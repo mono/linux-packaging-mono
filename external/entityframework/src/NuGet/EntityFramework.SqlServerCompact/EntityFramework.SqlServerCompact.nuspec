@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata schemaVersion="2">
+    <id>EntityFramework.SqlServerCompact</id>
+    <version>6.0.0-alpha2</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <projectUrl>http://go.microsoft.com/fwlink/?LinkID=273752</projectUrl>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkId=273754</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Allows SQL Server Compact 4.0 to be used with Entity Framework.</description>
+    <summary>Allows SQL Server Compact 4.0 to be used with Entity Framework.</summary>
+    <language>en-US</language>
+    <tags>entityframework sqlservercompact</tags>
+    <dependencies>
+      <dependency id="Microsoft.SqlServer.Compact" version="4.0" />
+      <dependency id="EntityFramework" version="6.0.0-alpha2" />
+    </dependencies>
+  </metadata>
+</package>

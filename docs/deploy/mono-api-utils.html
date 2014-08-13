@@ -1,0 +1,624 @@
+﻿<?xml version="1.0" encoding="utf-8"?><span>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <title>mono-api-utils.html</title>
+   <style type="text/css">
+
+
+   h3 { 
+       font-size: 18px;
+       padding-bottom: 4pt;
+       border-bottom: 2px solid #dddddd;
+   }
+       
+   .api {
+     border: 1px solid;
+     padding: 10pt;
+     margin: 10pt;
+   } 
+
+   .api-entry { 
+       border-bottom: none;
+       font-size: 18px;
+   }
+
+   .prototype {
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
+     margin-top: 5pt;
+     margin-bottom: 5pt;  
+   } 
+
+   .header {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+    
+   .code {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+   
+
+</style>
+</head>
+<body>
+<h2>Utility Methods</h2>
+
+<h3>Bitsets</h3>
+
+	<p />MonoBitsets are a set of routines used to manipulate sets
+	of bits.
+	
+ <a name="api:mono_bitset_alloc_size"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_alloc_size</div>
+
+    <div class="prototype">Prototype: mono_bitset_alloc_size</div>
+<p />
+
+</div> <a name="api:mono_bitset_clear"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_clear</div>
+
+    <div class="prototype">Prototype: mono_bitset_clear</div>
+<p />
+
+</div> <a name="api:mono_bitset_clear_all"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_clear_all</div>
+
+    <div class="prototype">Prototype: mono_bitset_clear_all</div>
+<p />
+
+</div> <a name="api:mono_bitset_clone"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_clone</div>
+
+    <div class="prototype">Prototype: mono_bitset_clone</div>
+<p />
+
+</div> <a name="api:mono_bitset_copyto"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_copyto</div>
+
+    <div class="prototype">Prototype: mono_bitset_copyto</div>
+<p />
+
+</div> <a name="api:mono_bitset_count"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_count</div>
+
+    <div class="prototype">Prototype: mono_bitset_count</div>
+<p />
+
+</div> <a name="api:mono_bitset_equal"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_equal</div>
+
+    <div class="prototype">Prototype: mono_bitset_equal</div>
+<p />
+
+</div> <a name="api:mono_bitset_find_first"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_find_first</div>
+
+    <div class="prototype">Prototype: mono_bitset_find_first</div>
+<p />
+
+</div> <a name="api:mono_bitset_find_last"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_find_last</div>
+
+    <div class="prototype">Prototype: mono_bitset_find_last</div>
+<p />
+
+</div> <a name="api:mono_bitset_find_start"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_find_start</div>
+
+    <div class="prototype">Prototype: mono_bitset_find_start</div>
+<p />
+
+</div> <a name="api:mono_bitset_foreach"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_foreach</div>
+
+    <div class="prototype">Prototype: mono_bitset_foreach</div>
+<p />
+
+</div> <a name="api:mono_bitset_free"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_free</div>
+
+    <div class="prototype">Prototype: mono_bitset_free</div>
+<p />
+
+</div> <a name="api:mono_bitset_intersection"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_intersection</div>
+
+    <div class="prototype">Prototype: mono_bitset_intersection</div>
+<p />
+
+</div> <a name="api:mono_bitset_invert"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_invert</div>
+
+    <div class="prototype">Prototype: mono_bitset_invert</div>
+<p />
+
+</div> <a name="api:mono_bitset_mem_new"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_mem_new</div>
+
+    <div class="prototype">Prototype: mono_bitset_mem_new</div>
+<p />
+
+</div> <a name="api:mono_bitset_new"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_new</div>
+
+    <div class="prototype">Prototype: mono_bitset_new</div>
+<p />
+
+</div> <a name="api:mono_bitset_set"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_set</div>
+
+    <div class="prototype">Prototype: mono_bitset_set</div>
+<p />
+
+</div> <a name="api:mono_bitset_set_all"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_set_all</div>
+
+    <div class="prototype">Prototype: mono_bitset_set_all</div>
+<p />
+
+</div> <a name="api:mono_bitset_size"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_size</div>
+
+    <div class="prototype">Prototype: mono_bitset_size</div>
+<p />
+
+</div> <a name="api:mono_bitset_sub"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_sub</div>
+
+    <div class="prototype">Prototype: mono_bitset_sub</div>
+<p />
+
+</div> <a name="api:mono_bitset_test"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_test</div>
+
+    <div class="prototype">Prototype: mono_bitset_test</div>
+<p />
+
+</div> <a name="api:mono_bitset_test_bulk"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_test_bulk</div>
+
+    <div class="prototype">Prototype: mono_bitset_test_bulk</div>
+<p />
+
+</div> <a name="api:mono_bitset_union"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_union</div>
+
+    <div class="prototype">Prototype: mono_bitset_union</div>
+<p />
+
+</div> <a name="api:mono_bitset_find_first_unset"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_find_first_unset</div>
+
+    <div class="prototype">Prototype: mono_bitset_find_first_unset</div>
+<p />
+
+</div> <a name="api:mono_bitset_intersection_2"></a>
+ <div class="api">
+    <div class="api-entry">mono_bitset_intersection_2</div>
+
+    <div class="prototype">Prototype: mono_bitset_intersection_2</div>
+<p />
+
+
+</div><h3>Hashtables</h3>
+
+	<p /><tt>GHashTable</tt> is used when you need to store object
+	references into a hashtable, objects stored in a
+	<tt>MonoGHashTable</tt> are properly tracked by the garbage
+	collector.
+
+	<p />The <tt>MonoGHashTable</tt> data type has the same API as
+	the GLIB.
+	
+ <a name="api:mono_g_hash_table_destroy"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_destroy</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_destroy</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_foreach"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_foreach</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_foreach</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_foreach_remove"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_foreach_remove</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_foreach_remove</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_foreach_steal"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_foreach_steal</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_foreach_steal</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_insert"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_insert</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_insert</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_lookup"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_lookup</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_lookup</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_lookup_extended"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_lookup_extended</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_lookup_extended</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_new"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_new</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_new</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_new_full"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_new_full</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_new_full</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_remap"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_remap</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_remap</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_remove"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_remove</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_remove</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_replace"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_replace</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_replace</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_size"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_size</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_size</div>
+<p />
+
+</div> <a name="api:mono_g_hash_table_steal"></a>
+ <div class="api">
+    <div class="api-entry">mono_g_hash_table_steal</div>
+
+    <div class="prototype">Prototype: mono_g_hash_table_steal</div>
+<p />
+
+
+</div><h3>SHA1 Signatures</h3>
+
+ <a name="api:mono_sha1_init"></a>
+ <div class="api">
+    <div class="api-entry">mono_sha1_init</div>
+
+    <div class="prototype">Prototype: mono_sha1_init</div>
+<p />
+
+</div> <a name="api:mono_sha1_update"></a>
+ <div class="api">
+    <div class="api-entry">mono_sha1_update</div>
+
+    <div class="prototype">Prototype: mono_sha1_update</div>
+<p />
+
+</div> <a name="api:mono_sha1_get_digest_from_file"></a>
+ <div class="api">
+    <div class="api-entry">mono_sha1_get_digest_from_file</div>
+
+    <div class="prototype">Prototype: mono_sha1_get_digest_from_file</div>
+<p />
+
+</div> <a name="api:mono_sha1_get_digest"></a>
+ <div class="api">
+    <div class="api-entry">mono_sha1_get_digest</div>
+
+    <div class="prototype">Prototype: mono_sha1_get_digest</div>
+<p />
+
+</div> <a name="api:mono_sha1_final"></a>
+ <div class="api">
+    <div class="api-entry">mono_sha1_final</div>
+
+    <div class="prototype">Prototype: mono_sha1_final</div>
+<p />
+
+
+</div><h3>MD5 Signatures</h3>
+
+ <a name="api:mono_md5_init"></a>
+ <div class="api">
+    <div class="api-entry">mono_md5_init</div>
+
+    <div class="prototype">Prototype: mono_md5_init</div>
+<p />
+
+</div> <a name="api:mono_md5_update"></a>
+ <div class="api">
+    <div class="api-entry">mono_md5_update</div>
+
+    <div class="prototype">Prototype: mono_md5_update</div>
+<p />
+
+</div> <a name="api:mono_md5_get_digest_from_file"></a>
+ <div class="api">
+    <div class="api-entry">mono_md5_get_digest_from_file</div>
+
+    <div class="prototype">Prototype: mono_md5_get_digest_from_file</div>
+<p />
+
+</div> <a name="api:mono_md5_get_digest"></a>
+ <div class="api">
+    <div class="api-entry">mono_md5_get_digest</div>
+
+    <div class="prototype">Prototype: mono_md5_get_digest</div>
+<p />
+
+</div> <a name="api:mono_md5_final"></a>
+ <div class="api">
+    <div class="api-entry">mono_md5_final</div>
+
+    <div class="prototype">Prototype: mono_md5_final</div>
+<p />
+
+
+</div> <a name="api:mono_digest_get_public_token"></a>
+ <div class="api">
+    <div class="api-entry">mono_digest_get_public_token</div>
+
+    <div class="prototype">Prototype: mono_digest_get_public_token</div>
+<p />
+
+
+</div><h3>Memory Pools</h3>
+
+	<p />Memory pools are a convenient way of tracking memory
+	allocations that are used for one specific task, they are also
+	faster than using the standard memory allocation procedures,
+	as they are designed to be used only by a single thread at a
+	time. 
+
+	<p /><tt>MonoMemPool</tt> objects are not thread safe, which
+	means that you should not share the objects across multiple
+	threads without providing proper locking around it (unlike
+	<tt>malloc</tt> and <tt>free</tt> which are thread safe). 
+
+	<p />When a <tt>MonoMemPool</tt> is released with
+	<tt>mono_mempool_destroy</tt> all of the of the memory
+	allocated from that memory pool with
+	<tt>mono_mempool_alloc</tt> and <tt>mono_mempool_alloc0</tt>
+	is released.
+	
+ <a name="api:mono_mempool_new"></a>
+ <div class="api">
+    <div class="api-entry">mono_mempool_new</div>
+
+    <div class="prototype">MonoMemPool*
+mono_mempool_new (void)
+
+</div>
+<p />
+<b>Returns</b>
+<blockquote>	  a new memory pool.
+</blockquote>
+
+</div> <a name="api:mono_mempool_destroy"></a>
+ <div class="api">
+    <div class="api-entry">mono_mempool_destroy</div>
+
+    <div class="prototype">void
+mono_mempool_destroy (MonoMemPool *pool)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>pool:</i></dt><dd> the memory pool to destroy</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Free all memory associated with this pool.
+
+</div> <a name="api:mono_mempool_alloc"></a>
+ <div class="api">
+    <div class="api-entry">mono_mempool_alloc</div>
+
+    <div class="prototype">gpointer
+mono_mempool_alloc (MonoMemPool *pool, guint size)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>pool:</i></dt><dd> the momory pool to use</dd><dt><i>size:</i></dt><dd> size of the momory block</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the address of a newly allocated memory block.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 Allocates a new block of memory in <i>pool</i>.
+	
+
+</div> <a name="api:mono_mempool_alloc0"></a>
+ <div class="api">
+    <div class="api-entry">mono_mempool_alloc0</div>
+
+    <div class="prototype">gpointer
+mono_mempool_alloc0 (MonoMemPool *pool, guint size)
+
+</div>
+<p />
+<b>Remarks</b>
+<p />	 
+	 same as mono_mempool_alloc, but fills memory with zero.
+
+</div> <a name="api:mono_mempool_empty"></a>
+ <div class="api">
+    <div class="api-entry">mono_mempool_empty</div>
+
+    <div class="prototype">Prototype: mono_mempool_empty</div>
+<p />
+
+</div> <a name="api:mono_mempool_invalidate"></a>
+ <div class="api">
+    <div class="api-entry">mono_mempool_invalidate</div>
+
+    <div class="prototype">void
+mono_mempool_invalidate (MonoMemPool *pool)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>pool:</i></dt><dd> the memory pool to invalidate</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Fill the memory associated with this pool to 0x2a (42). Useful for debugging.
+
+</div> <a name="api:mono_mempool_stats"></a>
+ <div class="api">
+    <div class="api-entry">mono_mempool_stats</div>
+
+    <div class="prototype">void
+mono_mempool_stats (MonoMemPool *pool)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>pool:</i></dt><dd> the momory pool we need stats for</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Print a few stats about the mempool
+
+</div> <a name="api:mono_mempool_contains_addr"></a>
+ <div class="api">
+    <div class="api-entry">mono_mempool_contains_addr</div>
+
+    <div class="prototype">gboolean
+mono_mempool_contains_addr (MonoMemPool *pool,
+							gpointer addr)
+
+</div>
+<p />
+<b>Remarks</b>
+<p />	 
+	  Determines whenever ADDR is inside the memory used by the mempool.
+
+ 
+</div><h3>JIT utilities</h3>
+
+ <a name="api:mono_signbit_double"></a>
+ <div class="api">
+    <div class="api-entry">mono_signbit_double</div>
+
+    <div class="prototype">Prototype: mono_signbit_double</div>
+<p />
+
+</div> <a name="api:mono_signbit_float"></a>
+ <div class="api">
+    <div class="api-entry">mono_signbit_float</div>
+
+    <div class="prototype">Prototype: mono_signbit_float</div>
+<p />
+
+
+</div><h3>Disassembling Generated Code</h3>
+
+	<p />Routines used to debug the JIT-produced code.
+	
+ <a name="api:mono_disasm_code"></a>
+ <div class="api">
+    <div class="api-entry">mono_disasm_code</div>
+
+    <div class="prototype">Prototype: mono_disasm_code</div>
+<p />
+
+</div> <a name="api:mono_disasm_code_one"></a>
+ <div class="api">
+    <div class="api-entry">mono_disasm_code_one</div>
+
+    <div class="prototype">Prototype: mono_disasm_code_one</div>
+<p />
+
+
+</div><h3>Walking the Stack</h3>
+
+ <a name="api:mono_walk_stack"></a>
+ <div class="api">
+    <div class="api-entry">mono_walk_stack</div>
+
+    <div class="prototype">Prototype: mono_walk_stack</div>
+<p />
+
+</div> <a name="api:mono_stack_walk_no_il"></a>
+ <div class="api">
+    <div class="api-entry">mono_stack_walk_no_il</div>
+
+    <div class="prototype">Prototype: mono_stack_walk_no_il</div>
+<p />
+
+
+</div><h3>Others</h3>
+
+ <a name="api:mono_escape_uri_string"></a>
+ <div class="api">
+    <div class="api-entry">mono_escape_uri_string</div>
+
+    <div class="prototype">Prototype: mono_escape_uri_string</div>
+<p />
+
+</div></body>
+</html>
+</span>

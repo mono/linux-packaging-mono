@@ -1,0 +1,308 @@
+<?xml version="1.0"?>
+<project name="ClassLibrary" default="all">
+    <include buildfile="../ikvm.include" />
+    <property name="pathsep" value=":" />
+    <property overwrite="false" name="signoption" value="" />
+    <property overwrite="false" name="SkipSystemCoreDependency" value="false" />
+    <property name="OPENJDK_VERSION" value="OpenJDK 7u6 b24" />
+    <property name="OpenJDK7.dir" value="${project::get-base-directory()}/../../openjdk-7u6-b24" />
+    <if test="${platform::is-win32()}">
+        <property name="pathsep" value=";" />
+    </if>
+
+    <target name="all" depends="classes rmi vfs resources core">
+    </target>
+
+    <target name="version">
+        <property name="VERSION" value="${assemblyname::get-version(assemblyname::get-assembly-name(path::combine(project::get-base-directory(), '../bin/IKVM.Runtime.dll')))}" />
+    </target>
+
+    <target name="copyright" depends="allsources.gen.lst">
+        <exec program="${project::get-base-directory()}/../tools/SourceLicenseAnalyzer.exe" output="copyright.txt" useruntimeengine="true" />
+        <loadfile file="copyright.txt" property="COPYRIGHT" />
+    </target>
+
+    <target name="allsources.gen.lst">
+        <copy file="allsources.lst" tofile="allsources.gen.lst" outputencoding="ascii" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="OPENJDK7" value="${OpenJDK7.dir}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="System.Core" unless="${SkipSystemCoreDependency}">
+        <delete file="System.Core.dll" />
+        <if test="${version::get-major(framework::get-version(framework::get-target-framework() )) &lt; 4}">
+            <copy file="../bin/IKVM.Reflection.dll" todir="." overwrite="true" />
+            <csc target="exe" output="GenerateSystemCore.exe">
+                <sources>
+                    <include name="GenerateSystemCore.cs" />
+                </sources>
+                <references>
+                    <include name="IKVM.Reflection.dll" asis="true" />
+                </references>
+            </csc>
+            <exec program="GenerateSystemCore.exe" useruntimeengine="true" />
+            <delete>
+                <fileset basedir=".">
+                    <include name="IKVM.Reflection.dll"/>
+                    <include name="GenerateSystemCore.exe"/>
+                </fileset>
+            </delete>
+        </if>
+    </target>
+
+    <target name="DummySystemCoreJar">
+        <exec program="javac" commandline="-implicit:none ExtensionAttribute.java" useruntimeengine="false" />
+        <zip zipfile="System.Core.jar">
+            <fileset prefix="cli/System/Runtime/CompilerServices">
+                <include name="ExtensionAttribute.class" />
+                <include name="ExtensionAttribute$Annotation.class" />
+            </fileset>
+        </zip>
+        <delete>
+            <fileset basedir=".">
+                <include name="ExtensionAttribute.class" />
+                <include name="ExtensionAttribute$Annotation.class" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="classes" depends="version copyright allsources.gen.lst System.Core">
+        <delete>
+            <fileset basedir="../classpath">
+                <include name="**.class"/>
+            </fileset>
+        </delete>
+        <delete>
+            <fileset basedir="${OpenJDK7.dir}">
+                <include name="**.class"/>
+            </fileset>
+        </delete>
+        <delete>
+            <fileset basedir=".">
+                <include name="**.class"/>
+                <include name="mscorlib.jar" />
+                <include name="System.jar" />
+                <include name="System.Core.jar" />
+                <include name="System.Data.jar" />
+                <include name="System.Drawing.jar" />
+            </fileset>
+        </delete>
+        <exec program="${project::get-base-directory()}/../bin/ikvmstub.exe" commandline="-bootstrap mscorlib" useruntimeengine="true" />
+        <exec program="${project::get-base-directory()}/../bin/ikvmstub.exe" commandline="-bootstrap System" useruntimeengine="true" />
+        <exec program="${project::get-base-directory()}/../bin/ikvmstub.exe" commandline="-bootstrap System.Core" useruntimeengine="true" unless="${SkipSystemCoreDependency}" />
+        <if test="${SkipSystemCoreDependency}">
+            <call target="DummySystemCoreJar" />
+        </if>
+        <exec program="${project::get-base-directory()}/../bin/ikvmstub.exe" commandline="-bootstrap System.Data" useruntimeengine="true" />
+        <exec program="${project::get-base-directory()}/../bin/ikvmstub.exe" commandline="-bootstrap System.Drawing" useruntimeengine="true" />
+        <property name="IKVM.Runtime" value="IKVM.Runtime" />
+        <if test="${signoption != ''}">
+            <loadfile file="../tools/pubkey.txt" property="publickey" />
+            <property name="IKVM.Runtime" value="IKVM.Runtime, PublicKey=${publickey}" />
+        </if>
+        <copy file="AssemblyInfo.java.in" tofile="AssemblyInfo.java" outputencoding="ascii" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="RUNTIME" value="${IKVM.Runtime}" />
+                    <token key="VERSION" value="${VERSION}" />
+                    <token key="COPYRIGHT" value="${COPYRIGHT}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <copy file="java/lang/PropertyConstants.java.in" tofile="java/lang/PropertyConstants.java" outputencoding="ascii" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="AWTASSEMBLY" value="${string::replace(assemblyname::get-full-name(assemblyname::get-assembly-name(path::combine(project::get-base-directory(), '../bin/IKVM.Runtime.dll'))), 'IKVM.Runtime', 'IKVM.AWT.WinForms')}" />
+                    <token key="VERSION" value="${VERSION}" />
+                    <token key="OPENJDK_VERSION" value="${OPENJDK_VERSION}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <exec program="javac" commandline="-J-Xmx1536M -implicit:none -g -nowarn -cp dummy -bootclasspath mscorlib.jar${pathsep}System.jar${pathsep}System.Core.jar${pathsep}System.Data.jar${pathsep}System.Drawing.jar${pathsep}../runtime/IKVM.Runtime.jar @allsources.gen.lst" useruntimeengine="false" />
+    </target>
+
+    <target name="rmi">
+        <property name="VMARGS" value="-J-client -J-Xmx896m -J-Xms128m -J-XX:PermSize=32m -J-XX:MaxPermSize=160m" />
+        <property name="CLASSPATH" value="${OpenJDK7.dir}/jdk/src/share/classes/${pathsep}${OpenJDK7.dir}/build/linux-amd64/impsrc/${pathsep}." />
+        <property name="OUTPUT" value="${OpenJDK7.dir}/build/linux-amd64/classes/" />
+        <property name="ARGS" value="${VMARGS} -bootclasspath ${CLASSPATH} -d ${OUTPUT}" />
+        <exec program="rmic" commandline="${ARGS} -v1.1 sun.rmi.registry.RegistryImpl" />
+        <exec program="rmic" commandline="${ARGS} -v1.1 sun.rmi.transport.DGCImpl" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 sun.rmi.server.Activation$ActivationSystemImpl" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 java.rmi.activation.ActivationGroup" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 com.sun.jndi.rmi.registry.ReferenceWrapper" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 javax.management.remote.rmi.RMIConnectionImpl" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 -iiop javax.management.remote.rmi.RMIConnectionImpl" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 -iiop -standardPackage javax.management.remote.rmi.RMIConnectionImpl" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 javax.management.remote.rmi.RMIServerImpl" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 -iiop javax.management.remote.rmi.RMIServerImpl" />
+        <exec program="rmic" commandline="${ARGS} -v1.2 -iiop -standardPackage javax.management.remote.rmi.RMIServerImpl" />
+        <exec program="rmic" commandline="${ARGS} -iiop javax.management.remote.rmi.RMIConnection" />
+        <exec program="rmic" commandline="${ARGS} -iiop -standardPackage javax.management.remote.rmi.RMIConnection" />
+        <exec program="rmic" commandline="${ARGS} -iiop javax.management.remote.rmi.RMIServer" />
+        <exec program="rmic" commandline="${ARGS} -iiop -standardPackage javax.management.remote.rmi.RMIServer" />
+    </target>
+
+    <target name="vfs">
+        <!-- This file is generated here, but it is added as a resource to IKVM.Runtime.dll, because Ref.Emit on .NET 1.1 doesn't support adding a raw resource. -->
+        <zip zipfile="vfs.zip">
+            <fileset basedir="${OpenJDK7.dir}/build/linux-amd64/j2re-image">
+                <include name="lib/calendars.properties" />
+                <include name="lib/logging.properties" />
+                <include name="lib/management/management.properties" />
+                <include name="lib/net.properties" />
+                <include name="lib/psfontj2d.properties" />
+                <include name="lib/sound.properties" />
+                <include name="lib/cmm/*" />
+                <include name="lib/zi/**/*" />
+                <include name="lib/currency.data" />
+                <include name="lib/security/java.policy" />
+                <include name="lib/security/java.security" />
+                <!--
+                we don't add lib/security/local_policy.jar, because it is the restricted version,
+                instead we'll add a link in vfs from local_policy.jar to US_export_policy.jar
+                (because US_export_policy.jar is unrestricted)
+                -->
+                <include name="lib/security/US_export_policy.jar" />
+            </fileset>
+            <fileset basedir="${OpenJDK7.dir}/jdk/src/windows">
+                <include name="lib/flavormap.properties" />
+                <include name="lib/content-types.properties" />
+            </fileset>
+            </zip>
+        </target>
+
+    <target name="resources">
+        <!-- resources that are not in @OPENJDK7@/build/linux-amd64/j2re-image/lib/resources.jar -->
+        <zip zipfile="resources.zip">
+            <fileset basedir="${OpenJDK7.dir}/jdk/src/share/classes">
+                <include name="com/sun/swing/internal/plaf/**/*" />
+                <include name="com/sun/java/swing/plaf/**/*.properties" />
+                <include name="com/sun/java/swing/plaf/**/*.gif" />
+                <include name="sun/launcher/resources/*.properties" />
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="response.gen.txt">
+        <copy file="response.txt" tofile="response.gen.txt" outputencoding="ascii" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="OPENJDK7" value="${OpenJDK7.dir}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="core" depends="version response.gen.txt">
+        <copy file="../bin/IKVM.Runtime.dll" todir="." />
+        <copy file="../bin/IKVM.AWT.WinForms.dll" todir="." />
+        <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-version:${VERSION}" />
+            <arg value="${signoption}" />
+            <arg value="-compressresources" />
+            <arg value="-opt:fields" />
+            <arg value="-strictfinalfieldsemantics" />
+            <arg value="-removeassertions" />
+            <arg value="-target:library" />
+            <arg value="-sharedclassloader" />
+            <arg value="-r:mscorlib.dll" />
+            <arg value="-r:System.dll" />
+            <arg value="-r:System.Core.dll" unless="${SkipSystemCoreDependency}" />
+            <arg value="-r:System.Xml.dll" />
+            <arg value="-r:IKVM.Runtime.dll" />
+            <!-- we already know that the JNI assembly is not available, so suppress the warning -->
+            <arg value="-nowarn:110" />
+            <arg value="-warnaserror" />
+            <arg value="@response.gen.txt" />
+        </exec>
+        <if test="${property::exists('peverify')}">
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Beans.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Charsets.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Corba.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Core.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Jdbc.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Management.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Media.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Misc.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Naming.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Remoting.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Security.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.SwingAWT.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Text.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.Util.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.XML.API.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.XML.Bind.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.XML.Crypto.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.XML.Parse.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.XML.Transform.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.XML.WebServices.dll" />
+            <exec program="${peverify}" commandline="-nologo IKVM.OpenJDK.XML.XPath.dll" />
+        </if>
+	<!-- make sure that we haven't accidentally introduced new dependencies -->
+        <exec program="${project::get-base-directory()}/../tools/depcheck.exe" commandline="response.txt dependencies.txt" useruntimeengine="true" />
+        <copy todir="../bin">
+            <fileset basedir=".">
+                <include name="IKVM.OpenJDK.*.dll" />
+            </fileset>
+        </copy>
+        <!-- update base addresses in response.txt for next build -->
+        <exec program="${project::get-base-directory()}/../tools/updbaseaddresses.exe" commandline="response.txt" useruntimeengine="true" />
+
+        <!-- generate stubs for the public Java APIs we expose -->
+        <mkdir dir="../lib" />
+        <exec program="${project::get-base-directory()}/../bin/ikvmstub.exe" useruntimeengine="true">
+            <arg value="-out:../lib/ikvm-api.jar" />
+            <arg value="../bin/IKVM.OpenJDK.Core.dll" />
+            <arg value="-namespace:ikvm.io" />
+            <arg value="-namespace:ikvm.lang" />
+            <arg value="-namespace:ikvm.runtime" />
+        </exec>
+    </target>
+
+    <target name="tools.gen.rsp">
+        <copy file="tools.rsp" tofile="tools.gen.rsp" outputencoding="ascii" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="OPENJDK7" value="${OpenJDK7.dir}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="tools" depends="version tools.gen.rsp">
+        <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-r:mscorlib.dll" />
+            <arg value="-version:${VERSION}" />
+            <arg value="${signoption}" />
+            <arg value="-warnaserror" />
+            <arg value="@tools.gen.rsp" />
+        </exec>
+    </target>
+
+    <target name="jdk-tools" depends="version">
+        <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-version:${VERSION}" />
+            <arg value="-out:../bin/javac.exe" />
+            <arg value="-main:com.sun.tools.javac.Main" />
+            <arg value="-r:../bin/IKVM.OpenJDK.Tools.dll" />
+        </exec>
+        <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-version:${VERSION}" />
+            <arg value="-out:../bin/javah.exe" />
+            <arg value="-main:com.sun.tools.javah.Main" />
+            <arg value="-r:../bin/IKVM.OpenJDK.Tools.dll" />
+        </exec>
+        <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-version:${VERSION}" />
+            <arg value="-out:../bin/javap.exe" />
+            <arg value="-main:sun.tools.javap.Main" />
+            <arg value="-r:../bin/IKVM.OpenJDK.Tools.dll" />
+        </exec>
+    </target>
+
+</project>

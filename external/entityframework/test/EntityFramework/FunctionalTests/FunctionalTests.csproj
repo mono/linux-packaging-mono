@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{23330EF8-2593-4B0A-A70F-12E6BE1F46C4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Data.Entity</RootNamespace>
+    <AssemblyName>EntityFramework.FunctionalTests</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugNet40|AnyCPU' ">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\DebugNet40\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseNet40|AnyCPU' ">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\ReleaseNet40\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\FinalPublicKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>true</DelaySign>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq">
+      <HintPath>..\..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Services" />
+    <Reference Include="System.Data.Services.Client" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="xunit, Version=1.9.1.1600, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\xunit.1.9.1\lib\net20\xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions, Version=1.9.1.1600, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\xunit.extensions.1.9.1\lib\net20\xunit.extensions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\FinalPublicKey.snk">
+      <Link>Properties\FinalPublicKey.snk</Link>
+    </None>
+    <None Include="packages.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <EmbeddedResource Include="TestModels\SpatialTvfsModel\226644SpatialModel.csdl">
+      <LogicalName>FunctionalTests.ProductivityApi.SpatialTvfsModel.226644SpatialModel.csdl</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestModels\SpatialTvfsModel\226644SpatialModel.msl">
+      <LogicalName>FunctionalTests.ProductivityApi.SpatialTvfsModel.226644SpatialModel.msl</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestModels\SpatialTvfsModel\226644SpatialModel.ssdl">
+      <LogicalName>FunctionalTests.ProductivityApi.SpatialTvfsModel.226644SpatialModel.ssdl</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\EntityFramework.SqlServerCompact\EntityFramework.SqlServerCompact.csproj">
+      <Project>{1ef9c524-7122-4677-b111-dd14bb2a9ea2}</Project>
+      <Name>EntityFramework.SqlServerCompact</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\EntityFramework.SqlServer\EntityFramework.SqlServer.csproj">
+      <Project>{6f4bb80b-5f74-44d3-a77f-0025dfa48c1a}</Project>
+      <Name>EntityFramework.SqlServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\EntityFramework\EntityFramework.csproj">
+      <Project>{E06D1C12-EFE8-4413-A15C-AE01FC158F2F}</Project>
+      <Name>EntityFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FunctionalTests.Transitional\FunctionalTests.Transitional.csproj">
+      <Project>{3d65611f-e8fb-4a33-9196-7836969d6378}</Project>
+      <Name>FunctionalTests.Transitional</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <Compile Include="EntityClient\AsyncScenarios.cs" />
+    <Compile Include="EntityClient\DependencyResolverTests.cs" />
+    <Compile Include="MetaTests.cs" />
+    <Compile Include="Migrations\AddColumnScenarios.cs" />
+    <Compile Include="Migrations\AddForeignKeyScenarios.cs" />
+    <Compile Include="Migrations\AlterColumnScenarios.cs" />
+    <Compile Include="Migrations\AutoAndGenerateScenarios.cs" />
+    <Compile Include="Migrations\AutoAndGenerateTestCase.cs" />
+    <Compile Include="Migrations\AddPrimaryKeyScenarios.cs" />
+    <Compile Include="Migrations\MultiTenantScenarios.cs" />
+    <Compile Include="Migrations\SchemaScenarios.cs" />
+    <Compile Include="Migrations\CreateIndexScenarios.cs" />
+    <Compile Include="Migrations\CreateTableScenarios.cs" />
+    <Compile Include="Migrations\CrossDatabaseScenarios.cs" />
+    <Compile Include="Migrations\CustomSqlScenarios.cs" />
+    <Compile Include="Migrations\DashScriptScenarios.cs" />
+    <Compile Include="Migrations\DatabaseGeneratedScenarios.cs" />
+    <Compile Include="Migrations\DefaultValueScenarios.cs" />
+    <Compile Include="Migrations\DropColumnScenarios.cs" />
+    <Compile Include="Migrations\DropForeignKeyScenarios.cs" />
+    <Compile Include="Migrations\DropIndexScenarios.cs" />
+    <Compile Include="Migrations\MappingScenarios.cs" />
+    <Compile Include="Migrations\NoTestInfraScenarios.cs" />
+    <Compile Include="Migrations\SeedingScenarios.cs" />
+    <Compile Include="Migrations\ToolingScenarios.cs" />
+    <Compile Include="Migrations\TransactionScenarios.cs" />
+    <Compile Include="Migrations\TestModel\TestMigration.cs" />
+    <Compile Include="Objects\LazyLoadingTests.cs" />
+    <Compile Include="Objects\SerializationScenarios.cs" />
+    <Compile Include="PlanCompiler\AnonymousTypeTests.cs" />
+    <Compile Include="PlanCompiler\LinqGroupByTests.cs" />
+    <Compile Include="ProductivityApi\DbConfigurationTests.cs" />
+    <Compile Include="ProductivityApi\ScaffoldingScenarioTests.cs" />
+    <Compile Include="ProductivityApi\SimpleScenariosForLocalDb.cs" />
+    <Compile Include="Query\FunctionTests.cs" />
+    <Compile Include="Query\GroupAggregateTests.cs" />
+    <Compile Include="Query\JoinEliminationTests.cs" />
+    <Compile Include="Query\LinqToEntities\ContainsTests.cs" />
+    <Compile Include="Query\LinqToEntities\DefaultIfEmptyTests.cs" />
+    <Compile Include="Query\LinqToEntities\FuncletizationTests.cs" />
+    <Compile Include="Query\LinqToEntities\FunctionsTests.cs" />
+    <Compile Include="Query\LinqToEntities\GroupByOptimizationTests.cs" />
+    <Compile Include="Query\LinqToEntities\IncludeTests.cs" />
+    <Compile Include="Query\LinqToEntities\MaterializationTests.cs" />
+    <Compile Include="Query\LinqToEntities\OrderByLiftingTests.cs" />
+    <Compile Include="Query\QueryEnumTests.cs" />
+    <Compile Include="SqlClient\SqlProviderServicesTests.cs" />
+    <Compile Include="Query\SqlGeneratorTests.cs" />
+    <Compile Include="TestHelpers\EnumeratorExtensions.cs" />
+    <Compile Include="TestHelpers\FullTrustAttribute.cs" />
+    <Compile Include="TestHelpers\ListExtensions.cs" />
+    <Compile Include="TestHelpers\PartialTrustFactAttribute.cs" />
+    <Compile Include="TestHelpers\PartialTrustClassCommand.cs" />
+    <Compile Include="TestHelpers\PartialTrustCommand.cs" />
+    <Compile Include="TestHelpers\PartialTrustFixtureAttribute.cs" />
+    <Compile Include="TestModels\SimpleModel\LocalDbLoginsContext.cs" />
+    <Compile Include="TestModels\SimpleModel\SimpleLocalDbModelContext.cs" />
+    <Compile Include="TestModels\SimpleModel\SimpleLocalDbModelContextWithNoData.cs" />
+    <Compile Include="TestModels\SimpleModel\SimpleLocalDbModelInitializer.cs" />
+    <Compile Include="TestModels\StoreModel\AWBuildVersion.cs" />
+    <Compile Include="TestModels\StoreModel\ConcreteType1_3.cs" />
+    <Compile Include="TestModels\StoreModel\DatabaseLog.cs" />
+    <Compile Include="TestModels\StoreModel\ErrorLog.cs" />
+    <Compile Include="TestModels\AdvancedPatternsModel\AdvancedPatternsEmployeeContext.cs" />
+    <Compile Include="ProductivityApi\ChangeTrackingProxyTests.cs" />
+    <Compile Include="ProductivityApi\ComplexTypeTests.cs" />
+    <Compile Include="ProductivityApi\ConcurrencyTests.cs" />
+    <Compile Include="ProductivityApi\ConnectionTests.cs" />
+    <Compile Include="ProductivityApi\DatabaseInitializationTests.cs" />
+    <Compile Include="ProductivityApi\DatabaseTests.cs" />
+    <Compile Include="ProductivityApi\DatabindingTests.cs" />
+    <Compile Include="ProductivityApi\DbConnectionFactoryTests.cs" />
+    <Compile Include="ProductivityApi\DbContextTestsForSqlCe.cs" />
+    <Compile Include="ProductivityApi\DbEntityEntryTests.cs" />
+    <Compile Include="ProductivityApi\DbModelTests.cs" />
+    <Compile Include="ProductivityApi\DbPropertyValuesTests.cs" />
+    <Compile Include="ProductivityApi\DbSetTests.cs" />
+    <Compile Include="ProductivityApi\DbSqlQueryTests.cs" />
+    <Compile Include="ProductivityApi\DetectChangesTests.cs" />
+    <Compile Include="ProductivityApi\DisposeTests.cs" />
+    <Compile Include="ProductivityApi\enumtests.cs" />
+    <Compile Include="ProductivityApi\extralazyloadingtests.cs" />
+    <Compile Include="TestModels\ExtraLazyLoading\cachingcollectioninitializer.cs" />
+    <Compile Include="TestModels\ExtraLazyLoading\collectionextensions.cs" />
+    <Compile Include="TestModels\ExtraLazyLoading\ihasisloaded.cs" />
+    <Compile Include="TestModels\ExtraLazyLoading\lazyblogcontext.cs" />
+    <Compile Include="TestModels\ExtraLazyLoading\queryablecollection.cs" />
+    <Compile Include="TestModels\ExtraLazyLoading\queryablecollectioninitializer.cs" />
+    <Compile Include="ProductivityApi\FindTests.cs" />
+    <Compile Include="ProductivityApi\IncludeTests.cs" />
+    <Compile Include="TestModels\InvalidMappingModel\InvalidMappingContext.cs" />
+    <Compile Include="TestModels\InvalidTypeModel\Person.cs" />
+    <Compile Include="TestModels\InvalidTypeModel\PersonContext.cs" />
+    <Compile Include="ProductivityApi\InvalidTypeTests.cs" />
+    <Compile Include="TestModels\LinqModels\BaseTypeForLinq.cs" />
+    <Compile Include="TestModels\LinqModels\BaseTypeForLinqComparer.cs" />
+    <Compile Include="TestModels\LinqModels\CustomerForLinq.cs" />
+    <Compile Include="TestModels\LinqModels\FeaturedProductForLinq.cs" />
+    <Compile Include="TestModels\LinqModels\NumberForLinq.cs" />
+    <Compile Include="TestModels\LinqModels\OrderForLinq.cs" />
+    <Compile Include="TestModels\LinqModels\ProductForLinq.cs" />
+    <Compile Include="TestModels\LinqModels\SimpleModelForLinq.cs" />
+    <Compile Include="TestModels\LinqModels\SimpleModelForLinqInitializer.cs" />
+    <Compile Include="ProductivityApi\LinqTests.cs" />
+    <Compile Include="ProductivityApi\ModelNamespaceAndContainerTests.cs" />
+    <Compile Include="ProductivityApi\MultiThreadingTests.cs" />
+    <Compile Include="ProductivityApi\NoTrackingTests.cs" />
+    <Compile Include="ProductivityApi\PartialTrustTests.cs" />
+    <Compile Include="ProductivityApi\PropertyApiTests.cs" />
+    <Compile Include="TestModels\SimpleModel\BadMappingModel.cs" />
+    <Compile Include="TestModels\SimpleModel\CeLoginsContext.cs" />
+    <Compile Include="TestModels\SimpleModel\DisabledInitializerContext.cs" />
+    <Compile Include="TestModels\SimpleModel\EntityConnectionForSimpleModel.cs" />
+    <Compile Include="TestModels\SimpleModel\LoginsContext.cs" />
+    <Compile Include="TestModels\SimpleModel\ModelWithWideProperties.cs" />
+    <Compile Include="ProductivityApi\SimpleScenarios.cs" />
+    <Compile Include="ProductivityApi\SimpleScenariosForSqlCe.cs" />
+    <Compile Include="ProductivityApi\SpatialTests.cs" />
+    <Compile Include="TestModels\SpatialTvfsModel\SpatialNorthwindContext.cs" />
+    <Compile Include="TestModels\SpatialTvfsModel\SpatialNorthwindInitializer.cs" />
+    <Compile Include="ProductivityApi\TransactionTests.cs" />
+    <Compile Include="TestModels\UnSpecifiedOrderingModel\CompositeKeyEntityWithNoOrdering.cs" />
+    <Compile Include="TestModels\UnSpecifiedOrderingModel\NoOrderingContext.cs" />
+    <Compile Include="ProductivityApi\ValidationTests.cs" />
+    <Compile Include="ProductivityApi\WriteEdmxTests.cs" />
+    <Compile Include="TestHelpers\EntityTypeConfigurationExtensions.cs" />
+    <Compile Include="TestHelpers\IEnumerableExtentions.cs" />
+    <Compile Include="Migrations\TestHelpers\DbProviders.cs" />
+    <Compile Include="TestHelpers\PartialTrustSandbox.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+xcopy /s /y /d "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+xcopy /s /y /d "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

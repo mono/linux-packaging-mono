@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<project name="ikvmc" default="ikvmc">
+    <include buildfile="../ikvm.include" />
+
+    <target name="ikvmc">
+        <property name="defs" value="TRACE;STATIC_COMPILER" />
+        <if test="${property::exists('signed')}">
+            <property name="defs" value="${defs};${signed}" />
+        </if>
+        <if test="${version::get-major(framework::get-version(framework::get-target-framework() )) == 4}">
+            <property name="defs" value="${defs};NET_4_0" />
+        </if>
+        <csc target="exe" output="../bin/ikvmc.exe" optimize="true" define="${defs}" noconfig="true" nostdlib="true">
+            <sources>
+                <include name="../CommonAssemblyInfo.cs" />
+                <include name="AotTypeWrapper.cs" />
+                <include name="AssemblyInfo.cs" />
+                <include name="AssemblyResolver.cs" />
+                <include name="Compiler.cs" />
+                <include name="CompilerClassLoader.cs" />
+                <include name="FakeTypes.cs" />
+                <include name="Proxy.cs" />
+                <include name="remapper.cs" />
+                <include name="../runtime/AssemblyClassLoader.cs" />
+                <include name="../runtime/atomic.cs" />
+                <include name="../runtime/attributes.cs" />
+                <include name="../runtime/BigEndianBinaryReader.cs" />
+                <include name="../runtime/ByteCode.cs" />
+                <include name="../runtime/ClassFile.cs" />
+                <include name="../runtime/ClassLoaderWrapper.cs" />
+                <include name="../runtime/CodeEmitter.cs" />
+                <include name="../runtime/compiler.cs" />
+                <include name="../runtime/CoreClasses.cs" />
+                <include name="../runtime/DotNetTypeWrapper.cs" />
+                <include name="../runtime/DynamicClassLoader.cs" />
+                <include name="../runtime/DynamicTypeWrapper.cs" />
+                <include name="../runtime/intrinsics.cs" />
+                <include name="../runtime/JavaException.cs" />
+                <include name="../runtime/JsrInliner.cs" />
+                <include name="../runtime/LocalVars.cs" />
+                <include name="../runtime/MemberWrapper.cs" />
+                <include name="../runtime/profiler.cs" />
+                <include name="../runtime/ReflectUtil.cs" />
+                <include name="../runtime/RuntimeHelperTypes.cs" />
+                <include name="../runtime/Serialization.cs" />
+                <include name="../runtime/tracer.cs" />
+                <include name="../runtime/Types.cs" />
+                <include name="../runtime/TypeWrapper.cs" />
+                <include name="../runtime/verifier.cs" />
+                <include name="../runtime/vm.cs" />
+            </sources>
+            <references>
+                <include name="../bin/ICSharpCode.SharpZipLib.dll" asis="true" />
+                <include name="../bin/IKVM.Reflection.dll" asis="true" />
+                <include name="${ReferencePath}/mscorlib.dll" />
+                <include name="${ReferencePath}/System.dll" />
+                <include name="${ReferencePath}/System.Configuration.dll" />
+                <include name="${ReferencePath}/System.Xml.dll" />
+            </references>
+        </csc>
+    </target>
+</project>

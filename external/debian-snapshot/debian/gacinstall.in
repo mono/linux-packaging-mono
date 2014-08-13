@@ -1,0 +1,144 @@
+#!/usr/bin/perl
+
+#
+# Setup
+#
+
+# Directives
+use strict;
+use warnings;
+
+# Figure out the mode
+my $mode = shift @ARGV;
+
+if (!defined $mode)
+{
+    print STDERR "E: You must supply a mode\n";
+    print STDERR "E: Use: install, remove, or name\n";
+    exit 1;
+}
+
+# Name is simply
+if ($mode eq "name")
+{
+    print "Mono git snapshot %SNAPVER% (%GITVER%)\n";
+    exit 0;
+}
+
+# This program gets the name of a file (ending in .installcligac) and
+# a list of assemblies to install, as full paths. The ones given are
+# the only ones that passed the white/blacklisting.
+
+# Get the base file
+my $basename = shift @ARGV;
+my $cligac = "/usr/share/cli-common/packages.d/$basename.installcligac";
+
+if (! -f $cligac)
+{
+    print STDERR "E: File does not exist: $cligac\n";
+    exit 1;
+}
+
+# Get the base directory
+my $basedir = "/usr/share/cli-common/packages.d/";
+
+# Removing is also simple
+if ($mode eq "remove")
+{
+    # Get the uninstall file
+    my $uninstall = "$basedir/$basename.mono";
+
+    if (-f $uninstall)
+    {
+	# Go through the file
+	open UNINSTALL, "<$uninstall" or
+	    die "E: Cannot open uninstall file ($!)";
+
+	while (<UNINSTALL>)
+	{
+		my $assembly = $_;
+		chomp($assembly);
+		my $cmd = "/opt/mono-%SNAPVER%/bin/gacutil -u $assembly > /dev/null";
+		my $res = system($cmd);
+		if ($res > 0) {
+			print STDERR "W: removing assembly: $assembly failed!\n";
+		}
+	}
+
+	close UNINSTALL;
+
+	# Unlike the file
+	unlink($uninstall);
+    }
+
+    # We are good
+    exit 0;
+}
+
+# The only thing left should be "install"
+if ($mode ne "install")
+{
+    print STDERR "E: Unknown mode: $mode\n";
+    print STDERR "E: Use: install, remove or name\n";
+    exit 1;
+}
+
+
+# Open up our uninstall file
+open UNINSTALL, ">$basedir/$basename.mono"
+    or die "E: Cannot open uninstall: $basedir/$basename.mono";
+
+# Go through the file
+open CLIGAC, "<$cligac" or die "E: Cannot open: $cligac ($!)";
+
+while (@ARGV)
+{
+    # Get the assembly name
+    my $dll = shift @ARGV;
+    
+    # Make sure it is there
+    if (! -f $dll)
+    {
+	print STDERR "E: Assembly does not exist: $dll\n";
+	exit 1;
+    }
+    
+    # Figure out the mono's precise name
+    my $fullname = get_full_name($dll);
+    
+    # Write out the uninstall file
+    print UNINSTALL "$fullname\n";
+    
+    # Install the file. We use the "../../../.." to make it a
+    # relative path to this program (since gacutil doesn't like
+    # absolute paths). There isn't a problem of doing too many
+    # since we typically run from the root context.
+    my $cmd = "(cd `dirname $dll` && "
+    	. "/opt/mono-%SNAPVER%/bin/gacutil -i `basename $dll`"
+	   . " > /dev/null)";
+    system($cmd) == 0 or die "E: installing Assembly $dll failed\n";
+}
+
+close CLIGAC;
+close UNINSTALL;
+
+# Finish up successfully
+exit 0;
+
+# Get the name of the assembly in a manner suitable for uninstall
+# using gacutil.
+sub get_full_name
+{
+    # Get the name
+    my $dll = shift;
+
+    # Open a pipe to monop
+    my $cmd = "LANG=C /opt/mono-%SNAPVER%/bin/mono /opt/mono-%SNAPVER%/share/mono/MonoGetAssemblyName.exe $dll";
+    open PIPE, "$cmd |" or die "E: Cannot open pipe to assembly builder $dll";
+
+    # This generate a single line that produces the desired results
+    $_ = <PIPE>;
+    chomp;
+	 # assembly1, Version=1.0.0.0, Culture=en, PublicKeyToken=0123456789abcdef
+    return $_;
+}
