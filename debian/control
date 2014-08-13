@@ -474,7 +474,6 @@ Depends: ${misc:Depends},
          libmono-tasklets2.0-cil (= ${source:Version}),
          libmono-tasklets4.0-cil (= ${source:Version}),
          libmono-wcf3.0a-cil (= ${source:Version}),
-         libmono-web4.0-cil (= ${source:Version}),
          libmono-webbrowser2.0-cil (= ${source:Version}),
          libmono-webbrowser4.0-cil (= ${source:Version}),
          libmono-webmatrix-data4.0-cil (= ${source:Version}),
@@ -507,7 +506,6 @@ Description: Mono libraries (for CLI 2.0)
  This package contains various Mono libraries for CLI 2.0:
   - Mono.CompilerServices.SymbolWriter
   - Mono.Http
-  - Mono.Web
   - OpenSystem.C
 
 Package: libmono-posix2.0-cil
@@ -617,18 +615,6 @@ Description: Mono.Http library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono.Http library for CLI 4.0.
-
-Package: libmono-web4.0-cil
-Architecture: all
-Depends: ${misc:Depends}, ${cli:Depends}
-Description: Mono.Web library (for CLI 4.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono.Web library for CLI 4.0.
 
 Package: libmono-opensystem-c4.0-cil
 Architecture: all
