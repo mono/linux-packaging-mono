@@ -353,7 +353,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_gc_toggleref_add@VER_1 3.6.0
  mono_gc_toggleref_register_callback@VER_1 3.6.0
  mono_gc_register_bridge_callbacks@VER_1 3.2.8+dfsg
- mono_gc_scan_for_specific_ref@VER_1 3.2.8+dfsg
  mono_gc_toggleref_add@VER_1 3.2.8+dfsg
  mono_gc_toggleref_register_callback@VER_1 3.2.8+dfsg
  mono_gc_wait_for_bridge_processing@VER_1 3.2.8+dfsg
