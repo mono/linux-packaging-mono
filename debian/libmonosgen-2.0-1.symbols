@@ -161,10 +161,19 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_context_get_desc@VER_1 3.2.1+dfsg
  mono_context_init@VER_1 3.2.1+dfsg
  mono_context_set@VER_1 3.2.1+dfsg
+ mono_counter_get_name@VER_1 3.6.0
+ mono_counter_get_section@VER_1 3.6.0
+ mono_counter_get_size@VER_1 3.6.0
+ mono_counter_get_type@VER_1 3.6.0
+ mono_counter_get_unit@VER_1 3.6.0
+ mono_counter_get_variance@VER_1 3.6.0
  mono_counters_cleanup@VER_1 3.2.1+dfsg
  mono_counters_dump@VER_1 3.2.1+dfsg
  mono_counters_enable@VER_1 3.2.1+dfsg
+ mono_counters_foreach@VER_1 3.6.0
  mono_counters_register@VER_1 3.2.1+dfsg
+ mono_counters_register_with_size@VER_1 3.6.0
+ mono_counters_sample@VER_1 3.6.0
  mono_current_single_method@VER_1 3.2.8+dfsg
  mono_custom_attrs_construct@VER_1 3.2.1+dfsg
  mono_custom_attrs_free@VER_1 3.2.1+dfsg
@@ -232,6 +241,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_dl_fallback_register@VER_1 3.2.1+dfsg
  mono_dl_fallback_unregister@VER_1 3.2.1+dfsg
  mono_dllmap_insert@VER_1 3.2.1+dfsg
+ mono_do_crash_chaining@VER_1 3.6.0
  mono_do_signal_chaining@VER_1 3.2.1+dfsg
  mono_do_single_method_regression@VER_1 3.2.8+dfsg
  mono_do_x86_stack_align@VER_1 3.2.1+dfsg
@@ -255,9 +265,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_domain_try_unload@VER_1 3.2.1+dfsg
  mono_domain_unload@VER_1 3.2.1+dfsg
  mono_dont_free_domains@VER_1 3.2.1+dfsg
- mono_dont_free_global_codeman@VER_1 3.2.1+dfsg
  mono_dwarf_escape_path@VER_1 3.2.1+dfsg
  mono_emit_native_call@VER_1 3.2.1+dfsg
+ mono_enable_debug_domain_unload@VER_1 3.6.0
  mono_environment_exitcode_get@VER_1 3.2.1+dfsg
  mono_environment_exitcode_set@VER_1 3.2.1+dfsg
  mono_error_cleanup@VER_1 3.2.1+dfsg
@@ -340,6 +350,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_gc_reference_queue_add@VER_1 3.2.8+dfsg
  mono_gc_reference_queue_free@VER_1 3.2.8+dfsg
  mono_gc_reference_queue_new@VER_1 3.2.8+dfsg
+ mono_gc_toggleref_add@VER_1 3.6.0
+ mono_gc_toggleref_register_callback@VER_1 3.6.0
  mono_gc_register_bridge_callbacks@VER_1 3.2.8+dfsg
  mono_gc_scan_for_specific_ref@VER_1 3.2.8+dfsg
  mono_gc_toggleref_add@VER_1 3.2.8+dfsg
@@ -766,6 +778,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_runtime_resource_limit@VER_1 3.2.1+dfsg
  mono_runtime_resource_set_callback@VER_1 3.2.1+dfsg
  mono_runtime_run_main@VER_1 3.2.1+dfsg
+ mono_runtime_set_main_args@VER_1 3.6.0
  mono_runtime_set_shutting_down@VER_1 3.2.1+dfsg
  mono_security_core_clr_get_options@VER_1 3.2.1+dfsg
  mono_security_core_clr_require_elevated_permissions@VER_1 3.2.1+dfsg
@@ -779,6 +792,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_set_assemblies_path@VER_1 3.2.1+dfsg
  mono_set_break_policy@VER_1 3.2.1+dfsg
  mono_set_config_dir@VER_1 3.2.1+dfsg
+ mono_set_crash_chaining@VER_1 3.6.0
  mono_set_defaults@VER_1 3.2.1+dfsg
  mono_set_dirs@VER_1 3.2.1+dfsg
  mono_set_is_debugger_attached@VER_1 3.2.1+dfsg
@@ -841,6 +855,11 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_exit@VER_1 3.2.1+dfsg
  mono_thread_get_main@VER_1 3.2.1+dfsg
  mono_thread_get_undeniable_exception@VER_1 3.2.1+dfsg
+ mono_thread_info_exit@VER_1 3.6.0-0xamarin1
+ mono_thread_info_get_stack_bounds@VER_1 3.6.0
+ mono_thread_info_open_handle@VER_1 3.6.0
+ mono_thread_info_tls_get@VER_1 3.6.0
+ mono_thread_info_tls_set@VER_1 3.6.0
  mono_thread_init@VER_1 3.2.1+dfsg
  mono_thread_is_foreign@VER_1 3.2.1+dfsg
  mono_thread_manage@VER_1 3.2.1+dfsg
