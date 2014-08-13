@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# Description: This wrapper script pre-compiles (AOT) the passed assembly
+#              before executing it, and AOTs new assemblies in build output
+#              directory.
+
+export MONO_PATH
+
+DEBIAN_DIR=$(dirname $0)
+#MONO_DIR=$DEBIAN_DIR/..
+MONO_DIR=${DEBIAN_DIR/%\/debian}
+ASSEMBLY=$1
+
+#case $ASSEMBLY in
+#	*.dll | *.exe)
+#		if [ -f $ASSEMBLY -a ! -f "$ASSEMBLY.so" ]; then
+#			$MONO_DIR/runtime/mono-wrapper --aot $ASSEMBLY
+#		fi
+#	;;
+#esac
+           
+$MONO_DIR/runtime/mono-wrapper "$@"
+
+ASSEMBLIES_DIR=$MONO_DIR/mcs/class/lib
+ASSEMBLIES=$(find $ASSEMBLIES_DIR -name "*.dll" -or -name "*.exe")
+for ASSEMBLY in $ASSEMBLIES; do
+	ASSEMBLY_DIR=$(dirname $ASSEMBLY)
+	ASSEMBLY_NAME=$(basename $ASSEMBLY)
+	if [ ! -f "$ASSEMBLY.so" ]; then
+		#if [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/net_2_0" ] ||
+		#   [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/net_2_1" ] ||
+		#   [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/net_2_1_tuned" ]; then
+		#   	# AOT for 2.0/2.1 is buggy and likes to crash
+		#	true
+		#elif [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/net_2_0_bootstrap" ]; then
+		#	# AOT for 2.0 runtime libs seems to work though
+		#	$MONO_DIR/runtime/mono-wrapper --aot -O=all $ASSEMBLY
+		#else
+		#	$MONO_DIR/runtime/mono-wrapper --aot -O=all $ASSEMBLY
+		#fi
+		
+		# only AOT basic / 1.0 bootstrap / 2.0 bootstrap
+		if [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/basic" ] ||
+		   [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/net_1_1_bootstrap" ] ||
+		   [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/net_2_0_bootstrap" ]; then
+			$MONO_DIR/runtime/mono-wrapper --aot -O=all $ASSEMBLY
+		fi
+		
+		# always AOT libs used by the compilers
+		if [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/default" ]; then
+			if [ "$ASSEMBLY_NAME" = "mscorlib.dll" ] ||
+			   [ "$ASSEMBLY_NAME" = "System.dll" ] ||
+			   [ "$ASSEMBLY_NAME" = "System.Xml.dll" ]; then
+				$MONO_DIR/runtime/mono-wrapper --aot -O=all $ASSEMBLY
+			fi
+		fi
+		#elif [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/net_2_0" ] ||
+		#     [ "$ASSEMBLY_DIR" = "$ASSEMBLIES_DIR/net_2_1" ]; then
+		#	if [ "$ASSEMBLY_NAME" = "mscorlib.dll" ] ||
+		#	   [ "$ASSEMBLY_NAME" = "System.dll" ] ||
+		#	   [ "$ASSEMBLY_NAME" = "System.Xml.dll" ]; then
+		#		MONO_PATH=$MONO_DIR/class/lib/net_2_0:$MONO_PATH $MONO_DIR/runtime/mono-wrapper --aot -O=all $ASSEMBLY
+		#	fi
+		#fi
+	fi
+done

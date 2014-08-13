@@ -1,0 +1,105 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+dh_clistrip - strips CLI debug symbols from package build directories
+
+=cut
+
+use strict;
+use File::Find;
+use Debian::Debhelper::Dh_Lib;
+
+=head1 SYNOPSIS
+
+B<dh_clistrip> [S<I<debhelper options>>] [B<-X>I<item>] [--dbg-package=package]
+
+=head1 DESCRIPTION
+
+dh_clistrip is a debhelper program that removes debug symbols from
+CLI libraries and applications.
+
+dh_clistrip deletes all *.exe.mdb and *.dll.mdb files.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-X>I<item>, B<--exclude=>I<item>
+
+Exclude files that contain "item" anywhere in their filename from being
+deleted. You may use this option multiple times to build up a list of things
+to exclude.
+
+=item B<--dbg-package=>I<package>
+
+Moves the debug symbols to the specified package.
+
+=back
+
+=cut
+
+init();
+
+my $pwd = `pwd`;
+chomp $pwd;
+
+# This variable can be used to turn off stripping (see Policy).
+if (defined $ENV{DEB_BUILD_OPTIONS} && $ENV{DEB_BUILD_OPTIONS} =~ /nostrip/) {
+	exit;
+}
+        
+foreach my $package (@{$dh{DOPACKAGES}}) {
+	my $tmp = tmpdir($package);
+
+	my $debug_pkg = '';
+	if (defined($dh{DEBUGPACKAGES})) {
+		$debug_pkg = @{$dh{DEBUGPACKAGES}}[0];
+		verbose_print("debug_pkg: $debug_pkg");
+	}
+	
+	if ($package eq $debug_pkg) {
+		# skip debug package
+		next;
+	}
+	
+	# find debug symbols
+	find (sub {
+		foreach my $exclude (@{$dh{EXCLUDE}}) {  
+			return if /$exclude/;
+		}
+		return unless -f && /\.(exe|dll)\.mdb$/;
+        	
+		my $file = $_;
+		my $dir = $File::Find::dir;
+		
+		if ($debug_pkg ne '') {
+			my $debug_dir = $dir;
+			verbose_print("dir: $dir");
+			$debug_dir =~ s!$tmp!!;
+			verbose_print("debug_dir: $debug_dir");
+			$debug_dir = $pwd . "/debian/$debug_pkg/" . $debug_dir;
+			verbose_print("debug_dir: $debug_dir");
+			if (! -d $debug_dir) {
+				doit("install", "-d", $debug_dir);
+			}
+			verbose_print("moving $file to $debug_dir");
+			doit("mv", $file, $debug_dir);
+		} else {
+			verbose_print("deleting $file");
+			doit("rm", $file);
+		}
+	}, $tmp);
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>
+
+This program is a part of cli-common.
+
+=head1 AUTHOR
+
+Mirco Bauer <meebey@meebey.net>
+
+=cut

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+MCS_DIR=mcs/class/lib
+
+find $MCS_DIR -name "*.exe" -or -name "*.dll" -exec runtime/mono-wrapper --aot {} \;

@@ -1,0 +1,4 @@
+#!/bin/sh
+OLD_VER=$1
+NEW_VER=$2
+git diff --ignore-all-space $OLD_VER $NEW_VER | filterdiff -i "*.cs" -x '*/Test/*' | egrep "\+\+\+|[+-]\s*(public|protected)"

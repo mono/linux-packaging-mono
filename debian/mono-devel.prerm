@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+if [ "$1" = remove ]; then
+        update-alternatives --remove c-sharp-compiler		/usr/bin/mono-csc
+        update-alternatives --remove resource-file-generator	/usr/bin/resgen
+        update-alternatives --remove assembly-linker		/usr/bin/al
+        update-alternatives --remove strong-name-tool		/usr/bin/sn
+fi
+
+#DEBHELPER#

@@ -1,0 +1,4 @@
+#include "libmonoboehm-2.0-1.symbols"
+ mono_exc_esp_offset@VER_1 3.2.1+dfsg
+ mono_hwcap_s390x_has_ld@VER_1 3.2.3+dfsg
+

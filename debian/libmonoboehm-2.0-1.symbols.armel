@@ -1,0 +1,23 @@
+#include "libmonoboehm-2.0-1.symbols"
+ mono_exc_esp_offset@VER_1 3.2.1+dfsg
+ mono_read16@VER_1 3.2.1+dfsg
+ mono_read32@VER_1 3.2.1+dfsg
+ mono_read64@VER_1 3.2.1+dfsg
+ mono_arm_emit_load_imm@VER_1 3.2.1+dfsg
+ mono_arm_is_rotated_imm8@VER_1 3.2.1+dfsg
+ mono_arm_patchable_b@VER_1 3.2.1+dfsg
+ mono_arm_patchable_bl@VER_1 3.2.1+dfsg
+ mono_arm_resume_unwind@VER_1 3.2.1+dfsg
+ mono_arm_throw_exception@VER_1 3.2.1+dfsg
+ mono_arm_throw_exception_by_token@VER_1 3.2.1+dfsg
+ mono_arm_thumb_supported@VER_1 3.2.1+dfsg
+ mono_hwcap_arm_has_thumb2@VER_1 3.2.3+dfsg
+ mono_hwcap_arm_has_thumb@VER_1 3.2.3+dfsg
+ mono_hwcap_arm_has_vfp@VER_1 3.2.3+dfsg
+ mono_hwcap_arm_has_vfp3@VER_1 3.2.3+dfsg-4~
+ mono_hwcap_arm_has_vfp3_d16@VER_1 3.2.3+dfsg-4~
+ mono_hwcap_arm_is_v5@VER_1 3.2.3+dfsg
+ mono_hwcap_arm_is_v6@VER_1 3.2.3+dfsg
+ mono_hwcap_arm_is_v7@VER_1 3.2.3+dfsg
+ mono_hwcap_arm_is_v7s@VER_1 3.2.3+dfsg
+

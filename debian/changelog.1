@@ -1,0 +1,2638 @@
+mono (2.6.3-4) experimental; urgency=low
+
+  * Backported fix from upstream SVN revision r158081, which corrects
+    xbuild's handling of wildcards with directories. This fixes a bug
+    which prevents Pinta 0.4 from being built. Thanks to Ankit Jain
+    <jankit@novell.com>
+
+ -- Jo Shields <directhex@apebox.org>  Wed, 07 Jul 2010 10:56:17 +0100
+
+mono (2.6.3-3) experimental; urgency=low
+
+  * git:debian/patches/arm_cpuinfo_parsing:
+    + Fix bug in QEMU-friendly ARM CPU capability parsing, by setting
+      v7_supported explicitly to FALSE on non-QEMU hardware, unless
+      a v7 CPU is detected (previously it was MAYBE, so v7 instructions
+      were always generated)
+
+ -- Jo Shields <directhex@apebox.org>  Thu, 01 Jul 2010 00:38:28 +0100
+
+mono (2.6.3-2) experimental; urgency=low
+
+  * git:debian/patches/kfreebsd_support:
+    + Ensure all FreeBSD ifdefs also apply to kFreeBSD
+    + Use &ctx->uc_mcontext, not &ctx->uc_mcontext.gregs, on FreeBSD kernels
+    + Ensure kFreeBSD follows POSIX signal code paths
+    + (Closes: #585662)
+  * git:debian/patches/fix_GetTypeDescriptor_wrapped_type_call_forwarding_r157626:
+    + Backport from upstream SVN repository to fix upstream bug 603060, which
+      causes TypeDescriptorProvider to return false values on wrapped types
+  * git:debian/patches/insecure_EnableViewStateMac_XSS_CVE-2010-1459:
+    + Backport from upstream SVN repository to fix CVE-2010-1459, which
+      implies that the default value for EnableViewStateMac can potentially
+      allow XSS attacks against ASP.NET sites hosted on Mono
+      (Closes: #585440)
+  * debian/update-monodoc:
+    + Updated script from Iain Lane <laney@ubuntu.com> which no longer fails
+      when called using bash rather than dash (Closes: #580665)
+  * debian/control:
+    + Add a Replaces: on libmono-dev << 2.4.3 (Closes: #582614)
+  * debian/control,
+    debian/libmono{1,0}.0-cil.install,
+    debian/mono-{1,2}.0-service.install:
+    + Move mono-service executables' GAC entries to mono-service packages
+      where they belong (Closes: #586192)
+
+ -- Jo Shields <directhex@apebox.org>  Tue, 22 Jun 2010 08:53:51 +0100
+
+mono (2.6.3-1) experimental; urgency=low
+
+  * New upstream release (Closes: #572901)
+    + Soft debugger
+    + Co-routine framework Mono.Tasklets
+    + Auto-completion for the csharp shell
+    + LINQ to SQL
+    + Enhanced XBuild
+    + Mono.Simd for AMD64
+    + Verifier and Sandbox (used by Moonlight)
+    + Debugging support for GDB
+
+  * The "Good bye dpatch, hello git" release
+  * debian/control
+    debian/rules
+    debian/patches/*:
+    + Replaced dpatches with git branches.
+
+  * debian/mono-dbg.install:
+    + Added mono-gdb.py script for gdb integration
+  * debian/control
+    debian/libmono-debugger-soft0.0-cil.install:
+    + New package for the soft debugger library.
+  * debian/libmono-microsoft-build2.0-cil.install:
+    + Added new libraries.
+  * debian/control
+    debian/libmono-c5-1.0-cil.install
+    debian/libmono-c5-1.1-cil.install:
+    + Renamed the libmono-c5-1.0-cil package to libmono-c5-1.1-cil as the
+      assembly version changed.
+  * debiab/control
+    debian/libmono-tasklets2.0-cil.install:
+    + New package for the continuations library.
+  * debian/libmono-wcf3.0-cil.install:
+    + Added new System.Data.Services library.
+    + Updated System.ServiceModel.Web GAC path.
+  * debian/mono-devel.install
+    debian/mono-devel.manpages:
+    + Added pdb2mdb, sqlmetal, svcutil and RabbitMQ.Client.Apigen.exe.
+    + Updated mono-xmltool.exe path.
+  * debian/control
+    debian/libmono-windowsbase3.0-cil.install:
+    + New package containing the WindowsBase library which used to be part of
+      the mono-uia source package.
+  * debian/watch:
+    + Tracking latest branch now.
+  * debian/copyright:
+    + Completly rewritten copyright file in DEP5 format based on
+      moonlight 2.0's debian/copyright written by Jo Shields with minor
+      modifications.
+    + Updated debian/* copyright.
+  * debian/rules:
+    + Dropped build-arch/indep split as we needed to build 90% of the classlib
+      for the test suite anyhow.
+    + Bumped clilibs where needed.
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 06 Jun 2010 17:45:35 +0200
+
+mono (2.4.4~svn151842-2) unstable; urgency=low
+
+  [ Mirco Bauer ]
+  * debian/control:
+    + Changed section of libmono-dev back to cli-mono.
+    + Added misc:Depends to mono-dbg to please lintian.
+  * debian/mono-devel.install:
+    + Added makecert.
+  * mcs/class/System.Web/System.Web.UI.WebControls/TableRow.cs
+    mcs/class/System.Web/System.Web.UI.WebControls/TableRowCollection.cs:
+    + Reverted dpatch changes that were done accidentally.
+  * Cherry-picked debian/patches/fix_csharp_attach_param
+    mcs/tools/csharp/repl.cs:
+    + Fixed NRE when using the attach parameter of csharp.
+
+  [ Iain Lane ]
+  * debian/update-monodoc: Check whether monodoc-browser is configured before
+    generating the search index in the trigger. Previously the lack of this
+    caused uninstallability due to monodoc not being able to find GTK# in the
+    GAC. (Closes: #575803)
+
+  [ Jo Shields ]
+  * debian/patches/mono-arm-thumb2-ftbfs.dpatch:
+    + Use GCC atomic built-ins to prevent FTBFS on ARM with Thumb2 (Thanks to
+      Alexander Sack <asac@ubuntu.com>)
+  * debian/patches/mono-thumb2-jit-blx.dpatch:
+    + Assorted JIT fixes for ARM (Thanks to Alexander Sack <asac@ubuntu.com>)
+  * debian/patches/arm-cpuinfo-parsing.dpatch:
+    + Smarter CPU detection, to allow Mono to run properly under QEMU without
+      asserting and dying (Thanks to Loïc Minier <loic.minier@ubuntu.com>)
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 25 Apr 2010 14:56:28 +0200
+
+mono (2.4.4~svn151842-1) unstable; urgency=medium
+
+  [ Jo Shields ]
+  * debian/patches/dont_assert_on_empty_DGC_field_r146984.dpatch:
+    + Backport fix from upstream which causes IKVM to fail to build
+      (Closes: #562393)
+  * debian/patches/escape_Lucene.Net_search_string_r148946.dpatch:
+    + Backport fix from upsrream which causes Monodoc to crash when
+      searching for "()" and other characters (Closes: #516597)
+
+  [ Mirco Bauer ]
+  * The "Mono 2.4.4 FREE LUV for squeeze & lucid" release
+  * New upstream SVN snapshot of the mono-2-4 branch
+    + Fixed assertion failed in fieldref_encode_signature which caused
+      SIGABRT. (Closes: #565548)
+    + Mono is now DFSG complaint again by default as the binary-only shipped
+      files were replaced with source code. Also the non-free XML
+      specification files were replaced and thus we can ship the RabbitMQ
+      library again.
+  * debian/patches/disable_building_convert.exe.dpatch
+    debian/patches/disable_building_RabbitMQ.Client.dll.dpatch:
+    + Dropped, we can build the RabbitMQ client library and convert.exe again,
+      as the source is provided now (see above).
+  * debian/fix_large_ranges_in_random_generator_r146995.dpatch:
+    + Dropped, already applied upstream.
+  * debian/watch:
+    + We are only watching the 2.4 series for now (until squeeze is released)
+  * debian/control:
+    + Added libnunit-cil-dev to Depends of libmono-cil-dev as that one
+      contains the symlink to the nunit.pc file which is no longer present in
+      libnunit2.4-cil but libnunit-cil-dev.
+    + Dropped purpose less libmono-nunit2.4-cil package as libmono-cil-dev
+      does the job now.
+    + Added conflicts libmono-nunit2.4-cil to libmono-cil-dev for cleaning up.
+    + Shortened too long line in the long descroption of libmono-cil-dev.
+    + Changed section of libmono-dev to libdevel.
+    + Added ${misc:Depends} to Depends of all packages.
+    + Bumped Standards-Version to 3.8.4 (no changes needed).
+    + Re-added libmono-messaging-rabbitmq2.0-cil and libmono-rabbitmq2.0-cil
+      packages.
+  * debian/cli.binfmt:
+    + Replaced mono-common with mono-runtime. (Closes: #565490)
+  * debian/mono-runtime.postinst:
+    + Removed obsolete mono-common / mono-jit traces.
+  * debian/copyright:
+    + Refere to versioned GPL license file.
+    + Updated license information of RabbitMQ XML specification files.
+    + Added license information of docs/HtmlAgilityPack.
+
+ -- Mirco Bauer <meebey@debian.org>  Wed, 17 Feb 2010 23:17:44 +0100
+
+mono (2.4.3+dfsg-1) unstable; urgency=medium
+
+  [ Jo Shields ]
+  * debian/monodoc-base.postinst,
+    debian/monodoc-base.triggers,
+    debian/monodoc-base.install,
+    debian/update-monodoc:
+    + Add a trigger to handle installation of documentation into monodoc
+
+  [ Iain Lane ]
+  * debian/monodoc-base.postinst: Only update the monodoc index when we need
+    to - i.e. when we are being triggered (by a lib installing new docs) or
+    upon a new install of monodoc-base (to generate the initial index)
+
+  [ Mirco Bauer ]
+  * The "mince pies for all" release
+  * New upstream (bugfix) release:
+    + New license compiler (lc) tool.
+    + Improved memory usage and performance for ASP.NET.
+    + Updated xbuild.
+    + Many bugfixes.
+  * debian/control
+    debian/rules
+    debian/copyright:
+    debian/patches/disable_building_RabbitMQ.Client.dll.dpatch:
+    + Dropped the RabbitMQ library with spec sources again, as the
+      auto-generated API source files without DFSG-free sources for the
+      generator are not good enough. (Closes: #560151)
+  * debian/copyright:
+    + Updated for the new license compiler tool.
+  * debian/rules:
+    + Bumped clilibs of libmono-system2.0-cil, libmono-security{1,2}.0-cil,
+      libmono-data-tds{1,2}.0-cil and libmono-microsoft-build2.0-cil
+      to >= 2.4.3.
+  * debian/update-monodoc:
+    + Handle search index too.
+  * debian/libmono-profiler.install:
+    + Install .so symlinks too, bloody pseudo versioned shared libraries.
+  * debian/libmono-simd2.0-cil.install:
+    + Added missing compile time symlink.
+  * debian/control:
+    + Promote monodoc-viewer from Recommends to Depends for monodoc-manual.
+      (Closes: #551909)
+    + Fixed typo in monodoc-base and monodoc-manual package description.
+      (Closes: #557355, #557379)
+    + Bumped Standards-Version to 3.8.3 (no changes needed)
+  * debian/patches/fix_metadata_dup.dpatch
+  * debian/patches/fix_gridview_r146128_r146133.dpatch:
+    + Dropped, already applied upstream.
+  * debian/control:
+    debian/libmono-cil-dev.install
+    debian/*.install:
+    + Added new libmono-cil-dev package which ships now all pkg-config files
+      and depends on all Mono CLI library packages.
+  * debian/mono-devel.links:
+    + Dropped /usr/bin/csc as it was causing a file conflict with the chicken
+      compiler from the chicken-bin package. Most source packages were
+      transitioned to use /usr/bin/mono-csc or /usr/bin/cli-csc instead.
+      (Closes: #509367, #518106)
+  * debian/patches/fix_DynamicMethod_restrictedSkipVisibility_r138886.dpatch:
+    + Pass restrictedSkipVisibility parameter correctly to the called
+      constructor as needed by the DbLinq library. (Closes: #551964)
+      (thanks goes to Silviu Paragina for the investigation and the patch)
+  * debian/mono-xbuild.install
+    debian/man/xbuild.1:
+    + Replaced xbuild manpage place holder with new upstream manpage.
+  * debian/mono-xbuild.install:
+    + Addded new target files.
+  * debian/mono-devel.install
+    debian/mono-devel.manpages:
+    + Added lc tool.
+  * debian/libmono-system-web2.0-cil.install:
+    + Added new development symlinks.
+  * debian/fix_large_ranges_in_random_generator_r146995.dpatch:
+    + Fix random numbers in large ranges.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 14 Dec 2009 00:01:59 +0100
+
+mono (2.4.2.3+dfsg-3) unstable; urgency=low
+
+  [ Jo Shields ]
+  * Add missing Conflicts/Replaces on monodoc-base from pre-Squeeze due
+    to monodoc.dll.mdb conflict
+  * debian/patches/fix_gridview_r146128_r146133.dpatch:
+    + Add fix from Mono SVN for TableRowCollection in ASP.NET
+
+  [ Mirco Bauer ]
+  * Added mono-gmcs to mono-csharp-shell dependencies as it links gmcs.exe
+    (Closes: #552211)
+  * debian/rules:
+    + Add dh_makeshlibs call for all remaining libraries. This adds missing
+      ldconfig calls to the maintainer scripts for libMonoSupportW.so,
+      libMonoPosixHelper.so and libmono-profiler-*.so.
+      (Closes: #553008, #553104)
+      (Obsoletes NMU by Matt Kraai <kraai@ftbfs.org>, Closes: #556662)
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 17 Nov 2009 23:26:36 +0100
+
+mono (2.4.2.3+dfsg-2) unstable; urgency=medium
+
+  * debian/control:
+    + Add missing cli:Suggests to libmono-bytefx0.7.6.1-cil and
+      libmono-bytefx0.7.6.2-cil.
+  * debian/rules:
+    + Removed mono:upversion and mono:next-version from dh_gencontrol -s
+      call as those are unused for arch:any packages.
+  * debian/patches/fix_metadata_dup.dpatch:
+    + Remove duplicate appdomain.h, fixing FTBFS.
+      (thanks to Stefan Siegl for the investigation, Closes: #543010)
+  * debian/patches/fix_CreateDelegate_ArgumentException.dpatch:
+    + Fixed ArgumentException in System.Delegate.CreateDelegate() which broke
+      IronPython 2.6 Beta 2.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 07 Sep 2009 22:00:21 +0200
+
+mono (2.4.2.3+dfsg-1) unstable; urgency=low
+
+  * New upstream release:
+    + Fixes XML signature HMAC truncation authentication bypass.
+      (CVE-2009-0217)
+    + Shipping the RabbitMQ.Client library now as the non-free bits were
+      removed.
+    + Includes ASP.NET MVC.
+    + Updated xbuild.
+  * debian/patches/disable_unavailable_cpu_optimizations_r133647.dpatch
+    debian/patches/fix_disabling_aot_r131940.dpatch
+    debian/patches/fix_null_funcptr_marshalling_r127347.dpatch
+    debian/patches/fix_ppc_build_using_gcc-4.4_r131472.dpatch
+    debian/patches/fix_recursive_unmanaged_types.dpatch
+    debian/patches/fix_sparc_support_r134797.dpatch:
+    + Dropped, as already applied upstream.
+  * debian/rules:
+    + Bumped clilibs where needed.
+  * debian/rules
+    debian/mono-devel.install
+    debian/mono-api-diff.cs:
+    + As mono-api-diff was dropped from Mono 2.4 and we need it to track API
+      changes we bundle it now in the source package.
+      (thanks to C.J. Adams-Collier for this)
+  * debian/copyright:
+    + Updated for ASP.NET MVC.
+  * debian/control:
+    + Moved libmono-firebirdsql1.7-cil from Depends to Recommends of
+      mono-complete, as libfbclient2 as not available on s390.
+    + Added libmono-system-web-mvc1.0-cil package.
+    + Added libmono-messaging-rabbitmq2.0-cil and libmono-rabbitmq2.0-cil
+      package.
+  * debian/patches/fix_array_compare.dpatch:
+    + Fix in the compiler needed for IronRuby.
+      (thanks goes to C.J. Adams-Collier for providing the patch)
+  * debian/control
+    debian/mono-runtime.install
+    debian/libmono-profiler.install:
+    + Moved the libmono-profiler-* libraries to the new libmono-profiler
+      package, as they pull libmono0 in which is unneeded for normal usage.
+  * debian/control
+    debian/mono-devel.install
+    debian/mono-mcs.install
+    debian/mono-gmcs.install:
+    + Moved mcs to mono-mcs and gmcs to mono-gmcs from mono-devel, as that
+      caused a lot of confusion. (closes: #525279 and #537081)
+    + Added mono-csc to mono-devel in preparation to drop csc in the future as
+      it conflicts with the chicken compiler, see #509367.
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 30 Jul 2009 19:35:10 +0200
+
+mono (2.4+dfsg-6) unstable; urgency=low
+
+  * debian/rules:
+    + Force pthread for armel as __thread FTBFS.
+    + Build Mono.Simd in test target, which hopefully fixes the failing
+      mono/mini tests.
+  * debian/control:
+    + Removed dh_installxsp and monodiet from the package description of
+      mono-utils. (Closes: #534906)
+    + Bumped Standards-Version to 3.8.2 (no changes needed)
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 05 Jul 2009 14:44:23 +0200
+
+mono (2.4+dfsg-5) unstable; urgency=low
+
+  * debian/rules:
+    + Let the build system decide if sigaltstack() will be used and which TLS
+      instead of passing explicitly --with-sigaltstack and --with-tls to
+      the ./configure script.
+    + Run also the JIT (mono/mini) tests.
+  * debian/patches/fix_disabling_aot_r131940.dpatch:
+    + Fixes the build of kfreebsd-amd64 and kfreebsd-i386.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 22 Jun 2009 00:08:35 +0200
+
+mono (2.4+dfsg-4) unstable; urgency=low
+
+  * debian/rules:
+    + Removed the config.make hack as that broke AMD64 builds and instead let
+      the ./configure script from the configure-indep target create that file.
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 14 Jun 2009 16:52:28 +0200 
+
+mono (2.4+dfsg-3) unstable; urgency=low
+
+  * debian/control:
+    + Change Section of prj2make-sharp to devel to match archive overrides.
+    + Added replaces libmono-cairo1.0-cil to libmono-cairo2.0-cil, as the
+      pkg-config file was moved from that. (Closes: #531006)
+    + Added conflicts mono-{1,2}.0-runtime to mono-runtime to ensure
+      aptitude is proposing a happy upgrade path.
+  * debian/libmono-wcf3.0-cil.install:
+    + Added missing System.IdentityModel development symlink.
+      (Closes: #531496)
+  * debian/shlibs.local
+    debian/update-shlibs.local.sh:
+    + Removed libgda-2 entry for the benefit of dh_clideps not picking that as
+      Suggests for libmono-system-data{1,2}.0-cil up. (Closes: #531870)
+  * debian/patches/fix_ppc_build_using_gcc-4.4_r131472.dpatch:
+    + Fixes the build on PPC when using GCC 4.4.
+  * debian/patches/disable_unavailable_cpu_optimizations_r133647.dpatch:
+    + Disable CPU optimizations which might be unavailable (like SSE2 on
+      Pentium 3).
+  * debian/patches/fix_sparc_support_r134797.patch:
+    + Fixes the hang for all applications when running on SPARC.
+      (Closes: #531566)
+  * debian/rules:
+    + Implemented test target and run basic runtime tests as part of the build
+      if nocheck wasn't passed via DEB_BUILD_OPTIONS.
+
+ -- Mirco Bauer <meebey@debian.org>  Sat, 13 Jun 2009 16:56:43 +0200
+
+mono (2.4+dfsg-2) unstable; urgency=low
+
+  [ Jo Shields ]
+  * debian/rules:
+    + Implement workaround to force removal of /usr/share/doc symlinks
+      on Ubuntu systems when upgrading from pre-2.4 packages
+  * debian/control:
+    + Add dependency on lsb-release to allow distro detection
+
+  [ Mirco Bauer ]
+  * Upload to unstable.
+  * debian/update-shlibs.local.sh:
+    + Fixed shlibs line of libMonoPosixHelper, was causing incorrect
+      dependencies on libmono0 instead of mono-runtime.
+    + Added shlibs line for libMonoSupportW.
+  * debian/monodoc-base.install:
+    + Added missing monodoc development symlink.
+  * debian/mono-1.0-devel.install
+    debian/mono-2.0-devel.install:
+    + Added installutil.exe.
+  * debian/mono-csharp-shell.install:
+    + Added missing Mono.CSharp development symlink.
+  * debian/libmono-messaging2.0-cil.install:
+    + Really install library and development symlink of Mono.Messaging.
+  * debian/libmono-management2.0-cil.install:
+    + Added missing Mono.Management development symlink.
+  * debian/mono-devel.install:
+    + Install mcs mo-files.
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 24 May 2009 15:23:14 +0200
+
+mono (2.4+dfsg-1) experimental; urgency=low
+
+  * New upstream release.
+    + For release highlights see the NEWS.Debian file
+  * debian/NEWS:
+    + Updated for Mono 2.4, Mono 2.2 and Mono 2.0.
+  * DFSG edition of Mono 2.4 as the source taball contained a binary that is
+    not part of the bootstrapping process (docs/AgilityPack.dll) and is CC
+    Share-alike 2.5 licensed (non-free). Also it contained non-free
+    specification files needed by the RabbitMQ.Client library.
+  * debian/README.source:
+    + Mention which files we removed and how to create the tarball we use.
+    + Document which binaries are required to bootstrap the C# compiler.
+  * debian/rules:
+    + Made get-orig-source policy conform (by using . as output path).
+    + Dropped --with-oprofile from configure call as debian doesn't ship the
+      needed header files for it.
+    + Pass --with-moonlight=no to configure call as the moon source package
+      will ship the assemblies with the release containing Silverlight 2.0
+      support.
+    + Build MonoGetAssemblyName using gmcs instead of mcs.
+    + Don't allow dh_clideps to add mono-runtime dependencies to
+      mono-1.0/2.0-gac to prevent circular dependency hell. (Closes: #528090)
+    + Added missing non-stamp/files targets to .PHONY.
+    + Only pass mono/2.0 to MONO_PATH in RUN_MONO variable, else gmcs.exe
+      picks up the 1.0 corlib.
+    + Bumped clilibs of libmono-cairo{1.0,2.0}-cil, libmono-data{1.0,2.0}-cil,
+      libmono-data-tds{1.0,2.0}-cil, libmono-oracle2.0-cil,
+      libmono-posix{1.0,2.0}-cil, libmono-relaxng{1.0,2.0}-cil,
+      libmono-system2.0-cil, libmono-system-runtime2.0-cil, libmono-web2.0-cil,
+      libmono-winforms2.0-cil and libmono-webbrowser0.5-cil.
+    + Install upstream changelog and debian news only in the mono-runtime
+      package.
+  * debian/cli-wrapper.c
+    + Dropped as this wrapper is obsolete since mono 1.1.6-1.
+  * debian/patches/kfreebsd_support.dpatch
+    debian/patches/build_genxs_2.0.dpatch:
+    + Updated to cleanly apply again.
+  * debian/patches/fix_wsdl2_duplicate_keys_r117243.dpatch
+    debian/patches/fix_NetworkInterface_exception_r120282.dpatch
+    debian/patches/fix_TcpClient_IPv6_r122598.dpatch:
+    + Dropped, already applied upstream.
+  * debian/patches/armel_fix_configure_fpu_check.dpatch:
+    + Only patch configure.in, autoreconf takes care of configure.
+  * debian/patches/armel-glibc-2.8.dpatch:
+    + Dropped, fixed upstream in a different way.
+  * debian/patches/fix_NetworkInterface_endless_loop.dpatch:
+    + Fix loop by setting next item. (Closes: #519480)
+  * debian/libmono-system-web2.0-cil.install:
+    + Added system.web.extensions_1.0.pc and
+      system.web.extensions.design_1.0.pc.
+  * debian/libmono2.0-cil.install:
+    + Added mono.web.pc.
+  * debian/control:
+    debian/patches/99_autoreconf.dpatch:
+    + Added autoconf to build-deps, as we autoreconf in debian/rules now.
+    + Dropped autoreconf dpatch.
+  * debian/control:
+    + Updated Vcs-* fields for the migrated git repository.
+    + Added new mono-csharp-shell package.
+    + mono-devel recommends mono-csharp-shell now (very useful for
+      debugging).
+    + Added new libmono-management2.0-cil, libmono-messaging2.0-cil,
+      libmono-simd2.0-cil and libmono-wcf3.0-cil packages.
+    + Merged monodoc-base and monodoc-manual packages from the monodoc source
+      package.
+    + Dropped mono-smcs, libmono-corlib2.1-cil and libmono-system2.1-cil as
+      those will be shipped by the moon source package.
+    + Removed transition dependencies from libmono1.0-cil, libmono2.0-cil
+      mono-devel, as the Mono 2.0 transition has been completed some weeks ago.
+    + Renamed libmono-nunit2.2-cil to libmono-nunit2.4-cil and only ship a
+      symlink to nunit.pc with a binary dependency on libnunit2.4-cil.
+    + Added mono-complete metapackage to make ISVs and users installing
+      non-Debian applications happy.
+    + Changed Section of all packages to cli-mono except *-dbg to match
+      archive overrides.
+    + Added automake to build-deps needed for autoreconf.
+  * debian/libmono-cairo1.0-cil.install
+    debian/libmono-cairo2.0-cil.install
+    debian/patches/fix-mono-cairo.pc.in.dpatch:
+    + Moved mono-cairo.pc from libmono-cairo1.0-cil to libmono-cairo2.0-cil
+      and reference the CLI 2.0 version in the pkg-config file now.
+  * debian/mono-devel.install:
+    + Added mono-cil-strip
+    + Added getline.cs, mono-lineeditor.pc, Options.cs and mono-options.pc
+    + Removed CorCompare.exe and mono-api-diff(.exe) as dropped by upstream.
+    + Updated mono-shlib-cop and sqlsharp as they are now CLI 2.0
+  * debian/patches/fix_recursive_unmanaged_types.dpatch:
+    + Fixes recursive structs regression as seen with OpenOffice.org.
+  * debian/copyright:
+    + Added Lucene.Net, RabbitMQ.Client and HtmlAgilityPack licenses.
+  * debian/patches/build_cecil_as_2.0.dpatch
+    debian/patches/build_firebirdsql_as_2.0.dpatch
+    debian/patches/build_permview_as_2.0.dpatch
+    debian/patches/build_linker_tuner_cil-strip_as_2.0.dpatch:
+    + Build Mono.Cecil, FirebirdSql.Data.Firebird, permview, tuner, linker and
+      cil-strip for CLI 2.0.
+  * debian/control
+    debian/rules
+    debian/mono-jt.*
+    debian/mono-common.*
+    debian/libmono0.*
+    debian/mono-runtime.*:
+    + Merged mono-jit, mono-common and libmono0 (except libmono.so.*)
+      packages into mono-runtime. libmono0 was pulled in by
+      libmono-system2.0-cil as it pinvokes libMonoPosixHelper.so for
+      compression stream APIs. Since the interpreter (mint) was dropped long
+      time ago and is unmainained upstream, there is no reason to keep those
+      3 domains (VM, config / binfmt support, helper libraries) split.
+    + Renamed mono-jit-dbg package to mono-runtime-dbg.
+  * debian/shlibs.local:
+    + Updated using the debian/update-shlibs.local.sh script.
+  * debian/watch:
+    + Mangle +dfsg version.
+  * debian/control
+    debian/libmono1.0-cil.install
+    debian/libmono-cecil-private-cil.install:
+    + Moved Mono.Cecil from libmono1.0-cil to libmono-cecil-private-cil, as
+      it's now build for CLI 2.0.
+  * debian/libmono-system-web2.0-cil.install:
+    + Added System.ComponentModel.DataAnnotations, System.Web.Abstractions,
+      System.Web.DynamicData and System.Web.Routing.
+  * debian/control
+    debian/libmono-i18n1.0-cil.install
+    debian/libmono-i18n2.0-cil.install
+    debian/libmono-i18n-west1.0-cil.install
+    debian/libmono-i18n-west2.0-cil.install:
+    + Moved I18N.dll and I18N.West.dll from libmono-i18nX.Y-cil to
+      libmono-i18n-westX.Y-cil, as this is the only code page that is really
+      needed in 90% of the cases.
+  * debian/compat
+    debian/control:
+    + Bumped debhelper to 7.
+  * debian/control
+    debian/mono-1.0-devel.install
+    debian/mono-2.0-devel.install
+    debian/mono-devel.install:
+    + Removed mono-api-info1 as dropped by upstream and moved
+      2.0/mono-api-info.exe from mono-2.0-devel to mono-devel.
+  * debian/control
+    debian/libmono0.install
+    debian/libmono-dev.install
+    debian/mono-devel.install:
+    + Moved dotnet.pc and dotnet35.pc from libmono-dev to mono-devel.
+    + Removed libmono-profiler-*.a as unused and unneeded.
+  * debian/mono-runtime.docs
+    debian/changelog
+    debian/changelog.1:
+    + Moved all entries older than the version in lenny (1.9.1) to
+      changelog.1
+    + Install changelog.1 only in mono-runtime.
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 21 May 2009 01:04:54 +0200
+
+mono (2.0.1-6) unstable; urgency=low
+
+  [ Jo Shields ]
+  * debian/control:
+    + Update package descriptions to make it clearer what is what, and
+      avoid multiple packages with identical short descriptions
+      (Closes: #519404)
+
+  [ Sebastian Dröge ]
+  * debian/patches/fix_null_funcptr_marshalling_r127347.dpatch:
+    + Fix marshalling for NULL function pointers, they should be mapped
+      to managed null delegates and vice versa. Patch from upstream SVN.
+
+ -- Sebastian Dröge <slomo@debian.org>  Fri, 01 May 2009 13:37:07 +0200
+
+mono (2.0.1-5) unstable; urgency=low
+
+  * The "Let the show begin!" release
+    + Upload to unstable starting the Mono 2.0 transition, status available at:
+      http://wiki.debian.org/Teams/DebianMonoGroup/Mono20TransitionTODO
+  * debian/control:
+    + The compilers (mono-mcs and mono-gmcs) are not forward compatible with
+      newer upstream versions, thus added stronger dependencies.
+    + Removed libgamin-dev, libcups2-dev, librsvg2-dev, libgtk2.0-dev and
+      libgnomeui-dev from build-deps-indep as those packages are only needed
+      to generate the debian/shlibs.local file using the
+      debian/update-shlibs.local.sh script (the script checks now if those
+      are installed). This extended hack is needed as shared-mime-info in
+      unstable conflicts with gnome < 2.24 and gnome 2.24 is blocked by
+      the Mono 2.0 transition.
+  * debian/shlibs.local:
+    + Updated using the debian/update-shlibs.local.sh script.
+
+ -- Mirco Bauer <meebey@debian.org>  Wed, 25 Feb 2009 00:10:02 +0100
+
+mono (2.0.1-4) experimental; urgency=low
+
+  * debian/rules:
+    + Pass internal-mono instead of --internal-mono if the debhelper version
+      is older than 7.1, as that one doesn't support custom parameters via
+      init(). This ensures backwards compatibility with older debhelper
+      versions, as found in Ubuntu.
+  * debian/control:
+    + Lowered debhelper build-dep to >= 5.
+  * debian/dh_clideps
+    debian/dh_makeclilibs:
+    + Re-synced from cli-common 0.6.0, needed for dh 7.0 backwards
+      compatibilty.
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 27 Jan 2009 00:15:04 +0100
+
+mono (2.0.1-3) experimental; urgency=low
+
+  * Rebuilt against libc6 and glib from unstable.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 26 Jan 2009 22:49:05 +0100
+
+mono (2.0.1-2) experimental; urgency=low
+
+  [ Jo Shields ]
+  * debian/patches/fix_wsdl2_duplicate_keys_r117243.dpatch:
+    + Fix bug in wsdl2 preventing parsing of Amazon Web Services 
+      wsdl file (thanks to Iain Lane <laney@ubuntu.com> for help
+      isolating this bug)
+  * debian/patches/fix_NetworkInterface_exception_r120282.dpatch:
+    + Warn, rather than fail, on "funny" network interfaces
+      (Closes: #507297)
+
+  [ Mirco Bauer ]
+  * debian/mono-1.0-devel.{postinst,prerm}
+    debian/mono-mcs.{postinst,prerm}
+    debian/mono-devel.{postinst,prerm}:
+    + Moved update-alternatives calls to mono-devel.{postinst,prerm}.
+  * debian/mono.links
+    debian/mono.postinst
+    + Removed, those are just left-overs.
+  * debian/mono-jit.postinst:
+    + Lowered alternative priority to 10 like all other alternative we install.
+  * debian/control:
+    + Moved cli-* Provides from mono-1.0-devel, mono-mcs and mono-gmcs to
+      mono-devel, as thats where the cli-* alternatives now lives.
+    + Added many strong versioned binary dependencies to mono-devel as hack
+      to make experimental buildds happy, else everything needing
+      mono-devel >= 2.0 will FTBFS in experimental (e.g. KDE4).
+      (thanks goes to Modestas Vainius for the investigation)
+    + Made dependency on libmono0, libmono-corlib2.0-cil and
+      libmono-corlib1.0-cil strong for mono-utils to ensure that the correct
+      versions are pulled in (else we might confuse APT or funny buildds).
+    + Bumped debhelper build-dep to >= 7.1, as needed for the bundled
+      debian/dh_* scripts.
+  * debian/dh_clideps
+    debian/dh_makeclilibs:
+    + Synced from cli-common 0.6.0, needed for dh 7.1 support.
+
+   [ David Paleino ]
+   * debian/patches/fix_TcpClient_IPv6_r122598.dpatch:
+     + Fix bug in TcpClient() implementation preventing IPv6 connections
+       from working
+
+ -- Mirco Bauer <meebey@debian.org>  Wed, 21 Jan 2009 23:39:02 +0100
+
+mono (2.0.1-1) experimental; urgency=low
+
+  [ Mirco Bauer ]
+  * New upstream (bugfix) release.
+  * debian/mono-1.0-devel.manpages:
+    + Removed mcs1 as it's already shipped in mono-mcs.
+  * debian/patches/99_autoreconf.dpatch:
+    + Updated
+  * debian/mono-devel.links:
+    + Make csc a symlink to gmcs, a runtime version neutral default
+      compiler.
+  * debian/patches/armel_fix_configure_fpu_check.dpatch:
+    + Forward ported patch from 1.2.4 to fix FTBFS on linux/armel.
+  * debian/patches/99_autoreconf.dpatch:
+    + Updated
+  * debian/mono-common.install:
+    + Name the /etc files and directories explicitly to make sure not to
+      install /etc/mconfig by accident when doing a binary-indep binary-arch
+      (in that order) build.
+
+  [ Jo Shields ]
+  * debian/patches/armel-glibc-2.8.dpatch:
+    + Fix build failure on armel architecture on libc6 2.8 (Thanks
+      to Michael Casadevall <sonicmctails@gmail.com> for the patch)
+
+  [ David Paleino ]
+  * Group Policy:
+    + implemented get-orig-source target in debian/rules
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 23 Nov 2008 16:16:00 +0100
+
+mono (2.0-1) experimental; urgency=low
+
+  * New upstream release.
+    + System.Web.Extensions is included in the debian source and binary
+      packages now, as JSON.NET was relicensed to MIT/X11 and thus no DFSGing
+      needed anymore! (Closes: #497213)
+    + With this release, we changed the default development stack from 1.0 to
+      2.0. This has no influence to the runtime nor existing binary packages,
+      for more details see:
+      http://wiki.debian.org/Teams/DebianMonoGroup/Mono20Transition
+  * debian/copyright:
+    + Updated license info of JSON.NET
+  * debian/control:
+    + Removed libgda2-dev from buid-deps as debian/update-shlibs.local.sh
+      takes already care of it.
+    + mono-utils depends on libmono-corlib2.0-cil and only suggests
+      libmono-corlib1.0-cil now as the default runtime was changed to 2.0.
+    + Updated libcupsys2-dev build-dependency to libcups2-dev.
+    + Updated Standards-Version to 3.8.0 (no changes needed).
+  * debian/rules:
+    + Pass --enable-quiet-build=no to configure call, else we get a less
+      verbose build log.
+    + Bumped clilibs to 2.0 of libmono{1,2}.0-cil, libmono-cairo{1,2}.0-cil,
+      libmono-data-tds{1,2}.0-cil, libmono-system2.0-cil,
+      libmono-system-runtime2.0-cil, libmono-security{1,2}.0-cil,
+      libmono-web2.0-cil, libmono-winforms2.0-cil and libmono-system2.1-cil.
+  * debian/mono.runtime-script:
+    + Call the script of gacutil instead of passing the application filename
+      directly to mono, as we rely on the default gacutil now provided by the
+      mono-gac package.
+  * debian/patches/method-signature-testing.dpatch
+    debian/patches/pass_CPPFLAGS_nicely_r98803.dpatch
+    debian/patches/fix_bound_checking_r98524_r98527.dpatch
+    debian/patches/fix_softfloat_r105848.dpatch
+    debian/patches/fix_stack_alignment_r105650_r105651.dpatch
+    debian/patches/fix_xen_support_r103474_r103475.dpatch
+    debian/patches/fix_Dictionary_preventing_GC_r102114.dpatch
+    debian/patches/fix_TdsConnectionPool_svn.dpatch
+    debian/patches/fix_Assembly.LoadFrom_deadlock.dpatch:
+    + Removed, already applied upstream.
+  * debian/patches/dont_build_System.Web.Extensions.dpatch:
+    + Disabled, JSON.NET was re-licensed to MIT/X11.
+  * debian/libmono-system-web2.0-cil.install:
+    + Added System.Web.Extensions.dll and System.Web.Extensions.Design.dll.
+  * debian/update-shlibs.local.sh:
+    + Fixed grep calls so it doesn't match udeb lines.
+  * debian/shlibs.local:
+    + Updated
+  * debian/control
+    debian/libmono-mozilla0.2-cil.install
+    debian/libmono-webbrowser0.5-cil.install:
+    + Renamed libmono-mozilla0.2-cil to libmono-webbrowser0.5-cil and
+      removed Replaces.
+  * debian/control
+    debian/libmono{1,2}.0-cil.install
+    debian/libmono-posix{1,2}.0-cil.install:
+    debian/libmono-getoptions{1,2}.0-cil.install:
+    debian/libmono-data{1,2}.0-cil.install:
+    + Moved the Mono.Posix, Mono.GetOptions and Mono.Data.* libraries into
+      extra packages to support smaller install sizes of typical applications
+      (e.g. tomboy or gnome-do).
+    + Added libmono-posix{1,2}.0-cil, libmono-getoptions{1,2}.0-cil and
+      libmono-data{1,2}.0-cil as dependency of libmono{1,2}-cil to aid a smooth
+      runtime transition.
+  * debian/libmono-system-data2.0-cil.install:
+    + Added System.Data.DataSetExtensions.dll and System.Data.Linq.dll.
+  * debian/rules
+    debian/libmono{1,2}.0-cil.install:
+    + Dropped Mono.Security.Win32.dll as the library is only useful on
+      Windows.
+  * debian/patches/build_genxs_2.0.dpatch:
+    + Enables compiling genxs for CLI 2.0 as upstream provided a genxs2 script
+      but forgot to build the actual application.
+  * debian/mono-2.0-devel.install
+    debian/mono-2.0-devel.manpages:
+    + Added xsd2 and genxs2
+  * debian/mono-devel.install
+    debian/mono-devel.manpages
+    debian/mono-1.0-devel.install
+    debian/mono-1.0-devel.manpages:
+    + Moved all unversioned tools and default scripts (with their manpages) to
+      mono-devel.
+  * debian/mono-mcs.install
+    debian/mono-mcs.manpages
+    debian/mono-gmcs.install
+    debian/mono-gmcs.manpages
+    debian/mono-devel.install
+    debian/mono-devel.manpages
+    debian/control:
+    + Moved gmcs script and manpage from mono-gmcs to mono-devel.
+    + Added Replaces for mono-mcs and mono-gmcs to mono-devel.
+    + Added gmcs2 script and manpage to mono-gmcs
+    + Added mcs1 script and manpage to mono-mcs.
+      This changes are needed to get a default compiler target using a single
+      package that depends on the current default which is 2.0 (gmcs2).
+  * debian/System.Windows.Forms.dll.config:
+    + Added dll-map for libgdk_pixbuf-2.0.so
+  * debian/control:
+    + Improved many package descriptions by adding the names of the
+      libraries they contain with a brief description of what they do.
+  * debian/control
+    debian/mono-gac.install
+    debian/mono-{1,2}.0-gac.install:
+    + The default script "gacutil" is still shipped in mono-gac but
+      "gacutil1" and "gacutil2" are now in mono-1.0-gac and mono-2.0-gac.
+      mono-gac pulls in mono-2.0-gac by default.
+      This is needed to make a 2.0-only install possible.
+  * debian/control:
+    + Added mono-1.0-runtime and mono-2.0-runtime package, which pull in the
+      runtime stack of the specific runtime version in.
+      mono-runtime pulls in mono-2.0-runtime as the new default runtime.
+      This is needed to make a 2.0-only install possible.
+  * debian/libmono-dev.install:
+    + Added dotnet35.pc
+  * debian/mono-smcs.install:
+    + Added smcs.pc
+  * debian/control:
+    + s/meta package/metapackage/ as lintian says so.
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 11 Nov 2008 00:21:27 +0100
+
+mono (1.9.1+dfsg-4) unstable; urgency=high
+
+  [ Mirco Bauer ]
+  * Added lpia to Architecture fields.
+    (to make Jo Shields more happy)
+  * debian/fix_Assembly.LoadFrom_deadlock.dpatch:
+    + Fixes deadlock in loading assemblies code like Assembly.LoadFrom(),
+      causing deadlocks (mostly) on SMP systems.
+      (patches taken from upstream SVN revisions: r105036, r105153, r113458,
+       r115451 and r115697) 
+
+  [ Jo Shields ]
+  * Add myself to Uploaders
+  * debian/patches/fix_sloppy_attribute_encode_CVE-2008-3422.dpatch:
+    + Fixes CVE-2008-3422, thus urgency set to high (Closes: #494406)
+  * debian/patches/fix_CRLF_injection_CVE-2008-3906.dpatch:
+    + Fixes CVE-2008-3906, thus urgency set to high (Closes: #498894)
+  * debian/patches/fix_IsolatedStorage_regression_r99231_r101171_r101172.dpatch:
+    + Fix regression in IsolatedStorage behaviour causing exceptions 
+      with subdirectories (Closes: #501505)
+  * debian/patches/fix_mono-config_man_page_r111681.dpatch:
+    + Fix minor manpage typo (Closes: #495624)
+  * debian/control:
+    + Tweak description of mono-xbuild package (Closes: #493478)
+  * debian/man/*:
+    + Update default manpage to point to correct URL for documentation
+      (Closes: #500771)
+
+ -- Jo Shields <directhex@apebox.org>  Mon, 13 Oct 2008 23:21:40 +0200
+
+mono (1.9.1+dfsg-3) unstable; urgency=medium
+
+  * debian/control
+    debian/rules
+    debian/libmono-nunit2.2-cil.install:
+    + Added libmono-nunit2.2-cil package needed by packages like monodevelop
+      and mono-tools, the nunit 2.4 API (libnunit2.4-cil) changed too much to
+      port these packages. (thus urgency set to medium)
+  * debian/shlibs.local:
+    + Updated for the Mono 1.9 release (forgot this in -1).
+  * debian/rules:
+    debian/libmono-system2.0-cil.install:
+    + Added System.Xml.Linq library but with the correct compiler-directory.
+      (Closes: #487996)
+  * debian/control:
+    + Added libdiplus to dependencies of libmono-system-web1.0-cil and
+      libmono-system-web2.0-cil as System.Web.UI.WebControls.WebColorConverter
+      invokes it (which is needed by most web applications). (Closes: #479683)
+    + Removed -1 revision of all Replaces lines with << as condition, as it's
+      useless and makes backports and Ubuntu integration easier.
+    + Added Conflicts on mono-classlib-{1,2}.0 (<< 1.1.13.6) and
+      mono-classlib-{1,2}.0-dbg to ensure they are removed on all systems and
+      the transition was finished long time ago.
+  * debian/patches/fix_Dictionary_preventing_GC_r102114.dpatch:
+    Clear empty slots in keySlots and valueSlots. Otherwise the garbage
+    collector cannot reclaim the referenced key/value.
+    (patch taken from upstream SVN revision 102114)
+  * debian/patches/fix_TdsConnectionPool_svn.dpatch:
+    + Don't leak connections in the pool, would cause an infinitely timeout.
+    (patch taken from upstream SVN revisions 105424, 105432, 105433, 105719,
+     106448 and 107325)
+  * debian/libmono-system1.0-cil.clideps-override
+    debian/libmono-system2.0-cil.clideps-override:
+    + libcupsys2 package was renamed to libcups2, moving the dependeny on
+      libcups2 to suggests (as it was before).
+  * debian/rules:
+    + Removed --list-missing from dh_install call, it's useless in the current
+      implementation.
+  * debian/patches/fix-mono-nunit.pc.in.dpatch:
+    + Remove stupid relative path from prefix variable.
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 05 Aug 2008 21:46:48 +0200
+
+mono (1.9.1+dfsg-2) unstable; urgency=medium
+
+  * Urgency set to medium as this release contains important bugfixes for
+    different architectures.
+  * debian/control:
+    + Added xdg-utils | libgnome2-0 | konqueror to suggests of mono-jit as
+      starting processes can make use of those if installed (to emulate
+      ShellExecute).
+  * debian/patches/fix_bound_checking_r98524_r98527.dpatch:
+    + Fixes bound checking caused SIGSEGV on AMD64 when building XSP.
+      (Closes: #486652, patch taken from upstream SVN revision 98524 and 98527)
+      (thanks to Jo Shields <directhex@apebox.org> for investigation and
+       providing the dpatch)
+  * debian/patches/fix_softfloat_r105848.dpatch:
+    + Fixed softfloat caused SIGABRT on armel when building banshee.
+      (Closes: #485112, patch taken from upstream SVN revision 105848)
+  * debian/patches/fix_stack_alignment_r105650_r105651.dpatch:
+    + Fixes stack alignment, caused assertions on AMD64. (Closes: #473119)
+      (patch taken from upstream SVN revision 105650 and 105651)
+  * debian/patches/fix_xen_support_r103474_r103475.dpatch:
+    + Fixes XEN support caused "4gb seg fixup" messages. (Closes: #481699)
+      (patch taken from upstream SVN revision 103474 and 103475)
+      (thanks to Andrew Deason <adeason2@uiuc.edu> for investigation and
+       providing the dpatch)
+  * debian/patches/99_autoreconf.dpatch:
+    + Updated
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 17 Jun 2008 23:59:52 +0200
+
+mono (1.9.1+dfsg-1) unstable; urgency=low
+
+  * DFSG version of Mono 1.9.1
+    + Deleted the mcs/class/System.Web.Extensions/ directory as
+      mcs/class/System.Web.Extensions/System.Web.Script.Serialization/JSON/*.cs
+      is licensed under Creative Commons Attribution 2.5 which is not
+      DFSG-free.
+  * New upstream release.
+  * debian/libmono1.0-cil.install:
+    + Added internal cecil.pc as mono-tools >= 1.9 needs it.
+  * debian/patches/pass_CPPFLAGS_nicely_r98803.dpatch:
+    + Updated
+  * debian/mono-api-check:
+    + Fixed bashism. (Closes: #471879)
+    + Implemented support to check APIs on .deb and .changes files.
+  * debian/rules:
+    + clilibs are now defined much more granularly now (per package).
+      Checked APIs of mono 1.2.2.1 vs 1.2.6 and 1.2.6 vs 1.9.
+    + Bumped clilibs of libmono-system-web2.0-cil to 1.9.1
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 22 Apr 2008 20:09:39 +0200
+
+mono (1.9+dfsg-3) unstable; urgency=low
+
+  * debian/patches/pass_CPPFLAGS_nicely_r98803.dpatch:
+    + Pass CPPFLAGS nicely to libgc, fixes FTBFS. (Closes: #475972)
+      (taken from upstream SVN revision 98803)
+  * debian/patches/99_autoreconf.dpatch:
+    + Updated
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 15 Apr 2008 22:26:39 +0200
+
+mono (1.9+dfsg-2) unstable; urgency=low
+
+  * Upload to unstable.
+  * debian/control:
+    + Fixed Vcs-Svn field.
+    + Cleaned up Uploaders field.
+  * debian/rules:
+    + Delete binaries missed by "make clean". (Closes: #424576)
+      (thanks to Sandro Tosi <matrixhasu@gmail.com> for the patch)
+  * debian/mono-common.preinst:
+    + Removed empty script.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 07 Apr 2008 22:11:03 +0200
+
+mono (1.9+dfsg-1) experimental; urgency=low
+
+  [ Mirco Bauer ]
+  * DFSG version of Mono 1.9
+    + Deleted the mcs/class/System.Web.Extensions/ directory as
+      mcs/class/System.Web.Extensions/System.Web.Script.Serialization/JSON/*.cs
+      is licensed under Creative Commons Attribution 2.5 which is not
+      DFSG-free.
+  * New upstream release.
+  * debian/rules:
+    + Bumped clilibs to 1.9
+  * debian/mono-api-check:
+    + Implemented -k switch to keep and inspect the XML diff file.
+    + Fixed application invocation.
+  * debian/patches/fix_threads.h.dpatch
+    debian/patches/fix_Mono.Cecil_linkage.dpatch
+    debian/patches/ppc_fix_flushing_of_icache_r92014.dpatch:
+    + Removed, already applied upstream.
+  * debian/libmono2.0-cil.install:
+    + Added Mono.Web.dll
+  * debian/control
+    debian/libmono-mozilla0.1-cil.install
+    debian/libmono-mozilla0.2-cil.install:
+    + Renamed libmono-mozilla0.1-cil to libmono-mozilla0.2-cil, as the assembly
+      version (ABI) was bumped from 0.1 to 0.2.
+
+  [ Sebastian Dröge ]
+  * debian/patches/method-signature-testing.dpatch:
+    + Patch from upstream SVN to fix db4o build failure with cecil 0.6,
+      improves checking of method signatures.
+  * debian/rules:
+    + Put CFLAGS into "" to make the shell happy and fix FTBFS.
+    + Set default CFLAGS to -O2 -g.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 04 Feb 2008 22:11:53 +0100
+
+mono (1.2.6+dfsg-6) unstable; urgency=high
+
+  * debian/mono-mcs.postinst
+    debian/mono-1.0-devel.postinst:
+    + Moved alternatives handling for cli-sn, cli-resgen and cli-al from
+      mono-mcs to mono-1.0-devel, as mono-1.0-devel ships those applications
+      (since mono 1.2.6+dfsg-1). (Closes: #460513)
+      This caused FTBS for different source packages that didn't explicitly
+      build-depend on mono-mcs, thus urgency set to high.
+      (Thanks to Laurent Bigonville <bigon@bigon.be> for the investigation)
+  * debian/mono-utils.postint
+    debian/mono-utils.postinst:
+    + Fixed file name.
+  * debian/control:
+    + Added libmono-dev and pkg-config to recommends of mono-{1,2}.0-devel, as
+      mkbundle(2) uses pkg-config and needs mono.pc.
+  * debian/patches/ppc_disable_delegate_trampoline_optimization.dpatch
+    debian/patches/ppc_fix_flushing_of_icache_r92014.dpatch
+    + Replaced ppc_disable_delegate_trampoline_optimization with
+      ppc_fix_flushing_of_icache_r92014, as that one fixes instead of
+      workarounds the PPC SIGILL issue (taken from upstream's SVN).
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 04 Feb 2008 20:57:20 +0100
+
+mono (1.2.6+dfsg-5) unstable; urgency=low
+
+  * debian/rules:
+    + Reverted the changed target dependecies, which caused no patches being
+      applied anymore. Thus the fix_implicit_pointer_conversions patch for IA64
+      is applied again. (Closes: #457868)
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 27 Dec 2007 20:54:20 +0100
+
+mono (1.2.6+dfsg-4) unstable; urgency=low
+
+  * debian/patches/ppc_disable_delegate_trampoline_optimization.dpatch:
+    + Disables delegate trampoline code for PPC, fixes instant SIGILL runtime
+      crashes for every invoked application (as seen in PPC build logs of
+      gtk-sharp2, gnome-sharp2 or beagle).
+  * debian/patches/fix_threads.h.dpatch:
+    + Don't include threads-type.h in threads.h and moved functions to the
+      correct header, fixes compiling of OpenOffice.org's Mono bridge.
+      (taken from upstream SVN revision 91687 + 91817)
+  * debian/rules:
+    + Make sure -j1 is passed to make, Mono's build system doesn't like -j > 1.
+
+ -- Mirco Bauer <meebey@debian.org>  Wed, 26 Dec 2007 23:29:28 +0100
+
+mono (1.2.6+dfsg-3) unstable; urgency=low
+
+  * debian/rules:
+    + Pass -D to cli.binfmt install call, makes it not failing on archs that
+      are not listed in debian/control.
+      (thanks to Emanuele Rocca <ema@debian.org> for the hint)
+    + Enhanced "make distclean" error handling, making lintian happy.
+  * debian/libmono-system-messaging{1,2}.0-cil.clideps-override
+    debian/libmono-bytefx0.7.6.{1,2}-cil.clideps-override:
+    + Added suggests libmono-winforms{1,2}.0-cil, doesn't make sense to pull in
+      System.Windows.Forms for designer classes (which are only used by VS.NET)
+  * debian/patches/fix_implicit_pointer_conversions.dpatch:
+    + Fixed implicit pointer conversions by including a missing header, which
+      caused FTBFS on IA64.
+  * debian/control:
+    + Added Homepage, Vcs-Svn and Vcs-Browser fields.
+    + Updated Standards-Version to 3.7.3, no changes needed.
+    + Changed Section of libmono-dev to libmono-dev.
+    + Added Suggests (using cli:Suggests) fields for
+      libmono-system-messaging{1,2}.0-cil and libmono-bytefx0.7.6.{1,2}-cil.
+    + Use cli:Depends for libmono-bytefx0.7.6.{1,2}-cil instead of manual
+      dependencies.
+  * debian/NEWS:
+    + Fixed typo and indention.
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 25 Dec 2007 13:40:33 +0100
+
+mono (1.2.6+dfsg-2) unstable; urgency=low
+
+  * The "Welcome SPARC and S390 Users!" release
+  * debian/mono-2.0-devel.install
+    debian/mono-2.0-devel.manpages:
+    + Added mconfig
+  * debian/control:
+    + Added sparc and s390 to Architecture fields. (Closes: #332511, #377584)
+      (as the last 3 feature-releases of Mono were able to build on sparc, and
+       upstream is getting sparc port contributions again, it should be safe
+       to enable sparc now)
+    + Added Replaces << mono-common 1.2.6+dfsg-2 to mono-2.0-devel, as
+      /etc/mono/mconfig/ was moved to mono-2.0-devel.
+  * debian/libmono-system{1,2}.0-cil.clideps-override:
+    + Added suggests libmono-winforms{1,2}.0-cil, doesn't make sense to pull in
+      System.Windows.Forms for designer classes (which are only used by VS.NET)
+  * debian/patches/g_thread_init.dpatch:
+    + Dropped, already applied upstream.
+        
+ -- Mirco Bauer <meebey@debian.org>  Fri, 21 Dec 2007 01:35:40 +0100
+
+mono (1.2.6+dfsg-1) unstable; urgency=low
+
+  * DFSG version of Mono 1.2.6
+    + Deleted mcs/class/System.Web.Extensions/System.Web.Script.Serialization/
+      JSON/* as those source files are licensed under Creative Commons
+      Attribution 2.5 which is not DFSG-free.
+  * New upstream release
+    + Invoking GetFields on emitted type doesn't crash anymore, as seen with
+      nemerle. (Closes: #452585)
+  * debian/rules:
+    + Updated MONO_API to 1.2.6
+    + Enabled moonlight support in configure call.
+    + Removed all "rm debian/tmp/usr/lib/mono/gac/"... calls, instead list
+      libraries explicitly in .install files.
+      (this is pretty error prone when upstream introduces new libraries and
+       the rm list became way too long)
+    + Copy various 1.0 manpages to 2.0 manpages for missing 2.0 manpages.
+    + Remove +dfsg part in upstream version detection (UPVERSION variable).
+  * debian/control:
+    + Added new packages (mono-mcs/gmcs needed to be split as some parts of the
+      runtime relies on the compiler, like the XmlSerializer class):
+      - mono-mcs was split to: mono-1.0-devel and mono-1.0-service.
+        (monolinker.exe is now shipped part of mono-1.0-devel, Closes: #443833)
+      - mono-gmcs was split to: mono-2.0-devel, mono-2.0-service and
+        mono-xbuild.
+      - mono-smcs, containing the new compiler for moonlight/silverlight
+        applications.
+      - libmono-corlib2.1-cil and libmono-system2.1-cil, containing the
+        moonlight/silverlight runtime libraries.
+      - libmono-db2-1.0-cil, containing IBM DB2 database connector.
+      - libmono-mozilla0.1-cil, containing the WebControl implementation using
+        the Mozilla engine.
+      - libmono-i18n1.0-cil and libmono-i18n2.0-cil, containing I18N libraries
+        with code page definitions, moved from libmono-corlib{1,2}.0-cil.
+      - prj2make-sharp, upstream moved distribution of prj2make-sharp to Mono.
+    + libmono-corlib{1,2}.0-cil recommends libmono-i18n{1,2}.0-cil now.
+    + Removed mono and mono-devel meta packages, as they are not useful for
+      anyone.
+  * debian/dh_clideps:
+    + Synced from cli-common 0.5.3, needed for CLI 2.1 support.
+  * debian/patches/00list:
+    + Disabled armel_fix_configure_fpu_check.dpatch
+      (FPU check is fixed upstream)
+  * debian/patches/kfreebsd_support.dpatch:
+    + Updated (and re-autoconfed)
+  * debian/patches/fix-mono.pc.in.dpatch:
+    + Updated
+  * debian/patches/ppc_fix_mono_class_proxy_vtable_r84948.dpatch:
+    + Removed, already applied upstream.
+  * debian/patches/fix_Mono.Cecil_linkage.dpatch:
+    + Link Mono.Cecil(.Mdb) against CLI 1.0 instead of 2.0, patch taken from
+      upstream.
+  * debian/libmono1.0-cil.install:
+    + Added Mono.Cecil.dll and Mono.Cecil.Mdb.dll.
+  * debian/update-shlibs.local.sh:
+    + Wrote this script to ease updating the debian/shlibs.local file.
+  * debian/shlibs.local:
+    + Updated
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 16 Dec 2007 15:44:33 +0100
+
+mono (1.2.5.1-2) unstable; urgency=high
+
+  * Mirco 'meebey' Bauer:
+    + debian/mono.runtime-script:
+      - When removing GAC libraries, output the assembly name correctly on
+        errors.
+    + debian/patches/fix_BigInteger_overflow_CVE-2007-5197.dpatch:
+      - Fixes CVE-2007-5197, thus urgency set to high.
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 04 Nov 2007 15:34:08 +0100
+
+mono (1.2.5.1-1) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + New upstream (bugfix) release. (Closes: #443468)
+    + debian/System.Windows.Forms.dll.config:
+      - Added libX11 and libXcursor.
+
+ -- Mirco Bauer <meebey@debian.org>  Sat, 22 Sep 2007 19:33:05 +0200
+
+mono (1.2.5-3) unstable; urgency=high
+
+  * Mirco 'meebey' Bauer:
+    + debian/patches/ppc_fix_mono_class_proxy_vtable_r84948.dpatch:
+      - Fixes crash bug on PPC for all applications that use DBus,
+        thus setting urgency to high. (Closes: #437452, #441795, #441879)
+        (Thanks to Bram Senders <bram@luon.net> for testing the patch)
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 13 Sep 2007 21:44:16 +0200
+
+mono (1.2.5-2) unstable; urgency=medium
+
+  * Sebastian 'slomo' Dröge:
+    + debian/FirebirdSql.Data.Firebird.dll.config,
+      debian/shlibs.local:
+      - Use libfbclient2 instead of old and to be removed libfbclient1.
+        Thanks to Damyan Ivanov <dmn@debian.org> for the
+        patch (Closes: #440850).
+    + debian/changelog:
+      - Use urgency=medium because of the RC bugfix.
+
+ -- Sebastian Dröge <slomo@debian.org>  Wed, 05 Sep 2007 07:02:15 +0200
+
+mono (1.2.5-1) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + New upstream release
+    + debian/watch:
+      - Updated
+    + debian/rules:
+      - Bumped MONO_API to 1.2.5
+    + debian/patches/kfreebsd_support.dpatch
+      debian/patches/armel_fix_configure_fpu_check.dpatch:
+      - Updated (re-autoconfed)
+      - Updated
+    + debian/patches/ppc_fix_memory_corruption_r81413.dpatch:
+      debian/patches/fix_delegate_memory_leak_r79001.dpatch
+      debian/patches/remove_broken_dllmap_from_mono-shlib-cop.dpatch:
+      - Removed, already applied upstream.
+    + debian/mono-utils.install
+      debian/mono-utils.manpages:
+      - Removed monodiet as removed by upstream
+    + debian/man/resgen.1:
+      - Removed, supplied upstream.
+    + debian/mono-mcs.manpages:
+      - Added monolinker.1
+      - Updated resgen.1
+    + debian/mono-mcs.manpages
+      debian/mono-mjs.manpages:
+      - Moved mono-mjs.1 manpage to mono-mjs package.
+    + debian/control:
+      - Added "Replaces" for mono-mjs.1 move to mono-mjs package.
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 02 Sep 2007 21:36:13 +0200
+
+mono (1.2.4-6) unstable; urgency=medium
+
+  * Mirco 'meebey' Bauer:
+    + debian/patches/kfreebsd_support.dpatch:
+      - Patch configure script too, as we are not re-autogening.
+        This made kfreebsd-* FTBFS.
+    + Urgency set to medium, as the last upload fixes an important crash
+      bug (#428190) for PPC.
+      
+ -- Mirco Bauer <meebey@debian.org>  Thu, 09 Aug 2007 19:36:21 +0200
+
+mono (1.2.4-5) unstable; urgency=low
+
+  * The "there is more than Linux and X86" release
+  * Mirco 'meebey' Bauer:
+    + debian/control:
+      - Replaced ${Source-Version} with ${source:Version} and ${binary:Version}
+    + debian/patches/ppc_fix_memory_corruption_r81413.dpatch:
+      - Fix memory corruption on PPC, caused all Gtk# programs to crash.
+        Patch taken from upstream SVN.
+        (Closes: #428209, #430614, #427934, #428190, #429685)
+        (Thanks to Wouter Verhelst for testing the patch)
+    + debian/patches/armel_fix_configure_fpu_check.dpatch:
+      - Detect FPU correctly. (Closes: #430582)
+        (Thanks to Riku Voipio <riku.voipio@iki.fi> for the patch)
+    + debian/patches/fix_delegate_memory_leak_r79001.dpatch:
+      - Fix memory leak for delegates passed to unmanaged land, taken from
+        upstream SVN. (Closes: #428781)
+        (Thanks to Chris Howie <cdhowie@nerdshack.com> for investigation)
+    + debian/patches/kfreebsd_support.dpatch:
+      - Updated, added support for kfreebsd-amd64
+    + debian/rules:
+      - Use softfloat on armel.
+  * Sebastian 'slomo' Dröge:
+    + debian/patches/armel_fix_configure_fpu_check.dpatch:
+      - Regenerate configure for the change.
+
+ -- Mirco Bauer <meebey@debian.org>  Sat, 21 Jul 2007 15:48:05 +0200
+
+mono (1.2.4-4) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + debian/rules:
+      - Use pthread for arm/armeb/armel, should fix FTBFS for ARM.
+  * Sebastian 'slomo' Dröge:
+    + debian/patches/g_thread_init.dpatch:
+      - Call g_thread_init() as early as possible as this is required for newer
+        glib versions. See:
+        http://bugzilla.ximian.com/show_bug.cgi?id=81862
+        http://bugzilla.gnome.org/show_bug.cgi?id=331853
+        Patch from upstream SVN, rev. 78018.
+
+ -- Mirco Bauer <meebey@debian.org>  Wed, 13 Jun 2007 01:31:55 +0200
+
+mono (1.2.4-3) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + debian/rules:
+      - Enable sigaltstack only for i386 and amd64, fixes FTBFS for ia64 and
+        possibly other archs.
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 29 May 2007 22:54:24 +0200
+
+mono (1.2.4-2) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + debian/patches/00list:
+      - Disabled dont_remap_non-runtime_libs patch, has side effects
+        and breaks banshee, means applications using libmono-cairo{1,2}.0-cil
+        running on CLR 2.0 need again to depend on the 2.0 version explicitly
+    + debian/rules:
+      - Call dh_strip in binary-arch target, else mono-utils binaries have
+        debugging symbols.
+    + debian/control:
+      - Strictly depend on upstream version for assemblies doing ICalls
+        (internal calls into the runtime implementation).
+  * Sebastian 'slomo' Dröge:
+    + debian/rules:
+      - Set executable bit on dh_clistrip and the other debhelper scripts
+        to fix FTBFS.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 28 May 2007 16:18:53 +0200
+
+mono (1.2.4-1) unstable; urgency=medium
+
+  * The clean me harder and be nicer to embedded devices upload
+  * Mirco 'meebey' Bauer:
+    + New upstream release
+      - Fixes endian problem with UDP multicasts (Closes: #406909)
+    + debian/patches/dont_remap_non-runtime_libs.dpatch:
+      - Don't remap referenced versions for libraries that are not part of the
+        runtime (like Npgsql, Novell.Directory.Ldap and Mono.* specially
+        Mono.Cairo) because that makes predictable dependency tracking
+        impossible for such libraries and is pretty insane as the remapped
+        version must be 100% ABI compatible.
+        This caused FTBFS for applications using Gtk# (which uses Mono.Cairo
+        version 1.0) but runs and compiles (gmcs) under CLR 2.0.
+        (Closes: #425194)
+    + debian/control:
+      - New package mono-dbg, containing all debug sybols (*.mdb), which is
+        27 MB for all libraries and applications of the mono source package.
+        This new package should make specially embedded device users happy.
+      - New package mono-jit-dbg, unstripped mono-jit
+      - New package libmono0-dbg, unstripped libmono0
+      - Add libgdiplus dependency to libmono-winforms{1,2}.0-cil, as it's only
+        indirectly used via System.Drawing of libmono-system{1,2}.0-cil, which
+        only suggests libgdiplus.
+    + debian/rules:
+      - Bumped MONO_API to 1.2.4
+      - Install Mono.Data.Sqlite.dll.config
+      - Enabled sigaltstack in ./configure call, since we use __thread / NPTL.
+      - Call debian/dh_clifixperms in binary-indep target
+      - Call debian/dh_clistrip in binary-indep target
+    + debian/libmono-sqlite{1,2}.0-cil.install:
+      - Added Mono.Data.Sqlite.dll
+    + debian/libmono-dev.install:
+      - Added dotnet.pc
+    + debian/patches/fix-mono.pc.in.dpatch
+      debian/patches/fix-mono-cairo.pc.in.dpatch:
+      - Replace ../../ with @prefix@
+    + debian/mono-gmcs.install:
+      - Added httpcfg and mono-api-info2
+    + debian/libmono-system1.0-cil.clideps-override:
+      - Move libcupsys2 to Suggests.
+      - Move libgdiplus to Suggests.
+    + debian/libmono-system-data{1,2}.0-cil.clideps-override:
+      - Move libglib2.0-0 to Suggests.
+    + debian/libmono-winforms{1,2}.0-cil.clideps-override:
+      - Move libglib2.0-0 to Suggests.
+    + debian/dh_clifixperms:
+      - Copied from cli-common-dev
+    + debian/dh_clistrip:
+      - Copied from cli-common-dev
+    + debian/shlibs.local:
+      - Added libgda-2
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 21 May 2007 01:04:08 +0200
+
+mono (1.2.3.1-5) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + debian/control:
+      - Added Conflicts: mono-utils (<< 1.2.3.1-4) to libmono0, to aid partial
+        upgrade of Mono from etch to lenny or sid, thanks to Rene Engelhard for
+        the hints. (really Closes: #412970)
+      - Moved binfmt-support dependency to recommends. (Closes: #418765)
+        The mono-common.postinst and mono-common.prerm scripts already checks
+        if binfmt-support is actually installed.
+      - Updated to use my Debian email address now.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 16 Apr 2007 01:12:04 +0200
+
+mono (1.2.3.1-4) unstable; urgency=low
+
+  * Upload to unstable
+  * Sebastian 'slomo' Dröge:
+    + debian/control:
+      - Let mono-utils depend on exactly the same upstream version of libmono0
+        that it was build with and remove the other workarounds for bug #412970
+        as this is now the correct fix. Thanks to Mirco Bauer for investigating
+      - Add armel to architectures
+    + debian/rules:
+      - The shlibs file of libmono0 now contains >= $UPVERSION
+
+ -- Sebastian Dröge <slomo@debian.org>  Sun, 15 Apr 2007 21:06:21 +0200
+
+mono (1.2.3.1-3) experimental; urgency=low
+
+  * Sebastian 'slomo' Dröge:
+    + debian/control:
+      - Also let mono-jit conflict with mono-utils (<< 1.2.3.1), otherwise the
+        previously added stricter dependencies in mono-utils don't have any
+        effect for pre-1.2.3.1-2 mono versions. (Closes: #412970)
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue,  6 Mar 2007 07:32:55 +0100
+
+mono (1.2.3.1-2) experimental; urgency=low
+
+  * Sebastian 'slomo' Dröge:
+    + debian/control:
+      - Also add kfreebsd-amd64 to archs
+      - Let libmono-winforms*.0-cil suggest shared-mime-info (Closes: #394674)
+      - Make mono-utils depend on libmono-corlib1.0-cil with a stricter
+        version requirement as it most probably breaks with other
+        versions. (Closes: #412970)
+
+ -- Sebastian Dröge <slomo@debian.org>  Mon,  5 Mar 2007 08:00:35 +0100
+
+mono (1.2.3.1-1) experimental; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + debian/rules:
+      - Split the package build system into arch and indep for the configure,
+        install and build target.
+      - Added --disable-mcs-build to configure-indep call.
+        (buildds doesn't need to build the complete base-class-libraries,
+         since it's arch-indep, in arch-indep packages, and already in the
+         archive when uploaded. This should reduce the build time from 10
+         hours to about 1 hour for arm)
+      - Added kfreebsd checks for configure confflags.
+      - Moved building of MonoGetAssemblyName.exe from install to binary-indep,
+        else the compiler isn't available yet (if only binary-arch is build).
+    + debian/dh_clideps:
+     - Synced from cli-common (contains support for kfreebsd)
+    + debian/patches/kfreebsd_support.dpatch:
+      - Adds kfreebsd support to Mono.
+        (Closes: #394456, thanks to Petr Salinger <Petr.Salinger@seznam.cz>
+         and Aurelien Jarno <aurelien@aurel32.net> for the patch)
+
+  * Sebastian 'slomo' Dröge:
+    + New upstream release (Closes: #411924):
+      - Fixes assertion failures on PPC (Closes: #403495)
+    + debian/libmono-system2.0-cil.clideps-override:
+      - Move libasound2 to Suggests
+    + debian/libmono-system1.0-cil.install,
+      debian/libmono-system2.0-cil.install:
+      - Add CustomMarshalers.dll
+    + debian/libmono-system-data1.0-cil.clideps-override,
+      debian/libmono-system-data2.0-cil.clideps-override:
+      - Move libgda2-3 to Suggests
+    + debian/libmono-winforms1.0-cil.clideps-override,
+      debian/libmono-winforms2.0-cil.clideps-override:
+      - Move librsvg2-2 to Suggests
+    + debian/mono-common.install:
+      - Update path for cil-opcodes.xml
+    + debian/mono-gmcs.install:
+      - Add /usr/bin/al2 utility
+      - Update path for xbuild stuff
+    + debian/rules:
+      - Install new System.Data.dll.config file
+      - Remove new utilities from mono-mcs as they're already elsewhere
+      - Update MONO_API to 1.2.3
+    + debian/shlibs.local:
+      - Add shlibs entry for libasound2
+    + debian/System.Data.dll.config:
+      - Added new dllmaps
+    + debian/shlibs.local,
+      debian/patches/firebird-fbclient.dpatch,
+      debian/FirebirdSql.Data.Firebird.dll.config:
+      - Use libfbclient1 instead of the embedded libfbembed1
+        library which is not thread-safe (Closes: #410379)
+    + debian/control:
+      - Clean up Build-Depends-Indep
+    + debian/rules,
+      debian/mono-gac.install:
+      - Fix various build failures caused by the binary-arch / binary-indep
+        split
+
+ -- Sebastian Dröge <slomo@debian.org>  Tue, 27 Feb 2007 09:44:02 +0100
+
+mono (1.2.2.1-2) unstable; urgency=high
+
+  * Sebastian 'slomo' Dröge:
+    + Urgency high for RC bugfix
+    + debian/control:
+      - Build depend on dpkg-dev (>= 1.13.19) for ${source:Version}
+        substitution (Closes: #411915)
+      - Update to use my debian.org address
+
+ -- Sebastian Dröge <slomo@debian.org>  Sat, 24 Feb 2007 16:51:10 +0100
+
+mono (1.2.2.1-1) unstable; urgency=low
+
+  * New upstream release
+    + Mono 1.2.2.1 contains important bugfixes for the ARM architecture
+      (see #394418), but urgency is not raised because it's a new version.
+    + Mono 1.2 has upstream security support for 7 years as it's used 
+      in enterprise distributions by upstream.
+    + For more Mono 1.2 news check the NEWS file.
+
+  * Mirco 'meebey' Bauer:
+    + New upstream release (1.2.1)
+    + debian/NEWS:
+      - Added entry for Mono 1.2
+    + debian/control:
+      - Removed unstable warning from mono-gmcs description.
+    + debian/patches/gmcs-static-anonmethods.dpatch:
+      - Removed, already applied upstream.
+    + debian/mono-gmcs.install:
+      - Added mkbundle2
+      - Added sgen
+    + debian/libmono-system-web2.0-cil.clideps-override:
+      - Override for GUI/X11 dependency on libmono-winforms2.0-cil to suggests.
+    + debian/dh_clideps:
+      - Synced from cli-common-dev 0.4.7.
+    + debian/shlibs.local:
+      - Synced versions from /var/lib/dpkg/info/*.shlibs
+  * Sebastian 'slomo' Dröge:
+    + New upstream release (1.2.2)
+    + New upstream release (1.2.2.1)
+    + debian/rules:
+      - Update MONO_API to 1.2.2
+    + debian/libmono{1,2}.0-cil.install:
+      - Add OpenSystem.C library
+    + debian/patches/*:
+      - Remove obsolete patches
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Tue,  5 Dec 2006 20:03:41 +0100
+
+mono (1.1.18-3) unstable; urgency=low
+
+  * Sebastian 'slomo' Dröge:
+    + debian/patches/gmcs-static-anonmethods.dpatch:
+      - Fix from SVN (r66807) for compilation of static anonymous methods
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Thu, 19 Oct 2006 06:58:20 +0200
+
+mono (1.1.18-2) unstable; urgency=medium
+
+  * The "clean me harder for etch" and "please build on arm this time" release
+  * Mirco 'meebey' Bauer:
+    + debian/control:
+      - Removed obsolete mono-classlib-{1,2}.0 transition packages.
+      - Changed dependency of mono-runtime on mono-gac to
+        (= ${source:Version}) for making Mono binNMUable.
+      - Removed libgc-dev build-dep for kfreebsd.
+    + debian/rules:
+      - Added --enable-minimal=aot to configure call for kfreebsd, this might
+        give us a successful build.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Wed, 18 Oct 2006 23:09:35 +0200
+
+mono (1.1.18-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer:
+    + debian/patches/arm_support_larger_stack_r65218.dpatch
+      debian/patches/fix_tmp_race_r65441.dpatch:
+      - Removed, already applied upstream.
+    + debian/control:
+      - Removed Mono from Build-Conflicts.
+    + debian/rules:
+      - Added parameters to $(MAKE) so an existing Mono install is not used.
+        (thanks to Raja R Harinath <harinath@gmail.com> to for the hint)
+    + debian/libmono-winforms{1,2}.0-cil.clideps-override:
+      - Added suggests libgnomeui-0.
+    + debian/watch:
+      - Updated location again.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 15 Oct 2006 13:03:38 +0200
+
+mono (1.1.17.1-5) unstable; urgency=high
+
+  * Mirco 'meebey' Bauer:
+    + debian/patches/fix_tmp_race_r65441.dpatch:
+      - Fixes tempfile race condition (CVE-2006-5072), taken from upstream SVN.
+    + debian/control:
+      - Added mono binary packages to Build-Conflicts, else it tries to use it
+        during bootstrap and fails.
+    + debian/dh_clideps
+      debian/dh_makeclilibs:
+      - Synced from cli-common-dev 0.4.6.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Tue, 3 Oct 2006 14:02:21 +0200
+
+mono (1.1.17.1-4) unstable; urgency=high
+
+  * Mirco 'meebey' Bauer:
+    + debian/control:
+      - Added zlib1g-dev to build-deps, needed by the System.IO.Compression API
+        in System.dll 2.0. (Closes: #379225)
+    + debian/dh_clideps:
+      - Synced from cli-common package, contains bugfix for libc6 dependencies,
+        makes Mono installable on ia64 again. (Closes: #388557)
+      - Also supports -l switch now for controlling the MONO_GAC_PREFIX
+        environment variable.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 23 Sep 2006 23:09:49 +0200
+
+mono (1.1.17.1-3) unstable; urgency=high
+
+  * Mirco 'meebey' Bauer:
+    + debian/patches/arm_support_larger_stack_r65218.dpatch:
+      - Should fix ARM FTBFS, taken from upstream SVN, thus urgency=medium.
+    + debian/dh_clideps:
+      - Synced from cli-common package, contains bugfix for dependencies on
+        libmono0 and other packages.
+    + debian/control:
+      - Added "Suggests: ${cli:Suggests}" to libmono-system{1,2}.0-cil and
+        libmono-winforms{1,2}.0-cil.
+      - Added libxml-dom-perl to build-deps (needed by debian/dh_clideps)
+    + libmono-system2.0-cil.clideps-override
+      libmono-winforms1.0-cil.clideps-override
+      libmono-system1.0-cil.clideps-override
+      libmono-winforms2.0-cil.clideps-override:
+      - Added, used to override specific Depends to Suggests for assembly
+        references.
+    + debian/shlibs.local:
+      - Updated
+    + debian/mono-common.postinst:
+      - Removed old /usr/share/dotnet/mono to /usr/lib/mono transition code.
+      - Added removal of unneeded /usr/share/dotnet/mono symlink.
+        (Closes: #387277)
+    + debian/rules:
+      - Honor noopt in DEB_BUILD_OPTIONS.
+        (thanks to Timo Lindfors <lindi@kurp.hut.fi>, Closes: #380617)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Mon, 4 Sep 2006 22:44:55 +0200
+
+mono (1.1.17.1-2) unstable; urgency=high
+
+  * Mirco 'meebey' Bauer:
+    + debian/rules:
+      - Removed --with-static_mono=no from configure call, caused bad runtime
+        bugs (random crashes, e.g. FTBFS for ARM). According to upstream this
+        is an untested feature, and should not be used by the runtime itself.
+        (thanks to Sebastian 'slomo' Dröge for the investigation)
+    + debian/watch:
+      - Updated
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Mon, 4 Sep 2006 22:44:55 +0200
+
+mono (1.1.17.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer:
+    + debian/patches/unix-end-point-serialize.dpatch
+    + debian/patches/unix-end-point-equals.dpatch
+    + debian/patches/fix-mono-cairo-image-surface-constructor-signature.dpatch
+    + debian/patches/ppc_missing_lock.dpatch
+    + debian/patches/sqliteclient-ppc.dpatch
+    + debian/patches/gacutil-remove-full-assembly-name.dpatch:
+      - Removed, already applied upstream.
+    + debian/patches/console-no-utf8-bom.dpatch:
+      - Updated, thanks to Sebastian 'slomo' Dröge.
+    + debian/control:
+      - Removed mono-mbas package.
+    + debian/libmono-microsoft{7,8}.0-cil.install
+      debian/mono-mbas.install
+      debian/mono-mcs.manpages:
+      - Removed VB.NET, upstream split it into a separate tarball. 
+    + debian/mono-gmcs.install:
+      - Added bin/resgen2 and bin/mono-service2
+    + debian/libmono{1,2}.0-cil.install:
+      - Added mono-service.exe
+    + Updated to Standards Version 3.7.2 (no changes needed).
+  * Sebastian 'slomo' Dröge:
+    + debian/mono.runtime-script:
+      - don't fail on removal if an assembly can't be removed. This is most
+        likely the case because the assembly is already gone.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 3 Sep 2006 17:19:37 +0200
+
+mono (1.1.13.8-1) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + Updated debian/watch to use URL for stable releases.
+  * Sebastian 'slomo' Dröge:
+    + New upstream release
+    + debian/patches/ppc_missing_lock.dpatch:
+      - Add a missing lock and make some memory executable to fix
+        various segfaults on PPC64 SMP machines with 32 bit userland.
+        Patch from mono SVN (rev 61756). Thanks to Johannes Berg
+        (Closes: #371134)
+    + debian/patches/sqliteclient-ppc.dpatch:
+      - LastInsertRowID() returns long, not int for sqlite3.
+        Fixes it to not return always 0 on PPC. Patch from mono SVN (rev 60676).
+    + debian/patches/resource-manager-boo.dpatch:
+      - dropped, upstream now
+    + debian/patches/console-no-utf8-bom.dpatch:
+      - don't output the Byte Order Mark on UTF8 locales to the console. This
+        breaks scripts and everything that parses the output of mono programs.
+    + debian/patches/gacutil-remove-full-assembly-name.dpatch:
+      - Allow removal of assemblies with neutral culture info when given as
+        full assembly name to gacutil
+    + debian/mono.runtime-scripts:
+      - added LANG=C to all calls of external programs where the output is
+        parsed
+      - Exit with a non-0 exit code if something goes wrong
+      - Use the full assembly name and gacutil /u for uninstallation
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Tue, 27 Jun 2006 15:11:24 +0200
+
+mono (1.1.13.6-4) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer:
+    + debian/mono-api-check:
+      - Added .NET 2.0 support (-2 parameter).
+    + debian/rules:
+      - pass -r to dh_clideps call for mono-gac, to prevent a circular
+        dependency between mono-gac <-> mono-runtime. (Closes: #365822)
+  * Sebastian 'slomo' Dröge:
+    + debian/patches/fix-mono-cairo-image-surface-constructor-signature.dpatch:
+      - Fix the signature of the Mono.Cairo.ImageSurface constructor. It should
+        take a byte array, not a string. The old version with the string could
+        never work and would've caused a segfault instead. (SVN rev 60175)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Tue, 9 May 2006 22:34:09 +0200
+
+mono (1.1.13.6-3) unstable; urgency=medium
+
+  * Mirco 'meebey' Bauer:
+    + debian/control:
+      - Package mono-gac can not depend on cli-common >= 0.4.0 yet, which is
+        still in the NEW queue. Changed to use "Recommends" instead.
+        This caused FTBFS for packages that build-depend on cli-common or
+        mono-gac, thus using urgency=medium.
+      - Removed stdout and stderr redirect in mono-common.{postinst,prerm} to 
+        aid debugging a problem with binfmt.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 23 Apr 2006 15:32:29 +0200
+
+mono (1.1.13.6-2) unstable; urgency=low
+
+  * Dylan R. E. Moonfire
+    + Included the late-GAC install hooks.
+  * Mirco 'meebey' Bauer:
+    + synced dh_clideps and dh_makeclilibs from cli-common 0.4.0
+    + debian/control:
+      - New meta package mono-runtime.
+      - Removed libmono-$version provides of libmono0, not needed anymore.
+        The shlibs file uses now libmono0.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 9 Apr 2006 14:07:23 -0500
+
+mono (1.1.13.6-1) unstable; urgency=high
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + This upload solves a dependency chain hell that made Mono not installable
+      on all archs except i386 and amd64, this caused FTBFS for gtk-sharp and
+      could also for dbus, avahi and probably other source packages, too,
+      and blocking their migration to testing. Thus urgency=high.
+      Unfortunately, I can't close any bugreports here, because there is none
+      filed against Mono for this issue (yet).
+    + Splitted left libraries of mono-classlib-1.0 and mono-classlib-2.0
+      into own packages to avoid ABI breakages and meet the CLI Policy.
+      All libraries in a package must have the same version number
+      (required for versioned package names), see CLI Policy 0.4.0
+      mono-classlib-1.0/2.0 are now empty transition packages.
+      This also solves the circular depedency. (Closes: #358363)
+    + debian/mono-classlib-1.0.install
+      debian/mono-classlib-1.0-dbg.install
+      debian/mono-classlib-2.0.install
+      debian/mono-classlib-2.0-dbg.install:
+      - Removed, not needed anymore because of splitting.
+    + debian/control:
+      - Removed mono-classlib-1.0/2.0-dbg package
+        Removed mono-assemblies-base package:
+      - Changed mono-classlib-1.0/2.0 to have a minimum as depencies for the
+        transition to avoid a dependency hell. (Closes: #360996)
+        All packages that have a binary dependency on
+        mono-classlib-1.0/2.0 should be rebuild!
+      - Removed pnet-compiler Build-Conflicts and Conflicts.
+      - Updated libgdiplus dependency of libmono-winforms1.0/2.0-cil
+        to >= 1.1.13.4
+      - Moved System.Drawing.Design and System.Design to
+        libmono-winforms1.0/2.0-cil
+      - Added mono-mbas package, to avoid GUI dependency chain
+      - Added mono-mjs package, to avoid GUI dependency chain
+      - Added libmono-corlib2.0-cil to mono-utils Suggests, needed when
+        monodis parses 2.0 libraries.
+      - Added libmono1.0-cil package
+      - Added libmono2.0-cil package
+      - Added libmono-system1.0-cil package
+      - Added libmono-system2.0-cil package
+      - Added libmono-system-data1.0-cil package
+      - Added libmono-system-data2.0-cil package
+      - Added libmono-system-ldap1.0-cil package
+      - Added libmono-system-ldap2.0-cil package
+      - Added libmono-data-tds1.0-cil package
+      - Added libmono-data-tds2.0-cil package
+      - Added libmono-accessibility1.0-cil package
+      - Added libmono-accessibility2.0-cil package
+      - Added libmono-c5-1.0-cil package
+      - Added libmono-cscompmgd7.0-cil package
+      - Added libmono-cscompmgd8.0-cil package
+      - Added libmono-ldap1.0-cil package
+      - Added libmono-ldap2.0-cil package
+      - Added libmono-microsoft-build2.0-cil package
+      - Added libmono-microsoft7.0-cil package
+      - Added libmono-microsoft8.0-cil package
+      - Added libmono-oracle1.0-cil package
+      - Added libmono-oracle2.0-cil package
+      - Added libmono-peapi1.0-cil package
+      - Added libmono-peapi2.0-cil package
+      - Added libmono-relaxng1.0-cil package
+      - Added libmono-relaxng2.0-cil package
+    + debian/rules:
+      - Added dh_makeclilibs call for 2.0 libraries, with tighter dependencies.
+
+  * Sebastian Dröge
+    + Add myself to Uploaders
+    + Added debian/mono-api-check:
+      - small wrapper script for comparing two assemblies and testing whether
+        their API is compatible.
+    + debian/patches/unix-end-point-equals.dpatch (SVN rev 57754:57757):
+      - Fix Equals() and GetHashCode() of Mono.Unix.UnixEndPoint.
+        http://bugzilla.ximian.com/show_bug.cgi?id=77747
+    + debian/patches/resource-manager-boo.dpatch:
+      - Fix the long outstanding breakage of boo. See
+        http://bugzilla.ximian.com/show_bug.cgi?id=77242
+    + debian/patches/*.dpatch:
+      - Removed all obsolete, old patches
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Wed, 5 Apr 2006 23:47:48 +0200
+
+mono (1.1.13.4-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + Splitted some ABI problematic libraries into own packages.
+      Conforming to CLI Policy 0.3.0, for more details see:
+      http://pkg-mono.alioth.debian.org/cli-policy/ch3.html#s3.1
+    + debian/control:
+      - Added libmono-corlib1.0-cil package
+      - Added libmono-corlib2.0-cil package
+        (this solves tight dependency problems on mono-jit)
+      - Removed mono-classlib-1.0 dependency from mono-jit.
+      - Added libmono-firebirdsql1.7-cil package
+      - Added libmono-bytefx0.7.6.1-cil package
+      - Added libmono-bytefx0.7.6.2-cil package
+      - Added libmono-npgsql1.0-cil package
+      - Added libmono-npgsql2.0-cil package
+      - Added libmono-sharpzip0.6-cil package
+      - Added libmono-sharpzip0.84-cil package
+      - Added libmono-sharpzip2.6-cil package
+      - Added libmono-sharpzip2.84-cil package
+      - Added libmono-winforms1.0-cil package
+      - Added libmono-winforms2.0-cil package
+      - Added libmono-sqlite1.0-cil package
+      - Added libmono-sqlite2.0-cil package
+      - Added libmono-cairo1.0-cil package
+      - Added libmono-cairo2.0-cil package
+      - Added replaces for mono-classlib-1.0/2.0(-dbg).
+      - Added splitted packages to mono-classlib-1.0/2.0 depends, for
+        transistion.
+    + debian/mono-classlib-1.0.install:
+      - Moved mscorlib.dll to libmono-corlib1.0-cil.install
+    + debian/mono-classlib-2.0.install:
+      - Moved mscorlib.dll to libmono-corlib2.0-cil.install
+    + debian/README.Debian:
+      - Updated support archs list.
+    + debian/changelog:
+      - Fixed indentation of some entries.
+  * Sebastian Dröge
+    + debian/patches/unix-end-point-serialize.dpatch (SVN rev 57026):
+      - Fix the serialization of UnixEndPoint
+    + debian/rules:
+      - Add debian/libmono0/usr/lib to the search path of dh_shlibdeps to get
+        the missing libmono0 dependencies in mono-jit and mono-utils.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 11 Mar 2006 22:46:42 +0100
+
+mono (1.1.13.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + debian/control:
+      - Added arm and armeb to arch lists
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 28 Jan 2006 22:57:07 +0100
+
+mono (1.1.13.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + synced dh_clideps and dh_makeclilibs from cli-common
+    + debian/rules:
+      - Added --with-static_mono=no to configure call, else the libmono0
+         package would be useless and loading a 1.7mb shared library is not
+         _that_ slow.
+      - Removed chrpath hack
+    + debian/control:
+      - Updated debhelper build-dep to >= 5.0.0
+      - Removed chrpath from build-deps.
+      - Adjusted some package descriptions.
+      - Added replaces to mono-gmcs for mono-mcs.
+      - Added ${misc:Depends} to all arch dep packages.
+    + debian/mono-jay.manpages:
+      - Updated path of jay.1
+    + debian/mono-common.dirs:
+      - Added usr/share/dotnet (Closes: #311540)
+    + debian/mono-gmcs.install:
+      - Added xbuild
+      - Added ilasm2
+    + debian/libmono0.install:
+      - Added libMonoSupportW.so
+    + debian/libmono-dev.install:
+      - Added libMonoSupportW.a
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 14 Jan 2006 17:21:28 +0100
+
+mono (1.1.12.1-1) unstable; urgency=low
+
+  * New upstream release (Closes: #344531)
+  * Mirco 'meebey' Bauer
+    + debian/control:
+      - Added libx11-dev and libxt-dev to build-deps.
+      - Added libgc-dev [kfreebsd-i386] to build-deps. (Closes: #322599)
+    + debian/rules:
+      - Added kfreebsd check for configure call.
+      - Added --with-libgdiplus=installed and --with-x=yes to configure call.
+    + debian/compat:
+      - Changed to 5.
+    + debian/mono-classlib-1.0.install:
+      - Added usr/lib/mono/compat-1.0/
+      - Added usr/lib/pkgconfig/mono-cairo.pc
+    + debian/mono-classlib-1.0-dbg.install:
+      - Removed usr/lib/mono/gac/Microsoft.VisualBasic/7.0.*/*.mdb
+    + debian/mono-classlib-2.0.install:
+      - Added usr/lib/mono/compat-2.0/
+      - Added usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/
+      - Added usr/lib/mono/gac/Microsoft.Build.*/2.*/
+      - Removed usr/lib/mono/gac/Microsoft.VisualBasic/8.0.*/*.mdb
+    + debian/mono-classlib-2.0-dbg.install:
+      - Added usr/lib/mono/gac/FirebirdSql.Data.Firebird/1.7.*/*.mdb
+      - Added usr/lib/mono/gac/Microsoft.Build.*/2.*/*.mdb
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Tue, 27 Dec 2005 12:58:11 +0100
+
+mono (1.1.10-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + debian/patches/00list:
+      - Removed fix_xsp2_inherits, already applied upstream.
+      - Removed datetime_doparse_fix, already applied upstream.
+      - Removed s390_compile_fix, already applied upstream.
+      - Removed 64bit_implicit_pointer_cast_fix, already applied upstream.
+    + debian/mono-mcs.manpages:
+      - Added mozroots.1
+    + debian/mono-classlib-1.0.install:
+      - Added dotnet.pc
+    + debian/control:
+      - Added libgdiplus to "Recommends" of mono. (Closes: #333851)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 12 Nov 2005 21:54:15 +0200
+
+mono (1.1.9.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + debian/patches/00list:
+      - Removed io_layer_fix_r50689, already applied upstream.
+      - Removed amd64_compile_fix_r50553, already applied upstream.
+    + debian/mono-utils.install:
+      - Removed dh_installxsp, postrm-monoxsp and postinst-monoxsp. Those files
+        will be in the XSP package (mono-xsp-base) instead.
+    + debian/mono-utils.manpages:
+      - Removed dh_installxsp.1
+    + debian/patches/s390_compile_fix.dpatch:
+      - Updated the patch, one "break" was missing in an empty default label.
+    + debian/patches/fix_xsp2_inherits.dpatch:
+      - Added patch to fix class inheritance with XSP2.
+        (thanks to Dylan R. E. Moonfire <debian@mfgames.com> for the patch)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 16 Oct 2005 14:01:28 +0200
+
+mono (1.1.9.1-3) unstable; urgency=medium
+
+  * Mirco 'meebey' Bauer
+    + debian/patches/amd64_compile_fix_r50553.dpatch:
+      - Backport from upstream's SVN, should fix amd64 build.
+        (Closes: #330369)
+    + debian/patches/64bit_implicit_pointer_cast_fix.dpatch:
+      - Should fix problems with amd64 and ia64 build.
+        (Closes: #330982, thanks to David Mosberger-Tang
+         <David.Mosberger@acm.org> for the patch)
+    + Synced dh_makeclilibs and dh_clideps from cli-common.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 2 Oct 2005 17:17:19 +0200
+
+mono (1.1.9.1-2) unstable; urgency=medium
+
+  * Mirco 'meebey' Bauer
+    + debian/control:
+      - Added dc to build-deps, required for full bootstrap (solves FTBFS).
+        (Closes: #330280)
+    + debian/rules:
+      - Making debian/dh_makeclilibs and debian/dh_clideps now executable.
+        (Closes: #330283)
+    + debian/patches/io_layer_fix_r50689.dpatch:
+      - Backport from upstream's SVN, fixes process signalling bug.
+    + debian/patches/s390_compile_fix.dpatch:
+      - Backport from upstream's SVN, should fix s390 build.
+  * Eduard Bloch
+    + fixed bashisms in maintainer scripts and added removal of rpath (chrpath)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Tue, 27 Sep 2005 11:58:34 +0200
+
+mono (1.1.9.1-1) unstable; urgency=low
+
+  * The "Mono becomes architecture friendly" release
+    - Mono 1.1.9 supports now IA-64 and ARM too
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + debian/readme:
+      - Removed MonoConventions.
+      - Added link to CLI Policy.
+    + debian/rules:
+      - Deleting more nunit files.
+    + debian/control:
+      - Dropped cli-common build dependency.
+      - Added ia64 arch-dep packages.
+    + debian/mono-gmcs.install:
+      - Added monop2.
+    + debian/patches/remove_broken_dllmap_from_mono-shlib-cop.dpatch:
+      - Wrote patch to remove a dllmap which was causing that dh_clidep
+        generates a dependency for libc6.
+    + Copied dh_makeclilibs and dh_clideps of cli-common to debian/ for
+      bootstrapping reasons, Mono is now autobuildable.
+    + Applied patch for binfmt-detector-cli which makes it 64bit clean.
+      (Closes: #325313, thanks to Colin Watson <cjwatson@debian.org> for the
+       patch)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 24 Sep 2005 15:51:03 +0200
+
+mono (1.1.8.3-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + debian/rules:
+      - Copying monodis to debian/tmp/usr/bin now, else dh_clideps in
+        internal-mono mode will fail.
+      - Copying monograph from mono/monograph/.libs to debian/tmp/usr/bin.
+        "make install" is still on drugs installing libtool wrapper scripts.
+        (Closes: #320479)
+    + debian/mono-utils.install:
+      - Use monodis from debian/tmp again.
+    + debian/control:
+      - Updated versioned cli-common build-dep to >= 0.2.1, this version
+        will generate proper deps now when using internal-mono mode.
+        (Closes: #325473)
+      - Updated to Standards Version 3.6.2.1 (no changes).
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Fri, 2 Sep 2005 18:42:39 +0200
+
+mono (1.1.8.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + debian/rules:
+      - Using new feature of cli-common (internal-mono), this allows to use
+        the built Mono (in debian/) instead of an installed Mono
+        (thanks to Ingo Saitz for working on this).
+    + debian/control:
+      - Added mono-gmcs to "Suggests" of mono-devel.
+      - Changed "Priority" of mono-classlib-(1.0|2.0)-dbg to extra.
+      - Changed dependency of mono-classlib-2.0-dbg from mono-classlib-1.0
+        to mono-classlib-2.0.
+      - Updated versioned cli-common build-dep to >= 0.1.4
+      - Removed mono-common dependency from many packages (it's not required
+        and breaks autobuilding of new packages).
+      - Removed mono-classlib-1.0/2.0 from build-deps.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 10 Jul 2005 16:08:12 +0200
+
+mono (1.1.8.1-3) unstable; urgency=low
+
+  * Mirco 'meebey' Bauer
+    + debian/mono-gmcs.install:
+    + debian/mono-gmcs.manpages:
+      - those 2 files were missing, thus the mono-gmcs package was empty.
+        (Closes: #316742)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 3 Jul 2005 15:51:55 +0200
+
+mono (1.1.8.1-2) unstable; urgency=medium
+
+  * Mirco 'meebey' Bauer
+    + debian/control:
+      - Added "Replaces" to mono-utils for mono-mcs (<= 1.1.6-4).
+        This broke upgrading mono packages from 1.1.6 to 1.1.8.1, thus urgency
+        set to medium. (Closes: #316691)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 3 Jul 2005 12:43:24 +0200
+
+mono (1.1.8.1-1) unstable; urgency=low
+
+  * New upstream release
+    + Fixed DirectoryInfo.GetFiles(), it failed when filename had a backspace
+      or space at the end. (Closes: #285287)
+    + With this release we also package the C# 2.0 part, for details see below.
+  * Mirco 'meebey' Bauer
+    + debian/mono-mcs.manpages:
+      - removed monoresgen.1 and prj2make.1
+        (the programs for those don't exist in the packages anymore).
+    + debian/rules:
+      - disabled 07_no_libc_fun.dpatch
+        (upstream doesn't use internal libc symbols anymore)
+      - Deleting prj2make from build
+        (it is shipped with the prj2make-sharp package).
+      - Added --preview=yes and --with-ikvm-native=no to ./configure call
+        (libikvm-native.so is shipped by the ikvm package).
+      - A lot of changes to make the split of classlib 1.0/2.0 possible.
+    + debian/control:
+      - Updated versioned cli-common build-dep to >= 0.1.3
+      - Moved libMonoPosixHelper.so from libmono-dev to libmono0, because it's
+        an unversioned library now.
+      - Added "Replaces" to libmono0 for libmono-dev (<= 1.1.6-4).
+      - Renamed mono-assmeblies-base to mono-classlib-1.0 and set "Replaces"
+        and "Conflicts" for it.
+      - Added mono-assmeblies-base transistion package.
+      - Added new packages: mono-gmcs, mono-classlib-2.0, mono-classlib-1.0-dbg
+        and mono-classlib-2.0-dbg.
+      - Removed ${cli:Depends} from "Depends" of mono-classlib-1.0.
+      - Dropped mono-assemblies-arch package, there aren't any arch specific
+        CIL libraries.
+      - Changed static depends of mono-mcs to ${cli:Depends}
+      - Added mono-classlib-1.0 and mono-classlib-2.0 to build-deps
+        (required for dh_makeclilibs).
+    + debian/mono-utils.install:
+      - Using mono/dis/.libs/monodis because the Makefile is confused and
+        installs a libtool wrapper script instead.
+      - Added missing /usr/bin/monodiet
+      - Added new /usr/bin/mono-find-provides and /usr/bin/mono-find-requires
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Tue, 21 Jun 2005 21:30:36 +0200
+
+mono (1.1.6-4) unstable; urgency=low
+
+  * upload to unstable
+  * Mirco 'meebey' Bauer
+    + added debian/watch file
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 29 May 2005 19:51:35 +0200
+
+mono (1.1.6-3) experimental; urgency=low
+
+  * Mirco 'meebey' Bauer
+    + updated "Section" fields in debian/control.
+    + added amd64 to the arch fields (Closes: #253542)
+      (thanks to Kurt Roeckx for testing it on AMD64)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 14 May 2005 18:58:59 +0200
+
+mono (1.1.6-2) experimental; urgency=low
+
+  * Mirco 'meebey' Bauer
+    + removed cli-common from mono-common deps, it's for build-deps.
+    + updated versioned build-dep of cli-common to >= 0.1.1
+     
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 17 Apr 2005 21:19:58 +0200
+
+mono (1.1.6-1) experimental; urgency=low
+
+  * New upstream release
+    + New version (Closes: #296353, #301268)
+    + New build system, using one source tarball.
+    + Almost all programs have a manpage now.
+    + Mono 1.1.x branch supports AMD64 architecture.
+    + Remoting is fast again with 1.1.6
+      (Closes: #303349)
+  * Mirco 'meebey' Bauer
+    + Upstream merged mcs and mono into one mono tarball, this makes the
+      build process a lot easier.
+    + Dropping /usr/share/dotnet structure with this release, upstream
+      provides now a FHS conform solution.
+    + Added versioned mono-common dependency to mono, makes lintian happy.
+    + Added cli-common to build-dependencies.
+    + Added transition code to mono-common.postinst for moving
+      /usr/share/dotnet/mono to /usr/lib/mono
+      (thanks to Ingo Saitz aka Salz for helping with this)
+    + Added c-sharp-compiler, resource-file-generator, assembly-linker,
+      strong-name-tool, global-assembly-cache-tool and cil-disassembler
+      alternatives (those are common CLI programs).
+    + Added mono-devel metapackage.
+    + Added mono-common dependecy to all related packages.
+    + Removed a lot of hacks in debian/rules, not required anymore.
+    + Removed old Conflicts/Replaces.
+    + Removed icu28-dev from buil-dependencies (ICU is not recommended by
+      upstream anymore, and does break things).
+    + Added pkg-config to "Recommends" of mono-mcs. (Closes: #294606)
+    + created 07_no_libc_fun.dpatch
+      (Mono 1.1.x tries to use internal libc symbols, which is not required)
+     
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 2 Apr 2005 12:48:09 +0200
+
+mono (1.0.5-2) unstable; urgency=high
+
+  * Mirco 'meebey' Bauer
+    + removed mono-mint package and all packages for s390.
+      The mono-mint (the interpeter) is deprecated, unmaintained upstream
+      and was just a proof-of-concept programm.
+      The mono-jit is no longer supported for s390 by upstream in the stable
+      release and has a lot of bugs on that arch. This prevents Mono to enter
+      "testing", thus removed.
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Tue, 15 Feb 2005 22:58:39 +0200
+
+mono (1.0.5-1) unstable; urgency=high
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + disabled building of .NET 2.0 classlib, because it breaks too much.
+      Upstream said it should not be used, even Novell does not ship it. 
+      This fixes some very strange bugs, all tested against 1.0.5.    
+      (Closes: #286270, #276464, #287279)
+    + cleanups in debian/rules
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 30 Jan 2005 01:07:36 +0200
+
+mono (1.0.4-1) unstable; urgency=high
+
+  * New upstream release
+  * Mirco 'meebey' Bauer
+    + removed automake from build-deps 
+    + JIT seems to be stable now (Closes: #258041)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 05 Dec 2004 16:09:32 +0200
+
+mono (1.0.2-1) unstable; urgency=high
+
+  * The "All or Nothing" release
+  * New upstream release (Closes: #273675)
+  * Mirco 'meebey' Bauer
+    + applied debian/rules patch to fix FTBFS on i386 with amd64 kernel
+      (Closes: #265510 thanks to Kurt Roeckx <Q@ping.be>)
+    + removed all not official supported architectures
+      (Closes: #272846, #259680)
+    + cosmetic cleanups in debian/rules
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Thu, 11 Oct 2004 21:21:02 +0200
+
+mono (1.0.1-1) unstable; urgency=medium
+
+  * New upstream (bugfix) release
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Thu, 12 Aug 2004 13:46:04 +0200
+
+mono (1.0-4) unstable; urgency=medium
+
+  * the "sorry for forgetting the NOT RELEASED YET tags" release
+  * Mono BSP
+  * Mirco 'meebey' Bauer
+    + debian/rules: s390 build should work now
+      (showstopper for sarge, thus medium urgency)
+    + debian/control: fixed typo, tuned Architecture field for mono (should
+      finaly prevent "unallowed" architectures from trying to build mono)
+    + debian/README.Debian: fixed typo
+  * Eduard Bloch
+    + --with-ntpl=no! When compiled with NTPL support, it still breaks on
+      kernel 2.4 though not using the other libs (closes: #256755, #257412)
+    + patched Makefiles to link explicitely with glib and dl, thanks to
+      Russ Allbery <rra@stanford.edu> (closes: #262023)
+    + disabled mono-mint build for i386 and powerpc, upstream wish
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sun, 08 Aug 2004 16:38:32 +0200
+
+mono (1.0-3) unstable; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Eduard Bloch <blade@debian.org>  Wed,  7 Jul 2004 19:03:57 +0200
+
+mono (1.0-2) unstable; urgency=medium
+
+  * Eduard Bloch
+    + Workarounds for FTBFS on architectures that have we already built for in
+      the past
+    + dh_makenetlibs: extremely ugly workaround for collecting library data
+      even when not the whole assembly chain works (we need something more
+      mature than monodis to do this; closes: #258040)
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Wed, 07 Jul 2004 18:53:32 +0200
+
+mono (1.0-1) unstable; urgency=low
+
+  * New upstream release (1.0 final)
+  * Mirco 'meebey' Bauer
+    + debian/rules: cleanup
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Mon, 30 Jun 2004 18:41:27 +0200
+
+mono (0.97-1) unstable; urgency=medium
+
+  * New upstream release (Release Candidate)
+    + basicaly a bugfix release, solves JIT crash problems with kernel 2.4.x
+      (closes: #255485, #256200), thus this urgency
+  * Eduard Bloch
+    + Added libMonoPosixHelper... to libmono... packages (closes: #256697)
+    + monosn is gone, using sn to get the signature strings now
+    + set alternative dependency on mono-assemblies-base-0.96,
+      apparently compatible
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Mon, 28 Jun 2004 01:14:32 +0200
+
+mono (0.96-1) unstable; urgency=low
+
+  * New upstream release
+  * Eduard Bloch
+    + setting virtual ".shlibs" for libmono via provides, currently
+      libmono-0.96
+    + created new dh_makenetlibs and dh_netdeps tools to manage assembly
+      dependencies in the Perl/Python way
+    + Moved Pablo's dh_installxsp script to mono-utils to mono-utils
+    + mono-common.preinst now moves /usr/lib/mono directory (if exists) to
+      /usr/share/dotnet
+    + moved the check for mono-vs.-mint priority to debian/rules
+    + applied the patch (as dpatch) from Jackson Harper,
+      http://bugzilla.ximian.com/showattachment.cgi?attach_id=8206 to fix the
+      monodis segfault while operating on unresolved assembly references
+  * Mirco 'meebey' Bauer
+    + New upstream release updates
+    + enabled preview features (.NET 1.2, generics)
+  * Michael Schiansky
+    + Since beta1 (0.91) dllmaps are handled cleanly (Closes: #241686)
+  * Pablo Fischer
+    + Added autoscript support to dh_installxsp	
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 19 Jun 2004 14:38:57 +0200
+
+mono (0.91-1) unstable; urgency=low
+
+  * New upstream release (Closes: Bug#249419)
+  * JIT is more stable now (Closes: Bug#238420)
+  * FTBFS fixes for sparc in rules/control
+  * added s390 architecture to mono-jit, libmono0 and libmono-dev
+  * documented supported architectures in README.Debian
+
+ -- Mirco 'meebey' Bauer <mail@meebey.net>  Sun, 02 May 2004 19:19:22 +0200
+
+mono (0.31-2) unstable; urgency=low
+
+  * kernel detection overridden to build 2.4 compatible version 
+    (closes: #243928, #243940)
+  * DLL map updates (closes: #241686)
+  * README.Debian updated with latest MonoConventions
+
+ -- Eduard Bloch <blade@debian.org>  Wed,  7 Apr 2004 01:39:55 +0200
+
+mono (0.31-1) unstable; urgency=low
+
+  * New upstream release
+  * Eduard Bloch
+    + added additional entries to the hard-coded DLL map (closes: #236782)
+    + included experimental patch for build failures on HPPA (partial fix 
+      for #240272)
+
+ -- Eduard Bloch <blade@debian.org>  Tue,  6 Apr 2004 09:44:35 +0200
+
+mono (0.30.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Eduard Bloch:
+    + debian/control: limited "any" arch lists to those really supported by the
+      Mono project. libmono0(-dev) to i386 powerpc (closes: #235315)
+    + added a workaround for gnomeui-2 symbolic name (closes: #235946)
+    + deleting the alternatives entries only on removal (closes: #234815)
+
+ -- Eduard Bloch <blade@debian.org>  Sat,  6 Mar 2004 13:15:43 +0100
+
+mono (0.30.1-1) unstable; urgency=low
+
+  * New upstream release
+  * SONAME wokraround for libgstreamer-0.6.so.1
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 24 Feb 2004 18:15:49 +0100
+
+mono (0.29.99.20040114-4) unstable; urgency=low
+
+  * Eduard Bloch:
+    + catch-them-all cli-wrapper rewrite
+    + set mono-common conflict with the virtual package cli-common
+  * Teófilo Ruiz Suárez:
+    + removed libicu26-dev from Build-Depends so mono-jit don't depend on
+    libicu26 (Closes: #231966)
+
+ -- Eduard Bloch <blade@debian.org>  Mon,  9 Feb 2004 00:23:40 +0100
+
+mono (0.29.99.20040114-3) unstable; urgency=low
+
+  * bugfix release, hopefully the last of 0.29* series
+  * Teófilo Ruiz Suárez:
+    + added automake1.7 to Build-Deps
+  * Eduard Bloch:
+    + Included modified icu-config to use libicu26-dev
+    + added libtool to Build-Deps (closes: #231271)
+    + hook to correct SONAMEs in /etc/mono/config file (Closes: #231191)
+    + included a generic binary wrapper to mono-common to be used as
+      PROGRAM to run /usr/bin/PROGRAM.exe with /usr/bin/cli
+
+ -- Eduard Bloch <blade@debian.org>  Thu, 22 Jan 2004 00:57:56 +0100
+
+mono (0.29.99.20040114-2) unstable; urgency=low
+
+  * Finally closing the outstanding ITPs (closes: #132882)
+  * Maintainer mailing list address fixed
+  * libmint* removed (upstream request, considered as dead-end package)
+  * improved description, added pedump to mono-utils, dropped monosn (upstream
+    request)
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 18 Jan 2004 19:15:41 +0100
+
+mono (0.29.99.20040114-1) unstable; urgency=low
+
+  * New maintainer: Debian Mono maintainers <pkg-mono-devel@alioth.debian.org>
+    after the previous maintainers stoped the work on it
+  * Package descriptions written or improved
+  * Library package separation to follow the shared libs conventions
+    (libmono and libmono-profiler-... seem to belong together, though)
+  * libmono-dev depends on libmint-dev since the last contains the headers and
+    is available on all supported arches
+  * Package renaming to avoid confusion (mono in mono-jit, mint in mono-mint)
+  * merged binfmt-detector-cli and mono-common since they were already linked
+    together and another 3kB package makes no much sense
+  * limited the arch list to those officially supported by the Mono Project
+  * Adapted the /usr/share/doc/mono-interpreter (now -mint) fixing hooks
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 18 Jan 2004 19:11:04 +0100
+
+mono (0.26-2) unstable; urgency=low
+
+  * No longer depend on an external libgc
+
+ -- Alp Toker <alp@atoker.com>  Tue, 26 Aug 2003 23:27:11 +0100
+
+mono (0.26-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Fri, 15 Aug 2003 15:41:38 +0100
+
+mono (0.24-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Wed,  7 May 2003 02:53:40 +0100
+
+mono (0.23-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Fri,  7 Mar 2003 20:32:37 +0000
+
+mono (0.22-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Thu,  6 Mar 2003 22:52:19 +0000
+
+mono (0.21-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Thu, 27 Feb 2003 22:55:33 +0000
+
+mono (0.20-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Mon, 24 Feb 2003 01:09:34 +0000
+
+mono (0.19-3) unstable; urgency=low
+
+  * Build libmono as a shared object (needed for mod_mono)
+
+ -- Alp Toker <alp@atoker.com>  Sat, 25 Jan 2003 05:26:44 +0000
+
+mono (0.19-2) unstable; urgency=low
+
+  * Build against the new libgc6c102
+  * Pipe binfmt-misc warnings to /dev/null
+
+ -- Alp Toker <alp@atoker.com>  Tue, 21 Jan 2003 07:17:12 +0000
+
+mono (0.19-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Tue, 21 Jan 2003 00:05:56 +0000
+
+mono (0.18-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Mon, 13 Jan 2003 17:16:34 +0000
+
+mono (0.17-3) unstable; urgency=low
+
+  * Include machine.config and anything else that goes in /etc/mono
+
+ -- Alp Toker <alp@atoker.com>  Tue, 17 Dec 2002 14:23:30 +0000
+
+mono (0.17-2) unstable; urgency=low
+
+  * Disable exuberant debugging in PPC trampoline code
+
+ -- Alp Toker <alp@atoker.com>  Mon, 16 Dec 2002 17:58:56 +0000
+
+mono (0.17-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Alp Toker <alp@atoker.com>  Tue, 10 Dec 2002 14:13:18 +0000
+
+mono (0.16-1) unstable; urgency=low
+
+  * New upstream version. Sorry I havn't been doing any CVS snapshots for
+     a month. I'll try and sort something out.
+  * Include a patch from Michel Danzer <daenzer@debian.org> to fix
+     idiotic build failure on non-i386 arches.
+  * Install /etc/mono/config and the manpage in the mono-common package,
+     and add a replaces for smooth upgrades (mono-config.5 used to be in
+     the mono-jit package).
+  * Switch from setting prefix to DESTDIR so /etc works too.
+  * Added some {}s to monoburg.y to make it parse correctly. Thanks to
+     Zoltan Varga's message on mono-list.
+  * Added data/config to the list of files that need to be cleaned 
+     manually.
+
+ -- Robert McQueen <robot101@debian.org>  Sat, 19 Oct 2002 16:16:08 +0100
+
+mono (0.15-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Robert McQueen <robot101@debian.org>  Sat, 24 Aug 2002 00:36:34 +0100
+
+mono (0.13-3) unstable; urgency=low
+
+  * Pass --disable-shared to configure, and link mono-jit statically.
+  * This turned out to be broken. Thanks to Dick Porter for putting up
+     with me moaning about libtool combinations for a day, and for fixing
+     it with the correct method I absolutely failed to see. Applied his
+     patch for this, should hit CVS soon or I'll back it out.
+  * Ship only a static libmono-dev for people interested in embedding.
+     Shared lib is useless because the API is massively unstable.
+  * Conflict the -dev with the old libmono0 until it is deemed useful
+     again.
+  * Change -a to -s in the binary-arch target so debhelper will only
+     build arch-specific packages if they're available on the build arch.
+  * Added mono-config.5 manpage to mono-jit package, and libmono.la and
+     pkg-config/mono files to libmono-dev package.
+
+ -- Robert McQueen <robot101@debian.org>  Wed, 14 Aug 2002 23:07:40 +0100
+
+mono (0.13-2) unstable; urgency=low
+
+  * Holiday maintainer upload. =)
+  * Switched to pristine upstream source tarball.
+  * Cleaned up debian/rules file, separated binary-arch/binary-indep
+     targets for builds on other arches.
+  * Stole the makefile magic from galeon (I did help write it =) to
+     automatically run configure or autogen.sh depending on whether we're
+     building from CVS or not, and then do the correct clean command
+     later.
+  * At the advice of Ximian folk, don't provide libmono0/libmono-dev for
+     the moment - the API is unstable.
+  * For when it does return... install the .a into libmono-dev and make
+     it arch: any.
+  * Include libmono.so.0 and libmono.so.0.0.0 into the mono-jit package.
+     These will be returned to a seperate package, and headers and static
+     libraries provided, when libmono's API is stable. To ease
+     transition, added a Replaces: header.
+  * Made mono-common arch: all, it contains no binaries currently.
+  * Leave out cil-opcodes.xml unless someone complains.
+  * Install documentation in mono-common, and have packages that depend
+     on it symlink to there instead. Made mono depend directly on
+     mono-common to prevent lintian griping about this. Added code to
+     postinsts of mono, mono-jit and mono-interpreter remove their doc
+     dir and replace it with a symlink on upgrades. Dpkg will not replace
+     a directory with a symlink, even if it's empty.
+  * Added -e to /bin/sh in the maintainer scripts.
+  * Don't ship monostyle.1 and monoburg.1 manpages, the programs are in
+     the mcs package and we don't ship them currently.
+  * Added undocumented symlink for monograph.1.
+  * Added rm to clean target for spare Makefiles left behind.
+
+ -- Robert McQueen <robot101@debian.org>  Sun,  4 Aug 2002 00:57:15 +0100
+
+mono (0.13-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Alp Toker <alp@atoker.com>  Sun, 28 Apr 2002 22:10:10 +0100

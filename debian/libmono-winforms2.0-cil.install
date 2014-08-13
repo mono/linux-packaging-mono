@@ -1,0 +1,6 @@
+debian/tmp/usr/lib/mono/gac/System.Windows.Forms/2.0.*/
+debian/tmp/usr/lib/mono/gac/System.Drawing.Design/2.0.*/
+debian/tmp/usr/lib/mono/gac/System.Design/2.0.*/
+debian/tmp/usr/lib/mono/2.0/System.Windows.Forms.dll
+debian/tmp/usr/lib/mono/2.0/System.Drawing.Design.dll
+debian/tmp/usr/lib/mono/2.0/System.Design.dll

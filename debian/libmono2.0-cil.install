@@ -1,0 +1,8 @@
+debian/tmp/usr/lib/mono/2.0/Mono.CompilerServices.SymbolWriter.dll
+debian/tmp/usr/lib/mono/2.0/Mono.Http.dll
+debian/tmp/usr/lib/mono/2.0/Mono.Web.dll
+debian/tmp/usr/lib/mono/2.0/OpenSystem.C.dll
+debian/tmp/usr/lib/mono/gac/Mono.CompilerServices.SymbolWriter/2.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/Mono.Http/2.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/Mono.Web/2.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/OpenSystem.C/2.0.0.0__*/

@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+update-alternatives \
+	 --install /usr/bin/cli-ildasm cil-disassembler /usr/bin/monodis 10 \
+	 --slave /usr/share/man/man1/cli-ildasm.1.gz cli-ildasm.1.gz /usr/share/man/man1/monodis.1.gz
+
+#DEBHELPER#

@@ -1,0 +1,764 @@
+Format-Specification: http://dep.debian.net/deps/dep5/
+Upstream-Name: Mono
+Upstream-Source: http://ftp.novell.com/pub/mono/sources/mono
+
+Files: *
+Copyright: © 2001 Andreas Jonsson
+           © 2001 Andrew Sutton
+           © 2001 Bob Smith. http://www.thestuff.net
+           © 2001 Chris Hynes
+           © 2001 Christopher Podurgiel
+           © 2001 Daniel Weber
+           © 2001 David Dawkins
+           © 2001 Derek Holden (dholden@draper.com)
+           © 2001 Garrett Rooney (rooneg@electricjellyfish.net)
+           © 2001 John Barnette
+           © 2001 John R. Hicks (angryjohn69@nc.rr.com)
+           © 2001 Krister Hansson
+           © 2001 Mads Pultz
+           © 2001 Marcel Narings
+           © 2001 Martin Weindel
+           © 2001 Matthew S. Ford
+           © 2001 Michael Lambert, All Rights Reserved
+           © 2001 Moonlight Enterprises, All Rights Reserved
+           © 2001 Phillip Pearson (http://www.myelin.co.nz)
+           © 2001 Ricardo Fernández Pascual
+           © 2001 Scott Sanders
+           © 2001 Wictor Wilén (wictor@iBizkit.se)
+           © 2001-2002 Jason Diamond  http://injektilo.org/
+           © 2001-2002 Marcin Szczepanski
+           © 2001-2002 Mike Kestner
+           © 2001-2002 Nick Drochak II
+           © 2001-2002 Southern Storm Software, Pty Ltd.
+           © 2001-2002 Vladimir Vukicevic (vladimir@pobox.com)
+           © 2001-2002 Wild West Software
+           © 2001-2003 Ximian, Inc.  http://www.ximian.com
+           © 2002 Alejandro Sánchez Acosta  <raciel@es.gnu.org>
+           © 2002 Ameya Sailesh Gargesh (ameya_13@yahoo.com)
+           © 2002 Brian Ritchie
+           © 2002 Chew Keong TAN
+           © 2002 Chris J Breisch
+           © 2002 Dan Lewis
+           © 2002 Daniel Stodden  <stodden@in.tum.de>   
+           © 2002 Duco Fijma
+           © 2002 Franklin Wise
+           © 2002 Free Software Foundation
+           © 2002 Gaurav Vaish
+           © 2002 Jaime Anguiano Olarra
+           © 2002 John Donagher
+           © 2002 Jon Guymon
+           © 2002 Kevin Winchester
+           © 2002 Kral Ferch
+           © 2002 Lawrence Pit
+           © 2002 Martin Adoue
+           © 2002 Martin Baulig
+           © 2002 Matt Hunter
+           © 2002 Miguel de Icaza
+           © 2002 Owen Brady (Ocean at owenbrady dot net)
+           © 2002 Piers Haken
+           © 2002 Rodrigo Moya
+           © 2002 Stuart Caborn
+           © 2002 Ulrich Kunitz
+           © 2002-2003 Dave Bettin
+           © 2002-2003 Eduardo Garcia Cebollero <kiwnix@yahoo.es>
+           © 2002-2003 Greg Reinacker, Reinacker & Associates, Inc. All rights reserved 
+           © 2002-2003 Jackson Harper, All rights reserved
+           © 2002-2003 Ville Palo
+           © 2002-2004 Motus Technologies Inc. (http://www.motus.com)
+           © 2002-2004 Tim Coleman
+           © 2002-2005 Cesar Lopez Nataren
+           © 2002-2005 Lluis Sanchez Gual
+           © 2002-2005 Rafael Teixeira
+           © 2002-2008 Daniel Morgan
+           © 2002-2008 Mainsoft Corporation.
+           © 2002-2010 Novell, Inc (http://www.novell.com)
+           © 2003 Aleksey Sanin (aleksey@aleksey.com)
+           © 2003 Alexandre Pigolkine (pigolkine@gmx.de)
+           © 2003 Brad Fitzpatrick
+           © 2003 Dominik Fretz
+           © 2003 Duncan Mak, Ximian Inc.
+           © 2003 Eric Glass
+           © 2003 Erik LeBel
+           © 2003 Gilles Freart
+           © 2003 Ian MacLean
+           © 2003 Jean-Marc André <jean-marc.andre@polymtl.ca>
+           © 2003 Jochen Wezel (CompuMaster GmbH)
+           © 2003 Johannes Roith <johannes@jroith.de>
+           © 2003 Joshua Tauberer
+           © 2003 Latitude Geographics Group, All rights reserved
+           © 2003 Lee Mallabone <gnome@fonicmonkey.net>
+           © 2003 Martin Willemoes Hansen
+           © 2003 Oleg Tkachenko
+           © 2003 Patrick Kalkman
+           © 2003 Patrik Torstensson
+           © 2003 Pedro Martínez Juliá  <yoros@wanadoo.es>
+           © 2003 Peter Van Isacker
+           © 2003 Phillip Jerkins
+           © 2003 Sergey Chaban (serge@wildwestsoftware.com)
+           © 2003 Stefan Görling
+           © 2003 The Mentalis.org Team (http://www.mentalis.org/)
+           © 2003 Thong (Tum) Nguyen [tum@veridicus.com]
+           © 2003-2004 Andreas Nahr
+           © 2003-2004 Atsushi Enomoto
+           © 2003-2004 Ben Maurer
+           © 2003-2004 Carlos Guzman Alvarez
+           © 2003-2004 Todd Berman
+           © 2003-2007 Alp Toker <alp@atoker.com>
+           © 2003-2007 Juraj Skripsky
+           © 2003-2008 Jonathan Pryor
+           © 2003-2008 Niels Kokholm
+           © 2003-2008 Peter Sestoft
+           © 2004 Edd Dumbill
+           © 2004 Everaldo Canuto
+           © 2004 IT+ A/S (http://www.itplus.dk)
+           © 2004 Ivan Hamilton
+           © 2004 Luca Barbieri
+           © 2004 Matthijs ter Woord
+           © 2004 Punit Todi
+           © 2004-2005 Geoff Norton.
+           © 2004-2006 Jaroslaw Kowalski
+           © 2004-2006 John Luke
+           © 2004-2008 Gert Driesen
+           © 2004-2008 HotFeet GmbH (http://www.hotfeet.ch)
+           © 2005 akiramei (mei@work.email.ne.jp)
+           © 2005 Carlo Kok (ck@carlo-kok.com)
+           © 2005 David Waite (mass@akuma.org)
+           © 2005 Hubert FONGARNAND
+           © 2005 Iain McCoy
+           © 2005 Senganal T
+           © 2005 Sharif FarsiWeb, Inc. (http://www.farsiweb.info)
+           © 2005 Voelcker Informatik AG
+           © 2005-2007 Marek Sieradzki
+           © 2005-2008 Jb Evain (http://evain.net)
+           © 2005-2008 Jiri George Moudry
+           © 2005-2008 Kornél Pál
+           © 2006 Alexander Olk
+           © 2006 Bruno Haible
+           © 2006 Evaluant RC S.A
+           © 2006 Forcom (http://www.forcom.com.pl/)
+           © 2006 Marek Habersack
+           © 2006 Matt Hargett
+           © 2006 Patrick Earl
+           © 2006 Sridhar Kulkarni
+           © 2006-2007 Dmitry S. Kataev
+           © 2006-2009 Daniel Nauck
+           © 2006-2009 Jonathan Chambers
+           © 2007 Andreas Noever
+           © 2007 Dean Brettle
+           © 2007 Marcos Cobena (http://www.youcannoteatbits.org/)
+           © 2007-2008 Andreia Gaita
+           © 2007-2008 Ivan N. Zlatev
+           © 2007-2008 Pascal Craponne
+           © 2007-2008 Stefan Klinger
+           © 2008 Andy Hume
+           © 2008 db4objects, Inc. (http://www.db4o.com)
+           © 2008 Eric Butler
+           © 2008 George Giolfan
+           © 2008 James Fitzsimons
+           © 2008 Michael Barker
+           © 2008 Realtime Worlds Ltd
+           © 2008-2009 Jérémie "Garuma" Laval
+           © 2009 Aaron Bockover
+           © 2009 Craig Sutherland
+           © 2009 Eric Maupin (http://www.ermau.com)
+           © 2009 leppie (http://xacc.wordpress.com/)
+           © 2009 Olivier Dufour olivier(dot)duff(at)gmail(dot)com
+           © 2011-2013 Xamarin Inc (http://www.xamarin.com)
+License: MIT
+
+Files: debian/*
+Copyright: © 2002 Robert McQueen <robot101@debian.org>
+           © 2002-2003 Alp Toker <alp@atoker.com>
+           © 2004-2013 Mirco Bauer <meebey@debian.org>
+           © 2008-2010 Jo Shields <directhex@apebox.org>
+License: GPL
+
+Files: debian/detector/*
+Copyright: © Ilya Konstantinov <future@shiny.co.il>
+           © 2005 Colin Watson <cjwatson@debian.org>
+License: GPL-2
+
+Files: mono/*
+Copyright: © 1995-1997 Peter Mattis, Spencer Kimball and Josh MacDonald
+           © 2000 Intel Corporation.  All rights reserved.
+           © 2001 Martin Weindel
+           © 2001 Radek Doulik
+           © 2001-2002 Ximian, Inc.
+           © 2002 Sergey Chaban
+           © 2002-2004 Neale Ferguson
+           © 2002-2009 Novell, Inc (http://www.novell.com)
+           © 2003 PT Cakram Datalingga Duaribu  http://www.cdl2000.com
+           © 2003-2004 Bernie Solomon
+           © 2006 Broadcom
+           © 2006 Sergey Tikhonov (tsv@solvo.ru)
+           © 2007 Randolph Chung
+           © 2007-2008 Andreas Faerber
+           © 2008 Kornél Pál
+           © 2011-2012 Xamarin Inc (http://www.xamarin.com)
+License: LGPL-2
+
+Files: libgc/*
+Copyright: © 1988-1989 Hans-J. Boehm, Alan J. Demers
+           © 1991-1996 by Xerox Corporation.  All rights reserved.
+           © 1996-1999 by Silicon Graphics.  All rights reserved.
+           © 1998 Fergus Henderson.  All rights reserved.
+           © 1999-2004 by Hewlett-Packard Company. All rights reserved.
+           © 1999-2001 by Red Hat, Inc. All rights reserved.
+License: other
+ THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED
+ OR IMPLIED.  ANY USE IS AT YOUR OWN RISK.
+ 
+ Permission is hereby granted to use or copy this program
+ for any purpose,  provided the above notices are retained on all copies.
+ Permission to modify the code and to distribute modified code is granted,
+ provided the above notices are retained, and a notice that the code was
+ modified is included with the above copyright notice.
+
+Files: mono/benchmark/logic.cs, 
+       mcs/tools/prj2make/*, 
+       mcs/class/Compat.ICSharpCode.SharpZipLib/*, 
+       mcs/class/ICSharpCode.SharpZipLib/*
+Copyright: © 1998-2001 Free Software Foundation, Inc.
+           © 2001 Southern Storm Software, Pty Ltd.
+           © 2001-2005 Mike Krueger
+           © 2004 Francisco T. Martinez <paco@mfcon.com>
+           © 2004-2005 John Reilly
+License: GPL-2+
+
+Files: mcs/tools/pdb2mdb/*, 
+       mcs/class/dlr/*,
+       mcs/class/MicrosoftAjaxLibrary/*, 
+       mcs/class/System.Web.Mvc/*,
+       mcs/class/System.Web.Mvc2/*,
+       mono/docs/HtmlAgilityPack/*
+Copyright: © 2003 Ximian, Inc (http://www.ximian.com)
+           © 2007-2009 Microsoft Corporation
+           © 2009 Simon Mourier
+License: Ms-PL
+
+Files: mcs/tools/monodoc/Lucene.Net/*
+Copyright: © 2004 The Apache Software Foundation
+License: Apache-2.0
+
+Files: mcs/tools/csharp/repl.cs, 
+       mcs/mcs/*
+Copyright: © 2001-2003 Ximian, Inc (http://www.ximian.com)
+           © 2003-2009 Novell, Inc
+           © 2008 John Resig (jquery.com)
+License: MIT | GPL-2
+
+Files: mcs/class/ByteFX.Data/*, 
+       mcs/class/Npgsql/*
+Copyright: © 2001 Matthew S. Ford
+           © 2002-2004 ByteFX, Inc.
+           © 2002-2006 The Npgsql Development Team
+           © 2003 Pedro Martínez Juliá  <yoros@wanadoo.es>
+           © 2003 PostgreSQL Global Development Group
+           © 2003 PT Cakram Datalingga Duaribu (http://www.cdl2000.com)
+           © 2004 Emiliano Necciari
+           © 2004-2005 Novell, Inc (http://www.novell.com)
+           © 2004-2009 Rolf Bjarne Kvinge, RKvinge@novell.com
+License: LGPL-2.1+
+
+Files: mcs/tools/csharp/getline.cs
+Copyright: © 2008 Novell, Inc.
+License: MIT | Apache-2.0
+
+Files: mcs/tools/lc/*
+Copyright: © 2009 RemObjects Software
+           © 2008 Novell (http://www.novell.com)
+License: MIT
+
+Files: mcs/class/System.Web.Extensions/System.Web.Script.Serialization/JSON/*
+Copyright: © 2007 James Newton-King
+License: MIT
+
+Files: mcs/nunit24/*
+Copyright: © 2000-2002 Philip A. Craig
+           © 2002-2004 James W. Newkirk
+           © 2002-2004 Michael C. Two
+           © 2002-2004 Alexei A. Vorontsov
+           © 2002-2008 Charlie Poole
+License: other
+ This software is provided 'as-is', without any express or implied warranty. 
+ In no event will the authors be held liable for any damages arising from the 
+ use of this software.
+ 
+ Permission is granted to anyone to use this software for any purpose, including
+ commercial applications, and to alter it and redistribute it freely, subject to
+ the following restrictions:
+ 
+  1. The origin of this software must not be misrepresented; you must not claim
+  that you wrote the original software. If you use this software in a product,
+  an acknowledgment (see the following) in the product documentation is
+  required.
+ 
+    Portions Copyright © 2002-2007 Charlie Poole or Copyright © 2002-2004 James
+    W. Newkirk, Michael C. Two, Alexei A. Vorontsov or Copyright © 2000-2002
+    Philip A. Craig
+ 
+  2. Altered source versions must be plainly marked as such, and must not be
+  misrepresented as being the original software.
+ 
+  3. This notice may not be removed or altered from any source distribution.
+
+Files: mono/utils/strtod.c,
+       mcs/nunit24/NUnitExtensions/core/RowTest/*,
+       mcs/nunit24/NUnitExtensions/framework/RowTestAttribute.cs,
+       mcs/nunit24/NUnitExtensions/framework/SpecialValue.cs,
+       mcs/nunit24/NUnitExtensions/framework/RowAttribute.cs,
+       mcs/nunit24/NUnitExtensions/framework/RowTest/*
+Copyright: © 1991-2001 by Lucent Technologies
+           © 2007 Andreas Schlapsi
+License: MIT
+
+Files: ikvm-native/*,
+       mono/io-layer/wapi_glob.*,
+       mono/utils/freebsd-*,
+       mcs/jay/*,
+       mcs/class/RabbitMQ.Client/docs/*
+Copyright: © 1989-1993 The Regents of the University of California.  All rights reserved.
+           © 1996-1998 John D. Polstra.
+           © 2004 Apple Computer, Inc.
+           © 2004 Jeroen Frijters
+           © 2004 The Mozilla Foundation
+           © 2009 AMQP Working Group
+License: BSD
+
+Files: mcs/class/Mono.CodeContracts/*
+Copyright: © 2010 Chris Bacon
+           © 2011 Alexander Chebaturkin
+License: MIT
+
+Files: mcs/class/Mono.Parallel/*
+Copyright: © 2008-2011 Jérémie "Garuma" Laval
+License: MIT
+
+Files: mcs/class/System.ComponentModel.Composition.4.5/*
+Copyright: © Microsoft Corporation.  All rights reserved.
+License: Ms-PL
+Comment:
+  This directory contains an import of Microsoft's Mananged Extensibility 2
+  Preview 4 as downloaded from: http://mef.codeplex.com/
+  Licensed under Ms-PL: http://mef.codeplex.com/license
+
+Files: mcs/class/System.Net.Http/*
+Copyright: © 2011-2012 Xamarin Inc (http://www.xamarin.com)
+License: MIT
+
+Files: mcs/class/System.Threading.Tasks.Dataflow/*
+Copyright: © 2011 Jérémie "garuma" Laval
+           © 2012 Petr Onderka
+License: MIT
+
+Files: mcs/class/System.Web.Mvc3/*
+       mcs/class/System.Json.Microsoft/*
+Copyright: © Microsoft Corporation. All rights reserved.
+License: Apache-2.0
+Comment:
+  This directory contains an import of Microsoft's ASP.NET MVC project:
+  http://aspnetwebstack.codeplex.com/
+  Licensed under Apache-2.0: http://aspnetwebstack.codeplex.com/license
+
+Files: mcs/class/System.Json.Microsoft/Test/*
+Copyright: © 2011 Xamarin, Inc.
+License: MIT
+
+Files: mcs/class/System/Mono.Net.Dns/*
+Copyright: © 2011 Gonzalo Paniagua Javier
+License: Apache-2.0
+
+Files: external/Lucene.Net/*
+Copyright: © 2006-2012 The Apache Software Foundation
+License: Apache-2.0
+
+Files: external/Lucene.Net/src/contrib/Snowball/SF/Snowball/Ext/HungarianStemmer.cs
+       external/Lucene.Net/src/contrib/Snowball/SF/Snowball/Ext/PortugueseStemmer.cs
+       external/Lucene.Net/src/contrib/Snowball/SF/Snowball/Ext/TurkishStemmer.cs
+       external/Lucene.Net/src/contrib/Snowball/SF/Snowball/Ext/RomanianStemmer.cs
+Copyright: © 2001 Dr Martin Porter
+           © 2002 Richard Boulton
+           © 2006-2012 The Apache Software Foundation
+License: Apache-2.0 | BSD
+
+Files: external/Lucene.Net/src/core/Util/UnicodeUtil.cs
+Copyright: © 2001-2004 Unicode, Inc.
+           © 2006-2012 The Apache Software Foundation
+License: Apache 2.0 | other
+ Disclaimer
+
+ This source code is provided as is by Unicode, Inc. No claims are
+ made as to fitness for any particular purpose. No warranties of any
+ kind are expressed or implied. The recipient agrees to determine
+ applicability of information provided. If this file has been
+ purchased on magnetic or optical media from Unicode, Inc., the
+ sole remedy for any claim will be exchange of defective media
+ within 90 days of receipt.
+
+ Limitations on Rights to Redistribute This Code
+
+ Unicode, Inc. hereby grants the right to freely use the information
+ supplied in this file in the creation of products supporting the
+ Unicode Standard, and to make copies of this file in any form
+ for internal or external distribution as long as this notice
+ remains attached.
+
+Files: external/Newtonsoft.Json/*
+Copyright: © 2007 James Newton-King
+License: MIT
+
+Files: external/Newtonsoft.Json/Src/Newtonsoft.Json/Utilities/LinqBridge.cs
+Copyright: © 2007-2009 Atif Aziz, Joseph Albahari. All rights reserved.
+License: BSD
+
+Files: external/aspnetwebstack/*
+Copyright: © Microsoft Corporation.  All rights reserved.
+License: Apache-2.0
+
+Files: external/aspnetwebstack/test/System.Web.Helpers.Test/TestFiles/xhtml11-flat.dtd
+Copyright: © 1998-2000 World Wide Web Consortium
+License: other
+ Permission to use, copy, modify and distribute the XHTML DTD and its
+ accompanying documentation for any purpose and without fee is hereby
+ granted in perpetuity, provided that the above copyright notice and
+ this paragraph appear in all copies.  The copyright holders make no
+ representation about the suitability of the DTD for any purpose.
+
+ It is provided "as is" without expressed or implied warranty.
+
+Files: external/cecil/*
+Copyright: © 2002-2003 Ximian, Inc. http://www.ximian.com
+           © 2003 Motus Technologies Inc. (http://www.motus.com)
+           © 2004-2006 Novell Inc. (http://www.novell.com)
+           © 2008-2011 Jb Evain
+           © 2008 Juerg Billeter
+License: MIT
+
+Files: external/cecil/symbols/pdb/Microsoft.Cci.Pdb/*
+Copyright: © Microsoft. All rights reserved
+License: Ms-PL
+
+Files: external/entityframework/*
+Copyright: © Microsoft Open Technologies, Inc.  All rights reserved.
+License: Apache-2.0
+
+Files: external/ikvm/openjdk/*
+       external/ikvm/openjdk/java/awt/image/BufferedImage.java
+       external/ikvm/openjdk/java/awt/image/IndexColorModel.java
+       external/ikvm/openjdk/java/awt/GraphicsConfiguration.java
+       external/ikvm/runtime/fdlibm/*
+       external/ikvm/openjdk/sun/font/StrikeCache.java
+       external/ikvm/openjdk/sun/font/FontManager.java
+Copyright: © 1994-1997, 2003, 2006-2008, 2010-2012 Oracle and/or its affiliates. All rights reserved
+           © 1996, 1997 Taligent, Inc. - All Rights Reserved
+           © 1996-1999 IBM Corp. - All Rights Reserved
+           © 1999-2001, 2004-2006, 2008, 2011 Free Software Foundation, Inc
+           © 2002-2007, 2009 Jeroen Frijters
+           © 2007 Red Hat, Inc
+           © 2009-2012 Volker Berlin (i-net software)
+           © 2010-2011 Karsten Heinrich (i-net software)
+License: GPL-2
+
+Files: external/ikvm/openjdk/java/util/zip/*
+       external/ikvm/openjdk/java/awt/color/ICC_ColorSpace.java
+       external/ikvm/openjdk/java/awt/image/*
+       external/ikvm/openjdk/icedtea/jce/
+       external/ikvm/openjdk/gnu/java/*
+       external/ikvm/openjdk/sun/java2d/SunCompositeContext.java
+Copyright: © 1999-2005, 2011 Free Software Foundation, Inc
+License: GPL-2+
+
+Files: external/ikvm/openjdk/java/lang/LangHelper.java
+       external/ikvm/openjdk/java/util/zip/ClassStubZipEntry.java
+       external/ikvm/openjdk/java/net/SocketUtil.java
+       external/ikvm/openjdk/java/lang/ref/Reference.java
+       external/ikvm/openjdk/java/lang/VMSystemProperties.java
+       external/ikvm/openjdk/java/lang/LangHelper.java
+       external/ikvm/openjdk/java/lang/reflect/ReflectHelper.java
+       external/ikvm/openjdk/sun/net/www/protocol/ikvmres/Handler.java
+       external/ikvm/openjdk/sun/font/*
+       external/ikvm/openjdk/sun/java2d/*
+       external/ikvm/openjdk/sun/jdbc/odbc/*
+       external/ikvm/openjdk/sun/security/*
+       external/ikvm/openjdk/sun/awt/Win32FontManager.java
+       external/ikvm/openjdk/sun/awt/windows/WPrinterJob.java
+       external/ikvm/openjdk/sun/awt/IkvmDataTransferer.java
+       external/ikvm/openjdk/sun/awt/AppContextDC.java
+       external/ikvm/openjdk/sun/awt/image/GifImageDecoder.java
+       external/ikvm/openjdk/sun/awt/image/JPEGImageDecoder.java
+       external/ikvm/openjdk/sun/awt/image/IkvmImageDecoder.java
+       external/ikvm/openjdk/sun/awt/image/ImageRepresentation.java
+       external/ikvm/openjdk/sun/nio/ch/SelectionKeyImpl.java
+       external/ikvm/openjdk/sun/nio/fs/NetFileSystemProvider.java
+       external/ikvm/openjdk/sun/nio/fs/DefaultFileSystemProvider.java
+       external/ikvm/openjdk/sun/nio/fs/DefaultFileTypeDetector.java
+       external/ikvm/openjdk/sun/nio/fs/NetFileSystem.java
+       external/ikvm/openjdk/sun/nio/fs/NetPath.java
+       external/ikvm/openjdk/sun/misc/Unsafe.java
+       external/ikvm/openjdk/sun/misc/MiscHelper.java
+       external/ikvm/openjdk/sun/print/PrintPeer.java
+       external/ikvm/openjdk/sun/print/UnixPrintServiceLookup.java
+       external/ikvm/openjdk/sun/print/Win32PrintJob.java
+       external/ikvm/openjdk/sun/print/Win32PrintServiceLookup.java
+       external/ikvm/openjdk/sun/management/FileSystemImpl.java
+       external/ikvm/openjdk/com/sun/imageio/plugins/jpeg/JPEGImageWriter.java
+       external/ikvm/openjdk/com/sun/imageio/plugins/jpeg/JPEGImageReader.java
+       external/ikvm/openjdk/com/sun/management/OperatingSystem.java
+       external/ikvm/openjdk/ikvm/awt/IkvmToolkit.java
+       external/ikvm/openjdk/ikvm/internal/*
+       external/ikvm/openjdk/ExtensionAttribute.java
+       external/ikvm/openjdk/GenerateSystemCore.cs
+       external/ikvm/classpath/sun/misc/Ref.java
+       external/ikvm/classpath/ikvm/*
+       external/ikvm/classpath/gnu/*
+       external/ikvm/runtime/*
+       external/ikvm/debugger/*
+       external/ikvm/ikvm/*
+       external/ikvm/ikvmstub/*
+       external/ikvm/ikvmc/*
+       external/ikvm/awt/*
+       external/ikvm/tools/*
+       external/ikvm/msbuild/*
+       external/ikvm/reflect/*
+       external/ikvm/native/*
+Copyright: © 2002-2013 Jeroen Frijters
+           © 2006-2013 Volker Berlin (i-net software)
+           © 2006 Active Endpoints, Inc
+           © 2010-2011 Karsten Heinrich (i-net software)
+           © 2011 Trevor Bell (Siemens Energy, Inc.)
+           © 2011 Marek Safar
+License: zlib/libpng
+
+Files: external/rx/*
+Copyright: Microsoft Open Technologies, Inc. All rights reserved
+License: Apache-2.0
+Comment:
+  This directory contains an import of Microsoft's Reactive Extensions project:
+  http://rx.codeplex.com/
+  Licensed under Apache-2.0: http://rx.codeplex.com/license
+
+Files: external/debian-snapshot/*
+Copyright: © 2005, 2007-2010 Mirco Bauer <meebey@debian.org>
+           © 2006-2007 Dylan R. E. Moonfire <debian@mfgames.com>
+           © 2006 Sebastian Dröge <slomo@debian.org>
+           © 2010, 2012 Jo Shields <directhex@apebox.org>
+License: GPL
+
+Files: support/*
+Copyright: © 1995-2006 Mark Adler
+           © 1995-2006 Jean-loup Gailly.
+           © 1998-2005 Gilles Vollant
+           © 2004-2006 Jonathan Pryor
+           © 2005 Daniel Drake
+           © 2005-2009 Novell, Inc.
+License: zlib/libpng
+
+Files: support/minizip/*
+Copyright: © 1990-2000 Info-ZIP.  All rights reserved.
+           © 1998-2005 Gilles Vollant
+License: zlib/libpng
+
+License: Apache-2.0
+ On Debian systems the full text of the Apache Software License 2.0 can be
+ found in the `/usr/share/common-licenses/Apache-2.0' file.
+
+License: LGPL-2
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation;
+ version 2 of the License.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
+
+ You should have received a copy of the GNU Library General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA  02110-1301 USA
+
+ On Debian systems the full text of the GNU Library General Public License can be
+ found in the `/usr/share/common-licenses/LGPL-2' file.
+
+License: LGPL-2.1
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation;
+ version 2.1 of the License.
+
+ This library is distributed in the hope that it will be useful, 
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public  
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+ On Debian systems the full text of the GNU Lesser General Public License can be
+ found in the `/usr/share/common-licenses/LGPL-2.1' file.
+
+License: GPL
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or   
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the    
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+ On Debian systems the full text of the GNU General Public License can be found
+ in the `/usr/share/common-licenses/GPL' file.
+
+License: GPL-2
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 2 of the License.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ On Debian systems the full text of the GNU General Public License can be found
+ in the `/usr/share/common-licenses/GPL-2' file.
+
+License: GPL-2+
+ Ths program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ Th is program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ On Debian systems the full text of the GNU General Public License can be found
+ in the `/usr/share/common-licenses/GPL-2' file.
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ 
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+License: zlib/libpng
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
+License: BSD
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+
+ 1. Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ 3. Neither the name of the <ORGANIZATION> nor the names of its contributors
+ may be used to endorse or promote products derived from this software
+ without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ DAMAGE.
+
+License: Ms-PL
+ This license governs use of the accompanying software. If you use the 
+ software, you accept this license. If you do not accept the license, do not 
+ use the software.
+
+ 1. Definitions
+ The terms "reproduce," "reproduction," "derivative works," and "distribution" 
+ have the same meaning here as under U.S. copyright law.
+ A "contribution" is the original software, or any additions or changes to 
+ the software.
+ A "contributor" is any person that distributes its contribution under this 
+ license.
+ "Licensed patents" are a contributor's patent claims that read directly on its 
+ contribution.
+
+ 2. Grant of Rights
+ (A) Copyright Grant- Subject to the terms of this license, including the 
+ license conditions and limitations in section 3, each contributor grants you 
+ a non-exclusive, worldwide, royalty-free copyright license to reproduce its 
+ contribution, prepare derivative works of its contribution, and distribute 
+ its contribution or any derivative works that you create.
+ (B) Patent Grant- Subject to the terms of this license, including the license 
+ conditions and limitations in section 3, each contributor grants you a 
+ non-exclusive, worldwide, royalty-free license under its licensed patents to 
+ make, have made, use, sell, offer for sale, import, and/or otherwise dispose 
+ of its contribution in the software or derivative works of the 
+ contribution in the software.
+
+ 3. Conditions and Limitations
+ (A) No Trademark License- This license does not grant you rights to use any 
+ contributors' name, logo, or trademarks.
+ (B) If you bring a patent claim against any contributor over patents that you 
+ claim are infringed by the software, your patent license from such 
+ contributor to the software ends automatically.
+ (C) If you distribute any portion of the software, you must retain all 
+ copyright, patent, trademark, and attribution notices that are present in the 
+ software.
+ (D) If you distribute any portion of the software in source code form, you may 
+ do so only under this license by including a complete copy of this license 
+ with your distribution. If you distribute any portion of the software in 
+ compiled or object code form, you may only do so under a license that complies 
+ with this license.
+ (E) The software is licensed "as-is." You bear the risk of using it. The 
+ contributors give no express warranties, guarantees or conditions. You may 
+ have additional consumer rights under your local laws which this license 
+ cannot change. To the extent permitted under your local laws, the contributors 
+ exclude the implied warranties of merchantability, fitness for a particular 
+ purpose and non-infringement.
+

@@ -1,0 +1,14 @@
+/usr/lib/pkgconfig/mono.pc
+/usr/lib/pkgconfig/mono-cairo.pc
+/usr/lib/pkgconfig/aspnetwebstack.pc
+/usr/lib/pkgconfig/cecil.pc
+/usr/lib/pkgconfig/system.web.extensions_1.0.pc
+/usr/lib/pkgconfig/system.web.extensions.design_1.0.pc
+/usr/lib/pkgconfig/system.web.mvc.pc
+/usr/lib/pkgconfig/system.web.mvc2.pc
+/usr/lib/pkgconfig/system.web.mvc3.pc
+/usr/lib/pkgconfig/wcf.pc
+/usr/lib/pkgconfig/mono.web.pc
+/usr/lib/pkgconfig/dotnet.pc
+/usr/lib/pkgconfig/dotnet35.pc
+/usr/lib/pkgconfig/reactive.pc

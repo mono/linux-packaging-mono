@@ -1,0 +1,8 @@
+tmp/
+patched/
+mono-*/
+monodoc-*/
+libmono*/
+files
+*.debhelper*
+*.substvars

@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+# On upgrades we need to repopulate the GAC and framework paths
+# to accomodate any changes in layout
+#
+# We only need to do this on upgrade; on first configure we know
+# that any GAC libraries will call gac-install-package later.
+if [ -n "$2" ]; then
+    # Install the GAC
+    if [ -x /usr/share/cli-common/gac-install ]; then
+	/usr/share/cli-common/gac-install mono
+    fi
+    # Install any framework libs
+    if [ -x /usr/share/cli-common/framework-install ]; then
+	/usr/share/cli-common/framework-install mono
+    fi
+fi
+
+# Update the alternatives
+update-alternatives \
+	--install /usr/bin/cli-gacutil global-assembly-cache-tool /usr/bin/gacutil 10 \
+	--slave /usr/share/man/man1/cli-gacutil.1.gz cli-gacutil.1.gz /usr/share/man/man1/gacutil.1.gz
+
+#DEBHELPER#

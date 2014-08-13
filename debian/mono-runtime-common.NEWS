@@ -1,0 +1,161 @@
+mono (2.10.1-1) experimental; urgency=low
+
+  * Mono 2.10
+    + SGen Precise Stack Scanning
+    + Enhanced SIMD with new methods for Vector data type conversions and
+      swapping elements in vectors
+    + ASP.NET MVC 3.0 (not included, only supported)
+    + The C# Interactive Shell can now be used as shebang:
+      #!/usr/bin/csharp
+  * Complete Announcement of Mono 2.10 (vs Mono 2.8):
+    http://www.mono-project.com/Release_Notes_Mono_2.10
+
+  * Mono 2.8
+    + SGen Garbage Collector
+    + .NET 4.0 runtime
+    + C# 4.0 compiler
+    + ASP.NET 4.0
+    + Managed Extensibility Framework (MEF)
+    + System.Data.Services.Client (OData)
+    + glib was replaced with eglib
+    + Removed .NET 1.1 runtime
+    + Removed libraries:
+      - ByteFX.Data
+      - FirebirdSql.Data.Firebird
+      - Microsoft.JScript
+      - Microsoft.Vsa
+      - Mono.Data
+      - Mono.Data.SqliteClient
+      - Mono.Data.SybaseClient
+      - Mono.Data.TdsClient
+      - Mono.GetOptions
+  * Complete Announcement of Mono 2.8 (vs Mono 2.6):
+    http://www.mono-project.com/Release_Notes_Mono_2.8
+
+  * Mono 2.6.7
+    + ASP.NET MVC 2.0
+  * Complete Announcement of Mono 2.6.7 (vs Mono 2.6):
+    http://www.mono-project.com/Release_Notes_Mono_2.6.7
+
+  * Mono 2.6
+    + Soft debugger
+    + Co-routine framework Mono.Tasklets
+    + Auto-completion for the csharp shell
+    + LINQ to SQL
+    + Enhanced XBuild
+    + Mono.Simd for AMD64
+    + Verifier and Sandbox (used by Moonlight)
+    + Debugging support for GDB
+  * Complete Announcement of Mono 2.6 (vs Mono 2.4):
+    http://www.mono-project.com/Release_Notes_Mono_2.6
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 15 Mar 2011 21:21:51 +0100
+
+mono (2.4-1) unstable; urgency=low
+
+  * Mono 2.4 ships a lot of goodies:
+    + SIMD support in Mono.
+    + No expensive polls in the threading implementation any longer.
+    + Speed-up garbarge collection on multi-core systems.
+    + Optimized XPath (using 15% less memory).
+    + Faster DateTime.TryParse implementation (by not using try/catch).
+    + Support for precompiled ASP.NET pages.
+  * Complete Announcement of Mono 2.4 (vs Mono 2.2):
+    http://www.mono-project.com/Release_Notes_Mono_2.4
+
+  * Mono 2.2 also ships with lovely things:
+    + The tree-based code generation engine in the JIT was replaced with the
+      Linear IL engine, which allows better optimizations.
+    + Generic sharing is now used in all cases (reduces memory usage).
+    + Generic sharing is now supported on ARM.
+    + Support of full Ahead of Time Compilation.
+    + New PerformanceCounters implementation that allows to monitor the runtime
+      internals. Including the GUI tool "mperfmon" to view them.
+    + Interactive shell called "csharp" that allows to execute C#
+      expressions inside a shell. There is also a GUI version available
+      called "gsharp".
+    + Live Inspection. You can attach using the csharp shell to a
+      running process and run code inside to debug things.
+    + The C# compiler will now optimize empty strings ("") away with
+      String.Empty (which reduces memory usage).
+    + The Regular Expressions engine has been rewritten being more efficient.
+      At the same time compiled regex are also supported now.
+    + ASP.NET supports now new routing handlers needed by ASP.NET MVC.
+    + In the WinForms implementation were almost 200 bugs fixed (since Mono 2.0)
+  * Complete Announcement of Mono 2.2 (vs Mono 2.0):
+    http://www.mono-project.com/Release_Notes_Mono_2.2
+ 
+  * Mono 2.0 shipped with:
+    + A console debugger (mdb) part of the mono-debugger package.
+    + WinForms 2.0 API is complete.
+    + WinForms's WebBrowser was implemented using Mozilla's Gecko HTML
+      rendering engine.
+    + WinForms now supports international keyboard input through XIM.
+    + Performance of locking (used by threading) was significally improved.
+    + New debug parameter "--debug=cast" which print outs the types in for
+      InvalidCastException.
+    + The C# compiler supports now expression trees (for LINQ) which completes
+      the C# 3.0 support.
+    + The C# compiler is now dual-licensed under MIT/X11 and GPLv2 (only).
+    + LINQ and LINQ to XML are now complete.
+    + Big Arrays for 64bit architectures are now support (but have to be
+      compiled using the --enable-big-arrays configure switch)
+  * Complete Announcement of Mono 2.0:
+    http://www.mono-project.com/Release_Notes_Mono_2.0
+
+ -- Mirco Bauer <meebey@debian.org>  Fri, 10 Apr 2009 00:58:39 +0200
+
+mono (1.2.2.1-1) unstable; urgency=low
+
+  * Here we go, Mono 1.2 is now official stable and released!
+
+  * Mono 1.2 brings a lot of new features in:
+    - The C# 2.0 compiler is now stable, and the ECMA standard was updated, so
+      it's safe to use C# 2.0 (gmcs) now. _But_ the 2.0 API is not complete, thus
+      there are classes/methods still missing.
+    - Mono is now officially supported on the following architectures:
+      + 32bit: i386, powerpc, arm, s390, sparc.
+      + 64bit: amd64, s390x, ia64.
+      The debian packages are available for: i386, powerpc arm, amd64 and ia64.
+      Packages for s390, s390x, sparc and kfreebsd-i386 are under review, when
+      the ports are prooved to be stable enough, we will include them.
+    - Complete System.Windows.Forms 1.1 API
+      This version is not using wine! SWF runs natively on Linux (X11 driver)
+      using an own implementation (libgdiplus).
+    - File System Watching API now supports inotify.
+
+  * Complete Announcement of Mono 1.2 (vs Mono 1.0):
+    http://www.go-mono.com/archive/1.2/
+    
+  * Announcement of Mono 1.2.1:
+    http://www.go-mono.com/archive/1.2.1/
+ 
+  * Announcement of Mono 1.2.2:
+    http://www.go-mono.com/archive/1.2.2/
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Wed, 6 Nov 2006 23:00:28 +0200
+
+mono (0.96-1) unstable; urgency=low
+
+  * It has been quite a while since the last Mono release in Debian and
+    we feel that it's time to announce few things changed in the
+    meantime:
+
+  - dependencies management and debhelper integration - the new
+    mono-utils package contains scripts to create and manage dependencies
+    between the .NET library packages.  They work in a similar way to the
+    .shlibs system in Debian. For more details, see dh_makenetlibs(1),
+    dh_netdeps(1) and monodoc's rules file as example.
+    Another script available now is dh_installxsp which will install
+    snippets of configuration files for XSP packages (HTML/ASP.NET server
+    and Apache module).
+
+  - the GAC - except of mscorlib.dll, all DLLs are moved into
+    /usr/share/dotnet hierarchy and are now loaded using the GAC (Global
+    Assembly Cache) method. This also makes sane versioning possible,
+    similar to SONAME handling on native shared libraries.
+ 
+  - see README.Debian for further details about changes and the current
+    .NET Debian policy
+
+ -- Debian Mono Group <pkg-mono-group@lists.alioth.debian.org>  Sat, 19 Jun 2004 14:39:08 +0200

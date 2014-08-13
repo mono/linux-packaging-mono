@@ -1,0 +1,7 @@
+debian/tmp/usr/bin/mprof-report
+debian/tmp/usr/bin/pedump
+debian/tmp/usr/bin/peverify
+debian/tmp/usr/bin/monodis		/usr/bin/
+debian/tmp/usr/bin/monograph
+debian/tmp/usr/bin/mono-find-provides
+debian/tmp/usr/bin/mono-find-requires

@@ -1,0 +1,9 @@
+#include "libmonosgen-2.0-1.symbols"
+ mono_exc_esp_offset@VER_1 3.2.1+dfsg
+ mono_read16@VER_1 3.2.1+dfsg
+ mono_read32@VER_1 3.2.1+dfsg
+ mono_read64@VER_1 3.2.1+dfsg
+ mono_arch_emit_epilog_sub@VER_1 3.2.1+dfsg
+ mono_arch_emit_this_vret_args@VER_1 3.2.1+dfsg
+ mono_arch_get_inst_for_method@VER_1 3.2.1+dfsg
+

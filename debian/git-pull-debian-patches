@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+CURRENT_BRANCH=$(git branch -l | egrep '^\* ' | cut -d ' ' -f 2)
+DEBIAN_PATCHES=$(git branch -lr | egrep "$CURRENT_BRANCH-patches/")
+for DEBIAN_PATCH in $DEBIAN_PATCHES; do
+	git checkout ${DEBIAN_PATCH/origin\//}
+	git pull
+done 
+git checkout $CURRENT_BRANCH

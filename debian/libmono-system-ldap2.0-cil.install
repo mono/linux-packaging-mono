@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/mono/gac/System.DirectoryServices/2.0.*/
+debian/tmp/usr/lib/mono/2.0/System.DirectoryServices.dll
+debian/tmp/usr/lib/mono/gac/System.DirectoryServices.Protocols/2.0.*/
+debian/tmp/usr/lib/mono/2.0/System.DirectoryServices.Protocols.dll

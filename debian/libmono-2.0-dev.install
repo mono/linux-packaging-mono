@@ -1,0 +1,5 @@
+usr/lib/libmono-2.0.so
+usr/lib/libmono-2.0.a
+usr/lib/pkgconfig/mono-2.pc
+usr/include/
+debian/mono-archs.make /usr/share/mono/

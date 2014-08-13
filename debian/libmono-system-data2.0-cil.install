@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/mono/gac/System.Data/2.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/System.Data.DataSetExtensions/3.5.0.0__*/
+debian/tmp/usr/lib/mono/2.0/System.Data.dll
+debian/tmp/usr/lib/mono/2.0/System.Data.DataSetExtensions.dll

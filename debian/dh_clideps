@@ -1,0 +1,631 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+dh_clideps - calculates CLI (.NET) dependencies
+
+=cut
+
+use strict;
+use Cwd;
+use File::Find;
+use File::Temp;
+use Debian::Debhelper::Dh_Lib;
+
+#eval 'use Debian::Debhelper::Dh_Lib';
+#print "You need to install the debhelper package in order to use this program!" if $@;
+
+=head1 SYNOPSIS
+
+B<dh_clideps> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+dh_clideps is a debhelper program that is responsible for generating the
+${cli:Depends} substitutions and adding them to substvars files.
+
+The program will look at .dll/.exe and .config files in your package, and
+will use the embedded dependency information to generate a dependency
+string on assembly and shared libs packages, including the setting of
+version ranges (as declared by the shlibs/clilibs files of the used
+packages). The dependency on a certain CLR (Common Language Runtime)
+version will be also added to the final variable.
+
+Note: the dependencies on shared libraries may be not resolved correctly
+if there are no .config files associated with the the .exe/.dll file
+which refers to the particular shared library (by its SONAME).
+
+If you use this program, your package should build-depend on cli-common-dev
+(>= 0.4.0).
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-d>
+
+Attempt to predict and avoid duplicates that may appear if you package
+both, native shared libraries and DLL assemblies in one package.
+The list of possibly duplicating candidates is expected to be in the
+variable shlib:Depends from debian/package.substvars.
+
+=item B<-r>
+
+Don't set a strong versioned dependency on mono-runtime or other CLR packages.
+This option can be used to specify a relaxed dependency on the VM/CLR
+by-hand in the control file, eg. "mono-runtime | cli-runtime".
+
+=item B<-l>directory[:directory:directory:..]
+
+Before mondis is run, MONO_GAC_PREFIX and MONO_PATH are set to the specified directory (or
+directories -- separate with colons). This is useful for multi-binary packages where a library is
+built in one package and another package contains binaries linked against said library. Relative
+paths will be made absolute for the benefit of monodis.
+
+Note that the directory given should be the complete or relative path to a directory that contains
+the library. See example below.
+
+=item B<internal-mono>                             
+
+Uses the mono runtime in . (used for bootstrapping mono packages)  
+
+=head1 EXAMPLES
+
+Suppose that your source package produces libfoo1.0-cil and libbar1.0-cil
+binary packages.
+In your rules file, first run dh_makeclilibs, then dh_clideps:
+  (MONO_GAC_PREFIX example)
+  dh_makeclilibs -V
+  dh_clideps -l debian/libfoo1.0-cil/usr:debian/libbar1.0-cil/usr
+or
+  (MONO_PATH example)
+  dh_clideps -l debian/foo-application/usr/lib/foo-application
+or
+  (MONO_GAC_PREFIX example)
+  dh_clideps -l debian/tmp/usr
+
+=cut
+
+# gar, debhelper 7.1 defines -d for all scripts already :(
+init(options => {
+#  "d" => \$dh{D_FLAG},
+  "r" => \$dh{R_FLAG},
+  "l=s", => \$dh{L_PARAMS},
+  "internal-mono"  => \$dh{INTERNAL_MONO_FLAG},
+});
+
+my $clr;
+my $cli = '/usr/bin/cli';
+my $cli_version = `$cli --version 2>&1`;
+my $cli_parser;
+my $cli_parser_paths;
+my $pwd = `pwd`;
+chomp $pwd;
+
+my $mono_gac_prefix = "";
+my $mono_path = "";
+if ($dh{L_PARAMS}) { 
+  my @mono_paths = ();
+  my @mono_gac_prefixes = ();
+  # Add to existing paths, if set.
+  push(@mono_gac_prefixes, $ENV{'MONO_GAC_PREFIX'}) if exists $ENV{'MONO_GAC_PREFIX'};
+  push(@mono_paths,        $ENV{'MONO_PATH'}) if exists $ENV{'MONO_PATH'};
+  foreach (split(/:/, $dh{L_PARAMS})) {
+    # Force the path absolute.
+    my $full_path;
+    if (m:^/:) {
+      $full_path = $_;
+    } else {
+      $full_path = getcwd()."/$_";
+    }
+    if (-d "$full_path/lib/mono/gac") {
+      # it's a GAC prefix
+      push(@mono_gac_prefixes, $full_path);
+    } else {
+      # it's a Mono PATH
+      push(@mono_paths, $full_path);
+    }
+  }
+  $mono_gac_prefix .= ":" . join(':', @mono_gac_prefixes);
+  $mono_path       .= ":" . join(':', @mono_paths);
+} else {
+  $mono_gac_prefix = $ENV{'MONO_GAC_PREFIX'} if exists $ENV{'MONO_GAC_PREFIX'};
+  $mono_path       = $ENV{'MONO_PATH'} if exists $ENV{'MONO_PATH'};
+}
+
+if (defined($dh{INTERNAL_MONO_FLAG}) ||
+    (defined($ARGV[0]) && $ARGV[0] eq "internal-mono")) {
+    $clr = "mono";
+    $cli_parser = "$pwd/debian/tmp/usr/bin/monodis";
+    $cli_parser_paths = "LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib MONO_PATH=$mono_path:$pwd/debian/tmp/usr/lib/mono/1.0:$pwd/debian/tmp/usr/lib/mono/2.0 MONO_GAC_PREFIX=$mono_gac_prefix ";
+    $cli_version = `LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib $pwd/debian/tmp/usr/bin/mono --version 2>&1`;
+    verbose_print("Will use built Mono (debian/tmp/usr/bin/monodis) for CIL parsing.");
+} elsif (-x "/usr/bin/monodis") {
+    $clr = "mono";
+    $cli_parser = "/usr/bin/monodis";
+    $cli_parser_paths = "MONO_PATH=$mono_path MONO_GAC_PREFIX=$mono_gac_prefix ";
+    verbose_print("Will use Mono (/usr/bin/monodis) for CIL parsing.");
+} elsif (-x "/usr/bin/ildasm") {
+    $clr = "pnet";
+    $cli_parser = "/usr/share/cli-common/ildasm-monodis";
+    verbose_print("Will use Portable.NET (/usr/bin/ildasm) for CIL parsing.");
+} else {
+    error("Could not find a CIL disassembler, aborting.");
+}
+
+{
+  local $/="";
+  open(FILE, 'debian/control');
+  my $srcblock = <FILE>;
+  close(FILE);
+  if ($srcblock =~ m/Build-Depends(?:\-Indep)?\:(?:.*\n\s+)*.*cli\-common\-dev\s*\(>=\s*([^\)]+)\)/ &&
+      system("dpkg", "--compare-versions", $1, ">=", "0.4.4") != 0) {
+    warning("Warning! No Build-Depends(-Indep) on cli-common-dev (>= 0.4.4)!");
+  }
+}
+
+if (!defined $cli_version || $cli_version eq "" ) {
+    warning("Warning! No CLR is installed. (Probably forgot to Build-Depend on cli-virtual-machine.)");
+} else {
+  if ($clr eq "mono") {
+    if ($cli_version =~ /(mint|version)\ ([\d\.]+)/) {
+      $cli_version = "$2";
+    } else {
+      error("Unable to parse Mono version out of \"$cli_version\".");
+    }
+  } elsif ($clr eq "pnet") {
+    if ($cli_version =~ /ILRUN\ ([\d\.]+)/) {
+      $cli_version = "$1";
+    } else {
+      error("Unable to parse Portable.NET version out of \"$cli_version\".");
+    }
+  } else {
+    error("Unable to detect CLR, aborting.");
+  }
+}
+
+
+# Cleaning the paths given on the command line
+foreach (@ARGV) {
+    s#/$##;
+    s#^/##;
+}
+
+my $fh;
+
+verbose_print("Loading clilibs...");
+my %clilibdata;
+open($fh, "cat /var/lib/dpkg/info/*.clilibs debian/*/DEBIAN/clilibs 2> /dev/null |");
+while (<$fh>) {
+    /(\S+)\s+(\S+)\s+(\w.*)\n?/;
+    $clilibdata{"$1/$2"} = $3;
+}
+close($fh);
+
+
+verbose_print("Loading shlibs...");
+my %shlibdata;
+open($fh, "cat /var/lib/dpkg/info/*.shlibs $pwd/debian/shlibs.local $pwd/debian/*/DEBIAN/shlibs 2> /dev/null |");
+while (<$fh>) {
+  /(\S+)\s+(\S+)\s+(\w.*)\n?/;
+  my ($soname, $soversion, $dependency);
+  #chomp;
+  #my($soname, $soversion, $dependency) = split(/\s+/, $_, 3);
+  $soname = $1;
+  $soversion = $2;
+  $dependency = $3;
+  $shlibdata{"$soname.so.$soversion"} = $dependency;
+}
+close($fh);
+
+our $needs_net_1_0;
+our $needs_net_2_0;
+our $needs_net_2_1;
+our $needs_net_4_0;
+
+foreach my $package (@{$dh{DOPACKAGES}}) {
+  my $tmp = tmpdir($package);
+  my %refs = ( depends => [],
+               recommends => [],
+               suggests => [] );
+  my $found_exe = 0;
+  $needs_net_1_0 = 0;
+  $needs_net_2_0 = 0;
+  $needs_net_2_1 = 0;
+  $needs_net_4_0 = 0;
+  
+  # for idempotency
+  delsubstvar($package, "cli:Depends");
+  delsubstvar($package, "cli:Suggests");
+  delsubstvar($package, "cli:Recommends");
+
+  # find binaries
+  find (sub {
+    return unless -f && !-l && /\.(exe|dll)$/;
+    my $file = $_;
+    if (/\.exe$/) {
+      $found_exe = 1;
+    }
+
+    verbose_print("Package: $package Assembly: $file");
+        
+    my %shlibRefs = resolveShlibRefs($package, $file);
+    push(@{$refs{depends}},    @{$shlibRefs{depends}});
+    push(@{$refs{recommends}}, @{$shlibRefs{recommends}});
+    push(@{$refs{suggests}},   @{$shlibRefs{suggests}});
+
+    my %clilibRefs = resolveClilibRefs($package, $tmp, $file);
+    push(@{$refs{depends}},    @{$clilibRefs{depends}});
+    push(@{$refs{recommends}}, @{$clilibRefs{recommends}});
+    push(@{$refs{suggests}},   @{$clilibRefs{suggests}});
+  }, $tmp);
+
+  $refs{depends}    = filterDuplicates($package, $refs{depends});
+  $refs{recommends} = filterDuplicates($package, $refs{recommends});
+  $refs{suggests}   = filterDuplicates($package, $refs{suggests});
+
+  my $vm_ref = "";
+  if (!defined($dh{R_FLAG}) && $found_exe) {
+    if ($clr eq "mono") {
+      if ($needs_net_4_0) {
+        $vm_ref = "mono-runtime (>= 2.10.1), ";
+      } elsif ($needs_net_2_1) {
+        $vm_ref = "mono-runtime (>= 1.2.6), ";
+      } elsif ($needs_net_2_0) {
+        $vm_ref = "mono-runtime (>= 1.1.8.1), ";
+      } elsif ($needs_net_1_0) {
+        $vm_ref = "mono-runtime (>= 1.0), ";
+      } else {
+        $vm_ref = "mono-runtime (>= $cli_version), ";
+      }
+    } elsif ($clr eq "pnet") {
+      $vm_ref = "pnet-interpreter (>= $cli_version), ";
+    }
+  }
+  
+  my $dh_ref = "";
+  if (-f "$tmp/usr/share/cli-common/packages.d/$package.installcligac") {
+    # this package uses late GAC install, thus we need cli-common at package install time
+    if (-f "debian/cligacpolicy" || -f "debian/$package.cligacpolicy") {
+      # if this package uses dh_cligacpolicy then we need 0.5.4 for the policy-remove script in .postrm
+      # and 0.5.6 to get a working .postrm script (tried also to remove on purge)
+      $dh_ref = "cli-common (>= 0.5.6), ";
+    } else {
+      # we still need at least 0.5.1, as older versions silently missed installing policy files
+      $dh_ref = "cli-common (>= 0.5.1), ";
+    }
+  }
+  $vm_ref .= $dh_ref;
+  
+    #$deps .= join(", ", "",
+    #    sort {
+    #        # beautify the sort order, requested by meebey
+    #        my $apkg;
+    #        $a =~ /^\S+/;
+    #        $apkg=$&;
+    #        $b =~ /^\S+/;
+    #        if($apkg eq $&) {
+    #           return -1 if( ($a=~/>=/) && ($b=~/<</));
+    #           return 1 if( ($b=~/>=/) && ($a=~/<</));
+    #        }
+    #        $a cmp $b;
+    #    } (keys %depkgsFiltered)
+    #);
+    
+  @{$refs{depends}}    = sort(@{$refs{depends}});
+  @{$refs{recommends}} = sort(@{$refs{recommends}});
+  @{$refs{suggests}}   = sort(@{$refs{suggests}});
+
+  addsubstvar($package, "cli:Depends",    $vm_ref . join(", ", @{$refs{depends}}));
+  addsubstvar($package, "cli:Recommends", join(", ", @{$refs{recommends}}));
+  addsubstvar($package, "cli:Suggests",   join(", ", @{$refs{suggests}}));
+}
+
+sub filterDuplicates {
+  my $package = shift;
+  my $packages = shift;
+  
+  my %packagesFiltered;
+  for (@{$packages}) {
+    # filter undef, empties, dups and don't depend on ourself package
+    if (!$_) {
+      next;
+    }
+    
+    /^(\S+)/;
+    if ($1 &&
+        $1 ne $package) {
+      $packagesFiltered{$_} = 1;
+    }
+  }
+
+  # now filter the dupes coming from shlibs
+  if (defined($dh{D_FLAG})) {
+    my $fh;
+    if (open($fh, "< $pwd/debian/$package.substvars" )) {
+      while (<$fh>) {
+        if (/^shlibs:Depends=(.*)\n?/) {
+          for (split(/\s*,\s*/, $1)) {
+            delete $packagesFiltered{$_};
+          }
+        }
+      }
+      close($fh);
+    } else {
+      verbose_print("Could not read $pwd/debian/$package.substvars");
+    }
+  }
+  
+  return [ keys %packagesFiltered ];
+}
+
+sub loadDllMap {
+   my $filename = shift;
+   our $dllmapdata = shift;
+   if (!-f $filename) {
+     verbose_print("loadDllMap(): DLL map $filename not found, ignoring...");
+     return;
+   }
+   
+   use XML::DOM;
+   my $parser = new XML::DOM::Parser;
+   my $doc = $parser->parsefile($filename, whitespace => 'strip');
+   my $root = $doc->getDocumentElement();
+   my @mapentries = $root->getElementsByTagName("dllmap");
+   foreach my $mapentry (@mapentries) {
+     my $dll = $mapentry->getAttribute("dll");
+     my $target = $mapentry->getAttribute("target");
+     my $os = $mapentry->getAttribute("os");
+     my $valid = 1;
+     if ($os) {
+       $valid = ($os =~ m/^!/);
+       $os =~ s/^!//;
+       foreach (split(/,/, $os)) {
+         if ($_ eq "linux") {
+           $valid = !$valid;
+           last;
+         }
+       }
+     }
+     if ($valid) {
+       verbose_print("DLL map: '$dll' target: '$target'");
+       $dllmapdata->{$dll} = $target;
+     }
+   }
+}
+
+sub loadOverrides {
+   my $package = shift;
+   my $overridedata = shift;
+   
+   # load clideps overrides
+   verbose_print("Loading clideps-override for $package...");
+   my $fh;
+   open($fh, "cat $pwd/debian/$package.clideps-override 2> /dev/null |");
+   while (<$fh>) {
+     /(\S+)\s+(\S+)(?:\s+(\(\S+\s+\S+\)))?\n?/;
+     my ($type, $package, $version);
+     $type = $1;    
+     $package = $2; 
+     $version = $3 if defined($3);
+     if ($version) {
+       $overridedata->{$package} = $type." ".$version;
+     } else {
+       $overridedata->{$package} = $type;
+     }
+   }
+   close($fh);
+}
+
+sub resolveOverride {
+  my $package = shift;
+  my $pkgref = shift;
+  my %ret = ( depends => undef,
+              recommends => undef,
+              suggests => undef );
+
+  my $type = "depends";
+  my $newpkgref = $pkgref;
+  $newpkgref =~ m/(\S+)(?:\s+(\(\S+\s+\S+\)))?/;
+  my $pkgname = $1;
+  my $ver = $2;
+  # hack for libc6,
+  # for ia64 and alpha the package name is libc6.1,
+  # for kfreebsd-i386 and kfreebsd-amd64 it is libc0.1
+  if ($pkgname =~ m/^libc[06]/) {
+    $newpkgref = "libc6 $ver | libc6.1 $ver | libc0.1 $ver";
+  }
+ 
+  my %overridedata;
+  loadOverrides($package, \%overridedata);
+  if (defined($overridedata{$pkgname})) {
+    verbose_print("Found clideps-override: $pkgname for: $package");
+
+    my $override = $overridedata{$pkgname};
+    $override =~ m/(\S+)(?:\s+(\(\S+\s+\S+\)))?/;
+    if ($1 eq "suggests" ||
+        $1 eq "recommends") {
+      $type = $1;
+    } elsif ($1 eq "ignores") {
+    } else {
+      warning("Warning: unknown override type: $1 in: '$override' for: $package!");
+    }
+       
+    if (defined($2)) {
+      $newpkgref = "$pkgname $2";
+    } else {
+      $newpkgref = $pkgref;
+    }
+  }
+  verbose_print("resolved pkgref: $pkgref to $type: $newpkgref");
+  $ret{$type} = $newpkgref;
+  
+  return %ret; 
+}
+
+sub resolveClilibRefs {
+  my $package = shift;
+  my $tmp = shift;
+  my $assembly_filename = shift;
+  my %ret = ( depends => [],
+              recommends => [],
+              suggests => [] );
+
+  my (undef, $tmpfile) = File::Temp::tempfile("/tmp/".basename($0).".XXXX", UNLINK => 1);
+  my $command = "LANG=C $cli_parser_paths MONO_GAC_PREFIX=\$MONO_GAC_PREFIX:$tmp/usr $cli_parser --assemblyref $assembly_filename 2>&1 > $tmpfile";
+  verbose_print("running CLI parser command: $command");
+  
+  system($command);
+  if ($?) {
+    my $output;
+    {
+      local *F;
+      open(F, $tmpfile);
+      local $/;
+      $output = <F>;
+      close(F);
+    }
+    error("cli_parser call failed: '".$command."' rc: $? output: $output");
+    return;
+  }
+        
+  my ($ver, $name, $key);
+  local *F;
+  open(F, $tmpfile);
+  while (<F>) {
+    $ver  = $1 if /Version=(.*)\n/;
+    $name = $1 if /Could not find assembly ([^,]+),/;
+    $name = $1 if /Name=(.*)\n/;
+    $ver  = "$1.$2" if /Major\/Minor:\s*(\d+),(\d+)/;
+    $ver  .= ".$1.$2" if /Build:\s*(\d+),(\d+)/;
+
+    if (/0x\S+:.([ABCDEF0123456789 ]+)\n/ || /Token:\s*(\w+)/) {
+      $key = $1;
+      $key =~ s/\ //g;
+      $key = $ver . "__" . lc($key);
+      my $compat = "$name/$key";
+      if (!defined($clilibdata{$compat})) {
+        warning("Warning: No Debian dependency data for $name ($key)!");
+      } else {
+        my $pkgref = $clilibdata{$compat};
+        my %overriddenRef = resolveOverride($package, $pkgref);
+        push(@{$ret{depends}},    $overriddenRef{depends});
+        push(@{$ret{recommends}}, $overriddenRef{recommends});
+        push(@{$ret{suggests}},   $overriddenRef{suggests});
+      }
+
+      if ($name eq "mscorlib") {
+        if ($ver eq "1.0.5000.0") {
+          $needs_net_1_0 = 1;
+        } elsif ($ver eq "2.0.3600.0") {
+          $needs_net_2_0 = 1;
+        } elsif ($ver eq "2.0.0.0") {
+          $needs_net_2_0 = 1;
+        } elsif ($ver eq "2.1.0.0") {
+          $needs_net_2_1 = 1;
+        } elsif ($ver eq "4.0.0.0") {
+          $needs_net_4_0 = 1;
+        } else {
+          warning("Warning: Unknown mscorlib version: $ver!");
+        }
+      } 
+    }
+  }
+  close(F);
+  
+  return %ret;
+}
+
+sub resolveShlibRefs {
+   my $package = shift;
+   my $assembly_filename = shift;
+   my $config_filename = $assembly_filename.".config";
+   my %ret = ( depends => [],
+               recommends => [],
+               suggests => [] );
+   if (-r $config_filename) {
+     verbose_print("Found DLL map: $config_filename");
+   } else {
+     verbose_print("Found no specific DLL map, but resolving modulerefs anyway");
+   }
+
+   # load dll maps
+   verbose_print("Loading DLL maps for: $assembly_filename...");
+   my %dllmapdata;
+   loadDllMap("/etc/mono/config", \%dllmapdata);
+   loadDllMap("$pwd/debian/tmp/etc/mono/config", \%dllmapdata);
+   loadDllMap($config_filename, \%dllmapdata);
+   
+   # parse modulerefs
+   my (undef, $tmpfile) = File::Temp::tempfile("/tmp/".basename($0).".XXXX", UNLINK => 1);
+   my $command = "LANG=C $cli_parser_paths $cli_parser --moduleref $assembly_filename 2>&1 > $tmpfile";
+   
+   system($command);
+   if ($?) {
+     my $output;
+     {
+       local *F;
+       open(F, $tmpfile);
+       local $/;
+       $output = <F>;
+       close(F);
+     }
+     error("cli_parser call failed: '".$command."' rc: $? output: $output");
+     return;
+   }
+   
+   local *F;
+   open(F, $tmpfile);
+   while (<F>) {
+     my $name = $1 if /\d+:\s+(.*)\n/;
+     if (!defined($name)) {
+       next;
+     }
+     my $target = $dllmapdata{$name};
+     
+     if (defined($target)) {
+       $target = basename($target);
+       verbose_print("Resolved moduleref via DLL map: $name to: $target");
+     } elsif (defined($shlibdata{$name})) {
+       verbose_print("Resolved moduleref via direct match in shlibs");
+     } else {
+       warning("Warning: Could not resolve moduleref: $name for: $assembly_filename!");
+       next;
+     }
+ 
+     my $pkgref;
+     if (defined($target) && defined($shlibdata{$target})) {
+       $pkgref = $shlibdata{$target};
+     } elsif (defined($shlibdata{$name})) {
+       $pkgref = $shlibdata{$name};
+     } elsif (defined($target) && defined($shlibdata{$target.".0"})) {
+       # for DLL maps that have an unversioned library as target
+       $pkgref = $shlibdata{$target.".0"};
+     } else {
+       warning("Warning: Missing shlibs entry: $target or $name for: $assembly_filename!");
+       next;
+     }
+
+     my %overriddenRef = resolveOverride($package, $pkgref);
+     push(@{$ret{depends}},    $overriddenRef{depends});
+     push(@{$ret{recommends}}, $overriddenRef{recommends});
+     push(@{$ret{suggests}},   $overriddenRef{suggests});
+   } 
+   close(F);
+   
+   return %ret;
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>
+
+This program is a part of cli-common-dev.
+
+=head1 AUTHOR
+
+Mirco Bauer <meebey@meebey.net>, Eduard Bloch <blade@debian.org>,
+partialy based on code from Brendan O'Dea <bod@debian.org> and
+Joey Hess <joeyh@debian.org>.
+
+=cut

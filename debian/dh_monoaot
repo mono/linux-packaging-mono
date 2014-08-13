@@ -1,0 +1,87 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+dh_monoaot - generates AOT images for assemblies
+
+=cut
+
+use strict;
+use File::Find;
+use Debian::Debhelper::Dh_Lib;
+
+=head1 SYNOPSIS
+
+B<dh_monoaot> [S<I<debhelper options>>] [B<-n>]
+
+=head1 DESCRIPTION
+
+dh_monoaot is a debhelper program that is responsible for
+generating AOT images at package install time.
+
+It also automatically generates the postinst and prerm commands needed
+to generate AOT images. See L<dh_installdeb(1)> for an
+explanation of how this works.
+
+This is based on L<dh_installcligac(1)> in the cli-common package.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-n>, B<--noscripts>
+
+Do not modify postinst/prerm scripts.
+
+=back
+
+=head1 NOTES
+
+Note that this command is not idempotent. "dh_clean -k" should be called
+between invocations of this command. Otherwise, it may cause multiple
+instances of the same text to be added to maintainer scripts.
+
+=cut
+
+init();
+
+foreach my $package (@{$dh{DOPACKAGES}}) {
+  my $tmp = tmpdir($package);
+  my @files;
+  
+  # find binaries
+  find (sub {
+    return unless -f and /\.(exe|dll)$/;
+    return unless $File::Find::dir =~ m!^$tmp/usr/lib!;
+    
+    my $fullfilename = $File::Find::name;
+    
+    my $filename = $fullfilename;
+    $filename =~ s/^$tmp//;
+    
+    verbose_print("fullfilename: $fullfilename");
+    verbose_print("filename: $filename");
+    push(@files, $filename);
+  }, $tmp);
+  
+  if (! $dh{NOSCRIPTS}) {
+    foreach my $file (@files) {
+      autoscript($package, "postinst", "postinst-monoaot",
+                 "s!#FILE#!$file!");
+      autoscript($package, "prerm", "prerm-monoaot",
+                 "s!#FILE#!$file.so!");
+    }
+  }
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>
+
+This program is a part of cli-common-dev.
+
+=head1 AUTHOR
+
+Mirco 'meebey' Bauer <meebey@meebey.net>
+
+=cut

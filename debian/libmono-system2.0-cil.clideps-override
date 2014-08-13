@@ -1,0 +1,7 @@
+suggests libfam0
+suggests libgamin0
+suggests libx11-6
+suggests libasound2
+suggests libcups2
+suggests libgdiplus
+suggests libmono-winforms2.0-cil

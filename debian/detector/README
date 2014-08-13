@@ -1,0 +1,45 @@
+binfmt-pe
+
+	This utility determines the Microsoft PE executable file's
+	type (Native, .NET CLR) and runs it using the appropriate
+	runtime (WINE, CLI). It also detects and refuses to run
+	MS-DOS (non-PE) executables.
+	
+	It is inteded to be used in a Linux binfmt configuration,
+	since binfmt itself is incapable of reliably distinguishing
+	between various PE file types (since they have no different
+	"magic string") and runtimes refuse to run files which
+	they don't support (CLR runtimes refuse to run
+	Native images and vice versa).
+	
+Technical information
+
+	The file's type is determined from certain characteristics
+	in the PE / COFF file header. It should be noted that the
+	techniques used might not be standard and are not throughtly
+	tested to work, so false detections might occur.
+	
+	In short:
+	- An MS-DOS executable is assumed if the PE offset in the MS-DOS
+	  header is NULL or points to an offset beyond the file's length
+	- A CLR file is assumed if the PE header's directory entry
+	  for "CLI header" is not NULL and points to a valid offset in
+	  the executable file.
+	- A native executable file is assumed otherwise.
+	
+	The runtime names are hardcoded into the utilit (that is -
+	not configurable) and are exec'ed from the utility --
+	"wine" is used for native images, "cli" is used for CLR images.
+
+Credits
+
+	This utility is based on the PE / COFF header structures from
+	Ximian's Mono .NET runtime project ( http://www.go-mono.com/ ).
+
+Author
+
+	Ilya Konstantinov <future@shiny.co.il>
+	
+Licenses
+
+	This utility is covered by the GPL license.

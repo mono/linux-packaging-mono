@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+update-alternatives \
+	--install /usr/bin/cli cli /usr/bin/mono 10 \
+	--slave /usr/share/man/man1/cli.1.gz cli.1.gz /usr/share/man/man1/mono.1.gz
+
+#DEBHELPER#

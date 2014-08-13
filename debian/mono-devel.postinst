@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+update-alternatives \
+	--install /usr/bin/cli-csc c-sharp-compiler /usr/bin/mono-csc 10 \
+	--slave /usr/share/man/man1/cli-csc.1.gz cli-csc.1.gz /usr/share/man/man1/mcs.1.gz
+
+update-alternatives \
+        --install /usr/bin/cli-resgen resource-file-generator /usr/bin/resgen 10 \
+        --slave /usr/share/man/man1/cli-resgen.1.gz cli-resgen.1.gz /usr/share/man/man1/resgen.1.gz
+
+update-alternatives \
+        --install /usr/bin/cli-al assembly-linker /usr/bin/al 10 \
+        --slave /usr/share/man/man1/cli-al.1.gz cli-al.1.gz /usr/share/man/man1/al.1.gz
+
+update-alternatives \
+        --install /usr/bin/cli-sn strong-name-tool /usr/bin/sn 10 \
+        --slave /usr/share/man/man1/cli-sn.1.gz cli-sn.1.gz /usr/share/man/man1/sn.1.gz
+
+#DEBHELPER#

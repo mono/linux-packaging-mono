@@ -1,0 +1,4 @@
+if [ "$1" = "configure" ]
+then
+	/usr/bin/mono --aot -O=all,shared #FILE# > /dev/null 2>&1
+fi

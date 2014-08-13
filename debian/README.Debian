@@ -1,0 +1,107 @@
+Mono for Debian
+---------------
+
+1. Documentation can be found in the separated monodoc packages.
+
+2. Supported Processor Architectures for Mono 1.1.x (current)
+    JIT:
+    Linux/x86
+    Linux/AMD64
+    Linux/PPC
+    Linux/S390 (not functional)
+    Linux/ARM
+    Solaris/SPARC
+    
+    Interpreter (deprecated/unmaintained):
+    -
+
+   Supported Processor Architectures for Mono 1.0.x (old)
+    JIT:
+    Linux/x86
+    Linux/PPC
+    MacOS/PPC
+
+    Interpreter (deprecated/unmaintained):
+    Linux/x86
+    Linux/PPC
+    HP-UX/HPPA
+    S390
+    StrongARM
+    Solaris/SPARC
+    Solaris/SPARC v9
+ 
+3. Typical problems:
+3a.  Purge your ~/.wapi directory if you see messages like:
+
+     ** (/tmp/hello.exe:23770): WARNING **: Shared memory sanity check
+     failed.
+
+     ** (/tmp/hello.exe:23770): WARNING **: Failed to attach shared memory!
+     Falling back to non-shared handles
+
+     Reason:
+     02:00:00 < totte> .wapi is the shared memory file folder used to handle process.start and someother functions for our IO lib
+3b. Question: 
+    Mono does not work for me (wrong version of mscorlib reported) or
+    monodevelop breaks on start (MonoDevelop.Core.dll has incorrect
+    version...)
+    Answer:
+    Most likely you have compiled some old Mono version before and have
+    a funny mixture of upstream and Debian files in different versions.
+    Make sure that /usr/local does not appear in the output of the
+    following commands and remove the particular files in /usr/local/...:
+
+    which mono
+    which mint
+    ldd $(which mono)
+    ls /usr/local/lib/Mono*dll
+    ls /usr/local/lib/System*dll
+    ls /usr/local/lib/I18*dll
+    (and maybe most other dll files there)
+
+4. (for developers) 
+   The main coordination site of the maintainers is on
+   http://pkg-mono.alioth.debian.org/, more details can be found there.
+   CLI Policy for packaging Mono libraries/applications can be found on
+   http://pkg-mono.alioth.debian.org/cli-policy/
+   An offline version is in /usr/share/doc/cli-common/ of the the cli-common package.
+
+-----------------------------------------------------------------------------
+
+PS: Some comparisons (not real benchmarks!), testing different
+invocation methods:
+
+  The "native" method via exec, binfmt_misc, binfmpt-support (Perl
+  script), binfmt-detector-cli:
+
+time for x in `seq 1000` ; do ./hello.exe > /dev/null; done
+
+real    3m2.969s
+user    2m8.060s
+sys     0m14.540s
+
+  The shell wrapper method using mono:
+
+time for x in `seq 1000` ; do ./hello.sh > /dev/null; done
+
+real    2m43.146s
+user    1m45.990s
+sys     0m11.140s
+
+  Using "cli-wrapper" with a symlink:
+
+time for x in `seq 1000` ; do ./hello > /dev/null; done
+
+real    2m23.958s
+user    1m32.720s
+sys     0m9.640s
+
+  The "interpreter" method using mono:
+
+time for x in `seq 1000` ; do /usr/bin/cli ./hello.exe > /dev/null; done
+
+real    2m23.699s
+user    1m33.140s
+sys     0m8.920s
+
+ Eduard Bloch <blade@debian.org> -- Sat, 19 Jun 2004 02:28:40 +0200

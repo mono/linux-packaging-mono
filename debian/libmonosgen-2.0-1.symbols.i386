@@ -1,0 +1,14 @@
+#include "libmonosgen-2.0-1.symbols"
+ mono_breakpoint_clean_code@VER_1 3.2.1+dfsg
+ mono_breakpoint_info@VER_1 3.2.1+dfsg
+ mono_hwcap_x86_has_cmov@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_has_fcmov@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_has_sse1@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_has_sse2@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_has_sse3@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_has_sse41@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_has_sse42@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_has_sse4a@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_has_ssse3@VER_1 3.2.3+dfsg
+ mono_hwcap_x86_is_xen@VER_1 3.2.3+dfsg
+

@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/mono/gac/Microsoft.Build.*/2.0.*/
+debian/tmp/usr/lib/mono/gac/Microsoft.Build.*/3.5.*/
+debian/tmp/usr/lib/mono/2.0/Microsoft.Build.*.dll
+debian/tmp/usr/lib/mono/3.5/Microsoft.Build.*.dll

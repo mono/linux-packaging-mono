@@ -1,0 +1,4 @@
+package mono-runtime 
+detector /usr/lib/cli/binfmt-detector-cli
+interpreter /usr/bin/cli
+magic MZ

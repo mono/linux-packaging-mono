@@ -1,0 +1,8 @@
+#!/bin/sh
+
+CURRENT_BRANCH=$(git branch -l | egrep '^\* ' | cut -d ' ' -f 2)
+DEBIAN_BRANCH=$(grep -h ^debian-branch $(git rev-parse --show-cdup)./debian/gbp.conf ~/.gbp.conf 2> /dev/null | head -n 1 | cut -d '=' -f 2)
+DEBIAN_PATCHES=$(git branch -l | egrep "$DEBIAN_BRANCH-patches/")
+for DEBIAN_PATCH in $DEBIAN_PATCHES; do
+	git merge --no-ff $DEBIAN_PATCH
+done 

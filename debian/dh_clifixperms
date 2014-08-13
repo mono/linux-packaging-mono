@@ -1,0 +1,70 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+dh_clifixperms - fix permissions of files in CLI package build directories
+
+=cut
+
+use strict;
+use Debian::Debhelper::Dh_Lib;
+
+=head1 SYNOPSIS
+
+B<dh_clifixperms> [S<I<debhelper options>>] [B<-X>I<item>]
+
+=head1 DESCRIPTION
+
+dh_clifixperms is a debhelper program that is responsible for setting
+the permissions of files and directories for CLI assemblies and
+executables.
+
+dh_clifixperms makes all files that end in *.dll, *.mdb, *.cs,
+*.aspx, and *.config to mode 644 and *.exe to mode 755.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-X>I<item>, B<--exclude> I<item>
+
+Exclude files that contain "item" anywhere in their filename from having
+their permissions changed. You may use this option multiple times to build
+up a list of things to exclude.
+
+=back
+
+=cut
+
+init();
+
+foreach my $package (@{$dh{DOPACKAGES}}) {
+	my $tmp=tmpdir($package);
+
+	my $find_options='';
+	if (defined($dh{EXCLUDE_FIND}) && $dh{EXCLUDE_FIND} ne '') {
+		$find_options="! \\( $dh{EXCLUDE_FIND} \\)";
+	}
+
+	# Fix the permissions of various CLI-based files
+	for my $ext (qw(dll mdb cs config aspx))
+	{
+	    complex_doit("find $tmp $find_options -name \"*.$ext\" -type f -print0",
+			 "2>/dev/null | xargs -0r chmod 0644");
+	}
+	complex_doit("find $tmp $find_options -name \"*.exe\" -type f -print0",
+		     "2>/dev/null | xargs -0r chmod 0755");
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>
+
+This program is a part of cli-common.
+
+=head1 AUTHOR
+
+Dylan R. E. Moonfire <debian@mfgames.com> based on work from Joey Hess
+<joeyh@debian.org>.
+
+=cut

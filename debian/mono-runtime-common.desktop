@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Mono Runtime
+Exec=mono
+Terminal=false
+Type=Application
+Icon=mono-runtime-common
+MimeType=application/x-ms-dos-executable;
+NoDisplay=true

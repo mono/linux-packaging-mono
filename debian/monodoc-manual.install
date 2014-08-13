@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/monodoc/monodoc.xml
+debian/tmp/usr/lib/monodoc/sources/*.source
+debian/tmp/usr/lib/monodoc/sources/*.tree
+debian/tmp/usr/lib/monodoc/sources/*.zip

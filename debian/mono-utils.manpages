@@ -1,0 +1,5 @@
+debian/man/pedump.1
+debian/man/monograph.1
+debian/man/mono-find-provides.1
+debian/man/mono-find-requires.1
+debian/tmp/usr/share/man/man1/monodis.1

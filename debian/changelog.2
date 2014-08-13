@@ -1,0 +1,978 @@
+mono (3.2.8+dfsg-7) unstable; urgency=medium
+
+  * [10016c2] Build libmono-2.0-1 and libmono-2.0-dev for mipsel
+
+ -- Iain Lane <laney@debian.org>  Thu, 10 Jul 2014 11:19:02 +0100
+
+mono (3.2.8+dfsg-6) unstable; urgency=medium
+
+  * [9a7e4fb] Properly support Python 3 as Python version linked by 
+    GDB. Thanks to Matthias Klose <doko@debian.org>
+    (Closes: #752661)
+
+ -- Jo Shields <directhex@apebox.org>  Mon, 07 Jul 2014 21:52:07 +0100
+
+mono (3.2.8+dfsg-5) unstable; urgency=medium
+
+  [ Jo Shields ]
+  * [c1dd2a1] Enforce strict dependency versioning on 
+    libmono-cecil-private-cil. This ensures that packages depending on it 
+    are upgraded in lockstep. This works around the unreliable ABI 
+    versioning on this library. (Closes: #728911)
+
+ -- Jo Shields <directhex@apebox.org>  Sun, 06 Jul 2014 16:01:19 +0100
+
+mono (3.2.8+dfsg-4) experimental; urgency=low
+
+  * [3930eef] Add missing libmono-winforms2.0-cil dependency to 
+    libmono-cil-dev.
+
+ -- Jo Shields <directhex@apebox.org>  Thu, 27 Feb 2014 23:29:17 +0000
+
+mono (3.2.8+dfsg-3) experimental; urgency=low
+
+  * [6a91386] -z and -n do the same thing, right? Fixes autopkgtest for real.
+
+ -- Jo Shields <directhex@apebox.org>  Wed, 26 Feb 2014 10:28:38 +0000
+
+mono (3.2.8+dfsg-2) experimental; urgency=low
+
+  * [2192ca9] Only trigger mono-gac postinst on upgrades. This should fix 
+    an edge case when GAC-installing libraries which rely on 
+    machine.config's key remapping at the same time as mono-gac 
+    first-install, such as F#. Thanks to Christopher James Halse Rogers.
+
+ -- Jo Shields <directhex@apebox.org>  Tue, 25 Feb 2014 23:55:52 +0000
+
+mono (3.2.8+dfsg-1) experimental; urgency=low
+
+  * The "Debian 9.0 Zurg" release
+
+  * [9972bf8] Imported Upstream version 3.2.8+dfsg
+  * [c9f9468] README is gone, ship README.md instead since it might be useful
+  * [029af3f] Refresh symbols files for libmono*
+  * [e2acadb] Don't use killall to kill stray Mono processes, it doesn't work 
+    as desired. (Closes: #738277)
+  * [0b1a48e] Delete some corner-case build rules for working around arch 
+    issues
+  * [26e5fbc] Bump System.Reactive to 2.2
+  * [660166e] Fix up XBuild paths
+  * [ea9afdc] Add new Facades to mono-devel
+  * [8305898] Add new XBuild 12.0 files to mono-xbuild package
+  * [4575803] Add new Mono.XBuild.Tasks library
+  * [66a2288] Refreshed clilibs versioning and renamed packages as required 
+    by ABI changes
+
+ -- Jo Shields <directhex@apebox.org>  Thu, 20 Feb 2014 20:45:09 +0000
+
+mono (3.2.3+dfsg-7) experimental; urgency=medium
+
+  [ Mirco Bauer ]
+  * [fd41e43] Added a hard timeout of 1 hour per test pass to prevent blocking
+    buildds forever
+  * [68cd63d] Hard kill stray mono processes after each test pass to make the
+    life of buildd admins nicer
+  * [2b00059] Added psmisc to build-deps for the killall command
+
+  [ Christopher James Halse Rogers ]
+  * [c6ee8c7] Make the install-framework commmand idempotent
+
+ -- Mirco Bauer <meebey@debian.org>  Fri, 17 Jan 2014 07:06:13 +0100
+
+mono (3.2.3+dfsg-6) experimental; urgency=medium
+
+  * The "Hello F#" release
+
+  [ Christopher James Halse Rogers ]
+  * [37faf77] Do the framework-install/framework-remove dance in mono-gac maint
+    scripts. This ensures our 3rd-party-ish framework libraries end up in the
+    right place on upgrades.
+
+  [ Jo Shields ]
+  * [5872e81] Disable monitor.exe, it frequently doesn't get cleaned up on
+    buildds, which can cause buildd admin angst.
+  * [a9a843a] Disable bug-10127, this is another test which can leave stray
+    processes.
+  * [c01f5fc] mono-devel should pull in libmono-2.0-dev as this contains
+    mono-2.pc. Fixes FTBFS in gtk-sharp3 and others.
+
+ -- Mirco Bauer <meebey@debian.org>  Wed, 15 Jan 2014 07:21:45 +0100
+
+mono (3.2.3+dfsg-5) experimental; urgency=low
+
+  * [bb3e132] Fix error in debian/libmonosgen-2.0-1.symbols.armhf
+  * [98b1fb6] Roll all the -facades- (PCL) packages into mono-devel. These 
+    are meaningless outside compile time, and a pain to maintain, so we 
+    gain nothing from having them split out.
+
+ -- Jo Shields <directhex@apebox.org>  Thu, 12 Dec 2013 12:35:44 +0000
+
+mono (3.2.3+dfsg-4) experimental; urgency=low
+
+  [ Alex Rønne Petersen ]
+  * [17c6b02] Merge branch 'armhf' of github.com:alexrp/mono
+    (cherry picked from commit b9bcafb382666ccf2f2848065f1760c8f322fa4d)
+
+  [ Jo Shields ]
+  * [cf19c56] Add support for armhf packages
+
+ -- Jo Shields <directhex@apebox.org>  Tue, 03 Dec 2013 22:52:00 +0000
+
+mono (3.2.3+dfsg-3) experimental; urgency=low
+
+  * [2b7198e] Fix buggy Replaces section on 
+    libmono-system-windows-forms-datavisualization4.0a-cil package 
+    (Closes: #728340)
+  * [8a07907] There is a bug in the silicon on Loongson 2E and 2F 
+    processors, which can cause the traditional NOP instruction 
+    (which doesn't exist on MIPS but is an alias to 'sll 0,0,0') 
+    to fail intermittently under high load. This is worked around 
+    in binutils 
+    (https://sourceware.org/ml/binutils/2009-11/msg00387.html) but 
+    that only applies to software compiled via binutils, not via a 
+    JITter like Mono. The fix uses a different no-op instruction 
+    which does not trigger the CPU bug. Thanks to Alex Rønne 
+    Petersen for his help.
+
+ -- Jo Shields <directhex@apebox.org>  Fri, 15 Nov 2013 00:03:19 +0000
+
+mono (3.2.3+dfsg-2) experimental; urgency=low
+
+  [ Christopher James Halse Rogers ]
+  * [e3ef79e] Add dh_installcliframework support to mono.runtime-script
+
+ -- Jo Shields <directhex@apebox.org>  Wed, 30 Oct 2013 00:07:49 +0000
+
+mono (3.2.3+dfsg-1) experimental; urgency=low
+
+  [ Jo Shields ]
+  * [d0a215f] Imported Upstream version 3.2.3+dfsg (Closes: #725279)
+  * [f355562] Add new symbols for 3.2.3
+  * [0d9bcb4] Bump ABI versions for 3.2.3 changes, including package renames 
+    where required by policy.
+  * [93ed69f] Fix the couple of packages that accidentally did not drop IA64 
+    support.
+  * [5513028] Add Sgen debug helper to mono-dbg
+  * [ab982e4] Add missing mono-heapviz and mdbrebase
+  * [81bf668] Strip out 4.5 version of bundled NUnit, we don't ship the 
+    bundle in Debian.
+  * [d6db210] Add missing monosgen-2.pc to libmonosgen-2.0-dev
+  * [6c1a392] Add libmono-system-json2.0-cil package
+  * [e3c04e1] Refresh list of packages in libmono-cil-dev.
+  * [b9c8e08] Add System.DirectoryServices.Protocols assembly package
+  * [2e5b801] Add 2.0 (3.5) version of System.Net assembly packages.
+  * [be5178c] Add package for System.ServiceModel.Activation assembly
+  * [6b9fdaa] Add package for System.Json.Microsoft assembly
+  * [e37416a] Add package for 2.0 (3.5) version of System.Data.Services.Client 
+    assembly
+  * [d42483b] Add symbol brought in by the last patch merge
+  * [cd78202] Don't redeclare desc in mini_create_ftnptr on ppc64
+  * [4d2d529] Add missing PowerPC symbols
+  * [0ad5d69] Abandon SPARC support. The company which had previously been 
+    maintaining it dropped their interest after Mono 2.8, and as such, the 
+    SPARC port is bitrotted beyond use. (Closes: #727542)
+
+  [ Alex Rønne Petersen ]
+  * [be0a4a3] Remove unneeded NetBSD code path from atomic.h. 
+  * [4d3344a] Simplify the ifdeffery in atomic.c/.h a bit. 
+  * [b3a340d] Use host preprocessor identifiers in atomic.c, not target.
+  * [9058bfe] Remove unneeded ARM code from atomic.c.
+  * [97a4fff] Use GCC atomics on s390x.
+  * [a668980] Remove MONO_ARCH_SAVE_REGS from threading icalls.
+  * [73ec437] Use mono_memory_barrier () for Thread.MemoryBarrier ().
+  * [70e8ca1] Add implementations of various interlocked functions to 
+    atomic.c/.h.
+  * [b37681e] Add interlocked read/write functions to atomic.c/.h.
+  * [f912c77] Move definition of NEED_64BIT_CMPXCHG_FALLBACK to top of 
+    atomic.c. 
+  * [3b93dd8] Use __sync_sub_and_fetch () for atomic decrements for 
+    clarity.
+  * [8d36fd1] Use InterlockedRead64 () for Interlocked.Read (long&).
+  * [07c705d] Use InterlockedIncrement64 () for Interlocked.Increment
+    (long&).
+  * [c1a8be1] Use InterlockedDecrement64 () for Interlocked.Decrement
+    (long&).
+  * [deeb1c8] Use InterlockedExchange64 () for Interlocked.Exchange
+    (long&, long).
+  * [413523f] Use InterlockedExchange64 () for Interlocked.Exchange
+    (double&, double).
+  * [2676ce4] Use InterlockedAdd () for Interlocked.Add (int&, int).
+  * [07d515c] Use InterlockedAdd64 () for Interlocked.Add (long&, long).
+  * [9599856] Correct our implementation of Thread.VolatileRead ()/VolatileWrite ().
+  * [bfe9881] Use slow 64-bit cmpxchg for 32-bit ARM, MIPS, and PowerPC.
+  * [3c16fd2] Add an extension point in atomic.c.
+  * [771e714] Add mono_gc_wbarrier_generic_store_atomic () function.
+
+  [ Zoltan Varga ]
+  * [d6629c3] [runtime] Fix the interlocked increment/decrement/add functions.
+
+ -- Jo Shields <directhex@apebox.org>  Thu, 24 Oct 2013 20:21:32 +0100
+
+mono (3.2.1+dfsg-1) experimental; urgency=low
+
+  * The "REJECT FALSE ICONS" release
+
+  [ Jo Shields ]
+  * [b9108c7] Dirty patch to introduce a new System.Windows.Forms.WebBrowser 
+    back-end, which does absolutely nothing. This is to allow applications 
+    which create a WebBrowser object to continue to run without crashing, 
+    in the absence of a working browser back-end (which we lack right now). 
+    This patch is sufficient for 
+    http://www.java2s.com/Tutorial/CSharp/0460__GUI-Windows-Forms/AsimpleBrowser.htm
+    to run without crashing. (Closes: #683289, #694948)
+  * [d20f6ad] Update README.source for the latest +dfsg changes
+  * [621d62b] Imported Upstream version 3.2.1+dfsg
+  * [a469da4] Delete .git folders which are incorrectly supplied (sometimes) 
+    in upstream tarballs
+  * [93dc83d] Remove IA64 as a build arch, it's abandoned upstream - add 
+    newly fixed MIPS (little endian) instead.
+  * [45139df] Refresh debian/ - including new split-off packages - now SGen 
+    is default
+  * [f8f6ae7] Rename libmono-2.0 packages to libmonoboehm-2.0 as appropriate.
+  * [22f5059] Add new GAC'd assemblies from this release.
+  * [7876094] Refreshed dh_makeclilibs version information to reflect ABI 
+    and API bumps.
+  * [0916fab] Rename libmono-csharp4.0-cil.install to 
+    libmono-csharp4.0a-cil.install, due to heavy ABI breakage.
+  * [c4437d1] Fix compilation failure to due to uninitialized variable.
+  * [b53dbb2] Create a set of new packages for PCL Facades.
+  * [1054a3b] Add Xamarin to copyright file
+  * [3643568] Fix compilation failure to due to uninitialized variable.
+  * [0873f74] Replace references to Novell in package descriptions with 
+    Xamarin.
+
+  [ Mirco Bauer ]
+  * [c920c13] Removed mono_arch_get_lmf_addr from s390x specific symbols
+  * [7b291a4] Added new armel specific symbols to libmono-2.0-1.symbols.armel
+
+  [ Atsushi Eno ]
+  * [15e60b3] Add Assembly version attributes to hopefully fix bug #10002.
+    (cherry picked from commit cd6dc32e0b936645bf2f89e1bf61c6ae04c3258a)
+    The new files are modified by this commit but were not present in the
+    packaged release.
+  * [5b98c36] [rx] Add missing AssemblyInfos.
+    (cherry picked from commit 7890e1e824b91b1fd30d375b8cfb19d5abb23c5a)
+  * [7cb9532] remove wrong EOLs after Libs: in reactive.pc.in. Third 
+    attempt to fix bug #10002.
+    (cherry picked from commit 5c228f3dd0e9b32a5b0d4aaaf0903ebaeae5a6d9)
+  * [8583276] Fix build (giconv.c) (cherry picked from commit 
+    37e7f2fb50e2f357ae4068d3b7551ff411f9f77c)
+
+  [ Carlos Martín Nieto ]
+  * [b85c794] Create package for Reactive Extensions.
+    Now that they have a version, let's create binary packages for them.
+
+  [ Alex Rønne Petersen ]
+  * [172471f] Support a MONO_ARCH_HAVE_TLS_INIT variable.
+    Setting this on an architecture makes Mini call
+    mono_arch_tls_init () on thread attach.
+    This is primarily useful for architectures that have not
+    had their LMF code ported to the new infrastructure due to
+    a general lack of maintenance or hardware to do it on.
+    (cherry picked from commit f87a4f127d1a0ea1cf4145f9605c5698af08c6cf)
+  * [7cbea71] MIPS: Set USE_MUL to 0 by default (for now).
+    Setting it to 1 breaks on Loongson CPUs which are the most common
+    desktop MIPS CPUs supported by e.g. Debian.
+    This change can be reverted when more investigation is done to find
+    out why exactly this breaks.
+    Thanks to Jo Shields (@directhex) for lots of testing and debugging
+    and spotting this define that turned out to be the culprit.
+    (cherry picked from commit 0e67acba31c39e37b1bc55afb28d157c36895c23)
+
+  [ Mark Probst ]
+  * [e19428c] Fix race conditions in finalizer/weak link staging. 
+    (cherry picked from commit aef4b77ea79aa0a4c06e10bd5842da9df0d10973)
+
+  [ Jeffrey Stedfast ]
+  * [090dda7] [eglib] Fixed g_utf8_to_utf16_general() to handle 
+    invalid utf8 (cherry picked from commit 
+    a81cd6dae81a7077a7f014948c78075da08f02f7)
+
+  [ Zoltan Varga ]
+  * [49af7b0] [sgen] Use __builtin_ctzl () in OBJ_BITMAP_FOREACH_PTR () on 64 
+    bit platforms. Fixes #14834. (cherry picked from commit 
+    d2cc22580898df5d4a15e0f99ab513e1570a6082)
+    Thanks to Andres G. Aragoneses (@knocte) for his help tracking this one
+    down, as it broke Banshee.
+
+ -- Jo Shields <directhex@apebox.org>  Sun, 22 Sep 2013 18:35:43 +0100
+
+mono (3.0.6+dfsg2-12) unstable; urgency=medium
+
+  [ Jo Shields ]
+  * [0410495] Only trigger mono-gac postinst on upgrades. This should fix an
+    edge case when GAC-installing libraries which rely on machine.config's key
+    remapping at the same time as mono-gac first-install, such as F#. Thanks to
+    Christopher James Halse Rogers.
+  * [173a0cf] -z and -n do the same thing, right? Fixes autopkgtest for real.
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 27 Mar 2014 10:21:21 +0100
+
+mono (3.0.6+dfsg2-11) unstable; urgency=medium
+
+  * The "Hello F#" release
+
+  [ Christopher James Halse Rogers ]
+  * [d953ce1] Do the framework-install/framework-remove dance in mono-gac maint scripts.
+    This ensures our 3rd-party-ish framework libraries end up in the right place
+    on upgrades.
+    cf: gac-install/gac-remove
+  * [9303f0c] Add dh_installcliframework support to mono.runtime-script
+  * [a0ea7e3] Make the install-framework commmand idempotent
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 11 Feb 2014 02:46:08 +0100
+
+mono (3.0.6+dfsg2-10) unstable; urgency=low
+
+  [ Marek Safar ]
+  * [3fc971b] Add test from Jb Evain to test biner with user method types
+    (cherry picked from commit 80d342ff7555e95bfa3917543ce66910175cf61d)
+
+  [ Jo Shields ]
+  * [fae7653] Really remove SPARC from list of architectures (Closes: #731253)
+
+ -- Jo Shields <directhex@apebox.org>  Tue, 03 Dec 2013 23:55:11 +0000
+
+mono (3.0.6+dfsg2-9) unstable; urgency=low
+
+  * [24232d8] Enforce strict dependency versioning on 
+    libmono-cecil-private-cil. This ensures that packages depending 
+    on it are upgraded in lockstep. This works around the unreliable 
+    ABI versioning on this library. (Closes: #728911)
+
+ -- Jo Shields <directhex@apebox.org>  Sun, 17 Nov 2013 20:21:43 +0000
+
+mono (3.0.6+dfsg2-8) unstable; urgency=low
+
+  * [a87c24d] Remove SPARC. It's a dead architecture in Mono upstream 
+    (and elsewhere). (Closes: #727542)
+  * [b6e4975] Fix package descriptions to not mention SPARC or IA64, 
+    and exchange S/390 with S/390x
+
+ -- Jo Shields <directhex@apebox.org>  Sun, 27 Oct 2013 14:09:33 +0000
+
+mono (3.0.6+dfsg2-7) unstable; urgency=low
+
+  [ Jeffrey Stedfast ]
+  * [235060d] [eglib] Fixed g_utf8_to_utf16_general() to handle invalid 
+    utf8 (cherry picked from commit a81cd6dae81a7077a7f014948c78075da08f02f7)
+    (Closes: #716689)
+
+  [ Atsushi Eno ]
+  * [5c90cf9] Fix build (giconv.c) 
+    (cherry picked from commit 37e7f2fb50e2f357ae4068d3b7551ff411f9f77c)
+
+ -- Jo Shields <directhex@apebox.org>  Sat, 12 Oct 2013 23:54:26 +0100
+
+mono (3.0.6+dfsg2-6) unstable; urgency=low
+
+  [ Mirco Bauer ]
+  * [c920c13] Removed mono_arch_get_lmf_addr from s390x specific symbols
+  * [7b291a4] Added new armel specific symbols to libmono-2.0-1.symbols.armel
+
+  [ Atsushi Eno ]
+  * [15e60b3] Add Assembly version attributes to hopefully fix bug #10002.
+    (cherry picked from commit cd6dc32e0b936645bf2f89e1bf61c6ae04c3258a)
+    The new files are modified by this commit but were not present in the
+    packaged release.
+  * [5b98c36] [rx] Add missing AssemblyInfos.
+    (cherry picked from commit 7890e1e824b91b1fd30d375b8cfb19d5abb23c5a)
+  * [7cb9532] remove wrong EOLs after Libs: in reactive.pc.in. Third attempt to fix bug #10002.
+    (cherry picked from commit 5c228f3dd0e9b32a5b0d4aaaf0903ebaeae5a6d9)
+
+  [ Carlos Martín Nieto ]
+  * [b85c794] Create package for Reactive Extensions.
+    Now that they have a version, let's create binary packages for them.
+
+  [ Alex Rønne Petersen ]
+  * [172471f] Support a MONO_ARCH_HAVE_TLS_INIT variable.
+    Setting this on an architecture makes Mini call
+    mono_arch_tls_init () on thread attach.
+    This is primarily useful for architectures that have not
+    had their LMF code ported to the new infrastructure due to
+    a general lack of maintenance or hardware to do it on.
+    (cherry picked from commit f87a4f127d1a0ea1cf4145f9605c5698af08c6cf)
+
+  [ Jo Shields ]
+  * [1eacac9] Kill IA64 support. It's dead upstream and not coming back.
+
+ -- Mirco Bauer <meebey@meebey.net>  Fri, 11 Oct 2013 11:25:53 +0200
+
+mono (3.0.6+dfsg2-5) unstable; urgency=low
+
+  * [8b43de0] [monodoc] Ensure we don't try to use <Parameters> when 
+    it might be null. Fixes Gendarme doc generation. 
+    (cherry picked from commit ba222d4eb939ef097dd2b77b1fea5c3b8a60b310)
+  * [478f26a] Switch debian/gbp.conf to use non-Experimental branches
+  * [0dde9cb] Fix compilation failure to due to uninitialized variable.
+
+ -- Jo Shields <directhex@apebox.org>  Wed, 09 Oct 2013 23:21:56 +0200
+
+mono (3.0.6+dfsg2-4) unstable; urgency=low
+
+  [ Iain Lane ]
+  * [2a84a9f] Install Mono.Posix and System.Data.OracleClient into 4.5 too
+
+  [ Neale Ferguson ]
+  * [a4118b9] Add lazy rgctx support to s390x
+    (cherry picked from commit 3cbc51a82063f879680eab3c99415028e9c80c00)
+  * [8f533d3] Correct call parameter processing for GENERICINST types
+    (cherry picked from commit efa707b468967f1fa57bb39c642109439dc03c84)
+  * [a99f491] Remove unneeded call - lazy support
+    (cherry picked from commit 89cbc62dee8e694b1d80157d254322523bbce411)
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 13 May 2013 12:22:42 +0200
+
+mono (3.0.6+dfsg2-3) unstable; urgency=low
+
+  * Upload to unstable
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 05 May 2013 09:07:45 +0200
+
+mono (3.0.6+dfsg2-2) experimental; urgency=low
+
+  [ Jo Shields ]
+  * [f46cef1] Ensure GetVolumeInformation is defined on kfreebsd, by adding to
+    the #define
+  * [88cfd6f] Remove duplicated definition of mini_gc_enable_gc_maps_for_aot -
+    fixed build on PowerPC, Itanium, SPARC
+    (cherry picked from commit 998373afb6cb164767d2dc7cc62610e1dbf4a161)
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 18 Apr 2013 20:21:12 +0200
+
+mono (3.0.6+dfsg2-1) experimental; urgency=low
+
+  * The "From Mirco Bauer with Love" release
+
+  [ Mirco Bauer ]
+  * New major upstream release
+    + Dropped obsolete downstream patches:
+      - master-experimental-patches/CVE-2012-3382-Mono.Web-XSS
+      - master-experimental-patches/X.509_fixes
+      - master-experimental-patches/fix_mono-api-info
+  * [8f13662] Bumped clilibs where needed to >= 3.0.6
+  * [1a21b1c] Updated debian/copyright for Mono 3.0.6
+  * [8550395] Remove external/Lucene.Net/lib/ from source tarball in get-orig-source
+  * [37f20cb] Updated debian/README.source for Mono 3.0.6
+  * [44b076b] Imported Upstream version 3.0.6+dfsg2
+  * [422ee0e] Imported Upstream version 3.0.6+dfsg
+  * [2a298ae] Updated libmono-2.0-1.symbols for Mono 3.0.2 and 3.0.3
+  * [8bb72a8] Re-synced debian/dh_makeclilibs from cli-common 0.9, needed for .NET 4.5 support
+  * [81be094] Imported Upstream version 3.0.1+dfsg
+  * [ca9c963] Imported Upstream version 3.0.0+dfsg
+  * [2b6934a] Updated GNU/kFreeBSD port for Mono 3.0
+  * [df4ee63] Disable -Werror=format-security on GCC as the input is already
+              validated by the caller.
+  * [552f512] Added missing RabbitMQ.Client/docs/specs files back, which
+              were accidently deleted in debian/rules' get-orig-source target
+  * [fd3c55d] Updated libmono-2.0-1.symbols for Mono 3.0
+  * [70a0773] Added 4.5 runtime config files to mono-runtime.install
+  * [f2c64d8] Moved gmcs and dmcs to the mono-mcs package as they are now just
+              script wrappers around mcs which from now on provides the
+              C# 2.0, 3.0, 4.0 and 5.0 compiler
+  * [5f555c4] Use mcs compiler in debian/rules for MonoGetAssemblyName and
+              mono-api-diff
+  * [22cdeb1] The default C# compiler (cli-csc) is now mcs instead of dmcs,
+              making CLI 4.5 the new default runtime
+  * [d8aa46c] Updated application paths of mono-devel.install
+  * [bbad2af] Added new libmono-corlib4.5-cil package
+  * [2992c9c] Updated application path of mono-csharp-shell.install
+  * [86a3c74] Updated application path of mono-4.0-gac.install
+  * [422f9a5] Updated library path of libmono-codecontracts4.0-cil.install
+  * [07f956e] Added new libmono-parallel4.0-cil package
+  * [0ac23eb] Updated application path of mono-4.0-service.install
+  * [68801fb] Added new libmono-system-json4.0-cil package
+  * [62ec2a8] Updated library paths for libmono-microsoft-build*4.0-cil and
+              added new libmono-microsoft-build4.0-cil package
+  * [9f85c45] Added new libmono-entityframework(-sqlserver)6.0-cil package
+  * [64737c1] Added new libmono-system-net-http4.0-cil package
+  * [0d23a36] Added new libmono-system-net-http-formatting4.0-cil package
+  * [7a5ff4b] Added new libmono-system-threading-tasks-dataflow4.0-cil package
+  * [7d22b72] Added new libmono-system-web-http4.0-cil package
+  * [a153a71] Added new libmono-system-web-http-selfhost4.0-cil package
+  * [4be7571] Added new libmono-system-web-mvc3.0-cil package
+  * [5705132] Added new libmono-system-web-razor2.0-cil package
+  * [f636e2f] Added new libmono-system-web-webpages2.0-cil package
+  * [2b8ef48] Added new libmono-system-web-webpages-deployment2.0-cil package
+  * [3a0996e] Added new libmono-system-web-webpages-razor2.0-cil package
+  * [cba5827] Added aspnetwebstack.pc and system.web.mvc3.pc to libmono-cil-dev
+              package
+  * [e36a51e] Added cccheck(.exe) with manpage to mono-devel package
+  * [cb6e8fc] Added crlupdate(.exe) with manpage to mono-devel package
+  * [bb1a528] Updated library paths for .NET 4.5 development profile
+  * [52efd50] Updated application paths for .NET 4.5 development profile
+
+  [ Marek Safar ]
+  * [3531cf8] Build correct version of System.Net for non-mobile profile
+
+ -- Mirco Bauer <meebey@debian.org>  Wed, 10 Apr 2013 23:13:16 +0200
+
+mono (2.10.8.1-8) unstable; urgency=high
+
+  * [b9108c7] Dirty patch to introduce a new System.Windows.Forms.WebBrowser 
+    back-end, which does absolutely nothing. This is to allow applications 
+    which create a WebBrowser object to continue to run without crashing, 
+    in the absence of a working browser back-end (which we lack right now). 
+    This patch is sufficient for 
+    http://www.java2s.com/Tutorial/CSharp/0460__GUI-Windows-Forms/AsimpleBrowser.htm 
+    to run without crashing. (Closes: #683289, #694948)
+
+ -- Jo Shields <directhex@apebox.org>  Sun, 03 Mar 2013 17:36:38 +0000
+
+mono (2.10.8.1-7) unstable; urgency=high
+
+  [ Jo Shields ]
+  * [4a46aae] Remove armhf from mono-archs.make - It should have been 
+    removed in 2.10.8.1-6 but was overlooked (Closes: #695743)
+
+  [ Marek Habersack ]
+  * [226b326] Fix for Novell bug #739119 (Closes: #686562, CVE-2012-3543)
+  * [6983b45] Update to fix for Novell bug #739119
+
+ -- Jo Shields <directhex@apebox.org>  Mon, 28 Jan 2013 10:27:00 +0000
+
+mono (2.10.8.1-6) unstable; urgency=low
+
+  * [da2fc97] Remove armhf from list of supported architectures. It 
+    ain't supported by the runtime in Mono 2.10.x, and trying to 
+    shoehorn it in was more difficult than we had hoped. It will 
+    return in the future, for Mono 2.12. (Closes: #682284)
+
+ -- Jo Shields <directhex@apebox.org>  Mon, 27 Aug 2012 17:15:03 +0100
+
+mono (2.10.8.1-5) unstable; urgency=high
+
+  [ Jo Shields ]
+  * [c05ec16] Add symbols file for ppc64 (Closes: #651664)
+
+  [ Mirco Bauer ]
+  * [4e87058] Fixed version of ppc64 specific symbol
+    mono_exc_esp_offset was introduced in 2.10.1 which is also 
+    backport-friendly
+
+  [ Gonzalo Paniagua Javier ]
+  * [1930eb3] HtmlEncode the path.
+    	Fixes Novell bug #769799. (Closes: #681095, CVE-2012-3382)
+
+ -- Jo Shields <directhex@apebox.org>  Wed, 11 Jul 2012 19:13:12 +0100
+
+mono (2.10.8.1-4) unstable; urgency=low
+
+  [ Iain Lane ]
+  * [10b15d4] Pass LDFLAGS to binfmt-detector-cli too (Closes: #657518)
+
+  [ Jo Shields ]
+  * [f77ef2f] Tweak build system to check multiarch library folder for 
+    libX11.so.
+
+ -- Jo Shields <directhex@apebox.org>  Sun, 27 May 2012 15:28:00 +0100
+
+mono (2.10.8.1-3) unstable; urgency=low
+
+  * [c934e01] Remove unused File::Basename import from runtime script.
+    Having this present causes failures on release upgrades where perl-base
+    and perl-modules are not in a consistent state (e.g. this can happen
+    when upgrading across major Perl versions). (Closes: #665335) (LP:
+    #948848)
+  * [9e3cc40] Remove monodoc-base trigger.
+    This trigger updated the monodoc search index. It ended up calling
+    /usr/bin/monodoc, which is shipped in the monodoc-browser package
+    (source package mono-tools). The script attempted to check that
+    monodoc-browser was configured, but didn't get this right. This led to
+    numerous upgrade failures when Depends of monodoc-browser were not
+    satisfied when the trigger was invoked and calling monodoc to update the
+    search index bombed out due to this. It's more correct to just have
+    monodoc-browser ship this trigger itself. (LP: #972751)
+  * [dd2925c] Standards-Version bump to 3.9.3, no changes required
+  * [8299ee0] Remove duplicate Depends in mono-complete
+  * [508c4f5] Revert "Merge branch 'master-patches/fix_crash_in_fixup_cattrs'"
+    This reverts commit 86127dcf508213eac5b50a65c989cf5971b57378, reversing
+    changes made to 55a1a20a4d858346ed8a8d840abc3f9230ea816e.
+    This branch introduced regressions which caused both nant and mono-upnp
+    (at least) to FTBFS. (Closes: #666623)
+  * [61fbbe4] Fix ARM printf format problems.
+    When building with -Werror=format-security on ARM, mono fails to build
+    due to incorrect format strings in arm-dis.c
+    (cherry picked from commit 32c1b70ad164640ff0a2739e66884d0279cfe7c7)
+    Signed-off-by: Iain Lane <laney@debian.org>
+  * [9883116] Pass CFLAGS and CPPFLAGS when building binfmt-detector.
+    Ensures hardening support is enabled for this binary.
+    Thanks to Simon Ruderich <simon@ruderich.org> (Closes: #657518)
+  * [4bb0138] Ensure compiler flags are passed into build system.
+    This issue was discovered when it was noted that Debian's hardening
+    buildflags weren't being propogated to all binaries.
+    The patch is from Simon Ruderich <simon@ruderich.org>
+    (cherry picked from commit d6dcfb27fc6252352f6ad6f8bd9ef5cff206fd46)
+    Also Closes: #657518
+
+ -- Iain Lane <laney@debian.org>  Wed, 04 Apr 2012 21:15:59 +0100
+
+mono (2.10.8.1-2) unstable; urgency=low
+
+  [ Zoltan Varga ]
+  * [52cf3ab] Modify fixup_cattrs () to handle a corner case where a cattr is
+              created using a MonoCMethod instead of a ConstructorBuilder.
+
+  [ Moritz Muehlenhoff ]
+  * [96d7d4a] Use dpkg-buildflags for enabling hardened build flags
+              (closes: #657518)
+
+  [ Mirco Bauer ]
+  * [de40c42] Bumped dpkg-dev build-dep to >= 1.16.1~ as we include
+              buildflags.mk of it
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 22 Mar 2012 22:00:34 +0100
+
+mono (2.10.8.1-1) unstable; urgency=low
+
+  [ Jb Evain ]
+  * [b31e994] [mono-api-info] try to read local files before using the resolver
+
+  [ Mirco Bauer ]
+  * [e6134cc] Imported Upstream version 2.10.8.1
+  * [e8b34c9] Added s390x specific symbols to libmono-2.0-1.symbols.s390x
+  * [ad7a051] Copied armel specific symbols to libmono-2.0-1.symbols.armhf
+  * [1001d95] Added new symbol to libmono-2.0-1.symbols
+  * [c17bea6] Build mono-api-diff and MonoGetAssemblyName with dmcs
+              instead of gmcs
+  * [1388ad0] Bumped clilibs of libmono-system4.0-cil,
+              libmono-sqlite{2,4}.0-cil and
+              libmono-microsoft-build-framework4.0-cil to >= 2.10.7
+  * [7bb7153] Added -a switch (ABI) to mono-api-check
+  * [b35dd98] Imported Upstream version 2.10.8.1
+  * [a251cb0] Fixed typo in package short description of
+              libmono-webmatrix-data4.0-cil (closes: #656671)
+  * [b35dd98] Imported Upstream version 2.10.8.1
+  * [03f5030] Updated RUN_MONO variable for a 4.0 runtime
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 05 Feb 2012 19:21:10 +0100
+
+mono (2.10.5-2) unstable; urgency=low
+
+  [ Mirco Bauer ]
+  * Upload to unstable
+
+  [ Sebastien Pouliot ]
+  * [80b0a2d] Add support for validating RSA-based X.509 certifcates using
+              SHA256
+  * [977f0e0] Avoid ANE when a key algorithm parameters is really null
+              (not just ASN.1 null)
+  * [83468f9] Avoid throwing when verifying an RSA certificate with dsaSHA1
+  * [2050ee0] Add MD4, SHA384 and SHA512 signature verification to X.509
+              certificates
+  * [ab80293] Fix X.500 DN comparison
+  * [d864bce] Avoid throwing an ANE on an invalid X.509 extension
+  * [ab2997c] Add entries for MD4 in machine.config
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 16 Jan 2012 04:50:58 +0100
+
+mono (2.10.5-1) experimental; urgency=low
+
+  * [854fa78] Imported Upstream version 2.10.5
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 25 Aug 2011 22:26:08 +0200
+
+mono (2.10.4-3) experimental; urgency=low
+
+  [ Jo Shields ]
+  * [985d2ae] Revert "[xbuild] Make Engine.DefaultToolsVersion 2.0 ."
+    This reverts commit 4010c69c7d61223c73f111be2d79c4a440b70b45.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 22 Aug 2011 22:44:41 +0200
+
+mono (2.10.4-2) experimental; urgency=low
+
+  * [77d26a4] Fixed failing upgrade of libmono-webbrowser0.5-cil to
+              libmono-webbrowser2.0-cil with conflicts/replaces
+
+ -- Mirco Bauer <meebey@debian.org>  Fri, 12 Aug 2011 21:19:36 +0200
+
+mono (2.10.4-1) experimental; urgency=low
+
+  [ Mirco Bauer ]
+  * New upstream (bugfix) release
+  * [6a8fc99] Install mono-api-diff.exe in mono/4.0
+  * [85bc08e] Imported Upstream version 2.10.4
+  * [113d0f0] Wrapped too long debian/changelog lines
+
+  [ Miguel de Icaza ]
+  * [03ceab5] Do not throw if we get a RunAndCollect
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 11 Aug 2011 21:32:53 +0200
+
+mono (2.10.3-1) experimental; urgency=low
+
+  * The "from Xamarin with love" release
+
+  [ Mirco Bauer ]
+  * [5f13e09] Updated download URL in debian/watch
+  * [4abf062] Added desktop file for mono with and without a terminal window
+  * [f165789] Imported Upstream version 2.10.3
+  * [b51b15c] Dropped unused libglib2.0-dev from build-deps which was replaced
+              by Mono's own eglib
+  * [00a5c48] Fixed manpage reference for cli-csc alternative
+  * [b6fb713] New patch structure
+  * [6cb63b3] Use debian-branch instead of current branch
+  * [3956527] Added I18N west package as dependency to WinForms as the
+              RichTextBox class requires CP1252 (closes: #629151)
+  * [997bec0] Mono.WebBrowser library is now shipped in both 2.0 and 4.0
+              runtime flavors
+  * [dfd65af] Added /usr/lib/mono/xbuild-frameworks to mono-xbuild package
+  * [12478bf] Removed useless dh_makeclilibs call for not existing
+              libmono-winforms4.0-cil
+  * [3d2d42c] Allow the inclusion of the binary file debian/mono-runtime.png
+  * [2a814af] Fixed missing separator in Depends field of
+              libmono-microsoft-visualc10.0-cil and
+              libmono-microsoft-web-infrastructure1.0-cil
+  * [491534a] Fixed non-binNMUable error for mono-devel
+  * [eb78f74] Fixed spelling mistake according to lintian:
+              s/allows to/allows one to/
+  * [5fae96e] Fixed too long extended description line for mono-runtime-sgen
+  * [5dbb6e1] Set single-debian-patch in debian/source/options
+  * [98bf4a8] Added CLI 4.0 support to mono-api-check
+  * [5965895] Bumped clilibs to 2.10.3 where appropriate
+  * [e706e60] New lame API check tool: mono-api-source-check
+              (only use at your own risk!)
+
+  [ Zoltan Varga ]
+  * [300bb53] Apply a workaround for a gcc 4.6 problem on arm.
+
+ -- Mirco Bauer <meebey@debian.org>  Wed, 10 Aug 2011 23:52:12 +0200
+
+mono (2.10.1-4) experimental; urgency=low
+
+  [ Zoltan Varga ]
+  * [db3ee8c] Only use memory barriers on arm when running on armv6 or later.
+  * [cf1d8e8] Add a membar to libgc's UNLOCK () on arm. Fixes Mono#683409.
+
+  [ Jo Shields ]
+  * [0e3d427] Ensure SIGXFSZ is used instead of SIGPWR on kFreeBSD.
+              (Closes: #621907)
+  * [8cd4f00] Define CPU registers on kFreeBSD/AMD64, to prevent build
+              failures.
+
+  [ Mirco Bauer ]
+  * [9546eb7] Added armel specific symbols to libmono-2.0-1.symbols.armel
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 10 Apr 2011 17:16:47 +0200
+
+mono (2.10.1-3) experimental; urgency=low
+
+  [ Jo Shields ]
+  * [0fd2fc1] Tweak architecture checks in configure.in so kfreebsd-gnu is
+              considered an SGen-capable architecture. (closes: #621448)
+
+  [ Mirco Bauer ]
+  * [26a6ee8] Moved architecture dependent symbols into
+              libmono-2.0-1.symbols.$arch
+
+ -- Mirco Bauer <meebey@debian.org>  Sat, 09 Apr 2011 15:15:04 +0200
+
+mono (2.10.1-2) experimental; urgency=low
+
+  * [aba0fce] Dropped obsolete archs: arm, armeb and lpia;
+              no longer supported arch: s390;
+              added potential new archs: armhf, ppc64 and s390x;
+              only build and install sgen on supported archs
+  * [66a0541] kfreebsd support for Mono 2.10.1 - mainly backport of gc 6.8
+              (closes: #621031)
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 07 Apr 2011 01:33:02 +0200
+
+mono (2.10.1-1) experimental; urgency=low
+
+  * The "size does matter" release
+
+  [ Mirco Bauer ]
+  * New upstream release
+    + For release highlights see the NEWS.Debian file of the
+      mono-runtime package
+
+  [ Jo Shields ]
+  * [5c6aba5] Imported Upstream version 2.8
+  * [f85b0b1] Imported Upstream version 2.8.1
+
+  [ Mirco Bauer ]
+  * [01df276] Pass parallel variable in DEB_BUILD_OPTIONS to mono/Makefile
+  * [e3871f8] Build libgc before mono
+
+  [ Jo Shields ]
+  * [98cb87c] Imported Upstream version 2.10~rc1
+  * [b401a2a] Add test which is missing from 2.10~rc1 tarballs, causing test
+              suite to fail to build
+
+  [ Mirco Bauer ]
+  * [79f2862] Build eglib before libgc and made them parallel buildable
+  * [58bf7d7] Renamed libmono0 package to libmono-2.0-1 following the new
+              soname
+  * [f1e4e50] Provide deb-symbols for libmono-2.0-1
+  * [7be8ed1] Renamed libmono-dev package to libmono-2.0-dev and dropped
+              libglib2.0-dev dependency as Mono no longer makes use of the glib
+  * [d97f372] Moved mono.pc to libmono-cil-dev
+  * [3cd11ad] New mono-runtime-sgen package which contains the Mono VM with
+              a new garbage collector
+  * [7f3919a] Dropped libmono-firebirdsql1.7-cil package
+  * [c31f6e2] Stick to upstream's configure defaults except for ikvm and
+              quiet builds
+  * [de8c9aa] Removed obsolete cleanups
+  * [97c07fa] Removed obsolete doc dir symlinking removal code for Ubuntu
+  * [e6e31ff] Cleaned up Uploaders
+  * [3c24df0] Disable automatic AOT on "make install" as this needs to be done
+              on package install time
+  * [1ced0ac] Merged the install-arch and install-indep target into a single
+              install target
+  * [3a2409b] Disable libgc's parallel mark on powerpc as it FTBFS
+  * [97c6760] Added a 2nd test-suite pass with sgen
+  * [af7129a] Disable sgen on powerpc for now as it needs further porting
+  * [3f99e0e] Don't run the test-suite with sgen on powerpc
+
+  [ Jo Shields ]
+  * [9a320e5] Imported Upstream version 2.10.1
+
+  [ Mirco Bauer ]
+  * [e618805] Don't delete ltmain.sh in clean target as autoreconf is not
+              recreating it
+  * [38ccb49] Updated libmono-2.0-1.symbols for 2.10.1
+  * [0472e8b] Dropped license and copyright information of no longer
+              distributed FirebirdSql.Data.Firebird and Microsoft.JScript
+              assemblies
+  * [cb9cfec] Moved license and copyright information of RabbitMQ.Client to
+              distinct copyright files
+  * [d191bb3] Moved changelog entries older than 2.6.7-1 to changelog.1
+  * [4b69b38] Dropped mono-1.0-devel and merged mono-2.0-devel into mono-devel
+  * [f8e8352] Re-synced debhelper tools from cli-common 0.8~git.ca22e7 with
+              .NET 4.0 support
+  * [dac60fb] Ignore temporarily package build directories
+  * [78db0f9] Replaced depcrecated dh_clean -k call with dh_prep
+  * [4cd31f2] Forcely install jay
+  * [3e69ed3] Drop unwanted/incorrectly shipped files from upstream
+  * [a27bef2] Dropped obsolete and added missing manpages
+  * [b407a26] Make use of dh_install's --list-missing feature
+  * [37638d7] Dropped obsolete and added missing dllmaps
+  * [1597015] Bumped clilibs to >= 2.10.1 where needed
+  * [953569a] Dropped obsolete replaces << 1.2.4-1 lines from mono-dbg
+  * [ee0cbf6] Dropped prj2make-sharp package
+  * [61a9ed1] Updated debian/shlibs.local for Mono 2.10.1
+  * [0fa85d7] Updated mono-runtime.NEWS for Mono 2.10, 2.8 and 2.6
+  * [15fe448] Dropped all CLI 1.0 library and C# 1.0 compiler packages as
+              Mono 2.10 no longer supports the 1.0 runtime, added new packages
+              for all CLI 4.0 libraries and the C# 4.0 compiler and made
+              C# 4.0 the new default C# compiler.
+              All CLI 2.0 library packages are left for ABI and backwards
+              compatibility.
+  * [59b28b7] Sorted dependencies of libmono-cil-dev for easier tracking
+  * [9288af2] Added missing libmono-microsoft-csharp4.0-cil to libmono-cil-dev
+              dependencies
+  * [30cd43e] Added libmono-microsoft-csharp4.0-cil as manual dependency to
+              mono-dmcs as needed for dynamic types
+  * [f262b9f] Added debian/find-icalls.sh helper script which finds internal
+              calls from the source tree
+  * [ce1e2f5] Force the debian version. $(top_srcdir)/.git is no longer a good
+              indicator if this is an upstream git clone or a debian git clone
+  * [ebf531b] Switch to dpkg-source 3.0 (quilt) format
+  * [9b7ed73] Added missing Mono.WebBrowser.dll.config
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 05 Apr 2011 00:28:57 +0200
+
+mono (2.6.7-5) unstable; urgency=low
+
+  [ Zoltan Varga ]
+  * [7453b31] Fix a merge problem which broke tailcalls and F# support.
+    (closes: #607465)
+
+  [ Rodrigo Kumpera ]
+  * [e32c3aa] Check generic instantions for constraint violations.
+    (CVE-2010-4254, closes: #608288)
+  * [7905343] Fix corlib testsuite crash.
+  * [6eb9cab] Handle invalid instantiation of generic methods.
+  * [fbba0ca] Disable generic instance verification is security is off.
+
+  [ Mirco Bauer ]
+  * [ec09641] Disable the use of shared memory to make Mono reliable
+    even when /dev/shm gets exhausted.  (closes: #587948)
+
+ -- Mirco Bauer <meebey@debian.org>  Sun, 09 Jan 2011 19:38:15 +0100
+
+mono (2.6.7-4) unstable; urgency=high
+
+  [ Mirco Bauer ]
+  * [63821a1] Added libmono-nunit2.2-cil to conflicts and replaces of
+    libmono-cil-dev for smooth upgrade from lenny (closes: #602024)
+  * [0089f11] Moved the System.Data.Linq library into libmono-system-
+    data-linq2.0-cil to avoid an unneeded dependency chain for most
+    applications.
+  * [393dc41] Demote libmono-firebirdsql1.7-cil and mono-debugger from
+    recommends to suggests if built on Ubuntu.
+
+  [ Paolo Molaro ]
+  * [52727f0] Search for dllimported shared libs in the base directory,
+    not cwd. * loader.c: we don't search the current directory anymore
+    for shared libraries referenced in DllImport attributes, as it has a
+    slight security risk. We search in the same directory where the
+    referencing image was loaded from, instead.
+    (CVE-2010-4159, closes: #605097)
+
+  [ Zoltan Varga ]
+  * [f17ab04] Fix stack alignment when resuming from a signal handler in
+    the soft debugger.
+
+ -- Mirco Bauer <meebey@debian.org>  Mon, 06 Dec 2010 23:34:16 +0100
+
+mono (2.6.7-3) unstable; urgency=low
+
+  * The "welcome to new java refugees" release
+
+  [ Iain Lane ]
+  * [a2781e1] Add an environment variable to control X509 validation
+    mode, and set default to no check
+  * [a16f93a] Add --no-ext-diff to git diff call of git-test-debian-
+    patches
+
+  [ Mirco Bauer ]
+  * [cb9c6c2] Fixed manpage name sections. (closes: #595149)
+
+ -- Mirco Bauer <meebey@debian.org>  Thu, 09 Sep 2010 01:09:45 +0200
+
+mono (2.6.7-2) experimental; urgency=low
+
+  [ Mirco Bauer ]
+  * [d1bf954] Added missing tasks and targets files for xbuild 3.5
+  * [814bfd7] Bumped clilibs of libmono-data-tds{1,2}.0-cil, libmono-
+    security2.0-cil, libmono-microsoft-build2.0-cil and libmono-
+    debugger-soft0.0-cil
+  * [3c1d0ef] Added development symlink for System.Web.Mvc to libmono-
+    system-web-mvc1.0-cil
+
+  [ Iain Lane ]
+  * [754b410] Revert upstream commit 59db1f55409d80fc93ed, which
+    commented out the Requires line in mono.pc.in.
+
+  [ Jo Shields ]
+  * [ea1f755] Add full definitions for all AMD64 registers on kFreeBSD.
+    This fixes a FTBFS on kFreeBSD-AMD64.
+
+ -- Mirco Bauer <meebey@debian.org>  Tue, 24 Aug 2010 02:26:43 +0200
+
+mono (2.6.7-1) experimental; urgency=low
+
+  [ Mirco Bauer ]
+  * The "squeeze-ing the best out of Mono" release
+  * [c91fe56] Added git-dch settings
+  * [665316e] Imported Upstream version 2.6.7
+    + Includes ASP.NET MVC 2.0
+  * [1823ffa] Don't let git-import-orig do merges
+  * [9b50f29] Implemented tool to test merge all debian patch branches
+    against the upstream branch.
+  * [d06b9ad] Only merge branches that really begin with
+    debian/patches/*
+  * [822f606] Added System.Web.Mvc2 to debian/copyright
+  * [45d4f69] Added libmono-system-web-mvc2.0-cil package
+  * [b9b720e] Fix mono/test test suite compilation.
+
+  [ Andy Stührk ]
+  * [f6745b9] XplatUIX11.WorkingArea can segfault if the WM does not
+    support _NET_WORKAREA (Closes: #557229)
+    (thanks to Brian Pellin and Andy Stührk for the investigation and patch)
+
+ -- Mirco Bauer <meebey@debian.org>  Sat, 07 Aug 2010 00:35:39 +0200
+

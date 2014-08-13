@@ -1,0 +1,11 @@
+debian/tmp/usr/share/man/man1/mdassembler.1
+debian/tmp/usr/share/man/man1/mdoc.1
+debian/tmp/usr/share/man/man1/mdoc-assemble.1
+debian/tmp/usr/share/man/man1/mdoc-export-html.1
+debian/tmp/usr/share/man/man1/mdoc-export-msxdoc.1
+debian/tmp/usr/share/man/man1/mdoc-update.1
+debian/tmp/usr/share/man/man1/mdoc-validate.1
+debian/tmp/usr/share/man/man1/mdvalidater.1
+debian/tmp/usr/share/man/man1/monodocer.1
+debian/tmp/usr/share/man/man1/monodocs2html.1
+debian/tmp/usr/share/man/man5/mdoc.5

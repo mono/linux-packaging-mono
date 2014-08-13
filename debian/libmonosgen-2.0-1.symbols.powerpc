@@ -1,0 +1,8 @@
+#include "libmonosgen-2.0-1.symbols"
+ mono_exc_esp_offset@VER_1 3.2.1+dfsg
+ mono_hwcap_ppc_has_icache_snoop@VER_1 3.2.3+dfsg
+ mono_hwcap_ppc_has_move_fpr_gpr@VER_1 3.2.3+dfsg
+ mono_hwcap_ppc_has_multiple_ls_units@VER_1 3.2.3+dfsg
+ mono_hwcap_ppc_is_isa_2x@VER_1 3.2.3+dfsg
+ mono_hwcap_ppc_is_isa_64@VER_1 3.2.3+dfsg
+

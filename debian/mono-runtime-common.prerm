@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+if [ "$1" = remove ] && [ -x /usr/sbin/update-binfmts ]; then
+	update-binfmts --package mono-runtime --remove cli /usr/bin/cli
+fi
+
+#DEBHELPER#

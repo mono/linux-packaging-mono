@@ -1,0 +1,16 @@
+#!/bin/sh -e
+
+if [ configure = "$1" ] && [ -x /usr/sbin/update-binfmts ]; then
+	update-binfmts --import cli
+fi
+
+if [ configure = "$1" ] && [ -d /usr/share/dotnet/mono/ ] && [ -L /usr/share/dotnet/mono ]; then
+	# it's a symlink
+	rm /usr/share/dotnet/mono
+fi
+
+if [ "$1" = "configure" ]; then
+	ldconfig
+fi
+        
+#DEBHELPER#
