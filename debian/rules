@@ -164,10 +164,6 @@ install-stamp:
 	rm -f $(CURDIR)/debian/tmp/usr/lib/mono/2.0/Mono.C5.dll
 	# mono 2.10.1 bug, prj2make was removed but the start script not
 	rm -f $(CURDIR)/debian/tmp/usr/bin/prj2make
-	# mono 2.10.1 bug, this lib doesn't exist for .NET 4.0 and also has
-	# a wrong assembly version
-	rm -rf $(CURDIR)/debian/tmp/usr/lib/mono/gac/cscompmgd/0.0.0.0__*/
-	rm -f  $(CURDIR)/debian/tmp/usr/lib/mono/4.0/cscompmgd*
 
 	# copy missing 2.0 manpages
 	cp $(CURDIR)/debian/tmp/usr/share/man/man1/al.1 \
