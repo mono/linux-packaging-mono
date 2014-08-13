@@ -51,17 +51,6 @@ else
 	CONF_FLAGS += --with-sgen=no
 endif
 
-ifneq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
-	MINI_TEST = true
-	MONO_BOEHM_TEST = true
-	MONO_SGEN_TEST = true
-else
-	TIMEOUT = timeout -k 1h 1h
-	MINI_TEST = cd mono/mini && $(TIMEOUT) make check; $(KILL_MONO)
-	MONO_BOEHM_TEST = cd mono/tests && MONO_ENV_OPTIONS=--gc=boehm $(TIMEOUT) make test; $(KILL_MONO)
-	MONO_SGEN_TEST = cd mono/tests && MONO_ENV_OPTIONS=--gc=sgen $(TIMEOUT) make test; $(KILL_MONO)
-endif
-
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
@@ -111,17 +100,6 @@ build-stamp: configure-stamp
 	         debian/dh_clifixperms \
 	         debian/dh_monoaot
 
-	touch $@
-
-test: test-stamp
-test-stamp: build-stamp
-	-$(MINI_TEST)
-	-$(MONO_BOEHM_TEST)
-	-$(MONO_SGEN_TEST)
-	-$(KILL_MONO)
-	# funny bug-459094.cs creates too long directory names which
-	# pbuilder is unable to remove, eh
-	rm -rf mono/tests/abcde12345abcde12345abcde12345abcde12345/
 	touch $@
 
 clean:
@@ -349,7 +327,7 @@ binary-indep: build-stamp install-stamp
 	dh_md5sums -i
 	dh_builddeb -i
 
-binary-arch: build-stamp install-stamp test-stamp
+binary-arch: build-stamp install-stamp
 	dh_testdir
 	dh_testroot
 	
