@@ -560,6 +560,7 @@ Description: Mono.CompilerServices.SymbolWriter library (for CLI 4.0)
  for CLI 4.0.
 
 Package: libmono-csharp4.0c-cil
+Provides: libmono-csharp4.0-cil, libmono-csharp4.0a-cil, libmono-csharp4.0b-cil
 Conflicts: libmono-csharp4.0-cil (<< 3.2.1), libmono-csharp4.0a-cil (<< 3.2.3), libmono-csharp4.0b-cil (<< 3.2.8)
 Replaces: libmono-csharp4.0-cil (<< 3.2.1), libmono-csharp4.0a-cil (<< 3.2.3), libmono-csharp4.0b-cil (<< 3.2.8)
 Architecture: all
@@ -1911,6 +1912,7 @@ Description: Mono System.Runtime.DurableInstancing Library (for CLI 4.0)
  for CLI 4.0.
 
 Package: libmono-system-servicemodel4.0a-cil
+Provides: libmono-system-servicemodel4.0-cil
 Conflicts: libmono-system-servicemodel4.0-cil (<< 3.2.3)
 Replaces: libmono-system-servicemodel4.0-cil (<< 3.2.3)
 Architecture: all
@@ -2268,6 +2270,7 @@ Description: Mono System.Windows.Forms Library (for CLI 4.0)
  This package contains the Mono System.Windows.Forms library for CLI 4.0.
 
 Package: libmono-system-windows-forms-datavisualization4.0a-cil
+Provides: libmono-system-windows-forms-datavisualization4.0-cil
 Conflicts: libmono-system-windows-forms-datavisualization4.0-cil (<< 3.2.3)
 Replaces: libmono-system-windows-forms-datavisualization4.0-cil (<< 3.2.3)
 Architecture: all
@@ -2298,6 +2301,7 @@ Description: Mono System.Xaml Library (for CLI 4.0)
  This package contains the Mono System.Xaml library for CLI 4.0.
 
 Package: libmono-wcf3.0a-cil
+Provides: libmono-wcf3.0-cil
 Replaces: libmono-wcf3.0-cil (<< 3.2.3)
 Conflicts: libmono-wcf3.0-cil (<< 3.2.3)
 Architecture: all
@@ -2787,6 +2791,7 @@ Description: Mono Microsoft.Web.Infrastructure library (for CLI 4.0)
 
 Package: libmono-peapi2.0a-cil
 Architecture: all
+Provides: libmono-peapi2.0-cil
 Replaces: libmono-peapi2.0-cil
 Conflicts: libmono-peapi2.0-cil
 Depends: ${misc:Depends},
@@ -2802,6 +2807,7 @@ Description: Mono PEAPI library (for CLI 2.0)
 
 Package: libmono-peapi4.0a-cil
 Architecture: all
+Provides: libmono-peapi4.0-cil
 Replaces: libmono-peapi4.0-cil
 Conflicts: libmono-peapi4.0-cil
 Depends: ${misc:Depends},
@@ -2844,6 +2850,7 @@ Description: Mono Relaxng library (for CLI 4.0)
 
 Package: libmono-debugger-soft2.0a-cil
 Architecture: all
+Provides: libmono-debugger-soft2.0-cil
 Replaces: libmono-debugger-soft0.0-cil, libmono-debugger-soft2.0-cil
 Conflicts: libmono-debugger-soft0.0-cil, libmono-debugger-soft2.0-cil
 Depends: ${misc:Depends},
@@ -2860,6 +2867,7 @@ Description: Mono Soft Debugger library (for CLI 2.0)
 
 Package: libmono-debugger-soft4.0a-cil
 Architecture: all
+Provides: libmono-debugger-soft4.0-cil
 Replaces: libmono-debugger-soft4.0-cil
 Conflicts: libmono-debugger-soft4.0-cil
 Depends: ${misc:Depends},
