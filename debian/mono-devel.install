@@ -10,6 +10,7 @@ debian/tmp/usr/bin/disco
 debian/tmp/usr/bin/dtd2xsd
 debian/tmp/usr/bin/dtd2rng
 debian/tmp/usr/bin/genxs
+debian/tmp/usr/bin/ikdasm
 debian/tmp/usr/bin/ilasm
 debian/tmp/usr/bin/installvst
 debian/tmp/usr/bin/lc
@@ -98,6 +99,7 @@ debian/tmp/usr/lib/mono/2.0/wsdl.exe*
 debian/tmp/usr/lib/mono/4.5/wsdl.exe*
 debian/tmp/usr/lib/mono/2.0/xsd.exe*
 debian/tmp/usr/lib/mono/4.5/xsd.exe*
+debian/tmp/usr/lib/mono/4.5/ikdasm.exe*
 debian/tmp/usr/lib/mono/mono-configuration-crypto/
 debian/tmp/usr/lib/mono-source-libs/getline.cs
 debian/tmp/usr/lib/mono-source-libs/Options.cs
