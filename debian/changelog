@@ -1,3 +1,11 @@
+mono (3.6.0-0xamarin2) unstable; urgency=medium
+
+  * [10493a9] Add ikdasm to mono-devel
+  * [90e0f5a] Blanket install all Facades, rather than manually 
+    maintaining a list
+
+ -- Jo Shields <jo.shields@xamarin.com>  Wed, 20 Aug 2014 13:49:12 +0100
+
 mono (3.6.0-0xamarin1) unstable; urgency=medium
 
   * Initial release.
