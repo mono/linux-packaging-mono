@@ -54,9 +54,17 @@ Provides:       mono-xml-relaxng = %{version}
 Provides:       mono-ziplib = %{version}
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 %if %llvm == yes
+%if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
+Requires:       libmono-llvm0 = %{version}
+%else
 Recommends:     libmono-llvm0 = %{version}
 %endif
+%endif
+%if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
+Requires:       libgdiplus0
+%else
 Recommends:     libgdiplus0
+%endif
 Provides:       mono(Commons.Xml.Relaxng) = 1.0.5000.0
 Provides:       mono(CustomMarshalers) = 1.0.5000.0
 Provides:       mono(I18N) = 1.0.5000.0
