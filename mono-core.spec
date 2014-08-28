@@ -19,6 +19,7 @@
 
 %{!?ext_man: %define ext_man .gz}
 %define llvm no
+%global debug_package %{nil} 
 %define sgen yes
 
 Name:           mono-core
