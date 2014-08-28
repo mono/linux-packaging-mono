@@ -36,8 +36,13 @@ BuildRequires:  fdupes
 BuildRequires:  gcc-c++
 BuildRequires:  libgdiplus-devel
 BuildRequires:  libtool
+%if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 BuildRequires:  pkgconfig
+BuildRequires:  libX11-devel
+%else
+BuildRequires:  pkg-config
 BuildRequires:  xorg-x11-libX11-devel
+%endif
 BuildRequires:  zlib-devel
 %ifnarch ia64 %arm aarch64 s390
 BuildRequires:  valgrind-devel
