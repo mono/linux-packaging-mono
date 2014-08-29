@@ -17,7 +17,11 @@
 #
 
 
+%if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
+%define ext_man .gz
+%else
 %{!?ext_man: %define ext_man .gz}
+%endif
 %define llvm no
 %global debug_package %{nil} 
 %define sgen yes
