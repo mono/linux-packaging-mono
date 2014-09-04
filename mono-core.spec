@@ -27,7 +27,7 @@
 %define sgen yes
 
 Name:           mono-core
-Version:        3.6.0
+Version:        3.8.0
 Release:        0
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
