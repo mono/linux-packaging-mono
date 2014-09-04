@@ -180,7 +180,12 @@ typedef struct {
 #define MONO_CONTEXT_GET_BP(ctx) ((gpointer)((ctx)->rbp))
 #define MONO_CONTEXT_GET_SP(ctx) ((gpointer)((ctx)->rsp))
 
-#if defined(__native_client__)
+#if defined (HOST_WIN32) && !defined(__GNUC__)
+/* msvc doesn't support inline assembly, so have to use a separate .asm file */
+extern void mono_context_get_current (void *);
+#define MONO_CONTEXT_GET_CURRENT(ctx) do { mono_context_get_current((void*)&(ctx)); } while (0)
+
+#elif defined(__native_client__)
 #define MONO_CONTEXT_GET_CURRENT(ctx)	\
 	__asm__ __volatile__(	\
 		"movq $0x0,  %%nacl:0x00(%%r15, %0, 1)\n"	\

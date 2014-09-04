@@ -160,7 +160,7 @@ static gboolean missing_remsets;
 	if (*(ptr) && sgen_ptr_in_nursery ((char*)*(ptr))) { \
 		if (!sgen_get_remset ()->find_address ((char*)(ptr)) && !sgen_cement_lookup (*(ptr))) { \
 			SGEN_LOG (0, "Oldspace->newspace reference %p at offset %td in object %p (%s.%s) not found in remsets.", *(ptr), (char*)(ptr) - (char*)(obj), (obj), ((MonoObject*)(obj))->vtable->klass->name_space, ((MonoObject*)(obj))->vtable->klass->name); \
-			binary_protocol_missing_remset ((obj), (gpointer)LOAD_VTABLE ((obj)), (char*)(ptr) - (char*)(obj), *(ptr), (gpointer)LOAD_VTABLE(*(ptr)), object_is_pinned (*(ptr))); \
+			binary_protocol_missing_remset ((obj), (gpointer)LOAD_VTABLE ((obj)), (int) ((char*)(ptr) - (char*)(obj)), *(ptr), (gpointer)LOAD_VTABLE(*(ptr)), object_is_pinned (*(ptr))); \
 			if (!object_is_pinned (*(ptr)))								\
 				missing_remsets = TRUE;									\
 		}																\
@@ -220,7 +220,7 @@ is_major_or_los_object_marked (char *obj)
 	if (*(ptr) && !sgen_ptr_in_nursery ((char*)*(ptr)) && !is_major_or_los_object_marked ((char*)*(ptr))) { \
 		if (!sgen_get_remset ()->find_address_with_cards (start, cards, (char*)(ptr))) { \
 			SGEN_LOG (0, "major->major reference %p at offset %td in object %p (%s.%s) not found in remsets.", *(ptr), (char*)(ptr) - (char*)(obj), (obj), ((MonoObject*)(obj))->vtable->klass->name_space, ((MonoObject*)(obj))->vtable->klass->name); \
-			binary_protocol_missing_remset ((obj), (gpointer)LOAD_VTABLE ((obj)), (char*)(ptr) - (char*)(obj), *(ptr), (gpointer)LOAD_VTABLE(*(ptr)), object_is_pinned (*(ptr))); \
+			binary_protocol_missing_remset ((obj), (gpointer)LOAD_VTABLE ((obj)), (int) ((char*)(ptr) - (char*)(obj)), *(ptr), (gpointer)LOAD_VTABLE(*(ptr)), object_is_pinned (*(ptr))); \
 			missing_remsets = TRUE;				\
 		}																\
 	}																	\
@@ -640,7 +640,7 @@ static MonoObject *check_key = NULL;
 static RootRecord *check_root = NULL;
 
 static void
-check_root_obj_specific_ref_from_marker (void **obj)
+check_root_obj_specific_ref_from_marker (void **obj, void *gc_data)
 {
 	check_root_obj_specific_ref (check_root, check_key, *obj);
 }
@@ -669,7 +669,7 @@ scan_roots_for_specific_ref (MonoObject *key, int root_type)
 			return;
 		case ROOT_DESC_COMPLEX: {
 			gsize *bitmap_data = sgen_get_complex_descriptor_bitmap (desc);
-			int bwords = (*bitmap_data) - 1;
+			int bwords = (int) ((*bitmap_data) - 1);
 			void **start_run = start_root;
 			bitmap_data++;
 			while (bwords-- > 0) {
@@ -687,7 +687,7 @@ scan_roots_for_specific_ref (MonoObject *key, int root_type)
 		}
 		case ROOT_DESC_USER: {
 			MonoGCRootMarkFunc marker = sgen_get_user_descriptor_func (desc);
-			marker (start_root, check_root_obj_specific_ref_from_marker);
+			marker (start_root, check_root_obj_specific_ref_from_marker, NULL);
 			break;
 		}
 		case ROOT_DESC_RUN_LEN:
@@ -735,6 +735,13 @@ check_obj_not_in_domain (void **o)
 	g_assert (((MonoObject*)(*o))->vtable->domain != check_domain);
 }
 
+
+static void
+check_obj_not_in_domain_callback (void **o, void *gc_data)
+{
+	g_assert (((MonoObject*)(*o))->vtable->domain != check_domain);
+}
+
 void
 sgen_scan_for_registered_roots_in_domain (MonoDomain *domain, int root_type)
 {
@@ -761,7 +768,7 @@ sgen_scan_for_registered_roots_in_domain (MonoDomain *domain, int root_type)
 			break;
 		case ROOT_DESC_COMPLEX: {
 			gsize *bitmap_data = sgen_get_complex_descriptor_bitmap (desc);
-			int bwords = (*bitmap_data) - 1;
+			int bwords = (int)((*bitmap_data) - 1);
 			void **start_run = start_root;
 			bitmap_data++;
 			while (bwords-- > 0) {
@@ -779,7 +786,7 @@ sgen_scan_for_registered_roots_in_domain (MonoDomain *domain, int root_type)
 		}
 		case ROOT_DESC_USER: {
 			MonoGCRootMarkFunc marker = sgen_get_user_descriptor_func (desc);
-			marker (start_root, check_obj_not_in_domain);
+			marker (start_root, check_obj_not_in_domain_callback, NULL);
 			break;
 		}
 		case ROOT_DESC_RUN_LEN:
@@ -797,7 +804,7 @@ is_xdomain_ref_allowed (gpointer *ptr, char *obj, MonoDomain *domain)
 {
 	MonoObject *o = (MonoObject*)(obj);
 	MonoObject *ref = (MonoObject*)*(ptr);
-	int offset = (char*)(ptr) - (char*)o;
+	size_t offset = (char*)(ptr) - (char*)o;
 
 	if (o->vtable->klass == mono_defaults.thread_class && offset == G_STRUCT_OFFSET (MonoThread, internal_thread))
 		return TRUE;
@@ -846,7 +853,7 @@ check_reference_for_xdomain (gpointer *ptr, char *obj, MonoDomain *domain)
 {
 	MonoObject *o = (MonoObject*)(obj);
 	MonoObject *ref = (MonoObject*)*(ptr);
-	int offset = (char*)(ptr) - (char*)o;
+	size_t offset = (char*)(ptr) - (char*)o;
 	MonoClass *class;
 	MonoClassField *field;
 	char *str;
@@ -927,6 +934,7 @@ compare_xrefs (const void *a_ptr, const void *b_ptr)
 	return 0;
 }
 
+/*
 static void
 dump_processor_state (SgenBridgeProcessor *p)
 {
@@ -951,6 +959,7 @@ dump_processor_state (SgenBridgeProcessor *p)
 
 	printf ("-------\n");
 }
+*/
 
 gboolean
 sgen_compare_bridge_processor_results (SgenBridgeProcessor *a, SgenBridgeProcessor *b)

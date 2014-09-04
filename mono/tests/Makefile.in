@@ -269,6 +269,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -277,6 +278,7 @@ GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
+GTKX11 = @GTKX11@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -343,6 +345,7 @@ SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
 XGETTEXT = @XGETTEXT@
@@ -392,6 +395,7 @@ install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
 libgc_dir = @libgc_dir@
+libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
 libmono_ldflags = @libmono_ldflags@
@@ -453,6 +457,7 @@ STRESS_TESTS_SRC = \
 	monitor-stress.cs	\
 	thread-stress.cs	\
 	gc-stress.cs		\
+	gc-graystack-stress.cs		\
 	exit-stress.cs		\
 	process-stress.cs	\
 	assembly-load-stress.cs
@@ -809,7 +814,6 @@ BASE_TEST_CS_SRC = \
 	allow-synchronous-major.cs	\
 	unload-appdomain-on-shutdown.cs	\
 	block_guard_restore_aligment_on_exit.cs	\
-	finally_block_ending_in_dead_bb.cs	\
 	thread_static_gc_layout.cs \
 	sleep.cs
 
@@ -817,7 +821,8 @@ TEST_CS_SRC_DIST = \
 	$(BASE_TEST_CS_SRC)	\
 	async-exc-compilation.cs \
 	filter-stack.cs	\
-	finally_guard.cs
+	finally_guard.cs \
+	finally_block_ending_in_dead_bb.cs
 
 TEST_CS_SRC_GEN = \
 	runtime-invoke.gen.cs \
@@ -828,17 +833,21 @@ TEST_CS_SRC_GEN = \
 @AMD64_FALSE@@X86_TRUE@TEST_CS_SRC = $(BASE_TEST_CS_SRC) \
 @AMD64_FALSE@@X86_TRUE@	$(TEST_CS_SRC_GEN) \
 @AMD64_FALSE@@X86_TRUE@	async-exc-compilation.cs \
-@AMD64_FALSE@@X86_TRUE@	finally_guard.cs $(am__append_1)
+@AMD64_FALSE@@X86_TRUE@	finally_guard.cs \
+@AMD64_FALSE@@X86_TRUE@	finally_block_ending_in_dead_bb.cs \
+@AMD64_FALSE@@X86_TRUE@	$(am__append_1)
 @AMD64_TRUE@TEST_CS_SRC = $(BASE_TEST_CS_SRC) $(TEST_CS_SRC_GEN) \
 @AMD64_TRUE@	async-exc-compilation.cs finally_guard.cs \
-@AMD64_TRUE@	$(am__append_1)
+@AMD64_TRUE@	finally_block_ending_in_dead_bb.cs $(am__append_1)
 # #651684
 @AMD64_TRUE@PLATFORM_DISABLED_TESTS = finally_guard.exe \
 @AMD64_TRUE@	$(am__append_2)
 @ARM_TRUE@PLATFORM_DISABLED_TESTS = filter-stack.exe $(am__append_2)
 @HOST_WIN32_TRUE@@X86_TRUE@PLATFORM_DISABLED_TESTS =  \
 @HOST_WIN32_TRUE@@X86_TRUE@	async-exc-compilation.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	finally_guard.exe $(am__append_2)
+@HOST_WIN32_TRUE@@X86_TRUE@	finally_guard.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	finally_block_ending_in_dead_bb.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	$(am__append_2)
 # bug #319249
 @IA64_TRUE@PLATFORM_DISABLED_TESTS = exception17.exe winx64structs.exe \
 @IA64_TRUE@	$(am__append_2)
@@ -871,6 +880,7 @@ TEST_CS_SRC_GEN = \
 @NACL_CODEGEN_TRUE@	async-exc-compilation.exe bug-561239.exe \
 @NACL_CODEGEN_TRUE@	bug-70561.exe finalizer-abort.exe \
 @NACL_CODEGEN_TRUE@	finally_guard.exe \
+@NACL_CODEGEN_TRUE@	finally_block_ending_in_dead_bb.exe \
 @NACL_CODEGEN_TRUE@	main-returns-abort-resetabort.exe \
 @NACL_CODEGEN_TRUE@	main-returns-background-abort-resetabort.exe \
 @NACL_CODEGEN_TRUE@	thread6.exe threadpool-exceptions5.exe \
@@ -924,7 +934,8 @@ DISABLED_TESTS_WRENCH = \
 	assemblyresolve_event3.exe \
 	delegate2.exe	\
 	finally_guard.exe \
-	gc-altstack.exe
+	gc-altstack.exe \
+	generic-xdomain.2.exe
 
 AOT_DISABLED_TESTS = constraints-load.exe
 
@@ -1060,6 +1071,7 @@ SGEN_TESTS = \
 	sgen-cementing-stress.exe	\
 	sgen-case-23400.exe	\
 	sgen-new-threads-dont-join-stw.exe	\
+	gc-graystack-stress.exe	\
 	bug-17590.exe
 
 SGEN_CONFIGURATIONS = \
@@ -1112,7 +1124,7 @@ GSHARED_TESTS = \
 		generic-sealed-virtual.2.exe generic-system-arrays.2.exe	\
 		generic-stack-traces.2.exe generic-stack-traces2.2.exe		\
 		bug-472600.2.exe bug-473482.2.exe bug-473999.2.exe		\
-		bug-479763.2.exe generic-xdomain.2.exe				\
+		bug-479763.2.exe				\
 		generic-type-load-exception.2.exe bug-616463.exe	\
 		bug-1147.exe
 

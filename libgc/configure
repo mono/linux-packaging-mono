@@ -636,6 +636,7 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+WERROR_CFLAGS
 USE_LIBDIR_FALSE
 USE_LIBDIR_TRUE
 UNWINDLIBS
@@ -811,6 +812,7 @@ enable_full_debug
 enable_redirect_malloc
 enable_gc_assertions
 enable_quiet_build
+enable_werror
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1466,6 +1468,7 @@ Optional Features:
   --enable-redirect-malloc  redirect malloc and friends to GC routines
   --enable-gc-assertions  collector-internal assertion checking
   --enable-quiet-build  Enable quiet libgc build (on by default)
+  --enable-werror Pass -Werror to the C compiler
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -16209,8 +16212,8 @@ if test x$GCC != xyes; then
     dolt_supported=no
 fi
 case $host in
-i?86-*-linux*|x86_64-*-linux*|powerpc-*-linux*|powerpc64-*-linux* \
-|amd64-*-freebsd*|i?86-*-freebsd*|ia64-*-freebsd*|arm*-*-linux*|sparc*-*-linux*|mips*-*-linux*)
+i?86-*-linux*|i?86-apple-darwin*|x86_64-*-linux*|powerpc-*-linux*|powerpc64-*-linux* \
+|amd64-*-freebsd*|i?86-*-freebsd*|ia64-*-freebsd*|arm*-*-linux*|sparc*-*-linux*|mips*-*-linux*|x86_64-apple-darwin*|aarch64*)
     pic_options='-fPIC'
     ;;
 ?86-pc-cygwin*|i?86-pc-cygwin*)
@@ -16594,6 +16597,18 @@ fi
 else
   USE_LIBDIR_TRUE='#'
   USE_LIBDIR_FALSE=
+fi
+
+
+# Check whether --enable-werror was given.
+if test "${enable_werror+set}" = set; then :
+  enableval=$enable_werror; werror_flag=$enableval
+else
+  werror_flag=no
+fi
+
+if test x$werror_flag = xyes; then
+	WERROR_CFLAGS="-Werror"
 fi
 
 

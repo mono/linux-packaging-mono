@@ -171,6 +171,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -179,6 +180,7 @@ GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
+GTKX11 = @GTKX11@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -245,6 +247,7 @@ SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
 XGETTEXT = @XGETTEXT@
@@ -294,6 +297,7 @@ install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
 libgc_dir = @libgc_dir@
+libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
 libmono_ldflags = @libmono_ldflags@
@@ -624,9 +628,9 @@ test: mcs-do-test-profiles
 # depend on $(symlinks) to ensure 'etc/mono' directory exists
 etc/mono/config: ../data/config Makefile $(symlinks)
 	d=`cd ../support && pwd`; \
-	sed 's,target="libMonoPosixHelper[^"]*",target="'$$d/libMonoPosixHelper.la'",' ../data/config > $@t
+	sed 's,target="$(prefix)/lib/libMonoPosixHelper$(libsuffix)",target="'$$d'/libMonoPosixHelper.la",' ../data/config > $@t
 	if test -z "$(libgdiplus_loc)"; then :; else \
-	  sed 's,target="[^"]*libgdiplus[^"]*",target="$(libgdiplus_loc)",' $@t > $@tt; \
+	  sed 's,target="$(libgdiplus_install_loc)",target="$(libgdiplus_loc)",' $@t > $@tt; \
 	  mv -f $@tt $@t; fi
 	mv -f $@t $@
 

@@ -66,8 +66,7 @@
 #include <zlib.h>
 #endif
 
-/* the architecture needs a memory fence */
-#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__) || defined(__arm__))
+#if defined(__linux__)
 #include <unistd.h>
 #include <sys/syscall.h>
 #include "perf_event.h"
@@ -354,7 +353,12 @@ struct _LogBuffer {
 	unsigned char buf [1];
 };
 
-#define ENTER_LOG(lb,str) if ((lb)->locked) {write(2, str, strlen(str)); write(2, "\n", 1);return;} else {(lb)->locked++;}
+static inline void
+ign_res (int G_GNUC_UNUSED unused, ...)
+{
+}
+
+#define ENTER_LOG(lb,str) if ((lb)->locked) {ign_res (write(2, str, strlen(str))); ign_res (write(2, "\n", 1));return;} else {(lb)->locked++;}
 #define EXIT_LOG(lb) (lb)->locked--;
 
 typedef struct _StatBuffer StatBuffer;
@@ -379,7 +383,7 @@ struct _MonoProfiler {
 	StatBuffer *stat_buffers;
 	FILE* file;
 #if defined (HAVE_SYS_ZLIB)
-	gzFile *gzfile;
+	gzFile gzfile;
 #endif
 	uint64_t startup_time;
 	int pipe_output;
@@ -1233,7 +1237,7 @@ mono_sample_hit (MonoProfiler *profiler, unsigned char *ip, void *context)
 		char buf [256];
 		snprintf (buf, sizeof (buf), "hit at %p in thread %p after %llu ms\n", ip, (void*)thread_id (), (unsigned long long int)elapsed/100);
 		len = strlen (buf);
-		write (2, buf, len);
+		ign_res (write (2, buf, len));
 	}
 	sbuf = profiler->stat_buffers;
 	if (!sbuf)
@@ -1251,22 +1255,22 @@ mono_sample_hit (MonoProfiler *profiler, unsigned char *ip, void *context)
 		do {
 			oldsb = profiler->stat_buffers;
 			sbuf->next = oldsb;
-			foundsb = InterlockedCompareExchangePointer ((volatile void**)&profiler->stat_buffers, sbuf, oldsb);
+			foundsb = InterlockedCompareExchangePointer ((void * volatile*)&profiler->stat_buffers, sbuf, oldsb);
 		} while (foundsb != oldsb);
 		if (do_debug)
-			write (2, "overflow\n", 9);
+			ign_res (write (2, "overflow\n", 9));
 		/* notify the helper thread */
 		if (sbuf->next->next) {
 			char c = 0;
-			write (profiler->pipes [1], &c, 1);
+			ign_res (write (profiler->pipes [1], &c, 1));
 			if (do_debug)
-				write (2, "notify\n", 7);
+				ign_res (write (2, "notify\n", 7));
 		}
 	}
 	do {
 		old_data = sbuf->data;
 		new_data = old_data + 4 + bt_data.count * 3;
-		data = InterlockedCompareExchangePointer ((volatile void**)&sbuf->data, new_data, old_data);
+		data = InterlockedCompareExchangePointer ((void * volatile*)&sbuf->data, new_data, old_data);
 	} while (data != old_data);
 	if (old_data >= sbuf->data_end)
 		return; /* lost event */
@@ -1334,6 +1338,7 @@ add_code_pointer (uintptr_t ip)
 	num_code_pages += add_code_page (code_pages, size_code_pages, ip & CPAGE_MASK);
 }
 
+#if defined(HAVE_DL_ITERATE_PHDR) && defined(ELFMAG0)
 static void
 dump_ubin (const char *filename, uintptr_t load_addr, uint64_t offset, uintptr_t size)
 {
@@ -1351,6 +1356,7 @@ dump_ubin (const char *filename, uintptr_t load_addr, uint64_t offset, uintptr_t
 	memcpy (logbuffer->data, filename, len);
 	logbuffer->data += len;
 }
+#endif
 
 static void
 dump_usym (const char *name, uintptr_t value, uintptr_t size)
@@ -2089,7 +2095,7 @@ log_shutdown (MonoProfiler *prof)
 	if (prof->command_port) {
 		char c = 1;
 		void *res;
-		write (prof->pipes [1], &c, 1);
+		ign_res (write (prof->pipes [1], &c, 1));
 		pthread_join (prof->helper_thread, &res);
 	}
 #endif

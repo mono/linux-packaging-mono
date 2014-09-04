@@ -86,6 +86,9 @@ libmonoruntime_static_la_LIBADD = $(bundle_obj) $(libmonoruntime_la_LIBADD)
 null_sources = \
 	console-null.c
 
+null_gc_sources = \
+	null-gc.c
+
 common_sources = \
 	$(platform_sources)	\
 	assembly.c		\
@@ -159,7 +162,6 @@ common_sources = \
 	monitor.h		\
 	nacl-stub.c		\
 	normalization-tables.h	\
-	null-gc.c		\
 	number-formatter.h	\
 	object-internals.h	\
 	opcodes.c		\
@@ -194,7 +196,10 @@ common_sources = \
 	reflection-internals.h	\
 	file-mmap-posix.c	\
 	file-mmap-windows.c	\
-	file-mmap.h
+	file-mmap.h	\
+	object-offsets.h	\
+	abi-details.h	\
+	metadata-cross-helpers.c
 
 
 # These source files have compile time dependencies on GC code
@@ -266,7 +271,7 @@ sgen_sources = \
 	sgen-qsort.c	\
 	sgen-qsort.h
 
-libmonoruntime_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(boehm_sources)
+libmonoruntime_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES)
 
 libmonoruntimesgen_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(sgen_sources)

@@ -647,6 +647,7 @@ GUINT_TO_POINTER
 GINT_TO_POINTER
 GPOINTER_TO_UINT
 GPOINTER_TO_INT
+WERROR_CFLAGS
 PKG_CONFIG
 HAVE_ALLOCA_H
 G_HAVE_ISO_VARARGS
@@ -811,6 +812,7 @@ enable_libtool_lock
 enable_rpath
 with_libiconv_prefix
 with_crosspkgdir
+enable_werror
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1455,6 +1457,7 @@ Optional Features:
                           optimize for fast installation [default=yes]
   --disable-libtool-lock  avoid locking (might break parallel builds)
   --disable-rpath         do not hardcode runtime library paths
+  --enable-werror Pass -Werror to the C compiler
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -11970,8 +11973,8 @@ if test x$GCC != xyes; then
     dolt_supported=no
 fi
 case $host in
-i?86-*-linux*|x86_64-*-linux*|powerpc-*-linux*|powerpc64-*-linux* \
-|amd64-*-freebsd*|i?86-*-freebsd*|ia64-*-freebsd*|arm*-*-linux*|sparc*-*-linux*|mips*-*-linux*)
+i?86-*-linux*|i?86-apple-darwin*|x86_64-*-linux*|powerpc-*-linux*|powerpc64-*-linux* \
+|amd64-*-freebsd*|i?86-*-freebsd*|ia64-*-freebsd*|arm*-*-linux*|sparc*-*-linux*|mips*-*-linux*|x86_64-apple-darwin*|aarch64*)
     pic_options='-fPIC'
     ;;
 ?86-pc-cygwin*|i?86-pc-cygwin*)
@@ -13889,7 +13892,7 @@ if test "x$have_iso_varargs" = "xyes"; then
 fi
 
 
-for ac_header in getopt.h sys/time.h sys/wait.h pwd.h langinfo.h iconv.h localcharset.h sys/types.h
+for ac_header in getopt.h sys/select.h sys/time.h sys/wait.h pwd.h langinfo.h iconv.h localcharset.h sys/types.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -14005,6 +14008,18 @@ if test "${with_crosspkgdir+set}" = set; then :
 		export PKG_CONFIG_PATH
 	fi
 
+fi
+
+
+# Check whether --enable-werror was given.
+if test "${enable_werror+set}" = set; then :
+  enableval=$enable_werror; werror_flag=$enableval
+else
+  werror_flag=no
+fi
+
+if test x$werror_flag = xyes; then
+	WERROR_CFLAGS="-Werror"
 fi
 
 

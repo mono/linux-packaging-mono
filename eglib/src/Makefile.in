@@ -102,14 +102,14 @@ am__DEPENDENCIES_1 =
 libeglib_static_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 am__libeglib_static_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
-	garray.c gbytearray.c gerror.c ghashtable.c giconv.c gmem.c \
-	gmodule.h goutput.c gqsort.c gstr.c gslist.c gstring.c \
-	gptrarray.c glist.c gqueue.c gpath.c gshell.c gspawn.c gfile.c \
-	gfile-posix.c gpattern.c gmarkup.c gutf8.c gunicode.c \
-	unicode-data.h gdate-unix.c gdir-unix.c gfile-unix.c \
-	gmisc-unix.c gmodule-unix.c gtimer-unix.c eglib-config.hw \
-	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
-	gmodule-win32.c gtimer-win32.c vasprintf.c
+	garray.c gbytearray.c gerror.c vasprintf.h ghashtable.c \
+	giconv.c gmem.c gmodule.h goutput.c gqsort.c gstr.c gslist.c \
+	gstring.c gptrarray.c glist.c gqueue.c gpath.c gshell.c \
+	gspawn.c gfile.c gfile-posix.c gpattern.c gmarkup.c gutf8.c \
+	gunicode.c unicode-data.h gdate-unix.c gdir-unix.c \
+	gfile-unix.c gmisc-unix.c gmodule-unix.c gtimer-unix.c \
+	eglib-config.hw gdate-win32.c gdir-win32.c gfile-win32.c \
+	gmisc-win32.c gmodule-win32.c gtimer-win32.c vasprintf.c
 am__objects_1 = libeglib_static_la-gdate-unix.lo \
 	libeglib_static_la-gdir-unix.lo \
 	libeglib_static_la-gfile-unix.lo \
@@ -150,14 +150,14 @@ libeglib_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libeglib_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @HOST_WIN32_TRUE@libeglib_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
-	garray.c gbytearray.c gerror.c ghashtable.c giconv.c gmem.c \
-	gmodule.h goutput.c gqsort.c gstr.c gslist.c gstring.c \
-	gptrarray.c glist.c gqueue.c gpath.c gshell.c gspawn.c gfile.c \
-	gfile-posix.c gpattern.c gmarkup.c gutf8.c gunicode.c \
-	unicode-data.h gdate-unix.c gdir-unix.c gfile-unix.c \
-	gmisc-unix.c gmodule-unix.c gtimer-unix.c eglib-config.hw \
-	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
-	gmodule-win32.c gtimer-win32.c vasprintf.c
+	garray.c gbytearray.c gerror.c vasprintf.h ghashtable.c \
+	giconv.c gmem.c gmodule.h goutput.c gqsort.c gstr.c gslist.c \
+	gstring.c gptrarray.c glist.c gqueue.c gpath.c gshell.c \
+	gspawn.c gfile.c gfile-posix.c gpattern.c gmarkup.c gutf8.c \
+	gunicode.c unicode-data.h gdate-unix.c gdir-unix.c \
+	gfile-unix.c gmisc-unix.c gmodule-unix.c gtimer-unix.c \
+	eglib-config.hw gdate-win32.c gdir-win32.c gfile-win32.c \
+	gmisc-win32.c gmodule-win32.c gtimer-win32.c vasprintf.c
 am__objects_6 = libeglib_la-gdate-unix.lo libeglib_la-gdir-unix.lo \
 	libeglib_la-gfile-unix.lo libeglib_la-gmisc-unix.lo \
 	libeglib_la-gmodule-unix.lo libeglib_la-gtimer-unix.lo
@@ -332,6 +332,7 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
+WERROR_CFLAGS = @WERROR_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -389,6 +390,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LTLIBRARIES = libeglib.la libeglib-static.la
+AM_CFLAGS = $(WERROR_CFLAGS)
 win_files = \
 	eglib-config.hw \
 	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
@@ -412,6 +414,7 @@ libeglib_la_SOURCES = \
 	garray.c	\
 	gbytearray.c	\
 	gerror.c	\
+	vasprintf.h     \
 	ghashtable.c 	\
 	giconv.c	\
 	gmem.c       	\

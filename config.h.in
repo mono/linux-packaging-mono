@@ -320,7 +320,7 @@
 /* Define to 1 if you have the `getpriority' function. */
 #undef HAVE_GETPRIORITY
 
-/* Define to 1 if you have the `GetProcessId' function. */
+/* Define if GetProcessId is available */
 #undef HAVE_GETPROCESSID
 
 /* Define to 1 if you have the `getpwent' function. */
@@ -923,9 +923,6 @@
 
 /* native types */
 #undef MONO_NATIVE_TYPES
-
-/* Sizeof sock_un.sun_path */
-#undef MONO_SIZEOF_SUNPATH
 
 /* Reduce runtime requirements (and capabilities) */
 #undef MONO_SMALL_CONFIG

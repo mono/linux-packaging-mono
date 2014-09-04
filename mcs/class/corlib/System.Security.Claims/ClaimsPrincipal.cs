@@ -59,14 +59,16 @@ namespace System.Security.Claims {
 			if (identities == null)
 				throw new ArgumentNullException ("identities");
 			
-			identities = new List<ClaimsIdentity> (identities);
+			this.identities = new List<ClaimsIdentity> (identities);
 		}
 
 		public ClaimsPrincipal (IIdentity identity)
 		{
 			if (identity == null)
 				throw new ArgumentNullException ("identity");
-			// TODO
+
+			identities = new List<ClaimsIdentity> ();
+			identities.Add (new ClaimsIdentity (identity));
 		}
 
 		public ClaimsPrincipal (IPrincipal principal)
