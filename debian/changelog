@@ -1,3 +1,14 @@
+mono (3.8.0-0xamarin1) unstable; urgency=medium
+
+  * [6a76a29] Imported Upstream version 3.8.0
+  * [0729228] Make monodoc-manual Recommend: not Depend: on a manual reader. 
+    This matches the upstream behaviour, whilst still allowing Apt to be 
+    aware of an important packaging relationship (and in most end-user 
+    cases, will install the manual reader anyway)
+  * [3def398] Add new symbols to .symbols files
+
+ -- Jo Shields <jo.shields@xamarin.com>  Thu, 04 Sep 2014 09:44:45 +0100
+
 mono (3.6.0-0xamarin2) unstable; urgency=medium
 
   * [10493a9] Add ikdasm to mono-devel
