@@ -79,12 +79,14 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@noinst_PROGRAMS = test-sgen-qsort$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@	test-gc-memfuncs$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@	test-mono-linked-list-set$(EXEEXT)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@TESTS = test-sgen-qsort$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@	test-gc-memfuncs$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@	test-mono-linked-list-set$(EXEEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@noinst_PROGRAMS = test-sgen-qsort$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@	test-gc-memfuncs$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@	test-mono-linked-list-set$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@	test-conc-hashtable$(EXEEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@TESTS = test-sgen-qsort$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@	test-gc-memfuncs$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@	test-mono-linked-list-set$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@	test-conc-hashtable$(EXEEXT)
 subdir = mono/unit-tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -105,37 +107,45 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am__test_gc_memfuncs_SOURCES_DIST = test-gc-memfuncs.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@am_test_gc_memfuncs_OBJECTS = test_gc_memfuncs-test-gc-memfuncs.$(OBJEXT)
-test_gc_memfuncs_OBJECTS = $(am_test_gc_memfuncs_OBJECTS)
+am__test_conc_hashtable_SOURCES_DIST = test-conc-hashtable.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@am_test_conc_hashtable_OBJECTS = test_conc_hashtable-test-conc-hashtable.$(OBJEXT)
+test_conc_hashtable_OBJECTS = $(am_test_conc_hashtable_OBJECTS)
 am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = ../metadata/libmonoruntimesgen.la \
 	../io-layer/libwapi.la ../utils/libmonoutils.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_DEPENDENCIES = $(am__DEPENDENCIES_2)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_conc_hashtable_DEPENDENCIES = $(am__DEPENDENCIES_2)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+test_conc_hashtable_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_conc_hashtable_CFLAGS) $(CFLAGS) \
+	$(test_conc_hashtable_LDFLAGS) $(LDFLAGS) -o $@
+am__test_gc_memfuncs_SOURCES_DIST = test-gc-memfuncs.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@am_test_gc_memfuncs_OBJECTS = test_gc_memfuncs-test-gc-memfuncs.$(OBJEXT)
+test_gc_memfuncs_OBJECTS = $(am_test_gc_memfuncs_OBJECTS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_DEPENDENCIES = $(am__DEPENDENCIES_2)
 test_gc_memfuncs_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_gc_memfuncs_CFLAGS) $(CFLAGS) \
 	$(test_gc_memfuncs_LDFLAGS) $(LDFLAGS) -o $@
 am__test_mono_linked_list_set_SOURCES_DIST =  \
 	test-mono-linked-list-set.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@am_test_mono_linked_list_set_OBJECTS = test_mono_linked_list_set-test-mono-linked-list-set.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@am_test_mono_linked_list_set_OBJECTS = test_mono_linked_list_set-test-mono-linked-list-set.$(OBJEXT)
 test_mono_linked_list_set_OBJECTS =  \
 	$(am_test_mono_linked_list_set_OBJECTS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_DEPENDENCIES = $(am__DEPENDENCIES_2)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_DEPENDENCIES = $(am__DEPENDENCIES_2)
 test_mono_linked_list_set_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_mono_linked_list_set_CFLAGS) $(CFLAGS) \
 	$(test_mono_linked_list_set_LDFLAGS) $(LDFLAGS) -o $@
 am__test_sgen_qsort_SOURCES_DIST = test-sgen-qsort.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@am_test_sgen_qsort_OBJECTS = test_sgen_qsort-test-sgen-qsort.$(OBJEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@am_test_sgen_qsort_OBJECTS = test_sgen_qsort-test-sgen-qsort.$(OBJEXT)
 test_sgen_qsort_OBJECTS = $(am_test_sgen_qsort_OBJECTS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_DEPENDENCIES = $(am__DEPENDENCIES_2)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_DEPENDENCIES = $(am__DEPENDENCIES_2)
 test_sgen_qsort_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(test_sgen_qsort_CFLAGS) $(CFLAGS) $(test_sgen_qsort_LDFLAGS) \
@@ -170,10 +180,11 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(test_gc_memfuncs_SOURCES) \
+SOURCES = $(test_conc_hashtable_SOURCES) $(test_gc_memfuncs_SOURCES) \
 	$(test_mono_linked_list_set_SOURCES) \
 	$(test_sgen_qsort_SOURCES)
-DIST_SOURCES = $(am__test_gc_memfuncs_SOURCES_DIST) \
+DIST_SOURCES = $(am__test_conc_hashtable_SOURCES_DIST) \
+	$(am__test_gc_memfuncs_SOURCES_DIST) \
 	$(am__test_mono_linked_list_set_SOURCES_DIST) \
 	$(am__test_sgen_qsort_SOURCES_DIST)
 am__can_run_installinfo = \
@@ -449,6 +460,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -457,6 +469,7 @@ GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
+GTKX11 = @GTKX11@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -523,6 +536,7 @@ SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
 XGETTEXT = @XGETTEXT@
@@ -572,6 +586,7 @@ install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
 libgc_dir = @libgc_dir@
+libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
 libmono_ldflags = @libmono_ldflags@
@@ -611,18 +626,22 @@ TEST_LDADD = ../metadata/libmonoruntimesgen.la ../io-layer/libwapi.la ../utils/l
 	$(LIBGC_LIBS) $(GLIB_LIBS) -lm $(LIBICONV)
 
 @PLATFORM_DARWIN_TRUE@TEST_LDFLAGS = -framework CoreFoundation -framework Foundation
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_SOURCES = test-sgen-qsort.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_CFLAGS = $(TEST_CFLAGS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_LDADD = $(TEST_LDADD)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_LDFLAGS = $(TEST_LDFLAGS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_SOURCES = test-gc-memfuncs.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_CFLAGS = $(TEST_CFLAGS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_LDADD = $(TEST_LDADD)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_LDFLAGS = $(TEST_LDFLAGS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_SOURCES = test-mono-linked-list-set.c
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_CFLAGS = $(TEST_CFLAGS)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_LDADD = $(TEST_LDADD)
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_LDFLAGS = $(TEST_LDFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_SOURCES = test-sgen-qsort.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_CFLAGS = $(TEST_CFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_LDADD = $(TEST_LDADD)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_LDFLAGS = $(TEST_LDFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_SOURCES = test-gc-memfuncs.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_CFLAGS = $(TEST_CFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_LDADD = $(TEST_LDADD)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_gc_memfuncs_LDFLAGS = $(TEST_LDFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_SOURCES = test-mono-linked-list-set.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_CFLAGS = $(TEST_CFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_LDADD = $(TEST_LDADD)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_mono_linked_list_set_LDFLAGS = $(TEST_LDFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_conc_hashtable_SOURCES = test-conc-hashtable.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_conc_hashtable_CFLAGS = $(TEST_CFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_conc_hashtable_LDADD = $(TEST_LDADD)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@PLATFORM_LINUX_FALSE@@SUPPORT_BOEHM_TRUE@test_conc_hashtable_LDFLAGS = $(TEST_LDFLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -667,6 +686,10 @@ clean-noinstPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+test-conc-hashtable$(EXEEXT): $(test_conc_hashtable_OBJECTS) $(test_conc_hashtable_DEPENDENCIES) $(EXTRA_test_conc_hashtable_DEPENDENCIES) 
+	@rm -f test-conc-hashtable$(EXEEXT)
+	$(AM_V_CCLD)$(test_conc_hashtable_LINK) $(test_conc_hashtable_OBJECTS) $(test_conc_hashtable_LDADD) $(LIBS)
+
 test-gc-memfuncs$(EXEEXT): $(test_gc_memfuncs_OBJECTS) $(test_gc_memfuncs_DEPENDENCIES) $(EXTRA_test_gc_memfuncs_DEPENDENCIES) 
 	@rm -f test-gc-memfuncs$(EXEEXT)
 	$(AM_V_CCLD)$(test_gc_memfuncs_LINK) $(test_gc_memfuncs_OBJECTS) $(test_gc_memfuncs_LDADD) $(LIBS)
@@ -685,6 +708,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gc_memfuncs-test-gc-memfuncs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Po@am__quote@
@@ -712,6 +736,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+test_conc_hashtable-test-conc-hashtable.o: test-conc-hashtable.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -MT test_conc_hashtable-test-conc-hashtable.o -MD -MP -MF $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Tpo -c -o test_conc_hashtable-test-conc-hashtable.o `test -f 'test-conc-hashtable.c' || echo '$(srcdir)/'`test-conc-hashtable.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Tpo $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-conc-hashtable.c' object='test_conc_hashtable-test-conc-hashtable.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -c -o test_conc_hashtable-test-conc-hashtable.o `test -f 'test-conc-hashtable.c' || echo '$(srcdir)/'`test-conc-hashtable.c
+
+test_conc_hashtable-test-conc-hashtable.obj: test-conc-hashtable.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -MT test_conc_hashtable-test-conc-hashtable.obj -MD -MP -MF $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Tpo -c -o test_conc_hashtable-test-conc-hashtable.obj `if test -f 'test-conc-hashtable.c'; then $(CYGPATH_W) 'test-conc-hashtable.c'; else $(CYGPATH_W) '$(srcdir)/test-conc-hashtable.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Tpo $(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-conc-hashtable.c' object='test_conc_hashtable-test-conc-hashtable.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_conc_hashtable_CFLAGS) $(CFLAGS) -c -o test_conc_hashtable-test-conc-hashtable.obj `if test -f 'test-conc-hashtable.c'; then $(CYGPATH_W) 'test-conc-hashtable.c'; else $(CYGPATH_W) '$(srcdir)/test-conc-hashtable.c'; fi`
 
 test_gc_memfuncs-test-gc-memfuncs.o: test-gc-memfuncs.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gc_memfuncs_CFLAGS) $(CFLAGS) -MT test_gc_memfuncs-test-gc-memfuncs.o -MD -MP -MF $(DEPDIR)/test_gc_memfuncs-test-gc-memfuncs.Tpo -c -o test_gc_memfuncs-test-gc-memfuncs.o `test -f 'test-gc-memfuncs.c' || echo '$(srcdir)/'`test-gc-memfuncs.c
@@ -971,6 +1009,13 @@ test-gc-memfuncs.log: test-gc-memfuncs$(EXEEXT)
 test-mono-linked-list-set.log: test-mono-linked-list-set$(EXEEXT)
 	@p='test-mono-linked-list-set$(EXEEXT)'; \
 	b='test-mono-linked-list-set'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test-conc-hashtable.log: test-conc-hashtable$(EXEEXT)
+	@p='test-conc-hashtable$(EXEEXT)'; \
+	b='test-conc-hashtable'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

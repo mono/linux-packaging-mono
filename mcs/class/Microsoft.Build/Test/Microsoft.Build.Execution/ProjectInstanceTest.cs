@@ -291,6 +291,56 @@ namespace MonoTests.Microsoft.Build.Execution
 			Assert.IsNotNull (p, "#1");
 			Assert.AreEqual ("False", p.EvaluatedValue, "#2");
 		}
+
+		[Test]
+		public void ConditionalExpression ()
+		{
+			string project_xml = @"<Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+	<PropertyGroup>
+		<NoCompilerStandardLib>true</NoCompilerStandardLib>
+                <ResolveAssemblyReferencesDependsOn>$(ResolveAssemblyReferencesDependsOn);_AddCorlibReference</ResolveAssemblyReferencesDependsOn>
+        </PropertyGroup>
+</Project>";
+			var xml = XmlReader.Create (new StringReader (project_xml));
+			var root = ProjectRootElement.Create (xml);
+			root.FullPath = "ProjectInstanceTest.ConditionalExpression.proj";
+			var proj = new ProjectInstance (root);
+			var p = proj.GetProperty ("ResolveAssemblyReferencesDependsOn");
+			Assert.IsNotNull (p, "#1");
+			Assert.AreEqual (";_AddCorlibReference", p.EvaluatedValue, "#2");
+		}
+
+		[Test]
+		[Category ("NotWorking")] // until we figure out why it fails on wrench.
+		public void ItemsInTargets ()
+		{
+			string project_xml = @"<Project DefaultTargets='Default' xmlns='http://schemas.microsoft.com/developer/msbuild/2003'>
+	<Target Name='Default'>
+		<PropertyGroup>
+			<_ExplicitMSCorlibPath>$([Microsoft.Build.Utilities.ToolLocationHelper]::GetPathToStandardLibraries ('$(TargetFrameworkIdentifier)', '$(TargetFrameworkVersion)', '$(TargetFrameworkProfile)'))\mscorlib.dll</_ExplicitMSCorlibPath>
+		</PropertyGroup>
+		<ItemGroup>
+			<_ExplicitReference
+				Include='$(_ExplicitMSCorlibPath)'
+				Condition='Exists($(_ExplicitMSCorlibPath))'>
+				<Private>false</Private>
+			</_ExplicitReference>
+		</ItemGroup>
+	</Target>
+	<Import Project='$(MSBuildBinPath)\\Microsoft.CSharp.targets' />
+</Project>";
+			var xml = XmlReader.Create (new StringReader (project_xml));
+			var root = ProjectRootElement.Create (xml);
+			root.FullPath = "ProjectInstanceTest.ConditionalExpression.proj";
+			var proj = new ProjectInstance (root, null, "4.0", ProjectCollection.GlobalProjectCollection);
+			proj.Build ();
+			// make sure the property value expansion is done successfully.
+			Assert.IsTrue (!string.IsNullOrEmpty (proj.GetPropertyValue ("_ExplicitMSCorlibPath")), "premise: propertyValue by ToolLocationHelper func call");
+			var items = proj.GetItems ("_ExplicitReference");
+			// make sure items are stored after build.
+			Assert.IsTrue (items.Any (), "items.Any");
+			Assert.IsTrue (!string.IsNullOrEmpty (items.First ().EvaluatedInclude), "item.EvaluatedInclude");
+		}
 	}
 	
 	namespace SubNamespace

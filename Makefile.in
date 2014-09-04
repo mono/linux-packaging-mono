@@ -85,7 +85,7 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(srcdir)/config.h.in mkinstalldirs \
 	$(srcdir)/mono-core.spec.in $(srcdir)/mono-uninstalled.pc.in \
 	AUTHORS COPYING.LIB ChangeLog NEWS compile config.guess \
-	config.rpath config.sub install-sh missing ltmain.sh
+	config.rpath config.sub depcomp install-sh missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -246,6 +246,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -254,6 +255,7 @@ GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
+GTKX11 = @GTKX11@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -320,6 +322,7 @@ SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
 XGETTEXT = @XGETTEXT@
@@ -369,6 +372,7 @@ install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
 libgc_dir = @libgc_dir@
+libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
 libmono_ldflags = @libmono_ldflags@
@@ -403,6 +407,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
+AM_CFLAGS = $(WERROR_CFLAGS)
 MONOTOUCH_SUBDIRS = $(libgc_dir) eglib/src mono
 @CROSS_COMPILING_FALSE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples msvc $(docs_dir)
 @CROSS_COMPILING_FALSE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@SUBDIRS = $(libgc_dir) eglib/src mono runtime
@@ -936,7 +941,9 @@ GIT_DIR ?= $(srcdir)/.git
 dist-hook:
 	test -d $(distdir)/mcs || mkdir $(distdir)/mcs
 	d=`cd $(distdir)/mcs && pwd`; cd $(mcs_topdir) && $(MAKE) distdir=$$d dist-recursive
-	rm -rf `find $(top_distdir)/external -path '*\.git' -and -type d`
+	rm -rf `find $(top_distdir)/external -path '*\.git'`
+	rm -f `find $(top_distdir)/external -path '*\.exe'`
+	rm -f `find $(top_distdir)/external -path '*\.dll'`
 	cp mcs/class/lib/basic/System.Configuration.dll mcs/class/lib/monolite/
 	cp mcs/class/lib/basic/System.Security.dll mcs/class/lib/monolite/
 .PHONY: get-monolite-latest 

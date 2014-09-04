@@ -252,6 +252,7 @@ STRIP = @STRIP@
 THREADDLLIBS = @THREADDLLIBS@
 UNWINDLIBS = @UNWINDLIBS@
 VERSION = @VERSION@
+WERROR_CFLAGS = @WERROR_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@

@@ -382,6 +382,7 @@ STRIP = @STRIP@
 THREADDLLIBS = @THREADDLLIBS@
 UNWINDLIBS = @UNWINDLIBS@
 VERSION = @VERSION@
+WERROR_CFLAGS = @WERROR_CFLAGS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -490,7 +491,7 @@ EXTRA_libmonogc_la_SOURCES = alpha_mach_dep.S \
 libmonogc_static_la_SOURCES = $(libmonogc_la_SOURCES)
 libmonogc_static_la_LIBADD = $(libmonogc_la_LIBADD)
 libmonogc_static_la_LDFLAGS = -static
-AM_CFLAGS = @GC_CFLAGS@
+AM_CFLAGS = $(WERROR_CFLAGS) @GC_CFLAGS@
 @CPLUSPLUS_FALSE@extra_checks = 
 @CPLUSPLUS_TRUE@extra_checks = test_cpp
 

@@ -923,6 +923,7 @@ class_member_declaration
 	| indexer_declaration
 	| operator_declaration
 	| constructor_declaration
+	| primary_constructor_body
 	| destructor_declaration
 	| type_declaration
 	| attributes_without_members
@@ -934,6 +935,33 @@ class_member_declaration
 		$$ = null;
 		lexer.parsing_generic_declaration = false;
 	  }	
+	;
+
+primary_constructor_body
+	: OPEN_BRACE
+	  {
+		current_local_parameters = current_type.PrimaryConstructorParameters;
+		if (current_local_parameters == null) {
+			report.Error (9010, GetLocation ($1), "Primary constructor body is not allowed");
+			current_local_parameters = ParametersCompiled.EmptyReadOnlyParameters;
+		}
+
+		++lexer.parsing_block;
+		start_block (GetLocation ($1));
+	  }
+	  opt_statement_list block_end
+	  {
+		current_local_parameters = null;
+		var t = current_type as ClassOrStruct;
+		if (t != null) {
+			var b = (ToplevelBlock) $4;
+			if (t.PrimaryConstructorBlock != null) {
+				report.Error (8041, b.StartLocation, "Primary constructor already has a body");
+			} else {
+				t.PrimaryConstructorBlock = b;
+			}
+		}
+	  }
 	;
 
 struct_declaration
@@ -1415,7 +1443,28 @@ method_header
 
 method_body
 	: block
+	| expression_block
 	| SEMICOLON		{ $$ = null; }
+	;
+
+expression_block
+	: ARROW
+	 {
+		if (lang_version < LanguageVersion.V_6) {
+			FeatureIsNotAvailable (GetLocation ($1), "expression bodied members");
+		}
+
+		++lexer.parsing_block;
+		start_block (GetLocation ($1));
+	 }
+	 expression SEMICOLON
+	 {
+		lexer.parsing_block = 0;
+		current_block.AddStatement (new ContextualReturn ((Expression) $3));
+		var b = end_block (GetLocation ($4));
+		b.IsCompilerGenerated = true;
+		$$ = b;
+	 }
 	;
 
 opt_formal_parameter_list
@@ -1708,13 +1757,14 @@ arglist_modifier
 	  		report.Error (1669, GetLocation ($1), "__arglist is not valid in this context");
 	  }
 	;
-	
+
 property_declaration
 	: opt_attributes
 	  opt_modifiers
 	  member_type
 	  member_declaration_name
 	  {
+		lexer.parsing_generic_declaration = false;
 		if (doc_support)
 			tmpComment = Lexer.consume_doc_comment ();
 	  }
@@ -1742,10 +1792,57 @@ property_declaration
 	  CLOSE_BRACE
 	  {
 		lbag.AppendToMember (current_property, GetLocation ($10));
+		lexer.parsing_modifiers = true;
+	  }
+	  opt_property_initializer
+	  {
 		current_property = null;
+	  }
+	| opt_attributes
+	  opt_modifiers
+	  member_type
+	  member_declaration_name
+	  {
+		lexer.parsing_generic_declaration = false;
+		if (doc_support)
+			tmpComment = Lexer.consume_doc_comment ();
+		current_local_parameters = ParametersCompiled.EmptyReadOnlyParameters;
+	  }
+	  expression_block
+	  {
+		var type = (FullNamedExpression) $3;
+		var property = new Property (current_type, type, (Modifiers) $2,
+			(MemberName) $4, (Attributes) $1);
+
+		if (type.Type != null && type.Type.Kind == MemberKind.Void)
+			report.Error (547, GetLocation ($3), "`{0}': property or indexer cannot have void type", property.GetSignatureForError ());
+
+		property.Get = new Property.GetMethod (property, Modifiers.COMPILER_GENERATED, null, property.Location);
+		property.Get.Block = (ToplevelBlock) $6;
+
+		current_type.AddMember (property);
+
+		current_local_parameters = null;
 	  }
 	;
 
+opt_property_initializer
+	: /* empty */
+	| ASSIGN
+	  {
+		++lexer.parsing_block;
+		current_local_parameters = ParametersCompiled.EmptyReadOnlyParameters;
+		start_block (GetLocation ($1));
+	  }
+	  expression SEMICOLON
+	  {
+		--lexer.parsing_block;
+		((Property)current_property).Initializer = (Expression) $3;
+		lbag.AppendToMember (current_property, GetLocation ($1), GetLocation ($4));
+		end_block (GetLocation ($4));
+		current_local_parameters = null;
+	  }
+	;
 
 indexer_declaration
 	: opt_attributes opt_modifiers
@@ -1777,24 +1874,34 @@ indexer_declaration
 		}
 
 		lexer.PropertyParsing = true;
+		current_local_parameters = (ParametersCompiled) $7;
 	  }
-	  OPEN_BRACE accessor_declarations 
+	  indexer_body
 	  {
-		lexer.PropertyParsing = false;
-	  }
-	  CLOSE_BRACE
-	  {
+ 		lexer.PropertyParsing = false;
+		current_local_parameters = null;
+
 		if (current_property.AccessorFirst != null && current_property.AccessorFirst.Block == null)
 			((Indexer) current_property).ParameterInfo.CheckParameters (current_property);
 	  
 		if (doc_support)
 			current_property.DocComment = ConsumeStoredComment ();
 			
-		lbag.AppendToMember (current_property, GetLocation ($10), GetLocation ($13));
 		current_property = null;		
 	  }
 	;
 
+indexer_body
+	: OPEN_BRACE accessor_declarations CLOSE_BRACE
+	  {
+		lbag.AppendToMember (current_property, GetLocation ($1), GetLocation ($3));
+	  }
+	| expression_block
+	  {
+		current_property.Get = new Indexer.GetIndexerMethod (current_property, Modifiers.COMPILER_GENERATED, current_local_parameters, null, current_property.Location);
+		current_property.Get.Block = (ToplevelBlock) $1;
+	  }
+	;
 
 accessor_declarations
 	: get_accessor_declaration
@@ -2017,7 +2124,7 @@ operator_declaration
 	: opt_attributes opt_modifiers operator_declarator 
 	  {
 	  }
-	  operator_body
+	  method_body
 	  {
 		OperatorDeclaration decl = (OperatorDeclaration) $3;
 		if (decl != null) {
@@ -2043,11 +2150,6 @@ operator_declaration
 		current_local_parameters = null;
 	  }
 	;
-
-operator_body 
-	: block
-	| SEMICOLON { $$ = null; }
-	; 
 
 operator_type
 	: type_expression_or_array
@@ -4166,6 +4268,16 @@ additive_expression
 
 		$$ = new Is ((Expression) $1, null, GetLocation ($2));
 	  }
+	| AWAIT IS type
+	  {
+		var lt = (LocatedToken) $1;
+		$$ = new Is (new SimpleName (lt.Value, lt.Location), (Expression) $3, GetLocation ($2));
+	  }
+	| AWAIT AS type
+	  {
+		var lt = (LocatedToken) $1;
+		$$ = new As (new SimpleName (lt.Value, lt.Location), (Expression) $3, GetLocation ($2));
+	  }
 	;
 
 shift_expression
@@ -4666,6 +4778,9 @@ primary_parameters
 
 		// Cannot use opt_formal_parameter_list because it can be shared instance for empty parameters
 	  	lbag.AppendToMember (current_container, GetLocation ($1), GetLocation ($3));
+
+		if (lang_version < LanguageVersion.V_6)
+			FeatureIsNotAvailable (GetLocation ($1), "primary constructor");
 	  }
 	;
 
@@ -4682,14 +4797,19 @@ opt_primary_parameters_with_class_base
 	  {
 		$$ = $1;
 	  }
+	| primary_parameters class_base
+	  {
+		$$ = $1;
+	  }
 	| primary_parameters class_base OPEN_PARENS
 	  {
 		++lexer.parsing_block;
+		current_type.PrimaryConstructorBaseArgumentsStart = GetLocation ($3);
 	  }
 	  opt_argument_list CLOSE_PARENS
 	  {
-		lbag.AppendToMember (current_container, GetLocation ($3), GetLocation ($6));
-		((Class)current_type).PrimaryConstructorBaseArguments = (Arguments) $5;
+		lbag.AppendToMember (current_container, GetLocation ($6));
+		current_type.PrimaryConstructorBaseArguments = (Arguments) $5;
 		--lexer.parsing_block;
 
 		$$ = $1;

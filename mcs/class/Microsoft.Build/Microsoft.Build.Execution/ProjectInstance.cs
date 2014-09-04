@@ -164,7 +164,7 @@ namespace Microsoft.Build.Execution
 				// FIXME: this is kind of workaround for unavoidable issue that PLATFORM=* is actually given
 				// on some platforms and that prevents setting default "PLATFORM=AnyCPU" property.
 				if (!string.Equals ("PLATFORM", (string) p.Key, StringComparison.OrdinalIgnoreCase))
-					this.properties [(string) p.Key] = new ProjectPropertyInstance ((string) p.Key, false, (string) p.Value);
+					this.properties [(string) p.Key] = new ProjectPropertyInstance ((string) p.Key, true, (string) p.Value);
 			foreach (var p in global_properties)
 				this.properties [p.Key] = new ProjectPropertyInstance (p.Key, false, p.Value);
 			var tools = projects.GetToolset (tools_version) ?? projects.GetToolset (projects.DefaultToolsVersion);
@@ -256,7 +256,7 @@ namespace Microsoft.Build.Execution
 
 		void EvaluateItems (ProjectRootElement xml, IEnumerable<ProjectElement> elements)
 		{
-			foreach (var child in elements) {
+			foreach (var child in elements.Reverse ()) {
 				var ige = child as ProjectItemGroupElement;
 				if (ige != null) {
 					foreach (var p in ige.Items) {
@@ -435,6 +435,7 @@ namespace Microsoft.Build.Execution
 			var parameters = new BuildParameters (projects) {
 				ForwardingLoggers = remoteLoggers,
 				Loggers = loggers,
+				DefaultToolsVersion = projects.DefaultToolsVersion,
 			};
 			var requestData = new BuildRequestData (this, targets ?? DefaultTargets.ToArray ());
 			var result = manager.Build (parameters, requestData);

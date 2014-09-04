@@ -856,13 +856,13 @@ mono_jit_info_add_aot_module (MonoImage *image, gpointer start, gpointer end)
 {
 	MonoJitInfo *ji;
 
-	mono_appdomains_lock ();
+	g_assert (mono_root_domain);
+	mono_domain_lock (mono_root_domain);
 
 	/*
 	 * We reuse MonoJitInfoTable to store AOT module info,
 	 * this gives us async-safe lookup.
 	 */
-	g_assert (mono_root_domain);
 	if (!mono_root_domain->aot_modules) {
 		mono_root_domain->num_jit_info_tables ++;
 		mono_root_domain->aot_modules = jit_info_table_new (mono_root_domain);
@@ -874,7 +874,7 @@ mono_jit_info_add_aot_module (MonoImage *image, gpointer start, gpointer end)
 	ji->code_size = (guint8*)end - (guint8*)start;
 	jit_info_table_add (mono_root_domain, &mono_root_domain->aot_modules, ji);
 
-	mono_appdomains_unlock ();
+	mono_domain_unlock (mono_root_domain);
 }
 
 void
@@ -2023,7 +2023,7 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 	/* Close dynamic assemblies first, since they have no ref count */
 	for (tmp = domain->domain_assemblies; tmp; tmp = tmp->next) {
 		MonoAssembly *ass = tmp->data;
-		if (!ass->image || !ass->image->dynamic)
+		if (!ass->image || !image_is_dynamic (ass->image))
 			continue;
 		mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_ASSEMBLY, "Unloading domain %s[%p], assembly %s[%p], ref_count=%d", domain->friendly_name, domain, ass->aname.name, ass, ass->ref_count);
 		if (!mono_assembly_close_except_image_pools (ass))
@@ -2034,7 +2034,7 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 		MonoAssembly *ass = tmp->data;
 		if (!ass)
 			continue;
-		if (!ass->image || ass->image->dynamic)
+		if (!ass->image || image_is_dynamic (ass->image))
 			continue;
 		mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_ASSEMBLY, "Unloading domain %s[%p], assembly %s[%p], ref_count=%d", domain->friendly_name, domain, ass->aname.name, ass, ass->ref_count);
 		if (!mono_assembly_close_except_image_pools (ass))

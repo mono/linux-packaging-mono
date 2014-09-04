@@ -620,6 +620,11 @@ namespace Mono.CSharp {
 			spec.SetMetaInfo (type);
 		}
 
+		public void Define (TypeParameter tp)
+		{
+			builder = tp.builder;
+		}
+
 		public void EmitConstraints (GenericTypeParameterBuilder builder)
 		{
 			var attr = GenericParameterAttributes.None;
@@ -1047,7 +1052,8 @@ namespace Mono.CSharp {
 					continue;
 				}
 
-				types [i] = ((TypeParameterSpec)t).GetEffectiveBase ();
+				var tps = t as TypeParameterSpec;
+				types [i] = tps != null ? tps.GetEffectiveBase () : t;
 			}
 
 			if (HasTypeConstraint)
@@ -1349,7 +1355,15 @@ namespace Mono.CSharp {
 
 			if (TypeArguments != null) {
 				foreach (var t in TypeArguments) {
-					if (((TypeParameterSpec) t).IsConvertibleToInterface (iface))
+					var tps = t as TypeParameterSpec;
+					if (tps != null) {
+						if (tps.IsConvertibleToInterface (iface))
+							return true;
+
+						continue;
+					}
+
+					if (t.ImplementsInterface (iface, false))
 						return true;
 				}
 			}
@@ -1464,6 +1478,9 @@ namespace Mono.CSharp {
 					var ac = ec as ArrayContainer;
 					if (ac != null)
 						return ArrayContainer.MakeType (context.Module, et, ac.Rank);
+
+					if (ec is PointerContainer)
+						return PointerContainer.MakeType (context.Module, et);
 
 					throw new NotImplementedException ();
 				}

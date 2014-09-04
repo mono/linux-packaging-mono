@@ -145,7 +145,8 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	mono-threads-windows.c mono-threads.h mono-tls.h mono-tls.c \
 	linux_magic.h mono-memory-model.h atomic.h atomic.c \
 	mono-hwcap.h mono-hwcap.c bsearch.h bsearch.c \
-	mono-signal-handler.h mach-support-x86.c mach-support-amd64.c \
+	mono-signal-handler.h mono-conc-hashtable.h \
+	mono-conc-hashtable.c mach-support-x86.c mach-support-amd64.c \
 	mach-support-arm.c mach-support-unknown.c mono-hwcap-x86.c \
 	mono-hwcap-x86.h mono-hwcap-arm.c mono-hwcap-arm.h \
 	mono-hwcap-arm64.c mono-hwcap-arm64.h mono-hwcap-mips.c \
@@ -165,7 +166,7 @@ am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	mono-linked-list-set.lo mono-threads.lo mono-threads-posix.lo \
 	mono-threads-mach.lo mono-threads-mach-helper.lo \
 	mono-threads-windows.lo mono-tls.lo atomic.lo mono-hwcap.lo \
-	bsearch.lo
+	bsearch.lo mono-conc-hashtable.lo
 @CROSS_COMPILE_FALSE@@X86_TRUE@am__objects_2 = mach-support-x86.lo
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@am__objects_3 =  \
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@	mach-support-amd64.lo
@@ -325,6 +326,7 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
+GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
@@ -333,6 +335,7 @@ GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
+GTKX11 = @GTKX11@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -399,6 +402,7 @@ SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
 XGETTEXT = @XGETTEXT@
@@ -448,6 +452,7 @@ install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
 libgc_dir = @libgc_dir@
+libgdiplus_install_loc = @libgdiplus_install_loc@
 libgdiplus_loc = @libgdiplus_loc@
 libmono_cflags = @libmono_cflags@
 libmono_ldflags = @libmono_ldflags@
@@ -583,7 +588,9 @@ monoutils_sources = \
 	mono-hwcap.c	\
 	bsearch.h	\
 	bsearch.c	\
-	mono-signal-handler.h
+	mono-signal-handler.h	\
+	mono-conc-hashtable.h	\
+	mono-conc-hashtable.c
 
 arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
@@ -670,6 +677,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mach-support-x86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mach-support.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-codeman.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-conc-hashtable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-counters.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-dl.Plo@am__quote@
