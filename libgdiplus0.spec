@@ -19,7 +19,7 @@
 %define real_name libgdiplus
 
 Name:           libgdiplus0
-Version:        3.6
+Version:        3.8
 Release:        0
 Url:            http://go-mono.org/
 Source0:        http://download.mono-project.com/sources/%{real_name}/%{real_name}-%{version}.tar.gz
