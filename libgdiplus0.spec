@@ -30,6 +30,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Provides:       libgdiplus
 BuildRequires:  autoconf
 BuildRequires:  automake
+BuildRequires:  make
 BuildRequires:  libtool
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 BuildRequires:  pkgconfig
