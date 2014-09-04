@@ -38,6 +38,7 @@ BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
 BuildRequires:  which
+BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
 BuildRequires:  libgdiplus-devel
