@@ -260,6 +260,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_domain_is_unloading@VER_1 3.2.1+dfsg
  mono_domain_owns_vtable_slot@VER_1 3.2.1+dfsg
  mono_domain_set@VER_1 3.2.1+dfsg
+ mono_domain_set_config@VER_1 3.8.0
  mono_domain_set_internal@VER_1 3.2.1+dfsg
  mono_domain_try_type_resolve@VER_1 3.2.1+dfsg
  mono_domain_try_unload@VER_1 3.2.1+dfsg
@@ -350,6 +351,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_gc_reference_queue_add@VER_1 3.2.8+dfsg
  mono_gc_reference_queue_free@VER_1 3.2.8+dfsg
  mono_gc_reference_queue_new@VER_1 3.2.8+dfsg
+ mono_gc_register_finalizer_callbacks@VER_1 3.8.0
  mono_gc_toggleref_add@VER_1 3.6.0
  mono_gc_toggleref_register_callback@VER_1 3.6.0
  mono_gc_register_bridge_callbacks@VER_1 3.2.8+dfsg
@@ -745,6 +747,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_ptr_class_get@VER_1 3.2.1+dfsg
  mono_raise_exception@VER_1 3.2.1+dfsg
  mono_realloc_native_code@VER_1 3.2.1+dfsg
+ mono_reflection_assembly_get_assembly@VER_1 3.8.0
  mono_reflection_free_type_info@VER_1 3.2.1+dfsg
  mono_reflection_get_custom_attrs@VER_1 3.2.1+dfsg
  mono_reflection_get_custom_attrs_blob@VER_1 3.2.1+dfsg
