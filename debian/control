@@ -161,8 +161,8 @@ Depends: ${misc:Depends},
          mono-2.0-service (= ${source:Version}),
          mono-4.0-service (= ${source:Version}),
          monodoc-base (= ${source:Version}),
+         monodoc-manual (= ${source:Version}),
          libmono-cil-dev (= ${source:Version})
-Recommends: monodoc-manual (= ${source:Version})
 Description: complete Mono runtime, development tools and all libraries
  Mono is a platform for running and developing applications based on the
  ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
