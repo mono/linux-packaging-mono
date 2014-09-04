@@ -3444,7 +3444,7 @@ Description: shared MonoDoc binaries
 Package: monodoc-manual
 Architecture: all
 Section: doc
-Depends: ${misc:Depends}, monodoc-browser | monodoc-http | monodoc-viewer
+Recommends: ${misc:Depends}, monodoc-browser | monodoc-http | monodoc-viewer
 Suggests: monodoc-gtk-manual,
  monodoc-gecko-manual,
  monodoc-nunit-manual
