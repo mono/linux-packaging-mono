@@ -37,6 +37,7 @@ Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.ta
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
+BuildRequires:  which
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
 BuildRequires:  libgdiplus-devel
