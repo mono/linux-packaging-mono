@@ -826,6 +826,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_single_method_list@VER_1 3.2.8+dfsg
  mono_single_method_regression_opt@VER_1 3.2.8+dfsg
  mono_stack_walk@VER_1 3.2.1+dfsg
+ mono_stack_walk_async_safe@VER_1 3.10.0-0xamarin1
  mono_stack_walk_no_il@VER_1 3.2.1+dfsg
  mono_store_remote_field@VER_1 3.2.1+dfsg
  mono_store_remote_field_new@VER_1 3.2.1+dfsg
@@ -833,6 +834,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_string_equal@VER_1 3.2.1+dfsg
  mono_string_from_bstr@VER_1 3.2.1+dfsg
  mono_string_from_utf16@VER_1 3.2.1+dfsg
+ mono_string_from_utf32@VER_1 3.10.0-0xamarin1
  mono_string_hash@VER_1 3.2.1+dfsg
  mono_string_intern@VER_1 3.2.1+dfsg
  mono_string_is_interned@VER_1 3.2.1+dfsg
@@ -841,8 +843,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_string_new_len@VER_1 3.2.1+dfsg
  mono_string_new_size@VER_1 3.2.1+dfsg
  mono_string_new_utf16@VER_1 3.2.1+dfsg
+ mono_string_new_utf32@VER_1 3.10.0-0xamarin1
  mono_string_new_wrapper@VER_1 3.2.1+dfsg
  mono_string_to_utf16@VER_1 3.2.1+dfsg
+ mono_string_to_utf32@VER_1 3.10.0-0xamarin1
  mono_string_to_utf8@VER_1 3.2.1+dfsg
  mono_string_to_utf8_checked@VER_1 3.2.1+dfsg
  mono_stringify_assembly_name@VER_1 3.2.1+dfsg
@@ -854,6 +858,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_create@VER_1 3.2.1+dfsg
  mono_thread_current@VER_1 3.2.1+dfsg
  mono_thread_detach@VER_1 3.2.1+dfsg
+ mono_thread_detach_if_exiting@VER_1 3.10.0-0xamarin1
  mono_thread_exit@VER_1 3.2.1+dfsg
  mono_thread_get_main@VER_1 3.2.1+dfsg
  mono_thread_get_undeniable_exception@VER_1 3.2.1+dfsg
@@ -876,7 +881,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_tls_key_get_offset@VER_1 3.2.8+dfsg
  mono_tls_key_set_offset@VER_1 3.2.8+dfsg
  mono_trace_set_level_string@VER_1 3.2.1+dfsg
+ mono_trace_set_log_handler@VER_1 3.10.0-0xamarin1
  mono_trace_set_mask_string@VER_1 3.2.1+dfsg
+ mono_trace_set_print_handler@VER_1 3.10.0-0xamarin1
+ mono_trace_set_printerr_handler@VER_1 3.10.0-0xamarin1
  mono_trampoline_code@VER_1 3.2.1+dfsg
  mono_type_create_from_typespec@VER_1 3.2.1+dfsg
  mono_type_full_name@VER_1 3.2.1+dfsg
