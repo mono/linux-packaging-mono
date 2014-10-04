@@ -1,3 +1,10 @@
+mono (3.10.0-0xamarin1) unstable; urgency=medium
+
+  * [172c8e3] Imported Upstream version 3.10.0
+  * [e503fac] Refreshed symbols files
+
+ -- Jo Shields <jo.shields@xamarin.com>  Sat, 04 Oct 2014 12:34:15 +0100
+
 mono (3.8.0-0xamarin1) unstable; urgency=medium
 
   * [6a76a29] Imported Upstream version 3.8.0
