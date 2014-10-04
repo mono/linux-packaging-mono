@@ -100,8 +100,7 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwapi_la_DEPENDENCIES =
 am__libwapi_la_SOURCES_DIST = access.h collection.c collection.h \
-	context.c context.h critical-sections.c critical-sections.h \
-	critical-section-private.h error.c error.h events.c events.h \
+	context.c context.h error.c error.h events.c events.h \
 	event-private.h handles.c handles.h handles-private.h io.c \
 	io.h io-portability.c io-portability.h io-private.h io-layer.h \
 	locking.c macros.h messages.c messages.h misc.c misc-private.h \
@@ -114,11 +113,11 @@ am__libwapi_la_SOURCES_DIST = access.h collection.c collection.h \
 	types.h uglify.h versioninfo.c versioninfo.h wait.c wait.h \
 	wapi_glob.h wapi_glob.c wapi.h wapi-private.h wthreads.c \
 	io-layer-dummy.c
-am__objects_1 = collection.lo context.lo critical-sections.lo error.lo \
-	events.lo handles.lo io.lo io-portability.lo locking.lo \
-	messages.lo misc.lo mutexes.lo posix.lo processes.lo \
-	security.lo semaphores.lo shared.lo sockets.lo system.lo \
-	timefuncs.lo versioninfo.lo wait.lo wapi_glob.lo wthreads.lo
+am__objects_1 = collection.lo context.lo error.lo events.lo handles.lo \
+	io.lo io-portability.lo locking.lo messages.lo misc.lo \
+	mutexes.lo posix.lo processes.lo security.lo semaphores.lo \
+	shared.lo sockets.lo system.lo timefuncs.lo versioninfo.lo \
+	wait.lo wapi_glob.lo wthreads.lo
 am__objects_2 =
 am__objects_3 = io-layer-dummy.lo
 @HOST_WIN32_FALSE@am_libwapi_la_OBJECTS = $(am__objects_1) \
@@ -403,7 +402,6 @@ OTHER_H = \
 	access.h	\
 	collection.h	\
 	context.h	\
-	critical-sections.h	\
 	error.h		\
 	events.h	\
 	handles.h	\
@@ -433,9 +431,6 @@ OTHER_SRC = \
 	collection.h		\
 	context.c		\
 	context.h		\
-	critical-sections.c	\
-	critical-sections.h	\
-	critical-section-private.h	\
 	error.c			\
 	error.h			\
 	events.c		\
@@ -564,7 +559,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/context.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/critical-sections.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/events.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/handles.Plo@am__quote@

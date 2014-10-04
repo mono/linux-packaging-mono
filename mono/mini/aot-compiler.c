@@ -206,7 +206,7 @@ typedef struct MonoAotCompile {
 	MonoAotStats stats;
 	int method_index;
 	char *static_linking_symbol;
-	CRITICAL_SECTION mutex;
+	mono_mutex_t mutex;
 	gboolean use_bin_writer;
 	gboolean gas_line_numbers;
 	MonoImageWriter *w;
@@ -254,8 +254,8 @@ typedef struct {
 	gboolean jit_used, llvm_used;
 } MonoPltEntry;
 
-#define mono_acfg_lock(acfg) EnterCriticalSection (&((acfg)->mutex))
-#define mono_acfg_unlock(acfg) LeaveCriticalSection (&((acfg)->mutex))
+#define mono_acfg_lock(acfg) mono_mutex_lock (&((acfg)->mutex))
+#define mono_acfg_unlock(acfg) mono_mutex_unlock (&((acfg)->mutex))
 
 /* This points to the current acfg in LLVM mode */
 static MonoAotCompile *llvm_acfg;
@@ -2666,8 +2666,10 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 		case MONO_WRAPPER_LDFLDA:
 		case MONO_WRAPPER_STFLD:
 		case MONO_WRAPPER_ISINST: {
-			MonoClass *proxy_class = mono_marshal_get_wrapper_info (method);
-			encode_klass_ref (acfg, proxy_class, p, &p);
+			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
+
+			g_assert (info);
+			encode_klass_ref (acfg, info->d.proxy.klass, p, &p);
 			break;
 		}
 		case MONO_WRAPPER_LDFLD_REMOTE:
@@ -5043,6 +5045,7 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 		} else {
 			encode_value (0, p, &p);
 		}
+		encode_value (patch_info->data.del_tramp->virtual, p, &p);
 		break;
 	case MONO_PATCH_INFO_FIELD:
 	case MONO_PATCH_INFO_SFLDA:
@@ -5330,18 +5333,7 @@ emit_exception_debug_info (MonoAotCompile *acfg, MonoCompile *cfg)
 		encoded = mono_unwind_ops_encode (cfg->unwind_ops, &encoded_len);
 
 		unwind_desc = get_unwind_info_offset (acfg, encoded, encoded_len);
-		g_assert (unwind_desc < 0xffff);
-		if (cfg->has_unwind_info_for_epilog) {
-			/*
-			 * The lower 16 bits identify the unwind descriptor, the upper 16 bits contain the offset of
-			 * the start of the epilog from the end of the method.
-			 */
-			g_assert (cfg->code_size - cfg->epilog_begin < 0xffff);
-			encode_value (((cfg->code_size - cfg->epilog_begin) << 16) | unwind_desc, p, &p);
-			g_free (encoded);
-		} else {
-			encode_value (unwind_desc, p, &p);
-		}
+		encode_value (unwind_desc, p, &p);
 	} else {
 		encode_value (jinfo->unwind_info, p, &p);
 	}
@@ -5440,6 +5432,7 @@ emit_exception_debug_info (MonoAotCompile *acfg, MonoCompile *cfg)
 
 		eh_info = mono_jit_info_get_arch_eh_info (jinfo);
 		encode_value (eh_info->stack_size, p, &p);
+		encode_value (eh_info->epilog_size, p, &p);
 	}
 
 	if (jinfo->has_generic_jit_info) {
@@ -8708,7 +8701,7 @@ acfg_create (MonoAssembly *ass, guint32 opts)
 	acfg->klass_blob_hash = g_hash_table_new (NULL, NULL);
 	acfg->method_blob_hash = g_hash_table_new (NULL, NULL);
 	acfg->plt_entry_debug_sym_cache = g_hash_table_new (g_str_hash, g_str_equal);
-	InitializeCriticalSection (&acfg->mutex);
+	mono_mutex_init_recursive (&acfg->mutex);
 
 	return acfg;
 }

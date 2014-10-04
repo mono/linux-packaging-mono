@@ -55,7 +55,7 @@ MonoDefaults mono_defaults;
  * See domain-internals.h for locking policy in combination with the
  * domain lock.
  */
-static CRITICAL_SECTION loader_mutex;
+static mono_mutex_t loader_mutex;
 static gboolean loader_lock_inited;
 
 /* Statistics */
@@ -83,7 +83,7 @@ mono_loader_init ()
 	static gboolean inited;
 
 	if (!inited) {
-		InitializeCriticalSection (&loader_mutex);
+		mono_mutex_init_recursive (&loader_mutex);
 		loader_lock_inited = TRUE;
 
 		mono_native_tls_alloc (&loader_error_thread_id, NULL);
@@ -110,7 +110,7 @@ mono_loader_cleanup (void)
 	mono_native_tls_free (loader_error_thread_id);
 	mono_native_tls_free (loader_lock_nest_id);
 
-	DeleteCriticalSection (&loader_mutex);
+	mono_mutex_destroy (&loader_mutex);
 	loader_lock_inited = FALSE;	
 }
 
@@ -1098,7 +1098,6 @@ method_from_methodspec (MonoImage *image, MonoGenericContext *context, guint32 i
 	mono_metadata_decode_value (ptr, &ptr);
 	ptr++;
 	param_count = mono_metadata_decode_value (ptr, &ptr);
-	g_assert (param_count);
 
 	inst = mono_metadata_parse_generic_inst (image, NULL, param_count, ptr, &ptr);
 	if (!inst)
@@ -2265,6 +2264,18 @@ mono_stack_walk_no_il (MonoStackWalk func, gpointer user_data)
 {
 	StackWalkUserData ud = { func, user_data };
 	mono_get_eh_callbacks ()->mono_walk_stack_with_ctx (stack_walk_adapter, NULL, MONO_UNWIND_DEFAULT, &ud);
+}
+
+/*
+ * mono_stack_walk_async_safe:
+ *
+ *   Async safe version callable from signal handlers.
+ */
+void
+mono_stack_walk_async_safe (MonoStackWalk func, gpointer user_data)
+{
+	StackWalkUserData ud = { func, user_data };
+	mono_get_eh_callbacks ()->mono_walk_stack_with_ctx (stack_walk_adapter, NULL, MONO_UNWIND_NONE, &ud);
 }
 
 static gboolean

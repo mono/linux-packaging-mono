@@ -1164,9 +1164,14 @@ namespace Mono.Cecil {
 
 		MetadataToken GetTypeRefToken (TypeReference type)
 		{
+			MetadataToken token;
+			if (module.CustomMetadataWriter != null) {
+				if (module.CustomMetadataWriter.CreateTypeRefToken (ref type, out token))
+					return token;
+			}
+
 			var row = CreateTypeRefRow (type);
 
-			MetadataToken token;
 			if (type_ref_map.TryGetValue (row, out token))
 				return token;
 

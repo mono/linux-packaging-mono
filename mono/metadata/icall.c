@@ -129,9 +129,9 @@ mono_double_ParseImpl (char *ptr, double *result)
 
 	if (*ptr){
 		/* mono_strtod () is not thread-safe */
-		EnterCriticalSection (&mono_strtod_mutex);
+		mono_mutex_lock (&mono_strtod_mutex);
 		*result = mono_strtod (ptr, &endptr);
-		LeaveCriticalSection (&mono_strtod_mutex);
+		mono_mutex_unlock (&mono_strtod_mutex);
 	}
 
 	if (!*ptr || (endptr && *endptr))
@@ -7410,12 +7410,6 @@ ves_icall_System_Char_GetDataTablePointers (int category_data_version,
 	*to_lower_data_high = ToLowerDataHigh;
 	*to_upper_data_low = ToUpperDataLow;
 	*to_upper_data_high = ToUpperDataHigh;
-}
-
-ICALL_EXPORT gint32
-ves_icall_MonoDebugger_GetMethodToken (MonoReflectionMethod *method)
-{
-	return method->method->token;
 }
 
 /*

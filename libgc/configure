@@ -5021,6 +5021,22 @@ $as_echo "$as_me: WARNING: \"Only HP/UX 11 threads are supported.\"" >&2;}
 
 	THREADDLLIBS="-lpthread -lrt"
 	;;
+     *-*-kfreebsd*-gnu)
+	$as_echo "#define GC_FREEBSD_THREADS 1" >>confdefs.h
+
+	INCLUDES="$INCLUDES -pthread"
+	THREADDLLIBS=-pthread
+	$as_echo "#define _REENTRANT 1" >>confdefs.h
+
+	if test "${enable_parallel_mark}" = yes; then
+		$as_echo "#define PARALLEL_MARK 1" >>confdefs.h
+
+	fi
+	$as_echo "#define THREAD_LOCAL_ALLOC 1" >>confdefs.h
+
+	$as_echo "#define USE_COMPILER_TLS 1" >>confdefs.h
+
+	;;
       *-*-freebsd*)
 	$as_echo "#define GC_FREEBSD_THREADS 1" >>confdefs.h
 
