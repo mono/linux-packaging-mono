@@ -142,17 +142,20 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	lock-free-array-queue.h mono-linked-list-set.c \
 	mono-linked-list-set.h mono-threads.c mono-threads-posix.c \
 	mono-threads-mach.c mono-threads-mach-helper.c \
-	mono-threads-windows.c mono-threads.h mono-tls.h mono-tls.c \
+	mono-threads-windows.c mono-threads-linux.c \
+	mono-threads-freebsd.c mono-threads-openbsd.c \
+	mono-threads-android.c mono-threads.h mono-tls.h mono-tls.c \
 	linux_magic.h mono-memory-model.h atomic.h atomic.c \
 	mono-hwcap.h mono-hwcap.c bsearch.h bsearch.c \
 	mono-signal-handler.h mono-conc-hashtable.h \
-	mono-conc-hashtable.c mach-support-x86.c mach-support-amd64.c \
-	mach-support-arm.c mach-support-unknown.c mono-hwcap-x86.c \
-	mono-hwcap-x86.h mono-hwcap-arm.c mono-hwcap-arm.h \
-	mono-hwcap-arm64.c mono-hwcap-arm64.h mono-hwcap-mips.c \
-	mono-hwcap-mips.h mono-hwcap-ppc.c mono-hwcap-ppc.h \
-	mono-hwcap-sparc.c mono-hwcap-sparc.h mono-hwcap-ia64.c \
-	mono-hwcap-ia64.h mono-hwcap-s390x.c mono-hwcap-s390x.h
+	mono-conc-hashtable.c sha1.h sha1.c mach-support-x86.c \
+	mach-support-amd64.c mach-support-arm.c mach-support-unknown.c \
+	mono-hwcap-x86.c mono-hwcap-x86.h mono-hwcap-arm.c \
+	mono-hwcap-arm.h mono-hwcap-arm64.c mono-hwcap-arm64.h \
+	mono-hwcap-mips.c mono-hwcap-mips.h mono-hwcap-ppc.c \
+	mono-hwcap-ppc.h mono-hwcap-sparc.c mono-hwcap-sparc.h \
+	mono-hwcap-ia64.c mono-hwcap-ia64.h mono-hwcap-s390x.c \
+	mono-hwcap-s390x.h
 am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	mono-codeman.lo dlmalloc.lo mono-counters.lo mono-dl.lo \
 	mono-internal-hash.lo mono-io-portability.lo monobitset.lo \
@@ -165,8 +168,10 @@ am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	lock-free-queue.lo lock-free-alloc.lo lock-free-array-queue.lo \
 	mono-linked-list-set.lo mono-threads.lo mono-threads-posix.lo \
 	mono-threads-mach.lo mono-threads-mach-helper.lo \
-	mono-threads-windows.lo mono-tls.lo atomic.lo mono-hwcap.lo \
-	bsearch.lo mono-conc-hashtable.lo
+	mono-threads-windows.lo mono-threads-linux.lo \
+	mono-threads-freebsd.lo mono-threads-openbsd.lo \
+	mono-threads-android.lo mono-tls.lo atomic.lo mono-hwcap.lo \
+	bsearch.lo mono-conc-hashtable.lo sha1.lo
 @CROSS_COMPILE_FALSE@@X86_TRUE@am__objects_2 = mach-support-x86.lo
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@am__objects_3 =  \
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@	mach-support-amd64.lo
@@ -577,6 +582,10 @@ monoutils_sources = \
 	mono-threads-mach.c	\
 	mono-threads-mach-helper.c	\
 	mono-threads-windows.c	\
+	mono-threads-linux.c	\
+	mono-threads-freebsd.c	\
+	mono-threads-openbsd.c	\
+	mono-threads-android.c	\
 	mono-threads.h	\
 	mono-tls.h	\
 	mono-tls.c	\
@@ -590,7 +599,9 @@ monoutils_sources = \
 	bsearch.c	\
 	mono-signal-handler.h	\
 	mono-conc-hashtable.h	\
-	mono-conc-hashtable.c
+	mono-conc-hashtable.c	\
+	sha1.h		\
+	sha1.c
 
 arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
@@ -709,8 +720,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-semaphore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-sha1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-stdlib.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-android.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-freebsd.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-linux.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach-helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-openbsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads.Plo@am__quote@
@@ -719,6 +734,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-uri.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-value-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/monobitset.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sha1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strenc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strtod.Plo@am__quote@
 

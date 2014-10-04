@@ -944,6 +944,47 @@ public class Tests
 		return 0;
 	}
 
+	public interface IFace1<T> {
+		void m1 ();
+		void m2 ();
+		void m3 ();
+		void m4 ();
+		void m5 ();
+	}
+
+	public class ClassIFace<T> : IFace1<T> {
+		public void m1 () {
+		}
+		public void m2 () {
+		}
+		public void m3 () {
+		}
+		public void m4 () {
+		}
+		public void m5 () {
+		}
+	}
+
+	interface IFaceIFaceCall {
+		void call<T, T2> (IFace1<object> iface);
+	}
+
+	class MakeIFaceCall : IFaceIFaceCall {
+		public void call<T, T2> (IFace1<object> iface) {
+			iface.m1 ();
+		}
+	}
+
+	// Check normal interface calls from gsharedvt call to fully instantiated methods
+	public static int test_0_instatiated_iface_call () {
+		ClassIFace<object> c1 = new ClassIFace<object> ();
+
+		IFaceIFaceCall c = new MakeIFaceCall ();
+
+		c.call<object, int> (c1);
+		return 0;
+	}
+
 	[MethodImplAttribute (MethodImplOptions.NoInlining)]
 	static string to_string<T, T2>(T t, T2 t2) {
 		return t.ToString ();
@@ -1018,7 +1059,36 @@ public class Tests
 		return 0;
 	}
 
-	struct Pair<T1, T2> {
+	interface IConstrainedCalls {
+		Pair<int, int> vtype_ret<T, T2>(T t, T2 t2) where T: IReturnVType;
+	}
+
+	public interface IReturnVType {
+		Pair<int, int> return_vtype ();
+	}
+
+	public class CConstrainedCalls : IConstrainedCalls {
+		[MethodImplAttribute (MethodImplOptions.NoInlining)]
+		public Pair<int, int> vtype_ret<T, T2>(T t, T2 t2) where T : IReturnVType {
+			return t.return_vtype ();
+		}
+	}
+
+	class ReturnVType : IReturnVType {
+		public Pair<int, int> return_vtype () {
+			return new Pair<int, int> () { First = 1, Second = 2 };
+		}
+	}
+
+	public static int test_0_constrained_vtype_ret () {
+		IConstrainedCalls c = new CConstrainedCalls ();
+		var r = c.vtype_ret<ReturnVType, int> (new ReturnVType (), 1);
+		if (r.First != 1 || r.Second != 2)
+			return 1;
+		return 0;
+	}
+
+	public struct Pair<T1, T2> {
 		public T1 First;
 		public T2 Second;
 	}

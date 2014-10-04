@@ -1192,7 +1192,7 @@ libmonoruntimeinclude_HEADERS = \
 
 @PLATFORM_DARWIN_TRUE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
 EXTRA_DIST = make-bundle.pl sample-bundle $(win32_sources) $(unix_sources) $(null_sources) runtime.h \
-		tpool-poll.c tpool-epoll.c tpool-kqueue.c Makefile.am.in
+		tpool-poll.c tpool-epoll.c tpool-kqueue.c
 
 all: all-am
 
@@ -4039,9 +4039,6 @@ assembly.lo mono-config.lo: Makefile
 @DTRACE_G_REQUIRED_TRUE@pedump-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d libmonoruntime.la ../io-layer/libwapi.la ../utils/libmonoutils.la
 @DTRACE_G_REQUIRED_TRUE@	DTRACE="$(DTRACE)" DTRACEFLAGS="$(DTRACEFLAGS)" AR="$(AR)" $(SHELL) $(top_srcdir)/data/dtrace-prelink.sh \
 @DTRACE_G_REQUIRED_TRUE@	--pic pedump-dtrace.$(OBJEXT) $(top_srcdir)/data/mono.d libmonoruntime.la ../io-layer/libwapi.la ../utils/libmonoutils.la
-
-@HAS_EXTENSION_MODULE_FALSE@Makefile.am: Makefile.am.in
-@HAS_EXTENSION_MODULE_FALSE@	cp $< $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

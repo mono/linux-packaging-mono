@@ -437,7 +437,7 @@ namespace Mono.Cecil {
 		}
 #endif
 
-		public TypeReference ImportType (TypeReference type, ImportGenericContext context)
+		public virtual TypeReference ImportType (TypeReference type, ImportGenericContext context)
 		{
 			if (type.IsTypeSpecification ())
 				return ImportTypeSpecification (type, context);
@@ -466,6 +466,7 @@ namespace Mono.Cecil {
 			case MetadataScopeType.AssemblyNameReference:
 				return ImportAssemblyName ((AssemblyNameReference) scope);
 			case MetadataScopeType.ModuleDefinition:
+				if (scope == module) return scope;
 				return ImportAssemblyName (((ModuleDefinition) scope).Assembly.Name);
 			case MetadataScopeType.ModuleReference:
 				throw new NotImplementedException ();
@@ -474,7 +475,7 @@ namespace Mono.Cecil {
 			throw new NotSupportedException ();
 		}
 
-		AssemblyNameReference ImportAssemblyName (AssemblyNameReference name)
+		protected virtual AssemblyNameReference ImportAssemblyName (AssemblyNameReference name)
 		{
 			AssemblyNameReference reference;
 			if (TryGetAssemblyNameReference (name, out reference))

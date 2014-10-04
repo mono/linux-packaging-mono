@@ -1903,6 +1903,11 @@ mono_main (int argc, char* argv[])
 		mono_load_coree (argv [i]);
 #endif
 
+	/* Parse gac loading options before loading assemblies. */
+	if (mono_compile_aot || action == DO_EXEC || action == DO_DEBUGGER) {
+		mono_config_parse (config_file);
+	}
+
 	mono_set_defaults (mini_verbose, opt);
 	domain = mini_init (argv [i], forced_version);
 
@@ -1966,11 +1971,6 @@ mono_main (int argc, char* argv[])
 		}
 		aname = argv [i];
 		break;
-	}
-
-	/* Parse gac loading options before loading assemblies. */
-	if (mono_compile_aot || action == DO_EXEC || action == DO_DEBUGGER) {
-		mono_config_parse (config_file);
 	}
 
 #ifdef MONO_JIT_INFO_TABLE_TEST
@@ -2178,6 +2178,8 @@ mono_jit_init_version (const char *domain_name, const char *runtime_version)
 void        
 mono_jit_cleanup (MonoDomain *domain)
 {
+	mono_thread_manage ();
+
 	mini_cleanup (domain);
 }
 

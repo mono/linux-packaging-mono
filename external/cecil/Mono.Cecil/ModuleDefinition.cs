@@ -157,6 +157,22 @@ namespace Mono.Cecil {
 		}
 	}
 
+	interface ICustomMetadataWriter
+	{
+		/*
+		 * Remap TypeReference or create custom TypeRef token.
+		 *
+		 * Return true to use the returned custom 'token'.
+		 *
+		 * Return false to create a TypeRef token for 'type'
+		 * (which may have been replaced with a different TypeReference).
+		 * 
+		 * This is necessary when types are moved from one assembly to another
+		 * to either adjust the scope or replace a TypeRef with a TypeDef token.
+		 */
+		bool CreateTypeRefToken (ref TypeReference type, out MetadataToken token);
+	}
+
 	public sealed class WriterParameters {
 
 		Stream symbol_stream;
@@ -216,6 +232,7 @@ namespace Mono.Cecil {
 
 #if !READ_ONLY
 		MetadataImporter importer;
+		ICustomMetadataWriter custom_writer;
 #endif
 		Collection<CustomAttribute> custom_attributes;
 		Collection<AssemblyNameReference> references;
@@ -285,6 +302,18 @@ namespace Mono.Cecil {
 #if !READ_ONLY
 		internal MetadataImporter MetadataImporter {
 			get { return importer ?? (importer = new MetadataImporter (this)); }
+		}
+
+		internal void SetMetadataImporter (MetadataImporter importer)
+		{
+			if (this.importer != null)
+				throw new InvalidOperationException ();
+			this.importer = importer;
+		}
+
+		internal ICustomMetadataWriter CustomMetadataWriter {
+			get { return custom_writer; }
+			set { custom_writer = value; }
 		}
 #endif
 

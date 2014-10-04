@@ -283,15 +283,8 @@
  <div class="api">
     <div class="api-entry">DeleteCriticalSection</div>
 
-    <div class="prototype">void DeleteCriticalSection(WapiCriticalSection *section)
-
-</div>
+    <div class="prototype">Prototype: DeleteCriticalSection</div>
 <p />
-<b>Parameters</b>
-<blockquote><dt><i>section:</i></dt><dd> The critical section to delete.</dd></blockquote>
-<b>Remarks</b>
-<p />	 
-	 Releases all resources owned by critical section <i>section</i>.
 
 </div> <a name="api:DeleteFile"></a>
  <div class="api">
@@ -764,35 +757,15 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
  <div class="api">
     <div class="api-entry">InitializeCriticalSectionAndSpinCount</div>
 
-    <div class="prototype">gboolean InitializeCriticalSectionAndSpinCount(WapiCriticalSection *section,
-					       guint32 spincount G_GNUC_UNUSED)
-
-</div>
+    <div class="prototype">Prototype: InitializeCriticalSectionAndSpinCount</div>
 <p />
-<b>Parameters</b>
-<blockquote><dt><i>section:</i></dt><dd> The critical section to initialise.</dd><dt><i>spincount:</i></dt><dd> The spin count for this critical section.  Not</dd></blockquote>
-<b>Remarks</b>
-<p />	 currently used. 
-	
-	 Initialises a critical section and sets the spin count.  This
-	 implementation just calls InitializeCriticalSection().
-	
-	 Return value: %TRUE on success, %FALSE otherwise.  (%FALSE never
-	 happens).
 
 </div> <a name="api:InitializeCriticalSection"></a>
  <div class="api">
     <div class="api-entry">InitializeCriticalSection</div>
 
-    <div class="prototype">void InitializeCriticalSection(WapiCriticalSection *section)
-
-</div>
+    <div class="prototype">Prototype: InitializeCriticalSection</div>
 <p />
-<b>Parameters</b>
-<blockquote><dt><i>section:</i></dt><dd> The critical section to initialise</dd></blockquote>
-<b>Remarks</b>
-<p />	 
-	 Initialises a critical section.
 
 </div> <a name="api:ioctlsocket"></a>
  <div class="api">
@@ -1046,19 +1019,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
  <div class="api">
     <div class="api-entry">SetCriticalSectionSpinCount</div>
 
-    <div class="prototype">guint32 SetCriticalSectionSpinCount(WapiCriticalSection *section G_GNUC_UNUSED, guint32 spincount G_GNUC_UNUSED)
-
-</div>
+    <div class="prototype">Prototype: SetCriticalSectionSpinCount</div>
 <p />
-<b>Parameters</b>
-<blockquote><dt><i>section:</i></dt><dd> The critical section to set</dd><dt><i>spincount:</i></dt><dd> The new spin count for this critical section.  Not</dd></blockquote>
-<b>Remarks</b>
-<p />	 currently used. 
-	
-	 Sets the spin count for the critical section <i>section</i>.  The spin
-	 count is currently ignored, and set to zero.
-	
-	 Return value: The previous spin count.  (Currently always zero).
 
 </div> <a name="api:SetCurrentDirectory"></a>
  <div class="api">
@@ -1356,24 +1318,8 @@ SleepEx (guint32 ms, gboolean alertable)
  <div class="api">
     <div class="api-entry">TryEnterCriticalSection</div>
 
-    <div class="prototype">gboolean TryEnterCriticalSection(WapiCriticalSection *section)
-
-</div>
+    <div class="prototype">Prototype: TryEnterCriticalSection</div>
 <p />
-<b>Parameters</b>
-<blockquote><dt><i>section:</i></dt><dd> The critical section to try and enter</dd></blockquote>
-<b>Remarks</b>
-<p />	 
-	 Attempts to enter a critical section without blocking.  If
-	 successful the calling thread takes ownership of the critical
-	 section.
-	
-	 A thread can recursively call EnterCriticalSection() and
-	 TryEnterCriticalSection(), but must call LeaveCriticalSection() an
-	 equal number of times.
-	
-	 Return value: %TRUE if the thread successfully locked the critical
-	 section, %FALSE otherwise.
 
 </div> <a name="api:UnlockFile"></a>
  <div class="api">
