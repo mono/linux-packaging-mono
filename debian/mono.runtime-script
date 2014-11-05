@@ -12,6 +12,8 @@ use File::Basename;
 # Figure out the mode
 my $mode = shift @ARGV;
 
+my $framework_prefix = "/usr/lib/mono";
+
 if (!defined $mode)
 {
     print STDERR "E: You must supply a mode\n";
@@ -36,7 +38,6 @@ my $basename = shift @ARGV;
 # the (framework version×10, full path) pairs
 if ($mode eq "install-framework")
 {
-    my $framework_prefix = "/usr/lib/mono";
     # TODO: We could detect this ourselves
     my %runtime_versions = (20 => "$framework_prefix/2.0",
 			    35 => "$framework_prefix/3.5",
@@ -130,10 +131,44 @@ if ($mode eq "remove")
 	{
 		my $assembly = $_;
 		chomp($assembly);
-		my $cmd = "/usr/bin/gacutil -u $assembly > /dev/null";
-		my $res = system($cmd);
-		if ($res > 0) {
+		# The uninstall file can contain two formats - full paths to non-assembly entries
+		# (i.e. FSharp sigdata/optdata files), or assembly signature stuff in the format
+		# "name, Version=x.x.x.x, Culture=neutral, PublicKeyToken=yyyyyyyyyyyyy"
+		#
+		# We can switch behaviour, based on whether it is a path or not (if it is a path,
+		# it has a leading /)
+		#
+		# If it's not a path, pass the entry to gacutil to uninstall
+		if ($assembly !~ /^\//)
+		{
+		    my $cmd = "/usr/bin/gacutil -u $assembly > /dev/null";
+		    my $res = system($cmd);
+		    if ($res > 0) {
 			print STDERR "W: removing assembly: $assembly failed!\n";
+		    }
+		}
+		# If it is a path, unlink.
+		#
+		# This is often not actually needed - if a parent assembly is uninstalled
+		# from the GAC, the sigdata/optdata files are cleaned automatically
+		#
+		# We manually unlink if these files are specifically named anyway, in case
+		# we ever want to keep companion files in different packages (where they would
+		# not be uninstalled by the same GAC cleaning run)
+		else
+		{
+		    # Definitely a link, unlink it please
+		    if (-l "$assembly")
+		    {
+			unlink $assembly;
+		    }
+		    # The file exists, but is not a link, which means we didn't put it
+		    # there, so panic!
+		    elsif (-f "$assembly")
+		    {
+			print STDERR "W: removing non-assembly file: $assembly failed!\n";
+		    }
+		    # If the file doesn't exist, we do nothing - we don't WANT it to exist
 		}
 	}
 
@@ -175,20 +210,47 @@ while (@ARGV)
 	exit 1;
     }	
     
-    # Figure out the mono's precise name
-    my $fullname = get_full_name($dll);
-    
-    # Write out the uninstall file
-    print UNINSTALL "$fullname\n";
-    
-    # Install the file. We use the "../../../.." to make it a
-    # relative path to this program (since gacutil doesn't like
-    # absolute paths). There isn't a problem of doing too many
-    # since we typically run from the root context.
-    my $cmd = "(cd `dirname $dll` && "
-    	. "/usr/bin/gacutil -i `basename $dll`"
-	   . " > /dev/null)";
-    system($cmd) == 0 or die "E: installing Assembly $dll failed\n";
+    # Split the provided assembly path into its components - folder, basename, and suffix.
+    # All three are useful
+    my($assemblyfilename, $assemblypath, $assemblysuffix) = (fileparse($dll, qr/\.[^.]*/));
+
+    # If the suffix is .dll, assume this is a simple CLI assembly, and use gacutil for
+    # processing
+    if (( $assemblysuffix eq ".dll" ) || ( $assemblysuffix eq ".exe" ))
+    {
+	# Figure out the mono's precise name
+	my $fullname = get_full_name($dll);
+
+	# Write out the uninstall file
+	print UNINSTALL "$fullname\n";
+
+	# Install the file. We use the "../../../.." to make it a
+	# relative path to this program (since gacutil doesn't like
+	# absolute paths). There isn't a problem of doing too many
+	# since we typically run from the root context.
+	my $cmd = "(cd `dirname $dll` && "
+	    . "/usr/bin/gacutil -i `basename $dll`"
+	    . " > /dev/null)";
+	system($cmd) == 0 or die "E: installing Assembly $dll failed\n";
+    }
+    else
+    {
+	# If the extension is not .dll, this is some other file format (e.g. FSharp
+	# sigdata/optdata) and we cannot use gacutil.
+	#
+	# First, we determine the path of the assembly which accompanies this data file
+	my $parentassembly = "$assemblypath$assemblyfilename.dll";
+	# Then extract the assembly information from this "parent" assembly, such as the
+	# version and signing token
+	my $fullname = get_full_name($parentassembly);
+	my($parentname, $parentver, $parentculture, $parenttoken) = split(/, [a-zA-z]*=/, $fullname);
+	# And finally, we construct a path to where we know Mono will GAC-install the
+	# parent assembly, and put a symlink in there
+	my $targetpath = "$framework_prefix/gac/$parentname/$parentver\__$parenttoken/$assemblyfilename$assemblysuffix";
+	symlink($dll, $targetpath);
+	# And write the path to the symlink into the uninstall file
+	print UNINSTALL "$targetpath\n";
+    }
 }
 
 close CLIGAC;
