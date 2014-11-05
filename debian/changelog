@@ -1,3 +1,14 @@
+mono (3.10.0-0xamarin2) unstable; urgency=medium
+
+  * [2124890] Include missing support-s390x.h header file absent from 
+    3.10.0 tarball
+  * [e175e7c] Fix missing s390x opcode
+  * [36bbb7d] Remove deleted symbols for s390x
+  * [ee239bc] Add support for non-assemblies installed to the GAC. This 
+    is the first half of a fix to put F# sigdata/optdata files in the GAC.
+
+ -- Jo Shields <jo.shields@xamarin.com>  Wed, 05 Nov 2014 11:49:25 +0000
+
 mono (3.10.0-0xamarin1) unstable; urgency=medium
 
   * [172c8e3] Imported Upstream version 3.10.0
