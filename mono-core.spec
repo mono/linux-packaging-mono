@@ -1474,6 +1474,7 @@ Requires:       mono-core = %{version}
 # Added to uncompress and compare documentation used by build-compare
 Requires:       unzip
 Provides:       monodoc
+Provides:       monodoc-devel
 
 %description -n monodoc-core
 Monodoc-core contains documentation tools for C#.
