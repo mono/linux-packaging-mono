@@ -28,7 +28,7 @@
 
 Name:           mono-core
 Version:        3.10.0
-Release:        1
+Release:        2
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
