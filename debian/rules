@@ -343,10 +343,10 @@ binary-arch: build-stamp install-stamp
 	dh_installman -s
 	dh_installexamples -s
 	dh_installexamples -pmono-jay $(CURDIR)/mcs/jay/skeleton.cs
-	dh_strip -pmono-runtime --dbg-package=mono-runtime-dbg
+	dh_strip -pmono-runtime-sgen -pmono-runtime-boehm --dbg-package=mono-runtime-dbg
 	dh_strip -plibmonoboehm-2.0-1 --dbg-package=libmonoboehm-2.0-1-dbg
 	dh_strip -plibmonosgen-2.0-1 --dbg-package=libmonosgen-2.0-1-dbg
-	dh_strip -s -Xbin/mono-sgen
+	dh_strip -s -Xbin/mono-sgen -Xbin/mono-boehm
 	dh_compress -s -Xskeleton.cs
 
 	dh_fixperms -s
