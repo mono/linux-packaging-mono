@@ -47,31 +47,40 @@ init();
 
 foreach my $package (@{$dh{DOPACKAGES}}) {
   my $tmp = tmpdir($package);
-  my @files;
-  
-  # find binaries
-  find (sub {
-    return unless -f and /\.(exe|dll)$/;
-    return unless $File::Find::dir =~ m!^$tmp/usr/lib!;
-    
-    my $fullfilename = $File::Find::name;
-    
-    my $filename = $fullfilename;
-    $filename =~ s/^$tmp//;
-    
-    verbose_print("fullfilename: $fullfilename");
-    verbose_print("filename: $filename");
-    push(@files, $filename);
-  }, $tmp);
-  
-  if (! $dh{NOSCRIPTS}) {
-    foreach my $file (@files) {
-      autoscript($package, "postinst", "postinst-monoaot",
-                 "s!#FILE#!$file!");
-      autoscript($package, "prerm", "prerm-monoaot",
-                 "s!#FILE#!$file.so!");
+  my $monoaot = pkgfile($package, "installmonoaot");
+
+  if ($monoaot ne '') {
+    # sanity check: do all files listed in the installcligac file exist?
+    open MONOAOT, "<$monoaot" or
+      die "E: Can't open $monoaot\n";
+    while (<MONOAOT>)
+    {
+      chomp;
+      if (! -f "$tmp$_") {
+        die "E: Can't find file $tmp$_!\n";
+      }
     }
+    close MONOAOT;
+
+    if (! $dh{NOSCRIPTS}) {
+    open MONOAOT, "<$monoaot" or
+      die "E: Can't open $monoaot\n";
+    while (<MONOAOT>)
+    {
+      chomp;
+      foreach my $file ($_) {
+        autoscript($package, "postinst", "postinst-monoaot",
+                   "s!#FILE#!$file!g");
+        autoscript($package, "prerm", "prerm-monoaot",
+                   "s!#FILE#!$file.so!");
+      }
+    }
+    close MONOAOT;
+
+    }
+
   }
+  
 }
 
 =head1 SEE ALSO
@@ -83,5 +92,6 @@ This program is a part of cli-common-dev.
 =head1 AUTHOR
 
 Mirco 'meebey' Bauer <meebey@meebey.net>
+Jo Shields <jo.shields@xamarin.com>
 
 =cut
