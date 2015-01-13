@@ -335,6 +335,9 @@
 /* Define to 1 if you have the `getresuid' function. */
 #undef HAVE_GETRESUID
 
+/* Define to 1 if you have the `getrlimit' function. */
+#undef HAVE_GETRLIMIT
+
 /* Define to 1 if you have the `getrusage' function. */
 #undef HAVE_GETRUSAGE
 
@@ -760,6 +763,9 @@
 
 /* Define to 1 if you have the <sys/poll.h> header file. */
 #undef HAVE_SYS_POLL_H
+
+/* Define to 1 if you have the <sys/resource.h> header file. */
+#undef HAVE_SYS_RESOURCE_H
 
 /* Define to 1 if you have the <sys/sdt.h> header file. */
 #undef HAVE_SYS_SDT_H

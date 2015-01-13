@@ -12,6 +12,9 @@
 /* Define to 1 if you have the `getpwuid_r' function. */
 #undef HAVE_GETPWUID_R
 
+/* Define to 1 if you have the `getrlimit' function. */
+#undef HAVE_GETRLIMIT
+
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
 
@@ -59,6 +62,9 @@
 
 /* Define to 1 if you have the `strtok_r' function. */
 #undef HAVE_STRTOK_R
+
+/* Define to 1 if you have the <sys/resource.h> header file. */
+#undef HAVE_SYS_RESOURCE_H
 
 /* Define to 1 if you have the <sys/select.h> header file. */
 #undef HAVE_SYS_SELECT_H

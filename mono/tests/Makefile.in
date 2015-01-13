@@ -94,7 +94,7 @@ target_triplet = @target@
 @NACL_CODEGEN_TRUE@@X86_TRUE@	main-returns-background-resetabort.exe \
 @NACL_CODEGEN_TRUE@@X86_TRUE@	main-returns-background.exe \
 @NACL_CODEGEN_TRUE@@X86_TRUE@	main-returns-background-change.exe
-@NACL_CODEGEN_FALSE@am__append_3 = bug-438454.cs bug-438454.exe.stdout.expected threadpool-in-processexit.cs threadpool-in-processexit.exe.stdout.expected
+@NACL_CODEGEN_FALSE@am__append_3 = threadpool-in-processexit.cs threadpool-in-processexit.exe.stdout.expected
 subdir = mono/tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/tests-config.in \
@@ -457,6 +457,7 @@ STRESS_TESTS_SRC = \
 	monitor-stress.cs	\
 	thread-stress.cs	\
 	gc-stress.cs		\
+	gc-copy-stress.cs	\
 	gc-graystack-stress.cs		\
 	exit-stress.cs		\
 	process-stress.cs	\
@@ -628,6 +629,7 @@ BASE_TEST_CS_SRC = \
 	array3.cs		\
 	classinit.cs		\
 	classinit2.cs		\
+	classinit3.cs		\
 	synchronized.cs		\
 	async_read.cs		\
 	threadpool.cs		\
@@ -847,6 +849,8 @@ TEST_CS_SRC_GEN = \
 @HOST_WIN32_TRUE@@X86_TRUE@	async-exc-compilation.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	finally_guard.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	finally_block_ending_in_dead_bb.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	threadpool-exceptions5.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	$(am__append_2)
 # bug #319249
 @IA64_TRUE@PLATFORM_DISABLED_TESTS = exception17.exe winx64structs.exe \
@@ -1076,13 +1080,11 @@ SGEN_TESTS = \
 
 SGEN_CONFIGURATIONS = \
 	"|plain"	\
-	"major=marksweep-par|ms-par"	\
 	"major=marksweep-conc|ms-conc"	\
 	"major=marksweep-conc,minor=split|ms-conc-split"	\
 	"minor=split|ms-split"	\
 	"minor=split,alloc-ratio=95|ms-split-95"	\
 	"|plain-clear-at-gc|clear-at-gc"	\
-	"major=marksweep-par|ms-par-clear-at-gc|clear-at-gc"	\
 	"major=marksweep-conc|ms-conc-clear-at-gc|clear-at-gc"	\
 	"minor=split|ms-split-clear-at-gc|clear-at-gc"
 
@@ -1999,10 +2001,6 @@ patch-libtool:
 
 @NACL_CODEGEN_TRUE@test-process-exit:
 @NACL_CODEGEN_FALSE@test-process-exit:
-@NACL_CODEGEN_FALSE@	@$(MCS) $(srcdir)/bug-438454.cs -out:bug-438454.exe
-@NACL_CODEGEN_FALSE@	@echo "Testing bug-438454.exe..."
-@NACL_CODEGEN_FALSE@	@$(RUNTIME) bug-438454.exe > bug-438454.exe.stdout
-@NACL_CODEGEN_FALSE@	@diff -w bug-438454.exe.stdout $(srcdir)/bug-438454.exe.stdout.expected
 @NACL_CODEGEN_FALSE@	@$(MCS) $(srcdir)/threadpool-in-processexit.cs -out:threadpool-in-processexit.exe
 @NACL_CODEGEN_FALSE@	@echo "Testing threadpool-in-processexit.exe..."
 @NACL_CODEGEN_FALSE@	@$(RUNTIME) threadpool-in-processexit.exe > threadpool-in-processexit.exe.stdout
@@ -2011,7 +2009,6 @@ patch-libtool:
 test-oom: $(OOM_TESTS)
 	@for fn in $+ ; do	\
 		echo "Testing $$fn ...";	\
-		MONO_GC_PARAMS=max-heap-size=16m,major=marksweep-par MONO_ENV_OPTIONS="--gc=sgen" $(RUNTIME) $$fn > $$fn.stdout || exit 1;	\
 		MONO_GC_PARAMS=max-heap-size=16m MONO_ENV_OPTIONS="--gc=sgen"                     $(RUNTIME) $$fn > $$fn.stdout || exit 1;	\
 		MONO_GC_PARAMS=max-heap-size=16m                                                  $(RUNTIME) $$fn > $$fn.stdout || exit 1;	\
 	done

@@ -12,7 +12,7 @@ License:        LGPL v2.1 only
 Group:          Development/Languages/Mono
 Summary:        A .NET Runtime Environment
 Url:            http://www.mono-project.com
-Version:        3.10.0
+Version:        3.12.0
 Release:        0
 Source0:        mono-%{version}.tar.bz2
 BuildRequires:  bison

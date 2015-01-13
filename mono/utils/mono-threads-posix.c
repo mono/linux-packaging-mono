@@ -19,7 +19,11 @@
 
 #include <errno.h>
 
-#if defined(PLATFORM_ANDROID)
+#if defined(PLATFORM_ANDROID) && !defined(TARGET_ARM64)
+#define USE_TKILL_ON_ANDROID 1
+#endif
+
+#ifdef USE_TKILL_ON_ANDROID
 extern int tkill (pid_t tid, int signal);
 #endif
 
@@ -236,6 +240,50 @@ mono_threads_core_open_thread_handle (HANDLE handle, MonoNativeThreadId tid)
 	return handle;
 }
 
+gpointer
+mono_threads_core_prepare_interrupt (HANDLE thread_handle)
+{
+	return wapi_prepare_interrupt_thread (thread_handle);
+}
+
+void
+mono_threads_core_finish_interrupt (gpointer wait_handle)
+{
+	wapi_finish_interrupt_thread (wait_handle);
+}
+
+void
+mono_threads_core_self_interrupt (void)
+{
+	wapi_self_interrupt ();
+}
+
+void
+mono_threads_core_clear_interruption (void)
+{
+	wapi_clear_interruption ();
+}
+
+int
+mono_threads_pthread_kill (MonoThreadInfo *info, int signum)
+{
+#ifdef USE_TKILL_ON_ANDROID
+	int result, old_errno = errno;
+	result = tkill (info->native_handle, signum);
+	if (result < 0) {
+		result = errno;
+		errno = old_errno;
+	}
+	return result;
+#elif defined(__native_client__)
+	/* Workaround pthread_kill abort() in NaCl glibc. */
+	return 0;
+#else
+	return pthread_kill (mono_thread_info_get_tid (info), signum);
+#endif
+
+}
+
 #if !defined (__MACH__)
 
 #if !defined(__native_client__)
@@ -315,26 +363,6 @@ mono_threads_init_platform (void)
 void
 mono_threads_core_interrupt (MonoThreadInfo *info)
 {
-}
-
-int
-mono_threads_pthread_kill (MonoThreadInfo *info, int signum)
-{
-#if defined (PLATFORM_ANDROID)
-	int result, old_errno = errno;
-	result = tkill (info->native_handle, signum);
-	if (result < 0) {
-		result = errno;
-		errno = old_errno;
-	}
-	return result;
-#elif defined(__native_client__)
-	/* Workaround pthread_kill abort() in NaCl glibc. */
-	return 0;
-#else
-	return pthread_kill (mono_thread_info_get_tid (info), signum);
-#endif
-
 }
 
 void

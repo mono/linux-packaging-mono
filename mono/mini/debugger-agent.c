@@ -289,7 +289,7 @@ typedef struct {
 #define HEADER_LENGTH 11
 
 #define MAJOR_VERSION 2
-#define MINOR_VERSION 36
+#define MINOR_VERSION 38
 
 typedef enum {
 	CMD_SET_VM = 1,
@@ -403,7 +403,8 @@ typedef enum {
 	INVOKE_FLAG_DISABLE_BREAKPOINTS = 1,
 	INVOKE_FLAG_SINGLE_THREADED = 2,
 	INVOKE_FLAG_RETURN_OUT_THIS = 4,
-	INVOKE_FLAG_RETURN_OUT_ARGS = 8
+	INVOKE_FLAG_RETURN_OUT_ARGS = 8,
+	INVOKE_FLAG_VIRTUAL = 16
 } InvokeFlags;
 
 typedef enum {
@@ -513,7 +514,8 @@ typedef enum {
 typedef enum {
 	CMD_STACK_FRAME_GET_VALUES = 1,
 	CMD_STACK_FRAME_GET_THIS = 2,
-	CMD_STACK_FRAME_SET_VALUES = 3
+	CMD_STACK_FRAME_SET_VALUES = 3,
+	CMD_STACK_FRAME_GET_DOMAIN = 4,
 } CmdStackFrame;
 
 typedef enum {
@@ -813,6 +815,12 @@ static void invalidate_frames (DebuggerTlsData *tls);
 static void
 register_socket_transport (void);
 #endif
+
+static inline gboolean
+is_debugger_thread (void)
+{
+	return GetCurrentThreadId () == debugger_thread_id;
+}
 
 static int
 parse_address (char *address, char **host, int *port)
@@ -2776,9 +2784,6 @@ notify_thread (gpointer key, gpointer value, gpointer user_data)
 #endif
 
 	/* This is _not_ equivalent to ves_icall_System_Threading_Thread_Abort () */
-#ifdef HOST_WIN32
-	QueueUserAPC (notify_thread_apc, thread->handle, (ULONG_PTR)NULL);
-#else
 	if (mono_thread_info_new_interrupt_enabled ()) {
 		MonoThreadInfo *info;
 		MonoJitInfo *ji;
@@ -2798,6 +2803,10 @@ notify_thread (gpointer key, gpointer value, gpointer user_data)
 			mono_thread_info_finish_suspend_and_resume (info);
 		}
 	} else {
+#ifdef HOST_WIN32
+		// FIXME: Remove this since new interrupt is used on win32 now
+		QueueUserAPC (notify_thread_apc, thread->handle, (ULONG_PTR)NULL);
+#else
 		res = mono_thread_kill (thread, mono_thread_get_abort_signal ());
 		if (res) {
 			DEBUG(1, fprintf (log_file, "[%p] mono_thread_kill () failed for %p: %d...\n", (gpointer)GetCurrentThreadId (), (gpointer)tid, res));
@@ -2806,8 +2815,8 @@ notify_thread (gpointer key, gpointer value, gpointer user_data)
 			 */
 			tls->terminated = TRUE;
 		}
-	}
 #endif
+	}
 }
 
 static void
@@ -4068,6 +4077,10 @@ appdomain_start_unload (MonoProfiler *prof, MonoDomain *domain)
 {
 	DebuggerTlsData *tls;
 
+	/* This might be called during shutdown on the debugger thread from the CMD_VM_EXIT code */
+	if (is_debugger_thread ())
+		return;
+
 	/*
 	 * Remember the currently unloading appdomain as it is needed to generate
 	 * proper ids for unloading assemblies.
@@ -4081,6 +4094,9 @@ static void
 appdomain_unload (MonoProfiler *prof, MonoDomain *domain)
 {
 	DebuggerTlsData *tls;
+
+	if (is_debugger_thread ())
+		return;
 
 	tls = mono_native_tls_get_value (debugger_tls_id);
 	g_assert (tls);
@@ -4120,6 +4136,9 @@ assembly_load (MonoProfiler *prof, MonoAssembly *assembly, int result)
 static void
 assembly_unload (MonoProfiler *prof, MonoAssembly *assembly)
 {
+	if (is_debugger_thread ())
+		return;
+
 	process_profiler_event (EVENT_KIND_ASSEMBLY_UNLOAD, assembly);
 
 	clear_event_requests_for_assembly (assembly);
@@ -6488,6 +6507,10 @@ clear_types_for_assembly (MonoAssembly *assembly)
 	MonoDomain *domain = mono_domain_get ();
 	AgentDomainInfo *info = NULL;
 
+	if (!domain || !domain_jit_info (domain))
+		/* Can happen during shutdown */
+		return;
+
 	mono_loader_lock ();
 	info = get_agent_domain_info (domain);
 	g_hash_table_foreach_remove (info->loaded_classes, type_comes_from_assembly, assembly);
@@ -6561,6 +6584,12 @@ do_invoke_method (DebuggerTlsData *tls, Buffer *buf, InvokeData *invoke, guint8 
 	if (MONO_CLASS_IS_INTERFACE (m->klass)) {
 		if (!this) {
 			DEBUG (1, fprintf (log_file, "[%p] Error: Interface method invoked without this argument.\n", (gpointer)GetCurrentThreadId ()));
+			return ERR_INVALID_ARGUMENT;
+		}
+		m = mono_object_get_virtual_method (this, m);
+	} else if (invoke->flags & INVOKE_FLAG_VIRTUAL) {
+		if (!this) {
+			DEBUG (1, fprintf (log_file, "[%p] Error: invoke with INVOKE_FLAG_VIRTUAL flag set without this argument.\n", (gpointer)GetCurrentThreadId ()));
 			return ERR_INVALID_ARGUMENT;
 		}
 		m = mono_object_get_virtual_method (this, m);
@@ -9029,6 +9058,11 @@ frame_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 		mono_metadata_free_mh (header);
 		break;
 	}
+	case CMD_STACK_FRAME_GET_DOMAIN: {
+		if (CHECK_PROTOCOL_VERSION (2, 38))
+			buffer_add_domainid (buf, frame->domain);
+		break;
+	}
 	default:
 		return ERR_NOT_IMPLEMENTED;
 	}
@@ -9397,7 +9431,8 @@ static const char* type_cmds_str[] = {
 static const char* stack_frame_cmds_str[] = {
 	"GET_VALUES",
 	"GET_THIS",
-	"SET_VALUES"
+	"SET_VALUES",
+	"GET_DOMAIN",
 };
 
 static const char* array_cmds_str[] = {

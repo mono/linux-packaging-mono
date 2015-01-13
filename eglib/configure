@@ -11977,7 +11977,7 @@ i?86-*-linux*|i?86-apple-darwin*|x86_64-*-linux*|powerpc-*-linux*|powerpc64-*-li
 |amd64-*-freebsd*|i?86-*-freebsd*|ia64-*-freebsd*|arm*-*-linux*|sparc*-*-linux*|mips*-*-linux*|x86_64-apple-darwin*|aarch64*)
     pic_options='-fPIC'
     ;;
-?86-pc-cygwin*|i?86-pc-cygwin*)
+?86-pc-cygwin*|i?86-pc-cygwin*|i?86-pc-mingw32*)
     pic_options='-DDLL_EXPORT'
     ;;
 i?86-apple-darwin*|arm-apple-darwin*)
@@ -12652,6 +12652,17 @@ ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
   cat >>confdefs.h <<_ACEOF
 #define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
+for ac_func in getrlimit
+do :
+  ac_fn_c_check_func "$LINENO" "getrlimit" "ac_cv_func_getrlimit"
+if test "x$ac_cv_func_getrlimit" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GETRLIMIT 1
 _ACEOF
 
 fi
@@ -13892,7 +13903,7 @@ if test "x$have_iso_varargs" = "xyes"; then
 fi
 
 
-for ac_header in getopt.h sys/select.h sys/time.h sys/wait.h pwd.h langinfo.h iconv.h localcharset.h sys/types.h
+for ac_header in getopt.h sys/select.h sys/time.h sys/wait.h pwd.h langinfo.h iconv.h localcharset.h sys/types.h sys/resource.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"

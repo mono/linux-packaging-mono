@@ -1792,11 +1792,9 @@ namespace Mono.CSharp {
 				// this argument is generated during compilation which speeds up dispatch
 				// by about 25%
 				//
-
+				// Unused as it breaks compatibility
 				//
-				// Disabled for now due to JIT bug
-				//
-				//method_parameters = ParametersCompiled.Prefix (method_parameters,
+				// method_parameters = ParametersCompiled.Prefix (method_parameters,
 				//	new Parameter (null, null, 0, null, loc), ec.Module.Compiler.BuiltinTypes.Object);
 			}
 
