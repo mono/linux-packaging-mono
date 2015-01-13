@@ -1,0 +1,3 @@
+/usr/bin/cert-sync
+/usr/lib/mono/4.5/cert-sync.exe*
+debian/mono-keystore			/etc/ca-certificates/update.d/

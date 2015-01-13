@@ -144,6 +144,19 @@ Description: Mono utilities
  This package includes various tools useful for CLI developers, like
  pedump, monodis and monograph.
 
+Package: ca-certificates-mono
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${cli:Depends}, ca-certificates (>= 20121114)
+Description: Common CA certificates (Mono keystore)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package uses the hooks of the ca-certificates package to update the
+ Mono keystore.
+
 Package: mono-complete
 Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 s390x
 Depends: ${misc:Depends},
@@ -1048,6 +1061,7 @@ Package: libmono-system2.0-cil
 Architecture: all
 Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
 Suggests: ${cli:Suggests}
+Recommends: ca-certificates-mono (= ${source:Version})
 Depends: ${misc:Depends},
          ${cli:Depends},
          mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion})
@@ -1063,6 +1077,7 @@ Description: Mono System libraries (for CLI 2.0)
 Package: libmono-system4.0-cil
 Architecture: all
 Suggests: ${cli:Suggests}
+Recommends: ca-certificates-mono (= ${source:Version})
 Depends: ${misc:Depends},
          ${cli:Depends},
          mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion})
@@ -1428,6 +1443,7 @@ Description: Mono System.Messaging library (for CLI 4.0)
 Package: libmono-security2.0-cil
 Architecture: all
 Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
+Recommends: ca-certificates-mono (= ${source:Version})
 Depends: ${misc:Depends},
          ${cli:Depends}
 Description: Mono Security library (for CLI 2.0)
@@ -1441,6 +1457,7 @@ Description: Mono Security library (for CLI 2.0)
 
 Package: libmono-security4.0-cil
 Architecture: all
+Recommends: ca-certificates-mono (= ${source:Version})
 Depends: ${misc:Depends},
          ${cli:Depends}
 Description: Mono Security library (for CLI 4.0)
