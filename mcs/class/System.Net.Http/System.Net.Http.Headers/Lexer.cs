@@ -193,11 +193,16 @@ namespace System.Net.Http.Headers
 			//
 			for (; i < input.Length; ++i) {
 				char s = input[i];
-				if (s > last_token_char || !token_chars[s])
+				if (!IsValidCharacter (s))
 					return false;
 			}
 
 			return i > 0;
+		}
+
+		public static bool IsValidCharacter (char input)
+		{
+			return input <= last_token_char && token_chars[input];
 		}
 
 		public void EatChar ()
@@ -247,7 +252,7 @@ namespace System.Net.Http.Headers
 			return false;
 		}
 
-		public Token Scan ()
+		public Token Scan (bool recognizeDash = false)
 		{
 			int start = pos;
 			if (s == null)
@@ -279,8 +284,12 @@ namespace System.Net.Http.Headers
 					ttype = Token.Type.SeparatorSlash;
 					break;
 				case '-':
-					ttype = Token.Type.SeparatorDash;
-					break;
+					if (recognizeDash) {
+						ttype = Token.Type.SeparatorDash;
+						break;
+					}
+
+					goto default;
 				case ',':
 					ttype = Token.Type.SeparatorComma;
 					break;

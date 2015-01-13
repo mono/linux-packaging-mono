@@ -90,6 +90,7 @@ static int do_mono_sample = 0;
 static int in_shutdown = 0;
 static int do_debug = 0;
 static int do_counters = 0;
+static MonoProfileSamplingMode sampling_mode = MONO_PROFILER_STAT_MODE_PROCESS;
 
 /* For linux compile with:
  * gcc -fPIC -shared -o libmono-profiler-log.so proflog.c utils.c -Wall -g -lz `pkg-config --cflags --libs mono-2`
@@ -831,13 +832,10 @@ walk_stack (MonoMethod *method, int32_t native_offset, int32_t il_offset, mono_b
  * event, hence the collect_bt/emit_bt split.
  */
 static void
-collect_bt (FrameData *data, gboolean async_safe)
+collect_bt (FrameData *data)
 {
 	data->count = 0;
-	if (async_safe)
-		mono_stack_walk_async_safe (walk_stack, data);
-	else
-		mono_stack_walk_no_il (walk_stack, data);
+	mono_stack_walk_no_il (walk_stack, data);
 }
 
 static void
@@ -870,7 +868,7 @@ gc_alloc (MonoProfiler *prof, MonoObject *obj, MonoClass *klass)
 	len += 7;
 	len &= ~7;
 	if (do_bt)
-		collect_bt (&data, FALSE);
+		collect_bt (&data);
 	logbuffer = ensure_logbuf (32 + MAX_FRAMES * 8);
 	now = current_time ();
 	ENTER_LOG (logbuffer, "gcalloc");
@@ -1135,7 +1133,7 @@ throw_exc (MonoProfiler *prof, MonoObject *object)
 	FrameData data;
 	LogBuffer *logbuffer;
 	if (do_bt)
-		collect_bt (&data, FALSE);
+		collect_bt (&data);
 	logbuffer = ensure_logbuf (16 + MAX_FRAMES * 8);
 	now = current_time ();
 	ENTER_LOG (logbuffer, "throw");
@@ -1171,7 +1169,7 @@ monitor_event (MonoProfiler *profiler, MonoObject *object, MonoProfilerMonitorEv
 	FrameData data;
 	LogBuffer *logbuffer;
 	if (do_bt)
-		collect_bt (&data, FALSE);
+		collect_bt (&data);
 	logbuffer = ensure_logbuf (16 + MAX_FRAMES * 8);
 	now = current_time ();
 	ENTER_LOG (logbuffer, "monitor");
@@ -1220,11 +1218,44 @@ thread_name (MonoProfiler *prof, uintptr_t tid, const char *name)
 	EXIT_LOG (logbuffer);
 }
 
+typedef struct {
+	MonoMethod *method;
+	MonoDomain *domain;
+	void *base_address;
+	int offset;
+} AsyncFrameInfo;
+
+typedef struct {
+	int count;
+	AsyncFrameInfo *data;
+} AsyncFrameData;
+
+static mono_bool
+async_walk_stack (MonoMethod *method, MonoDomain *domain, void *base_address, int offset, void *data)
+{
+	AsyncFrameData *frame = data;
+	if (frame->count < num_frames) {
+		frame->data [frame->count].method = method;
+		frame->data [frame->count].domain = domain;
+		frame->data [frame->count].base_address = base_address;
+		frame->data [frame->count].offset = offset;
+		// printf ("In %d at %p (dom %p) (native: %p)\n", frame->count, method, domain, base_address);
+		frame->count++;
+	}
+	return frame->count == num_frames;
+}
+
+/*
+(type | frame count), tid, time, ip, [method, domain, base address, offset] * frames
+*/
+#define SAMPLE_EVENT_SIZE_IN_SLOTS(FRAMES) (4 + (FRAMES) * 4)
+
 static void
 mono_sample_hit (MonoProfiler *profiler, unsigned char *ip, void *context)
 {
 	StatBuffer *sbuf;
-	FrameData bt_data;
+	AsyncFrameInfo frames [num_frames];
+	AsyncFrameData bt_data = { 0, &frames [0]};
 	uint64_t now;
 	uintptr_t *data, *new_data, *old_data;
 	uintptr_t elapsed;
@@ -1233,7 +1264,9 @@ mono_sample_hit (MonoProfiler *profiler, unsigned char *ip, void *context)
 	if (in_shutdown)
 		return;
 	now = current_time ();
-	collect_bt (&bt_data, TRUE);
+
+	mono_stack_walk_async_safe (&async_walk_stack, context, &bt_data);
+
 	elapsed = (now - profiler->startup_time) / 10000;
 	if (do_debug) {
 		int len;
@@ -1272,7 +1305,7 @@ mono_sample_hit (MonoProfiler *profiler, unsigned char *ip, void *context)
 	}
 	do {
 		old_data = sbuf->data;
-		new_data = old_data + 4 + bt_data.count * 3;
+		new_data = old_data + SAMPLE_EVENT_SIZE_IN_SLOTS (bt_data.count);
 		data = InterlockedCompareExchangePointer ((void * volatile*)&sbuf->data, new_data, old_data);
 	} while (data != old_data);
 	if (old_data >= sbuf->data_end)
@@ -1282,9 +1315,10 @@ mono_sample_hit (MonoProfiler *profiler, unsigned char *ip, void *context)
 	old_data [2] = elapsed;
 	old_data [3] = (uintptr_t)ip;
 	for (i = 0; i < bt_data.count; ++i) {
-		old_data [4+3*i] = (uintptr_t)bt_data.methods [i];
-		old_data [4+3*i+1] = (uintptr_t)bt_data.il_offsets [i];
-		old_data [4+3*i+2] = (uintptr_t)bt_data.native_offsets [i];
+		old_data [4 + 4 * i + 0] = (uintptr_t)frames [i].method;
+		old_data [4 + 4 * i + 1] = (uintptr_t)frames [i].domain;
+		old_data [4 + 4 * i + 2] = (uintptr_t)frames [i].base_address;
+		old_data [4 + 4 * i + 3] = (uintptr_t)frames [i].offset;
 	}
 }
 
@@ -1624,8 +1658,22 @@ dump_sample_hits (MonoProfiler *prof, StatBuffer *sbuf, int recurse)
 		int count = sample [0] & 0xff;
 		int mbt_count = (sample [0] & 0xff00) >> 8;
 		int type = sample [0] >> 16;
-		if (sample + count + 3 + mbt_count * 3 > sbuf->data)
+		uintptr_t *managed_sample_base = sample + count + 3;
+
+		if (sample + SAMPLE_EVENT_SIZE_IN_SLOTS (mbt_count) > sbuf->data)
 			break;
+
+		for (i = 0; i < mbt_count; ++i) {
+			MonoMethod *method = (MonoMethod*)managed_sample_base [i * 4 + 0];
+			MonoDomain *domain = (MonoDomain*)managed_sample_base [i * 4 + 1];
+			void *address = (void*)managed_sample_base [i * 4 + 2];
+
+			if (!method) {
+				MonoJitInfo *ji = mono_jit_info_table_find (domain, address);
+				if (ji)
+					managed_sample_base [i * 4 + 0] = (uintptr_t)mono_jit_info_get_method (ji);
+			}
+		}
 		logbuffer = ensure_logbuf (20 + count * 8);
 		emit_byte (logbuffer, TYPE_SAMPLE | TYPE_SAMPLE_HIT);
 		emit_value (logbuffer, type);
@@ -1635,15 +1683,16 @@ dump_sample_hits (MonoProfiler *prof, StatBuffer *sbuf, int recurse)
 			emit_ptr (logbuffer, (void*)sample [i + 3]);
 			add_code_pointer (sample [i + 3]);
 		}
+
 		sample += count + 3;
 		/* new in data version 6 */
 		emit_uvalue (logbuffer, mbt_count);
 		for (i = 0; i < mbt_count; ++i) {
-			emit_method (logbuffer, (void*)sample [i * 3]); /* method */
-			emit_svalue (logbuffer, sample [i * 3 + 1]); /* il offset */
-			emit_svalue (logbuffer, sample [i * 3 + 2]); /* native offset */
+			emit_method (logbuffer, (void*)sample [i * 4]); /* method */
+			emit_svalue (logbuffer, 0); /* il offset will always be 0 from now on */
+			emit_svalue (logbuffer, sample [i * 4 + 3]); /* native offset */
 		}
-		sample += 3 * mbt_count;
+		sample += 4 * mbt_count;
 	}
 	dump_unmanaged_coderefs (prof);
 }
@@ -2188,6 +2237,10 @@ new_filename (const char* filename)
 }
 
 #ifndef DISABLE_HELPER_THREAD
+
+//this is exposed by the JIT, but it's not meant to be a supported API for now.
+extern void mono_threads_attach_tools_thread (void);
+
 static void*
 helper_thread (void* arg)
 {
@@ -2198,6 +2251,7 @@ helper_thread (void* arg)
 	MonoThread *thread = NULL;
 	uint64_t start, now;
 
+	mono_threads_attach_tools_thread ();
 	//fprintf (stderr, "Server listening\n");
 	start = current_time ();
 	command_socket = -1;
@@ -2255,9 +2309,11 @@ helper_thread (void* arg)
 				sbufbase->next->next = NULL;
 				if (do_debug)
 					fprintf (stderr, "stat buffer dump\n");
-				dump_sample_hits (prof, sbuf, 1);
-				free_buffer (sbuf, sbuf->size);
-				safe_dump (prof, ensure_logbuf (0));
+				if (sbuf) {
+					dump_sample_hits (prof, sbuf, 1);
+					free_buffer (sbuf, sbuf->size);
+					safe_dump (prof, ensure_logbuf (0));
+				}
 				continue;
 			}
 			/* time to shut down */
@@ -2692,6 +2748,14 @@ mono_profiler_startup (const char *desc)
 			do_debug = 1;
 			continue;
 		}
+		if ((opt = match_option (p, "sampling-real", NULL)) != p) {
+			sampling_mode = MONO_PROFILER_STAT_MODE_REAL;
+			continue;
+		}
+		if ((opt = match_option (p, "sampling-process", NULL)) != p) {
+			sampling_mode = MONO_PROFILER_STAT_MODE_PROCESS;
+			continue;
+		}
 		if ((opt = match_option (p, "heapshot", &val)) != p) {
 			events &= ~MONO_PROFILE_ALLOCATIONS;
 			events &= ~MONO_PROFILE_ENTER_LEAVE;
@@ -2781,6 +2845,7 @@ mono_profiler_startup (const char *desc)
 	
 	if (do_mono_sample && sample_type == SAMPLE_CYCLES) {
 		events |= MONO_PROFILE_STATISTICAL;
+		mono_profiler_set_statistical_mode (sampling_mode, 1000000 / sample_freq);
 		mono_profiler_install_statistical (mono_sample_hit);
 	}
 

@@ -116,18 +116,14 @@ PROGRAMS = $(bin_PROGRAMS)
 am_monodis_OBJECTS = dump.$(OBJEXT) main.$(OBJEXT) declsec.$(OBJEXT)
 monodis_OBJECTS = $(am_monodis_OBJECTS)
 am__DEPENDENCIES_1 =
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntime-static.la \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1) \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1) \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1)
-@JIT_SUPPORTED_FALSE@am__DEPENDENCIES_3 = ../interpreter/libmint.la
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@am__DEPENDENCIES_3 =  \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	../mini/$(LIBMONO_LA) \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_2)
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_TRUE@am__DEPENDENCIES_3 =  \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_TRUE@	../mini/$(LIBMONO_LA)
+@SHARED_MONO_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntime-static.la \
+@SHARED_MONO_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la \
+@SHARED_MONO_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
+@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1)
+@SHARED_MONO_FALSE@am__DEPENDENCIES_3 = ../mini/$(LIBMONO_LA) \
+@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_2)
+@SHARED_MONO_TRUE@am__DEPENDENCIES_3 = ../mini/$(LIBMONO_LA)
 monodis_DEPENDENCIES = libmonodis.a $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
@@ -430,16 +426,15 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@static_libs = \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/metadata/libmonoruntime-static.la	\
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la	\
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(GLIB_LIBS) $(LIBICONV) \
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@	$(LIBGC_STATIC_LIBS)
+@SHARED_MONO_FALSE@static_libs = \
+@SHARED_MONO_FALSE@	$(top_builddir)/mono/metadata/libmonoruntime-static.la	\
+@SHARED_MONO_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la	\
+@SHARED_MONO_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
+@SHARED_MONO_FALSE@	$(GLIB_LIBS) $(LIBICONV) \
+@SHARED_MONO_FALSE@	$(LIBGC_STATIC_LIBS)
 
-@JIT_SUPPORTED_FALSE@runtime_lib = ../interpreter/libmint.la
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_FALSE@runtime_lib = ../mini/$(LIBMONO_LA) $(static_libs)
-@JIT_SUPPORTED_TRUE@@SHARED_MONO_TRUE@runtime_lib = ../mini/$(LIBMONO_LA)
+@SHARED_MONO_FALSE@runtime_lib = ../mini/$(LIBMONO_LA) $(static_libs)
+@SHARED_MONO_TRUE@runtime_lib = ../mini/$(LIBMONO_LA)
 noinst_LIBRARIES = libmonodis.a
 libmonodis_a_SOURCES = \
 	get.c		\

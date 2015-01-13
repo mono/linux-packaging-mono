@@ -125,7 +125,7 @@ mono_class_from_name_case (MonoImage *image, const char* name_space, const char 
 </div>
 <p />
 <b>Parameters</b>
-<blockquote><dt><i>image:</i></dt><dd> The MonoImage where the type is looked up in</dd><dt><i>name_space:</i></dt><dd> the type namespace</dd><dt><i>name:</i></dt><dd> the type short name.</dd></blockquote>
+<blockquote><dt><i>image:</i></dt><dd> The MonoImage where the type is looked up in</dd><dt><i>name_space:</i></dt><dd> the type namespace</dd><dt><i>name:</i></dt><dd> the type short name.</dd><dt><i>deprecated:</i></dt><dd> use the _checked variant</dd></blockquote>
 <b>Remarks</b>
 <p />	 
 	 Obtains a MonoClass with a given namespace and a given name which
@@ -332,7 +332,7 @@ mono_class_get_full (MonoImage *image, guint32 type_token, MonoGenericContext *c
 </div>
 <p />
 <b>Parameters</b>
-<blockquote><dt><i>image:</i></dt><dd> the image where the class resides</dd><dt><i>type_token:</i></dt><dd> the token for the class</dd><dt><i>context:</i></dt><dd> the generic context used to evaluate generic instantiations in</dd></blockquote>
+<blockquote><dt><i>image:</i></dt><dd> the image where the class resides</dd><dt><i>type_token:</i></dt><dd> the token for the class</dd><dt><i>context:</i></dt><dd> the generic context used to evaluate generic instantiations in</dd><dt><i>deprecated:</i></dt><dd> Functions that expose MonoGenericContext are going away in mono 4.0</dd></blockquote>
 <b>Returns</b>
 <blockquote>	  the MonoClass that represents <i>type_token</i> in <i>image</i>
 </blockquote>

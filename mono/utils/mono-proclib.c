@@ -105,6 +105,10 @@ mono_process_list (int *size)
 	if (size)
 		*size = res;
 	return buf;
+#elif defined(__HAIKU__)
+	/* FIXME: Add back the code from 9185fcc305e43428d0f40f3ee37c8a405d41c9ae */
+	g_assert_not_reached ();
+	return NULL;
 #else
 	const char *name;
 	void **buf = NULL;
@@ -660,3 +664,13 @@ mono_cpu_get_data (int cpu_id, MonoCpuData data, MonoProcessError *error)
 	return value;
 }
 
+int
+mono_atexit (void (*func)(void))
+{
+#ifdef PLATFORM_ANDROID
+	/* Some versions of android libc doesn't define atexit () */
+	return 0;
+#else
+	return atexit (func);
+#endif
+}

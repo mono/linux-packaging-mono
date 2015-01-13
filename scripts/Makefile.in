@@ -408,6 +408,7 @@ scripts_4_0 = \
 	prj2make$(SCRIPT_SUFFIX)		\
 	soapsuds$(SCRIPT_SUFFIX)		\
 	caspol$(SCRIPT_SUFFIX)			\
+	cert-sync$(SCRIPT_SUFFIX)		\
 	cert2spc$(SCRIPT_SUFFIX)		\
 	certmgr$(SCRIPT_SUFFIX)			\
 	chktrust$(SCRIPT_SUFFIX)		\
@@ -495,8 +496,7 @@ EXTRA_DIST = \
 	get-cygwin-deps.sh	\
 	mono-configuration-crypto.in
 
-@USE_JIT_FALSE@mono_interp = mint
-@USE_JIT_TRUE@mono_interp = mono
+mono_interp = mono
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@plat_bindir = $(shell cygpath -m $(libdir))
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@plat_bindir = $(bindir)
 @HOST_WIN32_FALSE@plat_bindir = $(bindir)

@@ -453,29 +453,29 @@ namespace System {
 					: db.GetAvailableIds ();
 			}
 
-			static TimeZoneInfo _GetTimeZone (string name)
+			static TimeZoneInfo _GetTimeZone (string id, string name)
 			{
 				if (db == null)
 					return null;
 				byte[] buffer = db.GetTimeZoneData (name);
 				if (buffer == null)
 					return null;
-				return TimeZoneInfo.ParseTZBuffer (name, buffer, buffer.Length);
+				return TimeZoneInfo.ParseTZBuffer (id, buffer, buffer.Length);
 			}
 
-			internal static TimeZoneInfo GetTimeZone (string id)
+			internal static TimeZoneInfo GetTimeZone (string id, string name)
 			{
-				if (id != null) {
-					if (id == "GMT" || id == "UTC")
-						return new TimeZoneInfo (id, TimeSpan.FromSeconds (0), id, id, id, null, true);
-					if (id.StartsWith ("GMT"))
+				if (name != null) {
+					if (name == "GMT" || name == "UTC")
+						return new TimeZoneInfo (id, TimeSpan.FromSeconds (0), id, name, name, null, disableDaylightSavingTime:true);
+					if (name.StartsWith ("GMT"))
 						return new TimeZoneInfo (id,
-								TimeSpan.FromSeconds (ParseNumericZone (id)),
-								id, id, id, null, true);
+								TimeSpan.FromSeconds (ParseNumericZone (name)),
+								id, name, name, null, disableDaylightSavingTime:true);
 				}
 
 				try {
-					return _GetTimeZone (id);
+					return _GetTimeZone (id, name);
 				} catch (Exception) {
 					return null;
 				}
@@ -533,12 +533,13 @@ namespace System {
 			static readonly object _lock = new object ();
 
 			static TimeZoneInfo defaultZone;
-			internal static TimeZoneInfo Default {
+			internal static TimeZoneInfo Local {
 				get {
 					lock (_lock) {
 						if (defaultZone != null)
 							return defaultZone;
-						return defaultZone = GetTimeZone (GetDefaultTimeZoneName ());
+						var id  = GetDefaultTimeZoneName ();
+						return defaultZone = GetTimeZone (id, id);
 					}
 				}
 			}
@@ -553,7 +554,10 @@ namespace System {
 			{
 				IntPtr value = IntPtr.Zero;
 				int n = 0;
-				string defaultTimeZone;
+				string defaultTimeZone  = Environment.GetEnvironmentVariable ("__XA_OVERRIDE_TIMEZONE_ID__");
+
+				if (!string.IsNullOrEmpty (defaultTimeZone))
+					return defaultTimeZone;
 
 				// Used by the tests
 				if (Environment.GetEnvironmentVariable ("__XA_USE_JAVA_DEFAULT_TIMEZONE_ID__") == null)
@@ -576,16 +580,20 @@ namespace System {
 #if SELF_TEST
 			/*
 			 * Compile:
-			 *    mcs  /out:tzi.exe /unsafe "/d:INSIDE_CORLIB;MONODROID;NET_4_0;LIBC;SELF_TEST" System/TimeZone*.cs ../../build/common/Consts.cs ../Mono.Options/Mono.Options/Options.cs
+			 *    mcs /debug+ /out:tzi.exe /unsafe "/d:INSIDE_CORLIB;MONODROID;NET_4_0;LIBC;SELF_TEST" ../corlib/System/AndroidPlatform.cs System/TimeZone*.cs ../../build/common/Consts.cs ../Mono.Options/Mono.Options/Options.cs
 			 * Prep:
 			 *    mkdir -p usr/share/zoneinfo
+			 *    mkdir -p misc/zoneinfo/zoneinfo
 			 *    android_root=`adb shell echo '$ANDROID_ROOT' | tr -d "\r"`
+			 *    android_data=`adb shell echo '$ANDROID_DATA' | tr -d "\r"`
 			 *    adb pull $android_root/usr/share/zoneinfo usr/share/zoneinfo
+			 *    adb pull $android_data/misc/zoneinfo/tzdata misc/zoneinfo
 			 * Run:
-			 *    ANDROID_ROOT=`pwd` mono tzi.exe
+			 *    __XA_OVERRIDE_TIMEZONE_ID__=America/New_York ANDROID_ROOT=`pwd` ANDROID_DATA=`pwd` mono --debug tzi.exe --offset=1969-01-01
 			 */
 			static void Main (string[] args)
 			{
+				DateTime? offset           = null;
 				Func<IAndroidTimeZoneDB> c = () => GetDefaultTimeZoneDB ();
 				Mono.Options.OptionSet p = null;
 				p = new Mono.Options.OptionSet () {
@@ -594,6 +602,10 @@ namespace System {
 					} },
 					{ "Z=", "Create ZoneInfoDB from {DIR}.", v => {
 							c = () => new ZoneInfoDB (v);
+					} },
+					{ "offset=", "Show timezone info offset for DateTime {OFFSET}.", v => {
+						offset = DateTime.Parse (v);
+						Console.WriteLine ("Using DateTime Offset: {0}", offset);
 					} },
 					{ "help", "Show this message and exit", v => {
 							p.WriteOptionDescriptions (Console.Out);
@@ -606,9 +618,13 @@ namespace System {
 				foreach (var id in GetAvailableIds ()) {
 					Console.Write ("name={0,-40}", id);
 					try {
-						TimeZoneInfo zone = _GetTimeZone (id);
-						if (zone != null)
-							Console.Write (" {0}", zone);
+						TimeZoneInfo zone = _GetTimeZone (id, id);
+						if (zone != null) {
+							Console.Write (" {0,-40}", zone);
+							if (offset.HasValue) {
+								Console.Write ("From Offset: {0}", zone.GetUtcOffset (offset.Value));
+							}
+						}
 						else {
 							Console.Write (" ERROR:null");
 						}
