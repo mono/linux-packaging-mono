@@ -88,6 +88,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_class_from_name@VER_1 3.2.1+dfsg
  mono_class_from_name_case@VER_1 3.2.1+dfsg
  mono_class_from_typeref@VER_1 3.2.1+dfsg
+ mono_class_from_typeref_checked@VER_1 3.12.0
  mono_class_get@VER_1 3.2.1+dfsg
  mono_class_get_byref_type@VER_1 3.2.1+dfsg
  mono_class_get_com_object_class@VER_1 3.2.1+dfsg
@@ -574,7 +575,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_metadata_implmap_from_method@VER_1 3.2.1+dfsg
  mono_metadata_init@VER_1 3.2.1+dfsg
  mono_metadata_interfaces_from_typedef@VER_1 3.2.1+dfsg
- mono_metadata_load_generic_param_constraints@VER_1 3.2.1+dfsg
+ mono_metadata_load_generic_param_constraints_checked@VER_1 3.12.0
  mono_metadata_load_generic_params@VER_1 3.2.1+dfsg
  mono_metadata_locate@VER_1 3.2.1+dfsg
  mono_metadata_locate_token@VER_1 3.2.1+dfsg
@@ -730,6 +731,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_profiler_install_transition@VER_1 3.2.1+dfsg
  mono_profiler_load@VER_1 3.2.1+dfsg
  mono_profiler_set_events@VER_1 3.2.1+dfsg
+ mono_profiler_set_statistical_mode@VER_1 3.12.0
  mono_property_get_flags@VER_1 3.2.1+dfsg
  mono_property_get_get_method@VER_1 3.2.1+dfsg
  mono_property_get_name@VER_1 3.2.1+dfsg
@@ -825,7 +827,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_single_method_list@VER_1 3.2.8+dfsg
  mono_single_method_regression_opt@VER_1 3.2.8+dfsg
  mono_stack_walk@VER_1 3.2.1+dfsg
- mono_stack_walk_async_safe@VER_1 3.10.0-0xamarin1
+ mono_stack_walk_async_safe@VER_1 3.10.0
  mono_stack_walk_no_il@VER_1 3.2.1+dfsg
  mono_store_remote_field@VER_1 3.2.1+dfsg
  mono_store_remote_field_new@VER_1 3.2.1+dfsg
@@ -833,7 +835,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_string_equal@VER_1 3.2.1+dfsg
  mono_string_from_bstr@VER_1 3.2.1+dfsg
  mono_string_from_utf16@VER_1 3.2.1+dfsg
- mono_string_from_utf32@VER_1 3.10.0-0xamarin1
+ mono_string_from_utf32@VER_1 3.10.0
  mono_string_hash@VER_1 3.2.1+dfsg
  mono_string_intern@VER_1 3.2.1+dfsg
  mono_string_is_interned@VER_1 3.2.1+dfsg
@@ -842,10 +844,10 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_string_new_len@VER_1 3.2.1+dfsg
  mono_string_new_size@VER_1 3.2.1+dfsg
  mono_string_new_utf16@VER_1 3.2.1+dfsg
- mono_string_new_utf32@VER_1 3.10.0-0xamarin1
+ mono_string_new_utf32@VER_1 3.10.0
  mono_string_new_wrapper@VER_1 3.2.1+dfsg
  mono_string_to_utf16@VER_1 3.2.1+dfsg
- mono_string_to_utf32@VER_1 3.10.0-0xamarin1
+ mono_string_to_utf32@VER_1 3.10.0
  mono_string_to_utf8@VER_1 3.2.1+dfsg
  mono_string_to_utf8_checked@VER_1 3.2.1+dfsg
  mono_stringify_assembly_name@VER_1 3.2.1+dfsg
@@ -857,13 +859,18 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_thread_create@VER_1 3.2.1+dfsg
  mono_thread_current@VER_1 3.2.1+dfsg
  mono_thread_detach@VER_1 3.2.1+dfsg
- mono_thread_detach_if_exiting@VER_1 3.10.0-0xamarin1
+ mono_thread_detach_if_exiting@VER_1 3.10.0
  mono_thread_exit@VER_1 3.2.1+dfsg
  mono_thread_get_main@VER_1 3.2.1+dfsg
  mono_thread_get_undeniable_exception@VER_1 3.2.1+dfsg
- mono_thread_info_exit@VER_1 3.6.0-0xamarin1
+ mono_thread_info_clear_interruption@VER_1 3.12.0
+ mono_thread_info_exit@VER_1 3.6.0
+ mono_thread_info_finish_interrupt@VER_1 3.12.0
  mono_thread_info_get_stack_bounds@VER_1 3.6.0
+ mono_thread_info_interrupt@VER_1 3.12.0
  mono_thread_info_open_handle@VER_1 3.6.0
+ mono_thread_info_prepare_interrupt@VER_1 3.12.0
+ mono_thread_info_self_interrupt@VER_1 3.12.0
  mono_thread_info_tls_get@VER_1 3.6.0
  mono_thread_info_tls_set@VER_1 3.6.0
  mono_thread_init@VER_1 3.2.1+dfsg
@@ -873,6 +880,11 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_thread_set_main@VER_1 3.2.1+dfsg
  mono_thread_set_manage_callback@VER_1 3.2.1+dfsg
  mono_thread_stop@VER_1 3.2.1+dfsg
+ mono_threads_attach_tools_thread@VER_1 3.12.0
+ mono_threads_core_clear_interruption@VER_1 3.12.0
+ mono_threads_core_finish_interrupt@VER_1 3.12.0
+ mono_threads_core_prepare_interrupt@VER_1 3.12.0
+ mono_threads_core_self_interrupt@VER_1 3.12.0
  mono_threads_create_thread@VER_1 3.2.8+dfsg
  mono_threads_get_default_stacksize@VER_1 3.2.1+dfsg
  mono_threads_request_thread_dump@VER_1 3.2.1+dfsg
@@ -880,10 +892,10 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_tls_key_get_offset@VER_1 3.2.8+dfsg
  mono_tls_key_set_offset@VER_1 3.2.8+dfsg
  mono_trace_set_level_string@VER_1 3.2.1+dfsg
- mono_trace_set_log_handler@VER_1 3.10.0-0xamarin1
+ mono_trace_set_log_handler@VER_1 3.10.0
  mono_trace_set_mask_string@VER_1 3.2.1+dfsg
- mono_trace_set_print_handler@VER_1 3.10.0-0xamarin1
- mono_trace_set_printerr_handler@VER_1 3.10.0-0xamarin1
+ mono_trace_set_print_handler@VER_1 3.10.0
+ mono_trace_set_printerr_handler@VER_1 3.10.0
  mono_trampoline_code@VER_1 3.2.1+dfsg
  mono_type_create_from_typespec@VER_1 3.2.1+dfsg
  mono_type_full_name@VER_1 3.2.1+dfsg
