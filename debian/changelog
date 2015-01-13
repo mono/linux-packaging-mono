@@ -1,3 +1,17 @@
+mono (3.12.0-0xamarin1) unstable; urgency=medium
+
+  * [e281f10] Fix missing contents in mono-runtime-dbg package
+  * [cf92446] Imported Upstream version 3.12.0
+  * [8f21e3a] Drop s390x patches (already in this release)
+  * [cf3b52e] Refreshed symbols files
+  * [ae4b009] Bump clilibs dependencies, as required by ABI bumps.
+  * [f5d01a3] Add cert-sync, to handle CA certificate sync with Debian CA
+    store
+  * [ededb55] Refresh dh_monoaot to work from a manifest file, 
+    debian/installmonoaot, into $PREFIX/mono/lib/aot-cache/$ARCH
+
+ -- Jo Shields <jo.shields@xamarin.com>  Tue, 13 Jan 2015 18:44:19 +0000
+
 mono (3.10.0-0xamarin2) unstable; urgency=medium
 
   * [2124890] Include missing support-s390x.h header file absent from 
