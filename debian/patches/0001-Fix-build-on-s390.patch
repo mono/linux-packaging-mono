@@ -1,0 +1,32 @@
+From e6bd66abf645bb8ea508409eca5e9b4820ba74d6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Alexander=20K=C3=B6plinger?= <alex.koeplinger@outlook.com>
+Date: Tue, 2 Dec 2014 05:49:59 +0100
+Subject: [PATCH] Fix build on s390
+
+---
+ mono/mini/mini-posix.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+Index: xamarin-pkg-mono/mono/mini/mini-posix.c
+===================================================================
+--- xamarin-pkg-mono.orig/mono/mini/mini-posix.c	2015-01-14 08:23:41.289232722 +0000
++++ xamarin-pkg-mono/mono/mini/mini-posix.c	2015-01-14 08:23:53.000000000 +0000
+@@ -297,6 +297,9 @@
+ #endif
+ 
+ #ifdef SIGPROF
++
++static int profiling_signal_in_use;
++
+ #if defined(__ia64__) || defined(__sparc__) || defined(sparc) || defined(__s390__) || defined(s390)
+ 
+ MONO_SIG_HANDLER_FUNC (static, sigprof_signal_handler)
+@@ -309,8 +312,6 @@
+ 
+ #else
+ 
+-static int profiling_signal_in_use;
+-
+ static void
+ per_thread_profiler_hit (void *ctx)
+ {
