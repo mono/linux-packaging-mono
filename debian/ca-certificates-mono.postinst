@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ "x$1" == "xconfigure" ] && [ -x /usr/sbin/update-ca-certificates ]; then 
+	if [ ! -f /var/lib/dpkg/triggers/update-ca-certificates ]; then
+		/usr/sbin/update-ca-certificates
+	else
+		/usr/bin/dpkg-trigger update-ca-certificates
+	fi
+fi
+
+#DEBHELPER#
+
+exit 0
+
