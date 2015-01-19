@@ -1,0 +1,42 @@
+From afcb0baec2182503ed8de016bd6225cbb1c74191 Mon Sep 17 00:00:00 2001
+From: Jo Shields <jo.shields@xamarin.com>
+Date: Mon, 19 Jan 2015 14:32:22 +0000
+Subject: [PATCH] Workaround for X509Certificate.RSA throwing an unhandled
+ exception in ASN1 parsing of certificates with ECC public keys only.
+
+---
+ mcs/class/Mono.Security/Mono.Security.X509/X509Certificate.cs | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/mcs/class/Mono.Security/Mono.Security.X509/X509Certificate.cs b/mcs/class/Mono.Security/Mono.Security.X509/X509Certificate.cs
+index 11be419..da39f9a 100644
+--- a/mcs/class/Mono.Security/Mono.Security.X509/X509Certificate.cs
++++ b/mcs/class/Mono.Security/Mono.Security.X509/X509Certificate.cs
+@@ -247,7 +247,7 @@ namespace Mono.Security.X509 {
+ 				if (m_keyalgoparams == null)
+ 					throw new CryptographicException ("Missing key algorithm parameters.");
+ 
+-				if (_dsa == null) {
++				if (_dsa == null && m_keyalgo == "1.2.840.10040.4.1") {
+ 					DSAParameters dsaParams = new DSAParameters ();
+ 					// for DSA m_publickey contains 1 ASN.1 integer - Y
+ 					ASN1 pubkey = new ASN1 (m_publickey);
+@@ -327,7 +327,7 @@ namespace Mono.Security.X509 {
+ 
+ 		public virtual RSA RSA {
+ 			get {
+-				if (_rsa == null) {
++				if (_rsa == null && m_keyalgo == "1.2.840.113549.1.1.1") {
+ 					RSAParameters rsaParams = new RSAParameters ();
+ 					// for RSA m_publickey contains 2 ASN.1 integers
+ 					// the modulus and the public exponent
+@@ -560,4 +560,4 @@ namespace Mono.Security.X509 {
+ 			return Convert.FromBase64String (base64);
+ 		}
+ 	}
+-}
+\ No newline at end of file
++}
+-- 
+1.9.1
+
