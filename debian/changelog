@@ -1,3 +1,12 @@
+mono (3.12.0-0xamarin2) unstable; urgency=medium
+
+  * [ae97eed] Import e6bd66a to fix build on s390x
+  * [f6cc812] Add postinst script to ca-certificates-mono, to handle 
+    versions of Ubuntu whose ca-certificates does not contain the 
+    update-ca-certificates trigger (i.e. anything before Trusty)
+
+ -- Jo Shields <jo.shields@xamarin.com>  Thu, 15 Jan 2015 16:44:49 +0000
+
 mono (3.12.0-0xamarin1) unstable; urgency=medium
 
   * [e281f10] Fix missing contents in mono-runtime-dbg package
