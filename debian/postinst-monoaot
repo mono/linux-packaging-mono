@@ -2,5 +2,5 @@ if [ "$1" = "configure" ]
 then
 	MONOARCH=`mono --version | grep Architecture | sed 's/.*:  //'`
 	mkdir -p /usr/lib/mono/aot-cache/${MONOARCH}/
-	/usr/bin/mono --aot=outfile=/usr/lib/mono/aot-cache/${MONOARCH}/`basename #FILE#.so` -O=all,shared #FILE# > /dev/null 2>&1
+	/usr/bin/mono --aot=outfile=/usr/lib/mono/aot-cache/${MONOARCH}/`basename #FILE#.so` -O=all,shared #FILE# > /dev/null 2>&1 || true
 fi
