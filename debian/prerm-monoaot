@@ -1,1 +1,1 @@
-rm -f /usr/lib/mono/aot-cache/`mono --version | grep Architecture | sed 's/.*:  //'`/`basename #FILE#`
+rm -f /usr/lib/mono/aot-cache/`mono --version | grep Architecture | sed 's/.*:  //' | sed 's/el,.*//'`/`basename #FILE#`
