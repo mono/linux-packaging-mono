@@ -1,3 +1,11 @@
+mono (3.12.0-0xamarin4) unstable; urgency=medium
+
+  * [8882ab8] Add ||true to AOT postinst, to prevent install failure on
+    architectures like s390x without AOT.
+  * [3176827] Fix AOT-on-install on ARM
+
+ -- Jo Shields <jo.shields@xamarin.com>  Sat, 07 Feb 2015 13:54:36 -0500
+
 mono (3.12.0-0xamarin3) unstable; urgency=medium
 
   * [0536783] Workaround for X509Certificate.RSA throwing an unhandled 
