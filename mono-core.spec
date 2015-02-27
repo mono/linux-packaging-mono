@@ -180,9 +180,9 @@ rm -f %{buildroot}%{_prefix}/lib/mono/2.0/cilc.exe*
 
 # brp-compress doesn't search _mandir
 # so we cheat it
-ln -s . %{buildroot}%{_prefix}%{_prefix}
+ln -s . %{buildroot}%{_prefix}/symlink-for-brp-compress
 RPM_BUILD_ROOT=%{buildroot}%{_prefix} /usr/lib/rpm/brp-compress
-rm %{buildroot}%{_prefix}%{_prefix}
+rm %{buildroot}%{_prefix}/symlink-for-brp-compress
 
 # Fix non-executable-in-bin
 chmod +x %{buildroot}%{_bindir}/mono-gdb.py
