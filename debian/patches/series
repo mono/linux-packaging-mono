@@ -1,3 +1,4 @@
 0001-TLS-protocol-add-handshake-state-validation.patch
+0002-Remove-the-client-side-SSLv2-fallback.patch
 0001-Workaround-for-X509Certificate.RSA-throwing-an-unhan.patch
 0001-Fix-build-on-s390.patch
