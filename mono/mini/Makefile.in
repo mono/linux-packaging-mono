@@ -2879,13 +2879,12 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 @DISABLE_EXECUTABLES_FALSE@@SUPPORT_BOEHM_TRUE@buildver-boehm.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntime-static.la
 @SUPPORT_BOEHM_TRUE@	@echo "const char *build_date = \"`date`\";" > buildver-boehm.h
 @SUPPORT_BOEHM_TRUE@mono_boehm-main.$(OBJEXT): buildver-boehm.h
-@SUPPORT_BOEHM_TRUE@main.c: buildver-boehm.h
 
 @DISABLE_EXECUTABLES_TRUE@buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen.la
 @DISABLE_EXECUTABLES_FALSE@buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen-static.la
 	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
 mono_sgen-main-sgen.$(OBJEXT): buildver-sgen.h
-main-sgen.c: buildver-sgen.h
+main-sgen.$(OBJEXT): buildver-sgen.h
 
 # if SUPPORT_SGEN
 # 
