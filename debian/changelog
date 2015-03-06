@@ -1,3 +1,17 @@
+mono (3.12.0-0xamarin5) unstable; urgency=high
+
+  * [f9fbb08] TLS protocol: add handshake state validation
+  * [4ad684a] Remove the client-side SSLv2 fallback.
+    There's almost no SSLv3 web site left so a v2 fallback is only extra
+    code we do not need to carry forward.
+  * [2a72252] Remove the EXPORT ciphers and related code path.
+    That was still useful in 2003/2004 but the technical and legal landscape
+    changed a lot since then. Removing the old, limited key size, cipher
+    suites also allow removed additional parts of the code that deals with
+    them.
+
+ -- Jo Shields <jo.shields@xamarin.com>  Fri, 06 Mar 2015 16:03:15 +0000
+
 mono (3.12.0-0xamarin4) unstable; urgency=medium
 
   * [8882ab8] Add ||true to AOT postinst, to prevent install failure on
