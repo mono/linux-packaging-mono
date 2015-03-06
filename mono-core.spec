@@ -27,17 +27,14 @@
 %define sgen yes
 
 Name:           mono-core
-Version:        3.12.0
-Release:        2
+Version:        3.12.1
+Release:        0
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 Patch0:		0001-Workaround-for-X509Certificate.RSA-throwing-an-unhan.patch
-Patch1:		0001-TLS-protocol-add-handshake-state-validation.patch
-Patch2:		0002-Remove-the-client-side-SSLv2-fallback.patch
-Patch3:		0003-Remove-the-EXPORT-ciphers-and-related-code-path.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -115,9 +112,6 @@ technologies that have been submitted to the ECMA for standardization.
 %prep
 %setup -q -n mono-%{version}
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 ./autogen.sh
