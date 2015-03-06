@@ -1,0 +1,200 @@
+From 1509226c41d74194c146deb173e752b8d3cdeec4 Mon Sep 17 00:00:00 2001
+From: Sebastien Pouliot <sebastien@xamarin.com>
+Date: Fri, 6 Mar 2015 10:34:14 -0500
+Subject: [PATCH 1/3] TLS protocol: add handshake state validation
+
+---
+ .../ClientRecordProtocol.cs                        | 33 ++++++++++++++++---
+ .../Mono.Security.Protocol.Tls/Context.cs          |  2 ++
+ .../Mono.Security.Protocol.Tls/RecordProtocol.cs   |  8 ++---
+ .../ServerRecordProtocol.cs                        | 37 ++++++++++++++++------
+ 4 files changed, 59 insertions(+), 21 deletions(-)
+
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ClientRecordProtocol.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ClientRecordProtocol.cs
+index 7cece50..acaa0c2 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ClientRecordProtocol.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ClientRecordProtocol.cs
+@@ -129,6 +129,7 @@ namespace Mono.Security.Protocol.Tls
+ 			HandshakeType type, byte[] buffer)
+ 		{
+ 			ClientContext context = (ClientContext)this.context;
++			var last = context.LastHandshakeMsg;
+ 
+ 			switch (type)
+ 			{
+@@ -148,23 +149,44 @@ namespace Mono.Security.Protocol.Tls
+ 					return null;
+ 
+ 				case HandshakeType.ServerHello:
++					if (last != HandshakeType.HelloRequest)
++						break;
+ 					return new TlsServerHello(this.context, buffer);
+ 
++					// Optional
+ 				case HandshakeType.Certificate:
++					if (last != HandshakeType.ServerHello)
++						break;
+ 					return new TlsServerCertificate(this.context, buffer);
+ 
++					// Optional
+ 				case HandshakeType.ServerKeyExchange:
+-					return new TlsServerKeyExchange(this.context, buffer);
++					// only for RSA_EXPORT
++					if (last == HandshakeType.Certificate && context.Current.Cipher.IsExportable)
++						return new TlsServerKeyExchange(this.context, buffer);
++					break;
+ 
++					// Optional
+ 				case HandshakeType.CertificateRequest:
+-					return new TlsServerCertificateRequest(this.context, buffer);
++					if (last == HandshakeType.ServerKeyExchange || last == HandshakeType.Certificate)
++						return new TlsServerCertificateRequest(this.context, buffer);
++					break;
+ 
+ 				case HandshakeType.ServerHelloDone:
+-					return new TlsServerHelloDone(this.context, buffer);
++					if (last == HandshakeType.CertificateRequest || last == HandshakeType.Certificate || last == HandshakeType.ServerHello)
++						return new TlsServerHelloDone(this.context, buffer);
++					break;
+ 
+ 				case HandshakeType.Finished:
+-					return new TlsServerFinished(this.context, buffer);
+-
++					// depends if a full (ServerHelloDone) or an abbreviated handshake (ServerHello) is being done
++					bool check = context.AbbreviatedHandshake ? (last == HandshakeType.ServerHello) : (last == HandshakeType.ServerHelloDone);
++					// ChangeCipherSpecDone is not an handshake message (it's a content type) but still needs to be happens before finished
++					if (check && context.ChangeCipherSpecDone) {
++						context.ChangeCipherSpecDone = false;
++						return new TlsServerFinished (this.context, buffer);
++					}
++					break;
++					
+ 				default:
+ 					throw new TlsException(
+ 						AlertDescription.UnexpectedMessage,
+@@ -172,6 +194,7 @@ namespace Mono.Security.Protocol.Tls
+ 							"Unknown server handshake message received ({0})", 
+ 							type.ToString()));
+ 			}
++			throw new TlsException (AlertDescription.HandshakeFailiure, String.Format ("Protocol error, unexpected protocol transition from {0} to {1}", last, type));
+ 		}
+ 
+ 		#endregion
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/Context.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/Context.cs
+index b4caf28..3923daf 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/Context.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/Context.cs
+@@ -122,6 +122,8 @@ namespace Mono.Security.Protocol.Tls
+ 			set { this.protocolNegotiated = value; }
+ 		}
+ 
++		public bool ChangeCipherSpecDone { get; set; }
++
+ 		public SecurityProtocolType SecurityProtocol
+ 		{
+ 			get 
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/RecordProtocol.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/RecordProtocol.cs
+index 5895106..e8ae131 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/RecordProtocol.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/RecordProtocol.cs
+@@ -88,6 +88,8 @@ namespace Mono.Security.Protocol.Tls
+ 			} else {
+ 				ctx.StartSwitchingSecurityParameters (false);
+ 			}
++
++			ctx.ChangeCipherSpecDone = true;
+ 		}
+ 
+ 		public virtual HandshakeMessage GetMessage(HandshakeType type)
+@@ -348,9 +350,6 @@ namespace Mono.Security.Protocol.Tls
+ 				// Try to read the Record Content Type
+ 				int type = internalResult.InitialBuffer[0];
+ 
+-				// Set last handshake message received to None
+-				this.context.LastHandshakeMsg = HandshakeType.ClientHello;
+-
+ 				ContentType	contentType	= (ContentType)type;
+ 				byte[] buffer = this.ReadRecordBuffer(type, record);
+ 				if (buffer == null)
+@@ -458,9 +457,6 @@ namespace Mono.Security.Protocol.Tls
+ 			// Try to read the Record Content Type
+ 			int type = recordTypeBuffer[0];
+ 
+-			// Set last handshake message received to None
+-			this.context.LastHandshakeMsg = HandshakeType.ClientHello;
+-
+ 			ContentType	contentType	= (ContentType)type;
+ 			byte[] buffer = this.ReadRecordBuffer(type, record);
+ 			if (buffer == null)
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ServerRecordProtocol.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ServerRecordProtocol.cs
+index 6e316dc..31c2547 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ServerRecordProtocol.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ServerRecordProtocol.cs
+@@ -33,6 +33,8 @@ namespace Mono.Security.Protocol.Tls
+ {
+ 	internal class ServerRecordProtocol : RecordProtocol
+ 	{
++		TlsClientCertificate cert;
++		
+ 		#region Constructors
+ 
+ 		public ServerRecordProtocol(
+@@ -93,30 +95,45 @@ namespace Mono.Security.Protocol.Tls
+ 		private HandshakeMessage createClientHandshakeMessage(
+ 			HandshakeType type, byte[] buffer)
+ 		{
++			var last = context.LastHandshakeMsg;
+ 			switch (type)
+ 			{
+ 				case HandshakeType.ClientHello:
+ 					return new TlsClientHello(this.context, buffer);
+ 
+ 				case HandshakeType.Certificate:
+-					return new TlsClientCertificate(this.context, buffer);
++					if (last != HandshakeType.ClientHello)
++						break;
++					cert = new TlsClientCertificate(this.context, buffer);
++					return cert;
+ 
+ 				case HandshakeType.ClientKeyExchange:
+-					return new TlsClientKeyExchange(this.context, buffer);
++					if (last == HandshakeType.ClientHello || last == HandshakeType.Certificate)
++						return new TlsClientKeyExchange(this.context, buffer);
++					break;
+ 
+ 				case HandshakeType.CertificateVerify:
+-					return new TlsClientCertificateVerify(this.context, buffer);
++					if (last == HandshakeType.ClientKeyExchange && cert != null)
++						return new TlsClientCertificateVerify(this.context, buffer);
++					break;
+ 
+ 				case HandshakeType.Finished:
+-					return new TlsClientFinished(this.context, buffer);
+-
++					// Certificates are optional, but if provided, they should send a CertificateVerify
++					bool check = (cert == null) ? (last == HandshakeType.ClientKeyExchange) : (last == HandshakeType.CertificateVerify);
++					// ChangeCipherSpecDone is not an handshake message (it's a content type) but still needs to be happens before finished
++					if (check && context.ChangeCipherSpecDone) {
++						context.ChangeCipherSpecDone = false;
++						return new TlsClientFinished(this.context, buffer);
++					}
++					break;
++					
+ 				default:
+-					throw new TlsException(
+-						AlertDescription.UnexpectedMessage,
+-						String.Format(CultureInfo.CurrentUICulture,
+-							"Unknown server handshake message received ({0})", 
+-							type.ToString()));
++					throw new TlsException(AlertDescription.UnexpectedMessage, String.Format(CultureInfo.CurrentUICulture,
++														 "Unknown server handshake message received ({0})", 
++														 type.ToString()));
++					break;
+ 			}
++			throw new TlsException (AlertDescription.HandshakeFailiure, String.Format ("Protocol error, unexpected protocol transition from {0} to {1}", last, type));
+ 		}
+ 
+ 		private HandshakeMessage createServerHandshakeMessage(
+-- 
+1.9.1
+
