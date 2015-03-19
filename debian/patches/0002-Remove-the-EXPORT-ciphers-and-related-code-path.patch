@@ -1,0 +1,233 @@
+From 9c38772f094168d8bfd5bc73bf8925cd04faad10 Mon Sep 17 00:00:00 2001
+From: Sebastien Pouliot <sebastien@xamarin.com>
+Date: Fri, 6 Mar 2015 10:35:27 -0500
+Subject: [PATCH]     Remove the EXPORT ciphers and related code path
+
+    That was still useful in 2003/2004 but the technical and legal landscape
+    changed a lot since then. Removing the old, limited key size, cipher
+    suites also allow removed additional parts of the code that deals with
+    them.
+---
+ .../CipherSuiteFactory.cs                          | 28 +++++------
+ .../ClientRecordProtocol.cs                        |  7 ---
+ .../Mono.Security.Protocol.Tls/SslCipherSuite.cs   | 54 ++--------------------
+ .../Mono.Security.Protocol.Tls/SslServerStream.cs  | 12 +----
+ .../Mono.Security.Protocol.Tls/TlsCipherSuite.cs   | 40 ++--------------
+ 5 files changed, 26 insertions(+), 115 deletions(-)
+
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/CipherSuiteFactory.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/CipherSuiteFactory.cs
+index b8eb7ec..13573cb 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/CipherSuiteFactory.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/CipherSuiteFactory.cs
+@@ -116,14 +116,14 @@ namespace Mono.Security.Protocol.Tls
+ 			scs.Add((0x00 << 0x08) | 0x09, "TLS_RSA_WITH_DES_CBC_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, false, true, 8, 8, 56, 8, 8);
+ 			
+ 			// Supported exportable ciphers
+-			scs.Add((0x00 << 0x08) | 0x03, "TLS_RSA_EXPORT_WITH_RC4_40_MD5", CipherAlgorithmType.Rc4, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, false, 5, 16, 40, 0, 0);
+-			scs.Add((0x00 << 0x08) | 0x06, "TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5", CipherAlgorithmType.Rc2, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, true, 5, 16, 40, 8, 8);
+-			scs.Add((0x00 << 0x08) | 0x08, "TLS_RSA_EXPORT_WITH_DES40_CBC_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, true, 5, 8, 40, 8, 8);
+-			scs.Add((0x00 << 0x08) | 0x60, "TLS_RSA_EXPORT_WITH_RC4_56_MD5", CipherAlgorithmType.Rc4, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, false, 7, 16, 56, 0, 0);
+-			scs.Add((0x00 << 0x08) | 0x61, "TLS_RSA_EXPORT_WITH_RC2_CBC_56_MD5", CipherAlgorithmType.Rc2, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, true, 7, 16, 56, 8, 8);
++			// scs.Add((0x00 << 0x08) | 0x03, "TLS_RSA_EXPORT_WITH_RC4_40_MD5", CipherAlgorithmType.Rc4, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, false, 5, 16, 40, 0, 0);
++			// scs.Add((0x00 << 0x08) | 0x06, "TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5", CipherAlgorithmType.Rc2, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, true, 5, 16, 40, 8, 8);
++			// scs.Add((0x00 << 0x08) | 0x08, "TLS_RSA_EXPORT_WITH_DES40_CBC_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, true, 5, 8, 40, 8, 8);
++			// scs.Add((0x00 << 0x08) | 0x60, "TLS_RSA_EXPORT_WITH_RC4_56_MD5", CipherAlgorithmType.Rc4, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, false, 7, 16, 56, 0, 0);
++			// scs.Add((0x00 << 0x08) | 0x61, "TLS_RSA_EXPORT_WITH_RC2_CBC_56_MD5", CipherAlgorithmType.Rc2, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, true, 7, 16, 56, 8, 8);
+ 			// 56 bits but we use 64 bits because of parity (DES is really 56 bits)
+-			scs.Add((0x00 << 0x08) | 0x62, "TLS_RSA_EXPORT_WITH_DES_CBC_56_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, true, 8, 8, 64, 8, 8); 
+-			scs.Add((0x00 << 0x08) | 0x64, "TLS_RSA_EXPORT_WITH_RC4_56_SHA", CipherAlgorithmType.Rc4, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, false, 7, 16, 56, 0, 0);
++			// scs.Add((0x00 << 0x08) | 0x62, "TLS_RSA_EXPORT_WITH_DES_CBC_56_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, true, 8, 8, 64, 8, 8);
++			// scs.Add((0x00 << 0x08) | 0x64, "TLS_RSA_EXPORT_WITH_RC4_56_SHA", CipherAlgorithmType.Rc4, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, false, 7, 16, 56, 0, 0);
+ 			
+ 			// Default CipherSuite
+ 			// scs.Add(0, "TLS_NULL_WITH_NULL_NULL", CipherAlgorithmType.None, HashAlgorithmType.None, ExchangeAlgorithmType.None, true, false, 0, 0, 0, 0, 0);
+@@ -195,14 +195,14 @@ namespace Mono.Security.Protocol.Tls
+ 			scs.Add((0x00 << 0x08) | 0x09, "SSL_RSA_WITH_DES_CBC_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, false, true, 8, 8, 56, 8, 8);
+ 
+ 			// Supported exportable ciphers
+-			scs.Add((0x00 << 0x08) | 0x03, "SSL_RSA_EXPORT_WITH_RC4_40_MD5", CipherAlgorithmType.Rc4, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, false, 5, 16, 40, 0, 0);
+-			scs.Add((0x00 << 0x08) | 0x06, "SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5", CipherAlgorithmType.Rc2, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, true, 5, 16, 40, 8, 8);
+-			scs.Add((0x00 << 0x08) | 0x08, "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, true, 5, 8, 40, 8, 8);
+-			scs.Add((0x00 << 0x08) | 0x60, "SSL_RSA_EXPORT_WITH_RC4_56_MD5", CipherAlgorithmType.Rc4, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, false, 7, 16, 56, 0, 0);
+-			scs.Add((0x00 << 0x08) | 0x61, "SSL_RSA_EXPORT_WITH_RC2_CBC_56_MD5", CipherAlgorithmType.Rc2, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, true, 7, 16, 56, 8, 8);
++			// scs.Add((0x00 << 0x08) | 0x03, "SSL_RSA_EXPORT_WITH_RC4_40_MD5", CipherAlgorithmType.Rc4, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, false, 5, 16, 40, 0, 0);
++			// scs.Add((0x00 << 0x08) | 0x06, "SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5", CipherAlgorithmType.Rc2, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, true, 5, 16, 40, 8, 8);
++			// scs.Add((0x00 << 0x08) | 0x08, "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, true, 5, 8, 40, 8, 8);
++			// scs.Add((0x00 << 0x08) | 0x60, "SSL_RSA_EXPORT_WITH_RC4_56_MD5", CipherAlgorithmType.Rc4, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, false, 7, 16, 56, 0, 0);
++			// scs.Add((0x00 << 0x08) | 0x61, "SSL_RSA_EXPORT_WITH_RC2_CBC_56_MD5", CipherAlgorithmType.Rc2, HashAlgorithmType.Md5, ExchangeAlgorithmType.RsaKeyX, true, true, 7, 16, 56, 8, 8);
+ 			// 56 bits but we use 64 bits because of parity (DES is really 56 bits)
+-			scs.Add((0x00 << 0x08) | 0x62, "SSL_RSA_EXPORT_WITH_DES_CBC_56_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, true, 8, 8, 64, 8, 8); 
+-			scs.Add((0x00 << 0x08) | 0x64, "SSL_RSA_EXPORT_WITH_RC4_56_SHA", CipherAlgorithmType.Rc4, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, false, 7, 16, 56, 0, 0);
++			// scs.Add((0x00 << 0x08) | 0x62, "SSL_RSA_EXPORT_WITH_DES_CBC_56_SHA", CipherAlgorithmType.Des, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, true, 8, 8, 64, 8, 8);
++			// scs.Add((0x00 << 0x08) | 0x64, "SSL_RSA_EXPORT_WITH_RC4_56_SHA", CipherAlgorithmType.Rc4, HashAlgorithmType.Sha1, ExchangeAlgorithmType.RsaKeyX, true, false, 7, 16, 56, 0, 0);
+ 
+ 			// Default CipherSuite
+ 			// scs.Add(0, "SSL_NULL_WITH_NULL_NULL", CipherAlgorithmType.None, HashAlgorithmType.None, true, false, 0, 0, 0, 0, 0);
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ClientRecordProtocol.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ClientRecordProtocol.cs
+index acaa0c2..0602e70 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ClientRecordProtocol.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/ClientRecordProtocol.cs
+@@ -160,13 +160,6 @@ namespace Mono.Security.Protocol.Tls
+ 					return new TlsServerCertificate(this.context, buffer);
+ 
+ 					// Optional
+-				case HandshakeType.ServerKeyExchange:
+-					// only for RSA_EXPORT
+-					if (last == HandshakeType.Certificate && context.Current.Cipher.IsExportable)
+-						return new TlsServerKeyExchange(this.context, buffer);
+-					break;
+-
+-					// Optional
+ 				case HandshakeType.CertificateRequest:
+ 					if (last == HandshakeType.ServerKeyExchange || last == HandshakeType.Certificate)
+ 						return new TlsServerCertificateRequest(this.context, buffer);
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/SslCipherSuite.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/SslCipherSuite.cs
+index ae9b9d5..da95ed1 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/SslCipherSuite.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/SslCipherSuite.cs
+@@ -190,59 +190,15 @@ namespace Mono.Security.Protocol.Tls
+ 			this.Context.ClientWriteKey = keyBlock.ReadBytes(this.KeyMaterialSize);
+ 			this.Context.ServerWriteKey = keyBlock.ReadBytes(this.KeyMaterialSize);
+ 
+-			if (!this.IsExportable)
++			if (this.IvSize != 0)
+ 			{
+-				if (this.IvSize != 0)
+-				{
+-					this.Context.ClientWriteIV = keyBlock.ReadBytes(this.IvSize);
+-					this.Context.ServerWriteIV = keyBlock.ReadBytes(this.IvSize);
+-				}
+-				else
+-				{
+-					this.Context.ClientWriteIV = CipherSuite.EmptyArray;
+-					this.Context.ServerWriteIV = CipherSuite.EmptyArray;
+-				}
++				this.Context.ClientWriteIV = keyBlock.ReadBytes(this.IvSize);
++				this.Context.ServerWriteIV = keyBlock.ReadBytes(this.IvSize);
+ 			}
+ 			else
+ 			{
+-				HashAlgorithm md5 = MD5.Create();
+-
+-				int keySize = (md5.HashSize >> 3); //in bytes not bits
+-				byte[] temp = new byte [keySize];
+-
+-				// Generate final write keys
+-				md5.TransformBlock(this.Context.ClientWriteKey, 0, this.Context.ClientWriteKey.Length, temp, 0);
+-				md5.TransformFinalBlock(this.Context.RandomCS, 0, this.Context.RandomCS.Length);
+-				byte[] finalClientWriteKey = new byte[this.ExpandedKeyMaterialSize];
+-				Buffer.BlockCopy(md5.Hash, 0, finalClientWriteKey, 0, this.ExpandedKeyMaterialSize);
+-
+-				md5.Initialize();
+-				md5.TransformBlock(this.Context.ServerWriteKey, 0, this.Context.ServerWriteKey.Length, temp, 0);
+-				md5.TransformFinalBlock(this.Context.RandomSC, 0, this.Context.RandomSC.Length);
+-				byte[] finalServerWriteKey = new byte[this.ExpandedKeyMaterialSize];
+-				Buffer.BlockCopy(md5.Hash, 0, finalServerWriteKey, 0, this.ExpandedKeyMaterialSize);
+-				
+-				this.Context.ClientWriteKey = finalClientWriteKey;
+-				this.Context.ServerWriteKey = finalServerWriteKey;
+-
+-				// Generate IV keys
+-				if (this.IvSize > 0) 
+-				{
+-					md5.Initialize();
+-					temp = md5.ComputeHash(this.Context.RandomCS, 0, this.Context.RandomCS.Length);
+-					this.Context.ClientWriteIV = new byte[this.IvSize];
+-					Buffer.BlockCopy(temp, 0, this.Context.ClientWriteIV, 0, this.IvSize);
+-
+-					md5.Initialize();
+-					temp = md5.ComputeHash(this.Context.RandomSC, 0, this.Context.RandomSC.Length);
+-					this.Context.ServerWriteIV = new byte[this.IvSize];
+-					Buffer.BlockCopy(temp, 0, this.Context.ServerWriteIV, 0, this.IvSize);
+-				}
+-				else 
+-				{
+-					this.Context.ClientWriteIV = CipherSuite.EmptyArray;
+-					this.Context.ServerWriteIV = CipherSuite.EmptyArray;
+-				}
++				this.Context.ClientWriteIV = CipherSuite.EmptyArray;
++				this.Context.ServerWriteIV = CipherSuite.EmptyArray;
+ 			}
+ 
+ 			DebugHelper.WriteLine(">>>> KeyBlock", keyBlock.ToArray());
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/SslServerStream.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/SslServerStream.cs
+index 6862c69..fb8ede4 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/SslServerStream.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/SslServerStream.cs
+@@ -233,16 +233,8 @@ namespace Mono.Security.Protocol.Tls
+ 			// Send ServerCertificate message
+ 			this.protocol.SendRecord(HandshakeType.Certificate);
+ 
+-			// If the negotiated cipher is a KeyEx cipher send ServerKeyExchange
+-			if (this.context.Negotiating.Cipher.IsExportable)
+-			{
+-				this.protocol.SendRecord(HandshakeType.ServerKeyExchange);
+-			}
+-
+-			// If the negotiated cipher is a KeyEx cipher or
+-			// the client certificate is required send the CertificateRequest message
+-			if (this.context.Negotiating.Cipher.IsExportable ||
+-				((ServerContext)this.context).ClientCertificateRequired ||
++			// If the client certificate is required send the CertificateRequest message
++			if (((ServerContext)this.context).ClientCertificateRequired ||
+ 				((ServerContext)this.context).RequestClientCertificate)
+ 			{
+ 				this.protocol.SendRecord(HandshakeType.CertificateRequest);
+diff --git a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/TlsCipherSuite.cs b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/TlsCipherSuite.cs
+index f4feb4e..2b261bf 100644
+--- a/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/TlsCipherSuite.cs
++++ b/mcs/class/Mono.Security/Mono.Security.Protocol.Tls/TlsCipherSuite.cs
+@@ -123,45 +123,15 @@ namespace Mono.Security.Protocol.Tls
+ 			this.Context.ClientWriteKey = keyBlock.ReadBytes(this.KeyMaterialSize);
+ 			this.Context.ServerWriteKey = keyBlock.ReadBytes(this.KeyMaterialSize);
+ 
+-			if (!this.IsExportable)
++			if (this.IvSize != 0)
+ 			{
+-				if (this.IvSize != 0)
+-				{
+-					this.Context.ClientWriteIV = keyBlock.ReadBytes(this.IvSize);
+-					this.Context.ServerWriteIV = keyBlock.ReadBytes(this.IvSize);
+-				}
+-				else
+-				{
+-					this.Context.ClientWriteIV = CipherSuite.EmptyArray;
+-					this.Context.ServerWriteIV = CipherSuite.EmptyArray;
+-				}
++				this.Context.ClientWriteIV = keyBlock.ReadBytes(this.IvSize);
++				this.Context.ServerWriteIV = keyBlock.ReadBytes(this.IvSize);
+ 			}
+ 			else
+ 			{
+-				// Generate final write keys
+-				byte[] finalClientWriteKey	= PRF(this.Context.ClientWriteKey, "client write key", this.Context.RandomCS, this.ExpandedKeyMaterialSize);
+-				byte[] finalServerWriteKey	= PRF(this.Context.ServerWriteKey, "server write key", this.Context.RandomCS, this.ExpandedKeyMaterialSize);
+-				
+-				this.Context.ClientWriteKey	= finalClientWriteKey;
+-				this.Context.ServerWriteKey	= finalServerWriteKey;
+-
+-				if (this.IvSize > 0) 
+-				{
+-					// Generate IV block
+-					byte[] ivBlock = PRF(CipherSuite.EmptyArray, "IV block", this.Context.RandomCS, this.IvSize*2);
+-
+-					// Generate IV keys
+-					this.Context.ClientWriteIV = new byte[this.IvSize];				
+-					Buffer.BlockCopy(ivBlock, 0, this.Context.ClientWriteIV, 0, this.Context.ClientWriteIV.Length);
+-
+-					this.Context.ServerWriteIV = new byte[this.IvSize];
+-					Buffer.BlockCopy(ivBlock, this.IvSize, this.Context.ServerWriteIV, 0, this.Context.ServerWriteIV.Length);
+-				}
+-				else 
+-				{
+-					this.Context.ClientWriteIV = CipherSuite.EmptyArray;
+-					this.Context.ServerWriteIV = CipherSuite.EmptyArray;
+-				}
++				this.Context.ClientWriteIV = CipherSuite.EmptyArray;
++				this.Context.ServerWriteIV = CipherSuite.EmptyArray;
+ 			}
+ 
+ 			DebugHelper.WriteLine(">>>> KeyBlock", keyBlock.ToArray());
+-- 
+1.9.1
+

@@ -1,2 +1,5 @@
+0001-TLS-protocol-add-handshake-state-validation.patch
+0002-Remove-the-EXPORT-ciphers-and-related-code-path.patch
+0003-Remove-the-client-side-SSLv2-fallback.patch
 include_missing_s390x_header.patch
 0001-Add-OP_LREM_IMM-support-Add-implementation-of-mono_a.patch
