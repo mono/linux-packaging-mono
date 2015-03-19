@@ -1,3 +1,9 @@
+mono (3.8.0-0xamarin2) 38-security; urgency=high
+
+  * [57fcb84] Security fixes for CVE-2015-2318, CVE-2015-2319, CVE-2015-2320
+
+ -- Jo Shields <jo.shields@xamarin.com>  Thu, 19 Mar 2015 15:42:02 +0000
+
 mono (3.8.0-0xamarin1) unstable; urgency=medium
 
   * [6a76a29] Imported Upstream version 3.8.0
