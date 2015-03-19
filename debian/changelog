@@ -1,3 +1,9 @@
+mono (3.10.0-0xamarin3) 310-security; urgency=high
+
+  * [0c3f831] Security fixes for CVE-2015-2318, CVE-2015-2319, CVE-2015-2320
+
+ -- Jo Shields <jo.shields@xamarin.com>  Thu, 19 Mar 2015 14:47:35 +0000
+
 mono (3.10.0-0xamarin2) unstable; urgency=medium
 
   * [2124890] Include missing support-s390x.h header file absent from 
