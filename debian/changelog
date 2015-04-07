@@ -1,3 +1,50 @@
+mono (4.0.0~alpha1-0xamarin1) alpha; urgency=medium
+
+  * [806294f] Imported Upstream version 4.0.0~alpha1
+  * [fc69ea4] 4.0 assemblies are basically facades now - only install
+    them with mono-devel (where the existing facades live)
+  * [4a4fc38] Get rid of 4.0 corlib package
+  * [67859c0] Remove 2.0/3.0/3.5 packages
+  * [9958b3f] Use 4.5 folder for mono-api-check
+  * [a4be944] Remove 2.0-specific packaging overrides from debian/rules
+  * [84e2a95] Delete 0001-Workaround-for-X509Certificate.RSA-throwing-
+    an-unhan.patch (fixed upstream)
+  * [9638dd6] Delete 0001-Fix-build-on-s390.patch (merged upstream)
+  * [d4c73f1] Clean up correct directories in clean rule
+  * [f486343] Add ppc64el to list of accepted architectures, 4.0 kinda
+    works on ppc64el
+  * [0463f36] Remove monograph from mono-utils
+  * [9630a2a] Refresh symbols files for libmono*
+  * [6076b89] Fix building of MonoGetAssemblyName
+  * [55461b9] Remove libmono-entityframework*-cil (removed upstream)
+  * [961ac66] Remove Mono.Cecil.Mdb from libmono-cecil-private-cil
+    (removed upstream)
+  * [7103a5d] Remove libmono-system-web-mvc1.0-cil (removed upstream)
+  * [92699ea] Remove libmono-sharpzip2.6-cil (removed upstream)
+  * [27e7cfc] Remove libmono-npgsql4.0-cil (removed upstream)
+  * [78b4076] No more /usr/bin/gmcs
+  * [6d17020] Use 4.5, not 4.0, in dh_makeclilibs
+  * [8ad5afb] Remove stray override on libmono-wcl3.0a-cil package
+  * [7c290cc] Remove mono-gmcs package
+  * [2a30f92] Bump dh_makeclilibs version overrides, as required.
+    Remember, we never change package names in the Xamarin packages,
+    which violates the Debian packaging policy - we ought to change
+    package name whenever interfaces are removed, but this is a
+    massive pain for end-users who will find package dependencies
+    no longer satisfied on their distributions. A few random
+    misbehaviours is considered the lesser evil.
+  * [7b7ca49] Fix MONO_PATH used in dh_clideps
+  * [e00fed2] Add xbuild 14 stuff to mono-xbuild package
+  * [47d5fc8] Add libmono-system-data-entity4.0-cil package
+  * [d40ff8b] Rename symbolicate to mono-symbolicate, and package it
+  * [db99dfe] Add breaks/replaces to mono-devel for files moved there
+  * [108f4e7] Change AOT flags used at install time, to avoid segfault
+  * [5c9f9d1] Generate a transitional package for corlib 4.0
+  * [d1696aa] Add transitional packages, to satisfy Xamarin MonoDevelop
+    dependencies
+
+ -- Jo Shields <jo.shields@xamarin.com>  Wed, 08 Apr 2015 14:48:17 +0100
+
 mono (3.12.1-0xamarin1) unstable; urgency=high
 
   * [ce565ca] Imported Upstream version 3.12.1
