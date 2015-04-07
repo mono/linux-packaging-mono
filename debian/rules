@@ -110,9 +110,7 @@ clean:
 	# distclean misses stuff
 	find -name "*.mdb" -delete
 	rm -rf mcs/class/lib/basic/ \
-	       mcs/class/lib/net_2_0/ \
-	       mcs/class/lib/net_3_5/ \
-	       mcs/class/lib/net_4_0/
+	       mcs/class/lib/net_4_5/
 
 	-cd debian/detector && $(MAKE) clean
 	rm -f debian/MonoGetAssemblyName.exe \
