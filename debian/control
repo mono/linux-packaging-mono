@@ -133,7 +133,7 @@ Provides: cil-disassembler
 Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 s390x
 Replaces: mono-mcs (<= 1.1.6-4)
 Depends: ${shlibs:Depends}, ${misc:Depends}, libmonoboehm-2.0-1 (= ${binary:Version}),
- libmono-corlib4.5-cil (= ${source:Version}) | libmono-corlib2.0-cil (= ${source:Version})
+ libmono-corlib4.5-cil (= ${source:Version})
 Description: Mono utilities
  Mono is a platform for running and developing applications based on the
  ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
@@ -169,9 +169,7 @@ Depends: ${misc:Depends},
          mono-devel (= ${source:Version}),
          mono-mcs (= ${source:Version}),
          mono-csharp-shell (= ${source:Version}),
-         mono-2.0-gac (= ${source:Version}),
          mono-4.0-gac (= ${source:Version}),
-         mono-2.0-service (= ${source:Version}),
          mono-4.0-service (= ${source:Version}),
          monodoc-base (= ${source:Version}),
          monodoc-manual (= ${source:Version}),
@@ -325,42 +323,27 @@ Breaks: libmono-dev (<< 2.10~)
 Conflicts: libmono-nunit2.2-cil,
            libmono-nunit2.4-cil
 Depends: ${misc:Depends},
-         libmono2.0-cil (= ${source:Version}),
-         libmono-accessibility2.0-cil (= ${source:Version}),
          libmono-accessibility4.0-cil (= ${source:Version}),
          libmono-c5-1.1-cil (= ${source:Version}),
-         libmono-cairo2.0-cil (= ${source:Version}),
          libmono-cairo4.0-cil (= ${source:Version}),
          libmono-cecil-private-cil (= ${source:Version}),
          libmono-codecontracts4.0-cil (= ${source:Version}),
          libmono-compilerservices-symbolwriter4.0-cil (= ${source:Version}),
-         libmono-corlib2.0-cil (= ${source:Version}),
          libmono-corlib4.5-cil (= ${source:Version}),
          libmono-cscompmgd0.0-cil (= ${source:Version}),
-         libmono-cscompmgd8.0-cil (= ${source:Version}),
          libmono-csharp4.0c-cil (= ${source:Version}),
          libmono-custommarshalers4.0-cil (= ${source:Version}),
-         libmono-data-tds2.0-cil (= ${source:Version}),
          libmono-data-tds4.0-cil (= ${source:Version}),
          libmono-db2-1.0-cil (= ${source:Version}),
-         libmono-debugger-soft2.0a-cil (= ${source:Version}),
          libmono-debugger-soft4.0a-cil (= ${source:Version}),
          libmono-entityframework6.0-cil (= ${source:Version}),
          libmono-entityframework-sqlserver6.0-cil (= ${source:Version}),
          libmono-http4.0-cil (= ${source:Version}),
-         libmono-i18n2.0-cil (= ${source:Version}),
          libmono-i18n4.0-all (= ${source:Version}),
-         libmono-i18n-west2.0-cil (= ${source:Version}),
-         libmono-ldap2.0-cil (= ${source:Version}),
          libmono-ldap4.0-cil (= ${source:Version}),
-         libmono-management2.0-cil (= ${source:Version}),
          libmono-management4.0-cil (= ${source:Version}),
-         libmono-messaging2.0-cil (= ${source:Version}),
          libmono-messaging4.0-cil (= ${source:Version}),
-         libmono-messaging-rabbitmq2.0-cil (= ${source:Version}),
          libmono-messaging-rabbitmq4.0-cil (= ${source:Version}),
-         libmono-microsoft8.0-cil (= ${source:Version}),
-         libmono-microsoft-build2.0-cil (= ${source:Version}),
          libmono-microsoft-build4.0-cil (= ${source:Version}),
          libmono-microsoft-build-engine4.0-cil (= ${source:Version}),
          libmono-microsoft-build-framework4.0-cil (= ${source:Version}),
@@ -369,41 +352,27 @@ Depends: ${misc:Depends},
          libmono-microsoft-csharp4.0-cil (= ${source:Version}),
          libmono-microsoft-visualc10.0-cil (= ${source:Version}),
          libmono-microsoft-web-infrastructure1.0-cil (= ${source:Version}),
-         libmono-npgsql2.0-cil (= ${source:Version}),
          libmono-npgsql4.0-cil (= ${source:Version}),
-         libmono-oracle2.0-cil (= ${source:Version}),
          libmono-oracle4.0-cil (= ${source:Version}),
          libmono-parallel4.0-cil (= ${source:Version}),
-         libmono-peapi2.0a-cil (= ${source:Version}),
          libmono-peapi4.0a-cil (= ${source:Version}),
-         libmono-posix2.0-cil (= ${source:Version}),
          libmono-posix4.0-cil (= ${source:Version}),
-         libmono-rabbitmq2.0-cil (= ${source:Version}),
          libmono-rabbitmq4.0-cil (= ${source:Version}),
-         libmono-relaxng2.0-cil (= ${source:Version}),
          libmono-relaxng4.0-cil (= ${source:Version}),
-         libmono-security2.0-cil (= ${source:Version}),
          libmono-security4.0-cil (= ${source:Version}),
          libmono-sharpzip2.6-cil (= ${source:Version}),
-         libmono-sharpzip2.84-cil (= ${source:Version}),
          libmono-sharpzip4.84-cil (= ${source:Version}),
-         libmono-simd2.0-cil (= ${source:Version}),
          libmono-simd4.0-cil (= ${source:Version}),
-         libmono-sqlite2.0-cil (= ${source:Version}),
          libmono-sqlite4.0-cil (= ${source:Version}),
-         libmono-system2.0-cil (= ${source:Version}),
          libmono-system4.0-cil (= ${source:Version}),
          libmono-system-componentmodel-composition4.0-cil (= ${source:Version}),
          libmono-system-componentmodel-dataannotations4.0-cil (= ${source:Version}),
          libmono-system-configuration4.0-cil (= ${source:Version}),
          libmono-system-configuration-install4.0-cil (= ${source:Version}),
          libmono-system-core4.0-cil (= ${source:Version}),
-         libmono-system-data2.0-cil (= ${source:Version}),
          libmono-system-data4.0-cil (= ${source:Version}),
          libmono-system-data-datasetextensions4.0-cil (= ${source:Version}),
-         libmono-system-data-linq2.0-cil (= ${source:Version}),
          libmono-system-data-linq4.0-cil (= ${source:Version}),
-         libmono-system-data-services2.0-cil (= ${source:Version}),
          libmono-system-data-services4.0-cil (= ${source:Version}),
          libmono-system-data-services-client4.0-cil (= ${source:Version}),
          libmono-system-design4.0-cil (= ${source:Version}),
@@ -415,16 +384,12 @@ Depends: ${misc:Depends},
          libmono-system-identitymodel-selectors4.0-cil (= ${source:Version}),
          libmono-system-io-compression4.0-cil (= ${source:Version}),
          libmono-system-io-compression-filesystem4.0-cil (= ${source:Version}),
-         libmono-system-json2.0-cil (= ${source:Version}),
          libmono-system-json4.0-cil (= ${source:Version}),
          libmono-system-json-microsoft4.0-cil (= ${source:Version}),
-         libmono-system-ldap2.0-cil (= ${source:Version}),
          libmono-system-ldap4.0-cil (= ${source:Version}),
          libmono-system-ldap-protocols4.0-cil (= ${source:Version}),
          libmono-system-management4.0-cil (= ${source:Version}),
-         libmono-system-messaging2.0-cil (= ${source:Version}),
          libmono-system-messaging4.0-cil (= ${source:Version}),
-         libmono-system-net2.0-cil (= ${source:Version}),
          libmono-system-net4.0-cil (= ${source:Version}),
          libmono-system-net-http4.0-cil (= ${source:Version}),
          libmono-system-net-http-formatting4.0-cil (= ${source:Version}),
@@ -441,7 +406,6 @@ Depends: ${misc:Depends},
          libmono-system-reactive-runtime-remoting2.2-cil (= ${source:Version}),
          libmono-system-reactive-windows-forms2.2-cil (= ${source:Version}),
          libmono-system-reactive-windows-threading2.2-cil (= ${source:Version}),
-         libmono-system-runtime2.0-cil (= ${source:Version}),
          libmono-system-runtime4.0-cil (= ${source:Version}),
          libmono-system-runtime-caching4.0-cil (= ${source:Version}),
          libmono-system-runtime-durableinstancing4.0-cil (= ${source:Version}),
@@ -456,7 +420,6 @@ Depends: ${misc:Depends},
          libmono-system-serviceprocess4.0-cil (= ${source:Version}),
          libmono-system-threading-tasks-dataflow4.0-cil (= ${source:Version}),
          libmono-system-transactions4.0-cil (= ${source:Version}),
-         libmono-system-web2.0-cil (= ${source:Version}),
          libmono-system-web4.0-cil (= ${source:Version}),
          libmono-system-web-abstractions4.0-cil (= ${source:Version}),
          libmono-system-web-applicationservices4.0-cil (= ${source:Version}),
@@ -467,7 +430,6 @@ Depends: ${misc:Depends},
          libmono-system-web-http-selfhost4.0-cil (= ${source:Version}),
          libmono-system-web-http-webhost4.0-cil (= ${source:Version}),
          libmono-system-web-mvc1.0-cil (= ${source:Version}),
-         libmono-system-web-mvc2.0-cil (= ${source:Version}),
          libmono-system-web-mvc3.0-cil (= ${source:Version}),
          libmono-system-web-razor2.0-cil (= ${source:Version}),
          libmono-system-web-routing4.0-cil (= ${source:Version}),
@@ -482,16 +444,10 @@ Depends: ${misc:Depends},
          libmono-system-xml4.0-cil (= ${source:Version}),
          libmono-system-xml-linq4.0-cil (= ${source:Version}),
          libmono-system-xml-serialization4.0-cil (= ${source:Version}),
-         libmono-tasklets2.0-cil (= ${source:Version}),
          libmono-tasklets4.0-cil (= ${source:Version}),
-         libmono-wcf3.0a-cil (= ${source:Version}),
-         libmono-webbrowser2.0-cil (= ${source:Version}),
          libmono-webbrowser4.0-cil (= ${source:Version}),
          libmono-webmatrix-data4.0-cil (= ${source:Version}),
-         libmono-windowsbase3.0-cil (= ${source:Version}),
          libmono-windowsbase4.0-cil (= ${source:Version}),
-         libmono-winforms2.0-cil (= ${source:Version}),
-         libmono-xbuild-tasks2.0-cil (= ${source:Version}),
          libmono-xbuild-tasks4.0-cil (= ${source:Version}),
          libnunit-cil-dev (>= 2.4)
 Description: Mono Base Class Libraries (BCL) - Development files
@@ -502,35 +458,6 @@ Description: Mono Base Class Libraries (BCL) - Development files
  Mono provides a complete CLR (Common Language Runtime) including compiler and
  runtime, which can produce and execute CIL (Common Intermediate Language)
  bytecode (aka assemblies), and a class library.
-
-Package: libmono2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends}, ${cli:Depends}
-Description: Mono libraries (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains various Mono libraries for CLI 2.0:
-  - Mono.CompilerServices.SymbolWriter
-  - Mono.Http
-
-Package: libmono-posix2.0-cil
-Architecture: all
-Replaces: libmono2.0-cil (<< 2.0)
-Depends: ${misc:Depends}, ${cli:Depends}
-Description: Mono.Posix library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono.Posix library for CLI 2.0 that binds many APIs
- found in glibc or intl.
 
 Package: libmono-posix4.0-cil
 Architecture: all
@@ -654,23 +581,6 @@ Description: Mono C5 library
  .
  This package contains the Mono C5 library.
 
-Package: libmono-webbrowser2.0-cil
-Architecture: all
-Conflicts: libmono-webbrowser0.5-cil
-Replaces: libmono-webbrowser0.5-cil
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Recommends: ${cli:Recommends}
-Description: Mono Web Browser library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the implementation of the WebControl class based on the
- Mozilla engine using libgluezilla for CLI 2.0.
-
 Package: libmono-webbrowser4.0-cil
 Architecture: all
 Conflicts: libmono-webbrowser0.5-cil
@@ -688,21 +598,6 @@ Description: Mono Web Browser library (for CLI 4.0)
  This package contains the implementation of the WebControl class based on the
  Mozilla engine using libgluezilla for CLI 4.0.
 
-Package: libmono-management2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Management library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono.Management library for CLI 2.0, which provides
- attach functionality for the Mono runtime. It allows one to load code
- externally into a Mono process to debug or augment code live.
-
 Package: libmono-management4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -717,22 +612,6 @@ Description: Mono Management library (for CLI 4.0)
  This package contains the Mono.Management library for CLI 4.0, which provides
  attach functionality for the Mono runtime. It allows one to load code
  externally into a Mono process to debug or augment code live.
-
-Package: libmono-messaging2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Homepage: http://mono-project.com/SystemMessaging
-Description: Mono Messaging library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono.Messaging library for CLI 2.0, which provides
- messaging functionality using different implementations. At this time Mono
- does not provide a System.Messaging implementation.
 
 Package: libmono-messaging4.0-cil
 Architecture: all
@@ -750,21 +629,6 @@ Description: Mono Messaging library (for CLI 4.0)
  messaging functionality using different implementations. At this time Mono
  does not provide a System.Messaging implementation.
 
-Package: libmono-messaging-rabbitmq2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Homepage: http://mono-project.com/SystemMessaging
-Description: Mono Messaging RabbitMQ library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler
- and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono.Messaging.RabbitMQ library for CLI 2.0.
-
 Package: libmono-messaging-rabbitmq4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -779,21 +643,6 @@ Description: Mono Messaging RabbitMQ library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono.Messaging.RabbitMQ library for CLI 4.0.
-
-Package: libmono-rabbitmq2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Homepage: http://mono-project.com/SystemMessaging
-Description: Mono RabbitMQ.Client library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler
- and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the RabbitMQ.Client library for CLI 2.0.
 
 Package: libmono-rabbitmq4.0-cil
 Architecture: all
@@ -810,22 +659,6 @@ Description: Mono RabbitMQ.Client library (for CLI 4.0)
  .
  This package contains the RabbitMQ.Client library for CLI 4.0.
 
-Package: libmono-simd2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Homepage: http://go-mono.com/docs/index.aspx?tlink=0@N%3aMono.Simd
-Description: Mono SIMD (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono.Simd library for CLI 2.0, which provides a
- number of classes that are hardware accelerated by mapping the classes and
- the actual operations to native SIMD instructions on a processor.
-
 Package: libmono-simd4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -841,29 +674,6 @@ Description: Mono SIMD (for CLI 4.0)
  This package contains the Mono.Simd library for CLI 4.0, which provides a
  number of classes that are hardware accelerated by mapping the classes and
  the actual operations to native SIMD instructions on a processor.
-
-Package: libmono-corlib2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Conflicts: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion})
-Recommends: libmono-i18n-west2.0-cil
-Suggests: libmono-i18n2.0-cil
-Description: Mono core library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Core Library (mscorlib.dll) of Mono for CLI 2.0, 
- which is the glue between the BCL (Base Class Libraries) and the JIT.
- .
- You should install libmono-i18n-west2.0-cil if you are using
- ISO 8859-15 (Latin 9) or other common Western European code pages.
- US-ASCII, ISO 8859-1 (Latin 1) and UTF-8 users don't need any extra I18N
- packages.
 
 Package: libmono-corlib4.5-cil
 Architecture: all
@@ -902,22 +712,6 @@ Description: Mono I18N libraries (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package will install all I18N libraries for CLI 4.0.
-
-Package: libmono-i18n2.0-cil
-Architecture: all
-Replaces: libmono-corlib2.0-cil (<< 1.2.6-1)
-Depends: ${misc:Depends},
-         ${cli:Depends},
-         mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion})
-Description: Mono I18N libraries (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains I18N libraries for CLI 2.0, containing various code
- pages definitions.
 
 Package: libmono-i18n4.0-cil
 Architecture: all
@@ -987,25 +781,6 @@ Description: Mono I18N.Rare library (for CLI 4.0)
  .
  This package contains the I18N.Rare library for CLI 4.0.
 
-Package: libmono-i18n-west2.0-cil
-Architecture: all
-Replaces: libmono-corlib2.0-cil (<< 1.2.6-1), libmono-i18n2.0-cil (<< 2.4)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono I18N.West library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the I18N.West library for CLI 2.0, containing Central
- and Western European code pages such as ISO 8859-3 (Latin 3),
- ISO 8859-15 (Latin 9) and others.
- .
- This package also includes the base I18N library used by all I18N
- libraries.
-
 Package: libmono-i18n-west4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -1034,23 +809,6 @@ Description: Mono.Parallel library (for CLI 4.0)
  .
  This package contains the Mono.Parallel library for CLI 4.0 which ships some
  threading utility classes.
-
-Package: libmono-system2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Suggests: ${cli:Suggests}
-Recommends: ca-certificates-mono (= ${source:Version})
-Depends: ${misc:Depends},
-         ${cli:Depends},
-         mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion})
-Description: Mono System libraries (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the BCL (Base Class Libraries) of Mono for CLI 2.0.
 
 Package: libmono-system4.0-cil
 Architecture: all
@@ -1177,20 +935,6 @@ Description: Mono System.EnterpriseServices library (for CLI 4.0)
  .
  This package contains the Mono System.EnterpriseServices library for CLI 4.0.
 
-Package: libmono-system-json2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends},
-Description: Mono System.Json library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Json library for CLI 2.0 which provides
- serialization of JavaScript Object Notation (JSON).
-
 Package: libmono-system-json4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -1231,19 +975,6 @@ Description: Mono System.Management library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono System.Management library for CLI 4.0.
-
-Package: libmono-system-net2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends},
-Description: Mono System.Net library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Net library for CLI 2.0.
 
 Package: libmono-system-net4.0-cil
 Architecture: all
@@ -1390,21 +1121,6 @@ Description: Mono CustomMarshalers library (for CLI 4.0)
  .
  This package contains the CustomMarshalers library for CLI 4.0.
 
-Package: libmono-system-messaging2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Suggests: ${cli:Suggests}
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono System.Messaging Library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Messaging library for CLI 2.0.
-
 Package: libmono-system-messaging4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -1417,21 +1133,6 @@ Description: Mono System.Messaging library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono System.Messaging library for CLI 4.0.
-
-Package: libmono-security2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Recommends: ca-certificates-mono (= ${source:Version})
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Security library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Security library for CLI 2.0.
 
 Package: libmono-security4.0-cil
 Architecture: all
@@ -1447,21 +1148,6 @@ Description: Mono Security library (for CLI 4.0)
  .
  This package contains the Mono Security library for CLI 4.0.
 
-Package: libmono-data-tds2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Data Library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler
- and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Data library for CLI 2.0.
-
 Package: libmono-data-tds4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -1475,21 +1161,6 @@ Description: Mono Data Library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono Data library for CLI 4.0.
-
-Package: libmono-system-data2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Suggests: ${cli:Suggests}
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono System.Data Library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Data library for CLI 2.0.
 
 Package: libmono-system-data4.0-cil
 Architecture: all
@@ -1518,23 +1189,6 @@ Description: Mono System.Data.DataSetExtensions library (for CLI 4.0)
  .
  This package contains the Mono System.Data.DataSetExtensions library
  for CLI 4.0.
-
-Package: libmono-system-data-services2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Homepage: http://mono-project.com/WCF
-Description: Mono System.Data.Services library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the System.Data.Services library which is part of
- the Windows Communication Foundation (WCF) libraries of Mono for CLI 2.0.
- The WFC stack is for building SOA-based applications.
- Its development is in early stages.
 
 Package: libmono-system-data-services4.0-cil
 Architecture: all
@@ -1569,23 +1223,6 @@ Description: Mono System.Data.Services.Client library (for CLI 4.0)
  of the Windows Communication Foundation (WCF) libraries of Mono for CLI 4.0.
  The WFC stack is for building SOA-based applications.
  Its development is in early stages.
-
-Package: libmono-system-data-linq2.0-cil
-Architecture: all
-Replaces: libmono-system-data2.0-cil (<< 2.6.7-4)
-Conflicts: libmono-system-data2.0-cil (<< 2.6.7-4)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono System.Data.Linq Library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Data.Linq library which implements
- LINQ to SQL. LINQ to SQL allows one to query relational databases using the
- language-integrated query (LINQ) extension of the C# programming language.
 
 Package: libmono-system-data-linq4.0-cil
 Architecture: all
@@ -1994,23 +1631,6 @@ Description: Mono System.ServiceModel.Web Library (for CLI 4.0)
  The WFC stack is for building SOA-based applications.
  Its development is in early stages.
 
-Package: libmono-system-web2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Suggests: ${cli:Suggests}
-Depends: ${misc:Depends},
-         ${cli:Depends},
-         mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion}),
-         libgdiplus
-Description: Mono System.Web Library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Web library for CLI 2.0.
-
 Package: libmono-system-web4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2173,23 +1793,6 @@ Description: Mono ASP.NET MVC 1.0 Library (for CLI 2.0)
  The ASP.NET MVC framework is a web application framework that implements the
  model-view-controller (MVC) pattern.
 
-Package: libmono-system-web-mvc2.0-cil
-Architecture: all
-Replaces: libmono-system-web-mvc1.0-cil (<< 2.6.7)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono ASP.NET MVC 2.0 Library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Web.Mvc 2.0 library for CLI 2.0.
- .
- The ASP.NET MVC framework is a web application framework that implements the
- model-view-controller (MVC) pattern.
-
 Package: libmono-system-web-mvc3.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2295,43 +1898,6 @@ Description: Mono System.Xaml Library (for CLI 4.0)
  .
  This package contains the Mono System.Xaml library for CLI 4.0.
 
-Package: libmono-wcf3.0a-cil
-Provides: libmono-wcf3.0-cil
-Replaces: libmono-wcf3.0-cil (<< 3.2.3)
-Conflicts: libmono-wcf3.0-cil (<< 3.2.3)
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Homepage: http://mono-project.com/WCF
-Description: Mono WCF libraries (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Windows Communication Foundation (WCF) libraries
- of Mono for CLI 2.0. The WFC stack is for building SOA-based applications.
- Its development is in early stages.
- .
- WCF is also used in Moonlight, but it cuts down huge parts of .NET 3.0
- features but this implementation used by Moonlight should be almost feature
- complete.
-
-Package: libmono-system-runtime2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono System.Runtime Library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Runtime library for CLI 2.0.
-
 Package: libmono-system-runtime4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2344,20 +1910,6 @@ Description: Mono System.Runtime library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono System.Runtime library for CLI 4.0.
-
-Package: libmono-system-ldap2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono System.DirectoryServices library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.DirectoryServices library for CLI 2.0.
 
 Package: libmono-system-ldap4.0-cil
 Architecture: all
@@ -2386,40 +1938,6 @@ Description: Mono System.DirectoryServices.Protocols library (for CLI 4.0)
  This package contains the Mono System.DirectoryServices.Protocols library 
  for CLI 4.0.
 
-Package: libmono-winforms2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Suggests: ${cli:Suggests},
-          shared-mime-info
-Depends: ${misc:Depends},
-         ${cli:Depends},
-         libgdiplus,
-         libmono-i18n-west2.0-cil
-Description: Mono System.Windows.Forms library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono System.Windows.Forms library for CLI 2.0.
-
-Package: libmono-cairo2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.4-1),
-          mono-classlib-2.0-dbg (<< 1.1.13.4-1),
-          libmono-cairo1.0-cil (<< 2.4)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Cairo library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Cairo library for CLI 2.0.
-
 Package: libmono-cairo4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2447,20 +1965,6 @@ Description: Mono SharpZipLib library (for CLI 2.0)
  .
  This package contains the Mono SharpZipLib library version 2.6, for CLI 2.0.
 
-Package: libmono-sharpzip2.84-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.4-1), mono-classlib-2.0-dbg (<< 1.1.13.4-1)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono SharpZipLib library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono SharpZipLib library version 2.84, for CLI 2.0.
-
 Package: libmono-sharpzip4.84-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2473,20 +1977,6 @@ Description: Mono SharpZipLib library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono SharpZipLib library version 4.84, for CLI 4.0.
-
-Package: libmono-npgsql2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.4-1), mono-classlib-2.0-dbg (<< 1.1.13.4-1)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Npgsql library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Npgsql library for CLI 2.0.
 
 Package: libmono-npgsql4.0-cil
 Architecture: all
@@ -2514,20 +2004,6 @@ Description: Mono DB2 library
  .
  This package contains the Mono DB2 library.
 
-Package: libmono-oracle2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Oracle library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Oracle library for CLI 2.0.
-
 Package: libmono-oracle4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2540,20 +2016,6 @@ Description: Mono Oracle library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono Oracle library for CLI 4.0.
-
-Package: libmono-sqlite2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.4-1), mono-classlib-2.0-dbg (<< 1.1.13.4-1)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Sqlite library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Sqlite library for CLI 2.0.
 
 Package: libmono-sqlite4.0-cil
 Architecture: all
@@ -2568,20 +2030,6 @@ Description: Mono Sqlite library (for CLI 4.0)
  .
  This package contains the Mono Sqlite library for CLI 4.0.
 
-Package: libmono-accessibility2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Accessibility library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Accessibility library for CLI 2.0.
-
 Package: libmono-accessibility4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2594,20 +2042,6 @@ Description: Mono Accessibility library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono Accessibility library for CLI 4.0.
-
-Package: libmono-cscompmgd8.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono cscompmgd library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono cscompmgd library version 8.0, for CLI 2.0.
 
 Package: libmono-cscompmgd0.0-cil
 Architecture: all
@@ -2622,20 +2056,6 @@ Description: Mono cscompmgd library (for CLI 4.0)
  .
  This package contains the Mono cscompmgd library version 0.0, for CLI 4.0.
 
-Package: libmono-ldap2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono LDAP library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono LDAP library for CLI 2.0.
-
 Package: libmono-ldap4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2648,34 +2068,6 @@ Description: Mono LDAP library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono LDAP library for CLI 4.0.
-
-Package: libmono-microsoft8.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Microsoft libraries (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Microsoft libraries version 8.0, for CLI 2.0.
-
-Package: libmono-microsoft-build2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Microsoft.Build libraries (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Microsoft.Build libraries version 2.0.
 
 Package: libmono-microsoft-build4.0-cil
 Architecture: all
@@ -2784,22 +2176,6 @@ Description: Mono Microsoft.Web.Infrastructure library (for CLI 4.0)
  This package contains the Mono Microsoft.Web.Infrastructure library
  version 1.0, for CLI 4.0.
 
-Package: libmono-peapi2.0a-cil
-Architecture: all
-Provides: libmono-peapi2.0-cil
-Replaces: libmono-peapi2.0-cil
-Conflicts: libmono-peapi2.0-cil
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono PEAPI library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono PEAPI library for CLI 2.0.
-
 Package: libmono-peapi4.0a-cil
 Architecture: all
 Provides: libmono-peapi4.0-cil
@@ -2816,20 +2192,6 @@ Description: Mono PEAPI library (for CLI 4.0)
  .
  This package contains the Mono PEAPI library for CLI 4.0.
 
-Package: libmono-relaxng2.0-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Relaxng library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Relaxng library for CLI 2.0.
-
 Package: libmono-relaxng4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2842,23 +2204,6 @@ Description: Mono Relaxng library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono Relaxng library for CLI 4.0.
-
-Package: libmono-debugger-soft2.0a-cil
-Architecture: all
-Provides: libmono-debugger-soft2.0-cil
-Replaces: libmono-debugger-soft0.0-cil, libmono-debugger-soft2.0-cil
-Conflicts: libmono-debugger-soft0.0-cil, libmono-debugger-soft2.0-cil
-Depends: ${misc:Depends},
-         ${cli:Depends},
-         mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion})
-Description: Mono Soft Debugger library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Soft Debugger library for CLI 2.0.
 
 Package: libmono-debugger-soft4.0a-cil
 Architecture: all
@@ -2876,25 +2221,6 @@ Description: Mono Soft Debugger library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono Soft Debugger library for CLI 4.0.
-
-Package: libmono-tasklets2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends},
-         mono-runtime (>= ${mono:upversion}), mono-runtime (<< ${mono:next-upversion})
-Homepage: http://www.mono-project.com/Continuations
-Description: Mono Tasklets library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono Tasklets library for CLI 2.0.
- .
- The Mono.Tasklets library provides a continuation framework that allows for
- a number of high-level abstractions like co-routines and cooperative
- multi-threading to be implemented on top of it.
 
 Package: libmono-tasklets4.0-cil
 Architecture: all
@@ -2915,20 +2241,6 @@ Description: Mono Tasklets library (for CLI 4.0)
  a number of high-level abstractions like co-routines and cooperative
  multi-threading to be implemented on top of it.
 
-Package: libmono-windowsbase3.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono WindowsBase library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the WindowsBase library for CLI 2.0 which provides
- the System.IO.Packaging namespace.
-
 Package: libmono-windowsbase4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -2942,20 +2254,6 @@ Description: Mono WindowsBase library (for CLI 4.0)
  .
  This package contains the WindowsBase library for CLI 4.0 which provides
  the System.IO.Packaging namespace.
-
-Package: libmono-xbuild-tasks2.0-cil
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono Mono.XBuild.Tasks library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono.XBuild.Tasks library for CLI 2.0 which provides
- the Mono.XBuild.Tasks namespace.
 
 Package: libmono-xbuild-tasks4.0-cil
 Architecture: all
@@ -3292,21 +2590,6 @@ Description: Mono development tools
  This package contains various development tools and pulls in the default
  development stack for Mono (which is 4.0 currently).
 
-Package: mono-2.0-service
-Architecture: all
-Depends: ${misc:Depends}, ${cli:Depends}
-Replaces: mono-gmcs (<< 1.2.6-1),
-          libmono2.0-cil (<< 2.4.4~svn151842-3~)
-Description: Mono service manager for CLI 2.0
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the mono-service2 manager, used to start and stop CLI
- 2.0 services based on the System.ServiceProcess API.
-
 Package: mono-4.0-service
 Architecture: all
 Replaces: mono-1.0-service
@@ -3356,22 +2639,6 @@ Description: Mono GAC tool
  .
  This package pulls in the default GAC (Global Assembly Cache) tool (gacutil)
  used by Mono to store shared CIL (Common Intermediate Language) libraries.
-
-Package: mono-2.0-gac
-Architecture: all
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Recommends: cli-common (>= 0.4.0)
-Description: Mono GAC tool (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package includes a version of the GAC (Global Assembly Cache) tool 
- (gacutil) used by Mono to store shared CIL (Common Intermediate Language) 
- libraries, for CLI 2.0
 
 Package: mono-4.0-gac
 Architecture: all

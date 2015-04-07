@@ -41,7 +41,6 @@ debian/tmp/usr/bin/sqlmetal
 debian/tmp/usr/bin/svcutil
 debian/tmp/usr/bin/wsdl
 debian/tmp/usr/bin/xsd
-debian/tmp/usr/lib/mono/2.0/al.exe*
 debian/tmp/usr/lib/mono/4.5/al.exe*
 debian/tmp/usr/lib/mono/4.5/browsercaps-updater.exe*
 debian/tmp/usr/lib/mono/4.5/caspol.exe*
@@ -51,16 +50,13 @@ debian/tmp/usr/lib/mono/4.5/cert2spc.exe*
 debian/tmp/usr/lib/mono/4.5/certmgr.exe*
 debian/tmp/usr/lib/mono/4.5/chktrust.exe*
 debian/tmp/usr/lib/mono/4.5/crlupdate.exe*
-debian/tmp/usr/lib/mono/2.0/culevel.exe*
 debian/tmp/usr/lib/mono/4.5/culevel.exe*
 debian/tmp/usr/lib/mono/4.5/disco.exe*
 debian/tmp/usr/lib/mono/4.5/dtd2rng.exe*
 debian/tmp/usr/lib/mono/4.5/dtd2xsd.exe*
-debian/tmp/usr/lib/mono/2.0/genxs.exe*
 debian/tmp/usr/lib/mono/4.5/genxs.exe*
 debian/tmp/usr/lib/mono/4.5/httpcfg.exe*
 debian/tmp/usr/lib/mono/4.5/ictool.exe*
-debian/tmp/usr/lib/mono/2.0/ilasm.exe*
 debian/tmp/usr/lib/mono/4.5/ilasm.exe*
 debian/tmp/usr/lib/mono/4.5/installutil.exe*
 debian/tmp/usr/lib/mono/4.5/installvst.exe*
@@ -69,11 +65,8 @@ debian/tmp/usr/lib/mono/4.5/macpack.exe*
 debian/tmp/usr/lib/mono/4.5/makecert.exe*
 debian/tmp/usr/lib/mono/4.5/mconfig.exe*
 debian/tmp/usr/lib/mono/4.5/mdbrebase.exe*
-debian/tmp/usr/lib/mono/2.0/mkbundle.exe*
 debian/tmp/usr/lib/mono/4.5/mkbundle.exe*
 debian/tmp/usr/lib/mono/4.5/mono-xmltool.exe*
-debian/tmp/usr/lib/mono/2.0/monop.exe*
-debian/tmp/usr/lib/mono/2.0/monolinker.exe*
 debian/tmp/usr/lib/mono/4.5/monolinker.exe*
 debian/tmp/usr/lib/mono/4.5/mono-api-info.exe*
 debian/tmp/usr/lib/mono/4.5/mono-cil-strip.exe*
@@ -82,9 +75,7 @@ debian/tmp/usr/lib/mono/4.5/monop.exe*
 debian/tmp/usr/lib/mono/4.5/mozroots.exe*
 debian/tmp/usr/lib/mono/4.5/permview.exe*
 debian/tmp/usr/lib/mono/4.5/pdb2mdb.exe*
-debian/tmp/usr/lib/mono/2.0/resgen.exe*
 debian/tmp/usr/lib/mono/4.5/resgen.exe*
-debian/tmp/usr/lib/mono/2.0/RabbitMQ.Client.Apigen.exe*
 debian/tmp/usr/lib/mono/4.5/RabbitMQ.Client.Apigen.exe*
 debian/tmp/usr/lib/mono/4.5/secutil.exe*
 debian/tmp/usr/lib/mono/4.5/setreg.exe*
@@ -95,9 +86,7 @@ debian/tmp/usr/lib/mono/4.5/soapsuds.exe*
 debian/tmp/usr/lib/mono/4.5/sqlmetal.exe*
 debian/tmp/usr/lib/mono/4.5/sqlsharp.exe*
 debian/tmp/usr/lib/mono/4.5/svcutil.exe*
-debian/tmp/usr/lib/mono/2.0/wsdl.exe*
 debian/tmp/usr/lib/mono/4.5/wsdl.exe*
-debian/tmp/usr/lib/mono/2.0/xsd.exe*
 debian/tmp/usr/lib/mono/4.5/xsd.exe*
 debian/tmp/usr/lib/mono/4.5/ikdasm.exe*
 debian/tmp/usr/lib/mono/mono-configuration-crypto/

@@ -1,16 +1,4 @@
 debian/tmp/usr/bin/xbuild
-debian/tmp/usr/lib/mono/2.0/xbuild.exe*
-debian/tmp/usr/lib/mono/2.0/xbuild.rsp
-debian/tmp/usr/lib/mono/2.0/Microsoft.*.targets
-debian/tmp/usr/lib/mono/2.0/Microsoft.*.tasks  
-debian/tmp/usr/lib/mono/2.0/Microsoft.*.xsd
-debian/tmp/usr/lib/mono/2.0/MSBuild/
-debian/tmp/usr/lib/mono/3.5/xbuild.exe*
-debian/tmp/usr/lib/mono/3.5/xbuild.rsp
-debian/tmp/usr/lib/mono/3.5/Microsoft.*.targets
-debian/tmp/usr/lib/mono/3.5/Microsoft.*.tasks
-debian/tmp/usr/lib/mono/3.5/Microsoft.*.xsd
-debian/tmp/usr/lib/mono/3.5/MSBuild/
 debian/tmp/usr/lib/mono/4.5/xbuild.exe*
 debian/tmp/usr/lib/mono/4.5/xbuild.rsp
 debian/tmp/usr/lib/mono/4.5/Microsoft.*.targets
