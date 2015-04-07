@@ -137,7 +137,7 @@ if (defined($dh{INTERNAL_MONO_FLAG}) ||
     (defined($ARGV[0]) && $ARGV[0] eq "internal-mono")) {
     $clr = "mono";
     $cli_parser = "$pwd/debian/tmp/usr/bin/monodis";
-    $cli_parser_paths = "LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib MONO_PATH=$mono_path:$pwd/debian/tmp/usr/lib/mono/1.0:$pwd/debian/tmp/usr/lib/mono/2.0 MONO_GAC_PREFIX=$mono_gac_prefix ";
+    $cli_parser_paths = "LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib MONO_PATH=$mono_path:$pwd/debian/tmp/usr/lib/mono/4.5 MONO_GAC_PREFIX=$mono_gac_prefix ";
     $cli_version = `LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib $pwd/debian/tmp/usr/bin/mono --version 2>&1`;
     verbose_print("Will use built Mono (debian/tmp/usr/bin/monodis) for CIL parsing.");
 } elsif (-x "/usr/bin/monodis") {
