@@ -23,6 +23,7 @@ debian/tmp/usr/bin/mono-cil-strip
 debian/tmp/usr/bin/mono-configuration-crypto
 debian/tmp/usr/bin/mono-heapviz
 debian/tmp/usr/bin/mono-shlib-cop
+debian/tmp/usr/bin/mono-symbolicate
 debian/tmp/usr/bin/mono-test-install
 debian/tmp/usr/bin/mono-xmltool
 debian/tmp/usr/bin/monop
@@ -71,6 +72,7 @@ debian/tmp/usr/lib/mono/4.5/monolinker.exe*
 debian/tmp/usr/lib/mono/4.5/mono-api-info.exe*
 debian/tmp/usr/lib/mono/4.5/mono-cil-strip.exe*
 debian/tmp/usr/lib/mono/4.5/mono-shlib-cop.exe*
+debian/tmp/usr/lib/mono/4.5/mono-symbolicate.exe*
 debian/tmp/usr/lib/mono/4.5/monop.exe*
 debian/tmp/usr/lib/mono/4.5/mozroots.exe*
 debian/tmp/usr/lib/mono/4.5/permview.exe*
