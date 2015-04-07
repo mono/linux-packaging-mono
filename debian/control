@@ -358,7 +358,6 @@ Depends: ${misc:Depends},
          libmono-rabbitmq4.0-cil (= ${source:Version}),
          libmono-relaxng4.0-cil (= ${source:Version}),
          libmono-security4.0-cil (= ${source:Version}),
-         libmono-sharpzip2.6-cil (= ${source:Version}),
          libmono-sharpzip4.84-cil (= ${source:Version}),
          libmono-simd4.0-cil (= ${source:Version}),
          libmono-sqlite4.0-cil (= ${source:Version}),
@@ -1902,20 +1901,6 @@ Description: Mono Cairo library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono Cairo library for CLI 4.0.
-
-Package: libmono-sharpzip2.6-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.4-1), mono-classlib-2.0-dbg (<< 1.1.13.4-1)
-Depends: ${misc:Depends},
-         ${cli:Depends}
-Description: Mono SharpZipLib library (for CLI 2.0)
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono SharpZipLib library version 2.6, for CLI 2.0.
 
 Package: libmono-sharpzip4.84-cil
 Architecture: all
