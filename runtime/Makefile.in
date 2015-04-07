@@ -79,13 +79,11 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@INSTALL_4_0_TRUE@am__append_1 = etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.5/machine.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
-@INSTALL_2_0_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_2 = net_2_0 net_3_5
-@INSTALL_4_0_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_3 = net_4_0
-@INSTALL_4_5_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_4 = net_4_5 xbuild_12
-@INSTALL_MONODROID_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_5 = monodroid
-@INSTALL_MONOTOUCH_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_6 = monotouch monotouch_runtime
-@INSTALL_XAMMAC_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_7 = xammac
+@INSTALL_4_5_TRUE@am__append_1 = etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.5/machine.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
+@INSTALL_4_5_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_2 = net_4_0 net_4_5 xbuild_12 xbuild_14
+@INSTALL_MONODROID_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_3 = monodroid
+@INSTALL_MONOTOUCH_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_4 = monotouch monotouch_runtime
+@INSTALL_XAMMAC_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_5 = xammac
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -158,6 +156,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_PERF_EVENTS = @DISABLE_PERF_EVENTS@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
@@ -241,12 +240,15 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
+SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTUNE_CFLAGS = @VTUNE_CFLAGS@
+VTUNE_LIBS = @VTUNE_LIBS@
 WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
@@ -342,30 +344,19 @@ SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 @ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_2) \
 @ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_3) \
 @ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_4) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_5) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_6) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_7)
+@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_5)
 @ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@build_profiles = xammac \
 @ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_2) \
 @ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_3) \
 @ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_4) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_5) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_6) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_7)
+@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_5)
 @ONLY_MONOTOUCH_TRUE@build_profiles = monotouch $(am__append_2) \
 @ONLY_MONOTOUCH_TRUE@	$(am__append_3) $(am__append_4) \
-@ONLY_MONOTOUCH_TRUE@	$(am__append_5) $(am__append_6) \
-@ONLY_MONOTOUCH_TRUE@	$(am__append_7)
-@INSTALL_2_0_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@al_profile = net_2_0
-@INSTALL_4_0_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@al_profile = net_4_0
+@ONLY_MONOTOUCH_TRUE@	$(am__append_5)
 @INSTALL_4_5_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@al_profile = net_4_5
 @ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
-TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/gmcs $(tmpinst)/bin/dmcs $(tmpinst)/bin/al2 $(tmpinst)/bin/al
-@ENABLE_NUNIT_TESTS_FALSE@test_select = ONLY_CENTUM_TESTS=yes
-
-# now a misnomer, but it'll go away soon enough.
-@ENABLE_NUNIT_TESTS_TRUE@test_select = 
+TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/dmcs $(tmpinst)/bin/al2 $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@cur_dir_cmd = pwd
 @HOST_WIN32_FALSE@cur_dir_cmd = pwd
@@ -592,16 +583,16 @@ mcs-do-run-test-profiles: test-support-files
 
 # Compile all assemblies with the verifier turned on. Code must be valid but not verifiable.
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
-# Skip net 4.0 assemblies because the contain metadata only
+# Skip net 4.0 assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
 	  if [ "net_4_0" = "$$profile" ]; then \
           continue; \
       fi; \
-	  if [ "net_3_5" = "$$profile" ]; then \
-		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_2_0$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
-	  elif [ "xbuild_12" = "$$profile" ]; then \
+	  if [ "xbuild_12" = "$$profile" ]; then \
+		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_5$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
+	  elif [ "xbuild_14" = "$$profile" ]; then \
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_5$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  else \
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
@@ -620,7 +611,7 @@ mcs-compileall: mono-wrapper etc/mono/config
 
 @NACL_CODEGEN_TRUE@check-local:
 @NACL_CODEGEN_FALSE@check-local: mcs-compileall mcs-do-test-profiles
-@NACL_CODEGEN_FALSE@	$(MAKE) $(test_select) mcs-do-run-test-profiles
+@NACL_CODEGEN_FALSE@	$(MAKE) mcs-do-run-test-profiles
 
 # Compile all mcs tests
 test: mcs-do-test-profiles
@@ -642,12 +633,6 @@ $(tmpinst)/bin/mcs: $(tmpinst)/bin/mono Makefile
 	echo '#! /bin/sh' > $@ ; \
 	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
 	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/build/mcs.exe"'" "$$@"' >> $@ ; \
-	chmod +x $@
-
-$(tmpinst)/bin/gmcs: $(tmpinst)/bin/mono Makefile
-	echo '#! /bin/sh' > $@ ; \
-	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
-	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/build/mcs.exe -sdk:2"'" "$$@"' >> $@ ; \
 	chmod +x $@
 
 $(tmpinst)/bin/dmcs: $(tmpinst)/bin/mono Makefile

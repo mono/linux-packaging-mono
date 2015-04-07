@@ -82,7 +82,8 @@
 #define mono_assert_not_reached() g_assert_not_reached() 
 #endif
 
-#define MONO_CHECK_ARG(arg, expr)		G_STMT_START{		  \
+/* Use this as MONO_CHECK_ARG_NULL (arg,expr,) in functions returning void */
+#define MONO_CHECK_ARG(arg, expr, retval)		G_STMT_START{		  \
 		if (G_UNLIKELY (!(expr)))							  \
        {								  \
 		MonoException *ex;					  \
@@ -91,16 +92,19 @@
 		if (arg) {} /* check if the name exists */		  \
 		ex = mono_get_exception_argument (#arg, msg);		  \
 		g_free (msg);						  \
-		mono_raise_exception (ex);				  \
+		mono_set_pending_exception (ex);					  \
+		return retval;										  \
        };				}G_STMT_END
 
-#define MONO_CHECK_ARG_NULL(arg)	    G_STMT_START{		  \
+/* Use this as MONO_CHECK_ARG_NULL (arg,) in functions returning void */
+#define MONO_CHECK_ARG_NULL(arg, retval)	    G_STMT_START{		  \
 		if (G_UNLIKELY (arg == NULL))						  \
        {								  \
 		MonoException *ex;					  \
 		if (arg) {} /* check if the name exists */		  \
 		ex = mono_get_exception_argument_null (#arg);		  \
-		mono_raise_exception (ex);				  \
+		mono_set_pending_exception (ex);					  \
+		return retval;										  \
        };				}G_STMT_END
 
 /* 16 == default capacity */
@@ -286,11 +290,6 @@ typedef struct {
 } MonoTypeLoadException;
 
 typedef struct {
-	MonoException base;
-	MonoObject *wrapped_exception;
-} MonoRuntimeWrappedException;
-
-typedef struct {
 	MonoObject   object;
 	MonoObject  *async_state;
 	MonoObject  *handle;
@@ -380,6 +379,7 @@ typedef struct {
 	MonoObject obj;
 	gint32 il_offset;
 	gint32 native_offset;
+	gint64 method_address;
 	MonoReflectionMethod *method;
 	MonoString *filename;
 	gint32 line;
@@ -533,6 +533,37 @@ typedef struct {
 
 typedef struct {
 	MonoObject obj;
+	MonoString *NativeName;
+	MonoArray *ShortDatePatterns;
+	MonoArray *YearMonthPatterns;
+	MonoArray *LongDatePatterns;
+	MonoString *MonthDayPattern;
+
+	MonoArray *EraNames;
+	MonoArray *AbbreviatedEraNames;
+	MonoArray *AbbreviatedEnglishEraNames;
+	MonoArray *DayNames;
+	MonoArray *AbbreviatedDayNames;
+	MonoArray *SuperShortDayNames;
+	MonoArray *MonthNames;
+	MonoArray *AbbreviatedMonthNames;
+	MonoArray *GenitiveMonthNames;
+	MonoArray *GenitiveAbbreviatedMonthNames;
+} MonoCalendarData;
+
+typedef struct {
+	MonoObject obj;
+	MonoString *AMDesignator;
+	MonoString *PMDesignator;
+	MonoString *TimeSeparator;
+	MonoArray *LongTimePatterns;
+	MonoArray *ShortTimePatterns;
+	guint32 FirstDayOfWeek;
+	guint32 CalendarWeekRule;
+} MonoCultureData;
+
+typedef struct {
+	MonoObject obj;
 	MonoBoolean is_read_only;
 	gint32 lcid;
 	gint32 parent_lcid;
@@ -618,7 +649,7 @@ typedef void        (*MonoFreeMethodFunc)	 (MonoDomain *domain, MonoMethod *meth
 /* Used to initialize the method pointers inside vtables */
 typedef gboolean    (*MonoInitVTableFunc)    (MonoVTable *vtable);
 
-void mono_set_pending_exception (MonoException *exc) MONO_INTERNAL;
+MONO_COLD void mono_set_pending_exception (MonoException *exc) MONO_INTERNAL;
 
 /* remoting and async support */
 
@@ -1415,7 +1446,7 @@ void        mono_reflection_create_unmanaged_type (MonoReflectionType *type) MON
 void        mono_reflection_register_with_runtime (MonoReflectionType *type) MONO_INTERNAL;
 
 void        mono_reflection_create_custom_attr_data_args (MonoImage *image, MonoMethod *method, const guchar *data, guint32 len, MonoArray **typed_args, MonoArray **named_args, CattrNamedArg **named_arg_info, MonoError *error) MONO_INTERNAL;
-MonoMethodSignature * mono_reflection_lookup_signature (MonoImage *image, MonoMethod *method, guint32 token) MONO_INTERNAL;
+MonoMethodSignature * mono_reflection_lookup_signature (MonoImage *image, MonoMethod *method, guint32 token, MonoError *error) MONO_INTERNAL;
 
 MonoArray* mono_param_get_objects_internal  (MonoDomain *domain, MonoMethod *method, MonoClass *refclass) MONO_INTERNAL;
 

@@ -80,7 +80,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@SUPPORT_BOEHM_TRUE@bin_PROGRAMS = monodis$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@bin_PROGRAMS = monodis$(EXEEXT)
 subdir = mono/dis
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp ChangeLog \
@@ -116,17 +116,15 @@ PROGRAMS = $(bin_PROGRAMS)
 am_monodis_OBJECTS = dump.$(OBJEXT) main.$(OBJEXT) declsec.$(OBJEXT)
 monodis_OBJECTS = $(am_monodis_OBJECTS)
 am__DEPENDENCIES_1 =
-@SHARED_MONO_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntime-static.la \
-@SHARED_MONO_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la \
-@SHARED_MONO_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1)
-@SHARED_MONO_FALSE@am__DEPENDENCIES_3 = ../mini/$(LIBMONO_LA) \
-@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_2)
-@SHARED_MONO_TRUE@am__DEPENDENCIES_3 = ../mini/$(LIBMONO_LA)
+@SUPPORT_SGEN_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
+am__DEPENDENCIES_3 = $(metadata_lib) \
+	$(top_builddir)/mono/io-layer/libwapi.la \
+	$(top_builddir)/mono/utils/libmonoutils.la \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_2)
 monodis_DEPENDENCIES = libmonodis.a $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -252,6 +250,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_PERF_EVENTS = @DISABLE_PERF_EVENTS@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
@@ -335,12 +334,15 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
+SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTUNE_CFLAGS = @VTUNE_CFLAGS@
+VTUNE_LIBS = @VTUNE_LIBS@
 WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
@@ -426,15 +428,16 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
-@SHARED_MONO_FALSE@static_libs = \
-@SHARED_MONO_FALSE@	$(top_builddir)/mono/metadata/libmonoruntime-static.la	\
-@SHARED_MONO_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la	\
-@SHARED_MONO_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@SHARED_MONO_FALSE@	$(GLIB_LIBS) $(LIBICONV) \
-@SHARED_MONO_FALSE@	$(LIBGC_STATIC_LIBS)
+@SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime-static.a
+@SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen-static.la
+@SUPPORT_SGEN_FALSE@gc_lib = $(LIBGC_STATIC_LIBS)
+runtime_lib = \
+	$(metadata_lib) \
+	$(top_builddir)/mono/io-layer/libwapi.la	\
+	$(top_builddir)/mono/utils/libmonoutils.la \
+	$(GLIB_LIBS) $(LIBICONV) \
+	$(gc_lib)
 
-@SHARED_MONO_FALSE@runtime_lib = ../mini/$(LIBMONO_LA) $(static_libs)
-@SHARED_MONO_TRUE@runtime_lib = ../mini/$(LIBMONO_LA)
 noinst_LIBRARIES = libmonodis.a
 libmonodis_a_SOURCES = \
 	get.c		\
@@ -456,10 +459,11 @@ monodis_LDADD = \
 	libmonodis.a			\
 	$(runtime_lib)			\
 	$(LLVM_LIBS)			\
+	$(LLVM_LDFLAGS)			\
 	$(GLIB_LIBS)			\
 	$(LIBICONV)
 
-@PLATFORM_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation
+@PLATFORM_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation -framework Foundation
 man_MANS = monodis.1
 EXTRA_DIST = $(man_MANS)
 all: all-am

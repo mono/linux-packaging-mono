@@ -93,7 +93,7 @@ namespace Ildasm
         
         void AppendTypeName(StringBuilder sb, Type type, string typeName, bool noself = false, bool securityCompatHack = false)
         {
-            if (type.Assembly == assembly && !noself && (!type.IsGenericType || type.IsGenericTypeDefinition) && !type.HasElementType)
+            if (type.Assembly == assembly && !type.__IsMissing && !noself && (!type.IsGenericType || type.IsGenericTypeDefinition) && !type.HasElementType)
             {
                 AppendTypeName(sb, type);
             }

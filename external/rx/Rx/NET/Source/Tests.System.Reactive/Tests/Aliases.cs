@@ -23,6 +23,7 @@ namespace ReactiveTests.Tests
     [TestClass]
     public partial class AliasesTest : ReactiveTest
     {
+#if !NO_EXPRESSIONS
         [TestMethod]
         public void Qbservable_Aliases()
         {
@@ -33,5 +34,6 @@ namespace ReactiveTests.Tests
             Assert.IsTrue(xs.Map(x => x.ToString()).ToEnumerable().SequenceEqual(new[] { "1" }), "Map");
             Assert.IsTrue(xs.FlatMap(x => xs).ToEnumerable().SequenceEqual(new[] { 1 }), "FlatMap");
         }
+#endif
     }
 }

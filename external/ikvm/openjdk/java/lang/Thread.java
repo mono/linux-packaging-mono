@@ -256,7 +256,8 @@ class Thread implements Runnable {
      * Set by (private) java.util.concurrent.locks.LockSupport.setBlocker
      * Accessed using java.util.concurrent.locks.LockSupport.getBlocker
      */
-    volatile Object parkBlocker;
+    @ikvm.lang.Internal // [IKVM] accessed from java.util.concurrent
+    public volatile Object parkBlocker;
 
     /* The object in which this thread is blocked in an interruptible I/O
      * operation, if any.  The blocker's interrupt method should be invoked
@@ -477,6 +478,8 @@ class Thread implements Runnable {
             throw new NullPointerException("name cannot be null");
         }
 
+        this.name = name.toCharArray();
+
         Thread parent = currentThread();
         SecurityManager security = System.getSecurityManager();
         if (g == null) {
@@ -513,7 +516,6 @@ class Thread implements Runnable {
         this.group = g;
         this.daemon = parent.isDaemon();
         this.priority = parent.getPriority();
-        this.name = name.toCharArray();
         if (isCCLOverridden(parent))
             this.contextClassLoader = parent.getContextClassLoader();
         else

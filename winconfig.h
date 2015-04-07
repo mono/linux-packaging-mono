@@ -179,6 +179,15 @@
 /* Have gc.h */
 /* #define HAVE_GC_H 1 */
 
+/* Define to 1 if you have the `getaddrinfo' function. */
+#define HAVE_GETADDRINFO 1
+
+/* Define to 1 if you have the `getnameinfo' function. */
+#define HAVE_GETNAMEINFO 1
+
+/* Define to 1 if you have the `getprotobyname' function. */
+#define HAVE_GETPROTOBYNAME 1
+
 /* Define to 1 if you have the `getdomainname' function. */
 /* #undef HAVE_GETDOMAINNAME */
 
@@ -633,5 +642,5 @@
 /* #undef USE_MONO_MUTEX */
 
 /* Version number of package */
-#define VERSION "3.12.0"
+#define VERSION "4.0.0"
 #endif

@@ -13,9 +13,11 @@
 #include <mono/metadata/threads.h>
 #include <mono/metadata/mono-gc.h>
 #include <mono/metadata/debug-helpers.h>
+#include <mono/metadata/mono-perfcounters.h>
 #include <mono/utils/atomic.h>
 #include <mono/utils/mono-membar.h>
 #include <mono/utils/mono-counters.h>
+#include <mono/utils/mono-mutex.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -67,11 +69,17 @@
 #endif
 
 #if defined(__linux__)
+
 #include <unistd.h>
 #include <sys/syscall.h>
 #include "perf_event.h"
+
+#ifndef DISABLE_PERF_EVENTS
 #define USE_PERF_EVENTS 1
+
 static int read_perf_mmap (MonoProfiler* prof, int cpu);
+#endif
+
 #endif
 
 #define BUFFER_SIZE (4096 * 16)
@@ -239,18 +247,16 @@ typedef struct _LogBuffer LogBuffer;
  *	[code size: uleb128] size of the generated code
  *	[name: string] full method name
  *
- * type exception format:
- * type: TYPE_EXCEPTION
- * exinfo: TYPE_EXCEPTION_BT flag and one of: TYPE_THROW, TYPE_CLAUSE
+ * type runtime format:
+ * type: TYPE_RUNTIME
+ * exinfo: one of: TYPE_JITHELPER
  * [time diff: uleb128] nanoseconds since last timing
- * if exinfo.low3bits == TYPE_CLAUSE
- * 	[clause type: uleb128] finally/catch/fault/filter
- * 	[clause num: uleb128] the clause number in the method header
- * 	[method: sleb128] MonoMethod* as a pointer difference from the last such
- * 	pointer or the buffer method_base
- * if exinfo.low3bits == TYPE_THROW
- * 	[object: sleb128] the object that was thrown as a difference from obj_base
- *	If the TYPE_EXCEPTION_BT flag is set, a backtrace follows.
+ * if exinfo == TYPE_JITHELPER
+ *	[type: uleb128] MonoProfilerCodeBufferType enum value
+ *	[buffer address: sleb128] pointer to the native code as a diff from ptr_base
+ *	[buffer size: uleb128] size of the generated code
+ *	if type == MONO_PROFILER_CODE_BUFFER_SPECIFIC_TRAMPOLINE
+ *		[name: string] buffer description name
  *
  * type monitor format:
  * type: TYPE_MONITOR
@@ -314,11 +320,13 @@ typedef struct _LogBuffer LogBuffer;
  * if exinfo == TYPE_SAMPLE_COUNTERS_DESC
  * 	[len: uleb128] number of counters
  * 	for i = 0 to len
- * 		[section: uleb128] section name of counter
+ * 		[section: uleb128] section of counter
+ * 		if section == MONO_COUNTER_PERFCOUNTERS:
+ * 			[section_name: string] section name of counter
  * 		[name: string] name of counter
- * 		[type: uleb128] type name of counter
- * 		[unit: uleb128] unit name of counter
- * 		[variance: uleb128] variance name of counter
+ * 		[type: uleb128] type of counter
+ * 		[unit: uleb128] unit of counter
+ * 		[variance: uleb128] variance of counter
  * 		[index: uleb128] unique index of counter
  * if exinfo == TYPE_SAMPLE_COUNTERS
  * 	[timestamp: uleb128] sampling timestamp
@@ -380,7 +388,6 @@ struct _BinaryObject {
 };
 
 struct _MonoProfiler {
-	LogBuffer *buffers;
 	StatBuffer *stat_buffers;
 	FILE* file;
 #if defined (HAVE_SYS_ZLIB)
@@ -677,6 +684,7 @@ process_requests (MonoProfiler *profiler)
 }
 
 static void counters_init (MonoProfiler *profiler);
+static void counters_sample (MonoProfiler *profiler, uint64_t timestamp);
 
 static void
 runtime_initialized (MonoProfiler *profiler)
@@ -684,6 +692,7 @@ runtime_initialized (MonoProfiler *profiler)
 	runtime_inited = 1;
 #ifndef DISABLE_HELPER_THREAD
 	counters_init (profiler);
+	counters_sample (profiler, 0);
 #endif
 	/* ensure the main thread data and startup are available soon */
 	safe_dump (profiler, ensure_logbuf (0));
@@ -1122,6 +1131,36 @@ method_jitted (MonoProfiler *prof, MonoMethod *method, MonoJitInfo* jinfo, int r
 	EXIT_LOG (logbuffer);
 	if (logbuffer->next)
 		safe_dump (prof, logbuffer);
+	process_requests (prof);
+}
+
+static void
+code_buffer_new (MonoProfiler *prof, void *buffer, int size, MonoProfilerCodeBufferType type, void *data)
+{
+	uint64_t now;
+	int nlen;
+	char *name;
+	LogBuffer *logbuffer;
+	if (type == MONO_PROFILER_CODE_BUFFER_SPECIFIC_TRAMPOLINE) {
+		name = data;
+		nlen = strlen (name) + 1;
+	} else {
+		name = NULL;
+		nlen = 0;
+	}
+	logbuffer = ensure_logbuf (32 + nlen);
+	now = current_time ();
+	ENTER_LOG (logbuffer, "code buffer");
+	emit_byte (logbuffer, TYPE_JITHELPER | TYPE_RUNTIME);
+	emit_time (logbuffer, now);
+	emit_value (logbuffer, type);
+	emit_ptr (logbuffer, buffer);
+	emit_value (logbuffer, size);
+	if (name) {
+		memcpy (logbuffer->data, name, nlen);
+		logbuffer->data += nlen;
+	}
+	EXIT_LOG (logbuffer);
 	process_requests (prof);
 }
 
@@ -1642,14 +1681,36 @@ dump_unmanaged_coderefs (MonoProfiler *prof)
 }
 
 static void
+dump_sample_hits_inner (MonoProfiler *prof, StatBuffer *sbuf, int recurse, GPtrArray **array);
+
+static void
 dump_sample_hits (MonoProfiler *prof, StatBuffer *sbuf, int recurse)
+{
+	GPtrArray *array = NULL;
+	dump_sample_hits_inner (prof, sbuf, recurse, &array);
+
+	if (array) {
+		int i;
+		g_ptr_array_sort (array, g_direct_equal);
+		for (i = 0; i < array->len; ++i) {
+			MonoJitInfo *cur = array->pdata [i];
+			//Ignore duplicates
+			if (i > 0 && array->pdata [i - 1] == cur)
+				continue;
+			method_jitted (prof, mono_jit_info_get_method (cur), cur, MONO_PROFILE_OK);
+		}
+	}
+}
+
+static void
+dump_sample_hits_inner (MonoProfiler *prof, StatBuffer *sbuf, int recurse, GPtrArray **array)
 {
 	uintptr_t *sample;
 	LogBuffer *logbuffer;
 	if (!sbuf)
 		return;
 	if (recurse && sbuf->next) {
-		dump_sample_hits (prof, sbuf->next, 1);
+		dump_sample_hits_inner (prof, sbuf->next, 1, array);
 		free_buffer (sbuf->next, sbuf->next->size);
 		sbuf->next = NULL;
 	}
@@ -1670,8 +1731,12 @@ dump_sample_hits (MonoProfiler *prof, StatBuffer *sbuf, int recurse)
 
 			if (!method) {
 				MonoJitInfo *ji = mono_jit_info_table_find (domain, address);
-				if (ji)
+				if (ji) {
 					managed_sample_base [i * 4 + 0] = (uintptr_t)mono_jit_info_get_method (ji);
+					if (!*array)
+						*array = g_ptr_array_new ();
+					g_ptr_array_add (*array, ji);
+				}
 			}
 		}
 		logbuffer = ensure_logbuf (20 + count * 8);
@@ -1698,13 +1763,6 @@ dump_sample_hits (MonoProfiler *prof, StatBuffer *sbuf, int recurse)
 }
 
 #if USE_PERF_EVENTS
-#ifndef __NR_perf_event_open
-#ifdef __arm__
-#define __NR_perf_event_open 364
-#else
-#define __NR_perf_event_open 241
-#endif
-#endif
 
 static int
 mono_cpu_count (void)
@@ -1787,7 +1845,7 @@ perf_event_syscall (struct perf_event_attr *attr, pid_t pid, int cpu, int group_
 	return syscall(/*__NR_perf_event_open*/ 298, attr, pid, cpu, group_fd, flags);
 #elif defined(__i386__)
 	return syscall(/*__NR_perf_event_open*/ 336, attr, pid, cpu, group_fd, flags);
-#elif defined(__arm__)
+#elif defined(__arm__) || defined (__aarch64__)
 	return syscall(/*__NR_perf_event_open*/ 364, attr, pid, cpu, group_fd, flags);
 #else
 	return -1;
@@ -1958,21 +2016,35 @@ typedef struct MonoCounterAgent {
 	void *value;
 	size_t value_size;
 	short index;
+	short emitted;
 	struct MonoCounterAgent *next;
 } MonoCounterAgent;
 
 static MonoCounterAgent* counters;
 static gboolean counters_initialized = FALSE;
 static int counters_index = 1;
+static mono_mutex_t counters_mutex;
 
-static mono_bool
-counters_init_add_counter (MonoCounter *counter, gpointer data)
+static void
+counters_add_agent (MonoCounter *counter)
 {
 	MonoCounterAgent *agent, *item;
 
+	if (!counters_initialized)
+		return;
+
+	mono_mutex_lock (&counters_mutex);
+
 	for (agent = counters; agent; agent = agent->next) {
-		if (agent->counter == counter)
-			return TRUE;
+		if (agent->counter == counter) {
+			agent->value_size = 0;
+			if (agent->value) {
+				free (agent->value);
+				agent->value = NULL;
+			}
+			mono_mutex_unlock (&counters_mutex);
+			return;
+		}
 	}
 
 	agent = malloc (sizeof (MonoCounterAgent));
@@ -1980,6 +2052,7 @@ counters_init_add_counter (MonoCounter *counter, gpointer data)
 	agent->value = NULL;
 	agent->value_size = 0;
 	agent->index = counters_index++;
+	agent->emitted = 0;
 	agent->next = NULL;
 
 	if (!counters) {
@@ -1991,21 +2064,52 @@ counters_init_add_counter (MonoCounter *counter, gpointer data)
 		item->next = agent;
 	}
 
+	mono_mutex_unlock (&counters_mutex);
+}
+
+static mono_bool
+counters_init_foreach_callback (MonoCounter *counter, gpointer data)
+{
+	counters_add_agent (counter);
 	return TRUE;
 }
 
 static void
 counters_init (MonoProfiler *profiler)
 {
+	assert (!counters_initialized);
+
+	mono_mutex_init (&counters_mutex);
+
+	counters_initialized = TRUE;
+
+	mono_counters_on_register (&counters_add_agent);
+	mono_counters_foreach (counters_init_foreach_callback, NULL);
+}
+
+static void
+counters_emit (MonoProfiler *profiler)
+{
 	MonoCounterAgent *agent;
 	LogBuffer *logbuffer;
 	int size = 1 + 5, len = 0;
 
-	mono_counters_foreach (counters_init_add_counter, NULL);
+	if (!counters_initialized)
+		return;
+
+	mono_mutex_lock (&counters_mutex);
 
 	for (agent = counters; agent; agent = agent->next) {
+		if (agent->emitted)
+			continue;
+
 		size += strlen (mono_counter_get_name (agent->counter)) + 1 + 5 * 5;
 		len += 1;
+	}
+
+	if (!len) {
+		mono_mutex_unlock (&counters_mutex);
+		return;
 	}
 
 	logbuffer = ensure_logbuf (size);
@@ -2014,17 +2118,26 @@ counters_init (MonoProfiler *profiler)
 	emit_byte (logbuffer, TYPE_SAMPLE_COUNTERS_DESC | TYPE_SAMPLE);
 	emit_value (logbuffer, len);
 	for (agent = counters; agent; agent = agent->next) {
-		const char *name = mono_counter_get_name (agent->counter);
+		const char *name;
+
+		if (agent->emitted)
+			continue;
+
+		name = mono_counter_get_name (agent->counter);
 		emit_value (logbuffer, mono_counter_get_section (agent->counter));
 		emit_string (logbuffer, name, strlen (name) + 1);
 		emit_value (logbuffer, mono_counter_get_type (agent->counter));
 		emit_value (logbuffer, mono_counter_get_unit (agent->counter));
 		emit_value (logbuffer, mono_counter_get_variance (agent->counter));
 		emit_value (logbuffer, agent->index);
+
+		agent->emitted = 1;
 	}
 	EXIT_LOG (logbuffer);
 
-	counters_initialized = TRUE;
+	safe_dump (profiler, ensure_logbuf (0));
+
+	mono_mutex_unlock (&counters_mutex);
 }
 
 static void
@@ -2041,8 +2154,12 @@ counters_sample (MonoProfiler *profiler, uint64_t timestamp)
 	if (!counters_initialized)
 		return;
 
+	counters_emit (profiler);
+
 	buffer_size = 8;
 	buffer = calloc (1, buffer_size);
+
+	mono_mutex_lock (&counters_mutex);
 
 	size = 1 + 10 + 5;
 	for (agent = counters; agent; agent = agent->next)
@@ -2137,6 +2254,163 @@ counters_sample (MonoProfiler *profiler, uint64_t timestamp)
 	EXIT_LOG (logbuffer);
 
 	safe_dump (profiler, ensure_logbuf (0));
+
+	mono_mutex_unlock (&counters_mutex);
+}
+
+typedef struct _PerfCounterAgent PerfCounterAgent;
+struct _PerfCounterAgent {
+	PerfCounterAgent *next;
+	int index;
+	char *category_name;
+	char *name;
+	int type;
+	gint64 value;
+	guint8 emitted;
+	guint8 updated;
+	guint8 deleted;
+};
+
+static PerfCounterAgent *perfcounters = NULL;
+
+static void
+perfcounters_emit (MonoProfiler *profiler)
+{
+	PerfCounterAgent *pcagent;
+	LogBuffer *logbuffer;
+	int size = 1 + 5, len = 0;
+
+	for (pcagent = perfcounters; pcagent; pcagent = pcagent->next) {
+		if (pcagent->emitted)
+			continue;
+
+		size += strlen (pcagent->name) + 1 + 5 * 5;
+		len += 1;
+	}
+
+	if (!len)
+		return;
+
+	logbuffer = ensure_logbuf (size);
+
+	ENTER_LOG (logbuffer, "perfcounters");
+	emit_byte (logbuffer, TYPE_SAMPLE_COUNTERS_DESC | TYPE_SAMPLE);
+	emit_value (logbuffer, len);
+	for (pcagent = perfcounters; pcagent; pcagent = pcagent->next) {
+		if (pcagent->emitted)
+			continue;
+
+		emit_value (logbuffer, MONO_COUNTER_PERFCOUNTERS);
+		emit_string (logbuffer, pcagent->category_name, strlen (pcagent->category_name) + 1);
+		emit_string (logbuffer, pcagent->name, strlen (pcagent->name) + 1);
+		emit_value (logbuffer, MONO_COUNTER_LONG);
+		emit_value (logbuffer, MONO_COUNTER_RAW);
+		emit_value (logbuffer, MONO_COUNTER_VARIABLE);
+		emit_value (logbuffer, pcagent->index);
+
+		pcagent->emitted = 1;
+	}
+	EXIT_LOG (logbuffer);
+
+	safe_dump (profiler, ensure_logbuf (0));
+}
+
+static gboolean
+perfcounters_foreach (char *category_name, char *name, unsigned char type, gint64 value, gpointer user_data)
+{
+	PerfCounterAgent *pcagent;
+
+	for (pcagent = perfcounters; pcagent; pcagent = pcagent->next) {
+		if (strcmp (pcagent->category_name, category_name) != 0 || strcmp (pcagent->name, name) != 0)
+			continue;
+		if (pcagent->value == value)
+			return TRUE;
+
+		pcagent->value = value;
+		pcagent->updated = 1;
+		pcagent->deleted = 0;
+		return TRUE;
+	}
+
+	pcagent = g_new0 (PerfCounterAgent, 1);
+	pcagent->next = perfcounters;
+	pcagent->index = counters_index++;
+	pcagent->category_name = g_strdup (category_name);
+	pcagent->name = g_strdup (name);
+	pcagent->type = (int) type;
+	pcagent->value = value;
+	pcagent->emitted = 0;
+	pcagent->updated = 1;
+	pcagent->deleted = 0;
+
+	perfcounters = pcagent;
+
+	return TRUE;
+}
+
+static void
+perfcounters_sample (MonoProfiler *profiler, uint64_t timestamp)
+{
+	PerfCounterAgent *pcagent;
+	LogBuffer *logbuffer;
+	int size;
+
+	if (!counters_initialized)
+		return;
+
+	mono_mutex_lock (&counters_mutex);
+
+	/* mark all perfcounters as deleted, foreach will unmark them as necessary */
+	for (pcagent = perfcounters; pcagent; pcagent = pcagent->next)
+		pcagent->deleted = 1;
+
+	mono_perfcounter_foreach (perfcounters_foreach, perfcounters);
+
+	perfcounters_emit (profiler);
+
+
+	size = 1 + 10 + 5;
+	for (pcagent = perfcounters; pcagent; pcagent = pcagent->next) {
+		if (pcagent->deleted || !pcagent->updated)
+			continue;
+		size += 10 * 2 + sizeof (gint64);
+	}
+
+	logbuffer = ensure_logbuf (size);
+
+	ENTER_LOG (logbuffer, "perfcounters");
+	emit_byte (logbuffer, TYPE_SAMPLE_COUNTERS | TYPE_SAMPLE);
+	emit_uvalue (logbuffer, timestamp);
+	for (pcagent = perfcounters; pcagent; pcagent = pcagent->next) {
+		if (pcagent->deleted || !pcagent->updated)
+			continue;
+		emit_uvalue (logbuffer, pcagent->index);
+		emit_uvalue (logbuffer, MONO_COUNTER_LONG);
+		emit_svalue (logbuffer, pcagent->value);
+
+		pcagent->updated = 0;
+	}
+
+	emit_value (logbuffer, 0);
+	EXIT_LOG (logbuffer);
+
+	safe_dump (profiler, ensure_logbuf (0));
+
+	mono_mutex_unlock (&counters_mutex);
+}
+
+static void
+counters_and_perfcounters_sample (MonoProfiler *prof)
+{
+	static uint64_t start = -1;
+	uint64_t now;
+
+	if (start == -1)
+		start = current_time ();
+
+	now = current_time ();
+	counters_sample (prof, (now - start) / 1000/ 1000);
+	perfcounters_sample (prof, (now - start) / 1000/ 1000);
 }
 
 #endif /* DISABLE_HELPER_THREAD */
@@ -2146,6 +2420,8 @@ log_shutdown (MonoProfiler *prof)
 {
 	in_shutdown = 1;
 #ifndef DISABLE_HELPER_THREAD
+	counters_and_perfcounters_sample (prof);
+
 	if (prof->command_port) {
 		char c = 1;
 		void *res;
@@ -2236,10 +2512,10 @@ new_filename (const char* filename)
 	return res;
 }
 
-#ifndef DISABLE_HELPER_THREAD
-
 //this is exposed by the JIT, but it's not meant to be a supported API for now.
 extern void mono_threads_attach_tools_thread (void);
+
+#ifndef DISABLE_HELPER_THREAD
 
 static void*
 helper_thread (void* arg)
@@ -2249,11 +2525,9 @@ helper_thread (void* arg)
 	int len;
 	char buf [64];
 	MonoThread *thread = NULL;
-	uint64_t start, now;
 
 	mono_threads_attach_tools_thread ();
 	//fprintf (stderr, "Server listening\n");
-	start = current_time ();
 	command_socket = -1;
 	while (1) {
 		fd_set rfds;
@@ -2282,8 +2556,8 @@ helper_thread (void* arg)
 			}
 		}
 #endif
-		now = current_time ();
-		counters_sample (prof, (now - start) / 1000/ 1000);
+
+		counters_and_perfcounters_sample (prof);
 
 		tv.tv_sec = 1;
 		tv.tv_usec = 0;
@@ -2468,13 +2742,6 @@ create_profiler (const char *filename)
 		FILE *f;
 		if (force_delete)
 			unlink (nf);
-		if ((f = fopen (nf, "r"))) {
-			fclose (f);
-			fprintf (stderr, "The Mono profiler won't overwrite existing filename: %s.\n", nf);
-			fprintf (stderr, "Profiling disabled: use a different name or -FILENAME to force overwrite.\n");
-			free (prof);
-			return NULL;
-		}
 		prof->file = fopen (nf, "wb");
 	}
 	if (!prof->file) {
@@ -2692,6 +2959,7 @@ mono_profiler_startup (const char *desc)
 	int fast_time = 0;
 	int calls_enabled = 0;
 	int allocs_enabled = 0;
+	int only_counters = 0;
 	int events = MONO_PROFILE_GC|MONO_PROFILE_ALLOCATIONS|
 		MONO_PROFILE_GC_MOVES|MONO_PROFILE_CLASS_EVENTS|MONO_PROFILE_THREADS|
 		MONO_PROFILE_ENTER_LEAVE|MONO_PROFILE_JIT_COMPILATION|MONO_PROFILE_EXCEPTIONS|
@@ -2809,6 +3077,10 @@ mono_profiler_startup (const char *desc)
 			do_counters = 1;
 			continue;
 		}
+		if ((opt = match_option (p, "countersonly", NULL)) != p) {
+			only_counters = 1;
+			continue;
+		}
 		if (opt == p) {
 			usage (0);
 			exit (0);
@@ -2820,6 +3092,8 @@ mono_profiler_startup (const char *desc)
 	}
 	if (allocs_enabled)
 		events |= MONO_PROFILE_ALLOCATIONS;
+	if (only_counters)
+		events = 0;
 	utils_init (fast_time);
 
 	prof = create_profiler (filename);
@@ -2838,12 +3112,13 @@ mono_profiler_startup (const char *desc)
 	mono_profiler_install_thread_name (thread_name);
 	mono_profiler_install_enter_leave (method_enter, method_leave);
 	mono_profiler_install_jit_end (method_jitted);
+	mono_profiler_install_code_buffer_new (code_buffer_new);
 	mono_profiler_install_exception (throw_exc, method_exc_leave, clause_exc);
 	mono_profiler_install_monitor (monitor_event);
 	mono_profiler_install_runtime_initialized (runtime_initialized);
 
 	
-	if (do_mono_sample && sample_type == SAMPLE_CYCLES) {
+	if (do_mono_sample && sample_type == SAMPLE_CYCLES && !only_counters) {
 		events |= MONO_PROFILE_STATISTICAL;
 		mono_profiler_set_statistical_mode (sampling_mode, 1000000 / sample_freq);
 		mono_profiler_install_statistical (mono_sample_hit);

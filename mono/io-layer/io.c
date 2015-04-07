@@ -27,8 +27,6 @@
 #include <sys/mount.h>
 #endif
 #include <sys/types.h>
-#include <dirent.h>
-#include <fnmatch.h>
 #include <stdio.h>
 #include <utime.h>
 #ifdef __linux__
@@ -1035,8 +1033,9 @@ static void console_close (gpointer handle, gpointer data)
 	DEBUG("%s: closing console handle %p", __func__, handle);
 
 	g_free (console_handle->filename);
-	
-	close (fd);
+
+	if (fd > 2)
+		close (fd);
 }
 
 static WapiFileType console_getfiletype(void)

@@ -22,11 +22,12 @@
   
 */
 using System;
-using System.Runtime.Serialization;
 
 namespace IKVM.Reflection
 {
+#if !CORECLR
 	[Serializable]
+#endif
 	public sealed class BadImageFormatException : Exception
 	{
 		public BadImageFormatException()
@@ -43,9 +44,11 @@ namespace IKVM.Reflection
 		{
 		}
 
-		private BadImageFormatException(SerializationInfo info, StreamingContext context)
+#if !CORECLR
+		private BadImageFormatException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
 			: base(info, context)
 		{
 		}
+#endif
 	}
 }

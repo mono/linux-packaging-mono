@@ -1272,7 +1272,7 @@ namespace IKVM.Internal
 							while (lookup != null)
 							{
 								MethodWrapper mw = GetMethodWrapperDuringCtor(lookup, methods, ifmethod.Name, ifmethod.Signature);
-								if (mw == null)
+								if (mw == null || (mw.IsMirandaMethod && mw.DeclaringType != wrapper))
 								{
 									mw = MirandaMethodWrapper.Create(wrapper, ifmethod);
 									methods.Add(mw);
@@ -1442,14 +1442,6 @@ namespace IKVM.Internal
 
 			private static void CheckLoaderConstraints(MethodWrapper mw, MethodWrapper baseMethod)
 			{
-#if !STATIC_COMPILER
-				if (JVM.FinishingForDebugSave)
-				{
-					// when we're finishing types to save a debug image (in dynamic mode) we don't care about loader constraints anymore
-					// (and we can't throw a LinkageError, because that would prevent the debug image from being saved)
-					return;
-				}
-#endif
 				if (mw.ReturnType != baseMethod.ReturnType)
 				{
 					if (mw.ReturnType.IsUnloadable || baseMethod.ReturnType.IsUnloadable)
@@ -1464,8 +1456,14 @@ namespace IKVM.Internal
 					{
 #if STATIC_COMPILER
 						StaticCompiler.LinkageError("Method \"{2}.{3}{4}\" has a return type \"{0}\" and tries to override method \"{5}.{3}{4}\" that has a return type \"{1}\"", mw.ReturnType, baseMethod.ReturnType, mw.DeclaringType.Name, mw.Name, mw.Signature, baseMethod.DeclaringType.Name);
+#else
+						// when we're finishing types to save a debug image (in dynamic mode) we don't care about loader constraints anymore
+						// (and we can't throw a LinkageError, because that would prevent the debug image from being saved)
+						if (!JVM.FinishingForDebugSave)
+						{
+							throw new LinkageError("Loader constraints violated");
+						}
 #endif
-						throw new LinkageError("Loader constraints violated");
 					}
 				}
 				TypeWrapper[] here = mw.GetParameters();
@@ -1486,8 +1484,14 @@ namespace IKVM.Internal
 						{
 #if STATIC_COMPILER
 							StaticCompiler.LinkageError("Method \"{2}.{3}{4}\" has an argument type \"{0}\" and tries to override method \"{5}.{3}{4}\" that has an argument type \"{1}\"", here[i], there[i], mw.DeclaringType.Name, mw.Name, mw.Signature, baseMethod.DeclaringType.Name);
+#else
+							// when we're finishing types to save a debug image (in dynamic mode) we don't care about loader constraints anymore
+							// (and we can't throw a LinkageError, because that would prevent the debug image from being saved)
+							if (!JVM.FinishingForDebugSave)
+							{
+								throw new LinkageError("Loader constraints violated");
+							}
 #endif
-							throw new LinkageError("Loader constraints violated");
 						}
 					}
 				}
@@ -2469,6 +2473,8 @@ namespace IKVM.Internal
 				// NOTE this implements the (completely broken) OpenJDK 7 b147 HotSpot behavior,
 				// not the algorithm specified in section 5.4.5 of the JavaSE7 JVM spec
 				// see http://weblog.ikvm.net/PermaLink.aspx?guid=bde44d8b-7ba9-4e0e-b3a6-b735627118ff and subsequent posts
+				// UPDATE as of JDK 7u65 and JDK 8u11, the algorithm changed again to handle package private methods differently
+				// this code has not been updated to reflect these changes (we're still at JDK 8 GA level)
 				explicitOverride = false;
 				MethodWrapper topPublicOrProtectedMethod = null;
 				TypeWrapper tw = wrapper.BaseTypeWrapper;
@@ -2908,7 +2914,13 @@ namespace IKVM.Internal
 							// We're a Miranda method or we're an inherited default interface method
 							Debug.Assert(baseMethods[index].Length == 1 && baseMethods[index][0].DeclaringType.IsInterface);
 							MirandaMethodWrapper mmw = (MirandaMethodWrapper)methods[index];
-							MethodAttributes attr = MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.CheckAccessOnOverride;
+							MethodAttributes attr = MethodAttributes.HideBySig | MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.CheckAccessOnOverride;
+							MethodWrapper baseMiranda;
+							if (wrapper.BaseTypeWrapper == null || (baseMiranda = wrapper.BaseTypeWrapper.GetMethodWrapper(mw.Name, mw.Signature, true)) == null || !baseMiranda.IsMirandaMethod)
+							{
+								// we're not overriding a miranda method in a base class, so can we set the newslot flag
+								attr |= MethodAttributes.NewSlot;
+							}
 							if (wrapper.IsInterface || (wrapper.IsAbstract && mmw.BaseMethod.IsAbstract && mmw.Error == null))
 							{
 								attr |= MethodAttributes.Abstract;
@@ -2917,9 +2929,11 @@ namespace IKVM.Internal
 							AttributeHelper.HideFromReflection(mb);
 							if ((!wrapper.IsAbstract && mmw.BaseMethod.IsAbstract) || (!wrapper.IsInterface && mmw.Error != null))
 							{
+								string message = mmw.Error ?? (wrapper.Name + "." + methods[index].Name + methods[index].Signature);
 								CodeEmitter ilgen = CodeEmitter.Create(mb);
-								ilgen.EmitThrow("java.lang.AbstractMethodError", mmw.Error ?? (wrapper.Name + "." + methods[index].Name + methods[index].Signature));
+								ilgen.EmitThrow(mmw.IsConflictError ? "java.lang.IncompatibleClassChangeError" : "java.lang.AbstractMethodError", message);
 								ilgen.DoEmit();
+								wrapper.EmitLevel4Warning(mmw.IsConflictError ? HardError.IncompatibleClassChangeError : HardError.AbstractMethodError, message);
 							}
 #if STATIC_COMPILER
 							if (wrapper.IsInterface && !mmw.IsAbstract)
@@ -4217,6 +4231,7 @@ namespace IKVM.Internal
 									CodeEmitter ilgen = CodeEmitter.Create(mb);
 									ilgen.EmitThrow("java.lang.AbstractMethodError", mw.DeclaringType.Name + "." + mw.Name + mw.Signature);
 									ilgen.DoEmit();
+									wrapper.EmitLevel4Warning(HardError.AbstractMethodError, mw.DeclaringType.Name + "." + mw.Name + mw.Signature);
 								}
 							}
 						}
@@ -4270,6 +4285,7 @@ namespace IKVM.Internal
 								// NOTE in the JVM it is apparently legal for a non-abstract class to have abstract methods, but
 								// the CLR doens't allow this, so we have to emit a method that throws an AbstractMethodError
 								stub = true;
+								wrapper.EmitLevel4Warning(HardError.AbstractMethodError, classFile.Name + "." + m.Name + m.Signature);
 							}
 							else if (classFile.IsPublic && !classFile.IsFinal && !(m.IsPublic || m.IsProtected))
 							{
@@ -4911,11 +4927,11 @@ namespace IKVM.Internal
 				ilGenerator.EmitLdarg(1);
 				if (fieldType == PrimitiveTypeWrapper.LONG)
 				{
-					ilGenerator.Emit(OpCodes.Call, JVM.Import(typeof(System.Threading.Interlocked)).GetMethod("CompareExchange", new Type[] { Types.Int64.MakeByRefType(), Types.Int64, Types.Int64 }));
+					ilGenerator.Emit(OpCodes.Call, InterlockedMethods.CompareExchangeInt64);
 				}
 				else if (fieldType == PrimitiveTypeWrapper.INT)
 				{
-					ilGenerator.Emit(OpCodes.Call, JVM.Import(typeof(System.Threading.Interlocked)).GetMethod("CompareExchange", new Type[] { Types.Int32.MakeByRefType(), Types.Int32, Types.Int32 }));
+					ilGenerator.Emit(OpCodes.Call, InterlockedMethods.CompareExchangeInt32);
 				}
 				else
 				{
@@ -5614,6 +5630,7 @@ namespace IKVM.Internal
 						ilgen.DoEmit();
 						typeBuilder.DefineMethodOverride(mb, (MethodInfo)ifmethod.GetMethod());
 						wrapper.SetHasIncompleteInterfaceImplementation();
+						wrapper.EmitLevel4Warning(HardError.AbstractMethodError, wrapper.Name + "." + ifmethod.Name + ifmethod.Signature);
 					}
 				}
 			}
@@ -7136,6 +7153,27 @@ namespace IKVM.Internal
 		internal override byte[] GetFieldRawTypeAnnotations(FieldWrapper fw)
 		{
 			return impl.GetFieldRawTypeAnnotations(Array.IndexOf(GetFields(), fw));
+		}
+
+		[Conditional("STATIC_COMPILER")]
+		internal void EmitLevel4Warning(HardError error, string message)
+		{
+#if STATIC_COMPILER
+			if (GetClassLoader().WarningLevelHigh)
+			{
+				switch (error)
+				{
+					case HardError.AbstractMethodError:
+						GetClassLoader().IssueMessage(Message.EmittedAbstractMethodError, this.Name, message);
+						break;
+					case HardError.IncompatibleClassChangeError:
+						GetClassLoader().IssueMessage(Message.EmittedIncompatibleClassChangeError, this.Name, message);
+						break;
+					default:
+						throw new InvalidOperationException();
+				}
+			}
+#endif
 		}
 	}
 

@@ -590,15 +590,18 @@ get_call_info_internal (MonoGenericSharingContext *gsctx, CallInfo *cinfo, MonoM
 		add_general (&gr, param_regs, &stack_size, &cinfo->sig_cookie);
 	}
 
+	if (cinfo->vtype_retaddr) {
+		/* if the function returns a struct on stack, the called method already does a ret $0x4 */
+		cinfo->callee_stack_pop = 4;
+	} else if (CALLCONV_IS_STDCALL (sig) && sig->pinvoke) {
+		/* Have to compensate for the stack space popped by the native callee */
+		cinfo->callee_stack_pop = stack_size;
+	}
+
 	if (mono_do_x86_stack_align && (stack_size % MONO_ARCH_FRAME_ALIGNMENT) != 0) {
 		cinfo->need_stack_align = TRUE;
 		cinfo->stack_align_amount = MONO_ARCH_FRAME_ALIGNMENT - (stack_size % MONO_ARCH_FRAME_ALIGNMENT);
 		stack_size += cinfo->stack_align_amount;
-	}
-
-	if (cinfo->vtype_retaddr) {
-		/* if the function returns a struct on stack, the called method already does a ret $0x4 */
-		cinfo->callee_stack_pop = 4;
 	}
 
 	cinfo->stack_usage = stack_size;
@@ -868,7 +871,7 @@ mono_arch_is_int_overflow (void *sigctx, void *info)
 	MonoContext ctx;
 	guint8* ip;
 
-	mono_arch_sigctx_to_monoctx (sigctx, &ctx);
+	mono_sigctx_to_monoctx (sigctx, &ctx);
 
 	ip = (guint8*)ctx.eip;
 
@@ -1920,7 +1923,7 @@ mono_arch_peephole_pass_1 (MonoCompile *cfg, MonoBasicBlock *bb)
 	MonoInst *ins, *n;
 
 	MONO_BB_FOR_EACH_INS_SAFE (bb, n, ins) {
-		MonoInst *last_ins = ins->prev;
+		MonoInst *last_ins = mono_inst_prev (ins, FILTER_IL_SEQ_POINT);
 
 		switch (ins->opcode) {
 		case OP_IADD_IMM:
@@ -2011,7 +2014,7 @@ mono_arch_peephole_pass_2 (MonoCompile *cfg, MonoBasicBlock *bb)
 				 * Convert succeeding STORE_MEMBASE_IMM 0 ins to STORE_MEMBASE_REG 
 				 * since it takes 3 bytes instead of 7.
 				 */
-				for (ins2 = ins->next; ins2; ins2 = ins2->next) {
+				for (ins2 = mono_inst_next (ins, FILTER_IL_SEQ_POINT); ins2; ins2 = ins2->next) {
 					if ((ins2->opcode == OP_STORE_MEMBASE_IMM) && (ins2->inst_imm == 0)) {
 						ins2->opcode = OP_STORE_MEMBASE_REG;
 						ins2->sreg1 = ins->dreg;
@@ -2289,7 +2292,7 @@ static int tls_gs_offset;
 gboolean
 mono_x86_have_tls_get (void)
 {
-#ifdef __APPLE__
+#ifdef TARGET_MACH
 	static gboolean have_tls_get = FALSE;
 	static gboolean inited = FALSE;
 	guint32 *ins;
@@ -2761,6 +2764,9 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
  		case OP_NOT_REACHED:
  		case OP_NOT_NULL:
  			break;
+		case OP_IL_SEQ_POINT:
+			mono_add_seq_point (cfg, bb, ins, code - cfg->native_code);
+			break;
 		case OP_SEQ_POINT: {
 			int i;
 
@@ -3171,7 +3177,8 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			x86_push_membase (code, ins->inst_basereg, 0xf0f0f0f0);
 			break;
 		case OP_MOVE:
-			x86_mov_reg_reg (code, ins->dreg, ins->sreg1, 4);
+			if (ins->dreg != ins->sreg1)
+				x86_mov_reg_reg (code, ins->dreg, ins->sreg1, 4);
 			break;
 		case OP_TAILCALL: {
 			MonoCallInst *call = (MonoCallInst*)ins;
@@ -3697,6 +3704,14 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_FMOVE:
 			/* Not needed on the fp stack */
 			break;
+		case OP_MOVE_F_TO_I4:
+			x86_fst_membase (code, ins->backend.spill_var->inst_basereg, ins->backend.spill_var->inst_offset, FALSE, TRUE);
+			x86_mov_reg_membase (code, ins->dreg, ins->backend.spill_var->inst_basereg, ins->backend.spill_var->inst_offset, 4);
+			break;
+		case OP_MOVE_I4_TO_F:
+			x86_mov_membase_reg (code, ins->backend.spill_var->inst_basereg, ins->backend.spill_var->inst_offset, ins->sreg1, 4);
+			x86_fld_membase (code, ins->backend.spill_var->inst_basereg, ins->backend.spill_var->inst_offset, FALSE);
+			break;
 		case OP_FADD:
 			x86_fp_op_reg (code, X86_FADD, 1, TRUE);
 			break;
@@ -4210,14 +4225,9 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			break;
 		}
 		case OP_MEMORY_BARRIER: {
-			/* x86 only needs barrier for StoreLoad and FullBarrier */
-			switch (ins->backend.memory_barrier_kind) {
-			case StoreLoadBarrier:
-			case FullBarrier:
-				/* http://blogs.sun.com/dave/resource/NHM-Pipeline-Blog-V2.txt */
+			if (ins->backend.memory_barrier_kind == MONO_MEMORY_BARRIER_SEQ) {
 				x86_prefix (code, X86_LOCK_PREFIX);
 				x86_alu_membase_imm (code, X86_ADD, X86_ESP, 0, 0);
-				break;
 			}
 			break;
 		}
@@ -4315,6 +4325,69 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 
 			x86_prefix (code, X86_LOCK_PREFIX);
 			x86_cmpxchg_membase_reg (code, ins->sreg1, ins->inst_offset, ins->sreg2);
+			break;
+		}
+		case OP_ATOMIC_LOAD_I1: {
+			x86_widen_membase (code, ins->dreg, ins->inst_basereg, ins->inst_offset, TRUE, FALSE);
+			break;
+		}
+		case OP_ATOMIC_LOAD_U1: {
+			x86_widen_membase (code, ins->dreg, ins->inst_basereg, ins->inst_offset, FALSE, FALSE);
+			break;
+		}
+		case OP_ATOMIC_LOAD_I2: {
+			x86_widen_membase (code, ins->dreg, ins->inst_basereg, ins->inst_offset, TRUE, TRUE);
+			break;
+		}
+		case OP_ATOMIC_LOAD_U2: {
+			x86_widen_membase (code, ins->dreg, ins->inst_basereg, ins->inst_offset, FALSE, TRUE);
+			break;
+		}
+		case OP_ATOMIC_LOAD_I4:
+		case OP_ATOMIC_LOAD_U4: {
+			x86_mov_reg_membase (code, ins->dreg, ins->inst_basereg, ins->inst_offset, 4);
+			break;
+		}
+		case OP_ATOMIC_LOAD_R4:
+		case OP_ATOMIC_LOAD_R8: {
+			x86_fld_membase (code, ins->inst_basereg, ins->inst_offset, ins->opcode == OP_ATOMIC_LOAD_R8);
+			break;
+		}
+		case OP_ATOMIC_STORE_I1:
+		case OP_ATOMIC_STORE_U1:
+		case OP_ATOMIC_STORE_I2:
+		case OP_ATOMIC_STORE_U2:
+		case OP_ATOMIC_STORE_I4:
+		case OP_ATOMIC_STORE_U4: {
+			int size;
+
+			switch (ins->opcode) {
+			case OP_ATOMIC_STORE_I1:
+			case OP_ATOMIC_STORE_U1:
+				size = 1;
+				break;
+			case OP_ATOMIC_STORE_I2:
+			case OP_ATOMIC_STORE_U2:
+				size = 2;
+				break;
+			case OP_ATOMIC_STORE_I4:
+			case OP_ATOMIC_STORE_U4:
+				size = 4;
+				break;
+			}
+
+			x86_mov_membase_reg (code, ins->inst_destbasereg, ins->inst_offset, ins->sreg1, size);
+
+			if (ins->backend.memory_barrier_kind == MONO_MEMORY_BARRIER_SEQ)
+				x86_mfence (code);
+			break;
+		}
+		case OP_ATOMIC_STORE_R4:
+		case OP_ATOMIC_STORE_R8: {
+			x86_fst_membase (code, ins->inst_destbasereg, ins->inst_offset, ins->opcode == OP_ATOMIC_STORE_R8, TRUE);
+
+			if (ins->backend.memory_barrier_kind == MONO_MEMORY_BARRIER_SEQ)
+				x86_mfence (code);
 			break;
 		}
 		case OP_CARD_TABLE_WBARRIER: {
@@ -4860,10 +4933,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_XZERO:
 			x86_sse_alu_pd_reg_reg (code, X86_SSE_PXOR, ins->dreg, ins->dreg);
 			break;
-		case OP_ICONV_TO_R8_RAW:
-			x86_mov_membase_reg (code, ins->backend.spill_var->inst_basereg, ins->backend.spill_var->inst_offset, ins->sreg1, 4);
-			x86_fld_membase (code, ins->backend.spill_var->inst_basereg, ins->backend.spill_var->inst_offset, FALSE);
-			break;
 
 		case OP_FCONV_TO_R8_X:
 			x86_fst_membase (code, ins->backend.spill_var->inst_basereg, ins->backend.spill_var->inst_offset, TRUE, TRUE);
@@ -5053,6 +5122,7 @@ mono_arch_patch_code (MonoMethod *method, MonoDomain *domain, guint8 *code, Mono
 		case MONO_PATCH_INFO_RGCTX_FETCH:
 		case MONO_PATCH_INFO_GENERIC_CLASS_INIT:
 		case MONO_PATCH_INFO_MONITOR_ENTER:
+		case MONO_PATCH_INFO_MONITOR_ENTER_V4:
 		case MONO_PATCH_INFO_MONITOR_EXIT:
 		case MONO_PATCH_INFO_JIT_ICALL_ADDR:
 #if defined(__native_client_codegen__) && defined(__native_client__)
@@ -5828,6 +5898,7 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckI
 	}
 
 	nacl_domain_code_validate (domain, &start, size, &code);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_IMT_TRAMPOLINE, NULL);
 
 	return start;
 }
@@ -5878,7 +5949,7 @@ mono_arch_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMetho
 			opcode = OP_ROUND;
 		}
 		
-		if (opcode) {
+		if (opcode && fsig->param_count == 1) {
 			MONO_INST_NEW (cfg, ins, opcode);
 			ins->type = STACK_R8;
 			ins->dreg = mono_alloc_freg (cfg);
@@ -5887,7 +5958,7 @@ mono_arch_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMetho
 		}
 
 		if (cfg->opt & MONO_OPT_CMOV) {
-			int opcode = 0;
+			opcode = 0;
 
 			if (strcmp (cmethod->name, "Min") == 0) {
 				if (fsig->params [0]->type == MONO_TYPE_I4)
@@ -5897,7 +5968,7 @@ mono_arch_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMetho
 					opcode = OP_IMAX;
 			}		
 
-			if (opcode) {
+			if (opcode && fsig->param_count == 2) {
 				MONO_INST_NEW (cfg, ins, opcode);
 				ins->type = STACK_I4;
 				ins->dreg = mono_alloc_ireg (cfg);
@@ -5909,7 +5980,7 @@ mono_arch_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMetho
 
 #if 0
 		/* OP_FREM is not IEEE compatible */
-		else if (strcmp (cmethod->name, "IEEERemainder") == 0) {
+		else if (strcmp (cmethod->name, "IEEERemainder") == 0 && fsig->param_count == 2) {
 			MONO_INST_NEW (cfg, ins, OP_FREM);
 			ins->inst_i0 = args [0];
 			ins->inst_i1 = args [1];
@@ -6019,7 +6090,6 @@ gpointer
 mono_arch_get_this_arg_from_call (mgreg_t *regs, guint8 *code)
 {
 	guint32 esp = regs [X86_ESP];
-	CallInfo *cinfo = NULL;
 	gpointer res;
 	int offset;
 
@@ -6031,8 +6101,6 @@ mono_arch_get_this_arg_from_call (mgreg_t *regs, guint8 *code)
 	 * <this=delegate>
 	 */
 	res = ((MonoObject**)esp) [0];
-	if (cinfo)
-		g_free (cinfo);
 	return res;
 }
 
@@ -6101,8 +6169,7 @@ get_delegate_invoke_impl (gboolean has_target, guint32 param_count, guint32 *cod
 		g_assert ((code - start) < code_reserve);
 	}
 
-	nacl_global_codeman_validate(&start, code_reserve, &code);
-	mono_debug_add_delegate_trampoline (start, code - start);
+	nacl_global_codeman_validate (&start, code_reserve, &code);
 
 	if (code_len)
 		*code_len = code - start;
@@ -6117,6 +6184,7 @@ get_delegate_invoke_impl (gboolean has_target, guint32 param_count, guint32 *cod
 		if (!has_target)
 			g_free (buff);
 	}
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_DELEGATE_INVOKE, NULL);
 
 	return start;
 }
@@ -6228,6 +6296,7 @@ mono_arch_get_delegate_virtual_invoke_impl (MonoMethodSignature *sig, MonoMethod
 	/* Load the vtable */
 	x86_mov_reg_membase (code, X86_EAX, X86_ECX, MONO_STRUCT_OFFSET (MonoObject, vtable), 4);
 	x86_jump_membase (code, X86_EAX, offset);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_DELEGATE_INVOKE, NULL);
 
 	return start;
 }
@@ -6710,6 +6779,22 @@ mono_arch_opcode_supported (int opcode)
 	case OP_ATOMIC_ADD_I4:
 	case OP_ATOMIC_EXCHANGE_I4:
 	case OP_ATOMIC_CAS_I4:
+	case OP_ATOMIC_LOAD_I1:
+	case OP_ATOMIC_LOAD_I2:
+	case OP_ATOMIC_LOAD_I4:
+	case OP_ATOMIC_LOAD_U1:
+	case OP_ATOMIC_LOAD_U2:
+	case OP_ATOMIC_LOAD_U4:
+	case OP_ATOMIC_LOAD_R4:
+	case OP_ATOMIC_LOAD_R8:
+	case OP_ATOMIC_STORE_I1:
+	case OP_ATOMIC_STORE_I2:
+	case OP_ATOMIC_STORE_I4:
+	case OP_ATOMIC_STORE_U1:
+	case OP_ATOMIC_STORE_U2:
+	case OP_ATOMIC_STORE_U4:
+	case OP_ATOMIC_STORE_R4:
+	case OP_ATOMIC_STORE_R8:
 		return TRUE;
 	default:
 		return FALSE;
