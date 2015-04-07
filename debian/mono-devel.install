@@ -96,7 +96,7 @@ debian/tmp/usr/lib/pkgconfig/mono-lineeditor.pc
 debian/tmp/usr/lib/pkgconfig/mono-options.pc
 debian/tmp/usr/share/locale/*/LC_MESSAGES/mcs.mo
 debian/mono-api-check		/usr/bin/
-debian/mono-api-diff.exe	/usr/lib/mono/4.0/
+debian/mono-api-diff.exe	/usr/lib/mono/4.5/
 debian/tmp/etc/mono/mconfig
 debian/tmp/usr/bin/al2
 debian/tmp/usr/bin/httpcfg

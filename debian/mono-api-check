@@ -2,7 +2,7 @@
 
 NAME=$(basename $0)
 MONO_API_INFO="mono-api-info"
-MONO_API_DIFF="mono /usr/lib/mono/4.0/mono-api-diff.exe"
+MONO_API_DIFF="mono /usr/lib/mono/4.5/mono-api-diff.exe"
 
 KEEP=0
 if [ "$1" = "-k" ]; then
