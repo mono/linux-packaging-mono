@@ -1,4 +1,4 @@
-DEB_MONO_ARCHS = amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 s390x
+DEB_MONO_ARCHS = amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
 # grep defined mono/metadata/sgen-archdep.h
 #if defined(MONO_CROSS_COMPILE)
 #elif defined(TARGET_X86)
