@@ -2360,23 +2360,6 @@ Description: Mono C# 2.0 / 3.0 / 4.0 / 5.0  compiler for CLI 2.0 / 4.0 / 4.5
  runtime, which can produce and execute CIL (Common Intermediate Language)
  bytecode (aka assemblies), and a class library.
 
-Package: mono-gmcs
-Architecture: all
-Depends: ${misc:Depends},
-         mono-mcs (= ${source:Version})
-Description: Mono C# 2.0 and C# 3.0 compiler for CLI 2.0 (transitional package)
- This is a transitional dummy package to aid migration to mono-mcs.
- .
- This is the Mono C# (C-Sharp) 2.0 and C# 3.0 compiler, a platform-independent
- compiler which produces CIL (Common Intermediate Language) binary executables.
- This compiler targets the CLI 2.0 runtime version.
- .
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
-
 Package: mono-dmcs
 Architecture: all
 Depends: ${misc:Depends},
