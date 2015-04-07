@@ -172,6 +172,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_counters_dump@VER_1 3.2.1+dfsg
  mono_counters_enable@VER_1 3.2.1+dfsg
  mono_counters_foreach@VER_1 3.6.0
+ mono_counters_init@VER_1 4.0.0~alpha1
+ mono_counters_on_register@VER_1 4.0.0~alpha1
  mono_counters_register@VER_1 3.2.1+dfsg
  mono_counters_register_with_size@VER_1 3.6.0
  mono_counters_sample@VER_1 3.6.0
@@ -200,9 +202,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_debug_free_method_jit_info@VER_1 3.2.1+dfsg
  mono_debug_free_source_location@VER_1 3.2.1+dfsg
  mono_debug_il_offset_from_address@VER_1 3.2.1+dfsg
+ mono_debug_image_has_debug_info@VER_1 4.0.0~alpha1
  mono_debug_init@VER_1 3.2.1+dfsg
- mono_debug_list_add@VER_1 3.2.1+dfsg
- mono_debug_list_remove@VER_1 3.2.1+dfsg
+#MISSING: 4.0.0~alpha1# mono_debug_list_add@VER_1 3.2.1+dfsg
+#MISSING: 4.0.0~alpha1# mono_debug_list_remove@VER_1 3.2.1+dfsg
  mono_debug_lookup_locals@VER_1 3.2.1+dfsg
  mono_debug_lookup_method@VER_1 3.2.1+dfsg
  mono_debug_lookup_method_addresses@VER_1 3.2.1+dfsg
@@ -221,10 +224,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_debug_symfile_lookup_location@VER_1 3.2.1+dfsg
  mono_debug_symfile_lookup_method@VER_1 3.2.1+dfsg
  mono_debugger_agent_register_transport@VER_1 3.2.1+dfsg
- mono_debugger_class_init_func@VER_1 3.2.1+dfsg
+#MISSING: 4.0.0~alpha1# mono_debugger_class_init_func@VER_1 3.2.1+dfsg
  mono_debugger_insert_breakpoint@VER_1 3.2.1+dfsg
  mono_debugger_method_has_breakpoint@VER_1 3.2.1+dfsg
  mono_debugger_run_finally@VER_1 3.2.1+dfsg
+ mono_decimal_addsub@VER_1 4.0.0~alpha1
+ mono_decimal_divide@VER_1 4.0.0~alpha1
+ mono_decimal_from_number@VER_1 4.0.0~alpha1
  mono_declsec_flags_from_assembly@VER_1 3.2.1+dfsg
  mono_declsec_flags_from_class@VER_1 3.2.1+dfsg
  mono_declsec_flags_from_method@VER_1 3.2.1+dfsg
@@ -656,6 +662,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_module_file_get_object@VER_1 3.2.1+dfsg
  mono_module_get_object@VER_1 3.2.1+dfsg
  mono_monitor_enter@VER_1 3.2.1+dfsg
+ mono_monitor_enter_v4@VER_1 4.0.0~alpha1
  mono_monitor_exit@VER_1 3.2.1+dfsg
  mono_monitor_try_enter@VER_1 3.2.1+dfsg
  mono_mprotect@VER_1 3.2.1+dfsg
@@ -692,6 +699,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_path_canonicalize@VER_1 3.2.1+dfsg
  mono_path_resolve_symlinks@VER_1 3.2.1+dfsg
  mono_pe_file_open@VER_1 3.2.1+dfsg
+ mono_perfcounter_foreach@VER_1 4.0.0~alpha1
  mono_perfcounters_init@VER_1 3.2.1+dfsg
  mono_pmip@VER_1 3.2.1+dfsg
  mono_poll@VER_1 3.2.1+dfsg
@@ -784,6 +792,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_runtime_run_main@VER_1 3.2.1+dfsg
  mono_runtime_set_main_args@VER_1 3.6.0
  mono_runtime_set_shutting_down@VER_1 3.2.1+dfsg
+ mono_save_seq_point_info@VER_1 4.0.0~alpha1
  mono_security_core_clr_get_options@VER_1 3.2.1+dfsg
  mono_security_core_clr_require_elevated_permissions@VER_1 3.2.1+dfsg
  mono_security_core_clr_set_options@VER_1 3.2.1+dfsg
