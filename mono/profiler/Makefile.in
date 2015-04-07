@@ -80,8 +80,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@bin_PROGRAMS = mprof-report$(EXEEXT)
-@PLATFORM_ANDROID_TRUE@am__append_1 = $(GLIB_LIBS)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@bin_PROGRAMS = mprof-report$(EXEEXT)
 subdir = mono/profiler
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp ChangeLog
@@ -150,28 +149,24 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@am_libmono_profiler_aot_la_rpath =  \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@	-rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_cov_la_DEPENDENCIES = $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libmono_profiler_cov_la_OBJECTS = mono-cov.lo
 libmono_profiler_cov_la_OBJECTS =  \
 	$(am_libmono_profiler_cov_la_OBJECTS)
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@am_libmono_profiler_cov_la_rpath =  \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@	-rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_cov_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_iomap_la_DEPENDENCIES = $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libmono_profiler_iomap_la_OBJECTS = mono-profiler-iomap.lo
 libmono_profiler_iomap_la_OBJECTS =  \
 	$(am_libmono_profiler_iomap_la_OBJECTS)
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@am_libmono_profiler_iomap_la_rpath =  \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@	-rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@	$(libdir)
-@PLATFORM_ANDROID_TRUE@am__DEPENDENCIES_4 = $(am__DEPENDENCIES_1)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_iomap_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_4)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libmono_profiler_log_la_OBJECTS = proflog.lo
 libmono_profiler_log_la_OBJECTS =  \
 	$(am_libmono_profiler_log_la_OBJECTS)
@@ -179,9 +174,21 @@ libmono_profiler_log_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_log_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@am_libmono_profiler_log_la_rpath =  \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@	-rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_DEPENDENCIES =  \
+@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_3) \
+@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am__libmono_profiler_vtune_la_SOURCES_DIST = mono-profiler-vtune.c
+@HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_la_OBJECTS = libmono_profiler_vtune_la-mono-profiler-vtune.lo
+libmono_profiler_vtune_la_OBJECTS =  \
+	$(am_libmono_profiler_vtune_la_OBJECTS)
+libmono_profiler_vtune_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libmono_profiler_vtune_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
 PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = decode.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
@@ -219,11 +226,14 @@ am__v_CCLD_1 =
 SOURCES = $(libmono_profiler_aot_la_SOURCES) \
 	$(libmono_profiler_cov_la_SOURCES) \
 	$(libmono_profiler_iomap_la_SOURCES) \
-	$(libmono_profiler_log_la_SOURCES) $(mprof_report_SOURCES)
+	$(libmono_profiler_log_la_SOURCES) \
+	$(libmono_profiler_vtune_la_SOURCES) $(mprof_report_SOURCES)
 DIST_SOURCES = $(libmono_profiler_aot_la_SOURCES) \
 	$(libmono_profiler_cov_la_SOURCES) \
 	$(libmono_profiler_iomap_la_SOURCES) \
-	$(libmono_profiler_log_la_SOURCES) $(mprof_report_SOURCES)
+	$(libmono_profiler_log_la_SOURCES) \
+	$(am__libmono_profiler_vtune_la_SOURCES_DIST) \
+	$(mprof_report_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -280,6 +290,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_PERF_EVENTS = @DISABLE_PERF_EVENTS@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
@@ -363,12 +374,15 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
+SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTUNE_CFLAGS = @VTUNE_CFLAGS@
+VTUNE_LIBS = @VTUNE_LIBS@
 WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
@@ -460,9 +474,10 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir) 	\
 	$(GLIB_CFLAGS)
 
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@lib_LTLIBRARIES = libmono-profiler-cov.la libmono-profiler-aot.la libmono-profiler-iomap.la libmono-profiler-log.la
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@PLATFORM_ANDROID_TRUE@libmono_profiler_log_la_LDFLAGS = -avoid-version
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@PLATFORM_DARWIN_TRUE@libmono_profiler_log_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_lib = libmono-profiler-vtune.la
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = libmono-profiler-cov.la libmono-profiler-aot.la libmono-profiler-iomap.la libmono-profiler-log.la $(vtune_lib)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@libmono_profiler_log_la_LDFLAGS = -avoid-version
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@libmono_profiler_log_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@@SUPPORT_BOEHM_TRUE@LIBMONO = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@LIBMONO = $(top_builddir)/mono/mini/$(LIBMONO_LA)
 
@@ -485,14 +500,17 @@ libmono_profiler_aot_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_iomap_la_SOURCES = mono-profiler-iomap.c
 libmono_profiler_iomap_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_log_la_SOURCES = proflog.c
-libmono_profiler_log_la_LIBADD = $(LIBMONO) $(Z_LIBS) $(am__append_1)
+libmono_profiler_log_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(Z_LIBS)
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_SOURCES = mono-profiler-vtune.c
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 mprof_report_SOURCES = decode.c
 mprof_report_LDADD = $(Z_LIBS)
 PLOG_TESTS_SRC = test-alloc.cs test-busy.cs test-monitor.cs test-excleave.cs \
 	test-heapshot.cs test-traces.cs
 
 PLOG_TESTS = $(PLOG_TESTS_SRC:.cs=.exe)
-with_mono_path = MONO_PATH=$(mcs_topdir)/class/lib/net_4_0
+with_mono_path = MONO_PATH=$(mcs_topdir)/class/lib/net_4_5
 RUNTIME = $(with_mono_path) $(top_builddir)/runtime/mono-wrapper
 MCS = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug
 EXTRA_DIST = utils.c utils.h proflog.h log-profiler.txt perf_event.h \
@@ -579,6 +597,9 @@ libmono-profiler-iomap.la: $(libmono_profiler_iomap_la_OBJECTS) $(libmono_profil
 
 libmono-profiler-log.la: $(libmono_profiler_log_la_OBJECTS) $(libmono_profiler_log_la_DEPENDENCIES) $(EXTRA_libmono_profiler_log_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_profiler_log_la_LINK) $(am_libmono_profiler_log_la_rpath) $(libmono_profiler_log_la_OBJECTS) $(libmono_profiler_log_la_LIBADD) $(LIBS)
+
+libmono-profiler-vtune.la: $(libmono_profiler_vtune_la_OBJECTS) $(libmono_profiler_vtune_la_DEPENDENCIES) $(EXTRA_libmono_profiler_vtune_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libmono_profiler_vtune_la_LINK) $(am_libmono_profiler_vtune_la_rpath) $(libmono_profiler_vtune_la_OBJECTS) $(libmono_profiler_vtune_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -640,6 +661,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/decode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_la-mono-profiler-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-cov.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-profiler-aot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-profiler-iomap.Plo@am__quote@
@@ -668,6 +690,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+libmono_profiler_vtune_la-mono-profiler-vtune.lo: mono-profiler-vtune.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_profiler_vtune_la_CFLAGS) $(CFLAGS) -MT libmono_profiler_vtune_la-mono-profiler-vtune.lo -MD -MP -MF $(DEPDIR)/libmono_profiler_vtune_la-mono-profiler-vtune.Tpo -c -o libmono_profiler_vtune_la-mono-profiler-vtune.lo `test -f 'mono-profiler-vtune.c' || echo '$(srcdir)/'`mono-profiler-vtune.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_profiler_vtune_la-mono-profiler-vtune.Tpo $(DEPDIR)/libmono_profiler_vtune_la-mono-profiler-vtune.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-profiler-vtune.c' object='libmono_profiler_vtune_la-mono-profiler-vtune.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_profiler_vtune_la_CFLAGS) $(CFLAGS) -c -o libmono_profiler_vtune_la-mono-profiler-vtune.lo `test -f 'mono-profiler-vtune.c' || echo '$(srcdir)/'`mono-profiler-vtune.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

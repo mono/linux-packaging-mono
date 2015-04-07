@@ -197,6 +197,7 @@ MONO_SIG_HANDLER_SIGNATURE (mono_chain_signal)
 MONO_SIG_HANDLER_FUNC (static, sigabrt_signal_handler)
 {
 	MonoJitInfo *ji = NULL;
+	MONO_SIG_HANDLER_INFO_TYPE *info = MONO_SIG_HANDLER_GET_INFO ();
 	MONO_SIG_HANDLER_GET_CONTEXT;
 
 	if (mono_thread_internal_current ())
@@ -204,7 +205,7 @@ MONO_SIG_HANDLER_FUNC (static, sigabrt_signal_handler)
 	if (!ji) {
         if (mono_chain_signal (MONO_SIG_HANDLER_PARAMS))
 			return;
-		mono_handle_native_sigsegv (SIGABRT, ctx);
+		mono_handle_native_sigsegv (SIGABRT, ctx, info);
 	}
 }
 
@@ -297,7 +298,10 @@ MONO_SIG_HANDLER_FUNC (static, sigusr1_signal_handler)
 #endif
 
 #ifdef SIGPROF
-#if defined(__ia64__) || defined(__sparc__) || defined(sparc) || defined(__s390__) || defined(s390)
+
+static int profiling_signal_in_use;
+
+#if defined(__ia64__) || defined(__sparc__) || defined(sparc)
 
 MONO_SIG_HANDLER_FUNC (static, sigprof_signal_handler)
 {
@@ -308,8 +312,6 @@ MONO_SIG_HANDLER_FUNC (static, sigprof_signal_handler)
 }
 
 #else
-
-static int profiling_signal_in_use;
 
 static void
 per_thread_profiler_hit (void *ctx)
@@ -325,7 +327,7 @@ per_thread_profiler_hit (void *ctx)
 		MonoContext mono_context;
 		guchar *ips [call_chain_depth + 1];
 
-		mono_arch_sigctx_to_monoctx (ctx, &mono_context);
+		mono_sigctx_to_monoctx (ctx, &mono_context);
 		ips [0] = MONO_CONTEXT_GET_IP (&mono_context);
 		
 		if (jit_tls != NULL) {

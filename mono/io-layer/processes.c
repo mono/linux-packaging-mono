@@ -19,18 +19,29 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#ifdef HAVE_SIGNAL_H
 #include <signal.h>
-#include <sys/wait.h>
+#endif
 #include <sys/time.h>
-#include <sys/resource.h>
 #include <fcntl.h>
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
 #include <ctype.h>
 
+#ifdef HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+#ifdef HAVE_SYS_RESOURCE_H
+#include <sys/resource.h>
+#endif
+
 #ifdef HAVE_SYS_MKDEV_H
 #include <sys/mkdev.h>
+#endif
+
+#ifdef HAVE_UTIME_H
+#include <utime.h>
 #endif
 
 /* sys/resource.h (for rusage) is required when using osx 10.3 (but not 10.4) */
@@ -81,7 +92,7 @@
 #include <mono/utils/mono-signal-handler.h>
 
 /* The process' environment strings */
-#if defined(__APPLE__) && !defined (__arm__)
+#if defined(__APPLE__) && !defined (__arm__) && !defined (__aarch64__)
 /* Apple defines this in crt_externs.h but doesn't provide that header for 
  * arm-apple-darwin9.  We'll manually define the symbol on Apple as it does
  * in fact exist on all implementations (so far) 
@@ -137,7 +148,6 @@ static void process_add_sigchld_handler (void);
  * signal handler)
  */
 static struct MonoProcess *mono_processes = NULL;
-static volatile gint32 mono_processes_read_lock = 0;
 static volatile gint32 mono_processes_cleaning_up = 0;
 static mono_mutex_t mono_processes_mutex;
 static void mono_processes_cleanup (void);
@@ -490,6 +500,21 @@ CreateProcessWithLogonW (const gunichar2 *username,
 }
 
 static gboolean
+is_readable_or_executable (const char *prog)
+{
+	struct stat buf;
+	int a = access (prog, R_OK);
+	int b = access (prog, X_OK);
+	if (a != 0 && b != 0)
+		return FALSE;
+	if (stat (prog, &buf))
+		return FALSE;
+	if (S_ISREG (buf.st_mode))
+		return TRUE;
+	return FALSE;
+}
+
+static gboolean
 is_executable (const char *prog)
 {
 	struct stat buf;
@@ -621,7 +646,7 @@ gboolean CreateProcess (const gunichar2 *appname, const gunichar2 *cmdline,
 			prog = g_strdup (unquoted);
 
 			/* Executable existing ? */
-			if (!is_executable (prog)) {
+			if (!is_readable_or_executable (prog)) {
 				DEBUG ("%s: Couldn't find executable %s",
 					   __func__, prog);
 				g_free (unquoted);
@@ -637,8 +662,8 @@ gboolean CreateProcess (const gunichar2 *appname, const gunichar2 *cmdline,
 			prog = g_strdup_printf ("%s/%s", curdir, unquoted);
 			g_free (curdir);
 
-			/* And make sure it's executable */
-			if (!is_executable (prog)) {
+			/* And make sure it's readable */
+			if (!is_readable_or_executable (prog)) {
 				DEBUG ("%s: Couldn't find executable %s",
 					   __func__, prog);
 				g_free (unquoted);
@@ -729,7 +754,7 @@ gboolean CreateProcess (const gunichar2 *appname, const gunichar2 *cmdline,
 			prog = g_strdup (token);
 			
 			/* Executable existing ? */
-			if (!is_executable (prog)) {
+			if (!is_readable_or_executable (prog)) {
 				DEBUG ("%s: Couldn't find executable %s",
 					   __func__, token);
 				g_free (token);
@@ -750,8 +775,10 @@ gboolean CreateProcess (const gunichar2 *appname, const gunichar2 *cmdline,
 
 			/* I assume X_OK is the criterion to use,
 			 * rather than F_OK
+			 *
+			 * X_OK is too strict *if* the target is a CLR binary
 			 */
-			if (!is_executable (prog)) {
+			if (!is_readable_or_executable (prog)) {
 				g_free (prog);
 				prog = g_find_program_in_path (token);
 				if (prog == NULL) {
@@ -807,6 +834,13 @@ gboolean CreateProcess (const gunichar2 *appname, const gunichar2 *cmdline,
 				
 				goto free_strings;
 			}
+		}
+	} else {
+		if (!is_executable (prog)) {
+			DEBUG ("%s: Executable permisson not set on %s", __func__, prog);
+			g_free (prog);
+			SetLastError (ERROR_ACCESS_DENIED);
+			goto free_strings;
 		}
 	}
 
@@ -1240,7 +1274,12 @@ GetExitCodeProcess (gpointer process, guint32 *code)
 		
 		return FALSE;
 	}
-	
+
+	if (process_handle->id == _wapi_getpid ()) {
+		*code = STILL_ACTIVE;
+		return TRUE;
+	}
+
 	/* A process handle is only signalled if the process has exited
 	 * and has been waited for */
 
@@ -1317,8 +1356,8 @@ typedef struct
 	gpointer address_end;
 	char *perms;
 	gpointer address_offset;
-	dev_t device;
-	ino_t inode;
+	guint64 device;
+	guint64 inode;
 	char *filename;
 } WapiProcModule;
 
@@ -1387,7 +1426,7 @@ static GSList *load_modules (void)
 		mod->perms = g_strdup ("r--p");
 		mod->address_offset = 0;
 		mod->device = makedev (0, 0);
-		mod->inode = (ino_t) i;
+		mod->inode = i;
 		mod->filename = g_strdup (name); 
 		
 		if (g_slist_find_custom (ret, mod, find_procmodule) == NULL) {
@@ -1439,7 +1478,7 @@ static GSList *load_modules (void)
                                        info->dlpi_phdr[info->dlpi_phnum - 1].p_vaddr);
 		mod->perms = g_strdup ("r--p");
 		mod->address_offset = 0;
-		mod->inode = (ino_t) i;
+		mod->inode = i;
 		mod->filename = g_strdup (info->dlpi_name); 
 
 		DEBUG ("%s: inode=%d, filename=%s, address_start=%p, address_end=%p", __func__,
@@ -1501,8 +1540,8 @@ static GSList *load_modules (FILE *fp)
 	char *maj_dev_start, *min_dev_start, *inode_start, prot_buf[5];
 	gpointer address_start, address_end, address_offset;
 	guint32 maj_dev, min_dev;
-	ino_t inode;
-	dev_t device;
+	guint64 inode;
+	guint64 device;
 	
 	while (fgets (buf, sizeof(buf), fp)) {
 		p = buf;
@@ -1575,7 +1614,7 @@ static GSList *load_modules (FILE *fp)
 		if (!g_ascii_isxdigit (*inode_start)) {
 			continue;
 		}
-		inode = (ino_t)strtol (inode_start, &endp, 10);
+		inode = (guint64)strtol (inode_start, &endp, 10);
 		p = endp;
 		if (!g_ascii_isspace (*p)) {
 			continue;
@@ -2395,9 +2434,9 @@ mono_processes_cleanup (void)
 {
 	struct MonoProcess *mp;
 	struct MonoProcess *prev = NULL;
-	struct MonoProcess *candidate = NULL;
+	GSList *finished = NULL;
+	GSList *l;
 	gpointer unref_handle;
-	int spin;
 
 	DEBUG ("%s", __func__);
 
@@ -2405,9 +2444,8 @@ mono_processes_cleanup (void)
 	if (InterlockedCompareExchange (&mono_processes_cleaning_up, 1, 0) != 0)
 		return;
 
-	mp = mono_processes;
-	while (mp != NULL) {
-		if (mp->pid == 0 && mp->handle != NULL) {
+	for (mp = mono_processes; mp; mp = mp->next) {
+		if (mp->pid == 0 && mp->handle) {
 			/* This process has exited and we need to remove the artifical ref
 			 * on the handle */
 			mono_mutex_lock (&mono_processes_mutex);
@@ -2416,9 +2454,7 @@ mono_processes_cleanup (void)
 			mono_mutex_unlock (&mono_processes_mutex);
 			if (unref_handle)
 				_wapi_handle_unref (unref_handle);
-			continue;
 		}
-		mp = mp->next;
 	}
 
 	/*
@@ -2427,62 +2463,44 @@ mono_processes_cleanup (void)
 	 * asynchronously. The handler requires that the mono_processes list
 	 * remain valid.
 	 */
-	mp = mono_processes;
-	spin = 0;
-	while (mp != NULL) {
-		if ((mp->handle_count == 0 && mp->pid == 0) || candidate != NULL) {
-			if (spin > 0) {
-				_wapi_handle_spin (spin);
-				spin <<= 1;
-			}
+	mono_mutex_lock (&mono_processes_mutex);
 
-			/* We've found a candidate */
-			mono_mutex_lock (&mono_processes_mutex);
+	mp = mono_processes;
+	while (mp) {
+		if (mp->handle_count == 0 && mp->freeable) {
 			/*
+			 * Unlink the entry.
 			 * This code can run parallel with the sigchld handler, but the
 			 * modifications it makes are safe.
 			 */
-			if (candidate == NULL) {
-				/* unlink it */
-				if (mp == mono_processes) {
-					mono_processes = mp->next;
-				} else {
-					prev->next = mp->next;
-				}
-				candidate = mp;
-			}
+			if (mp == mono_processes)
+				mono_processes = mp->next;
+			else
+				prev->next = mp->next;
+			finished = g_slist_prepend (finished, mp);
 
-			/* It's still safe to traverse the structure.*/
-			mono_memory_barrier ();
-
-			if (mono_processes_read_lock != 0) {
-				/* The sigchld handler is watching us. Spin a bit and try again */
-				if (spin == 0) {
-					spin = 1;
-				} else if (spin >= 8) {
-					/* Just give up for now */
-					mono_mutex_unlock (&mono_processes_mutex);
-					break;
-				}
-			} else {
-				/* We've modified the list of processes, and we know the sigchld handler
-				 * isn't executing, so even if it executes at any moment, it'll see the
-				 * new version of the list. So now we can free the candidate. */
-				DEBUG ("%s: freeing candidate %p", __func__, candidate);
-				mp = candidate->next;
-				MONO_SEM_DESTROY (&candidate->exit_sem);
-				g_free (candidate);
-				candidate = NULL;
-			}
-
-			mono_mutex_unlock (&mono_processes_mutex);
-
-			continue;
+			mp = mp->next;
+		} else {
+			prev = mp;
+			mp = mp->next;
 		}
-		spin = 0;
-		prev = mp;
-		mp = mp->next;
 	}
+
+	mono_memory_barrier ();
+
+	for (l = finished; l; l = l->next) {
+		/*
+		 * All the entries in the finished list are unlinked from mono_processes, and
+		 * they have the 'finished' flag set, which means the sigchld handler is done
+		 * accessing them.
+		 */
+		mp = l->data;
+		MONO_SEM_DESTROY (&mp->exit_sem);
+		g_free (mp);
+	}
+	g_slist_free (finished);
+
+	mono_mutex_unlock (&mono_processes_mutex);
 
 	DEBUG ("%s done", __func__);
 
@@ -2513,8 +2531,6 @@ MONO_SIGNAL_HANDLER_FUNC (static, mono_sigchld_signal_handler, (int _dummy, sigi
 
 	DEBUG ("SIG CHILD handler for pid: %i\n", info->si_pid);
 
-	InterlockedIncrement (&mono_processes_read_lock);
-
 	do {
 		do {
 			pid = waitpid (-1, &status, WNOHANG);
@@ -2524,19 +2540,24 @@ MONO_SIGNAL_HANDLER_FUNC (static, mono_sigchld_signal_handler, (int _dummy, sigi
 			break;
 
 		DEBUG ("child ended: %i", pid);
-		p = mono_processes;
-		while (p != NULL) {
+
+		/*
+		 * This can run concurrently with the code in the rest of this module.
+		 */
+		for (p = mono_processes; p; p = p->next) {
 			if (p->pid == pid) {
-				p->pid = 0; /* this pid doesn't exist anymore, clear it */
-				p->status = status;
-				MONO_SEM_POST (&p->exit_sem);
 				break;
 			}
-			p = p->next;
+		}
+		if (p) {
+			p->pid = 0; /* this pid doesn't exist anymore, clear it */
+			p->status = status;
+			MONO_SEM_POST (&p->exit_sem);
+			mono_memory_barrier ();
+			/* Mark this as freeable, the pointer becomes invalid afterwards */
+			p->freeable = TRUE;
 		}
 	} while (1);
-
-	InterlockedDecrement (&mono_processes_read_lock);
 
 	DEBUG ("SIG CHILD handler: done looping.");
 }

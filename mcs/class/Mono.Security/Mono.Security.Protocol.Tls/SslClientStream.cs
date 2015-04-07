@@ -590,7 +590,7 @@ namespace Mono.Security.Protocol.Tls
 			{
 				try {
 					Exception e = ex;
-					this.protocol.SendAlert(ex.Alert != null ? ex.Alert : new Alert (AlertDescription.InternalError));
+					this.protocol.SendAlert(ref e);
 				} catch {
 				}
 				negotiate.SetComplete(new IOException("The authentication or decryption has failed.", ex));

@@ -108,32 +108,33 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	char-conversions.h cil-coff.h class.c class-internals.h \
 	cominterop.c cominterop.h console-io.h coree.c coree.h \
 	culture-info.h culture-info-tables.h debug-helpers.c \
-	debug-mono-symfile.h debug-mono-symfile.c decimal.c decimal.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h file-io.c file-io.h filewatcher.c filewatcher.h \
-	gc-internal.h gc-memfuncs.c icall.c icall-def.h image.c \
-	jit-info.c loader.c locales.c locales.h lock-tracer.c \
+	debug-mono-symfile.h debug-mono-symfile.c decimal-ms.c \
+	decimal-ms.h domain-internals.h environment.c environment.h \
+	exception.c exception.h file-io.c file-io.h filewatcher.c \
+	filewatcher.h gc-internal.h gc-memfuncs.c icall.c icall-def.h \
+	image.c jit-info.c loader.c locales.c locales.h lock-tracer.c \
 	lock-tracer.h marshal.c marshal.h mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
 	metadata-internals.h method-builder.h method-builder.c \
 	mono-basic-block.c mono-basic-block.h mono-config.c mono-cq.c \
 	mono-cq.h mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-debug-debugger.c mono-endian.c mono-endian.h mono-hash.h \
-	mono-mlist.c mono-mlist.h mono-perfcounters.c \
-	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-wsq.c mono-wsq.h monitor.h nacl-stub.c \
+	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
+	mono-route.h mono-wsq.c mono-wsq.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h object-internals.h \
 	opcodes.c socket-io.c socket-io.h process.c process.h \
-	profiler.c profiler-private.h rand.h rand.c runtime.c \
-	security.c security.h security-core-clr.c security-core-clr.h \
-	security-manager.c security-manager.h string-icalls.c \
-	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
-	threads-types.h threadpool.c threadpool.h \
-	threadpool-internals.h verify.c verify-internals.h \
-	wrapper-types.h reflection-internals.h file-mmap-posix.c \
-	file-mmap-windows.c file-mmap.h object-offsets.h abi-details.h \
-	metadata-cross-helpers.c appdomain.c domain.c gc.c monitor.c \
-	mono-hash.c object.c reflection.c null-gc.c boehm-gc.c
+	profiler.c profiler-private.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.h \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-internals.h tpool-poll.c verify.c \
+	verify-internals.h wrapper-types.h reflection-internals.h \
+	file-mmap-posix.c file-mmap-windows.c file-mmap.h \
+	object-offsets.h abi-details.h metadata-cross-helpers.c \
+	appdomain.c domain.c gc.c monitor.c mono-hash.c object.c \
+	reflection.c null-gc.c boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_1 =  \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-console-unix.lo
 @HOST_WIN32_TRUE@am__objects_2 =  \
@@ -147,7 +148,7 @@ am__objects_4 = $(am__objects_3) libmonoruntime_static_la-assembly.lo \
 	libmonoruntime_static_la-coree.lo \
 	libmonoruntime_static_la-debug-helpers.lo \
 	libmonoruntime_static_la-debug-mono-symfile.lo \
-	libmonoruntime_static_la-decimal.lo \
+	libmonoruntime_static_la-decimal-ms.lo \
 	libmonoruntime_static_la-environment.lo \
 	libmonoruntime_static_la-exception.lo \
 	libmonoruntime_static_la-file-io.lo \
@@ -168,10 +169,10 @@ am__objects_4 = $(am__objects_3) libmonoruntime_static_la-assembly.lo \
 	libmonoruntime_static_la-mono-config.lo \
 	libmonoruntime_static_la-mono-cq.lo \
 	libmonoruntime_static_la-mono-debug.lo \
-	libmonoruntime_static_la-mono-debug-debugger.lo \
 	libmonoruntime_static_la-mono-endian.lo \
 	libmonoruntime_static_la-mono-mlist.lo \
 	libmonoruntime_static_la-mono-perfcounters.lo \
+	libmonoruntime_static_la-mono-route.lo \
 	libmonoruntime_static_la-mono-wsq.lo \
 	libmonoruntime_static_la-nacl-stub.lo \
 	libmonoruntime_static_la-opcodes.lo \
@@ -179,14 +180,16 @@ am__objects_4 = $(am__objects_3) libmonoruntime_static_la-assembly.lo \
 	libmonoruntime_static_la-process.lo \
 	libmonoruntime_static_la-profiler.lo \
 	libmonoruntime_static_la-rand.lo \
+	libmonoruntime_static_la-remoting.lo \
 	libmonoruntime_static_la-runtime.lo \
-	libmonoruntime_static_la-security.lo \
+	libmonoruntime_static_la-mono-security.lo \
 	libmonoruntime_static_la-security-core-clr.lo \
 	libmonoruntime_static_la-security-manager.lo \
 	libmonoruntime_static_la-string-icalls.lo \
 	libmonoruntime_static_la-sysmath.lo \
 	libmonoruntime_static_la-threads.lo \
 	libmonoruntime_static_la-threadpool.lo \
+	libmonoruntime_static_la-tpool-poll.lo \
 	libmonoruntime_static_la-verify.lo \
 	libmonoruntime_static_la-file-mmap-posix.lo \
 	libmonoruntime_static_la-file-mmap-windows.lo \
@@ -220,27 +223,28 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c console-win32.c \
 	class.c class-internals.h cominterop.c cominterop.h \
 	console-io.h coree.c coree.h culture-info.h \
 	culture-info-tables.h debug-helpers.c debug-mono-symfile.h \
-	debug-mono-symfile.c decimal.c decimal.h domain-internals.h \
-	environment.c environment.h exception.c exception.h file-io.c \
-	file-io.h filewatcher.c filewatcher.h gc-internal.h \
-	gc-memfuncs.c icall.c icall-def.h image.c jit-info.c loader.c \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-cq.c mono-cq.h mono-debug.h mono-debug.c \
-	mono-debug-debugger.h mono-debug-debugger.c mono-endian.c \
-	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
-	mono-perfcounters.c mono-perfcounters.h \
-	mono-perfcounters-def.h mono-ptr-array.h mono-wsq.c mono-wsq.h \
-	monitor.h nacl-stub.c normalization-tables.h \
-	number-formatter.h object-internals.h opcodes.c socket-io.c \
-	socket-io.h process.c process.h profiler.c profiler-private.h \
-	rand.h rand.c runtime.c security.c security.h \
+	debug-mono-symfile.c decimal-ms.c decimal-ms.h \
+	domain-internals.h environment.c environment.h exception.c \
+	exception.h file-io.c file-io.h filewatcher.c filewatcher.h \
+	gc-internal.h gc-memfuncs.c icall.c icall-def.h image.c \
+	jit-info.c loader.c locales.c locales.h lock-tracer.c \
+	lock-tracer.h marshal.c marshal.h mempool.c mempool.h \
+	mempool-internals.h metadata.c metadata-verify.c \
+	metadata-internals.h method-builder.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config.c mono-cq.c \
+	mono-cq.h mono-debug.h mono-debug.c mono-debug-debugger.h \
+	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
+	mono-route.h mono-wsq.c mono-wsq.h monitor.h nacl-stub.c \
+	normalization-tables.h number-formatter.h object-internals.h \
+	opcodes.c socket-io.c socket-io.h process.c process.h \
+	profiler.c profiler-private.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.h \
 	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
-	threadpool.h threadpool-internals.h verify.c \
+	threadpool.h threadpool-internals.h tpool-poll.c verify.c \
 	verify-internals.h wrapper-types.h reflection-internals.h \
 	file-mmap-posix.c file-mmap-windows.c file-mmap.h \
 	object-offsets.h abi-details.h metadata-cross-helpers.c \
@@ -255,7 +259,8 @@ am__objects_12 = $(am__objects_11) libmonoruntime_la-assembly.lo \
 	libmonoruntime_la-cominterop.lo libmonoruntime_la-coree.lo \
 	libmonoruntime_la-debug-helpers.lo \
 	libmonoruntime_la-debug-mono-symfile.lo \
-	libmonoruntime_la-decimal.lo libmonoruntime_la-environment.lo \
+	libmonoruntime_la-decimal-ms.lo \
+	libmonoruntime_la-environment.lo \
 	libmonoruntime_la-exception.lo libmonoruntime_la-file-io.lo \
 	libmonoruntime_la-filewatcher.lo \
 	libmonoruntime_la-gc-memfuncs.lo libmonoruntime_la-icall.lo \
@@ -268,20 +273,21 @@ am__objects_12 = $(am__objects_11) libmonoruntime_la-assembly.lo \
 	libmonoruntime_la-mono-basic-block.lo \
 	libmonoruntime_la-mono-config.lo libmonoruntime_la-mono-cq.lo \
 	libmonoruntime_la-mono-debug.lo \
-	libmonoruntime_la-mono-debug-debugger.lo \
 	libmonoruntime_la-mono-endian.lo \
 	libmonoruntime_la-mono-mlist.lo \
 	libmonoruntime_la-mono-perfcounters.lo \
-	libmonoruntime_la-mono-wsq.lo libmonoruntime_la-nacl-stub.lo \
-	libmonoruntime_la-opcodes.lo libmonoruntime_la-socket-io.lo \
-	libmonoruntime_la-process.lo libmonoruntime_la-profiler.lo \
-	libmonoruntime_la-rand.lo libmonoruntime_la-runtime.lo \
-	libmonoruntime_la-security.lo \
+	libmonoruntime_la-mono-route.lo libmonoruntime_la-mono-wsq.lo \
+	libmonoruntime_la-nacl-stub.lo libmonoruntime_la-opcodes.lo \
+	libmonoruntime_la-socket-io.lo libmonoruntime_la-process.lo \
+	libmonoruntime_la-profiler.lo libmonoruntime_la-rand.lo \
+	libmonoruntime_la-remoting.lo libmonoruntime_la-runtime.lo \
+	libmonoruntime_la-mono-security.lo \
 	libmonoruntime_la-security-core-clr.lo \
 	libmonoruntime_la-security-manager.lo \
 	libmonoruntime_la-string-icalls.lo \
 	libmonoruntime_la-sysmath.lo libmonoruntime_la-threads.lo \
-	libmonoruntime_la-threadpool.lo libmonoruntime_la-verify.lo \
+	libmonoruntime_la-threadpool.lo \
+	libmonoruntime_la-tpool-poll.lo libmonoruntime_la-verify.lo \
 	libmonoruntime_la-file-mmap-posix.lo \
 	libmonoruntime_la-file-mmap-windows.lo \
 	libmonoruntime_la-metadata-cross-helpers.lo
@@ -306,43 +312,44 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	char-conversions.h cil-coff.h class.c class-internals.h \
 	cominterop.c cominterop.h console-io.h coree.c coree.h \
 	culture-info.h culture-info-tables.h debug-helpers.c \
-	debug-mono-symfile.h debug-mono-symfile.c decimal.c decimal.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h file-io.c file-io.h filewatcher.c filewatcher.h \
-	gc-internal.h gc-memfuncs.c icall.c icall-def.h image.c \
-	jit-info.c loader.c locales.c locales.h lock-tracer.c \
+	debug-mono-symfile.h debug-mono-symfile.c decimal-ms.c \
+	decimal-ms.h domain-internals.h environment.c environment.h \
+	exception.c exception.h file-io.c file-io.h filewatcher.c \
+	filewatcher.h gc-internal.h gc-memfuncs.c icall.c icall-def.h \
+	image.c jit-info.c loader.c locales.c locales.h lock-tracer.c \
 	lock-tracer.h marshal.c marshal.h mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
 	metadata-internals.h method-builder.h method-builder.c \
 	mono-basic-block.c mono-basic-block.h mono-config.c mono-cq.c \
 	mono-cq.h mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-debug-debugger.c mono-endian.c mono-endian.h mono-hash.h \
-	mono-mlist.c mono-mlist.h mono-perfcounters.c \
-	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-wsq.c mono-wsq.h monitor.h nacl-stub.c \
+	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
+	mono-route.h mono-wsq.c mono-wsq.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h object-internals.h \
 	opcodes.c socket-io.c socket-io.h process.c process.h \
-	profiler.c profiler-private.h rand.h rand.c runtime.c \
-	security.c security.h security-core-clr.c security-core-clr.h \
-	security-manager.c security-manager.h string-icalls.c \
-	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
-	threads-types.h threadpool.c threadpool.h \
-	threadpool-internals.h verify.c verify-internals.h \
-	wrapper-types.h reflection-internals.h file-mmap-posix.c \
-	file-mmap-windows.c file-mmap.h object-offsets.h abi-details.h \
-	metadata-cross-helpers.c appdomain.c domain.c gc.c monitor.c \
-	mono-hash.c object.c reflection.c sgen-os-posix.c \
-	sgen-os-mach.c sgen-os-win32.c sgen-gc.c sgen-internal.c \
-	sgen-marksweep.c sgen-los.c sgen-protocol.c sgen-bridge.c \
-	sgen-bridge.h sgen-old-bridge.c sgen-new-bridge.c \
-	sgen-tarjan-bridge.c sgen-toggleref.c sgen-toggleref.h \
-	sgen-gc.h sgen-conf.h sgen-archdep.h sgen-cardtable.c \
-	sgen-cardtable.h sgen-pointer-queue.c sgen-pointer-queue.h \
-	sgen-pinning.c sgen-pinning.h sgen-pinning-stats.c \
-	sgen-workers.c sgen-workers.h sgen-gray.c sgen-gray.h \
-	sgen-major-copy-object.h sgen-minor-copy-object.h \
-	sgen-copy-object.h sgen-major-scan-object.h \
-	sgen-minor-scan-object.h sgen-protocol.h sgen-scan-object.h \
+	profiler.c profiler-private.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.h \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-internals.h tpool-poll.c verify.c \
+	verify-internals.h wrapper-types.h reflection-internals.h \
+	file-mmap-posix.c file-mmap-windows.c file-mmap.h \
+	object-offsets.h abi-details.h metadata-cross-helpers.c \
+	appdomain.c domain.c gc.c monitor.c mono-hash.c object.c \
+	reflection.c sgen-os-posix.c sgen-os-mach.c sgen-os-win32.c \
+	sgen-gc.c sgen-internal.c sgen-marksweep.c sgen-los.c \
+	sgen-protocol.c sgen-bridge.c sgen-bridge.h sgen-old-bridge.c \
+	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
+	sgen-toggleref.h sgen-gc.h sgen-conf.h sgen-archdep.h \
+	sgen-cardtable.c sgen-cardtable.h sgen-pointer-queue.c \
+	sgen-pointer-queue.h sgen-pinning.c sgen-pinning.h \
+	sgen-pinning-stats.c sgen-workers.c sgen-workers.h sgen-gray.c \
+	sgen-gray.h sgen-major-copy-object.h sgen-minor-copy-object.h \
+	sgen-copy-object.h sgen-marksweep-scan-object-concurrent.h \
+	sgen-minor-scan-object.h sgen-marksweep-drain-gray-stack.h \
+	sgen-protocol.h sgen-protocol-def.h sgen-scan-object.h \
 	sgen-nursery-allocator.c sgen-hash-table.c sgen-hash-table.h \
 	sgen-descriptor.c sgen-descriptor.h sgen-alloc.c sgen-debug.c \
 	sgen-simple-nursery.c sgen-split-nursery.c \
@@ -361,7 +368,7 @@ am__objects_19 = $(am__objects_18) \
 	libmonoruntimesgen_static_la-coree.lo \
 	libmonoruntimesgen_static_la-debug-helpers.lo \
 	libmonoruntimesgen_static_la-debug-mono-symfile.lo \
-	libmonoruntimesgen_static_la-decimal.lo \
+	libmonoruntimesgen_static_la-decimal-ms.lo \
 	libmonoruntimesgen_static_la-environment.lo \
 	libmonoruntimesgen_static_la-exception.lo \
 	libmonoruntimesgen_static_la-file-io.lo \
@@ -382,10 +389,10 @@ am__objects_19 = $(am__objects_18) \
 	libmonoruntimesgen_static_la-mono-config.lo \
 	libmonoruntimesgen_static_la-mono-cq.lo \
 	libmonoruntimesgen_static_la-mono-debug.lo \
-	libmonoruntimesgen_static_la-mono-debug-debugger.lo \
 	libmonoruntimesgen_static_la-mono-endian.lo \
 	libmonoruntimesgen_static_la-mono-mlist.lo \
 	libmonoruntimesgen_static_la-mono-perfcounters.lo \
+	libmonoruntimesgen_static_la-mono-route.lo \
 	libmonoruntimesgen_static_la-mono-wsq.lo \
 	libmonoruntimesgen_static_la-nacl-stub.lo \
 	libmonoruntimesgen_static_la-opcodes.lo \
@@ -393,14 +400,16 @@ am__objects_19 = $(am__objects_18) \
 	libmonoruntimesgen_static_la-process.lo \
 	libmonoruntimesgen_static_la-profiler.lo \
 	libmonoruntimesgen_static_la-rand.lo \
+	libmonoruntimesgen_static_la-remoting.lo \
 	libmonoruntimesgen_static_la-runtime.lo \
-	libmonoruntimesgen_static_la-security.lo \
+	libmonoruntimesgen_static_la-mono-security.lo \
 	libmonoruntimesgen_static_la-security-core-clr.lo \
 	libmonoruntimesgen_static_la-security-manager.lo \
 	libmonoruntimesgen_static_la-string-icalls.lo \
 	libmonoruntimesgen_static_la-sysmath.lo \
 	libmonoruntimesgen_static_la-threads.lo \
 	libmonoruntimesgen_static_la-threadpool.lo \
+	libmonoruntimesgen_static_la-tpool-poll.lo \
 	libmonoruntimesgen_static_la-verify.lo \
 	libmonoruntimesgen_static_la-file-mmap-posix.lo \
 	libmonoruntimesgen_static_la-file-mmap-windows.lo \
@@ -458,43 +467,44 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	char-conversions.h cil-coff.h class.c class-internals.h \
 	cominterop.c cominterop.h console-io.h coree.c coree.h \
 	culture-info.h culture-info-tables.h debug-helpers.c \
-	debug-mono-symfile.h debug-mono-symfile.c decimal.c decimal.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h file-io.c file-io.h filewatcher.c filewatcher.h \
-	gc-internal.h gc-memfuncs.c icall.c icall-def.h image.c \
-	jit-info.c loader.c locales.c locales.h lock-tracer.c \
+	debug-mono-symfile.h debug-mono-symfile.c decimal-ms.c \
+	decimal-ms.h domain-internals.h environment.c environment.h \
+	exception.c exception.h file-io.c file-io.h filewatcher.c \
+	filewatcher.h gc-internal.h gc-memfuncs.c icall.c icall-def.h \
+	image.c jit-info.c loader.c locales.c locales.h lock-tracer.c \
 	lock-tracer.h marshal.c marshal.h mempool.c mempool.h \
 	mempool-internals.h metadata.c metadata-verify.c \
 	metadata-internals.h method-builder.h method-builder.c \
 	mono-basic-block.c mono-basic-block.h mono-config.c mono-cq.c \
 	mono-cq.h mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-debug-debugger.c mono-endian.c mono-endian.h mono-hash.h \
-	mono-mlist.c mono-mlist.h mono-perfcounters.c \
-	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-wsq.c mono-wsq.h monitor.h nacl-stub.c \
+	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
+	mono-route.h mono-wsq.c mono-wsq.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h object-internals.h \
 	opcodes.c socket-io.c socket-io.h process.c process.h \
-	profiler.c profiler-private.h rand.h rand.c runtime.c \
-	security.c security.h security-core-clr.c security-core-clr.h \
-	security-manager.c security-manager.h string-icalls.c \
-	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
-	threads-types.h threadpool.c threadpool.h \
-	threadpool-internals.h verify.c verify-internals.h \
-	wrapper-types.h reflection-internals.h file-mmap-posix.c \
-	file-mmap-windows.c file-mmap.h object-offsets.h abi-details.h \
-	metadata-cross-helpers.c appdomain.c domain.c gc.c monitor.c \
-	mono-hash.c object.c reflection.c sgen-os-posix.c \
-	sgen-os-mach.c sgen-os-win32.c sgen-gc.c sgen-internal.c \
-	sgen-marksweep.c sgen-los.c sgen-protocol.c sgen-bridge.c \
-	sgen-bridge.h sgen-old-bridge.c sgen-new-bridge.c \
-	sgen-tarjan-bridge.c sgen-toggleref.c sgen-toggleref.h \
-	sgen-gc.h sgen-conf.h sgen-archdep.h sgen-cardtable.c \
-	sgen-cardtable.h sgen-pointer-queue.c sgen-pointer-queue.h \
-	sgen-pinning.c sgen-pinning.h sgen-pinning-stats.c \
-	sgen-workers.c sgen-workers.h sgen-gray.c sgen-gray.h \
-	sgen-major-copy-object.h sgen-minor-copy-object.h \
-	sgen-copy-object.h sgen-major-scan-object.h \
-	sgen-minor-scan-object.h sgen-protocol.h sgen-scan-object.h \
+	profiler.c profiler-private.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.h \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-internals.h tpool-poll.c verify.c \
+	verify-internals.h wrapper-types.h reflection-internals.h \
+	file-mmap-posix.c file-mmap-windows.c file-mmap.h \
+	object-offsets.h abi-details.h metadata-cross-helpers.c \
+	appdomain.c domain.c gc.c monitor.c mono-hash.c object.c \
+	reflection.c sgen-os-posix.c sgen-os-mach.c sgen-os-win32.c \
+	sgen-gc.c sgen-internal.c sgen-marksweep.c sgen-los.c \
+	sgen-protocol.c sgen-bridge.c sgen-bridge.h sgen-old-bridge.c \
+	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
+	sgen-toggleref.h sgen-gc.h sgen-conf.h sgen-archdep.h \
+	sgen-cardtable.c sgen-cardtable.h sgen-pointer-queue.c \
+	sgen-pointer-queue.h sgen-pinning.c sgen-pinning.h \
+	sgen-pinning-stats.c sgen-workers.c sgen-workers.h sgen-gray.c \
+	sgen-gray.h sgen-major-copy-object.h sgen-minor-copy-object.h \
+	sgen-copy-object.h sgen-marksweep-scan-object-concurrent.h \
+	sgen-minor-scan-object.h sgen-marksweep-drain-gray-stack.h \
+	sgen-protocol.h sgen-protocol-def.h sgen-scan-object.h \
 	sgen-nursery-allocator.c sgen-hash-table.c sgen-hash-table.h \
 	sgen-descriptor.c sgen-descriptor.h sgen-alloc.c sgen-debug.c \
 	sgen-simple-nursery.c sgen-split-nursery.c \
@@ -513,7 +523,7 @@ am__objects_26 = $(am__objects_25) libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-coree.lo \
 	libmonoruntimesgen_la-debug-helpers.lo \
 	libmonoruntimesgen_la-debug-mono-symfile.lo \
-	libmonoruntimesgen_la-decimal.lo \
+	libmonoruntimesgen_la-decimal-ms.lo \
 	libmonoruntimesgen_la-environment.lo \
 	libmonoruntimesgen_la-exception.lo \
 	libmonoruntimesgen_la-file-io.lo \
@@ -533,24 +543,27 @@ am__objects_26 = $(am__objects_25) libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-mono-config.lo \
 	libmonoruntimesgen_la-mono-cq.lo \
 	libmonoruntimesgen_la-mono-debug.lo \
-	libmonoruntimesgen_la-mono-debug-debugger.lo \
 	libmonoruntimesgen_la-mono-endian.lo \
 	libmonoruntimesgen_la-mono-mlist.lo \
 	libmonoruntimesgen_la-mono-perfcounters.lo \
+	libmonoruntimesgen_la-mono-route.lo \
 	libmonoruntimesgen_la-mono-wsq.lo \
 	libmonoruntimesgen_la-nacl-stub.lo \
 	libmonoruntimesgen_la-opcodes.lo \
 	libmonoruntimesgen_la-socket-io.lo \
 	libmonoruntimesgen_la-process.lo \
 	libmonoruntimesgen_la-profiler.lo \
-	libmonoruntimesgen_la-rand.lo libmonoruntimesgen_la-runtime.lo \
-	libmonoruntimesgen_la-security.lo \
+	libmonoruntimesgen_la-rand.lo \
+	libmonoruntimesgen_la-remoting.lo \
+	libmonoruntimesgen_la-runtime.lo \
+	libmonoruntimesgen_la-mono-security.lo \
 	libmonoruntimesgen_la-security-core-clr.lo \
 	libmonoruntimesgen_la-security-manager.lo \
 	libmonoruntimesgen_la-string-icalls.lo \
 	libmonoruntimesgen_la-sysmath.lo \
 	libmonoruntimesgen_la-threads.lo \
 	libmonoruntimesgen_la-threadpool.lo \
+	libmonoruntimesgen_la-tpool-poll.lo \
 	libmonoruntimesgen_la-verify.lo \
 	libmonoruntimesgen_la-file-mmap-posix.lo \
 	libmonoruntimesgen_la-file-mmap-windows.lo \
@@ -744,6 +757,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_PERF_EVENTS = @DISABLE_PERF_EVENTS@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
@@ -827,12 +841,15 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
+SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTUNE_CFLAGS = @VTUNE_CFLAGS@
+VTUNE_LIBS = @VTUNE_LIBS@
 WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
@@ -951,7 +968,7 @@ top_srcdir = @top_srcdir@
 @SUPPORT_BOEHM_TRUE@boehm_libraries = $(shared_boehm_libraries) libmonoruntime-static.la
 @DISABLE_EXECUTABLES_FALSE@noinst_LTLIBRARIES = $(boehm_libraries) $(sgen_libraries)
 @DISABLE_EXECUTABLES_TRUE@noinst_LTLIBRARIES = $(shared_sgen_libraries) $(shared_boehm_libraries)
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) -DMONO_BINDIR=\"$(bindir)/\" -DMONO_ASSEMBLIES=\"$(assembliesdir)\" -DMONO_CFG_DIR=\"$(confdir)\"
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) -DMONO_BINDIR=\"$(bindir)/\" -DMONO_ASSEMBLIES=\"$(assembliesdir)\" -DMONO_CFG_DIR=\"$(confdir)\" $(SHARED_CFLAGS)
 CLEANFILES = mono-bundle.stamp
 libmonoruntime_static_la_LIBADD = $(bundle_obj) $(libmonoruntime_la_LIBADD)
 null_sources = \
@@ -979,8 +996,8 @@ common_sources = \
 	debug-helpers.c		\
 	debug-mono-symfile.h	\
 	debug-mono-symfile.c	\
-	decimal.c		\
-	decimal.h		\
+	decimal-ms.c		\
+	decimal-ms.h		\
 	domain-internals.h	\
 	environment.c		\
 	environment.h		\
@@ -1019,7 +1036,6 @@ common_sources = \
 	mono-debug.h		\
 	mono-debug.c		\
 	mono-debug-debugger.h	\
-	mono-debug-debugger.c	\
 	mono-endian.c		\
 	mono-endian.h		\
 	mono-hash.h		\
@@ -1029,6 +1045,8 @@ common_sources = \
 	mono-perfcounters.h	\
 	mono-perfcounters-def.h	\
 	mono-ptr-array.h	\
+	mono-route.c		\
+	mono-route.h		\
 	mono-wsq.c		\
 	mono-wsq.h		\
 	monitor.h		\
@@ -1045,8 +1063,10 @@ common_sources = \
 	profiler-private.h	\
 	rand.h			\
 	rand.c			\
+	remoting.h		\
+	remoting.c		\
 	runtime.c		\
-	security.c		\
+	mono-security.c		\
 	security.h		\
 	security-core-clr.c	\
 	security-core-clr.h	\
@@ -1062,6 +1082,7 @@ common_sources = \
 	threadpool.c		\
 	threadpool.h		\
 	threadpool-internals.h	\
+	tpool-poll.c	\
 	verify.c		\
 	verify-internals.h	\
 	wrapper-types.h	\
@@ -1120,9 +1141,11 @@ sgen_sources = \
 	sgen-major-copy-object.h \
 	sgen-minor-copy-object.h \
 	sgen-copy-object.h \
-	sgen-major-scan-object.h \
+	sgen-marksweep-scan-object-concurrent.h \
 	sgen-minor-scan-object.h \
+	sgen-marksweep-drain-gray-stack.h	\
 	sgen-protocol.h		\
+	sgen-protocol-def.h		\
 	sgen-scan-object.h	\
 	sgen-nursery-allocator.c	\
 	sgen-hash-table.c	\
@@ -1320,7 +1343,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-coree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-debug-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-debug-mono-symfile.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-decimal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-decimal-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-domain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-exception.Plo@am__quote@
@@ -1346,12 +1369,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-basic-block.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-cq.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-debug-debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-endian.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-mlist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-perfcounters.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-route.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-wsq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-nacl-stub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-null-gc.Plo@am__quote@
@@ -1361,15 +1385,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-profiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-reflection.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-remoting.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-security-core-clr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-security-manager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-socket-io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threads.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-tpool-poll.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-assembly.Plo@am__quote@
@@ -1382,7 +1407,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-coree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-debug-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-debug-mono-symfile.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-decimal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-decimal-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-domain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-exception.Plo@am__quote@
@@ -1408,12 +1433,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-basic-block.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-cq.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-debug-debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-endian.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-mlist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-perfcounters.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-route.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-wsq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-nacl-stub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-null-gc.Plo@am__quote@
@@ -1423,15 +1449,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-profiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-reflection.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-remoting.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-security-core-clr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-security-manager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-socket-io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threadpool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threads.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-tpool-poll.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-assembly.Plo@am__quote@
@@ -1443,7 +1470,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-coree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-debug-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-debug-mono-symfile.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-decimal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-decimal-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-domain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-exception.Plo@am__quote@
@@ -1469,12 +1496,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-basic-block.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-cq.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-debug-debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-endian.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-mlist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-perfcounters.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-route.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-wsq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-nacl-stub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-object.Plo@am__quote@
@@ -1483,10 +1511,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-profiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-reflection.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-remoting.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-security-core-clr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-security-manager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-alloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-cardtable.Plo@am__quote@
@@ -1523,6 +1551,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threads.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-tpool-poll.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-assembly.Plo@am__quote@
@@ -1534,7 +1563,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-coree.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-debug-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-debug-mono-symfile.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-decimal.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-decimal-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-domain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-exception.Plo@am__quote@
@@ -1560,12 +1589,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-basic-block.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-cq.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-debug-debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-endian.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-mlist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-perfcounters.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-route.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-wsq.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-nacl-stub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-object.Plo@am__quote@
@@ -1574,10 +1604,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-profiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-reflection.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-remoting.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-security-core-clr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-security-manager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-alloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-cardtable.Plo@am__quote@
@@ -1614,6 +1644,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threads.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-tpool-poll.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pedump.Po@am__quote@
 
@@ -1704,12 +1735,12 @@ libmonoruntime_static_la-debug-mono-symfile.lo: debug-mono-symfile.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-debug-mono-symfile.lo `test -f 'debug-mono-symfile.c' || echo '$(srcdir)/'`debug-mono-symfile.c
 
-libmonoruntime_static_la-decimal.lo: decimal.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-decimal.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-decimal.Tpo -c -o libmonoruntime_static_la-decimal.lo `test -f 'decimal.c' || echo '$(srcdir)/'`decimal.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-decimal.Tpo $(DEPDIR)/libmonoruntime_static_la-decimal.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decimal.c' object='libmonoruntime_static_la-decimal.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_static_la-decimal-ms.lo: decimal-ms.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-decimal-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-decimal-ms.Tpo -c -o libmonoruntime_static_la-decimal-ms.lo `test -f 'decimal-ms.c' || echo '$(srcdir)/'`decimal-ms.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-decimal-ms.Tpo $(DEPDIR)/libmonoruntime_static_la-decimal-ms.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decimal-ms.c' object='libmonoruntime_static_la-decimal-ms.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-decimal.lo `test -f 'decimal.c' || echo '$(srcdir)/'`decimal.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-decimal-ms.lo `test -f 'decimal-ms.c' || echo '$(srcdir)/'`decimal-ms.c
 
 libmonoruntime_static_la-environment.lo: environment.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-environment.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-environment.Tpo -c -o libmonoruntime_static_la-environment.lo `test -f 'environment.c' || echo '$(srcdir)/'`environment.c
@@ -1851,13 +1882,6 @@ libmonoruntime_static_la-mono-debug.lo: mono-debug.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-mono-debug.lo `test -f 'mono-debug.c' || echo '$(srcdir)/'`mono-debug.c
 
-libmonoruntime_static_la-mono-debug-debugger.lo: mono-debug-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-mono-debug-debugger.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-mono-debug-debugger.Tpo -c -o libmonoruntime_static_la-mono-debug-debugger.lo `test -f 'mono-debug-debugger.c' || echo '$(srcdir)/'`mono-debug-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-mono-debug-debugger.Tpo $(DEPDIR)/libmonoruntime_static_la-mono-debug-debugger.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-debug-debugger.c' object='libmonoruntime_static_la-mono-debug-debugger.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-mono-debug-debugger.lo `test -f 'mono-debug-debugger.c' || echo '$(srcdir)/'`mono-debug-debugger.c
-
 libmonoruntime_static_la-mono-endian.lo: mono-endian.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-mono-endian.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-mono-endian.Tpo -c -o libmonoruntime_static_la-mono-endian.lo `test -f 'mono-endian.c' || echo '$(srcdir)/'`mono-endian.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-mono-endian.Tpo $(DEPDIR)/libmonoruntime_static_la-mono-endian.Plo
@@ -1878,6 +1902,13 @@ libmonoruntime_static_la-mono-perfcounters.lo: mono-perfcounters.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-perfcounters.c' object='libmonoruntime_static_la-mono-perfcounters.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-mono-perfcounters.lo `test -f 'mono-perfcounters.c' || echo '$(srcdir)/'`mono-perfcounters.c
+
+libmonoruntime_static_la-mono-route.lo: mono-route.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-mono-route.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-mono-route.Tpo -c -o libmonoruntime_static_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-mono-route.Tpo $(DEPDIR)/libmonoruntime_static_la-mono-route.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-route.c' object='libmonoruntime_static_la-mono-route.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
 
 libmonoruntime_static_la-mono-wsq.lo: mono-wsq.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-mono-wsq.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-mono-wsq.Tpo -c -o libmonoruntime_static_la-mono-wsq.lo `test -f 'mono-wsq.c' || echo '$(srcdir)/'`mono-wsq.c
@@ -1928,6 +1959,13 @@ libmonoruntime_static_la-rand.lo: rand.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-rand.lo `test -f 'rand.c' || echo '$(srcdir)/'`rand.c
 
+libmonoruntime_static_la-remoting.lo: remoting.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-remoting.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-remoting.Tpo -c -o libmonoruntime_static_la-remoting.lo `test -f 'remoting.c' || echo '$(srcdir)/'`remoting.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-remoting.Tpo $(DEPDIR)/libmonoruntime_static_la-remoting.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='remoting.c' object='libmonoruntime_static_la-remoting.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-remoting.lo `test -f 'remoting.c' || echo '$(srcdir)/'`remoting.c
+
 libmonoruntime_static_la-runtime.lo: runtime.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-runtime.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-runtime.Tpo -c -o libmonoruntime_static_la-runtime.lo `test -f 'runtime.c' || echo '$(srcdir)/'`runtime.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-runtime.Tpo $(DEPDIR)/libmonoruntime_static_la-runtime.Plo
@@ -1935,12 +1973,12 @@ libmonoruntime_static_la-runtime.lo: runtime.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-runtime.lo `test -f 'runtime.c' || echo '$(srcdir)/'`runtime.c
 
-libmonoruntime_static_la-security.lo: security.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-security.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-security.Tpo -c -o libmonoruntime_static_la-security.lo `test -f 'security.c' || echo '$(srcdir)/'`security.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-security.Tpo $(DEPDIR)/libmonoruntime_static_la-security.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='security.c' object='libmonoruntime_static_la-security.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_static_la-mono-security.lo: mono-security.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-mono-security.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-mono-security.Tpo -c -o libmonoruntime_static_la-mono-security.lo `test -f 'mono-security.c' || echo '$(srcdir)/'`mono-security.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-mono-security.Tpo $(DEPDIR)/libmonoruntime_static_la-mono-security.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-security.c' object='libmonoruntime_static_la-mono-security.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-security.lo `test -f 'security.c' || echo '$(srcdir)/'`security.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-mono-security.lo `test -f 'mono-security.c' || echo '$(srcdir)/'`mono-security.c
 
 libmonoruntime_static_la-security-core-clr.lo: security-core-clr.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-security-core-clr.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-security-core-clr.Tpo -c -o libmonoruntime_static_la-security-core-clr.lo `test -f 'security-core-clr.c' || echo '$(srcdir)/'`security-core-clr.c
@@ -1983,6 +2021,13 @@ libmonoruntime_static_la-threadpool.lo: threadpool.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntime_static_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+
+libmonoruntime_static_la-tpool-poll.lo: tpool-poll.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-tpool-poll.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-tpool-poll.Tpo -c -o libmonoruntime_static_la-tpool-poll.lo `test -f 'tpool-poll.c' || echo '$(srcdir)/'`tpool-poll.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-tpool-poll.Tpo $(DEPDIR)/libmonoruntime_static_la-tpool-poll.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tpool-poll.c' object='libmonoruntime_static_la-tpool-poll.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-tpool-poll.lo `test -f 'tpool-poll.c' || echo '$(srcdir)/'`tpool-poll.c
 
 libmonoruntime_static_la-verify.lo: verify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-verify.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-verify.Tpo -c -o libmonoruntime_static_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
@@ -2138,12 +2183,12 @@ libmonoruntime_la-debug-mono-symfile.lo: debug-mono-symfile.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-debug-mono-symfile.lo `test -f 'debug-mono-symfile.c' || echo '$(srcdir)/'`debug-mono-symfile.c
 
-libmonoruntime_la-decimal.lo: decimal.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-decimal.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-decimal.Tpo -c -o libmonoruntime_la-decimal.lo `test -f 'decimal.c' || echo '$(srcdir)/'`decimal.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-decimal.Tpo $(DEPDIR)/libmonoruntime_la-decimal.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decimal.c' object='libmonoruntime_la-decimal.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_la-decimal-ms.lo: decimal-ms.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-decimal-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-decimal-ms.Tpo -c -o libmonoruntime_la-decimal-ms.lo `test -f 'decimal-ms.c' || echo '$(srcdir)/'`decimal-ms.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-decimal-ms.Tpo $(DEPDIR)/libmonoruntime_la-decimal-ms.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decimal-ms.c' object='libmonoruntime_la-decimal-ms.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-decimal.lo `test -f 'decimal.c' || echo '$(srcdir)/'`decimal.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-decimal-ms.lo `test -f 'decimal-ms.c' || echo '$(srcdir)/'`decimal-ms.c
 
 libmonoruntime_la-environment.lo: environment.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-environment.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-environment.Tpo -c -o libmonoruntime_la-environment.lo `test -f 'environment.c' || echo '$(srcdir)/'`environment.c
@@ -2285,13 +2330,6 @@ libmonoruntime_la-mono-debug.lo: mono-debug.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-mono-debug.lo `test -f 'mono-debug.c' || echo '$(srcdir)/'`mono-debug.c
 
-libmonoruntime_la-mono-debug-debugger.lo: mono-debug-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-mono-debug-debugger.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-mono-debug-debugger.Tpo -c -o libmonoruntime_la-mono-debug-debugger.lo `test -f 'mono-debug-debugger.c' || echo '$(srcdir)/'`mono-debug-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-mono-debug-debugger.Tpo $(DEPDIR)/libmonoruntime_la-mono-debug-debugger.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-debug-debugger.c' object='libmonoruntime_la-mono-debug-debugger.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-mono-debug-debugger.lo `test -f 'mono-debug-debugger.c' || echo '$(srcdir)/'`mono-debug-debugger.c
-
 libmonoruntime_la-mono-endian.lo: mono-endian.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-mono-endian.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-mono-endian.Tpo -c -o libmonoruntime_la-mono-endian.lo `test -f 'mono-endian.c' || echo '$(srcdir)/'`mono-endian.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-mono-endian.Tpo $(DEPDIR)/libmonoruntime_la-mono-endian.Plo
@@ -2312,6 +2350,13 @@ libmonoruntime_la-mono-perfcounters.lo: mono-perfcounters.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-perfcounters.c' object='libmonoruntime_la-mono-perfcounters.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-mono-perfcounters.lo `test -f 'mono-perfcounters.c' || echo '$(srcdir)/'`mono-perfcounters.c
+
+libmonoruntime_la-mono-route.lo: mono-route.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-mono-route.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-mono-route.Tpo -c -o libmonoruntime_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-mono-route.Tpo $(DEPDIR)/libmonoruntime_la-mono-route.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-route.c' object='libmonoruntime_la-mono-route.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
 
 libmonoruntime_la-mono-wsq.lo: mono-wsq.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-mono-wsq.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-mono-wsq.Tpo -c -o libmonoruntime_la-mono-wsq.lo `test -f 'mono-wsq.c' || echo '$(srcdir)/'`mono-wsq.c
@@ -2362,6 +2407,13 @@ libmonoruntime_la-rand.lo: rand.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-rand.lo `test -f 'rand.c' || echo '$(srcdir)/'`rand.c
 
+libmonoruntime_la-remoting.lo: remoting.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-remoting.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-remoting.Tpo -c -o libmonoruntime_la-remoting.lo `test -f 'remoting.c' || echo '$(srcdir)/'`remoting.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-remoting.Tpo $(DEPDIR)/libmonoruntime_la-remoting.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='remoting.c' object='libmonoruntime_la-remoting.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-remoting.lo `test -f 'remoting.c' || echo '$(srcdir)/'`remoting.c
+
 libmonoruntime_la-runtime.lo: runtime.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-runtime.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-runtime.Tpo -c -o libmonoruntime_la-runtime.lo `test -f 'runtime.c' || echo '$(srcdir)/'`runtime.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-runtime.Tpo $(DEPDIR)/libmonoruntime_la-runtime.Plo
@@ -2369,12 +2421,12 @@ libmonoruntime_la-runtime.lo: runtime.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-runtime.lo `test -f 'runtime.c' || echo '$(srcdir)/'`runtime.c
 
-libmonoruntime_la-security.lo: security.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-security.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-security.Tpo -c -o libmonoruntime_la-security.lo `test -f 'security.c' || echo '$(srcdir)/'`security.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-security.Tpo $(DEPDIR)/libmonoruntime_la-security.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='security.c' object='libmonoruntime_la-security.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_la-mono-security.lo: mono-security.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-mono-security.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-mono-security.Tpo -c -o libmonoruntime_la-mono-security.lo `test -f 'mono-security.c' || echo '$(srcdir)/'`mono-security.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-mono-security.Tpo $(DEPDIR)/libmonoruntime_la-mono-security.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-security.c' object='libmonoruntime_la-mono-security.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-security.lo `test -f 'security.c' || echo '$(srcdir)/'`security.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-mono-security.lo `test -f 'mono-security.c' || echo '$(srcdir)/'`mono-security.c
 
 libmonoruntime_la-security-core-clr.lo: security-core-clr.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-security-core-clr.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-security-core-clr.Tpo -c -o libmonoruntime_la-security-core-clr.lo `test -f 'security-core-clr.c' || echo '$(srcdir)/'`security-core-clr.c
@@ -2417,6 +2469,13 @@ libmonoruntime_la-threadpool.lo: threadpool.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntime_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+
+libmonoruntime_la-tpool-poll.lo: tpool-poll.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-tpool-poll.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-tpool-poll.Tpo -c -o libmonoruntime_la-tpool-poll.lo `test -f 'tpool-poll.c' || echo '$(srcdir)/'`tpool-poll.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-tpool-poll.Tpo $(DEPDIR)/libmonoruntime_la-tpool-poll.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tpool-poll.c' object='libmonoruntime_la-tpool-poll.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-tpool-poll.lo `test -f 'tpool-poll.c' || echo '$(srcdir)/'`tpool-poll.c
 
 libmonoruntime_la-verify.lo: verify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-verify.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-verify.Tpo -c -o libmonoruntime_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
@@ -2572,12 +2631,12 @@ libmonoruntimesgen_static_la-debug-mono-symfile.lo: debug-mono-symfile.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-debug-mono-symfile.lo `test -f 'debug-mono-symfile.c' || echo '$(srcdir)/'`debug-mono-symfile.c
 
-libmonoruntimesgen_static_la-decimal.lo: decimal.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-decimal.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-decimal.Tpo -c -o libmonoruntimesgen_static_la-decimal.lo `test -f 'decimal.c' || echo '$(srcdir)/'`decimal.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-decimal.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-decimal.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decimal.c' object='libmonoruntimesgen_static_la-decimal.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntimesgen_static_la-decimal-ms.lo: decimal-ms.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-decimal-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-decimal-ms.Tpo -c -o libmonoruntimesgen_static_la-decimal-ms.lo `test -f 'decimal-ms.c' || echo '$(srcdir)/'`decimal-ms.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-decimal-ms.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-decimal-ms.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decimal-ms.c' object='libmonoruntimesgen_static_la-decimal-ms.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-decimal.lo `test -f 'decimal.c' || echo '$(srcdir)/'`decimal.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-decimal-ms.lo `test -f 'decimal-ms.c' || echo '$(srcdir)/'`decimal-ms.c
 
 libmonoruntimesgen_static_la-environment.lo: environment.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-environment.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-environment.Tpo -c -o libmonoruntimesgen_static_la-environment.lo `test -f 'environment.c' || echo '$(srcdir)/'`environment.c
@@ -2719,13 +2778,6 @@ libmonoruntimesgen_static_la-mono-debug.lo: mono-debug.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-mono-debug.lo `test -f 'mono-debug.c' || echo '$(srcdir)/'`mono-debug.c
 
-libmonoruntimesgen_static_la-mono-debug-debugger.lo: mono-debug-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-mono-debug-debugger.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-mono-debug-debugger.Tpo -c -o libmonoruntimesgen_static_la-mono-debug-debugger.lo `test -f 'mono-debug-debugger.c' || echo '$(srcdir)/'`mono-debug-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-mono-debug-debugger.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-mono-debug-debugger.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-debug-debugger.c' object='libmonoruntimesgen_static_la-mono-debug-debugger.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-mono-debug-debugger.lo `test -f 'mono-debug-debugger.c' || echo '$(srcdir)/'`mono-debug-debugger.c
-
 libmonoruntimesgen_static_la-mono-endian.lo: mono-endian.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-mono-endian.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-mono-endian.Tpo -c -o libmonoruntimesgen_static_la-mono-endian.lo `test -f 'mono-endian.c' || echo '$(srcdir)/'`mono-endian.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-mono-endian.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-mono-endian.Plo
@@ -2746,6 +2798,13 @@ libmonoruntimesgen_static_la-mono-perfcounters.lo: mono-perfcounters.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-perfcounters.c' object='libmonoruntimesgen_static_la-mono-perfcounters.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-mono-perfcounters.lo `test -f 'mono-perfcounters.c' || echo '$(srcdir)/'`mono-perfcounters.c
+
+libmonoruntimesgen_static_la-mono-route.lo: mono-route.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-mono-route.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-mono-route.Tpo -c -o libmonoruntimesgen_static_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-mono-route.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-mono-route.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-route.c' object='libmonoruntimesgen_static_la-mono-route.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
 
 libmonoruntimesgen_static_la-mono-wsq.lo: mono-wsq.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-mono-wsq.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-mono-wsq.Tpo -c -o libmonoruntimesgen_static_la-mono-wsq.lo `test -f 'mono-wsq.c' || echo '$(srcdir)/'`mono-wsq.c
@@ -2796,6 +2855,13 @@ libmonoruntimesgen_static_la-rand.lo: rand.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-rand.lo `test -f 'rand.c' || echo '$(srcdir)/'`rand.c
 
+libmonoruntimesgen_static_la-remoting.lo: remoting.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-remoting.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-remoting.Tpo -c -o libmonoruntimesgen_static_la-remoting.lo `test -f 'remoting.c' || echo '$(srcdir)/'`remoting.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-remoting.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-remoting.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='remoting.c' object='libmonoruntimesgen_static_la-remoting.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-remoting.lo `test -f 'remoting.c' || echo '$(srcdir)/'`remoting.c
+
 libmonoruntimesgen_static_la-runtime.lo: runtime.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-runtime.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-runtime.Tpo -c -o libmonoruntimesgen_static_la-runtime.lo `test -f 'runtime.c' || echo '$(srcdir)/'`runtime.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-runtime.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-runtime.Plo
@@ -2803,12 +2869,12 @@ libmonoruntimesgen_static_la-runtime.lo: runtime.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-runtime.lo `test -f 'runtime.c' || echo '$(srcdir)/'`runtime.c
 
-libmonoruntimesgen_static_la-security.lo: security.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-security.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-security.Tpo -c -o libmonoruntimesgen_static_la-security.lo `test -f 'security.c' || echo '$(srcdir)/'`security.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-security.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-security.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='security.c' object='libmonoruntimesgen_static_la-security.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntimesgen_static_la-mono-security.lo: mono-security.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-mono-security.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-mono-security.Tpo -c -o libmonoruntimesgen_static_la-mono-security.lo `test -f 'mono-security.c' || echo '$(srcdir)/'`mono-security.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-mono-security.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-mono-security.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-security.c' object='libmonoruntimesgen_static_la-mono-security.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-security.lo `test -f 'security.c' || echo '$(srcdir)/'`security.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-mono-security.lo `test -f 'mono-security.c' || echo '$(srcdir)/'`mono-security.c
 
 libmonoruntimesgen_static_la-security-core-clr.lo: security-core-clr.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-security-core-clr.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-security-core-clr.Tpo -c -o libmonoruntimesgen_static_la-security-core-clr.lo `test -f 'security-core-clr.c' || echo '$(srcdir)/'`security-core-clr.c
@@ -2851,6 +2917,13 @@ libmonoruntimesgen_static_la-threadpool.lo: threadpool.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntimesgen_static_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+
+libmonoruntimesgen_static_la-tpool-poll.lo: tpool-poll.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-tpool-poll.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-tpool-poll.Tpo -c -o libmonoruntimesgen_static_la-tpool-poll.lo `test -f 'tpool-poll.c' || echo '$(srcdir)/'`tpool-poll.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-tpool-poll.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-tpool-poll.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tpool-poll.c' object='libmonoruntimesgen_static_la-tpool-poll.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-tpool-poll.lo `test -f 'tpool-poll.c' || echo '$(srcdir)/'`tpool-poll.c
 
 libmonoruntimesgen_static_la-verify.lo: verify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-verify.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-verify.Tpo -c -o libmonoruntimesgen_static_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
@@ -3209,12 +3282,12 @@ libmonoruntimesgen_la-debug-mono-symfile.lo: debug-mono-symfile.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-debug-mono-symfile.lo `test -f 'debug-mono-symfile.c' || echo '$(srcdir)/'`debug-mono-symfile.c
 
-libmonoruntimesgen_la-decimal.lo: decimal.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-decimal.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-decimal.Tpo -c -o libmonoruntimesgen_la-decimal.lo `test -f 'decimal.c' || echo '$(srcdir)/'`decimal.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-decimal.Tpo $(DEPDIR)/libmonoruntimesgen_la-decimal.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decimal.c' object='libmonoruntimesgen_la-decimal.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntimesgen_la-decimal-ms.lo: decimal-ms.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-decimal-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-decimal-ms.Tpo -c -o libmonoruntimesgen_la-decimal-ms.lo `test -f 'decimal-ms.c' || echo '$(srcdir)/'`decimal-ms.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-decimal-ms.Tpo $(DEPDIR)/libmonoruntimesgen_la-decimal-ms.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='decimal-ms.c' object='libmonoruntimesgen_la-decimal-ms.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-decimal.lo `test -f 'decimal.c' || echo '$(srcdir)/'`decimal.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-decimal-ms.lo `test -f 'decimal-ms.c' || echo '$(srcdir)/'`decimal-ms.c
 
 libmonoruntimesgen_la-environment.lo: environment.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-environment.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-environment.Tpo -c -o libmonoruntimesgen_la-environment.lo `test -f 'environment.c' || echo '$(srcdir)/'`environment.c
@@ -3356,13 +3429,6 @@ libmonoruntimesgen_la-mono-debug.lo: mono-debug.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-mono-debug.lo `test -f 'mono-debug.c' || echo '$(srcdir)/'`mono-debug.c
 
-libmonoruntimesgen_la-mono-debug-debugger.lo: mono-debug-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-mono-debug-debugger.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-mono-debug-debugger.Tpo -c -o libmonoruntimesgen_la-mono-debug-debugger.lo `test -f 'mono-debug-debugger.c' || echo '$(srcdir)/'`mono-debug-debugger.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-mono-debug-debugger.Tpo $(DEPDIR)/libmonoruntimesgen_la-mono-debug-debugger.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-debug-debugger.c' object='libmonoruntimesgen_la-mono-debug-debugger.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-mono-debug-debugger.lo `test -f 'mono-debug-debugger.c' || echo '$(srcdir)/'`mono-debug-debugger.c
-
 libmonoruntimesgen_la-mono-endian.lo: mono-endian.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-mono-endian.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-mono-endian.Tpo -c -o libmonoruntimesgen_la-mono-endian.lo `test -f 'mono-endian.c' || echo '$(srcdir)/'`mono-endian.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-mono-endian.Tpo $(DEPDIR)/libmonoruntimesgen_la-mono-endian.Plo
@@ -3383,6 +3449,13 @@ libmonoruntimesgen_la-mono-perfcounters.lo: mono-perfcounters.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-perfcounters.c' object='libmonoruntimesgen_la-mono-perfcounters.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-mono-perfcounters.lo `test -f 'mono-perfcounters.c' || echo '$(srcdir)/'`mono-perfcounters.c
+
+libmonoruntimesgen_la-mono-route.lo: mono-route.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-mono-route.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-mono-route.Tpo -c -o libmonoruntimesgen_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-mono-route.Tpo $(DEPDIR)/libmonoruntimesgen_la-mono-route.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-route.c' object='libmonoruntimesgen_la-mono-route.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
 
 libmonoruntimesgen_la-mono-wsq.lo: mono-wsq.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-mono-wsq.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-mono-wsq.Tpo -c -o libmonoruntimesgen_la-mono-wsq.lo `test -f 'mono-wsq.c' || echo '$(srcdir)/'`mono-wsq.c
@@ -3433,6 +3506,13 @@ libmonoruntimesgen_la-rand.lo: rand.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-rand.lo `test -f 'rand.c' || echo '$(srcdir)/'`rand.c
 
+libmonoruntimesgen_la-remoting.lo: remoting.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-remoting.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-remoting.Tpo -c -o libmonoruntimesgen_la-remoting.lo `test -f 'remoting.c' || echo '$(srcdir)/'`remoting.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-remoting.Tpo $(DEPDIR)/libmonoruntimesgen_la-remoting.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='remoting.c' object='libmonoruntimesgen_la-remoting.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-remoting.lo `test -f 'remoting.c' || echo '$(srcdir)/'`remoting.c
+
 libmonoruntimesgen_la-runtime.lo: runtime.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-runtime.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-runtime.Tpo -c -o libmonoruntimesgen_la-runtime.lo `test -f 'runtime.c' || echo '$(srcdir)/'`runtime.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-runtime.Tpo $(DEPDIR)/libmonoruntimesgen_la-runtime.Plo
@@ -3440,12 +3520,12 @@ libmonoruntimesgen_la-runtime.lo: runtime.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-runtime.lo `test -f 'runtime.c' || echo '$(srcdir)/'`runtime.c
 
-libmonoruntimesgen_la-security.lo: security.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-security.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-security.Tpo -c -o libmonoruntimesgen_la-security.lo `test -f 'security.c' || echo '$(srcdir)/'`security.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-security.Tpo $(DEPDIR)/libmonoruntimesgen_la-security.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='security.c' object='libmonoruntimesgen_la-security.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntimesgen_la-mono-security.lo: mono-security.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-mono-security.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-mono-security.Tpo -c -o libmonoruntimesgen_la-mono-security.lo `test -f 'mono-security.c' || echo '$(srcdir)/'`mono-security.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-mono-security.Tpo $(DEPDIR)/libmonoruntimesgen_la-mono-security.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-security.c' object='libmonoruntimesgen_la-mono-security.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-security.lo `test -f 'security.c' || echo '$(srcdir)/'`security.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-mono-security.lo `test -f 'mono-security.c' || echo '$(srcdir)/'`mono-security.c
 
 libmonoruntimesgen_la-security-core-clr.lo: security-core-clr.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-security-core-clr.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-security-core-clr.Tpo -c -o libmonoruntimesgen_la-security-core-clr.lo `test -f 'security-core-clr.c' || echo '$(srcdir)/'`security-core-clr.c
@@ -3488,6 +3568,13 @@ libmonoruntimesgen_la-threadpool.lo: threadpool.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntimesgen_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+
+libmonoruntimesgen_la-tpool-poll.lo: tpool-poll.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-tpool-poll.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-tpool-poll.Tpo -c -o libmonoruntimesgen_la-tpool-poll.lo `test -f 'tpool-poll.c' || echo '$(srcdir)/'`tpool-poll.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-tpool-poll.Tpo $(DEPDIR)/libmonoruntimesgen_la-tpool-poll.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tpool-poll.c' object='libmonoruntimesgen_la-tpool-poll.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-tpool-poll.lo `test -f 'tpool-poll.c' || echo '$(srcdir)/'`tpool-poll.c
 
 libmonoruntimesgen_la-verify.lo: verify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-verify.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-verify.Tpo -c -o libmonoruntimesgen_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c

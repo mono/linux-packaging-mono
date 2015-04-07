@@ -3827,20 +3827,30 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			EMIT_COND_SYSTEM_EXCEPTION (S390_CC_LT, "OverflowException");
 			s390_lgfr (code, ins->dreg, ins->sreg1);
 			break;
-		case OP_FMOVE: {
+		case OP_FMOVE:
 			if (ins->dreg != ins->sreg1) {
 				s390_ldr   (code, ins->dreg, ins->sreg1);
 			}
-		}
 			break;
-		case OP_FCONV_TO_R4: {
+		case OP_MOVE_F_TO_I8: 
+			s390_lgdr (code, ins->dreg, ins->sreg1);
+			break;
+		case OP_MOVE_I8_TO_F: 
+			s390_ldgr (code, ins->dreg, ins->sreg1);
+			break;
+		case OP_MOVE_F_TO_I4:
+			s390_lgdr (code, ins->dreg, ins->sreg1);
+			break;
+		case OP_MOVE_I4_TO_F: 
+			s390_lgfr (code, s390_r0, ins->sreg1);
+			s390_ldgr (code, ins->dreg, s390_r0);
+			break;
+		case OP_FCONV_TO_R4:
 			s390_ledbr (code, ins->dreg, ins->sreg1);
 			s390_ldebr (code, ins->dreg, ins->dreg);
-		}
 			break;
-		case OP_S390_SETF4RET: {
+		case OP_S390_SETF4RET:
 			s390_ledbr (code, ins->dreg, ins->sreg1);
-		}
 			break;
 		case OP_TLS_GET: {
 			if (s390_is_imm16 (ins->inst_offset)) {
@@ -4071,6 +4081,9 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_NOT_REACHED:
 		case OP_NOT_NULL: {
 		}
+			break;
+		case OP_IL_SEQ_POINT:
+			mono_add_seq_point (cfg, bb, ins, code - cfg->native_code);
 			break;
 		case OP_SEQ_POINT: {
 			int i;
@@ -4577,8 +4590,8 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			}
 		}
 			break;	
-		case OP_MEMORY_BARRIER: {
-		}
+		case OP_MEMORY_BARRIER:
+			s390_mem (code);
 			break;
 		case OP_GC_LIVENESS_DEF:
 		case OP_GC_LIVENESS_USE:
@@ -5635,6 +5648,8 @@ get_delegate_invoke_impl (gboolean has_target, guint32 param_count, guint32 *cod
 		mono_arch_flush_icache (start, size);
 	}
 
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_DELEGATE_INVOKE, NULL);
+
 	if (code_len)
 		*code_len = code - start;
 
@@ -5909,8 +5924,9 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain,
 	}
 
 	mono_arch_flush_icache ((guint8*)start, (code - start));
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_IMT_TRAMPOLINE, NULL);
 
-	if (!fail_tramp)
+	if (!fail_tramp) 
 		mono_stats.imt_thunks_size += (code - start);
 
 	g_assert (code - start <= size);

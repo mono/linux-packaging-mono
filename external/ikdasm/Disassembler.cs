@@ -44,6 +44,7 @@ namespace Ildasm
         None = 0,
         DiffMode = 1,
         Caverbal = 2,
+        Project = 4,
     }
 
     sealed partial class Disassembler
@@ -59,7 +60,7 @@ namespace Ildasm
         const int COMIMAGE_FLAGS_STRONGNAMESIGNED = 0x00000008;
         const int COMIMAGE_FLAGS_NATIVE_ENTRYPOINT = 0x00000010;
         const int COMIMAGE_FLAGS_32BITPREFERRED = 0x00020000;
-        readonly Universe universe = new Universe(UniverseOptions.EnableFunctionPointers | UniverseOptions.ResolveMissingMembers | UniverseOptions.DisablePseudoCustomAttributeRetrieval);
+        readonly Universe universe;
         readonly Assembly mscorlib;
         readonly Type typeofSystemBoolean;
         readonly Type typeofSystemSByte;
@@ -100,6 +101,12 @@ namespace Ildasm
             this.compat = compat;
             this.diffMode = (flags & Flags.DiffMode) != 0;
             this.flags = flags;
+            UniverseOptions options = UniverseOptions.EnableFunctionPointers | UniverseOptions.ResolveMissingMembers | UniverseOptions.DisablePseudoCustomAttributeRetrieval;
+            if ((flags & Flags.Project) == 0)
+            {
+                options |= UniverseOptions.DisableWindowsRuntimeProjection;
+            }
+            universe = new Universe(options);
             universe.AssemblyResolve += new IKVM.Reflection.ResolveEventHandler(universe_AssemblyResolve);
             mscorlib = universe.Import(typeof(object)).Assembly;
             typeofSystemBoolean = universe.Import(typeof(bool));
@@ -505,7 +512,7 @@ namespace Ildasm
             {
                 typeSize = GetPointerSize();
             }
-            else if (!type.__GetLayout(out packingSize, out typeSize))
+            else if (type.__IsMissing || !type.__GetLayout(out packingSize, out typeSize))
             {
                 if (type == typeofSystemSByte
                     || type == typeofSystemByte
@@ -530,6 +537,11 @@ namespace Ildasm
                     || type == typeofSystemDouble)
                 {
                     typeSize = 8;
+                }
+                else
+                {
+                    // unknown
+                    typeSize = 0;
                 }
             }
             return typeSize;
@@ -683,7 +695,7 @@ namespace Ildasm
             else if (compat == CompatLevel.V45)
             {
                 lw.WriteLine();
-                lw.WriteLine("//  Microsoft (R) .NET Framework IL Disassembler.  Version 4.0.30319.17929");
+                lw.WriteLine("//  Microsoft (R) .NET Framework IL Disassembler.  Version 4.0.30319.18020");
                 lw.WriteLine("//  Copyright (c) Microsoft Corporation.  All rights reserved.");
                 lw.WriteLine();
                 lw.WriteLine();
@@ -807,14 +819,7 @@ namespace Ildasm
             if (type.BaseType != null)
             {
                 lw.Write("       extends ");
-                if (type.BaseType.__IsMissing || !type.BaseType.IsGenericType)
-                {
-                    WriteTypeDefOrRef(lw, type.BaseType);
-                }
-                else
-                {
-                    WriteSignatureType(lw, type.BaseType, TypeLocation.General);
-                }
+                WriteInterfaceOrBaseType(lw, type.BaseType);
                 lw.WriteLine();
                 lw.GoToColumn(level);
             }
@@ -831,14 +836,7 @@ namespace Ildasm
                         lw.GoToColumn(level + 18);
                     }
                     first = false;
-                    if (iface.__IsMissing || !iface.IsGenericType)
-                    {
-                        WriteTypeDefOrRef(lw, iface);
-                    }
-                    else
-                    {
-                        WriteSignatureType(lw, iface, TypeLocation.General);
-                    }
+                    WriteInterfaceOrBaseType(lw, iface);
                 }
                 lw.WriteLine();
                 lw.GoToColumn(level);
@@ -865,7 +863,7 @@ namespace Ildasm
                     {
                         lw.GoToColumn(level + 2);
                         lw.Write(".interfaceimpl type ");
-                        WriteTypeDefOrRef(lw, iface);
+                        WriteInterfaceOrBaseType(lw, iface);
                         lw.WriteLine();
                         WriteCustomAttributes(lw, level + 2, cas);
                     }
@@ -906,6 +904,18 @@ namespace Ildasm
             WriteTypeNameNoOuter(lw, type);
             lw.WriteLine();
             lw.WriteLine();
+        }
+
+        void WriteInterfaceOrBaseType(LineWriter lw, Type type)
+        {
+            if (type.__IsMissing || !type.IsGenericType)
+            {
+                WriteTypeDefOrRef(lw, type);
+            }
+            else
+            {
+                WriteSignatureType(lw, type, TypeLocation.General);
+            }
         }
 
         void WriteGenericParameterCustomAttributes(LineWriter lw, int level, Type[] args)
@@ -1055,6 +1065,7 @@ namespace Ildasm
             }
             WriteCallingConvention(lw, prop.__CallingConvention);
             WriteSignatureType(lw, prop.PropertyType);
+            WriteCustomModifiers(lw, prop.__GetCustomModifiers());
             if (lw.Column > 40)
             {
                 lw.WriteLine();
@@ -2029,9 +2040,37 @@ namespace Ildasm
             for (int i = 0; i < referencedAssemblies.Length; i++)
             {
                 AssemblyName asm = referencedAssemblies[i];
-                lw.Write(".assembly extern {0}{1}",
-                    asm.ContentType == AssemblyContentType.WindowsRuntime && (compat == CompatLevel.None || compat >= CompatLevel.V45) ? "windowsruntime " : "",
-                    QuoteIdentifier(asm.Name));
+                lw.Write(".assembly extern ");
+                if ((asm.Flags & AssemblyNameFlags.Retargetable) != 0)
+                {
+                    lw.Write("retargetable ");
+                }
+                if (asm.ContentType == AssemblyContentType.WindowsRuntime && (compat == CompatLevel.None || compat >= CompatLevel.V45))
+                {
+                    lw.Write("windowsruntime ");
+                }
+                switch (asm.ProcessorArchitecture)
+                {
+                    case ProcessorArchitecture.MSIL:
+                        lw.Write("cil ");
+                        break;
+                    case ProcessorArchitecture.X86:
+                        lw.Write("x86 ");
+                        break;
+                    case ProcessorArchitecture.IA64:
+                        lw.Write("ia64 ");
+                        break;
+                    case ProcessorArchitecture.Amd64:
+                        lw.Write("amd64 ");
+                        break;
+                    case ProcessorArchitecture.Arm:
+                        if (compat == CompatLevel.None)
+                        {
+                            lw.Write("/*arm*/ ");
+                        }
+                        break;
+                }
+                lw.Write(QuoteIdentifier(asm.Name));
                 if (asm.Name != this.referencedAssemblies[resolvedAssemblies[i]])
                 {
                     lw.Write(" as {0}", QuoteIdentifier(this.referencedAssemblies[resolvedAssemblies[i]]));
@@ -2070,8 +2109,7 @@ namespace Ildasm
             }
             foreach (var ca in cas)
             {
-                if (ca.Constructor.DeclaringType.FullName == "System.Diagnostics.DebuggableAttribute"
-                    && ca.Constructor.DeclaringType.Assembly.GetName().Name == "mscorlib")
+                if (compat != CompatLevel.None && IsDebuggableAttribute(ca.AttributeType))
                 {
                     lw.WriteLine();
                     lw.WriteLine("  // --- The following custom attribute is added automatically, do not uncomment -------");
@@ -2115,6 +2153,16 @@ namespace Ildasm
                 }
             }
             lw.WriteLine("}");
+        }
+
+        static bool IsDebuggableAttribute(Type type)
+        {
+            return !type.IsNested
+                && (type.__IsMissing || !type.IsGenericType)
+                && !type.HasElementType
+                && !type.__IsFunctionPointer
+                && type.__Name == "DebuggableAttribute"
+                && type.__Namespace == "System.Diagnostics";
         }
 
         void WriteDeclarativeSecurity(LineWriter lw, int level, IList<CustomAttributeData> list, int metadataToken)

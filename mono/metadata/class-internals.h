@@ -209,7 +209,9 @@ enum {
 	MONO_EXCEPTION_BAD_IMAGE = 12,
 	MONO_EXCEPTION_OBJECT_SUPPLIED = 13, /*The exception object is already created.*/
 	MONO_EXCEPTION_OUT_OF_MEMORY = 14,
-	MONO_EXCEPTION_INLINE_FAILED = 15
+	MONO_EXCEPTION_INLINE_FAILED = 15,
+	MONO_EXCEPTION_MONO_ERROR = 16,
+	/* add other exception type */
 };
 
 /* This struct collects the info needed for the runtime use of a class,
@@ -559,7 +561,11 @@ struct _MonoDynamicGenericClass {
  * A type parameter.
  */
 struct _MonoGenericParam {
-	MonoGenericContainer *owner;	/* Type or method this parameter was defined in. */
+	/*
+	 * Type or method this parameter was defined in.
+	 * If this is non-null, this is a MonoGenericParamFull structure.
+	 */
+	MonoGenericContainer *owner;
 	guint16 num;
 	/* For internal runtime use, used to make different versions of the same param */
 	guint16 serial;
@@ -657,6 +663,8 @@ typedef struct {
 	gconstpointer trampoline;
 	MonoMethodSignature *sig;
 	const char *c_symbol;
+	MonoMethod *wrapper_method;
+	gboolean no_raise;
 } MonoJitICallInfo;
 
 typedef struct {
@@ -1025,6 +1033,9 @@ mono_class_inflate_generic_method_full (MonoMethod *method, MonoClass *klass_hin
 MonoMethod*
 mono_class_inflate_generic_method_full_checked (MonoMethod *method, MonoClass *klass_hint, MonoGenericContext *context, MonoError *error) MONO_INTERNAL;
 
+MonoMethod *
+mono_class_inflate_generic_method_checked (MonoMethod *method, MonoGenericContext *context, MonoError *error) MONO_INTERNAL;
+
 MonoMethodInflated*
 mono_method_inflated_lookup (MonoMethodInflated* method, gboolean cache) MONO_INTERNAL;
 
@@ -1239,7 +1250,7 @@ MonoJitICallInfo *
 mono_register_jit_icall (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean is_save) MONO_INTERNAL;
 
 MonoJitICallInfo *
-mono_register_jit_icall_full (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean is_save, const char *c_symbol) MONO_INTERNAL;
+mono_register_jit_icall_full (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean is_save, gboolean no_raise, const char *c_symbol) MONO_INTERNAL;
 
 void
 mono_register_jit_icall_wrapper (MonoJitICallInfo *info, gconstpointer wrapper) MONO_INTERNAL;
@@ -1393,5 +1404,11 @@ mono_class_get_and_inflate_typespec_checked (MonoImage *image, guint32 type_toke
 
 MonoClass *
 mono_class_from_name_case_checked (MonoImage *image, const char* name_space, const char *name, MonoError *error) MONO_INTERNAL;
+
+MonoClassField*
+mono_field_from_token_checked (MonoImage *image, uint32_t token, MonoClass **retklass, MonoGenericContext *context, MonoError *error) MONO_INTERNAL;
+
+gpointer
+mono_ldtoken_checked (MonoImage *image, guint32 token, MonoClass **handle_class, MonoGenericContext *context, MonoError *error) MONO_INTERNAL;
 
 #endif /* __MONO_METADATA_CLASS_INTERBALS_H__ */

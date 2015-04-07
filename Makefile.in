@@ -233,6 +233,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_PERF_EVENTS = @DISABLE_PERF_EVENTS@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
@@ -316,12 +317,15 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
+SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTUNE_CFLAGS = @VTUNE_CFLAGS@
+VTUNE_LIBS = @VTUNE_LIBS@
 WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
@@ -414,9 +418,9 @@ MONOTOUCH_SUBDIRS = $(libgc_dir) eglib/src mono
 @CROSS_COMPILING_FALSE@@ONLY_MONOTOUCH_TRUE@SUBDIRS = $(MONOTOUCH_SUBDIRS) runtime
 @CROSS_COMPILING_TRUE@SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples msvc $(docs_dir)
 # Keep in sync with SUBDIRS
-@CROSS_COMPILING_FALSE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@DIST_SUBDIRS = m4 po libgc eglib mono ikvm-native support data runtime scripts man samples tools msvc docs
+@CROSS_COMPILING_FALSE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs
 # Keep in sync with SUBDIRS
-@CROSS_COMPILING_TRUE@DIST_SUBDIRS = m4 po libgc eglib mono ikvm-native support data runtime scripts man samples tools msvc docs
+@CROSS_COMPILING_TRUE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs
 SUBMODULE_ERROR = 'Could not recursively update all git submodules. You may experience compilation problems if some submodules are out of date'
 EXTRA_DIST = \
         README.md \
@@ -943,7 +947,7 @@ dist-hook:
 	d=`cd $(distdir)/mcs && pwd`; cd $(mcs_topdir) && $(MAKE) distdir=$$d dist-recursive
 	rm -rf `find $(top_distdir)/external -path '*\.git'`
 	rm -f `find $(top_distdir)/external -path '*\.exe'`
-	rm -f `find $(top_distdir)/external -path '*\.dll'`
+	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/v4\.0*'`
 	cp mcs/class/lib/basic/System.Configuration.dll mcs/class/lib/monolite/
 	cp mcs/class/lib/basic/System.Security.dll mcs/class/lib/monolite/
 .PHONY: get-monolite-latest 

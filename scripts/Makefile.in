@@ -79,8 +79,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@INSTALL_4_0_TRUE@am__append_1 = $(scripts_4_0) dmcs
-@INSTALL_4_5_TRUE@am__append_2 = xbuild
+@INSTALL_4_5_TRUE@am__append_1 = $(scripts_4_0) dmcs xbuild
 subdir = scripts
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-find-provides.in \
@@ -181,6 +180,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_PERF_EVENTS = @DISABLE_PERF_EVENTS@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
@@ -264,12 +264,15 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
+SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTUNE_CFLAGS = @VTUNE_CFLAGS@
+VTUNE_LIBS = @VTUNE_LIBS@
 WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
@@ -379,8 +382,8 @@ COMPAT_4_0_SUFFIX = 4$(SCRIPT_SUFFIX)
 bin_SCRIPTS = $(scripts_4_0_umask) $(scripts_defaults) $(scripts_2_0) \
 	$(scripts_service) $(scripts_nunit) $(scripts_rpmhelpers) \
 	$(MDOC_SUBCOMMANDS) $(MDOC_COMPAT) mono-test-install peverify \
-	mcs gmcs mono-heapviz $(scripts_mono_configuration_crypto) \
-	$(am__append_1) $(am__append_2)
+	mcs mono-heapviz $(scripts_mono_configuration_crypto) \
+	$(am__append_1)
 scripts_4_0_umask = \
 	makecert$(SCRIPT_SUFFIX)		\
 	sn$(SCRIPT_SUFFIX)
@@ -488,7 +491,6 @@ EXTRA_DIST = \
 	xbuild.in			\
 	update_submodules		\
 	mcs.in				\
-	gmcs.in				\
 	dmcs.in				\
 	mono-test-install	\
 	mono-heapviz		\
@@ -514,11 +516,7 @@ REWRITE_DEBUG = $(REWRITE_COMMON) -e 's,@''mono_interp@,$(mono_interp) --debug,g
 REWRITE2_DEBUG = $(REWRITE_DEBUG) -e 's,@''framework_version@,2.0,g'
 REWRITE2 = $(REWRITE) -e 's,@''framework_version@,2.0,g'
 REWRITE2_1 = $(REWRITE) -e 's,@''framework_version@,2.1,g'
-@INSTALL_4_0_FALSE@@INSTALL_4_5_FALSE@REWRITE4 = $(REWRITE) -e 's,@''framework_version@,2.0,g'
-@INSTALL_4_0_TRUE@@INSTALL_4_5_FALSE@REWRITE4 = $(REWRITE) -e 's,@''framework_version@,4.0,g'
 @INSTALL_4_5_TRUE@REWRITE4 = $(REWRITE) -e 's,@''framework_version@,4.5,g'
-@INSTALL_4_0_FALSE@@INSTALL_4_5_FALSE@REWRITE4_DEBUG = $(REWRITE_DEBUG) -e 's,@''framework_version@,2.0,g'
-@INSTALL_4_0_TRUE@@INSTALL_4_5_FALSE@REWRITE4_DEBUG = $(REWRITE_DEBUG) -e 's,@''framework_version@,4.0,g'
 @INSTALL_4_5_TRUE@REWRITE4_DEBUG = $(REWRITE_DEBUG) -e 's,@''framework_version@,4.5,g'
 all: all-am
 
@@ -764,10 +762,6 @@ mcs: mcs.in Makefile
 	$(REWRITE_COMMON) $(srcdir)/mcs.in > $@.tmp
 	mv -f $@.tmp $@
 
-gmcs: gmcs.in Makefile
-	$(REWRITE_COMMON) $(srcdir)/gmcs.in > $@.tmp
-	mv -f $@.tmp $@
-
 dmcs: dmcs.in Makefile
 	$(REWRITE_COMMON) $(srcdir)/dmcs.in > $@.tmp
 	mv -f $@.tmp $@
@@ -781,7 +775,7 @@ mono-service2: mono-service.in Makefile
 	mv -f $@.tmp $@
 
 nunit-console$(SCRIPT_SUFFIX): $(SCRIPT_IN) Makefile
-	$(REWRITE2_DEBUG) -e 's,@''exe_name@,nunit-console,g' $(srcdir)/$(SCRIPT_IN) | $(FILTER) > $@.tmp
+	$(REWRITE4_DEBUG) -e 's,@''exe_name@,nunit-console,g' $(srcdir)/$(SCRIPT_IN) | $(FILTER) > $@.tmp
 	mv -f $@.tmp $@
 
 nunit-console2$(SCRIPT_SUFFIX): $(SCRIPT_IN) Makefile
@@ -814,7 +808,7 @@ $(scripts_defaults): $(SCRIPT_IN) Makefile
 
 $(scripts_2_0): $(SCRIPT_IN) Makefile
 	n=`echo $@ | sed 's,$(COMPAT_2_0_SUFFIX)$$,,'`; \
-	$(REWRITE2) -e "s,@""exe_name@,$$n,g" $(srcdir)/$(SCRIPT_IN) | $(FILTER) > $@.tmp
+	$(REWRITE4) -e "s,@""exe_name@,$$n,g" $(srcdir)/$(SCRIPT_IN) | $(FILTER) > $@.tmp
 	mv -f $@.tmp $@
 
 $(scripts_4_0): $(SCRIPT_IN) Makefile

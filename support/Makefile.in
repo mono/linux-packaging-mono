@@ -134,17 +134,16 @@ am__DEPENDENCIES_1 =
 libMonoPosixHelper_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
-	signal.c stdio.c string.c stdlib.c fakepoll.h dirent.c fcntl.c \
-	fstab.c grp.c macros.c nl.c nl.h old-map.c old-map.h pwd.c \
-	serial.c sys-mman.c sys-sendfile.c sys-stat.c sys-statvfs.c \
-	sys-time.c sys-uio.c sys-utsname.c sys-wait.c sys-xattr.c \
-	syslog.c time.c unistd.c utime.c x-struct-str.c zlib-helper.c \
-	adler32.c compress.c crc32.c uncompr.c deflate.c trees.c \
-	zutil.c inflate.c infback.c inftrees.c inffast.c crc32.h \
-	deflate.h inffast.h inffixed.h inflate.h inftrees.h trees.h \
-	zconf.h zlib.h zutil.h minizip/crypt.h minizip/ioapi.c \
-	minizip/ioapi.h minizip/unzip.c minizip/unzip.h minizip/zip.c \
-	minizip/zip.h
+	signal.c stdio.c string.c stdlib.c dirent.c fcntl.c fstab.c \
+	grp.c macros.c nl.c nl.h old-map.c old-map.h pwd.c serial.c \
+	sys-mman.c sys-sendfile.c sys-stat.c sys-statvfs.c sys-time.c \
+	sys-uio.c sys-utsname.c sys-wait.c sys-xattr.c syslog.c time.c \
+	unistd.c utime.c x-struct-str.c zlib-helper.c adler32.c \
+	compress.c crc32.c uncompr.c deflate.c trees.c zutil.c \
+	inflate.c infback.c inftrees.c inffast.c crc32.h deflate.h \
+	inffast.h inffixed.h inflate.h inftrees.h trees.h zconf.h \
+	zlib.h zutil.h minizip/crypt.h minizip/ioapi.c minizip/ioapi.h \
+	minizip/unzip.c minizip/unzip.h minizip/zip.c minizip/zip.h
 am__objects_1 = errno.lo map.lo signal.lo stdio.lo string.lo stdlib.lo
 am__objects_2 = dirent.lo fcntl.lo fstab.lo grp.lo macros.lo nl.lo \
 	old-map.lo pwd.lo serial.lo sys-mman.lo sys-sendfile.lo \
@@ -269,6 +268,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_PERF_EVENTS = @DISABLE_PERF_EVENTS@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
@@ -352,12 +352,15 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
+SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTUNE_CFLAGS = @VTUNE_CFLAGS@
+VTUNE_LIBS = @VTUNE_LIBS@
 WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
@@ -469,7 +472,6 @@ MPH_C_SOURCE = \
 # Source code which helps implement POSIX and other related Unix standards,
 # and *may* be portable between Unix platforms.
 MPH_UNIX_SOURCE = \
-	fakepoll.h				\
 	dirent.c				\
 	fcntl.c					\
 	fstab.c					\
@@ -977,7 +979,7 @@ refresh:
 	--rename-member=st_mtime=st_mtime_                    \
 	--rename-namespace=Mono.Unix.Native=Mono.Posix        \
 	--library=MonoPosixHelper                             \
-	$(mcs_topdir)/class/lib/net_2_0/Mono.Posix.dll map
+	$(mcs_topdir)/class/lib/net_4_5/Mono.Posix.dll map
 
 # Useful if mono is compiled with --enable-shared=no
 patch-libtool:

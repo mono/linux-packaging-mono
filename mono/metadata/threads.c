@@ -14,7 +14,6 @@
 #include <config.h>
 
 #include <glib.h>
-#include <signal.h>
 #include <string.h>
 
 #include <mono/metadata/object.h>
@@ -44,7 +43,11 @@
 
 #include <mono/metadata/gc-internal.h>
 
-#if defined(PLATFORM_ANDROID) && !defined(TARGET_ARM64)
+#ifdef HAVE_SIGNAL_H
+#include <signal.h>
+#endif
+
+#if defined(PLATFORM_ANDROID) && !defined(TARGET_ARM64) && !defined(TARGET_AMD64)
 #define USE_TKILL_ON_ANDROID 1
 #endif
 
@@ -583,13 +586,11 @@ static guint32 WINAPI start_wrapper_internal(void *data)
 	info = mono_thread_info_current ();
 	g_assert (info);
 	internal->thread_info = info;
-
+	internal->small_id = info->small_id;
 
 	tid=internal->tid;
 
 	SET_CURRENT_OBJECT (internal);
-
-	mono_monitor_init_tls ();
 
 	/* Every thread references the appdomain which created it */
 	mono_thread_push_appdomain_ref (domain);
@@ -924,6 +925,7 @@ mono_thread_attach_full (MonoDomain *domain, gboolean force_attach)
 	info = mono_thread_info_current ();
 	g_assert (info);
 	thread->thread_info = info;
+	thread->small_id = info->small_id;
 
 	current_thread = new_thread_with_internal (domain, thread);
 
@@ -937,8 +939,6 @@ mono_thread_attach_full (MonoDomain *domain, gboolean force_attach)
 
 	SET_CURRENT_OBJECT (thread);
 	mono_domain_set (domain, TRUE);
-
-	mono_monitor_init_tls ();
 
 	thread_adjust_static_data (thread);
 
@@ -1056,7 +1056,7 @@ ves_icall_System_Threading_Thread_Thread_internal (MonoThread *this,
 
 	if ((internal->state & ThreadState_Unstarted) == 0) {
 		UNLOCK_THREAD (internal);
-		mono_raise_exception (mono_get_exception_thread_state ("Thread has already been started."));
+		mono_set_pending_exception (mono_get_exception_thread_state ("Thread has already been started."));
 		return NULL;
 	}
 
@@ -1116,7 +1116,8 @@ ves_icall_System_Threading_InternalThread_Thread_free_internal (MonoInternalThre
 	}
 }
 
-void ves_icall_System_Threading_Thread_Sleep_internal(gint32 ms)
+void
+ves_icall_System_Threading_Thread_Sleep_internal(gint32 ms)
 {
 	guint32 res;
 	MonoInternalThread *thread = mono_thread_internal_current ();
@@ -1250,6 +1251,17 @@ ves_icall_System_Threading_Thread_SetName_internal (MonoInternalThread *this_obj
 	mono_thread_set_name_internal (this_obj, name, TRUE);
 }
 
+int
+ves_icall_System_Threading_Thread_GetPriority (MonoInternalThread *thread)
+{
+	return ThreadPriority_Lowest;
+}
+
+void
+ves_icall_System_Threading_Thread_SetPriority (MonoInternalThread *thread, int priority)
+{
+}
+
 /* If the array is already in the requested domain, we just return it,
    otherwise we return a copy in that domain. */
 static MonoArray*
@@ -1305,8 +1317,9 @@ mono_thread_internal_current (void)
 	return res;
 }
 
-gboolean ves_icall_System_Threading_Thread_Join_internal(MonoInternalThread *this,
-							 int ms, HANDLE thread)
+gboolean
+ves_icall_System_Threading_Thread_Join_internal(MonoInternalThread *this,
+												int ms, HANDLE thread)
 {
 	MonoInternalThread *cur_thread = mono_thread_internal_current ();
 	gboolean ret;
@@ -1318,7 +1331,7 @@ gboolean ves_icall_System_Threading_Thread_Join_internal(MonoInternalThread *thi
 	if ((this->state & ThreadState_Unstarted) != 0) {
 		UNLOCK_THREAD (this);
 		
-		mono_raise_exception (mono_get_exception_thread_state ("Thread has not been started."));
+		mono_set_pending_exception (mono_get_exception_thread_state ("Thread has not been started."));
 		return FALSE;
 	}
 
@@ -1760,6 +1773,13 @@ gint32 ves_icall_System_Threading_Interlocked_CompareExchange_Int(gint32 *locati
 	return InterlockedCompareExchange(location, value, comparand);
 }
 
+gint32 ves_icall_System_Threading_Interlocked_CompareExchange_Int_Success(gint32 *location, gint32 value, gint32 comparand, MonoBoolean *success)
+{
+	gint32 r = InterlockedCompareExchange(location, value, comparand);
+	*success = r == comparand;
+	return r;
+}
+
 MonoObject * ves_icall_System_Threading_Interlocked_CompareExchange_Object (MonoObject **location, MonoObject *value, MonoObject *comparand)
 {
 	MonoObject *res;
@@ -1969,7 +1989,7 @@ void mono_thread_current_check_pending_interrupt ()
 int  
 mono_thread_get_abort_signal (void)
 {
-#ifdef HOST_WIN32
+#if defined (HOST_WIN32) || !defined (HAVE_SIGACTION)
 	return -1;
 #elif defined(PLATFORM_ANDROID)
 	return SIGUNUSED;
@@ -2107,7 +2127,8 @@ ves_icall_System_Threading_Thread_ResetAbort (void)
 
 	if (!was_aborting) {
 		const char *msg = "Unable to reset abort because no abort was requested";
-		mono_raise_exception (mono_get_exception_thread_state (msg));
+		mono_set_pending_exception (mono_get_exception_thread_state (msg));
+		return;
 	}
 	thread->abort_exc = NULL;
 	if (thread->abort_state_handle) {
@@ -2161,7 +2182,8 @@ ves_icall_System_Threading_Thread_GetAbortExceptionState (MonoThread *this)
 		MonoException *invalid_op_exc = mono_get_exception_invalid_operation ("Thread.ExceptionState cannot access an ExceptionState from a different AppDomain");
 		if (exc)
 			MONO_OBJECT_SETREF (invalid_op_exc, inner_ex, exc);
-		mono_raise_exception (invalid_op_exc);
+		mono_set_pending_exception (invalid_op_exc);
+		return NULL;
 	}
 
 	return deserialized;
@@ -2199,8 +2221,10 @@ mono_thread_suspend (MonoInternalThread *thread)
 void
 ves_icall_System_Threading_Thread_Suspend (MonoInternalThread *thread)
 {
-	if (!mono_thread_suspend (thread))
-		mono_raise_exception (mono_get_exception_thread_state ("Thread has not been started, or is dead."));
+	if (!mono_thread_suspend (thread)) {
+		mono_set_pending_exception (mono_get_exception_thread_state ("Thread has not been started, or is dead."));
+		return;
+	}
 }
 
 static gboolean
@@ -2229,8 +2253,10 @@ mono_thread_resume (MonoInternalThread *thread)
 void
 ves_icall_System_Threading_Thread_Resume (MonoThread *thread)
 {
-	if (!thread->internal_thread || !mono_thread_resume (thread->internal_thread))
-		mono_raise_exception (mono_get_exception_thread_state ("Thread has not been started, or is dead."));
+	if (!thread->internal_thread || !mono_thread_resume (thread->internal_thread)) {
+		mono_set_pending_exception (mono_get_exception_thread_state ("Thread has not been started, or is dead."));
+		return;
+	}
 }
 
 static gboolean
@@ -3996,13 +4022,13 @@ mono_thread_alloc_tls (MonoReflectionType *type)
 	return tls_offset;
 }
 
-void
-mono_thread_destroy_tls (uint32_t tls_offset)
+static void
+destroy_tls (MonoDomain *domain, uint32_t tls_offset)
 {
 	MonoTlsDataRecord *prev = NULL;
 	MonoTlsDataRecord *cur;
 	guint32 size = 0;
-	MonoDomain *domain = mono_domain_get ();
+
 	mono_domain_lock (domain);
 	cur = domain->tlsrec_list;
 	while (cur) {
@@ -4023,6 +4049,12 @@ mono_thread_destroy_tls (uint32_t tls_offset)
 		mono_special_static_data_free_slot (tls_offset, size);
 }
 
+void
+mono_thread_destroy_tls (uint32_t tls_offset)
+{
+	destroy_tls (mono_domain_get (), tls_offset);
+}
+
 /*
  * This is just to ensure cleanup: the finalizers should have taken care, so this is not perf-critical.
  */
@@ -4030,7 +4062,7 @@ void
 mono_thread_destroy_domain_tls (MonoDomain *domain)
 {
 	while (domain->tlsrec_list)
-		mono_thread_destroy_tls (domain->tlsrec_list->tls_offset);
+		destroy_tls (domain, domain->tlsrec_list->tls_offset);
 }
 
 static MonoClassField *local_slots = NULL;
@@ -4109,7 +4141,8 @@ static void CALLBACK dummy_apc (ULONG_PTR param)
  * Performs the operation that the requested thread state requires (abort,
  * suspend or stop)
  */
-static MonoException* mono_thread_execute_interruption (MonoInternalThread *thread)
+static MonoException*
+mono_thread_execute_interruption (MonoInternalThread *thread)
 {
 	LOCK_THREAD (thread);
 
@@ -4260,35 +4293,56 @@ gboolean mono_thread_interruption_requested ()
 	return FALSE;
 }
 
-static void mono_thread_interruption_checkpoint_request (gboolean bypass_abort_protection)
+static MonoException*
+mono_thread_interruption_checkpoint_request (gboolean bypass_abort_protection)
 {
 	MonoInternalThread *thread = mono_thread_internal_current ();
 
 	/* The thread may already be stopping */
 	if (thread == NULL)
-		return;
+		return NULL;
 
 	if (thread->interruption_requested && (bypass_abort_protection || !is_running_protected_wrapper ())) {
 		MonoException* exc = mono_thread_execute_interruption (thread);
-		if (exc) mono_raise_exception (exc);
+		if (exc)
+			return exc;
 	}
+	return NULL;
 }
 
 /*
  * Performs the interruption of the current thread, if one has been requested,
  * and the thread is not running a protected wrapper.
+ * Return the exception which needs to be thrown, if any.
  */
-void mono_thread_interruption_checkpoint ()
+MonoException*
+mono_thread_interruption_checkpoint (void)
 {
-	mono_thread_interruption_checkpoint_request (FALSE);
+	return mono_thread_interruption_checkpoint_request (FALSE);
 }
 
 /*
  * Performs the interruption of the current thread, if one has been requested.
+ * Return the exception which needs to be thrown, if any.
  */
-void mono_thread_force_interruption_checkpoint ()
+MonoException*
+mono_thread_force_interruption_checkpoint_noraise (void)
 {
-	mono_thread_interruption_checkpoint_request (TRUE);
+	return mono_thread_interruption_checkpoint_request (TRUE);
+}
+
+/*
+ * Performs the interruption of the current thread, if one has been requested.
+ * Throw the exception which needs to be thrown, if any.
+ */
+void
+mono_thread_force_interruption_checkpoint (void)
+{
+	MonoException *ex;
+
+	ex = mono_thread_interruption_checkpoint_request (TRUE);
+	if (ex)
+		mono_raise_exception (ex);
 }
 
 /*
@@ -4475,7 +4529,7 @@ mono_thread_kill (MonoInternalThread *thread, int signal)
 	/* Workaround pthread_kill abort() in NaCl glibc. */
 	return -1;
 #endif
-#ifdef HOST_WIN32
+#if defined (HOST_WIN32) || !defined (HAVE_SIGACTION)
 	/* Win32 uses QueueUserAPC and callers of this are guarded */
 	g_assert_not_reached ();
 #else

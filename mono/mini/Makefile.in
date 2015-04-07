@@ -146,32 +146,34 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 LTLIBRARIES = $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 @DTRACE_G_REQUIRED_TRUE@@STATIC_MONO_TRUE@am__DEPENDENCIES_1 = mono-dtrace.$(OBJEXT)
 libmini_static_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__libmini_static_la_SOURCES_DIST = mini.c ir-emit.h method-to-ir.c \
-	decompose.c mini.h version.h optflags-def.h jit-icalls.h \
-	jit-icalls.c trace.c trace.h patch-info.h mini-ops.h \
-	mini-arch.h dominators.c cfold.c regalloc.c regalloc.h \
-	helpers.c liveness.c ssa.c abcremoval.c abcremoval.h ssapre.c \
-	ssapre.h local-propagation.c driver.c debug-mini.c \
-	linear-scan.c aot-compiler.c aot-runtime.c graph.c \
-	mini-codegen.c mini-exceptions.c mini-trampolines.c declsec.c \
-	declsec.h wapihandles.c branch-opts.c mini-generic-sharing.c \
-	regalloc2.c simd-methods.h tasklets.c tasklets.h \
-	simd-intrinsics.c mini-native-types.c mini-unwind.h unwind.c \
-	image-writer.h image-writer.c dwarfwriter.h dwarfwriter.c \
-	mini-gc.h mini-gc.c debugger-agent.h debugger-agent.c xdebug.c \
-	mini-llvm.h mini-llvm-cpp.h alias-analysis.c \
-	mini-cross-helpers.c mini-llvm.c mini-llvm-cpp.cpp \
-	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-arm64.c mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm.c mini-arm.h exceptions-arm.c tramp-arm.c mini-ia64.c \
-	mini-ia64.h exceptions-ia64.c tramp-ia64.c mini-mips.c \
-	mini-mips.h exceptions-mips.c tramp-mips.c mini-ppc.c \
-	mini-ppc.h exceptions-ppc.c tramp-ppc.c mini-s390x.c \
-	mini-s390x.h support-s390x.h exceptions-s390x.c tramp-s390x.c \
-	mini-sparc.c mini-sparc.h exceptions-sparc.c tramp-sparc.c \
-	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
-	mini-windows.c mini-darwin.c mini-posix.c
+am__libmini_static_la_SOURCES_DIST = mini.c seq-points.c seq-points.h \
+	ir-emit.h method-to-ir.c decompose.c mini.h version.h \
+	optflags-def.h jit-icalls.h jit-icalls.c trace.c trace.h \
+	patch-info.h mini-ops.h mini-arch.h dominators.c cfold.c \
+	regalloc.c regalloc.h helpers.c liveness.c ssa.c abcremoval.c \
+	abcremoval.h ssapre.c ssapre.h local-propagation.c driver.c \
+	debug-mini.c linear-scan.c aot-compiler.c aot-runtime.c \
+	graph.c mini-codegen.c mini-exceptions.c mini-trampolines.c \
+	declsec.c declsec.h wapihandles.c branch-opts.c \
+	mini-generic-sharing.c regalloc2.c simd-methods.h tasklets.c \
+	tasklets.h simd-intrinsics.c mini-native-types.c mini-unwind.h \
+	unwind.c image-writer.h image-writer.c dwarfwriter.h \
+	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
+	debugger-agent.c xdebug.c mini-llvm.h mini-llvm-cpp.h \
+	alias-analysis.c mini-cross-helpers.c mini-llvm.c \
+	mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
+	tramp-amd64.c mini-arm64.c mini-arm64.h exceptions-arm64.c \
+	tramp-arm64.c mini-arm.c mini-arm.h exceptions-arm.c \
+	tramp-arm.c mini-ia64.c mini-ia64.h exceptions-ia64.c \
+	tramp-ia64.c mini-mips.c mini-mips.h exceptions-mips.c \
+	tramp-mips.c mini-ppc.c mini-ppc.h exceptions-ppc.c \
+	tramp-ppc.c mini-s390x.c mini-s390x.h support-s390x.h \
+	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
+	exceptions-sparc.c tramp-sparc.c mini-x86.c mini-x86.h \
+	exceptions-x86.c tramp-x86.c mini-windows.c mini-darwin.c \
+	mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
+	libmini_static_la-seq-points.lo \
 	libmini_static_la-method-to-ir.lo \
 	libmini_static_la-decompose.lo libmini_static_la-jit-icalls.lo \
 	libmini_static_la-trace.lo libmini_static_la-dominators.lo \
@@ -261,36 +263,38 @@ libmini_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(LDFLAGS) -o $@
 @DISABLE_EXECUTABLES_FALSE@am_libmini_static_la_rpath =
 libmini_la_LIBADD =
-am__libmini_la_SOURCES_DIST = mini.c ir-emit.h method-to-ir.c \
-	decompose.c mini.h version.h optflags-def.h jit-icalls.h \
-	jit-icalls.c trace.c trace.h patch-info.h mini-ops.h \
-	mini-arch.h dominators.c cfold.c regalloc.c regalloc.h \
-	helpers.c liveness.c ssa.c abcremoval.c abcremoval.h ssapre.c \
-	ssapre.h local-propagation.c driver.c debug-mini.c \
-	linear-scan.c aot-compiler.c aot-runtime.c graph.c \
-	mini-codegen.c mini-exceptions.c mini-trampolines.c declsec.c \
-	declsec.h wapihandles.c branch-opts.c mini-generic-sharing.c \
-	regalloc2.c simd-methods.h tasklets.c tasklets.h \
-	simd-intrinsics.c mini-native-types.c mini-unwind.h unwind.c \
-	image-writer.h image-writer.c dwarfwriter.h dwarfwriter.c \
-	mini-gc.h mini-gc.c debugger-agent.h debugger-agent.c xdebug.c \
-	mini-llvm.h mini-llvm-cpp.h alias-analysis.c \
-	mini-cross-helpers.c mini-llvm.c mini-llvm-cpp.cpp \
-	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-arm64.c mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm.c mini-arm.h exceptions-arm.c tramp-arm.c mini-ia64.c \
-	mini-ia64.h exceptions-ia64.c tramp-ia64.c mini-mips.c \
-	mini-mips.h exceptions-mips.c tramp-mips.c mini-ppc.c \
-	mini-ppc.h exceptions-ppc.c tramp-ppc.c mini-s390x.c \
-	mini-s390x.h support-s390x.h exceptions-s390x.c tramp-s390x.c \
-	mini-sparc.c mini-sparc.h exceptions-sparc.c tramp-sparc.c \
-	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
-	mini-windows.c mini-darwin.c mini-posix.c
-am__objects_18 = libmini_la-mini.lo libmini_la-method-to-ir.lo \
-	libmini_la-decompose.lo libmini_la-jit-icalls.lo \
-	libmini_la-trace.lo libmini_la-dominators.lo \
-	libmini_la-cfold.lo libmini_la-regalloc.lo \
-	libmini_la-helpers.lo libmini_la-liveness.lo libmini_la-ssa.lo \
+am__libmini_la_SOURCES_DIST = mini.c seq-points.c seq-points.h \
+	ir-emit.h method-to-ir.c decompose.c mini.h version.h \
+	optflags-def.h jit-icalls.h jit-icalls.c trace.c trace.h \
+	patch-info.h mini-ops.h mini-arch.h dominators.c cfold.c \
+	regalloc.c regalloc.h helpers.c liveness.c ssa.c abcremoval.c \
+	abcremoval.h ssapre.c ssapre.h local-propagation.c driver.c \
+	debug-mini.c linear-scan.c aot-compiler.c aot-runtime.c \
+	graph.c mini-codegen.c mini-exceptions.c mini-trampolines.c \
+	declsec.c declsec.h wapihandles.c branch-opts.c \
+	mini-generic-sharing.c regalloc2.c simd-methods.h tasklets.c \
+	tasklets.h simd-intrinsics.c mini-native-types.c mini-unwind.h \
+	unwind.c image-writer.h image-writer.c dwarfwriter.h \
+	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
+	debugger-agent.c xdebug.c mini-llvm.h mini-llvm-cpp.h \
+	alias-analysis.c mini-cross-helpers.c mini-llvm.c \
+	mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
+	tramp-amd64.c mini-arm64.c mini-arm64.h exceptions-arm64.c \
+	tramp-arm64.c mini-arm.c mini-arm.h exceptions-arm.c \
+	tramp-arm.c mini-ia64.c mini-ia64.h exceptions-ia64.c \
+	tramp-ia64.c mini-mips.c mini-mips.h exceptions-mips.c \
+	tramp-mips.c mini-ppc.c mini-ppc.h exceptions-ppc.c \
+	tramp-ppc.c mini-s390x.c mini-s390x.h support-s390x.h \
+	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
+	exceptions-sparc.c tramp-sparc.c mini-x86.c mini-x86.h \
+	exceptions-x86.c tramp-x86.c mini-windows.c mini-darwin.c \
+	mini-posix.c
+am__objects_18 = libmini_la-mini.lo libmini_la-seq-points.lo \
+	libmini_la-method-to-ir.lo libmini_la-decompose.lo \
+	libmini_la-jit-icalls.lo libmini_la-trace.lo \
+	libmini_la-dominators.lo libmini_la-cfold.lo \
+	libmini_la-regalloc.lo libmini_la-helpers.lo \
+	libmini_la-liveness.lo libmini_la-ssa.lo \
 	libmini_la-abcremoval.lo libmini_la-ssapre.lo \
 	libmini_la-local-propagation.lo libmini_la-driver.lo \
 	libmini_la-debug-mini.lo libmini_la-linear-scan.lo \
@@ -363,7 +367,7 @@ am__DEPENDENCIES_4 = $(monodir)/mono/metadata/libmonoruntime.la \
 @LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@	$(am__DEPENDENCIES_4)
 @LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES =  \
 @LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
-@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_5)
+@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5)
 am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp
 @LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS = mini-llvm.lo \
 @LOADED_LLVM_TRUE@	mini-llvm-cpp.lo
@@ -375,8 +379,10 @@ libmono_llvm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 @LOADED_LLVM_TRUE@am_libmono_llvm_la_rpath = -rpath $(libdir)
 @DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_6 =  \
 @DTRACE_G_REQUIRED_TRUE@	.libs/mono-dtrace.$(OBJEXT)
+@LOADED_LLVM_FALSE@am__DEPENDENCIES_7 = $(am__DEPENDENCIES_2) \
+@LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_2)
 libmonoboehm_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_4) \
-	$(am__DEPENDENCIES_6)
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_7)
 am_libmonoboehm_2_0_la_OBJECTS =
 libmonoboehm_2_0_la_OBJECTS = $(am_libmonoboehm_2_0_la_OBJECTS)
 libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -387,12 +393,12 @@ libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(libdir)
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoboehm_2_0_la_rpath =  \
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@	-rpath $(libdir)
-am__DEPENDENCIES_7 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
+am__DEPENDENCIES_8 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
 	$(monodir)/mono/io-layer/libwapi.la \
 	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_2)
-libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_7) \
-	$(am__DEPENDENCIES_6)
+libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_8) \
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_7)
 am_libmonosgen_2_0_la_OBJECTS =
 libmonosgen_2_0_la_OBJECTS = $(am_libmonosgen_2_0_la_OBJECTS)
 libmonosgen_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -424,22 +430,20 @@ mono_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_boehm_OBJECTS = mono_boehm-main.$(OBJEXT)
 mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
-@INCLUDED_LIBGC_FALSE@am__DEPENDENCIES_8 = $(am__DEPENDENCIES_2)
-@INCLUDED_LIBGC_TRUE@am__DEPENDENCIES_8 =  \
+@INCLUDED_LIBGC_FALSE@am__DEPENDENCIES_9 = $(am__DEPENDENCIES_2)
+@INCLUDED_LIBGC_TRUE@am__DEPENDENCIES_9 =  \
 @INCLUDED_LIBGC_TRUE@	$(monodir)/libgc/libmonogc-static.la
-am__DEPENDENCIES_9 =  \
+am__DEPENDENCIES_10 =  \
 	$(monodir)/mono/metadata/libmonoruntime-static.la \
 	$(monodir)/mono/io-layer/libwapi.la \
 	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_8)
-@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_10 = libmini-static.la \
-@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_9)
-@STATIC_MONO_FALSE@am__DEPENDENCIES_11 = libmonoboehm-2.0.la
-@STATIC_MONO_TRUE@am__DEPENDENCIES_11 = $(am__DEPENDENCIES_10)
-@LOADED_LLVM_FALSE@am__DEPENDENCIES_12 = $(am__DEPENDENCIES_2) \
-@LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_2)
-mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_11) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_12) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_9)
+@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_11 = libmini-static.la \
+@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_10)
+@STATIC_MONO_FALSE@am__DEPENDENCIES_12 = libmonoboehm-2.0.la
+@STATIC_MONO_TRUE@am__DEPENDENCIES_12 = $(am__DEPENDENCIES_11)
+mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_12) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 mono_boehm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_boehm_CFLAGS) \
@@ -456,7 +460,7 @@ am__DEPENDENCIES_13 =  \
 @STATIC_MONO_FALSE@am__DEPENDENCIES_15 = libmonosgen-2.0.la
 @STATIC_MONO_TRUE@am__DEPENDENCIES_15 = $(am__DEPENDENCIES_14)
 mono_sgen_DEPENDENCIES = $(am__DEPENDENCIES_15) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_12) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
@@ -470,10 +474,10 @@ am__objects_35 = main.$(OBJEXT)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_35)
 monow_OBJECTS = $(am_monow_OBJECTS)
 am__DEPENDENCIES_16 = $(am__DEPENDENCIES_15) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_12) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
-am__DEPENDENCIES_17 = $(am__DEPENDENCIES_11) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_12) $(am__DEPENDENCIES_2) \
+am__DEPENDENCIES_17 = $(am__DEPENDENCIES_12) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES =  \
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_16)
@@ -594,6 +598,7 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DISABLE_PERF_EVENTS = @DISABLE_PERF_EVENTS@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
@@ -677,12 +682,15 @@ RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
+SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+VTUNE_CFLAGS = @VTUNE_CFLAGS@
+VTUNE_LIBS = @VTUNE_LIBS@
 WERROR_CFLAGS = @WERROR_CFLAGS@
 X11 = @X11@
 XATTR_LIB = @XATTR_LIB@
@@ -812,7 +820,7 @@ AM_CFLAGS = \
 	-I$(top_srcdir) 	\
 	$(GLIB_CFLAGS)		\
 	$(LLVM_CFLAGS)		\
-	$(PLATFORM_CFLAGS) $(ARCH_CFLAGS)
+	$(PLATFORM_CFLAGS) $(ARCH_CFLAGS) $(SHARED_CFLAGS)
 
 AM_CXXFLAGS = $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
 # The mingw math.h has "extern inline" functions that dont appear in libs, so
@@ -847,7 +855,7 @@ lib_LTLIBRARIES = $(shared_libraries) $(am__append_1)
 @DISABLE_EXECUTABLES_FALSE@noinst_LTLIBRARIES = $(mini_common_lib) libmini-static.la
 @DISABLE_EXECUTABLES_TRUE@noinst_LTLIBRARIES = $(mini_common_lib)
 @LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp
-@LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(LLVM_LIBS) \
+@LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(GLIB_LIBS) $(LLVM_LIBS) \
 @LOADED_LLVM_TRUE@	$(LLVM_LDFLAGS) $(am__append_2)
 @LOADED_LLVM_TRUE@@PLATFORM_DARWIN_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 mono_boehm_SOURCES = \
@@ -907,6 +915,7 @@ mono_sgen_LDFLAGS = $(static_flags) -export-dynamic $(monobinldflags) $(monobin_
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_SOURCES = $(mono_boehm_SOURCES)
 genmdesc_SOURCES = \
 	mini.h		\
+	seq-points.h	\
 	genmdesc.c	\
 	helpers.c	\
 	../metadata/opcodes.c
@@ -989,6 +998,8 @@ posix_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@llvm_sources = 
 common_sources = \
 	mini.c			\
+	seq-points.c	\
+	seq-points.h	\
 	ir-emit.h		\
 	method-to-ir.c		\
 	decompose.c		\
@@ -1092,6 +1103,7 @@ regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
 @SPARC64_TRUE@arch_define = __sparc__
 @SPARC_TRUE@arch_define = __sparc__
 @X86_TRUE@arch_define = __i386__
+@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = --exclude DYNCALL --exclude GSHAREDVT
 
 # pick up arm_dpimacros.h
 @ARM_TRUE@ARCH_CFLAGS = -I../arch/arm
@@ -1106,11 +1118,11 @@ libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(arch_sources) $(os_sour
 libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
-libmonoboehm_2_0_la_LIBADD = libmini.la $(libs) $(LIBMONO_DTRACE_OBJECT)
+libmonoboehm_2_0_la_LIBADD = libmini.la $(libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags)
 libmonosgen_2_0_la_SOURCES = 
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
-libmonosgen_2_0_la_LIBADD = libmini.la $(sgen_libs) $(LIBMONO_DTRACE_OBJECT)
+libmonosgen_2_0_la_LIBADD = libmini.la $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags)
 
 #
@@ -1155,6 +1167,8 @@ EXTRA_DIST = TestDriver.cs ldscript ldscript.mono \
 	$(windows_sources)			\
 	$(darwin_sources) Info.plist		\
 	$(posix_sources)					\
+	test_op_il_seq_point.sh			\
+	test_op_il_seq_point_headerfooter.sh	\
 	Makefile.am.in
 
 all: $(BUILT_SOURCES)
@@ -1403,6 +1417,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-regalloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-regalloc2.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-seq-points.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-simd-intrinsics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-ssa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-ssapre.Plo@am__quote@
@@ -1473,6 +1488,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-regalloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-regalloc2.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-seq-points.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-simd-intrinsics.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-ssa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-ssapre.Plo@am__quote@
@@ -1528,6 +1544,13 @@ libmini_static_la-mini.lo: mini.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini.c' object='libmini_static_la-mini.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini.lo `test -f 'mini.c' || echo '$(srcdir)/'`mini.c
+
+libmini_static_la-seq-points.lo: seq-points.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-seq-points.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-seq-points.Tpo -c -o libmini_static_la-seq-points.lo `test -f 'seq-points.c' || echo '$(srcdir)/'`seq-points.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-seq-points.Tpo $(DEPDIR)/libmini_static_la-seq-points.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='seq-points.c' object='libmini_static_la-seq-points.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-seq-points.lo `test -f 'seq-points.c' || echo '$(srcdir)/'`seq-points.c
 
 libmini_static_la-method-to-ir.lo: method-to-ir.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-method-to-ir.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-method-to-ir.Tpo -c -o libmini_static_la-method-to-ir.lo `test -f 'method-to-ir.c' || echo '$(srcdir)/'`method-to-ir.c
@@ -2018,6 +2041,13 @@ libmini_la-mini.lo: mini.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini.c' object='libmini_la-mini.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini.lo `test -f 'mini.c' || echo '$(srcdir)/'`mini.c
+
+libmini_la-seq-points.lo: seq-points.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-seq-points.lo -MD -MP -MF $(DEPDIR)/libmini_la-seq-points.Tpo -c -o libmini_la-seq-points.lo `test -f 'seq-points.c' || echo '$(srcdir)/'`seq-points.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-seq-points.Tpo $(DEPDIR)/libmini_la-seq-points.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='seq-points.c' object='libmini_la-seq-points.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-seq-points.lo `test -f 'seq-points.c' || echo '$(srcdir)/'`seq-points.c
 
 libmini_la-method-to-ir.lo: method-to-ir.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-method-to-ir.lo -MD -MP -MF $(DEPDIR)/libmini_la-method-to-ir.Tpo -c -o libmini_la-method-to-ir.lo `test -f 'method-to-ir.c' || echo '$(srcdir)/'`method-to-ir.c
@@ -2965,7 +2995,14 @@ checktests: $(regtests)
 
 rcheck: mono $(regtests)
 @NACL_CODEGEN_TRUE@	for i in $(regtests); do echo "running test $$i"; $(RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
-@NACL_CODEGEN_FALSE@	$(RUNTIME) --regression $(regtests)
+@NACL_CODEGEN_FALSE@	-($(RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | ./emitnunit.pl
+@NACL_CODEGEN_FALSE@	exit $$(cat regressionexitcode.out)
+
+check-seq-points: mono $(regtests)
+	rm -f TestResults_op_il_seq_point.xml
+	for i in $(regtests); do ./test_op_il_seq_point.sh $$i || (./test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+	for i in $(regtests); do ./test_op_il_seq_point.sh $$i --aot || (./test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+	./test_op_il_seq_point_headerfooter.sh
 
 gctest: mono gc-test.exe
 	MONO_DEBUG_OPTIONS=clear-nursery-at-gc $(RUNTIME) --regression gc-test.exe
@@ -2990,7 +3027,7 @@ fullaotcheck: mono $(fullaot_regtests)
 	cp $(fullaot_regtests) fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot=full fullaot-tmp/* || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
-	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --full-aot fullaot-tmp/$$i --exclude '!FULLAOT' || exit 1; done
+	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --full-aot fullaot-tmp/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
 
 llvmfullaotcheck:
 	$(MAKE) fullaotcheck LLVM=1
@@ -3019,10 +3056,10 @@ stat3: mono bench.exe
 docu: mini.sgm
 	docbook2txt mini.sgm
 
-check-local: rcheck
+check-local: rcheck check-seq-points
 
 clean-local:
-	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe
+	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResults_op_il_seq_point.xml*
 
 version.h: Makefile
 	if test -d $(top_srcdir)/.git; then \
