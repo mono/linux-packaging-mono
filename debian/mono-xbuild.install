@@ -13,3 +13,8 @@ debian/tmp/usr/lib/mono/gac/Microsoft.Build.Utilities.v12.0/12.0.0.0__*/
 debian/tmp/usr/lib/mono/gac/Microsoft.Build/12.0.0.0__*/
 debian/tmp/usr/lib/mono/gac/Microsoft.Build.Engine/12.0.0.0__*/
 debian/tmp/usr/lib/mono/gac/Microsoft.Build.Framework/12.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/Microsoft.Build.Tasks.Core/14.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/Microsoft.Build.Utilities.Core/14.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/Microsoft.Build/14.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/Microsoft.Build.Engine/14.0.0.0__*/
+debian/tmp/usr/lib/mono/gac/Microsoft.Build.Framework/14.0.0.0__*/
