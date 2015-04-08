@@ -677,6 +677,35 @@ Description: Mono core library (transitional package)
  of the Core Library (mscorlib.dll) of Mono for CLI 4.0, which will execute
  fine on the newer 4.5 Core Library.
 
+Package: libmono-corlib2.0-cil
+Architecture: all
+Depends: ${misc:Depends}, libmono-corlib4.5-cil (= ${source:Version})
+Description: Mono core library (transitional package)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This is a transitional package to satisfy dependencies on the older version
+ of the Core Library (mscorlib.dll) of Mono for CLI 2.0, which will execute
+ fine on the newer 4.5 Core Library.
+
+Package: libmono-system2.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         libmono-system4.0-cil (= ${source:Version})
+Description: Mono System libraries (transitional package)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This is a transitional package to satisfy dependencies on the older version
+ of the BCL (Base Class Libraries) of Mono for CLI 2.0, which will execute
+ fine on the newer 4.0 BCL (Base Class Libraries).
+
 Package: libmono-i18n4.0-all
 Architecture: all
 Depends: ${misc:Depends},
