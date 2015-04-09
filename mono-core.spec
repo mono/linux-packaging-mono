@@ -1142,11 +1142,9 @@ Mono development tools.
 %{_prefix}/lib/mono/gac/Microsoft.Build
 %{_prefix}/lib/mono/gac/Microsoft.Build.Engine
 %{_prefix}/lib/mono/gac/Microsoft.Build.Framework
-%{_prefix}/lib/mono/gac/Microsoft.Build.Tasks
 %{_prefix}/lib/mono/gac/Microsoft.Build.Tasks.v4.0
 %{_prefix}/lib/mono/gac/Microsoft.Build.Tasks.v12.0/
 %{_prefix}/lib/mono/gac/Microsoft.Build.Tasks.Core/
-%{_prefix}/lib/mono/gac/Microsoft.Build.Utilities
 %{_prefix}/lib/mono/gac/Microsoft.Build.Utilities.v4.0
 %{_prefix}/lib/mono/gac/Microsoft.Build.Utilities.v12.0/
 %{_prefix}/lib/mono/gac/Microsoft.Build.Utilities.Core/
