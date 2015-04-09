@@ -233,7 +233,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/dmcs
 %{_bindir}/gacutil
 %{_bindir}/gacutil2
-%{_bindir}/gmcs
 %{_bindir}/ikdasm
 %{_bindir}/mcs
 %{_bindir}/mono
