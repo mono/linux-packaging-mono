@@ -34,7 +34,7 @@ License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
-Patch0:		0001-Workaround-for-X509Certificate.RSA-throwing-an-unhan.patch
+#Patch0:		0001-Workaround-for-X509Certificate.RSA-throwing-an-unhan.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -111,7 +111,7 @@ technologies that have been submitted to the ECMA for standardization.
 
 %prep
 %setup -q -n mono-%{version}
-%patch0 -p1
+#%patch0 -p1
 
 %build
 ./autogen.sh
