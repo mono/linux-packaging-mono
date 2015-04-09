@@ -324,7 +324,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/Mono.CSharp
 %{_prefix}/lib/mono/gac/Mono.Cairo
 %{_prefix}/lib/mono/gac/Mono.Cecil
-%{_prefix}/lib/mono/gac/Mono.Cecil.Mdb
 %{_prefix}/lib/mono/gac/Mono.CompilerServices.SymbolWriter
 %{_prefix}/lib/mono/gac/Mono.Management
 %{_prefix}/lib/mono/gac/Mono.Parallel
