@@ -1153,30 +1153,6 @@ Mono development tools.
 %{_prefix}/lib/mono/gac/PEAPI
 %{_prefix}/lib/mono/xbuild
 %{_prefix}/lib/mono/xbuild-frameworks
-%{_prefix}/lib/mono/xbuild/12.0/
-%{_prefix}/lib/mono/xbuild/12.0/bin/
-%{_prefix}/lib/mono/xbuild/14.0/
-%{_prefix}/lib/mono/xbuild/14.0/bin/
-
-%package -n mono-entityframework
-Summary:        Entity Framework (EF) is an object-relational mapper
-License:        Apache-2.0
-Group:          Development/Languages/Mono
-Requires:       mono-core = %{version}
-Provides:       mono(System.Data.Entity) = 4.0.0.0
-
-%description -n mono-entityframework
-Entity Framework (EF) is an object-relational mapper that enables .NET
-developers to work with relational data using domain-specific objects.
-It eliminates the need for most of the data-access code that developers
-usually need to write
-
-%files -n mono-entityframework
-%defattr(-, root, root)
-%{_prefix}/lib/mono/4.5/EntityFramework.SqlServer.dll
-%{_prefix}/lib/mono/4.5/EntityFramework.dll
-%{_prefix}/lib/mono/gac/EntityFramework.SqlServer
-%{_prefix}/lib/mono/gac/EntityFramework
 
 %package -n mono-reactive
 Summary:        Reactive Extensions
