@@ -943,28 +943,6 @@ Database connectivity for Mono.
 %{_prefix}/lib/mono/4.5/System.Data.OracleClient.dll
 %{_prefix}/lib/mono/gac/System.Data.OracleClient
 
-%package -n mono-data-postgresql
-Summary:        Database connectivity for Mono
-License:        LGPL-2.1
-Group:          Development/Languages/Mono
-Requires:       mono-core = %{version}
-Requires:       mono-data = %{version}
-Provides:       mono(Npgsql) = 1.0.5000.0
-
-%description -n mono-data-postgresql
-The Mono Project is an open development initiative that is working to
-develop an open source, Unix version of the .NET development platform.
-Its objective is to enable Unix developers to build and deploy
-cross-platform .NET applications. The project will implement various
-technologies that have been submitted to the ECMA for standardization.
-
-Database connectivity for Mono.
-
-%files -n mono-data-postgresql
-%defattr(-, root, root)
-%{_prefix}/lib/mono/4.5/Npgsql.dll
-%{_prefix}/lib/mono/gac/Npgsql
-
 %package -n mono-nunit
 Summary:        NUnit Testing Framework
 License:        LGPL-2.1
@@ -1313,7 +1291,6 @@ Requires:       libmonoboehm-2_0-1 = %{version}
 Requires:       libmonoboehm-2_0-devel = %{version}
 Requires:       mono-data = %{version}
 Requires:       mono-data-oracle = %{version}
-Requires:       mono-data-postgresql = %{version}
 Requires:       mono-data-sqlite = %{version}
 Requires:       mono-devel = %{version}
 Requires:       mono-entityframework = %{version}
