@@ -1263,7 +1263,6 @@ Requires:       mono-data = %{version}
 Requires:       mono-data-oracle = %{version}
 Requires:       mono-data-sqlite = %{version}
 Requires:       mono-devel = %{version}
-Requires:       mono-entityframework = %{version}
 Requires:       mono-extras = %{version}
 Requires:       mono-locale-extras = %{version}
 Requires:       mono-mvc = %{version}
