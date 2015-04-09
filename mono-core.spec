@@ -1129,6 +1129,7 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/secutil.exe*
 %{_prefix}/lib/mono/4.5/sgen.exe*
 %{_prefix}/lib/mono/4.5/signcode.exe*
+%{_prefix}/lib/mono/4.5/symbolicate.exe*
 %{_prefix}/lib/mono/4.5/xbuild.exe*
 %{_prefix}/lib/mono/4.5/xbuild.rsp
 %{_prefix}/lib/mono/4.5/MSBuild/
@@ -1153,6 +1154,7 @@ Mono development tools.
 %{_prefix}/lib/mono/gac/PEAPI
 %{_prefix}/lib/mono/xbuild
 %{_prefix}/lib/mono/xbuild-frameworks
+%{_prefix}/lib64/mono/lldb
 
 %package -n mono-reactive
 Summary:        Reactive Extensions
