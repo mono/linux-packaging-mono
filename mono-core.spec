@@ -217,7 +217,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %dir %{_prefix}/lib/mono
 %dir %{_prefix}/lib/mono/4.5
 %dir %{_prefix}/lib/mono/4.5/Facades
-%dir %{_prefix}/lib/mono/compat-2.0
 %dir %{_prefix}/lib/mono/gac
 %dir %{_sysconfdir}/mono
 %dir %{_sysconfdir}/mono/2.0
@@ -912,9 +911,6 @@ Mono implementation of ASP.NET MVC.
 %{_prefix}/lib/mono/4.5/System.Web.Extensions.Design.dll
 %{_prefix}/lib/mono/4.5/System.Web.Extensions.dll
 %{_prefix}/lib/mono/4.5/System.Web.Mvc.dll
-%{_prefix}/lib/mono/compat-2.0/System.Web.Extensions.Design.dll
-%{_prefix}/lib/mono/compat-2.0/System.Web.Extensions.dll
-%{_prefix}/lib/mono/compat-2.0/System.Web.Mvc.dll
 %{_prefix}/lib/mono/gac/System.Web.DynamicData
 %{_prefix}/lib/mono/gac/System.Web.Extensions
 %{_prefix}/lib/mono/gac/System.Web.Extensions.Design
@@ -1316,7 +1312,6 @@ not install anything from outside the mono source (XSP, mono-basic, etc.).
 
 %files -n mono-complete
 %defattr(-, root, root)
-%dir %{_prefix}/lib/mono/compat-2.0
 
 %changelog
 
