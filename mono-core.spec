@@ -1036,7 +1036,6 @@ Mono development tools.
 %{_bindir}/mono-shlib-cop
 %{_bindir}/mono-xmltool
 %{_bindir}/monodis
-%{_bindir}/monograph
 %{_bindir}/monolinker
 %{_bindir}/monop
 %{_bindir}/monop2
