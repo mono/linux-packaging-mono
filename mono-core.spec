@@ -85,13 +85,20 @@ Provides:       mono(I18N.West) = 1.0.5000.0
 Provides:       mono(ICSharpCode.SharpZipLib) = 0.6.0.0
 Provides:       mono(ICSharpCode.SharpZipLib) = 0.84.0.0
 Provides:       mono(Mono.Cairo) = 1.0.5000.0
+Provides:       mono(Mono.Cairo) = 2.0.0.0
 Provides:       mono(Mono.CompilerServices.SymbolWriter) = 1.0.5000.0
 Provides:       mono(Mono.Posix) = 1.0.5000.0
 Provides:       mono(Mono.Security) = 1.0.5000.0
+Provides:       mono(Mono.Security) = 2.0.0.0
 Provides:       mono(System) = 1.0.5000.0
+Provides:       mono(System) = 2.0.0.0
+Provides:       mono(System.Configuration) = 2.0.0.0
 Provides:       mono(System.Security) = 1.0.5000.0
+Provides:       mono(System.Security) = 2.0.0.0
 Provides:       mono(System.Xml) = 1.0.5000.0
+Provides:       mono(System.Xml) = 2.0.0.0
 Provides:       mono(mscorlib) = 1.0.5000.0
+Provides:       mono(mscorlib) = 2.0.0.0
 
 %define _use_internal_dependency_generator 0
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
@@ -558,6 +565,7 @@ Provides:       mono-novell-directory = %{version}
 Provides:       mono(Mono.Data.Tds) = 1.0.5000.0
 Provides:       mono(Novell.Directory.Ldap) = 1.0.5000.0
 Provides:       mono(System.Data) = 1.0.5000.0
+Provides:       mono(System.Data) = 2.0.0.0
 Provides:       mono(System.DirectoryServices) = 1.0.5000.0
 Provides:       mono(System.EnterpriseServices) = 1.0.5000.0
 
@@ -611,8 +619,10 @@ Provides:       mono-window-forms = %{version}
 Provides:       mono(Accessibility) = 1.0.5000.0
 Provides:       mono(System.Design) = 1.0.5000.0
 Provides:       mono(System.Drawing) = 1.0.5000.0
+Provides:       mono(System.Drawing) = 2.0.0.0
 Provides:       mono(System.Drawing.Design) = 1.0.5000.0
 Provides:       mono(System.Windows.Forms) = 1.0.5000.0
+Provides:       mono(System.Windows.Forms) = 2.0.0.0
 
 %description -n mono-winforms
 The Mono Project is an open development initiative that is working to
@@ -803,10 +813,13 @@ Provides:       mono-web-forms = %{version}
 Provides:       mono-web-services = %{version}
 Provides:       mono(Mono.Http) = 1.0.5000.0
 Provides:       mono(System.Runtime.Remoting) = 1.0.5000.0
+Provides:       mono(System.Runtime.Remoting) = 2.0.0.0
 Provides:       mono(System.Runtime.Serialization.Formatters.Soap) = 1.0.5000.0
 Provides:       mono(System.Web) = 1.0.5000.0
+Provides:       mono(System.Web.Razor) = 2.0.0.0
 Provides:       mono(System.Web.Services) = 1.0.5000.0
 Provides:       mono(System.Web.WebPages.Deployment) = 2.1.0.0
+Provides:       mono(System.Web.WebPages.Razor) = 2.0.0.0
 
 %description -n mono-web
 The Mono Project is an open development initiative that is working to
