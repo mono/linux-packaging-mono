@@ -27,13 +27,13 @@
 %define sgen yes
 
 Name:           mono-core
-Version:        3.12.1
-Release:        0
+Version:        4.0.0
+Release:        0.alpha1.0
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
-Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
+Source0:        http://download.mono-project.com/sources/mono/mono-%{version}~alpha1.tar.bz2
 #Patch0:		0001-Workaround-for-X509Certificate.RSA-throwing-an-unhan.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
