@@ -1172,13 +1172,13 @@ Mono development tools.
 %{_prefix}/lib/mono/gac/Microsoft.Build.Engine
 %{_prefix}/lib/mono/gac/Microsoft.Build.Framework
 %{_prefix}/lib/mono/gac/Microsoft.Build.Tasks
-%{_prefix}/lib/mono/gac/Microsoft.Build.Tasks.v3.5
 %{_prefix}/lib/mono/gac/Microsoft.Build.Tasks.v4.0
 %{_prefix}/lib/mono/gac/Microsoft.Build.Tasks.v12.0/
+%{_prefix}/lib/mono/gac/Microsoft.Build.Tasks.Core/
 %{_prefix}/lib/mono/gac/Microsoft.Build.Utilities
-%{_prefix}/lib/mono/gac/Microsoft.Build.Utilities.v3.5
 %{_prefix}/lib/mono/gac/Microsoft.Build.Utilities.v4.0
 %{_prefix}/lib/mono/gac/Microsoft.Build.Utilities.v12.0/
+%{_prefix}/lib/mono/gac/Microsoft.Build.Utilities.Core/
 %{_prefix}/lib/mono/gac/Mono.CodeContracts
 %{_prefix}/lib/mono/gac/Mono.Debugger.Soft
 %{_prefix}/lib/mono/gac/Mono.XBuild.Tasks/
@@ -1187,6 +1187,8 @@ Mono development tools.
 %{_prefix}/lib/mono/xbuild-frameworks
 %{_prefix}/lib/mono/xbuild/12.0/
 %{_prefix}/lib/mono/xbuild/12.0/bin/
+%{_prefix}/lib/mono/xbuild/14.0/
+%{_prefix}/lib/mono/xbuild/14.0/bin/
 
 %package -n mono-entityframework
 Summary:        Entity Framework (EF) is an object-relational mapper
