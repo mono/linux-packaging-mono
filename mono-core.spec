@@ -584,6 +584,7 @@ Database connectivity for Mono.
 %{_prefix}/lib/mono/4.5/System.Data.DataSetExtensions.dll
 %{_prefix}/lib/mono/4.5/System.Data.Linq.dll
 %{_prefix}/lib/mono/4.5/System.Data.dll
+%{_prefix}/lib/mono/4.5/System.Data.Entity.dll
 %{_prefix}/lib/mono/4.5/System.DirectoryServices.dll
 %{_prefix}/lib/mono/4.5/System.DirectoryServices.Protocols.dll
 %{_prefix}/lib/mono/4.5/System.EnterpriseServices.dll
@@ -595,6 +596,7 @@ Database connectivity for Mono.
 %{_prefix}/lib/mono/gac/Mono.Data.Tds
 %{_prefix}/lib/mono/gac/Novell.Directory.Ldap
 %{_prefix}/lib/mono/gac/System.Data
+%{_prefix}/lib/mono/gac/System.Data.Entity
 %{_prefix}/lib/mono/gac/System.Data.DataSetExtensions
 %{_prefix}/lib/mono/gac/System.Data.Linq
 %{_prefix}/lib/mono/gac/System.DirectoryServices
