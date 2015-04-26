@@ -20,6 +20,9 @@ namespace System {
 [System.Runtime.InteropServices.ComVisible(true)]
     public struct TypedReference
     {
+#if MONO
+        RuntimeTypeHandle type;
+#endif
         private IntPtr Value;
         private IntPtr Type;
 
@@ -61,6 +64,9 @@ namespace System {
                 targetType = fieldType;
             }
 
+#if MONO
+            return MakeTypedReferenceInternal (target, flds);
+#else
             TypedReference result = new TypedReference ();
 
             // reference to TypedReference is banned, so have to pass result as pointer
@@ -69,14 +75,18 @@ namespace System {
                 InternalMakeTypedReference(&result, target, fields, targetType);
             }
             return result;
+#endif
         }
 
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.None)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+#if MONO
+        extern static TypedReference MakeTypedReferenceInternal (object target, FieldInfo[] fields);
+#else
         // reference to TypedReference is banned, so have to pass result as pointer
         private unsafe static extern void InternalMakeTypedReference(void* result, Object target, IntPtr[] flds, RuntimeType lastFieldType);
-
+#endif
         public override int GetHashCode()
         {
             if (Type == IntPtr.Zero)
@@ -124,7 +134,11 @@ namespace System {
         [CLSCompliant(false)]
         public unsafe static void SetTypedReference(TypedReference target, Object value)
         {
+#if MONO
+            throw new NotImplementedException ("SetTypedReference");
+#else
             InternalSetTypedReference(&target, value);
+#endif
         }
 
         [System.Security.SecurityCritical]  // auto-generated

@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?><span>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <title>mono-api-counters.html</title>
+   <style type="text/css">
+
+
+   h3 { 
+       font-size: 18px;
+       padding-bottom: 4pt;
+       border-bottom: 2px solid #dddddd;
+   }
+       
+   .api {
+     border: 1px solid;
+     padding: 10pt;
+     margin: 10pt;
+   } 
+
+   .api-entry { 
+       border-bottom: none;
+       font-size: 18px;
+   }
+
+   .prototype {
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
+     margin-top: 5pt;
+     margin-bottom: 5pt;  
+   } 
+
+   .header {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+    
+   .code {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+   
+
+</style>
+</head>
+<body>
+<h2>Counters</h2>
+	
+	<p />Counters is a Mono API for flexible statistics collection
+	and is used to track different events inside the JIT.
+
+        <p />You would typically register an address with the
+        <tt>mono_counters_register</tt> routine and increment the
+        counters from your application as you go.   At the end of the
+        program you would call mono_counters_dump which will display
+        all the registered counters.
+
+	<p />If you need more complicated counter computation, a
+        function can be provided instead of an address.  In that case
+        the <tt>MONO_COUNTER_CALLBACK</tt> flag must be ored in the
+        type request. 
+
+	<p />The types that can be rendered are:
+		
+<pre>
+       MONO_COUNTER_INT
+       MONO_COUNTER_UINT
+       MONO_COUNTER_WORD
+       MONO_COUNTER_LONG
+       MONO_COUNTER_ULONG
+       MONO_COUNTER_DOUBLE
+       MONO_COUNTER_STRING
+</pre>
+	
+	<p />To organize the output, you register also a section where
+	the counter will be displayed, or one of the following values
+	when you register your counter:
+
+<pre>
+
+       MONO_COUNTER_JIT
+       MONO_COUNTER_GC
+       MONO_COUNTER_METADATA
+       MONO_COUNTER_GENERICS
+       MONO_COUNTER_SECURITY
+</pre>
+	
+ <a name="api:mono_counters_dump"></a>
+ <div class="api">
+    <div class="api-entry">mono_counters_dump</div>
+
+    <div class="prototype">void
+mono_counters_dump (int section_mask, FILE *outfile)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>section_mask:</i></dt><dd> The sections to dump counters for</dd><dt><i>outfile:</i></dt><dd> a FILE to dump the results to</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Displays the counts of all the enabled counters registered. 
+	 To filter by variance, you can OR one or more variance with the specific section you want.
+	 Use MONO_COUNTER_SECTION_MASK to dump all categories of a specific variance.
+
+</div> <a name="api:mono_counters_enable"></a>
+ <div class="api">
+    <div class="api-entry">mono_counters_enable</div>
+
+    <div class="prototype">void
+mono_counters_enable (int section_mask)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>section_mask:</i></dt><dd> a mask listing the sections that will be displayed</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 This is used to track which counters will be displayed.
+
+</div></body>
+</html>
+</span>

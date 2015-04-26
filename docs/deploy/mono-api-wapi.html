@@ -1,0 +1,1588 @@
+﻿<?xml version="1.0" encoding="utf-8"?><span>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <title>mono-api-wapi.html</title>
+   <style type="text/css">
+
+
+   h3 { 
+       font-size: 18px;
+       padding-bottom: 4pt;
+       border-bottom: 2px solid #dddddd;
+   }
+       
+   .api {
+     border: 1px solid;
+     padding: 10pt;
+     margin: 10pt;
+   } 
+
+   .api-entry { 
+       border-bottom: none;
+       font-size: 18px;
+   }
+
+   .prototype {
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
+     margin-top: 5pt;
+     margin-bottom: 5pt;  
+   } 
+
+   .header {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+    
+   .code {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+   
+
+</style>
+</head>
+<body>
+<h2>Windows Compatibility API</h2>
+
+	<p />Mono implements a small subset of the Win32 API for some
+	file system interaction, I/O, thread and process operations.
+
+	<p />On Windows, Mono uses directly the services provided by the
+	operating system.   On other operating system it uses its own
+	implementation (referred to as the &quot;io-layer&quot; or &quot;wapi&quot;). 
+
+<h3>Windows Compatibility API</h3>
+
+ <a name="api:BindIoCompletionCallback"></a>
+ <div class="api">
+    <div class="api-entry">BindIoCompletionCallback</div>
+
+    <div class="prototype">Prototype: BindIoCompletionCallback</div>
+<p />
+
+</div> <a name="api:CloseHandle"></a>
+ <div class="api">
+    <div class="api-entry">CloseHandle</div>
+
+    <div class="prototype">gboolean CloseHandle(gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The handle to release</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Closes and invalidates <i>handle</i>, releasing any resources it
+	 consumes.  When the last handle to a temporary or non-persistent
+	 object is closed, that object can be deleted.  Closing the same
+	 handle twice is an error.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:closesocket"></a>
+ <div class="api">
+    <div class="api-entry">closesocket</div>
+
+    <div class="prototype">Prototype: closesocket</div>
+<p />
+
+</div> <a name="api:CopyFile"></a>
+ <div class="api">
+    <div class="api-entry">CopyFile</div>
+
+    <div class="prototype">gboolean CopyFile (const gunichar2 *name, const gunichar2 *dest_name,
+		   gboolean fail_if_exists)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> a pointer to a NULL-terminated unicode string, that names</dd></blockquote>
+<b>Remarks</b>
+<p />	 the file to be copied. 
+	 <i>dest_name</i>: a pointer to a NULL-terminated unicode string, that is the
+	 new name for the file.
+	 <i>fail_if_exists</i>: if TRUE and dest_name exists, the copy will fail.
+	
+	 Copies file <i>name</i> to <i>dest_name</i>
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:CreateDirectory"></a>
+ <div class="api">
+    <div class="api-entry">CreateDirectory</div>
+
+    <div class="prototype">gboolean CreateDirectory (const gunichar2 *name,
+			  WapiSecurityAttributes *security)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> a pointer to a NULL-terminated unicode string, that names</dd></blockquote>
+<b>Remarks</b>
+<p />	 the directory to be created. 
+	 <i>security</i>: ignored for now
+	
+	 Creates directory <i>name</i>
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:CreateEvent"></a>
+ <div class="api">
+    <div class="api-entry">CreateEvent</div>
+
+    <div class="prototype">gpointer CreateEvent(WapiSecurityAttributes *security G_GNUC_UNUSED,
+		     gboolean manual, gboolean initial,
+		     const gunichar2 *name G_GNUC_UNUSED)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>security:</i></dt><dd> Ignored for now.</dd><dt><i>manual:</i></dt><dd> Specifies whether the new event handle has manual or auto</dd></blockquote>
+<b>Remarks</b>
+<p />	 reset behaviour. 
+	 <i>initial</i>: Specifies whether the new event handle is initially
+	 signalled or not.
+	 <i>name</i>:Pointer to a string specifying the name of this name, or
+	 %NULL.  Currently ignored.
+	
+	 Creates a new event handle.
+	
+	 An event handle is signalled with SetEvent().  If the new handle is
+	 a manual reset event handle, it remains signalled until it is reset
+	 with ResetEvent().  An auto reset event remains signalled until a
+	 single thread has waited for it, at which time the event handle is
+	 automatically reset to unsignalled.
+	
+	 Return value: A new handle, or %NULL on error.
+
+</div> <a name="api:CreateFile"></a>
+ <div class="api">
+    <div class="api-entry">CreateFile</div>
+
+    <div class="prototype">gpointer CreateFile(const gunichar2 *name, guint32 fileaccess,
+		    guint32 sharemode, WapiSecurityAttributes *security,
+		    guint32 createmode, guint32 attrs,
+		    gpointer template G_GNUC_UNUSED)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> a pointer to a NULL-terminated unicode string, that names</dd></blockquote>
+<b>Remarks</b>
+<p />	 the file or other object to create. 
+	 <i>fileaccess</i>: specifies the file access mode
+	 <i>sharemode</i>: whether the file should be shared.  This parameter is
+	 currently ignored.
+	 <i>security</i>: Ignored for now.
+	 <i>createmode</i>: specifies whether to create a new file, whether to
+	 overwrite an existing file, whether to truncate the file, etc.
+	 <i>attrs</i>: specifies file attributes and flags.  On win32 attributes
+	 are characteristics of the file, not the handle, and are ignored
+	 when an existing file is opened.  Flags give the library hints on
+	 how to process a file to optimise performance.
+	 <i>template</i>: the handle of an open %GENERIC_READ file that specifies
+	 attributes to apply to a newly created file, ignoring <i>attrs</i>.
+	 Normally this parameter is NULL.  This parameter is ignored when an
+	 existing file is opened.
+	
+	 Creates a new file handle.  This only applies to normal files:
+	 pipes are handled by CreatePipe(), and console handles are created
+	 with GetStdHandle().
+	
+	 Return value: the new handle, or %INVALID_HANDLE_VALUE on error.
+
+</div> <a name="api:CreateMutex"></a>
+ <div class="api">
+    <div class="api-entry">CreateMutex</div>
+
+    <div class="prototype">gpointer CreateMutex(WapiSecurityAttributes *security G_GNUC_UNUSED, gboolean owned,
+			const gunichar2 *name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>security:</i></dt><dd> Ignored for now.</dd><dt><i>owned:</i></dt><dd> If %TRUE, the mutex is created with the calling thread</dd></blockquote>
+<b>Remarks</b>
+<p />	 already owning the mutex. 
+	 <i>name</i>:Pointer to a string specifying the name of this mutex, or
+	 %NULL.
+	
+	 Creates a new mutex handle.  A mutex is signalled when no thread
+	 owns it.  A thread acquires ownership of the mutex by waiting for
+	 it with WaitForSingleObject() or WaitForMultipleObjects().  A
+	 thread relinquishes ownership with ReleaseMutex().
+	
+	 A thread that owns a mutex can specify the same mutex in repeated
+	 wait function calls without blocking.  The thread must call
+	 ReleaseMutex() an equal number of times to release the mutex.
+	
+	 Return value: A new handle, or %NULL on error.
+
+</div> <a name="api:CreatePipe"></a>
+ <div class="api">
+    <div class="api-entry">CreatePipe</div>
+
+    <div class="prototype">Prototype: CreatePipe</div>
+<p />
+
+</div> <a name="api:CreateProcess"></a>
+ <div class="api">
+    <div class="api-entry">CreateProcess</div>
+
+    <div class="prototype">Prototype: CreateProcess</div>
+<p />
+
+</div> <a name="api:CreateProcessWithLogonW"></a>
+ <div class="api">
+    <div class="api-entry">CreateProcessWithLogonW</div>
+
+    <div class="prototype">Prototype: CreateProcessWithLogonW</div>
+<p />
+
+</div> <a name="api:CreateSemaphore"></a>
+ <div class="api">
+    <div class="api-entry">CreateSemaphore</div>
+
+    <div class="prototype">gpointer CreateSemaphore(WapiSecurityAttributes *security G_GNUC_UNUSED, gint32 initial, gint32 max, const gunichar2 *name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>security:</i></dt><dd> Ignored for now.</dd><dt><i>initial:</i></dt><dd> The initial count for the semaphore.  The value must be</dd></blockquote>
+<b>Remarks</b>
+<p />	 greater than or equal to zero, and less than or equal to <i>max</i>. 
+	 <i>max</i>: The maximum count for this semaphore.  The value must be
+	 greater than zero.
+	 <i>name</i>: Pointer to a string specifying the name of this semaphore,
+	 or %NULL.  Currently ignored.
+	
+	 Creates a new semaphore handle.  A semaphore is signalled when its
+	 count is greater than zero, and unsignalled otherwise.  The count
+	 is decreased by one whenever a wait function releases a thread that
+	 was waiting for the semaphore.  The count is increased by calling
+	 ReleaseSemaphore().
+	
+	 Return value: a new handle, or NULL
+
+</div> <a name="api:CreateThread"></a>
+ <div class="api">
+    <div class="api-entry">CreateThread</div>
+
+    <div class="prototype">Prototype: CreateThread</div>
+<p />
+
+</div> <a name="api:DeleteCriticalSection"></a>
+ <div class="api">
+    <div class="api-entry">DeleteCriticalSection</div>
+
+    <div class="prototype">Prototype: DeleteCriticalSection</div>
+<p />
+
+</div> <a name="api:DeleteFile"></a>
+ <div class="api">
+    <div class="api-entry">DeleteFile</div>
+
+    <div class="prototype">gboolean DeleteFile(const gunichar2 *name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> a pointer to a NULL-terminated unicode string, that names</dd></blockquote>
+<b>Remarks</b>
+<p />	 the file to be deleted. 
+	
+	 Deletes file <i>name</i>.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:DuplicateHandle"></a>
+ <div class="api">
+    <div class="api-entry">DuplicateHandle</div>
+
+    <div class="prototype">Prototype: DuplicateHandle</div>
+<p />
+
+</div> <a name="api:EnterCriticalSection"></a>
+ <div class="api">
+    <div class="api-entry">EnterCriticalSection</div>
+
+    <div class="prototype">Prototype: EnterCriticalSection</div>
+<p />
+
+</div> <a name="api:EnumProcesses"></a>
+ <div class="api">
+    <div class="api-entry">EnumProcesses</div>
+
+    <div class="prototype">Prototype: EnumProcesses</div>
+<p />
+
+</div> <a name="api:EnumProcessModules"></a>
+ <div class="api">
+    <div class="api-entry">EnumProcessModules</div>
+
+    <div class="prototype">Prototype: EnumProcessModules</div>
+<p />
+
+</div> <a name="api:errno_to_WSA"></a>
+ <div class="api">
+    <div class="api-entry">errno_to_WSA</div>
+
+    <div class="prototype">Prototype: errno_to_WSA</div>
+<p />
+
+</div> <a name="api:ExitThread"></a>
+ <div class="api">
+    <div class="api-entry">ExitThread</div>
+
+    <div class="prototype">Prototype: ExitThread</div>
+<p />
+
+</div> <a name="api:FileTimeToSystemTime"></a>
+ <div class="api">
+    <div class="api-entry">FileTimeToSystemTime</div>
+
+    <div class="prototype">gboolean FileTimeToSystemTime(const WapiFileTime *file_time,
+			      WapiSystemTime *system_time)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>file_time:</i></dt><dd> Points to a %WapiFileTime structure that contains the</dd></blockquote>
+<b>Remarks</b>
+<p />	 number of ticks to convert. 
+	 <i>system_time</i>: Points to a %WapiSystemTime structure to receive the
+	 broken-out time.
+	
+	 Converts a tick count into broken-out time values.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:FindClose"></a>
+ <div class="api">
+    <div class="api-entry">FindClose</div>
+
+    <div class="prototype">gboolean FindClose (gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>wapi_handle:</i></dt><dd> the find handle to close.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Closes find handle <i>wapi_handle</i>
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:FindFirstFile"></a>
+ <div class="api">
+    <div class="api-entry">FindFirstFile</div>
+
+    <div class="prototype">Prototype: FindFirstFile</div>
+<p />
+
+</div> <a name="api:FindNextFile"></a>
+ <div class="api">
+    <div class="api-entry">FindNextFile</div>
+
+    <div class="prototype">Prototype: FindNextFile</div>
+<p />
+
+</div> <a name="api:FlushFileBuffers"></a>
+ <div class="api">
+    <div class="api-entry">FlushFileBuffers</div>
+
+    <div class="prototype">gboolean FlushFileBuffers(gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> Handle to open file.  The handle must have</dd></blockquote>
+<b>Remarks</b>
+<p />	 %GENERIC_WRITE access. 
+	
+	 Flushes buffers of the file and causes all unwritten data to
+	 be written.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:FormatMessage"></a>
+ <div class="api">
+    <div class="api-entry">FormatMessage</div>
+
+    <div class="prototype">Prototype: FormatMessage</div>
+<p />
+
+</div> <a name="api:GetCurrentDirectory"></a>
+ <div class="api">
+    <div class="api-entry">GetCurrentDirectory</div>
+
+    <div class="prototype">extern guint32 GetCurrentDirectory (guint32 length, gunichar2 *buffer)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>length:</i></dt><dd> size of the buffer</dd><dt><i>buffer:</i></dt><dd> pointer to buffer that recieves path</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Retrieves the current directory for the current process.
+	
+	 Return value: number of characters in buffer on success, zero on failure
+
+</div> <a name="api:GetCurrentProcess"></a>
+ <div class="api">
+    <div class="api-entry">GetCurrentProcess</div>
+
+    <div class="prototype">Prototype: GetCurrentProcess</div>
+<p />
+
+</div> <a name="api:GetCurrentProcessId"></a>
+ <div class="api">
+    <div class="api-entry">GetCurrentProcessId</div>
+
+    <div class="prototype">Prototype: GetCurrentProcessId</div>
+<p />
+
+</div> <a name="api:GetCurrentThread"></a>
+ <div class="api">
+    <div class="api-entry">GetCurrentThread</div>
+
+    <div class="prototype">Prototype: GetCurrentThread</div>
+<p />
+
+</div> <a name="api:GetCurrentThreadId"></a>
+ <div class="api">
+    <div class="api-entry">GetCurrentThreadId</div>
+
+    <div class="prototype">gsize
+GetCurrentThreadId (void)
+
+</div>
+<p />
+<b>Remarks</b>
+<p />	 
+	 Looks up the thread ID of the current thread.  This ID can be
+	 passed to OpenThread() to create a new handle on this thread.
+	
+	 Return value: the thread ID.  NB this is defined as DWORD (ie 32
+	 bit) in the MS API, but we need to cope with 64 bit IDs for s390x
+	 and amd64.  This doesn't really break the API, it just embraces and
+	 extends it on 64bit platforms :)
+
+</div> <a name="api:GetDiskFreeSpaceEx"></a>
+ <div class="api">
+    <div class="api-entry">GetDiskFreeSpaceEx</div>
+
+    <div class="prototype">Prototype: GetDiskFreeSpaceEx</div>
+<p />
+
+</div> <a name="api:GetDriveType"></a>
+ <div class="api">
+    <div class="api-entry">GetDriveType</div>
+
+    <div class="prototype">Prototype: GetDriveType</div>
+<p />
+
+</div> <a name="api:GetExitCodeProcess"></a>
+ <div class="api">
+    <div class="api-entry">GetExitCodeProcess</div>
+
+    <div class="prototype">Prototype: GetExitCodeProcess</div>
+<p />
+
+</div> <a name="api:GetExitCodeThread"></a>
+ <div class="api">
+    <div class="api-entry">GetExitCodeThread</div>
+
+    <div class="prototype">Prototype: GetExitCodeThread</div>
+<p />
+
+</div> <a name="api:GetFileAttributesEx"></a>
+ <div class="api">
+    <div class="api-entry">GetFileAttributesEx</div>
+
+    <div class="prototype">gboolean GetFileAttributesEx (const gunichar2 *name, WapiGetFileExInfoLevels level, gpointer info)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> a pointer to a NULL-terminated unicode filename.</dd><dt><i>level:</i></dt><dd> must be GetFileExInfoStandard</dd><dt><i>info:</i></dt><dd> pointer to a WapiFileAttributesData structure</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Gets attributes, size and filetimes for <i>name</i>;
+	
+	 Return value: %TRUE on success, %FALSE on failure
+
+</div> <a name="api:GetFileAttributes"></a>
+ <div class="api">
+    <div class="api-entry">GetFileAttributes</div>
+
+    <div class="prototype">guint32 GetFileAttributes (const gunichar2 *name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> a pointer to a NULL-terminated unicode filename.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Gets the attributes for <i>name</i>;
+	
+	 Return value: %INVALID_FILE_ATTRIBUTES on failure
+
+</div> <a name="api:GetFileSize"></a>
+ <div class="api">
+    <div class="api-entry">GetFileSize</div>
+
+    <div class="prototype">guint32 GetFileSize(gpointer handle, guint32 *highsize)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The file handle to query.  The handle must have</dd></blockquote>
+<b>Remarks</b>
+<p />	 %GENERIC_READ or %GENERIC_WRITE access. 
+	 <i>highsize</i>: If non-%NULL, the high 32 bits of the file size are
+	 stored here.
+	
+	 Retrieves the size of the file <i>handle</i>.
+	
+	 If the library is compiled without large file support, <i>highsize</i>
+	 has its value set to zero on a successful return.
+	
+	 Return value: On success, the low 32 bits of the file size.  If
+	 <i>highsize</i> is non-%NULL then the high 32 bits of the file size are
+	 stored here.  On failure %INVALID_FILE_SIZE is returned.
+
+</div> <a name="api:GetFileTime"></a>
+ <div class="api">
+    <div class="api-entry">GetFileTime</div>
+
+    <div class="prototype">gboolean GetFileTime(gpointer handle, WapiFileTime *create_time,
+		     WapiFileTime *last_access, WapiFileTime *last_write)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The file handle to query.  The handle must have</dd></blockquote>
+<b>Remarks</b>
+<p />	 %GENERIC_READ access. 
+	 <i>create_time</i>: Points to a %WapiFileTime structure to receive the
+	 number of ticks since the epoch that file was created.  May be
+	 %NULL.
+	 <i>last_access</i>: Points to a %WapiFileTime structure to receive the
+	 number of ticks since the epoch when file was last accessed.  May be
+	 %NULL.
+	 <i>last_write</i>: Points to a %WapiFileTime structure to receive the
+	 number of ticks since the epoch when file was last written to.  May
+	 be %NULL.
+	
+	 Finds the number of ticks since the epoch that the file referenced
+	 by <i>handle</i> was created, last accessed and last modified.  A tick is
+	 a 100 nanosecond interval.  The epoch is Midnight, January 1 1601
+	 GMT.
+	
+	 Create time isn't recorded on POSIX file systems or reported by
+	 stat(2), so that time is guessed by returning the oldest of the
+	 other times.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:GetFileType"></a>
+ <div class="api">
+    <div class="api-entry">GetFileType</div>
+
+    <div class="prototype">WapiFileType GetFileType(gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The file handle to test.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Finds the type of file <i>handle</i>.
+	
+	 Return value: %FILE_TYPE_UNKNOWN - the type of the file <i>handle</i> is
+	 unknown.  %FILE_TYPE_DISK - <i>handle</i> is a disk file.
+	 %FILE_TYPE_CHAR - <i>handle</i> is a character device, such as a console.
+	 %FILE_TYPE_PIPE - <i>handle</i> is a named or anonymous pipe.
+
+</div> <a name="api:GetFileVersionInfo"></a>
+ <div class="api">
+    <div class="api-entry">GetFileVersionInfo</div>
+
+    <div class="prototype">Prototype: GetFileVersionInfo</div>
+<p />
+
+</div> <a name="api:GetFileVersionInfoSize"></a>
+ <div class="api">
+    <div class="api-entry">GetFileVersionInfoSize</div>
+
+    <div class="prototype">Prototype: GetFileVersionInfoSize</div>
+<p />
+
+</div> <a name="api:GetLastError"></a>
+ <div class="api">
+    <div class="api-entry">GetLastError</div>
+
+    <div class="prototype">guint32 GetLastError(void)
+
+</div>
+<p />
+<b>Remarks</b>
+<p />	 
+	 Retrieves the last error that occurred in the calling thread.
+	
+	 Return value: The error code for the last error that happened on
+	 the calling thread.
+
+</div> <a name="api:GetLogicalDriveStrings"></a>
+ <div class="api">
+    <div class="api-entry">GetLogicalDriveStrings</div>
+
+    <div class="prototype">Prototype: GetLogicalDriveStrings</div>
+<p />
+
+</div> <a name="api:GetModuleBaseName"></a>
+ <div class="api">
+    <div class="api-entry">GetModuleBaseName</div>
+
+    <div class="prototype">Prototype: GetModuleBaseName</div>
+<p />
+
+</div> <a name="api:GetModuleFileNameEx"></a>
+ <div class="api">
+    <div class="api-entry">GetModuleFileNameEx</div>
+
+    <div class="prototype">Prototype: GetModuleFileNameEx</div>
+<p />
+
+</div> <a name="api:GetModuleInformation"></a>
+ <div class="api">
+    <div class="api-entry">GetModuleInformation</div>
+
+    <div class="prototype">Prototype: GetModuleInformation</div>
+<p />
+
+</div> <a name="api:GetPriorityClass"></a>
+ <div class="api">
+    <div class="api-entry">GetPriorityClass</div>
+
+    <div class="prototype">Prototype: GetPriorityClass</div>
+<p />
+
+</div> <a name="api:GetProcessId"></a>
+ <div class="api">
+    <div class="api-entry">GetProcessId</div>
+
+    <div class="prototype">Prototype: GetProcessId</div>
+<p />
+
+</div> <a name="api:GetProcessTimes"></a>
+ <div class="api">
+    <div class="api-entry">GetProcessTimes</div>
+
+    <div class="prototype">Prototype: GetProcessTimes</div>
+<p />
+
+</div> <a name="api:GetProcessWorkingSetSize"></a>
+ <div class="api">
+    <div class="api-entry">GetProcessWorkingSetSize</div>
+
+    <div class="prototype">Prototype: GetProcessWorkingSetSize</div>
+<p />
+
+</div> <a name="api:GetStdHandle"></a>
+ <div class="api">
+    <div class="api-entry">GetStdHandle</div>
+
+    <div class="prototype">
+static mono_mutex_t stdhandle_mutex;
+
+gpointer GetStdHandle(WapiStdHandle stdhandle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>stdhandle:</i></dt><dd> specifies the file descriptor</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Returns a handle for stdin, stdout, or stderr.  Always returns the
+	 same handle for the same <i>stdhandle</i>.
+	
+	 Return value: the handle, or %INVALID_HANDLE_VALUE on error
+
+</div> <a name="api:GetSystemInfo"></a>
+ <div class="api">
+    <div class="api-entry">GetSystemInfo</div>
+
+    <div class="prototype">Prototype: GetSystemInfo</div>
+<p />
+
+</div> <a name="api:GetTempPath"></a>
+ <div class="api">
+    <div class="api-entry">GetTempPath</div>
+
+    <div class="prototype">Prototype: GetTempPath</div>
+<p />
+
+</div> <a name="api:GetThreadContext"></a>
+ <div class="api">
+    <div class="api-entry">GetThreadContext</div>
+
+    <div class="prototype">Prototype: GetThreadContext</div>
+<p />
+
+</div> <a name="api:GetTickCount"></a>
+ <div class="api">
+    <div class="api-entry">GetTickCount</div>
+
+    <div class="prototype">Prototype: GetTickCount</div>
+<p />
+
+</div> <a name="api:ImpersonateLoggedOnUser"></a>
+ <div class="api">
+    <div class="api-entry">ImpersonateLoggedOnUser</div>
+
+    <div class="prototype">Prototype: ImpersonateLoggedOnUser</div>
+<p />
+
+</div> <a name="api:InitializeCriticalSectionAndSpinCount"></a>
+ <div class="api">
+    <div class="api-entry">InitializeCriticalSectionAndSpinCount</div>
+
+    <div class="prototype">Prototype: InitializeCriticalSectionAndSpinCount</div>
+<p />
+
+</div> <a name="api:InitializeCriticalSection"></a>
+ <div class="api">
+    <div class="api-entry">InitializeCriticalSection</div>
+
+    <div class="prototype">Prototype: InitializeCriticalSection</div>
+<p />
+
+</div> <a name="api:ioctlsocket"></a>
+ <div class="api">
+    <div class="api-entry">ioctlsocket</div>
+
+    <div class="prototype">Prototype: ioctlsocket</div>
+<p />
+
+</div> <a name="api:LeaveCriticalSection"></a>
+ <div class="api">
+    <div class="api-entry">LeaveCriticalSection</div>
+
+    <div class="prototype">Prototype: LeaveCriticalSection</div>
+<p />
+
+</div> <a name="api:LockFile"></a>
+ <div class="api">
+    <div class="api-entry">LockFile</div>
+
+    <div class="prototype">Prototype: LockFile</div>
+<p />
+
+</div> <a name="api:MoveFile"></a>
+ <div class="api">
+    <div class="api-entry">MoveFile</div>
+
+    <div class="prototype">gboolean MoveFile (const gunichar2 *name, const gunichar2 *dest_name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> a pointer to a NULL-terminated unicode string, that names</dd></blockquote>
+<b>Remarks</b>
+<p />	 the file to be moved. 
+	 <i>dest_name</i>: a pointer to a NULL-terminated unicode string, that is the
+	 new name for the file.
+	
+	 Renames file <i>name</i> to <i>dest_name</i>.
+	 MoveFile sets ERROR_ALREADY_EXISTS if the destination exists, except
+	 when it is the same file as the source.  In that case it silently succeeds.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:OpenEvent"></a>
+ <div class="api">
+    <div class="api-entry">OpenEvent</div>
+
+    <div class="prototype">Prototype: OpenEvent</div>
+<p />
+
+</div> <a name="api:OpenMutex"></a>
+ <div class="api">
+    <div class="api-entry">OpenMutex</div>
+
+    <div class="prototype">Prototype: OpenMutex</div>
+<p />
+
+</div> <a name="api:OpenProcess"></a>
+ <div class="api">
+    <div class="api-entry">OpenProcess</div>
+
+    <div class="prototype">Prototype: OpenProcess</div>
+<p />
+
+</div> <a name="api:OpenSemaphore"></a>
+ <div class="api">
+    <div class="api-entry">OpenSemaphore</div>
+
+    <div class="prototype">Prototype: OpenSemaphore</div>
+<p />
+
+</div> <a name="api:OpenThread"></a>
+ <div class="api">
+    <div class="api-entry">OpenThread</div>
+
+    <div class="prototype">Prototype: OpenThread</div>
+<p />
+
+</div> <a name="api:PulseEvent"></a>
+ <div class="api">
+    <div class="api-entry">PulseEvent</div>
+
+    <div class="prototype">gboolean PulseEvent(gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The event handle.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Sets the event handle <i>handle</i> to the signalled state, and then
+	 resets it to unsignalled after informing any waiting threads.
+	
+	 If <i>handle</i> is a manual reset event, all waiting threads that can be
+	 released immediately are released.  <i>handle</i> is then reset.  If
+	 <i>handle</i> is an auto reset event, one waiting thread is released even
+	 if multiple threads are waiting.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.  (Currently only
+	 ever returns %TRUE).
+
+</div> <a name="api:QueryPerformanceCounter"></a>
+ <div class="api">
+    <div class="api-entry">QueryPerformanceCounter</div>
+
+    <div class="prototype">Prototype: QueryPerformanceCounter</div>
+<p />
+
+</div> <a name="api:QueryPerformanceFrequency"></a>
+ <div class="api">
+    <div class="api-entry">QueryPerformanceFrequency</div>
+
+    <div class="prototype">Prototype: QueryPerformanceFrequency</div>
+<p />
+
+</div> <a name="api:QueueUserAPC"></a>
+ <div class="api">
+    <div class="api-entry">QueueUserAPC</div>
+
+    <div class="prototype">Prototype: QueueUserAPC</div>
+<p />
+
+</div> <a name="api:ReadFile"></a>
+ <div class="api">
+    <div class="api-entry">ReadFile</div>
+
+    <div class="prototype">gboolean ReadFile(gpointer handle, gpointer buffer, guint32 numbytes,
+		  guint32 *bytesread, WapiOverlapped *overlapped)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The file handle to read from.  The handle must have</dd></blockquote>
+<b>Remarks</b>
+<p />	 %GENERIC_READ access. 
+	 <i>buffer</i>: The buffer to store read data in
+	 <i>numbytes</i>: The maximum number of bytes to read
+	 <i>bytesread</i>: The actual number of bytes read is stored here.  This
+	 value can be zero if the handle is positioned at the end of the
+	 file.
+	 <i>overlapped</i>: points to a required %WapiOverlapped structure if
+	 <i>handle</i> has the %FILE_FLAG_OVERLAPPED option set, should be NULL
+	 otherwise.
+	
+	 If <i>handle</i> does not have the %FILE_FLAG_OVERLAPPED option set, this
+	 function reads up to <i>numbytes</i> bytes from the file from the current
+	 file position, and stores them in <i>buffer</i>.  If there are not enough
+	 bytes left in the file, just the amount available will be read.
+	 The actual number of bytes read is stored in <i>bytesread</i>.
+	
+	 If <i>handle</i> has the %FILE_FLAG_OVERLAPPED option set, the current
+	 file position is ignored and the read position is taken from data
+	 in the <i>overlapped</i> structure.
+	
+	 Return value: %TRUE if the read succeeds (even if no bytes were
+	 read due to an attempt to read past the end of the file), %FALSE on
+	 error.
+
+</div> <a name="api:ReleaseMutex"></a>
+ <div class="api">
+    <div class="api-entry">ReleaseMutex</div>
+
+    <div class="prototype">gboolean ReleaseMutex(gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The mutex handle.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Releases ownership if the mutex handle <i>handle</i>.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.  This function
+	 fails if the calling thread does not own the mutex <i>handle</i>.
+
+</div> <a name="api:ReleaseSemaphore"></a>
+ <div class="api">
+    <div class="api-entry">ReleaseSemaphore</div>
+
+    <div class="prototype">gboolean ReleaseSemaphore(gpointer handle, gint32 count, gint32 *prevcount)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The semaphore handle to release.</dd><dt><i>count:</i></dt><dd> The amount by which the semaphore's count should be</dd></blockquote>
+<b>Remarks</b>
+<p />	 increased. 
+	 <i>prevcount</i>: Pointer to a location to store the previous count of
+	 the semaphore, or %NULL.
+	
+	 Increases the count of semaphore <i>handle</i> by <i>count</i>.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:RemoveDirectory"></a>
+ <div class="api">
+    <div class="api-entry">RemoveDirectory</div>
+
+    <div class="prototype">gboolean RemoveDirectory (const gunichar2 *name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> a pointer to a NULL-terminated unicode string, that names</dd></blockquote>
+<b>Remarks</b>
+<p />	 the directory to be removed. 
+	
+	 Removes directory <i>name</i>
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:ReplaceFile"></a>
+ <div class="api">
+    <div class="api-entry">ReplaceFile</div>
+
+    <div class="prototype">Prototype: ReplaceFile</div>
+<p />
+
+</div> <a name="api:ResetEvent"></a>
+ <div class="api">
+    <div class="api-entry">ResetEvent</div>
+
+    <div class="prototype">gboolean ResetEvent(gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The event handle.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Resets the event handle <i>handle</i> to the unsignalled state.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.  (Currently only
+	 ever returns %TRUE).
+
+</div> <a name="api:ResumeThread"></a>
+ <div class="api">
+    <div class="api-entry">ResumeThread</div>
+
+    <div class="prototype">Prototype: ResumeThread</div>
+<p />
+
+</div> <a name="api:RevertToSelf"></a>
+ <div class="api">
+    <div class="api-entry">RevertToSelf</div>
+
+    <div class="prototype">Prototype: RevertToSelf</div>
+<p />
+
+</div> <a name="api:SetCriticalSectionSpinCount"></a>
+ <div class="api">
+    <div class="api-entry">SetCriticalSectionSpinCount</div>
+
+    <div class="prototype">Prototype: SetCriticalSectionSpinCount</div>
+<p />
+
+</div> <a name="api:SetCurrentDirectory"></a>
+ <div class="api">
+    <div class="api-entry">SetCurrentDirectory</div>
+
+    <div class="prototype">extern gboolean SetCurrentDirectory (const gunichar2 *path)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>path:</i></dt><dd> path to new directory</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Changes the directory path for the current process.
+	
+	 Return value: %TRUE on success, %FALSE on failure.
+
+</div> <a name="api:SetEndOfFile"></a>
+ <div class="api">
+    <div class="api-entry">SetEndOfFile</div>
+
+    <div class="prototype">gboolean SetEndOfFile(gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The file handle to set.  The handle must have</dd></blockquote>
+<b>Remarks</b>
+<p />	 %GENERIC_WRITE access. 
+	
+	 Moves the end-of-file position to the current position of the file
+	 pointer.  This function is used to truncate or extend a file.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:SetEvent"></a>
+ <div class="api">
+    <div class="api-entry">SetEvent</div>
+
+    <div class="prototype">gboolean SetEvent(gpointer handle)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The event handle</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Sets the event handle <i>handle</i> to the signalled state.
+	
+	 If <i>handle</i> is a manual reset event, it remains signalled until it
+	 is reset with ResetEvent().  An auto reset event remains signalled
+	 until a single thread has waited for it, at which time <i>handle</i> is
+	 automatically reset to unsignalled.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.  (Currently only
+	 ever returns %TRUE).
+
+</div> <a name="api:SetFileAttributes"></a>
+ <div class="api">
+    <div class="api-entry">SetFileAttributes</div>
+
+    <div class="prototype">extern gboolean SetFileAttributes (const gunichar2 *name, guint32 attrs)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> name of file</dd><dt><i>attrs:</i></dt><dd> attributes to set</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Changes the attributes on a named file.
+	
+	 Return value: %TRUE on success, %FALSE on failure.
+
+</div> <a name="api:SetFilePointer"></a>
+ <div class="api">
+    <div class="api-entry">SetFilePointer</div>
+
+    <div class="prototype">guint32 SetFilePointer(gpointer handle, gint32 movedistance,
+		       gint32 *highmovedistance, WapiSeekMethod method)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The file handle to set.  The handle must have</dd></blockquote>
+<b>Remarks</b>
+<p />	 %GENERIC_READ or %GENERIC_WRITE access. 
+	 <i>movedistance</i>: Low 32 bits of a signed value that specifies the
+	 number of bytes to move the file pointer.
+	 <i>highmovedistance</i>: Pointer to the high 32 bits of a signed value
+	 that specifies the number of bytes to move the file pointer, or
+	 %NULL.
+	 <i>method</i>: The starting point for the file pointer move.
+	
+	 Sets the file pointer of an open file.
+	
+	 The distance to move the file pointer is calculated from
+	 <i>movedistance</i> and <i>highmovedistance</i>: If <i>highmovedistance</i> is %NULL,
+	 <i>movedistance</i> is the 32-bit signed value; otherwise, <i>movedistance</i>
+	 is the low 32 bits and <i>highmovedistance</i> a pointer to the high 32
+	 bits of a 64 bit signed value.  A positive distance moves the file
+	 pointer forward from the position specified by <i>method</i>; a negative
+	 distance moves the file pointer backward.
+	
+	 If the library is compiled without large file support,
+	 <i>highmovedistance</i> is ignored and its value is set to zero on a
+	 successful return.
+	
+	 Return value: On success, the low 32 bits of the new file pointer.
+	 If <i>highmovedistance</i> is not %NULL, the high 32 bits of the new file
+	 pointer are stored there.  On failure, %INVALID_SET_FILE_POINTER.
+
+</div> <a name="api:SetFileTime"></a>
+ <div class="api">
+    <div class="api-entry">SetFileTime</div>
+
+    <div class="prototype">gboolean SetFileTime(gpointer handle, const WapiFileTime *create_time,
+		     const WapiFileTime *last_access,
+		     const WapiFileTime *last_write)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The file handle to set.  The handle must have</dd></blockquote>
+<b>Remarks</b>
+<p />	 %GENERIC_WRITE access. 
+	 <i>create_time</i>: Points to a %WapiFileTime structure that contains the
+	 number of ticks since the epoch that the file was created.  May be
+	 %NULL.
+	 <i>last_access</i>: Points to a %WapiFileTime structure that contains the
+	 number of ticks since the epoch when the file was last accessed.
+	 May be %NULL.
+	 <i>last_write</i>: Points to a %WapiFileTime structure that contains the
+	 number of ticks since the epoch when the file was last written to.
+	 May be %NULL.
+	
+	 Sets the number of ticks since the epoch that the file referenced
+	 by <i>handle</i> was created, last accessed or last modified.  A tick is
+	 a 100 nanosecond interval.  The epoch is Midnight, January 1 1601
+	 GMT.
+	
+	 Create time isn't recorded on POSIX file systems, and is ignored.
+	
+	 Return value: %TRUE on success, %FALSE otherwise.
+
+</div> <a name="api:SetLastError"></a>
+ <div class="api">
+    <div class="api-entry">SetLastError</div>
+
+    <div class="prototype">void SetLastError(guint32 code)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>code:</i></dt><dd> The error code.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Sets the error code in the calling thread.
+
+</div> <a name="api:SetPriorityClass"></a>
+ <div class="api">
+    <div class="api-entry">SetPriorityClass</div>
+
+    <div class="prototype">Prototype: SetPriorityClass</div>
+<p />
+
+</div> <a name="api:SetProcessWorkingSetSize"></a>
+ <div class="api">
+    <div class="api-entry">SetProcessWorkingSetSize</div>
+
+    <div class="prototype">Prototype: SetProcessWorkingSetSize</div>
+<p />
+
+</div> <a name="api:ShellExecuteEx"></a>
+ <div class="api">
+    <div class="api-entry">ShellExecuteEx</div>
+
+    <div class="prototype">Prototype: ShellExecuteEx</div>
+<p />
+
+</div> <a name="api:SignalObjectAndWait"></a>
+ <div class="api">
+    <div class="api-entry">SignalObjectAndWait</div>
+
+    <div class="prototype">guint32 SignalObjectAndWait(gpointer signal_handle, gpointer wait,
+			    guint32 timeout, gboolean alertable)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>signal_handle:</i></dt><dd> An object to signal</dd><dt><i>wait:</i></dt><dd> An object to wait for</dd><dt><i>timeout:</i></dt><dd> The maximum time in milliseconds to wait for</dd><dt><i>alertable:</i></dt><dd> Specifies whether the function returnes when the system</dd></blockquote>
+<b>Remarks</b>
+<p />	 queues an I/O completion routine or an APC for the calling thread. 
+	
+	 Atomically signals <i>signal</i> and waits for <i>wait</i> to become signalled,
+	 or <i>timeout</i> ms elapses.  If <i>timeout</i> is zero, the object's state is
+	 tested and the function returns immediately.  If <i>timeout</i> is
+	 %INFINITE, the function waits forever.
+	
+	 <i>signal</i> can be a semaphore, mutex or event object.
+	
+	 If <i>alertable</i> is %TRUE and the system queues an I/O completion
+	 routine or an APC for the calling thread, the function returns and
+	 the thread calls the completion routine or APC function.  If
+	 %FALSE, the function does not return, and the thread does not call
+	 the completion routine or APC function.  A completion routine is
+	 queued when the ReadFileEx() or WriteFileEx() function in which it
+	 was specified has completed.  The calling thread is the thread that
+	 initiated the read or write operation.  An APC is queued when
+	 QueueUserAPC() is called.  Currently completion routines and APC
+	 functions are not supported.
+	
+	 Return value: %WAIT_ABANDONED - <i>wait</i> is a mutex that was not
+	 released by the owning thread when it exited.  Ownershop of the
+	 mutex object is granted to the calling thread and the mutex is set
+	 to nonsignalled.  %WAIT_IO_COMPLETION - the wait was ended by one
+	 or more user-mode asynchronous procedure calls queued to the
+	 thread.  %WAIT_OBJECT_0 - The state of <i>wait</i> is signalled.
+	 %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and <i>wait</i>'s state is
+	 still not signalled.  %WAIT_FAILED - an error occurred.
+
+</div> <a name="api:SleepEx"></a>
+ <div class="api">
+    <div class="api-entry">SleepEx</div>
+
+    <div class="prototype">guint32
+SleepEx (guint32 ms, gboolean alertable)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>ms:</i></dt><dd> The time in milliseconds to suspend for</dd><dt><i>alertable:</i></dt><dd> if TRUE, the wait can be interrupted by an APC call</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Suspends execution of the current thread for <i>ms</i> milliseconds.  A
+	 value of zero causes the thread to relinquish its time slice.  A
+	 value of %INFINITE causes an infinite delay.
+
+</div> <a name="api:Sleep"></a>
+ <div class="api">
+    <div class="api-entry">Sleep</div>
+
+    <div class="prototype">Prototype: Sleep</div>
+<p />
+
+</div> <a name="api:SuspendThread"></a>
+ <div class="api">
+    <div class="api-entry">SuspendThread</div>
+
+    <div class="prototype">Prototype: SuspendThread</div>
+<p />
+
+</div> <a name="api:TerminateProcess"></a>
+ <div class="api">
+    <div class="api-entry">TerminateProcess</div>
+
+    <div class="prototype">Prototype: TerminateProcess</div>
+<p />
+
+</div> <a name="api:TlsAlloc"></a>
+ <div class="api">
+    <div class="api-entry">TlsAlloc</div>
+
+    <div class="prototype">Prototype: TlsAlloc</div>
+<p />
+
+</div> <a name="api:TlsFree"></a>
+ <div class="api">
+    <div class="api-entry">TlsFree</div>
+
+    <div class="prototype">Prototype: TlsFree</div>
+<p />
+
+</div> <a name="api:TlsGetValue"></a>
+ <div class="api">
+    <div class="api-entry">TlsGetValue</div>
+
+    <div class="prototype">Prototype: TlsGetValue</div>
+<p />
+
+</div> <a name="api:TlsSetValue"></a>
+ <div class="api">
+    <div class="api-entry">TlsSetValue</div>
+
+    <div class="prototype">Prototype: TlsSetValue</div>
+<p />
+
+</div> <a name="api:TransmitFile"></a>
+ <div class="api">
+    <div class="api-entry">TransmitFile</div>
+
+    <div class="prototype">Prototype: TransmitFile</div>
+<p />
+
+</div> <a name="api:TryEnterCriticalSection"></a>
+ <div class="api">
+    <div class="api-entry">TryEnterCriticalSection</div>
+
+    <div class="prototype">Prototype: TryEnterCriticalSection</div>
+<p />
+
+</div> <a name="api:UnlockFile"></a>
+ <div class="api">
+    <div class="api-entry">UnlockFile</div>
+
+    <div class="prototype">Prototype: UnlockFile</div>
+<p />
+
+</div> <a name="api:VerLanguageName"></a>
+ <div class="api">
+    <div class="api-entry">VerLanguageName</div>
+
+    <div class="prototype">Prototype: VerLanguageName</div>
+<p />
+
+</div> <a name="api:VerQueryValue"></a>
+ <div class="api">
+    <div class="api-entry">VerQueryValue</div>
+
+    <div class="prototype">Prototype: VerQueryValue</div>
+<p />
+
+</div> <a name="api:WaitForInputIdle"></a>
+ <div class="api">
+    <div class="api-entry">WaitForInputIdle</div>
+
+    <div class="prototype">guint32 WaitForInputIdle(gpointer handle, guint32 timeout)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> a handle to the process to wait for</dd><dt><i>timeout:</i></dt><dd> the maximum time in milliseconds to wait for</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 This function returns when either <i>handle</i> process is waiting
+	 for input, or <i>timeout</i> ms elapses.  If <i>timeout</i> is zero, the
+	 process state is tested and the function returns immediately.
+	 If <i>timeout</i> is %INFINITE, the function waits forever.
+	
+	 Return value: 0 - <i>handle</i> process is waiting for input.
+	 %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and
+	 <i>handle</i> process is not waiting for input.  %WAIT_FAILED - an error
+	 occurred. 
+
+</div> <a name="api:WaitForMultipleObjectsEx"></a>
+ <div class="api">
+    <div class="api-entry">WaitForMultipleObjectsEx</div>
+
+    <div class="prototype">guint32 WaitForMultipleObjectsEx(guint32 numobjects, gpointer *handles,
+				 gboolean waitall, guint32 timeout,
+				 gboolean alertable)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>numobjects:</i></dt><dd> The number of objects in <i>handles</i>. The maximum allowed</dd></blockquote>
+<b>Remarks</b>
+<p />	 is %MAXIMUM_WAIT_OBJECTS. 
+	 <i>handles</i>: An array of object handles.  Duplicates are not allowed.
+	 <i>waitall</i>: If %TRUE, this function waits until all of the handles
+	 are signalled.  If %FALSE, this function returns when any object is
+	 signalled.
+	 <i>timeout</i>: The maximum time in milliseconds to wait for.
+	 <i>alertable</i>: if TRUE, the wait can be interrupted by an APC call
+	
+<p />
+	 This function returns when either one or more of <i>handles</i> is
+	 signalled, or <i>timeout</i> ms elapses.  If <i>timeout</i> is zero, the state
+	 of each item of <i>handles</i> is tested and the function returns
+	 immediately.  If <i>timeout</i> is %INFINITE, the function waits forever.
+	
+	 Return value: %WAIT_OBJECT_0 to %WAIT_OBJECT_0 + <i>numobjects</i> - 1 -
+	 if <i>waitall</i> is %TRUE, indicates that all objects are signalled.  If
+	 <i>waitall</i> is %FALSE, the return value minus %WAIT_OBJECT_0 indicates
+	 the first index into <i>handles</i> of the objects that are signalled.
+	 %WAIT_ABANDONED_0 to %WAIT_ABANDONED_0 + <i>numobjects</i> - 1 - if
+	 <i>waitall</i> is %TRUE, indicates that all objects are signalled, and at
+	 least one object is an abandoned mutex object (See
+	 WaitForSingleObject() for a description of abandoned mutexes.)  If
+	 <i>waitall</i> is %FALSE, the return value minus %WAIT_ABANDONED_0
+	 indicates the first index into <i>handles</i> of an abandoned mutex.
+	 %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and no objects in
+	 <i>handles</i> are signalled.  %WAIT_FAILED - an error occurred.
+	 %WAIT_IO_COMPLETION - the wait was ended by an APC.
+
+</div> <a name="api:WaitForMultipleObjects"></a>
+ <div class="api">
+    <div class="api-entry">WaitForMultipleObjects</div>
+
+    <div class="prototype">Prototype: WaitForMultipleObjects</div>
+<p />
+
+</div> <a name="api:WaitForSingleObjectEx"></a>
+ <div class="api">
+    <div class="api-entry">WaitForSingleObjectEx</div>
+
+    <div class="prototype">guint32 WaitForSingleObjectEx(gpointer handle, guint32 timeout,
+			      gboolean alertable)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> an object to wait for</dd><dt><i>timeout:</i></dt><dd> the maximum time in milliseconds to wait for</dd><dt><i>alertable:</i></dt><dd> if TRUE, the wait can be interrupted by an APC call</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 This function returns when either <i>handle</i> is signalled, or <i>timeout</i>
+	 ms elapses.  If <i>timeout</i> is zero, the object's state is tested and
+	 the function returns immediately.  If <i>timeout</i> is %INFINITE, the
+	 function waits forever.
+	
+	 Return value: %WAIT_ABANDONED - <i>handle</i> is a mutex that was not
+	 released by the owning thread when it exited.  Ownership of the
+	 mutex object is granted to the calling thread and the mutex is set
+	 to nonsignalled.  %WAIT_OBJECT_0 - The state of <i>handle</i> is
+	 signalled.  %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and
+	 <i>handle</i>'s state is still not signalled.  %WAIT_FAILED - an error
+	 occurred. %WAIT_IO_COMPLETION - the wait was ended by an APC.
+
+</div> <a name="api:WaitForSingleObject"></a>
+ <div class="api">
+    <div class="api-entry">WaitForSingleObject</div>
+
+    <div class="prototype">Prototype: WaitForSingleObject</div>
+<p />
+
+</div> <a name="api:WriteFile"></a>
+ <div class="api">
+    <div class="api-entry">WriteFile</div>
+
+    <div class="prototype">gboolean WriteFile(gpointer handle, gconstpointer buffer, guint32 numbytes,
+		   guint32 *byteswritten, WapiOverlapped *overlapped)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>handle:</i></dt><dd> The file handle to write to.  The handle must have</dd></blockquote>
+<b>Remarks</b>
+<p />	 %GENERIC_WRITE access. 
+	 <i>buffer</i>: The buffer to read data from.
+	 <i>numbytes</i>: The maximum number of bytes to write.
+	 <i>byteswritten</i>: The actual number of bytes written is stored here.
+	 If the handle is positioned at the file end, the length of the file
+	 is extended.  This parameter may be %NULL.
+	 <i>overlapped</i>: points to a required %WapiOverlapped structure if
+	 <i>handle</i> has the %FILE_FLAG_OVERLAPPED option set, should be NULL
+	 otherwise.
+	
+	 If <i>handle</i> does not have the %FILE_FLAG_OVERLAPPED option set, this
+	 function writes up to <i>numbytes</i> bytes from <i>buffer</i> to the file at
+	 the current file position.  If <i>handle</i> is positioned at the end of
+	 the file, the file is extended.  The actual number of bytes written
+	 is stored in <i>byteswritten</i>.
+	
+	 If <i>handle</i> has the %FILE_FLAG_OVERLAPPED option set, the current
+	 file position is ignored and the write position is taken from data
+	 in the <i>overlapped</i> structure.
+	
+	 Return value: %TRUE if the write succeeds, %FALSE on error.
+
+</div> <a name="api:WSACleanup"></a>
+ <div class="api">
+    <div class="api-entry">WSACleanup</div>
+
+    <div class="prototype">Prototype: WSACleanup</div>
+<p />
+
+</div> <a name="api:WSAGetLastError"></a>
+ <div class="api">
+    <div class="api-entry">WSAGetLastError</div>
+
+    <div class="prototype">Prototype: WSAGetLastError</div>
+<p />
+
+</div> <a name="api:WSAIoctl"></a>
+ <div class="api">
+    <div class="api-entry">WSAIoctl</div>
+
+    <div class="prototype">Prototype: WSAIoctl</div>
+<p />
+
+</div> <a name="api:WSARecv"></a>
+ <div class="api">
+    <div class="api-entry">WSARecv</div>
+
+    <div class="prototype">Prototype: WSARecv</div>
+<p />
+
+</div> <a name="api:WSASend"></a>
+ <div class="api">
+    <div class="api-entry">WSASend</div>
+
+    <div class="prototype">Prototype: WSASend</div>
+<p />
+
+</div> <a name="api:WSASetLastError"></a>
+ <div class="api">
+    <div class="api-entry">WSASetLastError</div>
+
+    <div class="prototype">Prototype: WSASetLastError</div>
+<p />
+
+</div> <a name="api:WSAStartup"></a>
+ <div class="api">
+    <div class="api-entry">WSAStartup</div>
+
+    <div class="prototype">Prototype: WSAStartup</div>
+<p />
+
+
+</div><h3>Extended APIs</h3>
+
+	<p />The extended APIs provide access to a few internals of the
+	WAPI stack that are not exposed through the standard Win32
+	APIs.
+	
+ <a name="api:mono_once"></a>
+ <div class="api">
+    <div class="api-entry">mono_once</div>
+
+    <div class="prototype">Prototype: mono_once</div>
+<p />
+
+</div> <a name="api:wapi_clear_interruption"></a>
+ <div class="api">
+    <div class="api-entry">wapi_clear_interruption</div>
+
+    <div class="prototype">Prototype: wapi_clear_interruption</div>
+<p />
+
+</div> <a name="api:wapi_current_thread_desc"></a>
+ <div class="api">
+    <div class="api-entry">wapi_current_thread_desc</div>
+
+    <div class="prototype">Prototype: wapi_current_thread_desc</div>
+<p />
+
+</div> <a name="api:wapi_interrupt_thread"></a>
+ <div class="api">
+    <div class="api-entry">wapi_interrupt_thread</div>
+
+    <div class="prototype">Prototype: wapi_interrupt_thread</div>
+<p />
+
+</div> <a name="api:wapi_self_interrupt"></a>
+ <div class="api">
+    <div class="api-entry">wapi_self_interrupt</div>
+
+    <div class="prototype">Prototype: wapi_self_interrupt</div>
+<p />
+
+</div> <a name="api:wapi_thread_clear_wait_handle"></a>
+ <div class="api">
+    <div class="api-entry">wapi_thread_clear_wait_handle</div>
+
+    <div class="prototype">void
+wapi_thread_clear_wait_handle (gpointer handle)
+
+</div>
+<p />
+<b>Remarks</b>
+<p />	 
+	   Clear the wait handle of the current thread.
+
+</div></body>
+</html>
+</span>

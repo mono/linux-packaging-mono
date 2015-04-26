@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?><span>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <title>mono-api-reflection.html</title>
+   <style type="text/css">
+
+
+   h3 { 
+       font-size: 18px;
+       padding-bottom: 4pt;
+       border-bottom: 2px solid #dddddd;
+   }
+       
+   .api {
+     border: 1px solid;
+     padding: 10pt;
+     margin: 10pt;
+   } 
+
+   .api-entry { 
+       border-bottom: none;
+       font-size: 18px;
+   }
+
+   .prototype {
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
+     margin-top: 5pt;
+     margin-bottom: 5pt;  
+   } 
+
+   .header {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+    
+   .code {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+   
+
+</style>
+</head>
+<body>
+<h2>Fetching Types, and Basic Reflection</h2>
+
+ <a name="api:mono_reflection_get_custom_attrs_blob"></a>
+ <div class="api">
+    <div class="api-entry">mono_reflection_get_custom_attrs_blob</div>
+
+    <div class="prototype">Prototype: mono_reflection_get_custom_attrs_blob</div>
+<p />
+
+</div> <a name="api:mono_reflection_get_custom_attrs"></a>
+ <div class="api">
+    <div class="api-entry">mono_reflection_get_custom_attrs</div>
+
+    <div class="prototype">Prototype: mono_reflection_get_custom_attrs</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_get_attr"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_get_attr</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_get_attr</div>
+<p />
+
+</div> <a name="api:mono_reflection_get_token"></a>
+ <div class="api">
+    <div class="api-entry">mono_reflection_get_token</div>
+
+    <div class="prototype">Prototype: mono_reflection_get_token</div>
+<p />
+
+</div> <a name="api:mono_reflection_get_type"></a>
+ <div class="api">
+    <div class="api-entry">mono_reflection_get_type</div>
+
+    <div class="prototype">Prototype: mono_reflection_get_type</div>
+<p />
+
+</div> <a name="api:mono_reflection_parse_type"></a>
+ <div class="api">
+    <div class="api-entry">mono_reflection_parse_type</div>
+
+    <div class="prototype">Prototype: mono_reflection_parse_type</div>
+<p />
+
+</div> <a name="api:mono_reflection_type_from_name"></a>
+ <div class="api">
+    <div class="api-entry">mono_reflection_type_from_name</div>
+
+    <div class="prototype">Prototype: mono_reflection_type_from_name</div>
+<p />
+
+</div> <a name="api:mono_reflection_get_custom_attrs_info"></a>
+ <div class="api">
+    <div class="api-entry">mono_reflection_get_custom_attrs_info</div>
+
+    <div class="prototype">Prototype: mono_reflection_get_custom_attrs_info</div>
+<p />
+
+
+</div><h2>Custom Attributes</h2>
+
+ <a name="api:mono_custom_attrs_construct"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_construct</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_construct</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_free"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_free</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_free</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_from_assembly"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_from_assembly</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_from_assembly</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_from_class"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_from_class</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_from_class</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_from_event"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_from_event</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_from_event</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_from_field"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_from_field</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_from_field</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_from_index"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_from_index</div>
+
+    <div class="prototype">MonoCustomAttrInfo*
+mono_custom_attrs_from_index (MonoImage *image, guint32 idx)
+
+</div>
+<p />
+<b>Returns</b>
+<blockquote>	  NULL if no attributes are found or if a loading error occurs.
+</blockquote>
+
+</div> <a name="api:mono_custom_attrs_from_method"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_from_method</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_from_method</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_from_param"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_from_param</div>
+
+    <div class="prototype">MonoCustomAttrInfo*
+mono_custom_attrs_from_param (MonoMethod *method, guint32 param)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>method:</i></dt><dd> handle to the method that we want to retrieve custom parameter information from</dd><dt><i>param:</i></dt><dd> parameter number, where zero represent the return value, and one is the first parameter in the method</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the custom attribute object for the specified parameter, or NULL if there are none.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 The result must be released with mono_custom_attrs_free().
+	
+
+</div> <a name="api:mono_custom_attrs_from_property"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_from_property</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_from_property</div>
+<p />
+
+</div> <a name="api:mono_custom_attrs_has_attr"></a>
+ <div class="api">
+    <div class="api-entry">mono_custom_attrs_has_attr</div>
+
+    <div class="prototype">Prototype: mono_custom_attrs_has_attr</div>
+<p />
+
+
+</div><h2></h2>
+ <a name="api:mono_module_file_get_object"></a>
+ <div class="api">
+    <div class="api-entry">mono_module_file_get_object</div>
+
+    <div class="prototype">Prototype: mono_module_file_get_object</div>
+<p />
+
+</div> <a name="api:mono_module_get_object"></a>
+ <div class="api">
+    <div class="api-entry">mono_module_get_object</div>
+
+    <div class="prototype">Prototype: mono_module_get_object</div>
+<p />
+
+</div> <a name="api:mono_method_body_get_object"></a>
+ <div class="api">
+    <div class="api-entry">mono_method_body_get_object</div>
+
+    <div class="prototype">Prototype: mono_method_body_get_object</div>
+<p />
+
+</div> <a name="api:mono_event_get_object"></a>
+ <div class="api">
+    <div class="api-entry">mono_event_get_object</div>
+
+    <div class="prototype">Prototype: mono_event_get_object</div>
+<p />
+
+</div> <a name="api:mono_assembly_get_object"></a>
+ <div class="api">
+    <div class="api-entry">mono_assembly_get_object</div>
+
+    <div class="prototype">Prototype: mono_assembly_get_object</div>
+<p />
+
+</div> <a name="api:mono_param_get_objects"></a>
+ <div class="api">
+    <div class="api-entry">mono_param_get_objects</div>
+
+    <div class="prototype">Prototype: mono_param_get_objects</div>
+<p />
+
+</div> <a name="api:mono_field_get_object"></a>
+ <div class="api">
+    <div class="api-entry">mono_field_get_object</div>
+
+    <div class="prototype">Prototype: mono_field_get_object</div>
+<p />
+
+</div> <a name="api:mono_property_get_object"></a>
+ <div class="api">
+    <div class="api-entry">mono_property_get_object</div>
+
+    <div class="prototype">Prototype: mono_property_get_object</div>
+<p />
+
+</div></body>
+</html>
+</span>

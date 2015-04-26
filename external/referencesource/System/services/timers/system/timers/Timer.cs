@@ -62,12 +62,7 @@ namespace System.Timers {
             if (interval <= 0)
                 throw new ArgumentException(SR.GetString(SR.InvalidParameter, "interval", interval));
                         
-            double roundedInterval = Math.Ceiling(interval);
-            if (roundedInterval > Int32.MaxValue || roundedInterval <= 0) {
-                throw new ArgumentException(SR.GetString(SR.InvalidParameter, "interval", interval));                
-            }
-
-            this.interval = (int) roundedInterval;
+            this.interval = CalculateRoundedInterval(interval, true);
         }
 
         /// <devdoc>
@@ -128,7 +123,7 @@ namespace System.Timers {
                                 throw new ObjectDisposedException(GetType().Name);
                             }
 
-                            int i = (int)Math.Ceiling(interval);
+                            int i = CalculateRoundedInterval(interval);
                             cookie = new Object();
                             timer = new System.Threading.Timer(callback, cookie, i, autoReset? i:Timeout.Infinite);
                         }
@@ -141,9 +136,19 @@ namespace System.Timers {
           }
         }
 
+        private static int CalculateRoundedInterval(double interval, bool argumentCheck = false) {
+            double roundedInterval = Math.Ceiling(interval);
+            if (roundedInterval > Int32.MaxValue || roundedInterval <= 0) {
+                if (argumentCheck)
+                    throw new ArgumentException(SR.GetString(SR.InvalidParameter, "interval", interval));
+
+                throw new ArgumentOutOfRangeException(SR.GetString(SR.InvalidParameter, "interval", interval));
+            }
+            return (int)roundedInterval;
+        }
 
         private void UpdateTimer() {
-            int i = (int)Math.Ceiling(interval);
+            int i = CalculateRoundedInterval(interval);
             timer.Change(i, autoReset? i :Timeout.Infinite );
         }
         

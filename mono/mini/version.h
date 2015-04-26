@@ -1,1 +1,1 @@
-#define FULL_VERSION "(detached/21d849b"
+#define FULL_VERSION "mono-4.0.0-branch/7975f50"
