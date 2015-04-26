@@ -1,3 +1,11 @@
+mono (4.0.1-0xamarin1) unstable; urgency=medium
+
+  * [d984845] Add Breaks/Replaces for 2.0/3.5 facades
+  * [757121c] Imported Upstream version 4.0.1
+  * [7b3c1de] There are now facades for 2.0/3.5 too
+
+ -- Jo Shields <directhex@apebox.org>  Sun, 26 Apr 2015 19:24:45 +0100
+
 mono (4.0.0~alpha1-0xamarin1) alpha; urgency=medium
 
   * [806294f] Imported Upstream version 4.0.0~alpha1
