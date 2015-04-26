@@ -1,0 +1,821 @@
+﻿<?xml version="1.0" encoding="utf-8"?><span>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <title>mono-api-class.html</title>
+   <style type="text/css">
+
+
+   h3 { 
+       font-size: 18px;
+       padding-bottom: 4pt;
+       border-bottom: 2px solid #dddddd;
+   }
+       
+   .api {
+     border: 1px solid;
+     padding: 10pt;
+     margin: 10pt;
+   } 
+
+   .api-entry { 
+       border-bottom: none;
+       font-size: 18px;
+   }
+
+   .prototype {
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
+     margin-top: 5pt;
+     margin-bottom: 5pt;  
+   } 
+
+   .header {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+    
+   .code {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+   
+
+</style>
+</head>
+<body>
+<h2>Class Operations</h2>
+
+ <a name="api:mono_class_array_element_size"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_array_element_size</div>
+
+    <div class="prototype">gint32
+mono_class_array_element_size (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> </dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the number of bytes an element of type <i>klass</i>
+
+	 uses when stored into an array.</blockquote>
+
+</div> <a name="api:mono_class_data_size"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_data_size</div>
+
+    <div class="prototype">gint32
+mono_class_data_size (MonoClass *klass)
+	
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> a class </dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the size of the static class data
+</blockquote>
+<b>Remarks</b>
+<p />	 <p />
+
+
+</div> <a name="api:mono_class_enum_basetype"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_enum_basetype</div>
+
+    <div class="prototype">MonoType*
+mono_class_enum_basetype (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the underlying type representation for an enumeration.
+</blockquote>
+
+</div> <a name="api:mono_class_from_generic_parameter"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_from_generic_parameter</div>
+
+    <div class="prototype">Prototype: mono_class_from_generic_parameter</div>
+<p />
+
+</div> <a name="api:mono_class_from_mono_type"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_from_mono_type</div>
+
+    <div class="prototype">Prototype: mono_class_from_mono_type</div>
+<p />
+
+</div> <a name="api:mono_class_from_name_case"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_from_name_case</div>
+
+    <div class="prototype">MonoClass*
+mono_class_from_name_case (MonoImage *image, const char* name_space, const char *name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>image:</i></dt><dd> The MonoImage where the type is looked up in</dd><dt><i>name_space:</i></dt><dd> the type namespace</dd><dt><i>name:</i></dt><dd> the type short name.</dd><dt><i>deprecated:</i></dt><dd> use the _checked variant</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Obtains a MonoClass with a given namespace and a given name which
+	 is located in the given MonoImage.   The namespace and name
+	 lookups are case insensitive.
+
+</div> <a name="api:mono_class_from_name"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_from_name</div>
+
+    <div class="prototype">MonoClass*
+mono_class_from_name (MonoImage *image, const char* name_space, const char *name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>image:</i></dt><dd> The MonoImage where the type is looked up in</dd><dt><i>name_space:</i></dt><dd> the type namespace</dd><dt><i>name:</i></dt><dd> the type short name.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Obtains a MonoClass with a given namespace and a given name which
+	 is located in the given MonoImage.
+	
+	 To reference nested classes, use the &quot;/&quot; character as a separator.
+	 For example use &quot;Foo/Bar&quot; to reference the class Bar that is nested
+	 inside Foo, like this: &quot;class Foo { class Bar {} }&quot;.
+
+</div> <a name="api:mono_class_from_typeref"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_from_typeref</div>
+
+    <div class="prototype">Prototype: mono_class_from_typeref</div>
+<p />
+
+</div> <a name="api:mono_class_get_byref_type"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_byref_type</div>
+
+    <div class="prototype">MonoType*
+mono_class_get_byref_type (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	
+<p />
+
+</div> <a name="api:mono_class_get_element_class"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_element_class</div>
+
+    <div class="prototype">MonoClass*
+mono_class_get_element_class (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the element class of an array or an enumeration.
+</blockquote>
+
+</div> <a name="api:mono_class_get_events"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_events</div>
+
+    <div class="prototype">MonoEvent*
+mono_class_get_events (MonoClass* klass, gpointer *iter)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a <i>MonoEvent</i>* on each invocation, or NULL when no more are available.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 This routine is an iterator routine for retrieving the properties in a class.
+	
+	 You must pass a gpointer that points to zero and is treated as an opaque handle to
+	 iterate over all of the elements.  When no more values are
+	 available, the return value is NULL.
+	
+
+</div> <a name="api:mono_class_get_event_token"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_event_token</div>
+
+    <div class="prototype">Prototype: mono_class_get_event_token</div>
+<p />
+
+</div> <a name="api:mono_class_get_field_from_name"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_field_from_name</div>
+
+    <div class="prototype">MonoClassField*
+mono_class_get_field_from_name (MonoClass *klass, const char *name)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the class to lookup the field.</dd><dt><i>name:</i></dt><dd> the field name</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the MonoClassField pointer of the named field or NULL
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 Search the class <i>klass</i> and it's parents for a field with the name <i>name</i>.
+	
+<p />
+
+</div> <a name="api:mono_class_get_field"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_field</div>
+
+    <div class="prototype">MonoClassField*
+mono_class_get_field (MonoClass *class, guint32 field_token)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>class:</i></dt><dd> the class to lookup the field.</dd><dt><i>field_token:</i></dt><dd> the field token</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  A MonoClassField representing the type and offset of
+
+	 the field, or a NULL value if the field does not belong to this
+	 class.</blockquote>
+
+</div> <a name="api:mono_class_get_fields"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_fields</div>
+
+    <div class="prototype">MonoClassField*
+mono_class_get_fields (MonoClass* klass, gpointer *iter)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a <i>MonoClassField</i>* on each iteration, or NULL when no more fields are available.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 This routine is an iterator routine for retrieving the fields in a class.
+	
+	 You must pass a gpointer that points to zero and is treated as an opaque handle to
+	 iterate over all of the elements.  When no more values are
+	 available, the return value is NULL.
+	
+
+</div> <a name="api:mono_class_get_field_token"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_field_token</div>
+
+    <div class="prototype">guint32
+mono_class_get_field_token (MonoClassField *field)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>field:</i></dt><dd> the field we need the token of</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the token representing the field in the image it was loaded from.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 Get the token of a field. Note that the tokesn is only valid for the image
+	 the field was loaded from. Don't use this function for fields in dynamic types.
+	
+<p />
+
+</div> <a name="api:mono_class_get_flags"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_flags</div>
+
+    <div class="prototype">guint32
+mono_class_get_flags (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the flags from the TypeDef table.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 The type flags from the TypeDef table from the metadata.
+	 see the TYPE_ATTRIBUTE_* definitions on tabledefs.h for the
+	 different values.
+	
+
+</div> <a name="api:mono_class_get_full"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_full</div>
+
+    <div class="prototype">MonoClass*
+mono_class_get_full (MonoImage *image, guint32 type_token, MonoGenericContext *context)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>image:</i></dt><dd> the image where the class resides</dd><dt><i>type_token:</i></dt><dd> the token for the class</dd><dt><i>context:</i></dt><dd> the generic context used to evaluate generic instantiations in</dd><dt><i>deprecated:</i></dt><dd> Functions that expose MonoGenericContext are going away in mono 4.0</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the MonoClass that represents <i>type_token</i> in <i>image</i>
+</blockquote>
+
+</div> <a name="api:mono_class_get_image"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_image</div>
+
+    <div class="prototype">Prototype: mono_class_get_image</div>
+<p />
+
+</div> <a name="api:mono_class_get_interfaces"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_interfaces</div>
+
+    <div class="prototype">MonoClass*
+mono_class_get_interfaces (MonoClass* klass, gpointer *iter)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a <i>Monoclass</i>* on each invocation, or NULL when no more are available.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 This routine is an iterator routine for retrieving the interfaces implemented by this class.
+	
+	 You must pass a gpointer that points to zero and is treated as an opaque handle to
+	 iterate over all of the elements.  When no more values are
+	 available, the return value is NULL.
+	
+
+</div> <a name="api:mono_class_get_method_from_name"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_method_from_name</div>
+
+    <div class="prototype">MonoMethod*
+mono_class_get_method_from_name (MonoClass *klass, const char *name, int param_count)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> where to look for the method</dd><dt><i>name:</i></dt><dd> name of the method</dd><dt><i>param_count:</i></dt><dd> number of parameters. -1 for any number.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Obtains a MonoMethod with a given name and number of parameters.
+	 It only works if there are no multiple signatures for any given method name.
+
+</div> <a name="api:mono_class_get_methods"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_methods</div>
+
+    <div class="prototype">MonoMethod*
+mono_class_get_methods (MonoClass* klass, gpointer *iter)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a MonoMethod on each iteration or NULL when no more methods are available.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 This routine is an iterator routine for retrieving the fields in a class.
+	
+	 You must pass a gpointer that points to zero and is treated as an opaque handle to
+	 iterate over all of the elements.  When no more values are
+	 available, the return value is NULL.
+	
+
+</div> <a name="api:mono_class_get"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get</div>
+
+    <div class="prototype">Prototype: mono_class_get</div>
+<p />
+
+</div> <a name="api:mono_class_get_name"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_name</div>
+
+    <div class="prototype">const char*
+mono_class_get_name (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the name of the class.
+</blockquote>
+
+</div> <a name="api:mono_class_get_namespace"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_namespace</div>
+
+    <div class="prototype">const char*
+mono_class_get_namespace (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the namespace of the class.
+</blockquote>
+
+</div> <a name="api:mono_class_get_nested_types"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_nested_types</div>
+
+    <div class="prototype">MonoClass*
+mono_class_get_nested_types (MonoClass* klass, gpointer *iter)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a <i>Monoclass</i>* on each invocation, or NULL when no more are available.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 This routine is an iterator routine for retrieving the nested types of a class.
+	 This works only if <i>klass</i> is non-generic, or a generic type definition.
+	
+	 You must pass a gpointer that points to zero and is treated as an opaque handle to
+	 iterate over all of the elements.  When no more values are
+	 available, the return value is NULL.
+	
+
+</div> <a name="api:mono_class_get_nesting_type"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_nesting_type</div>
+
+    <div class="prototype">Prototype: mono_class_get_nesting_type</div>
+<p />
+
+</div> <a name="api:mono_class_get_parent"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_parent</div>
+
+    <div class="prototype">MonoClass*
+mono_class_get_parent (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the parent class for this class.
+</blockquote>
+
+</div> <a name="api:mono_class_get_properties"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_properties</div>
+
+    <div class="prototype">MonoProperty*
+mono_class_get_properties (MonoClass* klass, gpointer *iter)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a <i>MonoProperty</i>* on each invocation, or NULL when no more are available.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 This routine is an iterator routine for retrieving the properties in a class.
+	
+	 You must pass a gpointer that points to zero and is treated as an opaque handle to
+	 iterate over all of the elements.  When no more values are
+	 available, the return value is NULL.
+	
+
+</div> <a name="api:mono_class_get_property_from_name"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_property_from_name</div>
+
+    <div class="prototype">Prototype: mono_class_get_property_from_name</div>
+<p />
+
+</div> <a name="api:mono_class_get_property_token"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_property_token</div>
+
+    <div class="prototype">Prototype: mono_class_get_property_token</div>
+<p />
+
+</div> <a name="api:mono_class_get_rank"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_rank</div>
+
+    <div class="prototype">int
+mono_class_get_rank (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the rank for the array (the number of dimensions).
+</blockquote>
+
+</div> <a name="api:mono_class_get_type"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_type</div>
+
+    <div class="prototype">MonoType*
+mono_class_get_type (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the MonoType from the class.
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 This method returns the internal Type representation for the class.
+	
+
+</div> <a name="api:mono_class_inflate_generic_method"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_inflate_generic_method</div>
+
+    <div class="prototype">Prototype: mono_class_inflate_generic_method</div>
+<p />
+
+</div> <a name="api:mono_class_inflate_generic_type"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_inflate_generic_type</div>
+
+    <div class="prototype">Prototype: mono_class_inflate_generic_type</div>
+<p />
+
+</div> <a name="api:mono_class_init"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_init</div>
+
+    <div class="prototype">gboolean
+mono_class_init (MonoClass *class)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>class:</i></dt><dd> the class to initialize</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	   Compute the instance_size, class_size and other infos that cannot be 
+	 computed at mono_class_get() time. Also compute vtable_size if possible. 
+	 Returns TRUE on success or FALSE if there was a problem in loading
+	 the type (incorrect assemblies, missing assemblies, methods, etc). 
+	
+	 LOCKING: Acquires the loader lock.
+
+</div> <a name="api:mono_class_instance_size"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_instance_size</div>
+
+    <div class="prototype">gint32
+mono_class_instance_size (MonoClass *klass)
+	
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> a class </dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the size of an object instance
+</blockquote>
+<b>Remarks</b>
+<p />	 <p />
+
+
+</div> <a name="api:mono_class_is_assignable_from"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_is_assignable_from</div>
+
+    <div class="prototype">gboolean
+mono_class_is_assignable_from (MonoClass *klass, MonoClass *oklass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the class to be assigned to</dd><dt><i>oklass:</i></dt><dd> the source class</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  true if an instance of object oklass can be assigned to an
+
+	 instance of object <i>klass</i></blockquote>
+
+</div> <a name="api:mono_class_is_enum"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_is_enum</div>
+
+    <div class="prototype">gboolean
+mono_class_is_enum (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  true if the MonoClass represents an enumeration.
+</blockquote>
+
+</div> <a name="api:mono_class_is_subclass_of"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_is_subclass_of</div>
+
+    <div class="prototype">gboolean
+mono_class_is_subclass_of (MonoClass *klass, MonoClass *klassc, 
+			   gboolean check_interfaces)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> class to probe if it is a subclass of another one</dd><dt><i>klassc:</i></dt><dd> the class we suspect is the base class</dd><dt><i>check_interfaces:</i></dt><dd> whether we should perform interface checks</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 This method determines whether <i>klass</i> is a subclass of <i>klassc</i>.
+	
+	 If the <i>check_interfaces</i> flag is set, then if <i>klassc</i> is an interface
+	 this method return true if the <i>klass</i> implements the interface or
+	 if <i>klass</i> is an interface, if one of its base classes is <i>klass</i>.
+	
+	 If <i>check_interfaces</i> is false then, then if <i>klass</i> is not an interface
+	 then it returns true if the <i>klass</i> is a subclass of <i>klassc</i>.
+	
+	 if <i>klass</i> is an interface and <i>klassc</i> is System.Object, then this function
+	 return true.
+	
+
+</div> <a name="api:mono_class_is_valuetype"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_is_valuetype</div>
+
+    <div class="prototype">gboolean
+mono_class_is_valuetype (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  true if the MonoClass represents a ValueType.
+</blockquote>
+
+</div> <a name="api:mono_class_min_align"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_min_align</div>
+
+    <div class="prototype">gint32
+mono_class_min_align (MonoClass *klass)
+	
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> a class </dd></blockquote>
+<b>Returns</b>
+<blockquote>	  minimm alignment requirements 
+</blockquote>
+<b>Remarks</b>
+<p />	 <p />
+
+
+</div> <a name="api:mono_class_num_events"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_num_events</div>
+
+    <div class="prototype">int
+mono_class_num_events (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the number of events in the class.
+</blockquote>
+
+</div> <a name="api:mono_class_num_fields"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_num_fields</div>
+
+    <div class="prototype">int
+mono_class_num_fields (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the number of static and instance fields in the class.
+</blockquote>
+
+</div> <a name="api:mono_class_num_methods"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_num_methods</div>
+
+    <div class="prototype">int
+mono_class_num_methods (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the number of methods in the class.
+</blockquote>
+
+</div> <a name="api:mono_class_num_properties"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_num_properties</div>
+
+    <div class="prototype">int
+mono_class_num_properties (MonoClass *klass)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> the MonoClass to act on</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the number of properties in the class.
+</blockquote>
+
+</div> <a name="api:mono_class_value_size"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_value_size</div>
+
+    <div class="prototype">gint32
+mono_class_value_size      (MonoClass *klass, guint32 *align)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> a class </dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the size of a value of kind <i>klass</i>
+</blockquote>
+<b>Remarks</b>
+<p />	 
+	 This function is used for value types, and return the
+	 space and the alignment to store that kind of value object.
+	
+
+</div> <a name="api:mono_class_vtable"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_vtable</div>
+
+    <div class="prototype">MonoVTable*
+mono_class_vtable (MonoDomain *domain, MonoClass *class)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>domain:</i></dt><dd> the application domain</dd><dt><i>class:</i></dt><dd> the class to initialize</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 VTables are domain specific because we create domain specific code, and 
+	 they contain the domain specific static class data.
+	 On failure, NULL is returned, and class-&gt;exception_type is set.
+
+</div> <a name="api:mono_class_get_method_from_name_flags"></a>
+ <div class="api">
+    <div class="api-entry">mono_class_get_method_from_name_flags</div>
+
+    <div class="prototype">MonoMethod*
+mono_class_get_method_from_name_flags (MonoClass *klass, const char *name, int param_count, int flags)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>klass:</i></dt><dd> where to look for the method</dd><dt><i>name_space:</i></dt><dd> name of the method</dd><dt><i>param_count:</i></dt><dd> number of parameters. -1 for any number.</dd><dt><i>flags:</i></dt><dd> flags which must be set in the method</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 Obtains a MonoMethod with a given name and number of parameters.
+	 It only works if there are no multiple signatures for any given method name.
+
+</div></body>
+</html>
+</span>

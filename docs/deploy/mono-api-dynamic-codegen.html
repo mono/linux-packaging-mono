@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="utf-8"?><span>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <title>mono-api-dynamic-codegen.html</title>
+   <style type="text/css">
+
+
+   h3 { 
+       font-size: 18px;
+       padding-bottom: 4pt;
+       border-bottom: 2px solid #dddddd;
+   }
+       
+   .api {
+     border: 1px solid;
+     padding: 10pt;
+     margin: 10pt;
+   } 
+
+   .api-entry { 
+       border-bottom: none;
+       font-size: 18px;
+   }
+
+   .prototype {
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
+     margin-top: 5pt;
+     margin-bottom: 5pt;  
+   } 
+
+   .header {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+    
+   .code {
+     border: 1px solid;
+     padding: 0 0 5pt 5pt;
+     margin: 10pt;
+     white-space: pre;
+       font-family: monospace;
+   }
+   
+
+</style>
+</head>
+<body>
+<h2>Dynamic Code Generation</h2>
+
+	<p />The dynamic code generation interface inside the Mono
+	runtime is similar to the API exposed by
+	System.Reflection.Emit.
+
+	<p />This interface is used by Mono internally to generate code
+	on the flight in a cross-platform fashion.  For example,
+	P/Invoke marshalling in Mono is implemented in terms of this
+	interface, but it is also used in various other parts of the
+	runtime.
+
+	<p />Unlike Reflection.Emit, the dynamic code generation
+	interface does not start with an assembly builder.   The code
+	generation interface starts directly at the method level,
+	which is represented by a pointer to the MonoMethodBuilder
+	structure.
+
+	<p />To JIT this method, the process is this:
+
+	<ul>
+		<li>Create a <tt>MonoMethodBuilder</tt> object using
+		the <tt>mono_mb_new</tt> method.  The method's class
+		is specified as the first argument.
+
+		<li>Create the method signature, using
+		<tt>mono_metadata_signature_alloc</tt>.  The call
+		takes the number of arguments that the method takes.
+		Then you must initialize the types for each one of the
+		parameters.
+
+		<li>Emit the CIL code, using one of the
+		<tt>mono_mb_emit_*</tt> functions.   There are some
+		helper routines that you can use.
+
+		<li>Create the <tt>MonoMethod</tt> from the
+		<tt>MethodBuilder</tt> using
+		<tt>mono_mb_create_method</tt>.
+
+		<li>Release the <tt>MonoMethodBuilder</tt> resources
+		using mono_mb_free. 
+	</li></li></li></li></li></ul>
+
+	<p />The result of this process is a <tt>MonoMethod</tt> which
+	can be called using <tt><a href="api:mono_create_jit_trampoline">mono_create_jit_trampoline</a></tt>
+	routine or can be passed to any other functions that require
+	the MonoMethod.
+
+	<p />Example:
+
+	<pre>
+MonoMethod *adder ()
+{
+    MonoMethodBuilder *mb;
+    MonoMethodSignature *sig;
+    MonoMethod *method;
+    
+    mb = mono_mb_new (mono_defaults.object_class, &quot;adder&quot;, MONO_WRAPPER_NONE);
+
+    /* Setup method signature */
+    sig = mono_metadata_signature_alloc (2);
+    sig-&gt;ret = &amp;mono_get_int32_class ()-&gt;byval_arg;
+    sig-&gt;params [0] = &amp;mono_get_int32_class ()-&gt;byval_arg;
+    sig-&gt;params [1] = &amp;mono_defaults.int32_class-&gt;byval_arg;
+
+    /* Emit CIL code */
+    mono_mb_emit_ldarg (mb, 0);
+    mono_mb_emit_ldarg (mb, 1);
+    mono_mb_emit_byte (mb, CEE_ADD);
+    mono_mb_emit_byte (mb, CEE_RET);
+
+    /* Get the method */
+    method = mono_mb_create_method (mb, sig, max_stack);
+    
+    /* Cleanup */
+    mono_mb-free (mb);
+    return method;
+}
+	</pre>
+	
+ <a name="api:mono_mb_new"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_new</div>
+
+    <div class="prototype">Prototype: mono_mb_new</div>
+<p />
+
+
+	<p />The possible values for the <i>type</i> argument are:
+
+<pre>
+        MONO_WRAPPER_NONE
+        MONO_WRAPPER_DELEGATE_INVOKE
+        MONO_WRAPPER_DELEGATE_BEGIN_INVOKE
+        MONO_WRAPPER_DELEGATE_END_INVOKE
+        MONO_WRAPPER_RUNTIME_INVOKE
+        MONO_WRAPPER_NATIVE_TO_MANAGED
+        MONO_WRAPPER_MANAGED_TO_NATIVE
+        MONO_WRAPPER_REMOTING_INVOKE
+        MONO_WRAPPER_REMOTING_INVOKE_WITH_CHECK
+        MONO_WRAPPER_XDOMAIN_INVOKE
+        MONO_WRAPPER_XDOMAIN_DISPATCH
+        MONO_WRAPPER_LDFLD
+        MONO_WRAPPER_STFLD
+        MONO_WRAPPER_LDFLD_REMOTE
+        MONO_WRAPPER_STFLD_REMOTE
+        MONO_WRAPPER_SYNCHRONIZED
+        MONO_WRAPPER_DYNAMIC_METHOD
+        MONO_WRAPPER_ISINST
+        MONO_WRAPPER_CASTCLASS
+        MONO_WRAPPER_PROXY_ISINST
+        MONO_WRAPPER_STELEMREF
+        MONO_WRAPPER_UNBOX
+        MONO_WRAPPER_LDFLDA
+        MONO_WRAPPER_UNKNOWN
+</pre>
+
+</div><h3>Emitting IL</h3>
+
+	<p />Functions that can be used to generate IL on the flight,
+	similar in spirit to System.Reflection.Emit.ILGenerator.
+	
+ <a name="api:mono_mb_emit_add_to_local"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_add_to_local</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_add_to_local</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_branch"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_branch</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_branch</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_byte"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_byte</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_byte</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_exception"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_exception</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_exception</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_i2"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_i2</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_i2</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_i4"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_i4</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_i4</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_icon"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_icon</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_icon</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_ldarg_addr"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_ldarg_addr</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_ldarg_addr</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_ldarg"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_ldarg</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_ldarg</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_ldflda"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_ldflda</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_ldflda</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_ldloc_addr"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_ldloc_addr</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_ldloc_addr</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_ldloc"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_ldloc</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_ldloc</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_ldstr"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_ldstr</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_ldstr</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_managed_call"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_managed_call</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_managed_call</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_native_call"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_native_call</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_native_call</div>
+<p />
+
+</div> <a name="api:mono_mb_emit_stloc"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_emit_stloc</div>
+
+    <div class="prototype">Prototype: mono_mb_emit_stloc</div>
+<p />
+
+
+</div><h3>Local variables and Methods</h3>
+ <a name="api:mono_mb_create_method"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_create_method</div>
+
+    <div class="prototype">MonoMethod*
+mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, int max_stack)
+
+</div>
+<p />
+<b>Returns</b>
+<blockquote>	  the newly created method.
+
+	</blockquote>
+<b>Remarks</b>
+<p />	 
+	 Create a MonoMethod from this method builder.
+
+</div> <a name="api:mono_mb_add_data"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_add_data</div>
+
+    <div class="prototype">Prototype: mono_mb_add_data</div>
+<p />
+
+</div> <a name="api:mono_mb_add_local"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_add_local</div>
+
+    <div class="prototype">Prototype: mono_mb_add_local</div>
+<p />
+
+</div> <a name="api:mono_mb_free"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_free</div>
+
+    <div class="prototype">Prototype: mono_mb_free</div>
+<p />
+
+
+</div><h3>Patching Addresses</h3>
+ <a name="api:mono_mb_patch_addr"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_patch_addr</div>
+
+    <div class="prototype">Prototype: mono_mb_patch_addr</div>
+<p />
+
+</div> <a name="api:mono_mb_patch_addr_s"></a>
+ <div class="api">
+    <div class="api-entry">mono_mb_patch_addr_s</div>
+
+    <div class="prototype">Prototype: mono_mb_patch_addr_s</div>
+<p />
+
+
+</div><h3>Method Signatures</h3>
+ <a name="api:mono_metadata_signature_alloc"></a>
+ <div class="api">
+    <div class="api-entry">mono_metadata_signature_alloc</div>
+
+    <div class="prototype">Prototype: mono_metadata_signature_alloc</div>
+<p />
+
+</div> <a name="api:mono_metadata_signature_dup"></a>
+ <div class="api">
+    <div class="api-entry">mono_metadata_signature_dup</div>
+
+    <div class="prototype">Prototype: mono_metadata_signature_dup</div>
+<p />
+
+</div></body>
+</html>
+</span>
