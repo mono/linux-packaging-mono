@@ -109,3 +109,5 @@ debian/tmp/usr/bin/sgen
 debian/tmp/usr/bin/wsdl2
 debian/tmp/usr/lib/mono/4.5/Facades/
 debian/tmp/usr/lib/mono/4.0
+debian/tmp/usr/lib/mono/3.5
+debian/tmp/usr/lib/mono/2.0
