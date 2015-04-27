@@ -1,8 +1,8 @@
-diff --git a/mono/mini/tramp-amd64.c b/mono/mini/tramp-amd64.c
-index 526ba98..0c7f8b2 100755
---- a/mono/mini/tramp-amd64.c
-+++ b/mono/mini/tramp-amd64.c
-@@ -983,7 +983,7 @@ mono_arch_create_monitor_enter_trampoline (MonoTrampInfo **info, gboolean is_v4,
+Index: xamarin-pkg-mono/mono/mini/tramp-amd64.c
+===================================================================
+--- xamarin-pkg-mono.orig/mono/mini/tramp-amd64.c	2015-04-28 00:23:39.342850339 +0100
++++ xamarin-pkg-mono/mono/mini/tramp-amd64.c	2015-04-28 00:23:39.338850339 +0100
+@@ -995,7 +995,7 @@
  	status_offset = MONO_THREADS_SYNC_MEMBER_OFFSET (status_offset);
  	nest_offset = MONO_THREADS_SYNC_MEMBER_OFFSET (nest_offset);
  
