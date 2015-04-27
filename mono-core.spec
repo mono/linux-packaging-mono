@@ -27,14 +27,14 @@
 %define sgen yes
 
 Name:           mono-core
-Version:        4.0.0
-Release:        0.alpha1.0
+Version:        4.0.1
+Release:        1
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
-Source0:        http://download.mono-project.com/sources/mono/mono-%{version}~alpha1.tar.bz2
-Patch0:		fix-rpm-helpers.patch
+Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
+#Patch0:		fix-rpm-helpers.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -118,7 +118,7 @@ technologies that have been submitted to the ECMA for standardization.
 
 %prep
 %setup -q -n mono-%{version}
-%patch0 -p1
+#%patch0 -p1
 
 %build
 ./autogen.sh
@@ -1106,6 +1106,8 @@ Mono development tools.
 %{_mandir}/man1/xbuild.1%ext_man
 %{_prefix}/lib/mono-source-libs
 %{_prefix}/lib/mono/4.0
+%{_prefix}/lib/mono/3.5
+%{_prefix}/lib/mono/2.0
 %{_prefix}/lib/mono/4.5/Microsoft.Build.dll
 %{_prefix}/lib/mono/4.5/Microsoft.Build.Engine.dll
 %{_prefix}/lib/mono/4.5/Microsoft.Build.Framework.dll
