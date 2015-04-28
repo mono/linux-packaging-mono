@@ -1,3 +1,9 @@
+mono (4.0.1-0xamarin4) unstable; urgency=medium
+
+  * [68faaca] Fix missing Mono.Xbuild.Tasks
+
+ -- Jo Shields <jo.shields@xamarin.com>  Tue, 28 Apr 2015 12:33:25 +0100
+
 mono (4.0.1-0xamarin3) unstable; urgency=medium
 
   * [a303532] Fix fuzz on last patch. This is why I shouldn't work past midnight.
