@@ -28,7 +28,7 @@
 
 Name:           mono-core
 Version:        4.0.1
-Release:        2
+Release:        3
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
@@ -365,6 +365,7 @@ cert-sync /etc/pki/tls/certs/ca-bundle.crt
 %package -n libmono-2_0-1
 Summary:        A Library for embedding Mono in your Application
 License:        LGPL-2.1
+Requires:	libmonoboehm-2_0-1
 Group:          Development/Libraries/C and C++
 
 %description -n libmono-2_0-1
