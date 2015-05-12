@@ -28,13 +28,14 @@
 
 Name:           mono-core
 Version:        4.0.1
-Release:        3
+Release:        4
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 Patch0:		import-amd64-tramp-size.patch
+Patch1:		0001-system.runtime.caching-Remove-inappropropriate-use-o.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -119,6 +120,7 @@ technologies that have been submitted to the ECMA for standardization.
 %prep
 %setup -q -n mono-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 ./autogen.sh
