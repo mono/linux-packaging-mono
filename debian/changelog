@@ -1,3 +1,12 @@
+mono (4.0.1-0xamarin5) unstable; urgency=medium
+
+  * [fe44de8] Add a hard dependency on ca-certificates-mono
+    to mono-complete. This is needed for distributions like
+    Mint which install without Recommends: by default.
+  * [7bd9b17] Emergency backport to fix #29667
+
+ -- Jo Shields <jo.shields@xamarin.com>  Tue, 12 May 2015 16:16:31 +0100
+
 mono (4.0.1-0xamarin4) unstable; urgency=medium
 
   * [68faaca] Fix missing Mono.Xbuild.Tasks
