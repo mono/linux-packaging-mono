@@ -105,7 +105,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 108
+#define MONO_AOT_FILE_VERSION 111
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -2232,7 +2232,7 @@ jinfo_get_method (MonoJitInfo *ji)
 void      mono_aot_init                     (void) MONO_INTERNAL;
 void      mono_aot_cleanup                  (void) MONO_INTERNAL;
 gpointer  mono_aot_get_method               (MonoDomain *domain,
-											 MonoMethod *method) MONO_INTERNAL;
+											 MonoMethod *method);
 gpointer  mono_aot_get_method_from_token    (MonoDomain *domain, MonoImage *image, guint32 token) MONO_INTERNAL;
 gboolean  mono_aot_is_got_entry             (guint8 *code, guint8 *addr) MONO_INTERNAL;
 guint8*   mono_aot_get_plt_entry            (guint8 *code) MONO_INTERNAL;
