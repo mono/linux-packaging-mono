@@ -1,0 +1,25 @@
+From de778fd9987b306e41f70fcc10d399bb63b22ee7 Mon Sep 17 00:00:00 2001
+From: Jo Shields <jo.shields@xamarin.com>
+Date: Fri, 15 May 2015 12:14:18 +0100
+Subject: [PATCH] Add missing Microsoft.Portable.VisualBasic_4.{0,5}.targets to
+ EXTRA_DIST
+
+---
+ mcs/tools/xbuild/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mcs/tools/xbuild/Makefile b/mcs/tools/xbuild/Makefile
+index afa7c21..771184c 100644
+--- a/mcs/tools/xbuild/Makefile
++++ b/mcs/tools/xbuild/Makefile
+@@ -109,5 +109,7 @@ EXTRA_DISTFILES = \
+ 	targets/Microsoft.Portable.Core.targets \
+ 	targets/Microsoft.Portable.Core.props \
+ 	targets/Microsoft.WebApplication.targets \
++	targets/Microsoft.Portable.VisualBasic_4.0.targets \
++	targets/Microsoft.Portable.VisualBasic_4.5.targets \
+ 	xbuild.make \
+ 	xbuild_test.make
+-- 
+1.9.1
+
