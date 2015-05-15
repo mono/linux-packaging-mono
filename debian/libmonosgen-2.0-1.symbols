@@ -1,6 +1,7 @@
 libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  VER_1@VER_1 3.2.1+dfsg
  mono_add_internal_call@VER_1 3.2.1+dfsg
+ mono_aot_get_method@VER_1 4.0.1.34
  mono_aot_only@VER_1 3.2.1+dfsg
  mono_aot_register_globals@VER_1 3.2.1+dfsg
  mono_aot_register_module@VER_1 3.2.1+dfsg
@@ -153,6 +154,12 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_code_manager_size@VER_1 3.2.1+dfsg
  mono_compile_aot@VER_1 3.2.1+dfsg
  mono_compile_method@VER_1 3.2.1+dfsg
+ mono_conc_hashtable_destroy@VER_1 4.0.1.34
+ mono_conc_hashtable_insert@VER_1 4.0.1.34
+ mono_conc_hashtable_lookup@VER_1 4.0.1.34
+ mono_conc_hashtable_new@VER_1 4.0.1.34
+ mono_conc_hashtable_new_full@VER_1 4.0.1.34
+ mono_conc_hashtable_remove@VER_1 4.0.1.34
  mono_config_cleanup@VER_1 3.2.1+dfsg
  mono_config_for_assembly@VER_1 3.2.1+dfsg
  mono_config_parse@VER_1 3.2.1+dfsg
@@ -433,6 +440,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_get_int32_class@VER_1 3.2.1+dfsg
  mono_get_int64_class@VER_1 3.2.1+dfsg
  mono_get_intptr_class@VER_1 3.2.1+dfsg
+ mono_get_jit_info_from_method@VER_1 4.0.1.34
  mono_get_machine_config@VER_1 3.2.1+dfsg
  mono_get_method@VER_1 3.2.1+dfsg
  mono_get_method_constrained@VER_1 3.2.1+dfsg
@@ -529,6 +537,11 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_load_remote_field@VER_1 3.2.1+dfsg
  mono_load_remote_field_new@VER_1 3.2.1+dfsg
  mono_local_deadce@VER_1 3.2.1+dfsg
+ mono_lock_free_queue_dequeue@VER_1 4.0.1.34
+ mono_lock_free_queue_enqueue@VER_1 4.0.1.34
+ mono_lock_free_queue_init@VER_1 4.0.1.34
+ mono_lock_free_queue_node_free@VER_1 4.0.1.34
+ mono_lock_free_queue_node_init@VER_1 4.0.1.34
  mono_locks_dump@VER_1 3.2.1+dfsg
  mono_lookup_icall_symbol@VER_1 3.2.1+dfsg
  mono_lookup_internal_call@VER_1 3.2.1+dfsg
