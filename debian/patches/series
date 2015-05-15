@@ -1,1 +1,2 @@
+add_missing_vb_portable_targets.patch
 rename-and-package-symbolicate.patch
