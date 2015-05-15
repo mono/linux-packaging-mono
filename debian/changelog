@@ -1,3 +1,9 @@
+mono (4.0.1.28-0xamarin1) alpha; urgency=medium
+
+  * New release - mono-4.0.1.28.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 15 May 2015 09:12:10 +0100
+
 mono (4.0.1-0xamarin5) unstable; urgency=medium
 
   * [fe44de8] Add a hard dependency on ca-certificates-mono
