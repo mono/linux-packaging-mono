@@ -110,6 +110,8 @@ Provides:       mono(mscorlib) = 2.0.0.0
 %define __find_requires env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/find-requires && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-requires; } | sort | uniq | grep ^...'
 %endif
 
+%define __threepartver env sh -c 'echo %{version} | cut -f1-3 -d.'
+
 %description
 The Mono Project is an open development initiative that is working to
 develop an open source, Unix version of the .NET development platform.
@@ -118,7 +120,7 @@ cross-platform .NET applications. The project will implement various
 technologies that have been submitted to the ECMA for standardization.
 
 %prep
-%setup -q -n mono-%{version}
+%setup -q -n mono-%{__threepartver}
 %patch0 -p1
 %patch1 -p1
 
