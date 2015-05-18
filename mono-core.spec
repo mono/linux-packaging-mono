@@ -34,8 +34,7 @@ License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
-Patch0:		import-amd64-tramp-size.patch
-Patch1:		0001-system.runtime.caching-Remove-inappropropriate-use-o.patch
+Patch0:		add_missing_vb_portable_targets.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -122,7 +121,6 @@ technologies that have been submitted to the ECMA for standardization.
 %prep
 %setup -q -n mono-%{__threepartver}
 %patch0 -p1
-%patch1 -p1
 
 %build
 ./autogen.sh
