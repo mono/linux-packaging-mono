@@ -27,7 +27,9 @@
 %define sgen yes
 
 Name:           mono-core
-Version:	4.0.1.34
+%define __majorver 4.0.1
+%define __minorver 34
+Version:	%{__majorver}.%{__minorver}
 Release:	0.xamarin.1
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
@@ -109,8 +111,6 @@ Provides:       mono(mscorlib) = 2.0.0.0
 %define __find_requires env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/find-requires && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-requires; } | sort | uniq | grep ^...'
 %endif
 
-%define __threepartver env sh -c 'echo %{version} | cut -f1-3 -d.'
-
 %description
 The Mono Project is an open development initiative that is working to
 develop an open source, Unix version of the .NET development platform.
@@ -119,7 +119,7 @@ cross-platform .NET applications. The project will implement various
 technologies that have been submitted to the ECMA for standardization.
 
 %prep
-%setup -q -n mono-%{__threepartver}
+%setup -q -n mono-%{__majorver}
 %patch0 -p1
 
 %build
