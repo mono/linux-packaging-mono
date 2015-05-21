@@ -1292,6 +1292,9 @@ Requires:       mono-winforms = %{version}
 Requires:       mono-winfxcore = %{version}
 Requires:       monodoc-core = %{version}
 
+Obsoletes:      mono-entityframework < 4.0.0
+Obsoletes:      mono-data-postgresql < 4.0.0
+
 %description -n mono-complete
 The Mono Project is an open development initiative that is working to
 develop an open source, Unix version of the .NET development platform.
