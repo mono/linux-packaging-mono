@@ -1,3 +1,9 @@
+mono (4.1.0.1738-0nightly5) nightly; urgency=low
+
+  * "Bugfix - see git log"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 26 May 2015 17:13:48 -0400
+
 mono (4.1.0.1738-0nightly4) nightly; urgency=low
 
   * "Bugfix - see git log"
