@@ -206,6 +206,7 @@ mono_arch_get_restore_context (MonoTrampInfo **info, gboolean aot)
 	nacl_global_codeman_validate(&start, 256, &code);
 
 	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
 
 	if (info)
 		*info = mono_tramp_info_create ("restore_context", start, code - start, ji, unwind_ops);
@@ -270,6 +271,8 @@ mono_arch_get_call_filter (MonoTrampInfo **info, gboolean aot)
 	amd64_mov_reg_membase (code, AMD64_RDI, AMD64_ARG_REG1,  MONO_STRUCT_OFFSET (MonoContext, rdi), 8);
 	amd64_mov_reg_membase (code, AMD64_RSI, AMD64_ARG_REG1,  MONO_STRUCT_OFFSET (MonoContext, rsi), 8);
 #endif
+	/* load exc register */
+	amd64_mov_reg_membase (code, AMD64_RAX, AMD64_ARG_REG1,  MONO_STRUCT_OFFSET (MonoContext, rax), 8);
 
 	/* call the handler */
 	amd64_call_reg (code, AMD64_ARG_REG2);
@@ -293,6 +296,7 @@ mono_arch_get_call_filter (MonoTrampInfo **info, gboolean aot)
 	nacl_global_codeman_validate(&start, kMaxCodeSize, &code);
 
 	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
 
 	if (info)
 		*info = mono_tramp_info_create ("call_filter", start, code - start, ji, unwind_ops);
@@ -328,8 +332,10 @@ mono_amd64_throw_exception (guint64 dummy1, guint64 dummy2, guint64 dummy3, guin
 
 	if (mono_object_isinst (exc, mono_defaults.exception_class)) {
 		MonoException *mono_ex = (MonoException*)exc;
-		if (!rethrow)
+		if (!rethrow) {
 			mono_ex->stack_trace = NULL;
+			mono_ex->trace_ips = NULL;
+		}
 	}
 
 	/* adjust eip so that it point into the call instruction */
@@ -484,6 +490,7 @@ get_throw_trampoline (MonoTrampInfo **info, gboolean rethrow, gboolean corlib, g
 	g_assert ((code - start) < kMaxCodeSize);
 
 	nacl_global_codeman_validate(&start, kMaxCodeSize, &code);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
 
 	if (info)
 		*info = mono_tramp_info_create (tramp_name, start, code - start, ji, unwind_ops);
@@ -960,7 +967,7 @@ mono_arch_get_throw_pending_exception (MonoTrampInfo **info, gboolean aot)
 
 	/* Call the throw trampoline */
 	if (aot) {
-		ji = mono_patch_info_list_prepend (ji, code - start, MONO_PATCH_INFO_JIT_ICALL_ADDR, "mono_amd64_throw_exception");
+		ji = mono_patch_info_list_prepend (ji, code - start, MONO_PATCH_INFO_JIT_ICALL_ADDR, "mono_throw_exception");
 		amd64_mov_reg_membase (code, AMD64_R11, AMD64_RIP, 0, 8);
 	} else {
 		throw_trampoline = mono_get_throw_exception ();
@@ -995,6 +1002,8 @@ mono_arch_get_throw_pending_exception (MonoTrampInfo **info, gboolean aot)
 	g_assert ((code - start) < kMaxCodeSize);
 
 	nacl_global_codeman_validate(&start, kMaxCodeSize, &code);
+	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
 
 	if (info)
 		*info = mono_tramp_info_create ("throw_pending_exception", start, code - start, ji, unwind_ops);
@@ -1018,8 +1027,8 @@ mono_arch_notify_pending_exc (MonoThreadInfo *info)
 	if (!info) {
 		lmf = mono_get_lmf ();
 	} else {
-		g_assert (info->suspend_state.valid);
-		lmf = info->suspend_state.unwind_data [MONO_UNWIND_DATA_LMF];
+		g_assert (mono_thread_info_get_suspend_state (info)->valid);
+		lmf = mono_thread_info_get_suspend_state (info)->unwind_data [MONO_UNWIND_DATA_LMF];
 	}
 
 	if (!lmf)
@@ -1380,6 +1389,8 @@ mono_tasklets_arch_restore (void)
 	g_assert ((code - start) <= kMaxCodeSize);
 
 	nacl_global_codeman_validate(&start, kMaxCodeSize, &code);
+	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
 
 	saved = start;
 	return (MonoContinuationRestore)saved;

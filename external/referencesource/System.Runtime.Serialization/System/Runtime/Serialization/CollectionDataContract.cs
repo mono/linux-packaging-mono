@@ -12,7 +12,9 @@ namespace System.Runtime.Serialization
     using System.Reflection;
     using System.Threading;
     using System.Xml;
+#if !NO_CONFIGURATION
     using System.Runtime.Serialization.Configuration;
+#endif
     using DataContractDictionary = System.Collections.Generic.Dictionary<System.Xml.XmlQualifiedName, DataContract>;
     using System.Security;
     using System.Security.Permissions;
@@ -473,7 +475,9 @@ namespace System.Runtime.Serialization
         }
 
         [Fx.Tag.SecurityNote(Critical = "Holds all state used for (de)serializing collections. Since the data is cached statically, we lock down access to it.")]
+#if !NO_SECURITY_ATTRIBUTES
         [SecurityCritical(SecurityCriticalScope.Everything)]
+#endif
         class CollectionDataContractCriticalHelper : DataContract.DataContractCriticalHelper
         {
             static Type[] _knownInterfaces;
@@ -1299,6 +1303,7 @@ namespace System.Runtime.Serialization
             return (InvalidCollectionInSharedContractMessage == null);
         }
 
+#if !NO_DYNAMIC_CODEGEN
         [Fx.Tag.SecurityNote(Miscellaneous =
             "RequiresReview - Calculates whether this collection requires MemberAccessPermission for deserialization."
             + " Since this information is used to determine whether to give the generated code access"
@@ -1391,6 +1396,7 @@ namespace System.Runtime.Serialization
 
             return false;
         }
+#endif
 
         internal override bool Equals(object other, Dictionary<DataContractPairKey, object> checkedContracts)
         {

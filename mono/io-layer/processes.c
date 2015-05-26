@@ -90,6 +90,7 @@
 #include <mono/utils/mono-membar.h>
 #include <mono/utils/mono-mutex.h>
 #include <mono/utils/mono-signal-handler.h>
+#include <mono/utils/mono-proclib.h>
 
 /* The process' environment strings */
 #if defined(__APPLE__) && !defined (__arm__) && !defined (__aarch64__)
@@ -114,7 +115,7 @@ static guint32 process_wait (gpointer handle, guint32 timeout, gboolean alertabl
 static void process_close (gpointer handle, gpointer data);
 static gboolean is_pid_valid (pid_t pid);
 
-#if !defined(__OpenBSD__)
+#if !(defined(PLATFORM_MACOSX) || defined(__OpenBSD__) || defined(__HAIKU__))
 static FILE *
 open_process_map (int pid, const char *mode);
 #endif
@@ -1308,11 +1309,19 @@ GetProcessTimes (gpointer process, WapiFileTime *create_time,
 		/* Not sure if w32 allows NULLs here or not */
 		return FALSE;
 	
-	if (WAPI_IS_PSEUDO_PROCESS_HANDLE (process))
-		/* This is a pseudo handle, so just fail for now
-		 */
-		return FALSE;
-	
+	if (WAPI_IS_PSEUDO_PROCESS_HANDLE (process)) {
+		gpointer pid = GINT_TO_POINTER (WAPI_HANDLE_TO_PID(process));
+		gint64 start_ticks, user_ticks, kernel_ticks;
+
+		mono_process_get_times (pid, &start_ticks, &user_ticks, &kernel_ticks);
+
+		_wapi_guint64_to_filetime (start_ticks, create_time);
+		_wapi_guint64_to_filetime (user_ticks, kernel_time);
+		_wapi_guint64_to_filetime (kernel_ticks, user_time);
+
+		return TRUE;
+	}
+
 	process_handle = lookup_process_handle (process);
 	if (!process_handle) {
 		DEBUG ("%s: Can't find process %p", __func__, process);
@@ -1692,7 +1701,7 @@ static gboolean match_procname_to_modulename (char *procname, char *modulename)
 	return result;
 }
 
-#if !defined(__OpenBSD__)
+#if !(defined(PLATFORM_MACOSX) || defined(__OpenBSD__) || defined(__HAIKU__))
 static FILE *
 open_process_map (int pid, const char *mode)
 {
@@ -2581,7 +2590,7 @@ static guint32
 process_wait (gpointer handle, guint32 timeout, gboolean alertable)
 {
 	WapiHandle_process *process_handle;
-	pid_t pid, ret;
+	pid_t pid G_GNUC_UNUSED, ret;
 	int status;
 	guint32 start;
 	guint32 now;

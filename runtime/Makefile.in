@@ -572,8 +572,7 @@ $(symlinks):
 
 @BUILD_MCS_TRUE@clean-local:
 @BUILD_MCS_TRUE@	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' clean-profiles
-@BUILD_MCS_TRUE@	-./mono-wrapper --wapi=semdel
-@BUILD_MCS_TRUE@	-rm -fr $(etctmp) $(tmpinst) .wapi
+@BUILD_MCS_TRUE@	-rm -fr $(etctmp) $(tmpinst)
 
 mcs-do-test-profiles:
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' test-profiles

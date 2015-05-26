@@ -83,9 +83,9 @@ subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in mkinstalldirs \
-	$(srcdir)/mono-core.spec.in $(srcdir)/mono-uninstalled.pc.in \
-	AUTHORS COPYING.LIB ChangeLog NEWS compile config.guess \
-	config.rpath config.sub depcomp install-sh missing ltmain.sh
+	$(srcdir)/mono-uninstalled.pc.in COPYING.LIB ChangeLog NEWS \
+	compile config.guess config.rpath config.sub install-sh \
+	missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -101,7 +101,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = mono-core.spec mono-uninstalled.pc
+CONFIG_CLEAN_FILES = mono-uninstalled.pc
 CONFIG_CLEAN_VPATH_FILES =
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -426,11 +426,9 @@ EXTRA_DIST = \
         README.md \
 	    LICENSE \
 	    autogen.sh \
-	    build-mingw32.sh \
 	    mkinstalldirs \
 	    mono-uninstalled.pc.in \
 	    winconfig.h \
-	    mono-core.spec \
 	    external
 
 DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_MCS=false EXTERNAL_RUNTIME=false
@@ -498,8 +496,6 @@ $(srcdir)/config.h.in: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 
 distclean-hdr:
 	-rm -f config.h stamp-h1
-mono-core.spec: $(top_builddir)/config.status $(srcdir)/mono-core.spec.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 mono-uninstalled.pc: $(top_builddir)/config.status $(srcdir)/mono-uninstalled.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 

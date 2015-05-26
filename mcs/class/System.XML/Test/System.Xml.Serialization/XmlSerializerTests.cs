@@ -278,7 +278,7 @@ namespace MonoTests.System.XmlSerialization
 		}
 
 		[Test]
-		[Category ("NotWorking")]
+		[Category ("MobileNotWorking")]
 		public void TestSerializeEnumeration_FromValue_Encoded ()
 		{
 			SerializeEncoded ((int) SimpleEnumeration.SECOND, typeof (SimpleEnumeration));
@@ -376,7 +376,7 @@ namespace MonoTests.System.XmlSerialization
 		}
 
 		[Test]
-		[Category ("NotWorking")]
+		[Category ("MobileNotWorking")]
 		public void TestSerializeEnumDefaultValue_Encoded ()
 		{
 			SerializeEncoded (new EnumDefaultValue ());
@@ -729,14 +729,14 @@ namespace MonoTests.System.XmlSerialization
 		}
 
 		[Test]
-		[Category ("NotDotNet")] // MS bug
+		[Category ("NotWorking")] // MS bug
 		public void TestSerializeField_Encoded ()
 		{
 			Field_Encoded f = new Field_Encoded ();
 			SerializeEncoded (f, typeof (Field_Encoded));
 			Assert.AreEqual (string.Format (CultureInfo.InvariantCulture,
 				"<?xml version='1.0' encoding='utf-16'?>" +
-				"<q1:field xmlns:xsi='{1}' xmlns:xsd='{0}' id='id1' flag1=''" +
+				"<q1:field xmlns:xsd='{0}' xmlns:xsi='{1}' id='id1' flag1=''" +
 				" flag2='' flag3='' flag4='' modifiers='PuBlIc'" +
 				" modifiers2='PuBlIc' modifiers4='PuBlIc' xmlns:q1='some:urn' />",
 				XmlSchema.Namespace, XmlSchema.InstanceNamespace),
@@ -753,7 +753,7 @@ namespace MonoTests.System.XmlSerialization
 			SerializeEncoded (f, typeof (Field_Encoded));
 			Assert.AreEqual (string.Format (CultureInfo.InvariantCulture,
 				"<?xml version='1.0' encoding='utf-16'?>" +
-				"<q1:field xmlns:xsi='{1}' xmlns:xsd='{0}' id='id1' flag3='two'" +
+				"<q1:field xmlns:xsd='{0}' xmlns:xsi='{1}' id='id1' flag3='two'" +
 				" flag4='' modifiers='Protected' modifiers2='PuBlIc'" +
 				" xmlns:q1='some:urn' />",
 				XmlSchema.Namespace, XmlSchema.InstanceNamespace),
@@ -770,7 +770,7 @@ namespace MonoTests.System.XmlSerialization
 			SerializeEncoded (f, typeof (Field_Encoded));
 			Assert.AreEqual (string.Format (CultureInfo.InvariantCulture,
 				"<?xml version='1.0' encoding='utf-16'?>" +
-				"<q1:field xmlns:xsi='{1}' xmlns:xsd='{0}' id='id1' flag1='two'" +
+				"<q1:field xmlns:xsd='{0}' xmlns:xsi='{1}' id='id1' flag1='two'" +
 				" flag2='two' flag4='' modifiers='PuBlIc' modifiers2='Protected'" +
 				" modifiers3='Protected' modifiers4='PuBlIc' modifiers5='Protected'" +
 				" xmlns:q1='some:urn' />",
@@ -976,7 +976,7 @@ namespace MonoTests.System.XmlSerialization
 			Serialize (optionalValue);
 			Assert.AreEqual (string.Format (CultureInfo.InvariantCulture,
 				"<?xml version='1.0' encoding='utf-16'?>" +
-				"<optionalValue xmlns:xsi='{1}' xmlns:xsd='{0}' xmlns='{2}' />",
+				"<optionalValue xmlns:xsd='{0}' xmlns:xsi='{1}' xmlns='{2}' />",
 				XmlSchema.Namespace, XmlSchema.InstanceNamespace, AnotherNamespace),
 				sw.ToString (), "#1");
 
@@ -990,7 +990,7 @@ namespace MonoTests.System.XmlSerialization
 			Serialize (optionalValue, overrides);
 			Assert.AreEqual (string.Format (CultureInfo.InvariantCulture,
 				"<?xml version='1.0' encoding='utf-16'?>" +
-				"<optionalValue xmlns:xsi='{1}' xmlns:xsd='{0}' xmlns='{2}'>" +
+				"<optionalValue xmlns:xsd='{0}' xmlns:xsi='{1}' xmlns='{2}'>" +
 				"<Attributes xmlns='{3}'>one four</Attributes>" +
 				"</optionalValue>", XmlSchema.Namespace, XmlSchema.InstanceNamespace,
 				AnotherNamespace, ANamespace), sw.ToString (), "#2");
@@ -999,14 +999,33 @@ namespace MonoTests.System.XmlSerialization
 			Serialize (optionalValue, overrides);
 			Assert.AreEqual (string.Format (CultureInfo.InvariantCulture,
 				"<?xml version='1.0' encoding='utf-16'?>" +
-				"<optionalValue xmlns:xsi='{1}' xmlns:xsd='{0}' xmlns='{2}'>" +
+				"<optionalValue xmlns:xsd='{0}' xmlns:xsi='{1}' xmlns='{2}'>" +
 				"<Attributes xmlns='{3}'>one four</Attributes>" +
 				"<Flags xmlns='{3}'>one</Flags>" +
 				"</optionalValue>",
 				XmlSchema.Namespace, XmlSchema.InstanceNamespace, AnotherNamespace,
 				ANamespace), sw.ToString (), "#3");
 		}
-
+		
+		[Test]
+		public void TestRoundTripSerializeOptionalValueTypeContainer ()
+		{
+			var source = new OptionalValueTypeContainer ();
+			source.IsEmpty = true;
+			source.IsEmptySpecified = true;
+			var ser = new XmlSerializer (typeof (OptionalValueTypeContainer));
+			string xml;
+			using (var t = new StringWriter ()) {
+				ser.Serialize (t, source);
+				xml = t.ToString();
+			}
+			using (var s = new StringReader (xml)) {
+				var obj = (OptionalValueTypeContainer) ser.Deserialize(s);
+				Assert.AreEqual (source.IsEmpty, obj.IsEmpty, "#1");
+				Assert.AreEqual (source.IsEmptySpecified, obj.IsEmptySpecified, "#2");
+			}
+		}
+		
 		[Test]
 		public void TestSerializePlainContainer ()
 		{
@@ -1535,7 +1554,6 @@ namespace MonoTests.System.XmlSerialization
 		}
 
 		[Test]
-		[Category ("NotWorking")] // SerializationCodeGenerator outputs wrong xsi:type for flagencoded in #C1
 		public void TestSerializeDefaultValueAttribute_Encoded ()
 		{
 			SoapAttributeOverrides overrides = new SoapAttributeOverrides ();
@@ -1733,7 +1751,7 @@ namespace MonoTests.System.XmlSerialization
 
 		[Test]
 		[ExpectedException (typeof (InvalidOperationException))]
-		[Category ("NotWorking")]
+		[Category ("MobileNotWorking")]
 		public void TestSerializeXmlNodeArrayIncludesAttribute ()
 		{
 			XmlDocument doc = new XmlDocument ();
@@ -2216,14 +2234,14 @@ namespace MonoTests.System.XmlSerialization
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
+		[Category ("MobileNotWorking")]
 		public void XmlArrayAttributeUnqualifiedWithNamespace ()
 		{
 			new XmlSerializer (typeof (XmlArrayUnqualifiedWithNamespace));
 		}
 
 		[Test]
-		[ExpectedException (typeof (InvalidOperationException))]
+		[Category ("MobileNotWorking")]
 		public void XmlArrayItemAttributeUnqualifiedWithNamespace ()
 		{
 			new XmlSerializer (typeof (XmlArrayItemUnqualifiedWithNamespace));
@@ -2862,7 +2880,27 @@ namespace MonoTests.System.XmlSerialization
 
 
 		#endregion //GenericsSeralizationTests
+		#region XmlInclude on abstract class tests (Bug #18558)
+		[Test]
+		public void TestSerializeIntermediateType ()
+		{
+			string expectedXml = "<ContainerTypeForTest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><XmlIntermediateType intermediate=\"false\"/></ContainerTypeForTest>";
+			var obj = new ContainerTypeForTest();
+			obj.MemberToUseInclude = new IntermediateTypeForTest ();
+			Serialize (obj);
+			Assert.AreEqual (Infoset (expectedXml), WriterText, "Serialized Output : " + WriterText);
+		}
 
+		[Test]
+		public void TestSerializeSecondType ()
+		{
+			string expectedXml = "<ContainerTypeForTest xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"><XmlSecondType intermediate=\"false\"/></ContainerTypeForTest>";
+			var obj = new ContainerTypeForTest();
+			obj.MemberToUseInclude = new SecondDerivedTypeForTest ();
+			Serialize (obj);
+			Assert.AreEqual (Infoset (expectedXml), WriterText, "Serialized Output : " + WriterText);
+		}
+		#endregion
 		public class XmlArrayOnInt
 		{
 			[XmlArray]
@@ -3319,7 +3357,7 @@ namespace MonoTests.System.XmlSerialization
 		}
 
 		[Test]
-		[Category("NotDotNet")]
+		[Category("NotWorking")]
 		public void ShouldSerializeGeneric ()
 		{
 			var ser = new XmlSerializer (typeof (ClassWithShouldSerializeGeneric));
@@ -3469,4 +3507,39 @@ namespace MonoTests.System.XmlSerialization
 			generatorFallback.SetValue (null, generatorFallbackOld);
 		}
 	}
+
+#region XmlInclude on abstract class test classes
+
+	[XmlType]
+	public class ContainerTypeForTest
+	{
+		[XmlElement ("XmlSecondType", typeof (SecondDerivedTypeForTest))]
+		[XmlElement ("XmlIntermediateType", typeof (IntermediateTypeForTest))]
+		[XmlElement ("XmlFirstType", typeof (FirstDerivedTypeForTest))]
+		public AbstractTypeForTest MemberToUseInclude { get; set; }
+	}
+
+	[XmlInclude (typeof (SecondDerivedTypeForTest))]
+	[XmlInclude (typeof (IntermediateTypeForTest))]
+	[XmlInclude (typeof (FirstDerivedTypeForTest))]
+	public abstract class AbstractTypeForTest
+	{
+	}
+
+	public class IntermediateTypeForTest : AbstractTypeForTest
+	{
+		[XmlAttribute (AttributeName = "intermediate")]
+		public bool IntermediateMember { get; set; }
+	}
+
+	public class FirstDerivedTypeForTest : AbstractTypeForTest
+	{
+		public string FirstMember { get; set; }
+	}
+
+	public class SecondDerivedTypeForTest : IntermediateTypeForTest
+	{
+		public string SecondMember { get; set; }
+	}
+#endregion
 }

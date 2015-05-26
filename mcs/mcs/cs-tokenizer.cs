@@ -928,7 +928,13 @@ namespace Mono.CSharp
 
 		static bool is_identifier_start_character (int c)
 		{
-			return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || Char.IsLetter ((char)c);
+			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_')
+				return true;
+
+			if (c < 0x80)
+				return false;
+
+			return is_identifier_start_character_slow_part ((char) c);
 		}
 
 		static bool is_identifier_part_character (char c)
@@ -948,21 +954,46 @@ namespace Mono.CSharp
 			return is_identifier_part_character_slow_part (c);
 		}
 
+		static bool is_identifier_start_character_slow_part (char c)
+		{
+			switch (Char.GetUnicodeCategory (c)) {
+			case UnicodeCategory.LetterNumber:
+			case UnicodeCategory.UppercaseLetter:
+			case UnicodeCategory.LowercaseLetter:
+			case UnicodeCategory.TitlecaseLetter:
+			case UnicodeCategory.ModifierLetter:
+			case UnicodeCategory.OtherLetter:
+				return true;
+			}
+			return false;
+		}
+
 		static bool is_identifier_part_character_slow_part (char c)
 		{
-			if (Char.IsLetter (c))
-				return true;
-
 			switch (Char.GetUnicodeCategory (c)) {
-				case UnicodeCategory.ConnectorPunctuation:
+			// connecting-character:  A Unicode character of the class Pc
+			case UnicodeCategory.ConnectorPunctuation:
 
-				// combining-character: A Unicode character of classes Mn or Mc
-				case UnicodeCategory.NonSpacingMark:
-				case UnicodeCategory.SpacingCombiningMark:
+			// combining-character: A Unicode character of classes Mn or Mc
+			case UnicodeCategory.NonSpacingMark:
+			case UnicodeCategory.SpacingCombiningMark:
 
-				// decimal-digit-character: A Unicode character of the class Nd 
-				case UnicodeCategory.DecimalDigitNumber:
+			// decimal-digit-character: A Unicode character of the class Nd 
+			case UnicodeCategory.DecimalDigitNumber:
+
+			// plus is_identifier_start_character_slow_part
+			case UnicodeCategory.LetterNumber:
+			case UnicodeCategory.UppercaseLetter:
+			case UnicodeCategory.LowercaseLetter:
+			case UnicodeCategory.TitlecaseLetter:
+			case UnicodeCategory.ModifierLetter:
+			case UnicodeCategory.OtherLetter:
 				return true;
+
+			// formatting-character: A Unicode character of the class Cf
+			case UnicodeCategory.Format:
+				// csc bug compatibility which recognizes it as a whitespace
+				return c != 0xFEFF;
 			}
 
 			return false;
@@ -3185,9 +3216,14 @@ namespace Mono.CSharp
 			if (c == '\\') {
 				int surrogate;
 				c = escape (c, out surrogate);
-				if (surrogate != 0) {
-					id_builder [pos++] = (char) c;
+				if (quoted || is_identifier_start_character (c)) {
+					// it's added bellow
+				} else if (surrogate != 0) {
+					id_builder [pos++] = (char)c;
 					c = surrogate;
+				} else {
+					Report.Error (1056, Location, "Unexpected character `\\{0}'", c.ToString ("x4"));
+					return Token.ERROR;
 				}
 			}
 
@@ -3208,9 +3244,18 @@ namespace Mono.CSharp
 							c = escape (c, out surrogate);
 							if (is_identifier_part_character ((char) c))
 								id_builder[pos++] = (char) c;
-
-							if (surrogate != 0) {
+							else if (surrogate != 0) {
 								c = surrogate;
+							} else {
+								switch (c) {
+								// TODO: Probably need more whitespace characters
+								case 0xFEFF:
+									putback_char = c;
+									break;
+								default:
+									Report.Error (1056, Location, "Unexpected character `\\{0}'", c.ToString ("x4"));
+									return Token.ERROR;
+								}
 							}
 
 							continue;

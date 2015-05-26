@@ -2129,7 +2129,7 @@ namespace Mono.CSharp {
 				// C# 3.0 introduced contextual keywords (var) which behaves like a type if type with
 				// same name exists or as a keyword when no type was found
 				//
-				if (vexpr != null && !vexpr.IsPossibleTypeOrNamespace (bc)) {
+				if (vexpr != null && !vexpr.IsPossibleType (bc)) {
 					if (bc.Module.Compiler.Settings.Version < LanguageVersion.V_3)
 						bc.Report.FeatureIsNotAvailable (bc.Module.Compiler, loc, "implicitly typed local variable");
 
@@ -3352,12 +3352,26 @@ namespace Mono.CSharp {
 								}
 
 								if (parent_storey_block.AnonymousMethodStorey == null) {
-									pb.StateMachine.AddCapturedThisField (ec, null);
-									b.HasCapturedThis = true;
+									if (pb.StateMachine.HoistedThis == null) {
+										pb.StateMachine.AddCapturedThisField (ec, null);
+										b.HasCapturedThis = true;
+									}
+
 									continue;
 								}
 
-								pb.StateMachine.AddParentStoreyReference (ec, storey);
+								var parent_this_block = pb;
+								while (parent_this_block.Parent != null) {
+									parent_this_block = parent_this_block.Parent.ParametersBlock;
+									if (parent_this_block.StateMachine != null) {
+										break;
+									}
+								}
+
+								//
+								// Add reference to closest storey which holds captured this
+								//
+								pb.StateMachine.AddParentStoreyReference (ec, parent_this_block.StateMachine ?? storey);
 							}
 
 							//

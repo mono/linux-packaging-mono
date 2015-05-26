@@ -38,6 +38,7 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Permissions;
 using System.Collections.Generic;
 using System.Security;
@@ -75,12 +76,14 @@ namespace System.Diagnostics {
 		IntPtr process_handle;
 		int pid;
 		bool enableRaisingEvents;
-		bool already_waiting;
+		RegisteredWaitHandle exitWaitHandle;
 		ISynchronizeInvoke synchronizingObject;
 		EventHandler exited_event;
 		IntPtr stdout_rd;
 		IntPtr stderr_rd;
-		
+
+		object thisLock = new Object ();
+
 		/* Private constructor called from other methods */
 		private Process(IntPtr handle, int id) {
 			process_handle=handle;
@@ -102,12 +105,30 @@ namespace System.Diagnostics {
 
 		void StartExitCallbackIfNeeded ()
 		{
-			bool start = (!already_waiting && enableRaisingEvents && exited_event != null);
-			if (start && process_handle != IntPtr.Zero) {
-				WaitOrTimerCallback cb = new WaitOrTimerCallback (CBOnExit);
-				ProcessWaitHandle h = new ProcessWaitHandle (process_handle);
-				ThreadPool.RegisterWaitForSingleObject (h, cb, this, -1, true);
-				already_waiting = true;
+			lock (thisLock) {
+				bool start = (exitWaitHandle == null && enableRaisingEvents && exited_event != null);
+				if (start && process_handle != IntPtr.Zero) {
+					WaitOrTimerCallback cb = new WaitOrTimerCallback (CBOnExit);
+					ProcessWaitHandle h = new ProcessWaitHandle (process_handle);
+					exitWaitHandle = ThreadPool.RegisterWaitForSingleObject (h, cb, this, -1, true);
+				}
+			}
+		}
+
+		void UnregisterExitCallback ()
+		{
+			lock (thisLock) {
+				if (exitWaitHandle != null) {
+					exitWaitHandle.Unregister (null);
+					exitWaitHandle = null;
+				}
+			}
+		}
+
+		bool IsExitCallbackPending ()
+		{
+			lock (thisLock) {
+				return exitWaitHandle != null;
 			}
 		}
 
@@ -1257,7 +1278,13 @@ namespace System.Diagnostics {
 						return false;
 				}
 			}
-			return WaitForExit_internal (process_handle, ms);
+
+			bool exited = WaitForExit_internal (process_handle, ms);
+
+			if (exited)
+				OnExited ();
+
+			return exited;
 		}
 
 		/* Waits up to ms milliseconds for process 'handle' to 
@@ -1315,7 +1342,7 @@ namespace System.Diagnostics {
 		}
 
 		[StructLayout (LayoutKind.Sequential)]
-		sealed class ProcessAsyncReader
+		sealed class ProcessAsyncReader : IThreadPoolWorkItem
 		{
 			/*
 			   The following fields match those of SocketAsyncResult.
@@ -1352,7 +1379,7 @@ namespace System.Diagnostics {
 			bool err_out; // true -> stdout, false -> stderr
 			internal int error;
 			public int operation = 8; // MAGIC NUMBER: see Socket.cs:AsyncOperation
-			public object ares;
+			public AsyncResult async_result;
 			public int EndCalled;
 
 			// These fields are not in SocketAsyncResult
@@ -1455,6 +1482,15 @@ namespace System.Diagnostics {
 
 			public void Close () {
 				stream.Close ();
+			}
+
+			void IThreadPoolWorkItem.ExecuteWorkItem()
+			{
+				async_result.Invoke ();
+			}
+
+			void IThreadPoolWorkItem.MarkAborted(ThreadAbortException tae)
+			{
 			}
 		}
 
@@ -1560,7 +1596,7 @@ namespace System.Diagnostics {
 				// dispose all managed resources.
 				if(disposing) {
 					// Do stuff here
-					lock (this) {
+					lock (thisLock) {
 						/* These have open FileStreams on the pipes we are about to close */
 						if (async_output != null)
 							async_output.Close ();
@@ -1586,7 +1622,7 @@ namespace System.Diagnostics {
 				
 				// Release unmanaged resources
 
-				lock(this) {
+				lock (thisLock) {
 					if(process_handle!=IntPtr.Zero) {
 						Process_free_internal(process_handle);
 						process_handle=IntPtr.Zero;
@@ -1604,14 +1640,30 @@ namespace System.Diagnostics {
 		static void CBOnExit (object state, bool unused)
 		{
 			Process p = (Process) state;
-			p.already_waiting = false;
+
+			if (!p.IsExitCallbackPending ())
+				return;
+
+			if (!p.HasExited) {
+				p.UnregisterExitCallback ();
+				p.StartExitCallbackIfNeeded ();
+				return;
+			}
+
 			p.OnExited ();
 		}
+
+		int on_exited_called = 0;
 
 		protected void OnExited() 
 		{
 			if (exited_event == null)
 				return;
+
+			if (on_exited_called != 0 || Interlocked.CompareExchange (ref on_exited_called, 1, 0) != 0)
+				return;
+
+			UnregisterExitCallback ();
 
 			if (synchronizingObject == null) {
 				foreach (EventHandler d in exited_event.GetInvocationList ()) {

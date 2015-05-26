@@ -3032,6 +3032,27 @@
       </method>
     </type>
   </test>
+  <test name="dtest-060.cs">
+    <type name="Test.Program">
+      <method name="Int32 Main()" attrs="150">
+        <size>201</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="Test.C">
+      <method name="Int32 M[T](Int32)" attrs="150">
+        <size>10</size>
+      </method>
+      <method name="Int32 M[T](Int64)" attrs="150">
+        <size>10</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
   <test name="dtest-anontype-01.cs">
     <type name="C">
       <method name="Void Main()" attrs="150">
@@ -3424,6 +3445,19 @@
       </method>
       <method name="Int32 Main()" attrs="150">
         <size>882</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="dtest-optional-02.cs">
+    <type name="Test">
+      <method name="System.Object Foo(System.Object)" attrs="150">
+        <size>10</size>
+      </method>
+      <method name="Int32 Main()" attrs="150">
+        <size>41</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -19531,9 +19565,6 @@
   </test>
   <test name="gtest-628.cs">
     <type name="Impl`1[T]">
-      <method name="System.Object CompareExchangeImpl(System.TypedReference, System.Object, System.Object)" attrs="150">
-        <size>37</size>
-      </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
       </method>
@@ -19546,11 +19577,32 @@
         <size>7</size>
       </method>
     </type>
+    <type name="Impl`1[T]">
+      <method name="System.Object CompareExchangeImpl(TypedReference, System.Object, System.Object)" attrs="150">
+        <size>37</size>
+      </method>
+    </type>
   </test>
   <test name="gtest-629.cs">
     <type name="Program">
       <method name="Void Main()" attrs="150">
         <size>135</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-630.cs">
+    <type name="A">
+      <method name="Int32 Foo(Int32)" attrs="486">
+        <size>10</size>
+      </method>
+      <method name="Int32 Bar[T](T)" attrs="145">
+        <size>23</size>
+      </method>
+      <method name="Int32 Main()" attrs="150">
+        <size>32</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -20515,6 +20567,56 @@
       </method>
       <method name="Void Main()" attrs="150">
         <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-autoproperty-17.cs">
+    <type name="MainClass">
+      <method name="Void Main(System.String[])" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="MainClass+Bar">
+      <method name="Boolean get_Condition()" attrs="3526">
+        <size>0</size>
+      </method>
+      <method name="Void .ctor()" attrs="6276">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="MainClass+Baz">
+      <method name="Boolean get_Condition()" attrs="2246">
+        <size>14</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>14</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-autoproperty-18.cs">
+    <type name="A">
+      <method name="Int32 get_Type()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>15</size>
+      </method>
+    </type>
+    <type name="B">
+      <method name="Int32 get_Type()" attrs="2193">
+        <size>13</size>
+      </method>
+      <method name="Int32 Main()" attrs="145">
+        <size>53</size>
+      </method>
+      <method name="Void .cctor()" attrs="6289">
+        <size>8</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -23922,7 +24024,7 @@
         <size>57</size>
       </method>
       <method name="Void Foo(Point ByRef)" attrs="145">
-        <size>39</size>
+        <size>33</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -24091,10 +24193,20 @@
         <size>42</size>
       </method>
       <method name="Void Main()" attrs="150">
-        <size>68</size>
+        <size>66</size>
       </method>
       <method name="Void &lt;Main&gt;m__0()" attrs="145">
         <size>2</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-initialize-14.cs">
+    <type name="X">
+      <method name="Int32 Main()" attrs="150">
+        <size>154</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
       </method>
     </type>
   </test>
@@ -29688,10 +29800,16 @@
         <size>10</size>
       </method>
       <method name="Int32 Main()" attrs="150">
-        <size>161</size>
+        <size>192</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
+      </method>
+      <method name="Int32 Test_8(System.Type, Boolean, Int32)" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Int32 Test_8(System.Type, Int32[])" attrs="145">
+        <size>10</size>
       </method>
     </type>
   </test>
@@ -43115,11 +43233,11 @@
   </test>
   <test name="test-550.cs">
     <type name="Bla.Blub.Fo‿o">
-      <method name="Void Main(System.String[])" attrs="150">
-        <size>12</size>
-      </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
+      </method>
+      <method name="Void Main()" attrs="150">
+        <size>14</size>
       </method>
     </type>
   </test>
@@ -51280,6 +51398,22 @@
       </method>
     </type>
   </test>
+  <test name="test-919.cs">
+    <type name="Test">
+      <method name="Void Main(System.String[])" attrs="150">
+        <size>14</size>
+      </method>
+      <method name="Void Outer(System.String)" attrs="145">
+        <size>29</size>
+      </method>
+      <method name="Void Inner(Char* ByRef, Char*)" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
   <test name="test-92.cs">
     <type name="Outer">
       <method name="Void .ctor()" attrs="6278">
@@ -51299,6 +51433,90 @@
     <type name="MainClass">
       <method name="Int32 Main()" attrs="150">
         <size>10</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-920.cs">
+    <type name="A">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="A+Adapter">
+      <method name="Void .ctor()" attrs="6276">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="B">
+      <method name="Int32 get_Adapter()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_Adapter(Int32)" attrs="2182">
+        <size>8</size>
+      </method>
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-921.cs">
+    <type name="A">
+      <method name="Void Foo(Reference.IA)" attrs="129">
+        <size>9</size>
+      </method>
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-922.cs">
+    <type name="A">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="B">
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="B+D">
+      <method name="C get_Property()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_Property(C)" attrs="2182">
+        <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-923.cs">
+    <type name="Program">
+      <method name="Void Main()" attrs="145">
+        <size>2</size>
+      </method>
+      <method name="Void Test(Location ByRef)" attrs="150">
+        <size>21</size>
+      </method>
+      <method name="Void Test(LocationWrapper)" attrs="150">
+        <size>39</size>
+      </method>
+      <method name="Void Test(LocationWrapper ByRef)" attrs="150">
+        <size>36</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -55436,6 +55654,52 @@
       </method>
     </type>
   </test>
+  <test name="test-anon-176.cs">
+    <type name="TestDelegateFinallyOut.Test">
+      <method name="Void CallDelegate(System.Action)" attrs="145">
+        <size>12</size>
+      </method>
+      <method name="Boolean TestMethod(Int32 ByRef)" attrs="145">
+        <size>75</size>
+      </method>
+      <method name="Int32 Main()" attrs="145">
+        <size>32</size>
+      </method>
+      <method name="Void &lt;TestMethod&gt;m__0()" attrs="145">
+        <size>7</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-anon-177.cs">
+    <type name="X">
+      <method name="Void Execute[TArg](TArg)" attrs="150">
+        <size>21</size>
+      </method>
+      <method name="Void Main()" attrs="150">
+        <size>8</size>
+      </method>
+      <method name="Void &lt;Execute`1&gt;m__0[TArg]()" attrs="145">
+        <size>58</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="X+&lt;Execute&gt;c__AnonStorey0`1[TArg]">
+      <method name="System.Collections.Generic.IEnumerable`1[System.Object] &lt;&gt;m__0(System.String)" attrs="131">
+        <size>26</size>
+      </method>
+      <method name="System.Object &lt;&gt;m__1(Char)" attrs="131">
+        <size>14</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
   <test name="test-anon-18.cs">
     <type name="A">
       <method name="Void Invoke()" attrs="454">
@@ -57902,7 +58166,7 @@
     </type>
     <type name="C">
       <method name="Void UnsafeTests()" attrs="145">
-        <size>36</size>
+        <size>70</size>
       </method>
       <method name="Void Main()" attrs="150">
         <size>99</size>
@@ -57952,7 +58216,10 @@
       </method>
     </type>
     <type name="C">
-      <method name="Void &lt;Main&gt;m__0()" attrs="145">
+      <method name="Void &lt;UnsafeTests&gt;m__0()" attrs="145">
+        <size>12</size>
+      </method>
+      <method name="Void &lt;Main&gt;m__1()" attrs="145">
         <size>17</size>
       </method>
     </type>
@@ -61021,7 +61288,7 @@
     </type>
     <type name="Tester+&lt;NewInitTest_1&gt;c__async34">
       <method name="Void MoveNext()" attrs="486">
-        <size>1026</size>
+        <size>1030</size>
       </method>
       <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
         <size>13</size>
@@ -61796,7 +62063,7 @@
     </type>
     <type name="Tester+&lt;NewInitTestGen&gt;c__async0`1[T]">
       <method name="Void MoveNext()" attrs="486">
-        <size>305</size>
+        <size>308</size>
       </method>
       <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
         <size>13</size>
@@ -64740,6 +65007,75 @@
       </method>
     </type>
   </test>
+  <test name="test-async-78.cs">
+    <type name="ExceptionHelper">
+      <method name="System.Threading.Tasks.Task ConditionalCatchExceptThreadAbortAsync(System.Func`1[System.Threading.Tasks.Task], System.Action`1[System.Exception])" attrs="150">
+        <size>41</size>
+      </method>
+    </type>
+    <type name="ATask">
+      <method name="System.Threading.Tasks.Task`1[System.Boolean] OnDoWorkAsync()" attrs="134">
+        <size>41</size>
+      </method>
+      <method name="System.Threading.Tasks.Task &lt;OnDoWorkAsync&gt;m__0()" attrs="129">
+        <size>41</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>18</size>
+      </method>
+    </type>
+    <type name="Tests">
+      <method name="Void Main()" attrs="150">
+        <size>20</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="ExceptionHelper+&lt;ConditionalCatchExceptThreadAbortAsync&gt;c__async0">
+      <method name="Void MoveNext()" attrs="486">
+        <size>73</size>
+      </method>
+      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
+        <size>13</size>
+      </method>
+    </type>
+    <type name="ATask+&lt;OnDoWorkAsync&gt;c__async0">
+      <method name="Void MoveNext()" attrs="486">
+        <size>182</size>
+      </method>
+      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
+        <size>13</size>
+      </method>
+    </type>
+    <type name="ATask+&lt;OnDoWorkAsync&gt;c__async4">
+      <method name="Void MoveNext()" attrs="486">
+        <size>248</size>
+      </method>
+      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
+        <size>13</size>
+      </method>
+    </type>
+    <type name="ATask+&lt;OnDoWorkAsync&gt;c__async4+&lt;OnDoWorkAsync&gt;c__AnonStorey7">
+      <method name="System.Threading.Tasks.Task &lt;&gt;m__0()" attrs="131">
+        <size>46</size>
+      </method>
+      <method name="Void &lt;&gt;m__1(System.Exception)" attrs="131">
+        <size>13</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="ATask+&lt;OnDoWorkAsync&gt;c__async4+&lt;OnDoWorkAsync&gt;c__AnonStorey7+&lt;OnDoWorkAsync&gt;c__async6">
+      <method name="Void MoveNext()" attrs="486">
+        <size>82</size>
+      </method>
+      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
+        <size>13</size>
+      </method>
+    </type>
+  </test>
   <test name="test-cls-00.cs">
     <type name="CLSCLass_6">
       <method name="Void add_Disposed(Delegate)" attrs="2182">
@@ -66663,6 +66999,22 @@
       </method>
     </type>
   </test>
+  <test name="test-interpolation-05.cs">
+    <type name="ParserTest">
+      <method name="Void Test1()" attrs="129">
+        <size>41</size>
+      </method>
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+      <method name="Void Test2()" attrs="129">
+        <size>12</size>
+      </method>
+    </type>
+  </test>
   <test name="test-iter-01.cs">
     <type name="X">
       <method name="Int32 Main()" attrs="150">
@@ -68391,6 +68743,16 @@
       </method>
     </type>
   </test>
+  <test name="test-null-operator-011.cs">
+    <type name="Crash">
+      <method name="System.String GetFoo()" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Void Main()" attrs="145">
+        <size>27</size>
+      </method>
+    </type>
+  </test>
   <test name="test-null-operator-02.cs">
     <type name="CI">
       <method name="Int32 get_Prop()" attrs="2182">
@@ -68405,6 +68767,12 @@
       <method name="Void set_PropNullable(System.Nullable`1[System.Byte])" attrs="2182">
         <size>8</size>
       </method>
+      <method name="System.Object get_PropReference()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_PropReference(System.Object)" attrs="2182">
+        <size>8</size>
+      </method>
       <method name="Void add_ev1(System.Action)" attrs="2182">
         <size>42</size>
       </method>
@@ -68416,25 +68784,17 @@
       </method>
     </type>
     <type name="C">
-      <method name="Int32 Main()" attrs="145">
-        <size>64</size>
-      </method>
-      <method name="Void .ctor()" attrs="6278">
-        <size>7</size>
-      </method>
       <method name="Int32 TestProperty()" attrs="145">
         <size>359</size>
       </method>
       <method name="Int32 TestField()" attrs="145">
         <size>351</size>
       </method>
-    </type>
-    <type name="CI">
-      <method name="System.Object get_PropReference()" attrs="2182">
-        <size>14</size>
+      <method name="Int32 Main()" attrs="145">
+        <size>64</size>
       </method>
-      <method name="Void set_PropReference(System.Object)" attrs="2182">
-        <size>8</size>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
       </method>
     </type>
   </test>
@@ -69918,6 +70278,50 @@
       </method>
     </type>
   </test>
+  <test name="test-static-using-08.cs">
+    <type name="A">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="A+N">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="Test">
+      <method name="Void Main()" attrs="150">
+        <size>4</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-static-using-09.cs">
+    <type name="Program">
+      <method name="Void Main()" attrs="145">
+        <size>9</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-static-using-10.cs">
+    <type name="A.T">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="A.T+N">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="B.Program">
+      <method name="Void Main()" attrs="145">
+        <size>19</size>
+      </method>
+    </type>
+  </test>
   <test name="test-var-01.cs">
     <type name="Test">
       <method name="Int32 Main()" attrs="150">
@@ -69958,6 +70362,16 @@
     <type name="Test">
       <method name="Int32 Main()" attrs="150">
         <size>201</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-var-04.cs">
+    <type name="Test.A">
+      <method name="Int32 Main()" attrs="150">
+        <size>12</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>

@@ -148,7 +148,7 @@ namespace System.IO
 		}
 #endif
 
-		internal FileStream (string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, FileOptions options, string msgPath, bool bFromProxy, bool useLongPath, bool checkHost)
+		internal FileStream (string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, FileOptions options, string msgPath, bool bFromProxy, bool useLongPath = false, bool checkHost = false)
 			: this (path, mode, access, share, bufferSize, false, options)
 		{
 		}
@@ -988,7 +988,7 @@ namespace System.IO
 			
 			if (count > 0) {
 				// Use the fastest method, all range checks has been done
-				Buffer.BlockCopyInternal (buf, buf_offset, dest, dest_offset, count);
+				Buffer.InternalBlockCopy (buf, buf_offset, dest, dest_offset, count);
 				buf_offset += count;
 			}
 			

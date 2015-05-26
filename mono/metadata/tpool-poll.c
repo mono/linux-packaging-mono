@@ -31,6 +31,8 @@ static void tp_poll_shutdown (gpointer event_data);
 static void tp_poll_modify (gpointer p, int fd, int operation, int events, gboolean is_new);
 static void tp_poll_wait (gpointer p);
 
+gpointer tp_poll_init (SocketIOData *data);
+
 gpointer
 tp_poll_init (SocketIOData *data)
 {
@@ -88,7 +90,7 @@ tp_poll_modify (gpointer p, int fd, int operation, int events, gboolean is_new)
 	SocketIOData *socket_io_data;
 	tp_poll_data *data;
 	char msg [1];
-	int unused;
+	int unused G_GNUC_UNUSED;
 
 	socket_io_data = p;
 	data = socket_io_data->event_data;

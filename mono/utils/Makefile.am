@@ -46,8 +46,6 @@ monoutils_sources = \
 	mono-string.h		\
 	mono-time.c  		\
 	mono-time.h  		\
-	strtod.h		\
-	strtod.c		\
 	strenc.h		\
 	strenc.c		\
 	mono-uri.c		\
@@ -99,6 +97,7 @@ monoutils_sources = \
 	mono-linked-list-set.c	\
 	mono-linked-list-set.h	\
 	mono-threads.c	\
+	mono-threads-state-machine.c	\
 	mono-threads-posix.c	\
 	mono-threads-mach.c	\
 	mono-threads-mach-helper.c	\
@@ -108,6 +107,8 @@ monoutils_sources = \
 	mono-threads-openbsd.c	\
 	mono-threads-android.c	\
 	mono-threads.h	\
+	mono-threads-coop.c	\
+	mono-threads-coop.h	\
 	mono-tls.h	\
 	mono-tls.c	\
 	linux_magic.h	\
@@ -130,7 +131,13 @@ monoutils_sources = \
 	networking-fallback.c	\
 	networking-missing.c	\
 	networking-windows.c	\
-	networking.h
+	networking.h	\
+	mono-rand.c	\
+	mono-rand.h \
+	memfuncs.c \
+	memfuncs.h \
+	parse.c \
+	parse.h
 
 arch_sources = 
 
