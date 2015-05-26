@@ -783,7 +783,7 @@ Mono implementation of WCF, Windows Communication Foundation
 %{_prefix}/lib/mono/gac/System.ServiceModel
 %{_prefix}/lib/mono/gac/System.ServiceModel.Activation
 %{_prefix}/lib/mono/gac/System.ServiceModel.Discovery
-%{_prefix}/lib/mono/4.5/System.ServiceModel.Internals
+%{_prefix}/lib/mono/gac/System.ServiceModel.Internals
 %{_prefix}/lib/mono/gac/System.ServiceModel.Routing
 %{_prefix}/lib/mono/gac/System.ServiceModel.Web
 %{_prefix}/lib/mono/gac/SMDiagnostics
