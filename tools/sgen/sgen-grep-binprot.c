@@ -8,7 +8,7 @@
 #define SGEN_BINARY_PROTOCOL
 #define MONO_INTERNAL
 
-#include <mono/metadata/sgen-protocol.h>
+#include <mono/sgen/sgen-protocol.h>
 
 #define SGEN_PROTOCOL_EOF	255
 
@@ -122,7 +122,7 @@ read_entry (EntryStream *stream, void *data)
 #define END_PROTOCOL_ENTRY
 #define END_PROTOCOL_ENTRY_HEAVY
 
-#include <mono/metadata/sgen-protocol-def.h>
+#include <mono/sgen/sgen-protocol-def.h>
 
 	default: assert (0);
 	}
@@ -182,7 +182,7 @@ is_always_match (int type)
 #define END_PROTOCOL_ENTRY
 #define END_PROTOCOL_ENTRY_HEAVY
 
-#include <mono/metadata/sgen-protocol-def.h>
+#include <mono/sgen/sgen-protocol-def.h>
 
 	default: assert (0);
 	}
@@ -207,6 +207,7 @@ typedef struct {
 #define TYPE_LONGLONG 1
 #define TYPE_SIZE 2
 #define TYPE_POINTER 3
+#define TYPE_BOOL 4
 
 static void
 print_entry_content (int entries_size, PrintEntry *entries, gboolean color_output)
@@ -229,6 +230,9 @@ print_entry_content (int entries_size, PrintEntry *entries, gboolean color_outpu
 			break;
 		case TYPE_POINTER:
 			printf ("%p", *(gpointer*) entries [i].data);
+			break;
+		case TYPE_BOOL:
+			printf ("%s", *(gboolean*) entries [i].data ? "true" : "false");
 			break;
 		default:
 			assert (0);
@@ -416,7 +420,7 @@ print_entry (int type, void *data, int num_nums, int *match_indices, gboolean co
 #define END_PROTOCOL_ENTRY_HEAVY \
 	END_PROTOCOL_ENTRY
 
-#include <mono/metadata/sgen-protocol-def.h>
+#include <mono/sgen/sgen-protocol-def.h>
 
 	default: assert (0);
 	}
@@ -499,7 +503,7 @@ match_index (gpointer ptr, int type, void *data)
 #define END_PROTOCOL_ENTRY_HEAVY \
 	END_PROTOCOL_ENTRY
 
-#include <mono/metadata/sgen-protocol-def.h>
+#include <mono/sgen/sgen-protocol-def.h>
 
 	default: assert (0);
 	}
@@ -562,7 +566,7 @@ is_vtable_match (gpointer ptr, int type, void *data)
 #define END_PROTOCOL_ENTRY_HEAVY \
 	END_PROTOCOL_ENTRY
 
-#include <mono/metadata/sgen-protocol-def.h>
+#include <mono/sgen/sgen-protocol-def.h>
 
 	default: assert (0);
 	}
@@ -594,6 +598,8 @@ main (int argc, char *argv[])
 	const char *input_path = NULL;
 	int input_file;
 	EntryStream stream;
+	unsigned long long entry_index;
+	unsigned long long first_entry_to_consider = 0;
 
 	for (i = 0; i < num_args; ++i) {
 		char *arg = argv [i + 1];
@@ -605,11 +611,37 @@ main (int argc, char *argv[])
 		} else if (!strcmp (arg, "-v") || !strcmp (arg, "--vtable")) {
 			vtables [num_vtables++] = strtoul (next_arg, NULL, 16);
 			++i;
+		} else if (!strcmp (arg, "-s") || !strcmp (arg, "--start-at")) {
+			first_entry_to_consider = strtoull (next_arg, NULL, 10);
+			++i;
 		} else if (!strcmp (arg, "-c") || !strcmp (arg, "--color")) {
 			color_output = TRUE;
 		} else if (!strcmp (arg, "-i") || !strcmp (arg, "--input")) {
 			input_path = next_arg;
 			++i;
+		} else if (!strcmp (arg, "--help")) {
+			printf (
+				"\n"
+				"Usage:\n"
+				"\n"
+				"\tsgen-grep-binprot [options] [pointer...]\n"
+				"\n"
+				"Examples:\n"
+				"\n"
+				"\tsgen-grep-binprot --all </tmp/binprot\n"
+				"\tsgen-grep-binprot --input /tmp/binprot --color 0xdeadbeef\n"
+				"\n"
+				"Options:\n"
+				"\n"
+				"\t--all                    Print all entries.\n"
+				"\t--color, -c              Highlight matches in color.\n"
+				"\t--help                   You're looking at it.\n"
+				"\t--input FILE, -i FILE    Read input from FILE instead of standard input.\n"
+				"\t--pause-times            Print GC pause times.\n"
+				"\t--start-at N, -s N       Begin filtering at the Nth entry.\n"
+				"\t--vtable PTR, -v PTR     Search for vtable pointer PTR.\n"
+				"\n");
+			return 0;
 		} else {
 			nums [num_nums++] = strtoul (arg, NULL, 16);
 		}
@@ -622,7 +654,10 @@ main (int argc, char *argv[])
 
 	input_file = input_path ? open (input_path, O_RDONLY) : STDIN_FILENO;
 	init_stream (&stream, input_file);
+	entry_index = 0;
 	while ((type = read_entry (&stream, data)) != SGEN_PROTOCOL_EOF) {
+		if (entry_index < first_entry_to_consider)
+			goto next_entry;
 		if (pause_times) {
 			switch (type) {
 			case PROTOCOL_ID (binary_protocol_world_stopping): {
@@ -670,11 +705,15 @@ main (int argc, char *argv[])
 					}
 				}
 			}
+			if (match || dump_all)
+				printf ("%12lld ", entry_index);
 			if (dump_all)
 				printf (match ? "* " : "  ");
 			if (match || dump_all)
 				print_entry (type, data, num_nums, match_indices, color_output);
 		}
+	next_entry:
+		++entry_index;
 	}
 	close_stream (&stream);
 	if (input_path)

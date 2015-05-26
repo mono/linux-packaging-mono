@@ -1765,11 +1765,11 @@ static guint32
 encode_constant (MonoDynamicImage *assembly, MonoObject *val, guint32 *ret_type) {
 	char blob_size [64];
 	char *b = blob_size;
-	char *p, *box_val;
+	char *box_val;
 	char* buf;
 	guint32 idx = 0, len = 0, dummy = 0;
 
-	p = buf = g_malloc (64);
+	buf = g_malloc (64);
 	if (!val) {
 		*ret_type = MONO_TYPE_CLASS;
 		len = 4;
@@ -2773,7 +2773,6 @@ mono_image_get_field_on_inst_token (MonoDynamicImage *assembly, MonoReflectionFi
 	guint32 token;
 	MonoClass *klass;
 	MonoGenericClass *gclass;
-	MonoDynamicGenericClass *dgclass;
 	MonoType *type;
 	char *name;
 
@@ -2786,7 +2785,6 @@ mono_image_get_field_on_inst_token (MonoDynamicImage *assembly, MonoReflectionFi
 		klass = mono_class_from_mono_type (type);
 		gclass = type->data.generic_class;
 		g_assert (gclass->is_dynamic);
-		dgclass = (MonoDynamicGenericClass *) gclass;
 
 		name = mono_string_to_utf8 (fb->name);
 		token = mono_image_get_memberref_token (assembly, &klass->byval_arg, name, 
@@ -2826,7 +2824,6 @@ mono_image_get_ctor_on_inst_token (MonoDynamicImage *assembly, MonoReflectionCto
 
 	if (is_sre_ctor_builder (mono_object_class (c->cb))) {
 		MonoReflectionCtorBuilder *cb = (MonoReflectionCtorBuilder *)c->cb;
-		MonoDynamicGenericClass *dgclass;
 		ReflectionMethodBuilder rmb;
 		char *name;
 
@@ -2835,7 +2832,6 @@ mono_image_get_ctor_on_inst_token (MonoDynamicImage *assembly, MonoReflectionCto
 
 		gclass = type->data.generic_class;
 		g_assert (gclass->is_dynamic);
-		dgclass = (MonoDynamicGenericClass *) gclass;
 
 		reflection_methodbuilder_from_ctor_builder (&rmb, cb);
 
@@ -3195,7 +3191,6 @@ static guint32
 mono_image_get_generic_field_token (MonoDynamicImage *assembly, MonoReflectionFieldBuilder *fb)
 {
 	MonoDynamicTable *table;
-	MonoClass *klass;
 	MonoType *custom = NULL, *type;
 	guint32 *values;
 	guint32 token, pclass, parent, sig;
@@ -3205,7 +3200,8 @@ mono_image_get_generic_field_token (MonoDynamicImage *assembly, MonoReflectionFi
 	if (token)
 		return token;
 
-	klass = mono_class_from_mono_type (mono_reflection_type_get_handle (fb->typeb));
+	/* FIXME: is this call necessary? */
+	mono_class_from_mono_type (mono_reflection_type_get_handle (fb->typeb));
 	name = mono_string_to_utf8 (fb->name);
 
 	/*FIXME this is one more layer of ugliness due how types are created.*/
@@ -3248,7 +3244,6 @@ mono_reflection_encode_sighelper (MonoDynamicImage *assembly, MonoReflectionSigH
 {
 	SigBuffer buf;
 	guint32 nargs;
-	guint32 size;
 	guint32 i, idx;
 
 	if (!assembly->save)
@@ -3262,8 +3257,6 @@ mono_reflection_encode_sighelper (MonoDynamicImage *assembly, MonoReflectionSigH
 	else
 		nargs = 0;
 
-	size = 10 + (nargs * 10);
-	
 	sigbuffer_init (&buf, 32);
 
 	/* Encode calling convention */
@@ -6380,14 +6373,15 @@ verify_safe_for_managed_space (MonoType *type)
 		for (i = 0; i < inst->type_argc; ++i)
 			if (!verify_safe_for_managed_space (inst->type_argv [i]))
 				return FALSE;
-		break;
+		return TRUE;
 	}
 #endif
 	case MONO_TYPE_VAR:
 	case MONO_TYPE_MVAR:
 		return TRUE;
+	default:
+		return TRUE;
 	}
-	return TRUE;
 }
 
 static MonoType*
@@ -8711,6 +8705,7 @@ mono_custom_attrs_from_index (MonoImage *image, guint32 idx)
 	MonoCustomAttrInfo *ainfo;
 	GList *tmp, *list = NULL;
 	const char *data;
+	MonoCustomAttrEntry* attr;
 
 	ca = &image->tables [MONO_TABLE_CUSTOMATTRIBUTE];
 
@@ -8730,7 +8725,7 @@ mono_custom_attrs_from_index (MonoImage *image, guint32 idx)
 	ainfo = g_malloc0 (MONO_SIZEOF_CUSTOM_ATTR_INFO + sizeof (MonoCustomAttrEntry) * len);
 	ainfo->num_attrs = len;
 	ainfo->image = image;
-	for (i = 0, tmp = list; i < len; ++i, tmp = tmp->next) {
+	for (i = len, tmp = list; i != 0; --i, tmp = tmp->next) {
 		mono_metadata_decode_row (ca, GPOINTER_TO_UINT (tmp->data), cols, MONO_CUSTOM_ATTR_SIZE);
 		mtoken = cols [MONO_CUSTOM_ATTR_TYPE] >> MONO_CUSTOM_ATTR_TYPE_BITS;
 		switch (cols [MONO_CUSTOM_ATTR_TYPE] & MONO_CUSTOM_ATTR_TYPE_MASK) {
@@ -8744,8 +8739,9 @@ mono_custom_attrs_from_index (MonoImage *image, guint32 idx)
 			g_error ("Unknown table for custom attr type %08x", cols [MONO_CUSTOM_ATTR_TYPE]);
 			break;
 		}
-		ainfo->attrs [i].ctor = mono_get_method (image, mtoken, NULL);
-		if (!ainfo->attrs [i].ctor) {
+		attr = &ainfo->attrs [i - 1];
+		attr->ctor = mono_get_method (image, mtoken, NULL);
+		if (!attr->ctor) {
 			g_warning ("Can't find custom attr constructor image: %s mtoken: 0x%08x", image->name, mtoken);
 			g_list_free (list);
 			g_free (ainfo);
@@ -8760,8 +8756,8 @@ mono_custom_attrs_from_index (MonoImage *image, guint32 idx)
 			return NULL;
 		}
 		data = mono_metadata_blob_heap (image, cols [MONO_CUSTOM_ATTR_VALUE]);
-		ainfo->attrs [i].data_size = mono_metadata_decode_value (data, &data);
-		ainfo->attrs [i].data = (guchar*)data;
+		attr->data_size = mono_metadata_decode_value (data, &data);
+		attr->data = (guchar*)data;
 	}
 	g_list_free (list);
 
@@ -10625,12 +10621,9 @@ mono_reflection_bind_generic_parameters (MonoReflectionType *type, int type_argc
 	MonoClass *klass;
 	MonoReflectionTypeBuilder *tb = NULL;
 	gboolean is_dynamic = FALSE;
-	MonoDomain *domain;
 	MonoClass *geninst;
 
 	mono_loader_lock ();
-
-	domain = mono_object_domain (type);
 
 	if (is_sre_type_builder (mono_object_class (type))) {
 		tb = (MonoReflectionTypeBuilder *) type;

@@ -331,9 +331,7 @@ opt_sets [] = {
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_EXCEPTION,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_EXCEPTION | MONO_OPT_CMOV,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_EXCEPTION | MONO_OPT_ABCREM,
-       MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_EXCEPTION | MONO_OPT_ABCREM | MONO_OPT_SSAPRE,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_ABCREM,
-       MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_SSAPRE,
        MONO_OPT_BRANCH | MONO_OPT_PEEPHOLE | MONO_OPT_LINEARS | MONO_OPT_COPYPROP | MONO_OPT_CONSPROP | MONO_OPT_DEADCE | MONO_OPT_LOOP | MONO_OPT_INLINE | MONO_OPT_INTRINS | MONO_OPT_ABCREM | MONO_OPT_SHARED,
        DEFAULT_OPTIMIZATIONS, 
 };
@@ -1724,19 +1722,15 @@ mono_main (int argc, char* argv[])
 		} else if (strcmp (argv [i], "--security") == 0) {
 #ifndef DISABLE_SECURITY
 			mono_verifier_set_mode (MONO_VERIFIER_MODE_VERIFIABLE);
-			mono_security_set_mode (MONO_SECURITY_MODE_CAS);
-			mono_activate_security_manager ();
 #else
 			fprintf (stderr, "error: --security: not compiled with security manager support");
 			return 1;
 #endif
 		} else if (strncmp (argv [i], "--security=", 11) == 0) {
-			/* Note: temporary-smcs-hack, validil, and verifiable need to be
+			/* Note: validil, and verifiable need to be
 			   accepted even if DISABLE_SECURITY is defined. */
 
-			if (strcmp (argv [i] + 11, "temporary-smcs-hack") == 0) {
-				mono_security_set_mode (MONO_SECURITY_MODE_SMCS_HACK);
-			} else if (strcmp (argv [i] + 11, "core-clr") == 0) {
+			if (strcmp (argv [i] + 11, "core-clr") == 0) {
 #ifndef DISABLE_SECURITY
 				mono_verifier_set_mode (MONO_VERIFIER_MODE_VERIFIABLE);
 				mono_security_set_mode (MONO_SECURITY_MODE_CORE_CLR);
@@ -1755,9 +1749,7 @@ mono_main (int argc, char* argv[])
 #endif
 			} else if (strcmp (argv [i] + 11, "cas") == 0) {
 #ifndef DISABLE_SECURITY
-				mono_verifier_set_mode (MONO_VERIFIER_MODE_VERIFIABLE);
-				mono_security_set_mode (MONO_SECURITY_MODE_CAS);
-				mono_activate_security_manager ();
+				fprintf (stderr, "warning: --security=cas not supported.");
 #else
 				fprintf (stderr, "error: --security: not compiled with CAS support");
 				return 1;
@@ -1779,16 +1771,8 @@ mono_main (int argc, char* argv[])
 		} else if (strcmp (argv [i], "--inside-mdb") == 0) {
 			action = DO_DEBUGGER;
 		} else if (strncmp (argv [i], "--wapi=", 7) == 0) {
-			if (strcmp (argv [i] + 7, "hps") == 0) {
-				return mini_wapi_hps (argc - i, argv + i);
-			} else if (strcmp (argv [i] + 7, "semdel") == 0) {
-				return mini_wapi_semdel (argc - i, argv + i);
-			} else if (strcmp (argv [i] + 7, "seminfo") == 0) {
-				return mini_wapi_seminfo (argc - i, argv + i);
-			} else {
-				fprintf (stderr, "Invalid --wapi suboption: '%s'\n", argv [i]);
-				return 1;
-			}
+			fprintf (stderr, "--wapi= option no longer supported\n.");
+			return 1;
 		} else if (strcmp (argv [i], "--no-x86-stack-align") == 0) {
 			mono_do_x86_stack_align = FALSE;
 #ifdef MONO_JIT_INFO_TABLE_TEST
@@ -1875,6 +1859,9 @@ mono_main (int argc, char* argv[])
 
 	mono_counters_init ();
 
+	/* Set rootdir before loading config */
+	mono_set_rootdir ();
+
 	if (enable_profile)
 		mono_profiler_load (profile_options);
 
@@ -1908,9 +1895,6 @@ mono_main (int argc, char* argv[])
 	if (mixed_mode)
 		mono_load_coree (argv [i]);
 #endif
-
-	/* Set rootdir before loading config */
-	mono_set_rootdir ();
 
 	/* Parse gac loading options before loading assemblies. */
 	if (mono_compile_aot || action == DO_EXEC || action == DO_DEBUGGER) {
@@ -2196,6 +2180,12 @@ void
 mono_jit_set_aot_only (gboolean val)
 {
 	mono_aot_only = val;
+}
+
+void
+mono_jit_set_aot_mode (MonoAotMode mode)
+{
+	mono_aot_mode = mode;
 }
 
 /**

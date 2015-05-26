@@ -713,6 +713,10 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
                 mono_defaults.corlib, "System", "MonoType");
 	g_assert (mono_defaults.monotype_class != 0);
 
+	mono_defaults.runtimetype_class = mono_class_from_name (
+                mono_defaults.corlib, "System", "RuntimeType");
+	g_assert (mono_defaults.runtimetype_class != 0);
+
 	mono_defaults.exception_class = mono_class_from_name (
                 mono_defaults.corlib, "System", "Exception");
 	g_assert (mono_defaults.exception_class != 0);
@@ -1117,11 +1121,6 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 
 	mono_g_hash_table_destroy (domain->env);
 	domain->env = NULL;
-
-	if (domain->tlsrec_list) {
-		mono_thread_destroy_domain_tls (domain);
-		domain->tlsrec_list = NULL;
-	}
 
 	mono_reflection_cleanup_domain (domain);
 
@@ -1872,27 +1871,6 @@ mono_get_runtime_info (void)
 	return current_runtime;
 }
 
-gchar *
-mono_debugger_check_runtime_version (const char *filename)
-{
-	const MonoRuntimeInfo* runtimes [G_N_ELEMENTS (supported_runtimes) + 1];
-	const MonoRuntimeInfo *rinfo;
-	MonoImage *image;
-
-	get_runtimes_from_exe (filename, &image, runtimes);
-	rinfo = runtimes [0];
-
-	if (!rinfo)
-		return g_strdup_printf ("Cannot get runtime version from assembly `%s'", filename);
-
-	if (rinfo != current_runtime)
-		return g_strdup_printf ("The Mono Debugger is currently using the `%s' runtime, but "
-					"the assembly `%s' requires version `%s'", current_runtime->runtime_version,
-					filename, rinfo->runtime_version);
-
-	return NULL;
-}
-
 /**
  * mono_framework_version:
  *
@@ -1914,4 +1892,18 @@ MonoAotCacheConfig *
 mono_get_aot_cache_config (void)
 {
 	return &aot_cache_config;
+}
+
+void
+mono_domain_lock (MonoDomain *domain)
+{
+	MONO_TRY_BLOCKING
+	mono_locks_acquire (&(domain)->lock, DomainLock);
+	MONO_FINISH_TRY_BLOCKING
+}
+
+void
+mono_domain_unlock (MonoDomain *domain)
+{
+	mono_locks_release (&(domain)->lock, DomainLock);
 }

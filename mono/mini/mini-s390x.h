@@ -5,7 +5,7 @@
 #include <mono/utils/mono-context.h>
 #include <signal.h>
 
-#define MONO_ARCH_CPU_SPEC s390x_cpu_desc
+#define MONO_ARCH_CPU_SPEC mono_s390x_cpu_desc
 
 #define MONO_MAX_IREGS 16
 #define MONO_MAX_FREGS 16
@@ -62,6 +62,8 @@ typedef struct
 #define MONO_ARCH_MONITOR_ENTER_ADJUSTMENT		1
 #define MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD		1
 #define MONO_ARCH_HAVE_INVALIDATE_METHOD		1
+#define MONO_ARCH_MONITOR_OBJECT_REG			s390_r2
+#define MONO_ARCH_LOCK_TAKEN_REG			s390_r1
 
 #define S390_STACK_ALIGNMENT		 8
 #define S390_FIRST_ARG_REG 		s390_r2

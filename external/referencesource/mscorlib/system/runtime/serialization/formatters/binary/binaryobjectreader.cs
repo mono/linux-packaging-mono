@@ -71,9 +71,9 @@ namespace System.Runtime.Serialization.Formatters.Binary {
         private BinaryMethodReturn binaryMethodReturn;
         private bool bIsCrossAppDomain;
 #endif        
-
+#if !DISABLE_CAS_USE
         private static FileIOPermission sfileIOPermission = new FileIOPermission(PermissionState.Unrestricted);
-        
+#endif        
         private SerStack ValueFixupStack
         {
             get {
@@ -139,7 +139,7 @@ namespace System.Runtime.Serialization.Formatters.Binary {
 
         }
 
-#if FEATURE_REMOTING
+#if FEATURE_REMOTING || MOBILE_LEGACY
         [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(HeaderHandler handler, __BinaryParser serParser, bool fCheck, bool isCrossAppDomain, IMethodCallMessage methodCallMessage) {
             if (serParser == null)
@@ -1362,7 +1362,9 @@ namespace System.Runtime.Serialization.Formatters.Binary {
                 if (bSimpleAssembly)
                 {
                     try {
+#if !DISABLE_CAS_USE
                           sfileIOPermission.Assert();
+#endif
                           try {
 #if FEATURE_FUSION
                               assm = ObjectReader.ResolveSimpleAssemblyName(new AssemblyName(assemblyName));
@@ -1371,7 +1373,9 @@ namespace System.Runtime.Serialization.Formatters.Binary {
 #endif // FEATURE_FUSION
                           }
                           finally {
+#if !DISABLE_CAS_USE
                               CodeAccessPermission.RevertAssert();
+#endif
                           }
                     }
                     catch(Exception e){
@@ -1386,12 +1390,16 @@ namespace System.Runtime.Serialization.Formatters.Binary {
                 else {
                     try
                     {
+#if !DISABLE_CAS_USE
                           sfileIOPermission.Assert();
+#endif
                           try {
                               assm = Assembly.Load(assemblyName);
                           }
                           finally {
+#if !DISABLE_CAS_USE
                               CodeAccessPermission.RevertAssert();
+#endif
                           }
                     }
                     catch (Exception e)

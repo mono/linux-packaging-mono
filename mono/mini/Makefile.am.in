@@ -3,13 +3,8 @@ mtest=for_loop
 monodir=$(top_builddir)
 
 # This is needed for automake dependency generation
-if INCLUDED_LIBGC
 libgc_libs=$(monodir)/libgc/libmonogc.la
 libgc_static_libs=$(monodir)/libgc/libmonogc-static.la
-else
-libgc_libs=$(LIBGC_LIBS)
-libgc_static_libs=$(LIBGC_STATIC_LIBS)
-endif
 
 libs=	\
 	$(monodir)/mono/metadata/libmonoruntime.la	\
@@ -20,6 +15,7 @@ libs=	\
 
 sgen_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
+	$(monodir)/mono/sgen/libmonosgen.la	\
 	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
@@ -33,6 +29,7 @@ static_libs=	\
 
 sgenstatic_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen-static.la	\
+	$(monodir)/mono/sgen/libmonosgen-static.la	\
 	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
@@ -65,13 +62,8 @@ endif
 # hack for automake to have the same source file in a library and a bin
 genmdesc_CFLAGS = $(AM_CFLAGS)
 
-if NO_VERSION_SCRIPT
 monoldflags=$(export_ldflags)
 monobinldflags=$(export_ldflags) $(extra_runtime_ldflags)
-else
-monoldflags=-Wl,-version-script=$(srcdir)/ldscript $(export_ldflags)
-monobinldflags=-Wl,-version-script=$(srcdir)/ldscript.mono $(export_ldflags) $(extra_runtime_ldflags)
-endif
 
 if HOST_WIN32
 libmonoldflags=-no-undefined -avoid-version -Wl,--kill-at $(monoldflags)
@@ -194,9 +186,9 @@ mono_boehm-main.$(OBJEXT): buildver-boehm.h
 endif
 
 if DISABLE_EXECUTABLES
-buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen.la
+buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
 else
-buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen-static.la
+buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen-static.la $(monodir)/mono/sgen/libmonosgen-static.la
 endif
 	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
 mono_sgen-main-sgen.$(OBJEXT): buildver-sgen.h
@@ -363,16 +355,19 @@ posix_sources = \
 
 if ENABLE_LLVM
 if LOADED_LLVM
-llvm_sources =
+llvm_sources = \
+	mini-llvm-loaded.c
 else
 llvm_sources = \
 	mini-llvm.c		\
+	mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp
 endif
 endif
 
 common_sources = \
 	mini.c			\
+	mini-runtime.c	\
 	seq-points.c	\
 	seq-points.h	\
 	ir-emit.h		\
@@ -390,15 +385,12 @@ common_sources = \
 	mini-arch.h		\
 	dominators.c		\
 	cfold.c			\
-	regalloc.c		\
 	regalloc.h		\
 	helpers.c		\
 	liveness.c		\
 	ssa.c			\
 	abcremoval.c		\
 	abcremoval.h		\
-	ssapre.c		\
-	ssapre.h		\
 	local-propagation.c	\
 	driver.c		\
 	debug-mini.c		\
@@ -409,12 +401,8 @@ common_sources = \
 	mini-codegen.c		\
 	mini-exceptions.c	\
 	mini-trampolines.c  	\
-	declsec.c		\
-	declsec.h		\
-	wapihandles.c		\
 	branch-opts.c		\
 	mini-generic-sharing.c	\
-	regalloc2.c		\
 	simd-methods.h		\
 	tasklets.c		\
 	tasklets.h		\
@@ -431,7 +419,6 @@ common_sources = \
 	debugger-agent.h 	\
 	debugger-agent.c	\
 	xdebug.c			\
-	mini-llvm.h			\
 	mini-llvm-cpp.h	\
 	alias-analysis.c	\
 	mini-cross-helpers.c
@@ -661,15 +648,18 @@ rcheck: mono $(regtests)
 if NACL_CODEGEN
 	for i in $(regtests); do echo "running test $$i"; $(RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
 else
-	-($(RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | ./emitnunit.pl
+	-($(RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
 	exit $$(cat regressionexitcode.out)
 endif
 
+rcheck2: mono $(regtests)
+	$(RUNTIME) --regression $(regtests)
+
 check-seq-points: mono $(regtests)
 	rm -f TestResults_op_il_seq_point.xml
-	for i in $(regtests); do ./test_op_il_seq_point.sh $$i || (./test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
-	for i in $(regtests); do ./test_op_il_seq_point.sh $$i --aot || (./test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
-	./test_op_il_seq_point_headerfooter.sh
+	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+	$(srcdir)/test_op_il_seq_point_headerfooter.sh
 
 gctest: mono gc-test.exe
 	MONO_DEBUG_OPTIONS=clear-nursery-at-gc $(RUNTIME) --regression gc-test.exe
@@ -738,8 +728,9 @@ pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = version.h $(arch_built)
 
 CLEANFILES= $(BUILT_SOURCES) *.exe *.dll
-EXTRA_DIST = TestDriver.cs ldscript ldscript.mono \
+EXTRA_DIST = TestDriver.cs \
 	genmdesc.pl				\
+	emitnunit.pl			\
 	$(test_sources) 			\
 	$(x86_sources) cpu-x86.md 		\
 	$(amd64_sources) cpu-amd64.md 		\
@@ -772,6 +763,11 @@ version.h: Makefile
 # Utility target for patching libtool to speed up linking
 patch-libtool:
 	sed -e 's,if (for obj in $$oldobjs,if (for obj in "",g' < ../../libtool > 2; mv 2 ../../libtool
+	chmod a+x ../../libtool
+
+# Utility target for patching libtool to get rid of the 'ranlib: file <file> has no symbols" warnings
+patch-libtool-osx:
+	sed -e 's/old_archive_cmds=.*/old_archive_cmds="libtool -no_warning_for_no_symbols -static -o \\$$oldlib \\$$oldobjs"/g' < ../../libtool > 2; mv 2 ../../libtool
 	chmod a+x ../../libtool
 
 # Utility target to patch automake to generate the same format silent output as the old mono silent build did

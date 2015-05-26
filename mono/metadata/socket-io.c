@@ -7,6 +7,9 @@
  *
  * Copyright 2001-2003 Ximian, Inc (http://www.ximian.com)
  * Copyright 2004-2009 Novell, Inc (http://www.novell.com)
+ *
+ * This file has been re-licensed under the MIT License:
+ * http://opensource.org/licenses/MIT
  */
 
 #include <config.h>
@@ -529,6 +532,13 @@ static gint32 convert_sockopt_level_and_name(MonoSocketOptionLevel mono_level,
 		case SocketOptionName_DropMembership:
 			*system_name = IPV6_LEAVE_GROUP;
 			break;
+		case SocketOptionName_IPv6Only:
+#ifdef IPV6_V6ONLY
+			*system_name = IPV6_V6ONLY;
+#else
+			return -1;
+#endif
+			break;
 		case SocketOptionName_PacketInformation:
 #ifdef HAVE_IPV6_PKTINFO
 			*system_name = IPV6_PKTINFO;
@@ -630,8 +640,8 @@ static gint32 get_family_hint(void)
 		MonoVTable *vtable;
 
 		socket_class = mono_class_from_name (get_socket_assembly (), "System.Net.Sockets", "Socket");
-		ipv4_field = mono_class_get_field_from_name (socket_class, "ipv4Supported");
-		ipv6_field = mono_class_get_field_from_name (socket_class, "ipv6Supported");
+		ipv4_field = mono_class_get_field_from_name (socket_class, "ipv4_supported");
+		ipv6_field = mono_class_get_field_from_name (socket_class, "ipv6_supported");
 		vtable = mono_class_vtable (mono_domain_get (), socket_class);
 		g_assert (vtable);
 		mono_runtime_class_init (vtable);
@@ -762,11 +772,12 @@ gpointer ves_icall_System_Net_Sockets_Socket_Accept_internal(SOCKET sock,
 							     gboolean blocking)
 {
 	SOCKET newsock;
+	MonoInternalThread* curthread G_GNUC_UNUSED = mono_thread_internal_current ();
+	MONO_PREPARE_BLOCKING
 	
 	*error = 0;
 #ifdef HOST_WIN32
 	{
-		MonoInternalThread* curthread = mono_thread_internal_current ();
 		curthread->interrupt_on_stop = (gpointer)TRUE;
 		newsock = _wapi_accept (sock, NULL, 0);
 		curthread->interrupt_on_stop = (gpointer)FALSE;
@@ -774,6 +785,8 @@ gpointer ves_icall_System_Net_Sockets_Socket_Accept_internal(SOCKET sock,
 #else
 	newsock = _wapi_accept (sock, NULL, 0);
 #endif
+	MONO_FINISH_BLOCKING
+
 	if(newsock==INVALID_SOCKET) {
 		*error = WSAGetLastError ();
 		return(NULL);
@@ -963,7 +976,9 @@ extern MonoObject *ves_icall_System_Net_Sockets_Socket_LocalEndPoint_internal(SO
 		return NULL;
 	}
 	sa = (salen <= 128) ? alloca (salen) : g_malloc0 (salen);
+	MONO_PREPARE_BLOCKING
 	ret = _wapi_getsockname (sock, (struct sockaddr *)sa, &salen);
+	MONO_FINISH_BLOCKING
 	
 	if(ret==SOCKET_ERROR) {
 		*error = WSAGetLastError ();
@@ -996,7 +1011,9 @@ extern MonoObject *ves_icall_System_Net_Sockets_Socket_RemoteEndPoint_internal(S
 	}
 	sa = (salen <= 128) ? alloca (salen) : g_malloc0 (salen);
 	/* Note: linux returns just 2 for AF_UNIX. Always. */
+	MONO_PREPARE_BLOCKING
 	ret = _wapi_getpeername (sock, (struct sockaddr *)sa, &salen);
+	MONO_FINISH_BLOCKING
 	if(ret==SOCKET_ERROR) {
 		*error = WSAGetLastError ();
 		if (salen > 128)
@@ -1237,7 +1254,10 @@ extern void ves_icall_System_Net_Sockets_Socket_Connect_internal(SOCKET sock, Mo
 	
 	LOGDEBUG (g_message("%s: connecting to %s port %d", __func__, inet_ntoa(((struct sockaddr_in *)sa)->sin_addr), ntohs (((struct sockaddr_in *)sa)->sin_port)));
 
+	MONO_PREPARE_BLOCKING
 	ret = _wapi_connect (sock, sa, sa_size);
+	MONO_FINISH_BLOCKING
+
 	if(ret==SOCKET_ERROR) {
 		*error = WSAGetLastError ();
 	}
@@ -1268,6 +1288,7 @@ extern void ves_icall_System_Net_Sockets_Socket_Disconnect_internal(SOCKET sock,
 	LPFN_DISCONNECTEX _wapi_disconnectex = NULL;
 	LPFN_TRANSMITFILE _wapi_transmitfile = NULL;
 	gboolean bret;
+	MONO_PREPARE_BLOCKING
 	
 	*error = 0;
 	
@@ -1312,12 +1333,14 @@ extern void ves_icall_System_Net_Sockets_Socket_Disconnect_internal(SOCKET sock,
 					   TF_DISCONNECT | TF_REUSE_SOCKET);
 	} else {
 		*error = ERROR_NOT_SUPPORTED;
-		return;
+		bret = TRUE; //we don't want the following bret check to change *error
 	}
 
 	if (bret == FALSE) {
 		*error = WSAGetLastError ();
 	}
+
+	MONO_FINISH_BLOCKING
 }
 
 gint32 ves_icall_System_Net_Sockets_Socket_Receive_internal(SOCKET sock, MonoArray *buffer, gint32 offset, gint32 count, gint32 flags, gint32 *error)
@@ -1326,6 +1349,7 @@ gint32 ves_icall_System_Net_Sockets_Socket_Receive_internal(SOCKET sock, MonoArr
 	guchar *buf;
 	gint32 alen;
 	int recvflags=0;
+	MonoInternalThread* curthread G_GNUC_UNUSED = mono_thread_internal_current ();
 	
 	*error = 0;
 	
@@ -1342,9 +1366,9 @@ gint32 ves_icall_System_Net_Sockets_Socket_Receive_internal(SOCKET sock, MonoArr
 		return (0);
 	}
 
+	MONO_PREPARE_BLOCKING
 #ifdef HOST_WIN32
 	{
-		MonoInternalThread* curthread = mono_thread_internal_current ();
 		curthread->interrupt_on_stop = (gpointer)TRUE;
 		ret = _wapi_recv (sock, buf, count, recvflags);
 		curthread->interrupt_on_stop = (gpointer)FALSE;
@@ -1352,6 +1376,7 @@ gint32 ves_icall_System_Net_Sockets_Socket_Receive_internal(SOCKET sock, MonoArr
 #else
 	ret = _wapi_recv (sock, buf, count, recvflags);
 #endif
+	MONO_FINISH_BLOCKING
 
 	if(ret==SOCKET_ERROR) {
 		*error = WSAGetLastError ();
@@ -1388,7 +1413,7 @@ gint32 ves_icall_System_Net_Sockets_Socket_Receive_array_internal(SOCKET sock, M
 	return(recv);
 }
 
-gint32 ves_icall_System_Net_Sockets_Socket_RecvFrom_internal(SOCKET sock, MonoArray *buffer, gint32 offset, gint32 count, gint32 flags, MonoObject **sockaddr, gint32 *error)
+gint32 ves_icall_System_Net_Sockets_Socket_ReceiveFrom_internal(SOCKET sock, MonoArray *buffer, gint32 offset, gint32 count, gint32 flags, MonoObject **sockaddr, gint32 *error)
 {
 	int ret;
 	guchar *buf;
@@ -1417,7 +1442,10 @@ gint32 ves_icall_System_Net_Sockets_Socket_RecvFrom_internal(SOCKET sock, MonoAr
 		return (0);
 	}
 
+	MONO_PREPARE_BLOCKING
 	ret = _wapi_recvfrom (sock, buf, count, recvflags, sa, &sa_size);
+	MONO_FINISH_BLOCKING
+
 	if(ret==SOCKET_ERROR) {
 		g_free(sa);
 		*error = WSAGetLastError ();
@@ -1464,7 +1492,9 @@ gint32 ves_icall_System_Net_Sockets_Socket_Send_internal(SOCKET sock, MonoArray 
 		return (0);
 	}
 
+	MONO_PREPARE_BLOCKING
 	ret = _wapi_send (sock, buf, count, sendflags);
+	MONO_FINISH_BLOCKING
 	if(ret==SOCKET_ERROR) {
 		*error = WSAGetLastError ();
 		return(0);
@@ -1533,7 +1563,9 @@ gint32 ves_icall_System_Net_Sockets_Socket_SendTo_internal(SOCKET sock, MonoArra
 		return (0);
 	}
 
+	MONO_PREPARE_BLOCKING
 	ret = _wapi_sendto (sock, buf, count, sendflags, sa, sa_size);
+	MONO_FINISH_BLOCKING
 	if(ret==SOCKET_ERROR) {
 		*error = WSAGetLastError ();
 	}
@@ -1545,13 +1577,16 @@ gint32 ves_icall_System_Net_Sockets_Socket_SendTo_internal(SOCKET sock, MonoArra
 
 static SOCKET Socket_to_SOCKET(MonoObject *sockobj)
 {
-	SOCKET sock;
+	MonoSafeHandle *safe_handle;
 	MonoClassField *field;
 	
-	field=mono_class_get_field_from_name(sockobj->vtable->klass, "socket");
-	sock=GPOINTER_TO_INT (*(gpointer *)(((char *)sockobj)+field->offset));
+	field = mono_class_get_field_from_name (sockobj->vtable->klass, "safe_handle");
+	safe_handle = ((MonoSafeHandle*) (*(gpointer *)(((char *)sockobj)+field->offset)));
 
-	return(sock);
+	if (safe_handle == NULL)
+		return -1;
+
+	return (SOCKET) safe_handle->handle;
 }
 
 #define POLL_ERRORS (MONO_POLLERR | MONO_POLLHUP | MONO_POLLNVAL)
@@ -2154,7 +2189,8 @@ void ves_icall_System_Net_Sockets_Socket_Shutdown_internal(SOCKET sock,
 							   gint32 *error)
 {
 	int ret;
-	
+	MONO_PREPARE_BLOCKING
+
 	*error = 0;
 	
 	/* Currently, the values for how (recv=0, send=1, both=2) match
@@ -2164,10 +2200,12 @@ void ves_icall_System_Net_Sockets_Socket_Shutdown_internal(SOCKET sock,
 	if(ret==SOCKET_ERROR) {
 		*error = WSAGetLastError ();
 	}
+
+	MONO_FINISH_BLOCKING
 }
 
 gint
-ves_icall_System_Net_Sockets_Socket_WSAIoctl (SOCKET sock, gint32 code,
+ves_icall_System_Net_Sockets_Socket_IOControl_internal (SOCKET sock, gint32 code,
 					      MonoArray *input,
 					      MonoArray *output, gint32 *error)
 {
@@ -2337,12 +2375,14 @@ get_addrinfo_family_hint (void)
 
 MonoBoolean ves_icall_System_Net_Dns_GetHostByName_internal(MonoString *host, MonoString **h_name, MonoArray **h_aliases, MonoArray **h_addr_list)
 {
-	gboolean add_local_ips = FALSE;
+	gboolean add_local_ips = FALSE, add_info_ok = TRUE;
 	gchar this_hostname [256];
 	MonoAddressInfo *info = NULL;
-	char *hostname;
-	
-	hostname=mono_string_to_utf8 (host);
+	char *hostname = mono_string_to_utf8 (host);
+	int hint = get_addrinfo_family_hint ();
+
+	MONO_PREPARE_BLOCKING
+
 	if (*hostname == '\0') {
 		add_local_ips = TRUE;
 		*h_name = host;
@@ -2354,14 +2394,15 @@ MonoBoolean ves_icall_System_Net_Dns_GetHostByName_internal(MonoString *host, Mo
 		}
 	}
 
-	if (*hostname && mono_get_address_info (hostname, 0, MONO_HINT_CANONICAL_NAME | get_addrinfo_family_hint (), &info)) {
-		g_free (hostname);
-		return(FALSE);
-	}
-	
-	g_free(hostname);
+	if (*hostname && mono_get_address_info (hostname, 0, MONO_HINT_CANONICAL_NAME | hint, &info))
+		add_info_ok = FALSE;
 
-	return (addrinfo_to_IPHostEntry(info, h_name, h_aliases, h_addr_list, add_local_ips));
+	g_free(hostname);
+	MONO_FINISH_BLOCKING
+
+	if (add_info_ok)
+		return addrinfo_to_IPHostEntry(info, h_name, h_aliases, h_addr_list, add_local_ips);
+	return FALSE;
 }
 
 extern MonoBoolean ves_icall_System_Net_Dns_GetHostByAddr_internal(MonoString *addr, MonoString **h_name, MonoArray **h_aliases, MonoArray **h_addr_list)
@@ -2373,6 +2414,10 @@ extern MonoBoolean ves_icall_System_Net_Dns_GetHostByAddr_internal(MonoString *a
 	gint32 family;
 	char hostname[NI_MAXHOST] = {0};
 	int flags = 0;
+	int hint = get_addrinfo_family_hint ();
+	gboolean add_info_ok;
+
+	MONO_PREPARE_BLOCKING
 
 	address = mono_string_to_utf8 (addr);
 
@@ -2413,10 +2458,13 @@ extern MonoBoolean ves_icall_System_Net_Dns_GetHostByAddr_internal(MonoString *a
 		}
 	}
 
-	if (mono_get_address_info (hostname, 0, get_addrinfo_family_hint () | MONO_HINT_CANONICAL_NAME | MONO_HINT_CONFIGURED_ONLY, &info))
-		return FALSE;
+	add_info_ok = !mono_get_address_info (hostname, 0, hint | MONO_HINT_CANONICAL_NAME | MONO_HINT_CONFIGURED_ONLY, &info);
+	MONO_FINISH_BLOCKING
 
-	return(addrinfo_to_IPHostEntry (info, h_name, h_aliases, h_addr_list, FALSE));
+	if (add_info_ok)
+		return addrinfo_to_IPHostEntry (info, h_name, h_aliases, h_addr_list, FALSE);
+
+	return FALSE;
 }
 
 extern MonoBoolean ves_icall_System_Net_Dns_GetHostName_internal(MonoString **h_name)
@@ -2435,7 +2483,7 @@ extern MonoBoolean ves_icall_System_Net_Dns_GetHostName_internal(MonoString **h_
 }
 
 gboolean
-ves_icall_System_Net_Sockets_Socket_SendFile (SOCKET sock, MonoString *filename, MonoArray *pre_buffer, MonoArray *post_buffer, gint flags)
+ves_icall_System_Net_Sockets_Socket_SendFile_internal (SOCKET sock, MonoString *filename, MonoArray *pre_buffer, MonoArray *post_buffer, gint flags)
 {
 	HANDLE file;
 	gint32 error;
@@ -2485,14 +2533,7 @@ icall_cancel_blocking_socket_operation (MonoThread *thread)
 {
 	MonoInternalThread *internal = thread->internal_thread;
 	
-	if (mono_thread_info_new_interrupt_enabled ()) {
-		mono_thread_info_abort_socket_syscall_for_close ((MonoNativeThreadId)(gsize)internal->tid);
-	} else {
-#ifndef HOST_WIN32
-		internal->ignore_next_signal = TRUE;
-		mono_thread_kill (internal, mono_thread_get_abort_signal ());		
-#endif
-	}
+	mono_thread_info_abort_socket_syscall_for_close ((MonoNativeThreadId)(gsize)internal->tid);
 }
 
 #endif /* #ifndef DISABLE_SOCKETS */

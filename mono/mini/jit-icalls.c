@@ -51,7 +51,10 @@ ldvirtfn_internal (MonoObject *obj, MonoMethod *method, gboolean gshared)
 		context.method_inst = mono_method_get_context (method)->method_inst;
 
 		res = mono_class_inflate_generic_method_checked (res, &context, &error);
-		mono_error_raise_exception (&error);
+		if (!mono_error_ok (&error)) {
+			mono_error_set_pending_exception (&error);
+			return NULL;
+		}
 	}
 
 	/* An rgctx wrapper is added by the trampolines no need to do it here */
@@ -296,7 +299,7 @@ mono_lshl (guint64 a, gint32 shamt)
 {
 	guint64 res;
 
-	res = a << shamt;
+	res = a << (shamt & 0x7f);
 
 	/*printf ("TESTL %lld << %d = %lld\n", a, shamt, res);*/
 
@@ -308,7 +311,7 @@ mono_lshr_un (guint64 a, gint32 shamt)
 {
 	guint64 res;
 
-	res = a >> shamt;
+	res = a >> (shamt & 0x7f);
 
 	/*printf ("TESTR %lld >> %d = %lld\n", a, shamt, res);*/
 
@@ -320,7 +323,7 @@ mono_lshr (gint64 a, gint32 shamt)
 {
 	gint64 res;
 
-	res = a >> shamt;
+	res = a >> (shamt & 0x7f);
 
 	/*printf ("TESTR %lld >> %d = %lld\n", a, shamt, res);*/
 
@@ -815,7 +818,10 @@ mono_ldtoken_wrapper (MonoImage *image, int token, MonoGenericContext *context)
 	gpointer res;
 
 	res = mono_ldtoken_checked (image, token, &handle_class, context, &error);
-	mono_error_raise_exception (&error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 	mono_class_init (handle_class);
 
 	return res;
@@ -1044,7 +1050,11 @@ mono_helper_newobj_mscorlib (guint32 idx)
 {
 	MonoError error;
 	MonoClass *klass = mono_class_get_checked (mono_defaults.corlib, MONO_TOKEN_TYPE_DEF | idx, &error);
-	mono_error_raise_exception (&error);
+
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 
 	return mono_object_new (mono_domain_get (), klass);
 }
@@ -1246,6 +1256,8 @@ mono_gsharedvt_constrained_call (gpointer mp, MonoMethod *cmethod, MonoClass *kl
 	gpointer new_args [16];
 
 	m = constrained_gsharedvt_call_setup (mp, cmethod, klass, &this_arg);
+	if (!m)
+		return NULL;
 	if (args && deref_arg) {
 		new_args [0] = *(gpointer*)args [0];
 		args = new_args;

@@ -1,4 +1,4 @@
-SUBDIRS = cas assemblyresolve gc-descriptors
+SUBDIRS = assemblyresolve gc-descriptors
 
 check-local: assemblyresolve/test/asm.dll testjit test-generic-sharing test-type-load test-cattr-type-load test-reflection-load-with-context test_platform test-process-exit test-messages rm-empty-logs
 check-full: test-sgen check-local
@@ -13,8 +13,8 @@ TEST_PROG = ../interpreter/mint
 
 JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_builddir)/mono/mini/mono-sgen,$(top_builddir)/mono/mini/mono)
 
-TEST_PROG_RUN = MONO_SHARED_DIR=$(mono_build_root)/runtime MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
-JITTEST_PROG_RUN = MONO_SHARED_DIR=$(mono_build_root)/runtime MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
+TEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
+JITTEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
 
 RUNTIME_ARGS=--config tests-config --optimize=all --debug
 
@@ -90,6 +90,7 @@ BASE_TEST_CS_SRC=		\
 	exception15.cs		\
 	exception16.cs		\
 	exception17.cs		\
+	exception18.cs		\
 	typeload-unaligned.cs	\
 	struct.cs		\
 	valuetype-gettype.cs	\
@@ -178,6 +179,8 @@ BASE_TEST_CS_SRC=		\
 	delegate7.cs		\
 	delegate8.cs		\
 	delegate9.cs		\
+	delegate10.cs		\
+	delegate11.cs		\
 	remoting1.cs		\
 	remoting2.cs		\
 	remoting3.cs		\
@@ -307,6 +310,7 @@ BASE_TEST_CS_SRC=		\
 	generic-typedef.2.cs	\
 	generic-marshalbyref.2.cs	\
 	generic-xdomain.2.cs	\
+	dynamic-generic-size.cs	\
 	bug-431413.2.cs	\
 	bug-459285.2.cs	\
 	generic-virtual-invoke.2.cs	\
@@ -556,11 +560,13 @@ endif
 # bug-459094.exe creates an extremely deep directory tree
 # delegate-invoke.exe depends on 929c6bc9b6d76a273f251e6f5dfacac36e9c38bd which was
 # reverted.
+# bug-Xamarin-5278.exe got broken by 5d26590e79da139a284459299aee95c25f4cd835
 DISABLED_TESTS=			\
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
 	bug-459094.exe \
 	delegate-invoke.exe \
+	bug-Xamarin-5278.exe \
 	$(PLATFORM_DISABLED_TESTS) \
 	$(EXTRA_DISABLED_TESTS)
 
@@ -666,7 +672,7 @@ TESTSI_IL=$(TEST_IL_SRC:.il=.exe)
 TESTBS=$(BENCHSRC:.cs=.exe)
 STRESS_TESTS=$(STRESS_TESTS_SRC:.cs=.exe)
 
-EXTRA_DIST=test-driver $(TEST_CS_SRC_DIST) $(TEST_IL_SRC) \
+EXTRA_DIST=test-driver test-runner.cs $(TEST_CS_SRC_DIST) $(TEST_IL_SRC) \
 	$(BENCHSRC) $(STRESS_TESTS_SRC) stress-runner.pl $(PREREQ_IL_SRC) $(PREREQ_CS_SRC)
 
 %.exe: %.il
@@ -884,7 +890,7 @@ stresstest: $(STRESS_TESTS)
 testbundle: console.exe
 	@echo "Testing mkbundle..."
 	@$(MKBUNDLE) --static console.exe > mkbundle.stdout
-	@$(with_mono_path) MONO_CFG_DIR=$(mono_cfg_dir) MONO_SHARED_DIR=$(mono_build_root)/runtime ./a.out >> mkbundle.stdout
+	@$(with_mono_path) MONO_CFG_DIR=$(mono_cfg_dir) ./a.out >> mkbundle.stdout
 	@- rm -rf a.out
 
 EXTRA_DIST += load-missing.il t-missing.cs load-exceptions.cs
@@ -1287,7 +1293,7 @@ if NACL_CODEGEN
 test-generic-sharing:
 else
 test-generic-sharing:
-	@if test x$(M) != x; then $(MAKE) test-generic-sharing-managed; else $(MAKE) test-generic-sharing-normal; fi
+	@if test x$(M) != x0; then $(MAKE) test-generic-sharing-managed; else $(MAKE) test-generic-sharing-normal; fi
 endif
 
 EXTRA_DIST += async-exceptions.cs

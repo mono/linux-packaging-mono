@@ -41,12 +41,16 @@ namespace System.Runtime.Serialization
 
         [Fx.Tag.SecurityNote(Critical = "XmlDictionaryString representing the XML namespaces for members of class."
             + "Statically cached and used from IL generated code.")]
+#if !NO_SECURITY_ATTRIBUTES
         [SecurityCritical]
+#endif
         XmlDictionaryString[] childElementNamespaces;
 
         [Fx.Tag.SecurityNote(Critical = "Holds instance of CriticalHelper which keeps state that is cached statically for serialization. "
             + "Static fields are marked SecurityCritical or readonly to prevent data from being modified or leaked to other components in appdomain.")]
+#if !NO_SECURITY_ATTRIBUTES
         [SecurityCritical]
+#endif
         ClassDataContractCriticalHelper helper;
 
         [Fx.Tag.SecurityNote(Critical = "Initializes SecurityCritical field 'helper'",
@@ -60,7 +64,9 @@ namespace System.Runtime.Serialization
 
         [Fx.Tag.SecurityNote(Critical = "Initializes SecurityCritical field 'helper'",
             Safe = "Doesn't leak anything.")]
+#if !NO_SECURITY_ATTRIBUTES
         [SecuritySafeCritical]
+#endif
         internal ClassDataContract(Type type)
             : base(new ClassDataContractCriticalHelper(type))
         {
@@ -69,7 +75,9 @@ namespace System.Runtime.Serialization
 
         [Fx.Tag.SecurityNote(Critical = "Initializes SecurityCritical field 'helper'",
             Safe = "Doesn't leak anything.")]
+#if !NO_SECURITY_ATTRIBUTES
         [SecuritySafeCritical]
+#endif
         ClassDataContract(Type type, XmlDictionaryString ns, string[] memberNames)
             : base(new ClassDataContractCriticalHelper(type, ns, memberNames))
         {
@@ -77,7 +85,9 @@ namespace System.Runtime.Serialization
         }
 
         [Fx.Tag.SecurityNote(Critical = "Initializes SecurityCritical fields; called from all constructors.")]
+#if !NO_SECURITY_ATTRIBUTES
         [SecurityCritical]
+#endif
         void InitClassDataContract()
         {
             this.helper = base.Helper as ClassDataContractCriticalHelper;
@@ -449,6 +459,7 @@ namespace System.Runtime.Serialization
             return o;
         }
 
+#if !NO_DYNAMIC_CODEGEN
         [Fx.Tag.SecurityNote(Miscellaneous = "RequiresReview - calculates whether this class requires MemberAccessPermission for deserialization."
             + "Since this information is used to determine whether to give the generated code access "
             + "permissions to private members, any changes to the logic should be reviewed.")]
@@ -653,10 +664,13 @@ namespace System.Runtime.Serialization
             return false;
 #endif
         }
+#endif
 
         [Fx.Tag.SecurityNote(Critical = "Holds all state used for (de)serializing classes."
             + " Since the data is cached statically, we lock down access to it.")]
+#if !NO_SECURITY_ATTRIBUTES
         [SecurityCritical(SecurityCriticalScope.Everything)]
+#endif
         class ClassDataContractCriticalHelper : DataContract.DataContractCriticalHelper
         {
             ClassDataContract baseContract;

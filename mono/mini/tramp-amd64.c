@@ -27,11 +27,14 @@
 
 #include "mini.h"
 #include "mini-amd64.h"
+#include "debugger-agent.h"
 
 #if defined(__native_client_codegen__) && defined(__native_client__)
 #include <malloc.h>
 #include <nacl/nacl_dyncode.h>
 #endif
+
+#define ALIGN_TO(val,align) ((((guint64)val) + ((align) - 1)) & ~((align) - 1))
 
 #define IS_REX(inst) (((inst) >= 0x40) && ((inst) <= 0x4f))
 
@@ -163,19 +166,8 @@ mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
 			gboolean disp_32bit = ((((gint64)addr - (gint64)orig_code)) < (1 << 30)) && ((((gint64)addr - (gint64)orig_code)) > -(1 << 30));
 
 			if ((((guint64)(addr)) >> 32) != 0 && !disp_32bit) {
-#ifdef MONO_ARCH_NOMAP32BIT
-				/* Print some diagnostics */
-				MonoJitInfo *ji = mono_jit_info_table_find (mono_domain_get (), (char*)orig_code);
-				if (ji)
-					fprintf (stderr, "At %s, offset 0x%zx\n", mono_method_full_name (jinfo_get_method (ji), TRUE), (guint8*)orig_code - (guint8*)ji->code_start);
-				fprintf (stderr, "Addr: %p\n", addr);
-				ji = mono_jit_info_table_find (mono_domain_get (), (char*)addr);
-				if (ji)
-					fprintf (stderr, "Callee: %s\n", mono_method_full_name (jinfo_get_method (ji), TRUE));
-				g_assert_not_reached ();
-#else
 				/* 
-				 * This might happen when calling AOTed code. Create a thunk.
+				 * This might happen with LLVM or when calling AOTed code. Create a thunk.
 				 */
 				guint8 *thunk_start, *thunk_code;
 
@@ -186,7 +178,6 @@ mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
 				g_assert ((((guint64)(addr)) >> 32) == 0);
 				mono_arch_flush_icache (thunk_start, thunk_code - thunk_start);
 				mono_profiler_code_buffer_new (thunk_start, thunk_code - thunk_start, MONO_PROFILER_CODE_BUFFER_HELPER, NULL);
-#endif
 			}
 			if (can_write) {
 				InterlockedExchange ((gint32*)(orig_code - 4), ((gint64)addr - (gint64)orig_code));
@@ -710,11 +701,9 @@ mono_arch_create_generic_trampoline (MonoTrampolineType tramp_type, MonoTrampInf
 	mono_arch_flush_icache (buf, code - buf);
 	mono_profiler_code_buffer_new (buf, code - buf, MONO_PROFILER_CODE_BUFFER_HELPER, NULL);
 
-	if (info) {
-		tramp_name = mono_get_generic_trampoline_name (tramp_type);
-		*info = mono_tramp_info_create (tramp_name, buf, code - buf, ji, unwind_ops);
-		g_free (tramp_name);
-	}
+	tramp_name = mono_get_generic_trampoline_name (tramp_type);
+	*info = mono_tramp_info_create (tramp_name, buf, code - buf, ji, unwind_ops);
+	g_free (tramp_name);
 
 	return buf;
 }
@@ -733,8 +722,7 @@ mono_arch_get_nullified_class_init_trampoline (MonoTrampInfo **info)
 	mono_arch_flush_icache (buf, code - buf);
 	mono_profiler_code_buffer_new (buf, code - buf, MONO_PROFILER_CODE_BUFFER_HELPER, NULL);
 
-	if (info)
-		*info = mono_tramp_info_create ("nullified_class_init_trampoline", buf, code - buf, NULL, NULL);
+	*info = mono_tramp_info_create ("nullified_class_init_trampoline", buf, code - buf, NULL, NULL);
 
 	return buf;
 }
@@ -904,11 +892,9 @@ mono_arch_create_rgctx_lazy_fetch_trampoline (guint32 slot, MonoTrampInfo **info
 
 	g_assert (code - buf <= tramp_size);
 
-	if (info) {
-		char *name = mono_get_rgctx_fetch_trampoline_name (slot);
-		*info = mono_tramp_info_create (name, buf, code - buf, ji, unwind_ops);
-		g_free (name);
-	}
+	char *name = mono_get_rgctx_fetch_trampoline_name (slot);
+	*info = mono_tramp_info_create (name, buf, code - buf, ji, unwind_ops);
+	g_free (name);
 
 	return buf;
 }
@@ -916,51 +902,9 @@ mono_arch_create_rgctx_lazy_fetch_trampoline (guint32 slot, MonoTrampInfo **info
 gpointer
 mono_arch_create_generic_class_init_trampoline (MonoTrampInfo **info, gboolean aot)
 {
-	guint8 *tramp;
-	guint8 *code, *buf;
-	static int byte_offset = -1;
-	static guint8 bitmask;
-	guint8 *jump;
-	int tramp_size;
-	GSList *unwind_ops = NULL;
-	MonoJumpInfo *ji = NULL;
-
-	tramp_size = 64;
-
-	code = buf = mono_global_codeman_reserve (tramp_size);
-
-	if (byte_offset < 0)
-		mono_marshal_find_bitfield_offset (MonoVTable, initialized, &byte_offset, &bitmask);
-
-	amd64_test_membase_imm_size (code, MONO_AMD64_ARG_REG1, byte_offset, bitmask, 1);
-	jump = code;
-	amd64_branch8 (code, X86_CC_Z, -1, 1);
-
-	amd64_ret (code);
-
-	x86_patch (jump, code);
-
-	if (aot) {
-		code = mono_arch_emit_load_aotconst (buf, code, &ji, MONO_PATCH_INFO_JIT_ICALL_ADDR, "specific_trampoline_generic_class_init");
-		amd64_jump_reg (code, AMD64_R11);
-	} else {
-		tramp = mono_arch_create_specific_trampoline (NULL, MONO_TRAMPOLINE_GENERIC_CLASS_INIT, mono_get_root_domain (), NULL);
-
-		/* jump to the actual trampoline */
-		amd64_jump_code (code, tramp);
-	}
-
-	nacl_global_codeman_validate (&buf, tramp_size, &code);
-
-	mono_arch_flush_icache (buf, code - buf);
-	mono_profiler_code_buffer_new (buf, code - buf, MONO_PROFILER_CODE_BUFFER_HELPER, NULL);
-
-	g_assert (code - buf <= tramp_size);
-
-	if (info)
-		*info = mono_tramp_info_create ("generic_class_init_trampoline", buf, code - buf, ji, unwind_ops);
-
-	return buf;
+	/* Not used on amd64 */
+	g_assert_not_reached ();
+	return NULL;
 }
 
 #ifdef MONO_ARCH_MONITOR_OBJECT_REG
@@ -1114,12 +1058,10 @@ mono_arch_create_monitor_enter_trampoline (MonoTrampInfo **info, gboolean is_v4,
 	mono_profiler_code_buffer_new (buf, code - buf, MONO_PROFILER_CODE_BUFFER_MONITOR, NULL);
 	g_assert (code - buf <= tramp_size);
 
-	if (info) {
-		if (is_v4)
-			*info = mono_tramp_info_create ("monitor_enter_v4_trampoline", buf, code - buf, ji, unwind_ops);
-		else
-			*info = mono_tramp_info_create ("monitor_enter_trampoline", buf, code - buf, ji, unwind_ops);
-	}
+	if (is_v4)
+		*info = mono_tramp_info_create ("monitor_enter_v4_trampoline", buf, code - buf, ji, unwind_ops);
+	else
+		*info = mono_tramp_info_create ("monitor_enter_trampoline", buf, code - buf, ji, unwind_ops);
 
 	return buf;
 }
@@ -1129,8 +1071,8 @@ mono_arch_create_monitor_exit_trampoline (MonoTrampInfo **info, gboolean aot)
 {
 	guint8 *tramp;
 	guint8 *code, *buf;
-	guint8 *jump_obj_null, *jump_have_waiters, *jump_sync_null, *jump_not_owned, *jump_cmpxchg_failed, *jump_sync_thin_hash = NULL;
-	guint8 *jump_next;
+	guint8 *jump_obj_null, *jump_have_waiters, *jump_sync_null, *jump_not_owned, *jump_cmpxchg_failed;
+	guint8 *jump_next, *jump_sync_thin_hash = NULL;
 	int tramp_size;
 	int status_offset, nest_offset;
 	MonoJumpInfo *ji = NULL;
@@ -1226,6 +1168,8 @@ mono_arch_create_monitor_exit_trampoline (MonoTrampInfo **info, gboolean aot)
 		amd64_dec_membase_size (code, sync_reg, nest_offset, 4);
 		amd64_ret (code);
 
+		if (jump_sync_thin_hash)
+			x86_patch (jump_sync_thin_hash, code);
 		x86_patch (jump_obj_null, code);
 		x86_patch (jump_have_waiters, code);
 		x86_patch (jump_not_owned, code);
@@ -1251,8 +1195,7 @@ mono_arch_create_monitor_exit_trampoline (MonoTrampInfo **info, gboolean aot)
 	mono_profiler_code_buffer_new (buf, code - buf, MONO_PROFILER_CODE_BUFFER_MONITOR, NULL);
 	g_assert (code - buf <= tramp_size);
 
-	if (info)
-		*info = mono_tramp_info_create ("monitor_exit_trampoline", buf, code - buf, ji, unwind_ops);
+	*info = mono_tramp_info_create ("monitor_exit_trampoline", buf, code - buf, ji, unwind_ops);
 
 	return buf;
 }
@@ -1331,8 +1274,7 @@ mono_arch_create_handler_block_trampoline (MonoTrampInfo **info, gboolean aot)
 	mono_profiler_code_buffer_new (buf, code - buf, MONO_PROFILER_CODE_BUFFER_HELPER, NULL);
 	g_assert (code - buf <= tramp_size);
 
-	if (info)
-		*info = mono_tramp_info_create ("handler_block_trampoline", buf, code - buf, ji, unwind_ops);
+	*info = mono_tramp_info_create ("handler_block_trampoline", buf, code - buf, ji, unwind_ops);
 
 	return buf;
 }
@@ -1370,4 +1312,114 @@ mono_arch_get_plt_info_offset (guint8 *plt_entry, mgreg_t *regs, guint8 *code)
 #else
 	return *(guint32*)(plt_entry + 6);
 #endif
+}
+
+/*
+ * mono_arch_create_sdb_trampoline:
+ *
+ *   Return a trampoline which captures the current context, passes it to
+ * debugger_agent_single_step_from_context ()/debugger_agent_breakpoint_from_context (),
+ * then restores the (potentially changed) context.
+ */
+guint8*
+mono_arch_create_sdb_trampoline (gboolean single_step, MonoTrampInfo **info, gboolean aot)
+{
+	int tramp_size = 256;
+	int framesize, ctx_offset, cfa_offset;
+	guint8 *code, *buf;
+	GSList *unwind_ops = NULL;
+	MonoJumpInfo *ji = NULL;
+
+	code = buf = mono_global_codeman_reserve (tramp_size);
+
+	framesize = sizeof (MonoContext);
+	framesize = ALIGN_TO (framesize, MONO_ARCH_FRAME_ALIGNMENT);
+
+	// CFA = sp + 8
+	cfa_offset = 8;
+	mono_add_unwind_op_def_cfa (unwind_ops, code, buf, AMD64_RSP, 8);
+	// IP saved at CFA - 8
+	mono_add_unwind_op_offset (unwind_ops, code, buf, AMD64_RIP, -cfa_offset);
+
+	amd64_push_reg (code, AMD64_RBP);
+	cfa_offset += sizeof(mgreg_t);
+	mono_add_unwind_op_def_cfa_offset (unwind_ops, code, buf, cfa_offset);
+	mono_add_unwind_op_offset (unwind_ops, code, buf, AMD64_RBP, - cfa_offset);
+
+	amd64_mov_reg_reg (code, AMD64_RBP, AMD64_RSP, sizeof(mgreg_t));
+	mono_add_unwind_op_def_cfa_reg (unwind_ops, code, buf, AMD64_RBP);
+	amd64_alu_reg_imm (code, X86_SUB, AMD64_RSP, framesize);
+
+	ctx_offset = 0;
+
+	/* Initialize a MonoContext structure on the stack */
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rax), AMD64_RAX, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rbx), AMD64_RBX, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rcx), AMD64_RCX, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rdx), AMD64_RDX, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rsi), AMD64_RSI, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rdi), AMD64_RDI, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r8), AMD64_R8, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r9), AMD64_R9, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r10), AMD64_R10, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r11), AMD64_R11, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r12), AMD64_R12, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r13), AMD64_R13, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r14), AMD64_R14, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r15), AMD64_R15, sizeof (mgreg_t));
+
+	amd64_mov_reg_membase (code, AMD64_R11, AMD64_RBP, 0, sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rbp), AMD64_R11, sizeof (mgreg_t));
+	amd64_lea_membase (code, AMD64_R11, AMD64_RBP, 2 * sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rsp), AMD64_R11, sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R11, AMD64_RBP, sizeof (mgreg_t), sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rip), AMD64_R11, sizeof (mgreg_t));
+
+	/* Call the single step/breakpoint function in sdb */
+	amd64_lea_membase (code, AMD64_ARG_REG1, AMD64_RSP, ctx_offset);
+
+	if (aot) {
+		if (single_step)
+			code = mono_arch_emit_load_aotconst (buf, code, &ji, MONO_PATCH_INFO_JIT_ICALL_ADDR, "debugger_agent_single_step_from_context");
+		else
+			code = mono_arch_emit_load_aotconst (buf, code, &ji, MONO_PATCH_INFO_JIT_ICALL_ADDR, "debugger_agent_breakpoint_from_context");
+		amd64_call_reg (code, AMD64_R11);
+	} else {
+		if (single_step)
+			amd64_call_code (code, debugger_agent_single_step_from_context);
+		else
+			amd64_call_code (code, debugger_agent_breakpoint_from_context);
+	}
+
+	/* Restore registers from ctx */
+	amd64_mov_reg_membase (code, AMD64_RAX, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rax), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_RBX, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rbx), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_RCX, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rcx), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_RDX, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rdx), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_RSI, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rsi), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_RDI, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rdi), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R8, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r8), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R9, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r9), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R10, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r10), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R11, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r11), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R12, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r12), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R13, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r13), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R14, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r14), sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R15, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, r15), sizeof (mgreg_t));
+
+	amd64_mov_reg_membase (code, AMD64_R11, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rbp), sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RBP, 0, AMD64_R11, sizeof (mgreg_t));
+	amd64_mov_reg_membase (code, AMD64_R11, AMD64_RSP, ctx_offset + MONO_STRUCT_OFFSET (MonoContext, rip), sizeof (mgreg_t));
+	amd64_mov_membase_reg (code, AMD64_RBP, sizeof (mgreg_t), AMD64_R11, sizeof (mgreg_t));
+
+	amd64_leave (code);
+	amd64_ret (code);
+
+	mono_arch_flush_icache (code, code - buf);
+	g_assert (code - buf <= tramp_size);
+
+	const char *tramp_name = single_step ? "sdb_single_step_trampoline" : "sdb_breakpoint_trampoline";
+	*info = mono_tramp_info_create (tramp_name, buf, code - buf, ji, unwind_ops);
+
+	return buf;
 }

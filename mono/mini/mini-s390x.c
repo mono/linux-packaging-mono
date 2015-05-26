@@ -1943,7 +1943,10 @@ mono_arch_allocate_vars (MonoCompile *cfg)
 	cfg->arch.bkchain_reg = -1;
 
 	if (frame_reg != STK_BASE) 
-		cfg->used_int_regs |= 1 << frame_reg;		
+		cfg->used_int_regs |= (1 << frame_reg);		
+
+	if (cfg->uses_rgctx_reg)
+		cfg->used_int_regs |= (1 << MONO_ARCH_IMT_REG);
 
 	sig     = mono_method_signature (cfg->method);
 	
@@ -2926,24 +2929,20 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 	guint offset;
 	guint8 *code = cfg->native_code + cfg->code_len;
 	guint last_offset = 0;
-	int max_len, cpos, src2;
+	int max_len, src2;
 
 	/* we don't align basic blocks of loops on s390 */
 
 	if (cfg->verbose_level > 2)
 		g_print ("Basic block %d starting at offset 0x%x\n", bb->block_num, bb->native_offset);
 
-	cpos = bb->max_offset;
-
-	if (cfg->prof_options & MONO_PROFILE_COVERAGE) {
-		//MonoCoverageInfo *cov = mono_get_coverage_info (cfg->method);
-		//g_assert (!mono_compile_aot);
-		//cpos += 6;
-		//if (bb->cil_code)
-		//	cov->data [bb->dfn].iloffset = bb->cil_code - cfg->cil_code;
-		/* this is not thread save, but good enough */
-		/* fixme: howto handle overflows? */
-		//x86_inc_mem (code, &cov->data [bb->dfn].count); 
+	if ((cfg->prof_options & MONO_PROFILE_COVERAGE) && cfg->coverage_info) {
+		MonoProfileCoverageInfo *cov = cfg->coverage_info;
+		g_assert (!mono_compile_aot);
+		cov->data [bb->dfn].cil_code = bb->cil_code;
+		/* This is not thread save, but good enough */
+		S390_SET (code, s390_r1, &cov->data [bb->dfn].count);
+		s390_alsi (code, 0, s390_r1, 1);
 	}
 
 	MONO_BB_FOR_EACH_INS (bb, ins) {
@@ -4613,8 +4612,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			g_assert_not_reached ();
 		}
 	       
-		cpos += max_len;
-
 		last_offset = offset;
 	}
 
@@ -4649,8 +4646,8 @@ mono_arch_register_lowlevel_calls (void)
 /*------------------------------------------------------------------*/
 
 void
-mono_arch_patch_code (MonoMethod *method, MonoDomain *domain, 
-		      guint8 *code, MonoJumpInfo *ji, MonoCodeManager *dyn_code_mp, gboolean run_cctors)
+mono_arch_patch_code (MonoCompile *cfg, MonoMethod *method, MonoDomain *domain, 
+		      guint8 *code, MonoJumpInfo *ji, gboolean run_cctors)
 {
 	MonoJumpInfo *patch_info;
 
@@ -4675,6 +4672,9 @@ mono_arch_patch_code (MonoMethod *method, MonoDomain *domain,
 			case MONO_PATCH_INFO_CLASS_INIT:
 			case MONO_PATCH_INFO_GENERIC_CLASS_INIT:
 			case MONO_PATCH_INFO_RGCTX_FETCH:
+			case MONO_PATCH_INFO_MONITOR_ENTER:
+			case MONO_PATCH_INFO_MONITOR_ENTER_V4:
+			case MONO_PATCH_INFO_MONITOR_EXIT:
 			case MONO_PATCH_INFO_ABS: {
 				S390_EMIT_CALL (ip, target);
 				continue;
@@ -5765,32 +5765,35 @@ gpointer
 mono_arch_get_delegate_virtual_invoke_impl (MonoMethodSignature *sig, MonoMethod *method, 
 					    int offset, gboolean load_imt_reg)
 {
-       guint8 *code, *start;
-       int size = 20;
+	guint8 *code, *start;
+	int size = 40;
 
-       start = code = mono_global_codeman_reserve (size);
+	start = code = mono_global_codeman_reserve (size);
 
-       /*
-        * Replace the "this" argument with the target
-        */
-       s390_lgr  (code, s390_r1, s390_r2);
-       s390_lg   (code, s390_r2, s390_r1, 0, MONO_STRUCT_OFFSET(MonoDelegate, target));        
-       
-       /*
-        * Load the IMT register, if needed
-        */
-       if (load_imt_reg) {
-               s390_lg  (code, MONO_ARCH_IMT_REG, s390_r2, 0, MONO_STRUCT_OFFSET(MonoDelegate, method));
-       }
+	/*
+	* Replace the "this" argument with the target
+	*/
+	s390_lgr  (code, s390_r1, s390_r2);
+	s390_lg   (code, s390_r2, 0, s390_r1, MONO_STRUCT_OFFSET(MonoDelegate, target));        
 
-       /*
-        * Load the vTable
-        */
-       s390_lg  (code, s390_r1, s390_r2, 0, MONO_STRUCT_OFFSET(MonoObject, vtable));
-       s390_agfi(code, s390_r1, offset);
-       s390_br  (code, s390_r1);
+	/*
+	* Load the IMT register, if needed
+	*/
+	if (load_imt_reg) {
+		s390_lg  (code, MONO_ARCH_IMT_REG, 0, s390_r1, MONO_STRUCT_OFFSET(MonoDelegate, method));
+	}
 
-       return(start);
+	/*
+	* Load the vTable
+	*/
+	s390_lg  (code, s390_r1, 0, s390_r2, MONO_STRUCT_OFFSET(MonoObject, vtable));
+	if (offset != 0) {
+		s390_agfi(code, s390_r1, offset);
+	}
+	s390_lg  (code, s390_r1, 0, s390_r1, 0);
+	s390_br  (code, s390_r1);
+
+	return(start);
 }
 
 /*========================= End of Function ========================*/

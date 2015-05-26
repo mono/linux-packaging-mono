@@ -19,6 +19,7 @@
 #include "mono/metadata/class-internals.h"
 #include "mono/metadata/domain-internals.h"
 #include "mono/metadata/gc-internal.h"
+#include "mono/metadata/mono-config-dirs.h"
 #include "mono/io-layer/io-layer.h"
 #include "mono/utils/mono-dl.h"
 #include <string.h>
@@ -260,6 +261,7 @@ mono_profiler_install_transition (MonoProfileMethodResult callback)
 void 
 mono_profiler_install_allocation (MonoProfileAllocFunc callback)
 {
+	mono_gc_enable_alloc_events ();
 	if (!prof_list)
 		return;
 	prof_list->allocation_cb = callback;
@@ -499,12 +501,12 @@ mono_profiler_code_transition (MonoMethod *method, int result)
 }
 
 void 
-mono_profiler_allocation (MonoObject *obj, MonoClass *klass)
+mono_profiler_allocation (MonoObject *obj)
 {
 	ProfilerDesc *prof;
 	for (prof = prof_list; prof; prof = prof->next) {
 		if ((prof->events & MONO_PROFILE_ALLOCATIONS) && prof->allocation_cb)
-			prof->allocation_cb (prof->profiler, obj, klass);
+			prof->allocation_cb (prof->profiler, obj, obj->vtable->klass);
 	}
 }
 
@@ -1013,7 +1015,7 @@ mono_profiler_coverage_free (MonoMethod *method)
 void 
 mono_profiler_coverage_get (MonoProfiler *prof, MonoMethod *method, MonoProfileCoverageFunc func)
 {
-	MonoProfileCoverageInfo* info;
+	MonoProfileCoverageInfo* info = NULL;
 	int i, offset;
 	guint32 code_size;
 	const unsigned char *start, *end, *cil_code;
@@ -1022,7 +1024,8 @@ mono_profiler_coverage_get (MonoProfiler *prof, MonoMethod *method, MonoProfileC
 	MonoDebugMethodInfo *debug_minfo;
 
 	mono_profiler_coverage_lock ();
-	info = g_hash_table_lookup (coverage_hash, method);
+	if (coverage_hash)
+		info = g_hash_table_lookup (coverage_hash, method);
 	mono_profiler_coverage_unlock ();
 
 	if (!info)
@@ -1196,17 +1199,14 @@ mono_profiler_load (const char *desc)
 		}
 		if (!load_embedded_profiler (desc, mname)) {
 			libname = g_strdup_printf ("mono-profiler-%s", mname);
-			if (!load_profiler_from_directory (NULL, libname, desc)) {
-				res = FALSE;
-#if defined (MONO_ASSEMBLIES)
+			if (mono_config_get_assemblies_dir ())
 				res = load_profiler_from_directory (mono_assembly_getrootdir (), libname, desc);
-#endif
-				if (!res)
-					res = load_profiler_from_mono_instalation (libname, desc);
-
-				if (!res)
-					g_warning ("The '%s' profiler wasn't found in the main executable nor could it be loaded from '%s'.", mname, libname);
-			}
+			if (!res)
+				res = load_profiler_from_directory (NULL, libname, desc);
+			if (!res)
+				res = load_profiler_from_mono_instalation (libname, desc);
+			if (!res)
+				g_warning ("The '%s' profiler wasn't found in the main executable nor could it be loaded from '%s'.", mname, libname);
 			g_free (libname);
 		}
 		g_free (mname);

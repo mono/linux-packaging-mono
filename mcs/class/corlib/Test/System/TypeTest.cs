@@ -283,6 +283,11 @@ namespace MonoTests.System
 		{
 		}
 
+		public class Nested
+		{
+
+		}
+
 		[Test]
 		public void TestIsAssignableFrom ()
 		{
@@ -367,9 +372,10 @@ namespace MonoTests.System
 
 			// Tests for byref types
 			Type paramType = typeof (TypeTest).GetMethod ("ByrefMethod", BindingFlags.Instance|BindingFlags.NonPublic).GetParameters () [0].ParameterType;
-			Assert.IsTrue (!paramType.IsSubclassOf (typeof (ValueType)), "#02");
-			//Assert.IsTrue (paramType.IsSubclassOf (typeof (Object)), "#03");
-			Assert.IsTrue (!paramType.IsSubclassOf (paramType), "#04");
+			Assert.IsFalse (paramType.IsSubclassOf (typeof(ValueType)), "#02");
+			Assert.IsNull (paramType.BaseType, "#02-b");
+			Assert.IsTrue (paramType.IsSubclassOf (typeof (Object)), "#03");
+			Assert.IsFalse (paramType.IsSubclassOf (paramType), "#04");
 		}
 
 		[Test]
@@ -1693,18 +1699,10 @@ namespace MonoTests.System
 		}
 
 		[Test]
-		[Category("NotDotNet")]
-		// Depends on the GAC working, which it doesn't durring make distcheck.
-		[Category ("NotWorking")]
-		public void GetTypeWithWhitespace ()
+		public void IsVisible ()
 		{
-			Assert.IsNotNull (Type.GetType
-						   (@"System.Configuration.NameValueSectionHandler,
-			System,
-Version=1.0.5000.0,
-Culture=neutral
-,
-PublicKeyToken=b77a5c561934e089"));
+			Assert.IsTrue (typeof (int).IsVisible, "#1");
+			Assert.IsTrue (typeof (Nested).IsVisible, "#2");
 		}
 
 		[Test]
@@ -1714,10 +1712,7 @@ PublicKeyToken=b77a5c561934e089"));
 			Assert.AreEqual ("System.String[*]", t.ToString ());
 		}
 
-#if MONOTOUCH
-		// feature not available when compiled under FULL_AOT_RUNTIME
-		[ExpectedException (typeof (NotImplementedException))]
-#endif
+#if MONO_COM
 		[Test]
 		public void TypeFromCLSID ()
 		{
@@ -1752,7 +1747,7 @@ PublicKeyToken=b77a5c561934e089"));
 			else
 				throw new COMException ();
 		}
-		
+#endif
 		[Test]
 		public void ExerciseFilterName ()
 		{
@@ -1884,6 +1879,20 @@ PublicKeyToken=b77a5c561934e089"));
 		public void CreateValueTypeNoCtorArgs ()
 		{
 			typeof(B).InvokeMember ("", BindingFlags.CreateInstance, null, null, new object [] { 1 });
+		}
+
+		[Test]
+		[ExpectedException (typeof (MissingMethodException))]
+		public void InvokeGetPropertyMissing ()
+		{
+			typeof(B).InvokeMember ("", BindingFlags.GetProperty, null, null, new object [] { 1 });
+		}
+
+		[Test]
+		[ExpectedException (typeof (MissingMethodException))]
+		public void InvokeSetPropertyMissing ()
+		{
+			typeof(B).InvokeMember ("", BindingFlags.SetProperty, null, null, new object [] { 1 });
 		}
 
 		internal static string bug336841 (string param1, params string [] param2)
@@ -3048,8 +3057,10 @@ PublicKeyToken=b77a5c561934e089"));
 			Assert.AreEqual (ut, arg, "#B3");
 		}
 
-		[Category ("NotWorking")]
-		//We dont support instantiating a user type 
+		[Test]
+#if MONOTOUCH
+		[ExpectedException (typeof (NotSupportedException))]
+#endif
 		public void MakeGenericType_NestedUserDefinedType ()
 		{
 			Type ut = new UserType (new UserType (typeof (int)));
@@ -3064,7 +3075,9 @@ PublicKeyToken=b77a5c561934e089"));
 		}
 		
 		[Test]
-		[Category ("NotWorking")]
+#if MONOTOUCH
+		[ExpectedException (typeof (NotSupportedException))]
+#endif
 		public void TestMakeGenericType_UserDefinedType_DotNet20SP1 () 
 		{
 			Type ut = new UserType(typeof(int));
@@ -3198,7 +3211,7 @@ PublicKeyToken=b77a5c561934e089"));
 				obj = GetType ().GetMember ("DummyMember", memtype,
 						BindingFlags.Public | BindingFlags.Instance);
 				Assert.AreEqual (testtype.GetHashCode (), obj.GetType ().GetHashCode (),
-						"Expected " + testtype.FullName);
+						"Expected #" + i + " " + testtype.FullName);
 			}
 
 		}
@@ -3526,10 +3539,10 @@ PublicKeyToken=b77a5c561934e089"));
 
 			a.Equals (a);
 			Assert.AreEqual (1, ta.eq, "#1");
-			Assert.AreEqual (0, ta.ust, "#2");
+			Assert.AreEqual (2, ta.ust, "#2");
 			a.Equals (b);
 			Assert.AreEqual (2, ta.eq, "#3");
-			Assert.AreEqual (1, ta.ust, "#4");
+			Assert.AreEqual (3, ta.ust, "#4");
 			Assert.AreEqual (0, tb.eq, "#5");
 			Assert.AreEqual (1, tb.ust, "#6");
 		}
@@ -3759,7 +3772,7 @@ PublicKeyToken=b77a5c561934e089"));
 			try {
 				typeof (MyRealEnum).IsEnumDefined (typeof (MyRealEnum));
 				Assert.Fail ("#8");
-			} catch (ArgumentException) { }
+			} catch (InvalidOperationException) { }
 
 			Assert.IsTrue (typeof (MyRealEnum).IsEnumDefined ((short)0), "#9");
 			Assert.IsFalse (typeof (MyRealEnum).IsEnumDefined ((short)88), "#10");

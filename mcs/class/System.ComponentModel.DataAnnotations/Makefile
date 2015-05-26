@@ -3,11 +3,8 @@ SUBDIRS =
 include ../../build/rules.make
 
 LIBRARY = System.ComponentModel.DataAnnotations.dll
-LIB_MCS_FLAGS = \
-                /r:System.dll \
-                /r:System.Core.dll \
-                /r:System.Data.dll \
-                /r:System.Xml.dll \
+LIB_REFS = System System.Core System.Data System.Xml
+LIB_MCS_FLAGS = -nowarn:414
 
 TEST_MCS_FLAGS = $(LIB_MCS_FLAGS)
 

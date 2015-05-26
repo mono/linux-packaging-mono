@@ -32,7 +32,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#if MONOTOUCH
+#if MONOTOUCH || XAMMAC
 
 using System;
 using System.Collections.Generic;
@@ -43,6 +43,31 @@ using System.Runtime.InteropServices;
 namespace System {
 
 	public partial class TimeZoneInfo {
+
+		static TimeZoneInfo CreateLocal ()
+		{
+			using (Stream stream = GetMonoTouchData (null)) {
+				return BuildFromStream ("Local", stream);
+			}
+		}
+
+		static TimeZoneInfo FindSystemTimeZoneByIdCore (string id)
+		{
+			using (Stream stream = GetMonoTouchData (id)) {
+				return BuildFromStream (id, stream);
+			}
+		}
+
+		static void GetSystemTimeZones (List<TimeZoneInfo> systemTimeZones)
+		{
+			foreach (string name in GetMonoTouchNames ()) {
+				using (Stream stream = GetMonoTouchData (name, false)) {
+					if (stream == null)
+						continue;
+					systemTimeZones.Add (BuildFromStream (name, stream));
+				}
+			}
+		}
 		
 		[DllImport ("__Internal")]
 		extern static IntPtr monotouch_timezone_get_names (ref int count);
@@ -70,16 +95,12 @@ namespace System {
 			IntPtr data = monotouch_timezone_get_data (name, ref size);
 			if (size <= 0) {
 				if (throw_on_error)
-					throw new TimeZoneNotFoundException ();
+					throw new TimeZoneNotFoundException (name);
 				return null;
 			}
 
 			unsafe {
-				var s = new UnmanagedMemoryStream ((byte*) data, size);
-				s.Closed += delegate {
-					Marshal.FreeHGlobal (data);
-				};
-				return s;
+				return new HGlobalUnmanagedMemoryStream ((byte*) data, size, data);
 			}
 		}
 	}
