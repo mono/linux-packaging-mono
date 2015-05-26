@@ -215,7 +215,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 
 %files -f mcs.lang
 %defattr(-, root, root)
-%doc AUTHORS COPYING.LIB LICENSE ChangeLog NEWS README.md
+%doc COPYING.LIB LICENSE ChangeLog NEWS README.md
 %config %{_sysconfdir}/mono/2.0/machine.config
 %config %{_sysconfdir}/mono/2.0/settings.map
 %config %{_sysconfdir}/mono/4.0/machine.config
