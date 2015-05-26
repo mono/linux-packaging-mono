@@ -772,9 +772,11 @@ Mono implementation of WCF, Windows Communication Foundation
 %{_prefix}/lib/mono/4.5/System.Runtime.DurableInstancing.dll
 %{_prefix}/lib/mono/4.5/System.ServiceModel.Activation.dll
 %{_prefix}/lib/mono/4.5/System.ServiceModel.Discovery.dll
+%{_prefix}/lib/mono/4.5/System.ServiceModel.Internals.dll
 %{_prefix}/lib/mono/4.5/System.ServiceModel.Routing.dll
 %{_prefix}/lib/mono/4.5/System.ServiceModel.Web.dll
 %{_prefix}/lib/mono/4.5/System.ServiceModel.dll
+%{_prefix}/lib/mono/4.5/SMDiagnostics.dll
 %{_prefix}/lib/mono/4.5/svcutil.exe*
 %{_prefix}/lib/mono/gac/System.Data.Services
 %{_prefix}/lib/mono/gac/System.IdentityModel
@@ -783,8 +785,10 @@ Mono implementation of WCF, Windows Communication Foundation
 %{_prefix}/lib/mono/gac/System.ServiceModel
 %{_prefix}/lib/mono/gac/System.ServiceModel.Activation
 %{_prefix}/lib/mono/gac/System.ServiceModel.Discovery
+%{_prefix}/lib/mono/4.5/System.ServiceModel.Internals
 %{_prefix}/lib/mono/gac/System.ServiceModel.Routing
 %{_prefix}/lib/mono/gac/System.ServiceModel.Web
+%{_prefix}/lib/mono/gac/SMDiagnostics
 
 %package -n mono-winfxcore
 Summary:        Mono implementation of core WinFX APIs
@@ -1052,6 +1056,7 @@ Mono development tools.
 %{_bindir}/mono-find-requires
 %{_bindir}/mono-heapviz
 %{_bindir}/mono-shlib-cop
+%{_bindir}/mono-symbolicate
 %{_bindir}/mono-xmltool
 %{_bindir}/monodis
 %{_bindir}/monolinker
@@ -1072,6 +1077,7 @@ Mono development tools.
 %dir %{_datadir}/mono-2.0/mono
 %dir %{_datadir}/mono-2.0/mono/cil
 %{_datadir}/mono-2.0/mono/cil/cil-opcodes.xml
+%{_datadir}/mono-2.0/mono/profiler/mono-profiler-log.suppression
 %{_libdir}/libmono-profiler-*.*
 %{_libdir}/pkgconfig/cecil.pc
 %{_libdir}/pkgconfig/dotnet.pc
@@ -1096,6 +1102,7 @@ Mono development tools.
 %{_mandir}/man1/mono-api-info.1%ext_man
 %{_mandir}/man1/mono-cil-strip.1%ext_man
 %{_mandir}/man1/mono-shlib-cop.1%ext_man
+%{_mandir}/man1/mono-symbolicate.1%ext_man
 %{_mandir}/man1/mono-xmltool.1%ext_man
 %{_mandir}/man1/monodis.1%ext_man
 %{_mandir}/man1/monolinker.1%ext_man
