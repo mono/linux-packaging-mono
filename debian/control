@@ -360,6 +360,7 @@ Depends: ${misc:Depends},
          libmono-security4.0-cil (= ${source:Version}),
          libmono-sharpzip4.84-cil (= ${source:Version}),
          libmono-simd4.0-cil (= ${source:Version}),
+         libmono-smdiagnostics0.0-cil (= ${source:Version}),
          libmono-sqlite4.0-cil (= ${source:Version}),
          libmono-system4.0-cil (= ${source:Version}),
          libmono-system-componentmodel-composition4.0-cil (= ${source:Version}),
@@ -413,6 +414,7 @@ Depends: ${misc:Depends},
          libmono-system-servicemodel4.0a-cil (= ${source:Version}),
          libmono-system-servicemodel-activation4.0-cil (= ${source:Version}),
          libmono-system-servicemodel-discovery4.0-cil (= ${source:Version}),
+         libmono-system-servicemodel-internals0.0-cil (= ${source:Version}),
          libmono-system-servicemodel-routing4.0-cil (= ${source:Version}),
          libmono-system-servicemodel-web4.0-cil (= ${source:Version}),
          libmono-system-serviceprocess4.0-cil (= ${source:Version}),
@@ -642,6 +644,23 @@ Description: Mono SIMD (for CLI 4.0)
  This package contains the Mono.Simd library for CLI 4.0, which provides a
  number of classes that are hardware accelerated by mapping the classes and
  the actual operations to native SIMD instructions on a processor.
+
+Package: libmono-smdiagnostics0.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Homepage: http://mono-project.com/WCF
+Description: Mono SMDiagnostics Library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the SMDiagnostics library which is part
+ of the Windows Communication Foundation (WCF) libraries of Mono for CLI 4.0.
+ The WFC stack is for building SOA-based applications.
+ Its development is in early stages.
 
 Package: libmono-corlib4.5-cil
 Architecture: all
@@ -1604,6 +1623,23 @@ Description: Mono System.ServiceModel.Discovery Library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the System.ServiceModel.Discovery library which is part
+ of the Windows Communication Foundation (WCF) libraries of Mono for CLI 4.0.
+ The WFC stack is for building SOA-based applications.
+ Its development is in early stages.
+
+Package: libmono-system-servicemodel-internals0.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Homepage: http://mono-project.com/WCF
+Description: Mono System.ServiceModel.Internals Library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.ServiceModel.Internals library which is part
  of the Windows Communication Foundation (WCF) libraries of Mono for CLI 4.0.
  The WFC stack is for building SOA-based applications.
  Its development is in early stages.

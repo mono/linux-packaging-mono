@@ -1,1 +1,2 @@
 /usr/lib/libmono-profiler-*.so*
+/usr/share/mono-2.0/mono/profiler/mono-profiler-log.suppression
