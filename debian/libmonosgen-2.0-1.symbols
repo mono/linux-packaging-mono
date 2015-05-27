@@ -71,7 +71,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_bitset_test_bulk@Base 4.1.0.1738
  mono_bitset_union@Base 4.1.0.1738
  mono_bounded_array_class_get@Base 4.1.0.1738
- mono_breakpoint_clean_code@Base 4.1.0.1738
  mono_check_corlib_version@Base 4.1.0.1738
  mono_class_array_element_size@Base 4.1.0.1738
  mono_class_data_size@Base 4.1.0.1738
