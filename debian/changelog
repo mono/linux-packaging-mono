@@ -1,3 +1,9 @@
+mono (4.3.0.10-0nightly1) nightly; urgency=low
+
+  * "New release - mono-4.3.0.10.tar.bz2"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 27 May 2015 12:26:58 -0400
+
 mono (4.1.0.1738-0nightly6) nightly; urgency=low
 
   * "Bugfix - see git log"
