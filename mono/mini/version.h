@@ -1,1 +1,1 @@
-#define FULL_VERSION "(detached/ee621ce"
+#define FULL_VERSION "Nightly 4.3.0.10"
