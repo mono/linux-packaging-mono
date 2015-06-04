@@ -406,7 +406,7 @@ namespace IKVM.Reflection
 			this.declaringType = declaringType;
 			this.ns = ns;
 			this.name = name;
-			MarkEnumOrValueType(ns, name);
+			MarkKnownType(ns, name);
 
 			// HACK we need to handle the Windows Runtime projected types that change from ValueType to Class or v.v.
 			if (WindowsRuntimeProjection.IsProjectedValueType(ns, name, module))
@@ -643,7 +643,18 @@ namespace IKVM.Reflection
 		private readonly MemberInfo owner;
 		private readonly int index;
 
-		internal MissingTypeParameter(MemberInfo owner, int index)
+		internal MissingTypeParameter(Type owner, int index)
+			: this(owner, index, Signature.ELEMENT_TYPE_VAR)
+		{
+		}
+
+		internal MissingTypeParameter(MethodInfo owner, int index)
+			: this(owner, index, Signature.ELEMENT_TYPE_MVAR)
+		{
+		}
+
+		private MissingTypeParameter(MemberInfo owner, int index, byte sigElementType)
+			: base(sigElementType)
 		{
 			this.owner = owner;
 			this.index = index;

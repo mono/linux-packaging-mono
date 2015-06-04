@@ -94,28 +94,23 @@ namespace Ildasm
 						}
                         else if (IsIldasmOption(arg, "project"))
                         {
-                        flags |= Flags.Project;
+                            flags |= Flags.Project;
                         }
-						else
-						{
-							PrintUsage();
-							return 1;
-						}
-					}
-					else
-					{
-						if (inputFile != null)
-						{
-							PrintUsage();
-							return 1;
-						}
-						else
-						{
-							inputFile = arg;
-						}
-					}
-				}
-			}
+                    }
+                    else
+                    {
+                        if (inputFile != null)
+                        {
+                            PrintUsage();
+                            return 1;
+                        }
+                        else
+                        {
+                            inputFile = arg;
+                        }
+                    }
+                }
+            }
 
             if (inputFile == null)
             {
@@ -178,7 +173,6 @@ namespace Ildasm
             Console.WriteLine("Usage: ikdasm [options] <file_name> [options]");
             Console.WriteLine();
             Console.WriteLine("Options:");
-
 			if (typeof (int).Assembly.GetType ("Mono.Runtime") != null) {
 				Console.WriteLine ("  --out=<file name>   Direct output to file rather than stdout.");
 				Console.WriteLine ("  --help              Print this help.");

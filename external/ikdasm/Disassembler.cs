@@ -1476,20 +1476,19 @@ namespace Ildasm
                 ;
         }
 
-        void WritePInvokeImpl(LineWriter lw, MethodBase method)
+        void WritePInvokeImpl(LineWriter lw, MemberInfo member)
         {
             lw.Write("pinvokeimpl(");
-            MethodInfo mi = method as MethodInfo;
             ImplMapFlags flags;
             string importName;
             string importScope;
-            if (mi != null && mi.__TryGetImplMap(out flags, out importName, out importScope))
+            if (member.Module.__TryGetImplMap(member.MetadataToken, out flags, out importName, out importScope))
             {
                 if (importScope != null)
                 {
                     lw.Write("\"{0}\"", EscapePInvoke(importScope));
                 }
-                if (importName != null && importName != method.Name)
+                if (importName != null && importName != member.Name)
                 {
                     lw.Write(" as \"{0}\"", EscapePInvoke(importName));
                 }
@@ -1954,6 +1953,10 @@ namespace Ildasm
             {
                 lw.Write("notserialized ");
             }
+            if ((field.Attributes & FieldAttributes.PinvokeImpl) != 0)
+            {
+                WritePInvokeImpl(lw, field);
+            }
             if ((field.Attributes & FieldAttributes.HasFieldMarshal) != 0)
             {
                 FieldMarshal marshal;
@@ -2021,7 +2024,14 @@ namespace Ildasm
             foreach (var mod in mods.Reverse())
             {
                 lw.Write(" {0}(", mod.IsRequired ? "modreq" : "modopt");
-                WriteTypeDefOrRef(lw, mod.Type);
+                if (mod.Type.__IsBuiltIn)
+                {
+                    WriteSignatureType(lw, mod.Type);
+                }
+                else
+                {
+                    WriteTypeDefOrRef(lw, mod.Type);
+                }
                 lw.Write(")");
             }
         }
@@ -2165,8 +2175,12 @@ namespace Ildasm
                 && type.__Namespace == "System.Diagnostics";
         }
 
-        void WriteDeclarativeSecurity(LineWriter lw, int level, IList<CustomAttributeData> list, int metadataToken)
+        void WriteDeclarativeSecurity(LineWriter lw, int level, IEnumerable<CustomAttributeData> list, int metadataToken)
         {
+            if (diffMode)
+            {
+                list = list.OrderBy(cad => cad.ConstructorArguments[0].Value);
+            }
             var action = (System.Security.Permissions.SecurityAction)(- 1);
             var curr = new List<CustomAttributeData>();
             foreach (var sec in list)

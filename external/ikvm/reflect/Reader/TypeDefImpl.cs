@@ -43,7 +43,7 @@ namespace IKVM.Reflection.Reader
 			this.index = index;
 			this.typeName = module.GetString(module.TypeDef.records[index].TypeName);
 			this.typeNamespace = module.GetString(module.TypeDef.records[index].TypeNamespace);
-			MarkEnumOrValueType(typeNamespace, typeName);
+			MarkKnownType(typeNamespace, typeName);
 		}
 
 		public override Type BaseType
@@ -260,7 +260,7 @@ namespace IKVM.Reflection.Reader
 					int len = module.GenericParam.records.Length;
 					for (int i = first; i < len && module.GenericParam.records[i].Owner == token; i++)
 					{
-						list.Add(new GenericTypeParameter(module, i));
+						list.Add(new GenericTypeParameter(module, i, Signature.ELEMENT_TYPE_VAR));
 					}
 					typeArgs = list.ToArray();
 				}

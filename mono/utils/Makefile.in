@@ -119,9 +119,9 @@ LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmonoutils_la_LIBADD =
 am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	mono-logger.c mono-logger-internal.h mono-codeman.c dlmalloc.h \
-	dlmalloc.c mono-counters.c mono-compiler.h mono-dl.c \
-	mono-dl-windows.c mono-dl-darwin.c mono-dl-posix.c mono-dl.h \
-	mono-internal-hash.c mono-internal-hash.h \
+	dlmalloc.c mono-counters.c mono-compiler.h mono-complex.h \
+	mono-dl.c mono-dl-windows.c mono-dl-darwin.c mono-dl-posix.c \
+	mono-dl.h mono-internal-hash.c mono-internal-hash.h \
 	mono-io-portability.c mono-io-portability.h monobitset.c \
 	mono-filemap.c mono-math.c mono-mmap.c mono-mmap.h \
 	mono-mmap-internal.h mono-mutex.c mono-mutex.h \
@@ -520,6 +520,7 @@ monoutils_sources = \
 	dlmalloc.c      	\
 	mono-counters.c		\
 	mono-compiler.h		\
+	mono-complex.h		\
 	mono-dl.c		\
 	mono-dl-windows.c	\
 	mono-dl-darwin.c	\
