@@ -89,9 +89,10 @@ namespace System
 		*/
 		private List<KeyValuePair<DateTime, TimeType>> transitions;
 
-#if !MOBILE
+#if !MOBILE || MOBILE_STATIC
 		static TimeZoneInfo CreateLocal ()
 		{
+#if !MOBILE_STATIC
 			if (IsWindows && LocalZoneKey != null) {
 				string name = (string)LocalZoneKey.GetValue ("TimeZoneKeyName");
 				if (name == null)
@@ -100,6 +101,7 @@ namespace System
 				if (name != null)
 					return TimeZoneInfo.FindSystemTimeZoneById (name);
 			}
+#endif
 
 			var tz = Environment.GetEnvironmentVariable ("TZ");
 			if (tz != null) {
@@ -135,6 +137,7 @@ namespace System
 
 		static void GetSystemTimeZones (List<TimeZoneInfo> systemTimeZones)
 		{
+#if !MOBILE_STATIC
 			if (TimeZoneKey != null) {
 				foreach (string id in TimeZoneKey.GetSubKeyNames ()) {
 					try {
@@ -144,6 +147,7 @@ namespace System
 
 				return;
 			}
+#endif
 
 #if LIBC
 			string[] continents = new string [] {"Africa", "America", "Antarctica", "Arctic", "Asia", "Atlantic", "Brazil", "Canada", "Chile", "Europe", "Indian", "Mexico", "Mideast", "Pacific", "US"};
@@ -202,7 +206,7 @@ namespace System
 #endif
 		private AdjustmentRule [] adjustmentRules;
 
-#if !NET_2_1
+#if !NET_2_1 || MOBILE_STATIC
 		/// <summary>
 		/// Determine whether windows of not (taken Stephane Delcroix's code)
 		/// </summary>
@@ -229,6 +233,7 @@ namespace System
 			return str.Substring (Istart, Iend-Istart+1);
 		}
 		
+#if !MOBILE_STATIC
 		static RegistryKey timeZoneKey;
 		static RegistryKey TimeZoneKey {
 			get {
@@ -256,6 +261,7 @@ namespace System
 					"SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation", false);
 			}
 		}
+#endif
 #endif
 
 		private static bool TryAddTicks (DateTime date, long ticks, out DateTime result, DateTimeKind kind = DateTimeKind.Unspecified)
@@ -849,24 +855,17 @@ namespace System
 					DateTime ttime = pair.Key;
 					TimeType ttype = pair.Value;
 
+					if (ttime.Year > year)
+						continue;
+					if (ttime.Year < year)
+						break;
+
 					if (ttype.IsDst) {
 						// DaylightTime.Delta is relative to the current BaseUtcOffset.
-						var d =  new TimeSpan (0, 0, ttype.Offset) - BaseUtcOffset;
-						// Handle DST gradients
-						if (start != DateTime.MinValue && delta != d)
-							end = start;
-
+						delta =  new TimeSpan (0, 0, ttype.Offset) - BaseUtcOffset;
 						start = ttime;
-						delta = d;
-
-						if (ttime.Year <= year)
-							break;
 					} else {
-						if (ttime.Year < year)
-							break;
-
 						end = ttime;
-						start = DateTime.MinValue;
 					}
 				}
 
@@ -875,22 +874,26 @@ namespace System
 					start += BaseUtcOffset;
 
 				// DaylightTime.End is relative to the DST time.
-				if (end != DateTime.MaxValue)
+				if (end != DateTime.MinValue)
 					end += BaseUtcOffset + delta;
 			} else {
-				AdjustmentRule rule = null;
-				foreach (var r in GetAdjustmentRules ()) {
-					if (r.DateEnd.Year < year)
+				AdjustmentRule first = null, last = null;
+
+				foreach (var rule in GetAdjustmentRules ()) {
+					if (rule.DateStart.Year != year && rule.DateEnd.Year != year)
 						continue;
-					if (r.DateStart.Year > year)
-						break;
-					rule = r;
+					if (rule.DateStart.Year == year)
+						first = rule;
+					if (rule.DateEnd.Year == year)
+						last = rule;
 				}
-				if (rule != null) {
-					start = TransitionPoint (rule.DaylightTransitionStart, year);
-					end = TransitionPoint (rule.DaylightTransitionEnd, year);
-					delta = rule.DaylightDelta;
-				}
+
+				if (first == null || last == null)
+					return new DaylightTime (new DateTime (), new DateTime (), new TimeSpan ());
+
+				start = TransitionPoint (first.DaylightTransitionStart, year);
+				end = TransitionPoint (last.DaylightTransitionEnd, year);
+				delta = first.DaylightDelta;
 			}
 
 			if (start == DateTime.MinValue || end == DateTime.MinValue)

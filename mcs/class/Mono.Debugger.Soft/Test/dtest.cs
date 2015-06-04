@@ -1515,8 +1515,8 @@ public class DebuggerTests
 		StackFrame frame = e.Thread.GetFrames () [0];
 
 		var locals = frame.Method.GetLocals ();
-		Assert.AreEqual (8, locals.Length);
-		for (int i = 0; i < 8; ++i) {
+		Assert.AreEqual (9, locals.Length);
+		for (int i = 0; i < 9; ++i) {
 			if (locals [i].Name == "args") {
 				Assert.IsTrue (locals [i].IsArg);
 				Assert.AreEqual ("String[]", locals [i].Type.Name);
@@ -1540,6 +1540,7 @@ public class DebuggerTests
 				Assert.IsTrue (locals [i].IsArg);
 				Assert.AreEqual ("String", locals [i].Type.Name);
 			} else if (locals [i].Name == "astruct") {
+			} else if (locals [i].Name == "alist") {
 			} else {
 				Assert.Fail ();
 			}
@@ -1624,6 +1625,8 @@ public class DebuggerTests
 				AssertValue ("AB", vals [i]);
 			if (locals [i].Name == "t")
 				AssertValue ("ABC", vals [i]);
+			if (locals [i].Name == "alist") {
+			}
 		}
 
 		// Argument checking
@@ -2266,6 +2269,17 @@ public class DebuggerTests
 		task = s.InvokeMethodAsyncWithResult (e.Thread, m, null);
 		out_this = task.Result.OutThis as StructMirror;
 		Assert.AreEqual (null, out_this);
+
+		// interface method
+		var cl1 = frame.Method.DeclaringType.Assembly.GetType ("ITest2");
+		m = cl1.GetMethod ("invoke_iface");
+		v = s.InvokeMethod (e.Thread, m, null);
+		AssertValue (42, v);
+
+		// virtual method
+		m = vm.RootDomain.Corlib.GetType ("System.Object").GetMethod ("ToString");
+		v = s.InvokeMethod (e.Thread, m, null, InvokeOptions.Virtual);
+		AssertValue ("42", v);
 #endif
 	}
 

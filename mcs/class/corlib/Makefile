@@ -6,13 +6,12 @@ export __SECURITY_BOOTSTRAP_DB=$(topdir)/class/corlib
 LIBRARY = corlib.dll
 LIBRARY_NAME = mscorlib.dll
 
-REFERENCE_SOURCES_FLAGS = -d:FEATURE_PAL,PFX_LEGACY_3_5 -d:MONO -d:MONO_HYBRID_ENCODING_SUPPORT,PLATFORM_UNIX
 LIB_MCS_FLAGS = $(REFERENCE_SOURCES_FLAGS) $(RESOURCE_FILES:%=-resource:%)
 
 #LIBRARY_USE_INTERMEDIATE_FILE = yes
 
 ifeq (2, $(FRAMEWORK_VERSION_MAJOR))
-LIB_MCS_FLAGS += --runtime:v2
+LIB_MCS_FLAGS += --runtime:v4
 else
 ifeq (4, $(FRAMEWORK_VERSION_MAJOR))
 LIB_MCS_FLAGS += --runtime:v4
@@ -41,7 +40,7 @@ REFERENCE_SOURCES_FLAGS = -d:FEATURE_PAL,GENERICS_WORK,FEATURE_LIST_PREDICATES,F
 MOBILE_STATIC := $(filter mobile_static monotouch monotouch_runtime, $(PROFILE))
 
 ifndef MOBILE_STATIC
-REFERENCE_SOURCES_FLAGS += -d:FEATURE_REMOTING,MONO_COM,FEATURE_COMINTEROP
+REFERENCE_SOURCES_FLAGS += -d:FEATURE_REMOTING,MONO_COM,FEATURE_COMINTEROP,FEATURE_ROLE_BASED_SECURITY
 endif
 
 LOCAL_MCS_FLAGS = -unsafe -nostdlib -nowarn:612,618 -d:INSIDE_CORLIB,MONO_CULTURE_DATA -d:LIBC $(REFERENCE_SOURCES_FLAGS)
@@ -175,9 +174,9 @@ EXTRA_DISTFILES += \
 
 TMP_FILE1=tzi1.tmp
 TMP_FILE2=tzi2.tmp
-	
+
+# Remove some code that is protected so we don't have to include all the corlib files.
 tzi.exe:System/AndroidPlatform.cs $(wildcard System/TimeZone*.cs) ../../build/common/Consts.cs ../../build/common/Locale.cs ../Mono.Options/Mono.Options/Options.cs
-	# Remove some code that is protected so we don't have to include all the corlib files.
 	trap "rm -f $(TMP_FILE1) $(TMP_FILE2)" EXIT INT QUIT TERM && \
 	sed 's/Environment\.GetResourceString/string.Format/g' ../../../external/referencesource/mscorlib/system/timezoneinfo.cs > $(TMP_FILE1) && \
 	sed 's/StringBuilder\.DefaultCapacity/100/g' ../../../external/referencesource/mscorlib/system/text/stringbuildercache.cs > $(TMP_FILE2) && \
