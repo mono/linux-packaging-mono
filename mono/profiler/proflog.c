@@ -93,7 +93,8 @@ static int use_zip = 0;
 static int do_report = 0;
 static int do_heap_shot = 0;
 static int max_call_depth = 100;
-static int runtime_inited = 0;
+static volatile int runtime_inited = 0;
+static int need_helper_thread = 0;
 static int command_port = 0;
 static int heapshot_requested = 0;
 static int sample_type = 0;
@@ -623,11 +624,8 @@ find_method (MonoDomain *domain, void *user_data)
 }
 
 static void
-register_method_local (MonoProfiler *prof, MonoDomain *domain, MonoMethod *method, MonoJitInfo *ji)
+register_method_local (MonoProfiler *prof, MonoMethod *method, MonoJitInfo *ji)
 {
-	if (!domain)
-		g_assert (ji);
-
 	if (!mono_conc_hashtable_lookup (prof->method_table, method)) {
 		if (!ji) {
 			MethodSearch search = { method, NULL };
@@ -649,10 +647,17 @@ register_method_local (MonoProfiler *prof, MonoDomain *domain, MonoMethod *metho
 }
 
 static void
-emit_method (MonoProfiler *prof, LogBuffer *logbuffer, MonoDomain *domain, MonoMethod *method)
+emit_method (MonoProfiler *prof, LogBuffer *logbuffer, MonoMethod *method)
 {
-	register_method_local (prof, domain, method, NULL);
+	register_method_local (prof, method, NULL);
 	emit_method_inner (logbuffer, method);
+}
+
+static void
+emit_method_as_ptr (MonoProfiler *prof, LogBuffer *logbuffer, MonoMethod *method)
+{
+	register_method_local (prof, method, NULL);
+	emit_ptr (logbuffer, method);
 }
 
 static void
@@ -802,24 +807,22 @@ process_requests (MonoProfiler *profiler)
 static void counters_init (MonoProfiler *profiler);
 static void counters_sample (MonoProfiler *profiler, uint64_t timestamp);
 
-static void
-runtime_initialized (MonoProfiler *profiler)
-{
-	runtime_inited = 1;
-#ifndef DISABLE_HELPER_THREAD
-	counters_init (profiler);
-	counters_sample (profiler, 0);
-#endif
-	/* ensure the main thread data and startup are available soon */
-	safe_send (profiler, ensure_logbuf (0));
-}
-
 /*
  * Can be called only at safe callback locations.
  */
 static void
 safe_send (MonoProfiler *profiler, LogBuffer *logbuffer)
 {
+	/* We need the runtime initialized so that we have threads and hazard
+	 * pointers available. Otherwise, the lock free queue will not work and
+	 * there won't be a thread to process the data.
+	 *
+	 * While the runtime isn't initialized, we just accumulate data in the
+	 * thread local buffer list.
+	 */
+	if (!InterlockedRead (&runtime_inited))
+		return;
+
 	int cd = logbuffer->call_depth;
 
 	send_buffer (profiler, TLS_GET (GPtrArray, tlsmethodlist), TLS_GET (LogBuffer, tlsbuffer));
@@ -967,7 +970,7 @@ collect_bt (FrameData *data)
 }
 
 static void
-emit_bt (LogBuffer *logbuffer, FrameData *data)
+emit_bt (MonoProfiler *prof, LogBuffer *logbuffer, FrameData *data)
 {
 	/* FIXME: this is actually tons of data and we should
 	 * just output it the first time and use an id the next
@@ -979,7 +982,7 @@ emit_bt (LogBuffer *logbuffer, FrameData *data)
 	//if (*p != data.count) {
 	//	printf ("bad num frames enc at %d: %d -> %d\n", count, data.count, *p); printf ("frames end: %p->%p\n", p, logbuffer->data); exit(0);}
 	while (data->count) {
-		emit_ptr (logbuffer, data->methods [--data->count]);
+		emit_method_as_ptr (prof, logbuffer, data->methods [--data->count]);
 	}
 }
 
@@ -988,7 +991,7 @@ gc_alloc (MonoProfiler *prof, MonoObject *obj, MonoClass *klass)
 {
 	uint64_t now;
 	uintptr_t len;
-	int do_bt = (nocalls && runtime_inited && !notraces)? TYPE_ALLOC_BT: 0;
+	int do_bt = (nocalls && InterlockedRead (&runtime_inited) && !notraces)? TYPE_ALLOC_BT: 0;
 	FrameData data;
 	LogBuffer *logbuffer;
 	len = mono_object_get_size (obj);
@@ -1006,7 +1009,7 @@ gc_alloc (MonoProfiler *prof, MonoObject *obj, MonoClass *klass)
 	emit_obj (logbuffer, obj);
 	emit_value (logbuffer, len);
 	if (do_bt)
-		emit_bt (logbuffer, &data);
+		emit_bt (prof, logbuffer, &data);
 	EXIT_LOG (logbuffer);
 	if (logbuffer->next)
 		safe_send (prof, logbuffer);
@@ -1144,7 +1147,7 @@ class_loaded (MonoProfiler *prof, MonoClass *klass, int result)
 	LogBuffer *logbuffer;
 	if (result != MONO_PROFILE_OK)
 		return;
-	if (runtime_inited)
+	if (InterlockedRead (&runtime_inited))
 		name = mono_type_get_name (mono_class_get_type (klass));
 	else
 		name = type_name (klass);
@@ -1183,7 +1186,7 @@ method_enter (MonoProfiler *prof, MonoMethod *method)
 	ENTER_LOG (logbuffer, "enter");
 	emit_byte (logbuffer, TYPE_ENTER | TYPE_METHOD);
 	emit_time (logbuffer, now);
-	emit_method (prof, logbuffer, mono_domain_get (), method);
+	emit_method (prof, logbuffer, method);
 	EXIT_LOG (logbuffer);
 	process_requests (prof);
 }
@@ -1199,7 +1202,7 @@ method_leave (MonoProfiler *prof, MonoMethod *method)
 	ENTER_LOG (logbuffer, "leave");
 	emit_byte (logbuffer, TYPE_LEAVE | TYPE_METHOD);
 	emit_time (logbuffer, now);
-	emit_method (prof, logbuffer, mono_domain_get (), method);
+	emit_method (prof, logbuffer, method);
 	EXIT_LOG (logbuffer);
 	if (logbuffer->next)
 		safe_send (prof, logbuffer);
@@ -1220,7 +1223,7 @@ method_exc_leave (MonoProfiler *prof, MonoMethod *method)
 	ENTER_LOG (logbuffer, "eleave");
 	emit_byte (logbuffer, TYPE_EXC_LEAVE | TYPE_METHOD);
 	emit_time (logbuffer, now);
-	emit_method (prof, logbuffer, mono_domain_get (), method);
+	emit_method (prof, logbuffer, method);
 	EXIT_LOG (logbuffer);
 	process_requests (prof);
 }
@@ -1231,7 +1234,7 @@ method_jitted (MonoProfiler *prof, MonoMethod *method, MonoJitInfo *ji, int resu
 	if (result != MONO_PROFILE_OK)
 		return;
 
-	register_method_local (prof, NULL, method, ji);
+	register_method_local (prof, method, ji);
 }
 
 static void
@@ -1267,7 +1270,7 @@ code_buffer_new (MonoProfiler *prof, void *buffer, int size, MonoProfilerCodeBuf
 static void
 throw_exc (MonoProfiler *prof, MonoObject *object)
 {
-	int do_bt = (nocalls && runtime_inited && !notraces)? TYPE_EXCEPTION_BT: 0;
+	int do_bt = (nocalls && InterlockedRead (&runtime_inited) && !notraces)? TYPE_EXCEPTION_BT: 0;
 	uint64_t now;
 	FrameData data;
 	LogBuffer *logbuffer;
@@ -1280,7 +1283,7 @@ throw_exc (MonoProfiler *prof, MonoObject *object)
 	emit_time (logbuffer, now);
 	emit_obj (logbuffer, object);
 	if (do_bt)
-		emit_bt (logbuffer, &data);
+		emit_bt (prof, logbuffer, &data);
 	EXIT_LOG (logbuffer);
 	process_requests (prof);
 }
@@ -1296,14 +1299,14 @@ clause_exc (MonoProfiler *prof, MonoMethod *method, int clause_type, int clause_
 	emit_time (logbuffer, now);
 	emit_value (logbuffer, clause_type);
 	emit_value (logbuffer, clause_num);
-	emit_method (prof, logbuffer, mono_domain_get (), method);
+	emit_method (prof, logbuffer, method);
 	EXIT_LOG (logbuffer);
 }
 
 static void
 monitor_event (MonoProfiler *profiler, MonoObject *object, MonoProfilerMonitorEvent event)
 {
-	int do_bt = (nocalls && runtime_inited && !notraces && event == MONO_PROFILER_MONITOR_CONTENTION)? TYPE_MONITOR_BT: 0;
+	int do_bt = (nocalls && InterlockedRead (&runtime_inited) && !notraces && event == MONO_PROFILER_MONITOR_CONTENTION)? TYPE_MONITOR_BT: 0;
 	uint64_t now;
 	FrameData data;
 	LogBuffer *logbuffer;
@@ -1316,7 +1319,7 @@ monitor_event (MonoProfiler *profiler, MonoObject *object, MonoProfilerMonitorEv
 	emit_time (logbuffer, now);
 	emit_obj (logbuffer, object);
 	if (do_bt)
-		emit_bt (logbuffer, &data);
+		emit_bt (profiler, logbuffer, &data);
 	EXIT_LOG (logbuffer);
 	process_requests (profiler);
 }
@@ -1829,10 +1832,9 @@ dump_sample_hits (MonoProfiler *prof, StatBuffer *sbuf)
 		emit_uvalue (logbuffer, mbt_count);
 		for (i = 0; i < mbt_count; ++i) {
 			MonoMethod *method = (MonoMethod *) sample [i * 4 + 0];
-			MonoDomain *domain = (MonoDomain *) sample [i * 4 + 1];
 			uintptr_t native_offset = sample [i * 4 + 3];
 
-			emit_method (prof, logbuffer, domain, method);
+			emit_method (prof, logbuffer, method);
 			emit_svalue (logbuffer, 0); /* il offset will always be 0 from now on */
 			emit_svalue (logbuffer, native_offset);
 		}
@@ -2724,7 +2726,7 @@ helper_thread (void* arg)
 			if (strcmp (buf, "heapshot\n") == 0) {
 				heapshot_requested = 1;
 				//fprintf (stderr, "perform heapshot\n");
-				if (runtime_inited && !thread) {
+				if (InterlockedRead (&runtime_inited) && !thread) {
 					thread = mono_thread_attach (mono_get_root_domain ());
 					/*fprintf (stderr, "attached\n");*/
 				}
@@ -2878,13 +2880,33 @@ start_writer_thread (MonoProfiler* prof)
 	return !pthread_create (&prof->writer_thread, NULL, writer_thread, prof);
 }
 
+static void
+runtime_initialized (MonoProfiler *profiler)
+{
+#ifndef DISABLE_HELPER_THREAD
+	if (hs_mode_ondemand || need_helper_thread) {
+		if (!start_helper_thread (profiler))
+			profiler->command_port = 0;
+	}
+#endif
+
+	start_writer_thread (profiler);
+
+	InterlockedWrite (&runtime_inited, 1);
+#ifndef DISABLE_HELPER_THREAD
+	counters_init (profiler);
+	counters_sample (profiler, 0);
+#endif
+	/* ensure the main thread data and startup are available soon */
+	safe_send (profiler, ensure_logbuf (0));
+}
+
 static MonoProfiler*
 create_profiler (const char *filename)
 {
 	MonoProfiler *prof;
 	char *nf;
 	int force_delete = 0;
-	int need_helper_thread = 0;
 	prof = calloc (1, sizeof (MonoProfiler));
 
 	prof->command_port = command_port;
@@ -2943,12 +2965,7 @@ create_profiler (const char *filename)
 	if (do_counters && !need_helper_thread) {
 		need_helper_thread = 1;
 	}
-#ifndef DISABLE_HELPER_THREAD
-	if (hs_mode_ondemand || need_helper_thread) {
-		if (!start_helper_thread (prof))
-			prof->command_port = 0;
-	}
-#else
+#ifdef DISABLE_HELPER_THREAD
 	if (hs_mode_ondemand)
 		fprintf (stderr, "Ondemand heapshot unavailable on this arch.\n");
 #endif
@@ -2956,8 +2973,6 @@ create_profiler (const char *filename)
 	mono_lock_free_queue_init (&prof->writer_queue);
 	mono_mutex_init (&prof->method_table_mutex);
 	prof->method_table = mono_conc_hashtable_new (&prof->method_table_mutex, NULL, NULL);
-
-	start_writer_thread (prof);
 
 	prof->startup_time = current_time ();
 	return prof;

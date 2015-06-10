@@ -1,1 +1,1 @@
-#define FULL_VERSION "(detached/ed1d3ec"
+#define FULL_VERSION "Stable 4.0.2.4/198235d"
