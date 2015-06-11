@@ -206,6 +206,9 @@ init_plt (MonoAotModule *info);
 static void
 compute_llvm_code_range (MonoAotModule *amodule, guint8 **code_start, guint8 **code_end);
 
+static gboolean
+mono_aot_init_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *method, MonoClass **klass);
+
 /*****************************************************/
 /*                 AOT RUNTIME                       */
 /*****************************************************/
@@ -837,7 +840,10 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 			if (!m)
 				return FALSE;
 			mono_class_init (m->klass);
-			ref->method = mono_marshal_get_remoting_invoke_with_check (m);
+			if (mono_aot_only)
+				ref->method = m;
+			else
+				ref->method = mono_marshal_get_remoting_invoke_with_check (m);
 			break;
 		}
 		case MONO_WRAPPER_PROXY_ISINST: {
@@ -3573,12 +3579,9 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 {
 	MonoClass *klass;
 	gboolean from_plt = method == NULL;
-	MonoMemPool *mp;
-	int i, pindex, n_patches, used_strings;
-	gboolean keep_patches = TRUE;
-	guint8 *p;
 	MonoJitInfo *jinfo = NULL;
 	guint8 *code, *info;
+	gboolean res;
 
 	if (mono_profiler_get_events () & MONO_PROFILE_ENTER_LEAVE) {
 		if (mono_aot_only)
@@ -3587,7 +3590,7 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 		return NULL;
 	}
 
-	if ((domain != mono_get_root_domain ()) && (!(amodule->info.opts & MONO_OPT_SHARED)))
+	if (domain != mono_get_root_domain ())
 		/* Non shared AOT code can't be used in other appdomains */
 		return NULL;
 
@@ -3642,85 +3645,9 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 		}
 	}
 
-	p = info;
-
-	if (method) {
-		klass = method->klass;
-		decode_klass_ref (amodule, p, &p);
-	} else {
-		klass = decode_klass_ref (amodule, p, &p);
-	}
-
-	if (amodule->info.opts & MONO_OPT_SHARED)
-		used_strings = decode_value (p, &p);
-	else
-		used_strings = 0;
-
-	for (i = 0; i < used_strings; i++) {
-		guint token = decode_value (p, &p);
-		mono_ldstr (mono_get_root_domain (), image, mono_metadata_token_index (token));
-	}
-
-	if (amodule->info.opts & MONO_OPT_SHARED)	
-		keep_patches = FALSE;
-
-	n_patches = decode_value (p, &p);
-
-	keep_patches = FALSE;
-
-	if (n_patches) {
-		MonoJumpInfo *patches;
-		guint32 *got_slots;
-		gboolean llvm;
-		gpointer *got;
-
-		if (keep_patches)
-			mp = domain->mp;
-		else
-			mp = mono_mempool_new ();
-
-		if ((gpointer)code >= amodule->info.jit_code_start && (gpointer)code <= amodule->info.jit_code_end) {
-			llvm = FALSE;
-			got = amodule->got;
-		} else {
-			llvm = TRUE;
-			got = amodule->llvm_got;
-			g_assert (got);
-		}
-
-		patches = load_patch_info (amodule, mp, n_patches, llvm, &got_slots, p, &p);
-		if (patches == NULL)
-			goto cleanup;
-
-		for (pindex = 0; pindex < n_patches; ++pindex) {
-			MonoJumpInfo *ji = &patches [pindex];
-			gpointer addr;
-
-			/*
-			 * For SFLDA, we need to call resolve_patch_target () since the GOT slot could have
-			 * been initialized by load_method () for a static cctor before the cctor has
-			 * finished executing (#23242).
-			 */
-			if (!got [got_slots [pindex]] || ji->type == MONO_PATCH_INFO_SFLDA) {
-				addr = mono_resolve_patch_target (method, domain, code, ji, TRUE);
-				if (ji->type == MONO_PATCH_INFO_METHOD_JUMP)
-					addr = mono_create_ftnptr (domain, addr);
-				mono_memory_barrier ();
-				got [got_slots [pindex]] = addr;
-				if (ji->type == MONO_PATCH_INFO_METHOD_JUMP)
-					register_jump_target_got_slot (domain, ji->data.method, &(got [got_slots [pindex]]));
-			}
-			ji->type = MONO_PATCH_INFO_NONE;
-		}
-
-		g_free (got_slots);
-
-		if (!keep_patches)
-			mono_mempool_destroy (mp);
-	}
-
-	if (mini_get_debug_options ()->load_aot_jit_info_eagerly)
-		jinfo = mono_aot_find_jit_info (domain, amodule->assembly->image, code);
+	res = mono_aot_init_method (amodule, method_index, method, &klass);
+	if (!res)
+		goto cleanup;
 
 	if (mono_trace_is_traced (G_LOG_LEVEL_DEBUG, MONO_TRACE_AOT)) {
 		char *full_name;
@@ -3754,7 +3681,7 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 		MonoJitInfo *jinfo;
 
 		if (!method) {
-			method = mono_get_method (image, token, NULL);
+			method = mono_get_method (amodule->assembly->image, token, NULL);
 			g_assert (method);
 		}
 		mono_profiler_method_jit (method);
@@ -3769,11 +3696,6 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 	return code;
 
  cleanup:
-	/* FIXME: The space in domain->mp is wasted */	
-	if (amodule->info.opts & MONO_OPT_SHARED)
-		/* No need to cache patches */
-		mono_mempool_destroy (mp);
-
 	if (jinfo)
 		g_free (jinfo);
 
@@ -3919,6 +3841,89 @@ mono_aot_find_method_index (MonoMethod *method)
 {
 	MonoAotModule *out_amodule;
 	return find_aot_method (method, &out_amodule);
+}
+
+static gboolean
+mono_aot_init_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *method, MonoClass **klass)
+{
+	MonoDomain *domain = mono_domain_get ();
+	MonoMemPool *mp;
+	int pindex, n_patches;
+	guint8 *p;
+	MonoJitInfo *jinfo = NULL;
+	guint8 *code, *info;
+
+	code = &amodule->code [amodule->code_offsets [method_index]];
+	info = &amodule->blob [mono_aot_get_offset (amodule->method_info_offsets, method_index)];
+
+	p = info;
+
+	if (method) {
+		*klass = method->klass;
+		decode_klass_ref (amodule, p, &p);
+	} else {
+		*klass = decode_klass_ref (amodule, p, &p);
+	}
+
+	n_patches = decode_value (p, &p);
+
+	if (n_patches) {
+		MonoJumpInfo *patches;
+		guint32 *got_slots;
+		gboolean llvm;
+		gpointer *got;
+
+		mp = mono_mempool_new ();
+
+		if ((gpointer)code >= amodule->info.jit_code_start && (gpointer)code <= amodule->info.jit_code_end) {
+			llvm = FALSE;
+			got = amodule->got;
+		} else {
+			llvm = TRUE;
+			got = amodule->llvm_got;
+			g_assert (got);
+		}
+
+		patches = load_patch_info (amodule, mp, n_patches, llvm, &got_slots, p, &p);
+		if (patches == NULL)
+			goto cleanup;
+
+		for (pindex = 0; pindex < n_patches; ++pindex) {
+			MonoJumpInfo *ji = &patches [pindex];
+			gpointer addr;
+
+			/*
+			 * For SFLDA, we need to call resolve_patch_target () since the GOT slot could have
+			 * been initialized by load_method () for a static cctor before the cctor has
+			 * finished executing (#23242).
+			 */
+			if (!got [got_slots [pindex]] || ji->type == MONO_PATCH_INFO_SFLDA) {
+				addr = mono_resolve_patch_target (method, domain, code, ji, TRUE);
+				if (ji->type == MONO_PATCH_INFO_METHOD_JUMP)
+					addr = mono_create_ftnptr (domain, addr);
+				mono_memory_barrier ();
+				got [got_slots [pindex]] = addr;
+				if (ji->type == MONO_PATCH_INFO_METHOD_JUMP)
+					register_jump_target_got_slot (domain, ji->data.method, &(got [got_slots [pindex]]));
+			}
+			ji->type = MONO_PATCH_INFO_NONE;
+		}
+
+		g_free (got_slots);
+
+		mono_mempool_destroy (mp);
+	}
+
+	if (mini_get_debug_options ()->load_aot_jit_info_eagerly)
+		jinfo = mono_aot_find_jit_info (domain, amodule->assembly->image, code);
+
+	return TRUE;
+
+ cleanup:
+	if (jinfo)
+		g_free (jinfo);
+
+	return FALSE;
 }
 
 /*
@@ -4647,15 +4652,14 @@ get_new_trampoline_from_page (int tramp_type)
 		return code;
 	}
 	mono_aot_page_unlock ();
-	psize = mono_pagesize ();
 	/* the trampoline template page is in the mscorlib module */
 	image = mono_defaults.corlib;
 	g_assert (image);
 
+	psize = MONO_AOT_TRAMP_PAGE_SIZE;
+
 	amodule = image->aot_module;
 	g_assert (amodule);
-
-	g_assert (amodule->info.tramp_page_size == psize);
 
 	if (tramp_type == MONO_AOT_TRAMP_SPECIFIC)
 		tpage = load_function (amodule, "specific_trampolines_page");
@@ -4738,7 +4742,7 @@ get_new_specific_trampoline_from_page (gpointer tramp, gpointer arg)
 
 	code = get_new_trampoline_from_page (MONO_AOT_TRAMP_SPECIFIC);
 
-	data = (gpointer*)((char*)code - mono_pagesize ());
+	data = (gpointer*)((char*)code - MONO_AOT_TRAMP_PAGE_SIZE);
 	data [0] = arg;
 	data [1] = tramp;
 	/*g_warning ("new trampoline at %p for data %p, tramp %p (stored at %p)", code, arg, tramp, data);*/
@@ -4754,7 +4758,7 @@ get_new_rgctx_trampoline_from_page (gpointer tramp, gpointer arg)
 
 	code = get_new_trampoline_from_page (MONO_AOT_TRAMP_STATIC_RGCTX);
 
-	data = (gpointer*)((char*)code - mono_pagesize ());
+	data = (gpointer*)((char*)code - MONO_AOT_TRAMP_PAGE_SIZE);
 	data [0] = arg;
 	data [1] = tramp;
 	/*g_warning ("new rgctx trampoline at %p for data %p, tramp %p (stored at %p)", code, arg, tramp, data);*/
@@ -4770,7 +4774,7 @@ get_new_imt_trampoline_from_page (gpointer arg)
 
 	code = get_new_trampoline_from_page (MONO_AOT_TRAMP_IMT_THUNK);
 
-	data = (gpointer*)((char*)code - mono_pagesize ());
+	data = (gpointer*)((char*)code - MONO_AOT_TRAMP_PAGE_SIZE);
 	data [0] = arg;
 	/*g_warning ("new imt trampoline at %p for data %p, (stored at %p)", code, arg, data);*/
 	return code;
@@ -4785,7 +4789,7 @@ get_new_gsharedvt_arg_trampoline_from_page (gpointer tramp, gpointer arg)
 
 	code = get_new_trampoline_from_page (MONO_AOT_TRAMP_GSHAREDVT_ARG);
 
-	data = (gpointer*)((char*)code - mono_pagesize ());
+	data = (gpointer*)((char*)code - MONO_AOT_TRAMP_PAGE_SIZE);
 	data [0] = arg;
 	data [1] = tramp;
 	/*g_warning ("new rgctx trampoline at %p for data %p, tramp %p (stored at %p)", code, arg, tramp, data);*/

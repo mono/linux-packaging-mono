@@ -3689,7 +3689,11 @@ static void
 emit_class_init (MonoCompile *cfg, MonoClass *klass, MonoBasicBlock **out_bblock)
 {
 	/* This could be used as a fallback if needed */
-	//emit_generic_class_init (cfg, klass, out_bblock);
+	if (cfg->compile_aot) {
+		/* With the overhead of plt entries, the inline version is comparable in size/speed */
+		emit_generic_class_init (cfg, klass, out_bblock);
+		return;
+	}
 
 	*out_bblock = cfg->cbb;
 
@@ -5546,9 +5550,11 @@ emit_array_unsafe_access (MonoCompile *cfg, MonoMethodSignature *fsig, MonoInst 
 }
 
 static gboolean
-is_unsafe_mov_compatible (MonoClass *param_klass, MonoClass *return_klass)
+is_unsafe_mov_compatible (MonoCompile *cfg, MonoClass *param_klass, MonoClass *return_klass)
 {
 	uint32_t align;
+
+	param_klass = mono_class_from_mono_type (mini_get_underlying_type (cfg, &param_klass->byval_arg));
 
 	//Only allow for valuetypes
 	if (!param_klass->valuetype || !return_klass->valuetype)
@@ -5580,11 +5586,11 @@ emit_array_unsafe_mov (MonoCompile *cfg, MonoMethodSignature *fsig, MonoInst **a
 	MonoClass *return_klass = mono_class_from_mono_type (fsig->ret);
 
 	//Valuetypes that are semantically equivalent
-	if (is_unsafe_mov_compatible (param_klass, return_klass))
+	if (is_unsafe_mov_compatible (cfg, param_klass, return_klass))
 		return args [0];
 
 	//Arrays of valuetypes that are semantically equivalent
-	if (param_klass->rank == 1 && return_klass->rank == 1 && is_unsafe_mov_compatible (param_klass->element_class, return_klass->element_class))
+	if (param_klass->rank == 1 && return_klass->rank == 1 && is_unsafe_mov_compatible (cfg, param_klass->element_class, return_klass->element_class))
 		return args [0];
 
 	return NULL;
@@ -8190,12 +8196,13 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 			 * Backward branches are handled at the end of method-to-ir ().
 			 */
 			gboolean intr_loc = ip == header->code || (!cfg->cbb->last_ins && cfg->header->num_clauses);
+			gboolean sym_seq_point = sym_seq_points && mono_bitset_test_fast (seq_point_locs, ip - header->code);
 
 			/* Avoid sequence points on empty IL like .volatile */
 			// FIXME: Enable this
 			//if (!(cfg->cbb->last_ins && cfg->cbb->last_ins->opcode == OP_SEQ_POINT)) {
 			NEW_SEQ_POINT (cfg, ins, ip - header->code, intr_loc);
-			if (sp != stack_start)
+			if ((sp != stack_start) && !sym_seq_point)
 				ins->flags |= MONO_INST_NONEMPTY_STACK;
 			MONO_ADD_INS (cfg->cbb, ins);
 

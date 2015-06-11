@@ -1167,24 +1167,25 @@ arch_emit_specific_trampoline_pages (MonoAotCompile *acfg)
 	guint8 *code;
 	guint8 *loop_start, *loop_branch_back, *loop_end_check, *imt_found_check;
 	int i;
+	int pagesize = MONO_AOT_TRAMP_PAGE_SIZE;
 #define COMMON_TRAMP_SIZE 16
-	int count = (mono_pagesize () - COMMON_TRAMP_SIZE) / 8;
+	int count = (pagesize - COMMON_TRAMP_SIZE) / 8;
 	int imm8, rot_amount;
 	char symbol [128];
 
 	if (!acfg->aot_opts.use_trampolines_page)
 		return;
 
-	acfg->tramp_page_size = mono_pagesize ();
+	acfg->tramp_page_size = pagesize;
 
 	sprintf (symbol, "%sspecific_trampolines_page", acfg->user_symbol_prefix);
-	emit_alignment (acfg, mono_pagesize ());
+	emit_alignment (acfg, pagesize);
 	emit_global (acfg, symbol, TRUE);
 	emit_label (acfg, symbol);
 
 	/* emit the generic code first, the trampoline address + 8 is in the lr register */
 	code = buf;
-	imm8 = mono_arm_is_rotated_imm8 (mono_pagesize (), &rot_amount);
+	imm8 = mono_arm_is_rotated_imm8 (pagesize, &rot_amount);
 	ARM_SUB_REG_IMM (code, ARMREG_LR, ARMREG_LR, imm8, rot_amount);
 	ARM_LDR_IMM (code, ARMREG_R1, ARMREG_LR, -8);
 	ARM_LDR_IMM (code, ARMREG_PC, ARMREG_LR, -4);
@@ -1212,7 +1213,7 @@ arch_emit_specific_trampoline_pages (MonoAotCompile *acfg)
 	emit_global (acfg, symbol, TRUE);
 	emit_label (acfg, symbol);
 	code = buf;
-	imm8 = mono_arm_is_rotated_imm8 (mono_pagesize (), &rot_amount);
+	imm8 = mono_arm_is_rotated_imm8 (pagesize, &rot_amount);
 	ARM_SUB_REG_IMM (code, ARMREG_IP, ARMREG_IP, imm8, rot_amount);
 	ARM_LDR_IMM (code, MONO_ARCH_RGCTX_REG, ARMREG_IP, -8);
 	ARM_LDR_IMM (code, ARMREG_PC, ARMREG_IP, -4);
@@ -1239,7 +1240,7 @@ arch_emit_specific_trampoline_pages (MonoAotCompile *acfg)
 	emit_label (acfg, symbol);
 	code = buf;
 	ARM_PUSH (code, (1 << ARMREG_R0) | (1 << ARMREG_R1) | (1 << ARMREG_R2) | (1 << ARMREG_R3));
-	imm8 = mono_arm_is_rotated_imm8 (mono_pagesize (), &rot_amount);
+	imm8 = mono_arm_is_rotated_imm8 (pagesize, &rot_amount);
 	ARM_SUB_REG_IMM (code, ARMREG_IP, ARMREG_IP, imm8, rot_amount);
 	ARM_LDR_IMM (code, ARMREG_R0, ARMREG_IP, -8);
 	ARM_LDR_IMM (code, ARMREG_PC, ARMREG_IP, -4);
@@ -1269,7 +1270,7 @@ arch_emit_specific_trampoline_pages (MonoAotCompile *acfg)
 	/* Need at least two free registers, plus a slot for storing the pc */
 	ARM_PUSH (code, (1 << ARMREG_R0)|(1 << ARMREG_R1)|(1 << ARMREG_R2));
 
-	imm8 = mono_arm_is_rotated_imm8 (mono_pagesize (), &rot_amount);
+	imm8 = mono_arm_is_rotated_imm8 (pagesize, &rot_amount);
 	ARM_SUB_REG_IMM (code, ARMREG_IP, ARMREG_IP, imm8, rot_amount);
 	ARM_LDR_IMM (code, ARMREG_R0, ARMREG_IP, -8);
 
@@ -3261,7 +3262,7 @@ add_method (MonoAotCompile *acfg, MonoMethod *method)
 static void
 add_extra_method_with_depth (MonoAotCompile *acfg, MonoMethod *method, int depth)
 {
-	if (mono_method_is_generic_sharable_full (method, FALSE, TRUE, FALSE))
+	if (mono_method_is_generic_sharable_full (method, TRUE, TRUE, FALSE))
 		method = mini_get_shared_method (method);
 	else if ((acfg->opts & MONO_OPT_GSHAREDVT) && prefer_gsharedvt_method (acfg, method) && mono_method_is_generic_sharable_full (method, FALSE, FALSE, TRUE))
 		/* Use the gsharedvt version */
@@ -4229,6 +4230,42 @@ add_generic_class_with_depth (MonoAotCompile *acfg, MonoClass *klass, int depth,
 			gcomparer = mono_class_from_name (mono_defaults.corlib, "System.Collections.Generic", "GenericEqualityComparer`1");
 			g_assert (gcomparer);
 			add_generic_class (acfg, mono_class_inflate_generic_class (gcomparer, &ctx), FALSE, "EqualityComparer<T>");
+		}
+	}
+
+	/* Add an instance of EnumComparer<T> which is created dynamically by EqualityComparer<T> for enums */
+	if (klass->image == mono_defaults.corlib && !strcmp (klass->name_space, "System.Collections.Generic") && !strcmp (klass->name, "EqualityComparer`1")) {
+		MonoClass *enum_comparer;
+		MonoClass *tclass = mono_class_from_mono_type (klass->generic_class->context.class_inst->type_argv [0]);
+		MonoGenericContext ctx;
+		MonoType *args [16];
+
+		if (mono_class_is_enum (tclass)) {
+			memset (&ctx, 0, sizeof (ctx));
+			args [0] = &tclass->byval_arg;
+			ctx.class_inst = mono_metadata_get_generic_inst (1, args);
+
+			enum_comparer = mono_class_from_name (mono_defaults.corlib, "System.Collections.Generic", "EnumEqualityComparer`1");
+			g_assert (enum_comparer);
+			add_generic_class (acfg, mono_class_inflate_generic_class (enum_comparer, &ctx), FALSE, "EqualityComparer<T>");
+		}
+	}
+
+	/* Add an instance of ObjectComparer<T> which is created dynamically by Comparer<T> for enums */
+	if (klass->image == mono_defaults.corlib && !strcmp (klass->name_space, "System.Collections.Generic") && !strcmp (klass->name, "Comparer`1")) {
+		MonoClass *comparer;
+		MonoClass *tclass = mono_class_from_mono_type (klass->generic_class->context.class_inst->type_argv [0]);
+		MonoGenericContext ctx;
+		MonoType *args [16];
+
+		if (mono_class_is_enum (tclass)) {
+			memset (&ctx, 0, sizeof (ctx));
+			args [0] = &tclass->byval_arg;
+			ctx.class_inst = mono_metadata_get_generic_inst (1, args);
+
+			comparer = mono_class_from_name (mono_defaults.corlib, "System.Collections.Generic", "ObjectComparer`1");
+			g_assert (comparer);
+			add_generic_class (acfg, mono_class_inflate_generic_class (comparer, &ctx), FALSE, "Comparer<T>");
 		}
 	}
 }
@@ -5359,7 +5396,6 @@ static void
 emit_method_info (MonoAotCompile *acfg, MonoCompile *cfg)
 {
 	MonoMethod *method;
-	GList *l;
 	int pindex, buf_size, n_patches;
 	GPtrArray *patches;
 	MonoJumpInfo *patch_info;
@@ -5392,16 +5428,7 @@ emit_method_info (MonoAotCompile *acfg, MonoCompile *cfg)
 		/* Not needed when loading the method */
 		encode_value (0, p, &p);
 
-	/* String table */
-	if (cfg->opt & MONO_OPT_SHARED) {
-		encode_value (g_list_length (cfg->ldstr_list), p, &p);
-		for (l = cfg->ldstr_list; l; l = l->next) {
-			encode_value ((long)l->data, p, &p);
-		}
-	}
-	else
-		/* Used only in shared mode */
-		g_assert (!cfg->ldstr_list);
+	g_assert (!(cfg->opt & MONO_OPT_SHARED));
 
 	n_patches = 0;
 	for (pindex = 0; pindex < patches->len; ++pindex) {
@@ -6175,8 +6202,6 @@ emit_trampolines (MonoAotCompile *acfg)
 			emit_trampoline (acfg, acfg->got_offset, info);
 		}
 
-		mono_arch_get_nullified_class_init_trampoline (&info);
-		emit_trampoline (acfg, acfg->got_offset, info);
 #if defined(MONO_ARCH_MONITOR_OBJECT_REG)
 		mono_arch_create_monitor_enter_trampoline (&info, FALSE, TRUE);
 		emit_trampoline (acfg, acfg->got_offset, info);
@@ -6918,9 +6943,9 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 				if (m->is_inflated) {
 					if (!(mono_class_generic_sharing_enabled (m->klass) &&
 						  mono_method_is_generic_sharable_full (m, FALSE, FALSE, FALSE)) &&
-						!method_has_type_vars (m)) {
+						(!method_has_type_vars (m) || mono_method_is_generic_sharable_full (m, TRUE, TRUE, FALSE))) {
 						if (m->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) {
-							if (mono_aot_mode_is_full (&acfg->aot_opts))
+							if (mono_aot_mode_is_full (&acfg->aot_opts) && !method_has_type_vars (m))
 								add_extra_method_with_depth (acfg, mono_marshal_get_native_wrapper (m, TRUE, TRUE), depth + 1);
 						} else {
 							add_extra_method_with_depth (acfg, m, depth + 1);
@@ -8713,6 +8738,10 @@ collect_methods (MonoAotCompile *acfg)
 		}
 		*/
 
+		if (method->is_generic || method->klass->generic_container)
+			/* Compile the ref shared version instead */
+			method = mini_get_shared_method (method);
+
 		/* Since we add the normal methods first, their index will be equal to their zero based token index */
 		add_method_with_index (acfg, method, i, FALSE);
 		acfg->method_index ++;
@@ -8730,14 +8759,6 @@ collect_methods (MonoAotCompile *acfg)
 		method = mono_get_method_checked (acfg->image, token, NULL, NULL, &error);
 		report_loader_error (acfg, &error, "Failed to load method token 0x%x due to %s\n", i, mono_error_get_message (&error));
 
-		/*
-		if (strcmp (method->name, "gshared2"))
-			continue;
-		*/
-		/*
-		if (!strstr (method->klass->image->name, "mini"))
-			continue;
-		*/
 		if (method->is_generic || method->klass->generic_container) {
 			MonoMethod *gshared;
 
