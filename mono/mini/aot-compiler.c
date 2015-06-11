@@ -3090,6 +3090,8 @@ static MonoPltEntry*
 get_plt_entry (MonoAotCompile *acfg, MonoJumpInfo *patch_info)
 {
 	MonoPltEntry *res;
+	gboolean synchronized = FALSE;
+	static int synchronized_symbol_idx;
 
 	if (!is_plt_patch (patch_info))
 		return NULL;
@@ -3105,6 +3107,7 @@ get_plt_entry (MonoAotCompile *acfg, MonoJumpInfo *patch_info)
 		 * wrapper.
 		 */
 		res = NULL;
+		synchronized = TRUE;
 	}
 
 	if (!res) {
@@ -3118,6 +3121,13 @@ get_plt_entry (MonoAotCompile *acfg, MonoJumpInfo *patch_info)
 		res->symbol = get_plt_symbol (acfg, res->plt_offset, patch_info);
 		if (acfg->aot_opts.write_symbols)
 			res->debug_sym = get_plt_entry_debug_sym (acfg, res->ji, acfg->plt_entry_debug_sym_cache);
+		if (synchronized) {
+			/* Avoid duplicate symbols because we don't cache */
+			res->symbol = g_strdup_printf ("%s_%d", res->symbol, synchronized_symbol_idx);
+			if (res->debug_sym)
+				res->debug_sym = g_strdup_printf ("%s_%d", res->debug_sym, synchronized_symbol_idx);
+			synchronized_symbol_idx ++;
+		}
 		if (res->debug_sym)
 			res->llvm_symbol = g_strdup_printf ("%s_%s_llvm", res->symbol, res->debug_sym);
 		else
@@ -3622,8 +3632,18 @@ add_wrappers (MonoAotCompile *acfg)
 				for (j = 0; j < cattr->num_attrs; ++j)
 					if (cattr->attrs [j].ctor && (!strcmp (cattr->attrs [j].ctor->klass->name, "MonoNativeFunctionWrapperAttribute") || !strcmp (cattr->attrs [j].ctor->klass->name, "UnmanagedFunctionPointerAttribute")))
 						break;
-				if (j < cattr->num_attrs)
-					add_method (acfg, mono_marshal_get_native_func_wrapper_aot (klass));
+				if (j < cattr->num_attrs) {
+					MonoMethod *invoke;
+					MonoMethod *wrapper;
+					MonoMethod *del_invoke;
+
+					/* Add wrappers needed by mono_ftnptr_to_delegate () */
+					invoke = mono_get_delegate_invoke (klass);
+					wrapper = mono_marshal_get_native_func_wrapper_aot (klass);
+					del_invoke = mono_marshal_get_delegate_invoke_internal (invoke, FALSE, TRUE, wrapper);
+					add_method (acfg, wrapper);
+					add_method (acfg, del_invoke);
+				}
 			}
 		} else if ((acfg->opts & MONO_OPT_GSHAREDVT) && klass->generic_container) {
 			MonoError error;
