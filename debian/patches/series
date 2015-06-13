@@ -1,1 +1,2 @@
+0001-runtime-Fix-support-for-callvirt-delegates-with-a-vt.patch
 rename-and-package-symbolicate.patch
