@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2015-06-11 11:40-0400\n"
+"POT-Creation-Date: 2015-06-18 11:41-0400\n"
 "PO-Revision-Date: 2008-09-26 15:14+0100\n"
 "Last-Translator: Daniel Nauck <dna@mono-project.de>\n"
 "Language-Team: http://www.mono-project.de\n"
@@ -2186,19 +2186,19 @@ msgstr ""
 msgid "Cannot perform member binding on `null' value"
 msgstr ""
 
-#: mcs/mcs/expression.cs:9788
+#: mcs/mcs/expression.cs:9797
 #, csharp-format
 msgid ""
 "`{0}': cannot reference a type through an expression. Consider using `{1}' "
 "instead"
 msgstr ""
 
-#: mcs/mcs/expression.cs:9867
+#: mcs/mcs/expression.cs:9876
 #, csharp-format
 msgid "A nested type cannot be specified through a type parameter `{0}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:9875
+#: mcs/mcs/expression.cs:9884
 #, fuzzy, csharp-format
 msgid ""
 "Alias `{0}' cannot be used with `::' since it denotes a type. Consider "
@@ -2207,123 +2207,123 @@ msgstr ""
 "Der Alias `{0}' kann nicht mit '::' verwendet werden, da der Alias auf einen "
 "Typ verweist. Verwenden Sie '.' stattdessen."
 
-#: mcs/mcs/expression.cs:9944
+#: mcs/mcs/expression.cs:9953
 #, csharp-format
 msgid "The nested type `{0}' does not exist in the type `{1}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:9968
+#: mcs/mcs/expression.cs:9977
 #, csharp-format
 msgid ""
 "Type `{0}' does not contain a definition for `{1}' and no extension method "
 "`{1}' of type `{0}' could be found. Are you missing {2}?"
 msgstr ""
 
-#: mcs/mcs/expression.cs:10247
+#: mcs/mcs/expression.cs:10256
 #, csharp-format
 msgid "Cannot apply indexing with [] to an expression of type `{0}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:10392
+#: mcs/mcs/expression.cs:10401
 #, csharp-format
 msgid "Wrong number of indexes `{0}' inside [], expected `{1}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:10820
+#: mcs/mcs/expression.cs:10829
 msgid ""
 "The indexer base access cannot be dynamically dispatched. Consider casting "
 "the dynamic arguments or eliminating the base access"
 msgstr ""
 
-#: mcs/mcs/expression.cs:10910
+#: mcs/mcs/expression.cs:10919
 msgid "An expression tree may not contain a base access"
 msgstr ""
 
-#: mcs/mcs/expression.cs:10928
+#: mcs/mcs/expression.cs:10937
 msgid "Keyword `base' is not available in a static method"
 msgstr ""
 
-#: mcs/mcs/expression.cs:10930
+#: mcs/mcs/expression.cs:10939
 msgid "Keyword `base' is not available in the current context"
 msgstr ""
 
-#: mcs/mcs/expression.cs:10968
+#: mcs/mcs/expression.cs:10977
 msgid ""
 "A property, indexer or dynamic member access may not be passed as `ref' or "
 "`out' parameter"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11313
+#: mcs/mcs/expression.cs:11322
 #, csharp-format
 msgid "Array elements cannot be of type `{0}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11316
+#: mcs/mcs/expression.cs:11325
 #, csharp-format
 msgid "Array elements cannot be of static type `{0}'"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11492
+#: mcs/mcs/expression.cs:11501
 msgid "Cannot use a negative size with stackalloc"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11496
+#: mcs/mcs/expression.cs:11505
 msgid "Cannot use stackalloc in finally or catch"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11651
+#: mcs/mcs/expression.cs:11660
 #, csharp-format
 msgid ""
 "Member `{0}' cannot be initialized. An object initializer may only be used "
 "for fields, or properties"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11659
+#: mcs/mcs/expression.cs:11668
 #, csharp-format
 msgid ""
 "Static field or property `{0}' cannot be assigned in an object initializer"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11763
+#: mcs/mcs/expression.cs:11772
 #, fuzzy
 msgid "Expression tree cannot contain a dictionary initializer"
 msgstr ""
 "`{0}': Statische Klassen können keine benutzerdefinierten Operatoren "
 "beinhalten"
 
-#: mcs/mcs/expression.cs:11888
+#: mcs/mcs/expression.cs:11897
 #, csharp-format
 msgid ""
 "A field or property `{0}' cannot be initialized with a collection object "
 "initializer because type `{1}' does not implement `{2}' interface"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11899
+#: mcs/mcs/expression.cs:11908
 #, csharp-format
 msgid "Inconsistent `{0}' member declaration"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11907
+#: mcs/mcs/expression.cs:11916
 #, csharp-format
 msgid ""
 "An object initializer includes more than one member `{0}' initialization"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11925
+#: mcs/mcs/expression.cs:11934
 #, csharp-format
 msgid "Cannot initialize object of type `{0}' with a collection initializer"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12070
+#: mcs/mcs/expression.cs:12079
 msgid ""
 "Object and collection initializers cannot be used to instantiate a delegate"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12278
+#: mcs/mcs/expression.cs:12287
 msgid "Anonymous types cannot be used in this expression"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12372
+#: mcs/mcs/expression.cs:12381
 #, csharp-format
 msgid "An anonymous type property `{0}' cannot be initialized with `{1}'"
 msgstr ""
@@ -2487,39 +2487,39 @@ msgstr ""
 msgid "The {2} type parameter `{0}' must be {3} valid on `{1}{4}'"
 msgstr ""
 
-#: mcs/mcs/generic.cs:2214
+#: mcs/mcs/generic.cs:2239
 #, csharp-format
 msgid "`{0}': static classes cannot be used as generic arguments"
 msgstr ""
 
-#: mcs/mcs/generic.cs:2221
+#: mcs/mcs/generic.cs:2246
 #, csharp-format
 msgid "The type `{0}' may not be used as a type argument"
 msgstr ""
 
-#: mcs/mcs/generic.cs:2262
+#: mcs/mcs/generic.cs:2287
 msgid "Unbound generic name is not valid in this context"
 msgstr ""
 
-#: mcs/mcs/generic.cs:2322
+#: mcs/mcs/generic.cs:2347
 msgid "Variant type parameters can only be used with interfaces and delegates"
 msgstr ""
 
-#: mcs/mcs/generic.cs:2391
+#: mcs/mcs/generic.cs:2416
 #, csharp-format
 msgid ""
 "Partial method declarations of `{0}' have inconsistent constraints for type "
 "parameter `{1}'"
 msgstr ""
 
-#: mcs/mcs/generic.cs:2407
+#: mcs/mcs/generic.cs:2432
 #, csharp-format
 msgid ""
 "Partial declarations of `{0}' have inconsistent constraints for type "
 "parameter `{1}'"
 msgstr ""
 
-#: mcs/mcs/generic.cs:2594
+#: mcs/mcs/generic.cs:2619
 #, fuzzy, csharp-format
 msgid ""
 "The type `{0}' must be a reference type in order to use it as type parameter "
@@ -2528,7 +2528,7 @@ msgstr ""
 "Der Typ `{0}' muss ein Referenztyp sein, damit er als `{1}'-Parameter in "
 "generischen Typ oder in der generischen Methode `{2}' verwendet werden kann."
 
-#: mcs/mcs/generic.cs:2604
+#: mcs/mcs/generic.cs:2629
 #, fuzzy, csharp-format
 msgid ""
 "The type `{0}' must be a non-nullable value type in order to use it as type "
@@ -2537,14 +2537,14 @@ msgstr ""
 "Der Typ `{0}' darf keine NULL-Werte zulassen, wenn er als `{1}'-Parameter im "
 "generischen Typ oder in der generischen Methode `{2}' verwendet werden soll."
 
-#: mcs/mcs/generic.cs:2665
+#: mcs/mcs/generic.cs:2690
 #, csharp-format
 msgid ""
 "The type `{0}' must have a public parameterless constructor in order to use "
 "it as parameter `{1}' in the generic type or method `{2}'"
 msgstr ""
 
-#: mcs/mcs/generic.cs:2721
+#: mcs/mcs/generic.cs:2746
 #, fuzzy, csharp-format
 msgid ""
 "The type `{0}' cannot be used as type parameter `{1}' in the generic type or "
@@ -2554,7 +2554,7 @@ msgstr ""
 "Der Typ `{0}' muss ein Referenztyp sein, damit er als `{1}'-Parameter in "
 "generischen Typ oder in der generischen Methode `{2}' verwendet werden kann."
 
-#: mcs/mcs/generic.cs:2727
+#: mcs/mcs/generic.cs:2752
 #, fuzzy, csharp-format
 msgid ""
 "The type `{0}' cannot be used as type parameter `{1}' in the generic type or "
@@ -2564,7 +2564,7 @@ msgstr ""
 "Der Typ `{0}' muss ein Referenztyp sein, damit er als `{1}'-Parameter in "
 "generischen Typ oder in der generischen Methode `{2}' verwendet werden kann."
 
-#: mcs/mcs/generic.cs:2731
+#: mcs/mcs/generic.cs:2756
 #, fuzzy, csharp-format
 msgid ""
 "The type `{0}' cannot be used as type parameter `{1}' in the generic type or "
@@ -2573,7 +2573,7 @@ msgstr ""
 "Der Typ `{0}' muss ein Referenztyp sein, damit er als `{1}'-Parameter in "
 "generischen Typ oder in der generischen Methode `{2}' verwendet werden kann."
 
-#: mcs/mcs/generic.cs:2736
+#: mcs/mcs/generic.cs:2761
 #, fuzzy, csharp-format
 msgid ""
 "The type `{0}' cannot be used as type parameter `{1}' in the generic type or "
@@ -2582,7 +2582,7 @@ msgstr ""
 "Der Typ `{0}' muss ein Referenztyp sein, damit er als `{1}'-Parameter in "
 "generischen Typ oder in der generischen Methode `{2}' verwendet werden kann."
 
-#: mcs/mcs/generic.cs:2741
+#: mcs/mcs/generic.cs:2766
 #, fuzzy, csharp-format
 msgid ""
 "The type `{0}' cannot be used as type parameter `{1}' in the generic type or "
@@ -2648,14 +2648,14 @@ msgid ""
 "supply runtime policy"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:465
+#: mcs/mcs/ikvm.cs:469
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:474
+#: mcs/mcs/ikvm.cs:478
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
@@ -3409,48 +3409,48 @@ msgid ""
 "property or indexer"
 msgstr ""
 
-#: mcs/mcs/property.cs:625
+#: mcs/mcs/property.cs:624
 #, csharp-format
 msgid ""
 "`{0}': accessibility modifiers on accessors may only be used if the property "
 "or indexer has both a get and a set accessor"
 msgstr ""
 
-#: mcs/mcs/property.cs:860
+#: mcs/mcs/property.cs:859
 #, fuzzy, csharp-format
 msgid "`{0}': Only auto-implemented properties can have initializers"
 msgstr "`{0}': Instanzfeldinitialisierungen können nicht in Strukturen sein"
 
-#: mcs/mcs/property.cs:864
+#: mcs/mcs/property.cs:863
 #, fuzzy, csharp-format
 msgid "`{0}': Properties inside interfaces cannot have initializers"
 msgstr "`{0}': Instanzfeldinitialisierungen können nicht in Strukturen sein"
 
-#: mcs/mcs/property.cs:874
+#: mcs/mcs/property.cs:873
 #, csharp-format
 msgid "Auto-implemented property `{0}' must have get accessor"
 msgstr ""
 
-#: mcs/mcs/property.cs:909
+#: mcs/mcs/property.cs:908
 #, csharp-format
 msgid ""
 "Automatically implemented property `{0}' cannot be used inside a type with "
 "an explicit StructLayout attribute"
 msgstr ""
 
-#: mcs/mcs/property.cs:1413
+#: mcs/mcs/property.cs:1412
 #, csharp-format
 msgid "`{0}': event must be of a delegate type"
 msgstr ""
 
-#: mcs/mcs/property.cs:1691
+#: mcs/mcs/property.cs:1690
 #, csharp-format
 msgid ""
 "The `{0}' attribute is valid only on an indexer that is not an explicit "
 "interface member declaration"
 msgstr ""
 
-#: mcs/mcs/property.cs:1695
+#: mcs/mcs/property.cs:1694
 msgid "Cannot set the `IndexerName' attribute on an indexer marked override"
 msgstr ""
 

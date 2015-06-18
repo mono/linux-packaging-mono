@@ -923,6 +923,11 @@ TEST_CS_SRC_GEN = \
 @NACL_CODEGEN_TRUE@	gsharing-valuetype-layout.exe \
 @NACL_CODEGEN_TRUE@	$(am__append_2)
 
+# These tests hang
+@POWERPC64_TRUE@PLATFORM_DISABLED_TESTS = monitor.exe \
+@POWERPC64_TRUE@	finalizer-abort.exe finalizer-exception.exe \
+@POWERPC64_TRUE@	finalizer-exit.exe $(am__append_2)
+
 # bug #71274
 @POWERPC_TRUE@PLATFORM_DISABLED_TESTS = finalizer-abort.exe \
 @POWERPC_TRUE@	finalizer-exception.exe finalizer-exit.exe \

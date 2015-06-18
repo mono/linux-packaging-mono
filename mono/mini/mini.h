@@ -2206,7 +2206,7 @@ MonoInst *mono_get_got_var (MonoCompile *cfg);
 void      mono_add_seq_point (MonoCompile *cfg, MonoBasicBlock *bb, MonoInst *ins, int native_offset);
 void      mono_add_var_location (MonoCompile *cfg, MonoInst *var, gboolean is_reg, int reg, int offset, int from, int to);
 MonoInst* mono_emit_jit_icall (MonoCompile *cfg, gconstpointer func, MonoInst **args);
-MonoInst* mono_emit_jit_icall_by_info (MonoCompile *cfg, MonoJitICallInfo *info, MonoInst **args, MonoBasicBlock **out_cbb);
+MonoInst* mono_emit_jit_icall_by_info (MonoCompile *cfg, MonoJitICallInfo *info, MonoInst **args);
 MonoInst* mono_emit_method_call (MonoCompile *cfg, MonoMethod *method, MonoInst **args, MonoInst *this);
 void      mono_create_helper_signatures (void);
 
@@ -2434,7 +2434,7 @@ int               mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoB
 									 MonoInst *return_var, MonoInst **inline_args,
 									 guint inline_offset, gboolean is_virtual_call);
 
-MonoInst         *mono_decompose_opcode (MonoCompile *cfg, MonoInst *ins, MonoBasicBlock **out_cbb);
+MonoInst         *mono_decompose_opcode (MonoCompile *cfg, MonoInst *ins);
 void              mono_decompose_long_opts (MonoCompile *cfg);
 void              mono_decompose_vtype_opts (MonoCompile *cfg);
 void              mono_decompose_vtype_opts_llvm (MonoCompile *cfg);
@@ -2752,10 +2752,10 @@ gboolean
 mono_class_generic_sharing_enabled (MonoClass *class);
 
 gpointer
-mono_class_fill_runtime_generic_context (MonoVTable *class_vtable, guint8 *caller, guint32 slot);
+mono_class_fill_runtime_generic_context (MonoVTable *class_vtable, guint32 slot);
 
 gpointer
-mono_method_fill_runtime_generic_context (MonoMethodRuntimeGenericContext *mrgctx, guint8 *caller, guint32 slot);
+mono_method_fill_runtime_generic_context (MonoMethodRuntimeGenericContext *mrgctx, guint32 slot);
 
 MonoMethodRuntimeGenericContext*
 mono_method_lookup_rgctx (MonoVTable *class_vtable, MonoGenericInst *method_inst);
@@ -2837,6 +2837,7 @@ MonoType* mini_type_get_underlying_type (MonoGenericSharingContext *gsctx, MonoT
 MonoMethod* mini_get_shared_method (MonoMethod *method);
 MonoMethod* mini_get_shared_method_to_register (MonoMethod *method);
 MonoMethod* mini_get_shared_method_full (MonoMethod *method, gboolean all_vt, gboolean is_gsharedvt);
+int mini_get_rgctx_entry_slot (MonoJumpInfoRgctxEntry *entry);
 
 int mini_type_stack_size (MonoGenericSharingContext *gsctx, MonoType *t, int *align);
 int mini_type_stack_size_full (MonoGenericSharingContext *gsctx, MonoType *t, guint32 *align, gboolean pinvoke);

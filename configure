@@ -18498,7 +18498,7 @@ _ACEOF
   fi
 
 
-for ac_header in sys/filio.h sys/sockio.h netdb.h utime.h sys/utime.h semaphore.h sys/un.h linux/rtc.h sys/syscall.h sys/mkdev.h sys/uio.h sys/param.h sys/sysctl.h libproc.h
+for ac_header in sys/filio.h sys/sockio.h netdb.h utime.h sys/utime.h semaphore.h sys/un.h linux/rtc.h sys/syscall.h sys/mkdev.h sys/uio.h sys/param.h sys/sysctl.h libproc.h sys/prctl.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -20699,6 +20699,17 @@ do :
 if test "x$ac_cv_func_getrlimit" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_GETRLIMIT 1
+_ACEOF
+
+fi
+done
+
+	for ac_func in prctl
+do :
+  ac_fn_c_check_func "$LINENO" "prctl" "ac_cv_func_prctl"
+if test "x$ac_cv_func_prctl" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PRCTL 1
 _ACEOF
 
 fi
@@ -23456,6 +23467,17 @@ do :
 if test "x$ac_cv_func_setpgid" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_SETPGID 1
+_ACEOF
+
+fi
+done
+
+	for ac_func in system
+do :
+  ac_fn_c_check_func "$LINENO" "system" "ac_cv_func_system"
+if test "x$ac_cv_func_system" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYSTEM 1
 _ACEOF
 
 fi

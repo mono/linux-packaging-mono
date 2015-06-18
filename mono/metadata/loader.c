@@ -1535,7 +1535,7 @@ mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char
 			continue;
 		case 3:
 			if (!is_absolute && mono_dl_get_system_dir ()) {
-				dir_name = mono_dl_get_system_dir ();
+				dir_name = (char*)mono_dl_get_system_dir ();
 				file_name = g_path_get_basename (new_scope);
 				base_name = NULL;
 			} else
@@ -2422,7 +2422,7 @@ async_stack_walk_adapter (MonoStackFrameInfo *frame, MonoContext *ctx, gpointer 
 		if (frame->ji->async)
 			return d->func (NULL, frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
 		else
-			return d->func (mono_jit_info_get_method (frame->ji), frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
+			return d->func (frame->actual_method, frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
 		break;
 	default:
 		g_assert_not_reached ();
