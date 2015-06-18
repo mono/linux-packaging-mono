@@ -5713,34 +5713,8 @@ emit_exception_debug_info (MonoAotCompile *acfg, MonoCompile *cfg, gboolean stor
 		p += p2 - buf2;
 		g_free (buf2);
 
-		if (gsctx && (gsctx->var_is_vt || gsctx->mvar_is_vt)) {
-			MonoMethodInflated *inflated;
-			MonoGenericContext *context;
-			MonoGenericInst *inst;
-
-			g_assert (jinfo->d.method->is_inflated);
-			inflated = (MonoMethodInflated*)jinfo->d.method;
-			context = &inflated->context;
-
+		if (gsctx && gsctx->is_gsharedvt) {
 			encode_value (1, p, &p);
-			if (context->class_inst) {
-				inst = context->class_inst;
-
-				encode_value (inst->type_argc, p, &p);
-				for (i = 0; i < inst->type_argc; ++i)
-					encode_value (gsctx->var_is_vt [i], p, &p);
-			} else {
-				encode_value (0, p, &p);
-			}
-			if (context->method_inst) {
-				inst = context->method_inst;
-
-				encode_value (inst->type_argc, p, &p);
-				for (i = 0; i < inst->type_argc; ++i)
-					encode_value (gsctx->mvar_is_vt [i], p, &p);
-			} else {
-				encode_value (0, p, &p);
-			}
 		} else {
 			encode_value (0, p, &p);
 		}
@@ -7307,8 +7281,10 @@ execute_system (const char * command)
 	g_free (wstr);
 
 	g_free (command);
-#else
+#elif defined (HAVE_SYSTEM)
 	status = system (command);
+#else
+	g_assert_not_reached ();
 #endif
 
 	return status;

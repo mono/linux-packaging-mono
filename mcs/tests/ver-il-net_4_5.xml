@@ -3053,6 +3053,25 @@
       </method>
     </type>
   </test>
+  <test name="dtest-061.cs">
+    <type name="Test.Program">
+      <method name="Void Main()" attrs="150">
+        <size>88</size>
+      </method>
+      <method name="Void AreEqual[A,B](A, B)" attrs="150">
+        <size>54</size>
+      </method>
+      <method name="Void ShiftTest(Int32, Int32)" attrs="134">
+        <size>2459</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+      <method name="Void .cctor()" attrs="6289">
+        <size>24</size>
+      </method>
+    </type>
+  </test>
   <test name="dtest-anontype-01.cs">
     <type name="C">
       <method name="Void Main()" attrs="150">
@@ -19604,6 +19623,53 @@
       <method name="Int32 Main()" attrs="150">
         <size>32</size>
       </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-631.cs">
+    <type name="BaseClass`1[TSource]">
+      <method name="Void DoStuff[TInput](TInput)" attrs="134">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="MyClass">
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void MyInterface.DoStuff[TInput](TInput)" attrs="993">
+        <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-632.cs">
+    <type name="BaseClass`1[TSource]">
+      <method name="Void DoStuff[TInput](TInput)" attrs="134">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="MyClass">
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void MyInterface.DoStuff[TInput](TInput)" attrs="993">
+        <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="TInterface">
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
       </method>
@@ -51584,6 +51650,35 @@
       </method>
     </type>
   </test>
+  <test name="test-926.cs">
+    <type name="Program">
+      <method name="Void Main()" attrs="150">
+        <size>12</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="MyClass">
+      <method name="Int32 get_Item(Int32)" attrs="2500">
+        <size>10</size>
+      </method>
+      <method name="Void set_Item(Int32, Int32)" attrs="2501">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="Derived">
+      <method name="Int32 get_Item(Int32)" attrs="2244">
+        <size>10</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
   <test name="test-93.cs">
     <type name="N1.C">
       <method name="Void .ctor()" attrs="6278">
@@ -69021,6 +69116,33 @@
       </method>
       <method name="Int32 &lt;d&gt;m__0(Int32)" attrs="145">
         <size>10</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-null-operator-10.cs">
+    <type name="Event">
+      <method name="System.String get_Name()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_Name(System.String)" attrs="2182">
+        <size>8</size>
+      </method>
+      <method name="System.String get_Foo()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_Foo(System.String)" attrs="2182">
+        <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="X">
+      <method name="Void Main()" attrs="150">
+        <size>50</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
       </method>
     </type>
   </test>
