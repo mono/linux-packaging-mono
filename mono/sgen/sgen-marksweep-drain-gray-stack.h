@@ -33,7 +33,7 @@
 
 /* Returns whether the object is still in the nursery. */
 static inline MONO_ALWAYS_INLINE gboolean
-COPY_OR_MARK_FUNCTION_NAME (void **ptr, void *obj, SgenGrayQueue *queue)
+COPY_OR_MARK_FUNCTION_NAME (GCObject **ptr, GCObject *obj, SgenGrayQueue *queue)
 {
 	MSBlockInfo *block;
 
@@ -41,7 +41,7 @@ COPY_OR_MARK_FUNCTION_NAME (void **ptr, void *obj, SgenGrayQueue *queue)
 	++stat_optimized_copy;
 	{
 		char *forwarded;
-		mword desc;
+		SgenDescriptor desc;
 		if ((forwarded = SGEN_OBJECT_IS_FORWARDED (obj)))
 			desc = sgen_obj_get_descriptor_safe (forwarded);
 		else
@@ -56,7 +56,7 @@ COPY_OR_MARK_FUNCTION_NAME (void **ptr, void *obj, SgenGrayQueue *queue)
 
 	if (sgen_ptr_in_nursery (obj)) {
 		int word, bit;
-		char *forwarded, *old_obj;
+		GCObject *forwarded, *old_obj;
 		mword vtable_word = *(mword*)obj;
 
 		HEAVY_STAT (++stat_optimized_copy_nursery);
@@ -125,19 +125,19 @@ COPY_OR_MARK_FUNCTION_NAME (void **ptr, void *obj, SgenGrayQueue *queue)
 		MS_CALC_MARK_BIT (word, bit, obj);
 		SGEN_ASSERT (9, !MS_MARK_BIT (block, word, bit), "object %p already marked", obj);
 		MS_SET_MARK_BIT (block, word, bit);
-		binary_protocol_mark (obj, (gpointer)LOAD_VTABLE (obj), sgen_safe_object_get_size ((GCObject*)obj));
+		binary_protocol_mark (obj, (gpointer)LOAD_VTABLE (obj), sgen_safe_object_get_size (obj));
 
 		return FALSE;
 	} else {
 		mword vtable_word = *(mword*)obj;
-		mword desc;
+		SgenDescriptor desc;
 		int type;
 
 		HEAVY_STAT (++stat_optimized_copy_major);
 
 #ifdef COPY_OR_MARK_WITH_EVACUATION
 		{
-			char *forwarded;
+			GCObject *forwarded;
 			if ((forwarded = SGEN_VTABLE_IS_FORWARDED (vtable_word))) {
 				HEAVY_STAT (++stat_optimized_copy_major_forwarded);
 				SGEN_UPDATE_REFERENCE (ptr, forwarded);
@@ -149,10 +149,10 @@ COPY_OR_MARK_FUNCTION_NAME (void **ptr, void *obj, SgenGrayQueue *queue)
 
 		SGEN_ASSERT (9, !SGEN_VTABLE_IS_PINNED (vtable_word), "Pinned object in non-pinned block?");
 
-		desc = sgen_vtable_get_descriptor ((GCVTable*)vtable_word);
+		desc = sgen_vtable_get_descriptor ((GCVTable)vtable_word);
 		type = desc & DESC_TYPE_MASK;
 
-		if (sgen_safe_object_is_small ((GCObject*)obj, type)) {
+		if (sgen_safe_object_is_small (obj, type)) {
 #ifdef HEAVY_STATISTICS
 			if (type <= DESC_TYPE_MAX_SMALL_OBJ)
 				++stat_optimized_copy_major_small_fast;
@@ -181,7 +181,7 @@ COPY_OR_MARK_FUNCTION_NAME (void **ptr, void *obj, SgenGrayQueue *queue)
 
 			if (sgen_los_object_is_pinned (obj))
 				return FALSE;
-			binary_protocol_pin (obj, (gpointer)SGEN_LOAD_VTABLE (obj), sgen_safe_object_get_size ((GCObject*)obj));
+			binary_protocol_pin (obj, (gpointer)SGEN_LOAD_VTABLE (obj), sgen_safe_object_get_size (obj));
 
 			sgen_los_pin_object (obj);
 			if (SGEN_OBJECT_HAS_REFERENCES (obj))
@@ -194,9 +194,9 @@ COPY_OR_MARK_FUNCTION_NAME (void **ptr, void *obj, SgenGrayQueue *queue)
 }
 
 static void
-SCAN_OBJECT_FUNCTION_NAME (char *obj, mword desc, SgenGrayQueue *queue)
+SCAN_OBJECT_FUNCTION_NAME (GCObject *obj, SgenDescriptor desc, SgenGrayQueue *queue)
 {
-	char *start = obj;
+	char *start = (char*)obj;
 
 #ifdef HEAVY_STATISTICS
 	++stat_optimized_major_scan;
@@ -235,8 +235,8 @@ DRAIN_GRAY_STACK_FUNCTION_NAME (ScanCopyContext ctx)
 	SGEN_ASSERT (0, ctx.ops->scan_object == major_scan_object_with_evacuation, "Wrong scan function");
 
 	for (;;) {
-		char *obj;
-		mword desc;
+		GCObject *obj;
+		SgenDescriptor desc;
 
 		HEAVY_STAT (++stat_drain_loops);
 

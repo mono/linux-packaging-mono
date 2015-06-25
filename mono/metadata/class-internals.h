@@ -11,6 +11,7 @@
 #include <mono/io-layer/io-layer.h>
 #include "mono/utils/mono-compiler.h"
 #include "mono/utils/mono-error.h"
+#include "mono/sgen/gc-internal-agnostic.h"
 
 #define MONO_CLASS_IS_ARRAY(c) ((c)->rank)
 
@@ -394,7 +395,7 @@ struct _MonoClass {
 	MonoGenericClass *generic_class;
 	MonoGenericContainer *generic_container;
 
-	void *gc_descr;
+	MonoGCDescriptor gc_descr;
 
 	MonoClassRuntimeInfo *runtime_info;
 
@@ -452,7 +453,7 @@ struct MonoVTable {
 	 * According to comments in gc_gcj.h, this should be the second word in
 	 * the vtable.
 	 */
-	void *gc_descr; 	
+	MonoGCDescriptor gc_descr;
 	MonoDomain *domain;  /* each object/vtable belongs to exactly one domain */
         gpointer    type; /* System.Type type for klass */
 	guint8     *interface_bitmap;
@@ -860,23 +861,6 @@ typedef struct {
 	MonoObject *wrapper;
 	void       *handle;
 } MonoHandleRef;
-
-enum {
-	MONO_GENERIC_SHARING_NONE,
-	MONO_GENERIC_SHARING_COLLECTIONS,
-	MONO_GENERIC_SHARING_CORLIB,
-	MONO_GENERIC_SHARING_ALL
-};
-
-/*
- * Flags for which contexts were used in inflating a generic.
- */
-enum {
-	MONO_GENERIC_CONTEXT_USED_CLASS = 1,
-	MONO_GENERIC_CONTEXT_USED_METHOD = 2
-};
-
-#define MONO_GENERIC_CONTEXT_USED_BOTH		(MONO_GENERIC_CONTEXT_USED_CLASS | MONO_GENERIC_CONTEXT_USED_METHOD)
 
 extern MonoStats mono_stats;
 

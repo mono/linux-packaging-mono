@@ -35,13 +35,13 @@ extern guint64 stat_slots_allocated_in_vain;
  * anymore, which is the case in the parallel collector.
  */
 static MONO_ALWAYS_INLINE void
-par_copy_object_no_checks (char *destination, GCVTable *vt, void *obj, mword objsize, SgenGrayQueue *queue)
+par_copy_object_no_checks (char *destination, GCVTable vt, void *obj, mword objsize, SgenGrayQueue *queue)
 {
 	sgen_client_pre_copy_checks (destination, vt, obj, objsize);
 	binary_protocol_copy (obj, destination, vt, objsize);
 
 	/* FIXME: assumes object layout */
-	memcpy (destination + sizeof (mword), (char*)obj + sizeof (mword), objsize - sizeof (mword));
+	memcpy ((char*)destination + sizeof (mword), (char*)obj + sizeof (mword), objsize - sizeof (mword));
 
 	/* adjust array->bounds */
 	SGEN_ASSERT (9, sgen_vtable_get_descriptor (vt), "vtable %p has no gc descriptor", vt);
@@ -60,11 +60,11 @@ par_copy_object_no_checks (char *destination, GCVTable *vt, void *obj, mword obj
 static MONO_NEVER_INLINE void*
 copy_object_no_checks (void *obj, SgenGrayQueue *queue)
 {
-	GCVTable *vt = SGEN_LOAD_VTABLE_UNCHECKED (obj);
+	GCVTable vt = SGEN_LOAD_VTABLE_UNCHECKED (obj);
 	gboolean has_references = SGEN_VTABLE_HAS_REFERENCES (vt);
 	mword objsize = SGEN_ALIGN_UP (sgen_client_par_object_get_size (vt, obj));
 	/* FIXME: Does this not mark the newly allocated object? */
-	char *destination = COLLECTOR_SERIAL_ALLOC_FOR_PROMOTION (vt, obj, objsize, has_references);
+	void *destination = COLLECTOR_SERIAL_ALLOC_FOR_PROMOTION (vt, obj, objsize, has_references);
 
 	if (G_UNLIKELY (!destination)) {
 		/* FIXME: Is this path ever tested? */

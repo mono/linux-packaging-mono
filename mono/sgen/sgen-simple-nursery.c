@@ -30,8 +30,8 @@
 #include "mono/sgen/sgen-layout-stats.h"
 #include "mono/sgen/sgen-client.h"
 
-static inline char*
-alloc_for_promotion (GCVTable *vtable, char *obj, size_t objsize, gboolean has_references)
+static inline GCObject*
+alloc_for_promotion (GCVTable vtable, GCObject *obj, size_t objsize, gboolean has_references)
 {
 	return major_collector.alloc_object (vtable, objsize, has_references);
 }

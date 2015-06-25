@@ -20689,6 +20689,27 @@
       </method>
     </type>
   </test>
+  <test name="gtest-autoproperty-19.cs">
+    <type name="Node">
+      <method name="Int32 get_Next()" attrs="2502">
+        <size>14</size>
+      </method>
+      <method name="Void .ctor()" attrs="6276">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="NodeLinked">
+      <method name="Int32 get_Next()" attrs="2246">
+        <size>14</size>
+      </method>
+      <method name="Int32 Main()" attrs="150">
+        <size>36</size>
+      </method>
+      <method name="Void .ctor(Int32)" attrs="6278">
+        <size>15</size>
+      </method>
+    </type>
+  </test>
   <test name="gtest-collectioninit-01.cs">
     <type name="Test">
       <method name="Void TestList(System.Collections.Generic.List`1[System.Int32], Int32)" attrs="145">
@@ -67195,6 +67216,16 @@
       </method>
     </type>
   </test>
+  <test name="test-interpolation-06.cs">
+    <type name="X">
+      <method name="Int32 Main()" attrs="150">
+        <size>134</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
   <test name="test-iter-01.cs">
     <type name="X">
       <method name="Int32 Main()" attrs="150">
@@ -69141,6 +69172,54 @@
       <method name="Void Main()" attrs="150">
         <size>50</size>
       </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-null-operator-11.cs">
+    <type name="X">
+      <method name="Void Main()" attrs="150">
+        <size>60</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="A">
+      <method name="B get_b()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_b(B)" attrs="2182">
+        <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="B">
+      <method name="C get_c()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_c(C)" attrs="2182">
+        <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="C">
+      <method name="D get_d()" attrs="2182">
+        <size>14</size>
+      </method>
+      <method name="Void set_d(D)" attrs="2182">
+        <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="D">
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
       </method>
