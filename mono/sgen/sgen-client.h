@@ -29,7 +29,7 @@ void sgen_client_init (void);
  * The slow path for getting an object's size.  We're passing in the vtable because we've
  * already fetched it.
  */
-mword sgen_client_slow_object_get_size (GCVTable *vtable, GCObject* o);
+mword sgen_client_slow_object_get_size (GCVTable vtable, GCObject* o);
 
 /*
  * Fill the given range with a dummy object.  If the range is too short to be filled with an
@@ -92,7 +92,7 @@ void sgen_client_clear_unreachable_ephemerons (ScanCopyContext ctx);
  * parts of the object based on which cards are marked, do so and return TRUE.  Otherwise,
  * return FALSE.
  */
-gboolean sgen_client_cardtable_scan_object (char *obj, mword block_obj_size, guint8 *cards, gboolean mod_union, ScanCopyContext ctx);
+gboolean sgen_client_cardtable_scan_object (GCObject *obj, mword block_obj_size, guint8 *cards, gboolean mod_union, ScanCopyContext ctx);
 
 /*
  * Called after nursery objects have been pinned.  No action is necessary.
@@ -114,7 +114,7 @@ void sgen_client_collecting_major_3 (SgenPointerQueue *fin_ready_queue, SgenPoin
 /*
  * Called after a LOS object has been pinned.  No action is necessary.
  */
-void sgen_client_pinned_los_object (char *obj);
+void sgen_client_pinned_los_object (GCObject *obj);
 
 /*
  * Called for every degraded allocation.  No action is necessary.
@@ -144,9 +144,9 @@ const char* sgen_client_description_for_internal_mem_type (int type);
 /*
  * Only used for debugging.  `sgen_client_vtable_get_namespace()` may return NULL.
  */
-gboolean sgen_client_vtable_is_inited (GCVTable *vtable);
-const char* sgen_client_vtable_get_namespace (GCVTable *vtable);
-const char* sgen_client_vtable_get_name (GCVTable *vtable);
+gboolean sgen_client_vtable_is_inited (GCVTable vtable);
+const char* sgen_client_vtable_get_namespace (GCVTable vtable);
+const char* sgen_client_vtable_get_name (GCVTable vtable);
 
 /*
  * Called before starting collections.  The world is already stopped.  No action is

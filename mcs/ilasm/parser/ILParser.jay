@@ -591,9 +591,6 @@ class_head 		: D_CLASS class_attr comp_name formal_typars_clause extends_clause
                           }
 			;
 
-class_attrs		: class_attrs class_attr
-			;
-
 class_attr		: /* EMPTY */                           
 			  { 
 				// Reset some flags
@@ -689,13 +686,13 @@ constraints_clause	: /* EMTPY */
                        ;
 
 
-constraints		: generic_class_ref
+constraints		: type
 			  {
                                 ArrayList al = new ArrayList ();
                                 al.Add ($1);
                                 $$ = al;
                            }
-			| constraints COMMA generic_class_ref
+			| constraints COMMA type
                           {
                                 ArrayList al = (ArrayList) $1;
                                 al.Add ($3);
@@ -707,6 +704,10 @@ generic_class_ref	: class_ref
 			  {
                                 $$ = $1;
 			  }
+			| K_OBJECT
+                          {
+                                $$ = new PrimitiveTypeRef (PrimitiveType.Object, "System.Object");
+                          }
 			| K_CLASS class_ref typars_clause
 			  {
                                 if ($3 != null)
@@ -921,17 +922,13 @@ class_decl		: method_all
 
 type			: generic_class_ref
                           {
-			  	$$ = $1;
-                          }
-			| K_OBJECT
-                          {
-                                $$ = new PrimitiveTypeRef (PrimitiveType.Object, "System.Object");
+				$$ = GetTypeRef ((BaseTypeRef) $1);
                           }
 			| K_VALUE K_CLASS class_ref
                           {
-				BaseClassRef class_ref = (BaseClassRef) $3;
-				class_ref.MakeValueClass ();
-                                $$ = class_ref;
+                                BaseClassRef class_ref = (BaseClassRef) $3;
+                                class_ref.MakeValueClass ();
+                                $$ = GetTypeRef (class_ref);
                           }
 			| K_VALUETYPE OPEN_BRACKET slashed_name CLOSE_BRACKET slashed_name typars_clause
                           {
@@ -939,7 +936,7 @@ type			: generic_class_ref
                                 if ($6 != null)
                                         $$ = ext_ref.GetGenericTypeInst ((GenericArguments) $6);
                                 else
-                                        $$ = ext_ref;
+                                        $$ = GetTypeRef (ext_ref);
                           }
                         | K_VALUETYPE slashed_name typars_clause
                           {
@@ -948,42 +945,42 @@ type			: generic_class_ref
                                 if ($3 != null)
                                         $$ = t_ref.GetGenericTypeInst ((GenericArguments) $3);
                                 else
-                                        $$ = t_ref;
+                                        $$ = GetTypeRef (t_ref);
                           }
 			| type OPEN_BRACKET CLOSE_BRACKET
                           {
-                                BaseTypeRef base_type = GetTypeRef ((BaseTypeRef) $1);
+                                BaseTypeRef base_type = (BaseTypeRef) $1;
                                 base_type.MakeArray ();
                                 $$ = base_type;
                           }
 			| type OPEN_BRACKET bounds CLOSE_BRACKET
                           {
-                                BaseTypeRef base_type = GetTypeRef ((BaseTypeRef) $1);
+                                BaseTypeRef base_type = (BaseTypeRef) $1;
                                 ArrayList bound_list = (ArrayList) $3;
                                 base_type.MakeBoundArray (bound_list);
                                 $$ = base_type;
                           }
 			| type AMPERSAND
                           {
-                                BaseTypeRef base_type = GetTypeRef ((BaseTypeRef) $1);
+                                BaseTypeRef base_type = (BaseTypeRef) $1;
                                 base_type.MakeManagedPointer ();
                                 $$ = base_type;
                           }
 			| type STAR
                           {
-                                BaseTypeRef base_type = GetTypeRef ((BaseTypeRef) $1);
+                                BaseTypeRef base_type = (BaseTypeRef) $1;
                                 base_type.MakeUnmanagedPointer ();
                                 $$ = base_type;
                           }
 			| type K_PINNED
                           {
-                                BaseTypeRef base_type = GetTypeRef ((BaseTypeRef) $1);
+                                BaseTypeRef base_type = (BaseTypeRef) $1;
                                 base_type.MakePinned ();
                                 $$ = base_type;
                           }
 			| type K_MODREQ OPEN_PARENS custom_modifier_type CLOSE_PARENS
                           {
-                                BaseTypeRef base_type = GetTypeRef ((BaseTypeRef) $1);
+                                BaseTypeRef base_type = (BaseTypeRef) $1;
                                 BaseTypeRef class_ref = (BaseTypeRef) $4;
                                 base_type.MakeCustomModified (codegen,
                                         CustomModifier.modreq, class_ref);
@@ -991,7 +988,7 @@ type			: generic_class_ref
                           }
 			| type K_MODOPT OPEN_PARENS custom_modifier_type CLOSE_PARENS
                           {
-                                BaseTypeRef base_type = GetTypeRef ((BaseTypeRef) $1);
+                                BaseTypeRef base_type = (BaseTypeRef) $1;
                                 BaseTypeRef class_ref = (BaseTypeRef) $4;
                                 base_type.MakeCustomModified (codegen,
                                         CustomModifier.modopt, class_ref);
@@ -1002,8 +999,6 @@ type			: generic_class_ref
                                 $$ = new MethodPointerTypeRef ((CallConv) $2, (BaseTypeRef) $3, (ArrayList) $6);
                           }
 			| primitive_type
-			;
-
 			;
 
 primitive_type		: K_INT8
@@ -1490,7 +1485,7 @@ custom_modifier_type
 			| class_ref
 			;
 
-field_decl		: D_FIELD repeat_opt field_attr type id at_opt init_opt
+field_decl		: D_FIELD repeat_opt field_attr type id at_opt init_opt semicolon_opt
                           {
                                 FieldDef field_def = new FieldDef((FieldAttr) $3, 
 					(string) $5, (BaseTypeRef) $4);
@@ -1682,6 +1677,23 @@ member_init : field_init_full
 				$$ = new StringConst ((string) $3);
 			  }
 			;
+
+opt_truefalse_list
+				: truefalse_list
+				;
+
+truefalse_list
+				: truefalse
+				  {
+				  	$$ = new List<BoolConst> () { new BoolConst ((bool) $1) };
+				  }
+				| truefalse_list truefalse
+				  {
+				  	var l = (List<BoolConst>) $1;
+				  	l.Add (new BoolConst ((bool) $2));
+				  	$$ = l;
+				  }
+				;
 
 data_decl		: data_head data_body
                           {
@@ -2698,22 +2710,22 @@ event_decls		: /* EMPTY */
 			| event_decls event_decl
 			;
 
-event_decl		: D_ADDON method_ref
+event_decl		: D_ADDON method_ref semicolon_opt
                           {
                                 codegen.CurrentTypeDef.CurrentEvent.AddAddon (
                                         (MethodRef) $2);                                
                           }
-			| D_REMOVEON method_ref
+			| D_REMOVEON method_ref semicolon_opt
                           {
                                 codegen.CurrentTypeDef.CurrentEvent.AddRemoveon (
                                         (MethodRef) $2);
                           }
-			| D_FIRE method_ref
+			| D_FIRE method_ref semicolon_opt
                           {
                                 codegen.CurrentTypeDef.CurrentEvent.AddFire (
                                         (MethodRef) $2);
                           }
-			| D_OTHER method_ref
+			| D_OTHER method_ref semicolon_opt
                           {
                                 codegen.CurrentTypeDef.CurrentEvent.AddOther (
                                         (MethodRef) $2);
@@ -2789,23 +2801,76 @@ prop_decl		: D_SET method_ref
 			| language_decl
 			;
 
-customattr_decl		: D_CUSTOM custom_type
+customattr_decl
+			: D_CUSTOM customattr_owner_type_opt custom_type
                           {
-                                $$ = new CustomAttr ((BaseMethodRef) $2, null);
+                                $$ = new CustomAttr ((BaseMethodRef) $3, null);
                           }
-			| D_CUSTOM custom_type ASSIGN comp_qstring
-			| D_CUSTOM custom_type ASSIGN bytes_list
+			| D_CUSTOM customattr_owner_type_opt custom_type ASSIGN comp_qstring
+			| D_CUSTOM customattr_owner_type_opt custom_type ASSIGN bytes_list
                           {
-                                $$ = new CustomAttr ((BaseMethodRef) $2, new ByteArrConst ((byte[]) $4));
+                                $$ = new CustomAttr ((BaseMethodRef) $3, new ByteArrConst ((byte[]) $5));
                           }
-            | D_CUSTOM custom_type ASSIGN OPEN_BRACE member_init CLOSE_BRACE
+            | D_CUSTOM customattr_owner_type_opt custom_type ASSIGN OPEN_BRACE customattr_values CLOSE_BRACE
               {
-            	$$ = new CustomAttr ((BaseMethodRef) $2, null);
+            	$$ = new CustomAttr ((BaseMethodRef) $3, (PEAPI.Constant) $6);
               }
-			| D_CUSTOM OPEN_PARENS owner_type CLOSE_PARENS custom_type
-			| D_CUSTOM OPEN_PARENS owner_type CLOSE_PARENS custom_type ASSIGN comp_qstring
-			| D_CUSTOM OPEN_PARENS owner_type CLOSE_PARENS custom_type ASSIGN bytes_list
 			;
+
+// TODO: unused for now
+customattr_owner_type_opt
+			: /* empty */
+			| OPEN_PARENS type CLOSE_PARENS
+			;
+
+customattr_values
+				: /* empty */
+				| K_BOOL OPEN_BRACKET int32 CLOSE_BRACKET OPEN_PARENS opt_truefalse_list CLOSE_PARENS
+				  {
+			  		var l = (List<BoolConst>) $6;
+			  		$$ = new ArrayConstant (l?.ToArray ()) {
+			  			ExplicitSize = (int) $3
+			  		};
+				  }
+				| K_BYTEARRAY bytes_list
+                 {
+    				$$ = new ByteArrConst ((byte[]) $2);
+                 }
+				| K_STRING OPEN_PARENS SQSTRING CLOSE_PARENS
+				  {
+					$$ = new StringConst ((string) $3);
+				  }
+				| customattr_ctor_args
+				  {
+				  	var c = $1 as Constant;
+			  		$$ = c ?? new ArrayConstant (((List<DataConstant>) $1).ToArray ());
+				  }
+				;
+
+customattr_ctor_args
+				: customattr_ctor_arg
+				| customattr_ctor_args customattr_ctor_arg
+				  {
+				  	var l = $1 as List<DataConstant>;
+				  	if (l == null) {
+				  		l = new List<DataConstant> () {
+				  			(DataConstant) $1
+				  		};
+				  	}
+
+				  	l.Add ((DataConstant) $2);
+				  	$$ = l;
+				  }
+				;
+
+customattr_ctor_arg
+				: field_init_primitive
+				| K_TYPE OPEN_PARENS type CLOSE_PARENS
+				  {
+				  	$$ = new StringConst (((TypeRef) $3).FullName);
+				  }
+				;
+
 			
 custom_type		: call_conv type type_spec DOUBLE_COLON method_name OPEN_PARENS type_list CLOSE_PARENS
                           {
@@ -3353,6 +3418,11 @@ comp_name		: id
                                 $$ = (string) $1 + '.' + (string) $3;
                           }
                         | COMP_NAME
+			;
+
+semicolon_opt
+			: /* empty */
+			| SEMICOLON
 			;
 
 %%

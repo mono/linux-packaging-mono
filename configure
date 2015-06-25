@@ -686,10 +686,6 @@ MIPS_SGI_FALSE
 MIPS_SGI_TRUE
 MIPS_GCC_FALSE
 MIPS_GCC_TRUE
-ONLY_XAMMAC_FALSE
-ONLY_XAMMAC_TRUE
-ONLY_MONOTOUCH_FALSE
-ONLY_MONOTOUCH_TRUE
 INSTALL_XAMMAC_FALSE
 INSTALL_XAMMAC_TRUE
 INSTALL_MONOTOUCH_FALSE
@@ -1743,8 +1739,8 @@ Optional Packages:
   --with-libgdiplus=installed|sibling|<path>	Override the libgdiplus used for System.Drawing tests (defaults to installed)
   --with-profile4_5=yes,no        If you want to install the 4.5 FX (defaults to yes)
   --with-monodroid=yes,no         If you want to build the MonoDroid assemblies (defaults to no)
-  --with-monotouch=yes,no,only    If you want to build the MonoTouch assemblies (defaults to no)
-  --with-xammac=yes,no,only       If you want to build the Xamarin.Mac assemblies (defaults to no)
+  --with-monotouch=yes,no         If you want to build the Xamarin.iOS assemblies (defaults to no)
+  --with-xammac=yes,no            If you want to build the Xamarin.Mac assemblies (defaults to no)
   --with-oprofile=no,<oprofile install dir>   Enable oprofile support (defaults to no)
   --with-malloc-mempools=yes,no  Use malloc for each single mempool allocation (only for runtime debugging, defaults to no)
   --with-mcs-docs=yes,no         If you want to build the documentation under mcs (defaults to yes)
@@ -26836,22 +26832,6 @@ else
   INSTALL_XAMMAC_FALSE=
 fi
 
- if test "x$with_monotouch" = "xonly"; then
-  ONLY_MONOTOUCH_TRUE=
-  ONLY_MONOTOUCH_FALSE='#'
-else
-  ONLY_MONOTOUCH_TRUE='#'
-  ONLY_MONOTOUCH_FALSE=
-fi
-
- if test "x$with_xammac" = "xonly"; then
-  ONLY_XAMMAC_TRUE=
-  ONLY_XAMMAC_FALSE='#'
-else
-  ONLY_XAMMAC_TRUE='#'
-  ONLY_XAMMAC_FALSE=
-fi
-
 
  if test ${TARGET}${ac_cv_c_compiler_gnu} = MIPSyes; then
   MIPS_GCC_TRUE=
@@ -27349,14 +27329,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${INSTALL_XAMMAC_TRUE}" && test -z "${INSTALL_XAMMAC_FALSE}"; then
   as_fn_error $? "conditional \"INSTALL_XAMMAC\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${ONLY_MONOTOUCH_TRUE}" && test -z "${ONLY_MONOTOUCH_FALSE}"; then
-  as_fn_error $? "conditional \"ONLY_MONOTOUCH\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${ONLY_XAMMAC_TRUE}" && test -z "${ONLY_XAMMAC_FALSE}"; then
-  as_fn_error $? "conditional \"ONLY_XAMMAC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${MIPS_GCC_TRUE}" && test -z "${MIPS_GCC_FALSE}"; then

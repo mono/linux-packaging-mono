@@ -749,16 +749,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	if test -d $(top_srcdir)/.git; then \
-		(cd $(top_srcdir); \
-			LANG=C; export LANG; \
-			branch=`git branch | grep '^\*' | sed 's/(detached from .*/explicit/' | cut -d ' ' -f 2`; \
-			version=`git log --no-color --first-parent -n1 --pretty=format:%h`; \
-			echo "#define FULL_VERSION \"$$branch/$$version\""; \
-		); \
-	else \
-		echo "#define FULL_VERSION \"tarball\""; \
-	fi > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.292/4f4b324\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

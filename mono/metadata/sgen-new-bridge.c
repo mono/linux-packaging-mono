@@ -664,7 +664,7 @@ dfs1 (HashEntry *obj_entry)
 
 			if (!obj_entry->v.dfs1.is_visited) {
 				int num_links = 0;
-				mword desc = sgen_obj_get_descriptor_safe (start);
+				mword desc = sgen_obj_get_descriptor_safe (obj);
 
 				obj_entry->v.dfs1.is_visited = 1;
 
@@ -932,7 +932,7 @@ dump_graph (void)
 
 	fprintf (file, "<nodes>\n");
 	SGEN_HASH_TABLE_FOREACH (&hash_table, obj, entry) {
-		MonoVTable *vt = (MonoVTable*) SGEN_LOAD_VTABLE (obj);
+		MonoVTable *vt = SGEN_LOAD_VTABLE (obj);
 		fprintf (file, "<node id=\"%p\"><attvalues><attvalue for=\"0\" value=\"%s.%s\"/><attvalue for=\"1\" value=\"%s\"/></attvalues></node>\n",
 				obj, vt->klass->name_space, vt->klass->name, entry->is_bridge ? "true" : "false");
 	} SGEN_HASH_TABLE_FOREACH_END;
@@ -1201,7 +1201,7 @@ processing_build_callback_data (int generation)
 			HashEntryWithAccounting *entry = (HashEntryWithAccounting*)all_entries [i];
 			if (entry->entry.is_bridge) {
 				MonoObject *obj = sgen_hash_table_key_for_value_pointer (entry);
-				MonoClass *klass = ((MonoVTable*)SGEN_LOAD_VTABLE (obj))->klass;
+				MonoClass *klass = SGEN_LOAD_VTABLE (obj)->klass;
 				mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "OBJECT %s::%s (%p) weight %f", klass->name_space, klass->name, obj, entry->weight);
 			}
 		}
@@ -1325,7 +1325,7 @@ processing_after_callback (int generation)
 	if (bridge_accounting_enabled) {
 		for (i = 0; i < num_sccs; ++i) {
 			for (j = 0; j < api_sccs [i]->num_objs; ++j) {
-				GCVTable *vtable = SGEN_LOAD_VTABLE (api_sccs [i]->objs [j]);
+				GCVTable vtable = SGEN_LOAD_VTABLE (api_sccs [i]->objs [j]);
 				mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC,
 					"OBJECT %s (%p) SCC [%d] %s",
 						sgen_client_vtable_get_namespace (vtable), sgen_client_vtable_get_name (vtable), api_sccs [i]->objs [j],

@@ -444,9 +444,59 @@ namespace PEAPI {
 			cVal = val;
 			tabIx = MDTable.CustomAttribute;
 
-			var bac = val as ByteArrConst;
+			byteVal = ConstantToByteArray (val);
+		}
+
+		static byte[] ConstantToByteArray (Constant c)
+		{
+			var bac = c as ByteArrConst;
 			if (bac != null)
-				byteVal = bac.val;
+				return bac.val;
+
+			var ms = new MemoryStream ();
+			// Version info
+			ms.WriteByte (1);
+			ms.WriteByte (0);
+
+			if (c == null) {
+				ms.WriteByte (0);
+				ms.WriteByte (0);
+				return ms.ToArray ();
+			}
+
+			var sc = c as StringConst;
+			if (sc != null) {
+				string value = sc.val;
+				if (value == null)
+					throw new NotImplementedException ();
+
+				var buf = Encoding.UTF8.GetBytes (value);
+				MetaData.CompressNum ((uint) buf.Length, ms);
+				var byteVal = ms.ToArray ();
+				System.Array.Resize (ref byteVal, (int) ms.Length + buf.Length + 2);
+				System.Array.Copy (buf, 0, byteVal, ms.Length, buf.Length);
+				return byteVal;
+			}
+
+			var ac = c as ArrayConstant;
+			if (ac != null) {
+				var bw = new BinaryWriter (ms);
+				if (ac.ExplicitSize != null)
+					bw.Write (ac.ExplicitSize.Value);
+				ac.Write (bw);
+				bw.Write ((short)0);
+				return ms.ToArray ();
+			}
+
+			var bc = c as DataConstant;
+			if (bc != null) {
+				var bw = new BinaryWriter (ms);
+				bc.Write (bw);
+				bw.Write ((short)0);
+				return ms.ToArray ();
+			}
+
+			throw new NotImplementedException (c.GetType ().ToString ());
 		}
 
 		internal CustomAttribute(MetaDataElement paren, Method constrType,
@@ -2916,7 +2966,7 @@ namespace PEAPI {
 	/// <summary>
 	/// Boolean constant
 	/// </summary>
-	public class BoolConst : Constant {
+	public class BoolConst : DataConstant {
 		bool val;
 
 		/// <summary>
@@ -3114,7 +3164,7 @@ namespace PEAPI {
 
 	}
 
-	public class UIntConst : Constant {
+	public class UIntConst : DataConstant {
 		ulong val;
 
 		public UIntConst(byte val) 
@@ -3169,7 +3219,7 @@ namespace PEAPI {
 	}
 
 	public class StringConst : DataConstant {
-		string val;
+		internal string val;
 
 		public StringConst(string val) 
 		{
@@ -3269,6 +3319,8 @@ namespace PEAPI {
 				size += dataVals[i].GetSize();
 			}
 		}
+
+		public int? ExplicitSize { get; set; }
 
 		internal sealed override void Write(BinaryWriter bw) 
 		{
