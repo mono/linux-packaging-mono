@@ -113,7 +113,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 117
+#define MONO_AOT_FILE_VERSION 119
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -188,35 +188,29 @@ typedef struct MonoAotFileInfo
 	guint32 dummy;
 
 	/* All the pointers should be at the start to avoid alignment problems */
-
-	/* Mono's Global Offset Table */
-	gpointer got;
+	/* Symbols */
+#define MONO_AOT_FILE_INFO_FIRST_SYMBOL jit_got
+	/* Global Offset Table for JITted code */
+	gpointer jit_got;
 	/* Global Offset Table for LLVM code */
 	gpointer llvm_got;
-	/* Compiled code for methods */
-	gpointer methods;
-	gpointer jit_code_start;
-	gpointer jit_code_end;
 	/* Mono EH Frame created by llc when using LLVM */
 	gpointer mono_eh_frame;
+	gpointer jit_code_start;
+	gpointer jit_code_end;
+	gpointer method_addresses;
 	/* Data blob */
 	gpointer blob;
 	gpointer class_name_table;
 	gpointer class_info_offsets;
 	gpointer method_info_offsets;
 	gpointer ex_info_offsets;
-	gpointer method_addresses;
 	gpointer extra_method_info_offsets;
 	gpointer extra_method_table;
 	gpointer got_info_offsets;
 	gpointer llvm_got_info_offsets;
-	gpointer unwind_info;
 	gpointer mem_end;
 	gpointer image_table;
-	/* Start of Mono's Program Linkage Table */
-	gpointer plt;
-	/* End of Mono's Program Linkage Table */
-	gpointer plt_end;
 	/* The GUID of the assembly which the AOT image was generated from */
 	gpointer assembly_guid;
 	/*
@@ -233,13 +227,20 @@ typedef struct MonoAotFileInfo
 	gpointer globals;
 	/* Points to a string containing the assembly name*/
 	gpointer assembly_name;
+	/* Start of Mono's Program Linkage Table */
+	gpointer plt;
+	/* End of Mono's Program Linkage Table */
+	gpointer plt_end;
+	gpointer unwind_info;
 	/* Points to a table mapping methods to their unbox trampolines */
 	gpointer unbox_trampolines;
 	/* Points to the end of the previous table */
 	gpointer unbox_trampolines_end;
 	/* Points to a table of unbox trampoline addresses/offsets */
 	gpointer unbox_trampoline_addresses;
+#define	MONO_AOT_FILE_INFO_LAST_SYMBOL unbox_trampoline_addresses
 
+	/* Scalars */
 	/* The index of the first GOT slot used by the PLT */
 	guint32 plt_got_offset_base;
 	/* Number of entries in the GOT */
@@ -256,22 +257,25 @@ typedef struct MonoAotFileInfo
 	guint32 simd_opts;
 	/* Index of the blob entry holding the GC used by this module */
 	gint32 gc_name_index;
+	guint32 num_rgctx_fetch_trampolines;
+	/* These are used for sanity checking object layout problems when cross-compiling */
+	guint32 double_align, long_align, generic_tramp_num;
+	/* The page size used by trampoline pages */
+	guint32 tramp_page_size;
 
+	/* Arrays */
 	/* Number of trampolines */
 	guint32 num_trampolines [MONO_AOT_TRAMP_NUM];
 	/* The indexes of the first GOT slots used by the trampolines */
 	guint32 trampoline_got_offset_base [MONO_AOT_TRAMP_NUM];
 	/* The size of one trampoline */
 	guint32 trampoline_size [MONO_AOT_TRAMP_NUM];
-	guint32 num_rgctx_fetch_trampolines;
-
-	/* These are used for sanity checking object layout problems when cross-compiling */
-	guint32 double_align, long_align, generic_tramp_num;
-	/* The page size used by trampoline pages */
-	guint32 tramp_page_size;
 	/* The offset where the trampolines begin on a trampoline page */
 	guint32 tramp_page_code_offsets [MONO_AOT_TRAMP_NUM];
 } MonoAotFileInfo;
+
+/* Number of symbols in the MonoAotFileInfo structure */
+#define MONO_AOT_FILE_INFO_NUM_SYMBOLS (((G_STRUCT_OFFSET (MonoAotFileInfo, MONO_AOT_FILE_INFO_LAST_SYMBOL) - G_STRUCT_OFFSET (MonoAotFileInfo, MONO_AOT_FILE_INFO_FIRST_SYMBOL)) / sizeof (gpointer)) + 1)
 
 typedef struct
 {
@@ -2204,7 +2208,7 @@ void      mono_linear_scan                  (MonoCompile *cfg, GList *vars, GLis
 void      mono_global_regalloc              (MonoCompile *cfg);
 void      mono_create_jump_table            (MonoCompile *cfg, MonoInst *label, MonoBasicBlock **bbs, int num_blocks);
 int       mono_compile_assembly             (MonoAssembly *ass, guint32 opts, const char *aot_options);
-MonoCompile *mini_method_compile            (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFlags flags, int parts);
+MonoCompile *mini_method_compile            (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFlags flags, int parts, int aot_method_index);
 void      mono_destroy_compile              (MonoCompile *cfg);
 MonoJitICallInfo *mono_find_jit_opcode_emulation (int opcode);
 void	  mono_print_ins_index (int i, MonoInst *ins);
@@ -2335,8 +2339,10 @@ void     mono_llvm_init                     (void) MONO_LLVM_INTERNAL;
 void     mono_llvm_cleanup                  (void) MONO_LLVM_INTERNAL;
 void     mono_llvm_emit_method              (MonoCompile *cfg) MONO_LLVM_INTERNAL;
 void     mono_llvm_emit_call                (MonoCompile *cfg, MonoCallInst *call) MONO_LLVM_INTERNAL;
-void     mono_llvm_create_aot_module        (const char *got_symbol, gboolean external_symbols, gboolean emit_dwarf) MONO_LLVM_INTERNAL;
+void     mono_llvm_create_aot_module        (const char *global_prefix, gboolean emit_dwarf) MONO_LLVM_INTERNAL;
 void     mono_llvm_emit_aot_module          (const char *filename, const char *cu_name) MONO_LLVM_INTERNAL;
+void     mono_llvm_emit_aot_file_info       (MonoAotFileInfo *info, gboolean has_jitted_code) MONO_LLVM_INTERNAL;
+void     mono_llvm_emit_aot_data            (const char *symbol, guint8 *data, int data_len) MONO_LLVM_INTERNAL;
 void     mono_llvm_check_method_supported   (MonoCompile *cfg) MONO_LLVM_INTERNAL;
 void     mono_llvm_free_domain_info         (MonoDomain *domain) MONO_LLVM_INTERNAL;
 MONO_API void mono_personality              (void);
@@ -2404,8 +2410,10 @@ char*             mono_get_rgctx_fetch_trampoline_name (int slot);
 gpointer          mini_get_nullified_class_init_trampoline (void);
 gpointer          mini_get_single_step_trampoline (void);
 gpointer          mini_get_breakpoint_trampoline (void);
-gpointer          mini_add_method_trampoline (MonoMethod *orig_method, MonoMethod *m, gpointer compiled_method, gboolean add_static_rgctx_tramp, gboolean add_unbox_tramp);
+gpointer          mini_add_method_trampoline (MonoMethod *m, gpointer compiled_method, gboolean add_static_rgctx_tramp, gboolean add_unbox_tramp);
 gboolean          mini_jit_info_is_gsharedvt (MonoJitInfo *ji);
+gpointer*         mini_resolve_imt_method (MonoVTable *vt, gpointer *vtable_slot, MonoMethod *imt_method, MonoMethod **impl_method, gpointer *out_aot_addr,
+										   gboolean *out_need_rgctx_tramp, MonoMethod **variant_iface);
 
 gboolean          mono_running_on_valgrind (void);
 void*             mono_global_codeman_reserve (int size);

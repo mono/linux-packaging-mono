@@ -57,10 +57,10 @@
 #include <mono/metadata/gc-internal.h>
 #include <mono/metadata/environment.h>
 #include <mono/metadata/threads-types.h>
+#include <mono/metadata/threadpool-ms.h>
 #include <mono/metadata/socket-io.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/runtime.h>
-#include <mono/metadata/threadpool.h>
 #include <mono/metadata/verify-internals.h>
 #include <mono/utils/mono-semaphore.h>
 #include <mono/utils/mono-error-internals.h>
@@ -2764,7 +2764,7 @@ suspend_vm (void)
 		/*
 		 * Suspend creation of new threadpool threads, since they cannot run
 		 */
-		mono_thread_pool_suspend ();
+		mono_threadpool_ms_suspend ();
 
 	mono_loader_unlock ();
 }
@@ -2807,7 +2807,7 @@ resume_vm (void)
 	//g_assert (err == 0);
 
 	if (suspend_count == 0)
-		mono_thread_pool_resume ();
+		mono_threadpool_ms_resume ();
 
 	mono_loader_unlock ();
 }
@@ -9192,6 +9192,14 @@ object_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 	if (err)
 		return err;
 
+	MonoClass *obj_type;
+
+	obj_type = obj->vtable->klass;
+	if (mono_class_is_transparent_proxy (obj_type))
+		obj_type = ((MonoTransparentProxy *)obj)->remote_class->proxy_class;
+
+	g_assert (obj_type);
+
 	switch (command) {
 	case CMD_OBJECT_REF_GET_TYPE:
 		/* This handles transparent proxies too */
@@ -9207,7 +9215,7 @@ object_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 
 			/* Check that the field belongs to the object */
 			found = FALSE;
-			for (k = obj->vtable->klass; k; k = k->parent) {
+			for (k = obj_type; k; k = k->parent) {
 				if (k == f->parent) {
 					found = TRUE;
 					break;
@@ -9244,7 +9252,7 @@ object_commands (int command, guint8 *p, guint8 *end, Buffer *buf)
 
 			/* Check that the field belongs to the object */
 			found = FALSE;
-			for (k = obj->vtable->klass; k; k = k->parent) {
+			for (k = obj_type; k; k = k->parent) {
 				if (k == f->parent) {
 					found = TRUE;
 					break;
