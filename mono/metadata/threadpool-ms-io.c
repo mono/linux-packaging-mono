@@ -22,7 +22,6 @@
 
 #include <mono/metadata/gc-internal.h>
 #include <mono/metadata/mono-mlist.h>
-#include <mono/metadata/threadpool-internals.h>
 #include <mono/metadata/threadpool-ms.h>
 #include <mono/metadata/threadpool-ms-io.h>
 #include <mono/utils/atomic.h>
@@ -239,7 +238,7 @@ selector_thread (gpointer data)
 
 			updates_old = threadpool_io->updates;
 
-			threadpool_io->updates = mono_gc_alloc_fixed (sizeof (ThreadPoolIOUpdate) * threadpool_io->updates_capacity, NULL);
+			threadpool_io->updates = mono_gc_alloc_fixed (sizeof (ThreadPoolIOUpdate) * threadpool_io->updates_capacity, MONO_GC_DESCRIPTOR_NULL);
 			g_assert (threadpool_io->updates);
 
 			mono_gc_free_fixed (updates_old);
@@ -284,12 +283,12 @@ selector_thread (gpointer data)
 						mono_threadpool_ms_enqueue_work_item (((MonoObject*) sockares)->vtable->domain, (MonoObject*) sockares);
 				}
 
-				if (!list) {
+				if (!list)
 					mono_g_hash_table_remove (threadpool_io->states, GINT_TO_POINTER (fd));
-				} else {
+				else
 					mono_g_hash_table_replace (threadpool_io->states, GINT_TO_POINTER (fd), list);
-					threadpool_io->backend.event_reset_fd_at (i, get_events (list));
-				}
+
+				threadpool_io->backend.event_reset_fd_at (i, get_events (list));
 			}
 
 			ready -= 1;
@@ -533,7 +532,7 @@ mono_threadpool_ms_io_add (MonoAsyncResult *ares, MonoSocketAsyncResult *sockare
 		updates_new_capacity = updates_old_capacity + 128;
 
 		updates_old = threadpool_io->updates;
-		updates_new = mono_gc_alloc_fixed (sizeof (ThreadPoolIOUpdate) * updates_new_capacity, NULL);
+		updates_new = mono_gc_alloc_fixed (sizeof (ThreadPoolIOUpdate) * updates_new_capacity, MONO_GC_DESCRIPTOR_NULL);
 		g_assert (updates_new);
 
 		if (updates_old)
@@ -659,6 +658,20 @@ mono_threadpool_ms_io_remove_domain_jobs (MonoDomain *domain)
 	mono_mutex_unlock (&threadpool_io->states_lock);
 }
 
+void
+icall_append_io_job (MonoObject *target, MonoSocketAsyncResult *state)
+{
+	MonoAsyncResult *ares;
+
+	/* Don't call mono_async_result_new() to avoid capturing the context */
+	ares = (MonoAsyncResult *) mono_object_new (mono_domain_get (), mono_defaults.asyncresult_class);
+	MONO_OBJECT_SETREF (ares, async_delegate, target);
+	MONO_OBJECT_SETREF (ares, async_state, state);
+
+	mono_threadpool_ms_io_add (ares, state);
+	return;
+}
+
 #else
 
 gboolean
@@ -687,6 +700,12 @@ mono_threadpool_ms_io_remove_socket (int fd)
 
 void
 mono_threadpool_ms_io_remove_domain_jobs (MonoDomain *domain)
+{
+	g_assert_not_reached ();
+}
+
+void
+icall_append_io_job (MonoObject *target, MonoSocketAsyncResult *state)
 {
 	g_assert_not_reached ();
 }

@@ -1186,7 +1186,7 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 		gpointer addr;
 
 		addr = mono_compile_method (data);
-		return mini_add_method_trampoline (NULL, data, addr, mono_method_needs_static_rgctx_invoke (data, FALSE), FALSE);
+		return mini_add_method_trampoline (data, addr, mono_method_needs_static_rgctx_invoke (data, FALSE), FALSE);
 	}
 	case MONO_RGCTX_INFO_VIRT_METHOD_CODE: {
 		MonoJumpInfoVirtMethod *info = data;
@@ -1209,7 +1209,7 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 		method = info->klass->vtable [ioffset + slot];
 
 		addr = mono_compile_method (method);
-		return mini_add_method_trampoline (NULL, method, addr, mono_method_needs_static_rgctx_invoke (method, FALSE), FALSE);
+		return mini_add_method_trampoline (method, addr, mono_method_needs_static_rgctx_invoke (method, FALSE), FALSE);
 	}
 	case MONO_RGCTX_INFO_VIRT_METHOD_BOX_TYPE: {
 		MonoJumpInfoVirtMethod *info = data;
@@ -2008,7 +2008,14 @@ generic_inst_is_sharable (MonoGenericInst *inst, gboolean allow_type_vars,
 static gboolean
 type_is_sharable (MonoType *type, gboolean allow_type_vars, gboolean allow_partial)
 {
-	if (MONO_TYPE_IS_REFERENCE (type) || (allow_type_vars && (type->type == MONO_TYPE_VAR || type->type == MONO_TYPE_MVAR)))
+	if (allow_type_vars && (type->type == MONO_TYPE_VAR || type->type == MONO_TYPE_MVAR)) {
+		MonoType *constraint = type->data.generic_param->gshared_constraint;
+		if (!constraint)
+			return TRUE;
+		type = constraint;
+	}
+
+	if (MONO_TYPE_IS_REFERENCE (type))
 		return TRUE;
 
 	/* Allow non ref arguments if they are primitive types or enums (partial sharing). */

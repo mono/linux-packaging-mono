@@ -4175,7 +4175,7 @@ $as_echo "#define DISABLE_ATTACH 1" >>confdefs.h
 		host_win32=no
 		platform_darwin=yes
 		target_mach=yes
-		CPPFLAGS="$CPPFLAGS -no-cpp-precomp -D_THREAD_SAFE -DGC_MACOSX_THREADS -DPLATFORM_MACOSX -DUSE_MMAP -DUSE_MUNMAP"
+		CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE -DGC_MACOSX_THREADS -DPLATFORM_MACOSX -DUSE_MMAP -DUSE_MUNMAP"
 		libmono_cflags="-D_THREAD_SAFE"
 		need_link_unlink=yes
 		$as_echo "#define PTHREAD_POINTER_ID 1" >>confdefs.h
@@ -24871,7 +24871,7 @@ $as_echo_n "checking if inter-process shared handles are requested... " >&6; }
 if test "${enable_shared_handles+set}" = set; then :
   enableval=$enable_shared_handles; try_shared_handles=$enableval
 else
-  try_shared_handles=yes
+  try_shared_handles=no
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $try_shared_handles" >&5

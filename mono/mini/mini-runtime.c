@@ -2174,10 +2174,11 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 					return NULL;
 				} else {
 					mono_raise_exception (jit_ex);
+					/* coverity[unreachable] */
 				}
 			}
 
-			info->compiled_method = mini_add_method_trampoline (NULL, callee, info->compiled_method, mono_method_needs_static_rgctx_invoke (callee, FALSE), FALSE);
+			info->compiled_method = mini_add_method_trampoline (callee, info->compiled_method, mono_method_needs_static_rgctx_invoke (callee, TRUE), FALSE);
 		} else {
 			info->compiled_method = NULL;
 		}
@@ -3451,6 +3452,7 @@ mini_cleanup (MonoDomain *domain)
 
 #ifndef MONO_CROSS_COMPILE
 	mono_domain_free (domain, TRUE);
+	mono_gc_mutex_cleanup ();
 #endif
 
 #ifdef ENABLE_LLVM
