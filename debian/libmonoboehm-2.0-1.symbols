@@ -975,8 +975,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_install_assembly_refonly_search_hook@Base 4.1.0.1738
  mono_install_assembly_search_hook@Base 4.1.0.1738
  mono_install_runtime_cleanup@Base 4.1.0.1738
- mono_install_threadpool_item_hooks@Base 4.1.0.1738
- mono_install_threadpool_thread_hooks@Base 4.1.0.1738
  mono_install_unhandled_exception_hook@Base 4.1.0.1738
  mono_is_debugger_attached@Base 4.1.0.1738
  mono_jit_cleanup@Base 4.1.0.1738
