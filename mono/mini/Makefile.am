@@ -34,7 +34,8 @@ sgenstatic_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
 
-CLASS=$(mcs_topdir)/class/lib/net_4_5
+-include $(mcs_topdir)/build/config.make
+CLASS=$(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 
 RUNTIME_EXECUTABLE = $(if $(BOEHM),$(top_builddir)/mono/mini/mono-boehm,$(top_builddir)/runtime/mono-wrapper)
 
@@ -309,7 +310,9 @@ ppc_sources = \
 
 arm_sources = \
 	mini-arm.c		\
+	mini-arm-tls.S		\
 	mini-arm.h		\
+	mini-arm-tls.h		\
 	exceptions-arm.c	\
 	tramp-arm.c
 
@@ -749,7 +752,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.372/0f9f44e\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.489/b9cff43\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
