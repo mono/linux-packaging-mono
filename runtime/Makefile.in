@@ -83,7 +83,7 @@ target_triplet = @target@
 @INSTALL_4_5_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_2 = binary_reference_assemblies net_4_5 xbuild_12 xbuild_14
 @INSTALL_MONODROID_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_3 = monodroid
 @INSTALL_MONOTOUCH_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_4 = monotouch monotouch_runtime
-@INSTALL_XAMMAC_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_5 = xammac
+@INSTALL_XAMMAC_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_5 = xammac xammac_net_4_5
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \

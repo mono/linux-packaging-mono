@@ -129,6 +129,7 @@ typedef struct MonoAotOptions {
 	gboolean autoreg;
 	char *mtriple;
 	char *llvm_path;
+	char *temp_path;
 	char *instances_logfile_path;
 	char *logfile;
 	gboolean dump_json;
@@ -3197,6 +3198,16 @@ add_method_with_index (MonoAotCompile *acfg, MonoMethod *method, int index, gboo
 		g_ptr_array_add (acfg->extra_methods, method);
 }
 
+static gboolean
+prefer_gsharedvt_method (MonoAotCompile *acfg, MonoMethod *method)
+{
+	/* One instantiation with valuetypes is generated for each async method */
+	if (method->klass->image == mono_defaults.corlib && (!strcmp (method->klass->name, "AsyncMethodBuilderCore") || !strcmp (method->klass->name, "AsyncVoidMethodBuilder")))
+		return TRUE;
+	else
+		return FALSE;
+}
+
 static guint32
 get_method_index (MonoAotCompile *acfg, MonoMethod *method)
 {
@@ -3239,6 +3250,9 @@ add_extra_method_with_depth (MonoAotCompile *acfg, MonoMethod *method, int depth
 {
 	if (mono_method_is_generic_sharable_full (method, FALSE, TRUE, FALSE))
 		method = mini_get_shared_method (method);
+	else if ((acfg->opts & MONO_OPT_GSHAREDVT) && prefer_gsharedvt_method (acfg, method) && mono_method_is_generic_sharable_full (method, FALSE, FALSE, TRUE))
+		/* Use the gsharedvt version */
+		return;
 
 	if (acfg->aot_opts.log_generics)
 		aot_printf (acfg, "%*sAdding method %s.\n", depth, "", mono_method_full_name (method, TRUE));
@@ -5733,8 +5747,6 @@ emit_klass_info (MonoAotCompile *acfg, guint32 token)
 	g_assert (klass->nested_classes_inited);
 
 	mono_class_setup_vtable (klass);
-	if (klass->exception_type)
-		g_error ("Error setting up %s class vtable\n", klass->name);
 
 	/* 
 	 * Emit all the information which is required for creating vtables so
@@ -6406,6 +6418,21 @@ add_readonly_value (MonoAotOptions *opts, const char *val)
 	readonly_values = rdv;
 }
 
+static gchar *
+clean_path (gchar * path)
+{
+	if (!path)
+		return NULL;
+
+	if (g_str_has_suffix (path, G_DIR_SEPARATOR_S))
+		return path;
+
+	gchar *clean = g_strconcat (path, G_DIR_SEPARATOR_S, NULL);
+	g_free (path);
+
+	return clean;
+}
+
 static void
 mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 {
@@ -6419,6 +6446,8 @@ mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 			opts->outfile = g_strdup (arg + strlen ("outfile="));
 		} else if (str_begins_with (arg, "llvm-outfile=")) {
 			opts->llvm_outfile = g_strdup (arg + strlen ("llvm-outfile="));
+		} else if (str_begins_with (arg, "temp-path=")) {
+			opts->temp_path = clean_path (g_strdup (arg + strlen ("temp-path=")));
 		} else if (str_begins_with (arg, "save-temps")) {
 			opts->save_temps = TRUE;
 		} else if (str_begins_with (arg, "keep-temps")) {
@@ -6513,6 +6542,7 @@ mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 			printf ("Supported options for --aot:\n");
 			printf ("    outfile=\n");
 			printf ("    llvm-outfile=\n");
+			printf ("    temp-path=\n");
 			printf ("    save-temps\n");
 			printf ("    keep-temps\n");
 			printf ("    write-symbols\n");
@@ -9168,6 +9198,7 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 	acfg->aot_opts.nrgctx_fetch_trampolines = 128;
 	acfg->aot_opts.ngsharedvt_arg_trampolines = 128;
 	acfg->aot_opts.llvm_path = g_strdup ("");
+	acfg->aot_opts.temp_path = g_strdup ("");
 #ifdef MONOTOUCH
 	acfg->aot_opts.use_trampolines_page = TRUE;
 #endif
@@ -9377,10 +9408,13 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 				acfg->llvm_sfile = g_strdup (acfg->aot_opts.llvm_outfile);
 			}
 		} else {
-			acfg->tmpbasename = g_strdup_printf ("%s", "temp");
+			acfg->tmpbasename = (strcmp (acfg->aot_opts.temp_path, "") == 0) ?
+				g_strdup_printf ("%s", "temp") :
+				g_build_filename (acfg->aot_opts.temp_path, "temp", NULL);
+				
 			acfg->tmpfname = g_strdup_printf ("%s.s", acfg->tmpbasename);
-			acfg->llvm_sfile = g_strdup ("temp-llvm.s");
-			acfg->llvm_ofile = g_strdup ("temp-llvm.o");
+			acfg->llvm_sfile = g_strdup_printf ("%s-llvm.s", acfg->tmpbasename);
+			acfg->llvm_ofile = g_strdup_printf ("%s-llvm.o", acfg->tmpbasename);
 		}
 
 		res = emit_llvm_file (acfg);

@@ -104,12 +104,12 @@
     <div class="api-entry">mono_profiler_install</div>
 
     <div class="prototype">void
-mono_profiler_install (MonoProfiler *prof, int version, MonoProfileFunc callback)
+mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
 
 </div>
 <p />
 <b>Parameters</b>
-<blockquote><dt><i>prof:</i></dt><dd> a MonoProfiler structure pointer, or a pointer to a derived structure.</dd><dt><i>version:</i></dt><dd> profiler API version (see profiler.h)</dd><dt><i>callback:</i></dt><dd> the function to invoke at shutdown</dd></blockquote>
+<blockquote><dt><i>prof:</i></dt><dd> a MonoProfiler structure pointer, or a pointer to a derived structure.</dd><dt><i>callback:</i></dt><dd> the function to invoke at shutdown</dd></blockquote>
 <b>Remarks</b>
 <p />	 
 	 Use mono_profiler_install to activate profiling in the Mono runtime.
