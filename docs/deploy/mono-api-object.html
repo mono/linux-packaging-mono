@@ -108,6 +108,7 @@ MonoObject* <a href="#api:mono_object_isinst">mono_object_isinst</a>            
 gpointer    <a href="#api:mono_object_unbox">mono_object_unbox</a>              (MonoObject *obj);
 MonoObject* <a href="#api:mono_object_castclass_mbyref">mono_object_castclass_mbyref</a>   (MonoObject *obj, 
                                             MonoClass *klass);
+            <a href="#api:mono_object_is_alive"></a>                               
 guint       <a href="#api:mono_object_get_size">mono_object_get_size</a>           (MonoObject* o);
 MonoObject* <a href="#api:mono_value_box">mono_value_box</a>                 (MonoDomain *domain, 
                                             MonoClass *class, 
@@ -421,6 +422,13 @@ mono_object_castclass_mbyref (MonoObject *obj, MonoClass *klass)
 <b>Returns</b>
 <blockquote>	  <i>obj</i> if <i>obj</i> is derived from <i>klass</i>, throws an exception otherwise
 </blockquote>
+
+</div> <a name="api:mono_object_is_alive"></a>
+ <div class="api">
+    <div class="api-entry">mono_object_is_alive</div>
+
+    <div class="prototype">Prototype: mono_object_is_alive</div>
+<p />
 
 </div> <a name="api:mono_object_get_size"></a>
  <div class="api">

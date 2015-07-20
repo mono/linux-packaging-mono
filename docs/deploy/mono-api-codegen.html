@@ -122,7 +122,7 @@ mono_code_manager_invalidate (MonoCodeManager *cman)
     <div class="api-entry">mono_code_manager_new_dynamic</div>
 
     <div class="prototype">MonoCodeManager* 
-mono_code_manager_new_dynamic (int bind_size)
+mono_code_manager_new_dynamic (void)
 
 </div>
 <p />
@@ -134,8 +134,6 @@ mono_code_manager_new_dynamic (int bind_size)
 	 Creates a new code manager suitable for holding native code that can be
 	 used for single or small methods that need to be deallocated independently
 	 of other native code.
-	 BIND_SIZE is the amount of memory reserved for storing thunks. If its 0,
-	 the default size is used.
 	
 
 </div> <a name="api:mono_code_manager_new"></a>
