@@ -257,6 +257,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_disasm_code_one@VER_1 3.2.1+dfsg
  mono_dl_fallback_register@VER_1 3.2.1+dfsg
  mono_dl_fallback_unregister@VER_1 3.2.1+dfsg
+ mono_dl_get_system_dir@VER_1 4.0.3.13
  mono_dllmap_insert@VER_1 3.2.1+dfsg
  mono_do_crash_chaining@VER_1 3.6.0
  mono_do_signal_chaining@VER_1 3.2.1+dfsg
