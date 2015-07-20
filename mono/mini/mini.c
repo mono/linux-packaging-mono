@@ -2071,12 +2071,15 @@ mini_tls_get_supported (MonoCompile *cfg, MonoTlsKey key)
 MonoInst*
 mono_create_tls_get (MonoCompile *cfg, MonoTlsKey key)
 {
+	if (!MONO_ARCH_HAVE_TLS_GET)
+		return NULL;
+
 	/*
 	 * TLS offsets might be different at AOT time, so load them from a GOT slot and
 	 * use a different opcode.
 	 */
 	if (cfg->compile_aot) {
-		if (MONO_ARCH_HAVE_TLS_GET && ARCH_HAVE_TLS_GET_REG) {
+		if (ARCH_HAVE_TLS_GET_REG) {
 			MonoInst *ins, *c;
 
 			EMIT_NEW_TLS_OFFSETCONST (cfg, c, key);
@@ -3230,7 +3233,6 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	cfg->orig_method = method;
 	cfg->gen_seq_points = debug_options.gen_seq_points_compact_data || debug_options.gen_sdb_seq_points;
 	cfg->gen_sdb_seq_points = debug_options.gen_sdb_seq_points;
-	cfg->flags = flags;
 
 #ifdef PLATFORM_ANDROID
 	if (cfg->method->wrapper_type != MONO_WRAPPER_NONE) {

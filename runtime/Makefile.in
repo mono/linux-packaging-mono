@@ -79,8 +79,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@INSTALL_4_5_TRUE@am__append_1 = etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.5/machine.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
-@INSTALL_4_5_TRUE@am__append_2 = binary_reference_assemblies net_4_5 xbuild_12 xbuild_14
+@INSTALL_4_x_TRUE@am__append_1 = etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.5/machine.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
+@INSTALL_4_x_TRUE@am__append_2 = binary_reference_assemblies net_4_x xbuild_12 xbuild_14
 @INSTALL_MONODROID_TRUE@am__append_3 = monodroid
 @INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime monotouch_watch
 @INSTALL_XAMMAC_TRUE@am__append_5 = xammac xammac_net_4_5
@@ -342,7 +342,7 @@ symlinks = etc/mono/1.0/machine.config etc/mono/2.0/machine.config \
 SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5)
-@INSTALL_4_5_TRUE@al_profile = net_4_5
+@INSTALL_4_x_TRUE@al_profile = net_4_x
 test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
 TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/dmcs $(tmpinst)/bin/al2 $(tmpinst)/bin/al
@@ -579,9 +579,9 @@ mcs-compileall: mono-wrapper etc/mono/config
           continue; \
       fi; \
 	  if [ "xbuild_12" = "$$profile" ]; then \
-		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_5$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
+		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_x$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  elif [ "xbuild_14" = "$$profile" ]; then \
-		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_5$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
+		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_x$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  else \
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  fi; \

@@ -325,7 +325,8 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-with_mono_path = MONO_PATH=$(mcs_topdir)/class/lib/net_4_5
+CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
+with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(with_mono_path) $(top_builddir)/runtime/mono-wrapper --debug
 MCS = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -debug:full -target:library
 EXTRA_DIST = asm.cs Test.cs TestBase.cs
@@ -517,6 +518,7 @@ uninstall-am:
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags-am uninstall uninstall-am
 
+-include $(mcs_topdir)/build/config.make
 
 prereq: test/asm.dll
 

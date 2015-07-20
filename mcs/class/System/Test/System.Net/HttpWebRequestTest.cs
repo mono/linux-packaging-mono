@@ -70,7 +70,7 @@ namespace MonoTests.System.Net
 			Assert.AreEqual ("OK", res.StatusCode.ToString (), "#B1");
 			Assert.AreEqual ("OK", res.StatusDescription, "#B2");
 
-			Assert.AreEqual ("text/html; charset=ISO-8859-1", res.Headers.Get ("Content-Type"), "#C1");
+			Assert.IsTrue (res.Headers.Get ("Content-Type").StartsWith ("text/html; charset=", StringComparison.OrdinalIgnoreCase), "#C1");
 			Assert.IsNotNull (res.LastModified, "#C2");
 			Assert.AreEqual (0, res.Cookies.Count, "#C3");
 
@@ -123,14 +123,15 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
-		[Category("InetAccess")]
+		//[Category("InetAccess")]
+		[Category ("NotWorking")] // Disabled until a server that meets requirements is found
 		public void Cookies1 ()
 		{
 			// The purpose of this test is to ensure that the cookies we get from a request
 			// are stored in both, the CookieCollection in HttpWebResponse and the CookieContainer
 			// in HttpWebRequest.
 			// If this URL stops sending *one* and only one cookie, replace it.
-			string url = "http://www.elmundo.es";
+			string url = "http://xamarin.com";
 			CookieContainer cookies = new CookieContainer ();
 			HttpWebRequest req = (HttpWebRequest) WebRequest.Create (url);
 			req.KeepAlive = false;
@@ -2814,6 +2815,7 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+		[Category("MobileNotWorking")]
 		public void BeginWrite_Request_Aborted ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint ();

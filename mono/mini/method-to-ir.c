@@ -2030,7 +2030,10 @@ emit_push_lmf (MonoCompile *cfg)
 			/* jit_tls = pthread_getspecific (mono_jit_tls_id); lmf_addr = &jit_tls->lmf; */
 
 			/* Load mono_jit_tls_id */
-			EMIT_NEW_AOTCONST (cfg, args [0], MONO_PATCH_INFO_JIT_TLS_ID, NULL);
+			if (cfg->compile_aot)
+				EMIT_NEW_AOTCONST (cfg, args [0], MONO_PATCH_INFO_JIT_TLS_ID, NULL);
+			else
+				EMIT_NEW_ICONST (cfg, args [0], mono_jit_tls_id);
 			/* call pthread_getspecific () */
 			jit_tls_ins = mono_emit_jit_icall (cfg, pthread_getspecific, args);
 			/* lmf_addr = &jit_tls->lmf */
@@ -4142,9 +4145,7 @@ handle_alloc (MonoCompile *cfg, MonoClass *klass, gboolean for_box, int context_
 			return NULL;
 		}
 
-#ifndef MONO_CROSS_COMPILE
 		managed_alloc = mono_gc_get_managed_allocator (klass, for_box, TRUE);
-#endif
 
 		if (managed_alloc) {
 			int size = mono_class_instance_size (klass);
@@ -6371,6 +6372,8 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 #endif
 				break;
 			case MONO_TYPE_R4:
+				ins->type = cfg->r4_stack_type;
+				break;
 			case MONO_TYPE_R8:
 				ins->type = STACK_R8;
 				break;
@@ -6504,6 +6507,8 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 #endif
 					break;
 				case MONO_TYPE_R4:
+					ins->type = cfg->r4_stack_type;
+					break;
 				case MONO_TYPE_R8:
 					ins->type = STACK_R8;
 					break;

@@ -79,7 +79,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@INSTALL_4_5_TRUE@am__append_1 = $(scripts_4_0) dmcs xbuild
+@INSTALL_4_x_TRUE@am__append_1 = $(scripts_4_0) dmcs xbuild
 subdir = scripts
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-find-provides.in \
@@ -517,8 +517,8 @@ REWRITE_DEBUG = $(REWRITE_COMMON) -e 's,@''mono_interp@,$(mono_interp) --debug,g
 REWRITE2_DEBUG = $(REWRITE_DEBUG) -e 's,@''framework_version@,2.0,g'
 REWRITE2 = $(REWRITE) -e 's,@''framework_version@,2.0,g'
 REWRITE2_1 = $(REWRITE) -e 's,@''framework_version@,2.1,g'
-@INSTALL_4_5_TRUE@REWRITE4 = $(REWRITE) -e 's,@''framework_version@,4.5,g'
-@INSTALL_4_5_TRUE@REWRITE4_DEBUG = $(REWRITE_DEBUG) -e 's,@''framework_version@,4.5,g'
+@INSTALL_4_x_TRUE@REWRITE4 = $(REWRITE) -e 's,@''framework_version@,4.5,g'
+@INSTALL_4_x_TRUE@REWRITE4_DEBUG = $(REWRITE_DEBUG) -e 's,@''framework_version@,4.5,g'
 all: all-am
 
 .SUFFIXES:

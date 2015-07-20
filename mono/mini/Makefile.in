@@ -162,15 +162,15 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	mini-cross-helpers.c mini-llvm.c mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
 	tramp-amd64.c mini-arm64.c mini-arm64.h exceptions-arm64.c \
-	tramp-arm64.c mini-arm.c mini-arm.h exceptions-arm.c \
-	tramp-arm.c mini-ia64.c mini-ia64.h exceptions-ia64.c \
-	tramp-ia64.c mini-mips.c mini-mips.h exceptions-mips.c \
-	tramp-mips.c mini-ppc.c mini-ppc.h exceptions-ppc.c \
-	tramp-ppc.c mini-s390x.c mini-s390x.h support-s390x.h \
-	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
-	exceptions-sparc.c tramp-sparc.c mini-x86.c mini-x86.h \
-	exceptions-x86.c tramp-x86.c mini-windows.c mini-darwin.c \
-	mini-posix.c
+	tramp-arm64.c mini-arm.c mini-arm-tls.S mini-arm.h \
+	mini-arm-tls.h exceptions-arm.c tramp-arm.c mini-ia64.c \
+	mini-ia64.h exceptions-ia64.c tramp-ia64.c mini-mips.c \
+	mini-mips.h exceptions-mips.c tramp-mips.c mini-ppc.c \
+	mini-ppc.h exceptions-ppc.c tramp-ppc.c mini-s390x.c \
+	mini-s390x.h support-s390x.h exceptions-s390x.c tramp-s390x.c \
+	mini-sparc.c mini-sparc.h exceptions-sparc.c tramp-sparc.c \
+	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
+	mini-windows.c mini-darwin.c mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -209,7 +209,7 @@ am__objects_3 = libmini_static_la-mini-amd64.lo \
 am__objects_4 = libmini_static_la-mini-arm64.lo \
 	libmini_static_la-exceptions-arm64.lo \
 	libmini_static_la-tramp-arm64.lo
-am__objects_5 = libmini_static_la-mini-arm.lo \
+am__objects_5 = libmini_static_la-mini-arm.lo mini-arm-tls.lo \
 	libmini_static_la-exceptions-arm.lo \
 	libmini_static_la-tramp-arm.lo
 am__objects_6 = libmini_static_la-mini-ia64.lo \
@@ -279,15 +279,15 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-cross-helpers.c mini-llvm.c mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
 	tramp-amd64.c mini-arm64.c mini-arm64.h exceptions-arm64.c \
-	tramp-arm64.c mini-arm.c mini-arm.h exceptions-arm.c \
-	tramp-arm.c mini-ia64.c mini-ia64.h exceptions-ia64.c \
-	tramp-ia64.c mini-mips.c mini-mips.h exceptions-mips.c \
-	tramp-mips.c mini-ppc.c mini-ppc.h exceptions-ppc.c \
-	tramp-ppc.c mini-s390x.c mini-s390x.h support-s390x.h \
-	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
-	exceptions-sparc.c tramp-sparc.c mini-x86.c mini-x86.h \
-	exceptions-x86.c tramp-x86.c mini-windows.c mini-darwin.c \
-	mini-posix.c
+	tramp-arm64.c mini-arm.c mini-arm-tls.S mini-arm.h \
+	mini-arm-tls.h exceptions-arm.c tramp-arm.c mini-ia64.c \
+	mini-ia64.h exceptions-ia64.c tramp-ia64.c mini-mips.c \
+	mini-mips.h exceptions-mips.c tramp-mips.c mini-ppc.c \
+	mini-ppc.h exceptions-ppc.c tramp-ppc.c mini-s390x.c \
+	mini-s390x.h support-s390x.h exceptions-s390x.c tramp-s390x.c \
+	mini-sparc.c mini-sparc.h exceptions-sparc.c tramp-sparc.c \
+	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
+	mini-windows.c mini-darwin.c mini-posix.c
 am__objects_18 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-decompose.lo libmini_la-jit-icalls.lo \
@@ -315,8 +315,8 @@ am__objects_20 = libmini_la-mini-amd64.lo \
 	libmini_la-exceptions-amd64.lo libmini_la-tramp-amd64.lo
 am__objects_21 = libmini_la-mini-arm64.lo \
 	libmini_la-exceptions-arm64.lo libmini_la-tramp-arm64.lo
-am__objects_22 = libmini_la-mini-arm.lo libmini_la-exceptions-arm.lo \
-	libmini_la-tramp-arm.lo
+am__objects_22 = libmini_la-mini-arm.lo mini-arm-tls.lo \
+	libmini_la-exceptions-arm.lo libmini_la-tramp-arm.lo
 am__objects_23 = libmini_la-mini-ia64.lo libmini_la-exceptions-ia64.lo \
 	libmini_la-tramp-ia64.lo
 am__objects_24 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
@@ -497,6 +497,16 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
+CPPASCOMPILE = $(CCAS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CCASFLAGS) $(CCASFLAGS)
+LTCPPASCOMPILE = $(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CCAS) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CCASFLAGS) $(CCASFLAGS)
+AM_V_CPPAS = $(am__v_CPPAS_@AM_V@)
+am__v_CPPAS_ = $(am__v_CPPAS_@AM_DEFAULT_V@)
+am__v_CPPAS_0 = @echo "  CPPAS   " $@;
+am__v_CPPAS_1 = 
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 AM_V_CC = $(am__v_CC_@AM_V@)
@@ -805,7 +815,7 @@ sgenstatic_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
 
-CLASS = $(mcs_topdir)/class/lib/net_4_5
+CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 RUNTIME_EXECUTABLE = $(if $(BOEHM),$(top_builddir)/mono/mini/mono-boehm,$(top_builddir)/runtime/mono-wrapper)
 RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE)
 RUNTIME_AOTCHECK = MONO_PATH=$(CLASS):. $(RUNTIME_EXECUTABLE)
@@ -940,7 +950,9 @@ ppc_sources = \
 
 arm_sources = \
 	mini-arm.c		\
+	mini-arm-tls.S		\
 	mini-arm.h		\
+	mini-arm-tls.h		\
 	exceptions-arm.c	\
 	tramp-arm.c
 
@@ -1165,7 +1177,7 @@ all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cpp .lo .o .obj
+.SUFFIXES: .S .c .cpp .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -1492,11 +1504,36 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-xdebug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main-sgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-arm-tls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm-cpp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-llvm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-main-sgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono_boehm-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono_sgen-main-sgen.Po@am__quote@
+
+.S.o:
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCCAS_TRUE@	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCCAS_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CPPASCOMPILE) -c -o $@ $<
+
+.S.obj:
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCCAS_TRUE@	$(CPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCCAS_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(CPPASCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.S.lo:
+@am__fastdepCCAS_TRUE@	$(AM_V_CPPAS)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepCCAS_TRUE@	$(LTCPPASCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCCAS_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCCAS_FALSE@	DEPDIR=$(DEPDIR) $(CCASDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCCAS_FALSE@	$(AM_V_CPPAS@am__nodep@)$(LTCPPASCOMPILE) -c -o $@ $<
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -2833,6 +2870,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-libLTLIBRARIES uninstall-libmonoincludeHEADERS
 
 
+-include $(mcs_topdir)/build/config.make
+
 @HOST_WIN32_TRUE@export HOST_CC
 
 @DISABLE_EXECUTABLES_FALSE@mono: mono-$(mono_bin_suffix)
@@ -3007,7 +3046,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResults_op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.372/0f9f44e\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.489/b9cff43\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

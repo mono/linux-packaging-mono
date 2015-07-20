@@ -453,6 +453,10 @@ load_metadata_ptrs (MonoImage *image, MonoCLIImageInfo *iinfo)
 			ptr += 8 + 3;
 			image->uncompressed_metadata = TRUE;
 			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_ASSEMBLY, "Assembly '%s' has the non-standard metadata heap #-.\nRecompile it correctly (without the /incremental switch or in Release mode).\n", image->name);
+		} else if (strncmp (ptr + 8, "#Pdb", 5) == 0) {
+			image->heap_pdb.data = image->raw_metadata + read32 (ptr);
+			image->heap_pdb.size = read32 (ptr + 4);
+			ptr += 8 + 5;
 		} else {
 			g_message ("Unknown heap type: %s\n", ptr + 8);
 			ptr += 8 + strlen (ptr + 8) + 1;
@@ -926,9 +930,12 @@ mono_image_load_names (MonoImage *image)
 					0, MONO_ASSEMBLY_NAME));
 	}
 
-	image->module_name = mono_metadata_string_heap (image, 
+	/* Portable pdb images don't have a MODULE row */
+	if (image->tables [MONO_TABLE_MODULE].rows) {
+		image->module_name = mono_metadata_string_heap (image,
 			mono_metadata_decode_row_col (&image->tables [MONO_TABLE_MODULE],
 					0, MONO_MODULE_NAME));
+	}
 }
 
 static MonoImage *

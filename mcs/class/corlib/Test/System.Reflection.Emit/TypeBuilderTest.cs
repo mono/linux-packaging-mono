@@ -1182,6 +1182,7 @@ namespace MonoTests.System.Reflection.Emit
 		}
 
 		[Test]
+		[Category ("AndroidNotWorking")] // Fails with System.MethodAccessException : Method `t17:.ctor ()' is inaccessible from method `t18:.ctor ()'
 		public void DefineDefaultConstructor_Parent_DefaultCtorInaccessible ()
 		{
 			TypeBuilder tb;
@@ -8434,6 +8435,7 @@ namespace MonoTests.System.Reflection.Emit
 		}
 
 		[Test]
+		[Category ("MobileNotWorking")] // Not available in the 2.1 profile
 		public void TestAddDeclarativeSecurityAlreadyCreated ()
 		{
 			TypeBuilder tb = module.DefineType (genTypeName ());
@@ -8452,6 +8454,7 @@ namespace MonoTests.System.Reflection.Emit
 		}
 
 		[Test]
+		[Category ("MobileNotWorking")] // Not available in the 2.1 profile
 		public void TestAddDeclarativeSecurityNullPermissionSet ()
 		{
 			TypeBuilder tb = module.DefineType (genTypeName ());
@@ -8468,6 +8471,7 @@ namespace MonoTests.System.Reflection.Emit
 		}
 
 		[Test]
+		[Category ("MobileNotWorking")] // Not available in the 2.1 profile
 		public void TestAddDeclarativeSecurityInvalidAction ()
 		{
 			TypeBuilder tb = module.DefineType (genTypeName ());
@@ -8488,6 +8492,7 @@ namespace MonoTests.System.Reflection.Emit
 		}
 
 		[Test]
+		[Category ("MobileNotWorking")] // Not available in the 2.1 profile
 		public void TestAddDeclarativeSecurityDuplicateAction ()
 		{
 			TypeBuilder tb = module.DefineType (genTypeName ());
@@ -10878,6 +10883,7 @@ namespace MonoTests.System.Reflection.Emit
 
 		//Test for #572660
         [Test]
+        [Category ("MobileNotWorking")] // Mono.CompilerServices.SymbolWriter not available in XA
         public void CircularArrayType()
         {
 			var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("Test"), AssemblyBuilderAccess.RunAndSave);
@@ -11025,6 +11031,10 @@ namespace MonoTests.System.Reflection.Emit
 		}
 
 		[Test]
+		[Category ("AndroidNotWorking")]
+		// It's not possible to save the assembly in the current directory on Android and AssemblyBuilder.DefineDynamicModule will not
+		// allow a full path to the assembly to be passed to it. Trying to change the current directory before saving will not work either as
+		// FileStream will then prepend / to the file name (perhaps it's another bug) and write access to the filesystem root is, obviously, denied
 		public void Ldfld_Encoding_10122 () {
 			Build2<Example<int>> ();
 		}

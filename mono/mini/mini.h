@@ -726,6 +726,7 @@ typedef enum {
 	 * consists of floats/doubles.
 	 */
 	LLVMArgFpStruct,
+	LLVMArgVtypeByRef,
 } LLVMArgStorage;
 
 typedef struct {
@@ -1923,6 +1924,7 @@ typedef struct {
 	gboolean suspend_on_unhandled;
 	gboolean dyn_runtime_invoke;
 	gboolean gdb;
+	gboolean arm_use_fallback_tls;
 	/*
 	 * Whenever data such as next sequence points and flags is required.
 	 * Next sequence points and flags are required by the debugger agent.
