@@ -1,3 +1,9 @@
+mono (4.0.3.19-0xamarin1) alpha; urgency=low
+
+  * "New release - mono-4.0.3.19.tar.bz2"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 24 Jul 2015 04:18:03 -0400
+
 mono (4.0.3.13-0xamarin2) alpha; urgency=low
 
   * "Bugfix - see git log"
