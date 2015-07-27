@@ -514,11 +514,18 @@ namespace Mono.Linker.Steps {
 				MarkMethodsIf (type.Methods, IsStaticConstructorPredicate);
 			}
 
+			DoAdditionalTypeProcessing (type);
+
 			Annotations.Mark (type);
 
 			ApplyPreserveInfo (type);
 
 			return type;
+		}
+
+		// Allow subclassers to mark additional things when marking a method
+		protected virtual void DoAdditionalTypeProcessing (TypeDefinition method)
+		{
 		}
 
 		void MarkTypeSpecialCustomAttributes (TypeDefinition type)
@@ -570,17 +577,21 @@ namespace Mono.Linker.Steps {
 			return argument != null;
 		}
 
-		protected void MarkNamedMethod (TypeDefinition type, string method_name)
+		protected int MarkNamedMethod (TypeDefinition type, string method_name)
 		{
 			if (!type.HasMethods)
-				return;
+				return 0;
 
+			int count = 0;
 			foreach (MethodDefinition method in type.Methods) {
 				if (method.Name != method_name)
 					continue;
 
 				MarkMethod (method);
+				count++;
 			}
+
+			return count;
 		}
 
 		void MarkSoapHeader (MethodDefinition method, CustomAttribute attribute)
@@ -957,9 +968,16 @@ namespace Mono.Linker.Steps {
 			if (ShouldParseMethodBody (method))
 				MarkMethodBody (method.Body);
 
+			DoAdditionalMethodProcessing (method);
+
 			Annotations.Mark (method);
 
 			ApplyPreserveMethods (method);
+		}
+
+		// Allow subclassers to mark additional things when marking a method
+		protected virtual void DoAdditionalMethodProcessing (MethodDefinition method)
+		{
 		}
 
 		void MarkBaseMethods (MethodDefinition method)

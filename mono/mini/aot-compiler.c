@@ -3137,7 +3137,6 @@ is_plt_patch (MonoJumpInfo *patch_info)
 	case MONO_PATCH_INFO_INTERNAL_METHOD:
 	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
 	case MONO_PATCH_INFO_ICALL_ADDR:
-	case MONO_PATCH_INFO_CLASS_INIT:
 	case MONO_PATCH_INFO_RGCTX_FETCH:
 	case MONO_PATCH_INFO_MONITOR_ENTER:
 	case MONO_PATCH_INFO_MONITOR_ENTER_V4:
@@ -3363,7 +3362,7 @@ add_jit_icall_wrapper (gpointer key, gpointer value, gpointer user_data)
 		return;
 
 	name = g_strdup_printf ("__icall_wrapper_%s", callinfo->name);
-	wrapper = mono_marshal_get_icall_wrapper (callinfo->sig, name, callinfo->func, check_for_pending_exc);
+	wrapper = mono_marshal_get_icall_wrapper (callinfo->sig, name, callinfo->func, TRUE);
 	g_free (name);
 
 	add_method (acfg, wrapper);
@@ -5323,7 +5322,6 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 	case MONO_PATCH_INFO_CLASS:
 	case MONO_PATCH_INFO_IID:
 	case MONO_PATCH_INFO_ADJUSTED_IID:
-	case MONO_PATCH_INFO_CLASS_INIT:
 		encode_klass_ref (acfg, patch_info->data.klass, p, &p);
 		break;
 	case MONO_PATCH_INFO_DELEGATE_TRAMPOLINE:
@@ -5918,7 +5916,6 @@ static char*
 get_plt_entry_debug_sym (MonoAotCompile *acfg, MonoJumpInfo *ji, GHashTable *cache)
 {
 	char *debug_sym = NULL;
-	char *s;
 	char *prefix;
 
 	if (acfg->llvm && llvm_acfg->aot_opts.static_link) {
@@ -5934,11 +5931,6 @@ get_plt_entry_debug_sym (MonoAotCompile *acfg, MonoJumpInfo *ji, GHashTable *cac
 		break;
 	case MONO_PATCH_INFO_INTERNAL_METHOD:
 		debug_sym = g_strdup_printf ("%s_jit_icall_%s", prefix, ji->data.name);
-		break;
-	case MONO_PATCH_INFO_CLASS_INIT:
-		s = mono_type_get_name (&ji->data.klass->byval_arg);
-		debug_sym = g_strdup_printf ("%s__class_init_%s", prefix, s);
-		g_free (s);
 		break;
 	case MONO_PATCH_INFO_RGCTX_FETCH:
 		debug_sym = g_strdup_printf ("%s_rgctx_fetch_%d", prefix, acfg->label_generator ++);
@@ -6541,14 +6533,87 @@ clean_path (gchar * path)
 	return clean;
 }
 
+static GPtrArray *
+mono_aot_split_options (const char *aot_options)
+{
+	enum MonoAotOptionState {
+		MONO_AOT_OPTION_STATE_DEFAULT,
+		MONO_AOT_OPTION_STATE_STRING,
+		MONO_AOT_OPTION_STATE_ESCAPE,
+	};
+
+	GPtrArray *args = g_ptr_array_new ();
+	enum MonoAotOptionState state = MONO_AOT_OPTION_STATE_DEFAULT;
+	gchar const *opt_start = aot_options;
+	gboolean end_of_string = FALSE;
+	gchar cur;
+
+	g_return_val_if_fail (aot_options != NULL, NULL);
+
+	while ((cur = *aot_options) != '\0') {
+		if (state == MONO_AOT_OPTION_STATE_ESCAPE)
+			goto next;
+
+		switch (cur) {
+		case '"':
+			// If we find a quote, then if we're in the default case then
+			// it means we've found the start of a string, if not then it
+			// means we've found the end of the string and should switch
+			// back to the default case.		
+			switch (state) {
+			case MONO_AOT_OPTION_STATE_DEFAULT:
+				state = MONO_AOT_OPTION_STATE_STRING;
+				break;
+			case MONO_AOT_OPTION_STATE_STRING:
+				state = MONO_AOT_OPTION_STATE_DEFAULT;
+				break;
+			case MONO_AOT_OPTION_STATE_ESCAPE:
+				g_assert_not_reached ();
+				break;
+			}
+			break;
+		case '\\':
+			// If we've found an escaping operator, then this means we
+			// should not process the next character if inside a string.		
+			if (state == MONO_AOT_OPTION_STATE_STRING) 
+				state = MONO_AOT_OPTION_STATE_ESCAPE;
+			break;
+		case ',':
+			// If we're in the default state then this means we've found
+			// an option, store it for later processing.
+			if (state == MONO_AOT_OPTION_STATE_DEFAULT)
+				goto new_opt;
+			break;
+		}
+
+	next:
+		aot_options++;
+		// If the next character is end of string, then process the last option.
+		if (*(aot_options) == '\0') {
+			end_of_string = TRUE;
+			goto new_opt;
+		}
+		continue;
+
+	new_opt:
+		g_ptr_array_add (args, g_strndup (opt_start, aot_options - opt_start));
+		opt_start = ++aot_options;
+		if (end_of_string)
+			break;
+		goto next;
+	}
+
+	return args;
+}
+
 static void
 mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 {
-	gchar **args, **ptr;
+	GPtrArray* args;
 
-	args = g_strsplit (aot_options ? aot_options : "", ",", -1);
-	for (ptr = args; ptr && *ptr; ptr ++) {
-		const char *arg = *ptr;
+	args = mono_aot_split_options (aot_options ? aot_options : "");
+	for (int i = 0; i < args->len; ++i) {
+		const char *arg = g_ptr_array_index (args, i);
 
 		if (str_begins_with (arg, "outfile=")) {
 			opts->outfile = g_strdup (arg + strlen ("outfile="));
@@ -6680,6 +6745,8 @@ mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 			fprintf (stderr, "AOT : Unknown argument '%s'.\n", arg);
 			exit (1);
 		}
+
+		g_free ((gpointer) arg);
 	}
 
 	if (opts->use_trampolines_page) {
@@ -6688,7 +6755,8 @@ mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 		opts->nimt_trampolines = 0;
 		opts->ngsharedvt_arg_trampolines = 0;
 	}
-	g_strfreev (args);
+
+	g_ptr_array_free (args, /*free_seg=*/TRUE);
 }
 
 static void
@@ -6781,7 +6849,6 @@ can_encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info)
 		return can_encode_method (acfg, method);
 	}
 	case MONO_PATCH_INFO_VTABLE:
-	case MONO_PATCH_INFO_CLASS_INIT:
 	case MONO_PATCH_INFO_CLASS:
 	case MONO_PATCH_INFO_IID:
 	case MONO_PATCH_INFO_ADJUSTED_IID:
@@ -8846,7 +8913,7 @@ collect_methods (MonoAotCompile *acfg)
 		if (mono_aot_mode_is_full (&acfg->aot_opts) && method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) {
 			/* Compile the wrapper instead */
 			/* We do this here instead of add_wrappers () because it is easy to do it here */
-			MonoMethod *wrapper = mono_marshal_get_native_wrapper (method, check_for_pending_exc, TRUE);
+			MonoMethod *wrapper = mono_marshal_get_native_wrapper (method, TRUE, TRUE);
 			method = wrapper;
 		}
 

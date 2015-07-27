@@ -101,18 +101,40 @@ namespace Mono.CSharp
 
 	public class ParenthesizedExpression : ShimExpression
 	{
+		bool conditional_access_receiver;
+
 		public ParenthesizedExpression (Expression expr, Location loc)
 			: base (expr)
 		{
 			this.loc = loc;
 		}
 
-		protected override Expression DoResolve (ResolveContext ec)
+		protected override Expression DoResolve (ResolveContext rc)
 		{
-			var res = expr.Resolve (ec);
+			Expression res = null;
+
+			if (!rc.HasSet (ResolveContext.Options.ConditionalAccessReceiver)) {
+				if (expr.HasConditionalAccess ()) {
+					conditional_access_receiver = true;
+					using (rc.Set (ResolveContext.Options.ConditionalAccessReceiver)) {
+						res = expr.Resolve (rc);
+					}
+				}
+			}
+
+			if (!conditional_access_receiver)
+				res = expr.Resolve (rc);
+
 			var constant = res as Constant;
 			if (constant != null && constant.IsLiteral)
 				return Constant.CreateConstantFromValue (res.Type, constant.GetValue (), expr.Location);
+
+			if (conditional_access_receiver) {
+				expr = res;
+				type = LiftMemberType (rc, res.Type);
+				eclass = expr.eclass;
+				return this;
+			}
 
 			return res;
 		}
@@ -127,9 +149,21 @@ namespace Mono.CSharp
 			return visitor.Visit (this);
 		}
 
+		public override void Emit (EmitContext ec)
+		{
+			if (!conditional_access_receiver)
+				base.Emit (ec);
+
+			var prev = ec.ConditionalAccess;
+			ec.ConditionalAccess = new ConditionalAccessContext (type, ec.DefineLabel ());
+			expr.Emit (ec);
+			ec.CloseConditionalAccess (type.IsNullableType ? type : null);
+			ec.ConditionalAccess = prev;
+		}
+
 		public override bool HasConditionalAccess ()
 		{
-			return expr.HasConditionalAccess ();
+			return false;
 		}
 	}
 	
@@ -1382,14 +1416,12 @@ namespace Mono.CSharp
 		}
 
 
-#if NET_4_0 || MOBILE_DYNAMIC
 		public override SLE.Expression MakeExpression (BuilderContext ctx)
 		{
 			var target = ((RuntimeValueExpression) expr).MetaObject.Expression;
 			var source = SLE.Expression.Convert (operation.MakeExpression (ctx), target.Type);
 			return SLE.Expression.Assign (target, source);
 		}
-#endif
 
 		public static string OperName (Mode oper)
 		{
@@ -2665,7 +2697,7 @@ namespace Mono.CSharp
 			temp_storage.Release (ec);
 		}
 
-#if (NET_4_0 || MOBILE_DYNAMIC) && !STATIC
+#if !STATIC
 		public override SLE.Expression MakeExpression (BuilderContext ctx)
 		{
 			return SLE.Expression.Default (type.GetMetaInfo ());
@@ -8265,7 +8297,6 @@ namespace Mono.CSharp
 			return data;
 		}
 
-#if NET_4_0 || MOBILE_DYNAMIC
 		public override SLE.Expression MakeExpression (BuilderContext ctx)
 		{
 #if STATIC
@@ -8282,7 +8313,6 @@ namespace Mono.CSharp
 			return SLE.Expression.NewArrayInit (array_element_type.GetMetaInfo (), initializers);
 #endif
 		}
-#endif
 #if STATIC
 		//
 		// Emits the initializers for the array
@@ -9724,7 +9754,7 @@ namespace Mono.CSharp
 				}
 
 				if (expr_type.IsNullableType) {
-					expr = Nullable.Unwrap.Create (expr, true).Resolve (rc);
+					expr = Nullable.Unwrap.Create (expr.Resolve (rc), true);
 					expr_type = expr.Type;
 				}
 			}
@@ -10773,13 +10803,9 @@ namespace Mono.CSharp
 #else
 			var value = new[] { source.MakeExpression (ctx) };
 			var args = Arguments.MakeExpression (arguments, ctx).Concat (value);
-#if NET_4_0 || MOBILE_DYNAMIC
 			return SLE.Expression.Block (
 					SLE.Expression.Call (InstanceExpression.MakeExpression (ctx), (MethodInfo) Setter.GetMetaInfo (), args),
 					value [0]);
-#else
-			return args.First ();
-#endif
 #endif
 		}
 
@@ -11733,8 +11759,13 @@ namespace Mono.CSharp
 			args.Add (new Argument (mg.CreateExpressionTree (ec)));
 
 			var expr_initializers = new ArrayInitializer (arguments.Count, loc);
-			foreach (Argument a in arguments)
+			foreach (Argument a in arguments) {
+				if (a.ArgType == Argument.AType.ExtensionType) {
+					ec.Report.Error (8075, a.Expr.Location, "An expression tree cannot contain a collection initializer with extension method");
+					continue;
+				}
 				expr_initializers.Add (a.CreateExpressionTree (ec));
+			}
 
 			args.Add (new Argument (new ArrayCreation (
 				CreateExpressionTypeExpression (ec, loc), expr_initializers, loc)));
@@ -12547,6 +12578,7 @@ namespace Mono.CSharp
 		protected override void CloneTo (CloneContext clonectx, Expression t)
 		{
 			var target = (InterpolatedStringInsert)t;
+			target.expr = expr.Clone (clonectx);
 			if (Alignment != null)
 				target.Alignment = Alignment.Clone (clonectx);
 		}

@@ -254,6 +254,7 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
@@ -1558,8 +1559,6 @@ check-parallel: compile-tests check-full
 test-wrench: check-parallel
 
 aotcheck: testaot gshared-aot
-
--include $(mcs_topdir)/build/config.make
 
 %.exe: %.il
 	$(ILASM) -out:$@ $<

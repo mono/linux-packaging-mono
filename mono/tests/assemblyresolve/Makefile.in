@@ -146,6 +146,7 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
@@ -518,7 +519,6 @@ uninstall-am:
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags-am uninstall uninstall-am
 
--include $(mcs_topdir)/build/config.make
 
 prereq: test/asm.dll
 

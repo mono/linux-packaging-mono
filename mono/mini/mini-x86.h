@@ -52,7 +52,7 @@ struct sigcontext {
 #define MONO_ARCH_USE_SIGACTION
 #endif
 
-#if defined(__native_client__)
+#if defined(__native_client__) || defined(HOST_WATCHOS)
 #undef MONO_ARCH_USE_SIGACTION
 #endif
 
@@ -318,7 +318,7 @@ guint8*
 mono_x86_emit_tls_get_reg (guint8* code, int dreg, int offset_reg);
 
 guint32
-mono_x86_get_this_arg_offset (MonoGenericSharingContext *gsctx, MonoMethodSignature *sig);
+mono_x86_get_this_arg_offset (MonoMethodSignature *sig);
 
 gboolean
 mono_x86_have_tls_get (void);
