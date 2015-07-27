@@ -117,21 +117,21 @@ am__v_lt_1 =
 libmonoruntime_static_la_DEPENDENCIES = $(libmonoruntime_la_LIBADD)
 am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	../../support/libm/complex.c console-win32.c assembly.c \
-	attach.h attach.c char-conversions.h cil-coff.h class.c \
-	class-internals.h cominterop.c cominterop.h console-io.h \
-	coree.c coree.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c decimal-ms.c decimal-ms.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h file-io.c file-io.h filewatcher.c filewatcher.h \
-	gc-internal.h icall.c icall-def.h image.c jit-info.c loader.c \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	attach.h attach.c cil-coff.h class.c class-internals.h \
+	cominterop.c cominterop.h console-io.h coree.c coree.h \
+	culture-info.h culture-info-tables.h debug-helpers.c \
+	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
+	debug-mono-ppdb.c decimal-ms.c decimal-ms.h domain-internals.h \
+	environment.c environment.h exception.c exception.h file-io.c \
+	file-io.h filewatcher.c filewatcher.h gc-internal.h icall.c \
+	icall-def.h image.c jit-info.c loader.c locales.c locales.h \
+	lock-tracer.c lock-tracer.h marshal.c marshal.h mempool.c \
+	mempool.h mempool-internals.h metadata.c metadata-verify.c \
+	metadata-internals.h method-builder.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config.c \
+	mono-debug.h mono-debug.c mono-debug-debugger.h mono-endian.c \
+	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
+	mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
@@ -232,21 +232,21 @@ libmonoruntime_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 libmonoruntime_la_DEPENDENCIES = libmonoruntime-config.la
 am__libmonoruntime_la_SOURCES_DIST = console-unix.c \
 	../../support/libm/complex.c console-win32.c assembly.c \
-	attach.h attach.c char-conversions.h cil-coff.h class.c \
-	class-internals.h cominterop.c cominterop.h console-io.h \
-	coree.c coree.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c decimal-ms.c decimal-ms.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h file-io.c file-io.h filewatcher.c filewatcher.h \
-	gc-internal.h icall.c icall-def.h image.c jit-info.c loader.c \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	attach.h attach.c cil-coff.h class.c class-internals.h \
+	cominterop.c cominterop.h console-io.h coree.c coree.h \
+	culture-info.h culture-info-tables.h debug-helpers.c \
+	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
+	debug-mono-ppdb.c decimal-ms.c decimal-ms.h domain-internals.h \
+	environment.c environment.h exception.c exception.h file-io.c \
+	file-io.h filewatcher.c filewatcher.h gc-internal.h icall.c \
+	icall-def.h image.c jit-info.c loader.c locales.c locales.h \
+	lock-tracer.c lock-tracer.h marshal.c marshal.h mempool.c \
+	mempool.h mempool-internals.h metadata.c metadata-verify.c \
+	metadata-internals.h method-builder.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config.c \
+	mono-debug.h mono-debug.c mono-debug-debugger.h mono-endian.c \
+	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
+	mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
@@ -327,21 +327,21 @@ libmonoruntimesgen_static_la_DEPENDENCIES =  \
 	$(libmonoruntimesgen_la_LIBADD)
 am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	../../support/libm/complex.c console-win32.c assembly.c \
-	attach.h attach.c char-conversions.h cil-coff.h class.c \
-	class-internals.h cominterop.c cominterop.h console-io.h \
-	coree.c coree.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c decimal-ms.c decimal-ms.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h file-io.c file-io.h filewatcher.c filewatcher.h \
-	gc-internal.h icall.c icall-def.h image.c jit-info.c loader.c \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	attach.h attach.c cil-coff.h class.c class-internals.h \
+	cominterop.c cominterop.h console-io.h coree.c coree.h \
+	culture-info.h culture-info-tables.h debug-helpers.c \
+	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
+	debug-mono-ppdb.c decimal-ms.c decimal-ms.h domain-internals.h \
+	environment.c environment.h exception.c exception.h file-io.c \
+	file-io.h filewatcher.c filewatcher.h gc-internal.h icall.c \
+	icall-def.h image.c jit-info.c loader.c locales.c locales.h \
+	lock-tracer.c lock-tracer.h marshal.c marshal.h mempool.c \
+	mempool.h mempool-internals.h metadata.c metadata-verify.c \
+	metadata-internals.h method-builder.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config.c \
+	mono-debug.h mono-debug.c mono-debug-debugger.h mono-endian.c \
+	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
+	mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
@@ -451,21 +451,21 @@ libmonoruntimesgen_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 libmonoruntimesgen_la_DEPENDENCIES = libmonoruntime-config.la
 am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	../../support/libm/complex.c console-win32.c assembly.c \
-	attach.h attach.c char-conversions.h cil-coff.h class.c \
-	class-internals.h cominterop.c cominterop.h console-io.h \
-	coree.c coree.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c decimal-ms.c decimal-ms.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h file-io.c file-io.h filewatcher.c filewatcher.h \
-	gc-internal.h icall.c icall-def.h image.c jit-info.c loader.c \
-	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
-	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
+	attach.h attach.c cil-coff.h class.c class-internals.h \
+	cominterop.c cominterop.h console-io.h coree.c coree.h \
+	culture-info.h culture-info-tables.h debug-helpers.c \
+	debug-mono-symfile.h debug-mono-symfile.c debug-mono-ppdb.h \
+	debug-mono-ppdb.c decimal-ms.c decimal-ms.h domain-internals.h \
+	environment.c environment.h exception.c exception.h file-io.c \
+	file-io.h filewatcher.c filewatcher.h gc-internal.h icall.c \
+	icall-def.h image.c jit-info.c loader.c locales.c locales.h \
+	lock-tracer.c lock-tracer.h marshal.c marshal.h mempool.c \
+	mempool.h mempool-internals.h metadata.c metadata-verify.c \
+	metadata-internals.h method-builder.h method-builder.c \
+	mono-basic-block.c mono-basic-block.h mono-config.c \
+	mono-debug.h mono-debug.c mono-debug-debugger.h mono-endian.c \
+	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
+	mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
@@ -713,6 +713,7 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
@@ -950,7 +951,6 @@ common_sources = \
 	assembly.c		\
 	attach.h		\
 	attach.c		\
-	char-conversions.h	\
 	cil-coff.h		\
 	class.c			\
 	class-internals.h	\

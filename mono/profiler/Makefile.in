@@ -283,6 +283,7 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
@@ -930,8 +931,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	uninstall-suppressionDATA
 
-
--include $(mcs_topdir)/build/config.make
 
 %.exe: %.cs
 	$(MCS) -out:$@ $<

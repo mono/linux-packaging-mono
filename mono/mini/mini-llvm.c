@@ -46,7 +46,6 @@ void bzero (void *to, size_t count) { memset (to, 0, count); }
 typedef struct {
 	LLVMModuleRef module;
 	LLVMValueRef throw, rethrow, throw_corlib_exception;
-	LLVMValueRef generic_class_init_tramp;
 	GHashTable *llvm_types;
 	LLVMValueRef got_var;
 	const char *got_symbol;
@@ -282,6 +281,7 @@ get_vtype_size (MonoType *t)
 
 	size = mono_class_value_size (mono_class_from_mono_type (t), NULL);
 
+	/* LLVMArgAsIArgs depends on this since it stores whole words */
 	while (size < 2 * sizeof (gpointer) && mono_is_power_of_two (size) == -1)
 		size ++;
 
@@ -394,7 +394,7 @@ type_to_llvm_type (EmitContext *ctx, MonoType *t)
 	if (t->byref)
 		return LLVMPointerType (LLVMInt8Type (), 0);
 
-	t = mini_get_underlying_type (ctx->cfg, t);
+	t = mini_get_underlying_type (t);
 	switch (t->type) {
 	case MONO_TYPE_VOID:
 		return LLVMVoidType ();
@@ -1173,7 +1173,7 @@ sig_to_llvm_sig_full (EmitContext *ctx, MonoMethodSignature *sig, LLVMCallInfo *
 	if (sinfo)
 		memset (sinfo, 0, sizeof (LLVMSigInfo));
 
-	rtype = mini_get_underlying_type (ctx->cfg, sig->ret);
+	rtype = mini_get_underlying_type (sig->ret);
 	ret_type = type_to_llvm_type (ctx, rtype);
 	CHECK_FAILURE (ctx);
 
@@ -1193,6 +1193,11 @@ sig_to_llvm_sig_full (EmitContext *ctx, MonoMethodSignature *sig, LLVMCallInfo *
 		case LLVMArgVtypeByVal:
 			/* Vtype returned normally by val */
 			break;
+		case LLVMArgVtypeAsScalar:
+			/* LLVM models this by returning an int */
+			g_assert (cinfo->ret.nslots == 1 || cinfo->ret.nslots == 2);
+			ret_type = LLVMIntType (cinfo->ret.nslots * sizeof (mgreg_t) * 8);
+			break;
 		case LLVMArgFpStruct: {
 			/* Vtype returned as a fp struct */
 			LLVMTypeRef members [16];
@@ -1208,7 +1213,7 @@ sig_to_llvm_sig_full (EmitContext *ctx, MonoMethodSignature *sig, LLVMCallInfo *
 			ret_type = LLVMVoidType ();
 			break;
 		default:
-			if (mini_type_is_vtype (ctx->cfg, rtype)) {
+			if (mini_type_is_vtype (rtype)) {
 				g_assert (cinfo->ret.storage == LLVMArgVtypeRetAddr);
 				vretaddr = TRUE;
 				ret_type = LLVMVoidType ();
@@ -1326,6 +1331,9 @@ sig_to_llvm_sig_full (EmitContext *ctx, MonoMethodSignature *sig, LLVMCallInfo *
 			pindex += ainfo->nslots;
 			break;
 		}
+		case LLVMArgVtypeAsScalar:
+			g_assert_not_reached ();
+			break;
 		default:
 			param_types [pindex ++] = type_to_llvm_arg_type (ctx, sig->params [i]);
 			break;
@@ -2078,7 +2086,7 @@ emit_entry_bb (EmitContext *ctx, LLVMBuilderRef builder)
 		MonoInst *var = cfg->varinfo [i];
 		LLVMTypeRef vtype;
 
-		if (var->flags & (MONO_INST_VOLATILE|MONO_INST_INDIRECT) || mini_type_is_vtype (cfg, var->inst_vtype)) {
+		if (var->flags & (MONO_INST_VOLATILE|MONO_INST_INDIRECT) || mini_type_is_vtype (var->inst_vtype)) {
 			vtype = type_to_llvm_type (ctx, var->inst_vtype);
 			CHECK_FAILURE (ctx);
 			/* Could be already created by an OP_VPHI */
@@ -2143,6 +2151,9 @@ emit_entry_bb (EmitContext *ctx, LLVMBuilderRef builder)
 			LLVMBuildStore (ctx->builder, arg, convert (ctx, ctx->addresses [reg], LLVMPointerType (LLVMTypeOf (arg), 0)));
 			break;
 		}
+		case LLVMArgVtypeAsScalar:
+			g_assert_not_reached ();
+			break;
 		default:
 			ctx->values [reg] = convert_full (ctx, ctx->values [reg], llvm_type_to_stack_type (cfg, type_to_llvm_type (ctx, sig->params [i])), type_is_unsigned (ctx, sig->params [i]));
 			break;
@@ -2154,10 +2165,10 @@ emit_entry_bb (EmitContext *ctx, LLVMBuilderRef builder)
 	if (sig->hasthis)
 		emit_volatile_store (ctx, cfg->args [0]->dreg);
 	for (i = 0; i < sig->param_count; ++i)
-		if (!mini_type_is_vtype (cfg, sig->params [i]))
+		if (!mini_type_is_vtype (sig->params [i]))
 			emit_volatile_store (ctx, cfg->args [i + sig->hasthis]->dreg);
 
-	if (sig->hasthis && !cfg->rgctx_var && cfg->generic_sharing_context) {
+	if (sig->hasthis && !cfg->rgctx_var && cfg->gshared) {
 		LLVMValueRef this_alloc;
 
 		/*
@@ -2476,6 +2487,9 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 			g_assert (addresses [reg]);
 			args [pindex] = LLVMBuildLoad (ctx->builder, convert (ctx, addresses [reg], LLVMPointerType (LLVMArrayType (IntPtrType (), ainfo->nslots), 0)), "");
 			break;
+		case LLVMArgVtypeAsScalar:
+			g_assert_not_reached ();
+			break;
 		default:
 			g_assert (args [pindex]);
 			if (i == 0 && sig->hasthis)
@@ -2547,6 +2561,11 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 			LLVMBuildStore (builder, lcall, addresses [call->inst.dreg]);
 			break;
 		case LLVMArgFpStruct:
+			if (!addresses [call->inst.dreg])
+				addresses [call->inst.dreg] = build_alloca (ctx, sig->ret);
+			LLVMBuildStore (builder, lcall, convert_full (ctx, addresses [call->inst.dreg], LLVMPointerType (LLVMTypeOf (lcall), 0), FALSE));
+			break;
+		case LLVMArgVtypeAsScalar:
 			if (!addresses [call->inst.dreg])
 				addresses [call->inst.dreg] = build_alloca (ctx, sig->ret);
 			LLVMBuildStore (builder, lcall, convert_full (ctx, addresses [call->inst.dreg], LLVMPointerType (LLVMTypeOf (lcall), 0), FALSE));
@@ -2889,6 +2908,19 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 
 				retval = LLVMBuildInsertValue (builder, LLVMGetUndef (ret_type), part1, 0, "");
 
+				LLVMBuildRet (builder, retval);
+				break;
+			}
+			case LLVMArgVtypeAsScalar: {
+				LLVMTypeRef ret_type = LLVMGetReturnType (LLVMGetElementType (LLVMTypeOf (method)));
+				LLVMValueRef retval;
+				int size;
+
+				size = get_vtype_size (sig->ret);
+
+				g_assert (addresses [ins->sreg1]);
+
+				retval = LLVMBuildLoad (builder, LLVMBuildBitCast (builder, addresses [ins->sreg1], LLVMPointerType (ret_type, 0), ""), "");
 				LLVMBuildRet (builder, retval);
 				break;
 			}
@@ -3503,6 +3535,7 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 		case OP_LCONV_TO_R8:
 			values [ins->dreg] = LLVMBuildSIToFP (builder, lhs, LLVMDoubleType (), dname);
 			break;
+		case OP_ICONV_TO_R_UN:
 		case OP_LCONV_TO_R_UN:
 			values [ins->dreg] = LLVMBuildUIToFP (builder, lhs, LLVMDoubleType (), dname);
 			break;
@@ -4118,7 +4151,7 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 				break;
 			}
 
-			if (mini_is_gsharedvt_klass (cfg, klass)) {
+			if (mini_is_gsharedvt_klass (klass)) {
 				// FIXME:
 				LLVM_FAILURE (ctx, "gsharedvt");
 				break;
@@ -5427,7 +5460,9 @@ mono_llvm_emit_call (MonoCompile *cfg, MonoCallInst *call)
 			break;
 		}
 		case LLVMArgVtypeByVal:
+		case LLVMArgVtypeByRef:
 		case LLVMArgVtypeInReg:
+		case LLVMArgVtypeAsScalar:
 		case LLVMArgAsIArgs:
 		case LLVMArgAsFpArgs:
 			MONO_INST_NEW (cfg, ins, OP_LLVM_OUTARG_VT);

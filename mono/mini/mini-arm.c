@@ -698,14 +698,14 @@ mono_arm_have_tls_get (void)
  * Returns the size of the activation frame.
  */
 int
-mono_arch_get_argument_info (MonoGenericSharingContext *gsctx, MonoMethodSignature *csig, int param_count, MonoJitArgumentInfo *arg_info)
+mono_arch_get_argument_info (MonoMethodSignature *csig, int param_count, MonoJitArgumentInfo *arg_info)
 {
 	int k, frame_size = 0;
 	guint32 size, align, pad;
 	int offset = 8;
 	MonoType *t;
 
-	t = mini_type_get_underlying_type (gsctx, csig->ret);
+	t = mini_get_underlying_type (csig->ret);
 	if (MONO_TYPE_ISSTRUCT (t)) {
 		frame_size += sizeof (gpointer);
 		offset += 4;
@@ -721,7 +721,7 @@ mono_arch_get_argument_info (MonoGenericSharingContext *gsctx, MonoMethodSignatu
 	arg_info [0].size = frame_size;
 
 	for (k = 0; k < param_count; k++) {
-		size = mini_type_stack_size_full (NULL, csig->params [k], &align, csig->pinvoke);
+		size = mini_type_stack_size_full (csig->params [k], &align, csig->pinvoke);
 
 		/* ignore alignment for now */
 		align = 1;
@@ -821,7 +821,7 @@ mono_arch_get_delegate_invoke_impl (MonoMethodSignature *sig, gboolean has_targe
 	MonoType *sig_ret;
 
 	/* FIXME: Support more cases */
-	sig_ret = mini_type_get_underlying_type (NULL, sig->ret);
+	sig_ret = mini_get_underlying_type (sig->ret);
 	if (MONO_TYPE_ISSTRUCT (sig_ret))
 		return NULL;
 
@@ -1056,10 +1056,11 @@ mono_arm_is_hard_float (void)
 }
 
 static gboolean
-is_regsize_var (MonoGenericSharingContext *gsctx, MonoType *t) {
+is_regsize_var (MonoType *t)
+{
 	if (t->byref)
 		return TRUE;
-	t = mini_type_get_underlying_type (gsctx, t);
+	t = mini_get_underlying_type (t);
 	switch (t->type) {
 	case MONO_TYPE_I4:
 	case MONO_TYPE_U4:
@@ -1102,7 +1103,7 @@ mono_arch_get_allocatable_int_vars (MonoCompile *cfg)
 			continue;
 
 		/* we can only allocate 32 bit values */
-		if (is_regsize_var (cfg->generic_sharing_context, ins->inst_vtype)) {
+		if (is_regsize_var (ins->inst_vtype)) {
 			g_assert (MONO_VARINFO (cfg, i)->reg == -1);
 			g_assert (i == vmv->idx);
 			vars = mono_varlist_insert_sorted (cfg, vars, vmv, FALSE);
@@ -1207,10 +1208,15 @@ mono_arch_flush_icache (guint8 *code, gint size)
 
 typedef enum {
 	RegTypeNone,
+	/* Passed/returned in an ireg */
 	RegTypeGeneral,
+	/* Passed/returned in a pair of iregs */
 	RegTypeIRegPair,
+	/* Passed on the stack */
 	RegTypeBase,
+	/* First word in r3, second word on the stack */
 	RegTypeBaseGen,
+	/* FP value passed in either an ireg or a vfp reg */
 	RegTypeFP,
 	RegTypeStructByVal,
 	RegTypeStructByAddr,
@@ -1401,7 +1407,7 @@ is_hfa (MonoType *t, int *out_nfields, int *out_esize)
 		if (field->type->attrs & FIELD_ATTRIBUTE_STATIC)
 			continue;
 		ftype = mono_field_get_type (field);
-		ftype = mini_type_get_underlying_type (NULL, ftype);
+		ftype = mini_get_underlying_type (ftype);
 
 		if (MONO_TYPE_ISSTRUCT (ftype)) {
 			int nested_nfields, nested_esize;
@@ -1433,7 +1439,7 @@ is_hfa (MonoType *t, int *out_nfields, int *out_esize)
 }
 
 static CallInfo*
-get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSignature *sig)
+get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 {
 	guint i, gr, fpr, pstart;
 	gint float_spare;
@@ -1456,7 +1462,7 @@ get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSign
 	fpr = ARM_VFP_F0;
 	float_spare = -1;
 
-	t = mini_type_get_underlying_type (gsctx, sig->ret);
+	t = mini_get_underlying_type (sig->ret);
 	switch (t->type) {
 	case MONO_TYPE_I1:
 	case MONO_TYPE_U1:
@@ -1503,7 +1509,7 @@ get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSign
 			break;
 		}
 		// FIXME: Only for variable types
-		if (mini_is_gsharedvt_type_gsctx (gsctx, t)) {
+		if (mini_is_gsharedvt_type (t)) {
 			cinfo->ret.storage = RegTypeStructByAddr;
 			break;
 		}
@@ -1524,7 +1530,7 @@ get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSign
 		break;
 	case MONO_TYPE_VAR:
 	case MONO_TYPE_MVAR:
-		g_assert (mini_is_gsharedvt_type_gsctx (gsctx, t));
+		g_assert (mini_is_gsharedvt_type (t));
 		cinfo->ret.storage = RegTypeStructByAddr;
 		break;
 	case MONO_TYPE_VOID:
@@ -1544,7 +1550,7 @@ get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSign
 	 * are sometimes made using calli without sig->hasthis set, like in the delegate
 	 * invoke wrappers.
 	 */
-	if (vtype_retaddr && !is_pinvoke && (sig->hasthis || (sig->param_count > 0 && MONO_TYPE_IS_REFERENCE (mini_type_get_underlying_type (gsctx, sig->params [0]))))) {
+	if (vtype_retaddr && !is_pinvoke && (sig->hasthis || (sig->param_count > 0 && MONO_TYPE_IS_REFERENCE (mini_get_underlying_type (sig->params [0]))))) {
 		if (sig->hasthis) {
 			add_general (&gr, &stack_size, cinfo->args + 0, TRUE);
 		} else {
@@ -1586,7 +1592,7 @@ get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSign
 			n++;
 			continue;
 		}
-		t = mini_type_get_underlying_type (gsctx, sig->params [i]);
+		t = mini_get_underlying_type (sig->params [i]);
 		switch (t->type) {
 		case MONO_TYPE_I1:
 		case MONO_TYPE_U1:
@@ -1621,9 +1627,9 @@ get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSign
 				add_general (&gr, &stack_size, ainfo, TRUE);
 				break;
 			}
-			if (mini_is_gsharedvt_type_gsctx (gsctx, t)) {
+			if (mini_is_gsharedvt_type (t)) {
 				/* gsharedvt arguments are passed by ref */
-				g_assert (mini_is_gsharedvt_type_gsctx (gsctx, t));
+				g_assert (mini_is_gsharedvt_type (t));
 				add_general (&gr, &stack_size, ainfo, TRUE);
 				switch (ainfo->storage) {
 				case RegTypeGeneral:
@@ -1666,7 +1672,7 @@ get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSign
 				if (is_pinvoke)
 					size = mono_class_native_size (klass, &align);
 				else
-					size = mini_type_stack_size_full (gsctx, t, &align, FALSE);
+					size = mini_type_stack_size_full (t, &align, FALSE);
 			}
 			DEBUG(printf ("load %d bytes struct\n", size));
 			align_size = size;
@@ -1726,7 +1732,7 @@ get_call_info (MonoGenericSharingContext *gsctx, MonoMemPool *mp, MonoMethodSign
 		case MONO_TYPE_VAR:
 		case MONO_TYPE_MVAR:
 			/* gsharedvt arguments are passed by ref */
-			g_assert (mini_is_gsharedvt_type_gsctx (gsctx, t));
+			g_assert (mini_is_gsharedvt_type (t));
 			add_general (&gr, &stack_size, ainfo, TRUE);
 			switch (ainfo->storage) {
 			case RegTypeGeneral:
@@ -1771,15 +1777,15 @@ mono_arch_tail_call_supported (MonoCompile *cfg, MonoMethodSignature *caller_sig
 	CallInfo *c1, *c2;
 	gboolean res;
 
-	c1 = get_call_info (NULL, NULL, caller_sig);
-	c2 = get_call_info (NULL, NULL, callee_sig);
+	c1 = get_call_info (NULL, caller_sig);
+	c2 = get_call_info (NULL, callee_sig);
 
 	/*
 	 * Tail calls with more callee stack usage than the caller cannot be supported, since
 	 * the extra stack space would be left on the stack after the tail call.
 	 */
 	res = c1->stack_usage >= c2->stack_usage;
-	callee_ret = mini_get_underlying_type (cfg, callee_sig->ret);
+	callee_ret = mini_get_underlying_type (callee_sig->ret);
 	if (callee_ret && MONO_TYPE_ISSTRUCT (callee_ret) && c2->ret.storage != RegTypeStructByVal)
 		/* An address on the callee's stack is passed as the first argument */
 		res = FALSE;
@@ -1826,7 +1832,7 @@ mono_arch_compute_omit_fp (MonoCompile *cfg)
 	sig = mono_method_signature (cfg->method);
 
 	if (!cfg->arch.cinfo)
-		cfg->arch.cinfo = get_call_info (cfg->generic_sharing_context, cfg->mempool, sig);
+		cfg->arch.cinfo = get_call_info (cfg->mempool, sig);
 	cinfo = cfg->arch.cinfo;
 
 	/*
@@ -1894,9 +1900,9 @@ mono_arch_allocate_vars (MonoCompile *cfg)
 	sig = mono_method_signature (cfg->method);
 
 	if (!cfg->arch.cinfo)
-		cfg->arch.cinfo = get_call_info (cfg->generic_sharing_context, cfg->mempool, sig);
+		cfg->arch.cinfo = get_call_info (cfg->mempool, sig);
 	cinfo = cfg->arch.cinfo;
-	sig_ret = mini_get_underlying_type (cfg, sig->ret);
+	sig_ret = mini_get_underlying_type (sig->ret);
 
 	mono_arch_compute_omit_fp (cfg);
 
@@ -2074,7 +2080,7 @@ mono_arch_allocate_vars (MonoCompile *cfg)
 			continue;
 
 		t = ins->inst_vtype;
-		if (cfg->gsharedvt && mini_is_gsharedvt_variable_type (cfg, t))
+		if (cfg->gsharedvt && mini_is_gsharedvt_variable_type (t))
 			continue;
 
 		/* inst->backend.is_pinvoke indicates native sized value types, this is used by the
@@ -2153,7 +2159,7 @@ mono_arch_allocate_vars (MonoCompile *cfg)
 		if (ins->opcode != OP_REGVAR) {
 			ins->opcode = OP_REGOFFSET;
 			ins->inst_basereg = cfg->frame_reg;
-			size = mini_type_stack_size_full (cfg->generic_sharing_context, sig->params [i], &ualign, sig->pinvoke);
+			size = mini_type_stack_size_full (sig->params [i], &ualign, sig->pinvoke);
 			align = ualign;
 			/* FIXME: if a structure is misaligned, our memcpy doesn't work,
 			 * since it loads/stores misaligned words, which don't do the right thing.
@@ -2193,7 +2199,7 @@ mono_arch_create_vars (MonoCompile *cfg)
 	sig = mono_method_signature (cfg->method);
 
 	if (!cfg->arch.cinfo)
-		cfg->arch.cinfo = get_call_info (cfg->generic_sharing_context, cfg->mempool, sig);
+		cfg->arch.cinfo = get_call_info (cfg->mempool, sig);
 	cinfo = cfg->arch.cinfo;
 
 	if (IS_HARD_FLOAT) {
@@ -2283,7 +2289,7 @@ mono_arch_get_llvm_call_info (MonoCompile *cfg, MonoMethodSignature *sig)
 
 	n = sig->param_count + sig->hasthis;
 
-	cinfo = get_call_info (cfg->generic_sharing_context, cfg->mempool, sig);
+	cinfo = get_call_info (cfg->mempool, sig);
 
 	linfo = mono_mempool_alloc0 (cfg->mempool, sizeof (LLVMCallInfo) + (sizeof (LLVMArgInfo) * n));
 
@@ -2293,12 +2299,19 @@ mono_arch_get_llvm_call_info (MonoCompile *cfg, MonoMethodSignature *sig)
 	 * - we only pass/receive them in registers in some cases, and only 
 	 *   in 1 or 2 integer registers.
 	 */
-	if (cinfo->ret.storage == RegTypeStructByAddr) {
+	switch (cinfo->ret.storage) {
+	case RegTypeGeneral:
+	case RegTypeNone:
+	case RegTypeFP:
+	case RegTypeIRegPair:
+		break;
+	case RegTypeStructByAddr:
 		/* Vtype returned using a hidden argument */
 		linfo->ret.storage = LLVMArgVtypeRetAddr;
 		linfo->vret_arg_index = cinfo->vret_arg_index;
-	} else if (cinfo->ret.storage != RegTypeGeneral && cinfo->ret.storage != RegTypeNone && cinfo->ret.storage != RegTypeFP && cinfo->ret.storage != RegTypeIRegPair) {
-		cfg->exception_message = g_strdup ("unknown ret conv");
+		break;
+	default:
+		cfg->exception_message = g_strdup_printf ("unknown ret conv (%d)", cinfo->ret.storage);
 		cfg->disable_llvm = TRUE;
 		return linfo;
 	}
@@ -2312,6 +2325,7 @@ mono_arch_get_llvm_call_info (MonoCompile *cfg, MonoMethodSignature *sig)
 		case RegTypeGeneral:
 		case RegTypeIRegPair:
 		case RegTypeBase:
+		case RegTypeBaseGen:
 			linfo->args [i].storage = LLVMArgInIReg;
 			break;
 		case RegTypeStructByVal:
@@ -2340,7 +2354,7 @@ mono_arch_emit_call (MonoCompile *cfg, MonoCallInst *call)
 	sig = call->signature;
 	n = sig->param_count + sig->hasthis;
 	
-	cinfo = get_call_info (cfg->generic_sharing_context, cfg->mempool, sig);
+	cinfo = get_call_info (cfg->mempool, sig);
 
 	switch (cinfo->ret.storage) {
 	case RegTypeStructByVal:
@@ -2382,7 +2396,7 @@ mono_arch_emit_call (MonoCompile *cfg, MonoCallInst *call)
 			t = sig->params [i - sig->hasthis];
 		else
 			t = &mono_defaults.int_class->byval_arg;
-		t = mini_type_get_underlying_type (cfg->generic_sharing_context, t);
+		t = mini_get_underlying_type (t);
 
 		if ((sig->call_convention == MONO_CALL_VARARG) && (i == sig->sentinelpos)) {
 			/* Emit the signature cookie just before the implicit arguments */
@@ -2691,7 +2705,7 @@ mono_arch_emit_outarg_vt (MonoCompile *cfg, MonoInst *ins, MonoInst *src)
 void
 mono_arch_emit_setret (MonoCompile *cfg, MonoMethod *method, MonoInst *val)
 {
-	MonoType *ret = mini_type_get_underlying_type (cfg->generic_sharing_context, mono_method_signature (method)->ret);
+	MonoType *ret = mini_get_underlying_type (mono_method_signature (method)->ret);
 
 	if (!ret->byref) {
 		if (ret->type == MONO_TYPE_I8 || ret->type == MONO_TYPE_U8) {
@@ -2815,7 +2829,7 @@ dyn_call_supported (CallInfo *cinfo, MonoMethodSignature *sig)
 		if (t->byref)
 			continue;
 
-		t = mini_replace_type (t);
+		t = mini_get_underlying_type (t);
 
 		switch (t->type) {
 		case MONO_TYPE_R4:
@@ -2844,7 +2858,7 @@ mono_arch_dyn_call_prepare (MonoMethodSignature *sig)
 	CallInfo *cinfo;
 	int i;
 
-	cinfo = get_call_info (NULL, NULL, sig);
+	cinfo = get_call_info (NULL, sig);
 
 	if (!dyn_call_supported (cinfo, sig)) {
 		g_free (cinfo);
@@ -2855,10 +2869,10 @@ mono_arch_dyn_call_prepare (MonoMethodSignature *sig)
 	// FIXME: Preprocess the info to speed up start_dyn_call ()
 	info->sig = sig;
 	info->cinfo = cinfo;
-	info->rtype = mini_type_get_underlying_type (NULL, sig->ret);
+	info->rtype = mini_get_underlying_type (sig->ret);
 	info->param_types = g_new0 (MonoType*, sig->param_count);
 	for (i = 0; i < sig->param_count; ++i)
-		info->param_types [i] = mini_type_get_underlying_type (NULL, sig->params [i]);
+		info->param_types [i] = mini_get_underlying_type (sig->params [i]);
 	
 	return (MonoDynCallInfo*)info;
 }
@@ -3108,7 +3122,7 @@ mono_arch_instrument_epilog_full (MonoCompile *cfg, void *func, void *p, gboolea
 	int save_mode = SAVE_NONE;
 	int offset;
 	MonoMethod *method = cfg->method;
-	MonoType *ret_type = mini_type_get_underlying_type (cfg->generic_sharing_context, mono_method_signature (method)->ret);
+	MonoType *ret_type = mini_get_underlying_type (mono_method_signature (method)->ret);
 	int rtype = ret_type->type;
 	int save_offset = cfg->param_area;
 	save_offset += 7;
@@ -4184,7 +4198,7 @@ emit_move_return_value (MonoCompile *cfg, MonoInst *ins, guint8 *code)
 	case OP_FCALL_REG:
 	case OP_FCALL_MEMBASE:
 		if (IS_VFP) {
-			MonoType *sig_ret = mini_type_get_underlying_type (NULL, ((MonoCallInst*)ins)->signature->ret);
+			MonoType *sig_ret = mini_get_underlying_type (((MonoCallInst*)ins)->signature->ret);
 			if (sig_ret->type == MONO_TYPE_R4) {
 				if (IS_HARD_FLOAT) {
 					ARM_CVTS (code, ins->dreg, ARM_VFP_F0);
@@ -4208,7 +4222,7 @@ emit_move_return_value (MonoCompile *cfg, MonoInst *ins, guint8 *code)
 
 		g_assert (IS_VFP);
 
-		sig_ret = mini_type_get_underlying_type (NULL, ((MonoCallInst*)ins)->signature->ret);
+		sig_ret = mini_get_underlying_type (((MonoCallInst*)ins)->signature->ret);
 		g_assert (sig_ret->type == MONO_TYPE_R4);
 		if (IS_HARD_FLOAT) {
 			ARM_CPYS (code, ins->dreg, ARM_VFP_F0);
@@ -5079,6 +5093,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				ARM_LDR_REG_REG (code, ARMREG_PC, ARMREG_PC, ARMREG_IP);
 			} else {
 				code = mono_arm_patchable_b (code, ARMCOND_AL);
+				cfg->thunk_area += THUNK_SIZE;
 			}
 			break;
 		}
@@ -5174,7 +5189,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			g_assert (ins->sreg1 == ARMREG_R0);
 
 			mono_add_patch_info (cfg, code - cfg->native_code, MONO_PATCH_INFO_INTERNAL_METHOD,
-								 (gpointer)"specific_trampoline_generic_class_init");
+								 (gpointer)"mono_generic_class_init");
 			code = emit_call_seq (cfg, code);
 
 			/* Initialized case */
@@ -5583,7 +5598,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			break;
 
 		case OP_SETFRET: {
-			MonoType *sig_ret = mini_type_get_underlying_type (NULL, mono_method_signature (cfg->method)->ret);
+			MonoType *sig_ret = mini_get_underlying_type (mono_method_signature (cfg->method)->ret);
 			if (sig_ret->type == MONO_TYPE_R4) {
 				if (cfg->r4fp) {
 					g_assert (!IS_HARD_FLOAT);
@@ -6242,7 +6257,7 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 	/* load arguments allocated to register from the stack */
 	pos = 0;
 
-	cinfo = get_call_info (cfg->generic_sharing_context, NULL, sig);
+	cinfo = get_call_info (NULL, sig);
 
 	if (cinfo->ret.storage == RegTypeStructByAddr) {
 		ArgInfo *ainfo = &cinfo->ret;
@@ -6434,7 +6449,7 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 				int soffset = 0;
 				int cur_reg;
 				int size = 0;
-				size = mini_type_stack_size_full (cfg->generic_sharing_context, inst->inst_vtype, NULL, sig->pinvoke);
+				size = mini_type_stack_size_full (inst->inst_vtype, NULL, sig->pinvoke);
 				for (cur_reg = 0; cur_reg < ainfo->size; ++cur_reg) {
 					if (arm_is_imm12 (doffset)) {
 						ARM_STR_IMM (code, ainfo->reg + cur_reg, inst->inst_basereg, doffset);

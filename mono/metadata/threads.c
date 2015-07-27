@@ -2584,6 +2584,24 @@ ves_icall_System_Runtime_Remoting_Contexts_Context_RegisterContext (MonoAppConte
 	g_hash_table_insert (contexts, gch, gch);
 
 	mono_threads_unlock ();
+
+	mono_profiler_context_loaded (ctx);
+}
+
+void
+ves_icall_System_Runtime_Remoting_Contexts_Context_ReleaseContext (MonoAppContext *ctx)
+{
+	/*
+	 * NOTE: Since finalizers are unreliable for the purposes of ensuring
+	 * cleanup in exceptional circumstances, we don't actually do any
+	 * cleanup work here. We instead do this when we iterate the `contexts`
+	 * hash table. The only purpose of this finalizer, at the moment, is to
+	 * notify the profiler.
+	 */
+
+	//g_print ("Releasing context %d in domain %d\n", ctx->context_id, ctx->domain_id);
+
+	mono_profiler_context_unloaded (ctx);
 }
 
 void
@@ -3702,17 +3720,16 @@ thread_adjust_static_data (MonoInternalThread *thread)
 	mono_threads_unlock ();
 }
 
+/*
+ * LOCKING: requires that threads_mutex is held
+ */
 static void
 context_adjust_static_data (MonoAppContext *ctx)
 {
-	mono_threads_lock ();
-
 	if (context_static_info.offset || context_static_info.idx > 0) {
 		guint32 offset = MAKE_SPECIAL_STATIC_OFFSET (context_static_info.idx, context_static_info.offset, 0);
 		mono_alloc_static_data (&ctx->static_data, offset, FALSE);
 	}
-
-	mono_threads_unlock ();
 }
 
 /*

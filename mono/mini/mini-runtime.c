@@ -588,7 +588,7 @@ mono_icall_get_wrapper_full (MonoJitICallInfo* callinfo, gboolean do_compile)
 	MonoMethod *wrapper;
 	gconstpointer trampoline;
 	MonoDomain *domain = mono_get_root_domain ();
-	gboolean check_exc = check_for_pending_exc;
+	gboolean check_exc = TRUE;
 
 	if (callinfo->wrapper) {
 		return callinfo->wrapper;
@@ -1174,7 +1174,6 @@ mono_patch_info_hash (gconstpointer data)
 	case MONO_PATCH_INFO_CLASS:
 	case MONO_PATCH_INFO_IID:
 	case MONO_PATCH_INFO_ADJUSTED_IID:
-	case MONO_PATCH_INFO_CLASS_INIT:
 	case MONO_PATCH_INFO_METHODCONST:
 	case MONO_PATCH_INFO_METHOD:
 	case MONO_PATCH_INFO_METHOD_JUMP:
@@ -1459,13 +1458,6 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		target = mono_class_vtable (domain, patch_info->data.klass);
 		g_assert (target);
 		break;
-	case MONO_PATCH_INFO_CLASS_INIT: {
-		MonoVTable *vtable = mono_class_vtable (domain, patch_info->data.klass);
-
-		g_assert (vtable);
-		target = mono_create_class_init_trampoline (vtable);
-		break;
-	}
 	case MONO_PATCH_INFO_DELEGATE_TRAMPOLINE: {
 		MonoDelegateClassMethodPair *del_tramp = patch_info->data.del_tramp;
 
@@ -2788,7 +2780,6 @@ mini_create_jit_domain_info (MonoDomain *domain)
 {
 	MonoJitDomainInfo *info = g_new0 (MonoJitDomainInfo, 1);
 
-	info->class_init_trampoline_hash = g_hash_table_new (mono_aligned_addr_hash, NULL);
 	info->jump_trampoline_hash = g_hash_table_new (mono_aligned_addr_hash, NULL);
 	info->jit_trampoline_hash = g_hash_table_new (mono_aligned_addr_hash, NULL);
 	info->delegate_trampoline_hash = g_hash_table_new (class_method_pair_hash, class_method_pair_equal);
@@ -2852,7 +2843,6 @@ mini_free_jit_domain_info (MonoDomain *domain)
 	}
 	if (info->method_code_hash)
 		g_hash_table_destroy (info->method_code_hash);
-	g_hash_table_destroy (info->class_init_trampoline_hash);
 	g_hash_table_destroy (info->jump_trampoline_hash);
 	g_hash_table_destroy (info->jit_trampoline_hash);
 	g_hash_table_destroy (info->delegate_trampoline_hash);
@@ -3033,11 +3023,6 @@ mini_init (const char *filename, const char *runtime_version)
 	mono_runtime_install_handlers ();
 #endif
 	mono_threads_install_cleanup (mini_thread_cleanup);
-
-#ifdef MONO_ARCH_HAVE_NOTIFY_PENDING_EXC
-	check_for_pending_exc = FALSE;
-	mono_threads_install_notify_pending_exc ((MonoThreadNotifyPendingExcFunc)mono_arch_notify_pending_exc);
-#endif
 
 #define JIT_TRAMPOLINES_WORK
 #ifdef JIT_TRAMPOLINES_WORK
@@ -3366,8 +3351,6 @@ register_icalls (void)
 	register_icall (mono_fill_method_rgctx, "mono_method_fill_rgctx", "ptr ptr int", FALSE);
 
 	register_icall (mono_debugger_agent_user_break, "mono_debugger_agent_user_break", "void", FALSE);
-	register_dyn_icall (mono_create_specific_trampoline (NULL, MONO_TRAMPOLINE_GENERIC_CLASS_INIT, mono_get_root_domain (), NULL),
-						"specific_trampoline_generic_class_init", "void", TRUE);
 
 #ifdef TARGET_IOS
 	register_icall (pthread_getspecific, "pthread_getspecific", "ptr ptr", TRUE);

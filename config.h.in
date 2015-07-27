@@ -413,6 +413,9 @@
 /* isinf available */
 #undef HAVE_ISINF
 
+/* Define to 1 if you have the `kill' function. */
+#undef HAVE_KILL
+
 /* Define to 1 if you have the `kqueue' function. */
 #undef HAVE_KQUEUE
 
@@ -631,6 +634,9 @@
 
 /* Define to 1 if you have the `sigaction' function. */
 #undef HAVE_SIGACTION
+
+/* Define to 1 if you have the `signal' function. */
+#undef HAVE_SIGNAL
 
 /* Define to 1 if you have the <signal.h> header file. */
 #undef HAVE_SIGNAL_H
