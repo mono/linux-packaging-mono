@@ -394,6 +394,7 @@ Depends: ${misc:Depends},
          libmono-system-net-http-formatting4.0-cil (= ${source:Version}),
          libmono-system-net-http-webrequest4.0-cil (= ${source:Version}),
          libmono-system-numerics4.0-cil (= ${source:Version}),
+         libmono-system-numerics-vectors4.0-cil (= ${source:Version}),
          libmono-system-reactive-core2.2-cil (= ${source:Version}),
          libmono-system-reactive-debugger2.2-cil (= ${source:Version}),
          libmono-system-reactive-experimental2.2-cil (= ${source:Version}),
@@ -1057,6 +1058,19 @@ Description: Mono System.Numerics library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono System.Numerics library for CLI 4.0.
+
+Package: libmono-system-numerics-vectors4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends},
+Description: Mono System.Numerics.Vectors library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the Mono System.Numerics.Vectors library for CLI 4.0.
 
 Package: libmono-system-security4.0-cil
 Architecture: all
