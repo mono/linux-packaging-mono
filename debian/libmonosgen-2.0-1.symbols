@@ -20,6 +20,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_get_assemblyref@Base 4.1.0.1738
  mono_assembly_get_image@Base 4.1.0.1738
  mono_assembly_get_main@Base 4.1.0.1738
+ mono_assembly_get_name@Base 4.3.0.624
  mono_assembly_get_object@Base 4.1.0.1738
  mono_assembly_getrootdir@Base 4.1.0.1738
  mono_assembly_invoke_load_hook@Base 4.1.0.1738
@@ -158,6 +159,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_config_string_for_assembly_file@Base 4.1.0.1738
  mono_context_get@Base 4.1.0.1738
  mono_context_get_desc@Base 4.1.0.1738
+ mono_context_get_domain_id@Base 4.3.0.624
+ mono_context_get_id@Base 4.3.0.624
  mono_context_init@Base 4.1.0.1738
  mono_context_set@Base 4.1.0.1738
  mono_counter_get_name@Base 4.1.0.1738
@@ -247,6 +250,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_domain_from_appdomain@Base 4.1.0.1738
  mono_domain_get@Base 4.1.0.1738
  mono_domain_get_by_id@Base 4.1.0.1738
+ mono_domain_get_friendly_name@Base 4.3.0.624
  mono_domain_get_id@Base 4.1.0.1738
  mono_domain_has_type_resolve@Base 4.1.0.1738
  mono_domain_is_unloading@Base 4.1.0.1738
@@ -675,11 +679,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_install@Base 4.1.0.1738
  mono_profiler_install_allocation@Base 4.1.0.1738
  mono_profiler_install_appdomain@Base 4.1.0.1738
+ mono_profiler_install_appdomain_name@Base 4.3.0.624
  mono_profiler_install_assembly@Base 4.1.0.1738
  mono_profiler_install_class@Base 4.1.0.1738
  mono_profiler_install_code_buffer_new@Base 4.1.0.1738
  mono_profiler_install_code_chunk_destroy@Base 4.1.0.1738
  mono_profiler_install_code_chunk_new@Base 4.1.0.1738
+ mono_profiler_install_context@Base 4.3.0.624
  mono_profiler_install_coverage_filter@Base 4.1.0.1738
  mono_profiler_install_enter_leave@Base 4.1.0.1738
  mono_profiler_install_exception@Base 4.1.0.1738
