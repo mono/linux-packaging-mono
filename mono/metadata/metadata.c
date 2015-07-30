@@ -1864,7 +1864,7 @@ mono_metadata_signature_dup_internal_with_padding (MonoImage *image, MonoMemPool
 	MonoMethodSignature *ret;
 	sigsize = sig_header_size = MONO_SIZEOF_METHOD_SIGNATURE + sig->param_count * sizeof (MonoType *) + padding;
 	if (sig->ret)
-		sigsize += sizeof (MonoType);
+		sigsize += MONO_SIZEOF_TYPE;
 
 	if (image) {
 		ret = mono_image_alloc (image, sigsize);
@@ -1881,7 +1881,7 @@ mono_metadata_signature_dup_internal_with_padding (MonoImage *image, MonoMemPool
 		// Danger! Do not alter padding use without changing the dup_add_this below
 		intptr_t end_of_header = (intptr_t)( (char*)(ret) + sig_header_size);
 		ret->ret = (MonoType *)end_of_header;
-		*ret->ret = *sig->ret;
+		memcpy (ret->ret, sig->ret, MONO_SIZEOF_TYPE);
 	}
 
 	return ret;
@@ -2397,42 +2397,7 @@ delete_image_set (MonoImageSet *set)
 	g_hash_table_destroy (set->gmethod_cache);
 	g_hash_table_destroy (set->gsignature_cache);
 
-	if (set->wrapper_caches.delegate_abstract_invoke_cache)
-		g_hash_table_destroy (set->wrapper_caches.delegate_abstract_invoke_cache);
-	if (set->wrapper_caches.runtime_invoke_direct_cache)
-		g_hash_table_destroy (set->wrapper_caches.runtime_invoke_direct_cache);
-	if (set->wrapper_caches.managed_wrapper_cache)
-		g_hash_table_destroy (set->wrapper_caches.managed_wrapper_cache);
-	if (set->wrapper_caches.native_wrapper_cache)
-		g_hash_table_destroy (set->wrapper_caches.native_wrapper_cache);
-	if (set->wrapper_caches.native_wrapper_aot_cache)
-		g_hash_table_destroy (set->wrapper_caches.native_wrapper_aot_cache);
-	if (set->wrapper_caches.native_wrapper_check_cache)
-		g_hash_table_destroy (set->wrapper_caches.native_wrapper_check_cache);
-	if (set->wrapper_caches.native_wrapper_aot_check_cache)
-		g_hash_table_destroy (set->wrapper_caches.native_wrapper_aot_check_cache);
-	if (set->wrapper_caches.native_func_wrapper_aot_cache)
-		g_hash_table_destroy (set->wrapper_caches.native_func_wrapper_aot_cache);
-	if (set->wrapper_caches.remoting_invoke_cache)
-		g_hash_table_destroy (set->wrapper_caches.remoting_invoke_cache);
-	if (set->wrapper_caches.unbox_wrapper_cache)
-		g_hash_table_destroy (set->wrapper_caches.unbox_wrapper_cache);
-	if (set->wrapper_caches.cominterop_invoke_cache)
-		g_hash_table_destroy (set->wrapper_caches.cominterop_invoke_cache);
-	if (set->wrapper_caches.cominterop_wrapper_cache)
-		g_hash_table_destroy (set->wrapper_caches.cominterop_wrapper_cache);
-	if (set->wrapper_caches.thunk_invoke_cache)
-		g_hash_table_destroy (set->wrapper_caches.thunk_invoke_cache);
-	if (set->wrapper_caches.runtime_invoke_cache)
-		g_hash_table_destroy (set->wrapper_caches.runtime_invoke_cache);
-	if (set->wrapper_caches.delegate_invoke_cache)
-		g_hash_table_destroy (set->wrapper_caches.delegate_invoke_cache);
-	if (set->wrapper_caches.delegate_begin_invoke_cache)
-		g_hash_table_destroy (set->wrapper_caches.delegate_begin_invoke_cache);
-	if (set->wrapper_caches.delegate_end_invoke_cache)
-		g_hash_table_destroy (set->wrapper_caches.delegate_end_invoke_cache);
-	if (set->wrapper_caches.synchronized_cache)
-		g_hash_table_destroy (set->wrapper_caches.synchronized_cache);
+	mono_wrapper_caches_free (&set->wrapper_caches);
 
 	image_sets_lock ();
 
@@ -6595,3 +6560,13 @@ mono_metadata_get_corresponding_property_from_generic_type_definition (MonoPrope
 	return gtd->ext->properties + offset;
 }
 
+MonoWrapperCaches*
+mono_method_get_wrapper_cache (MonoMethod *method)
+{
+	if (method->is_inflated) {
+		MonoMethodInflated *imethod = (MonoMethodInflated *)method;
+		return &imethod->owner->wrapper_caches;
+	} else {
+		return &method->klass->image->wrapper_caches;
+	}
+}

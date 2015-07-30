@@ -2252,14 +2252,6 @@ emit_entry_bb (EmitContext *ctx, LLVMBuilderRef builder)
 	;
 }
 
-/* Have to export this for AOT */
-void
-mono_personality (void)
-{
-	/* Not used */
-	g_assert_not_reached ();
-}
-
 static void
 process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref, MonoInst *ins)
 {
@@ -2622,7 +2614,7 @@ emit_handler_start (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef builder
 
 	if (cfg->compile_aot) {
 		/* Use a dummy personality function */
-		personality = LLVMGetNamedFunction (module, "mono_aot_personality");
+		personality = LLVMGetNamedFunction (module, "mono_personality");
 		g_assert (personality);
 	} else {
 		personality = LLVMGetNamedFunction (module, "mono_personality");
@@ -6015,21 +6007,6 @@ mono_llvm_create_aot_module (MonoAssembly *assembly, const char *global_prefix, 
 		LLVMSetInitializer (lmodule->got_var, LLVMConstNull (got_type));
 	}
 
-	/* Add a dummy personality function */
-	{
-		LLVMBasicBlockRef lbb;
-		LLVMBuilderRef lbuilder;
-		LLVMValueRef personality;
-
-		personality = LLVMAddFunction (lmodule->module, "mono_aot_personality", LLVMFunctionType (LLVMVoidType (), NULL, 0, FALSE));
-		LLVMSetLinkage (personality, LLVMInternalLinkage);
-		lbb = LLVMAppendBasicBlock (personality, "BB0");
-		lbuilder = LLVMCreateBuilder ();
-		LLVMPositionBuilderAtEnd (lbuilder, lbb);
-		LLVMBuildRetVoid (lbuilder);
-		mark_as_used (lmodule, personality);
-	}
-
 	lmodule->llvm_types = g_hash_table_new (NULL, NULL);
 	lmodule->plt_entries = g_hash_table_new (g_str_hash, g_str_equal);
 	lmodule->plt_entries_ji = g_hash_table_new (NULL, NULL);
@@ -6094,7 +6071,7 @@ AddJitGlobal (MonoLLVMModule *lmodule, LLVMTypeRef type, const char *name)
 	LLVMValueRef v;
 
 	s = g_strdup_printf ("%s%s", lmodule->global_prefix, name);
-	v = LLVMAddGlobal (lmodule->module, type, s);
+	v = LLVMAddGlobal (lmodule->module, LLVMInt8Type (), s);
 	g_free (s);
 	return v;
 }
@@ -6204,6 +6181,9 @@ emit_aot_file_info (MonoLLVMModule *lmodule)
 		fields [tindex ++] = LLVMConstNull (eltype);
 		fields [tindex ++] = LLVMConstNull (eltype);
 	}
+
+	for (i = 0; i < MONO_AOT_FILE_INFO_NUM_SYMBOLS; ++i)
+		fields [2 + i] = LLVMConstBitCast (fields [2 + i], eltype);
 
 	/* Scalars */
 	fields [tindex ++] = LLVMConstInt (LLVMInt32Type (), info->plt_got_offset_base, FALSE);
