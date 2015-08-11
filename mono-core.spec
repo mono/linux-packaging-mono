@@ -103,6 +103,7 @@ Provides:       mono(System.Xml) = 2.0.0.0
 Provides:       mono(mscorlib) = 1.0.5000.0
 Provides:       mono(mscorlib) = 2.0.0.0
 Provides:       mono(mscorlib) = 4.0.0.0
+Provides:	mono(Mono.Configuration.Crypto) = 4.0.0.0
 
 %define _use_internal_dependency_generator 0
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
