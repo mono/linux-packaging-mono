@@ -37,6 +37,7 @@ Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 Patch0:		0001-runtime-Fix-support-for-callvirt-delegates-with-a-vt.patch
+Patch1:		0001-Un-revoke-fix-in-BNC-144655-mono-find-provides-shoul.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -121,6 +122,7 @@ technologies that have been submitted to the ECMA for standardization.
 %prep
 %setup -q -n mono-%{__majorver}
 %patch0 -p1
+%patch1 -p1
 
 %build
 ./autogen.sh
