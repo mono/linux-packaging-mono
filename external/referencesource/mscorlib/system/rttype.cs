@@ -4283,15 +4283,23 @@ namespace System
         #endregion
 
         #region Generics
-#if !MONO
+
         internal RuntimeType[] GetGenericArgumentsInternal()
         {
+#if MONO
+            return (RuntimeType[]) GetGenericArgumentsInternal (true);
+#else
             return GetRootElementType().GetTypeHandleInternal().GetInstantiationInternal();
+#endif
         }
 
         public override Type[] GetGenericArguments() 
         {
+#if MONO
+            Type[] types = GetGenericArgumentsInternal (false);
+#else
             Type[] types = GetRootElementType().GetTypeHandleInternal().GetInstantiationPublic();
+#endif
 
             if (types == null)
                 types = EmptyArray<Type>.Value;
@@ -4340,6 +4348,11 @@ namespace System
             SanityCheckGenericArguments(instantiationRuntimeType, genericParameters);
 
             Type ret = null;
+#if MONO
+            ret = MakeGenericType (this, instantiationRuntimeType);
+            if (ret == null)
+                throw new TypeLoadException ();
+#else
             try 
             {
                 ret = new RuntimeTypeHandle(this).Instantiate(instantiationRuntimeType);
@@ -4349,10 +4362,10 @@ namespace System
                 ValidateGenericArguments(this, instantiationRuntimeType, e);
                 throw e;
             }
-
+#endif
             return ret;
         }
-#endif
+
         public override bool IsGenericTypeDefinition
         {
 #if !FEATURE_CORECLR
@@ -4707,15 +4720,23 @@ namespace System
                     // pass LCID_ENGLISH_US if no explicit culture is specified to match the behavior of VB
                     int lcid = (culture == null ? 0x0409 : culture.LCID);
 
+#if MONO
+                    throw new NotImplementedException ();
+#else
                     return InvokeDispMethod(name, bindingFlags, target, providedArgs, isByRef, lcid, namedParams);
+#endif
                     #endregion
                 }
 #if FEATURE_REMOTING
                 else
                 {
+#if MONO
+                    throw new NotImplementedException ();
+#else
                     #region TransparentProxy case
                     return ((MarshalByRefObject)target).InvokeMember(name, bindingFlags, binder, providedArgs, modifiers, culture, namedParams);
                     #endregion
+#endif
                 }
 #endif // FEATURE_REMOTING
             }
@@ -5440,6 +5461,7 @@ namespace System
                             throw new MissingMethodException(Environment.GetResourceString("MissingConstructor_Name", FullName));
                         }
 
+#if !DISABLE_CAS_USE
                         // If we're creating a delegate, we're about to call a
                         // constructor taking an integer to represent a target
                         // method. Since this is very difficult (and expensive)
@@ -5470,7 +5492,7 @@ namespace System
                             new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
 #endif // FEATURE_CORECLR
                         }
-
+#endif // !DISABLE_CAS_USE
                         if (invokeMethod.GetParametersNoCopy().Length == 0)
                         {
                             if (args.Length != 0)
@@ -5770,7 +5792,7 @@ namespace System
         #endregion
 #endif
         #region COM
-#if FEATURE_COMINTEROP && FEATURE_REMOTING
+#if FEATURE_COMINTEROP && FEATURE_REMOTING && !MONO
         [System.Security.SecuritySafeCritical]  // auto-generated
         private Object ForwardCallToInvokeMember(String memberName, BindingFlags flags, Object target, int[] aWrapperTypes, ref MessageData msgData)
         {

@@ -288,6 +288,17 @@ mono_loader_get_last_error (void)
 	return (MonoLoaderError*)mono_native_tls_get_value (loader_error_thread_id);
 }
 
+void
+mono_loader_assert_no_error (void)
+{
+	MonoLoaderError *error = mono_loader_get_last_error ();
+
+	if (error) {
+		g_print ("Unhandled loader error: %x, %s %s %s\n", error->exception_type, error->msg, error->assembly_name, error->class_name);
+		g_assert_not_reached ();
+	}
+}
+
 /**
  * mono_loader_clear_error:
  *
@@ -449,7 +460,7 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 	MonoTableInfo *tables = image->tables;
 	MonoType *sig_type;
 	guint32 cols[6];
-	guint32 nindex, class, class_table;
+	guint32 nindex, class;
 	const char *fname;
 	const char *ptr;
 	guint32 idx = mono_metadata_token_index (token);
@@ -469,15 +480,12 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 
 	switch (class) {
 	case MONO_MEMBERREF_PARENT_TYPEDEF:
-		class_table = MONO_TOKEN_TYPE_DEF;
 		klass = mono_class_get_checked (image, MONO_TOKEN_TYPE_DEF | nindex, error);
 		break;
 	case MONO_MEMBERREF_PARENT_TYPEREF:
-		class_table = MONO_TOKEN_TYPE_REF;
 		klass = mono_class_from_typeref_checked (image, MONO_TOKEN_TYPE_REF | nindex, error);
 		break;
 	case MONO_MEMBERREF_PARENT_TYPESPEC:
-		class_table = MONO_TOKEN_TYPE_SPEC;
 		klass = mono_class_get_and_inflate_typespec_checked (image, MONO_TOKEN_TYPE_SPEC | nindex, context, error);
 		break;
 	default:
@@ -515,7 +523,7 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 	field = mono_class_get_field_from_name_full (klass, fname, sig_type);
 
 	if (!field) {
-		g_assert (!mono_loader_get_last_error ());
+		mono_loader_assert_no_error ();
 		mono_error_set_field_load (error, klass, fname, "Could not find field '%s'", fname);
 	}
 
@@ -531,7 +539,7 @@ mono_field_from_token (MonoImage *image, guint32 token, MonoClass **retklass, Mo
 {
 	MonoError error;
 	MonoClassField *res = mono_field_from_token_checked (image, token, retklass, context, &error);
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 	if (!mono_error_ok (&error)) {
 		mono_loader_set_error_from_mono_error (&error);
 		mono_error_cleanup (&error);
@@ -570,7 +578,7 @@ mono_field_from_token_checked (MonoImage *image, guint32 token, MonoClass **retk
 
 	if (mono_metadata_token_table (token) == MONO_TABLE_MEMBERREF) {
 		field = field_from_memberref (image, token, retklass, context, error);
-		g_assert (!mono_loader_get_last_error ());
+		mono_loader_assert_no_error ();
 	} else {
 		type = mono_metadata_typedef_from_field (image, mono_metadata_token_index (token));
 		if (!type) {
@@ -596,7 +604,7 @@ mono_field_from_token_checked (MonoImage *image, guint32 token, MonoClass **retk
 	if (field && field->parent && !field->parent->generic_class && !field->parent->generic_container)
 		mono_conc_hashtable_insert (image->field_cache, GUINT_TO_POINTER (token), field);
 
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 	return field;
 }
 
@@ -894,7 +902,7 @@ mono_method_get_signature_full (MonoMethod *method, MonoImage *image, guint32 to
 	MonoError error;
 	MonoMethodSignature *res = mono_method_get_signature_checked (method, image, token, context, &error);
 
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 
 	if (!res) {
 		g_assert (!mono_error_ok (&error));
@@ -995,7 +1003,7 @@ mono_method_get_signature (MonoMethod *method, MonoImage *image, guint32 token)
 	MonoError error;
 	MonoMethodSignature *res = mono_method_get_signature_checked (method, image, token, NULL, &error);
 
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 
 	if (!res) {
 		g_assert (!mono_error_ok (&error));
@@ -1147,11 +1155,11 @@ method_from_memberref (MonoImage *image, guint32 idx, MonoGenericContext *typesp
 		g_free (msig);
 	}
 
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 	return method;
 
 fail:
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 	g_assert (!mono_error_ok (error));
 	return NULL;
 }
@@ -1187,7 +1195,7 @@ method_from_methodspec (MonoImage *image, MonoGenericContext *context, guint32 i
 
 	inst = mono_metadata_parse_generic_inst (image, NULL, param_count, ptr, &ptr);
 	if (!inst) {
-		g_assert (!mono_loader_get_last_error ());
+		mono_loader_assert_no_error ();
 		mono_error_set_bad_image (error, image, "Cannot parse generic instance for methodspec 0x%08x", idx);
 		return NULL;
 	}
@@ -1220,7 +1228,7 @@ method_from_methodspec (MonoImage *image, MonoGenericContext *context, guint32 i
 	new_context.method_inst = inst;
 
 	method = mono_class_inflate_generic_method_full_checked (method, klass, &new_context, error);
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 	return method;
 }
 
@@ -1528,7 +1536,7 @@ mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char
 			continue;
 		case 3:
 			if (!is_absolute && mono_dl_get_system_dir ()) {
-				dir_name = mono_dl_get_system_dir ();
+				dir_name = (char*)mono_dl_get_system_dir ();
 				file_name = g_path_get_basename (new_scope);
 				base_name = NULL;
 			} else
@@ -1850,7 +1858,6 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 	MonoTableInfo *tables = image->tables;
 	MonoGenericContainer *generic_container = NULL, *container = NULL;
 	const char *sig = NULL;
-	int size;
 	guint32 cols [MONO_TYPEDEF_SIZE];
 
 	mono_error_init (error);
@@ -1859,7 +1866,7 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 		MonoClass *handle_class;
 
 		result = mono_lookup_dynamic_token_class (image, token, TRUE, &handle_class, context);
-		g_assert (!mono_loader_get_last_error ());
+		mono_loader_assert_no_error ();
 
 		// This checks the memberref type as well
 		if (result && handle_class != mono_defaults.methodhandle_class) {
@@ -1920,7 +1927,7 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 
 	if (!sig) /* already taken from the methodref */
 		sig = mono_metadata_blob_heap (image, cols [4]);
-	size = mono_metadata_decode_blob_size (sig, &sig);
+	/* size = */ mono_metadata_decode_blob_size (sig, &sig);
 
 	container = klass->generic_container;
 
@@ -1930,7 +1937,7 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 	 */
 	if (*sig & 0x10) {
 		generic_container = mono_metadata_load_generic_params (image, token, container);
-		g_assert (!mono_loader_get_last_error ()); /* FIXME don't swallow this error. */
+		mono_loader_assert_no_error (); /* FIXME don't swallow this error. */
 	}
 	if (generic_container) {
 		result->is_generic = TRUE;
@@ -1964,7 +1971,7 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
  	if (generic_container)
  		mono_method_set_generic_container (result, generic_container);
 
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 	return result;
 }
 
@@ -1980,7 +1987,7 @@ mono_get_method_full (MonoImage *image, guint32 token, MonoClass *klass,
 {
 	MonoError error;
 	MonoMethod *result = mono_get_method_checked (image, token, klass, context, &error);
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 	if (!mono_error_ok (&error)) {
 		mono_loader_set_error_from_mono_error (&error);
 		mono_error_cleanup (&error);
@@ -2128,7 +2135,7 @@ mono_get_method_constrained (MonoImage *image, guint32 token, MonoClass *constra
 	MonoError error;
 	MonoMethod *result = mono_get_method_constrained_checked (image, token, constrained_class, context, cil_method, &error);
 
-	g_assert (!mono_loader_get_last_error ());
+	mono_loader_assert_no_error ();
 	if (!mono_error_ok (&error)) {
 		mono_loader_set_error_from_mono_error (&error);
 		mono_error_cleanup (&error);
@@ -2435,7 +2442,7 @@ stack_walk_adapter (MonoStackFrameInfo *frame, MonoContext *ctx, gpointer data)
 		return FALSE;
 	case FRAME_TYPE_MANAGED:
 		g_assert (frame->ji);
-		return d->func (mono_jit_info_get_method (frame->ji), frame->native_offset, frame->il_offset, frame->managed, d->user_data);
+		return d->func (frame->actual_method, frame->native_offset, frame->il_offset, frame->managed, d->user_data);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -2475,10 +2482,11 @@ async_stack_walk_adapter (MonoStackFrameInfo *frame, MonoContext *ctx, gpointer 
 	case FRAME_TYPE_MANAGED:
 		if (!frame->ji)
 			return FALSE;
-		if (frame->ji->async)
+		if (frame->ji->async) {
 			return d->func (NULL, frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
-		else
-			return d->func (mono_jit_info_get_method (frame->ji), frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
+		} else {
+			return d->func (frame->actual_method, frame->domain, frame->ji->code_start, frame->native_offset, d->user_data);
+		}
 		break;
 	default:
 		g_assert_not_reached ();
@@ -2530,7 +2538,10 @@ static gboolean loader_lock_track_ownership = FALSE;
 void
 mono_loader_lock (void)
 {
+	MONO_TRY_BLOCKING
 	mono_locks_acquire (&loader_mutex, LoaderLock);
+	MONO_FINISH_TRY_BLOCKING
+		
 	if (G_UNLIKELY (loader_lock_track_ownership)) {
 		mono_native_tls_set_value (loader_lock_nest_id, GUINT_TO_POINTER (GPOINTER_TO_UINT (mono_native_tls_get_value (loader_lock_nest_id)) + 1));
 	}
@@ -2601,7 +2612,6 @@ MonoMethodSignature*
 mono_method_signature_checked (MonoMethod *m, MonoError *error)
 {
 	int idx;
-	int size;
 	MonoImage* img;
 	const char *sig;
 	gboolean can_cache_signature;
@@ -2669,7 +2679,7 @@ mono_method_signature_checked (MonoMethod *m, MonoError *error)
 		if (!mono_verifier_verify_method_signature (img, sig_offset, error))
 			return NULL;
 
-		size = mono_metadata_decode_blob_size (sig, &sig_body);
+		/* size = */ mono_metadata_decode_blob_size (sig, &sig_body);
 
 		signature = mono_metadata_parse_method_signature_full (img, container, idx, sig_body, NULL, error);
 		if (!signature)

@@ -3696,6 +3696,10 @@ sealed class MethodAnalyzer
 					{
 						SetHardError(wrapper.GetClassLoader(), ref instr, HardError.AbstractMethodError, "{0}.{1}{2}", cpi.Class, cpi.Name, cpi.Signature);
 					}
+					else if(invoke == NormalizedByteCode.__invokeinterface && targetMethod.IsPrivate)
+					{
+						SetHardError(wrapper.GetClassLoader(), ref instr, HardError.IncompatibleClassChangeError, "private interface method requires invokespecial, not invokeinterface: method {0}.{1}{2}", cpi.Class, cpi.Name, cpi.Signature);
+					}
 					else if(targetMethod.IsAccessibleFrom(cpi.GetClassType(), wrapper, thisType))
 					{
 						return;
@@ -3869,7 +3873,7 @@ sealed class MethodAnalyzer
 				SetHardError(wrapper.GetClassLoader(), ref instr, HardError.NoSuchFieldError, "{0}.{1}", cpi.Class, cpi.Name);
 				return;
 			}
-			if(cpi.GetFieldType() != field.FieldTypeWrapper && !field.FieldTypeWrapper.IsUnloadable)
+			if(cpi.GetFieldType() != field.FieldTypeWrapper && !cpi.GetFieldType().IsUnloadable & !field.FieldTypeWrapper.IsUnloadable)
 			{
 #if STATIC_COMPILER
 				StaticCompiler.LinkageError("Field \"{2}.{3}\" is of type \"{0}\" instead of type \"{1}\" as expected by \"{4}\"", field.FieldTypeWrapper, cpi.GetFieldType(), cpi.GetClassType().Name, cpi.Name, wrapper.Name);

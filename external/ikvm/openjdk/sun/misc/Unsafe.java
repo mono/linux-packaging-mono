@@ -32,7 +32,6 @@ import cli.System.Security.Permissions.SecurityPermissionAttribute;
 import ikvm.lang.Internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ReflectHelper;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 
@@ -57,16 +56,28 @@ public final class Unsafe
         return theUnsafe;
     }
 
+    private static native Field createFieldAndMakeAccessible(Class c, String field);
+    private static native Field copyFieldAndMakeAccessible(Field field);
+
     // this is the intrinsified version of objectFieldOffset(XXX.class.getDeclaredField("xxx"))
     public long objectFieldOffset(Class c, String field)
     {
-        return allocateUnsafeFieldId(ReflectHelper.createFieldAndMakeAccessible(c, field));
+        return allocateUnsafeFieldId(createFieldAndMakeAccessible(c, field));
     }
 
     // NOTE we have a really lame (and slow) implementation!
     public long objectFieldOffset(Field field)
     {
         if(Modifier.isStatic(field.getModifiers()))
+        {
+            throw new IllegalArgumentException();
+        }
+        return allocateUnsafeFieldId(field);
+    }
+    
+    public long staticFieldOffset(Field field)
+    {
+        if(!Modifier.isStatic(field.getModifiers()))
         {
             throw new IllegalArgumentException();
         }
@@ -81,7 +92,7 @@ public final class Unsafe
     
     static int allocateUnsafeFieldId(Field original)
     {
-        Field copy = ReflectHelper.copyFieldAndMakeAccessible(original);
+        Field copy = copyFieldAndMakeAccessible(original);
         synchronized(fields)
         {
             int id = fields.size();
@@ -850,10 +861,34 @@ public final class Unsafe
     @cli.System.Security.SecurityCriticalAttribute.Annotation
     public long allocateMemory(long bytes)
     {
+        if (bytes == 0)
+        {
+            return 0;
+        }
         try
         {
             if (false) throw new cli.System.OutOfMemoryException();
             return Marshal.AllocHGlobal(IntPtr.op_Explicit(bytes)).ToInt64();
+        }
+        catch (cli.System.OutOfMemoryException x)
+        {
+            throw new OutOfMemoryError(x.get_Message());
+        }
+    }
+
+    @SecurityPermissionAttribute.Annotation(value = SecurityAction.__Enum.LinkDemand, UnmanagedCode = true)
+    @cli.System.Security.SecurityCriticalAttribute.Annotation
+    public long reallocateMemory(long address, long bytes)
+    {
+        if (bytes == 0)
+        {
+            freeMemory(address);
+            return 0;
+        }
+        try
+        {
+            if (false) throw new cli.System.OutOfMemoryException();
+            return Marshal.ReAllocHGlobal(IntPtr.op_Explicit(address), IntPtr.op_Explicit(bytes)).ToInt64();
         }
         catch (cli.System.OutOfMemoryException x)
         {
@@ -1123,6 +1158,12 @@ public final class Unsafe
     }
 
     public Object staticFieldBase(Field f)
+    {
+        return null;
+    }
+    
+    @Deprecated
+    public Object staticFieldBase(Class<?> c)
     {
         return null;
     }

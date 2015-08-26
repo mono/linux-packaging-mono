@@ -91,6 +91,38 @@ namespace MonoTests.Microsoft.Build.Tasks {
 		}
 
 		[Test]
+		[Category("NotWorking")] // this fails due to an xbuild bug, it works on MS.NET
+		public void TestLineWithEscapedSemicolon ()
+		{
+			string[] lines = new string[] { "abc%3Btest%3B%3B", "%3Bdef" };
+			CreateProjectAndCheck (full_filepath, lines, false, true, delegate () {
+				CheckFileExists (full_filepath, true);
+				CheckLines (full_filepath, new string [] {"abc;test;;", ";def"});
+			});
+		}
+
+		[Test]
+		[Category("NotWorking")] // this fails due to an xbuild bug, it works on MS.NET
+		public void TestLineWithEscapedSpace ()
+		{
+			string[] lines = new string[] { "  %20%20abc%20test  ", "  def%20%20" };
+			CreateProjectAndCheck (full_filepath, lines, false, true, delegate () {
+				CheckFileExists (full_filepath, true);
+				CheckLines (full_filepath, new string [] {"  abc test", "def  "});
+			});
+		}
+
+		[Test]
+		public void TestLineWithEscapedQuote ()
+		{
+			string[] lines = new string[] { "%22abc test%22 123 %22def%22" };
+			CreateProjectAndCheck (full_filepath, lines, false, true, delegate () {
+				CheckFileExists (full_filepath, true);
+				CheckLines (full_filepath, new string [] {"\"abc test\" 123 \"def\""});
+			});
+		}
+
+		[Test]
 		public void TestNoOverwrite ()
 		{
 			string[] lines = new string[] { "abc", "def" };
@@ -210,7 +242,7 @@ namespace MonoTests.Microsoft.Build.Tasks {
 			string[] actual = File.ReadAllLines (full_filepath);
 			Assert.AreEqual (expected != null ? expected.Length : 0, actual.Length, "Number of lines written don't match");
 
-			if (expected != null)
+			if (expected == null)
 				return;
 			int i = 0;
 			foreach (string line in actual)

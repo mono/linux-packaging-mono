@@ -433,11 +433,11 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = cas assemblyresolve gc-descriptors
+SUBDIRS = assemblyresolve gc-descriptors
 TEST_PROG = ../interpreter/mint
 JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_builddir)/mono/mini/mono-sgen,$(top_builddir)/mono/mini/mono)
-TEST_PROG_RUN = MONO_SHARED_DIR=$(mono_build_root)/runtime MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
-JITTEST_PROG_RUN = MONO_SHARED_DIR=$(mono_build_root)/runtime MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
+TEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
+JITTEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
 RUNTIME_ARGS = --config tests-config --optimize=all --debug
 with_mono_path = MONO_PATH=$(mcs_topdir)/class/lib/net_4_5
 RUNTIME = $(with_mono_path) $(top_builddir)/runtime/mono-wrapper
@@ -509,6 +509,7 @@ BASE_TEST_CS_SRC = \
 	exception15.cs		\
 	exception16.cs		\
 	exception17.cs		\
+	exception18.cs		\
 	typeload-unaligned.cs	\
 	struct.cs		\
 	valuetype-gettype.cs	\
@@ -597,6 +598,8 @@ BASE_TEST_CS_SRC = \
 	delegate7.cs		\
 	delegate8.cs		\
 	delegate9.cs		\
+	delegate10.cs		\
+	delegate11.cs		\
 	remoting1.cs		\
 	remoting2.cs		\
 	remoting3.cs		\
@@ -827,6 +830,7 @@ BASE_TEST_CS_SRC = \
 	thread_static_gc_layout.cs \
 	sleep.cs \
 	bug-27147.cs	\
+	bug-30085.cs	\
 	bug-17537.cs
 
 TEST_CS_SRC_DIST = \
@@ -919,6 +923,11 @@ TEST_CS_SRC_GEN = \
 @NACL_CODEGEN_TRUE@	gsharing-valuetype-layout.exe \
 @NACL_CODEGEN_TRUE@	$(am__append_2)
 
+# These tests hang
+@POWERPC64_TRUE@PLATFORM_DISABLED_TESTS = monitor.exe \
+@POWERPC64_TRUE@	finalizer-abort.exe finalizer-exception.exe \
+@POWERPC64_TRUE@	finalizer-exit.exe $(am__append_2)
+
 # bug #71274
 @POWERPC_TRUE@PLATFORM_DISABLED_TESTS = finalizer-abort.exe \
 @POWERPC_TRUE@	finalizer-exception.exe finalizer-exit.exe \
@@ -931,11 +940,13 @@ TEST_CS_SRC_GEN = \
 # bug-459094.exe creates an extremely deep directory tree
 # delegate-invoke.exe depends on 929c6bc9b6d76a273f251e6f5dfacac36e9c38bd which was
 # reverted.
+# bug-Xamarin-5278.exe got broken by 5d26590e79da139a284459299aee95c25f4cd835
 DISABLED_TESTS = \
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
 	bug-459094.exe \
 	delegate-invoke.exe \
+	bug-Xamarin-5278.exe \
 	$(PLATFORM_DISABLED_TESTS) \
 	$(EXTRA_DISABLED_TESTS)
 
@@ -1537,7 +1548,7 @@ uninstall-am:
 	uninstall-am
 
 
-check-local: assemblyresolve/test/asm.dll testjit test-generic-sharing test-type-load test-cattr-type-load test-reflection-load-with-context test_platform test-process-exit test-messages rm-empty-logs
+check-local: assemblyresolve/test/asm.dll testjit test-generic-sharing test-type-load test-cattr-type-load test-reflection-load-with-context test_platform test-process-exit test-messages test-unhandled-exception-2 rm-empty-logs
 check-full: test-sgen check-local
 check-parallel: compile-tests check-full
 
@@ -1578,7 +1589,7 @@ tests: $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_
 @HOST_WIN32_TRUE@@NACL_CODEGEN_FALSE@test-messages:
 @HOST_WIN32_FALSE@@NACL_CODEGEN_FALSE@test-messages: w32message.exe
 @HOST_WIN32_FALSE@@NACL_CODEGEN_FALSE@	> test_messages.zero
-@HOST_WIN32_FALSE@@NACL_CODEGEN_FALSE@	$(with_mono_path) $(JITTEST_PROG_RUN) w32message.exe >& w32message.allout && cmp test_messages.zero w32message.allout
+@HOST_WIN32_FALSE@@NACL_CODEGEN_FALSE@	$(with_mono_path) $(JITTEST_PROG_RUN) w32message.exe > w32message.allout 2>&1 && cmp test_messages.zero w32message.allout
 
 @AMD64_TRUE@test-sgen : sgen-tests
 @AMD64_FALSE@@HOST_WIN32_TRUE@@X86_TRUE@test-sgen :
@@ -1722,7 +1733,7 @@ stresstest: $(STRESS_TESTS)
 testbundle: console.exe
 	@echo "Testing mkbundle..."
 	@$(MKBUNDLE) --static console.exe > mkbundle.stdout
-	@$(with_mono_path) MONO_CFG_DIR=$(mono_cfg_dir) MONO_SHARED_DIR=$(mono_build_root)/runtime ./a.out >> mkbundle.stdout
+	@$(with_mono_path) MONO_CFG_DIR=$(mono_cfg_dir) ./a.out >> mkbundle.stdout
 	@- rm -rf a.out
 test-type-load: TestDriver.dll
 	@$(ILASM) /dll /output:load-missing.dll $(srcdir)/load-missing.il > /dev/null
@@ -1988,11 +1999,11 @@ gshared-aot:
 test-generic-sharing-normal: $(GSHARED_TESTS)
 	@for fn in $+ ; do	\
 		echo "Testing $$fn ...";	\
-		MONO_GENERIC_SHARING=all $(RUNTIME) -O=gshared                $$fn > $$fn.stdout || exit 1;	\
-		MONO_GENERIC_SHARING=all $(RUNTIME) -O=gshared,shared         $$fn > $$fn.stdout || exit 1;	\
-		MONO_GENERIC_SHARING=all $(RUNTIME) -O=gshared,-inline        $$fn > $$fn.stdout || exit 1;	\
-		MONO_GENERIC_SHARING=all $(RUNTIME) -O=gshared,-inline,shared $$fn > $fn.stdout || exit 1;	\
-		if [ x$(AOT) = x1 ]; then MONO_GENERIC_SHARING=all $(with_mono_path) $(JITTEST_PROG_RUN) --aot --debug $$fn > /dev/null || exit 1; MONO_GENERIC_SHARING=all $(RUNTIME) $$fn > $$fn.stdout || exit 1; fi; \
+		$(RUNTIME) -O=gshared                $$fn > $$fn.stdout || exit 1;	\
+		$(RUNTIME) -O=gshared,shared         $$fn > $$fn.stdout || exit 1;	\
+		$(RUNTIME) -O=gshared,-inline        $$fn > $$fn.stdout || exit 1;	\
+		$(RUNTIME) -O=gshared,-inline,shared $$fn > $fn.stdout || exit 1;	\
+		if [ x$(AOT) = x1 ]; then $(with_mono_path) $(JITTEST_PROG_RUN) --aot --debug $$fn > /dev/null || exit 1; $(RUNTIME) $$fn > $$fn.stdout || exit 1; fi; \
 	done
 
 test-generic-sharing-managed: test-runner.exe $(GSHARED_TESTS)
@@ -2000,7 +2011,7 @@ test-generic-sharing-managed: test-runner.exe $(GSHARED_TESTS)
 
 @NACL_CODEGEN_TRUE@test-generic-sharing:
 @NACL_CODEGEN_FALSE@test-generic-sharing:
-@NACL_CODEGEN_FALSE@	@if test x$(M) != x; then $(MAKE) test-generic-sharing-managed; else $(MAKE) test-generic-sharing-normal; fi
+@NACL_CODEGEN_FALSE@	@if test x$(M) != x0; then $(MAKE) test-generic-sharing-managed; else $(MAKE) test-generic-sharing-normal; fi
 async-exceptions.exe : async-exceptions.cs
 	$(MCS) -out:async-exceptions.exe $(srcdir)/async-exceptions.cs
 test-async-exceptions : async-exceptions.exe
@@ -2031,6 +2042,17 @@ test-oom: $(OOM_TESTS)
 		MONO_GC_PARAMS=max-heap-size=16m MONO_ENV_OPTIONS="--gc=sgen"                     $(RUNTIME) $$fn > $$fn.stdout || exit 1;	\
 		MONO_GC_PARAMS=max-heap-size=16m                                                  $(RUNTIME) $$fn > $$fn.stdout || exit 1;	\
 	done
+
+@HOST_WIN32_TRUE@test-unhandled-exception-2:
+@HOST_WIN32_FALSE@test-unhandled-exception-2: unhandled-exception.exe
+@HOST_WIN32_FALSE@	@echo "Testing unhandled-exception_1 ..."; $(RUNTIME) $+ 1 1> unhandled-exception_1.exe.stdout 2> unhandled-exception_1.exe.stderr; if test "x$$?" != "x1";   then exit 1; fi;	\
+@HOST_WIN32_FALSE@	 echo "Testing unhandled-exception_2 ..."; $(RUNTIME) $+ 2 1> unhandled-exception_2.exe.stdout 2> unhandled-exception_2.exe.stderr; if test "x$$?" != "x0";   then exit 2; fi;	\
+@HOST_WIN32_FALSE@	 echo "Testing unhandled-exception_3 ..."; $(RUNTIME) $+ 3 1> unhandled-exception_3.exe.stdout 2> unhandled-exception_3.exe.stderr; if test "x$$?" != "x0";   then exit 3; fi;	\
+@HOST_WIN32_FALSE@	 echo "Testing unhandled-exception_4 ..."; $(RUNTIME) $+ 4 1> unhandled-exception_4.exe.stdout 2> unhandled-exception_4.exe.stderr; if test "x$$?" != "x0";   then exit 4; fi;	\
+@HOST_WIN32_FALSE@	 echo "Testing unhandled-exception_5 ..."; $(RUNTIME) $+ 5 1> unhandled-exception_5.exe.stdout 2> unhandled-exception_5.exe.stderr; if test "x$$?" != "x255"; then exit 5; fi;	\
+@HOST_WIN32_FALSE@	 echo "Testing unhandled-exception_6 ..."; $(RUNTIME) $+ 6 1> unhandled-exception_6.exe.stdout 2> unhandled-exception_6.exe.stderr; if test "x$$?" != "x0";   then exit 6; fi;	\
+@HOST_WIN32_FALSE@	 echo "Testing unhandled-exception_7 ..."; $(RUNTIME) $+ 7 1> unhandled-exception_7.exe.stdout 2> unhandled-exception_7.exe.stderr; if test "x$$?" != "x0";   then exit 7; fi;	\
+@HOST_WIN32_FALSE@	 echo "Testing unhandled-exception_8 ..."; $(RUNTIME) $+ 8 1> unhandled-exception_8.exe.stdout 2> unhandled-exception_8.exe.stderr; if test "x$$?" != "x3";   then exit 8; fi
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

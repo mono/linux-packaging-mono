@@ -26,24 +26,27 @@ mobile_common_dirs := \
 	Mono.Security	\
 	System	\
 	I18N		\
-	System.Xml.Linq	\
+	System.ServiceModel.Internals	\
+	SMDiagnostics	\
 	System.Runtime.Serialization	\
+	System.Xml.Linq	\
 	System.ServiceModel	\
 	System.ServiceModel.Web	\
 	System.Json	\
 	System.Web.Services	\
 	Mono.Data.Tds	\
 	System.Transactions	\
+	System.Numerics	\
 	System.Data	\
 	Mono.Cairo	\
 	Mono.Data.Sqlite	\
-	System.Numerics	\
 	System.Data.Services.Client \
 	System.IO.Compression \
 	System.IO.Compression.FileSystem \
 	System.ComponentModel.DataAnnotations \
 	System.ComponentModel.Composition.4.5 \
 	System.Net \
+	System.Net.Http	\
 	System.Windows \
 	System.Xml.Serialization \
 	Mono.CSharp	\
@@ -57,7 +60,6 @@ mobile_static_dirs := \
 mobile_dynamic_dirs := \
 	$(mobile_common_dirs)	\
 	Mono.CompilerServices.SymbolWriter	\
-	System.Net.Http
 
 xammac_dirs := \
 	$(mobile_dynamic_dirs)
@@ -67,6 +69,8 @@ monodroid_dirs := \
 
 monotouch_dirs := \
 	$(mobile_static_dirs)
+
+monotouch_watch_dirs := $(monotouch_dirs)
 
 monotouch_runtime_dirs := \
 	corlib \
@@ -84,6 +88,8 @@ xammac_4_5_dirs := \
 	Mono.Security	\
 	System	\
 	I18N		\
+	System.ServiceModel.Internals	\
+	SMDiagnostics	\
 	System.Numerics	\
 	Mono.Data.Tds	\
 	System.Transactions	\
@@ -100,7 +106,6 @@ xammac_4_5_dirs := \
 	System.Configuration.Install 	\
 	System.Messaging	        \
 	System.Web.Services \
-	System.Net \
 	System.ServiceModel	\
 	System.ServiceModel.Web	\
 	System.Json	\
@@ -108,6 +113,7 @@ xammac_4_5_dirs := \
 	System.IO.Compression \
 	System.IO.Compression.FileSystem \
 	System.ComponentModel.Composition.4.5 \
+	System.Net \
 	System.Windows \
 	System.Xml.Serialization \
 	Mono.CSharp	\
@@ -126,83 +132,99 @@ net_4_5_dirs := \
 	System.Core			\
 	Mono.Security			\
 	System.Security			\
-	System.Configuration		\
-	I18N				\
+	System.Configuration	\
 	$(resgen_dir)			\
 	System.Drawing			\
 	System.Transactions		\
 	System.EnterpriseServices	\
 	Mono.Data.Tds			\
+	System.Numerics		\
 	System.Data			\
 	System.ComponentModel.DataAnnotations	\
 	Accessibility			\
 	Mono.WebBrowser			\
 	System.Runtime.Serialization.Formatters.Soap \
-	Managed.Windows.Forms		\
+	System.Windows.Forms		\
 	Mono.Data.Sqlite		\
 	System.Web.ApplicationServices	\
+	Novell.Directory.Ldap		\
+	System.DirectoryServices	\
 	System.Web			\
 	System.Web.Services		\
+	System.Design			\
 	System.Runtime.Remoting		\
 	System.Configuration.Install 	\
 	System.Management		\
 	System.Data.OracleClient	\
-	Microsoft.VisualC		\
 	Cscompmgd			\
-	PEAPI				\
 	Commons.Xml.Relaxng		\
-	Novell.Directory.Ldap		\
-	Mono.Security.Win32		\
-	System.DirectoryServices	\
-	System.DirectoryServices.Protocols	\
-	RabbitMQ.Client			\
 	Mono.Messaging			\
 	System.Messaging	        \
-	Mono.Messaging.RabbitMQ		\
 	System.ServiceProcess           \
 	System.Drawing.Design		\
-	System.Design			\
 	ICSharpCode.SharpZipLib		\
-	Mono.Http			\
-	Mono.Cairo                      \
 	IBM.Data.DB2			\
 	CustomMarshalers		\
-	Mono.Cecil			\
-	Mono.Cecil.Mdb			\
-	Mono.Debugger.Soft		\
 	SystemWebTestShim			\
-	System.Xml.Linq			\
+	System.ServiceModel.Internals	\
+	SMDiagnostics	\
 	System.Runtime.Serialization	\
-	System.Data.DataSetExtensions	\
+	System.Xml.Linq			\
 	System.Data.Linq		\
 	System.Web.Abstractions		\
 	System.Web.Routing		\
+	System.Runtime.DurableInstancing \
 	System.IdentityModel		\
 	System.IdentityModel.Selectors	\
 	System.ServiceModel		\
 	System.Web.Extensions		\
 	System.Web.Extensions.Design	\
 	System.Web.DynamicData		\
-	Mono.C5				\
-	Mono.Management			\
-	Mono.Options 			\
-	Mono.Simd			\
-	Mono.Tasklets       		\
-	System.Dynamic			\
 	Mono.CSharp			\
 	System.Net			\
 	System.Json		\
-	System.Numerics		\
 	Microsoft.CSharp	\
-	System.Windows.Forms.DataVisualization	\
 	System.Xaml \
 	WindowsBase \
 	System.ServiceModel.Activation \
 	System.ServiceModel.Routing \
 	System.ServiceModel.Discovery \
 	System.Runtime.Caching \
-	System.Runtime.DurableInstancing \
+	Microsoft.Web.Infrastructure \
+	System.ServiceModel.Web \
+	System.Net.Http	\
+	System.Net.Http.WebRequest \
+	System.Web.Razor \
+	System.Web.WebPages.Deployment \
+	System.Web.WebPages \
+	System.Web.WebPages.Razor \
+	System.Web.Mvc3 \
+	System.Net.Http.Formatting \
+	System.Web.Http \
+	System.Web.Http.SelfHost \
+	System.Web.Http.WebHost
+
+# These are the subdirs which depends on libs in net_4_5_dirs
+# or have proper dependencies between each other
+net_4_5_parallel_dirs := \
+	PEAPI				\
+	I18N				\
+	Mono.Http			\
+	Mono.Cairo                      \
+	Mono.Cecil			\
+	Mono.Cecil.Mdb			\
+	Mono.Debugger.Soft		\
+	Mono.C5				\
+	Mono.Management			\
+	Mono.Options 			\
+	Mono.Simd			\
+	Mono.Tasklets       		\
+	Mono.CodeContracts \
 	Mono.Parallel \
+	Mono.Security.Win32		\
+	Mono.Messaging.RabbitMQ		\
+	System.Dynamic			\
+	System.Windows.Forms.DataVisualization	\
 	System.Reactive.Interfaces \
 	System.Reactive.Core \
 	System.Reactive.Linq \
@@ -214,32 +236,22 @@ net_4_5_dirs := \
 	System.Reactive.Observable.Aliases \
 	System.Reactive.Experimental \
 	System.Reactive.Debugger \
-	Microsoft.Web.Infrastructure \
-	WebMatrix.Data \
-	System.ServiceModel.Web \
 	System.Data.Services.Client	\
 	System.Data.Services \
-	System.Json.Microsoft \
 	System.Data.Entity \
-	monodoc	\
+	System.Data.DataSetExtensions	\
+	System.Json.Microsoft \
 	System.Threading.Tasks.Dataflow \
 	System.ComponentModel.Composition.4.5 \
-	System.Net.Http	\
-	System.Net.Http.WebRequest \
-	System.Web.Razor \
-	System.Web.WebPages.Deployment \
-	System.Web.WebPages \
-	System.Web.WebPages.Razor \
-	System.Web.Mvc3 \
-	System.Net.Http.Formatting \
-	System.Web.Http \
-	System.Web.Http.SelfHost \
-	System.Web.Http.WebHost \
-	Mono.CodeContracts \
 	System.IO.Compression \
 	System.IO.Compression.FileSystem \
 	System.Windows \
 	System.Xml.Serialization \
+	System.DirectoryServices.Protocols	\
+	RabbitMQ.Client			\
+	Microsoft.VisualC		\
+	WebMatrix.Data \
+	monodoc	\
 	$(pcl_facade_dirs)
 
 xbuild_2_0_dirs := \
@@ -255,19 +267,21 @@ xbuild_4_0_dirs := \
 
 monodroid_SUBDIRS := $(monodroid_dirs)
 monotouch_SUBDIRS := $(monotouch_dirs)
+monotouch_watch_SUBDIRS := $(monotouch_watch_dirs)
 monotouch_runtime_SUBDIRS := $(monotouch_runtime_dirs)
 mobile_static_SUBDIRS := $(mobile_static_dirs)
 mobile_SUBDIRS := $(mobile_dynamic_dirs)
 xammac_SUBDIRS := $(xammac_dirs)
 xammac_net_4_5_SUBDIRS := $(xammac_4_5_dirs)
 binary_reference_assemblies_SUBDIRS := reference-assemblies
-net_4_5_SUBDIRS := $(net_4_5_dirs) $(xbuild_4_0_dirs) aot-compiler
+net_4_5_SUBDIRS := $(net_4_5_dirs) $(xbuild_4_0_dirs)
+net_4_5_PARALLEL_SUBDIRS := $(net_4_5_parallel_dirs) aot-compiler
 xbuild_12_SUBDIRS := $(xbuild_4_0_dirs)
 xbuild_14_SUBDIRS := $(xbuild_4_0_dirs)
 
 include ../build/rules.make
 
-SUBDIRS = $(mobile_static_dirs) $(mobile_dynamic_dirs) $(monotouch_dirs) $(monodroid_dirs) $(xammac_dirs) $(net_4_5_dirs) $(xammac_net_4_5_SUBDIRS)
+SUBDIRS = $(mobile_static_dirs) $(mobile_dynamic_dirs) $(monotouch_dirs) $(monodroid_dirs) $(xammac_dirs) $(net_4_5_dirs) $(net_4_5_parallel_dirs) $(xammac_net_4_5_SUBDIRS)
 
 DIST_ONLY_SUBDIRS = dlr aot-compiler reference-assemblies $(xbuild_4_0_dirs)
 
@@ -290,6 +304,7 @@ DISTFILES = \
 	doc/TemplateTest.cs	\
 	notes/BitVecto32.txt	\
 	MicrosoftAjaxLibrary/License.htm	\
+	test-helpers/NetworkHelpers.cs	\
 	$(monolite_files)
 
 .PHONY: all-local $(STD_TARGETS:=-local)
@@ -315,3 +330,5 @@ dist-local: dist-default
 
 csproj-local:
 
+do-clean:
+	$(RM) -rf $(topdir)/class/lib/$(PROFILE)

@@ -15,6 +15,7 @@
 @SET_MAKE@
 
 
+
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -126,7 +127,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
+	"$(DESTDIR)$(suppressiondir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntime-static.la \
@@ -150,13 +152,6 @@ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-libmono_profiler_cov_la_DEPENDENCIES = $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_libmono_profiler_cov_la_OBJECTS = mono-cov.lo
-libmono_profiler_cov_la_OBJECTS =  \
-	$(am_libmono_profiler_cov_la_OBJECTS)
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_cov_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_iomap_la_DEPENDENCIES = $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -192,7 +187,8 @@ libmono_profiler_vtune_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = decode.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
-mprof_report_DEPENDENCIES = $(am__DEPENDENCIES_1)
+mprof_report_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -224,12 +220,10 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmono_profiler_aot_la_SOURCES) \
-	$(libmono_profiler_cov_la_SOURCES) \
 	$(libmono_profiler_iomap_la_SOURCES) \
 	$(libmono_profiler_log_la_SOURCES) \
 	$(libmono_profiler_vtune_la_SOURCES) $(mprof_report_SOURCES)
 DIST_SOURCES = $(libmono_profiler_aot_la_SOURCES) \
-	$(libmono_profiler_cov_la_SOURCES) \
 	$(libmono_profiler_iomap_la_SOURCES) \
 	$(libmono_profiler_log_la_SOURCES) \
 	$(am__libmono_profiler_vtune_la_SOURCES_DIST) \
@@ -239,6 +233,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+DATA = $(suppression_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -471,11 +466,12 @@ top_srcdir = @top_srcdir@
 @HAVE_ZLIB_TRUE@Z_LIBS = -lz
 AM_CPPFLAGS = \
 	-fexceptions -DMONO_USE_EXC_TABLES	\
+	-DSUPPRESSION_DIR=\""$(datadir)/mono-$(API_VER)/mono/profiler"\"        \
 	-I$(top_srcdir) 	\
 	$(GLIB_CFLAGS)
 
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_lib = libmono-profiler-vtune.la
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = libmono-profiler-cov.la libmono-profiler-aot.la libmono-profiler-iomap.la libmono-profiler-log.la $(vtune_lib)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = libmono-profiler-aot.la libmono-profiler-iomap.la libmono-profiler-log.la $(vtune_lib)
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@libmono_profiler_log_la_LDFLAGS = -avoid-version
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@libmono_profiler_log_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@@SUPPORT_BOEHM_TRUE@LIBMONO = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
@@ -491,12 +487,8 @@ AM_CPPFLAGS = \
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@@SUPPORT_BOEHM_TRUE@	$(GLIB_LIBS) $(LIBICONV) \
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@@SUPPORT_BOEHM_TRUE@	$(LIBGC_STATIC_LIBS)
 
-libmono_profiler_cov_la_SOURCES = mono-cov.c
-libmono_profiler_cov_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_aot_la_SOURCES = mono-profiler-aot.c
 libmono_profiler_aot_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
-#libmono_profiler_logging_la_SOURCES = mono-profiler-logging.c
-#libmono_profiler_logging_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_iomap_la_SOURCES = mono-profiler-iomap.c
 libmono_profiler_iomap_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_log_la_SOURCES = proflog.c
@@ -505,7 +497,7 @@ libmono_profiler_log_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(Z_LIBS)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 mprof_report_SOURCES = decode.c
-mprof_report_LDADD = $(Z_LIBS)
+mprof_report_LDADD = $(Z_LIBS) $(GLIB_LIBS) $(LIBICONV)
 PLOG_TESTS_SRC = test-alloc.cs test-busy.cs test-monitor.cs test-excleave.cs \
 	test-heapshot.cs test-traces.cs
 
@@ -513,8 +505,11 @@ PLOG_TESTS = $(PLOG_TESTS_SRC:.cs=.exe)
 with_mono_path = MONO_PATH=$(mcs_topdir)/class/lib/net_4_5
 RUNTIME = $(with_mono_path) $(top_builddir)/runtime/mono-wrapper
 MCS = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug
-EXTRA_DIST = utils.c utils.h proflog.h log-profiler.txt perf_event.h \
-	$(PLOG_TESTS_SRC) ptestrunner.pl
+suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
+suppression_DATA = mono-profiler-log.suppression
+EXTRA_DIST = utils.c utils.h proflog.h perf_event.h \
+	$(PLOG_TESTS_SRC) ptestrunner.pl \
+	$(suppression_DATA)
 
 all: all-am
 
@@ -589,9 +584,6 @@ clean-libLTLIBRARIES:
 libmono-profiler-aot.la: $(libmono_profiler_aot_la_OBJECTS) $(libmono_profiler_aot_la_DEPENDENCIES) $(EXTRA_libmono_profiler_aot_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libmono_profiler_aot_la_rpath) $(libmono_profiler_aot_la_OBJECTS) $(libmono_profiler_aot_la_LIBADD) $(LIBS)
 
-libmono-profiler-cov.la: $(libmono_profiler_cov_la_OBJECTS) $(libmono_profiler_cov_la_DEPENDENCIES) $(EXTRA_libmono_profiler_cov_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) $(am_libmono_profiler_cov_la_rpath) $(libmono_profiler_cov_la_OBJECTS) $(libmono_profiler_cov_la_LIBADD) $(LIBS)
-
 libmono-profiler-iomap.la: $(libmono_profiler_iomap_la_OBJECTS) $(libmono_profiler_iomap_la_DEPENDENCIES) $(EXTRA_libmono_profiler_iomap_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libmono_profiler_iomap_la_rpath) $(libmono_profiler_iomap_la_OBJECTS) $(libmono_profiler_iomap_la_LIBADD) $(LIBS)
 
@@ -662,7 +654,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/decode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_la-mono-profiler-vtune.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-cov.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-profiler-aot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-profiler-iomap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/proflog.Plo@am__quote@
@@ -703,6 +694,27 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-suppressionDATA: $(suppression_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(suppression_DATA)'; test -n "$(suppressiondir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(suppressiondir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(suppressiondir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(suppressiondir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(suppressiondir)" || exit $$?; \
+	done
+
+uninstall-suppressionDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(suppression_DATA)'; test -n "$(suppressiondir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(suppressiondir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -789,11 +801,11 @@ distdir: $(DISTFILES)
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA)
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(suppressiondir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -849,7 +861,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-suppressionDATA
 
 install-dvi: install-dvi-am
 
@@ -895,7 +907,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES
+uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-suppressionDATA
 
 .MAKE: check-am install-am install-strip
 
@@ -909,11 +922,12 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES
 	install-exec-am install-html install-html-am install-info \
 	install-info-am install-libLTLIBRARIES install-man install-pdf \
 	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-libLTLIBRARIES
+	install-suppressionDATA installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
+	uninstall-suppressionDATA
 
 
 %.exe: %.cs

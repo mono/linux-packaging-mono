@@ -54,6 +54,7 @@ struct MonoProcess {
 	struct MonoProcess *next;
 };
 
+typedef struct MonoProcess MonoProcess;
 
 /*
  * _WapiHandle_process is a structure containing all the required information

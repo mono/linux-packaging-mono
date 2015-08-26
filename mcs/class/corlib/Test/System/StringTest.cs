@@ -652,6 +652,13 @@ public class StringTest
 	}
 
 	[Test]
+	[ExpectedException (typeof (ArgumentOutOfRangeException))]
+	public void CompareOrdinal_InvalidCount()
+	{
+		string.CompareOrdinal ("a", 0, "b", 0, -1);
+	}
+
+	[Test]
 	public void CompareOrdinalWithOffset ()
 	{
 		string ab1 = "ab";
@@ -2965,7 +2972,7 @@ public class StringTest
 
 		result = s1.PadLeft (s1.Length);
 		Assert.AreEqual (s1, result, "#C1");
-		Assert.IsTrue (!object.ReferenceEquals (s1, result), "#C2");
+		Assert.IsTrue (object.ReferenceEquals (s1, result), "#C2");
 
 		result = s1.PadLeft (s1.Length + 1);
 		Assert.AreEqual (" Hi!", result, "#D");
@@ -3008,7 +3015,7 @@ public class StringTest
 
 		result = s1.PadRight (s1.Length);
 		Assert.AreEqual (s1, result, "#C1");
-		Assert.IsTrue (!object.ReferenceEquals (s1, result), "#C2");
+		Assert.IsTrue (object.ReferenceEquals (s1, result), "#C2");
 
 		result = s1.PadRight (s1.Length + 1);
 		Assert.AreEqual ("Hi! ", result, "#D");

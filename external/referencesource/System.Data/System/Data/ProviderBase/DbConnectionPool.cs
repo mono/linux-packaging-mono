@@ -235,8 +235,9 @@ namespace System.Data.ProviderBase {
                     Bid.PoolerTrace("<prov.DbConnectionPool.TransactedConnectionPool.PutTransactedObject|RES|CPOOL> %d#, Transaction %d#, Connection %d#, Added.\n", ObjectID, transaction.GetHashCode(), transactedObject.ObjectID );
                 }
 
+#if !MOBILE
                 Pool.PerformanceCounters.NumberOfFreeConnections.Increment();
-
+#endif
             }
 
             internal void TransactionEnded(SysTx.Transaction transaction, DbConnectionInternal transactedObject) 
@@ -300,7 +301,9 @@ namespace System.Data.ProviderBase {
                 // connections, we'll put it back...
                 if (0 <= entry)  
                 {
+#if !MOBILE
                     Pool.PerformanceCounters.NumberOfFreeConnections.Decrement();
+#endif
                     Pool.PutObjectFromTransactedPool(transactedObject);
                 }
             }
@@ -622,7 +625,9 @@ namespace System.Data.ProviderBase {
                     if (_stackOld.TryPop(out obj)) {
                         Debug.Assert(obj != null, "null connection is not expected");
                         // If we obtained one from the old stack, destroy it.
+#if !MOBILE
                         PerformanceCounters.NumberOfFreeConnections.Decrement();
+#endif
 
                         // Transaction roots must survive even aging out (TxEnd event will clean them up).
                         bool shouldDestroy = true;
@@ -709,12 +714,16 @@ namespace System.Data.ProviderBase {
             // Second, dispose of all the free connections.
             while (_stackNew.TryPop(out obj)) {
                 Debug.Assert(obj != null, "null connection is not expected");
+#if !MOBILE
                 PerformanceCounters.NumberOfFreeConnections.Decrement();
+#endif
                 DestroyObject(obj);
             }
             while (_stackOld.TryPop(out obj)) {
                 Debug.Assert(obj != null, "null connection is not expected");
+#if !MOBILE
                 PerformanceCounters.NumberOfFreeConnections.Decrement();
+#endif
                 DestroyObject(obj);
             }
 
@@ -748,7 +757,9 @@ namespace System.Data.ProviderBase {
                     }
                     _objectList.Add(newObj);
                     _totalObjects = _objectList.Count;
+#if !MOBILE
                     PerformanceCounters.NumberOfPooledConnections.Increment();   // 
+#endif
                 }
 
                 // If the old connection belonged to another pool, we need to remove it from that
@@ -964,12 +975,16 @@ namespace System.Data.ProviderBase {
 
                 if (removed) {
                     Bid.PoolerTrace("<prov.DbConnectionPool.DestroyObject|RES|CPOOL> %d#, Connection %d#, Removed from pool.\n", ObjectID, obj.ObjectID);
+#if !MOBILE
                     PerformanceCounters.NumberOfPooledConnections.Decrement();
+#endif
                 }
                 obj.Dispose();
 
                 Bid.PoolerTrace("<prov.DbConnectionPool.DestroyObject|RES|CPOOL> %d#, Connection %d#, Disposed.\n", ObjectID, obj.ObjectID);
+#if !MOBILE
                 PerformanceCounters.HardDisconnectsPerSecond.Increment();
+#endif
             }
         }
 
@@ -1159,7 +1174,9 @@ namespace System.Data.ProviderBase {
             DbConnectionInternal obj = null;
             SysTx.Transaction transaction = null;
 
+#if !MOBILE
             PerformanceCounters.SoftConnectsPerSecond.Increment();
+#endif
 
             Bid.PoolerTrace("<prov.DbConnectionPool.GetConnection|RES|CPOOL> %d#, Getting connection.\n", ObjectID);
 
@@ -1192,10 +1209,12 @@ namespace System.Data.ProviderBase {
                         finally {
                             waitResult = SafeNativeMethods.WaitForMultipleObjectsEx(waitHandleCount, _waitHandles.DangerousGetHandle(), false, waitForMultipleObjectsTimeout, false);
 
+#if !FULL_AOT_RUNTIME
                             // VSTFDEVDIV 479551 - call GetHRForLastWin32Error immediately after after the native call
                             if (waitResult == WAIT_FAILED) {
                                 waitForMultipleObjectsExHR = Marshal.GetHRForLastWin32Error();
                             }
+#endif
                         }
 
                         // From the WaitAny docs: "If more than one object became signaled during
@@ -1316,7 +1335,9 @@ namespace System.Data.ProviderBase {
                         if (CREATION_HANDLE == waitResult) {
                             int result = SafeNativeMethods.ReleaseSemaphore(_waitHandles.CreationHandle.DangerousGetHandle(), 1, IntPtr.Zero);
                             if (0 == result) { // failure case
+#if !FULL_AOT_RUNTIME
                                 releaseSemaphoreResult = Marshal.GetHRForLastWin32Error();
+#endif
                             }
                         }
                         if (mustRelease) {
@@ -1364,7 +1385,9 @@ namespace System.Data.ProviderBase {
         /// <param name="oldConnection">Inner connection that will be replaced</param>
         /// <returns>A new inner connection that is attached to the <paramref name="owningObject"/></returns>
         internal DbConnectionInternal ReplaceConnection(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection) {
+#if !MOBILE
             PerformanceCounters.SoftConnectsPerSecond.Increment();
+#endif
             Bid.PoolerTrace("<prov.DbConnectionPool.ReplaceConnection|RES|CPOOL> %d#, replacing connection.\n", ObjectID);
 
             DbConnectionInternal newConnection = UserCreateRequest(owningObject, userOptions, oldConnection);
@@ -1402,7 +1425,9 @@ namespace System.Data.ProviderBase {
 
             if (null != obj) {
                 Bid.PoolerTrace("<prov.DbConnectionPool.GetFromGeneralPool|RES|CPOOL> %d#, Connection %d#, Popped from general pool.\n", ObjectID, obj.ObjectID);
+#if !MOBILE
                 PerformanceCounters.NumberOfFreeConnections.Decrement();
+#endif
             }
             return(obj);
         }
@@ -1416,7 +1441,9 @@ namespace System.Data.ProviderBase {
 
                 if (null != obj) {
                     Bid.PoolerTrace("<prov.DbConnectionPool.GetFromTransactedPool|RES|CPOOL> %d#, Connection %d#, Popped from transacted pool.\n", ObjectID, obj.ObjectID);
+#if !MOBILE
                     PerformanceCounters.NumberOfFreeConnections.Decrement();
+#endif
 
                     if (obj.IsTransactionRoot) {
                         try {
@@ -1560,14 +1587,17 @@ namespace System.Data.ProviderBase {
 
             _stackNew.Push(obj);
             _waitHandles.PoolSemaphore.Release(1);
+#if !MOBILE
             PerformanceCounters.NumberOfFreeConnections.Increment();
-
+#endif
         }
 
         internal void PutObject(DbConnectionInternal obj, object owningObject) {
             Debug.Assert(null != obj, "null obj?");
 
+#if !MOBILE
             PerformanceCounters.SoftDisconnectsPerSecond.Increment();
+#endif
 
             // Once a connection is closing (which is the state that we're in at
             // this point in time) you cannot delegate a transaction to or enlist
@@ -1671,7 +1701,9 @@ namespace System.Data.ProviderBase {
                 DbConnectionInternal obj = reclaimedObjects[i];
 
                 Bid.PoolerTrace("<prov.DbConnectionPool.ReclaimEmancipatedObjects|RES|CPOOL> %d#, Connection %d#, Reclaiming.\n", ObjectID, obj.ObjectID);
+#if !MOBILE
                 PerformanceCounters.NumberOfReclaimedConnections.Increment();
+#endif
 
                 emancipatedObjectFound = true;
 

@@ -64,6 +64,11 @@ namespace MonoTests.System.Reflection
 		{
 		}
 
+		public interface InterfaceTest
+		{
+			void Clone ();
+		}
+
 		[Test]
 		public void IsDefined_AttributeType_Null ()
 		{
@@ -304,7 +309,7 @@ namespace MonoTests.System.Reflection
 		[Test]
 		public void GetMethodBody_Abstract ()
 		{
-			MethodBody mb = typeof (ICloneable).GetMethod ("Clone").GetMethodBody ();
+			MethodBody mb = typeof (InterfaceTest).GetMethod ("Clone").GetMethodBody ();
 			Assert.IsNull (mb);
 		}
 
@@ -393,6 +398,15 @@ namespace MonoTests.System.Reflection
 			Assert.AreEqual (-1, pi.Position, "#2");
 			// MS always return false here
 			//Assert.IsTrue (pi.IsRetval, "#3");
+		}
+
+		[Test]
+		public void MethodInfoModule ()
+		{
+			Type type = typeof (MethodInfoTest);
+			MethodInfo me = type.GetMethod ("return_parameter_test");
+
+			Assert.AreEqual (type.Module, me.Module);
 		}
 
 		[Test]
