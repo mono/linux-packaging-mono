@@ -30,6 +30,8 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
+using System.Reflection;
+using System.Globalization;
 
 using NUnit.Framework;
 namespace MonoTests.System
@@ -665,6 +667,12 @@ namespace MonoTests.System
 		public class GetSystemTimeZonesTests
 		{
 			[Test]
+			public void Identity ()
+			{
+				Assert.AreSame (TimeZoneInfo.GetSystemTimeZones (), TimeZoneInfo.GetSystemTimeZones ());
+			}
+
+			[Test]
 			public void NotEmpty ()
 			{
 				if (Environment.OSVersion.Platform != PlatformID.Unix)
@@ -802,6 +810,32 @@ namespace MonoTests.System
 				}		
 			}
 		#endif
+
+			[Test]
+			public void SubminuteDSTOffsets ()
+			{
+				if (Environment.OSVersion.Platform != PlatformID.Unix)
+					Assert.Ignore ();
+
+				var subMinuteDSTs = new string [] {
+					"Europe/Dublin", // Europe/Dublin has a DST offset of 34 minutes and 39 seconds in 1916.
+					"Europe/Amsterdam",
+					"America/St_Johns",
+					"Canada/Newfoundland",
+					"Europe/Moscow",
+					"Europe/Riga",
+					"N/A", // testing that the test doesn't fail with inexistent TZs
+				};
+				foreach (var tz in subMinuteDSTs) {
+					try {
+						TimeZoneInfo.FindSystemTimeZoneById (tz);
+					} catch (TimeZoneNotFoundException) {
+						// ok;
+					} catch (Exception ex) {
+						Assert.Fail (string.Format ("Failed to load TZ {0}: {1}", tz, ex.ToString ()));
+					}
+				}
+			}
 		}
 		
 		[TestFixture]
@@ -998,6 +1032,35 @@ namespace MonoTests.System
 				Assert.AreEqual(dstUtcOffset, cairo.GetUtcOffset (d.Add (new TimeSpan(0,0,0,-1))));
 				Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset (d));
 				Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset (d.Add (new TimeSpan(0,0,0, 1))));
+			}
+		}
+
+		[TestFixture]
+		public class GetDaylightChanges
+		{
+			MethodInfo getChanges;
+
+			[SetUp]
+			public void Setup ()
+			{
+				var flags = BindingFlags.Instance | BindingFlags.NonPublic;
+				getChanges = typeof (TimeZoneInfo).GetMethod ("GetDaylightChanges", flags);
+			}
+
+			[Test]
+			public void TestSydneyDaylightChanges ()
+			{
+				TimeZoneInfo tz;
+				if (Environment.OSVersion.Platform == PlatformID.Unix)
+					tz = TimeZoneInfo.FindSystemTimeZoneById ("Australia/Sydney");
+				else
+					tz = TimeZoneInfo.FindSystemTimeZoneById ("W. Australia Standard Time");
+
+				var changes = (DaylightTime) getChanges.Invoke (tz, new object [] {2014});
+
+				Assert.AreEqual (new TimeSpan (1, 0, 0), changes.Delta);
+				Assert.AreEqual (new DateTime (2014, 10, 5, 2, 0, 0), changes.Start);
+				Assert.AreEqual (new DateTime (2014, 4, 6, 3, 0, 0), changes.End);
 			}
 		}
 	}

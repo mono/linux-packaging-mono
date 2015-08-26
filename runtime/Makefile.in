@@ -80,10 +80,11 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 @INSTALL_4_5_TRUE@am__append_1 = etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.5/machine.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
-@INSTALL_4_5_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_2 = binary_reference_assemblies net_4_5 xbuild_12 xbuild_14
-@INSTALL_MONODROID_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_3 = monodroid
-@INSTALL_MONOTOUCH_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_4 = monotouch monotouch_runtime
-@INSTALL_XAMMAC_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@am__append_5 = xammac xammac_net_4_5
+@INSTALL_4_5_TRUE@am__append_2 = binary_reference_assemblies net_4_5 xbuild_12 xbuild_14
+@INSTALL_MONODROID_TRUE@am__append_3 = monodroid
+@INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime
+@INSTALL_MONOTOUCH_WATCH_TRUE@am__append_5 = monotouch_watch
+@INSTALL_XAMMAC_TRUE@am__append_6 = xammac xammac_net_4_5
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -340,21 +341,10 @@ symlinks = etc/mono/1.0/machine.config etc/mono/2.0/machine.config \
 	etc/mono/2.0/web.config etc/mono/browscap.ini \
 	etc/mono/2.0/Browsers/Compat.browser $(am__append_1)
 SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@build_profiles =  \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_2) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_3) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_4) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@	$(am__append_5)
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@build_profiles = xammac \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_2) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_3) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_4) \
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_TRUE@	$(am__append_5)
-@ONLY_MONOTOUCH_TRUE@build_profiles = monotouch $(am__append_2) \
-@ONLY_MONOTOUCH_TRUE@	$(am__append_3) $(am__append_4) \
-@ONLY_MONOTOUCH_TRUE@	$(am__append_5)
-@INSTALL_4_5_TRUE@@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@al_profile = net_4_5
-@ONLY_MONOTOUCH_FALSE@@ONLY_XAMMAC_FALSE@test_profiles = $(build_profiles)
+build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5) $(am__append_6)
+@INSTALL_4_5_TRUE@al_profile = net_4_5
+test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
 TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/dmcs $(tmpinst)/bin/al2 $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
@@ -572,8 +562,7 @@ $(symlinks):
 
 @BUILD_MCS_TRUE@clean-local:
 @BUILD_MCS_TRUE@	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' clean-profiles
-@BUILD_MCS_TRUE@	-./mono-wrapper --wapi=semdel
-@BUILD_MCS_TRUE@	-rm -fr $(etctmp) $(tmpinst) .wapi
+@BUILD_MCS_TRUE@	-rm -fr $(etctmp) $(tmpinst)
 
 mcs-do-test-profiles:
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(test_profiles)' test-profiles

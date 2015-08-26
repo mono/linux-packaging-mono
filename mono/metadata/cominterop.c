@@ -23,7 +23,6 @@
 #include "metadata/appdomain.h"
 #include "metadata/reflection-internals.h"
 #include "mono/metadata/debug-helpers.h"
-#include "mono/metadata/threadpool.h"
 #include "mono/metadata/threads.h"
 #include "mono/metadata/monitor.h"
 #include "mono/metadata/metadata-internals.h"
@@ -593,7 +592,6 @@ mono_cominterop_emit_ptr_to_object_conv (MonoMethodBuilder *mb, MonoType *type, 
 		static MonoClass* com_interop_proxy_class = NULL;
 		static MonoMethod* com_interop_proxy_get_proxy = NULL;
 		static MonoMethod* get_transparent_proxy = NULL;
-		int real_proxy;
 		guint32 pos_null = 0, pos_ccw = 0, pos_end = 0;
 		MonoClass *klass = NULL; 
 
@@ -625,7 +623,7 @@ mono_cominterop_emit_ptr_to_object_conv (MonoMethodBuilder *mb, MonoType *type, 
 			get_transparent_proxy = mono_class_get_method_from_name (mono_defaults.real_proxy_class, "GetTransparentProxy", 0);
 #endif
 
-		real_proxy = mono_mb_add_local (mb, &com_interop_proxy_class->byval_arg);
+		mono_mb_add_local (mb, &com_interop_proxy_class->byval_arg);
 
 		mono_mb_emit_ldloc (mb, 0);
 		mono_mb_emit_byte (mb, CEE_LDIND_I);
@@ -982,7 +980,7 @@ mono_cominterop_get_invoke (MonoMethod *method)
 	MonoMethodSignature *sig;
 	MonoMethodBuilder *mb;
 	MonoMethod *res;
-	int i, temp_obj;
+	int i;
 	GHashTable* cache = mono_marshal_get_cache (&method->klass->image->cominterop_invoke_cache, mono_aligned_addr_hash, NULL);
 
 	g_assert (method);
@@ -999,7 +997,7 @@ mono_cominterop_get_invoke (MonoMethod *method)
 	mb = mono_mb_new (method->klass, method->name, MONO_WRAPPER_COMINTEROP_INVOKE);
 
 	/* get real proxy object, which is a ComInteropProxy in this case*/
-	temp_obj = mono_mb_add_local (mb, &mono_defaults.object_class->byval_arg);
+	mono_mb_add_local (mb, &mono_defaults.object_class->byval_arg);
 	mono_mb_emit_ldarg (mb, 0);
 	mono_mb_emit_ldflda (mb, MONO_STRUCT_OFFSET (MonoTransparentProxy, rp));
 	mono_mb_emit_byte (mb, CEE_LDIND_REF);
@@ -3227,12 +3225,6 @@ cominterop_release_all_rcws (void)
 {
 }
 
-gboolean
-mono_marshal_free_ccw (MonoObject* object)
-{
-	return FALSE;
-}
-
 gpointer
 mono_string_to_bstr (MonoString *string_obj)
 {
@@ -3279,6 +3271,12 @@ mono_free_bstr (gpointer bstr)
 #else
 	g_free (((char *)bstr) - 4);
 #endif
+}
+
+gboolean
+mono_marshal_free_ccw (MonoObject* object)
+{
+	return FALSE;
 }
 
 int

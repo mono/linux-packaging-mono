@@ -84,6 +84,15 @@ mono_llvm_replace_uses_of (LLVMValueRef var, LLVMValueRef v);
 LLVMValueRef
 mono_llvm_build_cmpxchg (LLVMBuilderRef builder, LLVMValueRef addr, LLVMValueRef comparand, LLVMValueRef value);
 
+void
+mono_llvm_set_must_tail (LLVMValueRef call_ins);
+
+LLVMValueRef
+mono_llvm_create_constant_data_array (const uint8_t *data, int len);
+
+void
+mono_llvm_set_is_constant (LLVMValueRef global_var);
+
 G_END_DECLS
 
 #endif /* __MONO_MINI_LLVM_CPP_H__ */  

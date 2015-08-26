@@ -16,7 +16,9 @@
 
 namespace System.Threading
 {    
+#if !MONO
     using Microsoft.Win32.SafeHandles;
+#endif
     using System.Security.Permissions;
     using System.Runtime.InteropServices;
     using System.Runtime.CompilerServices;
@@ -164,9 +166,16 @@ namespace System.Threading
         [CLSCompliant(false)]
         [PrePrepareMethod]
         [ResourceExposure(ResourceScope.None)]
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]       
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+#if MONO
+        protected static int WaitHelper(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout)
+        {
+            throw new NotImplementedException ();
+        }
+#else
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         protected static extern int WaitHelper(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout);
+#endif
 #endif
 
         // set SynchronizationContext on the current thread
@@ -181,7 +190,7 @@ namespace System.Threading
             ec.SynchronizationContextNoFlow = syncContext;
         }
 
-#if FEATURE_CORECLR
+#if FEATURE_CORECLR || MOBILE_LEGACY
         //
         // This is a framework-internal method for Jolt's use.  The problem is that SynchronizationContexts set inside of a reverse p/invoke
         // into an AppDomain are not persisted in that AppDomain; the next time the same thread calls into the same AppDomain,
@@ -210,7 +219,7 @@ namespace System.Threading
 #endif
 
         [System.Security.SecurityCritical]
-#if FEATURE_LEGACYNETCF
+#if FEATURE_LEGACYNETCF || MOBILE_LEGACY
         public static void SetThreadStaticContext(SynchronizationContext syncContext)
 #else
         internal static void SetThreadStaticContext(SynchronizationContext syncContext)
@@ -269,6 +278,11 @@ namespace System.Threading
 #if FEATURE_APPX
             if (context == null && Environment.IsWinRTSupported)
                 context = GetWinRTContext();
+#endif
+
+#if MONODROID
+            if (context == null)
+                context = AndroidPlatform.GetDefaultSyncContext ();
 #endif
 
             return context;

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2002-2014 Jeroen Frijters
+  Copyright (C) 2002-2015 Jeroen Frijters
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -230,7 +230,7 @@ namespace IKVM.Internal
 		private static void GetAttributeArgsAndTypes(ClassLoaderWrapper loader, IKVM.Internal.MapXml.Attribute attr, out Type[] argTypes, out object[] args)
 		{
 			// TODO add error handling
-			TypeWrapper[] twargs = loader.ArgTypeWrapperListFromSigNoThrow(attr.Sig);
+			TypeWrapper[] twargs = loader.ArgTypeWrapperListFromSig(attr.Sig, LoadMode.Link);
 			argTypes = new Type[twargs.Length];
 			args = new object[argTypes.Length];
 			for(int i = 0; i < twargs.Length; i++)
@@ -239,7 +239,7 @@ namespace IKVM.Internal
 				TypeWrapper tw = twargs[i];
 				if(tw == CoreClasses.java.lang.Object.Wrapper)
 				{
-					tw = loader.FieldTypeWrapperFromSigNoThrow(attr.Params[i].Sig);
+					tw = loader.FieldTypeWrapperFromSig(attr.Params[i].Sig, LoadMode.Link);
 				}
 				if(tw.IsArray)
 				{
@@ -287,7 +287,7 @@ namespace IKVM.Internal
 					for(int i = 0; i < namedProperties.Length; i++)
 					{
 						namedProperties[i] = t.GetProperty(attr.Properties[i].Name);
-						propertyValues[i] = ParseValue(loader, loader.FieldTypeWrapperFromSigNoThrow(attr.Properties[i].Sig), attr.Properties[i].Value);
+						propertyValues[i] = ParseValue(loader, loader.FieldTypeWrapperFromSig(attr.Properties[i].Sig, LoadMode.Link), attr.Properties[i].Value);
 					}
 				}
 				else
@@ -304,7 +304,7 @@ namespace IKVM.Internal
 					for(int i = 0; i < namedFields.Length; i++)
 					{
 						namedFields[i] = t.GetField(attr.Fields[i].Name);
-						fieldValues[i] = ParseValue(loader, loader.FieldTypeWrapperFromSigNoThrow(attr.Fields[i].Sig), attr.Fields[i].Value);
+						fieldValues[i] = ParseValue(loader, loader.FieldTypeWrapperFromSig(attr.Fields[i].Sig, LoadMode.Link), attr.Fields[i].Value);
 					}
 				}
 				else
@@ -333,7 +333,7 @@ namespace IKVM.Internal
 						FieldWrapper fw = t.GetFieldWrapper(attr.Fields[i].Name, attr.Fields[i].Sig);
 						fw.Link();
 						namedFields[i] = fw.GetField();
-						fieldValues[i] = ParseValue(loader, loader.FieldTypeWrapperFromSigNoThrow(attr.Fields[i].Sig), attr.Fields[i].Value);
+						fieldValues[i] = ParseValue(loader, loader.FieldTypeWrapperFromSig(attr.Fields[i].Sig, LoadMode.Link), attr.Fields[i].Value);
 					}
 				}
 				else
@@ -1630,7 +1630,7 @@ namespace IKVM.Internal
 			{
 				try
 				{
-					return loader.RetTypeWrapperFromSig(annotationClass.Replace('/', '.')).Annotation;
+					return loader.RetTypeWrapperFromSig(annotationClass.Replace('/', '.'), LoadMode.LoadOrThrow).Annotation;
 				}
 				catch (RetargetableJavaException)
 				{
@@ -1659,7 +1659,7 @@ namespace IKVM.Internal
 #endif
 			if (ClassFile.IsValidFieldSig(annotationClass))
 			{
-				TypeWrapper tw = owner.GetClassLoader().RetTypeWrapperFromSigNoThrow(annotationClass.Replace('/', '.'));
+				TypeWrapper tw = owner.GetClassLoader().RetTypeWrapperFromSig(annotationClass.Replace('/', '.'), LoadMode.Link);
 				// Java allows inaccessible annotations to be used, so when the annotation isn't visible
 				// we fall back to using the DynamicAnnotationAttribute.
 				if (!tw.IsUnloadable && tw.IsAccessibleFrom(owner))
@@ -1725,7 +1725,7 @@ namespace IKVM.Internal
 			else if(targetType == Types.Type)
 			{
 				// TODO check the obj descriptor matches the type we expect
-				return loader.FieldTypeWrapperFromSig(((string)((object[])obj)[1]).Replace('/', '.')).TypeAsTBD;
+				return loader.FieldTypeWrapperFromSig(((string)((object[])obj)[1]).Replace('/', '.'), LoadMode.LoadOrThrow).TypeAsTBD;
 			}
 			else if(targetType.IsArray)
 			{
@@ -2748,6 +2748,25 @@ namespace IKVM.Internal
 			return null;
 		}
 
+		internal MethodWrapper GetInterfaceMethod(string name, string sig)
+		{
+			MethodWrapper method = GetMethodWrapper(name, sig, false);
+			if (method != null)
+			{
+				return method;
+			}
+			TypeWrapper[] interfaces = Interfaces;
+			for (int i = 0; i < interfaces.Length; i++)
+			{
+				method = interfaces[i].GetInterfaceMethod(name, sig);
+				if (method != null)
+				{
+					return method;
+				}
+			}
+			return null;
+		}
+
 		internal void SetMethods(MethodWrapper[] methods)
 		{
 			Debug.Assert(methods != null);
@@ -3086,7 +3105,7 @@ namespace IKVM.Internal
 				{
 					return false;
 				}
-				return (!elem1.IsNonPrimitiveValueType && elem1.IsSubTypeOf(elem2)) || (rank1 == rank2 && elem2.IsGhost && elem1 == CoreClasses.java.lang.Object.Wrapper);
+				return (!elem1.IsNonPrimitiveValueType && elem1.IsSubTypeOf(elem2));
 			}
 			return this.IsSubTypeOf(wrapper);
 		}
@@ -3526,6 +3545,13 @@ namespace IKVM.Internal
 		{
 			return null;
 		}
+
+#if !STATIC_COMPILER && !STUB_GENERATOR
+		internal virtual TypeWrapper Host
+		{
+			get { return null; }
+		}
+#endif
 	}
 
 	sealed class UnloadableTypeWrapper : TypeWrapper
@@ -4336,7 +4362,7 @@ namespace IKVM.Internal
 				// as object (not as arrays of object)
 				if(type.IsArray)
 				{
-					type = GetClassLoader().FieldTypeWrapperFromSig(sigtype);
+					type = GetClassLoader().FieldTypeWrapperFromSig(sigtype, LoadMode.LoadOrThrow);
 				}
 				else if(type.IsPrimitive)
 				{
@@ -4421,13 +4447,30 @@ namespace IKVM.Internal
 			}
 		}
 
-		private bool IsCallerID(Type type)
+		private static bool IsCallerID(Type type)
 		{
 #if STUB_GENERATOR
 			return type.FullName == "ikvm.internal.CallerID";
 #else
-			return type == CoreClasses.ikvm.@internal.CallerID.Wrapper.TypeAsSignatureType
-				&& GetClassLoader() == ClassLoaderWrapper.GetBootstrapClassLoader();
+			return type == CoreClasses.ikvm.@internal.CallerID.Wrapper.TypeAsSignatureType;
+#endif
+		}
+
+		private static bool IsCallerSensitive(MethodBase mb)
+		{
+#if FIRST_PASS
+			return false;
+#elif STATIC_COMPILER || STUB_GENERATOR
+			foreach (CustomAttributeData cad in mb.GetCustomAttributesData())
+			{
+				if (cad.AttributeType.FullName == "sun.reflect.CallerSensitiveAttribute")
+				{
+					return true;
+				}
+			}
+			return false;
+#else
+			return mb.IsDefined(typeof(sun.reflect.CallerSensitiveAttribute), false);
 #endif
 		}
 
@@ -4438,7 +4481,8 @@ namespace IKVM.Internal
 			int len = parameters.Length;
 			if(len > 0
 				&& IsCallerID(parameters[len - 1].ParameterType)
-				&& !method.DeclaringType.IsInterface)
+				&& GetClassLoader() == ClassLoaderWrapper.GetBootstrapClassLoader()				
+				&& IsCallerSensitive(method))
 			{
 				len--;
 				flags |= MemberFlags.CallerID;

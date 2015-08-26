@@ -877,7 +877,9 @@ internal static partial class Bid
     [ResourceConsumption(ResourceScope.Machine, ResourceScope.Machine)] // getModulePath
     private static void initEntryPoint()
     {
+#if !MONO
         NativeMethods.DllBidInitialize();
+#endif
 
         //
         //  Multi-file assemblies are not supported by current model of the BID managed wrapper.
@@ -890,6 +892,7 @@ internal static partial class Bid
         modID = NoData;
 
         string friendlyName = getAppDomainFriendlyName();
+#if !MONO
         BIDEXTINFO extInfo = new BIDEXTINFO(Marshal.GetHINSTANCE(mod),
                                             getModulePath(mod),
                                             friendlyName,
@@ -898,6 +901,7 @@ internal static partial class Bid
         NativeMethods.DllBidEntryPoint( ref modID, BidVer, modIdentity,
                                         configFlags, ref modFlags, ctrlCallback,
                                         ref extInfo, IntPtr.Zero, IntPtr.Zero );
+#endif
 
         if( modID != NoData )
         {

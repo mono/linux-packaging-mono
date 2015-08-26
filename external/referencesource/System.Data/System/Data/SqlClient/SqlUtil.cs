@@ -27,6 +27,7 @@ namespace System.Data.SqlClient {
     using System.Runtime.ExceptionServices;
 
     static internal class AsyncHelper {
+#if !MONO
         internal static Task CreateContinuationTask(Task task, Action onSuccess, SqlInternalConnectionTds connectionToDoom = null, Action<Exception> onFailure = null) {
             if (task == null) {
                 onSuccess();
@@ -145,7 +146,7 @@ namespace System.Data.SqlClient {
                 }, TaskScheduler.Default
             );
         }
-
+#endif
 
         internal static void WaitForCompletion(Task task, int timeout, Action onTimeout = null, bool rethrowExceptions=true) {
             try {
@@ -187,6 +188,7 @@ namespace System.Data.SqlClient {
         [ResourceExposure(ResourceScope.None)]
         [ResourceConsumption(ResourceScope.Process, ResourceScope.Process)]
         private InOutOfProcHelper() {
+#if !MONO
             // Don't need to close this handle...
             // SxS: we use this method to check if we are running inside the SQL Server process. This call should be safe in SxS environment.
             IntPtr handle = SafeNativeMethods.GetModuleHandle(null);
@@ -201,6 +203,7 @@ namespace System.Data.SqlClient {
                     _inProc = true;
                 }
             }
+#endif
         }
 
         internal static bool InProc {
@@ -674,9 +677,11 @@ namespace System.Data.SqlClient {
         static internal Exception BulkLoadMappingsNamesOrOrdinalsOnly() {
             return ADP.InvalidOperation(Res.GetString(Res.SQL_BulkLoadMappingsNamesOrOrdinalsOnly));
         }
+#if !MONO
         static internal Exception BulkLoadCannotConvertValue(Type sourcetype, MetaType metatype, Exception e) {
             return ADP.InvalidOperation(Res.GetString(Res.SQL_BulkLoadCannotConvertValue, sourcetype.Name, metatype.TypeName), e);
         }
+#endif
         static internal Exception BulkLoadNonMatchingColumnMapping() {
             return ADP.InvalidOperation(Res.GetString(Res.SQL_BulkLoadNonMatchingColumnMapping));
         }
@@ -768,7 +773,7 @@ namespace System.Data.SqlClient {
                 return ADP.Argument(msg);
             }
         }
-
+#if !MONO
         static internal Exception MultiSubnetFailoverWithMoreThan64IPs() {
             string msg = GetSNIErrorMessage((int)SNINativeMethodWrapper.SniSpecialErrors.MultiSubnetFailoverWithMoreThan64IPs);
             return ADP.InvalidOperation(msg);
@@ -783,7 +788,7 @@ namespace System.Data.SqlClient {
             string msg = GetSNIErrorMessage((int)SNINativeMethodWrapper.SniSpecialErrors.MultiSubnetFailoverWithNonTcpProtocol);
             return ADP.Argument(msg);
         }
-
+#endif
         //
         // Read-only routing
         //
@@ -928,10 +933,12 @@ namespace System.Data.SqlClient {
         static internal Exception NotificationsNotAvailableOnContextConnection() {
             return ADP.InvalidOperation(Res.GetString(Res.SQL_NotificationsNotAvailableOnContextConnection));
         }
+#if !MONO
         static internal Exception UnexpectedSmiEvent(Microsoft.SqlServer.Server.SmiEventSink_Default.UnexpectedEventType eventType) {
             Debug.Assert(false, "UnexpectedSmiEvent: "+eventType.ToString());    // Assert here, because these exceptions will most likely be eaten by the server.
             return ADP.InvalidOperation(Res.GetString(Res.SQL_UnexpectedSmiEvent, (int)eventType));
         }
+#endif
         static internal Exception UserInstanceNotAvailableInProc() {
             return ADP.InvalidOperation(Res.GetString(Res.SQL_UserInstanceNotAvailableInProc));
         }
@@ -969,7 +976,7 @@ namespace System.Data.SqlClient {
         static internal Exception SubclassMustOverride() {
             return ADP.InvalidOperation(Res.GetString(Res.SqlMisc_SubclassMustOverride));
         }
-
+#if !MONO
         /// <summary>
         /// gets a message for SNI error (sniError must be valid, non-zero error code)
         /// </summary>
@@ -979,7 +986,7 @@ namespace System.Data.SqlClient {
             string errorMessageId = String.Format((IFormatProvider)null, "SNI_ERROR_{0}", sniError);
             return Res.GetString(errorMessageId);
         }
-
+#endif
         // BulkLoad
         internal const string WriteToServer = "WriteToServer";
 

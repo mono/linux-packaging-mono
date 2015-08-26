@@ -516,6 +516,8 @@ namespace System.Text
                                 break;
                             default:
                                 result = (Encoding)(EncodingHelper.InvokeI18N ("GetEncoding", codepage));
+								if (result == null)
+									throw new NotSupportedException(Environment.GetResourceString("NotSupported_NoCodepageData", codepage));
                                 break;
                             }
 #else
@@ -709,7 +711,11 @@ namespace System.Text
         {
             get
             {
+#if MONO
+                return (Environment.GetResourceStringEncodingName(m_codePage));
+#else
                 return (Environment.GetResourceString("Globalization.cp_" + m_codePage));
+#endif
             }
         }
 

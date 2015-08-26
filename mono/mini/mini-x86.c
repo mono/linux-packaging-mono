@@ -29,6 +29,7 @@
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/mono-memory-model.h>
 #include <mono/utils/mono-hwcap-x86.h>
+#include <mono/utils/mono-threads.h>
 
 #include "trace.h"
 #include "mini-x86.h"
@@ -324,7 +325,7 @@ add_valuetype (MonoGenericSharingContext *gsctx, MonoMethodSignature *sig, ArgIn
 
 		/* Special case structs with only a float member */
 		if (info->num_fields == 1) {
-			int ftype = mini_replace_type (info->fields [0].field->type)->type;
+			int ftype = mini_type_get_underlying_type (gsctx, info->fields [0].field->type)->type;
 			if ((info->native_size == 8) && (ftype == MONO_TYPE_R8)) {
 				ainfo->storage = ArgValuetypeInReg;
 				ainfo->pair_storage [0] = ArgOnDoubleFpStack;
@@ -392,12 +393,10 @@ get_call_info_internal (MonoGenericSharingContext *gsctx, CallInfo *cinfo, MonoM
 	{
 		ret_type = mini_type_get_underlying_type (gsctx, sig->ret);
 		switch (ret_type->type) {
-		case MONO_TYPE_BOOLEAN:
 		case MONO_TYPE_I1:
 		case MONO_TYPE_U1:
 		case MONO_TYPE_I2:
 		case MONO_TYPE_U2:
-		case MONO_TYPE_CHAR:
 		case MONO_TYPE_I4:
 		case MONO_TYPE_U4:
 		case MONO_TYPE_I:
@@ -517,14 +516,12 @@ get_call_info_internal (MonoGenericSharingContext *gsctx, CallInfo *cinfo, MonoM
 		}
 		ptype = mini_type_get_underlying_type (gsctx, sig->params [i]);
 		switch (ptype->type) {
-		case MONO_TYPE_BOOLEAN:
 		case MONO_TYPE_I1:
 		case MONO_TYPE_U1:
 			add_general (&gr, param_regs, &stack_size, ainfo);
 			break;
 		case MONO_TYPE_I2:
 		case MONO_TYPE_U2:
-		case MONO_TYPE_CHAR:
 			add_general (&gr, param_regs, &stack_size, ainfo);
 			break;
 		case MONO_TYPE_I4:
@@ -724,7 +721,7 @@ mono_arch_tail_call_supported (MonoCompile *cfg, MonoMethodSignature *caller_sig
 	 * the extra stack space would be left on the stack after the tail call.
 	 */
 	res = c1->stack_usage >= c2->stack_usage;
-	callee_ret = mini_replace_type (callee_sig->ret);
+	callee_ret = mini_get_underlying_type (cfg, callee_sig->ret);
 	if (callee_ret && MONO_TYPE_ISSTRUCT (callee_ret) && c2->ret.storage != ArgValuetypeInReg)
 		/* An address on the callee's stack is passed as the first argument */
 		res = FALSE;
@@ -1212,7 +1209,7 @@ mono_arch_create_vars (MonoCompile *cfg)
 	sig = mono_method_signature (cfg->method);
 
 	cinfo = get_call_info (cfg->generic_sharing_context, cfg->mempool, sig);
-	sig_ret = mini_replace_type (sig->ret);
+	sig_ret = mini_get_underlying_type (cfg, sig->ret);
 
 	if (cinfo->ret.storage == ArgValuetypeInReg)
 		cfg->ret_var_is_local = TRUE;
@@ -1427,7 +1424,7 @@ mono_arch_emit_call (MonoCompile *cfg, MonoCallInst *call)
 
 	sig = call->signature;
 	n = sig->param_count + sig->hasthis;
-	sig_ret = mini_replace_type (sig->ret);
+	sig_ret = mini_get_underlying_type (cfg, sig->ret);
 
 	cinfo = get_call_info (cfg->generic_sharing_context, cfg->mempool, sig);
 	call->call_info = cinfo;
@@ -2300,6 +2297,7 @@ mono_x86_have_tls_get (void)
 	if (inited)
 		return have_tls_get;
 
+#ifdef MONO_HAVE_FAST_TLS
 	ins = (guint32*)pthread_getspecific;
 	/*
 	 * We're looking for these two instructions:
@@ -2309,6 +2307,7 @@ mono_x86_have_tls_get (void)
 	 */
 	have_tls_get = ins [0] == 0x0424448b && ins [1] == 0x85048b65;
 	tls_gs_offset = ins [2];
+#endif
 
 	inited = TRUE;
 
@@ -2546,7 +2545,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 
 	cpos = bb->max_offset;
 
-	if (cfg->prof_options & MONO_PROFILE_COVERAGE) {
+	if ((cfg->prof_options & MONO_PROFILE_COVERAGE) && cfg->coverage_info) {
 		MonoProfileCoverageInfo *cov = cfg->coverage_info;
 		g_assert (!cfg->compile_aot);
 		cpos += 6;
@@ -3386,6 +3385,10 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			x86_ret (code);
 			break;
 		}
+		case OP_GET_EX_OBJ:
+			if (ins->dreg != X86_EAX)
+				x86_mov_reg_reg (code, ins->dreg, X86_EAX, sizeof (gpointer));
+			break;
 
 		case OP_LABEL:
 			ins->inst_c0 = code - cfg->native_code;
@@ -5023,19 +5026,26 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			MONO_VARINFO (cfg, ins->inst_c0)->live_range_end = code - cfg->native_code;
 			break;
 		}
-		case OP_NACL_GC_SAFE_POINT: {
-#if defined(__native_client_codegen__) && defined(__native_client_gc__)
-			if (cfg->compile_aot)
-				code = emit_call (cfg, code, MONO_PATCH_INFO_ABS, (gpointer)mono_nacl_gc);
-			else {
-				guint8 *br [1];
+		case OP_GC_SAFE_POINT: {
+			const char *polling_func = NULL;
+			int compare_val = 0;
+			guint8 *br [1];
 
-				x86_test_mem_imm8 (code, (gpointer)&__nacl_thread_suspension_needed, 0xFFFFFFFF);
-				br[0] = code; x86_branch8 (code, X86_CC_EQ, 0, FALSE);
-				code = emit_call (cfg, code, MONO_PATCH_INFO_ABS, (gpointer)mono_nacl_gc);
-				x86_patch (br[0], code);
-			}
+#if defined (USE_COOP_GC)
+			polling_func = "mono_threads_state_poll";
+			compare_val = 1;
+#elif defined(__native_client_codegen__) && defined(__native_client_gc__)
+			polling_func = "mono_nacl_gc";
+			compare_val = 0xFFFFFFFF;
 #endif
+			if (!polling_func)
+				break;
+
+			x86_test_membase_imm (code, ins->sreg1, 0, compare_val);
+			br[0] = code; x86_branch8 (code, X86_CC_EQ, 0, FALSE);
+			code = emit_call (cfg, code, MONO_PATCH_INFO_INTERNAL_METHOD, polling_func);
+			x86_patch (br [0], code);
+
 			break;
 		}
 		case OP_GC_LIVENESS_DEF:
@@ -5080,94 +5090,74 @@ mono_arch_register_lowlevel_calls (void)
 }
 
 void
-mono_arch_patch_code (MonoMethod *method, MonoDomain *domain, guint8 *code, MonoJumpInfo *ji, MonoCodeManager *dyn_code_mp, gboolean run_cctors)
+mono_arch_patch_code_new (MonoCompile *cfg, MonoDomain *domain, guint8 *code, MonoJumpInfo *ji, gpointer target)
 {
-	MonoJumpInfo *patch_info;
-	gboolean compile_aot = !run_cctors;
+	unsigned char *ip = ji->ip.i + code;
 
-	for (patch_info = ji; patch_info; patch_info = patch_info->next) {
-		unsigned char *ip = patch_info->ip.i + code;
-		const unsigned char *target;
-
-		if (compile_aot) {
-			switch (patch_info->type) {
-			case MONO_PATCH_INFO_BB:
-			case MONO_PATCH_INFO_LABEL:
-				break;
-			default:
-				/* No need to patch these */
-				continue;
-			}
-		}
-
-		target = mono_resolve_patch_target (method, domain, code, patch_info, run_cctors);
-
-		switch (patch_info->type) {
-		case MONO_PATCH_INFO_IP:
-			*((gconstpointer *)(ip)) = target;
-			break;
-		case MONO_PATCH_INFO_CLASS_INIT: {
-			guint8 *code = ip;
-			/* Might already been changed to a nop */
-			x86_call_code (code, 0);
-			x86_patch (ip, target);
-			break;
-		}
-		case MONO_PATCH_INFO_ABS:
-		case MONO_PATCH_INFO_METHOD:
-		case MONO_PATCH_INFO_METHOD_JUMP:
-		case MONO_PATCH_INFO_INTERNAL_METHOD:
-		case MONO_PATCH_INFO_BB:
-		case MONO_PATCH_INFO_LABEL:
-		case MONO_PATCH_INFO_RGCTX_FETCH:
-		case MONO_PATCH_INFO_GENERIC_CLASS_INIT:
-		case MONO_PATCH_INFO_MONITOR_ENTER:
-		case MONO_PATCH_INFO_MONITOR_ENTER_V4:
-		case MONO_PATCH_INFO_MONITOR_EXIT:
-		case MONO_PATCH_INFO_JIT_ICALL_ADDR:
+	switch (ji->type) {
+	case MONO_PATCH_INFO_IP:
+		*((gconstpointer *)(ip)) = target;
+		break;
+	case MONO_PATCH_INFO_CLASS_INIT: {
+		guint8 *code = ip;
+		/* Might already been changed to a nop */
+		x86_call_code (code, 0);
+		x86_patch (ip, (unsigned char*)target);
+		break;
+	}
+	case MONO_PATCH_INFO_ABS:
+	case MONO_PATCH_INFO_METHOD:
+	case MONO_PATCH_INFO_METHOD_JUMP:
+	case MONO_PATCH_INFO_INTERNAL_METHOD:
+	case MONO_PATCH_INFO_BB:
+	case MONO_PATCH_INFO_LABEL:
+	case MONO_PATCH_INFO_RGCTX_FETCH:
+	case MONO_PATCH_INFO_MONITOR_ENTER:
+	case MONO_PATCH_INFO_MONITOR_ENTER_V4:
+	case MONO_PATCH_INFO_MONITOR_EXIT:
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
 #if defined(__native_client_codegen__) && defined(__native_client__)
-			if (nacl_is_code_address (code)) {
-				/* For tail calls, code is patched after being installed */
-				/* but not through the normal "patch callsite" method.   */
-				unsigned char buf[kNaClAlignment];
-				unsigned char *aligned_code = (uintptr_t)code & ~kNaClAlignmentMask;
-				unsigned char *_target = target;
-				int ret;
-				/* All patch targets modified in x86_patch */
-				/* are IP relative.                        */
-				_target = _target + (uintptr_t)buf - (uintptr_t)aligned_code;
-				memcpy (buf, aligned_code, kNaClAlignment);
-				/* Patch a temp buffer of bundle size, */
-				/* then install to actual location.    */
-				x86_patch (buf + ((uintptr_t)code - (uintptr_t)aligned_code), _target);
-				ret = nacl_dyncode_modify (aligned_code, buf, kNaClAlignment);
-				g_assert (ret == 0);
-			}
-			else {
-				x86_patch (ip, target);
-			}
-#else
-			x86_patch (ip, target);
-#endif
-			break;
-		case MONO_PATCH_INFO_NONE:
-			break;
-		case MONO_PATCH_INFO_R4:
-		case MONO_PATCH_INFO_R8: {
-			guint32 offset = mono_arch_get_patch_offset (ip);
-			*((gconstpointer *)(ip + offset)) = target;
-			break;
+		if (nacl_is_code_address (code)) {
+			/* For tail calls, code is patched after being installed */
+			/* but not through the normal "patch callsite" method.   */
+			unsigned char buf[kNaClAlignment];
+			unsigned char *aligned_code = (uintptr_t)code & ~kNaClAlignmentMask;
+			unsigned char *_target = target;
+			int ret;
+			/* All patch targets modified in x86_patch */
+			/* are IP relative.                        */
+			_target = _target + (uintptr_t)buf - (uintptr_t)aligned_code;
+			memcpy (buf, aligned_code, kNaClAlignment);
+			/* Patch a temp buffer of bundle size, */
+			/* then install to actual location.    */
+			x86_patch (buf + ((uintptr_t)code - (uintptr_t)aligned_code), _target);
+			ret = nacl_dyncode_modify (aligned_code, buf, kNaClAlignment);
+			g_assert (ret == 0);
 		}
-		default: {
-			guint32 offset = mono_arch_get_patch_offset (ip);
+		else {
+			x86_patch (ip, (unsigned char*)target);
+		}
+#else
+		x86_patch (ip, (unsigned char*)target);
+#endif
+		break;
+	case MONO_PATCH_INFO_NONE:
+		break;
+	case MONO_PATCH_INFO_R4:
+	case MONO_PATCH_INFO_R8: {
+		guint32 offset = mono_arch_get_patch_offset (ip);
+		*((gconstpointer *)(ip + offset)) = target;
+		break;
+	}
+	default: {
+		guint32 offset = mono_arch_get_patch_offset (ip);
 #if !defined(__native_client__)
-			*((gconstpointer *)(ip + offset)) = target;
+		*((gconstpointer *)(ip + offset)) = target;
 #else
-			*((gconstpointer *)(ip + offset)) = nacl_modify_patch_target (target);
+		*((gconstpointer *)(ip + offset)) = nacl_modify_patch_target (target);
 #endif
-			break;
-		}
-		}
+		break;
+	}
 	}
 }
 
@@ -5475,7 +5465,7 @@ mono_arch_emit_epilog (MonoCompile *cfg)
 		gboolean supported = FALSE;
 
 		if (cfg->compile_aot) {
-#if defined(__APPLE__) || defined(__linux__)
+#if MONO_HAVE_FAST_TLS
 			supported = TRUE;
 #endif
 		} else if (mono_get_jit_tls_offset () != -1) {
@@ -6042,8 +6032,6 @@ mono_arch_get_patch_offset (guint8 *code)
 gboolean
 mono_breakpoint_clean_code (guint8 *method_start, guint8 *code, int offset, guint8 *buf, int size)
 {
-	int i;
-	gboolean can_write = TRUE;
 	/*
 	 * If method_start is non-NULL we need to perform bound checks, since we access memory
 	 * at code - offset we could go before the start of the method and end up in a different
@@ -6057,21 +6045,7 @@ mono_breakpoint_clean_code (guint8 *method_start, guint8 *code, int offset, guin
 		memset (buf, 0, size);
 		memcpy (buf + offset - diff, method_start, diff + size - offset);
 	}
-	code -= offset;
-	for (i = 0; i < MONO_BREAKPOINT_ARRAY_SIZE; ++i) {
-		int idx = mono_breakpoint_info_index [i];
-		guint8 *ptr;
-		if (idx < 1)
-			continue;
-		ptr = mono_breakpoint_info [idx].address;
-		if (ptr >= code && ptr < code + size) {
-			guint8 saved_byte = mono_breakpoint_info [idx].saved_byte;
-			can_write = FALSE;
-			/*g_print ("patching %p with 0x%02x (was: 0x%02x)\n", ptr, saved_byte, buf [ptr - code]);*/
-			buf [ptr - code] = saved_byte;
-		}
-	}
-	return can_write;
+	return TRUE;
 }
 
 /*
@@ -6189,6 +6163,42 @@ get_delegate_invoke_impl (gboolean has_target, guint32 param_count, guint32 *cod
 	return start;
 }
 
+#define MAX_VIRTUAL_DELEGATE_OFFSET 32
+
+static gpointer
+get_delegate_virtual_invoke_impl (gboolean load_imt_reg, int offset, guint32 *code_size)
+{
+	guint8 *code, *start;
+	int size = 24;
+
+	/*
+	 * The stack contains:
+	 * <delegate>
+	 * <return addr>
+	 */
+	start = code = mono_global_codeman_reserve (size);
+
+	/* Replace the this argument with the target */
+	x86_mov_reg_membase (code, X86_EAX, X86_ESP, 4, 4);
+	x86_mov_reg_membase (code, X86_ECX, X86_EAX, MONO_STRUCT_OFFSET (MonoDelegate, target), 4);
+	x86_mov_membase_reg (code, X86_ESP, 4, X86_ECX, 4);
+
+	if (load_imt_reg) {
+		/* Load the IMT reg */
+		x86_mov_reg_membase (code, MONO_ARCH_IMT_REG, X86_EAX, MONO_STRUCT_OFFSET (MonoDelegate, method), 4);
+	}
+
+	/* Load the vtable */
+	x86_mov_reg_membase (code, X86_EAX, X86_ECX, MONO_STRUCT_OFFSET (MonoObject, vtable), 4);
+	x86_jump_membase (code, X86_EAX, offset);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_DELEGATE_INVOKE, NULL);
+
+	if (code_size)
+		*code_size = code - start;
+
+	return start;
+}
+
 GSList*
 mono_arch_get_delegate_invoke_impls (void)
 {
@@ -6204,6 +6214,18 @@ mono_arch_get_delegate_invoke_impls (void)
 	for (i = 0; i < MAX_ARCH_DELEGATE_PARAMS; ++i) {
 		code = get_delegate_invoke_impl (FALSE, i, &code_len);
 		tramp_name = g_strdup_printf ("delegate_invoke_impl_target_%d", i);
+		res = g_slist_prepend (res, mono_tramp_info_create (tramp_name, code, code_len, NULL, NULL));
+		g_free (tramp_name);
+	}
+
+	for (i = 0; i < MAX_VIRTUAL_DELEGATE_OFFSET; ++i) {
+		code = get_delegate_virtual_invoke_impl (TRUE, i * SIZEOF_VOID_P, &code_len);
+		tramp_name = g_strdup_printf ("delegate_virtual_invoke_imt_%d", i);
+		res = g_slist_prepend (res, mono_tramp_info_create (tramp_name, code, code_len, NULL, NULL));
+		g_free (tramp_name);
+
+		code = get_delegate_virtual_invoke_impl (FALSE, i * SIZEOF_VOID_P, &code_len);
+		tramp_name = g_strdup_printf ("delegate_virtual_invoke_%d", i);
 		res = g_slist_prepend (res, mono_tramp_info_create (tramp_name, code, code_len, NULL, NULL));
 		g_free (tramp_name);
 	}
@@ -6273,32 +6295,7 @@ mono_arch_get_delegate_invoke_impl (MonoMethodSignature *sig, gboolean has_targe
 gpointer
 mono_arch_get_delegate_virtual_invoke_impl (MonoMethodSignature *sig, MonoMethod *method, int offset, gboolean load_imt_reg)
 {
-	guint8 *code, *start;
-	int size = 24;
-
-	/*
-	 * The stack contains:
-	 * <delegate>
-	 * <return addr>
-	 */
-	start = code = mono_global_codeman_reserve (size);
-
-	/* Replace the this argument with the target */
-	x86_mov_reg_membase (code, X86_EAX, X86_ESP, 4, 4);
-	x86_mov_reg_membase (code, X86_ECX, X86_EAX, MONO_STRUCT_OFFSET (MonoDelegate, target), 4);
-	x86_mov_membase_reg (code, X86_ESP, 4, X86_ECX, 4);
-
-	if (load_imt_reg) {
-		/* Load the IMT reg */
-		x86_mov_reg_membase (code, MONO_ARCH_IMT_REG, X86_EAX, MONO_STRUCT_OFFSET (MonoDelegate, method), 4);
-	}
-
-	/* Load the vtable */
-	x86_mov_reg_membase (code, X86_EAX, X86_ECX, MONO_STRUCT_OFFSET (MonoObject, vtable), 4);
-	x86_jump_membase (code, X86_EAX, offset);
-	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_DELEGATE_INVOKE, NULL);
-
-	return start;
+	return get_delegate_virtual_invoke_impl (load_imt_reg, offset, NULL);
 }
 
 mgreg_t

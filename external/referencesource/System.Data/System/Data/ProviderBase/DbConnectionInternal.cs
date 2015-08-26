@@ -356,7 +356,9 @@ namespace System.Data.ProviderBase {
 
             Activate(transaction);
 
+#if !MOBILE
             PerformanceCounters.NumberOfActiveConnections.Increment();
+#endif
         }
 
         internal void AddWeakReference(object value, int tag) {
@@ -448,7 +450,9 @@ namespace System.Data.ProviderBase {
                         else {
                             Deactivate();   // ensure we de-activate non-pooled connections, or the data readers and transactions may not get cleaned up...
 
+#if !MOBILE
                             PerformanceCounters.HardDisconnectsPerSecond.Increment();
+#endif
                         
                             // To prevent an endless recursion, we need to clear
                             // the owning object before we call dispose so that
@@ -463,11 +467,17 @@ namespace System.Data.ProviderBase {
                                 SetInStasis();                           
                             }
                             else {
+#if MONO_PARTIAL_DATA_IMPORT
+				Dispose();
+#else
+#if !MOBILE
                                 PerformanceCounters.NumberOfNonPooledConnections.Decrement();
+#endif
                                 if (this.GetType() != typeof(System.Data.SqlClient.SqlInternalConnectionSmi))
                                 {
                                     Dispose();
                                 }
+#endif
                             }
                         }
                     }
@@ -513,9 +523,11 @@ namespace System.Data.ProviderBase {
             Debug.Assert(0 == activateCount, "activated multiple times?");
 #endif // DEBUG
 
+#if !MOBILE
             if (PerformanceCounters != null) { // Pool.Clear will DestroyObject that will clean performanceCounters before going here 
                 PerformanceCounters.NumberOfActiveConnections.Decrement();
             }
+#endif
 
             if (!_connectionIsDoomed && Pool.UseLoadBalancing) {
                 // If we're not already doomed, check the connection's lifetime and
@@ -569,7 +581,9 @@ namespace System.Data.ProviderBase {
                 // once and for all, or the server will have fits about us
                 // leaving connections open until the client-side GC kicks 
                 // in.
+#if !MOBILE
                 PerformanceCounters.NumberOfNonPooledConnections.Decrement();
+#endif
                 Dispose();
             }
             // When _pooledCount is 0, the connection is a pooled connection
@@ -839,7 +853,9 @@ namespace System.Data.ProviderBase {
         internal void SetInStasis() {
             _isInStasis = true;
             Bid.PoolerTrace("<prov.DbConnectionInternal.SetInStasis|RES|CPOOL> %d#, Non-Pooled Connection has Delegated Transaction, waiting to Dispose.\n", ObjectID);
+#if !MOBILE
             PerformanceCounters.NumberOfStasisConnections.Increment();
+#endif
         }
 
         private void TerminateStasis(bool returningToPool) {
@@ -849,7 +865,9 @@ namespace System.Data.ProviderBase {
             else {
                 Bid.PoolerTrace("<prov.DbConnectionInternal.TerminateStasis|RES|CPOOL> %d#, Delegated Transaction has ended, connection is closed/leaked.  Disposing.\n", ObjectID);
             }
+#if !MOBILE
             PerformanceCounters.NumberOfStasisConnections.Decrement();
+#endif
             _isInStasis = false;
         }
 

@@ -23,7 +23,7 @@ using System.Security;
 using System.Security.Permissions;
 using System.Threading;
 using System.Diagnostics.Contracts;
-#if !FEATURE_PAL && FEATURE_ASYNC_IO 
+#if !FEATURE_PAL && FEATURE_ASYNC_IO || MONO
 using System.Threading.Tasks; 
 #endif  // !FEATURE_PAL && FEATURE_ASYNC_IO 
 
@@ -102,7 +102,7 @@ namespace System.IO {
         private long _offset;
         private FileAccess _access;
         internal bool _isOpen;        
-#if !FEATURE_PAL && FEATURE_ASYNC_IO 
+#if !FEATURE_PAL && FEATURE_ASYNC_IO || MONO
         [NonSerialized] 
         private Task<Int32> _lastReadTask; // The last successful task returned from ReadAsync 
 #endif  // FEATURE_PAL && FEATURE_ASYNC_IO 
@@ -163,11 +163,13 @@ namespace System.IO {
             if (_isOpen) {
                 throw new InvalidOperationException(Environment.GetResourceString("InvalidOperation_CalledTwice"));
             }
+#if !DISABLE_CAS_USE
             if (!skipSecurityCheck) {
 #pragma warning disable 618
                 new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
 #pragma warning restore 618
             }
+#endif
 
             // check for wraparound
             unsafe {
@@ -242,11 +244,12 @@ namespace System.IO {
             if (_isOpen)
                 throw new InvalidOperationException(Environment.GetResourceString("InvalidOperation_CalledTwice"));
 
+#if !DISABLE_CAS_USE
             if (!skipSecurityCheck)
 #pragma warning disable 618
                 new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
 #pragma warning restore 618
-
+#endif
             _mem = pointer;
             _offset = 0;
             _length = length;
@@ -295,7 +298,7 @@ namespace System.IO {
             if (!_isOpen) __Error.StreamIsClosed();
         }
         
-#if !FEATURE_PAL && FEATURE_ASYNC_IO 
+#if !FEATURE_PAL && FEATURE_ASYNC_IO || MONO
         [HostProtection(ExternalThreading=true)] 
         [ComVisible(false)] 
         public override Task FlushAsync(CancellationToken cancellationToken) { 
@@ -457,7 +460,7 @@ namespace System.IO {
             return nInt;
         }
         
-#if !FEATURE_PAL && FEATURE_ASYNC_IO 
+#if !FEATURE_PAL && FEATURE_ASYNC_IO || MONO
         [HostProtection(ExternalThreading = true)]
         [ComVisible(false)]
         public override Task<Int32> ReadAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken) {        
@@ -653,7 +656,7 @@ namespace System.IO {
             return;
         }
         
-#if !FEATURE_PAL && FEATURE_ASYNC_IO 
+#if !FEATURE_PAL && FEATURE_ASYNC_IO || MONO 
         [HostProtection(ExternalThreading = true)] 
         [ComVisible(false)] 
         public override Task WriteAsync(Byte[] buffer, Int32 offset, Int32 count, CancellationToken cancellationToken) { 

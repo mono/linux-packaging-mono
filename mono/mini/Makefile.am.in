@@ -3,13 +3,8 @@ mtest=for_loop
 monodir=$(top_builddir)
 
 # This is needed for automake dependency generation
-if INCLUDED_LIBGC
 libgc_libs=$(monodir)/libgc/libmonogc.la
 libgc_static_libs=$(monodir)/libgc/libmonogc-static.la
-else
-libgc_libs=$(LIBGC_LIBS)
-libgc_static_libs=$(LIBGC_STATIC_LIBS)
-endif
 
 libs=	\
 	$(monodir)/mono/metadata/libmonoruntime.la	\
@@ -20,6 +15,7 @@ libs=	\
 
 sgen_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
+	$(monodir)/mono/sgen/libmonosgen.la	\
 	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
@@ -33,6 +29,7 @@ static_libs=	\
 
 sgenstatic_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen-static.la	\
+	$(monodir)/mono/sgen/libmonosgen-static.la	\
 	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
@@ -41,11 +38,11 @@ CLASS=$(mcs_topdir)/class/lib/net_4_5
 
 RUNTIME_EXECUTABLE = $(if $(BOEHM),$(top_builddir)/mono/mini/mono-boehm,$(top_builddir)/runtime/mono-wrapper)
 
-RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE)
+MINI_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE)
 RUNTIME_AOTCHECK = MONO_PATH=$(CLASS):. $(RUNTIME_EXECUTABLE)
 
-MCS = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -nowarn:0162
-ILASM = $(RUNTIME) $(CLASS)/ilasm.exe
+MCS = $(MINI_RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -nowarn:0162
+ILASM = $(MINI_RUNTIME) $(CLASS)/ilasm.exe
 
 AM_CFLAGS = \
 	-I$(top_srcdir) 	\
@@ -65,13 +62,8 @@ endif
 # hack for automake to have the same source file in a library and a bin
 genmdesc_CFLAGS = $(AM_CFLAGS)
 
-if NO_VERSION_SCRIPT
 monoldflags=$(export_ldflags)
 monobinldflags=$(export_ldflags) $(extra_runtime_ldflags)
-else
-monoldflags=-Wl,-version-script=$(srcdir)/ldscript $(export_ldflags)
-monobinldflags=-Wl,-version-script=$(srcdir)/ldscript.mono $(export_ldflags) $(extra_runtime_ldflags)
-endif
 
 if HOST_WIN32
 libmonoldflags=-no-undefined -avoid-version -Wl,--kill-at $(monoldflags)
@@ -194,9 +186,9 @@ mono_boehm-main.$(OBJEXT): buildver-boehm.h
 endif
 
 if DISABLE_EXECUTABLES
-buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen.la
+buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen.la $(monodir)/mono/sgen/libmonosgen.la
 else
-buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen-static.la
+buildver-sgen.h: libmini-static.la $(monodir)/mono/metadata/libmonoruntimesgen-static.la $(monodir)/mono/sgen/libmonosgen-static.la
 endif
 	@echo "const char *build_date = \"`date`\";" > buildver-sgen.h
 mono_sgen-main-sgen.$(OBJEXT): buildver-sgen.h
@@ -363,16 +355,19 @@ posix_sources = \
 
 if ENABLE_LLVM
 if LOADED_LLVM
-llvm_sources =
+llvm_sources = \
+	mini-llvm-loaded.c
 else
 llvm_sources = \
 	mini-llvm.c		\
+	mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp
 endif
 endif
 
 common_sources = \
 	mini.c			\
+	mini-runtime.c	\
 	seq-points.c	\
 	seq-points.h	\
 	ir-emit.h		\
@@ -390,15 +385,12 @@ common_sources = \
 	mini-arch.h		\
 	dominators.c		\
 	cfold.c			\
-	regalloc.c		\
 	regalloc.h		\
 	helpers.c		\
 	liveness.c		\
 	ssa.c			\
 	abcremoval.c		\
 	abcremoval.h		\
-	ssapre.c		\
-	ssapre.h		\
 	local-propagation.c	\
 	driver.c		\
 	debug-mini.c		\
@@ -409,12 +401,8 @@ common_sources = \
 	mini-codegen.c		\
 	mini-exceptions.c	\
 	mini-trampolines.c  	\
-	declsec.c		\
-	declsec.h		\
-	wapihandles.c		\
 	branch-opts.c		\
 	mini-generic-sharing.c	\
-	regalloc2.c		\
 	simd-methods.h		\
 	tasklets.c		\
 	tasklets.h		\
@@ -431,7 +419,6 @@ common_sources = \
 	debugger-agent.h 	\
 	debugger-agent.c	\
 	xdebug.c			\
-	mini-llvm.h			\
 	mini-llvm-cpp.h	\
 	alias-analysis.c	\
 	mini-cross-helpers.c
@@ -651,19 +638,22 @@ cpu-mips.h: cpu-mips.md genmdesc$(EXEEXT)
 	$(GENMDESC_PRG) cpu-mips.h mips_desc $(srcdir)/cpu-mips.md
 
 testi: mono test.exe
-	$(RUNTIME) -v -v --ncompile 1 --compile Test:$(mtest) test.exe
+	$(MINI_RUNTIME) -v -v --ncompile 1 --compile Test:$(mtest) test.exe
 
 # ensure the tests are actually correct
 checktests: $(regtests)
-	for i in $(regtests); do $(RUNTIME) $$i; done
+	for i in $(regtests); do $(MINI_RUNTIME) $$i; done
 
 rcheck: mono $(regtests)
 if NACL_CODEGEN
-	for i in $(regtests); do echo "running test $$i"; $(RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
+	for i in $(regtests); do echo "running test $$i"; $(MINI_RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
 else
-	-($(RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
+	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
 	exit $$(cat regressionexitcode.out)
 endif
+
+rcheck2: mono $(regtests)
+	$(MINI_RUNTIME) --regression $(regtests)
 
 check-seq-points: mono $(regtests)
 	rm -f TestResults_op_il_seq_point.xml
@@ -672,14 +662,14 @@ check-seq-points: mono $(regtests)
 	$(srcdir)/test_op_il_seq_point_headerfooter.sh
 
 gctest: mono gc-test.exe
-	MONO_DEBUG_OPTIONS=clear-nursery-at-gc $(RUNTIME) --regression gc-test.exe
+	MONO_DEBUG_OPTIONS=clear-nursery-at-gc $(MINI_RUNTIME) --regression gc-test.exe
 
 LLVM_AOT_RUNTIME_OPTS=$(if $(LLVM),--llvm,)
 GSHAREDVT_RUNTIME_OPTS=$(if $(GSHAREDVT),-O=gsharedvt,)
 
 aotcheck: mono $(regtests)
 	rm -rf *.exe.so *.exe.dylib *.exe.dylib.dSYM
-	$(RUNTIME) $(LLVM_AOT_RUNTIME_OPTS) --aot $(regtests) || exit 1
+	$(MINI_RUNTIME) $(LLVM_AOT_RUNTIME_OPTS) --aot $(regtests) || exit 1
 	for i in $(regtests); do $(RUNTIME_AOTCHECK) --regression $$i || exit 1; done
 	rm -rf *.exe.so *.exe.dylib *.exe.dylib.dSYM
 
@@ -708,21 +698,21 @@ gccheck: gc-test.exe
 	MONO_GC_PARAMS=stack-mark=precise MONO_GC_DEBUG=clear-at-gc ./mono-sgen gc-test.exe	
 
 bench: mono test.exe
-	time env $(RUNTIME) --ncompile $(count) --compile Test:$(mtest) test.exe
+	time env $(MINI_RUNTIME) --ncompile $(count) --compile Test:$(mtest) test.exe
 
 mbench: test.exe
 	time $(monodir)/mono/jit/mono --ncompile $(count) --compile Test:$(mtest) test.exe
 
 stat1: mono bench.exe
-	$(RUNTIME) --verbose --statfile stats.pl --regression bench.exe
+	$(MINI_RUNTIME) --verbose --statfile stats.pl --regression bench.exe
 	perl viewstat.pl stats.pl
 
 stat2: mono basic.exe
-	$(RUNTIME) --verbose --statfile stats.pl --regression basic.exe
+	$(MINI_RUNTIME) --verbose --statfile stats.pl --regression basic.exe
 	perl viewstat.pl -e stats.pl
 
 stat3: mono bench.exe
-	$(RUNTIME) --statfile stats.pl --ncompile 1000 --compile Tests:test_0_many_nested_loops bench.exe 
+	$(MINI_RUNTIME) --statfile stats.pl --ncompile 1000 --compile Tests:test_0_many_nested_loops bench.exe 
 	perl viewstat.pl stats.pl
 
 docu: mini.sgm
@@ -738,7 +728,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = version.h $(arch_built)
 
 CLEANFILES= $(BUILT_SOURCES) *.exe *.dll
-EXTRA_DIST = TestDriver.cs ldscript ldscript.mono \
+EXTRA_DIST = TestDriver.cs \
 	genmdesc.pl				\
 	emitnunit.pl			\
 	$(test_sources) 			\
@@ -759,11 +749,16 @@ EXTRA_DIST = TestDriver.cs ldscript ldscript.mono \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.0.4.1/5ab4c0d\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.2.0.179/a224653\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
 	sed -e 's,if (for obj in $$oldobjs,if (for obj in "",g' < ../../libtool > 2; mv 2 ../../libtool
+	chmod a+x ../../libtool
+
+# Utility target for patching libtool to get rid of the 'ranlib: file <file> has no symbols" warnings
+patch-osx-libtool:
+	sed -e 's/old_archive_cmds=.*/old_archive_cmds="libtool -no_warning_for_no_symbols -static -o \\$$oldlib \\$$oldobjs"/g' < ../../libtool > 2; mv 2 ../../libtool
 	chmod a+x ../../libtool
 
 # Utility target to patch automake to generate the same format silent output as the old mono silent build did

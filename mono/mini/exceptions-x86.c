@@ -12,6 +12,9 @@
 #include <glib.h>
 #include <signal.h>
 #include <string.h>
+#ifdef HAVE_UCONTEXT_H
+#include <ucontext.h>
+#endif
 
 #include <mono/metadata/abi-details.h>
 #include <mono/arch/x86/x86-codegen.h>
@@ -31,7 +34,7 @@
 static gpointer signal_exception_trampoline;
 
 gpointer
-mono_x86_get_signal_exception_trampoline (MonoTrampInfo **info, gboolean aot) MONO_INTERNAL;
+mono_x86_get_signal_exception_trampoline (MonoTrampInfo **info, gboolean aot);
 
 #ifdef TARGET_WIN32
 static void (*restore_stack) (void *);
@@ -108,6 +111,9 @@ mono_win32_get_handle_stackoverflow (void)
 
 	/* return */
 	x86_ret (code);
+
+	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
 
 	return start;
 }
@@ -354,6 +360,9 @@ mono_arch_get_restore_context (MonoTrampInfo **info, gboolean aot)
 		g_slist_free (unwind_ops);
 	}
 
+	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
+
 	return start;
 }
 
@@ -431,6 +440,9 @@ mono_arch_get_call_filter (MonoTrampInfo **info, gboolean aot)
 		g_slist_free (unwind_ops);
 	}
 
+	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
+
 	g_assert ((code - start) < kMaxCodeSize);
 	return start;
 }
@@ -463,8 +475,10 @@ mono_x86_throw_exception (mgreg_t *regs, MonoObject *exc,
 
 	if (mono_object_isinst (exc, mono_defaults.exception_class)) {
 		MonoException *mono_ex = (MonoException*)exc;
-		if (!rethrow)
+		if (!rethrow) {
 			mono_ex->stack_trace = NULL;
+			mono_ex->trace_ips = NULL;
+		}
 	}
 
 	/* adjust eip so that it point into the call instruction */
@@ -653,6 +667,9 @@ get_throw_trampoline (const char *name, gboolean rethrow, gboolean llvm, gboolea
 		g_slist_free (unwind_ops);
 	}
 
+	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
+
 	return start;
 }
 
@@ -706,7 +723,7 @@ mono_arch_exceptions_init (void)
  * for SEHs to behave. This requires hotfix http://support.microsoft.com/kb/976038
  * or (eventually) Windows 7 SP1.
  */
-#ifdef HOST_WIN32
+#ifdef TARGET_WIN32
 	DWORD flags;
 	FARPROC getter;
 	FARPROC setter;
@@ -731,7 +748,7 @@ mono_arch_exceptions_init (void)
 	tramp = get_throw_trampoline ("llvm_throw_exception_trampoline", FALSE, TRUE, FALSE, FALSE, FALSE, NULL, FALSE);
 	mono_register_jit_icall (tramp, "llvm_throw_exception_trampoline", NULL, TRUE);
 
-	tramp = get_throw_trampoline ("llvm_rethrow_exception_trampoline", FALSE, TRUE, FALSE, FALSE, FALSE, NULL, FALSE);
+	tramp = get_throw_trampoline ("llvm_rethrow_exception_trampoline", TRUE, TRUE, FALSE, FALSE, FALSE, NULL, FALSE);
 	mono_register_jit_icall (tramp, "llvm_rethrow_exception_trampoline", NULL, TRUE);
 
 	tramp = get_throw_trampoline ("llvm_throw_corlib_exception_trampoline", FALSE, TRUE, TRUE, FALSE, FALSE, NULL, FALSE);
@@ -942,6 +959,9 @@ mono_x86_get_signal_exception_trampoline (MonoTrampInfo **info, gboolean aot)
 			g_free (l->data);
 		g_slist_free (unwind_ops);
 	}
+
+	mono_arch_flush_icache (start, code - start);
+	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
 
 	return start;
 }

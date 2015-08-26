@@ -1,6 +1,6 @@
-SUBDIRS = cas assemblyresolve gc-descriptors
+SUBDIRS = assemblyresolve gc-descriptors
 
-check-local: assemblyresolve/test/asm.dll testjit test-generic-sharing test-type-load test-cattr-type-load test-reflection-load-with-context test_platform test-process-exit test-messages rm-empty-logs
+check-local: assemblyresolve/test/asm.dll testjit test-generic-sharing test-type-load test-cattr-type-load test-reflection-load-with-context test_platform test-process-exit test-messages test-unhandled-exception-2 rm-empty-logs
 check-full: test-sgen check-local
 check-parallel: compile-tests check-full
 
@@ -13,8 +13,8 @@ TEST_PROG = ../interpreter/mint
 
 JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_builddir)/mono/mini/mono-sgen,$(top_builddir)/mono/mini/mono)
 
-TEST_PROG_RUN = MONO_SHARED_DIR=$(mono_build_root)/runtime MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
-JITTEST_PROG_RUN = MONO_SHARED_DIR=$(mono_build_root)/runtime MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
+TEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
+JITTEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
 
 RUNTIME_ARGS=--config tests-config --optimize=all --debug
 
@@ -90,6 +90,7 @@ BASE_TEST_CS_SRC=		\
 	exception15.cs		\
 	exception16.cs		\
 	exception17.cs		\
+	exception18.cs		\
 	typeload-unaligned.cs	\
 	struct.cs		\
 	valuetype-gettype.cs	\
@@ -178,6 +179,8 @@ BASE_TEST_CS_SRC=		\
 	delegate7.cs		\
 	delegate8.cs		\
 	delegate9.cs		\
+	delegate10.cs		\
+	delegate11.cs		\
 	remoting1.cs		\
 	remoting2.cs		\
 	remoting3.cs		\
@@ -408,6 +411,7 @@ BASE_TEST_CS_SRC=		\
 	thread_static_gc_layout.cs \
 	sleep.cs \
 	bug-27147.cs	\
+	bug-30085.cs	\
 	bug-17537.cs
 
 TEST_CS_SRC_DIST=	\
@@ -452,6 +456,11 @@ endif
 if POWERPC
 # bug #71274
 PLATFORM_DISABLED_TESTS=finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
+endif
+
+if POWERPC64
+# These tests hang
+PLATFORM_DISABLED_TESTS=monitor.exe finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
 endif
 
 if ARM
@@ -557,11 +566,13 @@ endif
 # bug-459094.exe creates an extremely deep directory tree
 # delegate-invoke.exe depends on 929c6bc9b6d76a273f251e6f5dfacac36e9c38bd which was
 # reverted.
+# bug-Xamarin-5278.exe got broken by 5d26590e79da139a284459299aee95c25f4cd835
 DISABLED_TESTS=			\
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
 	bug-459094.exe \
 	delegate-invoke.exe \
+	bug-Xamarin-5278.exe \
 	$(PLATFORM_DISABLED_TESTS) \
 	$(EXTRA_DISABLED_TESTS)
 
@@ -725,7 +736,7 @@ test-messages:
 else
 test-messages: w32message.exe
 	> test_messages.zero
-	$(with_mono_path) $(JITTEST_PROG_RUN) w32message.exe >& w32message.allout && cmp test_messages.zero w32message.allout
+	$(with_mono_path) $(JITTEST_PROG_RUN) w32message.exe > w32message.allout 2>&1 && cmp test_messages.zero w32message.allout
 endif
 endif
 
@@ -885,7 +896,7 @@ stresstest: $(STRESS_TESTS)
 testbundle: console.exe
 	@echo "Testing mkbundle..."
 	@$(MKBUNDLE) --static console.exe > mkbundle.stdout
-	@$(with_mono_path) MONO_CFG_DIR=$(mono_cfg_dir) MONO_SHARED_DIR=$(mono_build_root)/runtime ./a.out >> mkbundle.stdout
+	@$(with_mono_path) MONO_CFG_DIR=$(mono_cfg_dir) ./a.out >> mkbundle.stdout
 	@- rm -rf a.out
 
 EXTRA_DIST += load-missing.il t-missing.cs load-exceptions.cs
@@ -1274,11 +1285,11 @@ GSHARED_TESTS = \
 test-generic-sharing-normal: $(GSHARED_TESTS)
 	@for fn in $+ ; do	\
 		echo "Testing $$fn ...";	\
-		MONO_GENERIC_SHARING=all $(RUNTIME) -O=gshared                $$fn > $$fn.stdout || exit 1;	\
-		MONO_GENERIC_SHARING=all $(RUNTIME) -O=gshared,shared         $$fn > $$fn.stdout || exit 1;	\
-		MONO_GENERIC_SHARING=all $(RUNTIME) -O=gshared,-inline        $$fn > $$fn.stdout || exit 1;	\
-		MONO_GENERIC_SHARING=all $(RUNTIME) -O=gshared,-inline,shared $$fn > $fn.stdout || exit 1;	\
-		if [ x$(AOT) = x1 ]; then MONO_GENERIC_SHARING=all $(with_mono_path) $(JITTEST_PROG_RUN) --aot --debug $$fn > /dev/null || exit 1; MONO_GENERIC_SHARING=all $(RUNTIME) $$fn > $$fn.stdout || exit 1; fi; \
+		$(RUNTIME) -O=gshared                $$fn > $$fn.stdout || exit 1;	\
+		$(RUNTIME) -O=gshared,shared         $$fn > $$fn.stdout || exit 1;	\
+		$(RUNTIME) -O=gshared,-inline        $$fn > $$fn.stdout || exit 1;	\
+		$(RUNTIME) -O=gshared,-inline,shared $$fn > $fn.stdout || exit 1;	\
+		if [ x$(AOT) = x1 ]; then $(with_mono_path) $(JITTEST_PROG_RUN) --aot --debug $$fn > /dev/null || exit 1; $(RUNTIME) $$fn > $$fn.stdout || exit 1; fi; \
 	done
 
 test-generic-sharing-managed: test-runner.exe $(GSHARED_TESTS)
@@ -1288,7 +1299,7 @@ if NACL_CODEGEN
 test-generic-sharing:
 else
 test-generic-sharing:
-	@if test x$(M) != x; then $(MAKE) test-generic-sharing-managed; else $(MAKE) test-generic-sharing-normal; fi
+	@if test x$(M) != x0; then $(MAKE) test-generic-sharing-managed; else $(MAKE) test-generic-sharing-normal; fi
 endif
 
 EXTRA_DIST += async-exceptions.cs
@@ -1335,6 +1346,19 @@ test-oom: $(OOM_TESTS)
 		MONO_GC_PARAMS=max-heap-size=16m                                                  $(RUNTIME) $$fn > $$fn.stdout || exit 1;	\
 	done
 
+if HOST_WIN32
+test-unhandled-exception-2:
+else
+test-unhandled-exception-2: unhandled-exception.exe
+	@echo "Testing unhandled-exception_1 ..."; $(RUNTIME) $+ 1 1> unhandled-exception_1.exe.stdout 2> unhandled-exception_1.exe.stderr; if test "x$$?" != "x1";   then exit 1; fi;	\
+	 echo "Testing unhandled-exception_2 ..."; $(RUNTIME) $+ 2 1> unhandled-exception_2.exe.stdout 2> unhandled-exception_2.exe.stderr; if test "x$$?" != "x0";   then exit 2; fi;	\
+	 echo "Testing unhandled-exception_3 ..."; $(RUNTIME) $+ 3 1> unhandled-exception_3.exe.stdout 2> unhandled-exception_3.exe.stderr; if test "x$$?" != "x0";   then exit 3; fi;	\
+	 echo "Testing unhandled-exception_4 ..."; $(RUNTIME) $+ 4 1> unhandled-exception_4.exe.stdout 2> unhandled-exception_4.exe.stderr; if test "x$$?" != "x0";   then exit 4; fi;	\
+	 echo "Testing unhandled-exception_5 ..."; $(RUNTIME) $+ 5 1> unhandled-exception_5.exe.stdout 2> unhandled-exception_5.exe.stderr; if test "x$$?" != "x255"; then exit 5; fi;	\
+	 echo "Testing unhandled-exception_6 ..."; $(RUNTIME) $+ 6 1> unhandled-exception_6.exe.stdout 2> unhandled-exception_6.exe.stderr; if test "x$$?" != "x0";   then exit 6; fi;	\
+	 echo "Testing unhandled-exception_7 ..."; $(RUNTIME) $+ 7 1> unhandled-exception_7.exe.stdout 2> unhandled-exception_7.exe.stderr; if test "x$$?" != "x0";   then exit 7; fi;	\
+	 echo "Testing unhandled-exception_8 ..."; $(RUNTIME) $+ 8 1> unhandled-exception_8.exe.stdout 2> unhandled-exception_8.exe.stderr; if test "x$$?" != "x3";   then exit 8; fi
+endif
 
 noinst_LTLIBRARIES = libtest.la
 

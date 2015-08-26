@@ -35,24 +35,13 @@ using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Globalization;
-
-#if LIBC || MONODROID
 using System.IO;
-using Mono;
-#endif
 
 using Microsoft.Win32;
 
 namespace System
 {
-#if MOBILE
-	[TypeForwardedFrom (Consts.AssemblySystem_Core)]
-#else
-	[TypeForwardedFrom (Consts.AssemblySystemCore_3_5)]
-#endif
-	[SerializableAttribute]
-	public
-	sealed partial class TimeZoneInfo : IEquatable<TimeZoneInfo>, ISerializable, IDeserializationCallback
+	partial class TimeZoneInfo
 	{
 		TimeSpan baseUtcOffset;
 		public TimeSpan BaseUtcOffset {
@@ -100,18 +89,14 @@ namespace System
 		*/
 		private List<KeyValuePair<DateTime, TimeType>> transitions;
 
+#if !MOBILE || MOBILE_STATIC
 		static TimeZoneInfo CreateLocal ()
 		{
-#if MONODROID
-			return AndroidTimeZones.Local;
-#elif MONOTOUCH
-			using (Stream stream = GetMonoTouchData (null)) {
-				return BuildFromStream ("Local", stream);
-			}
-#else
-#if !NET_2_1
+#if !MOBILE_STATIC
 			if (IsWindows && LocalZoneKey != null) {
 				string name = (string)LocalZoneKey.GetValue ("TimeZoneKeyName");
+				if (name == null)
+					name = (string)LocalZoneKey.GetValue ("StandardName"); // windows xp
 				name = TrimSpecial (name);
 				if (name != null)
 					return TimeZoneInfo.FindSystemTimeZoneById (name);
@@ -131,15 +116,61 @@ namespace System
 
 			try {
 				return FindSystemTimeZoneByFileName ("Local", "/etc/localtime");	
-			} catch {
+			} catch (TimeZoneNotFoundException) {
 				try {
 					return FindSystemTimeZoneByFileName ("Local", Path.Combine (TimeZoneDirectory, "localtime"));	
-				} catch {
-					return null;
+				} catch (TimeZoneNotFoundException) {
+					return Utc;
 				}
 			}
+		}
+
+		static TimeZoneInfo FindSystemTimeZoneByIdCore (string id)
+		{
+#if LIBC
+			string filepath = Path.Combine (TimeZoneDirectory, id);
+			return FindSystemTimeZoneByFileName (id, filepath);
+#else
+			throw new NotImplementedException ();
 #endif
 		}
+
+		static void GetSystemTimeZones (List<TimeZoneInfo> systemTimeZones)
+		{
+#if !MOBILE_STATIC
+			if (TimeZoneKey != null) {
+				foreach (string id in TimeZoneKey.GetSubKeyNames ()) {
+					try {
+						systemTimeZones.Add (FindSystemTimeZoneById (id));
+					} catch {}
+				}
+
+				return;
+			}
+#endif
+
+#if LIBC
+			string[] continents = new string [] {"Africa", "America", "Antarctica", "Arctic", "Asia", "Atlantic", "Brazil", "Canada", "Chile", "Europe", "Indian", "Mexico", "Mideast", "Pacific", "US"};
+			foreach (string continent in continents) {
+				try {
+					foreach (string zonepath in Directory.GetFiles (Path.Combine (TimeZoneDirectory, continent))) {
+						try {
+							string id = String.Format ("{0}/{1}", continent, Path.GetFileName (zonepath));
+							systemTimeZones.Add (FindSystemTimeZoneById (id));
+						} catch (ArgumentNullException) {
+						} catch (TimeZoneNotFoundException) {
+						} catch (InvalidTimeZoneException) {
+						} catch (Exception) {
+							throw;
+						}
+					}
+				} catch {}
+			}
+#else
+			throw new NotImplementedException ("This method is not implemented for this platform");
+#endif
+		}
+#endif
 
 		string standardDisplayName;
 		public string StandardName {
@@ -175,7 +206,7 @@ namespace System
 #endif
 		private AdjustmentRule [] adjustmentRules;
 
-#if !NET_2_1
+#if !NET_2_1 || MOBILE_STATIC
 		/// <summary>
 		/// Determine whether windows of not (taken Stephane Delcroix's code)
 		/// </summary>
@@ -192,6 +223,8 @@ namespace System
 		/// </summary>
 		private static string TrimSpecial (string str)
 		{
+			if (str == null)
+				return str;
 			var Istart = 0;
 			while (Istart < str.Length && !char.IsLetterOrDigit(str[Istart])) Istart++;
 			var Iend = str.Length - 1;
@@ -200,6 +233,7 @@ namespace System
 			return str.Substring (Istart, Iend-Istart+1);
 		}
 		
+#if !MOBILE_STATIC
 		static RegistryKey timeZoneKey;
 		static RegistryKey TimeZoneKey {
 			get {
@@ -227,6 +261,7 @@ namespace System
 					"SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation", false);
 			}
 		}
+#endif
 #endif
 
 		private static bool TryAddTicks (DateTime date, long ticks, out DateTime result, DateTimeKind kind = DateTimeKind.Unspecified)
@@ -428,6 +463,8 @@ namespace System
 #if !NET_2_1
 			if (TimeZoneKey != null)
 			{
+				if (id == "Coordinated Universal Time")
+					id = "UTC"; //windows xp exception for "StandardName" property
 				RegistryKey key = TimeZoneKey.OpenSubKey (id, false);
 				if (key == null)
 					throw new TimeZoneNotFoundException ();
@@ -437,21 +474,8 @@ namespace System
 			// Local requires special logic that already exists in the Local property (bug #326)
 			if (id == "Local")
 				return Local;
-#if MONOTOUCH
-			using (Stream stream = GetMonoTouchData (id)) {
-				return BuildFromStream (id, stream);
-			}
-#elif MONODROID
-			var timeZoneInfo = AndroidTimeZones.GetTimeZone (id, id);
-			if (timeZoneInfo == null)
-				throw new TimeZoneNotFoundException ();
-			return timeZoneInfo;
-#elif LIBC
-			string filepath = Path.Combine (TimeZoneDirectory, id);
-			return FindSystemTimeZoneByFileName (id, filepath);
-#else
-			throw new NotImplementedException ();
-#endif
+
+			return FindSystemTimeZoneByIdCore (id);
 		}
 
 #if LIBC
@@ -462,24 +486,6 @@ namespace System
 
 			using (FileStream stream = File.OpenRead (filepath)) {
 				return BuildFromStream (id, stream);
-			}
-		}
-#endif
-#if LIBC || MONOTOUCH
-		const int BUFFER_SIZE = 16384; //Big enough for any tz file (on Oct 2008, all tz files are under 10k)
-		
-		private static TimeZoneInfo BuildFromStream (string id, Stream stream) 
-		{
-			byte [] buffer = new byte [BUFFER_SIZE];
-			int length = stream.Read (buffer, 0, BUFFER_SIZE);
-			
-			if (!ValidTZFile (buffer, length))
-				throw new InvalidTimeZoneException ("TZ file too big for the buffer");
-
-			try {
-				return ParseTZBuffer (id, buffer, length);
-			} catch (Exception e) {
-				throw new InvalidTimeZoneException (e.Message);
 			}
 		}
 #endif
@@ -639,61 +645,17 @@ namespace System
 			info.AddValue ("SupportsDaylightSavingTime", SupportsDaylightSavingTime);
 		}
 
-		//FIXME: change this to a generic Dictionary and allow caching for FindSystemTimeZoneById
-		private static List<TimeZoneInfo> systemTimeZones;
+		static ReadOnlyCollection<TimeZoneInfo> systemTimeZones;
+
 		public static ReadOnlyCollection<TimeZoneInfo> GetSystemTimeZones ()
 		{
 			if (systemTimeZones == null) {
-				systemTimeZones = new List<TimeZoneInfo> ();
-#if !NET_2_1
-				if (TimeZoneKey != null) {
-					foreach (string id in TimeZoneKey.GetSubKeyNames ()) {
-						try {
-							systemTimeZones.Add (FindSystemTimeZoneById (id));
-						} catch {}
-					}
+				var tz = new List<TimeZoneInfo> ();
+				GetSystemTimeZones (tz);
+				Interlocked.CompareExchange (ref systemTimeZones, new ReadOnlyCollection<TimeZoneInfo> (tz), null);
+			}
 
-					return new ReadOnlyCollection<TimeZoneInfo> (systemTimeZones);
-				}
-#endif
-#if MONODROID
-			foreach (string id in AndroidTimeZones.GetAvailableIds ()) {
-				var tz = AndroidTimeZones.GetTimeZone (id, id);
-				if (tz != null)
-					systemTimeZones.Add (tz);
-			}
-#elif MONOTOUCH
-				if (systemTimeZones.Count == 0) {
-					foreach (string name in GetMonoTouchNames ()) {
-						using (Stream stream = GetMonoTouchData (name, false)) {
-							if (stream == null)
-								continue;
-							systemTimeZones.Add (BuildFromStream (name, stream));
-						}
-					}
-				}
-#elif LIBC
-				string[] continents = new string [] {"Africa", "America", "Antarctica", "Arctic", "Asia", "Atlantic", "Brazil", "Canada", "Chile", "Europe", "Indian", "Mexico", "Mideast", "Pacific", "US"};
-				foreach (string continent in continents) {
-					try {
-						foreach (string zonepath in Directory.GetFiles (Path.Combine (TimeZoneDirectory, continent))) {
-							try {
-								string id = String.Format ("{0}/{1}", continent, Path.GetFileName (zonepath));
-								systemTimeZones.Add (FindSystemTimeZoneById (id));
-							} catch (ArgumentNullException) {
-							} catch (TimeZoneNotFoundException) {
-							} catch (InvalidTimeZoneException) {
-							} catch (Exception) {
-								throw;
-							}
-						}
-					} catch {}
-				}
-#else
-				throw new NotImplementedException ("This method is not implemented for this platform");
-#endif
-			}
-			return new ReadOnlyCollection<TimeZoneInfo> (systemTimeZones);
+			return systemTimeZones;
 		}
 
 		public TimeSpan GetUtcOffset (DateTime dateTime)
@@ -879,6 +841,65 @@ namespace System
 		public bool IsDaylightSavingTime (DateTimeOffset dateTimeOffset)
 		{
 			throw new NotImplementedException ();
+		}
+
+		internal DaylightTime GetDaylightChanges (int year)
+		{
+			DateTime start = DateTime.MinValue, end = DateTime.MinValue;
+			TimeSpan delta = new TimeSpan ();
+
+			if (transitions != null) {
+				end = DateTime.MaxValue;
+				for (var i =  transitions.Count - 1; i >= 0; i--) {
+					var pair = transitions [i];
+					DateTime ttime = pair.Key;
+					TimeType ttype = pair.Value;
+
+					if (ttime.Year > year)
+						continue;
+					if (ttime.Year < year)
+						break;
+
+					if (ttype.IsDst) {
+						// DaylightTime.Delta is relative to the current BaseUtcOffset.
+						delta =  new TimeSpan (0, 0, ttype.Offset) - BaseUtcOffset;
+						start = ttime;
+					} else {
+						end = ttime;
+					}
+				}
+
+				// DaylightTime.Start is relative to the Standard time.
+				if (start != DateTime.MinValue)
+					start += BaseUtcOffset;
+
+				// DaylightTime.End is relative to the DST time.
+				if (end != DateTime.MinValue)
+					end += BaseUtcOffset + delta;
+			} else {
+				AdjustmentRule first = null, last = null;
+
+				foreach (var rule in GetAdjustmentRules ()) {
+					if (rule.DateStart.Year != year && rule.DateEnd.Year != year)
+						continue;
+					if (rule.DateStart.Year == year)
+						first = rule;
+					if (rule.DateEnd.Year == year)
+						last = rule;
+				}
+
+				if (first == null || last == null)
+					return new DaylightTime (new DateTime (), new DateTime (), new TimeSpan ());
+
+				start = TransitionPoint (first.DaylightTransitionStart, year);
+				end = TransitionPoint (last.DaylightTransitionEnd, year);
+				delta = first.DaylightDelta;
+			}
+
+			if (start == DateTime.MinValue || end == DateTime.MinValue)
+				return new DaylightTime (new DateTime (), new DateTime (), new TimeSpan ());
+
+			return new DaylightTime (start, end, delta);
 		}
 
 		public bool IsInvalidTime (DateTime dateTime)
@@ -1115,7 +1136,24 @@ namespace System
 			return adjustmentRules;
 		}
 
-#if LIBC || MONODROID
+#if LIBC || MONOTOUCH
+		const int BUFFER_SIZE = 16384; //Big enough for any tz file (on Oct 2008, all tz files are under 10k)
+		
+		private static TimeZoneInfo BuildFromStream (string id, Stream stream)
+		{
+			byte [] buffer = new byte [BUFFER_SIZE];
+			int length = stream.Read (buffer, 0, BUFFER_SIZE);
+			
+			if (!ValidTZFile (buffer, length))
+				throw new InvalidTimeZoneException ("TZ file too big for the buffer");
+
+			try {
+				return ParseTZBuffer (id, buffer, length);
+			} catch (Exception e) {
+				throw new InvalidTimeZoneException (e.Message);
+			}
+		}
+
 		private static bool ValidTZFile (byte [] buffer, int length)
 		{
 			StringBuilder magic = new StringBuilder ();
@@ -1234,8 +1272,14 @@ namespace System
 				} else {
 					if (daylightDisplayName != ttype.Name)
 						daylightDisplayName = ttype.Name;
-					if (dstDelta.TotalSeconds != ttype.Offset - baseUtcOffset.TotalSeconds)
-						dstDelta = new TimeSpan(0, 0, ttype.Offset) - baseUtcOffset;
+					if (dstDelta.TotalSeconds != ttype.Offset - baseUtcOffset.TotalSeconds) {
+						// Round to nearest minute, since it's not possible to create an adjustment rule
+						// with sub-minute precision ("The TimeSpan parameter cannot be specified more precisely than whole minutes.")
+						// This happens for instance with Europe/Dublin, which had an offset of 34 minutes and 39 seconds in 1916.
+						dstDelta = new TimeSpan (0, 0, ttype.Offset) - baseUtcOffset;
+						if (dstDelta.Ticks % TimeSpan.TicksPerMinute != 0)
+							dstDelta = TimeSpan.FromMinutes ((long) (dstDelta.TotalMinutes + 0.5f));
+					}
 
 					dst_start = ttime;
 					dst_observed = true;

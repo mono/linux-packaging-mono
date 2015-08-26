@@ -162,7 +162,7 @@ namespace System.Net {
 
 			string path;
 			Uri raw_uri = null;
-			if (Uri.MaybeUri (raw_url) && Uri.TryCreate (raw_url, UriKind.Absolute, out raw_uri))
+			if (Uri.MaybeUri (raw_url.ToLowerInvariant ()) && Uri.TryCreate (raw_url, UriKind.Absolute, out raw_uri))
 				path = raw_uri.PathAndQuery;
 			else
 				path = raw_url;
@@ -187,6 +187,11 @@ namespace System.Net {
 			}
 
 			CreateQueryString (url.Query);
+
+			// Use reference source HttpListenerRequestUriBuilder to process url.
+			// Fixes #29927
+			url = HttpListenerRequestUriBuilder.GetRequestUri (raw_url, url.Scheme,
+								url.Authority, url.LocalPath, url.Query);
 
 			if (version >= HttpVersion.Version11) {
 				string t_encoding = Headers ["Transfer-Encoding"];

@@ -282,6 +282,11 @@ namespace Mono.CSharp {
 			}
 		}
 
+		public void SetOwner (Attributable owner)
+		{
+			targets [0] = owner;
+		}
+
 		/// <summary>
 		///   Tries to resolve the type of the attribute. Flags an error if it can't, and complain is true.
 		/// </summary>
@@ -1223,6 +1228,19 @@ namespace Mono.CSharp {
 			Attrs.AddRange (attrs);
 		}
 
+		public static void AttachFromPartial (Attributable target, Attributable partialSrc)
+		{
+			if (target.OptAttributes == null) {
+				target.OptAttributes = partialSrc.OptAttributes;
+			} else {
+				target.OptAttributes.Attrs.AddRange (partialSrc.OptAttributes.Attrs);
+			}
+
+			foreach (var attr in partialSrc.OptAttributes.Attrs) {
+				attr.SetOwner (target);
+			}
+		}
+
 		public void AttachTo (Attributable attributable, IMemberContext context)
 		{
 			foreach (Attribute a in Attrs)
@@ -1999,8 +2017,8 @@ namespace Mono.CSharp {
 
 			int[] bits = decimal.GetBits (value);
 			AttributeEncoder encoder = new AttributeEncoder ();
-			encoder.Encode ((byte) (bits[3] >> 16));
-			encoder.Encode ((byte) (bits[3] >> 31));
+			encoder.Encode ((byte) ((bits[3] & 0xFF0000) >> 16)); // Scale
+			encoder.Encode ((byte) ((bits[3] >> 31) << 7)); // Sign encoded as 0x80 for negative, 0x0 for possitive
 			encoder.Encode ((uint) bits[2]);
 			encoder.Encode ((uint) bits[1]);
 			encoder.Encode ((uint) bits[0]);
