@@ -1149,7 +1149,7 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/secutil.exe*
 %{_prefix}/lib/mono/4.5/sgen.exe*
 %{_prefix}/lib/mono/4.5/signcode.exe*
-%{_prefix}/lib/mono/4.5/symbolicate.exe*
+%{_prefix}/lib/mono/4.5/mono-symbolicate.exe*
 %{_prefix}/lib/mono/4.5/xbuild.exe*
 %{_prefix}/lib/mono/4.5/xbuild.rsp
 %{_prefix}/lib/mono/4.5/MSBuild/
