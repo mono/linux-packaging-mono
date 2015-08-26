@@ -1,0 +1,25 @@
+From f4de38878981140f12c53d1f1ab5ce46f5c475a3 Mon Sep 17 00:00:00 2001
+From: Dylan Borg <borgdylan@hotmail.com>
+Date: Mon, 13 Jul 2015 09:18:03 +0200
+Subject: [PATCH] fix the x86 build
+
+---
+ mono/mini/mini-x86.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mono/mini/mini-x86.c b/mono/mini/mini-x86.c
+index 6b5def5..027aa25 100644
+--- a/mono/mini/mini-x86.c
++++ b/mono/mini/mini-x86.c
+@@ -5465,7 +5465,7 @@ mono_arch_emit_epilog (MonoCompile *cfg)
+ 		gboolean supported = FALSE;
+ 
+ 		if (cfg->compile_aot) {
+-#if MONO_HAVE_FAST_TLS
++#if defined(MONO_HAVE_FAST_TLS)
+ 			supported = TRUE;
+ #endif
+ 		} else if (mono_get_jit_tls_offset () != -1) {
+-- 
+1.9.1
+
