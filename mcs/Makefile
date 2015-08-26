@@ -8,6 +8,7 @@ basic_SUBDIRS := build jay mcs class
 build_SUBDIRS := build class mcs class/aot-compiler tools
 monodroid_SUBDIRS := build class
 monotouch_SUBDIRS := build class
+monotouch_watch_SUBDIRS := build class
 monotouch_runtime_SUBDIRS := build class
 xammac_SUBDIRS := build class
 mobile_SUBDIRS := build class
@@ -44,6 +45,10 @@ profiles-do--%:
 profile-do--%:
 	$(MAKE) PROFILE=$(subst --, ,$*)
 
+# xbuild_12 and xbuild_14 will try to install the same files, so they need
+# to be ordered
+profile-do--xbuild_14--install: profile-do--xbuild_12--install
+
 # We don't want to run the tests in parallel.  We want behaviour like -k.
 profiles-do--run-test:
 	ret=:; $(foreach p,$(PROFILES), { $(MAKE) PROFILE=$(p) run-test || ret=false; }; ) $$ret
@@ -56,6 +61,7 @@ $(_boot_:%=profile-do--binary_reference_assemblies--%):           profile-do--bi
 $(_boot_:%=profile-do--net_4_5--%):           profile-do--net_4_5--%:           profile-do--build--%
 $(_boot_:%=profile-do--monodroid--%):         profile-do--monodroid--%:         profile-do--build--%
 $(_boot_:%=profile-do--monotouch--%):         profile-do--monotouch--%:         profile-do--build--%
+$(_boot_:%=profile-do--monotouch_watch--%):   profile-do--monotouch_watch--%:   profile-do--build--%
 $(_boot_:%=profile-do--monotouch_runtime--%):  profile-do--monotouch_runtime--%:  profile-do--build--%
 $(_boot_:%=profile-do--xammac--%):            profile-do--xammac--%:            profile-do--build--%
 $(_boot_:%=profile-do--xammac_net_4_5--%):    profile-do--xammac_net_4_5--%:           profile-do--build--%

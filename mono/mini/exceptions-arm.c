@@ -154,8 +154,10 @@ mono_arm_throw_exception (MonoObject *exc, mgreg_t pc, mgreg_t sp, mgreg_t *int_
 
 	if (mono_object_isinst (exc, mono_defaults.exception_class)) {
 		MonoException *mono_ex = (MonoException*)exc;
-		if (!rethrow)
+		if (!rethrow) {
 			mono_ex->stack_trace = NULL;
+			mono_ex->trace_ips = NULL;
+		}
 	}
 	mono_handle_exception (&ctx, exc);
 	mono_restore_context (&ctx);
@@ -606,9 +608,8 @@ mono_arch_setup_async_callback (MonoContext *ctx, void (*async_cb)(void *fun), g
 	/* Allocate a stack frame */
 	sp -= 16;
 	MONO_CONTEXT_SET_SP (ctx, sp);
-	MONO_CONTEXT_SET_IP (ctx, async_cb);
 
-	// FIXME: thumb/arm
+	mono_arch_setup_resume_sighandler_ctx (ctx, async_cb);
 }
 
 /*

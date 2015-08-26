@@ -130,30 +130,43 @@
 	: "=r" (offset))
 #endif
 #elif defined(__s390x__)
-# if defined(PIC)
+# if defined(__PIC__)
+#  if !defined(__PIE__)
 // This only works if libmono is linked into the application
-#  define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  				\
-						__asm__ ("basr	%%r1,0\n\t"			\
-							 "j	0f\n\t"				\
-							 ".quad " #var "@TLSGD\n\t"		\
+#   define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  				\
+						__asm__ ("basr  %%r1,0\n\t"			\
+							 "j     0f\n\t"				\
+							 ".quad " #var "@TLSGD\n"		\
 							 "0:\n\t"				\
-							 "lg	%%r2,4(%%r1)\n\t"		\
+							 "lg    %%r2,4(%%r1)\n\t"		\
 							 "brasl	%%r14,__tls_get_offset@PLT:tls_gdcall:"#var"\n\t" \
 							 "lgr	%0,%%r2\n\t"			\
 							: "=r" (foo) : 				\
 							: "1", "2", "14", "cc");		\
 						offset = foo; } while (0)
+#  elif __PIE__ == 1
+#   define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  					\
+						__asm__ ("lg	%0," #var "@GOTNTPOFF(%%r12)\n\t"	\
+							 : "=r" (foo));					\
+						offset = foo; } while (0)
+#  elif __PIE__ == 2
+#   define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  				\
+						__asm__ ("larl	%%r1," #var "@INDNTPOFF\n\t"	\
+							 "lg	%0,0(%%r1)\n\t"			\
+							 : "=r" (foo) :				\
+							 : "1", "cc");				\
+						offset = foo; } while (0)
+#  endif
 # else
-#  define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  				\
-						__asm__ ("basr	%%r1,0\n\t"			\
-							 "j	0f\n\t"				\
-							 ".quad " #var "@NTPOFF\n"		\
-							 "0:\n\t"				\
-							 "lg	%0,4(%%r1)\n\t"			\
-							: "=r" (foo) : : "1");			\
+#  define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  			\
+						__asm__ ("basr  %%r1,0\n\t"		\
+							 "j     0f\n\t"			\
+							 ".quad " #var "@NTPOFF\n"	\
+							 "0:\n\t"			\
+							 "lg    %0,4(%%r1)\n\t"		\
+							: "=r" (foo) : : "1");		\
 						offset = foo; } while (0)
 # endif
-
 #else
 #define MONO_THREAD_VAR_OFFSET(var,offset) (offset) = -1
 #endif
@@ -169,7 +182,7 @@
 
 #elif defined(TARGET_MACH) && (defined(__i386__) || defined(__x86_64__))
 
-#define MONO_HAVE_FAST_TLS
+#define MONO_HAVE_FAST_TLS 1
 #define MONO_FAST_TLS_SET(x,y) pthread_setspecific(x, y)
 #define MONO_FAST_TLS_GET(x) pthread_getspecific(x)
 #define MONO_FAST_TLS_ADDR(x) (mono_mach_get_tls_address_from_thread (pthread_self (), x))
@@ -242,14 +255,12 @@ typedef SSIZE_T ssize_t;
 #endif /* _MSC_VER */
 
 #if !defined(_MSC_VER) && !defined(PLATFORM_SOLARIS) && !defined(_WIN32) && !defined(__CYGWIN__) && !defined(MONOTOUCH) && HAVE_VISIBILITY_HIDDEN
-#define MONO_INTERNAL __attribute__ ((visibility ("hidden")))
 #if MONO_LLVM_LOADED
 #define MONO_LLVM_INTERNAL MONO_API
 #else
-#define MONO_LLVM_INTERNAL MONO_INTERNAL
+#define MONO_LLVM_INTERNAL
 #endif
 #else
-#define MONO_INTERNAL 
 #define MONO_LLVM_INTERNAL 
 #endif
 

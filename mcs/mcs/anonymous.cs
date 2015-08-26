@@ -526,7 +526,7 @@ namespace Mono.CSharp {
 				fexpr.EmitAssign (ec, source, false, false);
 				Instance = fexpr;
 			} else {
-				var local = TemporaryVariableReference.Create (source.Type, block, Location);
+				var local = TemporaryVariableReference.Create (source.Type, block, Location, writeToSymbolFile: true);
 				if (source.Type.IsStruct) {
 					local.LocalInfo.CreateBuilder (ec);
 				} else {
@@ -1187,6 +1187,9 @@ namespace Mono.CSharp {
 			Expression am;
 			if (compatibles.TryGetValue (type, out am))
 				return am;
+
+			if (type == InternalType.ErrorType)
+				return null;
 
 			TypeSpec delegate_type = CompatibleChecks (ec, type);
 			if (delegate_type == null)

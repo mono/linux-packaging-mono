@@ -410,6 +410,7 @@ public class AssemblyBuilderTest
 	}
 
 	[Test]
+	[Category ("AndroidNotWorking")] // DefineResource doesn't allow path in its fileName parameter and the test attempts to write to / in effect
 	public void TestDefineResource ()
 	{
 		ab.DefineResource ("foo", "FOO", "foo.txt", ResourceAttributes.Public);
@@ -586,6 +587,7 @@ public class AssemblyBuilderTest
 	}
 
 	[Test]
+	[Category ("AndroidNotWorking")] // Missing Mono.Compilerservices.SymbolWriter assembly
 	public void TestDefineDynamicModule ()
 	{
 		ab.DefineDynamicModule ("foo", "foo.dll");
@@ -1829,9 +1831,13 @@ public class AssemblyBuilderTest
 				fullName);
 			newDomain.DoCallBack (new CrossAppDomainDelegate (helper.Test));
 		} finally {
+#if !MONODROID
+			// RUNTIME: crash
+			// AppDomain unloading crashes the runtime on Android
 			if (newDomain != null) {
 				AppDomain.Unload (newDomain);
 			}
+#endif
 		}
 	}
 

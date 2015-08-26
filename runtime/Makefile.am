@@ -25,12 +25,6 @@ $(symlinks):
 
 SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 
-if ONLY_MONOTOUCH
-build_profiles = monotouch
-else
-if ONLY_XAMMAC
-build_profiles = xammac
-else
 build_profiles = 
 
 if INSTALL_4_5
@@ -46,14 +40,15 @@ if INSTALL_MONOTOUCH
 build_profiles += monotouch monotouch_runtime
 endif
 
+if INSTALL_MONOTOUCH_WATCH
+build_profiles += monotouch_watch
+endif
+
 if INSTALL_XAMMAC
 build_profiles += xammac xammac_net_4_5
 endif
 
 test_profiles = $(build_profiles)
-
-endif
-endif
 
 if BUILD_MCS
 
@@ -79,11 +74,9 @@ install-data:
 uninstall:
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' RUNTIME_HAS_CONSISTENT_GACDIR=yes prefix=$(prefix) uninstall-profiles
 
-## mono --wapi=semdel will probably not delete the semaphore if someone is crazy enough to do a 'make -j distclean' :-)
 clean-local:
 	cd $(mcs_topdir) && $(MAKE) NO_DIR_CHECK=1 PROFILES='$(build_profiles)' clean-profiles
-	-./mono-wrapper --wapi=semdel
-	-rm -fr $(etctmp) $(tmpinst) .wapi
+	-rm -fr $(etctmp) $(tmpinst)
 
 endif BUILD_MCS
 

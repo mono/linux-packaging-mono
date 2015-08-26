@@ -23,14 +23,15 @@ namespace System {
     using System.Security.Principal;
     using System.Security.Policy;
     using System.Security;
-    using System.Security.Util;
     using System.Collections;
     using System.Text;
     using System.Configuration.Assemblies;
     using System.Threading;
     using System.Runtime.InteropServices;
     using System.Runtime.Remoting;
+#if !FULL_AOT_RUNTIME
     using System.Reflection.Emit;
+#endif
     using CultureInfo = System.Globalization.CultureInfo;
     using System.IO;
     using System.Runtime.Versioning;
@@ -57,7 +58,7 @@ namespace System {
 
         Type GetType ();
 
-#if FEATURE_REMOTING        
+#if FEATURE_REMOTING || MOBILE_LEGACY
         [System.Security.SecurityCritical]  // auto-generated_required
         Object InitializeLifetimeService ();
 
@@ -65,7 +66,7 @@ namespace System {
         Object GetLifetimeService ();
 #endif // FEATURE_REMOTING        
 
-#if FEATURE_CAS_POLICY
+#if FEATURE_CAS_POLICY || MOBILE_LEGACY
         Evidence Evidence { get; }
 #endif // FEATURE_CAS_POLICY
         event EventHandler DomainUnload;
@@ -86,7 +87,7 @@ namespace System {
 
         [method:System.Security.SecurityCritical]
         event UnhandledExceptionEventHandler UnhandledException;
-
+#if !FULL_AOT_RUNTIME
         AssemblyBuilder DefineDynamicAssembly(AssemblyName            name,
                                               AssemblyBuilderAccess   access);
 
@@ -139,7 +140,7 @@ namespace System {
                                               PermissionSet           optionalPermissions,
                                               PermissionSet           refusedPermissions,
                                               bool                    isSynchronized);
-
+#endif
         ObjectHandle CreateInstance(String assemblyName,
                                     String typeName);
 
@@ -247,18 +248,18 @@ namespace System {
         #endif
         Object GetData(string name);
 
-#if FEATURE_CAS_POLICY        
+#if FEATURE_CAS_POLICY || MOBILE_LEGACY
         [System.Security.SecurityCritical]  // auto-generated_required
         void SetAppDomainPolicy(PolicyLevel domainPolicy);
 
-#if FEATURE_IMPERSONATION
+#if FEATURE_IMPERSONATION || MOBILE_LEGACY
         void SetThreadPrincipal(IPrincipal principal);
 #endif // FEATURE_IMPERSONATION
 
         void SetPrincipalPolicy(PrincipalPolicy policy);
 #endif
 
-#if FEATURE_REMOTING
+#if FEATURE_REMOTING || MOBILE_LEGACY
         void DoCallBack(CrossAppDomainDelegate theDelegate);
 #endif
 

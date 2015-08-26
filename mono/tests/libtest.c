@@ -411,7 +411,6 @@ mono_test_marshal_unicode_char_array (gunichar2 *s)
 	return 0;
 }
 
-
 LIBTEST_API int STDCALL 
 mono_test_empty_pinvoke (int i)
 {
@@ -506,6 +505,22 @@ mono_test_marshal_out_array (int *a1)
 		a1 [i] = i;
 	}
 	
+	return 0;
+}
+
+LIBTEST_API int STDCALL
+mono_test_marshal_out_byref_array_out_size_param (int **out_arr, int *out_len)
+{
+	int *arr;
+	int i, len;
+
+	len = 4;
+	arr = marshal_alloc (sizeof (gint32) * len);
+	for (i = 0; i < len; ++i)
+		arr [i] = i;
+	*out_arr = arr;
+	*out_len = len;
+
 	return 0;
 }
 
@@ -965,10 +980,7 @@ mono_test_marshal_delegate5 (SimpleDelegate5 delegate)
 LIBTEST_API int STDCALL 
 mono_test_marshal_delegate6 (SimpleDelegate5 delegate)
 {
-	int res;
-
-	res = delegate (NULL);
-
+	delegate (NULL);
 	return 0;
 }
 
@@ -1085,12 +1097,18 @@ mono_test_marshal_stringbuilder (char *s, int n)
 }
 
 LIBTEST_API int STDCALL  
-mono_test_marshal_stringbuilder2 (char *s, int n)
+mono_test_marshal_stringbuilder_append (char *s, int length)
 {
-	const char m[] = "EFGH";
+	const char out_sentinel[] = "CSHARP_";
+	const char out_len = strlen (out_sentinel);
 
-	strncpy(s, m, n);
-	s [n] = '\0';
+	for (int i=0; i < length; i++) {
+		s [i] = out_sentinel [i % out_len];
+	}
+
+	s [length] = '\0';
+
+
 	return 0;
 }
 

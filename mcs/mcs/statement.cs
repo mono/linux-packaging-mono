@@ -1222,7 +1222,7 @@ namespace Mono.CSharp {
 						//
 						// The return type is actually Task<T> type argument
 						//
-						if (expr.Type == async_type) {
+						if (expr.Type == async_type && async_type.TypeArguments [0] != ec.Module.PredefinedTypes.Task.TypeSpec) {
 							ec.Report.Error (4016, loc,
 								"`{0}': The return expression type of async method must be `{1}' rather than `Task<{1}>'",
 								ec.GetSignatureForError (), async_type.TypeArguments[0].GetSignatureForError ());
@@ -2129,7 +2129,7 @@ namespace Mono.CSharp {
 				// C# 3.0 introduced contextual keywords (var) which behaves like a type if type with
 				// same name exists or as a keyword when no type was found
 				//
-				if (vexpr != null && !vexpr.IsPossibleTypeOrNamespace (bc)) {
+				if (vexpr != null && !vexpr.IsPossibleType (bc)) {
 					if (bc.Module.Compiler.Settings.Version < LanguageVersion.V_3)
 						bc.Report.FeatureIsNotAvailable (bc.Module.Compiler, loc, "implicitly typed local variable");
 
@@ -2346,6 +2346,7 @@ namespace Mono.CSharp {
 			FixedVariable = 1 << 6,
 			UsingVariable = 1 << 7,
 			IsLocked = 1 << 8,
+			SymbolFileHidden = 1 << 9,
 
 			ReadonlyMask = ForeachVariable | FixedVariable | UsingVariable
 		}
@@ -2521,13 +2522,16 @@ namespace Mono.CSharp {
 			// All fixed variabled are pinned, a slot has to be alocated
 			//
 			builder = ec.DeclareLocal (Type, IsFixed);
-			if (!ec.HasSet (BuilderContext.Options.OmitDebugInfo) && (flags & Flags.CompilerGenerated) == 0)
+			if ((flags & Flags.SymbolFileHidden) == 0)
 				ec.DefineLocalVariable (name, builder);
 		}
 
-		public static LocalVariable CreateCompilerGenerated (TypeSpec type, Block block, Location loc)
+		public static LocalVariable CreateCompilerGenerated (TypeSpec type, Block block, Location loc, bool writeToSymbolFile = false)
 		{
 			LocalVariable li = new LocalVariable (block, GetCompilerGeneratedName (block), Flags.CompilerGenerated | Flags.Used, loc);
+			if (!writeToSymbolFile)
+				li.flags |= Flags.SymbolFileHidden;
+			
 			li.Type = type;
 			return li;
 		}
@@ -3352,12 +3356,26 @@ namespace Mono.CSharp {
 								}
 
 								if (parent_storey_block.AnonymousMethodStorey == null) {
-									pb.StateMachine.AddCapturedThisField (ec, null);
-									b.HasCapturedThis = true;
+									if (pb.StateMachine.HoistedThis == null) {
+										pb.StateMachine.AddCapturedThisField (ec, null);
+										b.HasCapturedThis = true;
+									}
+
 									continue;
 								}
 
-								pb.StateMachine.AddParentStoreyReference (ec, storey);
+								var parent_this_block = pb;
+								while (parent_this_block.Parent != null) {
+									parent_this_block = parent_this_block.Parent.ParametersBlock;
+									if (parent_this_block.StateMachine != null) {
+										break;
+									}
+								}
+
+								//
+								// Add reference to closest storey which holds captured this
+								//
+								pb.StateMachine.AddParentStoreyReference (ec, parent_this_block.StateMachine ?? storey);
 							}
 
 							//
@@ -5848,6 +5866,11 @@ namespace Mono.CSharp {
 			this.loc = loc;
 		}
 
+		protected virtual void EmitBeginException (EmitContext ec)
+		{
+			ec.BeginExceptionBlock ();
+		}
+
 		protected virtual void EmitTryBodyPrepare (EmitContext ec)
 		{
 			StateMachineInitializer state_machine = null;
@@ -5858,7 +5881,7 @@ namespace Mono.CSharp {
 				ec.Emit (OpCodes.Stloc, state_machine.CurrentPC);
 			}
 
-			ec.BeginExceptionBlock ();
+			EmitBeginException (ec);
 
 			if (resume_points != null) {
 				ec.MarkLabel (resume_point);
@@ -6831,6 +6854,14 @@ namespace Mono.CSharp {
 			return ok;
 		}
 
+		protected override void EmitBeginException (EmitContext ec)
+		{
+			if (fini.HasAwait && stmt is TryCatch)
+				ec.BeginExceptionBlock ();
+
+			base.EmitBeginException (ec);
+		}
+
 		protected override void EmitTryBody (EmitContext ec)
 		{
 			if (fini.HasAwait) {
@@ -6839,6 +6870,10 @@ namespace Mono.CSharp {
 
 				ec.TryFinallyUnwind.Add (this);
 				stmt.Emit (ec);
+
+				if (stmt is TryCatch)
+					ec.EndExceptionBlock ();
+
 				ec.TryFinallyUnwind.Remove (this);
 
 				if (start_fin_label != null)

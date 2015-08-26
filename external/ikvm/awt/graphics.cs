@@ -232,7 +232,7 @@ namespace ikvm.awt
         public override void clipRect(int x, int y, int w, int h)
         {
             checkState();
-            base.clearRect(x, y, w, h);
+            base.clipRect(x, y, w, h);
         }
 
         public override void clip(java.awt.Shape shape)
@@ -1963,7 +1963,7 @@ namespace ikvm.awt
 
         public override java.awt.Color getBackground()
         {
-            return bgcolor == Color.Empty ? null : new java.awt.Color(color.ToArgb(), true);
+            return bgcolor == Color.Empty ? null : new java.awt.Color(bgcolor.ToArgb(), true);
         }
 
         public override java.awt.Stroke getStroke()

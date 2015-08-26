@@ -8,15 +8,18 @@
 //
 
 using NUnit.Framework;
+#if !MONODROID
 using NUnit.Framework.SyntaxHelpers;
+#endif
 using System;
 using System.Text;
 using System.Threading;
 using Mono.Unix;
+using Mono.Unix.Android;
 using Mono.Unix.Native;
-
+#if !MONODROID
 namespace NUnit.Framework.SyntaxHelpers { class Dummy {} }
-
+#endif
 namespace MonoTests.Mono.Unix {
 
 	[TestFixture]
@@ -125,6 +128,8 @@ namespace MonoTests.Mono.Unix {
 		[Category ("NotOnMac")]
 		public void TestRealTimeCstor ()
 		{
+			if (!TestHelper.CanUseRealTimeSignals ())
+				return;
 			RealTimeSignum rts = new RealTimeSignum (0);
 			using (UnixSignal s = new UnixSignal (rts))
 			{
@@ -138,6 +143,8 @@ namespace MonoTests.Mono.Unix {
 		[Category ("NotOnMac")]
 		public void TestSignumPropertyThrows ()
 		{
+			if (!TestHelper.CanUseRealTimeSignals ())
+				return;
 			UnixSignal signal1 = new UnixSignal (new RealTimeSignum (0));
 			Signum s = signal1.Signum;
 		}
@@ -146,6 +153,8 @@ namespace MonoTests.Mono.Unix {
 		[Category ("NotOnMac")]
 		public void TestRealTimeSignumProperty ()
 		{
+			if (!TestHelper.CanUseRealTimeSignals ())
+				return;
 			RealTimeSignum rts = new RealTimeSignum (0);
 			UnixSignal signal1 = new UnixSignal (rts);
 			Assert.That (signal1.RealTimeSignum, Is.EqualTo (rts));
@@ -156,6 +165,8 @@ namespace MonoTests.Mono.Unix {
 		[Category ("NotOnMac")]
 		public void TestRealTimePropertyThrows ()
 		{
+			if (!TestHelper.CanUseRealTimeSignals ())
+				return;
 			UnixSignal signal1 = new UnixSignal (Signum.SIGSEGV);
 			RealTimeSignum s = signal1.RealTimeSignum;
 		}
@@ -164,6 +175,8 @@ namespace MonoTests.Mono.Unix {
 		[Category ("NotOnMac")]
 		public void TestRaiseRTMINSignal ()
 		{
+			if (!TestHelper.CanUseRealTimeSignals ())
+				return;
 			RealTimeSignum rts = new RealTimeSignum (0);
 			using (UnixSignal signal = new UnixSignal (rts))
 			{
@@ -178,6 +191,8 @@ namespace MonoTests.Mono.Unix {
 		[Category ("NotOnMac")]
 		public void TestRaiseRTMINPlusOneSignal ()
 		{
+			if (!TestHelper.CanUseRealTimeSignals ())
+				return;
 			/*this number is a guestimate, but it's ok*/
 			for (int i = 1; i < 10; ++i) {
 				RealTimeSignum rts = new RealTimeSignum (i);
@@ -203,6 +218,8 @@ namespace MonoTests.Mono.Unix {
 		[Category ("NotOnMac")]
 		public void TestCanRegisterRTSignalMultipleTimes ()
 		{
+			if (!TestHelper.CanUseRealTimeSignals ())
+				return;
 			/*this number is a guestimate, but it's ok*/
 			for (int i = 1; i < 10; ++i) {
 				RealTimeSignum rts = new RealTimeSignum (i);
@@ -375,6 +392,7 @@ namespace MonoTests.Mono.Unix {
 		}
 
 		[Test]
+		[Category ("AndroidNotWorking")] // Android 4.4.4 doesn't have signal(2)
 		public void TestSignalActionInteraction ()
 		{
 			using (UnixSignal a = new UnixSignal (Signum.SIGINT)) {

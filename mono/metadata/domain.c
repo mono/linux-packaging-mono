@@ -343,7 +343,7 @@ domain_id_alloc (MonoDomain *domain)
 	int id = -1, i;
 	if (!appdomains_list) {
 		appdomain_list_size = 2;
-		appdomains_list = mono_gc_alloc_fixed (appdomain_list_size * sizeof (void*), NULL);
+		appdomains_list = mono_gc_alloc_fixed (appdomain_list_size * sizeof (void*), MONO_GC_DESCRIPTOR_NULL);
 	}
 	for (i = appdomain_next; i < appdomain_list_size; ++i) {
 		if (!appdomains_list [i]) {
@@ -365,7 +365,7 @@ domain_id_alloc (MonoDomain *domain)
 		if (new_size >= (1 << 16))
 			g_assert_not_reached ();
 		id = appdomain_list_size;
-		new_list = mono_gc_alloc_fixed (new_size * sizeof (void*), NULL);
+		new_list = mono_gc_alloc_fixed (new_size * sizeof (void*), MONO_GC_DESCRIPTOR_NULL);
 		memcpy (new_list, appdomains_list, appdomain_list_size * sizeof (void*));
 		mono_gc_free_fixed (appdomains_list);
 		appdomains_list = new_list;
@@ -380,7 +380,7 @@ domain_id_alloc (MonoDomain *domain)
 }
 
 static gsize domain_gc_bitmap [sizeof(MonoDomain)/4/32 + 1];
-static gpointer domain_gc_desc = NULL;
+static MonoGCDescriptor domain_gc_desc = MONO_GC_DESCRIPTOR_NULL;
 static guint32 domain_shadow_serial = 0L;
 
 MonoDomain *
@@ -412,7 +412,7 @@ mono_domain_create (void)
 	domain = mono_gc_alloc_fixed (sizeof (MonoDomain), NULL);
 #else
 	domain = mono_gc_alloc_fixed (sizeof (MonoDomain), domain_gc_desc);
-	mono_gc_register_root ((char*)&(domain->MONO_DOMAIN_FIRST_GC_TRACKED), G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_LAST_GC_TRACKED) - G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_FIRST_GC_TRACKED), NULL);
+	mono_gc_register_root ((char*)&(domain->MONO_DOMAIN_FIRST_GC_TRACKED), G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_LAST_GC_TRACKED) - G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_FIRST_GC_TRACKED), MONO_GC_DESCRIPTOR_NULL);
 #endif
 	domain->shadow_serial = shadow_serial;
 	domain->domain = NULL;
@@ -713,6 +713,10 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
                 mono_defaults.corlib, "System", "MonoType");
 	g_assert (mono_defaults.monotype_class != 0);
 
+	mono_defaults.runtimetype_class = mono_class_from_name (
+                mono_defaults.corlib, "System", "RuntimeType");
+	g_assert (mono_defaults.runtimetype_class != 0);
+
 	mono_defaults.exception_class = mono_class_from_name (
                 mono_defaults.corlib, "System", "Exception");
 	g_assert (mono_defaults.exception_class != 0);
@@ -839,7 +843,14 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_defaults.generic_ireadonlylist_class = mono_class_from_name (
 	        mono_defaults.corlib, "System.Collections.Generic", "IReadOnlyList`1");
 
+	mono_defaults.threadpool_wait_callback_class = mono_class_from_name (
+		mono_defaults.corlib, "System.Threading", "_ThreadPoolWaitCallback");
+	mono_defaults.threadpool_perform_wait_callback_method = mono_class_get_method_from_name (
+		mono_defaults.threadpool_wait_callback_class, "PerformWaitCallback", 0);
+
 	domain->friendly_name = g_path_get_basename (filename);
+
+	mono_profiler_appdomain_name (domain, domain->friendly_name);
 
 	return domain;
 }
@@ -1017,7 +1028,7 @@ mono_domain_foreach (MonoDomainFunc func, gpointer user_data)
 	 */
 	mono_appdomains_lock ();
 	size = appdomain_list_size;
-	copy = mono_gc_alloc_fixed (appdomain_list_size * sizeof (void*), NULL);
+	copy = mono_gc_alloc_fixed (appdomain_list_size * sizeof (void*), MONO_GC_DESCRIPTOR_NULL);
 	memcpy (copy, appdomains_list, appdomain_list_size * sizeof (void*));
 	mono_appdomains_unlock ();
 
@@ -1117,11 +1128,6 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 
 	mono_g_hash_table_destroy (domain->env);
 	domain->env = NULL;
-
-	if (domain->tlsrec_list) {
-		mono_thread_destroy_domain_tls (domain);
-		domain->tlsrec_list = NULL;
-	}
 
 	mono_reflection_cleanup_domain (domain);
 
@@ -1317,6 +1323,12 @@ mono_domain_get_id (MonoDomain *domain)
 	return domain->domain_id;
 }
 
+const char *
+mono_domain_get_friendly_name (MonoDomain *domain)
+{
+	return domain->friendly_name;
+}
+
 /*
  * mono_domain_alloc:
  *
@@ -1490,6 +1502,18 @@ MonoAppContext *
 mono_context_get (void)
 {
 	return GET_APPCONTEXT ();
+}
+
+gint32
+mono_context_get_id (MonoAppContext *context)
+{
+	return context->context_id;
+}
+
+gint32
+mono_context_get_domain_id (MonoAppContext *context)
+{
+	return context->domain_id;
 }
 
 /* LOCKING: the caller holds the lock for this domain */
@@ -1872,27 +1896,6 @@ mono_get_runtime_info (void)
 	return current_runtime;
 }
 
-gchar *
-mono_debugger_check_runtime_version (const char *filename)
-{
-	const MonoRuntimeInfo* runtimes [G_N_ELEMENTS (supported_runtimes) + 1];
-	const MonoRuntimeInfo *rinfo;
-	MonoImage *image;
-
-	get_runtimes_from_exe (filename, &image, runtimes);
-	rinfo = runtimes [0];
-
-	if (!rinfo)
-		return g_strdup_printf ("Cannot get runtime version from assembly `%s'", filename);
-
-	if (rinfo != current_runtime)
-		return g_strdup_printf ("The Mono Debugger is currently using the `%s' runtime, but "
-					"the assembly `%s' requires version `%s'", current_runtime->runtime_version,
-					filename, rinfo->runtime_version);
-
-	return NULL;
-}
-
 /**
  * mono_framework_version:
  *
@@ -1914,4 +1917,18 @@ MonoAotCacheConfig *
 mono_get_aot_cache_config (void)
 {
 	return &aot_cache_config;
+}
+
+void
+mono_domain_lock (MonoDomain *domain)
+{
+	MONO_TRY_BLOCKING
+	mono_locks_acquire (&(domain)->lock, DomainLock);
+	MONO_FINISH_TRY_BLOCKING
+}
+
+void
+mono_domain_unlock (MonoDomain *domain)
+{
+	mono_locks_release (&(domain)->lock, DomainLock);
 }

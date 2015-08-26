@@ -6,12 +6,15 @@ namespace System.Runtime.Serialization
 {
     using System;
     using System.Reflection;
+#if !NO_DYNAMIC_CODEGEN
     using System.Reflection.Emit;
+#endif
     using System.Security;
 
     [Fx.Tag.SecurityNote(Miscellaneous = "RequiresReview (Critical) - works on CodeGenerator objects, which require Critical access.")]
     class BitFlagsGenerator
     {
+#if !NO_DYNAMIC_CODEGEN
         int bitCount;
         CodeGenerator ilg;
         LocalBuilder[] locals;
@@ -27,6 +30,7 @@ namespace System.Runtime.Serialization
                 locals[i] = ilg.DeclareLocal(typeof(byte), localName + i, (byte) 0);
             }
         }
+#endif
 
         public static bool IsBitSet(byte[] bytes, int bitIndex)
         {
@@ -42,6 +46,7 @@ namespace System.Runtime.Serialization
             bytes[byteIndex] |= bitValue;
         }
 
+#if !NO_DYNAMIC_CODEGEN
         public int GetBitCount()
         {
             return bitCount;
@@ -100,6 +105,7 @@ namespace System.Runtime.Serialization
                 ilg.Stloc(local);
             }
         }
+#endif
 
         static byte GetBitValue(int bitIndex)
         {

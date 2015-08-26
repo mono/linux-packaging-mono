@@ -46,12 +46,12 @@ namespace System.ServiceModel.Channels
 	public static class UrlUtility {
 		public static string UrlEncode (string s, Encoding e)
 		{
-			return System.Net.WebUtility.UrlEncode (s);
+			return System.Runtime.UrlUtility.UrlEncode (s, e);
 		}
 
 		public static string UrlDecode (string s, Encoding e)
 		{
-			return System.Net.WebUtility.UrlDecode (s);
+			return System.Runtime.UrlUtility.UrlDecode (s, e);
 		}
 	}
 }

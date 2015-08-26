@@ -251,7 +251,7 @@ codechunk_valloc (void *preferred, guint32 size)
 	 * Keep a small freelist of memory blocks to decrease pressure on the kernel memory subsystem to avoid #3321.
 	 */
 	mono_mutex_lock (&valloc_mutex);
-	freelist = g_hash_table_lookup (valloc_freelists, GUINT_TO_POINTER (size));
+	freelist = (GSList *) g_hash_table_lookup (valloc_freelists, GUINT_TO_POINTER (size));
 	if (freelist) {
 		ptr = freelist->data;
 		memset (ptr, 0, size);
@@ -272,7 +272,7 @@ codechunk_vfree (void *ptr, guint32 size)
 	GSList *freelist;
 
 	mono_mutex_lock (&valloc_mutex);
-	freelist = g_hash_table_lookup (valloc_freelists, GUINT_TO_POINTER (size));
+	freelist = (GSList *) g_hash_table_lookup (valloc_freelists, GUINT_TO_POINTER (size));
 	if (!freelist || g_slist_length (freelist) < VALLOC_FREELIST_SIZE) {
 		freelist = g_slist_prepend (freelist, ptr);
 		g_hash_table_insert (valloc_freelists, GUINT_TO_POINTER (size), freelist);
@@ -292,7 +292,7 @@ codechunk_cleanup (void)
 		return;
 	g_hash_table_iter_init (&iter, valloc_freelists);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		GSList *freelist = value;
+		GSList *freelist = (GSList *) value;
 		GSList *l;
 
 		for (l = freelist; l; l = l->next) {
@@ -331,7 +331,7 @@ mono_code_manager_cleanup (void)
 MonoCodeManager* 
 mono_code_manager_new (void)
 {
-	MonoCodeManager *cman = g_malloc0 (sizeof (MonoCodeManager));
+	MonoCodeManager *cman = (MonoCodeManager *) g_malloc0 (sizeof (MonoCodeManager));
 	if (!cman)
 		return NULL;
 #if defined(__native_client_codegen__) && defined(__native_client__)
@@ -488,9 +488,6 @@ mono_code_manager_foreach (MonoCodeManager *cman, MonoCodeManagerFunc func, void
 #if defined(__ppc__) || defined(__powerpc__)
 #define BIND_ROOM 4
 #endif
-#if defined(__arm__)
-#define BIND_ROOM 8
-#endif
 #if defined(TARGET_ARM64)
 #define BIND_ROOM 4
 #endif
@@ -569,7 +566,7 @@ new_codechunk (CodeChunk *last, int dynamic, int size)
 #endif
 	}
 
-	chunk = malloc (sizeof (CodeChunk));
+	chunk = (CodeChunk *) malloc (sizeof (CodeChunk));
 	if (!chunk) {
 		if (flags == CODE_FLAG_MALLOC)
 			dlfree (ptr);
@@ -579,7 +576,7 @@ new_codechunk (CodeChunk *last, int dynamic, int size)
 	}
 	chunk->next = NULL;
 	chunk->size = chunk_size;
-	chunk->data = ptr;
+	chunk->data = (char *) ptr;
 	chunk->flags = flags;
 	chunk->pos = bsize;
 	chunk->bsize = bsize;
