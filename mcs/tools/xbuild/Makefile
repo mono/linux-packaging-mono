@@ -5,7 +5,7 @@ NO_TESTS = yes
 
 include xbuild.make
 
-LOCAL_MCS_FLAGS = -r:$(XBUILD_FRAMEWORK) -r:$(XBUILD_UTILITIES) -r:$(XBUILD_ENGINE)
+LOCAL_MCS_FLAGS = -r:$(XBUILD_FRAMEWORK) -r:$(XBUILD_UTILITIES) -r:$(XBUILD_ENGINE) -r:$(XBUILD_MSTASKS)
 PROGRAM = xbuild.exe
 
 include ../../build/executable.make
@@ -105,11 +105,11 @@ EXTRA_DISTFILES = \
 	frameworks/net_4.5.1.xml \
 	targets/Microsoft.Portable.CSharp_4.0.targets \
 	targets/Microsoft.Portable.CSharp_4.5.targets \
+	targets/Microsoft.Portable.VisualBasic_4.0.targets \
+	targets/Microsoft.Portable.VisualBasic_4.5.targets \
 	targets/Microsoft.Portable.Common.targets \
 	targets/Microsoft.Portable.Core.targets \
 	targets/Microsoft.Portable.Core.props \
 	targets/Microsoft.WebApplication.targets \
-	targets/Microsoft.Portable.VisualBasic_4.0.targets \
-	targets/Microsoft.Portable.VisualBasic_4.5.targets \
 	xbuild.make \
 	xbuild_test.make

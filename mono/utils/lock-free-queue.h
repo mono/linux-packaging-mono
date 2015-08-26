@@ -28,8 +28,8 @@
 #ifndef __MONO_LOCKFREEQUEUE_H__
 #define __MONO_LOCKFREEQUEUE_H__
 
-#include <mono/utils/mono-publib.h>
 #include <glib.h>
+#include <mono/utils/mono-publib.h>
 
 //#define QUEUE_DEBUG	1
 

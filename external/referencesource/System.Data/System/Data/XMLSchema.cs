@@ -22,16 +22,19 @@ namespace System.Data {
     internal class XMLSchema {
 
         internal static TypeConverter GetConverter(Type type) { 
+#if !DISABLE_CAS_USE
             HostProtectionAttribute protAttrib = new HostProtectionAttribute();
             protAttrib.SharedState = true;
-
             CodeAccessPermission permission = (CodeAccessPermission)protAttrib.CreatePermission();
             permission.Assert(); 
+#endif
             try {
                 return TypeDescriptor.GetConverter(type);
             }
             finally {
+#if !DISABLE_CAS_USE
                 CodeAccessPermission.RevertAssert(); 
+#endif
             }
         }
 

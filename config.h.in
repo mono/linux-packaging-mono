@@ -121,7 +121,7 @@
 /* Extension module enabled */
 #undef ENABLE_EXTENSION_MODULE
 
-/* Gsharing */
+/* Gsharedvt */
 #undef ENABLE_GSHAREDVT
 
 /* Icall export enabled */
@@ -180,6 +180,9 @@
 
 /* Define to 1 if you have the <CommonCrypto/CommonDigest.h> header file. */
 #undef HAVE_COMMONCRYPTO_COMMONDIGEST_H
+
+/* Define to 1 if you have the <complex.h> header file. */
+#undef HAVE_COMPLEX_H
 
 /* Define to 1 if you have the `confstr' function. */
 #undef HAVE_CONFSTR
@@ -287,15 +290,6 @@
 /* Define to 1 if you have the `futimes' function. */
 #undef HAVE_FUTIMES
 
-/* GC requires thread registration */
-#undef HAVE_GC_ALLOW_REGISTER_THREADS
-
-/* Define to 1 if you have the <gc/gc.h> header file. */
-#undef HAVE_GC_GC_H
-
-/* Define to 1 if you have the <gc.h> header file. */
-#undef HAVE_GC_H
-
 /* Have getaddrinfo */
 #undef HAVE_GETADDRINFO
 
@@ -380,7 +374,7 @@
 /* Have inet_ntop */
 #undef HAVE_INET_NTOP
 
-/* Define to 1 if you have the `inet_pton' function. */
+/* Have inet_pton */
 #undef HAVE_INET_PTON
 
 /* Define to 1 if you have the <inttypes.h> header file. */
@@ -520,6 +514,9 @@
 
 /* Define to 1 if you have the `posix_madvise' function. */
 #undef HAVE_POSIX_MADVISE
+
+/* Define to 1 if you have the `prctl' function. */
+#undef HAVE_PRCTL
 
 /* Define to 1 if you have the `preadv' function. */
 #undef HAVE_PREADV
@@ -755,6 +752,9 @@
 /* Define to 1 if you have the <syslog.h> header file. */
 #undef HAVE_SYSLOG_H
 
+/* Define to 1 if you have the `system' function. */
+#undef HAVE_SYSTEM
+
 /* Define to 1 if you have the <sys/auxv.h> header file. */
 #undef HAVE_SYS_AUXV_H
 
@@ -793,6 +793,9 @@
 
 /* Define to 1 if you have the <sys/poll.h> header file. */
 #undef HAVE_SYS_POLL_H
+
+/* Define to 1 if you have the <sys/prctl.h> header file. */
+#undef HAVE_SYS_PRCTL_H
 
 /* Define to 1 if you have the <sys/resource.h> header file. */
 #undef HAVE_SYS_RESOURCE_H
@@ -942,9 +945,6 @@
    */
 #undef LT_OBJDIR
 
-/* Cross-compiling using MinGW */
-#undef MINGW_CROSS_COMPILE
-
 /* Enable the allocation and indexing of arrays greater than Int32.MaxValue */
 #undef MONO_BIG_ARRAYS
 
@@ -1060,6 +1060,9 @@
 #undef TARGET_PS3
 
 /* ... */
+#undef TARGET_PS4
+
+/* ... */
 #undef TARGET_S390X
 
 /* ... */
@@ -1068,7 +1071,7 @@
 /* ... */
 #undef TARGET_SPARC64
 
-/* Target OS is Win32/MinGW */
+/* Target Platform is Win32 */
 #undef TARGET_WIN32
 
 /* ... */
@@ -1076,6 +1079,9 @@
 
 /* ... */
 #undef TARGET_XBOX360
+
+/* Enable cooperative stop-the-world garbage collection. */
+#undef USE_COOP_GC
 
 /* ... */
 #undef USE_GCC_ATOMIC_OPS

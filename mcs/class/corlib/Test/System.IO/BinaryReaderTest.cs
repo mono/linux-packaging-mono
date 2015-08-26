@@ -274,20 +274,6 @@ namespace MonoTests.System.IO
 			}
 		}
 
-		[Test]
-		public void TestReadUnicode ()
-		{
-			char testChar1 = 'H';
-			using (var stream = new MemoryStream())
-			using (var writer = new BinaryWriter(stream, Encoding.Unicode, true))
-			using (var reader = new BinaryReader(stream, Encoding.Unicode))
-			{
-				writer.Write(testChar1);
-				stream.Position = 0;
-				Assert.AreEqual ('H', reader.ReadChar ());
-			}
-		}
-
 
 		//-TODO: (TestRead[Type]*) Verify the ReadBoolean, ReadByte ....
 		// ReadBoolean, ReadByte, ReadChar, ReadInt32 Done
@@ -1076,7 +1062,7 @@ namespace MonoTests.System.IO
 	}
 	
 	[Test]
-	[ExpectedException(typeof(EndOfStreamException))]
+	[ExpectedException(typeof(IOException))]
 	public void ReadDecimalException ()
 	{
 		MemoryStream stream = new MemoryStream (new byte [] {0, 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 0, 0, 0, 0 ,87, 98, 0, 0, 0, 0, 0});
@@ -1573,6 +1559,23 @@ namespace MonoTests.System.IO
 				reader.Read (readChars, 0, 4);
 				Assert.AreEqual (1, reader.ReadCharsCounter);
 				Assert.AreEqual (1, reader.ReadCounter);
+			}
+		}
+	}
+
+	// Bug Xamarin #30171
+	[Test]
+	public void BinaryReaderRegressionMono40 ()
+	{
+		char testChar1 = 'H';
+		using (var stream = new MemoryStream()){
+			using (var writer = new BinaryWriter(stream, Encoding.Unicode, true)){
+				using (var reader = new BinaryReader(stream, Encoding.Unicode)) {
+					writer.Write(testChar1);
+					stream.Position = 0;
+					char testchar2 = reader.ReadChar();
+					Assert.AreEqual (testChar1, testchar2);
+				}
 			}
 		}
 	}

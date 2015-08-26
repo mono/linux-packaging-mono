@@ -89,7 +89,7 @@ struct sigcontext {
 #endif
 #define MONO_ARCH_HAVE_RESTORE_STACK_SUPPORT 1
 
-#define MONO_ARCH_CPU_SPEC x86_desc
+#define MONO_ARCH_CPU_SPEC mono_x86_desc
 
 #define MONO_MAX_IREGS 8
 #define MONO_MAX_FREGS 8
@@ -206,11 +206,11 @@ typedef struct {
 /* X86 uses jit_tls->lmf (See emit_push_lmf ()) */
 #define MONO_ARCH_ENABLE_MONO_LMF_VAR 1
 #endif
-#define MONO_ARCH_HAVE_CREATE_DELEGATE_TRAMPOLINE 1
 #define MONO_ARCH_HAVE_TLS_GET (mono_x86_have_tls_get ())
 #define MONO_ARCH_IMT_REG X86_EDX
 #define MONO_ARCH_VTABLE_REG X86_EDX
 #define MONO_ARCH_RGCTX_REG MONO_ARCH_IMT_REG
+#define MONO_ARCH_EXC_REG X86_EAX
 #define MONO_ARCH_HAVE_GENERALIZED_IMT_THUNK 1
 #define MONO_ARCH_HAVE_LIVERANGE_OPS 1
 #define MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX 1
@@ -256,6 +256,7 @@ typedef struct {
 #define MONO_ARCH_HAVE_TRANSLATE_TLS_OFFSET 1
 #define MONO_ARCH_HAVE_TLS_GET_REG 1
 #define MONO_ARCH_HAVE_DUMMY_INIT 1
+#define MONO_ARCH_HAVE_PATCH_CODE_NEW 1
 
 /* Used for optimization, not complete */
 #define MONO_ARCH_IS_OP_MEMBASE(opcode) ((opcode) == OP_X86_PUSH_MEMBASE)
@@ -311,30 +312,30 @@ typedef struct {
 } GSharedVtCallInfo;
 
 guint8*
-mono_x86_emit_tls_get (guint8* code, int dreg, int tls_offset) MONO_INTERNAL;
+mono_x86_emit_tls_get (guint8* code, int dreg, int tls_offset);
 
 guint8*
-mono_x86_emit_tls_get_reg (guint8* code, int dreg, int offset_reg) MONO_INTERNAL;
+mono_x86_emit_tls_get_reg (guint8* code, int dreg, int offset_reg);
 
 guint32
-mono_x86_get_this_arg_offset (MonoGenericSharingContext *gsctx, MonoMethodSignature *sig) MONO_INTERNAL;
+mono_x86_get_this_arg_offset (MonoGenericSharingContext *gsctx, MonoMethodSignature *sig);
 
 gboolean
-mono_x86_have_tls_get (void) MONO_INTERNAL;
+mono_x86_have_tls_get (void);
 
 void
 mono_x86_throw_exception (mgreg_t *regs, MonoObject *exc, 
-						  mgreg_t eip, gboolean rethrow) MONO_INTERNAL;
+						  mgreg_t eip, gboolean rethrow);
 
 void
 mono_x86_throw_corlib_exception (mgreg_t *regs, guint32 ex_token_index, 
-								 mgreg_t eip, gint32 pc_offset) MONO_INTERNAL;
+								 mgreg_t eip, gint32 pc_offset);
 
 void 
-mono_x86_patch (unsigned char* code, gpointer target) MONO_INTERNAL;
+mono_x86_patch (unsigned char* code, gpointer target);
 
 gpointer
-mono_x86_start_gsharedvt_call (GSharedVtCallInfo *info, gpointer *caller, gpointer *callee, gpointer mrgctx_reg) MONO_INTERNAL;
+mono_x86_start_gsharedvt_call (GSharedVtCallInfo *info, gpointer *caller, gpointer *callee, gpointer mrgctx_reg);
 
 #endif /* __MONO_MINI_X86_H__ */  
 

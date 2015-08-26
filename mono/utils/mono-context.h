@@ -17,6 +17,10 @@
 #include <signal.h>
 #endif
 
+#ifdef HOST_WATCHOS
+#include <ucontext.h>
+#endif
+
 /*
  * General notes about mono-context.
  * Each arch defines a MonoContext struct with all GPR regs + IP/PC.
@@ -147,6 +151,7 @@ typedef struct {
 
 #elif (defined(__x86_64__) && !defined(MONO_CROSS_COMPILE)) || (defined(TARGET_AMD64)) /* defined(__i386__) */
 
+#include <mono/arch/amd64/amd64-codegen.h>
 
 #if !defined( HOST_WIN32 ) && !defined(__native_client__) && !defined(__native_client_codegen__)
 
@@ -157,32 +162,17 @@ typedef struct {
 #endif
 
 typedef struct {
-	mgreg_t rax;
-	mgreg_t rbx;
-	mgreg_t rcx;
-	mgreg_t rdx;
-	mgreg_t rbp;
-	mgreg_t rsp;
-    mgreg_t rsi;
-	mgreg_t rdi;
-	mgreg_t r8;
-	mgreg_t r9;
-	mgreg_t r10;
-	mgreg_t r11;
-	mgreg_t r12;
-	mgreg_t r13;
-	mgreg_t r14;
-	mgreg_t r15;
-	mgreg_t rip;
+	mgreg_t gregs [AMD64_NREG];
+	double fregs [AMD64_XMM_NREG];
 } MonoContext;
 
-#define MONO_CONTEXT_SET_IP(ctx,ip) do { (ctx)->rip = (mgreg_t)(ip); } while (0); 
-#define MONO_CONTEXT_SET_BP(ctx,bp) do { (ctx)->rbp = (mgreg_t)(bp); } while (0); 
-#define MONO_CONTEXT_SET_SP(ctx,esp) do { (ctx)->rsp = (mgreg_t)(esp); } while (0); 
+#define MONO_CONTEXT_SET_IP(ctx,ip) do { (ctx)->gregs [AMD64_RIP] = (mgreg_t)(ip); } while (0);
+#define MONO_CONTEXT_SET_BP(ctx,bp) do { (ctx)->gregs [AMD64_RBP] = (mgreg_t)(bp); } while (0);
+#define MONO_CONTEXT_SET_SP(ctx,esp) do { (ctx)->gregs [AMD64_RSP] = (mgreg_t)(esp); } while (0);
 
-#define MONO_CONTEXT_GET_IP(ctx) ((gpointer)((ctx)->rip))
-#define MONO_CONTEXT_GET_BP(ctx) ((gpointer)((ctx)->rbp))
-#define MONO_CONTEXT_GET_SP(ctx) ((gpointer)((ctx)->rsp))
+#define MONO_CONTEXT_GET_IP(ctx) ((gpointer)((ctx)->gregs [AMD64_RIP]))
+#define MONO_CONTEXT_GET_BP(ctx) ((gpointer)((ctx)->gregs [AMD64_RBP]))
+#define MONO_CONTEXT_GET_SP(ctx) ((gpointer)((ctx)->gregs [AMD64_RSP]))
 
 #if defined (HOST_WIN32) && !defined(__GNUC__)
 /* msvc doesn't support inline assembly, so have to use a separate .asm file */
@@ -262,6 +252,24 @@ typedef struct {
 #define MONO_CONTEXT_GET_BP(ctx) ((gpointer)((ctx)->regs [ARMREG_FP]))
 #define MONO_CONTEXT_GET_SP(ctx) ((gpointer)((ctx)->regs [ARMREG_SP]))
 
+#if defined(HOST_WATCHOS)
+
+#define MONO_CONTEXT_GET_CURRENT(ctx) do {							\
+	ucontext_t uctx;												\
+	struct __darwin_mcontext32 *mctx;								\
+	getcontext(&uctx);												\
+	mctx = uctx.uc_mcontext;										\
+	memcpy(ctx.regs, mctx->__ss.__r, 13 * sizeof(__uint32_t));		\
+	ctx.regs[ARMREG_SP] = mctx->__ss.__sp;							\
+	ctx.regs[ARMREG_LR] = mctx->__ss.__lr;							\
+	ctx.regs[ARMREG_PC] = mctx->__ss.__pc;							\
+	ctx.pc = mctx->__ss.__pc;										\
+	memcpy(ctx.fregs, mctx->__fs.__r, 16 * sizeof(__uint32_t));		\
+	ctx.cpsr = mctx->__ss.__cpsr;									\
+} while (0);
+
+#else
+
 #define MONO_CONTEXT_GET_CURRENT(ctx)	do { 	\
 	__asm__ __volatile__(			\
 		"push {r0}\n"				\
@@ -284,6 +292,8 @@ typedef struct {
 	);								\
 	ctx.pc = ctx.regs [15];			\
 } while (0)
+
+#endif
 
 #define MONO_ARCH_HAS_MONO_CONTEXT 1
 
@@ -338,6 +348,8 @@ typedef struct {
 		: "memory"			 \
 	); \
 } while (0)
+
+#define MONO_ARCH_HAS_MONO_CONTEXT 1
 
 #elif defined(__mono_ppc__) /* defined(__arm__) */
 
@@ -558,7 +570,7 @@ typedef struct ucontext MonoContext;
  * The naming is misleading, the SIGCTX argument should be the platform's context
  * structure (ucontext_c on posix, CONTEXT on windows).
  */
-void mono_sigctx_to_monoctx (void *sigctx, MonoContext *mctx) MONO_INTERNAL;
+void mono_sigctx_to_monoctx (void *sigctx, MonoContext *mctx);
 
 /*
  * This will not completely initialize SIGCTX since MonoContext contains less
@@ -566,6 +578,6 @@ void mono_sigctx_to_monoctx (void *sigctx, MonoContext *mctx) MONO_INTERNAL;
  * the system, and use this function to override the parts of it which are
  * also in MonoContext.
  */
-void mono_monoctx_to_sigctx (MonoContext *mctx, void *sigctx) MONO_INTERNAL;
+void mono_monoctx_to_sigctx (MonoContext *mctx, void *sigctx);
 
 #endif /* __MONO_MONO_CONTEXT_H__ */

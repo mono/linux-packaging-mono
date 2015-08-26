@@ -17,10 +17,15 @@ namespace System {
 
     [Serializable]
     [AttributeUsageAttribute(AttributeTargets.All, Inherited = true, AllowMultiple=false)] 
+#if !MOBILE
     [ClassInterface(ClassInterfaceType.None)]
     [ComDefaultInterface(typeof(_Attribute))]
     [System.Runtime.InteropServices.ComVisible(true)]
-    public abstract partial class Attribute : _Attribute
+#endif
+    public abstract partial class Attribute
+#if !MOBILE
+        : _Attribute
+#endif
     {
         #region Private Statics
 #if MONO
@@ -42,14 +47,14 @@ namespace System {
             var method = (MethodInfo) parameter.Member;
             var definition = method.GetBaseDefinition ();
 
+			if (attributeType == null)
+				attributeType = typeof (Attribute);
+
             if (method == definition)
-				return (Attribute []) parameter.GetCustomAttributes (typeof(Attribute), inherit);
+		return (Attribute []) parameter.GetCustomAttributes (attributeType, inherit);
 
             var types = new List<Type> ();
             var custom_attributes = new List<Attribute> ();
-
-            if (attributeType == null)
-                attributeType = typeof (Attribute);
 
             while (true) {
                 var param = method.GetParametersInternal () [parameter.Position];
@@ -1012,7 +1017,7 @@ namespace System {
         #region Public Members
         public virtual bool IsDefaultAttribute() { return false; }
         #endregion
-
+#if !MOBILE
         void _Attribute.GetTypeInfoCount(out uint pcTInfo)
         {
             throw new NotImplementedException();
@@ -1032,5 +1037,6 @@ namespace System {
         {
             throw new NotImplementedException();
         }
+#endif
     }
 }

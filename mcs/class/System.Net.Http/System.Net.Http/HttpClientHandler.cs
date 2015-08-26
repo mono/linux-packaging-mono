@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
 using System.Net.Http.Headers;
+using System.Linq;
 
 namespace System.Net.Http
 {
@@ -274,9 +275,18 @@ namespace System.Net.Http
 			// Add request headers
 			var headers = wr.Headers;
 			foreach (var header in request.Headers) {
-				foreach (var value in header.Value) {
-					headers.AddValue (header.Key, value);
+				var values = header.Value;
+				if (header.Key == "Transfer-Encoding") {
+					// Chunked Transfer-Encoding is never set for HttpWebRequest. It's detected
+					// from ContentLength by HttpWebRequest
+					values = values.Where (l => l != "chunked");
 				}
+
+				var values_formated = HttpRequestHeaders.GetSingleHeaderString (header.Key, values);
+				if (values_formated == null)
+					continue;
+
+				headers.AddValue (header.Key, values_formated);
 			}
 			
 			return wr;

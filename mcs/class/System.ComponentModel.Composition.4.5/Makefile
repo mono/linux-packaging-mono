@@ -3,7 +3,8 @@ SUBDIRS =
 include ../../build/rules.make
 
 LIBRARY = System.ComponentModel.Composition.dll
-LIB_MCS_FLAGS = -r:System.dll -r:System.Core.dll -d:CLR40 -resource:$(STRING_MESSAGES) -d:USE_ECMA_KEY,FEATURE_REFLECTIONCONTEXT,FEATURE_REFLECTIONFILEIO,FEATURE_SERIALIZATION,FEATURE_SLIMLOCK -nowarn:219,414
+LIB_REFS = System System.Core
+LIB_MCS_FLAGS = -d:CLR40 -resource:$(STRING_MESSAGES) -d:USE_ECMA_KEY,FEATURE_REFLECTIONCONTEXT,FEATURE_REFLECTIONFILEIO,FEATURE_SERIALIZATION,FEATURE_SLIMLOCK -nowarn:219,414
 
 STRING_MESSAGES = Microsoft.Internal.Strings.resources
 
@@ -12,7 +13,7 @@ CLEAN_FILES += $(STRING_MESSAGES)
 EXTRA_DISTFILES = \
 	src/ComponentModel/Strings.resx
 	
-VALID_PROFILE := $(filter net_4_5 monotouch monodroid xammac xammac_net_4_5 mobile mobile_static, $(PROFILE))
+VALID_PROFILE := $(filter net_4_5 monotouch monotouch_watch monodroid xammac xammac_net_4_5 mobile mobile_static, $(PROFILE))
 ifndef VALID_PROFILE
 LIBRARY_NAME = dummy-System.ComponentModel.Composition.dll
 NO_INSTALL = yes
