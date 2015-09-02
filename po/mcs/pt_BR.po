@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2015-08-26 05:54-0400\n"
+"POT-Creation-Date: 2015-09-02 12:15-0400\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -276,32 +276,38 @@ msgid "Error reading resource file `{0}'"
 msgstr "Erro ao ler arquivo de recurso \"{0}\""
 
 #: mcs/mcs/assembly.cs:877
-msgid "Could not write to file `"
+#, csharp-format
+msgid "Output file `{0}' exceeds the 4GB limit"
+msgstr ""
+
+#: mcs/mcs/assembly.cs:879
+#, fuzzy, csharp-format
+msgid "Could not write to file `{0}'. {1}"
 msgstr "Não foi possível escrever para o arquivo \""
 
-#: mcs/mcs/assembly.cs:921
+#: mcs/mcs/assembly.cs:923
 msgid "Cannot specify -main if building a module or library"
 msgstr ""
 "Não é possível especificar -main se estiver compilando um módulo ou "
 "biblioteca"
 
-#: mcs/mcs/assembly.cs:947
+#: mcs/mcs/assembly.cs:949
 #, csharp-format
 msgid "Could not find `{0}' specified for Main method"
 msgstr "Não foi possível encontrar o \"{0}\" especificado para o método Main"
 
-#: mcs/mcs/assembly.cs:953
+#: mcs/mcs/assembly.cs:955
 #, csharp-format
 msgid "`{0}' specified for Main method must be a valid class or struct"
 msgstr ""
 "\"{0}\" especificado para o método Main deve ser uma classe válida ou struct"
 
-#: mcs/mcs/assembly.cs:957
+#: mcs/mcs/assembly.cs:959
 #, csharp-format
 msgid "`{0}' does not have a suitable static Main method"
 msgstr "\"{0}\" não possue um método Main estático apropriado"
 
-#: mcs/mcs/assembly.cs:960
+#: mcs/mcs/assembly.cs:962
 #, csharp-format
 msgid ""
 "Program `{0}' does not contain a static `Main' method suitable for an entry "
@@ -310,21 +316,21 @@ msgstr ""
 "Programa \"{0}\" não contém um método estático \"Main\" apropriado para um "
 "ponto de entrada"
 
-#: mcs/mcs/assembly.cs:979
+#: mcs/mcs/assembly.cs:981
 msgid "Error during assembly signing. "
 msgstr "Erro durante a assinatura do assembly. "
 
-#: mcs/mcs/assembly.cs:1164
+#: mcs/mcs/assembly.cs:1166
 #, fuzzy, csharp-format
 msgid "Metadata file `{0}' could not be found"
 msgstr "Arquivo fonte \"{0}\" não pôde ser encontrado"
 
-#: mcs/mcs/assembly.cs:1169
+#: mcs/mcs/assembly.cs:1171
 #, fuzzy, csharp-format
 msgid "Metadata file `{0}' does not contain valid metadata"
 msgstr "arquivo \"{0}\" possui metadados inválidos \"{1}\""
 
-#: mcs/mcs/assembly.cs:1175
+#: mcs/mcs/assembly.cs:1177
 #, fuzzy, csharp-format
 msgid ""
 "Referenced assembly file `{0}' is a module. Consider using `-addmodule' "
@@ -333,7 +339,7 @@ msgstr ""
 "Arquivo referenciado \"{0}\" não é um assembly. Considere, ao invés disso, "
 "utilizar a opção \"-addmodule\""
 
-#: mcs/mcs/assembly.cs:1182
+#: mcs/mcs/assembly.cs:1184
 #, fuzzy, csharp-format
 msgid ""
 "Added module file `{0}' is an assembly. Consider using `-r' option to "

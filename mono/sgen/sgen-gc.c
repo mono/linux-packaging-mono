@@ -2744,7 +2744,7 @@ mono_gc_wbarrier_generic_store (gpointer ptr, GCObject* value)
 {
 	SGEN_LOG (8, "Wbarrier store at %p to %p (%s)", ptr, value, value ? sgen_client_vtable_get_name (SGEN_LOAD_VTABLE (value)) : "null");
 	SGEN_UPDATE_REFERENCE_ALLOW_NULL (ptr, value);
-	if (ptr_in_nursery (value))
+	if (ptr_in_nursery (value) || concurrent_collection_in_progress)
 		mono_gc_wbarrier_generic_nostore (ptr);
 	sgen_dummy_use (value);
 }
@@ -2761,7 +2761,7 @@ mono_gc_wbarrier_generic_store_atomic (gpointer ptr, GCObject *value)
 
 	InterlockedWritePointer (ptr, value);
 
-	if (ptr_in_nursery (value))
+	if (ptr_in_nursery (value) || concurrent_collection_in_progress)
 		mono_gc_wbarrier_generic_nostore (ptr);
 
 	sgen_dummy_use (value);
@@ -3243,6 +3243,7 @@ sgen_gc_init (void)
 					sgen_env_var_error (MONO_GC_DEBUG_NAME, "Ignoring.", "`check-concurrent` only works with concurrent major collectors.");
 					continue;
 				}
+				nursery_clear_policy = CLEAR_AT_GC;
 				do_concurrent_checks = TRUE;
 			} else if (!strcmp (opt, "dump-nursery-at-minor-gc")) {
 				do_dump_nursery_content = TRUE;
