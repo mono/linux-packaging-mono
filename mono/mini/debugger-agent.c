@@ -988,14 +988,14 @@ mono_debugger_agent_init (void)
 	/* Needed by the hash_table_new_type () call below */
 	mono_gc_base_init ();
 
-	thread_to_tls = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_KEY_GC);
-	MONO_GC_REGISTER_ROOT_FIXED (thread_to_tls);
+	thread_to_tls = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_KEY_GC, MONO_ROOT_SOURCE_DEBUGGER, "thread-to-tls table");
+	MONO_GC_REGISTER_ROOT_FIXED (thread_to_tls, MONO_ROOT_SOURCE_DEBUGGER, "thread-to-tls table");
 
-	tid_to_thread = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_VALUE_GC);
-	MONO_GC_REGISTER_ROOT_FIXED (tid_to_thread);
+	tid_to_thread = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_VALUE_GC, MONO_ROOT_SOURCE_DEBUGGER, "tid-to-thread table");
+	MONO_GC_REGISTER_ROOT_FIXED (tid_to_thread, MONO_ROOT_SOURCE_DEBUGGER, "tid-to-thread table");
 
-	tid_to_thread_obj = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_VALUE_GC);
-	MONO_GC_REGISTER_ROOT_FIXED (tid_to_thread_obj);
+	tid_to_thread_obj = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_VALUE_GC, MONO_ROOT_SOURCE_DEBUGGER, "tid-to-thread object table");
+	MONO_GC_REGISTER_ROOT_FIXED (tid_to_thread_obj, MONO_ROOT_SOURCE_DEBUGGER, "tid-to-thread object table");
 
 	pending_assembly_loads = g_ptr_array_new ();
 	domains = g_hash_table_new (mono_aligned_addr_hash, NULL);
@@ -1928,8 +1928,8 @@ objrefs_init (void)
 {
 	objrefs = g_hash_table_new_full (NULL, NULL, NULL, free_objref);
 	obj_to_objref = g_hash_table_new (NULL, NULL);
-	suspended_objs = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_KEY_GC);
-	MONO_GC_REGISTER_ROOT_FIXED (suspended_objs);
+	suspended_objs = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_KEY_GC, MONO_ROOT_SOURCE_DEBUGGER, "suspended objects table");
+	MONO_GC_REGISTER_ROOT_FIXED (suspended_objs, MONO_ROOT_SOURCE_DEBUGGER, "suspended objects table");
 }
 
 static void
@@ -3835,7 +3835,7 @@ thread_startup (MonoProfiler *prof, uintptr_t tid)
 	g_assert (!tls);
 	// FIXME: Free this somewhere
 	tls = g_new0 (DebuggerTlsData, 1);
-	MONO_GC_REGISTER_ROOT_SINGLE (tls->thread);
+	MONO_GC_REGISTER_ROOT_SINGLE (tls->thread, MONO_ROOT_SOURCE_DEBUGGER, "debugger thread reference");
 	tls->thread = thread;
 	mono_native_tls_set_value (debugger_tls_id, tls);
 
@@ -7013,7 +7013,7 @@ vm_commands (int command, int id, guint8 *p, guint8 *end, Buffer *buf)
 		 * Store the invoke data into tls, the thread will execute it after it is
 		 * resumed.
 		 */
-		if (tls->pending_invoke || tls->invoke)
+		if (tls->pending_invoke)
 			return ERR_NOT_SUSPENDED;
 		tls->pending_invoke = g_new0 (InvokeData, 1);
 		tls->pending_invoke->id = id;
@@ -8404,7 +8404,7 @@ method_commands_internal (int command, MonoMethod *method, MonoDomain *domain, g
 		break;
 	}
 	case CMD_METHOD_GET_LOCALS_INFO: {
-		int i, j, num_locals;
+		int i, num_locals;
 		MonoDebugLocalsInfo *locals;
 		int *locals_map = NULL;
 
@@ -8431,40 +8431,25 @@ method_commands_internal (int command, MonoMethod *method, MonoDomain *domain, g
 				buffer_add_int (buf, header->code_size);
 			}
 		} else {
-			/* Maps between the IL locals index and the index in locals->locals */
-			locals_map = g_new0 (int, header->num_locals);
-			for (i = 0; i < header->num_locals; ++i)
-				locals_map [i] = -1;
 			num_locals = locals->num_locals;
-			for (i = 0; i < num_locals; ++i) {
-				g_assert (locals->locals [i].index < header->num_locals);
-				locals_map [locals->locals [i].index] = i;
-			}
 			buffer_add_int (buf, num_locals);
 
 			/* Types */
-			for (i = 0; i < header->num_locals; ++i) {
-				if (locals_map [i] != -1)
-					buffer_add_typeid (buf, domain, mono_class_from_mono_type (header->locals [i]));
+			for (i = 0; i < num_locals; ++i) {
+				g_assert (locals->locals [i].index < header->num_locals);
+				buffer_add_typeid (buf, domain, mono_class_from_mono_type (header->locals [locals->locals [i].index]));
 			}
-
 			/* Names */
-			for (i = 0; i < header->num_locals; ++i) {
-				if (locals_map [i] != -1)
-					buffer_add_string (buf, locals->locals [locals_map [i]].name);
-			}
-
+			for (i = 0; i < num_locals; ++i)
+				buffer_add_string (buf, locals->locals [i].name);
 			/* Scopes */
-			for (i = 0; i < header->num_locals; ++i) {
-				if (locals_map [i] != -1) {
-					j = locals_map [i];
-					if (locals->locals [j].block) {
-						buffer_add_int (buf, locals->locals [j].block->start_offset);
-						buffer_add_int (buf, locals->locals [j].block->end_offset);
-					} else {
-						buffer_add_int (buf, 0);
-						buffer_add_int (buf, header->code_size);
-					}
+			for (i = 0; i < num_locals; ++i) {
+				if (locals->locals [i].block) {
+					buffer_add_int (buf, locals->locals [i].block->start_offset);
+					buffer_add_int (buf, locals->locals [i].block->end_offset);
+				} else {
+					buffer_add_int (buf, 0);
+					buffer_add_int (buf, header->code_size);
 				}
 			}
 		}

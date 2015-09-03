@@ -1980,7 +1980,7 @@ major_finish_collection (const char *reason, size_t old_next_pin_slot, gboolean 
 	fragment_total = sgen_build_nursery_fragments (nursery_section, NULL);
 	if (!fragment_total)
 		degraded_mode = 1;
-	SGEN_LOG (4, "Free space in nursery after major %ld", fragment_total);
+	SGEN_LOG (4, "Free space in nursery after major %ld", (long)fragment_total);
 
 	if (do_concurrent_checks && concurrent_collection_in_progress)
 		sgen_debug_check_nursery_is_clean ();
@@ -2520,7 +2520,7 @@ sgen_have_pending_finalizers (void)
  * We do not coalesce roots.
  */
 int
-sgen_register_root (char *start, size_t size, SgenDescriptor descr, int root_type)
+sgen_register_root (char *start, size_t size, SgenDescriptor descr, int root_type, int source, const char *msg)
 {
 	RootRecord new_root;
 	int i;
@@ -2532,6 +2532,8 @@ sgen_register_root (char *start, size_t size, SgenDescriptor descr, int root_typ
 			size_t old_size = root->end_root - start;
 			root->end_root = start + size;
 			SGEN_ASSERT (0, !!root->root_desc == !!descr, "Can't change whether a root is precise or conservative.");
+			SGEN_ASSERT (0, root->source == source, "Can't change a root's source identifier.");
+			SGEN_ASSERT (0, !!root->msg == !!msg, "Can't change a root's message.");
 			root->root_desc = descr;
 			roots_size += size;
 			roots_size -= old_size;
@@ -2542,11 +2544,13 @@ sgen_register_root (char *start, size_t size, SgenDescriptor descr, int root_typ
 
 	new_root.end_root = start + size;
 	new_root.root_desc = descr;
+	new_root.source = source;
+	new_root.msg = msg;
 
 	sgen_hash_table_replace (&roots_hash [root_type], start, &new_root, NULL);
 	roots_size += size;
 
-	SGEN_LOG (3, "Added root for range: %p-%p, descr: %llx  (%d/%d bytes)", start, new_root.end_root, descr, (int)size, (int)roots_size);
+	SGEN_LOG (3, "Added root for range: %p-%p, descr: %llx  (%d/%d bytes)", start, new_root.end_root, (long long)descr, (int)size, (int)roots_size);
 
 	UNLOCK_GC;
 	return TRUE;
