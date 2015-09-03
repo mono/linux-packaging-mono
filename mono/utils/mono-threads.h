@@ -16,6 +16,7 @@
 #include <mono/utils/mono-mutex.h>
 #include <mono/utils/mono-tls.h>
 #include <mono/utils/mono-threads-coop.h>
+#include <mono/utils/mono-threads-api.h>
 
 #include <glib.h>
 #include <config.h>
@@ -280,6 +281,7 @@ typedef struct {
 	void (*setup_async_callback) (MonoContext *ctx, void (*async_cb)(void *fun), gpointer user_data);
 	gboolean (*thread_state_init_from_sigctx) (MonoThreadUnwindState *state, void *sigctx);
 	gboolean (*thread_state_init_from_handle) (MonoThreadUnwindState *tctx, MonoThreadInfo *info);
+	void (*thread_state_init) (MonoThreadUnwindState *tctx);
 } MonoThreadInfoRuntimeCallbacks;
 
 //Not using 0 and 1 to ensure callbacks are not returning bad data
@@ -631,6 +633,7 @@ gboolean mono_thread_info_is_running (THREAD_INFO_TYPE *info);
 gboolean mono_thread_info_is_live (THREAD_INFO_TYPE *info);
 int mono_thread_info_suspend_count (THREAD_INFO_TYPE *info);
 int mono_thread_info_current_state (THREAD_INFO_TYPE *info);
+const char* mono_thread_state_name (int state);
 
 gboolean mono_thread_info_in_critical_location (THREAD_INFO_TYPE *info);
 gboolean mono_thread_info_begin_suspend (THREAD_INFO_TYPE *info, gboolean interrupt_kernel);

@@ -1516,8 +1516,7 @@ get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 			cinfo->ret.reg = ARMREG_R0;
 			break;
 		}
-		// FIXME: Only for variable types
-		if (mini_is_gsharedvt_type (t)) {
+		if (mini_is_gsharedvt_variable_type (t)) {
 			cinfo->ret.storage = RegTypeStructByAddr;
 			break;
 		}
@@ -1635,7 +1634,7 @@ get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 				add_general (&gr, &stack_size, ainfo, TRUE);
 				break;
 			}
-			if (mini_is_gsharedvt_type (t)) {
+			if (mini_is_gsharedvt_variable_type (t)) {
 				/* gsharedvt arguments are passed by ref */
 				g_assert (mini_is_gsharedvt_type (t));
 				add_general (&gr, &stack_size, ainfo, TRUE);
@@ -2810,8 +2809,8 @@ dyn_call_supported (CallInfo *cinfo, MonoMethodSignature *sig)
 
 		switch (ainfo->storage) {
 		case RegTypeGeneral:
-			break;
 		case RegTypeIRegPair:
+		case RegTypeBaseGen:
 			break;
 		case RegTypeBase:
 			if (ainfo->offset >= (DYN_CALL_STACK_ARGS * sizeof (gpointer)))
@@ -2926,12 +2925,16 @@ mono_arch_start_dyn_call (MonoDynCallInfo *info, gpointer **args, guint8 *ret, g
 		ArgInfo *ainfo = &dinfo->cinfo->args [i + sig->hasthis];
 		int slot = -1;
 
-		if (ainfo->storage == RegTypeGeneral || ainfo->storage == RegTypeIRegPair || ainfo->storage == RegTypeStructByVal)
+		if (ainfo->storage == RegTypeGeneral || ainfo->storage == RegTypeIRegPair || ainfo->storage == RegTypeStructByVal) {
 			slot = ainfo->reg;
-		else if (ainfo->storage == RegTypeBase)
+		} else if (ainfo->storage == RegTypeBase) {
 			slot = PARAM_REGS + (ainfo->offset / 4);
-		else
+		} else if (ainfo->storage == RegTypeBaseGen) {
+			/* slot + 1 is the first stack slot, so the code below will work */
+			slot = 3;
+		} else {
 			g_assert_not_reached ();
+		}
 
 		if (t->byref) {
 			p->regs [slot] = (mgreg_t)*arg;
@@ -3898,6 +3901,10 @@ handle_thunk (MonoCompile *cfg, MonoDomain *domain, guchar *code, const guchar *
 			for (p = thunks; p < thunks + thunks_size; p += THUNK_SIZE) {
 				if (((guint32*)p) [0] == 0) {
 					/* Free entry */
+					target_thunk = p;
+					break;
+				} else if (((guint32*)p) [2] == (guint32)target) {
+					/* Thunk already points to target */
 					target_thunk = p;
 					break;
 				}
@@ -5976,6 +5983,22 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			ins->backend.pc_offset = code - cfg->native_code;
 			bb->spill_slot_defs = g_slist_prepend_mempool (cfg->mempool, bb->spill_slot_defs, ins);
 			break;
+		case OP_GC_SAFE_POINT: {
+#if defined (USE_COOP_GC)
+			const char *polling_func = NULL;
+			guint8 *buf [1];
+
+			polling_func = "mono_threads_state_poll";
+			ARM_LDR_IMM (code, ARMREG_IP, ins->sreg1, 0);
+			ARM_CMP_REG_IMM (code, ARMREG_IP, 0, 0);
+			buf [0] = code;
+			ARM_B_COND (code, ARMCOND_EQ, 0);
+			mono_add_patch_info (cfg, code - cfg->native_code, MONO_PATCH_INFO_INTERNAL_METHOD, polling_func);
+			code = emit_call_seq (cfg, code);
+			arm_patch (buf [0], code);
+#endif
+			break;
+		}
 
 		default:
 			g_warning ("unknown opcode %s in %s()\n", mono_inst_name (ins->opcode), __FUNCTION__);

@@ -45,7 +45,7 @@ void bzero (void *to, size_t count) { memset (to, 0, count); }
   */
 typedef struct {
 	LLVMModuleRef module;
-	LLVMValueRef throw, rethrow, throw_corlib_exception;
+	LLVMValueRef throw, rethrow, throw_corlib_exception, state_poll;
 	GHashTable *llvm_types;
 	LLVMValueRef got_var;
 	const char *got_symbol;
@@ -1186,6 +1186,9 @@ sig_to_llvm_sig_full (EmitContext *ctx, MonoMethodSignature *sig, LLVMCallInfo *
 
 				members [0] = IntPtrType ();
 				ret_type = LLVMStructType (members, 1, FALSE);
+			} else if (cinfo->ret.pair_storage [0] == LLVMArgNone && cinfo->ret.pair_storage [1] == LLVMArgNone) {
+				/* Empty struct */
+				ret_type = LLVMVoidType ();
 			} else {
 				g_assert_not_reached ();
 			}
@@ -2538,6 +2541,10 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 		case LLVMArgVtypeInReg: {
 			LLVMValueRef regs [2];
 
+			if (LLVMTypeOf (lcall) == LLVMVoidType ())
+				/* Empty struct */
+				break;
+
 			if (!addresses [ins->dreg])
 				addresses [ins->dreg] = build_alloca (ctx, sig->ret);
 
@@ -2751,7 +2758,7 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 
 	if (bb->flags & BB_EXCEPTION_HANDLER) {
 		if (!bblocks [bb->block_num].invoke_target) {
-			//LLVM_FAILURE (ctx, "handler without invokes");
+			LLVM_FAILURE (ctx, "handler without invokes");
 		}
 
 		emit_handler_start (ctx, bb, builder);
@@ -4718,6 +4725,61 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 
 		case OP_DUMMY_USE:
 			break;
+		case OP_GC_SAFE_POINT: {
+			LLVMValueRef callee, cmp, val;
+			LLVMTypeRef llvm_sig;
+			const char *icall_name;
+			LLVMBasicBlockRef poll_bb, cont_bb;
+
+			poll_bb = gen_bb (ctx, "POLL_BB");
+			cont_bb = gen_bb (ctx, "NOPOLL_BB");
+
+			val = LLVMBuildLoad (ctx->builder, convert (ctx, lhs, LLVMPointerType (LLVMInt8Type (), 0)), "");
+			cmp = LLVMBuildICmp (builder, LLVMIntEQ, val, LLVMConstInt (LLVMTypeOf (val), 0, FALSE), "");
+			LLVMBuildCondBr (ctx->builder, cmp, cont_bb, poll_bb);
+
+			builder = ctx->builder = create_builder (ctx);
+			LLVMPositionBuilderAtEnd (builder, poll_bb);
+
+			MonoMethodSignature *sig = mono_metadata_signature_alloc (mono_get_corlib (), 0);
+			sig->ret = &mono_get_void_class ()->byval_arg;
+			icall_name = "mono_threads_state_poll";
+			llvm_sig = sig_to_llvm_sig (ctx, sig);
+
+			if (ctx->cfg->compile_aot) {
+				callee = ctx->lmodule->state_poll;
+				if (!callee) {
+					MonoMethodSignature *sig = mono_metadata_signature_alloc (mono_get_corlib (), 0);
+					sig->ret = &mono_get_void_class ()->byval_arg;
+					llvm_sig = sig_to_llvm_sig (ctx, sig);
+
+					callee = get_plt_entry (ctx, llvm_sig, MONO_PATCH_INFO_INTERNAL_METHOD, icall_name);
+				}
+			} else {
+				callee = ctx->lmodule->state_poll;
+				if (!callee) {
+					MonoMethodSignature *sig = mono_metadata_signature_alloc (mono_get_corlib (), 0);
+					sig->ret = &mono_get_void_class ()->byval_arg;
+					llvm_sig = sig_to_llvm_sig (ctx, sig);
+
+					callee = LLVMAddFunction (ctx->module, icall_name, llvm_sig);
+					LLVMAddGlobalMapping (ctx->lmodule->ee, callee, resolve_patch (ctx->cfg, MONO_PATCH_INFO_INTERNAL_METHOD, icall_name));
+					ctx->lmodule->state_poll = callee;
+				}
+			}
+			//
+			// FIXME: This can use the PreserveAll cconv to avoid clobbering registers.
+			// It requires the wrapper to also use that calling convention.
+			//
+			val = emit_call (ctx, bb, &builder, callee, NULL, 0);
+			LLVMBuildBr (builder, cont_bb);
+
+			builder = ctx->builder = create_builder (ctx);
+			LLVMPositionBuilderAtEnd (builder, cont_bb);
+
+			bblocks [bb->block_num].end_bblock = cont_bb;
+			break;
+		}
 
 			/*
 			 * EXCEPTION HANDLING

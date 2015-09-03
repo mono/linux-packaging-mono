@@ -92,7 +92,7 @@ target_triplet = @target@
 @DISABLE_EXECUTABLES_FALSE@	mono$(EXEEXT)
 @DISABLE_EXECUTABLES_TRUE@noinst_PROGRAMS = genmdesc$(EXEEXT)
 @LOADED_LLVM_TRUE@am__append_1 = libmono-llvm.la
-@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(libs)
+@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
 @NACL_CODEGEN_TRUE@am__append_3 = nacl.cs
 @NACL_CODEGEN_TRUE@am__append_4 = nacl.exe
 subdir = mono/mini
@@ -584,8 +584,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
 BUILD_EXEEXT = @BUILD_EXEEXT@
-BUILD_GLIB_CFLAGS = @BUILD_GLIB_CFLAGS@
-BUILD_GLIB_LIBS = @BUILD_GLIB_LIBS@
 CC = @CC@
 CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
@@ -622,8 +620,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GMODULE_CFLAGS = @GMODULE_CFLAGS@
-GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
@@ -788,7 +784,7 @@ monodir = $(top_builddir)
 # This is needed for automake dependency generation
 libgc_libs = $(monodir)/libgc/libmonogc.la
 libgc_static_libs = $(monodir)/libgc/libmonogc-static.la
-libs = \
+boehm_libs = \
 	$(monodir)/mono/metadata/libmonoruntime.la	\
 	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
@@ -802,14 +798,14 @@ sgen_libs = \
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
 
-static_libs = \
+boehm_static_libs = \
 	$(monodir)/mono/metadata/libmonoruntime-static.la	\
 	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV) \
 	$(libgc_static_libs)
 
-sgenstatic_libs = \
+sgen_static_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen-static.la	\
 	$(monodir)/mono/sgen/libmonosgen-static.la	\
 	$(monodir)/mono/io-layer/libwapi.la	\
@@ -842,13 +838,13 @@ monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @HOST_WIN32_TRUE@libmonoldflags = -no-undefined -avoid-version -Wl,--kill-at $(monoldflags)
 @SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonosgen-2.0.la
-@SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini-static.la $(sgenstatic_libs)
+@SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini-static.la $(sgen_static_libs)
 @SUPPORT_BOEHM_TRUE@boehm_libraries = libmonoboehm-2.0.la
-@SUPPORT_BOEHM_TRUE@boehm_static_libraries = libmini-static.la $(static_libs)
+@SUPPORT_BOEHM_TRUE@boehm_static_libraries = libmini-static.la $(boehm_static_libs)
 @SUPPORT_BOEHM_TRUE@boehm_binaries = mono-boehm
 @SUPPORT_SGEN_FALSE@mono_bin_suffix = boehm
 
-#The mono uses sgen, while libmono remains boehm
+# The mono executable uses sgen, while libmono remains boehm
 @SUPPORT_SGEN_TRUE@mono_bin_suffix = sgen
 libmono_suffix = boehm
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
@@ -1120,7 +1116,7 @@ libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(arch_sources) $(os_sour
 libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
-libmonoboehm_2_0_la_LIBADD = libmini.la $(libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
+libmonoboehm_2_0_la_LIBADD = libmini.la $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
 libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags)
 libmonosgen_2_0_la_SOURCES = 
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
@@ -1151,6 +1147,17 @@ CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649
 LLVM_AOT_RUNTIME_OPTS = $(if $(LLVM),--llvm,)
 GSHAREDVT_RUNTIME_OPTS = $(if $(GSHAREDVT),-O=gsharedvt,)
 fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
+FULLAOT_LIBS = \
+	mscorlib.dll \
+	System.Core.dll \
+	System.dll \
+	Mono.Posix.dll \
+	System.Configuration.dll \
+	System.Security.dll \
+	System.Xml.dll \
+	Mono.Security.dll \
+	Mono.Simd.dll
+
 pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = version.h $(arch_built)
 CLEANFILES = $(BUILT_SOURCES) *.exe *.dll
@@ -2975,11 +2982,10 @@ checktests: $(regtests)
 
 rcheck: mono $(regtests)
 @NACL_CODEGEN_TRUE@	for i in $(regtests); do echo "running test $$i"; $(MINI_RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
-@NACL_CODEGEN_FALSE@	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
-@NACL_CODEGEN_FALSE@	exit $$(cat regressionexitcode.out)
-
-rcheck2: mono $(regtests)
-	$(MINI_RUNTIME) --regression $(regtests)
+@NACL_CODEGEN_TRUE@elif JENKINS_URL
+@NACL_CODEGEN_TRUE@	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
+@NACL_CODEGEN_TRUE@	exit $$(cat regressionexitcode.out)
+@NACL_CODEGEN_FALSE@	$(MINI_RUNTIME) --regression $(regtests)
 
 check-seq-points: mono $(regtests)
 	rm -f TestResults_op_il_seq_point.xml
@@ -3006,11 +3012,20 @@ gsharedvtcheck:
 fullaotcheck: mono $(fullaot_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
-	cp $(CLASS)/mscorlib.dll $(CLASS)/System.Core.dll $(CLASS)/System.dll $(CLASS)/Mono.Posix.dll $(CLASS)/System.Configuration.dll $(CLASS)/System.Security.dll $(CLASS)/System.Xml.dll $(CLASS)/Mono.Security.dll $(CLASS)/Mono.Simd.dll $(regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
-	cp $(fullaot_regtests) fullaot-tmp/
-	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot=full fullaot-tmp/* || exit 1
+	$(MAKE) fullaot-libs AOT_FLAGS=full
+	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
+	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot=full fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
 	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --full-aot fullaot-tmp/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
+
+# This can run in parallel
+fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
+
+fullaot-tmp/%.dylib: $(CLASS)/%
+	cp $(CLASS)/$* fullaot-tmp/
+	mkdir fullaot-tmp/$*-tmp
+	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
+	rm -rf fullaot-tmp/$*-tmp
 
 llvmfullaotcheck:
 	$(MAKE) fullaotcheck LLVM=1
@@ -3045,7 +3060,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResults_op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.723/8f7b98b\"" > version.h
+	echo "#define FULL_VERSION \"Nightly master-4.3.0.1044/f0e244a\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

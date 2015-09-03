@@ -59,6 +59,7 @@
 #include <mono/utils/dtrace.h>
 #include <mono/utils/mono-signal-handler.h>
 #include <mono/utils/mono-threads.h>
+#include <mono/utils/checked-build.h>
 #include <mono/io-layer/io-layer.h>
 
 #include "mini.h"
@@ -118,12 +119,14 @@ static void register_icalls (void);
 gboolean
 mono_running_on_valgrind (void)
 {
+#ifndef HOST_WIN32
 	if (RUNNING_ON_VALGRIND){
 #ifdef VALGRIND_JIT_REGISTER_MAP
 		valgrind_register = TRUE;
 #endif
 		return TRUE;
 	} else
+#endif
 		return FALSE;
 }
 
@@ -603,25 +606,11 @@ mono_icall_get_wrapper_full (MonoJitICallInfo* callinfo, gboolean do_compile)
 	MonoDomain *domain = mono_get_root_domain ();
 	gboolean check_exc = TRUE;
 
-	if (callinfo->wrapper) {
+	if (callinfo->wrapper)
 		return callinfo->wrapper;
-	}
 
 	if (callinfo->trampoline)
 		return callinfo->trampoline;
-
-	/*
-	 * We use the lock on the root domain instead of the JIT lock to protect
-	 * callinfo->trampoline, since we do a lot of stuff inside the critical section.
-	 */
-	mono_loader_lock (); /*FIXME mono_compile_method requires the loader lock, by large.*/
-	mono_domain_lock (domain);
-
-	if (callinfo->trampoline) {
-		mono_domain_unlock (domain);
-		mono_loader_unlock ();
-		return callinfo->trampoline;
-	}
 
 	if (!strcmp (callinfo->name, "mono_thread_interruption_checkpoint"))
 		/* This icall is used to check for exceptions, so don't check in the wrapper */
@@ -635,11 +624,12 @@ mono_icall_get_wrapper_full (MonoJitICallInfo* callinfo, gboolean do_compile)
 		trampoline = mono_compile_method (wrapper);
 	else
 		trampoline = mono_create_ftnptr (domain, mono_create_jit_trampoline_in_domain (domain, wrapper));
-	mono_register_jit_icall_wrapper (callinfo, trampoline);
 
-	callinfo->trampoline = trampoline;
-
-	mono_domain_unlock (domain);
+	mono_loader_lock ();
+	if (!callinfo->trampoline) {
+		mono_register_jit_icall_wrapper (callinfo, trampoline);
+		callinfo->trampoline = trampoline;
+	}
 	mono_loader_unlock ();
 
 	return callinfo->trampoline;
@@ -666,7 +656,9 @@ mono_dynamic_code_hash_lookup (MonoDomain *domain, MonoMethod *method)
 static void
 register_opcode_emulation (int opcode, const char *name, const char *sigstr, gpointer func, const char *symbol, gboolean no_throw)
 {
+#ifndef DISABLE_JIT
 	mini_register_opcode_emulation (opcode, name, sigstr, func, symbol, no_throw);
+#endif
 }
 
 /*
@@ -1212,9 +1204,6 @@ mono_patch_info_hash (gconstpointer data)
 	case MONO_PATCH_INFO_GC_CARD_TABLE_ADDR:
 	case MONO_PATCH_INFO_GC_NURSERY_START:
 	case MONO_PATCH_INFO_JIT_TLS_ID:
-	case MONO_PATCH_INFO_MONITOR_ENTER:
-	case MONO_PATCH_INFO_MONITOR_ENTER_V4:
-	case MONO_PATCH_INFO_MONITOR_EXIT:
 	case MONO_PATCH_INFO_GOT_OFFSET:
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
 		return (ji->type << 8);
@@ -1602,15 +1591,6 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		target = mono_create_rgctx_lazy_fetch_trampoline (slot);
 		break;
 	}
-	case MONO_PATCH_INFO_MONITOR_ENTER:
-		target = mono_create_monitor_enter_trampoline ();
-		break;
-	case MONO_PATCH_INFO_MONITOR_ENTER_V4:
-		target = mono_create_monitor_enter_v4_trampoline ();
-		break;
-	case MONO_PATCH_INFO_MONITOR_EXIT:
-		target = mono_create_monitor_exit_trampoline ();
-		break;
 #ifdef MONO_ARCH_SOFT_DEBUG_SUPPORTED
 	case MONO_PATCH_INFO_SEQ_POINT_INFO:
 		if (!run_cctors)
@@ -1982,6 +1962,8 @@ mono_jit_free_method (MonoDomain *domain, MonoMethod *method)
 	mono_internal_hash_table_remove (&domain->jit_code_hash, method);
 	mono_domain_jit_code_hash_unlock (domain);
 	g_hash_table_remove (domain_jit_info (domain)->jump_trampoline_hash, method);
+
+	/* requires the domain lock - took above */
 	mono_conc_hashtable_remove (domain_jit_info (domain)->runtime_invoke_hash, method);
 
 	/* Remove jump targets in this method */
@@ -2265,7 +2247,9 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 		if (!info->dyn_call_info)
 			info->runtime_invoke = mono_jit_compile_method (invoke);
 
+		mono_domain_lock (domain);
 		info2 = mono_conc_hashtable_insert (domain_info->runtime_invoke_hash, method, info);
+		mono_domain_unlock (domain);
 		if (info2) {
 			g_free (info);
 			info = info2;
@@ -2674,6 +2658,8 @@ mini_parse_debug_options (void)
 			debug_options.gen_sdb_seq_points = TRUE;
 		else if (!strcmp (arg, "gen-compact-seq-points"))
 			debug_options.gen_seq_points_compact_data = TRUE;
+		else if (!strcmp (arg, "single-imm-size"))
+			debug_options.single_imm_size = TRUE;
 		else if (!strcmp (arg, "init-stacks"))
 			debug_options.init_stacks = TRUE;
 		else if (!strcmp (arg, "casts"))
@@ -2692,7 +2678,7 @@ mini_parse_debug_options (void)
 			mono_align_small_structs = TRUE;
 		else {
 			fprintf (stderr, "Invalid option for the MONO_DEBUG env variable: %s\n", arg);
-			fprintf (stderr, "Available options: 'handle-sigint', 'keep-delegates', 'reverse-pinvoke-exceptions', 'collect-pagefault-stats', 'break-on-unverified', 'no-gdb-backtrace', 'dont-free-domains', 'suspend-on-sigsegv', 'suspend-on-exception', 'suspend-on-unhandled', 'dyn-runtime-invoke', 'gdb', 'explicit-null-checks', 'init-stacks', 'check-pinvoke-callconv', 'arm-use-fallback-tls', 'debug-domain-unload', 'partial-sharing', 'align-small-structs'\n");
+			fprintf (stderr, "Available options: 'handle-sigint', 'keep-delegates', 'reverse-pinvoke-exceptions', 'collect-pagefault-stats', 'break-on-unverified', 'no-gdb-backtrace', 'suspend-on-sigsegv', 'suspend-on-exception', 'suspend-on-unhandled', 'dont-free-domains', 'dyn-runtime-invoke', 'gdb', 'explicit-null-checks', 'gen-seq-points', 'gen-compact-seq-points', 'single-imm-size', 'init-stacks', 'casts', 'soft-breakpoints', 'check-pinvoke-callconv', 'arm-use-fallback-tls', 'debug-domain-unload', 'partial-sharing', 'align-small-structs'\n");
 			exit (1);
 		}
 	}
@@ -2799,7 +2785,7 @@ mini_create_jit_domain_info (MonoDomain *domain)
 	info->jit_trampoline_hash = g_hash_table_new (mono_aligned_addr_hash, NULL);
 	info->delegate_trampoline_hash = g_hash_table_new (class_method_pair_hash, class_method_pair_equal);
 	info->llvm_vcall_trampoline_hash = g_hash_table_new (mono_aligned_addr_hash, NULL);
-	info->runtime_invoke_hash = mono_conc_hashtable_new_full (&domain->lock, mono_aligned_addr_hash, NULL, NULL, runtime_invoke_info_free);
+	info->runtime_invoke_hash = mono_conc_hashtable_new_full (mono_aligned_addr_hash, NULL, NULL, runtime_invoke_info_free);
 	info->seq_points = g_hash_table_new_full (mono_aligned_addr_hash, NULL, NULL, mono_seq_point_info_free);
 	info->arch_seq_points = g_hash_table_new (mono_aligned_addr_hash, NULL);
 	info->jump_target_hash = g_hash_table_new (NULL, NULL);
@@ -2925,6 +2911,8 @@ mini_init (const char *filename, const char *runtime_version)
 
 	MONO_VES_INIT_BEGIN ();
 
+	CHECKED_MONO_INIT ();
+
 #if defined(__linux__) && !defined(__native_client__)
 	if (access ("/proc/self/maps", F_OK) != 0) {
 		g_print ("Mono requires /proc to be mounted.\n");
@@ -2978,6 +2966,7 @@ mini_init (const char *filename, const char *runtime_version)
 	ticallbacks.setup_async_callback = mono_setup_async_callback;
 	ticallbacks.thread_state_init_from_sigctx = mono_thread_state_init_from_sigctx;
 	ticallbacks.thread_state_init_from_handle = mono_thread_state_init_from_handle;
+	ticallbacks.thread_state_init = mono_thread_state_init;
 
 	mono_counters_init ();
 
@@ -3146,8 +3135,6 @@ register_icalls (void)
 				ves_icall_get_frame_info);
 	mono_add_internal_call ("System.Diagnostics.StackTrace::get_trace",
 				ves_icall_get_trace);
-	mono_add_internal_call ("System.Exception::get_trace",
-				ves_icall_System_Exception_get_trace);
 	mono_add_internal_call ("Mono.Runtime::mono_runtime_install_handlers",
 				mono_runtime_install_handlers);
 
@@ -3493,8 +3480,6 @@ mini_cleanup (MonoDomain *domain)
 	mono_native_tls_free (mono_jit_tls_id);
 
 	mono_mutex_destroy (&jit_mutex);
-
-	mono_mutex_destroy (&mono_delegate_section);
 
 	mono_code_manager_cleanup ();
 

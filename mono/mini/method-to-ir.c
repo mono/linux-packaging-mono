@@ -54,7 +54,6 @@
 #include <mono/metadata/security-manager.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/security-core-clr.h>
-#include <mono/metadata/monitor.h>
 #include <mono/metadata/profiler-private.h>
 #include <mono/metadata/profiler.h>
 #include <mono/metadata/debug-mono-symfile.h>
@@ -149,9 +148,6 @@ static int inline_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 /* helper methods signatures */
 static MonoMethodSignature *helper_sig_domain_get;
 static MonoMethodSignature *helper_sig_rgctx_lazy_fetch_trampoline;
-static MonoMethodSignature *helper_sig_monitor_enter_exit_trampoline;
-static MonoMethodSignature *helper_sig_monitor_enter_exit_trampoline_llvm;
-static MonoMethodSignature *helper_sig_monitor_enter_v4_trampoline_llvm;
 
 /*
  * Instruction metadata
@@ -356,9 +352,6 @@ mono_create_helper_signatures (void)
 {
 	helper_sig_domain_get = mono_create_icall_signature ("ptr");
 	helper_sig_rgctx_lazy_fetch_trampoline = mono_create_icall_signature ("ptr ptr");
-	helper_sig_monitor_enter_exit_trampoline = mono_create_icall_signature ("void");
-	helper_sig_monitor_enter_exit_trampoline_llvm = mono_create_icall_signature ("void object");
-	helper_sig_monitor_enter_v4_trampoline_llvm = mono_create_icall_signature ("void object ptr");
 }
 
 static MONO_NEVER_INLINE void
@@ -4318,6 +4311,7 @@ icall_is_direct_callable (MonoCompile *cfg, MonoMethod *cmethod)
 		g_hash_table_insert (h, (char*)"Decimal", GUINT_TO_POINTER (1));
 		g_hash_table_insert (h, (char*)"Number", GUINT_TO_POINTER (1));
 		g_hash_table_insert (h, (char*)"Buffer", GUINT_TO_POINTER (1));
+		g_hash_table_insert (h, (char*)"Monitor", GUINT_TO_POINTER (1));
 		mono_memory_barrier ();
 		direct_icall_type_hash = h;
 	}
@@ -6022,59 +6016,6 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 				return ins;
 			}
 		}
-	} else if (cmethod->klass == mono_defaults.monitor_class) {
-#if defined(MONO_ARCH_MONITOR_OBJECT_REG)
-		if (strcmp (cmethod->name, "Enter") == 0 && fsig->param_count == 1) {
-			MonoCallInst *call;
-
-			if (COMPILE_LLVM (cfg)) {
-				/* 
-				 * Pass the argument normally, the LLVM backend will handle the
-				 * calling convention problems.
-				 */
-				call = (MonoCallInst*)mono_emit_abs_call (cfg, MONO_PATCH_INFO_MONITOR_ENTER, NULL, helper_sig_monitor_enter_exit_trampoline_llvm, args);
-			} else {
-				call = (MonoCallInst*)mono_emit_abs_call (cfg, MONO_PATCH_INFO_MONITOR_ENTER,
-					    NULL, helper_sig_monitor_enter_exit_trampoline, NULL);
-				mono_call_inst_add_outarg_reg (cfg, call, args [0]->dreg,
-											   MONO_ARCH_MONITOR_OBJECT_REG, FALSE);
-			}
-
-			return (MonoInst*)call;
-#if defined(MONO_ARCH_MONITOR_LOCK_TAKEN_REG)
-		} else if (strcmp (cmethod->name, "Enter") == 0 && fsig->param_count == 2) {
-			MonoCallInst *call;
-
-			if (COMPILE_LLVM (cfg)) {
-				/*
-				 * Pass the argument normally, the LLVM backend will handle the
-				 * calling convention problems.
-				 */
-				call = (MonoCallInst*)mono_emit_abs_call (cfg, MONO_PATCH_INFO_MONITOR_ENTER_V4, NULL, helper_sig_monitor_enter_v4_trampoline_llvm, args);
-			} else {
-				call = (MonoCallInst*)mono_emit_abs_call (cfg, MONO_PATCH_INFO_MONITOR_ENTER_V4,
-					    NULL, helper_sig_monitor_enter_exit_trampoline, NULL);
-				mono_call_inst_add_outarg_reg (cfg, call, args [0]->dreg, MONO_ARCH_MONITOR_OBJECT_REG, FALSE);
-				mono_call_inst_add_outarg_reg (cfg, call, args [1]->dreg, MONO_ARCH_MONITOR_LOCK_TAKEN_REG, FALSE);
-			}
-
-			return (MonoInst*)call;
-#endif
-		} else if (strcmp (cmethod->name, "Exit") == 0 && fsig->param_count == 1) {
-			MonoCallInst *call;
-
-			if (COMPILE_LLVM (cfg)) {
-				call = (MonoCallInst*)mono_emit_abs_call (cfg, MONO_PATCH_INFO_MONITOR_EXIT, NULL, helper_sig_monitor_enter_exit_trampoline_llvm, args);
-			} else {
-				call = (MonoCallInst*)mono_emit_abs_call (cfg, MONO_PATCH_INFO_MONITOR_EXIT,
-					    NULL, helper_sig_monitor_enter_exit_trampoline, NULL);
-				mono_call_inst_add_outarg_reg (cfg, call, args [0]->dreg,
-											   MONO_ARCH_MONITOR_OBJECT_REG, FALSE);
-			}
-
-			return (MonoInst*)call;
-		}
-#endif
 	} else if (cmethod->klass->image == mono_defaults.corlib &&
 			   (strcmp (cmethod->klass->name_space, "System.Threading") == 0) &&
 			   (strcmp (cmethod->klass->name, "Interlocked") == 0)) {
@@ -6975,7 +6916,7 @@ inline_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature *fsig,
 	cfg->disable_inline = prev_disable_inline;
 	cfg->inline_depth --;
 
-	if ((costs >= 0 && costs < 60) || inline_always) {
+	if ((costs >= 0 && costs < 60) || inline_always || (costs >= 0 && (cmethod->iflags & METHOD_IMPL_ATTRIBUTE_AGGRESSIVE_INLINING))) {
 		if (cfg->verbose_level > 2)
 			printf ("INLINE END %s -> %s\n", mono_method_full_name (cfg->method, TRUE), mono_method_full_name (cmethod, TRUE));
 		
@@ -7918,8 +7859,9 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				MONO_INST_NEW (cfg, ins, OP_START_HANDLER);
 				MONO_ADD_INS (tblock, ins);
 
-				if (seq_points && clause->flags != MONO_EXCEPTION_CLAUSE_FINALLY) {
+				if (seq_points && clause->flags != MONO_EXCEPTION_CLAUSE_FINALLY && clause->flags != MONO_EXCEPTION_CLAUSE_FILTER) {
 					/* finally clauses already have a seq point */
+					/* seq points for filter clauses are emitted below */
 					NEW_SEQ_POINT (cfg, ins, clause->handler_offset, TRUE);
 					MONO_ADD_INS (tblock, ins);
 				}
@@ -7961,6 +7903,11 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				 */
 				EMIT_NEW_DUMMY_USE (cfg, dummy_use, tblock->in_stack [0]);
 #endif
+
+				if (seq_points && clause->flags == MONO_EXCEPTION_CLAUSE_FILTER) {
+					NEW_SEQ_POINT (cfg, ins, clause->handler_offset, TRUE);
+					MONO_ADD_INS (tblock, ins);
+				}
 				
 				if (clause->flags == MONO_EXCEPTION_CLAUSE_FILTER) {
 					GET_BBLOCK (cfg, tblock, ip + clause->data.filter_offset);
@@ -8846,6 +8793,20 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 			} else {
 				fsig = mono_method_get_signature_checked (cmethod, image, token, generic_context, &cfg->error);
 				CHECK_CFG_ERROR;
+			}
+
+			/* See code below */
+			if (cmethod->klass == mono_defaults.monitor_class && !strcmp (cmethod->name, "Enter") && mono_method_signature (cmethod)->param_count == 1) {
+				MonoBasicBlock *tbb;
+
+				GET_BBLOCK (cfg, tbb, ip + 5);
+				if (tbb->try_start && MONO_REGION_FLAGS(tbb->region) == MONO_EXCEPTION_CLAUSE_FINALLY) {
+					/*
+					 * We want to extend the try block to cover the call, but we can't do it if the
+					 * call is made directly since its followed by an exception check.
+					 */
+					direct_icall = FALSE;
+				}
 			}
 
 			mono_save_token_info (cfg, image, token, cil_method);
@@ -10673,6 +10634,7 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 			// FIXME: LLVM can't handle the inconsistent bb linking
 			if (!mono_class_is_nullable (klass) &&
+				!mini_is_gsharedvt_klass (klass) &&
 				ip + 5 < end && ip_in_bb (cfg, cfg->cbb, ip + 5) &&
 				(ip [5] == CEE_BRTRUE || 
 				 ip [5] == CEE_BRTRUE_S ||
@@ -10843,11 +10805,13 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				ensure_method_is_allowed_to_access_field (cfg, method, field);
 			*/
 
+			ftype = mono_field_get_type (field);
+
 			/*
 			 * LDFLD etc. is usable on static fields as well, so convert those cases to
 			 * the static case.
 			 */
-			if (is_instance && field->type->attrs & FIELD_ATTRIBUTE_STATIC) {
+			if (is_instance && ftype->attrs & FIELD_ATTRIBUTE_STATIC) {
 				switch (op) {
 				case CEE_LDFLD:
 					op = CEE_LDSFLD;
@@ -11031,8 +10995,6 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 			/* STATIC CASE */
 			context_used = mini_class_check_context_used (cfg, klass);
-
-			ftype = mono_field_get_type (field);
 
 			if (ftype->attrs & FIELD_ATTRIBUTE_LITERAL)
 				UNVERIFIED;

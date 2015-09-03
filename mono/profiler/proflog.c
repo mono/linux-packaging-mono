@@ -198,8 +198,8 @@ typedef struct _LogBuffer LogBuffer;
  *
  * type GC format:
  * type: TYPE_GC
- * exinfo: one of TYPE_GC_EVENT, TYPE_GC_RESIZE, TYPE_GC_MOVE, TYPE_GC_HANDLE_CREATED,
- * TYPE_GC_HANDLE_DESTROYED
+ * exinfo: one of TYPE_GC_EVENT, TYPE_GC_RESIZE, TYPE_GC_MOVE, TYPE_GC_HANDLE_CREATED[_BT],
+ * TYPE_GC_HANDLE_DESTROYED[_BT]
  * [time diff: uleb128] nanoseconds since last timing
  * if exinfo == TYPE_GC_RESIZE
  *	[heap_size: uleb128] new heap size
@@ -211,15 +211,17 @@ typedef struct _LogBuffer LogBuffer;
  *	[objaddr: sleb128]+ num_objects object pointer differences from obj_base
  *	num is always an even number: the even items are the old
  *	addresses, the odd numbers are the respective new object addresses
- * if exinfo == TYPE_GC_HANDLE_CREATED
+ * if exinfo == TYPE_GC_HANDLE_CREATED[_BT]
  *	[handle_type: uleb128] GC handle type (System.Runtime.InteropServices.GCHandleType)
  *	upper bits reserved as flags
  *	[handle: uleb128] GC handle value
  *	[objaddr: sleb128] object pointer differences from obj_base
- * if exinfo == TYPE_GC_HANDLE_DESTROYED
+ * 	If exinfo == TYPE_GC_HANDLE_CREATED_BT, a backtrace follows.
+ * if exinfo == TYPE_GC_HANDLE_DESTROYED[_BT]
  *	[handle_type: uleb128] GC handle type (System.Runtime.InteropServices.GCHandleType)
  *	upper bits reserved as flags
  *	[handle: uleb128] GC handle value
+ * 	If exinfo == TYPE_GC_HANDLE_DESTROYED_BT, a backtrace follows.
  *
  * type metadata format:
  * type: TYPE_METADATA
@@ -230,21 +232,23 @@ typedef struct _LogBuffer LogBuffer;
  * [pointer: sleb128] pointer of the metadata type depending on mtype
  * if mtype == TYPE_CLASS
  *	[image: sleb128] MonoImage* as a pointer difference from ptr_base
- *  [flags: uleb128] must be 0
+ * 	[flags: uleb128] must be 0
  * 	[name: string] full class name
  * if mtype == TYPE_IMAGE
- *  [flags: uleb128] must be 0
+ * 	[flags: uleb128] must be 0
  * 	[name: string] image file name
  * if mtype == TYPE_ASSEMBLY
- *  [flags: uleb128] must be 0
+ * 	[flags: uleb128] must be 0
  * 	[name: string] assembly name
  * if mtype == TYPE_DOMAIN
- *  [flags: uleb128] must be 0
+ * 	[flags: uleb128] must be 0
  * if mtype == TYPE_DOMAIN && exinfo == 0
  * 	[name: string] domain friendly name
  * if mtype == TYPE_CONTEXT
+ * 	[flags: uleb128] must be 0
  * 	[domain: sleb128] domain id as pointer
  * if mtype == TYPE_THREAD && (format_version < 11 || (format_version > 10 && exinfo == 0))
+ * 	[flags: uleb128] must be 0
  * 	[name: string] thread name
  *
  * type method format:
@@ -1169,7 +1173,13 @@ gc_roots (MonoProfiler *prof, int num, void **objects, int *root_types, uintptr_
 static void
 gc_handle (MonoProfiler *prof, int op, int type, uintptr_t handle, MonoObject *obj)
 {
+	int do_bt = nocalls && InterlockedRead (&runtime_inited) && !notraces;
 	uint64_t now;
+	FrameData data;
+
+	if (do_bt)
+		collect_bt (&data);
+
 	LogBuffer *logbuffer = ensure_logbuf (
 		EVENT_SIZE /* event */ +
 		LEB128_SIZE /* time */ +
@@ -1177,21 +1187,36 @@ gc_handle (MonoProfiler *prof, int op, int type, uintptr_t handle, MonoObject *o
 		LEB128_SIZE /* handle */ +
 		(op == MONO_PROFILER_GC_HANDLE_CREATED ? (
 			LEB128_SIZE /* obj */
+		) : 0) +
+		(do_bt ? (
+			LEB128_SIZE /* flags */ +
+			LEB128_SIZE /* count */ +
+			data.count * (
+				LEB128_SIZE /* method */
+			)
 		) : 0)
 	);
+
 	now = current_time ();
 	ENTER_LOG (logbuffer, "gchandle");
+
 	if (op == MONO_PROFILER_GC_HANDLE_CREATED)
-		emit_byte (logbuffer, TYPE_GC_HANDLE_CREATED | TYPE_GC);
+		emit_byte (logbuffer, (do_bt ? TYPE_GC_HANDLE_CREATED_BT : TYPE_GC_HANDLE_CREATED) | TYPE_GC);
 	else if (op == MONO_PROFILER_GC_HANDLE_DESTROYED)
-		emit_byte (logbuffer, TYPE_GC_HANDLE_DESTROYED | TYPE_GC);
+		emit_byte (logbuffer, (do_bt ? TYPE_GC_HANDLE_DESTROYED_BT : TYPE_GC_HANDLE_DESTROYED) | TYPE_GC);
 	else
-		return;
+		g_assert_not_reached ();
+
 	emit_time (logbuffer, now);
 	emit_value (logbuffer, type);
 	emit_value (logbuffer, handle);
+
 	if (op == MONO_PROFILER_GC_HANDLE_CREATED)
 		emit_obj (logbuffer, obj);
+
+	if (do_bt)
+		emit_bt (prof, logbuffer, &data);
+
 	EXIT_LOG (logbuffer);
 	process_requests (prof);
 }
@@ -3168,20 +3193,15 @@ counters_and_perfcounters_sample (MonoProfiler *prof)
 }
 
 #define COVERAGE_DEBUG(x) if (debug_coverage) {x}
+static mono_mutex_t coverage_mutex;
 static MonoConcurrentHashTable *coverage_methods = NULL;
-static mono_mutex_t coverage_methods_mutex;
 static MonoConcurrentHashTable *coverage_assemblies = NULL;
-static mono_mutex_t coverage_assemblies_mutex;
 static MonoConcurrentHashTable *coverage_classes = NULL;
-static mono_mutex_t coverage_classes_mutex;
+
 static MonoConcurrentHashTable *filtered_classes = NULL;
-static mono_mutex_t filtered_classes_mutex;
 static MonoConcurrentHashTable *entered_methods = NULL;
-static mono_mutex_t entered_methods_mutex;
 static MonoConcurrentHashTable *image_to_methods = NULL;
-static mono_mutex_t image_to_methods_mutex;
 static MonoConcurrentHashTable *suppressed_assemblies = NULL;
-static mono_mutex_t suppressed_assemblies_mutex;
 static gboolean coverage_initialized = FALSE;
 
 static GPtrArray *coverage_data = NULL;
@@ -3499,9 +3519,11 @@ dump_coverage (MonoProfiler *prof)
 	COVERAGE_DEBUG(fprintf (stderr, "Coverage: Started dump\n");)
 	method_id = 0;
 
+	mono_mutex_lock (&coverage_mutex);
 	mono_conc_hashtable_foreach (coverage_assemblies, build_assembly_buffer, prof);
 	mono_conc_hashtable_foreach (coverage_classes, build_class_buffer, prof);
 	mono_conc_hashtable_foreach (coverage_methods, build_method_buffer, prof);
+	mono_mutex_unlock (&coverage_mutex);
 
 	COVERAGE_DEBUG(fprintf (stderr, "Coverage: Finished dump\n");)
 }
@@ -3521,7 +3543,9 @@ process_method_enter_coverage (MonoProfiler *prof, MonoMethod *method)
 	if (mono_conc_hashtable_lookup (suppressed_assemblies, (gpointer) mono_image_get_name (image)))
 		return;
 
+	mono_mutex_lock (&coverage_mutex);
 	mono_conc_hashtable_insert (entered_methods, method, method);
+	mono_mutex_unlock (&coverage_mutex);
 }
 
 static MonoLockFreeQueueNode *
@@ -3608,7 +3632,9 @@ coverage_filter (MonoProfiler *prof, MonoMethod *method)
 		if (has_positive && !found) {
 			COVERAGE_DEBUG(fprintf (stderr, "   Positive match was not found\n");)
 
+			mono_mutex_lock (&coverage_mutex);
 			mono_conc_hashtable_insert (filtered_classes, klass, klass);
+			mono_mutex_unlock (&coverage_mutex);
 			g_free (fqn);
 			g_free (classname);
 
@@ -3628,7 +3654,9 @@ coverage_filter (MonoProfiler *prof, MonoMethod *method)
 			if (strstr (fqn, filter) != NULL) {
 				COVERAGE_DEBUG(fprintf (stderr, "matched\n");)
 
+				mono_mutex_lock (&coverage_mutex);
 				mono_conc_hashtable_insert (filtered_classes, klass, klass);
+				mono_mutex_unlock (&coverage_mutex);
 				g_free (fqn);
 				g_free (classname);
 
@@ -3649,15 +3677,19 @@ coverage_filter (MonoProfiler *prof, MonoMethod *method)
 
 	assembly = mono_image_get_assembly (image);
 
+	mono_mutex_lock (&coverage_mutex);
 	mono_conc_hashtable_insert (coverage_methods, method, method);
 	mono_conc_hashtable_insert (coverage_assemblies, assembly, assembly);
+	mono_mutex_unlock (&coverage_mutex);
 
 	image_methods = mono_conc_hashtable_lookup (image_to_methods, image);
 
 	if (image_methods == NULL) {
 		image_methods = g_malloc (sizeof (MonoLockFreeQueue));
 		mono_lock_free_queue_init (image_methods);
+		mono_mutex_lock (&coverage_mutex);
 		mono_conc_hashtable_insert (image_to_methods, image, image_methods);
+		mono_mutex_unlock (&coverage_mutex);
 	}
 
 	node = create_method_node (method);
@@ -3668,7 +3700,9 @@ coverage_filter (MonoProfiler *prof, MonoMethod *method)
 	if (class_methods == NULL) {
 		class_methods = g_malloc (sizeof (MonoLockFreeQueue));
 		mono_lock_free_queue_init (class_methods);
+		mono_mutex_lock (&coverage_mutex);
 		mono_conc_hashtable_insert (coverage_classes, klass, class_methods);
+		mono_mutex_unlock (&coverage_mutex);
 	}
 
 	node = create_method_node (method);
@@ -3741,8 +3775,7 @@ init_suppressed_assemblies (void)
 	char *line;
 	FILE *sa_file;
 
-	mono_mutex_init (&suppressed_assemblies_mutex);
-	suppressed_assemblies = mono_conc_hashtable_new (&suppressed_assemblies_mutex, g_str_hash, g_str_equal);
+	suppressed_assemblies = mono_conc_hashtable_new (g_str_hash, g_str_equal);
 	sa_file = fopen (SUPPRESSION_DIR "/mono-profiler-log.suppression", "r");
 	if (sa_file == NULL)
 		return;
@@ -3755,24 +3788,11 @@ init_suppressed_assemblies (void)
 
 	while ((line = get_next_line (content, &content))) {
 		line = g_strchomp (g_strchug (line));
+		/* No locking needed as we're doing initialization */
 		mono_conc_hashtable_insert (suppressed_assemblies, line, line);
 	}
 
 	fclose (sa_file);
-}
-
-static MonoConcurrentHashTable *
-init_hashtable (mono_mutex_t *mutex)
-{
-	mono_mutex_init (mutex);
-	return mono_conc_hashtable_new (mutex, NULL, NULL);
-}
-
-static void
-destroy_hashtable (MonoConcurrentHashTable *hashtable, mono_mutex_t *mutex)
-{
-	mono_conc_hashtable_destroy (hashtable);
-	mono_mutex_destroy (mutex);
 }
 
 #endif /* DISABLE_HELPER_THREAD */
@@ -3785,12 +3805,13 @@ coverage_init (MonoProfiler *prof)
 
 	COVERAGE_DEBUG(fprintf (stderr, "Coverage initialized\n");)
 
-	coverage_methods = init_hashtable (&coverage_methods_mutex);
-	coverage_assemblies = init_hashtable (&coverage_assemblies_mutex);
-	coverage_classes = init_hashtable (&coverage_classes_mutex);
-	filtered_classes = init_hashtable (&filtered_classes_mutex);
-	entered_methods = init_hashtable (&entered_methods_mutex);
-	image_to_methods = init_hashtable (&image_to_methods_mutex);
+	mono_mutex_init (&coverage_mutex);
+	coverage_methods = mono_conc_hashtable_new (NULL, NULL);
+	coverage_assemblies = mono_conc_hashtable_new (NULL, NULL);
+	coverage_classes = mono_conc_hashtable_new (NULL, NULL);
+	filtered_classes = mono_conc_hashtable_new (NULL, NULL);
+	entered_methods = mono_conc_hashtable_new (NULL, NULL);
+	image_to_methods = mono_conc_hashtable_new (NULL, NULL);
 	init_suppressed_assemblies ();
 
 	coverage_initialized = TRUE;
@@ -3842,16 +3863,19 @@ log_shutdown (MonoProfiler *prof)
 	else
 		fclose (prof->file);
 
-	destroy_hashtable (prof->method_table, &prof->method_table_mutex);
+	mono_conc_hashtable_destroy (prof->method_table);
+	mono_mutex_destroy (&prof->method_table_mutex);
 
 	if (coverage_initialized) {
-		destroy_hashtable (coverage_methods, &coverage_methods_mutex);
-		destroy_hashtable (coverage_assemblies, &coverage_assemblies_mutex);
-		destroy_hashtable (coverage_classes, &coverage_classes_mutex);
-		destroy_hashtable (filtered_classes, &filtered_classes_mutex);
-		destroy_hashtable (entered_methods, &entered_methods_mutex);
-		destroy_hashtable (image_to_methods, &image_to_methods_mutex);
-		destroy_hashtable (suppressed_assemblies, &suppressed_assemblies_mutex);
+		mono_conc_hashtable_destroy (coverage_methods);
+		mono_conc_hashtable_destroy (coverage_assemblies);
+		mono_conc_hashtable_destroy (coverage_classes);
+		mono_conc_hashtable_destroy (filtered_classes);
+
+		mono_conc_hashtable_destroy (entered_methods);
+		mono_conc_hashtable_destroy (image_to_methods);
+		mono_conc_hashtable_destroy (suppressed_assemblies);
+		mono_mutex_destroy (&coverage_mutex);
 	}
 
 	free (prof);
@@ -4149,7 +4173,9 @@ writer_thread (void *arg)
 				 * method lists will just be empty for the rest of the
 				 * app's lifetime.
 				 */
+				mono_mutex_lock (&prof->method_table_mutex);
 				mono_conc_hashtable_insert (prof->method_table, info->method, info->method);
+				mono_mutex_unlock (&prof->method_table_mutex);
 
 				char *name = mono_method_full_name (info->method, 1);
 				int nlen = strlen (name) + 1;
@@ -4299,7 +4325,7 @@ create_profiler (const char *filename, GPtrArray *filters)
 
 	mono_lock_free_queue_init (&prof->writer_queue);
 	mono_mutex_init (&prof->method_table_mutex);
-	prof->method_table = mono_conc_hashtable_new (&prof->method_table_mutex, NULL, NULL);
+	prof->method_table = mono_conc_hashtable_new (NULL, NULL);
 
 	if (do_coverage)
 		coverage_init (prof);

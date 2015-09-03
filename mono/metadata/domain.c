@@ -93,7 +93,12 @@ static gboolean debug_domain_unload;
 
 gboolean mono_dont_free_domains;
 
-#define mono_appdomains_lock() mono_mutex_lock (&appdomains_mutex)
+#define mono_appdomains_lock() do {	\
+	MONO_TRY_BLOCKING;	\
+	mono_mutex_lock (&appdomains_mutex); \
+	MONO_FINISH_TRY_BLOCKING;	\
+} while (0);
+
 #define mono_appdomains_unlock() mono_mutex_unlock (&appdomains_mutex)
 static mono_mutex_t appdomains_mutex;
 
@@ -486,7 +491,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	MonoAssembly *ass = NULL;
 	MonoImageOpenStatus status = MONO_IMAGE_OK;
 	const MonoRuntimeInfo* runtimes [G_N_ELEMENTS (supported_runtimes) + 1];
-	int n;
+	int n, dummy;
 
 #ifdef DEBUG_DOMAIN_UNLOAD
 	debug_domain_unload = TRUE;
@@ -514,6 +519,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_counters_register ("Total code space allocated", MONO_COUNTER_INT|MONO_COUNTER_JIT, &total_domain_code_alloc);
 
 	mono_gc_base_init ();
+	mono_thread_info_attach (&dummy);
 
 	MONO_FAST_TLS_INIT (tls_appdomain);
 	mono_native_tls_alloc (&appdomain_thread_id, NULL);
@@ -1282,6 +1288,10 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 		g_hash_table_destroy (domain->ftnptrs_hash);
 		domain->ftnptrs_hash = NULL;
 	}
+	if (domain->method_to_dyn_method) {
+		g_hash_table_destroy (domain->method_to_dyn_method);
+		domain->method_to_dyn_method = NULL;
+	}
 
 	mono_mutex_destroy (&domain->finalizable_objects_hash_lock);
 	mono_mutex_destroy (&domain->assemblies_lock);
@@ -1959,9 +1969,9 @@ mono_get_aot_cache_config (void)
 void
 mono_domain_lock (MonoDomain *domain)
 {
-	MONO_TRY_BLOCKING
+	MONO_TRY_BLOCKING;
 	mono_locks_acquire (&(domain)->lock, DomainLock);
-	MONO_FINISH_TRY_BLOCKING
+	MONO_FINISH_TRY_BLOCKING;
 }
 
 void
