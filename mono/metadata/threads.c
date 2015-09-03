@@ -228,13 +228,12 @@ static gboolean shutting_down = FALSE;
 
 static gint32 managed_thread_id_counter = 0;
 
-
 static void
 mono_threads_lock (void)
 {
-	MONO_TRY_BLOCKING
+	MONO_TRY_BLOCKING;
 	mono_locks_acquire (&threads_mutex, ThreadsLock);
-	MONO_FINISH_TRY_BLOCKING
+	MONO_FINISH_TRY_BLOCKING;
 }
 
 static void
@@ -379,9 +378,9 @@ lock_thread (MonoInternalThread *thread)
 
 	g_assert (thread->synch_cs);
 
-	MONO_TRY_BLOCKING
+	MONO_TRY_BLOCKING;
 	mono_mutex_lock (thread->synch_cs);
-	MONO_FINISH_TRY_BLOCKING
+	MONO_FINISH_TRY_BLOCKING;
 }
 
 static inline void
@@ -453,7 +452,7 @@ static void thread_cleanup (MonoInternalThread *thread)
 		}
 		/* This needs to be called even if handle_remove () fails */
 		if (mono_thread_cleanup_fn)
-			mono_thread_cleanup_fn ((MonoNativeThreadId)thread->tid);
+			mono_thread_cleanup_fn (thread_get_tid (thread));
 		return;
 	}
 	mono_release_type_locks (thread);
@@ -480,7 +479,7 @@ static void thread_cleanup (MonoInternalThread *thread)
 	thread->appdomain_refs = NULL;
 
 	if (mono_thread_cleanup_fn)
-		mono_thread_cleanup_fn ((MonoNativeThreadId)thread->tid);
+		mono_thread_cleanup_fn (thread_get_tid (thread));
 
 	if (mono_gc_is_moving ()) {
 		MONO_GC_UNREGISTER_ROOT (thread->thread_pinning_ref);
@@ -650,7 +649,7 @@ static guint32 WINAPI start_wrapper_internal(void *data)
 	internal->thread_info = info;
 	internal->small_id = info->small_id;
 
-	tid=internal->tid;
+	tid = internal->tid;
 
 	SET_CURRENT_OBJECT (internal);
 
@@ -804,7 +803,7 @@ create_thread (MonoThread *thread, MonoInternalThread *internal, StartInfo *star
 	 */
 	if (thread_start_args == NULL) {
 		MONO_GC_REGISTER_ROOT_FIXED (thread_start_args);
-		thread_start_args = mono_g_hash_table_new (NULL, NULL);
+		thread_start_args = mono_g_hash_table_new_type (NULL, NULL, MONO_HASH_CONSERVATIVE_GC);
 	}
 	mono_g_hash_table_insert (thread_start_args, thread, start_info->start_arg);
 	if (threads_starting_up == NULL) {
@@ -832,10 +831,10 @@ create_thread (MonoThread *thread, MonoInternalThread *internal, StartInfo *star
 	 */
 	create_flags = CREATE_SUSPENDED;
 
-	MONO_PREPARE_BLOCKING
+	MONO_PREPARE_BLOCKING;
 	thread_handle = mono_threads_create_thread ((LPTHREAD_START_ROUTINE)start_wrapper, start_info,
 												stack_size, create_flags, &tid);
-	MONO_FINISH_BLOCKING
+	MONO_FINISH_BLOCKING;
 
 	if (thread_handle == NULL) {
 		/* The thread couldn't be created, so throw an exception */
@@ -867,9 +866,9 @@ create_thread (MonoThread *thread, MonoInternalThread *internal, StartInfo *star
 	if (!handle_store (thread, FALSE))
 		return FALSE;
 
-	MONO_PREPARE_BLOCKING
+	MONO_PREPARE_BLOCKING;
 	mono_thread_info_resume (tid);
-	MONO_FINISH_BLOCKING
+	MONO_FINISH_BLOCKING;
 
 	if (internal->start_notify) {
 		/*
@@ -880,9 +879,9 @@ create_thread (MonoThread *thread, MonoInternalThread *internal, StartInfo *star
 		 */
 		THREAD_DEBUG (g_message ("%s: (%"G_GSIZE_FORMAT") waiting for thread %p (%"G_GSIZE_FORMAT") to start", __func__, GetCurrentThreadId (), internal, (gsize)internal->tid));
 
-		MONO_PREPARE_BLOCKING
+		MONO_PREPARE_BLOCKING;
 		WaitForSingleObjectEx (internal->start_notify, INFINITE, FALSE);
-		MONO_FINISH_BLOCKING
+		MONO_FINISH_BLOCKING;
 
 		CloseHandle (internal->start_notify);
 		internal->start_notify = NULL;
@@ -981,8 +980,8 @@ mono_thread_attach_full (MonoDomain *domain, gboolean force_attach)
 
 	tid=GetCurrentThreadId ();
 
-	thread->handle=thread_handle;
-	thread->tid=tid;
+	thread->handle = thread_handle;
+	thread->tid = tid;
 	thread->stack_ptr = &tid;
 
 	THREAD_DEBUG (g_message ("%s: Attached thread ID %"G_GSIZE_FORMAT" (handle %p)", __func__, tid, thread_handle));
@@ -1194,9 +1193,9 @@ ves_icall_System_Threading_Thread_Sleep_internal(gint32 ms)
 	while (TRUE) {
 		mono_thread_set_state (thread, ThreadState_WaitSleepJoin);
 	
-		MONO_PREPARE_BLOCKING
+		MONO_PREPARE_BLOCKING;
 		res = SleepEx(ms,TRUE);
-		MONO_FINISH_BLOCKING
+		MONO_FINISH_BLOCKING;
 	
 		mono_thread_clr_state (thread, ThreadState_WaitSleepJoin);
 
@@ -1412,9 +1411,9 @@ ves_icall_System_Threading_Thread_Join_internal(MonoThread *this_obj, int ms)
 	
 	mono_thread_set_state (cur_thread, ThreadState_WaitSleepJoin);
 
-	MONO_PREPARE_BLOCKING
+	MONO_PREPARE_BLOCKING;
 	ret=WaitForSingleObjectEx (handle, ms, TRUE);
-	MONO_FINISH_BLOCKING
+	MONO_FINISH_BLOCKING;
 
 	mono_thread_clr_state (cur_thread, ThreadState_WaitSleepJoin);
 	
@@ -1440,12 +1439,12 @@ mono_wait_uninterrupted (MonoInternalThread *thread, gboolean multiple, guint32 
 
 	start = (ms == -1) ? 0 : mono_100ns_ticks ();
 	do {
-		MONO_PREPARE_BLOCKING
+		MONO_PREPARE_BLOCKING;
 			if (multiple)
 			ret = WaitForMultipleObjectsEx (numhandles, handles, waitall, wait, alertable);
 		else
 			ret = WaitForSingleObjectEx (handles [0], ms, alertable);
-		MONO_FINISH_BLOCKING
+		MONO_FINISH_BLOCKING;
 
 		if (ret != WAIT_IO_COMPLETION)
 			break;
@@ -1606,9 +1605,9 @@ ves_icall_System_Threading_WaitHandle_SignalAndWait_Internal (HANDLE toSignal, H
 
 	mono_thread_set_state (thread, ThreadState_WaitSleepJoin);
 	
-	MONO_PREPARE_BLOCKING
+	MONO_PREPARE_BLOCKING;
 	ret = SignalObjectAndWait (toSignal, toWait, ms, TRUE);
-	MONO_FINISH_BLOCKING
+	MONO_FINISH_BLOCKING;
 	
 	mono_thread_clr_state (thread, ThreadState_WaitSleepJoin);
 
@@ -2709,9 +2708,9 @@ static void wait_for_tids (struct wait_data *wait, guint32 timeout)
 	
 	THREAD_DEBUG (g_message("%s: %d threads to wait for in this batch", __func__, wait->num));
 
-	MONO_PREPARE_BLOCKING
+	MONO_PREPARE_BLOCKING;
 	ret=WaitForMultipleObjectsEx(wait->num, wait->handles, TRUE, timeout, TRUE);
-	MONO_FINISH_BLOCKING
+	MONO_FINISH_BLOCKING;
 
 	if(ret==WAIT_FAILED) {
 		/* See the comment in build_wait_tids() */
@@ -2772,9 +2771,9 @@ static void wait_for_tids_or_state_change (struct wait_data *wait, guint32 timeo
 		count++;
 	}
 
-	MONO_PREPARE_BLOCKING
+	MONO_PREPARE_BLOCKING;
 	ret=WaitForMultipleObjectsEx (count, wait->handles, FALSE, timeout, TRUE);
-	MONO_FINISH_BLOCKING
+	MONO_FINISH_BLOCKING;
 
 	if(ret==WAIT_FAILED) {
 		/* See the comment in build_wait_tids() */
@@ -2836,7 +2835,7 @@ static void build_wait_tids (gpointer key, gpointer value, gpointer user)
 			return;
 		}
 
-		handle = mono_threads_open_thread_handle (thread->handle, (MonoNativeThreadId)thread->tid);
+		handle = mono_threads_open_thread_handle (thread->handle, thread_get_tid (thread));
 		if (handle == NULL) {
 			THREAD_DEBUG (g_message ("%s: ignoring unopenable thread %"G_GSIZE_FORMAT, __func__, (gsize)thread->tid));
 			return;
@@ -2876,7 +2875,7 @@ remove_and_abort_threads (gpointer key, gpointer value, gpointer user)
 	if (thread->tid != self && (thread->state & ThreadState_Background) != 0 &&
 		!(thread->flags & MONO_THREAD_FLAG_DONT_MANAGE)) {
 	
-		handle = mono_threads_open_thread_handle (thread->handle, (MonoNativeThreadId)thread->tid);
+		handle = mono_threads_open_thread_handle (thread->handle, thread_get_tid (thread));
 		if (handle == NULL)
 			return FALSE;
 
@@ -3058,7 +3057,7 @@ collect_threads_for_suspend (gpointer key, gpointer value, gpointer user_data)
 		return;
 
 	if (wait->num<MAXIMUM_WAIT_OBJECTS) {
-		handle = mono_threads_open_thread_handle (thread->handle, (MonoNativeThreadId)thread->tid);
+		handle = mono_threads_open_thread_handle (thread->handle, thread_get_tid (thread));
 		if (handle == NULL)
 			return;
 
@@ -3249,7 +3248,7 @@ dump_thread (gpointer key, gpointer value, gpointer user)
 	We probably should loop a bit around trying to get it to either managed code
 	or WSJ state.
 	*/
-	mono_thread_info_safe_suspend_and_run ((MonoNativeThreadId)(gsize)thread->tid, FALSE, print_thread_dump, thread);
+	mono_thread_info_safe_suspend_and_run (thread_get_tid (thread), FALSE, print_thread_dump, thread);
 }
 
 void
@@ -3425,7 +3424,7 @@ collect_appdomain_thread (gpointer key, gpointer value, gpointer user_data)
 		/* printf ("ABORTING THREAD %p BECAUSE IT REFERENCES DOMAIN %s.\n", thread->tid, domain->friendly_name); */
 
 		if(data->wait.num<MAXIMUM_WAIT_OBJECTS) {
-			HANDLE handle = mono_threads_open_thread_handle (thread->handle, (MonoNativeThreadId)thread->tid);
+			HANDLE handle = mono_threads_open_thread_handle (thread->handle, thread_get_tid (thread));
 			if (handle == NULL)
 				return;
 			data->wait.handles [data->wait.num] = handle;
@@ -4471,7 +4470,7 @@ abort_thread_internal (MonoInternalThread *thread, gboolean can_raise_exception,
 		return;
 	}
 
-	mono_thread_info_safe_suspend_and_run ((MonoNativeThreadId)(gsize)thread->tid, TRUE, abort_thread_critical, &data);
+	mono_thread_info_safe_suspend_and_run (thread_get_tid (thread), TRUE, abort_thread_critical, &data);
 	if (data.interrupt_token)
 		mono_thread_info_finish_interrupt (data.interrupt_token);
 	/*FIXME we need to wait for interruption to complete -- figure out how much into interruption we should wait for here*/
@@ -4529,7 +4528,7 @@ suspend_thread_internal (MonoInternalThread *thread, gboolean interrupt)
 		data.thread = thread;
 		data.interrupt = interrupt;
 
-		mono_thread_info_safe_suspend_and_run ((MonoNativeThreadId)(gsize)thread->tid, interrupt, suspend_thread_critical, &data);
+		mono_thread_info_safe_suspend_and_run (thread_get_tid (thread), interrupt, suspend_thread_critical, &data);
 		if (data.interrupt_token)
 			mono_thread_info_finish_interrupt (data.interrupt_token);
 		UNLOCK_THREAD (thread);
@@ -4553,7 +4552,7 @@ resume_thread_internal (MonoInternalThread *thread)
 {
 	UNLOCK_THREAD (thread);
 	/* Awake the thread */
-	if (!mono_thread_info_resume ((MonoNativeThreadId)(gpointer)(gsize)thread->tid))
+	if (!mono_thread_info_resume (thread_get_tid (thread)))
 		return FALSE;
 	LOCK_THREAD (thread);
 	thread->state &= ~ThreadState_Suspended;

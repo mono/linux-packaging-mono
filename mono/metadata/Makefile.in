@@ -358,7 +358,7 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
 	appdomain.c domain.c gc-stats.c gc.c monitor.c mono-hash.c \
 	object.c reflection.c sgen-os-posix.c sgen-os-mach.c \
-	sgen-os-win32.c sgen-bridge.c sgen-bridge.h \
+	sgen-os-win32.c sgen-os-coop.c sgen-bridge.c sgen-bridge.h \
 	sgen-bridge-internal.h sgen-old-bridge.c sgen-new-bridge.c \
 	sgen-tarjan-bridge.c sgen-toggleref.c sgen-toggleref.h \
 	sgen-stw.c sgen-mono.c sgen-client-mono.h
@@ -432,6 +432,7 @@ am__objects_23 = libmonoruntimesgen_static_la-appdomain.lo \
 am__objects_24 = libmonoruntimesgen_static_la-sgen-os-posix.lo \
 	libmonoruntimesgen_static_la-sgen-os-mach.lo \
 	libmonoruntimesgen_static_la-sgen-os-win32.lo \
+	libmonoruntimesgen_static_la-sgen-os-coop.lo \
 	libmonoruntimesgen_static_la-sgen-bridge.lo \
 	libmonoruntimesgen_static_la-sgen-old-bridge.lo \
 	libmonoruntimesgen_static_la-sgen-new-bridge.lo \
@@ -482,7 +483,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
 	appdomain.c domain.c gc-stats.c gc.c monitor.c mono-hash.c \
 	object.c reflection.c sgen-os-posix.c sgen-os-mach.c \
-	sgen-os-win32.c sgen-bridge.c sgen-bridge.h \
+	sgen-os-win32.c sgen-os-coop.c sgen-bridge.c sgen-bridge.h \
 	sgen-bridge-internal.h sgen-old-bridge.c sgen-new-bridge.c \
 	sgen-tarjan-bridge.c sgen-toggleref.c sgen-toggleref.h \
 	sgen-stw.c sgen-mono.c sgen-client-mono.h
@@ -554,6 +555,7 @@ am__objects_31 = libmonoruntimesgen_la-appdomain.lo \
 am__objects_32 = libmonoruntimesgen_la-sgen-os-posix.lo \
 	libmonoruntimesgen_la-sgen-os-mach.lo \
 	libmonoruntimesgen_la-sgen-os-win32.lo \
+	libmonoruntimesgen_la-sgen-os-coop.lo \
 	libmonoruntimesgen_la-sgen-bridge.lo \
 	libmonoruntimesgen_la-sgen-old-bridge.lo \
 	libmonoruntimesgen_la-sgen-new-bridge.lo \
@@ -696,8 +698,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
 BUILD_EXEEXT = @BUILD_EXEEXT@
-BUILD_GLIB_CFLAGS = @BUILD_GLIB_CFLAGS@
-BUILD_GLIB_LIBS = @BUILD_GLIB_LIBS@
 CC = @CC@
 CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
@@ -734,8 +734,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GMODULE_CFLAGS = @GMODULE_CFLAGS@
-GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
@@ -1082,6 +1080,7 @@ sgen_sources = \
 	sgen-os-posix.c		\
 	sgen-os-mach.c		\
 	sgen-os-win32.c		\
+	sgen-os-coop.c		\
 	sgen-bridge.c		\
 	sgen-bridge.h		\
 	sgen-bridge-internal.h	\
@@ -1482,6 +1481,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-mono.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-new-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-old-bridge.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-os-coop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-os-mach.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-os-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-os-win32.Plo@am__quote@
@@ -1555,6 +1555,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-mono.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-new-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-old-bridge.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-os-coop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-os-mach.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-os-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-os-win32.Plo@am__quote@
@@ -2994,6 +2995,13 @@ libmonoruntimesgen_static_la-sgen-os-win32.lo: sgen-os-win32.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-sgen-os-win32.lo `test -f 'sgen-os-win32.c' || echo '$(srcdir)/'`sgen-os-win32.c
 
+libmonoruntimesgen_static_la-sgen-os-coop.lo: sgen-os-coop.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-sgen-os-coop.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-sgen-os-coop.Tpo -c -o libmonoruntimesgen_static_la-sgen-os-coop.lo `test -f 'sgen-os-coop.c' || echo '$(srcdir)/'`sgen-os-coop.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-sgen-os-coop.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-sgen-os-coop.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-os-coop.c' object='libmonoruntimesgen_static_la-sgen-os-coop.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-sgen-os-coop.lo `test -f 'sgen-os-coop.c' || echo '$(srcdir)/'`sgen-os-coop.c
+
 libmonoruntimesgen_static_la-sgen-bridge.lo: sgen-bridge.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-sgen-bridge.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-sgen-bridge.Tpo -c -o libmonoruntimesgen_static_la-sgen-bridge.lo `test -f 'sgen-bridge.c' || echo '$(srcdir)/'`sgen-bridge.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-sgen-bridge.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-sgen-bridge.Plo
@@ -3511,6 +3519,13 @@ libmonoruntimesgen_la-sgen-os-win32.lo: sgen-os-win32.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-os-win32.c' object='libmonoruntimesgen_la-sgen-os-win32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-sgen-os-win32.lo `test -f 'sgen-os-win32.c' || echo '$(srcdir)/'`sgen-os-win32.c
+
+libmonoruntimesgen_la-sgen-os-coop.lo: sgen-os-coop.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-sgen-os-coop.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-sgen-os-coop.Tpo -c -o libmonoruntimesgen_la-sgen-os-coop.lo `test -f 'sgen-os-coop.c' || echo '$(srcdir)/'`sgen-os-coop.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-sgen-os-coop.Tpo $(DEPDIR)/libmonoruntimesgen_la-sgen-os-coop.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-os-coop.c' object='libmonoruntimesgen_la-sgen-os-coop.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-sgen-os-coop.lo `test -f 'sgen-os-coop.c' || echo '$(srcdir)/'`sgen-os-coop.c
 
 libmonoruntimesgen_la-sgen-bridge.lo: sgen-bridge.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-sgen-bridge.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-sgen-bridge.Tpo -c -o libmonoruntimesgen_la-sgen-bridge.lo `test -f 'sgen-bridge.c' || echo '$(srcdir)/'`sgen-bridge.c

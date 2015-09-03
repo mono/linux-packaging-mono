@@ -3,6 +3,9 @@
 /* The architecture this is running on */
 #undef ARCHITECTURE
 
+/* Enable checked build. */
+#undef CHECKED_BUILD
+
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -260,6 +263,12 @@
 /* Define to 1 if you have the <execinfo.h> header file. */
 #undef HAVE_EXECINFO_H
 
+/* Define to 1 if you have the `execv' function. */
+#undef HAVE_EXECV
+
+/* Define to 1 if you have the `execve' function. */
+#undef HAVE_EXECVE
+
 /* Define to 1 if you have the `execvp' function. */
 #undef HAVE_EXECVP
 
@@ -271,6 +280,9 @@
 
 /* Define to 1 if you have the `finite' function. */
 #undef HAVE_FINITE
+
+/* Define to 1 if you have the `fork' function. */
+#undef HAVE_FORK
 
 /* Define to 1 if you have the <fstab.h> header file. */
 #undef HAVE_FSTAB_H
@@ -331,9 +343,6 @@
 
 /* Define to 1 if you have the `getpriority' function. */
 #undef HAVE_GETPRIORITY
-
-/* Define if GetProcessId is available */
-#undef HAVE_GETPROCESSID
 
 /* Have getprotobyname */
 #undef HAVE_GETPROTOBYNAME
@@ -578,12 +587,6 @@
 /* Define to 1 if you have the `remap_file_pages' function. */
 #undef HAVE_REMAP_FILE_PAGES
 
-/* Define to 1 if you have the `rint' function. */
-#undef HAVE_RINT
-
-/* Define to 1 if you have the `round' function. */
-#undef HAVE_ROUND
-
 /* Define to 1 if you have the `sched_getcpu' function. */
 #undef HAVE_SCHED_GETCPU
 
@@ -712,6 +715,9 @@
 
 /* Define to 1 if `kp_proc' is a member of `struct kinfo_proc'. */
 #undef HAVE_STRUCT_KINFO_PROC_KP_PROC
+
+/* Define to 1 if the system has the type `struct linger'. */
+#undef HAVE_STRUCT_LINGER
 
 /* Define to 1 if `pw_gecos' is a member of `struct passwd'. */
 #undef HAVE_STRUCT_PASSWD_PW_GECOS
@@ -1076,6 +1082,9 @@
 
 /* ... */
 #undef TARGET_SPARC64
+
+/* The JIT/AOT targets WatchOS */
+#undef TARGET_WATCHOS
 
 /* Target Platform is Win32 */
 #undef TARGET_WIN32

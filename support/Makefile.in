@@ -136,20 +136,21 @@ libMonoPosixHelper_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
 am__libMonoPosixHelper_la_SOURCES_DIST = errno.c map.c map.h mph.h \
 	signal.c stdio.c string.c stdlib.c dirent.c fcntl.c fstab.c \
 	grp.c macros.c nl.c nl.h old-map.c old-map.h pwd.c serial.c \
-	sys-mman.c sys-sendfile.c sys-stat.c sys-statvfs.c sys-time.c \
-	sys-uio.c sys-utsname.c sys-wait.c sys-xattr.c syslog.c time.c \
-	unistd.c utime.c x-struct-str.c zlib-helper.c adler32.c \
-	compress.c crc32.c uncompr.c deflate.c trees.c zutil.c \
-	inflate.c infback.c inftrees.c inffast.c crc32.h deflate.h \
-	inffast.h inffixed.h inflate.h inftrees.h trees.h zconf.h \
-	zlib.h zutil.h minizip/crypt.h minizip/ioapi.c minizip/ioapi.h \
-	minizip/unzip.c minizip/unzip.h minizip/zip.c minizip/zip.h
+	sys-mman.c sys-sendfile.c sys-socket.c sys-stat.c \
+	sys-statvfs.c sys-time.c sys-uio.c sys-utsname.c sys-wait.c \
+	sys-xattr.c syslog.c time.c unistd.c utime.c x-struct-str.c \
+	zlib-helper.c adler32.c compress.c crc32.c uncompr.c deflate.c \
+	trees.c zutil.c inflate.c infback.c inftrees.c inffast.c \
+	crc32.h deflate.h inffast.h inffixed.h inflate.h inftrees.h \
+	trees.h zconf.h zlib.h zutil.h minizip/crypt.h minizip/ioapi.c \
+	minizip/ioapi.h minizip/unzip.c minizip/unzip.h minizip/zip.c \
+	minizip/zip.h
 am__objects_1 = errno.lo map.lo signal.lo stdio.lo string.lo stdlib.lo
 am__objects_2 = dirent.lo fcntl.lo fstab.lo grp.lo macros.lo nl.lo \
 	old-map.lo pwd.lo serial.lo sys-mman.lo sys-sendfile.lo \
-	sys-stat.lo sys-statvfs.lo sys-time.lo sys-uio.lo \
-	sys-utsname.lo sys-wait.lo sys-xattr.lo syslog.lo time.lo \
-	unistd.lo utime.lo x-struct-str.lo
+	sys-socket.lo sys-stat.lo sys-statvfs.lo sys-time.lo \
+	sys-uio.lo sys-utsname.lo sys-wait.lo sys-xattr.lo syslog.lo \
+	time.lo unistd.lo utime.lo x-struct-str.lo
 @HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1) $(am__objects_2)
 @HOST_WIN32_TRUE@am__objects_3 = $(am__objects_1)
 am__objects_4 = adler32.lo compress.lo crc32.lo uncompr.lo deflate.lo \
@@ -249,8 +250,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
 BUILD_EXEEXT = @BUILD_EXEEXT@
-BUILD_GLIB_CFLAGS = @BUILD_GLIB_CFLAGS@
-BUILD_GLIB_LIBS = @BUILD_GLIB_LIBS@
 CC = @CC@
 CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
@@ -287,8 +286,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GMODULE_CFLAGS = @GMODULE_CFLAGS@
-GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
@@ -486,6 +483,7 @@ MPH_UNIX_SOURCE = \
 	serial.c				\
 	sys-mman.c				\
 	sys-sendfile.c				\
+	sys-socket.c				\
 	sys-stat.c				\
 	sys-statvfs.c				\
 	sys-time.c				\
@@ -684,6 +682,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/supportw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sys-mman.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sys-sendfile.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sys-socket.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sys-stat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sys-statvfs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sys-time.Plo@am__quote@
@@ -957,12 +956,14 @@ refresh:
 	--impl-macro=_GNU_SOURCE --impl-macro=_XOPEN_SOURCE   \
 	--impl-header="<sys/types.h>"                         \
 	--impl-header="<sys/stat.h>"                          \
+	--autoconf-header="<netinet/in.h>"                    \
 	--autoconf-header="<sys/time.h>"                      \
 	--autoconf-header="<sys/poll.h>"                      \
 	--autoconf-header="<sys/wait.h>"                      \
 	--autoconf-header="<sys/statvfs.h>"                   \
 	--autoconf-header="<sys/xattr.h>"                     \
 	--autoconf-header="<sys/mman.h>"                      \
+	--autoconf-header="<sys/socket.h>"                    \
 	--autoconf-header="<sys/uio.h>"                       \
 	--autoconf-header="<unistd.h>"                        \
 	--impl-header="<fcntl.h>"                             \
@@ -980,7 +981,7 @@ refresh:
 	--rename-member=st_mtime=st_mtime_                    \
 	--rename-namespace=Mono.Unix.Native=Mono.Posix        \
 	--library=MonoPosixHelper                             \
-	$(mcs_topdir)/class/lib/net_4_5/Mono.Posix.dll map
+	$(mcs_topdir)/class/lib/net_4_x/Mono.Posix.dll map
 
 # Useful if mono is compiled with --enable-shared=no
 patch-libtool:

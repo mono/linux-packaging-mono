@@ -534,16 +534,6 @@ MonoArray *ves_icall_System_Diagnostics_Process_GetModules_internal (MonoObject 
 			mono_array_setref (arr, i, mono_array_get (temp_arr, MonoObject*, i));
 	}
 
-	if (count == num_added) {
-		arr = temp_arr;
-	} else {
-		/* shorter version of the array */
-		arr = mono_array_new (mono_domain_get (), proc_class, num_added);
-
-		for (i = 0; i < num_added; i++)
-			mono_array_setref (arr, i, mono_array_get (temp_arr, MonoObject*, i));
-	}
-
 	return arr;
 }
 
@@ -663,10 +653,7 @@ MonoBoolean ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoPr
 	} else {
 		process_info->process_handle = shellex.hProcess;
 		process_info->thread_handle = NULL;
-		/* It appears that there's no way to get the pid from a
-		 * process handle before windows xp.  Really.
-		 */
-#if defined(HAVE_GETPROCESSID) && !defined(MONO_CROSS_COMPILE)
+#if !defined(MONO_CROSS_COMPILE)
 		process_info->pid = GetProcessId (shellex.hProcess);
 #else
 		process_info->pid = 0;
@@ -807,14 +794,14 @@ MonoBoolean ves_icall_System_Diagnostics_Process_WaitForExit_internal (MonoObjec
 {
 	guint32 ret;
 	
-	MONO_PREPARE_BLOCKING
+	MONO_PREPARE_BLOCKING;
 	if(ms<0) {
 		/* Wait forever */
 		ret=WaitForSingleObjectEx (process, INFINITE, TRUE);
 	} else {
 		ret=WaitForSingleObjectEx (process, ms, TRUE);
 	}
-	MONO_FINISH_BLOCKING
+	MONO_FINISH_BLOCKING;
 
 	if(ret==WAIT_OBJECT_0) {
 		return(TRUE);

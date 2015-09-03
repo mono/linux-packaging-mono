@@ -244,8 +244,8 @@ mono_marshal_init (void)
 #ifdef USE_COOP_GC
 		register_icall (mono_threads_prepare_blocking, "mono_threads_prepare_blocking", "int", FALSE);
 		register_icall (mono_threads_finish_blocking, "mono_threads_finish_blocking", "void int", FALSE);
-		register_icall (mono_threads_reset_blocking_start, "mono_threads_reset_blocking_start","int", FALSE);
-		register_icall (mono_threads_reset_blocking_end, "mono_threads_reset_blocking_end","void int", FALSE);
+		register_icall (mono_threads_reset_blocking_start, "mono_threads_reset_blocking_start","int", TRUE);
+		register_icall (mono_threads_reset_blocking_end, "mono_threads_reset_blocking_end","void int", TRUE);
 #endif
 	}
 }
@@ -8697,7 +8697,7 @@ mono_marshal_get_synchronized_wrapper (MonoMethod *method)
 	MonoMethodBuilder *mb;
 	MonoMethod *res;
 	GHashTable *cache;
-	int i, pos, this_local, ret_local = 0;
+	int i, pos, pos2, this_local, taken_local, ret_local = 0;
 	MonoGenericContext *ctx = NULL;
 	MonoMethod *orig_method = NULL;
 	MonoGenericContainer *container = NULL;
@@ -8738,6 +8738,7 @@ mono_marshal_get_synchronized_wrapper (MonoMethod *method)
 	mb = mono_mb_new (method->klass, method->name, MONO_WRAPPER_SYNCHRONIZED);
 
 #ifndef DISABLE_JIT
+	mb->skip_visibility = 1;
 	/* result */
 	if (!MONO_TYPE_IS_VOID (sig->ret))
 		ret_local = mono_mb_add_local (mb, sig->ret);
@@ -8766,6 +8767,7 @@ mono_marshal_get_synchronized_wrapper (MonoMethod *method)
 #ifndef DISABLE_JIT
 	/* this */
 	this_local = mono_mb_add_local (mb, &mono_defaults.object_class->byval_arg);
+	taken_local = mono_mb_add_local (mb, &mono_defaults.boolean_class->byval_arg);
 
 	clause = mono_image_alloc0 (method->klass->image, sizeof (MonoExceptionClause));
 	clause->flags = MONO_EXCEPTION_CLAUSE_FINALLY;
@@ -8776,7 +8778,7 @@ mono_marshal_get_synchronized_wrapper (MonoMethod *method)
 	if (!enter_method) {
 		MonoMethodDesc *desc;
 
-		desc = mono_method_desc_new ("Monitor:Enter", FALSE);
+		desc = mono_method_desc_new ("Monitor:enter_with_atomic_var(object,bool&)", FALSE);
 		enter_method = mono_method_desc_search_in_class (desc, mono_defaults.monitor_class);
 		g_assert (enter_method);
 		mono_method_desc_free (desc);
@@ -8811,6 +8813,7 @@ mono_marshal_get_synchronized_wrapper (MonoMethod *method)
 
 	/* Call Monitor::Enter() */
 	mono_mb_emit_ldloc (mb, this_local);
+	mono_mb_emit_ldloc_addr (mb, taken_local);
 	mono_mb_emit_managed_call (mb, enter_method, NULL);
 
 	clause->try_offset = mono_mb_get_label (mb);
@@ -8837,9 +8840,12 @@ mono_marshal_get_synchronized_wrapper (MonoMethod *method)
 	clause->try_len = mono_mb_get_pos (mb) - clause->try_offset;
 	clause->handler_offset = mono_mb_get_label (mb);
 
-	/* Call Monitor::Exit() */
+	/* Call Monitor::Exit() if needed */
+	mono_mb_emit_ldloc (mb, taken_local);
+	pos2 = mono_mb_emit_branch (mb, CEE_BRFALSE);
 	mono_mb_emit_ldloc (mb, this_local);
 	mono_mb_emit_managed_call (mb, exit_method, NULL);
+	mono_mb_patch_branch (mb, pos2);
 	mono_mb_emit_byte (mb, CEE_ENDFINALLY);
 
 	clause->handler_len = mono_mb_get_pos (mb) - clause->handler_offset;
@@ -11106,6 +11112,9 @@ mono_marshal_get_thunk_invoke_wrapper (MonoMethod *method)
 	GHashTable *cache;
 	MonoMethod *res;
 	int i, param_count, sig_size, pos_leave;
+#ifdef USE_COOP_GC
+	int coop_gc_var;
+#endif
 
 	g_assert (method);
 
@@ -11159,10 +11168,22 @@ mono_marshal_get_thunk_invoke_wrapper (MonoMethod *method)
 	if (!MONO_TYPE_IS_VOID (sig->ret))
 		mono_mb_add_local (mb, sig->ret);
 
+#ifdef USE_COOP_GC
+	/* local 4, the local to be used when calling the reset_blocking funcs */
+	/* tons of code hardcode 3 to be the return var */
+	coop_gc_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
+#endif
+
 	/* clear exception arg */
 	mono_mb_emit_ldarg (mb, param_count - 1);
 	mono_mb_emit_byte (mb, CEE_LDNULL);
 	mono_mb_emit_byte (mb, CEE_STIND_REF);
+
+#ifdef USE_COOP_GC
+	/* FIXME this is technically wrong as the callback itself must be executed in gc unsafe context. */
+	mono_mb_emit_icall (mb, mono_threads_reset_blocking_start);
+	mono_mb_emit_stloc (mb, coop_gc_var);
+#endif
 
 	/* try */
 	clause = mono_image_alloc0 (image, sizeof (MonoExceptionClause));
@@ -11233,6 +11254,12 @@ mono_marshal_get_thunk_invoke_wrapper (MonoMethod *method)
 			mono_mb_emit_op (mb, CEE_BOX, mono_class_from_mono_type (sig->ret));
 	}
 
+#ifdef USE_COOP_GC
+	/* XXX merge reset_blocking_end with detach */
+	mono_mb_emit_ldloc (mb, coop_gc_var);
+	mono_mb_emit_icall (mb, mono_threads_reset_blocking_end);
+#endif
+
 	mono_mb_emit_byte (mb, CEE_RET);
 #endif
 
@@ -11271,13 +11298,4 @@ mono_marshal_free_dynamic_wrappers (MonoMethod *method)
 
 	if (marshal_mutex_initialized)
 		mono_marshal_unlock ();
-}
-
-static gboolean
-signature_pointer_pair_matches_signature (gpointer key, gpointer value, gpointer user_data)
-{
-       SignaturePointerPair *pair = (SignaturePointerPair*)key;
-       MonoMethodSignature *sig = (MonoMethodSignature*)user_data;
-
-       return mono_metadata_signature_equal (pair->sig, sig);
 }

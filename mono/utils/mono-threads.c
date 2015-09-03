@@ -149,7 +149,7 @@ dump_threads (void)
 	MonoThreadInfo *info;
 	MonoThreadInfo *cur = mono_thread_info_current ();
 
-	MOSTLY_ASYNC_SAFE_PRINTF ("STATE CUE CARD: (? means a positive number, usually 1 or 2)\n");
+	MOSTLY_ASYNC_SAFE_PRINTF ("STATE CUE CARD: (? means a positive number, usually 1 or 2, * means any number)\n");
 	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x0\t- starting (GOOD, unless the thread is running managed code)\n");
 	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x1\t- running (BAD, unless it's the gc thread)\n");
 	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x2\t- detached (GOOD, unless the thread is running managed code)\n");
@@ -157,7 +157,7 @@ dump_threads (void)
 	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x?04\t- self suspended (GOOD)\n");
 	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x?05\t- async suspend requested (BAD)\n");
 	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x?06\t- self suspend requested (BAD)\n");
-	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x07\t- blocking (GOOD)\n");
+	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x*07\t- blocking (GOOD)\n");
 	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x?08\t- blocking with pending suspend (GOOD)\n");
 
 	FOREACH_THREAD_SAFE (info) {
@@ -357,14 +357,7 @@ unregister_thread (void *arg)
 	if (threads_callbacks.thread_detach)
 		threads_callbacks.thread_detach (info);
 
-	/*
-	Since the thread info lock is taken from within blocking sections, we can't check from there, so it must be done here.
-	This ensures that we won't lose any suspend requests as a suspend initiator must hold the lock.
-	Once we're holding the suspend lock, no threads can suspend us and once we unregister, no thread can find us. 
-	*/
-	MONO_PREPARE_BLOCKING
 	mono_thread_info_suspend_lock ();
-	MONO_FINISH_BLOCKING
 
 	/*
 	Now perform the callback that must be done under locks.
@@ -681,7 +674,7 @@ mono_thread_info_end_self_suspend (void)
 		return;
 	THREADS_SUSPEND_DEBUG ("FINISH SELF SUSPEND OF %p\n", info);
 
-	g_assert (mono_threads_get_runtime_callbacks ()->thread_state_init_from_sigctx (&info->thread_saved_state [SELF_SUSPEND_STATE_INDEX], NULL));
+	mono_threads_get_runtime_callbacks ()->thread_state_init (&info->thread_saved_state [SELF_SUSPEND_STATE_INDEX]);
 
 	/* commit the saved state and notify others if needed */
 	switch (mono_threads_transition_state_poll (info)) {
@@ -884,6 +877,7 @@ mono_thread_info_safe_suspend_and_run (MonoNativeThreadId id, gboolean interrupt
 	/*FIXME: unify this with self-suspend*/
 	g_assert (id != mono_native_thread_id_get ());
 
+	/* This can block during stw */
 	mono_thread_info_suspend_lock ();
 	mono_threads_begin_global_suspend ();
 
@@ -968,7 +962,9 @@ STW to make sure no unsafe pending suspend is in progress.
 void
 mono_thread_info_suspend_lock (void)
 {
+	MONO_TRY_BLOCKING;
 	MONO_SEM_WAIT_UNITERRUPTIBLE (&global_suspend_semaphore);
+	MONO_FINISH_TRY_BLOCKING;
 }
 
 void

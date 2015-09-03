@@ -1096,8 +1096,10 @@ get_call_info (MonoMethodSignature *sig)
 					cinfo->args [n].reg = fr;
 					fr ++;
 					FP_ALSO_IN_REG (gr ++);
+#if !defined(__mono_ppc64__)
 					if (size == 8)
 						FP_ALSO_IN_REG (gr ++);
+#endif
 					ALWAYS_ON_STACK (stack_size += size);
 				} else {
 					cinfo->args [n].offset = PPC_STACK_PARAM_OFFSET + stack_size;
@@ -1165,7 +1167,10 @@ get_call_info (MonoMethodSignature *sig)
 			cinfo->args [n].size = 4;
 
 			/* It was 7, now it is 8 in LinuxPPC */
-			if (fr <= PPC_LAST_FPARG_REG) {
+			if (fr <= PPC_LAST_FPARG_REG
+			// For non-native vararg calls the parms must go in storage
+				 && !(!sig->pinvoke && (sig->call_convention == MONO_CALL_VARARG))
+				) {
 				cinfo->args [n].regtype = RegTypeFP;
 				cinfo->args [n].reg = fr;
 				fr ++;
@@ -1182,7 +1187,10 @@ get_call_info (MonoMethodSignature *sig)
 		case MONO_TYPE_R8:
 			cinfo->args [n].size = 8;
 			/* It was 7, now it is 8 in LinuxPPC */
-			if (fr <= PPC_LAST_FPARG_REG) {
+			if (fr <= PPC_LAST_FPARG_REG
+			// For non-native vararg calls the parms must go in storage
+				 && !(!sig->pinvoke && (sig->call_convention == MONO_CALL_VARARG))
+				 ) {
 				cinfo->args [n].regtype = RegTypeFP;
 				cinfo->args [n].reg = fr;
 				fr ++;
@@ -1354,7 +1362,7 @@ mono_arch_allocate_vars (MonoCompile *m)
 		m->ret->inst_c0 = m->ret->dreg = ppc_r3;
 	} else {
 		/* FIXME: handle long values? */
-		switch (mini_get_underlying_type (m, sig->ret)->type) {
+		switch (mini_get_underlying_type (sig->ret)->type) {
 		case MONO_TYPE_VOID:
 			break;
 		case MONO_TYPE_R4:
@@ -3738,6 +3746,14 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			if (ins->dreg != ins->sreg1)
 				ppc_fmr (code, ins->dreg, ins->sreg1);
 			break;
+		case OP_MOVE_F_TO_I4:
+			ppc_stfs (code, ins->sreg1, -4, ppc_r1);
+			ppc_ldptr (code, ins->dreg, -4, ppc_r1);
+			break;
+		case OP_MOVE_I4_TO_F:
+			ppc_stw (code, ins->sreg1, -4, ppc_r1);
+			ppc_lfs (code, ins->dreg, -4, ppc_r1);
+			break;
 		case OP_FCONV_TO_R4:
 			ppc_frsp (code, ins->dreg, ins->sreg1);
 			break;
@@ -4420,6 +4436,22 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			else
 				ppc_mr (code, ins->dreg, ins->sreg1);
 			break;
+#else
+		case OP_ICONV_TO_R4:
+		case OP_ICONV_TO_R8: {
+			if (cpu_hw_caps & PPC_ISA_64) {
+				ppc_srawi(code, ppc_r0, ins->sreg1, 31);
+				ppc_stw (code, ppc_r0, -8, ppc_r1);
+				ppc_stw (code, ins->sreg1, -4, ppc_r1);
+				ppc_lfd (code, ins->dreg, -8, ppc_r1);
+				ppc_fcfid (code, ins->dreg, ins->dreg);
+				if (ins->opcode == OP_ICONV_TO_R4)
+					ppc_frsp (code, ins->dreg, ins->dreg);
+				}
+			break;
+		}
+#endif
+
 		case OP_ATOMIC_ADD_I4:
 		CASE_PPC64 (OP_ATOMIC_ADD_I8) {
 			int location = ins->inst_basereg;
@@ -4453,21 +4485,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			ppc_mr (code, ins->dreg, ppc_r0);
 			break;
 		}
-#else
-		case OP_ICONV_TO_R4:
-		case OP_ICONV_TO_R8: {
-			if (cpu_hw_caps & PPC_ISA_64) {
-				ppc_srawi(code, ppc_r0, ins->sreg1, 31);
-				ppc_stw (code, ppc_r0, -8, ppc_r1);
-				ppc_stw (code, ins->sreg1, -4, ppc_r1);
-				ppc_lfd (code, ins->dreg, -8, ppc_r1);
-				ppc_fcfid (code, ins->dreg, ins->dreg);
-				if (ins->opcode == OP_ICONV_TO_R4)
-					ppc_frsp (code, ins->dreg, ins->dreg);
-				}
-			break;
-		}
-#endif
 		case OP_ATOMIC_CAS_I4:
 		CASE_PPC64 (OP_ATOMIC_CAS_I8) {
 			int location = ins->sreg1;

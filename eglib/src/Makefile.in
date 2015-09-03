@@ -98,56 +98,6 @@ CONFIG_CLEAN_FILES = eglib-config.h
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-@HOST_WIN32_TRUE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-libeglib_static_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_1)
-am__libeglib_static_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
-	garray.c gbytearray.c gerror.c vasprintf.h ghashtable.c \
-	giconv.c gmem.c gmodule.h goutput.c gqsort.c gstr.c gslist.c \
-	gstring.c gptrarray.c glist.c gqueue.c gpath.c gshell.c \
-	gspawn.c gfile.c gfile-posix.c gpattern.c gmarkup.c gutf8.c \
-	gunicode.c unicode-data.h gdate-unix.c gdir-unix.c \
-	gfile-unix.c gmisc-unix.c gmodule-unix.c gtimer-unix.c \
-	eglib-config.hw gdate-win32.c gdir-win32.c gfile-win32.c \
-	gmisc-win32.c gmodule-win32.c gtimer-win32.c vasprintf.c
-am__objects_1 = libeglib_static_la-gdate-unix.lo \
-	libeglib_static_la-gdir-unix.lo \
-	libeglib_static_la-gfile-unix.lo \
-	libeglib_static_la-gmisc-unix.lo \
-	libeglib_static_la-gmodule-unix.lo \
-	libeglib_static_la-gtimer-unix.lo
-am__objects_2 = libeglib_static_la-gdate-win32.lo \
-	libeglib_static_la-gdir-win32.lo \
-	libeglib_static_la-gfile-win32.lo \
-	libeglib_static_la-gmisc-win32.lo \
-	libeglib_static_la-gmodule-win32.lo \
-	libeglib_static_la-gtimer-win32.lo
-@HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
-@HOST_WIN32_TRUE@am__objects_3 = $(am__objects_2)
-@NEED_VASPRINTF_TRUE@am__objects_4 = libeglib_static_la-vasprintf.lo
-am__objects_5 = libeglib_static_la-garray.lo \
-	libeglib_static_la-gbytearray.lo libeglib_static_la-gerror.lo \
-	libeglib_static_la-ghashtable.lo libeglib_static_la-giconv.lo \
-	libeglib_static_la-gmem.lo libeglib_static_la-goutput.lo \
-	libeglib_static_la-gqsort.lo libeglib_static_la-gstr.lo \
-	libeglib_static_la-gslist.lo libeglib_static_la-gstring.lo \
-	libeglib_static_la-gptrarray.lo libeglib_static_la-glist.lo \
-	libeglib_static_la-gqueue.lo libeglib_static_la-gpath.lo \
-	libeglib_static_la-gshell.lo libeglib_static_la-gspawn.lo \
-	libeglib_static_la-gfile.lo libeglib_static_la-gfile-posix.lo \
-	libeglib_static_la-gpattern.lo libeglib_static_la-gmarkup.lo \
-	libeglib_static_la-gutf8.lo libeglib_static_la-gunicode.lo \
-	$(am__objects_3) $(am__objects_4)
-am_libeglib_static_la_OBJECTS = $(am__objects_5)
-libeglib_static_la_OBJECTS = $(am_libeglib_static_la_OBJECTS)
-AM_V_lt = $(am__v_lt_@AM_V@)
-am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
-am__v_lt_0 = --silent
-am__v_lt_1 = 
-libeglib_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libeglib_static_la_CFLAGS) $(CFLAGS) \
-	$(libeglib_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @HOST_WIN32_TRUE@libeglib_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	garray.c gbytearray.c gerror.c vasprintf.h ghashtable.c \
@@ -158,15 +108,15 @@ am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	gfile-unix.c gmisc-unix.c gmodule-unix.c gtimer-unix.c \
 	eglib-config.hw gdate-win32.c gdir-win32.c gfile-win32.c \
 	gmisc-win32.c gmodule-win32.c gtimer-win32.c vasprintf.c
-am__objects_6 = libeglib_la-gdate-unix.lo libeglib_la-gdir-unix.lo \
+am__objects_1 = libeglib_la-gdate-unix.lo libeglib_la-gdir-unix.lo \
 	libeglib_la-gfile-unix.lo libeglib_la-gmisc-unix.lo \
 	libeglib_la-gmodule-unix.lo libeglib_la-gtimer-unix.lo
-am__objects_7 = libeglib_la-gdate-win32.lo libeglib_la-gdir-win32.lo \
+am__objects_2 = libeglib_la-gdate-win32.lo libeglib_la-gdir-win32.lo \
 	libeglib_la-gfile-win32.lo libeglib_la-gmisc-win32.lo \
 	libeglib_la-gmodule-win32.lo libeglib_la-gtimer-win32.lo
-@HOST_WIN32_FALSE@am__objects_8 = $(am__objects_6)
-@HOST_WIN32_TRUE@am__objects_8 = $(am__objects_7)
-@NEED_VASPRINTF_TRUE@am__objects_9 = libeglib_la-vasprintf.lo
+@HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
+@HOST_WIN32_TRUE@am__objects_3 = $(am__objects_2)
+@NEED_VASPRINTF_TRUE@am__objects_4 = libeglib_la-vasprintf.lo
 am_libeglib_la_OBJECTS = libeglib_la-garray.lo \
 	libeglib_la-gbytearray.lo libeglib_la-gerror.lo \
 	libeglib_la-ghashtable.lo libeglib_la-giconv.lo \
@@ -178,9 +128,13 @@ am_libeglib_la_OBJECTS = libeglib_la-garray.lo \
 	libeglib_la-gshell.lo libeglib_la-gspawn.lo \
 	libeglib_la-gfile.lo libeglib_la-gfile-posix.lo \
 	libeglib_la-gpattern.lo libeglib_la-gmarkup.lo \
-	libeglib_la-gutf8.lo libeglib_la-gunicode.lo $(am__objects_8) \
-	$(am__objects_9)
+	libeglib_la-gutf8.lo libeglib_la-gunicode.lo $(am__objects_3) \
+	$(am__objects_4)
 libeglib_la_OBJECTS = $(am_libeglib_la_OBJECTS)
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 libeglib_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libeglib_la_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -214,9 +168,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libeglib_static_la_SOURCES) $(libeglib_la_SOURCES)
-DIST_SOURCES = $(am__libeglib_static_la_SOURCES_DIST) \
-	$(am__libeglib_la_SOURCES_DIST)
+SOURCES = $(libeglib_la_SOURCES)
+DIST_SOURCES = $(am__libeglib_la_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -389,7 +342,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LTLIBRARIES = libeglib.la libeglib-static.la
+noinst_LTLIBRARIES = libeglib.la
 AM_CFLAGS = $(WERROR_CFLAGS)
 win_files = \
 	eglib-config.hw \
@@ -441,13 +394,9 @@ libeglib_la_SOURCES = \
 	$(vasprintf_files)
 
 libeglib_la_CFLAGS = -g -Wall -D_FORTIFY_SOURCE=2
-libeglib_static_la_SOURCES = $(libeglib_la_SOURCES)
-libeglib_static_la_CFLAGS = $(libeglib_la_CFLAGS)
 AM_CPPFLAGS = -I$(srcdir)
 @HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@libeglib_la_LIBADD = -llog
 @HOST_WIN32_TRUE@libeglib_la_LIBADD = -lm $(LIBICONV) -lpsapi
-libeglib_static_la_LIBADD = $(libeglib_la_LIBADD) $(LIBICONV)
-libeglib_static_la_LDFLAGS = -static
 MAINTAINERCLEANFILES = Makefile.in
 EXTRA_DIST = eglib-config.h.in $(win_files) $(unix_files)
 all: all-am
@@ -498,9 +447,6 @@ clean-noinstLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libeglib-static.la: $(libeglib_static_la_OBJECTS) $(libeglib_static_la_DEPENDENCIES) $(EXTRA_libeglib_static_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libeglib_static_la_LINK)  $(libeglib_static_la_OBJECTS) $(libeglib_static_la_LIBADD) $(LIBS)
-
 libeglib.la: $(libeglib_la_OBJECTS) $(libeglib_la_DEPENDENCIES) $(EXTRA_libeglib_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libeglib_la_LINK)  $(libeglib_la_OBJECTS) $(libeglib_la_LIBADD) $(LIBS)
 
@@ -546,42 +492,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gunicode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gutf8.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-vasprintf.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-garray.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gbytearray.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gdate-unix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gdate-win32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gdir-unix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gdir-win32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gerror.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gfile-posix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gfile-unix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gfile-win32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gfile.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-ghashtable.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-giconv.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-glist.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gmarkup.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gmem.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gmisc-unix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gmisc-win32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gmodule-unix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gmodule-win32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-goutput.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gpath.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gpattern.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gptrarray.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gqsort.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gqueue.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gshell.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gslist.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gspawn.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gstr.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gstring.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gtimer-unix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gtimer-win32.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gunicode.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-gutf8.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_static_la-vasprintf.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -603,258 +513,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
-
-libeglib_static_la-garray.lo: garray.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-garray.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-garray.Tpo -c -o libeglib_static_la-garray.lo `test -f 'garray.c' || echo '$(srcdir)/'`garray.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-garray.Tpo $(DEPDIR)/libeglib_static_la-garray.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='garray.c' object='libeglib_static_la-garray.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-garray.lo `test -f 'garray.c' || echo '$(srcdir)/'`garray.c
-
-libeglib_static_la-gbytearray.lo: gbytearray.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gbytearray.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gbytearray.Tpo -c -o libeglib_static_la-gbytearray.lo `test -f 'gbytearray.c' || echo '$(srcdir)/'`gbytearray.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gbytearray.Tpo $(DEPDIR)/libeglib_static_la-gbytearray.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gbytearray.c' object='libeglib_static_la-gbytearray.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gbytearray.lo `test -f 'gbytearray.c' || echo '$(srcdir)/'`gbytearray.c
-
-libeglib_static_la-gerror.lo: gerror.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gerror.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gerror.Tpo -c -o libeglib_static_la-gerror.lo `test -f 'gerror.c' || echo '$(srcdir)/'`gerror.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gerror.Tpo $(DEPDIR)/libeglib_static_la-gerror.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gerror.c' object='libeglib_static_la-gerror.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gerror.lo `test -f 'gerror.c' || echo '$(srcdir)/'`gerror.c
-
-libeglib_static_la-ghashtable.lo: ghashtable.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-ghashtable.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-ghashtable.Tpo -c -o libeglib_static_la-ghashtable.lo `test -f 'ghashtable.c' || echo '$(srcdir)/'`ghashtable.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-ghashtable.Tpo $(DEPDIR)/libeglib_static_la-ghashtable.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='ghashtable.c' object='libeglib_static_la-ghashtable.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-ghashtable.lo `test -f 'ghashtable.c' || echo '$(srcdir)/'`ghashtable.c
-
-libeglib_static_la-giconv.lo: giconv.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-giconv.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-giconv.Tpo -c -o libeglib_static_la-giconv.lo `test -f 'giconv.c' || echo '$(srcdir)/'`giconv.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-giconv.Tpo $(DEPDIR)/libeglib_static_la-giconv.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='giconv.c' object='libeglib_static_la-giconv.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-giconv.lo `test -f 'giconv.c' || echo '$(srcdir)/'`giconv.c
-
-libeglib_static_la-gmem.lo: gmem.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gmem.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gmem.Tpo -c -o libeglib_static_la-gmem.lo `test -f 'gmem.c' || echo '$(srcdir)/'`gmem.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gmem.Tpo $(DEPDIR)/libeglib_static_la-gmem.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gmem.c' object='libeglib_static_la-gmem.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gmem.lo `test -f 'gmem.c' || echo '$(srcdir)/'`gmem.c
-
-libeglib_static_la-goutput.lo: goutput.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-goutput.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-goutput.Tpo -c -o libeglib_static_la-goutput.lo `test -f 'goutput.c' || echo '$(srcdir)/'`goutput.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-goutput.Tpo $(DEPDIR)/libeglib_static_la-goutput.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='goutput.c' object='libeglib_static_la-goutput.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-goutput.lo `test -f 'goutput.c' || echo '$(srcdir)/'`goutput.c
-
-libeglib_static_la-gqsort.lo: gqsort.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gqsort.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gqsort.Tpo -c -o libeglib_static_la-gqsort.lo `test -f 'gqsort.c' || echo '$(srcdir)/'`gqsort.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gqsort.Tpo $(DEPDIR)/libeglib_static_la-gqsort.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gqsort.c' object='libeglib_static_la-gqsort.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gqsort.lo `test -f 'gqsort.c' || echo '$(srcdir)/'`gqsort.c
-
-libeglib_static_la-gstr.lo: gstr.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gstr.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gstr.Tpo -c -o libeglib_static_la-gstr.lo `test -f 'gstr.c' || echo '$(srcdir)/'`gstr.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gstr.Tpo $(DEPDIR)/libeglib_static_la-gstr.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstr.c' object='libeglib_static_la-gstr.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gstr.lo `test -f 'gstr.c' || echo '$(srcdir)/'`gstr.c
-
-libeglib_static_la-gslist.lo: gslist.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gslist.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gslist.Tpo -c -o libeglib_static_la-gslist.lo `test -f 'gslist.c' || echo '$(srcdir)/'`gslist.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gslist.Tpo $(DEPDIR)/libeglib_static_la-gslist.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gslist.c' object='libeglib_static_la-gslist.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gslist.lo `test -f 'gslist.c' || echo '$(srcdir)/'`gslist.c
-
-libeglib_static_la-gstring.lo: gstring.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gstring.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gstring.Tpo -c -o libeglib_static_la-gstring.lo `test -f 'gstring.c' || echo '$(srcdir)/'`gstring.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gstring.Tpo $(DEPDIR)/libeglib_static_la-gstring.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gstring.c' object='libeglib_static_la-gstring.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gstring.lo `test -f 'gstring.c' || echo '$(srcdir)/'`gstring.c
-
-libeglib_static_la-gptrarray.lo: gptrarray.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gptrarray.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gptrarray.Tpo -c -o libeglib_static_la-gptrarray.lo `test -f 'gptrarray.c' || echo '$(srcdir)/'`gptrarray.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gptrarray.Tpo $(DEPDIR)/libeglib_static_la-gptrarray.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gptrarray.c' object='libeglib_static_la-gptrarray.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gptrarray.lo `test -f 'gptrarray.c' || echo '$(srcdir)/'`gptrarray.c
-
-libeglib_static_la-glist.lo: glist.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-glist.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-glist.Tpo -c -o libeglib_static_la-glist.lo `test -f 'glist.c' || echo '$(srcdir)/'`glist.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-glist.Tpo $(DEPDIR)/libeglib_static_la-glist.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='glist.c' object='libeglib_static_la-glist.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-glist.lo `test -f 'glist.c' || echo '$(srcdir)/'`glist.c
-
-libeglib_static_la-gqueue.lo: gqueue.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gqueue.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gqueue.Tpo -c -o libeglib_static_la-gqueue.lo `test -f 'gqueue.c' || echo '$(srcdir)/'`gqueue.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gqueue.Tpo $(DEPDIR)/libeglib_static_la-gqueue.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gqueue.c' object='libeglib_static_la-gqueue.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gqueue.lo `test -f 'gqueue.c' || echo '$(srcdir)/'`gqueue.c
-
-libeglib_static_la-gpath.lo: gpath.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gpath.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gpath.Tpo -c -o libeglib_static_la-gpath.lo `test -f 'gpath.c' || echo '$(srcdir)/'`gpath.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gpath.Tpo $(DEPDIR)/libeglib_static_la-gpath.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gpath.c' object='libeglib_static_la-gpath.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gpath.lo `test -f 'gpath.c' || echo '$(srcdir)/'`gpath.c
-
-libeglib_static_la-gshell.lo: gshell.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gshell.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gshell.Tpo -c -o libeglib_static_la-gshell.lo `test -f 'gshell.c' || echo '$(srcdir)/'`gshell.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gshell.Tpo $(DEPDIR)/libeglib_static_la-gshell.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gshell.c' object='libeglib_static_la-gshell.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gshell.lo `test -f 'gshell.c' || echo '$(srcdir)/'`gshell.c
-
-libeglib_static_la-gspawn.lo: gspawn.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gspawn.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gspawn.Tpo -c -o libeglib_static_la-gspawn.lo `test -f 'gspawn.c' || echo '$(srcdir)/'`gspawn.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gspawn.Tpo $(DEPDIR)/libeglib_static_la-gspawn.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gspawn.c' object='libeglib_static_la-gspawn.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gspawn.lo `test -f 'gspawn.c' || echo '$(srcdir)/'`gspawn.c
-
-libeglib_static_la-gfile.lo: gfile.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gfile.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gfile.Tpo -c -o libeglib_static_la-gfile.lo `test -f 'gfile.c' || echo '$(srcdir)/'`gfile.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gfile.Tpo $(DEPDIR)/libeglib_static_la-gfile.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gfile.c' object='libeglib_static_la-gfile.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gfile.lo `test -f 'gfile.c' || echo '$(srcdir)/'`gfile.c
-
-libeglib_static_la-gfile-posix.lo: gfile-posix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gfile-posix.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gfile-posix.Tpo -c -o libeglib_static_la-gfile-posix.lo `test -f 'gfile-posix.c' || echo '$(srcdir)/'`gfile-posix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gfile-posix.Tpo $(DEPDIR)/libeglib_static_la-gfile-posix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gfile-posix.c' object='libeglib_static_la-gfile-posix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gfile-posix.lo `test -f 'gfile-posix.c' || echo '$(srcdir)/'`gfile-posix.c
-
-libeglib_static_la-gpattern.lo: gpattern.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gpattern.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gpattern.Tpo -c -o libeglib_static_la-gpattern.lo `test -f 'gpattern.c' || echo '$(srcdir)/'`gpattern.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gpattern.Tpo $(DEPDIR)/libeglib_static_la-gpattern.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gpattern.c' object='libeglib_static_la-gpattern.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gpattern.lo `test -f 'gpattern.c' || echo '$(srcdir)/'`gpattern.c
-
-libeglib_static_la-gmarkup.lo: gmarkup.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gmarkup.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gmarkup.Tpo -c -o libeglib_static_la-gmarkup.lo `test -f 'gmarkup.c' || echo '$(srcdir)/'`gmarkup.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gmarkup.Tpo $(DEPDIR)/libeglib_static_la-gmarkup.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gmarkup.c' object='libeglib_static_la-gmarkup.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gmarkup.lo `test -f 'gmarkup.c' || echo '$(srcdir)/'`gmarkup.c
-
-libeglib_static_la-gutf8.lo: gutf8.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gutf8.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gutf8.Tpo -c -o libeglib_static_la-gutf8.lo `test -f 'gutf8.c' || echo '$(srcdir)/'`gutf8.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gutf8.Tpo $(DEPDIR)/libeglib_static_la-gutf8.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gutf8.c' object='libeglib_static_la-gutf8.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gutf8.lo `test -f 'gutf8.c' || echo '$(srcdir)/'`gutf8.c
-
-libeglib_static_la-gunicode.lo: gunicode.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gunicode.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gunicode.Tpo -c -o libeglib_static_la-gunicode.lo `test -f 'gunicode.c' || echo '$(srcdir)/'`gunicode.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gunicode.Tpo $(DEPDIR)/libeglib_static_la-gunicode.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gunicode.c' object='libeglib_static_la-gunicode.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gunicode.lo `test -f 'gunicode.c' || echo '$(srcdir)/'`gunicode.c
-
-libeglib_static_la-gdate-unix.lo: gdate-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gdate-unix.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gdate-unix.Tpo -c -o libeglib_static_la-gdate-unix.lo `test -f 'gdate-unix.c' || echo '$(srcdir)/'`gdate-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gdate-unix.Tpo $(DEPDIR)/libeglib_static_la-gdate-unix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gdate-unix.c' object='libeglib_static_la-gdate-unix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gdate-unix.lo `test -f 'gdate-unix.c' || echo '$(srcdir)/'`gdate-unix.c
-
-libeglib_static_la-gdir-unix.lo: gdir-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gdir-unix.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gdir-unix.Tpo -c -o libeglib_static_la-gdir-unix.lo `test -f 'gdir-unix.c' || echo '$(srcdir)/'`gdir-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gdir-unix.Tpo $(DEPDIR)/libeglib_static_la-gdir-unix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gdir-unix.c' object='libeglib_static_la-gdir-unix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gdir-unix.lo `test -f 'gdir-unix.c' || echo '$(srcdir)/'`gdir-unix.c
-
-libeglib_static_la-gfile-unix.lo: gfile-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gfile-unix.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gfile-unix.Tpo -c -o libeglib_static_la-gfile-unix.lo `test -f 'gfile-unix.c' || echo '$(srcdir)/'`gfile-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gfile-unix.Tpo $(DEPDIR)/libeglib_static_la-gfile-unix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gfile-unix.c' object='libeglib_static_la-gfile-unix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gfile-unix.lo `test -f 'gfile-unix.c' || echo '$(srcdir)/'`gfile-unix.c
-
-libeglib_static_la-gmisc-unix.lo: gmisc-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gmisc-unix.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gmisc-unix.Tpo -c -o libeglib_static_la-gmisc-unix.lo `test -f 'gmisc-unix.c' || echo '$(srcdir)/'`gmisc-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gmisc-unix.Tpo $(DEPDIR)/libeglib_static_la-gmisc-unix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gmisc-unix.c' object='libeglib_static_la-gmisc-unix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gmisc-unix.lo `test -f 'gmisc-unix.c' || echo '$(srcdir)/'`gmisc-unix.c
-
-libeglib_static_la-gmodule-unix.lo: gmodule-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gmodule-unix.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gmodule-unix.Tpo -c -o libeglib_static_la-gmodule-unix.lo `test -f 'gmodule-unix.c' || echo '$(srcdir)/'`gmodule-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gmodule-unix.Tpo $(DEPDIR)/libeglib_static_la-gmodule-unix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gmodule-unix.c' object='libeglib_static_la-gmodule-unix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gmodule-unix.lo `test -f 'gmodule-unix.c' || echo '$(srcdir)/'`gmodule-unix.c
-
-libeglib_static_la-gtimer-unix.lo: gtimer-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gtimer-unix.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gtimer-unix.Tpo -c -o libeglib_static_la-gtimer-unix.lo `test -f 'gtimer-unix.c' || echo '$(srcdir)/'`gtimer-unix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gtimer-unix.Tpo $(DEPDIR)/libeglib_static_la-gtimer-unix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtimer-unix.c' object='libeglib_static_la-gtimer-unix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gtimer-unix.lo `test -f 'gtimer-unix.c' || echo '$(srcdir)/'`gtimer-unix.c
-
-libeglib_static_la-gdate-win32.lo: gdate-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gdate-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gdate-win32.Tpo -c -o libeglib_static_la-gdate-win32.lo `test -f 'gdate-win32.c' || echo '$(srcdir)/'`gdate-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gdate-win32.Tpo $(DEPDIR)/libeglib_static_la-gdate-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gdate-win32.c' object='libeglib_static_la-gdate-win32.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gdate-win32.lo `test -f 'gdate-win32.c' || echo '$(srcdir)/'`gdate-win32.c
-
-libeglib_static_la-gdir-win32.lo: gdir-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gdir-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gdir-win32.Tpo -c -o libeglib_static_la-gdir-win32.lo `test -f 'gdir-win32.c' || echo '$(srcdir)/'`gdir-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gdir-win32.Tpo $(DEPDIR)/libeglib_static_la-gdir-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gdir-win32.c' object='libeglib_static_la-gdir-win32.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gdir-win32.lo `test -f 'gdir-win32.c' || echo '$(srcdir)/'`gdir-win32.c
-
-libeglib_static_la-gfile-win32.lo: gfile-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gfile-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gfile-win32.Tpo -c -o libeglib_static_la-gfile-win32.lo `test -f 'gfile-win32.c' || echo '$(srcdir)/'`gfile-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gfile-win32.Tpo $(DEPDIR)/libeglib_static_la-gfile-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gfile-win32.c' object='libeglib_static_la-gfile-win32.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gfile-win32.lo `test -f 'gfile-win32.c' || echo '$(srcdir)/'`gfile-win32.c
-
-libeglib_static_la-gmisc-win32.lo: gmisc-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gmisc-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gmisc-win32.Tpo -c -o libeglib_static_la-gmisc-win32.lo `test -f 'gmisc-win32.c' || echo '$(srcdir)/'`gmisc-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gmisc-win32.Tpo $(DEPDIR)/libeglib_static_la-gmisc-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gmisc-win32.c' object='libeglib_static_la-gmisc-win32.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gmisc-win32.lo `test -f 'gmisc-win32.c' || echo '$(srcdir)/'`gmisc-win32.c
-
-libeglib_static_la-gmodule-win32.lo: gmodule-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gmodule-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gmodule-win32.Tpo -c -o libeglib_static_la-gmodule-win32.lo `test -f 'gmodule-win32.c' || echo '$(srcdir)/'`gmodule-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gmodule-win32.Tpo $(DEPDIR)/libeglib_static_la-gmodule-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gmodule-win32.c' object='libeglib_static_la-gmodule-win32.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gmodule-win32.lo `test -f 'gmodule-win32.c' || echo '$(srcdir)/'`gmodule-win32.c
-
-libeglib_static_la-gtimer-win32.lo: gtimer-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-gtimer-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-gtimer-win32.Tpo -c -o libeglib_static_la-gtimer-win32.lo `test -f 'gtimer-win32.c' || echo '$(srcdir)/'`gtimer-win32.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-gtimer-win32.Tpo $(DEPDIR)/libeglib_static_la-gtimer-win32.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtimer-win32.c' object='libeglib_static_la-gtimer-win32.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-gtimer-win32.lo `test -f 'gtimer-win32.c' || echo '$(srcdir)/'`gtimer-win32.c
-
-libeglib_static_la-vasprintf.lo: vasprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -MT libeglib_static_la-vasprintf.lo -MD -MP -MF $(DEPDIR)/libeglib_static_la-vasprintf.Tpo -c -o libeglib_static_la-vasprintf.lo `test -f 'vasprintf.c' || echo '$(srcdir)/'`vasprintf.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_static_la-vasprintf.Tpo $(DEPDIR)/libeglib_static_la-vasprintf.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='vasprintf.c' object='libeglib_static_la-vasprintf.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_static_la_CFLAGS) $(CFLAGS) -c -o libeglib_static_la-vasprintf.lo `test -f 'vasprintf.c' || echo '$(srcdir)/'`vasprintf.c
 
 libeglib_la-garray.lo: garray.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -MT libeglib_la-garray.lo -MD -MP -MF $(DEPDIR)/libeglib_la-garray.Tpo -c -o libeglib_la-garray.lo `test -f 'garray.c' || echo '$(srcdir)/'`garray.c
