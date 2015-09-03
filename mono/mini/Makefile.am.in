@@ -770,7 +770,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly master-4.3.0.1044/f0e244a\"" > version.h
+	echo "#define FULL_VERSION \"Nightly master-4.3.0.1080/30d6567\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
