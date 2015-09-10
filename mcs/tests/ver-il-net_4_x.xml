@@ -18522,7 +18522,7 @@
     </type>
     <type name="C">
       <method name="Int32 Main()" attrs="150">
-        <size>603</size>
+        <size>727</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -19688,6 +19688,37 @@
       </method>
     </type>
   </test>
+  <test name="gtest-634.cs">
+    <type name="ThingWithOrganizationId">
+      <method name="Void .ctor()" attrs="6276">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="Thing">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="BaseService`1[TConstraint]">
+      <method name="Void Save[T](T)" attrs="1478">
+        <size>0</size>
+      </method>
+      <method name="Void .ctor()" attrs="6276">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="DerivedService">
+      <method name="Void Save[TThing](TThing)" attrs="198">
+        <size>23</size>
+      </method>
+      <method name="Void Main()" attrs="145">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
   <test name="gtest-anontype-01.cs">
     <type name="Test">
       <method name="Int32 Main()" attrs="150">
@@ -20704,6 +20735,38 @@
       </method>
       <method name="Void .ctor(Int32)" attrs="6278">
         <size>15</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-autoproperty-20.cs">
+    <type name="BrokenOverrideProperty.BaseClass">
+      <method name="System.String get_Whatever()" attrs="2502">
+        <size>14</size>
+      </method>
+      <method name="Void set_Whatever(System.String)" attrs="2502">
+        <size>8</size>
+      </method>
+      <method name="Void .ctor(String)" attrs="6276">
+        <size>15</size>
+      </method>
+    </type>
+    <type name="BrokenOverrideProperty.DerivedClass">
+      <method name="System.String get_Whatever()" attrs="2246">
+        <size>14</size>
+      </method>
+      <method name="Void set_Whatever(System.String)" attrs="2246">
+        <size>20</size>
+      </method>
+      <method name="Void .ctor(String)" attrs="6278">
+        <size>9</size>
+      </method>
+    </type>
+    <type name="BrokenOverrideProperty.MainClass">
+      <method name="Int32 Main()" attrs="150">
+        <size>49</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
       </method>
     </type>
   </test>
@@ -69062,6 +69125,11 @@
     </type>
   </test>
   <test name="test-null-operator-08.cs">
+    <type name="S">
+      <method name="Void Foo(Boolean)" attrs="486">
+        <size>38</size>
+      </method>
+    </type>
     <type name="Program">
       <method name="Void M[T](T)" attrs="145">
         <size>88</size>
@@ -69075,24 +69143,17 @@
       <method name="Void M3[T](System.Nullable`1[T])" attrs="145">
         <size>106</size>
       </method>
-      <method name="Void Main()" attrs="145">
-        <size>165</size>
-      </method>
-      <method name="Void .ctor()" attrs="6278">
-        <size>7</size>
-      </method>
-    </type>
-    <type name="S">
-      <method name="Void Foo(Boolean)" attrs="486">
-        <size>38</size>
-      </method>
-    </type>
-    <type name="Program">
       <method name="Void TestAddress_1[T](T)" attrs="145">
         <size>56</size>
       </method>
       <method name="Void TestAddress_2[T](T[])" attrs="145">
         <size>82</size>
+      </method>
+      <method name="Void Main()" attrs="145">
+        <size>165</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
       </method>
     </type>
   </test>
@@ -69311,6 +69372,19 @@
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-null-operator-18.cs">
+    <type name="MainClass">
+      <method name="Void Main()" attrs="150">
+        <size>7</size>
+      </method>
+      <method name="Void TestBug()" attrs="150">
+        <size>38</size>
+      </method>
+      <method name="Void Test(Int32)" attrs="150">
+        <size>12</size>
       </method>
     </type>
   </test>
