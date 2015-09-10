@@ -12604,7 +12604,7 @@ done
 
 fi
 
- if test x$ac_cv_func_vasprintf = x ; then
+ if test x$ac_cv_func_vasprintf = xno ; then
   NEED_VASPRINTF_TRUE=
   NEED_VASPRINTF_FALSE='#'
 else
