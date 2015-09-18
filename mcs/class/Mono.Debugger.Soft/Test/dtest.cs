@@ -2507,6 +2507,28 @@ public class DebuggerTests
 	}
 
 	[Test]
+	public void InvokeAbort () {
+		vm.Detach ();
+
+		Start (new string [] { "dtest-app.exe", "invoke-abort" });
+
+		Event e = run_until ("invoke_abort");
+
+		StackFrame f = e.Thread.GetFrames ()[0];
+
+		var obj = f.GetThis () as ObjectMirror;
+		var t = obj.Type;
+		var m = t.GetMethod ("invoke_abort_2");
+		// Invoke multiple times to check that the subsequent invokes are aborted too
+		var res = (IInvokeAsyncResult)obj.BeginInvokeMultiple (e.Thread, new MethodMirror[] { m, m, m, m }, null, InvokeOptions.None, delegate { }, null);
+		Thread.Sleep (500);
+		res.Abort ();
+		AssertThrows<CommandException> (delegate {
+				obj.EndInvokeMethod (res);
+			});
+	}
+
+	[Test]
 	public void GetThreads () {
 		vm.GetThreads ();
 	}

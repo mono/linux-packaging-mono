@@ -1003,3 +1003,9 @@ mono_arch_create_sdb_trampoline (gboolean single_step, MonoTrampInfo **info, gbo
 
 	return buf;
 }
+
+#if defined(ENABLE_GSHAREDVT)
+
+#include "../../../mono-extensions/mono/mini/tramp-amd64-gsharedvt.c"
+
+#endif /* !ENABLE_GSHAREDVT */
