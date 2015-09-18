@@ -35,7 +35,7 @@ Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
-Source0:        http://download.mono-project.com/sources/mono/mono-master-%{version}.tar.bz2
+Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 #Patch0:		add_missing_vb_portable_targets.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
