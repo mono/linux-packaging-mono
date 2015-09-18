@@ -689,6 +689,8 @@ MIPS_GCC_FALSE
 MIPS_GCC_TRUE
 INSTALL_XAMMAC_FALSE
 INSTALL_XAMMAC_TRUE
+INSTALL_MONOTOUCH_TV_FALSE
+INSTALL_MONOTOUCH_TV_TRUE
 INSTALL_MONOTOUCH_WATCH_FALSE
 INSTALL_MONOTOUCH_WATCH_TRUE
 INSTALL_MONOTOUCH_FALSE
@@ -1010,6 +1012,7 @@ with_profile4_x
 with_monodroid
 with_monotouch
 with_monotouch_watch
+with_monotouch_tv
 with_xammac
 with_oprofile
 with_malloc_mempools
@@ -1738,6 +1741,7 @@ Optional Packages:
   --with-monodroid=yes,no         If you want to build the MonoDroid assemblies (defaults to no)
   --with-monotouch=yes,no         If you want to build the Xamarin.iOS assemblies (defaults to no)
   --with-monotouch_watch=yes,no   If you want to build the Xamarin.WatchOS assemblies (defaults to no)
+  --with-monotouch_tv=yes,no      If you want to build the Xamarin.TVOS assemblies (defaults to no)
   --with-xammac=yes,no            If you want to build the Xamarin.Mac assemblies (defaults to no)
   --with-oprofile=no,<oprofile install dir>   Enable oprofile support (defaults to no)
   --with-malloc-mempools=yes,no  Use malloc for each single mempool allocation (only for runtime debugging, defaults to no)
@@ -26584,6 +26588,14 @@ else
 fi
 
 
+# Check whether --with-monotouch_tv was given.
+if test "${with_monotouch_tv+set}" = set; then :
+  withval=$with_monotouch_tv;
+else
+  with_monotouch_tv=no
+fi
+
+
 # Check whether --with-xammac was given.
 if test "${with_xammac+set}" = set; then :
   withval=$with_xammac;
@@ -26726,6 +26738,7 @@ if test x$cross_compiling = xyes -o x$enable_mcs_build = xno; then
    with_monodroid=no
    with_monotouch=no
    with_monotouch_watch=no
+   with_monotouch_tv=no
    with_xammac=no
 fi
 
@@ -26789,6 +26802,14 @@ fi
 else
   INSTALL_MONOTOUCH_WATCH_TRUE='#'
   INSTALL_MONOTOUCH_WATCH_FALSE=
+fi
+
+ if test "x$with_monotouch_tv" != "xno"; then
+  INSTALL_MONOTOUCH_TV_TRUE=
+  INSTALL_MONOTOUCH_TV_FALSE='#'
+else
+  INSTALL_MONOTOUCH_TV_TRUE='#'
+  INSTALL_MONOTOUCH_TV_FALSE=
 fi
 
  if test "x$with_xammac" != "xno"; then
@@ -27308,6 +27329,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${INSTALL_MONOTOUCH_WATCH_TRUE}" && test -z "${INSTALL_MONOTOUCH_WATCH_FALSE}"; then
   as_fn_error $? "conditional \"INSTALL_MONOTOUCH_WATCH\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${INSTALL_MONOTOUCH_TV_TRUE}" && test -z "${INSTALL_MONOTOUCH_TV_FALSE}"; then
+  as_fn_error $? "conditional \"INSTALL_MONOTOUCH_TV\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${INSTALL_XAMMAC_TRUE}" && test -z "${INSTALL_XAMMAC_FALSE}"; then
@@ -30495,9 +30520,10 @@ echo "
 
    Libraries:
 	.NET 4.6:        $with_profile4_x
-	MonoDroid:       $with_monodroid
+	Xamarin.Android: $with_monodroid
 	Xamarin.iOS:     $with_monotouch
 	Xamarin.WatchOS: $with_monotouch_watch
+	Xamarin.TVOS:    $with_monotouch_tv
 	Xamarin.Mac:     $with_xammac
 	JNI support:     $jdk_headers_found
 	libgdiplus:      $libgdiplus_msg

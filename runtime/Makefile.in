@@ -84,7 +84,8 @@ target_triplet = @target@
 @INSTALL_MONODROID_TRUE@am__append_3 = monodroid
 @INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime
 @INSTALL_MONOTOUCH_WATCH_TRUE@am__append_5 = monotouch_watch
-@INSTALL_XAMMAC_TRUE@am__append_6 = xammac xammac_net_4_5
+@INSTALL_MONOTOUCH_TV_TRUE@am__append_6 = monotouch_tv
+@INSTALL_XAMMAC_TRUE@am__append_7 = xammac xammac_net_4_5
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -339,7 +340,7 @@ symlinks = etc/mono/1.0/machine.config etc/mono/2.0/machine.config \
 	etc/mono/2.0/Browsers/Compat.browser $(am__append_1)
 SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6)
+	$(am__append_5) $(am__append_6) $(am__append_7)
 @INSTALL_4_x_TRUE@al_profile = net_4_x
 test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
