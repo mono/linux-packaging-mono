@@ -1,0 +1,35 @@
+From 2437b1ea77fc4252f3fdf17e847333ca2a152d0d Mon Sep 17 00:00:00 2001
+From: Rodrigo Kumpera <kumpera@gmail.com>
+Date: Fri, 18 Sep 2015 16:51:12 -0400
+Subject: [PATCH] [threading] Apparentlty zero is a valid tls key on some
+ systems.
+
+---
+ mono/utils/mono-threads.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/mono/utils/mono-threads.c b/mono/utils/mono-threads.c
+index e84e409..c0bfbec 100644
+--- a/mono/utils/mono-threads.c
++++ b/mono/utils/mono-threads.c
+@@ -417,7 +417,7 @@ mono_threads_unregister_current_thread (MonoThreadInfo *info)
+ MonoThreadInfo*
+ mono_thread_info_current_unchecked (void)
+ {
+-	return thread_info_key ? (MonoThreadInfo*)mono_native_tls_get_value (thread_info_key) : NULL;
++	return mono_threads_inited ? (MonoThreadInfo*)mono_native_tls_get_value (thread_info_key) : NULL;
+ }
+ 
+ 
+@@ -574,8 +574,6 @@ mono_threads_init (MonoThreadInfoCallbacks *callbacks, size_t info_size)
+ 	res = mono_native_tls_alloc (&thread_exited_key, (void *) thread_exited_dtor);
+ #endif
+ 
+-	g_assert (thread_info_key);
+-
+ 	g_assert (res);
+ 
+ #ifndef HAVE_KW_THREAD
+-- 
+1.9.1
+
