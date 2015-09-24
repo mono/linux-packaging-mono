@@ -4537,6 +4537,9 @@ namespace Mono.CSharp
 						expr = Convert.ImplicitConversion (rc, left, Nullable.NullableInfo.GetUnderlyingType (rtype), loc);
 						if (expr == null)
 							return null;
+
+						if ((oper & Operator.BitwiseMask) != 0)
+							type = rtype;
 					}
 
 					if (expr != null) {
@@ -4568,6 +4571,9 @@ namespace Mono.CSharp
 						expr = Convert.ImplicitConversion (rc, right, Nullable.NullableInfo.GetUnderlyingType (ltype), loc);
 						if (expr == null)
 							return null;
+
+						if ((oper & Operator.BitwiseMask) != 0)
+							type = ltype;
 					}
 
 					if (expr != null) {
@@ -7045,12 +7051,7 @@ namespace Mono.CSharp
 		protected override Expression DoResolve (ResolveContext rc)
 		{
 			if (!rc.HasSet (ResolveContext.Options.ConditionalAccessReceiver)) {
-				if (expr.HasConditionalAccess ()) {
-					conditional_access_receiver = true;
-					using (rc.Set (ResolveContext.Options.ConditionalAccessReceiver)) {
-						return DoResolveInvocation (rc);
-					}
-				}
+				conditional_access_receiver = expr.HasConditionalAccess ();
 			}
 
 			return DoResolveInvocation (rc);
@@ -7060,6 +7061,11 @@ namespace Mono.CSharp
 		{
 			Expression member_expr;
 			var atn = expr as ATypeNameExpression;
+
+			var flags = default (ResolveContext.FlagsHandle);
+			if (conditional_access_receiver)
+				flags = ec.Set (ResolveContext.Options.ConditionalAccessReceiver);
+
 			if (atn != null) {
 				member_expr = atn.LookupNameExpression (ec, MemberLookupRestrictions.InvocableOnly | MemberLookupRestrictions.ReadAccess);
 				if (member_expr != null) {
@@ -7073,6 +7079,9 @@ namespace Mono.CSharp
 			} else {
 				member_expr = expr.Resolve (ec);
 			}
+
+			if (conditional_access_receiver)
+				flags.Dispose ();
 
 			if (member_expr == null)
 				return null;
@@ -7210,13 +7219,15 @@ namespace Mono.CSharp
 			if (mg.IsConditionallyExcluded)
 				return;
 
+			var da = conditional_access_receiver ? fc.BranchDefiniteAssignment () : null;
+
   			mg.FlowAnalysis (fc);
 
 			if (arguments != null)
 				arguments.FlowAnalysis (fc);
 
 			if (conditional_access_receiver)
-				fc.ConditionalAccessEnd ();
+				fc.DefiniteAssignment = da;
 		}
 
 		public override string GetSignatureForError ()
@@ -10236,7 +10247,14 @@ namespace Mono.CSharp
 		//
 		Expression CreateAccessExpression (ResolveContext ec, bool conditionalAccessReceiver)
 		{
+			if (conditionalAccessReceiver)
+				ec.Set (ResolveContext.Options.ConditionalAccessReceiver);
+			
 			Expr = Expr.Resolve (ec);
+
+			if (conditionalAccessReceiver)
+				ec.With (ResolveContext.Options.ConditionalAccessReceiver, false);
+
 			if (Expr == null)
 				return null;
 
@@ -10247,11 +10265,16 @@ namespace Mono.CSharp
 				return null;
 			}
 
-			if (type.IsArray)
-				return new ArrayAccess (this, loc) {
+			if (type.IsArray) {
+				var aa = new ArrayAccess (this, loc) {
 					ConditionalAccess = ConditionalAccess,
-					ConditionalAccessReceiver = conditionalAccessReceiver
 				};
+
+				if (conditionalAccessReceiver)
+					aa.SetConditionalAccessReceiver ();
+
+				return aa;
+			}
 
 			if (type.IsPointer)
 				return Expr.MakePointerAccess (ec, type, Arguments);
@@ -10304,20 +10327,9 @@ namespace Mono.CSharp
 
 		protected override Expression DoResolve (ResolveContext rc)
 		{
-			Expression expr;
-			if (!rc.HasSet (ResolveContext.Options.ConditionalAccessReceiver)) {
-				if (HasConditionalAccess ()) {
-					using (rc.Set (ResolveContext.Options.ConditionalAccessReceiver)) {
-						expr = CreateAccessExpression (rc, true);
-						if (expr == null)
-							return null;
+			bool conditionalAccessReceiver = !rc.HasSet (ResolveContext.Options.ConditionalAccessReceiver) && HasConditionalAccess ();
 
-						return expr.Resolve (rc);
-					}
-				}
-			}
-
-			expr = CreateAccessExpression (rc, false);
+			var expr = CreateAccessExpression (rc, conditionalAccessReceiver);
 			if (expr == null)
 				return null;
 
@@ -10341,9 +10353,6 @@ namespace Mono.CSharp
 		public override void FlowAnalysis (FlowAnalysisContext fc)
 		{
 			Expr.FlowAnalysis (fc);
-
-			if (ConditionalAccess)
-				fc.BranchConditionalAccessDefiniteAssignment ();
 
 			Arguments.FlowAnalysis (fc);
 		}
@@ -10380,6 +10389,7 @@ namespace Mono.CSharp
 		LocalTemporary temp;
 		bool prepared;
 		bool? has_await_args;
+		bool conditional_access_receiver;
 		
 		public ArrayAccess (ElementAccess ea_data, Location l)
 		{
@@ -10388,8 +10398,6 @@ namespace Mono.CSharp
 		}
 
 		public bool ConditionalAccess { get; set; }
-
-		public bool ConditionalAccessReceiver { get; set; }
 
 		public void AddressOf (EmitContext ec, AddressOp mode)
 		{
@@ -10447,7 +10455,7 @@ namespace Mono.CSharp
 				UnsafeError (ec, ea.Location);
 			}
 
-			if (ConditionalAccessReceiver)
+			if (conditional_access_receiver)
 				type = LiftMemberType (ec, type);
 
 			foreach (Argument a in ea.Arguments) {
@@ -10470,7 +10478,12 @@ namespace Mono.CSharp
 
 		public override void FlowAnalysis (FlowAnalysisContext fc)
 		{
+			var da = conditional_access_receiver ? fc.BranchDefiniteAssignment () : null;
+
 			ea.FlowAnalysis (fc);
+
+			if (conditional_access_receiver)
+				fc.DefiniteAssignment = da;
 		}
 
 		public override bool HasConditionalAccess ()
@@ -10512,14 +10525,14 @@ namespace Mono.CSharp
 					LoadInstanceAndArguments (ec, false, true);
 				}
 
-				if (ConditionalAccessReceiver)
+				if (conditional_access_receiver)
 					ec.ConditionalAccess = new ConditionalAccessContext (type, ec.DefineLabel ());
 
 				var ac = (ArrayContainer) ea.Expr.Type;
 				LoadInstanceAndArguments (ec, false, false);
 				ec.EmitArrayLoad (ac);
 
-				if (ConditionalAccessReceiver)
+				if (conditional_access_receiver)
 					ec.CloseConditionalAccess (type.IsNullableType && type != ac.Element ? type : null);
 			}	
 
@@ -10640,6 +10653,11 @@ namespace Mono.CSharp
 			using (ctx.With (BuilderContext.Options.CheckedScope, true)) {
 				return Arguments.MakeExpression (ea.Arguments, ctx);
 			}
+		}
+
+		public void SetConditionalAccessReceiver ()
+		{
+			conditional_access_receiver = true;
 		}
 	}
 
@@ -10794,11 +10812,13 @@ namespace Mono.CSharp
 
 		public override void FlowAnalysis (FlowAnalysisContext fc)
 		{
+			var da = conditional_access_receiver ? fc.BranchDefiniteAssignment () : null;
+
 			base.FlowAnalysis (fc);
 			arguments.FlowAnalysis (fc);
 
 			if (conditional_access_receiver)
-				fc.ConditionalAccessEnd ();
+				fc.DefiniteAssignment = da;
 		}
 
 		public override string GetSignatureForError ()
