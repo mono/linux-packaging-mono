@@ -294,10 +294,6 @@ namespace IKVM.Internal
 						StaticCompiler.IssueMessage(options, Message.WrongClassName, name, f.Name);
 						return null;
 					}
-					if(options.removeUnusedFields)
-					{
-						f.RemoveUnusedFields();
-					}
 					if(f.IsPublic && options.privatePackages != null)
 					{
 						foreach(string p in options.privatePackages)
@@ -2088,43 +2084,6 @@ namespace IKVM.Internal
 				return ((RemappedMethodBaseWrapper)mw).DoLink();
 			}
 
-			internal override TypeWrapper DeclaringTypeWrapper
-			{
-				get
-				{
-					// at the moment we don't support nested remapped types
-					return null;
-				}
-			}
-
-			internal override void Finish()
-			{
-				if(BaseTypeWrapper != null)
-				{
-					BaseTypeWrapper.Finish();
-				}
-				foreach(TypeWrapper iface in Interfaces)
-				{
-					iface.Finish();
-				}
-				foreach(MethodWrapper m in GetMethods())
-				{
-					m.Link();
-				}
-				foreach(FieldWrapper f in GetFields())
-				{
-					f.Link();
-				}
-			}
-
-			internal override TypeWrapper[] InnerClasses
-			{
-				get
-				{
-					return TypeWrapper.EmptyArray;
-				}
-			}
-
 			internal override TypeWrapper[] Interfaces
 			{
 				get
@@ -3512,7 +3471,6 @@ namespace IKVM.Internal
 		internal Dictionary<string, string> props;
 		internal bool noglobbing;
 		internal CodeGenOptions codegenoptions;
-		internal bool removeUnusedFields;
 		internal bool compressedResources;
 		internal string[] privatePackages;
 		internal string[] publicPackages;
