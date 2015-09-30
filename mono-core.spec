@@ -1139,6 +1139,7 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/ilasm.exe*
 %{_prefix}/lib/mono/4.5/installvst.exe*
 %{_prefix}/lib/mono/4.5/lc.exe*
+%{_prefix}/lib/mono/4.5/linkeranalyzer.exe*
 %{_prefix}/lib/mono/4.5/macpack.exe*
 %{_prefix}/lib/mono/4.5/makecert.exe*
 %{_prefix}/lib/mono/4.5/mdbrebase.exe*
