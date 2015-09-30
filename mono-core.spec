@@ -154,7 +154,7 @@ export PATH=/opt/novell/llvm-mono/bin:$PATH
   --with-ikvm=yes \
   --with-moonlight=no
 
-make %{?_smp_mflags}
+make
 
 %install
 %make_install
