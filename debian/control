@@ -325,7 +325,6 @@ Conflicts: libmono-nunit2.2-cil,
            libmono-nunit2.4-cil
 Depends: ${misc:Depends},
          libmono-accessibility4.0-cil (= ${source:Version}),
-         libmono-c5-1.1-cil (= ${source:Version}),
          libmono-cairo4.0-cil (= ${source:Version}),
          libmono-cecil-private-cil (= ${source:Version}),
          libmono-codecontracts4.0-cil (= ${source:Version}),
@@ -538,19 +537,6 @@ Description: Mono.Cecil library
  .
  This package contains the private Mono.Cecil library that allows one to
  generate and inspect programs and libraries in the ECMA CIL format.
-
-Package: libmono-c5-1.1-cil
-Architecture: all
-Replaces: mono-classlib-2.0 (<< 1.1.13.6), mono-classlib-2.0-dbg (<< 1.1.13.6), libmono-c5-1.0-cil
-Depends: ${misc:Depends}, ${cli:Depends}
-Description: Mono C5 library
- Mono is a platform for running and developing applications based on the
- ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
- Mono provides a complete CLR (Common Language Runtime) including compiler and
- runtime, which can produce and execute CIL (Common Intermediate Language)
- bytecode (aka assemblies), and a class library.
- .
- This package contains the Mono C5 library.
 
 Package: libmono-webbrowser4.0-cil
 Architecture: all
@@ -2543,7 +2529,6 @@ Replaces: mono-1.0-devel (<< 2.0),
           libmono-facades-system-xml-xdocument-cil (<< 3.2.3+dfsg-5~),
           libmono-facades-system-xml-xmlserializer-cil (<< 3.2.3+dfsg-5~),
           libmono-accessibility4.0-cil (<< 4.0.0~alpha1-0~),
-          libmono-c5-1.1-cil (<< 4.0.0~alpha1-0~),
           libmono-cairo4.0-cil (<< 4.0.0~alpha1-0~),
           libmono-compilerservices-symbolwriter4.0-cil (<< 4.0.0~alpha1-0~),
           libmono-csharp4.0c-cil (<< 4.0.0~alpha1-0~),
@@ -2727,7 +2712,6 @@ Breaks:   libmono-facades-system-collections-cil (<< 3.2.3+dfsg-5~),
           libmono-facades-system-xml-xdocument-cil (<< 3.2.3+dfsg-5~),
           libmono-facades-system-xml-xmlserializer-cil (<< 3.2.3+dfsg-5~),
           libmono-accessibility4.0-cil (<< 4.0.0~alpha1-0~),
-          libmono-c5-1.1-cil (<< 4.0.0~alpha1-0~),
           libmono-cairo4.0-cil (<< 4.0.0~alpha1-0~),
           libmono-compilerservices-symbolwriter4.0-cil (<< 4.0.0~alpha1-0~),
           libmono-csharp4.0c-cil (<< 4.0.0~alpha1-0~),
