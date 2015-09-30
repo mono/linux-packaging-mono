@@ -3811,6 +3811,7 @@ $as_echo "$am_cv_prog_tar_ustar" >&6; }
 
 
 
+                                     # TODO: remove this hack once we require automake 1.11+
 
 ac_config_headers="$ac_config_headers config.h"
 

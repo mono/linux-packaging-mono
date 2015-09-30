@@ -390,6 +390,22 @@ namespace Mono.CSharp
 			if (IsAnonymousStoreyMutateRequired)
 				type = CurrentAnonymousMethod.Storey.Mutator.Mutate (type);
 
+			if (pinned) {
+				//
+				// This is for .net compatibility. I am not sure why pinned
+				// pointer temps are converted to & even if they are pointers to
+				// pointers.
+				//
+				var pt = type as PointerContainer;
+				if (pt != null) {
+					type = pt.Element;
+					if (type.Kind == MemberKind.Void)
+						type = Module.Compiler.BuiltinTypes.IntPtr;
+					
+					return ig.DeclareLocal (type.GetMetaInfo ().MakeByRefType (), true);
+				}
+			}
+
 			return ig.DeclareLocal (type.GetMetaInfo (), pinned);
 		}
 

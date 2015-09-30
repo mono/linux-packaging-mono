@@ -423,7 +423,8 @@ common_sources = \
 	xdebug.c			\
 	mini-llvm-cpp.h	\
 	alias-analysis.c	\
-	mini-cross-helpers.c
+	mini-cross-helpers.c \
+	arch-stubs.c
 
 test_sources = 			\
 	basic-calls.cs 		\
@@ -649,12 +650,13 @@ checktests: $(regtests)
 rcheck: mono $(regtests)
 if NACL_CODEGEN
 	for i in $(regtests); do echo "running test $$i"; $(MINI_RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
-elif JENKINS_URL
+else
 	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
 	exit $$(cat regressionexitcode.out)
-else
-	$(MINI_RUNTIME) --regression $(regtests)
 endif
+
+rcheck2: mono $(regtests)
+	$(MINI_RUNTIME) --regression $(regtests)
 
 check-seq-points: mono $(regtests)
 	rm -f TestResults_op_il_seq_point.xml
@@ -770,7 +772,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.1229/07bae96\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.1414/bd67e39\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
