@@ -289,7 +289,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/ICSharpCode.SharpZipLib.dll
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
-%{_prefix}/lib/mono/4.5/Mono.C5.dll
 %{_prefix}/lib/mono/4.5/Mono.CSharp.dll
 %{_prefix}/lib/mono/4.5/Mono.Cairo.dll
 %{_prefix}/lib/mono/4.5/Mono.CompilerServices.SymbolWriter.dll
@@ -329,7 +328,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/ICSharpCode.SharpZipLib
 %{_prefix}/lib/mono/gac/Microsoft.CSharp
 %{_prefix}/lib/mono/gac/Microsoft.VisualC
-%{_prefix}/lib/mono/gac/Mono.C5
 %{_prefix}/lib/mono/gac/Mono.CSharp
 %{_prefix}/lib/mono/gac/Mono.Cairo
 %{_prefix}/lib/mono/gac/Mono.Cecil
