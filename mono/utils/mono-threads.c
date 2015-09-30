@@ -10,6 +10,11 @@
 
 #include <config.h>
 
+/* enable pthread extensions */
+#ifdef TARGET_MACH
+#define _DARWIN_C_SOURCE
+#endif
+
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-semaphore.h>
 #include <mono/utils/mono-threads.h>
@@ -163,7 +168,15 @@ dump_threads (void)
 	MOSTLY_ASYNC_SAFE_PRINTF ("\t0x?08\t- blocking with pending suspend (GOOD)\n");
 
 	FOREACH_THREAD_SAFE (info) {
+#ifdef TARGET_MACH
+		char thread_name [256] = { 0 };
+		pthread_getname_np (mono_thread_info_get_tid (info), thread_name, 255);
+
+		MOSTLY_ASYNC_SAFE_PRINTF ("--thread %p id %p [%p] (%s) state %x  %s\n", info, (void *) mono_thread_info_get_tid (info), (void*)(size_t)info->native_handle, thread_name, info->thread_state, info == cur ? "GC INITIATOR" : "" );
+#else
 		MOSTLY_ASYNC_SAFE_PRINTF ("--thread %p id %p [%p] state %x  %s\n", info, (void *) mono_thread_info_get_tid (info), (void*)(size_t)info->native_handle, info->thread_state, info == cur ? "GC INITIATOR" : "" );
+#endif
+
 	} END_FOREACH_THREAD_SAFE
 }
 
@@ -417,7 +430,7 @@ mono_threads_unregister_current_thread (MonoThreadInfo *info)
 MonoThreadInfo*
 mono_thread_info_current_unchecked (void)
 {
-	return thread_info_key ? (MonoThreadInfo*)mono_native_tls_get_value (thread_info_key) : NULL;
+	return mono_threads_inited ? (MonoThreadInfo*)mono_native_tls_get_value (thread_info_key) : NULL;
 }
 
 
@@ -574,8 +587,6 @@ mono_threads_init (MonoThreadInfoCallbacks *callbacks, size_t info_size)
 	res = mono_native_tls_alloc (&thread_exited_key, (void *) thread_exited_dtor);
 #endif
 
-	g_assert (thread_info_key);
-
 	g_assert (res);
 
 #ifndef HAVE_KW_THREAD
@@ -591,6 +602,7 @@ mono_threads_init (MonoThreadInfoCallbacks *callbacks, size_t info_size)
 	mono_lls_init (&thread_list, NULL);
 	mono_thread_smr_init ();
 	mono_threads_init_platform ();
+	mono_threads_init_abort_syscall ();
 
 #if defined(__MACH__)
 	mono_mach_init (thread_info_key);

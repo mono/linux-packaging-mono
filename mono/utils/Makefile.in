@@ -83,7 +83,7 @@ target_triplet = @target@
 @CROSS_COMPILE_FALSE@@X86_TRUE@am__append_1 = mach-support-x86.c
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@am__append_2 = mach-support-amd64.c
 @ARM_TRUE@@CROSS_COMPILE_FALSE@am__append_3 = mach-support-arm.c
-@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__append_4 = mach-support-arm.c
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__append_4 = mach-support-arm64.c
 @CROSS_COMPILE_TRUE@am__append_5 = mach-support-unknown.c
 @X86_TRUE@am__append_6 = mono-hwcap-x86.c mono-hwcap-x86.h
 @AMD64_TRUE@am__append_7 = mono-hwcap-x86.c mono-hwcap-x86.h
@@ -144,11 +144,15 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	lock-free-array-queue.h mono-linked-list-set.c \
 	mono-linked-list-set.h mono-threads.c \
 	mono-threads-state-machine.c mono-threads-posix.c \
+	mono-threads-posix-signals.c mono-threads-posix-signals.h \
 	mono-threads-mach.c mono-threads-mach-helper.c \
 	mono-threads-windows.c mono-threads-linux.c \
 	mono-threads-freebsd.c mono-threads-openbsd.c \
 	mono-threads-android.c mono-threads.h mono-threads-api.h \
-	mono-threads-coop.c mono-threads-coop.h mono-tls.h mono-tls.c \
+	mono-threads-coop.c mono-threads-coop.h \
+	mono-threads-mach-abort-syscall.c \
+	mono-threads-posix-abort-syscall.c \
+	mono-threads-windows-abort-syscall.c mono-tls.h mono-tls.c \
 	linux_magic.h mono-memory-model.h atomic.h atomic.c \
 	mono-hwcap.h mono-hwcap.c bsearch.h bsearch.c \
 	mono-signal-handler.h mono-conc-hashtable.h \
@@ -157,12 +161,13 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	networking-windows.c networking.h mono-rand.c mono-rand.h \
 	memfuncs.c memfuncs.h parse.c parse.h checked-build.c \
 	checked-build.h mach-support-x86.c mach-support-amd64.c \
-	mach-support-arm.c mach-support-unknown.c mono-hwcap-x86.c \
-	mono-hwcap-x86.h mono-hwcap-arm.c mono-hwcap-arm.h \
-	mono-hwcap-arm64.c mono-hwcap-arm64.h mono-hwcap-mips.c \
-	mono-hwcap-mips.h mono-hwcap-ppc.c mono-hwcap-ppc.h \
-	mono-hwcap-sparc.c mono-hwcap-sparc.h mono-hwcap-ia64.c \
-	mono-hwcap-ia64.h mono-hwcap-s390x.c mono-hwcap-s390x.h
+	mach-support-arm.c mach-support-arm64.c mach-support-unknown.c \
+	mono-hwcap-x86.c mono-hwcap-x86.h mono-hwcap-arm.c \
+	mono-hwcap-arm.h mono-hwcap-arm64.c mono-hwcap-arm64.h \
+	mono-hwcap-mips.c mono-hwcap-mips.h mono-hwcap-ppc.c \
+	mono-hwcap-ppc.h mono-hwcap-sparc.c mono-hwcap-sparc.h \
+	mono-hwcap-ia64.c mono-hwcap-ia64.h mono-hwcap-s390x.c \
+	mono-hwcap-s390x.h
 am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	mono-codeman.lo dlmalloc.lo mono-counters.lo mono-dl.lo \
 	mono-dl-windows.lo mono-dl-darwin.lo mono-dl-posix.lo \
@@ -176,12 +181,15 @@ am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	lock-free-alloc.lo lock-free-array-queue.lo \
 	mono-linked-list-set.lo mono-threads.lo \
 	mono-threads-state-machine.lo mono-threads-posix.lo \
-	mono-threads-mach.lo mono-threads-mach-helper.lo \
-	mono-threads-windows.lo mono-threads-linux.lo \
-	mono-threads-freebsd.lo mono-threads-openbsd.lo \
-	mono-threads-android.lo mono-threads-coop.lo mono-tls.lo \
-	atomic.lo mono-hwcap.lo bsearch.lo mono-conc-hashtable.lo \
-	sha1.lo json.lo networking.lo networking-posix.lo \
+	mono-threads-posix-signals.lo mono-threads-mach.lo \
+	mono-threads-mach-helper.lo mono-threads-windows.lo \
+	mono-threads-linux.lo mono-threads-freebsd.lo \
+	mono-threads-openbsd.lo mono-threads-android.lo \
+	mono-threads-coop.lo mono-threads-mach-abort-syscall.lo \
+	mono-threads-posix-abort-syscall.lo \
+	mono-threads-windows-abort-syscall.lo mono-tls.lo atomic.lo \
+	mono-hwcap.lo bsearch.lo mono-conc-hashtable.lo sha1.lo \
+	json.lo networking.lo networking-posix.lo \
 	networking-fallback.lo networking-missing.lo \
 	networking-windows.lo mono-rand.lo memfuncs.lo parse.lo \
 	checked-build.lo
@@ -189,7 +197,8 @@ am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@am__objects_3 =  \
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@	mach-support-amd64.lo
 @ARM_TRUE@@CROSS_COMPILE_FALSE@am__objects_4 = mach-support-arm.lo
-@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__objects_5 = mach-support-arm.lo
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__objects_5 =  \
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@	mach-support-arm64.lo
 @CROSS_COMPILE_TRUE@am__objects_6 = mach-support-unknown.lo
 @X86_TRUE@am__objects_7 = mono-hwcap-x86.lo
 @AMD64_TRUE@am__objects_8 = mono-hwcap-x86.lo
@@ -598,6 +607,8 @@ monoutils_sources = \
 	mono-threads.c	\
 	mono-threads-state-machine.c	\
 	mono-threads-posix.c	\
+	mono-threads-posix-signals.c	\
+	mono-threads-posix-signals.h	\
 	mono-threads-mach.c	\
 	mono-threads-mach-helper.c	\
 	mono-threads-windows.c	\
@@ -609,6 +620,9 @@ monoutils_sources = \
 	mono-threads-api.h	\
 	mono-threads-coop.c	\
 	mono-threads-coop.h	\
+	mono-threads-mach-abort-syscall.c	\
+	mono-threads-posix-abort-syscall.c	\
+	mono-threads-windows-abort-syscall.c	\
 	mono-tls.h	\
 	mono-tls.c	\
 	linux_magic.h	\
@@ -724,6 +738,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lock-free-queue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mach-support-amd64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mach-support-arm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mach-support-arm64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mach-support-unknown.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mach-support-x86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mach-support.Plo@am__quote@
@@ -769,11 +784,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-coop.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-freebsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-linux.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach-abort-syscall.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach-helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-openbsd.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix-abort-syscall.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix-signals.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-state-machine.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-windows-abort-syscall.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-time.Plo@am__quote@

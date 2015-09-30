@@ -2456,6 +2456,9 @@ namespace Mono.CSharp {
 			get {
 				return (flags & Flags.FixedVariable) != 0;
 			}
+			set {
+				flags = value ? flags | Flags.FixedVariable : flags & ~Flags.FixedVariable;
+			}
 		}
 
 		bool INamedBlockVariable.IsParameter {
@@ -3367,7 +3370,7 @@ namespace Mono.CSharp {
 								var parent_this_block = pb;
 								while (parent_this_block.Parent != null) {
 									parent_this_block = parent_this_block.Parent.ParametersBlock;
-									if (parent_this_block.StateMachine != null) {
+									if (parent_this_block.StateMachine != null && parent_this_block.StateMachine.HoistedThis != null) {
 										break;
 									}
 								}
@@ -6290,6 +6293,7 @@ namespace Mono.CSharp {
 					LocalVariable.Flags.FixedVariable | LocalVariable.Flags.CompilerGenerated | LocalVariable.Flags.Used,
 					vi.Location);
 				pinned_string.Type = rc.BuiltinTypes.String;
+				vi.IsFixed = false;
 
 				eclass = ExprClass.Variable;
 				type = rc.BuiltinTypes.Int;

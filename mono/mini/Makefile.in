@@ -159,18 +159,18 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	unwind.c image-writer.h image-writer.c dwarfwriter.h \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
 	debugger-agent.c xdebug.c mini-llvm-cpp.h alias-analysis.c \
-	mini-cross-helpers.c mini-llvm.c mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
-	tramp-amd64.c mini-arm64.c mini-arm64.h exceptions-arm64.c \
-	tramp-arm64.c mini-arm.c mini-arm-tls.S mini-arm.h \
-	mini-arm-tls.h exceptions-arm.c tramp-arm.c mini-ia64.c \
-	mini-ia64.h exceptions-ia64.c tramp-ia64.c mini-mips.c \
-	mini-mips.h exceptions-mips.c tramp-mips.c mini-ppc.c \
-	mini-ppc.h exceptions-ppc.c tramp-ppc.c mini-s390x.c \
-	mini-s390x.h support-s390x.h exceptions-s390x.c tramp-s390x.c \
-	mini-sparc.c mini-sparc.h exceptions-sparc.c tramp-sparc.c \
-	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
-	mini-windows.c mini-darwin.c mini-posix.c
+	mini-cross-helpers.c arch-stubs.c mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h \
+	exceptions-amd64.c tramp-amd64.c mini-arm64.c mini-arm64.h \
+	exceptions-arm64.c tramp-arm64.c mini-arm.c mini-arm-tls.S \
+	mini-arm.h mini-arm-tls.h exceptions-arm.c tramp-arm.c \
+	mini-ia64.c mini-ia64.h exceptions-ia64.c tramp-ia64.c \
+	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
+	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
+	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
+	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
+	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
+	tramp-x86.c mini-windows.c mini-darwin.c mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -198,7 +198,8 @@ am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-debugger-agent.lo \
 	libmini_static_la-xdebug.lo \
 	libmini_static_la-alias-analysis.lo \
-	libmini_static_la-mini-cross-helpers.lo
+	libmini_static_la-mini-cross-helpers.lo \
+	libmini_static_la-arch-stubs.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_2 = libmini_static_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_static_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo
@@ -276,18 +277,18 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	unwind.c image-writer.h image-writer.c dwarfwriter.h \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
 	debugger-agent.c xdebug.c mini-llvm-cpp.h alias-analysis.c \
-	mini-cross-helpers.c mini-llvm.c mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
-	tramp-amd64.c mini-arm64.c mini-arm64.h exceptions-arm64.c \
-	tramp-arm64.c mini-arm.c mini-arm-tls.S mini-arm.h \
-	mini-arm-tls.h exceptions-arm.c tramp-arm.c mini-ia64.c \
-	mini-ia64.h exceptions-ia64.c tramp-ia64.c mini-mips.c \
-	mini-mips.h exceptions-mips.c tramp-mips.c mini-ppc.c \
-	mini-ppc.h exceptions-ppc.c tramp-ppc.c mini-s390x.c \
-	mini-s390x.h support-s390x.h exceptions-s390x.c tramp-s390x.c \
-	mini-sparc.c mini-sparc.h exceptions-sparc.c tramp-sparc.c \
-	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
-	mini-windows.c mini-darwin.c mini-posix.c
+	mini-cross-helpers.c arch-stubs.c mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h \
+	exceptions-amd64.c tramp-amd64.c mini-arm64.c mini-arm64.h \
+	exceptions-arm64.c tramp-arm64.c mini-arm.c mini-arm-tls.S \
+	mini-arm.h mini-arm-tls.h exceptions-arm.c tramp-arm.c \
+	mini-ia64.c mini-ia64.h exceptions-ia64.c tramp-ia64.c \
+	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
+	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
+	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
+	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
+	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
+	tramp-x86.c mini-windows.c mini-darwin.c mini-posix.c
 am__objects_18 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-decompose.lo libmini_la-jit-icalls.lo \
@@ -305,7 +306,8 @@ am__objects_18 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-unwind.lo libmini_la-image-writer.lo \
 	libmini_la-dwarfwriter.lo libmini_la-mini-gc.lo \
 	libmini_la-debugger-agent.lo libmini_la-xdebug.lo \
-	libmini_la-alias-analysis.lo libmini_la-mini-cross-helpers.lo
+	libmini_la-alias-analysis.lo libmini_la-mini-cross-helpers.lo \
+	libmini_la-arch-stubs.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_19 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
@@ -1057,7 +1059,8 @@ common_sources = \
 	xdebug.c			\
 	mini-llvm-cpp.h	\
 	alias-analysis.c	\
-	mini-cross-helpers.c
+	mini-cross-helpers.c \
+	arch-stubs.c
 
 test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	arrays.cs basic-float.cs basic-math.cs basic.cs exceptions.cs \
@@ -1378,6 +1381,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-alias-analysis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-aot-compiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-aot-runtime.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-arch-stubs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-branch-opts.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-cfold.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-debug-mini.Plo@am__quote@
@@ -1446,6 +1450,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-alias-analysis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-aot-compiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-aot-runtime.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-arch-stubs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-branch-opts.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-cfold.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-debug-mini.Plo@am__quote@
@@ -1818,6 +1823,13 @@ libmini_static_la-mini-cross-helpers.lo: mini-cross-helpers.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-cross-helpers.c' object='libmini_static_la-mini-cross-helpers.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-cross-helpers.lo `test -f 'mini-cross-helpers.c' || echo '$(srcdir)/'`mini-cross-helpers.c
+
+libmini_static_la-arch-stubs.lo: arch-stubs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-arch-stubs.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-arch-stubs.Tpo -c -o libmini_static_la-arch-stubs.lo `test -f 'arch-stubs.c' || echo '$(srcdir)/'`arch-stubs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-arch-stubs.Tpo $(DEPDIR)/libmini_static_la-arch-stubs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='arch-stubs.c' object='libmini_static_la-arch-stubs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-arch-stubs.lo `test -f 'arch-stubs.c' || echo '$(srcdir)/'`arch-stubs.c
 
 libmini_static_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-llvm.Tpo -c -o libmini_static_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
@@ -2294,6 +2306,13 @@ libmini_la-mini-cross-helpers.lo: mini-cross-helpers.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-cross-helpers.c' object='libmini_la-mini-cross-helpers.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-cross-helpers.lo `test -f 'mini-cross-helpers.c' || echo '$(srcdir)/'`mini-cross-helpers.c
+
+libmini_la-arch-stubs.lo: arch-stubs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-arch-stubs.lo -MD -MP -MF $(DEPDIR)/libmini_la-arch-stubs.Tpo -c -o libmini_la-arch-stubs.lo `test -f 'arch-stubs.c' || echo '$(srcdir)/'`arch-stubs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-arch-stubs.Tpo $(DEPDIR)/libmini_la-arch-stubs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='arch-stubs.c' object='libmini_la-arch-stubs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-arch-stubs.lo `test -f 'arch-stubs.c' || echo '$(srcdir)/'`arch-stubs.c
 
 libmini_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-llvm.Tpo -c -o libmini_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
@@ -2982,10 +3001,11 @@ checktests: $(regtests)
 
 rcheck: mono $(regtests)
 @NACL_CODEGEN_TRUE@	for i in $(regtests); do echo "running test $$i"; $(MINI_RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
-@NACL_CODEGEN_TRUE@elif JENKINS_URL
-@NACL_CODEGEN_TRUE@	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
-@NACL_CODEGEN_TRUE@	exit $$(cat regressionexitcode.out)
-@NACL_CODEGEN_FALSE@	$(MINI_RUNTIME) --regression $(regtests)
+@NACL_CODEGEN_FALSE@	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
+@NACL_CODEGEN_FALSE@	exit $$(cat regressionexitcode.out)
+
+rcheck2: mono $(regtests)
+	$(MINI_RUNTIME) --regression $(regtests)
 
 check-seq-points: mono $(regtests)
 	rm -f TestResults_op_il_seq_point.xml
@@ -3060,7 +3080,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResults_op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.1229/07bae96\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.1414/bd67e39\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

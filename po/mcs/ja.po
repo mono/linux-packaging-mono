@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2015-09-18 09:49-0400\n"
+"POT-Creation-Date: 2015-09-30 03:49-0400\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Atsushi Eno <atsushi@ximian.com>\n"
 "Language-Team: \n"
@@ -1451,7 +1451,7 @@ msgstr ""
 msgid "The operation in question is undefined on void pointers"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:519 mcs/mcs/statement.cs:3948 mcs/mcs/statement.cs:3950
+#: mcs/mcs/ecore.cs:519 mcs/mcs/statement.cs:3951 mcs/mcs/statement.cs:3953
 #, csharp-format
 msgid "Internal compiler error: {0}"
 msgstr ""
@@ -2690,7 +2690,7 @@ msgstr ""
 msgid "Iterators cannot have unsafe parameters or yield types"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1214 mcs/mcs/statement.cs:6193
+#: mcs/mcs/iterators.cs:1214 mcs/mcs/statement.cs:6196
 msgid "Unsafe code may not appear in iterators"
 msgstr ""
 
@@ -3617,7 +3617,7 @@ msgid ""
 "clause nested inside of the innermost catch clause"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1801 mcs/mcs/statement.cs:6751
+#: mcs/mcs/statement.cs:1801 mcs/mcs/statement.cs:6755
 msgid "The type caught or thrown must be derived from System.Exception"
 msgstr ""
 
@@ -3644,7 +3644,7 @@ msgid ""
 "declarators"
 msgstr ""
 
-#: mcs/mcs/statement.cs:2802
+#: mcs/mcs/statement.cs:2805
 #, csharp-format
 msgid ""
 "A local variable named `{0}' cannot be declared in this scope because it "
@@ -3652,127 +3652,127 @@ msgid ""
 "scope to denote something else"
 msgstr ""
 
-#: mcs/mcs/statement.cs:2814
+#: mcs/mcs/statement.cs:2817
 #, csharp-format
 msgid "A local variable named `{0}' is already defined in this scope"
 msgstr ""
 
-#: mcs/mcs/statement.cs:2821
+#: mcs/mcs/statement.cs:2824
 #, fuzzy, csharp-format
 msgid ""
 "The type parameter name `{0}' is the same as local variable or parameter name"
 msgstr ""
 "型パラメータ `{0}' が、その宣言型あるいはメソッドと同じ名前になっています"
 
-#: mcs/mcs/statement.cs:3730
+#: mcs/mcs/statement.cs:3733
 #, csharp-format
 msgid ""
 "The out parameter `{0}' must be assigned to before control leaves the "
 "current method"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4004
+#: mcs/mcs/statement.cs:4007
 #, fuzzy
 msgid "Async methods cannot have ref or out parameters"
 msgstr "Conditionalメソッド `{0}' ではoutパラメータを指定できません"
 
-#: mcs/mcs/statement.cs:4010
+#: mcs/mcs/statement.cs:4013
 msgid "__arglist is not allowed in parameter list of async methods"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4016
+#: mcs/mcs/statement.cs:4019
 #, fuzzy
 msgid "Async methods cannot have unsafe parameters"
 msgstr "`{0}': staticクラス '{1}' から派生することはできません"
 
-#: mcs/mcs/statement.cs:4213
+#: mcs/mcs/statement.cs:4216
 #, csharp-format
 msgid "The label `{0}' is a duplicate"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4222 mcs/mcs/statement.cs:4233
+#: mcs/mcs/statement.cs:4225 mcs/mcs/statement.cs:4236
 #, csharp-format
 msgid ""
 "The label `{0}' shadows another label by the same name in a contained scope"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4454
+#: mcs/mcs/statement.cs:4457
 #, csharp-format
 msgid "`{0}': not all code paths return a value"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4586
+#: mcs/mcs/statement.cs:4589
 #, csharp-format
 msgid "The label `{0}' already occurs in this switch statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4713
+#: mcs/mcs/statement.cs:4716
 #, csharp-format
 msgid ""
 "Control cannot fall out of switch statement through final case label `{0}'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4716
+#: mcs/mcs/statement.cs:4719
 #, csharp-format
 msgid "Control cannot fall through from one case label `{0}' to another"
 msgstr ""
 
-#: mcs/mcs/statement.cs:5153
+#: mcs/mcs/statement.cs:5156
 #, csharp-format
 msgid ""
 "A switch expression of type `{0}' cannot be converted to an integral type, "
 "bool, char, string, enum or nullable type"
 msgstr ""
 
-#: mcs/mcs/statement.cs:5959
+#: mcs/mcs/statement.cs:5962
 #, csharp-format
 msgid "`{0}' is not a reference type as required by the lock statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6340
+#: mcs/mcs/statement.cs:6344
 msgid "The type of locals declared in a fixed statement must be a pointer type"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6420
+#: mcs/mcs/statement.cs:6424
 msgid ""
 "The right hand side of a fixed statement assignment may not be a cast "
 "expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6425
+#: mcs/mcs/statement.cs:6429
 msgid ""
 "You cannot use the fixed statement to take the address of an already fixed "
 "expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6611
+#: mcs/mcs/statement.cs:6615
 msgid ""
 "The `await' operator cannot be used in the filter expression of a catch "
 "clause"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7199
+#: mcs/mcs/statement.cs:7203
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
 "type `{0}'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7428
+#: mcs/mcs/statement.cs:7432
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
 "`System.IDisposable'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7840
+#: mcs/mcs/statement.cs:7844
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
 "suitable public MoveNext method and public Current property"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7884
+#: mcs/mcs/statement.cs:7888
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -3780,18 +3780,18 @@ msgid ""
 "implementation"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7906
+#: mcs/mcs/statement.cs:7910
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
 "not contain a definition for `{1}' or is inaccessible"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8141
+#: mcs/mcs/statement.cs:8145
 msgid "Use of null is not valid in this context"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8153
+#: mcs/mcs/statement.cs:8157
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr ""
