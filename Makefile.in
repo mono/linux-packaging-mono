@@ -84,8 +84,8 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in mkinstalldirs \
 	$(srcdir)/mono-uninstalled.pc.in COPYING.LIB ChangeLog NEWS \
-	compile config.guess config.rpath config.sub install-sh \
-	missing ltmain.sh
+	compile config.guess config.rpath config.sub depcomp \
+	install-sh missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
