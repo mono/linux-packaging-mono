@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2015-09-30 03:49-0400\n"
+"POT-Creation-Date: 2015-10-08 11:39-0400\n"
 "PO-Revision-Date: 2008-09-26 15:14+0100\n"
 "Last-Translator: Daniel Nauck <dna@mono-project.de>\n"
 "Language-Team: http://www.mono-project.de\n"
@@ -538,12 +538,12 @@ msgstr ""
 msgid "Single-line comment or end-of-line expected"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:2948 mcs/mcs/cs-tokenizer.cs:4180
+#: mcs/mcs/cs-tokenizer.cs:2948 mcs/mcs/cs-tokenizer.cs:4178
 msgid "Expected `#endif' directive"
 msgstr "`#endif' Direktive erwartet"
 
 #: mcs/mcs/cs-tokenizer.cs:2981 mcs/mcs/cs-tokenizer.cs:3002
-#: mcs/mcs/cs-tokenizer.cs:3033 mcs/mcs/cs-tokenizer.cs:4178
+#: mcs/mcs/cs-tokenizer.cs:3033 mcs/mcs/cs-tokenizer.cs:4176
 msgid "#endregion directive expected"
 msgstr "`#endregion' Direktive erwartet"
 
@@ -1269,7 +1269,7 @@ msgstr ""
 msgid "Method name expected"
 msgstr "Methodennamen erwartet"
 
-#: mcs/mcs/doc.cs:627
+#: mcs/mcs/doc.cs:614
 #, csharp-format
 msgid "Error generating XML documentation file `{0}' (`{1}')"
 msgstr "Fehler beim erstellen der XML-Dokumentationsdatei `{0}' (`{1}')"
@@ -2277,20 +2277,20 @@ msgstr ""
 msgid "Cannot use stackalloc in finally or catch"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11709
+#: mcs/mcs/expression.cs:11714
 #, csharp-format
 msgid ""
 "Member `{0}' cannot be initialized. An object initializer may only be used "
 "for fields, or properties"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11717
+#: mcs/mcs/expression.cs:11722
 #, csharp-format
 msgid ""
 "Static field or property `{0}' cannot be assigned in an object initializer"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11788
+#: mcs/mcs/expression.cs:11793
 #, fuzzy
 msgid ""
 "An expression tree cannot contain a collection initializer with extension "
@@ -2299,46 +2299,46 @@ msgstr ""
 "`{0}': Statische Klassen können keine benutzerdefinierten Operatoren "
 "beinhalten"
 
-#: mcs/mcs/expression.cs:11826
+#: mcs/mcs/expression.cs:11831
 #, fuzzy
 msgid "Expression tree cannot contain a dictionary initializer"
 msgstr ""
 "`{0}': Statische Klassen können keine benutzerdefinierten Operatoren "
 "beinhalten"
 
-#: mcs/mcs/expression.cs:11951
+#: mcs/mcs/expression.cs:11956
 #, csharp-format
 msgid ""
 "A field or property `{0}' cannot be initialized with a collection object "
 "initializer because type `{1}' does not implement `{2}' interface"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11962
+#: mcs/mcs/expression.cs:11967
 #, csharp-format
 msgid "Inconsistent `{0}' member declaration"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11970
+#: mcs/mcs/expression.cs:11975
 #, csharp-format
 msgid ""
 "An object initializer includes more than one member `{0}' initialization"
 msgstr ""
 
-#: mcs/mcs/expression.cs:11988
+#: mcs/mcs/expression.cs:11993
 #, csharp-format
 msgid "Cannot initialize object of type `{0}' with a collection initializer"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12133
+#: mcs/mcs/expression.cs:12138
 msgid ""
 "Object and collection initializers cannot be used to instantiate a delegate"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12341
+#: mcs/mcs/expression.cs:12346
 msgid "Anonymous types cannot be used in this expression"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12435
+#: mcs/mcs/expression.cs:12440
 #, csharp-format
 msgid "An anonymous type property `{0}' cannot be initialized with `{1}'"
 msgstr ""

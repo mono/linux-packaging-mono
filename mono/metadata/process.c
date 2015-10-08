@@ -31,7 +31,7 @@
 /* define LOGDEBUG(...) g_message(__VA_ARGS__)  */
 
 #ifdef _WIN32
-#include <Shellapi.h>
+#include <shellapi.h>
 #endif
 
 HANDLE ves_icall_System_Diagnostics_Process_GetProcess_internal (guint32 pid)
@@ -1065,11 +1065,5 @@ ves_icall_System_Diagnostics_Process_GetProcessData (int pid, gint32 data_type, 
 	if (error)
 		*error = perror;
 	return res;
-}
-
-void
-ves_icall_System_Diagnostics_Process_ProcessAsyncReader_RemoveFromIOThreadPool (HANDLE handle)
-{
-	mono_threadpool_ms_io_remove_socket (GPOINTER_TO_INT (handle));
 }
 
