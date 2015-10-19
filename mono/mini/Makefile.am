@@ -717,6 +717,24 @@ fullaot-tmp/%.dylib: $(CLASS)/%
 llvmfullaotcheck:
 	$(MAKE) fullaotcheck LLVM=1
 
+llvmonlycheck: mono $(fullaot_regtests)
+	rm -rf fullaot-tmp
+	mkdir fullaot-tmp
+	$(MAKE) fullaot-libs AOT_FLAGS=llvmonly
+	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
+	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  --aot=llvmonly fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
+	ln -s $$PWD/mono fullaot-tmp/
+	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --llvmonly fullaot-tmp/$$i --exclude '!FULLAOT' --exclude '!BITCODE' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
+
+# This can run in parallel
+fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
+
+fullaot-tmp/%.dylib: $(CLASS)/%
+	cp $(CLASS)/$* fullaot-tmp/
+	mkdir fullaot-tmp/$*-tmp
+	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
+	rm -rf fullaot-tmp/$*-tmp
+
 gccheck: gc-test.exe
 	MONO_GC_PARAMS=stack-mark=precise MONO_GC_DEBUG=clear-at-gc ./mono-sgen gc-test.exe	
 
@@ -772,7 +790,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.1475/a4c91bb\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.1564/0421c0c\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
