@@ -4998,6 +4998,10 @@ handle_delegate_ctor (MonoCompile *cfg, MonoClass *klass, MonoInst *target, Mono
 		MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORE_MEMBASE_REG, obj->dreg, MONO_STRUCT_OFFSET (MonoDelegate, method_ptr), dreg);
 	}
 
+	dreg = alloc_preg (cfg);
+	MONO_EMIT_NEW_ICONST (cfg, dreg, virtual ? 1 : 0);
+	MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STOREI1_MEMBASE_REG, obj->dreg, MONO_STRUCT_OFFSET (MonoDelegate, method_is_virtual), dreg);
+
 	/* All the checks which are in mono_delegate_ctor () are done by the delegate trampoline */
 
 	return obj;
@@ -9841,6 +9845,11 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				handle_stack_args (cfg, stack_start, sp - stack_start);
 				sp = stack_start;
 				CHECK_UNVERIFIABLE (cfg);
+
+				/* Undo the links */
+				mono_unlink_bblock (cfg, cfg->cbb, default_bblock);
+				for (i = 0; i < n; ++i)
+					mono_unlink_bblock (cfg, cfg->cbb, targets [i]);
 			}
 
 			MONO_EMIT_NEW_BIALU_IMM (cfg, OP_ICOMPARE_IMM, -1, src1->dreg, n);
