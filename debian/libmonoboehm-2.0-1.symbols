@@ -1017,7 +1017,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_mempool_alloc@Base 4.1.0.1738
  mono_mempool_contains_addr@Base 4.1.0.1738
  mono_mempool_destroy@Base 4.1.0.1738
- mono_mempool_empty@Base 4.1.0.1738
  mono_mempool_get_allocated@Base 4.1.0.1738
  mono_mempool_invalidate@Base 4.1.0.1738
  mono_mempool_new@Base 4.1.0.1738
