@@ -1,2 +1,4 @@
 /usr/lib/mono/4.5/Mono.Security.dll*
+/usr/lib/mono/4.5/Mono.Security.Providers.*.dll*
 /usr/lib/mono/gac/Mono.Security/4.0.0.0__*/
+/usr/lib/mono/gac/Mono.Security.Providers.*/4.0.0.0__*/
