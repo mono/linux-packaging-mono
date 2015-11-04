@@ -346,6 +346,50 @@ mono_type_name_check_byref (MonoType *type, GString *str)
 		g_string_append_c (str, '&');
 }
 
+/**
+ * mono_identifier_escape_type_name_chars:
+ * @str: a destination string
+ * @identifier: an IDENTIFIER in internal form
+ *
+ * Returns: str.
+ *
+ * The displayed form of the identifier is appended to str.
+ *
+ * The displayed form of an identifier has the characters ,+&*[]\
+ * that have special meaning in type names escaped with a preceeding
+ * backslash (\) character.
+ */
+static GString*
+mono_identifier_escape_type_name_chars (GString* str, const char* identifier)
+{
+	if (!identifier)
+		return str;
+
+	size_t n = str->len;
+	// reserve space for common case: there will be no escaped characters.
+	g_string_set_size(str, n + strlen(identifier));
+	g_string_set_size(str, n);
+
+	for (const char* s = identifier; *s != 0 ; s++) {
+		switch (*s) {
+		case ',':
+		case '+':
+		case '&':
+		case '*':
+		case '[':
+		case ']':
+		case '\\':
+			g_string_append_c (str, '\\');
+			g_string_append_c (str, *s);
+			break;
+		default:
+			g_string_append_c (str, *s);
+			break;
+		}
+	}
+	return str;
+}
+
 static void
 mono_type_get_name_recurse (MonoType *type, GString *str, gboolean is_recursed,
 			    MonoTypeNameFormat format)
@@ -427,16 +471,19 @@ mono_type_get_name_recurse (MonoType *type, GString *str, gboolean is_recursed,
 			else
 				g_string_append_c (str, '+');
 		} else if (*klass->name_space) {
-			g_string_append (str, klass->name_space);
+			if (format == MONO_TYPE_NAME_FORMAT_IL)
+				g_string_append (str, klass->name_space);
+			else
+				mono_identifier_escape_type_name_chars (str, klass->name_space);
 			g_string_append_c (str, '.');
 		}
 		if (format == MONO_TYPE_NAME_FORMAT_IL) {
 			char *s = strchr (klass->name, '`');
 			int len = s ? s - klass->name : strlen (klass->name);
-
 			g_string_append_len (str, klass->name, len);
-		} else
-			g_string_append (str, klass->name);
+		} else {
+			mono_identifier_escape_type_name_chars (str, klass->name);
+		}
 		if (is_recursed)
 			break;
 		if (klass->generic_class) {
@@ -1293,7 +1340,7 @@ mono_class_find_enum_basetype (MonoClass *class, MonoError *error)
 			goto fail;
 		}
 
-		ftype = mono_metadata_parse_type_full (m, container, MONO_PARSE_FIELD, cols [MONO_FIELD_FLAGS], sig + 1, &sig);
+		ftype = mono_metadata_parse_type_full (m, container, cols [MONO_FIELD_FLAGS], sig + 1, &sig);
 		if (!ftype) {
 			if (mono_loader_get_last_error ()) /*FIXME plug the above to not leak errors*/
 				mono_error_set_from_loader_error (error);
@@ -2065,9 +2112,6 @@ mono_class_layout_fields (MonoClass *class)
 		if (!(field->type->attrs & FIELD_ATTRIBUTE_STATIC) || field->type->attrs & FIELD_ATTRIBUTE_LITERAL)
 			continue;
 		if (mono_field_is_deleted (field))
-			continue;
-		// Special static fields do not need a domain-level static slot
-		if (mono_class_field_is_special_static (field))
 			continue;
 
 		if (mono_type_has_exceptions (field->type)) {
@@ -10504,7 +10548,7 @@ mono_field_resolve_type (MonoClassField *field, MonoError *error)
 		mono_metadata_decode_value (sig, &sig);
 		/* FIELD signature == 0x06 */
 		g_assert (*sig == 0x06);
-		field->type = mono_metadata_parse_type_full (image, container, MONO_PARSE_FIELD, cols [MONO_FIELD_FLAGS], sig + 1, &sig);
+		field->type = mono_metadata_parse_type_full (image, container, cols [MONO_FIELD_FLAGS], sig + 1, &sig);
 		if (!field->type)
 			mono_class_set_failure_from_loader_error (class, error, g_strdup_printf ("Could not load field %s type", field->name));
 	}

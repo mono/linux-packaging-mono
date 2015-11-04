@@ -55,12 +55,12 @@
 <h3>Synopsys</h3>
 
 	<div class="header">
-guint32   <a href="#api:mono_gchandle_new">mono_gchandle_new</a>         (GCObject *obj, 
-                                     gboolean pinned);
-guint32   <a href="#api:mono_gchandle_new_weakref">mono_gchandle_new_weakref</a> (GCObject *obj, 
-                                     gboolean track_resurrection);
-GCObject* <a href="#api:mono_gchandle_get_target">mono_gchandle_get_target</a>  (guint32 gchandle);
-void      <a href="#api:mono_gchandle_free">mono_gchandle_free</a>        (guint32 gchandle);
+guint32     <a href="#api:mono_gchandle_new">mono_gchandle_new</a>         (MonoObject *obj, 
+                                       gboolean pinned);
+guint32     <a href="#api:mono_gchandle_new_weakref">mono_gchandle_new_weakref</a> (MonoObject *obj, 
+                                       gboolean track_resurrection);
+MonoObject* <a href="#api:mono_gchandle_get_target">mono_gchandle_get_target</a>  (guint32 gchandle);
+void        <a href="#api:mono_gchandle_free">mono_gchandle_free</a>        (guint32 gchandle);
 
 	</div>
 	
@@ -149,7 +149,7 @@ static MonoObject* o = NULL;
     <div class="api-entry">mono_gchandle_new</div>
 
     <div class="prototype">guint32
-mono_gchandle_new (GCObject *obj, gboolean pinned)
+mono_gchandle_new (MonoObject *obj, gboolean pinned)
 
 </div>
 <p />
@@ -178,7 +178,7 @@ mono_gchandle_new (GCObject *obj, gboolean pinned)
     <div class="api-entry">mono_gchandle_new_weakref</div>
 
     <div class="prototype">guint32
-mono_gchandle_new_weakref (GCObject *obj, gboolean track_resurrection)
+mono_gchandle_new_weakref (MonoObject *obj, gboolean track_resurrection)
 
 </div>
 <p />
@@ -208,7 +208,7 @@ mono_gchandle_new_weakref (GCObject *obj, gboolean track_resurrection)
  <div class="api">
     <div class="api-entry">mono_gchandle_get_target</div>
 
-    <div class="prototype">GCObject*
+    <div class="prototype">MonoObject*
 mono_gchandle_get_target (guint32 gchandle)
 
 </div>

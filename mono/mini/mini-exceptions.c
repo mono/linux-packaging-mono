@@ -42,6 +42,10 @@
 #include <sys/prctl.h>
 #endif
 
+#ifdef HAVE_UNWIND_H
+#include <unwind.h>
+#endif
+
 #include <mono/metadata/appdomain.h>
 #include <mono/metadata/tabledefs.h>
 #include <mono/metadata/threads.h>
@@ -62,6 +66,7 @@
 #include "trace.h"
 #include "debugger-agent.h"
 #include "seq-points.h"
+#include "llvm-runtime.h"
 
 #ifdef ENABLE_LLVM
 #include "mini-llvm-cpp.h"
@@ -125,14 +130,10 @@ mono_exceptions_init (void)
 	cbs.mono_walk_stack_with_ctx = mono_runtime_walk_stack_with_ctx;
 	cbs.mono_walk_stack_with_state = mono_walk_stack_with_state;
 
-#if defined(ENABLE_LLVM) && !defined(MONO_LLVM_LOADED)
 	if (mono_llvm_only)
 		cbs.mono_raise_exception = mono_llvm_raise_exception;
 	else
 		cbs.mono_raise_exception = mono_get_throw_exception ();
-#else
-		cbs.mono_raise_exception = mono_get_throw_exception ();
-#endif
 	cbs.mono_raise_exception_with_ctx = mono_raise_exception_with_ctx;
 	cbs.mono_exception_walk_trace = mono_exception_walk_trace;
 	cbs.mono_install_handler_block_guard = mono_install_handler_block_guard;
@@ -1524,7 +1525,7 @@ mono_handle_exception_internal (MonoContext *ctx, gpointer obj, gboolean resume,
 			if (msg == NULL) {
 				msg = message ? mono_string_to_utf8 ((MonoString *) message) : g_strdup ("(System.Exception.Message property not available)");
 			}
-			g_print ("[%p:] EXCEPTION handling: %s.%s: %s\n", (void*)GetCurrentThreadId (), mono_object_class (obj)->name_space, mono_object_class (obj)->name, msg);
+			g_print ("[%p:] EXCEPTION handling: %s.%s: %s\n", (void*)mono_native_thread_id_get (), mono_object_class (obj)->name_space, mono_object_class (obj)->name, msg);
 			g_free (msg);
 			if (mono_ex && mono_trace_eval_exception (mono_object_class (mono_ex)))
 				mono_print_thread_dump_from_ctx (ctx);
@@ -2711,3 +2712,203 @@ mono_jinfo_get_epilog_size (MonoJitInfo *ji)
 
 	return info->epilog_size;
 }
+
+/*
+ * LLVM/Bitcode exception handling.
+ */
+
+#ifdef MONO_ARCH_HAVE_UNWIND_BACKTRACE
+
+#if 0
+static gboolean show_native_addresses = TRUE;
+#else
+static gboolean show_native_addresses = FALSE;
+#endif
+
+static _Unwind_Reason_Code
+build_stack_trace (struct _Unwind_Context *frame_ctx, void *state)
+{
+	MonoDomain *domain = mono_domain_get ();
+	uintptr_t ip = _Unwind_GetIP (frame_ctx);
+
+	if (show_native_addresses || mono_jit_info_table_find (domain, (char*)ip)) {
+		GList **trace_ips = (GList **)state;
+		*trace_ips = g_list_prepend (*trace_ips, (gpointer)ip);
+	}
+
+	return _URC_NO_REASON;
+}
+
+#endif
+
+static void
+throw_exception (MonoObject *ex, gboolean rethrow)
+{
+	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
+	MonoException *mono_ex;
+
+	if (!mono_object_isinst (ex, mono_defaults.exception_class))
+		mono_ex = mono_get_exception_runtime_wrapped (ex);
+	else
+		mono_ex = (MonoException*)ex;
+
+	// Note: Not pinned
+	jit_tls->thrown_exc = mono_gchandle_new ((MonoObject*)mono_ex, FALSE);
+
+	if (!rethrow) {
+#ifdef MONO_ARCH_HAVE_UNWIND_BACKTRACE
+		GList *l, *ips = NULL;
+		GList *trace;
+
+		_Unwind_Backtrace (build_stack_trace, &ips);
+		/* The list contains gshared info-ip pairs */
+		trace = NULL;
+		ips = g_list_reverse (ips);
+		for (l = ips; l; l = l->next) {
+			// FIXME:
+			trace = g_list_append (trace, l->data);
+			trace = g_list_append (trace, NULL);
+		}
+		MONO_OBJECT_SETREF (mono_ex, trace_ips, mono_glist_to_array (trace, mono_defaults.int_class));
+		g_list_free (l);
+		g_list_free (trace);
+#endif
+	}
+
+	mono_llvm_cpp_throw_exception ();
+}
+
+void
+mono_llvm_throw_exception (MonoObject *ex)
+{
+	throw_exception (ex, FALSE);
+}
+
+void
+mono_llvm_rethrow_exception (MonoObject *ex)
+{
+	throw_exception (ex, TRUE);
+}
+
+void
+mono_llvm_raise_exception (MonoException *e)
+{
+	mono_llvm_throw_exception ((MonoObject*)e);
+}
+
+void
+mono_llvm_throw_corlib_exception (guint32 ex_token_index)
+{
+	guint32 ex_token = MONO_TOKEN_TYPE_DEF | ex_token_index;
+	MonoException *ex;
+
+	ex = mono_exception_from_token (mono_defaults.exception_class->image, ex_token);
+
+	mono_llvm_throw_exception ((MonoObject*)ex);
+}
+
+/*
+ * mono_llvm_resume_exception:
+ *
+ *   Resume exception propagation.
+ */
+void
+mono_llvm_resume_exception (void)
+{
+	mono_llvm_cpp_throw_exception ();
+}
+
+/*
+ * mono_llvm_load_exception:
+ *
+ *   Return the currently thrown exception.
+ */
+MonoObject *
+mono_llvm_load_exception (void)
+{
+	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
+
+	MonoException *mono_ex = (MonoException*)mono_gchandle_get_target (jit_tls->thrown_exc);
+	g_assert (mono_ex->trace_ips);
+
+	GList *trace_ips = NULL;
+	gpointer ip = __builtin_return_address (0);
+
+	size_t upper = mono_array_length (mono_ex->trace_ips);
+
+	for (int i = 0; i < upper; i++) {
+		gpointer curr_ip = mono_array_get (mono_ex->trace_ips, gpointer, i);
+		trace_ips = g_list_prepend (trace_ips, curr_ip);
+
+		if (ip == curr_ip)
+			break;
+	}
+
+	// FIXME: Does this work correctly for rethrows?
+	// We may be discarding useful information
+	// when this gets GC'ed
+	MONO_OBJECT_SETREF (mono_ex, trace_ips, mono_glist_to_array (trace_ips, mono_defaults.int_class));
+	g_list_free (trace_ips);
+
+	// FIXME:
+	//MONO_OBJECT_SETREF (mono_ex, stack_trace, ves_icall_System_Exception_get_trace (mono_ex));
+
+	return &mono_ex->object;
+}
+
+/*
+ * mono_llvm_clear_exception:
+ *
+ *   Mark the currently thrown exception as handled.
+ */
+void
+mono_llvm_clear_exception (void)
+{
+	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
+	mono_gchandle_free (jit_tls->thrown_exc);
+	jit_tls->thrown_exc = 0;
+
+	mono_memory_barrier ();
+}
+
+/*
+ * mono_llvm_match_exception:
+ *
+ *   Return the innermost clause containing REGION_START-REGION_END which can handle
+ * the current exception.
+ */
+gint32
+mono_llvm_match_exception (MonoJitInfo *jinfo, guint32 region_start, guint32 region_end)
+{
+	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
+	MonoObject *exc;
+	gint32 index = -1;
+
+	g_assert (jit_tls->thrown_exc);
+	exc = mono_gchandle_get_target (jit_tls->thrown_exc);
+	for (int i = 0; i < jinfo->num_clauses; i++) {
+		MonoJitExceptionInfo *ei = &jinfo->clauses [i];
+
+		if (! (ei->try_offset == region_start && ei->try_offset + ei->try_len == region_end) )
+			continue;
+
+		// FIXME: Handle edge cases handled in get_exception_catch_class
+		if (ei->flags == MONO_EXCEPTION_CLAUSE_NONE && mono_object_isinst (exc, ei->data.catch_class)) {
+			index = ei->clause_index;
+			break;
+		} else if (ei->flags == MONO_EXCEPTION_CLAUSE_FILTER) {
+			g_assert_not_reached ();
+		}
+	}
+
+	return index;
+}
+
+#ifdef ENABLE_LLVM
+_Unwind_Reason_Code 
+mono_debug_personality (int a, _Unwind_Action b,
+uint64_t c, struct _Unwind_Exception *d, struct _Unwind_Context *e)
+{
+	g_assert_not_reached ();
+}
+#endif

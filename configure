@@ -718,6 +718,8 @@ VTUNE_CFLAGS
 VTUNE_LIBS
 HAVE_VTUNE_FALSE
 HAVE_VTUNE_TRUE
+ENABLE_LLVM_RUNTIME_FALSE
+ENABLE_LLVM_RUNTIME_TRUE
 LOADED_LLVM_FALSE
 LOADED_LLVM_TRUE
 ENABLE_LLVM_FALSE
@@ -996,9 +998,11 @@ enable_big_arrays
 enable_dtrace
 enable_nacl_codegen
 enable_nacl_gc
+with_cross_offsets
 enable_llvm
 enable_loadedllvm
 enable_llvm_version_check
+enable_llvm_runtime
 with_llvm
 enable_vtune
 with_vtune
@@ -1705,6 +1709,7 @@ Optional Features:
   --enable-llvm	Enable the LLVM back-end
   --enable-loadedllvm	Load the LLVM back-end dynamically
   --enable-llvm-version-check Check that the LLVM matches the version expected by mono
+  --enable-llvm-runtime	Enable runtime support for llvmonly code
   --enable-vtune	Enable the VTUNE back-end
   --enable-icall-symbol-map Generate tables which map icall functions to their C symbols
   --enable-icall-export Export icall functions
@@ -1732,6 +1737,7 @@ Optional Packages:
   --with-gc=included,none  Controls the Boehm GC config, default=included
   --with-large-heap=yes,no       Enable support for GC heaps larger than 3GB (defaults to no)
   --with-ikvm-native=yes,no      build the IKVM JNI interface library (defaults to yes)
+  --with-cross-offsets=<offsets file path>    Explicit AOT cross offsets file
   --with-llvm=<llvm prefix>    Enable the LLVM back-end
   --with-vtune=<vtune prefix>	Enable jit vtune profiling
   --with-sgen=yes,no             Extra Generational GC, default=yes
@@ -18488,7 +18494,7 @@ fi
 
 done
 
-for ac_header in sys/param.h sys/socket.h sys/ipc.h sys/sem.h sys/utsname.h alloca.h ucontext.h pwd.h sys/select.h netinet/tcp.h netinet/in.h unistd.h sys/types.h link.h asm/sigcontext.h sys/inotify.h arpa/inet.h complex.h
+for ac_header in sys/param.h sys/socket.h sys/ipc.h sys/sem.h sys/utsname.h alloca.h ucontext.h pwd.h sys/select.h netinet/tcp.h netinet/in.h unistd.h sys/types.h link.h asm/sigcontext.h sys/inotify.h arpa/inet.h complex.h unwind.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -18926,7 +18932,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 		if test "x$mono_cv_clang" = "xyes"; then
 	   	   # https://bugzilla.samba.org/show_bug.cgi?id=8118
 	   	   WARN="$WARN -Qunused-arguments"
-		   WARN="$WARN -Wno-unused-function -Wno-tautological-compare -Wno-parentheses-equality -Wno-self-assign"
+		   WARN="$WARN -Wno-unused-function -Wno-tautological-compare -Wno-parentheses-equality -Wno-self-assign -Wno-return-stack-address"
 		fi
 else
 	# The Sun Forte compiler complains about inline functions that access static variables
@@ -19637,8 +19643,9 @@ _ACEOF
 
 if test "x$mono_feature_disable_aot" = "xyes"; then
 
-$as_echo "#define DISABLE_AOT_COMPILER 1" >>confdefs.h
+$as_echo "#define DISABLE_AOT 1" >>confdefs.h
 
+	enable_system_aot=no
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: Disabled AOT compiler" >&5
 $as_echo "$as_me: Disabled AOT compiler" >&6;}
 fi
@@ -20271,6 +20278,13 @@ _ACEOF
 fi
 done
 
+
+# signal() is declared inline in Android headers
+# so we need to workaround it by overriding the check.
+if test x$platform_android = xyes; then
+	$as_echo "#define HAVE_SIGNAL 1" >>confdefs.h
+
+fi
 
 if test x$host_win32 = xno; then
 
@@ -25065,6 +25079,18 @@ fi
 
 
 
+
+# Check whether --with-cross-offsets was given.
+if test "${with_cross_offsets+set}" = set; then :
+  withval=$with_cross_offsets;
+cat >>confdefs.h <<_ACEOF
+#define MONO_OFFSETS_FILE "$withval"
+_ACEOF
+
+fi
+
+
+
 # Check whether --enable-llvm was given.
 if test "${enable_llvm+set}" = set; then :
   enableval=$enable_llvm; enable_llvm=$enableval
@@ -25084,6 +25110,13 @@ if test "${enable_llvm_version_check+set}" = set; then :
   enableval=$enable_llvm_version_check; enable_llvm_version_check=$enableval
 else
   enable_llvm_version_check=no
+fi
+
+# Check whether --enable-llvm-runtime was given.
+if test "${enable_llvm_runtime+set}" = set; then :
+  enableval=$enable_llvm_runtime; enable_llvm_runtime=$enableval
+else
+  enable_llvm_runtime=no
 fi
 
 
@@ -25170,11 +25203,17 @@ fi
    LLVM_SYSTEM_LIBS=`$LLVM_CONFIG --system-libs 2>/dev/null | grep -- -`
    if test "x$host" != "x$target"; then
       # No need for jit libs
-      LLVM_LIBS=`$LLVM_CONFIG --libs core bitwriter`
+      LLVM_LIBS=`$LLVM_CONFIG --libs analysis core bitwriter`
    else
-      LLVM_LIBS=`$LLVM_CONFIG --libs core bitwriter jit mcjit $llvm_codegen`
+      LLVM_LIBS=`$LLVM_CONFIG --libs analysis core bitwriter jit mcjit $llvm_codegen`
    fi
-   LLVM_LIBS="$LLVM_LIBS $LLVM_LDFLAGS $LLVM_SYSTEM_LIBS -lstdc++"
+   LLVM_LIBS="$LLVM_LIBS $LLVM_LDFLAGS $LLVM_SYSTEM_LIBS"
+   # The c++ standard library used by llvm doesn't show up in $LLVM_SYSTEM_LIBS so add it manually
+   if echo $LLVM_CXXFLAGS | grep -q -- '-stdlib=libc++'; then
+      LLVM_LIBS="$LLVM_LIBS -lc++"
+   else
+      LLVM_LIBS="$LLVM_LIBS -lstdc++"
+   fi
 
    expected_llvm_version="3.4svn-mono-mono/e656cac"
 
@@ -25205,6 +25244,7 @@ $as_echo "$llvm_version" >&6; }
          -lLLVMARMAsmPrinter -lLLVMTableGen -lLLVMDebugInfo -lLLVMOption -lLLVMX86Disassembler \
          -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter -lLLVMX86Desc \
          -lLLVMMCDisassembler -lLLVMX86Info -lLLVMX86AsmPrinter -lLLVMX86Utils -lLLVMJIT \
+         -lLLVMAnalysis -lLLVMTarget \
          -lLLVMIRReader -lLLVMAsmParser -lLLVMLineEditor -lLLVMMCAnalysis -lLLVMInstrumentation \
          -lLLVMInterpreter -lLLVMCodeGen -lLLVMScalarOpts -lLLVMInstCombine -lLLVMTransformUtils \
          -lLLVMipa -lLLVMAnalysis -lLLVMProfileData -lLLVMMCJIT -lLLVMTarget -lLLVMRuntimeDyld \
@@ -25258,6 +25298,23 @@ fi
 else
   LOADED_LLVM_TRUE='#'
   LOADED_LLVM_FALSE=
+fi
+
+
+if test "x$enable_llvm" = "xyes"; then
+   enable_llvm_runtime=yes
+fi
+if test "x$enable_llvm_runtime" = "xyes"; then
+
+$as_echo "#define ENABLE_LLVM_RUNTIME 1" >>confdefs.h
+
+fi
+ if test x$enable_llvm_runtime = xyes; then
+  ENABLE_LLVM_RUNTIME_TRUE=
+  ENABLE_LLVM_RUNTIME_FALSE='#'
+else
+  ENABLE_LLVM_RUNTIME_TRUE='#'
+  ENABLE_LLVM_RUNTIME_FALSE=
 fi
 
 
@@ -27066,7 +27123,7 @@ ac_config_commands="$ac_config_commands quiet-libtool"
 ac_config_commands="$ac_config_commands nolock-libtool"
 
 
-ac_config_files="$ac_config_files Makefile mono-uninstalled.pc scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/io-layer/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile runtime/Makefile msvc/Makefile po/Makefile"
+ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/io-layer/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile runtime/Makefile msvc/Makefile po/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -27299,6 +27356,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${LOADED_LLVM_TRUE}" && test -z "${LOADED_LLVM_FALSE}"; then
   as_fn_error $? "conditional \"LOADED_LLVM\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_LLVM_RUNTIME_TRUE}" && test -z "${ENABLE_LLVM_RUNTIME_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_LLVM_RUNTIME\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_VTUNE_TRUE}" && test -z "${HAVE_VTUNE_FALSE}"; then
@@ -28422,6 +28483,7 @@ do
     "nolock-libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS nolock-libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "mono-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES mono-uninstalled.pc" ;;
+    "acceptance-tests/Makefile") CONFIG_FILES="$CONFIG_FILES acceptance-tests/Makefile" ;;
     "scripts/mono-find-provides") CONFIG_FILES="$CONFIG_FILES scripts/mono-find-provides" ;;
     "scripts/mono-find-requires") CONFIG_FILES="$CONFIG_FILES scripts/mono-find-requires" ;;
     "mono/Makefile") CONFIG_FILES="$CONFIG_FILES mono/Makefile" ;;

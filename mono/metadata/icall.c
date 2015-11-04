@@ -53,6 +53,7 @@
 #include <mono/metadata/domain-internals.h>
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/class-internals.h>
+#include <mono/metadata/reflection-internals.h>
 #include <mono/metadata/marshal.h>
 #include <mono/metadata/gc-internal.h>
 #include <mono/metadata/mono-gc.h>
@@ -1231,23 +1232,13 @@ get_caller_no_reflection (MonoMethod *m, gint32 no, gint32 ilo, gboolean managed
 }
 
 static MonoReflectionType *
-type_from_name (const char *str, MonoBoolean ignoreCase)
+type_from_parsed_name (MonoTypeNameParse *info, MonoBoolean ignoreCase)
 {
 	MonoMethod *m, *dest;
 
 	MonoType *type = NULL;
 	MonoAssembly *assembly = NULL;
-	MonoTypeNameParse info;
-	char *temp_str = g_strdup (str);
 	gboolean type_resolve = FALSE;
-
-	/* mono_reflection_parse_type() mangles the string */
-	if (!mono_reflection_parse_type (temp_str, &info)) {
-		mono_reflection_free_type_info (&info);
-		g_free (temp_str);
-		return NULL;
-	}
-
 
 	/*
 	 * We must compute the calling assembly as type loading must happen under a metadata context.
@@ -1276,25 +1267,22 @@ type_from_name (const char *str, MonoBoolean ignoreCase)
 		g_warning (G_STRLOC);
 	}
 
-	if (info.assembly.name)
-		assembly = mono_assembly_load (&info.assembly, assembly ? assembly->basedir : NULL, NULL);
+	if (info->assembly.name)
+		assembly = mono_assembly_load (&info->assembly, assembly ? assembly->basedir : NULL, NULL);
 
 
 	if (assembly) {
 		/* When loading from the current assembly, AppDomain.TypeResolve will not be called yet */
-		type = mono_reflection_get_type (assembly->image, &info, ignoreCase, &type_resolve);
+		type = mono_reflection_get_type (assembly->image, info, ignoreCase, &type_resolve);
 	}
 
-	if (!info.assembly.name && !type) /* try mscorlib */
-		type = mono_reflection_get_type (NULL, &info, ignoreCase, &type_resolve);
+	if (!info->assembly.name && !type) /* try mscorlib */
+		type = mono_reflection_get_type (NULL, info, ignoreCase, &type_resolve);
 
 	if (assembly && !type && type_resolve) {
 		type_resolve = FALSE; /* This will invoke TypeResolve if not done in the first 'if' */
-		type = mono_reflection_get_type (assembly->image, &info, ignoreCase, &type_resolve);
+		type = mono_reflection_get_type (assembly->image, info, ignoreCase, &type_resolve);
 	}
-
-	mono_reflection_free_type_info (&info);
-	g_free (temp_str);
 
 	if (!type) 
 		return NULL;
@@ -1307,9 +1295,22 @@ MonoReflectionType *
 mono_type_get (const char *str)
 {
 	char *copy = g_strdup (str);
-	MonoReflectionType *type = type_from_name (copy, FALSE);
+	MonoTypeNameParse info;
+	MonoReflectionType *type;
+	gboolean parsedOk;
 
-	g_free (copy);
+	parsedOk = mono_reflection_parse_type(copy, &info);
+	if (!parsedOk) {
+		mono_reflection_free_type_info (&info);
+		g_free(copy);
+		return NULL;
+	}
+
+	type = type_from_parsed_name (&info, FALSE);
+
+	mono_reflection_free_type_info (&info);
+	g_free(copy);
+
 	return type;
 }
 #endif
@@ -1320,10 +1321,27 @@ ves_icall_type_from_name (MonoString *name,
 			  MonoBoolean ignoreCase)
 {
 	char *str = mono_string_to_utf8 (name);
+	MonoTypeNameParse info;
 	MonoReflectionType *type;
+	gboolean parsedOk;
 
-	type = type_from_name (str, ignoreCase);
+	parsedOk = mono_reflection_parse_type (str, &info);
+
+	/* mono_reflection_parse_type() mangles the string */
+	if (!parsedOk) {
+		mono_reflection_free_type_info (&info);
+		g_free (str);
+		if (throwOnError) {
+			mono_set_pending_exception(mono_get_exception_argument("typeName", "failed parse"));
+		}
+		return NULL;
+	}
+
+	type = type_from_parsed_name (&info, ignoreCase);
+
+	mono_reflection_free_type_info (&info);
 	g_free (str);
+
 	if (type == NULL){
 		MonoException *e = NULL;
 		
@@ -3868,8 +3886,10 @@ ves_icall_Type_GetNestedTypes (MonoReflectionType *type, MonoString *name, guint
 			continue;
 
 		if (name != NULL) {
-			if (str == NULL)
+			if (str == NULL) {
 				str = mono_string_to_utf8 (name);
+				mono_identifier_unescape_type_name_chars (str);
+			}
 
 			if (strcmp (nested->name, str))
 				continue;
@@ -3908,8 +3928,7 @@ ves_icall_System_Reflection_Assembly_InternalGetType (MonoReflectionAssembly *as
 		g_free (str);
 		mono_reflection_free_type_info (&info);
 		if (throwOnError) {
-			/* uhm: this is a parse error, though... */
-			mono_set_pending_exception (mono_get_exception_type_load (name, NULL));
+			mono_set_pending_exception (mono_get_exception_argument("name", "failed parse"));
 			return NULL;
 		}
 		/*g_print ("failed parse\n");*/
@@ -4611,7 +4630,7 @@ ves_icall_System_Reflection_Assembly_GetCallingAssembly (void)
 	dest = NULL;
 	mono_stack_walk_no_il (get_executing, &dest);
 	m = dest;
-	mono_stack_walk_no_il (get_caller, &dest);
+	mono_stack_walk_no_il (get_caller_no_reflection, &dest);
 	if (!dest)
 		dest = m;
 	return mono_assembly_get_object (mono_domain_get (), dest->klass->image->assembly);
@@ -5846,13 +5865,18 @@ ves_icall_System_Environment_GetEnvironmentVariable (MonoString *name)
  */
 #ifndef _MSC_VER
 #ifndef __MINGW32_VERSION
-#if defined(__APPLE__) && !defined (__arm__) && !defined (__aarch64__)
+#if defined(__APPLE__)
+#if defined (TARGET_OSX)
 /* Apple defines this in crt_externs.h but doesn't provide that header for 
  * arm-apple-darwin9.  We'll manually define the symbol on Apple as it does
  * in fact exist on all implementations (so far) 
  */
 gchar ***_NSGetEnviron(void);
 #define environ (*_NSGetEnviron())
+#else
+static char *mono_environ[1] = { NULL };
+#define environ mono_environ
+#endif /* defined (TARGET_OSX) */
 #else
 extern
 char **environ;
