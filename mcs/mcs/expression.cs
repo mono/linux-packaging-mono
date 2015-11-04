@@ -130,8 +130,12 @@ namespace Mono.CSharp
 			}
 
 			var constant = res as Constant;
-			if (constant != null && constant.IsLiteral)
+			if (constant != null && constant.IsLiteral) {
+				if (res is NullLiteral)
+					return res;
+				
 				return Constant.CreateConstantFromValue (res.Type, constant.GetValue (), expr.Location);
+			}
 
 			if (conditional_access_receiver) {
 				expr = res;
@@ -11353,7 +11357,10 @@ namespace Mono.CSharp
 
 				single_spec = single_spec.Next;
 			} else if (single_spec.IsPointer) {
-				if (!TypeManager.VerifyUnmanaged (ec.Module, type, loc))
+				//
+				// Declared fields cannot have unmanaged check done before all types are defined
+				//
+				if (!(ec.CurrentMemberDefinition is Field) && !TypeManager.VerifyUnmanaged (ec.Module, type, loc))
 					return null;
 
 				if (!ec.IsUnsafe) {

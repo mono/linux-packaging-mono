@@ -367,6 +367,16 @@ llvm_sources = \
 endif
 endif
 
+if ENABLE_LLVM
+llvm_runtime_sources = \
+	llvm-runtime.cpp
+else
+if ENABLE_LLVM_RUNTIME
+llvm_runtime_sources = \
+	llvm-runtime.cpp
+endif
+endif
+
 common_sources = \
 	mini.c			\
 	mini-runtime.c	\
@@ -424,7 +434,8 @@ common_sources = \
 	mini-llvm-cpp.h	\
 	alias-analysis.c	\
 	mini-cross-helpers.c \
-	arch-stubs.c
+	arch-stubs.c		\
+	llvm-runtime.h
 
 test_sources = 			\
 	basic-calls.cs 		\
@@ -537,7 +548,7 @@ os_sources = $(darwin_sources) $(posix_sources)
 monobin_platform_ldflags=-framework CoreFoundation -framework Foundation
 endif
 
-libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(arch_sources) $(os_sources)
+libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
 libmini_la_CFLAGS = $(mono_CFLAGS)
 
 libmonoboehm_2_0_la_SOURCES =
@@ -659,7 +670,7 @@ rcheck2: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
 check-seq-points: mono $(regtests)
-	rm -f TestResults_op_il_seq_point.xml
+	rm -f TestResult-op_il_seq_point.xml
 	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	$(srcdir)/test_op_il_seq_point_headerfooter.sh
@@ -762,7 +773,7 @@ docu: mini.sgm
 check-local: rcheck check-seq-points
 
 clean-local:
-	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResults_op_il_seq_point.xml*
+	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 pkgconfigdir = $(libdir)/pkgconfig
 
@@ -790,7 +801,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.1564/0421c0c\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.1945/b73f81c\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

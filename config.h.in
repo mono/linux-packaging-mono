@@ -13,7 +13,7 @@
 #undef DISABLED_FEATURES
 
 /* Disable AOT Compiler */
-#undef DISABLE_AOT_COMPILER
+#undef DISABLE_AOT
 
 /* Disable support for multiple appdomains. */
 #undef DISABLE_APPDOMAINS
@@ -135,6 +135,9 @@
 
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM
+
+/* Runtime support code for llvm enabled */
+#undef ENABLE_LLVM_RUNTIME
 
 /* Enable using `perf` for profiling on Linux */
 #undef ENABLE_PERF_EVENTS
@@ -908,6 +911,9 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to 1 if you have the <unwind.h> header file. */
+#undef HAVE_UNWIND_H
+
 /* Define to 1 if you have /usr/include/malloc.h. */
 #undef HAVE_USR_INCLUDE_MALLOC_H
 
@@ -968,6 +974,9 @@
 
 /* native types */
 #undef MONO_NATIVE_TYPES
+
+/* AOT cross offsets file */
+#undef MONO_OFFSETS_FILE
 
 /* Reduce runtime requirements (and capabilities) */
 #undef MONO_SMALL_CONFIG

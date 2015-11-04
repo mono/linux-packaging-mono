@@ -124,14 +124,14 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	debug-mono-ppdb.c decimal-ms.c decimal-ms.h domain-internals.h \
 	environment.c environment.h exception.c exception.h file-io.c \
 	file-io.h filewatcher.c filewatcher.h gc-internal.h icall.c \
-	icall-def.h image.c jit-info.c loader.c locales.c locales.h \
-	lock-tracer.c lock-tracer.h marshal.c marshal.h mempool.c \
-	mempool.h mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config.c \
-	mono-debug.h mono-debug.c mono-debug-debugger.h mono-endian.c \
-	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
-	mono-perfcounters.c mono-perfcounters.h \
+	icall-def.h image.c image-internals.h jit-info.c loader.c \
+	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
+	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
+	metadata-verify.c metadata-internals.h method-builder.h \
+	method-builder.c mono-basic-block.c mono-basic-block.h \
+	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
+	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
@@ -239,14 +239,14 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c \
 	debug-mono-ppdb.c decimal-ms.c decimal-ms.h domain-internals.h \
 	environment.c environment.h exception.c exception.h file-io.c \
 	file-io.h filewatcher.c filewatcher.h gc-internal.h icall.c \
-	icall-def.h image.c jit-info.c loader.c locales.c locales.h \
-	lock-tracer.c lock-tracer.h marshal.c marshal.h mempool.c \
-	mempool.h mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config.c \
-	mono-debug.h mono-debug.c mono-debug-debugger.h mono-endian.c \
-	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
-	mono-perfcounters.c mono-perfcounters.h \
+	icall-def.h image.c image-internals.h jit-info.c loader.c \
+	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
+	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
+	metadata-verify.c metadata-internals.h method-builder.h \
+	method-builder.c mono-basic-block.c mono-basic-block.h \
+	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
+	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
@@ -334,14 +334,14 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	debug-mono-ppdb.c decimal-ms.c decimal-ms.h domain-internals.h \
 	environment.c environment.h exception.c exception.h file-io.c \
 	file-io.h filewatcher.c filewatcher.h gc-internal.h icall.c \
-	icall-def.h image.c jit-info.c loader.c locales.c locales.h \
-	lock-tracer.c lock-tracer.h marshal.c marshal.h mempool.c \
-	mempool.h mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config.c \
-	mono-debug.h mono-debug.c mono-debug-debugger.h mono-endian.c \
-	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
-	mono-perfcounters.c mono-perfcounters.h \
+	icall-def.h image.c image-internals.h jit-info.c loader.c \
+	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
+	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
+	metadata-verify.c metadata-internals.h method-builder.h \
+	method-builder.c mono-basic-block.c mono-basic-block.h \
+	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
+	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
@@ -459,14 +459,14 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	debug-mono-ppdb.c decimal-ms.c decimal-ms.h domain-internals.h \
 	environment.c environment.h exception.c exception.h file-io.c \
 	file-io.h filewatcher.c filewatcher.h gc-internal.h icall.c \
-	icall-def.h image.c jit-info.c loader.c locales.c locales.h \
-	lock-tracer.c lock-tracer.h marshal.c marshal.h mempool.c \
-	mempool.h mempool-internals.h metadata.c metadata-verify.c \
-	metadata-internals.h method-builder.h method-builder.c \
-	mono-basic-block.c mono-basic-block.h mono-config.c \
-	mono-debug.h mono-debug.c mono-debug-debugger.h mono-endian.c \
-	mono-endian.h mono-hash.h mono-mlist.c mono-mlist.h \
-	mono-perfcounters.c mono-perfcounters.h \
+	icall-def.h image.c image-internals.h jit-info.c loader.c \
+	locales.c locales.h lock-tracer.c lock-tracer.h marshal.c \
+	marshal.h mempool.c mempool.h mempool-internals.h metadata.c \
+	metadata-verify.c metadata-internals.h method-builder.h \
+	method-builder.c mono-basic-block.c mono-basic-block.h \
+	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
+	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
+	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
 	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
 	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
@@ -979,6 +979,7 @@ common_sources = \
 	icall.c			\
 	icall-def.h		\
 	image.c			\
+	image-internals.h	\
 	jit-info.c		\
 	loader.c		\
 	locales.c		\

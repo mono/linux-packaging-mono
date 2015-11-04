@@ -417,7 +417,7 @@ AC_PROG_LD_GNU
 AM_ICONV()
 
 AC_CHECK_HEADERS(sys/filio.h sys/sockio.h netdb.h utime.h sys/utime.h semaphore.h sys/un.h linux/rtc.h sys/syscall.h sys/mkdev.h sys/uio.h sys/param.h sys/sysctl.h libproc.h sys/prctl.h)
-AC_CHECK_HEADERS(sys/param.h sys/socket.h sys/ipc.h sys/sem.h sys/utsname.h alloca.h ucontext.h pwd.h sys/select.h netinet/tcp.h netinet/in.h unistd.h sys/types.h link.h asm/sigcontext.h sys/inotify.h arpa/inet.h complex.h)
+AC_CHECK_HEADERS(sys/param.h sys/socket.h sys/ipc.h sys/sem.h sys/utsname.h alloca.h ucontext.h pwd.h sys/select.h netinet/tcp.h netinet/in.h unistd.h sys/types.h link.h asm/sigcontext.h sys/inotify.h arpa/inet.h complex.h unwind.h)
 AC_CHECK_HEADERS([linux/netlink.h linux/rtnetlink.h],
                   [], [], [#include <stddef.h>
 		  #include <sys/socket.h>
@@ -546,7 +546,7 @@ if test x"$GCC" = xyes; then
 		if test "x$mono_cv_clang" = "xyes"; then
 	   	   # https://bugzilla.samba.org/show_bug.cgi?id=8118
 	   	   WARN="$WARN -Qunused-arguments"
-		   WARN="$WARN -Wno-unused-function -Wno-tautological-compare -Wno-parentheses-equality -Wno-self-assign"
+		   WARN="$WARN -Wno-unused-function -Wno-tautological-compare -Wno-parentheses-equality -Wno-self-assign -Wno-return-stack-address"
 		fi
 else
 	# The Sun Forte compiler complains about inline functions that access static variables
@@ -743,7 +743,8 @@ AC_ARG_ENABLE(minimal, [  --enable-minimal=LIST      drop support for LIST subsy
 AC_DEFINE_UNQUOTED(DISABLED_FEATURES, "$DISABLED_FEATURES", [String of disabled features])
 
 if test "x$mono_feature_disable_aot" = "xyes"; then
-	AC_DEFINE(DISABLE_AOT_COMPILER, 1, [Disable AOT Compiler])
+	AC_DEFINE(DISABLE_AOT, 1, [Disable AOT Compiler])
+	enable_system_aot=no
 	AC_MSG_NOTICE([Disabled AOT compiler])
 fi
 
@@ -1076,6 +1077,12 @@ AC_CHECK_HEADERS(signal.h)
 AC_CHECK_FUNCS(sigaction)
 AC_CHECK_FUNCS(kill)
 AC_CHECK_FUNCS(signal)
+
+# signal() is declared inline in Android headers
+# so we need to workaround it by overriding the check.
+if test x$platform_android = xyes; then
+	AC_DEFINE(HAVE_SIGNAL,1)
+fi
 
 if test x$host_win32 = xno; then
 
@@ -2562,6 +2569,13 @@ if test "x$enable_nacl_gc" = "xyes"; then
 fi
 AC_SUBST(MONO_NACL_ALIGN_MASK_OFF)
 
+dnl **************************
+dnl *** AOT cross offsets  ***
+dnl **************************
+
+AC_ARG_WITH(cross-offsets, [  --with-cross-offsets=<offsets file path>    Explicit AOT cross offsets file],
+    AC_DEFINE_UNQUOTED(MONO_OFFSETS_FILE, "$withval", [AOT cross offsets file]))
+
 dnl **************
 dnl ***  LLVM  ***
 dnl **************
@@ -2569,6 +2583,7 @@ dnl **************
 AC_ARG_ENABLE(llvm,[  --enable-llvm	Enable the LLVM back-end], enable_llvm=$enableval, enable_llvm=no)
 AC_ARG_ENABLE(loadedllvm,[  --enable-loadedllvm	Load the LLVM back-end dynamically], enable_llvm=$enableval && enable_loadedllvm=$enableval, enable_loadedllvm=no)
 AC_ARG_ENABLE(llvm-version-check,[  --enable-llvm-version-check Check that the LLVM matches the version expected by mono], enable_llvm_version_check=$enableval, enable_llvm_version_check=no)
+AC_ARG_ENABLE(llvm-runtime,[  --enable-llvm-runtime	Enable runtime support for llvmonly code], enable_llvm_runtime=$enableval, enable_llvm_runtime=no)
 
 AC_ARG_WITH(llvm, [  --with-llvm=<llvm prefix>    Enable the LLVM back-end], enable_llvm=yes,)
 
@@ -2608,11 +2623,17 @@ if test "x$enable_llvm" = "xyes"; then
    LLVM_SYSTEM_LIBS=`$LLVM_CONFIG --system-libs 2>/dev/null | grep -- -`
    if test "x$host" != "x$target"; then
       # No need for jit libs
-      LLVM_LIBS=`$LLVM_CONFIG --libs core bitwriter`
+      LLVM_LIBS=`$LLVM_CONFIG --libs analysis core bitwriter`
    else
-      LLVM_LIBS=`$LLVM_CONFIG --libs core bitwriter jit mcjit $llvm_codegen`
+      LLVM_LIBS=`$LLVM_CONFIG --libs analysis core bitwriter jit mcjit $llvm_codegen`
    fi
-   LLVM_LIBS="$LLVM_LIBS $LLVM_LDFLAGS $LLVM_SYSTEM_LIBS -lstdc++"
+   LLVM_LIBS="$LLVM_LIBS $LLVM_LDFLAGS $LLVM_SYSTEM_LIBS"
+   # The c++ standard library used by llvm doesn't show up in $LLVM_SYSTEM_LIBS so add it manually
+   if echo $LLVM_CXXFLAGS | grep -q -- '-stdlib=libc++'; then
+      LLVM_LIBS="$LLVM_LIBS -lc++"
+   else
+      LLVM_LIBS="$LLVM_LIBS -lstdc++"
+   fi
 
    expected_llvm_version="3.4svn-mono-mono/e656cac"
 
@@ -2641,6 +2662,7 @@ if test "x$enable_llvm" = "xyes"; then
          -lLLVMARMAsmPrinter -lLLVMTableGen -lLLVMDebugInfo -lLLVMOption -lLLVMX86Disassembler \
          -lLLVMX86AsmParser -lLLVMX86CodeGen -lLLVMSelectionDAG -lLLVMAsmPrinter -lLLVMX86Desc \
          -lLLVMMCDisassembler -lLLVMX86Info -lLLVMX86AsmPrinter -lLLVMX86Utils -lLLVMJIT \
+         -lLLVMAnalysis -lLLVMTarget \
          -lLLVMIRReader -lLLVMAsmParser -lLLVMLineEditor -lLLVMMCAnalysis -lLLVMInstrumentation \
          -lLLVMInterpreter -lLLVMCodeGen -lLLVMScalarOpts -lLLVMInstCombine -lLLVMTransformUtils \
          -lLLVMipa -lLLVMAnalysis -lLLVMProfileData -lLLVMMCJIT -lLLVMTarget -lLLVMRuntimeDyld \
@@ -2674,6 +2696,14 @@ if test "x$enable_loadedllvm" = "xyes"; then
    AC_DEFINE(MONO_LLVM_LOADED, 1, [The LLVM back end is dynamically loaded])
 fi
 AM_CONDITIONAL(LOADED_LLVM, [test x$enable_loadedllvm = xyes])
+
+if test "x$enable_llvm" = "xyes"; then
+   enable_llvm_runtime=yes
+fi
+if test "x$enable_llvm_runtime" = "xyes"; then
+   AC_DEFINE(ENABLE_LLVM_RUNTIME, 1, [Runtime support code for llvm enabled])
+fi
+AM_CONDITIONAL(ENABLE_LLVM_RUNTIME, [test x$enable_llvm_runtime = xyes])
 
 TARGET="unknown"
 ACCESS_UNALIGNED="yes"
@@ -3794,6 +3824,7 @@ AC_CONFIG_COMMANDS([nolock-libtool], [sed -e 's/lock_old_archive_extraction=yes/
 AC_OUTPUT([
 Makefile
 mono-uninstalled.pc
+acceptance-tests/Makefile
 scripts/mono-find-provides
 scripts/mono-find-requires
 mono/Makefile

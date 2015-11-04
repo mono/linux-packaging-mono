@@ -159,18 +159,19 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	unwind.c image-writer.h image-writer.c dwarfwriter.h \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
 	debugger-agent.c xdebug.c mini-llvm-cpp.h alias-analysis.c \
-	mini-cross-helpers.c arch-stubs.c mini-llvm.c \
-	mini-llvm-loaded.c mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h \
-	exceptions-amd64.c tramp-amd64.c mini-arm64.c mini-arm64.h \
-	exceptions-arm64.c tramp-arm64.c mini-arm.c mini-arm-tls.S \
-	mini-arm.h mini-arm-tls.h exceptions-arm.c tramp-arm.c \
-	mini-ia64.c mini-ia64.h exceptions-ia64.c tramp-ia64.c \
-	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
-	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
-	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
-	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
-	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
-	tramp-x86.c mini-windows.c mini-darwin.c mini-posix.c
+	mini-cross-helpers.c arch-stubs.c llvm-runtime.h mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-runtime.cpp \
+	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
+	mini-arm64.c mini-arm64.h exceptions-arm64.c tramp-arm64.c \
+	mini-arm.c mini-arm-tls.S mini-arm.h mini-arm-tls.h \
+	exceptions-arm.c tramp-arm.c mini-ia64.c mini-ia64.h \
+	exceptions-ia64.c tramp-ia64.c mini-mips.c mini-mips.h \
+	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
+	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
+	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
+	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
+	mini-x86.h exceptions-x86.c tramp-x86.c mini-windows.c \
+	mini-darwin.c mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -204,55 +205,58 @@ am__objects_1 = libmini_static_la-mini.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_static_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_2 = libmini_static_la-mini-llvm-loaded.lo
-am__objects_3 = libmini_static_la-mini-amd64.lo \
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@am__objects_3 =  \
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.lo
+@ENABLE_LLVM_TRUE@am__objects_3 = llvm-runtime.lo
+am__objects_4 = libmini_static_la-mini-amd64.lo \
 	libmini_static_la-exceptions-amd64.lo \
 	libmini_static_la-tramp-amd64.lo
-am__objects_4 = libmini_static_la-mini-arm64.lo \
+am__objects_5 = libmini_static_la-mini-arm64.lo \
 	libmini_static_la-exceptions-arm64.lo \
 	libmini_static_la-tramp-arm64.lo
-am__objects_5 = libmini_static_la-mini-arm.lo mini-arm-tls.lo \
+am__objects_6 = libmini_static_la-mini-arm.lo mini-arm-tls.lo \
 	libmini_static_la-exceptions-arm.lo \
 	libmini_static_la-tramp-arm.lo
-am__objects_6 = libmini_static_la-mini-ia64.lo \
+am__objects_7 = libmini_static_la-mini-ia64.lo \
 	libmini_static_la-exceptions-ia64.lo \
 	libmini_static_la-tramp-ia64.lo
-am__objects_7 = libmini_static_la-mini-mips.lo \
+am__objects_8 = libmini_static_la-mini-mips.lo \
 	libmini_static_la-exceptions-mips.lo \
 	libmini_static_la-tramp-mips.lo
-am__objects_8 = libmini_static_la-mini-ppc.lo \
+am__objects_9 = libmini_static_la-mini-ppc.lo \
 	libmini_static_la-exceptions-ppc.lo \
 	libmini_static_la-tramp-ppc.lo
-am__objects_9 = libmini_static_la-mini-s390x.lo \
+am__objects_10 = libmini_static_la-mini-s390x.lo \
 	libmini_static_la-exceptions-s390x.lo \
 	libmini_static_la-tramp-s390x.lo
-am__objects_10 = libmini_static_la-mini-sparc.lo \
+am__objects_11 = libmini_static_la-mini-sparc.lo \
 	libmini_static_la-exceptions-sparc.lo \
 	libmini_static_la-tramp-sparc.lo
-am__objects_11 = libmini_static_la-mini-x86.lo \
+am__objects_12 = libmini_static_la-mini-x86.lo \
 	libmini_static_la-exceptions-x86.lo \
 	libmini_static_la-tramp-x86.lo
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@X86_TRUE@am__objects_12 = $(am__objects_11)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_12 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_12 = $(am__objects_10)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_12 = $(am__objects_9)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_12 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_12 = $(am__objects_8)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_TRUE@am__objects_12 = $(am__objects_7)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_TRUE@am__objects_12 = $(am__objects_6)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_12 = $(am__objects_5)
-@AMD64_FALSE@@ARM64_TRUE@am__objects_12 = $(am__objects_4)
-@AMD64_TRUE@am__objects_12 = $(am__objects_3)
-am__objects_13 = libmini_static_la-mini-windows.lo
-am__objects_14 = libmini_static_la-mini-darwin.lo
-am__objects_15 = libmini_static_la-mini-posix.lo
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@@PLATFORM_SIGPOSIX_TRUE@am__objects_16 = $(am__objects_15)
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@am__objects_16 =  \
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_14) \
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_15)
-@HOST_WIN32_TRUE@am__objects_16 = $(am__objects_13)
-am__objects_17 = $(am__objects_1) $(am__objects_2) $(am__objects_12) \
-	$(am__objects_16)
-am_libmini_static_la_OBJECTS = $(am__objects_17)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@X86_TRUE@am__objects_13 = $(am__objects_12)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_13 = $(am__objects_11)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_13 = $(am__objects_11)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_13 = $(am__objects_10)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_13 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_13 = $(am__objects_9)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_TRUE@am__objects_13 = $(am__objects_8)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_TRUE@am__objects_13 = $(am__objects_7)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_13 = $(am__objects_6)
+@AMD64_FALSE@@ARM64_TRUE@am__objects_13 = $(am__objects_5)
+@AMD64_TRUE@am__objects_13 = $(am__objects_4)
+am__objects_14 = libmini_static_la-mini-windows.lo
+am__objects_15 = libmini_static_la-mini-darwin.lo
+am__objects_16 = libmini_static_la-mini-posix.lo
+@HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@@PLATFORM_SIGPOSIX_TRUE@am__objects_17 = $(am__objects_16)
+@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@am__objects_17 =  \
+@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_15) \
+@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_16)
+@HOST_WIN32_TRUE@am__objects_17 = $(am__objects_14)
+am__objects_18 = $(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_13) $(am__objects_17)
+am_libmini_static_la_OBJECTS = $(am__objects_18)
 libmini_static_la_OBJECTS = $(am_libmini_static_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -277,19 +281,20 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	unwind.c image-writer.h image-writer.c dwarfwriter.h \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
 	debugger-agent.c xdebug.c mini-llvm-cpp.h alias-analysis.c \
-	mini-cross-helpers.c arch-stubs.c mini-llvm.c \
-	mini-llvm-loaded.c mini-llvm-cpp.cpp mini-amd64.c mini-amd64.h \
-	exceptions-amd64.c tramp-amd64.c mini-arm64.c mini-arm64.h \
-	exceptions-arm64.c tramp-arm64.c mini-arm.c mini-arm-tls.S \
-	mini-arm.h mini-arm-tls.h exceptions-arm.c tramp-arm.c \
-	mini-ia64.c mini-ia64.h exceptions-ia64.c tramp-ia64.c \
-	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
-	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
-	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
-	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
-	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
-	tramp-x86.c mini-windows.c mini-darwin.c mini-posix.c
-am__objects_18 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
+	mini-cross-helpers.c arch-stubs.c llvm-runtime.h mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-runtime.cpp \
+	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
+	mini-arm64.c mini-arm64.h exceptions-arm64.c tramp-arm64.c \
+	mini-arm.c mini-arm-tls.S mini-arm.h mini-arm-tls.h \
+	exceptions-arm.c tramp-arm.c mini-ia64.c mini-ia64.h \
+	exceptions-ia64.c tramp-ia64.c mini-mips.c mini-mips.h \
+	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
+	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
+	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
+	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
+	mini-x86.h exceptions-x86.c tramp-x86.c mini-windows.c \
+	mini-darwin.c mini-posix.c
+am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-decompose.lo libmini_la-jit-icalls.lo \
 	libmini_la-trace.lo libmini_la-dominators.lo \
@@ -308,51 +313,51 @@ am__objects_18 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-debugger-agent.lo libmini_la-xdebug.lo \
 	libmini_la-alias-analysis.lo libmini_la-mini-cross-helpers.lo \
 	libmini_la-arch-stubs.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_19 =  \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_20 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_19 = libmini_la-mini-llvm-loaded.lo
-am__objects_20 = libmini_la-mini-amd64.lo \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_20 = libmini_la-mini-llvm-loaded.lo
+am__objects_21 = libmini_la-mini-amd64.lo \
 	libmini_la-exceptions-amd64.lo libmini_la-tramp-amd64.lo
-am__objects_21 = libmini_la-mini-arm64.lo \
+am__objects_22 = libmini_la-mini-arm64.lo \
 	libmini_la-exceptions-arm64.lo libmini_la-tramp-arm64.lo
-am__objects_22 = libmini_la-mini-arm.lo mini-arm-tls.lo \
+am__objects_23 = libmini_la-mini-arm.lo mini-arm-tls.lo \
 	libmini_la-exceptions-arm.lo libmini_la-tramp-arm.lo
-am__objects_23 = libmini_la-mini-ia64.lo libmini_la-exceptions-ia64.lo \
+am__objects_24 = libmini_la-mini-ia64.lo libmini_la-exceptions-ia64.lo \
 	libmini_la-tramp-ia64.lo
-am__objects_24 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
+am__objects_25 = libmini_la-mini-mips.lo libmini_la-exceptions-mips.lo \
 	libmini_la-tramp-mips.lo
-am__objects_25 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
+am__objects_26 = libmini_la-mini-ppc.lo libmini_la-exceptions-ppc.lo \
 	libmini_la-tramp-ppc.lo
-am__objects_26 = libmini_la-mini-s390x.lo \
+am__objects_27 = libmini_la-mini-s390x.lo \
 	libmini_la-exceptions-s390x.lo libmini_la-tramp-s390x.lo
-am__objects_27 = libmini_la-mini-sparc.lo \
+am__objects_28 = libmini_la-mini-sparc.lo \
 	libmini_la-exceptions-sparc.lo libmini_la-tramp-sparc.lo
-am__objects_28 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
+am__objects_29 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 	libmini_la-tramp-x86.lo
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@X86_TRUE@am__objects_29 = $(am__objects_28)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_29 = $(am__objects_27)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_29 = $(am__objects_27)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_29 = $(am__objects_26)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_29 = $(am__objects_25)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_29 = $(am__objects_25)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_TRUE@am__objects_29 = $(am__objects_24)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_TRUE@am__objects_29 = $(am__objects_23)
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_29 =  \
-@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@	$(am__objects_22)
-@AMD64_FALSE@@ARM64_TRUE@am__objects_29 = $(am__objects_21)
-@AMD64_TRUE@am__objects_29 = $(am__objects_20)
-am__objects_30 = libmini_la-mini-windows.lo
-am__objects_31 = libmini_la-mini-darwin.lo
-am__objects_32 = libmini_la-mini-posix.lo
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@@PLATFORM_SIGPOSIX_TRUE@am__objects_33 = $(am__objects_32)
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@am__objects_33 =  \
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_31) \
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_32)
-@HOST_WIN32_TRUE@am__objects_33 = $(am__objects_30)
-am_libmini_la_OBJECTS = $(am__objects_18) $(am__objects_19) \
-	$(am__objects_29) $(am__objects_33)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_FALSE@@X86_TRUE@am__objects_30 = $(am__objects_29)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_FALSE@@SPARC_TRUE@am__objects_30 = $(am__objects_28)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_FALSE@@SPARC64_TRUE@am__objects_30 = $(am__objects_28)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_FALSE@@S390X_TRUE@am__objects_30 = $(am__objects_27)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_FALSE@@POWERPC_TRUE@am__objects_30 = $(am__objects_26)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_FALSE@@POWERPC64_TRUE@am__objects_30 = $(am__objects_26)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_FALSE@@MIPS_TRUE@am__objects_30 = $(am__objects_25)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_FALSE@@IA64_TRUE@am__objects_30 = $(am__objects_24)
+@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_30 =  \
+@AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@	$(am__objects_23)
+@AMD64_FALSE@@ARM64_TRUE@am__objects_30 = $(am__objects_22)
+@AMD64_TRUE@am__objects_30 = $(am__objects_21)
+am__objects_31 = libmini_la-mini-windows.lo
+am__objects_32 = libmini_la-mini-darwin.lo
+am__objects_33 = libmini_la-mini-posix.lo
+@HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@@PLATFORM_SIGPOSIX_TRUE@am__objects_34 = $(am__objects_33)
+@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@am__objects_34 =  \
+@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_32) \
+@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_33)
+@HOST_WIN32_TRUE@am__objects_34 = $(am__objects_31)
+am_libmini_la_OBJECTS = $(am__objects_19) $(am__objects_20) \
+	$(am__objects_3) $(am__objects_30) $(am__objects_34)
 libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@am_libmini_la_rpath =
 @DISABLE_EXECUTABLES_TRUE@@SHARED_MONO_TRUE@am_libmini_la_rpath =
@@ -463,12 +468,12 @@ mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
 	$(CFLAGS) $(mono_sgen_LDFLAGS) $(LDFLAGS) -o $@
 am__monow_SOURCES_DIST = main-sgen.c main.c
-am__objects_34 = main-sgen.$(OBJEXT)
-am__objects_35 = main.$(OBJEXT)
+am__objects_35 = main-sgen.$(OBJEXT)
+am__objects_36 = main.$(OBJEXT)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_34)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__objects_35)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_35)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_36)
 monow_OBJECTS = $(am_monow_OBJECTS)
 am__DEPENDENCIES_14 = $(am__DEPENDENCIES_13) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_2) \
@@ -1003,6 +1008,12 @@ posix_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@llvm_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@	mini-llvm-loaded.c
 
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@llvm_runtime_sources = \
+@ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.cpp
+
+@ENABLE_LLVM_TRUE@llvm_runtime_sources = \
+@ENABLE_LLVM_TRUE@	llvm-runtime.cpp
+
 common_sources = \
 	mini.c			\
 	mini-runtime.c	\
@@ -1060,7 +1071,8 @@ common_sources = \
 	mini-llvm-cpp.h	\
 	alias-analysis.c	\
 	mini-cross-helpers.c \
-	arch-stubs.c
+	arch-stubs.c		\
+	llvm-runtime.h
 
 test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	arrays.cs basic-float.cs basic-math.cs basic.cs exceptions.cs \
@@ -1115,7 +1127,7 @@ regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
 #monobin_platform_ldflags=-sectcreate __TEXT __info_plist $(top_srcdir)/mono/mini/Info.plist -framework CoreFoundation -framework Foundation
 @PLATFORM_DARWIN_TRUE@monobin_platform_ldflags = -framework CoreFoundation -framework Foundation
 @PLATFORM_SIGPOSIX_TRUE@monobin_platform_ldflags = 
-libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(arch_sources) $(os_sources)
+libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
 libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
@@ -1515,6 +1527,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-x86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-unwind.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-xdebug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main-sgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mini-arm-tls.Plo@am__quote@
@@ -3008,7 +3021,7 @@ rcheck2: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
 check-seq-points: mono $(regtests)
-	rm -f TestResults_op_il_seq_point.xml
+	rm -f TestResult-op_il_seq_point.xml
 	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	$(srcdir)/test_op_il_seq_point_headerfooter.sh
@@ -3095,10 +3108,10 @@ docu: mini.sgm
 check-local: rcheck check-seq-points
 
 clean-local:
-	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResults_op_il_seq_point.xml*
+	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.1564/0421c0c\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.1945/b73f81c\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

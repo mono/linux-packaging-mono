@@ -84,8 +84,8 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in mkinstalldirs \
 	$(srcdir)/mono-uninstalled.pc.in COPYING.LIB ChangeLog NEWS \
-	compile config.guess config.rpath config.sub install-sh \
-	missing ltmain.sh
+	compile config.guess config.rpath config.sub depcomp \
+	install-sh missing ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -410,12 +410,12 @@ top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = $(WERROR_CFLAGS)
 MONOTOUCH_SUBDIRS = $(libgc_dir) eglib/src mono
-@CROSS_COMPILING_FALSE@SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples msvc $(docs_dir)
-@CROSS_COMPILING_TRUE@SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples msvc $(docs_dir)
+@CROSS_COMPILING_FALSE@SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples msvc $(docs_dir) acceptance-tests
+@CROSS_COMPILING_TRUE@SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples msvc $(docs_dir) acceptance-tests
 # Keep in sync with SUBDIRS
-@CROSS_COMPILING_FALSE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs
+@CROSS_COMPILING_FALSE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs acceptance-tests
 # Keep in sync with SUBDIRS
-@CROSS_COMPILING_TRUE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs
+@CROSS_COMPILING_TRUE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs acceptance-tests
 SUBMODULE_ERROR = 'Could not recursively update all git submodules. You may experience compilation problems if some submodules are out of date'
 EXTRA_DIST = \
         README.md \

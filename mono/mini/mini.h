@@ -35,8 +35,6 @@
 #include <mono/utils/mono-conc-hashtable.h>
 #include <mono/utils/mono-signal-handler.h>
 
-#define MONO_BREAKPOINT_ARRAY_SIZE 64
-
 #include "mini-arch.h"
 #include "regalloc.h"
 #include "mini-unwind.h"
@@ -113,7 +111,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 122
+#define MONO_AOT_FILE_VERSION 124
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -178,6 +176,7 @@ typedef enum {
 	MONO_AOT_FILE_FLAG_DEBUG = 4,
 	MONO_AOT_FILE_FLAG_LLVM_THUMB = 8,
 	MONO_AOT_FILE_FLAG_LLVM_ONLY = 16,
+	MONO_AOT_FILE_FLAG_SAFEPOINTS = 32,
 } MonoAotFileFlags;
 
 /* This structure is stored in the AOT file */
@@ -267,7 +266,11 @@ typedef struct MonoAotFileInfo
 	guint32 double_align, long_align, generic_tramp_num;
 	/* The page size used by trampoline pages */
 	guint32 tramp_page_size;
-
+	/*
+	 * The number of GOT entries which need to be preinitialized when the
+	 * module is loaded.
+	 */
+	guint32 nshared_got_entries;
 	/* Arrays */
 	/* Number of trampolines */
 	guint32 num_trampolines [MONO_AOT_TRAMP_NUM];
@@ -333,6 +336,12 @@ typedef struct {
 	MonoJitInfo *ji;
 	MonoCodeManager *code_mp;
 } MonoJitDynamicMethodInfo;
+
+/* An extension of MonoGenericParamFull used in generic sharing */
+typedef struct {
+	MonoGenericParamFull param;
+	MonoGenericParam *parent;
+} MonoGSharedGenericParam;
 
 #define domain_jit_info(domain) ((MonoJitDomainInfo*)((domain)->runtime_info))
 
@@ -774,6 +783,15 @@ typedef struct {
 	 * Should be 0 or 1.
 	 */
 	int vret_arg_index;
+	/*
+	 * Maps parameter indexes in the original signature to parameter indexes
+	 * in the LLVM signature.
+	 */
+	int *pindexes;
+	/* The indexes of various special arguments in the LLVM signature */
+	int vret_arg_pindex, this_arg_pindex, rgctx_arg_pindex, imt_arg_pindex;
+
+	/* Inline array of argument info */
 	/* args [0] is for the this argument if it exists */
 	LLVMArgInfo args [1];
 } LLVMCallInfo;
@@ -1365,6 +1383,32 @@ enum {
 	MONO_OPT_LAST
 };
 
+/*
+ * This structure represents a JIT backend.
+ */
+typedef struct {
+	guint            have_card_table_wb : 1;
+	guint            have_op_generic_class_init : 1;
+	guint            emulate_mul_div : 1;
+	guint            emulate_div : 1;
+	guint            emulate_long_shift_opts : 1;
+	guint            have_objc_get_selector : 1;
+	guint            have_generalized_imt_thunk : 1;
+	guint            have_tls_get : 1;
+	guint            have_tls_get_reg : 1;
+	guint            have_liverange_ops: 1;
+	guint            have_op_tail_call : 1;
+	guint            have_dummy_init : 1;
+	guint            gshared_supported : 1;
+	guint            use_fpstack : 1;
+	guint            ilp32 : 1;
+	guint            need_got_var : 1;
+	guint            need_div_check : 1;
+	guint            no_unaligned_access : 1;
+	int              monitor_enter_adjustment;
+	int              dyn_call_param_area;
+} MonoBackend;
+
 /* Flags for mini_method_compile () */
 typedef enum {
 	/* Whenever to run cctors during JITting */
@@ -1445,6 +1489,8 @@ typedef struct {
 	MonoMethod      *current_method; /* The method currently processed by method_to_ir () */
 	MonoMethod      *method_to_register; /* The method to register in JIT info tables */
 	MonoGenericContext *generic_context;
+
+	MonoBackend *backend;
 
 	/* 
 	 * This variable represents the hidden argument holding the vtype
@@ -2115,6 +2161,7 @@ mono_bb_last_inst (MonoBasicBlock *bb, int filter)
 /* main function */
 MONO_API int         mono_main                      (int argc, char* argv[]);
 MONO_API void        mono_set_defaults              (int verbose_level, guint32 opts);
+void        mono_parse_env_options         (int argc, char *argv []);
 MonoDomain* mini_init                      (const char *filename, const char *runtime_version);
 void        mini_cleanup                   (MonoDomain *domain);
 MONO_API MonoDebugOptions *mini_get_debug_options   (void);
@@ -2169,6 +2216,7 @@ void      mono_merge_basic_blocks           (MonoCompile *cfg, MonoBasicBlock *b
 void      mono_optimize_branches            (MonoCompile *cfg);
 
 void      mono_blockset_print               (MonoCompile *cfg, MonoBitSet *set, const char *name, guint idom);
+const char*mono_ji_type_to_string           (MonoJumpInfoType type);
 void      mono_print_ji                     (const MonoJumpInfo *ji);
 void      mono_print_ins_index              (int i, MonoInst *ins);
 void      mono_print_ins                    (MonoInst *ins);
@@ -2325,10 +2373,12 @@ guint8*  mono_aot_get_unwind_info           (MonoJitInfo *ji, guint32 *unwind_in
 guint32  mono_aot_method_hash               (MonoMethod *method);
 MonoMethod* mono_aot_get_array_helper_from_wrapper (MonoMethod *method);
 guint32  mono_aot_get_got_offset            (MonoJumpInfo *ji) MONO_LLVM_INTERNAL;
+gboolean mono_aot_is_shared_got_offset      (int offset) MONO_LLVM_INTERNAL;
 char*    mono_aot_get_method_name           (MonoCompile *cfg) MONO_LLVM_INTERNAL;
 gboolean mono_aot_is_direct_callable        (MonoJumpInfo *patch_info) MONO_LLVM_INTERNAL;
 void     mono_aot_mark_unused_llvm_plt_entry(MonoJumpInfo *patch_info) MONO_LLVM_INTERNAL;
 char*    mono_aot_get_plt_symbol            (MonoJumpInfoType type, gconstpointer data) MONO_LLVM_INTERNAL;
+char*    mono_aot_get_direct_call_symbol    (MonoJumpInfoType type, gconstpointer data);
 int      mono_aot_get_method_index          (MonoMethod *method) MONO_LLVM_INTERNAL;
 MonoJumpInfo* mono_aot_patch_info_dup       (MonoJumpInfo* ji) MONO_LLVM_INTERNAL;
 void     mono_aot_set_make_unreadable       (gboolean unreadable);
@@ -2366,6 +2416,15 @@ void     mono_llvm_check_method_supported   (MonoCompile *cfg) MONO_LLVM_INTERNA
 void     mono_llvm_free_domain_info         (MonoDomain *domain) MONO_LLVM_INTERNAL;
 MONO_API void mono_personality              (void);
 int      mono_llvm_load                     (const char* bpath);
+void     mono_llvm_rethrow_exception (MonoObject *ex);
+void     mono_llvm_throw_exception (MonoObject *ex);
+void     mono_llvm_throw_corlib_exception (guint32 ex_token_index);
+void     mono_llvm_resume_exception (void);
+gint32   mono_llvm_match_exception (MonoJitInfo *jinfo, guint32 region_start, guint32 region_end);
+void     mono_llvm_clear_exception (void);
+MonoObject *mono_llvm_load_exception (void);
+void     mono_llvm_reset_exception (void);
+void     mono_llvm_raise_exception (MonoException *e);
 
 gboolean mini_llvm_init                     (void);
 
@@ -2869,6 +2928,7 @@ MonoType* mini_type_get_underlying_type (MonoType *type);
 MonoMethod* mini_get_shared_method (MonoMethod *method);
 MonoMethod* mini_get_shared_method_to_register (MonoMethod *method);
 MonoMethod* mini_get_shared_method_full (MonoMethod *method, gboolean all_vt, gboolean is_gsharedvt);
+MonoType* mini_get_shared_gparam (MonoType *t, MonoType *constraint);
 int mini_get_rgctx_entry_slot (MonoJumpInfoRgctxEntry *entry);
 
 int mini_type_stack_size (MonoType *t, int *align);
@@ -2989,58 +3049,14 @@ void MONO_SIG_HANDLER_SIGNATURE (mono_sigsegv_signal_handler);
 void MONO_SIG_HANDLER_SIGNATURE (mono_sigint_signal_handler) ;
 gboolean MONO_SIG_HANDLER_SIGNATURE (mono_chain_signal);
 
-#ifdef MONO_ARCH_HAVE_OP_TAIL_CALL
-#define ARCH_HAVE_OP_TAIL_CALL 1
-#else
-#define ARCH_HAVE_OP_TAIL_CALL 0
-#endif
-
 #ifndef MONO_ARCH_HAVE_TLS_GET
 #define MONO_ARCH_HAVE_TLS_GET 0
-#endif
-
-#ifdef MONO_ARCH_HAVE_TLS_GET_REG
-#define ARCH_HAVE_TLS_GET_REG 1
-#else
-#define ARCH_HAVE_TLS_GET_REG 0
-#endif
-
-#ifdef MONO_ARCH_EMULATE_MUL_DIV
-#define ARCH_EMULATE_MUL_DIV 1
-#else
-#define ARCH_EMULATE_MUL_DIV 0
-#endif
-
-#ifndef MONO_ARCH_MONITOR_ENTER_ADJUSTMENT
-#define MONO_ARCH_MONITOR_ENTER_ADJUSTMENT 1
-#endif
-
-#ifndef MONO_ARCH_DYN_CALL_PARAM_AREA
-#define MONO_ARCH_DYN_CALL_PARAM_AREA 0
 #endif
 
 #ifdef MONO_ARCH_VARARG_ICALLS
 #define ARCH_VARARG_ICALLS 1
 #else
 #define ARCH_VARARG_ICALLS 0
-#endif
-
-#ifdef MONO_ARCH_HAVE_DUMMY_INIT
-#define ARCH_HAVE_DUMMY_INIT 1
-#else
-#define ARCH_HAVE_DUMMY_INIT 0
-#endif
-
-#ifdef MONO_CROSS_COMPILE
-#define MONO_IS_CROSS_COMPILE 1
-#else
-#define MONO_IS_CROSS_COMPILE 0
-#endif
-
-#if defined(__mono_ilp32__)
-#define MONO_IS_ILP32 1
-#else
-#define MONO_IS_ILP32 0
 #endif
 
 #endif /* __MONO_MINI_H__ */

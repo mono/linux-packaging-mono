@@ -7119,6 +7119,7 @@ mono_method_body_get_object (MonoDomain *domain, MonoMethod *method)
 	if ((method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) ||
 		(method->flags & METHOD_ATTRIBUTE_ABSTRACT) ||
 	    (method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) ||
+		(method->klass->image->raw_data && method->klass->image->raw_data [1] != 'Z') ||
 	    (method->iflags & METHOD_IMPL_ATTRIBUTE_RUNTIME))
 		return NULL;
 
@@ -7424,7 +7425,7 @@ _mono_reflection_parse_type (char *name, char **endptr, gboolean is_recursed,
 {
 	char *start, *p, *w, *last_point, *startn;
 	int in_modifiers = 0;
-	int isbyref = 0, rank = 0;
+	int isbyref = 0, rank = 0, isptr = 0;
 
 	start = p = w = name;
 
@@ -7496,20 +7497,27 @@ _mono_reflection_parse_type (char *name, char **endptr, gboolean is_recursed,
 			if (isbyref) /* only one level allowed by the spec */
 				return 0;
 			isbyref = 1;
+			isptr = 0;
 			info->modifiers = g_list_append (info->modifiers, GUINT_TO_POINTER (0));
 			*p++ = 0;
 			break;
 		case '*':
+			if (isbyref) /* pointer to ref not okay */
+				return 0;
 			info->modifiers = g_list_append (info->modifiers, GUINT_TO_POINTER (-1));
+			isptr = 1;
 			*p++ = 0;
 			break;
 		case '[':
+			if (isbyref) /* array of ref and generic ref are not okay */
+				return 0;
 			//Decide if it's an array of a generic argument list
 			*p++ = 0;
 
 			if (!*p) //XXX test
 				return 0;
 			if (*p  == ',' || *p == '*' || *p == ']') { //array
+				isptr = 0;
 				rank = 1;
 				while (*p) {
 					if (*p == ']')
@@ -7526,8 +7534,9 @@ _mono_reflection_parse_type (char *name, char **endptr, gboolean is_recursed,
 					return 0;
 				info->modifiers = g_list_append (info->modifiers, GUINT_TO_POINTER (rank));
 			} else {
-				if (rank) /* generic args after array spec*/ //XXX test
+				if (rank || isptr) /* generic args after array spec or ptr*/ //XXX test
 					return 0;
+				isptr = 0;
 				info->type_arguments = g_ptr_array_new ();
 				while (*p) {
 					MonoTypeNameParse *subinfo = g_new0 (MonoTypeNameParse, 1);
@@ -7619,10 +7628,92 @@ _mono_reflection_parse_type (char *name, char **endptr, gboolean is_recursed,
 	return 1;
 }
 
+
+/**
+ * mono_identifier_unescape_type_name_chars:
+ * @identifier: the display name of a mono type
+ *
+ * Returns:
+ *  The name in internal form, that is without escaping backslashes.
+ *
+ *  The string is modified in place!
+ */
+char*
+mono_identifier_unescape_type_name_chars(char* identifier)
+{
+	char *w, *r;
+	if (!identifier)
+		return NULL;
+	for (w = r = identifier; *r != 0; r++)
+	{
+		char c = *r;
+		if (c == '\\') {
+			r++;
+			if (*r == 0)
+				break;
+			c = *r;
+		}
+		*w = c;
+		w++;
+	}
+	if (w != r)
+		*w = 0;
+	return identifier;
+}
+
+void
+mono_identifier_unescape_info (MonoTypeNameParse* info);
+
+static void
+unescape_each_type_argument(void* data, void* user_data)
+{
+	MonoTypeNameParse* info = (MonoTypeNameParse*)data;
+	mono_identifier_unescape_info (info);
+}
+
+static void
+unescape_each_nested_name (void* data, void* user_data)
+{
+	char* nested_name = (char*) data;
+	mono_identifier_unescape_type_name_chars(nested_name);
+}
+
+/**
+ * mono_identifier_unescape_info:
+ *
+ * @info: a parsed display form of an (optionally assembly qualified) full type name.
+ *
+ * Returns: nothing.
+ *
+ * Destructively updates the info by unescaping the identifiers that
+ * comprise the type namespace, name, nested types (if any) and
+ * generic type arguments (if any).
+ *
+ * The resulting info has the names in internal form.
+ *
+ */
+void
+mono_identifier_unescape_info (MonoTypeNameParse *info)
+{
+	if (!info)
+		return;
+	mono_identifier_unescape_type_name_chars(info->name_space);
+	mono_identifier_unescape_type_name_chars(info->name);
+	// but don't escape info->assembly
+	if (info->type_arguments)
+		g_ptr_array_foreach(info->type_arguments, &unescape_each_type_argument, NULL);
+	if (info->nested)
+		g_list_foreach(info->nested, &unescape_each_nested_name, NULL);
+}
+
 int
 mono_reflection_parse_type (char *name, MonoTypeNameParse *info)
 {
-	return _mono_reflection_parse_type (name, NULL, FALSE, info);
+	int ok = _mono_reflection_parse_type (name, NULL, FALSE, info);
+	if (ok) {
+		mono_identifier_unescape_info (info);
+	}
+	return ok;
 }
 
 static MonoType*

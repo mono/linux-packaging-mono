@@ -1,4 +1,4 @@
-﻿// ==++==
+// ==++==
 //
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
 // 
@@ -7,7 +7,7 @@
 //
 // TaskAwaiter.cs
 //
-// <OWNER>[....]</OWNER>
+// <OWNER>Microsoft</OWNER>
 //
 // Types for awaiting Task and Task<T>. These types are emitted from Task{<T>}.GetAwaiter 
 // and Task{<T>}.ConfigureAwait.  They are meant to be used only by the compiler, e.g.
@@ -48,9 +48,7 @@ using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Permissions;
-#if !FEATURE_PAL && !FEATURE_CORECLR   // PAL doesn't support  eventing
 using System.Diagnostics.Tracing;
-#endif
 
 // NOTE: For performance reasons, initialization is not verified.  If a developer
 //       incorrectly initializes a task awaiter, which should only be done by the compiler,
@@ -70,9 +68,6 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Initializes the <see cref="TaskAwaiter"/>.</summary>
         /// <param name="task">The <see cref="System.Threading.Tasks.Task"/> to be awaited.</param>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         internal TaskAwaiter(Task task)
         {
             Contract.Requires(task != null, "Constructing an awaiter requires a task to await.");
@@ -84,9 +79,6 @@ namespace System.Runtime.CompilerServices
         /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
         public bool IsCompleted 
         {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get { return m_task.IsCompleted; }
         }
 
@@ -116,9 +108,6 @@ namespace System.Runtime.CompilerServices
         /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
         /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
         /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public void GetResult()
         {
             ValidateEnd(m_task);
@@ -129,9 +118,6 @@ namespace System.Runtime.CompilerServices
         /// prior to completing the await.
         /// </summary>
         /// <param name="task">The awaited task.</param>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         internal static void ValidateEnd(Task task)
         {
             // Fast checks that can be inlined.
@@ -224,11 +210,10 @@ namespace System.Runtime.CompilerServices
         {
             if (continuation == null) throw new ArgumentNullException("continuation");
             StackCrawlMark stackMark = StackCrawlMark.LookForMyCaller;
-
+#if !MONO
             // If TaskWait* ETW events are enabled, trace a beginning event for this await
             // and set up an ending event to be traced when the asynchronous await completes.
-#if !FEATURE_PAL && !FEATURE_CORECLR    // PAL and CoreClr don't support  eventing
-            if (TplEtwProvider.Log.IsEnabled() || Task.s_asyncDebuggingEnabled)
+            if ( TplEtwProvider.Log.IsEnabled() || Task.s_asyncDebuggingEnabled)
             {
                 continuation = OutputWaitEtwEvents(task, continuation);
             }
@@ -238,7 +223,6 @@ namespace System.Runtime.CompilerServices
             task.SetContinuationForAwait(continuation, continueOnCapturedContext, flowExecutionContext, ref stackMark);
         }
 
-#if !FEATURE_PAL && !FEATURE_CORECLR    // PAL and CoreClr don't support  eventing
         /// <summary>
         /// Outputs a WaitBegin ETW event, and augments the continuation action to output a WaitEnd ETW event.
         /// </summary>
@@ -255,17 +239,23 @@ namespace System.Runtime.CompilerServices
                 Task.AddToActiveTasks(task);
             }
 
+#if !MONO
             var etwLog = TplEtwProvider.Log;
 
             if (etwLog.IsEnabled())
             {
                 // ETW event for Task Wait Begin
                 var currentTaskAtBegin = Task.InternalCurrent;
+
+                // If this task's continuation is another task, get it.
+                var continuationTask = AsyncMethodBuilderCore.TryGetContinuationTask(continuation);
                 etwLog.TaskWaitBegin(
                     (currentTaskAtBegin != null ? currentTaskAtBegin.m_taskScheduler.Id : TaskScheduler.Default.Id),
                     (currentTaskAtBegin != null ? currentTaskAtBegin.Id : 0),
-                    task.Id, TplEtwProvider.TaskWaitBehavior.Asynchronous);
+                    task.Id, TplEtwProvider.TaskWaitBehavior.Asynchronous, 
+                    (continuationTask != null ? continuationTask.Id : 0), System.Threading.Thread.GetDomainID());
             }
+#endif
 
             // Create a continuation action that outputs the end event and then invokes the user
             // provided delegate.  This incurs the allocations for the closure/delegate, but only if the event
@@ -278,7 +268,7 @@ namespace System.Runtime.CompilerServices
                 {
                     Task.RemoveFromActiveTasks(task.Id);
                 }
-
+#if !MONO
                 // ETW event for Task Wait End.
                 Guid prevActivityId = new Guid();
                 bool bEtwLogEnabled = etwLog.IsEnabled();
@@ -292,19 +282,23 @@ namespace System.Runtime.CompilerServices
 
                     // Ensure the continuation runs under the activity ID of the task that completed for the
                     // case the antecendent is a promise (in the other cases this is already the case).
-                    if ((task.Options & (TaskCreationOptions)InternalTaskOptions.PromiseTask) != 0)
+                    if (etwLog.TasksSetActivityIds && (task.Options & (TaskCreationOptions)InternalTaskOptions.PromiseTask) != 0)
                         EventSource.SetCurrentThreadActivityId(TplEtwProvider.CreateGuidForTaskID(task.Id), out prevActivityId);
                 }
+#endif
                 // Invoke the original continuation provided to OnCompleted.
                 continuation();
 
-                if (bEtwLogEnabled && (task.Options & (TaskCreationOptions)InternalTaskOptions.PromiseTask) != 0)
+#if !MONO
+                if (bEtwLogEnabled)
                 {
-                    EventSource.SetCurrentThreadActivityId(prevActivityId);
+                    etwLog.TaskWaitContinuationComplete(task.Id);
+                    if (etwLog.TasksSetActivityIds && (task.Options & (TaskCreationOptions)InternalTaskOptions.PromiseTask) != 0)
+                        EventSource.SetCurrentThreadActivityId(prevActivityId);
                 }
+#endif
             });
         }
-#endif
     }
 
     /// <summary>Provides an awaiter for awaiting a <see cref="System.Threading.Tasks.Task{TResult}"/>.</summary>
@@ -317,9 +311,6 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Initializes the <see cref="TaskAwaiter{TResult}"/>.</summary>
         /// <param name="task">The <see cref="System.Threading.Tasks.Task{TResult}"/> to be awaited.</param>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         internal TaskAwaiter(Task<TResult> task)
         {
             Contract.Requires(task != null, "Constructing an awaiter requires a task to await.");
@@ -331,9 +322,6 @@ namespace System.Runtime.CompilerServices
         /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
         public bool IsCompleted 
         {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get { return m_task.IsCompleted; }
         }
 
@@ -364,9 +352,6 @@ namespace System.Runtime.CompilerServices
         /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
         /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
         /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public TResult GetResult()
         {
             TaskAwaiter.ValidateEnd(m_task);
@@ -386,9 +371,6 @@ namespace System.Runtime.CompilerServices
         /// <param name="continueOnCapturedContext">
         /// true to attempt to marshal the continuation back to the original context captured; otherwise, false.
         /// </param>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         internal ConfiguredTaskAwaitable(Task task, bool continueOnCapturedContext)
         {
             Contract.Requires(task != null, "Constructing an awaitable requires a task to await.");
@@ -397,9 +379,6 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Gets an awaiter for this awaitable.</summary>
         /// <returns>The awaiter.</returns>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public ConfiguredTaskAwaitable.ConfiguredTaskAwaiter GetAwaiter()
         {
             return m_configuredTaskAwaiter;
@@ -421,9 +400,6 @@ namespace System.Runtime.CompilerServices
             /// true to attempt to marshal the continuation back to the original context captured
             /// when BeginAwait is called; otherwise, false.
             /// </param>
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             internal ConfiguredTaskAwaiter(Task task, bool continueOnCapturedContext)
             {
                 Contract.Requires(task != null, "Constructing an awaiter requires a task to await.");
@@ -436,9 +412,6 @@ namespace System.Runtime.CompilerServices
             /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
             public bool IsCompleted 
             {
-#if !FEATURE_CORECLR
-                [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
                 get { return m_task.IsCompleted; }
             }
 
@@ -469,9 +442,6 @@ namespace System.Runtime.CompilerServices
             /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
             /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
             /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             public void GetResult()
             {
                 TaskAwaiter.ValidateEnd(m_task);
@@ -491,9 +461,6 @@ namespace System.Runtime.CompilerServices
         /// <param name="continueOnCapturedContext">
         /// true to attempt to marshal the continuation back to the original context captured; otherwise, false.
         /// </param>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         internal ConfiguredTaskAwaitable(Task<TResult> task, bool continueOnCapturedContext)
         {
             m_configuredTaskAwaiter = new ConfiguredTaskAwaitable<TResult>.ConfiguredTaskAwaiter(task, continueOnCapturedContext);
@@ -501,9 +468,6 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Gets an awaiter for this awaitable.</summary>
         /// <returns>The awaiter.</returns>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public ConfiguredTaskAwaitable<TResult>.ConfiguredTaskAwaiter GetAwaiter()
         {
             return m_configuredTaskAwaiter;
@@ -524,9 +488,6 @@ namespace System.Runtime.CompilerServices
             /// <param name="continueOnCapturedContext">
             /// true to attempt to marshal the continuation back to the original context captured; otherwise, false.
             /// </param>
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             internal ConfiguredTaskAwaiter(Task<TResult> task, bool continueOnCapturedContext)
             {
                 Contract.Requires(task != null, "Constructing an awaiter requires a task to await.");
@@ -539,9 +500,6 @@ namespace System.Runtime.CompilerServices
             /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
             public bool IsCompleted 
             {
-#if !FEATURE_CORECLR
-                [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
                 get { return m_task.IsCompleted; }
             }
 
@@ -572,9 +530,6 @@ namespace System.Runtime.CompilerServices
             /// <exception cref="System.NullReferenceException">The awaiter was not properly initialized.</exception>
             /// <exception cref="System.Threading.Tasks.TaskCanceledException">The task was canceled.</exception>
             /// <exception cref="System.Exception">The task completed in a Faulted state.</exception>
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             public TResult GetResult()
             {
                 TaskAwaiter.ValidateEnd(m_task);
