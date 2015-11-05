@@ -731,6 +731,7 @@ typedef struct MonoMemcpyArgs {
 
 typedef enum {
 	LLVMArgNone,
+	LLVMArgNormal,
 	LLVMArgInIReg,
 	LLVMArgInFPReg,
 	LLVMArgVtypeInReg,
@@ -749,6 +750,10 @@ typedef enum {
 	LLVMArgVtypeByRef,
 	/* Vtype returned as an int */
 	LLVMArgVtypeAsScalar,
+	/* Scalar returned by ref using an additional argument */
+	LLVMArgScalarRetAddr,
+	/* Scalar passed by ref */
+	LLVMArgScalarByRef
 } LLVMArgStorage;
 
 typedef struct {
@@ -769,6 +774,8 @@ typedef struct {
 	int nslots;
 	/* Only if storage == LLVMArgAsFpArgs/LLVMArgFpStruct (4/8) */
 	int esize;
+	/* Parameter index in the LLVM signature */
+	int pindex;
 } LLVMArgInfo;
 
 typedef struct {
@@ -783,11 +790,6 @@ typedef struct {
 	 * Should be 0 or 1.
 	 */
 	int vret_arg_index;
-	/*
-	 * Maps parameter indexes in the original signature to parameter indexes
-	 * in the LLVM signature.
-	 */
-	int *pindexes;
 	/* The indexes of various special arguments in the LLVM signature */
 	int vret_arg_pindex, this_arg_pindex, rgctx_arg_pindex, imt_arg_pindex;
 
