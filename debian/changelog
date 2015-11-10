@@ -1,3 +1,9 @@
+mono (4.0.5.1-0xamarin1) beta; urgency=medium
+
+  * [d28a933] Imported Upstream version 4.0.5.1
+
+ -- Jo Shields <jo.shields@xamarin.com>  Tue, 10 Nov 2015 14:55:32 +0000
+
 mono (4.0.4.1-0xamarin1) alpha; urgency=low
 
   * "New release - mono-4.0.4.1.tar.bz2"
