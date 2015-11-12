@@ -476,6 +476,33 @@ mono_loader_lock (void)
     <div class="prototype">Prototype: mono_gc_enable</div>
 <p />
 
+</div> <a name="api:mono_gc_is_finalizer_thread"></a>
+ <div class="api">
+    <div class="api-entry">mono_gc_is_finalizer_thread</div>
+
+    <div class="prototype">gboolean
+mono_gc_is_finalizer_thread (MonoThread *thread)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>thread:</i></dt><dd> the thread to test.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 In Mono objects are finalized asynchronously on a separate thread.
+	 This routine tests whether the <i>thread</i> argument represents the
+	 finalization thread.
+	
+<p />
+	 Returns true if <i>thread</i> is the finalization thread.
+
+</div> <a name="api:mono_gc_out_of_memory"></a>
+ <div class="api">
+    <div class="api-entry">mono_gc_out_of_memory</div>
+
+    <div class="prototype">Prototype: mono_gc_out_of_memory</div>
+<p />
+
 </div> <a name="api:mono_gc_start_world"></a>
  <div class="api">
     <div class="api-entry">mono_gc_start_world</div>
@@ -495,6 +522,13 @@ mono_loader_lock (void)
     <div class="api-entry">mono_gc_alloc_fixed</div>
 
     <div class="prototype">Prototype: mono_gc_alloc_fixed</div>
+<p />
+
+</div> <a name="api:mono_gc_enable_events"></a>
+ <div class="api">
+    <div class="api-entry">mono_gc_enable_events</div>
+
+    <div class="prototype">Prototype: mono_gc_enable_events</div>
 <p />
 
 </div> <a name="api:mono_gc_free_fixed"></a>
