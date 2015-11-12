@@ -19,54 +19,42 @@ ILASM = $(RUNTIME) $(CLASS)/ilasm.exe
 check-ms-test-suite:
 	@if $(MAKE) validate-ms-test-suite RESET_VERSIONS=1; then \
 		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance build MCS="$(MCS) -t:library -warn:1 -r:nunit.framework"; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-console.exe -nologo -exclude=MonoBug,BadTest"; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-console.exe -nologo -exclude=MonoBug,BadTest" NUNIT_XML_RESULT=$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-conformance.xml; \
 		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug -warn:1"; \
 		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run MONO="$(RUNTIME)"; \
 	else \
 		echo "*** [ms-test-suite] Getting the repository failed, you probably don't have access to this Xamarin-internal resource. Skipping."; \
 	fi
 
-# Roslyn require some aditional files in the mono installation to build.
-# Those files can be copied from roslyn mono toolset archive that is downloaded by cibuild.sh
 check-roslyn:
 	@$(MAKE) validate-roslyn RESET_VERSIONS=1
 	@if [ -z $$PREFIX ]; then echo "You need to set PREFIX to the prefix of the Mono installation that should be used for testing Roslyn." && exit 1; fi
 	export MSBuildExtensionsPath=$$PREFIX/lib/mono/xbuild; \
-	MONO_TOOLSET_NAME=mono.mac.3; \
-	MONO_NUGET_DIR=$$PREFIX/lib/mono/xbuild/Microsoft/NuGet; \
 	MONO_DOTNET_PORTABLE_DIR=$$PREFIX/lib/mono/xbuild-frameworks/.NETPortable/; \
-	pushd /tmp; \
-	if [ ! -d "$$MONO_NUGET_DIR" ]; then \
-		echo "Mono installation is missing $$MONO_NUGET_DIR"; \
-		ROSLYN_MONO_TOOLSET_REQUIRED=yes; \
+	MONO_NUGET_TARGETS_DIR=$$PREFIX/lib/mono/xbuild/Microsoft/NuGet/; \
+	MONO_PORTABLE_TARGETS_DIR=$$PREFIX/lib/mono/xbuild/Microsoft/Portable/v5.0; \
+	if [ ! -d "$$MONO_DOTNET_PORTABLE_DIR/v5.0" ]; then \
+		mkdir -p $$MONO_DOTNET_PORTABLE_DIR; \
+		mkdir -p $$MONO_NUGET_TARGETS_DIR; \
+		mkdir -p $$MONO_PORTABLE_TARGETS_DIR; \
+		curl -SL "http://storage.bos.internalx.com/bot-provisioning/RoslynBuildDependencies.zip" > /tmp/RoslynBuildDependencies.zip; \
+		unzip -o /tmp/RoslynBuildDependencies.zip -d /tmp/RoslynBuildDependencies; \
+		cp -r /tmp/RoslynBuildDependencies/PortableReferenceAssemblies/* $$MONO_DOTNET_PORTABLE_DIR; \
+		cp /tmp/RoslynBuildDependencies/NuGetTargets/* $$MONO_NUGET_TARGETS_DIR; \
+		cp /tmp/RoslynBuildDependencies/PortableTargets/* $$MONO_PORTABLE_TARGETS_DIR; \
 	fi; \
-	if [ ! -d "$$MONO_DOTNET_PORTABLE_DIR" ]; then \
-		echo "Mono installation is missing $$MONO_DOTNET_PORTABLE_DIR"; \
-		ROSLYN_MONO_TOOLSET_REQUIRED=yes; \
-	fi; \
-	if [[ $$ROSLYN_MONO_TOOLSET_REQUIRED ]]; then \
-		if [ ! -d "$$MONO_TOOLSET_NAME" ]; then \
-			echo "Downloading roslyn mono tool set"; \
-			curl -O https://dotnetci.blob.core.windows.net/roslyn/$$MONO_TOOLSET_NAME.tar.bz2; \
-			tar -jxf $$MONO_TOOLSET_NAME.tar.bz2; \
-		fi; \
-	fi; \
-	if [ ! -d "$$MONO_NUGET_DIR" ]; then \
-		mkdir $$MONO_NUGET_DIR; \
-		cp -r $$MONO_TOOLSET_NAME/lib/mono/xbuild/Microsoft/NuGet/* $$MONO_NUGET_DIR; \
-	fi; \
-	if [ ! -d "$$MONO_DOTNET_PORTABLE_DIR" ]; then \
-		mkdir $$MONO_DOTNET_PORTABLE_DIR; \
-		cp -r $$MONO_TOOLSET_NAME/lib/mono/xbuild-frameworks/.NETPortable/* $$MONO_DOTNET_PORTABLE_DIR; \
-	fi; \
-	popd; \
-	cd $(ROSLYN_PATH) && ./cibuild.sh --mono-path $$PREFIX/bin
+	cd $(ROSLYN_PATH); \
+	sed -i -e 'N; s/bootstrapArg=".*\n.*"/bootstrapArg=""/g' cibuild.sh; \
+	sed -i -e 's#-xml Binaries/\$$BUILD_CONFIGURATION/xUnitResults/#-nunit $(abs_top_builddir)/acceptance-tests/TestResult-#g' cibuild.sh; \
+	./cibuild.sh --mono-path $$PREFIX/bin
 
 coreclr-validate:
 	$(MAKE) validate-coreclr RESET_VERSIONS=1
 
 coreclr-compile-tests: coreclr-validate
-	$(MAKE) -j4 $(CORECLR_TESTSI_CS) $(CORECLR_COREMANGLIB_TESTSI_CS) $(CORECLR_TESTSI_IL)
+	$(MAKE) -j4 $(CORECLR_TESTSI_CS)
+	$(MAKE) -j4 $(CORECLR_COREMANGLIB_TESTSI_CS)
+	$(MAKE) -j4 $(CORECLR_TESTSI_IL)
 
 # the CoreCLR IL tests use the System.Console facade, we need to copy it to the test directory
 # all the other tests rely on the coreclr-testlibrary.dll
@@ -89,7 +77,7 @@ coreclr-runtest-coremanglib: coreclr-validate test-runner.exe $(CORECLR_COREMANG
 check-coreclr: coreclr-compile-tests coreclr-runtest-basic coreclr-runtest-coremanglib
 
 coreclr-gcstress: coreclr-validate GCStressTests.exe $(CORECLR_STRESSTESTSI_CS)
-	BVT_ROOT=$(realpath $(CORECLR_PATH)/tests/src/GC/Stress/Tests) $(RUNTIME) GCStressTests.exe $(CORECLR_PATH)/tests/src/GC/Stress/testmix_gc.config
+	BVT_ROOT=$(realpath $(CORECLR_PATH)/tests/src/GC/Stress/Tests) $(RUNTIME) GCStressTests.exe $(CORECLR_PATH)/tests/src/GC/Stress/testmix_gc.config; if [ $$? -ne 100 ]; then exit 1; fi
 
 # Output a variable in $(2) to the file $(1), separated by newline characters
 # we need to do it in groups of 100 entries to make sure we don't exceed shell char limits
@@ -307,6 +295,7 @@ CORECLR_TEST_CS_SRC=		\
 	$(CORECLR_PATH)/tests/src/JIT/Directed/coverage/oldtests/lclfldmul.cs	\
 	$(CORECLR_PATH)/tests/src/JIT/Directed/coverage/oldtests/lclfldrem.cs	\
 	$(CORECLR_PATH)/tests/src/JIT/Directed/coverage/oldtests/lclfldsub.cs	\
+	$(CORECLR_PATH)/tests/src/JIT/Directed/gettypetypeof/gettypetypeofmatrix.cs	\
 	$(CORECLR_PATH)/tests/src/JIT/Directed/intrinsic/interlocked/IntrinsicTest_Overflow.cs	\
 	$(CORECLR_PATH)/tests/src/JIT/Directed/intrinsic/interlocked/cmpxchg.cs	\
 	$(CORECLR_PATH)/tests/src/JIT/Directed/intrinsic/interlocked/cse_cmpxchg.cs	\
@@ -3808,7 +3797,12 @@ CORECLR_DISABLED_TEST_CS_SRC += 	\
 CORECLR_DISABLED_TEST_CS_SRC += 	\
 	$(CORECLR_PATH)/tests/src/Regressions/assemblyref/assem.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/assemblyref/test.cs		\
-	$(CORECLR_PATH)/tests/src/Interop/ReversePInvoke/Marshalling/MarshalBoolArray.cs
+	$(CORECLR_PATH)/tests/src/Interop/ReversePInvoke/Marshalling/MarshalBoolArray.cs	\
+	$(CORECLR_PATH)/tests/src/Interop/NativeCallable/NativeCallableTest.cs	\
+	$(CORECLR_PATH)/tests/src/JIT/Directed/StructABI/StructABI.OSX.cs	\
+	$(CORECLR_PATH)/tests/src/JIT/Directed/StructABI/StructABI.Windows.cs	\
+	$(CORECLR_PATH)/tests/src/JIT/Directed/StructABI/StructABI.Unix.cs	\
+	$(CORECLR_PATH)/tests/src/JIT/Directed/StructABI/StructABI.cs
 
 # relies on a define:
 CORECLR_DISABLED_TEST_CS_SRC += $(CORECLR_PATH)/tests/src/Exceptions/Finalization/Finalizer.cs
@@ -3859,6 +3853,9 @@ CORECLR_DISABLED_TEST_CS_SRC += 	\
 	$(CORECLR_PATH)/tests/src/Common/Coreclr.TestWrapper/CoreclrTestWrapperLib.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/cti/system/resources/resourcemanager/customculture.cs	\
 	$(CORECLR_PATH)/tests/src/CoreMangLib/system/resources/resourcemanager/customculture.cs
+
+# Mono doesn't support ICastable
+CORECLR_DISABLED_TEST_CS_SRC += $(CORECLR_PATH)/tests/src/Interop/ICastable/Castable.cs
 
 # throws IndexOutOfRange exception even on .NET
 CORECLR_DISABLED_TEST_CS_SRC += 	\
@@ -5203,4 +5200,9 @@ test-runner.exe: $(top_srcdir)/mono/tests/test-runner.cs
 GCStressTests.exe: $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
 	$(MCS) -out:$@ -debug -d:PROJECTK_BUILD $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
 
-CLEANFILES = $(CORECLR_TESTSI_CS) $(CORECLR_COREMANGLIB_TESTSI_CS) $(CORECLR_TESTSI_IL) *.dll *.exe *.mdb $(CORECLR_STRESSTESTSI_CS) GCStressTests.exe coreclr-testlibrary.dll
+CLEANFILES = *.dll *.exe *.mdb $(CORECLR_STRESSTESTSI_CS) GCStressTests.exe coreclr-testlibrary.dll
+
+clean-local:
+	-rm -f $(CORECLR_TESTSI_CS)
+	-rm -f $(CORECLR_COREMANGLIB_TESTSI_CS)
+	-rm -f $(CORECLR_TESTSI_IL)

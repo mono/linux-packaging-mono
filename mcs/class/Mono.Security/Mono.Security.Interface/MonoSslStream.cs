@@ -36,7 +36,7 @@ using Mono.Net.Security;
 
 namespace Mono.Security.Interface
 {
-	public abstract class MonoSslStream
+	public abstract class MonoSslStream : IDisposable
 	{
 		public abstract void AuthenticateAsClient (string targetHost);
 
@@ -192,6 +192,11 @@ namespace Mono.Security.Interface
 
 		protected virtual void Dispose (bool disposing)
 		{
+		}
+
+		~MonoSslStream ()
+		{
+			Dispose (false);
 		}
 	}
 }

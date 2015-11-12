@@ -111,7 +111,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 124
+#define MONO_AOT_FILE_VERSION 125
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -731,8 +731,11 @@ typedef struct MonoMemcpyArgs {
 
 typedef enum {
 	LLVMArgNone,
+	/* Scalar argument passed by value */
 	LLVMArgNormal,
+	/* Only in ainfo->pair_storage */
 	LLVMArgInIReg,
+	/* Only in ainfo->pair_storage */
 	LLVMArgInFPReg,
 	LLVMArgVtypeInReg,
 	LLVMArgVtypeByVal,
@@ -776,6 +779,7 @@ typedef struct {
 	int esize;
 	/* Parameter index in the LLVM signature */
 	int pindex;
+	MonoType *type;
 } LLVMArgInfo;
 
 typedef struct {

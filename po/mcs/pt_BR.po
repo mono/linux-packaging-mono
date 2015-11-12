@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2015-11-05 11:00-0500\n"
+"POT-Creation-Date: 2015-11-12 10:42-0500\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -58,18 +58,18 @@ msgid "Parameter `{0}' is declared as type `{1}' but should be `{2}'"
 msgstr ""
 "O parâmetro \"{0}\" é declarado como tipo \"{1}\" mas deveria ser \"{2}\""
 
-#: mcs/mcs/anonymous.cs:1238
+#: mcs/mcs/anonymous.cs:1243
 #, fuzzy
 msgid "Async lambda expressions cannot be converted to expression trees"
 msgstr ""
 "Uma expressão lambda com um corpo de declarações não pode ser convertida "
 "para uma árvore de expressão"
 
-#: mcs/mcs/anonymous.cs:1287
+#: mcs/mcs/anonymous.cs:1301
 msgid "An anonymous method cannot be converted to an expression tree"
 msgstr "Um método anônimo não pode ser convertido para uma árvore de expressão"
 
-#: mcs/mcs/anonymous.cs:1306
+#: mcs/mcs/anonymous.cs:1320
 #, fuzzy, csharp-format
 msgid ""
 "Cannot convert anonymous method block without a parameter list to delegate "
@@ -79,7 +79,7 @@ msgstr ""
 "parâmetros para representar o tipo \"{0}\" por que este possui um ou mais "
 "parâmetros \"externos\"."
 
-#: mcs/mcs/anonymous.cs:1330
+#: mcs/mcs/anonymous.cs:1344
 msgid ""
 "Anonymous methods and lambda expressions cannot be used in the current "
 "context"
@@ -87,7 +87,7 @@ msgstr ""
 "Métodos anônimos ou expressões lambdas não podem ser utilizados no contexto "
 "atual"
 
-#: mcs/mcs/anonymous.cs:1381
+#: mcs/mcs/anonymous.cs:1395
 #, fuzzy, csharp-format
 msgid ""
 "Local variable or parameter `{0}' cannot have their address taken and be "
@@ -96,18 +96,18 @@ msgstr ""
 "A variável local ou parâmetro \"{0}\" não pode ter seu endereço obtido e ser "
 "utilizado dentro de um método anônimo ou expressão lambda"
 
-#: mcs/mcs/anonymous.cs:1401
+#: mcs/mcs/anonymous.cs:1415
 #, fuzzy, csharp-format
 msgid "Cannot convert async {0} to delegate type `{1}'"
 msgstr "Não foi possível converter \"{0}\" para um tipo não-delegate \"{1}\""
 
-#: mcs/mcs/anonymous.cs:1714
+#: mcs/mcs/anonymous.cs:1728
 msgid "An expression tree cannot contain an anonymous method expression"
 msgstr ""
 "Uma árvore de expressão não pode conter uma expressão que seja um método "
 "anônimo"
 
-#: mcs/mcs/anonymous.cs:2026
+#: mcs/mcs/anonymous.cs:2040
 #, csharp-format
 msgid ""
 "`{0}': An anonymous type cannot have multiple properties with the same name"
@@ -1558,7 +1558,7 @@ msgstr ""
 msgid "The operation in question is undefined on void pointers"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:519 mcs/mcs/statement.cs:3953 mcs/mcs/statement.cs:3955
+#: mcs/mcs/ecore.cs:519 mcs/mcs/statement.cs:3955 mcs/mcs/statement.cs:3957
 #, csharp-format
 msgid "Internal compiler error: {0}"
 msgstr ""
@@ -3056,7 +3056,7 @@ msgstr "__arglist não é permitida em parâmetros de listas de iteradores"
 msgid "Iterators cannot have unsafe parameters or yield types"
 msgstr "Iteradores não podem ter parâmetros inseguros ou tipos yield"
 
-#: mcs/mcs/iterators.cs:1214 mcs/mcs/statement.cs:6198
+#: mcs/mcs/iterators.cs:1214 mcs/mcs/statement.cs:6257
 msgid "Unsafe code may not appear in iterators"
 msgstr "Código inseguro não pode aparecer em iteradores"
 
@@ -3633,21 +3633,21 @@ msgid "Namespace `{0}' contains a definition with same name as alias `{1}'"
 msgstr ""
 "O namespace \"{0}\" contém uma definição com o mesmo nome do alias \"{1}\""
 
-#: mcs/mcs/namespace.cs:1445
+#: mcs/mcs/namespace.cs:1450
 #, csharp-format
 msgid ""
 "A `using' directive can only be applied to namespaces but `{0}' denotes a "
 "type. Consider using a `using static' instead"
 msgstr ""
 
-#: mcs/mcs/namespace.cs:1469
+#: mcs/mcs/namespace.cs:1474
 #, csharp-format
 msgid ""
 "A 'using static' directive can only be applied to types but `{0}' denotes a "
 "namespace. Consider using a `using' directive instead"
 msgstr ""
 
-#: mcs/mcs/namespace.cs:1550
+#: mcs/mcs/namespace.cs:1555
 #, csharp-format
 msgid "The extern alias `{0}' was not specified in -reference option"
 msgstr "O alias externo \"{0}\" não foi especificado na opção -reference"
@@ -4122,7 +4122,7 @@ msgstr ""
 "Uma declaração throw sem argumentos não é permitida dentro de uma clálculsa "
 "finalmente aninhada dentro da cláusula de catch mais interna"
 
-#: mcs/mcs/statement.cs:1791 mcs/mcs/statement.cs:6757
+#: mcs/mcs/statement.cs:1791 mcs/mcs/statement.cs:6816
 msgid "The type caught or thrown must be derived from System.Exception"
 msgstr ""
 
@@ -4186,79 +4186,79 @@ msgstr ""
 "O parâmetro externo \"{0}\" deve estar atribuída para antes que o controle "
 "deixe o método atual"
 
-#: mcs/mcs/statement.cs:4009
+#: mcs/mcs/statement.cs:4011
 #, fuzzy
 msgid "Async methods cannot have ref or out parameters"
 msgstr "Iteradores não podem ter parâmetros ref ou out"
 
-#: mcs/mcs/statement.cs:4015
+#: mcs/mcs/statement.cs:4017
 #, fuzzy
 msgid "__arglist is not allowed in parameter list of async methods"
 msgstr "__arglist não é permitida em parâmetros de listas de iteradores"
 
-#: mcs/mcs/statement.cs:4021
+#: mcs/mcs/statement.cs:4023
 #, fuzzy
 msgid "Async methods cannot have unsafe parameters"
 msgstr "Iteradores não podem ter parâmetros ref ou out"
 
-#: mcs/mcs/statement.cs:4218
+#: mcs/mcs/statement.cs:4220
 #, csharp-format
 msgid "The label `{0}' is a duplicate"
 msgstr "O rótulo \"{0}\" é uma duplicata"
 
-#: mcs/mcs/statement.cs:4227 mcs/mcs/statement.cs:4238
+#: mcs/mcs/statement.cs:4229 mcs/mcs/statement.cs:4240
 #, csharp-format
 msgid ""
 "The label `{0}' shadows another label by the same name in a contained scope"
 msgstr ""
 "O rótulo \"{0}\" esconde outro rótulo pelo mesmo nome em um escopo contido"
 
-#: mcs/mcs/statement.cs:4459
+#: mcs/mcs/statement.cs:4518
 #, csharp-format
 msgid "`{0}': not all code paths return a value"
 msgstr "\"{0}\": nem todos caminhos de códigos devolvem um valor"
 
-#: mcs/mcs/statement.cs:4591
+#: mcs/mcs/statement.cs:4650
 #, fuzzy, csharp-format
 msgid "The label `{0}' already occurs in this switch statement"
 msgstr "O rótulo \"case {0}:\" já ocorre nesta declaração de switch"
 
-#: mcs/mcs/statement.cs:4718
+#: mcs/mcs/statement.cs:4777
 #, fuzzy, csharp-format
 msgid ""
 "Control cannot fall out of switch statement through final case label `{0}'"
 msgstr "Controle não pode passar de um rótulo de caso para outro"
 
-#: mcs/mcs/statement.cs:4721
+#: mcs/mcs/statement.cs:4780
 #, fuzzy, csharp-format
 msgid "Control cannot fall through from one case label `{0}' to another"
 msgstr "Controle não pode passar de um rótulo de caso para outro"
 
-#: mcs/mcs/statement.cs:5158
+#: mcs/mcs/statement.cs:5217
 #, csharp-format
 msgid ""
 "A switch expression of type `{0}' cannot be converted to an integral type, "
 "bool, char, string, enum or nullable type"
 msgstr ""
 
-#: mcs/mcs/statement.cs:5964
+#: mcs/mcs/statement.cs:6023
 #, csharp-format
 msgid "`{0}' is not a reference type as required by the lock statement"
 msgstr ""
 "\"{0}\" não é um tipo de referência como necessário para a declaração lock"
 
-#: mcs/mcs/statement.cs:6346
+#: mcs/mcs/statement.cs:6405
 msgid "The type of locals declared in a fixed statement must be a pointer type"
 msgstr ""
 "O tipo de locais declarados em uma declaração fixa devem ser tipos ponteiros"
 
-#: mcs/mcs/statement.cs:6426
+#: mcs/mcs/statement.cs:6485
 msgid ""
 "The right hand side of a fixed statement assignment may not be a cast "
 "expression"
 msgstr "O lado direito de uma declaração fixa não deve ser uma expressão cast"
 
-#: mcs/mcs/statement.cs:6431
+#: mcs/mcs/statement.cs:6490
 msgid ""
 "You cannot use the fixed statement to take the address of an already fixed "
 "expression"
@@ -4266,7 +4266,7 @@ msgstr ""
 "Você não pode usar a declaração fixa para pegar o endereço de uma expressão "
 "já fixa"
 
-#: mcs/mcs/statement.cs:6617
+#: mcs/mcs/statement.cs:6676
 #, fuzzy
 msgid ""
 "The `await' operator cannot be used in the filter expression of a catch "
@@ -4274,7 +4274,7 @@ msgid ""
 msgstr ""
 "O operador \"{0}\" não pode ser aplicado a um operando de tipo estático"
 
-#: mcs/mcs/statement.cs:7205
+#: mcs/mcs/statement.cs:7264
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
@@ -4283,7 +4283,7 @@ msgstr ""
 "Uma cláusula catch anterior já pega todas as exceções do this ou um tipo "
 "super \"{0}\""
 
-#: mcs/mcs/statement.cs:7434
+#: mcs/mcs/statement.cs:7493
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
@@ -4292,7 +4292,7 @@ msgstr ""
 "\"{0}\": tipo utilizado em uma declaração em uso deve ser implicitamente "
 "conversível para \"System.IDisposable\""
 
-#: mcs/mcs/statement.cs:7846
+#: mcs/mcs/statement.cs:7905
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
@@ -4301,7 +4301,7 @@ msgstr ""
 "declaração do foreach requer que o tipo de retorno \"{0}\" de \"{1}\" deve "
 "ter um método apropriado público MoveNext e a propriedade pública Current"
 
-#: mcs/mcs/statement.cs:7890
+#: mcs/mcs/statement.cs:7949
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -4312,7 +4312,7 @@ msgstr ""
 "estas contém múltiplas implementações de \"{1}\". Tente um casting para uma "
 "implementação específica"
 
-#: mcs/mcs/statement.cs:7912
+#: mcs/mcs/statement.cs:7971
 #, fuzzy, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
@@ -4321,11 +4321,11 @@ msgstr ""
 "declaração do foreach não pode operar em variáveis do tipo \"{0}\" pois "
 "estas não contém uma definição para \"GetEnumerator\" ou não estão acessíveis"
 
-#: mcs/mcs/statement.cs:8147
+#: mcs/mcs/statement.cs:8206
 msgid "Use of null is not valid in this context"
 msgstr "Uso do null é inválido neste contexto"
 
-#: mcs/mcs/statement.cs:8159
+#: mcs/mcs/statement.cs:8218
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr "Declaração do foreach não pode operar em um \"{0}\""
