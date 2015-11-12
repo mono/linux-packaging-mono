@@ -74,7 +74,7 @@ namespace System.Net {
 		int reuses;
 		bool context_bound;
 		bool secure;
-		X509Certificate2 cert;
+		X509Certificate cert;
 		int s_timeout = 90000; // 90k ms for first request, 15k ms from then on
 		Timer timer;
 		IPEndPoint local_ep;
@@ -83,7 +83,7 @@ namespace System.Net {
 		X509Certificate2 client_cert;
 		IMonoSslStream ssl_stream;
 
-		public HttpConnection (Socket sock, EndPointListener epl, bool secure, X509Certificate2 cert)
+		public HttpConnection (Socket sock, EndPointListener epl, bool secure, X509Certificate cert)
 		{
 			this.sock = sock;
 			this.epl = epl;
@@ -312,18 +312,25 @@ namespace System.Net {
 			int used = 0;
 			string line;
 
-			try {
-				line = ReadLine (buffer, position, len - position, ref used);
-				position += used;
-			} catch {
-				context.ErrorMessage = "Bad request";
-				context.ErrorStatus = 400;
-				return true;
-			}
+			while (true) {
+				if (context.HaveError)
+					return true;
 
-			do {
+				if (position >= len)
+					break;
+
+				try {
+					line = ReadLine (buffer, position, len - position, ref used);
+					position += used;
+				} catch {
+					context.ErrorMessage = "Bad request";
+					context.ErrorStatus = 400;
+					return true;
+				}
+
 				if (line == null)
 					break;
+
 				if (line == "") {
 					if (input_state == InputState.RequestLine)
 						continue;
@@ -344,21 +351,7 @@ namespace System.Net {
 						return true;
 					}
 				}
-
-				if (context.HaveError)
-					return true;
-
-				if (position >= len)
-					break;
-				try {
-					line = ReadLine (buffer, position, len - position, ref used);
-					position += used;
-				} catch {
-					context.ErrorMessage = "Bad request";
-					context.ErrorStatus = 400;
-					return true;
-				}
-			} while (line != null);
+			}
 
 			if (used == len) {
 				ms.SetLength (0);

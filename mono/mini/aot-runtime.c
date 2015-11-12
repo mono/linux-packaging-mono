@@ -828,6 +828,7 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 	}
 
 	if (image_index == MONO_AOT_METHODREF_WRAPPER) {
+		WrapperInfo *info;
 		guint32 wrapper_type;
 
 		wrapper_type = decode_value (p, &p);
@@ -893,9 +894,18 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 				g_error ("Error: No managed allocator, but we need one for AOT.\nAre you using non-standard GC options?\n");
 			break;
 		}
-		case MONO_WRAPPER_WRITE_BARRIER:
+		case MONO_WRAPPER_WRITE_BARRIER: {
+			int nursery_bits = decode_value (p, &p);
+
 			ref->method = mono_gc_get_write_barrier ();
+			if (ref->method) {
+				/* Sanity check */
+				info = mono_marshal_get_wrapper_info (ref->method);
+				g_assert (info);
+				g_assert (info->d.wbarrier.nursery_bits == nursery_bits);
+			}
 			break;
+		}
 		case MONO_WRAPPER_STELEMREF: {
 			int subtype = decode_value (p, &p);
 
@@ -903,7 +913,6 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 				ref->method = mono_marshal_get_stelemref ();
 			} else if (subtype == WRAPPER_SUBTYPE_VIRTUAL_STELEMREF) {
 				int kind;
-				WrapperInfo *info;
 				
 				kind = decode_value (p, &p);
 
@@ -987,7 +996,6 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 
 				ref->method = mono_marshal_get_array_address (rank, elem_size);
 			} else if (subtype == WRAPPER_SUBTYPE_STRING_CTOR) {
-				WrapperInfo *info;
 				MonoMethod *m;
 
 				m = decode_resolve_method_ref (module, p, &p);
@@ -1073,7 +1081,6 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 				ref->method = mono_marshal_get_runtime_invoke (m, TRUE, pass_rgctx);
 			} else {
 				MonoMethodSignature *sig;
-				WrapperInfo *info;
 
 				sig = decode_signature_with_target (module, NULL, p, &p);
 				info = mono_marshal_get_wrapper_info (target);
@@ -1134,8 +1141,6 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 					return FALSE;
 
 				if (wrapper_type == MONO_WRAPPER_DELEGATE_INVOKE) {
-					WrapperInfo *info;
-
 					subtype = decode_value (p, &p);
 					info = mono_marshal_get_wrapper_info (target);
 					if (info) {
@@ -1794,6 +1799,8 @@ init_amodule_got (MonoAotModule *amodule)
 		if (ji->type == MONO_PATCH_INFO_GC_CARD_TABLE_ADDR && !mono_gc_is_moving ()) {
 			amodule->shared_got [i] = NULL;
 		} else if (ji->type == MONO_PATCH_INFO_GC_NURSERY_START && !mono_gc_is_moving ()) {
+			amodule->shared_got [i] = NULL;
+		} else if (ji->type == MONO_PATCH_INFO_GC_NURSERY_BITS && !mono_gc_is_moving ()) {
 			amodule->shared_got [i] = NULL;
 		} else if (ji->type == MONO_PATCH_INFO_IMAGE) {
 			amodule->shared_got [i] = amodule->assembly->image;
@@ -3420,6 +3427,7 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 	case MONO_PATCH_INFO_INTERRUPTION_REQUEST_FLAG:
 	case MONO_PATCH_INFO_GC_CARD_TABLE_ADDR:
 	case MONO_PATCH_INFO_GC_NURSERY_START:
+	case MONO_PATCH_INFO_GC_NURSERY_BITS:
 	case MONO_PATCH_INFO_JIT_TLS_ID:
 		break;
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:

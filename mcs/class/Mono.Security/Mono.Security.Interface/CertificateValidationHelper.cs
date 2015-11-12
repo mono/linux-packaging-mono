@@ -93,6 +93,10 @@ namespace Mono.Security.Interface
 		ValidationResult ValidateChain (string targetHost, X509CertificateCollection certificates);
 
 		ValidationResult ValidateClientCertificate (X509CertificateCollection certificates);
+
+		bool InvokeSystemValidator (
+			string targetHost, bool serverMode, X509CertificateCollection certificates,
+			ref MonoSslPolicyErrors errors, ref int status11);
 	}
 
 	public static class CertificateValidationHelper
@@ -128,14 +132,25 @@ namespace Mono.Security.Interface
 			get { return supportsTrustAnchors; }
 		}
 
-		internal static ICertificateValidator GetDefaultValidator (MonoTlsSettings settings)
+		static ICertificateValidator GetDefaultValidator (MonoTlsProvider provider, MonoTlsSettings settings)
 		{
-			return (ICertificateValidator)NoReflectionHelper.GetDefaultCertificateValidator (settings);
+			return (ICertificateValidator)NoReflectionHelper.GetDefaultCertificateValidator (provider, settings);
 		}
 
+		/*
+		 * Internal API, intended to be used by MonoTlsProvider implementations.
+		 */
+		public static ICertificateValidator GetValidator (MonoTlsProvider provider, MonoTlsSettings settings)
+		{
+			return GetDefaultValidator (provider, settings);
+		}
+
+		/*
+		 * Use this overloaded version in user code.
+		 */
 		public static ICertificateValidator GetValidator (MonoTlsSettings settings)
 		{
-			return GetDefaultValidator (settings);
+			return GetDefaultValidator (null, settings);
 		}
 	}
 #endif

@@ -2782,6 +2782,8 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 		encode_value ((MONO_AOT_METHODREF_NO_AOT_TRAMPOLINE << 24), p, &p);
 
 	if (method->wrapper_type) {
+		WrapperInfo *info = mono_marshal_get_wrapper_info (method);
+
 		encode_value ((MONO_AOT_METHODREF_WRAPPER << 24), p, &p);
 
 		encode_value (method->wrapper_type, p, &p);
@@ -2802,8 +2804,6 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 		case MONO_WRAPPER_LDFLDA:
 		case MONO_WRAPPER_STFLD:
 		case MONO_WRAPPER_ISINST: {
-			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			g_assert (info);
 			encode_klass_ref (acfg, info->d.proxy.klass, p, &p);
 			break;
@@ -2812,18 +2812,17 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 		case MONO_WRAPPER_STFLD_REMOTE:
 			break;
 		case MONO_WRAPPER_ALLOC: {
-			AllocatorWrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			/* The GC name is saved once in MonoAotFileInfo */
-			g_assert (info->alloc_type != -1);
-			encode_value (info->alloc_type, p, &p);
+			g_assert (info->d.alloc.alloc_type != -1);
+			encode_value (info->d.alloc.alloc_type, p, &p);
 			break;
 		}
-		case MONO_WRAPPER_WRITE_BARRIER:
+		case MONO_WRAPPER_WRITE_BARRIER: {
+			g_assert (info);
+			encode_value (info->d.wbarrier.nursery_bits, p, &p);
 			break;
+		}
 		case MONO_WRAPPER_STELEMREF: {
-			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			g_assert (info);
 			encode_value (info->subtype, p, &p);
 			if (info->subtype == WRAPPER_SUBTYPE_VIRTUAL_STELEMREF)
@@ -2831,8 +2830,6 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 			break;
 		}
 		case MONO_WRAPPER_UNKNOWN: {
-			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			g_assert (info);
 			encode_value (info->subtype, p, &p);
 			if (info->subtype == WRAPPER_SUBTYPE_PTR_TO_STRUCTURE ||
@@ -2845,8 +2842,6 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 			break;
 		}
 		case MONO_WRAPPER_MANAGED_TO_NATIVE: {
-			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			g_assert (info);
 			encode_value (info->subtype, p, &p);
 			if (info->subtype == WRAPPER_SUBTYPE_ICALL_WRAPPER) {
@@ -2870,8 +2865,6 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 			break;
 		}
 		case MONO_WRAPPER_MANAGED_TO_MANAGED: {
-			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			g_assert (info);
 			encode_value (info->subtype, p, &p);
 
@@ -2886,15 +2879,11 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 			break;
 		}
 		case MONO_WRAPPER_CASTCLASS: {
-			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			g_assert (info);
 			encode_value (info->subtype, p, &p);
 			break;
 		}
 		case MONO_WRAPPER_RUNTIME_INVOKE: {
-			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			g_assert (info);
 			encode_value (info->subtype, p, &p);
 			encode_value (info->d.runtime_invoke.pass_rgctx, p, &p);
@@ -2923,8 +2912,6 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 			break;
 		}
 		case MONO_WRAPPER_NATIVE_TO_MANAGED: {
-			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
-
 			g_assert (info);
 			encode_method_ref (acfg, info->d.native_to_managed.method, p, &p);
 			encode_klass_ref (acfg, info->d.native_to_managed.klass, p, &p);
@@ -5185,6 +5172,7 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 	case MONO_PATCH_INFO_JIT_TLS_ID:
 	case MONO_PATCH_INFO_GC_CARD_TABLE_ADDR:
 	case MONO_PATCH_INFO_GC_NURSERY_START:
+	case MONO_PATCH_INFO_GC_NURSERY_BITS:
 		break;
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:
 		encode_value (patch_info->data.index, p, &p);
@@ -5457,6 +5445,7 @@ emit_method_info (MonoAotCompile *acfg, MonoCompile *cfg)
 
 		if (patch_info->type == MONO_PATCH_INFO_GC_CARD_TABLE_ADDR ||
 			patch_info->type == MONO_PATCH_INFO_GC_NURSERY_START ||
+			patch_info->type == MONO_PATCH_INFO_GC_NURSERY_BITS ||
 			patch_info->type == MONO_PATCH_INFO_AOT_MODULE) {
 			/* Stored in a GOT slot initialized at module load time */
 			patch_info->type = MONO_PATCH_INFO_NONE;
@@ -7060,6 +7049,7 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 		case MONO_PATCH_INFO_NONE:
 		case MONO_PATCH_INFO_GC_CARD_TABLE_ADDR:
 		case MONO_PATCH_INFO_GC_NURSERY_START:
+		case MONO_PATCH_INFO_GC_NURSERY_BITS:
 			break;
 		case MONO_PATCH_INFO_IMAGE:
 			/* The assembly is stored in GOT slot 0 */
@@ -9531,6 +9521,11 @@ add_preinit_got_slots (MonoAotCompile *acfg)
 
 	ji = mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
 	ji->type = MONO_PATCH_INFO_AOT_MODULE;
+	get_got_offset (acfg, FALSE, ji);
+	get_got_offset (acfg, TRUE, ji);
+
+	ji = mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
+	ji->type = MONO_PATCH_INFO_GC_NURSERY_BITS;
 	get_got_offset (acfg, FALSE, ji);
 	get_got_offset (acfg, TRUE, ji);
 

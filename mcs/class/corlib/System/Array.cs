@@ -1689,10 +1689,10 @@ namespace System
 		
 			if (keys == null)
 				throw new ArgumentNullException ("keys");
-				
-			if (keys.Length != items.Length)
-				throw new ArgumentException ("Length of keys and items does not match.");
-			
+
+			if (keys.Length > items.Length)
+				throw new ArgumentException ("Length of keys is larger than length of items.");
+
 			SortImpl<TKey, TValue> (keys, items, 0, keys.Length, comparer);
 		}
 
@@ -3188,6 +3188,19 @@ namespace System
 
 		//
 		// Moved value from instance into target of different type with no checks (JIT intristics)
+		//
+		// Restrictions:
+		//
+		// S and R must either:
+		// 	 both be blitable valuetypes
+		// 	 both be reference types (IOW, an unsafe cast)
+		// S and R cannot be float or double
+		// S and R must either:
+		//	 both be a struct
+		// 	 both be a scalar
+		// S and R must either:
+		// 	 be of same size
+		// 	 both be a scalar of size <= 4
 		//
 		internal static R UnsafeMov<S,R> (S instance) {
 			return (R)(object) instance;
