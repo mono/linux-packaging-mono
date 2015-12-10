@@ -32,10 +32,10 @@
 #include "metadata/abi-details.h"
 #include "metadata/mono-gc.h"
 #include "metadata/runtime.h"
-#include "metadata/sgen-bridge-internal.h"
-#include "metadata/gc-internal.h"
+#include "metadata/sgen-bridge-internals.h"
+#include "metadata/gc-internals.h"
 #include "utils/mono-memory-model.h"
-#include "utils/mono-logger-internal.h"
+#include "utils/mono-logger-internals.h"
 
 #ifdef HEAVY_STATISTICS
 static guint64 stat_wbarrier_set_arrayref = 0;
@@ -332,8 +332,6 @@ mono_gc_get_specific_write_barrier (gboolean is_concurrent)
 #endif
 	res = mono_mb_create_method (mb, sig, 16);
 	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_NONE);
-	/* The generated barrier depends on this being the same at runtime */
-	info->d.wbarrier.nursery_bits = DEFAULT_NURSERY_BITS;
 	mono_marshal_set_wrapper_info (res, info);
 	mono_mb_free (mb);
 
@@ -378,7 +376,7 @@ get_array_fill_vtable (void)
 
 		klass.element_class = mono_defaults.byte_class;
 		klass.rank = 1;
-		klass.instance_size = sizeof (MonoArray);
+		klass.instance_size = MONO_SIZEOF_MONO_ARRAY;
 		klass.sizes.element_size = 1;
 		klass.name = "array_filler_type";
 
@@ -397,7 +395,7 @@ sgen_client_array_fill_range (char *start, size_t size)
 {
 	MonoArray *o;
 
-	if (size < sizeof (MonoArray)) {
+	if (size < MONO_SIZEOF_MONO_ARRAY) {
 		memset (start, 0, size);
 		return FALSE;
 	}
@@ -407,7 +405,7 @@ sgen_client_array_fill_range (char *start, size_t size)
 	/* Mark this as not a real object */
 	o->obj.synchronisation = GINT_TO_POINTER (-1);
 	o->bounds = NULL;
-	o->max_length = (mono_array_size_t)(size - sizeof (MonoArray));
+	o->max_length = (mono_array_size_t)(size - MONO_SIZEOF_MONO_ARRAY);
 
 	return TRUE;
 }
@@ -415,10 +413,10 @@ sgen_client_array_fill_range (char *start, size_t size)
 void
 sgen_client_zero_array_fill_header (void *p, size_t size)
 {
-	if (size >= sizeof (MonoArray)) {
-		memset (p, 0, sizeof (MonoArray));
+	if (size >= MONO_SIZEOF_MONO_ARRAY) {
+		memset (p, 0, MONO_SIZEOF_MONO_ARRAY);
 	} else {
-		static guint8 zeros [sizeof (MonoArray)];
+		static guint8 zeros [MONO_SIZEOF_MONO_ARRAY];
 
 		SGEN_ASSERT (0, !memcmp (p, zeros, size), "TLAB segment must be zeroed out.");
 	}
@@ -1187,7 +1185,7 @@ create_allocator (int atype, gboolean slowpath)
 		mono_mb_emit_ldarg (mb, 1);
 		mono_mb_emit_byte (mb, CEE_MUL_OVF_UN);
 		/* + sizeof (MonoArray) */
-		mono_mb_emit_icon (mb, sizeof (MonoArray));
+		mono_mb_emit_icon (mb, MONO_SIZEOF_MONO_ARRAY);
 		mono_mb_emit_byte (mb, CEE_ADD_OVF_UN);
 		mono_mb_emit_stloc (mb, size_var);
 
@@ -2687,12 +2685,6 @@ sgen_client_ensure_weak_gchandles_accessible (void)
 	 */
 	if (G_UNLIKELY (bridge_processing_in_progress))
 		mono_gc_wait_for_bridge_processing ();
-}
-
-gboolean
-mono_gc_set_allow_synchronous_major (gboolean flag)
-{
-	return sgen_set_allow_synchronous_major (flag);
 }
 
 void*

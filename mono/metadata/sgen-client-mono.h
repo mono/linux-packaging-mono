@@ -88,10 +88,10 @@ struct _SgenClientThreadInfo {
 #include "metadata/profiler-private.h"
 #include "utils/dtrace.h"
 #include "utils/mono-counters.h"
-#include "utils/mono-logger-internal.h"
+#include "utils/mono-logger-internals.h"
 #include "utils/mono-time.h"
-#include "utils/mono-semaphore.h"
-#include "metadata/sgen-bridge-internal.h"
+#include "utils/mono-os-semaphore.h"
+#include "metadata/sgen-bridge-internals.h"
 
 extern void mono_sgen_register_moved_object (void *obj, void *destination);
 extern void mono_sgen_gc_event_moves (void);
@@ -114,7 +114,7 @@ sgen_mono_array_size (GCVTable vtable, MonoArray *array, mword *bounds_size, mwo
 	else
 		element_size = vtable->klass->sizes.element_size;
 
-	size_without_bounds = size = sizeof (MonoArray) + element_size * mono_array_length_fast (array);
+	size_without_bounds = size = MONO_SIZEOF_MONO_ARRAY + element_size * mono_array_length_fast (array);
 
 	if (G_UNLIKELY (array->bounds)) {
 		size += sizeof (mono_array_size_t) - 1;
@@ -561,6 +561,11 @@ sgen_client_binary_protocol_global_remset (gpointer ptr, gpointer value, gpointe
 }
 
 static void G_GNUC_UNUSED
+sgen_client_binary_protocol_mod_union_remset (gpointer obj, gpointer ptr, gpointer value, gpointer value_vtable)
+{
+}
+
+static void G_GNUC_UNUSED
 sgen_client_binary_protocol_ptr_update (gpointer ptr, gpointer old_value, gpointer new_value, gpointer vtable, size_t size)
 {
 }
@@ -694,9 +699,9 @@ extern MonoNativeTlsKey thread_info_key;
 
 typedef MonoSemType SgenSemaphore;
 
-#define SGEN_SEMAPHORE_INIT(sem,initial)	MONO_SEM_INIT ((sem), (initial))
-#define SGEN_SEMAPHORE_POST(sem)		MONO_SEM_POST ((sem))
-#define SGEN_SEMAPHORE_WAIT(sem)		MONO_SEM_WAIT ((sem))
+#define SGEN_SEMAPHORE_INIT(sem,initial)	mono_os_sem_init ((sem), (initial))
+#define SGEN_SEMAPHORE_POST(sem)		mono_os_sem_post ((sem))
+#define SGEN_SEMAPHORE_WAIT(sem)		mono_os_sem_wait ((sem), MONO_SEM_FLAGS_NONE)
 
 gboolean sgen_has_critical_method (void);
 gboolean sgen_is_critical_method (MonoMethod *method);

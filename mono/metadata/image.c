@@ -27,7 +27,7 @@
 #include "marshal.h"
 #include "coree.h"
 #include <mono/io-layer/io-layer.h>
-#include <mono/utils/mono-logger-internal.h>
+#include <mono/utils/mono-logger-internals.h>
 #include <mono/utils/mono-path.h>
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/mono-io-portability.h>
@@ -79,8 +79,8 @@ static GHashTable *get_loaded_images_by_name_hash (gboolean refonly)
 
 static gboolean debug_assembly_unload = FALSE;
 
-#define mono_images_lock() if (mutex_inited) mono_mutex_lock (&images_mutex)
-#define mono_images_unlock() if (mutex_inited) mono_mutex_unlock (&images_mutex)
+#define mono_images_lock() if (mutex_inited) mono_os_mutex_lock (&images_mutex)
+#define mono_images_unlock() if (mutex_inited) mono_os_mutex_unlock (&images_mutex)
 static gboolean mutex_inited;
 static mono_mutex_t images_mutex;
 
@@ -222,7 +222,7 @@ mono_image_rva_map (MonoImage *image, guint32 addr)
 void
 mono_images_init (void)
 {
-	mono_mutex_init_recursive (&images_mutex);
+	mono_os_mutex_init_recursive (&images_mutex);
 
 	int hash_idx;
 	for(hash_idx = 0; hash_idx < IMAGES_HASH_COUNT; hash_idx++)
@@ -246,7 +246,7 @@ mono_images_cleanup (void)
 	GHashTableIter iter;
 	MonoImage *image;
 
-	mono_mutex_destroy (&images_mutex);
+	mono_os_mutex_destroy (&images_mutex);
 
 	// If an assembly image is still loaded at shutdown, this could indicate managed code is still running.
 	// Reflection-only images being still loaded doesn't indicate anything as harmful, so we don't check for it.
@@ -713,8 +713,8 @@ class_next_value (gpointer value)
 void
 mono_image_init (MonoImage *image)
 {
-	mono_mutex_init_recursive (&image->lock);
-	mono_mutex_init_recursive (&image->szarray_cache_lock);
+	mono_os_mutex_init_recursive (&image->lock);
+	mono_os_mutex_init_recursive (&image->szarray_cache_lock);
 
 	image->mempool = mono_mempool_new_size (INITIAL_IMAGE_SIZE);
 	mono_internal_hash_table_init (&image->class_cache,
@@ -1037,30 +1037,32 @@ do_mono_image_load (MonoImage *image, MonoImageOpenStatus *status,
 	iinfo = image->image_info;
 	header = &iinfo->cli_header;
 
-	for (l = image_loaders; l; l = l->next) {
-		MonoImageLoader *loader = l->data;
-		if (loader->match (image)) {
-			image->loader = loader;
-			break;
-		}
-	}
-	if (!image->loader) {
-		*status = MONO_IMAGE_IMAGE_INVALID;
-		goto invalid_image;
-	}
-
-	if (status)
-		*status = MONO_IMAGE_IMAGE_INVALID;
-
-	if (care_about_pecoff == FALSE)
-		goto done;
-
 	if (!image->metadata_only) {
+		for (l = image_loaders; l; l = l->next) {
+			MonoImageLoader *loader = l->data;
+			if (loader->match (image)) {
+				image->loader = loader;
+				break;
+			}
+		}
+		if (!image->loader) {
+			*status = MONO_IMAGE_IMAGE_INVALID;
+			goto invalid_image;
+		}
+
+		if (status)
+			*status = MONO_IMAGE_IMAGE_INVALID;
+
+		if (care_about_pecoff == FALSE)
+			goto done;
+
 		if (image->loader == &pe_loader && !mono_verifier_verify_pe_data (image, &errors))
 			goto invalid_image;
 
 		if (!mono_image_load_pe_data (image))
 			goto invalid_image;
+	} else {
+		image->loader = (MonoImageLoader*)&pe_loader;
 	}
 
 	if (care_about_cli == FALSE) {
@@ -1845,8 +1847,8 @@ mono_image_close_except_pools (MonoImage *image)
 	if (image->modules_loaded)
 		g_free (image->modules_loaded);
 
-	mono_mutex_destroy (&image->szarray_cache_lock);
-	mono_mutex_destroy (&image->lock);
+	mono_os_mutex_destroy (&image->szarray_cache_lock);
+	mono_os_mutex_destroy (&image->lock);
 
 	/*g_print ("destroy image %p (dynamic: %d)\n", image, image->dynamic);*/
 	if (image_is_dynamic (image)) {
@@ -2467,13 +2469,13 @@ g_slist_append_image (MonoImage *image, GSList *list, gpointer data)
 void
 mono_image_lock (MonoImage *image)
 {
-	mono_locks_acquire (&image->lock, ImageDataLock);
+	mono_locks_os_acquire (&image->lock, ImageDataLock);
 }
 
 void
 mono_image_unlock (MonoImage *image)
 {
-	mono_locks_release (&image->lock, ImageDataLock);
+	mono_locks_os_release (&image->lock, ImageDataLock);
 }
 
 
@@ -2536,51 +2538,24 @@ mono_image_append_class_to_reflection_info_set (MonoClass *klass)
 	mono_image_unlock (image);
 }
 
-#if CHECKED_BUILD
-
-// These are support for the mempool reference tracking feature in checked-build, but live in image.c due to use of static variables of this file.
-
-// Given an image and a pointer, return the mempool owner if it is either this image or one of its imagesets.
-static MonoMemPoolOwner
-check_for_mempool_owner (void *ptr, MonoImage *image)
-{
-	if (mono_mempool_contains_addr (image->mempool, ptr))
-	{
-		MonoMemPoolOwner owner = {image, NULL};
-		return owner;
-	}
-
-	GSList *l;
-	for (l = image->image_sets; l; l = l->next) {
-		MonoImageSet *set = l->data;
-
-		if (mono_mempool_contains_addr (set->mempool, ptr))
-		{
-			MonoMemPoolOwner owner = {NULL, set};
-			return owner;
-		}
-	}
-
-	return mono_mempool_no_owner;
-}
+// This is support for the mempool reference tracking feature in checked-build, but lives in image.c due to use of static variables of this file.
 
 /**
- * mono_find_mempool_owner:
+ * mono_find_image_owner:
  *
- * Find the image or imageset, if any, which a given pointer is located in the memory of.
+ * Find the image, if any, which a given pointer is located in the memory of.
  */
-MonoMemPoolOwner
-mono_find_mempool_owner (void *ptr)
+MonoImage *
+mono_find_image_owner (void *ptr)
 {
 	mono_images_lock ();
 
-	MonoMemPoolOwner owner = mono_mempool_no_owner;
-	gboolean searching = TRUE;
+	MonoImage *owner = NULL;
 
 	// Iterate over both by-path image hashes
 	const int hash_candidates[] = {IMAGES_HASH_PATH, IMAGES_HASH_PATH_REFONLY};
 	int hash_idx;
-	for (hash_idx = 0; searching && hash_idx < G_N_ELEMENTS (hash_candidates); hash_idx++)
+	for (hash_idx = 0; !owner && hash_idx < G_N_ELEMENTS (hash_candidates); hash_idx++)
 	{
 		GHashTable *target = loaded_images_hashes [hash_candidates [hash_idx]];
 		GHashTableIter iter;
@@ -2588,14 +2563,12 @@ mono_find_mempool_owner (void *ptr)
 
 		// Iterate over images within a hash
 		g_hash_table_iter_init (&iter, target);
-		while (searching && g_hash_table_iter_next(&iter, NULL, (gpointer *)&image))
+		while (!owner && g_hash_table_iter_next(&iter, NULL, (gpointer *)&image))
 		{
 			mono_image_lock (image);
-			owner = check_for_mempool_owner (ptr, image);
+			if (mono_mempool_contains_addr (image->mempool, ptr))
+				owner = image;
 			mono_image_unlock (image);
-
-			// Continue searching if null owner returned
-			searching = check_mempool_owner_eq (owner, mono_mempool_no_owner);
 		}
 	}
 
@@ -2603,5 +2576,3 @@ mono_find_mempool_owner (void *ptr)
 
 	return owner;
 }
-
-#endif

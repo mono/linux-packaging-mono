@@ -41,21 +41,22 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/marshal.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/mempool-internals.h>
 #include <mono/metadata/mono-endian.h>
 #include <mono/metadata/threads-types.h>
-#include <mono/utils/mono-logger-internal.h>
+#include <mono/utils/mono-logger-internals.h>
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-time.h>
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/json.h>
 
-#include "mini.h"
+#include "aot-compiler.h"
 #include "seq-points.h"
 #include "image-writer.h"
 #include "dwarfwriter.h"
 #include "mini-gc.h"
+#include "mini-llvm.h"
 
 #if !defined(DISABLE_AOT) && !defined(DISABLE_JIT)
 
@@ -250,8 +251,8 @@ typedef struct {
 	gboolean jit_used, llvm_used;
 } MonoPltEntry;
 
-#define mono_acfg_lock(acfg) mono_mutex_lock (&((acfg)->mutex))
-#define mono_acfg_unlock(acfg) mono_mutex_unlock (&((acfg)->mutex))
+#define mono_acfg_lock(acfg) mono_os_mutex_lock (&((acfg)->mutex))
+#define mono_acfg_unlock(acfg) mono_os_mutex_unlock (&((acfg)->mutex))
 
 /* This points to the current acfg in LLVM mode */
 static MonoAotCompile *llvm_acfg;
@@ -2504,23 +2505,24 @@ encode_klass_ref_inner (MonoAotCompile *acfg, MonoClass *klass, guint8 *buf, gui
 		MonoGenericParam *par = klass->byval_arg.data.generic_param;
 
 		encode_value (MONO_AOT_TYPEREF_VAR, p, &p);
-		encode_value (klass->byval_arg.type, p, &p);
-		encode_value (mono_type_get_generic_param_num (&klass->byval_arg), p, &p);
 
-		encode_value (container ? 1 : 0, p, &p);
-		if (container) {
-			encode_value (container->is_method, p, &p);
-			g_assert (!par->gshared_constraint);
-			if (container->is_method)
-				encode_method_ref (acfg, container->owner.method, p, &p);
-			else
-				encode_klass_ref (acfg, container->owner.klass, p, &p);
+		encode_value (par->gshared_constraint ? 1 : 0, p, &p);
+		if (par->gshared_constraint) {
+			MonoGSharedGenericParam *gpar = (MonoGSharedGenericParam*)par;
+			encode_type (acfg, par->gshared_constraint, p, &p);
+			encode_klass_ref (acfg, mono_class_from_generic_parameter (gpar->parent, NULL, klass->byval_arg.type == MONO_TYPE_MVAR), p, &p);
 		} else {
-			encode_value (par->gshared_constraint ? 1 : 0, p, &p);
-			if (par->gshared_constraint) {
-				MonoGSharedGenericParam *gpar = (MonoGSharedGenericParam*)par;
-				encode_type (acfg, par->gshared_constraint, p, &p);
-				encode_klass_ref (acfg, mono_class_from_generic_parameter (gpar->parent, NULL, klass->byval_arg.type == MONO_TYPE_MVAR), p, &p);
+			encode_value (klass->byval_arg.type, p, &p);
+			encode_value (mono_type_get_generic_param_num (&klass->byval_arg), p, &p);
+
+			encode_value (container->is_anonymous ? 0 : 1, p, &p);
+
+			if (!container->is_anonymous) {
+				encode_value (container->is_method, p, &p);
+				if (container->is_method)
+					encode_method_ref (acfg, container->owner.method, p, &p);
+				else
+					encode_klass_ref (acfg, container->owner.klass, p, &p);
 			}
 		}
 	} else if (klass->byval_arg.type == MONO_TYPE_PTR) {
@@ -2819,7 +2821,6 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 		}
 		case MONO_WRAPPER_WRITE_BARRIER: {
 			g_assert (info);
-			encode_value (info->d.wbarrier.nursery_bits, p, &p);
 			break;
 		}
 		case MONO_WRAPPER_STELEMREF: {
@@ -3058,7 +3059,6 @@ is_plt_patch (MonoJumpInfo *patch_info)
 	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
 	case MONO_PATCH_INFO_ICALL_ADDR:
 	case MONO_PATCH_INFO_RGCTX_FETCH:
-	case MONO_PATCH_INFO_LLVM_IMT_TRAMPOLINE:
 		return TRUE;
 	default:
 		return FALSE;
@@ -4483,6 +4483,41 @@ add_generic_instances (MonoAotCompile *acfg)
 		if (klass)
 			add_instances_of (acfg, klass, insts, ninsts, TRUE);
 
+		/* Add instances of EnumEqualityComparer which are created by EqualityComparer<T> for enums */
+		{
+			MonoClass *enum_comparer;
+			MonoType *insts [16];
+			int ninsts;
+
+			ninsts = 0;
+			insts [ninsts ++] = &mono_defaults.int32_class->byval_arg;
+			insts [ninsts ++] = &mono_defaults.uint32_class->byval_arg;
+			insts [ninsts ++] = &mono_defaults.uint16_class->byval_arg;
+			insts [ninsts ++] = &mono_defaults.byte_class->byval_arg;
+			enum_comparer = mono_class_from_name (mono_defaults.corlib, "System.Collections.Generic", "EnumEqualityComparer`1");
+			g_assert (enum_comparer);
+			add_instances_of (acfg, enum_comparer, insts, ninsts, FALSE);
+
+			ninsts = 0;
+			insts [ninsts ++] = &mono_defaults.int16_class->byval_arg;
+			enum_comparer = mono_class_from_name (mono_defaults.corlib, "System.Collections.Generic", "ShortEnumEqualityComparer`1");
+			g_assert (enum_comparer);
+			add_instances_of (acfg, enum_comparer, insts, ninsts, FALSE);
+
+			ninsts = 0;
+			insts [ninsts ++] = &mono_defaults.sbyte_class->byval_arg;
+			enum_comparer = mono_class_from_name (mono_defaults.corlib, "System.Collections.Generic", "SByteEnumEqualityComparer`1");
+			g_assert (enum_comparer);
+			add_instances_of (acfg, enum_comparer, insts, ninsts, FALSE);
+
+			enum_comparer = mono_class_from_name (mono_defaults.corlib, "System.Collections.Generic", "LongEnumEqualityComparer`1");
+			g_assert (enum_comparer);
+			ninsts = 0;
+			insts [ninsts ++] = &mono_defaults.int64_class->byval_arg;
+			insts [ninsts ++] = &mono_defaults.uint64_class->byval_arg;
+			add_instances_of (acfg, enum_comparer, insts, ninsts, FALSE);
+		}
+
 		/* Add instances of the array generic interfaces for primitive types */
 		/* This will add instances of the InternalArray_ helper methods in Array too */
 		klass = mono_class_from_name (acfg->image, "System.Collections.Generic", "ICollection`1");
@@ -4557,6 +4592,30 @@ add_generic_instances (MonoAotCompile *acfg)
 					}
 				}
 			}
+		}
+
+		/* object[] accessor wrappers. */
+		{
+			MonoClass *obj_array_class = mono_array_class_get (mono_defaults.object_class, 1);
+			MonoMethod *m;
+
+			m = mono_class_get_method_from_name (obj_array_class, "Get", 1);
+			g_assert (m);
+
+			m = mono_marshal_get_array_accessor_wrapper (m);
+			add_extra_method (acfg, m);
+
+			m = mono_class_get_method_from_name (obj_array_class, "Address", 1);
+			g_assert (m);
+
+			m = mono_marshal_get_array_accessor_wrapper (m);
+			add_extra_method (acfg, m);
+
+			m = mono_class_get_method_from_name (obj_array_class, "Set", 2);
+			g_assert (m);
+
+			m = mono_marshal_get_array_accessor_wrapper (m);
+			add_extra_method (acfg, m);
 		}
 	}
 }
@@ -5303,10 +5362,6 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 	}
 	case MONO_PATCH_INFO_SEQ_POINT_INFO:
 	case MONO_PATCH_INFO_AOT_MODULE:
-		break;
-	case MONO_PATCH_INFO_LLVM_IMT_TRAMPOLINE:
-		encode_method_ref (acfg, patch_info->data.imt_tramp->method, p, &p);
-		encode_value (patch_info->data.imt_tramp->vt_offset, p, &p);
 		break;
 	case MONO_PATCH_INFO_SIGNATURE:
 		encode_signature (acfg, (MonoMethodSignature*)patch_info->data.target, p, &p);
@@ -9259,7 +9314,7 @@ acfg_create (MonoAssembly *ass, guint32 opts)
 	acfg->klass_blob_hash = g_hash_table_new (NULL, NULL);
 	acfg->method_blob_hash = g_hash_table_new (NULL, NULL);
 	acfg->plt_entry_debug_sym_cache = g_hash_table_new (g_str_hash, g_str_equal);
-	mono_mutex_init_recursive (&acfg->mutex);
+	mono_os_mutex_init_recursive (&acfg->mutex);
 
 	init_got_info (&acfg->got_info);
 	init_got_info (&acfg->llvm_got_info);

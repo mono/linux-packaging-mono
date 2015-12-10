@@ -39,7 +39,7 @@
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/environment.h>
 #include <mono/metadata/mono-debug.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/verify.h>
 #include <mono/metadata/verify-internals.h>
@@ -50,7 +50,7 @@
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-counters.h>
 #include <mono/utils/mono-error-internals.h>
-#include <mono/utils/mono-logger-internal.h>
+#include <mono/utils/mono-logger-internals.h>
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/mono-path.h>
 #include <mono/utils/mono-tls.h>
@@ -72,6 +72,8 @@
 
 #include "mini-gc.h"
 #include "debugger-agent.h"
+#include "llvm-runtime.h"
+#include "mini-llvm.h"
 
 MonoTraceSpec *mono_jit_trace_calls;
 MonoMethodDesc *mono_inject_async_exc_method;
@@ -81,8 +83,8 @@ int mono_break_at_bb_bb_num;
 gboolean mono_do_x86_stack_align = TRUE;
 gboolean mono_using_xdebug;
 
-#define mono_jit_lock() mono_mutex_lock (&jit_mutex)
-#define mono_jit_unlock() mono_mutex_unlock (&jit_mutex)
+#define mono_jit_lock() mono_os_mutex_lock (&jit_mutex)
+#define mono_jit_unlock() mono_os_mutex_unlock (&jit_mutex)
 static mono_mutex_t jit_mutex;
 
 MonoBackend *current_backend;
@@ -212,8 +214,8 @@ typedef struct MonoJumpTableChunk {
 } MonoJumpTableChunk;
 
 static MonoJumpTableChunk* g_jumptable;
-#define mono_jumptable_lock() mono_mutex_lock (&jumptable_mutex)
-#define mono_jumptable_unlock() mono_mutex_unlock (&jumptable_mutex)
+#define mono_jumptable_lock() mono_os_mutex_lock (&jumptable_mutex)
+#define mono_jumptable_unlock() mono_os_mutex_unlock (&jumptable_mutex)
 static mono_mutex_t jumptable_mutex;
 
 static  MonoJumpTableChunk*
@@ -229,7 +231,7 @@ void
 mono_jumptable_init (void)
 {
 	if (g_jumptable == NULL) {
-		mono_mutex_init_recursive (&jumptable_mutex);
+		mono_os_mutex_init_recursive (&jumptable_mutex);
 		g_jumptable = mono_create_jumptable_chunk (DEFAULT_JUMPTABLE_CHUNK_ELEMENTS);
 	}
 }
@@ -285,7 +287,7 @@ mono_jumptable_cleanup (void)
 			current = prev;
 		}
 		g_jumptable = NULL;
-		mono_mutex_destroy (&jumptable_mutex);
+		mono_os_mutex_destroy (&jumptable_mutex);
 	}
 }
 
@@ -3286,8 +3288,10 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 		try_generic_shared = mono_class_generic_sharing_enabled (method->klass) &&
 			(opts & MONO_OPT_GSHARED) && mono_method_is_generic_sharable (method, FALSE);
 		if (mini_is_gsharedvt_sharable_method (method)) {
+			/*
 			if (!mono_debug_count ())
 				try_generic_shared = FALSE;
+			*/
 		}
 	}
 
@@ -3454,7 +3458,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 		if (COMPILE_LLVM (cfg)) {
 			mono_llvm_check_method_supported (cfg);
 			if (cfg->disable_llvm) {
-				if (cfg->verbose_level >= cfg->llvm_only ? 0 : 1) {
+				if (cfg->verbose_level >= (cfg->llvm_only ? 0 : 1)) {
 					//nm = mono_method_full_name (cfg->method, TRUE);
 					printf ("LLVM failed for '%s': %s\n", method->name, cfg->exception_message);
 					//g_free (nm);
@@ -3828,10 +3832,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	if (COMPILE_SOFT_FLOAT (cfg))
 		mono_decompose_soft_float (cfg);
 #endif
-	if (COMPILE_LLVM (cfg))
-		mono_decompose_vtype_opts_llvm (cfg);
-	else
-		mono_decompose_vtype_opts (cfg);
+	mono_decompose_vtype_opts (cfg);
 	if (cfg->flags & MONO_CFG_HAS_ARRAY_ACCESS)
 		mono_decompose_array_access_opts (cfg);
 
@@ -3973,7 +3974,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 		if (!cfg->disable_llvm)
 			mono_llvm_emit_method (cfg);
 		if (cfg->disable_llvm) {
-			if (cfg->verbose_level >= cfg->llvm_only ? 0 : 1) {
+			if (cfg->verbose_level >= (cfg->llvm_only ? 0 : 1)) {
 				//nm = mono_method_full_name (cfg->method, TRUE);
 				printf ("LLVM failed for '%s': %s\n", method->name, cfg->exception_message);
 				//g_free (nm);
@@ -4464,7 +4465,7 @@ mini_get_underlying_type (MonoType *type)
 void
 mini_jit_init (void)
 {
-	mono_mutex_init_recursive (&jit_mutex);
+	mono_os_mutex_init_recursive (&jit_mutex);
 #ifndef DISABLE_JIT
 	current_backend = g_new0 (MonoBackend, 1);
 	init_backend (current_backend);

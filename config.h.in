@@ -1,8 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* The architecture this is running on */
-#undef ARCHITECTURE
-
 /* Enable checked build. */
 #undef CHECKED_BUILD
 
@@ -962,6 +959,9 @@
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
+
+/* The architecture this is running on */
+#undef MONO_ARCHITECTURE
 
 /* Enable the allocation and indexing of arrays greater than Int32.MaxValue */
 #undef MONO_BIG_ARRAYS

@@ -17434,7 +17434,7 @@
   <test name="gtest-540.cs">
     <type name="C">
       <method name="Int32 Main()" attrs="150">
-        <size>762</size>
+        <size>1025</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -19750,6 +19750,22 @@
       </method>
       <method name="Void Main()" attrs="150">
         <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-636.cs">
+    <type name="MainClass">
+      <method name="Int32 Main()" attrs="150">
+        <size>88</size>
+      </method>
+      <method name="Boolean XX()" attrs="145">
+        <size>32</size>
+      </method>
+      <method name="System.Nullable`1[System.Boolean] YY()" attrs="145">
+        <size>48</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -51840,6 +51856,35 @@
       </method>
     </type>
   </test>
+  <test name="test-931.cs">
+    <type name="MainClass">
+      <method name="System.String op_Implicit(MainClass)" attrs="2198">
+        <size>10</size>
+      </method>
+      <method name="Int32 Main()" attrs="150">
+        <size>60</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-932.cs">
+    <type name="X">
+      <method name="Void Main()" attrs="145">
+        <size>20</size>
+      </method>
+      <method name="Void WriteLine(System.String, System.ConsoleColor, System.ConsoleColor, System.Object[])" attrs="134">
+        <size>7</size>
+      </method>
+      <method name="Void WriteLine(System.String, System.ConsoleColor, System.ConsoleColor)" attrs="134">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
   <test name="test-94.cs">
     <type name="Base">
       <method name="Int32 IVehicle.Start()" attrs="481">
@@ -65477,6 +65522,38 @@
       </method>
     </type>
   </test>
+  <test name="test-async-81.cs">
+    <type name="MainClass">
+      <method name="Void Main()" attrs="150">
+        <size>17</size>
+      </method>
+      <method name="System.Threading.Tasks.Task`1[System.Int32] Foo()" attrs="129">
+        <size>33</size>
+      </method>
+      <method name="System.Threading.Tasks.Task Bar()" attrs="129">
+        <size>41</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="MainClass+&lt;Foo&gt;c__async0">
+      <method name="Void MoveNext()" attrs="486">
+        <size>166</size>
+      </method>
+      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
+        <size>13</size>
+      </method>
+    </type>
+    <type name="MainClass+&lt;Bar&gt;c__async1">
+      <method name="Void MoveNext()" attrs="486">
+        <size>224</size>
+      </method>
+      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
+        <size>13</size>
+      </method>
+    </type>
+  </test>
   <test name="test-cls-00.cs">
     <type name="CLSCLass_6">
       <method name="Void add_Disposed(Delegate)" attrs="2182">
@@ -69554,6 +69631,31 @@
     <type name="X">
       <method name="Int32 Main()" attrs="150">
         <size>114</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-null-operator-20.cs">
+    <type name="M">
+      <method name="Void Main()" attrs="150">
+        <size>182</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-null-operator-21.cs">
+    <type name="X">
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="MainClass">
+      <method name="Void Main()" attrs="150">
+        <size>28</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>

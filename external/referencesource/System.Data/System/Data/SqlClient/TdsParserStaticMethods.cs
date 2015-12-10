@@ -2,8 +2,8 @@
 // <copyright file="TdsParserStaticFunctionality.cs" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
-// <owner current="true" primary="true">Microsoft</owner>
-// <owner current="true" primary="false">Microsoft</owner>
+// <owner current="true" primary="true">[....]</owner>
+// <owner current="true" primary="false">[....]</owner>
 //------------------------------------------------------------------------------
 
 namespace System.Data.SqlClient {
@@ -67,7 +67,7 @@ namespace System.Data.SqlClient {
                         if (index+1 < aliasLookup.Length) {
                             string parsedAliasName = aliasLookup.Substring(index+1);
 
-                            // Fix 
+                            // Fix bug 298286
                             if ("dbnetlib" == parsedProtocol) {
                                     index = parsedAliasName.IndexOf(':');
                                     if (-1 != index && index + 1 < parsedAliasName.Length) {
@@ -113,7 +113,11 @@ namespace System.Data.SqlClient {
         [ResourceExposure(ResourceScope.None)] // SxS: we use this method for TDS login only
         [ResourceConsumption(ResourceScope.Process, ResourceScope.Process)]
         static internal int GetCurrentProcessIdForTdsLoginOnly() {
+#if MOBILE
+            return 0;
+#else
             return SafeNativeMethods.GetCurrentProcessId();
+#endif
         }
 
 

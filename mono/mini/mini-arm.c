@@ -95,8 +95,8 @@ void sys_icache_invalidate (void *start, size_t len);
 #endif
 
 /* This mutex protects architecture specific caches */
-#define mono_mini_arch_lock() mono_mutex_lock (&mini_arch_mutex)
-#define mono_mini_arch_unlock() mono_mutex_unlock (&mini_arch_mutex)
+#define mono_mini_arch_lock() mono_os_mutex_lock (&mini_arch_mutex)
+#define mono_mini_arch_unlock() mono_os_mutex_unlock (&mini_arch_mutex)
 static mono_mutex_t mini_arch_mutex;
 
 static gboolean v5_supported = FALSE;
@@ -146,8 +146,6 @@ static int vfp_scratch2 = ARM_VFP_D1;
 #endif
 
 static int i8_align;
-
-static volatile int ss_trigger_var = 0;
 
 static gpointer single_step_tramp, breakpoint_tramp;
 
@@ -680,6 +678,7 @@ mono_arm_have_fast_tls (void)
 gboolean
 mono_arm_have_tls_get (void)
 {
+	return FALSE;
 #ifdef HAVE_FAST_TLS
 	return TRUE;
 #else
@@ -917,9 +916,8 @@ mono_arch_init (void)
 {
 	const char *cpu_arch;
 
-	mono_mutex_init_recursive (&mini_arch_mutex);
+	mono_os_mutex_init_recursive (&mini_arch_mutex);
 	if (mini_get_debug_options ()->soft_breakpoints) {
-		single_step_tramp = mini_get_single_step_trampoline ();
 		breakpoint_tramp = mini_get_breakpoint_trampoline ();
 	} else {
 		ss_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ|MONO_MMAP_32BIT);
@@ -1636,7 +1634,10 @@ get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 					ainfo->reg = fpr;
 					ainfo->nregs = nfields;
 					ainfo->esize = esize;
-					fpr += nfields;
+					if (esize == 4)
+						fpr += nfields;
+					else
+						fpr += nfields * 2;
 					break;
 				} else {
 					fpr = ARM_VFP_F16;
@@ -1999,19 +2000,8 @@ mono_arch_allocate_vars (MonoCompile *cfg)
 		offset += size;
 	}
 
-	if (cfg->arch.seq_point_read_var) {
+	if (cfg->arch.seq_point_ss_method_var) {
 		MonoInst *ins;
-
-		ins = cfg->arch.seq_point_read_var;
-
-		size = 4;
-		align = 4;
-		offset += align - 1;
-		offset &= ~(align - 1);
-		ins->opcode = OP_REGOFFSET;
-		ins->inst_basereg = cfg->frame_reg;
-		ins->inst_offset = offset;
-		offset += size;
 
 		ins = cfg->arch.seq_point_ss_method_var;
 		size = 4;
@@ -2203,9 +2193,7 @@ mono_arch_create_vars (MonoCompile *cfg)
 
 	if (cfg->gen_sdb_seq_points) {
 		if (cfg->soft_breakpoints) {
-			MonoInst *ins = mono_compile_create_var (cfg, &mono_defaults.int_class->byval_arg, OP_LOCAL);
-			ins->flags |= MONO_INST_VOLATILE;
-			cfg->arch.seq_point_read_var = ins;
+			MonoInst *ins;
 
 			ins = mono_compile_create_var (cfg, &mono_defaults.int_class->byval_arg, OP_LOCAL);
 			ins->flags |= MONO_INST_VOLATILE;
@@ -2641,7 +2629,7 @@ mono_arch_emit_outarg_vt (MonoCompile *cfg, MonoInst *ins, MonoInst *src)
 
 				call->float_args = g_slist_append_mempool (cfg->mempool, call->float_args, fad);
 			} else {
-				add_outarg_reg (cfg, call, RegTypeFP, ainfo->reg + i, load);
+				add_outarg_reg (cfg, call, RegTypeFP, ainfo->reg + (i * 2), load);
 			}
 		}
 		break;
@@ -4096,6 +4084,12 @@ mono_arm_emit_load_imm (guint8 *code, int dreg, guint32 val)
 	code += 4;
 	return code;
 #endif
+	if (mini_get_debug_options()->single_imm_size && v7_supported) {
+		ARM_MOVW_REG_IMM (code, dreg, val & 0xffff);
+		ARM_MOVT_REG_IMM (code, dreg, (val >> 16) & 0xffff);
+		return code;
+	}
+
 	if ((imm8 = mono_arm_is_rotated_imm8 (val, &rot_amount)) >= 0) {
 		ARM_MOV_REG_IMM (code, dreg, imm8, rot_amount);
 	} else if ((imm8 = mono_arm_is_rotated_imm8 (~val, &rot_amount)) >= 0) {
@@ -4614,7 +4608,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			int i;
 			MonoInst *info_var = cfg->arch.seq_point_info_var;
 			MonoInst *ss_trigger_page_var = cfg->arch.ss_trigger_page_var;
-			MonoInst *ss_read_var = cfg->arch.seq_point_read_var;
 			MonoInst *ss_method_var = cfg->arch.seq_point_ss_method_var;
 			MonoInst *bp_method_var = cfg->arch.seq_point_bp_method_var;
 			MonoInst *var;
@@ -4635,7 +4628,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				g_assert (arm_is_imm12 (info_var->inst_offset));
 			}
 
-			if (!cfg->soft_breakpoints) {
+			if (!cfg->soft_breakpoints && !cfg->compile_aot) {
 				/*
 				 * Read from the single stepping trigger page. This will cause a
 				 * SIGSEGV when single stepping is enabled.
@@ -4647,8 +4640,8 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 
 			if (ins->flags & MONO_INST_SINGLE_STEP_LOC) {
 				if (cfg->soft_breakpoints) {
-					/* Load the address of the sequence point trigger variable. */
-					var = ss_read_var;
+					/* Load the address of the sequence point method variable. */
+					var = ss_method_var;
 					g_assert (var);
 					g_assert (var->opcode == OP_REGOFFSET);
 					g_assert (arm_is_imm12 (var->inst_offset));
@@ -4657,14 +4650,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 					/* Read the value and check whether it is non-zero. */
 					ARM_LDR_IMM (code, dreg, dreg, 0);
 					ARM_CMP_REG_IMM (code, dreg, 0, 0);
-
-					/* Load the address of the sequence point method. */
-					var = ss_method_var;
-					g_assert (var);
-					g_assert (var->opcode == OP_REGOFFSET);
-					g_assert (arm_is_imm12 (var->inst_offset));
-					ARM_LDR_IMM (code, dreg, var->inst_basereg, var->inst_offset);
-
 					/* Call it conditionally. */
 					ARM_BLX_REG_COND (code, ARMCOND_NE, dreg);
 				} else {
@@ -6585,15 +6570,12 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 		}
 	}
 
-	if (cfg->arch.seq_point_read_var) {
-		MonoInst *read_ins = cfg->arch.seq_point_read_var;
+	if (cfg->arch.seq_point_ss_method_var) {
 		MonoInst *ss_method_ins = cfg->arch.seq_point_ss_method_var;
 		MonoInst *bp_method_ins = cfg->arch.seq_point_bp_method_var;
 #ifdef USE_JUMP_TABLES
 		gpointer *jte;
 #endif
-		g_assert (read_ins->opcode == OP_REGOFFSET);
-		g_assert (arm_is_imm12 (read_ins->inst_offset));
 		g_assert (ss_method_ins->opcode == OP_REGOFFSET);
 		g_assert (arm_is_imm12 (ss_method_ins->inst_offset));
 		g_assert (bp_method_ins->opcode == OP_REGOFFSET);
@@ -6601,26 +6583,21 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 
 #ifdef USE_JUMP_TABLES
 		jte = mono_jumptable_add_entries (3);
-		jte [0] = (gpointer)&ss_trigger_var;
-		jte [1] = single_step_tramp;
-		jte [2] = breakpoint_tramp;
+		jte [0] = &single_step_tramp;
+		jte [1] = breakpoint_tramp;
 		code = mono_arm_load_jumptable_entry_addr (code, jte, ARMREG_LR);
 #else
 		ARM_MOV_REG_REG (code, ARMREG_LR, ARMREG_PC);
 		ARM_B (code, 2);
-		*(volatile int **)code = &ss_trigger_var;
-		code += 4;
-		*(gpointer*)code = single_step_tramp;
+		*(gpointer*)code = &single_step_tramp;
 		code += 4;
 		*(gpointer*)code = breakpoint_tramp;
 		code += 4;
 #endif
 
 		ARM_LDR_IMM (code, ARMREG_IP, ARMREG_LR, 0);
-		ARM_STR_IMM (code, ARMREG_IP, read_ins->inst_basereg, read_ins->inst_offset);
-		ARM_LDR_IMM (code, ARMREG_IP, ARMREG_LR, 4);
 		ARM_STR_IMM (code, ARMREG_IP, ss_method_ins->inst_basereg, ss_method_ins->inst_offset);
-		ARM_LDR_IMM (code, ARMREG_IP, ARMREG_LR, 8);
+		ARM_LDR_IMM (code, ARMREG_IP, ARMREG_LR, 4);
 		ARM_STR_IMM (code, ARMREG_IP, bp_method_ins->inst_basereg, bp_method_ins->inst_offset);
 	}
 
@@ -7491,7 +7468,7 @@ mono_arch_start_single_stepping (void)
 	if (ss_trigger_page)
 		mono_mprotect (ss_trigger_page, mono_pagesize (), 0);
 	else
-		ss_trigger_var = 1;
+		single_step_tramp = mini_get_single_step_trampoline ();
 }
 	
 /*
@@ -7505,7 +7482,7 @@ mono_arch_stop_single_stepping (void)
 	if (ss_trigger_page)
 		mono_mprotect (ss_trigger_page, mono_pagesize (), MONO_MMAP_READ);
 	else
-		ss_trigger_var = 0;
+		single_step_tramp = NULL;
 }
 
 #if __APPLE__

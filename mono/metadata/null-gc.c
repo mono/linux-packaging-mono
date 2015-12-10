@@ -9,7 +9,7 @@
 #include "config.h"
 #include <glib.h>
 #include <mono/metadata/mono-gc.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/runtime.h>
 #include <mono/utils/atomic.h>
 #include <mono/utils/mono-threads.h>
@@ -526,12 +526,6 @@ mono_gc_get_vtable_bits (MonoClass *klass)
 void
 mono_gc_register_altstack (gpointer stack, gint32 stack_size, gpointer altstack, gint32 altstack_size)
 {
-}
-
-gboolean
-mono_gc_set_allow_synchronous_major (gboolean flag)
-{
-	return TRUE;
 }
 
 gboolean

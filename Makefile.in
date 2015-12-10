@@ -418,13 +418,14 @@ MONOTOUCH_SUBDIRS = $(libgc_dir) eglib/src mono
 @CROSS_COMPILING_TRUE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs acceptance-tests
 SUBMODULE_ERROR = 'Could not recursively update all git submodules. You may experience compilation problems if some submodules are out of date'
 EXTRA_DIST = \
-        README.md \
-	    LICENSE \
-	    autogen.sh \
-	    mkinstalldirs \
-	    mono-uninstalled.pc.in \
-	    winconfig.h \
-	    external
+	README.md 		\
+	LICENSE 		\
+	autogen.sh 		\
+	mkinstalldirs 		\
+	mono-uninstalled.pc.in 	\
+	winconfig.h 		\
+	code_of_conduct.md 	\
+	external
 
 DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_MCS=false EXTERNAL_RUNTIME=false
 # Disable this for now because it is very slow and causes wrench to timeout:

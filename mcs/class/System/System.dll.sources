@@ -222,11 +222,6 @@ System.Net/AuthenticationSchemeSelector.cs
 System.Net/Authorization.cs
 System.Net/BasicClient.cs
 System.Net/BindIPEndPoint.cs
-System.Net.Cache/HttpCacheAgeControl.cs
-System.Net.Cache/HttpRequestCacheLevel.cs
-System.Net.Cache/HttpRequestCachePolicy.cs
-System.Net.Cache/RequestCacheLevel.cs
-System.Net.Cache/RequestCachePolicy.cs
 System.Net/ChunkedInputStream.cs
 System.Net/ChunkStream.cs
 System.Net.Configuration/AuthenticationModuleElementCollection.cs
@@ -553,16 +548,9 @@ System.Threading/ThreadExceptionEventArgs.cs
 System.Threading/ThreadExceptionEventHandler.cs
 System.Timers/ElapsedEventArgs.cs
 System/UriBuilder.cs
-System/UriComponents.cs
 System/Uri.cs
-System/UriFormat.cs
-System/UriFormatException.cs
-System/UriHostNameType.cs
 System/UriHelper.cs
-System/UriIdnScope.cs
-System/UriKind.cs
 System/UriParser.cs
-System/UriPartial.cs
 System/UriTypeConverter.cs
 System/UriElements.cs
 System/UriParseComponents.cs
@@ -570,8 +558,6 @@ System.Web/AspNetHostingPermissionAttribute.cs
 System.Web/AspNetHostingPermission.cs
 System.Web/AspNetHostingPermissionLevel.cs
 
-System.Runtime.InteropServices/DefaultParameterValueAttribute.cs
-System.Runtime.InteropServices/HandleCollector.cs
 System.Runtime.InteropServices/StandardOleMarshalObject.cs
 System.Runtime.InteropServices.ComTypes/ADVF.cs
 System.Runtime.InteropServices.ComTypes/DATADIR.cs
@@ -1017,6 +1003,11 @@ ReferenceSources/_SslStream.cs
 ../../../external/referencesource/System/compmod/system/diagnostics/TypedElement.cs
 ../../../external/referencesource/System/compmod/system/diagnostics/XmlWriterTraceListener.cs
 
+../../../external/referencesource/System/net/System/UriEnumTypes.cs
+../../../external/referencesource/System/net/System/URIFormatException.cs
+../../../external/referencesource/System/net/System/UriHostNameType.cs
+../../../external/referencesource/System/net/System/URIPartial.cs
+
 ../../../external/referencesource/System/net/System/Net/_BufferOffsetSize.cs
 ../../../external/referencesource/System/net/System/Net/_LazyAsyncResult.cs
 ../../../external/referencesource/System/net/System/Net/_LoggingObject.cs
@@ -1035,12 +1026,17 @@ ReferenceSources/_SslStream.cs
 ../../../external/referencesource/System/net/System/Net/WebUtility.cs
 ../../../external/referencesource/System/net/System/Net/WriteStreamClosedEventArgs.cs
 
+../../../external/referencesource/System/net/System/Net/Cache/RequestCachePolicy.cs
+
+../../../external/referencesource/System/net/System/Net/Sockets/IPProtectionLevel.cs
 ../../../external/referencesource/System/net/System/Net/Sockets/NetworkStream.cs
+
 ../../../external/referencesource/System/net/System/Net/NetworkInformation/IPInterfaceStatistics.cs
 ../../../external/referencesource/System/net/System/Net/NetworkInformation/ScopeLevel.cs
 ../../../external/referencesource/System/net/System/Net/NetworkInformation/UnicastIPAddressInformation.cs
 
-../../../external/referencesource/System/net/System/Net/Sockets/IPProtectionLevel.cs
+../../../external/referencesource/System/sys/system/runtime/interopservices/DefaultParameterValueAttribute.cs
+../../../external/referencesource/System/sys/system/runtime/interopservices/handlecollector.cs
 
 ../../../external/referencesource/System/sys/system/runtime/versioning/FrameworkName.cs
 

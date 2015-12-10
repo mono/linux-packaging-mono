@@ -147,7 +147,7 @@ endif
 
 if LOADED_LLVM
 lib_LTLIBRARIES += libmono-llvm.la
-libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp
+libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 libmono_llvm_la_LIBADD = $(GLIB_LIBS) $(LLVM_LIBS) $(LLVM_LDFLAGS)
 if PLATFORM_DARWIN
 libmono_llvm_la_LDFLAGS=-Wl,-undefined -Wl,suppress -Wl,-flat_namespace
@@ -363,7 +363,8 @@ else
 llvm_sources = \
 	mini-llvm.c		\
 	mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp
+	mini-llvm-cpp.cpp \
+	llvm-jit.cpp
 endif
 endif
 
@@ -407,6 +408,7 @@ common_sources = \
 	driver.c		\
 	debug-mini.c		\
 	linear-scan.c		\
+	aot-compiler.h		\
 	aot-compiler.c		\
 	aot-runtime.c		\
 	graph.c			\
@@ -431,6 +433,7 @@ common_sources = \
 	debugger-agent.h 	\
 	debugger-agent.c	\
 	xdebug.c			\
+	mini-llvm.h			\
 	mini-llvm-cpp.h	\
 	alias-analysis.c	\
 	mini-cross-helpers.c \
@@ -448,7 +451,7 @@ test_sources = 			\
 	basic.cs		\
 	exceptions.cs		\
 	devirtualization.cs	\
-	iltests.il.in		\
+	iltests.il		\
 	test.cs			\
 	generics.cs		\
 	generics-variant-types.il\
@@ -588,10 +591,6 @@ generics.exe: generics.cs TestDriver.dll generics-variant-types.dll
 %.exe: %.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll
 
-iltests.il: iltests.il.in Makefile.am
-	echo '// DO NOT EDIT: This file has been generated from iltests.il.in' > iltests.il
-	cpp -Darch=$(arch_define) < $(srcdir)/iltests.il.in | sed 's/^#.*//' >> iltests.il
-
 %.exe: %.il
 	$(ILASM) -output=$@ $<
 
@@ -710,7 +709,7 @@ FULLAOT_LIBS = \
 fullaotcheck: mono $(fullaot_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS=full
+	$(MAKE) fullaot-libs AOT_FLAGS=full GSHAREDVT=$(GSHAREDVT)
 	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot=full fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
@@ -722,7 +721,7 @@ fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
 fullaot-tmp/%.dylib: $(CLASS)/%
 	cp $(CLASS)/$* fullaot-tmp/
 	mkdir fullaot-tmp/$*-tmp
-	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
+	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper $(if $(GSHAREDVT),-O=gsharedvt) --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
 	rm -rf fullaot-tmp/$*-tmp
 
 llvmfullaotcheck:
@@ -736,15 +735,6 @@ llvmonlycheck: mono $(fullaot_regtests)
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  --aot=llvmonly fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
 	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --llvmonly fullaot-tmp/$$i --exclude '!FULLAOT' --exclude '!BITCODE' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
-
-# This can run in parallel
-fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
-
-fullaot-tmp/%.dylib: $(CLASS)/%
-	cp $(CLASS)/$* fullaot-tmp/
-	mkdir fullaot-tmp/$*-tmp
-	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
-	rm -rf fullaot-tmp/$*-tmp
 
 gccheck: gc-test.exe
 	MONO_GC_PARAMS=stack-mark=precise MONO_GC_DEBUG=clear-at-gc ./mono-sgen gc-test.exe	
@@ -801,7 +791,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.2050/140660e\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.2390/85c7bd0\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

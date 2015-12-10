@@ -30,12 +30,22 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using Mono.Security.Interface;
-using Mono.Net.Security;
+using MNS = Mono.Net.Security;
 
 namespace Mono.Security.Providers.OldTls
 {
 	public class OldTlsProvider : MonoTlsProvider
 	{
+		static readonly Guid id = new Guid ("cf8baa0d-c6ed-40ae-b512-dec8d097e9af");
+
+		public override Guid ID {
+			get { return id; }
+		}
+
+		public override string Name {
+			get { return "old"; }
+		}
+
 		public override bool SupportsSslStream {
 			get { return true; }
 		}
@@ -52,12 +62,12 @@ namespace Mono.Security.Providers.OldTls
 			get { return SslProtocols.Tls; }
 		}
 
-		public override MonoSslStream CreateSslStream (
+		public override IMonoSslStream CreateSslStream (
 			Stream innerStream, bool leaveInnerStreamOpen,
 			MonoTlsSettings settings = null)
 		{
-			var impl = new LegacySslStream (innerStream, leaveInnerStreamOpen, this, settings);
-			return new MonoSslStreamImpl (impl);
+			var impl = new MNS.LegacySslStream (innerStream, leaveInnerStreamOpen, this, settings);
+			return new MNS.MonoSslStreamImpl (impl);
 		}
 
 		public override IMonoTlsContext CreateTlsContext (

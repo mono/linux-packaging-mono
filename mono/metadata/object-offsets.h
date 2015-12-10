@@ -38,6 +38,14 @@ DECL_ALIGN(float)
 DECL_ALIGN(double)
 DECL_ALIGN(gpointer)
 
+DECL_SIZE(gint8)
+DECL_SIZE(gint16)
+DECL_SIZE(gint32)
+DECL_SIZE(gint64)
+DECL_SIZE(float)
+DECL_SIZE(double)
+DECL_SIZE(gpointer)
+
 #ifndef DISABLE_METADATA_OFFSETS
 //object offsets
 DECL_OFFSET(MonoObject, vtable)
@@ -235,4 +243,6 @@ DECL_OFFSET(SeqPointInfo, bp_addrs)
 #undef DECL_OFFSET2
 #undef DECL_ALIGN
 #undef DECL_ALIGN2
+#undef DECL_SIZE
+#undef DECL_SIZE2
 #undef USE_CROSS_COMPILE_OFFSETS

@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
  * the IL code looks.
  */
 
-#if MOBILE
+#if __MOBILE__
 namespace ObjectTests
 {
 #endif
@@ -119,7 +119,7 @@ struct Gamma {
 
 class Tests {
 
-#if !MOBILE
+#if !__MOBILE__
 	public static int Main (string[] args) {
 		return TestDriver.RunTests (typeof (Tests), args);
 	}
@@ -1667,8 +1667,49 @@ ncells ) {
 		var res = arm64_hfa_on_stack_inner (1, 2, 3, 4, 5, 6, 7, 8, s);
 		return res == 10.0 ? 0 : 1;
 	}
+
+	class MulOvfClass {
+		[MethodImplAttribute (MethodImplOptions.NoInlining)]
+		public unsafe void EncodeIntoBuffer(char* value, int valueLength, char* buffer, int bufferLength) {
+		}
+	}
+
+	static unsafe int test_0_mul_ovf_regress_36052 () {
+		var p = new MulOvfClass ();
+
+		string typeName = typeof(int).Name;
+		int bufferSize = 45;
+
+		fixed (char* value = typeName) {
+			char* buffer = stackalloc char[bufferSize];
+			p.EncodeIntoBuffer(value, typeName.Length, buffer, bufferSize);
+		}
+		return 0;
+	}
+
+	struct Struct16 {
+		public int a, b, c, d;
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	static int pass_struct16 (object o0, object o2, object o3, object o4, object o5, object o6, object o7, Struct16 o8) {
+		// This disables LLVM
+		try {
+		} catch {
+		}
+		return o8.a;
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	static int pass_struct16 (object o0, object o2, object o3, object o6, object o7, Struct16 o8) {
+		return pass_struct16 (o0, o2, null, o3, null, o6, o7, o8);
+	}
+
+	public static int test_42_pass_16byte_struct_split () {
+		return pass_struct16 (null, null, null, null, null, new Struct16 () { a = 42 });
+	}
 }
 
-#if MOBILE
+#if __MOBILE__
 }
 #endif

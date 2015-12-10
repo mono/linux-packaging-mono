@@ -39,7 +39,7 @@
 #include <mono/metadata/marshal.h>
 #include <mono/metadata/lock-tracer.h>
 #include <mono/metadata/verify-internals.h>
-#include <mono/utils/mono-logger-internal.h>
+#include <mono/utils/mono-logger-internals.h>
 #include <mono/utils/mono-dl.h>
 #include <mono/utils/mono-membar.h>
 #include <mono/utils/mono-counters.h>
@@ -56,7 +56,8 @@ MonoDefaults mono_defaults;
  * See domain-internals.h for locking policy in combination with the
  * domain lock.
  */
-static mono_mutex_t loader_mutex, global_loader_data_mutex;
+static MonoCoopMutex loader_mutex;
+static mono_mutex_t global_loader_data_mutex;
 static gboolean loader_lock_inited;
 
 /* Statistics */
@@ -82,13 +83,13 @@ static void dllmap_cleanup (void);
 static void
 global_loader_data_lock (void)
 {
-	mono_locks_acquire (&global_loader_data_mutex, LoaderGlobalDataLock);
+	mono_locks_os_acquire (&global_loader_data_mutex, LoaderGlobalDataLock);
 }
 
 static void
 global_loader_data_unlock (void)
 {
-	mono_locks_release (&global_loader_data_mutex, LoaderGlobalDataLock);
+	mono_locks_os_release (&global_loader_data_mutex, LoaderGlobalDataLock);
 }
 
 void
@@ -97,8 +98,8 @@ mono_loader_init ()
 	static gboolean inited;
 
 	if (!inited) {
-		mono_mutex_init_recursive (&loader_mutex);
-		mono_mutex_init_recursive (&global_loader_data_mutex);
+		mono_coop_mutex_init_recursive (&loader_mutex);
+		mono_os_mutex_init_recursive (&global_loader_data_mutex);
 		loader_lock_inited = TRUE;
 
 		mono_native_tls_alloc (&loader_error_thread_id, NULL);
@@ -126,8 +127,8 @@ mono_loader_cleanup (void)
 	mono_native_tls_free (loader_error_thread_id);
 	mono_native_tls_free (loader_lock_nest_id);
 
-	mono_mutex_destroy (&loader_mutex);
-	mono_mutex_destroy (&global_loader_data_mutex);
+	mono_coop_mutex_destroy (&loader_mutex);
+	mono_os_mutex_destroy (&global_loader_data_mutex);
 	loader_lock_inited = FALSE;	
 }
 
@@ -1942,6 +1943,7 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 	if (generic_container) {
 		result->is_generic = TRUE;
 		generic_container->owner.method = result;
+		generic_container->is_anonymous = FALSE; // Method is now known, container is no longer anonymous
 		/*FIXME put this before the image alloc*/
 		if (!mono_metadata_load_generic_param_constraints_checked (image, token, generic_container, error))
 			return NULL;
@@ -2540,10 +2542,7 @@ static gboolean loader_lock_track_ownership = FALSE;
 void
 mono_loader_lock (void)
 {
-	MONO_TRY_BLOCKING;
-	mono_locks_acquire (&loader_mutex, LoaderLock);
-	MONO_FINISH_TRY_BLOCKING;
-		
+	mono_locks_coop_acquire (&loader_mutex, LoaderLock);
 	if (G_UNLIKELY (loader_lock_track_ownership)) {
 		mono_native_tls_set_value (loader_lock_nest_id, GUINT_TO_POINTER (GPOINTER_TO_UINT (mono_native_tls_get_value (loader_lock_nest_id)) + 1));
 	}
@@ -2552,7 +2551,7 @@ mono_loader_lock (void)
 void
 mono_loader_unlock (void)
 {
-	mono_locks_release (&loader_mutex, LoaderLock);
+	mono_locks_coop_release (&loader_mutex, LoaderLock);
 	if (G_UNLIKELY (loader_lock_track_ownership)) {
 		mono_native_tls_set_value (loader_lock_nest_id, GUINT_TO_POINTER (GPOINTER_TO_UINT (mono_native_tls_get_value (loader_lock_nest_id)) - 1));
 	}

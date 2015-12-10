@@ -2018,8 +2018,9 @@ struct Mono_Unix_UnixSignal_SignalInfo {
 	int   count;
 	int   read_fd;
 	int   write_fd;
-	int   have_handler;
 	int   pipecnt;
+	int   pipelock;
+	int   have_handler;
 	void* handler;
 };
 
@@ -2049,6 +2050,7 @@ int Mono_Posix_Stdlib_clearerr (void* stream);
 void* Mono_Posix_Stdlib_CreateFilePosition (void);
 int Mono_Posix_Stdlib_DumpFilePosition (char* buf, void* handle, int len);
 int Mono_Posix_Stdlib_EOF (void);
+const char* Mono_Unix_VersionString (void);
 int Mono_Posix_Stdlib_EXIT_FAILURE (void);
 int Mono_Posix_Stdlib_EXIT_SUCCESS (void);
 int Mono_Posix_Stdlib_fgetpos (void* stream, void* pos);

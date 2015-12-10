@@ -15,7 +15,7 @@ monoutils_sources = \
 	mono-md5.c		\
 	mono-sha1.c		\
 	mono-logger.c		\
-	mono-logger-internal.h	\
+	mono-logger-internals.h	\
 	mono-codeman.c		\
 	dlmalloc.h      	\
 	dlmalloc.c      	\
@@ -36,9 +36,10 @@ monoutils_sources = \
 	mono-math.c  		\
 	mono-mmap.c  		\
 	mono-mmap.h  		\
-	mono-mmap-internal.h	\
-	mono-mutex.c  		\
-	mono-mutex.h  		\
+	mono-mmap-internals.h	\
+	mono-os-mutex.h		\
+	mono-coop-mutex.h		\
+	mono-once.h		\
 	mono-lazy-init.h		\
 	mono-networkinterfaces.c		\
 	mono-networkinterfaces.h		\
@@ -53,8 +54,8 @@ monoutils_sources = \
 	mono-uri.c		\
 	mono-poll.c		\
 	mono-path.c		\
-	mono-semaphore.c	\
-	mono-semaphore.h	\
+	mono-os-semaphore.h	\
+	mono-coop-semaphore.h		\
 	mono-sigcontext.h	\
 	mono-stdlib.c 		\
 	mono-property-hash.h 	\

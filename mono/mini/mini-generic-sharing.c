@@ -27,6 +27,12 @@
 static void
 mono_class_unregister_image_generic_subclasses (MonoImage *image, gpointer user_data);
 
+/* Counters */
+static int num_templates_allocted;
+static int num_templates_bytes;
+static int num_oti_allocted;
+static int num_oti_bytes;
+
 static gboolean partial_supported = FALSE;
 
 static inline gboolean
@@ -340,41 +346,22 @@ mono_class_unregister_image_generic_subclasses (MonoImage *image, gpointer user_
 static MonoRuntimeGenericContextTemplate*
 alloc_template (MonoClass *klass)
 {
-	static gboolean inited = FALSE;
-	static int num_allocted = 0;
-	static int num_bytes = 0;
-
 	int size = sizeof (MonoRuntimeGenericContextTemplate);
 
-	if (!inited) {
-		mono_counters_register ("RGCTX template num allocted", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_allocted);
-		mono_counters_register ("RGCTX template bytes allocted", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_bytes);
-		inited = TRUE;
-	}
-
-	num_allocted++;
-	num_bytes += size;
+	num_templates_allocted++;
+	num_templates_bytes += size;
 
 	return mono_image_alloc0 (klass->image, size);
 }
 
+/* LOCKING: Takes the loader lock */
 static MonoRuntimeGenericContextInfoTemplate*
 alloc_oti (MonoImage *image)
 {
-	static gboolean inited = FALSE;
-	static int num_allocted = 0;
-	static int num_bytes = 0;
-
 	int size = sizeof (MonoRuntimeGenericContextInfoTemplate);
 
-	if (!inited) {
-		mono_counters_register ("RGCTX oti num allocted", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_allocted);
-		mono_counters_register ("RGCTX oti bytes allocted", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_bytes);
-		inited = TRUE;
-	}
-
-	num_allocted++;
-	num_bytes += size;
+	num_oti_allocted++;
+	num_oti_bytes += size;
 
 	return mono_image_alloc0 (image, size);
 }
@@ -882,11 +869,11 @@ class_type_info (MonoDomain *domain, MonoClass *klass, MonoRgctxInfoType info_ty
 			return GUINT_TO_POINTER (mono_class_value_size (klass, NULL));
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
 		if (MONO_TYPE_IS_REFERENCE (&klass->byval_arg))
-			return GUINT_TO_POINTER (1);
+			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_REF);
 		else if (mono_class_is_nullable (klass))
-			return GUINT_TO_POINTER (2);
+			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_NULLABLE);
 		else
-			return GUINT_TO_POINTER (0);
+			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_VTYPE);
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO: {
 		static MonoMethod *memcpy_method [17];
@@ -1231,11 +1218,11 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 
 		impl_class = method->klass;
 		if (MONO_TYPE_IS_REFERENCE (&impl_class->byval_arg))
-			return GUINT_TO_POINTER (1);
+			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_REF);
 		else if (mono_class_is_nullable (impl_class))
-			return GUINT_TO_POINTER (2);
+			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_NULLABLE);
 		else
-			return GUINT_TO_POINTER (0);
+			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_VTYPE);
 	}
 #ifndef DISABLE_REMOTING
 	case MONO_RGCTX_INFO_REMOTING_INVOKE_WITH_CHECK:
@@ -1248,10 +1235,11 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 	case MONO_RGCTX_INFO_FIELD_OFFSET: {
 		MonoClassField *field = data;
 
+		/* The value is offset by 1 */
 		if (field->parent->valuetype && !(field->type->attrs & FIELD_ATTRIBUTE_STATIC))
-			return GUINT_TO_POINTER (field->offset - sizeof (MonoObject));
+			return GUINT_TO_POINTER (field->offset - sizeof (MonoObject) + 1);
 		else
-			return GUINT_TO_POINTER (field->offset);
+			return GUINT_TO_POINTER (field->offset + 1);
 	}
 	case MONO_RGCTX_INFO_METHOD_RGCTX: {
 		MonoMethodInflated *method = data;
@@ -1846,6 +1834,7 @@ fill_runtime_generic_context (MonoVTable *class_vtable, MonoRuntimeGenericContex
 										method_inst ? method_inst->type_argc : 0, slot, TRUE, TRUE, &do_free);
 	/* This might take the loader lock */
 	info = instantiate_info (domain, &oti, &context, klass);
+	g_assert (info);
 
 	/*
 	if (method_inst)
@@ -2622,6 +2611,11 @@ mini_type_stack_size_full (MonoType *t, guint32 *align, gboolean pinvoke)
 void
 mono_generic_sharing_init (void)
 {
+	mono_counters_register ("RGCTX template num allocted", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_templates_allocted);
+	mono_counters_register ("RGCTX template bytes allocted", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_templates_bytes);
+	mono_counters_register ("RGCTX oti num allocted", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_oti_allocted);
+	mono_counters_register ("RGCTX oti bytes allocted", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_oti_bytes);
+
 	mono_install_image_unload_hook (mono_class_unregister_image_generic_subclasses, NULL);
 }
 
@@ -2777,38 +2771,31 @@ mini_get_shared_gparam (MonoType *t, MonoType *constraint)
 	key.param.param.gshared_constraint = constraint;
 
 	g_assert (mono_generic_param_info (par));
-	/* image might not be set for sre */
-	if (par->owner && par->owner->image) {
-		image = par->owner->image;
+	image = get_image_for_generic_param(par);
 
-		/*
-		 * Need a cache to ensure the newly created gparam
-		 * is unique wrt T/CONSTRAINT.
-		 */
-		mono_image_lock (image);
-		if (!image->gshared_types) {
-			image->gshared_types_len = MONO_TYPE_INTERNAL;
-			image->gshared_types = g_new0 (GHashTable*, image->gshared_types_len);
-		}
-		if (!image->gshared_types [constraint->type])
-			image->gshared_types [constraint->type] = g_hash_table_new (shared_gparam_hash, shared_gparam_equal);
-		res = g_hash_table_lookup (image->gshared_types [constraint->type], &key);
-		mono_image_unlock (image);
-		if (res)
-			return res;
-		copy = mono_image_alloc0 (image, sizeof (MonoGSharedGenericParam));
-		memcpy (&copy->param, par, sizeof (MonoGenericParamFull));
-		name = get_shared_gparam_name (constraint->type, ((MonoGenericParamFull*)copy)->info.name);
-		copy->param.info.name = mono_image_strdup (image, name);
-		g_free (name);
-	} else {
-		/* mono_generic_param_name () expects this to be a MonoGenericParamFull */
-		copy = g_new0 (MonoGSharedGenericParam, 1);
-		memcpy (&copy->param, par, sizeof (MonoGenericParam));
+	/*
+	 * Need a cache to ensure the newly created gparam
+	 * is unique wrt T/CONSTRAINT.
+	 */
+	mono_image_lock (image);
+	if (!image->gshared_types) {
+		image->gshared_types_len = MONO_TYPE_INTERNAL;
+		image->gshared_types = g_new0 (GHashTable*, image->gshared_types_len);
 	}
-	copy->param.param.owner = NULL;
-	// FIXME:
-	copy->param.param.image = image ? image : mono_defaults.corlib;
+	if (!image->gshared_types [constraint->type])
+		image->gshared_types [constraint->type] = g_hash_table_new (shared_gparam_hash, shared_gparam_equal);
+	res = g_hash_table_lookup (image->gshared_types [constraint->type], &key);
+	mono_image_unlock (image);
+	if (res)
+		return res;
+	copy = mono_image_alloc0 (image, sizeof (MonoGSharedGenericParam));
+	memcpy (&copy->param, par, sizeof (MonoGenericParamFull));
+	copy->param.info.pklass = NULL;
+	name = get_shared_gparam_name (constraint->type, ((MonoGenericParamFull*)copy)->info.name);
+	copy->param.info.name = mono_image_strdup (image, name);
+	g_free (name);
+
+	copy->param.param.owner = par->owner;
 
 	copy->param.param.gshared_constraint = constraint;
 	copy->parent = par;

@@ -4,7 +4,7 @@
 //
 // ==--==
 //
-// <OWNER>Microsoft</OWNER>
+// <OWNER>[....]</OWNER>
 /*=============================================================================
 **
 ** Class: Thread
@@ -558,7 +558,7 @@ namespace System.Threading {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern void AbortInternal();
 #endif
-#if !FEATURE_CORECLR || MONO
+#if (!FEATURE_CORECLR && !MONO) || MONO_FEATURE_THREAD_ABORT
         /*=========================================================================
         ** Resets a thread abort.
         ** Should be called by trusted code only
@@ -578,7 +578,8 @@ namespace System.Threading {
         [ResourceExposure(ResourceScope.None)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern void ResetAbortNative();
-
+#endif
+#if (!FEATURE_CORECLR && !MONO) || MONO_FEATURE_THREAD_SUSPEND_RESUME
         /*=========================================================================
         ** Suspends the thread. If the thread is already suspended, this call has
         ** no effect.
@@ -615,7 +616,9 @@ namespace System.Threading {
         [ResourceExposure(ResourceScope.None)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern void ResumeInternal();
+#endif
 
+#if !FEATURE_CORECLR || MONO
         /*=========================================================================
         ** Interrupts a thread that is inside a Wait(), Sleep() or Join().  If that
         ** thread is not currently blocked in that manner, it will be interrupted
@@ -1168,12 +1171,12 @@ namespace System.Threading {
                 if (CompatibilitySwitches.IsAppEarlierThanWindowsPhone8)
                 {
                     //
-                    // NetCF had a 
-
-
-
-
-
+                    // NetCF had a bug where Thread.Current{UI}Culture would set the culture for every thread in the process.  
+                    // This was because they stored the value in a regular static field (NetCF has no support for ThreadStatic fields).
+                    // Some apps depend on the broken behavior. We will emulate this behavior by redirecting setters to 
+                    // DefaultThreadCurrentUICulture. (Note that this property did not existed in NetCF and so it is fine to piggy back 
+                    // on it for the quirk.)
+                    //
                     CultureInfo.SetCurrentUICultureQuirk(value);
                     return;
                 }

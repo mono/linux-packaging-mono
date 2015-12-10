@@ -36,6 +36,7 @@ namespace Ildasm
         {
             string outputFile = null;
             string inputFile = null;
+            MetadataTableIndex? tableToDump = null;
             var compatLevel = CompatLevel.None;
             var flags = Flags.None;
 
@@ -44,7 +45,10 @@ namespace Ildasm
 
 				var p = new OptionSet () {
 						{ "help", v => printUsage = true },
-						{ "out", v => outputFile = v }
+						{ "out", v => outputFile = v },
+						{ "assembly", v =>tableToDump = MetadataTableIndex.Assembly },
+						{ "assemblyref", v =>tableToDump = MetadataTableIndex.AssemblyRef },
+						{ "moduleref", v =>tableToDump = MetadataTableIndex.ModuleRef },
 					};
 				args = p.Parse (args).ToArray ();
 				if (printUsage) {
@@ -117,6 +121,22 @@ namespace Ildasm
                 PrintUsage();
                 return 1;
             }
+			if (tableToDump.HasValue)
+			{
+				var tableDumper = new TableDumper(inputFile);
+				if (outputFile != null)
+				{
+					using (StreamWriter sw = new StreamWriter(outputFile, false))
+					{
+						tableDumper.DumpTable(sw, tableToDump.Value);
+					}
+				}
+				else
+				{
+					tableDumper.DumpTable(Console.Out, tableToDump.Value);
+				}
+				return 0;
+			}
             var disassembler = new Disassembler(inputFile, outputFile, compatLevel, flags);
             if (outputFile != null)
             {

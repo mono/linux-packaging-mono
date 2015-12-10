@@ -46,7 +46,6 @@ ICALL(COMPROX_2, "FindProxy", ves_icall_Mono_Interop_ComInteropProxy_FindProxy)
 ICALL_TYPE(RUNTIME, "Mono.Runtime", RUNTIME_1)
 ICALL(RUNTIME_1, "GetDisplayName", ves_icall_Mono_Runtime_GetDisplayName)
 ICALL(RUNTIME_12, "GetNativeStackTrace", ves_icall_Mono_Runtime_GetNativeStackTrace)
-ICALL(RUNTIME_13, "SetGCAllowSynchronousMajor", ves_icall_Mono_Runtime_SetGCAllowSynchronousMajor)
 
 #ifndef PLATFORM_RO_FS
 ICALL_TYPE(KPAIR, "Mono.Security.Cryptography.KeyPairPersistence", KPAIR_1)
@@ -325,6 +324,7 @@ ICALL(MONOIO_3, "CreateDirectory(string,System.IO.MonoIOError&)", ves_icall_Syst
 ICALL(MONOIO_4, "CreatePipe", ves_icall_System_IO_MonoIO_CreatePipe)
 ICALL(MONOIO_5, "DeleteFile(string,System.IO.MonoIOError&)", ves_icall_System_IO_MonoIO_DeleteFile)
 #endif /* !PLATFORM_RO_FS */
+ICALL(MONOIO_38, "DumpHandles", ves_icall_System_IO_MonoIO_DumpHandles)
 ICALL(MONOIO_34, "DuplicateHandle", ves_icall_System_IO_MonoIO_DuplicateHandle)
 ICALL(MONOIO_37, "FindClose", ves_icall_System_IO_MonoIO_FindClose)
 ICALL(MONOIO_35, "FindFirst", ves_icall_System_IO_MonoIO_FindFirst)

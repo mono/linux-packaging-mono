@@ -290,7 +290,7 @@ namespace System.Numerics {
             return new Complex(Math.Sin(a) * Math.Cosh(b), Math.Cos(a) * Math.Sinh(b));
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Sinh", Justification = "Microsoft: Existing Name")]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Sinh", Justification = "[....]: Existing Name")]
         public static Complex Sinh(Complex value) /* Hyperbolic sin */
         {
             double a = value.m_real;
@@ -300,6 +300,10 @@ namespace System.Numerics {
         }
         public static Complex Asin(Complex value) /* Arcsin */
         {
+	    if ((value.m_imaginary == 0 && value.m_real < 0) || value.m_imaginary > 0)
+            {
+                return -Asin(-value);
+            }
             return (-ImaginaryOne) * Log(ImaginaryOne * value + Sqrt(One - value * value));
         }
 
@@ -309,7 +313,7 @@ namespace System.Numerics {
             return new Complex(Math.Cos(a) * Math.Cosh(b), - (Math.Sin(a) * Math.Sinh(b)));
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Cosh", Justification = "Microsoft: Existing Name")]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Cosh", Justification = "[....]: Existing Name")]
         public static Complex Cosh(Complex value) /* Hyperbolic cos */
         {
             double a = value.m_real;
@@ -318,6 +322,10 @@ namespace System.Numerics {
         }
         public static Complex Acos(Complex value) /* Arccos */
         {
+            if ((value.m_imaginary == 0 && value.m_real > 0) || value.m_imaginary < 0)
+            {
+                return System.Math.PI - Acos(-value);
+            }
             return (-ImaginaryOne) * Log(value + ImaginaryOne*Sqrt(One - (value * value)));
 
         }
@@ -325,7 +333,7 @@ namespace System.Numerics {
             return (Sin(value) / Cos(value));
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Tanh", Justification = "Microsoft: Existing Name")]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Tanh", Justification = "[....]: Existing Name")]
         public static Complex Tanh(Complex value) /* Hyperbolic tan */
         {
             return (Sinh(value) / Cosh(value));
@@ -362,7 +370,7 @@ namespace System.Numerics {
             return (new Complex(result_re, result_im));
         }
 
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Sqrt", Justification = "Microsoft: Existing Name")]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Sqrt", Justification = "[....]: Existing Name")]
         public static Complex Sqrt(Complex value) /* Square root ot the complex number */
         {
             return Complex.FromPolarCoordinates(Math.Sqrt(value.Magnitude), value.Phase / 2.0);

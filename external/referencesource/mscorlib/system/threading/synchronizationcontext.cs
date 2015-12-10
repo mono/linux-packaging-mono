@@ -3,7 +3,7 @@
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
 // 
 //
-// <OWNER>Microsoft</OWNER>
+// <OWNER>[....]</OWNER>
 /*============================================================
 **
 ** Class:  SynchronizationContext
@@ -81,7 +81,7 @@ namespace System.Threading
         static Type s_cachedPreparedType4;
         static Type s_cachedPreparedType5;
 
-        // protected so that only the derived sync context class can enable these flags
+        // protected so that only the derived [....] context class can enable these flags
         [System.Security.SecuritySafeCritical]  // auto-generated
         [SuppressMessage("Microsoft.Concurrency", "CA8001", Justification = "We never dereference s_cachedPreparedType*, so ordering is unimportant")]
         protected void SetWaitNotificationRequired()
@@ -95,7 +95,7 @@ namespace System.Threading
             // So we keep track of a few types we've already prepared in this AD.  It is uncommon to have more than
             // a few SynchronizationContext implementations, so we only cache the first five we encounter; this lets
             // our cache be much faster than a more general cache might be.  This is important, because this
-            // is a *very* hot code path for many WPF and Microsoft apps.
+            // is a *very* hot code path for many WPF and [....] apps.
             //
             Type type = this.GetType();
             if (s_cachedPreparedType1 != type &&
@@ -186,11 +186,11 @@ namespace System.Threading
         private static SynchronizationContext s_threadStaticContext;
 
 		//
-		// NetCF had a 
-
-
-
-
+		// NetCF had a bug where SynchronizationContext.SetThreadStaticContext would set the SyncContext for every thread in the process.  
+		// This was because they stored the value in a regular static field (NetCF has no support for ThreadStatic fields).  This was fixed in 
+		// Mango, but some apps built against pre-Mango WP7 do depend on the broken behavior.  So for those apps we need an AppDomain-wide static
+		// to hold whatever context was last set on any thread.
+		//
         private static SynchronizationContext s_appDomainStaticContext;
 
         [System.Security.SecurityCritical]
@@ -251,6 +251,14 @@ namespace System.Threading
             ec.SynchronizationContext = syncContext;
             ec.SynchronizationContextNoFlow = syncContext;
         }
+
+#if MOBILE_LEGACY
+        [Obsolete("The method is not supported and will be removed")]
+        public static void SetThreadStaticContext(SynchronizationContext syncContext)
+        {
+            throw new NotSupportedException ();
+        }
+#endif
 
         // Get the current SynchronizationContext on the current thread
         public static SynchronizationContext Current 

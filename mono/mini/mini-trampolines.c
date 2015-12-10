@@ -27,8 +27,8 @@ static GHashTable *rgctx_lazy_fetch_trampoline_hash;
 static GHashTable *rgctx_lazy_fetch_trampoline_hash_addr;
 static guint32 trampoline_calls, jit_trampolines, unbox_trampolines, static_rgctx_trampolines;
 
-#define mono_trampolines_lock() mono_mutex_lock (&trampolines_mutex)
-#define mono_trampolines_unlock() mono_mutex_unlock (&trampolines_mutex)
+#define mono_trampolines_lock() mono_os_mutex_lock (&trampolines_mutex)
+#define mono_trampolines_unlock() mono_os_mutex_unlock (&trampolines_mutex)
 static mono_mutex_t trampolines_mutex;
 
 #ifdef MONO_ARCH_GSHARED_SUPPORTED
@@ -1220,7 +1220,7 @@ create_trampoline_code (MonoTrampolineType tramp_type)
 void
 mono_trampolines_init (void)
 {
-	mono_mutex_init_recursive (&trampolines_mutex);
+	mono_os_mutex_init_recursive (&trampolines_mutex);
 
 	if (mono_aot_only)
 		return;
@@ -1257,7 +1257,7 @@ mono_trampolines_cleanup (void)
 	if (rgctx_lazy_fetch_trampoline_hash_addr)
 		g_hash_table_destroy (rgctx_lazy_fetch_trampoline_hash_addr);
 
-	mono_mutex_destroy (&trampolines_mutex);
+	mono_os_mutex_destroy (&trampolines_mutex);
 }
 
 guint8 *
@@ -1502,26 +1502,6 @@ mono_create_rgctx_lazy_fetch_trampoline (guint32 offset)
 
 	return ptr;
 }
- 
-#ifdef MONO_ARCH_LLVM_SUPPORTED
-/*
- * mono_create_llvm_imt_trampoline:
- *
- *   LLVM compiled code can't pass in the IMT argument, so we use this trampoline, which
- * sets the IMT argument, then branches to the contents of the vtable slot given by
- * vt_offset in the vtable which is obtained from the argument list.
- */
-gpointer
-mono_create_llvm_imt_trampoline (MonoDomain *domain, MonoMethod *m, int vt_offset)
-{
-#ifdef MONO_ARCH_HAVE_LLVM_IMT_TRAMPOLINE
-	return mono_arch_get_llvm_imt_trampoline (domain, m, vt_offset);
-#else
-	g_assert_not_reached ();
-	return NULL;
-#endif
-}
-#endif
 
 guint32
 mono_find_rgctx_lazy_fetch_trampoline_by_addr (gconstpointer addr)

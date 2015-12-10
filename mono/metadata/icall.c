@@ -55,7 +55,7 @@
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/reflection-internals.h>
 #include <mono/metadata/marshal.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/mono-gc.h>
 #include <mono/metadata/rand.h>
 #include <mono/metadata/sysmath.h>
@@ -89,7 +89,7 @@
 #include <mono/utils/mono-io-portability.h>
 #include <mono/utils/mono-digest.h>
 #include <mono/utils/bsearch.h>
-#include <mono/utils/mono-mutex.h>
+#include <mono/utils/mono-os-mutex.h>
 #include <mono/utils/mono-threads.h>
 
 #if defined (HOST_WIN32)
@@ -2324,7 +2324,7 @@ ves_icall_MonoType_GetGenericArguments (MonoReflectionType *type, MonoBoolean ru
 		MonoGenericContainer *container = klass->generic_container;
 		res = create_type_array (domain, runtimeTypeArray, container->type_argc);
 		for (i = 0; i < container->type_argc; ++i) {
-			pklass = mono_class_from_generic_parameter (mono_generic_container_get_param (container, i), klass->image, FALSE);
+			pklass = mono_class_from_generic_parameter_internal (mono_generic_container_get_param (container, i));
 			mono_array_setref (res, i, mono_type_get_object (domain, &pklass->byval_arg));
 		}
 	} else if (klass->generic_class) {
@@ -2678,8 +2678,7 @@ ves_icall_MonoMethod_GetGenericArguments (MonoReflectionMethod *method)
 	for (i = 0; i < count; i++) {
 		MonoGenericContainer *container = mono_method_get_generic_container (method->method);
 		MonoGenericParam *param = mono_generic_container_get_param (container, i);
-		MonoClass *pklass = mono_class_from_generic_parameter (
-			param, method->method->klass->image, TRUE);
+		MonoClass *pklass = mono_class_from_generic_parameter_internal (param);
 		mono_array_setref (res, i,
 				mono_type_get_object (domain, &pklass->byval_arg));
 	}
@@ -3568,16 +3567,43 @@ property_hash (gconstpointer data)
 }
 
 static gboolean
+method_declaring_signatures_equal (MonoMethod *method1, MonoMethod *method2)
+{
+	if (method1->is_inflated)
+		method1 = ((MonoMethodInflated*) method1)->declaring;
+	if (method2->is_inflated)
+		method2 = ((MonoMethodInflated*) method2)->declaring;
+
+	return mono_metadata_signature_equal (mono_method_signature (method1), mono_method_signature (method2));
+}
+
+static gboolean
 property_equal (MonoProperty *prop1, MonoProperty *prop2)
 {
 	// Properties are hide-by-name-and-signature
 	if (!g_str_equal (prop1->name, prop2->name))
 		return FALSE;
 
-	if (prop1->get && prop2->get && !mono_metadata_signature_equal (mono_method_signature (prop1->get), mono_method_signature (prop2->get)))
+	/* If we see a property in a generic method, we want to
+	   compare the generic signatures, not the inflated signatures
+	   because we might conflate two properties that were
+	   distinct:
+
+	   class Foo<T,U> {
+	     public T this[T t] { getter { return t; } } // method 1
+	     public U this[U u] { getter { return u; } } // method 2
+	   }
+
+	   If we see int Foo<int,int>::Item[int] we need to know if
+	   the indexer came from method 1 or from method 2, and we
+	   shouldn't conflate them.   (Bugzilla 36283)
+	*/
+	if (prop1->get && prop2->get && !method_declaring_signatures_equal (prop1->get, prop2->get))
 		return FALSE;
-	if (prop1->set && prop2->set && !mono_metadata_signature_equal (mono_method_signature (prop1->set), mono_method_signature (prop2->set)))
+
+	if (prop1->set && prop2->set && !method_declaring_signatures_equal (prop1->set, prop2->set))
 		return FALSE;
+
 	return TRUE;
 }
 
@@ -7266,19 +7292,19 @@ mono_icall_init (void)
 #endif
 
 	icall_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-	mono_mutex_init (&icall_mutex);
+	mono_os_mutex_init (&icall_mutex);
 }
 
 static void
 mono_icall_lock (void)
 {
-	mono_locks_mutex_acquire (&icall_mutex, IcallLock);
+	mono_locks_os_acquire (&icall_mutex, IcallLock);
 }
 
 static void
 mono_icall_unlock (void)
 {
-	mono_locks_mutex_release (&icall_mutex, IcallLock);
+	mono_locks_os_release (&icall_mutex, IcallLock);
 }
 
 void
@@ -7287,7 +7313,7 @@ mono_icall_cleanup (void)
 	g_hash_table_destroy (icall_hash);
 	g_hash_table_destroy (jit_icall_hash_name);
 	g_hash_table_destroy (jit_icall_hash_addr);
-	mono_mutex_destroy (&icall_mutex);
+	mono_os_mutex_destroy (&icall_mutex);
 }
 
 void

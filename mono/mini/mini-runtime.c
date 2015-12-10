@@ -42,7 +42,7 @@
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/environment.h>
 #include <mono/metadata/mono-debug.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/mempool-internals.h>
 #include <mono/metadata/attach.h>
@@ -51,7 +51,7 @@
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-counters.h>
 #include <mono/utils/mono-error-internals.h>
-#include <mono/utils/mono-logger-internal.h>
+#include <mono/utils/mono-logger-internals.h>
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/mono-path.h>
 #include <mono/utils/mono-tls.h>
@@ -73,6 +73,7 @@
 #include "jit-icalls.h"
 
 #include "mini-gc.h"
+#include "mini-llvm.h"
 #include "debugger-agent.h"
 
 #ifdef MONO_ARCH_LLVM_SUPPORTED
@@ -108,8 +109,8 @@ int mini_verbose = 0;
  */
 gboolean mono_use_llvm = FALSE;
 
-#define mono_jit_lock() mono_mutex_lock (&jit_mutex)
-#define mono_jit_unlock() mono_mutex_unlock (&jit_mutex)
+#define mono_jit_lock() mono_os_mutex_lock (&jit_mutex)
+#define mono_jit_unlock() mono_os_mutex_unlock (&jit_mutex)
 static mono_mutex_t jit_mutex;
 
 static MonoCodeManager *global_codeman;
@@ -1641,14 +1642,6 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 			target = mono_arch_get_seq_point_info (domain, code);
 		break;
 #endif
-	case MONO_PATCH_INFO_LLVM_IMT_TRAMPOLINE:
-#ifdef MONO_ARCH_LLVM_SUPPORTED
-		g_assert (mono_use_llvm);
-		target = mono_create_llvm_imt_trampoline (domain, patch_info->data.imt_tramp->method, patch_info->data.imt_tramp->vt_offset);
-#else
-		g_assert_not_reached ();
-#endif
-		break;
 	case MONO_PATCH_INFO_GC_CARD_TABLE_ADDR: {
 		int card_table_shift_bits;
 		gpointer card_table_mask;
@@ -2346,7 +2339,7 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 		gpointer *args;
 		static RuntimeInvokeDynamicFunction dyn_runtime_invoke;
 		int i, pindex;
-		guint8 buf [256];
+		guint8 buf [512];
 		guint8 retval [256];
 		gpointer rgctx;
 
@@ -3029,7 +3022,7 @@ mini_init (const char *filename, const char *runtime_version)
 	}
 #endif
 
-	mono_mutex_init_recursive (&jit_mutex);
+	mono_os_mutex_init_recursive (&jit_mutex);
 
 	mono_cross_helpers_run ();
 
@@ -3610,7 +3603,7 @@ mini_cleanup (MonoDomain *domain)
 
 	mono_native_tls_free (mono_jit_tls_id);
 
-	mono_mutex_destroy (&jit_mutex);
+	mono_os_mutex_destroy (&jit_mutex);
 
 	mono_code_manager_cleanup ();
 
@@ -3745,8 +3738,8 @@ typedef struct MonoJumpTableChunk {
 } MonoJumpTableChunk;
 
 static MonoJumpTableChunk* g_jumptable;
-#define mono_jumptable_lock() mono_mutex_lock (&jumptable_mutex)
-#define mono_jumptable_unlock() mono_mutex_unlock (&jumptable_mutex)
+#define mono_jumptable_lock() mono_os_mutex_lock (&jumptable_mutex)
+#define mono_jumptable_unlock() mono_os_mutex_unlock (&jumptable_mutex)
 static mono_mutex_t jumptable_mutex;
 
 static  MonoJumpTableChunk*
@@ -3762,7 +3755,7 @@ void
 mono_jumptable_init (void)
 {
 	if (g_jumptable == NULL) {
-		mono_mutex_init_recursive (&jumptable_mutex);
+		mono_os_mutex_init_recursive (&jumptable_mutex);
 		g_jumptable = mono_create_jumptable_chunk (DEFAULT_JUMPTABLE_CHUNK_ELEMENTS);
 	}
 }
@@ -3818,7 +3811,7 @@ mono_jumptable_cleanup (void)
 			current = prev;
 		}
 		g_jumptable = NULL;
-		mono_mutex_destroy (&jumptable_mutex);
+		mono_os_mutex_destroy (&jumptable_mutex);
 	}
 }
 
