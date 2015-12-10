@@ -18,7 +18,7 @@
 #include <mono/metadata/mono-debug.h>
 #include <mono/metadata/mono-debug-debugger.h>
 #include <mono/metadata/mono-endian.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/mempool.h>
 #include <mono/metadata/debug-mono-ppdb.h>
 #include <string.h>
@@ -137,7 +137,7 @@ mono_debug_init (MonoDebugFormat format)
 	mono_debug_initialized = TRUE;
 	mono_debug_format = format;
 
-	mono_mutex_init_recursive (&debugger_lock_mutex);
+	mono_os_mutex_init_recursive (&debugger_lock_mutex);
 
 	mono_debugger_lock ();
 
@@ -775,6 +775,20 @@ mono_debug_lookup_source_location (MonoMethod *method, guint32 address, MonoDoma
 	return location;
 }
 
+MonoDebugSourceLocation *
+mono_debug_method_lookup_location (MonoDebugMethodInfo *minfo, int il_offset)
+{
+	MonoDebugSourceLocation *location;
+
+	mono_debugger_lock ();
+	if (minfo->handle->ppdb)
+		location = mono_ppdb_lookup_location (minfo, il_offset);
+	else
+		location = mono_debug_symfile_lookup_location (minfo, il_offset);
+	mono_debugger_unlock ();
+	return location;
+}
+
 /*
  * mono_debug_lookup_locals:
  *
@@ -947,14 +961,14 @@ void
 mono_debugger_lock (void)
 {
 	g_assert (mono_debug_initialized);
-	mono_mutex_lock (&debugger_lock_mutex);
+	mono_os_mutex_lock (&debugger_lock_mutex);
 }
 
 void
 mono_debugger_unlock (void)
 {
 	g_assert (mono_debug_initialized);
-	mono_mutex_unlock (&debugger_lock_mutex);
+	mono_os_mutex_unlock (&debugger_lock_mutex);
 }
 
 /**

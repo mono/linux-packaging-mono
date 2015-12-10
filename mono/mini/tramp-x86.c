@@ -18,7 +18,7 @@
 #include <mono/metadata/mono-debug.h>
 #include <mono/metadata/mono-debug-debugger.h>
 #include <mono/metadata/profiler-private.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/arch/x86/x86-codegen.h>
 
 #include <mono/utils/memcheck.h>
@@ -86,37 +86,6 @@ mono_arch_get_static_rgctx_trampoline (MonoMethod *m, MonoMethodRuntimeGenericCo
 	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_GENERICS_TRAMPOLINE, NULL);
 
 	mono_tramp_info_register (mono_tramp_info_create (NULL, start, code - start, NULL, unwind_ops), domain);
-
-	return start;
-}
-
-gpointer
-mono_arch_get_llvm_imt_trampoline (MonoDomain *domain, MonoMethod *m, int vt_offset)
-{
-	guint8 *code, *start;
-	int buf_len;
-	int this_offset;
-
-	buf_len = 32;
-
-	start = code = mono_domain_code_reserve (domain, buf_len);
-
-	this_offset = mono_x86_get_this_arg_offset (mono_method_signature (m));
-
-	/* Set imt arg */
-	x86_mov_reg_imm (code, MONO_ARCH_IMT_REG, m);
-	/* Load this */
-	x86_mov_reg_membase (code, X86_EAX, X86_ESP, this_offset + 4, 4);
-	/* Load vtable address */
-	x86_mov_reg_membase (code, X86_EAX, X86_EAX, 0, 4);
-	x86_jump_membase (code, X86_EAX, vt_offset);
-
-	g_assert ((code - start) < buf_len);
-
-	nacl_domain_code_validate (domain, &start, buf_len, &code);
-
-	mono_arch_flush_icache (start, code - start);
-	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_IMT_TRAMPOLINE, NULL);
 
 	return start;
 }

@@ -30,11 +30,11 @@
 #include "mono/metadata/class-internals.h"
 #include "mono/metadata/metadata-internals.h"
 #include "mono/metadata/domain-internals.h"
-#include "mono/metadata/gc-internal.h"
+#include "mono/metadata/gc-internals.h"
 #include "mono/metadata/threads-types.h"
 #include "mono/metadata/string-icalls.h"
 #include "mono/metadata/attrdefs.h"
-#include "mono/metadata/gc-internal.h"
+#include "mono/metadata/gc-internals.h"
 #include "mono/metadata/cominterop.h"
 #include "mono/metadata/remoting.h"
 #include "mono/metadata/reflection-internals.h"
@@ -66,8 +66,8 @@ enum {
  * The marshal lock is a non-recursive complex lock that sits below the domain lock in the
  * runtime locking latice. Which means it can take simple locks suck as the image lock.
  */
-#define mono_marshal_lock() mono_locks_acquire (&marshal_mutex, MarshalLock)
-#define mono_marshal_unlock() mono_locks_release (&marshal_mutex, MarshalLock)
+#define mono_marshal_lock() mono_locks_os_acquire (&marshal_mutex, MarshalLock)
+#define mono_marshal_unlock() mono_locks_os_release (&marshal_mutex, MarshalLock)
 static mono_mutex_t marshal_mutex;
 static gboolean marshal_mutex_initialized;
 
@@ -187,7 +187,7 @@ mono_marshal_init (void)
 
 	if (!module_initialized) {
 		module_initialized = TRUE;
-		mono_mutex_init_recursive (&marshal_mutex);
+		mono_os_mutex_init_recursive (&marshal_mutex);
 		marshal_mutex_initialized = TRUE;
 
 		register_icall (ves_icall_System_Threading_Thread_ResetAbort, "ves_icall_System_Threading_Thread_ResetAbort", "void", TRUE);
@@ -257,7 +257,7 @@ mono_marshal_cleanup (void)
 
 	mono_native_tls_free (load_type_info_tls_id);
 	mono_native_tls_free (last_error_tls_id);
-	mono_mutex_destroy (&marshal_mutex);
+	mono_os_mutex_destroy (&marshal_mutex);
 	marshal_mutex_initialized = FALSE;
 }
 
@@ -2453,7 +2453,15 @@ mono_marshal_method_from_wrapper (MonoMethod *wrapper)
 		}
 		return m;
 	case MONO_WRAPPER_SYNCHRONIZED:
-		return info->d.synchronized.method;
+		m = info->d.synchronized.method;
+		if (wrapper->is_inflated) {
+			MonoError error;
+			MonoMethod *result;
+			result = mono_class_inflate_generic_method_checked (m, mono_method_get_context (wrapper), &error);
+			g_assert (mono_error_ok (&error)); /* FIXME don't swallow the error */
+			return result;
+		}
+		return m;
 	case MONO_WRAPPER_UNBOX:
 		return info->d.unbox.method;
 	case MONO_WRAPPER_MANAGED_TO_NATIVE:
@@ -6115,17 +6123,19 @@ emit_marshal_array (EmitMarshalContext *m, int argnum, MonoType *t,
 				break;
 			}
 
-			mono_mb_emit_ldarg (mb, argnum);
+			if (t->byref ) {
+				mono_mb_emit_ldarg (mb, argnum);
 
-			/* Create the managed array */
-			mono_mb_emit_ldarg (mb, param_num);
-			if (m->sig->params [param_num]->byref)
-				// FIXME: Support other types
-				mono_mb_emit_byte (mb, CEE_LDIND_I4);
-			mono_mb_emit_byte (mb, CEE_CONV_OVF_I);
-			mono_mb_emit_op (mb, CEE_NEWARR, klass->element_class);
-			/* Store into argument */
-			mono_mb_emit_byte (mb, CEE_STIND_I);
+				/* Create the managed array */
+				mono_mb_emit_ldarg (mb, param_num);
+				if (m->sig->params [param_num]->byref)
+					// FIXME: Support other types
+					mono_mb_emit_byte (mb, CEE_LDIND_I4);
+				mono_mb_emit_byte (mb, CEE_CONV_OVF_I);
+				mono_mb_emit_op (mb, CEE_NEWARR, klass->element_class);
+				/* Store into argument */
+				mono_mb_emit_byte (mb, CEE_STIND_I);
+			}
 		}
 
 		if (need_convert || need_free) {

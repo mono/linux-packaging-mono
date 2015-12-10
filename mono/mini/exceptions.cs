@@ -24,14 +24,14 @@ using System.Runtime.CompilerServices;
  * the IL code looks.
  */
 
-#if MOBILE
+#if __MOBILE__
 class ExceptionTests
 #else
 class Tests
 #endif
 {
 
-#if !MOBILE
+#if !__MOBILE__
 	public static int Main (string[] args) {
 		return TestDriver.RunTests (typeof (Tests), args);
 	}
@@ -2589,7 +2589,7 @@ class Tests
 	public static int test_0_lmf_filter () {
 		try {
 			// The invoke calls a runtime-invoke wrapper which has a filter clause
-#if MOBILE
+#if __MOBILE__
 			typeof (ExceptionTests).GetMethod ("lmf_filter").Invoke (null, new object [] { });
 #else
 			typeof (Tests).GetMethod ("lmf_filter").Invoke (null, new object [] { });
@@ -2816,9 +2816,37 @@ class Tests
 		}
 		return finally_called ? 0 : 1;
 	}
+
+	static int array_len_1 = 1;
+
+	public static int test_0_bounds_check_negative_constant () {
+		try {
+			byte[] arr = new byte [array_len_1];
+			byte b = arr [-1];
+			return 1;
+		} catch {
+		}
+		try {
+			byte[] arr = new byte [array_len_1];
+			arr [-1] = 1;
+			return 2;
+		} catch {
+		}
+		return 0;
+	}
+
+	public static int test_0_string_bounds_check_negative_constant () {
+		try {
+			string s = "A";
+			char c = s [-1];
+			return 1;
+		} catch {
+		}
+		return 0;
+	}
 }
 
-#if !MOBILE
+#if !__MOBILE__
 class ExceptionTests : Tests
 {
 }

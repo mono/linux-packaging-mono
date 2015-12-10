@@ -7,7 +7,7 @@
 //
 // Parallel.cs
 //
-// <OWNER>Microsoft</OWNER>
+// <OWNER>[....]</OWNER>
 //
 // A helper class that contains parallel versions of various looping constructs.  This
 // internally uses the task parallel library, but takes care to expose very little 
@@ -1109,7 +1109,7 @@ namespace System.Threading.Tasks
             }
 #endif
 
-            ParallelForReplicatingTask rootTask = null; // eliminates "Use of unassigned local variable" compiler 
+            ParallelForReplicatingTask rootTask = null; // eliminates "Use of unassigned local variable" compiler bug below.
 
             try
             {
@@ -1432,7 +1432,7 @@ namespace System.Threading.Tasks
             }
 #endif
 
-            ParallelForReplicatingTask rootTask = null; // eliminates "Use of unassigned local variable" compiler 
+            ParallelForReplicatingTask rootTask = null; // eliminates "Use of unassigned local variable" compiler bug below.
 
             try
             {

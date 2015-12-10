@@ -72,6 +72,14 @@ namespace Mono.Security.Interface
 
 	public abstract class MonoTlsProvider
 	{
+		public abstract Guid ID {
+			get;
+		}
+
+		public abstract string Name {
+			get;
+		}
+
 #region SslStream
 
 		/*
@@ -96,10 +104,10 @@ namespace Mono.Security.Interface
 		}
 
 		/*
-		 * Obtain a @MonoSslStream instance.
+		 * Obtain a @IMonoSslStream instance.
 		 *
 		 */
-		public abstract MonoSslStream CreateSslStream (
+		public abstract IMonoSslStream CreateSslStream (
 			Stream innerStream, bool leaveInnerStreamOpen,
 			MonoTlsSettings settings = null);
 
@@ -107,15 +115,28 @@ namespace Mono.Security.Interface
 
 #region Certificate Validation
 
+		/*
+		 * Allows a TLS provider to provide a custom system certificiate validator.
+		 */
 		public virtual bool HasCustomSystemCertificateValidator {
 			get { return false; }
 		}
 
+		/*
+		 * If @serverMode is true, then we're a server and want to validate a certificate
+		 * that we received from a client.
+		 *
+		 * On OS X and Mobile, the @chain will be initialized with the @certificates, but not actually built.
+		 *
+		 * Returns `true` if certificate validation has been performed and `false` to invoke the
+		 * default system validator.
+		 */
 		public virtual bool InvokeSystemCertificateValidator (
 			ICertificateValidator validator, string targetHost, bool serverMode,
-			X509CertificateCollection certificates, ref MonoSslPolicyErrors errors,
-			ref int status11)
+			X509CertificateCollection certificates, X509Chain chain, out bool success,
+			ref MonoSslPolicyErrors errors, ref int status11)
 		{
+			success = false;
 			return false;
 		}
 

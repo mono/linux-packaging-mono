@@ -239,12 +239,6 @@ static gboolean do_concurrent_checks = FALSE;
    each collection */
 static gboolean do_scan_starts_check = FALSE;
 
-/*
- * If the major collector is concurrent and this is FALSE, we will
- * never initiate a synchronous major collection, unless requested via
- * GC.Collect().
- */
-static gboolean allow_synchronous_major = TRUE;
 static gboolean disable_minor_collections = FALSE;
 static gboolean disable_major_collections = FALSE;
 static gboolean do_verify_nursery = FALSE;
@@ -346,7 +340,7 @@ nursery_canaries_enabled (void)
  * ########  Global data.
  * ######################################################################
  */
-LOCK_DECLARE (gc_mutex);
+MonoCoopMutex gc_mutex;
 gboolean sgen_try_free_some_memory;
 
 #define SCAN_START_SIZE	SGEN_SCAN_START_SIZE
@@ -359,7 +353,7 @@ GCMemSection *nursery_section = NULL;
 static volatile mword lowest_heap_address = ~(mword)0;
 static volatile mword highest_heap_address = 0;
 
-LOCK_DECLARE (sgen_interruption_mutex);
+MonoCoopMutex sgen_interruption_mutex;
 
 int current_collection_generation = -1;
 static volatile gboolean concurrent_collection_in_progress = FALSE;
@@ -2244,17 +2238,6 @@ sgen_perform_collection (size_t requested_size, int generation_to_collect, const
 		goto done;
 	}
 
-	/*
-	 * If we've been asked to do a major collection, and the major collector wants to
-	 * run synchronously (to evacuate), we set the flag to do that.
-	 */
-	if (generation_to_collect == GENERATION_OLD &&
-			allow_synchronous_major &&
-			major_collector.want_synchronous_collection &&
-			*major_collector.want_synchronous_collection) {
-		wait_to_finish = TRUE;
-	}
-
 	SGEN_ASSERT (0, !concurrent_collection_in_progress, "Why did this not get handled above?");
 
 	/*
@@ -2726,16 +2709,6 @@ sgen_gc_get_used_size (void)
 	return tot;
 }
 
-gboolean
-sgen_set_allow_synchronous_major (gboolean flag)
-{
-	if (!major_collector.is_concurrent)
-		return flag;
-
-	allow_synchronous_major = flag;
-	return TRUE;
-}
-
 void
 sgen_env_var_error (const char *env_var, const char *fallback, const char *description_format, ...)
 {
@@ -2807,11 +2780,11 @@ sgen_gc_init (void)
 	mono_thread_smr_init ();
 #endif
 
-	LOCK_INIT (gc_mutex);
+	mono_coop_mutex_init (&gc_mutex);
 
 	gc_debug_file = stderr;
 
-	LOCK_INIT (sgen_interruption_mutex);
+	mono_coop_mutex_init (&sgen_interruption_mutex);
 
 	if ((env = g_getenv (MONO_GC_PARAMS_NAME))) {
 		opts = g_strsplit (env, ",", -1);
@@ -2952,23 +2925,6 @@ sgen_gc_init (void)
 				}
 				continue;
 			}
-			if (g_str_has_prefix (opt, "allow-synchronous-major=")) {
-				if (!major_collector.is_concurrent) {
-					sgen_env_var_error (MONO_GC_PARAMS_NAME, "Ignoring.", "`allow-synchronous-major` is only valid for the concurrent major collector.");
-					continue;
-				}
-
-				opt = strchr (opt, '=') + 1;
-
-				if (!strcmp (opt, "yes")) {
-					allow_synchronous_major = TRUE;
-				} else if (!strcmp (opt, "no")) {
-					allow_synchronous_major = FALSE;
-				} else {
-					sgen_env_var_error (MONO_GC_PARAMS_NAME, "Using default value.", "`allow-synchronous-major` must be either `yes' or `no'.");
-					continue;
-				}
-			}
 
 			if (!strcmp (opt, "cementing")) {
 				cement_enabled = TRUE;
@@ -3001,8 +2957,6 @@ sgen_gc_init (void)
 			fprintf (stderr, "  minor=COLLECTOR (where COLLECTOR is `simple' or `split')\n");
 			fprintf (stderr, "  wbarrier=WBARRIER (where WBARRIER is `remset' or `cardtable')\n");
 			fprintf (stderr, "  [no-]cementing\n");
-			if (major_collector.is_concurrent)
-				fprintf (stderr, "  allow-synchronous-major=FLAG (where FLAG is `yes' or `no')\n");
 			if (major_collector.print_gc_param_usage)
 				major_collector.print_gc_param_usage ();
 			if (sgen_minor_collector.print_gc_param_usage)
@@ -3191,7 +3145,7 @@ sgen_get_nursery_clear_policy (void)
 void
 sgen_gc_lock (void)
 {
-	LOCK_GC;
+	mono_coop_mutex_lock (&gc_mutex);
 }
 
 void
@@ -3199,7 +3153,7 @@ sgen_gc_unlock (void)
 {
 	gboolean try_free = sgen_try_free_some_memory;
 	sgen_try_free_some_memory = FALSE;
-	mono_mutex_unlock (&gc_mutex);
+	mono_coop_mutex_unlock (&gc_mutex);
 	if (try_free)
 		mono_thread_hazardous_try_free_some ();
 }

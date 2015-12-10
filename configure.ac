@@ -2725,6 +2725,7 @@ case "$host" in
 	mips*)
 		TARGET=MIPS;
 		arch_target=mips;
+		with_tls=pthread;
 		ACCESS_UNALIGNED="no"
 
 		AC_MSG_CHECKING(for mips n32)
@@ -3619,7 +3620,7 @@ AC_SUBST(X11)
 AC_SUBST(GDKX11)
 AC_SUBST(GTKX11)
 AC_SUBST(XINERAMA)
-AC_DEFINE_UNQUOTED(ARCHITECTURE,"$arch_target",[The architecture this is running on])
+AC_DEFINE_UNQUOTED(MONO_ARCHITECTURE,"$arch_target",[The architecture this is running on])
 AC_SUBST(arch_target)
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)

@@ -103,21 +103,20 @@ am__libwapi_la_SOURCES_DIST = access.h collection.c collection.h \
 	context.c context.h error.c error.h events.c events.h \
 	event-private.h handles.c handles.h handles-private.h io.c \
 	io.h io-portability.c io-portability.h io-private.h io-layer.h \
-	locking.c macros.h messages.c messages.h misc.c misc-private.h \
-	mutexes.c mutexes.h mutex-private.h posix.c processes.c \
-	processes.h process-private.h security.c security.h \
-	semaphores.c semaphores.h semaphore-private.h shared.c \
-	shared.h sockets.c sockets.h socket-private.h \
-	socket-wrappers.h status.h threads.h thread-private.h \
-	timefuncs.c timefuncs.h timefuncs-private.h types.h uglify.h \
-	versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
-	wapi_glob.c wapi.h wapi-private.h wthreads.c wapi-remap.h \
-	io-layer-dummy.c
+	locking.c macros.h messages.c messages.h mutexes.c mutexes.h \
+	mutex-private.h posix.c processes.c processes.h \
+	process-private.h security.c security.h semaphores.c \
+	semaphores.h semaphore-private.h shared.c shared.h sockets.c \
+	sockets.h socket-private.h socket-wrappers.h status.h \
+	threads.h thread-private.h timefuncs.c timefuncs.h \
+	timefuncs-private.h types.h uglify.h versioninfo.c \
+	versioninfo.h wait.c wait.h wapi_glob.h wapi_glob.c wapi.h \
+	wapi-private.h wthreads.c wapi-remap.h io-layer-dummy.c
 am__objects_1 = collection.lo context.lo error.lo events.lo handles.lo \
-	io.lo io-portability.lo locking.lo messages.lo misc.lo \
-	mutexes.lo posix.lo processes.lo security.lo semaphores.lo \
-	shared.lo sockets.lo timefuncs.lo versioninfo.lo wait.lo \
-	wapi_glob.lo wthreads.lo
+	io.lo io-portability.lo locking.lo messages.lo mutexes.lo \
+	posix.lo processes.lo security.lo semaphores.lo shared.lo \
+	sockets.lo timefuncs.lo versioninfo.lo wait.lo wapi_glob.lo \
+	wthreads.lo
 am__objects_2 =
 am__objects_3 = io-layer-dummy.lo
 @HOST_WIN32_FALSE@am_libwapi_la_OBJECTS = $(am__objects_1) \
@@ -451,8 +450,6 @@ OTHER_SRC = \
 	macros.h		\
 	messages.c		\
 	messages.h		\
-	misc.c			\
-	misc-private.h		\
 	mutexes.c		\
 	mutexes.h		\
 	mutex-private.h		\
@@ -567,7 +564,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/locking.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/messages.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mutexes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/processes.Plo@am__quote@

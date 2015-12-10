@@ -1015,7 +1015,12 @@ class MDocUpdater : MDocCommand
 					XmlDocument doc = new XmlDocument ();
 					doc.Load (typefile.FullName);
 					XmlElement e = doc.SelectSingleNode("/Type") as XmlElement;
-					string assemblyName = doc.SelectSingleNode ("/Type/AssemblyInfo/AssemblyName").InnerText;
+					var assemblyNameNode = doc.SelectSingleNode ("/Type/AssemblyInfo/AssemblyName");
+					if (assemblyNameNode == null){
+						Warning ("Did not find /Type/AssemblyInfo/AssemblyName on {0}", typefile.FullName);
+						continue;
+					}
+					string assemblyName = assemblyNameNode.InnerText;
 					AssemblyDefinition assembly = assemblies.FirstOrDefault (a => a.Name.Name == assemblyName);
 
 					Action saveDoc = () => {
@@ -1663,7 +1668,11 @@ class MDocUpdater : MDocCommand
 	/// <returns>The assembly that was either added, or was already present</returns>
 	static XmlElement AddAssemblyNameToNode (XmlElement root, ModuleDefinition module)
 	{
-		Func<XmlElement, bool> assemblyFilter = x => x.SelectSingleNode ("AssemblyName").InnerText == module.Assembly.Name.Name;
+		Func<XmlElement, bool> assemblyFilter = x => {
+			var existingName = x.SelectSingleNode ("AssemblyName");
+			return existingName != null && existingName.InnerText == module.Assembly.Name.Name;
+		};
+		
 		return AddAssemblyXmlNode (
 			root.SelectNodes ("AssemblyInfo").Cast<XmlElement> ().ToArray (), 
 			assemblyFilter, x => WriteElementText (x, "AssemblyName", module.Assembly.Name.Name), 

@@ -37,7 +37,7 @@
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/object-internals.h>
 #include <mono/metadata/threads-types.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/utils/mono-threads.h>
 #include "attach.h"
 
@@ -98,10 +98,6 @@ static HANDLE receiver_thread_handle;
 static gboolean stop_receiver_thread;
 
 static gboolean needs_to_start, started;
-
-#define agent_lock() mono_mutex_lock (&agent_mutex)
-#define agent_unlock() mono_mutex_unlock (&agent_mutex)
-static mono_mutex_t agent_mutex;
 
 static void transport_connect (void);
 
@@ -184,8 +180,6 @@ mono_attach_parse_options (char *options)
 void
 mono_attach_init (void)
 {
-	mono_mutex_init_recursive (&agent_mutex);
-
 	config.enabled = TRUE;
 }
 

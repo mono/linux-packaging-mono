@@ -86,17 +86,24 @@ namespace Mono.Security.Interface
 			get;
 		}
 
-		X509Certificate SelectClientCertificate (
+		/*
+		 * Returns `true` if a client certificate has been selected (which could be `null`).
+		 */
+		bool SelectClientCertificate (
 			string targetHost, X509CertificateCollection localCertificates, X509Certificate remoteCertificate,
-			string[] acceptableIssuers);
+			string[] acceptableIssuers, out X509Certificate clientCertificate);
 
-		ValidationResult ValidateChain (string targetHost, X509CertificateCollection certificates);
+		/*
+		 * If @serverMode is true, then we're a server and want to validate a certificate that we received from a client.
+		 */
+		ValidationResult ValidateCertificate (string targetHost, bool serverMode, X509CertificateCollection certificates);
 
-		ValidationResult ValidateClientCertificate (X509CertificateCollection certificates);
-
+		/*
+		 * On OS X and Mobile, the @chain will be initialized with the @certificates, but not actually built.
+		 */
 		bool InvokeSystemValidator (
 			string targetHost, bool serverMode, X509CertificateCollection certificates,
-			ref MonoSslPolicyErrors errors, ref int status11);
+			X509Chain chain, ref MonoSslPolicyErrors errors, ref int status11);
 	}
 
 	public static class CertificateValidationHelper

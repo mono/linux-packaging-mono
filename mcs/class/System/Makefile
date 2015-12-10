@@ -23,8 +23,23 @@ TEST_MCS_FLAGS = -r:System.Drawing.dll -r:Mono.Security.dll -r:System.Data -r:Sy
 	$(foreach f, $(TEST_RESOURCES), -resource:$(f),$(notdir $(f)))
 
 REFERENCE_SOURCES_FLAGS = -d:FEATURE_PAL,SYSTEM_NAMESPACE,MONO,PLATFORM_UNIX
+ifndef NO_PROCESS_START
+REFERENCE_SOURCES_FLAGS += -d:MONO_FEATURE_PROCESS_START
+TEST_MCS_FLAGS += -d:MONO_FEATURE_PROCESS_START
+endif
+
 LIB_MCS_FLAGS = -nowarn:618 -d:CONFIGURATION_2_0 $(REFERENCE_SOURCES_FLAGS) -unsafe $(RESOURCE_FILES:%=-resource:%)
 TEST_MCS_FLAGS += -r:System.Configuration
+
+ifndef NO_THREAD_ABORT
+REFERENCE_SOURCES_FLAGS += -d:MONO_FEATURE_THREAD_ABORT
+TEST_MCS_FLAGS += -d:MONO_FEATURE_THREAD_ABORT
+endif
+
+ifndef NO_THREAD_SUSPEND_RESUME
+REFERENCE_SOURCES_FLAGS += -d:MONO_FEATURE_THREAD_SUSPEND_RESUME
+TEST_MCS_FLAGS += -d:MONO_FEATURE_THREAD_SUSPEND_RESUME
+endif
 
 RESOURCE_STRINGS = ../../../external/referencesource/System/System.txt
 
@@ -89,7 +104,7 @@ artifacts = $(system_library_deps) 			\
 
 .NOTPARALLEL: $(system_library_deps)
 
-$(the_libdir_base)System.dll: $(system_library_deps) 
+$(the_libdir_base)System.dll: $(system_library_deps) ../Mono.Security/Makefile
 
 ifeq (bare/,$(intermediate))
 build-bare:
@@ -111,7 +126,7 @@ $(the_libdir_base)System.Xml.dll:
 $(bare_libdir)/System.Xml.dll:
 	(cd ../System.XML; $(MAKE) $@)
 
-$(the_libdir_base)Mono.Security.dll:
+$(the_libdir_base)Mono.Security.dll: ../Mono.Security/Makefile
 	(cd ../Mono.Security; $(MAKE))
 
 $(the_libdir_base)System.Configuration.dll:

@@ -85,12 +85,20 @@ namespace System.Net.Security
 
 	public class SslStream : AuthenticatedStream, MNS.IMonoSslStream
 	{
-		MonoSslStream impl;
+		MonoTlsProvider provider;
+		IMonoSslStream impl;
 
-		internal MonoSslStream Impl {
+		internal IMonoSslStream Impl {
 			get {
 				CheckDisposed ();
 				return impl;
+			}
+		}
+
+		internal MonoTlsProvider Provider {
+			get {
+				CheckDisposed ();
+				return provider;
 			}
 		}
 
@@ -107,7 +115,7 @@ namespace System.Net.Security
 		public SslStream (Stream innerStream, bool leaveInnerStreamOpen)
 			: base (innerStream, leaveInnerStreamOpen)
 		{
-			var provider = GetProvider ();
+			provider = GetProvider ();
 			impl = provider.CreateSslStream (innerStream, leaveInnerStreamOpen);
 		}
 
@@ -119,14 +127,14 @@ namespace System.Net.Security
 		public SslStream (Stream innerStream, bool leaveInnerStreamOpen, RemoteCertificateValidationCallback userCertificateValidationCallback, LocalCertificateSelectionCallback userCertificateSelectionCallback)
 			: base (innerStream, leaveInnerStreamOpen)
 		{
-			var provider = GetProvider ();
-			var settings = new MonoTlsSettings ();
+			provider = GetProvider ();
+			var settings = MonoTlsSettings.CopyDefaultSettings ();
 			settings.RemoteCertificateValidationCallback = MNS.Private.CallbackHelpers.PublicToMono (userCertificateValidationCallback);
 			settings.ClientCertificateSelectionCallback = MNS.Private.CallbackHelpers.PublicToMono (userCertificateSelectionCallback);
 			impl = provider.CreateSslStream (innerStream, leaveInnerStreamOpen, settings);
 		}
 
-		internal SslStream (Stream innerStream, bool leaveInnerStreamOpen, MonoSslStream impl)
+		internal SslStream (Stream innerStream, bool leaveInnerStreamOpen, IMonoSslStream impl)
 			: base (innerStream, leaveInnerStreamOpen)
 		{
 			this.impl = impl;
@@ -331,7 +339,7 @@ namespace System.Net.Security
 		void CheckDisposed ()
 		{
 			if (impl == null)
-				throw new ObjectDisposedException ("MonoSslStream");
+				throw new ObjectDisposedException ("SslStream");
 		}
 
 		protected override void Dispose (bool disposing)

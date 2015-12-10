@@ -50,7 +50,7 @@
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/mono-debug.h>
 #include <mono/metadata/mono-debug-debugger.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/security-manager.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/security-core-clr.h>
@@ -69,6 +69,8 @@
 #include "jit.h"
 #include "debugger-agent.h"
 #include "seq-points.h"
+#include "aot-compiler.h"
+#include "mini-llvm.h"
 
 #define BRANCH_COST 10
 #define INLINE_LENGTH_LIMIT 20
@@ -2189,8 +2191,12 @@ target_type_is_incompatible (MonoCompile *cfg, MonoType *target, MonoInst *arg)
 
 	if (target->byref) {
 		/* FIXME: check that the pointed to types match */
-		if (arg->type == STACK_MP)
-			return target->type != MONO_TYPE_I && arg->klass != mono_class_from_mono_type (target);
+		if (arg->type == STACK_MP) {
+			MonoClass *base_class = mono_class_from_mono_type (target);
+			/* This is needed to handle gshared types + ldaddr */
+			simple_type = mini_get_underlying_type (&base_class->byval_arg);
+			return target->type != MONO_TYPE_I && arg->klass != base_class && arg->klass != mono_class_from_mono_type (simple_type);
+		}
 		if (arg->type == STACK_PTR)
 			return 0;
 		return 1;
@@ -2262,11 +2268,13 @@ target_type_is_incompatible (MonoCompile *cfg, MonoType *target, MonoInst *arg)
 		return 0;
 	case MONO_TYPE_GENERICINST:
 		if (mono_type_generic_inst_is_valuetype (simple_type)) {
+			MonoClass *target_class;
 			if (arg->type != STACK_VTYPE)
 				return 1;
 			klass = mono_class_from_mono_type (simple_type);
+			target_class = mono_class_from_mono_type (target);
 			/* The second cases is needed when doing partial sharing */
-			if (klass != arg->klass && mono_class_from_mono_type (target) != arg->klass)
+			if (klass != arg->klass && target_class != arg->klass && target_class != mono_class_from_mono_type (mini_get_underlying_type (&arg->klass->byval_arg)))
 				return 1;
 			return 0;
 		} else {
@@ -4072,10 +4080,10 @@ handle_unbox_gsharedvt (MonoCompile *cfg, MonoClass *klass, MonoInst *obj)
 	NEW_BBLOCK (cfg, is_nullable_bb);
 	NEW_BBLOCK (cfg, end_bb);
 	is_ref = emit_get_gsharedvt_info_klass (cfg, klass, MONO_RGCTX_INFO_CLASS_BOX_TYPE);
-	MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, is_ref->dreg, 1);
+	MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, is_ref->dreg, MONO_GSHAREDVT_BOX_TYPE_REF);
 	MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_IBEQ, is_ref_bb);
 
-	MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, is_ref->dreg, 2);
+	MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, is_ref->dreg, MONO_GSHAREDVT_BOX_TYPE_NULLABLE);
 	MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_IBEQ, is_nullable_bb);
 
 	/* This will contain either the address of the unboxed vtype, or an address of the temporary where the ref is stored */
@@ -4268,10 +4276,10 @@ handle_box (MonoCompile *cfg, MonoInst *val, MonoClass *klass, int context_used)
 		NEW_BBLOCK (cfg, is_nullable_bb);
 		NEW_BBLOCK (cfg, end_bb);
 		is_ref = emit_get_gsharedvt_info_klass (cfg, klass, MONO_RGCTX_INFO_CLASS_BOX_TYPE);
-		MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, is_ref->dreg, 1);
+		MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, is_ref->dreg, MONO_GSHAREDVT_BOX_TYPE_REF);
 		MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_IBEQ, is_ref_bb);
 
-		MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, is_ref->dreg, 2);
+		MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, is_ref->dreg, MONO_GSHAREDVT_BOX_TYPE_NULLABLE);
 		MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_IBEQ, is_nullable_bb);
 
 		/* Non-ref case */
@@ -5129,9 +5137,12 @@ handle_constrained_gsharedvt_call (MonoCompile *cfg, MonoMethod *cmethod, MonoMe
 			args [4] = ins;
 
 			if (mini_is_gsharedvt_type (fsig->params [0])) {
-				int addr_reg;
+				int addr_reg, deref_arg_reg;
 
-				args [3] = emit_get_gsharedvt_info_klass (cfg, mono_class_from_mono_type (fsig->params [0]), MONO_RGCTX_INFO_CLASS_BOX_TYPE);
+				ins = emit_get_gsharedvt_info_klass (cfg, mono_class_from_mono_type (fsig->params [0]), MONO_RGCTX_INFO_CLASS_BOX_TYPE);
+				deref_arg_reg = alloc_preg (cfg);
+				/* deref_arg = BOX_TYPE != MONO_GSHAREDVT_BOX_TYPE_VTYPE */
+				EMIT_NEW_BIALU_IMM (cfg, args [3], OP_ISUB_IMM, deref_arg_reg, ins->dreg, 1);
 
 				EMIT_NEW_VARLOADA_VREG (cfg, ins, sp [1]->dreg, fsig->params [0]);
 				addr_reg = ins->dreg;
@@ -5633,6 +5644,9 @@ emit_array_store (MonoCompile *cfg, MonoClass *klass, MonoInst **sp, gboolean sa
 			int index_reg = sp [1]->dreg;
 			int offset = (mono_class_array_element_size (klass) * sp [1]->inst_c0) + MONO_STRUCT_OFFSET (MonoArray, vector);
 
+			if (SIZEOF_REGISTER == 8 && COMPILE_LLVM (cfg))
+				MONO_EMIT_NEW_UNALU (cfg, OP_ZEXT_I4, index_reg, index_reg);
+
 			if (safety_checks)
 				MONO_EMIT_BOUNDS_CHECK (cfg, array_reg, MonoArray, max_length, index_reg);
 			EMIT_NEW_STORE_MEMBASE_TYPE (cfg, ins, &klass->byval_arg, array_reg, offset, sp [2]->dreg);
@@ -5748,6 +5762,9 @@ emit_array_unsafe_mov (MonoCompile *cfg, MonoMethodSignature *fsig, MonoInst **a
 {
 	MonoClass *param_klass = mono_class_from_mono_type (fsig->params [0]);
 	MonoClass *return_klass = mono_class_from_mono_type (fsig->ret);
+
+	if (mini_is_gsharedvt_variable_type (fsig->ret))
+		return NULL;
 
 	//Valuetypes that are semantically equivalent or numbers than can be widened to
 	if (is_unsafe_mov_compatible (cfg, param_klass, return_klass))
@@ -5881,8 +5898,12 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 			int add_reg = alloc_preg (cfg);
 
 #if SIZEOF_REGISTER == 8
-			/* The array reg is 64 bits but the index reg is only 32 */
-			MONO_EMIT_NEW_UNALU (cfg, OP_SEXT_I4, index_reg, args [1]->dreg);
+			if (COMPILE_LLVM (cfg)) {
+				MONO_EMIT_NEW_UNALU (cfg, OP_ZEXT_I4, index_reg, args [1]->dreg);
+			} else {
+				/* The array reg is 64 bits but the index reg is only 32 */
+				MONO_EMIT_NEW_UNALU (cfg, OP_SEXT_I4, index_reg, args [1]->dreg);
+			}
 #else
 			index_reg = args [1]->dreg;
 #endif	
@@ -9004,6 +9025,9 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 			sp -= n;
 
+			/*
+			 * We have the `constrained.' prefix opcode.
+			 */
 			if (constrained_class) {
 				if (mini_is_gsharedvt_klass (constrained_class)) {
 					if ((cmethod->klass != mono_defaults.object_class) && constrained_class->valuetype && cmethod->klass->valuetype) {
@@ -9018,9 +9042,6 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 					}
 				}
 
-				/*
-				 * We have the `constrained.' prefix opcode.
-				 */
 				if (constrained_partial_call) {
 					gboolean need_box = TRUE;
 
@@ -9062,7 +9083,7 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 						NEW_BBLOCK (cfg, end_bb);
 
 						box_type = emit_get_rgctx_virt_method (cfg, mono_class_check_context_used (constrained_class), constrained_class, cmethod, MONO_RGCTX_INFO_VIRT_METHOD_BOX_TYPE);
-						MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, box_type->dreg, 1);
+						MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, box_type->dreg, MONO_GSHAREDVT_BOX_TYPE_REF);
 						MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_IBEQ, is_ref_bb);
 
 						/* Non-ref case */
@@ -11077,6 +11098,8 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 						context_used = mini_class_check_context_used (cfg, klass);
 
 						offset_ins = emit_get_gsharedvt_info (cfg, field, MONO_RGCTX_INFO_FIELD_OFFSET);
+						/* The value is offset by 1 */
+						EMIT_NEW_BIALU_IMM (cfg, ins, OP_PSUB_IMM, offset_ins->dreg, offset_ins->dreg, 1);
 						dreg = alloc_ireg_mp (cfg);
 						EMIT_NEW_BIALU (cfg, ins, OP_PADD, dreg, sp [0]->dreg, offset_ins->dreg);
 						/* The decomposition will call mini_emit_stobj () which will emit a wbarrier if needed */
@@ -11160,6 +11183,8 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 						MonoInst *offset_ins;
 
 						offset_ins = emit_get_gsharedvt_info (cfg, field, MONO_RGCTX_INFO_FIELD_OFFSET);
+						/* The value is offset by 1 */
+						EMIT_NEW_BIALU_IMM (cfg, ins, OP_PSUB_IMM, offset_ins->dreg, offset_ins->dreg, 1);
 						EMIT_NEW_BIALU (cfg, ins, OP_PADD, dreg, sp [0]->dreg, offset_ins->dreg);
 					} else {
 						EMIT_NEW_BIALU_IMM (cfg, ins, OP_PADD_IMM, dreg, sp [0]->dreg, foffset);
@@ -11176,6 +11201,8 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 						MonoInst *offset_ins;
 
 						offset_ins = emit_get_gsharedvt_info (cfg, field, MONO_RGCTX_INFO_FIELD_OFFSET);
+						/* The value is offset by 1 */
+						EMIT_NEW_BIALU_IMM (cfg, ins, OP_PSUB_IMM, offset_ins->dreg, offset_ins->dreg, 1);
 						dreg = alloc_ireg_mp (cfg);
 						EMIT_NEW_BIALU (cfg, ins, OP_PADD, dreg, sp [0]->dreg, offset_ins->dreg);
 						EMIT_NEW_LOAD_MEMBASE_TYPE (cfg, load, field->type, dreg, 0);
@@ -11301,6 +11328,8 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 					MonoInst *offset_ins;
 
 					offset_ins = emit_get_rgctx_field (cfg, context_used, field, MONO_RGCTX_INFO_FIELD_OFFSET);
+					/* The value is offset by 1 */
+					EMIT_NEW_BIALU_IMM (cfg, ins, OP_PSUB_IMM, offset_ins->dreg, offset_ins->dreg, 1);
 					dreg = alloc_ireg_mp (cfg);
 					EMIT_NEW_BIALU (cfg, ins, OP_PADD, dreg, static_data->dreg, offset_ins->dreg);
 				} else if (field->offset == 0) {
@@ -11699,6 +11728,9 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				int array_reg = sp [0]->dreg;
 				int index_reg = sp [1]->dreg;
 				int offset = (mono_class_array_element_size (klass) * sp [1]->inst_c0) + MONO_STRUCT_OFFSET (MonoArray, vector);
+
+				if (SIZEOF_REGISTER == 8 && COMPILE_LLVM (cfg))
+					MONO_EMIT_NEW_UNALU (cfg, OP_ZEXT_I4, index_reg, index_reg);
 
 				MONO_EMIT_BOUNDS_CHECK (cfg, array_reg, MonoArray, max_length, index_reg);
 				EMIT_NEW_LOAD_MEMBASE_TYPE (cfg, ins, &klass->byval_arg, array_reg, offset);

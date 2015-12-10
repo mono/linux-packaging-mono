@@ -25338,6 +25338,7 @@ case "$host" in
 	mips*)
 		TARGET=MIPS;
 		arch_target=mips;
+		with_tls=pthread;
 		ACCESS_UNALIGNED="no"
 
 		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for mips n32" >&5
@@ -27035,7 +27036,7 @@ fi
 
 
 cat >>confdefs.h <<_ACEOF
-#define ARCHITECTURE "$arch_target"
+#define MONO_ARCHITECTURE "$arch_target"
 _ACEOF
 
 

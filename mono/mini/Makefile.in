@@ -152,26 +152,27 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	trace.c trace.h patch-info.h mini-ops.h mini-arch.h \
 	dominators.c cfold.c regalloc.h helpers.c liveness.c ssa.c \
 	abcremoval.c abcremoval.h local-propagation.c driver.c \
-	debug-mini.c linear-scan.c aot-compiler.c aot-runtime.c \
-	graph.c mini-codegen.c mini-exceptions.c mini-trampolines.c \
-	branch-opts.c mini-generic-sharing.c simd-methods.h tasklets.c \
-	tasklets.h simd-intrinsics.c mini-native-types.c mini-unwind.h \
-	unwind.c image-writer.h image-writer.c dwarfwriter.h \
-	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
-	debugger-agent.c xdebug.c mini-llvm-cpp.h alias-analysis.c \
-	mini-cross-helpers.c arch-stubs.c llvm-runtime.h mini-llvm.c \
-	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-runtime.cpp \
-	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-arm64.c mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm.c mini-arm-tls.S mini-arm.h mini-arm-tls.h \
-	exceptions-arm.c tramp-arm.c mini-ia64.c mini-ia64.h \
-	exceptions-ia64.c tramp-ia64.c mini-mips.c mini-mips.h \
-	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
-	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
-	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
-	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
-	mini-x86.h exceptions-x86.c tramp-x86.c mini-windows.c \
-	mini-darwin.c mini-posix.c
+	debug-mini.c linear-scan.c aot-compiler.h aot-compiler.c \
+	aot-runtime.c graph.c mini-codegen.c mini-exceptions.c \
+	mini-trampolines.c branch-opts.c mini-generic-sharing.c \
+	simd-methods.h tasklets.c tasklets.h simd-intrinsics.c \
+	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
+	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
+	debugger-agent.h debugger-agent.c xdebug.c mini-llvm.h \
+	mini-llvm-cpp.h alias-analysis.c mini-cross-helpers.c \
+	arch-stubs.c llvm-runtime.h mini-llvm.c mini-llvm-loaded.c \
+	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
+	mini-amd64.h exceptions-amd64.c tramp-amd64.c mini-arm64.c \
+	mini-arm64.h exceptions-arm64.c tramp-arm64.c mini-arm.c \
+	mini-arm-tls.S mini-arm.h mini-arm-tls.h exceptions-arm.c \
+	tramp-arm.c mini-ia64.c mini-ia64.h exceptions-ia64.c \
+	tramp-ia64.c mini-mips.c mini-mips.h exceptions-mips.c \
+	tramp-mips.c mini-ppc.c mini-ppc.h exceptions-ppc.c \
+	tramp-ppc.c mini-s390x.c mini-s390x.h support-s390x.h \
+	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
+	exceptions-sparc.c tramp-sparc.c mini-x86.c mini-x86.h \
+	exceptions-x86.c tramp-x86.c mini-windows.c mini-darwin.c \
+	mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -203,7 +204,8 @@ am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-arch-stubs.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_2 = libmini_static_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_static_la-mini-llvm-loaded.lo \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_2 = libmini_static_la-mini-llvm-loaded.lo
 @ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@am__objects_3 =  \
 @ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.lo
@@ -274,26 +276,27 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	trace.h patch-info.h mini-ops.h mini-arch.h dominators.c \
 	cfold.c regalloc.h helpers.c liveness.c ssa.c abcremoval.c \
 	abcremoval.h local-propagation.c driver.c debug-mini.c \
-	linear-scan.c aot-compiler.c aot-runtime.c graph.c \
-	mini-codegen.c mini-exceptions.c mini-trampolines.c \
+	linear-scan.c aot-compiler.h aot-compiler.c aot-runtime.c \
+	graph.c mini-codegen.c mini-exceptions.c mini-trampolines.c \
 	branch-opts.c mini-generic-sharing.c simd-methods.h tasklets.c \
 	tasklets.h simd-intrinsics.c mini-native-types.c mini-unwind.h \
 	unwind.c image-writer.h image-writer.c dwarfwriter.h \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
-	debugger-agent.c xdebug.c mini-llvm-cpp.h alias-analysis.c \
-	mini-cross-helpers.c arch-stubs.c llvm-runtime.h mini-llvm.c \
-	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-runtime.cpp \
-	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-arm64.c mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm.c mini-arm-tls.S mini-arm.h mini-arm-tls.h \
-	exceptions-arm.c tramp-arm.c mini-ia64.c mini-ia64.h \
-	exceptions-ia64.c tramp-ia64.c mini-mips.c mini-mips.h \
-	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
-	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
-	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
-	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
-	mini-x86.h exceptions-x86.c tramp-x86.c mini-windows.c \
-	mini-darwin.c mini-posix.c
+	debugger-agent.c xdebug.c mini-llvm.h mini-llvm-cpp.h \
+	alias-analysis.c mini-cross-helpers.c arch-stubs.c \
+	llvm-runtime.h mini-llvm.c mini-llvm-loaded.c \
+	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
+	mini-amd64.h exceptions-amd64.c tramp-amd64.c mini-arm64.c \
+	mini-arm64.h exceptions-arm64.c tramp-arm64.c mini-arm.c \
+	mini-arm-tls.S mini-arm.h mini-arm-tls.h exceptions-arm.c \
+	tramp-arm.c mini-ia64.c mini-ia64.h exceptions-ia64.c \
+	tramp-ia64.c mini-mips.c mini-mips.h exceptions-mips.c \
+	tramp-mips.c mini-ppc.c mini-ppc.h exceptions-ppc.c \
+	tramp-ppc.c mini-s390x.c mini-s390x.h support-s390x.h \
+	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
+	exceptions-sparc.c tramp-sparc.c mini-x86.c mini-x86.h \
+	exceptions-x86.c tramp-x86.c mini-windows.c mini-darwin.c \
+	mini-posix.c
 am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-decompose.lo libmini_la-jit-icalls.lo \
@@ -316,7 +319,8 @@ am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_20 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_20 = libmini_la-mini-llvm-loaded.lo
 am__objects_21 = libmini_la-mini-amd64.lo \
 	libmini_la-exceptions-amd64.lo libmini_la-tramp-amd64.lo
@@ -371,9 +375,10 @@ am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
 @LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES =  \
 @LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
 @LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_4)
-am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp
+am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp \
+	llvm-jit.cpp
 @LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS = mini-llvm.lo \
-@LOADED_LLVM_TRUE@	mini-llvm-cpp.lo
+@LOADED_LLVM_TRUE@	mini-llvm-cpp.lo llvm-jit.lo
 libmono_llvm_la_OBJECTS = $(am_libmono_llvm_la_OBJECTS)
 libmono_llvm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
@@ -861,7 +866,7 @@ lib_LTLIBRARIES = $(shared_libraries) $(am__append_1)
 @SHARED_MONO_TRUE@mini_common_lib = libmini.la
 @DISABLE_EXECUTABLES_FALSE@noinst_LTLIBRARIES = $(mini_common_lib) libmini-static.la
 @DISABLE_EXECUTABLES_TRUE@noinst_LTLIBRARIES = $(mini_common_lib)
-@LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp
+@LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 @LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(GLIB_LIBS) $(LLVM_LIBS) \
 @LOADED_LLVM_TRUE@	$(LLVM_LDFLAGS) $(am__append_2)
 @LOADED_LLVM_TRUE@@PLATFORM_DARWIN_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
@@ -1003,7 +1008,8 @@ posix_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@llvm_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm.c		\
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-loaded.c \
-@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.cpp
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.cpp \
+@ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.cpp
 
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@llvm_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@	mini-llvm-loaded.c
@@ -1044,6 +1050,7 @@ common_sources = \
 	driver.c		\
 	debug-mini.c		\
 	linear-scan.c		\
+	aot-compiler.h		\
 	aot-compiler.c		\
 	aot-runtime.c		\
 	graph.c			\
@@ -1068,6 +1075,7 @@ common_sources = \
 	debugger-agent.h 	\
 	debugger-agent.c	\
 	xdebug.c			\
+	mini-llvm.h			\
 	mini-llvm-cpp.h	\
 	alias-analysis.c	\
 	mini-cross-helpers.c \
@@ -1076,7 +1084,7 @@ common_sources = \
 
 test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	arrays.cs basic-float.cs basic-math.cs basic.cs exceptions.cs \
-	devirtualization.cs iltests.il.in test.cs generics.cs \
+	devirtualization.cs iltests.il test.cs generics.cs \
 	generics-variant-types.il basic-simd.cs aot-tests.cs \
 	gc-test.cs gshared.cs $(am__append_3)
 regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
@@ -1527,6 +1535,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-tramp-x86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-unwind.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-xdebug.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-jit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/llvm-runtime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main-sgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
@@ -2962,10 +2971,6 @@ generics.exe: generics.cs TestDriver.dll generics-variant-types.dll
 %.exe: %.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll
 
-iltests.il: iltests.il.in Makefile.am
-	echo '// DO NOT EDIT: This file has been generated from iltests.il.in' > iltests.il
-	cpp -Darch=$(arch_define) < $(srcdir)/iltests.il.in | sed 's/^#.*//' >> iltests.il
-
 %.exe: %.il
 	$(ILASM) -output=$@ $<
 
@@ -3045,7 +3050,7 @@ gsharedvtcheck:
 fullaotcheck: mono $(fullaot_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS=full
+	$(MAKE) fullaot-libs AOT_FLAGS=full GSHAREDVT=$(GSHAREDVT)
 	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot=full fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
@@ -3057,7 +3062,7 @@ fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
 fullaot-tmp/%.dylib: $(CLASS)/%
 	cp $(CLASS)/$* fullaot-tmp/
 	mkdir fullaot-tmp/$*-tmp
-	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
+	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper $(if $(GSHAREDVT),-O=gsharedvt) --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
 	rm -rf fullaot-tmp/$*-tmp
 
 llvmfullaotcheck:
@@ -3071,15 +3076,6 @@ llvmonlycheck: mono $(fullaot_regtests)
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  --aot=llvmonly fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
 	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --llvmonly fullaot-tmp/$$i --exclude '!FULLAOT' --exclude '!BITCODE' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
-
-# This can run in parallel
-fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
-
-fullaot-tmp/%.dylib: $(CLASS)/%
-	cp $(CLASS)/$* fullaot-tmp/
-	mkdir fullaot-tmp/$*-tmp
-	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
-	rm -rf fullaot-tmp/$*-tmp
 
 gccheck: gc-test.exe
 	MONO_GC_PARAMS=stack-mark=precise MONO_GC_DEBUG=clear-at-gc ./mono-sgen gc-test.exe	
@@ -3111,7 +3107,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.0.2050/140660e\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.0.2390/85c7bd0\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

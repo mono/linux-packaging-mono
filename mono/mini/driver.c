@@ -45,7 +45,7 @@
 #include <mono/metadata/mono-debug.h>
 #include <mono/metadata/security-manager.h>
 #include <mono/metadata/security-core-clr.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/coree.h>
 #include <mono/metadata/attach.h>
 #include "mono/utils/mono-counters.h"
@@ -53,6 +53,8 @@
 
 #include "mini.h"
 #include "jit.h"
+#include "aot-compiler.h"
+
 #include <string.h>
 #include <ctype.h>
 #include <locale.h>
@@ -1255,9 +1257,9 @@ mini_debug_usage (void)
 }
 
 #if defined(MONO_ARCH_ARCHITECTURE)
-/* Redefine ARCHITECTURE to include more information */
-#undef ARCHITECTURE
-#define ARCHITECTURE MONO_ARCH_ARCHITECTURE
+/* Redefine MONO_ARCHITECTURE to include more information */
+#undef MONO_ARCHITECTURE
+#define MONO_ARCHITECTURE MONO_ARCH_ARCHITECTURE
 #endif
 
 static const char info[] =
@@ -1278,7 +1280,7 @@ static const char info[] =
 #else
     "\tNotification:  Thread + polling\n"
 #endif
-        "\tArchitecture:  " ARCHITECTURE "\n"
+        "\tArchitecture:  " MONO_ARCHITECTURE "\n"
 	"\tDisabled:      " DISABLED_FEATURES "\n"
 	"\tMisc:          "
 #ifdef MONO_SMALL_CONFIG
@@ -1474,8 +1476,8 @@ switch_arch (char* argv[], const char* target_arch)
 	GString *path;
 	gsize arch_offset;
 
-	if ((strcmp (target_arch, "32") == 0 && strcmp (ARCHITECTURE, "x86") == 0) ||
-		(strcmp (target_arch, "64") == 0 && strcmp (ARCHITECTURE, "amd64") == 0)) {
+	if ((strcmp (target_arch, "32") == 0 && strcmp (MONO_ARCHITECTURE, "x86") == 0) ||
+		(strcmp (target_arch, "64") == 0 && strcmp (MONO_ARCHITECTURE, "amd64") == 0)) {
 		return; /* matching arch loaded */
 	}
 
@@ -2288,8 +2290,11 @@ mono_set_crash_chaining (gboolean chain_crashes)
 }
 
 void
-mono_parse_env_options (int argc, char *argv [])
+mono_parse_env_options (int *ref_argc, char **ref_argv [])
 {
+	int argc = *ref_argc;
+	char **argv = *ref_argv;
+
 	const char *env_options = g_getenv ("MONO_ENV_OPTIONS");
 	if (env_options != NULL){
 		GPtrArray *array = g_ptr_array_new ();
@@ -2358,8 +2363,8 @@ mono_parse_env_options (int argc, char *argv [])
 				new_argv [i++] = argv [j];
 			new_argv [i] = NULL;
 
-			argc = new_argc;
-			argv = new_argv;
+			*ref_argc = new_argc;
+			*ref_argv = new_argv;
 		}
 		g_ptr_array_free (array, TRUE);
 	}

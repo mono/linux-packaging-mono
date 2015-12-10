@@ -341,7 +341,6 @@ typedef struct {
 #define MONO_ARCH_DYN_CALL_SUPPORTED 1
 #define MONO_ARCH_DYN_CALL_PARAM_AREA 0
 
-#define MONO_ARCH_HAVE_LLVM_IMT_TRAMPOLINE 1
 #define MONO_ARCH_LLVM_SUPPORTED 1
 #define MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD 1
 #define MONO_ARCH_HAVE_CARD_TABLE_WBARRIER 1
@@ -363,6 +362,11 @@ typedef struct {
 
 #if defined(TARGET_OSX) || defined(__linux__)
 #define MONO_ARCH_HAVE_TLS_GET_REG 1
+#endif
+
+#if defined(TARGET_APPLETVOS)
+/* No signals */
+#define MONO_ARCH_NEED_DIV_CHECK 1
 #endif
 
 /* Used for optimization, not complete */
