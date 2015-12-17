@@ -255,7 +255,6 @@ CYGPATH_W = @CYGPATH_W@
 DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
 DSYMUTIL = @DSYMUTIL@
@@ -775,6 +774,7 @@ BASE_TEST_CS_SRC = \
 	bug-324535.cs	\
 	modules.cs	\
 	bug-81673.cs	\
+	bug-36848.cs    \
 	bug-81691.cs	\
 	bug-80307.cs	\
 	bug-415577.cs	\
@@ -1080,7 +1080,7 @@ EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	unhandled-exception-legacy-configuration.config \
 	appdomain-unload.exe.config unhandled-exception-test-case.2.cs \
 	unhandled-exception-test-runner.2.cs bug-81673-interface.cs \
-	bug-81691-a.cs bug-81691-b.cs bug-81466-lib.il \
+	bug-36848-a.cs bug-81691-a.cs bug-81691-b.cs bug-81466-lib.il \
 	bug-324535-il.il custom-modifiers.2.cs custom-modifiers-lib.il \
 	bug-382986-lib.cs bug-17537-helper.cs coreclr-security.cs \
 	generic-unboxing.2.il generic-boxing.2.il generic-unbox.2.cs \
@@ -1959,6 +1959,10 @@ bug-81673.exe bug-81673-interface.dll: $(srcdir)/bug-81673.cs $(srcdir)/bug-8167
 	$(MCS) -target:library -out:bug-81673-interface.dll $(srcdir)/bug-81673-interface.cs
 	$(MCS) -out:bug-81673.exe -r:bug-81673-interface.dll $(srcdir)/bug-81673.cs
 	$(MCS) -define:WITH_STOP -target:library -out:bug-81673-interface.dll $(srcdir)/bug-81673-interface.cs
+bug-36848.exe bug-36848-a.dll: $(srcdir)/bug-36848.cs $(srcdir)/bug-36848-a.cs
+	$(MCS) -target:library -out:bug-36848-a.dll $(srcdir)/bug-36848-a.cs
+	$(MCS) -r:bug-36848-a.dll -out:bug-36848.exe $(srcdir)/bug-36848.cs
+	$(MCS) -target:library -out:bug-36848-a.dll $(srcdir)/bug-36848-a.cs /define:WITH_STOP
 bug-81691.exe bug-81691-b.dll: $(srcdir)/bug-81691.cs $(srcdir)/bug-81691-a.cs $(srcdir)/bug-81691-b.cs
 	$(MCS) -target:library -out:bug-81691-a.dll $(srcdir)/bug-81691-a.cs
 	$(MCS) -target:library -out:bug-81691-b.dll -r:bug-81691-a.dll $(srcdir)/bug-81691-b.cs
