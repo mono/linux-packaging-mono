@@ -2,7 +2,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mini_get_debug_options@Base 4.1.0.1738
  mono_add_internal_call@Base 4.1.0.1738
  mono_aot_get_method@Base 4.1.0.1738
- mono_aot_register_globals@Base 4.1.0.1738
  mono_aot_register_module@Base 4.1.0.1738
  mono_array_addr_with_size@Base 4.1.0.1738
  mono_array_class_get@Base 4.1.0.1738
@@ -660,6 +659,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_pagesize@Base 4.1.0.1738
  mono_param_get_objects@Base 4.1.0.1738
  mono_parse_default_optimizations@Base 4.1.0.1738
+ mono_parse_env_options@Base 4.3.2.71
  mono_path_canonicalize@Base 4.1.0.1738
  mono_path_resolve_symlinks@Base 4.1.0.1738
  mono_pe_file_open@Base 4.1.0.1738
@@ -761,9 +761,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_security_core_clr_set_options@Base 4.1.0.1738
  mono_security_enable_core_clr@Base 4.1.0.1738
  mono_security_set_core_clr_platform_callback@Base 4.1.0.1738
- mono_sem_post@Base 4.1.0.1738
- mono_sem_timedwait@Base 4.1.0.1738
- mono_sem_wait@Base 4.1.0.1738
  mono_set_assemblies_path@Base 4.1.0.1738
  mono_set_break_policy@Base 4.1.0.1738
  mono_set_config_dir@Base 4.1.0.1738
