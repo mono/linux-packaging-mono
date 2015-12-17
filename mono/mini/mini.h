@@ -389,7 +389,7 @@ enum {
 	} while (0)
 
 #define MONO_INST_NEW(cfg,dest,op) do {	\
-		(dest) = mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoInst));	\
+		(dest) = (MonoInst *)mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoInst));	\
 		(dest)->opcode = (op);	\
 		(dest)->dreg = -1;			    \
 		MONO_INST_NULLIFY_SREGS ((dest));	    \
@@ -397,7 +397,7 @@ enum {
 	} while (0)
 
 #define MONO_INST_NEW_CALL(cfg,dest,op) do {	\
-		(dest) = mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoCallInst));	\
+		(dest) = (MonoCallInst *)mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoCallInst));	\
 		(dest)->inst.opcode = (op);	\
 		(dest)->inst.dreg = -1;					\
 		MONO_INST_NULLIFY_SREGS (&(dest)->inst);		\
@@ -741,8 +741,10 @@ typedef enum {
 	LLVMArgVtypeByVal,
 	LLVMArgVtypeRetAddr, /* On on cinfo->ret */
 	LLVMArgGSharedVt,
-	/* Fixed sized argument passed to/returned from gsharedvt method by ref */
+	/* Fixed size argument passed to/returned from gsharedvt method by ref */
 	LLVMArgGsharedvtFixed,
+	/* Fixed size vtype argument passed to/returned from gsharedvt method by ref */
+	LLVMArgGsharedvtFixedVtype,
 	/* Variable sized argument passed to/returned from gsharedvt method by ref */
 	LLVMArgGsharedvtVariable,
 	/* Vtype passed as one int array argument */
@@ -1167,6 +1169,7 @@ typedef enum {
 	MONO_RGCTX_INFO_TYPE,
 	MONO_RGCTX_INFO_REFLECTION_TYPE,
 	MONO_RGCTX_INFO_METHOD,
+	/* In llvmonly mode, this is a function descriptor */
 	MONO_RGCTX_INFO_GENERIC_METHOD_CODE,
 	MONO_RGCTX_INFO_CLASS_FIELD,
 	MONO_RGCTX_INFO_METHOD_RGCTX,
@@ -1179,8 +1182,10 @@ typedef enum {
 	/* +1 to avoid zero values in rgctx slots */
 	MONO_RGCTX_INFO_FIELD_OFFSET,
 	/* Either the code for a gsharedvt method, or the address for a gsharedvt-out trampoline for the method */
+	/* In llvmonly mode, this is a function descriptor */
 	MONO_RGCTX_INFO_METHOD_GSHAREDVT_OUT_TRAMPOLINE,
 	/* Same for virtual calls */
+	/* In llvmonly mode, this is a function descriptor */
 	MONO_RGCTX_INFO_METHOD_GSHAREDVT_OUT_TRAMPOLINE_VIRT,
 	/* Same for calli, associated with a signature */
 	MONO_RGCTX_INFO_SIG_GSHAREDVT_OUT_TRAMPOLINE_CALLI,
@@ -1192,6 +1197,7 @@ typedef enum {
 	MONO_RGCTX_INFO_MEMCPY,
 	MONO_RGCTX_INFO_BZERO,
 	/* The address of Nullable<T>.Box () */
+	/* In llvmonly mode, this is a function descriptor */
 	MONO_RGCTX_INFO_NULLABLE_CLASS_BOX,
 	MONO_RGCTX_INFO_NULLABLE_CLASS_UNBOX,
 	/* MONO_PATCH_INFO_VCALL_METHOD */
@@ -1758,6 +1764,10 @@ typedef struct {
 
 	/* DWARF location list for 'rgctx_var' */
 	GSList *rgctx_loclist;
+
+	int *gsharedvt_vreg_to_idx;
+
+	GSList *signatures;
 
 	/* GC Maps */
    
@@ -2465,6 +2475,8 @@ gpointer          mini_get_nullified_class_init_trampoline (void);
 gpointer          mini_get_single_step_trampoline (void);
 gpointer          mini_get_breakpoint_trampoline (void);
 gpointer          mini_add_method_trampoline (MonoMethod *m, gpointer compiled_method, gboolean add_static_rgctx_tramp, gboolean add_unbox_tramp);
+gpointer          mini_add_method_wrappers_llvmonly (MonoMethod *m, gpointer compiled_method, gboolean caller_gsharedvt, gboolean add_unbox_tramp, gpointer *out_arg);
+gpointer          mini_create_llvmonly_ftndesc (gpointer addr, gpointer arg);
 gboolean          mini_jit_info_is_gsharedvt (MonoJitInfo *ji);
 gpointer*         mini_resolve_imt_method (MonoVTable *vt, gpointer *vtable_slot, MonoMethod *imt_method, MonoMethod **impl_method, gpointer *out_aot_addr,
 										   gboolean *out_need_rgctx_tramp, MonoMethod **variant_iface);
@@ -2512,6 +2524,7 @@ void              mono_decompose_array_access_opts (MonoCompile *cfg);
 void              mono_decompose_soft_float (MonoCompile *cfg);
 void              mono_handle_global_vregs (MonoCompile *cfg);
 void              mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts);
+void              mono_allocate_gsharedvt_vars (MonoCompile *cfg);
 void              mono_if_conversion (MonoCompile *cfg);
 
 /* virtual function delegate */
@@ -2576,7 +2589,7 @@ void      mono_arch_decompose_long_opts         (MonoCompile *cfg, MonoInst *ins
 GSList*   mono_arch_get_delegate_invoke_impls   (void);
 LLVMCallInfo* mono_arch_get_llvm_call_info      (MonoCompile *cfg, MonoMethodSignature *sig) MONO_LLVM_INTERNAL;
 guint8*   mono_arch_emit_load_got_addr          (guint8 *start, guint8 *code, MonoCompile *cfg, MonoJumpInfo **ji);
-guint8*   mono_arch_emit_load_aotconst          (guint8 *start, guint8 *code, MonoJumpInfo **ji, int tramp_type, gconstpointer target);
+guint8*   mono_arch_emit_load_aotconst          (guint8 *start, guint8 *code, MonoJumpInfo **ji, MonoJumpInfoType tramp_type, gconstpointer target);
 GSList*   mono_arch_get_cie_program             (void);
 void      mono_arch_set_target                  (char *mtriple);
 gboolean  mono_arch_gsharedvt_sig_supported     (MonoMethodSignature *sig);
@@ -2697,7 +2710,7 @@ mono_thread_state_init_from_handle (MonoThreadUnwindState *tctx, MonoThreadInfo 
 typedef gboolean (*MonoJitStackWalk)            (StackFrameInfo *frame, MonoContext *ctx, gpointer data);
 
 void     mono_exceptions_init                   (void);
-gboolean mono_handle_exception                  (MonoContext *ctx, gpointer obj);
+gboolean mono_handle_exception                  (MonoContext *ctx, MonoObject *obj);
 void     mono_handle_native_sigsegv             (int signal, void *sigctx, MONO_SIG_HANDLER_INFO_TYPE *siginfo);
 MONO_API void     mono_print_thread_dump                 (void *sigctx);
 MONO_API void     mono_print_thread_dump_from_ctx        (MonoContext *ctx);
@@ -2759,6 +2772,7 @@ void        mono_compute_natural_loops          (MonoCompile *cfg);
 MonoBitSet* mono_compile_iterated_dfrontier     (MonoCompile *cfg, MonoBitSet *set);
 void        mono_ssa_compute                    (MonoCompile *cfg);
 void        mono_ssa_remove                     (MonoCompile *cfg);
+void        mono_ssa_remove_gsharedvt           (MonoCompile *cfg);
 void        mono_ssa_cprop                      (MonoCompile *cfg);
 void        mono_ssa_deadce                     (MonoCompile *cfg);
 void        mono_ssa_strength_reduction         (MonoCompile *cfg);
@@ -2931,6 +2945,8 @@ void mini_init_gsctx (MonoDomain *domain, MonoMemPool *mp, MonoGenericContext *c
 
 gpointer mini_get_gsharedvt_wrapper (gboolean gsharedvt_in, gpointer addr, MonoMethodSignature *normal_sig, MonoMethodSignature *gsharedvt_sig,
 									 gint32 vcall_offset, gboolean calli);
+MonoMethod* mini_get_gsharedvt_in_sig_wrapper (MonoMethodSignature *sig);
+MonoMethod* mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig);
 
 /* SIMD support */
 

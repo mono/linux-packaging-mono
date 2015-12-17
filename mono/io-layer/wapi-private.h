@@ -14,6 +14,7 @@
 #include <glib.h>
 #include <sys/stat.h>
 
+#include <mono/io-layer/wapi.h>
 #include <mono/io-layer/handles.h>
 #include <mono/io-layer/io.h>
 
@@ -173,7 +174,7 @@ struct _WapiHandleSharedLayout
 	struct _WapiHandleShared handles[_WAPI_HANDLE_INITIAL_COUNT];
 };
 
-#define _WAPI_FILESHARE_SIZE 102400
+typedef struct _WapiHandleSharedLayout _WapiHandleSharedLayout;
 
 struct _WapiFileShare
 {
@@ -190,15 +191,6 @@ struct _WapiFileShare
 };
 
 typedef struct _WapiFileShare _WapiFileShare;
-
-struct _WapiFileShareLayout
-{
-	guint32 hwm;
-	
-	struct _WapiFileShare share_info[_WAPI_FILESHARE_SIZE];
-};
-
-
 
 #define _WAPI_HANDLE_INVALID (gpointer)-1
 
