@@ -160,6 +160,16 @@ libmono_profiler_iomap_la_OBJECTS =  \
 	$(am_libmono_profiler_iomap_la_OBJECTS)
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_iomap_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+libmono_profiler_log_static_la_LIBADD =
+am_libmono_profiler_log_static_la_OBJECTS = proflog.lo
+libmono_profiler_log_static_la_OBJECTS =  \
+	$(am_libmono_profiler_log_static_la_OBJECTS)
+libmono_profiler_log_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) \
+	$(libmono_profiler_log_static_la_LDFLAGS) $(LDFLAGS) -o $@
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_static_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_libmono_profiler_log_la_OBJECTS = proflog.lo
@@ -221,10 +231,12 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmono_profiler_aot_la_SOURCES) \
 	$(libmono_profiler_iomap_la_SOURCES) \
+	$(libmono_profiler_log_static_la_SOURCES) \
 	$(libmono_profiler_log_la_SOURCES) \
 	$(libmono_profiler_vtune_la_SOURCES) $(mprof_report_SOURCES)
 DIST_SOURCES = $(libmono_profiler_aot_la_SOURCES) \
 	$(libmono_profiler_iomap_la_SOURCES) \
+	$(libmono_profiler_log_static_la_SOURCES) \
 	$(libmono_profiler_log_la_SOURCES) \
 	$(am__libmono_profiler_vtune_la_SOURCES_DIST) \
 	$(mprof_report_SOURCES)
@@ -471,7 +483,7 @@ AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)
 
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_lib = libmono-profiler-vtune.la
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = libmono-profiler-aot.la libmono-profiler-iomap.la libmono-profiler-log.la $(vtune_lib)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = libmono-profiler-aot.la libmono-profiler-iomap.la libmono-profiler-log.la libmono-profiler-log-static.la $(vtune_lib)
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@libmono_profiler_log_la_LDFLAGS = -avoid-version
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@libmono_profiler_log_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@@SUPPORT_BOEHM_TRUE@LIBMONO = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
@@ -496,6 +508,14 @@ libmono_profiler_log_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(Z_LIBS)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_SOURCES = mono-profiler-vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
+
+# The log profile uses eglib functions, so it needs to be linked against
+# libeglib in shared mode, but not in static mode, since that would
+# leads to duplicate symbols when it is linked into an app which
+# also uses eglib (e.g. the runtime). Automake doesn't support this
+# functionality, so create a separate static version of the library.
+libmono_profiler_log_static_la_SOURCES = proflog.c
+libmono_profiler_log_static_la_LDFLAGS = -static
 mprof_report_SOURCES = decode.c
 mprof_report_LDADD = $(Z_LIBS) $(GLIB_LIBS) $(LIBICONV)
 PLOG_TESTS_SRC = test-alloc.cs test-busy.cs test-monitor.cs test-excleave.cs \
@@ -586,6 +606,9 @@ libmono-profiler-aot.la: $(libmono_profiler_aot_la_OBJECTS) $(libmono_profiler_a
 
 libmono-profiler-iomap.la: $(libmono_profiler_iomap_la_OBJECTS) $(libmono_profiler_iomap_la_DEPENDENCIES) $(EXTRA_libmono_profiler_iomap_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libmono_profiler_iomap_la_rpath) $(libmono_profiler_iomap_la_OBJECTS) $(libmono_profiler_iomap_la_LIBADD) $(LIBS)
+
+libmono-profiler-log-static.la: $(libmono_profiler_log_static_la_OBJECTS) $(libmono_profiler_log_static_la_DEPENDENCIES) $(EXTRA_libmono_profiler_log_static_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libmono_profiler_log_static_la_LINK) $(am_libmono_profiler_log_static_la_rpath) $(libmono_profiler_log_static_la_OBJECTS) $(libmono_profiler_log_static_la_LIBADD) $(LIBS)
 
 libmono-profiler-log.la: $(libmono_profiler_log_la_OBJECTS) $(libmono_profiler_log_la_DEPENDENCIES) $(EXTRA_libmono_profiler_log_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_profiler_log_la_LINK) $(am_libmono_profiler_log_la_rpath) $(libmono_profiler_log_la_OBJECTS) $(libmono_profiler_log_la_LIBADD) $(LIBS)
