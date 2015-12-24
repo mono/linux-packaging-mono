@@ -111,7 +111,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 128
+#define MONO_AOT_FILE_VERSION 129
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -177,7 +177,22 @@ typedef enum {
 	MONO_AOT_FILE_FLAG_LLVM_THUMB = 8,
 	MONO_AOT_FILE_FLAG_LLVM_ONLY = 16,
 	MONO_AOT_FILE_FLAG_SAFEPOINTS = 32,
+	MONO_AOT_FILE_FLAG_SEPARATE_DATA = 64,
 } MonoAotFileFlags;
+
+typedef enum {
+	MONO_AOT_TABLE_BLOB,
+	MONO_AOT_TABLE_IMAGE_TABLE,
+	MONO_AOT_TABLE_CLASS_NAME,
+	MONO_AOT_TABLE_METHOD_INFO_OFFSETS,
+	MONO_AOT_TABLE_EX_INFO_OFFSETS,
+	MONO_AOT_TABLE_CLASS_INFO_OFFSETS,
+	MONO_AOT_TABLE_GOT_INFO_OFFSETS,
+	MONO_AOT_TABLE_LLVM_GOT_INFO_OFFSETS,
+	MONO_AOT_TABLE_EXTRA_METHOD_INFO_OFFSETS,
+	MONO_AOT_TABLE_EXTRA_METHOD_TABLE,
+	MONO_AOT_TABLE_NUM
+} MonoAotFileTable;
 
 /* This structure is stored in the AOT file */
 typedef struct MonoAotFileInfo
@@ -213,8 +228,8 @@ typedef struct MonoAotFileInfo
 	gpointer extra_method_table;
 	gpointer got_info_offsets;
 	gpointer llvm_got_info_offsets;
-	gpointer mem_end;
 	gpointer image_table;
+	gpointer mem_end;
 	/* The GUID of the assembly which the AOT image was generated from */
 	gpointer assembly_guid;
 	/*
@@ -271,7 +286,13 @@ typedef struct MonoAotFileInfo
 	 * module is loaded.
 	 */
 	guint32 nshared_got_entries;
+	/* The size of the data file, if MONO_AOT_FILE_FLAG_SEPARATE_DATA is set */
+	guint32 datafile_size;
+
 	/* Arrays */
+	/* Offsets for tables inside the data file if MONO_AOT_FILE_FLAG_SEPARATE_DATA is set */
+	// FIXME: Sync with AOT
+	guint32 table_offsets [MONO_AOT_TABLE_NUM];
 	/* Number of trampolines */
 	guint32 num_trampolines [MONO_AOT_TRAMP_NUM];
 	/* The indexes of the first GOT slots used by the trampolines */
@@ -2409,6 +2430,16 @@ void     mono_aot_init_gshared_method_rgctx  (gpointer aot_module, guint32 metho
 /* This is an exported function */
 MONO_API void     mono_aot_register_module           (gpointer *aot_info);
 
+/* These are used to load the AOT data for aot images compiled with MONO_AOT_FILE_FLAG_SEPARATE_DATA */
+/*
+ * Return the AOT data for ASSEMBLY. SIZE is the size of the data. OUT_HANDLE should be set to a handle which is later
+ * passed to the free function.
+ */
+typedef unsigned char* (*MonoLoadAotDataFunc)          (MonoAssembly *assembly, int size, gpointer user_data, void **out_handle);
+/* Not yet used */
+typedef void  (*MonoFreeAotDataFunc)          (MonoAssembly *assembly, int size, gpointer user_data, void *handle);
+MONO_API void mono_install_load_aot_data_hook (MonoLoadAotDataFunc load_func, MonoFreeAotDataFunc free_func, gpointer user_data);
+
 void     mono_xdebug_init                   (const char *xdebug_opts);
 void     mono_save_xdebug_info              (MonoCompile *cfg);
 void     mono_save_trampoline_xdebug_info   (MonoTrampInfo *info);
@@ -2947,6 +2978,8 @@ gpointer mini_get_gsharedvt_wrapper (gboolean gsharedvt_in, gpointer addr, MonoM
 									 gint32 vcall_offset, gboolean calli);
 MonoMethod* mini_get_gsharedvt_in_sig_wrapper (MonoMethodSignature *sig);
 MonoMethod* mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig);
+MonoMethodSignature* mini_get_gsharedvt_out_sig_wrapper_signature (gboolean has_this, gboolean has_ret, int param_count);
+gboolean mini_gsharedvt_runtime_invoke_supported (MonoMethodSignature *sig);
 
 /* SIMD support */
 

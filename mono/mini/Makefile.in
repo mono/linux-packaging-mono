@@ -93,8 +93,9 @@ target_triplet = @target@
 @DISABLE_EXECUTABLES_TRUE@noinst_PROGRAMS = genmdesc$(EXEEXT)
 @LOADED_LLVM_TRUE@am__append_1 = libmono-llvm.la
 @LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
-@NACL_CODEGEN_TRUE@am__append_3 = nacl.cs
-@NACL_CODEGEN_TRUE@am__append_4 = nacl.exe
+@BITCODE_TRUE@am__append_3 = -no-undefined
+@NACL_CODEGEN_TRUE@am__append_4 = nacl.cs
+@NACL_CODEGEN_TRUE@am__append_5 = nacl.exe
 subdir = mono/mini
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -844,9 +845,16 @@ AM_CXXFLAGS = $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
 genmdesc_CFLAGS = $(AM_CFLAGS)
 monoldflags = $(export_ldflags)
 monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@libmonoldflags = $(monoldflags) -version-info 1:0:0
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@libmonoldflags = -avoid-version $(monoldflags)
-@HOST_WIN32_TRUE@libmonoldflags = -no-undefined -avoid-version -Wl,--kill-at $(monoldflags)
+@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@libmonoldflags =  \
+@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@	$(monoldflags) \
+@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@	-version-info 1:0:0 \
+@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@	$(am__append_3)
+@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@libmonoldflags =  \
+@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@	-avoid-version \
+@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@	$(monoldflags) \
+@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@	$(am__append_3)
+@HOST_WIN32_TRUE@libmonoldflags = -no-undefined -avoid-version \
+@HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_3)
 @SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
 @SUPPORT_SGEN_TRUE@sgen_libraries = libmonosgen-2.0.la
 @SUPPORT_SGEN_TRUE@sgen_static_libraries = libmini-static.la $(sgen_static_libs)
@@ -854,10 +862,9 @@ monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
 @SUPPORT_BOEHM_TRUE@boehm_static_libraries = libmini-static.la $(boehm_static_libs)
 @SUPPORT_BOEHM_TRUE@boehm_binaries = mono-boehm
 @SUPPORT_SGEN_FALSE@mono_bin_suffix = boehm
-
-# The mono executable uses sgen, while libmono remains boehm
 @SUPPORT_SGEN_TRUE@mono_bin_suffix = sgen
-libmono_suffix = boehm
+@SUPPORT_SGEN_FALSE@libmono_suffix = boehm
+@SUPPORT_SGEN_TRUE@libmono_suffix = sgen
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
 @DISABLE_EXECUTABLES_TRUE@shared_libraries = $(boehm_libraries) $(sgen_libraries)
 lib_LTLIBRARIES = $(shared_libraries) $(am__append_1)
@@ -1085,11 +1092,11 @@ test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	arrays.cs basic-float.cs basic-math.cs basic.cs exceptions.cs \
 	devirtualization.cs iltests.il test.cs generics.cs \
 	generics-variant-types.il basic-simd.cs aot-tests.cs \
-	gc-test.cs gshared.cs $(am__append_3)
+	gc-test.cs gshared.cs $(am__append_4)
 regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
 	objects.exe arrays.exe basic-math.exe exceptions.exe \
 	iltests.exe devirtualization.exe generics.exe basic-simd.exe \
-	$(am__append_4)
+	$(am__append_5)
 @AMD64_TRUE@arch_sources = $(amd64_sources)
 @ARM64_TRUE@arch_sources = $(arm64_sources)
 @ARM_TRUE@arch_sources = $(arm_sources)
@@ -1180,6 +1187,7 @@ FULLAOT_LIBS = \
 	Mono.Security.dll \
 	Mono.Simd.dll
 
+llvmonly_regtests = $(fullaot_regtests) gshared.exe
 pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = version.h $(arch_built)
 CLEANFILES = $(BUILT_SOURCES) *.exe *.dll
@@ -3024,11 +3032,12 @@ rcheck: mono $(regtests)
 rcheck2: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
-check-seq-points: mono $(regtests)
-	rm -f TestResult-op_il_seq_point.xml
-	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
-	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
-	$(srcdir)/test_op_il_seq_point_headerfooter.sh
+@ARM_TRUE@check-seq-points:
+@ARM_FALSE@check-seq-points: mono $(regtests)
+@ARM_FALSE@	rm -f TestResult-op_il_seq_point.xml
+@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+@ARM_FALSE@	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
+@ARM_FALSE@	$(srcdir)/test_op_il_seq_point_headerfooter.sh
 
 gctest: mono gc-test.exe
 	MONO_DEBUG_OPTIONS=clear-nursery-at-gc $(MINI_RUNTIME) --regression gc-test.exe
@@ -3067,14 +3076,14 @@ fullaot-tmp/%.dylib: $(CLASS)/%
 llvmfullaotcheck:
 	$(MAKE) fullaotcheck LLVM=1
 
-llvmonlycheck: mono $(fullaot_regtests)
+llvmonlycheck: mono $(llvmonly_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
 	$(MAKE) fullaot-libs AOT_FLAGS=llvmonly
-	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
+	cp $(llvmonly_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  --aot=llvmonly fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
-	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --llvmonly fullaot-tmp/$$i --exclude '!FULLAOT' --exclude '!BITCODE' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
+	for i in $(llvmonly_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --llvmonly fullaot-tmp/$$i --exclude '!FULLAOT' --exclude '!BITCODE' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
 
 gccheck: gc-test.exe
 	MONO_GC_PARAMS=stack-mark=precise MONO_GC_DEBUG=clear-at-gc ./mono-sgen gc-test.exe	
@@ -3106,7 +3115,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.2.71/fcb5e10\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.2.147/2324a7a\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

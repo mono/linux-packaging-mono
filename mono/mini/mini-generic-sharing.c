@@ -1041,15 +1041,22 @@ get_wrapper_shared_type (MonoType *t)
 		return &mono_defaults.int_class->this_arg;
 	t = mini_get_underlying_type (t);
 
-	// FIXME: Merge more types (objref/int etc).
-
 	switch (t->type) {
+	case MONO_TYPE_OBJECT:
 	case MONO_TYPE_CLASS:
 	case MONO_TYPE_SZARRAY:
-		return &mono_defaults.object_class->byval_arg;
+	case MONO_TYPE_ARRAY:
+	case MONO_TYPE_PTR:
+		return &mono_defaults.int_class->byval_arg;
+		return &mono_defaults.int_class->byval_arg;
 	case MONO_TYPE_GENERICINST:
 		if (!MONO_TYPE_ISSTRUCT (t))
-			return &mono_defaults.object_class->byval_arg;
+			return &mono_defaults.int_class->byval_arg;
+		break;
+#if SIZEOF_VOID_P == 8
+	case MONO_TYPE_I8:
+		return &mono_defaults.int_class->byval_arg;
+#endif
 	default:
 		break;
 	}
@@ -1283,6 +1290,31 @@ mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig)
 	g_hash_table_insert (cache, sig, res);
 
 	return res;
+}
+
+MonoMethodSignature*
+mini_get_gsharedvt_out_sig_wrapper_signature (gboolean has_this, gboolean has_ret, int param_count)
+{
+	MonoMethodSignature *sig = g_malloc0 (sizeof (MonoMethodSignature) + (32 * sizeof (MonoType*)));
+	int i, pindex;
+
+	sig->ret = &mono_defaults.void_class->byval_arg;
+	sig->sentinelpos = -1;
+	pindex = 0;
+	if (has_this)
+		/* this */
+		sig->params [pindex ++] = &mono_defaults.int_class->byval_arg;
+	if (has_ret)
+		/* vret */
+		sig->params [pindex ++] = &mono_defaults.int_class->byval_arg;
+	for (i = 0; i < param_count; ++i)
+		/* byref arguments */
+		sig->params [pindex ++] = &mono_defaults.int_class->byval_arg;
+	/* extra arg */
+	sig->params [pindex ++] = &mono_defaults.int_class->byval_arg;
+	sig->param_count = pindex;
+
+	return sig;
 }
 
 /*
