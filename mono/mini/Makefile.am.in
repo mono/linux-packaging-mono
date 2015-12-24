@@ -87,13 +87,13 @@ boehm_static_libraries = libmini-static.la $(boehm_static_libs)
 boehm_binaries  = mono-boehm
 endif
 
-# The mono executable uses sgen, while libmono remains boehm
 if SUPPORT_SGEN
 mono_bin_suffix = sgen
+libmono_suffix = sgen
 else
 mono_bin_suffix = boehm
-endif
 libmono_suffix = boehm
+endif
 
 if DISABLE_EXECUTABLES
 else
@@ -242,6 +242,10 @@ mono_sgen_LDADD = \
 	$(MONO_DTRACE_OBJECT)
 
 mono_sgen_LDFLAGS = $(static_flags) -export-dynamic $(monobinldflags) $(monobin_platform_ldflags)
+
+if BITCODE
+libmonoldflags += -no-undefined
+endif
 
 # if SUPPORT_SGEN
 # 
@@ -668,11 +672,15 @@ endif
 rcheck2: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
+if ARM
+check-seq-points:
+else
 check-seq-points: mono $(regtests)
 	rm -f TestResult-op_il_seq_point.xml
 	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	for i in $(regtests); do $(srcdir)/test_op_il_seq_point.sh $$i --aot || ($(srcdir)/test_op_il_seq_point_headerfooter.sh; exit 1) || exit 1; done
 	$(srcdir)/test_op_il_seq_point_headerfooter.sh
+endif
 
 gctest: mono gc-test.exe
 	MONO_DEBUG_OPTIONS=clear-nursery-at-gc $(MINI_RUNTIME) --regression gc-test.exe
@@ -727,14 +735,16 @@ fullaot-tmp/%.dylib: $(CLASS)/%
 llvmfullaotcheck:
 	$(MAKE) fullaotcheck LLVM=1
 
-llvmonlycheck: mono $(fullaot_regtests)
+llvmonly_regtests = $(fullaot_regtests) gshared.exe
+
+llvmonlycheck: mono $(llvmonly_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
 	$(MAKE) fullaot-libs AOT_FLAGS=llvmonly
-	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
+	cp $(llvmonly_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  --aot=llvmonly fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
-	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --llvmonly fullaot-tmp/$$i --exclude '!FULLAOT' --exclude '!BITCODE' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
+	for i in $(llvmonly_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --llvmonly fullaot-tmp/$$i --exclude '!FULLAOT' --exclude '!BITCODE' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
 
 gccheck: gc-test.exe
 	MONO_GC_PARAMS=stack-mark=precise MONO_GC_DEBUG=clear-at-gc ./mono-sgen gc-test.exe	
@@ -791,7 +801,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.2.71/fcb5e10\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.2.147/2324a7a\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
