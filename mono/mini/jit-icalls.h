@@ -195,13 +195,15 @@ gpointer mono_fill_class_rgctx (MonoVTable *vtable, int index);
 
 gpointer mono_fill_method_rgctx (MonoMethodRuntimeGenericContext *mrgctx, int index);
 
-gpointer mono_resolve_iface_call (MonoObject *this_obj, int imt_slot, MonoMethod *imt_method, gpointer *out_arg);
-
-gpointer mono_resolve_vcall (MonoObject *this_obj, int slot, MonoMethod *imt_method, gpointer *out_arg);
-
 gpointer mono_resolve_iface_call_gsharedvt (MonoObject *this_obj, int imt_slot, MonoMethod *imt_method, gpointer *out_arg);
 
 gpointer mono_resolve_vcall_gsharedvt (MonoObject *this_obj, int imt_slot, MonoMethod *imt_method, gpointer *out_arg);
+
+MonoFtnDesc* mono_resolve_generic_virtual_call (MonoVTable *vt, int slot, MonoMethod *imt_method);
+
+MonoFtnDesc* mono_resolve_generic_virtual_iface_call (MonoVTable *vt, int imt_slot, MonoMethod *imt_method);
+
+gpointer mono_init_vtable_slot (MonoVTable *vtable, int slot);
 
 void mono_init_delegate (MonoDelegate *del, MonoObject *target, MonoMethod *method);
 

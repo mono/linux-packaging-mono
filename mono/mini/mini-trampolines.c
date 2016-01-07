@@ -182,7 +182,8 @@ mini_resolve_imt_method (MonoVTable *vt, gpointer *vtable_slot, MonoMethod *imt_
 	/* We can only use the AOT compiled code if we don't require further processing */
 	lookup_aot = !generic_virtual & !variant_iface;
 
-	mono_vtable_build_imt_slot (vt, mono_method_get_imt_slot (imt_method));
+	if (!mono_llvm_only)
+		mono_vtable_build_imt_slot (vt, mono_method_get_imt_slot (imt_method));
 
 	if (imt_method->is_inflated && ((MonoMethodInflated*)imt_method)->context.method_inst) {
 		MonoError error;
@@ -386,17 +387,14 @@ mini_add_method_trampoline (MonoMethod *m, gpointer compiled_method, gboolean ad
  * - generic sharing (ARG is the rgctx)
  * - gsharedvt signature wrappers (ARG is a function descriptor)
  */
-gpointer
-mini_create_llvmonly_ftndesc (gpointer addr, gpointer arg)
+MonoFtnDesc*
+mini_create_llvmonly_ftndesc (MonoDomain *domain, gpointer addr, gpointer arg)
 {
-	gpointer *res;
+	MonoFtnDesc *ftndesc = (MonoFtnDesc*)mono_domain_alloc0 (mono_domain_get (), 2 * sizeof (gpointer));
+	ftndesc->addr = addr;
+	ftndesc->arg = arg;
 
-	// FIXME: Memory management
-	res = g_malloc0 (2 * sizeof (gpointer));
-	res [0] = addr;
-	res [1] = arg;
-
-	return res;
+	return ftndesc;
 }
 
 /**
@@ -461,7 +459,11 @@ mini_add_method_wrappers_llvmonly (MonoMethod *m, gpointer compiled_method, gboo
 
 	if (ji && !ji->is_trampoline)
 		jmethod = jinfo_get_method (ji);
-	if (callee_gsharedvt && mini_is_gsharedvt_variable_signature (mono_method_signature (jmethod))) {
+
+	if (callee_gsharedvt)
+		callee_gsharedvt = mini_is_gsharedvt_variable_signature (mono_method_signature (jmethod));
+
+	if (!caller_gsharedvt && callee_gsharedvt) {
 		MonoMethodSignature *sig, *gsig;
 
 		/* Here m is a generic instance, while ji->method is the gsharedvt method implementing it */
@@ -475,21 +477,19 @@ mini_add_method_wrappers_llvmonly (MonoMethod *m, gpointer compiled_method, gboo
 		/*
 		 * This is a gsharedvt in wrapper, it gets passed a ftndesc for the gsharedvt method as an argument.
 		 */
-		*out_arg = mini_create_llvmonly_ftndesc (compiled_method, mini_method_get_rgctx (m));
+		*out_arg = mini_create_llvmonly_ftndesc (mono_domain_get (), compiled_method, mini_method_get_rgctx (m));
 		//printf ("IN: %s\n", mono_method_full_name (m, TRUE));
 	}
 
 	if (!(*out_arg) && mono_method_needs_static_rgctx_invoke (m, FALSE))
 		*out_arg = mini_method_get_rgctx (m);
 
-	if (caller_gsharedvt) {
+	if (caller_gsharedvt && !callee_gsharedvt) {
 		/*
 		 * The callee uses the gsharedvt calling convention, have to add an out wrapper.
 		 */
 		gpointer out_wrapper = mini_get_gsharedvt_wrapper (FALSE, NULL, mono_method_signature (m), NULL, -1, FALSE);
-		gpointer *out_wrapper_arg = g_malloc0 (2 * sizeof (gpointer));
-		out_wrapper_arg [0] = addr;
-		out_wrapper_arg [1] = *out_arg;
+		MonoFtnDesc *out_wrapper_arg = mini_create_llvmonly_ftndesc (mono_domain_get (), addr, *out_arg);
 
 		addr = out_wrapper;
 		*out_arg = out_wrapper_arg;
