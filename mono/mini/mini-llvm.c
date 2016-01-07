@@ -1378,9 +1378,11 @@ sig_to_llvm_sig_full (EmitContext *ctx, MonoMethodSignature *sig, LLVMCallInfo *
 		case LLVMArgAsFpArgs: {
 			int j;
 
+			/* Emit dummy fp arguments if needed so the rest is passed on the stack */
+			for (j = 0; j < ainfo->ndummy_fpargs; ++j)
+				param_types [pindex ++] = LLVMDoubleType ();
 			for (j = 0; j < ainfo->nslots; ++j)
-				param_types [pindex + j] = ainfo->esize == 8 ? LLVMDoubleType () : LLVMFloatType ();
-			pindex += ainfo->nslots;
+				param_types [pindex ++] = ainfo->esize == 8 ? LLVMDoubleType () : LLVMFloatType ();
 			break;
 		}
 		case LLVMArgVtypeAsScalar:
@@ -2793,6 +2795,8 @@ emit_entry_bb (EmitContext *ctx, LLVMBuilderRef builder)
 			LLVMValueRef args [8];
 			int j;
 
+			pindex += ainfo->ndummy_fpargs;
+
 			/* The argument is received as a set of int/fp arguments, store them into the real argument */
 			memset (args, 0, sizeof (args));
 			if (ainfo->storage == LLVMArgVtypeInReg) {
@@ -3010,7 +3014,7 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 	gboolean vretaddr;
 	LLVMTypeRef llvm_sig;
 	gpointer target;
-	gboolean is_virtual, calli;
+	gboolean is_virtual, calli, preserveall;
 	LLVMBuilderRef builder = *builder_ref;
 
 	if (call->signature->call_convention != MONO_CALL_DEFAULT)
@@ -3030,6 +3034,8 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 
 	is_virtual = (ins->opcode == OP_VOIDCALL_MEMBASE || ins->opcode == OP_CALL_MEMBASE || ins->opcode == OP_VCALL_MEMBASE || ins->opcode == OP_LCALL_MEMBASE || ins->opcode == OP_FCALL_MEMBASE || ins->opcode == OP_RCALL_MEMBASE);
 	calli = !call->fptr_is_patch && (ins->opcode == OP_VOIDCALL_REG || ins->opcode == OP_CALL_REG || ins->opcode == OP_VCALL_REG || ins->opcode == OP_LCALL_REG || ins->opcode == OP_FCALL_REG || ins->opcode == OP_RCALL_REG);
+	/* Unused */
+	preserveall = FALSE;
 
 	/* FIXME: Avoid creating duplicate methods */
 
@@ -3219,6 +3225,11 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 		case LLVMArgVtypeInReg:
 		case LLVMArgAsFpArgs: {
 			guint32 nargs;
+			int j;
+
+			for (j = 0; j < ainfo->ndummy_fpargs; ++j)
+				args [pindex + j] = LLVMConstNull (LLVMDoubleType ());
+			pindex += ainfo->ndummy_fpargs;
 
 			g_assert (addresses [reg]);
 			emit_vtype_to_args (ctx, builder, ainfo->type, addresses [reg], ainfo, args + pindex, &nargs);
@@ -3285,6 +3296,8 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 	g_assert (!(call->rgctx_arg_reg && call->imt_arg_reg));
 	if (!sig->pinvoke && !cfg->llvm_only)
 		LLVMSetInstructionCallConv (lcall, LLVMMono1CallConv);
+	if (preserveall)
+		mono_llvm_set_call_preserveall_cc (lcall);
 
 	if (cinfo->ret.storage == LLVMArgVtypeByRef)
 		LLVMAddInstrAttribute (lcall, 1 + cinfo->vret_arg_pindex, LLVMStructRetAttribute);
@@ -4161,7 +4174,8 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 		case OP_LCOMPARE_IMM:
 		case OP_COMPARE_IMM: {
 			CompRelation rel;
-			LLVMValueRef cmp;
+			LLVMValueRef cmp, args [16];
+			gboolean likely = (ins->flags & MONO_INST_LIKELY) != 0;
 
 			if (ins->next->opcode == OP_NOP)
 				break;
@@ -4222,6 +4236,12 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 					cmp = LLVMBuildICmp (builder, cond_to_llvm_cond [rel], convert (ctx, lhs, IntPtrType ()), convert (ctx, rhs, IntPtrType ()), "");
 			} else
 				cmp = LLVMBuildICmp (builder, cond_to_llvm_cond [rel], lhs, rhs, "");
+
+			if (likely) {
+				args [0] = cmp;
+				args [1] = LLVMConstInt (LLVMInt1Type (), 1, FALSE);
+				cmp = LLVMBuildCall (ctx->builder, LLVMGetNamedFunction (ctx->lmodule, "llvm.expect.i1"), args, 2, "");
+			}
 
 			if (MONO_IS_COND_BRANCH_OP (ins->next)) {
 				if (ins->next->inst_true_bb == ins->next->inst_false_bb) {
@@ -4525,6 +4545,7 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 		case OP_ISHR_UN_IMM:
 		case OP_LADD_IMM:
 		case OP_LSUB_IMM:
+		case OP_LMUL_IMM:
 		case OP_LREM_IMM:
 		case OP_LAND_IMM:
 		case OP_LOR_IMM:
@@ -4570,6 +4591,7 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 				break;
 			case OP_IMUL_IMM:
 			case OP_MUL_IMM:
+			case OP_LMUL_IMM:
 				values [ins->dreg] = LLVMBuildMul (builder, lhs, imm, dname);
 				break;
 			case OP_IDIV_IMM:
@@ -6135,8 +6157,9 @@ mono_llvm_check_method_supported (MonoCompile *cfg)
 			MonoExceptionClause *clause1 = &cfg->header->clauses [i];
 			MonoExceptionClause *clause2 = &cfg->header->clauses [j];
 
-			if (i != j && clause1->try_offset >= clause2->try_offset && clause1->handler_offset <= clause2->handler_offset &&
-				(clause1->flags == MONO_EXCEPTION_CLAUSE_FINALLY || clause2->flags == MONO_EXCEPTION_CLAUSE_FINALLY)) {
+			// FIXME: Nested try clauses fail in some cases too, i.e. #37273
+			if (i != j && clause1->try_offset >= clause2->try_offset && clause1->handler_offset <= clause2->handler_offset) {
+				//(clause1->flags == MONO_EXCEPTION_CLAUSE_FINALLY || clause2->flags == MONO_EXCEPTION_CLAUSE_FINALLY)) {
 				cfg->exception_message = g_strdup ("nested clauses");
 				cfg->disable_llvm = TRUE;
 				break;
@@ -6394,8 +6417,16 @@ mono_llvm_emit_method (MonoCompile *cfg)
 	for (i = 0; i < sig->param_count; ++i) {
 		LLVMArgInfo *ainfo = &linfo->args [i + sig->hasthis];
 		char *name;
+		int pindex = ainfo->pindex + ainfo->ndummy_fpargs;
+		int j;
 
-		values [cfg->args [i + sig->hasthis]->dreg] = LLVMGetParam (method, ainfo->pindex);
+		for (j = 0; j < ainfo->ndummy_fpargs; ++j) {
+			name = g_strdup_printf ("dummy_%d_%d", i, j);
+			LLVMSetValueName (LLVMGetParam (method, ainfo->pindex + j), name);
+			g_free (name);
+		}
+
+		values [cfg->args [i + sig->hasthis]->dreg] = LLVMGetParam (method, pindex);
 		if (ainfo->storage == LLVMArgScalarByRef) {
 			if (names [i] && names [i][0] != '\0')
 				name = g_strdup_printf ("p_arg_%s", names [i]);
@@ -6415,7 +6446,7 @@ mono_llvm_emit_method (MonoCompile *cfg)
 		LLVMSetValueName (values [cfg->args [i + sig->hasthis]->dreg], name);
 		g_free (name);
 		if (ainfo->storage == LLVMArgVtypeByVal)
-			LLVMAddAttribute (LLVMGetParam (method, ainfo->pindex), LLVMByValAttribute);
+			LLVMAddAttribute (LLVMGetParam (method, pindex), LLVMByValAttribute);
 
 		if (ainfo->storage == LLVMArgVtypeByRef) {
 			/* For OP_LDADDR */
@@ -6802,7 +6833,7 @@ mono_llvm_create_vars (MonoCompile *cfg)
 	sig = mono_method_signature (cfg->method);
 	if (cfg->gsharedvt && cfg->llvm_only) {
 		if (mini_is_gsharedvt_variable_signature (sig) && sig->ret->type != MONO_TYPE_VOID) {
-			cfg->vret_addr = mono_compile_create_var (cfg, &mono_defaults.int_class->byval_arg, OP_ARG);
+			cfg->vret_addr = mono_compile_create_var (cfg, &mono_get_int32_class ()->byval_arg, OP_ARG);
 			if (G_UNLIKELY (cfg->verbose_level > 1)) {
 				printf ("vret_addr = ");
 				mono_print_ins (cfg->vret_addr);
@@ -7123,6 +7154,7 @@ add_intrinsics (LLVMModuleRef module)
 	}
 
 	AddFunc2 (module, "llvm.expect.i8", LLVMInt8Type (), LLVMInt8Type (), LLVMInt8Type ());
+	AddFunc2 (module, "llvm.expect.i1", LLVMInt1Type (), LLVMInt1Type (), LLVMInt1Type ());
 
 	/* EH intrinsics */
 	{
@@ -7619,16 +7651,21 @@ emit_aot_file_info (MonoLLVMModule *module)
 		fields [tindex ++] = AddJitGlobal (module, eltype, "method_addresses");
 	else
 		fields [tindex ++] = LLVMConstNull (eltype);
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "blob");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "class_name_table");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "class_info_offsets");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "method_info_offsets");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "ex_info_offsets");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "extra_method_info_offsets");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "extra_method_table");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "got_info_offsets");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "llvm_got_info_offsets");
-	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "image_table");
+	if (info->flags & MONO_AOT_FILE_FLAG_SEPARATE_DATA) {
+		for (i = 0; i < MONO_AOT_TABLE_NUM; ++i)
+			fields [tindex ++] = LLVMConstNull (eltype);
+	} else {
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "blob");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "class_name_table");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "class_info_offsets");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "method_info_offsets");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "ex_info_offsets");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "extra_method_info_offsets");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "extra_method_table");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "got_info_offsets");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "llvm_got_info_offsets");
+		fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "image_table");
+	}
 	/* Not needed (mem_end) */
 	fields [tindex ++] = LLVMConstNull (eltype);
 	fields [tindex ++] = LLVMGetNamedGlobal (lmodule, "assembly_guid");

@@ -2338,6 +2338,12 @@ emit_aot_data (MonoAotCompile *acfg, MonoAotFileTable table, const char *symbol,
 		acfg->table_offsets [(int)table] = acfg->datafile_offset;
 		fwrite (data,1, size, acfg->data_outfile);
 		acfg->datafile_offset += size;
+		// align the data to 8 bytes. Put zeros in the file (so that every build results in consistent output).
+		int align = 8 - size % 8;
+		acfg->datafile_offset += align;
+		guint8 align_buf [16];
+		memset (&align_buf, 0, sizeof (align_buf));
+		fwrite (align_buf, align, 1, acfg->data_outfile);
 	} else if (acfg->llvm) {
 		mono_llvm_emit_aot_data (symbol, data, size);
 	} else {
@@ -6909,6 +6915,42 @@ can_encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info)
 	return TRUE;
 }
 
+static gboolean
+is_concrete_type (MonoType *t)
+{
+	MonoClass *klass;
+	int i;
+
+	if (t->type == MONO_TYPE_VAR || t->type == MONO_TYPE_MVAR)
+		return FALSE;
+	if (t->type == MONO_TYPE_GENERICINST) {
+		MonoGenericContext *orig_ctx;
+		MonoGenericInst *inst;
+		MonoType *arg;
+
+		klass = mono_class_from_mono_type (t);
+		orig_ctx = &klass->generic_class->context;
+
+		inst = orig_ctx->class_inst;
+		if (inst) {
+			for (i = 0; i < inst->type_argc; ++i) {
+				arg = mini_get_underlying_type (inst->type_argv [i]);
+				if (!is_concrete_type (arg))
+					return FALSE;
+			}
+		}
+		inst = orig_ctx->method_inst;
+		if (inst) {
+			for (i = 0; i < inst->type_argc; ++i) {
+				arg = mini_get_underlying_type (inst->type_argv [i]);
+				if (!is_concrete_type (arg))
+					return FALSE;
+			}
+		}
+	}
+	return TRUE;
+}
+
 /* LOCKING: Assumes the loader lock is held */
 static void
 add_gsharedvt_wrappers (MonoAotCompile *acfg, MonoMethodSignature *sig, gboolean gsharedvt_in, gboolean gsharedvt_out)
@@ -6953,20 +6995,23 @@ add_gsharedvt_wrappers (MonoAotCompile *acfg, MonoMethodSignature *sig, gboolean
 		//printf ("%s\n", mono_signature_full_name (sig));
 
 		copy->ret = mini_get_underlying_type (sig->ret);
-		// FIXME: Add more cases
-		if (copy->ret->type == MONO_TYPE_VAR || copy->ret->type == MONO_TYPE_MVAR || copy->ret->type == MONO_TYPE_GENERICINST)
+		if (!is_concrete_type (copy->ret))
 			concrete = FALSE;
 		for (i = 0; i < sig->param_count; ++i) {
 			copy->params [i] = mini_get_underlying_type (sig->params [i]);
-			if (copy->params [i]->type == MONO_TYPE_VAR || copy->params [i]->type == MONO_TYPE_MVAR || copy->params [i]->type == MONO_TYPE_GENERICINST)
+			if (!is_concrete_type (copy->params [i]))
 				concrete = FALSE;
 		}
 		if (concrete) {
 			copy->has_type_parameters = 0;
-			sig = copy;
 
 			if (gsharedvt_in) {
-				MonoMethod *wrapper = mini_get_gsharedvt_in_sig_wrapper (sig);
+				wrapper = mini_get_gsharedvt_in_sig_wrapper (copy);
+				add_extra_method (acfg, wrapper);
+			}
+
+			if (gsharedvt_out) {
+				wrapper = mini_get_gsharedvt_out_sig_wrapper (copy);
 				add_extra_method (acfg, wrapper);
 			}
 
@@ -9620,7 +9665,7 @@ static const char *preinited_jit_icalls[] = {
 	"mono_aot_init_gshared_method_this",
 	"mono_aot_init_gshared_method_rgctx",
 	"mono_llvm_throw_corlib_exception",
-	"mono_resolve_vcall",
+	"mono_init_vtable_slot",
 	"mono_helper_ldstr_mscorlib"
 };
 

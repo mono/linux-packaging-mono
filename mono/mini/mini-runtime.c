@@ -1830,6 +1830,12 @@ mono_jit_map_is_enabled (void)
 
 #endif
 
+static void
+no_gsharedvt_in_wrapper (void)
+{
+	g_assert_not_reached ();
+}
+
 static gpointer
 mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, MonoException **ex)
 {
@@ -1852,14 +1858,10 @@ mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, MonoException
 
 		/* Must be domain neutral since there is only one copy */
 		opt |= MONO_OPT_SHARED;
+	} else {
+		/* MONO_OPT_SHARED is no longer supported, we only use it for icall wrappers */
+		opt &= ~MONO_OPT_SHARED;
 	}
-
-	if (method->dynamic)
-		opt &= ~MONO_OPT_SHARED;
-
-	/* These methods can become invalid when a domain is unloaded */
-	if (method->klass->image != mono_get_corlib () || method->is_inflated)
-		opt &= ~MONO_OPT_SHARED;
 
 	if (opt & MONO_OPT_SHARED)
 		target_domain = mono_get_root_domain ();
@@ -1929,6 +1931,19 @@ mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, MonoException
 		code = mono_jit_compile_method_inner (method, target_domain, opt, ex);
 
 	if (!code && mono_llvm_only) {
+		if (method->wrapper_type == MONO_WRAPPER_UNKNOWN) {
+			WrapperInfo *info = mono_marshal_get_wrapper_info (method);
+
+			if (info->subtype == WRAPPER_SUBTYPE_GSHAREDVT_IN_SIG) {
+				/*
+				 * These wrappers are only created for signatures which are in the program, but
+				 * sometimes we load methods too eagerly and have to create them even if they
+				 * will never be called.
+				 */
+				return no_gsharedvt_in_wrapper;
+			}
+		}
+
 		printf ("AOT method not found in llvmonly mode: %s\n", mono_method_full_name (method, 1));
 		g_assert_not_reached ();
 	}
@@ -2138,6 +2153,7 @@ typedef struct {
 	MonoClass *ret_box_class;
 	gboolean needs_rgctx;
 	MonoMethodSignature *sig;
+	gboolean gsharedvt_invoke;
 	gpointer *wrapper_arg;
 } RuntimeInvokeInfo;
 
@@ -2145,20 +2161,15 @@ gboolean
 mini_gsharedvt_runtime_invoke_supported (MonoMethodSignature *sig)
 {
 	gboolean supported = TRUE;
-	int i;
 
-	for (i = 0; i < sig->param_count; ++i) {
-		MonoType *t = sig->params [i];
-
-		if (t->byref && t->type == MONO_TYPE_GENERICINST && mono_class_is_nullable (mono_class_from_mono_type (t)))
-			supported = FALSE;
-	}
+	if (sig->ret->type == MONO_TYPE_GENERICINST && mono_class_is_nullable (mono_class_from_mono_type (sig->ret)))
+		supported = FALSE;
 
 	return supported;
 }
 
 static RuntimeInvokeInfo*
-create_runtime_invoke_info (MonoDomain *domain, MonoMethod *method, gpointer compiled_method)
+create_runtime_invoke_info (MonoDomain *domain, MonoMethod *method, gpointer compiled_method, gboolean callee_gsharedvt)
 {
 	MonoMethod *invoke;
 	RuntimeInvokeInfo *info;
@@ -2256,12 +2267,12 @@ create_runtime_invoke_info (MonoDomain *domain, MonoMethod *method, gpointer com
 #ifndef ENABLE_GSHAREDVT
 			supported = FALSE;
 #endif
-
-			if (supported) {
+			if (supported && !callee_gsharedvt) {
 				/* Invoke a gsharedvt out wrapper instead */
 				MonoMethod *wrapper = mini_get_gsharedvt_out_sig_wrapper (sig);
 				MonoMethodSignature *wrapper_sig = mini_get_gsharedvt_out_sig_wrapper_signature (sig->hasthis, sig->ret->type != MONO_TYPE_VOID, sig->param_count);
 
+				info->gsharedvt_invoke = TRUE;
 				info->wrapper_arg = g_malloc0 (2 * sizeof (gpointer));
 				info->wrapper_arg [0] = info->compiled_method;
 				info->wrapper_arg [1] = mono_method_needs_static_rgctx_invoke (method, TRUE) ? mini_method_get_rgctx (method) : NULL;
@@ -2271,6 +2282,16 @@ create_runtime_invoke_info (MonoDomain *domain, MonoMethod *method, gpointer com
 				g_free (wrapper_sig);
 
 				info->compiled_method = mono_jit_compile_method (wrapper);
+			} else if (supported) {
+				/* Gsharedvt methods can be invoked the same way */
+				/* The out wrapper has the same signature as the compiled gsharedvt method */
+				MonoMethodSignature *wrapper_sig = mini_get_gsharedvt_out_sig_wrapper_signature (sig->hasthis, sig->ret->type != MONO_TYPE_VOID, sig->param_count);
+
+				info->gsharedvt_invoke = TRUE;
+				info->wrapper_arg = mono_method_needs_static_rgctx_invoke (method, TRUE) ? mini_method_get_rgctx (method) : NULL;
+
+				invoke = mono_marshal_get_runtime_invoke_for_sig (wrapper_sig);
+				g_free (wrapper_sig);
 			}
 		}
 		info->runtime_invoke = mono_jit_compile_method (invoke);
@@ -2294,6 +2315,8 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 	MonoDomain *domain = mono_domain_get ();
 	MonoJitDomainInfo *domain_info;
 	RuntimeInvokeInfo *info, *info2;
+	MonoJitInfo *ji = NULL;
+	gboolean callee_gsharedvt = FALSE;
 
 	if (obj == NULL && !(method->flags & METHOD_ATTRIBUTE_STATIC) && !method->string_ctor && (method->wrapper_type == 0)) {
 		g_warning ("Ignoring invocation of an instance method on a NULL instance.\n");
@@ -2358,12 +2381,18 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 				}
 			}
 
-			compiled_method = mini_add_method_trampoline (callee, compiled_method, mono_method_needs_static_rgctx_invoke (callee, TRUE), FALSE);
+			if (mono_llvm_only) {
+				ji = mini_jit_info_table_find (mono_domain_get (), (char *)mono_get_addr_from_ftnptr (compiled_method), NULL);
+				callee_gsharedvt = mini_jit_info_is_gsharedvt (ji);
+			}
+
+			if (!callee_gsharedvt)
+				compiled_method = mini_add_method_trampoline (callee, compiled_method, mono_method_needs_static_rgctx_invoke (callee, TRUE), FALSE);
 		} else {
 			compiled_method = NULL;
 		}
 
-		info = create_runtime_invoke_info (domain, method, compiled_method);
+		info = create_runtime_invoke_info (domain, method, compiled_method, callee_gsharedvt);
 
 		mono_domain_lock (domain);
 		info2 = (RuntimeInvokeInfo *)mono_conc_hashtable_insert (domain_info->runtime_invoke_hash, method, info);
@@ -2443,12 +2472,12 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 
 	runtime_invoke = (MonoObject *(*)(MonoObject *, void **, MonoObject **, void *))info->runtime_invoke;
 
-	if (info->wrapper_arg) {
+	if (info->gsharedvt_invoke) {
 		MonoMethodSignature *sig = mono_method_signature (method);
 		gpointer *args;
 		gpointer retval_ptr;
 		guint8 retval [256];
-		gpointer param_refs [256];
+		gpointer *param_refs;
 		int i, pindex;
 
 		/*
@@ -2456,8 +2485,11 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 		 * The advantage of this is the gsharedvt out wrappers have a reduced set of
 		 * signatures, so we only have to generate runtime invoke wrappers for these
 		 * signatures.
+		 * This code also handles invocation of gsharedvt methods directly, no
+		 * out wrappers are used in that case.
 		 */
 		args = (void **)g_alloca ((sig->param_count + sig->hasthis + 2) * sizeof (gpointer));
+		param_refs = (gpointer*)g_alloca ((sig->param_count + sig->hasthis + 2) * sizeof (gpointer));
 		pindex = 0;
 		/*
 		 * The runtime invoke wrappers expects pointers to primitive types, so have to
@@ -2472,6 +2504,20 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 		for (i = 0; i < sig->param_count; ++i) {
 			MonoType *t = sig->params [i];
 
+			if (t->type == MONO_TYPE_GENERICINST && mono_class_is_nullable (mono_class_from_mono_type (t))) {
+				MonoClass *klass = mono_class_from_mono_type (t);
+				guint8 *nullable_buf;
+				int size;
+
+				size = mono_class_value_size (klass, NULL);
+				nullable_buf = g_alloca (size);
+				g_assert (nullable_buf);
+
+				/* The argument pointed to by params [i] is either a boxed vtype or null */
+				mono_nullable_init (nullable_buf, (MonoObject*)params [i], klass);
+				params [i] = nullable_buf;
+			}
+
 			if (MONO_TYPE_IS_REFERENCE (t)) {
 				param_refs [i] = params [i];
 				params [i] = &(param_refs [i]);
@@ -2483,7 +2529,7 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 		runtime_invoke (NULL, args, exc, info->compiled_method);
 
 		if (sig->ret->type != MONO_TYPE_VOID && info->ret_box_class)
-				return mono_value_box (domain, info->ret_box_class, retval);
+			return mono_value_box (domain, info->ret_box_class, retval);
 		else
 			return *(MonoObject**)retval;
 	}
@@ -2505,6 +2551,189 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 	} else {
 		return runtime_invoke ((MonoObject *)obj, params, exc, info->compiled_method);
 	}
+}
+
+typedef struct {
+	MonoVTable *vtable;
+	int slot;
+} IMTThunkInfo;
+
+typedef gpointer (*IMTThunkFunc) (gpointer *arg, MonoMethod *imt_method);
+
+/*
+ * mini_llvmonly_initial_imt_thunk:
+ *
+ *  This function is called the first time a call is made through an IMT thunk.
+ * It should have the same signature as the mono_llvmonly_imt_thunk_... functions.
+ */
+static gpointer
+mini_llvmonly_initial_imt_thunk (gpointer *arg, MonoMethod *imt_method)
+{
+	IMTThunkInfo *info = (IMTThunkInfo*)arg;
+	gpointer *imt;
+	gpointer *ftndesc;
+	IMTThunkFunc func;
+
+	mono_vtable_build_imt_slot (info->vtable, info->slot);
+
+	imt = (gpointer*)info->vtable;
+	imt -= MONO_IMT_SIZE;
+
+	/* Return what the real IMT thunk returns */
+	ftndesc = imt [info->slot];
+	func = ftndesc [0];
+
+	if (func == (IMTThunkFunc)mini_llvmonly_initial_imt_thunk)
+		/* Happens when the imt slot contains only a generic virtual method */
+		return NULL;
+	return func ((gpointer *)ftndesc [1], imt_method);
+}
+
+/* This is called indirectly through an imt slot. */
+static gpointer
+mono_llvmonly_imt_thunk (gpointer *arg, MonoMethod *imt_method)
+{
+	int i = 0;
+
+	/* arg points to an array created in mono_llvmonly_get_imt_thunk () */
+	while (arg [i] && arg [i] != imt_method)
+		i += 2;
+	g_assert (arg [i]);
+
+	return arg [i + 1];
+}
+
+/* Optimized versions of mono_llvmonly_imt_thunk () for different table sizes */
+static gpointer
+mono_llvmonly_imt_thunk_1 (gpointer *arg, MonoMethod *imt_method)
+{
+	//g_assert (arg [0] == imt_method);
+	return arg [1];
+}
+
+static gpointer
+mono_llvmonly_imt_thunk_2 (gpointer *arg, MonoMethod *imt_method)
+{
+	//g_assert (arg [0] == imt_method || arg [2] == imt_method);
+	if (arg [0] == imt_method)
+		return arg [1];
+	else
+		return arg [3];
+}
+
+static gpointer
+mono_llvmonly_imt_thunk_3 (gpointer *arg, MonoMethod *imt_method)
+{
+	//g_assert (arg [0] == imt_method || arg [2] == imt_method || arg [4] == imt_method);
+	if (arg [0] == imt_method)
+		return arg [1];
+	else if (arg [2] == imt_method)
+		return arg [3];
+	else
+		return arg [5];
+}
+
+/*
+ * A version of the imt thunk used for generic virtual methods.
+ * Unlikely a normal imt thunk, its possible that IMT_METHOD is not found
+ * in the search table. The original JIT code had a 'fallback' trampoline it could
+ * call, but we can't do that, so we just return NULL, and the compiled code
+ * will handle it.
+ */
+static gpointer
+mono_llvmonly_generic_virtual_imt_thunk (gpointer *arg, MonoMethod *imt_method)
+{
+	int i = 0;
+
+	while (arg [i] && arg [i] != imt_method)
+		i += 2;
+	if (!arg [i])
+		return NULL;
+
+	return arg [i + 1];
+}
+
+static gpointer
+mono_llvmonly_get_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckItem **imt_entries, int count, gpointer fail_tramp)
+{
+	gpointer *buf;
+	gpointer *res;
+	int i, index, real_count;
+	gboolean virtual_generic = FALSE;
+
+	/*
+	 * Create an array which is passed to the imt thunk functions.
+	 * The array contains MonoMethod-function descriptor pairs, terminated by a NULL entry.
+	 */
+
+	real_count = 0;
+	for (i = 0; i < count; ++i) {
+		MonoIMTCheckItem *item = imt_entries [i];
+
+		if (item->is_equals)
+			real_count ++;
+		if (item->has_target_code)
+			virtual_generic = TRUE;
+	}
+
+	/*
+	 * Initialize all vtable entries reachable from this imt slot, so the compiled
+	 * code doesn't have to check it.
+	 */
+	for (i = 0; i < count; ++i) {
+		MonoIMTCheckItem *item = imt_entries [i];
+		int vt_slot;
+
+		if (!item->is_equals || item->has_target_code)
+			continue;
+		vt_slot = item->value.vtable_slot;
+		mono_init_vtable_slot (vtable, vt_slot);
+	}
+
+	/* Save the entries into an array */
+	buf = (void **)mono_domain_alloc (domain, (real_count + 1) * 2 * sizeof (gpointer));
+	index = 0;
+	for (i = 0; i < count; ++i) {
+		MonoIMTCheckItem *item = imt_entries [i];
+
+		if (!item->is_equals)
+			continue;
+
+		g_assert (item->key);
+		buf [(index * 2)] = item->key;
+		if (item->has_target_code)
+			buf [(index * 2) + 1] = item->value.target_code;
+		else
+			buf [(index * 2) + 1] = vtable->vtable [item->value.vtable_slot];
+		index ++;
+	}
+	buf [(index * 2)] = NULL;
+	buf [(index * 2) + 1] = fail_tramp;
+
+	/*
+	 * Return a function descriptor for a C function with 'buf' as its argument.
+	 * It will by called by JITted code.
+	 */
+	res = (void **)mono_domain_alloc (domain, 2 * sizeof (gpointer));
+	switch (real_count) {
+	case 1:
+		res [0] = mono_llvmonly_imt_thunk_1;
+		break;
+	case 2:
+		res [0] = mono_llvmonly_imt_thunk_2;
+		break;
+	case 3:
+		res [0] = mono_llvmonly_imt_thunk_3;
+		break;
+	default:
+		res [0] = mono_llvmonly_imt_thunk;
+		break;
+	}
+	if (virtual_generic)
+		res [0] = mono_llvmonly_generic_virtual_imt_thunk;
+	res [1] = buf;
+
+	return res;
 }
 
 MONO_SIG_HANDLER_FUNC (, mono_sigfpe_signal_handler)
@@ -2709,17 +2938,25 @@ static gpointer *vtable_trampolines;
 static int vtable_trampolines_size;
 
 gpointer
-mini_get_vtable_trampoline (int slot_index)
+mini_get_vtable_trampoline (MonoVTable *vt, int slot_index)
 {
 	int index = slot_index + MONO_IMT_SIZE;
 
 	if (mono_llvm_only) {
-		/* Not used */
-		if (slot_index < 0)
-			/* The vtable/imt construction code in object.c depends on this being non-NULL */
-			return no_imt_trampoline;
-		else
-			return no_vcall_trampoline;
+		if (slot_index < 0) {
+			/* Initialize the IMT thunks to a 'trampoline' so the generated code doesn't have to initialize it */
+			// FIXME: Memory management
+			gpointer *ftndesc = g_malloc (2 * sizeof (gpointer));
+			IMTThunkInfo *info = g_new0 (IMTThunkInfo, 1);
+			info->vtable = vt;
+			info->slot = index;
+			ftndesc [0] = mini_llvmonly_initial_imt_thunk;
+			ftndesc [1] = info;
+			mono_memory_barrier ();
+			return ftndesc;
+		} else {
+			return NULL;
+		}
 	}
 
 	g_assert (slot_index >= - MONO_IMT_SIZE);
@@ -2749,6 +2986,24 @@ mini_get_vtable_trampoline (int slot_index)
 	return vtable_trampolines [index];
 }
 
+static gpointer
+mini_get_imt_trampoline (MonoVTable *vt, int slot_index)
+{
+	return mini_get_vtable_trampoline (vt, slot_index - MONO_IMT_SIZE);
+}
+
+static gboolean
+mini_imt_entry_inited (MonoVTable *vt, int imt_slot_index)
+{
+	if (mono_llvm_only)
+		return FALSE;
+
+	gpointer *imt = (gpointer*)vt;
+	imt -= MONO_IMT_SIZE;
+
+	return (imt [imt_slot_index] != mini_get_imt_trampoline (vt, imt_slot_index));
+}
+
 gpointer
 mono_get_delegate_virtual_invoke_impl (MonoMethodSignature *sig, MonoMethod *method)
 {
@@ -2768,7 +3023,7 @@ mono_get_delegate_virtual_invoke_impl (MonoMethodSignature *sig, MonoMethod *met
 	is_interface = method->klass->flags & TYPE_ATTRIBUTE_INTERFACE ? TRUE : FALSE;
 	load_imt_reg = is_virtual_generic || is_interface;
 
-	if (is_interface && !is_virtual_generic)
+	if (is_interface)
 		offset = ((gint32)mono_method_get_imt_slot (method) - MONO_IMT_SIZE) * SIZEOF_VOID_P;
 	else
 		offset = G_STRUCT_OFFSET (MonoVTable, vtable) + ((mono_method_get_vtable_index (method)) * (SIZEOF_VOID_P));
@@ -2811,12 +3066,6 @@ mono_get_delegate_virtual_invoke_impl (MonoMethodSignature *sig, MonoMethod *met
 		cache [idx] = (guint8 *)mono_arch_get_delegate_virtual_invoke_impl (sig, method, offset, load_imt_reg);
 	}
 	return cache [idx];
-}
-
-static gpointer
-mini_get_imt_trampoline (int slot_index)
-{
-	return mini_get_vtable_trampoline (slot_index - MONO_IMT_SIZE);
 }
 
 static void
@@ -3169,6 +3418,7 @@ mini_init (const char *filename, const char *runtime_version)
 
 	callbacks.get_vtable_trampoline = mini_get_vtable_trampoline;
 	callbacks.get_imt_trampoline = mini_get_imt_trampoline;
+	callbacks.imt_entry_inited = mini_imt_entry_inited;
 
 	mono_install_callbacks (&callbacks);
 
@@ -3273,10 +3523,14 @@ mini_init (const char *filename, const char *runtime_version)
 		mono_marshal_use_aot_wrappers (TRUE);
 	}
 
-	if (mono_aot_only)
+	if (mono_llvm_only) {
+		mono_install_imt_thunk_builder (mono_llvmonly_get_imt_thunk);
+		mono_set_always_build_imt_thunks (TRUE);
+	} else if (mono_aot_only) {
 		mono_install_imt_thunk_builder (mono_aot_get_imt_thunk);
-	else
+	} else {
 		mono_install_imt_thunk_builder (mono_arch_build_imt_thunk);
+	}
 
 	/*Init arch tls information only after the metadata side is inited to make sure we see dynamic appdomain tls keys*/
 	mono_arch_finish_init ();
@@ -3581,10 +3835,12 @@ register_icalls (void)
 	register_icall (mono_aot_init_gshared_method_this, "mono_aot_init_gshared_method_this", "void ptr int object", TRUE);
 	register_icall (mono_aot_init_gshared_method_rgctx, "mono_aot_init_gshared_method_rgctx", "void ptr int ptr", TRUE);
 
-	register_icall_no_wrapper (mono_resolve_iface_call, "mono_resolve_iface_call", "ptr object int ptr ptr");
-	register_icall_no_wrapper (mono_resolve_vcall, "mono_resolve_vcall", "ptr object int ptr ptr");
 	register_icall_no_wrapper (mono_resolve_iface_call_gsharedvt, "mono_resolve_iface_call_gsharedvt", "ptr object int ptr ptr");
 	register_icall_no_wrapper (mono_resolve_vcall_gsharedvt, "mono_resolve_vcall_gsharedvt", "ptr object int ptr ptr");
+	register_icall_no_wrapper (mono_resolve_generic_virtual_call, "mono_resolve_generic_virtual_call", "ptr ptr int ptr");
+	register_icall_no_wrapper (mono_resolve_generic_virtual_iface_call, "mono_resolve_generic_virtual_iface_call", "ptr ptr int ptr");
+	/* This needs a wrapper so it can have a preserveall cconv */
+	register_icall (mono_init_vtable_slot, "mono_init_vtable_slot", "ptr ptr int", FALSE);
 	register_icall (mono_init_delegate, "mono_init_delegate", "void object object ptr", TRUE);
 	register_icall (mono_init_delegate_virtual, "mono_init_delegate_virtual", "void object object ptr", TRUE);
 	register_icall (mono_get_assembly_object, "mono_get_assembly_object", "object ptr", TRUE);
