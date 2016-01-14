@@ -4191,7 +4191,7 @@ mono_runtime_exec_main (MonoMethod *method, MonoArray *args, MonoObject **exc)
 			str = g_strconcat (assembly->image->name, ".config", NULL);
 			MONO_OBJECT_SETREF (domain->setup, configuration_file, mono_string_new (domain, str));
 			g_free (str);
-			mono_set_private_bin_path_from_config (domain);
+			mono_domain_set_options_from_config (domain);
 		}
 	}
 
@@ -6035,7 +6035,7 @@ mono_runtime_capture_context (MonoDomain *domain)
 		MonoMethod *wrapper;
 		if (!method)
 			return NULL;
-		wrapper = mono_marshal_get_runtime_invoke (method, FALSE, FALSE);
+		wrapper = mono_marshal_get_runtime_invoke (method, FALSE);
 		domain->capture_context_runtime_invoke = mono_compile_method (wrapper);
 		domain->capture_context_method = mono_compile_method (method);
 	}

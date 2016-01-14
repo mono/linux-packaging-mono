@@ -3010,22 +3010,6 @@ free_signature_pointer_pair (SignaturePointerPair *pair)
 	g_free (pair);
 }
 
-static MonoMethodSignature*
-sig_to_rgctx_sig (MonoMethodSignature *sig)
-{
-	// FIXME: memory allocation
-	MonoMethodSignature *res;
-	int i;
-
-	res = (MonoMethodSignature *)g_malloc (MONO_SIZEOF_METHOD_SIGNATURE + (sig->param_count + 1) * sizeof (MonoType*));
-	memcpy (res, sig, MONO_SIZEOF_METHOD_SIGNATURE);
-	res->param_count = sig->param_count + 1;
-	for (i = 0; i < sig->param_count; ++i)
-		res->params [i] = sig->params [i];
-	res->params [sig->param_count] = &mono_defaults.int_class->byval_arg;
-	return res;
-}
-
 MonoMethod *
 mono_marshal_get_delegate_invoke_internal (MonoMethod *method, gboolean callvirt, gboolean static_method_with_first_arg_bound, MonoMethod *target_method)
 {
@@ -3038,7 +3022,7 @@ mono_marshal_get_delegate_invoke_internal (MonoMethod *method, gboolean callvirt
 	SignaturePointerPair key;
 	SignaturePointerPair *new_key;
 	int local_i, local_len, local_delegates, local_d, local_target, local_res;
-	int pos0, pos1, pos2, pos3, pos4;
+	int pos0, pos1, pos2;
 	char *name;
 	MonoClass *target_class = NULL;
 	gboolean closed_over_null = FALSE;
@@ -3226,17 +3210,6 @@ mono_marshal_get_delegate_invoke_internal (MonoMethod *method, gboolean callvirt
 			// FIXME:
 			mono_mb_emit_exception_full (mb, "System", "NotImplementedException", "");
 		} else {
-			MonoMethodSignature *rgctx_sig;
-
-			// FIXME: Support this for the other cases as well
-			mono_mb_emit_ldarg (mb, 0);
-			mono_mb_emit_ldflda (mb, MONO_STRUCT_OFFSET (MonoDelegate, rgctx));
-			mono_mb_emit_byte (mb, CEE_LDIND_I);
-			pos3 = mono_mb_emit_branch (mb, CEE_BRFALSE);
-
-			/* Rgctx case */
-			rgctx_sig = sig_to_rgctx_sig (sig);
-
 			mono_mb_emit_ldloc (mb, local_target);
 			for (i = 0; i < sig->param_count; ++i)
 				mono_mb_emit_ldarg (mb, i + 1);
@@ -3246,21 +3219,8 @@ mono_marshal_get_delegate_invoke_internal (MonoMethod *method, gboolean callvirt
 			mono_mb_emit_ldarg (mb, 0);
 			mono_mb_emit_ldflda (mb, MONO_STRUCT_OFFSET (MonoDelegate, method_ptr));
 			mono_mb_emit_byte (mb, CEE_LDIND_I);
-			mono_mb_emit_op (mb, CEE_CALLI, rgctx_sig);
-			pos4 = mono_mb_emit_branch (mb, CEE_BR);
-
-			/* Non-rgctx case */
-			mono_mb_patch_branch (mb, pos3);
-			mono_mb_emit_ldloc (mb, local_target);
-			for (i = 0; i < sig->param_count; ++i)
-				mono_mb_emit_ldarg (mb, i + 1);
-			mono_mb_emit_ldarg (mb, 0);
-			mono_mb_emit_ldflda (mb, MONO_STRUCT_OFFSET (MonoDelegate, method_ptr));
-			mono_mb_emit_byte (mb, CEE_LDIND_I );
-			mono_mb_emit_op (mb, CEE_CALLI, sig);
-
-			mono_mb_patch_branch (mb, pos4);
-
+			mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+			mono_mb_emit_op (mb, CEE_MONO_CALLI_EXTRA_ARG, sig);
 			mono_mb_emit_byte (mb, CEE_RET);
 		}
 	
@@ -3289,16 +3249,6 @@ mono_marshal_get_delegate_invoke_internal (MonoMethod *method, gboolean callvirt
 			mono_mb_emit_op (mb, CEE_CALL, target_method);
 		}
 	} else {
-		MonoMethodSignature *rgctx_sig;
-
-		mono_mb_emit_ldarg (mb, 0);
-		mono_mb_emit_ldflda (mb, MONO_STRUCT_OFFSET (MonoDelegate, rgctx));
-		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		pos3 = mono_mb_emit_branch (mb, CEE_BRFALSE);
-
-		/* Rgctx case */
-		rgctx_sig = sig_to_rgctx_sig (invoke_sig);
-
 		if (static_method_with_first_arg_bound) {
 			mono_mb_emit_ldloc (mb, local_target);
 			if (!MONO_TYPE_IS_REFERENCE (invoke_sig->params[0]))
@@ -3312,24 +3262,8 @@ mono_marshal_get_delegate_invoke_internal (MonoMethod *method, gboolean callvirt
 		mono_mb_emit_ldarg (mb, 0);
 		mono_mb_emit_ldflda (mb, MONO_STRUCT_OFFSET (MonoDelegate, method_ptr));
 		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		mono_mb_emit_op (mb, CEE_CALLI, rgctx_sig);
-		pos4 = mono_mb_emit_branch (mb, CEE_BR);
-
-		/* Non-rgctx case */
-		mono_mb_patch_branch (mb, pos3);
-		if (static_method_with_first_arg_bound) {
-			mono_mb_emit_ldloc (mb, local_target);
-			if (!MONO_TYPE_IS_REFERENCE (invoke_sig->params[0]))
-				mono_mb_emit_op (mb, CEE_UNBOX_ANY, mono_class_from_mono_type (invoke_sig->params[0]));
-		}
-		for (i = 0; i < sig->param_count; ++i)
-			mono_mb_emit_ldarg (mb, i + 1);
-		mono_mb_emit_ldarg (mb, 0);
-		mono_mb_emit_ldflda (mb, MONO_STRUCT_OFFSET (MonoDelegate, method_ptr));
-		mono_mb_emit_byte (mb, CEE_LDIND_I);
-		mono_mb_emit_op (mb, CEE_CALLI, invoke_sig);
-
-		mono_mb_patch_branch (mb, pos4);
+		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+		mono_mb_emit_op (mb, CEE_MONO_CALLI_EXTRA_ARG, invoke_sig);
 	}
 
 	mono_mb_emit_byte (mb, CEE_RET);
@@ -3385,23 +3319,21 @@ mono_marshal_get_delegate_invoke_internal (MonoMethod *method, gboolean callvirt
 	mb->skip_visibility = 1;
 #endif /* DISABLE_JIT */
 
+	info = mono_wrapper_info_create (mb, subtype);
+
 	if (ctx) {
 		MonoMethod *def;
 
-		def = mono_mb_create_and_cache (cache, cache_key, mb, sig, sig->param_count + 16);
+		def = mono_mb_create_and_cache_full (cache, cache_key, mb, sig, sig->param_count + 16, info, NULL);
 		res = cache_generic_delegate_wrapper (cache, orig_method, def, ctx);
 	} else if (callvirt) {
 		new_key = g_new0 (SignaturePointerPair, 1);
 		*new_key = key;
 
-		info = mono_wrapper_info_create (mb, subtype);
-
 		res = mono_mb_create_and_cache_full (cache, new_key, mb, sig, sig->param_count + 16, info, &found);
 		if (found)
 			g_free (new_key);
 	} else {
-		info = mono_wrapper_info_create (mb, subtype);
-
 		res = mono_mb_create_and_cache_full (cache, cache_key, mb, sig, sig->param_count + 16, info, NULL);
 	}
 	mono_mb_free (mb);
@@ -3872,11 +3804,9 @@ emit_runtime_invoke_body (MonoMethodBuilder *mb, MonoImage *image, MonoMethod *m
  * it means that the compiled code for METHOD does not have to be looked up 
  * before calling the runtime invoke wrapper. In this case, the wrapper ignores
  * its METHOD argument.
- * If PASS_RGCTX is TRUE, the signature of the called method is changed to include a 'gpointer rgctx' as the
- * last argument (after 'this').
  */
 MonoMethod *
-mono_marshal_get_runtime_invoke (MonoMethod *method, gboolean virtual_, gboolean pass_rgctx)
+mono_marshal_get_runtime_invoke (MonoMethod *method, gboolean virtual_)
 {
 	MonoMethodSignature *sig, *csig, *callsig;
 	MonoMethodBuilder *mb;
@@ -3942,11 +3872,6 @@ mono_marshal_get_runtime_invoke (MonoMethod *method, gboolean virtual_, gboolean
 
 	sig = mono_method_signature (method);
 
-	if (pass_rgctx) {
-		sig = sig_to_rgctx_sig (sig);
-		callsig = sig_to_rgctx_sig (callsig);
-	}
-
 	target_klass = get_wrapper_target_class (method->klass->image);
 
 	/* Try to share wrappers for non-corlib methods with simple signatures */
@@ -4006,7 +3931,7 @@ mono_marshal_get_runtime_invoke (MonoMethod *method, gboolean virtual_, gboolean
 	csig->call_convention = MONO_CALL_C;
 #endif
 
-	name = mono_signature_to_name (callsig, pass_rgctx ? (virtual_ ? "runtime_invoke_virtual_rgctx" : "runtime_invoke_rgctx") : (virtual_ ? "runtime_invoke_virtual" : "runtime_invoke"));
+	name = mono_signature_to_name (callsig, virtual_ ? "runtime_invoke_virtual" : "runtime_invoke");
 	mb = mono_mb_new (target_klass, name,  MONO_WRAPPER_RUNTIME_INVOKE);
 	g_free (name);
 
@@ -4035,7 +3960,6 @@ mono_marshal_get_runtime_invoke (MonoMethod *method, gboolean virtual_, gboolean
 
 		info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_RUNTIME_INVOKE_NORMAL);
 		info->d.runtime_invoke.sig = callsig;
-		info->d.runtime_invoke.pass_rgctx = pass_rgctx;
 
 		/* Somebody may have created it before us */
 		if (!res) {
