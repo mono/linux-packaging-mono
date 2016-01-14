@@ -5125,6 +5125,7 @@ handle_array_new (MonoCompile *cfg, int rank, MonoInst **sp, unsigned char *ip)
 	cfg->flags |= MONO_CFG_HAS_VARARGS;
 
 	/* mono_array_new_va () needs a vararg calling convention */
+	cfg->exception_message = g_strdup ("array-new");
 	cfg->disable_llvm = TRUE;
 
 	/* FIXME: This uses info->sig, but it should use the signature of the wrapper */
@@ -6702,7 +6703,7 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 			   (strcmp (cmethod->klass->name_space, "System.Reflection") == 0) &&
 			   (strcmp (cmethod->klass->name, "Assembly") == 0)) {
 		if (cfg->llvm_only && !strcmp (cmethod->name, "GetExecutingAssembly")) {
-			/* No stack walks are current available, so implement this as an intrinsic */
+			/* No stack walks are currently available, so implement this as an intrinsic */
 			MonoInst *assembly_ins;
 
 			EMIT_NEW_AOTCONST (cfg, assembly_ins, MONO_PATCH_INFO_IMAGE, cfg->method->klass->image);
@@ -6726,11 +6727,14 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 		if (cfg->backend->have_objc_get_selector &&
 			!strcmp (cmethod->name, "GetHandle") && fsig->param_count == 1 &&
 		    (args [0]->opcode == OP_GOT_ENTRY || args [0]->opcode == OP_AOTCONST) &&
-		    cfg->compile_aot) {
+		    cfg->compile_aot && !cfg->llvm_only) {
 			MonoInst *pi;
 			MonoJumpInfoToken *ji;
 			MonoString *s;
 
+			// FIXME: llvmonly
+
+			cfg->exception_message = g_strdup ("GetHandle");
 			cfg->disable_llvm = TRUE;
 
 			if (args [0]->opcode == OP_GOT_ENTRY) {
@@ -7617,6 +7621,7 @@ emit_llvmonly_virtual_call (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSig
 	int arg_reg, this_reg, vtable_reg;
 	gboolean is_iface = cmethod->klass->flags & TYPE_ATTRIBUTE_INTERFACE;
 	gboolean is_gsharedvt = cfg->gsharedvt && mini_is_gsharedvt_variable_signature (fsig);
+	gboolean variant_iface = FALSE;
 	guint32 slot;
 	int offset;
 
@@ -7632,6 +7637,9 @@ emit_llvmonly_virtual_call (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSig
 		slot = mono_method_get_vtable_index (cmethod);
 
 	this_reg = sp [0]->dreg;
+
+	if (is_iface && mono_class_has_variant_generic_params (cmethod->klass))
+		variant_iface = TRUE;
 
 	if (!fsig->generic_param_count && !is_iface && !is_gsharedvt) {
 		/*
@@ -7674,7 +7682,7 @@ emit_llvmonly_virtual_call (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSig
 		return emit_extra_arg_calli (cfg, fsig, sp, arg_reg, call_target);
 	}
 
-	if (!fsig->generic_param_count && is_iface && !is_gsharedvt) {
+	if (!fsig->generic_param_count && is_iface && !variant_iface && !is_gsharedvt) {
 		/*
 		 * A simple interface call
 		 *
@@ -7713,7 +7721,7 @@ emit_llvmonly_virtual_call (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSig
 		return emit_llvmonly_calli (cfg, fsig, sp, ftndesc_ins);
 	}
 
-	if (fsig->generic_param_count && !is_gsharedvt) {
+	if ((fsig->generic_param_count || variant_iface) && !is_gsharedvt) {
 		/*
 		 * This is similar to the interface case, the vtable slot points to an imt thunk which is
 		 * dynamically extended as more instantiations are discovered.
@@ -9731,11 +9739,15 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				if (fsig->hasthis)
 					MONO_EMIT_NEW_CHECK_THIS (cfg, sp [0]->dreg);
 
-				addr = emit_get_rgctx_method (cfg, context_used, cmethod, MONO_RGCTX_INFO_GENERIC_METHOD_CODE);
 				if (cfg->llvm_only) {
+					if (cfg->gsharedvt && mini_is_gsharedvt_variable_signature (fsig))
+						addr = emit_get_rgctx_method (cfg, context_used, cmethod, MONO_RGCTX_INFO_GSHAREDVT_OUT_WRAPPER);
+					else
+						addr = emit_get_rgctx_method (cfg, context_used, cmethod, MONO_RGCTX_INFO_GENERIC_METHOD_CODE);
 					// FIXME: Avoid initializing imt_arg/vtable_arg
 					ins = emit_llvmonly_calli (cfg, fsig, sp, addr);
 				} else {
+					addr = emit_get_rgctx_method (cfg, context_used, cmethod, MONO_RGCTX_INFO_GENERIC_METHOD_CODE);
 					ins = (MonoInst*)mono_emit_calli (cfg, fsig, sp, addr, imt_arg, vtable_arg);
 				}
 				goto call_end;
@@ -12727,6 +12739,109 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				EMIT_NEW_UNALU (cfg, args [0], OP_MOVE, dreg, cfg->orig_domain_var->dreg);
 				mono_emit_jit_icall (cfg, mono_jit_set_domain, args);
 				ip += 2;
+				break;
+			}
+			case CEE_MONO_CALLI_EXTRA_ARG: {
+				MonoInst *addr;
+				MonoMethodSignature *fsig;
+				MonoInst *arg;
+
+				/*
+				 * This is the same as CEE_CALLI, but passes an additional argument
+				 * to the called method in llvmonly mode.
+				 * This is only used by delegate invoke wrappers to call the
+				 * actual delegate method.
+				 */
+				g_assert (method->wrapper_type == MONO_WRAPPER_DELEGATE_INVOKE);
+
+				CHECK_OPSIZE (6);
+				token = read32 (ip + 2);
+
+				ins = NULL;
+
+				cmethod = NULL;
+				CHECK_STACK (1);
+				--sp;
+				addr = *sp;
+				fsig = mini_get_signature (method, token, generic_context);
+
+				n = fsig->param_count + fsig->hasthis + 1;
+
+				CHECK_STACK (n);
+
+				sp -= n;
+				arg = sp [n - 1];
+
+				if (cfg->llvm_only) {
+					/*
+					 * The lowest bit of 'arg' determines whenever the callee uses the gsharedvt
+					 * cconv. This is set by mono_init_delegate ().
+					 */
+					if (cfg->gsharedvt && mini_is_gsharedvt_variable_signature (fsig)) {
+						MonoInst *callee = addr;
+						MonoInst *call, *localloc_ins;
+						MonoBasicBlock *is_gsharedvt_bb, *end_bb;
+						int low_bit_reg = alloc_preg (cfg);
+
+						NEW_BBLOCK (cfg, is_gsharedvt_bb);
+						NEW_BBLOCK (cfg, end_bb);
+
+						MONO_EMIT_NEW_BIALU_IMM (cfg, OP_PAND_IMM, low_bit_reg, arg->dreg, 1);
+						MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, low_bit_reg, 0);
+						MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_PBNE_UN, is_gsharedvt_bb);
+
+						/* Normal case: callee uses a normal cconv, have to add an out wrapper */
+						addr = emit_get_rgctx_sig (cfg, context_used,
+												   fsig, MONO_RGCTX_INFO_SIG_GSHAREDVT_OUT_TRAMPOLINE_CALLI);
+						/*
+						 * ADDR points to a gsharedvt-out wrapper, have to pass <callee, arg> as an extra arg.
+						 */
+						MONO_INST_NEW (cfg, ins, OP_LOCALLOC_IMM);
+						ins->dreg = alloc_preg (cfg);
+						ins->inst_imm = 2 * SIZEOF_VOID_P;
+						MONO_ADD_INS (cfg->cbb, ins);
+						localloc_ins = ins;
+						cfg->flags |= MONO_CFG_HAS_ALLOCA;
+						MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORE_MEMBASE_REG, localloc_ins->dreg, 0, callee->dreg);
+						MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORE_MEMBASE_REG, localloc_ins->dreg, SIZEOF_VOID_P, arg->dreg);
+
+						call = emit_extra_arg_calli (cfg, fsig, sp, localloc_ins->dreg, addr);
+						MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_BR, end_bb);
+
+						/* Gsharedvt case: callee uses a gsharedvt cconv, no conversion is needed */
+						MONO_START_BB (cfg, is_gsharedvt_bb);
+						MONO_EMIT_NEW_BIALU_IMM (cfg, OP_PXOR_IMM, arg->dreg, arg->dreg, 1);
+						ins = emit_extra_arg_calli (cfg, fsig, sp, arg->dreg, callee);
+						ins->dreg = call->dreg;
+
+						MONO_START_BB (cfg, end_bb);
+					} else {
+						ins = emit_extra_arg_calli (cfg, fsig, sp, arg->dreg, addr);
+					}
+				} else {
+					/* Same as CEE_CALLI */
+					if (cfg->gsharedvt && mini_is_gsharedvt_signature (fsig)) {
+						/*
+						 * We pass the address to the gsharedvt trampoline in the rgctx reg
+						 */
+						MonoInst *callee = addr;
+
+						addr = emit_get_rgctx_sig (cfg, context_used,
+												   fsig, MONO_RGCTX_INFO_SIG_GSHAREDVT_OUT_TRAMPOLINE_CALLI);
+						ins = (MonoInst*)mono_emit_calli (cfg, fsig, sp, addr, NULL, callee);
+					} else {
+						ins = (MonoInst*)mono_emit_calli (cfg, fsig, sp, addr, NULL, NULL);
+					}
+				}
+
+				if (!MONO_TYPE_IS_VOID (fsig->ret))
+					*sp++ = mono_emit_widen_call_res (cfg, ins, fsig);
+
+				CHECK_CFG_EXCEPTION;
+
+				ip += 6;
+				ins_flag = 0;
+				constrained_class = NULL;
 				break;
 			}
 			default:

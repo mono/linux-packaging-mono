@@ -111,7 +111,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 129
+#define MONO_AOT_FILE_VERSION 130
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -1196,6 +1196,7 @@ typedef enum {
 	MONO_RGCTX_INFO_METHOD,
 	/* In llvmonly mode, this is a function descriptor */
 	MONO_RGCTX_INFO_GENERIC_METHOD_CODE,
+	MONO_RGCTX_INFO_GSHAREDVT_OUT_WRAPPER,
 	MONO_RGCTX_INFO_CLASS_FIELD,
 	MONO_RGCTX_INFO_METHOD_RGCTX,
 	MONO_RGCTX_INFO_METHOD_CONTEXT,
@@ -1232,7 +1233,7 @@ typedef enum {
 	 * Same as MONO_RGCTX_INFO_CLASS_BOX_TYPE, but for the class
 	 * which implements the method.
 	 */
-	MONO_RGCTX_INFO_VIRT_METHOD_BOX_TYPE
+	MONO_RGCTX_INFO_VIRT_METHOD_BOX_TYPE,
 } MonoRgctxInfoType;
 
 typedef struct _MonoRuntimeGenericContextInfoTemplate {
@@ -1909,6 +1910,7 @@ enum {
 #define OP_PADD_IMM OP_LADD_IMM
 #define OP_PSUB_IMM OP_LSUB_IMM
 #define OP_PAND_IMM OP_LAND_IMM
+#define OP_PXOR_IMM OP_LXOR_IMM
 #define OP_PSUB OP_LSUB
 #define OP_PMUL OP_LMUL
 #define OP_PMUL_IMM OP_LMUL_IMM
@@ -1934,6 +1936,7 @@ enum {
 #define OP_PADD_IMM OP_IADD_IMM
 #define OP_PSUB_IMM OP_ISUB_IMM
 #define OP_PAND_IMM OP_IAND_IMM
+#define OP_PXOR_IMM OP_IXOR_IMM
 #define OP_PSUB OP_ISUB
 #define OP_PMUL OP_IMUL
 #define OP_PMUL_IMM OP_IMUL_IMM
@@ -2227,13 +2230,16 @@ MONO_API void        mono_parse_env_options         (int *ref_argc, char **ref_a
 MonoDomain* mini_init                      (const char *filename, const char *runtime_version);
 void        mini_cleanup                   (MonoDomain *domain);
 MONO_API MonoDebugOptions *mini_get_debug_options   (void);
+MONO_API gboolean    mini_parse_debug_option (const char *option);
 
 /* helper methods */
 void      mini_jit_init                    (void);
 void      mini_jit_cleanup                 (void);
 void      mono_disable_optimizations       (guint32 opts);
 void      mono_set_optimizations           (guint32 opts);
+void      mono_set_bisect_methods          (guint32 opt, const char *method_list_filename);
 guint32   mono_get_optimizations_for_method (MonoMethod *method, guint32 default_opt);
+char*     mono_opt_descr                   (guint32 flags);
 void      mono_set_verbose_level           (guint32 level);
 MonoJumpInfoToken* mono_jump_info_token_new (MonoMemPool *mp, MonoImage *image, guint32 token);
 MonoJumpInfoToken* mono_jump_info_token_new2 (MonoMemPool *mp, MonoImage *image, guint32 token, MonoGenericContext *context);
