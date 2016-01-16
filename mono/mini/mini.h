@@ -106,12 +106,15 @@
 #define inst_ls_word data.op[MINI_LS_WORD_IDX].const_val
 #define inst_ms_word data.op[MINI_MS_WORD_IDX].const_val
 
+#define MONO_LVREG_LS(lvreg)	((lvreg) + 1)
+#define MONO_LVREG_MS(lvreg)	((lvreg) + 2)
+
 #ifndef DISABLE_AOT
 #define MONO_USE_AOT_COMPILER
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 130
+#define MONO_AOT_FILE_VERSION 131
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -1158,6 +1161,11 @@ typedef struct {
 	 * The current exception in flight
 	 */
 	guint32 thrown_exc;
+
+	/*
+	 * The calling assembly in llvmonly mode.
+	 */
+	MonoImage *calling_image;
 } MonoJitTlsData;
 
 /*
@@ -1215,6 +1223,7 @@ typedef enum {
 	MONO_RGCTX_INFO_METHOD_GSHAREDVT_OUT_TRAMPOLINE_VIRT,
 	/* Same for calli, associated with a signature */
 	MONO_RGCTX_INFO_SIG_GSHAREDVT_OUT_TRAMPOLINE_CALLI,
+	MONO_RGCTX_INFO_SIG_GSHAREDVT_IN_TRAMPOLINE_CALLI,
 	/* One of MONO_GSHAREDVT_BOX_TYPE */
 	MONO_RGCTX_INFO_CLASS_BOX_TYPE,
 	/* Resolves to a MonoGSharedVtMethodRuntimeInfo */
@@ -1677,6 +1686,7 @@ typedef struct {
 	guint            compute_gc_maps : 1;
 	guint            soft_breakpoints : 1;
 	guint            arch_eh_jit_info : 1;
+	guint            has_emulated_ops : 1;
 	guint            has_indirection : 1;
 	guint            has_atomic_add_i4 : 1;
 	guint            has_atomic_exchange_i4 : 1;
@@ -2446,7 +2456,8 @@ void     mono_aot_register_jit_icall        (const char *name, gpointer addr);
 guint32  mono_aot_find_method_index         (MonoMethod *method);
 void     mono_aot_init_llvm_method          (gpointer aot_module, guint32 method_index);
 void     mono_aot_init_gshared_method_this  (gpointer aot_module, guint32 method_index, MonoObject *this_ins);
-void     mono_aot_init_gshared_method_rgctx  (gpointer aot_module, guint32 method_index, MonoMethodRuntimeGenericContext *rgctx);
+void     mono_aot_init_gshared_method_mrgctx  (gpointer aot_module, guint32 method_index, MonoMethodRuntimeGenericContext *rgctx);
+void     mono_aot_init_gshared_method_vtable  (gpointer aot_module, guint32 method_index, MonoVTable *vtable);
 
 /* This is an exported function */
 MONO_API void     mono_aot_register_module           (gpointer *aot_info);
@@ -2574,6 +2585,7 @@ void              mono_decompose_long_opts (MonoCompile *cfg);
 void              mono_decompose_vtype_opts (MonoCompile *cfg);
 void              mono_decompose_array_access_opts (MonoCompile *cfg);
 void              mono_decompose_soft_float (MonoCompile *cfg);
+void              mono_local_emulate_ops (MonoCompile *cfg);
 void              mono_handle_global_vregs (MonoCompile *cfg);
 void              mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts);
 void              mono_allocate_gsharedvt_vars (MonoCompile *cfg);

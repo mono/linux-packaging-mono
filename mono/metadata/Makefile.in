@@ -146,9 +146,9 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
-	handle.c handle.h handle-private.h appdomain.c domain.c \
-	gc-stats.c gc.c monitor.c mono-hash.c object.c reflection.c \
-	null-gc.c boehm-gc.c
+	handle.c handle.h appdomain.c domain.c gc-stats.c gc.c \
+	monitor.c mono-hash.c object.c reflection.c null-gc.c \
+	boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_1 =  \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-console-unix.lo
 am__dirstamp = $(am__leading_dot)dirstamp
@@ -263,9 +263,9 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
-	handle.c handle.h handle-private.h appdomain.c domain.c \
-	gc-stats.c gc.c monitor.c mono-hash.c object.c reflection.c \
-	null-gc.c boehm-gc.c
+	handle.c handle.h appdomain.c domain.c gc-stats.c gc.c \
+	monitor.c mono-hash.c object.c reflection.c null-gc.c \
+	boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_10 = libmonoruntime_la-console-unix.lo
 @PLATFORM_ANDROID_TRUE@am__objects_11 = ../../support/libm/libmonoruntime_la-complex.lo
 @HOST_WIN32_TRUE@am__objects_12 = libmonoruntime_la-console-win32.lo
@@ -360,13 +360,12 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
-	handle.c handle.h handle-private.h appdomain.c domain.c \
-	gc-stats.c gc.c monitor.c mono-hash.c object.c reflection.c \
-	sgen-os-posix.c sgen-os-mach.c sgen-os-win32.c sgen-os-coop.c \
-	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
-	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
-	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
-	sgen-client-mono.h
+	handle.c handle.h appdomain.c domain.c gc-stats.c gc.c \
+	monitor.c mono-hash.c object.c reflection.c sgen-os-posix.c \
+	sgen-os-mach.c sgen-os-win32.c sgen-os-coop.c sgen-bridge.c \
+	sgen-bridge.h sgen-bridge-internals.h sgen-old-bridge.c \
+	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
+	sgen-toggleref.h sgen-stw.c sgen-mono.c sgen-client-mono.h
 @HOST_WIN32_FALSE@am__objects_18 = libmonoruntimesgen_static_la-console-unix.lo
 @PLATFORM_ANDROID_TRUE@am__objects_19 = ../../support/libm/libmonoruntimesgen_static_la-complex.lo
 @HOST_WIN32_TRUE@am__objects_20 = libmonoruntimesgen_static_la-console-win32.lo
@@ -487,13 +486,12 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
-	handle.c handle.h handle-private.h appdomain.c domain.c \
-	gc-stats.c gc.c monitor.c mono-hash.c object.c reflection.c \
-	sgen-os-posix.c sgen-os-mach.c sgen-os-win32.c sgen-os-coop.c \
-	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
-	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
-	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
-	sgen-client-mono.h
+	handle.c handle.h appdomain.c domain.c gc-stats.c gc.c \
+	monitor.c mono-hash.c object.c reflection.c sgen-os-posix.c \
+	sgen-os-mach.c sgen-os-win32.c sgen-os-coop.c sgen-bridge.c \
+	sgen-bridge.h sgen-bridge-internals.h sgen-old-bridge.c \
+	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
+	sgen-toggleref.h sgen-stw.c sgen-mono.c sgen-client-mono.h
 @HOST_WIN32_FALSE@am__objects_26 =  \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-console-unix.lo
 @PLATFORM_ANDROID_TRUE@am__objects_27 = ../../support/libm/libmonoruntimesgen_la-complex.lo
@@ -1069,8 +1067,7 @@ common_sources = \
 	seq-points-data.h	\
 	seq-points-data.c	\
 	handle.c	\
-	handle.h	\
-	handle-private.h
+	handle.h
 
 
 # These source files have compile time dependencies on GC code

@@ -462,7 +462,7 @@ namespace Mono.Terminal {
 					
 					Console.ForegroundColor = selected ? ConsoleColor.Black : ConsoleColor.Gray;
 					Console.BackgroundColor = selected ? ConsoleColor.Cyan : ConsoleColor.Blue;
-					
+
 					var item = Prefix + Completions [item_idx];
 					if (item.Length > Width)
 						item = item.Substring (0, Width);
@@ -490,7 +490,7 @@ namespace Mono.Terminal {
 			{
 				if (selected_item+1 < Completions.Length){
 					selected_item++;
-					if (selected_item + top_item >= Height)
+					if (selected_item - top_item >= Height)
 						top_item++;
 					SaveExcursion (DrawSelection);
 				}
@@ -1418,7 +1418,15 @@ namespace Mono.Terminal {
 	class Demo {
 		static void Main ()
 		{
-			LineEditor le = new LineEditor ("foo");
+			LineEditor le = new LineEditor ("foo") {
+				HeuristicsMode = "csharp"
+			};
+			le.AutoCompleteEvent += delegate (string a, int pos){
+				string prefix = "";
+				var completions = new string [] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten" };
+				return new Mono.Terminal.LineEditor.Completion (prefix, completions);
+			};
+			
 			string s;
 			
 			while ((s = le.Edit ("shell> ", "")) != null){
