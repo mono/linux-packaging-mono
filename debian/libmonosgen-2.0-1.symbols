@@ -1,5 +1,6 @@
 libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mini_get_debug_options@Base 4.1.0.1738
+ mini_parse_debug_option@Base 4.3.3.38
  mono_add_internal_call@Base 4.1.0.1738
  mono_aot_get_method@Base 4.1.0.1738
  mono_aot_register_module@Base 4.1.0.1738
