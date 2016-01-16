@@ -4445,6 +4445,22 @@ icall_is_direct_callable (MonoCompile *cfg, MonoMethod *cmethod)
 	return FALSE;
 }
 
+/* Return whenever METHOD calls Assembly.GetCallingAssembly () */
+// FIXME: It would be better to generalize this using some kind of method attribute
+// or automatic detection
+static gboolean
+method_needs_calling_assembly (MonoMethod *method)
+{
+	MonoClass *klass = method->klass;
+
+	if (klass->image != mono_defaults.corlib)
+		return FALSE;
+	if (!strcmp (klass->name_space, "System") && !strcmp (klass->name, "Activator") &&
+		!strcmp (method->name, "CreateInstance"))
+		return TRUE;
+	return FALSE;
+}
+
 #define is_complex_isinst(klass) ((klass->flags & TYPE_ATTRIBUTE_INTERFACE) || klass->rank || mono_class_is_nullable (klass) || mono_class_is_marshalbyref (klass) || (klass->flags & TYPE_ATTRIBUTE_SEALED) || klass->byval_arg.type == MONO_TYPE_VAR || klass->byval_arg.type == MONO_TYPE_MVAR)
 
 static MonoInst*
@@ -6708,6 +6724,11 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 
 			EMIT_NEW_AOTCONST (cfg, assembly_ins, MONO_PATCH_INFO_IMAGE, cfg->method->klass->image);
 			ins = mono_emit_jit_icall (cfg, mono_get_assembly_object, &assembly_ins);
+			return ins;
+		}
+		if (cfg->llvm_only && !strcmp (cmethod->name, "GetCallingAssembly")) {
+			/* No stack walks are currently available, so implement this as an intrinsic */
+			ins = mono_emit_jit_icall (cfg, mono_llvmonly_get_calling_assembly, NULL);
 			return ins;
 		}
 	} else if (cmethod->klass == mono_defaults.math_class) {
@@ -9127,6 +9148,7 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 			gboolean delegate_invoke = FALSE;
 			gboolean direct_icall = FALSE;
 			gboolean constrained_partial_call = FALSE;
+			gboolean needs_calling_assembly = FALSE;
 			MonoMethod *cil_method;
 
 			CHECK_OPSIZE (5);
@@ -9243,6 +9265,21 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 					 */
 					direct_icall = FALSE;
 				}
+			}
+
+			/*
+			 * Stack walks are not supported in llvmonly mode, so
+			 * when calling methods which call GetCallingAssembly (), save the
+			 * current assembly in the caller. The call to GetCallingAssembly ()
+			 * will be turned into an icall which will retrieve the value.
+			 */
+			if (cfg->llvm_only && cmethod && method_needs_calling_assembly (cmethod)) {
+				needs_calling_assembly = TRUE;
+
+				MonoInst *assembly_ins;
+
+				EMIT_NEW_AOTCONST (cfg, assembly_ins, MONO_PATCH_INFO_IMAGE, cfg->method->klass->image);
+				ins = mono_emit_jit_icall (cfg, mono_llvmonly_set_calling_assembly, &assembly_ins);
 			}
 
 			mono_save_token_info (cfg, image, token, cil_method);
@@ -9943,6 +9980,18 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				EMIT_NEW_DUMMY_USE (cfg, dummy_use, keep_this_alive);
 			}
 
+			if (needs_calling_assembly) {
+				/*
+				 * Clear the calling assembly.
+				 * This is not EH safe, but this is not a problem in practice, since
+				 * the null value is only used for error checking.
+				 */
+				MonoInst *assembly_ins;
+
+				EMIT_NEW_PCONST (cfg, assembly_ins, NULL);
+				ins = mono_emit_jit_icall (cfg, mono_llvmonly_set_calling_assembly, &assembly_ins);
+			}
+
 			CHECK_CFG_EXCEPTION;
 
 			ip += 5;
@@ -10404,15 +10453,7 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 			/* Use the immediate opcodes if possible */
 			if (((sp [1]->opcode == OP_ICONST) || (sp [1]->opcode == OP_I8CONST)) && mono_arch_is_inst_imm (sp [1]->opcode == OP_ICONST ? sp [1]->inst_c0 : sp [1]->inst_l)) {
-				int imm_opcode;
-
-				imm_opcode = mono_op_to_op_imm_noemul (ins->opcode);
-#if defined(MONO_ARCH_EMULATE_MUL_DIV) || defined(MONO_ARCH_EMULATE_DIV)
-				/* Keep emulated opcodes which are optimized away later */
-				if ((ins->opcode == OP_IREM_UN || ins->opcode == OP_IDIV_UN_IMM) && (cfg->opt & (MONO_OPT_CONSPROP | MONO_OPT_COPYPROP)) && sp [1]->opcode == OP_ICONST && mono_is_power_of_two (sp [1]->inst_c0) >= 0) {
-					imm_opcode = mono_op_to_op_imm (ins->opcode);
-				}
-#endif
+				int imm_opcode = mono_op_to_op_imm_noemul (ins->opcode);
 				if (imm_opcode != -1) {
 					ins->opcode = imm_opcode;
 					if (sp [1]->opcode == OP_I8CONST) {
@@ -12816,7 +12857,45 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 						MONO_START_BB (cfg, end_bb);
 					} else {
-						ins = emit_extra_arg_calli (cfg, fsig, sp, arg->dreg, addr);
+						/* Caller uses a normal calling conv */
+
+						MonoInst *callee = addr;
+						MonoInst *call, *localloc_ins;
+						MonoBasicBlock *is_gsharedvt_bb, *end_bb;
+						int low_bit_reg = alloc_preg (cfg);
+
+						NEW_BBLOCK (cfg, is_gsharedvt_bb);
+						NEW_BBLOCK (cfg, end_bb);
+
+						MONO_EMIT_NEW_BIALU_IMM (cfg, OP_PAND_IMM, low_bit_reg, arg->dreg, 1);
+						MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, low_bit_reg, 0);
+						MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_PBNE_UN, is_gsharedvt_bb);
+
+						/* Normal case: callee uses a normal cconv, no conversion is needed */
+						call = emit_extra_arg_calli (cfg, fsig, sp, arg->dreg, callee);
+						MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_BR, end_bb);
+						/* Gsharedvt case: callee uses a gsharedvt cconv, have to add an in wrapper */
+						MONO_START_BB (cfg, is_gsharedvt_bb);
+						MONO_EMIT_NEW_BIALU_IMM (cfg, OP_PXOR_IMM, arg->dreg, arg->dreg, 1);
+						NEW_AOTCONST (cfg, addr, MONO_PATCH_INFO_GSHAREDVT_IN_WRAPPER, fsig);
+						MONO_ADD_INS (cfg->cbb, addr);
+						/*
+						 * ADDR points to a gsharedvt-in wrapper, have to pass <callee, arg> as an extra arg.
+						 */
+						MONO_INST_NEW (cfg, ins, OP_LOCALLOC_IMM);
+						ins->dreg = alloc_preg (cfg);
+						ins->inst_imm = 2 * SIZEOF_VOID_P;
+						MONO_ADD_INS (cfg->cbb, ins);
+						localloc_ins = ins;
+						cfg->flags |= MONO_CFG_HAS_ALLOCA;
+						MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORE_MEMBASE_REG, localloc_ins->dreg, 0, callee->dreg);
+						MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORE_MEMBASE_REG, localloc_ins->dreg, SIZEOF_VOID_P, arg->dreg);
+
+						ins = emit_extra_arg_calli (cfg, fsig, sp, localloc_ins->dreg, addr);
+						ins->dreg = call->dreg;
+						MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_BR, end_bb);
+
+						MONO_START_BB (cfg, end_bb);
 					}
 				} else {
 					/* Same as CEE_CALLI */
@@ -14097,8 +14176,8 @@ mono_handle_global_vregs (MonoCompile *cfg)
 					 * Make the component vregs volatile since the optimizations can
 					 * get confused otherwise.
 					 */
-					get_vreg_to_inst (cfg, vreg + 1)->flags |= MONO_INST_VOLATILE;
-					get_vreg_to_inst (cfg, vreg + 2)->flags |= MONO_INST_VOLATILE;
+					get_vreg_to_inst (cfg, MONO_LVREG_LS (vreg))->flags |= MONO_INST_VOLATILE;
+					get_vreg_to_inst (cfg, MONO_LVREG_MS (vreg))->flags |= MONO_INST_VOLATILE;
 				}
 #endif
 
@@ -14243,9 +14322,9 @@ mono_handle_global_vregs (MonoCompile *cfg)
 					/* Modify the two component vars too */
 					MonoInst *var1;
 
-					var1 = get_vreg_to_inst (cfg, cfg->varinfo [pos]->dreg + 1);
+					var1 = get_vreg_to_inst (cfg, MONO_LVREG_LS (cfg->varinfo [pos]->dreg));
 					var1->inst_c0 = pos;
-					var1 = get_vreg_to_inst (cfg, cfg->varinfo [pos]->dreg + 2);
+					var1 = get_vreg_to_inst (cfg, MONO_LVREG_MS (cfg->varinfo [pos]->dreg));
 					var1->inst_c0 = pos;
 				}
 #endif
@@ -14340,13 +14419,13 @@ mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts)
 
 				g_assert (ins->opcode == OP_REGOFFSET);
 
-				tree = get_vreg_to_inst (cfg, ins->dreg + 1);
+				tree = get_vreg_to_inst (cfg, MONO_LVREG_LS (ins->dreg));
 				g_assert (tree);
 				tree->opcode = OP_REGOFFSET;
 				tree->inst_basereg = ins->inst_basereg;
 				tree->inst_offset = ins->inst_offset + MINI_LS_WORD_OFFSET;
 
-				tree = get_vreg_to_inst (cfg, ins->dreg + 2);
+				tree = get_vreg_to_inst (cfg, MONO_LVREG_MS (ins->dreg));
 				g_assert (tree);
 				tree->opcode = OP_REGOFFSET;
 				tree->inst_basereg = ins->inst_basereg;
@@ -14603,9 +14682,9 @@ mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts)
 
 #if SIZEOF_REGISTER != 8
 					if (regtype == 'l') {
-						NEW_STORE_MEMBASE (cfg, store_ins, OP_STOREI4_MEMBASE_REG, var->inst_basereg, var->inst_offset + MINI_LS_WORD_OFFSET, ins->dreg + 1);
+						NEW_STORE_MEMBASE (cfg, store_ins, OP_STOREI4_MEMBASE_REG, var->inst_basereg, var->inst_offset + MINI_LS_WORD_OFFSET, MONO_LVREG_LS (ins->dreg));
 						mono_bblock_insert_after_ins (bb, ins, store_ins);
-						NEW_STORE_MEMBASE (cfg, store_ins, OP_STOREI4_MEMBASE_REG, var->inst_basereg, var->inst_offset + MINI_MS_WORD_OFFSET, ins->dreg + 2);
+						NEW_STORE_MEMBASE (cfg, store_ins, OP_STOREI4_MEMBASE_REG, var->inst_basereg, var->inst_offset + MINI_MS_WORD_OFFSET, MONO_LVREG_MS (ins->dreg));
 						mono_bblock_insert_after_ins (bb, ins, store_ins);
 						def_ins = store_ins;
 					}
@@ -14772,9 +14851,9 @@ mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts)
 
 #if SIZEOF_REGISTER != 8
 						if (regtype == 'l') {
-							NEW_LOAD_MEMBASE (cfg, load_ins, OP_LOADI4_MEMBASE, sreg + 2, var->inst_basereg, var->inst_offset + MINI_MS_WORD_OFFSET);
+							NEW_LOAD_MEMBASE (cfg, load_ins, OP_LOADI4_MEMBASE, MONO_LVREG_MS (sreg), var->inst_basereg, var->inst_offset + MINI_MS_WORD_OFFSET);
 							mono_bblock_insert_before_ins (bb, ins, load_ins);
-							NEW_LOAD_MEMBASE (cfg, load_ins, OP_LOADI4_MEMBASE, sreg + 1, var->inst_basereg, var->inst_offset + MINI_LS_WORD_OFFSET);
+							NEW_LOAD_MEMBASE (cfg, load_ins, OP_LOADI4_MEMBASE, MONO_LVREG_LS (sreg), var->inst_basereg, var->inst_offset + MINI_LS_WORD_OFFSET);
 							mono_bblock_insert_before_ins (bb, ins, load_ins);
 							use_ins = load_ins;
 						}

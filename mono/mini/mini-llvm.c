@@ -78,7 +78,7 @@ typedef struct {
 	const char *jit_got_symbol;
 	const char *eh_frame_symbol;
 	LLVMValueRef get_method, get_unbox_tramp;
-	LLVMValueRef init_method, init_method_gshared_rgctx, init_method_gshared_this;
+	LLVMValueRef init_method, init_method_gshared_mrgctx, init_method_gshared_this, init_method_gshared_vtable;
 	LLVMValueRef code_start, code_end;
 	LLVMValueRef inited_var;
 	int max_inited_idx, max_method_idx;
@@ -2486,6 +2486,8 @@ emit_init_icall_wrapper (MonoLLVMModule *module, const char *name, const char *i
 		sig = LLVMFunctionType2 (LLVMVoidType (), IntPtrType (), LLVMInt32Type (), FALSE);
 		break;
 	case 1:
+	case 3:
+		/* mrgctx/vtable */
 		func = LLVMAddFunction (lmodule, name, LLVMFunctionType2 (LLVMVoidType (), LLVMInt32Type (), IntPtrType (), FALSE));
 		sig = LLVMFunctionType3 (LLVMVoidType (), IntPtrType (), LLVMInt32Type (), IntPtrType (), FALSE);
 		break;
@@ -2550,8 +2552,9 @@ static void
 emit_init_icall_wrappers (MonoLLVMModule *module)
 {
 	module->init_method = emit_init_icall_wrapper (module, "init_method", "mono_aot_init_llvm_method", 0);
-	module->init_method_gshared_rgctx = emit_init_icall_wrapper (module, "init_method_gshared_rgctx", "mono_aot_init_gshared_method_rgctx", 1);
+	module->init_method_gshared_mrgctx = emit_init_icall_wrapper (module, "init_method_gshared_mrgctx", "mono_aot_init_gshared_method_mrgctx", 1);
 	module->init_method_gshared_this = emit_init_icall_wrapper (module, "init_method_gshared_this", "mono_aot_init_gshared_method_this", 2);
+	module->init_method_gshared_vtable = emit_init_icall_wrapper (module, "init_method_gshared_vtable", "mono_aot_init_gshared_method_vtable", 3);
 }
 
 static void
@@ -2666,10 +2669,16 @@ emit_init_method (EmitContext *ctx)
 	LLVMPositionBuilderAtEnd (ctx->builder, notinited_bb);
 
 	// FIXME: Cache
-	if (ctx->rgctx_arg) {
+	if (ctx->rgctx_arg && cfg->method->is_inflated && mono_method_get_context (cfg->method)->method_inst) {
 		args [0] = LLVMConstInt (LLVMInt32Type (), cfg->method_index, 0);
 		args [1] = convert (ctx, ctx->rgctx_arg, IntPtrType ());
-		callee = ctx->module->init_method_gshared_rgctx;
+		callee = ctx->module->init_method_gshared_mrgctx;
+		call = LLVMBuildCall (builder, callee, args, 2, "");
+	} else if (ctx->rgctx_arg) {
+		/* A vtable is passed as the rgctx argument */
+		args [0] = LLVMConstInt (LLVMInt32Type (), cfg->method_index, 0);
+		args [1] = convert (ctx, ctx->rgctx_arg, IntPtrType ());
+		callee = ctx->module->init_method_gshared_vtable;
 		call = LLVMBuildCall (builder, callee, args, 2, "");
 	} else if (cfg->gshared) {
 		args [0] = LLVMConstInt (LLVMInt32Type (), cfg->method_index, 0);
@@ -2710,7 +2719,6 @@ emit_unbox_tramp (EmitContext *ctx, const char *method_name, LLVMTypeRef method_
 	tramp_name = g_strdup_printf ("ut_%s", method_name);
 	tramp = LLVMAddFunction (ctx->module->lmodule, tramp_name, method_type);
 	LLVMSetLinkage (tramp, LLVMInternalLinkage);
-	LLVMAddFunctionAttr (tramp, LLVMNoUnwindAttribute);
 	if (!ctx->llvm_only && ctx->rgctx_arg_pindex != -1)
 		LLVMAddAttribute (LLVMGetParam (tramp, ctx->rgctx_arg_pindex), LLVMInRegAttribute);
 
@@ -3213,6 +3221,14 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 		break;
 	}
 
+	/*
+	 * Sometimes the same method is called with two different signatures (i.e. with and without 'this'), so
+	 * use the real callee for argument type conversion.
+	 */
+	LLVMTypeRef callee_type = LLVMGetElementType (LLVMTypeOf (callee));
+	LLVMTypeRef *param_types = (LLVMTypeRef*)g_alloca (sizeof (LLVMTypeRef) * LLVMCountParamTypes (callee_type));
+	LLVMGetParamTypes (callee_type, param_types);
+
 	for (i = 0; i < sig->param_count + sig->hasthis; ++i) {
 		guint32 regpair;
 		int reg, pindex;
@@ -3261,7 +3277,7 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 		case LLVMArgGsharedvtFixed:
 		case LLVMArgGsharedvtFixedVtype:
 			g_assert (addresses [reg]);
-			args [pindex] = addresses [reg];
+			args [pindex] = convert (ctx, addresses [reg], LLVMPointerType (type_to_llvm_arg_type (ctx, ainfo->type), 0));
 			break;
 		case LLVMArgGsharedvtVariable:
 			g_assert (addresses [reg]);
@@ -3270,7 +3286,7 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 		default:
 			g_assert (args [pindex]);
 			if (i == 0 && sig->hasthis)
-				args [pindex] = convert (ctx, args [pindex], ThisType ());
+				args [pindex] = convert (ctx, args [pindex], param_types [pindex]);
 			else
 				args [pindex] = convert (ctx, args [pindex], type_to_llvm_arg_type (ctx, ainfo->type));
 			break;
@@ -3916,9 +3932,20 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 		emit_dbg_loc (ctx, builder, ins->cil_code);
 
 		nins ++;
-		if (nins > 3000 && builder == starting_builder) {
-			/* some steps in llc are non-linear in the size of basic blocks, see #5714 */
-			LLVM_FAILURE (ctx, "basic block too long");
+		if (nins > 1000) {
+			/*
+			 * Some steps in llc are non-linear in the size of basic blocks, see #5714.
+			 * Start a new bblock. If the llvm optimization passes merge these, we
+			 * can work around that by doing a volatile load + cond branch from
+			 * localloc-ed memory.
+			 */
+			//LLVM_FAILURE (ctx, "basic block too long");
+			cbb = gen_bb (ctx, "CONT_LONG_BB");
+			LLVMBuildBr (ctx->builder, cbb);
+			ctx->builder = builder = create_builder (ctx);
+			LLVMPositionBuilderAtEnd (builder, cbb);
+			ctx->bblocks [bb->block_num].end_bblock = cbb;
+			nins = 0;
 		}
 
 		if (has_terminator)
