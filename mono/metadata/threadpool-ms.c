@@ -876,8 +876,18 @@ monitor_thread (void)
 
 		if (all_waitsleepjoin) {
 			ThreadPoolCounter counter;
-			COUNTER_ATOMIC (counter, { counter._.max_working ++; });
-			hill_climbing_force_change (counter._.max_working, TRANSITION_STARVATION);
+			gboolean limit_worker_max_reached = FALSE;
+
+			COUNTER_ATOMIC (counter, {
+				if (counter._.max_working >= threadpool->limit_worker_max) {
+					limit_worker_max_reached = TRUE;
+					break;
+				}
+				counter._.max_working ++;
+			});
+
+			if (!limit_worker_max_reached)
+				hill_climbing_force_change (counter._.max_working, TRANSITION_STARVATION);
 		}
 
 		threadpool->cpu_usage = mono_cpu_usage (threadpool->cpu_usage_state);
@@ -1421,12 +1431,16 @@ mono_threadpool_ms_resume (void)
 void
 ves_icall_System_Threading_ThreadPool_GetAvailableThreadsNative (gint32 *worker_threads, gint32 *completion_port_threads)
 {
+	ThreadPoolCounter counter;
+
 	if (!worker_threads || !completion_port_threads)
 		return;
 
 	mono_lazy_initialize (&status, initialize);
 
-	*worker_threads = threadpool->limit_worker_max;
+	counter.as_gint64 = COUNTER_READ ();
+
+	*worker_threads = MAX (0, threadpool->limit_worker_max - counter._.active);
 	*completion_port_threads = threadpool->limit_io_max;
 }
 
@@ -1464,8 +1478,8 @@ ves_icall_System_Threading_ThreadPool_SetMinThreadsNative (gint32 worker_threads
 	if (completion_port_threads <= 0 || completion_port_threads > threadpool->limit_io_max)
 		return FALSE;
 
-	threadpool->limit_worker_max = worker_threads;
-	threadpool->limit_io_max = completion_port_threads;
+	threadpool->limit_worker_min = worker_threads;
+	threadpool->limit_io_min = completion_port_threads;
 
 	return TRUE;
 }

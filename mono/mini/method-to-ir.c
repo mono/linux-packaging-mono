@@ -2191,8 +2191,12 @@ target_type_is_incompatible (MonoCompile *cfg, MonoType *target, MonoInst *arg)
 
 	if (target->byref) {
 		/* FIXME: check that the pointed to types match */
-		if (arg->type == STACK_MP)
-			return arg->klass != mono_class_from_mono_type (target);
+		if (arg->type == STACK_MP) {
+			MonoClass *base_class = mono_class_from_mono_type (target);
+			/* This is needed to handle gshared types + ldaddr */
+			simple_type = mini_get_underlying_type (cfg, &base_class->byval_arg);
+			return target->type != MONO_TYPE_I && arg->klass != base_class && arg->klass != mono_class_from_mono_type (simple_type);
+		}
 		if (arg->type == STACK_PTR)
 			return 0;
 		return 1;
@@ -8903,6 +8907,9 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 			sp -= n;
 
+			/*
+			 * We have the `constrained.' prefix opcode.
+			 */
 			if (constrained_class) {
 				if (mini_is_gsharedvt_klass (cfg, constrained_class)) {
 					if ((cmethod->klass != mono_defaults.object_class) && constrained_class->valuetype && cmethod->klass->valuetype) {
@@ -8917,9 +8924,6 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 					}
 				}
 
-				/*
-				 * We have the `constrained.' prefix opcode.
-				 */
 				if (constrained_partial_call) {
 					gboolean need_box = TRUE;
 
@@ -12052,6 +12056,23 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 					EMIT_NEW_AOTCONST (cfg, ins, MONO_PATCH_INFO_GC_NURSERY_START, NULL);
 				else
 					EMIT_NEW_PCONST (cfg, ins, mono_gc_get_nursery (&shift_bits, &size));
+
+				*sp++ = ins;
+				ip += 2;
+				inline_costs += 10 * num_calls++;
+				break;
+			}
+			case CEE_MONO_LDPTR_NURSERY_BITS: {
+				int shift_bits;
+				size_t size;
+				CHECK_STACK_OVF (1);
+
+				if (cfg->compile_aot) {
+					EMIT_NEW_AOTCONST (cfg, ins, MONO_PATCH_INFO_GC_NURSERY_BITS, NULL);
+				} else {
+					mono_gc_get_nursery (&shift_bits, &size);
+					EMIT_NEW_PCONST (cfg, ins, (gpointer)(mgreg_t)shift_bits);
+				}
 
 				*sp++ = ins;
 				ip += 2;
