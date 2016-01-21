@@ -1694,6 +1694,8 @@ typedef struct {
 	guint            check_pinvoke_callconv : 1;
 	guint            has_unwind_info_for_epilog : 1;
 	guint            disable_inline : 1;
+	/* Disable inlining into caller */
+	guint            no_inline : 1;
 	guint            gshared : 1;
 	guint            gsharedvt : 1;
 	guint            r4fp : 1;
@@ -2591,7 +2593,8 @@ void              mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local
 void              mono_allocate_gsharedvt_vars (MonoCompile *cfg);
 void              mono_if_conversion (MonoCompile *cfg);
 
-/* virtual function delegate */
+/* Delegates */
+void              mini_init_delegate (MonoDelegate *del);
 gpointer          mono_get_delegate_virtual_invoke_impl  (MonoMethodSignature *sig, MonoMethod *method);
 
 /* methods that must be provided by the arch-specific port */
@@ -2800,6 +2803,15 @@ MONO_API gboolean mono_exception_walk_trace     (MonoException *ex, MonoExceptio
 void mono_restore_context                       (MonoContext *ctx);
 guint8* mono_jinfo_get_unwind_info              (MonoJitInfo *ji, guint32 *unwind_info_len);
 int  mono_jinfo_get_epilog_size                 (MonoJitInfo *ji);
+void     mono_llvm_rethrow_exception            (MonoObject *ex);
+void     mono_llvm_throw_exception              (MonoObject *ex);
+void     mono_llvm_throw_corlib_exception       (guint32 ex_token_index);
+void     mono_llvm_resume_exception             (void);
+void     mono_llvm_clear_exception              (void);
+MonoObject *mono_llvm_load_exception            (void);
+void     mono_llvm_reset_exception              (void);
+void     mono_llvm_raise_exception              (MonoException *e);
+gint32 mono_llvm_match_exception                (MonoJitInfo *jinfo, guint32 region_start, guint32 region_end, gpointer rgctx, MonoObject *this_obj);
 
 gboolean
 mono_find_jit_info_ext (MonoDomain *domain, MonoJitTlsData *jit_tls, 

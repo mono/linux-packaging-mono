@@ -58,7 +58,7 @@ namespace Mono.Security.Providers.OldTls
 			get { return false; }
 		}
 
-		public override bool SupportsTlsContext {
+		internal override bool SupportsTlsContext {
 			get { return false; }
 		}
 
@@ -74,7 +74,7 @@ namespace Mono.Security.Providers.OldTls
 			return new MNS.Private.MonoSslStreamImpl (impl);
 		}
 
-		public override IMonoTlsContext CreateTlsContext (
+		internal override IMonoTlsContext CreateTlsContext (
 			string hostname, bool serverMode, TlsProtocols protocolFlags,
 			X509Certificate serverCertificate, X509CertificateCollection clientCertificates,
 			bool remoteCertRequired, MonoEncryptionPolicy encryptionPolicy,

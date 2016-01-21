@@ -5043,7 +5043,7 @@ handle_delegate_ctor (MonoCompile *cfg, MonoClass *klass, MonoInst *target, Mono
 		args [0] = obj;
 		args [1] = target;
 		args [2] = emit_get_rgctx_method (cfg, context_used, method, MONO_RGCTX_INFO_METHOD);
-		mono_emit_jit_icall (cfg, virtual_ ? mono_init_delegate_virtual : mono_init_delegate, args);
+		mono_emit_jit_icall (cfg, virtual_ ? mono_llvmonly_init_delegate_virtual : mono_llvmonly_init_delegate, args);
 
 		return obj;
 	}
@@ -6176,7 +6176,7 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 				if (opcode == OP_LOADI8_MEMBASE)
 					ins = mono_decompose_opcode (cfg, ins);
 
-				emit_memory_barrier (cfg, MONO_MEMORY_BARRIER_ACQ);
+				emit_memory_barrier (cfg, MONO_MEMORY_BARRIER_SEQ);
 
 				return ins;
 			}
@@ -6200,7 +6200,7 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 				opcode = OP_STORE_MEMBASE_REG;
 
 			if (opcode) {
-				emit_memory_barrier (cfg, MONO_MEMORY_BARRIER_REL);
+				emit_memory_barrier (cfg, MONO_MEMORY_BARRIER_SEQ);
 
 				MONO_INST_NEW (cfg, ins, opcode);
 				ins->sreg1 = args [1]->dreg;
@@ -6729,6 +6729,24 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 		if (cfg->llvm_only && !strcmp (cmethod->name, "GetCallingAssembly")) {
 			/* No stack walks are currently available, so implement this as an intrinsic */
 			ins = mono_emit_jit_icall (cfg, mono_llvmonly_get_calling_assembly, NULL);
+			return ins;
+		}
+	} else if (cmethod->klass->image == mono_defaults.corlib &&
+			   (strcmp (cmethod->klass->name_space, "System.Reflection") == 0) &&
+			   (strcmp (cmethod->klass->name, "MethodBase") == 0)) {
+		if (cfg->llvm_only && !strcmp (cmethod->name, "GetCurrentMethod")) {
+			/* No stack walks are currently available, so implement this as an intrinsic */
+			MonoInst *method_ins;
+			MonoMethod *declaring = cfg->method;
+
+			/* This returns the declaring generic method */
+			if (declaring->is_inflated)
+				declaring = ((MonoMethodInflated*)cfg->method)->declaring;
+			EMIT_NEW_AOTCONST (cfg, method_ins, MONO_PATCH_INFO_METHODCONST, declaring);
+			ins = mono_emit_jit_icall (cfg, mono_get_method_object, &method_ins);
+			cfg->no_inline = TRUE;
+			if (cfg->method != cfg->current_method)
+				inline_failure (cfg, "MethodBase:GetCurrentMethod ()");
 			return ins;
 		}
 	} else if (cmethod->klass == mono_defaults.math_class) {
@@ -12805,6 +12823,9 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				--sp;
 				addr = *sp;
 				fsig = mini_get_signature (method, token, generic_context);
+
+				if (cfg->llvm_only)
+					cfg->signatures = g_slist_prepend_mempool (cfg->mempool, cfg->signatures, fsig);
 
 				n = fsig->param_count + fsig->hasthis + 1;
 
