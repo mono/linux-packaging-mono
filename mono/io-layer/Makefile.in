@@ -110,8 +110,8 @@ am__libwapi_la_SOURCES_DIST = access.h context.c context.h error.c \
 	socket-wrappers.h status.h threads.h thread-private.h \
 	timefuncs.c timefuncs.h timefuncs-private.h types.h uglify.h \
 	versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
-	wapi_glob.c wapi.h wapi-private.h wthreads.c wapi-remap.h \
-	io-layer-dummy.c
+	wapi_glob.c wapi.h wapi-private.h wthreads.c io-trace.h \
+	wapi-remap.h io-layer-dummy.c
 am__objects_1 = context.lo error.lo events.lo handles.lo io.lo \
 	io-portability.lo locking.lo messages.lo mutexes.lo posix.lo \
 	processes.lo security.lo semaphores.lo shared.lo sockets.lo \
@@ -404,6 +404,7 @@ OTHER_H = \
 	events.h	\
 	handles.h	\
 	io.h		\
+	io-trace.h	\
 	io-layer.h	\
 	io-portability.h	\
 	macros.h	\
