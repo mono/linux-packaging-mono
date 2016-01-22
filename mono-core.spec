@@ -343,7 +343,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/Mono.Security
 %{_prefix}/lib/mono/gac/Mono.Security.Providers.DotNet
 %{_prefix}/lib/mono/gac/Mono.Security.Providers.NewSystemSource
-%{_prefix}/lib/mono/gac/Mono.Security.Providers.NewTls.dll
+%{_prefix}/lib/mono/gac/Mono.Security.Providers.NewTls
 %{_prefix}/lib/mono/gac/Mono.Security.Providers.OldTls
 %{_prefix}/lib/mono/gac/Mono.Simd
 %{_prefix}/lib/mono/gac/Mono.Tasklets
