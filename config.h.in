@@ -21,6 +21,15 @@
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
 
+/* Disable GC checked build */
+#undef DISABLE_CHECKED_BUILD_GC
+
+/* Disable metadata checked build */
+#undef DISABLE_CHECKED_BUILD_METADATA
+
+/* Disable thread checked build */
+#undef DISABLE_CHECKED_BUILD_THREAD
+
 /* Disable COM support */
 #undef DISABLE_COM
 
@@ -695,6 +704,9 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
+/* Define to 1 if the system has the type `struct cmsghdr'. */
+#undef HAVE_STRUCT_CMSGHDR
+
 /* Define to 1 if `d_off' is a member of `struct dirent'. */
 #undef HAVE_STRUCT_DIRENT_D_OFF
 
@@ -983,6 +995,9 @@
 
 /* The runtime is compiled for cross-compiling mode */
 #undef MONO_CROSS_COMPILE
+
+/* Disable banned functions from being used by the runtime */
+#undef MONO_INSIDE_RUNTIME
 
 /* The LLVM back end is dynamically loaded */
 #undef MONO_LLVM_LOADED

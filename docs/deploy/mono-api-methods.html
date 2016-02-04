@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?><span>
+﻿<?xml version="1.0" encoding="utf-8"?><span>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <title>mono-api-methods.html</title>
@@ -12,26 +12,32 @@
    }
        
    .api {
-     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
+     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 18px;
+       font-size: 150%;
+       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+       padding-bottom: .5em;
    }
 
    .prototype {
-     border: 1px solid;
-     background-color: #f2f2f2;
-     padding: 5pt;
+     border: 3px solid #ecf0f1;
+     border-radius: 6px;
+     padding: .5em;
      margin-top: 5pt;
-     margin-bottom: 5pt;  
+     margin-bottom: 5pt;
+     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+     display: block;
+     overflow: auto;
+     background-color: #f9f9f9;
    } 
 
    .header {
-     border: 1px solid;
+     
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -45,19 +51,397 @@
      white-space: pre;
        font-family: monospace;
    }
+
+   .strike {
+      text-decoration: line-through;
+   }
+	.deprecated {
+	    color: red;
+	}
    
 
 </style>
 </head>
 <body>
-<h3>Methods</h3>
+<h2>Methods</h2>
 
-<h3>Invoking Methods</h3>
+	<p />Methods are represented by the <code>MonoMethod*</code>
+	instances.  Various APIs surface these instances, but usually
+	you will use the <a href="#method-desc">method description</a>
+	API to get a handle to a Mono Method.   You can <a href="method-invoking">invoke</a> those methods from C,
+	or you can probe <a href="method-working">probe various properties</a> of a method, and in particular
+	its <a href="method-signature">method signature</a> or get
+	some <a href="method-header">low-level information</a> about them.
+
+	<p />The following code snippet from the Mono runtime shows you
+	how to create a managed <code>System.Version</code> instance
+	with four integers by looking up the constructor in the
+	managed implementation of System.Version, creating an instance
+	of the object, and then invoking the constructor on it.
+
+	<div class="header">
+MonoObject*
+create_version (MonoDomain *domain, guint32 major, guint32 minor, guint32 build, guint32 revision)
+{
+    MonoClass *System_Version;
+    MonoMethod *create_version;
+    MonoError error;
+    MonoObject *result;
+    gpointer args [4];
+
+    System_Version = mono_class_from_name (mono_defaults.corlib, &quot;System&quot;, &quot;Version&quot;);
+
+    // Create a method description that we use to search for the
+    // constructor method
+    MonoMethodDesc *desc = mono_method_desc_new (&quot;:.ctor(int,int,int,int)&quot;, FALSE);
+    create_version = mono_method_desc_search_in_class (desc, System_Version);
+    mono_method_desc_free (desc);
+
+    // Setup the parameters to pass.
+    args [0] = &amp;major;
+    args [1] = &amp;minor;
+    args [2] = &amp;build;
+    args [3] = &amp;revision;
+
+    // Create the object instance
+    result = mono_object_new_checked (domain, System_Version, &amp;error);
+
+    // Raise an exception in case of an error
+    mono_error_raise_exception (&amp;error);
+
+    // Otherwise, invoke the constructor
+    mono_runtime_invoke (create_version, result, args, NULL);
+
+    // Return ther esult
+    return result;
+}
+
+	</div>
+	
+<a name="method-desc"></a>
+<h3>Method Descriptions</h3>
+
+	<p />Methods are represented by the <code>MonoMethod*</code>
+	instances.  To simplify the process of getting
+	a <code>MonoMethod*</code>, you use Method Descriptors, which
+	are C-strings that describe the method that you are looking
+	for, and then you perform a search in either
+	a <a href="mono-api-type.html">type</a>, or a
+	loaded <a href="mono-api-image.html">image</a>.
+
+	
+	<p />To describe a method, you use the Method Description API.
+	Method descriptions are used to locate a method in the
+	executing program.   They can either be fully specified, that
+	is, they would include the namespace, class, method name and
+	all of its arguments or they omit the namespace and arguments
+	and even use wildcard matches for the class name and method names.
+
+	<p />You use the fully specified version to identify a
+	particular method, or you can use the partial version to find
+	a method or a family of methods in the code.   
+
+	<p />Method descriptions are typically created from a C string
+	representation, and take the following form:
+
+	<p /><code>[namespace.]classname:methodname[(args...)]</code>
+
+	<p />Both classname and methodname can contain the '*' character
+	which can be used to match anything.  Arguments are separated
+	by commas.
+
+	<p />You can use the type shortcuts to match the fully qualified
+	parameter types.  The supported type shortcuts are:
+        <code>char</code>,
+        <code>bool</code>,
+        <code>byte</code>,
+        <code>sbyte</code>,
+        <code>uint16</code>,
+        <code>int16</code>,
+        <code>uint</code>,
+        <code>int</code>,
+        <code>ulong</code>,
+        <code>long</code>,
+        <code>uintptr</code>,
+        <code>intptr</code>,
+        <code>single</code>,
+        <code>double</code>,
+        <code>string</code> and 
+        <code>object</code>.
+
+	<p />The type parameters can use the &quot;&amp;&quot; and &quot;*&quot; type modifiers.
+	
+	<p />Examples of method descriptions:
+	<ul>
+		<li>&quot;Monitor:Exit&quot;: matches classes and methods called &quot;Monitor.Exit&quot;
+		<li>&quot;Monitor:enter_with_atomic_var(object,bool&amp;)&quot;:
+		matches a method in the class Monitor with two
+		specific type parameters.
+		<li>&quot;:.ctor(int,int,int,int)&quot;: matches constructors
+		that take four integers.
+		<li>&quot;System.Globalization.CultureInfo:CreateCulture(string,bool)&quot;:
+		matches the CreateCultureMethod that takes a string
+		and a boolean on the System.Globalization.CultureInfo class.
+	</li></li></li></li></ul>
+
+	<p />You can
+	then <a href="api:mono_method_desc_search_in_image">search for
+	methods in MonoImages</a>
+	or <a href="api:mono_method_desc_search_in_class">search for
+	methods in classes</a>. 
+
+ <a name="api:mono_method_desc_new"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_desc_new</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">MonoMethodDesc*
+mono_method_desc_new (const char *name, gboolean include_namespace)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>name:</i></dt><dd> the method name.</dd><dt><i>include_namespace:</i></dt><dd> whether the name includes a namespace or not.</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a parsed representation of the method description.
+</blockquote>
+<b>Description</b>
+<p />	 
+	 Creates a method description for <i>name</i>, which conforms to the following
+	 specification:
+	
+	 [namespace.]classname:methodname[(args...)]
+	
+	 in all the loaded assemblies.
+	
+	 Both classname and methodname can contain '*' which matches anything.
+	
+
+</div> <a name="api:mono_method_desc_free"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_desc_free</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">void
+mono_method_desc_free (MonoMethodDesc *desc)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>desc:</i></dt><dd> method description to be released</dd></blockquote>
+<b>Description</b>
+<p />	 
+	 Releases the MonoMethodDesc object <i>desc</i>.
+
+</div> <a name="api:mono_method_desc_from_method"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_desc_from_method</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_desc_from_method</div>
+<p />
+
+</div> <a name="api:mono_method_desc_full_match"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_desc_full_match</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_desc_full_match</div>
+<p />
+
+</div> <a name="api:mono_method_desc_match"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_desc_match</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_desc_match</div>
+<p />
+
+</div> <a name="api:mono_method_desc_search_in_class"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_desc_search_in_class</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_desc_search_in_class</div>
+<p />
+
+</div> <a name="api:mono_method_desc_search_in_image"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_desc_search_in_image</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_desc_search_in_image</div>
+<p />
+
+
+<a name="method-working"></a>
+</div><h3>Working with Methods</h3>
+
+ <a name="api:mono_method_full_name"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_full_name</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_full_name</div>
+<p />
+
+</div> <a name="api:mono_method_get_class"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_class</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_class</div>
+<p />
+
+</div> <a name="api:mono_method_get_flags"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_flags</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_flags</div>
+<p />
+
+</div> <a name="api:mono_method_get_last_managed"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_last_managed</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_last_managed</div>
+<p />
+
+</div> <a name="api:mono_method_get_marshal_info"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_marshal_info</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_marshal_info</div>
+<p />
+
+</div> <a name="api:mono_method_get_name"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_name</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_name</div>
+<p />
+
+</div> <a name="api:mono_method_get_object"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_object</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_object</div>
+<p />
+
+</div> <a name="api:mono_method_get_param_names"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_param_names</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_param_names</div>
+<p />
+
+</div> <a name="api:mono_method_get_param_token"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_param_token</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_param_token</div>
+<p />
+
+</div> <a name="api:mono_method_get_signature"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_signature</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_signature</div>
+<p />
+
+</div> <a name="api:mono_method_get_index"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_index</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_index</div>
+<p />
+
+</div> <a name="api:mono_method_get_signature_full"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_signature_full</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_signature_full</div>
+<p />
+
+</div> <a name="api:mono_method_get_token"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_token</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_get_token</div>
+<p />
+
+</div> <a name="api:mono_method_get_unmanaged_thunk"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_get_unmanaged_thunk</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">gpointer
+mono_method_get_unmanaged_thunk (MonoMethod *method)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>method:</i></dt><dd> method to generate a thunk for.</dd></blockquote>
+<b>Description</b>
+<p />	 
+	 Returns an unmanaged-&gt;managed thunk that can be used to call
+	 a managed method directly from C.
+	
+	 The thunk's C signature closely matches the managed signature:
+	
+	 C#: public bool Equals (object obj);
+	 C:  typedef MonoBoolean (*Equals)(MonoObject*,
+	             MonoObject*, MonoException**);
+	
+	 The 1st (&quot;this&quot;) parameter must not be used with static methods:
+	
+	 C#: public static bool ReferenceEquals (object a, object b);
+	 C:  typedef MonoBoolean (*ReferenceEquals)(MonoObject*, MonoObject*,
+	             MonoException**);
+	
+	 The last argument must be a non-null pointer of a MonoException* pointer.
+	 It has &quot;out&quot; semantics. After invoking the thunk, *ex will be NULL if no
+	 exception has been thrown in managed code. Otherwise it will point
+	 to the MonoException* caught by the thunk. In this case, the result of
+	 the thunk is undefined:
+	
+	 MonoMethod *method = ... // MonoMethod* of System.Object.Equals
+	 MonoException *ex = NULL;
+	 Equals func = mono_method_get_unmanaged_thunk (method);
+	 MonoBoolean res = func (thisObj, objToCompare, &amp;ex);
+	 if (ex) {
+	    // handle exception
+	 }
+	
+	 The calling convention of the thunk matches the platform's default
+	 convention. This means that under Windows, C declarations must
+	 contain the __stdcall attribute:
+	
+	 C:  typedef MonoBoolean (__stdcall *Equals)(MonoObject*,
+	             MonoObject*, MonoException**);
+	
+	 LIMITATIONS
+	
+	 Value type arguments and return values are treated as they were objects:
+	
+	 C#: public static Rectangle Intersect (Rectangle a, Rectangle b);
+	 C:  typedef MonoObject* (*Intersect)(MonoObject*, MonoObject*, MonoException**);
+	
+	 Arguments must be properly boxed upon trunk's invocation, while return
+	 values must be unboxed.
+
+</div> <a name="api:mono_method_has_marshal_info"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_has_marshal_info</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_has_marshal_info</div>
+<p />
+
+</div> <a name="api:mono_method_verify"></a>
+ <div class="api">
+    <div class="api-entry ">mono_method_verify</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_method_verify</div>
+<p />
+
+
+<a name="method-invoking"></a>
+</div><h3>Invoking Methods</h3>
 
  <a name="api:mono_runtime_invoke"></a>
  <div class="api">
-    <div class="api-entry">mono_runtime_invoke</div>
-
+    <div class="api-entry ">mono_runtime_invoke</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoObject*
 mono_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **exc)
 
@@ -65,7 +449,7 @@ mono_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>method:</i></dt><dd> method to invoke</dd><dt><i>obJ:</i></dt><dd> object instance</dd><dt><i>params:</i></dt><dd> arguments to the method</dd><dt><i>exc:</i></dt><dd> exception information.</dd></blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Invokes the method represented by <i>method</i> on the object <i>obj</i>.
 	
@@ -121,8 +505,8 @@ mono_runtime_invoke (method, obj, args, &amp;exception);
 
 </div> <a name="api:mono_runtime_invoke_array"></a>
  <div class="api">
-    <div class="api-entry">mono_runtime_invoke_array</div>
-
+    <div class="api-entry ">mono_runtime_invoke_array</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoObject*
 mono_runtime_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
 			   MonoObject **exc)
@@ -131,7 +515,7 @@ mono_runtime_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>method:</i></dt><dd> method to invoke</dd><dt><i>obJ:</i></dt><dd> object instance</dd><dt><i>params:</i></dt><dd> arguments to the method</dd><dt><i>exc:</i></dt><dd> exception information.</dd></blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Invokes the method represented by <i>method</i> on the object <i>obj</i>.
 	
@@ -168,8 +552,8 @@ mono_runtime_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
 
 </div> <a name="api:mono_runtime_delegate_invoke"></a>
  <div class="api">
-    <div class="api-entry">mono_runtime_delegate_invoke</div>
-
+    <div class="api-entry ">mono_runtime_delegate_invoke</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoObject*
 mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **exc)
 
@@ -177,7 +561,7 @@ mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>delegate:</i></dt><dd> pointer to a delegate object.</dd><dt><i>params:</i></dt><dd> parameters for the delegate.</dd><dt><i>exc:</i></dt><dd> Pointer to the exception result.</dd></blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Invokes the delegate method <i>delegate</i> with the parameters provided.
 	
@@ -189,212 +573,32 @@ mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **
 
 </div> <a name="api:mono_method_body_get_object"></a>
  <div class="api">
-    <div class="api-entry">mono_method_body_get_object</div>
-
+    <div class="api-entry ">mono_method_body_get_object</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_method_body_get_object</div>
 <p />
 
-</div> <a name="api:mono_method_desc_free"></a>
- <div class="api">
-    <div class="api-entry">mono_method_desc_free</div>
 
-    <div class="prototype">void
-mono_method_desc_free (MonoMethodDesc *desc)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>desc:</i></dt><dd> method description to be released</dd></blockquote>
-<b>Remarks</b>
-<p />	 
-	 Releases the MonoMethodDesc object <i>desc</i>.
-
-</div> <a name="api:mono_method_desc_from_method"></a>
- <div class="api">
-    <div class="api-entry">mono_method_desc_from_method</div>
-
-    <div class="prototype">Prototype: mono_method_desc_from_method</div>
-<p />
-
-</div> <a name="api:mono_method_desc_full_match"></a>
- <div class="api">
-    <div class="api-entry">mono_method_desc_full_match</div>
-
-    <div class="prototype">Prototype: mono_method_desc_full_match</div>
-<p />
-
-</div> <a name="api:mono_method_desc_match"></a>
- <div class="api">
-    <div class="api-entry">mono_method_desc_match</div>
-
-    <div class="prototype">Prototype: mono_method_desc_match</div>
-<p />
-
-</div> <a name="api:mono_method_desc_new"></a>
- <div class="api">
-    <div class="api-entry">mono_method_desc_new</div>
-
-    <div class="prototype">MonoMethodDesc*
-mono_method_desc_new (const char *name, gboolean include_namespace)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>name:</i></dt><dd> the method name.</dd><dt><i>include_namespace:</i></dt><dd> whether the name includes a namespace or not.</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  a parsed representation of the method description.
-</blockquote>
-<b>Remarks</b>
-<p />	 
-	 Creates a method description for <i>name</i>, which conforms to the following
-	 specification:
-	
-	 [namespace.]classname:methodname[(args...)]
-	
-	 in all the loaded assemblies.
-	
-	 Both classname and methodname can contain '*' which matches anything.
-	
-
-</div> <a name="api:mono_method_desc_search_in_class"></a>
- <div class="api">
-    <div class="api-entry">mono_method_desc_search_in_class</div>
-
-    <div class="prototype">Prototype: mono_method_desc_search_in_class</div>
-<p />
-
-</div> <a name="api:mono_method_desc_search_in_image"></a>
- <div class="api">
-    <div class="api-entry">mono_method_desc_search_in_image</div>
-
-    <div class="prototype">Prototype: mono_method_desc_search_in_image</div>
-<p />
-
-</div> <a name="api:mono_method_full_name"></a>
- <div class="api">
-    <div class="api-entry">mono_method_full_name</div>
-
-    <div class="prototype">Prototype: mono_method_full_name</div>
-<p />
-
-</div> <a name="api:mono_method_get_class"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_class</div>
-
-    <div class="prototype">Prototype: mono_method_get_class</div>
-<p />
-
-</div> <a name="api:mono_method_get_flags"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_flags</div>
-
-    <div class="prototype">Prototype: mono_method_get_flags</div>
-<p />
-
-</div> <a name="api:mono_method_get_last_managed"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_last_managed</div>
-
-    <div class="prototype">Prototype: mono_method_get_last_managed</div>
-<p />
-
-</div> <a name="api:mono_method_get_marshal_info"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_marshal_info</div>
-
-    <div class="prototype">Prototype: mono_method_get_marshal_info</div>
-<p />
-
-</div> <a name="api:mono_method_get_name"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_name</div>
-
-    <div class="prototype">Prototype: mono_method_get_name</div>
-<p />
-
-</div> <a name="api:mono_method_get_object"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_object</div>
-
-    <div class="prototype">Prototype: mono_method_get_object</div>
-<p />
-
-</div> <a name="api:mono_method_get_param_names"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_param_names</div>
-
-    <div class="prototype">Prototype: mono_method_get_param_names</div>
-<p />
-
-</div> <a name="api:mono_method_get_param_token"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_param_token</div>
-
-    <div class="prototype">Prototype: mono_method_get_param_token</div>
-<p />
-
-</div> <a name="api:mono_method_get_signature"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_signature</div>
-
-    <div class="prototype">Prototype: mono_method_get_signature</div>
-<p />
-
-</div> <a name="api:mono_method_get_index"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_index</div>
-
-    <div class="prototype">Prototype: mono_method_get_index</div>
-<p />
-
-</div> <a name="api:mono_method_get_signature_full"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_signature_full</div>
-
-    <div class="prototype">Prototype: mono_method_get_signature_full</div>
-<p />
-
-</div> <a name="api:mono_method_get_token"></a>
- <div class="api">
-    <div class="api-entry">mono_method_get_token</div>
-
-    <div class="prototype">Prototype: mono_method_get_token</div>
-<p />
-
-</div> <a name="api:mono_method_has_marshal_info"></a>
- <div class="api">
-    <div class="api-entry">mono_method_has_marshal_info</div>
-
-    <div class="prototype">Prototype: mono_method_has_marshal_info</div>
-<p />
-
-</div> <a name="api:mono_method_verify"></a>
- <div class="api">
-    <div class="api-entry">mono_method_verify</div>
-
-    <div class="prototype">Prototype: mono_method_verify</div>
-<p />
-
-
+<a name="method-signature"></a>
 </div><h3>Method Signatures</h3>
 
  <a name="api:mono_method_signature"></a>
  <div class="api">
-    <div class="api-entry">mono_method_signature</div>
-
+    <div class="api-entry ">mono_method_signature</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoMethodSignature*
 mono_method_signature (MonoMethod *m)
 
 </div>
 <p />
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Return the signature of the method M. On failure, returns NULL.
 
 </div> <a name="api:mono_signature_explicit_this"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_explicit_this</div>
-
+    <div class="api-entry ">mono_signature_explicit_this</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">gboolean
 mono_signature_explicit_this (MonoMethodSignature *sig)
 
@@ -409,8 +613,8 @@ mono_signature_explicit_this (MonoMethodSignature *sig)
 
 </div> <a name="api:mono_signature_get_call_conv"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_get_call_conv</div>
-
+    <div class="api-entry ">mono_signature_get_call_conv</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">guint32
 mono_signature_get_call_conv (MonoMethodSignature *sig)
 
@@ -424,15 +628,15 @@ mono_signature_get_call_conv (MonoMethodSignature *sig)
 
 </div> <a name="api:mono_signature_get_desc"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_get_desc</div>
-
+    <div class="api-entry ">mono_signature_get_desc</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_signature_get_desc</div>
 <p />
 
 </div> <a name="api:mono_signature_get_param_count"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_get_param_count</div>
-
+    <div class="api-entry ">mono_signature_get_param_count</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">guint32
 mono_signature_get_param_count (MonoMethodSignature *sig)
 
@@ -446,8 +650,8 @@ mono_signature_get_param_count (MonoMethodSignature *sig)
 
 </div> <a name="api:mono_signature_get_params"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_get_params</div>
-
+    <div class="api-entry ">mono_signature_get_params</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoType*
 mono_signature_get_params (MonoMethodSignature *sig, gpointer *iter)
 
@@ -459,7 +663,7 @@ mono_signature_get_params (MonoMethodSignature *sig, gpointer *iter)
 <blockquote>	  the next parameter type of the method signature <i>sig</i>,
 
 	 <i>NULL</i> when finished.</blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Iterates over the parameters for the method signature <i>sig</i>.
 	 A void* pointer must be initualized to <i>NULL</i> to start the iteration
@@ -469,8 +673,8 @@ mono_signature_get_params (MonoMethodSignature *sig, gpointer *iter)
 
 </div> <a name="api:mono_signature_get_return_type"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_get_return_type</div>
-
+    <div class="api-entry ">mono_signature_get_return_type</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoType*
 mono_signature_get_return_type (MonoMethodSignature *sig)
 
@@ -484,15 +688,15 @@ mono_signature_get_return_type (MonoMethodSignature *sig)
 
 </div> <a name="api:mono_signature_hash"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_hash</div>
-
+    <div class="api-entry ">mono_signature_hash</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_signature_hash</div>
 <p />
 
 </div> <a name="api:mono_signature_is_instance"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_is_instance</div>
-
+    <div class="api-entry ">mono_signature_is_instance</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">gboolean
 mono_signature_is_instance (MonoMethodSignature *sig)
 
@@ -505,10 +709,29 @@ mono_signature_is_instance (MonoMethodSignature *sig)
 
 	 first instance argument. <i>FALSE</i> otherwise.</blockquote>
 
+</div> <a name="api:mono_signature_param_is_out"></a>
+ <div class="api">
+    <div class="api-entry ">mono_signature_param_is_out</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">mono_bool
+mono_signature_param_is_out (MonoMethodSignature *sig, int param_num)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>sig:</i></dt><dd> the method signature inspected</dd><dt><i>param_num:</i></dt><dd> the 0-based index of the inspected parameter</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  <i>TRUE</i> if the parameter is an out parameter, <i>FALSE</i>
+
+	 otherwise.</blockquote>
+<b>Description</b>
+<p />	 <p />
+
+
 </div> <a name="api:mono_signature_vararg_start"></a>
  <div class="api">
-    <div class="api-entry">mono_signature_vararg_start</div>
-
+    <div class="api-entry ">mono_signature_vararg_start</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">int
 mono_signature_vararg_start (MonoMethodSignature *sig)
 
@@ -523,53 +746,54 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
 
 </div> <a name="api:mono_param_get_objects"></a>
  <div class="api">
-    <div class="api-entry">mono_param_get_objects</div>
-
+    <div class="api-entry ">mono_param_get_objects</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_param_get_objects</div>
 <p />
 
 </div> <a name="api:mono_get_method_full"></a>
  <div class="api">
-    <div class="api-entry">mono_get_method_full</div>
-
+    <div class="api-entry ">mono_get_method_full</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_get_method_full</div>
 <p />
 
 </div> <a name="api:mono_get_method"></a>
  <div class="api">
-    <div class="api-entry">mono_get_method</div>
-
+    <div class="api-entry ">mono_get_method</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_get_method</div>
 <p />
 
 
+<a name="method-header"></a>
 </div><h3>Methods Header Operations</h3>
 
  <a name="api:mono_method_get_header"></a>
  <div class="api">
-    <div class="api-entry">mono_method_get_header</div>
-
+    <div class="api-entry ">mono_method_get_header</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_method_get_header</div>
 <p />
 
 </div> <a name="api:mono_method_header_get_clauses"></a>
  <div class="api">
-    <div class="api-entry">mono_method_header_get_clauses</div>
-
+    <div class="api-entry ">mono_method_header_get_clauses</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_method_header_get_clauses</div>
 <p />
 
 </div> <a name="api:mono_method_header_get_code"></a>
  <div class="api">
-    <div class="api-entry">mono_method_header_get_code</div>
-
+    <div class="api-entry ">mono_method_header_get_code</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_method_header_get_code</div>
 <p />
 
 </div> <a name="api:mono_method_header_get_locals"></a>
  <div class="api">
-    <div class="api-entry">mono_method_header_get_locals</div>
-
+    <div class="api-entry ">mono_method_header_get_locals</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_method_header_get_locals</div>
 <p />
 

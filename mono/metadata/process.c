@@ -105,12 +105,14 @@ static void process_set_field_object (MonoObject *obj, const gchar *fieldname,
 static void process_set_field_string (MonoObject *obj, const gchar *fieldname,
 				      const gunichar2 *val, guint32 len)
 {
+	MonoError error;
 	MonoClassField *field;
 	MonoString *string;
 
 	LOGDEBUG (g_message ("%s: Setting field %s to [%s]", __func__, fieldname, g_utf16_to_utf8 (val, len, NULL, NULL, NULL)));
 
-	string=mono_string_new_utf16 (mono_object_domain (obj), val, len);
+	string = mono_string_new_utf16_checked (mono_object_domain (obj), val, len, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 	
 	field=mono_class_get_field_from_name (mono_object_class (obj),
 					      fieldname);
@@ -377,6 +379,7 @@ static void process_get_assembly_fileversion (MonoObject *filever, MonoAssembly 
 
 static MonoObject* get_process_module (MonoAssembly *assembly, MonoClass *proc_class)
 {
+	MonoError error;
 	static MonoClass *filever_class = NULL;
 	MonoObject *item, *filever;
 	MonoDomain *domain = mono_domain_get ();
@@ -387,14 +390,16 @@ static MonoObject* get_process_module (MonoAssembly *assembly, MonoClass *proc_c
 
 	/* Build a System.Diagnostics.ProcessModule with the data.
 	 */
-	item = mono_object_new (domain, proc_class);
+	item = mono_object_new_checked (domain, proc_class, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	if (!filever_class)
 		filever_class = mono_class_from_name (system_assembly,
 					    "System.Diagnostics",
 					    "FileVersionInfo");
 
-	filever = mono_object_new (domain, filever_class);
+	filever = mono_object_new_checked (domain, filever_class, &error);
+	if (!mono_error_ok (&error)) goto leave;
 
 	process_get_assembly_fileversion (filever, assembly);
 	process_set_field_string_char (filever, "filename", filename);
@@ -405,13 +410,16 @@ static MonoObject* get_process_module (MonoAssembly *assembly, MonoClass *proc_c
 	process_set_field_string_char (item, "filename", filename);
 	process_set_field_string_char (item, "modulename", modulename);
 
+leave:
 	g_free (filename);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	return item;
 }
 
 static MonoObject* process_add_module (HANDLE process, HMODULE mod, gunichar2 *filename, gunichar2 *modulename, MonoClass *proc_class)
 {
+	MonoError error;
 	static MonoClass *filever_class = NULL;
 	MonoObject *item, *filever;
 	MonoDomain *domain=mono_domain_get ();
@@ -420,14 +428,16 @@ static MonoObject* process_add_module (HANDLE process, HMODULE mod, gunichar2 *f
 	
 	/* Build a System.Diagnostics.ProcessModule with the data.
 	 */
-	item=mono_object_new (domain, proc_class);
+	item=mono_object_new_checked (domain, proc_class, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	if (!filever_class)
 		filever_class=mono_class_from_name (system_assembly,
 					    "System.Diagnostics",
 					    "FileVersionInfo");
 
-	filever=mono_object_new (domain, filever_class);
+	filever=mono_object_new_checked (domain, filever_class, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	process_get_fileversion (filever, filename);
 
@@ -879,6 +889,7 @@ gint32 ves_icall_System_Diagnostics_Process_ExitCode_internal (HANDLE process)
 
 MonoString *ves_icall_System_Diagnostics_Process_ProcessName_internal (HANDLE process)
 {
+	MonoError error;
 	MonoString *string;
 	gboolean ok;
 	HMODULE mod;
@@ -898,7 +909,9 @@ MonoString *ves_icall_System_Diagnostics_Process_ProcessName_internal (HANDLE pr
 	
 	LOGDEBUG (g_message ("%s: process name is [%s]", __func__, g_utf16_to_utf8 (name, -1, NULL, NULL, NULL)));
 	
-	string=mono_string_new_utf16 (mono_domain_get (), name, len);
+	string = mono_string_new_utf16_checked (mono_domain_get (), name, len, &error);
+
+	mono_error_raise_exception (&error);
 	
 	return(string);
 }

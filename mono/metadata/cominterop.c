@@ -35,6 +35,8 @@
 #include "mono/utils/mono-counters.h"
 #include "mono/utils/strenc.h"
 #include "mono/utils/atomic.h"
+#include "mono/utils/mono-error.h"
+#include "mono/utils/mono-error-internals.h"
 #include <string.h>
 #include <errno.h>
 
@@ -167,6 +169,22 @@ mono_marshal_safearray_set_value (gpointer safearray, gpointer indices, gpointer
 
 static void
 mono_marshal_safearray_free_indices (gpointer indices);
+
+MonoClass*
+mono_class_try_get_com_object_class (void)
+{
+	static MonoClass *tmp_class;
+	static gboolean inited;
+	MonoClass *klass;
+	if (!inited) {
+		klass = mono_class_from_name (mono_defaults.corlib, "System", "__ComObject");
+		mono_memory_barrier ();
+		tmp_class = klass;
+		mono_memory_barrier ();
+		inited = TRUE;
+	}
+	return tmp_class;
+}
 
 /**
  * cominterop_method_signature:
@@ -520,11 +538,17 @@ cominterop_get_hresult_for_exception (MonoException* exc)
 static MonoReflectionType *
 cominterop_type_from_handle (MonoType *handle)
 {
+	MonoError error;
+	MonoReflectionType *ret;
 	MonoDomain *domain = mono_domain_get (); 
 	MonoClass *klass = mono_class_from_mono_type (handle);
 
 	mono_class_init (klass);
-	return mono_type_get_object (domain, handle);
+
+	ret = mono_type_get_object_checked (domain, handle, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
+
+	return ret;
 }
 
 void
@@ -1600,6 +1624,7 @@ ves_icall_System_Runtime_InteropServices_Marshal_GetComSlotForMethodInfoInternal
 MonoObject *
 ves_icall_System_ComObject_CreateRCW (MonoReflectionType *type)
 {
+	MonoError error;
 	MonoClass *klass;
 	MonoDomain *domain;
 	MonoObject *obj;
@@ -1607,13 +1632,15 @@ ves_icall_System_ComObject_CreateRCW (MonoReflectionType *type)
 	domain = mono_object_domain (type);
 	klass = mono_class_from_mono_type (type->type);
 
-	/* call mono_object_new_alloc_specific instead of mono_object_new
+	/* call mono_object_new_alloc_specific_checked instead of mono_object_new
 	 * because we want to actually create object. mono_object_new checks
 	 * to see if type is import and creates transparent proxy. this method
 	 * is called by the corresponding real proxy to create the real RCW.
 	 * Constructor does not need to be called. Will be called later.
 	*/
-	obj = mono_object_new_alloc_specific (mono_class_vtable_full (domain, klass, TRUE));
+	obj = mono_object_new_alloc_specific_checked (mono_class_vtable_full (domain, klass, TRUE), &error);
+	mono_error_raise_exception (&error);
+
 	return obj;
 }
 
@@ -2649,27 +2676,32 @@ mono_string_to_bstr (MonoString *string_obj)
 MonoString *
 mono_string_from_bstr (gpointer bstr)
 {
+	MonoError error;
+	MonoString * res = NULL;
+	
 	if (!bstr)
 		return NULL;
 #ifdef HOST_WIN32
-	return mono_string_new_utf16 (mono_domain_get (), bstr, SysStringLen (bstr));
+	res = mono_string_new_utf16_checked (mono_domain_get (), bstr, SysStringLen (bstr), &error);
 #else
 	if (com_provider == MONO_COM_DEFAULT) {
-		return mono_string_new_utf16 (mono_domain_get (), (const mono_unichar2 *)bstr, *((guint32 *)bstr - 1) / sizeof(gunichar2));
+		res = mono_string_new_utf16_checked (mono_domain_get (), (const mono_unichar2 *)bstr, *((guint32 *)bstr - 1) / sizeof(gunichar2), &error);
 	} else if (com_provider == MONO_COM_MS && init_com_provider_ms ()) {
 		MonoString* str = NULL;
 		glong written = 0;
 		gunichar2* utf16 = NULL;
 
 		utf16 = g_ucs4_to_utf16 ((const gunichar *)bstr, sys_string_len_ms (bstr), NULL, &written, NULL);
-		str = mono_string_new_utf16 (mono_domain_get (), utf16, written);
+		str = mono_string_new_utf16_checked (mono_domain_get (), utf16, written, &error);
 		g_free (utf16);
-		return str;
+		res = str;
 	} else {
 		g_assert_not_reached ();
 	}
 
 #endif
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
+	return res;
 }
 
 void
@@ -2991,6 +3023,7 @@ int mono_marshal_safe_array_get_ubound (gpointer psa, guint nDim, glong* plUboun
 static gboolean
 mono_marshal_safearray_begin (gpointer safearray, MonoArray **result, gpointer *indices, gpointer empty, gpointer parameter, gboolean allocateNewArray)
 {
+	MonoError error;
 	int dim;
 	uintptr_t *sizes;
 	intptr_t *bounds;
@@ -3049,7 +3082,8 @@ mono_marshal_safearray_begin (gpointer safearray, MonoArray **result, gpointer *
 
 			if (allocateNewArray) {
 				aklass = mono_bounded_array_class_get (mono_defaults.object_class, dim, bounded);
-				*result = mono_array_new_full (mono_domain_get (), aklass, sizes, bounds);
+				*result = mono_array_new_full_checked (mono_domain_get (), aklass, sizes, bounds, &error);
+				mono_error_raise_exception (&error); /* FIXME don't raise here */
 			} else {
 				*result = (MonoArray *)parameter;
 			}
@@ -3257,13 +3291,17 @@ mono_string_to_bstr (MonoString *string_obj)
 MonoString *
 mono_string_from_bstr (gpointer bstr)
 {
+	MonoString *res = NULL;
+	MonoError error;
 	if (!bstr)
 		return NULL;
 #ifdef HOST_WIN32
-	return mono_string_new_utf16 (mono_domain_get (), bstr, SysStringLen (bstr));
+	res = mono_string_new_utf16_checked (mono_domain_get (), bstr, SysStringLen (bstr), &error);
 #else
-	return mono_string_new_utf16 (mono_domain_get (), bstr, *((guint32 *)bstr - 1) / sizeof(gunichar2));
+	res = mono_string_new_utf16_checked (mono_domain_get (), bstr, *((guint32 *)bstr - 1) / sizeof(gunichar2), &error);
 #endif
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
+	return res;
 }
 
 void

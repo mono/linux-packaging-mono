@@ -936,8 +936,10 @@ mono_gc_alloc_obj (MonoVTable *vtable, size_t size)
 {
 	MonoObject *obj = sgen_alloc_obj (vtable, size);
 
-	if (G_UNLIKELY (alloc_events))
-		mono_profiler_allocation (obj);
+	if (G_UNLIKELY (alloc_events)) {
+		if (obj)
+			mono_profiler_allocation (obj);
+	}
 
 	return obj;
 }
@@ -947,22 +949,23 @@ mono_gc_alloc_pinned_obj (MonoVTable *vtable, size_t size)
 {
 	MonoObject *obj = sgen_alloc_obj_pinned (vtable, size);
 
-	if (G_UNLIKELY (alloc_events))
-		mono_profiler_allocation (obj);
+	if (G_UNLIKELY (alloc_events)) {
+		if (obj)
+			mono_profiler_allocation (obj);
+	}
 
 	return obj;
 }
 
 void*
-mono_gc_alloc_mature (MonoVTable *vtable)
+mono_gc_alloc_mature (MonoVTable *vtable, size_t size)
 {
-	MonoObject *obj = sgen_alloc_obj_mature (vtable, vtable->klass->instance_size);
+	MonoObject *obj = sgen_alloc_obj_mature (vtable, size);
 
-	if (obj && G_UNLIKELY (obj->vtable->klass->has_finalize))
-		mono_object_register_finalizer (obj);
-
-	if (G_UNLIKELY (alloc_events))
-		mono_profiler_allocation (obj);
+	if (G_UNLIKELY (alloc_events)) {
+		if (obj)
+			mono_profiler_allocation (obj);
+	}
 
 	return obj;
 }
@@ -1105,16 +1108,16 @@ create_allocator (int atype, gboolean slowpath)
 		case ATYPE_NORMAL:
 		case ATYPE_SMALL:
 			mono_mb_emit_ldarg (mb, 0);
-			mono_mb_emit_icall (mb, mono_object_new_specific);
+			mono_mb_emit_icall (mb, ves_icall_object_new_specific);
 			break;
 		case ATYPE_VECTOR:
 			mono_mb_emit_ldarg (mb, 0);
 			mono_mb_emit_ldarg (mb, 1);
-			mono_mb_emit_icall (mb, mono_array_new_specific);
+			mono_mb_emit_icall (mb, ves_icall_array_new_specific);
 			break;
 		case ATYPE_STRING:
 			mono_mb_emit_ldarg (mb, 1);
-			mono_mb_emit_icall (mb, mono_string_alloc);
+			mono_mb_emit_icall (mb, ves_icall_string_alloc);
 			break;
 		default:
 			g_assert_not_reached ();
@@ -1401,10 +1404,7 @@ create_allocator (int atype, gboolean slowpath)
 int
 mono_gc_get_aligned_size_for_allocator (int size)
 {
-	int aligned_size = size;
-	aligned_size += SGEN_ALLOC_ALIGN - 1;
-	aligned_size &= ~(SGEN_ALLOC_ALIGN - 1);
-	return aligned_size;
+	return SGEN_ALIGN_UP (size);
 }
 
 /*
@@ -1736,7 +1736,7 @@ mono_gc_alloc_vector (MonoVTable *vtable, size_t size, uintptr_t max_length)
 	arr = (MonoArray*)sgen_alloc_obj_nolock (vtable, size);
 	if (G_UNLIKELY (!arr)) {
 		UNLOCK_GC;
-		return mono_gc_out_of_memory (size);
+		return NULL;
 	}
 
 	arr->max_length = (mono_array_size_t)max_length;
@@ -1781,7 +1781,7 @@ mono_gc_alloc_array (MonoVTable *vtable, size_t size, uintptr_t max_length, uint
 	arr = (MonoArray*)sgen_alloc_obj_nolock (vtable, size);
 	if (G_UNLIKELY (!arr)) {
 		UNLOCK_GC;
-		return mono_gc_out_of_memory (size);
+		return NULL;
 	}
 
 	arr->max_length = (mono_array_size_t)max_length;
@@ -1825,7 +1825,7 @@ mono_gc_alloc_string (MonoVTable *vtable, size_t size, gint32 len)
 	str = (MonoString*)sgen_alloc_obj_nolock (vtable, size);
 	if (G_UNLIKELY (!str)) {
 		UNLOCK_GC;
-		return mono_gc_out_of_memory (size);
+		return NULL;
 	}
 
 	str->length = len;
@@ -2382,7 +2382,7 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 
 		if (!precise) {
 #ifdef USE_MONO_CTX
-			sgen_conservatively_pin_objects_from ((void**)&info->client_info.ctx, (void**)&info->client_info.ctx + ARCH_NUM_REGS,
+			sgen_conservatively_pin_objects_from ((void**)&info->client_info.ctx, (void**)(&info->client_info.ctx + 1),
 				start_nursery, end_nursery, PIN_TYPE_STACK);
 #else
 			sgen_conservatively_pin_objects_from ((void**)&info->client_info.regs, (void**)&info->client_info.regs + ARCH_NUM_REGS,
@@ -2707,12 +2707,6 @@ void
 mono_gc_register_altstack (gpointer stack, gint32 stack_size, gpointer altstack, gint32 altstack_size)
 {
 	// FIXME:
-}
-
-void
-sgen_client_out_of_memory (size_t size)
-{
-	mono_gc_out_of_memory (size);
 }
 
 guint8*

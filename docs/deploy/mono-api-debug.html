@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?><span>
+﻿<?xml version="1.0" encoding="utf-8"?><span>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <title>mono-api-debug.html</title>
@@ -12,26 +12,32 @@
    }
        
    .api {
-     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
+     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 18px;
+       font-size: 150%;
+       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+       padding-bottom: .5em;
    }
 
    .prototype {
-     border: 1px solid;
-     background-color: #f2f2f2;
-     padding: 5pt;
+     border: 3px solid #ecf0f1;
+     border-radius: 6px;
+     padding: .5em;
      margin-top: 5pt;
-     margin-bottom: 5pt;  
+     margin-bottom: 5pt;
+     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+     display: block;
+     overflow: auto;
+     background-color: #f9f9f9;
    } 
 
    .header {
-     border: 1px solid;
+     
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -45,134 +51,265 @@
      white-space: pre;
        font-family: monospace;
    }
+
+   .strike {
+      text-decoration: line-through;
+   }
+	.deprecated {
+	    color: red;
+	}
    
 
 </style>
 </head>
 <body>
- <a name="api:mono_debug_il_offset_from_address"></a>
- <div class="api">
-    <div class="api-entry">mono_debug_il_offset_from_address</div>
 
+<h3>Mono Debugger Interface</h3>
+
+	<p />These are methods that are invoked by the debugger at
+	runtime.
+	
+ <a name="api:mono_debugger_insert_breakpoint"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debugger_insert_breakpoint</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debugger_insert_breakpoint</div>
+<p />
+
+</div> <a name="api:mono_debugger_method_has_breakpoint"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debugger_method_has_breakpoint</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debugger_method_has_breakpoint</div>
+<p />
+
+
+</div><h3>Debugging Symbols</h3>
+ <a name="api:mono_debug_open_mono_symbols"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_open_mono_symbols</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_open_mono_symbols</div>
+<p />
+
+</div> <a name="api:mono_debug_symfile_free_location"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_symfile_free_location</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_symfile_free_location</div>
+<p />
+
+</div> <a name="api:mono_debug_symfile_is_loaded"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_symfile_is_loaded</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_symfile_is_loaded</div>
+<p />
+
+</div> <a name="api:mono_debug_symfile_lookup_locals"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_symfile_lookup_locals</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_symfile_lookup_locals</div>
+<p />
+
+</div> <a name="api:mono_debug_symfile_lookup_location"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_symfile_lookup_location</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">MonoDebugSourceLocation*
+mono_debug_symfile_lookup_location (MonoDebugMethodInfo *minfo, uint32_t offset)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>minfo:</i></dt><dd> A `MonoDebugMethodInfo' which can be retrieved by</dd></blockquote>
+<b>Description</b>
+<p />	         mono_debug_lookup_method(). 
+	 <i>offset</i>: IL offset within the corresponding method's CIL code.
+	
+	 This function is similar to mono_debug_lookup_location(), but we
+	 already looked up the method and also already did the
+	 `native address -&gt; IL offset' mapping.
+
+</div> <a name="api:mono_debug_symfile_lookup_method"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_symfile_lookup_method</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_symfile_lookup_method</div>
+<p />
+
+
+</div><h3>Internal Debugging </h3>
+
+ <a name="api:mono_debug_add_delegate_trampoline"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_add_delegate_trampoline</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_add_delegate_trampoline</div>
+<p />
+
+</div> <a name="api:mono_debug_close_image"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_close_image</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_close_image</div>
+<p />
+
+</div> <a name="api:mono_debug_domain_create"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_domain_create</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_domain_create</div>
+<p />
+
+</div> <a name="api:mono_debug_domain_unload"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_domain_unload</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_domain_unload</div>
+<p />
+
+</div> <a name="api:mono_debug_enabled"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_enabled</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">mono_bool
+mono_debug_enabled (void)
+
+</div>
+<p />
+<b>Description</b>
+<p />	 
+	 Returns true is debug information is enabled. This doesn't relate if a debugger is present or not.
+
+</div> <a name="api:mono_debug_free_method_jit_info"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_free_method_jit_info</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_free_method_jit_info</div>
+<p />
+
+</div> <a name="api:mono_debug_free_source_location"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_free_source_location</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">void
+mono_debug_free_source_location (MonoDebugSourceLocation *location)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>location:</i></dt><dd> A `MonoDebugSourceLocation'.</dd></blockquote>
+<b>Description</b>
+<p />	 
+	 Frees the <i>location</i>.
+
+</div> <a name="api:mono_debug_lookup_locals"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_lookup_locals</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_lookup_locals</div>
+<p />
+
+</div> <a name="api:mono_debug_lookup_method"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_lookup_method</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">MonoDebugMethodInfo*
+mono_debug_lookup_method (MonoMethod *method)
+
+</div>
+<p />
+<b>Description</b>
+<p />	 
+	 Lookup symbol file information for the method <i>method</i>.  The returned
+	 `MonoDebugMethodInfo' is a private structure, but it can be passed to
+	 mono_debug_symfile_lookup_location().
+
+</div> <a name="api:mono_debug_lookup_method_addresses"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_lookup_method_addresses</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_lookup_method_addresses</div>
+<p />
+
+</div> <a name="api:mono_debug_lookup_source_location"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_lookup_source_location</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">MonoDebugSourceLocation*
+mono_debug_lookup_source_location (MonoMethod *method, guint32 address, MonoDomain *domain)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>address:</i></dt><dd> Native offset within the <i>method</i>'s machine code.</dd></blockquote>
+<b>Description</b>
+<p />	 
+	 Lookup the source code corresponding to the machine instruction located at
+	 native offset <i>address</i> within <i>method</i>.
+	
+	 The returned `MonoDebugSourceLocation' contains both file / line number
+	 information and the corresponding IL offset.  It must be freed by
+	 mono_debug_free_source_location().
+
+</div> <a name="api:mono_debug_open_image_from_memory"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_open_image_from_memory</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_open_image_from_memory</div>
+<p />
+
+</div> <a name="api:mono_debug_print_stack_frame"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_print_stack_frame</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">gchar*
+mono_debug_print_stack_frame (MonoMethod *method, guint32 native_offset, MonoDomain *domain)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>native_offset:</i></dt><dd> Native offset within the <i>method</i>'s machine code.</dd></blockquote>
+<b>Description</b>
+<p />	 
+	 Conventient wrapper around mono_debug_lookup_source_location() which can be
+	 used if you only want to use the location to print a stack frame.
+
+</div> <a name="api:mono_debug_remove_method"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_remove_method</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_debug_remove_method</div>
+<p />
+
+</div> <a name="api:mono_debug_il_offset_from_address"></a>
+ <div class="api">
+    <div class="api-entry ">mono_debug_il_offset_from_address</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">gint32
 mono_debug_il_offset_from_address (MonoMethod *method, MonoDomain *domain, guint32 native_offset)
 
 </div>
 <p />
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	   Compute the IL offset corresponding to NATIVE_OFFSET inside the native
 	 code of METHOD in DOMAIN.
 
 </div> <a name="api:mono_debug_add_method"></a>
  <div class="api">
-    <div class="api-entry">mono_debug_add_method</div>
-
+    <div class="api-entry ">mono_debug_add_method</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_debug_add_method</div>
 <p />
 
 </div> <a name="api:mono_debug_close_mono_symbol_file"></a>
  <div class="api">
-    <div class="api-entry">mono_debug_close_mono_symbol_file</div>
-
+    <div class="api-entry ">mono_debug_close_mono_symbol_file</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_debug_close_mono_symbol_file</div>
-<p />
-
-</div> <a name="api:mono_debug_find_method"></a>
- <div class="api">
-    <div class="api-entry">mono_debug_find_method</div>
-
-    <div class="prototype">Prototype: mono_debug_find_method</div>
-<p />
-
-</div> <a name="api:mono_debug_using_mono_debugger"></a>
- <div class="api">
-    <div class="api-entry">mono_debug_using_mono_debugger</div>
-
-    <div class="prototype">Prototype: mono_debug_using_mono_debugger</div>
-<p />
-
-
-</div><h3>Mono Debugger Interface</h3>
-
-	<p />These are methods that are invoked by the debugger at
-	runtime.
-	
- <a name="api:mono_debugger_breakpoint_callback"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_breakpoint_callback</div>
-
-    <div class="prototype">Prototype: mono_debugger_breakpoint_callback</div>
-<p />
-
-</div> <a name="api:mono_debugger_check_runtime_version"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_check_runtime_version</div>
-
-    <div class="prototype">Prototype: mono_debugger_check_runtime_version</div>
-<p />
-
-</div> <a name="api:mono_debugger_event"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_event</div>
-
-    <div class="prototype">Prototype: mono_debugger_event</div>
-<p />
-
-</div> <a name="api:mono_debugger_handle_exception"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_handle_exception</div>
-
-    <div class="prototype">Prototype: mono_debugger_handle_exception</div>
-<p />
-
-</div> <a name="api:mono_debugger_insert_breakpoint_full"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_insert_breakpoint_full</div>
-
-    <div class="prototype">Prototype: mono_debugger_insert_breakpoint_full</div>
-<p />
-
-</div> <a name="api:mono_debugger_insert_breakpoint"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_insert_breakpoint</div>
-
-    <div class="prototype">Prototype: mono_debugger_insert_breakpoint</div>
-<p />
-
-</div> <a name="api:mono_debugger_lock"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_lock</div>
-
-    <div class="prototype">Prototype: mono_debugger_lock</div>
-<p />
-
-</div> <a name="api:mono_debugger_method_has_breakpoint"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_method_has_breakpoint</div>
-
-    <div class="prototype">Prototype: mono_debugger_method_has_breakpoint</div>
-<p />
-
-</div> <a name="api:mono_debugger_remove_breakpoint"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_remove_breakpoint</div>
-
-    <div class="prototype">Prototype: mono_debugger_remove_breakpoint</div>
-<p />
-
-</div> <a name="api:mono_debugger_runtime_invoke"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_runtime_invoke</div>
-
-    <div class="prototype">Prototype: mono_debugger_runtime_invoke</div>
-<p />
-
-</div> <a name="api:mono_debugger_unlock"></a>
- <div class="api">
-    <div class="api-entry">mono_debugger_unlock</div>
-
-    <div class="prototype">Prototype: mono_debugger_unlock</div>
 <p />
 
 </div></body>

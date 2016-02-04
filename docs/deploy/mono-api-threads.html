@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?><span>
+﻿<?xml version="1.0" encoding="utf-8"?><span>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <title>mono-api-threads.html</title>
@@ -12,26 +12,32 @@
    }
        
    .api {
-     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
+     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 18px;
+       font-size: 150%;
+       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+       padding-bottom: .5em;
    }
 
    .prototype {
-     border: 1px solid;
-     background-color: #f2f2f2;
-     padding: 5pt;
+     border: 3px solid #ecf0f1;
+     border-radius: 6px;
+     padding: .5em;
      margin-top: 5pt;
-     margin-bottom: 5pt;  
+     margin-bottom: 5pt;
+     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+     display: block;
+     overflow: auto;
+     background-color: #f9f9f9;
    } 
 
    .header {
-     border: 1px solid;
+     
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -45,6 +51,13 @@
      white-space: pre;
        font-family: monospace;
    }
+
+   .strike {
+      text-decoration: line-through;
+   }
+	.deprecated {
+	    color: red;
+	}
    
 
 </style>
@@ -55,93 +68,114 @@
 <h3>Thread API</h3>
  <a name="api:mono_thread_attach"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_attach</div>
-
+    <div class="api-entry ">mono_thread_attach</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_attach</div>
 <p />
 
 </div> <a name="api:mono_thread_create"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_create</div>
-
+    <div class="api-entry ">mono_thread_create</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_create</div>
 <p />
 
 </div> <a name="api:mono_thread_current"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_current</div>
-
+    <div class="api-entry ">mono_thread_current</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_current</div>
 <p />
 
 </div> <a name="api:mono_thread_detach"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_detach</div>
-
+    <div class="api-entry ">mono_thread_detach</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_detach</div>
 <p />
 
 </div> <a name="api:mono_thread_exit"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_exit</div>
-
+    <div class="api-entry ">mono_thread_exit</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_exit</div>
+<p />
+
+</div> <a name="api:mono_thread_get_managed_id"></a>
+ <div class="api">
+    <div class="api-entry ">mono_thread_get_managed_id</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_thread_get_managed_id</div>
+<p />
+
+</div> <a name="api:mono_thread_get_name_utf8"></a>
+ <div class="api">
+    <div class="api-entry ">mono_thread_get_name_utf8</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_thread_get_name_utf8</div>
+<p />
+
+</div> <a name="api:mono_thread_is_foreign"></a>
+ <div class="api">
+    <div class="api-entry ">mono_thread_is_foreign</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_thread_is_foreign</div>
 <p />
 
 </div> <a name="api:mono_thread_manage"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_manage</div>
-
+    <div class="api-entry ">mono_thread_manage</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_manage</div>
 <p />
 
 </div> <a name="api:mono_thread_new_init"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_new_init</div>
-
+    <div class="api-entry ">mono_thread_new_init</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_new_init</div>
 <p />
 
 </div> <a name="api:mono_threads_get_default_stacksize"></a>
  <div class="api">
-    <div class="api-entry">mono_threads_get_default_stacksize</div>
-
+    <div class="api-entry ">mono_threads_get_default_stacksize</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_threads_get_default_stacksize</div>
-<p />
-
-</div> <a name="api:mono_threads_install_cleanup"></a>
- <div class="api">
-    <div class="api-entry">mono_threads_install_cleanup</div>
-
-    <div class="prototype">Prototype: mono_threads_install_cleanup</div>
 <p />
 
 </div> <a name="api:mono_threads_set_default_stacksize"></a>
  <div class="api">
-    <div class="api-entry">mono_threads_set_default_stacksize</div>
-
+    <div class="api-entry ">mono_threads_set_default_stacksize</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_threads_set_default_stacksize</div>
+<p />
+
+</div> <a name="api:mono_thread_set_manage_callback"></a>
+ <div class="api">
+    <div class="api-entry ">mono_thread_set_manage_callback</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_thread_set_manage_callback</div>
 <p />
 
 </div> <a name="api:mono_thread_stop"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_stop</div>
-
+    <div class="api-entry ">mono_thread_stop</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_stop</div>
 <p />
 
 
 </div> <a name="api:mono_thread_get_main"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_get_main</div>
-
+    <div class="api-entry ">mono_thread_get_main</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_thread_get_main</div>
 <p />
 
 </div> <a name="api:mono_thread_set_main"></a>
  <div class="api">
-    <div class="api-entry">mono_thread_set_main</div>
-
+    <div class="api-entry ">mono_thread_set_main</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">void
 mono_thread_set_main (MonoThread *thread)
 
@@ -149,35 +183,59 @@ mono_thread_set_main (MonoThread *thread)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>thread:</i></dt><dd> thread to set as the main thread</dd></blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 This function can be used to instruct the runtime to treat <i>thread</i>
 	 as the main thread, ie, the thread that would normally execute the Main()
 	 method. This basically means that at the end of <i>thread</i>, the runtime will
 	 wait for the existing foreground threads to quit and other such details.
 
-</div> <a name="api:mono_pthread_key_for_tls"></a>
- <div class="api">
-    <div class="api-entry">mono_pthread_key_for_tls</div>
-
-    <div class="prototype">Prototype: mono_pthread_key_for_tls</div>
-<p />
-
 
 </div><h3>Monitors</h3>
 
  <a name="api:mono_monitor_enter"></a>
  <div class="api">
-    <div class="api-entry">mono_monitor_enter</div>
-
+    <div class="api-entry ">mono_monitor_enter</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_monitor_enter</div>
+<p />
+
+</div> <a name="api:mono_monitor_enter_v4"></a>
+ <div class="api">
+    <div class="api-entry ">mono_monitor_enter_v4</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_monitor_enter_v4</div>
 <p />
 
 </div> <a name="api:mono_monitor_exit"></a>
  <div class="api">
-    <div class="api-entry">mono_monitor_exit</div>
-
+    <div class="api-entry ">mono_monitor_exit</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_monitor_exit</div>
+<p />
+
+</div> <a name="api:mono_monitor_try_enter"></a>
+ <div class="api">
+    <div class="api-entry ">mono_monitor_try_enter</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_monitor_try_enter</div>
+<p />
+
+
+</div><h3>Initialization and Shutdown</h3>
+
+ <a name="api:mono_thread_cleanup"></a>
+ <div class="api">
+    <div class="api-entry ">mono_thread_cleanup</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_thread_cleanup</div>
+<p />
+
+</div> <a name="api:mono_thread_detach_if_exiting"></a>
+ <div class="api">
+    <div class="api-entry ">mono_thread_detach_if_exiting</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_thread_detach_if_exiting</div>
 <p />
 
 </div></body>

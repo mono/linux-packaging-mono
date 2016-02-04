@@ -99,7 +99,7 @@ target_triplet = @target@
 subdir = mono/mini
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
-	$(libmonoinclude_HEADERS) ChangeLog
+	$(libmonoinclude_HEADERS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -1130,6 +1130,7 @@ regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
 @SPARC64_TRUE@arch_define = __sparc__
 @SPARC_TRUE@arch_define = __sparc__
 @X86_TRUE@arch_define = __i386__
+@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = --exclude DYNCALL --exclude GSHAREDVT
 
 # pick up arm_dpimacros.h
 @ARM_TRUE@ARCH_CFLAGS = -I../arch/arm
@@ -3114,7 +3115,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.3.148/2c4cb3d\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.3.485/bac71d3\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

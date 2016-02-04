@@ -546,7 +546,7 @@ if test x"$GCC" = xyes; then
 		if test "x$mono_cv_clang" = "xyes"; then
 	   	   # https://bugzilla.samba.org/show_bug.cgi?id=8118
 	   	   WARN="$WARN -Qunused-arguments"
-		   WARN="$WARN -Wno-unused-function -Wno-tautological-compare -Wno-parentheses-equality -Wno-self-assign -Wno-return-stack-address"
+		   WARN="$WARN -Wno-unused-function -Wno-tautological-compare -Wno-parentheses-equality -Wno-self-assign -Wno-return-stack-address -Wno-constant-logical-operand"
 		fi
 else
 	# The Sun Forte compiler complains about inline functions that access static variables
@@ -2090,6 +2090,8 @@ if test x$host_win32 = xno; then
 		 #include <unistd.h>])
 	AC_CHECK_TYPES([suseconds_t], [AC_DEFINE(HAVE_SUSECONDS_T)], ,
 		[#include <sys/time.h>])
+	AC_CHECK_TYPES([struct cmsghdr], [AC_DEFINE(HAVE_STRUCT_CMSGHDR)], ,
+		[#include <sys/socket.h>])
 	AC_CHECK_TYPES([struct flock], [AC_DEFINE(HAVE_STRUCT_FLOCK)], ,
 		[#include <unistd.h>
 		 #include <fcntl.h>])
@@ -3530,6 +3532,29 @@ AC_ARG_WITH(checked_build, [  --with-checked-build=yes|no      Enable checked bu
 	fi
 ], [with_checked_build=no])
 
+if test x$with_checked_build != xno ; then
+	DISABLED_CHECKED_BUILD_TEST=none
+
+	AC_ARG_ENABLE(checked_build_test, [  --enable-checked-build-test=LIST      drop support for LIST checked build tests. LIST is a comma-separated list from: gc, metadata, thread.],
+	[
+		for feature in `echo "$enable_checked_build_test" | sed -e "s/,/ /g"`; do
+			eval "mono_checked_build_test_disable_$feature='yes'"
+		done
+		DISABLED_CHECKED_BUILD_TEST=$enable_checked_build_test
+	],[])
+
+	if test "x$mono_checked_build_test_disable_gc" = "xyes"; then
+		AC_DEFINE(DISABLE_CHECKED_BUILD_GC, 1, [Disable GC checked build])
+	fi
+
+	if test "x$mono_checked_build_test_disable_metadata" = "xyes"; then
+		AC_DEFINE(DISABLE_CHECKED_BUILD_METADATA, 1, [Disable metadata checked build])
+	fi
+
+	if test "x$mono_checked_build_test_disable_thread" = "xyes"; then
+		AC_DEFINE(DISABLE_CHECKED_BUILD_THREAD, 1, [Disable thread checked build])
+	fi
+fi
 
 AC_CHECK_HEADER([malloc.h], 
 		[AC_DEFINE([HAVE_USR_INCLUDE_MALLOC_H], [1], 
@@ -3625,6 +3650,9 @@ AC_SUBST(arch_target)
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
+
+#This must always be defined when building the runtime
+AC_DEFINE(MONO_INSIDE_RUNTIME,1, [Disable banned functions from being used by the runtime])
 
 mono_build_root=`pwd`
 AC_SUBST(mono_build_root)

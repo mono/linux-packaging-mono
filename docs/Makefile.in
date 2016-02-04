@@ -81,7 +81,7 @@ host_triplet = @host@
 target_triplet = @target@
 subdir = docs
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs ChangeLog README TODO
+	$(top_srcdir)/mkinstalldirs README TODO
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -369,10 +369,8 @@ EXTRA_DIST = \
 	check-exports		\
 	check-coverage		\
 	convert.cs		\
-	current-api		\
 	deploy			\
 	docs.make		\
-	documented		\
 	embedded-api		\
 	exdoc			\
 	file-share-modes	\
@@ -395,8 +393,6 @@ EXTRA_DIST = \
 	object-layout		\
 	precise-gc		\
 	produce-lists		\
-	public			\
-	public-api		\
 	README			\
 	remoting		\
 	ssapre.txt		\

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?><span>
+﻿<?xml version="1.0" encoding="utf-8"?><span>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <title>mono-api-domains.html</title>
@@ -12,26 +12,32 @@
    }
        
    .api {
-     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
+     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 18px;
+       font-size: 150%;
+       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+       padding-bottom: .5em;
    }
 
    .prototype {
-     border: 1px solid;
-     background-color: #f2f2f2;
-     padding: 5pt;
+     border: 3px solid #ecf0f1;
+     border-radius: 6px;
+     padding: .5em;
      margin-top: 5pt;
-     margin-bottom: 5pt;  
+     margin-bottom: 5pt;
+     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+     display: block;
+     overflow: auto;
+     background-color: #f9f9f9;
    } 
 
    .header {
-     border: 1px solid;
+     
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -45,6 +51,13 @@
      white-space: pre;
        font-family: monospace;
    }
+
+   .strike {
+      text-decoration: line-through;
+   }
+	.deprecated {
+	    color: red;
+	}
    
 
 </style>
@@ -68,25 +81,38 @@ typedef struct _MonoAppContext MonoAppContext
 MonoAssembly*           <a href="#api:mono_domain_assembly_open">mono_domain_assembly_open</a>    (MonoDomain *domain, 
                                                       const char *name);
                         <a href="#api:mono_domain_create"></a>                             
+MonoDomain*             <a href="#api:mono_domain_create_appdomain">mono_domain_create_appdomain</a> (char *friendly_name, 
+                                                      char *configuration_file);
 gboolean                <a href="#api:mono_domain_finalize">mono_domain_finalize</a>         (MonoDomain *domain, 
                                                       guint32 timeout) ;
                         <a href="#api:mono_domain_foreach"></a>                             
                         <a href="#api:mono_domain_free"></a>                             
+                        <a href="#api:mono_domain_from_appdomain"></a>                             
 MonoDomain*             <a href="#api:mono_domain_get_by_id">mono_domain_get_by_id</a>        (gint32 domainid) ;
+                        <a href="#api:mono_domain_get_friendly_name"></a>                             
                         <a href="#api:mono_domain_get_id"></a>                             
 MonoDomain*             <a href="#api:mono_domain_get">mono_domain_get</a>              ();
 gboolean                <a href="#api:mono_domain_has_type_resolve">mono_domain_has_type_resolve</a> (MonoDomain *domain);
                         <a href="#api:mono_domain_is_unloading"></a>                             
+gboolean                <a href="#api:mono_domain_owns_vtable_slot">mono_domain_owns_vtable_slot</a> (MonoDomain *domain, 
+                                                      gpointer vtable_slot);
+void                    <a href="#api:mono_domain_set_config">mono_domain_set_config</a>       (MonoDomain *domain, 
+                                                      const char *base_dir, 
+                                                      const char *config_file_name);
 void                    <a href="#api:mono_domain_set_internal">mono_domain_set_internal</a>     (MonoDomain *domain);
 gboolean                <a href="#api:mono_domain_set">mono_domain_set</a>              (MonoDomain *domain, 
                                                       gboolean force);
 MonoReflectionAssembly* <a href="#api:mono_domain_try_type_resolve">mono_domain_try_type_resolve</a> (MonoDomain *domain, 
                                                       char *name, 
                                                       MonoObject *tb);
-gboolean                <a href="#api:mono_domain_owns_vtable_slot">mono_domain_owns_vtable_slot</a> (MonoDomain *domain, 
-                                                      gpointer vtable_slot);
+                        <a href="#api:mono_domain_try_unload"></a>                             
+                        <a href="#api:mono_domain_unload"></a>                             
+void                    <a href="#api:mono_context_init">mono_context_init</a>            (MonoDomain *domain);
                         <a href="#api:mono_context_get"></a>                             
+                        <a href="#api:mono_context_get_domain_id"></a>                             
+                        <a href="#api:mono_context_get_id"></a>                             
                         <a href="#api:mono_context_set"></a>                             
+                        <a href="#api:mono_context_get_desc"></a>                             
 
 </div>
 
@@ -106,8 +132,8 @@ gboolean                <a href="#api:mono_domain_owns_vtable_slot">mono_domain_
 
  <a name="api:mono_domain_assembly_open"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_assembly_open</div>
-
+    <div class="api-entry ">mono_domain_assembly_open</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoAssembly*
 mono_domain_assembly_open (MonoDomain *domain, const char *name)
 
@@ -115,21 +141,22 @@ mono_domain_assembly_open (MonoDomain *domain, const char *name)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>domain:</i></dt><dd> the application domain</dd><dt><i>name:</i></dt><dd> file name of the assembly</dd></blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 fixme: maybe we should integrate this with mono_assembly_open ??
 
 </div> <a name="api:mono_domain_create"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_create</div>
-
+    <div class="api-entry ">mono_domain_create</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_domain_create</div>
 <p />
 
-</div> <a name="api:mono_domain_finalize"></a>
+</div><h4><a name="api:mono_domain_create_appdomain">mono_domain_create_appdomain</a>
+ <a name="api:mono_domain_finalize"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_finalize</div>
-
+    <div class="api-entry ">mono_domain_finalize</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">
 gboolean
 mono_domain_finalize (MonoDomain *domain, guint32 timeout) 
@@ -141,7 +168,7 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
 <b>Returns</b>
 <blockquote>	  TRUE if succeeded, FALSE if there was a timeout
 </blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	  Request finalization of all finalizable objects inside <i>domain</i>. Wait
 	 <i>timeout</i> msecs for the finalization to complete.
@@ -149,22 +176,23 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
 
 </div> <a name="api:mono_domain_foreach"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_foreach</div>
-
+    <div class="api-entry ">mono_domain_foreach</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_domain_foreach</div>
 <p />
 
 </div> <a name="api:mono_domain_free"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_free</div>
-
+    <div class="api-entry ">mono_domain_free</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_domain_free</div>
 <p />
 
-</div> <a name="api:mono_domain_get_by_id"></a>
+</div><h4><a name="api:mono_domain_from_appdomain">mono_domain_from_appdomain</a>
+ <a name="api:mono_domain_get_by_id"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_get_by_id</div>
-
+    <div class="api-entry ">mono_domain_get_by_id</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoDomain* 
 mono_domain_get_by_id (gint32 domainid) 
 
@@ -176,17 +204,18 @@ mono_domain_get_by_id (gint32 domainid)
 <blockquote>	  the domain for a specific domain id.
 </blockquote>
 
-</div> <a name="api:mono_domain_get_id"></a>
+</div><h4><a name="api:mono_domain_get_friendly_name">mono_domain_get_friendly_name</a>
+ <a name="api:mono_domain_get_id"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_get_id</div>
-
+    <div class="api-entry ">mono_domain_get_id</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_domain_get_id</div>
 <p />
 
 </div> <a name="api:mono_domain_get"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_get</div>
-
+    <div class="api-entry ">mono_domain_get</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoDomain*
 mono_domain_get ()
 
@@ -199,8 +228,8 @@ mono_domain_get ()
 
 </div> <a name="api:mono_domain_has_type_resolve"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_has_type_resolve</div>
-
+    <div class="api-entry ">mono_domain_has_type_resolve</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">gboolean
 mono_domain_has_type_resolve (MonoDomain *domain)
 
@@ -208,22 +237,36 @@ mono_domain_has_type_resolve (MonoDomain *domain)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>domain:</i></dt><dd> application domains being looked up</dd></blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Returns true if the AppDomain.TypeResolve field has been
 	 set.
 
 </div> <a name="api:mono_domain_is_unloading"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_is_unloading</div>
-
+    <div class="api-entry ">mono_domain_is_unloading</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_domain_is_unloading</div>
 <p />
 
-</div> <a name="api:mono_domain_set_internal"></a>
+</div> <a name="api:mono_domain_owns_vtable_slot"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_set_internal</div>
+    <div class="api-entry ">mono_domain_owns_vtable_slot</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">gboolean
+mono_domain_owns_vtable_slot (MonoDomain *domain, gpointer vtable_slot)
 
+</div>
+<p />
+<b>Description</b>
+<p />	 
+	  Returns whenever VTABLE_SLOT is inside a vtable which belongs to DOMAIN.
+
+</div><h4><a name="api:mono_domain_set_config">mono_domain_set_config</a>
+ <a name="api:mono_domain_set_internal"></a>
+ <div class="api">
+    <div class="api-entry ">mono_domain_set_internal</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">void
 mono_domain_set_internal (MonoDomain *domain)
 
@@ -231,14 +274,14 @@ mono_domain_set_internal (MonoDomain *domain)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>domain:</i></dt><dd> the new domain</dd></blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Sets the current domain to <i>domain</i>.
 
 </div> <a name="api:mono_domain_set"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_set</div>
-
+    <div class="api-entry ">mono_domain_set</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">gboolean
 mono_domain_set (MonoDomain *domain, gboolean force)
 
@@ -251,7 +294,7 @@ mono_domain_set (MonoDomain *domain, gboolean force)
 
 	   TRUE on success;
 	   FALSE if the domain is unloaded</blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Set the current appdomain to <i>domain</i>. If <i>force</i> is set, set it even
 	 if it is being unloaded.
@@ -259,8 +302,8 @@ mono_domain_set (MonoDomain *domain, gboolean force)
 
 </div> <a name="api:mono_domain_try_type_resolve"></a>
  <div class="api">
-    <div class="api-entry">mono_domain_try_type_resolve</div>
-
+    <div class="api-entry ">mono_domain_try_type_resolve</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">MonoReflectionAssembly*
 mono_domain_try_type_resolve (MonoDomain *domain, char *name, MonoObject *tb)
 
@@ -271,7 +314,7 @@ mono_domain_try_type_resolve (MonoDomain *domain, char *name, MonoObject *tb)
 <b>Returns</b>
 <blockquote>	  A MonoReflectionAssembly or NULL if not found
 </blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 This routine invokes the internal System.AppDomain.DoTypeResolve and returns
 	 the assembly that matches name.
@@ -279,29 +322,28 @@ mono_domain_try_type_resolve (MonoDomain *domain, char *name, MonoObject *tb)
 	 If <i>name</i> is null, the value of ((TypeBuilder)tb).FullName is used instead
 	
 
-</div> <a name="api:mono_domain_owns_vtable_slot"></a>
- <div class="api">
-    <div class="api-entry">mono_domain_owns_vtable_slot</div>
+</div><h4><a name="api:mono_domain_try_unload">mono_domain_try_unload</a>
+<h4><a name="api:mono_domain_unload">mono_domain_unload</a>
 
-    <div class="prototype">gboolean
-mono_domain_owns_vtable_slot (MonoDomain *domain, gpointer vtable_slot)
+<h3>Contexts</h3>
 
-</div>
-<p />
-<b>Remarks</b>
-<p />	 
-	  Returns whenever VTABLE_SLOT is inside a vtable which belongs to DOMAIN.
-
-
-</div><h3>Contexts</h3>
-
+<h4><a name="api:mono_context_init">mono_context_init</a>
  <a name="api:mono_context_get"></a>
  <div class="api">
-    <div class="api-entry">mono_context_get</div>
-
+    <div class="api-entry ">mono_context_get</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">Prototype: mono_context_get</div>
 <p />
 
-</div></body>
+</div><h4><a name="api:mono_context_get_domain_id">mono_context_get_domain_id</a>
+<h4><a name="api:mono_context_get_id">mono_context_get_id</a>
+ <a name="api:mono_context_set"></a>
+ <div class="api">
+    <div class="api-entry ">mono_context_set</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_context_set</div>
+<p />
+
+</div></h4></h4></h4></h4></h4></h4></h4></h4></h4></body>
 </html>
 </span>

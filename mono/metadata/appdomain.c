@@ -110,7 +110,7 @@ static void
 add_assemblies_to_domain (MonoDomain *domain, MonoAssembly *ass, GHashTable *hash);
 
 static MonoAppDomain *
-mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetup *setup);
+mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetup *setup, MonoError *error);
 
 static char *
 get_shadow_assembly_location_base (MonoDomain *domain, MonoError *error);
@@ -158,6 +158,7 @@ mono_runtime_get_no_exec (void)
 static void
 create_domain_objects (MonoDomain *domain)
 {
+	MonoError error;
 	MonoDomain *old_domain = mono_domain_get ();
 	MonoString *arg;
 	MonoVTable *string_vt;
@@ -193,7 +194,8 @@ create_domain_objects (MonoDomain *domain)
 	domain->stack_overflow_ex = mono_exception_from_name_two_strings (mono_defaults.corlib, "System", "StackOverflowException", arg, NULL);
 
 	/*The ephemeron tombstone i*/
-	domain->ephemeron_tombstone = mono_object_new (domain, mono_defaults.object_class);
+	domain->ephemeron_tombstone = mono_object_new_checked (domain, mono_defaults.object_class, &error);
+	mono_error_assert_ok (&error);
 
 	if (domain != old_domain) {
 		mono_thread_pop_appdomain_ref ();
@@ -223,6 +225,7 @@ void
 mono_runtime_init (MonoDomain *domain, MonoThreadStartCB start_cb,
 		   MonoThreadAttachCB attach_cb)
 {
+	MonoError error;
 	MonoAppDomainSetup *setup;
 	MonoAppDomain *ad;
 	MonoClass *klass;
@@ -245,10 +248,12 @@ mono_runtime_init (MonoDomain *domain, MonoThreadStartCB start_cb,
 	mono_thread_init (start_cb, attach_cb);
 
 	klass = mono_class_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
-	setup = (MonoAppDomainSetup *) mono_object_new_pinned (domain, klass);
+	setup = (MonoAppDomainSetup *) mono_object_new_pinned (domain, klass, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	klass = mono_class_from_name (mono_defaults.corlib, "System", "AppDomain");
-	ad = (MonoAppDomain *) mono_object_new_pinned (domain, klass);
+	ad = (MonoAppDomain *) mono_object_new_pinned (domain, klass, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 	ad->data = domain;
 	domain->domain = ad;
 	domain->setup = setup;
@@ -327,11 +332,13 @@ mono_check_corlib_version (void)
 void
 mono_context_init (MonoDomain *domain)
 {
+	MonoError error;
 	MonoClass *klass;
 	MonoAppContext *context;
 
 	klass = mono_class_from_name (mono_defaults.corlib, "System.Runtime.Remoting.Contexts", "Context");
-	context = (MonoAppContext *) mono_object_new_pinned (domain, klass);
+	context = (MonoAppContext *) mono_object_new_pinned (domain, klass, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 	context->domain_id = domain->domain_id;
 	context->context_id = 0;
 	ves_icall_System_Runtime_Remoting_Contexts_Context_RegisterContext (context);
@@ -392,15 +399,18 @@ mono_runtime_quit ()
 MonoDomain *
 mono_domain_create_appdomain (char *friendly_name, char *configuration_file)
 {
+	MonoError error;
 	MonoAppDomain *ad;
 	MonoAppDomainSetup *setup;
 	MonoClass *klass;
 
 	klass = mono_class_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
-	setup = (MonoAppDomainSetup *) mono_object_new (mono_domain_get (), klass);
+	setup = (MonoAppDomainSetup *) mono_object_new_checked (mono_domain_get (), klass, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 	setup->configuration_file = configuration_file != NULL ? mono_string_new (mono_domain_get (), configuration_file) : NULL;
 
-	ad = mono_domain_create_appdomain_internal (friendly_name, setup);
+	ad = mono_domain_create_appdomain_internal (friendly_name, setup, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	return mono_domain_from_appdomain (ad);
 }
@@ -427,9 +437,11 @@ mono_domain_set_config (MonoDomain *domain, const char *base_dir, const char *co
 static MonoAppDomainSetup*
 copy_app_domain_setup (MonoDomain *domain, MonoAppDomainSetup *setup)
 {
+	MonoError error;
 	MonoDomain *caller_domain = mono_domain_get ();
 	MonoClass *ads_class = mono_class_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
-	MonoAppDomainSetup *copy = (MonoAppDomainSetup*)mono_object_new (domain, ads_class);
+	MonoAppDomainSetup *copy = (MonoAppDomainSetup*)mono_object_new_checked (domain, ads_class, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	mono_domain_set_internal (domain);
 
@@ -460,20 +472,20 @@ copy_app_domain_setup (MonoDomain *domain, MonoAppDomainSetup *setup)
 }
 
 static MonoAppDomain *
-mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetup *setup)
+mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetup *setup, MonoError *error)
 {
-	MonoError error;
 	MonoClass *adclass;
 	MonoAppDomain *ad;
 	MonoDomain *data;
 	char *shadow_location;
-	
+
 	adclass = mono_class_from_name (mono_defaults.corlib, "System", "AppDomain");
 
 	/* FIXME: pin all those objects */
 	data = mono_domain_create();
 
-	ad = (MonoAppDomain *) mono_object_new (data, adclass);
+	ad = (MonoAppDomain *) mono_object_new_checked (data, adclass, error);
+	if (!mono_error_ok (error)) return NULL;
 	ad->data = data;
 	data->domain = ad;
 	data->friendly_name = g_strdup (friendly_name);
@@ -483,8 +495,11 @@ mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetup *
 	if (!setup->application_base) {
 		/* Inherit from the root domain since MS.NET does this */
 		MonoDomain *root = mono_get_root_domain ();
-		if (root->setup->application_base)
-			MONO_OBJECT_SETREF (setup, application_base, mono_string_new_utf16 (data, mono_string_chars (root->setup->application_base), mono_string_length (root->setup->application_base)));
+		if (root->setup->application_base) {
+			MonoString *s = mono_string_new_utf16_checked (data, mono_string_chars (root->setup->application_base), mono_string_length (root->setup->application_base), error);
+			mono_error_assert_ok (error); /* FIXME don't swallow the error */
+			MONO_OBJECT_SETREF (setup, application_base, s);
+		}
 	}
 
 	mono_context_init (data);
@@ -495,9 +510,10 @@ mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetup *
 
 #ifndef DISABLE_SHADOW_COPY
 	/*FIXME, guard this for when the debugger is not running */
-	shadow_location = get_shadow_assembly_location_base (data, &error);
-	if (!mono_error_ok (&error))
-		mono_error_raise_exception (&error);
+	shadow_location = get_shadow_assembly_location_base (data, error);
+	if (!mono_error_ok (error))
+		return NULL;
+
 	g_free (shadow_location);
 #endif
 
@@ -864,10 +880,16 @@ ves_icall_System_AppDomain_createDomain (MonoString *friendly_name, MonoAppDomai
 	mono_set_pending_exception (mono_get_exception_not_supported ("AppDomain creation is not supported on this runtime."));
 	return NULL;
 #else
-	char *fname = mono_string_to_utf8 (friendly_name);
-	MonoAppDomain *ad = mono_domain_create_appdomain_internal (fname, setup);
-	
+	MonoError error;
+	char *fname;
+	MonoAppDomain *ad;
+
+	fname = mono_string_to_utf8 (friendly_name);
+	ad = mono_domain_create_appdomain_internal (fname, setup, &error);
+
 	g_free (fname);
+
+	mono_error_raise_exception (&error);
 
 	return ad;
 #endif
@@ -1249,8 +1271,9 @@ mono_is_shadow_copy_enabled (MonoDomain *domain, const gchar *dir_name)
 }
 
 char *
-mono_make_shadow_copy (const char *filename)
+mono_make_shadow_copy (const char *filename, MonoError *error)
 {
+	mono_error_init (error);
 	return (char *) filename;
 }
 #else
@@ -1328,8 +1351,8 @@ get_shadow_assembly_location_base (MonoDomain *domain, MonoError *error)
 	setup = domain->setup;
 	if (setup->cache_path != NULL && setup->application_name != NULL) {
 		cache_path = mono_string_to_utf8_checked (setup->cache_path, error);
-		if (!mono_error_ok (error))
-			return NULL;
+		return_val_if_nok (error, NULL);
+
 #ifndef TARGET_WIN32
 		{
 			gint i;
@@ -1628,7 +1651,7 @@ or NULL if source file not found.
 FIXME bubble up the error instead of raising it here
 */
 char *
-mono_make_shadow_copy (const char *filename)
+mono_make_shadow_copy (const char *filename, MonoError *oerror)
 {
 	MonoError error;
 	gchar *sibling_source, *sibling_target;
@@ -1637,12 +1660,13 @@ mono_make_shadow_copy (const char *filename)
 	guint32 attrs;
 	char *shadow;
 	gboolean copy_result;
-	MonoException *exc;
 	struct stat src_sbuf;
 	struct utimbuf utbuf;
 	char *dir_name = g_path_get_dirname (filename);
 	MonoDomain *domain = mono_domain_get ();
 	char *shadow_dir;
+
+	mono_error_init (oerror);
 
 	set_domain_search_path (domain);
 
@@ -1656,8 +1680,8 @@ mono_make_shadow_copy (const char *filename)
 	if (!mono_error_ok (&error)) {
 		mono_error_cleanup (&error);
 		g_free (dir_name);
-		exc = mono_get_exception_execution_engine ("Failed to create shadow copy (invalid characters in shadow directory name).");
-		mono_raise_exception (exc);
+		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Failed to create shadow copy (invalid characters in shadow directory name).");
+		return NULL;
 	}
 
 	if (strstr (dir_name, shadow_dir)) {
@@ -1671,14 +1695,14 @@ mono_make_shadow_copy (const char *filename)
 	shadow = get_shadow_assembly_location (filename, &error);
 	if (!mono_error_ok (&error)) {
 		mono_error_cleanup (&error);
-		exc = mono_get_exception_execution_engine ("Failed to create shadow copy (invalid characters in file name).");
-		mono_raise_exception (exc);
+		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Failed to create shadow copy (invalid characters in file name).");
+		return NULL;
 	}
 
 	if (ensure_directory_exists (shadow) == FALSE) {
 		g_free (shadow);
-		exc = mono_get_exception_execution_engine ("Failed to create shadow copy (ensure directory exists).");
-		mono_raise_exception (exc);
+		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Failed to create shadow copy (ensure directory exists).");
+		return NULL;
 	}	
 
 	if (!private_file_needs_copying (filename, &src_sbuf, shadow))
@@ -1714,8 +1738,8 @@ mono_make_shadow_copy (const char *filename)
 		if (GetLastError() == ERROR_FILE_NOT_FOUND || GetLastError() == ERROR_PATH_NOT_FOUND)
 			return NULL; /* file not found, shadow copy failed */
 
-		exc = mono_get_exception_execution_engine ("Failed to create shadow copy (CopyFile).");
-		mono_raise_exception (exc);
+		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Failed to create shadow copy (CopyFile).");
+		return NULL;
 	}
 
 	/* attempt to copy .mdb, .config if they exist */
@@ -1733,15 +1757,15 @@ mono_make_shadow_copy (const char *filename)
 	
 	if (copy_result == FALSE)  {
 		g_free (shadow);
-		exc = mono_get_exception_execution_engine ("Failed to create shadow copy of sibling data (CopyFile).");
-		mono_raise_exception (exc);
+		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Failed to create shadow copy of sibling data (CopyFile).");
+		return NULL;
 	}
 
 	/* Create a .ini file containing the original assembly location */
 	if (!shadow_copy_create_ini (shadow, filename)) {
 		g_free (shadow);
-		exc = mono_get_exception_execution_engine ("Failed to create shadow copy .ini file.");
-		mono_raise_exception (exc);
+		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Failed to create shadow copy .ini file.");
+		return NULL;
 	}
 
 	utbuf.actime = src_sbuf.st_atime;
@@ -2170,7 +2194,11 @@ ves_icall_System_AppDomain_InternalGetProcessGuid (MonoString* newguid)
 	mono_domain_lock (mono_root_domain);
 	if (process_guid_set) {
 		mono_domain_unlock (mono_root_domain);
-		return mono_string_new_utf16 (mono_domain_get (), process_guid, sizeof(process_guid)/2);
+		MonoError error;
+		MonoString *res = NULL;
+		res = mono_string_new_utf16_checked (mono_domain_get (), process_guid, sizeof(process_guid)/2, &error);
+		mono_error_raise_exception (&error);
+		return res;
 	}
 	memcpy (process_guid, mono_string_chars(newguid), sizeof(process_guid));
 	process_guid_set = TRUE;
@@ -2281,6 +2309,7 @@ deregister_reflection_info_roots (MonoDomain *domain)
 static guint32 WINAPI
 unload_thread_main (void *arg)
 {
+	MonoError error;
 	unload_data *data = (unload_data*)arg;
 	MonoDomain *domain = data->domain;
 	MonoThread *thread;
@@ -2288,7 +2317,8 @@ unload_thread_main (void *arg)
 
 	/* Have to attach to the runtime so shutdown can wait for this thread */
 	/* Force it to be attached to avoid racing during shutdown. */
-	thread = mono_thread_attach_full (mono_get_root_domain (), TRUE);
+	thread = mono_thread_attach_full (mono_get_root_domain (), TRUE, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	/* 
 	 * FIXME: Abort our parent thread last, so we can return a failure 
