@@ -16,6 +16,7 @@
 #include "mono/metadata/tabledefs.h"
 #include "mono/metadata/exception.h"
 #include "mono/metadata/debug-helpers.h"
+#include "mono/metadata/reflection-internals.h"
 
 typedef enum {
 	MONO_MARSHAL_NONE,			/* No marshalling needed */
@@ -199,11 +200,17 @@ mono_remoting_marshal_init (void)
 static MonoReflectionType *
 type_from_handle (MonoType *handle)
 {
+	MonoError error;
+	MonoReflectionType *ret;
 	MonoDomain *domain = mono_domain_get (); 
 	MonoClass *klass = mono_class_from_mono_type (handle);
 
 	mono_class_init (klass);
-	return mono_type_get_object (domain, handle);
+
+	ret = mono_type_get_object_checked (domain, handle, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
+
+	return ret;
 }
 
 #ifndef DISABLE_JIT
@@ -401,7 +408,7 @@ mono_marshal_get_remoting_invoke (MonoMethod *method)
 
 	/* this seems to be the best plase to put this, as all remoting invokes seem to get filtered through here */
 #ifndef DISABLE_COM
-	if (mono_class_is_com_object (method->klass) || method->klass == mono_class_get_com_object_class ()) {
+	if (mono_class_is_com_object (method->klass) || method->klass == mono_class_try_get_com_object_class ()) {
 		MonoVTable *vtable = mono_class_vtable (mono_domain_get (), method->klass);
 		g_assert (vtable); /*FIXME do proper error handling*/
 
@@ -1970,6 +1977,7 @@ mono_get_xdomain_marshal_type (MonoType *t)
 MonoObject *
 mono_marshal_xdomain_copy_value (MonoObject *val)
 {
+	MonoError error;
 	MonoDomain *domain;
 	if (val == NULL) return NULL;
 
@@ -1995,7 +2003,10 @@ mono_marshal_xdomain_copy_value (MonoObject *val)
 	}
 	case MONO_TYPE_STRING: {
 		MonoString *str = (MonoString *) val;
-		return (MonoObject *) mono_string_new_utf16 (domain, mono_string_chars (str), mono_string_length (str));
+		MonoObject *res = NULL;
+		res = (MonoObject *) mono_string_new_utf16_checked (domain, mono_string_chars (str), mono_string_length (str), &error);
+		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		return res;
 	}
 	case MONO_TYPE_ARRAY:
 	case MONO_TYPE_SZARRAY: {

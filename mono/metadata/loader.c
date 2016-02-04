@@ -534,17 +534,14 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 /*
  * mono_field_from_token:
  * @deprecated use the _checked variant
+ * Notes: runtime code MUST not use this function
 */
 MonoClassField*
 mono_field_from_token (MonoImage *image, guint32 token, MonoClass **retklass, MonoGenericContext *context)
 {
 	MonoError error;
 	MonoClassField *res = mono_field_from_token_checked (image, token, retklass, context, &error);
-	mono_loader_assert_no_error ();
-	if (!mono_error_ok (&error)) {
-		mono_loader_set_error_from_mono_error (&error);
-		mono_error_cleanup (&error);
-	}
+	g_assert (mono_error_ok (&error));
 	return res;
 }
 
@@ -899,20 +896,15 @@ inflate_generic_header (MonoMethodHeader *header, MonoGenericContext *context)
 
 /*
  * token is the method_ref/def/spec token used in a call IL instruction.
+ * @deprecated use the _checked variant
+ * Notes: runtime code MUST not use this function
  */
 MonoMethodSignature*
 mono_method_get_signature_full (MonoMethod *method, MonoImage *image, guint32 token, MonoGenericContext *context)
 {
 	MonoError error;
 	MonoMethodSignature *res = mono_method_get_signature_checked (method, image, token, context, &error);
-
-	mono_loader_assert_no_error ();
-
-	if (!res) {
-		g_assert (!mono_error_ok (&error));
-		mono_loader_set_error_from_mono_error (&error);
-		mono_error_cleanup (&error); /* FIXME Don't swallow the error */
-	}
+	g_assert (mono_error_ok (&error));
 	return res;
 }
 
@@ -1001,19 +993,17 @@ mono_method_get_signature_checked (MonoMethod *method, MonoImage *image, guint32
 	return sig;
 }
 
+/*
+ * token is the method_ref/def/spec token used in a call IL instruction.
+ * @deprecated use the _checked variant
+ * Notes: runtime code MUST not use this function
+ */
 MonoMethodSignature*
 mono_method_get_signature (MonoMethod *method, MonoImage *image, guint32 token)
 {
 	MonoError error;
 	MonoMethodSignature *res = mono_method_get_signature_checked (method, image, token, NULL, &error);
-
-	mono_loader_assert_no_error ();
-
-	if (!res) {
-		g_assert (!mono_error_ok (&error));
-		mono_loader_set_error_from_mono_error (&error);
-		mono_error_cleanup (&error); /* FIXME Don't swallow the error */
-	}
+	g_assert (mono_error_ok (&error));
 	return res;
 }
 
@@ -1980,7 +1970,10 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 MonoMethod *
 mono_get_method (MonoImage *image, guint32 token, MonoClass *klass)
 {
-	return mono_get_method_full (image, token, klass, NULL);
+	MonoError error;
+	MonoMethod *result = mono_get_method_checked (image, token, klass, NULL, &error);
+	mono_error_cleanup (&error);
+	return result;
 }
 
 MonoMethod *
@@ -1989,11 +1982,7 @@ mono_get_method_full (MonoImage *image, guint32 token, MonoClass *klass,
 {
 	MonoError error;
 	MonoMethod *result = mono_get_method_checked (image, token, klass, context, &error);
-	mono_loader_assert_no_error ();
-	if (!mono_error_ok (&error)) {
-		mono_loader_set_error_from_mono_error (&error);
-		mono_error_cleanup (&error);
-	}
+	mono_error_cleanup (&error);
 	return result;
 }
 
@@ -2136,12 +2125,7 @@ mono_get_method_constrained (MonoImage *image, guint32 token, MonoClass *constra
 {
 	MonoError error;
 	MonoMethod *result = mono_get_method_constrained_checked (image, token, constrained_class, context, cil_method, &error);
-
-	mono_loader_assert_no_error ();
-	if (!mono_error_ok (&error)) {
-		mono_loader_set_error_from_mono_error (&error);
-		mono_error_cleanup (&error);
-	}
+	mono_error_cleanup (&error);
 	return result;
 }
 

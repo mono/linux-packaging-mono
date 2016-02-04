@@ -574,6 +574,7 @@ MonoArray*
 ves_icall_System_Globalization_CultureInfo_internal_get_cultures (MonoBoolean neutral,
 		MonoBoolean specific, MonoBoolean installed)
 {
+	MonoError error;
 	MonoArray *ret;
 	MonoClass *klass;
 	MonoCultureInfo *culture;
@@ -613,7 +614,8 @@ ves_icall_System_Globalization_CultureInfo_internal_get_cultures (MonoBoolean ne
 		ci = &culture_entries [i];
 		is_neutral = ci->territory == 0;
 		if ((neutral && is_neutral) || (specific && !is_neutral)) {
-			culture = (MonoCultureInfo *) mono_object_new (domain, klass);
+			culture = (MonoCultureInfo *) mono_object_new_checked (domain, klass, &error);
+			mono_error_raise_exception (&error);
 			mono_runtime_object_init ((MonoObject *) culture);
 			construct_culture (culture, ci);
 			culture->use_user_override = TRUE;
@@ -770,6 +772,7 @@ static MonoString *string_invariant_replace (MonoString *me,
 					     MonoString *oldValue,
 					     MonoString *newValue)
 {
+	MonoError error;
 	MonoString *ret;
 	gunichar2 *src;
 	gunichar2 *dest=NULL; /* shut gcc up */
@@ -818,7 +821,8 @@ static MonoString *string_invariant_replace (MonoString *me,
 	while (i < srclen) {
 		if (0 == memcmp(src + i, oldstr, oldstrlen * sizeof(gunichar2))) {
 			if (ret == NULL) {
-				ret = mono_string_new_size( mono_domain_get (), newsize);
+				ret = mono_string_new_size_checked (mono_domain_get (), newsize, &error);
+				mono_error_raise_exception (&error); /* FIXME don't raise here */
 				dest = mono_string_chars(ret);
 				memcpy (dest, src, i * sizeof(gunichar2));
 			}

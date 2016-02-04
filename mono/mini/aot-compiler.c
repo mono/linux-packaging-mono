@@ -3695,10 +3695,12 @@ add_wrappers (MonoAotCompile *acfg)
 #if 0
 	/* remoting-invoke wrappers */
 	for (i = 0; i < acfg->image->tables [MONO_TABLE_METHOD].rows; ++i) {
+		MonoError error;
 		MonoMethodSignature *sig;
 		
 		token = MONO_TOKEN_METHOD_DEF | (i + 1);
-		method = mono_get_method (acfg->image, token, NULL);
+		method = mono_get_method_checked (acfg->image, token, NULL, NULL, &error);
+		g_assert (mono_error_ok (&error)); /* FIXME don't swallow the error */
 
 		sig = mono_method_signature (method);
 
@@ -7322,13 +7324,13 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 	if (!cfg->has_got_slots)
 		InterlockedIncrement (&acfg->stats.methods_without_got_slots);
 
-	if (!cfg->method->wrapper_type || cfg->method->wrapper_type == MONO_WRAPPER_DELEGATE_INVOKE)
-		/* These only need out wrappers */
-		add_gsharedvt_wrappers (acfg, mono_method_signature (cfg->method), FALSE, TRUE);
-
 	/* Add gsharedvt wrappers for signatures used by the method */
 	if (acfg->aot_opts.llvm_only) {
 		GSList *l;
+
+		if (!cfg->method->wrapper_type || cfg->method->wrapper_type == MONO_WRAPPER_DELEGATE_INVOKE)
+			/* These only need out wrappers */
+			add_gsharedvt_wrappers (acfg, mono_method_signature (cfg->method), FALSE, TRUE);
 
 		for (l = cfg->signatures; l; l = l->next) {
 			MonoMethodSignature *sig = mono_metadata_signature_dup ((MonoMethodSignature*)l->data);
@@ -7855,31 +7857,17 @@ execute_system (const char * command)
 static gboolean
 emit_llvm_file (MonoAotCompile *acfg)
 {
-	char *command, *opts, *tempbc, *output_fname;
+	char *command, *opts, *tempbc, *optbc, *output_fname;
 
-	/* Emit the LLVM code into a .bc file */
 	if (acfg->aot_opts.llvm_only && acfg->aot_opts.asm_only) {
-		mono_llvm_emit_aot_module (acfg->aot_opts.llvm_outfile, g_path_get_basename (acfg->image->name));
-		return TRUE;
+		tempbc = g_strdup_printf ("%s.bc", acfg->tmpbasename);
+		optbc = g_strdup (acfg->aot_opts.llvm_outfile);
+	} else {
+		tempbc = g_strdup_printf ("%s.bc", acfg->tmpbasename);
+		optbc = g_strdup_printf ("%s.opt.bc", acfg->tmpbasename);
 	}
 
-	tempbc = g_strdup_printf ("%s.bc", acfg->tmpbasename);
 	mono_llvm_emit_aot_module (tempbc, g_path_get_basename (acfg->image->name));
-	g_free (tempbc);
-
-	if (acfg->aot_opts.llvm_only) {
-		/* Use the stock clang from xcode */
-		// FIXME: arch
-		// FIXME: -O2
-		// FIXME: llc/opt flags
-		command = g_strdup_printf ("clang -march=x86-64 -fpic -msse -msse2 -msse3 -msse4 -O0 -c -o \"%s\" \"%s.bc\"", acfg->llvm_ofile, acfg->tmpbasename);
-		//command = g_strdup_printf ("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk -Qunused-arguments -miphoneos-version-min=8.2 -arch arm64 -fpic -O0 -c -o \"%s\" \"%s.bc\"", acfg->llvm_ofile, acfg->tmpbasename);
-
-		aot_printf (acfg, "Executing clang: %s\n", command);
-		if (execute_system (command) != 0)
-			return FALSE;
-		return TRUE;
-	}
 
 	/*
 	 * FIXME: Experiment with adding optimizations, the -std-compile-opts set takes
@@ -7908,15 +7896,34 @@ emit_llvm_file (MonoAotCompile *acfg)
 	 * return OverwriteComplete;
 	 * Here, if 'Earlier' refers to a memset, and Later has no size info, it mistakenly thinks the memset is redundant.
 	 */
-	opts = g_strdup ("-targetlibinfo -no-aa -basicaa -notti -instcombine -simplifycfg -inline-cost -inline -sroa -domtree -early-cse -lazy-value-info -correlated-propagation -simplifycfg -instcombine -simplifycfg -reassociate -domtree -loops -loop-simplify -lcssa -loop-rotate -licm -lcssa -loop-unswitch -instcombine -scalar-evolution -loop-simplify -lcssa -indvars -loop-idiom -loop-deletion -loop-unroll -memdep -gvn -memdep -memcpyopt -sccp -instcombine -lazy-value-info -correlated-propagation -domtree -memdep -adce -simplifycfg -instcombine -strip-dead-prototypes -domtree -verify");
-	opts = g_strdup ("");
-#if 1
-	command = g_strdup_printf ("\"%sopt\" -f %s -o \"%s.opt.bc\" \"%s.bc\"", acfg->aot_opts.llvm_path, opts, acfg->tmpbasename, acfg->tmpbasename);
+	if (acfg->aot_opts.llvm_only)
+		// FIXME: This doesn't work yet
+		opts = g_strdup ("");
+	else
+		opts = g_strdup ("-targetlibinfo -no-aa -basicaa -notti -instcombine -simplifycfg -inline-cost -inline -sroa -domtree -early-cse -lazy-value-info -correlated-propagation -simplifycfg -instcombine -simplifycfg -reassociate -domtree -loops -loop-simplify -lcssa -loop-rotate -licm -lcssa -loop-unswitch -instcombine -scalar-evolution -loop-simplify -lcssa -indvars -loop-idiom -loop-deletion -loop-unroll -memdep -gvn -memdep -memcpyopt -sccp -instcombine -lazy-value-info -correlated-propagation -domtree -memdep -adce -simplifycfg -instcombine -strip-dead-prototypes -domtree -verify");
+	command = g_strdup_printf ("\"%sopt\" -f %s -o \"%s\" \"%s\"", acfg->aot_opts.llvm_path, opts, optbc, tempbc);
 	aot_printf (acfg, "Executing opt: %s\n", command);
 	if (execute_system (command) != 0)
 		return FALSE;
-#endif
 	g_free (opts);
+
+	if (acfg->aot_opts.llvm_only && acfg->aot_opts.asm_only)
+		/* Nothing else to do */
+		return TRUE;
+
+	if (acfg->aot_opts.llvm_only) {
+		/* Use the stock clang from xcode */
+		// FIXME: arch
+		// FIXME: -O2
+		// FIXME: llc/opt flags
+		command = g_strdup_printf ("clang -march=x86-64 -fpic -msse -msse2 -msse3 -msse4 -O0 -c -o \"%s\" \"%s.opt.bc\"", acfg->llvm_ofile, acfg->tmpbasename);
+		//command = g_strdup_printf ("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk -Qunused-arguments -miphoneos-version-min=8.2 -arch arm64 -fpic -O0 -c -o \"%s\" \"%s.bc\"", acfg->llvm_ofile, acfg->tmpbasename);
+
+		aot_printf (acfg, "Executing clang: %s\n", command);
+		if (execute_system (command) != 0)
+			return FALSE;
+		return TRUE;
+	}
 
 	if (!acfg->llc_args)
 		acfg->llc_args = g_string_new ("");

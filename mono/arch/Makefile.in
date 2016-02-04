@@ -80,7 +80,7 @@ host_triplet = @host@
 target_triplet = @target@
 subdir = mono/arch
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/mkinstalldirs ChangeLog
+	$(top_srcdir)/mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -385,7 +385,6 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
 
 # arm needs to build some stuff even in JIT mode
 @ARM_TRUE@SUBDIRS = $(arch_target)
-EXTRA_DIST = ChangeLog
 all: all-recursive
 
 .SUFFIXES:

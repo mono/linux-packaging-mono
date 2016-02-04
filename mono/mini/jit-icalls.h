@@ -186,6 +186,8 @@ mono_object_castclass_with_cache (MonoObject *obj, MonoClass *klass, gpointer *c
 void
 mono_generic_class_init (MonoVTable *vtable);
 
+void mono_interruption_checkpoint_from_trampoline (void);
+
 MonoObject*
 mono_gsharedvt_constrained_call (gpointer mp, MonoMethod *cmethod, MonoClass *klass, gboolean deref_arg, gpointer *args);
 
@@ -205,7 +207,7 @@ MonoFtnDesc* mono_resolve_generic_virtual_iface_call (MonoVTable *vt, int imt_sl
 
 gpointer mono_init_vtable_slot (MonoVTable *vtable, int slot);
 
-void mono_llvmonly_init_delegate (MonoDelegate *del, MonoObject *target, MonoMethod *method);
+void mono_llvmonly_init_delegate (MonoDelegate *del);
 
 void mono_llvmonly_init_delegate_virtual (MonoDelegate *del, MonoObject *target, MonoMethod *method);
 

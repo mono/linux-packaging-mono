@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?><span>
+﻿<?xml version="1.0" encoding="utf-8"?><span>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <title>mono-api-gc.html</title>
@@ -12,26 +12,32 @@
    }
        
    .api {
-     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
+     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 18px;
+       font-size: 150%;
+       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+       padding-bottom: .5em;
    }
 
    .prototype {
-     border: 1px solid;
-     background-color: #f2f2f2;
-     padding: 5pt;
+     border: 3px solid #ecf0f1;
+     border-radius: 6px;
+     padding: .5em;
      margin-top: 5pt;
-     margin-bottom: 5pt;  
+     margin-bottom: 5pt;
+     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
+     display: block;
+     overflow: auto;
+     background-color: #f9f9f9;
    } 
 
    .header {
-     border: 1px solid;
+     
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -45,6 +51,13 @@
      white-space: pre;
        font-family: monospace;
    }
+
+   .strike {
+      text-decoration: line-through;
+   }
+	.deprecated {
+	    color: red;
+	}
    
 
 </style>
@@ -56,11 +69,13 @@
 
 	<p />The public interface of the Mono GC is fairly limited, and
 	its the only one that embedders should be using:
-	
+
+<h3>Garbage Collector</h3>
+
  <a name="api:mono_gc_collect"></a>
  <div class="api">
-    <div class="api-entry">mono_gc_collect</div>
-
+    <div class="api-entry ">mono_gc_collect</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">void
 mono_gc_collect (int generation)
 
@@ -68,7 +83,7 @@ mono_gc_collect (int generation)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>generation:</i></dt><dd> GC generation identifier</dd></blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Perform a garbage collection for the given generation, higher numbers
 	 mean usually older objects. Collecting a high-numbered generation
@@ -78,10 +93,30 @@ mono_gc_collect (int generation)
 	
 	 	mono_gc_collect (mono_gc_max_generation ());
 
+</div> <a name="api:mono_gc_collection_count"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_collection_count</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">int
+mono_gc_collection_count (int generation)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>generation:</i></dt><dd> a GC generation number</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the number of garbage collections
+</blockquote>
+<b>Description</b>
+<p />	 
+	 Get how many times a garbage collection has been performed
+	 for the given <i>generation</i> number.
+	
+
 </div> <a name="api:mono_gc_max_generation"></a>
  <div class="api">
-    <div class="api-entry">mono_gc_max_generation</div>
-
+    <div class="api-entry ">mono_gc_max_generation</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">int
 mono_gc_max_generation (void)
 
@@ -90,17 +125,37 @@ mono_gc_max_generation (void)
 <b>Returns</b>
 <blockquote>	  the maximum generation number.
 </blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Get the maximum generation number used by the current garbage
 	 collector. The value will be 0 for the Boehm collector, 1 or more
 	 for the generational collectors.
 	
 
+</div> <a name="api:mono_gc_get_generation"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_get_generation</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">int
+mono_gc_get_generation  (MonoObject *object)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>object:</i></dt><dd> a managed object</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a garbage collector generation number
+</blockquote>
+<b>Description</b>
+<p />	 
+	 Get the garbage collector's generation that <i>object</i> belongs to.
+	 Use this has a hint only.
+	
+
 </div> <a name="api:mono_gc_get_heap_size"></a>
  <div class="api">
-    <div class="api-entry">mono_gc_get_heap_size</div>
-
+    <div class="api-entry ">mono_gc_get_heap_size</div>
+    <div><b>Syntax</b></div>
     <div class="prototype">int64_t
 mono_gc_get_heap_size (void)
 
@@ -109,10 +164,278 @@ mono_gc_get_heap_size (void)
 <b>Returns</b>
 <blockquote>	  the size of the heap in bytes
 </blockquote>
-<b>Remarks</b>
+<b>Description</b>
 <p />	 
 	 Get the amount of memory used by the garbage collector.
 	
+
+</div> <a name="api:mono_gc_get_used_size"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_get_used_size</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">int64_t
+mono_gc_get_used_size (void)
+
+</div>
+<p />
+<b>Returns</b>
+<blockquote>	  the amount of memory used in bytes
+</blockquote>
+<b>Description</b>
+<p />	 
+	 Get the approximate amount of memory used by managed objects.
+	
+
+</div> <a name="api:mono_gc_walk_heap"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_walk_heap</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">int
+mono_gc_walk_heap (int flags, MonoGCReferences callback, void *data)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>flags:</i></dt><dd> flags for future use</dd><dt><i>callback:</i></dt><dd> a function pointer called for each object in the heap</dd><dt><i>data:</i></dt><dd> a user data pointer that is passed to callback</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  a non-zero value if the GC doesn't support heap walking
+</blockquote>
+<b>Description</b>
+<p />	 
+	 This function can be used to iterate over all the live objects in the heap:
+	 for each object, <i>callback</i> is invoked, providing info about the object's
+	 location in memory, its class, its size and the objects it references.
+	 For each referenced object it's offset from the object address is
+	 reported in the offsets array.
+	 The object references may be buffered, so the callback may be invoked
+	 multiple times for the same object: in all but the first call, the size
+	 argument will be zero.
+	 Note that this function can be only called in the <i>MONO_GC_EVENT_PRE_START_WORLD</i>
+	 profiler event handler.
+	
+
+
+</div><h3>Reference Queues</h3>
+
+ <a name="api:mono_gc_reference_queue_add"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_reference_queue_add</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">gboolean
+mono_gc_reference_queue_add (MonoReferenceQueue *queue, MonoObject *obj, void *user_data)
+
+</div>
+<p />
+<b>Description</b>
+<p />	 <i>queue</i> the queue to add the reference to. 
+	 <i>obj</i> the object to be watched for collection
+	 <i>user_data</i> parameter to be passed to the queue callback
+	
+	 Queue an object to be watched for collection, when the <i>obj</i> is
+	 collected, the callback that was registered for the <i>queue</i> will
+	 be invoked with <i>user_data</i> as argument.
+	
+	 <i>returns</i> false if the queue is scheduled to be freed.
+
+</div> <a name="api:mono_gc_reference_queue_free"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_reference_queue_free</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">void
+mono_gc_reference_queue_free (MonoReferenceQueue *queue)
+
+</div>
+<p />
+<b>Description</b>
+<p />	 <i>queue</i> the queue that should be freed. 
+	
+	 This operation signals that <i>queue</i> should be freed. This operation is deferred
+	 as it happens on the finalizer thread.
+	
+	 After this call, no further objects can be queued. It's the responsibility of the
+	 caller to make sure that no further attempt to access queue will be made.
+
+</div> <a name="api:mono_gc_reference_queue_new"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_reference_queue_new</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">MonoReferenceQueue*
+mono_gc_reference_queue_new (mono_reference_queue_callback callback)
+
+</div>
+<p />
+<b>Description</b>
+<p />	 <i>callback</i> callback used when processing collected entries. 
+	
+	 Create a new reference queue used to process collected objects.
+	 A reference queue let you add a pair of (managed object, user data)
+	 using the mono_gc_reference_queue_add method.
+	
+	 Once the managed object is collected <i>callback</i> will be called
+	 in the finalizer thread with 'user data' as argument.
+	
+	 The callback is called from the finalizer thread without any locks held.
+	 When a AppDomain is unloaded, all callbacks for objects belonging to it
+	 will be invoked.
+	
+	 <i>returns</i> the new queue.
+
+
+</div><h3>SGen Bridge</h3>
+
+	<p />The bridge is a mechanism for SGen to let clients override
+	the death of some unreachable objects.  We use it in monodroid
+	to do garbage collection across the Mono and Java heaps.
+
+	<p />The client can designate some objects as &quot;bridged&quot;, which
+	means that they participate in the bridge processing step once
+	SGen considers them unreachable, i.e., dead.  Bridged objects
+	must be registered for finalization.
+
+	<p />When SGen is done marking, it puts together a list of all
+	dead bridged objects and then does a strongly connected
+	component analysis over their object graph.  That graph will
+	usually contain non-bridged objects, too.
+	
+	<p />The output of the SCC analysis is passed to the
+	`cross_references()` callback.  It is expected to set the
+	`is_alive` flag on those strongly connected components that it
+	wishes to be kept alive.  Only bridged objects will be
+	reported to the callback, i.e., non-bridged objects are
+	removed from the callback graph.
+	
+	<p />In monodroid each bridged object has a corresponding Java
+	mirror object.  In the bridge callback it reifies the Mono
+	object graph in the Java heap so that the full, combined
+	object graph is now instantiated on the Java side.  Then it
+	triggers a Java GC, waits for it to finish, and checks which
+	of the Java mirror objects are still alive.  For those it sets
+	the `is_alive` flag and returns from the callback.
+	
+	<p />The SCC analysis is done while the world is stopped, but
+	the callback is made with the world running again.  Weak links
+	to bridged objects and other objects reachable from them are
+	kept until the callback returns, at which point all links to
+	bridged objects that don't have `is_alive` set are nulled.
+	Note that weak links to non-bridged objects reachable from
+	bridged objects are not nulled.  This might be considered a
+	bug.
+
+<div class="header">
+enum {
+        SGEN_BRIDGE_VERSION = 4
+};
+        
+typedef enum {
+        /* Instances of this class should be scanned when computing the transitive dependency among bridges. E.g. List of object*/
+        GC_BRIDGE_TRANSPARENT_CLASS,
+        /* Instances of this class should not be scanned when computing the transitive dependency among bridges. E.g. String*/
+        GC_BRIDGE_OPAQUE_CLASS,
+        /* Instances of this class should be bridged and have their dependency computed. */
+        GC_BRIDGE_TRANSPARENT_BRIDGE_CLASS,
+        /* Instances of this class should be bridged but no dependencies should not be calculated. */
+        GC_BRIDGE_OPAQUE_BRIDGE_CLASS,
+} MonoGCBridgeObjectKind;
+
+typedef struct {
+        mono_bool is_alive;     /* to be set by the cross reference callback */
+        int num_objs;
+        MonoObject *objs [MONO_ZERO_LEN_ARRAY];
+} MonoGCBridgeSCC;
+
+typedef struct {
+        int src_scc_index;
+        int dst_scc_index;
+} MonoGCBridgeXRef;
+
+typedef struct {
+        int bridge_version;
+        /*
+         * Tells the runtime which classes to even consider when looking for
+         * bridged objects.  If subclasses are to be considered as well, the
+         * subclass check must be done in the callback.
+         */
+        MonoGCBridgeObjectKind (*bridge_class_kind) (MonoClass *klass);
+        /*
+         * This is only called on objects for whose classes
+         * `bridge_class_kind()` returned `XXX_BRIDGE_CLASS`.
+         */
+        mono_bool (*is_bridge_object) (MonoObject *object);
+        void (*cross_references) (int num_sccs, MonoGCBridgeSCC **sccs, int num_xrefs, MonoGCBridgeXRef *xrefs);
+} MonoGCBridgeCallbacks;
+</div>
+
+ <a name="api:mono_gc_register_bridge_callbacks"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_register_bridge_callbacks</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_gc_register_bridge_callbacks</div>
+<p />
+
+</div> <a name="api:mono_gc_wait_for_bridge_processing"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_wait_for_bridge_processing</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_gc_wait_for_bridge_processing</div>
+<p />
+
+
+</div><h3>Write Barriers</h3>
+
+ <a name="api:mono_gc_wbarrier_arrayref_copy"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_wbarrier_arrayref_copy</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_gc_wbarrier_arrayref_copy</div>
+<p />
+
+</div> <a name="api:mono_gc_wbarrier_generic_nostore"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_wbarrier_generic_nostore</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_gc_wbarrier_generic_nostore</div>
+<p />
+
+</div> <a name="api:mono_gc_wbarrier_generic_store"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_wbarrier_generic_store</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_gc_wbarrier_generic_store</div>
+<p />
+
+</div> <a name="api:mono_gc_wbarrier_generic_store_atomic"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_wbarrier_generic_store_atomic</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_gc_wbarrier_generic_store_atomic</div>
+<p />
+
+</div> <a name="api:mono_gc_wbarrier_object_copy"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_wbarrier_object_copy</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">void
+mono_gc_wbarrier_object_copy (MonoObject* obj, MonoObject *src)
+
+</div>
+<p />
+<b>Description</b>
+<p />	 
+	 Write barrier to call when obj is the result of a clone or copy of an object.
+
+</div> <a name="api:mono_gc_wbarrier_set_arrayref"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_wbarrier_set_arrayref</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_gc_wbarrier_set_arrayref</div>
+<p />
+
+</div> <a name="api:mono_gc_wbarrier_set_field"></a>
+ <div class="api">
+    <div class="api-entry ">mono_gc_wbarrier_set_field</div>
+    <div><b>Syntax</b></div>
+    <div class="prototype">Prototype: mono_gc_wbarrier_set_field</div>
+<p />
 
 </div></body>
 </html>

@@ -99,7 +99,7 @@ target_triplet = @target@
 subdir = mono/utils
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
-	$(libmonoutilsinclude_HEADERS) ChangeLog
+	$(libmonoutilsinclude_HEADERS)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -671,7 +671,7 @@ libmonoutilsinclude_HEADERS = \
 	mono-dl-fallback.h	\
 	mono-counters.h
 
-EXTRA_DIST = ChangeLog mono-embed.h mono-embed.c
+EXTRA_DIST = mono-embed.h mono-embed.c
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 

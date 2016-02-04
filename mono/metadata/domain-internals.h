@@ -60,6 +60,7 @@ struct _MonoJitInfoTableChunk
 	int		       refcount;
 	volatile int           num_elements;
 	volatile gint8        *last_code_end;
+	MonoJitInfo *next_tombstone;
 	MonoJitInfo * volatile data [MONO_JIT_INFO_TABLE_CHUNK_SIZE];
 };
 
@@ -201,7 +202,10 @@ struct _MonoJitInfo {
 		gpointer aot_info;
 		gpointer tramp_info;
 	} d;
-	struct _MonoJitInfo *next_jit_code_hash;
+	union {
+		struct _MonoJitInfo *next_jit_code_hash;
+		struct _MonoJitInfo *next_tombstone;
+	} n;
 	gpointer    code_start;
 	guint32     unwind_info;
 	int         code_size;
@@ -493,7 +497,7 @@ void
 mono_jit_info_set_generic_sharing_context (MonoJitInfo *ji, MonoGenericSharingContext *gsctx);
 
 char *
-mono_make_shadow_copy (const char *filename);
+mono_make_shadow_copy (const char *filename, MonoError *error);
 
 gboolean
 mono_is_shadow_copy_enabled (MonoDomain *domain, const gchar *dir_name);
