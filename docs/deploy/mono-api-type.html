@@ -12,32 +12,26 @@
    }
        
    .api {
+     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
-     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 150%;
-       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-       padding-bottom: .5em;
+       font-size: 18px;
    }
 
    .prototype {
-     border: 3px solid #ecf0f1;
-     border-radius: 6px;
-     padding: .5em;
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
      margin-top: 5pt;
-     margin-bottom: 5pt;
-     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-     display: block;
-     overflow: auto;
-     background-color: #f9f9f9;
+     margin-bottom: 5pt;  
    } 
 
    .header {
-     
+     border: 1px solid;
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -51,13 +45,6 @@
      white-space: pre;
        font-family: monospace;
    }
-
-   .strike {
-      text-decoration: line-through;
-   }
-	.deprecated {
-	    color: red;
-	}
    
 
 </style>
@@ -77,17 +64,13 @@ typedef struct _MonoType MonoType;
                      <a href="#api:mono_type_full_name"></a>                         
 MonoArrayType*       <a href="#api:mono_type_get_array_type">mono_type_get_array_type</a> (MonoType *type);
 MonoClass*           <a href="#api:mono_type_get_class">mono_type_get_class</a>      (MonoType *type);
+                     <a href="#api:mono_type_get_desc"></a>                         
                      <a href="#api:mono_type_get_modifiers"></a>                         
 char*                <a href="#api:mono_type_get_name">mono_type_get_name</a>       (MonoType *type);
-MonoType*            <a href="#api:mono_type_get_ptr_type">mono_type_get_ptr_type</a>   (MonoType *type);
 MonoMethodSignature* <a href="#api:mono_type_get_signature">mono_type_get_signature</a>  (MonoType *type);
 int                  <a href="#api:mono_type_get_type">mono_type_get_type</a>       (MonoType *type);
                      <a href="#api:mono_type_get_underlying_type"></a>                         
 gboolean             <a href="#api:mono_type_is_byref">mono_type_is_byref</a>       (MonoType *type);
-mono_bool            <a href="#api:mono_type_is_pointer">mono_type_is_pointer</a>     (MonoType *type);
-mono_bool            <a href="#api:mono_type_is_reference">mono_type_is_reference</a>   (MonoType *type);
-mono_bool            <a href="#api:mono_type_is_struct">mono_type_is_struct</a>      (MonoType *type);
-mono_bool            <a href="#api:mono_type_is_void">mono_type_is_void</a>        (MonoType *type);
                      <a href="#api:mono_type_size"></a>                         
                      <a href="#api:mono_type_stack_size"></a>                         
 guint32              <a href="#api:mono_type_to_unmanaged">mono_type_to_unmanaged</a>   (MonoType *type, 
@@ -103,29 +86,29 @@ guint32              <a href="#api:mono_type_to_unmanaged">mono_type_to_unmanage
 	
  <a name="api:mono_type_get_object"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_get_object</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_get_object</div>
+
     <div class="prototype">Prototype: mono_type_get_object</div>
 <p />
 
 </div> <a name="api:mono_type_create_from_typespec"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_create_from_typespec</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_create_from_typespec</div>
+
     <div class="prototype">Prototype: mono_type_create_from_typespec</div>
 <p />
 
 </div> <a name="api:mono_type_full_name"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_full_name</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_full_name</div>
+
     <div class="prototype">Prototype: mono_type_full_name</div>
 <p />
 
 </div> <a name="api:mono_type_get_array_type"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_get_array_type</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_get_array_type</div>
+
     <div class="prototype">MonoArrayType*
 mono_type_get_array_type (MonoType *type)
 
@@ -138,15 +121,15 @@ mono_type_get_array_type (MonoType *type)
 
 	 represents. The info includes details such as rank, array element type
 	 and the sizes and bounds of multidimensional arrays.</blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 It is only valid to call this function if <i>type</i> is a MONO_TYPE_ARRAY.
 	
 
 </div> <a name="api:mono_type_get_class"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_get_class</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_get_class</div>
+
     <div class="prototype">MonoClass*
 mono_type_get_class (MonoType *type)
 
@@ -157,24 +140,31 @@ mono_type_get_class (MonoType *type)
 <b>Returns</b>
 <blockquote>	  the MonoClass pointer that describes the class that <i>type</i> represents.
 </blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 It is only valid to call this function if <i>type</i> is a MONO_TYPE_CLASS or a
 	 MONO_TYPE_VALUETYPE. For more general functionality, use mono_class_from_mono_type (),
 	 instead
 	
 
+</div> <a name="api:mono_type_get_desc"></a>
+ <div class="api">
+    <div class="api-entry">mono_type_get_desc</div>
+
+    <div class="prototype">Prototype: mono_type_get_desc</div>
+<p />
+
 </div> <a name="api:mono_type_get_modifiers"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_get_modifiers</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_get_modifiers</div>
+
     <div class="prototype">Prototype: mono_type_get_modifiers</div>
 <p />
 
 </div> <a name="api:mono_type_get_name"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_get_name</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_get_name</div>
+
     <div class="prototype">char*
 mono_type_get_name (MonoType *type)
 
@@ -183,34 +173,13 @@ mono_type_get_name (MonoType *type)
 <b>Parameters</b>
 <blockquote><dt><i>type:</i></dt><dd> a type</dd></blockquote>
 <b>Returns</b>
-<blockquote>	  The string representation for type as it would be represented in IL code.
+<blockquote>	  the string representation for type as it would be represented in IL code.
 </blockquote>
-
-</div> <a name="api:mono_type_get_ptr_type"></a>
- <div class="api">
-    <div class="api-entry ">mono_type_get_ptr_type</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoType*
-mono_type_get_ptr_type (MonoType *type)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>type:</i></dt><dd> the MonoType operated on</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  the MonoType pointer that describes the type that <i>type</i>
-
-	 represents a pointer to.</blockquote>
-<b>Description</b>
-<p />	 
-	 It is only valid to call this function if <i>type</i> is a MONO_TYPE_PTR.
-	 instead
-	
 
 </div> <a name="api:mono_type_get_signature"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_get_signature</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_get_signature</div>
+
     <div class="prototype">MonoMethodSignature*
 mono_type_get_signature (MonoType *type)
 
@@ -222,15 +191,15 @@ mono_type_get_signature (MonoType *type)
 <blockquote>	  the MonoMethodSignature pointer that describes the signature
 
 	 of the function pointer <i>type</i> represents.</blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 It is only valid to call this function if <i>type</i> is a MONO_TYPE_FNPTR.
 	
 
 </div> <a name="api:mono_type_get_type"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_get_type</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_get_type</div>
+
     <div class="prototype">int
 mono_type_get_type (MonoType *type)
 
@@ -245,15 +214,15 @@ mono_type_get_type (MonoType *type)
 
 </div> <a name="api:mono_type_get_underlying_type"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_get_underlying_type</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_get_underlying_type</div>
+
     <div class="prototype">Prototype: mono_type_get_underlying_type</div>
 <p />
 
 </div> <a name="api:mono_type_is_byref"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_is_byref</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_is_byref</div>
+
     <div class="prototype">gboolean
 mono_type_is_byref (MonoType *type)
 
@@ -266,85 +235,24 @@ mono_type_is_byref (MonoType *type)
 
 	 <i>FALSE</i> otherwise.</blockquote>
 
-</div> <a name="api:mono_type_is_pointer"></a>
- <div class="api">
-    <div class="api-entry ">mono_type_is_pointer</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">mono_bool
-mono_type_is_pointer (MonoType *type)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>type:</i></dt><dd> the MonoType operated on</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  <i>TRUE</i> is <i>type</i> is a managed or unmanaged pointer type. <i>FALSE</i> otherwise.
-</blockquote>
-
-</div> <a name="api:mono_type_is_reference"></a>
- <div class="api">
-    <div class="api-entry ">mono_type_is_reference</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">mono_bool
-mono_type_is_reference (MonoType *type)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>type:</i></dt><dd> the MonoType operated on</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  <i>TRUE</i> is <i>type</i> represents an object reference . <i>FALSE</i> otherwise.
-</blockquote>
-
-</div> <a name="api:mono_type_is_struct"></a>
- <div class="api">
-    <div class="api-entry ">mono_type_is_struct</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">mono_bool
-mono_type_is_struct (MonoType *type)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>type:</i></dt><dd> the MonoType operated on</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  <i>TRUE</i> is <i>type</i> is a struct, that is a ValueType but not en enum
-
-	 or a basic type like System.Int32. <i>FALSE</i> otherwise.</blockquote>
-
-</div> <a name="api:mono_type_is_void"></a>
- <div class="api">
-    <div class="api-entry ">mono_type_is_void</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">mono_bool
-mono_type_is_void (MonoType *type)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>type:</i></dt><dd> the MonoType operated on</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  <i>TRUE</i> is <i>type</i> is System.Void. <i>FALSE</i> otherwise.
-</blockquote>
-
 </div> <a name="api:mono_type_size"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_size</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_size</div>
+
     <div class="prototype">Prototype: mono_type_size</div>
 <p />
 
 </div> <a name="api:mono_type_stack_size"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_stack_size</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_stack_size</div>
+
     <div class="prototype">Prototype: mono_type_stack_size</div>
 <p />
 
 </div> <a name="api:mono_type_to_unmanaged"></a>
  <div class="api">
-    <div class="api-entry ">mono_type_to_unmanaged</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_type_to_unmanaged</div>
+
     <div class="prototype">guint32
 mono_type_to_unmanaged (MonoType *type, MonoMarshalSpec *mspec, gboolean as_field,
 			gboolean unicode, MonoMarshalConv *conv) 

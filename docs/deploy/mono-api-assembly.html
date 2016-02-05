@@ -12,32 +12,26 @@
    }
        
    .api {
+     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
-     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 150%;
-       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-       padding-bottom: .5em;
+       font-size: 18px;
    }
 
    .prototype {
-     border: 3px solid #ecf0f1;
-     border-radius: 6px;
-     padding: .5em;
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
      margin-top: 5pt;
-     margin-bottom: 5pt;
-     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-     display: block;
-     overflow: auto;
-     background-color: #f9f9f9;
+     margin-bottom: 5pt;  
    } 
 
    .header {
-     
+     border: 1px solid;
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -51,13 +45,6 @@
      white-space: pre;
        font-family: monospace;
    }
-
-   .strike {
-      text-decoration: line-through;
-   }
-	.deprecated {
-	    color: red;
-	}
    
 
 </style>
@@ -73,8 +60,9 @@
 typedef struct _MonoImage MonoImage;
 typedef struct _MonoAssembly MonoAssembly;
 
+MonoAssembly*          <a href="#api:mono_assembly_open">mono_assembly_open</a>           (const char *filename, 
+                                                     MonoImageOpenStatus *status);
 void                   <a href="#api:mono_assembly_close">mono_assembly_close</a>          (MonoAssembly *assembly);
-                       <a href="#api:mono_assembly_get_object"></a>                             
 MonoAssembly*          <a href="#api:mono_assembly_load">mono_assembly_load</a>           (MonoAssemblyName *aname, 
                                                      const char *basedir, 
                                                      MonoImageOpenStatus *status);
@@ -83,49 +71,16 @@ MonoAssembly*          <a href="#api:mono_assembly_load_full">mono_assembly_load
                                                      MonoImageOpenStatus *status, 
                                                      gboolean refonly);
 MonoAssembly*          <a href="#api:mono_assembly_loaded">mono_assembly_loaded</a>         (MonoAssemblyName *aname);
-                       <a href="#api:mono_assembly_load_from"></a>                             
-                       <a href="#api:mono_assembly_load_from_full"></a>                             
-                       <a href="#api:mono_assembly_load_with_partial_name"></a>                             
-MonoAssembly*          <a href="#api:mono_assembly_open">mono_assembly_open</a>           (const char *filename, 
-                                                     MonoImageOpenStatus *status);
-                       <a href="#api:mono_assembly_open_full"></a>                             
-void                   <a href="#api:mono_set_assemblies_path">mono_set_assemblies_path</a>     (const char* path);
-void                   <a href="#api:mono_set_rootdir">mono_set_rootdir</a>             (void);
-                       <a href="#api:mono_assembly_fill_assembly_name"></a>                             
-                       <a href="#api:mono_assembly_foreach"></a>                             
+                       <a href="#api:mono_assembly_get_object"></a>                             
 MonoImage*             <a href="#api:mono_assembly_get_image">mono_assembly_get_image</a>      (MonoAssembly *assembly);
 MonoAssembly*          <a href="#api:mono_assembly_get_main">mono_assembly_get_main</a>       (void);
-MonoAssemblyName*      <a href="#api:mono_assembly_get_name">mono_assembly_get_name</a>       (MonoAssembly *assembly);
 G_CONST_RETURN gchar * <a href="#api:mono_assembly_getrootdir">mono_assembly_getrootdir</a>     (void);
-                       <a href="#api:mono_assembly_get_assemblyref"></a>                             
-                       <a href="#api:mono_assembly_loaded_full"></a>                             
-                       <a href="#api:mono_assembly_load_reference"></a>                             
-                       <a href="#api:mono_assembly_load_references"></a>                             
-                       <a href="#api:mono_assembly_load_module"></a>                             
-                       <a href="#api:mono_assembly_invoke_load_hook"></a>                             
-                       <a href="#api:mono_assembly_invoke_search_hook"></a>                             
-                       <a href="#api:mono_assembly_set_main"></a>                             
-void                   <a href="#api:mono_assembly_setrootdir">mono_assembly_setrootdir</a>     (const char *root_dir);
-                       <a href="#api:mono_register_config_for_assembly"></a>                             
-                       <a href="#api:mono_register_symfile_for_assembly"></a>                             
-MonoAssemblyName*      <a href="#api:mono_assembly_name_new">mono_assembly_name_new</a>       (const char *name);
-                       <a href="#api:mono_assembly_name_get_name"></a>                             
-                       <a href="#api:mono_assembly_name_get_culture"></a>                             
-                       <a href="#api:mono_assembly_name_get_version"></a>                             
-                       <a href="#api:mono_assembly_name_get_pubkeytoken"></a>                             
 void                   <a href="#api:mono_assembly_name_free">mono_assembly_name_free</a>      (MonoAssemblyName *aname);
 char*                  <a href="#api:mono_stringify_assembly_name">mono_stringify_assembly_name</a> (MonoAssemblyName *aname);
 gboolean               <a href="#api:mono_assembly_names_equal">mono_assembly_names_equal</a>    (MonoAssemblyName *l, 
                                                      MonoAssemblyName *r);
                        <a href="#api:mono_module_file_get_object"></a>                             
                        <a href="#api:mono_module_get_object"></a>                             
-                       <a href="#api:mono_install_assembly_load_hook"></a>                             
-                       <a href="#api:mono_install_assembly_search_hook"></a>                             
-                       <a href="#api:mono_install_assembly_refonly_search_hook"></a>                             
-                       <a href="#api:mono_install_assembly_preload_hook"></a>                             
-                       <a href="#api:mono_install_assembly_refonly_preload_hook"></a>                             
-                       <a href="#api:mono_install_assembly_postload_search_hook"></a>                             
-                       <a href="#api:mono_install_assembly_postload_refonly_search_hook"></a>                             
 
 	
 	</div>
@@ -133,97 +88,10 @@ gboolean               <a href="#api:mono_assembly_names_equal">mono_assembly_na
 <a name="cil_assembly_load"></a>
 <h3>Assembly Loading</h3>
 
- <a name="api:mono_assembly_close"></a>
- <div class="api">
-    <div class="api-entry ">mono_assembly_close</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">void
-mono_assembly_close (MonoAssembly *assembly)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>assembly:</i></dt><dd> the assembly to release.</dd></blockquote>
-<b>Description</b>
-<p />	 
-	 This method releases a reference to the <i>assembly</i>.  The assembly is
-	 only released when all the outstanding references to it are released.
-
-</div> <a name="api:mono_assembly_get_object"></a>
- <div class="api">
-    <div class="api-entry ">mono_assembly_get_object</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">Prototype: mono_assembly_get_object</div>
-<p />
-
-</div> <a name="api:mono_assembly_load"></a>
- <div class="api">
-    <div class="api-entry ">mono_assembly_load</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoAssembly*
-mono_assembly_load (MonoAssemblyName *aname, const char *basedir, MonoImageOpenStatus *status)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>aname:</i></dt><dd> A MonoAssemblyName with the assembly name to load.</dd><dt><i>basedir:</i></dt><dd> A directory to look up the assembly at.</dd><dt><i>status:</i></dt><dd> a pointer to a MonoImageOpenStatus to return the status of the load operation</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  the assembly referenced by <i>aname</i> loaded or NULL on error.   On error the
-
-	 value pointed by status is updated with an error code.</blockquote>
-<b>Description</b>
-<p />	 
-	 Loads the assembly referenced by <i>aname</i>, if the value of <i>basedir</i> is not NULL, it
-	 attempts to load the assembly from that directory before probing the standard locations.
-	
-
-</div> <a name="api:mono_assembly_load_full"></a>
- <div class="api">
-    <div class="api-entry ">mono_assembly_load_full</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoAssembly*
-mono_assembly_load_full (MonoAssemblyName *aname, const char *basedir, MonoImageOpenStatus *status, gboolean refonly)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>aname:</i></dt><dd> A MonoAssemblyName with the assembly name to load.</dd><dt><i>basedir:</i></dt><dd> A directory to look up the assembly at.</dd><dt><i>status:</i></dt><dd> a pointer to a MonoImageOpenStatus to return the status of the load operation</dd><dt><i>refonly:</i></dt><dd> Whether this assembly is being opened in &quot;reflection-only&quot; mode.</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  the assembly referenced by <i>aname</i> loaded or NULL on error.   On error the
-
-	 value pointed by status is updated with an error code.</blockquote>
-<b>Description</b>
-<p />	 
-	 Loads the assembly referenced by <i>aname</i>, if the value of <i>basedir</i> is not NULL, it
-	 attempts to load the assembly from that directory before probing the standard locations.
-	
-	 If the assembly is being opened in reflection-only mode (<i>refonly</i> set to TRUE) then no 
-	 assembly binding takes place.
-	
-
-</div> <a name="api:mono_assembly_loaded"></a>
- <div class="api">
-    <div class="api-entry ">mono_assembly_loaded</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoAssembly*
-mono_assembly_loaded (MonoAssemblyName *aname)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>aname:</i></dt><dd> an assembly to look for.</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  NULL If the given <i>aname</i> assembly has not been loaded, or a pointer to
-
-	 a MonoAssembly that matches the MonoAssemblyName specified.</blockquote>
-
-</div><h4><a name="api:mono_assembly_load_from">mono_assembly_load_from</a>
-<h4><a name="api:mono_assembly_load_from_full">mono_assembly_load_from_full</a>
-<h4><a name="api:mono_assembly_load_with_partial_name">mono_assembly_load_with_partial_name</a>
  <a name="api:mono_assembly_open"></a>
  <div class="api">
-    <div class="api-entry ">mono_assembly_open</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_assembly_open</div>
+
     <div class="prototype">MonoAssembly*
 mono_assembly_open (const char *filename, MonoImageOpenStatus *status)
 
@@ -236,24 +104,103 @@ mono_assembly_open (const char *filename, MonoImageOpenStatus *status)
 
 	 assembly or NULL on error.  Details about the error are stored in the
 	 <i>status</i> variable.</blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 mono_assembly_open opens the PE-image pointed by <i>filename</i>, and
 	 loads any external assemblies referenced by it.
 	
 
-</div><h4><a name="api:mono_assembly_open_full">mono_assembly_open_full</a>
-<h4><a name="api:mono_set_assemblies_path">mono_set_assemblies_path</a>
-<h4><a name="api:mono_set_rootdir">mono_set_rootdir</a>
+</div> <a name="api:mono_assembly_close"></a>
+ <div class="api">
+    <div class="api-entry">mono_assembly_close</div>
 
-<h3>Working with Assemblies</h3>
+    <div class="prototype">void
+mono_assembly_close (MonoAssembly *assembly)
 
-<h4><a name="api:mono_assembly_fill_assembly_name">mono_assembly_fill_assembly_name</a>
-<h4><a name="api:mono_assembly_foreach">mono_assembly_foreach</a>
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>assembly:</i></dt><dd> the assembly to release.</dd></blockquote>
+<b>Remarks</b>
+<p />	 
+	 This method releases a reference to the <i>assembly</i>.  The assembly is
+	 only released when all the outstanding references to it are released.
+
+</div> <a name="api:mono_assembly_load"></a>
+ <div class="api">
+    <div class="api-entry">mono_assembly_load</div>
+
+    <div class="prototype">MonoAssembly*
+mono_assembly_load (MonoAssemblyName *aname, const char *basedir, MonoImageOpenStatus *status)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>aname:</i></dt><dd> A MonoAssemblyName with the assembly name to load.</dd><dt><i>basedir:</i></dt><dd> A directory to look up the assembly at.</dd><dt><i>status:</i></dt><dd> a pointer to a MonoImageOpenStatus to return the status of the load operation</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the assembly referenced by <i>aname</i> loaded or NULL on error.   On error the
+
+	 value pointed by status is updated with an error code.</blockquote>
+<b>Remarks</b>
+<p />	 
+	 Loads the assembly referenced by <i>aname</i>, if the value of <i>basedir</i> is not NULL, it
+	 attempts to load the assembly from that directory before probing the standard locations.
+	
+
+</div> <a name="api:mono_assembly_load_full"></a>
+ <div class="api">
+    <div class="api-entry">mono_assembly_load_full</div>
+
+    <div class="prototype">MonoAssembly*
+mono_assembly_load_full (MonoAssemblyName *aname, const char *basedir, MonoImageOpenStatus *status, gboolean refonly)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>aname:</i></dt><dd> A MonoAssemblyName with the assembly name to load.</dd><dt><i>basedir:</i></dt><dd> A directory to look up the assembly at.</dd><dt><i>status:</i></dt><dd> a pointer to a MonoImageOpenStatus to return the status of the load operation</dd><dt><i>refonly:</i></dt><dd> Whether this assembly is being opened in &quot;reflection-only&quot; mode.</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  the assembly referenced by <i>aname</i> loaded or NULL on error.   On error the
+
+	 value pointed by status is updated with an error code.</blockquote>
+<b>Remarks</b>
+<p />	 
+	 Loads the assembly referenced by <i>aname</i>, if the value of <i>basedir</i> is not NULL, it
+	 attempts to load the assembly from that directory before probing the standard locations.
+	
+	 If the assembly is being opened in reflection-only mode (<i>refonly</i> set to TRUE) then no 
+	 assembly binding takes place.
+	
+
+</div> <a name="api:mono_assembly_loaded"></a>
+ <div class="api">
+    <div class="api-entry">mono_assembly_loaded</div>
+
+    <div class="prototype">MonoAssembly*
+mono_assembly_loaded (MonoAssemblyName *aname)
+
+</div>
+<p />
+<b>Parameters</b>
+<blockquote><dt><i>aname:</i></dt><dd> an assembly to look for.</dd></blockquote>
+<b>Returns</b>
+<blockquote>	  NULL If the given <i>aname</i> assembly has not been loaded, or a pointer to
+
+	 a MonoAssembly that matches the MonoAssemblyName specified.</blockquote>
+
+</div> <a name="api:mono_assembly_get_object"></a>
+ <div class="api">
+    <div class="api-entry">mono_assembly_get_object</div>
+
+    <div class="prototype">Prototype: mono_assembly_get_object</div>
+<p />
+
+
+</div><h3>Working with Assemblies</h3>
+
  <a name="api:mono_assembly_get_image"></a>
  <div class="api">
-    <div class="api-entry ">mono_assembly_get_image</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_assembly_get_image</div>
+
     <div class="prototype">MonoImage*
 mono_assembly_get_image (MonoAssembly *assembly)
 
@@ -267,8 +214,8 @@ mono_assembly_get_image (MonoAssembly *assembly)
 
 </div> <a name="api:mono_assembly_get_main"></a>
  <div class="api">
-    <div class="api-entry ">mono_assembly_get_main</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_assembly_get_main</div>
+
     <div class="prototype">MonoAssembly*
 mono_assembly_get_main (void)
 
@@ -278,11 +225,10 @@ mono_assembly_get_main (void)
 <blockquote>	  the assembly for the application, the first assembly that is loaded by the VM
 </blockquote>
 
-</div><h4><a name="api:mono_assembly_get_name">mono_assembly_get_name</a>
- <a name="api:mono_assembly_getrootdir"></a>
+</div> <a name="api:mono_assembly_getrootdir"></a>
  <div class="api">
-    <div class="api-entry ">mono_assembly_getrootdir</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_assembly_getrootdir</div>
+
     <div class="prototype">G_CONST_RETURN gchar *
 mono_assembly_getrootdir (void)
 
@@ -291,25 +237,14 @@ mono_assembly_getrootdir (void)
 <b>Returns</b>
 <blockquote>	  a string with the directory, this string should not be freed.
 </blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 <p />
 
 	 Obtains the root directory used for looking up assemblies.
 	
 
-</div><h4><a name="api:mono_assembly_get_assemblyref">mono_assembly_get_assemblyref</a>
-<h4><a name="api:mono_assembly_loaded_full">mono_assembly_loaded_full</a>
-<h4><a name="api:mono_assembly_load_reference">mono_assembly_load_reference</a>
-<h4><a name="api:mono_assembly_load_references">mono_assembly_load_references</a>
-<h4><a name="api:mono_assembly_load_module">mono_assembly_load_module</a>
-<h4><a name="api:mono_assembly_invoke_load_hook">mono_assembly_invoke_load_hook</a>
-<h4><a name="api:mono_assembly_invoke_search_hook">mono_assembly_invoke_search_hook</a>
-<h4><a name="api:mono_assembly_set_main">mono_assembly_set_main</a>
-<h4><a name="api:mono_assembly_setrootdir">mono_assembly_setrootdir</a>
-<h4><a name="api:mono_register_config_for_assembly">mono_register_config_for_assembly</a>
-<h4><a name="api:mono_register_symfile_for_assembly">mono_register_symfile_for_assembly</a>
 
-<h3>Assembly Names</h3>
+</div><h3>Assembly Names</h3>
 
 	<p />The MonoAssemblyName contains the full identity of an
 	assembly (name, culture, public key, public key token,
@@ -318,15 +253,10 @@ mono_assembly_getrootdir (void)
 	<p />These unmanaged objects represent the <a href="http://www.mono-project.com/monodoc/T:System.Reflection.AssemblyName">System.Reflection.AssemblyName</a>
 	managed type.
 
-<h4><a name="api:mono_assembly_name_new">mono_assembly_name_new</a>
-<h4><a name="api:mono_assembly_name_get_name">mono_assembly_name_get_name</a>
-<h4><a name="api:mono_assembly_name_get_culture">mono_assembly_name_get_culture</a>
-<h4><a name="api:mono_assembly_name_get_version">mono_assembly_name_get_version</a>
-<h4><a name="api:mono_assembly_name_get_pubkeytoken">mono_assembly_name_get_pubkeytoken</a>
  <a name="api:mono_assembly_name_free"></a>
  <div class="api">
-    <div class="api-entry ">mono_assembly_name_free</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_assembly_name_free</div>
+
     <div class="prototype">void
 mono_assembly_name_free (MonoAssemblyName *aname)
 
@@ -334,7 +264,7 @@ mono_assembly_name_free (MonoAssemblyName *aname)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>aname:</i></dt><dd> assembly name to free</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 <p />
 
 	 Frees the provided assembly name object.
@@ -342,8 +272,8 @@ mono_assembly_name_free (MonoAssemblyName *aname)
 
 </div> <a name="api:mono_stringify_assembly_name"></a>
  <div class="api">
-    <div class="api-entry ">mono_stringify_assembly_name</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_stringify_assembly_name</div>
+
     <div class="prototype">char*
 mono_stringify_assembly_name (MonoAssemblyName *aname)
 
@@ -355,7 +285,7 @@ mono_stringify_assembly_name (MonoAssemblyName *aname)
 <blockquote>	  a newly allocated string with a string representation of
 
 	 the assembly name.</blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Convert <i>aname</i> into its string format. The returned string is dynamically
 	 allocated and should be freed by the caller.
@@ -363,8 +293,8 @@ mono_stringify_assembly_name (MonoAssemblyName *aname)
 
 </div> <a name="api:mono_assembly_names_equal"></a>
  <div class="api">
-    <div class="api-entry ">mono_assembly_names_equal</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_assembly_names_equal</div>
+
     <div class="prototype">gboolean
 mono_assembly_names_equal (MonoAssemblyName *l, MonoAssemblyName *r)
 
@@ -375,7 +305,7 @@ mono_assembly_names_equal (MonoAssemblyName *l, MonoAssemblyName *r)
 <b>Returns</b>
 <blockquote>	  TRUE if both assembly names are equal.
 </blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Compares two MonoAssemblyNames and returns whether they are equal.
 	
@@ -390,28 +320,18 @@ mono_assembly_names_equal (MonoAssemblyName *l, MonoAssemblyName *r)
 
  <a name="api:mono_module_file_get_object"></a>
  <div class="api">
-    <div class="api-entry ">mono_module_file_get_object</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_module_file_get_object</div>
+
     <div class="prototype">Prototype: mono_module_file_get_object</div>
 <p />
 
 </div> <a name="api:mono_module_get_object"></a>
  <div class="api">
-    <div class="api-entry ">mono_module_get_object</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_module_get_object</div>
+
     <div class="prototype">Prototype: mono_module_get_object</div>
 <p />
 
-	
-
-</div><h3>Advanced</h3>
-
-<h4><a name="api:mono_install_assembly_load_hook">mono_install_assembly_load_hook</a>
-<h4><a name="api:mono_install_assembly_search_hook">mono_install_assembly_search_hook</a>
-<h4><a name="api:mono_install_assembly_refonly_search_hook">mono_install_assembly_refonly_search_hook</a>
-<h4><a name="api:mono_install_assembly_preload_hook">mono_install_assembly_preload_hook</a>
-<h4><a name="api:mono_install_assembly_refonly_preload_hook">mono_install_assembly_refonly_preload_hook</a>
-<h4><a name="api:mono_install_assembly_postload_search_hook">mono_install_assembly_postload_search_hook</a>
-</h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></h4></body>
+</div></body>
 </html>
 </span>

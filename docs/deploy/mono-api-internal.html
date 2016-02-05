@@ -12,32 +12,26 @@
    }
        
    .api {
+     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
-     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 150%;
-       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-       padding-bottom: .5em;
+       font-size: 18px;
    }
 
    .prototype {
-     border: 3px solid #ecf0f1;
-     border-radius: 6px;
-     padding: .5em;
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
      margin-top: 5pt;
-     margin-bottom: 5pt;
-     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-     display: block;
-     overflow: auto;
-     background-color: #f9f9f9;
+     margin-bottom: 5pt;  
    } 
 
    .header {
-     
+     border: 1px solid;
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -51,13 +45,6 @@
      white-space: pre;
        font-family: monospace;
    }
-
-   .strike {
-      text-decoration: line-through;
-   }
-	.deprecated {
-	    color: red;
-	}
    
 
 </style>
@@ -69,198 +56,110 @@
 	inside Mono that developers extending or altering Mono might
 	want to use.
 
-<h2>Strings</h2>
-
-<h3>Other Encodings</h3>
-
-	<p />These routines are used when coping with strings that come
-	from Mono's environment, and might be encoded in one or more
-	of the external encodings.
-
-	<p />For example, some file systems might historically contain a
-	mix of file names with both old and new encodings, typically
-	UTF8 for new files, and the old files would be encoded in an 8
-	bit character set (ISO-8859-1 for example).
-	
-	<p />These routines try a number of encodings, those specified
-	in the <tt>MONO_ENCODINGS</tt> environment variable and return
-	unicode strings that can be used internally.
-
-	<p />See the mono(1) man page for more details.
-	
- <a name="api:mono_unicode_from_external"></a>
- <div class="api">
-    <div class="api-entry ">mono_unicode_from_external</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">gunichar2*
-mono_unicode_from_external (const gchar *in, gsize *bytes)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>in:</i></dt><dd> pointers to the buffer.</dd><dt><i>bytes:</i></dt><dd> number of bytes in the string.</dd></blockquote>
-<b>Description</b>
-<p />	 
-	 Tries to turn a NULL-terminated string into UTF16.
-	
-	 First, see if it's valid UTF8, in which case just turn it directly
-	 into UTF16.  Next, run through the colon-separated encodings in
-	 MONO_EXTERNAL_ENCODINGS and do an iconv conversion on each,
-	 returning the first successful conversion to UTF16.  If no
-	 conversion succeeds, return NULL.
-	
-	 Callers must free the returned string if not NULL. bytes holds the number
-	 of bytes in the returned string, not including the terminator.
-
-</div> <a name="api:mono_unicode_to_external"></a>
- <div class="api">
-    <div class="api-entry ">mono_unicode_to_external</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">gchar*mono_unicode_to_external (const gunichar2 *uni)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>uni:</i></dt><dd> an UTF16 string to conver to an external representation.</dd></blockquote>
-<b>Description</b>
-<p />	 
-	 Turns NULL-terminated UTF16 into either UTF8, or the first
-	 working item in MONO_EXTERNAL_ENCODINGS if set.  If no conversions
-	 work, then UTF8 is returned.
-	
-	 Callers must free the returned string.
-
-</div> <a name="api:mono_utf8_from_external"></a>
- <div class="api">
-    <div class="api-entry ">mono_utf8_from_external</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">gchar*mono_utf8_from_external (const gchar *in)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>in:</i></dt><dd> pointer to the string buffer.</dd></blockquote>
-<b>Description</b>
-<p />	 
-	 Tries to turn a NULL-terminated string into UTF8.
-	
-	 First, see if it's valid UTF8, in which case there's nothing more
-	 to be done.  Next, run through the colon-separated encodings in
-	 MONO_EXTERNAL_ENCODINGS and do an iconv conversion on each,
-	 returning the first successful conversion to utf8.  If no
-	 conversion succeeds, return NULL.
-	
-	 Callers must free the returned string if not NULL.
-	
-	 This function is identical to mono_unicode_from_external, apart
-	 from returning utf8 not utf16; it's handy in a few places to work
-	 in utf8.
-
-
-</div><h2>Marshalling functions</h2>
+<h2>Marshalling functions</h2>
 
  <a name="api:mono_marshal_alloc"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_alloc</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_alloc</div>
+
     <div class="prototype">Prototype: mono_marshal_alloc</div>
 <p />
 
 </div> <a name="api:mono_marshal_asany"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_asany</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_asany</div>
+
     <div class="prototype">Prototype: mono_marshal_asany</div>
 <p />
 
 </div> <a name="api:mono_marshal_free_array"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_free_array</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_free_array</div>
+
     <div class="prototype">Prototype: mono_marshal_free_array</div>
 <p />
 
 </div> <a name="api:mono_marshal_free_asany"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_free_asany</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_free_asany</div>
+
     <div class="prototype">Prototype: mono_marshal_free_asany</div>
 <p />
 
 </div> <a name="api:mono_marshal_free"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_free</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_free</div>
+
     <div class="prototype">Prototype: mono_marshal_free</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_castclass"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_castclass</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_castclass</div>
+
     <div class="prototype">Prototype: mono_marshal_get_castclass</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_delegate_begin_invoke"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_delegate_begin_invoke</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_delegate_begin_invoke</div>
+
     <div class="prototype">Prototype: mono_marshal_get_delegate_begin_invoke</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_delegate_end_invoke"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_delegate_end_invoke</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_delegate_end_invoke</div>
+
     <div class="prototype">Prototype: mono_marshal_get_delegate_end_invoke</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_delegate_invoke"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_delegate_invoke</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_delegate_invoke</div>
+
     <div class="prototype">Prototype: mono_marshal_get_delegate_invoke</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_icall_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_icall_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_icall_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_get_icall_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_isinst"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_isinst</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_isinst</div>
+
     <div class="prototype">Prototype: mono_marshal_get_isinst</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_ldfld_remote_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_ldfld_remote_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_ldfld_remote_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_get_ldfld_remote_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_ldfld_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_ldfld_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_ldfld_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_get_ldfld_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_managed_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_managed_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_managed_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_get_managed_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_native_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_native_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_native_wrapper</div>
+
     <div class="prototype">MonoMethod*
 mono_marshal_get_native_wrapper (MonoMethod *method, gboolean check_exceptions, gboolean aot)
 
@@ -268,7 +167,7 @@ mono_marshal_get_native_wrapper (MonoMethod *method, gboolean check_exceptions, 
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>method:</i></dt><dd> The MonoMethod to wrap.</dd><dt><i>check_exceptions:</i></dt><dd> Whenever to check for pending exceptions</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 generates IL code for the pinvoke wrapper (the generated method
 	 calls the unmanaged code in piinfo-&gt;addr)
@@ -276,15 +175,15 @@ mono_marshal_get_native_wrapper (MonoMethod *method, gboolean check_exceptions, 
 
 </div> <a name="api:mono_marshal_get_proxy_cancast"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_proxy_cancast</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_proxy_cancast</div>
+
     <div class="prototype">Prototype: mono_marshal_get_proxy_cancast</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_ptr_to_struct"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_ptr_to_struct</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_ptr_to_struct</div>
+
     <div class="prototype">MonoMethod*
 mono_marshal_get_ptr_to_struct (MonoClass *klass)
 
@@ -292,64 +191,64 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>klass:</i></dt><dd></dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 generates IL code for PtrToStructure (IntPtr src, object structure)
 	 The wrapper info for the wrapper is a WrapperInfo structure.
 
 </div> <a name="api:mono_marshal_get_remoting_invoke_for_target"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_remoting_invoke_for_target</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_remoting_invoke_for_target</div>
+
     <div class="prototype">Prototype: mono_marshal_get_remoting_invoke_for_target</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_remoting_invoke"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_remoting_invoke</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_remoting_invoke</div>
+
     <div class="prototype">Prototype: mono_marshal_get_remoting_invoke</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_remoting_invoke_with_check"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_remoting_invoke_with_check</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_remoting_invoke_with_check</div>
+
     <div class="prototype">Prototype: mono_marshal_get_remoting_invoke_with_check</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_runtime_invoke"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_runtime_invoke</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_runtime_invoke</div>
+
     <div class="prototype">Prototype: mono_marshal_get_runtime_invoke</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_stelemref"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_stelemref</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_stelemref</div>
+
     <div class="prototype">Prototype: mono_marshal_get_stelemref</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_stfld_remote_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_stfld_remote_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_stfld_remote_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_get_stfld_remote_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_stfld_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_stfld_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_stfld_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_get_stfld_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_struct_to_ptr"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_struct_to_ptr</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_struct_to_ptr</div>
+
     <div class="prototype">MonoMethod*
 mono_marshal_get_struct_to_ptr (MonoClass *klass)
 
@@ -357,42 +256,42 @@ mono_marshal_get_struct_to_ptr (MonoClass *klass)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>klass:</i></dt><dd></dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 generates IL code for StructureToPtr (object structure, IntPtr ptr, bool fDeleteOld)
 	 The wrapper info for the wrapper is a WrapperInfo structure.
 
 </div> <a name="api:mono_marshal_get_synchronized_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_synchronized_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_synchronized_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_get_synchronized_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_unbox_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_unbox_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_unbox_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_get_unbox_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_get_xappdomain_invoke"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_get_xappdomain_invoke</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_get_xappdomain_invoke</div>
+
     <div class="prototype">Prototype: mono_marshal_get_xappdomain_invoke</div>
 <p />
 
 </div> <a name="api:mono_marshal_load_type_info"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_load_type_info</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_load_type_info</div>
+
     <div class="prototype">MonoMarshalType*
 mono_marshal_load_type_info (MonoClass* klass)
 
 </div>
 <p />
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	  Initialize klass-&gt;marshal_info using information from metadata. This function can
 	 recursively call itself, and the caller is responsible to avoid that by calling 
@@ -402,36 +301,36 @@ mono_marshal_load_type_info (MonoClass* klass)
 
 </div> <a name="api:mono_marshal_method_from_wrapper"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_method_from_wrapper</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_method_from_wrapper</div>
+
     <div class="prototype">Prototype: mono_marshal_method_from_wrapper</div>
 <p />
 
 </div> <a name="api:mono_marshal_realloc"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_realloc</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_realloc</div>
+
     <div class="prototype">Prototype: mono_marshal_realloc</div>
 <p />
 
 </div> <a name="api:mono_marshal_set_last_error"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_set_last_error</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_set_last_error</div>
+
     <div class="prototype">void
 mono_marshal_set_last_error (void)
 
 </div>
 <p />
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 This function is invoked to set the last error value from a P/Invoke call
 	 which has SetLastError set.
 
 </div> <a name="api:mono_marshal_type_size"></a>
  <div class="api">
-    <div class="api-entry ">mono_marshal_type_size</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_marshal_type_size</div>
+
     <div class="prototype">Prototype: mono_marshal_type_size</div>
 <p />
 
@@ -467,56 +366,56 @@ mono_marshal_set_last_error (void)
 	
  <a name="api:mono_loader_set_error_field_load"></a>
  <div class="api">
-    <div class="api-entry ">mono_loader_set_error_field_load</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_loader_set_error_field_load</div>
+
     <div class="prototype">Prototype: mono_loader_set_error_field_load</div>
 <p />
 
 </div> <a name="api:mono_loader_set_error_method_load"></a>
  <div class="api">
-    <div class="api-entry ">mono_loader_set_error_method_load</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_loader_set_error_method_load</div>
+
     <div class="prototype">Prototype: mono_loader_set_error_method_load</div>
 <p />
 
 </div> <a name="api:mono_loader_set_error_type_load"></a>
  <div class="api">
-    <div class="api-entry ">mono_loader_set_error_type_load</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_loader_set_error_type_load</div>
+
     <div class="prototype">void
 mono_loader_set_error_type_load (const char *class_name, const char *assembly_name)
 
 </div>
 <p />
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Set the loader error for this thread. 
 
 
 </div> <a name="api:mono_loader_get_last_error"></a>
  <div class="api">
-    <div class="api-entry ">mono_loader_get_last_error</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_loader_get_last_error</div>
+
     <div class="prototype">Prototype: mono_loader_get_last_error</div>
 <p />
 
 </div> <a name="api:mono_loader_clear_error"></a>
  <div class="api">
-    <div class="api-entry ">mono_loader_clear_error</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_loader_clear_error</div>
+
     <div class="prototype">void
 mono_loader_clear_error (void)
 
 </div>
 <p />
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Disposes any loader error messages on this thread
 
 </div> <a name="api:mono_loader_error_prepare_exception"></a>
  <div class="api">
-    <div class="api-entry ">mono_loader_error_prepare_exception</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_loader_error_prepare_exception</div>
+
     <div class="prototype">MonoException*
 mono_loader_error_prepare_exception (MonoLoaderError *error)
 
@@ -524,7 +423,7 @@ mono_loader_error_prepare_exception (MonoLoaderError *error)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>error:</i></dt><dd> The MonoLoaderError to turn into an exception</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 This turns a MonoLoaderError into an exception that can be thrown
 	 and resets the Mono Loader Error state during this process.
@@ -539,21 +438,21 @@ mono_loader_error_prepare_exception (MonoLoaderError *error)
 	
  <a name="api:mono_loader_lock"></a>
  <div class="api">
-    <div class="api-entry ">mono_loader_lock</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_loader_lock</div>
+
     <div class="prototype">void
 mono_loader_lock (void)
 
 </div>
 <p />
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 See docs/thread-safety.txt for the locking strategy.
 
 </div> <a name="api:mono_loader_unlock"></a>
  <div class="api">
-    <div class="api-entry ">mono_loader_unlock</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_loader_unlock</div>
+
     <div class="prototype">Prototype: mono_loader_unlock</div>
 <p />
 
@@ -565,50 +464,50 @@ mono_loader_lock (void)
 	
  <a name="api:mono_gc_disable"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_disable</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_disable</div>
+
     <div class="prototype">Prototype: mono_gc_disable</div>
 <p />
 
 </div> <a name="api:mono_gc_enable"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_enable</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_enable</div>
+
     <div class="prototype">Prototype: mono_gc_enable</div>
 <p />
 
 </div> <a name="api:mono_gc_start_world"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_start_world</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_start_world</div>
+
     <div class="prototype">Prototype: mono_gc_start_world</div>
 <p />
 
 </div> <a name="api:mono_gc_stop_world"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_stop_world</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_stop_world</div>
+
     <div class="prototype">Prototype: mono_gc_stop_world</div>
 <p />
 
 </div> <a name="api:mono_gc_alloc_fixed"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_alloc_fixed</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_alloc_fixed</div>
+
     <div class="prototype">Prototype: mono_gc_alloc_fixed</div>
 <p />
 
 </div> <a name="api:mono_gc_free_fixed"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_free_fixed</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_free_fixed</div>
+
     <div class="prototype">Prototype: mono_gc_free_fixed</div>
 <p />
 
 </div> <a name="api:mono_gc_make_descr_from_bitmap"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_make_descr_from_bitmap</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_make_descr_from_bitmap</div>
+
     <div class="prototype">Prototype: mono_gc_make_descr_from_bitmap</div>
 <p />
 
@@ -616,36 +515,36 @@ mono_loader_lock (void)
 
 </div> <a name="api:mono_gc_base_init"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_base_init</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_base_init</div>
+
     <div class="prototype">Prototype: mono_gc_base_init</div>
 <p />
 
 </div> <a name="api:mono_gc_invoke_finalizers"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_invoke_finalizers</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_invoke_finalizers</div>
+
     <div class="prototype">Prototype: mono_gc_invoke_finalizers</div>
 <p />
 
 </div> <a name="api:mono_gc_is_gc_thread"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_is_gc_thread</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_is_gc_thread</div>
+
     <div class="prototype">Prototype: mono_gc_is_gc_thread</div>
 <p />
 
 </div> <a name="api:mono_gc_pending_finalizers"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_pending_finalizers</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_pending_finalizers</div>
+
     <div class="prototype">Prototype: mono_gc_pending_finalizers</div>
 <p />
 
 </div> <a name="api:mono_gc_register_thread"></a>
  <div class="api">
-    <div class="api-entry ">mono_gc_register_thread</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gc_register_thread</div>
+
     <div class="prototype">Prototype: mono_gc_register_thread</div>
 <p />
 

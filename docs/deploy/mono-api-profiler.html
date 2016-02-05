@@ -12,32 +12,26 @@
    }
        
    .api {
+     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
-     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 150%;
-       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-       padding-bottom: .5em;
+       font-size: 18px;
    }
 
    .prototype {
-     border: 3px solid #ecf0f1;
-     border-radius: 6px;
-     padding: .5em;
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
      margin-top: 5pt;
-     margin-bottom: 5pt;
-     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-     display: block;
-     overflow: auto;
-     background-color: #f9f9f9;
+     margin-bottom: 5pt;  
    } 
 
    .header {
-     
+     border: 1px solid;
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -51,13 +45,6 @@
      white-space: pre;
        font-family: monospace;
    }
-
-   .strike {
-      text-decoration: line-through;
-   }
-	.deprecated {
-	    color: red;
-	}
    
 
 </style>
@@ -114,8 +101,8 @@
 	
  <a name="api:mono_profiler_install"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install</div>
+
     <div class="prototype">void
 mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
 
@@ -123,7 +110,7 @@ mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>prof:</i></dt><dd> a MonoProfiler structure pointer, or a pointer to a derived structure.</dd><dt><i>callback:</i></dt><dd> the function to invoke at shutdown</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Use mono_profiler_install to activate profiling in the Mono runtime.
 	 Typically developers of new profilers will create a new structure whose
@@ -133,43 +120,43 @@ mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
 
 </div> <a name="api:mono_profiler_install_allocation"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_allocation</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_allocation</div>
+
     <div class="prototype">Prototype: mono_profiler_install_allocation</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_appdomain"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_appdomain</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_appdomain</div>
+
     <div class="prototype">Prototype: mono_profiler_install_appdomain</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_assembly"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_assembly</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_assembly</div>
+
     <div class="prototype">Prototype: mono_profiler_install_assembly</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_class"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_class</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_class</div>
+
     <div class="prototype">Prototype: mono_profiler_install_class</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_coverage_filter"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_coverage_filter</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_coverage_filter</div>
+
     <div class="prototype">Prototype: mono_profiler_install_coverage_filter</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_enter_leave"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_enter_leave</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_enter_leave</div>
+
     <div class="prototype">void
 mono_profiler_install_enter_leave (MonoProfileMethodFunc enter, MonoProfileMethodFunc fleave)
 
@@ -177,7 +164,7 @@ mono_profiler_install_enter_leave (MonoProfileMethodFunc enter, MonoProfileMetho
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>enter:</i></dt><dd> the routine to be called on each method entry</dd><dt><i>fleave:</i></dt><dd> the routine to be called each time a method returns</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Use this routine to install routines that will be called everytime
 	 a method enters and leaves.   The routines will receive as an argument
@@ -185,8 +172,8 @@ mono_profiler_install_enter_leave (MonoProfileMethodFunc enter, MonoProfileMetho
 
 </div> <a name="api:mono_profiler_install_jit_compile"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_jit_compile</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_jit_compile</div>
+
     <div class="prototype">void 
 mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMethodResult end)
 
@@ -194,50 +181,50 @@ mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMetho
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>start:</i></dt><dd> the routine to be called when the JIT process starts.</dd><dt><i>end:</i></dt><dd> the routine to be called when the JIT process ends.</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Use this routine to install routines that will be called when JIT 
 	 compilation of a method starts and completes.
 
 </div> <a name="api:mono_profiler_install_module"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_module</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_module</div>
+
     <div class="prototype">Prototype: mono_profiler_install_module</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_thread"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_thread</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_thread</div>
+
     <div class="prototype">Prototype: mono_profiler_install_thread</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_transition"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_transition</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_transition</div>
+
     <div class="prototype">Prototype: mono_profiler_install_transition</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_gc"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_gc</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_gc</div>
+
     <div class="prototype">Prototype: mono_profiler_install_gc</div>
 <p />
 
 </div> <a name="api:mono_profiler_install_statistical"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_install_statistical</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_install_statistical</div>
+
     <div class="prototype">Prototype: mono_profiler_install_statistical</div>
 <p />
 
 </div> <a name="api:mono_profiler_set_events"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_set_events</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_set_events</div>
+
     <div class="prototype">void
 mono_profiler_set_events (MonoProfileFlags events)
 
@@ -245,7 +232,7 @@ mono_profiler_set_events (MonoProfileFlags events)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>events:</i></dt><dd> an ORed set of values made up of MONO_PROFILER_ flags</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 The events descriped in the <i>events</i> argument is a set of flags
 	 that represent which profiling events must be triggered.  For
@@ -259,14 +246,14 @@ mono_profiler_set_events (MonoProfileFlags events)
 
 </div> <a name="api:mono_profiler_get_events"></a>
  <div class="api">
-    <div class="api-entry ">mono_profiler_get_events</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_profiler_get_events</div>
+
     <div class="prototype">MonoProfileFlags
 mono_profiler_get_events (void)
 
 </div>
 <p />
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Returns a list of active events that will be intercepted. 
 

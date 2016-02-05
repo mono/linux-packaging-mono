@@ -12,32 +12,26 @@
    }
        
    .api {
+     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
-     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 150%;
-       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-       padding-bottom: .5em;
+       font-size: 18px;
    }
 
    .prototype {
-     border: 3px solid #ecf0f1;
-     border-radius: 6px;
-     padding: .5em;
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
      margin-top: 5pt;
-     margin-bottom: 5pt;
-     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-     display: block;
-     overflow: auto;
-     background-color: #f9f9f9;
+     margin-bottom: 5pt;  
    } 
 
    .header {
-     
+     border: 1px solid;
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -51,19 +45,12 @@
      white-space: pre;
        font-family: monospace;
    }
-
-   .strike {
-      text-decoration: line-through;
-   }
-	.deprecated {
-	    color: red;
-	}
    
 
 </style>
 </head>
 <body>
-<h2>Internal: Dynamic Code Generation</h2>
+<h2>Dynamic Code Generation</h2>
 
 	<p />The dynamic code generation interface inside the Mono
 	runtime is similar to the API exposed by
@@ -145,8 +132,8 @@ MonoMethod *adder ()
 	
  <a name="api:mono_mb_new"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_new</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_new</div>
+
     <div class="prototype">Prototype: mono_mb_new</div>
 <p />
 
@@ -187,113 +174,113 @@ MonoMethod *adder ()
 	
  <a name="api:mono_mb_emit_add_to_local"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_add_to_local</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_add_to_local</div>
+
     <div class="prototype">Prototype: mono_mb_emit_add_to_local</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_branch"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_branch</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_branch</div>
+
     <div class="prototype">Prototype: mono_mb_emit_branch</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_byte"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_byte</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_byte</div>
+
     <div class="prototype">Prototype: mono_mb_emit_byte</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_exception"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_exception</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_exception</div>
+
     <div class="prototype">Prototype: mono_mb_emit_exception</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_i2"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_i2</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_i2</div>
+
     <div class="prototype">Prototype: mono_mb_emit_i2</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_i4"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_i4</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_i4</div>
+
     <div class="prototype">Prototype: mono_mb_emit_i4</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_icon"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_icon</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_icon</div>
+
     <div class="prototype">Prototype: mono_mb_emit_icon</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_ldarg_addr"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_ldarg_addr</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_ldarg_addr</div>
+
     <div class="prototype">Prototype: mono_mb_emit_ldarg_addr</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_ldarg"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_ldarg</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_ldarg</div>
+
     <div class="prototype">Prototype: mono_mb_emit_ldarg</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_ldflda"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_ldflda</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_ldflda</div>
+
     <div class="prototype">Prototype: mono_mb_emit_ldflda</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_ldloc_addr"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_ldloc_addr</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_ldloc_addr</div>
+
     <div class="prototype">Prototype: mono_mb_emit_ldloc_addr</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_ldloc"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_ldloc</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_ldloc</div>
+
     <div class="prototype">Prototype: mono_mb_emit_ldloc</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_ldstr"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_ldstr</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_ldstr</div>
+
     <div class="prototype">Prototype: mono_mb_emit_ldstr</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_managed_call"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_managed_call</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_managed_call</div>
+
     <div class="prototype">Prototype: mono_mb_emit_managed_call</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_native_call"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_native_call</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_native_call</div>
+
     <div class="prototype">Prototype: mono_mb_emit_native_call</div>
 <p />
 
 </div> <a name="api:mono_mb_emit_stloc"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_emit_stloc</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_emit_stloc</div>
+
     <div class="prototype">Prototype: mono_mb_emit_stloc</div>
 <p />
 
@@ -301,8 +288,8 @@ MonoMethod *adder ()
 </div><h3>Local variables and Methods</h3>
  <a name="api:mono_mb_create_method"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_create_method</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_create_method</div>
+
     <div class="prototype">MonoMethod*
 mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, int max_stack)
 
@@ -312,28 +299,28 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
 <blockquote>	  the newly created method.
 
 	</blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Create a MonoMethod from this method builder.
 
 </div> <a name="api:mono_mb_add_data"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_add_data</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_add_data</div>
+
     <div class="prototype">Prototype: mono_mb_add_data</div>
 <p />
 
 </div> <a name="api:mono_mb_add_local"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_add_local</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_add_local</div>
+
     <div class="prototype">Prototype: mono_mb_add_local</div>
 <p />
 
 </div> <a name="api:mono_mb_free"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_free</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_free</div>
+
     <div class="prototype">Prototype: mono_mb_free</div>
 <p />
 
@@ -341,15 +328,15 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
 </div><h3>Patching Addresses</h3>
  <a name="api:mono_mb_patch_addr"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_patch_addr</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_patch_addr</div>
+
     <div class="prototype">Prototype: mono_mb_patch_addr</div>
 <p />
 
 </div> <a name="api:mono_mb_patch_addr_s"></a>
  <div class="api">
-    <div class="api-entry ">mono_mb_patch_addr_s</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_mb_patch_addr_s</div>
+
     <div class="prototype">Prototype: mono_mb_patch_addr_s</div>
 <p />
 
@@ -357,15 +344,15 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
 </div><h3>Method Signatures</h3>
  <a name="api:mono_metadata_signature_alloc"></a>
  <div class="api">
-    <div class="api-entry ">mono_metadata_signature_alloc</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_metadata_signature_alloc</div>
+
     <div class="prototype">Prototype: mono_metadata_signature_alloc</div>
 <p />
 
 </div> <a name="api:mono_metadata_signature_dup"></a>
  <div class="api">
-    <div class="api-entry ">mono_metadata_signature_dup</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_metadata_signature_dup</div>
+
     <div class="prototype">Prototype: mono_metadata_signature_dup</div>
 <p />
 
