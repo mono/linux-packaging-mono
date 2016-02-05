@@ -12,32 +12,26 @@
    }
        
    .api {
+     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
-     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 150%;
-       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-       padding-bottom: .5em;
+       font-size: 18px;
    }
 
    .prototype {
-     border: 3px solid #ecf0f1;
-     border-radius: 6px;
-     padding: .5em;
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
      margin-top: 5pt;
-     margin-bottom: 5pt;
-     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-     display: block;
-     overflow: auto;
-     background-color: #f9f9f9;
+     margin-bottom: 5pt;  
    } 
 
    .header {
-     
+     border: 1px solid;
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -51,13 +45,6 @@
      white-space: pre;
        font-family: monospace;
    }
-
-   .strike {
-      text-decoration: line-through;
-   }
-	.deprecated {
-	    color: red;
-	}
    
 
 </style>
@@ -159,8 +146,8 @@ static MonoObject* o = NULL;
 		
  <a name="api:mono_gchandle_new"></a>
  <div class="api">
-    <div class="api-entry ">mono_gchandle_new</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gchandle_new</div>
+
     <div class="prototype">guint32
 mono_gchandle_new (GCObject *obj, gboolean pinned)
 
@@ -172,7 +159,7 @@ mono_gchandle_new (GCObject *obj, gboolean pinned)
 <blockquote>	  a handle that can be used to access the object from
 
 	 unmanaged code.</blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 This returns a handle that wraps the object, this is used to keep a
 	 reference to a managed object from the unmanaged world and preventing the
@@ -188,8 +175,8 @@ mono_gchandle_new (GCObject *obj, gboolean pinned)
 
 </div> <a name="api:mono_gchandle_new_weakref"></a>
  <div class="api">
-    <div class="api-entry ">mono_gchandle_new_weakref</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gchandle_new_weakref</div>
+
     <div class="prototype">guint32
 mono_gchandle_new_weakref (GCObject *obj, gboolean track_resurrection)
 
@@ -201,7 +188,7 @@ mono_gchandle_new_weakref (GCObject *obj, gboolean track_resurrection)
 <blockquote>	  a handle that can be used to access the object from
 
 	 unmanaged code.</blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 This returns a weak handle that wraps the object, this is used to
 	 keep a reference to a managed object from the unmanaged world.
@@ -219,8 +206,8 @@ mono_gchandle_new_weakref (GCObject *obj, gboolean track_resurrection)
 
 </div> <a name="api:mono_gchandle_get_target"></a>
  <div class="api">
-    <div class="api-entry ">mono_gchandle_get_target</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_gchandle_get_target</div>
+
     <div class="prototype">GCObject*
 mono_gchandle_get_target (guint32 gchandle)
 
@@ -228,7 +215,7 @@ mono_gchandle_get_target (guint32 gchandle)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>gchandle:</i></dt><dd> a GCHandle's handle.</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 The handle was previously created by calling mono_gchandle_new or
 	 mono_gchandle_new_weakref. 

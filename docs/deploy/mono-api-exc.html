@@ -12,32 +12,26 @@
    }
        
    .api {
+     border: 1px solid;
      padding: 10pt;
      margin: 10pt;
-     border: 3px solid #ddd;
    } 
 
    .api-entry { 
        border-bottom: none;
-       font-size: 150%;
-       font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-       padding-bottom: .5em;
+       font-size: 18px;
    }
 
    .prototype {
-     border: 3px solid #ecf0f1;
-     border-radius: 6px;
-     padding: .5em;
+     border: 1px solid;
+     background-color: #f2f2f2;
+     padding: 5pt;
      margin-top: 5pt;
-     margin-bottom: 5pt;
-     font-family: &quot;Consolas&quot;, &quot;Courier&quot;, monospace;
-     display: block;
-     overflow: auto;
-     background-color: #f9f9f9;
+     margin-bottom: 5pt;  
    } 
 
    .header {
-     
+     border: 1px solid;
      padding: 0 0 5pt 5pt;
      margin: 10pt;
      white-space: pre;
@@ -51,13 +45,6 @@
      white-space: pre;
        font-family: monospace;
    }
-
-   .strike {
-      text-decoration: line-through;
-   }
-	.deprecated {
-	    color: red;
-	}
    
 
 </style>
@@ -117,33 +104,15 @@ MonoException* <a href="#api:mono_get_exception_missing_field">mono_get_exceptio
 MonoException* <a href="#api:mono_get_exception_not_supported">mono_get_exception_not_supported</a>           (const char *msg);
 MonoException* <a href="#api:mono_get_exception_reflection_type_load">mono_get_exception_reflection_type_load</a>    (MonoArray *types, 
                                                            MonoArray *exceptions);
-MonoException* <a href="#api:mono_exception_from_token_two_strings">mono_exception_from_token_two_strings</a>      (MonoImage *image, 
-                                                           guint32 token;
-MonoException* <a href="#api:mono_get_exception_bad_image_format2">mono_get_exception_bad_image_format2</a>       (const char *msg, 
-                                                           MonoString *fname);
-MonoException* <a href="#api:mono_get_exception_field_access">mono_get_exception_field_access</a>            (void);
-MonoException* <a href="#api:mono_get_exception_method_access">mono_get_exception_method_access</a>           (void);
-MonoException* <a href="#api:mono_get_exception_out_of_memory">mono_get_exception_out_of_memory</a>           (void);
-               <a href="#api:mono_get_exception_runtime_wrapped"></a>                                           
-MonoException* <a href="#api:mono_get_exception_thread_interrupted">mono_get_exception_thread_interrupted</a>      ();
 
 </div>
 
 <h3>Raising and Catching exceptions</h3>
 
-	<p />With the introduction of the Cooperative mode/Bitcode for
-	the Mono garbage collector, it is no longer recommended for
-	embedded developers to raise exceptions from any method except
-	the topmost registered internal call.
-
-	<p />It is recommended that you raise an error condition from
-	nested parts of code, surface this error and in the topmost
-	frame raise the exception.
-	
  <a name="api:mono_raise_exception"></a>
  <div class="api">
-    <div class="api-entry ">mono_raise_exception</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_raise_exception</div>
+
     <div class="prototype">void
 mono_raise_exception (MonoException *ex) 
 
@@ -151,14 +120,14 @@ mono_raise_exception (MonoException *ex)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>ex:</i></dt><dd> exception object</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Signal the runtime that the exception <i>ex</i> has been raised in unmanaged code.
 
 </div> <a name="api:mono_unhandled_exception"></a>
  <div class="api">
-    <div class="api-entry ">mono_unhandled_exception</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_unhandled_exception</div>
+
     <div class="prototype">void
 mono_unhandled_exception (MonoObject *exc)
 
@@ -166,7 +135,7 @@ mono_unhandled_exception (MonoObject *exc)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>exc:</i></dt><dd> exception thrown</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 This is a VM internal routine.
 	
@@ -178,8 +147,8 @@ mono_unhandled_exception (MonoObject *exc)
 
 </div> <a name="api:mono_print_unhandled_exception"></a>
  <div class="api">
-    <div class="api-entry ">mono_print_unhandled_exception</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_print_unhandled_exception</div>
+
     <div class="prototype">void
 mono_print_unhandled_exception (MonoObject *exc)
 
@@ -187,7 +156,7 @@ mono_print_unhandled_exception (MonoObject *exc)
 <p />
 <b>Parameters</b>
 <blockquote><dt><i>exc:</i></dt><dd> The exception</dd></blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Prints the unhandled exception.
 
@@ -197,8 +166,8 @@ mono_print_unhandled_exception (MonoObject *exc)
 
  <a name="api:mono_exception_from_name_domain"></a>
  <div class="api">
-    <div class="api-entry ">mono_exception_from_name_domain</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_exception_from_name_domain</div>
+
     <div class="prototype">MonoException*
 mono_exception_from_name_domain (MonoDomain *domain, MonoImage *image, 
 				 const char* name_space, const char *name)
@@ -210,7 +179,7 @@ mono_exception_from_name_domain (MonoDomain *domain, MonoImage *image,
 <b>Returns</b>
 <blockquote>	  the initialized exception instance.
 </blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Creates an exception object of the given namespace/name class on
 	 the given domain.
@@ -218,8 +187,8 @@ mono_exception_from_name_domain (MonoDomain *domain, MonoImage *image,
 
 </div> <a name="api:mono_exception_from_name"></a>
  <div class="api">
-    <div class="api-entry ">mono_exception_from_name</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_exception_from_name</div>
+
     <div class="prototype">MonoException*
 mono_exception_from_name (MonoImage *image, const char *name_space,
 			  const char *name)
@@ -231,7 +200,7 @@ mono_exception_from_name (MonoImage *image, const char *name_space,
 <b>Returns</b>
 <blockquote>	  the initialized exception instance.
 </blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Creates an exception of the given namespace/name class in the
 	 current domain.
@@ -239,8 +208,8 @@ mono_exception_from_name (MonoImage *image, const char *name_space,
 
 </div> <a name="api:mono_exception_from_name_msg"></a>
  <div class="api">
-    <div class="api-entry ">mono_exception_from_name_msg</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_exception_from_name_msg</div>
+
     <div class="prototype">MonoException*
 mono_exception_from_name_msg (MonoImage *image, const char *name_space,
 			      const char *name, const char *msg)
@@ -252,15 +221,15 @@ mono_exception_from_name_msg (MonoImage *image, const char *name_space,
 <b>Returns</b>
 <blockquote>	  the initialized exception instance.
 </blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Creates an exception and initializes its message field.
 	
 
 </div> <a name="api:mono_exception_from_name_two_strings"></a>
  <div class="api">
-    <div class="api-entry ">mono_exception_from_name_two_strings</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_exception_from_name_two_strings</div>
+
     <div class="prototype">MonoException*
 mono_exception_from_name_two_strings (MonoImage *image, const char *name_space,
 				      const char *name, MonoString *a1, MonoString *a2)
@@ -272,7 +241,7 @@ mono_exception_from_name_two_strings (MonoImage *image, const char *name_space,
 <b>Returns</b>
 <blockquote>	  the initialized exception instance.
 </blockquote>
-<b>Description</b>
+<b>Remarks</b>
 <p />	 
 	 Creates an exception from a constructor that takes two string
 	 arguments.
@@ -287,8 +256,8 @@ mono_exception_from_name_two_strings (MonoImage *image, const char *name_space,
 	
  <a name="api:mono_get_exception_appdomain_unloaded"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_appdomain_unloaded</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_appdomain_unloaded</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_appdomain_unloaded (void)
 
@@ -300,8 +269,8 @@ mono_get_exception_appdomain_unloaded (void)
 
 </div> <a name="api:mono_get_exception_argument"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_argument</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_argument</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_argument (const char *arg, const char *msg)
 
@@ -315,8 +284,8 @@ mono_get_exception_argument (const char *arg, const char *msg)
 
 </div> <a name="api:mono_get_exception_argument_null"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_argument_null</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_argument_null</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_argument_null (const char *arg)
 
@@ -330,8 +299,8 @@ mono_get_exception_argument_null (const char *arg)
 
 </div> <a name="api:mono_get_exception_argument_out_of_range"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_argument_out_of_range</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_argument_out_of_range</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_argument_out_of_range (const char *arg)
 
@@ -345,8 +314,8 @@ mono_get_exception_argument_out_of_range (const char *arg)
 
 </div> <a name="api:mono_get_exception_arithmetic"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_arithmetic</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_arithmetic</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_arithmetic ()
 
@@ -358,8 +327,8 @@ mono_get_exception_arithmetic ()
 
 </div> <a name="api:mono_get_exception_array_type_mismatch"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_array_type_mismatch</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_array_type_mismatch</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_array_type_mismatch ()
 
@@ -371,8 +340,8 @@ mono_get_exception_array_type_mismatch ()
 
 </div> <a name="api:mono_get_exception_bad_image_format"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_bad_image_format</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_bad_image_format</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_bad_image_format (const char *msg)
 
@@ -386,8 +355,8 @@ mono_get_exception_bad_image_format (const char *msg)
 
 </div> <a name="api:mono_get_exception_cannot_unload_appdomain"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_cannot_unload_appdomain</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_cannot_unload_appdomain</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_cannot_unload_appdomain (const char *msg)
 
@@ -401,15 +370,15 @@ mono_get_exception_cannot_unload_appdomain (const char *msg)
 
 </div> <a name="api:mono_get_exception_class"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_class</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_class</div>
+
     <div class="prototype">Prototype: mono_get_exception_class</div>
 <p />
 
 </div> <a name="api:mono_get_exception_divide_by_zero"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_divide_by_zero</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_divide_by_zero</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_divide_by_zero ()
 
@@ -421,8 +390,8 @@ mono_get_exception_divide_by_zero ()
 
 </div> <a name="api:mono_get_exception_execution_engine"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_execution_engine</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_execution_engine</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_execution_engine (const char *msg)
 
@@ -436,8 +405,8 @@ mono_get_exception_execution_engine (const char *msg)
 
 </div> <a name="api:mono_get_exception_file_not_found2"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_file_not_found2</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_file_not_found2</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_file_not_found2 (const char *msg, MonoString *fname)
 
@@ -451,8 +420,8 @@ mono_get_exception_file_not_found2 (const char *msg, MonoString *fname)
 
 </div> <a name="api:mono_get_exception_file_not_found"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_file_not_found</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_file_not_found</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_file_not_found (MonoString *fname)
 
@@ -466,8 +435,8 @@ mono_get_exception_file_not_found (MonoString *fname)
 
 </div> <a name="api:mono_get_exception_index_out_of_range"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_index_out_of_range</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_index_out_of_range</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_index_out_of_range ()
 
@@ -479,8 +448,8 @@ mono_get_exception_index_out_of_range ()
 
 </div> <a name="api:mono_get_exception_invalid_cast"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_invalid_cast</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_invalid_cast</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_invalid_cast ()
 
@@ -492,8 +461,8 @@ mono_get_exception_invalid_cast ()
 
 </div> <a name="api:mono_get_exception_io"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_io</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_io</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_io (const char *msg)
 
@@ -507,8 +476,8 @@ mono_get_exception_io (const char *msg)
 
 </div> <a name="api:mono_get_exception_missing_method"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_missing_method</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_missing_method</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_missing_method (const char *class_name, const char *member_name)
 
@@ -522,8 +491,8 @@ mono_get_exception_missing_method (const char *class_name, const char *member_na
 
 </div> <a name="api:mono_get_exception_not_implemented"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_not_implemented</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_not_implemented</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_not_implemented (const char *msg)
 
@@ -537,8 +506,8 @@ mono_get_exception_not_implemented (const char *msg)
 
 </div> <a name="api:mono_get_exception_null_reference"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_null_reference</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_null_reference</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_null_reference ()
 
@@ -550,8 +519,8 @@ mono_get_exception_null_reference ()
 
 </div> <a name="api:mono_get_exception_overflow"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_overflow</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_overflow</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_overflow ()
 
@@ -563,8 +532,8 @@ mono_get_exception_overflow ()
 
 </div> <a name="api:mono_get_exception_security"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_security</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_security</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_security ()
 
@@ -576,8 +545,8 @@ mono_get_exception_security ()
 
 </div> <a name="api:mono_get_exception_serialization"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_serialization</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_serialization</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_serialization (const char *msg)
 
@@ -591,8 +560,8 @@ mono_get_exception_serialization (const char *msg)
 
 </div> <a name="api:mono_get_exception_stack_overflow"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_stack_overflow</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_stack_overflow</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_stack_overflow (void)
 
@@ -604,8 +573,8 @@ mono_get_exception_stack_overflow (void)
 
 </div> <a name="api:mono_get_exception_synchronization_lock"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_synchronization_lock</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_synchronization_lock</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_synchronization_lock (const char *msg)
 
@@ -619,8 +588,8 @@ mono_get_exception_synchronization_lock (const char *msg)
 
 </div> <a name="api:mono_get_exception_thread_abort"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_thread_abort</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_thread_abort</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_thread_abort ()
 
@@ -632,8 +601,8 @@ mono_get_exception_thread_abort ()
 
 </div> <a name="api:mono_get_exception_thread_state"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_thread_state</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_thread_state</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_thread_state (const char *msg)
 
@@ -647,8 +616,8 @@ mono_get_exception_thread_state (const char *msg)
 
 </div> <a name="api:mono_get_exception_type_initialization"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_type_initialization</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_type_initialization</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_type_initialization (const gchar *type_name, MonoException *inner)
 
@@ -662,8 +631,8 @@ mono_get_exception_type_initialization (const gchar *type_name, MonoException *i
 
 </div> <a name="api:mono_get_exception_type_load"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_type_load</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_type_load</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_type_load (MonoString *class_name, char *assembly_name)
 
@@ -677,8 +646,8 @@ mono_get_exception_type_load (MonoString *class_name, char *assembly_name)
 
 </div> <a name="api:mono_get_exception_invalid_operation"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_invalid_operation</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_invalid_operation</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_invalid_operation (const char *msg)
 
@@ -692,8 +661,8 @@ mono_get_exception_invalid_operation (const char *msg)
 
 </div> <a name="api:mono_get_exception_missing_field"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_missing_field</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_missing_field</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_missing_field (const char *class_name, const char *member_name)
 
@@ -707,8 +676,8 @@ mono_get_exception_missing_field (const char *class_name, const char *member_nam
 
 </div> <a name="api:mono_get_exception_not_supported"></a>
  <div class="api">
-    <div class="api-entry ">mono_get_exception_not_supported</div>
-    <div><b>Syntax</b></div>
+    <div class="api-entry">mono_get_exception_not_supported</div>
+
     <div class="prototype">MonoException*
 mono_get_exception_not_supported (const char *msg)
 
@@ -719,97 +688,6 @@ mono_get_exception_not_supported (const char *msg)
 <b>Returns</b>
 <blockquote>	  a new instance of the System.NotSupportedException
 </blockquote>
-
-</div> <a name="api:mono_get_exception_reflection_type_load"></a>
- <div class="api">
-    <div class="api-entry ">mono_get_exception_reflection_type_load</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoException*
-mono_get_exception_reflection_type_load (MonoArray *types, MonoArray *exceptions)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>types:</i></dt><dd> an array of types that were defined in the moduled loaded.</dd><dt><i>exceptions:</i></dt><dd> an array of exceptions that were thrown during the type loading.</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  a new instance of the System.Reflection.ReflectionTypeLoadException
-</blockquote>
-
-</div> <a name="api:mono_exception_from_token_two_strings"></a>
- <div class="api">
-    <div class="api-entry ">mono_exception_from_token_two_strings</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoException*
-mono_exception_from_token_two_strings (MonoImage *image, guint32 token,
-									   MonoString *a1, MonoString *a2)
-
-</div>
-<p />
-<b>Description</b>
-<p />	 
-	   Same as mono_exception_from_name_two_strings, but lookup the exception class using
-	 IMAGE and TOKEN.
-
-</div> <a name="api:mono_get_exception_bad_image_format2"></a>
- <div class="api">
-    <div class="api-entry ">mono_get_exception_bad_image_format2</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoException*
-mono_get_exception_bad_image_format2 (const char *msg, MonoString *fname)
-
-</div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>msg:</i></dt><dd> an informative message for the user.</dd><dt><i>fname:</i></dt><dd> The full name of the file with the invalid image.</dd></blockquote>
-<b>Returns</b>
-<blockquote>	  a new instance of the System.BadImageFormatException
-</blockquote>
-
-</div> <a name="api:mono_get_exception_field_access"></a>
- <div class="api">
-    <div class="api-entry ">mono_get_exception_field_access</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoException*
-mono_get_exception_field_access (void)
-
-</div>
-<p />
-<b>Returns</b>
-<blockquote>	  a new instance of the System.FieldAccessException
-</blockquote>
-
-</div> <a name="api:mono_get_exception_method_access"></a>
- <div class="api">
-    <div class="api-entry ">mono_get_exception_method_access</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoException*
-mono_get_exception_method_access (void)
-
-</div>
-<p />
-<b>Returns</b>
-<blockquote>	  a new instance of the System.MethodAccessException
-</blockquote>
-
-</div> <a name="api:mono_get_exception_out_of_memory"></a>
- <div class="api">
-    <div class="api-entry ">mono_get_exception_out_of_memory</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">MonoException*
-mono_get_exception_out_of_memory (void)
-
-</div>
-<p />
-<b>Returns</b>
-<blockquote>	  a new instance of the System.OutOfMemoryException
-</blockquote>
-
-</div> <a name="api:mono_get_exception_runtime_wrapped"></a>
- <div class="api">
-    <div class="api-entry ">mono_get_exception_runtime_wrapped</div>
-    <div><b>Syntax</b></div>
-    <div class="prototype">Prototype: mono_get_exception_runtime_wrapped</div>
-<p />
 
 </div></body>
 </html>
