@@ -480,11 +480,13 @@ domain_get_next (ThreadPoolDomain *current)
 	return tpdomain;
 }
 
-static void
+/* return TRUE if timeout, FALSE otherwise (worker unpark or interrupt) */
+static gboolean
 worker_park (void)
 {
 	mono_cond_t cond;
 	MonoInternalThread *thread = mono_thread_internal_current ();
+	gboolean timeout = FALSE;
 
 	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_THREADPOOL, "[%p] current worker parking", GetCurrentThreadId ());
 
@@ -495,10 +497,17 @@ worker_park (void)
 	mono_mutex_lock (&threadpool->active_threads_lock);
 
 	if (!mono_runtime_is_shutting_down ()) {
+		static gpointer rand_handle = NULL;
+
+		if (!rand_handle)
+			rand_handle = rand_create ();
+		g_assert (rand_handle);
+
 		g_ptr_array_add (threadpool->parked_threads, &cond);
 		g_ptr_array_remove_fast (threadpool->working_threads, thread);
 
-		mono_cond_wait (&cond, &threadpool->active_threads_lock);
+		if (mono_cond_timedwait_ms (&cond, &threadpool->active_threads_lock, rand_next (rand_handle, 5 * 1000, 60 * 1000)) != 0)
+			timeout = TRUE;
 
 		g_ptr_array_add (threadpool->working_threads, thread);
 		g_ptr_array_remove (threadpool->parked_threads, &cond);
@@ -511,6 +520,8 @@ worker_park (void)
 	mono_cond_destroy (&cond);
 
 	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_THREADPOOL, "[%p] current worker unparking", GetCurrentThreadId ());
+
+	return timeout;
 }
 
 static gboolean
@@ -585,19 +596,24 @@ worker_thread (gpointer data)
 		}
 
 		if (retire || !(tpdomain = domain_get_next (previous_tpdomain))) {
+			gboolean timeout;
+
 			COUNTER_ATOMIC (counter, {
 				counter._.working --;
 				counter._.parked ++;
 			});
 
 			mono_mutex_unlock (&threadpool->domains_lock);
-			worker_park ();
+			timeout = worker_park ();
 			mono_mutex_lock (&threadpool->domains_lock);
 
 			COUNTER_ATOMIC (counter, {
 				counter._.working ++;
 				counter._.parked --;
 			});
+
+			if (timeout)
+				break;
 
 			if (retire)
 				retire = FALSE;
@@ -860,8 +876,18 @@ monitor_thread (void)
 
 		if (all_waitsleepjoin) {
 			ThreadPoolCounter counter;
-			COUNTER_ATOMIC (counter, { counter._.max_working ++; });
-			hill_climbing_force_change (counter._.max_working, TRANSITION_STARVATION);
+			gboolean limit_worker_max_reached = FALSE;
+
+			COUNTER_ATOMIC (counter, {
+				if (counter._.max_working >= threadpool->limit_worker_max) {
+					limit_worker_max_reached = TRUE;
+					break;
+				}
+				counter._.max_working ++;
+			});
+
+			if (!limit_worker_max_reached)
+				hill_climbing_force_change (counter._.max_working, TRANSITION_STARVATION);
 		}
 
 		threadpool->cpu_usage = mono_cpu_usage (threadpool->cpu_usage_state);
@@ -1405,12 +1431,16 @@ mono_threadpool_ms_resume (void)
 void
 ves_icall_System_Threading_ThreadPool_GetAvailableThreadsNative (gint32 *worker_threads, gint32 *completion_port_threads)
 {
+	ThreadPoolCounter counter;
+
 	if (!worker_threads || !completion_port_threads)
 		return;
 
 	mono_lazy_initialize (&status, initialize);
 
-	*worker_threads = threadpool->limit_worker_max;
+	counter.as_gint64 = COUNTER_READ ();
+
+	*worker_threads = MAX (0, threadpool->limit_worker_max - counter._.active);
 	*completion_port_threads = threadpool->limit_io_max;
 }
 
@@ -1448,8 +1478,8 @@ ves_icall_System_Threading_ThreadPool_SetMinThreadsNative (gint32 worker_threads
 	if (completion_port_threads <= 0 || completion_port_threads > threadpool->limit_io_max)
 		return FALSE;
 
-	threadpool->limit_worker_max = worker_threads;
-	threadpool->limit_io_max = completion_port_threads;
+	threadpool->limit_worker_min = worker_threads;
+	threadpool->limit_io_min = completion_port_threads;
 
 	return TRUE;
 }

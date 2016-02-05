@@ -659,6 +659,7 @@ emit_method_inner (LogBuffer *logbuffer, void *method)
 	assert (logbuffer->data <= logbuffer->data_end);
 }
 
+/*
 typedef struct {
 	MonoMethod *method;
 	MonoJitInfo *found;
@@ -686,11 +687,20 @@ find_method (MonoDomain *domain, void *user_data)
 	if (ji)
 		search->found = ji;
 }
+*/
 
 static void
 register_method_local (MonoProfiler *prof, MonoMethod *method, MonoJitInfo *ji)
 {
 	if (!mono_conc_hashtable_lookup (prof->method_table, method)) {
+		/*
+		 * FIXME: In some cases, we crash while looking up JIT info for AOT'd methods.
+		 * This usually happens for static constructors. This code is disabled for now
+		 * as we don't need this info for anything critical.
+		 *
+		 * https://bugzilla.xamarin.com/show_bug.cgi?id=35171
+		 */
+		/*
 		if (!ji) {
 			MethodSearch search = { method, NULL };
 
@@ -698,6 +708,7 @@ register_method_local (MonoProfiler *prof, MonoMethod *method, MonoJitInfo *ji)
 
 			ji = search.found;
 		}
+		*/
 
 		/*
 		 * FIXME: We can't always find JIT info for a generic shared method, especially
@@ -4724,7 +4735,7 @@ mono_profiler_startup (const char *desc)
 	mono_profiler_install_context (context_loaded, context_unloaded);
 	mono_profiler_install_class (NULL, class_loaded, NULL, class_unloaded);
 	mono_profiler_install_module (NULL, image_loaded, NULL, image_unloaded);
-	mono_profiler_install_assembly (NULL, assembly_loaded, NULL, assembly_unloaded);
+	mono_profiler_install_assembly (NULL, assembly_loaded, assembly_unloaded, NULL);
 	mono_profiler_install_thread (thread_start, thread_end);
 	mono_profiler_install_thread_name (thread_name);
 	mono_profiler_install_enter_leave (method_enter, method_leave);

@@ -69,7 +69,7 @@
 #endif
 
 /* Number of got entries shared between the JIT and LLVM GOT */
-#define N_COMMON_GOT_ENTRIES 4
+#define N_COMMON_GOT_ENTRIES 5
 
 #define ALIGN_TO(val,align) ((((guint64)val) + ((align) - 1)) & ~((align) - 1))
 #define ALIGN_PTR_TO(ptr,align) (gpointer)((((gssize)(ptr)) + (align - 1)) & (~(align - 1)))
@@ -2074,6 +2074,10 @@ load_aot_module (MonoAssembly *assembly, gpointer user_data)
 		memset (&ji, 0, sizeof (ji));
 		ji.type = MONO_PATCH_INFO_GC_NURSERY_START;
 		amodule->shared_got [3] = mono_resolve_patch_target (NULL, mono_get_root_domain (), NULL, &ji, FALSE);
+
+		memset (&ji, 0, sizeof (ji));
+		ji.type = MONO_PATCH_INFO_GC_NURSERY_BITS;
+		amodule->shared_got [4] = mono_resolve_patch_target (NULL, mono_get_root_domain (), NULL, &ji, FALSE);
 	}
 
 	init_gots (amodule);
@@ -3368,6 +3372,7 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 	case MONO_PATCH_INFO_MONITOR_EXIT:
 	case MONO_PATCH_INFO_GC_CARD_TABLE_ADDR:
 	case MONO_PATCH_INFO_GC_NURSERY_START:
+	case MONO_PATCH_INFO_GC_NURSERY_BITS:
 	case MONO_PATCH_INFO_JIT_TLS_ID:
 		break;
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:
@@ -3946,9 +3951,15 @@ gpointer
 mono_aot_get_method (MonoDomain *domain, MonoMethod *method)
 {
 	MonoClass *klass = method->klass;
+	MonoMethod *orig_method = method;
 	guint32 method_index;
 	MonoAotModule *amodule = klass->image->aot_module;
 	guint8 *code;
+	gboolean cache_result = FALSE;
+
+	if (domain != mono_get_root_domain ())
+		/* Non shared AOT code can't be used in other appdomains */
+		return NULL;
 
 	if (enable_aot_cache && !amodule && domain->entry_assembly && klass->image == mono_defaults.corlib) {
 		/* This cannot be AOTed during startup, so do it now */
@@ -3998,6 +4009,7 @@ mono_aot_get_method (MonoDomain *domain, MonoMethod *method)
 		if (code)
 			return code;
 
+		cache_result = TRUE;
 		method_index = find_aot_method (method, &amodule);
 		/*
 		 * Special case the ICollection<T> wrappers for arrays, as they cannot
@@ -4127,7 +4139,13 @@ mono_aot_get_method (MonoDomain *domain, MonoMethod *method)
 		method_index = mono_metadata_token_index (method->token) - 1;
 	}
 
-	return load_method (domain, amodule, klass->image, method, method->token, method_index);
+	code = load_method (domain, amodule, klass->image, method, method->token, method_index);
+	if (code && cache_result) {
+		amodule_lock (amodule);
+		g_hash_table_insert (amodule->method_to_code, orig_method, code);
+		amodule_unlock (amodule);
+	}
+	return code;
 }
 
 /**

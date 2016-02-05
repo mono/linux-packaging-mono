@@ -1,3 +1,33 @@
+mono (4.2.2.30-0xamarin1) alpha; urgency=low
+
+  * "New release - mono-4.2.2.30.tar.bz2"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 21 Jan 2016 17:41:07 -0500
+
+mono (4.2.2.29-0xamarin1) alpha; urgency=low
+
+  * "New release - mono-4.2.2.29.tar.bz2"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 18 Jan 2016 21:31:57 -0500
+
+mono (4.2.2.10-0xamarin1) alpha; urgency=low
+
+  * "New release - mono-4.2.2.10.tar.bz2"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 18 Dec 2015 19:43:17 -0500
+
+mono (4.2.1.124-0xamarin1) alpha; urgency=low
+
+  * "New release - mono-4.2.1.124.tar.bz2"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Wed, 09 Dec 2015 05:58:04 -0500
+
+mono (4.2.1.102-0xamarin1) alpha; urgency=low
+
+  * "New release - mono-4.2.1.102.tar.bz2"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 12 Nov 2015 04:33:29 -0500
+
 mono (4.2.1.91-0xamarin1) alpha; urgency=low
 
   * "New release - mono-4.2.1.91.tar.bz2"
