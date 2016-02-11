@@ -1130,7 +1130,7 @@ regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
 @SPARC64_TRUE@arch_define = __sparc__
 @SPARC_TRUE@arch_define = __sparc__
 @X86_TRUE@arch_define = __i386__
-@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = --exclude DYNCALL --exclude GSHAREDVT
+@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = --exclude DYNCALL
 
 # pick up arm_dpimacros.h
 @ARM_TRUE@ARCH_CFLAGS = -I../arch/arm
@@ -3115,7 +3115,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.3.509/efc6803\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.3.593/c5512c0\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

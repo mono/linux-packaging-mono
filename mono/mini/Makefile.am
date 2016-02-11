@@ -480,7 +480,7 @@ if AMD64
 arch_sources = $(amd64_sources)
 arch_built=cpu-amd64.h
 arch_define=__x86_64__
-ARCH_FULLAOT_EXCLUDE=--exclude DYNCALL --exclude GSHAREDVT
+ARCH_FULLAOT_EXCLUDE=--exclude DYNCALL
 endif
 
 if POWERPC
@@ -801,7 +801,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.3.509/efc6803\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.3.3.593/c5512c0\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

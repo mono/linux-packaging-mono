@@ -4784,6 +4784,12 @@ get_pinvoke_import (MonoAotCompile *acfg, MonoMethod *method)
 	
 	return import;
 }
+#else
+static const char *
+get_pinvoke_import (MonoAotCompile *acfg, MonoMethod *method)
+{
+	return NULL;
+}
 #endif
 
 static gint
@@ -6599,6 +6605,28 @@ clean_path (gchar * path)
 	return clean;
 }
 
+static gchar *
+wrap_path (gchar * path)
+{
+	int len;
+	if (!path)
+		return NULL;
+
+	// If the string contains no spaces, just return the original string.
+	if (strstr (path, " ") == NULL)
+		return path;
+
+	// If the string is already wrapped in quotes, return it.
+	len = strlen (path);
+	if (len >= 2 && path[0] == '\"' && path[len-1] == '\"')
+		return path;
+
+	// If the string contains spaces, then wrap it in quotes.
+	gchar *clean = g_strdup_printf ("\"%s\"", path);
+
+	return clean;
+}
+
 static GPtrArray *
 mono_aot_split_options (const char *aot_options)
 {
@@ -7916,10 +7944,7 @@ emit_llvm_file (MonoAotCompile *acfg)
 	if (acfg->aot_opts.llvm_only) {
 		/* Use the stock clang from xcode */
 		// FIXME: arch
-		// FIXME: -O2
-		// FIXME: llc/opt flags
-		command = g_strdup_printf ("clang -march=x86-64 -fpic -msse -msse2 -msse3 -msse4 -O0 -c -o \"%s\" \"%s.opt.bc\"", acfg->llvm_ofile, acfg->tmpbasename);
-		//command = g_strdup_printf ("/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang  -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk -Qunused-arguments -miphoneos-version-min=8.2 -arch arm64 -fpic -O0 -c -o \"%s\" \"%s.bc\"", acfg->llvm_ofile, acfg->tmpbasename);
+		command = g_strdup_printf ("clang -march=x86-64 -fpic -msse -msse2 -msse3 -msse4 -O2 -fno-optimize-sibling-calls -Wno-override-module -c -o \"%s\" \"%s.opt.bc\"", acfg->llvm_ofile, acfg->tmpbasename);
 
 		aot_printf (acfg, "Executing clang: %s\n", command);
 		if (execute_system (command) != 0)
@@ -9516,7 +9541,9 @@ compile_asm (MonoAotCompile *acfg)
 	g_string_append (acfg->as_args, "-c -x assembler");
 #endif
 
-	command = g_strdup_printf ("\"%s%s\" %s %s -o %s %s", tool_prefix, AS_NAME, AS_OPTIONS, acfg->as_args ? acfg->as_args->str : "", objfile, acfg->tmpfname);
+	command = g_strdup_printf ("\"%s%s\" %s %s -o %s %s", tool_prefix, AS_NAME, AS_OPTIONS,
+			acfg->as_args ? acfg->as_args->str : "", 
+			wrap_path (objfile), wrap_path (acfg->tmpfname));
 	aot_printf (acfg, "Executing the native assembler: %s\n", command);
 	if (execute_system (command) != 0) {
 		g_free (command);
@@ -9525,7 +9552,9 @@ compile_asm (MonoAotCompile *acfg)
 	}
 
 	if (acfg->llvm && !acfg->llvm_owriter) {
-		command = g_strdup_printf ("\"%s%s\" %s %s -o %s %s", tool_prefix, AS_NAME, AS_OPTIONS, acfg->as_args ? acfg->as_args->str : "", acfg->llvm_ofile, acfg->llvm_sfile);
+		command = g_strdup_printf ("\"%s%s\" %s %s -o %s %s", tool_prefix, AS_NAME, AS_OPTIONS,
+			acfg->as_args ? acfg->as_args->str : "",
+			wrap_path (acfg->llvm_ofile), wrap_path (acfg->llvm_sfile));
 		aot_printf (acfg, "Executing the native assembler: %s\n", command);
 		if (execute_system (command) != 0) {
 			g_free (command);
@@ -9563,10 +9592,13 @@ compile_asm (MonoAotCompile *acfg)
 		ld_flags = g_strdup_printf ("%s %s", ld_flags, "-lstdc++");
 
 #ifdef LD_NAME
-	command = g_strdup_printf ("%s -o \"%s\" %s \"%s.o\" %s", LD_NAME, tmp_outfile_name, llvm_ofile, acfg->tmpfname, ld_flags);
+	command = g_strdup_printf ("%s -o %s %s %s %s", LD_NAME,
+		wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
+		wrap_path (g_strdup_printf ("%s.o", acfg->tmpfname)), ld_flags);
 #else
-	command = g_strdup_printf ("\"%sld\" %s -shared -o %s %s %s.o %s", tool_prefix, LD_OPTIONS, tmp_outfile_name, llvm_ofile,
-		acfg->tmpfname, ld_flags);
+	command = g_strdup_printf ("\"%sld\" %s -shared -o %s %s %s %s", tool_prefix, LD_OPTIONS,
+		wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
+		wrap_path (g_strdup_printf ("%s.o", acfg->tmpfname)), ld_flags);
 #endif
 	aot_printf (acfg, "Executing the native linker: %s\n", command);
 	if (execute_system (command) != 0) {

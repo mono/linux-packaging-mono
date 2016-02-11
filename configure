@@ -1699,7 +1699,7 @@ Optional Features:
   --enable-gsharedvt Enable generic valuetype sharing
   --enable-native-types Enable native types
   --disable-boehm            Disable the Boehm GC.
-  --enable-parallel-mark     Enables GC Parallel Marking
+  --enable-parallel-mark     Enables Boehm GC Parallel Marking
   --disable-dev-random    disable the use of the random device (enabled by default)
   --disable-bcl-opt	BCL is compiled with no optimizations (allows accurate BCL debugging)
   --enable-perf-events Enable using `perf` for profiling on Linux

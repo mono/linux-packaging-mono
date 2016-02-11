@@ -1,1 +1,1 @@
-#define FULL_VERSION "Nightly 4.3.3.509/efc6803"
+#define FULL_VERSION "Nightly 4.3.3.593/c5512c0"

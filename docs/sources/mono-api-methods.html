@@ -14,7 +14,7 @@
 	managed implementation of System.Version, creating an instance
 	of the object, and then invoking the constructor on it.
 
-	<div class="header">
+	<div class="mapi-header">
 MonoObject*
 create_version (MonoDomain *domain, guint32 major, guint32 minor, guint32 build, guint32 revision)
 {
@@ -162,7 +162,7 @@ If you want to invoke generic methods, you must call the method on the
 "inflated" class, which you can obtain from the
 <tt>mono_object_get_class()</tt>
 
-<div class="code">
+<div class="mapi-code">
 MonoClass *clazz;
 MonoMethod *method;
 
