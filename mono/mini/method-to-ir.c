@@ -56,6 +56,7 @@
 #include <mono/metadata/security-core-clr.h>
 #include <mono/metadata/profiler-private.h>
 #include <mono/metadata/profiler.h>
+#include <mono/metadata/monitor.h>
 #include <mono/metadata/debug-mono-symfile.h>
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-memory-model.h>
@@ -4447,22 +4448,6 @@ icall_is_direct_callable (MonoCompile *cfg, MonoMethod *cmethod)
 	return FALSE;
 }
 
-/* Return whenever METHOD calls Assembly.GetCallingAssembly () */
-// FIXME: It would be better to generalize this using some kind of method attribute
-// or automatic detection
-static gboolean
-method_needs_calling_assembly (MonoMethod *method)
-{
-	MonoClass *klass = method->klass;
-
-	if (klass->image != mono_defaults.corlib)
-		return FALSE;
-	if (!strcmp (klass->name_space, "System") && !strcmp (klass->name, "Activator") &&
-		!strcmp (method->name, "CreateInstance"))
-		return TRUE;
-	return FALSE;
-}
-
 #define is_complex_isinst(klass) ((klass->flags & TYPE_ATTRIBUTE_INTERFACE) || klass->rank || mono_class_is_nullable (klass) || mono_class_is_marshalbyref (klass) || (klass->flags & TYPE_ATTRIBUTE_SEALED) || klass->byval_arg.type == MONO_TYPE_VAR || klass->byval_arg.type == MONO_TYPE_MVAR)
 
 static MonoInst*
@@ -5997,7 +5982,6 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 		} else 
 			return NULL;
 	} else if (cmethod->klass == mono_defaults.object_class) {
-
 		if (strcmp (cmethod->name, "GetType") == 0 && fsig->param_count + fsig->hasthis == 1) {
 			int dreg = alloc_ireg_ref (cfg);
 			int vt_reg = alloc_preg (cfg);
@@ -6095,12 +6079,42 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 		} else
 			return NULL;
 	} else if (cmethod->klass == runtime_helpers_class) {
-
 		if (strcmp (cmethod->name, "get_OffsetToStringData") == 0 && fsig->param_count == 0) {
 			EMIT_NEW_ICONST (cfg, ins, MONO_STRUCT_OFFSET (MonoString, chars));
 			return ins;
 		} else
 			return NULL;
+	} else if (cmethod->klass == mono_defaults.monitor_class) {
+		gboolean is_enter = FALSE;
+		gboolean is_v4 = FALSE;
+
+		if (!strcmp (cmethod->name, "enter_with_atomic_var") && mono_method_signature (cmethod)->param_count == 2) {
+			is_enter = TRUE;
+			is_v4 = TRUE;
+		}
+		if (!strcmp (cmethod->name, "Enter") && mono_method_signature (cmethod)->param_count == 1)
+			is_enter = TRUE;
+
+		if (is_enter) {
+			/*
+			 * To make async stack traces work, icalls which can block should have a wrapper.
+			 * For Monitor.Enter, emit two calls: a fastpath which doesn't have a wrapper, and a slowpath, which does.
+			 */
+			MonoBasicBlock *end_bb, *slowpath_bb;
+
+			NEW_BBLOCK (cfg, end_bb);
+			NEW_BBLOCK (cfg, slowpath_bb);
+
+			ins = mono_emit_jit_icall (cfg, is_v4 ? mono_monitor_enter_v4_fast : mono_monitor_enter_fast, args);
+			MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, ins->dreg, 0);
+			MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_IBEQ, slowpath_bb);
+			MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_BR, end_bb);
+			MONO_START_BB (cfg, slowpath_bb);
+			ins = mono_emit_jit_icall (cfg, is_v4 ? mono_monitor_enter_v4 : mono_monitor_enter, args);
+			MONO_EMIT_NEW_BRANCH_BLOCK (cfg, OP_BR, end_bb);
+			MONO_START_BB (cfg, end_bb);
+			return ins;
+		}
 	} else if (cmethod->klass == mono_defaults.thread_class) {
 		if (strcmp (cmethod->name, "SpinWait_nop") == 0 && fsig->param_count == 0) {
 			MONO_INST_NEW (cfg, ins, OP_RELAXED_NOP);
@@ -6733,11 +6747,6 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 
 			EMIT_NEW_AOTCONST (cfg, assembly_ins, MONO_PATCH_INFO_IMAGE, cfg->method->klass->image);
 			ins = mono_emit_jit_icall (cfg, mono_get_assembly_object, &assembly_ins);
-			return ins;
-		}
-		if (cfg->llvm_only && !strcmp (cmethod->name, "GetCallingAssembly")) {
-			/* No stack walks are currently available, so implement this as an intrinsic */
-			ins = mono_emit_jit_icall (cfg, mono_llvmonly_get_calling_assembly, NULL);
 			return ins;
 		}
 	} else if (cmethod->klass->image == mono_defaults.corlib &&
@@ -9174,7 +9183,6 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 			gboolean delegate_invoke = FALSE;
 			gboolean direct_icall = FALSE;
 			gboolean constrained_partial_call = FALSE;
-			gboolean needs_calling_assembly = FALSE;
 			MonoMethod *cil_method;
 
 			CHECK_OPSIZE (5);
@@ -9301,21 +9309,6 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 					 */
 					direct_icall = FALSE;
 				}
-			}
-
-			/*
-			 * Stack walks are not supported in llvmonly mode, so
-			 * when calling methods which call GetCallingAssembly (), save the
-			 * current assembly in the caller. The call to GetCallingAssembly ()
-			 * will be turned into an icall which will retrieve the value.
-			 */
-			if (cfg->llvm_only && cmethod && method_needs_calling_assembly (cmethod)) {
-				needs_calling_assembly = TRUE;
-
-				MonoInst *assembly_ins;
-
-				EMIT_NEW_AOTCONST (cfg, assembly_ins, MONO_PATCH_INFO_IMAGE, cfg->method->klass->image);
-				ins = mono_emit_jit_icall (cfg, mono_llvmonly_set_calling_assembly, &assembly_ins);
 			}
 
 			mono_save_token_info (cfg, image, token, cil_method);
@@ -10014,18 +10007,6 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 				/* See mono_emit_method_call_full () */
 				EMIT_NEW_DUMMY_USE (cfg, dummy_use, keep_this_alive);
-			}
-
-			if (needs_calling_assembly) {
-				/*
-				 * Clear the calling assembly.
-				 * This is not EH safe, but this is not a problem in practice, since
-				 * the null value is only used for error checking.
-				 */
-				MonoInst *assembly_ins;
-
-				EMIT_NEW_PCONST (cfg, assembly_ins, NULL);
-				ins = mono_emit_jit_icall (cfg, mono_llvmonly_set_calling_assembly, &assembly_ins);
 			}
 
 			CHECK_CFG_EXCEPTION;

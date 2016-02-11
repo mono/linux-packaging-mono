@@ -618,7 +618,7 @@ typedef struct {
 	gboolean (*debug_log_is_enabled) (void);
 	gboolean (*tls_key_supported) (MonoTlsKey key);
 	void     (*init_delegate) (MonoDelegate *del);
-	MonoObject* (*runtime_invoke) (MonoMethod *method, void *obj, void **params, MonoError *error, MonoObject **exc);
+	MonoObject* (*runtime_invoke) (MonoMethod *method, void *obj, void **params, MonoObject **exc, MonoError *error);
 	void*    (*compile_method) (MonoMethod *method, MonoError *error);
 } MonoRuntimeCallbacks;
 
@@ -1439,7 +1439,7 @@ MonoArray  *mono_reflection_sighelper_get_signature_local (MonoReflectionSigHelp
 
 MonoArray  *mono_reflection_sighelper_get_signature_field (MonoReflectionSigHelper *sig);
 
-MonoReflectionMarshalAsAttribute* mono_reflection_marshal_as_attribute_from_marshal_spec (MonoDomain *domain, MonoClass *klass, MonoMarshalSpec *spec);
+MonoReflectionMarshalAsAttribute* mono_reflection_marshal_as_attribute_from_marshal_spec (MonoDomain *domain, MonoClass *klass, MonoMarshalSpec *spec, MonoError *error);
 
 gpointer
 mono_reflection_lookup_dynamic_token (MonoImage *image, guint32 token, gboolean valid_token, MonoClass **handle_class, MonoGenericContext *context);
@@ -1695,6 +1695,13 @@ mono_string_new_checked (MonoDomain *domain, const char *text, MonoError *merror
 
 MonoString *
 mono_string_new_utf16_checked (MonoDomain *domain, const guint16 *text, gint32 len, MonoError *error);
+
+MonoObject*
+mono_runtime_try_invoke (MonoMethod *method, void *obj, void **params, MonoObject **exc, MonoError *error);
+
+MonoObject*
+mono_runtime_invoke_checked (MonoMethod *method, void *obj, void **params, MonoError *error);
+
 
 #endif /* __MONO_OBJECT_INTERNALS_H__ */
 

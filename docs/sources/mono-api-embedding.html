@@ -1,5 +1,18 @@
 <h2>Embedding Mono</h2>
 
+	<p>The Mono runtime can be embedded into C and C++
+	applications.   Your C/C++ code can invoke managed code
+	running in the Mono/.NET world and you can also surface your
+	internal application APIs to Mono and .NET.
+
+	<p>For an overview of how to embed Mono into your application
+	and the strategies that you can use to embed Mono, check the
+	Mono
+	website's <a href="http://www.mono-project.com/docs/advanced/embedding/">Embedding
+	Mono</a> page.
+
+	<p>This page is the companion API reference for the above guide.
+	
 	<p>The simplest way of embedding Mono is illustrated here:
 <pre>
 int main (int argc, char *argv)
@@ -150,7 +163,7 @@ getMessage ()
 <h4><a name="api:mono_config_string_for_assembly_file">mono_config_string_for_assembly_file</a></h4>
 <h4><a name="api:mono_get_config_dir">mono_get_config_dir</a></h4>
 <h4><a name="api:mono_get_machine_config">mono_get_machine_config</a></h4>
-<h4><a name="api:mono_register_machine_config">mono_register_machine_config</a>
+<h4><a name="api:mono_register_machine_config">mono_register_machine_config</a></h4>
 <h4><a name="api:mono_set_config_dir">mono_set_config_dir</a></h4>
 
 <h3>Advanced Execution Setups</h3>

@@ -1327,12 +1327,13 @@ constrained_gsharedvt_call_setup (gpointer mp, MonoMethod *cmethod, MonoClass *k
  * mono_gsharedvt_constrained_call:
  *
  *   Make a call to CMETHOD using the receiver MP, which is assumed to be of type KLASS. ARGS contains
- * the arguments to the method in the format used by mono_runtime_invoke ().
+ * the arguments to the method in the format used by mono_runtime_invoke_checked ().
  */
 MonoObject*
 mono_gsharedvt_constrained_call (gpointer mp, MonoMethod *cmethod, MonoClass *klass, gboolean deref_arg, gpointer *args)
 {
 	MonoError error;
+	MonoObject *o;
 	MonoMethod *m;
 	gpointer this_arg;
 	gpointer new_args [16];
@@ -1355,7 +1356,14 @@ mono_gsharedvt_constrained_call (gpointer mp, MonoMethod *cmethod, MonoClass *kl
 		args [0] = this_arg;
 		this_arg = NULL;
 	}
-	return mono_runtime_invoke (m, this_arg, args, NULL);
+
+	o = mono_runtime_invoke_checked (m, this_arg, args, &error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
+
+	return o;
 }
 
 void
@@ -1703,6 +1711,10 @@ mono_llvmonly_init_delegate (MonoDelegate *del)
 	 */
 	if (G_UNLIKELY (!ftndesc)) {
 		gpointer addr = mono_compile_method (del->method);
+
+		if (del->method->klass->valuetype && mono_method_signature (del->method)->hasthis)
+		    addr = mono_aot_get_unbox_trampoline (del->method);
+
 		gpointer arg = mini_get_delegate_arg (del->method, addr);
 
 		ftndesc = mini_create_llvmonly_ftndesc (mono_domain_get (), addr, arg);
@@ -1722,13 +1734,20 @@ mono_llvmonly_init_delegate_virtual (MonoDelegate *del, MonoObject *target, Mono
 
 	del->method = method;
 	del->method_ptr = mono_compile_method (method);
+	if (method->klass->valuetype)
+		del->method_ptr = mono_aot_get_unbox_trampoline (method);
 	del->extra_arg = mini_get_delegate_arg (del->method, del->method_ptr);
 }
 
 MonoObject*
 mono_get_assembly_object (MonoImage *image)
 {
-	return (MonoObject*)mono_assembly_get_object (mono_domain_get (), image->assembly);
+	MonoError error;
+	MonoObject *result;
+	result = (MonoObject*)mono_assembly_get_object_checked (mono_domain_get (), image->assembly, &error);
+	if (!result)
+		mono_error_set_pending_exception (&error);
+	return result;
 }
 
 MonoObject*
@@ -1747,89 +1766,6 @@ mono_ckfinite (double d)
 	if (isinf (d) || isnan (d))
 		mono_set_pending_exception (mono_get_exception_arithmetic ());
 	return d;
-}
-
-void
-mono_llvmonly_set_calling_assembly (MonoImage *image)
-{
-	MonoJitTlsData *jit_tls = NULL;
-
-	jit_tls = (MonoJitTlsData *)mono_native_tls_get_value (mono_jit_tls_id);
-	g_assert (jit_tls);
-	jit_tls->calling_image = image;
-}
-
-
-static gboolean
-get_executing (MonoMethod *m, gint32 no, gint32 ilo, gboolean managed, gpointer data)
-{
-	MonoMethod **dest = (MonoMethod **)data;
-
-	/* skip unmanaged frames */
-	if (!managed)
-		return FALSE;
-
-	if (!(*dest)) {
-		if (!strcmp (m->klass->name_space, "System.Reflection"))
-			return FALSE;
-		*dest = m;
-		return TRUE;
-	}
-	return FALSE;
-}
-
-static gboolean
-get_caller_no_reflection (MonoMethod *m, gint32 no, gint32 ilo, gboolean managed, gpointer data)
-{
-	MonoMethod **dest = (MonoMethod **)data;
-
-	/* skip unmanaged frames */
-	if (!managed)
-		return FALSE;
-
-	if (m->wrapper_type != MONO_WRAPPER_NONE)
-		return FALSE;
-
-	if (m->klass->image == mono_defaults.corlib && !strcmp (m->klass->name_space, "System.Reflection"))
-		return FALSE;
-
-	if (m == *dest) {
-		*dest = NULL;
-		return FALSE;
-	}
-	if (!(*dest)) {
-		*dest = m;
-		return TRUE;
-	}
-	return FALSE;
-}
-
-MonoObject*
-mono_llvmonly_get_calling_assembly (void)
-{
-	MonoJitTlsData *jit_tls = NULL;
-	MonoMethod *m;
-	MonoMethod *dest;
-	MonoAssembly *assembly;
-
-	dest = NULL;
-	mono_stack_walk_no_il (get_executing, &dest);
-	m = dest;
-	mono_stack_walk_no_il (get_caller_no_reflection, &dest);
-
-	if (!dest) {
-		/* Fall back to TLS */
-		jit_tls = (MonoJitTlsData *)mono_native_tls_get_value (mono_jit_tls_id);
-		g_assert (jit_tls);
-		if (!jit_tls->calling_image) {
-			mono_set_pending_exception (mono_get_exception_not_supported ("Stack walks are not supported on this platform."));
-			return NULL;
-		}
-		assembly = jit_tls->calling_image->assembly;
-	} else {
-		assembly = dest->klass->image->assembly;
-	}
-	return (MonoObject*)mono_assembly_get_object (mono_domain_get (), assembly);
 }
 
 /*

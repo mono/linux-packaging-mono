@@ -2083,9 +2083,9 @@ test-oom: $(OOM_TESTS)
 @HOST_WIN32_FALSE@test-unhandled-exception-2-5: unhandled-exception-5.exe test-runner.exe
 @HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 255 $<
 @HOST_WIN32_FALSE@test-unhandled-exception-2-6: unhandled-exception-6.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 0 $<
+@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 255 $<
 @HOST_WIN32_FALSE@test-unhandled-exception-2-7: unhandled-exception-7.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 0 $<
+@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 255 $<
 @HOST_WIN32_FALSE@test-unhandled-exception-2-8: unhandled-exception-8.exe test-runner.exe
 @HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 3 $<
 test-appdomain-unload: appdomain-loader.exe appdomain-tester.exe

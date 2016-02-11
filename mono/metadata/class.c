@@ -631,11 +631,11 @@ mono_type_get_underlying_type (MonoType *type)
 	return type;
 }
 
-/*
+/**
  * mono_class_is_open_constructed_type:
  * @type: a type
  *
- * Returns TRUE if type represents a generics open constructed type.
+ * Returns: TRUE if type represents a generics open constructed type.
  * IOW, not all type parameters required for the instantiation have
  * been provided or it's a generic type definition.
  *
@@ -2911,7 +2911,7 @@ mono_class_interface_offset (MonoClass *klass, MonoClass *itf) {
 	}
 }
 
-/*
+/**
  * mono_class_interface_offset_with_variance:
  * 
  * Return the interface offset of @itf in @klass. Sets @non_exact_match to TRUE if the match required variance check
@@ -8038,11 +8038,11 @@ mono_class_from_name (MonoImage *image, const char* name_space, const char *name
  * This method determines whether @klass is a subclass of @klassc.
  *
  * If the @check_interfaces flag is set, then if @klassc is an interface
- * this method return true if the @klass implements the interface or
+ * this method return TRUE if the @klass implements the interface or
  * if @klass is an interface, if one of its base classes is @klass.
  *
  * If @check_interfaces is false then, then if @klass is not an interface
- * then it returns true if the @klass is a subclass of @klassc.
+ * then it returns TRUE if the @klass is a subclass of @klassc.
  *
  * if @klass is an interface and @klassc is System.Object, then this function
  * return true.
@@ -8129,8 +8129,9 @@ mono_gparam_is_reference_conversible (MonoClass *target, MonoClass *candidate, g
  * @klass: the class to be assigned to
  * @oklass: the source class
  * 
- * Both klass and oklass must be instances of the same generic interface.
- * Return true if @klass can be assigned to a @klass variable
+ * Both @klass and @oklass must be instances of the same generic interface.
+ *
+ * Returns: TRUE if @klass can be assigned to a @klass variable
  */
 gboolean
 mono_class_is_variant_compatible (MonoClass *klass, MonoClass *oklass, gboolean check_for_reference_conv)
@@ -8281,7 +8282,7 @@ mono_gparam_is_assignable_from (MonoClass *target, MonoClass *candidate)
  * @klass: the class to be assigned to
  * @oklass: the source class
  *
- * Return: true if an instance of object oklass can be assigned to an
+ * Returns: TRUE if an instance of object oklass can be assigned to an
  * instance of object @klass
  */
 gboolean
@@ -8863,6 +8864,8 @@ mono_install_get_class_from_name (MonoGetClassFromName func)
 /**
  * mono_class_get_image:
  *
+ * Use this method to get the `MonoImage*` where this class came from.
+ *
  * Returns: The image where this class is defined.
  */
 MonoImage*
@@ -8875,7 +8878,9 @@ mono_class_get_image (MonoClass *klass)
  * mono_class_get_element_class:
  * @klass: the MonoClass to act on
  *
- * Returns: The element class of an array or an enumeration.
+ * Use this function to get the element class of an array.
+ *
+ * Returns: The element class of an array.
  */
 MonoClass*
 mono_class_get_element_class (MonoClass *klass)
@@ -8887,7 +8892,10 @@ mono_class_get_element_class (MonoClass *klass)
  * mono_class_is_valuetype:
  * @klass: the MonoClass to act on
  *
- * Returns: true if the MonoClass represents a ValueType.
+ * Use this method to determine if the provided `MonoClass*` represents a value type,
+ * or a reference type.
+ *
+ * Returns: TRUE if the MonoClass represents a ValueType, FALSE if it represents a reference type.
  */
 gboolean
 mono_class_is_valuetype (MonoClass *klass)
@@ -8899,7 +8907,9 @@ mono_class_is_valuetype (MonoClass *klass)
  * mono_class_is_enum:
  * @klass: the MonoClass to act on
  *
- * Returns: true if the MonoClass represents an enumeration.
+ * Use this function to determine if the provided `MonoClass*` represents an enumeration.
+ *
+ * Returns: TRUE if the MonoClass represents an enumeration.
  */
 gboolean
 mono_class_is_enum (MonoClass *klass)
@@ -8911,6 +8921,8 @@ mono_class_is_enum (MonoClass *klass)
  * mono_class_enum_basetype:
  * @klass: the MonoClass to act on
  *
+ * Use this function to get the underlying type for an enumeration value.
+ * 
  * Returns: The underlying type representation for an enumeration.
  */
 MonoType*
@@ -8938,6 +8950,10 @@ mono_class_get_parent (MonoClass *klass)
 /**
  * mono_class_get_nesting_type:
  * @klass: the MonoClass to act on
+ *
+ * Use this function to obtain the class that the provided `MonoClass*` is nested on.
+ *
+ * If the return is NULL, this indicates that this class is not nested.
  *
  * Returns: The container type where this type is nested or NULL if this type is not a nested type.
  */
@@ -9472,7 +9488,7 @@ mono_class_get_nested_types (MonoClass* klass, gpointer *iter)
  * mono_class_is_delegate
  * @klass: the MonoClass to act on
  *
- * Returns: true if the MonoClass represents a System.Delegate.
+ * Returns: TRUE if the MonoClass represents a System.Delegate.
  */
 mono_bool
 mono_class_is_delegate (MonoClass *klass)
@@ -9485,7 +9501,7 @@ mono_class_is_delegate (MonoClass *klass)
  * @klass: The MonoClass to act on
  * @interface: The interface to check if @klass implements.
  *
- * Returns: true if @klass implements @interface.
+ * Returns: TRUE if @klass implements @interface.
  */
 mono_bool
 mono_class_implements_interface (MonoClass* klass, MonoClass* iface)
@@ -10300,7 +10316,7 @@ can_access_member (MonoClass *access_klass, MonoClass *member_klass, MonoClass* 
  *
  * Used to determine if a method is allowed to access the specified field.
  *
- * Returns: true if the given @method is allowed to access the @field while following
+ * Returns: TRUE if the given @method is allowed to access the @field while following
  * the accessibility rules of the CLI.
  */
 gboolean
@@ -10327,7 +10343,7 @@ mono_method_can_access_field (MonoMethod *method, MonoClassField *field)
  *
  * Used to determine if the @method is allowed to access the specified @called method.
  *
- * Returns: true if the given @method is allowed to invoke the @called while following
+ * Returns: TRUE if the given @method is allowed to invoke the @called while following
  * the accessibility rules of the CLI.
  */
 gboolean

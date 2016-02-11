@@ -1596,6 +1596,7 @@ ves_icall_get_attributes (MonoReflectionType *type)
 ICALL_EXPORT MonoReflectionMarshalAsAttribute*
 ves_icall_System_Reflection_FieldInfo_get_marshal_info (MonoReflectionField *field)
 {
+	MonoError error;
 	MonoClass *klass = field->field->parent;
 	MonoMarshalType *info;
 	MonoType *ftype;
@@ -1615,8 +1616,13 @@ ves_icall_System_Reflection_FieldInfo_get_marshal_info (MonoReflectionField *fie
 		if (info->fields [i].field == field->field) {
 			if (!info->fields [i].mspec)
 				return NULL;
-			else
-				return mono_reflection_marshal_as_attribute_from_marshal_spec (field->object.vtable->domain, klass, info->fields [i].mspec);
+			else {
+				MonoReflectionMarshalAsAttribute* obj;
+				obj = mono_reflection_marshal_as_attribute_from_marshal_spec (field->object.vtable->domain, klass, info->fields [i].mspec, &error);
+				if (!mono_error_ok (&error))
+					mono_error_set_pending_exception (&error);
+				return obj;
+			}
 		}
 	}
 
@@ -1729,6 +1735,7 @@ ves_icall_get_parameter_info (MonoMethod *method, MonoReflectionMethod *member)
 ICALL_EXPORT MonoReflectionMarshalAsAttribute*
 ves_icall_System_MonoMethodInfo_get_retval_marshal (MonoMethod *method)
 {
+	MonoError error;
 	MonoDomain *domain = mono_domain_get (); 
 	MonoReflectionMarshalAsAttribute* res = NULL;
 	MonoMarshalSpec **mspecs;
@@ -1737,8 +1744,13 @@ ves_icall_System_MonoMethodInfo_get_retval_marshal (MonoMethod *method)
 	mspecs = g_new (MonoMarshalSpec*, mono_method_signature (method)->param_count + 1);
 	mono_method_get_marshal_info (method, mspecs);
 
-	if (mspecs [0])
-		res = mono_reflection_marshal_as_attribute_from_marshal_spec (domain, method->klass, mspecs [0]);
+	if (mspecs [0]) {
+		res = mono_reflection_marshal_as_attribute_from_marshal_spec (domain, method->klass, mspecs [0], &error);
+		if (!mono_error_ok (&error)) {
+			mono_error_set_pending_exception (&error);
+			return NULL;
+		}
+	}
 		
 	for (i = mono_method_signature (method)->param_count; i >= 0; i--)
 		if (mspecs [i])
@@ -2418,9 +2430,13 @@ ves_icall_MonoType_get_Module (MonoReflectionType *type)
 ICALL_EXPORT MonoReflectionAssembly*
 ves_icall_MonoType_get_Assembly (MonoReflectionType *type)
 {
+	MonoError error;
 	MonoDomain *domain = mono_domain_get (); 
 	MonoClass *klass = mono_class_from_mono_type (type->type);
-	return mono_assembly_get_object (domain, klass->image->assembly);
+	MonoReflectionAssembly *result = mono_assembly_get_object_checked (domain, klass->image->assembly, &error);
+	if (!result)
+		mono_error_set_pending_exception (&error);
+	return result;
 }
 
 ICALL_EXPORT MonoReflectionType*
@@ -3928,7 +3944,7 @@ property_accessor_nonpublic (MonoMethod* accessor, gboolean start_klass)
 ICALL_EXPORT MonoArray*
 ves_icall_Type_GetPropertiesByName (MonoReflectionType *type, MonoString *name, guint32 bflags, MonoBoolean ignore_case, MonoReflectionType *reftype)
 {
-	MonoException *ex;
+	MonoError error;
 	MonoDomain *domain; 
 	static MonoClass *System_Reflection_PropertyInfo;
 	MonoClass *startklass, *klass;
@@ -3943,6 +3959,8 @@ ves_icall_Type_GetPropertiesByName (MonoReflectionType *type, MonoString *name, 
 	GHashTable *properties = NULL;
 	MonoPtrArray tmp_array;
 
+	mono_error_init (&error);
+	
 	mono_ptr_array_init (tmp_array, 8, MONO_ROOT_SOURCE_REFLECTION, "temporary reflection properties list"); /*This the average for ASP.NET types*/
 
 	if (!System_Reflection_PropertyInfo)
@@ -4010,7 +4028,10 @@ handle_parent:
 		if (g_hash_table_lookup (properties, prop))
 			continue;
 
-		mono_ptr_array_append (tmp_array, mono_property_get_object (domain, startklass, prop));
+		MonoReflectionProperty *pr = mono_property_get_object_checked (domain, startklass, prop, &error);
+		if (!pr)
+			goto failure;
+		mono_ptr_array_append (tmp_array, pr);
 		
 		g_hash_table_insert (properties, prop, prop);
 	}
@@ -4028,20 +4049,25 @@ handle_parent:
 
 	return res;
 
+
+
 loader_error:
+	if (klass->exception_type != MONO_EXCEPTION_NONE) {
+		mono_error_set_exception_instance (&error, mono_class_get_exception_for_failure (klass));
+	} else {
+		mono_error_set_from_loader_error (&error);
+		mono_loader_clear_error ();
+	}
+
+failure:
 	if (properties)
 		g_hash_table_destroy (properties);
 	if (name)
 		g_free (propname);
 	mono_ptr_array_destroy (tmp_array);
 
-	if (klass->exception_type != MONO_EXCEPTION_NONE) {
-		ex = mono_class_get_exception_for_failure (klass);
-	} else {
-		ex = mono_loader_error_prepare_exception (mono_loader_get_last_error ());
-		mono_loader_clear_error ();
-	}
-	mono_set_pending_exception (ex);
+	mono_error_set_pending_exception (&error);
+
 	return NULL;
 }
 
@@ -4063,7 +4089,7 @@ event_equal (MonoEvent *event1, MonoEvent *event2)
 ICALL_EXPORT MonoArray*
 ves_icall_Type_GetEvents_internal (MonoReflectionType *type, MonoString *name, guint32 bflags, MonoReflectionType *reftype)
 {
-	MonoException *ex;
+	MonoError error;
 	MonoDomain *domain; 
 	static MonoClass *System_Reflection_EventInfo;
 	MonoClass *startklass, *klass;
@@ -4077,6 +4103,8 @@ ves_icall_Type_GetEvents_internal (MonoReflectionType *type, MonoString *name, g
 	GHashTable *events = NULL;
 	MonoPtrArray tmp_array;
 
+	mono_error_init (&error);
+	
 	mono_ptr_array_init (tmp_array, 4, MONO_ROOT_SOURCE_REFLECTION, "temporary reflection events list");
 
 	if (!System_Reflection_EventInfo)
@@ -4147,7 +4175,11 @@ handle_parent:
 		if (g_hash_table_lookup (events, event))
 			continue;
 
-		mono_ptr_array_append (tmp_array, mono_event_get_object (domain, startklass, event));
+		MonoReflectionEvent *ev_obj;
+		ev_obj = mono_event_get_object_checked (domain, startklass, event, &error);
+		if (!ev_obj)
+			goto failure;
+		mono_ptr_array_append (tmp_array, ev_obj);
 
 		g_hash_table_insert (events, event, event);
 	}
@@ -4169,14 +4201,23 @@ handle_parent:
 	return res;
 
 loader_error:
-	mono_ptr_array_destroy (tmp_array);
 	if (klass->exception_type != MONO_EXCEPTION_NONE) {
-		ex = mono_class_get_exception_for_failure (klass);
+		mono_error_set_exception_instance (&error, mono_class_get_exception_for_failure (klass));
 	} else {
-		ex = mono_loader_error_prepare_exception (mono_loader_get_last_error ());
+		mono_error_set_from_loader_error (&error);
 		mono_loader_clear_error ();
 	}
-	mono_set_pending_exception (ex);
+
+failure:
+	
+	if (events != NULL)
+		g_hash_table_destroy (events);
+	if (utf8_name != NULL)
+		g_free (utf8_name);
+
+	mono_ptr_array_destroy (tmp_array);
+
+	mono_error_set_pending_exception (&error);
 	return NULL;
 }
 
@@ -4460,9 +4501,11 @@ ves_icall_System_Reflection_Assembly_get_global_assembly_cache (MonoReflectionAs
 ICALL_EXPORT MonoReflectionAssembly*
 ves_icall_System_Reflection_Assembly_load_with_partial_name (MonoString *mname, MonoObject *evidence)
 {
+	MonoError error;
 	gchar *name;
 	MonoAssembly *res;
 	MonoImageOpenStatus status;
+	MonoReflectionAssembly* result = NULL;
 	
 	name = mono_string_to_utf8 (mname);
 	res = mono_assembly_load_with_partial_name (name, &status);
@@ -4471,7 +4514,10 @@ ves_icall_System_Reflection_Assembly_load_with_partial_name (MonoString *mname, 
 
 	if (res == NULL)
 		return NULL;
-	return mono_assembly_get_object (mono_domain_get (), res);
+	result = mono_assembly_get_object_checked (mono_domain_get (), res, &error);
+	if (!result)
+		mono_error_set_pending_exception (&error);
+	return result;
 }
 
 ICALL_EXPORT MonoString *
@@ -4575,7 +4621,9 @@ create_version (MonoDomain *domain, guint32 major, guint32 minor, guint32 build,
 	args [3] = &revision;
 	result = mono_object_new_checked (domain, System_Version, &error);
 	mono_error_raise_exception (&error); /* FIXME don't raise here */
-	mono_runtime_invoke (create_version, result, args, NULL);
+
+	mono_runtime_invoke_checked (create_version, result, args, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 
 	return result;
 }
@@ -4591,6 +4639,7 @@ ves_icall_System_Reflection_Assembly_GetReferencedAssemblies (MonoReflectionAsse
 	static MonoMethod *create_culture = NULL;
 	MonoImage *image = assembly->assembly->image;
 	MonoTableInfo *t;
+	MonoObject *o;
 
 	if (!System_Reflection_AssemblyName)
 		System_Reflection_AssemblyName = mono_class_from_name (
@@ -4635,7 +4684,11 @@ ves_icall_System_Reflection_Assembly_GetReferencedAssemblies (MonoReflectionAsse
 			MonoBoolean assembly_ref = 1;
 			args [0] = mono_string_new (domain, mono_metadata_string_heap (image, cols [MONO_ASSEMBLYREF_CULTURE]));
 			args [1] = &assembly_ref;
-			MONO_OBJECT_SETREF (aname, cultureInfo, mono_runtime_invoke (create_culture, NULL, args, NULL));
+
+			o = mono_runtime_invoke_checked (create_culture, NULL, args, &error);
+			mono_error_raise_exception (&error);
+
+			MONO_OBJECT_SETREF (aname, cultureInfo, o);
 		}
 		
 		if (cols [MONO_ASSEMBLYREF_PUBLIC_KEY]) {
@@ -4729,6 +4782,7 @@ ves_icall_System_Reflection_Assembly_GetManifestResourceInternal (MonoReflection
 ICALL_EXPORT gboolean
 ves_icall_System_Reflection_Assembly_GetManifestResourceInfoInternal (MonoReflectionAssembly *assembly, MonoString *name, MonoManifestResourceInfo *info)
 {
+	MonoError error;
 	MonoTableInfo *table = &assembly->assembly->image->tables [MONO_TABLE_MANIFESTRESOURCE];
 	int i;
 	guint32 cols [MONO_MANIFEST_SIZE];
@@ -4774,7 +4828,13 @@ ves_icall_System_Reflection_Assembly_GetManifestResourceInfoInternal (MonoReflec
 				mono_set_pending_exception (ex);
 				return FALSE;
 			}
-			MONO_OBJECT_SETREF (info, assembly, mono_assembly_get_object (mono_domain_get (), assembly->assembly->image->references [i - 1]));
+			MonoReflectionAssembly *assm_obj;
+			assm_obj = mono_assembly_get_object_checked (mono_domain_get (), assembly->assembly->image->references [i - 1], &error);
+			if (!assm_obj) {
+				mono_error_set_pending_exception (&error);
+				return FALSE;
+			}
+			MONO_OBJECT_SETREF (info, assembly, assm_obj);
 
 			/* Obtain info recursively */
 			ves_icall_System_Reflection_Assembly_GetManifestResourceInfoInternal (info->assembly, name, info);
@@ -4883,8 +4943,11 @@ ves_icall_System_Reflection_Assembly_GetModulesInternal (MonoReflectionAssembly 
 
 	for (i = 0; i < file_count; ++i, ++j) {
 		mono_metadata_decode_row (table, i, cols, MONO_FILE_SIZE);
-		if (cols [MONO_FILE_FLAGS] && FILE_CONTAINS_NO_METADATA)
-			mono_array_setref (res, j, mono_module_file_get_object (domain, image, i));
+		if (cols [MONO_FILE_FLAGS] && FILE_CONTAINS_NO_METADATA) {
+			MonoReflectionModule *rm = mono_module_file_get_object_checked (domain, image, i, &error);
+			mono_error_raise_exception (&error);
+			mono_array_setref (res, j, rm);
+		}
 		else {
 			MonoImage *m = mono_image_load_file_for_image (image, i + 1);
 			if (!m) {
@@ -4991,30 +5054,42 @@ ves_icall_System_Reflection_MethodBase_GetMethodBodyInternal (MonoMethod *method
 ICALL_EXPORT MonoReflectionAssembly*
 ves_icall_System_Reflection_Assembly_GetExecutingAssembly (void)
 {
+	MonoError error;
+	MonoReflectionAssembly *result;
 	MonoMethod *dest = NULL;
 
 	mono_stack_walk_no_il (get_executing, &dest);
 	g_assert (dest);
-	return mono_assembly_get_object (mono_domain_get (), dest->klass->image->assembly);
+	result = mono_assembly_get_object_checked (mono_domain_get (), dest->klass->image->assembly, &error);
+	if (!result)
+		mono_error_set_pending_exception (&error);
+	return result;
 }
 
 
 ICALL_EXPORT MonoReflectionAssembly*
 ves_icall_System_Reflection_Assembly_GetEntryAssembly (void)
 {
+	MonoError error;
+	MonoReflectionAssembly *result;
 	MonoDomain* domain = mono_domain_get ();
 
 	if (!domain->entry_assembly)
 		return NULL;
 
-	return mono_assembly_get_object (domain, domain->entry_assembly);
+	result = mono_assembly_get_object_checked (domain, domain->entry_assembly, &error);
+	if (!result)
+		mono_error_set_pending_exception (&error);
+	return result;
 }
 
 ICALL_EXPORT MonoReflectionAssembly*
 ves_icall_System_Reflection_Assembly_GetCallingAssembly (void)
 {
+	MonoError error;
 	MonoMethod *m;
 	MonoMethod *dest;
+	MonoReflectionAssembly *result;
 
 	dest = NULL;
 	mono_stack_walk_no_il (get_executing, &dest);
@@ -5026,7 +5101,10 @@ ves_icall_System_Reflection_Assembly_GetCallingAssembly (void)
 		mono_set_pending_exception (mono_get_exception_not_supported ("Stack walks are not supported on this platform."));
 		return NULL;
 	}
-	return mono_assembly_get_object (mono_domain_get (), dest->klass->image->assembly);
+	result = mono_assembly_get_object_checked (mono_domain_get (), dest->klass->image->assembly, &error);
+	if (!result)
+		mono_error_set_pending_exception (&error);
+	return result;
 }
 
 ICALL_EXPORT MonoString *
@@ -5086,6 +5164,8 @@ static void
 fill_reflection_assembly_name (MonoDomain *domain, MonoReflectionAssemblyName *aname, MonoAssemblyName *name, const char *absolute, gboolean by_default_version, gboolean default_publickey, gboolean default_token)
 {
 	static MonoMethod *create_culture = NULL;
+	MonoError error;
+	MonoObject *obj;
 	gpointer args [2];
 	guint32 pkey_len;
 	const char *pkey_ptr;
@@ -5146,7 +5226,11 @@ fill_reflection_assembly_name (MonoDomain *domain, MonoReflectionAssemblyName *a
 	if (name->culture) {
 		args [0] = mono_string_new (domain, name->culture);
 		args [1] = &assembly_ref;
-		MONO_OBJECT_SETREF (aname, cultureInfo, mono_runtime_invoke (create_culture, NULL, args, NULL));
+
+		obj = mono_runtime_invoke_checked (create_culture, NULL, args, &error);
+		mono_error_raise_exception (&error); /* FIXME don't raise here */
+
+		MONO_OBJECT_SETREF (aname, cultureInfo, obj);
 	}
 
 	if (name->public_key) {
@@ -7896,6 +7980,42 @@ mono_icall_cleanup (void)
 	mono_os_mutex_destroy (&icall_mutex);
 }
 
+/**
+ * mono_add_internal_call:
+ * @name: method specification to surface to the managed world
+ * @method: pointer to a C method to invoke when the method is called
+ *
+ * This method surfaces the C function pointed by @method as a method
+ * that has been surfaced in managed code with the method specified in
+ * @name as an internal call.
+ *
+ * Internal calls are surfaced to all app domains loaded and they are
+ * accessibly by a type with the specified name.
+ *
+ * You must provide a fully qualified type name, that is namespaces
+ * and type name, followed by a colon and the method name, with an
+ * optional signature to bind.
+ *
+ * For example, the following are all valid declarations:
+ *
+ * "MyApp.Services.ScriptService:Accelerate"
+ * "MyApp.Services.ScriptService:Slowdown(int,bool)"
+ *
+ * You use method parameters in cases where there might be more than
+ * one surface method to managed code.  That way you can register different
+ * internal calls for different method overloads.
+ *
+ * The internal calls are invoked with no marshalling.   This means that .NET
+ * types like System.String are exposed as `MonoString *` parameters.   This is
+ * different than the way that strings are surfaced in P/Invoke.
+ *
+ * For more information on how the parameters are marshalled, see the
+ * <a href="http://www.mono-project.com/docs/advanced/embedding/">Mono Embedding</a>
+ * page.
+ *
+ * See the <a  href="mono-api-methods.html#method-desc">Method Description</a>
+ * reference for more information on the format of method descriptions.
+ */
 void
 mono_add_internal_call (const char *name, gconstpointer method)
 {
