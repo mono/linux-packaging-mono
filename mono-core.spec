@@ -37,6 +37,7 @@ Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 Patch1:		0001-Un-revoke-fix-in-BNC-144655-mono-find-provides-shoul.patch
+Patch2:		0001-Don-t-remap-all-versions-of-Npgsql-to-4.0.0.0.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -132,6 +133,7 @@ technologies that have been submitted to the ECMA for standardization.
 %prep
 %setup -q -n mono-%{__majorver}
 %patch1 -p1
+%patch2 -p1
 
 %build
 ./autogen.sh
