@@ -1843,6 +1843,7 @@ init_amodule_got (MonoAotModule *amodule)
 	MonoMemPool *mp;
 	MonoJumpInfo *patches;
 	guint32 got_offsets [128];
+	MonoError error;
 	int i, npatches;
 
 	/* These can't be initialized in load_aot_module () */
@@ -1880,7 +1881,8 @@ init_amodule_got (MonoAotModule *amodule)
 		} else if (ji->type == MONO_PATCH_INFO_AOT_MODULE) {
 			amodule->shared_got [i] = amodule;
 		} else {
-			amodule->shared_got [i] = mono_resolve_patch_target (NULL, mono_get_root_domain (), NULL, ji, FALSE);
+			amodule->shared_got [i] = mono_resolve_patch_target (NULL, mono_get_root_domain (), NULL, ji, FALSE, &error);
+			mono_error_assert_ok (&error);
 		}
 	}
 
@@ -4070,6 +4072,7 @@ init_llvm_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *meth
 	int pindex, n_patches;
 	guint8 *p;
 	MonoJitInfo *jinfo = NULL;
+	MonoError error;
 	guint8 *code, *info;
 
 	code = (guint8 *)amodule->methods [method_index];
@@ -4133,7 +4136,8 @@ init_llvm_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *meth
 					ji->type = MONO_PATCH_INFO_ABS;
 					ji->data.target = jinfo;
 				}
-				addr = mono_resolve_patch_target (method, domain, code, ji, TRUE);
+				addr = mono_resolve_patch_target (method, domain, code, ji, TRUE, &error);
+				mono_error_raise_exception (&error); /* FIXME: don't raise here */
 				if (ji->type == MONO_PATCH_INFO_METHOD_JUMP)
 					addr = mono_create_ftnptr (domain, addr);
 				mono_memory_barrier ();
@@ -4599,7 +4603,7 @@ mono_aot_patch_plt_entry (guint8 *code, guint8 *plt_entry, gpointer *got, mgreg_
  * Returns NULL if the something cannot be loaded.
  */
 gpointer
-mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code)
+mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code, MonoError *error)
 {
 #ifdef MONO_ARCH_AOT_SUPPORTED
 	guint8 *p, *target, *plt_entry;
@@ -4607,8 +4611,9 @@ mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code
 	MonoAotModule *module = (MonoAotModule*)aot_module;
 	gboolean res, no_ftnptr = FALSE;
 	MonoMemPool *mp;
-	MonoError error;
 	gboolean using_gsharedvt = FALSE;
+
+	mono_error_init (error);
 
 	//printf ("DYN: %p %d\n", aot_module, plt_info_offset);
 
@@ -4636,12 +4641,18 @@ mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code
 	 */
 	if (mono_aot_only && ji.type == MONO_PATCH_INFO_METHOD && !ji.data.method->is_generic && !mono_method_check_context_used (ji.data.method) && !(ji.data.method->iflags & METHOD_IMPL_ATTRIBUTE_SYNCHRONIZED) &&
 		!mono_method_needs_static_rgctx_invoke (ji.data.method, FALSE) && !using_gsharedvt) {
-		target = (guint8 *)mono_jit_compile_method (ji.data.method, &error);
-		if (!mono_error_ok (&error))
-			mono_error_raise_exception (&error);
+		target = (guint8 *)mono_jit_compile_method (ji.data.method, error);
+		if (!mono_error_ok (error)) {
+			mono_mempool_destroy (mp);
+			return NULL;
+		}
 		no_ftnptr = TRUE;
 	} else {
-		target = (guint8 *)mono_resolve_patch_target (NULL, mono_domain_get (), NULL, &ji, TRUE);
+		target = (guint8 *)mono_resolve_patch_target (NULL, mono_domain_get (), NULL, &ji, TRUE, error);
+		if (!mono_error_ok (error)) {
+			mono_mempool_destroy (mp);
+			return NULL;
+		}
 	}
 
 	/*
@@ -4729,7 +4740,7 @@ mono_aot_get_plt_entry (guint8 *code)
 		return NULL;
 
 #ifdef TARGET_ARM
-	if (is_thumb_code (amodule, code))
+	if (is_thumb_code (amodule, code - 4))
 		return mono_arm_get_thumb_plt_entry (code);
 #endif
 
@@ -4884,6 +4895,7 @@ load_function_full (MonoAotModule *amodule, const char *name, MonoTrampInfo **ou
 
 		for (pindex = 0; pindex < n_patches; ++pindex) {
 			MonoJumpInfo *ji = &patches [pindex];
+			MonoError error;
 			gpointer target;
 
 			if (amodule->got [got_slots [pindex]])
@@ -4938,7 +4950,8 @@ load_function_full (MonoAotModule *amodule, const char *name, MonoTrampInfo **ou
 				/* Hopefully the code doesn't have patches which need method or 
 				 * domain to be set.
 				 */
-				target = mono_resolve_patch_target (NULL, NULL, (guint8 *)code, ji, FALSE);
+				target = mono_resolve_patch_target (NULL, NULL, (guint8 *)code, ji, FALSE, &error);
+				mono_error_assert_ok (&error);
 				g_assert (target);
 			}
 
@@ -5728,7 +5741,7 @@ mono_aot_get_plt_entry (guint8 *code)
 }
 
 gpointer
-mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code)
+mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code, MonoError *error)
 {
 	return NULL;
 }

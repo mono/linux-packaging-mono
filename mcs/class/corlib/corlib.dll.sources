@@ -239,7 +239,6 @@ System.Reflection/FieldInfo.cs
 System.Reflection/ImageFileMachine.cs
 System.Reflection/LocalVariableInfo.cs
 System.Reflection/MethodBody.cs
-System.Reflection/MethodInfo.cs
 System.Reflection/Module.cs
 System.Reflection/ModuleResolveEventHandler.cs
 System.Reflection/MonoAssembly.cs
@@ -637,6 +636,7 @@ System.Security/NamedPermissionSet.cs
 System.Security/PermissionBuilder.cs
 System.Security/PermissionSet.cs
 System.Security/PolicyLevelType.cs
+System.Security/SafeAccessTokenHandle.cs
 System.Security/SecureString.cs
 System.Security/SecurityElement.cs
 System.Security/SecurityFrame.cs
@@ -907,6 +907,7 @@ ReferenceSources/TypeNameParser.cs
 ReferenceSources/RuntimeType.cs
 ReferenceSources/RemotingFieldCachedData.cs
 ReferenceSources/MethodBase.cs
+ReferenceSources/NativeMethods.cs
 ReferenceSources/RuntimeHandles.cs
 ReferenceSources/CompareInfo.cs
 ReferenceSources/TypeBuilderInstantiation.cs
@@ -1137,6 +1138,7 @@ ReferenceSources/SecurityContext.cs
 
 ../../../external/referencesource/mscorlib/system/diagnostics/contracts/contracts.cs
 ../../../external/referencesource/mscorlib/system/diagnostics/contracts/contractsbcl.cs
+../../../external/referencesource/mscorlib/system/diagnostics/eventing/winmeta.cs
 
 ../../../external/referencesource/mscorlib/system/globalization/bidicategory.cs
 ../../../external/referencesource/mscorlib/system/globalization/calendar.cs
@@ -1236,6 +1238,7 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/reflection/methodbase.cs
 ../../../external/referencesource/mscorlib/system/reflection/methodbody.cs
 ../../../external/referencesource/mscorlib/system/reflection/methodimplattributes.cs
+../../../external/referencesource/mscorlib/system/reflection/methodinfo.cs
 ../../../external/referencesource/mscorlib/system/reflection/missing.cs
 ../../../external/referencesource/mscorlib/system/reflection/obfuscateassemblyattribute.cs
 ../../../external/referencesource/mscorlib/system/reflection/obfuscationattribute.cs

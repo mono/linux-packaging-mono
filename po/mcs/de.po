@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-02-11 10:40-0500\n"
+"POT-Creation-Date: 2016-02-18 10:52-0500\n"
 "PO-Revision-Date: 2008-09-26 15:14+0100\n"
 "Last-Translator: Daniel Nauck <dna@mono-project.de>\n"
 "Language-Team: http://www.mono-project.de\n"
@@ -131,71 +131,71 @@ msgstr ""
 msgid "Cannot assign to `{0}' because it is a `{1}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:210
+#: mcs/mcs/assembly.cs:211
 msgid ""
 "Executables cannot be satellite assemblies. Remove the attribute or keep it "
 "empty"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:234
+#: mcs/mcs/assembly.cs:235
 #, csharp-format
 msgid ""
 "The specified version string `{0}' does not conform to the required format - "
 "major[.minor[.build[.revision]]]"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:287
+#: mcs/mcs/assembly.cs:289
 msgid "Invalid type specified as an argument for TypeForwardedTo attribute"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:295
+#: mcs/mcs/assembly.cs:297
 #, csharp-format
 msgid "A duplicate type forward of type `{0}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:304
+#: mcs/mcs/assembly.cs:306
 #, fuzzy, csharp-format
 msgid "Cannot forward type `{0}' because it is defined in this assembly"
 msgstr ""
 "NULL kann nicht in `{0}' konvertiert werden, da dies ein Werttyp ist, der "
 "nicht auf NULL festgelegt werden kann"
 
-#: mcs/mcs/assembly.cs:310
+#: mcs/mcs/assembly.cs:312
 #, fuzzy, csharp-format
 msgid "Cannot forward type `{0}' because it is a nested type"
 msgstr ""
 "NULL kann nicht in `{0}' konvertiert werden, da dies ein Werttyp ist, der "
 "nicht auf NULL festgelegt werden kann"
 
-#: mcs/mcs/assembly.cs:327
+#: mcs/mcs/assembly.cs:329
 msgid "Friend assembly reference cannot have `null' value"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:344
+#: mcs/mcs/assembly.cs:346
 #, csharp-format
 msgid ""
 "Friend assembly reference `{0}' is invalid. InternalsVisibleTo declarations "
 "cannot have a version, culture or processor architecture specified"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:352
+#: mcs/mcs/assembly.cs:354
 #, csharp-format
 msgid ""
 "Friend assembly reference `{0}' is invalid. Strong named assemblies must "
 "specify a public key in their InternalsVisibleTo declarations"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:417
+#: mcs/mcs/assembly.cs:421
 #, csharp-format
 msgid "Referenced assembly `{0}' does not have a strong name"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:423
+#: mcs/mcs/assembly.cs:427
 #, csharp-format
 msgid "Referenced assembly `{0}' has different culture setting of `{1}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:450
+#: mcs/mcs/assembly.cs:454
 #, csharp-format
 msgid ""
 "Friend access was granted to `{0}', but the output assembly is named `{1}'. "
@@ -203,95 +203,95 @@ msgid ""
 "it"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:464
+#: mcs/mcs/assembly.cs:468
 msgid ""
 "Could not sign the assembly. ECMA key can only be used to delay-sign "
 "assemblies"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:723
+#: mcs/mcs/assembly.cs:727
 msgid ""
 "Added modules must be marked with the CLSCompliant attribute to match the "
 "assembly"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:758 mcs/mcs/assembly.cs:773
+#: mcs/mcs/assembly.cs:762 mcs/mcs/assembly.cs:777
 #, csharp-format
 msgid ""
 "Option `{0}' overrides attribute `{1}' given in a source file or added module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:808
+#: mcs/mcs/assembly.cs:812
 msgid "Delay signing was requested but no key file was given"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:829
+#: mcs/mcs/assembly.cs:837
 msgid "Cannot link resource file when building a module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:834 mcs/mcs/module.cs:752
+#: mcs/mcs/assembly.cs:842 mcs/mcs/module.cs:752
 #, fuzzy, csharp-format
 msgid "Error reading resource file `{0}'"
 msgstr "Fehler beim erstellen der XML-Dokumentationsdatei `{0}' (`{1}')"
 
-#: mcs/mcs/assembly.cs:904
+#: mcs/mcs/assembly.cs:912
 #, csharp-format
 msgid "Output file `{0}' exceeds the 4GB limit"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:906
+#: mcs/mcs/assembly.cs:914
 #, fuzzy, csharp-format
 msgid "Could not write to file `{0}'. {1}"
 msgstr "Kompilierung abgebrochen in Datei `{0}', {1}"
 
-#: mcs/mcs/assembly.cs:950
+#: mcs/mcs/assembly.cs:958
 msgid "Cannot specify -main if building a module or library"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:976
+#: mcs/mcs/assembly.cs:984
 #, csharp-format
 msgid "Could not find `{0}' specified for Main method"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:982
+#: mcs/mcs/assembly.cs:990
 #, fuzzy, csharp-format
 msgid "`{0}' specified for Main method must be a valid class or struct"
 msgstr "`{0}': Erweiterungsmethoden müssen statisch sein"
 
-#: mcs/mcs/assembly.cs:986
+#: mcs/mcs/assembly.cs:994
 #, csharp-format
 msgid "`{0}' does not have a suitable static Main method"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:989
+#: mcs/mcs/assembly.cs:997
 #, csharp-format
 msgid ""
 "Program `{0}' does not contain a static `Main' method suitable for an entry "
 "point"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1008
+#: mcs/mcs/assembly.cs:1016
 msgid "Error during assembly signing. "
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1198
+#: mcs/mcs/assembly.cs:1206
 #, csharp-format
 msgid "Metadata file `{0}' could not be found"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1203
+#: mcs/mcs/assembly.cs:1211
 #, csharp-format
 msgid "Metadata file `{0}' does not contain valid metadata"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1209
+#: mcs/mcs/assembly.cs:1217
 #, csharp-format
 msgid ""
 "Referenced assembly file `{0}' is a module. Consider using `-addmodule' "
 "option to add the module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1216
+#: mcs/mcs/assembly.cs:1224
 #, csharp-format
 msgid ""
 "Added module file `{0}' is an assembly. Consider using `-r' option to "
@@ -1221,51 +1221,51 @@ msgid ""
 "delegate `{1}'"
 msgstr ""
 
-#: mcs/mcs/delegate.cs:549
+#: mcs/mcs/delegate.cs:561
 #, csharp-format
 msgid ""
 "Cannot create delegate from method `{0}' because it is a member of System."
 "Nullable<T> type"
 msgstr ""
 
-#: mcs/mcs/delegate.cs:562
+#: mcs/mcs/delegate.cs:574
 #, csharp-format
 msgid ""
 "Extension method `{0}' of value type `{1}' cannot be used to create delegates"
 msgstr ""
 
-#: mcs/mcs/delegate.cs:580
+#: mcs/mcs/delegate.cs:592
 #, csharp-format
 msgid "Cannot create delegate from partial method declaration `{0}'"
 msgstr ""
 
-#: mcs/mcs/delegate.cs:583
+#: mcs/mcs/delegate.cs:595
 #, csharp-format
 msgid ""
 "Cannot create delegate with `{0}' because it has a Conditional attribute"
 msgstr ""
 
-#: mcs/mcs/delegate.cs:634
+#: mcs/mcs/delegate.cs:646
 #, csharp-format
 msgid ""
 "A method or delegate `{0} {1}' parameters and return type must be same as "
 "delegate `{2} {3}' parameters and return type"
 msgstr ""
 
-#: mcs/mcs/delegate.cs:641
+#: mcs/mcs/delegate.cs:653
 #, csharp-format
 msgid ""
 "A method or delegate `{0}' parameters do not match delegate `{1}' parameters"
 msgstr ""
 
-#: mcs/mcs/delegate.cs:646
+#: mcs/mcs/delegate.cs:658
 #, csharp-format
 msgid ""
 "A method or delegate `{0} {1}' return type does not match delegate `{2} {3}' "
 "return type"
 msgstr ""
 
-#: mcs/mcs/delegate.cs:823
+#: mcs/mcs/delegate.cs:835
 msgid "Method name expected"
 msgstr "Methodennamen erwartet"
 
@@ -2645,32 +2645,32 @@ msgstr ""
 msgid "Unsafe code may not appear in iterators"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:284
+#: mcs/mcs/ikvm.cs:286
 msgid "SDK path could not be resolved"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:385 mcs/mcs/ikvm.cs:389
+#: mcs/mcs/ikvm.cs:387 mcs/mcs/ikvm.cs:391
 #, csharp-format
 msgid ""
 "Assuming assembly reference `{0}' matches assembly `{1}'. You may need to "
 "supply runtime policy"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:497
+#: mcs/mcs/ikvm.cs:499
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:506
+#: mcs/mcs/ikvm.cs:508
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
 "removing one of the references"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:625
+#: mcs/mcs/ikvm.cs:627
 #, fuzzy, csharp-format
 msgid "Error opening icon file `{0}'. {1}"
 msgstr "Fehler beim erstellen der XML-Dokumentationsdatei `{0}' (`{1}')"
@@ -3744,38 +3744,38 @@ msgstr ""
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:809
+#: mcs/mcs/typemanager.cs:814
 #, csharp-format
 msgid "The predefined type `{0}.{1}' is not defined or imported"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:854
+#: mcs/mcs/typemanager.cs:859
 #, csharp-format
 msgid ""
 "The predefined type `{0}.{1}' is defined multiple times. Using definition "
 "from `{2}'"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:865
+#: mcs/mcs/typemanager.cs:870
 #, csharp-format
 msgid ""
 "The predefined type `{0}.{1}' is defined in an assembly that is not "
 "referenced."
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:875
+#: mcs/mcs/typemanager.cs:880
 #, csharp-format
 msgid "The predefined type `{0}.{1}' is not declared correctly"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:1001
+#: mcs/mcs/typemanager.cs:1006
 #, csharp-format
 msgid ""
 "The compiler required member `{0}.{1}{2}' could not be found or is "
 "inaccessible"
 msgstr ""
 
-#: mcs/mcs/typemanager.cs:1120
+#: mcs/mcs/typemanager.cs:1125
 #, csharp-format
 msgid ""
 "Cannot take the address of, get the size of, or declare a pointer to a "
