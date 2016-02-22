@@ -891,11 +891,11 @@ namespace System.Net.Sockets {
                 //     NetworkAccess.Accept permissions in Receive.
             }
             else {
-                //<STRIP>
-                // for V1 we will demand permission to run UnmanagedCode for
-                // an EndPoint that is not an IPEndPoint until we figure out how these fit
-                // into the whole picture of SocketPermission
-                //</STRIP>
+                //<
+
+
+
+
 
                 ExceptionHelper.UnmanagedPermission.Demand();
             }
@@ -2972,16 +2972,16 @@ namespace System.Net.Sockets {
             }
 
 
-            //<STRIP>
-            // we now need to get the status of the async completion, we had an easy implementation
-            // that uses GetSocketOption(), but VadimE suggested not to use this 'cause it may be
-            // buggy on some platforms, so we use WSAEnumNetworkEvents() instead:
-            //
-            // The best way to do this is to call WSAEnumNetworkEvents and use the error code iError
-            // array corresponding to FD_CONNECT. getsockopt (SO_ERROR) may return NO_ERROR under
-            // stress even in case of error at least on Winnt4.0 (I don't remember whether I fixed
-            // it on Win2000 or WinXP).
-            //</STRIP>
+            //<
+
+
+
+
+
+
+
+
+
 
             //
             // get async completion

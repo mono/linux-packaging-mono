@@ -57,7 +57,7 @@ namespace System {
 		 * of icalls, do not require an increment.
 		 */
 #pragma warning disable 169
-		private const int mono_corlib_version = 138;
+		private const int mono_corlib_version = 140;
 #pragma warning restore 169
 
 		[ComVisible (true)]
@@ -375,7 +375,7 @@ namespace System {
 		/// </summary>
 		public static Version Version {
 			get {
-				return new Version (Consts.FxFileVersion);
+				return new Version (Consts.EnvironmentVersion);
 			}
 		}
 
@@ -736,6 +736,10 @@ namespace System {
 				return String.Empty;
 			// This is where data common to all users goes
 			case SpecialFolder.CommonApplicationData:
+				Version v = CreateVersionFromString (GetOSVersionString ());
+				if (Platform == PlatformID.MacOSX && v >= new Version(15, 0)) {
+					return "/usr/local/share";
+				}
 				return "/usr/share";
 			default:
 				throw new ArgumentException ("Invalid SpecialFolder");

@@ -30,7 +30,8 @@
 #include <math.h>
 #include <glib.h>
 #include "mono-hash.h"
-#include "metadata/gc-internal.h"
+#include "metadata/gc-internals.h"
+#include <mono/utils/checked-build.h>
 
 #ifdef HAVE_BOEHM_GC
 #define mg_new0(type,n)  ((type *) GC_MALLOC(sizeof(type) * (n)))
@@ -63,34 +64,30 @@ struct _MonoGHashTable {
 	int   last_rehash;
 	GDestroyNotify value_destroy_func, key_destroy_func;
 	MonoGHashGCType gc_type;
+	MonoGCRootSource source;
+	const char *msg;
 };
+
+static MonoGHashTable *
+mono_g_hash_table_new (GHashFunc hash_func, GEqualFunc key_equal_func);
 
 #ifdef HAVE_SGEN_GC
 static MonoGCDescriptor table_hash_descr = MONO_GC_DESCRIPTOR_NULL;
 
 static void mono_g_hash_mark (void *addr, MonoGCMarkFunc mark_func, void *gc_data);
+#endif
 
 static Slot*
 new_slot (MonoGHashTable *hash)
 {
-	if (hash->gc_type == MONO_HASH_CONSERVATIVE_GC)
-		return mono_gc_alloc_fixed (sizeof (Slot), MONO_GC_DESCRIPTOR_NULL);
-	else
-		return mg_new (Slot, 1);
+	return mg_new (Slot, 1);
 }
 
 static void
 free_slot (MonoGHashTable *hash, Slot *slot)
 {
-	if (hash->gc_type == MONO_HASH_CONSERVATIVE_GC)
-		mono_gc_free_fixed (slot);
-	else
-		mg_free (slot);
+	mg_free (slot);
 }
-#else
-#define new_slot(h)	mg_new(Slot,1)
-#define free_slot(h,s)	mg_free((s))
-#endif
 
 #if UNUSED
 static gboolean
@@ -122,29 +119,31 @@ calc_prime (int x)
 #endif
 
 MonoGHashTable *
-mono_g_hash_table_new_type (GHashFunc hash_func, GEqualFunc key_equal_func, MonoGHashGCType type)
+mono_g_hash_table_new_type (GHashFunc hash_func, GEqualFunc key_equal_func, MonoGHashGCType type, MonoGCRootSource source, const char *msg)
 {
 	MonoGHashTable *hash = mono_g_hash_table_new (hash_func, key_equal_func);
 
 	hash->gc_type = type;
+	hash->source = source;
+	hash->msg = msg;
 
-#ifdef HAVE_SGEN_GC
 	if (type > MONO_HASH_KEY_VALUE_GC)
 		g_error ("wrong type for gc hashtable");
+
+#ifdef HAVE_SGEN_GC
 	/*
 	 * We use a user defined marking function to avoid having to register a GC root for
 	 * each hash node.
 	 */
 	if (!table_hash_descr)
 		table_hash_descr = mono_gc_make_root_descr_user (mono_g_hash_mark);
-	if (type != MONO_HASH_CONSERVATIVE_GC)
-		mono_gc_register_root_wbarrier ((char*)hash, sizeof (MonoGHashTable), table_hash_descr);
+	mono_gc_register_root_wbarrier ((char*)hash, sizeof (MonoGHashTable), table_hash_descr, source, msg);
 #endif
 
 	return hash;
 }
 
-MonoGHashTable *
+static MonoGHashTable *
 mono_g_hash_table_new (GHashFunc hash_func, GEqualFunc key_equal_func)
 {
 	MonoGHashTable *hash;
@@ -165,20 +164,6 @@ mono_g_hash_table_new (GHashFunc hash_func, GEqualFunc key_equal_func)
 	return hash;
 }
 
-MonoGHashTable *
-mono_g_hash_table_new_full (GHashFunc hash_func, GEqualFunc key_equal_func,
-			    GDestroyNotify key_destroy_func, GDestroyNotify value_destroy_func)
-{
-	MonoGHashTable *hash = mono_g_hash_table_new (hash_func, key_equal_func);
-	if (hash == NULL)
-		return NULL;
-	
-	hash->key_destroy_func = key_destroy_func;
-	hash->value_destroy_func = value_destroy_func;
-	
-	return hash;
-}
-
 typedef struct {
 	MonoGHashTable *hash;
 	int new_size;
@@ -188,7 +173,7 @@ typedef struct {
 static void*
 do_rehash (void *_data)
 {
-	RehashData *data = _data;
+	RehashData *data = (RehashData *)_data;
 	MonoGHashTable *hash = data->hash;
 	int current_size, i;
 	Slot **table;
@@ -218,6 +203,8 @@ do_rehash (void *_data)
 static void
 rehash (MonoGHashTable *hash)
 {
+	MONO_REQ_GC_UNSAFE_MODE; //we must run in unsafe mode to make rehash safe
+
 	int diff = ABS (hash->last_rehash - hash->in_use);
 	RehashData data;
 	void *old_table G_GNUC_UNUSED; /* unused on Boehm */
@@ -232,7 +219,13 @@ rehash (MonoGHashTable *hash)
 	data.new_size = g_spaced_primes_closest (hash->in_use);
 	data.table = mg_new0 (Slot *, data.new_size);
 
-	old_table = mono_gc_invoke_with_gc_lock (do_rehash, &data);
+	if (!mono_threads_is_coop_enabled ()) {
+		old_table = mono_gc_invoke_with_gc_lock (do_rehash, &data);
+	} else {
+		/* We cannot be preempted */
+		old_table = do_rehash (&data);
+	}
+
 	mg_free (old_table);
 }
 
@@ -432,17 +425,17 @@ mono_g_hash_table_insert_replace (MonoGHashTable *hash, gpointer key, gpointer v
 			if (replace){
 				if (hash->key_destroy_func != NULL)
 					(*hash->key_destroy_func)(s->key);
-				s->key = key;
+				s->key = (MonoObject *)key;
 			}
 			if (hash->value_destroy_func != NULL)
 				(*hash->value_destroy_func) (s->value);
-			s->value = value;
+			s->value = (MonoObject *)value;
 			return;
 		}
 	}
 	s = new_slot (hash);
-	s->key = key;
-	s->value = value;
+	s->key = (MonoObject *)key;
+	s->value = (MonoObject *)value;
 	s->next = hash->table [hashcode];
 	hash->table [hashcode] = s;
 	hash->in_use++;

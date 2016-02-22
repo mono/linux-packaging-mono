@@ -523,7 +523,10 @@ namespace System.Xml
             Operation operation = Operation.Read;
             IStreamProvider streamProvider;
             XmlDictionaryWriter writer;
+            Func<IAsyncResult, WriteValueAsyncResult, bool> writeBlockHandler;
 
+            static Func<IAsyncResult, WriteValueAsyncResult, bool> handleWriteBlock = HandleWriteBlock;
+            static Func<IAsyncResult, WriteValueAsyncResult, bool> handleWriteBlockAsync = HandleWriteBlockAsync;
             static AsyncCallback onContinueWork = Fx.ThunkCallback(OnContinueWork);
 
             public WriteValueAsyncResult(XmlDictionaryWriter writer, IStreamProvider value, AsyncCallback callback, object state)
@@ -531,6 +534,7 @@ namespace System.Xml
             {
                 this.streamProvider = value;
                 this.writer = writer;
+                this.writeBlockHandler = this.writer.Settings != null && this.writer.Settings.Async ? handleWriteBlockAsync : handleWriteBlock;
                 this.stream = value.GetStream();
                 if (this.stream == null)
                 {
@@ -598,7 +602,7 @@ namespace System.Xml
                     }
                     else
                     {
-                        if (HandleWriteBlock(result))
+                        if (this.writeBlockHandler(result, this))
                         {
                             // Write completed ([....] or async, doesn't matter) 
                             AdjustBlockSize();
@@ -631,24 +635,43 @@ namespace System.Xml
             }
 
             //returns whether or not I completed.
-            bool HandleWriteBlock(IAsyncResult result)
+            static bool HandleWriteBlock(IAsyncResult result, WriteValueAsyncResult thisPtr)
             {
                 if (result == null)
                 {
-                    result = this.writer.BeginWriteBase64(this.block, 0, this.bytesRead, onContinueWork, this);
+                    result = thisPtr.writer.BeginWriteBase64(thisPtr.block, 0, thisPtr.bytesRead, onContinueWork, thisPtr);
                     if (!result.CompletedSynchronously)
                     {
                         return false;
                     }
                 }
 
-                this.writer.EndWriteBase64(result);
+                thisPtr.writer.EndWriteBase64(result);
+                return true;
+            }
+
+            //returns whether or not I completed.
+            static bool HandleWriteBlockAsync(IAsyncResult result, WriteValueAsyncResult thisPtr)
+            {
+                Task task = (Task)result;
+
+                if (task == null)
+                {
+                    task = thisPtr.writer.WriteBase64Async(thisPtr.block, 0, thisPtr.bytesRead);
+                    task.AsAsyncResult(onContinueWork, thisPtr);
+                    return false;
+                }
+
+                task.GetAwaiter().GetResult();
+
                 return true;
             }
 
             static void OnContinueWork(IAsyncResult result)
             {
-                if (result.CompletedSynchronously)
+                // If result is a Task we shouldn't check for Synchronous completion 
+                // We should only return if we're in the async completion path and if the result completed synchronously.
+                if (result.CompletedSynchronously && !(result is Task))
                 {
                     return;
                 }

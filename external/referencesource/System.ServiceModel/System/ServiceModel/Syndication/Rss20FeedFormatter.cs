@@ -502,9 +502,8 @@ namespace System.ServiceModel.Syndication
                     }
                 }
             }
-            reader.ReadStartElement();
-            link.Uri = new Uri(reader.ReadString(), UriKind.RelativeOrAbsolute);
-            reader.ReadEndElement();
+            string uri = reader.ReadElementString();
+            link.Uri = new Uri(uri, UriKind.RelativeOrAbsolute); 
             return link;
         }
 
@@ -655,10 +654,17 @@ namespace System.ServiceModel.Syndication
                             }
                             else if (reader.IsStartElement(Rss20Constants.PubDateTag, Rss20Constants.Rss20Namespace))
                             {
+                                bool canReadContent = !reader.IsEmptyElement;
                                 reader.ReadStartElement();
-                                string str = reader.ReadString();
-                                result.PublishDate = DateFromString(str, reader);
-                                reader.ReadEndElement();
+                                if (canReadContent)
+                                {
+                                    string str = reader.ReadString();
+                                    if (!string.IsNullOrEmpty(str))
+                                    {
+                                        result.PublishDate = DateFromString(str, reader);
+                                    }
+                                    reader.ReadEndElement();
+                                }
                             }
                             else if (reader.IsStartElement(Rss20Constants.SourceTag, Rss20Constants.Rss20Namespace))
                             {
@@ -691,9 +697,7 @@ namespace System.ServiceModel.Syndication
                                         }
                                     }
                                 }
-                                reader.ReadStartElement();
-                                string feedTitle = reader.ReadString();
-                                reader.ReadEndElement();
+                                string feedTitle = reader.ReadElementString();
                                 feed.Title = new TextSyndicationContent(feedTitle);
                                 result.SourceFeed = feed;
                             }
@@ -947,9 +951,17 @@ namespace System.ServiceModel.Syndication
                         }
                         else if (reader.IsStartElement(Rss20Constants.LastBuildDateTag, Rss20Constants.Rss20Namespace))
                         {
+                            bool canReadContent = !reader.IsEmptyElement;
                             reader.ReadStartElement();
-                            result.LastUpdatedTime = DateFromString(reader.ReadString(), reader);
-                            reader.ReadEndElement();
+                            if (canReadContent)
+                            {
+                                string str = reader.ReadString();
+                                if (!string.IsNullOrEmpty(str))
+                                {
+                                    result.LastUpdatedTime = DateFromString(str, reader);
+                                }
+                                reader.ReadEndElement();
+                            }
                         }
                         else if (reader.IsStartElement(Rss20Constants.CategoryTag, Rss20Constants.Rss20Namespace))
                         {

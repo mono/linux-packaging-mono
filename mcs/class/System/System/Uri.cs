@@ -371,7 +371,7 @@ namespace System {
 			if ((path.Length == 0 || path [0] != '/') && baseEl.delimiter == SchemeDelimiter)
 				path = "/" + path;
 
-			source += UriHelper.Reduce (path, true);
+			source += UriHelper.Reduce (path, !IriParsing);
 
 			if (relativeEl.query != null) {
 				canUseBase = false;
@@ -799,6 +799,18 @@ namespace System {
 			int i = (int) c;
 			return (((i >= 0x41) && (i <= 0x5A)) || ((i >= 0x61) && (i <= 0x7A)));
 		}
+
+		// taken from referencesource/System/net/System/URI.cs
+		private static bool IsAsciiLetter(char character) {
+
+			return  (character >= 'a' && character <= 'z') ||
+					(character >= 'A' && character <= 'Z');
+		}
+
+		internal static bool IsAsciiLetterOrDigit(char character) {
+			return IsAsciiLetter (character) || (character >= '0' && character <= '9');
+		}
+		//
 
 		public override bool Equals (object comparand) 
 		{
@@ -1777,7 +1789,7 @@ namespace System {
 
 		// static methods
 
-		private const int MaxUriLength = 32766;
+		private const int MaxUriLength = 0xfff0;
 
 		public static int Compare (Uri uri1, Uri uri2, UriComponents partsToCompare, UriFormat compareFormat, StringComparison comparisonType)
 		{
@@ -1825,7 +1837,7 @@ namespace System {
 			if (stringToEscape == null)
 				throw new ArgumentNullException ("stringToEscape");
 
-			if (stringToEscape.Length > MaxUriLength) {
+			if (stringToEscape.Length >= MaxUriLength) {
 				throw new UriFormatException (string.Format ("Uri is longer than the maximum {0} characters.", MaxUriLength));
 			}
 
@@ -1882,7 +1894,7 @@ namespace System {
 			if (stringToEscape == null)
 				throw new ArgumentNullException ("stringToEscape");
 
-			if (stringToEscape.Length > MaxUriLength) {
+			if (stringToEscape.Length >= MaxUriLength) {
 				throw new UriFormatException (string.Format ("Uri is longer than the maximum {0} characters.", MaxUriLength));
 			}
 

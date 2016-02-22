@@ -37,8 +37,8 @@ Community supported architectures:
 [8]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-armhf/
 [9]: https://ci.appveyor.com/api/projects/status/1e61ebdfpbiei58v/branch/master?svg=true
 [10]: https://ci.appveyor.com/project/ajlennon/mono-817/branch/master
-[11]: http://jenkins.mono-project.com/job/test-mono-mainline-communityarchitectures/label=nealef-s390x-1/badge/icon
-[12]: http://jenkins.mono-project.com/job/test-mono-mainline-communityarchitectures/label=nealef-s390x-1/
+[11]: https://jenkins.mono-project.com/job/z/label=centos-s390x/badge/icon
+[12]: https://jenkins.mono-project.com/job/z/label=centos-s390x
 
 Compilation and Installation
 ============================
@@ -80,8 +80,7 @@ Testing and Installation
 You can run the mono and mcs test suites with the command: `make check`.
 
 Expect to find a few test suite failures. As a sanity check, you
-can compare the failures you got with [https://wrench.mono-project.com/Wrench/](https://wrench.mono-project.com/Wrench/)
-and [http://jenkins.mono-project.com/](http://jenkins.mono-project.com/).
+can compare the failures you got with [https://jenkins.mono-project.com/](https://jenkins.mono-project.com/).
 
 You can now install mono with: `make install`
 
@@ -497,4 +496,3 @@ to do at all), first edit `.gitmodules` to point to the new location, then:
 The desired output diff is a change in `.gitmodules` to reflect the
 change in the remote URL, and a change in /<submodule> where you see
 the desired change in the commit hash.
-

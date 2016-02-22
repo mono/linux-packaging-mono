@@ -44,16 +44,16 @@
 #include <stdlib.h>
 
 #include "sgen/sgen-gc.h"
-#include "sgen-bridge-internal.h"
+#include "sgen-bridge-internals.h"
 #include "sgen/sgen-hash-table.h"
 #include "sgen/sgen-qsort.h"
-#include "utils/mono-logger-internal.h"
+#include "utils/mono-logger-internals.h"
 
 MonoGCBridgeCallbacks bridge_callbacks;
 static SgenBridgeProcessor bridge_processor;
 static SgenBridgeProcessor compare_to_bridge_processor;
 
-gboolean bridge_processing_in_progress = FALSE;
+volatile gboolean bridge_processing_in_progress = FALSE;
 
 void
 mono_gc_wait_for_bridge_processing (void)
@@ -151,8 +151,8 @@ sgen_bridge_processing_stw_step (void)
 static gboolean
 is_bridge_object_dead (GCObject *obj, void *data)
 {
-	SgenHashTable *table = data;
-	unsigned char *value = sgen_hash_table_lookup (table, obj);
+	SgenHashTable *table = (SgenHashTable *)data;
+	unsigned char *value = (unsigned char *)sgen_hash_table_lookup (table, obj);
 	if (!value)
 		return FALSE;
 	return !*value;
@@ -179,9 +179,12 @@ null_weak_links_to_dead_objects (SgenBridgeProcessor *processor, int generation)
 	}
 
 	/* Null weak links to dead objects. */
-	sgen_null_links_if (is_bridge_object_dead, &alive_hash, GENERATION_NURSERY);
-	if (generation == GENERATION_OLD)
-		sgen_null_links_if (is_bridge_object_dead, &alive_hash, GENERATION_OLD);
+	sgen_null_links_if (is_bridge_object_dead, &alive_hash, GENERATION_NURSERY, FALSE);
+	sgen_null_links_if (is_bridge_object_dead, &alive_hash, GENERATION_NURSERY, TRUE);
+	if (generation == GENERATION_OLD) {
+		sgen_null_links_if (is_bridge_object_dead, &alive_hash, GENERATION_OLD, FALSE);
+		sgen_null_links_if (is_bridge_object_dead, &alive_hash, GENERATION_OLD, TRUE);
+	}
 
 	sgen_hash_table_clean (&alive_hash);
 }
@@ -213,8 +216,8 @@ free_callback_data (SgenBridgeProcessor *processor)
 static int
 compare_xrefs (const void *a_ptr, const void *b_ptr)
 {
-	const MonoGCBridgeXRef *a = a_ptr;
-	const MonoGCBridgeXRef *b = b_ptr;
+	const MonoGCBridgeXRef *a = (const MonoGCBridgeXRef *)a_ptr;
+	const MonoGCBridgeXRef *b = (const MonoGCBridgeXRef *)b_ptr;
 
 	if (a->src_scc_index < b->src_scc_index)
 		return -1;
@@ -306,7 +309,7 @@ sgen_compare_bridge_processor_results (SgenBridgeProcessor *a, SgenBridgeProcess
 		gboolean new_entry;
 
 		g_assert (scc->num_objs > 0);
-		a_scc_index_ptr = sgen_hash_table_lookup (&obj_to_a_scc, scc->objs [0]);
+		a_scc_index_ptr = (int *)sgen_hash_table_lookup (&obj_to_a_scc, scc->objs [0]);
 		g_assert (a_scc_index_ptr);
 		a_scc_index = *a_scc_index_ptr;
 
@@ -316,7 +319,7 @@ sgen_compare_bridge_processor_results (SgenBridgeProcessor *a, SgenBridgeProcess
 		g_assert (a_scc->num_objs == scc->num_objs);
 
 		for (j = 1; j < scc->num_objs; ++j) {
-			a_scc_index_ptr = sgen_hash_table_lookup (&obj_to_a_scc, scc->objs [j]);
+			a_scc_index_ptr = (int *)sgen_hash_table_lookup (&obj_to_a_scc, scc->objs [j]);
 			g_assert (a_scc_index_ptr);
 			g_assert (*a_scc_index_ptr == a_scc_index);
 		}
@@ -336,8 +339,8 @@ sgen_compare_bridge_processor_results (SgenBridgeProcessor *a, SgenBridgeProcess
 	 */
 
 	xrefs_alloc_size = a->num_xrefs * sizeof (MonoGCBridgeXRef);
-	a_xrefs = sgen_alloc_internal_dynamic (xrefs_alloc_size, INTERNAL_MEM_BRIDGE_DEBUG, TRUE);
-	b_xrefs = sgen_alloc_internal_dynamic (xrefs_alloc_size, INTERNAL_MEM_BRIDGE_DEBUG, TRUE);
+	a_xrefs = (MonoGCBridgeXRef *)sgen_alloc_internal_dynamic (xrefs_alloc_size, INTERNAL_MEM_BRIDGE_DEBUG, TRUE);
+	b_xrefs = (MonoGCBridgeXRef *)sgen_alloc_internal_dynamic (xrefs_alloc_size, INTERNAL_MEM_BRIDGE_DEBUG, TRUE);
 
 	memcpy (a_xrefs, a->api_xrefs, xrefs_alloc_size);
 	for (i = 0; i < b->num_xrefs; ++i) {
@@ -346,11 +349,11 @@ sgen_compare_bridge_processor_results (SgenBridgeProcessor *a, SgenBridgeProcess
 
 		g_assert (xref->src_scc_index != xref->dst_scc_index);
 
-		scc_index_ptr = sgen_hash_table_lookup (&b_scc_to_a_scc, GINT_TO_POINTER (xref->src_scc_index));
+		scc_index_ptr = (int *)sgen_hash_table_lookup (&b_scc_to_a_scc, GINT_TO_POINTER (xref->src_scc_index));
 		g_assert (scc_index_ptr);
 		b_xrefs [i].src_scc_index = *scc_index_ptr;
 
-		scc_index_ptr = sgen_hash_table_lookup (&b_scc_to_a_scc, GINT_TO_POINTER (xref->dst_scc_index));
+		scc_index_ptr = (int *)sgen_hash_table_lookup (&b_scc_to_a_scc, GINT_TO_POINTER (xref->dst_scc_index));
 		g_assert (scc_index_ptr);
 		b_xrefs [i].dst_scc_index = *scc_index_ptr;
 	}
@@ -404,9 +407,9 @@ sgen_bridge_processing_finish (int generation)
 }
 
 MonoGCBridgeObjectKind
-sgen_bridge_class_kind (MonoClass *class)
+sgen_bridge_class_kind (MonoClass *klass)
 {
-	return bridge_processor.class_kind (class);
+	return bridge_processor.class_kind (klass);
 }
 
 void
@@ -439,9 +442,9 @@ set_dump_prefix (const char *prefix)
 static const char *bridge_class;
 
 static MonoGCBridgeObjectKind
-bridge_test_bridge_class_kind (MonoClass *class)
+bridge_test_bridge_class_kind (MonoClass *klass)
 {
-	if (!strcmp (bridge_class, class->name))
+	if (!strcmp (bridge_class, klass->name))
 		return GC_BRIDGE_TRANSPARENT_BRIDGE_CLASS;
 	return GC_BRIDGE_TRANSPARENT_CLASS;
 }

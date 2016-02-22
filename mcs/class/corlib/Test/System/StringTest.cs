@@ -16,6 +16,10 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 
+#if !MOBILE
+using System.Diagnostics;
+#endif
+
 using NUnit.Framework;
 
 namespace MonoTests.System
@@ -90,6 +94,38 @@ public class StringTest
 			Assert.IsNotNull (ex.Message, "#4");
 			Assert.AreEqual ("count", ex.ParamName, "#5");
 		}
+	}
+
+	// Several tests in this file, to run properly, allocate 4GB objects.
+	// Obviously this creates problems on several kinds of systems, so we
+	// conservatively skip these tests unless we find a high-RAM environment.
+	// Checking RAM requires PerformanceCounter which is absent on mobile,
+	// so any test that calls this must be category MobileNotWorking.
+	static void RequireHighMemoryTestEnvironment ()
+	{
+#if MOBILE
+		Assert.Ignore("PerformanceCounter not available.");
+#else
+		if (!Environment.Is64BitProcess)
+			Assert.Ignore("This test cannot run on a 32-bit system.");
+
+		// Require 6 GB physical RAM, for the 4GB string plus 2GB headroom
+		var pc = new PerformanceCounter ("Mono Memory", "Total Physical Memory");
+
+		if (pc.RawValue < 6L*1024L*1024L*1024L)
+			Assert.Ignore("This machine may not have enough RAM to run this test.");
+#endif
+	}
+
+	[Test] // ctor (Char, Int32)
+	[Category ("MobileNotWorking")]
+	public void Constructor4_LargeString ()
+	{
+		RequireHighMemoryTestEnvironment();
+
+		var x = new String ('A', int.MaxValue);
+		Assert.AreEqual ('A', x[0]);
+		Assert.AreEqual ('A', x[int.MaxValue - 1]);
 	}
 
 	[Test] // ctor (Char [], Int32, Int32)
@@ -2993,12 +3029,14 @@ public class StringTest
 	}
 
 	[Test]
-	public void PadLeft_Overflow ()
+	[Category ("MobileNotWorking")]
+	public void PadLeft_LargeString ()
 	{
-		try {
-			"x".PadLeft (int.MaxValue, '-');
-		} catch (OutOfMemoryException) {
-		}
+		RequireHighMemoryTestEnvironment();
+
+		var x = "x".PadLeft (int.MaxValue, '-');
+		Assert.AreEqual ('-', x[0]);
+		Assert.AreEqual ('x', x[int.MaxValue - 1]);
 	}
 
 	[Test] // PadRight (Int32)
@@ -3043,12 +3081,14 @@ public class StringTest
 	}
 
 	[Test]
-	public void PadRight_Overflow ()
+	[Category ("MobileNotWorking")]
+	public void PadRight_LargeString ()
 	{
-		try {
-			"x".PadRight (int.MaxValue, '-');
-		} catch (OutOfMemoryException) {
-		}
+		RequireHighMemoryTestEnvironment();
+
+		var x = "x".PadRight (int.MaxValue, '-');
+		Assert.AreEqual ('x', x[0]);
+		Assert.AreEqual ('-', x[int.MaxValue - 1]);
 	}
 
 	[Test] // Remove (Int32, Int32)
@@ -3769,9 +3809,7 @@ public class StringTest
 		Assert.AreEqual ("original", "\u2028original\u2029".Trim (), "net_2_0 additional char#1");
 		Assert.AreEqual ("original", "\u0085original\u1680".Trim (), "net_2_0 additional char#2");
 
-#if NET_4_0
 		Assert.AreEqual ("", "\x9\xa\xb\xc\xd\x20\x85\xa0\x1680\x2000\x2001\x2002\x2003\x2004\x2005\x2006\x2007\x2008\x2009\x200a\x2028\x2029\x202f\x205f\x3000".Trim (), "net_4_0 changes #1");
-#endif
 	}
 
 	[Test]
@@ -3944,9 +3982,7 @@ public class StringTest
 		chunks = s1.Split(c2, 0);
 		Assert.AreEqual (0, chunks.Length, "Zero split");
 
-#if NET_4_0
 		Assert.AreEqual (0, "\x9\xa\xb\xc\xd\x20\x85\xa0\x1680\x2000\x2001\x2002\x2003\x2004\x2005\x2006\x2007\x2008\x2009\x200a\x2028\x2029\x202f\x205f\x3000".Split ((char[]) null, StringSplitOptions.RemoveEmptyEntries).Length, "net_4_0 changes");
-#endif
 	}
 
 	[Test]

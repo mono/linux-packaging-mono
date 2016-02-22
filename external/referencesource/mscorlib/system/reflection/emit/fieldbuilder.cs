@@ -258,6 +258,7 @@ namespace System.Reflection.Emit
 
         #endregion
 
+#if !FEATURE_CORECLR
         void _FieldBuilder.GetTypeInfoCount(out uint pcTInfo)
         {
             throw new NotImplementedException();
@@ -277,5 +278,6 @@ namespace System.Reflection.Emit
         {
             throw new NotImplementedException();
         }
+#endif
     }
 }

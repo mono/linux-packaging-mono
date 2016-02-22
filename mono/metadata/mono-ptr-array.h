@@ -13,7 +13,7 @@
 
 #include <glib.h>
 
-#include "mono/metadata/gc-internal.h"
+#include "mono/metadata/gc-internals.h"
 
 /* This is an implementation of a growable pointer array that avoids doing memory allocations for small sizes.
  * It works by allocating an initial small array on stack and only going to gc tracked memory if needed.
@@ -23,14 +23,20 @@ typedef struct {
 	void **data;
 	int size;
 	int capacity;
+	MonoGCRootSource source;
+	const char *msg;
 } MonoPtrArray;
 
 #define MONO_PTR_ARRAY_MAX_ON_STACK (16)
 
-#define mono_ptr_array_init(ARRAY, INITIAL_SIZE) do {\
+#define mono_ptr_array_init(ARRAY, INITIAL_SIZE, SOURCE, MSG) do {\
 	(ARRAY).size = 0; \
 	(ARRAY).capacity = MAX (INITIAL_SIZE, MONO_PTR_ARRAY_MAX_ON_STACK); \
-	(ARRAY).data = INITIAL_SIZE > MONO_PTR_ARRAY_MAX_ON_STACK ? mono_gc_alloc_fixed (sizeof (void*) * INITIAL_SIZE, mono_gc_make_root_descr_all_refs (INITIAL_SIZE)) : g_newa (void*, MONO_PTR_ARRAY_MAX_ON_STACK); \
+	(ARRAY).source = SOURCE; \
+	(ARRAY).msg = MSG; \
+	(ARRAY).data = INITIAL_SIZE > MONO_PTR_ARRAY_MAX_ON_STACK \
+		? (void **)mono_gc_alloc_fixed (sizeof (void*) * INITIAL_SIZE, mono_gc_make_root_descr_all_refs (INITIAL_SIZE), SOURCE, MSG) \
+		: g_newa (void*, MONO_PTR_ARRAY_MAX_ON_STACK); \
 } while (0)
 
 #define mono_ptr_array_destroy(ARRAY) do {\
@@ -40,8 +46,8 @@ typedef struct {
 
 #define mono_ptr_array_append(ARRAY, VALUE) do { \
 	if ((ARRAY).size >= (ARRAY).capacity) {\
-	void *__tmp = mono_gc_alloc_fixed (sizeof (void*) * (ARRAY).capacity * 2, mono_gc_make_root_descr_all_refs ((ARRAY).capacity * 2)); \
-		mono_gc_memmove_aligned (__tmp, (ARRAY).data, (ARRAY).capacity * sizeof (void*)); \
+	void **__tmp = (void **)mono_gc_alloc_fixed (sizeof (void*) * (ARRAY).capacity * 2, mono_gc_make_root_descr_all_refs ((ARRAY).capacity * 2), (ARRAY).source, (ARRAY).msg); \
+		mono_gc_memmove_aligned ((void *)__tmp, (ARRAY).data, (ARRAY).capacity * sizeof (void*)); \
 		if ((ARRAY).capacity > MONO_PTR_ARRAY_MAX_ON_STACK)	\
 			mono_gc_free_fixed ((ARRAY).data);	\
 		(ARRAY).data = __tmp;	\

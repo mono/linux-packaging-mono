@@ -110,7 +110,7 @@ MonoObject* <a href="#api:mono_object_castclass_mbyref">mono_object_castclass_mb
                                             MonoClass *klass);
 guint       <a href="#api:mono_object_get_size">mono_object_get_size</a>           (MonoObject* o);
 MonoObject* <a href="#api:mono_value_box">mono_value_box</a>                 (MonoDomain *domain, 
-                                            MonoClass *class, 
+                                            MonoClass *klass, 
                                             gpointer value);
             <a href="#api:mono_value_copy"></a>                               
             <a href="#api:mono_value_copy_array"></a>                               
@@ -177,18 +177,18 @@ const char* <a href="#api:mono_event_get_name">mono_event_get_name</a>          
 MonoClass*  <a href="#api:mono_event_get_parent">mono_event_get_parent</a>          (MonoEvent *event);
 MonoMethod* <a href="#api:mono_event_get_raise_method">mono_event_get_raise_method</a>    (MonoEvent *event);
 MonoMethod* <a href="#api:mono_event_get_remove_method">mono_event_get_remove_method</a>   (MonoEvent *event);
-gpointer    <a href="#api:mono_load_remote_field">mono_load_remote_field</a>         (MonoObject *this, 
+gpointer    <a href="#api:mono_load_remote_field">mono_load_remote_field</a>         (MonoObject *this_obj, 
                                             MonoClass *klass, 
                                             MonoClassField *field, 
                                             gpointer *res);
-MonoObject* <a href="#api:mono_load_remote_field_new">mono_load_remote_field_new</a>     (MonoObject *this, 
+MonoObject* <a href="#api:mono_load_remote_field_new">mono_load_remote_field_new</a>     (MonoObject *this_obj, 
                                             MonoClass *klass, 
                                             MonoClassField *field);
-void        <a href="#api:mono_store_remote_field">mono_store_remote_field</a>        (MonoObject *this, 
+void        <a href="#api:mono_store_remote_field">mono_store_remote_field</a>        (MonoObject *this_obj, 
                                             MonoClass *klass, 
                                             MonoClassField *field, 
                                             gpointer val);
-void        <a href="#api:mono_store_remote_field_new">mono_store_remote_field_new</a>    (MonoObject *this, 
+void        <a href="#api:mono_store_remote_field_new">mono_store_remote_field_new</a>    (MonoObject *this_obj, 
                                             MonoClass *klass, 
                                             MonoClassField *field, 
                                             MonoObject *arg);
@@ -449,7 +449,7 @@ mono_object_get_size (MonoObject* o)
     <div class="api-entry">mono_value_box</div>
 
     <div class="prototype">MonoObject*
-mono_value_box (MonoDomain *domain, MonoClass *class, gpointer value)
+mono_value_box (MonoDomain *domain, MonoClass *klass, gpointer value)
 
 </div>
 <p />
@@ -1072,7 +1072,7 @@ mono_event_get_remove_method (MonoEvent *event)
     <div class="api-entry">mono_load_remote_field</div>
 
     <div class="prototype">gpointer
-mono_load_remote_field (MonoObject *this, MonoClass *klass, MonoClassField *field, gpointer *res)
+mono_load_remote_field (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, gpointer *res)
 
 </div>
 <p />
@@ -1094,7 +1094,7 @@ mono_load_remote_field (MonoObject *this, MonoClass *klass, MonoClassField *fiel
     <div class="api-entry">mono_load_remote_field_new</div>
 
     <div class="prototype">MonoObject*
-mono_load_remote_field_new (MonoObject *this, MonoClass *klass, MonoClassField *field)
+mono_load_remote_field_new (MonoObject *this_obj, MonoClass *klass, MonoClassField *field)
 
 </div>
 <p />
@@ -1109,16 +1109,16 @@ mono_load_remote_field_new (MonoObject *this, MonoClass *klass, MonoClassField *
     <div class="api-entry">mono_store_remote_field</div>
 
     <div class="prototype">void
-mono_store_remote_field (MonoObject *this, MonoClass *klass, MonoClassField *field, gpointer val)
+mono_store_remote_field (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, gpointer val)
 
 </div>
 <p />
 <b>Parameters</b>
-<blockquote><dt><i>this:</i></dt><dd> pointer to an object</dd><dt><i>klass:</i></dt><dd> klass of the object containing <i>field</i></dd><dt><i>field:</i></dt><dd> the field to load</dd><dt><i>val:</i></dt><dd> the value/object to store</dd></blockquote>
+<blockquote><dt><i>this_obj:</i></dt><dd> pointer to an object</dd><dt><i>klass:</i></dt><dd> klass of the object containing <i>field</i></dd><dt><i>field:</i></dt><dd> the field to load</dd><dt><i>val:</i></dt><dd> the value/object to store</dd></blockquote>
 <b>Remarks</b>
 <p />	 
 	 This method is called by the runtime on attempts to store fields of
-	 transparent proxy objects. <i>this</i> points to such TP, <i>klass</i> is the class of
+	 transparent proxy objects. <i>this_obj</i> points to such TP, <i>klass</i> is the class of
 	 the object containing <i>field</i>. <i>val</i> is the new value to store in <i>field</i>.
 
 </div></body>

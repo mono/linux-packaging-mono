@@ -177,7 +177,6 @@ namespace System.Xml {
             set { lastChild = value;}
         }
         
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         internal override bool IsValidChildType( XmlNodeType type ) {
             return(type == XmlNodeType.Text) || (type == XmlNodeType.EntityReference);
         }
@@ -291,7 +290,6 @@ namespace System.Xml {
         }
 
         // Saves all the children of the node to the specified XmlWriter.
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         public override void WriteContentTo(XmlWriter w) {
             for (XmlNode node = FirstChild; node != null; node = node.NextSibling) {
                 node.WriteTo(w);

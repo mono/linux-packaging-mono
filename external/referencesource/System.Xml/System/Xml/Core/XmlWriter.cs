@@ -102,7 +102,6 @@ namespace System.Xml {
 
         // Writes out the attribute with the specified LocalName, value, and NamespaceURI.
 #if !SILVERLIGHT
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
 #endif
         public void WriteAttributeString(string localName, string ns, string value) {
             WriteStartAttribute(null, localName, ns);

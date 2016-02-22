@@ -72,6 +72,9 @@ namespace System.Threading
                         
 #if FEATURE_SYNCHRONIZATIONCONTEXT_WAIT
 
+        // helper delegate to statically bind to Wait method
+        private delegate int WaitDelegate(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout);
+
         static Type s_cachedPreparedType1;
         static Type s_cachedPreparedType2;
         static Type s_cachedPreparedType3;
@@ -178,37 +181,10 @@ namespace System.Threading
 #endif
 #endif
 
-        // set SynchronizationContext on the current thread
-        [System.Security.SecurityCritical]  // auto-generated_required
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
-        public static void SetSynchronizationContext(SynchronizationContext syncContext)
-        {
-            ExecutionContext ec = Thread.CurrentThread.GetMutableExecutionContext();
-            ec.SynchronizationContext = syncContext;
-            ec.SynchronizationContextNoFlow = syncContext;
-        }
-
-#if FEATURE_CORECLR || MOBILE_LEGACY
-        //
-        // This is a framework-internal method for Jolt's use.  The problem is that SynchronizationContexts set inside of a reverse p/invoke
-        // into an AppDomain are not persisted in that AppDomain; the next time the same thread calls into the same AppDomain,
-        // the [....] context will be null.  For Silverlight, this means that it's impossible to persist a [....] context on the UI thread,
-        // since Jolt is constantly transitioning in and out of each control's AppDomain on that thread.
-        //
-        // So for Jolt we will track a special thread-static context, which *will* persist across calls from Jolt, and if the thread does not 
-        // have a [....] context set in its execution context we'll use the thread-static context instead.
-        //
-        // This will break any future work that requires SynchronizationContext.Current to be in [....] with the value
-        // stored in a thread's ExecutionContext (wait notifications being one such example).  If that becomes a problem, we will
-        // need to rework this mechanism (which is one reason it's not being exposed publically).
-        //
-
+#if FEATURE_CORECLR
         [ThreadStatic]
         private static SynchronizationContext s_threadStaticContext;
 
-#if FEATURE_LEGACYNETCF
 		//
 		// NetCF had a bug where SynchronizationContext.SetThreadStaticContext would set the SyncContext for every thread in the process.  
 		// This was because they stored the value in a regular static field (NetCF has no support for ThreadStatic fields).  This was fixed in 
@@ -216,33 +192,77 @@ namespace System.Threading
 		// to hold whatever context was last set on any thread.
 		//
         private static SynchronizationContext s_appDomainStaticContext;
-#endif
 
         [System.Security.SecurityCritical]
-#if FEATURE_LEGACYNETCF || MOBILE_LEGACY
-        public static void SetThreadStaticContext(SynchronizationContext syncContext)
-#else
-        internal static void SetThreadStaticContext(SynchronizationContext syncContext)
-#endif
+        public static void SetSynchronizationContext(SynchronizationContext syncContext)
         {
-#if FEATURE_LEGACYNETCF
+            s_threadStaticContext = syncContext;
+        }
+
+        [System.Security.SecurityCritical]
+        public static void SetThreadStaticContext(SynchronizationContext syncContext)
+        {
 			//
 			// If this is a pre-Mango Windows Phone app, we need to set the SC for *all* threads to match the old NetCF behavior.
 			//
             if (CompatibilitySwitches.IsAppEarlierThanWindowsPhoneMango)
                 s_appDomainStaticContext = syncContext;
             else
-#endif
                 s_threadStaticContext = syncContext;
+        }
+
+        public static SynchronizationContext Current 
+        {
+            get      
+            {
+                SynchronizationContext context = null;
+            
+                if (CompatibilitySwitches.IsAppEarlierThanWindowsPhoneMango)
+                    context = s_appDomainStaticContext;
+                else
+                    context = s_threadStaticContext;
+
+#if FEATURE_APPX
+                if (context == null && Environment.IsWinRTSupported)
+                    context = GetWinRTContext();
+#endif
+
+                return context;
+            }
+        }
+
+        // Get the last SynchronizationContext that was set explicitly (not flowed via ExecutionContext.Capture/Run)        
+        internal static SynchronizationContext CurrentNoFlow
+        {
+            [FriendAccessAllowed]
+            get
+            {
+                return Current; // SC never flows
+            }
+        }
+
+#else //FEATURE_CORECLR
+
+        // set SynchronizationContext on the current thread
+        [System.Security.SecurityCritical]  // auto-generated_required
+        public static void SetSynchronizationContext(SynchronizationContext syncContext)
+        {
+            ExecutionContext ec = Thread.CurrentThread.GetMutableExecutionContext();
+            ec.SynchronizationContext = syncContext;
+            ec.SynchronizationContextNoFlow = syncContext;
+        }
+
+#if MOBILE_LEGACY
+        [Obsolete("The method is not supported and will be removed")]
+        public static void SetThreadStaticContext(SynchronizationContext syncContext)
+        {
+            throw new NotSupportedException ();
         }
 #endif
 
         // Get the current SynchronizationContext on the current thread
         public static SynchronizationContext Current 
         {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get      
             {
                 return Thread.CurrentThread.GetExecutionContextReader().SynchronizationContext ?? GetThreadLocalContext();
@@ -259,22 +279,10 @@ namespace System.Threading
             }
         }
 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         private static SynchronizationContext GetThreadLocalContext()
         {
             SynchronizationContext context = null;
             
-#if FEATURE_CORECLR
-#if FEATURE_LEGACYNETCF
-            if (CompatibilitySwitches.IsAppEarlierThanWindowsPhoneMango)
-                context = s_appDomainStaticContext;
-            else
-#endif //FEATURE_LEGACYNETCF
-                context = s_threadStaticContext;
-#endif //FEATURE_CORECLR
-
 #if FEATURE_APPX
             if (context == null && Environment.IsWinRTSupported)
                 context = GetWinRTContext();
@@ -287,6 +295,8 @@ namespace System.Threading
 
             return context;
         }
+
+#endif //FEATURE_CORECLR
 
 #if FEATURE_APPX
         [SecuritySafeCritical]

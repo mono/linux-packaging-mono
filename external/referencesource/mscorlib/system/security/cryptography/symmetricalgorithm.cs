@@ -41,9 +41,12 @@ namespace System.Security.Cryptography {
         // implementation. Post-Orcas the desktop has an implicit IDispoable implementation.
 #if FEATURE_CORECLR
         void IDisposable.Dispose()
-#else
-        public void Dispose()
+        {
+            Dispose();
+        }
 #endif // FEATURE_CORECLR
+
+        public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);

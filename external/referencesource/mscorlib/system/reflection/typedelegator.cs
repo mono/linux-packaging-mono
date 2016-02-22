@@ -17,19 +17,13 @@ namespace System.Reflection {
 
     [Serializable]
 [System.Runtime.InteropServices.ComVisible(true)]
-    public class TypeDelegator : 
-#if FEATURE_CORECLR && !FEATURE_NETCORE
-	Type
-#else
-	TypeInfo
-#endif	
+    public class TypeDelegator : TypeInfo
     {
-#if !FEATURE_CORECLR || FEATURE_NETCORE
         public override bool IsAssignableFrom(System.Reflection.TypeInfo typeInfo){
             if(typeInfo==null) return false;            
             return IsAssignableFrom(typeInfo.AsType());
         }
-#endif        
+
         protected Type typeImpl;
         
         #if FEATURE_CORECLR

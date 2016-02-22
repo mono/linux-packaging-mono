@@ -105,6 +105,7 @@ am__objects_1 = libmonosgen_static_la-sgen-alloc.lo \
 	libmonosgen_static_la-sgen-descriptor.lo \
 	libmonosgen_static_la-sgen-fin-weak-hash.lo \
 	libmonosgen_static_la-sgen-gc.lo \
+	libmonosgen_static_la-sgen-gchandles.lo \
 	libmonosgen_static_la-sgen-gray.lo \
 	libmonosgen_static_la-sgen-hash-table.lo \
 	libmonosgen_static_la-sgen-internal.lo \
@@ -139,7 +140,8 @@ am__objects_3 = libmonosgen_la-sgen-alloc.lo \
 	libmonosgen_la-sgen-cardtable.lo libmonosgen_la-sgen-debug.lo \
 	libmonosgen_la-sgen-descriptor.lo \
 	libmonosgen_la-sgen-fin-weak-hash.lo libmonosgen_la-sgen-gc.lo \
-	libmonosgen_la-sgen-gray.lo libmonosgen_la-sgen-hash-table.lo \
+	libmonosgen_la-sgen-gchandles.lo libmonosgen_la-sgen-gray.lo \
+	libmonosgen_la-sgen-hash-table.lo \
 	libmonosgen_la-sgen-internal.lo \
 	libmonosgen_la-sgen-layout-stats.lo libmonosgen_la-sgen-los.lo \
 	libmonosgen_la-sgen-marksweep.lo \
@@ -231,8 +233,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
 BUILD_EXEEXT = @BUILD_EXEEXT@
-BUILD_GLIB_CFLAGS = @BUILD_GLIB_CFLAGS@
-BUILD_GLIB_LIBS = @BUILD_GLIB_LIBS@
 CC = @CC@
 CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
@@ -248,9 +248,9 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
 DSYMUTIL = @DSYMUTIL@
@@ -268,8 +268,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GMODULE_CFLAGS = @GMODULE_CFLAGS@
-GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
@@ -448,6 +446,7 @@ monosgen_sources = \
 	sgen-fin-weak-hash.c \
 	sgen-gc.c \
 	sgen-gc.h \
+	sgen-gchandles.c \
 	sgen-gray.c \
 	sgen-gray.h \
 	sgen-hash-table.c \
@@ -553,6 +552,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_la-sgen-descriptor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_la-sgen-fin-weak-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_la-sgen-gc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_la-sgen-gchandles.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_la-sgen-gray.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_la-sgen-hash-table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_la-sgen-internal.Plo@am__quote@
@@ -576,6 +576,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_static_la-sgen-descriptor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_static_la-sgen-fin-weak-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_static_la-sgen-gc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_static_la-sgen-gchandles.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_static_la-sgen-gray.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_static_la-sgen-hash-table.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonosgen_static_la-sgen-internal.Plo@am__quote@
@@ -659,6 +660,13 @@ libmonosgen_static_la-sgen-gc.lo: sgen-gc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-gc.c' object='libmonosgen_static_la-sgen-gc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonosgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonosgen_static_la-sgen-gc.lo `test -f 'sgen-gc.c' || echo '$(srcdir)/'`sgen-gc.c
+
+libmonosgen_static_la-sgen-gchandles.lo: sgen-gchandles.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonosgen_static_la_CFLAGS) $(CFLAGS) -MT libmonosgen_static_la-sgen-gchandles.lo -MD -MP -MF $(DEPDIR)/libmonosgen_static_la-sgen-gchandles.Tpo -c -o libmonosgen_static_la-sgen-gchandles.lo `test -f 'sgen-gchandles.c' || echo '$(srcdir)/'`sgen-gchandles.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonosgen_static_la-sgen-gchandles.Tpo $(DEPDIR)/libmonosgen_static_la-sgen-gchandles.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-gchandles.c' object='libmonosgen_static_la-sgen-gchandles.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonosgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonosgen_static_la-sgen-gchandles.lo `test -f 'sgen-gchandles.c' || echo '$(srcdir)/'`sgen-gchandles.c
 
 libmonosgen_static_la-sgen-gray.lo: sgen-gray.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonosgen_static_la_CFLAGS) $(CFLAGS) -MT libmonosgen_static_la-sgen-gray.lo -MD -MP -MF $(DEPDIR)/libmonosgen_static_la-sgen-gray.Tpo -c -o libmonosgen_static_la-sgen-gray.lo `test -f 'sgen-gray.c' || echo '$(srcdir)/'`sgen-gray.c
@@ -820,6 +828,13 @@ libmonosgen_la-sgen-gc.lo: sgen-gc.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-gc.c' object='libmonosgen_la-sgen-gc.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonosgen_la_CFLAGS) $(CFLAGS) -c -o libmonosgen_la-sgen-gc.lo `test -f 'sgen-gc.c' || echo '$(srcdir)/'`sgen-gc.c
+
+libmonosgen_la-sgen-gchandles.lo: sgen-gchandles.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonosgen_la_CFLAGS) $(CFLAGS) -MT libmonosgen_la-sgen-gchandles.lo -MD -MP -MF $(DEPDIR)/libmonosgen_la-sgen-gchandles.Tpo -c -o libmonosgen_la-sgen-gchandles.lo `test -f 'sgen-gchandles.c' || echo '$(srcdir)/'`sgen-gchandles.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonosgen_la-sgen-gchandles.Tpo $(DEPDIR)/libmonosgen_la-sgen-gchandles.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sgen-gchandles.c' object='libmonosgen_la-sgen-gchandles.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonosgen_la_CFLAGS) $(CFLAGS) -c -o libmonosgen_la-sgen-gchandles.lo `test -f 'sgen-gchandles.c' || echo '$(srcdir)/'`sgen-gchandles.c
 
 libmonosgen_la-sgen-gray.lo: sgen-gray.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonosgen_la_CFLAGS) $(CFLAGS) -MT libmonosgen_la-sgen-gray.lo -MD -MP -MF $(DEPDIR)/libmonosgen_la-sgen-gray.Tpo -c -o libmonosgen_la-sgen-gray.lo `test -f 'sgen-gray.c' || echo '$(srcdir)/'`sgen-gray.c

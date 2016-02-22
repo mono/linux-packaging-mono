@@ -18,6 +18,7 @@ namespace System.ServiceModel.Security
     using System.Net.Security;
     using System.Runtime;
     using System.Security;
+    using System.Security.Authentication;
     using System.Security.Authentication.ExtendedProtection;
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
@@ -102,6 +103,28 @@ namespace System.ServiceModel.Security
             }
             else
                 return 1;
+        }
+    }
+
+    static class SslProtocolsHelper
+    {
+        internal static bool IsDefined(SslProtocols value)
+        {
+            SslProtocols allValues = SslProtocols.None;
+            foreach (var protocol in Enum.GetValues(typeof(SslProtocols)))
+            {
+                allValues |= (SslProtocols)protocol;
+            }
+            return (value & allValues) == value;
+        }
+
+        internal static void Validate(SslProtocols value)
+        {
+            if (!IsDefined(value))
+            {
+                throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new InvalidEnumArgumentException("value", (int)value,
+                    typeof(SslProtocols)));
+            }
         }
     }
 

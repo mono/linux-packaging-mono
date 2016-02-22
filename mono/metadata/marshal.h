@@ -115,7 +115,10 @@ typedef enum {
 	WRAPPER_SUBTYPE_GENERIC_ARRAY_HELPER,
 	/* Subtypes of MONO_WRAPPER_DELEGATE_INVOKE */
 	WRAPPER_SUBTYPE_DELEGATE_INVOKE_VIRTUAL,
-	WRAPPER_SUBTYPE_DELEGATE_INVOKE_BOUND
+	WRAPPER_SUBTYPE_DELEGATE_INVOKE_BOUND,
+	/* Subtypes of MONO_WRAPPER_UNKNOWN */
+	WRAPPER_SUBTYPE_GSHAREDVT_IN_SIG,
+	WRAPPER_SUBTYPE_GSHAREDVT_OUT_SIG,
 } WrapperSubtype;
 
 typedef struct {
@@ -147,6 +150,10 @@ typedef struct {
 
 typedef struct {
 	MonoMethod *method;
+} SynchronizedWrapperInfo;
+
+typedef struct {
+	MonoMethod *method;
 } SynchronizedInnerWrapperInfo;
 
 typedef struct {
@@ -164,6 +171,23 @@ typedef struct {
 typedef struct {
 	MonoClass *klass;
 } ProxyWrapperInfo;
+
+typedef struct {
+	const char *gc_name;
+	int alloc_type;
+} AllocatorWrapperInfo;
+
+typedef struct {
+	MonoMethod *method;
+} UnboxWrapperInfo;
+
+typedef struct {
+	MonoMethod *method;
+} RemotingWrapperInfo;
+
+typedef struct {
+	MonoMethodSignature *sig;
+} GsharedvtWrapperInfo;
 
 /*
  * This structure contains additional information to uniquely identify a given wrapper
@@ -185,6 +209,8 @@ typedef struct {
 		NativeToManagedWrapperInfo native_to_managed;
 		/* MONO_WRAPPER_MANAGED_TO_NATIVE */
 		ManagedToNativeWrapperInfo managed_to_native;
+		/* SYNCHRONIZED */
+		SynchronizedWrapperInfo synchronized;
 		/* SYNCHRONIZED_INNER */
 		SynchronizedInnerWrapperInfo synchronized_inner;
 		/* GENERIC_ARRAY_HELPER */
@@ -195,6 +221,14 @@ typedef struct {
 		ArrayAccessorWrapperInfo array_accessor;
 		/* PROXY_ISINST etc. */
 		ProxyWrapperInfo proxy;
+		/* ALLOC */
+		AllocatorWrapperInfo alloc;
+		/* UNBOX */
+		UnboxWrapperInfo unbox;
+		/* MONO_WRAPPER_REMOTING_INVOKE/MONO_WRAPPER_REMOTING_INVOKE_WITH_CHECK/MONO_WRAPPER_XDOMAIN_INVOKE */
+		RemotingWrapperInfo remoting;
+		/* GSHAREDVT_IN_SIG/GSHAREDVT_OUT_SIG */
+		GsharedvtWrapperInfo gsharedvt;
 	} d;
 } WrapperInfo;
 
@@ -294,9 +328,9 @@ WrapperInfo*
 mono_wrapper_info_create (MonoMethodBuilder *mb, WrapperSubtype subtype);
 
 void
-mono_marshal_set_wrapper_info (MonoMethod *method, gpointer data);
+mono_marshal_set_wrapper_info (MonoMethod *method, WrapperInfo *info);
 
-gpointer
+WrapperInfo*
 mono_marshal_get_wrapper_info (MonoMethod *wrapper);
 
 MonoMethod *
@@ -316,6 +350,9 @@ mono_marshal_get_runtime_invoke (MonoMethod *method, gboolean is_virtual);
 
 MonoMethod*
 mono_marshal_get_runtime_invoke_dynamic (void);
+
+MonoMethod *
+mono_marshal_get_runtime_invoke_for_sig (MonoMethodSignature *sig);
 
 MonoMethodSignature*
 mono_marshal_get_string_ctor_signature (MonoMethod *method);
@@ -395,9 +432,6 @@ mono_marshal_get_gsharedvt_out_wrapper (void);
 
 void
 mono_marshal_free_dynamic_wrappers (MonoMethod *method);
-
-void
-mono_marshal_free_inflated_wrappers (MonoMethod *method);
 
 void
 mono_marshal_lock_internal (void);
@@ -488,10 +522,10 @@ gpointer
 ves_icall_System_Runtime_InteropServices_Marshal_ReAllocCoTaskMem (gpointer ptr, int size);
 
 void*
-ves_icall_System_Runtime_InteropServices_Marshal_AllocHGlobal (int size);
+ves_icall_System_Runtime_InteropServices_Marshal_AllocHGlobal (gpointer size);
 
 gpointer 
-ves_icall_System_Runtime_InteropServices_Marshal_ReAllocHGlobal (gpointer ptr, int size);
+ves_icall_System_Runtime_InteropServices_Marshal_ReAllocHGlobal (gpointer ptr, gpointer size);
 
 void
 ves_icall_System_Runtime_InteropServices_Marshal_FreeHGlobal (void *ptr);

@@ -200,12 +200,7 @@ namespace System.IO.IsolatedStorage {
 
         private String GetNameFromID(String typeID, String instanceID)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(typeID);
-            sb.Append(SeparatorInternal);
-            sb.Append(instanceID);
-
-            return sb.ToString();
+            return typeID + SeparatorInternal + instanceID;
         }
 
         private static String GetPredefinedTypeName(Object o)

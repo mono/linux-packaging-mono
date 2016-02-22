@@ -6,6 +6,7 @@
 //	Atsushi Enomoto (atsushi@ximian.com)
 //
 // Copyright (c) 2006-2007 Novell, Inc. (http://www.novell.com)
+// Copyright 2015 Xamarin Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -26,6 +27,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+
 using System;
 using System.IO;
 using System.Text;
@@ -43,6 +45,7 @@ namespace System.Net.NetworkInformation {
 	[MonoTODO ("IPv6 support is missing")]
 	public class Ping : Component, IDisposable
 	{
+#if !MONOTOUCH
 		[StructLayout(LayoutKind.Sequential)]
 		struct cap_user_header_t
 		{
@@ -68,6 +71,7 @@ namespace System.Net.NetworkInformation {
 #endif
 		};
 		static readonly string PingBinPath;
+#endif
 		const int default_timeout = 4000; // 4 sec.
 		ushort identifier;
 
@@ -84,7 +88,8 @@ namespace System.Net.NetworkInformation {
 		CancellationTokenSource cts;
 		
 		public event PingCompletedEventHandler PingCompleted;
-		
+
+#if !MONOTOUCH
 		static Ping ()
 		{
 			if (Environment.OSVersion.Platform == PlatformID.Unix) {
@@ -106,6 +111,7 @@ namespace System.Net.NetworkInformation {
 			if (PingBinPath == null)
 				PingBinPath = "/bin/ping"; // default, fallback value
 		}
+#endif
 		
 		public Ping ()
 		{
@@ -115,7 +121,8 @@ namespace System.Net.NetworkInformation {
 			rng.GetBytes (randomIdentifier);
 			identifier = (ushort)(randomIdentifier [0] + (randomIdentifier [1] << 8));
 		}
-  
+
+#if !MONOTOUCH
 		[DllImport ("libc", EntryPoint="capget")]
 		static extern int capget (ref cap_user_header_t header, ref cap_user_data_t data);
 
@@ -142,6 +149,7 @@ namespace System.Net.NetworkInformation {
 				canSendPrivileged = false;
 			}
 		}
+#endif
 		
 		void IDisposable.Dispose ()
 		{
@@ -215,11 +223,16 @@ namespace System.Net.NetworkInformation {
 				throw new ArgumentException ("buffer");
 			// options can be null.
 
+#if MONOTOUCH
+			throw new InvalidOperationException ();
+#else
 			if (canSendPrivileged)
 				return SendPrivileged (address, timeout, buffer, options);
 			return SendUnprivileged (address, timeout, buffer, options);
+#endif
 		}
 
+#if !MONOTOUCH
 		private PingReply SendPrivileged (IPAddress address, int timeout, byte [] buffer, PingOptions options)
 		{
 			IPEndPoint target = new IPEndPoint (address, 0);
@@ -286,6 +299,7 @@ namespace System.Net.NetworkInformation {
 
 		private PingReply SendUnprivileged (IPAddress address, int timeout, byte [] buffer, PingOptions options)
 		{
+#if MONO_FEATURE_PROCESS_START
 			DateTime sentTime = DateTime.UtcNow;
 
 			Process ping = new Process ();
@@ -325,7 +339,11 @@ namespace System.Net.NetworkInformation {
 			}
 
 			return new PingReply (address, buffer, options, trip_time, status);
+#else
+			throw new PlatformNotSupportedException ("Ping is not supported on this platform.");
+#endif // MONO_FEATURE_PROCESS_START
 		}
+#endif // !MONOTOUCH
 
 		// Async
 
@@ -401,6 +419,7 @@ namespace System.Net.NetworkInformation {
 			worker.CancelAsync ();
 		}
 
+#if !MONOTOUCH
 		// ICMP message
 
 		class IcmpMessage
@@ -534,6 +553,7 @@ namespace System.Net.NetworkInformation {
 
 			return args.ToString ();
 		}
+#endif // !MONOTOUCH
 
 		public Task<PingReply> SendPingAsync (IPAddress address, int timeout, byte [] buffer)
 		{
@@ -592,4 +612,3 @@ namespace System.Net.NetworkInformation {
 		}
 	}
 }
-

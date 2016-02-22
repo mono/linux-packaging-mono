@@ -327,8 +327,9 @@ namespace System.Web {
                 path = path.Substring(0, iqs);
             }
 
-            if (!UrlPath.IsValidVirtualPathWithoutProtocol(path))
+            if (!UrlPath.IsValidVirtualPathWithoutProtocol(path)) {
                 throw new ArgumentException(SR.GetString(SR.Invalid_path_for_child_request, path));
+            }
 
             VirtualPath virtualPath = VirtualPath.Create(path);
 

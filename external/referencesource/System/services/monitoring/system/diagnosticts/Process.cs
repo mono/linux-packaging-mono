@@ -356,6 +356,14 @@ namespace System.Diagnostics {
             }
         }
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]  
+        public SafeProcessHandle SafeHandle {
+            get {
+                EnsureState(State.Associated);
+                return OpenProcessHandle(this.m_processAccess);
+            }
+        }
+
 #if !FEATURE_PAL
         /// <devdoc>
         ///    <para>
@@ -2054,6 +2062,9 @@ namespace System.Diagnostics {
 
 #if !FEATURE_PAL                    
                 if (startInfo.UserName.Length != 0) {                              
+                    if (startInfo.Password != null && startInfo.PasswordInClearText != null)
+                            throw new ArgumentException(SR.GetString(SR.CantSetDuplicatePassword));
+
                     NativeMethods.LogonFlags logonFlags = (NativeMethods.LogonFlags)0;                    
                     if( startInfo.LoadUserProfile) {
                         logonFlags = NativeMethods.LogonFlags.LOGON_WITH_PROFILE;
@@ -2061,10 +2072,12 @@ namespace System.Diagnostics {
 
                     IntPtr password = IntPtr.Zero;
                     try {
-                        if( startInfo.Password == null) {
+                        if( startInfo.Password != null) {
+                            password = Marshal.SecureStringToCoTaskMemUnicode(startInfo.Password);
+                        } else if( startInfo.PasswordInClearText != null) {
+                            password = Marshal.StringToCoTaskMemUni(startInfo.PasswordInClearText);
+                        } else {
                             password = Marshal.StringToCoTaskMemUni(String.Empty);
-                            } else {
-                            password = Marshal.SecureStringToCoTaskMemUnicode(startInfo.Password);                        
                         }
 
                         RuntimeHelpers.PrepareConstrainedRegions();

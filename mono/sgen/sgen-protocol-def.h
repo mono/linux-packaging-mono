@@ -1,3 +1,19 @@
+/*
+ * All binary protocol entries are defined here.  To keep compatibility with past binary
+ * protocol files, new protocol entries need to be defined at the end of the file so that
+ * the sequential numbering is preserved.  We also can't change the types or numbers of
+ * arguments of existing entries.  Instead, a new entry has to be added and the old entry
+ * retired - add a comment to make clear it's not used anymore, but it needs to stay in the
+ * definition file, both to preserve the numbering as well as for the benefit of
+ * `sgen-grep-binprot`, which will still want to read the old entries.
+ *
+ * It might become necessary to add a header protocol entry that includes version
+ * information.  If/when we do that, we should also include word length and endianness.  As
+ * of right now, binary protocol files don't identify themselves as 32 vs 64 bits or big- vs
+ * little-endian.  At that point, `sgen-grep-binprot` should also be made able to read all
+ * combinations of files, regardless of the host.
+ */
+
 BEGIN_PROTOCOL_ENTRY3 (binary_protocol_collection_requested, TYPE_INT, generation, TYPE_SIZE, requested_size, TYPE_BOOL, force)
 DEFAULT_PRINT ()
 IS_ALWAYS_MATCH (TRUE)
@@ -6,20 +22,18 @@ IS_VTABLE_MATCH (FALSE)
 END_PROTOCOL_ENTRY
 
 BEGIN_PROTOCOL_ENTRY2 (binary_protocol_collection_begin, TYPE_INT, index, TYPE_INT, generation)
-FLUSH ()
 DEFAULT_PRINT ()
 IS_ALWAYS_MATCH (TRUE)
 MATCH_INDEX (BINARY_PROTOCOL_MATCH)
 IS_VTABLE_MATCH (FALSE)
-END_PROTOCOL_ENTRY
+END_PROTOCOL_ENTRY_FLUSH
 
 BEGIN_PROTOCOL_ENTRY4 (binary_protocol_collection_end, TYPE_INT, index, TYPE_INT, generation, TYPE_LONGLONG, num_scanned_objects, TYPE_LONGLONG, num_unique_scanned_objects)
-FLUSH()
 CUSTOM_PRINT (printf ("%d generation %d scanned %lld unique %lld %0.2f%%", entry->index, entry->generation, entry->num_scanned_objects, entry->num_unique_scanned_objects, entry->num_unique_scanned_objects ? (100.0 * (double) entry->num_scanned_objects / (double) entry->num_unique_scanned_objects) : 0.0))
 IS_ALWAYS_MATCH (TRUE)
 MATCH_INDEX (BINARY_PROTOCOL_MATCH)
 IS_VTABLE_MATCH (FALSE)
-END_PROTOCOL_ENTRY
+END_PROTOCOL_ENTRY_FLUSH
 
 BEGIN_PROTOCOL_ENTRY0 (binary_protocol_concurrent_start)
 DEFAULT_PRINT ()
@@ -98,7 +112,7 @@ MATCH_INDEX (matches_interval (ptr, entry->addr, entry->size) ? 0 : BINARY_PROTO
 IS_VTABLE_MATCH (FALSE)
 END_PROTOCOL_ENTRY_HEAVY
 
-BEGIN_PROTOCOL_ENTRY_HEAVY4 (binary_protocol_block_set_state, TYPE_POINTER, addr, TYPE_SIZE, size, TYPE_INT, old, TYPE_INT, new)
+BEGIN_PROTOCOL_ENTRY_HEAVY4 (binary_protocol_block_set_state, TYPE_POINTER, addr, TYPE_SIZE, size, TYPE_INT, old, TYPE_INT, new_)
 DEFAULT_PRINT ()
 IS_ALWAYS_MATCH (FALSE)
 MATCH_INDEX (matches_interval (ptr, entry->addr, entry->size) ? 0 : BINARY_PROTOCOL_NO_MATCH)
@@ -309,24 +323,24 @@ MATCH_INDEX (BINARY_PROTOCOL_MATCH)
 IS_VTABLE_MATCH (FALSE)
 END_PROTOCOL_ENTRY
 
-BEGIN_PROTOCOL_ENTRY_HEAVY4 (binary_protocol_dislink_update, TYPE_POINTER, link, TYPE_POINTER, obj, TYPE_BOOL, track, TYPE_BOOL, staged)
-CUSTOM_PRINT(entry->obj ? printf ("link %p obj %p staged %d track %d", entry->link, entry->obj, entry->staged, entry->track) : printf ("link %p obj %p staged %d", entry->link, entry->obj, entry->staged))
-IS_ALWAYS_MATCH (FALSE)
-MATCH_INDEX (ptr == entry->link ? 0 : ptr == entry->obj ? 1 : BINARY_PROTOCOL_NO_MATCH)
-IS_VTABLE_MATCH (FALSE)
-END_PROTOCOL_ENTRY_HEAVY
-
-BEGIN_PROTOCOL_ENTRY_HEAVY4 (binary_protocol_dislink_update_staged, TYPE_POINTER, link, TYPE_POINTER, obj, TYPE_BOOL, track, TYPE_INT, index)
-CUSTOM_PRINT(entry->obj ? printf ("link %p obj %p index %d track %d", entry->link, entry->obj, entry->index, entry->track) : printf ("link %p obj %p index %d", entry->link, entry->obj, entry->index))
-IS_ALWAYS_MATCH (FALSE)
-MATCH_INDEX (ptr == entry->link ? 0 : ptr == entry->obj ? 1 : BINARY_PROTOCOL_NO_MATCH)
-IS_VTABLE_MATCH (FALSE)
-END_PROTOCOL_ENTRY_HEAVY
-
-BEGIN_PROTOCOL_ENTRY_HEAVY3 (binary_protocol_dislink_process_staged, TYPE_POINTER, link, TYPE_POINTER, obj, TYPE_INT, index)
+BEGIN_PROTOCOL_ENTRY_HEAVY3 (binary_protocol_dislink_add, TYPE_POINTER, link, TYPE_POINTER, obj, TYPE_BOOL, track)
 DEFAULT_PRINT ()
 IS_ALWAYS_MATCH (FALSE)
 MATCH_INDEX (ptr == entry->link ? 0 : ptr == entry->obj ? 1 : BINARY_PROTOCOL_NO_MATCH)
+IS_VTABLE_MATCH (FALSE)
+END_PROTOCOL_ENTRY_HEAVY
+
+BEGIN_PROTOCOL_ENTRY_HEAVY3 (binary_protocol_dislink_update, TYPE_POINTER, link, TYPE_POINTER, obj, TYPE_BOOL, track)
+CUSTOM_PRINT(entry->obj ? printf ("link %p obj %p track %d", entry->link, entry->obj, entry->track) : printf ("link %p obj %p", entry->link, entry->obj))
+IS_ALWAYS_MATCH (FALSE)
+MATCH_INDEX (ptr == entry->link ? 0 : ptr == entry->obj ? 1 : BINARY_PROTOCOL_NO_MATCH)
+IS_VTABLE_MATCH (FALSE)
+END_PROTOCOL_ENTRY_HEAVY
+
+BEGIN_PROTOCOL_ENTRY_HEAVY2 (binary_protocol_dislink_remove, TYPE_POINTER, link, TYPE_BOOL, track)
+DEFAULT_PRINT ()
+IS_ALWAYS_MATCH (FALSE)
+MATCH_INDEX (ptr == entry->link ? 0 : BINARY_PROTOCOL_NO_MATCH)
 IS_VTABLE_MATCH (FALSE)
 END_PROTOCOL_ENTRY_HEAVY
 
@@ -358,6 +372,13 @@ MATCH_INDEX (ptr == entry->cursor ? 1 : ptr == entry->value ? 2 : BINARY_PROTOCO
 IS_VTABLE_MATCH (FALSE)
 END_PROTOCOL_ENTRY_HEAVY
 
+BEGIN_PROTOCOL_ENTRY_HEAVY4 (binary_protocol_mod_union_remset, TYPE_POINTER, obj, TYPE_POINTER, ptr, TYPE_POINTER, value, TYPE_POINTER, value_vtable)
+DEFAULT_PRINT ()
+IS_ALWAYS_MATCH (FALSE)
+MATCH_INDEX (ptr == entry->obj ? 0 : ptr == entry->ptr ? 1 : ptr == entry->value ? 2 : BINARY_PROTOCOL_NO_MATCH)
+IS_VTABLE_MATCH (ptr == entry->value_vtable)
+END_PROTOCOL_ENTRY_HEAVY
+
 #undef BEGIN_PROTOCOL_ENTRY0
 #undef BEGIN_PROTOCOL_ENTRY1
 #undef BEGIN_PROTOCOL_ENTRY2
@@ -373,8 +394,6 @@ END_PROTOCOL_ENTRY_HEAVY
 #undef BEGIN_PROTOCOL_ENTRY_HEAVY5
 #undef BEGIN_PROTOCOL_ENTRY_HEAVY6
 
-#undef FLUSH
-
 #undef DEFAULT_PRINT
 #undef CUSTOM_PRINT
 
@@ -383,4 +402,5 @@ END_PROTOCOL_ENTRY_HEAVY
 #undef IS_VTABLE_MATCH
 
 #undef END_PROTOCOL_ENTRY
+#undef END_PROTOCOL_ENTRY_FLUSH
 #undef END_PROTOCOL_ENTRY_HEAVY

@@ -456,7 +456,10 @@ internal abstract class DiskBuildResultCache: BuildResultCache {
         // as it will not be used in future.
         if (HostingEnvironment.ShutdownInitiated) {
             BuildResultCompiledAssemblyBase compiledResult = result as BuildResultCompiledAssemblyBase;
-            if (compiledResult != null)
+
+            // DevDiv2 880034: check if ResultAssembly is null before calling GetName().
+            // UsesExistingAssembly could be true in updatable compilation scenarios.
+            if (compiledResult != null && compiledResult.ResultAssembly != null && !compiledResult.UsesExistingAssembly)
                 MarkAssemblyAndRelatedFilesForDeletion(compiledResult.ResultAssembly.GetName().Name);
             return;
         }

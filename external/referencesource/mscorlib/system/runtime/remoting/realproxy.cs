@@ -641,7 +641,6 @@ namespace System.Runtime.Remoting.Proxies {
             return retMsg;            
         } // EndInvokeHelper
 
-#if FEATURE_COMINTEROP
         // itnerop methods
         [System.Security.SecurityCritical]  // auto-generated
         public virtual IntPtr GetCOMIUnknown(bool fIsMarshalled)
@@ -659,7 +658,6 @@ namespace System.Runtime.Remoting.Proxies {
         {
             return IntPtr.Zero;
         }
-#endif // FEATURE_COMINTEROP
 
         // Method used for traversing back to the TP
         public virtual Object GetTransparentProxy()

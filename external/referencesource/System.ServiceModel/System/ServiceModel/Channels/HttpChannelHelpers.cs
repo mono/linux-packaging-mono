@@ -979,7 +979,7 @@ namespace System.ServiceModel.Channels
                     }
                     catch (IOException ioException)
                     {
-                        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(HttpChannelUtilities.CreateResponseIOException(ioException, TimeoutHelper.FromMilliseconds(this.ReadTimeout)));
+                        throw this.CreateResponseIOException(ioException);
                     }
                     catch (ObjectDisposedException objectDisposedException)
                     {
@@ -999,7 +999,7 @@ namespace System.ServiceModel.Channels
                     }
                     catch (IOException ioException)
                     {
-                        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(HttpChannelUtilities.CreateResponseIOException(ioException, TimeoutHelper.FromMilliseconds(this.ReadTimeout)));
+                        throw this.CreateResponseIOException(ioException);
                     }
                     catch (ObjectDisposedException objectDisposedException)
                     {
@@ -1023,7 +1023,7 @@ namespace System.ServiceModel.Channels
                     }
                     catch (IOException ioException)
                     {
-                        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(HttpChannelUtilities.CreateResponseIOException(ioException, TimeoutHelper.FromMilliseconds(this.ReadTimeout)));
+                        throw this.CreateResponseIOException(ioException);
                     }
                     catch (WebException webException)
                     {
@@ -1044,13 +1044,21 @@ namespace System.ServiceModel.Channels
                     }
                     catch (IOException ioException)
                     {
-                        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(HttpChannelUtilities.CreateResponseIOException(ioException, TimeoutHelper.FromMilliseconds(this.ReadTimeout)));
+                        throw this.CreateResponseIOException(ioException);
                     }
                     catch (WebException webException)
                     {
                         throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(HttpChannelUtilities.CreateResponseWebException(webException, this.webResponse));
                     }
                 }
+
+                private Exception CreateResponseIOException(IOException ioException)
+                {
+                    TimeSpan timeSpan = this.CanTimeout ? TimeoutHelper.FromMilliseconds(this.ReadTimeout) : TimeSpan.MaxValue;
+
+                    return DiagnosticUtility.ExceptionUtility.ThrowHelperError(HttpChannelUtilities.CreateResponseIOException(ioException, timeSpan));
+                } 
+
             }
         }
     }
@@ -1514,6 +1522,11 @@ namespace System.ServiceModel.Channels
                 {
                     mtomMessageEncoder.WriteMessage(this.message, this.outputStream, this.mtomBoundary);
                 }
+
+                if (this.supportsConcurrentIO)
+                {
+                    this.outputStream.Close();
+                }
             }
             finally
             {
@@ -1675,6 +1688,12 @@ namespace System.ServiceModel.Channels
                     }
 
                     httpOutput.messageEncoder.EndWriteMessage(result);
+
+                    if (this.httpOutput.supportsConcurrentIO)
+                    {
+                        httpOutput.outputStream.Close();
+                    }
+
                     return true;
                 }
                 else
@@ -1702,6 +1721,11 @@ namespace System.ServiceModel.Channels
                     if (content != null)
                     {
                         content.EndWriteToStream(result);
+                    }
+
+                    if (this.httpOutput.supportsConcurrentIO)
+                    {
+                        httpOutput.outputStream.Close();
                     }
 
                     return true;
@@ -2979,6 +3003,18 @@ namespace System.ServiceModel.Channels
                             {
                                 this.SetContentType(value);
                             }
+                        }
+                        else if (string.Compare(name, "Connection", StringComparison.OrdinalIgnoreCase) == 0 &&
+                                 value != null &&
+                                 string.Compare(value.Trim(), "close", StringComparison.OrdinalIgnoreCase) == 0 &&
+                                 !LocalAppContextSwitches.DisableExplicitConnectionCloseHeader)
+                        {
+                            // HttpListenerResponse will not serialize the Connection:close header
+                            // if its KeepAlive is true.  So in the case where a service has explicitly
+                            // added Connection:close (not added by default) set KeepAlive to false.
+                            // This will cause HttpListenerResponse to add its own Connection:close header
+                            // and to serialize it properly.  We do not add a redundant header here.
+                            this.listenerResponse.KeepAlive = false;
                         }
                         else
                         {

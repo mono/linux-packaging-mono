@@ -151,6 +151,10 @@ namespace System.Data.SqlClient {
         internal Decoder       _plpdecoder               = null;             // Decoder object to process plp character data
         internal bool          _accumulateInfoEvents= false;               // TRUE - accumulate info messages during TdsParser.Run, FALSE - fire them
         internal List<SqlError> _pendingInfoEvents = null;
+        internal byte[]        _bLongBytes         = null;                 // scratch buffer to serialize Long values (8 bytes).
+        internal byte[]        _bIntBytes          = null;                 // scratch buffer to serialize Int values (4 bytes).
+        internal byte[]        _bShortBytes        = null;                 // scratch buffer to serialize Short values (2 bytes).
+        internal byte[]        _bDecimalBytes      = null;                 // scratch buffer to serialize decimal values (17 bytes).
 
         //
         // DO NOT USE THIS BUFFER FOR OTHER THINGS.
@@ -740,7 +744,8 @@ namespace System.Data.SqlClient {
             return myInfo;
         }
 
-        internal void CreatePhysicalSNIHandle(string serverName, bool ignoreSniOpenTimeout, long timerExpire, out byte[] instanceName, byte[] spnBuffer, bool flushCache, bool async, bool fParallel) {
+        internal void CreatePhysicalSNIHandle(string serverName, bool ignoreSniOpenTimeout, long timerExpire, out byte[] instanceName, byte[] spnBuffer, bool flushCache, bool async, bool fParallel, TransparentNetworkResolutionState transparentNetworkResolutionState, int totalTimeout)
+        {
             SNINativeMethodWrapper.ConsumerInfo myInfo = CreateConsumerInfo(async);
 
             // Translate to SNI timeout values (Int32 milliseconds)
@@ -757,8 +762,7 @@ namespace System.Data.SqlClient {
                     timeout = 0;
                 }
             }
-
-            _sessionHandle = new SNIHandle(myInfo, serverName, spnBuffer, ignoreSniOpenTimeout, checked((int)timeout), out instanceName, flushCache, !async, fParallel);
+            _sessionHandle = new SNIHandle(myInfo, serverName, spnBuffer, ignoreSniOpenTimeout, checked((int)timeout), out instanceName, flushCache, !async, fParallel, transparentNetworkResolutionState, totalTimeout);
         }
 
         internal bool Deactivate() {
@@ -1034,7 +1038,7 @@ namespace System.Data.SqlClient {
                 // either TDS stream is corrupted or there is multithreaded misuse of connection
                 // NOTE: usually we do not proactively apply checks to TDS data, but this situation happened several times
                 // and caused infinite loop in CleanWire (VSTFDEVDIV\DEVDIV2:149937)
-                throw SQL.ParsingError();
+                throw SQL.ParsingError(ParsingErrorState.CorruptedTdsStream);
             }
 
             return true;
@@ -2368,10 +2372,10 @@ namespace System.Data.SqlClient {
                         else {
                             if (_parser._loginWithFailover)
                             {
-                                // For DbMirroring Failover during login, never break the connection, just close the TdsParser
+                                // For DB Mirroring Failover during login, never break the connection, just close the TdsParser (Devdiv 846298)
                                 _parser.Disconnect();
                             }
-                            else if ((_parser.State == TdsParserState.OpenNotLoggedIn) && (_parser.Connection.ConnectionOptions.MultiSubnetFailover))
+                            else if ((_parser.State == TdsParserState.OpenNotLoggedIn) && (_parser.Connection.ConnectionOptions.MultiSubnetFailover || _parser.Connection.ConnectionOptions.TransparentNetworkIPResolution))
                             {
                                 // For MultiSubnet Failover during login, never break the connection, just close the TdsParser
                                 _parser.Disconnect();
@@ -2441,7 +2445,7 @@ namespace System.Data.SqlClient {
                     AssertValidState();
                 }
                 else {
-                    throw SQL.ParsingError();
+                    throw SQL.ParsingError(ParsingErrorState.ProcessSniPacketFailed);
                 }
             }
         }

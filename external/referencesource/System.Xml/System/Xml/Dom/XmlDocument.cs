@@ -739,7 +739,6 @@ namespace System.Xml
 
         // Creates an XmlAttribute with the specified LocalName
         // and NamespaceURI.
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         public XmlAttribute CreateAttribute( String qualifiedName, String namespaceURI ) {
             string prefix = String.Empty;
             string localName = String.Empty;

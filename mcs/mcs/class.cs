@@ -92,7 +92,7 @@ namespace Mono.CSharp
 		}
 
 		//
-		// Any unattached attributes during parsing get added here. User
+		// Any unattached attributes during parsing get added here. Used
 		// by FULL_AST mode
 		//
 		public Attributes UnattachedAttributes {
@@ -530,7 +530,6 @@ namespace Mono.CSharp
 
 		bool has_normal_indexers;
 		string indexer_name;
-		protected bool requires_delayed_unmanagedtype_check;
 		bool error;
 		bool members_defined;
 		bool members_defined_ok;
@@ -1729,21 +1728,9 @@ namespace Mono.CSharp
 				return;
 
 			foreach (var member in members) {
-				var pbm = member as PropertyBasedMember;
-				if (pbm != null) {
+				var pbm = member as MemberBase;
+				if (pbm != null)
 					pbm.PrepareEmit ();
-					continue;
-				}
-
-				var mc = member as MethodCore;
-				if (mc != null) {
-					mc.PrepareEmit ();
-					continue;
-				}
-
-				var c = member as Const;
-				if (c != null)
-					c.DefineValue ();
 			}
 
 			base.PrepareEmit ();
@@ -1913,9 +1900,7 @@ namespace Mono.CSharp
 					if (compiled_iface != null)
 						compiled_iface.Define ();
 
-					ObsoleteAttribute oa = iface_type.GetAttributeObsolete ();
-					if (oa != null && !IsObsolete)
-						AttributeTester.Report_ObsoleteMessage (oa, iface_type.GetSignatureForError (), Location, Report);
+					iface_type.CheckObsoleteness (this, Location);
 
 					if (iface_type.Arity > 0) {
 						// TODO: passing `this' is wrong, should be base type iface instead
@@ -1956,9 +1941,7 @@ namespace Mono.CSharp
 				// Run checks skipped during DefineType (e.g FullNamedExpression::ResolveAsType)
 				//
 				if (base_type_expr != null) {
-					ObsoleteAttribute obsolete_attr = base_type.GetAttributeObsolete ();
-					if (obsolete_attr != null && !IsObsolete)
-						AttributeTester.Report_ObsoleteMessage (obsolete_attr, base_type.GetSignatureForError (), base_type_expr.Location, Report);
+					base_type.CheckObsoleteness (this, base_type_expr.Location);
 
 					if (IsGenericOrParentIsGeneric && base_type.IsAttribute) {
 						Report.Error (698, base_type_expr.Location,
@@ -2013,15 +1996,6 @@ namespace Mono.CSharp
 
 			if (HasOperators) {
 				CheckPairedOperators ();
-			}
-
-			if (requires_delayed_unmanagedtype_check) {
-				requires_delayed_unmanagedtype_check = false;
-				foreach (var member in members) {
-					var f = member as Field;
-					if (f != null && f.MemberType != null && f.MemberType.IsPointer)
-						TypeManager.VerifyUnmanaged (Module, f.MemberType, f.Location);
-				}
 			}
 
 			ComputeIndexerName();
@@ -2727,6 +2701,22 @@ namespace Mono.CSharp
 			return true;
 		}
 
+		public override void PrepareEmit ()
+		{
+			var s = this as Struct;
+			if (s == null || !s.HasUnmanagedCheckDone) {
+				for (int i = 0; i < Members.Count; ++i) {
+					var f = Members [i] as Field;
+					if (f == null || f.MemberType == null || !f.MemberType.IsPointer)
+						continue;
+
+					TypeManager.VerifyUnmanaged (Module, f.MemberType, f.Location);
+				}
+			}
+
+			base.PrepareEmit ();
+		}
+
 		public override void Emit ()
 		{
 			if (!has_static_constructor && HasStaticFieldInitializer) {
@@ -2975,7 +2965,7 @@ namespace Mono.CSharp
 
 	public sealed class Struct : ClassOrStruct
 	{
-		bool is_unmanaged, has_unmanaged_check_done;
+		bool is_unmanaged, has_unmanaged_check_done, requires_delayed_unmanagedtype_check;
 		bool InTransit;
 
 		// <summary>
@@ -3103,6 +3093,12 @@ namespace Mono.CSharp
 			CheckStructCycles ();
 
 			base.Emit ();
+		}
+
+		public bool HasUnmanagedCheckDone {
+			get {
+				return has_unmanaged_check_done;
+			}
 		}
 
 		bool HasUserDefaultConstructor ()
@@ -3773,6 +3769,9 @@ namespace Mono.CSharp
 			get {
 				return type_expr;
 			}
+			set {
+				type_expr = value;
+			}
 		}
 
 		#endregion
@@ -3876,6 +3875,12 @@ namespace Mono.CSharp
 		public override string GetSignatureForDocumentation ()
 		{
 			return Parent.GetSignatureForDocumentation () + "." + MemberName.Basename;
+		}
+
+		public virtual void PrepareEmit ()
+		{
+			if (member_type != null && type_expr != null)
+				member_type.CheckObsoleteness (this, type_expr.Location);
 		}
 
 		protected virtual bool ResolveMemberType ()

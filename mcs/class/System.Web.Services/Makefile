@@ -3,8 +3,7 @@ SUBDIRS =
 include ../../build/rules.make
 
 LIBRARY = System.Web.Services.dll
-MOBILE := $(filter monotouch monotouch_watch monodroid xammac mobile mobile_static, $(PROFILE))
-ifdef MOBILE
+ifdef MOBILE_PROFILE
 LIB_REFS = System System.Xml
 LIB_MCS_FLAGS = \
 	-nowarn:649 -nowarn:169			\
@@ -46,6 +45,14 @@ LIB_MCS_FLAGS += \
 endif
 
 TEST_MCS_FLAGS = $(LIB_MCS_FLAGS) -nowarn:618
+
+ifndef NO_THREAD_ABORT
+TEST_MCS_FLAGS += -d:MONO_FEATURE_THREAD_ABORT
+endif
+
+ifndef NO_THREAD_SUSPEND_RESUME
+TEST_MCS_FLAGS += -d:MONO_FEATURE_THREAD_SUSPEND_RESUME
+endif
 
 EXTRA_DISTFILES = \
 	System.Web.Services.Description/web-reference.xsd	\

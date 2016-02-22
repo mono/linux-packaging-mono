@@ -9,8 +9,12 @@
 //
 
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Collections;
 using System.Threading;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Sockets;
 using NUnit.Framework;
@@ -123,7 +127,21 @@ namespace MonoTests.System.Net.Sockets
 						  ProtocolType.Tcp);
 			conn.Connect (ep);
 
-			Socket client = server.Accept();
+			Socket client = null;
+			var sw = Stopwatch.StartNew ();
+			while (sw.ElapsedMilliseconds < 100)
+			{
+				try {
+					client = server.Accept();
+					break;
+				}
+				catch (SocketException ex) {
+					if (ex.SocketErrorCode == SocketError.WouldBlock)
+						continue;
+					throw;
+				}
+			}
+			Assert.IsNotNull (client, "Couldn't accept a client connection within 100ms.");
 			bool client_block = client.Blocking;
 
 			client.Close();
@@ -3477,6 +3495,27 @@ namespace MonoTests.System.Net.Sockets
 			s.Close ();
 		}
 
+#if MONOTOUCH
+		// when the linker is enabled then reflection won't work and would throw an NRE
+		// this is also always true for iOS - so we do not need to poke internals
+		static bool SupportsPortReuse ()
+		{
+			return true;
+		}
+#else
+		static bool? supportsPortReuse;
+		static bool SupportsPortReuse ()
+		{
+			if (supportsPortReuse.HasValue)
+				return supportsPortReuse.Value;
+
+			supportsPortReuse = (bool) typeof (Socket).GetMethod ("SupportsPortReuse",
+					BindingFlags.Static | BindingFlags.NonPublic)
+					.Invoke (null, new object [] {});
+			return supportsPortReuse.Value;
+		}
+#endif
+
 		// Test case for bug #31557
 		[Test]
 		public void TcpDoubleBind ()
@@ -3492,10 +3531,15 @@ namespace MonoTests.System.Net.Sockets
 
 				ss.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
-				ss.Bind (new IPEndPoint (IPAddress.Any, 12345));
-				ss.Listen(1);
+				Exception ex = null;
+				try {
+					ss.Bind (new IPEndPoint (IPAddress.Any, 12345));
+					ss.Listen(1);
+				} catch (SocketException e) {
+					ex = e;
+				}
 
-				// If we make it this far, we succeeded.
+				Assert.AreEqual (SupportsPortReuse (), ex == null);
 			}
 		}
 
@@ -4289,7 +4333,7 @@ namespace MonoTests.System.Net.Sockets
 
 			Socket listenSocket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			
-			listenSocket.Bind (new IPEndPoint (IPAddress.Loopback, 8001));
+			listenSocket.Bind (new IPEndPoint (IPAddress.Loopback, 0));
 			listenSocket.Listen (1);
 
 			listenSocket.BeginAccept (new AsyncCallback (ReceiveCallback), listenSocket);
@@ -4306,6 +4350,19 @@ namespace MonoTests.System.Net.Sockets
  
 			client.Receive (bytes, bytes.Length, 0);
 			client.Close ();
+		}
+
+		[Test]
+		public void UdpMulticasTimeToLive ()
+		{
+			/* see https://bugzilla.xamarin.com/show_bug.cgi?id=36941 */
+
+			using (Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp)) {
+				IPEndPoint end_point = new IPEndPoint (IPAddress.Any, 11000);
+				socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+				socket.Bind (end_point);
+				socket.SetSocketOption (SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 19);
+			}
 		}
  	}
 }

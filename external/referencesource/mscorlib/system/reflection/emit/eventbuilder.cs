@@ -139,6 +139,7 @@ namespace System.Reflection.Emit {
             customBuilder.CreateCustomAttribute(m_module, m_evToken.Token);
         }
 
+#if !FEATURE_CORECLR
         void _EventBuilder.GetTypeInfoCount(out uint pcTInfo)
         {
             throw new NotImplementedException();
@@ -158,6 +159,7 @@ namespace System.Reflection.Emit {
         {
             throw new NotImplementedException();
         }
+#endif
 
 
         // These are package private so that TypeBuilder can access them.

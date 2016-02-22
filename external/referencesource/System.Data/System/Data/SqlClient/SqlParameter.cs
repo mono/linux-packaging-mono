@@ -84,6 +84,48 @@ namespace System.Data.SqlClient {
         private bool                  _coercedValueIsDataFeed;
         private int                   _actualSize = -1;
 
+        /// <summary>
+        /// Column Encryption Cipher Related Metadata.
+        /// </summary>
+        private SqlCipherMetadata _columnEncryptionCipherMetadata;
+
+        /// <summary>
+        /// Get or set the encryption related metadata of this SqlParameter.
+        /// Should be set to a non-null value only once.
+        /// </summary>
+        internal SqlCipherMetadata CipherMetadata {
+            get {
+                return _columnEncryptionCipherMetadata;
+            }
+
+            set {
+                Debug.Assert(_columnEncryptionCipherMetadata == null || value == null,
+                    "_columnEncryptionCipherMetadata should be set to a non-null value only once.");
+
+                _columnEncryptionCipherMetadata = value;
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the parameter encryption metadata received by sp_describe_parameter_encryption.
+        /// For unencrypted parameters, the encryption metadata should still be sent (and will indicate 
+        /// that no encryption is needed).
+        /// </summary>
+        internal bool HasReceivedMetadata { get; set; }
+
+        /// <summary>
+        /// Returns the normalization rule version number as a byte
+        /// </summary>
+        internal byte NormalizationRuleVersion {
+            get {
+                if (_columnEncryptionCipherMetadata != null) {
+                    return _columnEncryptionCipherMetadata.NormalizationRuleVersion;
+                }
+
+                return 0x00;
+            }
+        }
+
         public SqlParameter() : base() {
         }
 
@@ -231,6 +273,16 @@ namespace System.Data.SqlClient {
             }
         }
 
+        [
+        DefaultValue(false),
+        ResCategoryAttribute(Res.DataCategory_Data),
+        ResDescriptionAttribute(Res.TCE_SqlParameter_ForceColumnEncryption),
+        ]
+        public bool ForceColumnEncryption {
+            get; 
+            set;
+        }
+
         override public DbType DbType {
             get {
                 return GetMetaTypeOnly().DbType;
@@ -309,6 +361,22 @@ namespace System.Data.SqlClient {
             }
         }
 
+        /// <summary>
+        /// Get SMI Metadata to write out type_info stream.
+        /// </summary>
+        /// <returns></returns>
+        internal MSS.SmiParameterMetaData GetMetadataForTypeInfo() {
+            ParameterPeekAheadValue peekAhead = null;
+
+            if (_internalMetaType == null) {
+                _internalMetaType = GetMetaTypeOnly();
+            }
+
+            return MetaDataForSmi(out peekAhead);
+        }
+
+        // IMPORTANT DEVNOTE: This method is being used for parameter encryption functionality, to get the type_info TDS object from SqlParameter.
+        // Please consider impact to that when changing this method. Refer to the callers of SqlParameter.GetMetadataForTypeInfo().
         internal MSS.SmiParameterMetaData MetaDataForSmi(out ParameterPeekAheadValue peekAhead) {
             peekAhead = null;
             MetaType mt = ValidateTypeLengths( true /* Yukon or newer */ );
@@ -448,7 +516,7 @@ namespace System.Data.SqlClient {
         internal bool ParamaterIsSqlType {
             get {
                 return _isSqlParameterSqlType;
-                }
+            }
             set {
                     _isSqlParameterSqlType = value;
                 }
@@ -998,6 +1066,7 @@ namespace System.Data.SqlClient {
             destination._coercedValueIsDataFeed = _coercedValueIsDataFeed;
             destination._coercedValueIsSqlType = _coercedValueIsSqlType;
             destination._actualSize = _actualSize;
+            destination.ForceColumnEncryption = ForceColumnEncryption;
         }
 
         internal byte GetActualPrecision() {

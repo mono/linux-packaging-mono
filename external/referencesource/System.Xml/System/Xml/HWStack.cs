@@ -52,12 +52,10 @@ namespace System.Xml {
             return null;
         }
 
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         internal object Peek() {
             return this.used > 0 ? this.stack[this.used - 1] : null;
         }
 
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         internal void AddToTop(object o) {
             if (this.used > 0) {
                 this.stack[this.used - 1] = o;

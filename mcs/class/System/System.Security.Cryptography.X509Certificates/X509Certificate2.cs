@@ -29,22 +29,22 @@
 
 #if SECURITY_DEP
 
-#if MONOTOUCH || MONODROID
-using Mono.Security;
-using Mono.Security.Cryptography;
-using MX = Mono.Security.X509;
-#else
+#if MONO_SECURITY_ALIAS
 extern alias MonoSecurity;
-
 using MonoSecurity::Mono.Security;
 using MonoSecurity::Mono.Security.Cryptography;
 using MX = MonoSecurity::Mono.Security.X509;
+#else
+using Mono.Security;
+using Mono.Security.Cryptography;
+using MX = Mono.Security.X509;
 #endif
 
 #endif
 
 using System.IO;
 using System.Text;
+using System.Collections;
 
 namespace System.Security.Cryptography.X509Certificates {
 
@@ -532,6 +532,47 @@ namespace System.Security.Cryptography.X509Certificates {
 		{
 			byte[] rawData = File.ReadAllBytes (fileName);
 			Import (rawData, (string)null, keyStorageFlags);
+		}
+
+		[MonoTODO ("X509ContentType.SerializedCert is not supported")]
+		public override byte[] Export (X509ContentType contentType, string password)
+		{
+			if (_cert == null)
+				throw new CryptographicException (empty_error);
+
+			switch (contentType) {
+			case X509ContentType.Cert:
+				return _cert.RawData;
+			case X509ContentType.Pfx: // this includes Pkcs12
+				return ExportPkcs12 (password);
+			case X509ContentType.SerializedCert:
+				// TODO
+				throw new NotSupportedException ();
+			default:
+				string msg = Locale.GetText ("This certificate format '{0}' cannot be exported.", contentType);
+				throw new CryptographicException (msg);
+			}
+		}
+
+		byte[] ExportPkcs12 (string password)
+		{
+			var pfx = new MX.PKCS12 ();
+			try {
+				var attrs = new Hashtable ();
+				var localKeyId = new ArrayList ();
+				localKeyId.Add (new byte[] { 1, 0, 0, 0 });
+				attrs.Add (MX.PKCS9.localKeyId, localKeyId);
+
+				if (password != null)
+					pfx.Password = password;
+				pfx.AddCertificate (_cert, attrs);
+				var privateKey = PrivateKey;
+				if (privateKey != null)
+					pfx.AddPkcs8ShroudedKeyBag (privateKey, attrs);
+				return pfx.GetBytes ();
+			} finally {
+				pfx.Password = null;
+			}
 		}
 
 		public override void Reset () 

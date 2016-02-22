@@ -12,6 +12,8 @@ EXTRA_DISTFILES = \
 	cs-parser.jay		\
 	mcs.exe.sources
 
+LIB_REFS = System System.Core System.Xml
+
 ifeq (basic, $(PROFILE))
 PROGRAM = basic.exe
 sourcefile = mcs.exe.sources
@@ -23,6 +25,16 @@ LOCAL_MCS_FLAGS += -lib:$(topdir)/class/lib/build -debug
 endif
 
 LOCAL_MCS_FLAGS += -d:STATIC,NO_SYMBOL_WRITER,NO_AUTHENTICODE
+
+ifndef NO_THREAD_ABORT
+REFERENCE_SOURCES_FLAGS += -d:MONO_FEATURE_THREAD_ABORT
+endif
+
+ifndef NO_PROCESS_START
+REFERENCE_SOURCES_FLAGS += -d:MONO_FEATURE_PROCESS_START
+endif
+
+LOCAL_MCS_FLAGS += $(REFERENCE_SOURCES_FLAGS)
 
 PROGRAM_INSTALL_DIR = $(mono_libdir)/mono/4.5
 

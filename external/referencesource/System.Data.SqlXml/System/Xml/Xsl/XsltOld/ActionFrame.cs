@@ -76,7 +76,6 @@ namespace System.Xml.Xsl.XsltOld {
             return ++ this.counter;
         }
 
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         internal void AllocateVariables(int count) {
             if (0 < count) {
                 this.variables = new object [count];

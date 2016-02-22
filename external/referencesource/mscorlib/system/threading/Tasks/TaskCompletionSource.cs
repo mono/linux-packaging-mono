@@ -343,9 +343,9 @@ namespace System.Threading.Tasks
         }
 
         // Enables a token to be stored into the canceled task
-        internal bool TrySetCanceled(CancellationToken tokenToRecord)
+        public bool TrySetCanceled(CancellationToken cancellationToken)
         {
-            bool rval = m_task.TrySetCanceled(tokenToRecord);
+            bool rval = m_task.TrySetCanceled(cancellationToken);
             if (!rval && !m_task.IsCompleted) SpinUntilCompleted();
             return rval;
         }

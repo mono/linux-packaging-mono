@@ -40,7 +40,9 @@ namespace System.Drawing
 {
 	[Serializable]	
 	[ComVisible (true)]
+#if !MONOTOUCH && !MONOMAC
 	[TypeConverter (typeof (PointConverter))]
+#endif
 	public struct Point
 	{
 		// Private x and y coordinate fields.
@@ -226,7 +228,7 @@ namespace System.Drawing
 		public Point (int dw)
 		{
 			y = dw >> 16;
-			x = dw & 0xffff;
+			x = unchecked ((short) (dw & 0xffff));
 		}
 
 		/// <summary>

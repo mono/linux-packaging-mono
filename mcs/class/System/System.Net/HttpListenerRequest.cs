@@ -30,13 +30,6 @@
 
 #if SECURITY_DEP
 
-#if MONOTOUCH || MONODROID
-using Mono.Security.Protocol.Tls;
-#else
-extern alias MonoSecurity;
-using MonoSecurity::Mono.Security.Protocol.Tls;
-#endif
-
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
@@ -45,6 +38,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Security.Authentication.ExtendedProtection;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace System.Net {
 	public sealed class HttpListenerRequest
@@ -142,10 +136,10 @@ namespace System.Net {
 			foreach (string kv in components) {
 				int pos = kv.IndexOf ('=');
 				if (pos == -1) {
-					query_string.Add (null, HttpUtility.UrlDecode (kv));
+					query_string.Add (null, WebUtility.UrlDecode (kv));
 				} else {
-					string key = HttpUtility.UrlDecode (kv.Substring (0, pos));
-					string val = HttpUtility.UrlDecode (kv.Substring (pos + 1));
+					string key = WebUtility.UrlDecode (kv.Substring (0, pos));
+					string val = WebUtility.UrlDecode (kv.Substring (pos + 1));
 					
 					query_string.Add (key, val);
 				}
@@ -182,7 +176,7 @@ namespace System.Net {
 								host, LocalEndPoint.Port);
 
 			if (!Uri.TryCreate (base_uri + path, UriKind.Absolute, out url)){
-				context.ErrorMessage = "Invalid url: " + base_uri + path;
+				context.ErrorMessage = WebUtility.HtmlEncode ("Invalid url: " + base_uri + path);
 				return;
 			}
 

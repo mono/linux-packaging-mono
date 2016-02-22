@@ -1295,7 +1295,7 @@ namespace System {
         }
 
         // Returns the host name represented as IDN (using punycode encoding) regardless of app.config settings
-        internal string IdnHost {
+        public string IdnHost {
             get {
                 string host = this.DnsSafeHost;
 
@@ -3946,7 +3946,7 @@ namespace System {
                         if (iriParsing || (s_IdnScope != UriIdnScope.None)){
                             if (iriParsing && hasUnicode && hostNotUnicodeNormalized){
                                 // Normalize user info
-                                userInfoString = EscapeUnescapeIri(pString, startInput, start + 1, UriComponents.UserInfo);
+                                userInfoString = IriHelper.EscapeUnescapeIri(pString, startInput, start + 1, UriComponents.UserInfo);
                                 try{
                                     if (UriParser.ShouldUseLegacyV2Quirks)
                                         userInfoString = userInfoString.Normalize(NormalizationForm.FormC);
@@ -4192,7 +4192,7 @@ namespace System {
                         if (iriParsing && hasUnicode
                             && StaticNotAny(flags, Flags.HostUnicodeNormalized)){
                             // Normalize any other host
-                            String user = new string(pString, startOtherHost, startOtherHost - end);
+                            String user = new string(pString, startOtherHost, end - startOtherHost);
                             try
                             {
                                 newHost += user.Normalize(NormalizationForm.FormC);
@@ -4436,11 +4436,11 @@ namespace System {
                         if (Char.IsHighSurrogate(c)){
                             if ((i + 1) < end){
                                 bool surrPair = false;
-                                valid = CheckIriUnicodeRange(c, str[i + 1], ref surrPair, true);
+                                valid = IriHelper.CheckIriUnicodeRange(c, str[i + 1], ref surrPair, true);
                             }
                         }
                         else{
-                            valid = CheckIriUnicodeRange(c, true);
+                            valid = IriHelper.CheckIriUnicodeRange(c, true);
                         }
                         if (!valid) res |= Check.NotIriCanonical;
                     }

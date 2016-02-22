@@ -97,6 +97,8 @@ namespace NUnit.ConsoleRunner
 						testFilter = new AndFilter( testFilter, excludeFilter );
 				}
 
+				testFilter = BabysitterSupport.AddBabysitterFilter(testFilter);
+
 				TestResult result = null;
 				string savedDirectory = Environment.CurrentDirectory;
 				TextWriter savedOut = Console.Out;
@@ -158,7 +160,7 @@ namespace NUnit.ConsoleRunner
 				//if ( testRunner != null )
 				//    testRunner.Unload();
 
-				if ( collector.HasExceptions )
+				if ( result == null || collector.HasExceptions )
 				{
 					collector.WriteExceptions();
 					return UNEXPECTED_ERROR;

@@ -983,6 +983,8 @@ namespace Microsoft.SqlServer.Server {
     //
     //  MetaData class to send parameter definitions to server.
     //  Sealed because we don't need to derive from it yet.
+    // IMPORTANT DEVNOTE: This class is being used for parameter encryption functionality, to get the type_info TDS object from SqlParameter.
+    // Please consider impact to that when changing this class. Refer to the callers of SqlParameter.GetMetadataForTypeInfo().
     internal sealed class SmiParameterMetaData : SmiExtendedMetaData {
 
         private ParameterDirection _direction;

@@ -52,7 +52,7 @@ namespace System.Collections.Concurrent
 #if !FEATURE_CORECLR
     [Serializable]
 #endif //!FEATURE_CORECLR
-    public class ConcurrentStack<T> : IProducerConsumerCollection<T>
+    public class ConcurrentStack<T> : IProducerConsumerCollection<T>, IReadOnlyCollection<T>
     {
         /// <summary>
         /// A simple (internal) node type used to store elements of concurrent stacks and queues.

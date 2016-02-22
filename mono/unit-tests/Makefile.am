@@ -7,7 +7,6 @@ if PLATFORM_DARWIN
 test_ldflags = -framework CoreFoundation -framework Foundation
 endif
 
-
 if !CROSS_COMPILE
 if !HOST_WIN32
 if SUPPORT_BOEHM
@@ -36,9 +35,24 @@ test_conc_hashtable_CFLAGS = $(test_cflags)
 test_conc_hashtable_LDADD = $(test_ldadd)
 test_conc_hashtable_LDFLAGS = $(test_ldflags)
 
-noinst_PROGRAMS = test-sgen-qsort test-memfuncs test-mono-linked-list-set test-conc-hashtable
+test_mono_handle_SOURCES = test-mono-handle.c
+test_mono_handle_CFLAGS = $(test_cflags)
+test_mono_handle_LDADD = $(test_ldadd)
+test_mono_handle_LDFLAGS = $(test_ldflags)
 
-TESTS = test-sgen-qsort test-memfuncs test-mono-linked-list-set test-conc-hashtable
+noinst_PROGRAMS = test-sgen-qsort test-memfuncs test-mono-linked-list-set test-conc-hashtable test-mono-handle
+
+TESTS = test-sgen-qsort test-memfuncs test-mono-linked-list-set test-conc-hashtable test-mono-handle
+
+.NOTPARALLEL:
+
+check-local:
+	if [ -e test-suite.log ]; then \
+		if grep -q "# FAIL:  0\|tests passed" test-suite.log; then successbool=True && failures=0; else successbool=False && failures=1; fi; \
+		echo "<?xml version='1.0' encoding='utf-8'?><test-results failures='$$failures' total='1' not-run='0' name='unit-tests.dummy' date='$$(date +%F)' time='$$(date +%T)'><test-suite name='MonoTests.unit-tests' success='$$successbool' time='0'><results><test-case name='MonoTests.unit-tests.100percentsuccess' executed='True' success='$$successbool' time='0'>" > TestResult-unit-tests.xml; \
+		if [ $$failures -ne 0 ]; then echo "<failure><message>"'<![CDATA[' >> TestResult-unit-tests.xml && cat test-suite.log >> TestResult-unit-tests.xml && echo "]]></message><stack-trace></stack-trace></failure>" >> TestResult-unit-tests.xml; fi; \
+		echo "</test-case></results></test-suite></test-results>" >> TestResult-unit-tests.xml; \
+	fi;
 
 endif SUPPORT_BOEHM
 endif !HOST_WIN32

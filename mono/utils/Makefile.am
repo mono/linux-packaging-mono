@@ -15,7 +15,7 @@ monoutils_sources = \
 	mono-md5.c		\
 	mono-sha1.c		\
 	mono-logger.c		\
-	mono-logger-internal.h	\
+	mono-logger-internals.h	\
 	mono-codeman.c		\
 	dlmalloc.h      	\
 	dlmalloc.c      	\
@@ -36,9 +36,10 @@ monoutils_sources = \
 	mono-math.c  		\
 	mono-mmap.c  		\
 	mono-mmap.h  		\
-	mono-mmap-internal.h	\
-	mono-mutex.c  		\
-	mono-mutex.h  		\
+	mono-mmap-internals.h	\
+	mono-os-mutex.h		\
+	mono-coop-mutex.h		\
+	mono-once.h		\
 	mono-lazy-init.h		\
 	mono-networkinterfaces.c		\
 	mono-networkinterfaces.h		\
@@ -53,8 +54,8 @@ monoutils_sources = \
 	mono-uri.c		\
 	mono-poll.c		\
 	mono-path.c		\
-	mono-semaphore.c	\
-	mono-semaphore.h	\
+	mono-os-semaphore.h	\
+	mono-coop-semaphore.h		\
 	mono-sigcontext.h	\
 	mono-stdlib.c 		\
 	mono-property-hash.h 	\
@@ -101,6 +102,8 @@ monoutils_sources = \
 	mono-threads.c	\
 	mono-threads-state-machine.c	\
 	mono-threads-posix.c	\
+	mono-threads-posix-signals.c	\
+	mono-threads-posix-signals.h	\
 	mono-threads-mach.c	\
 	mono-threads-mach-helper.c	\
 	mono-threads-windows.c	\
@@ -109,8 +112,12 @@ monoutils_sources = \
 	mono-threads-openbsd.c	\
 	mono-threads-android.c	\
 	mono-threads.h	\
+	mono-threads-api.h	\
 	mono-threads-coop.c	\
 	mono-threads-coop.h	\
+	mono-threads-mach-abort-syscall.c	\
+	mono-threads-posix-abort-syscall.c	\
+	mono-threads-windows-abort-syscall.c	\
 	mono-tls.h	\
 	mono-tls.c	\
 	linux_magic.h	\
@@ -139,7 +146,9 @@ monoutils_sources = \
 	memfuncs.c \
 	memfuncs.h \
 	parse.c \
-	parse.h
+	parse.h	\
+	checked-build.c \
+	checked-build.h
 
 arch_sources = 
 
@@ -158,7 +167,7 @@ arch_sources += mach-support-arm.c
 endif
 
 if ARM64
-arch_sources += mach-support-arm.c
+arch_sources += mach-support-arm64.c
 endif
 
 else

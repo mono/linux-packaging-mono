@@ -12,7 +12,7 @@
 #include "ir-emit.h"
 #include "jit-icalls.h"
 
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/abi-details.h>
 
 #ifndef DISABLE_JIT
@@ -76,7 +76,7 @@ decompose_long_opcode (MonoCompile *cfg, MonoInst *ins, MonoInst **repl_ins)
 
 		if (COMPILE_LLVM (cfg))
 			break;
-		if (MONO_IS_ILP32 && SIZEOF_REGISTER == 8)
+		if (cfg->backend->ilp32 && SIZEOF_REGISTER == 8)
 			opcode = OP_LADDCC;
 		else
 			opcode = OP_ADDCC;
@@ -90,7 +90,7 @@ decompose_long_opcode (MonoCompile *cfg, MonoInst *ins, MonoInst **repl_ins)
 
 		if (COMPILE_LLVM (cfg))
 			break;
-		if (MONO_IS_ILP32 && SIZEOF_REGISTER == 8)
+		if (cfg->backend->ilp32 && SIZEOF_REGISTER == 8)
 			opcode = OP_LADDCC;
 		else
 			opcode = OP_ADDCC;
@@ -105,7 +105,7 @@ decompose_long_opcode (MonoCompile *cfg, MonoInst *ins, MonoInst **repl_ins)
 
 		if (COMPILE_LLVM (cfg))
 			break;
-		if (MONO_IS_ILP32 && SIZEOF_REGISTER == 8)
+		if (cfg->backend->ilp32 && SIZEOF_REGISTER == 8)
 			opcode = OP_LSUBCC;
 		else
 			opcode = OP_SUBCC;
@@ -119,7 +119,7 @@ decompose_long_opcode (MonoCompile *cfg, MonoInst *ins, MonoInst **repl_ins)
 
 		if (COMPILE_LLVM (cfg))
 			break;
-		if (MONO_IS_ILP32 && SIZEOF_REGISTER == 8)
+		if (cfg->backend->ilp32 && SIZEOF_REGISTER == 8)
 			opcode = OP_LSUBCC;
 		else
 			opcode = OP_SUBCC;
@@ -307,10 +307,7 @@ mono_decompose_opcode (MonoCompile *cfg, MonoInst *ins)
 	gboolean emulate = FALSE;
 
 	/* FIXME: Instead of = NOP, don't emit the original ins at all */
-
-#ifdef MONO_ARCH_HAVE_DECOMPOSE_OPTS
 	mono_arch_decompose_opts (cfg, ins);
-#endif
 
 	/*
 	 * The code below assumes that we are called immediately after emitting 
@@ -446,36 +443,34 @@ mono_decompose_opcode (MonoCompile *cfg, MonoInst *ins)
 		cfg->exception_message = g_strdup_printf ("float conv.ovf.un opcodes not supported.");
 		break;
 
-#if defined(MONO_ARCH_EMULATE_DIV) && defined(MONO_ARCH_HAVE_OPCODE_NEEDS_EMULATION)
 	case OP_IDIV:
 	case OP_IREM:
 	case OP_IDIV_UN:
 	case OP_IREM_UN:
-		if (!mono_arch_opcode_needs_emulation (cfg, ins->opcode)) {
-#ifdef MONO_ARCH_NEED_DIV_CHECK
-			int reg1 = alloc_ireg (cfg);
-			int reg2 = alloc_ireg (cfg);
-			/* b == 0 */
-			MONO_EMIT_NEW_ICOMPARE_IMM (cfg, ins->sreg2, 0);
-			MONO_EMIT_NEW_COND_EXC (cfg, IEQ, "DivideByZeroException");
-			if (ins->opcode == OP_IDIV || ins->opcode == OP_IREM) {
-				/* b == -1 && a == 0x80000000 */
-				MONO_EMIT_NEW_ICOMPARE_IMM (cfg, ins->sreg2, -1);
-				MONO_EMIT_NEW_UNALU (cfg, OP_ICEQ, reg1, -1);
-				MONO_EMIT_NEW_ICOMPARE_IMM (cfg, ins->sreg1, 0x80000000);
-				MONO_EMIT_NEW_UNALU (cfg, OP_ICEQ, reg2, -1);
-				MONO_EMIT_NEW_BIALU (cfg, OP_IAND, reg1, reg1, reg2);
-				MONO_EMIT_NEW_ICOMPARE_IMM (cfg, reg1, 1);
-				MONO_EMIT_NEW_COND_EXC (cfg, IEQ, "OverflowException");
+		if (cfg->backend->emulate_div && mono_arch_opcode_needs_emulation (cfg, ins->opcode))
+			emulate = TRUE;
+		if (!emulate) {
+			if (cfg->backend->need_div_check) {
+				int reg1 = alloc_ireg (cfg);
+				int reg2 = alloc_ireg (cfg);
+				/* b == 0 */
+				MONO_EMIT_NEW_ICOMPARE_IMM (cfg, ins->sreg2, 0);
+				MONO_EMIT_NEW_COND_EXC (cfg, IEQ, "DivideByZeroException");
+				if (ins->opcode == OP_IDIV || ins->opcode == OP_IREM) {
+					/* b == -1 && a == 0x80000000 */
+					MONO_EMIT_NEW_ICOMPARE_IMM (cfg, ins->sreg2, -1);
+					MONO_EMIT_NEW_UNALU (cfg, OP_ICEQ, reg1, -1);
+					MONO_EMIT_NEW_ICOMPARE_IMM (cfg, ins->sreg1, 0x80000000);
+					MONO_EMIT_NEW_UNALU (cfg, OP_ICEQ, reg2, -1);
+					MONO_EMIT_NEW_BIALU (cfg, OP_IAND, reg1, reg1, reg2);
+					MONO_EMIT_NEW_ICOMPARE_IMM (cfg, reg1, 1);
+					MONO_EMIT_NEW_COND_EXC (cfg, IEQ, "OverflowException");
+				}
 			}
-#endif
 			MONO_EMIT_NEW_BIALU (cfg, ins->opcode, ins->dreg, ins->sreg1, ins->sreg2);
 			NULLIFY_INS (ins);
-		} else {
-			emulate = TRUE;
 		}
 		break;
-#endif
 
 #if SIZEOF_REGISTER == 8
 	case OP_LREM_IMM:
@@ -544,7 +539,7 @@ mono_decompose_opcode (MonoCompile *cfg, MonoInst *ins)
 			g_assert (!info->sig->hasthis);
 			g_assert (info->sig->param_count <= MONO_MAX_SRC_REGS);
 
-			args = mono_mempool_alloc0 (cfg->mempool, sizeof (MonoInst*) * info->sig->param_count);
+			args = (MonoInst **)mono_mempool_alloc0 (cfg->mempool, sizeof (MonoInst*) * info->sig->param_count);
 			if (info->sig->param_count > 0) {
 				int sregs [MONO_MAX_SRC_REGS];
 				int num_sregs, i;
@@ -639,10 +634,7 @@ mono_decompose_long_opts (MonoCompile *cfg)
 		cfg->cbb->code = cfg->cbb->last_ins = NULL;
 
 		while (tree) {
-
-#ifdef MONO_ARCH_HAVE_DECOMPOSE_LONG_OPTS
 			mono_arch_decompose_long_opts (cfg, tree);
-#endif
 
 			switch (tree->opcode) {
 			case OP_I8CONST:
@@ -1205,8 +1197,10 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 	 * Create a dummy bblock and emit code into it so we can use the normal 
 	 * code generation macros.
 	 */
-	cfg->cbb = mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoBasicBlock));
+	cfg->cbb = (MonoBasicBlock *)mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoBasicBlock));
 	first_bb = cfg->cbb;
+
+	/* For LLVM, decompose only the OP_STOREV_MEMBASE opcodes, which need write barriers and the gsharedvt opcodes */
 
 	for (bb = cfg->bb_entry; bb; bb = bb->next_bb) {
 		MonoInst *ins;
@@ -1226,10 +1220,11 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 			for (ins = bb->code; ins; ins = ins->next) {
 				switch (ins->opcode) {
 				case OP_VMOVE: {
+					g_assert (ins->klass);
+					if (COMPILE_LLVM (cfg) && !mini_is_gsharedvt_klass (ins->klass))
+						break;
 					src_var = get_vreg_to_inst (cfg, ins->sreg1);
 					dest_var = get_vreg_to_inst (cfg, ins->dreg);
-
-					g_assert (ins->klass);
 
 					if (!src_var)
 						src_var = mono_compile_create_var_for_vreg (cfg, &ins->klass->byval_arg, OP_LOCAL, ins->dreg);
@@ -1248,6 +1243,9 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 					break;
 				}
 				case OP_VZERO:
+					if (COMPILE_LLVM (cfg) && !mini_is_gsharedvt_klass (ins->klass))
+						break;
+
 					g_assert (ins->klass);
 
 					EMIT_NEW_VARLOADA_VREG (cfg, dest, ins->dreg, &ins->klass->byval_arg);
@@ -1266,6 +1264,9 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 					}
 					break;
 				case OP_DUMMY_VZERO:
+					if (COMPILE_LLVM (cfg))
+						break;
+
 					NULLIFY_INS (ins);
 					break;
 				case OP_STOREV_MEMBASE: {
@@ -1285,6 +1286,8 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 				}
 				case OP_LOADV_MEMBASE: {
 					g_assert (ins->klass);
+					if (COMPILE_LLVM (cfg) && !mini_is_gsharedvt_klass (ins->klass))
+						break;
 
 					dest_var = get_vreg_to_inst (cfg, ins->dreg);
 					// FIXME-VT:
@@ -1299,6 +1302,9 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 					break;
 				}
 				case OP_OUTARG_VT: {
+					if (COMPILE_LLVM (cfg))
+						break;
+
 					g_assert (ins->klass);
 
 					src_var = get_vreg_to_inst (cfg, ins->sreg1);
@@ -1329,6 +1335,9 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 				case OP_VCALL_MEMBASE: {
 					MonoCallInst *call = (MonoCallInst*)ins;
 					int size;
+
+					if (COMPILE_LLVM (cfg))
+						break;
 
 					if (call->vret_in_reg) {
 						MonoCallInst *call2;
@@ -1450,71 +1459,6 @@ mono_decompose_vtype_opts (MonoCompile *cfg)
 	}
 }
 
-void
-mono_decompose_vtype_opts_llvm (MonoCompile *cfg)
-{
-	MonoBasicBlock *bb, *first_bb;
-
-	/* Decompose only the OP_STOREV_MEMBASE opcodes, which need write barriers */
-
-	cfg->cbb = mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoBasicBlock));
-	first_bb = cfg->cbb;
-
-	for (bb = cfg->bb_entry; bb; bb = bb->next_bb) {
-		MonoInst *ins;
-		MonoInst *prev = NULL;
-		MonoInst *src_var, *src, *dest;
-		gboolean restart;
-		int dreg;
-
-		if (cfg->verbose_level > 2) mono_print_bb (bb, "BEFORE LOWER-VTYPE-OPTS(LLVM) ");
-
-		cfg->cbb->code = cfg->cbb->last_ins = NULL;
-		restart = TRUE;
-
-		while (restart) {
-			restart = FALSE;
-
-			for (ins = bb->code; ins; ins = ins->next) {
-				switch (ins->opcode) {
-				case OP_STOREV_MEMBASE: {
-					src_var = get_vreg_to_inst (cfg, ins->sreg1);
-
-					if (!src_var) {
-						g_assert (ins->klass);
-						src_var = mono_compile_create_var_for_vreg (cfg, &ins->klass->byval_arg, OP_LOCAL, ins->sreg1);
-					}
-
-					EMIT_NEW_VARLOADA_VREG ((cfg), (src), ins->sreg1, &ins->klass->byval_arg);
-
-					dreg = alloc_preg (cfg);
-					EMIT_NEW_BIALU_IMM (cfg, dest, OP_ADD_IMM, dreg, ins->inst_destbasereg, ins->inst_offset);
-					mini_emit_stobj (cfg, dest, src, src_var->klass, src_var->backend.is_pinvoke);
-					break;
-				}
-				default:
-					break;
-				}
-
-				g_assert (cfg->cbb == first_bb);
-
-				if (cfg->cbb->code || (cfg->cbb != first_bb)) {
-					/* Replace the original instruction with the new code sequence */
-
-					mono_replace_ins (cfg, bb, ins, &prev, first_bb, cfg->cbb);
-					first_bb->code = first_bb->last_ins = NULL;
-					first_bb->in_count = first_bb->out_count = 0;
-					cfg->cbb = first_bb;
-				}
-				else
-					prev = ins;
-			}
-		}
-
-		if (cfg->verbose_level > 2) mono_print_bb (bb, "AFTER LOWER-VTYPE-OPTS(LLVM) ");
-	}
-}
-
 inline static MonoInst *
 mono_get_domainvar (MonoCompile *cfg)
 {
@@ -1542,7 +1486,7 @@ mono_decompose_array_access_opts (MonoCompile *cfg)
 	 * Create a dummy bblock and emit code into it so we can use the normal 
 	 * code generation macros.
 	 */
-	cfg->cbb = mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoBasicBlock));
+	cfg->cbb = (MonoBasicBlock *)mono_mempool_alloc0 ((cfg)->mempool, sizeof (MonoBasicBlock));
 	first_bb = cfg->cbb;
 
 	for (bb = cfg->bb_entry; bb; bb = bb->next_bb) {

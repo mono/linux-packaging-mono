@@ -1384,7 +1384,8 @@ namespace System.Xml {
             if ( ch <= XmlCharType.SurHighEnd ) {
                 if ( pSrc + 1 < pSrcEnd ) {
                     int lowChar = pSrc[1];
-                    if ( lowChar >= XmlCharType.SurLowStart ) {
+                    if ( lowChar >= XmlCharType.SurLowStart &&
+                        (LocalAppContextSwitches.DontThrowOnInvalidSurrogatePairs || lowChar <= XmlCharType.SurLowEnd)) {
 
                         pDst[0] = (char)ch;
                         pDst[1] = (char)lowChar;

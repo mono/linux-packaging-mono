@@ -1,4 +1,4 @@
-// ==++==
+﻿// ==++==
 //
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
 //
@@ -597,12 +597,7 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
         // some raw date/time information in raw.
         //
         [System.Security.SecuritySafeCritical]  // auto-generated
-        private static Boolean Lex(
-#if !FEATURE_CORECLR
-            DS dps, ref __DTString str, ref DateTimeToken dtok, ref DateTimeRawInfo raw, ref DateTimeResult result, ref DateTimeFormatInfo dtfi, DateTimeStyles styles)
-#else
-            DS dps, ref __DTString str, ref DateTimeToken dtok, ref DateTimeRawInfo raw, ref DateTimeResult result, ref DateTimeFormatInfo dtfi)
-#endif
+        private static Boolean Lex(DS dps, ref __DTString str, ref DateTimeToken dtok, ref DateTimeRawInfo raw, ref DateTimeResult result, ref DateTimeFormatInfo dtfi, DateTimeStyles styles)
         {
 
             TokenType tokenType;
@@ -616,15 +611,15 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
             str.GetRegularToken(out tokenType, out tokenValue, dtfi);
 
 #if _LOGGING
-            // <STRIP>
-            // Builds with _LOGGING defined (x86dbg, amd64chk, etc) support tracing
-            // Set the following internal-only/unsupported environment variables to enable DateTime tracing to the console:
-            //
-            // COMPLUS_LogEnable=1
-            // COMPLUS_LogToConsole=1
-            // COMPLUS_LogLevel=9
-            // COMPLUS_ManagedLogFacility=0x00001000
-            // </STRIP>
+            // <
+
+
+
+
+
+
+
+
             if (_tracingEnabled) {
                 BCLDebug.Trace("DATETIME", "[DATETIME] Lex({0})\tpos:{1}({2}), {3}, DS.{4}", Hex(str.Value),
                                str.Index, Hex(str.m_current), tokenType, dps);
@@ -704,6 +699,7 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                                 case TokenType.SEP_Date:
                                     dtok.dtt     = DTT.YearDateSep;
                                     break;
+
                                 case TokenType.SEP_Time:
                                     if (!raw.hasSameDateAndTimeSeparators)
                                     {
@@ -716,6 +712,7 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                                     // we are sure we are not parsing time.
                                     dtok.dtt = DTT.YearDateSep;
                                     break;
+
                                 case TokenType.SEP_DateOrOffset:
                                     // The separator is either a date separator or the start of a time zone offset. If the token will complete the date then
                                     // process just the number and roll back the index so that the outer loop can attempt to parse the time zone offset.
@@ -772,16 +769,19 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                             if (raw.timeMark == TM.NotSet) {
                                 raw.timeMark = (sep == TokenType.SEP_Am ? TM.AM : TM.PM);
                                 dtok.dtt = DTT.NumAmpm;
-#if !FEATURE_CORECLR && !MONO
                                 // Fix AM/PM parsing case, e.g. "1/10 5 AM"
-                                if (enableAmPmParseAdjustment && dps == DS.D_NN)
+                                if (dps == DS.D_NN 
+#if !FEATURE_CORECLR && !MONO
+                                    && enableAmPmParseAdjustment
+#endif
+                                )
                                 {
                                     if (!ProcessTerminaltState(DS.DX_NN, ref result, ref styles, ref raw, dtfi))
                                     {
                                         return false;
                                     }
                                 }
-#endif
+
                                 raw.AddNumber(dtok.num);
                             } else {
                                 result.SetFailure(ParseFailureKind.Format, "Format_BadDateTime", null);
@@ -818,7 +818,7 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                             raw.AddNumber(dtok.num);
                             break;                            
                         case TokenType.SEP_Time:
-                            if (raw.hasSameDateAndTimeSeparators &&
+                            if (raw.hasSameDateAndTimeSeparators && 
                                 (dps == DS.D_Y || dps == DS.D_YN || dps == DS.D_YNd || dps == DS.D_YM || dps == DS.D_YMd))
                             {
                                 // we are parsing a date and we have the time separator same as date separator, so we mark the token as date separator
@@ -2384,11 +2384,7 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                 // Call the lexer to get the next token.
                 //
                 // If we find a era in Lex(), the era value will be in raw.era.
-#if !FEATURE_CORECLR
                 if (!Lex(dps, ref str, ref dtok, ref raw, ref result, ref dtfi, styles))
-#else
-                if (!Lex(dps, ref str, ref dtok, ref raw, ref result, ref dtfi))
-#endif                    
                 {
                     TPTraceExit("0000", dps);
                     return false;
@@ -2430,23 +2426,34 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                         }
                     }
 
-                    if (raw.hasSameDateAndTimeSeparators && (dtok.dtt == DTT.YearEnd || dtok.dtt == DTT.YearSpace || dtok.dtt == DTT.YearDateSep))
+                    if (raw.hasSameDateAndTimeSeparators)
                     {
-                        // When time and date separators are same and we are hitting a year number while the first parsed part of the string was recognized 
-                        // as part of time (and not a date) DS.T_Nt, DS.T_NNt then change the state to be a date so we try to parse it as a date instead
-                        if (dps == DS.T_Nt)
+                        if (dtok.dtt == DTT.YearEnd || dtok.dtt == DTT.YearSpace || dtok.dtt == DTT.YearDateSep)
                         {
-                            dps = DS.D_Nd;
-                        }
-                        if (dps == DS.T_NNt)
-                        {
-                            dps = DS.D_NNd;
-
-                            // we have the case of Serbia have dates in forms 'd.M.yyyy.' so we can expect '.' after the year number. 
-                            // changing the token to YearSpace instead of YearDateSep will make the parsing not failing this case.
-                            if (dtok.dtt == DTT.YearDateSep)
+                            // When time and date separators are same and we are hitting a year number while the first parsed part of the string was recognized 
+                            // as part of time (and not a date) DS.T_Nt, DS.T_NNt then change the state to be a date so we try to parse it as a date instead
+                            if (dps == DS.T_Nt)
                             {
-                                dtok.dtt = DTT.YearSpace;
+                                dps = DS.D_Nd;
+                            }
+                            if (dps == DS.T_NNt)
+                            {
+                                dps = DS.D_NNd;
+                            }
+                        }
+
+                        bool atEnd = str.AtEnd();
+                        if (dateParsingStates[(int)dps][(int)dtok.dtt] == DS.ERROR || atEnd)
+                        {
+                            switch (dtok.dtt)
+                            {
+                                // we have the case of Serbia have dates in forms 'd.M.yyyy.' so we can expect '.' after the date parts. 
+                                // changing the token to end with space instead of Date Separator will avoid failing the parsing.
+
+                                case DTT.YearDateSep:  dtok.dtt = atEnd ? DTT.YearEnd  : DTT.YearSpace;  break;
+                                case DTT.NumDatesep:   dtok.dtt = atEnd ? DTT.NumEnd   : DTT.NumSpace;   break;
+                                case DTT.NumTimesep:   dtok.dtt = atEnd ? DTT.NumEnd   : DTT.NumSpace;   break;
+                                case DTT.MonthDatesep: dtok.dtt = atEnd ? DTT.MonthEnd : DTT.MonthSpace; break;
                             }
                         }
                     }
@@ -3758,14 +3765,21 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                     // Otherwise it is unspecified and we consume no characters
                     break;
                 case ':':
-                    if (!str.Match(dtfi.TimeSeparator)) {
+                    // We match the separator in time pattern with the character in the time string if both equal to ':' or the date separator is matching the characters in the date string
+                    // We have to exclude the case when the time separator is more than one character and starts with ':' something like "::" for instance.
+                    if (((dtfi.TimeSeparator.Length > 1 && dtfi.TimeSeparator[0] == ':') || !str.Match(':')) && 
+                        !str.Match(dtfi.TimeSeparator)) {
                         // A time separator is expected.
                         result.SetFailure(ParseFailureKind.Format, "Format_BadDateTime", null);
                         return false;
                     }
                     break;
                 case '/':
-                    if (!str.Match(dtfi.DateSeparator)) {
+                    // We match the separator in date pattern with the character in the date string if both equal to '/' or the date separator is matching the characters in the date string
+                    // We have to exclude the case when the date separator is more than one character and starts with '/' something like "//" for instance.
+                    if (((dtfi.DateSeparator.Length > 1 && dtfi.DateSeparator[0] == '/') || !str.Match('/')) && 
+                        !str.Match(dtfi.DateSeparator))
+                    {
                         // A date separator is expected.
                         result.SetFailure(ParseFailureKind.Format, "Format_BadDateTime", null);
                         return false;
@@ -4158,15 +4172,15 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
             }
         }
 
-        // <STRIP>
-        // Builds with _LOGGING defined (x86dbg, amd64chk, etc) support tracing
-        // Set the following internal-only/unsupported environment variables to enable DateTime tracing to the console:
-        //
-        // COMPLUS_LogEnable=1
-        // COMPLUS_LogToConsole=1
-        // COMPLUS_LogLevel=9
-        // COMPLUS_ManagedLogFacility=0x00001000
-        // </STRIP>
+        // <
+
+
+
+
+
+
+
+
         [Pure]
         [Conditional("_LOGGING")]
         [ResourceExposure(ResourceScope.None)]
@@ -4373,6 +4387,11 @@ new DS[] { DS.ERROR, DS.TX_NNN,  DS.TX_NNN,  DS.TX_NNN,  DS.ERROR,   DS.ERROR,  
                 return (true);
             }
             return (false);
+        }
+
+        internal bool AtEnd()
+        {
+            return Index < len ? false : true;
         }
 
         internal bool Advance(int count) {

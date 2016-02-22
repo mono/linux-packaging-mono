@@ -17,6 +17,7 @@ namespace System.Security.Cryptography.X509Certificates {
     using System.Security.Cryptography;
     using System.Security.Permissions;
     using System.Text;
+    using Microsoft.Win32.SafeHandles;
 
     using _FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
@@ -44,7 +45,10 @@ namespace System.Security.Cryptography.X509Certificates {
         CtlNotSignatureValid            = 0x00040000,
         CtlNotValidForUsage             = 0x00080000,
         OfflineRevocation               = 0x01000000,
-        NoIssuanceChainPolicy           = 0x02000000
+        NoIssuanceChainPolicy           = 0x02000000,
+        ExplicitDistrust                = 0x04000000,
+        HasNotSupportedCriticalExtension = 0x08000000,
+        HasWeakSignature                = 0x00100000,
     }
 
     public struct X509ChainStatus {
@@ -72,12 +76,16 @@ namespace System.Security.Cryptography.X509Certificates {
         }
     }
 
-    public class X509Chain {
+    public class X509Chain
+        : IDisposable
+    {
         private uint m_status;
         private X509ChainPolicy m_chainPolicy;
         private X509ChainStatus[] m_chainStatus;
         private X509ChainElementCollection m_chainElementCollection;
-        private SafeCertChainHandle m_safeCertChainHandle;
+
+        [SecurityCritical]
+        private SafeX509ChainHandle m_safeCertChainHandle;
         private bool m_useMachineContext;
         private readonly object m_syncRoot = new object();
 
@@ -85,14 +93,16 @@ namespace System.Security.Cryptography.X509Certificates {
             return (X509Chain) CryptoConfig.CreateFromName("X509Chain");
         }
 
+        [SecurityCritical]
         public X509Chain () : this (false) {}
 
+        [SecurityCritical]
         public X509Chain (bool useMachineContext) {
             m_status = 0;
             m_chainPolicy = null;
             m_chainStatus = null;
             m_chainElementCollection = new X509ChainElementCollection();
-            m_safeCertChainHandle = SafeCertChainHandle.InvalidHandle;
+            m_safeCertChainHandle = SafeX509ChainHandle.InvalidHandle;
             m_useMachineContext = useMachineContext;
         }
 
@@ -103,7 +113,7 @@ namespace System.Security.Cryptography.X509Certificates {
             if (chainContext == IntPtr.Zero)
                 throw new ArgumentNullException("chainContext");
             m_safeCertChainHandle = CAPI.CertDuplicateCertificateChain(chainContext);
-            if (m_safeCertChainHandle == null || m_safeCertChainHandle == SafeCertChainHandle.InvalidHandle)
+            if (m_safeCertChainHandle == null || m_safeCertChainHandle == SafeX509ChainHandle.InvalidHandle)
                 throw new CryptographicException(SR.GetString(SR.Cryptography_InvalidContextHandle), "chainContext");
 
             Init();
@@ -114,6 +124,16 @@ namespace System.Security.Cryptography.X509Certificates {
             [SecurityPermissionAttribute(SecurityAction.InheritanceDemand, Flags=SecurityPermissionFlag.UnmanagedCode)]
             get {
                 return m_safeCertChainHandle.DangerousGetHandle();
+            }
+        }
+
+        public SafeX509ChainHandle SafeHandle {
+            [SecurityCritical]
+            [SecurityPermissionAttribute(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+            [SecurityPermissionAttribute(SecurityAction.InheritanceDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+            get
+            {
+                return m_safeCertChainHandle;
             }
         }
 
@@ -150,18 +170,26 @@ namespace System.Security.Cryptography.X509Certificates {
             }
         }
 
+#if FEATURE_CORESYSTEM
+        [SecuritySafeCritical]
+#endif
+#if !FEATURE_CORESYSTEM
         [PermissionSetAttribute(SecurityAction.LinkDemand, Unrestricted=true)]
         [PermissionSetAttribute(SecurityAction.InheritanceDemand, Unrestricted=true)]
+#endif
         public bool Build (X509Certificate2 certificate) {
             lock (m_syncRoot) {
                 if (certificate == null || certificate.CertContext.IsInvalid)
                     throw new ArgumentException(SR.GetString(SR.Cryptography_InvalidContextHandle), "certificate");
 
+#if !FEATURE_CORESYSTEM
                 // Chain building opens and enumerates the root store to see if the root of the chain is trusted.
                 StorePermission sp = new StorePermission(StorePermissionFlags.OpenStore | StorePermissionFlags.EnumerateCertificates);
                 sp.Demand();
+#endif
 
                 X509ChainPolicy chainPolicy = this.ChainPolicy;
+#if !FEATURE_CORESYSTEM
                 if (chainPolicy.RevocationMode == X509RevocationMode.Online) {
                     if (certificate.Extensions[CAPI.szOID_CRL_DIST_POINTS] != null ||
                         certificate.Extensions[CAPI.szOID_AUTHORITY_INFO_ACCESS] != null) {
@@ -173,6 +201,7 @@ namespace System.Security.Cryptography.X509Certificates {
                         ps.Demand();
                     }
                 }
+#endif
 
                 Reset();
                 int hr = BuildChain(m_useMachineContext ? new IntPtr(CAPI.HCCE_LOCAL_MACHINE) : new IntPtr(CAPI.HCCE_CURRENT_USER),
@@ -210,20 +239,41 @@ namespace System.Security.Cryptography.X509Certificates {
             }
         }
 
+        [SecurityCritical]
+#if !FEATURE_CORESYSTEM
         [PermissionSetAttribute(SecurityAction.LinkDemand, Unrestricted=true)]
         [PermissionSetAttribute(SecurityAction.InheritanceDemand, Unrestricted=true)]
+#endif
         public void Reset () {
             m_status = 0;
             m_chainStatus = null;
             m_chainElementCollection = new X509ChainElementCollection();
             if (!m_safeCertChainHandle.IsInvalid) {
                 m_safeCertChainHandle.Dispose();
-                m_safeCertChainHandle = SafeCertChainHandle.InvalidHandle;
+                m_safeCertChainHandle = SafeX509ChainHandle.InvalidHandle;
             }
         }
 
+        [SecuritySafeCritical]
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        [SecuritySafeCritical]
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Reset();
+            }
+        }
+
+        [SecurityCritical]
         private unsafe void Init () {
-            using (SafeCertChainHandle safeCertChainHandle = CAPI.CertDuplicateCertificateChain(m_safeCertChainHandle)) {
+            using (SafeX509ChainHandle safeCertChainHandle = CAPI.CertDuplicateCertificateChain(m_safeCertChainHandle)) {
                 CAPI.CERT_CHAIN_CONTEXT pChain = new CAPI.CERT_CHAIN_CONTEXT(Marshal.SizeOf(typeof(CAPI.CERT_CHAIN_CONTEXT)));
                 uint cbSize = (uint) Marshal.ReadInt32(safeCertChainHandle.DangerousGetHandle());
                 if (cbSize > Marshal.SizeOf(pChain))
@@ -237,6 +287,9 @@ namespace System.Security.Cryptography.X509Certificates {
             }
         }
 
+#if FEATURE_CORESYSTEM
+        [SecuritySafeCritical]
+#endif
         internal static X509ChainStatus[] GetChainStatusInformation (uint dwStatus) {
             if (dwStatus == 0)
                 return new X509ChainStatus[0];
@@ -248,157 +301,34 @@ namespace System.Security.Cryptography.X509Certificates {
             }
 
             X509ChainStatus[] chainStatus = new X509ChainStatus[count];
-
             int index = 0;
-            if ((dwStatus & CAPI.CERT_TRUST_IS_NOT_SIGNATURE_VALID) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.TRUST_E_CERT_SIGNATURE);
-                chainStatus[index].Status = X509ChainStatusFlags.NotSignatureValid;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_IS_NOT_SIGNATURE_VALID;
-            }
 
-            if ((dwStatus & CAPI.CERT_TRUST_CTL_IS_NOT_SIGNATURE_VALID) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.TRUST_E_CERT_SIGNATURE);
-                chainStatus[index].Status = X509ChainStatusFlags.CtlNotSignatureValid;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_CTL_IS_NOT_SIGNATURE_VALID;
-            }
+            foreach (X509ChainErrorMapping mapping in s_x509ChainErrorMappings)
+            {
+                if ((dwStatus & mapping.Win32Flag) != 0)
+                {
+                    Debug.Assert(index < chainStatus.Length);
 
-            if ((dwStatus & CAPI.CERT_TRUST_IS_UNTRUSTED_ROOT) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_UNTRUSTEDROOT);
-                chainStatus[index].Status = X509ChainStatusFlags.UntrustedRoot;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_IS_UNTRUSTED_ROOT;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_IS_PARTIAL_CHAIN) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_CHAINING);
-                chainStatus[index].Status = X509ChainStatusFlags.PartialChain;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_IS_PARTIAL_CHAIN;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_IS_REVOKED) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CRYPT_E_REVOKED);
-                chainStatus[index].Status = X509ChainStatusFlags.Revoked;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_IS_REVOKED;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_IS_NOT_VALID_FOR_USAGE) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_WRONG_USAGE);
-                chainStatus[index].Status = X509ChainStatusFlags.NotValidForUsage;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_IS_NOT_VALID_FOR_USAGE; 
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_CTL_IS_NOT_VALID_FOR_USAGE) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_WRONG_USAGE);
-                chainStatus[index].Status = X509ChainStatusFlags.CtlNotValidForUsage;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_CTL_IS_NOT_VALID_FOR_USAGE;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_IS_NOT_TIME_VALID) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_EXPIRED);
-                chainStatus[index].Status = X509ChainStatusFlags.NotTimeValid;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_IS_NOT_TIME_VALID;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_CTL_IS_NOT_TIME_VALID) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_EXPIRED);
-                chainStatus[index].Status = X509ChainStatusFlags.CtlNotTimeValid;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_CTL_IS_NOT_TIME_VALID;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_INVALID_NAME_CONSTRAINTS) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_INVALID_NAME);
-                chainStatus[index].Status = X509ChainStatusFlags.InvalidNameConstraints;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_INVALID_NAME_CONSTRAINTS;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_HAS_NOT_SUPPORTED_NAME_CONSTRAINT) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_INVALID_NAME);
-                chainStatus[index].Status = X509ChainStatusFlags.HasNotSupportedNameConstraint;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_HAS_NOT_SUPPORTED_NAME_CONSTRAINT;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_HAS_NOT_DEFINED_NAME_CONSTRAINT) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_INVALID_NAME);
-                chainStatus[index].Status = X509ChainStatusFlags.HasNotDefinedNameConstraint;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_HAS_NOT_DEFINED_NAME_CONSTRAINT;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_HAS_NOT_PERMITTED_NAME_CONSTRAINT) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_INVALID_NAME);
-                chainStatus[index].Status = X509ChainStatusFlags.HasNotPermittedNameConstraint;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_HAS_NOT_PERMITTED_NAME_CONSTRAINT;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_HAS_EXCLUDED_NAME_CONSTRAINT) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_INVALID_NAME);
-                chainStatus[index].Status = X509ChainStatusFlags.HasExcludedNameConstraint;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_HAS_EXCLUDED_NAME_CONSTRAINT;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_INVALID_POLICY_CONSTRAINTS) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_INVALID_POLICY);
-                chainStatus[index].Status = X509ChainStatusFlags.InvalidPolicyConstraints;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_INVALID_POLICY_CONSTRAINTS;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_NO_ISSUANCE_CHAIN_POLICY) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_INVALID_POLICY);
-                chainStatus[index].Status = X509ChainStatusFlags.NoIssuanceChainPolicy;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_NO_ISSUANCE_CHAIN_POLICY;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_INVALID_BASIC_CONSTRAINTS) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.TRUST_E_BASIC_CONSTRAINTS);
-                chainStatus[index].Status = X509ChainStatusFlags.InvalidBasicConstraints;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_INVALID_BASIC_CONSTRAINTS;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_IS_NOT_TIME_NESTED) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CERT_E_VALIDITYPERIODNESTING);
-                chainStatus[index].Status = X509ChainStatusFlags.NotTimeNested;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_IS_NOT_TIME_NESTED;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_REVOCATION_STATUS_UNKNOWN) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CRYPT_E_NO_REVOCATION_CHECK);
-                chainStatus[index].Status = X509ChainStatusFlags.RevocationStatusUnknown;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_REVOCATION_STATUS_UNKNOWN;
-            }
-
-            if ((dwStatus & CAPI.CERT_TRUST_IS_OFFLINE_REVOCATION) != 0) {
-                chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(CAPI.CRYPT_E_REVOCATION_OFFLINE);
-                chainStatus[index].Status = X509ChainStatusFlags.OfflineRevocation;
-                index++;
-                dwStatus &= ~CAPI.CERT_TRUST_IS_OFFLINE_REVOCATION;
+                    chainStatus[index].StatusInformation = X509Utils.GetSystemErrorString(mapping.Win32ErrorCode);
+                    chainStatus[index].Status = mapping.ChainStatusFlag;
+                    index++;
+                    dwStatus &= ~mapping.Win32Flag;
+                }
             }
 
             int shiftCount = 0;
             for (uint bits = dwStatus; bits != 0; bits = bits >> 1) {
                 if ((bits & 0x1) != 0) {
+                    Debug.Assert(index < chainStatus.Length);
+
                     chainStatus[index].Status = (X509ChainStatusFlags) (1 << shiftCount);
                     chainStatus[index].StatusInformation = SR.GetString(SR.Unknown_Error);
                     index++;
                 }
                 shiftCount++;
             }
+
+            Debug.Assert(index == chainStatus.Length);
 
             return chainStatus;
         }
@@ -407,6 +337,8 @@ namespace System.Security.Cryptography.X509Certificates {
         // Builds a certificate chain.
         //
 
+
+        [SecurityCritical]
         internal static unsafe int BuildChain (IntPtr hChainEngine,
                                                SafeCertContextHandle pCertContext,
                                                X509Certificate2Collection extraStore, 
@@ -416,7 +348,7 @@ namespace System.Security.Cryptography.X509Certificates {
                                                X509RevocationFlag revocationFlag,
                                                DateTime verificationTime,
                                                TimeSpan timeout,
-                                               ref SafeCertChainHandle ppChainContext) {
+                                               ref SafeX509ChainHandle ppChainContext) {
             if (pCertContext == null || pCertContext.IsInvalid)
                 throw new ArgumentException(SR.GetString(SR.Cryptography_InvalidContextHandle), "pCertContext");
 
@@ -473,5 +405,46 @@ namespace System.Security.Cryptography.X509Certificates {
 
             return CAPI.S_OK;
         }
+
+        private struct X509ChainErrorMapping
+        {
+            public readonly uint Win32Flag;
+            public readonly int Win32ErrorCode;
+            public readonly X509ChainStatusFlags ChainStatusFlag;
+
+            public X509ChainErrorMapping(uint win32Flag, int win32ErrorCode, X509ChainStatusFlags chainStatusFlag)
+            {
+                Win32Flag = win32Flag;
+                Win32ErrorCode = win32ErrorCode;
+                ChainStatusFlag = chainStatusFlag;
+            }
+        }
+
+        private static readonly X509ChainErrorMapping[] s_x509ChainErrorMappings = new[]
+        {
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_NOT_SIGNATURE_VALID, CAPI.TRUST_E_CERT_SIGNATURE, X509ChainStatusFlags.NotSignatureValid),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_CTL_IS_NOT_SIGNATURE_VALID, CAPI.TRUST_E_CERT_SIGNATURE, X509ChainStatusFlags.CtlNotSignatureValid),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_UNTRUSTED_ROOT, CAPI.CERT_E_UNTRUSTEDROOT, X509ChainStatusFlags.UntrustedRoot),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_PARTIAL_CHAIN, CAPI.CERT_E_CHAINING, X509ChainStatusFlags.PartialChain),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_REVOKED, CAPI.CRYPT_E_REVOKED, X509ChainStatusFlags.Revoked),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_NOT_VALID_FOR_USAGE, CAPI.CERT_E_WRONG_USAGE, X509ChainStatusFlags.NotValidForUsage),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_CTL_IS_NOT_VALID_FOR_USAGE, CAPI.CERT_E_WRONG_USAGE, X509ChainStatusFlags.CtlNotValidForUsage),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_NOT_TIME_VALID, CAPI.CERT_E_EXPIRED, X509ChainStatusFlags.NotTimeValid),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_CTL_IS_NOT_TIME_VALID, CAPI.CERT_E_EXPIRED, X509ChainStatusFlags.CtlNotTimeValid),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_INVALID_NAME_CONSTRAINTS, CAPI.CERT_E_INVALID_NAME, X509ChainStatusFlags.InvalidNameConstraints),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_HAS_NOT_SUPPORTED_NAME_CONSTRAINT, CAPI.CERT_E_INVALID_NAME, X509ChainStatusFlags.HasNotSupportedNameConstraint),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_HAS_NOT_DEFINED_NAME_CONSTRAINT, CAPI.CERT_E_INVALID_NAME, X509ChainStatusFlags.HasNotDefinedNameConstraint),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_HAS_NOT_PERMITTED_NAME_CONSTRAINT, CAPI.CERT_E_INVALID_NAME, X509ChainStatusFlags.HasNotPermittedNameConstraint),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_HAS_EXCLUDED_NAME_CONSTRAINT, CAPI.CERT_E_INVALID_NAME, X509ChainStatusFlags.HasExcludedNameConstraint),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_INVALID_POLICY_CONSTRAINTS, CAPI.CERT_E_INVALID_POLICY, X509ChainStatusFlags.InvalidPolicyConstraints),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_NO_ISSUANCE_CHAIN_POLICY, CAPI.CERT_E_INVALID_POLICY, X509ChainStatusFlags.NoIssuanceChainPolicy),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_INVALID_BASIC_CONSTRAINTS, CAPI.TRUST_E_BASIC_CONSTRAINTS, X509ChainStatusFlags.InvalidBasicConstraints),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_NOT_TIME_NESTED, CAPI.CERT_E_VALIDITYPERIODNESTING, X509ChainStatusFlags.NotTimeNested),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_REVOCATION_STATUS_UNKNOWN, CAPI.CRYPT_E_NO_REVOCATION_CHECK, X509ChainStatusFlags.RevocationStatusUnknown),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_OFFLINE_REVOCATION, CAPI.CRYPT_E_REVOCATION_OFFLINE, X509ChainStatusFlags.OfflineRevocation),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_IS_EXPLICIT_DISTRUST, CAPI.TRUST_E_EXPLICIT_DISTRUST, X509ChainStatusFlags.ExplicitDistrust),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_HAS_NOT_SUPPORTED_CRITICAL_EXT, CAPI.CERT_E_CRITICAL, X509ChainStatusFlags.HasNotSupportedCriticalExtension),
+            new X509ChainErrorMapping(CAPI.CERT_TRUST_HAS_WEAK_SIGNATURE, CAPI.CERTSRV_E_WEAK_SIGNATURE_OR_KEY, X509ChainStatusFlags.HasWeakSignature),
+        };
     }
 }

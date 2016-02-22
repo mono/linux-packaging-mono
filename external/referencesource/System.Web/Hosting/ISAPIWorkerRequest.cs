@@ -1887,7 +1887,6 @@ internal class ISAPIWorkerRequestInProc : ISAPIWorkerRequest {
         }
     }
 
-    [System.Runtime.TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
     private String GetAdditionalServerVar(int index) {
         if (_additionalServerVars == null)
             GetAdditionalServerVariables();

@@ -363,7 +363,7 @@ namespace System.ServiceModel.Dispatcher
             else
             {
                 return new XElement(HtmlPElementName,
-                    new XElement(HtmlAElementName, new XAttribute(HtmlNameAttributeName, "#" + label), title),
+                    new XElement(HtmlAElementName, new XAttribute(HtmlNameAttributeName, label), title),
                     new XElement(HtmlPreElementName, new XAttribute(HtmlClassAttributeName, label), content));
             }
         }

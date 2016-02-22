@@ -12557,6 +12557,18 @@ _ACEOF
 fi
 done
 
+for ac_func in fork execv execve
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
 
 #
 # Mono currently supports 10.6, but strndup is not available prior to 10.7; avoiding
@@ -12592,7 +12604,7 @@ done
 
 fi
 
- if test x$have_vasprintf = x ; then
+ if test x$ac_cv_func_vasprintf = xno ; then
   NEED_VASPRINTF_TRUE=
   NEED_VASPRINTF_FALSE='#'
 else
@@ -13804,6 +13816,92 @@ _ACEOF
 fi
 
 done
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for locale_charset in -liconv" >&5
+$as_echo_n "checking for locale_charset in -liconv... " >&6; }
+if ${ac_cv_lib_iconv_locale_charset+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-liconv  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char locale_charset ();
+int
+main ()
+{
+return locale_charset ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_iconv_locale_charset=yes
+else
+  ac_cv_lib_iconv_locale_charset=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iconv_locale_charset" >&5
+$as_echo "$ac_cv_lib_iconv_locale_charset" >&6; }
+if test "x$ac_cv_lib_iconv_locale_charset" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBICONV 1
+_ACEOF
+
+  LIBS="-liconv $LIBS"
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for locale_charset in -lcharset" >&5
+$as_echo_n "checking for locale_charset in -lcharset... " >&6; }
+if ${ac_cv_lib_charset_locale_charset+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcharset  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char locale_charset ();
+int
+main ()
+{
+return locale_charset ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_charset_locale_charset=yes
+else
+  ac_cv_lib_charset_locale_charset=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_charset_locale_charset" >&5
+$as_echo "$ac_cv_lib_charset_locale_charset" >&6; }
+if test "x$ac_cv_lib_charset_locale_charset" = xyes; then :
+  LIBS+="-liconv -lcharset"
+fi
+
+fi
 
 ac_fn_c_check_header_mongrel "$LINENO" "alloca.h" "ac_cv_header_alloca_h" "$ac_includes_default"
 if test "x$ac_cv_header_alloca_h" = xyes; then :

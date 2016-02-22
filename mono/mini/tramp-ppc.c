@@ -104,6 +104,8 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
 	/*g_print ("unbox trampoline at %d for %s:%s\n", this_pos, m->klass->name, m->name);
 	g_print ("unbox code is at %p for method at %p\n", start, addr);*/
 
+	mono_tramp_info_register (mono_tramp_info_create (NULL, start, code - start, NULL, NULL), domain);
+
 	return start;
 }
 
@@ -148,6 +150,8 @@ mono_arch_get_static_rgctx_trampoline (MonoMethod *m, MonoMethodRuntimeGenericCo
 	}
 	mono_arch_flush_icache (start, code - start);
 	g_assert ((code - start) <= size);
+
+	mono_tramp_info_register (mono_tramp_info_create (NULL, start, code - start, NULL, NULL), domain);
 
 	return start;
 }
@@ -196,12 +200,6 @@ mono_arch_patch_plt_entry (guint8 *code, gpointer *got, mgreg_t *regs, guint8 *a
 	if (!got)
 		got = (gpointer*)(gsize) regs [30];
 	*(guint8**)((guint8*)got + offset) = addr;
-}
-
-void
-mono_arch_nullify_class_init_trampoline (guint8 *code, mgreg_t *regs)
-{
-	mono_arch_patch_callsite (NULL, code, mini_get_nullified_class_init_trampoline ());
 }
 
 /* Stack size for trampoline function 
@@ -348,10 +346,7 @@ mono_arch_create_generic_trampoline (MonoTrampolineType tramp_type, MonoTrampInf
 		ppc_ldr  (code, ppc_r4, STACK + PPC_RET_ADDR_OFFSET, ppc_r1);
 
 	/* Arg 3: trampoline argument */
-	if (tramp_type == MONO_TRAMPOLINE_GENERIC_CLASS_INIT)
-		ppc_ldr (code, ppc_r5, GREGS_OFFSET + MONO_ARCH_VTABLE_REG * sizeof (mgreg_t), ppc_r1);
-	else
-		ppc_ldr (code, ppc_r5, GREGS_OFFSET, ppc_r1);
+	ppc_ldr (code, ppc_r5, GREGS_OFFSET, ppc_r1);
 
 	if (aot) {
 		code = mono_arch_emit_load_aotconst (buf, code, &ji, MONO_PATCH_INFO_JIT_ICALL_ADDR, g_strdup_printf ("trampoline_func_%d", tramp_type));
@@ -608,24 +603,6 @@ mono_arch_create_rgctx_lazy_fetch_trampoline (guint32 slot, MonoTrampInfo **info
 	char *name = mono_get_rgctx_fetch_trampoline_name (slot);
 	*info = mono_tramp_info_create (name, buf, code - buf, ji, unwind_ops);
 	g_free (name);
-
-	return buf;
-}
-
-gpointer
-mono_arch_get_nullified_class_init_trampoline (MonoTrampInfo **info)
-{
-	guint8 *code, *buf;
-	guint32 tramp_size = 64;
-
-	code = buf = mono_global_codeman_reserve (tramp_size);
-	ppc_blr (code);
-
-	mono_arch_flush_icache (buf, code - buf);
-
-	g_assert (code - buf <= tramp_size);
-
-	*info = mono_tramp_info_create ("nullified_class_init_trampoline", buf, code - buf, NULL, NULL);
 
 	return buf;
 }

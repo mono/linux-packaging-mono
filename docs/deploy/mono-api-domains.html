@@ -72,8 +72,8 @@ gboolean                <a href="#api:mono_domain_finalize">mono_domain_finalize
                                                       guint32 timeout) ;
                         <a href="#api:mono_domain_foreach"></a>                             
                         <a href="#api:mono_domain_free"></a>                             
-                        <a href="#api:mono_domain_get_by_id"></a>                             
-MonoDomain*             <a href="#api:mono_domain_get_id">mono_domain_get_by_id</a>        (gint32 domainid) ;
+MonoDomain*             <a href="#api:mono_domain_get_by_id">mono_domain_get_by_id</a>        (gint32 domainid) ;
+                        <a href="#api:mono_domain_get_id"></a>                             
 MonoDomain*             <a href="#api:mono_domain_get">mono_domain_get</a>              ();
 gboolean                <a href="#api:mono_domain_has_type_resolve">mono_domain_has_type_resolve</a> (MonoDomain *domain);
                         <a href="#api:mono_domain_is_unloading"></a>                             
@@ -165,13 +165,6 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
  <div class="api">
     <div class="api-entry">mono_domain_get_by_id</div>
 
-    <div class="prototype">Prototype: mono_domain_get_by_id</div>
-<p />
-
-</div> <a name="api:mono_domain_get_id"></a>
- <div class="api">
-    <div class="api-entry">mono_domain_get_id</div>
-
     <div class="prototype">MonoDomain* 
 mono_domain_get_by_id (gint32 domainid) 
 
@@ -180,8 +173,15 @@ mono_domain_get_by_id (gint32 domainid)
 <b>Parameters</b>
 <blockquote><dt><i>domainid:</i></dt><dd> the ID</dd></blockquote>
 <b>Returns</b>
-<blockquote>	  the a domain for a specific domain id.
+<blockquote>	  the domain for a specific domain id.
 </blockquote>
+
+</div> <a name="api:mono_domain_get_id"></a>
+ <div class="api">
+    <div class="api-entry">mono_domain_get_id</div>
+
+    <div class="prototype">Prototype: mono_domain_get_id</div>
+<p />
 
 </div> <a name="api:mono_domain_get"></a>
  <div class="api">

@@ -10,6 +10,7 @@ namespace System.Web {
     using System.Diagnostics.CodeAnalysis;
     using System.Runtime.ExceptionServices;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Web.Util;
 
     internal sealed class AspNetSynchronizationContext : AspNetSynchronizationContextBase {
@@ -127,6 +128,11 @@ namespace System.Web {
 
         public override void Post(SendOrPostCallback callback, Object state) {
             _state.Helper.QueueAsynchronous(() => callback(state));
+        }
+
+        // The method is used to post async func.
+        internal void PostAsync(Func<object, Task> callback, Object state) {
+            _state.Helper.QueueAsynchronousAsync(callback, state);
         }
 
         internal override void ProhibitVoidAsyncOperations() {

@@ -99,7 +99,7 @@ static gunichar2* marshal_bstr_alloc(const gchar* str)
 	int slen = strlen (str);
 	gunichar2* temp;
 	/* allocate len + 1 utf16 characters plus 4 byte integer for length*/
-	ret = g_malloc ((slen + 1) * sizeof(gunichar2) + sizeof(guint32));
+	ret = (gchar *)g_malloc ((slen + 1) * sizeof(gunichar2) + sizeof(guint32));
 	if (ret == NULL)
 		return NULL;
 	temp = g_utf8_to_utf16 (str, -1, NULL, NULL, NULL);
@@ -129,7 +129,7 @@ test_lpwstr_marshal (unsigned short* chars, long length)
 	int i = 0;
 	unsigned short *res;
 
-	res = marshal_alloc (2 * (length + 1));
+	res = (unsigned short *)marshal_alloc (2 * (length + 1));
 
 	// printf("test_lpwstr_marshal()\n");
 	
@@ -152,7 +152,7 @@ test_lpwstr_marshal_out (unsigned short** chars)
 	const char abc[] = "ABC";
 	glong len = strlen(abc);
 
-	*chars = marshal_alloc (2 * (len + 1));
+	*chars = (unsigned short *)marshal_alloc (2 * (len + 1));
 	
 	while ( i < len ) {
 		(*chars) [i] = abc[i];
@@ -515,10 +515,23 @@ mono_test_marshal_out_byref_array_out_size_param (int **out_arr, int *out_len)
 	int i, len;
 
 	len = 4;
-	arr = marshal_alloc (sizeof (gint32) * len);
+	arr = (gint32 *)marshal_alloc (sizeof (gint32) * len);
 	for (i = 0; i < len; ++i)
 		arr [i] = i;
 	*out_arr = arr;
+	*out_len = len;
+
+	return 0;
+}
+
+LIBTEST_API int STDCALL
+mono_test_marshal_out_lparray_out_size_param (int *arr, int *out_len)
+{
+	int i, len;
+
+	len = 4;
+	for (i = 0; i < len; ++i)
+		arr [i] = i;
 	*out_len = len;
 
 	return 0;
@@ -610,7 +623,7 @@ LIBTEST_API int STDCALL
 mono_test_marshal_out_struct (int a, simplestruct *ss, int b, OutVTypeDelegate func)
 {
 	/* Check that the input pointer is ignored */
-	ss->d = (gpointer)0x12345678;
+	ss->d = (const char *)0x12345678;
 
 	func (a, ss, b);
 
@@ -1005,7 +1018,7 @@ mono_test_marshal_delegate7 (SimpleDelegate7 delegate)
 	simplestruct *ptr;
 
 	/* Check that the input pointer is ignored */
-	ptr = (gpointer)0x12345678;
+	ptr = (simplestruct *)0x12345678;
 
 	res = delegate (&ptr);
 	if (res != 0)
@@ -1054,7 +1067,7 @@ typedef int (STDCALL *SimpleDelegate9) (return_int_fnt d);
 LIBTEST_API int STDCALL 
 mono_test_marshal_delegate9 (SimpleDelegate9 delegate, gpointer ftn)
 {
-	return delegate (ftn);
+	return delegate ((return_int_fnt)ftn);
 }
 
 static int STDCALL 
@@ -1094,6 +1107,14 @@ LIBTEST_API int STDCALL
 mono_test_marshal_return_delegate_delegate (ReturnDelegateDelegate d)
 {
 	return (d ()) (55);
+}
+
+typedef int (STDCALL *VirtualDelegate) (int);
+
+LIBTEST_API int STDCALL
+mono_test_marshal_virtual_delegate (VirtualDelegate del)
+{
+	return del (42);
 }
 
 LIBTEST_API int STDCALL  
@@ -1159,7 +1180,7 @@ mono_test_marshal_stringbuilder_out (char **s)
 	const char m[] = "This is my message.  Isn't it nice?";
 	char *str;
 
-	str = marshal_alloc (strlen (m) + 1);
+	str = (char *)marshal_alloc (strlen (m) + 1);
 	memcpy (str, m, strlen (m) + 1);
 	
 	*s = str;
@@ -1175,7 +1196,7 @@ mono_test_marshal_stringbuilder_out_unicode (gunichar2 **s)
 	s2 = g_utf8_to_utf16 (m, -1, NULL, &len, NULL);
 	
 	len = (len * 2) + 2;
-	*s = marshal_alloc (len);
+	*s = (gunichar2 *)marshal_alloc (len);
 	memcpy (*s, s2, len);
 
 	g_free (s2);
@@ -1192,18 +1213,21 @@ mono_test_marshal_stringbuilder_ref (char **s)
 	if (strcmp (*s, "ABC"))
 		return 1;
 
-	str = marshal_alloc (strlen (m) + 1);
+	str = (char *)marshal_alloc (strlen (m) + 1);
 	memcpy (str, m, strlen (m) + 1);
 	
 	*s = str;
 	return 0;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wc++-compat"
 typedef struct {
 #ifndef __GNUC__
     char a;
 #endif
 } EmptyStruct;
+#pragma GCC diagnostic pop
 
 LIBTEST_API int STDCALL 
 mono_test_marshal_empty_string_array (char **array)
@@ -1302,6 +1326,16 @@ mono_test_empty_struct (int a, EmptyStruct es, int b)
 #endif
 }
 
+LIBTEST_API EmptyStruct STDCALL
+mono_test_return_empty_struct (int a)
+{
+	EmptyStruct s;
+
+	g_assert (a == 42);
+
+	return s;
+}
+
 typedef struct {
        char a[100];
 } ByValStrStruct;
@@ -1311,7 +1345,7 @@ mono_test_byvalstr_gen (void)
 {
 	ByValStrStruct *ret;
        
-	ret = malloc(sizeof(ByValStrStruct));
+	ret = (ByValStrStruct *)malloc (sizeof (ByValStrStruct));
 	memset(ret, 'a', sizeof(ByValStrStruct)-1);
 	ret->a[sizeof(ByValStrStruct)-1] = 0;
 
@@ -1467,7 +1501,7 @@ class_marshal_test4 (SimpleObj *obj1)
 LIBTEST_API void STDCALL
 class_marshal_test1 (SimpleObj **obj1)
 {
-	SimpleObj *res = malloc (sizeof (SimpleObj));
+	SimpleObj *res = (SimpleObj *)malloc (sizeof (SimpleObj));
 
 	res->str = marshal_strdup ("ABC");
 	res->i = 5;
@@ -1710,7 +1744,7 @@ mono_test_asany (void *ptr, int what)
 		GError *error = NULL;
 		char *s;
 
-		s = g_utf16_to_utf8 (ptr, -1, NULL, NULL, &error);
+		s = g_utf16_to_utf8 ((const gunichar2 *)ptr, -1, NULL, NULL, &error);
 
 		if (!s)
 			return 1;
@@ -1742,7 +1776,7 @@ typedef struct
 LIBTEST_API int STDCALL 
 mono_test_marshal_asany_in (void* ptr)
 {
-	AsAnyStruct* asAny = ptr;
+	AsAnyStruct *asAny = (AsAnyStruct *)ptr;
 	int res = asAny->i + asAny->j + asAny->k;
 
 	return res;
@@ -1751,7 +1785,7 @@ mono_test_marshal_asany_in (void* ptr)
 LIBTEST_API int STDCALL 
 mono_test_marshal_asany_inout (void* ptr)
 {
-	AsAnyStruct* asAny = ptr;
+	AsAnyStruct *asAny = (AsAnyStruct *)ptr;
 	int res = asAny->i + asAny->j + asAny->k;
 
 	marshal_free (asAny->s);
@@ -1767,7 +1801,7 @@ mono_test_marshal_asany_inout (void* ptr)
 LIBTEST_API int STDCALL 
 mono_test_marshal_asany_out (void* ptr)
 {
-	AsAnyStruct* asAny = ptr;
+	AsAnyStruct *asAny = (AsAnyStruct *)ptr;
 	int res = asAny->i + asAny->j + asAny->k;
 
 	asAny->i = 10;
@@ -1953,7 +1987,7 @@ mono_test_marshal_pass_return_custom_in_delegate (PassReturnPtrDelegate del)
 	buf [0] = 0;
 	buf [1] = 10;
 
-	ptr = del (&buf);
+	ptr = (guint32 *)del (&buf);
 
 	res = ptr [1];
 
@@ -3547,6 +3581,9 @@ mono_test_marshal_lookup_symbol (const char *symbol_name)
 	return lookup_mono_symbol (symbol_name);
 }
 
+#define MONO_BEGIN_EFRAME { void *__dummy; void *__region_cookie = mono_threads_enter_gc_unsafe_region ? mono_threads_enter_gc_unsafe_region (&__dummy) : NULL;
+#define MONO_END_EFRAME if (mono_threads_exit_gc_unsafe_region) mono_threads_exit_gc_unsafe_region (__region_cookie, &__dummy); }
+
 /**
  * test_method_thunk:
  *
@@ -3557,56 +3594,78 @@ mono_test_marshal_lookup_symbol (const char *symbol_name)
 LIBTEST_API int STDCALL  
 test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_object_method_handle)
 {
+	int ret = 0;
+
 	gpointer (*mono_method_get_unmanaged_thunk)(gpointer)
-		= lookup_mono_symbol ("mono_method_get_unmanaged_thunk");
+		= (gpointer (*)(gpointer))lookup_mono_symbol ("mono_method_get_unmanaged_thunk");
 
 	gpointer (*mono_string_new_wrapper)(const char *)
-		= lookup_mono_symbol ("mono_string_new_wrapper");
+		= (gpointer (*)(const char *))lookup_mono_symbol ("mono_string_new_wrapper");
 
-	char* (*mono_string_to_utf8)(gpointer)
-		= lookup_mono_symbol ("mono_string_to_utf8");
+	char *(*mono_string_to_utf8)(gpointer)
+		= (char *(*)(gpointer))lookup_mono_symbol ("mono_string_to_utf8");
 
 	gpointer (*mono_object_unbox)(gpointer)
-		= lookup_mono_symbol ("mono_object_unbox");
+		= (gpointer (*)(gpointer))lookup_mono_symbol ("mono_object_unbox");
+
+	gpointer (*mono_threads_enter_gc_unsafe_region) (gpointer)
+		= (gpointer (*)(gpointer))lookup_mono_symbol ("mono_threads_enter_gc_unsafe_region");
+
+	void (*mono_threads_exit_gc_unsafe_region) (gpointer, gpointer)
+		= (void (*)(gpointer, gpointer))lookup_mono_symbol ("mono_threads_exit_gc_unsafe_region");
+
+	
 
 	gpointer test_method, ex = NULL;
 	gpointer (STDCALL *CreateObject)(gpointer*);
 
-	if (!mono_method_get_unmanaged_thunk)
-		return 1;
+	MONO_BEGIN_EFRAME;
+
+	if (!mono_method_get_unmanaged_thunk) {
+		ret = 1;
+		goto done;
+	}
 
 	test_method =  mono_method_get_unmanaged_thunk (test_method_handle);
-	if (!test_method)
-		return 2;
+	if (!test_method) {
+		ret = 2;
+		goto done;
+	}
 
-	CreateObject = mono_method_get_unmanaged_thunk (create_object_method_handle);
-	if (!CreateObject)
-		return 3;
-
+	CreateObject = (gpointer (STDCALL *)(gpointer *))mono_method_get_unmanaged_thunk (create_object_method_handle);
+	if (!CreateObject) {
+		ret = 3;
+		goto done;
+	}
+	
 
 	switch (test_id) {
 
 	case 0: {
 		/* thunks.cs:Test.Test0 */
-		void (STDCALL *F)(gpointer*) = test_method;
+		void (STDCALL *F)(gpointer *) = (void (STDCALL *)(gpointer *))test_method;
 		F (&ex);
 		break;
 	}
 
 	case 1: {
 		/* thunks.cs:Test.Test1 */
-		int (STDCALL *F)(gpointer*) = test_method;
-		if (F (&ex) != 42)
-			return 4;
+		int (STDCALL *F)(gpointer *) = (int (STDCALL *)(gpointer *))test_method;
+		if (F (&ex) != 42) {
+			ret = 4;
+			goto done;
+		}
 		break;
 	}
 
 	case 2: {
 		/* thunks.cs:Test.Test2 */
-		gpointer (STDCALL *F)(gpointer, gpointer*) = test_method;
+		gpointer (STDCALL *F)(gpointer, gpointer*) = (gpointer (STDCALL *)(gpointer, gpointer *))test_method;
 		gpointer str = mono_string_new_wrapper ("foo");
-		if (str != F (str, &ex))
-			return 4;
+		if (str != F (str, &ex)) {
+			ret = 4;
+			goto done;
+		}
 		break;
 	}
 
@@ -3616,12 +3675,14 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		gpointer obj;
 		gpointer str;
 
-		F = test_method;
+		F = (gpointer (STDCALL *)(gpointer, gpointer, gpointer *))test_method;
 		obj = CreateObject (&ex);
 		str = mono_string_new_wrapper ("bar");
 
-		if (str != F (obj, str, &ex))
-			return 4;
+		if (str != F (obj, str, &ex)) {
+			ret = 4;
+			goto done;
+		}
 		break;
 	}
 
@@ -3631,12 +3692,14 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		gpointer obj;
 		gpointer str;
 
-		F = test_method;
+		F = (int (STDCALL *)(gpointer, gpointer, int, gpointer *))test_method;
 		obj = CreateObject (&ex);
 		str = mono_string_new_wrapper ("bar");
 
-		if (42 != F (obj, str, 42, &ex))
-			return 4;
+		if (42 != F (obj, str, 42, &ex)) {
+			ret = 4;
+			goto done;
+		}
 
 		break;
 	}
@@ -3647,13 +3710,15 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		gpointer obj;
 		gpointer str;
 
-		F = test_method;
+		F = (int (STDCALL *)(gpointer, gpointer, int, gpointer *))test_method;
 		obj = CreateObject (&ex);
 		str = mono_string_new_wrapper ("bar");
 
 		F (obj, str, 42, &ex);
-		if (!ex)
-		    return 4;
+		if (!ex) {
+			ret = 4;
+			goto done;
+		}
 
 		break;
 	}
@@ -3666,24 +3731,30 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		gpointer str = mono_string_new_wrapper ("Test6");
 		int res;
 
-		F = test_method;
+		F = (int (STDCALL *)(gpointer, guint8, gint16, gint32, gint64, float, double, gpointer, gpointer *))test_method;
 		obj = CreateObject (&ex);
 
 		res = F (obj, 254, 32700, -245378, 6789600, 3.1415, 3.1415, str, &ex);
-		if (ex)
-			return 4;
+		if (ex) {
+			ret = 4;
+			goto done;
+		}
 
-		if (!res)
-			return 5;
+		if (!res) {
+			ret = 5;
+			goto done;
+		}
 
 		break;
 	}
 
 	case 7: {
 		/* thunks.cs:Test.Test7 */
-		gint64 (STDCALL *F)(gpointer*) = test_method;
-		if (F (&ex) != G_MAXINT64)
-			return 4;
+		gint64 (STDCALL *F)(gpointer*) = (gint64 (STDCALL *)(gpointer *))test_method;
+		if (F (&ex) != G_MAXINT64) {
+			ret = 4;
+			goto done;
+		}
 		break;
 	}
 
@@ -3700,11 +3771,14 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		double a6;
 		gpointer a7;
 
-		F = test_method;
+		F = (void (STDCALL *)(guint8 *, gint16 *, gint32 *, gint64 *, float *, double *,
+			gpointer *, gpointer *))test_method;
 
 		F (&a1, &a2, &a3, &a4, &a5, &a6, &a7, &ex);
-		if (ex)
-			return 4;
+		if (ex) {
+			ret = 4;
+			goto done;
+		}
 
 		if (!(a1 == 254 &&
 		      a2 == 32700 &&
@@ -3712,8 +3786,10 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		      a4 == 6789600 &&
 		      (fabs (a5 - 3.1415) < 0.001) &&
 		      (fabs (a6 - 3.1415) < 0.001) &&
-		      strcmp (mono_string_to_utf8 (a7), "Test8") == 0))
-			return 5;
+		      strcmp (mono_string_to_utf8 (a7), "Test8") == 0)){
+				ret = 5;
+				goto done;
+			}
 
 		break;
 	}
@@ -3721,7 +3797,7 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 	case 9: {
 		/* thunks.cs:Test.Test9 */
 		void (STDCALL *F)(guint8*, gint16*, gint32*, gint64*, float*, double*,
-				 gpointer*, gpointer*);
+			gpointer*, gpointer*);
 
 		guint8 a1;
 		gint16 a2;
@@ -3731,11 +3807,14 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		double a6;
 		gpointer a7;
 
-		F = test_method;
+		F = (void (STDCALL *)(guint8 *, gint16 *, gint32 *, gint64 *, float *, double *,
+			gpointer *, gpointer *))test_method;
 
 		F (&a1, &a2, &a3, &a4, &a5, &a6, &a7, &ex);
-		if (!ex)
-			return 4;
+		if (!ex) {
+			ret = 4;
+			goto done;
+		}
 
 		break;
 	}
@@ -3747,17 +3826,23 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		gpointer obj1, obj2;
 
 		obj1 = obj2 = CreateObject (&ex);
-		if (ex)
-			return 4;
+		if (ex) {
+			ret = 4;
+			goto done;
+		}
 
-		F = test_method;
+		F = (void (STDCALL *)(gpointer *, gpointer *))test_method;
 
 		F (&obj1, &ex);
-		if (ex)
-			return 5;
+		if (ex) {
+			ret = 5;
+			goto done;
+		}
 
-		if (obj1 == obj2)
-			return 6;
+		if (obj1 == obj2) {
+			ret = 6;
+			goto done;
+		}
 
 		break;
 	}
@@ -3771,31 +3856,43 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		int res;
 
 		obj = CreateObject (&ex);
-		if (ex)
-			return 4;
+		if (ex) {
+			ret = 4;
+			goto done;
+		}
 
-		if (!obj)
-			return 5;
+		if (!obj) {
+			ret = 5;
+			goto done;
+		}
 
-		a1 = mono_object_unbox (obj);
-		if (!a1)
-			return 6;
+		a1 = (TestStruct *)mono_object_unbox (obj);
+		if (!a1) {
+			ret = 6;
+			goto done;
+		}
 
 		a1->A = 42;
 		a1->B = 3.1415;
 
-		F = test_method;
+		F = (int (STDCALL *)(gpointer *, gpointer *))test_method;
 
-		res = F (obj, &ex);
-		if (ex)
-			return 7;
+		res = F ((gpointer *)obj, &ex);
+		if (ex) {
+			ret = 7;
+			goto done;
+		}
 
-		if (!res)
-			return 8;
+		if (!res) {
+			ret = 8;
+			goto done;
+		}
 
 		/* check whether the call was really by value */
-		if (a1->A != 42 || a1->B != 3.1415)
-			return 9;
+		if (a1->A != 42 || a1->B != 3.1415) {
+			ret = 9;
+			goto done;
+		}
 
 		break;
 	}
@@ -3808,27 +3905,39 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		gpointer obj;
 
 		obj = CreateObject (&ex);
-		if (ex)
-			return 4;
+		if (ex) {
+			ret = 4;
+			goto done;
+		}
 
-		if (!obj)
-			return 5;
+		if (!obj) {
+			ret = 5;
+			goto done;
+		}
 
-		a1 = mono_object_unbox (obj);
-		if (!a1)
-			return 6;
+		a1 = (TestStruct *)mono_object_unbox (obj);
+		if (!a1) {
+			ret = 6;
+			goto done;
+		}
 
-		F = test_method;
+		F = (void (STDCALL *)(gpointer, gpointer *))test_method;
 
 		F (obj, &ex);
-		if (ex)
-			return 7;
+		if (ex) {
+			ret = 7;
+			goto done;
+		}
 
-		if (a1->A != 42)
-			return 8;
+		if (a1->A != 42) {
+			ret = 8;
+			goto done;
+		}
 
-		if (!fabs (a1->B - 3.1415) < 0.001)
-			return 9;
+		if (!(fabs (a1->B - 3.1415) < 0.001)) {
+			ret = 9;
+			goto done;
+		}
 
 		break;
 	}
@@ -3840,22 +3949,30 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		TestStruct *a1;
 		gpointer obj;
 
-		F = test_method;
+		F = (gpointer (STDCALL *)(gpointer *))test_method;
 
 		obj = F (&ex);
-		if (ex)
-			return 4;
+		if (ex) {
+			ret = 4;
+			goto done;
+		}
 
-		if (!obj)
-			return 5;
+		if (!obj) {
+			ret = 5;
+			goto done;
+		}
 
-		a1 = mono_object_unbox (obj);
+		a1 = (TestStruct *)mono_object_unbox (obj);
 
-		if (a1->A != 42)
-			return 5;
+		if (a1->A != 42) {
+			ret = 5;
+			goto done;
+		}
 
-		if (!fabs (a1->B - 3.1415) < 0.001)
-			return 6;
+		if (!(fabs (a1->B - 3.1415) < 0.001)) {
+			ret = 6;
+			goto done;
+		}
 
 		break;
 	}
@@ -3868,41 +3985,55 @@ test_method_thunk (int test_id, gpointer test_method_handle, gpointer create_obj
 		gpointer obj;
 
 		obj = CreateObject (&ex);
-		if (ex)
-			return 4;
+		if (ex) {
+			ret = 4;
+			goto done;
+		}
 
-		if (!obj)
-			return 5;
+		if (!obj) {
+			ret = 5;
+			goto done;
+		}
 		
-		a1 = mono_object_unbox (obj);
+		a1 = (TestStruct *)mono_object_unbox (obj);
 
-		if (!a1)
-			return 6;
+		if (!a1) {
+			ret = 6;
+			goto done;
+		}
 
 		a1->A = 42;
 		a1->B = 3.1415;
 
-		F = test_method;
+		F = (void (STDCALL *)(gpointer, gpointer *))test_method;
 
 		F (obj, &ex);
-		if (ex)
-			return 4;
+		if (ex) {
+			ret = 4;
+			goto done;
+		}
 
-		if (a1->A != 1)
-			return 5;
+		if (a1->A != 1) {
+			ret = 5;
+			goto done;
+		}
 
-		if (a1->B != 17)
-			return 6;
+		if (a1->B != 17) {
+			ret = 6;
+			goto done;
+		}
 
 		break;
 	}
 
 	default:
-		return 9;
+		ret = 9;
 
 	}
+done:
+	MONO_END_EFRAME;
 
-	return 0;
+	return ret;
 }
 
 typedef struct 
@@ -5288,7 +5419,7 @@ static int call_managed_res;
 static void
 call_managed (gpointer arg)
 {
-	SimpleDelegate del = arg;
+	SimpleDelegate del = (SimpleDelegate)arg;
 
 	call_managed_res = del (42);
 }
@@ -5302,7 +5433,7 @@ mono_test_marshal_thread_attach (SimpleDelegate del)
 	int res;
 	pthread_t t;
 
-	res = pthread_create (&t, NULL, (gpointer)call_managed, del);
+	res = pthread_create (&t, NULL, (gpointer (*)(gpointer))call_managed, del);
 	g_assert (res == 0);
 	pthread_join (t, NULL);
 
@@ -5348,7 +5479,7 @@ mono_test_marshal_lpwstr (gunichar2 *str)
 LIBTEST_API char* STDCALL
 mono_test_marshal_return_lpstr (void)
 {
-	char *res = marshal_alloc (4);
+	char *res = (char *)marshal_alloc (4);
 	strcpy (res, "XYZ");
 	return res;
 }
@@ -5357,7 +5488,7 @@ mono_test_marshal_return_lpstr (void)
 LIBTEST_API gunichar2* STDCALL
 mono_test_marshal_return_lpwstr (void)
 {
-	gunichar2 *res = marshal_alloc (8);
+	gunichar2 *res = (gunichar2 *)marshal_alloc (8);
 	gunichar2* tmp = g_utf8_to_utf16 ("XYZ", -1, NULL, NULL, NULL);
 
 	memcpy (res, tmp, 8);
@@ -5456,4 +5587,1611 @@ mono_test_has_thiscall (void)
 }
 
 #endif
+
+
+typedef struct {
+	char f1;
+} sbyte1;
+
+LIBTEST_API sbyte1 STDCALL
+mono_return_sbyte1 (sbyte1 s1, int addend) {
+	if (s1.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte1 s1.f1: got %d but expected %d\n", s1.f1, 1);
+	}
+	s1.f1+=addend; 
+	return s1;
+}
+
+typedef struct {
+	char f1,f2;
+} sbyte2;
+
+LIBTEST_API sbyte2 STDCALL
+mono_return_sbyte2 (sbyte2 s2, int addend) {
+	if (s2.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte2 s2.f1: got %d but expected %d\n", s2.f1, 1);
+	}
+	if (s2.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte2 s2.f2: got %d but expected %d\n", s2.f2, 2);
+	}
+	s2.f1+=addend; s2.f2+=addend; 
+	return s2;
+}
+
+typedef struct {
+	char f1,f2,f3;
+} sbyte3;
+
+LIBTEST_API sbyte3 STDCALL
+mono_return_sbyte3 (sbyte3 s3, int addend) {
+	if (s3.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte3 s3.f1: got %d but expected %d\n", s3.f1, 1);
+	}
+	if (s3.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte3 s3.f2: got %d but expected %d\n", s3.f2, 2);
+	}
+	if (s3.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte3 s3.f3: got %d but expected %d\n", s3.f3, 3);
+	}
+	s3.f1+=addend; s3.f2+=addend; s3.f3+=addend; 
+	return s3;
+}
+
+typedef struct {
+	char f1,f2,f3,f4;
+} sbyte4;
+
+LIBTEST_API sbyte4 STDCALL
+mono_return_sbyte4 (sbyte4 s4, int addend) {
+	if (s4.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte4 s4.f1: got %d but expected %d\n", s4.f1, 1);
+	}
+	if (s4.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte4 s4.f2: got %d but expected %d\n", s4.f2, 2);
+	}
+	if (s4.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte4 s4.f3: got %d but expected %d\n", s4.f3, 3);
+	}
+	if (s4.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte4 s4.f4: got %d but expected %d\n", s4.f4, 4);
+	}
+	s4.f1+=addend; s4.f2+=addend; s4.f3+=addend; s4.f4+=addend; 
+	return s4;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5;
+} sbyte5;
+
+LIBTEST_API sbyte5 STDCALL
+mono_return_sbyte5 (sbyte5 s5, int addend) {
+	if (s5.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte5 s5.f1: got %d but expected %d\n", s5.f1, 1);
+	}
+	if (s5.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte5 s5.f2: got %d but expected %d\n", s5.f2, 2);
+	}
+	if (s5.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte5 s5.f3: got %d but expected %d\n", s5.f3, 3);
+	}
+	if (s5.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte5 s5.f4: got %d but expected %d\n", s5.f4, 4);
+	}
+	if (s5.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte5 s5.f5: got %d but expected %d\n", s5.f5, 5);
+	}
+	s5.f1+=addend; s5.f2+=addend; s5.f3+=addend; s5.f4+=addend; s5.f5+=addend; 
+	return s5;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6;
+} sbyte6;
+
+LIBTEST_API sbyte6 STDCALL
+mono_return_sbyte6 (sbyte6 s6, int addend) {
+	if (s6.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte6 s6.f1: got %d but expected %d\n", s6.f1, 1);
+	}
+	if (s6.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte6 s6.f2: got %d but expected %d\n", s6.f2, 2);
+	}
+	if (s6.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte6 s6.f3: got %d but expected %d\n", s6.f3, 3);
+	}
+	if (s6.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte6 s6.f4: got %d but expected %d\n", s6.f4, 4);
+	}
+	if (s6.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte6 s6.f5: got %d but expected %d\n", s6.f5, 5);
+	}
+	if (s6.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte6 s6.f6: got %d but expected %d\n", s6.f6, 6);
+	}
+	s6.f1+=addend; s6.f2+=addend; s6.f3+=addend; s6.f4+=addend; s6.f5+=addend; s6.f6+=addend; 
+	return s6;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7;
+} sbyte7;
+
+LIBTEST_API sbyte7 STDCALL
+mono_return_sbyte7 (sbyte7 s7, int addend) {
+	if (s7.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte7 s7.f1: got %d but expected %d\n", s7.f1, 1);
+	}
+	if (s7.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte7 s7.f2: got %d but expected %d\n", s7.f2, 2);
+	}
+	if (s7.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte7 s7.f3: got %d but expected %d\n", s7.f3, 3);
+	}
+	if (s7.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte7 s7.f4: got %d but expected %d\n", s7.f4, 4);
+	}
+	if (s7.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte7 s7.f5: got %d but expected %d\n", s7.f5, 5);
+	}
+	if (s7.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte7 s7.f6: got %d but expected %d\n", s7.f6, 6);
+	}
+	if (s7.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte7 s7.f7: got %d but expected %d\n", s7.f7, 7);
+	}
+	s7.f1+=addend; s7.f2+=addend; s7.f3+=addend; s7.f4+=addend; s7.f5+=addend; s7.f6+=addend; s7.f7+=addend; 
+	return s7;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8;
+} sbyte8;
+
+LIBTEST_API sbyte8 STDCALL
+mono_return_sbyte8 (sbyte8 s8, int addend) {
+	if (s8.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte8 s8.f1: got %d but expected %d\n", s8.f1, 1);
+	}
+	if (s8.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte8 s8.f2: got %d but expected %d\n", s8.f2, 2);
+	}
+	if (s8.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte8 s8.f3: got %d but expected %d\n", s8.f3, 3);
+	}
+	if (s8.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte8 s8.f4: got %d but expected %d\n", s8.f4, 4);
+	}
+	if (s8.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte8 s8.f5: got %d but expected %d\n", s8.f5, 5);
+	}
+	if (s8.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte8 s8.f6: got %d but expected %d\n", s8.f6, 6);
+	}
+	if (s8.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte8 s8.f7: got %d but expected %d\n", s8.f7, 7);
+	}
+	if (s8.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte8 s8.f8: got %d but expected %d\n", s8.f8, 8);
+	}
+	s8.f1+=addend; s8.f2+=addend; s8.f3+=addend; s8.f4+=addend; s8.f5+=addend; s8.f6+=addend; s8.f7+=addend; s8.f8+=addend; 
+	return s8;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9;
+} sbyte9;
+
+LIBTEST_API sbyte9 STDCALL
+mono_return_sbyte9 (sbyte9 s9, int addend) {
+	if (s9.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f1: got %d but expected %d\n", s9.f1, 1);
+	}
+	if (s9.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f2: got %d but expected %d\n", s9.f2, 2);
+	}
+	if (s9.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f3: got %d but expected %d\n", s9.f3, 3);
+	}
+	if (s9.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f4: got %d but expected %d\n", s9.f4, 4);
+	}
+	if (s9.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f5: got %d but expected %d\n", s9.f5, 5);
+	}
+	if (s9.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f6: got %d but expected %d\n", s9.f6, 6);
+	}
+	if (s9.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f7: got %d but expected %d\n", s9.f7, 7);
+	}
+	if (s9.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f8: got %d but expected %d\n", s9.f8, 8);
+	}
+	if (s9.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte9 s9.f9: got %d but expected %d\n", s9.f9, 9);
+	}
+	s9.f1+=addend; s9.f2+=addend; s9.f3+=addend; s9.f4+=addend; s9.f5+=addend; s9.f6+=addend; s9.f7+=addend; s9.f8+=addend; s9.f9+=addend; 
+	return s9;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9,f10;
+} sbyte10;
+
+LIBTEST_API sbyte10 STDCALL
+mono_return_sbyte10 (sbyte10 s10, int addend) {
+	if (s10.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f1: got %d but expected %d\n", s10.f1, 1);
+	}
+	if (s10.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f2: got %d but expected %d\n", s10.f2, 2);
+	}
+	if (s10.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f3: got %d but expected %d\n", s10.f3, 3);
+	}
+	if (s10.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f4: got %d but expected %d\n", s10.f4, 4);
+	}
+	if (s10.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f5: got %d but expected %d\n", s10.f5, 5);
+	}
+	if (s10.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f6: got %d but expected %d\n", s10.f6, 6);
+	}
+	if (s10.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f7: got %d but expected %d\n", s10.f7, 7);
+	}
+	if (s10.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f8: got %d but expected %d\n", s10.f8, 8);
+	}
+	if (s10.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f9: got %d but expected %d\n", s10.f9, 9);
+	}
+	if (s10.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte10 s10.f10: got %d but expected %d\n", s10.f10, 10);
+	}
+	s10.f1+=addend; s10.f2+=addend; s10.f3+=addend; s10.f4+=addend; s10.f5+=addend; s10.f6+=addend; s10.f7+=addend; s10.f8+=addend; s10.f9+=addend; s10.f10+=addend; 
+	return s10;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11;
+} sbyte11;
+
+LIBTEST_API sbyte11 STDCALL
+mono_return_sbyte11 (sbyte11 s11, int addend) {
+	if (s11.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f1: got %d but expected %d\n", s11.f1, 1);
+	}
+	if (s11.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f2: got %d but expected %d\n", s11.f2, 2);
+	}
+	if (s11.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f3: got %d but expected %d\n", s11.f3, 3);
+	}
+	if (s11.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f4: got %d but expected %d\n", s11.f4, 4);
+	}
+	if (s11.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f5: got %d but expected %d\n", s11.f5, 5);
+	}
+	if (s11.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f6: got %d but expected %d\n", s11.f6, 6);
+	}
+	if (s11.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f7: got %d but expected %d\n", s11.f7, 7);
+	}
+	if (s11.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f8: got %d but expected %d\n", s11.f8, 8);
+	}
+	if (s11.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f9: got %d but expected %d\n", s11.f9, 9);
+	}
+	if (s11.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f10: got %d but expected %d\n", s11.f10, 10);
+	}
+	if (s11.f11 != 11) {
+		fprintf(stderr, "mono_return_sbyte11 s11.f11: got %d but expected %d\n", s11.f11, 11);
+	}
+	s11.f1+=addend; s11.f2+=addend; s11.f3+=addend; s11.f4+=addend; s11.f5+=addend; s11.f6+=addend; s11.f7+=addend; s11.f8+=addend; s11.f9+=addend; s11.f10+=addend; s11.f11+=addend; 
+	return s11;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12;
+} sbyte12;
+
+LIBTEST_API sbyte12 STDCALL
+mono_return_sbyte12 (sbyte12 s12, int addend) {
+	if (s12.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f1: got %d but expected %d\n", s12.f1, 1);
+	}
+	if (s12.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f2: got %d but expected %d\n", s12.f2, 2);
+	}
+	if (s12.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f3: got %d but expected %d\n", s12.f3, 3);
+	}
+	if (s12.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f4: got %d but expected %d\n", s12.f4, 4);
+	}
+	if (s12.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f5: got %d but expected %d\n", s12.f5, 5);
+	}
+	if (s12.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f6: got %d but expected %d\n", s12.f6, 6);
+	}
+	if (s12.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f7: got %d but expected %d\n", s12.f7, 7);
+	}
+	if (s12.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f8: got %d but expected %d\n", s12.f8, 8);
+	}
+	if (s12.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f9: got %d but expected %d\n", s12.f9, 9);
+	}
+	if (s12.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f10: got %d but expected %d\n", s12.f10, 10);
+	}
+	if (s12.f11 != 11) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f11: got %d but expected %d\n", s12.f11, 11);
+	}
+	if (s12.f12 != 12) {
+		fprintf(stderr, "mono_return_sbyte12 s12.f12: got %d but expected %d\n", s12.f12, 12);
+	}
+	s12.f1+=addend; s12.f2+=addend; s12.f3+=addend; s12.f4+=addend; s12.f5+=addend; s12.f6+=addend; s12.f7+=addend; s12.f8+=addend; s12.f9+=addend; s12.f10+=addend; s12.f11+=addend; s12.f12+=addend; 
+	return s12;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13;
+} sbyte13;
+
+LIBTEST_API sbyte13 STDCALL
+mono_return_sbyte13 (sbyte13 s13, int addend) {
+	if (s13.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f1: got %d but expected %d\n", s13.f1, 1);
+	}
+	if (s13.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f2: got %d but expected %d\n", s13.f2, 2);
+	}
+	if (s13.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f3: got %d but expected %d\n", s13.f3, 3);
+	}
+	if (s13.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f4: got %d but expected %d\n", s13.f4, 4);
+	}
+	if (s13.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f5: got %d but expected %d\n", s13.f5, 5);
+	}
+	if (s13.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f6: got %d but expected %d\n", s13.f6, 6);
+	}
+	if (s13.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f7: got %d but expected %d\n", s13.f7, 7);
+	}
+	if (s13.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f8: got %d but expected %d\n", s13.f8, 8);
+	}
+	if (s13.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f9: got %d but expected %d\n", s13.f9, 9);
+	}
+	if (s13.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f10: got %d but expected %d\n", s13.f10, 10);
+	}
+	if (s13.f11 != 11) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f11: got %d but expected %d\n", s13.f11, 11);
+	}
+	if (s13.f12 != 12) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f12: got %d but expected %d\n", s13.f12, 12);
+	}
+	if (s13.f13 != 13) {
+		fprintf(stderr, "mono_return_sbyte13 s13.f13: got %d but expected %d\n", s13.f13, 13);
+	}
+	s13.f1+=addend; s13.f2+=addend; s13.f3+=addend; s13.f4+=addend; s13.f5+=addend; s13.f6+=addend; s13.f7+=addend; s13.f8+=addend; s13.f9+=addend; s13.f10+=addend; s13.f11+=addend; s13.f12+=addend; s13.f13+=addend; 
+	return s13;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14;
+} sbyte14;
+
+LIBTEST_API sbyte14 STDCALL
+mono_return_sbyte14 (sbyte14 s14, int addend) {
+	if (s14.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f1: got %d but expected %d\n", s14.f1, 1);
+	}
+	if (s14.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f2: got %d but expected %d\n", s14.f2, 2);
+	}
+	if (s14.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f3: got %d but expected %d\n", s14.f3, 3);
+	}
+	if (s14.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f4: got %d but expected %d\n", s14.f4, 4);
+	}
+	if (s14.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f5: got %d but expected %d\n", s14.f5, 5);
+	}
+	if (s14.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f6: got %d but expected %d\n", s14.f6, 6);
+	}
+	if (s14.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f7: got %d but expected %d\n", s14.f7, 7);
+	}
+	if (s14.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f8: got %d but expected %d\n", s14.f8, 8);
+	}
+	if (s14.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f9: got %d but expected %d\n", s14.f9, 9);
+	}
+	if (s14.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f10: got %d but expected %d\n", s14.f10, 10);
+	}
+	if (s14.f11 != 11) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f11: got %d but expected %d\n", s14.f11, 11);
+	}
+	if (s14.f12 != 12) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f12: got %d but expected %d\n", s14.f12, 12);
+	}
+	if (s14.f13 != 13) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f13: got %d but expected %d\n", s14.f13, 13);
+	}
+	if (s14.f14 != 14) {
+		fprintf(stderr, "mono_return_sbyte14 s14.f14: got %d but expected %d\n", s14.f14, 14);
+	}
+	s14.f1+=addend; s14.f2+=addend; s14.f3+=addend; s14.f4+=addend; s14.f5+=addend; s14.f6+=addend; s14.f7+=addend; s14.f8+=addend; s14.f9+=addend; s14.f10+=addend; s14.f11+=addend; s14.f12+=addend; s14.f13+=addend; s14.f14+=addend; 
+	return s14;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15;
+} sbyte15;
+
+LIBTEST_API sbyte15 STDCALL
+mono_return_sbyte15 (sbyte15 s15, int addend) {
+	if (s15.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f1: got %d but expected %d\n", s15.f1, 1);
+	}
+	if (s15.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f2: got %d but expected %d\n", s15.f2, 2);
+	}
+	if (s15.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f3: got %d but expected %d\n", s15.f3, 3);
+	}
+	if (s15.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f4: got %d but expected %d\n", s15.f4, 4);
+	}
+	if (s15.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f5: got %d but expected %d\n", s15.f5, 5);
+	}
+	if (s15.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f6: got %d but expected %d\n", s15.f6, 6);
+	}
+	if (s15.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f7: got %d but expected %d\n", s15.f7, 7);
+	}
+	if (s15.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f8: got %d but expected %d\n", s15.f8, 8);
+	}
+	if (s15.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f9: got %d but expected %d\n", s15.f9, 9);
+	}
+	if (s15.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f10: got %d but expected %d\n", s15.f10, 10);
+	}
+	if (s15.f11 != 11) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f11: got %d but expected %d\n", s15.f11, 11);
+	}
+	if (s15.f12 != 12) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f12: got %d but expected %d\n", s15.f12, 12);
+	}
+	if (s15.f13 != 13) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f13: got %d but expected %d\n", s15.f13, 13);
+	}
+	if (s15.f14 != 14) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f14: got %d but expected %d\n", s15.f14, 14);
+	}
+	if (s15.f15 != 15) {
+		fprintf(stderr, "mono_return_sbyte15 s15.f15: got %d but expected %d\n", s15.f15, 15);
+	}
+	s15.f1+=addend; s15.f2+=addend; s15.f3+=addend; s15.f4+=addend; s15.f5+=addend; s15.f6+=addend; s15.f7+=addend; s15.f8+=addend; s15.f9+=addend; s15.f10+=addend; s15.f11+=addend; s15.f12+=addend; s15.f13+=addend; s15.f14+=addend; s15.f15+=addend; 
+	return s15;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16;
+} sbyte16;
+
+LIBTEST_API sbyte16 STDCALL
+mono_return_sbyte16 (sbyte16 s16, int addend) {
+	if (s16.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f1: got %d but expected %d\n", s16.f1, 1);
+	}
+	if (s16.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f2: got %d but expected %d\n", s16.f2, 2);
+	}
+	if (s16.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f3: got %d but expected %d\n", s16.f3, 3);
+	}
+	if (s16.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f4: got %d but expected %d\n", s16.f4, 4);
+	}
+	if (s16.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f5: got %d but expected %d\n", s16.f5, 5);
+	}
+	if (s16.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f6: got %d but expected %d\n", s16.f6, 6);
+	}
+	if (s16.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f7: got %d but expected %d\n", s16.f7, 7);
+	}
+	if (s16.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f8: got %d but expected %d\n", s16.f8, 8);
+	}
+	if (s16.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f9: got %d but expected %d\n", s16.f9, 9);
+	}
+	if (s16.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f10: got %d but expected %d\n", s16.f10, 10);
+	}
+	if (s16.f11 != 11) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f11: got %d but expected %d\n", s16.f11, 11);
+	}
+	if (s16.f12 != 12) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f12: got %d but expected %d\n", s16.f12, 12);
+	}
+	if (s16.f13 != 13) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f13: got %d but expected %d\n", s16.f13, 13);
+	}
+	if (s16.f14 != 14) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f14: got %d but expected %d\n", s16.f14, 14);
+	}
+	if (s16.f15 != 15) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f15: got %d but expected %d\n", s16.f15, 15);
+	}
+	if (s16.f16 != 16) {
+		fprintf(stderr, "mono_return_sbyte16 s16.f16: got %d but expected %d\n", s16.f16, 16);
+	}
+	s16.f1+=addend; s16.f2+=addend; s16.f3+=addend; s16.f4+=addend; s16.f5+=addend; s16.f6+=addend; s16.f7+=addend; s16.f8+=addend; s16.f9+=addend; s16.f10+=addend; s16.f11+=addend; s16.f12+=addend; s16.f13+=addend; s16.f14+=addend; s16.f15+=addend; s16.f16+=addend; 
+	return s16;
+}
+
+typedef struct {
+	char f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17;
+} sbyte17;
+
+LIBTEST_API sbyte17 STDCALL
+mono_return_sbyte17 (sbyte17 s17, int addend) {
+	if (s17.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f1: got %d but expected %d\n", s17.f1, 1);
+	}
+	if (s17.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f2: got %d but expected %d\n", s17.f2, 2);
+	}
+	if (s17.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f3: got %d but expected %d\n", s17.f3, 3);
+	}
+	if (s17.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f4: got %d but expected %d\n", s17.f4, 4);
+	}
+	if (s17.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f5: got %d but expected %d\n", s17.f5, 5);
+	}
+	if (s17.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f6: got %d but expected %d\n", s17.f6, 6);
+	}
+	if (s17.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f7: got %d but expected %d\n", s17.f7, 7);
+	}
+	if (s17.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f8: got %d but expected %d\n", s17.f8, 8);
+	}
+	if (s17.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f9: got %d but expected %d\n", s17.f9, 9);
+	}
+	if (s17.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f10: got %d but expected %d\n", s17.f10, 10);
+	}
+	if (s17.f11 != 11) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f11: got %d but expected %d\n", s17.f11, 11);
+	}
+	if (s17.f12 != 12) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f12: got %d but expected %d\n", s17.f12, 12);
+	}
+	if (s17.f13 != 13) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f13: got %d but expected %d\n", s17.f13, 13);
+	}
+	if (s17.f14 != 14) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f14: got %d but expected %d\n", s17.f14, 14);
+	}
+	if (s17.f15 != 15) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f15: got %d but expected %d\n", s17.f15, 15);
+	}
+	if (s17.f16 != 16) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f16: got %d but expected %d\n", s17.f16, 16);
+	}
+	if (s17.f17 != 17) {
+		fprintf(stderr, "mono_return_sbyte17 s17.f17: got %d but expected %d\n", s17.f17, 17);
+	}
+	s17.f1+=addend; s17.f2+=addend; s17.f3+=addend; s17.f4+=addend; s17.f5+=addend; s17.f6+=addend; s17.f7+=addend; s17.f8+=addend; s17.f9+=addend; s17.f10+=addend; s17.f11+=addend; s17.f12+=addend; s17.f13+=addend; s17.f14+=addend; s17.f15+=addend; s17.f16+=addend; s17.f17+=addend; 
+	return s17;
+}
+
+typedef struct {
+	struct {
+		char f1;
+	} nested1;
+	char f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15;
+	struct {
+		char f16;
+	} nested2;
+} sbyte16_nested;
+
+LIBTEST_API sbyte16_nested STDCALL
+mono_return_sbyte16_nested (sbyte16_nested sn16, int addend) {
+	if (sn16.nested1.f1 != 1) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.nested1.f1: got %d but expected %d\n", sn16.nested1.f1, 1);
+	}
+	if (sn16.f2 != 2) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f2: got %d but expected %d\n", sn16.f2, 2);
+	}
+	if (sn16.f3 != 3) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f3: got %d but expected %d\n", sn16.f3, 3);
+	}
+	if (sn16.f4 != 4) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f4: got %d but expected %d\n", sn16.f4, 4);
+	}
+	if (sn16.f5 != 5) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f5: got %d but expected %d\n", sn16.f5, 5);
+	}
+	if (sn16.f6 != 6) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f6: got %d but expected %d\n", sn16.f6, 6);
+	}
+	if (sn16.f7 != 7) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f7: got %d but expected %d\n", sn16.f7, 7);
+	}
+	if (sn16.f8 != 8) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f8: got %d but expected %d\n", sn16.f8, 8);
+	}
+	if (sn16.f9 != 9) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f9: got %d but expected %d\n", sn16.f9, 9);
+	}
+	if (sn16.f10 != 10) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f10: got %d but expected %d\n", sn16.f10, 10);
+	}
+	if (sn16.f11 != 11) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f11: got %d but expected %d\n", sn16.f11, 11);
+	}
+	if (sn16.f12 != 12) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f12: got %d but expected %d\n", sn16.f12, 12);
+	}
+	if (sn16.f13 != 13) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f13: got %d but expected %d\n", sn16.f13, 13);
+	}
+	if (sn16.f14 != 14) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f14: got %d but expected %d\n", sn16.f14, 14);
+	}
+	if (sn16.f15 != 15) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.f15: got %d but expected %d\n", sn16.f15, 15);
+	}
+	if (sn16.nested2.f16 != 16) {
+		fprintf(stderr, "mono_return_sbyte16_nested sn16.nested2.f16: got %d but expected %d\n", sn16.nested2.f16, 16);
+	}
+	sn16.nested1.f1+=addend; sn16.f2+=addend; sn16.f3+=addend; sn16.f4+=addend; sn16.f5+=addend; sn16.f6+=addend; sn16.f7+=addend; sn16.f8+=addend; sn16.f9+=addend; sn16.f10+=addend; sn16.f11+=addend; sn16.f12+=addend; sn16.f13+=addend; sn16.f14+=addend; sn16.f15+=addend; sn16.nested2.f16+=addend; 
+	return sn16;
+}
+
+
+typedef struct {
+	short f1;
+} short1;
+
+LIBTEST_API short1 STDCALL
+mono_return_short1 (short1 s1, int addend) {
+	if (s1.f1 != 1) {
+		fprintf(stderr, "mono_return_short1 s1.f1: got %d but expected %d\n", s1.f1, 1);
+	}
+	s1.f1+=addend; 
+	return s1;
+}
+
+typedef struct {
+	short f1,f2;
+} short2;
+
+LIBTEST_API short2 STDCALL
+mono_return_short2 (short2 s2, int addend) {
+	if (s2.f1 != 1) {
+		fprintf(stderr, "mono_return_short2 s2.f1: got %d but expected %d\n", s2.f1, 1);
+	}
+	if (s2.f2 != 2) {
+		fprintf(stderr, "mono_return_short2 s2.f2: got %d but expected %d\n", s2.f2, 2);
+	}
+	s2.f1+=addend; s2.f2+=addend; 
+	return s2;
+}
+
+typedef struct {
+	short f1,f2,f3;
+} short3;
+
+LIBTEST_API short3 STDCALL
+mono_return_short3 (short3 s3, int addend) {
+	if (s3.f1 != 1) {
+		fprintf(stderr, "mono_return_short3 s3.f1: got %d but expected %d\n", s3.f1, 1);
+	}
+	if (s3.f2 != 2) {
+		fprintf(stderr, "mono_return_short3 s3.f2: got %d but expected %d\n", s3.f2, 2);
+	}
+	if (s3.f3 != 3) {
+		fprintf(stderr, "mono_return_short3 s3.f3: got %d but expected %d\n", s3.f3, 3);
+	}
+	s3.f1+=addend; s3.f2+=addend; s3.f3+=addend; 
+	return s3;
+}
+
+typedef struct {
+	short f1,f2,f3,f4;
+} short4;
+
+LIBTEST_API short4 STDCALL
+mono_return_short4 (short4 s4, int addend) {
+	if (s4.f1 != 1) {
+		fprintf(stderr, "mono_return_short4 s4.f1: got %d but expected %d\n", s4.f1, 1);
+	}
+	if (s4.f2 != 2) {
+		fprintf(stderr, "mono_return_short4 s4.f2: got %d but expected %d\n", s4.f2, 2);
+	}
+	if (s4.f3 != 3) {
+		fprintf(stderr, "mono_return_short4 s4.f3: got %d but expected %d\n", s4.f3, 3);
+	}
+	if (s4.f4 != 4) {
+		fprintf(stderr, "mono_return_short4 s4.f4: got %d but expected %d\n", s4.f4, 4);
+	}
+	s4.f1+=addend; s4.f2+=addend; s4.f3+=addend; s4.f4+=addend; 
+	return s4;
+}
+
+typedef struct {
+	short f1,f2,f3,f4,f5;
+} short5;
+
+LIBTEST_API short5 STDCALL
+mono_return_short5 (short5 s5, int addend) {
+	if (s5.f1 != 1) {
+		fprintf(stderr, "mono_return_short5 s5.f1: got %d but expected %d\n", s5.f1, 1);
+	}
+	if (s5.f2 != 2) {
+		fprintf(stderr, "mono_return_short5 s5.f2: got %d but expected %d\n", s5.f2, 2);
+	}
+	if (s5.f3 != 3) {
+		fprintf(stderr, "mono_return_short5 s5.f3: got %d but expected %d\n", s5.f3, 3);
+	}
+	if (s5.f4 != 4) {
+		fprintf(stderr, "mono_return_short5 s5.f4: got %d but expected %d\n", s5.f4, 4);
+	}
+	if (s5.f5 != 5) {
+		fprintf(stderr, "mono_return_short5 s5.f5: got %d but expected %d\n", s5.f5, 5);
+	}
+	s5.f1+=addend; s5.f2+=addend; s5.f3+=addend; s5.f4+=addend; s5.f5+=addend; 
+	return s5;
+}
+
+typedef struct {
+	short f1,f2,f3,f4,f5,f6;
+} short6;
+
+LIBTEST_API short6 STDCALL
+mono_return_short6 (short6 s6, int addend) {
+	if (s6.f1 != 1) {
+		fprintf(stderr, "mono_return_short6 s6.f1: got %d but expected %d\n", s6.f1, 1);
+	}
+	if (s6.f2 != 2) {
+		fprintf(stderr, "mono_return_short6 s6.f2: got %d but expected %d\n", s6.f2, 2);
+	}
+	if (s6.f3 != 3) {
+		fprintf(stderr, "mono_return_short6 s6.f3: got %d but expected %d\n", s6.f3, 3);
+	}
+	if (s6.f4 != 4) {
+		fprintf(stderr, "mono_return_short6 s6.f4: got %d but expected %d\n", s6.f4, 4);
+	}
+	if (s6.f5 != 5) {
+		fprintf(stderr, "mono_return_short6 s6.f5: got %d but expected %d\n", s6.f5, 5);
+	}
+	if (s6.f6 != 6) {
+		fprintf(stderr, "mono_return_short6 s6.f6: got %d but expected %d\n", s6.f6, 6);
+	}
+	s6.f1+=addend; s6.f2+=addend; s6.f3+=addend; s6.f4+=addend; s6.f5+=addend; s6.f6+=addend; 
+	return s6;
+}
+
+typedef struct {
+	short f1,f2,f3,f4,f5,f6,f7;
+} short7;
+
+LIBTEST_API short7 STDCALL
+mono_return_short7 (short7 s7, int addend) {
+	if (s7.f1 != 1) {
+		fprintf(stderr, "mono_return_short7 s7.f1: got %d but expected %d\n", s7.f1, 1);
+	}
+	if (s7.f2 != 2) {
+		fprintf(stderr, "mono_return_short7 s7.f2: got %d but expected %d\n", s7.f2, 2);
+	}
+	if (s7.f3 != 3) {
+		fprintf(stderr, "mono_return_short7 s7.f3: got %d but expected %d\n", s7.f3, 3);
+	}
+	if (s7.f4 != 4) {
+		fprintf(stderr, "mono_return_short7 s7.f4: got %d but expected %d\n", s7.f4, 4);
+	}
+	if (s7.f5 != 5) {
+		fprintf(stderr, "mono_return_short7 s7.f5: got %d but expected %d\n", s7.f5, 5);
+	}
+	if (s7.f6 != 6) {
+		fprintf(stderr, "mono_return_short7 s7.f6: got %d but expected %d\n", s7.f6, 6);
+	}
+	if (s7.f7 != 7) {
+		fprintf(stderr, "mono_return_short7 s7.f7: got %d but expected %d\n", s7.f7, 7);
+	}
+	s7.f1+=addend; s7.f2+=addend; s7.f3+=addend; s7.f4+=addend; s7.f5+=addend; s7.f6+=addend; s7.f7+=addend; 
+	return s7;
+}
+
+typedef struct {
+	short f1,f2,f3,f4,f5,f6,f7,f8;
+} short8;
+
+LIBTEST_API short8 STDCALL
+mono_return_short8 (short8 s8, int addend) {
+	if (s8.f1 != 1) {
+		fprintf(stderr, "mono_return_short8 s8.f1: got %d but expected %d\n", s8.f1, 1);
+	}
+	if (s8.f2 != 2) {
+		fprintf(stderr, "mono_return_short8 s8.f2: got %d but expected %d\n", s8.f2, 2);
+	}
+	if (s8.f3 != 3) {
+		fprintf(stderr, "mono_return_short8 s8.f3: got %d but expected %d\n", s8.f3, 3);
+	}
+	if (s8.f4 != 4) {
+		fprintf(stderr, "mono_return_short8 s8.f4: got %d but expected %d\n", s8.f4, 4);
+	}
+	if (s8.f5 != 5) {
+		fprintf(stderr, "mono_return_short8 s8.f5: got %d but expected %d\n", s8.f5, 5);
+	}
+	if (s8.f6 != 6) {
+		fprintf(stderr, "mono_return_short8 s8.f6: got %d but expected %d\n", s8.f6, 6);
+	}
+	if (s8.f7 != 7) {
+		fprintf(stderr, "mono_return_short8 s8.f7: got %d but expected %d\n", s8.f7, 7);
+	}
+	if (s8.f8 != 8) {
+		fprintf(stderr, "mono_return_short8 s8.f8: got %d but expected %d\n", s8.f8, 8);
+	}
+	s8.f1+=addend; s8.f2+=addend; s8.f3+=addend; s8.f4+=addend; s8.f5+=addend; s8.f6+=addend; s8.f7+=addend; s8.f8+=addend; 
+	return s8;
+}
+
+typedef struct {
+	short f1,f2,f3,f4,f5,f6,f7,f8,f9;
+} short9;
+
+LIBTEST_API short9 STDCALL
+mono_return_short9 (short9 s9, int addend) {
+	if (s9.f1 != 1) {
+		fprintf(stderr, "mono_return_short9 s9.f1: got %d but expected %d\n", s9.f1, 1);
+	}
+	if (s9.f2 != 2) {
+		fprintf(stderr, "mono_return_short9 s9.f2: got %d but expected %d\n", s9.f2, 2);
+	}
+	if (s9.f3 != 3) {
+		fprintf(stderr, "mono_return_short9 s9.f3: got %d but expected %d\n", s9.f3, 3);
+	}
+	if (s9.f4 != 4) {
+		fprintf(stderr, "mono_return_short9 s9.f4: got %d but expected %d\n", s9.f4, 4);
+	}
+	if (s9.f5 != 5) {
+		fprintf(stderr, "mono_return_short9 s9.f5: got %d but expected %d\n", s9.f5, 5);
+	}
+	if (s9.f6 != 6) {
+		fprintf(stderr, "mono_return_short9 s9.f6: got %d but expected %d\n", s9.f6, 6);
+	}
+	if (s9.f7 != 7) {
+		fprintf(stderr, "mono_return_short9 s9.f7: got %d but expected %d\n", s9.f7, 7);
+	}
+	if (s9.f8 != 8) {
+		fprintf(stderr, "mono_return_short9 s9.f8: got %d but expected %d\n", s9.f8, 8);
+	}
+	if (s9.f9 != 9) {
+		fprintf(stderr, "mono_return_short9 s9.f9: got %d but expected %d\n", s9.f9, 9);
+	}
+	s9.f1+=addend; s9.f2+=addend; s9.f3+=addend; s9.f4+=addend; s9.f5+=addend; s9.f6+=addend; s9.f7+=addend; s9.f8+=addend; s9.f9+=addend; 
+	return s9;
+}
+
+typedef struct {
+	struct {
+		short f1;
+	} nested1;
+	short f2,f3,f4,f5,f6,f7;
+	struct {
+		short f8;
+	} nested2;
+} short8_nested;
+
+LIBTEST_API short8_nested STDCALL
+mono_return_short8_nested (short8_nested sn8, int addend) {
+	if (sn8.nested1.f1 != 1) {
+		fprintf(stderr, "mono_return_short8_nested sn8.nested1.f1: got %d but expected %d\n", sn8.nested1.f1, 1);
+	}
+	if (sn8.f2 != 2) {
+		fprintf(stderr, "mono_return_short8_nested sn8.f2: got %d but expected %d\n", sn8.f2, 2);
+	}
+	if (sn8.f3 != 3) {
+		fprintf(stderr, "mono_return_short8_nested sn8.f3: got %d but expected %d\n", sn8.f3, 3);
+	}
+	if (sn8.f4 != 4) {
+		fprintf(stderr, "mono_return_short8_nested sn8.f4: got %d but expected %d\n", sn8.f4, 4);
+	}
+	if (sn8.f5 != 5) {
+		fprintf(stderr, "mono_return_short8_nested sn8.f5: got %d but expected %d\n", sn8.f5, 5);
+	}
+	if (sn8.f6 != 6) {
+		fprintf(stderr, "mono_return_short8_nested sn8.f6: got %d but expected %d\n", sn8.f6, 6);
+	}
+	if (sn8.f7 != 7) {
+		fprintf(stderr, "mono_return_short8_nested sn8.f7: got %d but expected %d\n", sn8.f7, 7);
+	}
+	if (sn8.nested2.f8 != 8) {
+		fprintf(stderr, "mono_return_short8_nested sn8.nested2.f8: got %d but expected %d\n", sn8.nested2.f8, 8);
+	}
+	sn8.nested1.f1+=addend; sn8.f2+=addend; sn8.f3+=addend; sn8.f4+=addend; sn8.f5+=addend; sn8.f6+=addend; sn8.f7+=addend; sn8.nested2.f8+=addend; 
+	return sn8;
+}
+
+
+typedef struct {
+	int f1;
+} int1;
+
+LIBTEST_API int1 STDCALL
+mono_return_int1 (int1 s1, int addend) {
+	if (s1.f1 != 1) {
+		fprintf(stderr, "mono_return_int1 s1.f1: got %d but expected %d\n", s1.f1, 1);
+	}
+	s1.f1+=addend; 
+	return s1;
+}
+
+typedef struct {
+	int f1,f2;
+} int2;
+
+LIBTEST_API int2 STDCALL
+mono_return_int2 (int2 s2, int addend) {
+	if (s2.f1 != 1) {
+		fprintf(stderr, "mono_return_int2 s2.f1: got %d but expected %d\n", s2.f1, 1);
+	}
+	if (s2.f2 != 2) {
+		fprintf(stderr, "mono_return_int2 s2.f2: got %d but expected %d\n", s2.f2, 2);
+	}
+	s2.f1+=addend; s2.f2+=addend; 
+	return s2;
+}
+
+typedef struct {
+	int f1,f2,f3;
+} int3;
+
+LIBTEST_API int3 STDCALL
+mono_return_int3 (int3 s3, int addend) {
+	if (s3.f1 != 1) {
+		fprintf(stderr, "mono_return_int3 s3.f1: got %d but expected %d\n", s3.f1, 1);
+	}
+	if (s3.f2 != 2) {
+		fprintf(stderr, "mono_return_int3 s3.f2: got %d but expected %d\n", s3.f2, 2);
+	}
+	if (s3.f3 != 3) {
+		fprintf(stderr, "mono_return_int3 s3.f3: got %d but expected %d\n", s3.f3, 3);
+	}
+	s3.f1+=addend; s3.f2+=addend; s3.f3+=addend; 
+	return s3;
+}
+
+typedef struct {
+	int f1,f2,f3,f4;
+} int4;
+
+LIBTEST_API int4 STDCALL
+mono_return_int4 (int4 s4, int addend) {
+	if (s4.f1 != 1) {
+		fprintf(stderr, "mono_return_int4 s4.f1: got %d but expected %d\n", s4.f1, 1);
+	}
+	if (s4.f2 != 2) {
+		fprintf(stderr, "mono_return_int4 s4.f2: got %d but expected %d\n", s4.f2, 2);
+	}
+	if (s4.f3 != 3) {
+		fprintf(stderr, "mono_return_int4 s4.f3: got %d but expected %d\n", s4.f3, 3);
+	}
+	if (s4.f4 != 4) {
+		fprintf(stderr, "mono_return_int4 s4.f4: got %d but expected %d\n", s4.f4, 4);
+	}
+	s4.f1+=addend; s4.f2+=addend; s4.f3+=addend; s4.f4+=addend; 
+	return s4;
+}
+
+typedef struct {
+	int f1,f2,f3,f4,f5;
+} int5;
+
+LIBTEST_API int5 STDCALL
+mono_return_int5 (int5 s5, int addend) {
+	if (s5.f1 != 1) {
+		fprintf(stderr, "mono_return_int5 s5.f1: got %d but expected %d\n", s5.f1, 1);
+	}
+	if (s5.f2 != 2) {
+		fprintf(stderr, "mono_return_int5 s5.f2: got %d but expected %d\n", s5.f2, 2);
+	}
+	if (s5.f3 != 3) {
+		fprintf(stderr, "mono_return_int5 s5.f3: got %d but expected %d\n", s5.f3, 3);
+	}
+	if (s5.f4 != 4) {
+		fprintf(stderr, "mono_return_int5 s5.f4: got %d but expected %d\n", s5.f4, 4);
+	}
+	if (s5.f5 != 5) {
+		fprintf(stderr, "mono_return_int5 s5.f5: got %d but expected %d\n", s5.f5, 5);
+	}
+	s5.f1+=addend; s5.f2+=addend; s5.f3+=addend; s5.f4+=addend; s5.f5+=addend; 
+	return s5;
+}
+
+typedef struct {
+	struct {
+		int f1;
+	} nested1;
+	int f2,f3;
+	struct {
+		int f4;
+	} nested2;
+} int4_nested;
+
+LIBTEST_API int4_nested STDCALL
+mono_return_int4_nested (int4_nested sn4, int addend) {
+	if (sn4.nested1.f1 != 1) {
+		fprintf(stderr, "mono_return_int4_nested sn4.nested1.f1: got %d but expected %d\n", sn4.nested1.f1, 1);
+	}
+	if (sn4.f2 != 2) {
+		fprintf(stderr, "mono_return_int4_nested sn4.f2: got %d but expected %d\n", sn4.f2, 2);
+	}
+	if (sn4.f3 != 3) {
+		fprintf(stderr, "mono_return_int4_nested sn4.f3: got %d but expected %d\n", sn4.f3, 3);
+	}
+	if (sn4.nested2.f4 != 4) {
+		fprintf(stderr, "mono_return_int4_nested sn4.nested2.f4: got %d but expected %d\n", sn4.nested2.f4, 4);
+	}
+	sn4.nested1.f1+=addend; sn4.f2+=addend; sn4.f3+=addend; sn4.nested2.f4+=addend; 
+	return sn4;
+}
+
+typedef struct {
+	float f1;
+} float1;
+
+LIBTEST_API float1 STDCALL
+mono_return_float1 (float1 s1, int addend) {
+	if (s1.f1 != 1) {
+		fprintf(stderr, "mono_return_float1 s1.f1: got %f but expected %d\n", s1.f1, 1);
+	}
+	s1.f1+=addend; 
+	return s1;
+}
+
+typedef struct {
+	float f1,f2;
+} float2;
+
+LIBTEST_API float2 STDCALL
+mono_return_float2 (float2 s2, int addend) {
+	if (s2.f1 != 1) {
+		fprintf(stderr, "mono_return_float2 s2.f1: got %f but expected %d\n", s2.f1, 1);
+	}
+	if (s2.f2 != 2) {
+		fprintf(stderr, "mono_return_float2 s2.f2: got %f but expected %d\n", s2.f2, 2);
+	}
+	s2.f1+=addend; s2.f2+=addend; 
+	return s2;
+}
+
+typedef struct {
+	float f1,f2,f3;
+} float3;
+
+LIBTEST_API float3 STDCALL
+mono_return_float3 (float3 s3, int addend) {
+	if (s3.f1 != 1) {
+		fprintf(stderr, "mono_return_float3 s3.f1: got %f but expected %d\n", s3.f1, 1);
+	}
+	if (s3.f2 != 2) {
+		fprintf(stderr, "mono_return_float3 s3.f2: got %f but expected %d\n", s3.f2, 2);
+	}
+	if (s3.f3 != 3) {
+		fprintf(stderr, "mono_return_float3 s3.f3: got %f but expected %d\n", s3.f3, 3);
+	}
+	s3.f1+=addend; s3.f2+=addend; s3.f3+=addend; 
+	return s3;
+}
+
+typedef struct {
+	float f1,f2,f3,f4;
+} float4;
+
+LIBTEST_API float4 STDCALL
+mono_return_float4 (float4 s4, int addend) {
+	if (s4.f1 != 1) {
+		fprintf(stderr, "mono_return_float4 s4.f1: got %f but expected %d\n", s4.f1, 1);
+	}
+	if (s4.f2 != 2) {
+		fprintf(stderr, "mono_return_float4 s4.f2: got %f but expected %d\n", s4.f2, 2);
+	}
+	if (s4.f3 != 3) {
+		fprintf(stderr, "mono_return_float4 s4.f3: got %f but expected %d\n", s4.f3, 3);
+	}
+	if (s4.f4 != 4) {
+		fprintf(stderr, "mono_return_float4 s4.f4: got %f but expected %d\n", s4.f4, 4);
+	}
+	s4.f1+=addend; s4.f2+=addend; s4.f3+=addend; s4.f4+=addend; 
+	return s4;
+}
+
+typedef struct {
+	float f1,f2,f3,f4,f5;
+} float5;
+
+LIBTEST_API float5 STDCALL
+mono_return_float5 (float5 s5, int addend) {
+	if (s5.f1 != 1) {
+		fprintf(stderr, "mono_return_float5 s5.f1: got %f but expected %d\n", s5.f1, 1);
+	}
+	if (s5.f2 != 2) {
+		fprintf(stderr, "mono_return_float5 s5.f2: got %f but expected %d\n", s5.f2, 2);
+	}
+	if (s5.f3 != 3) {
+		fprintf(stderr, "mono_return_float5 s5.f3: got %f but expected %d\n", s5.f3, 3);
+	}
+	if (s5.f4 != 4) {
+		fprintf(stderr, "mono_return_float5 s5.f4: got %f but expected %d\n", s5.f4, 4);
+	}
+	if (s5.f5 != 5) {
+		fprintf(stderr, "mono_return_float5 s5.f5: got %f but expected %d\n", s5.f5, 5);
+	}
+	s5.f1+=addend; s5.f2+=addend; s5.f3+=addend; s5.f4+=addend; s5.f5+=addend; 
+	return s5;
+}
+
+typedef struct {
+	float f1,f2,f3,f4,f5,f6;
+} float6;
+
+LIBTEST_API float6 STDCALL
+mono_return_float6 (float6 s6, int addend) {
+	if (s6.f1 != 1) {
+		fprintf(stderr, "mono_return_float6 s6.f1: got %f but expected %d\n", s6.f1, 1);
+	}
+	if (s6.f2 != 2) {
+		fprintf(stderr, "mono_return_float6 s6.f2: got %f but expected %d\n", s6.f2, 2);
+	}
+	if (s6.f3 != 3) {
+		fprintf(stderr, "mono_return_float6 s6.f3: got %f but expected %d\n", s6.f3, 3);
+	}
+	if (s6.f4 != 4) {
+		fprintf(stderr, "mono_return_float6 s6.f4: got %f but expected %d\n", s6.f4, 4);
+	}
+	if (s6.f5 != 5) {
+		fprintf(stderr, "mono_return_float6 s6.f5: got %f but expected %d\n", s6.f5, 5);
+	}
+	if (s6.f6 != 6) {
+		fprintf(stderr, "mono_return_float6 s6.f6: got %f but expected %d\n", s6.f6, 6);
+	}
+	s6.f1+=addend; s6.f2+=addend; s6.f3+=addend; s6.f4+=addend; s6.f5+=addend; s6.f6+=addend; 
+	return s6;
+}
+
+typedef struct {
+	float f1,f2,f3,f4,f5,f6,f7;
+} float7;
+
+LIBTEST_API float7 STDCALL
+mono_return_float7 (float7 s7, int addend) {
+	if (s7.f1 != 1) {
+		fprintf(stderr, "mono_return_float7 s7.f1: got %f but expected %d\n", s7.f1, 1);
+	}
+	if (s7.f2 != 2) {
+		fprintf(stderr, "mono_return_float7 s7.f2: got %f but expected %d\n", s7.f2, 2);
+	}
+	if (s7.f3 != 3) {
+		fprintf(stderr, "mono_return_float7 s7.f3: got %f but expected %d\n", s7.f3, 3);
+	}
+	if (s7.f4 != 4) {
+		fprintf(stderr, "mono_return_float7 s7.f4: got %f but expected %d\n", s7.f4, 4);
+	}
+	if (s7.f5 != 5) {
+		fprintf(stderr, "mono_return_float7 s7.f5: got %f but expected %d\n", s7.f5, 5);
+	}
+	if (s7.f6 != 6) {
+		fprintf(stderr, "mono_return_float7 s7.f6: got %f but expected %d\n", s7.f6, 6);
+	}
+	if (s7.f7 != 7) {
+		fprintf(stderr, "mono_return_float7 s7.f7: got %f but expected %d\n", s7.f7, 7);
+	}
+	s7.f1+=addend; s7.f2+=addend; s7.f3+=addend; s7.f4+=addend; s7.f5+=addend; s7.f6+=addend; s7.f7+=addend; 
+	return s7;
+}
+
+typedef struct {
+	float f1,f2,f3,f4,f5,f6,f7,f8;
+} float8;
+
+LIBTEST_API float8 STDCALL
+mono_return_float8 (float8 s8, int addend) {
+	if (s8.f1 != 1) {
+		fprintf(stderr, "mono_return_float8 s8.f1: got %f but expected %d\n", s8.f1, 1);
+	}
+	if (s8.f2 != 2) {
+		fprintf(stderr, "mono_return_float8 s8.f2: got %f but expected %d\n", s8.f2, 2);
+	}
+	if (s8.f3 != 3) {
+		fprintf(stderr, "mono_return_float8 s8.f3: got %f but expected %d\n", s8.f3, 3);
+	}
+	if (s8.f4 != 4) {
+		fprintf(stderr, "mono_return_float8 s8.f4: got %f but expected %d\n", s8.f4, 4);
+	}
+	if (s8.f5 != 5) {
+		fprintf(stderr, "mono_return_float8 s8.f5: got %f but expected %d\n", s8.f5, 5);
+	}
+	if (s8.f6 != 6) {
+		fprintf(stderr, "mono_return_float8 s8.f6: got %f but expected %d\n", s8.f6, 6);
+	}
+	if (s8.f7 != 7) {
+		fprintf(stderr, "mono_return_float8 s8.f7: got %f but expected %d\n", s8.f7, 7);
+	}
+	if (s8.f8 != 8) {
+		fprintf(stderr, "mono_return_float8 s8.f8: got %f but expected %d\n", s8.f8, 8);
+	}
+	s8.f1+=addend; s8.f2+=addend; s8.f3+=addend; s8.f4+=addend; s8.f5+=addend; s8.f6+=addend; s8.f7+=addend; s8.f8+=addend; 
+	return s8;
+}
+
+typedef struct {
+	float f1,f2,f3,f4,f5,f6,f7,f8,f9;
+} float9;
+
+LIBTEST_API float9 STDCALL
+mono_return_float9 (float9 s9, int addend) {
+	if (s9.f1 != 1) {
+		fprintf(stderr, "mono_return_float9 s9.f1: got %f but expected %d\n", s9.f1, 1);
+	}
+	if (s9.f2 != 2) {
+		fprintf(stderr, "mono_return_float9 s9.f2: got %f but expected %d\n", s9.f2, 2);
+	}
+	if (s9.f3 != 3) {
+		fprintf(stderr, "mono_return_float9 s9.f3: got %f but expected %d\n", s9.f3, 3);
+	}
+	if (s9.f4 != 4) {
+		fprintf(stderr, "mono_return_float9 s9.f4: got %f but expected %d\n", s9.f4, 4);
+	}
+	if (s9.f5 != 5) {
+		fprintf(stderr, "mono_return_float9 s9.f5: got %f but expected %d\n", s9.f5, 5);
+	}
+	if (s9.f6 != 6) {
+		fprintf(stderr, "mono_return_float9 s9.f6: got %f but expected %d\n", s9.f6, 6);
+	}
+	if (s9.f7 != 7) {
+		fprintf(stderr, "mono_return_float9 s9.f7: got %f but expected %d\n", s9.f7, 7);
+	}
+	if (s9.f8 != 8) {
+		fprintf(stderr, "mono_return_float9 s9.f8: got %f but expected %d\n", s9.f8, 8);
+	}
+	if (s9.f9 != 9) {
+		fprintf(stderr, "mono_return_float9 s9.f9: got %f but expected %d\n", s9.f9, 9);
+	}
+	s9.f1+=addend; s9.f2+=addend; s9.f3+=addend; s9.f4+=addend; s9.f5+=addend; s9.f6+=addend; s9.f7+=addend; s9.f8+=addend; s9.f9+=addend; 
+	return s9;
+}
+
+typedef struct {
+	struct {
+		float f1;
+	} nested1;
+	float f2,f3;
+	struct {
+		float f4;
+	} nested2;
+} float4_nested;
+
+LIBTEST_API float4_nested STDCALL
+mono_return_float4_nested (float4_nested sn4, int addend) {
+	if (sn4.nested1.f1 != 1) {
+		fprintf(stderr, "mono_return_float4_nested sn4.nested1.f1: got %f but expected %d\n", sn4.nested1.f1, 1);
+	}
+	if (sn4.f2 != 2) {
+		fprintf(stderr, "mono_return_float4_nested sn4.f2: got %f but expected %d\n", sn4.f2, 2);
+	}
+	if (sn4.f3 != 3) {
+		fprintf(stderr, "mono_return_float4_nested sn4.f3: got %f but expected %d\n", sn4.f3, 3);
+	}
+	if (sn4.nested2.f4 != 4) {
+		fprintf(stderr, "mono_return_float4_nested sn4.nested2.f4: got %f but expected %d\n", sn4.nested2.f4, 4);
+	}
+	sn4.nested1.f1+=addend; sn4.f2+=addend; sn4.f3+=addend; sn4.nested2.f4+=addend; 
+	return sn4;
+}
+
+typedef struct {
+	double f1;
+} double1;
+
+LIBTEST_API double1 STDCALL
+mono_return_double1 (double1 s1, int addend) {
+	if (s1.f1 != 1) {
+		fprintf(stderr, "mono_return_double1 s1.f1: got %f but expected %d\n", s1.f1, 1);
+	}
+	s1.f1+=addend; 
+	return s1;
+}
+
+typedef struct {
+	double f1,f2;
+} double2;
+
+LIBTEST_API double2 STDCALL
+mono_return_double2 (double2 s2, int addend) {
+	if (s2.f1 != 1) {
+		fprintf(stderr, "mono_return_double2 s2.f1: got %f but expected %d\n", s2.f1, 1);
+	}
+	if (s2.f2 != 2) {
+		fprintf(stderr, "mono_return_double2 s2.f2: got %f but expected %d\n", s2.f2, 2);
+	}
+	s2.f1+=addend; s2.f2+=addend; 
+	return s2;
+}
+
+typedef struct {
+	double f1,f2,f3;
+} double3;
+
+LIBTEST_API double3 STDCALL
+mono_return_double3 (double3 s3, int addend) {
+	if (s3.f1 != 1) {
+		fprintf(stderr, "mono_return_double3 s3.f1: got %f but expected %d\n", s3.f1, 1);
+	}
+	if (s3.f2 != 2) {
+		fprintf(stderr, "mono_return_double3 s3.f2: got %f but expected %d\n", s3.f2, 2);
+	}
+	if (s3.f3 != 3) {
+		fprintf(stderr, "mono_return_double3 s3.f3: got %f but expected %d\n", s3.f3, 3);
+	}
+	s3.f1+=addend; s3.f2+=addend; s3.f3+=addend; 
+	return s3;
+}
+
+typedef struct {
+	double f1,f2,f3,f4;
+} double4;
+
+LIBTEST_API double4 STDCALL
+mono_return_double4 (double4 s4, int addend) {
+	if (s4.f1 != 1) {
+		fprintf(stderr, "mono_return_double4 s4.f1: got %f but expected %d\n", s4.f1, 1);
+	}
+	if (s4.f2 != 2) {
+		fprintf(stderr, "mono_return_double4 s4.f2: got %f but expected %d\n", s4.f2, 2);
+	}
+	if (s4.f3 != 3) {
+		fprintf(stderr, "mono_return_double4 s4.f3: got %f but expected %d\n", s4.f3, 3);
+	}
+	if (s4.f4 != 4) {
+		fprintf(stderr, "mono_return_double4 s4.f4: got %f but expected %d\n", s4.f4, 4);
+	}
+	s4.f1+=addend; s4.f2+=addend; s4.f3+=addend; s4.f4+=addend; 
+	return s4;
+}
+
+typedef struct {
+	double f1,f2,f3,f4,f5;
+} double5;
+
+LIBTEST_API double5 STDCALL
+mono_return_double5 (double5 s5, int addend) {
+	if (s5.f1 != 1) {
+		fprintf(stderr, "mono_return_double5 s5.f1: got %f but expected %d\n", s5.f1, 1);
+	}
+	if (s5.f2 != 2) {
+		fprintf(stderr, "mono_return_double5 s5.f2: got %f but expected %d\n", s5.f2, 2);
+	}
+	if (s5.f3 != 3) {
+		fprintf(stderr, "mono_return_double5 s5.f3: got %f but expected %d\n", s5.f3, 3);
+	}
+	if (s5.f4 != 4) {
+		fprintf(stderr, "mono_return_double5 s5.f4: got %f but expected %d\n", s5.f4, 4);
+	}
+	if (s5.f5 != 5) {
+		fprintf(stderr, "mono_return_double5 s5.f5: got %f but expected %d\n", s5.f5, 5);
+	}
+	s5.f1+=addend; s5.f2+=addend; s5.f3+=addend; s5.f4+=addend; s5.f5+=addend; 
+	return s5;
+}
+
+typedef struct {
+	double f1,f2,f3,f4,f5,f6;
+} double6;
+
+LIBTEST_API double6 STDCALL
+mono_return_double6 (double6 s6, int addend) {
+	if (s6.f1 != 1) {
+		fprintf(stderr, "mono_return_double6 s6.f1: got %f but expected %d\n", s6.f1, 1);
+	}
+	if (s6.f2 != 2) {
+		fprintf(stderr, "mono_return_double6 s6.f2: got %f but expected %d\n", s6.f2, 2);
+	}
+	if (s6.f3 != 3) {
+		fprintf(stderr, "mono_return_double6 s6.f3: got %f but expected %d\n", s6.f3, 3);
+	}
+	if (s6.f4 != 4) {
+		fprintf(stderr, "mono_return_double6 s6.f4: got %f but expected %d\n", s6.f4, 4);
+	}
+	if (s6.f5 != 5) {
+		fprintf(stderr, "mono_return_double6 s6.f5: got %f but expected %d\n", s6.f5, 5);
+	}
+	if (s6.f6 != 6) {
+		fprintf(stderr, "mono_return_double6 s6.f6: got %f but expected %d\n", s6.f6, 6);
+	}
+	s6.f1+=addend; s6.f2+=addend; s6.f3+=addend; s6.f4+=addend; s6.f5+=addend; s6.f6+=addend; 
+	return s6;
+}
+
+typedef struct {
+	double f1,f2,f3,f4,f5,f6,f7;
+} double7;
+
+LIBTEST_API double7 STDCALL
+mono_return_double7 (double7 s7, int addend) {
+	if (s7.f1 != 1) {
+		fprintf(stderr, "mono_return_double7 s7.f1: got %f but expected %d\n", s7.f1, 1);
+	}
+	if (s7.f2 != 2) {
+		fprintf(stderr, "mono_return_double7 s7.f2: got %f but expected %d\n", s7.f2, 2);
+	}
+	if (s7.f3 != 3) {
+		fprintf(stderr, "mono_return_double7 s7.f3: got %f but expected %d\n", s7.f3, 3);
+	}
+	if (s7.f4 != 4) {
+		fprintf(stderr, "mono_return_double7 s7.f4: got %f but expected %d\n", s7.f4, 4);
+	}
+	if (s7.f5 != 5) {
+		fprintf(stderr, "mono_return_double7 s7.f5: got %f but expected %d\n", s7.f5, 5);
+	}
+	if (s7.f6 != 6) {
+		fprintf(stderr, "mono_return_double7 s7.f6: got %f but expected %d\n", s7.f6, 6);
+	}
+	if (s7.f7 != 7) {
+		fprintf(stderr, "mono_return_double7 s7.f7: got %f but expected %d\n", s7.f7, 7);
+	}
+	s7.f1+=addend; s7.f2+=addend; s7.f3+=addend; s7.f4+=addend; s7.f5+=addend; s7.f6+=addend; s7.f7+=addend; 
+	return s7;
+}
+
+typedef struct {
+	double f1,f2,f3,f4,f5,f6,f7,f8;
+} double8;
+
+LIBTEST_API double8 STDCALL
+mono_return_double8 (double8 s8, int addend) {
+	if (s8.f1 != 1) {
+		fprintf(stderr, "mono_return_double8 s8.f1: got %f but expected %d\n", s8.f1, 1);
+	}
+	if (s8.f2 != 2) {
+		fprintf(stderr, "mono_return_double8 s8.f2: got %f but expected %d\n", s8.f2, 2);
+	}
+	if (s8.f3 != 3) {
+		fprintf(stderr, "mono_return_double8 s8.f3: got %f but expected %d\n", s8.f3, 3);
+	}
+	if (s8.f4 != 4) {
+		fprintf(stderr, "mono_return_double8 s8.f4: got %f but expected %d\n", s8.f4, 4);
+	}
+	if (s8.f5 != 5) {
+		fprintf(stderr, "mono_return_double8 s8.f5: got %f but expected %d\n", s8.f5, 5);
+	}
+	if (s8.f6 != 6) {
+		fprintf(stderr, "mono_return_double8 s8.f6: got %f but expected %d\n", s8.f6, 6);
+	}
+	if (s8.f7 != 7) {
+		fprintf(stderr, "mono_return_double8 s8.f7: got %f but expected %d\n", s8.f7, 7);
+	}
+	if (s8.f8 != 8) {
+		fprintf(stderr, "mono_return_double8 s8.f8: got %f but expected %d\n", s8.f8, 8);
+	}
+	s8.f1+=addend; s8.f2+=addend; s8.f3+=addend; s8.f4+=addend; s8.f5+=addend; s8.f6+=addend; s8.f7+=addend; s8.f8+=addend; 
+	return s8;
+}
+
+typedef struct {
+	double f1,f2,f3,f4,f5,f6,f7,f8,f9;
+} double9;
+
+LIBTEST_API double9 STDCALL
+mono_return_double9 (double9 s9, int addend) {
+	if (s9.f1 != 1) {
+		fprintf(stderr, "mono_return_double9 s9.f1: got %f but expected %d\n", s9.f1, 1);
+	}
+	if (s9.f2 != 2) {
+		fprintf(stderr, "mono_return_double9 s9.f2: got %f but expected %d\n", s9.f2, 2);
+	}
+	if (s9.f3 != 3) {
+		fprintf(stderr, "mono_return_double9 s9.f3: got %f but expected %d\n", s9.f3, 3);
+	}
+	if (s9.f4 != 4) {
+		fprintf(stderr, "mono_return_double9 s9.f4: got %f but expected %d\n", s9.f4, 4);
+	}
+	if (s9.f5 != 5) {
+		fprintf(stderr, "mono_return_double9 s9.f5: got %f but expected %d\n", s9.f5, 5);
+	}
+	if (s9.f6 != 6) {
+		fprintf(stderr, "mono_return_double9 s9.f6: got %f but expected %d\n", s9.f6, 6);
+	}
+	if (s9.f7 != 7) {
+		fprintf(stderr, "mono_return_double9 s9.f7: got %f but expected %d\n", s9.f7, 7);
+	}
+	if (s9.f8 != 8) {
+		fprintf(stderr, "mono_return_double9 s9.f8: got %f but expected %d\n", s9.f8, 8);
+	}
+	if (s9.f9 != 9) {
+		fprintf(stderr, "mono_return_double9 s9.f9: got %f but expected %d\n", s9.f9, 9);
+	}
+	s9.f1+=addend; s9.f2+=addend; s9.f3+=addend; s9.f4+=addend; s9.f5+=addend; s9.f6+=addend; s9.f7+=addend; s9.f8+=addend; s9.f9+=addend; 
+	return s9;
+}
+
+typedef struct {
+	struct {
+		double f1;
+	} nested1;
+	struct {
+		double f2;
+	} nested2;
+} double2_nested;
+
+LIBTEST_API double2_nested STDCALL
+mono_return_double2_nested (double2_nested sn2, int addend) {
+	if (sn2.nested1.f1 != 1) {
+		fprintf(stderr, "mono_return_double2_nested sn2.nested1.f1: got %f but expected %d\n", sn2.nested1.f1, 1);
+	}
+	if (sn2.nested2.f2 != 2) {
+		fprintf(stderr, "mono_return_double2_nested sn2.nested2.f2: got %f but expected %d\n", sn2.nested2.f2, 2);
+	}
+	sn2.nested1.f1+=addend; sn2.nested2.f2+=addend; 
+	return sn2;
+}
+
+
+
+typedef struct {
+	double f1[4];
+} double_array4;
+
+LIBTEST_API double_array4 STDCALL
+mono_return_double_array4 (double_array4 sa4, int addend) {
+	if (sa4.f1[0] != 1) {
+		fprintf(stderr, "mono_return_double_array4 sa4.f1[0]: got %f but expected %d\n", sa4.f1[0], 1);
+	}
+	if (sa4.f1[1] != 2) {
+		fprintf(stderr, "mono_return_double_array4 sa4.f1[1]: got %f but expected %d\n", sa4.f1[1], 2);
+	}
+	if (sa4.f1[2] != 3) {
+		fprintf(stderr, "mono_return_double_array4 sa4.f1[2]: got %f but expected %d\n", sa4.f1[2], 3);
+	}
+	if (sa4.f1[3] != 4) {
+		fprintf(stderr, "mono_return_double_array4 sa4.f1[3]: got %f but expected %d\n", sa4.f1[3], 4);
+	}
+	sa4.f1[0]+=addend; sa4.f1[1]+=addend; sa4.f1[2]+=addend; sa4.f1[3]+=addend; 
+	return sa4;
+}
 

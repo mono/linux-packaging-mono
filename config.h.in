@@ -1,7 +1,7 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* The architecture this is running on */
-#undef ARCHITECTURE
+/* Enable checked build. */
+#undef CHECKED_BUILD
 
 /* GC description */
 #undef DEFAULT_GC_NAME
@@ -10,7 +10,7 @@
 #undef DISABLED_FEATURES
 
 /* Disable AOT Compiler */
-#undef DISABLE_AOT_COMPILER
+#undef DISABLE_AOT
 
 /* Disable support for multiple appdomains. */
 #undef DISABLE_APPDOMAINS
@@ -94,9 +94,6 @@
 /* Disable Shadow Copy for AppDomains */
 #undef DISABLE_SHADOW_COPY
 
-/* Disable inter-process shared handles */
-#undef DISABLE_SHARED_HANDLES
-
 /* Disable shared perfcounters. */
 #undef DISABLE_SHARED_PERFCOUNTERS
 
@@ -132,6 +129,9 @@
 
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM
+
+/* Runtime support code for llvm enabled */
+#undef ENABLE_LLVM_RUNTIME
 
 /* Enable using `perf` for profiling on Linux */
 #undef ENABLE_PERF_EVENTS
@@ -260,6 +260,12 @@
 /* Define to 1 if you have the <execinfo.h> header file. */
 #undef HAVE_EXECINFO_H
 
+/* Define to 1 if you have the `execv' function. */
+#undef HAVE_EXECV
+
+/* Define to 1 if you have the `execve' function. */
+#undef HAVE_EXECVE
+
 /* Define to 1 if you have the `execvp' function. */
 #undef HAVE_EXECVP
 
@@ -271,6 +277,9 @@
 
 /* Define to 1 if you have the `finite' function. */
 #undef HAVE_FINITE
+
+/* Define to 1 if you have the `fork' function. */
+#undef HAVE_FORK
 
 /* Define to 1 if you have the <fstab.h> header file. */
 #undef HAVE_FSTAB_H
@@ -331,9 +340,6 @@
 
 /* Define to 1 if you have the `getpriority' function. */
 #undef HAVE_GETPRIORITY
-
-/* Define if GetProcessId is available */
-#undef HAVE_GETPROCESSID
 
 /* Have getprotobyname */
 #undef HAVE_GETPROTOBYNAME
@@ -413,6 +419,9 @@
 /* isinf available */
 #undef HAVE_ISINF
 
+/* Define to 1 if you have the `kill' function. */
+#undef HAVE_KILL
+
 /* Define to 1 if you have the `kqueue' function. */
 #undef HAVE_KQUEUE
 
@@ -469,6 +478,9 @@
 
 /* Define to 1 if you have the `mmap' function. */
 #undef HAVE_MMAP
+
+/* Moving collector */
+#undef HAVE_MOVING_COLLECTOR
 
 /* Define to 1 if you have the `mremap' function. */
 #undef HAVE_MREMAP
@@ -575,12 +587,6 @@
 /* Define to 1 if you have the `remap_file_pages' function. */
 #undef HAVE_REMAP_FILE_PAGES
 
-/* Define to 1 if you have the `rint' function. */
-#undef HAVE_RINT
-
-/* Define to 1 if you have the `round' function. */
-#undef HAVE_ROUND
-
 /* Define to 1 if you have the `sched_getcpu' function. */
 #undef HAVE_SCHED_GETCPU
 
@@ -631,6 +637,9 @@
 
 /* Define to 1 if you have the `sigaction' function. */
 #undef HAVE_SIGACTION
+
+/* Define to 1 if you have the `signal' function. */
+#undef HAVE_SIGNAL
 
 /* Define to 1 if you have the <signal.h> header file. */
 #undef HAVE_SIGNAL_H
@@ -706,6 +715,9 @@
 
 /* Define to 1 if `kp_proc' is a member of `struct kinfo_proc'. */
 #undef HAVE_STRUCT_KINFO_PROC_KP_PROC
+
+/* Define to 1 if the system has the type `struct linger'. */
+#undef HAVE_STRUCT_LINGER
 
 /* Define to 1 if `pw_gecos' is a member of `struct passwd'. */
 #undef HAVE_STRUCT_PASSWD_PW_GECOS
@@ -806,9 +818,6 @@
 /* Define to 1 if you have the <sys/select.h> header file. */
 #undef HAVE_SYS_SELECT_H
 
-/* Define to 1 if you have the <sys/sem.h> header file. */
-#undef HAVE_SYS_SEM_H
-
 /* Define to 1 if you have the <sys/sendfile.h> header file. */
 #undef HAVE_SYS_SENDFILE_H
 
@@ -896,6 +905,9 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to 1 if you have the <unwind.h> header file. */
+#undef HAVE_UNWIND_H
+
 /* Define to 1 if you have /usr/include/malloc.h. */
 #undef HAVE_USR_INCLUDE_MALLOC_H
 
@@ -945,6 +957,9 @@
    */
 #undef LT_OBJDIR
 
+/* The architecture this is running on */
+#undef MONO_ARCHITECTURE
+
 /* Enable the allocation and indexing of arrays greater than Int32.MaxValue */
 #undef MONO_BIG_ARRAYS
 
@@ -956,6 +971,9 @@
 
 /* native types */
 #undef MONO_NATIVE_TYPES
+
+/* AOT cross offsets file */
+#undef MONO_OFFSETS_FILE
 
 /* Reduce runtime requirements (and capabilities) */
 #undef MONO_SMALL_CONFIG
@@ -1070,6 +1088,9 @@
 
 /* ... */
 #undef TARGET_SPARC64
+
+/* The JIT/AOT targets WatchOS */
+#undef TARGET_WATCHOS
 
 /* Target Platform is Win32 */
 #undef TARGET_WIN32

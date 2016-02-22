@@ -508,16 +508,6 @@ namespace Mono.CSharp {
 			return obsolete;
 		}
 
-		/// <summary>
-		/// Checks for ObsoleteAttribute presence. It's used for testing of all non-types elements
-		/// </summary>
-		public virtual void CheckObsoleteness (Location loc)
-		{
-			ObsoleteAttribute oa = GetAttributeObsolete ();
-			if (oa != null)
-				AttributeTester.Report_ObsoleteMessage (oa, GetSignatureForError (), loc, Report);
-		}
-
 		//
 		// Checks whether the type P is as accessible as this member
 		//
@@ -533,6 +523,9 @@ namespace Mono.CSharp {
 
 			while (TypeManager.HasElementType (p))
 				p = TypeManager.GetElementType (p);
+
+			if (p.BuiltinType != BuiltinTypeSpec.Type.None)
+				return true;
 
 			if (p.IsGenericParameter)
 				return true;
@@ -553,6 +546,10 @@ namespace Mono.CSharp {
 
 				bool same_access_restrictions = false;
 				for (MemberCore mc = this; !same_access_restrictions && mc != null && mc.Parent != null; mc = mc.Parent) {
+					var tc = mc as TypeContainer;
+					if (tc != null && tc.PartialContainer != null)
+						mc = tc.PartialContainer;
+
 					var al = mc.ModFlags & Modifiers.AccessibilityMask;
 					switch (pAccess) {
 					case Modifiers.INTERNAL:
@@ -1070,6 +1067,16 @@ namespace Mono.CSharp {
 		}
 
 		#endregion
+
+		public virtual void CheckObsoleteness (IMemberContext mc, Location loc)
+		{
+			var oa = GetAttributeObsolete ();
+			if (oa == null)
+				return;
+
+			if (!mc.IsObsolete)
+				AttributeTester.Report_ObsoleteMessage (oa, GetSignatureForError (), loc, mc.Module.Compiler.Report);
+		}
 
 		public virtual ObsoleteAttribute GetAttributeObsolete ()
 		{

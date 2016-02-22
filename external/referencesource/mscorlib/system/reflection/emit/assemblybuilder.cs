@@ -316,9 +316,9 @@ namespace System.Reflection.Emit
 #if FEATURE_REFLECTION_ONLY_LOAD
                 && access != AssemblyBuilderAccess.ReflectionOnly
 #endif // FEATURE_REFLECTION_ONLY_LOAD
-#if FEATURE_COLLECTIBLE_TYPES && !FEATURE_CORECLR
+#if FEATURE_COLLECTIBLE_TYPES
                 && access != AssemblyBuilderAccess.RunAndCollect
-#endif // FEATURE_COLLECTIBLE_TYPES && !FEATURE_CORECLR
+#endif // FEATURE_COLLECTIBLE_TYPES
                 )
             {
                 throw new ArgumentException(Environment.GetResourceString("Arg_EnumIllegalVal", (int)access), "access");
@@ -2159,6 +2159,7 @@ namespace System.Reflection.Emit
          **********************************************/
         private AssemblyBuilder() {}
 
+#if !FEATURE_CORECLR
         void _AssemblyBuilder.GetTypeInfoCount(out uint pcTInfo)
         {
             throw new NotImplementedException();
@@ -2180,6 +2181,7 @@ namespace System.Reflection.Emit
         {
             throw new NotImplementedException();
         }
+#endif
 
         // Create a new module in which to emit code. This module will not contain the manifest.
         [System.Security.SecurityCritical]  // auto-generated

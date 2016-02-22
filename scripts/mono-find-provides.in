@@ -8,13 +8,15 @@
 # (C) 2005 Novell (http://www.novell.com)
 #
 
+if [ -n "$DISABLE_MONO_RPM_AUTO_DEPS" ]; then exit 0; fi
+
 IFS=$'\n'
 filelist=($(grep -Ev '/usr/doc/|/usr/share/doc/'))
 monolist=($(printf "%s\n" "${filelist[@]}" | egrep "\\.(exe|dll)\$"))
 
 # Only include files with /gac/ in path
 #  (Allows packages to contain private assemblies that don't conflict with other packages)
-#monolist=($(printf "%s\n" "${monolist[@]}" | egrep "/gac/"))
+monolist=($(printf "%s\n" "${monolist[@]}" | egrep "/gac/"))
 # Disabled... see ChangeLog
 
 # Set the prefix, unless it is overriden (used when building mono rpms)

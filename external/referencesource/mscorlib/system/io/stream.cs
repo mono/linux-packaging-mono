@@ -744,9 +744,6 @@ namespace System.IO {
         // byte[] each time you call it, and should be overridden by any 
         // subclass that maintains an internal buffer.  Then, it can help perf
         // significantly for people who are reading one byte at a time.
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public virtual int ReadByte()
         {
             Contract.Ensures(Contract.Result<int>() >= -1);

@@ -781,6 +781,12 @@ namespace System.Net {
             return result;
         }
 
+        public unsafe bool HasFunction(string functionName)
+        {
+            IntPtr ret = UnsafeNclNativeMethods.GetProcAddress(this, functionName);
+            return (ret != IntPtr.Zero);
+        }
+
         protected override bool ReleaseHandle() {
             return UnsafeNclNativeMethods.SafeNetHandles.FreeLibrary(handle);
         }
@@ -2680,6 +2686,13 @@ namespace System.Net {
         {
             int status = (int)SecurityStatus.InvalidHandle;
             bool b = false;
+
+            // SCHANNEL only supports SECPKG_ATTR_ENDPOINT_BINDINGS and SECPKG_ATTR_UNIQUE_BINDINGS which
+            // map to our enum ChannelBindingKind.Endpoint and ChannelBindingKind.Unique.
+            if (contextAttribute != ContextAttribute.EndpointBindings && contextAttribute != ContextAttribute.UniqueBindings)
+            {
+                return status;
+            }
 
             // We don't want to be interrupted by thread abort exceptions or unexpected out-of-memory errors failing to jit
             // one of the following methods. So run within a CER non-interruptible block.

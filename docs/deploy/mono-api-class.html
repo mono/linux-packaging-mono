@@ -105,8 +105,13 @@ mono_class_enum_basetype (MonoClass *klass)
  <div class="api">
     <div class="api-entry">mono_class_from_generic_parameter</div>
 
-    <div class="prototype">Prototype: mono_class_from_generic_parameter</div>
+    <div class="prototype">MonoClass*
+mono_class_from_generic_parameter (MonoGenericParam *param, MonoImage *arg2 G_GNUC_UNUSED, gboolean arg3 G_GNUC_UNUSED)
+
+</div>
 <p />
+<b>Parameters</b>
+<blockquote><dt><i>param:</i></dt><dd> Parameter to find/construct a class for.</dd><dt><i>arg2:</i></dt><dd> Is ignored.</dd><dt><i>arg3:</i></dt><dd> Is ignored.</dd></blockquote>
 
 </div> <a name="api:mono_class_from_mono_type"></a>
  <div class="api">
@@ -245,7 +250,7 @@ mono_class_get_field_from_name (MonoClass *klass, const char *name)
     <div class="api-entry">mono_class_get_field</div>
 
     <div class="prototype">MonoClassField*
-mono_class_get_field (MonoClass *class, guint32 field_token)
+mono_class_get_field (MonoClass *klass, guint32 field_token)
 
 </div>
 <p />
@@ -579,7 +584,7 @@ mono_class_get_type (MonoClass *klass)
     <div class="api-entry">mono_class_init</div>
 
     <div class="prototype">gboolean
-mono_class_init (MonoClass *class)
+mono_class_init (MonoClass *klass)
 
 </div>
 <p />
@@ -788,7 +793,7 @@ mono_class_value_size      (MonoClass *klass, guint32 *align)
     <div class="api-entry">mono_class_vtable</div>
 
     <div class="prototype">MonoVTable*
-mono_class_vtable (MonoDomain *domain, MonoClass *class)
+mono_class_vtable (MonoDomain *domain, MonoClass *klass)
 
 </div>
 <p />

@@ -86,10 +86,8 @@ namespace System.Globalization {
         // init.
         static internal volatile EraInfo[] japaneseEraInfo;
 
-#if !__APPLE__
         private const string c_japaneseErasHive = @"System\CurrentControlSet\Control\Nls\Calendars\Japanese\Eras";
         private const string c_japaneseErasHivePermissionList = @"HKEY_LOCAL_MACHINE\" + c_japaneseErasHive;
-#endif
 
         //
         // Read our era info
@@ -119,11 +117,9 @@ namespace System.Globalization {
             // See if we need to build it
             if (japaneseEraInfo == null)
             {
-#if !__APPLE__
-
                 // See if we have any eras from the registry
                 japaneseEraInfo = GetErasFromRegistry();
-#endif
+
                 // See if we have to use the built-in eras
                 if (japaneseEraInfo == null)
                 {
@@ -147,7 +143,6 @@ namespace System.Globalization {
             return japaneseEraInfo;
         }
 
-#if !__APPLE__
         //
         // GetErasFromRegistry()
         //
@@ -172,7 +167,7 @@ namespace System.Globalization {
             // Look in the registry key and see if we can find any ranges
             int iFoundEras = 0;
             EraInfo[] registryEraRanges = null;
-            
+#if !MONO            
             try
             {
                 // Need to access registry
@@ -254,7 +249,7 @@ namespace System.Globalization {
                     registryEraRanges[i].maxEraYear = registryEraRanges[i-1].yearOffset + 1 - registryEraRanges[i].yearOffset;
                 }
             }
-
+#endif
             // Return our ranges
             return registryEraRanges;
         }
@@ -337,7 +332,6 @@ namespace System.Globalization {
             return new EraInfo( 0, year, month, day, year - 1, 1, 0, 
                                 names[0], names[1], names[3]);
         }
-#endif // !__APPLE__
 
         internal static volatile Calendar s_defaultInstance;
         internal GregorianCalendarHelper helper;

@@ -25,13 +25,13 @@
 
 #include "config.h"
 
-#ifdef HAVE_SGEN_GC
+#if defined(HAVE_SGEN_GC) && !defined(USE_COOP_GC)
 #if !defined(__MACH__) && !MONO_MACH_ARCH_SUPPORTED && defined(HAVE_PTHREAD_KILL)
 
 #include <errno.h>
 #include <glib.h>
 #include "sgen/sgen-gc.h"
-#include "metadata/gc-internal.h"
+#include "metadata/gc-internals.h"
 #include "sgen/sgen-archdep.h"
 #include "metadata/object-internals.h"
 #include "utils/mono-signal-handler.h"
@@ -246,7 +246,7 @@ sgen_os_init (void)
 		g_error ("failed sigaction");
 	}
 
-	sinfo.sa_handler = (void*) restart_handler;
+	sinfo.sa_handler = (void (*)(int))restart_handler;
 	if (sigaction (restart_signal_num, &sinfo, NULL) != 0) {
 		g_error ("failed sigaction");
 	}

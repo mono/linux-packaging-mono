@@ -33,11 +33,13 @@ class MakeBundle {
 	static string machine_config_file = null;
 	static string config_dir = null;
 	static string style = "linux";
+	static string os_message = "";
 	static bool compress;
 	static bool nomain;
 	static bool? use_dos2unix = null;
 	static bool skip_scan;
 	static string ctor_func;
+	static bool quiet;
 	
 	static int Main (string [] args)
 	{
@@ -94,8 +96,10 @@ class MakeBundle {
 				break;
 			case "--static":
 				static_link = true;
-				Console.WriteLine ("Note that statically linking the LGPL Mono runtime has more licensing restrictions than dynamically linking.");
-				Console.WriteLine ("See http://www.mono-project.com/Licensing for details on licensing.");
+				if (!quiet) {
+					Console.WriteLine ("Note that statically linking the LGPL Mono runtime has more licensing restrictions than dynamically linking.");
+					Console.WriteLine ("See http://www.mono-project.com/Licensing for details on licensing.");
+				}
 				break;
 			case "--config":
 				if (i+1 == top) {
@@ -113,7 +117,8 @@ class MakeBundle {
 
 				machine_config_file = args [++i];
 
-				Console.WriteLine ("WARNING:\n  Check that the machine.config file you are bundling\n  doesn't contain sensitive information specific to this machine.");
+				if (!quiet)
+					Console.WriteLine ("WARNING:\n  Check that the machine.config file you are bundling\n  doesn't contain sensitive information specific to this machine.");
 				break;
 			case "--config-dir":
 				if (i+1 == top) {
@@ -163,18 +168,21 @@ class MakeBundle {
 			case "--dos2unix=false":
 				use_dos2unix = false;
 				break;
+			case "-q":
+			case "--quiet":
+				quiet = true;
+				break;
 			default:
 				sources.Add (args [i]);
 				break;
 			}
-			
-			if (static_link && style == "windows") {
-				Console.Error.WriteLine ("The option `{0}' is not supported on this platform.", args [i]);
-				return 1;
-			}
+
 		}
 
-		Console.WriteLine ("Sources: {0} Auto-dependencies: {1}", sources.Count, autodeps);
+		if (!quiet) {
+			Console.WriteLine (os_message);
+			Console.WriteLine ("Sources: {0} Auto-dependencies: {1}", sources.Count, autodeps);
+		}
 		if (sources.Count == 0 || output == null) {
 			Help ();
 			Environment.Exit (1);
@@ -303,7 +311,7 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 
 			// Do the file reading and compression in parallel
 			Action<string> body = delegate (string url) {
-				string fname = new Uri (url).LocalPath;
+				string fname = LocateFile (new Uri (url).LocalPath);
 				Stream stream = File.OpenRead (fname);
 
 				long real_size = stream.Length;
@@ -338,7 +346,7 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 			// The non-parallel part
 			byte [] buffer = new byte [8192];
 			foreach (var url in files) {
-				string fname = new Uri (url).LocalPath;
+				string fname = LocateFile (new Uri (url).LocalPath);
 				string aname = Path.GetFileName (fname);
 				string encoded = aname.Replace ("-", "_").Replace (".", "_");
 
@@ -348,7 +356,8 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 				var stream = streams [url];
 				var real_size = sizes [url];
 
-				Console.WriteLine ("   embedding: " + fname);
+				if (!quiet)
+					Console.WriteLine ("   embedding: " + fname);
 
 				WriteSymbol (ts, "assembly_data_" + encoded, stream.Length);
 			
@@ -359,8 +368,10 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 					tc.WriteLine ("static CompressedAssembly assembly_bundle_{0} = {{{{\"{1}\"," +
 								  " assembly_data_{0}, {2}}}, {3}}};",
 								  encoded, aname, real_size, stream.Length);
-					double ratio = ((double) stream.Length * 100) / real_size;
-					Console.WriteLine ("   compression ratio: {0:.00}%", ratio);
+					if (!quiet) {
+						double ratio = ((double) stream.Length * 100) / real_size;
+						Console.WriteLine ("   compression ratio: {0:.00}%", ratio);
+					}
 				} else {
 					tc.WriteLine ("extern const unsigned char assembly_data_{0} [];", encoded);
 					tc.WriteLine ("static const MonoBundledAssembly assembly_bundle_{0} = {{\"{1}\", assembly_data_{0}, {2}}};",
@@ -372,7 +383,8 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 
 				try {
 					FileStream cf = File.OpenRead (fname + ".config");
-					Console.WriteLine (" config from: " + fname + ".config");
+					if (!quiet)
+						Console.WriteLine (" config from: " + fname + ".config");
 					tc.WriteLine ("extern const unsigned char assembly_config_{0} [];", encoded);
 					WriteSymbol (ts, "assembly_config_" + encoded, cf.Length);
 					WriteBuffer (ts, cf, buffer);
@@ -391,7 +403,8 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 					Error (String.Format ("Failure to open {0}", config_file));
 					return;
 				}
-				Console.WriteLine ("System config from: " + config_file);
+				if (!quiet)
+					Console.WriteLine ("System config from: " + config_file);
 				tc.WriteLine ("extern const char system_config;");
 				WriteSymbol (ts, "system_config", config_file.Length);
 
@@ -409,7 +422,8 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 					Error (String.Format ("Failure to open {0}", machine_config_file));
 					return;
 				}
-				Console.WriteLine ("Machine config from: " + machine_config_file);
+				if (!quiet)
+					Console.WriteLine ("Machine config from: " + machine_config_file);
 				tc.WriteLine ("extern const char machine_config;");
 				WriteSymbol (ts, "machine_config", machine_config_file.Length);
 
@@ -418,16 +432,6 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 				ts.WriteLine ();
 			}
 			ts.Close ();
-
-			string assembler = GetEnv ("AS", IsUnix ? "as" : "i686-pc-mingw32-as");
-			
-			Console.WriteLine ("Compiling:");
-			string cmd = String.Format ("{0} -o {1} {2} ", assembler, temp_o, temp_s);
-			int ret = Execute (cmd);
-			if (ret != 0){
-				Error ("[Fail]");
-				return;
-			}
 
 			if (compress)
 				tc.WriteLine ("\nstatic const CompressedAssembly *compressed [] = {");
@@ -478,42 +482,92 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 				string maintemplate = st.ReadToEnd ();
 				tc.Write (maintemplate);
 			}
-			
+
 			tc.Close ();
+
+			string assembler = GetEnv("AS", "as");
+			string as_cmd = String.Format("{0} -o {1} {2} ", assembler, temp_o, temp_s);
+			Execute(as_cmd);
 
 			if (compile_only)
 				return;
 
-			string zlib = (compress ? "-lz" : "");
-			string debugging = "-g";
-			string cc = GetEnv ("CC", IsUnix ? "cc" : "i686-pc-mingw32-gcc");
+			if (!quiet)
+				Console.WriteLine("Compiling:");
 
-			if (style == "linux")
-				debugging = "-ggdb";
-			if (static_link) {
-				string smonolib;
-				if (style == "osx")
-					smonolib = "`pkg-config --variable=libdir mono-2`/libmono-2.0.a ";
+			if (style == "windows")
+			{
+
+				Func<string, string> quote = (pp) => { return "\"" + pp + "\""; };
+
+				string compiler = GetEnv("CC", "cl.exe");
+				string winsdkPath = GetEnv("WINSDK", @"C:\Program Files (x86)\Windows Kits\8.1");
+				string vsPath = GetEnv("VSINCLUDE", @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC");
+				string monoPath = GetEnv("MONOPREFIX", @"C:\Program Files (x86)\Mono");
+
+				string[] includes = new string[] {winsdkPath + @"\Include\um", winsdkPath + @"\Include\shared", vsPath + @"\include", monoPath + @"\include\mono-2.0"};
+				string[] libs = new string[] { winsdkPath + @"\Lib\winv6.3\um\x86" , vsPath + @"\lib" };
+				string monoFile;
+
+				var compilerArgs = new List<string>();
+				foreach (string include in includes)
+					compilerArgs.Add(String.Format ("/I {0}", quote (include)));
+
+				if (static_link)
+					monoFile = LocateFile (monoPath + @"\lib\monosgen-2.0.lib");
 				else
-					smonolib = "-Wl,-Bstatic -lmono-2.0 -Wl,-Bdynamic ";
-				cmd = String.Format ("{4} -o {2} -Wall `pkg-config --cflags mono-2` {0} {3} " +
-						     "`pkg-config --libs-only-L mono-2` " + smonolib +
-						     "`pkg-config --libs-only-l mono-2 | sed -e \"s/\\-lmono-2.0 //\"` {1}",
-						     temp_c, temp_o, output, zlib, cc);
-			} else {
-				
-				cmd = String.Format ("{4} " + debugging + " -o {2} -Wall {0} `pkg-config --cflags --libs mono-2` {3} {1}",
-						     temp_c, temp_o, output, zlib, cc);
+					monoFile = LocateFile (monoPath + @"\lib\monosgen-2.0.dll");
+
+				compilerArgs.Add("/MD");
+				compilerArgs.Add(temp_c);
+				compilerArgs.Add(temp_o);
+				compilerArgs.Add("/link");
+
+				if (nomain)
+					compilerArgs.Add("/NOENTRY");
+					compilerArgs.Add("/DLL");
+
+				foreach (string lib in libs)
+					compilerArgs.Add(String.Format ("/LIBPATH:{0}", quote(lib)));
+				compilerArgs.Add (quote(monoFile));
+
+				string cl_cmd = String.Format("{0} {1}", compiler, String.Join(" ", compilerArgs.ToArray()));
+				Execute (cl_cmd);
 			}
-                            
-			ret = Execute (cmd);
-			if (ret != 0){
-				Error ("[Fail]");
-				return;
+			else
+			{
+				string zlib = (compress ? "-lz" : "");
+				string debugging = "-g";
+				string cc = GetEnv("CC", "cc");
+				string cmd = null;
+
+				if (style == "linux")
+					debugging = "-ggdb";
+				if (static_link)
+				{
+					string smonolib;
+					if (style == "osx")
+						smonolib = "`pkg-config --variable=libdir mono-2`/libmono-2.0.a ";
+					else
+						smonolib = "-Wl,-Bstatic -lmono-2.0 -Wl,-Bdynamic ";
+					cmd = String.Format("{4} -o {2} -Wall `pkg-config --cflags mono-2` {0} {3} " +
+						"`pkg-config --libs-only-L mono-2` " + smonolib +
+						"`pkg-config --libs-only-l mono-2 | sed -e \"s/\\-lmono-2.0 //\"` {1}",
+						temp_c, temp_o, output, zlib, cc);
+				}
+				else
+				{
+
+					cmd = String.Format("{4} " + debugging + " -o {2} -Wall {0} `pkg-config --cflags --libs mono-2` {3} {1}",
+						temp_c, temp_o, output, zlib, cc);
+				}
+				Execute (cmd);
 			}
-			Console.WriteLine ("Done");
-			}
-			}
+
+			if (!quiet)
+				Console.WriteLine ("Done");
+		}
+	}
 		} finally {
 			if (!keeptemp){
 				if (object_out == null){
@@ -542,9 +596,10 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 				}
 			
 				assemblies.Add (a.CodeBase);
-			} catch (Exception e) {
+			} catch (Exception) {
 				if (skip_scan) {
-					Console.WriteLine ("File will not be scanned: {0}", name);
+					if (!quiet)
+						Console.WriteLine ("File will not be scanned: {0}", name);
 					assemblies.Add (new Uri (new FileInfo (name).FullName).ToString ());
 				} else {
 					throw;
@@ -588,7 +643,7 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 				if (!QueueAssembly (files, a.CodeBase))
 					return false;
 			}
-		} catch (Exception e) {
+		} catch (Exception) {
 			if (!skip_scan)
 				throw;
 		}
@@ -629,7 +684,8 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 				}
 			}
 			Error ("Cannot find assembly `" + assembly + "'" );
-			Console.WriteLine ("Log: \n" + total_log);
+			if (!quiet)
+				Console.WriteLine ("Log: \n" + total_log);
 		} catch (IKVM.Reflection.BadImageFormatException f) {
 			if (skip_scan)
 				throw;
@@ -682,19 +738,19 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 	static void DetectOS ()
 	{
 		if (!IsUnix) {
-			Console.WriteLine ("OS is: Windows");
+			os_message = "OS is: Windows";
 			style = "windows";
 			return;
 		}
 
 		IntPtr buf = Marshal.AllocHGlobal (8192);
 		if (uname (buf) != 0){
-			Console.WriteLine ("Warning: Unable to detect OS");
+			os_message = "Warning: Unable to detect OS";
 			Marshal.FreeHGlobal (buf);
 			return;
 		}
 		string os = Marshal.PtrToStringAnsi (buf);
-		Console.WriteLine ("OS is: " + os);
+		os_message = "OS is: " + os;
 		if (os == "Darwin")
 			style = "osx";
 		
@@ -708,81 +764,114 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 		}
 	}
 
-	static int Execute (string cmdLine)
+	static void Execute (string cmdLine)
 	{
 		if (IsUnix) {
-			Console.WriteLine (cmdLine);
-			return system (cmdLine);
+			if (!quiet)
+				Console.WriteLine ("[execute cmd]: " + cmdLine);
+			int ret = system (cmdLine);
+			if (ret != 0)
+			{
+				Error(String.Format("[Fail] {0}", ret));
+			}
+			return;
 		}
-		
+
 		// on Windows, we have to pipe the output of a
 		// `cmd` interpolation to dos2unix, because the shell does not
 		// strip the CRLFs generated by the native pkg-config distributed
 		// with Mono.
 		//
 		// But if it's *not* on cygwin, just skip it.
-		
+
 		// check if dos2unix is applicable.
-		if (use_dos2unix == null) {
-			use_dos2unix = false;
+		if (use_dos2unix == true)
 			try {
-				var info = new ProcessStartInfo ("dos2unix");
-				info.CreateNoWindow = true;
-				info.RedirectStandardInput = true;
-				info.UseShellExecute = false;
-				var dos2unix = Process.Start (info);
-				dos2unix.StandardInput.WriteLine ("aaa");
-				dos2unix.StandardInput.WriteLine ("\u0004");
-				dos2unix.StandardInput.Close ();
-				dos2unix.WaitForExit ();
-				if (dos2unix.ExitCode == 0)
-					use_dos2unix = true;
-			} catch {
-				// ignore
-			}
-		}
-		// and if there is no dos2unix, just run cmd /c.
-		if (use_dos2unix == false) {
-			Console.WriteLine (cmdLine);
-			ProcessStartInfo dos2unix = new ProcessStartInfo ();
-			dos2unix.UseShellExecute = false;
-			dos2unix.FileName = "cmd";
-			dos2unix.Arguments = String.Format ("/c \"{0}\"", cmdLine);
-
-			using (Process p = Process.Start (dos2unix)) {
-				p.WaitForExit ();
-				return p.ExitCode;
-			}
+			var info = new ProcessStartInfo ("dos2unix");
+			info.CreateNoWindow = true;
+			info.RedirectStandardInput = true;
+			info.UseShellExecute = false;
+			var dos2unix = Process.Start (info);
+			dos2unix.StandardInput.WriteLine ("aaa");
+			dos2unix.StandardInput.WriteLine ("\u0004");
+			dos2unix.StandardInput.Close ();
+			dos2unix.WaitForExit ();
+			if (dos2unix.ExitCode == 0)
+				use_dos2unix = true;
+		} catch {
+			Console.WriteLine("Warning: dos2unix not found");
+			use_dos2unix = false;
 		}
 
-		StringBuilder b = new StringBuilder ();
-		int count = 0;
-		for (int i = 0; i < cmdLine.Length; i++) {
-			if (cmdLine [i] == '`') {
-				if (count % 2 != 0) {
-					b.Append ("|dos2unix");
-				}
-				count++;
-			}
-			b.Append (cmdLine [i]);
-		}
-		cmdLine = b.ToString ();
-		Console.WriteLine (cmdLine);
-			
-		ProcessStartInfo psi = new ProcessStartInfo ();
+		if (use_dos2unix == null)
+			use_dos2unix = false;
+
+		ProcessStartInfo psi = new ProcessStartInfo();
 		psi.UseShellExecute = false;
-		psi.FileName = "sh";
-		psi.Arguments = String.Format ("-c \"{0}\"", cmdLine);
 
+		// if there is no dos2unix, just run cmd /c.
+		if (use_dos2unix == false)
+		{
+			psi.FileName = "cmd";
+			psi.Arguments = String.Format("/c \"{0}\"", cmdLine);
+		}
+		else
+		{
+			psi.FileName = "sh";
+			StringBuilder b = new StringBuilder();
+			int count = 0;
+			for (int i = 0; i < cmdLine.Length; i++)
+			{
+				if (cmdLine[i] == '`')
+				{
+					if (count % 2 != 0)
+					{
+						b.Append("|dos2unix");
+					}
+					count++;
+				}
+				b.Append(cmdLine[i]);
+			}
+			cmdLine = b.ToString();
+			psi.Arguments = String.Format("-c \"{0}\"", cmdLine);
+		}
+
+		if (!quiet)
+			Console.WriteLine(cmdLine);
 		using (Process p = Process.Start (psi)) {
 			p.WaitForExit ();
-			return p.ExitCode;
+			int ret = p.ExitCode;
+			if (ret != 0){
+				Error (String.Format("[Fail] {0}", ret));
+			}
 		}
 	}
 
-	static string GetEnv (string name, string defaultValue) 
+	static string GetEnv(string name, string defaultValue)
 	{
-		string s = Environment.GetEnvironmentVariable (name);
-		return s != null ? s : defaultValue;
+		string val = Environment.GetEnvironmentVariable(name);
+		if (val != null)
+		{
+			if (!quiet)
+				Console.WriteLine("{0} = {1}", name, val);
+		}
+		else
+		{
+			val = defaultValue;
+			if (!quiet)
+				Console.WriteLine("{0} = {1} (default)", name, val);
+		}
+		return val;
+	}
+
+	static string LocateFile(string default_path)
+	{
+		var override_path = Path.Combine(Directory.GetCurrentDirectory(), Path.GetFileName(default_path));
+		if (File.Exists(override_path))
+			return override_path;
+		else if (File.Exists(default_path))
+			return default_path;
+		else
+			throw new FileNotFoundException(default_path);
 	}
 }

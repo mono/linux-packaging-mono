@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "mini-gc.h"
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 
 static gboolean
 get_provenance (StackFrameInfo *frame, MonoContext *ctx, gpointer data)
@@ -38,7 +38,7 @@ get_provenance_func (void)
 //#if defined(MONO_ARCH_GC_MAPS_SUPPORTED)
 
 #include <mono/metadata/sgen-conf.h>
-#include <mono/metadata/gc-internal.h>
+#include <mono/metadata/gc-internals.h>
 #include <mono/utils/mono-counters.h>
 
 #define SIZEOF_SLOT ((int)sizeof (mgreg_t))
@@ -597,7 +597,7 @@ thread_attach_func (void)
 	TlsData *tls;
 
 	tls = g_new0 (TlsData, 1);
-	tls->tid = GetCurrentThreadId ();
+	tls->tid = mono_native_thread_id_get ();
 	tls->info = mono_thread_info_current ();
 	stats.tlsdata_size += sizeof (TlsData);
 
@@ -622,7 +622,7 @@ thread_suspend_func (gpointer user_data, void *sigctx, MonoContext *ctx)
 		return;
 	}
 
-	if (tls->tid != GetCurrentThreadId ()) {
+	if (tls->tid != mono_native_thread_id_get ()) {
 		/* Happens on osx because threads are not suspended using signals */
 #ifndef TARGET_WIN32
 		gboolean res;
@@ -821,6 +821,7 @@ conservative_pass (TlsData *tls, guint8 *stack_start, guint8 *stack_end)
 		ji = frame.ji;
 
 		// FIXME: For skipped frames, scan the param area of the parent frame conservatively ?
+		// FIXME: trampolines
 
 		if (frame.type == FRAME_TYPE_MANAGED_TO_NATIVE) {
 			/*
@@ -1678,7 +1679,7 @@ process_variables (MonoCompile *cfg)
 			int hreg;
 			GCSlotType slot_type;
 
-			t = mini_type_get_underlying_type (NULL, t);
+			t = mini_get_underlying_type (t);
 
 			hreg = ins->dreg;
 			g_assert (hreg < MONO_MAX_IREGS);
@@ -1686,7 +1687,7 @@ process_variables (MonoCompile *cfg)
 			if (byref)
 				slot_type = SLOT_PIN;
 			else
-				slot_type = mini_type_is_reference (cfg, t) ? SLOT_REF : SLOT_NOREF;
+				slot_type = mini_type_is_reference (t) ? SLOT_REF : SLOT_NOREF;
 
 			if (slot_type == SLOT_PIN) {
 				/* These have no live interval, be conservative */
@@ -1833,9 +1834,9 @@ process_variables (MonoCompile *cfg)
 		}
 #endif
 
-		t = mini_type_get_underlying_type (NULL, t);
+		t = mini_get_underlying_type (t);
 
-		if (!mini_type_is_reference (cfg, t)) {
+		if (!mini_type_is_reference (t)) {
 			set_slot_everywhere (gcfg, pos, SLOT_NOREF);
 			if (cfg->verbose_level > 1)
 				printf ("\tnoref%s at %s0x%x(fp) (R%d, slot = %d): %s\n", (is_arg ? " arg" : ""), ins->inst_offset < 0 ? "-" : "", (ins->inst_offset < 0) ? -(int)ins->inst_offset : (int)ins->inst_offset, vmv->vreg, pos, mono_type_full_name (ins->inst_vtype));
@@ -1939,7 +1940,7 @@ process_param_area_slots (MonoCompile *cfg)
 			guint32 size;
 
 			if (MONO_TYPE_ISSTRUCT (t)) {
-				size = mini_type_stack_size_full (cfg->generic_sharing_context, t, &align, FALSE);
+				size = mini_type_stack_size_full (t, &align, FALSE);
 			} else {
 				size = sizeof (mgreg_t);
 			}
@@ -2053,7 +2054,7 @@ compute_frame_size (MonoCompile *cfg)
 
 		if (ins->opcode == OP_REGOFFSET) {
 			int size, size_in_slots;
-			size = mini_type_stack_size_full (cfg->generic_sharing_context, ins->inst_vtype, NULL, ins->backend.is_pinvoke);
+			size = mini_type_stack_size_full (ins->inst_vtype, NULL, ins->backend.is_pinvoke);
 			size_in_slots = ALIGN_TO (size, SIZEOF_SLOT) / SIZEOF_SLOT;
 
 			min_offset = MIN (min_offset, ins->inst_offset);

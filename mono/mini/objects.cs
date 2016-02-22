@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
  * the IL code looks.
  */
 
-#if MOBILE
+#if __MOBILE__
 namespace ObjectTests
 {
 #endif
@@ -119,7 +119,7 @@ struct Gamma {
 
 class Tests {
 
-#if !MOBILE
+#if !__MOBILE__
 	public static int Main (string[] args) {
 		return TestDriver.RunTests (typeof (Tests), args);
 	}
@@ -872,6 +872,32 @@ class Tests {
 		if (v != 5)
 			return 0;
 		return 2;
+	}
+
+	interface IFaceVirtualDel {
+		int return_field ();
+	}
+
+	struct VtypeVirtualDelStruct : IFaceVirtualDel {
+		public int f;
+		public int return_field_nonvirt () {
+			return f;
+		}
+		public int return_field () {
+			return f;
+		}
+	}
+
+	public static int test_42_vtype_delegate () {
+		var s = new VtypeVirtualDelStruct () { f = 42 };
+		Func<int> f = s.return_field_nonvirt;
+		return f ();
+	}
+
+	public static int test_42_vtype_virtual_delegate () {
+		IFaceVirtualDel s = new VtypeVirtualDelStruct () { f = 42 };
+		Func<int> f = s.return_field;
+		return f ();
 	}
 
 	public static int test_1_store_decimal () {
@@ -1653,8 +1679,94 @@ ncells ) {
 		else
 			return 0;
 	}
+
+	struct HFA4D {
+		public double a, b, c, d;
+	}
+
+	static double arm64_hfa_on_stack_inner (double d1, double d2, double d3, double d4, double d5, double d6, double d7, double d8, HFA4D s) {
+		return s.a + s.b + s.c + s.d;
+	}
+
+	static int test_0_arm64_hfa_on_stack () {
+		var s = new HFA4D () { a = 1.0, b = 2.0, c = 3.0, d = 4.0 };
+		var res = arm64_hfa_on_stack_inner (1, 2, 3, 4, 5, 6, 7, 8, s);
+		return res == 10.0 ? 0 : 1;
+	}
+
+	class MulOvfClass {
+		[MethodImplAttribute (MethodImplOptions.NoInlining)]
+		public unsafe void EncodeIntoBuffer(char* value, int valueLength, char* buffer, int bufferLength) {
+		}
+	}
+
+	static unsafe int test_0_mul_ovf_regress_36052 () {
+		var p = new MulOvfClass ();
+
+		string typeName = typeof(int).Name;
+		int bufferSize = 45;
+
+		fixed (char* value = typeName) {
+			char* buffer = stackalloc char[bufferSize];
+			p.EncodeIntoBuffer(value, typeName.Length, buffer, bufferSize);
+		}
+		return 0;
+	}
+
+	struct Struct16 {
+		public int a, b, c, d;
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	static int pass_struct16 (object o0, object o2, object o3, object o4, object o5, object o6, object o7, Struct16 o8) {
+		// This disables LLVM
+		try {
+		} catch {
+		}
+		return o8.a;
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	static int pass_struct16 (object o0, object o2, object o3, object o6, object o7, Struct16 o8) {
+		return pass_struct16 (o0, o2, null, o3, null, o6, o7, o8);
+	}
+
+	public static int test_42_pass_16byte_struct_split () {
+		return pass_struct16 (null, null, null, null, null, new Struct16 () { a = 42 });
+	}
+
+	public interface IComparer2
+	{
+		Type foo<T> ();
+	}
+
+	public class AClass : IComparer2 {
+		public Type foo<T> () {
+			return typeof(T);
+		}
+	}
+
+	public static int test_0_delegate_to_virtual_generic_on_ifaces () {
+		IComparer2 c = new AClass ();
+
+		Func<Type> f = c.foo<string>;
+		return f () == typeof(string) ? 0 : 1;
+	}
+
+	public enum ByteEnum2 : byte {
+		High = 142
+	}
+
+	[MethodImplAttribute (MethodImplOptions.NoInlining)]
+	public static int enum_arg_zero_extend (ByteEnum2 b) {
+		return (int)b;
+	}
+
+	public static int test_142_byte_enum_arg_zero_extend () {
+		return enum_arg_zero_extend (ByteEnum2.High);
+	}
 }
 
-#if MOBILE
+#if __MOBILE__
 }
 #endif

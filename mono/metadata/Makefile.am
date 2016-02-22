@@ -103,7 +103,6 @@ common_sources = \
 	assembly.c		\
 	attach.h		\
 	attach.c		\
-	char-conversions.h	\
 	cil-coff.h		\
 	class.c			\
 	class-internals.h	\
@@ -130,10 +129,11 @@ common_sources = \
 	file-io.h		\
 	filewatcher.c		\
 	filewatcher.h		\
-	gc-internal.h		\
+	gc-internals.h		\
 	icall.c			\
 	icall-def.h		\
 	image.c			\
+	image-internals.h	\
 	jit-info.c		\
 	loader.c		\
 	locales.c		\
@@ -214,7 +214,10 @@ common_sources = \
 	abi-details.h	\
 	metadata-cross-helpers.c	\
 	seq-points-data.h	\
-	seq-points-data.c
+	seq-points-data.c	\
+	handle.c	\
+	handle.h	\
+	handle-private.h
 
 
 # These source files have compile time dependencies on GC code
@@ -235,9 +238,10 @@ sgen_sources = \
 	sgen-os-posix.c		\
 	sgen-os-mach.c		\
 	sgen-os-win32.c		\
+	sgen-os-coop.c		\
 	sgen-bridge.c		\
 	sgen-bridge.h		\
-	sgen-bridge-internal.h	\
+	sgen-bridge-internals.h	\
 	sgen-old-bridge.c		\
 	sgen-new-bridge.c		\
 	sgen-tarjan-bridge.c		\

@@ -678,7 +678,6 @@ namespace System.Xml {
             return value.ToString(null, NumberFormatInfo.InvariantInfo);
         }
 
-#if !SILVERLIGHT
         ///<include file='doc\XmlConvert.uex' path='docs/doc[@for="XmlConvert.ToString6"]/*' />
         /// <devdoc>
         ///    <para>[To be supplied.]</para>
@@ -695,7 +694,6 @@ namespace System.Xml {
         public static string ToString(UInt16 value) {
             return value.ToString(null, NumberFormatInfo.InvariantInfo);
         }
-#endif
 
         ///<include file='doc\XmlConvert.uex' path='docs/doc[@for="XmlConvert.ToString8"]/*' />
         /// <devdoc>

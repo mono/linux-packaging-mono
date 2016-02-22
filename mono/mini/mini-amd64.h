@@ -209,16 +209,19 @@ typedef struct MonoCompileArch {
 	gpointer seq_point_info_var;
 	gpointer ss_trigger_page_var;
 	gpointer ss_tramp_var;
+	gpointer bp_tramp_var;
 	gpointer lmf_var;
 } MonoCompileArch;
-
-
 
 #ifdef TARGET_WIN32
 #define PARAM_REGS 4
 #else
 #define PARAM_REGS 6
 #endif
+
+typedef struct {
+	int dummy;
+} GSharedVtCallInfo;
 
 /* Structure used by the sequence points in AOTed code */
 typedef struct {
@@ -230,6 +233,7 @@ typedef struct {
 	mgreg_t regs [PARAM_REGS];
 	mgreg_t res;
 	guint8 *ret;
+	guint8 buffer [256];
 } DynCallArgs;
 
 #define MONO_CONTEXT_SET_LLVM_EXC_REG(ctx, exc) do { (ctx)->gregs [AMD64_RAX] = (gsize)exc; } while (0)
@@ -321,13 +325,10 @@ typedef struct {
 #define MONO_ARCH_RGCTX_REG MONO_ARCH_IMT_REG
 #define MONO_ARCH_EXC_REG AMD64_RAX
 #define MONO_ARCH_HAVE_CMOV_OPS 1
-#define MONO_ARCH_HAVE_NOTIFY_PENDING_EXC 1
 #define MONO_ARCH_HAVE_EXCEPTIONS_INIT 1
 #define MONO_ARCH_HAVE_GENERALIZED_IMT_THUNK 1
 #define MONO_ARCH_HAVE_LIVERANGE_OPS 1
 #define MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX 1
-#define MONO_ARCH_MONITOR_OBJECT_REG MONO_AMD64_ARG_REG1
-#define MONO_ARCH_MONITOR_LOCK_TAKEN_REG MONO_AMD64_ARG_REG2
 #define MONO_ARCH_HAVE_GET_TRAMPOLINES 1
 
 #define MONO_ARCH_AOT_SUPPORTED 1
@@ -341,7 +342,6 @@ typedef struct {
 #define MONO_ARCH_DYN_CALL_SUPPORTED 1
 #define MONO_ARCH_DYN_CALL_PARAM_AREA 0
 
-#define MONO_ARCH_HAVE_LLVM_IMT_TRAMPOLINE 1
 #define MONO_ARCH_LLVM_SUPPORTED 1
 #define MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD 1
 #define MONO_ARCH_HAVE_CARD_TABLE_WBARRIER 1
@@ -358,7 +358,16 @@ typedef struct {
 #define MONO_ARCH_HAVE_OP_GENERIC_CLASS_INIT 1
 
 #if defined(TARGET_OSX) || defined(__linux__)
+#define MONO_ARCH_HAVE_UNWIND_BACKTRACE 1
+#endif
+
+#if defined(TARGET_OSX) || defined(__linux__)
 #define MONO_ARCH_HAVE_TLS_GET_REG 1
+#endif
+
+#if defined(TARGET_APPLETVOS)
+/* No signals */
+#define MONO_ARCH_NEED_DIV_CHECK 1
 #endif
 
 /* Used for optimization, not complete */
@@ -406,13 +415,6 @@ mono_amd64_get_exception_trampolines (gboolean aot);
 
 int
 mono_amd64_get_tls_gs_offset (void) MONO_LLVM_INTERNAL;
-
-typedef struct {
-	guint8 *address;
-	guint8 saved_byte;
-} MonoBreakpointInfo;
-
-extern MonoBreakpointInfo mono_breakpoint_info [MONO_BREAKPOINT_ARRAY_SIZE];
 
 #ifdef TARGET_WIN32
 

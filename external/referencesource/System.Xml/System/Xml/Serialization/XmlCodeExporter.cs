@@ -414,8 +414,10 @@ namespace System.Xml.Serialization {
             }
             if (value == null) return;
             if (!(mapping is PrimitiveMapping)) {
-                DropDefaultAttribute(accessor, comments, memberTypeDesc.FullName);
-                AddWarningComment(comments, Res.GetString(Res.XmlDropNonPrimitiveAttributeValue, attributeName, defaultValue.ToString()));
+                if (comments != null) { 
+                    DropDefaultAttribute(accessor, comments, memberTypeDesc.FullName);
+                    AddWarningComment(comments, Res.GetString(Res.XmlDropNonPrimitiveAttributeValue, attributeName, defaultValue.ToString()));
+                }
                 return;
             }
             PrimitiveMapping pm = (PrimitiveMapping)mapping;

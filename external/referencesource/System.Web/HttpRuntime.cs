@@ -873,9 +873,10 @@ namespace System.Web {
             AppDomain appDomain = Thread.GetDomain();
 
             string codegenBase;
-
+            
+            // devdiv 1038337. Passing the corresponding IsDevelopmentEnvironment flag to ConstructSimpleAppName
             string simpleAppName = System.Web.Hosting.AppManagerAppDomainFactory.ConstructSimpleAppName(
-                AppDomainAppVirtualPath);
+                AppDomainAppVirtualPath, HostingEnvironment.IsDevelopmentEnvironment);
 
             string tempDirectory = null;
 
@@ -1412,7 +1413,6 @@ namespace System.Web {
         }
 
         internal static bool UseIntegratedPipeline {
-             [System.Runtime.TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
             get {
                 return _useIntegratedPipeline;
             }

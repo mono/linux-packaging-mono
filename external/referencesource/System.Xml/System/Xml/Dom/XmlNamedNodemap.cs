@@ -52,7 +52,6 @@ namespace System.Xml {
 
         // Gets the number of nodes in this XmlNamedNodeMap.
         public virtual int Count {
-            [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
             get {
                 return nodes.Count;
             }

@@ -19,7 +19,7 @@ namespace System.Web {
 
     internal sealed class LegacyAspNetSynchronizationContext : AspNetSynchronizationContextBase {
         private HttpApplication _application;
-        private Action _appVerifierCallback;
+        private Action<bool> _appVerifierCallback;
         private bool _disabled;
         private bool _syncCaller;
         private bool _invalidOperationEncountered;
@@ -34,14 +34,14 @@ namespace System.Web {
             _lastCompletionCallbackLock = new object();
         }
 
-        private void CheckForRequestCompletionIfRequired() {
+        private void CheckForRequestStateIfRequired() {
             if (_appVerifierCallback != null) {
-                _appVerifierCallback();
+                _appVerifierCallback(false);
             }
         }
 
         private void CallCallback(SendOrPostCallback callback, Object state) {
-            CheckForRequestCompletionIfRequired();
+            CheckForRequestStateIfRequired();
 
             // don't take app lock for [....] caller to avoid deadlocks in case they poll for result
             if (_syncCaller) {

@@ -16,6 +16,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using Microsoft.Win32.SafeHandles;
 
 namespace MonoTests.System.IO
 {
@@ -1531,15 +1532,23 @@ namespace MonoTests.System.IO
 		static IAsyncResult DoBeginWrite(Stream stream, ManualResetEvent mre, byte[] RandomBuffer)
 		{
 			return stream.BeginWrite (RandomBuffer, 0, RandomBuffer.Length, ar => {
-				stream.EndWrite (ar);
+				IAsyncResult begin_write_recursive_ares;
 
-				// we don't supply an ManualResetEvent so this will throw an NRE on the second run
-				// which nunit-console will ignore (but other test runners don't like that)
-				if (mre == null)
-					return;
+				try {
+					stream.EndWrite (ar);
 
-				DoBeginWrite (stream, null, RandomBuffer).AsyncWaitHandle.WaitOne ();
-				mre.Set ();
+					// we don't supply an ManualResetEvent so this will throw an NRE on the second run
+					// which nunit-console will ignore (but other test runners don't like that)
+					if (mre == null)
+						return;
+
+					begin_write_recursive_ares = DoBeginWrite (stream, null, RandomBuffer);
+					begin_write_recursive_ares.AsyncWaitHandle.WaitOne ();
+
+					mre.Set ();
+				} catch (ObjectDisposedException e) {
+					Console.WriteLine ("stream was disposed: {0}", e);
+				}
 			}, null);
 		}
 
@@ -1548,12 +1557,19 @@ namespace MonoTests.System.IO
 		{
 			string path = TempFolder + Path.DirectorySeparatorChar + "temp";
 			DeleteFile (path);
-	
-			using (FileStream stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.Write)) {
-				var mre = new ManualResetEvent (false);	
-				var RandomBuffer = new byte[1024];			
-				DoBeginWrite (stream, mre, RandomBuffer);
-				Assert.IsTrue (mre.WaitOne (5000), "#1");
+
+			IAsyncResult begin_write_ares = null;
+
+			try {
+				using (FileStream stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.Write)) {
+					var mre = new ManualResetEvent (false);
+					var RandomBuffer = new byte[1024];
+					begin_write_ares = DoBeginWrite (stream, mre, RandomBuffer);
+					Assert.IsTrue (mre.WaitOne (5000), "#1");
+				}
+			} finally {
+				if (begin_write_ares != null)
+					begin_write_ares.AsyncWaitHandle.WaitOne ();
 			}
 		}
 
@@ -1644,6 +1660,25 @@ namespace MonoTests.System.IO
 			
 		}
 
+		[Test]
+		public void OpenCharDeviceRepeatedly ()
+		{
+			// https://bugzilla.xamarin.com/show_bug.cgi?id=38408
+			try {
+				using (var f = new FileStream ("/dev/zero", FileMode.Open))
+				{
+				}
+			} catch (FileNotFoundException) {
+				// Only run this test on platforms where /dev/zero exists
+				Assert.Ignore();
+			}
+
+			// this shouldn't throw
+			using (var g = new FileStream ("/dev/zero", FileMode.Open))
+			{
+			}
+		}
+
 #if !MOBILE
 		[Test]
 		public void WriteWithExposedHandle ()
@@ -1676,6 +1711,17 @@ namespace MonoTests.System.IO
 				if (fs2 != null)
 					fs2.Close ();
 				DeleteFile (path);
+			}
+		}
+
+		[Test]
+		public void Ctor_InvalidSafeHandle ()
+		{
+			var sf = new SafeFileHandle (IntPtr.Zero, true);
+			try {
+				new FileStream (sf, FileAccess.ReadWrite);
+				Assert.Fail ("#1");
+			} catch (ArgumentException) {
 			}
 		}
 #endif

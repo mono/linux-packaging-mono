@@ -33,8 +33,8 @@
 #include "sgen/sgen-thread-pool.h"
 #include "metadata/profiler-private.h"
 #include "sgen/sgen-client.h"
-#include "metadata/sgen-bridge-internal.h"
-#include "metadata/gc-internal.h"
+#include "metadata/sgen-bridge-internals.h"
+#include "metadata/gc-internals.h"
 
 #define TV_DECLARE SGEN_TV_DECLARE
 #define TV_GETTIME SGEN_TV_GETTIME
@@ -103,7 +103,7 @@ is_ip_in_managed_allocator (MonoDomain *domain, gpointer ip)
 	 * missing methods (#13951). To work around this, we disable the AOT fallback. For this to work, the JIT needs
 	 * to register the jit info for all GC critical methods after they are JITted/loaded.
 	 */
-	ji = mono_jit_info_table_find_internal (domain, ip, FALSE, FALSE);
+	ji = mono_jit_info_table_find_internal (domain, (char *)ip, FALSE, FALSE);
 	if (!ji)
 		return FALSE;
 
@@ -367,7 +367,7 @@ update_sgen_info (SgenThreadInfo *info)
 	char *stack_start;
 
 	/* Once we remove the old suspend code, we should move sgen to directly access the state in MonoThread */
-	info->client_info.stopped_domain = mono_thread_info_tls_get (info, TLS_KEY_DOMAIN);
+	info->client_info.stopped_domain = (MonoDomain *)mono_thread_info_tls_get (info, TLS_KEY_DOMAIN);
 	info->client_info.stopped_ip = (gpointer) MONO_CONTEXT_GET_IP (&mono_thread_info_get_suspend_state (info)->ctx);
 	stack_start = (char*)MONO_CONTEXT_GET_SP (&mono_thread_info_get_suspend_state (info)->ctx) - REDZONE_SIZE;
 
@@ -400,7 +400,7 @@ sgen_unified_suspend_stop_world (void)
 			info->client_info.skip = !mono_thread_info_begin_suspend (info, FALSE);
 			THREADS_STW_DEBUG ("[GC-STW-BEGIN-SUSPEND] SUSPEND thread %p skip %d\n", mono_thread_info_get_tid (info), info->client_info.skip);
 		} else {
-			THREADS_STW_DEBUG ("[GC-STW-BEGIN-SUSPEND] IGNORE thread %p skip %d\n", mono_thread_info_get_tid (info), info->skip);
+			THREADS_STW_DEBUG ("[GC-STW-BEGIN-SUSPEND] IGNORE thread %p skip %d\n", mono_thread_info_get_tid (info), info->client_info.skip);
 		}
 	} END_FOREACH_THREAD_SAFE
 
@@ -421,7 +421,7 @@ sgen_unified_suspend_stop_world (void)
 			- We haven't accepted the previous suspend as good.
 			- We haven't gave up on it for this STW (it's either bad or asked not to)
 			*/
-			if (!mono_threads_core_check_suspend_result (info)) {
+			if (!mono_thread_info_check_suspend_result (info)) {
 				THREADS_STW_DEBUG ("[GC-STW-RESTART] SKIP thread %p failed to finish to suspend\n", mono_thread_info_get_tid (info));
 				info->client_info.skip = TRUE;
 			} else if (mono_thread_info_in_critical_location (info)) {

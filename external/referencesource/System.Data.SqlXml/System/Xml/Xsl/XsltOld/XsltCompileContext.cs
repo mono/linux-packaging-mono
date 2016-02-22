@@ -53,7 +53,6 @@ namespace System.Xml.Xsl.XsltOld {
             get { return string.Empty; }
         }
 
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         public override string LookupNamespace(string prefix) {
             return this.manager.ResolveXPathNamespace(prefix);
         }

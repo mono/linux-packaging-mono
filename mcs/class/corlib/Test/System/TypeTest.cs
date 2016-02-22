@@ -3,8 +3,10 @@
 // Authors:
 // 	Zoltan Varga (vargaz@freemail.hu)
 //  Patrik Torstensson
+//  Aleksey Kliger (aleksey@xamarin.com)
 //
 // (C) 2003 Ximian, Inc.  http://www.ximian.com
+// Copyright (C) 2015 Xamarin, Inc. (http://www.xamarin.com)
 // 
 
 using NUnit.Framework;
@@ -208,6 +210,16 @@ namespace MonoTests.System
 		public void Test (int __argument)
 		{
 		}
+	}
+
+	public class GenericIndexers<T, U>
+	{
+		// This class has two indexers that take different
+		// arguments.  GetProperties on all instances of this
+		// generic type should still have 2 properties, even
+		// if T and U are instantiated with the same types.
+		public T this[T t] { get { return t; } }
+		public U this[U u] { get { return u; } }
 	}
 
 	public class FirstMethodBinder : Binder
@@ -423,8 +435,25 @@ namespace MonoTests.System
 		public void GetProperties ()
 		{
 			// Test hide-by-name-and-signature
-			Assert.AreEqual (1, typeof (Derived2).GetProperties ().Length);
-			Assert.AreEqual (typeof (Derived2), typeof (Derived2).GetProperties ()[0].DeclaringType);
+			Assert.AreEqual (1, typeof (Derived2).GetProperties ().Length, "#1");
+			Assert.AreEqual (typeof (Derived2), typeof (Derived2).GetProperties ()[0].DeclaringType, "#2");
+
+			// For generics, hide-by-name-and-signature works on the unexpanded types. The
+			// GenericIndexers<T,U> class has two indexers that take different arguments.
+			// GetProperties on all instances of this generic type should still have 2 properties,
+			// even if T and U are instantiated with the same types.
+
+			var ps = typeof (GenericIndexers<int,int>).GetProperties ();
+			Assert.AreEqual (2, ps.Length, "#3");
+			for (int i = 0; i < ps.Length; i++) {
+				var p = ps[i];
+
+				var getterResultType = p.GetGetMethod ().ReturnType;
+
+				var msg = String.Format ("#4-{0}", i);
+				Assert.AreEqual (typeof (int), getterResultType, msg);
+			}
+
 		}
 
 		[Test] // GetProperties (BindingFlags)
@@ -3508,7 +3537,6 @@ namespace MonoTests.System
 			Assert.AreSame (typeof (Foo<>), type.DeclaringType, "#1");
 		}
 
-#if NET_4_0
 		interface IGetInterfaceMap<in T>
 		{
 		    string Bar (T t);
@@ -3923,6 +3951,43 @@ namespace MonoTests.System
 				}, false, false);
 			Assert.AreEqual (typeof (MyRealEnum).MakePointerType (), res, "#12");
 
+			tname = typeof (MyRealEnum).FullName + "*&";
+			res = Type.GetType (tname, name => {
+					return Assembly.Load (name);
+				},(asm,name,ignore) => {
+					return asm == null ? Type.GetType (name, false, ignore) : asm.GetType (name, false, ignore);
+				}, false, false);
+			Assert.AreEqual (typeof (MyRealEnum).MakePointerType ().MakeByRefType(),
+					 res, "#13");
+
+			tname = typeof (MyRealEnum).FullName + "[,]&";
+			res = Type.GetType (tname, name => {
+					return Assembly.Load (name);
+				},(asm,name,ignore) => {
+					return asm == null ? Type.GetType (name, false, ignore) : asm.GetType (name, false, ignore);
+				}, false, false);
+			Assert.AreEqual (typeof (MyRealEnum).MakeArrayType (2).MakeByRefType (),
+					 res, "#14");
+
+			tname = typeof (MyRealEnum).FullName + "*[]";
+			res = Type.GetType (tname, name => {
+					return Assembly.Load (name);
+				},(asm,name,ignore) => {
+					return asm == null ? Type.GetType (name, false, ignore) : asm.GetType (name, false, ignore);
+				}, false, false);
+			Assert.AreEqual (typeof (MyRealEnum).MakePointerType().MakeArrayType(),
+					 res, "#15");
+
+			// not a very useful type, but ought to be parsed correctly
+			tname = typeof (MyRealEnum).FullName + "[]**[]*&";
+			res = Type.GetType (tname, name => {
+					return Assembly.Load (name);
+				},(asm,name,ignore) => {
+					return asm == null ? Type.GetType (name, false, ignore) : asm.GetType (name, false, ignore);
+				}, false, false);
+			Assert.AreEqual (typeof (MyRealEnum).MakeArrayType().MakePointerType().MakePointerType().MakeArrayType().MakePointerType().MakeByRefType(),
+					 res, "#16");
+
 			// assembly resolve without type resolve
 			res = Type.GetType ("System.String,mscorlib", delegate (AssemblyName aname) { return typeof (int).Assembly; }, null);
 			Assert.AreEqual (typeof (string), res);
@@ -4019,12 +4084,14 @@ namespace MonoTests.System
 		[Test]
 		public void NewGetTypeErrors () {
 			MustANE (null);
+			MustAE ("!@#$%^&*");
 			MustAE (string.Format ("{0}[{1}&]", typeof (Foo<>).FullName, typeof (MyRealEnum).FullName));
 			MustAE (string.Format ("{0}[{1}*]", typeof (Foo<>).FullName, typeof (MyRealEnum).FullName));
 			MustAE (string.Format ("{0}&&", typeof (MyRealEnum).FullName));
 			MustAE (string.Format ("{0}&*", typeof (MyRealEnum).FullName));
 			MustAE (string.Format ("{0}&[{1}]", typeof (Foo<>).FullName, typeof (MyRealEnum).FullName));
-
+			MustAE (string.Format ("{0}[,", typeof (MyRealEnum).FullName));
+			MustAE (string.Format ("{0}[*", typeof (MyRealEnum).FullName));
 
 			MustAE (string.Format ("{0}[[{1},", typeof (Foo<>).FullName, typeof (MyRealEnum).FullName));
 			MustAE (string.Format ("{0}[[{1}]", typeof (Foo<>).FullName, typeof (MyRealEnum).FullName));
@@ -4065,7 +4132,6 @@ namespace MonoTests.System
 		public void IsAssignableFromWithNullable () {
             Console.WriteLine(typeof(IEnumerable<int?>).IsAssignableFrom(typeof(IEnumerable<int>)));
 		}
-#endif
 
 		[Test]
 		public void GetTypeParseGenericCorrectly () { //Bug #15124
@@ -4085,6 +4151,52 @@ namespace MonoTests.System
 			Assert.AreEqual (Type.GetType ("MonoTests.System.Foo`1[*"), null, "#14");
 			Assert.AreEqual (Type.GetType ("MonoTests.System.Foo`1[System.Int32"), null, "#15");
 		}
+
+#if !MONOTOUCH
+		[Test]
+		[Category ("AndroidNotWorking")] // requires symbol writer
+		public void FullNameGetTypeParseEscapeRoundtrip () // bug #26384
+		{
+			var nm = new AssemblyName ("asm");
+			var ab = AssemblyBuilder.DefineDynamicAssembly (nm,
+									AssemblyBuilderAccess.Run);
+			var mb = ab.DefineDynamicModule("m", true);
+			var tb = mb.DefineType ("NameSpace,+*&[]\\.Type,+*&[]\\",
+						TypeAttributes.Class | TypeAttributes.Public);
+
+			var nestedTb = tb.DefineNestedType("Nested,+*&[]\\",
+							  TypeAttributes.Class | TypeAttributes.NestedPublic);
+
+			var ty = tb.CreateType();
+
+			var nestedTy = nestedTb.CreateType();
+
+			var escapedNestedName =
+				"NameSpace\\,\\+\\*\\&\\[\\]\\\\"
+				+ "."
+				+ "Type\\,\\+\\*\\&\\[\\]\\\\"
+				+ "+"
+				+ "Nested\\,\\+\\*\\&\\[\\]\\\\";
+
+			Assert.AreEqual(escapedNestedName, nestedTy.FullName);
+
+			var lookupNestedTy =
+				Type.GetType(escapedNestedName + "," + nm.FullName,
+					     asmName => {
+						     if (asmName.FullName.Equals(nm.FullName)) return ab;
+						     else return Assembly.Load (asmName);
+					     },
+					     (asm,name,ignore) => {
+						     if (asm == null)
+							     return Type.GetType(name, true, ignore);
+						     else return asm.GetType(name, true, ignore);
+					     },
+					     true,
+					     false);
+			Assert.AreEqual(nestedTy, lookupNestedTy);
+
+		}
+#endif
 
 		public abstract class Stream : IDisposable
 		{
