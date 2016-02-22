@@ -588,7 +588,6 @@ namespace System.Runtime.Remoting.Proxies {
             }
         }
 
-#if FEATURE_COMINTEROP
         // interop methods
         [System.Security.SecurityCritical]
         public override IntPtr GetCOMIUnknown(bool fIsBeingMarshalled)
@@ -634,7 +633,6 @@ namespace System.Runtime.Remoting.Proxies {
         {
             // for now ignore this
         }
-#endif // FEATURE_COMINTEROP
 
         // Check whether we can cast the transparent proxy to the given type
         [System.Security.SecurityCritical]

@@ -42,7 +42,6 @@ namespace System.Security.AccessControl
         SelfRelative                        = 0x8000, // must always be on
     }
 
-
     public abstract class GenericSecurityDescriptor
     {
         #region Protected Members
@@ -1239,6 +1238,18 @@ namespace System.Security.AccessControl
             {
                 SystemAcl.Purge( sid );
             }
+        }
+
+        public void AddDiscretionaryAcl(byte revision, int trusted)
+        {
+            this.DiscretionaryAcl = new DiscretionaryAcl(this.IsContainer, this.IsDS, revision, trusted);
+            this.AddControlFlags(ControlFlags.DiscretionaryAclPresent);
+        }
+
+        public void AddSystemAcl(byte revision, int trusted)
+        {
+            this.SystemAcl = new SystemAcl(this.IsContainer, this.IsDS, revision, trusted);
+            this.AddControlFlags(ControlFlags.SystemAclPresent);
         }
 
         #endregion

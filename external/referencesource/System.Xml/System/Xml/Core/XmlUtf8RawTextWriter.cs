@@ -1245,12 +1245,12 @@ namespace System.Xml {
 
         private static unsafe byte* EncodeSurrogate( char* pSrc, char* pSrcEnd, byte* pDst ) {
             Debug.Assert( XmlCharType.IsSurrogate( *pSrc ) );
-
             int ch = *pSrc;
             if ( ch <= XmlCharType.SurHighEnd ) {
                 if ( pSrc + 1 < pSrcEnd ) {
                     int lowChar = pSrc[1];
-                    if ( lowChar >= XmlCharType.SurLowStart ) {
+                    if ( lowChar >= XmlCharType.SurLowStart &&
+                        (LocalAppContextSwitches.DontThrowOnInvalidSurrogatePairs || lowChar <= XmlCharType.SurLowEnd)) {
 
                         // Calculate Unicode scalar value for easier manipulations (see section 3.7 in Unicode spec)
                         // The scalar value repositions surrogate values to start at 0x10000.

@@ -33,7 +33,6 @@ namespace System.Xml {
 
         // Contains this node's data.
         public virtual string Data {
-            [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
             get {
                 if (data != null) {
                     return data;

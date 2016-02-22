@@ -28,6 +28,7 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections;
 using System.Reflection;
@@ -38,6 +39,31 @@ namespace MonoTests.System
 {
 	public class TimeZoneInfoTest
 	{
+		static FieldInfo localField;
+		static FieldInfo cachedDataField;
+		static object localFieldObj;
+
+		public static void SetLocal (TimeZoneInfo val)
+		{
+			if (localField == null) {
+				if (Type.GetType ("Mono.Runtime") != null) {
+					localField = typeof (TimeZoneInfo).GetField ("local",
+							BindingFlags.Static | BindingFlags.GetField | BindingFlags.NonPublic);
+				} else {
+					cachedDataField = typeof (TimeZoneInfo).GetField ("s_cachedData",
+							BindingFlags.Static | BindingFlags.GetField | BindingFlags.NonPublic);
+
+					localField = cachedDataField.FieldType.GetField ("m_localTimeZone",
+						BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic);
+				}
+			}
+
+			if (cachedDataField != null)
+				localFieldObj = cachedDataField.GetValue (null);
+
+			localField.SetValue (localFieldObj, val);
+		}
+
 		[TestFixture]
 		public class PropertiesTests
 		{
@@ -49,6 +75,28 @@ namespace MonoTests.System
 				TimeZoneInfo local = TimeZoneInfo.Local;
 				Assert.IsNotNull (local);
 				Assert.IsTrue (true);
+			}
+
+			[DllImport ("libc")]
+			private static extern int readlink (string path, byte[] buffer, int buflen);
+
+			[Test] // Covers #24958
+			public void LocalId ()
+			{
+				byte[] buf = new byte [512];
+
+				var path = "/etc/localtime";
+				try {
+					var ret = readlink (path, buf, buf.Length);
+					if (ret == -1)
+						return; // path is not a symbolic link, nothing to test
+				} catch (DllNotFoundException e) {
+					return;
+				}
+#if !MONOTOUCH && !XAMMAC
+				// this assumption is incorrect for iOS, tvO, watchOS and OSX
+				Assert.IsTrue (TimeZoneInfo.Local.Id != "Local", "Local timezone id should not be \"Local\"");
+#endif
 			}
 		}
 
@@ -314,6 +362,27 @@ namespace MonoTests.System
 		}
 		
 		[TestFixture]
+		public class ConvertTimeTests_LocalUtc : ConvertTimeTests
+		{
+			static TimeZoneInfo oldLocal;
+
+			[SetUp]
+			public void SetLocal ()
+			{
+				base.CreateTimeZones ();
+
+				oldLocal = TimeZoneInfo.Local;
+				TimeZoneInfoTest.SetLocal (TimeZoneInfo.Utc);
+			}
+
+			[TearDown]
+			public void RestoreLocal ()
+			{
+				TimeZoneInfoTest.SetLocal (oldLocal);
+			}
+		}
+
+		[TestFixture]
 		public class ConvertTimeTests
 		{
 			TimeZoneInfo london;
@@ -446,19 +515,28 @@ namespace MonoTests.System
 			}
 
 			[Test]
+			public void ConvertFromToUtc_Utc ()
+			{
+				DateTime utc = DateTime.UtcNow;
+				Assert.AreEqual (utc.Kind, DateTimeKind.Utc);
+				DateTime converted = TimeZoneInfo.ConvertTimeFromUtc (utc, TimeZoneInfo.Utc);
+				Assert.AreEqual (DateTimeKind.Utc, converted.Kind);
+				DateTime back = TimeZoneInfo.ConvertTimeToUtc (converted, TimeZoneInfo.Utc);
+				Assert.AreEqual (back.Kind, DateTimeKind.Utc);
+				Assert.AreEqual (utc, back);
+			}
+
+			[Test]
 			public void ConvertFromToLocal ()
 			{
 				DateTime utc = DateTime.UtcNow;
-				Assert.AreEqual(utc.Kind, DateTimeKind.Utc);
-				DateTime converted = TimeZoneInfo.ConvertTimeFromUtc(utc, TimeZoneInfo.Local);
-			#if NET_4_0
-				Assert.AreEqual(DateTimeKind.Local, converted.Kind);
-			#else
-				Assert.AreEqual(DateTimeKind.Unspecified, converted.Kind);
-			#endif
-				DateTime back = TimeZoneInfo.ConvertTimeToUtc(converted, TimeZoneInfo.Local);
-				Assert.AreEqual(back.Kind, DateTimeKind.Utc);
-				Assert.AreEqual(utc, back);
+				Assert.AreEqual (utc.Kind, DateTimeKind.Utc);
+				DateTime converted = TimeZoneInfo.ConvertTimeFromUtc (utc, TimeZoneInfo.Local);
+				var expectedKind = (TimeZoneInfo.Local == TimeZoneInfo.Utc)? DateTimeKind.Utc : DateTimeKind.Local;
+				Assert.AreEqual (expectedKind, converted.Kind);
+				DateTime back = TimeZoneInfo.ConvertTimeToUtc (converted, TimeZoneInfo.Local);
+				Assert.AreEqual (back.Kind, DateTimeKind.Utc);
+				Assert.AreEqual (utc, back);
 			}
 
 			[Test]
@@ -492,8 +570,9 @@ namespace MonoTests.System
 
 				sdt = new DateTime (2014, 1, 9, 23, 0, 0);
 				ddt = TimeZoneInfo.ConvertTime (sdt, TimeZoneInfo.Local);
-				Assert.AreEqual (ddt.Kind, sdt.Kind, "#3.1");
-				Assert.AreEqual (ddt.Kind, DateTimeKind.Unspecified, "#3.2");
+				var expectedKind = (TimeZoneInfo.Local == TimeZoneInfo.Utc)? DateTimeKind.Utc : sdt.Kind;
+				Assert.AreEqual (expectedKind,  ddt.Kind, "#3.1");
+				Assert.AreEqual (DateTimeKind.Unspecified, sdt.Kind, "#3.2");
 			}
 
 			[Test]
@@ -693,6 +772,15 @@ namespace MonoTests.System
 						return;
 				}
 				Assert.Fail ("Europe/Brussels not found in SystemTZ");
+			}
+
+			[Test]
+			public void ReflectionReturnsTheCorrectMethod ()
+			{
+				var method = (MethodInfo) typeof (TimeZoneInfo).GetMember ("GetSystemTimeZones", MemberTypes.Method, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)[0];
+
+				var timeZones = (global::System.Collections.ObjectModel.ReadOnlyCollection<TimeZoneInfo>) method.Invoke (null, null);
+				Assert.IsTrue (timeZones.Count > 0, "GetSystemTimeZones should not return an empty collection.");
 			}
 		}
 		
@@ -1068,7 +1156,7 @@ namespace MonoTests.System
 			{
 				foreach (var tz in TimeZoneInfo.GetSystemTimeZones ()) {
 					try {
-						for (var year = 1950; year <= DateTime.Now.Year; year++)
+						for (var year = 1950; year <= 2051; year++)
 							getChanges.Invoke (tz, new object [] {year} );
 					} catch (Exception e) {
 						Assert.Fail ("TimeZone " + tz.Id + " exception: " + e.ToString ()); 

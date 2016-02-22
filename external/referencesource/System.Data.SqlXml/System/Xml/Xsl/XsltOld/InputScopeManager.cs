@@ -107,7 +107,6 @@ namespace System.Xml.Xsl.XsltOld {
             return ResolveNonEmptyPrefix(prefix);
         }
 
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         public string ResolveXPathNamespace(string prefix) {
             Debug.Assert(prefix != null);
             if (prefix.Length == 0) {

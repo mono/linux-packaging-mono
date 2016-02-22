@@ -150,7 +150,7 @@ namespace System.IO {
 	[StructLayout(LayoutKind.Sequential)]
 	struct timespec {
 		public IntPtr tv_sec;
-		public IntPtr tv_usec;
+		public IntPtr tv_nsec;
 	}
 
 	class PathData
@@ -313,7 +313,7 @@ namespace System.IO {
 
 			Scan (fullPathNoLastSlash, false, ref initialFds);
 
-			var immediate_timeout = new timespec { tv_sec = (IntPtr)0, tv_usec = (IntPtr)0 };
+			var immediate_timeout = new timespec { tv_sec = (IntPtr)0, tv_nsec = (IntPtr)0 };
 			var eventBuffer = new kevent[0]; // we don't want to take any events from the queue at this point
 			var changes = CreateChangeList (ref initialFds);
 
@@ -364,7 +364,21 @@ namespace System.IO {
 			while (!requestStop) {
 				var changes = CreateChangeList (ref newFds);
 
-				int numEvents = kevent_notimeout (conn, changes, changes.Length, eventBuffer, eventBuffer.Length, IntPtr.Zero);
+				// We are calling an icall, so have to marshal manually
+				// Marshal in
+				int ksize = Marshal.SizeOf<kevent> ();
+				var changesNative = Marshal.AllocHGlobal (ksize * changes.Length);
+				for (int i = 0; i < changes.Length; ++i)
+					Marshal.StructureToPtr (changes [i], changesNative + (i * ksize), false);
+				var eventBufferNative = Marshal.AllocHGlobal (ksize * eventBuffer.Length);
+
+				int numEvents = kevent_notimeout (ref conn, changesNative, changes.Length, eventBufferNative, eventBuffer.Length);
+
+				// Marshal out
+				Marshal.FreeHGlobal (changesNative);
+				for (int i = 0; i < numEvents; ++i)
+					eventBuffer [i] = Marshal.PtrToStructure<kevent> (eventBufferNative + (i * ksize));
+				Marshal.FreeHGlobal (eventBufferNative);
 
 				if (numEvents == -1) {
 					// Stop () signals us to stop by closing the connection
@@ -376,7 +390,6 @@ namespace System.IO {
 
 					continue;
 				}
-
 				retries = 0;
 
 				for (var i = 0; i < numEvents; i++) {
@@ -667,8 +680,8 @@ namespace System.IO {
 		[DllImport ("libc")]
 		extern static int kevent (int kq, [In]kevent[] ev, int nchanges, [Out]kevent[] evtlist, int nevents, [In] ref timespec time);
 
-		[DllImport ("libc", EntryPoint="kevent")]
-		extern static int kevent_notimeout (int kq, [In]kevent[] ev, int nchanges, [Out]kevent[] evtlist, int nevents, IntPtr ptr);
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		extern static int kevent_notimeout (ref int kq, IntPtr ev, int nchanges, IntPtr evtlist, int nevents);
 	}
 
 	class KeventWatcher : IFileWatcher

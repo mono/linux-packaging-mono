@@ -1297,6 +1297,21 @@ namespace MonoTests.System
 		}
 
 		[Test]
+		public void Parse_SameTimeAndDateSeparator ()
+		{
+			var fiFI = (CultureInfo) CultureInfo.GetCultureInfo("fi-FI").Clone();
+
+			fiFI.DateTimeFormat.TimeSeparator = fiFI.DateTimeFormat.DateSeparator;
+
+			var dt = DateTime.Parse("4.3.2010", fiFI);
+
+			Assert.AreEqual (2010, dt.Year, "#1");
+			Assert.AreEqual (3, dt.Month, "#2");
+			Assert.AreEqual (4, dt.Day, "#3");
+		}
+
+
+		[Test]
 		[ExpectedException (typeof (FormatException))]
 		public void Parse_RequireSpaceSeparator ()
 		{
@@ -2530,9 +2545,7 @@ namespace MonoTests.System
 			DateTime expected2 = new DateTime (2011, 03, 22, 08, 32, 00, DateTimeKind.Utc);
 
 			string [] cultures = new string [] {"es-ES", "en-US", "en-GB", "de-DE", "fr-FR"
-#if NET_4_0
 				,"es", "en", "de", "fr"
-#endif
 				};
 			
 			foreach (string culture in cultures) {
@@ -2630,6 +2643,29 @@ namespace MonoTests.System
 			var res = DateTime.Parse ("12-002", CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.RoundtripKind);			
 			Assert.AreEqual (2, res.Year, "#1");
 			Assert.AreEqual (12, res.Month, "#2");			
+		}
+
+		[Test]
+		[Culture ("en-us")]
+		public void ToUniversalTime_TimeZoneOffsetShouldNotOverflow ()
+		{
+			var m = DateTime.MaxValue;
+			var res = m.ToUniversalTime ();
+
+			// It does not matter which time zone but we should never overflow or have DateTime.MinValue
+			Assert.AreEqual (9999, res.Year, "#1");
+			Assert.AreEqual (12, res.Month, "#2");
+			Assert.AreEqual (31, res.Day, "#3");
+			Assert.AreEqual (DateTimeKind.Utc, res.Kind, "#4");
+
+			m = DateTime.MinValue;
+			res = m.ToUniversalTime ();
+
+			// It does not matter which time zone but we should never overflow or have DateTime.MinValue
+			Assert.AreEqual (0, res.Year, "#10");
+			Assert.AreEqual (1, res.Month, "#11");
+			Assert.AreEqual (1, res.Day, "#12");
+			Assert.AreEqual (DateTimeKind.Utc, res.Kind, "#13");
 		}
 	}
 }

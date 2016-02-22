@@ -89,11 +89,13 @@ namespace System.Runtime.Serialization
         [SecuritySafeCritical]
         public void DemandSerializationFormatterPermission()
         {
+#if !DISABLE_CAS_USE
             if (!demandedSerializationFormatterPermission)
             {
                 Globals.SerializationFormatterPermission.Demand();
                 demandedSerializationFormatterPermission = true;
             }
+#endif
         }
 
         [Fx.Tag.SecurityNote(Critical = "Demands MemberAccess permission. demanding the right permission is critical.",
@@ -101,11 +103,13 @@ namespace System.Runtime.Serialization
         [SecuritySafeCritical]
         public void DemandMemberAccessPermission()
         {
+#if !DISABLE_CAS_USE
             if (!demandedMemberAccessPermission)
             {
                 Globals.MemberAccessPermission.Demand();
                 demandedMemberAccessPermission = true;
             }
+ #endif
         }
 
         public StreamingContext GetStreamingContext()
@@ -278,10 +282,6 @@ namespace System.Runtime.Serialization
             DataContract dataContract = PrimitiveDataContract.GetPrimitiveDataContract(typeName.Name, typeName.Namespace);
             if (dataContract == null)
             {
-                if (typeName.Name == Globals.SafeSerializationManagerName && typeName.Namespace == Globals.SafeSerializationManagerNamespace && Globals.TypeOfSafeSerializationManager != null)
-                {
-                    return GetDataContract(Globals.TypeOfSafeSerializationManager);
-                }
                 dataContract = scopedKnownTypes.GetDataContract(typeName);
                 if (dataContract == null)
                 {

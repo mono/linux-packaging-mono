@@ -7,11 +7,13 @@
 #include <mono/metadata/mempool.h>
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/threads-types.h>
+#include <mono/metadata/handle.h>
 #include <mono/io-layer/io-layer.h>
 #include "mono/utils/mono-compiler.h"
 #include "mono/utils/mono-error.h"
 #include "mono/utils/mono-stack-unwinding.h"
 #include "mono/utils/mono-tls.h"
+#include "mono/utils/mono-coop-mutex.h"
 
 #if 1
 #ifdef __GNUC__
@@ -163,6 +165,8 @@ struct _MonoArray {
 	double vector [MONO_ZERO_LEN_ARRAY];
 };
 
+#define MONO_SIZEOF_MONO_ARRAY (sizeof (MonoArray) - MONO_ZERO_LEN_ARRAY * sizeof (double))
+
 struct _MonoString {
 	MonoObject object;
 	int32_t length;
@@ -255,6 +259,8 @@ struct _MonoException {
 	MonoObject *_data;
 	MonoObject *captured_traces;
 	MonoArray  *native_trace_ips;
+	/* Dynamic methods referenced by the stack trace */
+	MonoObject *dynamic_methods;
 };
 
 typedef struct {
@@ -404,7 +410,7 @@ struct _MonoInternalThread {
 	gpointer appdomain_refs;
 	/* This is modified using atomic ops, so keep it a gint32 */
 	gint32 interruption_requested;
-	mono_mutex_t *synch_cs;
+	MonoCoopMutex *synch_cs;
 	MonoBoolean threadpool_thread;
 	MonoBoolean thread_interrupt_requested;
 	int stack_size;
@@ -598,12 +604,14 @@ typedef struct {
 	gpointer (*create_ftnptr) (MonoDomain *domain, gpointer addr);
 	gpointer (*get_addr_from_ftnptr) (gpointer descr);
 	char*    (*get_runtime_build_info) (void);
-	gpointer (*get_vtable_trampoline) (int slot_index);
-	gpointer (*get_imt_trampoline) (int imt_slot_index);
+	gpointer (*get_vtable_trampoline) (MonoVTable *vtable, int slot_index);
+	gpointer (*get_imt_trampoline) (MonoVTable *vtable, int imt_slot_index);
+	gboolean (*imt_entry_inited) (MonoVTable *vtable, int imt_slot_index);
 	void     (*set_cast_details) (MonoClass *from, MonoClass *to);
 	void     (*debug_log) (int level, MonoString *category, MonoString *message);
 	gboolean (*debug_log_is_enabled) (void);
 	gboolean (*tls_key_supported) (MonoTlsKey key);
+	void     (*init_delegate) (MonoDelegate *del);
 } MonoRuntimeCallbacks;
 
 typedef gboolean (*MonoInternalStackWalk) (MonoStackFrameInfo *frame, MonoContext *ctx, gpointer data);
@@ -778,7 +786,8 @@ struct _MonoDelegate {
 	MonoObject *target;
 	MonoMethod *method;
 	gpointer delegate_trampoline;
-	gpointer rgctx;
+	/* Extra argument passed to the target method in llvmonly mode */
+	gpointer extra_arg;
 	/* 
 	 * If non-NULL, this points to a memory location which stores the address of 
 	 * the compiled code of the method, or NULL if it is not yet compiled.
@@ -1542,6 +1551,9 @@ void
 mono_install_imt_thunk_builder (MonoImtThunkBuilder func);
 
 void
+mono_set_always_build_imt_thunks (gboolean value);
+
+void
 mono_vtable_build_imt_slot (MonoVTable* vtable, int imt_slot);
 
 guint32
@@ -1637,6 +1649,9 @@ mono_error_raise_exception (MonoError *target_error);
 
 void
 mono_error_set_pending_exception (MonoError *error);
+
+MonoArray *
+mono_glist_to_array (GList *list, MonoClass *eclass);
 
 #endif /* __MONO_OBJECT_INTERNALS_H__ */
 

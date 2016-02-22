@@ -48,13 +48,13 @@ class GFoo3<T> {
 
 // FIXME: Add mixed ref/noref tests, i.e. Dictionary<string, int>
 
-#if MOBILE
+#if __MOBILE__
 public class GSharedTests
 #else
 public class Tests
 #endif
 {
-#if !MOBILE
+#if !__MOBILE__
 	public static int Main (String[] args) {
 		return TestDriver.RunTests (typeof (Tests), args);
 	}
@@ -459,6 +459,21 @@ public class Tests
 
 	public static int test_0_gsharedvt_in_delegates () {
 		Func<int, int> f = new Func<int, int> (return_t<int>);
+		if (f (42) != 42)
+			return 1;
+		return 0;
+	}
+
+	class DelClass {
+		[MethodImplAttribute (MethodImplOptions.NoInlining)]
+		public static T return_t<T> (T t) {
+			return t;
+		}
+	}
+
+	public static int test_0_gsharedvt_in_delegates_reflection () {
+		var m = typeof(DelClass).GetMethod ("return_t").MakeGenericMethod (new Type [] { typeof (int) });
+		Func<int, int> f = (Func<int, int>)Delegate.CreateDelegate (typeof (Func<int,int>), null, m, false);
 		if (f (42) != 42)
 			return 1;
 		return 0;
@@ -1762,7 +1777,7 @@ public class MobileServiceCollection<TTable, TCol>
 	}
 }
 
-#if !MOBILE
+#if !__MOBILE__
 public class GSharedTests : Tests {
 }
 #endif

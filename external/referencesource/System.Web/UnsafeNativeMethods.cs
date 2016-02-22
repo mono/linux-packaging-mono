@@ -357,6 +357,17 @@ namespace System.Web {
         [DllImport(ModName.KERNEL32_FULL_NAME)]
         internal static extern IntPtr GetCurrentThread();
 
+        // http://msdn.microsoft.com/en-us/library/windows/desktop/aa366569(v=vs.85).aspx
+        [DllImport(ModName.KERNEL32_FULL_NAME, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+        internal static extern IntPtr GetProcessHeap();
+
+        // http://msdn.microsoft.com/en-us/library/windows/desktop/aa366701(v=vs.85).aspx
+        [DllImport(ModName.KERNEL32_FULL_NAME, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+        internal static extern bool HeapFree(
+            [In] IntPtr hHeap,
+            [In] uint dwFlags,
+            [In] IntPtr lpMem);
+
         /*
          * webengine.dll
          */

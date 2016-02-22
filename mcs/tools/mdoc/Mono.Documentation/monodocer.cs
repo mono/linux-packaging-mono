@@ -133,6 +133,9 @@ class MDocUpdater : MDocCommand
 	List<AssemblyDefinition> assemblies;
 	readonly DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
 	
+	string apistyle = string.Empty;
+	bool isClassicRun;
+	bool multiassembly;
 	bool delete;
 	bool show_exceptions;
 	bool no_assembly_versions, ignore_missing_types;
@@ -278,6 +281,12 @@ class MDocUpdater : MDocCommand
 			{ "preserve",
 				"Do not delete members that don't exist in the assembly, but rather mark them as preserved.",
 				v => PreserveTag = "true" },
+			{ "multiassembly",
+				"Allow types to be in multiple assemblies.",
+				v => multiassembly = true },
+			{ "api-style=",
+				"Denotes the apistyle. Currently, only `classic` and `unified` are supported. `classic` set of assemblies should be run first, immediately followed by 'unified' assemblies with the `dropns` parameter.",
+				v => apistyle = v.ToLowerInvariant ()},
 		};
 		var assemblies = Parse (p, args, "update", 
 				"[OPTIONS]+ ASSEMBLIES",
@@ -286,7 +295,17 @@ class MDocUpdater : MDocCommand
 			return;
 		if (assemblies.Count == 0)
 			Error ("No assemblies specified.");
-
+		
+		// validation for the api-style parameter
+		if (apistyle == "classic") 
+			isClassicRun = true;
+		else if (apistyle == "unified") {
+			if (!droppedAssemblies.Any ())
+				Error ("api-style 'unified' must also supply the 'dropns' parameter with at least one assembly and dropped namespace.");
+		} else if (!string.IsNullOrWhiteSpace (apistyle)) 
+			Error ("api-style '{0}' is not currently supported", apistyle);
+			
+				
 		foreach (var dir in assemblies
 				.Where (a => a.Contains (Path.DirectorySeparatorChar))
 				.Select (a => Path.GetDirectoryName (a)))
@@ -449,8 +468,10 @@ class MDocUpdater : MDocCommand
 			}
 			if (r == null)
 				continue;
-			c.Remove (n);
-			c.InsertBefore (n, r);
+			if (c [n.Name] != null) {
+				c.RemoveNamedItem (n.Name);
+				c.InsertBefore (n, r);
+			}
 		}
 	}
 	
@@ -676,12 +697,6 @@ class MDocUpdater : MDocCommand
 			XmlElement td = StubType(type, output);
 			if (td == null)
 				return null;
-			
-			System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo (DocUtils.PathCombine (dest, type.Namespace));
-			if (!dir.Exists) {
-				dir.Create();
-				Console.WriteLine("Namespace Directory Created: " + type.Namespace);
-			}
 		}
 		return reltypefile;
 	}
@@ -771,7 +786,13 @@ class MDocUpdater : MDocCommand
 
 	private void AddIndexAssembly (AssemblyDefinition assembly, XmlElement parent)
 	{
-		XmlElement index_assembly = parent.OwnerDocument.CreateElement("Assembly");
+		XmlElement index_assembly = null;
+		if (multiassembly) 
+			index_assembly = (XmlElement)parent.SelectSingleNode ("Assembly[@Name='"+ assembly.Name.Name +"']");
+		
+		if (index_assembly == null) 
+			index_assembly = parent.OwnerDocument.CreateElement ("Assembly");
+
 		index_assembly.SetAttribute ("Name", assembly.Name.Name);
 		index_assembly.SetAttribute ("Version", assembly.Name.Version.ToString());
 
@@ -846,7 +867,8 @@ class MDocUpdater : MDocCommand
 		
 		XmlElement index_types = WriteElement(index.DocumentElement, "Types");
 		XmlElement index_assemblies = WriteElement(index.DocumentElement, "Assemblies");
-		index_assemblies.RemoveAll ();
+		if (!multiassembly) 
+			index_assemblies.RemoveAll ();
 
 
 		HashSet<string> goodfiles = new HashSet<string> (StringComparer.OrdinalIgnoreCase);
@@ -1008,34 +1030,56 @@ class MDocUpdater : MDocCommand
 					XmlDocument doc = new XmlDocument ();
 					doc.Load (typefile.FullName);
 					XmlElement e = doc.SelectSingleNode("/Type") as XmlElement;
-					string assemblyName = doc.SelectSingleNode ("/Type/AssemblyInfo/AssemblyName").InnerText;
+					var assemblyNameNode = doc.SelectSingleNode ("/Type/AssemblyInfo/AssemblyName");
+					if (assemblyNameNode == null){
+						Warning ("Did not find /Type/AssemblyInfo/AssemblyName on {0}", typefile.FullName);
+						continue;
+					}
+					string assemblyName = assemblyNameNode.InnerText;
 					AssemblyDefinition assembly = assemblies.FirstOrDefault (a => a.Name.Name == assemblyName);
-					if (e != null && !no_assembly_versions && assembly != null && assemblyName != null && UpdateAssemblyVersions(e, assembly, GetAssemblyVersions(assemblyName), false)) {
+
+					Action saveDoc = () => {
 						using (TextWriter writer = OpenWrite (typefile.FullName, FileMode.Truncate))
 							WriteXml(doc.DocumentElement, writer);
+					};
+
+					if (e != null && !no_assembly_versions && assembly != null && assemblyName != null && UpdateAssemblyVersions (e, assembly, GetAssemblyVersions(assemblyName), false)) {
+						saveDoc ();
 						goodfiles.Add (relTypeFile);
 						continue;
 					}
 
 					Action actuallyDelete = () => {
 						string newname = typefile.FullName + ".remove";
-						try { System.IO.File.Delete (newname); } catch (Exception ex) { Warning ("Unable to delete existing file: {0}", newname); }
-						try { typefile.MoveTo (newname); } catch (Exception ex) { Warning ("Unable to rename to: {0}", newname); }
+						try { System.IO.File.Delete (newname); } catch (Exception) { Warning ("Unable to delete existing file: {0}", newname); }
+						try { typefile.MoveTo (newname); } catch (Exception) { Warning ("Unable to rename to: {0}", newname); }
 						Console.WriteLine ("Class no longer present; file renamed: " + Path.Combine (nsdir.Name, typefile.Name));
 					};
 
 					if (string.IsNullOrWhiteSpace (PreserveTag)) { // only do this if there was not a -preserve
-						using (TextWriter writer = OpenWrite (typefile.FullName, FileMode.Truncate))
-							WriteXml (doc.DocumentElement, writer);
-						
+						saveDoc ();
+
 						var unifiedAssemblyNode = doc.SelectSingleNode ("/Type/AssemblyInfo[@apistyle='unified']");
-						var classicAssemblyNode = doc.SelectSingleNode ("/Type/AssemblyInfo[@apistyle='classic']");
+						var classicAssemblyNode = doc.SelectSingleNode ("/Type/AssemblyInfo[not(@apistyle) or @apistyle='classic']");
+						var unifiedMembers = doc.SelectNodes ("//Member[@apistyle='unified']|//Member/AssemblyInfo[@apistyle='unified']");
+						var classicMembers = doc.SelectNodes ("//Member[@apistyle='classic']|//Member/AssemblyInfo[@apistyle='classic']");
 						bool isUnifiedRun = HasDroppedAnyNamespace ();
 						bool isClassicOrNormalRun = !isUnifiedRun;
+
+						Action<XmlNode, ApiStyle> removeStyles = (x, style) => {
+							var styledNodes = doc.SelectNodes("//*[@apistyle='"+ style.ToString ().ToLowerInvariant () +"']");
+							if (styledNodes != null && styledNodes.Count > 0) {
+								foreach(var node in styledNodes.Cast<XmlNode> ()) {
+									node.ParentNode.RemoveChild (node);
+								}
+							}
+							saveDoc ();
+						};
 						if (isClassicOrNormalRun) {
-							if (unifiedAssemblyNode != null) {
+							if (unifiedAssemblyNode != null || unifiedMembers.Count > 0) {
 								Warning ("*** this type is marked as unified, not deleting during this run: {0}", typefile.FullName);
 								// if truly removed from both assemblies, it will be removed fully during the unified run
+								removeStyles (doc, ApiStyle.Classic);
 								continue;
 							} else {
 								// we should be safe to delete here because it was not marked as a unified assembly
@@ -1043,7 +1087,7 @@ class MDocUpdater : MDocCommand
 							}
 						}
 						if (isUnifiedRun) {
-							if (classicAssemblyNode != null) {
+							if (classicAssemblyNode != null || classicMembers.Count > 0) {
 								Warning ("*** this type is marked as classic, not deleting {0}", typefile.FullName);
 								continue; 
 							} else {
@@ -1146,6 +1190,16 @@ class MDocUpdater : MDocCommand
 		foreach (DocsNodeInfo info in docEnum.GetDocumentationMembers (basefile, type)) {
 			XmlElement oldmember  = info.Node;
 			MemberReference oldmember2 = info.Member;
+
+			if (info.Member != null &&  info.Node != null) {
+				// Check for an error condition where the xml MemberName doesn't match the matched member
+				var memberName = GetMemberName (info.Member);
+				var memberAttribute = info.Node.Attributes ["MemberName"];
+				if (memberAttribute == null || (memberAttribute.Value != memberName && memberAttribute.Value.Split (',').Length != memberName.Split (',').Length)) {
+					oldmember.SetAttribute ("MemberName", memberName);
+				}
+			}
+
 			string sig = oldmember2 != null ? memberFormatters [0].GetDeclaration (oldmember2) : null;
 			
 			// Interface implementations and overrides are deleted from the docs
@@ -1226,10 +1280,10 @@ class MDocUpdater : MDocCommand
 				XmlElement mm = MakeMember(basefile, new DocsNodeInfo (null, m));
 				if (mm == null) continue;
 
-				if (MDocUpdater.SwitchingToMagicTypes) {
+				if (MDocUpdater.SwitchingToMagicTypes || MDocUpdater.HasDroppedNamespace (m)) {
 					// this is a unified style API that obviously doesn't exist in the classic API. Let's mark
 					// it with apistyle="unified", so that it's not displayed for classic style APIs
-					mm.SetAttribute ("apistyle", "unified");
+					mm.AddApiStyle (ApiStyle.Unified);
 				}
 
 				members.AppendChild( mm );
@@ -1340,8 +1394,10 @@ class MDocUpdater : MDocCommand
 
 		bool unifiedRun = HasDroppedNamespace (type);
 
-		var classicAssemblyInfo = member.SelectSingleNode ("AssemblyInfo[@apistyle='classic']");
-		bool nodeIsClassic = classicAssemblyInfo != null;
+		var classicAssemblyInfo = member.SelectSingleNode ("AssemblyInfo[not(@apistyle) or @apistyle='classic']");
+		bool nodeIsClassic = classicAssemblyInfo != null || member.HasApiStyle (ApiStyle.Classic);
+		var unifiedAssemblyInfo = member.SelectSingleNode ("AssemblyInfo[@apistyle='unified']");
+		bool nodeIsUnified = unifiedAssemblyInfo != null || member.HasApiStyle (ApiStyle.Unified);
 
 		Action actuallyDelete = () => {
 			todelete.Add (member);
@@ -1356,14 +1412,16 @@ class MDocUpdater : MDocCommand
 			Warning (message, signature);
 		} else if (unifiedRun && nodeIsClassic) {
 			// this is a unified run, and the member doesn't exist, but is marked as being in the classic assembly.
-				Warning ("Not removing '{0}' since it's still in the classic assembly.", signature);
+			member.RemoveApiStyle (ApiStyle.Unified);
+			member.AddApiStyle (ApiStyle.Classic);
+			Warning ("Not removing '{0}' since it's still in the classic assembly.", signature);
 		} else if (unifiedRun && !nodeIsClassic) {
 			// unified run, and the node is not classic, which means it doesn't exist anywhere.
 			actuallyDelete ();
-		} else {
-			if (!nodeIsClassic) {
+		} else { 
+			if (!isClassicRun || (isClassicRun && !nodeIsClassic && !nodeIsUnified)) { // regular codepath (ie. not classic/unified)
 				actuallyDelete ();
-			} else {
+			} else { // this is a classic run
 				Warning ("Removing classic from '{0}' ... will be removed in the unified run if not present there.", signature);
 				member.RemoveApiStyle (ApiStyle.Classic);
 				if (classicAssemblyInfo != null) {
@@ -1509,28 +1567,15 @@ class MDocUpdater : MDocCommand
 				type);
 		}
 		
+		AddAssemblyNameToNode (root, type);
+
 		string assemblyInfoNodeFilter = MDocUpdater.HasDroppedNamespace (type) ? "[@apistyle='unified']" : "[not(@apistyle) or @apistyle='classic']";
-
-		AddXmlNode(
-			root.SelectNodes ("AssemblyInfo" + assemblyInfoNodeFilter).Cast<XmlElement> ().ToArray (),
-			x => x.SelectSingleNode("AssemblyName").InnerText == type.Module.Assembly.Name.Name,
-			x => WriteElementText(x, "AssemblyName", type.Module.Assembly.Name.Name),
-			() => {
-				XmlElement ass = WriteElement(root, "AssemblyInfo", forceNewElement:true);
-				
-				if (MDocUpdater.HasDroppedNamespace (type)) ass.SetAttribute ("apistyle", "unified");
-
-				
-
-				return ass;
-			},
-			type);
-
-		foreach(var ass in root.SelectNodes ("AssemblyInfo" + assemblyInfoNodeFilter).Cast<XmlElement> ())
+		Func<XmlElement, bool> assemblyFilter = x => x.SelectSingleNode ("AssemblyName").InnerText == type.Module.Assembly.Name.Name;
+		foreach(var ass in root.SelectNodes ("AssemblyInfo" + assemblyInfoNodeFilter).Cast<XmlElement> ().Where (assemblyFilter))
 		{
 			WriteElementText(ass, "AssemblyName", type.Module.Assembly.Name.Name);
 			if (!no_assembly_versions) {
-				UpdateAssemblyVersions (root, type, true);
+				UpdateAssemblyVersions (ass, type, true);
 			}
 			else {
 				var versions = ass.SelectNodes ("AssemblyVersion").Cast<XmlNode> ().ToList ();
@@ -1628,6 +1673,43 @@ class MDocUpdater : MDocCommand
 		NormalizeWhitespace(root);
 	}
 
+	/// <summary>Adds an AssemblyInfo with AssemblyName node to an XmlElement.</summary>
+	/// <returns>The assembly that was either added, or was already present</returns>
+	XmlElement AddAssemblyNameToNode (XmlElement root, TypeDefinition type)
+	{
+		return AddAssemblyNameToNode (root, type.Module);
+	}
+
+	/// <summary>Adds an AssemblyInfo with AssemblyName node to an XmlElement.</summary>
+	/// <returns>The assembly that was either added, or was already present</returns>
+	XmlElement AddAssemblyNameToNode (XmlElement root, ModuleDefinition module)
+	{
+		Func<XmlElement, bool> assemblyFilter = x => {
+			var existingName = x.SelectSingleNode ("AssemblyName");
+
+			bool apiStyleMatches = true;
+			string currentApiStyle = x.GetAttribute ("apistyle");
+			if ((HasDroppedNamespace (module) && !string.IsNullOrWhiteSpace (currentApiStyle) && currentApiStyle != "unified") ||
+				    (isClassicRun && (string.IsNullOrWhiteSpace (currentApiStyle) || currentApiStyle != "classic"))) {
+				apiStyleMatches = false;
+			}
+			return apiStyleMatches && (existingName == null || (existingName != null && existingName.InnerText == module.Assembly.Name.Name));
+		};
+		
+		return AddAssemblyXmlNode (
+			root.SelectNodes ("AssemblyInfo").Cast<XmlElement> ().ToArray (), 
+			assemblyFilter, x => WriteElementText (x, "AssemblyName", module.Assembly.Name.Name), 
+			() =>  {
+				XmlElement ass = WriteElement (root, "AssemblyInfo", forceNewElement: true);
+				
+				if (MDocUpdater.HasDroppedNamespace (module))
+					ass.AddApiStyle (ApiStyle.Unified);
+				if (isClassicRun) 
+					ass.AddApiStyle (ApiStyle.Classic);
+				return ass;
+			}, module);
+	}
+
 	static readonly string[] TypeNodeOrder = {
 		"TypeSignature",
 		"MemberOfLibrary",
@@ -1683,7 +1765,13 @@ class MDocUpdater : MDocCommand
 		WriteElementText(me, "MemberType", GetMemberType(mi));
 
 		if (!no_assembly_versions) {
-			UpdateAssemblyVersions (me, mi, true);
+			if (!multiassembly)
+				UpdateAssemblyVersions (me, mi, true);
+			else {
+				var node = AddAssemblyNameToNode (me, mi.Module);
+
+				UpdateAssemblyVersionForAssemblyInfo (node, me, new[] { GetAssemblyVersion (mi.Module.Assembly) }, add: true);
+			}
 		}
 		else {
 			ClearElement (me, "AssemblyInfo");
@@ -1715,6 +1803,25 @@ class MDocUpdater : MDocCommand
 
 	static void AddXmlNode (XmlElement[] relevant, Func<XmlElement, bool> valueMatches, Action<XmlElement> setValue, Func<XmlElement> makeNewNode, TypeDefinition type) {
 		AddXmlNode (relevant, valueMatches, setValue, makeNewNode, type.Module);
+	}
+
+	static XmlElement AddAssemblyXmlNode (XmlElement[] relevant, Func<XmlElement, bool> valueMatches, Action<XmlElement> setValue, Func<XmlElement> makeNewNode, ModuleDefinition module)
+	{
+		bool isUnified = MDocUpdater.HasDroppedNamespace (module);
+		XmlElement thisAssemblyNode = relevant.FirstOrDefault (valueMatches);
+		if (thisAssemblyNode == null) {
+			thisAssemblyNode = makeNewNode ();
+		}
+		setValue (thisAssemblyNode);
+
+		if (isUnified) {
+			thisAssemblyNode.AddApiStyle (ApiStyle.Unified);
+
+			foreach (var otherNodes in relevant.Where (n => n != thisAssemblyNode && n.DoesNotHaveApiStyle (ApiStyle.Unified))) {
+				otherNodes.AddApiStyle (ApiStyle.Classic);
+			}
+		}
+		return thisAssemblyNode;
 	}
 
 	/// <summary>Adds an xml node, reusing the node if it's available</summary>
@@ -2276,12 +2383,18 @@ class MDocUpdater : MDocCommand
 				n.ParentNode.RemoveChild(n);
 	}
 	
-	private static bool UpdateAssemblyVersions (XmlElement root, MemberReference member, bool add)
+	private bool UpdateAssemblyVersions (XmlElement root, MemberReference member, bool add)
 	{
 		TypeDefinition type = member as TypeDefinition;
 		if (type == null)
 			type = member.DeclaringType as TypeDefinition;
-		return UpdateAssemblyVersions(root, type.Module.Assembly, new string[]{ GetAssemblyVersion (type.Module.Assembly) }, add);
+
+		var versions = new string[] { GetAssemblyVersion (type.Module.Assembly) };
+
+		if (root.LocalName == "AssemblyInfo")
+			return UpdateAssemblyVersionForAssemblyInfo (root, root.ParentNode as XmlElement, versions, add: true);
+		else 
+			return UpdateAssemblyVersions (root, type.Module.Assembly, versions, add);
 	}
 	
 	private static string GetAssemblyVersion (AssemblyDefinition assembly)
@@ -2289,8 +2402,11 @@ class MDocUpdater : MDocCommand
 		return assembly.Name.Version.ToString();
 	}
 	
-	private static bool UpdateAssemblyVersions(XmlElement root, AssemblyDefinition assembly, string[] assemblyVersions, bool add)
+	private bool UpdateAssemblyVersions(XmlElement root, AssemblyDefinition assembly, string[] assemblyVersions, bool add)
 	{
+		if (multiassembly)
+			return false;
+			
 		XmlElement av = (XmlElement) root.SelectSingleNode ("AssemblyVersions");
 		if (av != null) {
 				// AssemblyVersions is not part of the spec
@@ -2307,7 +2423,7 @@ class MDocUpdater : MDocCommand
 			e = root.OwnerDocument.CreateElement("AssemblyInfo");
 
 			if (MDocUpdater.HasDroppedNamespace (assembly)) {
-				e.SetAttribute ("apistyle", "unified");
+				e.AddApiStyle (ApiStyle.Unified);
 			}
 
 			root.AppendChild(e);
@@ -2316,13 +2432,16 @@ class MDocUpdater : MDocCommand
 		var thatNode = (XmlElement) root.SelectSingleNode (thatNodeFilter);
 		if (MDocUpdater.HasDroppedNamespace (assembly) && thatNode != null) {
 			// there's a classic node, we should add apistyles
-			e.SetAttribute ("apistyle", "unified");
-			thatNode.SetAttribute ("apistyle", "classic");
+			e.AddApiStyle (ApiStyle.Unified);
+			thatNode.AddApiStyle (ApiStyle.Classic);
 		}
 
-		List<XmlNode> matches = e.SelectNodes ("AssemblyVersion").Cast<XmlNode>()
-			.Where(v => Array.IndexOf (assemblyVersions, v.InnerText) >= 0)
-			.ToList ();
+		return UpdateAssemblyVersionForAssemblyInfo (e, root, assemblyVersions, add);
+	}
+
+	static bool UpdateAssemblyVersionForAssemblyInfo (XmlElement e, XmlElement root, string[] assemblyVersions, bool add)
+	{
+		List<XmlNode> matches = e.SelectNodes ("AssemblyVersion").Cast<XmlNode> ().Where (v => Array.IndexOf (assemblyVersions, v.InnerText) >= 0).ToList ();
 		// matches.Count > 0 && add: ignore -- already present
 		if (matches.Count > 0 && !add) {
 			foreach (XmlNode c in matches)
@@ -2398,40 +2517,27 @@ class MDocUpdater : MDocCommand
 
 	public static string MakeAttributesValueString (object v, TypeReference valueType)
 	{
-		if (v == null)
-			return "null";
-			if (valueType.FullName == "System.Type") {
-				var vTypeRef = v as TypeReference;
-				if (vTypeRef != null)
-					return "typeof(" + NativeTypeManager.GetTranslatedName (vTypeRef) + ")"; // TODO: drop NS handling
-				else
-					return "typeof(" + v.ToString () + ")";
+		var formatters = new [] { 
+			new AttributeValueFormatter (), 
+			new ApplePlatformEnumFormatter (), 
+			new StandardFlagsEnumFormatter (), 
+			new DefaultAttributeValueFormatter (),
+		};
+
+		ResolvedTypeInfo type = new ResolvedTypeInfo (valueType);
+		foreach (var formatter in formatters) {
+			string formattedValue;
+			if (formatter.TryFormatValue (v, type, out formattedValue)) {
+				return formattedValue;
 			}
-		if (valueType.FullName == "System.String")
-			return "\"" + v.ToString () + "\"";
-		if (valueType.FullName == "System.Char")
-			return "'" + v.ToString () + "'";
-		if (v is Boolean)
-			return (bool)v ? "true" : "false";
-		TypeDefinition valueDef = valueType.Resolve ();
-		if (valueDef == null || !valueDef.IsEnum)
-			return v.ToString ();
-		string typename = GetDocTypeFullName (valueType);
-		var values = GetEnumerationValues (valueDef);
-		long c = ToInt64 (v);
-		if (values.ContainsKey (c))
-			return typename + "." + values [c];
-		if (valueDef.CustomAttributes.Any (ca => ca.AttributeType.FullName == "System.FlagsAttribute")) {
-			return string.Join (" | ",
-					(from i in values.Keys
-					 where (c & i) != 0
-					 select typename + "." + values [i])
-					.DefaultIfEmpty (v.ToString ()).ToArray ());
 		}
-		return "(" + GetDocTypeFullName (valueType) + ") " + v.ToString ();
+
+		// this should never occur because the DefaultAttributeValueFormatter will always
+		// successfully format the value ... but this is needed to satisfy the compiler :)
+		throw new InvalidDataException (string.Format ("Unable to format attribute value ({0})", v.ToString ()));
 	}
 
-	private static Dictionary<long, string> GetEnumerationValues (TypeDefinition type)
+	internal static IDictionary<long, string> GetEnumerationValues (TypeDefinition type)
 	{
 		var values = new Dictionary<long, string> ();
 		foreach (var f in 
@@ -2443,7 +2549,7 @@ class MDocUpdater : MDocCommand
 		return values;
 	}
 
-	static long ToInt64 (object value)
+	internal static long ToInt64 (object value)
 	{
 		if (value is ulong)
 			return (long) (ulong) value;
@@ -2954,21 +3060,63 @@ static class DocUtils {
 		string styleString = style.ToString ().ToLowerInvariant ();
 		return element.GetAttribute ("apistyle") == styleString;
 	}
+	public static bool HasApiStyle(this XmlNode node, ApiStyle style) 
+	{
+		var attribute = node.Attributes ["apistyle"];
+		return attribute != null && attribute.Value == style.ToString ().ToLowerInvariant ();
+	}
 	public static void AddApiStyle(this XmlElement element, ApiStyle style) {
 		string styleString = style.ToString ().ToLowerInvariant ();
 		var existingValue = element.GetAttribute ("apistyle");
 		if (string.IsNullOrWhiteSpace (existingValue) || existingValue != styleString) {
 			element.SetAttribute ("apistyle", styleString);
 		}
+		
+		// Propagate the API style up to the membernode if necessary
+		if (element.LocalName == "AssemblyInfo" && element.ParentNode != null && element.ParentNode.LocalName == "Member") {
+			var member = element.ParentNode;
+			var unifiedAssemblyNode = member.SelectSingleNode ("AssemblyInfo[@apistyle='unified']");
+			var classicAssemblyNode = member.SelectSingleNode ("AssemblyInfo[not(@apistyle) or @apistyle='classic']");
+
+			var parentAttribute = element.ParentNode.Attributes ["apistyle"];
+			Action removeStyle = () => element.ParentNode.Attributes.Remove (parentAttribute);
+			Action propagateStyle = () => {
+				if (parentAttribute == null) {
+					// if it doesn't have the attribute, then add it
+					parentAttribute = element.OwnerDocument.CreateAttribute ("apistyle");
+					parentAttribute.Value = styleString;
+					element.ParentNode.Attributes.Append (parentAttribute);
+				} 
+			};
+
+			if ((style == ApiStyle.Classic && unifiedAssemblyNode != null) || (style == ApiStyle.Unified && classicAssemblyNode != null)) 
+				removeStyle ();
+			else
+				propagateStyle ();
+		}
+	}
+	public static void AddApiStyle (this XmlNode node, ApiStyle style) 
+	{
+		string styleString = style.ToString ().ToLowerInvariant ();
+		var existingAttribute = node.Attributes ["apistyle"];
+		if (existingAttribute == null) {
+			existingAttribute = node.OwnerDocument.CreateAttribute ("apistyle");
+			node.Attributes.Append (existingAttribute);
+		}
+		existingAttribute.Value = styleString;
 	}
 	public static void RemoveApiStyle (this XmlElement element, ApiStyle style) 
 	{
-		element.RemoveAttribute (style.ToString ().ToLowerInvariant ());
+		string styleString = style.ToString ().ToLowerInvariant ();
+		string existingValue = element.GetAttribute ("apistyle");
+		if (string.IsNullOrWhiteSpace (existingValue) || existingValue == styleString) {
+			element.RemoveAttribute ("apistyle");
+		}
 	}
 	public static void RemoveApiStyle (this XmlNode node, ApiStyle style) 
 	{
 		var styleAttribute = node.Attributes ["apistyle"];
-		if (styleAttribute != null) {
+		if (styleAttribute != null && styleAttribute.Value == style.ToString ().ToLowerInvariant ()) {
 			node.Attributes.Remove (styleAttribute);
 		}
 	}
@@ -3272,7 +3420,7 @@ class DocumentationEnumerator {
 		
 		string docName = member.MemberName;
 
-		string[] docTypeParams = GetTypeParameters (docName);
+		string[] docTypeParams = GetTypeParameters (docName, member.TypeParameters);
 
 		// If we're using 'magic types', then we might get false positives ... in those cases, we keep searching
 		MemberReference likelyCandidate = null;
@@ -3382,7 +3530,7 @@ class DocumentationEnumerator {
 		return likelyCandidate;
 	}
 
-	static string[] GetTypeParameters (string docName)
+	static string[] GetTypeParameters (string docName, IEnumerable<string> knownParameters)
 	{
 		if (docName [docName.Length-1] != '>')
 			return null;
@@ -3399,7 +3547,12 @@ class DocumentationEnumerator {
 		} while (--i >= 0);
 
 		types.Reverse ();
-		return types.ToArray ();
+		var arrayTypes = types.ToArray ();
+
+		if (knownParameters != null && knownParameters.Any () && arrayTypes.Length != knownParameters.Count ())
+			return knownParameters.ToArray ();
+		else
+			return arrayTypes;
 	}
 
 	protected static IEnumerable<MemberReference> GetReflectionMembers (TypeDefinition type, string docName)
@@ -5724,4 +5877,190 @@ class FileNameMemberFormatter : SlashDocMemberFormatter {
 	}
 }
 
+class ResolvedTypeInfo {
+	TypeDefinition typeDef;
+
+	public ResolvedTypeInfo (TypeReference value) {
+		Reference = value;
+	}
+
+	public TypeReference Reference { get; private set; }
+
+	public TypeDefinition Definition {
+		get {
+			if (typeDef == null) {
+				typeDef = Reference.Resolve ();
+			}
+			return typeDef;
+		}
+	}
+}
+
+/// <summary>Formats attribute values. Should return true if it is able to format the value.</summary>
+class AttributeValueFormatter {
+	public virtual bool TryFormatValue (object v, ResolvedTypeInfo type, out string returnvalue)
+	{
+		TypeReference valueType = type.Reference;
+		if (v == null) {
+			returnvalue = "null";
+			return true;
+		}
+		if (valueType.FullName == "System.Type") {
+			var vTypeRef = v as TypeReference;
+			if (vTypeRef != null) 
+				returnvalue = "typeof(" + NativeTypeManager.GetTranslatedName (vTypeRef) + ")"; // TODO: drop NS handling
+			else
+				returnvalue = "typeof(" + v.ToString () + ")";
+			
+			return true;
+		}
+		if (valueType.FullName == "System.String") {
+			returnvalue = "\"" + v.ToString () + "\"";
+			return true;
+		}
+		if (valueType.FullName == "System.Char") {
+			returnvalue = "'" + v.ToString () + "'";
+			return true;
+		}
+		if (v is Boolean) {
+			returnvalue = (bool)v ? "true" : "false";
+			return true;
+		}
+
+		TypeDefinition valueDef = type.Definition;
+		if (valueDef == null || !valueDef.IsEnum) {
+			returnvalue = v.ToString ();
+			return true;
+		}
+
+		string typename = MDocUpdater.GetDocTypeFullName (valueType);
+		var values = MDocUpdater.GetEnumerationValues (valueDef);
+		long c = MDocUpdater.ToInt64 (v);
+		if (values.ContainsKey (c)) {
+			returnvalue = typename + "." + values [c];
+			return true;
+		}
+
+		returnvalue = null;
+		return false;
+	}
+}
+
+/// <summary>The final value formatter in the pipeline ... if no other formatter formats the value,
+/// then this one will serve as the default implementation.</summary>
+class DefaultAttributeValueFormatter : AttributeValueFormatter {
+	public override bool TryFormatValue (object v, ResolvedTypeInfo type, out string returnvalue)
+	{
+		returnvalue = "(" + MDocUpdater.GetDocTypeFullName (type.Reference) + ") " + v.ToString ();
+		return true;
+	}
+}
+
+/// <summary>Flags enum formatter that assumes powers of two values.</summary>
+/// <remarks>As described here: https://msdn.microsoft.com/en-us/library/vstudio/ms229062(v=vs.100).aspx</remarks>
+class StandardFlagsEnumFormatter : AttributeValueFormatter {
+	public override bool TryFormatValue (object v, ResolvedTypeInfo type, out string returnvalue)
+	{
+		TypeReference valueType = type.Reference;
+		TypeDefinition valueDef = type.Definition;
+		if (valueDef.CustomAttributes.Any (ca => ca.AttributeType.FullName == "System.FlagsAttribute")) {
+
+			string typename = MDocUpdater.GetDocTypeFullName (valueType);
+			var values = MDocUpdater.GetEnumerationValues (valueDef);
+			long c = MDocUpdater.ToInt64 (v);
+			returnvalue = string.Join (" | ",
+				(from i in values.Keys
+				 where (c & i) == i && i != 0
+				 select typename + "." + values [i])
+				.DefaultIfEmpty (c.ToString ()).ToArray ());
+			
+			return true;
+		}
+
+		returnvalue = null;
+		return false;
+	}
+}
+
+/// <summary>A custom formatter for the ObjCRuntime.Platform enumeration.</summary>
+class ApplePlatformEnumFormatter : AttributeValueFormatter {
+	public override bool TryFormatValue (object v, ResolvedTypeInfo type, out string returnvalue)
+	{
+		TypeReference valueType = type.Reference;
+		string typename = MDocUpdater.GetDocTypeFullName (valueType);
+		TypeDefinition valueDef = type.Definition;
+		if (typename.Contains ("ObjCRuntime.Platform") && valueDef.CustomAttributes.Any (ca => ca.AttributeType.FullName == "System.FlagsAttribute")) {
+
+			var values = MDocUpdater.GetEnumerationValues (valueDef);
+			long c = MDocUpdater.ToInt64 (v);
+
+			returnvalue = Format (c, values, typename);
+			return true;
+		}
+
+		returnvalue = null;
+		return false;
+	}
+
+	string Format (long c, IDictionary<long, string> values, string typename)
+	{
+		int iosarch, iosmajor, iosminor, iossubminor;
+		int macarch, macmajor, macminor, macsubminor;
+		GetEncodingiOS (c, out iosarch, out iosmajor, out iosminor, out iossubminor);
+		GetEncodingMac ((ulong)c, out macarch, out macmajor, out macminor, out macsubminor);
+
+		if (iosmajor == 0 & iosminor == 0 && iossubminor == 0) {
+			return FormatValues ("Mac", macarch, macmajor, macminor, macsubminor);
+		}
+
+		if (macmajor == 0 & macminor == 0 && macsubminor == 0) {
+			return FormatValues ("iOS", iosarch, iosmajor, iosminor, iossubminor);
+		}
+
+		return string.Format ("(Platform){0}", c);
+	}
+
+	string FormatValues (string plat, int arch, int major, int minor, int subminor) 
+	{
+		string archstring = "";
+		switch (arch) {
+		case 1:
+			archstring = "32";
+			break;
+		case 2:
+			archstring = "64";
+			break;
+		}
+		return string.Format ("Platform.{4}_{0}_{1}{2} | Platform.{4}_Arch{3}",
+			major,
+			minor,
+			subminor == 0 ? "" : "_" + subminor.ToString (),
+			archstring,
+			plat
+		);
+	}
+
+	void GetEncodingiOS (long entireLong, out int archindex, out int major, out int minor, out int subminor)
+	{
+		long lowerBits = entireLong & 0xffffffff; 
+		int lowerBitsAsInt = (int) lowerBits;
+		GetEncoding (lowerBitsAsInt, out archindex, out major, out minor, out subminor);
+	}
+
+	void GetEncodingMac (ulong entireLong, out int archindex, out int major, out int minor, out int subminor)
+	{
+		ulong higherBits = entireLong & 0xffffffff00000000; 
+		int higherBitsAsInt = (int) ((higherBits) >> 32);
+		GetEncoding (higherBitsAsInt, out archindex, out major, out minor, out subminor);
+	}
+
+	void GetEncoding (Int32 encodedBits, out int archindex, out int major, out int minor, out int subminor)
+	{
+		// format is AAJJNNSS
+		archindex = (int)((encodedBits & 0xFF000000) >> 24);
+		major = (int)((encodedBits & 0x00FF0000) >> 16);
+		minor = (int)((encodedBits & 0x0000FF00) >> 8);
+		subminor = (int)((encodedBits & 0x000000FF) >> 0);
+	}
+}
 }

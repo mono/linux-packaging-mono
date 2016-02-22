@@ -183,6 +183,8 @@ namespace System.Reflection
         #endregion
 
         #region _ParameterInfo implementation
+
+#if !FEATURE_CORECLR
         void _ParameterInfo.GetTypeInfoCount(out uint pcTInfo)
         {
             throw new NotImplementedException();
@@ -202,6 +204,8 @@ namespace System.Reflection
         {
             throw new NotImplementedException();
         }
+#endif
+
         #endregion
 
         #region IObjectReference

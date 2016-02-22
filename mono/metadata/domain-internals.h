@@ -9,15 +9,11 @@
 #include <mono/metadata/mempool.h>
 #include <mono/metadata/lock-tracer.h>
 #include <mono/utils/mono-codeman.h>
-#include <mono/utils/mono-mutex.h>
 #include <mono/metadata/mono-hash.h>
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-internal-hash.h>
 #include <mono/io-layer/io-layer.h>
 #include <mono/metadata/mempool-internals.h>
-
-
-extern mono_mutex_t mono_delegate_section;
 
 /*
  * If this is set, the memory belonging to appdomains is not freed when a domain is
@@ -89,6 +85,10 @@ typedef struct {
 	 * associated with this handler.
 	 */
 	int clause_index;
+	uint32_t try_offset;
+	uint32_t try_len;
+	uint32_t handler_offset;
+	uint32_t handler_len;
 	union {
 		MonoClass *catch_class;
 		gpointer filter;
@@ -238,11 +238,17 @@ struct _MonoJitInfo {
 
 #define MONO_SIZEOF_JIT_INFO (offsetof (struct _MonoJitInfo, clauses))
 
+typedef struct {
+	gpointer *static_data; /* Used to free the static data without going through the MonoAppContext object itself. */
+	uint32_t gc_handle;
+} ContextStaticData;
+
 struct _MonoAppContext {
 	MonoObject obj;
 	gint32 domain_id;
 	gint32 context_id;
 	gpointer *static_data;
+	ContextStaticData *data;
 };
 
 /* Lock-free allocator */
@@ -284,7 +290,7 @@ struct _MonoDomain {
 	 * i.e. if both are taken by the same thread, the loader lock
 	 * must taken first.
 	 */
-	mono_mutex_t    lock;
+	MonoCoopMutex    lock;
 	MonoMemPool        *mp;
 	MonoCodeManager    *code_mp;
 	/*
@@ -399,16 +405,15 @@ struct _MonoDomain {
 	MonoClass *sockaddr_class;
 	MonoClassField *sockaddr_data_field;
 
-	/* Used by threadpool.c */
-	MonoImage *system_image;
-	MonoClass *corlib_asyncresult_class;
-	MonoClass *socket_class;
-	MonoClass *ad_unloaded_ex_class;
-	MonoClass *process_class;
-
 	/* Cache function pointers for architectures  */
 	/* that require wrappers */
 	GHashTable *ftnptrs_hash;
+
+	/* Maps MonoMethod* to weak links to DynamicMethod objects */
+	GHashTable *method_to_dyn_method;
+
+	/* <ThrowUnobservedTaskExceptions /> support */
+	gboolean throw_unobserved_task_exceptions;
 
 	guint32 execution_context_field_offset;
 };
@@ -424,10 +429,10 @@ typedef struct  {
 	const AssemblyVersionSet version_sets [4];
 } MonoRuntimeInfo;
 
-#define mono_domain_assemblies_lock(domain) mono_locks_acquire(&(domain)->assemblies_lock, DomainAssembliesLock)
-#define mono_domain_assemblies_unlock(domain) mono_locks_release(&(domain)->assemblies_lock, DomainAssembliesLock)
-#define mono_domain_jit_code_hash_lock(domain) mono_locks_acquire(&(domain)->jit_code_hash_lock, DomainJitCodeHashLock)
-#define mono_domain_jit_code_hash_unlock(domain) mono_locks_release(&(domain)->jit_code_hash_lock, DomainJitCodeHashLock)
+#define mono_domain_assemblies_lock(domain) mono_locks_os_acquire(&(domain)->assemblies_lock, DomainAssembliesLock)
+#define mono_domain_assemblies_unlock(domain) mono_locks_os_release(&(domain)->assemblies_lock, DomainAssembliesLock)
+#define mono_domain_jit_code_hash_lock(domain) mono_locks_os_acquire(&(domain)->jit_code_hash_lock, DomainJitCodeHashLock)
+#define mono_domain_jit_code_hash_unlock(domain) mono_locks_os_release(&(domain)->jit_code_hash_lock, DomainJitCodeHashLock)
 
 typedef MonoDomain* (*MonoLoadFunc) (const char *filename, const char *runtime_version);
 
@@ -597,6 +602,9 @@ ves_icall_System_AppDomain_InternalIsFinalizingForUnload (gint32 domain_id);
 void
 ves_icall_System_AppDomain_InternalUnload          (gint32 domain_id);
 
+void
+ves_icall_System_AppDomain_DoUnhandledException (MonoException *exc);
+
 gint32
 ves_icall_System_AppDomain_ExecuteAssembly         (MonoAppDomain *ad, 
 													MonoReflectionAssembly *refass,
@@ -632,6 +640,9 @@ ves_icall_System_AppDomain_GetIDFromDomain (MonoAppDomain * ad);
 MonoString *
 ves_icall_System_AppDomain_InternalGetProcessGuid (MonoString* newguid);
 
+MonoBoolean
+ves_icall_System_CLRConfig_CheckThrowUnobservedTaskExceptions (void);
+
 MonoAssembly *
 mono_assembly_load_corlib (const MonoRuntimeInfo *runtime, MonoImageOpenStatus *status);
 
@@ -665,7 +676,7 @@ MonoAssembly* mono_assembly_load_full_nosearch (MonoAssemblyName *aname,
 						MonoImageOpenStatus *status,
 						gboolean refonly);
 
-void mono_set_private_bin_path_from_config (MonoDomain *domain);
+void mono_domain_set_options_from_config (MonoDomain *domain);
 
 int mono_framework_version (void);
 

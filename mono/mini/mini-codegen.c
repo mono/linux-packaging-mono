@@ -144,7 +144,7 @@ mono_regstate_assign (MonoRegState *rs)
 	if (rs->next_vreg > rs->vassign_size) {
 		g_free (rs->vassign);
 		rs->vassign_size = MAX (rs->next_vreg, 256);
-		rs->vassign = g_malloc (rs->vassign_size * sizeof (gint32));
+		rs->vassign = (gint32 *)g_malloc (rs->vassign_size * sizeof (gint32));
 	}
 
 	memset (rs->isymbolic, 0, MONO_MAX_IREGS * sizeof (rs->isymbolic [0]));
@@ -295,7 +295,7 @@ resize_spill_info (MonoCompile *cfg, int bank)
 
 	g_assert (bank < MONO_NUM_REGBANKS);
 
-	new_info = mono_mempool_alloc0 (cfg->mempool, sizeof (MonoSpillInfo) * new_len);
+	new_info = (MonoSpillInfo *)mono_mempool_alloc0 (cfg->mempool, sizeof (MonoSpillInfo) * new_len);
 	if (orig_info)
 		memcpy (new_info, orig_info, sizeof (MonoSpillInfo) * orig_len);
 	for (i = orig_len; i < new_len; ++i)
@@ -419,6 +419,12 @@ static const char* const patch_info_str[] = {
 #undef PATCH_INFO
 };
 
+const char*
+mono_ji_type_to_string (MonoJumpInfoType type)
+{
+	return patch_info_str [type];
+}
+
 void
 mono_print_ji (const MonoJumpInfo *ji)
 {
@@ -435,6 +441,10 @@ mono_print_ji (const MonoJumpInfo *ji)
 		char *s = mono_method_full_name (ji->data.method, TRUE);
 		printf ("[METHODCONST - %s]", s);
 		g_free (s);
+		break;
+	}
+	case MONO_PATCH_INFO_INTERNAL_METHOD: {
+		printf ("[INTERNAL_METHOD - %s]", ji->data.name);
 		break;
 	}
 	default:
@@ -732,6 +742,12 @@ print_regtrack (RegTrack *t, int num)
 	}
 }
 #else
+
+const char*
+mono_ji_type_to_string (MonoJumpInfoType type)
+{
+	return "";
+}
 
 void
 mono_print_ji (const MonoJumpInfo *ji)
@@ -1164,10 +1180,11 @@ mono_local_regalloc (MonoCompile *cfg, MonoBasicBlock *bb)
 	if (cfg->reginfo && cfg->reginfo_len < max)
 		cfg->reginfo = NULL;
 
-	reginfo = cfg->reginfo;
+	reginfo = (RegTrack *)cfg->reginfo;
 	if (!reginfo) {
 		cfg->reginfo_len = MAX (1024, max * 2);
-		reginfo = cfg->reginfo = mono_mempool_alloc (cfg->mempool, sizeof (RegTrack) * cfg->reginfo_len);
+		reginfo = (RegTrack *)mono_mempool_alloc (cfg->mempool, sizeof (RegTrack) * cfg->reginfo_len);
+		cfg->reginfo = reginfo;
 	} 
 	else
 		g_assert (cfg->reginfo_len >= rs->next_vreg);
@@ -2434,7 +2451,7 @@ mono_opcode_to_cond (int opcode)
 	default:
 		printf ("%s\n", mono_inst_name (opcode));
 		g_assert_not_reached ();
-		return 0;
+		return (CompRelation)0;
 	}
 }
 
@@ -2496,7 +2513,7 @@ mono_opcode_to_type (int opcode, int cmp_opcode)
 		}
 	} else {
 		g_error ("Unknown opcode '%s' in opcode_to_type", mono_inst_name (opcode));
-		return 0;
+		return (CompType)0;
 	}
 }
 
@@ -2505,7 +2522,7 @@ mono_opcode_to_type (int opcode, int cmp_opcode)
 gboolean
 mono_is_regsize_var (MonoType *t)
 {
-	t = mini_type_get_underlying_type (NULL, t);
+	t = mini_get_underlying_type (t);
 	switch (t->type) {
 	case MONO_TYPE_I1:
 	case MONO_TYPE_U1:
@@ -2754,9 +2771,6 @@ mini_type_is_hfa (MonoType *t, int *out_nfields, int *out_esize)
 				return FALSE;
 			prev_ftype = ftype;
 			nfields += nested_nfields;
-			// FIXME: Nested float structs are aligned to 8 bytes
-			if (ftype->type == MONO_TYPE_R4)
-				return FALSE;
 		} else {
 			if (!(!ftype->byref && (ftype->type == MONO_TYPE_R4 || ftype->type == MONO_TYPE_R8)))
 				return FALSE;
@@ -2766,7 +2780,7 @@ mini_type_is_hfa (MonoType *t, int *out_nfields, int *out_esize)
 			nfields ++;
 		}
 	}
-	if (nfields == 0 || nfields > 4)
+	if (nfields == 0)
 		return FALSE;
 	*out_nfields = nfields;
 	*out_esize = prev_ftype->type == MONO_TYPE_R4 ? 4 : 8;

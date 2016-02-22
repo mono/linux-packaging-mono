@@ -105,16 +105,10 @@ namespace System.IO {
 
         protected char[] CoreNewLine = InitialNewLine.ToCharArray ();
 #else
-#if !PLATFORM_UNIX
         private const String InitialNewLine = "\r\n";
 
         protected char[] CoreNewLine = new char[] { '\r', '\n' };
-#else
-        private const String InitialNewLine = "\n";
 
-        protected char[] CoreNewLine = new char[] {'\n'};
-
-#endif // !PLATFORM_UNIX
 #endif
         // Can be null - if so, ask for the Thread's CurrentCulture every time.
         private IFormatProvider InternalFormatProvider;

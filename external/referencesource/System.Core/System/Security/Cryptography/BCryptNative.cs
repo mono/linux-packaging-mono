@@ -13,8 +13,31 @@ using System.Runtime.InteropServices;
 using System.Diagnostics.Contracts;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
+using System.Security.Cryptography.X509Certificates;
 
 namespace System.Security.Cryptography {
+
+    internal enum AsymmetricPaddingMode {
+        /// <summary>
+        ///     No padding
+        /// </summary>
+        None = 1,                       // BCRYPT_PAD_NONE
+
+        /// <summary>
+        ///     PKCS #1 padding
+        /// </summary>
+        Pkcs1 = 2,                      // BCRYPT_PAD_PKCS1
+
+        /// <summary>
+        ///     Optimal Asymmetric Encryption Padding
+        /// </summary>
+        Oaep = 4,                       // BCRYPT_PAD_OAEP
+
+        /// <summary>
+        ///     Probabilistic Signature Scheme padding
+        /// </summary>
+        Pss = 8                         // BCRYPT_PAD_PSS
+    }
     /// <summary>
     ///     Native interop with CNG's BCrypt layer. Native definitions can be found in bcrypt.h
     /// </summary>
@@ -34,6 +57,29 @@ namespace System.Security.Cryptography {
             public const string Sha256 = "SHA256";              // BCRYPT_SHA256_ALGORITHM
             public const string Sha384 = "SHA384";              // BCRYPT_SHA384_ALGORITHM
             public const string Sha512 = "SHA512";              // BCRYPT_SHA512_ALGORITHM
+            internal const string Rsa = "RSA";                  // BCRYPT_RSA_ALGORITHM
+        }
+
+        /// <summary>
+        ///     Well known key blob tyes
+        /// </summary>
+        internal static class KeyBlobType {
+            //During Win8 Windows introduced  BCRYPT_PUBLIC_KEY_BLOB L"PUBLICBLOB"  
+            //and #define BCRYPT_PRIVATE_KEY_BLOB L"PRIVATEBLOB". We should use the 
+            //same on ProjectN and ProjectK 
+            internal const string RsaFullPrivateBlob = "RSAFULLPRIVATEBLOB";    // BCRYPT_RSAFULLPRIVATE_BLOB
+            internal const string RsaPrivateBlob = "RSAPRIVATEBLOB";            // BCRYPT_RSAPRIVATE_BLOB
+            internal const string RsaPublicBlob = "RSAPUBLICBLOB";              // BCRYPT_PUBLIC_KEY_BLOB
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct BCRYPT_RSAKEY_BLOB {
+            internal KeyBlobMagicNumber Magic;
+            internal int BitLength;
+            internal int cbPublicExp;
+            internal int cbModulus;
+            internal int cbPrime1;
+            internal int cbPrime2;
         }
 
         /// <summary>
@@ -61,7 +107,35 @@ namespace System.Security.Cryptography {
             ECDHPublicP521 = 0x354B4345,                        // BCRYPT_ECDH_PUBLIC_P521_MAGIC
             ECDsaPublicP256 = 0x31534345,                       // BCRYPT_ECDSA_PUBLIC_P256_MAGIC
             ECDsaPublicP384 = 0x33534345,                       // BCRYPT_ECDSA_PUBLIC_P384_MAGIC
-            ECDsaPublicP521 = 0x35534345                        // BCRYPT_ECDSA_PUBLIC_P521_MAGIC
+            ECDsaPublicP521 = 0x35534345,                       // BCRYPT_ECDSA_PUBLIC_P521_MAGIC
+            RsaPublic = 0x31415352,                             // BCRYPT_RSAPUBLIC_MAGIC
+            RsaPrivate = 0x32415352,                            // BCRYPT_RSAPRIVATE_MAGIC
+            RsaFullPrivateMagic = 0x33415352,                    //BCRYPT_RSAFULLPRIVATE_MAGIC   
+            KeyDataBlob = 0x4d42444b                            // BCRYPT_KEY_DATA_BLOB_MAGIC
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct BCRYPT_OAEP_PADDING_INFO {
+            [MarshalAs(UnmanagedType.LPWStr)]
+            internal string pszAlgId;
+
+            internal IntPtr pbLabel;
+
+            internal int cbLabel;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct BCRYPT_PKCS1_PADDING_INFO {
+            [MarshalAs(UnmanagedType.LPWStr)]
+            internal string pszAlgId;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct BCRYPT_PSS_PADDING_INFO {
+            [MarshalAs(UnmanagedType.LPWStr)]
+            internal string pszAlgId;
+
+            internal int cbSalt;
         }
 
         /// <summary>
@@ -72,6 +146,9 @@ namespace System.Security.Cryptography {
             public const string Hmac = "HMAC";                  // BCRYPT_KDF_HMAC
             public const string Tls = "TLS_PRF";                // BCRYPT_KDF_TLS_PRF
         }
+
+        internal const string BCRYPT_ECCPUBLIC_BLOB = "ECCPUBLICBLOB";
+        internal const string BCRYPT_ECCPRIVATE_BLOB = "ECCPRIVATEBLOB";
 
         /// <summary>
         ///     Well known BCrypt provider names
@@ -163,6 +240,22 @@ namespace System.Security.Cryptography {
                                                                          string pszAlgId,             // BCryptAlgorithm
                                                                          string pszImplementation,    // ProviderNames
                                                                          int dwFlags);
+
+            [DllImport("bcrypt.dll", SetLastError = true)]
+            internal static extern ErrorCode BCryptExportKey([In]SafeBCryptKeyHandle hKey,
+                                                             [In]IntPtr hExportKey,
+                                                             [In][MarshalAs(UnmanagedType.LPWStr)] string pszBlobType,
+                                                             [Out, MarshalAs(UnmanagedType.LPArray)] byte[] pbOutput,
+                                                             [In]int cbOutput,
+                                                             [In]ref int pcbResult,
+                                                             [In] int dwFlags);
+
+            [DllImport("Crypt32.dll", SetLastError = true)]
+            internal static extern int CryptImportPublicKeyInfoEx2([In] uint dwCertEncodingType,
+                                                   [In] ref X509Native.CERT_PUBLIC_KEY_INFO pInfo,
+                                                   [In] int dwFlags,
+                                                   [In] IntPtr pvAuxInfo,
+                                                   [Out] out SafeBCryptKeyHandle phKey);
         }
 
         //
@@ -325,6 +418,41 @@ namespace System.Security.Cryptography {
             }
 
             return algorithmHandle;
+        }
+
+        [SecuritySafeCritical]
+        internal static SafeBCryptKeyHandle ImportAsymmetricPublicKey(X509Native.CERT_PUBLIC_KEY_INFO certPublicKeyInfo, int dwFlag) {
+            SafeBCryptKeyHandle keyHandle = null;            
+            int error = UnsafeNativeMethods.CryptImportPublicKeyInfoEx2(
+                                                        X509Native.X509_ASN_ENCODING,
+                                                        ref certPublicKeyInfo,
+                                                        dwFlag,
+                                                        IntPtr.Zero,
+                                                        out keyHandle);
+            if (error == 0) {
+                throw new CryptographicException(Marshal.GetLastWin32Error());
+            }
+            return keyHandle;
+        }
+
+        [SecuritySafeCritical]
+        internal static byte[] ExportBCryptKey(SafeBCryptKeyHandle hKey, string blobType) {
+            byte[] keyBlob = null;
+            int length = 0;
+
+            ErrorCode error = UnsafeNativeMethods.BCryptExportKey(hKey, IntPtr.Zero, blobType, null, 0, ref length, 0);
+
+            if (error != ErrorCode.BufferToSmall && error != ErrorCode.Success)
+            {
+                throw new CryptographicException(Marshal.GetLastWin32Error());
+            }
+
+            keyBlob = new byte[length];
+            error = UnsafeNativeMethods.BCryptExportKey(hKey, IntPtr.Zero, blobType, keyBlob, length, ref length, 0);
+            if (error != ErrorCode.Success) {
+                throw new CryptographicException(Marshal.GetLastWin32Error());
+            }
+            return keyBlob;
         }
     }
 }

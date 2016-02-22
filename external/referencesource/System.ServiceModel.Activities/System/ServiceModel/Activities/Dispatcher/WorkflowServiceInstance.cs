@@ -1653,8 +1653,8 @@ namespace System.ServiceModel.Activities.Dispatcher
                 result = this.Controller.ScheduleBookmarkResumption(bookmark, value, bookmarkScope);
             }
 
-            if (result == BookmarkResumptionResult.NotReady && !bufferedReceiveEnabled)
-            {
+            if (result == BookmarkResumptionResult.NotReady && !bufferedReceiveEnabled && (this.serviceHost.FilterResumeTimeout.TotalSeconds > 0))
+                {
                 if (waitHandle == null)
                 {
                     waitHandle = new AsyncWaitHandle();
@@ -3007,7 +3007,8 @@ namespace System.ServiceModel.Activities.Dispatcher
                 this.value = value;
                 this.bookmarkScope = bookmarkScope;
                 this.timeoutHelper = new TimeoutHelper(timeout);
-                // we are using default hard coded timeout of 1 minutes
+                // The value for WorkflowServiceHost.FilterResumeTimeout comes from the AppSetting
+                // "microsoft:WorkflowServices:FilterResumeTimeoutInSeconds"
                 this.nextIdleTimeoutHelper = new TimeoutHelper(instance.serviceHost.FilterResumeTimeout);
                 this.isResumeProtocolBookmark = isResumeProtocolBookmark;
                 this.OnCompleting = onCompleting;
@@ -3195,8 +3196,8 @@ namespace System.ServiceModel.Activities.Dispatcher
 
                     bool bufferedReceiveEnabled = this.isResumeProtocolBookmark && this.instance.BufferedReceiveManager != null;
                     this.resumptionResult = this.instance.ResumeProtocolBookmarkCore(this.bookmark, this.value, this.bookmarkScope, bufferedReceiveEnabled, ref this.waitHandle, ref this.ownsLock);
-                    if (this.resumptionResult == BookmarkResumptionResult.NotReady && !bufferedReceiveEnabled)
-                    {
+                    if (this.resumptionResult == BookmarkResumptionResult.NotReady && !bufferedReceiveEnabled && (this.instance.serviceHost.FilterResumeTimeout.TotalSeconds > 0))
+                        {
                         if (nextIdleCallback == null)
                         {
                             nextIdleCallback = new Action<object, TimeoutException>(OnNextIdle);

@@ -92,7 +92,6 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 
         // This method is invoked when GetEnumerator is called on a WinRT-backed implementation of IEnumerable.
         [SecurityCritical]
-        [ForceTokenStabilization]
         internal IEnumerator GetEnumerator_Stub()
         {
             IBindableIterable _this = JitHelpers.UnsafeCast<IBindableIterable>(this);

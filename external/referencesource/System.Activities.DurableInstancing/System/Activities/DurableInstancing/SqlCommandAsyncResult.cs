@@ -35,6 +35,8 @@ namespace System.Activities.DurableInstancing
                 new RetryErrorCode(10054, RetryErrorOptions.RetryBeginOrEnd | RetryErrorOptions.RetryWhenTransaction), // Severed tcp connection drawn from the pool
                 new RetryErrorCode(10060, RetryErrorOptions.RetryBeginOrEnd | RetryErrorOptions.RetryWhenTransaction), // The server was not found or was not accessible. 
                 new RetryErrorCode(10061, RetryErrorOptions.RetryBeginOrEnd | RetryErrorOptions.RetryWhenTransaction), // SQL Server not started
+                new RetryErrorCode(10928, RetryErrorOptions.RetryBeginOrEnd | RetryErrorOptions.RetryWhenTransaction), // SQL Azure error - The limit for the database resource has been reached.
+                new RetryErrorCode(10929, RetryErrorOptions.RetryBeginOrEnd | RetryErrorOptions.RetryWhenTransaction), // SQL Azure error - The server is currently too busy to support requests up to the maximum limit.
                 new RetryErrorCode(40143, RetryErrorOptions.RetryBeginOrEnd | RetryErrorOptions.RetryWhenTransaction), // SQL Azure error - server encountered error processing the request.
                 new RetryErrorCode(40197, RetryErrorOptions.RetryBeginOrEnd | RetryErrorOptions.RetryWhenTransaction), // SQL Azure error - server encountered error processing the request.
                 new RetryErrorCode(40501, RetryErrorOptions.RetryBeginOrEnd | RetryErrorOptions.RetryWhenTransaction), // SQL Azure error - server is currently busy.

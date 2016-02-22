@@ -36,7 +36,6 @@ namespace System.Runtime.InteropServices.WindowsRuntime
         // int Count { get }
         [Pure]
         [SecurityCritical]
-        [ForceTokenStabilization]
         internal int Count()
         {
             IBindableVector _this = JitHelpers.UnsafeCast<IBindableVector>(this);
@@ -52,7 +51,6 @@ namespace System.Runtime.InteropServices.WindowsRuntime
         // bool IsSynchronized { get }
         [Pure]
         [SecurityCritical]
-        [ForceTokenStabilization]
         internal bool IsSynchronized()
         {
             return false;
@@ -61,7 +59,6 @@ namespace System.Runtime.InteropServices.WindowsRuntime
         // object SyncRoot { get }
         [Pure]
         [SecurityCritical]
-        [ForceTokenStabilization]
         internal object SyncRoot()
         {
             return this;
@@ -70,7 +67,6 @@ namespace System.Runtime.InteropServices.WindowsRuntime
         // void CopyTo(Array array, int index)
         [Pure]
         [SecurityCritical]
-        [ForceTokenStabilization]
         internal void CopyTo(Array array, int arrayIndex)
         {
             if (array == null)

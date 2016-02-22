@@ -507,7 +507,7 @@ namespace System.ServiceModel.Channels
             switch (header.HeaderType)
             {
                 case HeaderType.BufferedMessageHeader:
-                    AddHeader(new Header(header.HeaderKind, CaptureBufferedHeader(collection.bufferedMessageData,
+                    AddHeader(new Header(header.HeaderKind, collection.CaptureBufferedHeader(collection.bufferedMessageData,
                         header.HeaderInfo, headerIndex), processing));
                     break;
                 case HeaderType.ReadableHeader:

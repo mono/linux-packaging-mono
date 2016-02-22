@@ -50,7 +50,6 @@
 #define GetCurrentDirectory wapi_GetCurrentDirectory 
 #define SetCurrentDirectory wapi_SetCurrentDirectory 
 #define CreatePipe wapi_CreatePipe 
-#define GetTempPath wapi_GetTempPath 
 #define GetLogicalDriveStrings wapi_GetLogicalDriveStrings 
 #define GetDiskFreeSpaceEx wapi_GetDiskFreeSpaceEx
 #define GetDriveType wapi_GetDriveType
@@ -90,9 +89,6 @@
 #define WSARecv wapi_WSARecv 
 #define WSASend wapi_WSASend 
 #define GetSystemInfo wapi_GetSystemInfo
-#define GetCurrentThreadId wapi_GetCurrentThreadId
-#define Sleep wapi_Sleep
-#define SleepEx wapi_SleepEx
 #define QueryPerformanceCounter wapi_QueryPerformanceCounter
 #define QueryPerformanceFrequency wapi_QueryPerformanceFrequency
 #define GetTickCount wapi_GetTickCount 
@@ -106,5 +102,7 @@
 #define WaitForMultipleObjects wapi_WaitForMultipleObjects
 #define WaitForMultipleObjectsEx wapi_WaitForMultipleObjectsEx
 #define WaitForInputIdle wapi_WaitForInputIdle
+#define GetThreadPriority wapi_GetThreadPriority
+#define SetThreadPriority wapi_SetThreadPriority
 
 #endif /* __WAPI_REMAP_H__ */

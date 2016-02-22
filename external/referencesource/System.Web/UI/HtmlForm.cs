@@ -286,7 +286,9 @@ namespace System.Web.UI.HtmlControls {
                 action = clientFilePath.VirtualPathString;
                 int iPos = action.LastIndexOf('/');
                 if (iPos >= 0) {
-                    action = action.Substring(iPos + 1);
+                    // Ensure the segment is always a relative path, so prepend a dot-segment
+                    // (RFC section 4.2 Relative Reference)
+                    action = "./" + action.Substring(iPos + 1);
                 }
             }
             else {

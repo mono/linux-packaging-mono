@@ -123,7 +123,9 @@ namespace Mono.Linker.Steps {
 		{
 			while (!QueueIsEmpty ()) {
 				MethodDefinition method = (MethodDefinition) _methods.Dequeue ();
+				Annotations.Push (method);
 				ProcessMethod (method);
+				Annotations.Pop ();
 			}
 		}
 
@@ -485,6 +487,8 @@ namespace Mono.Linker.Steps {
 			if (CheckProcessed (type))
 				return null;
 
+			Annotations.Push (type);
+
 			MarkScope (type.Scope);
 			MarkType (type.BaseType);
 			MarkType (type.DeclaringType);
@@ -517,6 +521,8 @@ namespace Mono.Linker.Steps {
 			}
 
 			DoAdditionalTypeProcessing (type);
+
+			Annotations.Pop ();
 
 			Annotations.Mark (type);
 
@@ -880,6 +886,7 @@ namespace Mono.Linker.Steps {
 			if (reference.DeclaringType is ArrayType)
 				return null;
 
+			Annotations.Push (reference);
 			if (reference.DeclaringType is GenericInstanceType)
 				MarkType (reference.DeclaringType);
 
@@ -888,13 +895,18 @@ namespace Mono.Linker.Steps {
 
 			MethodDefinition method = ResolveMethodDefinition (reference);
 
-			if (method == null)
+			if (method == null) {
+				Annotations.Pop ();
 				throw new ResolutionException (reference);
+			}
 
 			if (Annotations.GetAction (method) == MethodAction.Nothing)
 				Annotations.SetAction (method, MethodAction.Parse);
 
 			EnqueueMethod (method);
+
+			Annotations.Pop ();
+
 			return method;
 		}
 

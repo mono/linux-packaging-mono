@@ -119,7 +119,8 @@ namespace Mono.Security.Protocol.Tls
 
 				case HandshakeType.Finished:
 					// Certificates are optional, but if provided, they should send a CertificateVerify
-					bool check = (cert == null) ? (last == HandshakeType.ClientKeyExchange) : (last == HandshakeType.CertificateVerify);
+					bool hasCert = cert != null && cert.HasCertificate;
+					bool check = hasCert ? (last == HandshakeType.CertificateVerify) : (last == HandshakeType.ClientKeyExchange);
 					// ChangeCipherSpecDone is not an handshake message (it's a content type) but still needs to be happens before finished
 					if (check && context.ChangeCipherSpecDone) {
 						context.ChangeCipherSpecDone = false;
@@ -131,7 +132,6 @@ namespace Mono.Security.Protocol.Tls
 					throw new TlsException(AlertDescription.UnexpectedMessage, String.Format(CultureInfo.CurrentUICulture,
 														 "Unknown server handshake message received ({0})", 
 														 type.ToString()));
-					break;
 			}
 			throw new TlsException (AlertDescription.HandshakeFailiure, String.Format ("Protocol error, unexpected protocol transition from {0} to {1}", last, type));
 		}

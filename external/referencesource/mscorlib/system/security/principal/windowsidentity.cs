@@ -67,13 +67,13 @@ namespace System.Security.Principal
     public class WindowsIdentity : IIdentity, ISerializable, IDeserializationCallback, IDisposable {
 #endif
         [System.Security.SecurityCritical] // auto-generated
-        static SafeTokenHandle s_invalidTokenHandle = SafeTokenHandle.InvalidHandle; 
+        static SafeAccessTokenHandle s_invalidTokenHandle = SafeAccessTokenHandle.InvalidHandle; 
         private string m_name = null;
         private SecurityIdentifier m_owner = null;
         private SecurityIdentifier m_user = null;
         private object m_groups = null;
         [System.Security.SecurityCritical] // auto-generated
-        private SafeTokenHandle m_safeTokenHandle = SafeTokenHandle.InvalidHandle;
+        private SafeAccessTokenHandle m_safeTokenHandle = SafeAccessTokenHandle.InvalidHandle;
         private string m_authType = null;
         private int m_isAuthenticated = -1;
         private volatile TokenImpersonationLevel m_impersonationLevel;
@@ -125,7 +125,7 @@ namespace System.Security.Principal
 #endif
 
         [System.Security.SecurityCritical]  // auto-generated
-        internal WindowsIdentity (SafeTokenHandle safeTokenHandle) : this (safeTokenHandle.DangerousGetHandle(), null, -1) {
+        internal WindowsIdentity (SafeAccessTokenHandle safeTokenHandle) : this (safeTokenHandle.DangerousGetHandle(), null, -1) {
             GC.KeepAlive(safeTokenHandle);
         }
 
@@ -400,7 +400,7 @@ namespace System.Security.Principal
                 return false;
 
             // CheckTokenMembership expects an impersonation token
-            SafeTokenHandle token = SafeTokenHandle.InvalidHandle;
+            SafeAccessTokenHandle token = SafeAccessTokenHandle.InvalidHandle;
             TokenImpersonationLevel til = ImpersonationLevel;
             bool isMember = false;
 
@@ -423,7 +423,7 @@ namespace System.Security.Principal
                     throw new SecurityException(Win32Native.GetMessage(Marshal.GetLastWin32Error()));
             }
             finally {
-                if (token != SafeTokenHandle.InvalidHandle) {
+                if (token != SafeAccessTokenHandle.InvalidHandle) {
                     token.Dispose();
                 }
             }
@@ -608,6 +608,45 @@ namespace System.Security.Principal
         //
         // Public methods.
         //
+        [SecuritySafeCritical]
+        public static void RunImpersonated(SafeAccessTokenHandle safeAccessTokenHandle, Action action)
+        {
+            if (action == null)
+                throw new ArgumentNullException("action");
+
+            StackCrawlMark stackMark = StackCrawlMark.LookForMyCaller;
+
+            WindowsIdentity wi = null;
+            if (!safeAccessTokenHandle.IsInvalid)
+                wi = new WindowsIdentity(safeAccessTokenHandle);
+
+            using (WindowsImpersonationContext wiContext = SafeImpersonate(safeAccessTokenHandle, wi, ref stackMark))
+            {
+                action();
+            }
+        }
+
+        [SecuritySafeCritical]
+        public static T RunImpersonated<T>(SafeAccessTokenHandle safeAccessTokenHandle, Func<T> func)
+        {
+            if (func == null)
+                throw new ArgumentNullException("func");
+
+            StackCrawlMark stackMark = StackCrawlMark.LookForMyCaller;
+
+            WindowsIdentity wi = null;
+            if (!safeAccessTokenHandle.IsInvalid)
+                wi = new WindowsIdentity(safeAccessTokenHandle);
+
+            T result = default(T);
+            using (WindowsImpersonationContext wiContext = SafeImpersonate(safeAccessTokenHandle, wi, ref stackMark))
+            {
+                result = func();
+            }
+
+            return result;
+        }
+
         [System.Security.SecuritySafeCritical]  // auto-generated
         [DynamicSecurityMethodAttribute()]
         [ResourceExposure(ResourceScope.Process)]  // Call from within a CER, or use a RunAsUser helper.
@@ -658,16 +697,16 @@ namespace System.Security.Principal
             Dispose(true);
         }
 
-        //
-        // internal.
-        //
-
-        internal SafeTokenHandle TokenHandle {
+        public SafeAccessTokenHandle AccessToken {
             [System.Security.SecurityCritical]  // auto-generated
             get {
                 return m_safeTokenHandle;
             }
         }
+
+        //
+        // internal.
+        //
 
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.None)]
@@ -680,15 +719,15 @@ namespace System.Security.Principal
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.Process)]
         [ResourceConsumption(ResourceScope.Process)]
-        internal static WindowsImpersonationContext SafeImpersonate (SafeTokenHandle userToken, WindowsIdentity wi, ref StackCrawlMark stackMark) 
+        internal static WindowsImpersonationContext SafeImpersonate (SafeAccessTokenHandle userToken, WindowsIdentity wi, ref StackCrawlMark stackMark) 
         {
             bool isImpersonating;
             int hr = 0;
-            SafeTokenHandle safeTokenHandle = GetCurrentToken(TokenAccessLevels.MaximumAllowed, false, out isImpersonating, out hr);
+            SafeAccessTokenHandle safeTokenHandle = GetCurrentToken(TokenAccessLevels.MaximumAllowed, false, out isImpersonating, out hr);
             if (safeTokenHandle == null || safeTokenHandle.IsInvalid)
                 throw new SecurityException(Win32Native.GetMessage(hr));
 
-            // Set the SafeTokenHandle on the FSD:
+            // Set the SafeAccessTokenHandle on the FSD:
             FrameSecurityDescriptor secObj = SecurityRuntime.GetSecurityObjectForFrame(ref stackMark, true);
             if (secObj == null)
             {
@@ -705,7 +744,7 @@ namespace System.Security.Principal
                     Environment.FailFast(Win32Native.GetMessage(hr));
                 // update identity on the thread
                 UpdateThreadWI(wi);
-                secObj.SetTokenHandles(safeTokenHandle, (wi == null?null:wi.TokenHandle));
+                secObj.SetTokenHandles(safeTokenHandle, (wi == null?null:wi.AccessToken));
             } else {
                 hr = Win32.RevertToSelf();
                 if (hr < 0)
@@ -716,7 +755,7 @@ namespace System.Security.Principal
                     throw new SecurityException(Environment.GetResourceString("Argument_ImpersonateUser"));
                 }
                 UpdateThreadWI(wi);
-                secObj.SetTokenHandles(safeTokenHandle, (wi == null?null:wi.TokenHandle));
+                secObj.SetTokenHandles(safeTokenHandle, (wi == null?null:wi.AccessToken));
             }
 
             return context;
@@ -758,7 +797,7 @@ namespace System.Security.Principal
         internal static WindowsIdentity GetCurrentInternal (TokenAccessLevels desiredAccess, bool threadOnly) {
             int hr = 0;
             bool isImpersonating;
-            SafeTokenHandle safeTokenHandle = GetCurrentToken(desiredAccess, threadOnly, out isImpersonating, out hr);
+            SafeAccessTokenHandle safeTokenHandle = GetCurrentToken(desiredAccess, threadOnly, out isImpersonating, out hr);
             if (safeTokenHandle == null || safeTokenHandle.IsInvalid) {
                 // either we wanted only ThreadToken - return null
                 if (threadOnly && !isImpersonating)
@@ -803,9 +842,9 @@ namespace System.Security.Principal
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.Process)]
         [ResourceConsumption(ResourceScope.Process)]
-        private static SafeTokenHandle GetCurrentToken(TokenAccessLevels desiredAccess, bool threadOnly, out bool isImpersonating, out int hr) {
+        private static SafeAccessTokenHandle GetCurrentToken(TokenAccessLevels desiredAccess, bool threadOnly, out bool isImpersonating, out int hr) {
             isImpersonating = true;
-            SafeTokenHandle safeTokenHandle = GetCurrentThreadToken(desiredAccess, out hr);
+            SafeAccessTokenHandle safeTokenHandle = GetCurrentThreadToken(desiredAccess, out hr);
             if (safeTokenHandle == null && hr == GetHRForWin32Error(Win32Native.ERROR_NO_TOKEN)) {
                 // No impersonation
                 isImpersonating = false;
@@ -818,9 +857,9 @@ namespace System.Security.Principal
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.Process)]
         [ResourceConsumption(ResourceScope.Process)]
-        private static SafeTokenHandle GetCurrentProcessToken (TokenAccessLevels desiredAccess, out int hr) {
+        private static SafeAccessTokenHandle GetCurrentProcessToken (TokenAccessLevels desiredAccess, out int hr) {
             hr = 0;
-            SafeTokenHandle safeTokenHandle;
+            SafeAccessTokenHandle safeTokenHandle;
             if (!Win32Native.OpenProcessToken(Win32Native.GetCurrentProcess(), desiredAccess, out safeTokenHandle))
                 hr = GetHRForWin32Error(Marshal.GetLastWin32Error());
             return safeTokenHandle;
@@ -829,8 +868,8 @@ namespace System.Security.Principal
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.Process)]
         [ResourceConsumption(ResourceScope.Process)]
-        internal static SafeTokenHandle GetCurrentThreadToken(TokenAccessLevels desiredAccess, out int hr) {
-            SafeTokenHandle safeTokenHandle;
+        internal static SafeAccessTokenHandle GetCurrentThreadToken(TokenAccessLevels desiredAccess, out int hr) {
+            SafeAccessTokenHandle safeTokenHandle;
             hr = Win32.OpenThreadToken(desiredAccess, WinSecurityContext.Both, out safeTokenHandle);
             return safeTokenHandle;
         }
@@ -860,7 +899,7 @@ namespace System.Security.Principal
         [ResourceExposure(ResourceScope.Process)]
         [ResourceConsumption(ResourceScope.Process)]
         internal static ImpersonationQueryResult QueryImpersonation() {
-            SafeTokenHandle safeTokenHandle = null;
+            SafeAccessTokenHandle safeTokenHandle = null;
             int hr = Win32.OpenThreadToken(TokenAccessLevels.Query,  WinSecurityContext.Thread, out safeTokenHandle);
                         
             if (safeTokenHandle != null) {
@@ -884,7 +923,7 @@ namespace System.Security.Principal
         }
 
         [System.Security.SecurityCritical]  // auto-generated
-        private static Win32Native.LUID GetLogonAuthId (SafeTokenHandle safeTokenHandle) {
+        private static Win32Native.LUID GetLogonAuthId (SafeAccessTokenHandle safeTokenHandle) {
             using (SafeLocalAllocHandle pStatistics = GetTokenInformation(safeTokenHandle, TokenInformationClass.TokenStatistics)) {
                 Win32Native.TOKEN_STATISTICS statistics = pStatistics.Read<Win32Native.TOKEN_STATISTICS>(0);
             return statistics.AuthenticationId;
@@ -892,7 +931,7 @@ namespace System.Security.Principal
         }
 
         [System.Security.SecurityCritical]
-        private static SafeLocalAllocHandle GetTokenInformation (SafeTokenHandle tokenHandle, TokenInformationClass tokenInformationClass) {
+        private static SafeLocalAllocHandle GetTokenInformation (SafeAccessTokenHandle tokenHandle, TokenInformationClass tokenInformationClass) {
             SafeLocalAllocHandle safeLocalAllocHandle = SafeLocalAllocHandle.InvalidHandle;
             uint dwLength = (uint) Marshal.SizeOf(typeof(uint));
             bool result = Win32Native.GetTokenInformation(tokenHandle, 
@@ -933,7 +972,7 @@ namespace System.Security.Principal
 #if FEATURE_CORRUPTING_EXCEPTIONS
         [HandleProcessCorruptedStateExceptions] // 
 #endif // FEATURE_CORRUPTING_EXCEPTIONS
-        private unsafe static SafeTokenHandle KerbS4ULogon (string upn, ref SafeTokenHandle safeTokenHandle)
+        private unsafe static SafeAccessTokenHandle KerbS4ULogon (string upn, ref SafeAccessTokenHandle safeTokenHandle)
         {
             // source name
             byte[] sourceName = new byte[] { (byte)'C', (byte)'L', (byte)'R' }; // we set the source name to "CLR".
@@ -1119,7 +1158,7 @@ namespace System.Security.Principal
             RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
-                if (!identity.m_safeTokenHandle.IsInvalid && identity.m_safeTokenHandle != SafeTokenHandle.InvalidHandle && identity.m_safeTokenHandle.DangerousGetHandle() != IntPtr.Zero)
+                if (!identity.m_safeTokenHandle.IsInvalid && identity.m_safeTokenHandle != SafeAccessTokenHandle.InvalidHandle && identity.m_safeTokenHandle.DangerousGetHandle() != IntPtr.Zero)
                 {
                     identity.m_safeTokenHandle.DangerousAddRef(ref mustDecrement);
 

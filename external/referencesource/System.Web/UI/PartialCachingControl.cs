@@ -844,10 +844,8 @@ internal class ControlCachedVary {
     public override int GetHashCode () {
         HashCodeCombiner hashCodeCombiner = new HashCodeCombiner();
         
-        // Cast _varyByCustom to an object, since the HashCodeCombiner.AddObject(string)
-        // overload uses StringUtil.GetStringHashCode().  We want to use String.GetHashCode()
-        // in this method, since we do not require a stable hash code across architectures.
-        hashCodeCombiner.AddObject((object)_varyByCustom);
+        // We need non-randomized hash code for _varyByCustom
+        hashCodeCombiner.AddInt(StringUtil.GetNonRandomizedHashCode(_varyByCustom));
         
         hashCodeCombiner.AddArray(_varyByParams);
         hashCodeCombiner.AddArray(_varyByControls);

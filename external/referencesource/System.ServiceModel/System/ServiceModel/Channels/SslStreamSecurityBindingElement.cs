@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 namespace System.ServiceModel.Channels
 {
+    using System.Security.Authentication;
     using System.ComponentModel;
     using System.Collections.Generic;
     using System.Net.Security;
@@ -16,10 +17,12 @@ namespace System.ServiceModel.Channels
     {
         IdentityVerifier identityVerifier;
         bool requireClientCertificate;
+        SslProtocols sslProtocols;
 
         public SslStreamSecurityBindingElement()
         {
             this.requireClientCertificate = TransportDefaults.RequireClientCertificate;
+            this.sslProtocols = TransportDefaults.SslProtocols;
         }
 
         protected SslStreamSecurityBindingElement(SslStreamSecurityBindingElement elementToBeCloned)
@@ -27,6 +30,7 @@ namespace System.ServiceModel.Channels
         {
             this.identityVerifier = elementToBeCloned.identityVerifier;
             this.requireClientCertificate = elementToBeCloned.requireClientCertificate;
+            this.sslProtocols = elementToBeCloned.sslProtocols;
         }
 
         public IdentityVerifier IdentityVerifier
@@ -61,6 +65,20 @@ namespace System.ServiceModel.Channels
             set
             {
                 this.requireClientCertificate = value;
+            }
+        }
+
+        [DefaultValue(TransportDefaults.SslProtocols)]
+        public SslProtocols SslProtocols
+        {
+            get
+            {
+                return this.sslProtocols;
+            }
+            set
+            {
+                SslProtocolsHelper.Validate(value);
+                this.sslProtocols = value;
             }
         }
 
@@ -218,7 +236,7 @@ namespace System.ServiceModel.Channels
                 return false;
             }
 
-            return this.requireClientCertificate == ssl.requireClientCertificate;
+            return this.requireClientCertificate == ssl.requireClientCertificate && this.sslProtocols == ssl.sslProtocols;
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]

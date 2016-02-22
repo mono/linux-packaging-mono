@@ -7,14 +7,20 @@
 
 /* The architecture this is running on */
 #if defined(_M_IA64)
-#define ARCHITECTURE "ia64"
+#define MONO_ARCHITECTURE "ia64"
 #elif defined(_M_AMD64)
-#define ARCHITECTURE "amd64"
+#define MONO_ARCHITECTURE "amd64"
 #elif defined(_M_IX86)
-#define ARCHITECTURE "x86"
+#define MONO_ARCHITECTURE "x86"
 #else
 #error Unknown architecture
 #endif
+
+#ifndef WINVER
+#define WINVER 0x0A00
+#endif
+
+#include <SDKDDKVer.h>
 
 #if _WIN32_WINNT < 0x0600
 #error "Mono requires Windows Vista or later"
@@ -60,9 +66,6 @@
 
 /* Disable reflection emit support */
 /* #undef DISABLE_REFLECTION_EMIT */
-
-/* Disable inter-process shared handles */
-/* #undef DISABLE_SHARED_HANDLES */
 
 /* Disable advanced SSA JIT optimizations */
 /* #undef DISABLE_SSA */
@@ -365,6 +368,9 @@
 /* Using the simple generational GC. */
 /* #undef HAVE_SGEN_GC */
 
+ /* Have signal */
+#define HAVE_SIGNAL 1
+
 /* Have signbit */
 /* #undef HAVE_SIGNBIT */
 
@@ -636,5 +642,5 @@
 /* #undef USE_MONO_MUTEX */
 
 /* Version number of package */
-#define VERSION "4.2.2"
+#define VERSION "#MONO_VERSION#"
 #endif

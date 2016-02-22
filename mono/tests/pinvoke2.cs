@@ -61,6 +61,10 @@ public class Tests {
 	public struct EmptyStruct {
 	}
 
+	[StructLayout (LayoutKind.Sequential, Size=1)]
+	public struct EmptyStructCpp {
+	}
+
 	[StructLayout (LayoutKind.Sequential)]
 	public struct DelegateStruct {
 		public int a;
@@ -230,6 +234,9 @@ public class Tests {
 	[DllImport ("libtest", EntryPoint="mono_test_marshal_out_byref_array_out_size_param")]
 	public static extern int mono_test_marshal_out_byref_array_out_size_param ([Out] [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out int [] a1, out int n);
 
+	[DllImport ("libtest", EntryPoint="mono_test_marshal_out_lparray_out_size_param")]
+	public static extern int mono_test_marshal_out_lparray_out_size_param ([Out] [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] int [] a1, out int n);
+
 	[DllImport ("libtest", EntryPoint="mono_test_marshal_inout_nonblittable_array", CharSet = CharSet.Unicode)]
 	public static extern int mono_test_marshal_inout_nonblittable_array ([In, Out] char [] a1);
 	
@@ -262,6 +269,12 @@ public class Tests {
 
 	[DllImport ("libtest", EntryPoint="mono_test_empty_struct")]
 	public static extern int mono_test_empty_struct (int a, EmptyStruct es, int b);
+
+	[DllImport ("libtest", EntryPoint="mono_test_return_empty_struct")]
+	public static extern EmptyStruct mono_test_return_empty_struct (int a);
+
+	[DllImport ("libtest", EntryPoint="mono_test_return_empty_struct")]
+	public static extern EmptyStructCpp mono_test_return_empty_struct_cpp (int a);
 
 	[DllImport ("libtest", EntryPoint="mono_test_marshal_lpstruct")]
 	public static extern int mono_test_marshal_lpstruct ([In, MarshalAs(UnmanagedType.LPStruct)] SimpleStruct ss);
@@ -424,6 +437,22 @@ public class Tests {
 		return 0;
 	}
 
+	public static int test_0_marshal_out_lparray_out_size_param () {
+		int [] a1 = null;
+		int len;
+
+		a1 = new int [10];
+		int res = mono_test_marshal_out_lparray_out_size_param (a1, out len);
+		// Check that a1 was not overwritten
+		a1.GetHashCode ();
+		if (len != 4)
+			return 1;
+		for (int i = 0; i < len; i++)
+			if (a1 [i] != i)
+				return 2;
+		return 0;
+	}
+
 	public static int test_0_marshal_inout_nonblittable_array () {
 		char [] a1 = new char [10];
 		for (int i = 0; i < 10; i++)
@@ -483,9 +512,22 @@ public class Tests {
 
 		if (mono_test_empty_struct (1, es, 2) != 0)
 			return 1;
+
+		mono_test_return_empty_struct (42);
+
+		return 0;
+	}
+
+	/* FIXME: This doesn't work on all platforms */
+	/*
+	public static int test_0_marshal_empty_struct_cpp () {
+		EmptyStructCpp es = new EmptyStructCpp ();
+
+		mono_test_return_empty_struct_cpp (42);
 		
 		return 0;
 	}
+	*/
 
 	public static int test_0_marshal_lpstruct () {
 		SimpleStruct ss = new  SimpleStruct ();

@@ -30,6 +30,9 @@
 #define LOGDEBUG(...)  
 /* define LOGDEBUG(...) g_message(__VA_ARGS__)  */
 
+#ifdef _WIN32
+#include <shellapi.h>
+#endif
 
 HANDLE ves_icall_System_Diagnostics_Process_GetProcess_internal (guint32 pid)
 {
@@ -54,11 +57,11 @@ ves_icall_System_Diagnostics_Process_GetPid_internal (void)
 	return mono_process_current_pid ();
 }
 
-void ves_icall_System_Diagnostics_Process_Process_free_internal (MonoObject *this,
+void ves_icall_System_Diagnostics_Process_Process_free_internal (MonoObject *this_obj,
 								 HANDLE process)
 {
 #ifdef THREAD_DEBUG
-	g_message ("%s: Closing process %p, handle %p", __func__, this, process);
+	g_message ("%s: Closing process %p, handle %p", __func__, this_obj, process);
 #endif
 
 #if defined(TARGET_WIN32) || defined(HOST_WIN32)
@@ -68,9 +71,9 @@ void ves_icall_System_Diagnostics_Process_Process_free_internal (MonoObject *thi
 #endif
 }
 
-#define STASH_SYS_ASS(this) \
+#define STASH_SYS_ASS(this_obj) \
 	if(system_assembly == NULL) { \
-		system_assembly=this->vtable->klass->image; \
+		system_assembly=this_obj->vtable->klass->image; \
 	}
 
 static MonoImage *system_assembly=NULL;
@@ -377,10 +380,10 @@ static MonoObject* get_process_module (MonoAssembly *assembly, MonoClass *proc_c
 	static MonoClass *filever_class = NULL;
 	MonoObject *item, *filever;
 	MonoDomain *domain = mono_domain_get ();
-	char filename [80] = "[In Memory] ";
+	char *filename;
 	const char *modulename = assembly->aname.name;
 
-	strncat (filename, modulename, 80);
+	filename = g_strdup_printf ("[In Memory] %s", modulename);
 
 	/* Build a System.Diagnostics.ProcessModule with the data.
 	 */
@@ -401,6 +404,8 @@ static MonoObject* get_process_module (MonoAssembly *assembly, MonoClass *proc_c
 	process_set_field_int (item, "memory_size", assembly->image->raw_data_len);
 	process_set_field_string_char (item, "filename", filename);
 	process_set_field_string_char (item, "modulename", modulename);
+
+	g_free (filename);
 
 	return item;
 }
@@ -459,7 +464,7 @@ static GPtrArray* get_domain_assemblies (MonoDomain *domain)
 	assemblies = g_ptr_array_new ();
 	mono_domain_assemblies_lock (domain);
 	for (tmp = domain->domain_assemblies; tmp; tmp = tmp->next) {
-		MonoAssembly *ass = tmp->data;
+		MonoAssembly *ass = (MonoAssembly *)tmp->data;
 		if (ass->image->fileio_used)
 			continue;
 		g_ptr_array_add (assemblies, ass);
@@ -470,7 +475,7 @@ static GPtrArray* get_domain_assemblies (MonoDomain *domain)
 }
 
 /* Returns an array of System.Diagnostics.ProcessModule */
-MonoArray *ves_icall_System_Diagnostics_Process_GetModules_internal (MonoObject *this, HANDLE process)
+MonoArray *ves_icall_System_Diagnostics_Process_GetModules_internal (MonoObject *this_obj, HANDLE process)
 {
 	MonoArray *temp_arr = NULL;
 	MonoArray *arr;
@@ -489,7 +494,7 @@ MonoArray *ves_icall_System_Diagnostics_Process_GetModules_internal (MonoObject 
 		current_process = ves_icall_System_Diagnostics_Process_GetProcess_internal (pid);
 	}
 
-	STASH_SYS_ASS (this);
+	STASH_SYS_ASS (this_obj);
 
 	if (process == current_process) {
 		assemblies = get_domain_assemblies (mono_domain_get ());
@@ -517,7 +522,7 @@ MonoArray *ves_icall_System_Diagnostics_Process_GetModules_internal (MonoObject 
 
 	if (assemblies) {
 		for (i = 0; i < assembly_count; i++) {
-			MonoAssembly *ass = g_ptr_array_index (assemblies, i);
+			MonoAssembly *ass = (MonoAssembly *)g_ptr_array_index (assemblies, i);
 			MonoObject *module = get_process_module (ass, proc_class);
 			mono_array_setref (temp_arr, num_added++, module);
 		}
@@ -537,12 +542,12 @@ MonoArray *ves_icall_System_Diagnostics_Process_GetModules_internal (MonoObject 
 	return arr;
 }
 
-void ves_icall_System_Diagnostics_FileVersionInfo_GetVersionInfo_internal (MonoObject *this, MonoString *filename)
+void ves_icall_System_Diagnostics_FileVersionInfo_GetVersionInfo_internal (MonoObject *this_obj, MonoString *filename)
 {
-	STASH_SYS_ASS (this);
+	STASH_SYS_ASS (this_obj);
 	
-	process_get_fileversion (this, mono_string_chars (filename));
-	process_set_field_string (this, "filename",
+	process_get_fileversion (this_obj, mono_string_chars (filename));
+	process_set_field_string (this_obj, "filename",
 				  mono_string_chars (filename),
 				  mono_string_length (filename));
 }
@@ -618,9 +623,9 @@ MonoBoolean ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoPr
 	gboolean ret;
 
 	shellex.cbSize = sizeof(SHELLEXECUTEINFO);
-	shellex.fMask = SEE_MASK_FLAG_DDEWAIT | SEE_MASK_NOCLOSEPROCESS | SEE_MASK_UNICODE;
-	shellex.nShow = proc_start_info->window_style;
-	shellex.nShow = (shellex.nShow == 0) ? 1 : (shellex.nShow == 1 ? 0 : shellex.nShow);
+	shellex.fMask = (gulong)(SEE_MASK_FLAG_DDEWAIT | SEE_MASK_NOCLOSEPROCESS | SEE_MASK_UNICODE);
+	shellex.nShow = (gulong)proc_start_info->window_style;
+	shellex.nShow = (gulong)((shellex.nShow == 0) ? 1 : (shellex.nShow == 1 ? 0 : shellex.nShow));
 	
 	
 	if (proc_start_info->filename != NULL) {
@@ -644,7 +649,7 @@ MonoBoolean ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoPr
 	if (proc_start_info->error_dialog) {	
 		shellex.hwnd = proc_start_info->error_dialog_parent_handle;
 	} else {
-		shellex.fMask |= SEE_MASK_FLAG_NO_UI;
+		shellex.fMask = (gulong)(shellex.fMask | SEE_MASK_FLAG_NO_UI);
 	}
 
 	ret = ShellExecuteEx (&shellex);
@@ -653,10 +658,7 @@ MonoBoolean ves_icall_System_Diagnostics_Process_ShellExecuteEx_internal (MonoPr
 	} else {
 		process_info->process_handle = shellex.hProcess;
 		process_info->thread_handle = NULL;
-		/* It appears that there's no way to get the pid from a
-		 * process handle before windows xp.  Really.
-		 */
-#if defined(HAVE_GETPROCESSID) && !defined(MONO_CROSS_COMPILE)
+#if !defined(MONO_CROSS_COMPILE)
 		process_info->pid = GetProcessId (shellex.hProcess);
 #else
 		process_info->pid = 0;
@@ -769,7 +771,12 @@ MonoBoolean ves_icall_System_Diagnostics_Process_CreateProcess_internal (MonoPro
 
 	if (process_info->username) {
 		logon_flags = process_info->load_user_profile ? LOGON_WITH_PROFILE : 0;
-		ret=CreateProcessWithLogonW (mono_string_chars (process_info->username), process_info->domain ? mono_string_chars (process_info->domain) : NULL, process_info->password, logon_flags, shell_path, cmd? mono_string_chars (cmd): NULL, creation_flags, env_vars, dir, &startinfo, &procinfo);
+		ret = CreateProcessWithLogonW (
+			mono_string_chars (process_info->username),
+			process_info->domain ? mono_string_chars (process_info->domain) : NULL,
+			(const gunichar2 *)process_info->password, logon_flags, shell_path,
+			cmd ? mono_string_chars (cmd) : NULL,
+			creation_flags, env_vars, dir, &startinfo, &procinfo);
 	} else {
 		ret=CreateProcess (shell_path, cmd? mono_string_chars (cmd): NULL, NULL, NULL, TRUE, creation_flags, env_vars, dir, &startinfo, &procinfo);
 	}
@@ -793,18 +800,18 @@ MonoBoolean ves_icall_System_Diagnostics_Process_CreateProcess_internal (MonoPro
 	return(ret);
 }
 
-MonoBoolean ves_icall_System_Diagnostics_Process_WaitForExit_internal (MonoObject *this, HANDLE process, gint32 ms)
+MonoBoolean ves_icall_System_Diagnostics_Process_WaitForExit_internal (MonoObject *this_obj, HANDLE process, gint32 ms)
 {
 	guint32 ret;
 	
-	MONO_PREPARE_BLOCKING
+	MONO_PREPARE_BLOCKING;
 	if(ms<0) {
 		/* Wait forever */
 		ret=WaitForSingleObjectEx (process, INFINITE, TRUE);
 	} else {
 		ret=WaitForSingleObjectEx (process, ms, TRUE);
 	}
-	MONO_FINISH_BLOCKING
+	MONO_FINISH_BLOCKING;
 
 	if(ret==WAIT_OBJECT_0) {
 		return(TRUE);
@@ -813,7 +820,7 @@ MonoBoolean ves_icall_System_Diagnostics_Process_WaitForExit_internal (MonoObjec
 	}
 }
 
-MonoBoolean ves_icall_System_Diagnostics_Process_WaitForInputIdle_internal (MonoObject *this, HANDLE process, gint32 ms)
+MonoBoolean ves_icall_System_Diagnostics_Process_WaitForInputIdle_internal (MonoObject *this_obj, HANDLE process, gint32 ms)
 {
 	guint32 ret;
 	
@@ -1061,15 +1068,9 @@ ves_icall_System_Diagnostics_Process_GetProcessData (int pid, gint32 data_type, 
 	MonoProcessError perror;
 	guint64 res;
 
-	res = mono_process_get_data_with_error (GINT_TO_POINTER (pid), data_type, &perror);
+	res = mono_process_get_data_with_error (GINT_TO_POINTER (pid), (MonoProcessData)data_type, &perror);
 	if (error)
 		*error = perror;
 	return res;
-}
-
-void
-ves_icall_System_Diagnostics_Process_ProcessAsyncReader_RemoveFromIOThreadPool (HANDLE handle)
-{
-	mono_threadpool_ms_io_remove_socket (GPOINTER_TO_INT (handle));
 }
 

@@ -98,7 +98,6 @@ namespace MonoTests.System.Threading
 			Assert.IsTrue (sum   == 0, "#2");
 		}
 
-#if NET_4_0
 		event WaitCallback e;
 
 		[Test]
@@ -117,7 +116,6 @@ namespace MonoTests.System.Threading
 			ThreadPool.UnsafeQueueUserWorkItem (e, null);
 			Assert.IsTrue (ev.Wait (3000));
 		}
-#endif
 
 		[Test]
 		public void SetAndGetMinThreads ()
@@ -172,6 +170,8 @@ namespace MonoTests.System.Threading
 					ThreadPool.GetAvailableThreads (out workerThreads, out completionPortThreads);
 					if (workerThreads == 0)
 						break;
+
+					Console.WriteLine ("workerThreads = {0}, completionPortThreads = {1}", workerThreads, completionPortThreads);
 
 					if ((DateTime.Now - start).TotalSeconds >= 10)
 						Assert.Fail ("did not reach 0 available threads");

@@ -51,7 +51,7 @@ namespace System
     /// </remarks>
     [Serializable]
     [ComVisible(false)]
-#if !FEATURE_CORECLR && !FEATURE_NETCORE
+#if !FEATURE_CORECLR
     [HostProtection(Synchronization = true, ExternalThreading = true)]
 #endif
     [DebuggerTypeProxy(typeof(System_LazyDebugView<>))]
@@ -283,9 +283,6 @@ namespace System
         /// </remarks>
         public bool IsValueCreated
         {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get
             {
                 return m_boxed != null && m_boxed is Boxed;

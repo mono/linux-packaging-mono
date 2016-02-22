@@ -192,8 +192,13 @@ namespace Mono.CSharp
 			if (!inited || !invoking)
 				return;
 			
-			if (invoke_thread != null)
+			if (invoke_thread != null) {
+#if MONO_FEATURE_THREAD_ABORT
 				invoke_thread.Abort ();
+#else
+				invoke_thread.Interrupt ();
+#endif
+			}
 		}
 
 		/// <summary>
@@ -367,9 +372,14 @@ namespace Mono.CSharp
 				invoke_thread = System.Threading.Thread.CurrentThread;
 				invoking = true;
 				compiled (ref retval);
+#if MONO_FEATURE_THREAD_ABORT
 			} catch (ThreadAbortException e){
 				Thread.ResetAbort ();
 				Console.WriteLine ("Interrupted!\n{0}", e);
+#else
+			} catch (ThreadInterruptedException e) {
+				Console.WriteLine ("Interrupted!\n{0}", e);
+#endif
 			} finally {
 				invoking = false;
 
@@ -415,11 +425,7 @@ namespace Mono.CSharp
 				};
 				host.SetBaseTypes (baseclass_list);
 
-#if NET_4_0
 				var access = AssemblyBuilderAccess.RunAndCollect;
-#else
-				var access = AssemblyBuilderAccess.Run;
-#endif
 				var a = new AssemblyDefinitionDynamic (module, "completions");
 				a.Create (AppDomain.CurrentDomain, access);
 				module.SetDeclaringAssembly (a);
@@ -694,11 +700,7 @@ namespace Mono.CSharp
 				assembly = new AssemblyDefinitionDynamic (module, current_debug_name, current_debug_name);
 				assembly.Importer = importer;
 			} else {
-#if NET_4_0
 				access = AssemblyBuilderAccess.RunAndCollect;
-#else
-				access = AssemblyBuilderAccess.Run;
-#endif
 				assembly = new AssemblyDefinitionDynamic (module, current_debug_name);
 			}
 

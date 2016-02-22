@@ -1093,23 +1093,6 @@ namespace System.Runtime.Serialization
         }
 
         [SecurityCritical]
-        static Type typeOfSafeSerializationManager;
-        static bool typeOfSafeSerializationManagerSet;
-        internal static Type TypeOfSafeSerializationManager
-        {
-            [SecuritySafeCritical]
-            get
-            {
-                if (!typeOfSafeSerializationManagerSet)
-                {
-                    typeOfSafeSerializationManager = TypeOfInt.Assembly.GetType("System.Runtime.Serialization.SafeSerializationManager");
-                    typeOfSafeSerializationManagerSet = true;
-                }
-                return typeOfSafeSerializationManager;
-            }
-        }
-
-        [SecurityCritical]
         static Uri dataContractXsdBaseNamespaceUri;
         internal static Uri DataContractXsdBaseNamespaceUri
         {
@@ -1122,6 +1105,7 @@ namespace System.Runtime.Serialization
             }
         }
 
+#if !DISABLE_CAS_USE
         [Fx.Tag.SecurityNote(Critical = "Holds instance of SecurityPermission that we will Demand for SerializationFormatter."
             + " Should not be modified to something else.")]
         [SecurityCritical]
@@ -1153,7 +1137,7 @@ namespace System.Runtime.Serialization
                 return memberAccessPermission;
             }
         }
-
+#endif
 
         public const bool DefaultIsRequired = false;
         public const bool DefaultEmitDefaultValue = true;
@@ -1164,8 +1148,6 @@ namespace System.Runtime.Serialization
         public readonly static string NewObjectId = string.Empty;
         public const string SimpleSRSInternalsVisiblePattern = @"^[\s]*System\.Runtime\.Serialization[\s]*$";
         public const string FullSRSInternalsVisiblePattern = @"^[\s]*System\.Runtime\.Serialization[\s]*,[\s]*PublicKey[\s]*=[\s]*(?i:00000000000000000400000000000000)[\s]*$";
-        public const string SafeSerializationManagerName = "SafeSerializationManager";
-        public const string SafeSerializationManagerNamespace = "http://schemas.datacontract.org/2004/07/System.Runtime.Serialization";
         public const string NullObjectId = null;
         public const string Space = " ";
         public const string OpenBracket = "[";

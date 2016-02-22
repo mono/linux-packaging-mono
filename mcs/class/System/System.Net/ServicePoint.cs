@@ -47,6 +47,7 @@ namespace System.Net
 		int maxIdleTime;
 		int currentConnections;
 		DateTime idleSince;
+		DateTime lastDnsResolve;
 		Version protocolVersion;
 		X509Certificate certificate;
 		X509Certificate clientCertificate;
@@ -339,37 +340,30 @@ namespace System.Net
 			CheckAvailableForRecycling (out dummy);
 		}
 
+		private bool HasTimedOut
+		{
+			get {
+				int timeout = ServicePointManager.DnsRefreshTimeout;
+				return timeout != Timeout.Infinite &&
+					(lastDnsResolve + TimeSpan.FromMilliseconds (timeout)) < DateTime.UtcNow;
+			}
+		}
+
 		internal IPHostEntry HostEntry
 		{
 			get {
 				lock (hostE) {
-					if (host != null)
-						return host;
-
 					string uriHost = uri.Host;
 
-					// There is no need to do DNS resolution on literal IP addresses
-					if (uri.HostNameType == UriHostNameType.IPv6 ||
-						uri.HostNameType == UriHostNameType.IPv4) {
+					if (host == null || HasTimedOut) {
+						lastDnsResolve = DateTime.UtcNow;
 
-						if (uri.HostNameType == UriHostNameType.IPv6) {
-							// Remove square brackets
-							uriHost = uriHost.Substring(1,uriHost.Length-2);
+						try {
+							host = Dns.GetHostEntry (uriHost);
 						}
-
-						// Creates IPHostEntry
-						host = new IPHostEntry();
-						host.AddressList = new IPAddress[] { IPAddress.Parse(uriHost) };
-
-						return host;
-					}
-
-					// Try DNS resolution on host names
-					try  {
-						host = Dns.GetHostByName (uriHost);
-					} 
-					catch {
-						return null;
+						catch (Exception) {
+							return null;
+						}
 					}
 				}
 
@@ -419,10 +413,20 @@ namespace System.Net
 			return false;
 		}
 
-		internal void SetCertificates (X509Certificate client, X509Certificate server) 
+		internal void SetServerCertificate (X509Certificate server)
 		{
-			certificate = server;
-			clientCertificate = client;
+			var cloned = server != null ? new X509Certificate (server) : null;
+			var old = Interlocked.Exchange (ref certificate, cloned);
+			if (old != null)
+				old.Dispose ();
+		}
+
+		internal void SetClientCertificate (X509Certificate clientCertificate)
+		{
+			var cloned = clientCertificate != null ? new X509Certificate (clientCertificate) : null;
+			var old = Interlocked.Exchange (ref clientCertificate, cloned);
+			if (old != null)
+				old.Dispose ();
 		}
 
 		internal bool CallEndPointDelegate (Socket sock, IPEndPoint remote)

@@ -58,8 +58,8 @@ mono_local_cprop (MonoCompile *cfg)
 restart:
 
 	max = cfg->next_vreg;
-	defs = mono_mempool_alloc (cfg->mempool, sizeof (MonoInst*) * (cfg->next_vreg + 1));
-	def_index = mono_mempool_alloc (cfg->mempool, sizeof (guint32) * (cfg->next_vreg + 1));
+	defs = (MonoInst **)mono_mempool_alloc (cfg->mempool, sizeof (MonoInst*) * (cfg->next_vreg + 1));
+	def_index = (gint32 *)mono_mempool_alloc (cfg->mempool, sizeof (guint32) * (cfg->next_vreg + 1));
 
 	for (bb = cfg->bb_entry; bb; bb = bb->next_bb) {
 		MonoInst *ins;
@@ -107,7 +107,7 @@ restart:
 
 			/* FIXME: Optimize this */
 			if (ins->opcode == OP_LDADDR) {
-				MonoInst *var = ins->inst_p0;
+				MonoInst *var = (MonoInst *)ins->inst_p0;
 
 				defs [var->dreg] = NULL;
 				/*
@@ -276,6 +276,14 @@ restart:
 						   (!defs [def->sreg1] || (def_index [def->sreg1] < def_index [sreg]))) {
 					/* Avoid needless sign extension */
 					ins->sreg1 = def->sreg1;
+				} else if (ins->opcode == OP_COMPARE_IMM && def->opcode == OP_LDADDR && ins->inst_imm == 0) {
+					MonoInst dummy_arg1;
+
+					memset (&dummy_arg1, 0, sizeof (MonoInst));
+					dummy_arg1.opcode = OP_ICONST;
+					dummy_arg1.inst_c0 = 1;
+
+					mono_constant_fold_ins (cfg, ins, &dummy_arg1, NULL, TRUE);
 				}
 			}
 
@@ -365,7 +373,7 @@ restart:
 
 					// We allocated a new vreg, so need to restart
 					goto restart;
-				} else if (power2 > 0) {
+				} else if (power2 > 0 && power2 < 31) {
 					int r1 = mono_alloc_ireg (cfg);
 
 					NEW_BIALU_IMM (cfg, tmp1, OP_ISHR_IMM, r1, ins->sreg1, 31);

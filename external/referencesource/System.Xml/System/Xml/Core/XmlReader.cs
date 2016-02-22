@@ -1494,6 +1494,7 @@ namespace System.Xml {
             XmlTextReaderImpl tri = GetXmlTextReaderImpl(reader);
             return tri != null ? tri.Encoding : null;
         }
+#endif
 
         internal static ConformanceLevel GetV1ConformanceLevel(XmlReader reader) {
             XmlTextReaderImpl tri = GetXmlTextReaderImpl(reader);
@@ -1505,10 +1506,13 @@ namespace System.Xml {
             if (tri != null) {
                 return tri;
             }
+
+#if !SILVERLIGHT // Needed only for XmlTextReader or XmlValidatingReader
             XmlTextReader tr = reader as XmlTextReader;
             if (tr != null) {
                 return tr.Impl;
             }
+
             XmlValidatingReaderImpl vri = reader as XmlValidatingReaderImpl;
             if (vri != null) {
                 return vri.ReaderImpl;
@@ -1519,9 +1523,9 @@ namespace System.Xml {
             if (vr != null) {
                 return vr.Impl.ReaderImpl;
             }
+#endif
             return null;
         }
-#endif
 
         //
         // Static methods for creating readers

@@ -99,25 +99,23 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwapi_la_DEPENDENCIES =
-am__libwapi_la_SOURCES_DIST = access.h collection.c collection.h \
-	context.c context.h error.c error.h events.c events.h \
-	event-private.h handles.c handles.h handles-private.h io.c \
-	io.h io-portability.c io-portability.h io-private.h io-layer.h \
-	locking.c macros.h messages.c messages.h misc.c misc-private.h \
-	mutexes.c mutexes.h mutex-private.h posix.c processes.c \
-	processes.h process-private.h security.c security.h \
-	semaphores.c semaphores.h semaphore-private.h shared.c \
-	shared.h sockets.c sockets.h socket-private.h \
+am__libwapi_la_SOURCES_DIST = access.h context.c context.h error.c \
+	error.h events.c events.h event-private.h handles.c handles.h \
+	handles-private.h io.c io.h io-portability.c io-portability.h \
+	io-private.h io-layer.h locking.c macros.h messages.c \
+	messages.h mutexes.c mutexes.h mutex-private.h posix.c \
+	processes.c processes.h process-private.h security.c \
+	security.h semaphores.c semaphores.h semaphore-private.h \
+	shared.c shared.h sockets.c sockets.h socket-private.h \
 	socket-wrappers.h status.h threads.h thread-private.h \
 	timefuncs.c timefuncs.h timefuncs-private.h types.h uglify.h \
 	versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
-	wapi_glob.c wapi.h wapi-private.h wthreads.c wapi-remap.h \
-	io-layer-dummy.c
-am__objects_1 = collection.lo context.lo error.lo events.lo handles.lo \
-	io.lo io-portability.lo locking.lo messages.lo misc.lo \
-	mutexes.lo posix.lo processes.lo security.lo semaphores.lo \
-	shared.lo sockets.lo timefuncs.lo versioninfo.lo wait.lo \
-	wapi_glob.lo wthreads.lo
+	wapi_glob.c wapi.h wapi-private.h wthreads.c io-trace.h \
+	wapi-remap.h io-layer-dummy.c
+am__objects_1 = context.lo error.lo events.lo handles.lo io.lo \
+	io-portability.lo locking.lo messages.lo mutexes.lo posix.lo \
+	processes.lo security.lo semaphores.lo shared.lo sockets.lo \
+	timefuncs.lo versioninfo.lo wait.lo wapi_glob.lo wthreads.lo
 am__objects_2 =
 am__objects_3 = io-layer-dummy.lo
 @HOST_WIN32_FALSE@am_libwapi_la_OBJECTS = $(am__objects_1) \
@@ -198,8 +196,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
 BUILD_EXEEXT = @BUILD_EXEEXT@
-BUILD_GLIB_CFLAGS = @BUILD_GLIB_CFLAGS@
-BUILD_GLIB_LIBS = @BUILD_GLIB_LIBS@
 CC = @CC@
 CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
@@ -215,9 +211,9 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DEFAULT_PROFILE = @DEFAULT_PROFILE@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DISABLE_SHARED_HANDLES = @DISABLE_SHARED_HANDLES@
 DLLTOOL = @DLLTOOL@
 DOLT_BASH = @DOLT_BASH@
 DSYMUTIL = @DSYMUTIL@
@@ -235,8 +231,6 @@ GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
-GMODULE_CFLAGS = @GMODULE_CFLAGS@
-GMODULE_LIBS = @GMODULE_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GREP = @GREP@
@@ -405,12 +399,12 @@ AM_CPPFLAGS = \
 libwapiincludedir = $(includedir)/mono-$(API_VER)/mono/io-layer
 OTHER_H = \
 	access.h	\
-	collection.h	\
 	context.h	\
 	error.h		\
 	events.h	\
 	handles.h	\
 	io.h		\
+	io-trace.h	\
 	io-layer.h	\
 	io-portability.h	\
 	macros.h	\
@@ -432,8 +426,6 @@ OTHER_H = \
 
 OTHER_SRC = \
 	access.h		\
-	collection.c		\
-	collection.h		\
 	context.c		\
 	context.h		\
 	error.c			\
@@ -454,8 +446,6 @@ OTHER_SRC = \
 	macros.h		\
 	messages.c		\
 	messages.h		\
-	misc.c			\
-	misc-private.h		\
 	mutexes.c		\
 	mutexes.h		\
 	mutex-private.h		\
@@ -560,7 +550,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/events.Plo@am__quote@
@@ -570,7 +559,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/locking.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/messages.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mutexes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/processes.Plo@am__quote@

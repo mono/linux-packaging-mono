@@ -77,6 +77,7 @@ Mono.Xml/SmallXmlParser.cs
 Mono.Xml/SecurityParser.cs
 System/ActivationContext.cs
 System/AndroidPlatform.cs
+System/AppContext.cs
 System/AppDomain.cs
 System/AppDomainInitializer.cs
 System/AppDomainManager.cs
@@ -109,7 +110,6 @@ System/IConsoleDriver.cs
 System/IntPtr.cs
 System/KnownTerminals.cs
 System/MarshalByRefObject.cs
-System/Math.cs
 System/MonoAsyncCall.cs
 System/MonoCQItem.cs
 System/MonoCustomAttrs.cs
@@ -142,6 +142,7 @@ System/TimeZoneInfo.Android.cs
 System/TimeZoneInfo.MonoTouch.cs
 System/TimeZoneInfo.Serialization.cs
 ../../build/common/MonoTODOAttribute.cs
+System/TypeIdentifier.cs
 System/TypeSpec.cs
 System/TypeCode.cs
 System/UIntPtr.cs
@@ -163,10 +164,13 @@ System.Diagnostics/StackFrame.cs
 System.Diagnostics/StackTrace.cs
 System.Diagnostics.Tracing/EventAttribute.cs
 System.Diagnostics.Tracing/EventCommand.cs
-System.Diagnostics.Tracing/EventKeywords.cs
-System.Diagnostics.Tracing/EventLevel.cs
+../../../external/referencesource/mscorlib/system/diagnostics/eventing/winmeta.cs
+../../../external/referencesource/mscorlib/system/diagnostics/eventing/eventactivityoptions.cs
+../../../external/referencesource/mscorlib/system/diagnostics/eventing/TraceLogging/EventSourceOptions.cs
+../../../external/referencesource/mscorlib/system/diagnostics/eventing/TraceLogging/TraceLoggingEventTraits.cs
 System.Diagnostics.Tracing/EventSource.cs
 System.Diagnostics.Tracing/EventSourceAttribute.cs
+System.Diagnostics.Tracing/EventSourceSettings.cs
 System.Diagnostics.Tracing/EventCommandEventArgs.cs
 System.Diagnostics.Tracing/NonEventAttribute.cs
 System.Diagnostics.SymbolStore/ISymbolBinder.cs
@@ -232,7 +236,6 @@ System.Reflection/CustomAttributeNamedArgument.cs
 System.Reflection/CustomAttributeTypedArgument.cs
 System.Reflection/EventInfo.cs
 System.Reflection/ExceptionHandlingClause.cs
-System.Reflection/ExceptionHandlingClauseOptions.cs
 System.Reflection/FieldInfo.cs
 System.Reflection/ImageFileMachine.cs
 System.Reflection/LocalVariableInfo.cs
@@ -732,6 +735,9 @@ System.Security.Cryptography/SHA1CryptoServiceProvider.cs
 System.Security.Cryptography/TripleDESCryptoServiceProvider.cs
 System.Security.Cryptography.X509Certificates/X509Certificate.cs
 System.Security.Cryptography.X509Certificates/X509Certificate20.cs
+System.Security.Cryptography.X509Certificates/X509CertificateImpl.cs
+System.Security.Cryptography.X509Certificates/X509CertificateImplMono.cs
+System.Security.Cryptography.X509Certificates/X509Helper.cs
 System.Security.Cryptography.X509Certificates/X509ContentType.cs
 System.Security.Cryptography.X509Certificates/X509KeyStorageFlags.cs
 System.Security.Permissions/CodeAccessSecurityAttribute.cs
@@ -883,6 +889,7 @@ System.Threading.Tasks/DecoupledTask.cs
 ../Mono.Parallel/Mono.Threading/AtomicBoolean.cs
 
 ReferenceSources/__ConsoleStream.cs
+ReferenceSources/AppContextSwitches.cs
 ReferenceSources/Array.cs
 ReferenceSources/BCLDebug.cs
 ReferenceSources/CalendarData.cs
@@ -1000,6 +1007,7 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/iserviceobjectprovider.cs
 ../../../external/referencesource/mscorlib/system/invalidtimezoneexception.cs
 ../../../external/referencesource/mscorlib/system/Lazy.cs
+../../../external/referencesource/mscorlib/system/math.cs
 ../../../external/referencesource/mscorlib/system/memberaccessexception.cs
 ../../../external/referencesource/mscorlib/system/methodaccessexception.cs
 ../../../external/referencesource/mscorlib/system/midpointrounding.cs
@@ -1019,6 +1027,7 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/outofmemoryexception.cs
 ../../../external/referencesource/mscorlib/system/overflowexception.cs
 ../../../external/referencesource/mscorlib/system/paramarrayattribute.cs
+../../../external/referencesource/mscorlib/system/paramsarray.cs
 ../../../external/referencesource/mscorlib/system/platformnotsupportedexception.cs
 ../../../external/referencesource/mscorlib/system/progress.cs
 ../../../external/referencesource/mscorlib/system/random.cs
@@ -1131,6 +1140,7 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/globalization/bidicategory.cs
 ../../../external/referencesource/mscorlib/system/globalization/calendar.cs
 ../../../external/referencesource/mscorlib/system/globalization/calendaralgorithmtype.cs
+../../../external/referencesource/mscorlib/system/globalization/CalendricalCalculationsHelper.cs
 ../../../external/referencesource/mscorlib/system/globalization/calendardata.cs
 ../../../external/referencesource/mscorlib/system/globalization/calendarweekrule.cs
 ../../../external/referencesource/mscorlib/system/globalization/charunicodeinfo.cs
@@ -1223,6 +1233,7 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/reflection/membertypes.cs
 ../../../external/referencesource/mscorlib/system/reflection/methodattributes.cs
 ../../../external/referencesource/mscorlib/system/reflection/methodbase.cs
+../../../external/referencesource/mscorlib/system/reflection/methodbody.cs
 ../../../external/referencesource/mscorlib/system/reflection/methodimplattributes.cs
 ../../../external/referencesource/mscorlib/system/reflection/missing.cs
 ../../../external/referencesource/mscorlib/system/reflection/obfuscateassemblyattribute.cs
@@ -1238,6 +1249,8 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/reflection/typedelegator.cs
 ../../../external/referencesource/mscorlib/system/reflection/typefilter.cs
 ../../../external/referencesource/mscorlib/system/reflection/typeinfo.cs
+
+../../../external/referencesource/mscorlib/system/reflection/emit/methodbuilder.cs
 
 ../../../external/referencesource/mscorlib/system/resources/__fastresourcecomparer.cs
 ../../../external/referencesource/mscorlib/system/resources/__hresults.cs
@@ -1384,6 +1397,7 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/dsasignaturedeformatter.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/dsasignatureformatter.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/hashalgorithm.cs
+../../../external/referencesource/mscorlib/system/security/cryptography/HashAlgorithmName.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/hmac.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/hmacmd5.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/hmacripemd160.cs
@@ -1412,6 +1426,10 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/rsaoaepkeyexchangeformatter.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/rsapkcs1keyexchangedeformatter.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/rsapkcs1keyexchangeformatter.cs
+../../../external/referencesource/mscorlib/system/security/cryptography/RSAEncryptionPadding.cs
+../../../external/referencesource/mscorlib/system/security/cryptography/RSAEncryptionPaddingMode.cs
+../../../external/referencesource/mscorlib/system/security/cryptography/RSASignaturePadding.cs
+../../../external/referencesource/mscorlib/system/security/cryptography/RSASignaturePaddingMode.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/sha1.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/sha1managed.cs
 ../../../external/referencesource/mscorlib/system/security/cryptography/sha256.cs
@@ -1511,6 +1529,7 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/runtime/versioning/binarycompatibility.cs
 ../../../external/referencesource/mscorlib/system/runtime/versioning/componentguaranteesattribute.cs
 ../../../external/referencesource/mscorlib/system/runtime/versioning/multitargetinghelpers.cs
+../../../external/referencesource/mscorlib/system/runtime/versioning/NonVersionableAttribute.cs
 ../../../external/referencesource/mscorlib/system/runtime/versioning/resourceattributes.cs
 ../../../external/referencesource/mscorlib/system/runtime/versioning/targetframeworkattribute.cs
 ../../../external/referencesource/mscorlib/system/runtime/versioning/targetframeworkid.cs
@@ -1549,6 +1568,7 @@ ReferenceSources/SecurityContext.cs
 ../../../external/referencesource/mscorlib/system/threading/waithandlecannotbeopenedexception.cs
 ../../../external/referencesource/mscorlib/system/threading/threadpool.cs
 
+../../../external/referencesource/mscorlib/system/threading/Tasks/AsyncCausalityTracer.cs
 ../../../external/referencesource/mscorlib/system/threading/Tasks/BeginEndAwaitableAdapter.cs
 ../../../external/referencesource/mscorlib/system/threading/Tasks/TaskFactory.cs
 ../../../external/referencesource/mscorlib/system/threading/Tasks/FutureFactory.cs
@@ -1575,3 +1595,10 @@ ReferenceSources/SecurityContext.cs
 
 ReferenceSources/String.cs
 ReferenceSources/Type.cs
+
+coreclr/AsyncLocal.cs
+coreclr/DisablePrivateReflectionAttribute.cs
+coreclr/EncodingProvider.cs
+coreclr/FormattableString.cs
+coreclr/FormattableStringFactory.cs
+coreclr/WaitHandleExtensions.cs

@@ -315,9 +315,10 @@ namespace System.Web {
                 HttpCacheValidateHandler handler = _validationCallbackInfo[i].handler;
                 string targetTypeName = System.Web.UI.Util.GetAssemblyQualifiedTypeName(handler.Method.ReflectedType);
                 string methodName = handler.Method.Name;
-                callbackInfos[i] = targetTypeName;
-                callbackInfos[i+1] = methodName;
+                callbackInfos[2 * i] = targetTypeName;
+                callbackInfos[2 * i + 1] = methodName;
             }
+
             _validationCallbackInfoForSerialization = callbackInfos;
         }
 
@@ -339,7 +340,7 @@ namespace System.Web {
                     throw new SerializationException(SR.GetString(SR.Type_cannot_be_resolved, targetTypeName));
                 }
                 HttpCacheValidateHandler handler = (HttpCacheValidateHandler) Delegate.CreateDelegate(typeof(HttpCacheValidateHandler), target, methodName);
-                callbackInfos[i] = new ValidationCallbackInfo(handler, null);
+                callbackInfos[i / 2] = new ValidationCallbackInfo(handler, null);
             }
             _validationCallbackInfo = callbackInfos;
         }   

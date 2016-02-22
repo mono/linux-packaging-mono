@@ -333,7 +333,7 @@ namespace System.Net.Sockets {
        // WSAEREMOTE             = (10000+71),
         /// <devdoc>
         ///    <para>
-        ///       G----ful shutdown in progress.
+        ///       Graceful shutdown in progress.
         ///    </para>
         /// </devdoc>
         Disconnecting             = (10000+101), //WSAEDISCON
@@ -383,7 +383,10 @@ namespace System.Net.Sockets {
 
 
         //OS dependent errors
-
+#if MONO
+        IOPending             = 997,
+        OperationAborted      = 995,
+#else
         /// <devdoc>
         ///    <para>
         ///       Overlapped operations will complete later.
@@ -396,5 +399,6 @@ namespace System.Net.Sockets {
         ///    </para>
         /// </devdoc>
         OperationAborted      = (int) UnsafeNclNativeMethods.ErrorCodes.ERROR_OPERATION_ABORTED,   // 995, WSA_OPERATION_ABORTED
+#endif
     }
 }

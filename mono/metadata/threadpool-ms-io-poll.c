@@ -74,7 +74,7 @@ poll_register_fd (gint fd, gint events, gboolean is_new)
 		poll_fds_capacity *= 2;
 		g_assert (poll_fds_size <= poll_fds_capacity);
 
-		poll_fds = g_renew (mono_pollfd, poll_fds, poll_fds_capacity);
+		poll_fds = (mono_pollfd *)g_renew (mono_pollfd, poll_fds, poll_fds_capacity);
 	}
 
 	POLL_INIT_FD (&poll_fds [poll_fds_size - 1], fd, poll_event);
@@ -204,6 +204,10 @@ poll_event_wait (void (*callback) (gint fd, gint events, gpointer user_data), gp
 
 	if (ready == -1)
 		return -1;
+	if (ready == 0)
+		return 0;
+
+	g_assert (ready > 0);
 
 	for (i = 0; i < poll_fds_size; ++i) {
 		gint fd, events = 0;

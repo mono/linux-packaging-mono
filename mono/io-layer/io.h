@@ -177,7 +177,7 @@ extern gboolean WriteFile(gpointer handle, gconstpointer buffer,
 extern gboolean FlushFileBuffers(gpointer handle);
 extern gboolean SetEndOfFile(gpointer handle);
 extern guint32 SetFilePointer(gpointer handle, gint32 movedistance,
-			      gint32 *highmovedistance, WapiSeekMethod method);
+			      gint32 *highmovedistance, guint32 method);
 extern WapiFileType GetFileType(gpointer handle);
 extern guint32 GetFileSize(gpointer handle, guint32 *highsize);
 extern gboolean GetFileTime(gpointer handle, WapiFileTime *create_time,
@@ -210,7 +210,6 @@ extern guint32 GetCurrentDirectory (guint32 length, gunichar2 *buffer);
 extern gboolean SetCurrentDirectory (const gunichar2 *path);
 extern gboolean CreatePipe (gpointer *readpipe, gpointer *writepipe,
 			    WapiSecurityAttributes *security, guint32 size);
-extern guint32 GetTempPath (guint32 len, gunichar2 *buf);
 extern gint32 GetLogicalDriveStrings (guint32 len, gunichar2 *buf);
 extern gboolean GetDiskFreeSpaceEx(const gunichar2 *path_name, WapiULargeInteger *free_bytes_avail,
 				   WapiULargeInteger *total_number_of_bytes,

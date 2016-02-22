@@ -128,7 +128,7 @@ namespace System.Data.Common {
                     foreach(string keyword in Keys) {
                         object value;
                         if (ShouldSerialize(keyword) && TryGetValue(keyword, out value)) {
-                            string keyvalue = (null != value) ? Convert.ToString(value, CultureInfo.InvariantCulture) : (string)null;
+                            string keyvalue = ConvertValueToString(value);
                             AppendKeyValuePair(builder, keyword, keyvalue, UseOdbcRules);
                         }
                     }
@@ -211,6 +211,10 @@ namespace System.Data.Common {
                 }
                 return new System.Data.Common.ReadOnlyCollection<object>(values);
             }
+        }
+
+        internal virtual string ConvertValueToString(object value) {
+            return (value == null) ? (string)null : Convert.ToString(value, CultureInfo.InvariantCulture);
         }
 
         void System.Collections.IDictionary.Add(object keyword, object value) {

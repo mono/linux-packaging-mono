@@ -26,7 +26,6 @@ namespace System.Xml.Xsl.XsltOld {
         }
 
         internal OutputScope CurrentElementScope {
-            [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
             get {
                 Debug.Assert(this.elementScopesStack.Peek() != null); // We adding rootElementScope to garantee this
                 return (OutputScope) this.elementScopesStack.Peek();

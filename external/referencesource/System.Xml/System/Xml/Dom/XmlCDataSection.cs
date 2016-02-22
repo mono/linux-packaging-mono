@@ -86,7 +86,7 @@ namespace System.Xml {
             }
         }
 
-        internal override XmlNode PreviousText {
+        public override XmlNode PreviousText {
             get {
                 if (parentNode.IsText) {
                     return parentNode;

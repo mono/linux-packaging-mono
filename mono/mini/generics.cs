@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if MOBILE
+#if __MOBILE__
 class GenericsTests
 #else
 class Tests
@@ -21,7 +21,7 @@ class Tests
 		}
 	}
 
-#if !MOBILE
+#if !__MOBILE__
 	class Enumerator <T> : MyIEnumerator <T> {
 		T MyIEnumerator<T>.Current {
 			get {
@@ -41,7 +41,7 @@ class Tests
 	}
 #endif
 
-#if !MOBILE
+#if !__MOBILE__
 	static int Main (string[] args)
 	{
 		return TestDriver.RunTests (typeof (Tests), args);
@@ -191,7 +191,7 @@ class Tests
 	public static int test_0_constrained_vtype_box () {
 		GenericClass<TestStruct> t = new GenericClass<TestStruct> ();
 
-#if MOBILE
+#if __MOBILE__
 		return t.toString (new TestStruct ()) == "GenericsTests+TestStruct" ? 0 : 1;
 #else
 		return t.toString (new TestStruct ()) == "Tests+TestStruct" ? 0 : 1;
@@ -401,7 +401,7 @@ class Tests
 		return 0;
 	}
 
-#if !MOBILE
+#if !__MOBILE__
 	public static int test_0_variance_reflection () {
 		// covariance on IEnumerator
 		if (!typeof (MyIEnumerator<object>).IsAssignableFrom (typeof (MyIEnumerator<string>)))
@@ -990,6 +990,19 @@ class Tests
 		return 0;
 	}
 
+	class AClass {
+	}
+
+	class BClass : AClass {
+	}
+
+	public static int test_0_fullaot_variant_iface () {
+		var arr = new BClass [10];
+		var enumerable = (IEnumerable<AClass>)arr;
+		enumerable.GetEnumerator ();
+		return 0;
+	}
+
 	struct Record : Foo2<Record>.IRecord {
 		int counter;
 		int Foo2<Record>.IRecord.DoSomething () {
@@ -1231,9 +1244,37 @@ class Tests
 		test("a", "b", "c", "d", "e", "f", "g", "h");
 		return delegate_8_args_res == "h" ? 0 : 1;
 	}
+
+	static void throw_catch_t<T> () where T: Exception {
+		try {
+			throw new NotSupportedException ();
+		} catch (T) {
+		}
+	}
+
+	public static int test_0_gshared_catch_open_type () {
+		throw_catch_t<NotSupportedException> ();
+		return 0;
+	}
+
+	class ThrowClass<T> where T: Exception {
+		public void throw_catch_t () {
+			try {
+				throw new NotSupportedException ();
+			} catch (T) {
+			}
+		}
+	}
+
+	public static int test_0_gshared_catch_open_type_instance () {
+		var c = new ThrowClass<NotSupportedException> ();
+		c.throw_catch_t ();
+		return 0;
+	}
+
 }
 
-#if !MOBILE
+#if !__MOBILE__
 class GenericsTests : Tests
 {
 }

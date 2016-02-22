@@ -170,7 +170,7 @@
     <div class="prototype">gpointer CreateFile(const gunichar2 *name, guint32 fileaccess,
 		    guint32 sharemode, WapiSecurityAttributes *security,
 		    guint32 createmode, guint32 attrs,
-		    gpointer template G_GNUC_UNUSED)
+		    gpointer template_ G_GNUC_UNUSED)
 
 </div>
 <p />
@@ -461,20 +461,8 @@
  <div class="api">
     <div class="api-entry">GetCurrentThreadId</div>
 
-    <div class="prototype">gsize
-GetCurrentThreadId (void)
-
-</div>
+    <div class="prototype">Prototype: GetCurrentThreadId</div>
 <p />
-<b>Remarks</b>
-<p />	 
-	 Looks up the thread ID of the current thread.  This ID can be
-	 passed to OpenThread() to create a new handle on this thread.
-	
-	 Return value: the thread ID.  NB this is defined as DWORD (ie 32
-	 bit) in the MS API, but we need to cope with 64 bit IDs for s390x
-	 and amd64.  This doesn't really break the API, it just embraces and
-	 extends it on 64bit platforms :)
 
 </div> <a name="api:GetDiskFreeSpaceEx"></a>
  <div class="api">
@@ -1245,18 +1233,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
  <div class="api">
     <div class="api-entry">SleepEx</div>
 
-    <div class="prototype">guint32
-SleepEx (guint32 ms, gboolean alertable)
-
-</div>
+    <div class="prototype">Prototype: SleepEx</div>
 <p />
-<b>Parameters</b>
-<blockquote><dt><i>ms:</i></dt><dd> The time in milliseconds to suspend for</dd><dt><i>alertable:</i></dt><dd> if TRUE, the wait can be interrupted by an APC call</dd></blockquote>
-<b>Remarks</b>
-<p />	 
-	 Suspends execution of the current thread for <i>ms</i> milliseconds.  A
-	 value of zero causes the thread to relinquish its time slice.  A
-	 value of %INFINITE causes an infinite delay.
 
 </div> <a name="api:Sleep"></a>
  <div class="api">
@@ -1574,14 +1552,8 @@ SleepEx (guint32 ms, gboolean alertable)
  <div class="api">
     <div class="api-entry">wapi_thread_clear_wait_handle</div>
 
-    <div class="prototype">void
-wapi_thread_clear_wait_handle (gpointer handle)
-
-</div>
+    <div class="prototype">Prototype: wapi_thread_clear_wait_handle</div>
 <p />
-<b>Remarks</b>
-<p />	 
-	   Clear the wait handle of the current thread.
 
 </div></body>
 </html>

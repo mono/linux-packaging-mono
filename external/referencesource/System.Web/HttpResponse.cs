@@ -11,6 +11,7 @@ namespace System.Web {
 
     using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Runtime.Serialization;
     using System.IO;
     using System.Collections;
@@ -166,6 +167,12 @@ namespace System.Web {
         private bool UsingHttpWriter {
             get {
                 return (_httpWriter != null && _writer == _httpWriter);
+            }
+        }
+
+        internal void SetAllocatorProvider(IAllocatorProvider allocator) {
+            if (_httpWriter != null) {
+                _httpWriter.AllocatorProvider = allocator;
             }
         }
 
@@ -757,6 +764,10 @@ namespace System.Web {
             }
         }
 
+        public Task FlushAsync() {
+            return Task.Factory.FromAsync(BeginFlush, EndFlush, state: null);
+        }
+
         // WOS 1555777: kernel cache support
         // If the response can be kernel cached, return the kernel cache key;
         // otherwise return null.  The kernel cache key is used to invalidate
@@ -1238,6 +1249,13 @@ namespace System.Web {
                     else
                         errorFormatter = new UnhandledErrorFormatter(e);
                 }
+            }
+
+            // Show config source only on local request for security reasons
+            // Config file snippet may unintentionally reveal sensitive information (not related to the error)
+            ConfigErrorFormatter configErrorFormatter = errorFormatter as ConfigErrorFormatter;
+            if (configErrorFormatter != null) {
+                configErrorFormatter.AllowSourceCode = Request.IsLocal;
             }
 
             return errorFormatter;
@@ -2904,6 +2922,76 @@ namespace System.Web {
             }
         }
 
+        /// <devdoc>
+        ///    <para>Allows HTTP/2 Server Push</para>
+        /// </devdoc>
+        public void PushPromise(string path) {
+            // 
+
+
+            PushPromise(path, method: "GET", headers: null);
+        }
+
+        /// <devdoc>
+        ///    <para>Allows HTTP/2 Server Push</para>
+        /// </devdoc>
+        public void PushPromise(string path, string method, NameValueCollection headers) {
+            // PushPromise is non-deterministic and application shouldn't have logic that depends on it. 
+            // It's only purpose is performance advantage in some cases.
+            // There are many conditions (protocol and implementation) that may cause to 
+            // ignore the push requests completely.
+            // The expectation is based on fire-and-forget 
+
+            if (path == null) {
+                throw new ArgumentNullException("path");
+            }
+
+            if (method == null) {
+                throw new ArgumentNullException("method");
+            }
+
+            // Extract an optional query string
+            string queryString = string.Empty;
+            int i = path.IndexOf('?');
+
+            if (i >= 0) {
+                if (i < path.Length - 1) {
+                    queryString = path.Substring(i + 1);
+                }
+
+                // Remove the query string portion from the path
+                path = path.Substring(0, i);
+            }
+
+
+            // Only virtual path is allowed:
+            // "/path"   - origin relative
+            // "~/path"  - app relative
+            // "path"    - request relative
+            // "../path" - reduced 
+            if (string.IsNullOrEmpty(path) || !UrlPath.IsValidVirtualPathWithoutProtocol(path)) {
+                throw new ArgumentException(SR.GetString(SR.Invalid_path_for_push_promise, path));
+            }
+
+            VirtualPath virtualPath = Request.FilePathObject.Combine(VirtualPath.Create(path));
+
+            try {
+                if (!HttpRuntime.UseIntegratedPipeline) {
+                    throw new PlatformNotSupportedException(SR.GetString(SR.Requires_Iis_Integrated_Mode));
+                }
+
+                // Do push promise
+                IIS7WorkerRequest wr = (IIS7WorkerRequest) _wr;
+                wr.PushPromise(virtualPath.VirtualPathString, queryString, method, headers);
+            }
+            catch (PlatformNotSupportedException e) {
+                // Ignore errors if push promise is not supported
+                if (Context.TraceIsEnabled) {
+                    Context.Trace.Write("aspx", "Push promise is not supported", e);
+                }
+            }
+        }
+
         //
         // Deprecated ASP compatibility methods and properties
         //
@@ -3275,7 +3363,7 @@ namespace System.Web {
 
                 // DevDiv #782830: Provide a hook where the application can change the response status code
                 // or response headers.
-                if (!_onSendingHeadersSubscriptionQueue.IsEmpty) {
+                if (sendHeaders && !_onSendingHeadersSubscriptionQueue.IsEmpty) {
                     _onSendingHeadersSubscriptionQueue.FireAndComplete(cb => cb(Context));
                 }
 

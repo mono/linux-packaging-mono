@@ -2991,6 +2991,11 @@ namespace System.Security.AccessControl
             RemoveQualifiedAcesSpecific( sid, AceQualifier.SystemAudit, accessMask, GenericAce.AceFlagsFromAuditFlags( auditFlags ) | GenericAce.AceFlagsFromInheritanceFlags( inheritanceFlags, propagationFlags ), ObjectAceFlags.None, Guid.Empty, Guid.Empty );
         }
 
+        public void AddAudit(SecurityIdentifier sid, ObjectAuditRule rule)
+        {
+            AddAudit(rule.AuditFlags, sid, rule.AccessMask, rule.InheritanceFlags, rule.PropagationFlags, rule.ObjectFlags, rule.ObjectType, rule.InheritedObjectType);
+        }
+
         public void AddAudit( AuditFlags auditFlags, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType ) 
         {
             //
@@ -3005,6 +3010,11 @@ namespace System.Security.AccessControl
 
             CheckFlags( inheritanceFlags, propagationFlags );
             AddQualifiedAce(sid, AceQualifier.SystemAudit, accessMask, GenericAce.AceFlagsFromAuditFlags(auditFlags) | GenericAce.AceFlagsFromInheritanceFlags(inheritanceFlags, propagationFlags), objectFlags, objectType, inheritedObjectType);
+        }
+
+        public void SetAudit(SecurityIdentifier sid, ObjectAuditRule rule)
+        {
+            SetAudit(rule.AuditFlags, sid, rule.AccessMask, rule.InheritanceFlags, rule.PropagationFlags, rule.ObjectFlags, rule.ObjectType, rule.InheritedObjectType);
         }
 
         public void SetAudit( AuditFlags auditFlags, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType )
@@ -3023,6 +3033,11 @@ namespace System.Security.AccessControl
             SetQualifiedAce(sid, AceQualifier.SystemAudit, accessMask, GenericAce.AceFlagsFromAuditFlags(auditFlags) | GenericAce.AceFlagsFromInheritanceFlags(inheritanceFlags, propagationFlags), objectFlags, objectType, inheritedObjectType);
         }
 
+        public bool RemoveAudit(SecurityIdentifier sid, ObjectAuditRule rule)
+        {
+            return RemoveAudit(rule.AuditFlags, sid, rule.AccessMask, rule.InheritanceFlags, rule.PropagationFlags, rule.ObjectFlags, rule.ObjectType, rule.InheritedObjectType);
+        }
+
         public bool RemoveAudit( AuditFlags auditFlags, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType ) 
         {
             //
@@ -3036,6 +3051,11 @@ namespace System.Security.AccessControl
             Contract.EndContractBlock();
 
             return RemoveQualifiedAces(sid, AceQualifier.SystemAudit, accessMask, GenericAce.AceFlagsFromAuditFlags(auditFlags) | GenericAce.AceFlagsFromInheritanceFlags(inheritanceFlags, propagationFlags), true, objectFlags, objectType, inheritedObjectType);
+        }
+
+        public void RemoveAuditSpecific(SecurityIdentifier sid, ObjectAuditRule rule)
+        {
+            RemoveAuditSpecific(rule.AuditFlags, sid, rule.AccessMask, rule.InheritanceFlags, rule.PropagationFlags, rule.ObjectFlags, rule.ObjectType, rule.InheritedObjectType);
         }
 
         public void RemoveAuditSpecific( AuditFlags auditFlags, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType )
@@ -3134,6 +3154,11 @@ namespace System.Security.AccessControl
             RemoveQualifiedAcesSpecific(sid, accessType == AccessControlType.Allow ? AceQualifier.AccessAllowed : AceQualifier.AccessDenied, accessMask, GenericAce.AceFlagsFromInheritanceFlags( inheritanceFlags, propagationFlags ), ObjectAceFlags.None, Guid.Empty, Guid.Empty );
         }
 
+        public void AddAccess(AccessControlType accessType, SecurityIdentifier sid, ObjectAccessRule rule)
+        {
+            AddAccess(accessType, sid, rule.AccessMask, rule.InheritanceFlags, rule.PropagationFlags, rule.ObjectFlags, rule.ObjectType, rule.InheritedObjectType);
+        }
+
         public void AddAccess( AccessControlType accessType, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType )
         {
             //
@@ -3150,6 +3175,11 @@ namespace System.Security.AccessControl
             CheckFlags( inheritanceFlags, propagationFlags );
             everyOneFullAccessForNullDacl = false;
             AddQualifiedAce( sid, accessType == AccessControlType.Allow ? AceQualifier.AccessAllowed : AceQualifier.AccessDenied, accessMask, GenericAce.AceFlagsFromInheritanceFlags( inheritanceFlags, propagationFlags ), objectFlags, objectType, inheritedObjectType );
+        }
+
+        public void SetAccess(AccessControlType accessType, SecurityIdentifier sid, ObjectAccessRule rule)
+        {
+            SetAccess(accessType, sid, rule.AccessMask, rule.InheritanceFlags, rule.PropagationFlags, rule.ObjectFlags, rule.ObjectType, rule.InheritedObjectType);
         }
 
         public void SetAccess( AccessControlType accessType, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType )
@@ -3170,6 +3200,11 @@ namespace System.Security.AccessControl
             SetQualifiedAce( sid, accessType == AccessControlType.Allow ? AceQualifier.AccessAllowed : AceQualifier.AccessDenied, accessMask, GenericAce.AceFlagsFromInheritanceFlags( inheritanceFlags, propagationFlags ), objectFlags, objectType, inheritedObjectType);
         }
 
+        public bool RemoveAccess(AccessControlType accessType, SecurityIdentifier sid, ObjectAccessRule rule)
+        {
+            return RemoveAccess(accessType, sid, rule.AccessMask, rule.InheritanceFlags, rule.PropagationFlags, rule.ObjectFlags, rule.ObjectType, rule.InheritedObjectType);
+        }
+
         public bool RemoveAccess( AccessControlType accessType, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType )
         {
             //
@@ -3185,6 +3220,11 @@ namespace System.Security.AccessControl
             CheckAccessType( accessType );
             everyOneFullAccessForNullDacl = false;
             return RemoveQualifiedAces(sid, accessType == AccessControlType.Allow ? AceQualifier.AccessAllowed : AceQualifier.AccessDenied, accessMask, GenericAce.AceFlagsFromInheritanceFlags( inheritanceFlags, propagationFlags ), false, objectFlags, objectType, inheritedObjectType );
+        }
+
+        public void RemoveAccessSpecific(AccessControlType accessType, SecurityIdentifier sid, ObjectAccessRule rule)
+        {
+            RemoveAccessSpecific(accessType, sid, rule.AccessMask, rule.InheritanceFlags, rule.PropagationFlags, rule.ObjectFlags, rule.ObjectType, rule.InheritedObjectType);
         }
 
         public void RemoveAccessSpecific( AccessControlType accessType, SecurityIdentifier sid, int accessMask, InheritanceFlags inheritanceFlags, PropagationFlags propagationFlags, ObjectAceFlags objectFlags, Guid objectType, Guid inheritedObjectType )

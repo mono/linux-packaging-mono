@@ -2016,16 +2016,14 @@ namespace System.Linq
         }
     }
 
+
+    //
+    // We have added some optimization in SZArrayHelper class to cache the enumerator of zero length arrays so  
+    // the enumerator will be created once per type.
+    // 
     internal class EmptyEnumerable<TElement>
     {
-        static volatile TElement[] instance;
-
-        public static IEnumerable<TElement> Instance {
-            get {
-                if (instance == null) instance = new TElement[0];
-                return instance;
-            }
-        }
+        public static readonly TElement[] Instance = new TElement[0];
     }
 
     internal class IdentityFunction<TElement>

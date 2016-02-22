@@ -16,6 +16,7 @@ namespace Microsoft.Build.Tasks.Xaml
     using System.Xml;
     using System.Reflection;
     using System.Globalization;
+    using System.Runtime.Remoting.Lifetime;
     using Microsoft.Build.Utilities;
     using XamlBuildTask;
     using Microsoft.Build.Framework;
@@ -36,6 +37,14 @@ namespace Microsoft.Build.Tasks.Xaml
         HashSet<string> markupFileNames;
         IEnumerable<IXamlBuildTypeGenerationExtension> xamlBuildTypeGenerationExtensions;
         XamlBuildTypeGenerationExtensionContext buildContextForExtensions;
+
+        // Set the lease lifetime according to the environment variable with the name defined by RemotingLeaseLifetimeInMinutesEnvironmentVariableName
+        public override object InitializeLifetimeService()
+        {
+            ILease lease = (ILease)base.InitializeLifetimeService();
+            XamlBuildTaskLeaseLifetimeHelper.SetLeaseLifetimeFromEnvironmentVariable(lease);
+            return lease;
+        }
 
         public IList<ITaskItem> ApplicationMarkup
         {

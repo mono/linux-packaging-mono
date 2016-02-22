@@ -126,10 +126,19 @@ namespace System.ServiceModel.Channels
 
         public override void Close()
         {
-            this.FlushPendingBuffer();
-            stream.Close();
-            this.WaitForAllWritesToComplete();
-            this.closed = true;
+            try
+            {
+                if (!this.closed)
+                {
+                    this.FlushPendingBuffer();
+                    stream.Close();
+                    this.WaitForAllWritesToComplete();
+                }
+            }
+            finally
+            {
+                this.closed = true;
+            }
         }
 
         public override void Flush()

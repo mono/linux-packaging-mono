@@ -39,6 +39,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security;
+using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
 
 namespace System.Threading {
@@ -460,6 +461,7 @@ namespace System.Threading {
 			}
 		}
 
+#if MONO_FEATURE_THREAD_ABORT
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		private extern static void Abort_internal (InternalThread thread, object stateInfo);
 
@@ -487,6 +489,25 @@ namespace System.Threading {
 		void ClearAbortReason ()
 		{
 		}
+#else
+		[Obsolete ("Thread.Abort is not supported on the current platform.", true)]
+		public void Abort ()
+		{
+			throw new PlatformNotSupportedException ("Thread.Abort is not supported on the current platform.");
+		}
+
+		[Obsolete ("Thread.Abort is not supported on the current platform.", true)]
+		public void Abort (object stateInfo)
+		{
+			throw new PlatformNotSupportedException ("Thread.Abort is not supported on the current platform.");
+		}
+
+		[Obsolete ("Thread.ResetAbort is not supported on the current platform.", true)]
+		public static void ResetAbort ()
+		{
+			throw new PlatformNotSupportedException ("Thread.ResetAbort is not supported on the current platform.");
+		}
+#endif // MONO_FEATURE_THREAD_ABORT
 
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
 		private extern static void SpinWait_nop ();
@@ -705,5 +726,35 @@ namespace System.Threading {
 		{
 			return CultureInfo.CurrentUICulture;
 		}
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		internal static extern void GetStackTraces (out Thread[] threads, out object[] stack_frames);
+
+		// This is a mono extension to gather the stack traces for all running threads
+		internal static Dictionary<Thread, StackTrace> Mono_GetStackTraces () {
+			Thread[] threads;
+			object[] stack_frames;
+
+			GetStackTraces (out threads, out stack_frames);
+
+			var res = new Dictionary<Thread, StackTrace> ();
+			for (int i = 0; i < threads.Length; ++i)
+				res [threads [i]] = new StackTrace ((StackFrame[])stack_frames [i]);
+			return res;
+		}
+
+#if !MONO_FEATURE_THREAD_SUSPEND_RESUME
+		[Obsolete ("Thread.Suspend is not supported on the current platform.", true)]
+		public void Suspend ()
+		{
+			throw new PlatformNotSupportedException ("Thread.Suspend is not supported on the current platform.");
+		}
+
+		[Obsolete ("Thread.Resume is not supported on the current platform.", true)]
+		public void Resume ()
+		{
+			throw new PlatformNotSupportedException ("Thread.Resume is not supported on the current platform.");
+		}
+#endif
 	}
 }

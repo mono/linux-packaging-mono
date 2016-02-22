@@ -70,6 +70,7 @@ namespace System.Web.UI.Design.WebControls
         private bool _forceSchemaRetrieval;
         private readonly EntityDataSourceDesigner _owner;
         private bool _canLoadWebConfig;
+        private bool _usingEntityFrameworkVersionHigherThanFive = false;
         #endregion
         
         internal EntityDataSourceDesignerHelper(EntityDataSource entityDataSource, bool interactiveMode)
@@ -96,7 +97,7 @@ namespace System.Web.UI.Design.WebControls
 
             }            
             Debug.Assert(_owner != null, "expected non-null owner");            
-            Debug.Assert(_webApplication != null, "expected non-null web application service");            
+            Debug.Assert(_webApplication != null, "expected non-null web application service");
         }
 
         internal void AddSystemWebEntityReference()
@@ -627,9 +628,16 @@ namespace System.Web.UI.Design.WebControls
                 catch (Exception ex)
                 {   
                     StringBuilder exceptionMessage = new StringBuilder();
-                    exceptionMessage.AppendLine(Strings.Error_MetadataLoadError);
-                    exceptionMessage.AppendLine();
-                    exceptionMessage.Append(ex.Message);
+                    if (_usingEntityFrameworkVersionHigherThanFive)
+                    {
+                        exceptionMessage.Append(Strings.Error_UnsupportedVersionOfEntityFramework);
+                    }
+                    else
+                    {
+                        exceptionMessage.AppendLine(Strings.Error_MetadataLoadError);
+                        exceptionMessage.AppendLine();
+                        exceptionMessage.Append(ex.Message);
+                    }
                     ShowError(exceptionMessage.ToString());
                 }
             }
@@ -657,9 +665,17 @@ namespace System.Web.UI.Design.WebControls
             {
                 foreach (Type type in typeDiscoverySvc.GetTypes(typeof(object), false /*excludeGlobalTypes*/))
                 {
-                    if (!_assemblies.Contains(type.Assembly) && !IsSystemAssembly(type.Assembly.FullName))
+                    var assembly = type.Assembly;
+                    if (!_usingEntityFrameworkVersionHigherThanFive
+                            && assembly.GetName().Name.Equals("EntityFramework", StringComparison.InvariantCultureIgnoreCase)
+                            && assembly.GetName().Version.Major > 5)
                     {
-                        _assemblies.Add(type.Assembly);
+                        _usingEntityFrameworkVersionHigherThanFive = true;
+                        ShowError(Strings.Error_UnsupportedVersionOfEntityFramework);
+                    }
+                    if (!_assemblies.Contains(assembly) && !IsSystemAssembly(assembly.FullName))
+                    {
+                        _assemblies.Add(assembly);
                     }
                 }
             }

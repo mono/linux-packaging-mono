@@ -66,6 +66,11 @@ namespace System.IO {
             throw new UnauthorizedAccessException(Environment.GetResourceString("UnauthorizedAccess_MemStreamBuffer"));
         }
 
+        public override bool TryGetBuffer(out ArraySegment<byte> buffer) {
+            buffer = default(ArraySegment<byte>);
+            return false;
+        }
+
         public override int Capacity {
             get { 
                 return (int) _unmanagedStream.Capacity;

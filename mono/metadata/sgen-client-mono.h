@@ -88,10 +88,10 @@ struct _SgenClientThreadInfo {
 #include "metadata/profiler-private.h"
 #include "utils/dtrace.h"
 #include "utils/mono-counters.h"
-#include "utils/mono-logger-internal.h"
+#include "utils/mono-logger-internals.h"
 #include "utils/mono-time.h"
-#include "utils/mono-semaphore.h"
-#include "metadata/sgen-bridge-internal.h"
+#include "utils/mono-os-semaphore.h"
+#include "metadata/sgen-bridge-internals.h"
 
 extern void mono_sgen_register_moved_object (void *obj, void *destination);
 extern void mono_sgen_gc_event_moves (void);
@@ -114,7 +114,7 @@ sgen_mono_array_size (GCVTable vtable, MonoArray *array, mword *bounds_size, mwo
 	else
 		element_size = vtable->klass->sizes.element_size;
 
-	size_without_bounds = size = sizeof (MonoArray) + element_size * mono_array_length_fast (array);
+	size_without_bounds = size = MONO_SIZEOF_MONO_ARRAY + element_size * mono_array_length_fast (array);
 
 	if (G_UNLIKELY (array->bounds)) {
 		size += sizeof (mono_array_size_t) - 1;
@@ -244,14 +244,14 @@ extern gboolean sgen_mono_xdomain_checks;
 static gboolean G_GNUC_UNUSED
 sgen_client_object_has_critical_finalizer (GCObject *obj)
 {
-	MonoClass *class;
+	MonoClass *klass;
 
 	if (!mono_defaults.critical_finalizer_object)
 		return FALSE;
 
-	class = SGEN_LOAD_VTABLE (obj)->klass;
+	klass = SGEN_LOAD_VTABLE (obj)->klass;
 
-	return mono_class_has_parent_fast (class, mono_defaults.critical_finalizer_object);
+	return mono_class_has_parent_fast (klass, mono_defaults.critical_finalizer_object);
 }
 
 const char* sgen_client_vtable_get_namespace (GCVTable vtable);
@@ -401,7 +401,7 @@ sgen_client_binary_protocol_block_free (gpointer addr, size_t size)
 }
 
 static void G_GNUC_UNUSED
-sgen_client_binary_protocol_block_set_state (gpointer addr, size_t size, int old, int new)
+sgen_client_binary_protocol_block_set_state (gpointer addr, size_t size, int old, int new_)
 {
 }
 
@@ -561,6 +561,11 @@ sgen_client_binary_protocol_global_remset (gpointer ptr, gpointer value, gpointe
 }
 
 static void G_GNUC_UNUSED
+sgen_client_binary_protocol_mod_union_remset (gpointer obj, gpointer ptr, gpointer value, gpointer value_vtable)
+{
+}
+
+static void G_GNUC_UNUSED
 sgen_client_binary_protocol_ptr_update (gpointer ptr, gpointer old_value, gpointer new_value, gpointer vtable, size_t size)
 {
 }
@@ -571,7 +576,12 @@ sgen_client_binary_protocol_cleanup (gpointer ptr, gpointer vtable, size_t size)
 }
 
 static void G_GNUC_UNUSED
-sgen_client_binary_protocol_dislink_update (gpointer link, gpointer obj, gboolean track, gboolean staged)
+sgen_client_binary_protocol_dislink_add (gpointer link, gpointer obj, gboolean track)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_dislink_update (gpointer link, gpointer obj, gboolean track)
 {
 #ifdef ENABLE_DTRACE
 	if (MONO_GC_WEAK_UPDATE_ENABLED ()) {
@@ -587,12 +597,7 @@ sgen_client_binary_protocol_dislink_update (gpointer link, gpointer obj, gboolea
 }
 
 static void G_GNUC_UNUSED
-sgen_client_binary_protocol_dislink_update_staged (gpointer link, gpointer obj, gboolean track, int index)
-{
-}
-
-static void G_GNUC_UNUSED
-sgen_client_binary_protocol_dislink_process_staged (gpointer link, gpointer obj, int index)
+sgen_client_binary_protocol_dislink_remove (gpointer link, gboolean track)
 {
 }
 
@@ -694,9 +699,9 @@ extern MonoNativeTlsKey thread_info_key;
 
 typedef MonoSemType SgenSemaphore;
 
-#define SGEN_SEMAPHORE_INIT(sem,initial)	MONO_SEM_INIT ((sem), (initial))
-#define SGEN_SEMAPHORE_POST(sem)		MONO_SEM_POST ((sem))
-#define SGEN_SEMAPHORE_WAIT(sem)		MONO_SEM_WAIT ((sem))
+#define SGEN_SEMAPHORE_INIT(sem,initial)	mono_os_sem_init ((sem), (initial))
+#define SGEN_SEMAPHORE_POST(sem)		mono_os_sem_post ((sem))
+#define SGEN_SEMAPHORE_WAIT(sem)		mono_os_sem_wait ((sem), MONO_SEM_FLAGS_NONE)
 
 gboolean sgen_has_critical_method (void);
 gboolean sgen_is_critical_method (MonoMethod *method);
@@ -706,5 +711,6 @@ gboolean sgen_is_managed_allocator (MonoMethod *method);
 gboolean sgen_has_managed_allocator (void);
 
 void sgen_scan_for_registered_roots_in_domain (MonoDomain *domain, int root_type);
+void sgen_null_links_for_domain (MonoDomain *domain);
 
 #endif

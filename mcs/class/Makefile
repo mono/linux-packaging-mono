@@ -47,19 +47,24 @@ mobile_common_dirs := \
 	System.ComponentModel.Composition.4.5 \
 	System.Net \
 	System.Net.Http	\
+	System.Net.Http.WebRequest	\
 	System.Windows \
 	System.Xml.Serialization \
 	Mono.CSharp	\
 	Microsoft.CSharp \
-	$(pcl_facade_dirs)
+	Mono.Security.Providers.DotNet	\
+	Mono.Security.Providers.NewSystemSource \
+	Mono.Security.Providers.NewTls
 
 mobile_static_dirs := \
 	$(mobile_common_dirs)	\
-	Mono.Dynamic.Interpreter
+	Mono.Dynamic.Interpreter	\
+	$(pcl_facade_dirs)
 
 mobile_dynamic_dirs := \
 	$(mobile_common_dirs)	\
 	Mono.CompilerServices.SymbolWriter	\
+	$(pcl_facade_dirs)
 
 xammac_dirs := \
 	$(mobile_dynamic_dirs)
@@ -71,6 +76,7 @@ monotouch_dirs := \
 	$(mobile_static_dirs)
 
 monotouch_watch_dirs := $(monotouch_dirs)
+monotouch_tv_dirs   := $(monotouch_dirs)
 
 monotouch_runtime_dirs := \
 	corlib \
@@ -78,6 +84,9 @@ monotouch_runtime_dirs := \
 	System.Core \
 	System.XML \
 	Mono.CSharp
+
+monotouch_watch_runtime_dirs := $(monotouch_runtime_dirs)
+monotouch_tv_runtime_dirs := $(monotouch_runtime_dirs)
 
 xammac_4_5_dirs := \
 	corlib	\
@@ -121,9 +130,13 @@ xammac_4_5_dirs := \
 	Mono.CompilerServices.SymbolWriter	\
 	System.Data.Linq		\
 	System.Net.Http \
+	Mono.Security.Providers.DotNet \
+	Mono.Security.Providers.OldTls \
+	Mono.Security.Providers.NewSystemSource \
+	Mono.Security.Providers.NewTls \
 	$(pcl_facade_dirs)
 
-net_4_5_dirs := \
+net_4_x_dirs := \
 	corlib				\
 	System				\
 	System.XML			\
@@ -134,11 +147,14 @@ net_4_5_dirs := \
 	System.Security			\
 	System.Configuration	\
 	$(resgen_dir)			\
+	System.IO.Compression 		\
+	System.IO.Compression.FileSystem \
 	System.Drawing			\
 	System.Transactions		\
 	System.EnterpriseServices	\
 	Mono.Data.Tds			\
 	System.Numerics		\
+	System.Numerics.Vectors		\
 	System.Data			\
 	System.ComponentModel.DataAnnotations	\
 	Accessibility			\
@@ -202,11 +218,13 @@ net_4_5_dirs := \
 	System.Net.Http.Formatting \
 	System.Web.Http \
 	System.Web.Http.SelfHost \
-	System.Web.Http.WebHost
+	System.Web.Http.WebHost \
+	Mono.Security.Providers.NewSystemSource \
+	Mono.Security.Providers.NewTls
 
-# These are the subdirs which depends on libs in net_4_5_dirs
+# These are the subdirs which depends on libs in net_4_x_dirs
 # or have proper dependencies between each other
-net_4_5_parallel_dirs := \
+net_4_x_parallel_dirs := \
 	PEAPI				\
 	I18N				\
 	Mono.Http			\
@@ -243,10 +261,10 @@ net_4_5_parallel_dirs := \
 	System.Json.Microsoft \
 	System.Threading.Tasks.Dataflow \
 	System.ComponentModel.Composition.4.5 \
-	System.IO.Compression \
-	System.IO.Compression.FileSystem \
 	System.Windows \
 	System.Xml.Serialization \
+	Mono.Security.Providers.DotNet \
+	Mono.Security.Providers.OldTls \
 	System.DirectoryServices.Protocols	\
 	RabbitMQ.Client			\
 	Microsoft.VisualC		\
@@ -268,20 +286,23 @@ xbuild_4_0_dirs := \
 monodroid_SUBDIRS := $(monodroid_dirs)
 monotouch_SUBDIRS := $(monotouch_dirs)
 monotouch_watch_SUBDIRS := $(monotouch_watch_dirs)
+monotouch_tv_SUBDIRS    := $(monotouch_tv_dirs)
 monotouch_runtime_SUBDIRS := $(monotouch_runtime_dirs)
+monotouch_watch_runtime_SUBDIRS := $(monotouch_watch_runtime_dirs)
+monotouch_tv_runtime_SUBDIRS := $(monotouch_tv_runtime_dirs)
 mobile_static_SUBDIRS := $(mobile_static_dirs)
 mobile_SUBDIRS := $(mobile_dynamic_dirs)
 xammac_SUBDIRS := $(xammac_dirs)
 xammac_net_4_5_SUBDIRS := $(xammac_4_5_dirs)
 binary_reference_assemblies_SUBDIRS := reference-assemblies
-net_4_5_SUBDIRS := $(net_4_5_dirs) $(xbuild_4_0_dirs)
-net_4_5_PARALLEL_SUBDIRS := $(net_4_5_parallel_dirs) aot-compiler
+net_4_x_SUBDIRS := $(net_4_x_dirs) $(xbuild_4_0_dirs)
+net_4_x_PARALLEL_SUBDIRS := $(net_4_x_parallel_dirs) aot-compiler
 xbuild_12_SUBDIRS := $(xbuild_4_0_dirs)
 xbuild_14_SUBDIRS := $(xbuild_4_0_dirs)
 
 include ../build/rules.make
 
-SUBDIRS = $(mobile_static_dirs) $(mobile_dynamic_dirs) $(monotouch_dirs) $(monodroid_dirs) $(xammac_dirs) $(net_4_5_dirs) $(net_4_5_parallel_dirs) $(xammac_net_4_5_SUBDIRS)
+SUBDIRS = $(mobile_static_dirs) $(mobile_dynamic_dirs) $(monotouch_dirs) $(monodroid_dirs) $(xammac_dirs) $(net_4_x_dirs) $(net_4_x_parallel_dirs) $(xammac_net_4_5_SUBDIRS)
 
 DIST_ONLY_SUBDIRS = dlr aot-compiler reference-assemblies $(xbuild_4_0_dirs)
 
@@ -305,6 +326,7 @@ DISTFILES = \
 	notes/BitVecto32.txt	\
 	MicrosoftAjaxLibrary/License.htm	\
 	test-helpers/NetworkHelpers.cs	\
+	test-helpers/SocketResponder.cs	\
 	$(monolite_files)
 
 .PHONY: all-local $(STD_TARGETS:=-local)

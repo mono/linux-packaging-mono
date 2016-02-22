@@ -73,7 +73,6 @@ namespace MS.Internal.Xml.XPath {
         public virtual QueryProps Properties { get { return QueryProps.Merge; } }
 
         // ----------------- Helper methods -------------
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
         public static Query Clone(Query input) {
             if (input != null) {
                 return (Query)input.Clone();

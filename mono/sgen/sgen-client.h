@@ -88,6 +88,19 @@ gboolean sgen_client_mark_ephemerons (ScanCopyContext ctx);
 void sgen_client_clear_unreachable_ephemerons (ScanCopyContext ctx);
 
 /*
+ * May return NULL.  Must be an aligned pointer.
+ */
+gpointer sgen_client_default_metadata (void);
+gpointer sgen_client_metadata_for_object (GCObject *obj);
+
+/*
+ * No action required.
+ */
+void sgen_client_gchandle_created (int handle_type, GCObject *obj, guint32 handle);
+void sgen_client_gchandle_destroyed (int handle_type, guint32 handle);
+void sgen_client_ensure_weak_gchandles_accessible (void);
+
+/*
  * This is called for objects that are larger than one card.  If it's possible to scan only
  * parts of the object based on which cards are marked, do so and return TRUE.  Otherwise,
  * return FALSE.
@@ -272,8 +285,6 @@ void sgen_client_describe_invalid_pointer (GCObject *ptr);
 #define BEGIN_PROTOCOL_ENTRY_HEAVY6(method,t1,f1,t2,f2,t3,f3,t4,f4,t5,f5,t6,f6) \
 	void sgen_client_ ## method (t1 f1, t2 f2, t3 f3, t4 f4, t5 f5, t6 f6);
 
-#define FLUSH()
-
 #define DEFAULT_PRINT()
 #define CUSTOM_PRINT(_)
 
@@ -282,6 +293,7 @@ void sgen_client_describe_invalid_pointer (GCObject *ptr);
 #define IS_VTABLE_MATCH(_)
 
 #define END_PROTOCOL_ENTRY
+#define END_PROTOCOL_ENTRY_FLUSH
 #define END_PROTOCOL_ENTRY_HEAVY
 
 #include "sgen-protocol-def.h"

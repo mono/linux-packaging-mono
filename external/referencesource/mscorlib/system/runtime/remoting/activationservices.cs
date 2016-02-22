@@ -198,7 +198,6 @@ namespace System.Runtime.Remoting.Activation {
             return retObj;
         }
 
-#if FEATURE_COMINTEROP
         [System.Security.SecurityCritical]  // auto-generated
         private static MarshalByRefObject CreateObjectForCom(
             RuntimeType serverType, Object[] props, bool bNewObj)
@@ -230,7 +229,6 @@ namespace System.Runtime.Remoting.Activation {
             Contract.Assert(null != retObj, "null != retObj");
             return retObj;
         }
-#endif // FEATURE_COMINTEROP
 
         // For types with no proxy attribute, we take the default route of 
         // querying attributes if the current context is suitable for 

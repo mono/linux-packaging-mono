@@ -437,9 +437,6 @@ namespace System.Collections {
         // ArgumentException is thrown if the key is null or if the key is already
         // present in the hashtable.
         // 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public virtual void Add(Object key, Object value) {
             Insert(key, value, true);
         }
@@ -495,9 +492,6 @@ namespace System.Collections {
         }
     
         // Checks if this hashtable contains the given key.
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public virtual bool Contains(Object key) {
             return ContainsKey(key);
         }
@@ -709,9 +703,6 @@ namespace System.Collections {
                 return null;
             }
 
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             set {
                 Insert(key, value, false);
             }
@@ -786,9 +777,6 @@ namespace System.Collections {
         // in progress, the MoveNext and Current methods of the
         // enumerator will throw an exception.
         //
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         IEnumerator IEnumerable.GetEnumerator() {
             return new HashtableEnumerator(this, HashtableEnumerator.DictEntry);
         }
@@ -798,9 +786,6 @@ namespace System.Collections {
         // in progress, the MoveNext and Current methods of the
         // enumerator will throw an exception.
         //
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public virtual IDictionaryEnumerator GetEnumerator() {
             return new HashtableEnumerator(this, HashtableEnumerator.DictEntry);
         }
@@ -808,9 +793,6 @@ namespace System.Collections {
         // Internal method to get the hash code for an Object.  This will call
         // GetHashCode() on each object if you haven't provided an IHashCodeProvider
         // instance.  Otherwise, it calls hcp.GetHashCode(obj).
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         protected virtual int GetHash(Object key)
         {
             if (_keycomparer != null)
@@ -861,9 +843,6 @@ namespace System.Collections {
         // a static copy of all the keys in the hash table.
         // 
         public virtual ICollection Keys {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get {
                 if (keys == null) keys = new KeyCollection(this);
                     return keys;
@@ -881,9 +860,6 @@ namespace System.Collections {
         // a static copy of all the keys in the hash table.
         // 
         public virtual ICollection Values {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get {
                 if (values == null) values = new ValueCollection(this);
                     return values;
@@ -955,6 +931,9 @@ namespace System.Collections {
 #endif                    
 
 #if FEATURE_RANDOMIZED_STRING_HASHING
+#if !FEATURE_CORECLR
+                    // coreclr has the randomized string hashing on by default so we don't need to resize at this point
+
                     if(ntry > HashHelpers.HashCollisionThreshold && HashHelpers.IsWellKnownEqualityComparer(_keycomparer)) 
                     {
                         // PERF: We don't want to rehash if _keycomparer is already a RandomizedObjectEqualityComparer since in some
@@ -965,7 +944,8 @@ namespace System.Collections {
                             rehash(buckets.Length, true);
                         }
                     }
-#endif
+#endif // !FEATURE_CORECLR
+#endif // FEATURE_RANDOMIZED_STRING_HASHING
 
                     return;
                 }
@@ -990,6 +970,7 @@ namespace System.Collections {
 #endif                 
 
 #if FEATURE_RANDOMIZED_STRING_HASHING
+#if !FEATURE_CORECLR
                     if(ntry > HashHelpers.HashCollisionThreshold && HashHelpers.IsWellKnownEqualityComparer(_keycomparer)) 
                     {
                         // PERF: We don't want to rehash if _keycomparer is already a RandomizedObjectEqualityComparer since in some
@@ -1000,6 +981,7 @@ namespace System.Collections {
                             rehash(buckets.Length, true);
                         }
                     }
+#endif // !FEATURE_CORECLR
 #endif
                     return;
                 }
@@ -1037,6 +1019,7 @@ namespace System.Collections {
 #endif
 
 #if FEATURE_RANDOMIZED_STRING_HASHING
+#if !FEATURE_CORECLR
                 if(buckets.Length > HashHelpers.HashCollisionThreshold && HashHelpers.IsWellKnownEqualityComparer(_keycomparer)) 
                 {
                     // PERF: We don't want to rehash if _keycomparer is already a RandomizedObjectEqualityComparer since in some
@@ -1047,6 +1030,7 @@ namespace System.Collections {
                         rehash(buckets.Length, true);
                     }
                 }
+#endif // !FEATURE_CORECLR
 #endif
                 return;
             }
@@ -1333,9 +1317,6 @@ namespace System.Collections {
                 _hashtable.CopyKeys(array, arrayIndex);
             }
             
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             public virtual IEnumerator GetEnumerator() {
                 return new HashtableEnumerator(_hashtable, HashtableEnumerator.Keys);
             }
@@ -1377,9 +1358,6 @@ namespace System.Collections {
                 _hashtable.CopyValues(array, arrayIndex);
             }
             
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             public virtual IEnumerator GetEnumerator() {
                 return new HashtableEnumerator(_hashtable, HashtableEnumerator.Values);
             }
@@ -1455,9 +1433,6 @@ namespace System.Collections {
             }
 
             public override Object this[Object key] {
-#if !FEATURE_CORECLR
-                [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
                 get {
                         return _table[key];
                 }
@@ -1484,16 +1459,10 @@ namespace System.Collections {
                 }
             }
     
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             public override bool Contains(Object key) {
                 return _table.Contains(key);
             }
     
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             public override bool ContainsKey(Object key) {
                 if (key == null) {
                     throw new ArgumentNullException("key", Environment.GetResourceString("ArgumentNull_Key"));
@@ -1600,9 +1569,6 @@ namespace System.Collections {
             }
     
             public virtual Object Key {
-#if !FEATURE_CORECLR
-                [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
                 get {
                     if (current == false) throw new InvalidOperationException(Environment.GetResourceString(ResId.InvalidOperation_EnumNotStarted));
                     return currentKey;
@@ -1647,9 +1613,6 @@ namespace System.Collections {
             }
             
             public virtual Object Value {
-#if !FEATURE_CORECLR
-                [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
                 get {
                     if (current == false) throw new InvalidOperationException(Environment.GetResourceString(ResId.InvalidOperation_EnumOpCantHappen));
                     return currentValue;

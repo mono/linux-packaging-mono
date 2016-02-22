@@ -43,6 +43,7 @@ using System.Security.Permissions;
 using System.Collections.Generic;
 using System.Security;
 using System.Threading;
+using Microsoft.Win32.SafeHandles;
 
 namespace System.Diagnostics {
 
@@ -72,24 +73,20 @@ namespace System.Diagnostics {
 			public IntPtr Password;
 			public bool LoadUserProfile;
 		};
-		
+
 		IntPtr process_handle;
 		int pid;
-		bool enableRaisingEvents;
-		RegisteredWaitHandle exitWaitHandle;
+		int enable_raising_events;
+		Thread background_wait_for_exit_thread;
 		ISynchronizeInvoke synchronizingObject;
 		EventHandler exited_event;
-		IntPtr stdout_rd;
-		IntPtr stderr_rd;
-
-		object thisLock = new Object ();
 
 		/* Private constructor called from other methods */
 		private Process(IntPtr handle, int id) {
-			process_handle=handle;
+			process_handle = handle;
 			pid=id;
 		}
-		
+
 		public Process ()
 		{
 		}
@@ -98,53 +95,19 @@ namespace System.Diagnostics {
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]
 		[MonitoringDescription ("Base process priority.")]
 		public int BasePriority {
-			get {
-				return(0);
-			}
-		}
-
-		void StartExitCallbackIfNeeded ()
-		{
-			lock (thisLock) {
-				bool start = (exitWaitHandle == null && enableRaisingEvents && exited_event != null);
-				if (start && process_handle != IntPtr.Zero) {
-					WaitOrTimerCallback cb = new WaitOrTimerCallback (CBOnExit);
-					ProcessWaitHandle h = new ProcessWaitHandle (process_handle);
-					exitWaitHandle = ThreadPool.RegisterWaitForSingleObject (h, cb, this, -1, true);
-				}
-			}
-		}
-
-		void UnregisterExitCallback ()
-		{
-			lock (thisLock) {
-				if (exitWaitHandle != null) {
-					exitWaitHandle.Unregister (null);
-					exitWaitHandle = null;
-				}
-			}
-		}
-
-		bool IsExitCallbackPending ()
-		{
-			lock (thisLock) {
-				return exitWaitHandle != null;
-			}
+			get { return 0; }
 		}
 
 		[DefaultValue (false), Browsable (false)]
 		[MonitoringDescription ("Check for exiting of the process to raise the apropriate event.")]
 		public bool EnableRaisingEvents {
 			get {
-				return enableRaisingEvents;
+				return enable_raising_events == 1;
 			}
-			set { 
-				bool prev = enableRaisingEvents;
-				enableRaisingEvents = value;
-				if (enableRaisingEvents && !prev)
-					StartExitCallbackIfNeeded ();
+			set {
+				if (value && Interlocked.Exchange (ref enable_raising_events, 1) == 0)
+					StartBackgroundWaitForExit ();
 			}
-
 		}
 
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -159,8 +122,7 @@ namespace System.Diagnostics {
 
 				int code = ExitCode_internal (process_handle);
 				if (code == 259)
-					throw new InvalidOperationException ("The process must exit before " +
-									"getting the requested information.");
+					throw new InvalidOperationException ("The process must exit before getting the requested information.");
 
 				return code;
 			}
@@ -615,6 +577,7 @@ namespace System.Diagnostics {
 			}
 		}
 
+#if MONO_FEATURE_PROCESS_START
 		private StreamReader error_stream=null;
 		bool error_stream_exposed;
 
@@ -686,6 +649,28 @@ namespace System.Diagnostics {
 				start_info = value;
 			}
 		}
+#else
+		[Obsolete ("Process.StandardError is not supported on the current platform.", true)]
+		public StreamReader StandardError {
+			get { throw new PlatformNotSupportedException ("Process.StandardError is not supported on the current platform."); }
+		}
+
+		[Obsolete ("Process.StandardInput is not supported on the current platform.", true)]
+		public StreamWriter StandardInput {
+			get { throw new PlatformNotSupportedException ("Process.StandardInput is not supported on the current platform."); }
+		}
+
+		[Obsolete ("Process.StandardOutput is not supported on the current platform.", true)]
+		public StreamReader StandardOutput {
+			get { throw new PlatformNotSupportedException ("Process.StandardOutput is not supported on the current platform."); }
+		}
+
+		[Obsolete ("Process.StartInfo is not supported on the current platform.", true)]
+		public ProcessStartInfo StartInfo {
+			get { throw new PlatformNotSupportedException ("Process.StartInfo is not supported on the current platform."); }
+			set { throw new PlatformNotSupportedException ("Process.StartInfo is not supported on the current platform."); }
+		}
+#endif // MONO_FEATURE_PROCESS_START
 
 		/* Returns the process start time in Windows file
 		 * times (ticks from DateTime(1/1/1601 00:00 GMT))
@@ -933,6 +918,7 @@ namespace System.Diagnostics {
 			// the process (currently we have none).
 		}
 
+#if MONO_FEATURE_PROCESS_START
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		private extern static bool ShellExecuteEx_internal(ProcessStartInfo startInfo,
 								   ref ProcInfo proc_info);
@@ -973,19 +959,62 @@ namespace System.Diagnostics {
 
 			process.process_handle = proc_info.process_handle;
 			process.pid = proc_info.pid;
-			process.StartExitCallbackIfNeeded ();
+			process.StartBackgroundWaitForExit ();
 			return(ret);
 		}
 
-		private static bool Start_noshell (ProcessStartInfo startInfo,
-						   Process process)
+		//
+		// Creates a pipe with read and write descriptors
+		//
+		static void CreatePipe (out IntPtr read, out IntPtr write, bool writeDirection)
 		{
-			ProcInfo proc_info=new ProcInfo();
-			IntPtr stdin_rd = IntPtr.Zero, stdin_wr = IntPtr.Zero;
-			IntPtr stdout_wr;
-			IntPtr stderr_wr;
-			bool ret;
 			MonoIOError error;
+
+			//
+			// Creates read/write pipe from parent -> child perspective
+			// a child process uses same descriptors after fork. That's
+			// 4 descriptors in total where only 2. One in child, one in parent
+			// should be active and the other 2 closed. Which ones depends on
+			// comunication direction
+			//
+			// parent  -------->  child   (parent can write, child can read)
+			//
+			// read: closed       read: used
+			// write: used        write: closed
+			//
+			//
+			// parent  <--------  child   (parent can read, child can write)
+			//
+			// read: used         read: closed
+			// write: closed      write: used
+			//
+			// It can still be tricky for predefined descriptiors http://unixwiz.net/techtips/remap-pipe-fds.html
+			//
+			if (!MonoIO.CreatePipe (out read, out write, out error))
+				throw MonoIO.GetException (error);
+
+			if (IsWindows) {
+				const int DUPLICATE_SAME_ACCESS = 0x00000002;
+				var tmp = writeDirection ? write : read;
+
+				if (!MonoIO.DuplicateHandle (Process.GetCurrentProcess ().Handle, tmp, Process.GetCurrentProcess ().Handle, out tmp, 0, 0, DUPLICATE_SAME_ACCESS, out error))
+					throw MonoIO.GetException (error);
+
+				if (writeDirection) {
+					if (!MonoIO.Close (write, out error))
+						throw MonoIO.GetException (error);
+					write = tmp;
+				} else {
+					if (!MonoIO.Close (read, out error))
+						throw MonoIO.GetException (error);
+					read = tmp;
+				}
+			}
+		}
+
+		static bool Start_noshell (ProcessStartInfo startInfo, Process process)
+		{
+			var proc_info = new ProcInfo ();
 
 			if (startInfo.HaveEnvVars) {
 				string [] strs = new string [startInfo.EnvironmentVariables.Count];
@@ -997,164 +1026,116 @@ namespace System.Diagnostics {
 				proc_info.envValues = strs;
 			}
 
-			if (startInfo.RedirectStandardInput == true) {
-				if (IsWindows) {
-					int DUPLICATE_SAME_ACCESS = 0x00000002;
-					IntPtr stdin_wr_tmp;
+			MonoIOError error;
+			IntPtr stdin_read = IntPtr.Zero, stdin_write = IntPtr.Zero;
+			IntPtr stdout_read = IntPtr.Zero, stdout_write = IntPtr.Zero;
+			IntPtr stderr_read = IntPtr.Zero, stderr_write = IntPtr.Zero;
 
-					ret = MonoIO.CreatePipe (out stdin_rd,
-									 out stdin_wr_tmp);
-					if (ret) {
-						ret = MonoIO.DuplicateHandle (Process.GetCurrentProcess ().Handle, stdin_wr_tmp,
-						Process.GetCurrentProcess ().Handle, out stdin_wr, 0, 0, DUPLICATE_SAME_ACCESS);
-						MonoIO.Close (stdin_wr_tmp, out error);
-					}
-				}
-				else
-				{
-					ret = MonoIO.CreatePipe (out stdin_rd,
-									 out stdin_wr);
-				}
-				if (ret == false) {
-					throw new IOException ("Error creating standard input pipe");
-				}
-			} else {
-				stdin_rd = MonoIO.ConsoleInput;
-				/* This is required to stop the
-				 * &$*£ing stupid compiler moaning
-				 * that stdin_wr is unassigned, below.
-				 */
-				stdin_wr = (IntPtr)0;
-			}
-
-			if (startInfo.RedirectStandardOutput == true) {
-				IntPtr out_rd = IntPtr.Zero;
-				if (IsWindows) {
-					IntPtr out_rd_tmp;
-					int DUPLICATE_SAME_ACCESS = 0x00000002;
-
-					ret = MonoIO.CreatePipe (out out_rd_tmp,
-									 out stdout_wr);
-					if (ret) {
-						MonoIO.DuplicateHandle (Process.GetCurrentProcess ().Handle, out_rd_tmp,
-						Process.GetCurrentProcess ().Handle, out out_rd, 0, 0, DUPLICATE_SAME_ACCESS);
-						MonoIO.Close (out_rd_tmp, out error);
-					}
-				}
-				else {
-					ret = MonoIO.CreatePipe (out out_rd,
-									 out stdout_wr);
-				}
-
-				process.stdout_rd = out_rd;
-				if (ret == false) {
-					if (startInfo.RedirectStandardInput == true) {
-						MonoIO.Close (stdin_rd, out error);
-						MonoIO.Close (stdin_wr, out error);
-					}
-
-					throw new IOException ("Error creating standard output pipe");
-				}
-			} else {
-				process.stdout_rd = (IntPtr)0;
-				stdout_wr = MonoIO.ConsoleOutput;
-			}
-
-			if (startInfo.RedirectStandardError == true) {
-				IntPtr err_rd = IntPtr.Zero;
-				if (IsWindows) {
-					IntPtr err_rd_tmp;
-					int DUPLICATE_SAME_ACCESS = 0x00000002;
-
-					ret = MonoIO.CreatePipe (out err_rd_tmp,
-									 out stderr_wr);
-					if (ret) {
-						MonoIO.DuplicateHandle (Process.GetCurrentProcess ().Handle, err_rd_tmp,
-						Process.GetCurrentProcess ().Handle, out err_rd, 0, 0, DUPLICATE_SAME_ACCESS);
-						MonoIO.Close (err_rd_tmp, out error);
-					}
-				}
-				else {
-					ret = MonoIO.CreatePipe (out err_rd,
-									 out stderr_wr);
-				}
-
-				process.stderr_rd = err_rd;
-				if (ret == false) {
-					if (startInfo.RedirectStandardInput == true) {
-						MonoIO.Close (stdin_rd, out error);
-						MonoIO.Close (stdin_wr, out error);
-					}
-					if (startInfo.RedirectStandardOutput == true) {
-						MonoIO.Close (process.stdout_rd, out error);
-						MonoIO.Close (stdout_wr, out error);
-					}
-					
-					throw new IOException ("Error creating standard error pipe");
-				}
-			} else {
-				process.stderr_rd = (IntPtr)0;
-				stderr_wr = MonoIO.ConsoleError;
-			}
-
-			FillUserInfo (startInfo, ref proc_info);
 			try {
-				ret = CreateProcess_internal (startInfo,
-							      stdin_rd, stdout_wr, stderr_wr,
-							      ref proc_info);
-			} finally {
-				if (proc_info.Password != IntPtr.Zero)
-					Marshal.ZeroFreeBSTR (proc_info.Password);
-				proc_info.Password = IntPtr.Zero;
-			}
-			if (!ret) {
-				if (startInfo.RedirectStandardInput == true) {
-					MonoIO.Close (stdin_rd, out error);
-					MonoIO.Close (stdin_wr, out error);
+				if (startInfo.RedirectStandardInput) {
+					CreatePipe (out stdin_read, out stdin_write, true);
+				} else {
+					stdin_read = MonoIO.ConsoleInput;
+					stdin_write = IntPtr.Zero;
 				}
 
-				if (startInfo.RedirectStandardOutput == true) {
-					MonoIO.Close (process.stdout_rd, out error);
-					MonoIO.Close (stdout_wr, out error);
+				if (startInfo.RedirectStandardOutput) {
+					CreatePipe (out stdout_read, out stdout_write, false);
+				} else {
+					stdout_read = IntPtr.Zero;
+					stdout_write = MonoIO.ConsoleOutput;
 				}
 
-				if (startInfo.RedirectStandardError == true) {
-					MonoIO.Close (process.stderr_rd, out error);
-					MonoIO.Close (stderr_wr, out error);
+				if (startInfo.RedirectStandardError) {
+					CreatePipe (out stderr_read, out stderr_write, false);
+				} else {
+					stderr_read = IntPtr.Zero;
+					stderr_write = MonoIO.ConsoleError;
 				}
 
-				throw new Win32Exception (-proc_info.pid,
+				FillUserInfo (startInfo, ref proc_info);
+
+				//
+				// FIXME: For redirected pipes we need to send descriptors of
+				// stdin_write, stdout_read, stderr_read to child process and
+				// close them there (fork makes exact copy of parent's descriptors)
+				//
+				if (!CreateProcess_internal (startInfo, stdin_read, stdout_write, stderr_write, ref proc_info)) {
+					throw new Win32Exception (-proc_info.pid, 
 					"ApplicationName='" + startInfo.FileName +
 					"', CommandLine='" + startInfo.Arguments +
 					"', CurrentDirectory='" + startInfo.WorkingDirectory +
 					"', Native error= " + Win32Exception.W32ErrorMessage (-proc_info.pid));
+				}
+			} catch {
+				if (startInfo.RedirectStandardInput) {
+					if (stdin_read != IntPtr.Zero)
+						MonoIO.Close (stdin_read, out error);
+					if (stdin_write != IntPtr.Zero)
+						MonoIO.Close (stdin_write, out error);
+				}
+
+				if (startInfo.RedirectStandardOutput) {
+					if (stdout_read != IntPtr.Zero)
+						MonoIO.Close (stdout_read, out error);
+					if (stdout_write != IntPtr.Zero)
+						MonoIO.Close (stdout_write, out error);
+				}
+
+				if (startInfo.RedirectStandardError) {
+					if (stderr_read != IntPtr.Zero)
+						MonoIO.Close (stderr_read, out error);
+					if (stderr_write != IntPtr.Zero)
+						MonoIO.Close (stderr_write, out error);
+				}
+
+				throw;
+			} finally {
+				if (proc_info.Password != IntPtr.Zero) {
+					Marshal.ZeroFreeBSTR (proc_info.Password);
+					proc_info.Password = IntPtr.Zero;
+				}
 			}
 
 			process.process_handle = proc_info.process_handle;
 			process.pid = proc_info.pid;
 			
-			if (startInfo.RedirectStandardInput == true) {
-				MonoIO.Close (stdin_rd, out error);
-				process.input_stream = new StreamWriter (new MonoSyncFileStream (stdin_wr, FileAccess.Write, true, 8192), Console.Out.Encoding);
-				process.input_stream.AutoFlush = true;
+			if (startInfo.RedirectStandardInput) {
+				//
+				// FIXME: The descriptor needs to be closed but due to wapi io-layer
+				// not coping with duplicated descriptors any StandardInput write fails
+				//
+				// MonoIO.Close (stdin_read, out error);
+
+#if MOBILE
+				var stdinEncoding = Encoding.Default;
+#else
+				var stdinEncoding = Console.InputEncoding;
+#endif
+				process.input_stream = new StreamWriter (new FileStream (stdin_write, FileAccess.Write, true, 8192), stdinEncoding) {
+					AutoFlush = true
+				};
 			}
 
-			Encoding stdoutEncoding = startInfo.StandardOutputEncoding ?? Console.Out.Encoding;
-			Encoding stderrEncoding = startInfo.StandardErrorEncoding ?? Console.Out.Encoding;
+			if (startInfo.RedirectStandardOutput) {
+				MonoIO.Close (stdout_write, out error);
 
-			if (startInfo.RedirectStandardOutput == true) {
-				MonoIO.Close (stdout_wr, out error);
-				process.output_stream = new StreamReader (new MonoSyncFileStream (process.stdout_rd, FileAccess.Read, true, 8192), stdoutEncoding, true, 8192);
+				Encoding stdoutEncoding = startInfo.StandardOutputEncoding ?? Console.Out.Encoding;
+
+				process.output_stream = new StreamReader (new FileStream (stdout_read, FileAccess.Read, true, 8192), stdoutEncoding, true);
 			}
 
-			if (startInfo.RedirectStandardError == true) {
-				MonoIO.Close (stderr_wr, out error);
-				process.error_stream = new StreamReader (new MonoSyncFileStream (process.stderr_rd, FileAccess.Read, true, 8192), stderrEncoding, true, 8192);
+			if (startInfo.RedirectStandardError) {
+				MonoIO.Close (stderr_write, out error);
+
+				Encoding stderrEncoding = startInfo.StandardErrorEncoding ?? Console.Out.Encoding;
+
+				process.error_stream = new StreamReader (new FileStream (stderr_read, FileAccess.Read, true, 8192), stderrEncoding, true);
 			}
 
-			process.StartExitCallbackIfNeeded ();
+			process.StartBackgroundWaitForExit ();
 
-			return(ret);
+			return true;
 		}
 
 		// Note that ProcInfo.Password must be freed.
@@ -1234,6 +1215,43 @@ namespace System.Diagnostics {
 			psi.UseShellExecute = false;
 			return Start(psi);
 		}
+#else
+		[Obsolete ("Process.Start is not supported on the current platform.", true)]
+		public bool Start ()
+		{
+			throw new PlatformNotSupportedException ("Process.Start is not supported on the current platform.");
+		}
+
+		[Obsolete ("Process.Start is not supported on the current platform.", true)]
+		public static Process Start (ProcessStartInfo startInfo)
+		{
+			throw new PlatformNotSupportedException ("Process.Start is not supported on the current platform.");
+		}
+
+		[Obsolete ("Process.Start is not supported on the current platform.", true)]
+		public static Process Start (string fileName)
+		{
+			throw new PlatformNotSupportedException ("Process.Start is not supported on the current platform.");
+		}
+
+		[Obsolete ("Process.Start is not supported on the current platform.", true)]
+		public static Process Start(string fileName, string arguments)
+		{
+			throw new PlatformNotSupportedException ("Process.Start is not supported on the current platform.");
+		}
+
+		[Obsolete ("Process.Start is not supported on the current platform.", true)]
+		public static Process Start(string fileName, string username, SecureString password, string domain)
+		{
+			throw new PlatformNotSupportedException ("Process.Start is not supported on the current platform.");
+		}
+
+		[Obsolete ("Process.Start is not supported on the current platform.", true)]
+		public static Process Start(string fileName, string arguments, string username, SecureString password, string domain)
+		{
+			throw new PlatformNotSupportedException ("Process.Start is not supported on the current platform.");
+		}
+#endif // MONO_FEATURE_PROCESS_START
 
 		public override string ToString()
 		{
@@ -1259,38 +1277,21 @@ namespace System.Diagnostics {
 			if (process_handle == IntPtr.Zero)
 				throw new InvalidOperationException ("No process is associated with this object.");
 
+			if (!WaitForExit_internal (process_handle, ms))
+				return false;
 
-			DateTime start = DateTime.UtcNow;
-			if (async_output != null && !async_output.IsCompleted) {
-				if (false == async_output.WaitHandle.WaitOne (ms, false))
-					return false; // Timed out
+#if MONO_FEATURE_PROCESS_START
+			if (async_output != null)
+				async_output.WaitUtilEOF ();
 
-				if (ms >= 0) {
-					DateTime now = DateTime.UtcNow;
-					ms -= (int) (now - start).TotalMilliseconds;
-					if (ms <= 0)
-						return false;
-					start = now;
-				}
-			}
+			if (async_error != null)
+				async_error.WaitUtilEOF ();
+#endif // MONO_FEATURE_PROCESS_START
 
-			if (async_error != null && !async_error.IsCompleted) {
-				if (false == async_error.WaitHandle.WaitOne (ms, false))
-					return false; // Timed out
-
-				if (ms >= 0) {
-					ms -= (int) (DateTime.UtcNow - start).TotalMilliseconds;
-					if (ms <= 0)
-						return false;
-				}
-			}
-
-			bool exited = WaitForExit_internal (process_handle, ms);
-
-			if (exited)
+			if (EnableRaisingEvents)
 				OnExited ();
 
-			return exited;
+			return true;
 		}
 
 		/* Waits up to ms milliseconds for process 'handle' to 
@@ -1326,18 +1327,7 @@ namespace System.Diagnostics {
 		[MonitoringDescription ("Raised when it receives error data")]
 		public event DataReceivedEventHandler ErrorDataReceived;
 
-		void OnOutputDataReceived (string str)
-		{
-			if (OutputDataReceived != null)
-				OutputDataReceived (this, new DataReceivedEventArgs (str));
-		}
-
-		void OnErrorDataReceived (string str)
-		{
-			if (ErrorDataReceived != null)
-				ErrorDataReceived (this, new DataReceivedEventArgs (str));
-		}
-
+#if MONO_FEATURE_PROCESS_START
 		[Flags]
 		enum AsyncModes {
 			NoneYet = 0,
@@ -1347,169 +1337,9 @@ namespace System.Diagnostics {
 			AsyncError = 1 << 3
 		}
 
-		[StructLayout (LayoutKind.Sequential)]
-		sealed class ProcessAsyncReader : IThreadPoolWorkItem
-		{
-			/*
-			   The following fields match those of SocketAsyncResult.
-			   This is so that changes needed in the runtime to handle
-			   asynchronous reads are trivial
-			   Keep this in sync with SocketAsyncResult in 
-			   ./System.Net.Sockets/Socket.cs and MonoSocketAsyncResult
-			   in metadata/socket-io.h.
-			*/
-			/* DON'T shuffle fields around. DON'T remove fields */
-			public object Sock;
-			public IntPtr handle;
-			public object state;
-			public AsyncCallback callback;
-			public ManualResetEvent wait_handle;
-
-			public Exception delayedException;
-
-			public object EndPoint;
-			byte [] buffer = new byte [4196];
-			public int Offset;
-			public int Size;
-			public int SockFlags;
-
-			public object AcceptSocket;
-			public object[] Addresses;
-			public int port;
-			public object Buffers;          // Reserve this slot in older profiles
-			public bool ReuseSocket;        // Disconnect
-			public object acc_socket;
-			public int total;
-			public bool completed_sync;
-			bool completed;
-			bool err_out; // true -> stdout, false -> stderr
-			internal int error;
-			public int operation = 8; // MAGIC NUMBER: see Socket.cs:AsyncOperation
-			public AsyncResult async_result;
-			public int EndCalled;
-
-			// These fields are not in SocketAsyncResult
-			Process process;
-			Stream stream;
-			StringBuilder sb = new StringBuilder ();
-			public AsyncReadHandler ReadHandler;
-
-			public ProcessAsyncReader (Process process, IntPtr handle, bool err_out)
-			{
-				this.process = process;
-				this.handle = handle;
-				stream = new FileStream (handle, FileAccess.Read, false);
-				this.ReadHandler = new AsyncReadHandler (AddInput);
-				this.err_out = err_out;
-			}
-
-			public void AddInput ()
-			{
-				lock (this) {
-					int nread = stream.Read (buffer, 0, buffer.Length);
-					if (nread == 0) {
-						completed = true;
-						if (wait_handle != null)
-							wait_handle.Set ();
-						FlushLast ();
-						return;
-					}
-
-					try {
-						sb.Append (Encoding.Default.GetString (buffer, 0, nread));
-					} catch {
-						// Just in case the encoding fails...
-						for (int i = 0; i < nread; i++) {
-							sb.Append ((char) buffer [i]);
-						}
-					}
-
-					Flush (false);
-					ReadHandler.BeginInvoke (null, this);
-				}
-			}
-
-			void FlushLast ()
-			{
-				Flush (true);
-				if (err_out) {
-					process.OnOutputDataReceived (null);
-				} else {
-					process.OnErrorDataReceived (null);
-				}
-			}
-			
-			void Flush (bool last)
-			{
-				if (sb.Length == 0 ||
-				    (err_out && process.output_canceled) ||
-				    (!err_out && process.error_canceled))
-					return;
-
-				string total = sb.ToString ();
-				sb.Length = 0;
-				string [] strs = total.Split ('\n');
-				int len = strs.Length;
-				if (len == 0)
-					return;
-
-				for (int i = 0; i < len - 1; i++) {
-					if (err_out)
-						process.OnOutputDataReceived (strs [i]);
-					else
-						process.OnErrorDataReceived (strs [i]);
-				}
-
-				string end = strs [len - 1];
-				if (last || (len == 1 && end == "")) {
-					if (err_out) {
-						process.OnOutputDataReceived (end);
-					} else {
-						process.OnErrorDataReceived (end);
-					}
-				} else {
-					sb.Append (end);
-				}
-			}
-
-			public bool IsCompleted {
-				get { return completed; }
-			}
-
-			public WaitHandle WaitHandle {
-				get {
-					lock (this) {
-						if (wait_handle == null)
-							wait_handle = new ManualResetEvent (completed);
-						return wait_handle;
-					}
-				}
-			}
-
-			public void Close () {
-				RemoveFromIOThreadPool (handle);
-				stream.Close ();
-			}
-
-			[MethodImplAttribute(MethodImplOptions.InternalCall)]
-			extern static void RemoveFromIOThreadPool (IntPtr handle);
-
-			void IThreadPoolWorkItem.ExecuteWorkItem()
-			{
-				async_result.Invoke ();
-			}
-
-			void IThreadPoolWorkItem.MarkAborted(ThreadAbortException tae)
-			{
-			}
-		}
-
 		AsyncModes async_mode;
-		bool output_canceled;
-		bool error_canceled;
-		ProcessAsyncReader async_output;
-		ProcessAsyncReader async_error;
-		delegate void AsyncReadHandler ();
+		AsyncStreamReader async_output;
+		AsyncStreamReader async_error;
 
 		[ComVisibleAttribute(false)] 
 		public void BeginOutputReadLine ()
@@ -1520,11 +1350,26 @@ namespace System.Diagnostics {
 			if ((async_mode & AsyncModes.SyncOutput) != 0)
 				throw new InvalidOperationException ("Cannot mix asynchronous and synchonous reads.");
 
+			if ((async_mode & AsyncModes.AsyncOutput) != 0)
+				throw new InvalidOperationException ("An async read operation has already been started on the stream.");
+
 			async_mode |= AsyncModes.AsyncOutput;
-			output_canceled = false;
-			if (async_output == null) {
-				async_output = new ProcessAsyncReader (this, stdout_rd, true);
-				async_output.ReadHandler.BeginInvoke (null, async_output);
+
+			if (async_output == null)
+				async_output = new AsyncStreamReader (this, output_stream.BaseStream, new UserCallBack(this.OutputReadNotifyUser), output_stream.CurrentEncoding);
+
+			async_output.BeginReadLine ();
+		}
+
+		void OutputReadNotifyUser (String data)
+		{
+			// To avoid ---- between remove handler and raising the event
+			DataReceivedEventHandler outputDataReceived = OutputDataReceived;
+			if (outputDataReceived != null) {
+				if (SynchronizingObject != null && SynchronizingObject.InvokeRequired)
+					SynchronizingObject.Invoke (outputDataReceived, new object[] { this, new DataReceivedEventArgs (data) });
+				else
+					outputDataReceived (this, new DataReceivedEventArgs (data)); // Call back to user informing data is available.
 			}
 		}
 
@@ -1540,7 +1385,9 @@ namespace System.Diagnostics {
 			if (async_output == null)
 				throw new InvalidOperationException ("No async operation in progress.");
 
-			output_canceled = true;
+			async_output.CancelOperation ();
+
+			async_mode &= ~AsyncModes.AsyncOutput;
 		}
 
 		[ComVisibleAttribute(false)] 
@@ -1552,11 +1399,26 @@ namespace System.Diagnostics {
 			if ((async_mode & AsyncModes.SyncError) != 0)
 				throw new InvalidOperationException ("Cannot mix asynchronous and synchonous reads.");
 
+			if ((async_mode & AsyncModes.AsyncError) != 0)
+				throw new InvalidOperationException ("An async read operation has already been started on the stream.");
+
 			async_mode |= AsyncModes.AsyncError;
-			error_canceled = false;
-			if (async_error == null) {
-				async_error = new ProcessAsyncReader (this, stderr_rd, false);
-				async_error.ReadHandler.BeginInvoke (null, async_error);
+
+			if (async_error == null)
+				async_error = new AsyncStreamReader (this, error_stream.BaseStream, new UserCallBack(this.ErrorReadNotifyUser), error_stream.CurrentEncoding);
+
+			async_error.BeginReadLine ();
+		}
+
+		void ErrorReadNotifyUser (String data)
+		{
+			// To avoid ---- between remove handler and raising the event
+			DataReceivedEventHandler errorDataReceived = ErrorDataReceived;
+			if (errorDataReceived != null) {
+				if (SynchronizingObject != null && SynchronizingObject.InvokeRequired)
+					SynchronizingObject.Invoke (errorDataReceived, new object[] { this, new DataReceivedEventArgs (data) });
+				else
+					errorDataReceived (this, new DataReceivedEventArgs (data)); // Call back to user informing data is available.
 			}
 		}
 
@@ -1572,8 +1434,35 @@ namespace System.Diagnostics {
 			if (async_error == null)
 				throw new InvalidOperationException ("No async operation in progress.");
 
-			error_canceled = true;
+			async_error.CancelOperation ();
+
+			async_mode &= ~AsyncModes.AsyncError;
 		}
+#else
+		[Obsolete ("Process.BeginOutputReadLine is not supported on the current platform.", true)]
+		public void BeginOutputReadLine ()
+		{
+			throw new PlatformNotSupportedException ("Process.BeginOutputReadLine is not supported on the current platform.");
+		}
+
+		[Obsolete ("Process.BeginOutputReadLine is not supported on the current platform.", true)]
+		public void CancelOutputRead ()
+		{
+			throw new PlatformNotSupportedException ("Process.BeginOutputReadLine is not supported on the current platform.");
+		}
+
+		[Obsolete ("Process.BeginOutputReadLine is not supported on the current platform.", true)]
+		public void BeginErrorReadLine ()
+		{
+			throw new PlatformNotSupportedException ("Process.BeginOutputReadLine is not supported on the current platform.");
+		}
+
+		[Obsolete ("Process.BeginOutputReadLine is not supported on the current platform.", true)]
+		public void CancelErrorRead ()
+		{
+			throw new PlatformNotSupportedException ("Process.BeginOutputReadLine is not supported on the current platform.");
+		}
+#endif // MONO_FEATURE_PROCESS_START
 
 		[Category ("Behavior")]
 		[MonitoringDescription ("Raised when this process exits.")]
@@ -1582,64 +1471,59 @@ namespace System.Diagnostics {
 				if (process_handle != IntPtr.Zero && HasExited) {
 					value.BeginInvoke (null, null, null, null);
 				} else {
-					exited_event = (EventHandler) Delegate.Combine (exited_event, value);
+					exited_event += value;
 					if (exited_event != null)
-						StartExitCallbackIfNeeded ();
+						StartBackgroundWaitForExit ();
 				}
 			}
 			remove {
-				exited_event = (EventHandler) Delegate.Remove (exited_event, value);
+				exited_event -= value;
 			}
 		}
 
 		// Closes the system process handle
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		private extern void Process_free_internal(IntPtr handle);
-		
-		private bool disposed = false;
-		
+
+		int disposed;
+
 		protected override void Dispose(bool disposing) {
 			// Check to see if Dispose has already been called.
-			if(this.disposed == false) {
-				this.disposed=true;
-				// If this is a call to Dispose,
-				// dispose all managed resources.
-				if(disposing) {
-					// Do stuff here
-					lock (thisLock) {
-						/* These have open FileStreams on the pipes we are about to close */
-						if (async_output != null)
-							async_output.Close ();
-						if (async_error != null)
-							async_error.Close ();
+			if (disposed != 0 || Interlocked.CompareExchange (ref disposed, 1, 0) != 0)
+				return;
 
-						if (input_stream != null) {
-							if (!input_stream_exposed)
-								input_stream.Close ();
-							input_stream = null;
-						}
-						if (output_stream != null) {
-							if (!output_stream_exposed)
-								output_stream.Close ();
-							output_stream = null;
-						}
-						if (error_stream != null) {
-							if (!error_stream_exposed)
-								error_stream.Close ();
-							error_stream = null;
-						}
-					}
-				}
-				
-				// Release unmanaged resources
+			// If this is a call to Dispose,
+			// dispose all managed resources.
+			if (disposing) {
+#if MONO_FEATURE_PROCESS_START
+				async_output = null;
+				async_error = null;
 
-				lock (thisLock) {
-					if(process_handle!=IntPtr.Zero) {
-						Process_free_internal(process_handle);
-						process_handle=IntPtr.Zero;
-					}
+				if (input_stream != null) {
+					if (!input_stream_exposed)
+						input_stream.Close ();
+					input_stream = null;
 				}
+				if (output_stream != null) {
+					if (!output_stream_exposed)
+						output_stream.Close ();
+					output_stream = null;
+				}
+				if (error_stream != null) {
+					if (!error_stream_exposed)
+						error_stream.Close ();
+					error_stream = null;
+				}
+#endif // MONO_FEATURE_PROCESS_START
 			}
+
+			// Release unmanaged resources
+
+			if (process_handle!=IntPtr.Zero) {
+				Process_free_internal (process_handle);
+				process_handle = IntPtr.Zero;
+			}
+
 			base.Dispose (disposing);
 		}
 
@@ -1648,45 +1532,27 @@ namespace System.Diagnostics {
 			Dispose (false);
 		}
 
-		static void CBOnExit (object state, bool unused)
-		{
-			Process p = (Process) state;
-
-			if (!p.IsExitCallbackPending ())
-				return;
-
-			if (!p.HasExited) {
-				p.UnregisterExitCallback ();
-				p.StartExitCallbackIfNeeded ();
-				return;
-			}
-
-			p.OnExited ();
-		}
-
 		int on_exited_called = 0;
 
-		protected void OnExited() 
+		protected void OnExited()
 		{
-			if (exited_event == null)
-				return;
-
 			if (on_exited_called != 0 || Interlocked.CompareExchange (ref on_exited_called, 1, 0) != 0)
 				return;
 
-			UnregisterExitCallback ();
+			var cb = exited_event;
+			if (cb == null)
+				return;
 
-			if (synchronizingObject == null) {
-				foreach (EventHandler d in exited_event.GetInvocationList ()) {
+			if (synchronizingObject != null) {
+				synchronizingObject.BeginInvoke (cb, new object [] { this, EventArgs.Empty });
+			} else {
+				foreach (EventHandler d in cb.GetInvocationList ()) {
 					try {
 						d (this, EventArgs.Empty);
-					} catch {}
+					} catch {
+					}
 				}
-				return;
 			}
-			
-			object [] args = new object [] {this, EventArgs.Empty};
-			synchronizingObject.BeginInvoke (exited_event, args);
 		}
 
 		static bool IsWindows
@@ -1704,11 +1570,38 @@ namespace System.Diagnostics {
 			}
 		}
 
+		void StartBackgroundWaitForExit ()
+		{
+			IntPtr handle = process_handle;
+
+			if (enable_raising_events == 0)
+				return;
+			if (exited_event == null)
+				return;
+			if (handle == IntPtr.Zero)
+				return;
+			if (background_wait_for_exit_thread != null)
+				return;
+
+			Thread t = new Thread (_ => {
+				if (!WaitForExit_internal (handle, -1))
+					return;
+
+				if (EnableRaisingEvents)
+					OnExited ();
+			});
+
+			t.IsBackground = true;
+
+			if (Interlocked.CompareExchange (ref background_wait_for_exit_thread, t, null) == null)
+				t.Start ();
+		}
+
 		class ProcessWaitHandle : WaitHandle
 		{
 			[MethodImplAttribute (MethodImplOptions.InternalCall)]
 			private extern static IntPtr ProcessHandle_duplicate (IntPtr handle);
-			
+
 			public ProcessWaitHandle (IntPtr handle)
 			{
 				// Need to keep a reference to this handle,

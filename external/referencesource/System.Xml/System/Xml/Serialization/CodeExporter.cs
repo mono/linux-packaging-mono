@@ -158,6 +158,7 @@ namespace System.Xml.Serialization {
         internal abstract void EnsureTypesExported(Accessor[] accessors, string ns);
 
         internal static void AddWarningComment(CodeCommentStatementCollection comments, string text) {
+            Debug.Assert(comments != null);
             comments.Add(new CodeCommentStatement(Res.GetString(Res.XmlCodegenWarningDetails, text), false));
         }
 

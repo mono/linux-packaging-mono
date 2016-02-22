@@ -803,7 +803,7 @@ namespace System.Data.Common {
             return ADP.InvalidOperation(Res.GetString(Res.ADP_InvalidMixedUsageOfSecureAndClearCredential));
         }
         
-         static internal ArgumentException InvalidMixedArgumentOfSecureAndClearCredential() {
+        static internal ArgumentException InvalidMixedArgumentOfSecureAndClearCredential() {
             return ADP.Argument(Res.GetString(Res.ADP_InvalidMixedUsageOfSecureAndClearCredential));
         }
 
@@ -820,9 +820,33 @@ namespace System.Data.Common {
            return ADP.InvalidOperation(Res.GetString(Res.ADP_InvalidMixedUsageOfSecureCredentialAndContextConnection));
        }
 
-       static internal ArgumentException InvalidMixedArgumentOfSecureCredentialAndContextConnection()
+       static internal ArgumentException InvalidMixedArgumentOfSecureCredentialAndContextConnection() 
        {
            return ADP.Argument(Res.GetString(Res.ADP_InvalidMixedUsageOfSecureCredentialAndContextConnection));
+       }
+
+       static internal InvalidOperationException InvalidMixedUsageOfAccessTokenAndContextConnection() {
+           return ADP.InvalidOperation(Res.GetString(Res.ADP_InvalidMixedUsageOfAccessTokenAndContextConnection));
+       }
+
+       static internal InvalidOperationException InvalidMixedUsageOfAccessTokenAndIntegratedSecurity() {
+           return ADP.InvalidOperation(Res.GetString(Res.ADP_InvalidMixedUsageOfAccessTokenAndIntegratedSecurity));
+       }
+
+       static internal InvalidOperationException InvalidMixedUsageOfAccessTokenAndUserIDPassword() {
+           return ADP.InvalidOperation(Res.GetString(Res.ADP_InvalidMixedUsageOfAccessTokenAndUserIDPassword));
+       }
+
+       static internal Exception InvalidMixedUsageOfAccessTokenAndCredential() {
+           return ADP.InvalidOperation(Res.GetString(Res.ADP_InvalidMixedUsageOfAccessTokenAndCredential));
+       }
+
+       static internal Exception InvalidMixedUsageOfAccessTokenAndAuthentication() {
+           return ADP.InvalidOperation(Res.GetString(Res.ADP_InvalidMixedUsageOfAccessTokenAndAuthentication));
+       }
+
+       static internal Exception InvalidMixedUsageOfCredentialAndAccessToken() {
+           return ADP.InvalidOperation(Res.GetString(Res.ADP_InvalidMixedUsageOfCredentialAndAccessToken));
        }
 
        //
@@ -1568,6 +1592,10 @@ namespace System.Data.Common {
             return ADP.Argument(Res.GetString(Res.ADP_ParameterValueOutOfRange, value.ToString()));
         }
 
+        static internal ArgumentException ParameterValueOutOfRange(String value) {
+            return ADP.Argument(Res.GetString(Res.ADP_ParameterValueOutOfRange, value));
+        }
+
         static internal ArgumentException VersionDoesNotSupportDataType(string typeName) {
             return Argument(Res.GetString(Res.ADP_VersionDoesNotSupportDataType, typeName));
         }
@@ -1761,6 +1789,7 @@ namespace System.Data.Common {
         internal const string ChangeDatabase = "ChangeDatabase";
         internal const string Cancel = "Cancel";
         internal const string Clone = "Clone";
+        internal const string ColumnEncryptionSystemProviderNamePrefix = "MSSQL_";
         internal const string CommitTransaction = "CommitTransaction";
         internal const string CommandTimeout = "CommandTimeout";
         internal const string ConnectionString = "ConnectionString";
@@ -1823,6 +1852,7 @@ namespace System.Data.Common {
         internal const int DefaultCommandTimeout = 30;
         internal const int DefaultConnectionTimeout = DbConnectionStringDefaults.ConnectTimeout;
         internal const float FailoverTimeoutStep = 0.08F;    // fraction of timeout to use for fast failover connections
+        internal const int FirstTransparentAttemptTimeout = 500; // The first login attempt in  Transparent network IP Resolution 
 
         // security issue, don't rely upon static public readonly values - AS/URT 109635
         static internal readonly String StrEmpty = ""; // String.Empty
@@ -2058,6 +2088,9 @@ namespace System.Data.Common {
             const int ERROR_MORE_DATA = 234; // winerror.h
 
             string value;
+#if MOBILE
+            value = ADP.MachineName();
+#else
             if (IsPlatformNT5) {
                 int length = 0; // length parameter must be zero if buffer is null
                 // query for the required length
@@ -2083,6 +2116,7 @@ namespace System.Data.Common {
             else {
                 value = ADP.MachineName();
             }
+#endif
             return value;
         }
 
@@ -2091,6 +2125,7 @@ namespace System.Data.Common {
         [ResourceExposure(ResourceScope.Machine)]
         [ResourceConsumption(ResourceScope.Machine)]
         static internal Stream GetFileStream(string filename) {
+#if !DISABLE_CAS_USE
             (new FileIOPermission(FileIOPermissionAccess.Read, filename)).Assert();
             try {
                 return new FileStream(filename,FileMode.Open,FileAccess.Read,FileShare.Read);
@@ -2098,11 +2133,15 @@ namespace System.Data.Common {
             finally {
                 FileIOPermission.RevertAssert();
             }
+#else
+            return new FileStream(filename,FileMode.Open,FileAccess.Read,FileShare.Read);
+#endif
         }
 
         [ResourceExposure(ResourceScope.Machine)]
         [ResourceConsumption(ResourceScope.Machine)]
         static internal FileVersionInfo GetVersionInfo(string filename) {
+#if !DISABLE_CAS_USE
             (new FileIOPermission(FileIOPermissionAccess.Read, filename)).Assert(); // MDAC 62038
             try {
                 return FileVersionInfo.GetVersionInfo(filename); // MDAC 60411
@@ -2110,7 +2149,11 @@ namespace System.Data.Common {
             finally {
                 FileIOPermission.RevertAssert();
             }
+#else
+            return FileVersionInfo.GetVersionInfo(filename); // MDAC 60411
+#endif
         }
+
 #if MOBILE
         static internal object LocalMachineRegistryValue(string subkey, string queryvalue) {
             return null;

@@ -82,10 +82,7 @@ namespace System.Threading
             [SecuritySafeCritical]
             get
             {
-                // note: QueryUnbiasedInterruptTime is apparently not supported on CoreSystem currently.
-                // Presumably this will be a problem.  Will follow up with Windows team, but for now this is diabled
-                // for CoreSystem builds.
-#if !FEATURE_PAL && !FEATURE_CORESYSTEM && !MONO
+#if !MONO
                 if (Environment.IsWindows8OrAbove)
                 {
                     ulong time100ns;
@@ -98,7 +95,7 @@ namespace System.Threading
                     return (int)(uint)(time100ns / 10000);
                 }
                 else
-#endif //!FEATURE_PAL && !FEATURE_CORESYSTEM
+#endif
                 {
                     return Environment.TickCount;
                 }
@@ -578,10 +575,10 @@ namespace System.Threading
                     }
                     else
                     {
-#if !FEATURE_CORECLR && !MONO
+#if !MONO
                         if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.ThreadTransfer))
                             FrameworkEventSource.Log.ThreadTransferSendObj(this, 1, string.Empty, true);
-#endif // !FEATURE_CORECLR
+#endif
 
                         success = TimerQueue.Instance.UpdateTimer(this, dueTime, period);
                     }
@@ -697,10 +694,10 @@ namespace System.Threading
         [SecuritySafeCritical]
         internal void CallCallback()
         {
-#if !FEATURE_CORECLR && !MONO
+#if !MONO
             if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.ThreadTransfer))
                 FrameworkEventSource.Log.ThreadTransferReceiveObj(this, 1, string.Empty);
-#endif // !FEATURE_CORECLR
+#endif
 
             // call directly if EC flow is suppressed
             if (m_executionContext == null)

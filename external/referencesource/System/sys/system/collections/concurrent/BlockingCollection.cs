@@ -1,4 +1,4 @@
-﻿// ==++==
+// ==++==
 //
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
 // 
@@ -53,7 +53,7 @@ namespace System.Collections.Concurrent
 #endif
     [DebuggerTypeProxy(typeof(SystemThreadingCollections_BlockingCollectionDebugView<>))]
     [DebuggerDisplay("Count = {Count}, Type = {m_collection}")]
-    public class BlockingCollection<T> : IEnumerable<T>, ICollection, IDisposable
+    public class BlockingCollection<T> : IEnumerable<T>, ICollection, IDisposable, IReadOnlyCollection<T>
     {
         private IProducerConsumerCollection<T> m_collection;
         private int m_boundedCapacity;

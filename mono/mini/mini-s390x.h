@@ -63,8 +63,6 @@ typedef struct
 #define MONO_ARCH_HAVE_INVALIDATE_METHOD		1
 #define MONO_ARCH_HAVE_OP_GENERIC_CLASS_INIT		1
 #define MONO_ARCH_HAVE_SETUP_ASYNC_CALLBACK		1
-#define MONO_ARCH_MONITOR_OBJECT_REG			s390_r2
-#define MONO_ARCH_LOCK_TAKEN_REG			s390_r1
 
 #define S390_STACK_ALIGNMENT		 8
 #define S390_FIRST_ARG_REG 		s390_r2
@@ -113,6 +111,14 @@ typedef struct
 
 #define MONO_ARCH_FRAME_ALIGNMENT 8
 #define MONO_ARCH_CODE_ALIGNMENT 32
+
+/*-----------------------------------------------*/
+/* SIMD Related Definitions                      */
+/*-----------------------------------------------*/
+
+#define MONO_MAX_XREGS			31
+#define MONO_ARCH_CALLEE_XREGS		0x0
+#define MONO_ARCH_CALLEE_SAVED_XREGS	0x0
 
 /*-----------------------------------------------*/
 /* Macros used to generate instructions          */
