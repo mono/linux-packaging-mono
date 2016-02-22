@@ -298,7 +298,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/ICSharpCode.SharpZipLib.dll
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
-%{_prefix}/lib/mono/4.5/Mono.C5.dll
 %{_prefix}/lib/mono/4.5/Mono.CSharp.dll
 %{_prefix}/lib/mono/4.5/Mono.Cairo.dll
 %{_prefix}/lib/mono/4.5/Mono.CompilerServices.SymbolWriter.dll
@@ -306,6 +305,10 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/Mono.Parallel.dll
 %{_prefix}/lib/mono/4.5/Mono.Posix.dll
 %{_prefix}/lib/mono/4.5/Mono.Security.dll
+%{_prefix}/lib/mono/4.5/Mono.Security.Providers.DotNet.dll
+%{_prefix}/lib/mono/4.5/Mono.Security.Providers.NewSystemSource.dll
+%{_prefix}/lib/mono/4.5/Mono.Security.Providers.NewTls.dll
+%{_prefix}/lib/mono/4.5/Mono.Security.Providers.OldTls.dll
 %{_prefix}/lib/mono/4.5/Mono.Simd.dll
 %{_prefix}/lib/mono/4.5/Mono.Tasklets.dll
 %{_prefix}/lib/mono/4.5/System.Configuration.dll
@@ -319,6 +322,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Net.Http.Formatting.dll
 %{_prefix}/lib/mono/4.5/System.Net.Http.WebRequest.dll
 %{_prefix}/lib/mono/4.5/System.Numerics.dll
+%{_prefix}/lib/mono/4.5/System.Numerics.Vectors.dll
 %{_prefix}/lib/mono/4.5/System.Security.dll
 %{_prefix}/lib/mono/4.5/System.Threading.Tasks.Dataflow.dll
 %{_prefix}/lib/mono/4.5/System.Windows.dll
@@ -329,6 +333,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/cscompmgd.dll
 %{_prefix}/lib/mono/4.5/mscorlib.dll*
 %{_prefix}/lib/mono/4.5/Facades/System*
+%{_prefix}/lib/mono/4.5/Facades/Microsoft*
 %{_prefix}/lib/mono/gac/Commons.Xml.Relaxng
 %{_prefix}/lib/mono/gac/CustomMarshalers
 %{_prefix}/lib/mono/gac/I18N
@@ -336,7 +341,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/ICSharpCode.SharpZipLib
 %{_prefix}/lib/mono/gac/Microsoft.CSharp
 %{_prefix}/lib/mono/gac/Microsoft.VisualC
-%{_prefix}/lib/mono/gac/Mono.C5
 %{_prefix}/lib/mono/gac/Mono.CSharp
 %{_prefix}/lib/mono/gac/Mono.Cairo
 %{_prefix}/lib/mono/gac/Mono.Cecil
@@ -345,6 +349,10 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/Mono.Parallel
 %{_prefix}/lib/mono/gac/Mono.Posix
 %{_prefix}/lib/mono/gac/Mono.Security
+%{_prefix}/lib/mono/gac/Mono.Security.Providers.DotNet
+%{_prefix}/lib/mono/gac/Mono.Security.Providers.NewSystemSource
+%{_prefix}/lib/mono/gac/Mono.Security.Providers.NewTls
+%{_prefix}/lib/mono/gac/Mono.Security.Providers.OldTls
 %{_prefix}/lib/mono/gac/Mono.Simd
 %{_prefix}/lib/mono/gac/Mono.Tasklets
 %{_prefix}/lib/mono/gac/System
@@ -357,6 +365,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/System.Net.Http.Formatting
 %{_prefix}/lib/mono/gac/System.Net.Http.WebRequest
 %{_prefix}/lib/mono/gac/System.Numerics
+%{_prefix}/lib/mono/gac/System.Numerics.Vectors
 %{_prefix}/lib/mono/gac/System.Security
 %{_prefix}/lib/mono/gac/System.Threading.Tasks.Dataflow
 %{_prefix}/lib/mono/gac/System.Windows
@@ -1152,8 +1161,10 @@ Mono development tools.
 %{_mandir}/man1/xbuild.1%ext_man
 %{_prefix}/lib/mono-source-libs
 %{_prefix}/lib/mono/4.0
-%{_prefix}/lib/mono/3.5
-%{_prefix}/lib/mono/2.0
+%{_prefix}/lib/mono/4.5-api
+%{_prefix}/lib/mono/4.0-api
+%{_prefix}/lib/mono/3.5-api
+%{_prefix}/lib/mono/2.0-api
 %{_prefix}/lib/mono/4.5/Microsoft.Build.dll
 %{_prefix}/lib/mono/4.5/Microsoft.Build.Engine.dll
 %{_prefix}/lib/mono/4.5/Microsoft.Build.Framework.dll
@@ -1174,6 +1185,7 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/ilasm.exe*
 %{_prefix}/lib/mono/4.5/installvst.exe*
 %{_prefix}/lib/mono/4.5/lc.exe*
+%{_prefix}/lib/mono/4.5/linkeranalyzer.exe*
 %{_prefix}/lib/mono/4.5/macpack.exe*
 %{_prefix}/lib/mono/4.5/makecert.exe*
 %{_prefix}/lib/mono/4.5/mdbrebase.exe*
@@ -1190,7 +1202,7 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/secutil.exe*
 %{_prefix}/lib/mono/4.5/sgen.exe*
 %{_prefix}/lib/mono/4.5/signcode.exe*
-%{_prefix}/lib/mono/4.5/mono-symbolicate.exe*
+%{_prefix}/lib/mono/4.5/*symbolicate.exe*
 %{_prefix}/lib/mono/4.5/xbuild.exe*
 %{_prefix}/lib/mono/4.5/xbuild.rsp
 %{_prefix}/lib/mono/4.5/MSBuild/
