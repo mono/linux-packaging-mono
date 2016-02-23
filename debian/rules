@@ -294,7 +294,6 @@ binary-arch: build-stamp install-stamp
 	dh_link -s
 	dh_installchangelogs -s -X ChangeLog
 	dh_installchangelogs -pmono-runtime
-	dh_installchangelogs -pmono-jay $(CURDIR)/mcs/jay/ChangeLog
 	dh_installdocs -s
 	dh_installman -s
 	dh_installexamples -s
