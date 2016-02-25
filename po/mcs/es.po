@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-02-18 15:20-0500\n"
+"POT-Creation-Date: 2016-02-25 10:38-0500\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -573,12 +573,12 @@ msgstr ""
 msgid "Single-line comment or end-of-line expected"
 msgstr "Esperaba un comentario de una sola línea o el final de archivo"
 
-#: mcs/mcs/cs-tokenizer.cs:2949 mcs/mcs/cs-tokenizer.cs:4179
+#: mcs/mcs/cs-tokenizer.cs:2949 mcs/mcs/cs-tokenizer.cs:4182
 msgid "Expected `#endif' directive"
 msgstr "Esperaba la directiva `#endif'"
 
 #: mcs/mcs/cs-tokenizer.cs:2982 mcs/mcs/cs-tokenizer.cs:3003
-#: mcs/mcs/cs-tokenizer.cs:3034 mcs/mcs/cs-tokenizer.cs:4177
+#: mcs/mcs/cs-tokenizer.cs:3034 mcs/mcs/cs-tokenizer.cs:4180
 msgid "#endregion directive expected"
 msgstr "Esperaba la directiva `#endregion'"
 
@@ -645,7 +645,7 @@ msgstr ""
 msgid "Too many characters in character literal"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4008 mcs/mcs/cs-tokenizer.cs:4068
+#: mcs/mcs/cs-tokenizer.cs:4008 mcs/mcs/cs-tokenizer.cs:4071
 #, csharp-format
 msgid ""
 "A `{0}' character may only be escaped by doubling `{0}{0}' in an "

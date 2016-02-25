@@ -101,16 +101,6 @@
 
 #ifdef __GNUC__
 
-/* namespace and name should be a constant */
-/* image must be mscorlib since other assemblies can be unloaded */
-#define mono_class_from_name_cached(image,namespace,name) ({ \
-			static MonoClass *tmp_klass; \
-			if (!tmp_klass) { \
-				g_assert (image == mono_defaults.corlib); \
-				tmp_klass = mono_class_from_name ((image), (namespace), (name)); \
-				g_assert (tmp_klass); \
-			}; \
-			tmp_klass; })
 /* name should be a compile-time constant */
 #define mono_class_get_field_from_name_cached(klass,name) ({ \
 			static MonoClassField *tmp_field; \
@@ -137,7 +127,6 @@
 
 #else
 
-#define mono_class_from_name_cached(image,namespace,name) mono_class_from_name ((image), (namespace), (name))
 #define mono_class_get_field_from_name_cached(klass,name) mono_class_get_field_from_name ((klass), (name))
 #define mono_array_class_get_cached(eclass,rank) mono_array_class_get ((eclass), (rank))
 #define mono_array_new_cached(domain, eclass, size) mono_array_new_specific (mono_class_vtable ((domain), mono_array_class_get_cached ((eclass), 1)), (size))
@@ -297,7 +286,6 @@ typedef struct {
 typedef struct {
 	MonoMarshalByRefObject object;
 	gpointer     handle;
-	MonoBoolean  disposed;
 } MonoWaitHandle;
 
 /* This is a copy of System.Runtime.Remoting.Messaging.CallType */
@@ -620,6 +608,8 @@ typedef struct {
 	void     (*init_delegate) (MonoDelegate *del);
 	MonoObject* (*runtime_invoke) (MonoMethod *method, void *obj, void **params, MonoObject **exc, MonoError *error);
 	void*    (*compile_method) (MonoMethod *method, MonoError *error);
+	gpointer (*create_jump_trampoline) (MonoDomain *domain, MonoMethod *method, gboolean add_sync_wrapper, MonoError *error);
+	gpointer (*create_jit_trampoline) (MonoDomain *domain, MonoMethod *method, MonoError *error);
 } MonoRuntimeCallbacks;
 
 typedef gboolean (*MonoInternalStackWalk) (MonoStackFrameInfo *frame, MonoContext *ctx, gpointer data);

@@ -45,6 +45,9 @@
 /* Disable generics support */
 #undef DISABLE_GENERICS
 
+/* ... */
+#undef DISABLE_HW_TRAPS
+
 /* Icall tables disabled */
 #undef DISABLE_ICALL_TABLES
 

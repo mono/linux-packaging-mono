@@ -540,8 +540,6 @@ default_delegate_trampoline (MonoDomain *domain, MonoClass *klass)
 	return NULL;
 }
 
-static MonoTrampoline arch_create_jit_trampoline = default_trampoline;
-static MonoJumpTrampoline arch_create_jump_trampoline = default_jump_trampoline;
 static MonoDelegateTrampoline arch_create_delegate_trampoline = default_delegate_trampoline;
 static MonoImtThunkBuilder imt_thunk_builder;
 static gboolean always_build_imt_thunks;
@@ -560,18 +558,6 @@ MonoRuntimeCallbacks*
 mono_get_runtime_callbacks (void)
 {
 	return &callbacks;
-}
-
-void
-mono_install_trampoline (MonoTrampoline func) 
-{
-	arch_create_jit_trampoline = func? func: default_trampoline;
-}
-
-void
-mono_install_jump_trampoline (MonoJumpTrampoline func) 
-{
-	arch_create_jump_trampoline = func? func: default_jump_trampoline;
 }
 
 #ifndef DISABLE_REMOTING
@@ -627,9 +613,15 @@ mono_compile_method (MonoMethod *method)
 gpointer
 mono_runtime_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean add_sync_wrapper)
 {
-	MONO_REQ_GC_NEUTRAL_MODE
+	MonoError error;
+	gpointer res;
 
-	return arch_create_jump_trampoline (domain, method, add_sync_wrapper);
+	MONO_REQ_GC_NEUTRAL_MODE;
+
+	res = callbacks.create_jump_trampoline (domain, method, add_sync_wrapper, &error);
+	if (!mono_error_ok (&error))
+		mono_error_raise_exception (&error); /* FIXME: Don't raise here */
+	return res;
 }
 
 gpointer
@@ -1872,7 +1864,7 @@ mono_class_vtable_full (MonoDomain *domain, MonoClass *klass, gboolean raise_on_
 
 	g_assert (klass);
 
-	if (klass->exception_type) {
+	if (mono_class_has_failure (klass)) {
 		if (raise_on_error)
 			mono_raise_exception (mono_class_get_exception_for_failure (klass));
 		return NULL;
@@ -1956,8 +1948,8 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, gboolean
 		mono_loader_unlock ();
 		return runtime_info->domain_vtables [domain->domain_id];
 	}
-	if (!klass->inited || klass->exception_type) {
-		if (!mono_class_init (klass) || klass->exception_type) {
+	if (!klass->inited || mono_class_has_failure (klass)) {
+		if (!mono_class_init (klass) || mono_class_has_failure (klass)) {
 			mono_domain_unlock (domain);
 			mono_loader_unlock ();
 			if (raise_on_error)
@@ -1973,12 +1965,12 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, gboolean
 			mono_class_init (element_class);
 
 		/*mono_class_init can leave the vtable layout to be lazily done and we can't afford this here*/
-		if (element_class->exception_type == MONO_EXCEPTION_NONE && !element_class->vtable_size)
+		if (!mono_class_has_failure (element_class) && !element_class->vtable_size)
 			mono_class_setup_vtable (element_class);
 		
-		if (element_class->exception_type != MONO_EXCEPTION_NONE) {
+		if (mono_class_has_failure (element_class)) {
 			/*Can happen if element_class only got bad after mono_class_setup_vtable*/
-			if (klass->exception_type == MONO_EXCEPTION_NONE)
+			if (!mono_class_has_failure (klass))
 				mono_class_set_failure (klass, MONO_EXCEPTION_TYPE_LOAD, NULL);
 			mono_domain_unlock (domain);
 			mono_loader_unlock ();
@@ -2001,7 +1993,7 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, gboolean
 	/* Initialize klass->has_finalize */
 	mono_class_has_finalizer (klass);
 
-	if (klass->exception_type) {
+	if (mono_class_has_failure (klass)) {
 		mono_domain_unlock (domain);
 		mono_loader_unlock ();
 		if (raise_on_error)
@@ -2165,8 +2157,12 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, gboolean
 		for (i = 0; i < klass->vtable_size; ++i) {
 			MonoMethod *cm;
 
-			if ((cm = klass->vtable [i]))
-				vt->vtable [i] = arch_create_jit_trampoline (cm);
+			cm = klass->vtable [i];
+			if (cm) {
+				vt->vtable [i] = callbacks.create_jit_trampoline (domain, cm, &error);
+				if (!mono_error_ok (&error))
+					mono_error_raise_exception (&error); /* FIXME: Don't raise here */
+			}
 		}
 	}
 
@@ -3730,7 +3726,7 @@ mono_get_delegate_invoke (MonoClass *klass)
 
 	/* This is called at runtime, so avoid the slower search in metadata */
 	mono_class_setup_methods (klass);
-	if (klass->exception_type)
+	if (mono_class_has_failure (klass))
 		return NULL;
 	im = mono_class_get_method_from_name (klass, "Invoke", -1);
 	return im;
@@ -3751,7 +3747,7 @@ mono_get_delegate_begin_invoke (MonoClass *klass)
 
 	/* This is called at runtime, so avoid the slower search in metadata */
 	mono_class_setup_methods (klass);
-	if (klass->exception_type)
+	if (mono_class_has_failure (klass))
 		return NULL;
 	im = mono_class_get_method_from_name (klass, "BeginInvoke", -1);
 	return im;
@@ -3772,7 +3768,7 @@ mono_get_delegate_end_invoke (MonoClass *klass)
 
 	/* This is called at runtime, so avoid the slower search in metadata */
 	mono_class_setup_methods (klass);
-	if (klass->exception_type)
+	if (mono_class_has_failure (klass))
 		return NULL;
 	im = mono_class_get_method_from_name (klass, "EndInvoke", -1);
 	return im;
@@ -6604,23 +6600,16 @@ mono_wait_handle_get_handle (MonoWaitHandle *handle)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	static MonoClassField *f_os_handle;
-	static MonoClassField *f_safe_handle;
+	static MonoClassField *f_safe_handle = NULL;
+	MonoSafeHandle *sh;
 
-	if (!f_os_handle && !f_safe_handle) {
-		f_os_handle = mono_class_get_field_from_name (mono_defaults.manualresetevent_class, "os_handle");
-		f_safe_handle = mono_class_get_field_from_name (mono_defaults.manualresetevent_class, "safe_wait_handle");
+	if (!f_safe_handle) {
+		f_safe_handle = mono_class_get_field_from_name (mono_defaults.manualresetevent_class, "safeWaitHandle");
+		g_assert (f_safe_handle);
 	}
 
-	if (f_os_handle) {
-		HANDLE retval;
-		mono_field_get_value ((MonoObject*)handle, f_os_handle, &retval);
-		return retval;
-	} else {
-		MonoSafeHandle *sh;
-		mono_field_get_value ((MonoObject*)handle, f_safe_handle, &sh);
-		return sh->handle;
-	}
+	mono_field_get_value ((MonoObject*)handle, f_safe_handle, &sh);
+	return sh->handle;
 }
 
 

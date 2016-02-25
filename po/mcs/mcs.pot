@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: mono 4.3.3\n"
+"Project-Id-Version: mono 4.5.0\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-02-18 15:20-0500\n"
+"POT-Creation-Date: 2016-02-25 10:38-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -530,12 +530,12 @@ msgstr ""
 msgid "Single-line comment or end-of-line expected"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:2949 mcs/mcs/cs-tokenizer.cs:4179
+#: mcs/mcs/cs-tokenizer.cs:2949 mcs/mcs/cs-tokenizer.cs:4182
 msgid "Expected `#endif' directive"
 msgstr ""
 
 #: mcs/mcs/cs-tokenizer.cs:2982 mcs/mcs/cs-tokenizer.cs:3003
-#: mcs/mcs/cs-tokenizer.cs:3034 mcs/mcs/cs-tokenizer.cs:4177
+#: mcs/mcs/cs-tokenizer.cs:3034 mcs/mcs/cs-tokenizer.cs:4180
 msgid "#endregion directive expected"
 msgstr ""
 
@@ -598,7 +598,7 @@ msgstr ""
 msgid "Too many characters in character literal"
 msgstr ""
 
-#: mcs/mcs/cs-tokenizer.cs:4008 mcs/mcs/cs-tokenizer.cs:4068
+#: mcs/mcs/cs-tokenizer.cs:4008 mcs/mcs/cs-tokenizer.cs:4071
 #, csharp-format
 msgid ""
 "A `{0}' character may only be escaped by doubling `{0}{0}' in an "
