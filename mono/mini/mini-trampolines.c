@@ -1457,12 +1457,13 @@ mono_create_specific_trampoline (gpointer arg1, MonoTrampolineType tramp_type, M
 }
 
 gpointer
-mono_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean add_sync_wrapper)
+mono_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean add_sync_wrapper, MonoError *error)
 {
-	MonoError error;
 	MonoJitInfo *ji;
 	gpointer code;
 	guint32 code_size = 0;
+
+	mono_error_init (error);
 
 	code = mono_jit_find_compiled_method_with_jit_info (domain, method, &ji);
 	/*
@@ -1475,9 +1476,9 @@ mono_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean ad
 		return code;
 
 	if (mono_llvm_only) {
-		code = mono_jit_compile_method (method, &error);
-		if (!mono_error_ok (&error))
-			mono_error_raise_exception (&error);
+		code = mono_jit_compile_method (method, error);
+		if (!mono_error_ok (error))
+			return NULL;
 		return code;
 	}
 
@@ -1516,10 +1517,11 @@ method_not_found (void)
 }
 
 gpointer
-mono_create_jit_trampoline_in_domain (MonoDomain *domain, MonoMethod *method)
+mono_create_jit_trampoline (MonoDomain *domain, MonoMethod *method, MonoError *error)
 {
-	MonoError error;
 	gpointer tramp;
+
+	mono_error_init (error);
 
 	if (mono_aot_only) {
 		/* Avoid creating trampolines if possible */
@@ -1533,9 +1535,9 @@ mono_create_jit_trampoline_in_domain (MonoDomain *domain, MonoMethod *method)
 				/* These wrappers are not generated */
 				return method_not_found;
 			/* Methods are lazily initialized on first call, so this can't lead recursion */
-			code = mono_jit_compile_method (method, &error);
-			if (!mono_error_ok (&error))
-				mono_error_raise_exception (&error);
+			code = mono_jit_compile_method (method, error);
+			if (!mono_error_ok (error))
+				return NULL;
 			return code;
 		}
 	}
@@ -1556,12 +1558,6 @@ mono_create_jit_trampoline_in_domain (MonoDomain *domain, MonoMethod *method)
 
 	return tramp;
 }	
-
-gpointer
-mono_create_jit_trampoline (MonoMethod *method)
-{
-	return mono_create_jit_trampoline_in_domain (mono_domain_get (), method);
-}
 
 gpointer
 mono_create_jit_trampoline_from_token (MonoImage *image, guint32 token)

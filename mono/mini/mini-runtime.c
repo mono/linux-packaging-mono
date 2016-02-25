@@ -631,10 +631,15 @@ mono_icall_get_wrapper_full (MonoJitICallInfo* callinfo, gboolean do_compile)
 	wrapper = mono_marshal_get_icall_wrapper (callinfo->sig, name, callinfo->func, check_exc);
 	g_free (name);
 
-	if (do_compile)
+	if (do_compile) {
 		trampoline = mono_compile_method (wrapper);
-	else
-		trampoline = mono_create_ftnptr (domain, mono_create_jit_trampoline_in_domain (domain, wrapper));
+	} else {
+		MonoError error;
+
+		trampoline = mono_create_jit_trampoline (domain, wrapper, &error);
+		mono_error_assert_ok (&error);
+		trampoline = mono_create_ftnptr (domain, (gpointer)trampoline);
+	}
 
 	mono_loader_lock ();
 	if (!callinfo->trampoline) {
@@ -825,7 +830,8 @@ mono_get_lmf_addr (void)
 	 * mono_get_lmf_addr, and mono_get_lmf_addr requires the thread to be attached.
 	 */
 
-	mono_jit_thread_attach (NULL);
+	mono_thread_attach (mono_get_root_domain ());
+	mono_thread_set_state (mono_thread_internal_current (), ThreadState_Background);
 
 	if ((jit_tls = mono_native_tls_get_value (mono_jit_tls_id)))
 		return &jit_tls->lmf;
@@ -884,48 +890,119 @@ mono_set_lmf_addr (gpointer lmf_addr)
 }
 
 /*
- * mono_jit_thread_attach:
+ * mono_jit_thread_attach: called by native->managed wrappers
  *
- * Called by native->managed wrappers. Returns the original domain which needs to be
- * restored, or NULL.
+ * In non-coop mode:
+ *  - @dummy: is NULL
+ *  - @return: the original domain which needs to be restored, or NULL.
+ *
+ * In coop mode:
+ *  - @dummy: contains the original domain
+ *  - @return: a cookie containing current MonoThreadInfo* if it was in BLOCKING mode, NULL otherwise
  */
-MonoDomain*
-mono_jit_thread_attach (MonoDomain *domain)
+gpointer
+mono_jit_thread_attach (MonoDomain *domain, gpointer *dummy)
 {
 	MonoDomain *orig;
 
-	if (!domain)
-		/*
-		 * Happens when called from AOTed code which is only used in the root
-		 * domain.
-		 */
+	if (!domain) {
+		/* Happens when called from AOTed code which is only used in the root domain. */
 		domain = mono_get_root_domain ();
+	}
+
+	g_assert (domain);
+
+	if (!mono_threads_is_coop_enabled ()) {
+		gboolean attached;
 
 #ifdef MONO_HAVE_FAST_TLS
-	if (!MONO_FAST_TLS_GET (mono_lmf_addr)) {
-		mono_thread_attach (domain);
-		// #678164
-		mono_thread_set_state (mono_thread_internal_current (), ThreadState_Background);
-	}
+		attached = MONO_FAST_TLS_GET (mono_lmf_addr) != NULL;
 #else
-	if (!mono_native_tls_get_value (mono_jit_tls_id)) {
-		mono_thread_attach (domain);
-		mono_thread_set_state (mono_thread_internal_current (), ThreadState_Background);
-	}
+		attached = mono_native_tls_get_value (mono_jit_tls_id) != NULL;
 #endif
-	orig = mono_domain_get ();
-	if (orig != domain)
-		mono_domain_set (domain, TRUE);
 
-	return orig != domain ? orig : NULL;
+		if (!attached) {
+			mono_thread_attach (domain);
+
+			// #678164
+			mono_thread_set_state (mono_thread_internal_current (), ThreadState_Background);
+		}
+
+		orig = mono_domain_get ();
+		if (orig != domain)
+			mono_domain_set (domain, TRUE);
+
+		return orig != domain ? orig : NULL;
+	} else {
+		MonoThreadInfo *info;
+
+		info = mono_thread_info_current_unchecked ();
+		if (!info || !mono_thread_info_is_live (info)) {
+			/* thread state STARTING -> RUNNING */
+			mono_thread_attach (domain);
+
+			// #678164
+			mono_thread_set_state (mono_thread_internal_current (), ThreadState_Background);
+
+			*dummy = NULL;
+
+			/* mono_threads_reset_blocking_start returns the current MonoThreadInfo
+			 * if we were in BLOCKING mode */
+			return mono_thread_info_current ();
+		} else {
+			orig = mono_domain_get ();
+
+			/* orig might be null if we did an attach -> detach -> attach sequence */
+
+			if (orig != domain)
+				mono_domain_set (domain, TRUE);
+
+			*dummy = orig;
+
+			/* thread state (BLOCKING|RUNNING) -> RUNNING */
+			return mono_threads_reset_blocking_start (dummy);
+		}
+	}
 }
 
-/* Called by native->managed wrappers */
+/*
+ * mono_jit_thread_detach: called by native->managed wrappers
+ *
+ * In non-coop mode:
+ *  - @cookie: the original domain which needs to be restored, or NULL.
+ *  - @dummy: is NULL
+ *
+ * In coop mode:
+ *  - @cookie: contains current MonoThreadInfo* if it was in BLOCKING mode, NULL otherwise
+ *  - @dummy: contains the original domain
+ */
 void
-mono_jit_set_domain (MonoDomain *domain)
+mono_jit_thread_detach (gpointer cookie, gpointer *dummy)
 {
-	if (domain)
-		mono_domain_set (domain, TRUE);
+	MonoDomain *domain, *orig;
+
+	if (!mono_threads_is_coop_enabled ()) {
+		orig = (MonoDomain*) cookie;
+
+		if (orig)
+			mono_domain_set (orig, TRUE);
+	} else {
+		orig = (MonoDomain*) *dummy;
+
+		domain = mono_domain_get ();
+		g_assert (domain);
+
+		/* it won't do anything if cookie is NULL
+		 * thread state RUNNING -> (RUNNING|BLOCKING) */
+		mono_threads_reset_blocking_end (cookie, dummy);
+
+		if (orig != domain) {
+			if (!orig)
+				mono_domain_unset ();
+			else
+				mono_domain_set (orig, TRUE);
+		}
+	}
 }
 
 /**
@@ -1408,7 +1485,9 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		break;
 	}
 	case MONO_PATCH_INFO_METHOD_JUMP:
-		target = mono_create_jump_trampoline (domain, patch_info->data.method, FALSE);
+		target = mono_create_jump_trampoline (domain, patch_info->data.method, FALSE, error);
+		if (!mono_error_ok (error))
+			return NULL;
 #if defined(__native_client__) && defined(__native_client_codegen__)
 # if defined(TARGET_AMD64)
 		/* This target is an absolute address, not relative to the */
@@ -1424,13 +1503,17 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		 * avoid trampoline, as we not yet know where we will
 		 * be installed.
 		 */
-		target = mono_create_jit_trampoline_in_domain (domain, patch_info->data.method);
+		target = mono_create_jit_trampoline (domain, patch_info->data.method, error);
+		if (!mono_error_ok (error))
+			return NULL;
 #else
 		if (patch_info->data.method == method) {
 			target = code;
 		} else {
 			/* get the trampoline to the method from the domain */
-			target = mono_create_jit_trampoline_in_domain (domain, patch_info->data.method);
+			target = mono_create_jit_trampoline (domain, patch_info->data.method, error);
+			if (!mono_error_ok (error))
+				return NULL;
 		}
 #endif
 		break;
@@ -2457,7 +2540,7 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 			 * but keep it just in case for moonlight.
 			 */
 			mono_class_setup_vtable (method->klass);
-			if (method->klass->exception_type != MONO_EXCEPTION_NONE) {
+			if (mono_class_has_failure (method->klass)) {
 				MonoException *fail_exc = mono_class_get_exception_for_failure (method->klass);
 				if (exc)
 					*exc = (MonoObject*)fail_exc;
@@ -3309,6 +3392,43 @@ register_jit_stats (void)
 	mono_counters_register ("Methods from AOT", MONO_COUNTER_JIT | MONO_COUNTER_INT, &mono_jit_stats.methods_aot);
 	mono_counters_register ("Methods JITted using mono JIT", MONO_COUNTER_JIT | MONO_COUNTER_INT, &mono_jit_stats.methods_without_llvm);
 	mono_counters_register ("Methods JITted using LLVM", MONO_COUNTER_JIT | MONO_COUNTER_INT, &mono_jit_stats.methods_with_llvm);
+	mono_counters_register ("JIT/method-to-IR (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_method_to_ir);
+	mono_counters_register ("JIT/liveness_handle_exception_clauses (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_liveness_handle_exception_clauses);
+	mono_counters_register ("JIT/handle_out_of_line_bblock (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_handle_out_of_line_bblock);
+	mono_counters_register ("JIT/decompose_long_opts (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_decompose_long_opts);
+	mono_counters_register ("JIT/local_cprop (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_cprop);
+	mono_counters_register ("JIT/local_emulate_ops (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_emulate_ops);
+	mono_counters_register ("JIT/optimize_branches (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_optimize_branches);
+	mono_counters_register ("JIT/handle_global_vregs (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_handle_global_vregs);
+	mono_counters_register ("JIT/local_deadce (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_deadce);
+	mono_counters_register ("JIT/local_alias_analysis (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_alias_analysis);
+	mono_counters_register ("JIT/if_conversion (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_if_conversion);
+	mono_counters_register ("JIT/bb_ordering (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_bb_ordering);
+	mono_counters_register ("JIT/compile_dominator_info (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_compile_dominator_info);
+	mono_counters_register ("JIT/compute_natural_loops (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_compute_natural_loops);
+	mono_counters_register ("JIT/insert_safepoints (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_insert_safepoints);
+	mono_counters_register ("JIT/ssa_compute (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_ssa_compute);
+	mono_counters_register ("JIT/ssa_cprop (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_ssa_cprop);
+	mono_counters_register ("JIT/ssa_deadce(sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_ssa_deadce);
+	mono_counters_register ("JIT/perform_abc_removal (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_perform_abc_removal);
+	mono_counters_register ("JIT/ssa_remove (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_ssa_remove);
+	mono_counters_register ("JIT/local_cprop2 (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_cprop2);
+	mono_counters_register ("JIT/handle_global_vregs2 (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_handle_global_vregs2);
+	mono_counters_register ("JIT/local_deadce2 (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_deadce2);
+	mono_counters_register ("JIT/optimize_branches2 (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_optimize_branches2);
+	mono_counters_register ("JIT/decompose_vtype_opts (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_decompose_vtype_opts);
+	mono_counters_register ("JIT/decompose_array_access_opts (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_decompose_array_access_opts);
+	mono_counters_register ("JIT/liveness_handle_exception_clauses2 (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_liveness_handle_exception_clauses2);
+	mono_counters_register ("JIT/analyze_liveness (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_analyze_liveness);
+	mono_counters_register ("JIT/linear_scan (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_linear_scan);
+	mono_counters_register ("JIT/arch_allocate_vars (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_arch_allocate_vars);
+	mono_counters_register ("JIT/spill_global_vars (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_spill_global_vars);
+	mono_counters_register ("JIT/jit_local_cprop3 (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_cprop3);
+	mono_counters_register ("JIT/jit_local_deadce3 (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_deadce3);
+	mono_counters_register ("JIT/codegen (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_codegen);
+	mono_counters_register ("JIT/create_jit_info (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_create_jit_info);
+	mono_counters_register ("JIT/gc_create_gc_map (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_gc_create_gc_map);
+	mono_counters_register ("JIT/save_seq_point_info (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_save_seq_point_info);
 	mono_counters_register ("Total time spent JITting (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_time);
 	mono_counters_register ("Basic blocks", MONO_COUNTER_JIT | MONO_COUNTER_INT, &mono_jit_stats.basic_blocks);
 	mono_counters_register ("Max basic blocks", MONO_COUNTER_JIT | MONO_COUNTER_INT, &mono_jit_stats.max_basic_blocks);
@@ -3543,6 +3663,8 @@ mini_init (const char *filename, const char *runtime_version)
 #define JIT_TRAMPOLINES_WORK
 #ifdef JIT_TRAMPOLINES_WORK
 	callbacks.compile_method = mono_jit_compile_method;
+	callbacks.create_jump_trampoline = mono_create_jump_trampoline;
+	callbacks.create_jit_trampoline = mono_create_jit_trampoline;
 #endif
 
 	mono_install_callbacks (&callbacks);
@@ -3615,8 +3737,6 @@ mini_init (const char *filename, const char *runtime_version)
 
 #ifdef JIT_TRAMPOLINES_WORK
 	mono_install_free_method (mono_jit_free_method);
-	mono_install_trampoline (mono_create_jit_trampoline);
-	mono_install_jump_trampoline (mono_create_jump_trampoline);
 #ifndef DISABLE_REMOTING
 	mono_install_remoting_trampoline (mono_jit_create_remoting_trampoline);
 #endif
@@ -3740,8 +3860,8 @@ register_icalls (void)
 	register_icall (mono_trace_enter_method, "mono_trace_enter_method", NULL, TRUE);
 	register_icall (mono_trace_leave_method, "mono_trace_leave_method", NULL, TRUE);
 	register_icall (mono_get_lmf_addr, "mono_get_lmf_addr", "ptr", TRUE);
-	register_icall (mono_jit_thread_attach, "mono_jit_thread_attach", "ptr ptr", TRUE);
-	register_icall (mono_jit_set_domain, "mono_jit_set_domain", "void ptr", TRUE);
+	register_icall (mono_jit_thread_attach, "mono_jit_thread_attach", "ptr ptr ptr", TRUE);
+	register_icall (mono_jit_thread_detach, "mono_jit_thread_detach", "void ptr ptr", TRUE);
 	register_icall (mono_domain_get, "mono_domain_get", "ptr", TRUE);
 
 	register_icall (mono_llvm_throw_exception, "mono_llvm_throw_exception", "void object", TRUE);
