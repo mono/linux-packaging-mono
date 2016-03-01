@@ -143,6 +143,54 @@ static void init_safe_handle (void);
 static void*
 ves_icall_marshal_alloc (gulong size);
 
+void
+mono_string_utf8_to_builder (MonoStringBuilder *sb, char *text);
+
+void
+mono_string_utf16_to_builder (MonoStringBuilder *sb, gunichar2 *text);
+
+gchar*
+mono_string_builder_to_utf8 (MonoStringBuilder *sb);
+
+gunichar2*
+mono_string_builder_to_utf16 (MonoStringBuilder *sb);
+
+void
+mono_string_to_byvalstr (gpointer dst, MonoString *src, int size);
+
+void
+mono_string_to_byvalwstr (gpointer dst, MonoString *src, int size);
+
+gpointer
+mono_delegate_to_ftnptr (MonoDelegate *delegate);
+
+MonoDelegate*
+mono_ftnptr_to_delegate (MonoClass *klass, gpointer ftn);
+
+gpointer
+mono_array_to_savearray (MonoArray *array);
+
+gpointer
+mono_array_to_lparray (MonoArray *array);
+
+void
+mono_free_lparray (MonoArray *array, gpointer* nativeArray);
+
+gpointer
+mono_marshal_asany (MonoObject *obj, MonoMarshalNative string_encoding, int param_attrs);
+
+void
+mono_marshal_free_asany (MonoObject *o, gpointer ptr, MonoMarshalNative string_encoding, int param_attrs);
+
+gpointer
+mono_array_to_savearray (MonoArray *array);
+
+gpointer
+mono_array_to_lparray (MonoArray *array);
+
+void
+mono_free_lparray (MonoArray *array, gpointer* nativeArray);
+
 /* Lazy class loading functions */
 static GENERATE_GET_CLASS_WITH_CACHE (string_builder, System.Text, StringBuilder)
 static GENERATE_GET_CLASS_WITH_CACHE (date_time, System, DateTime)
@@ -152,7 +200,6 @@ static GENERATE_TRY_GET_CLASS_WITH_CACHE (icustom_marshaler, System.Runtime.Inte
 /* MonoMethod pointers to SafeHandle::DangerousAddRef and ::DangerousRelease */
 static MonoMethod *sh_dangerous_add_ref;
 static MonoMethod *sh_dangerous_release;
-
 
 static void
 init_safe_handle ()
@@ -283,9 +330,11 @@ mono_marshal_unlock_internal (void)
 	mono_marshal_unlock ();
 }
 
+/* This is a JIT icall, it sets the pending exception and return NULL on error */
 gpointer
 mono_delegate_to_ftnptr (MonoDelegate *delegate)
 {
+	MonoError error;
 	MonoMethod *method, *wrapper;
 	MonoClass *klass;
 	uint32_t target_handle = 0;
@@ -310,7 +359,8 @@ mono_delegate_to_ftnptr (MonoDelegate *delegate)
 		ftnptr = mono_lookup_pinvoke_call (method, &exc_class, &exc_arg);
 		if (!ftnptr) {
 			g_assert (exc_class);
-			mono_raise_exception (mono_exception_from_name_msg (mono_defaults.corlib, "System", exc_class, exc_arg));
+			mono_set_pending_exception (mono_exception_from_name_msg (mono_defaults.corlib, "System", exc_class, exc_arg));
+			return NULL;
 		}
 		return ftnptr;
 	}
@@ -328,7 +378,11 @@ mono_delegate_to_ftnptr (MonoDelegate *delegate)
 	delegate_hash_table_add (delegate);
 
 	/* when the object is collected, collect the dynamic method, too */
-	mono_object_register_finalizer ((MonoObject*)delegate);
+	mono_object_register_finalizer ((MonoObject*)delegate, &error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 
 	return delegate->delegate_trampoline;
 }
@@ -396,6 +450,7 @@ mono_marshal_use_aot_wrappers (gboolean use)
 static void
 parse_unmanaged_function_pointer_attr (MonoClass *klass, MonoMethodPInvoke *piinfo)
 {
+	MonoError error;
 	MonoCustomAttrInfo *cinfo;
 	MonoReflectionUnmanagedFunctionPointerAttribute *attr;
 
@@ -405,9 +460,12 @@ parse_unmanaged_function_pointer_attr (MonoClass *klass, MonoMethodPInvoke *piin
 		 * The pinvoke attributes are stored in a real custom attribute so we have to
 		 * construct it.
 		 */
-		cinfo = mono_custom_attrs_from_class (klass);
+		cinfo = mono_custom_attrs_from_class_checked (klass, &error);
+		if (!mono_error_ok (&error)) {
+			g_warning ("Could not load UnmanagedFunctionPointerAttribute due to %s", mono_error_get_message (&error));
+			mono_error_cleanup (&error);
+		}
 		if (cinfo && !mono_runtime_get_no_exec ()) {
-			MonoError error;
 			attr = (MonoReflectionUnmanagedFunctionPointerAttribute*)mono_custom_attrs_get_attr_checked (cinfo, mono_class_try_get_unmanaged_function_pointer_attribute_class (), &error);
 			if (attr) {
 				piinfo->piflags = (attr->call_conv << 8) | (attr->charset ? (attr->charset - 1) * 2 : 1) | attr->set_last_error;
@@ -423,6 +481,7 @@ parse_unmanaged_function_pointer_attr (MonoClass *klass, MonoMethodPInvoke *piin
 	}
 }
 
+/* This is a JIT icall, it sets the pending exception and returns NULL on error */
 MonoDelegate*
 mono_ftnptr_to_delegate (MonoClass *klass, gpointer ftn)
 {
@@ -482,12 +541,17 @@ mono_ftnptr_to_delegate (MonoClass *klass, gpointer ftn)
 		}
 
 		d = (MonoDelegate*)mono_object_new_checked (mono_domain_get (), klass, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		if (!mono_error_ok (&error)) {
+			mono_error_set_pending_exception (&error);
+			return NULL;
+		}
 		mono_delegate_ctor_with_method ((MonoObject*)d, this_obj, mono_compile_method (wrapper), wrapper);
 	}
 
-	if (d->object.vtable->domain != mono_domain_get ())
-		mono_raise_exception (mono_get_exception_not_supported ("Delegates cannot be marshalled from native code into a domain other than their home domain"));
+	if (d->object.vtable->domain != mono_domain_get ()) {
+		mono_set_pending_exception (mono_get_exception_not_supported ("Delegates cannot be marshalled from native code into a domain other than their home domain"));
+		return NULL;
+	}
 
 	return d;
 }
@@ -543,6 +607,7 @@ mono_string_from_byvalstr (const char *data, int max_len)
 	return mono_string_new_len (domain, data, len);
 }
 
+/* This is a JIT icall, it sets the pending exception and return NULL on error */
 static MonoString *
 mono_string_from_byvalwstr (gunichar2 *data, int max_len)
 {
@@ -557,7 +622,10 @@ mono_string_from_byvalwstr (gunichar2 *data, int max_len)
 	while (data [len]) len++;
 
 	res = mono_string_new_utf16_checked (domain, data, MIN (len, max_len), &error);
-	mono_error_raise_exception (&error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 	return res;
 }
 
@@ -680,6 +748,7 @@ mono_byvalarray_to_byte_array (MonoArray *arr, gpointer native_arr, guint32 elnu
 	mono_byvalarray_to_array (arr, native_arr, mono_defaults.byte_class, elnum);
 }
 
+/* This is a JIT icall, it sets the pending exception and returns on error */
 static void
 mono_array_to_byvalarray (gpointer native_arr, MonoArray *arr, MonoClass *elclass, guint32 elnum)
 {
@@ -691,9 +760,9 @@ mono_array_to_byvalarray (gpointer native_arr, MonoArray *arr, MonoClass *elclas
 
 		as = g_utf16_to_utf8 (mono_array_addr (arr, gunichar2, 0), mono_array_length (arr), NULL, NULL, &error);
 		if (error) {
-			MonoException *exc = mono_get_exception_argument ("string", error->message);
+			mono_set_pending_exception (mono_get_exception_argument ("string", error->message));
 			g_error_free (error);
-			mono_raise_exception (exc);
+			return;
 		}
 
 		memcpy (native_arr, as, MIN (strlen (as), elnum));
@@ -841,6 +910,8 @@ mono_string_utf16_to_builder (MonoStringBuilder *sb, gunichar2 *text)
  * Returns: a utf8 string with the contents of the StringBuilder.
  *
  * The return value must be released with g_free.
+ *
+ * This is a JIT icall, it sets the pending exception and returns NULL on error.
  */
 gchar*
 mono_string_builder_to_utf8 (MonoStringBuilder *sb)
@@ -851,7 +922,6 @@ mono_string_builder_to_utf8 (MonoStringBuilder *sb)
 	if (!sb)
 		return NULL;
 
-
 	gunichar2 *str_utf16 = mono_string_builder_to_utf16 (sb);
 
 	guint str_len = mono_string_builder_string_length (sb);
@@ -861,7 +931,7 @@ mono_string_builder_to_utf8 (MonoStringBuilder *sb)
 	if (gerror) {
 		g_error_free (gerror);
 		g_free (str_utf16);
-		mono_raise_exception (mono_get_exception_execution_engine ("Failed to convert StringBuilder from utf16 to utf8"));
+		mono_set_pending_exception (mono_get_exception_execution_engine ("Failed to convert StringBuilder from utf16 to utf8"));
 		return NULL;
 	} else {
 		guint len = mono_string_builder_capacity (sb) + 1;
@@ -869,7 +939,8 @@ mono_string_builder_to_utf8 (MonoStringBuilder *sb)
 		if (!mono_error_ok (&error)) {
 			g_free (str_utf16);
 			g_free (tmp);
-			mono_error_raise_exception (&error);
+			mono_error_set_pending_exception (&error);
+			return NULL;
 		}
 
 		g_assert (str_len < len);
@@ -891,6 +962,7 @@ mono_string_builder_to_utf8 (MonoStringBuilder *sb)
  * Returns: a utf16 string with the contents of the StringBuilder.
  *
  * The return value must not be freed.
+ * This is a JIT icall, it sets the pending exception and returns NULL on error.
  */
 gunichar2*
 mono_string_builder_to_utf16 (MonoStringBuilder *sb)
@@ -908,7 +980,10 @@ mono_string_builder_to_utf16 (MonoStringBuilder *sb)
 		len = 1;
 
 	gunichar2 *str = (gunichar2 *)mono_marshal_alloc ((len + 1) * sizeof (gunichar2), &error);
-	mono_error_raise_exception (&error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 
 	str[len] = '\0';
 
@@ -935,6 +1010,7 @@ mono_string_builder_to_utf16 (MonoStringBuilder *sb)
 	return str;
 }
 
+/* This is a JIT icall, it sets the pending exception and returns NULL on error. */
 static gpointer
 mono_string_to_lpstr (MonoString *s)
 {
@@ -956,7 +1032,7 @@ mono_string_to_lpstr (MonoString *s)
 	if (error) {
 		MonoException *exc = mono_get_exception_argument ("string", error->message);
 		g_error_free (error);
-		mono_raise_exception(exc);
+		mono_set_pending_exception (exc);
 		return NULL;
 	} else {
 		as = CoTaskMemAlloc (len + 1);
@@ -2071,6 +2147,7 @@ mono_marshal_emit_thread_force_interrupt_checkpoint (MonoMethodBuilder *mb)
 
 #endif /* DISABLE_JIT */
 
+/* This is a JIT icall, it sets the pending exception and returns NULL on error. */
 static MonoAsyncResult *
 mono_delegate_begin_invoke (MonoDelegate *delegate, gpointer *params)
 {
@@ -2080,15 +2157,15 @@ mono_delegate_begin_invoke (MonoDelegate *delegate, gpointer *params)
 
 	g_assert (delegate);
 	mcast_delegate = (MonoMulticastDelegate *) delegate;
-	if (mcast_delegate->delegates != NULL)
-		mono_raise_exception (mono_get_exception_argument (NULL, "The delegate must have only one target"));
+	if (mcast_delegate->delegates != NULL) {
+		mono_set_pending_exception (mono_get_exception_argument (NULL, "The delegate must have only one target"));
+		return NULL;
+	}
 
 #ifndef DISABLE_REMOTING
 	if (delegate->target && mono_object_class (delegate->target) == mono_defaults.transparent_proxy_class) {
-
 		MonoTransparentProxy* tp = (MonoTransparentProxy *)delegate->target;
 		if (!mono_class_is_contextbound (tp->remote_class->proxy_class) || tp->rp->context != (MonoObject *) mono_context_get ()) {
-
 			/* If the target is a proxy, make a direct call. Is proxy's work
 			// to make the call asynchronous.
 			*/
@@ -2110,7 +2187,7 @@ mono_delegate_begin_invoke (MonoDelegate *delegate, gpointer *params)
 			exc = NULL;
 			mono_remoting_invoke ((MonoObject *)tp->rp, msg, &exc, &out_args);
 			if (exc)
-				mono_raise_exception ((MonoException *) exc);
+				mono_set_pending_exception ((MonoException *) exc);
 			return ares;
 		}
 	}
@@ -2786,6 +2863,7 @@ mono_marshal_get_delegate_begin_invoke (MonoMethod *method)
 	return res;
 }
 
+/* This is a JIT icall, it sets the pending exception and returns NULL on error. */
 static MonoObject *
 mono_delegate_end_invoke (MonoDelegate *delegate, gpointer *params)
 {
@@ -2804,7 +2882,10 @@ mono_delegate_end_invoke (MonoDelegate *delegate, gpointer *params)
 	if (!delegate->method_info) {
 		g_assert (delegate->method);
 		MonoReflectionMethod *rm = mono_method_get_object_checked (domain, delegate->method, NULL, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		if (!mono_error_ok (&error)) {
+			mono_error_set_pending_exception (&error);
+			return NULL;
+		}
 		MONO_OBJECT_SETREF (delegate, method_info, rm);
 	}
 
@@ -2822,12 +2903,12 @@ mono_delegate_end_invoke (MonoDelegate *delegate, gpointer *params)
 
 	ares = (MonoAsyncResult *)mono_array_get (msg->args, gpointer, sig->param_count - 1);
 	if (ares == NULL) {
-		mono_raise_exception (mono_exception_from_name_msg (mono_defaults.corlib, "System.Runtime.Remoting", "RemotingException", "The async result object is null or of an unexpected type."));
+		mono_set_pending_exception (mono_exception_from_name_msg (mono_defaults.corlib, "System.Runtime.Remoting", "RemotingException", "The async result object is null or of an unexpected type."));
 		return NULL;
 	}
 
 	if (ares->async_delegate != (MonoObject*)delegate) {
-		mono_raise_exception (mono_get_exception_invalid_operation (
+		mono_set_pending_exception (mono_get_exception_invalid_operation (
 			"The IAsyncResult object provided does not match this delegate."));
 		return NULL;
 	}
@@ -2836,7 +2917,10 @@ mono_delegate_end_invoke (MonoDelegate *delegate, gpointer *params)
 	if (delegate->target && mono_object_is_transparent_proxy (delegate->target)) {
 		MonoTransparentProxy* tp = (MonoTransparentProxy *)delegate->target;
 		msg = (MonoMethodMessage *)mono_object_new_checked (domain, mono_defaults.mono_method_message_class, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		if (!mono_error_ok (&error)) {
+			mono_error_set_pending_exception (&error);
+			return NULL;
+		}
 		mono_message_init (domain, msg, delegate->method_info, NULL);
 		msg->call_type = CallType_EndInvoke;
 		MONO_OBJECT_SETREF (msg, async_result, ares);
@@ -2856,7 +2940,7 @@ mono_delegate_end_invoke (MonoDelegate *delegate, gpointer *params)
 			MONO_OBJECT_SETREF (((MonoException*)exc), stack_trace, mono_string_new (domain, tmp));
 			g_free (tmp);
 		}
-		mono_raise_exception ((MonoException*)exc);
+		mono_set_pending_exception ((MonoException*)exc);
 	}
 
 	mono_method_return_message_restore (method, params, out_args);
@@ -8042,6 +8126,7 @@ mono_marshal_set_callconv_from_modopt (MonoMethod *method, MonoMethodSignature *
 MonoMethod *
 mono_marshal_get_managed_wrapper (MonoMethod *method, MonoClass *delegate_klass, uint32_t target_handle)
 {
+	MonoError error;
 	MonoMethodSignature *sig, *csig, *invoke_sig;
 	MonoMethodBuilder *mb;
 	MonoMethod *res, *invoke;
@@ -8106,7 +8191,8 @@ mono_marshal_get_managed_wrapper (MonoMethod *method, MonoClass *delegate_klass,
 		 * contents of the attribute without constructing it, as that might not be
 		 * possible when running in cross-compiling mode.
 		 */
-		cinfo = mono_custom_attrs_from_class (delegate_klass);
+		cinfo = mono_custom_attrs_from_class_checked (delegate_klass, &error);
+		mono_error_assert_ok (&error);
 		attr = NULL;
 		if (cinfo) {
 			for (i = 0; i < cinfo->num_attrs; ++i) {
@@ -10127,12 +10213,16 @@ mono_marshal_alloc (gulong size, MonoError *error)
 	return res;
 }
 
+/* This is a JIT icall, it sets the pending exception and returns NULL on error. */
 static void*
 ves_icall_marshal_alloc (gulong size)
 {
 	MonoError error;
 	void *ret = mono_marshal_alloc (size, &error);
-	mono_error_raise_exception (&error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 
 	return ret;
 }
@@ -10166,6 +10256,7 @@ mono_marshal_string_to_utf16 (MonoString *s)
 	return s ? mono_string_chars (s) : NULL;
 }
 
+/* This is a JIT icall, it sets the pending exception and returns NULL on error. */
 static void *
 mono_marshal_string_to_utf16_copy (MonoString *s)
 {
@@ -10174,7 +10265,10 @@ mono_marshal_string_to_utf16_copy (MonoString *s)
 	} else {
 		MonoError error;
 		gunichar2 *res = (gunichar2 *)mono_marshal_alloc ((mono_string_length (s) * 2) + 2, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		if (!mono_error_ok (&error)) {
+			mono_error_set_pending_exception (&error);
+			return NULL;
+		}
 		memcpy (res, mono_string_chars (s), mono_string_length (s) * 2);
 		res [mono_string_length (s)] = 0;
 		return res;
@@ -10310,7 +10404,10 @@ ves_icall_System_Runtime_InteropServices_Marshal_PtrToStringUni (guint16 *ptr)
 		len++;
 
 	res = mono_string_new_utf16_checked (domain, ptr, len, &error);
-	mono_error_raise_exception (&error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 	return res;
 }
 
@@ -10392,29 +10489,31 @@ ves_icall_System_Runtime_InteropServices_Marshal_StructureToPtr (MonoObject *obj
 	pa [2] = &delete_old;
 
 	mono_runtime_invoke_checked (method, NULL, pa, &error);
-	mono_error_raise_exception (&error);
+	if (!mono_error_ok (&error))
+		mono_error_set_pending_exception (&error);
 }
 
 static void
-ptr_to_structure (gpointer src, MonoObject *dst)
+ptr_to_structure (gpointer src, MonoObject *dst, MonoError *error)
 {
-	MonoError error;
 	MonoMethod *method;
 	gpointer pa [2];
+
+	mono_error_init (error);
 
 	method = mono_marshal_get_ptr_to_struct (dst->vtable->klass);
 
 	pa [0] = &src;
 	pa [1] = dst;
 
-	mono_runtime_invoke_checked (method, NULL, pa, &error);
-	mono_error_raise_exception (&error); /* FIXME don't raise here */
+	mono_runtime_invoke_checked (method, NULL, pa, error);
 }
 
 void
 ves_icall_System_Runtime_InteropServices_Marshal_PtrToStructure (gpointer src, MonoObject *dst)
 {
 	MonoType *t;
+	MonoError error;
 
 	MONO_CHECK_ARG_NULL (src,);
 	MONO_CHECK_ARG_NULL (dst,);
@@ -10433,7 +10532,9 @@ ves_icall_System_Runtime_InteropServices_Marshal_PtrToStructure (gpointer src, M
 		return;
 	}
 
-	ptr_to_structure (src, dst);
+	ptr_to_structure (src, dst, &error);
+	if (!mono_error_ok (&error))
+		mono_error_set_pending_exception (&error);
 }
 
 MonoObject *
@@ -10455,9 +10556,16 @@ ves_icall_System_Runtime_InteropServices_Marshal_PtrToStructure_type (gpointer s
 	}
 
 	res = mono_object_new_checked (domain, klass, &error);
-	mono_error_raise_exception (&error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 
-	ptr_to_structure (src, res);
+	ptr_to_structure (src, res, &error);
+	if (!mono_error_ok (&error)) {
+		mono_error_set_pending_exception (&error);
+		return NULL;
+	}
 
 	return res;
 }
@@ -10640,8 +10748,10 @@ ves_icall_System_Runtime_InteropServices_Marshal_AllocHGlobal (gpointer size)
 #else
 	res = g_try_malloc (s);
 #endif
-	if (!res)
-		mono_raise_exception (mono_domain_get ()->out_of_memory_ex);
+	if (!res) {
+		mono_set_pending_exception (mono_domain_get ()->out_of_memory_ex);
+		return NULL;
+	}
 
 	return res;
 }
@@ -10653,7 +10763,7 @@ ves_icall_System_Runtime_InteropServices_Marshal_ReAllocHGlobal (gpointer ptr, g
 	size_t s = (size_t)size;
 
 	if (ptr == NULL) {
-		mono_raise_exception (mono_domain_get ()->out_of_memory_ex);
+		mono_set_pending_exception (mono_domain_get ()->out_of_memory_ex);
 		return NULL;
 	}
 
@@ -10662,8 +10772,10 @@ ves_icall_System_Runtime_InteropServices_Marshal_ReAllocHGlobal (gpointer ptr, g
 #else
 	res = g_try_realloc (ptr, s);
 #endif
-	if (!res)
-		mono_raise_exception (mono_domain_get ()->out_of_memory_ex);
+	if (!res) {
+		mono_set_pending_exception (mono_domain_get ()->out_of_memory_ex);
+		return NULL;
+	}
 
 	return res;
 }
@@ -10692,8 +10804,10 @@ ves_icall_System_Runtime_InteropServices_Marshal_AllocCoTaskMem (int size)
 
 	res = g_try_malloc ((gulong)size);
 #endif
-	if (!res)
-		mono_raise_exception (mono_domain_get ()->out_of_memory_ex);
+	if (!res) {
+		mono_set_pending_exception (mono_domain_get ()->out_of_memory_ex);
+		return NULL;
+	}
 	return res;
 }
 
@@ -10717,8 +10831,10 @@ ves_icall_System_Runtime_InteropServices_Marshal_ReAllocCoTaskMem (gpointer ptr,
 #else
 	res = g_try_realloc (ptr, (gulong)size);
 #endif
-	if (!res)
-		mono_raise_exception (mono_domain_get ()->out_of_memory_ex);
+	if (!res) {
+		mono_set_pending_exception (mono_domain_get ()->out_of_memory_ex);
+		return NULL;
+	}
 	return res;
 }
 
@@ -10738,6 +10854,12 @@ ves_icall_System_Runtime_InteropServices_Marshal_GetDelegateForFunctionPointerIn
 	}
 
 	return mono_ftnptr_to_delegate (klass, ftn);
+}
+
+gpointer
+ves_icall_System_Runtime_InteropServices_Marshal_GetFunctionPointerForDelegateInternal (MonoDelegate *delegate)
+{
+	return mono_delegate_to_ftnptr (delegate);
 }
 
 /**
@@ -11116,6 +11238,7 @@ mono_marshal_type_size (MonoType *type, MonoMarshalSpec *mspec, guint32 *align,
 	return 0;
 }
 
+/* This is a JIT icall, it sets the pending exception and return NULL on error */
 gpointer
 mono_marshal_asany (MonoObject *o, MonoMarshalNative string_encoding, int param_attrs)
 {
@@ -11173,7 +11296,10 @@ mono_marshal_asany (MonoObject *o, MonoMarshalNative string_encoding, int param_
 			return mono_object_unbox (o);
 
 		res = mono_marshal_alloc (mono_class_native_size (klass, NULL), &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		if (!mono_error_ok (&error)) {
+			mono_error_set_pending_exception (&error);
+			return NULL;
+		}
 
 		if (!((param_attrs & PARAM_ATTRIBUTE_OUT) && !(param_attrs & PARAM_ATTRIBUTE_IN))) {
 			method = mono_marshal_get_struct_to_ptr (o->vtable->klass);
@@ -11183,7 +11309,10 @@ mono_marshal_asany (MonoObject *o, MonoMarshalNative string_encoding, int param_
 			pa [2] = &delete_old;
 
 			mono_runtime_invoke_checked (method, NULL, pa, &error);
-			mono_error_raise_exception (&error); /* FIXME don't raise here */
+			if (!mono_error_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return NULL;
+			}
 		}
 
 		return res;
@@ -11191,10 +11320,11 @@ mono_marshal_asany (MonoObject *o, MonoMarshalNative string_encoding, int param_
 	default:
 		break;
 	}
-	mono_raise_exception (mono_get_exception_argument ("", "No PInvoke conversion exists for value passed to Object-typed parameter."));
+	mono_set_pending_exception (mono_get_exception_argument ("", "No PInvoke conversion exists for value passed to Object-typed parameter."));
 	return NULL;
 }
 
+/* This is a JIT icall, it sets the pending exception */
 void
 mono_marshal_free_asany (MonoObject *o, gpointer ptr, MonoMarshalNative string_encoding, int param_attrs)
 {
@@ -11234,7 +11364,10 @@ mono_marshal_free_asany (MonoObject *o, gpointer ptr, MonoMarshalNative string_e
 			pa [1] = o;
 
 			mono_runtime_invoke_checked (method, NULL, pa, &error);
-			mono_error_raise_exception (&error); /* FIXME don't raise here */
+			if (!mono_error_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return;
+			}
 		}
 
 		if (!((param_attrs & PARAM_ATTRIBUTE_OUT) && !(param_attrs & PARAM_ATTRIBUTE_IN))) {

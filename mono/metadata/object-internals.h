@@ -1577,8 +1577,8 @@ mono_runtime_unhandled_exception_policy_set (MonoRuntimeUnhandledExceptionPolicy
 MonoVTable *
 mono_class_try_get_vtable (MonoDomain *domain, MonoClass *klass);
 
-MonoException *
-mono_runtime_class_init_full (MonoVTable *vtable, gboolean raise_exception);
+gboolean
+mono_runtime_class_init_full (MonoVTable *vtable, MonoError *error);
 
 void
 mono_method_clear_object (MonoDomain *domain, MonoMethod *method);
@@ -1640,6 +1640,9 @@ mono_string_to_utf8_mp_ignore (MonoMemPool *mp, MonoString *s);
 
 gboolean
 mono_monitor_is_il_fastpath_wrapper (MonoMethod *method);
+
+MonoString*
+mono_string_intern_checked (MonoString *str, MonoError *error);
 
 char *
 mono_exception_get_native_backtrace (MonoException *exc);
