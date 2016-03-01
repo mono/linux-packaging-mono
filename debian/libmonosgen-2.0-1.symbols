@@ -489,9 +489,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_jit_parse_options@Base 4.1.0.1738
  mono_jit_set_aot_mode@Base 4.1.0.1738
  mono_jit_set_aot_only@Base 4.1.0.1738
- mono_jit_set_domain@Base 4.1.0.1738
  mono_jit_set_trace_options@Base 4.1.0.1738
  mono_jit_thread_attach@Base 4.1.0.1738
+ mono_jit_thread_detach@Base 4.5.0.17
  mono_ldstr@Base 4.1.0.1738
  mono_ldtoken@Base 4.1.0.1738
  mono_load_remote_field@Base 4.1.0.1738
