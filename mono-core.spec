@@ -174,7 +174,6 @@ rm -f %{buildroot}%{_libdir}/libMonoSupportW.*
 rm -f %{buildroot}%{_libdir}/libMonoPosixHelper.a
 rm -f %{buildroot}%{_libdir}/libikvm-native.a
 rm -f %{buildroot}%{_libdir}/libmono-llvm.a
-rm -f %{buildroot}%{_libdir}/libmono-2.0.a
 rm -f %{buildroot}%{_libdir}/libmonoboehm-2.0.a
 rm -f %{buildroot}%{_libdir}/libmonosgen-2.0.a
 
@@ -1193,6 +1192,8 @@ Mono development tools.
 %{_prefix}/lib/mono/xbuild
 %{_prefix}/lib/mono/xbuild-frameworks
 %{_prefix}/lib64/mono/lldb
+%{_libdir}/libmono-2.0.a
+
 
 %package -n mono-reactive
 Summary:        Reactive Extensions
