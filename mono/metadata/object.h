@@ -116,6 +116,7 @@ mono_ldstr		    (MonoDomain *domain, MonoImage *image, uint32_t str_index);
 MONO_API MonoString*
 mono_string_is_interned	    (MonoString *str);
 
+MONO_RT_EXTERNAL_ONLY
 MONO_API MonoString*
 mono_string_intern	    (MonoString *str);
 
@@ -212,6 +213,7 @@ mono_raise_exception	    (MonoException *ex);
 MONO_API void
 mono_runtime_object_init    (MonoObject *this_obj);
 
+MONO_RT_EXTERNAL_ONLY
 MONO_API void
 mono_runtime_class_init	    (MonoVTable *vtable);
 
