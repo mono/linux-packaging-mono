@@ -2151,6 +2151,7 @@ mono_marshal_emit_thread_force_interrupt_checkpoint (MonoMethodBuilder *mb)
 static MonoAsyncResult *
 mono_delegate_begin_invoke (MonoDelegate *delegate, gpointer *params)
 {
+	MonoError error;
 	MonoMulticastDelegate *mcast_delegate;
 	MonoClass *klass;
 	MonoMethod *method;
@@ -2185,7 +2186,11 @@ mono_delegate_begin_invoke (MonoDelegate *delegate, gpointer *params)
 			msg->call_type = CallType_BeginInvoke;
 
 			exc = NULL;
-			mono_remoting_invoke ((MonoObject *)tp->rp, msg, &exc, &out_args);
+			mono_remoting_invoke ((MonoObject *)tp->rp, msg, &exc, &out_args, &error);
+			if (!mono_error_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return NULL;
+			}
 			if (exc)
 				mono_set_pending_exception ((MonoException *) exc);
 			return ares;
@@ -2924,7 +2929,11 @@ mono_delegate_end_invoke (MonoDelegate *delegate, gpointer *params)
 		mono_message_init (domain, msg, delegate->method_info, NULL);
 		msg->call_type = CallType_EndInvoke;
 		MONO_OBJECT_SETREF (msg, async_result, ares);
-		res = mono_remoting_invoke ((MonoObject *)tp->rp, msg, &exc, &out_args);
+		res = mono_remoting_invoke ((MonoObject *)tp->rp, msg, &exc, &out_args, &error);
+		if (!mono_error_ok (&error)) {
+			mono_error_set_pending_exception (&error);
+			return NULL;
+		}
 	} else
 #endif
 	{
@@ -3162,11 +3171,13 @@ mono_marshal_get_delegate_invoke_internal (MonoMethod *method, gboolean callvirt
 	if (callvirt) {
 		subtype = WRAPPER_SUBTYPE_DELEGATE_INVOKE_VIRTUAL;
 		if (target_method->is_inflated) {
+			MonoError error;
 			MonoType *target_type;
 
 			g_assert (method->signature->hasthis);
-			target_type = mono_class_inflate_generic_type (method->signature->params [0],
-				mono_method_get_context (method));
+			target_type = mono_class_inflate_generic_type_checked (method->signature->params [0],
+				mono_method_get_context (method), &error);
+			mono_error_assert_ok (&error); /* FIXME don't swallow the error */
 			target_class = mono_class_from_mono_type (target_type);
 		} else {
 			target_class = target_method->klass;

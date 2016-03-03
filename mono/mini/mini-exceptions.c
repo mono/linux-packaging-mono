@@ -52,6 +52,7 @@
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/exception.h>
+#include <mono/metadata/exception-internals.h>
 #include <mono/metadata/object-internals.h>
 #include <mono/metadata/reflection-internals.h>
 #include <mono/metadata/gc-internals.h>
@@ -1115,6 +1116,7 @@ ves_icall_get_frame_info (gint32 skip, MonoBoolean need_file_info,
 static MonoClass*
 get_exception_catch_class (MonoJitExceptionInfo *ei, MonoJitInfo *ji, MonoContext *ctx)
 {
+	MonoError error;
 	MonoClass *catch_class = ei->data.catch_class;
 	MonoType *inflated_type;
 	MonoGenericContext context;
@@ -1133,7 +1135,9 @@ get_exception_catch_class (MonoJitExceptionInfo *ei, MonoJitInfo *ji, MonoContex
 	   when the exception is actually thrown, so as not to
 	   waste space for exception clauses which might never
 	   be encountered. */
-	inflated_type = mono_class_inflate_generic_type (&catch_class->byval_arg, &context);
+	inflated_type = mono_class_inflate_generic_type_checked (&catch_class->byval_arg, &context, &error);
+	mono_error_assert_ok (&error); /* FIXME don't swallow the error */
+
 	catch_class = mono_class_from_mono_type (inflated_type);
 	mono_metadata_free_type (inflated_type);
 
@@ -1603,7 +1607,8 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 
 	if (!mono_object_isinst (obj, mono_defaults.exception_class)) {
 		non_exception = obj;
-		obj = (MonoObject *)mono_get_exception_runtime_wrapped (obj);
+		obj = (MonoObject *)mono_get_exception_runtime_wrapped_checked (obj, &error);
+		mono_error_assert_ok (&error);
 	}
 
 	mono_ex = (MonoException*)obj;
@@ -2873,11 +2878,14 @@ mono_jinfo_get_epilog_size (MonoJitInfo *ji)
 static void
 throw_exception (MonoObject *ex, gboolean rethrow)
 {
+	MonoError error;
 	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
 	MonoException *mono_ex;
 
-	if (!mono_object_isinst (ex, mono_defaults.exception_class))
-		mono_ex = mono_get_exception_runtime_wrapped (ex);
+	if (!mono_object_isinst (ex, mono_defaults.exception_class)) {
+		mono_ex = mono_get_exception_runtime_wrapped_checked (ex, &error);
+		mono_error_assert_ok (&error);
+	}
 	else
 		mono_ex = (MonoException*)ex;
 
@@ -3029,12 +3037,15 @@ mono_llvm_match_exception (MonoJitInfo *jinfo, guint32 region_start, guint32 reg
 
 		catch_class = ei->data.catch_class;
 		if (catch_class->byval_arg.type == MONO_TYPE_VAR || catch_class->byval_arg.type == MONO_TYPE_MVAR || catch_class->byval_arg.type == MONO_TYPE_GENERICINST) {
+			MonoError error;
 			MonoGenericContext context;
 			MonoType *inflated_type;
 
 			g_assert (rgctx || this_obj);
 			context = get_generic_context_from_stack_frame (jinfo, rgctx ? rgctx : this_obj->vtable);
-			inflated_type = mono_class_inflate_generic_type (&catch_class->byval_arg, &context);
+			inflated_type = mono_class_inflate_generic_type_checked (&catch_class->byval_arg, &context, &error);
+			mono_error_assert_ok (&error); /* FIXME don't swallow the error */
+
 			catch_class = mono_class_from_mono_type (inflated_type);
 			mono_metadata_free_type (inflated_type);
 		}

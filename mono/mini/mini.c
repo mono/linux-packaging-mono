@@ -1261,7 +1261,7 @@ mini_method_verify (MonoCompile *cfg, MonoMethod *method, gboolean fail_compile)
 
 					if (info->exception_type == MONO_EXCEPTION_METHOD_ACCESS)
 						mono_error_set_generic_error (&cfg->error, "System", "MethodAccessException", "%s", msg);
-					else if (info->exception_type == info->exception_type == MONO_EXCEPTION_FIELD_ACCESS)
+					else if (info->exception_type == MONO_EXCEPTION_FIELD_ACCESS)
 						mono_error_set_generic_error (&cfg->error, "System", "FieldAccessException", "%s", msg);
 					else if (info->exception_type == MONO_EXCEPTION_UNVERIFIABLE_IL)
 						mono_error_set_generic_error (&cfg->error, "System.Security", "VerificationException", msg);
@@ -3008,7 +3008,12 @@ create_jit_info (MonoCompile *cfg, MonoMethod *method_to_compile)
 				 */
 				ei->try_start = (guint8*)ei->try_start - cfg->backend->monitor_enter_adjustment;
 			}
-			tblock = cfg->cil_offset_to_bb [ec->try_offset + ec->try_len];
+			if (ec->try_offset + ec->try_len < header->code_size)
+				tblock = cfg->cil_offset_to_bb [ec->try_offset + ec->try_len];
+			else
+				tblock = cfg->bb_exit;
+			if (G_UNLIKELY (cfg->verbose_level >= 4))
+				printf ("looking for end of try [%d, %d] -> %p (code size %d)\n", ec->try_offset, ec->try_len, tblock, header->code_size);
 			g_assert (tblock);
 			if (!tblock->native_offset) {
 				int j, end;
@@ -3465,7 +3470,6 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 
 	cfg = g_new0 (MonoCompile, 1);
 	cfg->method = method_to_compile;
-	cfg->header = mono_method_get_header (cfg->method);
 	cfg->mempool = mono_mempool_new ();
 	cfg->opt = opts;
 	cfg->prof_options = mono_profiler_get_events ();
@@ -3570,14 +3574,9 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 		return cfg;
 	}
 
-	header = cfg->header;
+	header = cfg->header = mono_method_get_header_checked (cfg->method, &cfg->error);
 	if (!header) {
-		if (mono_loader_get_last_error ()) {
-			mono_cfg_set_exception (cfg, MONO_EXCEPTION_MONO_ERROR);
-			mono_error_set_from_loader_error (&cfg->error);
-		} else {
-			mono_cfg_set_exception_invalid_program (cfg, g_strdup_printf ("Missing or incorrect header for method %s", cfg->method->name));
-		}
+		mono_cfg_set_exception (cfg, MONO_EXCEPTION_MONO_ERROR);
 		if (MONO_METHOD_COMPILE_END_ENABLED ())
 			MONO_PROBE_METHOD_COMPILE_END (method, FALSE);
 		return cfg;
