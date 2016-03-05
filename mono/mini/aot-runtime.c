@@ -224,7 +224,7 @@ static void
 compute_llvm_code_range (MonoAotModule *amodule, guint8 **code_start, guint8 **code_end);
 
 static gboolean
-init_llvm_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *method, MonoClass *init_class, MonoGenericContext *context, MonoError *error);
+init_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *method, MonoClass *init_class, MonoGenericContext *context, MonoError *error);
 
 static MonoJumpInfo*
 decode_patches (MonoAotModule *amodule, MonoMemPool *mp, int n_patches, gboolean llvm, guint32 *got_offsets);
@@ -3849,7 +3849,7 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 	if (!(is_llvm_code (amodule, code) && (amodule->info.flags & MONO_AOT_FILE_FLAG_LLVM_ONLY))) {
 		MonoError error;
 
-		res = init_llvm_method (amodule, method_index, method, NULL, NULL, &error);
+		res = init_method (amodule, method_index, method, NULL, NULL, &error);
 		if (!mono_error_ok (&error))
 			mono_error_raise_exception (&error); /* FIXME: Don't raise here */
 		if (!res)
@@ -4072,11 +4072,11 @@ mono_aot_find_method_index (MonoMethod *method)
 }
 
 static gboolean
-init_llvm_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *method, MonoClass *init_class, MonoGenericContext *context, MonoError *error)
+init_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *method, MonoClass *init_class, MonoGenericContext *context, MonoError *error)
 {
 	MonoDomain *domain = mono_domain_get ();
 	MonoMemPool *mp;
-	MonoClass *klass;
+	MonoClass *klass_to_run_ctor = NULL;
 	gboolean from_plt = method == NULL;
 	int pindex, n_patches;
 	guint8 *p;
@@ -4090,12 +4090,13 @@ init_llvm_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *meth
 
 	p = info;
 
-	if (method) {
-		klass = method->klass;
-		decode_klass_ref (amodule, p, &p);
-	} else {
-		klass = decode_klass_ref (amodule, p, &p);
-	}
+	//does the method's class has a cctor?
+	if (decode_value (p, &p) == 1)
+		klass_to_run_ctor = decode_klass_ref (amodule, p, &p);
+
+	//FIXME old code would use the class from @method if not null and ignore the one encoded. I don't know if we need to honor that -- @kumpera
+	if (method)
+		klass_to_run_ctor = method->klass;
 
 	n_patches = decode_value (p, &p);
 
@@ -4176,8 +4177,8 @@ init_llvm_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *meth
 	gboolean inited_ok = TRUE;
 	if (init_class)
 		inited_ok = mono_runtime_class_init_full (mono_class_vtable (domain, init_class), error);
-	else if (from_plt && klass && !klass->generic_container)
-		inited_ok = mono_runtime_class_init_full (mono_class_vtable (domain, klass), error);
+	else if (from_plt && klass_to_run_ctor && !klass_to_run_ctor->generic_container)
+		inited_ok = mono_runtime_class_init_full (mono_class_vtable (domain, klass_to_run_ctor), error);
 	if (!inited_ok)
 		return FALSE;
 
@@ -4198,7 +4199,7 @@ mono_aot_init_llvm_method (gpointer aot_module, guint32 method_index)
 	MonoError error;
 
 	// FIXME: Handle errors
-	res = init_llvm_method (amodule, method_index, NULL, NULL, NULL, &error);
+	res = init_method (amodule, method_index, NULL, NULL, NULL, &error);
 	g_assert (res);
 }
 
@@ -4224,7 +4225,7 @@ mono_aot_init_gshared_method_this (gpointer aot_module, guint32 method_index, Mo
 	context = mono_method_get_context (method);
 	g_assert (context);
 
-	res = init_llvm_method (amodule, method_index, NULL, klass, context, &error);
+	res = init_method (amodule, method_index, NULL, klass, context, &error);
 	g_assert (res);
 }
 
@@ -4243,7 +4244,7 @@ mono_aot_init_gshared_method_mrgctx (gpointer aot_module, guint32 method_index, 
 		context.class_inst = klass->generic_container->context.class_inst;
 	context.method_inst = rgctx->method_inst;
 
-	res = init_llvm_method (amodule, method_index, NULL, rgctx->class_vtable->klass, &context, &error);
+	res = init_method (amodule, method_index, NULL, rgctx->class_vtable->klass, &context, &error);
 	g_assert (res);
 }
 
@@ -4267,7 +4268,7 @@ mono_aot_init_gshared_method_vtable (gpointer aot_module, guint32 method_index, 
 	context = mono_method_get_context (method);
 	g_assert (context);
 
-	res = init_llvm_method (amodule, method_index, NULL, klass, context, &error);
+	res = init_method (amodule, method_index, NULL, klass, context, &error);
 	g_assert (res);
 }
 
@@ -4336,7 +4337,7 @@ mono_aot_get_method (MonoDomain *domain, MonoMethod *method)
 
 		if (mono_llvm_only) {
 			/* Needed by mono_aot_init_gshared_method_this () */
-			/* orig_method is a random instance but it is enough to make init_llvm_method () work */
+			/* orig_method is a random instance but it is enough to make init_method () work */
 			amodule_lock (amodule);
 			g_hash_table_insert (amodule->extra_methods, GUINT_TO_POINTER (method_index), orig_method);
 			amodule_unlock (amodule);
@@ -4896,8 +4897,9 @@ load_function_full (MonoAotModule *amodule, const char *name, MonoTrampInfo **ou
 		tinfo = g_new0 (MonoTrampInfo, 1);
 		tinfo->code = (guint8 *)code;
 		tinfo->code_size = code_size;
-		tinfo->uw_info = uw_info;
 		tinfo->uw_info_len = uw_info_len;
+		if (uw_info_len)
+			tinfo->uw_info = uw_info;
 
 		*out_tinfo = tinfo;
 	}
@@ -5062,8 +5064,11 @@ read_unwind_info (MonoAotModule *amodule, MonoTrampInfo *info, const char *symbo
 	uw_info = amodule->unwind_info + uw_offset;
 	uw_info_len = decode_value (uw_info, &uw_info);
 
-	info->uw_info = uw_info;
 	info->uw_info_len = uw_info_len;
+	if (uw_info_len)
+		info->uw_info = uw_info;
+	else
+		info->uw_info = NULL;
 
 	/* If successful return the address of the following data */
 	return (guint32*)symbol_addr + 1;
