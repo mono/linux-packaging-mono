@@ -78,8 +78,10 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-DIST_COMMON = $(srcdir)/versions.mk $(srcdir)/Makefile.in \
-	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs
+DIST_COMMON = $(srcdir)/versions.mk $(srcdir)/roslyn.mk \
+	$(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk \
+	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
+	$(top_srcdir)/mkinstalldirs
 subdir = acceptance-tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
@@ -321,17 +323,19 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-TOP = ..
-ROSLYN_PATH = $(TOP)/../roslyn
-CORECLR_PATH = $(TOP)/../coreclr
-MSTESTSUITE_PATH = $(TOP)/../ms-test-suite
-CONFIG = SUBMODULES.json
-EXTRA_DIST = README.md SUBMODULES.json versions.mk versions.py
+ACCEPTANCE_TESTS_PATH = external
+ROSLYN_PATH = $(ACCEPTANCE_TESTS_PATH)/roslyn
+CORECLR_PATH = $(ACCEPTANCE_TESTS_PATH)/coreclr
+MSTESTSUITE_PATH = $(ACCEPTANCE_TESTS_PATH)/ms-test-suite
+CLEANFILES = *.dll *.exe *.mdb $(CORECLR_STRESSTESTSI_CS) \
+	GCStressTests.exe coreclr-testlibrary.dll
+EXTRA_DIST = README.md SUBMODULES.json versions.mk versions.py roslyn.mk coreclr.mk ms-test-suite.mk
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(with_mono_path) $(abs_top_builddir)/runtime/mono-wrapper --debug
 MCS = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe
 ILASM = $(RUNTIME) $(CLASS)/ilasm.exe
+CONFIG = SUBMODULES.json
 CORECLR_TEST_CS_SRC = \
 	$(CORECLR_PATH)/tests/src/GC/Coverage/LargeObjectAlloc.cs	\
 	$(CORECLR_PATH)/tests/src/GC/Coverage/LargeObjectAlloc2.cs	\
@@ -5398,11 +5402,10 @@ CORECLR_TESTSI_CS = $(CORECLR_TEST_CS_SRC:.cs=.exe)
 CORECLR_TESTSI_IL = $(CORECLR_TEST_IL_SRC:.il=_il.exe)
 CORECLR_STRESSTESTSI_CS = $(CORECLR_STRESSTEST_CS_SRC:%.cs=%.exe)
 CORECLR_COREMANGLIB_TESTSI_CS = $(CORECLR_COREMANGLIB_TEST_CS_SRC:.cs=.exe)
-CLEANFILES = *.dll *.exe *.mdb $(CORECLR_STRESSTESTSI_CS) GCStressTests.exe coreclr-testlibrary.dll
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/versions.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/versions.mk $(srcdir)/roslyn.mk $(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -5423,7 +5426,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(srcdir)/versions.mk:
+$(srcdir)/versions.mk $(srcdir)/roslyn.mk $(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -5709,7 +5712,7 @@ __bump-branch-%:
 	@if [ "$(COMMIT)" = "1" ]; then echo "[acceptance-tests] Bump $* to switch to $(BRANCH) $(REMOTE BRANCH)." | git commit -F - $(CONFIG); fi
 
 __bump-current-version-%:
-	REV=$(shell cd $(TOP)/../$* && git log -1 --pretty=format:%H); \
+	REV=$(shell cd $(ACCEPTANCE_TESTS_PATH)/$* && git log -1 --pretty=format:%H); \
 	python versions.py set-rev $* $$REV; \
 	if [ "$(COMMIT)" = "1" ]; then echo "[acceptance-tests] Bump $* to pick up $$REV:" | git commit -F - $(CONFIG); fi
 
@@ -5748,19 +5751,6 @@ commit-bump-current-coreclr:
 
 commit-bump-current-ms-test-suite:
 	$(MAKE) bump-current-ms-test-suite COMMIT=1
-
-check-full: check-roslyn check-coreclr check-ms-test-suite
-
-check-ms-test-suite:
-	@if $(MAKE) validate-ms-test-suite RESET_VERSIONS=1; then \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance build MCS="$(MCS) -t:library -warn:1 -r:nunit.framework"; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-console.exe -nologo -exclude=MonoBug,BadTest" NUNIT_XML_RESULT=$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-conformance.xml; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug -warn:1"; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run MONO="$(RUNTIME)"; \
-	else \
-		echo "*** [ms-test-suite] Getting the repository failed, you probably don't have access to this Xamarin-internal resource. Skipping."; \
-	fi
-
 check-roslyn:
 	@$(MAKE) validate-roslyn RESET_VERSIONS=1
 	@if [ -z $$PREFIX ]; then echo "You need to set PREFIX to the prefix of the Mono installation that should be used for testing Roslyn." && exit 1; fi
@@ -5784,6 +5774,10 @@ check-roslyn:
 	sed -i -e 's#-xml Binaries/\$$BUILD_CONFIGURATION/xUnitResults/#-nunit $(abs_top_builddir)/acceptance-tests/TestResult-#g' cibuild.sh; \
 	./cibuild.sh --mono-path $$PREFIX/bin; \
 	sed -i -e 's/\\4.5"/\\4.5-api"/g' $$PREFIX/lib/mono/xbuild-frameworks/.NETFramework/v4.5/RedistList/FrameworkList.xml;
+clean-local-coreclr:
+	-rm -f $(CORECLR_TESTSI_CS)
+	-rm -f $(CORECLR_COREMANGLIB_TESTSI_CS)
+	-rm -f $(CORECLR_TESTSI_IL)
 
 coreclr-validate:
 	$(MAKE) validate-coreclr RESET_VERSIONS=1
@@ -5793,14 +5787,12 @@ coreclr-compile-tests: coreclr-validate
 	$(MAKE) -j4 $(CORECLR_COREMANGLIB_TESTSI_CS)
 	$(MAKE) -j4 $(CORECLR_TESTSI_IL)
 
-# the CoreCLR IL tests use the System.Console facade, we need to copy it to the test directory
-# all the other tests rely on the coreclr-testlibrary.dll
+# the CoreCLR tests rely on the coreclr-testlibrary.dll, we need to copy it to the test directory
 coreclr-runtest-basic: coreclr-validate test-runner.exe $(CORECLR_TESTSI_CS) $(CORECLR_TESTSI_IL)
 	@rm -f coreclr-testlist.txt
 	@$(call dumpvariabletofile, coreclr-testlist.txt, $(CORECLR_TESTSI_CS))
 	@$(call dumpvariabletofile, coreclr-testlist.txt, $(CORECLR_TESTSI_IL))
 	@for var in $(sort $(dir $(CORECLR_TESTSI_CS))); do ln -sf $(abspath coreclr-testlibrary.dll) "$$var"; done
-	@for var in $(sort $(dir $(CORECLR_TESTSI_IL))); do ln -sf "$(abspath $(CLASS)/Facades/System.Console.dll)" "$$var"; done
 	$(RUNTIME) ./test-runner.exe -j a --testsuite-name "coreclr" --expected-exit-code 100 --input-file coreclr-testlist.txt
 	@rm -f coreclr-testlist.txt
 
@@ -5846,11 +5838,19 @@ test-runner.exe: $(top_srcdir)/mono/tests/test-runner.cs
 
 GCStressTests.exe: $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
 	$(MCS) -out:$@ -debug -d:PROJECTK_BUILD $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
+check-ms-test-suite:
+	@if $(MAKE) validate-ms-test-suite RESET_VERSIONS=1; then \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance build MCS="$(MCS) -t:library -warn:1 -r:nunit.framework"; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-console.exe -nologo -exclude=MonoBug,BadTest" NUNIT_XML_RESULT=$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-conformance.xml; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug -warn:1"; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run MONO="$(RUNTIME)"; \
+	else \
+		echo "*** [ms-test-suite] Getting the repository failed, you probably don't have access to this Xamarin-internal resource. Skipping."; \
+	fi
 
-clean-local:
-	-rm -f $(CORECLR_TESTSI_CS)
-	-rm -f $(CORECLR_COREMANGLIB_TESTSI_CS)
-	-rm -f $(CORECLR_TESTSI_IL)
+check-full: check-roslyn check-coreclr check-ms-test-suite
+
+clean-local: clean-local-coreclr
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

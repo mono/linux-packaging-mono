@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii"?><span>
+﻿<?xml version="1.0" encoding="utf-8"?><span>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
    <title>mono-api-object.html</title>
@@ -110,7 +110,7 @@ MonoObject* <a href="#api:mono_object_castclass_mbyref">mono_object_castclass_mb
                                             MonoClass *klass);
 guint       <a href="#api:mono_object_get_size">mono_object_get_size</a>           (MonoObject* o);
 MonoObject* <a href="#api:mono_value_box">mono_value_box</a>                 (MonoDomain *domain, 
-                                            MonoClass *class, 
+                                            MonoClass *klass, 
                                             gpointer value);
             <a href="#api:mono_value_copy"></a>                               
             <a href="#api:mono_value_copy_array"></a>                               
@@ -449,7 +449,7 @@ mono_object_get_size (MonoObject* o)
     <div class="api-entry">mono_value_box</div>
 
     <div class="prototype">MonoObject*
-mono_value_box (MonoDomain *domain, MonoClass *class, gpointer value)
+mono_value_box (MonoDomain *domain, MonoClass *klass, gpointer value)
 
 </div>
 <p />

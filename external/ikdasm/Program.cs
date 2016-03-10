@@ -193,11 +193,15 @@ namespace Ildasm
             Console.WriteLine("Usage: ikdasm [options] <file_name> [options]");
             Console.WriteLine();
             Console.WriteLine("Options:");
-			if (typeof (int).Assembly.GetType ("Mono.Runtime") != null) {
-				Console.WriteLine ("  --out=<file name>   Direct output to file rather than stdout.");
-				Console.WriteLine ("  --help              Print this help.");
-			} else {
-				Console.WriteLine("  /OUT=<file name>    Direct output to file rather than to stdout.");
+            if (typeof (int).Assembly.GetType ("Mono.Runtime") != null) {
+                Console.WriteLine ("  -out=<file name>   Direct output to file rather than stdout");
+                Console.WriteLine ("  -help              Print this help");
+
+                Console.WriteLine ("  -assembly          Dumps the contents of the Assembly table");
+                Console.WriteLine ("  -assemblyref       Dumps the contents of the AssemblyRef table");
+                Console.WriteLine ("  -moduleref         Dumps the contents of the ModuleRef table");
+            } else {
+                Console.WriteLine("  /OUT=<file name>    Direct output to file rather than to stdout.");
 				Console.WriteLine("  /COMPAT=<version>   Match ildasm behavior. (<version> = 2.0 | 4.0 | 4.5)");
 				Console.WriteLine("  /DIFFMODE           Remove superficial differences to allow assembly comparisons");
 				Console.WriteLine("  /CAVERBAL           Try to decode custom attribute blobs");
