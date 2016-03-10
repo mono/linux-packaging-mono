@@ -4417,6 +4417,7 @@ emit_marshal_custom (EmitMarshalContext *m, int argnum, MonoType *t,
 		*conv_arg_type = &mono_defaults.int_class->byval_arg;
 	return conv_arg;
 #else
+	MonoError error;
 	MonoType *mtype;
 	MonoClass *mklass;
 	static MonoClass *ICustomMarshaler = NULL;
@@ -4449,10 +4450,11 @@ emit_marshal_custom (EmitMarshalContext *m, int argnum, MonoType *t,
 	}
 
 	if (spec->data.custom_data.image)
-		mtype = mono_reflection_type_from_name (spec->data.custom_data.custom_name, spec->data.custom_data.image);
+		mtype = mono_reflection_type_from_name_checked (spec->data.custom_data.custom_name, spec->data.custom_data.image, &error);
 	else
-		mtype = mono_reflection_type_from_name (spec->data.custom_data.custom_name, m->image);
+		mtype = mono_reflection_type_from_name_checked (spec->data.custom_data.custom_name, m->image, &error);
 	g_assert (mtype != NULL);
+	mono_error_assert_ok (&error);
 	mklass = mono_class_from_mono_type (mtype);
 	g_assert (mklass != NULL);
 
@@ -4946,8 +4948,8 @@ emit_marshal_vtype (EmitMarshalContext *m, int argnum, MonoType *t,
 		}
 
 		/* load pointer to returned value type */
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_VTADDR);
+		g_assert (m->vtaddr_var);
+		mono_mb_emit_ldloc (mb, m->vtaddr_var);
 		/* store the address of the source into local variable 0 */
 		mono_mb_emit_stloc (mb, 0);
 		/* set dst_ptr */
@@ -5027,8 +5029,8 @@ emit_marshal_vtype (EmitMarshalContext *m, int argnum, MonoType *t,
 		}
 			
 		/* load pointer to returned value type */
-		mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-		mono_mb_emit_byte (mb, CEE_MONO_VTADDR);
+		g_assert (m->vtaddr_var);
+		mono_mb_emit_ldloc (mb, m->vtaddr_var);
 			
 		/* store the address of the source into local variable 0 */
 		mono_mb_emit_stloc (mb, 0);
@@ -7221,10 +7223,12 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 	EmitMarshalContext m;
 	MonoMethodSignature *csig;
 	MonoClass *klass;
+	MonoExceptionClause *clause;
 	int i, argnum, *tmp_locals;
 	int type, param_shift = 0;
 	static MonoMethodSignature *get_last_error_sig = NULL;
-	int coop_gc_stack_dummy, coop_gc_var;
+	int coop_gc_stack_dummy, coop_gc_var, coop_unblocked_var;
+	int leave_pos;
 
 	memset (&m, 0, sizeof (m));
 	m.mb = mb;
@@ -7257,7 +7261,7 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 	mono_mb_emit_icon (mb, 0);
 	mono_mb_emit_stloc (mb, 2);
 
-	if (!MONO_TYPE_IS_VOID(sig->ret)) {
+	if (!MONO_TYPE_IS_VOID (sig->ret)) {
 		/* allocate local 3 to store the return value */
 		mono_mb_add_local (mb, sig->ret);
 	}
@@ -7267,7 +7271,14 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 		coop_gc_stack_dummy = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
 		/* local 5, the local to be used when calling the suspend funcs */
 		coop_gc_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
+		coop_unblocked_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
+
+		clause = (MonoExceptionClause *)mono_image_alloc0 (image, sizeof (MonoExceptionClause));
+		clause->flags = MONO_EXCEPTION_CLAUSE_FINALLY;
 	}
+
+	if (MONO_TYPE_ISSTRUCT (sig->ret))
+		m.vtaddr_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
 
 	if (mspecs [0] && mspecs [0]->native == MONO_NATIVE_CUSTOM) {
 		/* Return type custom marshaling */
@@ -7287,6 +7298,23 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 		tmp_locals [i] = emit_marshal (&m, i + param_shift, sig->params [i], mspecs [i + 1], 0, &csig->params [i], MARSHAL_ACTION_CONV_IN);
 	}
 
+	// In coop mode need to register blocking state during native call
+	if (mono_threads_is_coop_enabled ()) {
+		// Perform an extra, early lookup of the function address, so any exceptions
+		// potentially resulting from the lookup occur before entering blocking mode.
+		if (!func_param && !MONO_CLASS_IS_IMPORT (mb->method->klass) && aot) {
+			mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+			mono_mb_emit_op (mb, CEE_MONO_ICALL_ADDR, &piinfo->method);
+			mono_mb_emit_byte (mb, CEE_POP); // Result not needed yet
+		}
+
+		clause->try_offset = mono_mb_get_label (mb);
+
+		mono_mb_emit_ldloc_addr (mb, coop_gc_stack_dummy);
+		mono_mb_emit_icall (mb, mono_threads_prepare_blocking);
+		mono_mb_emit_stloc (mb, coop_gc_var);
+	}
+
 	/* push all arguments */
 
 	if (sig->hasthis)
@@ -7295,12 +7323,6 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 	for (i = 0; i < sig->param_count; i++) {
 		emit_marshal (&m, i + param_shift, sig->params [i], mspecs [i + 1], tmp_locals [i], NULL, MARSHAL_ACTION_PUSH);
 	}			
-
-	if (mono_threads_is_coop_enabled ()) {
-		mono_mb_emit_ldloc_addr (mb, coop_gc_stack_dummy);
-		mono_mb_emit_icall (mb, mono_threads_prepare_blocking);
-		mono_mb_emit_stloc (mb, coop_gc_var);
-	}
 
 	/* call the native method */
 	if (func_param) {
@@ -7346,10 +7368,24 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 #endif
 	}		
 
+	if (MONO_TYPE_ISSTRUCT (sig->ret)) {
+		MonoClass *klass = mono_class_from_mono_type (sig->ret);
+		mono_class_init (klass);
+		if (!(((klass->flags & TYPE_ATTRIBUTE_LAYOUT_MASK) == TYPE_ATTRIBUTE_EXPLICIT_LAYOUT) || klass->blittable)) {
+			/* This is used by emit_marshal_vtype (), but it needs to go right before the call */
+			mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+			mono_mb_emit_byte (mb, CEE_MONO_VTADDR);
+			mono_mb_emit_stloc (mb, m.vtaddr_var);
+		}
+	}
+
+	/* Unblock before converting the result, since that can involve calls into the runtime */
 	if (mono_threads_is_coop_enabled ()) {
 		mono_mb_emit_ldloc (mb, coop_gc_var);
 		mono_mb_emit_ldloc_addr (mb, coop_gc_stack_dummy);
 		mono_mb_emit_icall (mb, mono_threads_finish_blocking);
+		mono_mb_emit_icon (mb, 1);
+		mono_mb_emit_stloc (mb, coop_unblocked_var);
 	}
 
 	/* convert the result */
@@ -7360,7 +7396,6 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 		if (spec && spec->native == MONO_NATIVE_CUSTOM) {
 			emit_marshal (&m, 0, sig->ret, spec, 0, NULL, MARSHAL_ACTION_CONV_RESULT);
 		} else {
-
 		handle_enum:
 			switch (type) {
 			case MONO_TYPE_VOID:
@@ -7407,6 +7442,31 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 		mono_mb_emit_stloc (mb, 3);
 	}
 
+	if (mono_threads_is_coop_enabled ()) {
+		int pos;
+
+		leave_pos = mono_mb_emit_branch (mb, CEE_LEAVE);
+
+		clause->try_len = mono_mb_get_label (mb) - clause->try_offset;
+		clause->handler_offset = mono_mb_get_label (mb);
+
+		mono_mb_emit_ldloc (mb, coop_unblocked_var);
+		mono_mb_emit_icon (mb, 1);
+		pos = mono_mb_emit_branch (mb, CEE_BEQ);
+
+		mono_mb_emit_ldloc (mb, coop_gc_var);
+		mono_mb_emit_ldloc_addr (mb, coop_gc_stack_dummy);
+		mono_mb_emit_icall (mb, mono_threads_finish_blocking);
+
+		mono_mb_patch_branch (mb, pos);
+
+		mono_mb_emit_byte (mb, CEE_ENDFINALLY);
+
+		clause->handler_len = mono_mb_get_pos (mb) - clause->handler_offset;
+
+		mono_mb_patch_branch (mb, leave_pos);
+	}
+
 	/* 
 	 * Need to call this after converting the result since MONO_VTADDR needs 
 	 * to be adjacent to the call instruction.
@@ -7444,6 +7504,10 @@ mono_marshal_emit_native_wrapper (MonoImage *image, MonoMethodBuilder *mb, MonoM
 		mono_mb_emit_ldloc (mb, 3);
 
 	mono_mb_emit_byte (mb, CEE_RET);
+
+	if (mono_threads_is_coop_enabled ()) {
+		mono_mb_set_clauses (mb, 1, clause);
+	}
 }
 #endif /* DISABLE_JIT */
 
@@ -7879,6 +7943,9 @@ mono_marshal_emit_managed_wrapper (MonoMethodBuilder *mb, MonoMethodSignature *i
 		mono_mb_add_local (mb, sig->ret);
 	}
 
+	if (MONO_TYPE_ISSTRUCT (sig->ret))
+		m->vtaddr_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
+
 	/*
 	 * try {
 	 *   mono_jit_attach ();
@@ -7970,6 +8037,17 @@ mono_marshal_emit_managed_wrapper (MonoMethodBuilder *mb, MonoMethodSignature *i
 
 	/* ret = method (...) */
 	mono_mb_emit_managed_call (mb, method, NULL);
+
+	if (MONO_TYPE_ISSTRUCT (sig->ret)) {
+		MonoClass *klass = mono_class_from_mono_type (sig->ret);
+		mono_class_init (klass);
+		if (!(((klass->flags & TYPE_ATTRIBUTE_LAYOUT_MASK) == TYPE_ATTRIBUTE_EXPLICIT_LAYOUT) || klass->blittable)) {
+			/* This is used by emit_marshal_vtype (), but it needs to go right before the call */
+			mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+			mono_mb_emit_byte (mb, CEE_MONO_VTADDR);
+			mono_mb_emit_stloc (mb, m->vtaddr_var);
+		}
+	}
 
 	if (mspecs [0] && mspecs [0]->native == MONO_NATIVE_CUSTOM) {
 		emit_marshal (m, 0, sig->ret, mspecs [0], 0, NULL, MARSHAL_ACTION_MANAGED_CONV_RESULT);

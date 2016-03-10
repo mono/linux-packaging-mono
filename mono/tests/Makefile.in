@@ -1157,6 +1157,21 @@ OOM_TESTS = \
 	gc-oom-handling.exe	\
 	gc-oom-handling2.exe
 
+
+# tests that expect a 1 exit code
+@HOST_WIN32_FALSE@UNHANDLED_EXCEPTION_1_TESTS = \
+@HOST_WIN32_FALSE@	unhandled-exception-1.exe
+
+
+# tests that expect a 255 exit code
+@HOST_WIN32_FALSE@UNHANDLED_EXCEPTION_255_TESTS = \
+@HOST_WIN32_FALSE@	unhandled-exception-2.exe	\
+@HOST_WIN32_FALSE@	unhandled-exception-3.exe	\
+@HOST_WIN32_FALSE@	unhandled-exception-4.exe	\
+@HOST_WIN32_FALSE@	unhandled-exception-5.exe	\
+@HOST_WIN32_FALSE@	unhandled-exception-6.exe	\
+@HOST_WIN32_FALSE@	unhandled-exception-7.exe
+
 PROCESS_STRESS_TESTS = \
 		process-stress-1.exe	\
 		process-stress-2.exe	\
@@ -2071,25 +2086,21 @@ test-oom: $(OOM_TESTS)
 	done
 
 @HOST_WIN32_TRUE@test-unhandled-exception-2:
-@HOST_WIN32_FALSE@test-unhandled-exception-2: test-unhandled-exception-2-1 test-unhandled-exception-2-2 test-unhandled-exception-2-3 test-unhandled-exception-2-4	\
-@HOST_WIN32_FALSE@		 test-unhandled-exception-2-5 test-unhandled-exception-2-6 test-unhandled-exception-2-7 test-unhandled-exception-2-8
 
-@HOST_WIN32_FALSE@test-unhandled-exception-2-1: unhandled-exception-1.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 1 $<
-@HOST_WIN32_FALSE@test-unhandled-exception-2-2: unhandled-exception-2.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 0 $<
-@HOST_WIN32_FALSE@test-unhandled-exception-2-3: unhandled-exception-3.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 255 $<
-@HOST_WIN32_FALSE@test-unhandled-exception-2-4: unhandled-exception-4.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 0 $<
-@HOST_WIN32_FALSE@test-unhandled-exception-2-5: unhandled-exception-5.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 255 $<
-@HOST_WIN32_FALSE@test-unhandled-exception-2-6: unhandled-exception-6.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 255 $<
-@HOST_WIN32_FALSE@test-unhandled-exception-2-7: unhandled-exception-7.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 255 $<
-@HOST_WIN32_FALSE@test-unhandled-exception-2-8: unhandled-exception-8.exe test-runner.exe
-@HOST_WIN32_FALSE@	@$(RUNTIME) ./test-runner.exe --testsuite-name $@ --expected-exit-code 3 $<
+@HOST_WIN32_FALSE@test-unhandled-exception-2: $(UNHANDLED_EXCEPTION_1_TESTS) $(UNHANDLED_EXCEPTION_255_TESTS)
+@HOST_WIN32_FALSE@	$(MAKE) test-unhandled-exception-2-1-with-managed-handler
+@HOST_WIN32_FALSE@	$(MAKE) test-unhandled-exception-2-1-without-managed-handler
+@HOST_WIN32_FALSE@	$(MAKE) test-unhandled-exception-2-255-with-managed-handler
+@HOST_WIN32_FALSE@	$(MAKE) test-unhandled-exception-2-255-without-managed-handler
+
+@HOST_WIN32_FALSE@test-unhandled-exception-2-1-with-managed-handler: $(UNHANDLED_EXCEPTION_1_TESTS) test-runner.exe
+@HOST_WIN32_FALSE@	$(RUNTIME) ./test-runner.exe -j a --testsuite-name $@ --expected-exit-code 1 $(UNHANDLED_EXCEPTION_1_TESTS)
+@HOST_WIN32_FALSE@test-unhandled-exception-2-1-without-managed-handler: $(UNHANDLED_EXCEPTION_1_TESTS) test-runner.exe
+@HOST_WIN32_FALSE@	TEST_UNHANDLED_EXCEPTION_HANDLER=1 $(RUNTIME) ./test-runner.exe -j a --testsuite-name $@ --expected-exit-code 1 $(UNHANDLED_EXCEPTION_1_TESTS)
+@HOST_WIN32_FALSE@test-unhandled-exception-2-255-with-managed-handler: $(UNHANDLED_EXCEPTION_255_TESTS) test-runner.exe
+@HOST_WIN32_FALSE@	$(RUNTIME) ./test-runner.exe -j a --testsuite-name $@ --expected-exit-code 255 $(UNHANDLED_EXCEPTION_255_TESTS)
+@HOST_WIN32_FALSE@test-unhandled-exception-2-255-without-managed-handler: $(UNHANDLED_EXCEPTION_255_TESTS) test-runner.exe
+@HOST_WIN32_FALSE@	TEST_UNHANDLED_EXCEPTION_HANDLER=1 $(RUNTIME) ./test-runner.exe -j a --testsuite-name $@ --expected-exit-code 255 $(UNHANDLED_EXCEPTION_255_TESTS)
 test-appdomain-unload: appdomain-loader.exe appdomain-tester.exe
 	$(RUNTIME) -O=gshared appdomain-loader.exe > appdomain-loader.exe.1.stdout || exit 1;
 	$(RUNTIME) appdomain-loader.exe > appdomain-loader.exe.2.stdout || exit 1;

@@ -985,6 +985,7 @@ ves_icall_System_Object_MemberwiseClone (MonoObject *this_obj)
 ICALL_EXPORT gint32
 ves_icall_System_ValueType_InternalGetHashCode (MonoObject *this_obj, MonoArray **fields)
 {
+	MonoError error;
 	MonoClass *klass;
 	MonoObject **values = NULL;
 	MonoObject *o;
@@ -1024,7 +1025,11 @@ ves_icall_System_ValueType_InternalGetHashCode (MonoObject *this_obj, MonoArray 
 		default:
 			if (!values)
 				values = g_newa (MonoObject*, mono_class_num_fields (klass));
-			o = mono_field_get_value_object (mono_object_domain (this_obj), field, this_obj);
+			o = mono_field_get_value_object_checked (mono_object_domain (this_obj), field, this_obj, &error);
+			if (!is_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return 0;
+			}
 			values [count++] = o;
 		}
 	}
@@ -1043,6 +1048,7 @@ ves_icall_System_ValueType_InternalGetHashCode (MonoObject *this_obj, MonoArray 
 ICALL_EXPORT MonoBoolean
 ves_icall_System_ValueType_Equals (MonoObject *this_obj, MonoObject *that, MonoArray **fields)
 {
+	MonoError error;
 	MonoClass *klass;
 	MonoObject **values = NULL;
 	MonoObject *o;
@@ -1128,9 +1134,17 @@ ves_icall_System_ValueType_Equals (MonoObject *this_obj, MonoObject *that, MonoA
 		default:
 			if (!values)
 				values = g_newa (MonoObject*, mono_class_num_fields (klass) * 2);
-			o = mono_field_get_value_object (mono_object_domain (this_obj), field, this_obj);
+			o = mono_field_get_value_object_checked (mono_object_domain (this_obj), field, this_obj, &error);
+			if (!is_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return FALSE;
+			}
 			values [count++] = o;
-			o = mono_field_get_value_object (mono_object_domain (this_obj), field, that);
+			o = mono_field_get_value_object_checked (mono_object_domain (this_obj), field, that, &error);
+			if (!is_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return FALSE;
+			}
 			values [count++] = o;
 		}
 
@@ -1231,6 +1245,15 @@ ves_icall_ModuleBuilder_GetRegisteredToken (MonoReflectionModuleBuilder *mb, gui
 	mono_loader_unlock ();
 
 	return obj;
+}
+
+ICALL_EXPORT MonoReflectionModule*
+ves_icall_System_Reflection_Emit_AssemblyBuilder_InternalAddModule (MonoReflectionAssemblyBuilder *ab, MonoString *fileName)
+{
+	MonoError error;
+	MonoReflectionModule *result = mono_image_load_module_dynamic (ab, fileName, &error);
+	mono_error_set_pending_exception (&error);
+	return result;
 }
 
 static gboolean
@@ -1739,9 +1762,12 @@ ves_icall_get_method_info (MonoMethod *method, MonoMethodInfo *info)
 ICALL_EXPORT MonoArray*
 ves_icall_get_parameter_info (MonoMethod *method, MonoReflectionMethod *member)
 {
+	MonoError error;
 	MonoDomain *domain = mono_domain_get (); 
 
-	return mono_param_get_objects_internal (domain, method, member->reftype ? mono_class_from_mono_type (member->reftype->type) : NULL);
+	MonoArray *result = mono_param_get_objects_internal (domain, method, member->reftype ? mono_class_from_mono_type (member->reftype->type) : NULL, &error);
+	mono_error_set_pending_exception (&error);
+	return result;
 }
 
 ICALL_EXPORT MonoReflectionMarshalAsAttribute*
@@ -1802,6 +1828,7 @@ ves_icall_MonoField_GetParentType (MonoReflectionField *field, MonoBoolean decla
 ICALL_EXPORT MonoObject *
 ves_icall_MonoField_GetValueInternal (MonoReflectionField *field, MonoObject *obj)
 {	
+	MonoError error;
 	MonoClass *fklass = field->klass;
 	MonoClassField *cf = field->field;
 	MonoDomain *domain = mono_object_domain (field);
@@ -1815,7 +1842,9 @@ ves_icall_MonoField_GetValueInternal (MonoReflectionField *field, MonoObject *ob
 	if (mono_security_core_clr_enabled ())
 		mono_security_core_clr_ensure_reflection_access_field (cf);
 
-	return mono_field_get_value_object (domain, cf, obj);
+	MonoObject * result = mono_field_get_value_object_checked (domain, cf, obj, &error);
+	mono_error_set_pending_exception (&error);
+	return result;
 }
 
 ICALL_EXPORT void
@@ -7768,6 +7797,7 @@ mono_type_from_blob_type (MonoType *type, MonoTypeEnum blob_type, MonoType *real
 ICALL_EXPORT MonoObject*
 property_info_get_default_value (MonoReflectionProperty *property)
 {
+	MonoError error;
 	MonoType blob_type;
 	MonoProperty *prop = property->property;
 	MonoType *type = get_property_type (prop);
@@ -7786,8 +7816,9 @@ property_info_get_default_value (MonoReflectionProperty *property)
 	def_value = mono_class_get_property_default_value (prop, &def_type);
 
 	mono_type_from_blob_type (&blob_type, def_type, type);
-	o = mono_get_object_from_blob (domain, &blob_type, def_value);
+	o = mono_get_object_from_blob (domain, &blob_type, def_value, &error);
 
+	mono_error_set_pending_exception (&error);
 	return o;
 }
 

@@ -967,18 +967,26 @@ namespace Ildasm
                     lw.Write(".ctor ");
                 }
                 string sep2 = "(";
-                foreach (var constraint in par.GetGenericParameterConstraints())
+                Type[] constraints = par.GetGenericParameterConstraints();
+                CustomModifiers[] customModifiers = par.__GetGenericParameterConstraintCustomModifiers();
+                for (int j = 0; j < constraints.Length; j++)
                 {
+                    Type constraint = constraints[j];
                     lw.Write(sep2);
                     sep2 = ", ";
                     if (constraint.__IsMissing || !constraint.IsGenericType)
                     {
+                        if (!customModifiers[j].IsEmpty && !constraint.IsGenericParameter)
+                        {
+                            lw.Write(constraint.IsValueType ? "valuetype " : "class ");
+                        }
                         WriteTypeDefOrRef(lw, constraint);
                     }
                     else
                     {
                         WriteSignatureType(lw, constraint);
                     }
+                    WriteCustomModifiers(lw, customModifiers[j]);
                 }
                 if (sep2 != "(")
                 {
@@ -2635,7 +2643,10 @@ namespace Ildasm
 
         void WriteCustomAttributeImpl(LineWriter lw, CustomAttributeData ca, bool comment, int level0)
         {
-            lw.Write("instance void ");
+            lw.Write("instance ");
+            WriteSignatureType(lw, ca.Constructor.__ReturnParameter.ParameterType);
+            WriteCustomModifiers(lw, ca.Constructor.__ReturnParameter.__GetCustomModifiers());
+            lw.Write(" ");
             WriteTypeDefOrRef(lw, ca.Constructor.DeclaringType);
             lw.Write("::.ctor(");
             int level = lw.Column;

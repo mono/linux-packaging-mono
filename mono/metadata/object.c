@@ -72,15 +72,39 @@ static GENERATE_GET_CLASS_WITH_CACHE (activation_services, System.Runtime.Remoti
 #define ldstr_unlock() mono_os_mutex_unlock (&ldstr_section)
 static mono_mutex_t ldstr_section;
 
+/**
+ * mono_runtime_object_init:
+ * @this_obj: the object to initialize
+ *
+ * This function calls the zero-argument constructor (which must
+ * exist) for the given object.
+ */
 void
 mono_runtime_object_init (MonoObject *this_obj)
 {
+	MonoError error;
+	mono_runtime_object_init_checked (this_obj, &error);
+	mono_error_assert_ok (&error);
+}
+
+/**
+ * mono_runtime_object_init_checked:
+ * @this_obj: the object to initialize
+ * @error: set on error.
+ *
+ * This function calls the zero-argument constructor (which must
+ * exist) for the given object and returns TRUE on success, or FALSE
+ * on error and sets @error.
+ */
+gboolean
+mono_runtime_object_init_checked (MonoObject *this_obj, MonoError *error)
+{
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	MonoError error;
 	MonoMethod *method = NULL;
 	MonoClass *klass = this_obj->vtable->klass;
 
+	mono_error_init (error);
 	method = mono_class_get_method_from_name (klass, ".ctor", 0);
 	if (!method)
 		g_error ("Could not lookup zero argument constructor for class %s", mono_type_get_full_name (klass));
@@ -88,8 +112,8 @@ mono_runtime_object_init (MonoObject *this_obj)
 	if (method->klass->valuetype)
 		this_obj = (MonoObject *)mono_object_unbox (this_obj);
 
-	mono_runtime_invoke_checked (method, this_obj, NULL, &error);
-	mono_error_raise_exception (&error); /* FIXME don't raise here */
+	mono_runtime_invoke_checked (method, this_obj, NULL, error);
+	return is_ok (error);
 }
 
 /* The pseudo algorithm for type initialization from the spec
@@ -511,20 +535,6 @@ mono_release_type_locks (MonoInternalThread *thread)
 	mono_type_initialization_lock ();
 	g_hash_table_foreach_remove (type_initialization_hash, release_type_locks, GUINT_TO_POINTER (thread->tid));
 	mono_type_initialization_unlock ();
-}
-
-static gpointer
-default_trampoline (MonoMethod *method)
-{
-	return method;
-}
-
-static gpointer
-default_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean add_sync_wrapper)
-{
-	g_assert_not_reached ();
-
-	return NULL;
 }
 
 #ifndef DISABLE_REMOTING
@@ -3355,9 +3365,30 @@ mono_field_get_value (MonoObject *obj, MonoClassField *field, void *value)
 MonoObject *
 mono_field_get_value_object (MonoDomain *domain, MonoClassField *field, MonoObject *obj)
 {	
+	MonoError error;
+	MonoObject* result = mono_field_get_value_object_checked (domain, field, obj, &error);
+	mono_error_assert_ok (&error);
+	return result;
+}
+
+/**
+ * mono_field_get_value_object_checked:
+ * @domain: domain where the object will be created (if boxing)
+ * @field: MonoClassField describing the field to fetch information from
+ * @obj: The object instance for the field.
+ * @error: Set on error.
+ *
+ * Returns: a new MonoObject with the value from the given field.  If the
+ * field represents a value type, the value is boxed.  On error returns NULL and sets @error.
+ *
+ */
+MonoObject *
+mono_field_get_value_object_checked (MonoDomain *domain, MonoClassField *field, MonoObject *obj, MonoError *error)
+{
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	MonoError error;
+	mono_error_init (error);
+
 	MonoObject *o;
 	MonoClass *klass;
 	MonoVTable *vtable = NULL;
@@ -3366,10 +3397,9 @@ mono_field_get_value_object (MonoDomain *domain, MonoClassField *field, MonoObje
 	gboolean is_ref = FALSE;
 	gboolean is_literal = FALSE;
 	gboolean is_ptr = FALSE;
-	MonoType *type = mono_field_get_type_checked (field, &error);
+	MonoType *type = mono_field_get_type_checked (field, error);
 
-	if (!mono_error_ok (&error))
-		mono_error_raise_exception (&error);  /* FIXME don't raise here */
+	return_val_if_nok (error, NULL);
 
 	switch (type->type) {
 	case MONO_TYPE_STRING:
@@ -3415,12 +3445,12 @@ mono_field_get_value_object (MonoDomain *domain, MonoClassField *field, MonoObje
 		is_static = TRUE;
 
 		if (!is_literal) {
-			vtable = mono_class_vtable_full (domain, field->parent, &error);
-			mono_error_raise_exception (&error);  /* FIXME don't raise here */
+			vtable = mono_class_vtable_full (domain, field->parent, error);
+			return_val_if_nok (error, NULL);
 
 			if (!vtable->initialized) {
-				mono_runtime_class_init_full (vtable, &error);
-				mono_error_raise_exception (&error);  /* FIXME don't raise here */
+				mono_runtime_class_init_full (vtable, error);
+				return_val_if_nok (error, NULL);
 			}
 		}
 	} else {
@@ -3461,11 +3491,11 @@ mono_field_get_value_object (MonoDomain *domain, MonoClassField *field, MonoObje
 
 		/* MONO_TYPE_PTR is passed by value to runtime_invoke () */
 		args [0] = ptr ? *ptr : NULL;
-		args [1] = mono_type_get_object_checked (mono_domain_get (), type, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		args [1] = mono_type_get_object_checked (mono_domain_get (), type, error);
+		return_val_if_nok (error, NULL);
 
-		o = mono_runtime_invoke_checked (m, NULL, args, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		o = mono_runtime_invoke_checked (m, NULL, args, error);
+		return_val_if_nok (error, NULL);
 
 		return o;
 	}
@@ -3476,8 +3506,8 @@ mono_field_get_value_object (MonoDomain *domain, MonoClassField *field, MonoObje
 	if (mono_class_is_nullable (klass))
 		return mono_nullable_box (mono_field_get_addr (obj, vtable, field), klass);
 
-	o = mono_object_new_checked (domain, klass, &error);
-	mono_error_raise_exception (&error); /* FIXME don't raise here */
+	o = mono_object_new_checked (domain, klass, error);
+	return_val_if_nok (error, NULL);
 	v = ((gchar *) o) + sizeof (MonoObject);
 
 	if (is_literal) {
@@ -4305,6 +4335,7 @@ mono_unhandled_exception (MonoObject *exc)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
+	MonoError error;
 	MonoClassField *field;
 	MonoDomain *current_domain, *root_domain;
 	MonoObject *current_appdomain_delegate = NULL, *root_appdomain_delegate = NULL;
@@ -4318,24 +4349,27 @@ mono_unhandled_exception (MonoObject *exc)
 	current_domain = mono_domain_get ();
 	root_domain = mono_get_root_domain ();
 
-	root_appdomain_delegate = mono_field_get_value_object (root_domain, field, (MonoObject*) root_domain->domain);
-	if (current_domain != root_domain)
-		current_appdomain_delegate = mono_field_get_value_object (current_domain, field, (MonoObject*) current_domain->domain);
+	root_appdomain_delegate = mono_field_get_value_object_checked (root_domain, field, (MonoObject*) root_domain->domain, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
+	if (current_domain != root_domain) {
+		current_appdomain_delegate = mono_field_get_value_object_checked (current_domain, field, (MonoObject*) current_domain->domain, &error);
+		mono_error_raise_exception (&error); /* FIXME don't raise here */
+	}
 
-	/* set exitcode only if we will abort the process */
 	if (!current_appdomain_delegate && !root_appdomain_delegate) {
-		if ((main_thread && mono_thread_internal_current () == main_thread->internal_thread)
-		     || mono_runtime_unhandled_exception_policy_get () == MONO_UNHANDLED_POLICY_CURRENT)
-		{
-			mono_environment_exitcode_set (1);
-		}
-
 		mono_print_unhandled_exception (exc);
 	} else {
 		if (root_appdomain_delegate)
 			call_unhandled_exception_delegate (root_domain, root_appdomain_delegate, exc);
 		if (current_appdomain_delegate)
 			call_unhandled_exception_delegate (current_domain, current_appdomain_delegate, exc);
+	}
+
+	/* set exitcode only if we will abort the process */
+	if ((main_thread && mono_thread_internal_current () == main_thread->internal_thread)
+		 || mono_runtime_unhandled_exception_policy_get () == MONO_UNHANDLED_POLICY_CURRENT)
+	{
+		mono_environment_exitcode_set (1);
 	}
 }
 
