@@ -1141,7 +1141,6 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/cccheck.exe*
 %{_prefix}/lib/mono/4.5/ccrewrite.exe*
 %{_prefix}/lib/mono/4.5/cert2spc.exe*
-%{_prefix}/lib/mono/4.5/cil-stringreplacer.exe*
 %{_prefix}/lib/mono/4.5/dtd2rng.exe*
 %{_prefix}/lib/mono/4.5/dtd2xsd.exe*
 %{_prefix}/lib/mono/4.5/genxs.exe*
