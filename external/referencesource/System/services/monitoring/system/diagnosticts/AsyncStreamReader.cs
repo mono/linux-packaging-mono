@@ -293,8 +293,10 @@ namespace System.Diagnostics {
         internal void WaitUtilEOF() {
             if( eofEvent != null) {
                 eofEvent.WaitOne();
+#if !MONO
                 eofEvent.Close();
                 eofEvent = null;
+#endif
             }            
         }
     }

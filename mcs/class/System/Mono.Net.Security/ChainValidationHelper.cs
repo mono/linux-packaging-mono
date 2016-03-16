@@ -160,7 +160,7 @@ namespace Mono.Net.Security
 					certValidationCallback = new ServerCertValidationCallback (callback);
 				}
 				certSelectionCallback = Private.CallbackHelpers.MonoToInternal (settings.ClientCertificateSelectionCallback);
-				fallbackToSPM = settings.UseServicePointManagerCallback;
+				fallbackToSPM = settings.UseServicePointManagerCallback ?? stream != null;
 			}
 
 			if (stream != null) {
@@ -264,7 +264,7 @@ namespace Mono.Net.Security
 				leaf = certs [0];
 
 			if (tlsStream != null)
-				request.ServicePoint.SetServerCertificate (leaf);
+				request.ServicePoint.UpdateServerCertificate (leaf);
 
 			if (leaf == null) {
 				errors |= SslPolicyErrors.RemoteCertificateNotAvailable;
