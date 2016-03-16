@@ -6,7 +6,7 @@ OLD_CERTDIR=/usr/share/.mono
 NEW_CERTDIR=/etc/mono/certstore
 
 if [ "$1" = "upgrade" -o "$1" = "install" ] ; then
-   if [ -d "$OLD_CERTDIR" ] ; then
+   if [ -d "$OLD_CERTDIR" -a ! -L "$OLD_CERTDIR" ] ; then
      echo "Found cert store in old location, moving to $NEW_CERTDIR"
      mkdir -p $NEW_CERTDIR/
      mv $OLD_CERTDIR/* $NEW_CERTDIR/
