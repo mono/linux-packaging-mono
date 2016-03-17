@@ -25921,6 +25921,69 @@ $as_echo "#define TARGET_SPARC64 1" >>confdefs.h
 	;;
 esac
 
+case "$HOST" in
+X86)
+
+$as_echo "#define HOST_X86 1" >>confdefs.h
+
+	;;
+AMD64)
+
+$as_echo "#define HOST_AMD64 1" >>confdefs.h
+
+	;;
+ARM)
+
+$as_echo "#define HOST_ARM 1" >>confdefs.h
+
+	;;
+ARM64)
+
+$as_echo "#define HOST_ARM64 1" >>confdefs.h
+
+	;;
+POWERPC)
+
+$as_echo "#define HOST_POWERPC 1" >>confdefs.h
+
+	;;
+POWERPC64)
+
+$as_echo "#define HOST_POWERPC 1" >>confdefs.h
+
+
+$as_echo "#define HOST_POWERPC64 1" >>confdefs.h
+
+	;;
+S390X)
+
+$as_echo "#define HOST_S390X 1" >>confdefs.h
+
+	;;
+MIPS)
+
+$as_echo "#define HOST_MIPS 1" >>confdefs.h
+
+	;;
+IA64)
+
+$as_echo "#define HOST_IA64 1" >>confdefs.h
+
+	;;
+SPARC)
+
+$as_echo "#define HOST_SPARC 1" >>confdefs.h
+
+	;;
+SPARC64)
+
+$as_echo "#define HOST_SPARC64 1" >>confdefs.h
+
+	;;
+esac
+
+
+
 
 # Check whether --enable-vtune was given.
 if test "${enable_vtune+set}" = set; then :

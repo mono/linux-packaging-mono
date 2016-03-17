@@ -65651,6 +65651,38 @@
       </method>
     </type>
   </test>
+  <test name="test-async-84.cs">
+    <type name="Program">
+      <method name="System.Threading.Tasks.Task`1[S] Foo()" attrs="129">
+        <size>33</size>
+      </method>
+      <method name="System.Threading.Tasks.Task`1[System.String] DoAsync()" attrs="145">
+        <size>33</size>
+      </method>
+      <method name="Int32 Main()" attrs="145">
+        <size>46</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="Program+&lt;Foo&gt;c__async0">
+      <method name="Void MoveNext()" attrs="486">
+        <size>204</size>
+      </method>
+      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
+        <size>13</size>
+      </method>
+    </type>
+    <type name="Program+&lt;DoAsync&gt;c__async1">
+      <method name="Void MoveNext()" attrs="486">
+        <size>171</size>
+      </method>
+      <method name="Void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine)" attrs="486">
+        <size>13</size>
+      </method>
+    </type>
+  </test>
   <test name="test-cls-00.cs">
     <type name="CLSCLass_6">
       <method name="Void add_Disposed(Delegate)" attrs="2182">
@@ -67431,6 +67463,21 @@
     <type name="C">
       <method name="System.String &lt;get_Prop2&gt;m__0()" attrs="145">
         <size>13</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-expression-bodied-02.cs">
+    <type name="Cs0842ExpressionBodyGetterBug">
+      <method name="Int32 get_MyGetter()" attrs="2182">
+        <size>9</size>
+      </method>
+    </type>
+    <type name="C">
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
       </method>
     </type>
   </test>

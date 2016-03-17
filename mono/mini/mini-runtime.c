@@ -81,6 +81,7 @@
 #ifdef MONO_ARCH_LLVM_SUPPORTED
 #ifdef ENABLE_LLVM
 #include "mini-llvm-cpp.h"
+#include "llvm-jit.h"
 #endif
 #endif
 
@@ -2006,7 +2007,9 @@ mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, MonoError *er
 			MonoVTable *vtable;
 
 			mono_jit_stats.methods_lookups++;
-			vtable = mono_class_vtable (domain, method->klass);
+			vtable = mono_class_vtable_full (domain, method->klass, error);
+			if (!is_ok (error))
+				return NULL;
 			g_assert (vtable);
 			if (!mono_runtime_class_init_full (vtable, error))
 				return NULL;
@@ -2163,7 +2166,6 @@ mono_jit_free_method (MonoDomain *domain, MonoMethod *method)
 		}
 		g_slist_free (remove);
 	}
-
 	mono_domain_unlock (domain);
 
 #ifdef MONO_ARCH_HAVE_INVALIDATE_METHOD
@@ -3310,6 +3312,8 @@ mini_parse_debug_option (const char *option)
 		mono_align_small_structs = TRUE;
 	else if (!strcmp (option, "native-debugger-break"))
 		debug_options.native_debugger_break = TRUE;
+	else if (!strcmp (option, "disable_omit_fp"))
+		debug_options.disable_omit_fp = TRUE;
 	else
 		return FALSE;
 
@@ -3519,6 +3523,12 @@ runtime_invoke_info_free (gpointer value)
 }
 
 static void
+free_jit_callee_list (gpointer key, gpointer value, gpointer user_data)
+{
+	g_slist_free (value);
+}
+
+static void
 mini_free_jit_domain_info (MonoDomain *domain)
 {
 	MonoJitDomainInfo *info = domain_jit_info (domain);
@@ -3548,6 +3558,10 @@ mini_free_jit_domain_info (MonoDomain *domain)
 		mono_debugger_agent_free_domain_info (domain);
 	if (info->gsharedvt_arg_tramp_hash)
 		g_hash_table_destroy (info->gsharedvt_arg_tramp_hash);
+	if (info->llvm_jit_callees) {
+		g_hash_table_foreach (info->llvm_jit_callees, free_jit_callee_list, NULL);
+		g_hash_table_destroy (info->llvm_jit_callees);
+	}
 #ifdef ENABLE_LLVM
 	mono_llvm_free_domain_info (domain);
 #endif

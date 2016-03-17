@@ -3478,6 +3478,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	cfg->verbose_level = mini_verbose;
 	cfg->compile_aot = compile_aot;
 	cfg->full_aot = full_aot;
+	cfg->disable_omit_fp = debug_options.disable_omit_fp;
 	cfg->skip_visibility = method->skip_visibility;
 	cfg->orig_method = method;
 	cfg->gen_seq_points = debug_options.gen_seq_points_compact_data || debug_options.gen_sdb_seq_points;
@@ -4487,6 +4488,18 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 #if defined(__native_client_codegen__) && defined(__native_client__)
 			nacl_allow_target_modification (TRUE);
 #endif
+		}
+	}
+
+	/* Update llvm callees */
+	if (domain_jit_info (target_domain)->llvm_jit_callees) {
+		GSList *callees = g_hash_table_lookup (domain_jit_info (target_domain)->llvm_jit_callees, method);
+		GSList *l;
+
+		for (l = callees; l; l = l->next) {
+			gpointer *addr = (gpointer*)l->data;
+
+			*addr = code;
 		}
 	}
 
