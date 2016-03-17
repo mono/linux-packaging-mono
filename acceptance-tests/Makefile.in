@@ -1480,7 +1480,6 @@ CORECLR_TEST_CS_SRC = \
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0576/test0576.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0582/csgen.1.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0583/test583.cs	\
-	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0584/test584.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0792/test0792.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0828/test0828.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0829/test0829.cs	\
@@ -4079,6 +4078,8 @@ CORECLR_TESTLIBRARY_CS_SRC = \
 # has no entrypoint or Main method
 
 # samples (should probably be removed upstream)
+
+# this test makes no sense, the expected pattern is the English one for all cultures
 CORECLR_DISABLED_TEST_CS_SRC = $(CORECLR_PATH)/tests/src/Loader/regressions/polyrec/polyrec.cs \
 	$(CORECLR_PATH)/tests/src/managed/Compilation/Compilation.cs \
 	$(CORECLR_PATH)/tests/src/Loader/NativeLibs/FromNativePaths.cs \
@@ -4273,7 +4274,8 @@ CORECLR_DISABLED_TEST_CS_SRC = $(CORECLR_PATH)/tests/src/Loader/regressions/poly
 	$(CORECLR_PATH)/tests/src/CoreMangLib/system/delegate/threatmodel/tests/bindingtarget.cs \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/system/delegate/threatmodel/tests/testclass.cs \
 	$(CORECLR_PATH)/tests/src/hosting/samples/hosting/usercode/usercode.cs \
-	$(CORECLR_PATH)/tests/src/hosting/samples/resolveevent/usercodedependency/usercodedependency.cs
+	$(CORECLR_PATH)/tests/src/hosting/samples/resolveevent/usercodedependency/usercodedependency.cs \
+	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0584/test584.cs
 CORECLR_TEST_IL_SRC = \
 	$(CORECLR_PATH)/tests/src/JIT/BBT/Scenario4/Not-Int32.il	\
 	$(CORECLR_PATH)/tests/src/JIT/Directed/Convert/implicitConv.il	\
@@ -5772,8 +5774,9 @@ check-roslyn:
 	cd $(ROSLYN_PATH); \
 	sed -i -e 'N; s/bootstrapArg=".*\n.*"/bootstrapArg=""/g' cibuild.sh; \
 	sed -i -e 's#-xml Binaries/\$$BUILD_CONFIGURATION/xUnitResults/#-nunit $(abs_top_builddir)/acceptance-tests/TestResult-#g' cibuild.sh; \
-	./cibuild.sh --mono-path $$PREFIX/bin; \
-	sed -i -e 's/\\4.5"/\\4.5-api"/g' $$PREFIX/lib/mono/xbuild-frameworks/.NETFramework/v4.5/RedistList/FrameworkList.xml;
+	./cibuild.sh --mono-path $$PREFIX/bin || EXIT_CODE=1; \
+	sed -i -e 's/\\4.5"/\\4.5-api"/g' $$PREFIX/lib/mono/xbuild-frameworks/.NETFramework/v4.5/RedistList/FrameworkList.xml; \
+	exit $$EXIT_CODE
 clean-local-coreclr:
 	-rm -f $(CORECLR_TESTSI_CS)
 	-rm -f $(CORECLR_COREMANGLIB_TESTSI_CS)
@@ -5840,10 +5843,11 @@ GCStressTests.exe: $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
 	$(MCS) -out:$@ -debug -d:PROJECTK_BUILD $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
 check-ms-test-suite:
 	@if $(MAKE) validate-ms-test-suite RESET_VERSIONS=1; then \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance build MCS="$(MCS) -t:library -warn:1 -r:nunit.framework"; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-console.exe -nologo -exclude=MonoBug,BadTest" NUNIT_XML_RESULT=$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-conformance.xml; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug -warn:1"; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run MONO="$(RUNTIME)"; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance build MCS="$(MCS) -t:library -warn:1 -r:nunit.framework" && \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-console.exe -nologo -exclude=MonoBug,BadTest" NUNIT_XML_RESULT=$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-conformance.xml || EXIT_CODE=1; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug -warn:1" && \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run MONO="$(RUNTIME)" || EXIT_CODE=1; \
+		exit $$EXIT_CODE; \
 	else \
 		echo "*** [ms-test-suite] Getting the repository failed, you probably don't have access to this Xamarin-internal resource. Skipping."; \
 	fi

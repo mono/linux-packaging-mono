@@ -439,6 +439,7 @@ common_sources = \
 	xdebug.c			\
 	mini-llvm.h			\
 	mini-llvm-cpp.h	\
+	llvm-jit.h		\
 	alias-analysis.c	\
 	mini-cross-helpers.c \
 	arch-stubs.c		\
@@ -801,7 +802,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.5.0.262/2ed8402\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.5.0.349/3736375\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

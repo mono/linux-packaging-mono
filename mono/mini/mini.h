@@ -354,6 +354,8 @@ typedef struct
 	gpointer *memcpy_addr [17];
 	gpointer *bzero_addr [17];
 	gpointer llvm_module;
+	/* Maps MonoMethod -> GSlist of addresses */
+	GHashTable *llvm_jit_callees;
 } MonoJitDomainInfo;
 
 typedef struct {
@@ -2131,6 +2133,11 @@ typedef struct {
 	 * Translate Debugger.Break () into a native breakpoint signal
 	 */
 	gboolean native_debugger_break;
+	/*
+	 * Disabling the frame pointer emit optimization can allow debuggers to more easily
+	 * identify the stack on some platforms
+	 */
+	gboolean disable_omit_fp;
 } MonoDebugOptions;
 
 enum {

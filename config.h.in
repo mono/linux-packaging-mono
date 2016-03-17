@@ -977,8 +977,41 @@
 /* Define to 1 if you have the `_finite' function. */
 #undef HAVE__FINITE
 
+/* ... */
+#undef HOST_AMD64
+
+/* ... */
+#undef HOST_ARM
+
+/* ... */
+#undef HOST_ARM64
+
+/* ... */
+#undef HOST_IA64
+
+/* ... */
+#undef HOST_MIPS
+
+/* ... */
+#undef HOST_POWERPC
+
+/* ... */
+#undef HOST_POWERPC64
+
+/* ... */
+#undef HOST_S390X
+
+/* ... */
+#undef HOST_SPARC
+
+/* ... */
+#undef HOST_SPARC64
+
 /* Host Platform is Win32 */
 #undef HOST_WIN32
+
+/* ... */
+#undef HOST_X86
 
 /* Define as const if the declaration of iconv() needs const. */
 #undef ICONV_CONST

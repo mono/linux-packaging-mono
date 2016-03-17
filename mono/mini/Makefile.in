@@ -160,20 +160,20 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
 	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
 	debugger-agent.h debugger-agent.c xdebug.c mini-llvm.h \
-	mini-llvm-cpp.h alias-analysis.c mini-cross-helpers.c \
-	arch-stubs.c llvm-runtime.h mini-llvm.c mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
-	mini-amd64.h exceptions-amd64.c tramp-amd64.c mini-arm64.c \
-	mini-arm64.h exceptions-arm64.c tramp-arm64.c mini-arm.c \
-	mini-arm-tls.S mini-arm.h mini-arm-tls.h exceptions-arm.c \
-	tramp-arm.c mini-ia64.c mini-ia64.h exceptions-ia64.c \
-	tramp-ia64.c mini-mips.c mini-mips.h exceptions-mips.c \
-	tramp-mips.c mini-ppc.c mini-ppc.h exceptions-ppc.c \
-	tramp-ppc.c mini-s390x.c mini-s390x.h support-s390x.h \
-	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
-	exceptions-sparc.c tramp-sparc.c mini-x86.c mini-x86.h \
-	exceptions-x86.c tramp-x86.c mini-windows.c mini-darwin.c \
-	mini-posix.c
+	mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
+	mini-cross-helpers.c arch-stubs.c llvm-runtime.h mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
+	tramp-amd64.c mini-arm64.c mini-arm64.h exceptions-arm64.c \
+	tramp-arm64.c mini-arm.c mini-arm-tls.S mini-arm.h \
+	mini-arm-tls.h exceptions-arm.c tramp-arm.c mini-ia64.c \
+	mini-ia64.h exceptions-ia64.c tramp-ia64.c mini-mips.c \
+	mini-mips.h exceptions-mips.c tramp-mips.c mini-ppc.c \
+	mini-ppc.h exceptions-ppc.c tramp-ppc.c mini-s390x.c \
+	mini-s390x.h support-s390x.h exceptions-s390x.c tramp-s390x.c \
+	mini-sparc.c mini-sparc.h exceptions-sparc.c tramp-sparc.c \
+	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
+	mini-windows.c mini-darwin.c mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -284,7 +284,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	unwind.c image-writer.h image-writer.c dwarfwriter.h \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
 	debugger-agent.c xdebug.c mini-llvm.h mini-llvm-cpp.h \
-	alias-analysis.c mini-cross-helpers.c arch-stubs.c \
+	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
 	llvm-runtime.h mini-llvm.c mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
 	mini-amd64.h exceptions-amd64.c tramp-amd64.c mini-arm64.c \
@@ -1083,6 +1083,7 @@ common_sources = \
 	xdebug.c			\
 	mini-llvm.h			\
 	mini-llvm-cpp.h	\
+	llvm-jit.h		\
 	alias-analysis.c	\
 	mini-cross-helpers.c \
 	arch-stubs.c		\
@@ -3115,7 +3116,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.5.0.262/2ed8402\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.5.0.349/3736375\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
