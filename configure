@@ -1027,8 +1027,7 @@ with_malloc_mempools
 with_mcs_docs
 with_lazy_gc_thread_creation
 with_cooperative_gc
-with_checked_build
-enable_checked_build_test
+enable_checked_build
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1718,7 +1717,7 @@ Optional Features:
   --enable-icall-symbol-map Generate tables which map icall functions to their C symbols
   --enable-icall-export Export icall functions
   --disable-icall-tables Disable the runtime lookup of icalls
-  --enable-checked-build-test=LIST      drop support for LIST checked build tests. LIST is a comma-separated list from: gc, metadata, thread.
+  --enable-checked-build=LIST      To enable checked build (expensive asserts), configure with a comma-separated LIST of checked build modules and then include that same list in the environment variable MONO_CHECK_MODE at runtime. Recognized checked build modules: all, gc, metadata, thread
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1761,7 +1760,6 @@ Optional Packages:
   --with-mcs-docs=yes,no         If you want to build the documentation under mcs (defaults to yes)
   --with-lazy-gc-thread-creation=yes|no      Enable lazy runtime thread creation, embedding host must do it explicitly (defaults to no)
   --with-cooperative-gc=yes|no      Enable cooperative stop-the-world garbage collection (sgen only) (defaults to no)
-  --with-checked-build=yes|no      Enable checked build (expensive asserts)) (defaults to no)
 
 Some influential environment variables:
   CC          C compiler command
@@ -26921,53 +26919,46 @@ else
 fi
 
 
+# Check whether --enable-checked_build was given.
+if test "${enable_checked_build+set}" = set; then :
+  enableval=$enable_checked_build;
 
-# Check whether --with-checked_build was given.
-if test "${with_checked_build+set}" = set; then :
-  withval=$with_checked_build;
-	if test x$with_checked_build != xno ; then
+	if test x$enable_checked_build != x ; then
 
-$as_echo "#define CHECKED_BUILD 1" >>confdefs.h
+$as_echo "#define ENABLE_CHECKED_BUILD 1" >>confdefs.h
+
+	fi
+	for feature in `echo "$enable_checked_build" | sed -e "s/,/ /g"`; do
+		eval "mono_checked_build_test_enable_$feature='yes'"
+	done
+
+	if test "x$mono_checked_build_test_enable_all" = "xyes"; then
+		eval "mono_checked_build_test_enable_gc='yes'"
+		eval "mono_checked_build_test_enable_metadata='yes'"
+		eval "mono_checked_build_test_enable_thread='yes'"
+	fi
+
+	if test "x$mono_checked_build_test_enable_gc" = "xyes"; then
+
+$as_echo "#define ENABLE_CHECKED_BUILD_GC 1" >>confdefs.h
 
 	fi
 
-else
-  with_checked_build=no
+	if test "x$mono_checked_build_test_enable_metadata" = "xyes"; then
+
+$as_echo "#define ENABLE_CHECKED_BUILD_METADATA 1" >>confdefs.h
+
+	fi
+
+	if test "x$mono_checked_build_test_enable_thread" = "xyes"; then
+
+$as_echo "#define ENABLE_CHECKED_BUILD_THREAD 1" >>confdefs.h
+
+	fi
+
+
 fi
 
-
-if test x$with_checked_build != xno ; then
-	DISABLED_CHECKED_BUILD_TEST=none
-
-	# Check whether --enable-checked_build_test was given.
-if test "${enable_checked_build_test+set}" = set; then :
-  enableval=$enable_checked_build_test;
-		for feature in `echo "$enable_checked_build_test" | sed -e "s/,/ /g"`; do
-			eval "mono_checked_build_test_disable_$feature='yes'"
-		done
-		DISABLED_CHECKED_BUILD_TEST=$enable_checked_build_test
-
-fi
-
-
-	if test "x$mono_checked_build_test_disable_gc" = "xyes"; then
-
-$as_echo "#define DISABLE_CHECKED_BUILD_GC 1" >>confdefs.h
-
-	fi
-
-	if test "x$mono_checked_build_test_disable_metadata" = "xyes"; then
-
-$as_echo "#define DISABLE_CHECKED_BUILD_METADATA 1" >>confdefs.h
-
-	fi
-
-	if test "x$mono_checked_build_test_disable_thread" = "xyes"; then
-
-$as_echo "#define DISABLE_CHECKED_BUILD_THREAD 1" >>confdefs.h
-
-	fi
-fi
 
 ac_fn_c_check_header_mongrel "$LINENO" "malloc.h" "ac_cv_header_malloc_h" "$ac_includes_default"
 if test "x$ac_cv_header_malloc_h" = xyes; then :
