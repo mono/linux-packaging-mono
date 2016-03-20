@@ -1,8 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Enable checked build. */
-#undef CHECKED_BUILD
-
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -20,15 +17,6 @@
 
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
-
-/* Disable GC checked build */
-#undef DISABLE_CHECKED_BUILD_GC
-
-/* Disable metadata checked build */
-#undef DISABLE_CHECKED_BUILD_METADATA
-
-/* Disable thread checked build */
-#undef DISABLE_CHECKED_BUILD_THREAD
 
 /* Disable COM support */
 #undef DISABLE_COM
@@ -123,6 +111,18 @@
 
 /* Disables the verifier */
 #undef DISABLE_VERIFIER
+
+/* Enable checked build */
+#undef ENABLE_CHECKED_BUILD
+
+/* Enable GC checked build */
+#undef ENABLE_CHECKED_BUILD_GC
+
+/* Enable metadata checked build */
+#undef ENABLE_CHECKED_BUILD_METADATA
+
+/* Enable thread checked build */
+#undef ENABLE_CHECKED_BUILD_THREAD
 
 /* Enable DTrace probes */
 #undef ENABLE_DTRACE

@@ -345,7 +345,7 @@ build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 @INSTALL_4_x_TRUE@al_profile = net_4_x
 test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
-TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/dmcs $(tmpinst)/bin/al2 $(tmpinst)/bin/al
+TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@cur_dir_cmd = pwd
 @HOST_WIN32_FALSE@cur_dir_cmd = pwd
@@ -623,22 +623,10 @@ $(tmpinst)/bin/mcs: $(tmpinst)/bin/mono Makefile
 	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/build/mcs.exe"'" "$$@"' >> $@ ; \
 	chmod +x $@
 
-$(tmpinst)/bin/dmcs: $(tmpinst)/bin/mono Makefile
-	echo '#! /bin/sh' > $@ ; \
-	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
-	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/build/mcs.exe -sdk:4"'" "$$@"' >> $@ ; \
-	chmod +x $@
-
 $(tmpinst)/bin/ilasm: $(tmpinst)/bin/mono Makefile
 	echo '#! /bin/sh' > $@ ; \
 	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
 	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/ilasm/ilasm.exe"'" "$$@"' >> $@ ; \
-	chmod +x $@
-
-$(tmpinst)/bin/al2: $(tmpinst)/bin/mono Makefile
-	echo '#! /bin/sh' > $@ ; \
-	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
-	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/net_2_0/al.exe"'" "$$@"' >> $@ ; \
 	chmod +x $@
 
 $(tmpinst)/bin/al: $(tmpinst)/bin/mono Makefile
