@@ -1058,6 +1058,7 @@ Mono development tools.
 %{_bindir}/mdbrebase
 %{_bindir}/mkbundle
 %{_bindir}/mono-api-info
+%{_bindir}/mono-api-html
 %{_bindir}/mono-cil-strip
 %{_bindir}/mono-find-provides
 %{_bindir}/mono-find-requires
@@ -1155,6 +1156,7 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/mdbrebase.exe*
 %{_prefix}/lib/mono/4.5/mkbundle.exe*
 %{_prefix}/lib/mono/4.5/mono-api-info.exe*
+%{_prefix}/lib/mono/4.5/mono-api-html.exe*
 %{_prefix}/lib/mono/4.5/mono-cil-strip.exe*
 %{_prefix}/lib/mono/4.5/mono-shlib-cop.exe*
 %{_prefix}/lib/mono/4.5/mono-xmltool.exe*
