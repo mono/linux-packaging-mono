@@ -19,6 +19,7 @@ debian/tmp/usr/bin/makecert
 debian/tmp/usr/bin/mdbrebase
 debian/tmp/usr/bin/mkbundle
 debian/tmp/usr/bin/mono-api-info
+debian/tmp/usr/bin/mono-api-html
 debian/tmp/usr/bin/mono-cil-strip
 debian/tmp/usr/bin/mono-configuration-crypto
 debian/tmp/usr/bin/mono-heapviz
@@ -70,6 +71,7 @@ debian/tmp/usr/lib/mono/4.5/mkbundle.exe*
 debian/tmp/usr/lib/mono/4.5/mono-xmltool.exe*
 debian/tmp/usr/lib/mono/4.5/monolinker.exe*
 debian/tmp/usr/lib/mono/4.5/mono-api-info.exe*
+debian/tmp/usr/lib/mono/4.5/mono-api-html.exe*
 debian/tmp/usr/lib/mono/4.5/mono-cil-strip.exe*
 debian/tmp/usr/lib/mono/4.5/mono-shlib-cop.exe*
 debian/tmp/usr/lib/mono/4.5/mono-symbolicate.exe*

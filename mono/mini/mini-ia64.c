@@ -2690,16 +2690,16 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_CKFINITE:
 			/* Quiet NaN */
 			ia64_fclass_m (code, 6, 7, ins->sreg1, 0x080);
-			emit_cond_system_exception (cfg, code, "ArithmeticException", 6);
+			emit_cond_system_exception (cfg, code, "OverflowException", 6);
 			/* Signaling NaN */
 			ia64_fclass_m (code, 6, 7, ins->sreg1, 0x040);
-			emit_cond_system_exception (cfg, code, "ArithmeticException", 6);
+			emit_cond_system_exception (cfg, code, "OverflowException", 6);
 			/* Positive infinity */
 			ia64_fclass_m (code, 6, 7, ins->sreg1, 0x021);
-			emit_cond_system_exception (cfg, code, "ArithmeticException", 6);
+			emit_cond_system_exception (cfg, code, "OverflowException", 6);
 			/* Negative infinity */
 			ia64_fclass_m (code, 6, 7, ins->sreg1, 0x022);
-			emit_cond_system_exception (cfg, code, "ArithmeticException", 6);
+			emit_cond_system_exception (cfg, code, "OverflowException", 6);
 			break;
 
 		/* Calls */
@@ -4188,8 +4188,7 @@ mono_arch_emit_exceptions (MonoCompile *cfg)
 			guint8* buf;
 			guint64 exc_token_index;
 
-			exc_class = mono_class_from_name (mono_defaults.corlib, "System", patch_info->data.name);
-			g_assert (exc_class);
+			exc_class = mono_class_load_from_name (mono_defaults.corlib, "System", patch_info->data.name);
 			exc_token_index = mono_metadata_token_index (exc_class->type_token);
 			throw_ip = cfg->native_code + patch_info->ip.i;
 

@@ -221,8 +221,7 @@ mips_emit_exc_by_name(guint8 *code, const char *name)
 	gpointer addr;
 	MonoClass *exc_class;
 
-	exc_class = mono_class_from_name (mono_defaults.corlib, "System", name);
-	g_assert (exc_class);
+	exc_class = mono_class_load_from_name (mono_defaults.corlib, "System", name);
 
 	mips_load_const (code, mips_a0, exc_class->type_token);
 	addr = mono_get_throw_corlib_exception ();
@@ -4633,7 +4632,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			mips_bne (code, mips_at, mips_zero, 0);
 			mips_nop (code);
 
-			EMIT_SYSTEM_EXCEPTION_NAME("ArithmeticException");
+			EMIT_SYSTEM_EXCEPTION_NAME("OverflowException");
 			mips_patch (branch_patch, (guint32)code);
 			mips_fmovd (code, ins->dreg, ins->sreg1);
 			break;

@@ -993,9 +993,9 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_jit_parse_options@Base 4.1.0.1738
  mono_jit_set_aot_mode@Base 4.1.0.1738
  mono_jit_set_aot_only@Base 4.1.0.1738
- mono_jit_set_domain@Base 4.1.0.1738
  mono_jit_set_trace_options@Base 4.1.0.1738
  mono_jit_thread_attach@Base 4.1.0.1738
+ mono_jit_thread_detach@Base 4.5.0.17
  mono_ldstr@Base 4.1.0.1738
  mono_ldtoken@Base 4.1.0.1738
  mono_load_remote_field@Base 4.1.0.1738
@@ -1077,7 +1077,6 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_metadata_parse_param@Base 4.1.0.1738
  mono_metadata_parse_signature@Base 4.1.0.1738
  mono_metadata_parse_type@Base 4.1.0.1738
- mono_metadata_parse_type_full@Base 4.1.0.1738
  mono_metadata_parse_typedef_or_ref@Base 4.1.0.1738
  mono_metadata_properties_from_typedef@Base 4.1.0.1738
  mono_metadata_signature_alloc@Base 4.1.0.1738
@@ -1106,6 +1105,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_method_get_flags@Base 4.1.0.1738
  mono_method_get_generic_container@Base 4.1.0.1738
  mono_method_get_header@Base 4.1.0.1738
+ mono_method_get_header_checked@Base 4.5.0.149
  mono_method_get_index@Base 4.1.0.1738
  mono_method_get_last_managed@Base 4.1.0.1738
  mono_method_get_marshal_info@Base 4.1.0.1738

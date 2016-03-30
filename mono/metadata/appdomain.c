@@ -80,7 +80,7 @@
  * Changes which are already detected at runtime, like the addition
  * of icalls, do not require an increment.
  */
-#define MONO_CORLIB_VERSION 142
+#define MONO_CORLIB_VERSION 143
 
 typedef struct
 {
@@ -117,6 +117,9 @@ static char *
 get_shadow_assembly_location_base (MonoDomain *domain, MonoError *error);
 
 static MonoLoadFunc load_function = NULL;
+
+/* Lazy class loading functions */
+static GENERATE_GET_CLASS_WITH_CACHE (assembly, System.Reflection, Assembly)
 
 void
 mono_install_runtime_load (MonoLoadFunc func)
@@ -177,7 +180,9 @@ create_domain_objects (MonoDomain *domain)
 	string_vt = mono_class_vtable (domain, mono_defaults.string_class);
 	string_empty_fld = mono_class_get_field_from_name (mono_defaults.string_class, "Empty");
 	g_assert (string_empty_fld);
-	mono_field_static_set_value (string_vt, string_empty_fld, mono_string_intern (mono_string_new (domain, "")));
+	MonoString *empty_str = mono_string_intern_checked (mono_string_new (domain, ""), &error);
+	mono_error_assert_ok (&error);
+	mono_field_static_set_value (string_vt, string_empty_fld, empty_str);
 
 	/*
 	 * Create an instance early since we can't do it when there is no memory.
@@ -256,11 +261,11 @@ mono_runtime_init_checked (MonoDomain *domain, MonoThreadStartCB start_cb, MonoT
 
 	mono_thread_init (start_cb, attach_cb);
 
-	klass = mono_class_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
+	klass = mono_class_load_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
 	setup = (MonoAppDomainSetup *) mono_object_new_pinned (domain, klass, error);
 	return_if_nok (error);
 
-	klass = mono_class_from_name (mono_defaults.corlib, "System", "AppDomain");
+	klass = mono_class_load_from_name (mono_defaults.corlib, "System", "AppDomain");
 
 	ad = (MonoAppDomain *) mono_object_new_pinned (domain, klass, error);
 	return_if_nok (error);
@@ -302,18 +307,20 @@ mono_runtime_init_checked (MonoDomain *domain, MonoThreadStartCB start_cb, MonoT
 static int
 mono_get_corlib_version (void)
 {
+	MonoError error;
 	MonoClass *klass;
 	MonoClassField *field;
 	MonoObject *value;
 
-	klass = mono_class_from_name (mono_defaults.corlib, "System", "Environment");
+	klass = mono_class_load_from_name (mono_defaults.corlib, "System", "Environment");
 	mono_class_init (klass);
 	field = mono_class_get_field_from_name (klass, "mono_corlib_version");
 	if (!field)
 		return -1;
 	if (! (field->type->attrs & FIELD_ATTRIBUTE_STATIC))
 		return -1;
-	value = mono_field_get_value_object (mono_domain_get (), field, NULL);
+	value = mono_field_get_value_object_checked (mono_domain_get (), field, NULL, &error);
+	mono_error_raise_exception (&error); /* FIXME don't raise here */
 	return *(gint32*)((gchar*)value + sizeof (MonoObject));
 }
 
@@ -357,8 +364,7 @@ mono_context_init_checked (MonoDomain *domain, MonoError *error)
 
 	mono_error_init (error);
 
-	klass = mono_class_from_name (mono_defaults.corlib, "System.Runtime.Remoting.Contexts", "Context");
-
+	klass = mono_class_load_from_name (mono_defaults.corlib, "System.Runtime.Remoting.Contexts", "Context");
 	context = (MonoAppContext *) mono_object_new_pinned (domain, klass, error);
 	return_if_nok (error);
 
@@ -427,7 +433,7 @@ mono_domain_create_appdomain (char *friendly_name, char *configuration_file)
 	MonoAppDomainSetup *setup;
 	MonoClass *klass;
 
-	klass = mono_class_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
+	klass = mono_class_load_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
 	setup = (MonoAppDomainSetup *) mono_object_new_checked (mono_domain_get (), klass, &error);
 	mono_error_raise_exception (&error); /* FIXME don't raise here */
 	setup->configuration_file = configuration_file != NULL ? mono_string_new (mono_domain_get (), configuration_file) : NULL;
@@ -467,7 +473,7 @@ copy_app_domain_setup (MonoDomain *domain, MonoAppDomainSetup *setup, MonoError 
 	mono_error_init (error);
 
 	caller_domain = mono_domain_get ();
-	ads_class = mono_class_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
+	ads_class = mono_class_load_from_name (mono_defaults.corlib, "System", "AppDomainSetup");
 
 	copy = (MonoAppDomainSetup*)mono_object_new_checked (domain, ads_class, error);
 	return_val_if_nok (error, NULL);
@@ -510,7 +516,7 @@ mono_domain_create_appdomain_internal (char *friendly_name, MonoAppDomainSetup *
 
 	mono_error_init (error);
 
-	adclass = mono_class_from_name (mono_defaults.corlib, "System", "AppDomain");
+	adclass = mono_class_load_from_name (mono_defaults.corlib, "System", "AppDomain");
 
 	/* FIXME: pin all those objects */
 	data = mono_domain_create();
@@ -957,17 +963,12 @@ ves_icall_System_AppDomain_GetAssemblies (MonoAppDomain *ad, MonoBoolean refonly
 	MonoError error;
 	MonoDomain *domain = ad->data; 
 	MonoAssembly* ass;
-	static MonoClass *System_Reflection_Assembly;
 	MonoArray *res;
 	GSList *tmp;
 	int i;
 	GPtrArray *assemblies;
 
 	mono_error_init (&error);
-	
-	if (!System_Reflection_Assembly)
-		System_Reflection_Assembly = mono_class_from_name (
-			mono_defaults.corlib, "System.Reflection", "Assembly");
 
 	/* 
 	 * Make a copy of the list of assemblies because we can't hold the assemblies
@@ -986,7 +987,7 @@ ves_icall_System_AppDomain_GetAssemblies (MonoAppDomain *ad, MonoBoolean refonly
 	}
 	mono_domain_assemblies_unlock (domain);
 
-	res = mono_array_new (domain, System_Reflection_Assembly, assemblies->len);
+	res = mono_array_new (domain, mono_class_get_assembly_class (), assemblies->len);
 	for (i = 0; i < assemblies->len; ++i) {
 		ass = (MonoAssembly *)g_ptr_array_index (assemblies, i);
 		MonoReflectionAssembly *ass_obj = mono_assembly_get_object_checked (domain, ass, &error);

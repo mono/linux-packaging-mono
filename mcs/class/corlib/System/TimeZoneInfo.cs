@@ -295,7 +295,8 @@ namespace System
 			var Istart = 0;
 			while (Istart < str.Length && !char.IsLetterOrDigit(str[Istart])) Istart++;
 			var Iend = str.Length - 1;
-			while (Iend > Istart && !char.IsLetterOrDigit(str[Iend])) Iend--;
+			while (Iend > Istart && !char.IsLetterOrDigit(str[Iend]) && str[Iend] != ')') // zone name can include parentheses like "Central Standard Time (Mexico)"
+				Iend--;
 			
 			return str.Substring (Istart, Iend-Istart+1);
 		}
@@ -736,7 +737,8 @@ namespace System
 
 		public TimeSpan GetUtcOffset (DateTimeOffset dateTimeOffset)
 		{
-			throw new NotImplementedException ();
+			bool isDST;
+			return GetUtcOffset (dateTimeOffset.UtcDateTime, out isDST);
 		}
 
 		private TimeSpan GetUtcOffset (DateTime dateTime, out bool isDST)

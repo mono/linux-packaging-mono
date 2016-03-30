@@ -160,20 +160,20 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
 	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
 	debugger-agent.h debugger-agent.c xdebug.c mini-llvm.h \
-	mini-llvm-cpp.h alias-analysis.c mini-cross-helpers.c \
-	arch-stubs.c llvm-runtime.h mini-llvm.c mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
-	mini-amd64.h exceptions-amd64.c tramp-amd64.c mini-arm64.c \
-	mini-arm64.h exceptions-arm64.c tramp-arm64.c mini-arm.c \
-	mini-arm-tls.S mini-arm.h mini-arm-tls.h exceptions-arm.c \
-	tramp-arm.c mini-ia64.c mini-ia64.h exceptions-ia64.c \
-	tramp-ia64.c mini-mips.c mini-mips.h exceptions-mips.c \
-	tramp-mips.c mini-ppc.c mini-ppc.h exceptions-ppc.c \
-	tramp-ppc.c mini-s390x.c mini-s390x.h support-s390x.h \
-	exceptions-s390x.c tramp-s390x.c mini-sparc.c mini-sparc.h \
-	exceptions-sparc.c tramp-sparc.c mini-x86.c mini-x86.h \
-	exceptions-x86.c tramp-x86.c mini-windows.c mini-darwin.c \
-	mini-posix.c
+	mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
+	mini-cross-helpers.c arch-stubs.c llvm-runtime.h mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
+	tramp-amd64.c mini-arm64.c mini-arm64.h exceptions-arm64.c \
+	tramp-arm64.c mini-arm.c mini-arm-tls.S mini-arm.h \
+	mini-arm-tls.h exceptions-arm.c tramp-arm.c mini-ia64.c \
+	mini-ia64.h exceptions-ia64.c tramp-ia64.c mini-mips.c \
+	mini-mips.h exceptions-mips.c tramp-mips.c mini-ppc.c \
+	mini-ppc.h exceptions-ppc.c tramp-ppc.c mini-s390x.c \
+	mini-s390x.h support-s390x.h exceptions-s390x.c tramp-s390x.c \
+	mini-sparc.c mini-sparc.h exceptions-sparc.c tramp-sparc.c \
+	mini-x86.c mini-x86.h exceptions-x86.c tramp-x86.c \
+	mini-windows.c mini-darwin.c mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -284,7 +284,7 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	unwind.c image-writer.h image-writer.c dwarfwriter.h \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
 	debugger-agent.c xdebug.c mini-llvm.h mini-llvm-cpp.h \
-	alias-analysis.c mini-cross-helpers.c arch-stubs.c \
+	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
 	llvm-runtime.h mini-llvm.c mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
 	mini-amd64.h exceptions-amd64.c tramp-amd64.c mini-arm64.c \
@@ -792,6 +792,9 @@ top_srcdir = @top_srcdir@
 count = 100000
 mtest = for_loop
 monodir = $(top_builddir)
+mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
+@HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
+@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
 
 # This is needed for automake dependency generation
 libgc_libs = $(monodir)/libgc/libmonogc.la
@@ -827,7 +830,7 @@ sgen_static_libs = \
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 RUNTIME_EXECUTABLE = $(if $(BOEHM),$(top_builddir)/mono/mini/mono-boehm,$(top_builddir)/runtime/mono-wrapper)
 MINI_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE)
-RUNTIME_AOTCHECK = MONO_PATH=$(CLASS):. $(RUNTIME_EXECUTABLE)
+RUNTIME_AOTCHECK = MONO_PATH="$(CLASS)$(PLATFORM_PATH_SEPARATOR)." $(RUNTIME_EXECUTABLE)
 MCS = $(MINI_RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -nowarn:0162
 ILASM = $(MINI_RUNTIME) $(CLASS)/ilasm.exe
 AM_CFLAGS = \
@@ -1083,6 +1086,7 @@ common_sources = \
 	xdebug.c			\
 	mini-llvm.h			\
 	mini-llvm-cpp.h	\
+	llvm-jit.h		\
 	alias-analysis.c	\
 	mini-cross-helpers.c \
 	arch-stubs.c		\
@@ -3055,13 +3059,13 @@ gsharedvtcheck:
 	$(MAKE) fullaotcheck GSHAREDVT=1
 
 # This currently only works on amd64/arm
-fullaotcheck: mono $(fullaot_regtests)
+fullaotcheck: $(mono) $(fullaot_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
 	$(MAKE) fullaot-libs AOT_FLAGS=full GSHAREDVT=$(GSHAREDVT)
 	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot=full fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
-	ln -s $$PWD/mono fullaot-tmp/
+	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) fullaot-tmp/
 	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --full-aot fullaot-tmp/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
 
 # This can run in parallel
@@ -3070,7 +3074,7 @@ fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
 fullaot-tmp/%.dylib: $(CLASS)/%
 	cp $(CLASS)/$* fullaot-tmp/
 	mkdir fullaot-tmp/$*-tmp
-	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper $(if $(GSHAREDVT),-O=gsharedvt) --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
+	MONO_PATH="fullaot-tmp/$(PLATFORM_PATH_SEPARATOR)$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(if $(GSHAREDVT),-O=gsharedvt) --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
 	rm -rf fullaot-tmp/$*-tmp
 
 llvmfullaotcheck:
@@ -3115,7 +3119,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.3.3.744/051f496\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.5.0.421/c5789eb\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

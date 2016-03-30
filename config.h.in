@@ -1,8 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Enable checked build. */
-#undef CHECKED_BUILD
-
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -21,15 +18,6 @@
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
 
-/* Disable GC checked build */
-#undef DISABLE_CHECKED_BUILD_GC
-
-/* Disable metadata checked build */
-#undef DISABLE_CHECKED_BUILD_METADATA
-
-/* Disable thread checked build */
-#undef DISABLE_CHECKED_BUILD_THREAD
-
 /* Disable COM support */
 #undef DISABLE_COM
 
@@ -44,6 +32,9 @@
 
 /* Disable generics support */
 #undef DISABLE_GENERICS
+
+/* ... */
+#undef DISABLE_HW_TRAPS
 
 /* Icall tables disabled */
 #undef DISABLE_ICALL_TABLES
@@ -120,6 +111,18 @@
 
 /* Disables the verifier */
 #undef DISABLE_VERIFIER
+
+/* Enable checked build */
+#undef ENABLE_CHECKED_BUILD
+
+/* Enable GC checked build */
+#undef ENABLE_CHECKED_BUILD_GC
+
+/* Enable metadata checked build */
+#undef ENABLE_CHECKED_BUILD_METADATA
+
+/* Enable thread checked build */
+#undef ENABLE_CHECKED_BUILD_THREAD
 
 /* Enable DTrace probes */
 #undef ENABLE_DTRACE
@@ -599,6 +602,9 @@
 /* Define to 1 if you have the `remap_file_pages' function. */
 #undef HAVE_REMAP_FILE_PAGES
 
+/* Define to 1 if you have the `sched_getaffinity' function. */
+#undef HAVE_SCHED_GETAFFINITY
+
 /* Define to 1 if you have the `sched_getcpu' function. */
 #undef HAVE_SCHED_GETCPU
 
@@ -971,8 +977,41 @@
 /* Define to 1 if you have the `_finite' function. */
 #undef HAVE__FINITE
 
+/* ... */
+#undef HOST_AMD64
+
+/* ... */
+#undef HOST_ARM
+
+/* ... */
+#undef HOST_ARM64
+
+/* ... */
+#undef HOST_IA64
+
+/* ... */
+#undef HOST_MIPS
+
+/* ... */
+#undef HOST_POWERPC
+
+/* ... */
+#undef HOST_POWERPC64
+
+/* ... */
+#undef HOST_S390X
+
+/* ... */
+#undef HOST_SPARC
+
+/* ... */
+#undef HOST_SPARC64
+
 /* Host Platform is Win32 */
 #undef HOST_WIN32
+
+/* ... */
+#undef HOST_X86
 
 /* Define as const if the declaration of iconv() needs const. */
 #undef ICONV_CONST

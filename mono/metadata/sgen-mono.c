@@ -1198,14 +1198,12 @@ create_allocator (int atype, gboolean slowpath)
 		/* catch */
 		clause->flags = MONO_EXCEPTION_CLAUSE_NONE;
 		clause->try_len = mono_mb_get_pos (mb) - clause->try_offset;
-		clause->data.catch_class = mono_class_from_name (mono_defaults.corlib,
+		clause->data.catch_class = mono_class_load_from_name (mono_defaults.corlib,
 				"System", "OverflowException");
-		g_assert (clause->data.catch_class);
 		clause->handler_offset = mono_mb_get_label (mb);
 
-		oom_exc_class = mono_class_from_name (mono_defaults.corlib,
+		oom_exc_class = mono_class_load_from_name (mono_defaults.corlib,
 				"System", "OutOfMemoryException");
-		g_assert (oom_exc_class);
 		ctor = mono_class_get_method_from_name (oom_exc_class, ".ctor", 0);
 		g_assert (ctor);
 
@@ -1390,11 +1388,12 @@ create_allocator (int atype, gboolean slowpath)
 	info->d.alloc.gc_name = "sgen";
 	info->d.alloc.alloc_type = atype;
 
+#ifndef DISABLE_JIT
+	mb->init_locals = FALSE;
+#endif
+
 	res = mono_mb_create (mb, csig, 8, info);
 	mono_mb_free (mb);
-#ifndef DISABLE_JIT
-	mono_method_get_header (res)->init_locals = FALSE;
-#endif
 
 
 	return res;
@@ -2343,8 +2342,6 @@ mono_gc_scan_object (void *obj, void *gc_data)
 void
 sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean precise, ScanCopyContext ctx)
 {
-	SgenThreadInfo *info;
-
 	scan_area_arg_start = start_nursery;
 	scan_area_arg_end = end_nursery;
 
@@ -2398,7 +2395,7 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 				}
 			}
 		}
-	} END_FOREACH_THREAD
+	} FOREACH_THREAD_END
 }
 
 /*

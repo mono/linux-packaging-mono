@@ -3626,7 +3626,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			sparc_srl_imm (code, sparc_o7, 4, sparc_o7);
 			sparc_and_imm (code, FALSE, sparc_o7, 2047, sparc_o7);
 			sparc_cmp_imm (code, sparc_o7, 2047);
-			EMIT_COND_SYSTEM_EXCEPTION (ins, sparc_be, "ArithmeticException");
+			EMIT_COND_SYSTEM_EXCEPTION (ins, sparc_be, "OverflowException");
 #ifdef SPARCV9
 			sparc_fmovd (code, ins->sreg1, ins->dreg);
 #else
@@ -4208,8 +4208,7 @@ mono_arch_emit_exceptions (MonoCompile *cfg)
 
 			sparc_patch ((guint32*)(cfg->native_code + patch_info->ip.i), code);
 
-			exc_class = mono_class_from_name (mono_defaults.corlib, "System", patch_info->data.name);
-			g_assert (exc_class);
+			exc_class = mono_class_load_from_name (mono_defaults.corlib, "System", patch_info->data.name);
 			type_idx = exc_class->type_token - MONO_TOKEN_TYPE_DEF;
 			throw_ip = patch_info->ip.i;
 
