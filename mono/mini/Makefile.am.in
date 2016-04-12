@@ -801,7 +801,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.4.0.40/f8474c4\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.4.0.122/a3fabf1\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
