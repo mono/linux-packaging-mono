@@ -2400,6 +2400,7 @@ mono_arch_emit_call (MonoCompile *cfg, MonoCallInst *call)
 					} else {
 						int creg;
 
+						cfg->param_area = MAX (cfg->param_area, 8);
 						MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORER4_MEMBASE_REG, ARMREG_SP, (cfg->param_area - 8), in->dreg);
 						creg = mono_alloc_ireg (cfg);
 						MONO_EMIT_NEW_LOAD_MEMBASE_OP (cfg, OP_LOAD_MEMBASE, creg, ARMREG_SP, (cfg->param_area - 8));
@@ -2421,6 +2422,7 @@ mono_arch_emit_call (MonoCompile *cfg, MonoCallInst *call)
 					} else {
 						int creg;
 
+						cfg->param_area = MAX (cfg->param_area, 8);
 						MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORER8_MEMBASE_REG, ARMREG_SP, (cfg->param_area - 8), in->dreg);
 						creg = mono_alloc_ireg (cfg);
 						MONO_EMIT_NEW_LOAD_MEMBASE_OP (cfg, OP_LOAD_MEMBASE, creg, ARMREG_SP, (cfg->param_area - 8));
@@ -2492,6 +2494,7 @@ mono_arch_emit_call (MonoCompile *cfg, MonoCallInst *call)
 
 				/* This should work for soft-float as well */
 
+				cfg->param_area = MAX (cfg->param_area, 8);
 				MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORER8_MEMBASE_REG, ARMREG_SP, (cfg->param_area - 8), in->dreg);
 				creg = mono_alloc_ireg (cfg);
 				mono_call_inst_add_outarg_reg (cfg, call, creg, ARMREG_R3, FALSE);
@@ -6592,7 +6595,7 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 		code = mono_arm_load_jumptable_entry_addr (code, jte, ARMREG_LR);
 #else
 		ARM_MOV_REG_REG (code, ARMREG_LR, ARMREG_PC);
-		ARM_B (code, 2);
+		ARM_B (code, 1);
 		*(gpointer*)code = &single_step_tramp;
 		code += 4;
 		*(gpointer*)code = breakpoint_tramp;
@@ -6845,7 +6848,7 @@ mono_arch_emit_exceptions (MonoCompile *cfg)
 			patch_info->ip.i = code - cfg->native_code;
 			ARM_BL (code, 0);
 			cfg->thunk_area += THUNK_SIZE;
-			*(guint32*)(gpointer)code = exc_class->type_token;
+			*(guint32*)(gpointer)code = exc_class->type_token - MONO_TOKEN_TYPE_DEF;
 			code += 4;
 #endif
 			break;

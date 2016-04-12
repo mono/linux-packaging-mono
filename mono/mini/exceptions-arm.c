@@ -165,12 +165,13 @@ mono_arm_throw_exception (MonoObject *exc, mgreg_t pc, mgreg_t sp, mgreg_t *int_
 }
 
 void
-mono_arm_throw_exception_by_token (guint32 type_token, mgreg_t pc, mgreg_t sp, mgreg_t *int_regs, gdouble *fp_regs)
+mono_arm_throw_exception_by_token (guint32 ex_token_index, mgreg_t pc, mgreg_t sp, mgreg_t *int_regs, gdouble *fp_regs)
 {
+	guint32 ex_token = MONO_TOKEN_TYPE_DEF | ex_token_index;
 	/* Clear thumb bit */
 	pc &= ~1;
 
-	mono_arm_throw_exception ((MonoObject*)mono_exception_from_token (mono_defaults.corlib, type_token), pc, sp, int_regs, fp_regs);
+	mono_arm_throw_exception ((MonoObject*)mono_exception_from_token (mono_defaults.corlib, ex_token), pc, sp, int_regs, fp_regs);
 }
 
 void
@@ -245,9 +246,15 @@ get_throw_trampoline (int size, gboolean corlib, gboolean rethrow, gboolean llvm
 	/* exc is already in place in r0 */
 	if (corlib) {
 		/* The caller ip is already in R1 */
-		if (llvm)
-			/* Negate the ip adjustment done in mono_arm_throw_exception */
-			ARM_ADD_REG_IMM8 (code, ARMREG_R1, ARMREG_R1, 4);
+		if (llvm) {
+			/*
+			 * The address passed by llvm might point to before the call,
+			 * thus outside the eh range recorded by llvm. Use the return
+			 * address instead.
+			 * FIXME: Do this on more platforms.
+			 */
+			ARM_MOV_REG_REG (code, ARMREG_R1, ARMREG_LR); /* caller ip */
+		}
 	} else {
 		ARM_MOV_REG_REG (code, ARMREG_R1, ARMREG_LR); /* caller ip */
 	}

@@ -5087,10 +5087,8 @@ main ()
 {
 
 volatile unsigned int foo = 0;
-int main(int argc, char** argv) {
-    unsigned int r1 = __sync_bool_compare_and_swap(&foo, 0, 1);
-    return 0;
-}
+unsigned int r1 = __sync_bool_compare_and_swap(&foo, 0, 1);
+return 0;
 
   ;
   return 0;
