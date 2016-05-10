@@ -214,7 +214,7 @@ binary-indep: build-stamp install-stamp
 	debian/dh_clifixperms -i
 	DH_AUTOSCRIPTDIR=$(CURDIR)/debian debian/dh_monoaot -i
 	dh_installdeb -i
-	debian/dh_makeclilibs -i -m 1.0 $(DH_INTERNAL_MONO_PARAM)
+	debian/dh_makeclilibs -i -X/*-api/ -X/Facades/ -m 1.0 $(DH_INTERNAL_MONO_PARAM)
 	debian/dh_makeclilibs -p libmono-cairo4.0-cil -m 3.2.1 $(DH_INTERNAL_MONO_PARAM)
 	debian/dh_makeclilibs -p libmono-cecil-private-cil -m $(UPVERSION) $(DH_INTERNAL_MONO_PARAM)
 	debian/dh_makeclilibs -p libmono-compilerservices-symbolwriter4.0-cil -m 3.6.0 $(DH_INTERNAL_MONO_PARAM)
