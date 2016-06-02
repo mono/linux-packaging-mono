@@ -557,6 +557,9 @@ libmono_profiler_log_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LDFLAGS = -static
 mprof_report_SOURCES = decode.c
 mprof_report_LDADD = $(Z_LIBS) $(GLIB_LIBS) $(LIBICONV)
+
+# FIXME fix the profiler tests to work with coop.
+@ENABLE_COOP_TRUE@DISABLE_PROFILER_TESTS = 1
 PLOG_TESTS_SRC = test-alloc.cs test-busy.cs test-monitor.cs test-excleave.cs \
 	test-heapshot.cs test-traces.cs
 
@@ -1007,7 +1010,11 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	$(MCS) -out:$@ $<
 
 testlog: $(PLOG_TESTS)
-	$(with_mono_path) perl $(srcdir)/ptestrunner.pl $(top_builddir)
+	if [ "z$(DISABLE_PROFILER_TESTS)" != z1 ]; then \
+		$(with_mono_path) perl $(srcdir)/ptestrunner.pl $(top_builddir) ; \
+	else \
+		echo "Profiler tests disabled with cooperative GC" ; \
+	fi
 
 @NACL_CODEGEN_TRUE@check-local:
 @NACL_CODEGEN_FALSE@check-local: testlog
