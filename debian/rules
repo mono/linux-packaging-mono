@@ -40,16 +40,19 @@ endif
 ifeq ($(DEB_BUILD_ARCH), armel)
 	CONF_FLAGS += --with-fpu=NONE
 endif
-ifeq ($(DEB_BUILD_ARCH), powerpc)
-	# libgc with parallel mark FTBFS on ppc
-	CONF_FLAGS += --disable-parallel-mark
-endif
 
 ifneq (,$(findstring $(DEB_BUILD_ARCH),$(DEB_MONO_SGEN_ARCHS)))
 	CONF_FLAGS += --with-sgen=yes
 else
 	CONF_FLAGS += --with-sgen=no
 endif
+
+ifeq ($(DEB_BUILD_ARCH), arm64)
+	MONO_BOEHM_TEST = true
+	CONF_FLAGS += --disable-boehm
+	SKIP_LIBGC = true
+endif
+
 
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
@@ -88,7 +91,9 @@ build: build-stamp
 build-stamp: configure-stamp
 	dh_testdir
 	cd eglib && $(MAKE) $(EGLIB_MAKE_FLAGS)
+ifndef SKIP_LIBGC
 	cd libgc && $(MAKE) $(LIBGC_MAKE_FLAGS)
+endif
 	cd mono && $(MAKE) $(MONO_MAKE_FLAGS)
 	LC_ALL=C $(MAKE) $(MAKE_FLAGS) EXTERNAL_MCS=false EXTERNAL_MONO=false
 
@@ -290,10 +295,20 @@ binary-arch: build-stamp install-stamp
 	install -D -m 644 -o root -g root debian/cli.binfmt \
 	  debian/mono-runtime/usr/share/binfmts/cli
 
+ifdef SKIP_LIBGC
+	ln -s libmonosgen-2.0.a debian/tmp/usr/lib/libmono-2.0.a
+	ln -s libmonosgen-2.0.so debian/tmp/usr/lib/libmono-2.0.so
+	ln -s libmonosgen-2.0.so.1 debian/tmp/usr/lib/libmono-2.0.so.1
+	ln -s libmonosgen-2.0.so.1.0.0 debian/tmp/usr/lib/libmono-2.0.so.1.0.0
+endif
 	dh_install -s
+ifndef SKIP_LIBGC
+	install -m 644 debian/tmp/usr/bin/pedump debian/mono-utils/usr/bin/
+endif
 	dh_link -s
 	dh_installchangelogs -s -X ChangeLog
 	dh_installchangelogs -pmono-runtime
+	dh_installchangelogs -pmono-jay $(CURDIR)/mcs/jay/ChangeLog
 	dh_installdocs -s
 	dh_installman -s
 	dh_installexamples -s
@@ -305,10 +320,14 @@ binary-arch: build-stamp install-stamp
 	dh_compress -s -Xskeleton.cs
 
 	dh_fixperms -s
+ifndef SKIP_LIBGC
 	dpkg-gensymbols -plibmonoboehm-2.0-1 -edebian/tmp/usr/lib/libmonoboehm-2.0.so.1 -c4
+endif
 	dpkg-gensymbols -plibmonosgen-2.0-1 -edebian/tmp/usr/lib/libmonosgen-2.0.so.1 -c4
 	dh_makeshlibs -s -V
+ifndef SKIP_LIBGC
 	dh_makeshlibs -plibmonoboehm-2.0-1 -V 'libmonoboehm-2.0-1 (>= $(UPVERSION))'
+endif
 	dh_makeshlibs -plibmonosgen-2.0-1 -V 'libmonosgen-2.0-1 (>= $(UPVERSION))'
 	dh_installdeb -s
 	dh_shlibdeps -s -Xlibmono-profiler-cov -ldebian/libmonoboehm-2.0-1/usr/lib -ldebian/libmonosgen-2.0-1/usr/lib
@@ -340,6 +359,7 @@ get-orig-source:
 	rm -rf $(TARBALL_DIR)/external/Lucene.Net/lib/
 	find $(TARBALL_DIR) -name "*.dll" -not -path "$(TARBALL_DIR)/mcs/class/lib/monolite/*" -print -delete
 	find $(TARBALL_DIR) -name "*.exe" -not -path "$(TARBALL_DIR)/mcs/class/lib/monolite/*" -print -delete
+	find $(TARBALL_DIR) -name "*.chm" -not -path "$(TARBALL_DIR)/mcs/class/lib/monolite/*" -print -delete
 	find $(TARBALL_DIR)/external/ -name ".git" -not -path "$(TARBALL_DIR)/mcs/class/lib/monolite/*" -print -delete
 	mv $(TARBALL_DIR) $(TARBALL_DIR)+dfsg
 	tar -czf $(DEB_SOURCE_NAME)_$(UPVERSION)+dfsg.orig.tar.gz $(TARBALL_DIR)+dfsg

@@ -17,14 +17,14 @@ Build-Depends: debhelper (>= 7),
 	zlib1g-dev,
 	autoconf,
 	automake
-Standards-Version: 3.9.3
+Standards-Version: 3.9.6
 Homepage: http://www.mono-project.com/
 Vcs-Git: git://git.debian.org/git/pkg-mono/packages/mono.git
 Vcs-Browser: http://git.debian.org/?p=pkg-mono/packages/mono.git
 
 Package: mono-runtime-common
 Provides: cli-runtime, cli-virtual-machine
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Replaces: mono-common (<< 2.4), mono-jit (<< 2.4), libmono0 (<< 2.4), mono-runtime (<< 3.2.1)
 Conflicts: mono-common (<< 2.4),
            mono-jit (<< 2.4),
@@ -51,7 +51,7 @@ Description: Mono runtime - common files
  MIPS architectures. Optionally this package configures BINFMT support.
 
 Package: mono-runtime
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          mono-runtime-sgen (= ${binary:Version})
@@ -71,7 +71,7 @@ Description: Mono runtime - default version
  This package installs this architecture's default runtime version.
 
 Package: mono-runtime-sgen
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          mono-runtime-common (= ${binary:Version})
@@ -93,7 +93,7 @@ Description: Mono runtime - SGen
  collector.
 
 Package: mono-runtime-boehm
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${shlibs:Depends},
          ${misc:Depends},
          mono-runtime-common (= ${binary:Version})
@@ -115,10 +115,10 @@ Description: Mono runtime - Boehm
 Package: mono-runtime-dbg
 Priority: extra
 Section: debug
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Replaces: mono-jit-dbg (<< 2.4)
 Conflicts: mono-jit-dbg (<< 2.4)
-Depends: ${misc:Depends}, mono-runtime-sgen (= ${binary:Version}), mono-runtime-boehm (= ${binary:Version})
+Depends: ${misc:Depends}, mono-runtime-sgen (= ${binary:Version}), mono-runtime-boehm (= ${binary:Version}) [amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x]
 Recommends: gdb
 Description: Mono runtime, debugging symbols
  Mono is a platform for running and developing applications based on the
@@ -131,9 +131,9 @@ Description: Mono runtime, debugging symbols
 
 Package: mono-utils
 Provides: cil-disassembler
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Replaces: mono-mcs (<= 1.1.6-4)
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmonoboehm-2.0-1 (= ${binary:Version}),
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmonoboehm-2.0-1 (= ${binary:Version}) [amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x],
  libmono-corlib4.5-cil (= ${source:Version})
 Description: Mono utilities
  Mono is a platform for running and developing applications based on the
@@ -159,10 +159,10 @@ Description: Common CA certificates (Mono keystore)
  Mono keystore.
 
 Package: mono-complete
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${misc:Depends},
          mono-runtime (= ${binary:Version}),
-         mono-runtime-sgen (= ${binary:Version}) [amd64 armel armhf i386 kfreebsd-amd64 kfreebsd-i386 s390x],
+         mono-runtime-sgen (= ${binary:Version}) [amd64 armel arm64 armhf i386 kfreebsd-amd64 kfreebsd-i386 s390x],
          libmono-2.0-1 (= ${binary:Version}),
          libmono-profiler (= ${binary:Version}),
          mono-utils (= ${binary:Version}),
@@ -193,10 +193,10 @@ Description: complete Mono runtime, development tools and all libraries
  You should build-depend on cli-common-dev and the needed libraries instead.
 
 Package: libmono-2.0-1
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Replaces: libmono-dev (<= 1.1.6-4)
 Conflicts: mono-utils (<< 1.2.3.1-4)
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmonoboehm-2.0-1 (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmonoboehm-2.0-1 (= ${binary:Version}) [amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x], libmonosgen-2.0-1 (= ${binary:Version}) [arm64]
 Description: Mono JIT library (Default version)
  Shared library for Mono, used for embedding/hosting of the JIT.
  .
@@ -207,8 +207,8 @@ Description: Mono JIT library (Default version)
  bytecode (aka assemblies), and a class library.
 
 Package: libmono-2.0-dev
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
-Depends: ${misc:Depends}, libmonosgen-2.0-dev (= ${binary:Version})
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
+Depends: ${misc:Depends}, libmonoboehm-2.0-dev (= ${binary:Version}) [amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x], libmonosgen-2.0-dev (= ${binary:Version}) [arm64]
 Description: Mono JIT library - Development files (Default version)
  Header files and static libraries for libmono-2.0.
  .
@@ -219,7 +219,7 @@ Description: Mono JIT library - Development files (Default version)
  bytecode (aka assemblies), and a class library.
 
 Package: libmonosgen-2.0-1
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Mono JIT library (SGen GC)
  Shared library for Mono, used for embedding/hosting of the JIT.
@@ -233,7 +233,7 @@ Description: Mono JIT library (SGen GC)
 Package: libmonosgen-2.0-1-dbg
 Priority: extra
 Section: debug
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${misc:Depends}, libmonosgen-2.0-1 (= ${binary:Version})
 Recommends: gdb
 Description: Mono JIT library, debugging symbols (SGen GC)
@@ -246,7 +246,7 @@ Description: Mono JIT library, debugging symbols (SGen GC)
  bytecode (aka assemblies), and a class library.
 
 Package: libmonosgen-2.0-dev
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${misc:Depends}, libmonosgen-2.0-1 (= ${binary:Version})
 Description: Mono JIT library - Development files (SGen GC)
  Header files and static libraries for libmonosgen-2.0.
@@ -258,7 +258,7 @@ Description: Mono JIT library - Development files (SGen GC)
  bytecode (aka assemblies), and a class library.
 
 Package: libmonoboehm-2.0-1
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Mono JIT library (Boehm GC)
  Shared library for Mono, used for embedding/hosting of the JIT.
@@ -272,7 +272,7 @@ Description: Mono JIT library (Boehm GC)
 Package: libmonoboehm-2.0-1-dbg
 Priority: extra
 Section: debug
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${misc:Depends}, libmonoboehm-2.0-1 (= ${binary:Version})
 Recommends: gdb
 Description: Mono JIT library, debugging symbols (Boehm GC)
@@ -285,7 +285,7 @@ Description: Mono JIT library, debugging symbols (Boehm GC)
  bytecode (aka assemblies), and a class library.
 
 Package: libmonoboehm-2.0-dev
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${misc:Depends}, libmonoboehm-2.0-1 (= ${binary:Version})
 Description: Mono JIT library - Development files (Boehm GC)
  Header files and static libraries for libmonoboehm-2.0.
@@ -297,7 +297,7 @@ Description: Mono JIT library - Development files (Boehm GC)
  bytecode (aka assemblies), and a class library.
 
 Package: libmono-profiler
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Replaces: mono-runtime (<< 2.4.2.3)
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Mono profiler libraries
@@ -730,7 +730,7 @@ Depends: ${misc:Depends},
          libmono-i18n-other4.0-cil (= ${source:Version}),
          libmono-i18n-rare4.0-cil (= ${source:Version}),
          libmono-i18n-west4.0-cil (= ${source:Version}),
-Description: Mono I18N libraries (for CLI 4.0)
+Description: Mono I18N libraries metapackage (for CLI 4.0)
  Mono is a platform for running and developing applications based on the
  ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
  Mono provides a complete CLR (Common Language Runtime) including compiler and
@@ -3060,7 +3060,7 @@ Description: Mono GAC tool (for CLI 4.0)
  libraries, for CLI 4.0
 
 Package: mono-jay
-Architecture: amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 powerpc ppc64 ppc64el s390x
+Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: LALR(1) parser generator oriented to Java/CLI
  Mono is a platform for running and developing applications based on the
@@ -3108,7 +3108,7 @@ Description: shared MonoDoc binaries
 Package: monodoc-manual
 Architecture: all
 Section: doc
-Recommends: ${misc:Depends}, monodoc-browser | monodoc-http | monodoc-viewer
+Depends: ${misc:Depends}, monodoc-browser | monodoc-http | monodoc-viewer
 Suggests: monodoc-gtk-manual,
  monodoc-gecko-manual,
  monodoc-nunit-manual
