@@ -5,6 +5,7 @@
  *	Ludovic Henry (ludovic.henry@xamarin.com)
  *
  * Copyright 2015 Xamarin, Inc (http://www.xamarin.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 //
@@ -139,10 +140,10 @@ typedef struct {
 	MonoCoopMutex worker_creation_lock;
 
 	gint32 heuristic_completions;
-	guint32 heuristic_sample_start;
-	guint32 heuristic_last_dequeue; // ms
-	guint32 heuristic_last_adjustment; // ms
-	guint32 heuristic_adjustment_interval; // ms
+	gint64 heuristic_sample_start;
+	gint64 heuristic_last_dequeue; // ms
+	gint64 heuristic_last_adjustment; // ms
+	gint64 heuristic_adjustment_interval; // ms
 	ThreadPoolHillClimbing heuristic_hill_climbing;
 	MonoCoopMutex heuristic_lock;
 
@@ -344,16 +345,16 @@ cleanup (void)
 	mono_coop_mutex_unlock (&threadpool->active_threads_lock);
 }
 
-void
-mono_threadpool_ms_enqueue_work_item (MonoDomain *domain, MonoObject *work_item)
+gboolean
+mono_threadpool_ms_enqueue_work_item (MonoDomain *domain, MonoObject *work_item, MonoError *error)
 {
 	static MonoClass *threadpool_class = NULL;
 	static MonoMethod *unsafe_queue_custom_work_item_method = NULL;
-	MonoError error;
 	MonoDomain *current_domain;
 	MonoBoolean f;
 	gpointer args [2];
 
+	mono_error_init (error);
 	g_assert (work_item);
 
 	if (!threadpool_class)
@@ -370,17 +371,21 @@ mono_threadpool_ms_enqueue_work_item (MonoDomain *domain, MonoObject *work_item)
 
 	current_domain = mono_domain_get ();
 	if (current_domain == domain) {
-		mono_runtime_invoke_checked (unsafe_queue_custom_work_item_method, NULL, args, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		mono_runtime_invoke_checked (unsafe_queue_custom_work_item_method, NULL, args, error);
+		return_val_if_nok (error, FALSE);
 	} else {
 		mono_thread_push_appdomain_ref (domain);
 		if (mono_domain_set (domain, FALSE)) {
-			mono_runtime_invoke_checked (unsafe_queue_custom_work_item_method, NULL, args, &error);
-			mono_error_raise_exception (&error); /* FIXME don't raise here */
+			mono_runtime_invoke_checked (unsafe_queue_custom_work_item_method, NULL, args, error);
+			if (!is_ok (error)) {
+				mono_thread_pop_appdomain_ref ();
+				return FALSE;
+			}
 			mono_domain_set (current_domain, TRUE);
 		}
 		mono_thread_pop_appdomain_ref ();
 	}
+	return TRUE;
 }
 
 /* LOCKING: threadpool->domains_lock must be held */
@@ -524,7 +529,7 @@ worker_park (void)
 		if (interrupted)
 			goto done;
 
-		if (mono_coop_cond_timedwait (&threadpool->parked_threads_cond, &threadpool->active_threads_lock, rand_next ((void **)rand_handle, 5 * 1000, 60 * 1000)) != 0)
+		if (mono_coop_cond_timedwait (&threadpool->parked_threads_cond, &threadpool->active_threads_lock, rand_next (&rand_handle, 5 * 1000, 60 * 1000)) != 0)
 			timeout = TRUE;
 
 		mono_thread_info_uninstall_interrupt (&interrupted);
@@ -587,7 +592,8 @@ worker_thread (gpointer data)
 	thread = mono_thread_internal_current ();
 	g_assert (thread);
 
-	mono_thread_set_name_internal (thread, mono_string_new (mono_domain_get (), "Threadpool worker"), FALSE);
+	mono_thread_set_name_internal (thread, mono_string_new (mono_get_root_domain (), "Threadpool worker"), FALSE, &error);
+	mono_error_assert_ok (&error);
 
 	mono_coop_mutex_lock (&threadpool->active_threads_lock);
 	g_ptr_array_add (threadpool->working_threads, thread);
@@ -702,13 +708,15 @@ worker_try_create (void)
 {
 	ThreadPoolCounter counter;
 	MonoInternalThread *thread;
+	gint64 current_ticks;
 	gint32 now;
 
 	mono_coop_mutex_lock (&threadpool->worker_creation_lock);
 
 	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_THREADPOOL, "[%p] try create worker", mono_native_thread_id_get ());
-
-	if ((now = mono_100ns_ticks () / 10 / 1000 / 1000) == 0) {
+	current_ticks = mono_100ns_ticks ();
+	now = current_ticks / (10 * 1000 * 1000);
+	if (0 == current_ticks) {
 		g_warning ("failed to get 100ns ticks");
 	} else {
 		if (threadpool->worker_creation_current_second != now) {
@@ -736,7 +744,8 @@ worker_try_create (void)
 		counter._.active ++;
 	});
 
-	if ((thread = mono_thread_create_internal (mono_get_root_domain (), worker_thread, NULL, TRUE, 0)) != NULL) {
+	MonoError error;
+	if ((thread = mono_thread_create_internal (mono_get_root_domain (), worker_thread, NULL, TRUE, 0, &error)) != NULL) {
 		threadpool->worker_creation_current_count += 1;
 
 		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_THREADPOOL, "[%p] try create worker, created %p, now = %d count = %d", mono_native_thread_id_get (), thread->tid, now, threadpool->worker_creation_current_count);
@@ -744,7 +753,8 @@ worker_try_create (void)
 		return TRUE;
 	}
 
-	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_THREADPOOL, "[%p] try create worker, failed: could not create thread", mono_native_thread_id_get ());
+	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_THREADPOOL, "[%p] try create worker, failed: could not create thread due to %s", mono_native_thread_id_get (), mono_error_get_message (&error));
+	mono_error_cleanup (&error);
 
 	COUNTER_ATOMIC (counter, {
 		counter._.working --;
@@ -847,7 +857,7 @@ monitor_should_keep_running (void)
 static gboolean
 monitor_sufficient_delay_since_last_dequeue (void)
 {
-	guint32 threshold;
+	gint64 threshold;
 
 	g_assert (threadpool);
 
@@ -885,7 +895,7 @@ monitor_thread (void)
 		mono_gc_set_skip_thread (TRUE);
 
 		do {
-			guint32 ts;
+			gint64 ts;
 			gboolean alerted = FALSE;
 
 			if (mono_runtime_is_shutting_down ())
@@ -959,6 +969,7 @@ monitor_thread (void)
 static void
 monitor_ensure_running (void)
 {
+	MonoError error;
 	for (;;) {
 		switch (monitor_status) {
 		case MONITOR_STATUS_REQUESTED:
@@ -970,8 +981,10 @@ monitor_ensure_running (void)
 			if (mono_runtime_is_shutting_down ())
 				return;
 			if (InterlockedCompareExchange (&monitor_status, MONITOR_STATUS_REQUESTED, MONITOR_STATUS_NOT_RUNNING) == MONITOR_STATUS_NOT_RUNNING) {
-				if (!mono_thread_create_internal (mono_get_root_domain (), monitor_thread, NULL, TRUE, SMALL_STACK))
+				if (!mono_thread_create_internal (mono_get_root_domain (), monitor_thread, NULL, TRUE, SMALL_STACK, &error)) {
 					monitor_status = MONITOR_STATUS_NOT_RUNNING;
+					mono_error_cleanup (&error);
+				}
 				return;
 			}
 			break;
@@ -1041,7 +1054,7 @@ hill_climbing_get_wave_component (gdouble *samples, guint sample_count, gdouble 
 }
 
 static gint16
-hill_climbing_update (gint16 current_thread_count, guint32 sample_duration, gint32 completions, guint32 *adjustment_interval)
+hill_climbing_update (gint16 current_thread_count, guint32 sample_duration, gint32 completions, gint64 *adjustment_interval)
 {
 	ThreadPoolHillClimbing *hc;
 	ThreadPoolHeuristicStateTransition transition;
@@ -1281,8 +1294,8 @@ heuristic_adjust (void)
 
 	if (mono_coop_mutex_trylock (&threadpool->heuristic_lock) == 0) {
 		gint32 completions = InterlockedExchange (&threadpool->heuristic_completions, 0);
-		guint32 sample_end = mono_msec_ticks ();
-		guint32 sample_duration = sample_end - threadpool->heuristic_sample_start;
+		gint64 sample_end = mono_msec_ticks ();
+		gint64 sample_duration = sample_end - threadpool->heuristic_sample_start;
 
 		if (sample_duration >= threadpool->heuristic_adjustment_interval / 2) {
 			ThreadPoolCounter counter;
@@ -1314,10 +1327,9 @@ mono_threadpool_ms_cleanup (void)
 }
 
 MonoAsyncResult *
-mono_threadpool_ms_begin_invoke (MonoDomain *domain, MonoObject *target, MonoMethod *method, gpointer *params)
+mono_threadpool_ms_begin_invoke (MonoDomain *domain, MonoObject *target, MonoMethod *method, gpointer *params, MonoError *error)
 {
 	static MonoClass *async_call_klass = NULL;
-	MonoError error;
 	MonoMethodMessage *message;
 	MonoAsyncResult *async_result;
 	MonoAsyncCall *async_call;
@@ -1329,10 +1341,13 @@ mono_threadpool_ms_begin_invoke (MonoDomain *domain, MonoObject *target, MonoMet
 
 	mono_lazy_initialize (&status, initialize);
 
-	message = mono_method_call_message_new (method, params, mono_get_delegate_invoke (method->klass), (params != NULL) ? (&async_callback) : NULL, (params != NULL) ? (&state) : NULL);
+	mono_error_init (error);
 
-	async_call = (MonoAsyncCall*) mono_object_new_checked (domain, async_call_klass, &error);
-	mono_error_raise_exception (&error); /* FIXME don't raise here */
+	message = mono_method_call_message_new (method, params, mono_get_delegate_invoke (method->klass), (params != NULL) ? (&async_callback) : NULL, (params != NULL) ? (&state) : NULL, error);
+	return_val_if_nok (error, NULL);
+
+	async_call = (MonoAsyncCall*) mono_object_new_checked (domain, async_call_klass, error);
+	return_val_if_nok (error, NULL);
 
 	MONO_OBJECT_SETREF (async_call, msg, message);
 	MONO_OBJECT_SETREF (async_call, state, state);
@@ -1342,19 +1357,22 @@ mono_threadpool_ms_begin_invoke (MonoDomain *domain, MonoObject *target, MonoMet
 		MONO_OBJECT_SETREF (async_call, cb_target, async_callback);
 	}
 
-	async_result = mono_async_result_new (domain, NULL, async_call->state, NULL, (MonoObject*) async_call);
+	async_result = mono_async_result_new (domain, NULL, async_call->state, NULL, (MonoObject*) async_call, error);
+	return_val_if_nok (error, NULL);
 	MONO_OBJECT_SETREF (async_result, async_delegate, target);
 
-	mono_threadpool_ms_enqueue_work_item (domain, (MonoObject*) async_result);
+	mono_threadpool_ms_enqueue_work_item (domain, (MonoObject*) async_result, error);
+	return_val_if_nok (error, NULL);
 
 	return async_result;
 }
 
 MonoObject *
-mono_threadpool_ms_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, MonoObject **exc)
+mono_threadpool_ms_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, MonoObject **exc, MonoError *error)
 {
 	MonoAsyncCall *ac;
 
+	mono_error_init (error);
 	g_assert (exc);
 	g_assert (out_args);
 
@@ -1365,7 +1383,7 @@ mono_threadpool_ms_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, Mono
 	mono_monitor_enter ((MonoObject*) ares);
 
 	if (ares->endinvoke_called) {
-		*exc = (MonoObject*) mono_get_exception_invalid_operation (NULL);
+		mono_error_set_invalid_operation(error, "Delegate EndInvoke method called more than once");
 		mono_monitor_exit ((MonoObject*) ares);
 		return NULL;
 	}
@@ -1382,12 +1400,17 @@ mono_threadpool_ms_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, Mono
 		} else {
 			wait_event = CreateEvent (NULL, TRUE, FALSE, NULL);
 			g_assert(wait_event);
-			MONO_OBJECT_SETREF (ares, handle, (MonoObject*) mono_wait_handle_new (mono_object_domain (ares), wait_event));
+			MonoWaitHandle *wait_handle = mono_wait_handle_new (mono_object_domain (ares), wait_event, error);
+			if (!is_ok (error)) {
+				CloseHandle (wait_event);
+				return NULL;
+			}
+			MONO_OBJECT_SETREF (ares, handle, (MonoObject*) wait_handle);
 		}
 		mono_monitor_exit ((MonoObject*) ares);
-		MONO_PREPARE_BLOCKING;
+		MONO_ENTER_GC_SAFE;
 		WaitForSingleObjectEx (wait_event, INFINITE, TRUE);
-		MONO_FINISH_BLOCKING;
+		MONO_EXIT_GC_SAFE;
 	}
 
 	ac = (MonoAsyncCall*) ares->object_data;
@@ -1402,7 +1425,7 @@ gboolean
 mono_threadpool_ms_remove_domain_jobs (MonoDomain *domain, int timeout)
 {
 	gboolean res = TRUE;
-	guint32 start;
+	gint64 end;
 	gpointer sem;
 
 	g_assert (domain);
@@ -1411,13 +1434,12 @@ mono_threadpool_ms_remove_domain_jobs (MonoDomain *domain, int timeout)
 	g_assert (mono_domain_is_unloading (domain));
 
 	if (timeout != -1)
-		start = mono_msec_ticks ();
+		end = mono_msec_ticks () + timeout;
 
 #ifndef DISABLE_SOCKETS
 	mono_threadpool_ms_io_remove_domain_jobs (domain);
 	if (timeout != -1) {
-		timeout -= mono_msec_ticks () - start;
-		if (timeout < 0)
+		if (mono_msec_ticks () > end)
 			return FALSE;
 	}
 #endif
@@ -1436,16 +1458,19 @@ mono_threadpool_ms_remove_domain_jobs (MonoDomain *domain, int timeout)
 	mono_memory_write_barrier ();
 
 	while (domain->threadpool_jobs) {
-		MONO_PREPARE_BLOCKING;
-		WaitForSingleObject (sem, timeout);
-		MONO_FINISH_BLOCKING;
+		gint64 now;
+
 		if (timeout != -1) {
-			timeout -= mono_msec_ticks () - start;
-			if (timeout <= 0) {
+			now = mono_msec_ticks ();
+			if (now > end) {
 				res = FALSE;
 				break;
 			}
 		}
+
+		MONO_ENTER_GC_SAFE;
+		WaitForSingleObject (sem, timeout != -1 ? end - now : timeout);
+		MONO_EXIT_GC_SAFE;
 	}
 
 	domain->cleanup_semaphore = NULL;
@@ -1583,7 +1608,9 @@ void
 ves_icall_System_Threading_ThreadPool_ReportThreadStatus (MonoBoolean is_working)
 {
 	// TODO
-	mono_raise_exception (mono_get_exception_not_implemented (NULL));
+	MonoError error;
+	mono_error_set_not_implemented (&error, "");
+	mono_error_set_pending_exception (&error);
 }
 
 MonoBoolean
@@ -1596,7 +1623,9 @@ MonoBoolean G_GNUC_UNUSED
 ves_icall_System_Threading_ThreadPool_PostQueuedCompletionStatus (MonoNativeOverlapped *native_overlapped)
 {
 	/* This copy the behavior of the current Mono implementation */
-	mono_raise_exception (mono_get_exception_not_implemented (NULL));
+	MonoError error;
+	mono_error_set_not_implemented (&error, "");
+	mono_error_set_pending_exception (&error);
 	return FALSE;
 }
 

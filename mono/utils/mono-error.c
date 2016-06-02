@@ -4,6 +4,7 @@
  * Authors:
  *	Rodrigo Kumpera    (rkumpera@novell.com)
  * Copyright 2009 Novell, Inc (http://www.novell.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 #include <glib.h>
 
@@ -11,18 +12,23 @@
 #include "mono-error-internals.h"
 
 #include <mono/metadata/exception.h>
-#include <mono/metadata/class-internals.h>
 #include <mono/metadata/debug-helpers.h>
-#include <mono/metadata/object.h>
 #include <mono/metadata/object-internals.h>
+
+#define set_error_messagev() do { \
+	if (!(error->full_message = g_strdup_vprintf (msg_format, args))) \
+			error->flags |= MONO_ERROR_INCOMPLETE; \
+} while (0)
 
 #define set_error_message() do { \
 	va_list args; \
 	va_start (args, msg_format); \
-	if (!(error->full_message = g_strdup_vprintf (msg_format, args))) \
-			error->flags |= MONO_ERROR_INCOMPLETE; \
+	set_error_messagev();	     \
 	va_end (args); \
 } while (0)
+
+static void
+mono_error_set_generic_errorv (MonoError *oerror, const char *name_space, const char *name, const char *msg_format, va_list args);
 
 static gboolean
 is_managed_exception (MonoErrorInternal *error)
@@ -33,6 +39,8 @@ is_managed_exception (MonoErrorInternal *error)
 static void
 mono_error_prepare (MonoErrorInternal *error)
 {
+	/* mono_error_set_* after a mono_error_cleanup without an intervening init */
+	g_assert (error->error_code != MONO_ERROR_CLEANUP_CALLED_SENTINEL);
 	if (error->error_code != MONO_ERROR_NONE)
 		return;
 
@@ -83,6 +91,13 @@ mono_error_init_flags (MonoError *oerror, unsigned short flags)
 	error->flags = flags;
 }
 
+/**
+ * mono_error_init:
+ * @error: Pointer to MonoError struct to initialize
+ *
+ * Any function which takes a MonoError for purposes of reporting an error
+ * is required to call either this or mono_error_init_flags on entry.
+ */
 void
 mono_error_init (MonoError *error)
 {
@@ -93,15 +108,30 @@ void
 mono_error_cleanup (MonoError *oerror)
 {
 	MonoErrorInternal *error = (MonoErrorInternal*)oerror;
-	if (error->error_code == MONO_ERROR_NONE)
+	short int orig_error_code = error->error_code;
+	gboolean free_strings = error->flags & MONO_ERROR_FREE_STRINGS;
+	gboolean has_instance_handle = is_managed_exception (error);
+
+	/* Two cleanups in a row without an intervening init. */
+	g_assert (orig_error_code != MONO_ERROR_CLEANUP_CALLED_SENTINEL);
+
+	/* Mark it as cleaned up. */
+	error->error_code = MONO_ERROR_CLEANUP_CALLED_SENTINEL;
+	error->flags = 0;
+
+	if (orig_error_code == MONO_ERROR_NONE)
 		return;
 
-	if (is_managed_exception (error))
+
+	if (has_instance_handle)
 		mono_gchandle_free (error->exn.instance_handle);
+
 
 	g_free ((char*)error->full_message);
 	g_free ((char*)error->full_message_with_fields);
-	if (!(error->flags & MONO_ERROR_FREE_STRINGS)) //no memory was allocated
+	error->full_message = NULL;
+	error->full_message_with_fields = NULL;
+	if (!free_strings) //no memory was allocated
 		return;
 
 	g_free ((char*)error->type_name);
@@ -110,6 +140,9 @@ mono_error_cleanup (MonoError *oerror)
 	g_free ((char*)error->exception_name_space);
 	g_free ((char*)error->exception_name);
 	g_free ((char*)error->first_argument);
+	error->type_name = error->assembly_name = error->member_name = error->exception_name_space = error->exception_name = error->first_argument = NULL;
+	error->exn.klass = NULL;
+
 }
 
 gboolean
@@ -332,14 +365,79 @@ mono_error_set_bad_image (MonoError *oerror, MonoImage *image, const char *msg_f
 }
 
 void
-mono_error_set_generic_error (MonoError *oerror, const char * name_space, const char *name, const char *msg_format, ...)
+mono_error_set_generic_errorv (MonoError *oerror, const char *name_space, const char *name, const char *msg_format, va_list args)
 {
 	MonoErrorInternal *error = (MonoErrorInternal*)oerror;
 	mono_error_prepare (error);
 
 	error->error_code = MONO_ERROR_GENERIC;
 	mono_error_set_corlib_exception (oerror, name_space, name);
-	set_error_message ();
+	set_error_messagev ();
+}
+
+void
+mono_error_set_generic_error (MonoError *oerror, const char * name_space, const char *name, const char *msg_format, ...)
+{
+	va_list args;
+	va_start (args, msg_format);
+	mono_error_set_generic_errorv (oerror, name_space, name, msg_format, args);
+	va_end (args);
+}
+
+/**
+ * mono_error_set_not_implemented:
+ *
+ * System.NotImplementedException
+ */
+void
+mono_error_set_not_implemented (MonoError *oerror, const char *msg_format, ...)
+{
+	va_list args;
+	va_start (args, msg_format);
+	mono_error_set_generic_errorv (oerror, "System", "NotImplementedException", msg_format, args);
+	va_end (args);
+}
+
+/**
+ * mono_error_set_execution_engine:
+ *
+ * System.ExecutionEngineException
+ */
+void
+mono_error_set_execution_engine (MonoError *oerror, const char *msg_format, ...)
+{
+	va_list args;
+	va_start (args, msg_format);
+	mono_error_set_generic_errorv (oerror, "System", "ExecutionEngineException", msg_format, args);
+	va_end (args);
+}
+
+/**
+ * mono_error_set_not_supported:
+ *
+ * System.NotSupportedException
+ */
+void
+mono_error_set_not_supported (MonoError *oerror, const char *msg_format, ...)
+{
+	va_list args;
+	va_start (args, msg_format);
+	mono_error_set_generic_errorv (oerror, "System", "NotSupportedException", msg_format, args);
+	va_end (args);
+}
+
+/**
+ * mono_error_set_invalid_operation:
+ *
+ * System.InvalidOperationException
+ */
+void
+mono_error_set_invalid_operation (MonoError *oerror, const char *msg_format, ...)
+{
+	va_list args;
+	va_start (args, msg_format);
+	mono_error_set_generic_errorv (oerror, "System", "InvalidOperationException", msg_format, args);
+	va_end (args);
 }
 
 void
@@ -350,112 +448,6 @@ mono_error_set_exception_instance (MonoError *oerror, MonoException *exc)
 	mono_error_prepare (error);
 	error->error_code = MONO_ERROR_EXCEPTION_INSTANCE;
 	error->exn.instance_handle = mono_gchandle_new (exc ? &exc->object : NULL, FALSE);
-}
-
-void
-mono_error_set_from_loader_error (MonoError *oerror)
-{
-	MonoLoaderError *loader_error = mono_loader_get_last_error ();
-	MonoErrorInternal *error = (MonoErrorInternal*)oerror;
-	gboolean dup_strings = TRUE;
-
-	mono_error_prepare (error);
-
-	if (!loader_error) {
-		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Runtime tried to produce a mono-error from an empty loader-error");
-		return;
-	}
-
-	switch (loader_error->exception_type) {
-	case MONO_EXCEPTION_NONE:
-		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Runtime tried to produce a mono-error from a non-error loader-error");
-		break;
-
-	case MONO_EXCEPTION_INVALID_PROGRAM:
-		mono_error_set_generic_error (oerror, "System", "InvalidProgramException", "Failed for unknown reasons.");
-		break;
-
-	case MONO_EXCEPTION_UNVERIFIABLE_IL:
-		mono_error_set_generic_error (oerror, "System.Security", "VerificationException", "Failed for unknown reasons.");
-		break;
-
-	case MONO_EXCEPTION_MISSING_METHOD:
-		error->error_code = MONO_ERROR_MISSING_METHOD;
-		mono_error_set_type_name (oerror, loader_error->class_name);
-		mono_error_set_member_name (oerror, loader_error->member_name);
-		error->full_message = g_strdup ("Failed for unknown reasons.");
-		break;
-
-	case MONO_EXCEPTION_MISSING_FIELD:
-		mono_error_set_field_load (oerror, loader_error->klass, loader_error->member_name, "Failed for unknown reasons.");
-		break;
-
-	case MONO_EXCEPTION_TYPE_LOAD:
-		mono_error_set_type_load_name (oerror, g_strdup (loader_error->class_name), g_strdup (loader_error->assembly_name), "Failed for unknown reasons.");
-		dup_strings = FALSE;
-		break;
-	
-	case MONO_EXCEPTION_FILE_NOT_FOUND:
-		mono_error_set_assembly_load_simple (oerror, loader_error->assembly_name, loader_error->ref_only);
-		break;
-
-	case MONO_EXCEPTION_METHOD_ACCESS:
-		mono_error_set_generic_error (oerror, "System", "MethodAccessException", "Failed for unknown reasons.");
-		break;
-
-	case MONO_EXCEPTION_FIELD_ACCESS:
-		mono_error_set_generic_error (oerror, "System", "FieldAccessException", "Failed for unknown reasons.");
-		break;
-
-	case MONO_EXCEPTION_OBJECT_SUPPLIED:
-	case MONO_EXCEPTION_GENERIC_SHARING_FAILED:
-		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Runtime tried to produce a mono-error from JIT internal error %d", loader_error->exception_type);
-		break;
-
-	case MONO_EXCEPTION_BAD_IMAGE:
-		mono_error_set_bad_image_name (oerror, "<unknown>", "%s", loader_error->msg);
-		break;
-
-	case MONO_EXCEPTION_OUT_OF_MEMORY:
-		mono_error_set_out_of_memory (oerror, "Failed for unknown reasons.");
-		break;
-
-	default:
-		mono_error_set_generic_error (oerror, "System", "ExecutionEngineException", "Runtime tried to produce an unknown loader-error %d", loader_error->exception_type);
-		break;
-	}
-
-	mono_error_dup_strings (oerror, dup_strings);
-	mono_loader_clear_error ();
-}
-
-void
-mono_loader_set_error_from_mono_error (MonoError *oerror)
-{
-	MonoErrorInternal *error = (MonoErrorInternal*)oerror;
-
-	switch (error->error_code) {
-	case MONO_ERROR_MISSING_METHOD:
-		mono_loader_set_error_method_load (get_type_name (error), error->member_name);
-		break;
-	case MONO_ERROR_MISSING_FIELD:
-		mono_loader_set_error_field_load (error->exn.klass, error->member_name);
-		break;
-	case MONO_ERROR_TYPE_LOAD:
-		mono_loader_set_error_type_load (get_type_name (error), get_assembly_name (error));
-		break;
-	case MONO_ERROR_FILE_NOT_FOUND:
-		/* XXX can't recover if it's ref only or not */
-		mono_loader_set_error_assembly_load (get_assembly_name (error), FALSE);
-		break;
-	case MONO_ERROR_BAD_IMAGE:
-		mono_loader_set_error_bad_image (g_strdup (error->full_message));
-		break;
-	case MONO_ERROR_EXCEPTION_INSTANCE:
-		mono_loader_set_error_bad_image (g_strdup_printf ("Non translatable error"));
-	default:
-		mono_loader_set_error_bad_image (g_strdup_printf ("Non translatable error: %s", error->full_message));
-	}
 }
 
 void
@@ -683,7 +675,7 @@ mono_error_prepare_exception (MonoError *oerror, MonoError *error_out)
 	}
 	case MONO_ERROR_GENERIC:
 		if (!error->exception_name_space || !error->exception_name)
-			mono_error_set_generic_error (error_out, "System", "ExecutionEngineException", "MonoError with generic error but no exception name was supplied");
+			mono_error_set_execution_engine (error_out, "MonoError with generic error but no exception name was supplied");
 		else
 			exception = mono_exception_from_name_msg (mono_defaults.corlib, error->exception_name_space, error->exception_name, error->full_message);
 		break;
@@ -692,8 +684,11 @@ mono_error_prepare_exception (MonoError *oerror, MonoError *error_out)
 		exception = (MonoException*) mono_gchandle_get_target (error->exn.instance_handle);
 		break;
 
+	case MONO_ERROR_CLEANUP_CALLED_SENTINEL:
+		mono_error_set_execution_engine (error_out, "MonoError reused after mono_error_cleanup");
+		break;
 	default:
-		mono_error_set_generic_error (error_out, "System", "ExecutionEngineException", "Invalid error-code %d", error->error_code);
+		mono_error_set_execution_engine (error_out, "Invalid error-code %d", error->error_code);
 	}
 
 	if (!mono_error_ok (error_out))

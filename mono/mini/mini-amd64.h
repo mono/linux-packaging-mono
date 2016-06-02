@@ -6,26 +6,6 @@
 #include <mono/utils/mono-context.h>
 #include <glib.h>
 
-#ifdef __native_client_codegen__
-#define kNaClAlignmentAMD64 32
-#define kNaClAlignmentMaskAMD64 (kNaClAlignmentAMD64 - 1)
-
-/* TODO: use kamd64NaClLengthOfCallImm    */
-/* temporarily using kNaClAlignmentAMD64 so padding in */
-/* image-writer.c doesn't happen                       */
-#define kNaClLengthOfCallImm kNaClAlignmentAMD64
-
-int is_nacl_call_reg_sequence (guint8* code);
-void amd64_nacl_clear_legacy_prefix_tag ();
-void amd64_nacl_tag_legacy_prefix (guint8* code);
-void amd64_nacl_tag_rex (guint8* code);
-guint8* amd64_nacl_get_legacy_prefix_tag ();
-guint8* amd64_nacl_get_rex_tag ();
-void amd64_nacl_instruction_pre ();
-void amd64_nacl_instruction_post (guint8 **start, guint8 **end);
-void amd64_nacl_membase_handler (guint8** code, gint8 basereg, gint32 offset, gint8 dreg);
-#endif
-
 #ifdef HOST_WIN32
 #include <windows.h>
 /* use SIG* defines if possible */
@@ -175,13 +155,7 @@ struct MonoLMF {
 	 * the 'rbp' field is not valid.
 	 */
 	gpointer    previous_lmf;
-#if defined(__default_codegen__) || defined(HOST_WIN32)
 	guint64     rip;
-#elif defined(__native_client_codegen__)
-	/* On 64-bit compilers, default alignment is 8 for this field, */
-	/* this allows the structure to match for 32-bit compilers.    */
-	guint64     rip __attribute__ ((aligned(8)));
-#endif
 	guint64     rbp;
 	guint64     rsp;
 };
@@ -265,6 +239,51 @@ typedef struct {
 	guint8 buffer [256];
 } DynCallArgs;
 
+typedef enum {
+	ArgInIReg,
+	ArgInFloatSSEReg,
+	ArgInDoubleSSEReg,
+	ArgOnStack,
+	ArgValuetypeInReg,
+	ArgValuetypeAddrInIReg,
+	/* gsharedvt argument passed by addr */
+	ArgGSharedVtInReg,
+	ArgGSharedVtOnStack,
+	/* Variable sized gsharedvt argument passed/returned by addr */
+	ArgGsharedvtVariableInReg,
+	ArgNone /* only in pair_storage */
+} ArgStorage;
+
+typedef struct {
+	gint16 offset;
+	gint8  reg;
+	ArgStorage storage : 8;
+
+	/* Only if storage == ArgValuetypeInReg */
+	ArgStorage pair_storage [2];
+	gint8 pair_regs [2];
+	/* The size of each pair (bytes) */
+	int pair_size [2];
+	int nregs;
+	/* Only if storage == ArgOnStack */
+	int arg_size; // Bytes, will always be rounded up/aligned to 8 byte boundary
+} ArgInfo;
+
+typedef struct {
+	int nargs;
+	guint32 stack_usage;
+	guint32 reg_usage;
+	guint32 freg_usage;
+	gboolean need_stack_align;
+	gboolean gsharedvt;
+	/* The index of the vret arg in the argument list */
+	int vret_arg_index;
+	ArgInfo ret;
+	ArgInfo sig_cookie;
+	ArgInfo args [1];
+} CallInfo;
+
+
 #define MONO_CONTEXT_SET_LLVM_EXC_REG(ctx, exc) do { (ctx)->gregs [AMD64_RAX] = (gsize)exc; } while (0)
 #define MONO_CONTEXT_SET_LLVM_EH_SELECTOR_REG(ctx, sel) do { (ctx)->gregs [AMD64_RDX] = (gsize)(sel); } while (0)
 
@@ -304,7 +323,7 @@ typedef struct {
  */
 #define MONO_ARCH_VARARG_ICALLS 1
 
-#if (!defined( HOST_WIN32 ) && !defined(__native_client__) && !defined(__native_client_codegen__)) && defined (HAVE_SIGACTION)
+#if !defined( HOST_WIN32 ) && defined (HAVE_SIGACTION)
 
 #define MONO_ARCH_USE_SIGACTION 1
 
@@ -314,7 +333,7 @@ typedef struct {
 
 #endif
 
-#endif /* !HOST_WIN32 && !__native_client__ */
+#endif /* !HOST_WIN32 */
 
 #if !defined(__linux__)
 #define MONO_ARCH_NOMAP32BIT 1
@@ -361,9 +380,7 @@ typedef struct {
 #define MONO_ARCH_HAVE_GET_TRAMPOLINES 1
 
 #define MONO_ARCH_AOT_SUPPORTED 1
-#if !defined( __native_client__ )
 #define MONO_ARCH_SOFT_DEBUG_SUPPORTED 1
-#endif
 
 #define MONO_ARCH_SUPPORT_TASKLETS 1
 
@@ -379,21 +396,24 @@ typedef struct {
 #define MONO_ARCH_HAVE_CONTEXT_SET_INT_REG 1
 #define MONO_ARCH_HAVE_SETUP_ASYNC_CALLBACK 1
 #define MONO_ARCH_HAVE_CREATE_LLVM_NATIVE_THUNK 1
-#define MONO_ARCH_GSHAREDVT_SUPPORTED 1
 #define MONO_ARCH_HAVE_OP_TAIL_CALL 1
 #define MONO_ARCH_HAVE_TRANSLATE_TLS_OFFSET 1
 #define MONO_ARCH_HAVE_DUMMY_INIT 1
 #define MONO_ARCH_HAVE_SDB_TRAMPOLINES 1
 #define MONO_ARCH_HAVE_PATCH_CODE_NEW 1
 #define MONO_ARCH_HAVE_OP_GENERIC_CLASS_INIT 1
+#define MONO_ARCH_HAVE_GENERAL_RGCTX_LAZY_FETCH_TRAMPOLINE 1
 
 #if defined(TARGET_OSX) || defined(__linux__)
 #define MONO_ARCH_HAVE_UNWIND_BACKTRACE 1
 #endif
 
-#if defined(TARGET_OSX) || defined(__linux__)
+#if defined(TARGET_OSX) || defined(__linux__) || defined(TARGET_WIN32)
 #define MONO_ARCH_HAVE_TLS_GET_REG 1
 #endif
+
+#define MONO_ARCH_GSHAREDVT_SUPPORTED 1
+
 
 #if defined(TARGET_APPLETVOS)
 /* No signals */
@@ -459,6 +479,8 @@ void mono_arch_unwindinfo_install_unwind_info (gpointer* monoui, gpointer code, 
 
 #define MONO_ARCH_HAVE_UNWIND_TABLE 1
 #endif
+
+CallInfo* mono_arch_get_call_info (MonoMemPool *mp, MonoMethodSignature *sig);
 
 #endif /* __MONO_MINI_AMD64_H__ */  
 

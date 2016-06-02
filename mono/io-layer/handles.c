@@ -6,6 +6,7 @@
  *
  * (C) 2002-2011 Novell, Inc.
  * Copyright 2011 Xamarin Inc
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include <config.h>
@@ -983,12 +984,12 @@ void _wapi_handle_ref (gpointer handle)
 	struct _WapiHandleUnshared *handle_data;
 
 	if (!_WAPI_PRIVATE_VALID_SLOT (idx)) {
+		MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: Attempting to ref invalid private handle %p", __func__, handle);
 		return;
 	}
 	
 	if (_wapi_handle_type (handle) == WAPI_HANDLE_UNUSED) {
-		g_warning ("%s: Attempting to ref unused handle %p", __func__,
-			   handle);
+		MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: Attempting to ref unused handle %p", __func__, handle);
 		return;
 	}
 

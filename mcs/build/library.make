@@ -18,7 +18,13 @@
 # Have to rename to handle differences between assembly/directory names
 DEP_LIBS=$(patsubst System.Xml,System.XML,$(LIB_REFS))
 
-LIB_MCS_FLAGS += $(patsubst %,-r:%.dll,$(LIB_REFS))
+_FILTER_OUT = $(foreach x,$(2),$(if $(findstring $(1),$(x)),,$(x)))
+
+LIB_REFS_FULL = $(call _FILTER_OUT,=, $(LIB_REFS))
+LIB_REFS_ALIAS = $(filter-out $(LIB_REFS_FULL),$(LIB_REFS))
+
+LIB_MCS_FLAGS += $(patsubst %,-r:$(topdir)/class/lib/$(PROFILE)/%.dll,$(LIB_REFS_FULL))
+LIB_MCS_FLAGS += $(patsubst %,-r:%.dll, $(subst =,=$(topdir)/class/lib/$(PROFILE)/,$(LIB_REFS_ALIAS)))
 
 sourcefile = $(LIBRARY).sources
 
@@ -29,24 +35,11 @@ PROFILE_excludes = $(wildcard $(PROFILE)_$(LIBRARY).exclude.sources)
 sourcefile = $(depsdir)/$(PROFILE)_$(LIBRARY).sources
 library_CLEAN_FILES += $(sourcefile)
 
-ifdef EXTENSION_MODULE
-EXTENSION_include = $(wildcard $(topdir)/../../mono-extensions/mcs/$(thisdir)/$(PROFILE)_$(LIBRARY).sources)
-else
-EXTENSION_include = $(wildcard $(PROFILE)_opt_$(LIBRARY).sources)
-endif
-
-
-ifdef EXTENSION_MODULE
-EXTENSION_exclude = $(wildcard $(topdir)/../../mono-extensions/mcs/$(thisdir)/$(PROFILE)_$(LIBRARY).exclude.sources)
-else
-EXTENSION_exclude = $(wildcard $(PROFILE)_opt_$(LIBRARY).exclude.sources)
-endif
-
 # Note, gensources.sh can create a $(sourcefile).makefrag if it sees any '#include's
 # We don't include it in the dependencies since it isn't always created
-$(sourcefile): $(PROFILE_sources) $(PROFILE_excludes) $(topdir)/build/gensources.sh $(EXTENSION_include)
+$(sourcefile): $(PROFILE_sources) $(PROFILE_excludes) $(topdir)/build/gensources.sh
 	@echo Creating the per profile list $@ ...
-	$(SHELL) $(topdir)/build/gensources.sh $@ '$(PROFILE_sources)' '$(PROFILE_excludes)' '$(EXTENSION_include)' '$(EXTENSION_exclude)'
+	$(SHELL) $(topdir)/build/gensources.sh $@ '$(PROFILE_sources)' '$(PROFILE_excludes)'
 endif
 
 PLATFORM_excludes := $(wildcard $(LIBRARY).$(PLATFORM)-excludes)
@@ -141,7 +134,7 @@ endif
 csproj-local: csproj-library csproj-test
 
 intermediate_clean=$(subst /,-,$(intermediate))
-csproj-library: 
+csproj-library:
 	config_file=`basename $(LIBRARY) .dll`-$(intermediate_clean)$(PROFILE).input; \
 	case "$(thisdir)" in *"Facades"*) config_file=Facades_$$config_file;; esac; \
 	echo $(thisdir):$$config_file >> $(topdir)/../msvc/scripts/order; \
@@ -253,6 +246,7 @@ dist-local: dist-default
 	for f in `$(topdir)/tools/removecomments.sh $(wildcard *$(LIBRARY).sources)` $(TEST_FILES) ; do \
 	  case $$f in \
 	  ../*) : ;; \
+	  *.g.cs) : ;; \
 	  *) dest=`dirname "$$f"` ; \
 	     case $$subs in *" $$dest "*) : ;; *) subs=" $$dest$$subs" ; $(MKINSTALLDIRS) $(distdir)/$$dest ;; esac ; \
 	     cp -p "$$f" $(distdir)/$$dest || exit 1 ;; \

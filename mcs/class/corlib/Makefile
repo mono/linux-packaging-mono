@@ -20,7 +20,7 @@ $(error Unknown framework version)
 endif
 endif
 
-RESOURCE_STRINGS = ../../../external/referencesource/mscorlib/mscorlib.txt
+RESOURCE_STRINGS = ../referencesource/mscorlib/mscorlib.txt
 
 LIBRARY_COMPILE = $(BOOT_COMPILE)
 LIBRARY_INSTALL_DIR = $(mono_libdir)/mono/$(FRAMEWORK_VERSION)
@@ -36,6 +36,10 @@ RESOURCE_FILES = \
 	resources/collation.cjkKOlv2.bin
 
 REFERENCE_SOURCES_FLAGS = -d:FEATURE_PAL,GENERICS_WORK,FEATURE_LIST_PREDICATES,FEATURE_SERIALIZATION,FEATURE_ASCII,FEATURE_LATIN1,FEATURE_UTF7,FEATURE_UTF32,MONO_HYBRID_ENCODING_SUPPORT,FEATURE_ASYNC_IO,NEW_EXPERIMENTAL_ASYNC_IO,FEATURE_UTF32,FEATURE_EXCEPTIONDISPATCHINFO,FEATURE_CORRUPTING_EXCEPTIONS,FEATURE_EXCEPTION_NOTIFICATIONS,FEATURE_STRONGNAME_MIGRATION,FEATURE_USE_LCID,FEATURE_FUSION,FEATURE_CRYPTO,FEATURE_X509_SECURESTRINGS,FEATURE_SYNCHRONIZATIONCONTEXT,FEATURE_SYNCHRONIZATIONCONTEXT_WAIT
+
+ifndef MOBILE_PROFILE
+REFERENCE_SOURCES_FLAGS += -d:FEATURE_MACL
+endif
 
 ifndef MOBILE_STATIC
 REFERENCE_SOURCES_FLAGS += -d:FEATURE_REMOTING,MONO_COM,FEATURE_COMINTEROP,FEATURE_ROLE_BASED_SECURITY
@@ -60,15 +64,37 @@ WARNING_ABOUT_DISABLED_WARNING=1635
 LOCAL_MCS_FLAGS = -unsafe -nostdlib -nowarn:612,618,$(WARNING_ABOUT_DISABLED_WARNING) -d:INSIDE_CORLIB,MONO_CULTURE_DATA -d:LIBC $(REFERENCE_SOURCES_FLAGS)
 DEFAULT_REFERENCES =
 
-ifdef MOBILE_STATIC
-CORLIB_MONO_POSIX_REF =
-else
-CORLIB_MONO_POSIX_REF = -r:Mono.Posix.dll
+TEST_LIB_REFS = System.Core System
+
+ifndef MOBILE_STATIC
+TEST_LIB_REFS += Mono.Posix
 endif
 
 # System.IO/DirectoryInfoTest.cs needs Mono.Posix
-TEST_MCS_FLAGS += -debug -nowarn:168,219,618,672 -unsafe $(CORLIB_MONO_POSIX_REF) -r:System.Core.dll -r:System.dll \
+TEST_MCS_FLAGS += -debug -nowarn:168,219,618,672 -unsafe \
 				 -define:MONO_DATACONVERTER_STATIC_METHODS $(TEST_RESX_RESOURCES:%=-resource:%)
+
+
+CC_PROFILE := $(filter monotouch% xammac, $(PROFILE))
+ifdef CC_PROFILE
+
+BUILT_SOURCES = \
+	CommonCrypto/MD5CryptoServiceProvider.g.cs	\
+	CommonCrypto/SHA256Managed.g.cs \
+	CommonCrypto/RC2CryptoServiceProvider.g.cs \
+	CommonCrypto/SHA384Managed.g.cs \
+	CommonCrypto/DESCryptoServiceProvider.g.cs \
+	CommonCrypto/SHA1CryptoServiceProvider.g.cs	\
+	CommonCrypto/SHA512Managed.g.cs \
+	CommonCrypto/MD2Managed.g.cs \
+	CommonCrypto/SHA1Managed.g.cs \
+	CommonCrypto/TripleDESCryptoServiceProvider.g.cs \
+	CommonCrypto/MD4Managed.g.cs
+
+CommonCrypto/%.g.cs:
+	$(MAKE) -C CommonCrypto
+
+endif
 
 EXTRA_DISTFILES = \
 	Test/resources/MyResources.resources	\
@@ -107,11 +133,11 @@ $(test_lib): $(TEST_RESOURCES) $(satellite_assembly1) $(satellite_assembly2)
 
 $(satellite_assembly1): Test/resources/culture-es-ES.cs Test/resources/Resources.es-ES.resources
 	@mkdir -p es-ES
-	$(CSCOMPILE) -target:library -r:$(corlib) Test/resources/culture-es-ES.cs -resource:Test/resources/Resources.es-ES.resources -out:$@
+	$(CSCOMPILE) -target:library -r:$(topdir)/class/lib/$(PROFILE)/mscorlib.dll Test/resources/culture-es-ES.cs -resource:Test/resources/Resources.es-ES.resources -out:$@
 
 $(satellite_assembly2): Test/resources/culture-nn-NO.cs Test/resources/Resources.nn-NO.resources
 	@mkdir -p nn-NO
-	$(CSCOMPILE) -target:library -r:$(corlib) Test/resources/culture-nn-NO.cs -resource:Test/resources/Resources.nn-NO.resources -out:$@
+	$(CSCOMPILE) -target:library -r:$(topdir)/class/lib/$(PROFILE)/mscorlib.dll Test/resources/culture-nn-NO.cs -resource:Test/resources/Resources.nn-NO.resources -out:$@
 
 vtsdir = Test/System.Runtime.Serialization.Formatters.Binary/VersionTolerantSerialization
 vtslibs = \
@@ -126,11 +152,13 @@ test-vts: $(vtslibs) $(vtsdir)/$(PROFILE)_TestLib/BinarySerializationOverVersion
 
 $(vtsdir)/$(PROFILE)_TestLib/%/Address.dll: $(vtsdir)/VersionTolerantSerializationTestLib/%/Address.cs
 	@mkdir -p $(dir $@)
-	$(CSCOMPILE) -target:library -r:$(corlib) -warn:0 -out:$@ $^
+	$(CSCOMPILE) -target:library -warn:0 -r:$(topdir)/class/lib/$(PROFILE)/mscorlib.dll -out:$@ $^
 
 $(vtsdir)/$(PROFILE)_TestLib/BinarySerializationOverVersions.exe: $(vtsdir)/BinarySerializationOverVersions.cs $(vtsdir)/$(PROFILE)_TestLib/1.0/Address.dll $(test_nunit_dep)
-	$(CSCOMPILE) $(test_nunit_ref) -warn:0 -r:$(corlib) \
+	$(CSCOMPILE) $(test_nunit_ref) -warn:0 \
 		-r:$(vtsdir)/$(PROFILE)_TestLib/1.0/Address.dll \
+		-r:$(topdir)/class/lib/$(PROFILE)/mscorlib.dll \
+		-r:$(topdir)/class/lib/$(PROFILE)/System.dll \
 		$(vtsdir)/BinarySerializationOverVersions.cs -out:$@
 	@cp $(vtsdir)/$(PROFILE)_TestLib/1.0/Address.dll $(vtsdir)/$(PROFILE)_TestLib
 
@@ -173,8 +201,8 @@ TMP_FILE2=tzi2.tmp
 # Remove some code that is protected so we don't have to include all the corlib files.
 tzi.exe:System/AndroidPlatform.cs $(wildcard System/TimeZone*.cs) ../../build/common/Consts.cs ../../build/common/Locale.cs ../Mono.Options/Mono.Options/Options.cs
 	trap "rm -f $(TMP_FILE1) $(TMP_FILE2)" EXIT INT QUIT TERM && \
-	sed 's/Environment\.GetResourceString/string.Format/g' ../../../external/referencesource/mscorlib/system/timezoneinfo.cs > $(TMP_FILE1) && \
-	sed 's/StringBuilder\.DefaultCapacity/100/g' ../../../external/referencesource/mscorlib/system/text/stringbuildercache.cs > $(TMP_FILE2) && \
+	sed 's/Environment\.GetResourceString/string.Format/g' ../referencesource/mscorlib/system/timezoneinfo.cs > $(TMP_FILE1) && \
+	sed 's/StringBuilder\.DefaultCapacity/100/g' ../referencesource/mscorlib/system/text/stringbuildercache.cs > $(TMP_FILE2) && \
 	$(MCS) /debug+ /out:$@ -unsafe -nowarn:612,618 -d:INSIDE_CORLIB,MONO_CULTURE_DATA -d:LIBC $(REFERENCE_SOURCES_FLAGS) "/d:SELF_TEST;NET_1_1;NET_2_0;NET_2_1;NET_3_5;NET_4_0;NET_4_5;MONO;DISABLE_CAS_USE;MOBILE;MOBILE_DYNAMIC;MONODROID;ANDROID" $^ $(TMP_FILE1) $(TMP_FILE2)
 
 android-pull-tzdb:

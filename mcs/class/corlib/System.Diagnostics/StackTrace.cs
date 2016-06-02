@@ -219,17 +219,14 @@ namespace System.Diagnostics {
 			return i != 0;
 		}
 
-		// This method is also used with reflection by mono-symbolicate tool.
-		// mono-symbolicate tool uses this method to check which method matches
-		// the stack frame method signature.
-		static void GetFullNameForStackTrace (StringBuilder sb, MethodBase mi)
+		public static void GetFullNameForStackTrace (StringBuilder sb, MethodBase mi)
 		{
 			var declaringType = mi.DeclaringType;
 			if (declaringType.IsGenericType && !declaringType.IsGenericTypeDefinition)
 				declaringType = declaringType.GetGenericTypeDefinition ();
 
 			// Get generic definition
-			var bindingflags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+			const BindingFlags bindingflags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 			foreach (var m in declaringType.GetMethods (bindingflags)) {
 				if (m.MetadataToken == mi.MetadataToken) {
 					mi = m;
@@ -253,7 +250,7 @@ namespace System.Diagnostics {
 				sb.Append ("]");
 			}
 
-			ParameterInfo[] p = mi.GetParametersInternal ();
+			ParameterInfo[] p = mi.GetParameters ();
 
 			sb.Append (" (");
 			for (int i = 0; i < p.Length; ++i) {
@@ -264,18 +261,15 @@ namespace System.Diagnostics {
 				if (pt.IsGenericType && ! pt.IsGenericTypeDefinition)
 					pt = pt.GetGenericTypeDefinition ();
 
-				if (pt.IsClass && !String.IsNullOrEmpty (pt.Namespace)) {
-					sb.Append (pt.Namespace);
-					sb.Append (".");
-				}
-				sb.Append (pt.Name);
+				sb.Append (pt.ToString());
+
 				if (p [i].Name != null) {
 					sb.Append (" ");
 					sb.Append (p [i].Name);
 				}
 			}
 			sb.Append (")");
-		}
+		}		
 
 		public override string ToString ()
 		{

@@ -3,18 +3,7 @@
  *
  * Copyright (C) 2014 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include "config.h"
@@ -37,6 +26,7 @@
 #include "metadata/handle.h"
 #include "utils/mono-memory-model.h"
 #include "utils/mono-logger-internals.h"
+#include "sgen/sgen-thread-pool.h"
 
 #ifdef HEAVY_STATISTICS
 static guint64 stat_wbarrier_set_arrayref = 0;
@@ -907,11 +897,11 @@ mono_gc_clear_domain (MonoDomain * domain)
 	major_collector.iterate_objects (ITERATE_OBJECTS_SWEEP_PINNED, (IterateObjectCallbackFunc)clear_domain_free_major_pinned_object_callback, domain);
 
 	if (domain == mono_get_root_domain ()) {
-		sgen_pin_stats_print_class_stats ();
+		sgen_pin_stats_report ();
 		sgen_object_layout_dump (stdout);
 	}
 
-	sgen_restart_world (0, NULL);
+	sgen_restart_world (0);
 
 	binary_protocol_domain_unload_end (domain);
 	binary_protocol_flush_buffers (FALSE);
@@ -1252,16 +1242,14 @@ create_allocator (int atype, gboolean slowpath)
 		g_assert_not_reached ();
 	}
 
-	if (atype != ATYPE_SMALL) {
-		/* size += ALLOC_ALIGN - 1; */
-		mono_mb_emit_ldloc (mb, size_var);
-		mono_mb_emit_icon (mb, SGEN_ALLOC_ALIGN - 1);
-		mono_mb_emit_byte (mb, CEE_ADD);
-		/* size &= ~(ALLOC_ALIGN - 1); */
-		mono_mb_emit_icon (mb, ~(SGEN_ALLOC_ALIGN - 1));
-		mono_mb_emit_byte (mb, CEE_AND);
-		mono_mb_emit_stloc (mb, size_var);
-	}
+	/* size += ALLOC_ALIGN - 1; */
+	mono_mb_emit_ldloc (mb, size_var);
+	mono_mb_emit_icon (mb, SGEN_ALLOC_ALIGN - 1);
+	mono_mb_emit_byte (mb, CEE_ADD);
+	/* size &= ~(ALLOC_ALIGN - 1); */
+	mono_mb_emit_icon (mb, ~(SGEN_ALLOC_ALIGN - 1));
+	mono_mb_emit_byte (mb, CEE_AND);
+	mono_mb_emit_stloc (mb, size_var);
 
 	/* if (size > MAX_SMALL_OBJ_SIZE) goto slowpath */
 	if (atype != ATYPE_SMALL) {
@@ -1360,14 +1348,6 @@ create_allocator (int atype, gboolean slowpath)
 		mono_mb_emit_byte (mb, MONO_CEE_ADD);
 		mono_mb_emit_ldarg (mb, 1);
 		mono_mb_emit_byte (mb, MONO_CEE_STIND_I4);
-		/* s->chars [len] = 0; */
-		mono_mb_emit_ldloc (mb, p_var);
-		mono_mb_emit_ldloc (mb, size_var);
-		mono_mb_emit_icon (mb, 2);
-		mono_mb_emit_byte (mb, MONO_CEE_SUB);
-		mono_mb_emit_byte (mb, MONO_CEE_ADD);
-		mono_mb_emit_icon (mb, 0);
-		mono_mb_emit_byte (mb, MONO_CEE_STIND_I2);
 	}
 
 	/*
@@ -1591,7 +1571,7 @@ find_next_card (guint8 *card_data, guint8 *end)
 #define ARRAY_OBJ_INDEX(ptr,array,elem_size) (((char*)(ptr) - ((char*)(array) + G_STRUCT_OFFSET (MonoArray, vector))) / (elem_size))
 
 gboolean
-sgen_client_cardtable_scan_object (GCObject *obj, mword block_obj_size, guint8 *cards, gboolean mod_union, ScanCopyContext ctx)
+sgen_client_cardtable_scan_object (GCObject *obj, mword block_obj_size, guint8 *cards, ScanCopyContext ctx)
 {
 	MonoVTable *vt = SGEN_LOAD_VTABLE (obj);
 	MonoClass *klass = vt->klass;
@@ -1671,20 +1651,11 @@ LOOP_HEAD:
 				for (; elem < card_end; elem += elem_size)
 					scan_vtype_func (obj, elem, desc, ctx.queue BINARY_PROTOCOL_ARG (elem_size));
 			} else {
-				CopyOrMarkObjectFunc copy_func = ctx.ops->copy_or_mark_object;
+				ScanPtrFieldFunc scan_ptr_field_func = ctx.ops->scan_ptr_field;
 
 				HEAVY_STAT (++los_array_cards);
-				for (; elem < card_end; elem += SIZEOF_VOID_P) {
-					GCObject *new_;
-					gpointer old = *(gpointer*)elem;
-					if ((mod_union && old) || G_UNLIKELY (sgen_ptr_in_nursery (old))) {
-						HEAVY_STAT (++los_array_remsets);
-						copy_func ((GCObject**)elem, ctx.queue);
-						new_ = *(GCObject **)elem;
-						if (G_UNLIKELY (sgen_ptr_in_nursery (new_)))
-							sgen_add_to_global_remset (elem, new_);
-					}
-				}
+				for (; elem < card_end; elem += SIZEOF_VOID_P)
+					scan_ptr_field_func (obj, (GCObject**)elem, ctx.queue);
 			}
 
 			binary_protocol_card_scan (first_elem, elem - first_elem);
@@ -2212,11 +2183,7 @@ sgen_client_thread_register (SgenThreadInfo* info, void *stack_bottom_fallback)
 		info->client_info.stack_end = (char*)stack_bottom;
 	}
 
-#ifdef USE_MONO_CTX
 	memset (&info->client_info.ctx, 0, sizeof (MonoContext));
-#else
-	memset (&info->client_info.regs, 0, sizeof (info->client_info.regs));
-#endif
 
 	if (mono_gc_get_gc_callbacks ()->thread_attach_func)
 		info->client_info.runtime_data = mono_gc_get_gc_callbacks ()->thread_attach_func ();
@@ -2286,7 +2253,7 @@ static void
 sgen_thread_detach (SgenThreadInfo *p)
 {
 	/* If a delegate is passed to native code and invoked on a thread we dont
-	 * know about, the jit will register it with mono_jit_thread_attach, but
+	 * know about, marshal will register it with mono_threads_attach_coop, but
 	 * we have no way of knowing when that thread goes away.  SGen has a TSD
 	 * so we assume that if the domain is still registered, we can detach
 	 * the thread
@@ -2317,6 +2284,7 @@ void
 sgen_client_thread_register_worker (void)
 {
 	mono_thread_info_register_small_id ();
+	mono_native_thread_set_name (mono_native_thread_id_get (), "SGen worker");
 }
 
 /* Variables holding start/end nursery so it won't have to be passed at every call */
@@ -2347,7 +2315,7 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 
 	FOREACH_THREAD (info) {
 		int skip_reason = 0;
-		void *aligned_stack_start = (void*)(mword) ALIGN_TO ((mword)info->client_info.stack_start, SIZEOF_VOID_P);
+		void *aligned_stack_start;
 
 		if (info->client_info.skip) {
 			SGEN_LOG (3, "Skipping dead thread %p, range: %p-%p, size: %zd", info, info->client_info.stack_start, info->client_info.stack_end, (char*)info->client_info.stack_end - (char*)info->client_info.stack_start);
@@ -2358,12 +2326,20 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 		} else if (!mono_thread_info_is_live (info)) {
 			SGEN_LOG (3, "Skipping non-running thread %p, range: %p-%p, size: %zd (state %x)", info, info->client_info.stack_start, info->client_info.stack_end, (char*)info->client_info.stack_end - (char*)info->client_info.stack_start, info->client_info.info.thread_state);
 			skip_reason = 3;
+		} else if (!info->client_info.stack_start) {
+			SGEN_LOG (3, "Skipping starting or detaching thread %p", info);
+			skip_reason = 4;
 		}
 
 		binary_protocol_scan_stack ((gpointer)mono_thread_info_get_tid (info), info->client_info.stack_start, info->client_info.stack_end, skip_reason);
 
 		if (skip_reason)
 			continue;
+
+		g_assert (info->client_info.stack_start);
+		g_assert (info->client_info.stack_end);
+
+		aligned_stack_start = (void*)(mword) ALIGN_TO ((mword)info->client_info.stack_start, SIZEOF_VOID_P);
 
 		g_assert (info->client_info.suspend_done);
 		SGEN_LOG (3, "Scanning thread %p, range: %p-%p, size: %zd, pinned=%zd", info, info->client_info.stack_start, info->client_info.stack_end, (char*)info->client_info.stack_end - (char*)info->client_info.stack_start, sgen_get_pinned_count ());
@@ -2378,13 +2354,9 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 		}
 
 		if (!precise) {
-#ifdef USE_MONO_CTX
 			sgen_conservatively_pin_objects_from ((void**)&info->client_info.ctx, (void**)(&info->client_info.ctx + 1),
 				start_nursery, end_nursery, PIN_TYPE_STACK);
-#else
-			sgen_conservatively_pin_objects_from ((void**)&info->client_info.regs, (void**)&info->client_info.regs + ARCH_NUM_REGS,
-					start_nursery, end_nursery, PIN_TYPE_STACK);
-#endif
+
 			{
 				// This is used on Coop GC for platforms where we cannot get the data for individual registers.
 				// We force a spill of all registers into the stack and pass a chunk of data into sgen.
@@ -2745,37 +2717,6 @@ sgen_client_degraded_allocation (size_t size)
 	}
 }
 
-void
-sgen_client_log_timing (GGTimingInfo *info, mword last_major_num_sections, mword last_los_memory_usage)
-{
-	SgenMajorCollector *major_collector = sgen_get_major_collector ();
-	mword num_major_sections = major_collector->get_num_major_sections ();
-	char full_timing_buff [1024];
-	full_timing_buff [0] = '\0';
-
-	if (!info->is_overflow)
-	        sprintf (full_timing_buff, "total %.2fms, bridge %.2fms", info->stw_time / 10000.0f, (int)info->bridge_time / 10000.0f);
-	if (info->generation == GENERATION_OLD)
-	        mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR%s: (%s) pause %.2fms, %s major %dK/%dK los %dK/%dK",
-	                info->is_overflow ? "_OVERFLOW" : "",
-	                info->reason ? info->reason : "",
-	                (int)info->total_time / 10000.0f,
-	                full_timing_buff,
-	                major_collector->section_size * num_major_sections / 1024,
-	                major_collector->section_size * last_major_num_sections / 1024,
-	                los_memory_usage / 1024,
-	                last_los_memory_usage / 1024);
-	else
-	        mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MINOR%s: (%s) pause %.2fms, %s promoted %dK major %dK los %dK",
-	        		info->is_overflow ? "_OVERFLOW" : "",
-	                info->reason ? info->reason : "",
-	                (int)info->total_time / 10000.0f,
-	                full_timing_buff,
-	                (num_major_sections - last_major_num_sections) * major_collector->section_size / 1024,
-	                major_collector->section_size * num_major_sections / 1024,
-	                los_memory_usage / 1024);
-}
-
 /*
  * Debugging
  */
@@ -2957,9 +2898,14 @@ sgen_client_describe_invalid_pointer (GCObject *ptr)
 	sgen_bridge_describe_pointer (ptr);
 }
 
+static gboolean gc_inited;
+
 void
 mono_gc_base_init (void)
 {
+	if (gc_inited)
+		return;
+
 	mono_counters_init ();
 
 #ifdef HEAVY_STATISTICS
@@ -2982,11 +2928,14 @@ mono_gc_base_init (void)
 	if (mono_tls_key_get_offset (TLS_KEY_SGEN_TLAB_NEXT_ADDR) == -1)
 		sgen_set_use_managed_allocator (FALSE);
 #endif
+
+	gc_inited = TRUE;
 }
 
 void
 mono_gc_base_cleanup (void)
 {
+	sgen_thread_pool_shutdown ();
 }
 
 gboolean

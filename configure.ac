@@ -1,7 +1,8 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [4.5.0],
+# when bumping version number below, keep it in sync with man/mono.1 too
+AC_INIT(mono, [4.5.2],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -92,11 +93,11 @@ case "$host" in
 		host_win32=yes
 		mono_cv_clang=no
 		if test "x$cross_compiling" = "xno"; then
-			if test "x$host" == "x$build" -a "x$host" == "x$target"; then
+			if test "x$host" = "x$build" -a "x$host" = "x$target"; then
 				target_win32=yes
 			fi
 		else
-			if test "x$host" == "x$target"; then
+			if test "x$host" = "x$target"; then
 				target_win32=yes
 			fi
 		fi
@@ -272,8 +273,6 @@ case "$host" in
 		need_link_unlink=yes
 		libmono_cflags="-D_REENTRANT"
 		libgc_threads=pthreads
-		# This doesn't seem to work on solaris/x86, but the configure test runs
-		with_tls=pthread
 		has_dtrace=yes
 		use_sigposix=yes
 		enable_solaris_tar_check=yes
@@ -929,15 +928,8 @@ if test x$has_extension_module != xno ; then
 	AC_MSG_NOTICE([Enabling mono extension module.])
 fi
 
-AC_ARG_ENABLE(gsharedvt, [  --enable-gsharedvt Enable generic valuetype sharing], enable_gsharedvt=$enableval, enable_gsharedvt=no)
-if test x$enable_gsharedvt = xyes; then
-	AC_DEFINE(ENABLE_GSHAREDVT,1,[Gsharedvt])
-fi
-
-AC_ARG_ENABLE(native-types, [  --enable-native-types Enable native types], enable_native_types=$enableval, enable_native_types=no)
-if test x$enable_native_types = xyes; then
-	AC_DEFINE(MONO_NATIVE_TYPES,1,[native types])
-fi
+# Deprecated
+AC_ARG_ENABLE(gsharedvt, [  --enable-gsharedvt Enable generic valuetype sharing (Deprecated)], enable_gsharedvt=$enableval, enable_gsharedvt=no)
 
 AC_MSG_CHECKING(for visibility __attribute__)
 AC_COMPILE_IFELSE([
@@ -1083,6 +1075,7 @@ if test x$host_win32 = xno; then
 
 	dnl hires monotonic clock support
 	AC_SEARCH_LIBS(clock_gettime, rt)
+	AC_CHECK_FUNCS(clock_nanosleep)
 
 	dnl dynamic loader support
 	AC_CHECK_FUNC(dlopen, DL_LIB="",
@@ -2324,6 +2317,9 @@ else
 		#include <winsock2.h>
 		#include <ws2tcpip.h>
 	], [
+		#ifndef inet_pton
+		(void) inet_pton;
+		#endif
 		inet_pton (0, NULL, NULL);
 	], [
 		# Yes, we have it...
@@ -2456,7 +2452,7 @@ fi
 AC_ARG_ENABLE(bcl-opt, [  --disable-bcl-opt	BCL is compiled with no optimizations (allows accurate BCL debugging)], test_bcl_opt=$enableval, test_bcl_opt=yes)
 
 AC_ARG_ENABLE(perf-events, [  --enable-perf-events Enable using `perf` for profiling on Linux], test_perf_events=$enableval, test_perf_events=no)
-if test "x$test_perf_events" == "xyes"; then
+if test "x$test_perf_events" = "xyes"; then
 	AC_DEFINE(ENABLE_PERF_EVENTS, 1, [Enable using `perf` for profiling on Linux])
 	AC_SUBST(ENABLE_PERF_EVENTS)
 fi
@@ -2554,9 +2550,6 @@ if test "x$enable_nacl_codegen" = "xyes"; then
    MONO_NACL_ALIGN_MASK_OFF=1
    AC_DEFINE(TARGET_NACL, 1, [...])
    AC_DEFINE(__native_client_codegen__, 1, [...])
-else
-   MONO_NACL_ALIGN_MASK_OFF=0
-   AC_DEFINE(__default_codegen__, 1, [...])
 fi
 if test "x$enable_nacl_gc" = "xyes"; then
    if test "x$TARGET" = "xAMD64" -o "x$TARGET" = "xX86"; then
@@ -2618,7 +2611,7 @@ if test "x$enable_llvm" = "xyes"; then
    AC_MSG_CHECKING(LLVM version)
    AC_MSG_RESULT($llvm_version $llvm_api_version)
    if echo $llvm_version | grep -q 'mono'; then
-	  if test "x$enable_llvm_version_check" == "xyes"; then
+	  if test "x$enable_llvm_version_check" = "xyes"; then
 	  	 if test "$llvm_version" != "$expected_llvm_version"; then
 		 	AC_MSG_ERROR([Expected llvm version $expected_llvm_version, but llvm-config --version returned $llvm_version"])
 	  	 fi
@@ -2653,7 +2646,7 @@ if test "x$enable_llvm" = "xyes"; then
       llvm_jit_libs=""
    fi
    LLVM_LIBS=`$LLVM_CONFIG --libs analysis core bitwriter $llvm_jit_libs`
-   if test "x$LLVM_LIBS" == "x"; then
+   if test "x$LLVM_LIBS" = "x"; then
    	  echo "$LLVM_CONFIG --libs failed."
 	  exit 1
    fi
@@ -2878,6 +2871,7 @@ case "$host" in
 		TARGET=ARM;
 		TARGET_SYS=WATCHOS
 		arch_target=arm;
+		arm_fpu=VFP_HARD
 		ACCESS_UNALIGNED="no"
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
 		;;
@@ -2895,6 +2889,12 @@ case "$host" in
 		AOT_SUPPORTED="yes"
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
 		;;
+	arm*-netbsd*-eabi*)
+		TARGET=ARM;
+		arch_target=arm;
+		ACCESS_UNALIGNED="no"
+		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
+		;;
 # TODO: make proper support for NaCl host.
 #        arm*-*nacl)
 #		TARGET=ARM;
@@ -2907,6 +2907,7 @@ case "$host" in
 		TARGET=ARM64
 		arch_target=arm64
 		boehm_supported=false
+		AOT_SUPPORTED="yes"
 		;;
 	s390x-*-linux*)
 		TARGET=S390X;
@@ -2932,6 +2933,7 @@ if test "x$host" != "x$target"; then
 		with_tls=pthread
 		case "$target" in
 		armv7k-*)
+			arm_fpu=VFP_HARD
 			AC_DEFINE(TARGET_WATCHOS, 1, [...])
 			;;
 		esac		
@@ -3008,6 +3010,17 @@ if test "x$host" != "x$target"; then
 			CPPFLAGS="$CPPFLAGS"
 			;;
 		esac
+		;;
+   arm*-netbsd*-eabi*)
+		TARGET=ARM;
+		arch_target=arm;
+		AC_DEFINE(TARGET_ARM, 1, [...])
+		ACCESS_UNALIGNED="no"
+		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
+		# Can't use tls, since it depends on the runtime detection of tls offsets
+		# in mono-compiler.h
+		with_tls=pthread
+		target_mach=no
 		;;
    i686*-linux-*)
 		TARGET=X86;
@@ -3270,8 +3283,10 @@ case "$host" in
 	GTKX11="libgtk-x11-2.0.dylib"
 	;;
      *-*-*netbsd*)
-	LIBC="libc.so.12"
-	INTL="libintl.so.0"
+	LIBC="libc.so"
+	INTL="libintl.so"
+	SQLITE="libsqlite.so"
+	SQLITE3="libsqlite3.so"
 	;;
      *-*-kfreebsd*-gnu)
 	LIBC="libc.so.0.1"
@@ -3319,6 +3334,12 @@ AC_ARG_WITH([libgdiplus],
 
 # default install location
 libgdiplus_install_loc=libgdiplus${libsuffix}
+case "$host" in
+    *-*-*linux*)
+    libgdiplus_install_loc=libgdiplus${libsuffix}.0
+    ;;
+esac
+
 case $with_libgdiplus in
     no|installed)
     libgdiplus_loc=
@@ -3427,6 +3448,10 @@ if test ${TARGET} = ARM; then
 		])
 	fi
 
+	if test x$arm_fpu != x; then
+	   fpu=$arm_fpu
+	fi
+
 	AC_MSG_RESULT($fpu)
 	CPPFLAGS="$CPPFLAGS -DARM_FPU_$fpu=1"
 	unset fpu
@@ -3490,12 +3515,6 @@ if test ${TARGET} = ARM; then
 	fi
 fi
 
-if test ${TARGET} = ARM; then
-	if test "x${with_jumptables}" = "xyes"; then
-                AC_DEFINE(USE_JUMP_TABLES, 1, Use jump tables in JIT)
-        fi
-fi
-
 if test ${TARGET} = unknown; then
 	CPPFLAGS="$CPPFLAGS -DNO_PORT"
 	AC_MSG_WARN("mono has not been ported to $host: some things may not work.")
@@ -3538,20 +3557,6 @@ AC_ARG_WITH(bitcode,         [  --with-bitcode=yes,no           If bitcode is en
 AC_ARG_WITH(xammac,          [  --with-xammac=yes,no            If you want to build the Xamarin.Mac assemblies (defaults to no)],    [], [with_xammac=no])
 AC_ARG_WITH(mobile_static,   [  --with-mobile_static=yes,no     If you want to build the mobile_static assemblies (defaults to no)],  [], [with_mobile_static=no])
 
-OPROFILE=no
-AC_ARG_WITH(oprofile,[  --with-oprofile=no,<oprofile install dir>   Enable oprofile support (defaults to no)],[
-	if test x$with_oprofile != xno; then
-	    oprofile_include=$with_oprofile/include
-	    if test ! -f $oprofile_include/opagent.h; then
-	   	  AC_MSG_ERROR([oprofile include file not found at $oprofile_include/opagent.h])
-		fi
-	    OPROFILE=yes
-		OPROFILE_CFLAGS="-I$oprofile_include"
-	    OPROFILE_LIBS="-L$with_oprofile/lib/oprofile -lopagent"
-	    AC_DEFINE(HAVE_OPROFILE,1,[Have oprofile support])
-	fi
-])
-
 MALLOC_MEMPOOLS=no
 AC_ARG_WITH(malloc_mempools,[  --with-malloc-mempools=yes,no  Use malloc for each single mempool allocation (only for runtime debugging, defaults to no)],[
 	if test x$with_malloc_mempools = xyes; then
@@ -3582,6 +3587,8 @@ AC_ARG_WITH(cooperative_gc, [  --with-cooperative-gc=yes|no      Enable cooperat
 		AC_DEFINE(USE_COOP_GC,1,[Enable cooperative stop-the-world garbage collection.])
 	fi
 ], [with_cooperative_gc=no])
+
+AM_CONDITIONAL([ENABLE_COOP], [test x$with_cooperative_gc != xno])
 
 AC_ARG_ENABLE(checked_build, [  --enable-checked-build=LIST      To enable checked build (expensive asserts), configure with a comma-separated LIST of checked build modules and then include that same list in the environment variable MONO_CHECK_MODE at runtime. Recognized checked build modules: all, gc, metadata, thread],[
 
@@ -3660,10 +3667,6 @@ AC_SUBST(docs_dir)
 
 ## Maybe should also disable if mcsdir is invalid.  Let's punt the issue for now.
 AM_CONDITIONAL(BUILD_MCS, [test x$cross_compiling = xno && test x$enable_mcs_build != xno])
-
-AM_CONDITIONAL(HAVE_OPROFILE, test x$OPROFILE = xyes)
-AC_SUBST(OPROFILE_CFLAGS)
-AC_SUBST(OPROFILE_LIBS)
 
 libmono_ldflags="$libmono_ldflags $LIBS"
 
@@ -4063,10 +4066,6 @@ fi
     if test x$has_extension_module != xno; then
         echo "EXTENSION_MODULE = 1" >> $srcdir/$mcsdir/build/config.make
     fi
-
-    if test x$enable_gsharedvt = xno; then
-        echo "MONO_DISABLE_GSHAREDVT = 1" >> $srcdir/$mcsdir/build/config.make
-    fi
     
     echo "DEFAULT_PROFILE = $default_profile" >> $srcdir/$mcsdir/build/config.make
     
@@ -4090,7 +4089,6 @@ echo "
 	TLS:           $with_tls
 	SIGALTSTACK:   $with_sigaltstack
 	Engine:        $jit_status
-	oprofile:      $OPROFILE
 	BigArrays:     $enable_big_arrays
 	DTrace:        $enable_dtrace
 	LLVM Back End: $enable_llvm (dynamically loaded: $enable_loadedllvm)

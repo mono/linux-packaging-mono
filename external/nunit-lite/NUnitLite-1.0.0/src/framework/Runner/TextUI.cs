@@ -159,7 +159,7 @@ namespace NUnitLite.Runner
                         try {
                             assemblies.Add(Assembly.LoadFrom(name));
                         } 
-			catch (FileNotFoundException e) {
+			catch (FileNotFoundException/* e*/) {
                             assemblies.Add(Assembly.Load(name));
 			}
                     }
