@@ -412,7 +412,7 @@ namespace System.Runtime.InteropServices
 			var errorInfo = new ManagedErrorInfo(e);
 			SetErrorInfo (0, errorInfo);
 
-			return e.hresult;
+			return e._HResult;
 #else			
 			return -1;
 #endif
@@ -1591,7 +1591,7 @@ namespace System.Runtime.InteropServices
 				}
 			}
 
-			if (info is ManagedErrorInfo && ((ManagedErrorInfo) info).Exception.hresult == errorCode) {
+			if (info is ManagedErrorInfo && ((ManagedErrorInfo) info).Exception._HResult == errorCode) {
 				return ((ManagedErrorInfo) info).Exception;
 			}
 
@@ -1663,6 +1663,10 @@ namespace System.Runtime.InteropServices
 				throw new ArgumentNullException ("d");
 			
 			return GetFunctionPointerForDelegateInternal ((Delegate)(object)d);
+		}
+
+		internal static void SetLastWin32Error (int error)
+		{
 		}
 	}
 }

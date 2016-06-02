@@ -1,5 +1,6 @@
 # Copyright 2003-2011 Novell, Inc (http://www.novell.com)
 # Copyright 2011 Xamarin, Inc (http://www.xamarin.com)
+# Licensed under the MIT license. See LICENSE file in the project root for full license information.
 # arm cpu description file
 # this file is read by genmdesc to pruduce a table with all the relevant information
 # about the cpu instructions that may be used by the regsiter allocator, the scheduler
@@ -361,7 +362,7 @@ long_conv_to_ovf_i4_2: dest:i src1:i src2:i len:36
 vcall2: len:64 clob:c
 vcall2_reg: src1:i len:64 clob:c
 vcall2_membase: src1:b len:64 clob:c
-dyn_call: src1:i src2:i len:136 clob:c
+dyn_call: src1:i src2:i len:252 clob:c
 
 # This is different from the original JIT opcodes
 float_beq: len:32

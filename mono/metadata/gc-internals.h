@@ -5,6 +5,7 @@
  *
  * (C) 2002 Ximian, Inc.
  * Copyright 2012 Xamarin Inc (http://www.xamarin.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #ifndef __MONO_METADATA_GC_INTERNAL_H__
@@ -65,7 +66,7 @@
 /* useful until we keep track of gc-references in corlib etc. */
 #define IS_GC_REFERENCE(class,t) (mono_gc_is_moving () ? FALSE : ((t)->type == MONO_TYPE_U && (class)->image == mono_defaults.corlib))
 
-void   mono_object_register_finalizer               (MonoObject  *obj, MonoError *error);
+void   mono_object_register_finalizer               (MonoObject  *obj);
 void   ves_icall_System_GC_InternalCollect          (int          generation);
 gint64 ves_icall_System_GC_GetTotalMemory           (MonoBoolean  forceCollection);
 void   ves_icall_System_GC_KeepAlive                (MonoObject  *obj);

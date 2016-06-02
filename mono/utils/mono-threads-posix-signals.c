@@ -36,8 +36,8 @@ static sigset_t suspend_ack_signal_mask;
 //Can't avoid the circular dep on this. Will be gone pretty soon
 extern int mono_gc_get_suspend_signal (void);
 
-static int
-signal_search_alternative (int min_signal)
+int
+mono_threads_posix_signal_search_alternative (int min_signal)
 {
 #if !defined (SIGRTMIN)
 	g_error ("signal search only works with RTMIN");
@@ -88,7 +88,7 @@ suspend_signal_get (void)
 #else
 	static int suspend_signum = -1;
 	if (suspend_signum == -1)
-		suspend_signum = signal_search_alternative (-1);
+		suspend_signum = mono_threads_posix_signal_search_alternative (-1);
 	return suspend_signum;
 #endif /* SIGRTMIN */
 }
@@ -107,7 +107,7 @@ restart_signal_get (void)
 #else
 	static int resume_signum = -1;
 	if (resume_signum == -1)
-		resume_signum = signal_search_alternative (suspend_signal_get () + 1);
+		resume_signum = mono_threads_posix_signal_search_alternative (suspend_signal_get () + 1);
 	return resume_signum;
 #endif /* SIGRTMIN */
 }
@@ -127,7 +127,7 @@ abort_signal_get (void)
 #else
 	static int abort_signum = -1;
 	if (abort_signum == -1)
-		abort_signum = signal_search_alternative (restart_signal_get () + 1);
+		abort_signum = mono_threads_posix_signal_search_alternative (restart_signal_get () + 1);
 	return abort_signum;
 #endif /* SIGRTMIN */
 }
@@ -160,10 +160,10 @@ suspend_signal_handler (int _dummy, siginfo_t *info, void *context)
 	MonoThreadInfo *current = mono_thread_info_current ();
 	gboolean ret;
 
-	THREADS_SUSPEND_DEBUG ("SIGNAL HANDLER FOR %p [%p]\n", current, (void*)current->native_handle);
+	THREADS_SUSPEND_DEBUG ("SIGNAL HANDLER FOR %p [%p]\n", mono_thread_info_get_tid (current), (void*)current->native_handle);
 	if (current->syscall_break_signal) {
 		current->syscall_break_signal = FALSE;
-		THREADS_SUSPEND_DEBUG ("\tsyscall break for %p\n", current);
+		THREADS_SUSPEND_DEBUG ("\tsyscall break for %p\n", mono_thread_info_get_tid (current));
 		mono_threads_notify_initiator_of_abort (current);
 		goto done;
 	}
@@ -171,25 +171,27 @@ suspend_signal_handler (int _dummy, siginfo_t *info, void *context)
 	/* Have we raced with self suspend? */
 	if (!mono_threads_transition_finish_async_suspend (current)) {
 		current->suspend_can_continue = TRUE;
-		THREADS_SUSPEND_DEBUG ("\tlost race with self suspend %p\n", current);
+		THREADS_SUSPEND_DEBUG ("\tlost race with self suspend %p\n", mono_thread_info_get_tid (current));
 		goto done;
 	}
 
-	ret = mono_threads_get_runtime_callbacks ()->thread_state_init_from_sigctx (&current->thread_saved_state [ASYNC_SUSPEND_STATE_INDEX], context);
+	/*
+	 * If the thread is starting, then thread_state_init_from_sigctx returns FALSE,
+	 * as the thread might have been attached without the domain or lmf having been
+	 * initialized yet.
+	 *
+	 * One way to fix that is to keep the thread suspended (wait for the restart
+	 * signal), and make sgen aware that even if a thread might be suspended, there
+	 * would be cases where you cannot scan its stack/registers. That would in fact
+	 * consist in removing the async suspend compensation, and treat the case directly
+	 * in sgen. That's also how it was done in the sgen specific suspend code.
+	 */
 
-	/* thread_state_init_from_sigctx return FALSE if the current thread is detaching and suspend can't continue. */
-	current->suspend_can_continue = ret;
+	/* thread_state_init_from_sigctx return FALSE if the current thread is starting or detaching and suspend can't continue. */
+	current->suspend_can_continue = mono_threads_get_runtime_callbacks ()->thread_state_init_from_sigctx (&current->thread_saved_state [ASYNC_SUSPEND_STATE_INDEX], context);
 
-	/* This thread is doomed, all we can do is give up and let the suspender recover. */
-	if (!ret) {
-		THREADS_SUSPEND_DEBUG ("\tThread is dying, failed to capture state %p\n", current);
-		mono_threads_transition_async_suspend_compensation (current);
-
-		/* We're done suspending */
-		mono_threads_notify_initiator_of_suspend (current);
-
-		goto done;
-	}
+	if (!current->suspend_can_continue)
+		THREADS_SUSPEND_DEBUG ("\tThread is starting or detaching, failed to capture state %p\n", mono_thread_info_get_tid (current));
 
 	/*
 	Block the restart signal.

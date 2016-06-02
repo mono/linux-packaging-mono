@@ -30,6 +30,7 @@
 //
 using System;
 using System.Text;
+using System.Threading;
 using System.Runtime.InteropServices;
 #if !NET_2_1
 using System.Security.Permissions;
@@ -40,6 +41,14 @@ namespace System.Security.Cryptography.X509Certificates
 {
 	static partial class X509Helper
 	{
+		static INativeCertificateHelper nativeHelper;
+
+		internal static void InstallNativeHelper (INativeCertificateHelper helper)
+		{
+			if (nativeHelper == null)
+				Interlocked.CompareExchange (ref nativeHelper, helper, null);
+		}
+
 #if !NET_2_1
 		// typedef struct _CERT_CONTEXT {
 		//	DWORD                   dwCertEncodingType;
@@ -76,6 +85,14 @@ namespace System.Security.Cryptography.X509Certificates
 			throw new NotSupportedException ();
 		}
 #endif
+
+		public static X509CertificateImpl InitFromCertificate (X509Certificate cert)
+		{
+			if (nativeHelper != null)
+				return nativeHelper.Import (cert);
+
+			return InitFromCertificate (cert.Impl);
+		}
 
 		public static X509CertificateImpl InitFromCertificate (X509CertificateImpl impl)
 		{
@@ -131,37 +148,72 @@ namespace System.Security.Cryptography.X509Certificates
 			}
 		}
 
+		static byte[] PEM (string type, byte[] data)
+		{
+			string pem = Encoding.ASCII.GetString (data);
+			string header = String.Format ("-----BEGIN {0}-----", type);
+			string footer = String.Format ("-----END {0}-----", type);
+			int start = pem.IndexOf (header) + header.Length;
+			int end = pem.IndexOf (footer, start);
+			string base64 = pem.Substring (start, (end - start));
+			return Convert.FromBase64String (base64);
+		}
+
+		static byte[] ConvertData (byte[] data)
+		{
+			if (data == null || data.Length == 0)
+				return data;
+
+			// does it looks like PEM ?
+			if (data [0] != 0x30) {
+				try {
+					return PEM ("CERTIFICATE", data);
+				} catch {
+					// let the implementation take care of it.
+				}
+			}
+			return data;
+		}
+
 #if !MONOTOUCH && !XAMMAC
-		public static X509CertificateImpl Import (byte[] rawData, string password, X509KeyStorageFlags keyStorageFlags)
+		static X509CertificateImpl Import (byte[] rawData)
 		{
 			MX.X509Certificate x509;
-			if (password == null) {
+			try {
+				x509 = new MX.X509Certificate (rawData);
+			} catch (Exception e) {
 				try {
-					x509 = new MX.X509Certificate (rawData);
-				} catch (Exception e) {
-					try {
-						x509 = ImportPkcs12 (rawData, null);
-					} catch {
-						string msg = Locale.GetText ("Unable to decode certificate.");
-						// inner exception is the original (not second) exception
-						throw new CryptographicException (msg, e);
-					}
-				}
-			} else {
-				// try PKCS#12
-				try {
-					x509 = ImportPkcs12 (rawData, password);
-				}
-				catch {
-					// it's possible to supply a (unrequired/unusued) password
-					// fix bug #79028
-					x509 = new MX.X509Certificate (rawData);
+					x509 = ImportPkcs12 (rawData, null);
+				} catch {
+					string msg = Locale.GetText ("Unable to decode certificate.");
+					// inner exception is the original (not second) exception
+					throw new CryptographicException (msg, e);
 				}
 			}
 
 			return new X509CertificateImplMono (x509);
 		}
 #endif
+
+		public static X509CertificateImpl Import (byte[] rawData, string password, X509KeyStorageFlags keyStorageFlags)
+		{
+			if (password == null) {
+				rawData = ConvertData (rawData);
+				return Import (rawData);
+			}
+
+			MX.X509Certificate x509;
+			// try PKCS#12
+			try {
+				x509 = ImportPkcs12 (rawData, password);
+			} catch {
+				// it's possible to supply a (unrequired/unusued) password
+				// fix bug #79028
+				x509 = new MX.X509Certificate (rawData);
+			}
+
+			return new X509CertificateImplMono (x509);
+		}
 
 		public static byte[] Export (X509CertificateImpl impl, X509ContentType contentType, byte[] password)
 		{

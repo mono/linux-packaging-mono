@@ -469,8 +469,13 @@ namespace Mono.CSharp {
 			return false;
 		}
 
-		protected static TypeSpec LiftMemberType (ResolveContext rc, TypeSpec type)
+		protected TypeSpec LiftMemberType (ResolveContext rc, TypeSpec type)
 		{
+			var tps = type as TypeParameterSpec;
+			if (tps != null && !(tps.IsReferenceType || tps.IsValueType)) {
+				Error_OperatorCannotBeApplied (rc, loc, "?", type);
+			}
+
 			return TypeSpec.IsValueType (type) && !type.IsNullableType ?
 				Nullable.NullableInfo.MakeType (rc.Module, type) :
 				type;
@@ -1332,7 +1337,7 @@ namespace Mono.CSharp {
 		{
 		}
 
-		public ExpressionStatement ResolveStatement (BlockContext ec)
+		public virtual ExpressionStatement ResolveStatement (BlockContext ec)
 		{
 			Expression e = Resolve (ec);
 			if (e == null)
@@ -4477,8 +4482,8 @@ namespace Mono.CSharp {
 					//
 					// Uwrap delegate from Expression<T>
 					//
-					q = TypeManager.GetTypeArguments (q)[0];
-					p = TypeManager.GetTypeArguments (p)[0];
+					q = TypeManager.GetTypeArguments (q) [0];
+					p = TypeManager.GetTypeArguments (p) [0];
 				}
 
 				var p_m = Delegate.GetInvokeMethod (p);
@@ -4505,10 +4510,10 @@ namespace Mono.CSharp {
 				// if p has a return type Y, and q is void returning, then C1 is the better conversion.
 				//
 				if (q.Kind == MemberKind.Void) {
-					return p.Kind != MemberKind.Void ? 1: 0;
+					return p.Kind != MemberKind.Void ? 1 : 0;
 				}
 
-				var am = (AnonymousMethodExpression) a.Expr;
+				var am = (AnonymousMethodExpression)a.Expr;
 
 				//
 				// When anonymous method is an asynchronous, and P has a return type Task<Y1>, and Q has a return type Task<Y2>
@@ -4516,8 +4521,8 @@ namespace Mono.CSharp {
 				//
 				if (p.IsGenericTask || q.IsGenericTask) {
 					if (am.Block.IsAsync && p.IsGenericTask && q.IsGenericTask) {
-						q = q.TypeArguments[0];
-						p = p.TypeArguments[0];
+						q = q.TypeArguments [0];
+						p = p.TypeArguments [0];
 					}
 				}
 
@@ -4543,11 +4548,63 @@ namespace Mono.CSharp {
 			if (argument_type == q)
 				return 2;
 
-			//
-			// The parameters are identicial and return type is not void, use better type conversion
-			// on return type to determine better one
-			//
-			return BetterTypeConversion (ec, p, q);
+			return IsBetterConversionTarget (ec, p, q);
+		}
+
+		static int IsBetterConversionTarget (ResolveContext rc, TypeSpec p, TypeSpec q)
+		{
+			if ((p.Kind == MemberKind.Delegate || p.IsExpressionTreeType) && (q.Kind == MemberKind.Delegate || q.IsExpressionTreeType)) {
+
+				if (p.Kind != MemberKind.Delegate) {
+					p = TypeManager.GetTypeArguments (p) [0];
+				}
+
+				if (q.Kind != MemberKind.Delegate) {
+					q = TypeManager.GetTypeArguments (q) [0];
+				}
+
+				var p_m = Delegate.GetInvokeMethod (p);
+				var q_m = Delegate.GetInvokeMethod (q);
+
+				p = p_m.ReturnType;
+				q = q_m.ReturnType;
+
+				//
+				// if p is void returning, and q has a return type Y, then C2 is the better conversion.
+				//
+				if (p.Kind == MemberKind.Void) {
+					return q.Kind != MemberKind.Void ? 2 : 0;
+				}
+
+				//
+				// if p has a return type Y, and q is void returning, then C1 is the better conversion.
+				//
+				if (q.Kind == MemberKind.Void) {
+					return p.Kind != MemberKind.Void ? 1 : 0;
+				}
+
+				return IsBetterConversionTarget (rc, p, q);
+			}
+
+			if (p.IsGenericTask && q.IsGenericTask) {
+				q = q.TypeArguments [0];
+				p = p.TypeArguments [0];
+				return IsBetterConversionTarget (rc, p, q);
+			}
+
+			if (p.IsNullableType) {
+				p = Nullable.NullableInfo.GetUnderlyingType (p);
+				if (!BuiltinTypeSpec.IsPrimitiveType (p))
+					return 0;
+			}
+
+			if (q.IsNullableType) {
+				q = Nullable.NullableInfo.GetUnderlyingType (q);
+				if (!BuiltinTypeSpec.IsPrimitiveType (q))
+					return 0;
+			}
+
+			return BetterTypeConversion (rc, p, q);
 		}
 
 		//
@@ -4620,8 +4677,6 @@ namespace Mono.CSharp {
 				return 1;
 			}
 
-			// FIXME: handle lifted operators
-
 			// TODO: this is expensive
 			Expression p_tmp = new EmptyExpression (p);
 			Expression q_tmp = new EmptyExpression (q);
@@ -4647,13 +4702,15 @@ namespace Mono.CSharp {
 		///     false if candidate ain't better
 		///     true  if candidate is better than the current best match
 		/// </remarks>
-		static bool BetterFunction (ResolveContext ec, Arguments args, MemberSpec candidate, AParametersCollection cparam, bool candidate_params,
+		bool BetterFunction (ResolveContext ec, Arguments args, MemberSpec candidate, AParametersCollection cparam, bool candidate_params,
 			MemberSpec best, AParametersCollection bparam, bool best_params)
 		{
 			AParametersCollection candidate_pd = ((IParametersMember) candidate).Parameters;
 			AParametersCollection best_pd = ((IParametersMember) best).Parameters;
 
-			bool better_at_least_one = false;
+			int candidate_better_count = 0;
+			int best_better_count = 0;
+
 			bool are_equivalent = true;
 			int args_count = args == null ? 0 : args.Count;
 			int j = 0;
@@ -4704,28 +4761,52 @@ namespace Mono.CSharp {
 
 				// for each argument, the conversion to 'ct' should be no worse than 
 				// the conversion to 'bt'.
-				if (result == 2)
-					return false;
+				if (result == 2) {
+					//
+					// No optional parameters tie breaking rules for delegates overload resolution
+					//
+					if ((restrictions & Restrictions.CovariantDelegate) != 0)
+						return false;
+
+					++best_better_count;
+					continue;
+				}
 
 				// for at least one argument, the conversion to 'ct' should be better than 
 				// the conversion to 'bt'.
 				if (result != 0)
-					better_at_least_one = true;
+					++candidate_better_count;
 			}
 
-			if (better_at_least_one)
+			if (candidate_better_count != 0 && best_better_count == 0)
 				return true;
 
+			if (best_better_count > 0 && candidate_better_count == 0)
+				return false;
+
 			//
-			// Tie-breaking rules are applied only for equivalent parameter types
+			// LAMESPEC: Tie-breaking rules for not equivalent parameter types
 			//
 			if (!are_equivalent) {
+				while (j < args_count && !args [j++].IsDefaultArgument) ;
+
 				//
-				// LAMESPEC: A candidate with less default parameters is still better when there
+				// A candidate with no default parameters is still better when there
 				// is no better expression conversion
 				//
-				if (candidate_pd.Count < best_pd.Count && !candidate_params && best_pd.FixedParameters [j].HasDefaultValue) {
-					return true;
+				if (candidate_pd.Count < best_pd.Count) {
+					if (!candidate_params && !candidate_pd.FixedParameters [j - j].HasDefaultValue) {
+						return true;
+					}
+				} else if (candidate_pd.Count == best_pd.Count) {
+					if (candidate_params)
+						return false;
+
+					if (!candidate_pd.FixedParameters [j - 1].HasDefaultValue && best_pd.FixedParameters [j - 1].HasDefaultValue)
+						return true;
+
+					if (candidate_pd.FixedParameters [j - 1].HasDefaultValue && best_pd.HasParams)
+						return true;
 				}
 
 				return false;
@@ -4746,7 +4827,7 @@ namespace Mono.CSharp {
 				var cand_param = candidate_pd.FixedParameters [j];
 				var best_param = best_pd.FixedParameters [j];
 
-				if (cand_param.HasDefaultValue != best_param.HasDefaultValue)
+				if (cand_param.HasDefaultValue != best_param.HasDefaultValue && (!candidate_pd.HasParams || !best_pd.HasParams))
 					return cand_param.HasDefaultValue;
 
 				defaults_ambiguity = true;

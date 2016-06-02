@@ -1,5 +1,6 @@
 /*
  * Copyright 2011 Xamarin Inc
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #ifndef __MONO_MINI_ARM_H__
@@ -8,12 +9,6 @@
 #include <mono/arch/arm/arm-codegen.h>
 #include <mono/utils/mono-context.h>
 #include <glib.h>
-
-#ifdef __native_client_codegen__
-#define kNaClAlignmentARM 16
-#define kNaClAlignmentMaskARM (kNaClAlignmentARM - 1)
-#define kNaClLengthOfCallImm 4
-#endif
 
 #if defined(ARM_FPU_NONE)
 #define MONO_ARCH_SOFT_FLOAT_FALLBACK 1
@@ -150,7 +145,9 @@ typedef enum {
 	GSHAREDVT_RET_I1 = 3,
 	GSHAREDVT_RET_U1 = 4,
 	GSHAREDVT_RET_I2 = 5,
-	GSHAREDVT_RET_U2 = 6
+	GSHAREDVT_RET_U2 = 6,
+	GSHAREDVT_RET_VFP_R4 = 7,
+	GSHAREDVT_RET_VFP_R8 = 8
 } GSharedVtRetMarshal;
 
 typedef struct {
@@ -169,10 +166,59 @@ typedef struct {
 	int calli;
 	/* Whenever this is a in or an out call */
 	int gsharedvt_in;
+	/* Whenever this call uses fp registers */
+	int have_fregs;
+	gpointer caller_cinfo, callee_cinfo;
 	/* Maps stack slots/registers in the caller to the stack slots/registers in the callee */
 	/* A negative value means a register, i.e. -1=r0, -2=r1 etc. */
 	int map [MONO_ZERO_LEN_ARRAY];
 } GSharedVtCallInfo;
+
+
+typedef enum {
+	RegTypeNone,
+	/* Passed/returned in an ireg */
+	RegTypeGeneral,
+	/* Passed/returned in a pair of iregs */
+	RegTypeIRegPair,
+	/* Passed on the stack */
+	RegTypeBase,
+	/* First word in r3, second word on the stack */
+	RegTypeBaseGen,
+	/* FP value passed in either an ireg or a vfp reg */
+	RegTypeFP,
+	RegTypeStructByVal,
+	RegTypeStructByAddr,
+	RegTypeStructByAddrOnStack,
+	/* gsharedvt argument passed by addr in greg */
+	RegTypeGSharedVtInReg,
+	/* gsharedvt argument passed by addr on stack */
+	RegTypeGSharedVtOnStack,
+	RegTypeHFA
+} ArgStorage;
+
+typedef struct {
+	gint32  offset;
+	guint16 vtsize; /* in param area */
+	/* RegTypeHFA */
+	int esize;
+	/* RegTypeHFA */
+	int nregs;
+	guint8  reg;
+	ArgStorage  storage;
+	gint32  struct_size;
+	guint8  size    : 4; /* 1, 2, 4, 8, or regs used by RegTypeStructByVal */
+} ArgInfo;
+
+typedef struct {
+	int nargs;
+	guint32 stack_usage;
+	/* The index of the vret arg in the argument list for RegTypeStructByAddr */
+	int vret_arg_index;
+	ArgInfo ret;
+	ArgInfo sig_cookie;
+	ArgInfo args [1];
+} CallInfo;
 
 /* Structure used by the sequence points in AOTed code */
 typedef struct {
@@ -183,12 +229,15 @@ typedef struct {
 
 
 #define PARAM_REGS 4
+#define FP_PARAM_REGS 8
 #define DYN_CALL_STACK_ARGS 10
 
 typedef struct {
-	mgreg_t regs [PARAM_REGS + DYN_CALL_STACK_ARGS];
+	mgreg_t regs [PARAM_REGS + FP_PARAM_REGS];
+	double fpregs [FP_PARAM_REGS];
 	mgreg_t res, res2;
 	guint8 *ret;
+	guint32 has_fpregs;
 } DynCallArgs;
 
 void arm_patch (guchar *code, const guchar *target);
@@ -199,7 +248,7 @@ void
 mono_arm_throw_exception_by_token (guint32 type_token, mgreg_t pc, mgreg_t sp, mgreg_t *int_regs, gdouble *fp_regs);
 
 gpointer
-mono_arm_start_gsharedvt_call (GSharedVtCallInfo *info, gpointer *caller, gpointer *callee, gpointer mrgctx_reg);
+mono_arm_start_gsharedvt_call (GSharedVtCallInfo *info, gpointer *caller, gpointer *callee, gpointer mrgctx_reg, double *caller_fregs, double *callee_fregs);
 
 typedef enum {
 	MONO_ARM_FPU_NONE = 0,
@@ -258,7 +307,7 @@ typedef struct MonoCompileArch {
 
 #define MONO_ARCH_USE_SIGACTION 1
 
-#if defined(__native_client__) || defined(HOST_WATCHOS)
+#if defined(HOST_WATCHOS)
 #undef MONO_ARCH_USE_SIGACTION
 #endif
 
@@ -299,14 +348,13 @@ typedef struct MonoCompileArch {
 #define MONO_ARCH_HAVE_PATCH_CODE_NEW 1
 #define MONO_ARCH_HAVE_OP_GENERIC_CLASS_INIT 1
 
-#if defined(__native_client__)
-#undef MONO_ARCH_SOFT_DEBUG_SUPPORTED
-#undef MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX
-#undef MONO_ARCH_HAVE_CONTEXT_SET_INT_REG
-#endif
-
 #define MONO_ARCH_HAVE_TLS_GET (mono_arm_have_tls_get ())
 #define MONO_ARCH_HAVE_TLS_GET_REG 1
+
+#ifdef TARGET_WATCHOS
+#define MONO_ARCH_DISABLE_HW_TRAPS 1
+#define MONO_ARCH_HAVE_UNWIND_BACKTRACE 1
+#endif
 
 /* ARM doesn't have too many registers, so we have to use a callee saved one */
 #define MONO_ARCH_RGCTX_REG ARMREG_V5
@@ -349,14 +397,6 @@ mono_arm_patchable_b (guint8 *code, int cond);
 guint8*
 mono_arm_patchable_bl (guint8 *code, int cond);
 
-#ifdef USE_JUMP_TABLES
-guint8*
-mono_arm_load_jumptable_entry_addr (guint8 *code, gpointer *jte, ARMReg reg);
-
-guint8*
-mono_arm_load_jumptable_entry (guint8 *code, gpointer *jte, ARMReg reg);
-#endif
-
 gboolean
 mono_arm_is_hard_float (void);
 
@@ -365,5 +405,8 @@ mono_arm_have_tls_get (void);
 
 void
 mono_arm_unaligned_stack (MonoMethod *method);
+
+CallInfo*
+mono_arch_get_call_info (MonoMemPool *mp, MonoMethodSignature *sig);
 
 #endif /* __MONO_MINI_ARM_H__ */

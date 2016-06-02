@@ -3,6 +3,7 @@
  * Copyright (c) 2002-2003 Sergey Chaban <serge@wildwestsoftware.com>
  * Copyright 2005-2011 Novell Inc
  * Copyright 2011 Xamarin Inc
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 
@@ -1014,11 +1015,7 @@ typedef struct {
 	ARM_RORS_REG_COND(p, rd, rm, rs, ARMCOND_AL)
 #define ARM_RORS_REG_REG(p, rd, rm, rs) ARM_RORS_REG(p, rd, rm, rs)
 
-#ifdef __native_client_codegen__
-#define ARM_DBRK(p) ARM_EMIT(p, 0xE7FEDEF0)
-#else
 #define ARM_DBRK(p) ARM_EMIT(p, 0xE6000010)
-#endif
 #define ARM_IASM_DBRK() ARM_IASM_EMIT(0xE6000010)
 
 #define ARM_INC(p, reg) ARM_ADD_REG_IMM8(p, reg, reg, 1)

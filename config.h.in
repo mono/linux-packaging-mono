@@ -130,9 +130,6 @@
 /* Extension module enabled */
 #undef ENABLE_EXTENSION_MODULE
 
-/* Gsharedvt */
-#undef ENABLE_GSHAREDVT
-
 /* Icall export enabled */
 #undef ENABLE_ICALL_EXPORT
 
@@ -192,6 +189,9 @@
 
 /* Define to 1 if you have the <checklist.h> header file. */
 #undef HAVE_CHECKLIST_H
+
+/* Define to 1 if you have the `clock_nanosleep' function. */
+#undef HAVE_CLOCK_NANOSLEEP
 
 /* Define to 1 if you have the <CommonCrypto/CommonDigest.h> header file. */
 #undef HAVE_COMMONCRYPTO_COMMONDIGEST_H
@@ -520,9 +520,6 @@
 
 /* No GC support. */
 #undef HAVE_NULL_GC
-
-/* Have oprofile support */
-#undef HAVE_OPROFILE
 
 /* Define to 1 if you have the <pathconf.h> header file. */
 #undef HAVE_PATHCONF_H
@@ -1041,9 +1038,6 @@
 /* The LLVM back end is dynamically loaded */
 #undef MONO_LLVM_LOADED
 
-/* native types */
-#undef MONO_NATIVE_TYPES
-
 /* AOT cross offsets file */
 #undef MONO_OFFSETS_FILE
 
@@ -1061,9 +1055,6 @@
 
 /* Define if Unix sockets cannot be created in an anonymous namespace */
 #undef NEED_LINK_UNLINK
-
-/* Define to 1 if your C compiler doesn't accept -c and -o together. */
-#undef NO_MINUS_C_MINUS_O
 
 /* Name of package */
 #undef PACKAGE
@@ -1179,9 +1170,6 @@
 /* ... */
 #undef USE_GCC_ATOMIC_OPS
 
-/* Use jump tables in JIT */
-#undef USE_JUMP_TABLES
-
 /* Use kqueue for the threadpool */
 #undef USE_KQUEUE_FOR_THREADPOOL
 
@@ -1193,9 +1181,6 @@
 
 /* Version number of package */
 #undef VERSION
-
-/* ... */
-#undef __default_codegen__
 
 /* 64 bit mode with 4 byte longs and pointers */
 #undef __mono_ilp32__

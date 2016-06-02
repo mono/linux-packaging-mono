@@ -2,7 +2,7 @@
 #define __MONO_ERROR_INTERNALS_H__
 
 #include "mono/utils/mono-compiler.h"
-#include "mono/metadata/object-internals.h"
+#include "mono/metadata/class-internals.h"
 
 /*Keep in sync with MonoError*/
 typedef struct {
@@ -41,6 +41,11 @@ typedef struct {
 
 #define return_if_nok(error) do { if (!is_ok ((error))) return; } while (0)
 #define return_val_if_nok(error,val) do { if (!is_ok ((error))) return (val); } while (0)
+
+/* Only use this in icalls */
+#define return_val_and_set_pending_if_nok(error,value)	\
+	if (mono_error_set_pending_exception ((error)))	\
+		return (value);
 
 void
 mono_error_assert_ok_pos (MonoError *error, const char* filename, int lineno) MONO_LLVM_INTERNAL;
@@ -94,10 +99,19 @@ void
 mono_error_set_generic_error (MonoError *error, const char * name_space, const char *name, const char *msg_format, ...);
 
 void
-mono_error_set_exception_instance (MonoError *error, MonoException *exc);
+mono_error_set_execution_engine (MonoError *error, const char *msg_format, ...);
 
 void
-mono_error_set_from_loader_error (MonoError *error);
+mono_error_set_not_implemented (MonoError *error, const char *msg_format, ...);
+
+void
+mono_error_set_not_supported (MonoError *error, const char *msg_format, ...);
+
+void
+mono_error_set_invalid_operation (MonoError *error, const char *msg_format, ...);
+
+void
+mono_error_set_exception_instance (MonoError *error, MonoException *exc);
 
 MonoException*
 mono_error_prepare_exception (MonoError *error, MonoError *error_out);
@@ -107,9 +121,6 @@ mono_error_convert_to_exception (MonoError *error);
 
 void
 mono_error_raise_exception (MonoError *error);
-
-void
-mono_loader_set_error_from_mono_error (MonoError *oerror);
 
 void
 mono_error_move (MonoError *dest, MonoError *src);

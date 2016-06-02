@@ -3,6 +3,7 @@
  *
  * Copyright 2009-2011 Novell Inc (http://www.novell.com)
  * Copyright 2011 Xamarin Inc (http://www.xamarin.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include "mini.h"
@@ -1743,26 +1744,14 @@ get_most_deep_clause (MonoCompile *cfg, EmitContext *ctx, MonoBasicBlock *bb)
 {
 	// Since they're sorted by nesting we just need
 	// the first one that the bb is a member of
-	MonoExceptionClause *last = NULL;
-
 	for (int i = 0; i < cfg->header->num_clauses; i++) {
 		MonoExceptionClause *curr = &cfg->header->clauses [i];
 
 		if (MONO_OFFSET_IN_CLAUSE (curr, bb->real_offset))
 			return curr;
-		/*
-		if (MONO_OFFSET_IN_CLAUSE (curr, bb->real_offset)) {
-			if (last && CLAUSE_END(last) > CLAUSE_END(curr))
-				last = curr;
-			else
-				last = curr;
-		} else if(last) {
-			break;
-		}
-		*/
 	}
 
-	return last;
+	return NULL;
 }
 	
 static void
@@ -2068,6 +2057,11 @@ emit_cond_system_exception (EmitContext *ctx, MonoBasicBlock *bb, const char *ex
 	MonoClass *exc_class;
 	LLVMValueRef args [2];
 	LLVMValueRef callee;
+	gboolean no_pc = FALSE;
+
+	if (IS_TARGET_AMD64)
+		/* Some platforms don't require the pc argument */
+		no_pc = TRUE;
 	
 	ex_bb = gen_bb (ctx, "EX_BB");
 	if (ctx->llvm_only)
@@ -2112,7 +2106,10 @@ emit_cond_system_exception (EmitContext *ctx, MonoBasicBlock *bb, const char *ex
 		LLVMTypeRef sig;
 		const char *icall_name;
 
-		sig = LLVMFunctionType2 (LLVMVoidType (), LLVMInt32Type (), LLVMPointerType (LLVMInt8Type (), 0), FALSE);
+		if (no_pc)
+			sig = LLVMFunctionType1 (LLVMVoidType (), LLVMInt32Type (), FALSE);
+		else
+			sig = LLVMFunctionType2 (LLVMVoidType (), LLVMInt32Type (), LLVMPointerType (LLVMInt8Type (), 0), FALSE);
 		icall_name = "llvm_throw_corlib_exception_abs_trampoline";
 
 		if (ctx->cfg->compile_aot) {
@@ -2144,17 +2141,18 @@ emit_cond_system_exception (EmitContext *ctx, MonoBasicBlock *bb, const char *ex
 		}
 	}
 
-	if (IS_TARGET_X86 || IS_TARGET_AMD64)
-		args [0] = LLVMConstInt (LLVMInt32Type (), exc_class->type_token - MONO_TOKEN_TYPE_DEF, FALSE);
-	else
-		args [0] = LLVMConstInt (LLVMInt32Type (), exc_class->type_token, FALSE);
+	args [0] = LLVMConstInt (LLVMInt32Type (), exc_class->type_token - MONO_TOKEN_TYPE_DEF, FALSE);
 
 	/*
 	 * The LLVM mono branch contains changes so a block address can be passed as an
 	 * argument to a call.
 	 */
-	args [1] = LLVMBlockAddress (ctx->lmethod, ex_bb);
-	emit_call (ctx, bb, &builder, callee, args, 2);
+	if (no_pc) {
+		emit_call (ctx, bb, &builder, callee, args, 1);
+	} else {
+		args [1] = LLVMBlockAddress (ctx->lmethod, ex_bb);
+		emit_call (ctx, bb, &builder, callee, args, 2);
+	}
 
 	LLVMBuildUnreachable (builder);
 
@@ -3138,7 +3136,7 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 	gboolean is_virtual, calli, preserveall;
 	LLVMBuilderRef builder = *builder_ref;
 
-	if (call->signature->call_convention != MONO_CALL_DEFAULT) {
+	if ((call->signature->call_convention != MONO_CALL_DEFAULT) && !((call->signature->call_convention == MONO_CALL_C) && ctx->llvm_only)) {
 		set_failure (ctx, "non-default callconv");
 		return;
 	}
@@ -3203,8 +3201,12 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 					target =
 						mono_create_jit_trampoline (mono_domain_get (),
 													call->method, &error);
-					if (!mono_error_ok (&error))
-						mono_error_raise_exception (&error); /* FIXME: Don't raise here */
+					if (!is_ok (&error)) {
+						set_failure (ctx, mono_error_get_message (&error));
+						mono_error_cleanup (&error);
+						return;
+					}
+
 					tramp_var = LLVMAddGlobal (ctx->lmodule, LLVMPointerType (llvm_sig, 0), name);
 					LLVMSetInitializer (tramp_var, LLVMConstIntToPtr (LLVMConstInt (LLVMInt64Type (), (guint64)(size_t)target, FALSE), LLVMPointerType (llvm_sig, 0)));
 					LLVMSetLinkage (tramp_var, LLVMExternalLinkage);
@@ -3214,15 +3216,17 @@ process_call (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builder_ref,
 #else
 				target =
 					mono_create_jit_trampoline (mono_domain_get (),
-												call->method, &error);
-				if (!mono_error_ok (&error))
-					mono_error_raise_exception (&error); /* FIXME: Don't raise here */
+								    call->method, &error);
+				if (!is_ok (&error)) {
+					g_free (name);
+					set_failure (ctx, mono_error_get_message (&error));
+					mono_error_cleanup (&error);
+					return;
+				}
 
 				callee = LLVMAddFunction (ctx->lmodule, name, llvm_sig);
 				g_free (name);
 
-				if (!mono_error_ok (&error))
-					mono_error_raise_exception (&error); /* FIXME: Don't raise here */
 				LLVMAddGlobalMapping (ctx->module->ee, callee, target);
 #endif
 			}
@@ -5226,6 +5230,19 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 			ji = mono_aot_patch_info_dup (tmp_ji);
 			g_free (tmp_ji);
 
+			if (ji->type == MONO_PATCH_INFO_ICALL_ADDR) {
+				char *symbol = mono_aot_get_direct_call_symbol (MONO_PATCH_INFO_ICALL_ADDR_CALL, ji->data.target);
+				if (symbol) {
+					/*
+					 * Avoid emitting a got entry for these since the method is directly called, and it might not be
+					 * resolvable at runtime using dlsym ().
+					 */
+					g_free (symbol);
+					values [ins->dreg] = LLVMConstInt (IntPtrType (), 0, FALSE);
+					break;
+				}
+			}
+
 			ji->next = cfg->patch_info;
 			cfg->patch_info = ji;
 				   
@@ -5539,6 +5556,43 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 #endif
 			break;
 		}
+		case OP_GC_SAFE_POINT: {
+			LLVMValueRef val, cmp, callee;
+			LLVMBasicBlockRef poll_bb, cont_bb;
+			static LLVMTypeRef sig;
+			const char *icall_name = "mono_threads_state_poll";
+
+			if (!sig)
+				sig = LLVMFunctionType0 (LLVMVoidType (), FALSE);
+
+			/*
+			 * if (!*sreg1)
+			 *   mono_threads_state_poll ();
+			 * FIXME: Use a preserveall wrapper
+			 */
+			val = mono_llvm_build_load (builder, convert (ctx, lhs, LLVMPointerType (IntPtrType (), 0)), "", TRUE, LLVM_BARRIER_NONE);
+			cmp = LLVMBuildICmp (builder, LLVMIntEQ, val, LLVMConstNull (LLVMTypeOf (val)), "");
+			poll_bb = gen_bb (ctx, "POLL_BB");
+			cont_bb = gen_bb (ctx, "CONT_BB");
+			LLVMBuildCondBr (builder, cmp, cont_bb, poll_bb);
+
+			ctx->builder = builder = create_builder (ctx);
+			LLVMPositionBuilderAtEnd (builder, poll_bb);
+
+			if (ctx->cfg->compile_aot) {
+				callee = get_callee (ctx, sig, MONO_PATCH_INFO_INTERNAL_METHOD, icall_name);
+			} else {
+				gpointer target = resolve_patch (ctx->cfg, MONO_PATCH_INFO_INTERNAL_METHOD, icall_name);
+				callee = emit_jit_callee (ctx, icall_name, sig, target);
+			}
+			LLVMBuildCall (builder, callee, NULL, 0, "");
+			LLVMBuildBr (builder, cont_bb);
+
+			ctx->builder = builder = create_builder (ctx);
+			LLVMPositionBuilderAtEnd (builder, cont_bb);
+			ctx->bblocks [bb->block_num].end_bblock = cont_bb;
+			break;
+		}
 
 			/*
 			 * Overflow opcodes.
@@ -5549,14 +5603,12 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 		case OP_ISUB_OVF_UN:
 		case OP_IMUL_OVF:
 		case OP_IMUL_OVF_UN:
-#if SIZEOF_VOID_P == 8
 		case OP_LADD_OVF:
 		case OP_LADD_OVF_UN:
 		case OP_LSUB_OVF:
 		case OP_LSUB_OVF_UN:
 		case OP_LMUL_OVF:
 		case OP_LMUL_OVF_UN:
-#endif
 			{
 				LLVMValueRef args [2], val, ovf, func;
 
@@ -7052,6 +7104,12 @@ emit_method_inner (EmitContext *ctx)
 
 		// FIXME: beforefieldinit
 		if (ctx->has_got_access || mono_class_get_cctor (cfg->method->klass)) {
+			/*
+			 * linkonce methods shouldn't have initialization,
+			 * because they might belong to assemblies which
+			 * haven't been loaded yet.
+			 */
+			g_assert (!ctx->is_linkonce);
 			emit_init_method (ctx);
 		} else {
 			LLVMBuildBr (ctx->builder, ctx->inited_bb);
@@ -7705,7 +7763,9 @@ static void
 add_intrinsic (LLVMModuleRef module, int id)
 {
 	const char *name;
+#if defined(TARGET_AMD64) || defined(TARGET_X86)
 	LLVMTypeRef ret_type, arg_types [16];
+#endif
 
 	name = g_hash_table_lookup (intrins_id_to_name, GINT_TO_POINTER (id));
 	g_assert (name);
