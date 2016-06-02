@@ -14,6 +14,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_array_new_specific@Base 4.1.0.1738
  mono_assemblies_cleanup@Base 4.1.0.1738
  mono_assemblies_init@Base 4.1.0.1738
+ mono_assembly_addref@Base 4.5.2.48
  mono_assembly_close@Base 4.1.0.1738
  mono_assembly_fill_assembly_name@Base 4.1.0.1738
  mono_assembly_foreach@Base 4.1.0.1738
@@ -475,6 +476,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_install_assembly_refonly_preload_hook@Base 4.1.0.1738
  mono_install_assembly_refonly_search_hook@Base 4.1.0.1738
  mono_install_assembly_search_hook@Base 4.1.0.1738
+ mono_install_ftnptr_eh_callback@Base 4.5.2.48
  mono_install_load_aot_data_hook@Base 4.3.2.147
  mono_install_runtime_cleanup@Base 4.1.0.1738
  mono_install_unhandled_exception_hook@Base 4.1.0.1738
@@ -497,11 +499,16 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_ldtoken@Base 4.1.0.1738
  mono_load_remote_field@Base 4.1.0.1738
  mono_load_remote_field_new@Base 4.1.0.1738
+ mono_lock_free_alloc@Base 4.5.2.48-0nightly2
+ mono_lock_free_allocator_check_consistency@Base 4.5.2.48
+ mono_lock_free_allocator_init_allocator@Base 4.5.2.48
+ mono_lock_free_allocator_init_size_class@Base 4.5.2.48
+ mono_lock_free_free@Base 4.5.2.48
  mono_lock_free_queue_dequeue@Base 4.1.0.1738
  mono_lock_free_queue_enqueue@Base 4.1.0.1738
  mono_lock_free_queue_init@Base 4.1.0.1738
- mono_lock_free_queue_node_free@Base 4.1.0.1738
  mono_lock_free_queue_node_init@Base 4.1.0.1738
+ mono_lock_free_queue_node_unpoison@Base 4.5.2.48
  mono_locks_dump@Base 4.1.0.1738
  mono_lookup_icall_symbol@Base 4.1.0.1738
  mono_lookup_internal_call@Base 4.1.0.1738
@@ -639,6 +646,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_monitor_exit@Base 4.1.0.1738
  mono_monitor_try_enter@Base 4.1.0.1738
  mono_mprotect@Base 4.1.0.1738
+ mono_native_thread_id_get@Base 4.5.2.48
+ mono_native_thread_set_name@Base 4.5.2.48
  mono_object_castclass_mbyref@Base 4.1.0.1738
  mono_object_clone@Base 4.1.0.1738
  mono_object_describe@Base 4.1.0.1738
@@ -834,6 +843,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_get_managed_id@Base 4.3.3.735
  mono_thread_get_name_utf8@Base 4.3.3.735
  mono_thread_get_undeniable_exception@Base 4.1.0.1738
+ mono_thread_hazardous_try_free@Base 4.5.2.48
+ mono_thread_info_detach@Base 4.5.2.48
  mono_thread_init@Base 4.1.0.1738
  mono_thread_is_foreign@Base 4.1.0.1738
  mono_thread_manage@Base 4.1.0.1738
@@ -843,7 +854,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_stop@Base 4.1.0.1738
  mono_threads_assert_gc_safe_region@Base 4.3.3.735
  mono_threads_assert_gc_unsafe_region@Base 4.3.3.735
+ mono_threads_attach_coop@Base 4.5.2.48
  mono_threads_attach_tools_thread@Base 4.1.0.1738
+ mono_threads_detach_coop@Base 4.5.2.48
  mono_threads_enter_gc_safe_region@Base 4.3.3.735
  mono_threads_enter_gc_unsafe_region@Base 4.3.0.1080
  mono_threads_exit_gc_safe_region@Base 4.3.3.735
