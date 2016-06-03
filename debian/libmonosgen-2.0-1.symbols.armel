@@ -1,4 +1,4 @@
-#include "libmonosgen-2.0-1.symbols"
+#include "libmonosgen-2.0-1.symbols.arm64"
  mono_fallback_get_tls_key@Base 4.3.0.662
  mono_fallback_set_tls_key@Base 4.3.0.662
  mono_fast_get_tls_key@Base 4.3.0.662
