@@ -31,6 +31,7 @@
 #include <mono/utils/mono-machine.h>
 #include <mono/utils/mono-stack-unwinding.h>
 #include <mono/utils/mono-threads.h>
+#include <mono/utils/mono-threads-coop.h>
 #include <mono/utils/mono-tls.h>
 #include <mono/utils/atomic.h>
 #include <mono/utils/mono-conc-hashtable.h>
@@ -2571,7 +2572,8 @@ gpointer          mini_add_method_trampoline (MonoMethod *m, gpointer compiled_m
 gpointer          mini_add_method_wrappers_llvmonly (MonoMethod *m, gpointer compiled_method, gboolean caller_gsharedvt, gboolean add_unbox_tramp, gpointer *out_arg);
 gboolean          mini_jit_info_is_gsharedvt (MonoJitInfo *ji);
 gpointer*         mini_resolve_imt_method (MonoVTable *vt, gpointer *vtable_slot, MonoMethod *imt_method, MonoMethod **impl_method, gpointer *out_aot_addr,
-										   gboolean *out_need_rgctx_tramp, MonoMethod **variant_iface);
+					   gboolean *out_need_rgctx_tramp, MonoMethod **variant_iface,
+					   MonoError *error);
 MonoFtnDesc      *mini_create_llvmonly_ftndesc (MonoDomain *domain, gpointer addr, gpointer arg);
 
 gboolean          mono_running_on_valgrind (void);
