@@ -64,6 +64,7 @@
 #include <mono/utils/mono-error-internals.h>
 #include <mono/metadata/mono-basic-block.h>
 #include <mono/metadata/reflection-internals.h>
+#include <mono/utils/mono-threads-coop.h>
 
 #include "trace.h"
 
@@ -6806,7 +6807,7 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 		    cfg->compile_aot && !cfg->llvm_only) {
 			MonoInst *pi;
 			MonoJumpInfoToken *ji;
-			MonoString *s;
+			char *s;
 
 			// FIXME: llvmonly
 
@@ -6825,14 +6826,13 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 
 			NULLIFY_INS (args [0]);
 
-			// FIXME: Ugly
-			s = mono_ldstr_checked (cfg->domain, ji->image, mono_metadata_token_index (ji->token), &cfg->error);
+			s = mono_ldstr_utf8 (ji->image, mono_metadata_token_index (ji->token), &cfg->error);
 			return_val_if_nok (&cfg->error, NULL);
+
 			MONO_INST_NEW (cfg, ins, OP_OBJC_GET_SELECTOR);
 			ins->dreg = mono_alloc_ireg (cfg);
 			// FIXME: Leaks
-			ins->inst_p0 = mono_string_to_utf8_checked (s, &cfg->error);
-			return_val_if_nok (&cfg->error, NULL);
+			ins->inst_p0 = s;
 			MONO_ADD_INS (cfg->cbb, ins);
 			return ins;
 		}
@@ -12765,6 +12765,22 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 			case CEE_MONO_MEMORY_BARRIER: {
 				CHECK_OPSIZE (6);
 				emit_memory_barrier (cfg, (int)read32 (ip + 2));
+				ip += 6;
+				break;
+			}
+			case CEE_MONO_ATOMIC_STORE_I4: {
+				g_assert (mono_arch_opcode_supported (OP_ATOMIC_STORE_I4));
+
+				CHECK_OPSIZE (6);
+				CHECK_STACK (2);
+				sp -= 2;
+
+				MONO_INST_NEW (cfg, ins, OP_ATOMIC_STORE_I4);
+				ins->dreg = sp [0]->dreg;
+				ins->sreg1 = sp [1]->dreg;
+				ins->backend.memory_barrier_kind = (int) read32 (ip + 2);
+				MONO_ADD_INS (cfg->cbb, ins);
+
 				ip += 6;
 				break;
 			}

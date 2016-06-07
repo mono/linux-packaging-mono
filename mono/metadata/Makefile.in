@@ -82,7 +82,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 @PLATFORM_ANDROID_TRUE@am__append_1 = ../../support/libm/complex.c
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@bin_PROGRAMS = pedump$(EXEEXT)
+@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@bin_PROGRAMS = pedump$(EXEEXT)
 subdir = mono/metadata
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -586,19 +586,16 @@ am__installdirs = "$(DESTDIR)$(bindir)" \
 	"$(DESTDIR)$(libmonoruntimeincludedir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__pedump_SOURCES_DIST = pedump.c
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@am_pedump_OBJECTS =  \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	pedump.$(OBJEXT)
+@SHARED_MONO_TRUE@am_pedump_OBJECTS = pedump.$(OBJEXT)
 pedump_OBJECTS = $(am_pedump_OBJECTS)
 am__DEPENDENCIES_1 =
 @DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_2 = pedump-dtrace.$(OBJEXT)
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_DEPENDENCIES =  \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	libmonoruntime.la \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	../io-layer/libwapi.la \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	../utils/libmonoutils.la \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_1) \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_1) \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_1) \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_2)
+@SHARED_MONO_TRUE@pedump_DEPENDENCIES = $(sgen_libraries) \
+@SHARED_MONO_TRUE@	$(top_srcdir)/mono/sgen/libmonosgen.la \
+@SHARED_MONO_TRUE@	../io-layer/libwapi.la \
+@SHARED_MONO_TRUE@	../utils/libmonoutils.la \
+@SHARED_MONO_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@SHARED_MONO_TRUE@	$(am__DEPENDENCIES_2)
 pedump_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(pedump_LDFLAGS) $(LDFLAGS) -o $@
@@ -1147,13 +1144,13 @@ libmonoruntimeinclude_HEADERS = \
 
 @DTRACE_G_REQUIRED_FALSE@PEDUMP_DTRACE_OBJECT = 
 @DTRACE_G_REQUIRED_TRUE@PEDUMP_DTRACE_OBJECT = pedump-dtrace.$(OBJEXT)
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_SOURCES = \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	pedump.c
+@SHARED_MONO_TRUE@pedump_SOURCES = \
+@SHARED_MONO_TRUE@	pedump.c
 
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_LDADD = libmonoruntime.la ../io-layer/libwapi.la ../utils/libmonoutils.la \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(LIBGC_LIBS) $(GLIB_LIBS) -lm $(LIBICONV) $(PEDUMP_DTRACE_OBJECT)
+@SHARED_MONO_TRUE@pedump_LDADD = $(sgen_libraries) $(top_srcdir)/mono/sgen/libmonosgen.la ../io-layer/libwapi.la ../utils/libmonoutils.la \
+@SHARED_MONO_TRUE@	$(GLIB_LIBS) -lm $(LIBICONV) $(PEDUMP_DTRACE_OBJECT)
 
-@PLATFORM_DARWIN_TRUE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
+@PLATFORM_DARWIN_TRUE@@SHARED_MONO_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
 EXTRA_DIST = $(win32_sources) $(unix_sources) $(null_sources) runtime.h \
 		threadpool-ms-io-poll.c threadpool-ms-io-epoll.c threadpool-ms-io-kqueue.c
 
@@ -3870,9 +3867,12 @@ uninstall-am: uninstall-binPROGRAMS \
 #
 mono-config-dirs.lo: Makefile
 
-@DTRACE_G_REQUIRED_TRUE@pedump-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d libmonoruntime.la ../io-layer/libwapi.la ../utils/libmonoutils.la
+@DTRACE_G_REQUIRED_TRUE@pedump-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d $(shared_sgen_libraries) ../io-layer/libwapi.la ../utils/libmonoutils.la
 @DTRACE_G_REQUIRED_TRUE@	DTRACE="$(DTRACE)" DTRACEFLAGS="$(DTRACEFLAGS)" AR="$(AR)" $(SHELL) $(top_srcdir)/data/dtrace-prelink.sh \
-@DTRACE_G_REQUIRED_TRUE@	--pic pedump-dtrace.$(OBJEXT) $(top_srcdir)/data/mono.d libmonoruntime.la ../io-layer/libwapi.la ../utils/libmonoutils.la
+@DTRACE_G_REQUIRED_TRUE@	--pic pedump-dtrace.$(OBJEXT) $(top_srcdir)/data/mono.d $(shared_sgen_libraries) ../io-layer/libwapi.la ../utils/libmonoutils.la
+
+@SHARED_MONO_TRUE@$(top_srcdir)/mono/sgen/libmonosgen.la:
+@SHARED_MONO_TRUE@	make -w -C $(top_srcdir)/mono/sgen libmonosgen.la
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1174,7 +1174,7 @@ regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
 @SPARC64_TRUE@arch_define = __sparc__
 @SPARC_TRUE@arch_define = __sparc__
 @X86_TRUE@arch_define = __i386__
-@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = --exclude DYNCALL
+@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = 
 
 # pick up arm_dpimacros.h
 @ARM_TRUE@ARCH_CFLAGS = -I../arch/arm

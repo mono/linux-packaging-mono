@@ -7,7 +7,6 @@
 #include <mono/metadata/mempool.h>
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/threads-types.h>
-#include <mono/metadata/handle.h>
 #include <mono/io-layer/io-layer.h>
 #include "mono/utils/mono-compiler.h"
 #include "mono/utils/mono-error.h"
@@ -1623,6 +1622,12 @@ mono_property_set_value_checked (MonoProperty *prop, void *obj, void **params, M
 MonoObject*
 mono_property_get_value_checked (MonoProperty *prop, void *obj, void **params, MonoError *error);
 
+MonoString*
+mono_object_to_string_checked (MonoObject *obj, MonoError *error);
+
+MonoString*
+mono_object_try_to_string (MonoObject *obj, MonoObject **exc, MonoError *error);
+
 char *
 mono_string_to_utf8_ignore (MonoString *s);
 
@@ -1700,6 +1705,9 @@ mono_string_from_utf16_checked (mono_unichar2 *data, MonoError *error);
 
 MonoString *
 mono_string_from_utf32_checked (mono_unichar4 *data, MonoError *error);
+
+char*
+mono_ldstr_utf8 (MonoImage *image, guint32 idx, MonoError *error);
 
 gboolean
 mono_runtime_object_init_checked (MonoObject *this_obj, MonoError *error);

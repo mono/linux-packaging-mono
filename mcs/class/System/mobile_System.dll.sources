@@ -170,8 +170,8 @@ System.Net/HttpWebRequest.cs
 System.Net/HttpWebResponse.cs
 System.Net/ICredentialPolicy.cs
 System.Net/IPv6Address.cs
-System.Net/IPv6Address.cs
 System.Net/IWebConnectionState.cs
+System.Net/IWebProxyScript.cs
 System.Net/ListenerAsyncResult.cs
 System.Net/ListenerPrefix.cs
 System.Net/MacProxy.cs
@@ -264,7 +264,6 @@ System.Security.Cryptography.X509Certificates/X509VerificationFlags.cs
 System.Security.Cryptography/AsnEncodedData.cs
 System.Security.Cryptography/AsnEncodedDataCollection.cs
 System.Security.Cryptography/AsnEncodedDataEnumerator.cs
-System.Threading/Semaphore.cs
 System.Threading/ThreadExceptionEventArgs.cs
 System.Threading/ThreadExceptionEventHandler.cs
 System.Timers/ElapsedEventArgs.cs
@@ -687,8 +686,10 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/_NetRes.cs
 ../referencesource/System/net/System/Net/_LazyAsyncResult.cs
 ../referencesource/System/net/System/Net/_LoggingObject.cs
+../referencesource/System/net/System/Net/_PooledStream.cs
 ../referencesource/System/net/System/Net/_ProxyChain.cs
 ../referencesource/System/net/System/Net/_ScatterGatherBuffers.cs
+../referencesource/System/net/System/Net/_Semaphore.cs
 ../referencesource/System/net/System/Net/_TimerThread.cs
 ../referencesource/System/net/System/Net/_WebProxyDataBuilder.cs
 ../referencesource/System/net/System/Net/AuthenticationScheme.cs
@@ -699,6 +700,7 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/cookiecollection.cs
 ../referencesource/System/net/System/Net/cookiecontainer.cs
 ../referencesource/System/net/System/Net/cookieexception.cs
+../referencesource/System/net/System/Net/connectionpool.cs
 ../referencesource/System/net/System/Net/DnsEndPoint.cs
 ../referencesource/System/net/System/Net/EndPoint.cs
 ../referencesource/System/net/System/Net/FtpStatusCode.cs
@@ -796,12 +798,15 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/NetworkInformation/nodetype.cs
 ../referencesource/System/net/System/Net/NetworkInformation/pingexception.cs
 
+../referencesource/System/sys/system/IO/ports/InternalResources.cs
+
 ../referencesource/System/sys/system/runtime/interopservices/DefaultParameterValueAttribute.cs
 ../referencesource/System/sys/system/runtime/interopservices/handlecollector.cs
 
 ../referencesource/System/sys/system/runtime/versioning/FrameworkName.cs
 
 ../referencesource/System/sys/system/threading/Barrier.cs
+../referencesource/System/sys/system/threading/semaphore.cs
 
 ../referencesource/System/security/system/security/Authentication/ExtendedProtection/TokenBinding.cs
 

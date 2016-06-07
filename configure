@@ -20038,68 +20038,70 @@ else
 fi
 
 
-# Check whether --enable-parallel-mark was given.
+if test "x$support_boehm" = "xyes"; then
+
+	# Check whether --enable-parallel-mark was given.
 if test "${enable_parallel_mark+set}" = set; then :
   enableval=$enable_parallel_mark; enable_parallel_mark=$enableval
 else
   enable_parallel_mark=$parallel_mark
 fi
 
-if test x$enable_parallel_mark = xyes; then
-	libgc_configure_args="$libgc_configure_args --enable-parallel-mark"
-fi
+	if test x$enable_parallel_mark = xyes; then
+		libgc_configure_args="$libgc_configure_args --enable-parallel-mark"
+	fi
 
-gc_msg=""
-LIBGC_CPPFLAGS=
-LIBGC_LIBS=
-LIBGC_STATIC_LIBS=
-libgc_dir=
-case "x$libgc" in
-	xincluded)
-		if test "x$support_boehm" = "xyes"; then
-			libgc_dir=libgc
-		fi
+	gc_msg=""
+	LIBGC_CPPFLAGS=
+	LIBGC_LIBS=
+	LIBGC_STATIC_LIBS=
+	libgc_dir=
+	case "x$libgc" in
+		xincluded)
+			if test "x$support_boehm" = "xyes"; then
+				libgc_dir=libgc
+			fi
 
-		LIBGC_CPPFLAGS='-I$(top_srcdir)/libgc/include'
-		LIBGC_LIBS='$(top_builddir)/libgc/libmonogc.la'
-		LIBGC_STATIC_LIBS='$(top_builddir)/libgc/libmonogc-static.la'
+			LIBGC_CPPFLAGS='-I$(top_srcdir)/libgc/include'
+			LIBGC_LIBS='$(top_builddir)/libgc/libmonogc.la'
+			LIBGC_STATIC_LIBS='$(top_builddir)/libgc/libmonogc-static.la'
 
-		BOEHM_DEFINES="-DHAVE_BOEHM_GC"
+			BOEHM_DEFINES="-DHAVE_BOEHM_GC"
 
-		if test x$target_win32 = xyes; then
-			BOEHM_DEFINES="$BOEHM_DEFINES -DGC_NOT_DLL"
-			CFLAGS_FOR_LIBGC="$CFLAGS_FOR_LIBGC -DGC_BUILD -DGC_NOT_DLL"
-		fi
+			if test x$target_win32 = xyes; then
+				BOEHM_DEFINES="$BOEHM_DEFINES -DGC_NOT_DLL"
+				CFLAGS_FOR_LIBGC="$CFLAGS_FOR_LIBGC -DGC_BUILD -DGC_NOT_DLL"
+			fi
 
-		gc_msg="Included Boehm GC with typed GC"
-		if test x$enable_parallel_mark = xyes; then
+			gc_msg="Included Boehm GC with typed GC"
+			if test x$enable_parallel_mark = xyes; then
 
 cat >>confdefs.h <<_ACEOF
 #define DEFAULT_GC_NAME "Included Boehm (with typed GC and Parallel Mark)"
 _ACEOF
 
-			gc_msg="$gc_msg and parallel mark"
-		else
+				gc_msg="$gc_msg and parallel mark"
+			else
 
 cat >>confdefs.h <<_ACEOF
 #define DEFAULT_GC_NAME "Included Boehm (with typed GC)"
 _ACEOF
 
-		fi
-		;;
+			fi
+			;;
 
-	xboehm|xbohem|xyes)
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: \"External Boehm is no longer supported\"" >&5
+		xboehm|xbohem|xyes)
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: \"External Boehm is no longer supported\"" >&5
 $as_echo "$as_me: WARNING: \"External Boehm is no longer supported\"" >&2;}
-		;;
+			;;
 
-	xsgen)
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: \"Use --with-sgen instead" >&5
+		xsgen)
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: \"Use --with-sgen instead" >&5
 $as_echo "$as_me: WARNING: \"Use --with-sgen instead" >&2;}
-		;;
+			;;
 
-	xnone)
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: \"Compiling mono without GC.\"" >&5
+		xnone)
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: \"Compiling mono without GC.\"" >&5
 $as_echo "$as_me: WARNING: \"Compiling mono without GC.\"" >&2;}
 
 cat >>confdefs.h <<_ACEOF
@@ -20109,12 +20111,12 @@ _ACEOF
 
 $as_echo "#define HAVE_NULL_GC 1" >>confdefs.h
 
-		gc_msg="none"
-		;;
-	*)
-		as_fn_error $? "Invalid argument to --with-gc." "$LINENO" 5
-		;;
-esac
+			gc_msg="none"
+			;;
+		*)
+			as_fn_error $? "Invalid argument to --with-gc." "$LINENO" 5
+			;;
+	esac
 
 
 # Check whether --with-large-heap was given.
@@ -20124,15 +20126,17 @@ else
   large_heap=no
 fi
 
-if test "x$large_heap" = "xyes"; then
-   CPPFLAGS="$CPPFLAGS -DLARGE_CONFIG"
+	if test "x$large_heap" = "xyes"; then
+	   CPPFLAGS="$CPPFLAGS -DLARGE_CONFIG"
+	fi
+
+
+
+
+
+
+
 fi
-
-
-
-
-
-
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CC supports zero length arrays" >&5
@@ -26145,7 +26149,11 @@ if test x$buildsgen = xyes; then
 $as_echo "#define HAVE_MOVING_COLLECTOR 1" >>confdefs.h
 
    SGEN_DEFINES="-DHAVE_SGEN_GC"
-   gc_msg="sgen and $gc_msg"
+   if test "x$gc_msg" = "x"; then
+      gc_msg="sgen"
+   else
+      gc_msg="sgen and $gc_msg"
+   fi
 fi
 
  if test x$buildsgen = xyes; then

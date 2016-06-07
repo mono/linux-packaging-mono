@@ -47,6 +47,7 @@
 #include <mono/utils/mono-memory-model.h>
 #include <mono/utils/checked-build.h>
 #include <mono/utils/mono-threads.h>
+#include <mono/utils/mono-threads-coop.h>
 #include "cominterop.h"
 
 static void
@@ -2945,11 +2946,7 @@ do_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **ex
 	if (mono_profiler_get_events () & MONO_PROFILE_METHOD_EVENTS)
 		mono_profiler_method_start_invoke (method);
 
-	MONO_ENTER_GC_UNSAFE;
-
 	result = callbacks.runtime_invoke (method, obj, params, exc, error);
-
-	MONO_EXIT_GC_UNSAFE;
 
 	if (mono_profiler_get_events () & MONO_PROFILE_METHOD_EVENTS)
 		mono_profiler_method_end_invoke (method);
@@ -3007,7 +3004,7 @@ mono_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **
 			mono_error_cleanup (&error);
 	} else {
 		res = mono_runtime_invoke_checked (method, obj, params, &error);
-		mono_error_raise_exception (&error);
+		mono_error_raise_exception (&error); /* OK to throw, external only without a good alternative */
 	}
 	return res;
 }
@@ -4015,7 +4012,7 @@ mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **
 		}
 	} else {
 		MonoObject *result = mono_runtime_delegate_invoke_checked (delegate, params, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		mono_error_raise_exception (&error); /* OK to throw, external only without a good alternative */
 		return result;
 	}
 }
@@ -4894,7 +4891,7 @@ mono_runtime_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
 		}
 	} else {
 		MonoObject *result = mono_runtime_try_invoke_array (method, obj, params, NULL, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		mono_error_raise_exception (&error); /* OK to throw, external only without a good alternative */
 		return result;
 	}
 }
@@ -6816,6 +6813,48 @@ mono_ldstr_metadata_sig (MonoDomain *domain, const char* sig, MonoError *error)
 	return interned;
 }
 
+/*
+ * mono_ldstr_utf8:
+ *
+ *   Same as mono_ldstr, but return a NULL terminated utf8 string instead
+ * of an object.
+ */
+char*
+mono_ldstr_utf8 (MonoImage *image, guint32 idx, MonoError *error)
+{
+	const char *str;
+	size_t len2;
+	long written = 0;
+	char *as;
+	GError *gerror = NULL;
+
+	mono_error_init (error);
+
+	if (!mono_verifier_verify_string_signature (image, idx, NULL))
+		return NULL; /*FIXME we should probably be raising an exception here*/
+	str = mono_metadata_user_string (image, idx);
+
+	len2 = mono_metadata_decode_blob_size (str, &str);
+	len2 >>= 1;
+
+	as = g_utf16_to_utf8 ((guint16*)str, len2, NULL, &written, &gerror);
+	if (gerror) {
+		mono_error_set_argument (error, "string", "%s", gerror->message);
+		g_error_free (gerror);
+		return NULL;
+	}
+	/* g_utf16_to_utf8  may not be able to complete the convertion (e.g. NULL values were found, #335488) */
+	if (len2 > written) {
+		/* allocate the total length and copy the part of the string that has been converted */
+		char *as2 = (char *)g_malloc0 (len2);
+		memcpy (as2, as, written);
+		g_free (as);
+		as = as2;
+	}
+
+	return as;
+}
+
 /**
  * mono_string_to_utf8:
  * @s: a System.String
@@ -7583,6 +7622,37 @@ mono_message_invoke (MonoObject *target, MonoMethodMessage *msg,
 }
 
 /**
+ * prepare_to_string_method:
+ * @obj: The object
+ * @target: Set to @obj or unboxed value if a valuetype
+ *
+ * Returns: the ToString override for @obj. If @obj is a valuetype, @target is unboxed otherwise it's @obj.
+ */
+static MonoMethod *
+prepare_to_string_method (MonoObject *obj, void **target)
+{
+	MONO_REQ_GC_UNSAFE_MODE;
+
+	static MonoMethod *to_string = NULL;
+	MonoMethod *method;
+	g_assert (target);
+	g_assert (obj);
+
+	*target = obj;
+
+	if (!to_string)
+		to_string = mono_class_get_method_from_name_flags (mono_get_object_class (), "ToString", 0, METHOD_ATTRIBUTE_VIRTUAL | METHOD_ATTRIBUTE_PUBLIC);
+
+	method = mono_object_get_virtual_method (obj, to_string);
+
+	// Unbox value type if needed
+	if (mono_class_is_valuetype (mono_method_get_class (method))) {
+		*target = mono_object_unbox (obj);
+	}
+	return method;
+}
+
+/**
  * mono_object_to_string:
  * @obj: The object
  * @exc: Any exception thrown by ToString (). May be NULL.
@@ -7592,26 +7662,10 @@ mono_message_invoke (MonoObject *target, MonoMethodMessage *msg,
 MonoString *
 mono_object_to_string (MonoObject *obj, MonoObject **exc)
 {
-	MONO_REQ_GC_UNSAFE_MODE;
-
-	static MonoMethod *to_string = NULL;
 	MonoError error;
-	MonoMethod *method;
-	MonoString *s;
-	void *target = obj;
-
-	g_assert (obj);
-
-	if (!to_string)
-		to_string = mono_class_get_method_from_name_flags (mono_get_object_class (), "ToString", 0, METHOD_ATTRIBUTE_VIRTUAL | METHOD_ATTRIBUTE_PUBLIC);
-
-	method = mono_object_get_virtual_method (obj, to_string);
-
-	// Unbox value type if needed
-	if (mono_class_is_valuetype (mono_method_get_class (method))) {
-		target = mono_object_unbox (obj);
-	}
-
+	MonoString *s = NULL;
+	void *target;
+	MonoMethod *method = prepare_to_string_method (obj, &target);
 	if (exc) {
 		s = (MonoString *) mono_runtime_try_invoke (method, target, NULL, exc, &error);
 		if (*exc == NULL && !mono_error_ok (&error))
@@ -7620,11 +7674,51 @@ mono_object_to_string (MonoObject *obj, MonoObject **exc)
 			mono_error_cleanup (&error);
 	} else {
 		s = (MonoString *) mono_runtime_invoke_checked (method, target, NULL, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		mono_error_raise_exception (&error); /* OK to throw, external only without a good alternative */
 	}
 
 	return s;
 }
+
+/**
+ * mono_object_to_string_checked:
+ * @obj: The object
+ * @error: Set on error.
+ *
+ * Returns: the result of calling ToString () on an object. If the
+ * method cannot be invoked or if it raises an exception, sets @error
+ * and returns NULL.
+ */
+MonoString *
+mono_object_to_string_checked (MonoObject *obj, MonoError *error)
+{
+	mono_error_init (error);
+	void *target;
+	MonoMethod *method = prepare_to_string_method (obj, &target);
+	return (MonoString*) mono_runtime_invoke_checked (method, target, NULL, error);
+}
+
+/**
+ * mono_object_try_to_string:
+ * @obj: The object
+ * @exc: Any exception thrown by ToString (). Must not be NULL.
+ * @error: Set if method cannot be invoked.
+ *
+ * Returns: the result of calling ToString () on an object. If the
+ * method cannot be invoked sets @error, if it raises an exception sets @exc,
+ * and returns NULL.
+ */
+MonoString *
+mono_object_try_to_string (MonoObject *obj, MonoObject **exc, MonoError *error)
+{
+	g_assert (exc);
+	mono_error_init (error);
+	void *target;
+	MonoMethod *method = prepare_to_string_method (obj, &target);
+	return (MonoString*) mono_runtime_try_invoke (method, target, NULL, exc, error);
+}
+
+
 
 /**
  * mono_print_unhandled_exception:
@@ -7655,7 +7749,11 @@ mono_print_unhandled_exception (MonoObject *exc)
 			free_message = TRUE;
 		} else {
 			MonoObject *other_exc = NULL;
-			str = mono_object_to_string (exc, &other_exc);
+			str = mono_object_try_to_string (exc, &other_exc, &error);
+			if (other_exc == NULL && !is_ok (&error))
+				other_exc = (MonoObject*)mono_error_convert_to_exception (&error);
+			else
+				mono_error_cleanup (&error);
 			if (other_exc) {
 				char *original_backtrace = mono_exception_get_managed_backtrace ((MonoException*)exc);
 				char *nested_backtrace = mono_exception_get_managed_backtrace ((MonoException*)other_exc);
