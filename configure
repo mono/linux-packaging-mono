@@ -1006,6 +1006,7 @@ with_llvm
 enable_vtune
 with_vtune
 with_sgen
+with_sgen_default_concurrent
 with_x
 with_libgdiplus
 enable_icall_symbol_map
@@ -1740,6 +1741,7 @@ Optional Packages:
   --with-llvm=<llvm prefix>    Enable the LLVM back-end
   --with-vtune=<vtune prefix>	Enable jit vtune profiling
   --with-sgen=yes,no             Extra Generational GC, default=yes
+  --with-sgen-default-concurrent=yes,no             Use Concurrent GC, default=no
   --with-x                use the X Window System
   --with-libgdiplus=installed|sibling|<path>	Override the libgdiplus used for System.Drawing tests (defaults to installed)
   --with-profile4=yes,no          If you want to install the 4.6 FX (defaults to yes)
@@ -26144,6 +26146,14 @@ else
   buildsgen=yes
 fi
 
+
+# Check whether --with-sgen-default-concurrent was given.
+if test "${with_sgen_default_concurrent+set}" = set; then :
+  withval=$with_sgen_default_concurrent;
+else
+  with_sgen_default_concurrent=no
+fi
+
 if test x$buildsgen = xyes; then
 
 $as_echo "#define HAVE_MOVING_COLLECTOR 1" >>confdefs.h
@@ -26153,6 +26163,12 @@ $as_echo "#define HAVE_MOVING_COLLECTOR 1" >>confdefs.h
       gc_msg="sgen"
    else
       gc_msg="sgen and $gc_msg"
+   fi
+
+   if test x$with_sgen_default_concurrent != xno; then
+
+$as_echo "#define HAVE_CONC_GC_AS_DEFAULT 1" >>confdefs.h
+
    fi
 fi
 
@@ -27322,7 +27338,7 @@ ac_config_commands="$ac_config_commands quiet-libtool"
 ac_config_commands="$ac_config_commands nolock-libtool"
 
 
-ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/io-layer/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile runtime/Makefile msvc/Makefile po/Makefile"
+ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/io-layer/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile runtime/Makefile msvc/Makefile po/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -28691,6 +28707,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "mono-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES mono-uninstalled.pc" ;;
     "acceptance-tests/Makefile") CONFIG_FILES="$CONFIG_FILES acceptance-tests/Makefile" ;;
+    "llvm/Makefile") CONFIG_FILES="$CONFIG_FILES llvm/Makefile" ;;
     "scripts/mono-find-provides") CONFIG_FILES="$CONFIG_FILES scripts/mono-find-provides" ;;
     "scripts/mono-find-requires") CONFIG_FILES="$CONFIG_FILES scripts/mono-find-requires" ;;
     "mono/Makefile") CONFIG_FILES="$CONFIG_FILES mono/Makefile" ;;

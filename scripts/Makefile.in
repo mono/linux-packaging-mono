@@ -492,7 +492,9 @@ EXTRA_DIST = \
 	mono-heapviz		\
 	$(MDOC_COMPAT)		\
 	get-cygwin-deps.sh	\
-	mono-configuration-crypto.in
+	mono-configuration-crypto.in	\
+	submodules/versions.mk	\
+	submodules/versions.py
 
 mono_interp = mono
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@plat_bindir = $(shell cygpath -m $(libdir))

@@ -199,6 +199,9 @@
 /* Define to 1 if you have the <complex.h> header file. */
 #undef HAVE_COMPLEX_H
 
+/* Defaults to concurrent GC */
+#undef HAVE_CONC_GC_AS_DEFAULT
+
 /* Define to 1 if you have the `confstr' function. */
 #undef HAVE_CONFSTR
 
