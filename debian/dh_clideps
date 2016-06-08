@@ -65,9 +65,28 @@ paths will be made absolute for the benefit of monodis.
 Note that the directory given should be the complete or relative path to a directory that contains
 the library. See example below.
 
+=item B<-X>path B<--exclude=>path
+
+Paths to exclude from the .dll/.exe search.  Assemblies in these paths or their subdirectories
+will not be searched for dependencies, and assemblies missing references will not cause dh_clideps 
+to fail.
+
+=item B<--exclude-moduleref=>moduleref
+
+ModuleRef to exclude from dependency resolution.  dh_clideps will not attempt to resolve dependencies
+of these ModuleRefs.  In particular, dh_clideps will not fail if these modulerefs are unresolvable.
+
+May be specified multiple times.  Each time it excludes a new ModuleRef.
+
+ModuleRefs to be excluded can be optionally prefixed with "i:" to specify a case-insensitive match.
+
+If foo is excluded, both foo and foo.dll will be considered when matching the exclude.
+
 =item B<internal-mono>                             
 
 Uses the mono runtime in . (used for bootstrapping mono packages)  
+
+=back
 
 =head1 EXAMPLES
 
@@ -84,7 +103,41 @@ or
   (MONO_GAC_PREFIX example)
   dh_clideps -l debian/tmp/usr
 
+Suppose your source package libquux1.0-cil also ships some examples in /usr/share, and you don't
+want to pull in those dependencies.
+  dh_clideps -X/usr/share
+
+Suppose your source package has a ModuleRef on libbaz but works correctly
+without it.  Excluding this ModuleRef will prevent dh_clideps from adding
+a package dependency or failing if the libbaz dependency is unresolvable.
+  dh_clideps --exclude-moduleref=libbaz
+
 =cut
+
+# Static list of modulerefs to automatically exclude
+@{$dh{MODULE_EXCLUDE}} = (
+  "i:advapi32",
+  "i:comctl32",
+  "i:dwmapi",
+  "i:gdi32",
+  "i:imm32",
+  "i:kernel32",
+  "i:netapi32",
+  "i:oleaut32",
+  "i:opengl32",
+  "i:shell32",
+  "i:shlwapi",
+  "i:system32",
+  "i:user32",
+  "i:uxtheme",
+  "i:winmm",
+  "i:ws2_32",
+  );
+
+# Add an item to the moduleref exclude list.
+sub AddModulerefExclude { my($option,$value)=@_;
+	push @{$dh{MODULE_EXCLUDE}},$value;
+}
 
 # gar, debhelper 7.1 defines -d for all scripts already :(
 init(options => {
@@ -92,6 +145,7 @@ init(options => {
   "r" => \$dh{R_FLAG},
   "l=s", => \$dh{L_PARAMS},
   "internal-mono"  => \$dh{INTERNAL_MONO_FLAG},
+  "exclude-moduleref=s", => \&AddModulerefExclude,
 });
 
 my $clr;
@@ -100,6 +154,7 @@ my $cli_version = `$cli --version 2>&1`;
 my $cli_parser;
 my $cli_parser_paths;
 my $pwd = `pwd`;
+my @allpackages = getpackages();
 chomp $pwd;
 
 my $mono_gac_prefix = "";
@@ -159,8 +214,8 @@ if (defined($dh{INTERNAL_MONO_FLAG}) ||
   my $srcblock = <FILE>;
   close(FILE);
   if ($srcblock =~ m/Build-Depends(?:\-Indep)?\:(?:.*\n\s+)*.*cli\-common\-dev\s*\(>=\s*([^\)]+)\)/ &&
-      system("dpkg", "--compare-versions", $1, ">=", "0.4.4") != 0) {
-    warning("Warning! No Build-Depends(-Indep) on cli-common-dev (>= 0.4.4)!");
+      system("dpkg", "--compare-versions", $1, ">=", "0.8~") != 0) {
+    warning("Warning! No Build-Depends(-Indep) on cli-common-dev (>= 0.8~)!");
   }
 }
 
@@ -222,6 +277,7 @@ our $needs_net_1_0;
 our $needs_net_2_0;
 our $needs_net_2_1;
 our $needs_net_4_0;
+our $needs_net_4_5;
 
 foreach my $package (@{$dh{DOPACKAGES}}) {
   my $tmp = tmpdir($package);
@@ -229,10 +285,17 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
                recommends => [],
                suggests => [] );
   my $found_exe = 0;
+
+  use File::Spec;
+  my @exclude_dirs = ();
+  foreach(@{$dh{EXCLUDE}}) {
+    push(@exclude_dirs, File::Spec->catdir($tmp, $_));
+  }
   $needs_net_1_0 = 0;
   $needs_net_2_0 = 0;
   $needs_net_2_1 = 0;
   $needs_net_4_0 = 0;
+  $needs_net_4_5 = 0;
   
   # for idempotency
   delsubstvar($package, "cli:Depends");
@@ -247,6 +310,12 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
       $found_exe = 1;
     }
 
+    foreach(@exclude_dirs) {
+      if($File::Find::dir =~ m/^$_/) {
+        verbose_print("Excluding module $file from dir $File::Find::dir");
+        return;
+      }
+    }
     verbose_print("Package: $package Assembly: $file");
         
     my %shlibRefs = resolveShlibRefs($package, $file);
@@ -267,7 +336,9 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
   my $vm_ref = "";
   if (!defined($dh{R_FLAG}) && $found_exe) {
     if ($clr eq "mono") {
-      if ($needs_net_4_0) {
+      if ($needs_net_4_5) {
+        $vm_ref = "mono-runtime (>= 3.0~), ";
+      } elsif ($needs_net_4_0) {
         $vm_ref = "mono-runtime (>= 2.10.1), ";
       } elsif ($needs_net_2_1) {
         $vm_ref = "mono-runtime (>= 1.2.6), ";
@@ -524,7 +595,13 @@ sub resolveClilibRefs {
         } elsif ($ver eq "2.1.0.0") {
           $needs_net_2_1 = 1;
         } elsif ($ver eq "4.0.0.0") {
-          $needs_net_4_0 = 1;
+          # HACK: Mono 3.0 only provides a .NET 4.0 corlib for development
+          # support. At runtime Mono 3.0 always loads the 4.5 corlib though as 
+          # .NET 4.5 and .NET 4.0 both contain a corlib with the same assembly
+          # version but the 4.5 corlib contains more symbols! Thus we need to
+          # always depend on the 4.5 corlib with Mono 3.0.
+          # TODO: check cli_version for >= 3.0 and fallback to needs_net_4_0
+          $needs_net_4_5 = 1;
         } else {
           warning("Warning: Unknown mscorlib version: $ver!");
         }
@@ -577,33 +654,78 @@ sub resolveShlibRefs {
    local *F;
    open(F, $tmpfile);
    while (<F>) {
-     my $name = $1 if /\d+:\s+(.*)\n/;
-     if (!defined($name)) {
+     my $moduleref = $1 if /\d+:\s+(.*)\n/;
+     if (!defined($moduleref)) {
        next;
      }
-     my $target = $dllmapdata{$name};
+     my $skip = 0;
+     foreach my $excluded_moduleref (@{$dh{MODULE_EXCLUDE}}) {
+       # explicitly excluded modulerefs are never checked
+       $excluded_moduleref =~ /^(i:)?(.*)/;
+       my $exclude_pattern = "^$2(.dll)?\$";
+       if (defined $1 && $1 eq "i:" && $moduleref =~ /$exclude_pattern/i) {
+         # i: specified; case insensitive match
+         verbose_print("Ignoring moduleref $moduleref (case insensitive)");
+         $skip = 1;
+         last;
+       } elsif ($moduleref =~ /$exclude_pattern/) {
+         # case sensitive
+         verbose_print("Ignoring moduleref $moduleref");
+         $skip = 1;
+         last;
+       }
+     }
+     next if $skip;
+     my $target = $dllmapdata{$moduleref};
+     my $fullTarget = $target;
      
      if (defined($target)) {
        $target = basename($target);
-       verbose_print("Resolved moduleref via DLL map: $name to: $target");
-     } elsif (defined($shlibdata{$name})) {
+       verbose_print("Resolved moduleref via DLL map: $moduleref to: $target");
+     } elsif (defined($shlibdata{$moduleref})) {
        verbose_print("Resolved moduleref via direct match in shlibs");
+     } elsif (resolvePrivateLibrary($package, $moduleref, $package)) {
+       # There is no DllMap, but the package ships the private library alongside the assembly
+       verbose_print("Resolved moduleref to private library $moduleref");
+       next;
+     } elsif (resolvePrivateLibrary($package, "lib" . $moduleref . ".so", $package)) {
+       # There is no DllMap, the assembly is relying on Mono's "foo" -> "libfoo.so"
+       # translation, and is shipping libfoo.so alongside the assembly
+       verbose_print("Resolved moduleref to private library lib" . $moduleref . ".so");
+       next;
      } else {
-       warning("Warning: Could not resolve moduleref: $name for: $assembly_filename!");
+       warning("Warning: Could not resolve moduleref: $moduleref for: $assembly_filename!");
        next;
      }
  
      my $pkgref;
      if (defined($target) && defined($shlibdata{$target})) {
        $pkgref = $shlibdata{$target};
-     } elsif (defined($shlibdata{$name})) {
-       $pkgref = $shlibdata{$name};
+     } elsif (defined($shlibdata{$moduleref})) {
+       $pkgref = $shlibdata{$moduleref};
      } elsif (defined($target) && defined($shlibdata{$target.".0"})) {
        # for DLL maps that have an unversioned library as target
        $pkgref = $shlibdata{$target.".0"};
      } else {
-       warning("Warning: Missing shlibs entry: $target or $name for: $assembly_filename!");
-       next;
+       if(!resolvePrivateLibrary($package, $fullTarget, $package)) {
+         # Private library can't be found in the current package.  Try to resolve it
+         # in the other binary packages, and add a strong dependency if we find it.
+         foreach my $binary_package (@allpackages) {
+	   verbose_print("Checking $binary_package for $fullTarget");
+           if(resolvePrivateLibrary($package, $fullTarget, $binary_package)) {
+             verbose_print("Found private library in $binary_package");
+             $pkgref = $binary_package . " (= \${binary:Version})";
+             verbose_print("pkgref is $pkgref");
+             last;
+           }
+         }
+         if (!defined($pkgref)) {
+           warning("Warning: Missing shlibs entry: $target or $moduleref for: $assembly_filename!");
+         }
+       } else {
+         verbose_print("Found private library $target for $moduleref");
+         next;
+       }
      }
 
      my %overriddenRef = resolveOverride($package, $pkgref);
@@ -612,8 +734,44 @@ sub resolveShlibRefs {
      push(@{$ret{suggests}},   $overriddenRef{suggests});
    } 
    close(F);
-   
+
    return %ret;
+}
+
+sub resolvePrivateLibrary {
+  my $package = shift;
+  my $target = shift;
+  my $resolveIn = shift;
+  my $library_file;
+
+  use File::Spec;
+  if (File::Spec->file_name_is_absolute($target)) {
+    # If the DLLMap target is absolute, we should check that the target
+    # exists in that location.  Since we're currently in the directory
+    # with the assembly, we need to back out first.
+    my @targetDirs = File::Spec->splitdir($target);
+    my @cwdComponents = File::Spec->splitdir(File::Spec->rel2abs(File::Spec->curdir()));
+    my @upDirs = ("../", "../");
+
+    # Find where the last occurance of tmpdir is in $curdir, and add enough
+    # updirs to get there from cwd.
+    while(join("/", ($cwdComponents[-2], $cwdComponents[-1])) ne tmpdir($package)) {
+      pop(@cwdComponents);
+      push(@upDirs, "../");
+    }
+
+    $library_file = File::Spec->rel2abs(File::Spec->catdir((File::Spec->curdir(), @upDirs, tmpdir($resolveIn), @targetDirs)));
+  } else {
+    # If the DLLMap target is not absolute, look in the same directory
+    # as the assembly.
+    $library_file = basename($target);
+  }
+  verbose_print("Looking for $target at $library_file");
+  if (-f $library_file || -s $library_file) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 =head1 SEE ALSO
