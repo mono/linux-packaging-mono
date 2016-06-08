@@ -526,8 +526,13 @@ AM_CPPFLAGS = \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_shlibs) \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_stlibs)
 
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppression_DATA = mono-profiler-log.suppression
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@prof_ldflags = -avoid-version
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@prof_ldflags = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+
+# FIXME fix the profiler tests to work with coop.
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_FALSE@@HOST_WIN32_FALSE@@NACL_CODEGEN_FALSE@check_targets = testlog
 
 # The log profiler uses eglib functions, so it needs to be linked against
 # libeglib in shared mode, but not in static mode, since that would
@@ -557,9 +562,6 @@ libmono_profiler_log_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LDFLAGS = -static
 mprof_report_SOURCES = decode.c
 mprof_report_LDADD = $(Z_LIBS) $(GLIB_LIBS) $(LIBICONV)
-
-# FIXME fix the profiler tests to work with coop.
-@ENABLE_COOP_TRUE@DISABLE_PROFILER_TESTS = 1
 PLOG_TESTS_SRC = test-alloc.cs test-busy.cs test-monitor.cs test-excleave.cs \
 	test-heapshot.cs test-traces.cs
 
@@ -568,8 +570,6 @@ CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(with_mono_path) $(top_builddir)/runtime/mono-wrapper
 MCS = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug
-suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
-suppression_DATA = mono-profiler-log.suppression
 EXTRA_DIST = utils.c utils.h proflog.h \
 	$(PLOG_TESTS_SRC) ptestrunner.pl \
 	$(suppression_DATA)
@@ -1010,14 +1010,9 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	$(MCS) -out:$@ $<
 
 testlog: $(PLOG_TESTS)
-	if [ "z$(DISABLE_PROFILER_TESTS)" != z1 ]; then \
-		$(with_mono_path) perl $(srcdir)/ptestrunner.pl $(top_builddir) ; \
-	else \
-		echo "Profiler tests disabled with cooperative GC" ; \
-	fi
+	$(with_mono_path) perl $(srcdir)/ptestrunner.pl $(top_builddir)
 
-@NACL_CODEGEN_TRUE@check-local:
-@NACL_CODEGEN_FALSE@check-local: testlog
+check-local: $(check_targets)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
