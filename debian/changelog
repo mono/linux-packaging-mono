@@ -1,3 +1,9 @@
+mono (4.2.4.4-0wheezy1) wheezy; urgency=low
+
+  * "New release - mono-4.2.4.4.tar.bz2"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 13 Jun 2016 13:36:00 +0000
+
 mono (4.2.3.4-0xamarin2) beta; urgency=medium
 
   * "Bugfix - see git log"
