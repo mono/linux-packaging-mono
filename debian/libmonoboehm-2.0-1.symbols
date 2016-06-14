@@ -1166,6 +1166,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_param_get_objects@Base 4.1.0.1738
  mono_parse_default_optimizations@Base 4.1.0.1738
  mono_parse_env_options@Base 4.3.0.2390
+ mono_parse_options_from@Base 4.4.0.182
  mono_path_canonicalize@Base 4.1.0.1738
  mono_path_resolve_symlinks@Base 4.1.0.1738
  mono_pe_file_open@Base 4.1.0.1738
