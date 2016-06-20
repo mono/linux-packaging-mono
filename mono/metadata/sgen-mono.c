@@ -841,7 +841,7 @@ mono_gc_clear_domain (MonoDomain * domain)
 	sgen_stop_world (0);
 
 	if (sgen_concurrent_collection_in_progress ())
-		sgen_perform_collection (0, GENERATION_OLD, "clear domain", TRUE);
+		sgen_perform_collection (0, GENERATION_OLD, "clear domain", TRUE, FALSE);
 	SGEN_ASSERT (0, !sgen_concurrent_collection_in_progress (), "We just ordered a synchronous collection.  Why are we collecting concurrently?");
 
 	major_collector.finish_sweeping ();
@@ -1330,6 +1330,18 @@ create_allocator (int atype, ManagedAllocatorVariant variant)
 
 	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
 	mono_mb_emit_byte (mb, CEE_MONO_NOT_TAKEN);
+	/*
+	 * We are no longer in a critical section. We need to do this before calling
+	 * to unmanaged land in order to avoid stw deadlocks since unmanaged code
+	 * might take locks.
+	 */
+#ifdef MANAGED_ALLOCATOR_CAN_USE_CRITICAL_REGION
+	EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR (mb, thread_var);
+	mono_mb_emit_byte (mb, CEE_LDC_I4_0);
+	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (mb, CEE_MONO_ATOMIC_STORE_I4);
+	mono_mb_emit_i4 (mb, MONO_MEMORY_BARRIER_NONE);
+#endif
 
 	/* FIXME: mono_gc_alloc_obj takes a 'size_t' as an argument, not an int32 */
 	mono_mb_emit_ldarg (mb, 0);
@@ -2522,7 +2534,11 @@ mono_gc_get_gc_name (void)
 char*
 mono_gc_get_description (void)
 {
+#ifdef HAVE_CONC_GC_AS_DEFAULT
+	return g_strdup ("sgen (concurrent by default)");
+#else
 	return g_strdup ("sgen");
+#endif
 }
 
 void

@@ -15,7 +15,6 @@
 @SET_MAKE@
 
 
-
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -82,7 +81,6 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 @PLATFORM_ANDROID_TRUE@am__append_1 = ../../support/libm/complex.c
-@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@bin_PROGRAMS = pedump$(EXEEXT)
 subdir = mono/metadata
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -582,23 +580,6 @@ libmonoruntimesgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_la_rpath =
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_la_rpath =
-am__installdirs = "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(libmonoruntimeincludedir)"
-PROGRAMS = $(bin_PROGRAMS)
-am__pedump_SOURCES_DIST = pedump.c
-@SHARED_MONO_TRUE@am_pedump_OBJECTS = pedump.$(OBJEXT)
-pedump_OBJECTS = $(am_pedump_OBJECTS)
-am__DEPENDENCIES_1 =
-@DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_2 = pedump-dtrace.$(OBJEXT)
-@SHARED_MONO_TRUE@pedump_DEPENDENCIES = $(sgen_libraries) \
-@SHARED_MONO_TRUE@	$(top_srcdir)/mono/sgen/libmonosgen.la \
-@SHARED_MONO_TRUE@	../io-layer/libwapi.la \
-@SHARED_MONO_TRUE@	../utils/libmonoutils.la \
-@SHARED_MONO_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-@SHARED_MONO_TRUE@	$(am__DEPENDENCIES_2)
-pedump_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(pedump_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -633,13 +614,12 @@ SOURCES = $(libmonoruntime_config_la_SOURCES) \
 	$(libmonoruntime_static_la_SOURCES) \
 	$(libmonoruntime_la_SOURCES) \
 	$(libmonoruntimesgen_static_la_SOURCES) \
-	$(libmonoruntimesgen_la_SOURCES) $(pedump_SOURCES)
+	$(libmonoruntimesgen_la_SOURCES)
 DIST_SOURCES = $(libmonoruntime_config_la_SOURCES) \
 	$(am__libmonoruntime_static_la_SOURCES_DIST) \
 	$(am__libmonoruntime_la_SOURCES_DIST) \
 	$(am__libmonoruntimesgen_static_la_SOURCES_DIST) \
-	$(am__libmonoruntimesgen_la_SOURCES_DIST) \
-	$(am__pedump_SOURCES_DIST)
+	$(am__libmonoruntimesgen_la_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -672,6 +652,7 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
+am__installdirs = "$(DESTDIR)$(libmonoruntimeincludedir)"
 HEADERS = $(libmonoruntimeinclude_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
@@ -703,6 +684,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BITCODE = @BITCODE@
 BOEHM_DEFINES = @BOEHM_DEFINES@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
@@ -779,6 +761,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
+MONO_LLVMONLY = @MONO_LLVMONLY@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -807,6 +790,7 @@ SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
+TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
@@ -1142,15 +1126,6 @@ libmonoruntimeinclude_HEADERS = \
 	tokentype.h		\
 	verify.h		
 
-@DTRACE_G_REQUIRED_FALSE@PEDUMP_DTRACE_OBJECT = 
-@DTRACE_G_REQUIRED_TRUE@PEDUMP_DTRACE_OBJECT = pedump-dtrace.$(OBJEXT)
-@SHARED_MONO_TRUE@pedump_SOURCES = \
-@SHARED_MONO_TRUE@	pedump.c
-
-@SHARED_MONO_TRUE@pedump_LDADD = $(sgen_libraries) $(top_srcdir)/mono/sgen/libmonosgen.la ../io-layer/libwapi.la ../utils/libmonoutils.la \
-@SHARED_MONO_TRUE@	$(GLIB_LIBS) -lm $(LIBICONV) $(PEDUMP_DTRACE_OBJECT)
-
-@PLATFORM_DARWIN_TRUE@@SHARED_MONO_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
 EXTRA_DIST = $(win32_sources) $(unix_sources) $(null_sources) runtime.h \
 		threadpool-ms-io-poll.c threadpool-ms-io-epoll.c threadpool-ms-io-kqueue.c
 
@@ -1232,59 +1207,6 @@ libmonoruntimesgen-static.la: $(libmonoruntimesgen_static_la_OBJECTS) $(libmonor
 
 libmonoruntimesgen.la: $(libmonoruntimesgen_la_OBJECTS) $(libmonoruntimesgen_la_DEPENDENCIES) $(EXTRA_libmonoruntimesgen_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmonoruntimesgen_la_LINK) $(am_libmonoruntimesgen_la_rpath) $(libmonoruntimesgen_la_OBJECTS) $(libmonoruntimesgen_la_LIBADD) $(LIBS)
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
-	fi; \
-	for p in $$list; do echo "$$p $$p"; done | \
-	sed 's/$(EXEEXT)$$//' | \
-	while read p p1; do if test -f $$p \
-	 || test -f $$p1 \
-	  ; then echo "$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n;h' \
-	    -e 's|.*|.|' \
-	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
-	sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
-	    else { print "f", $$3 "/" $$4, $$1; } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	    test -z "$$files" || { \
-	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
-	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
-	    } \
-	; done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
-	files=`for p in $$list; do echo "$$p"; done | \
-	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
-	      -e 's/$$/$(EXEEXT)/' \
-	`; \
-	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(bindir)" && rm -f $$files
-
-clean-binPROGRAMS:
-	@list='$(bin_PROGRAMS)'; test -n "$$list" || exit 0; \
-	echo " rm -f" $$list; \
-	rm -f $$list || exit $$?; \
-	test -n "$(EXEEXT)" || exit 0; \
-	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
-	echo " rm -f" $$list; \
-	rm -f $$list
-
-pedump$(EXEEXT): $(pedump_OBJECTS) $(pedump_DEPENDENCIES) $(EXTRA_pedump_DEPENDENCIES) 
-	@rm -f pedump$(EXEEXT)
-	$(AM_V_CCLD)$(pedump_LINK) $(pedump_OBJECTS) $(pedump_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1581,7 +1503,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-verify.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pedump.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -3728,9 +3649,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libmonoruntimeincludedir)"; do \
+	for dir in "$(DESTDIR)$(libmonoruntimeincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -3768,8 +3689,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic clean-libtool \
-	clean-noinstLTLIBRARIES mostlyclean-am
+clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ../../support/libm/$(DEPDIR) ./$(DEPDIR)
@@ -3795,7 +3716,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-binPROGRAMS
+install-exec-am:
 
 install-html: install-html-am
 
@@ -3835,17 +3756,15 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS \
-	uninstall-libmonoruntimeincludeHEADERS
+uninstall-am: uninstall-libmonoruntimeincludeHEADERS
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
-	clean-binPROGRAMS clean-generic clean-libtool \
-	clean-noinstLTLIBRARIES cscopelist-am ctags ctags-am distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
+	clean-libtool clean-noinstLTLIBRARIES cscopelist-am ctags \
+	ctags-am distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
 	install-info-am install-libmonoruntimeincludeHEADERS \
@@ -3854,8 +3773,7 @@ uninstall-am: uninstall-binPROGRAMS \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-binPROGRAMS \
-	uninstall-libmonoruntimeincludeHEADERS
+	uninstall-am uninstall-libmonoruntimeincludeHEADERS
 
 @HOST_WIN32_TRUE@export HOST_CC
 
@@ -3866,13 +3784,6 @@ uninstall-am: uninstall-binPROGRAMS \
 # in configure.ac.
 #
 mono-config-dirs.lo: Makefile
-
-@DTRACE_G_REQUIRED_TRUE@pedump-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d $(shared_sgen_libraries) ../io-layer/libwapi.la ../utils/libmonoutils.la
-@DTRACE_G_REQUIRED_TRUE@	DTRACE="$(DTRACE)" DTRACEFLAGS="$(DTRACEFLAGS)" AR="$(AR)" $(SHELL) $(top_srcdir)/data/dtrace-prelink.sh \
-@DTRACE_G_REQUIRED_TRUE@	--pic pedump-dtrace.$(OBJEXT) $(top_srcdir)/data/mono.d $(shared_sgen_libraries) ../io-layer/libwapi.la ../utils/libmonoutils.la
-
-@SHARED_MONO_TRUE@$(top_srcdir)/mono/sgen/libmonosgen.la:
-@SHARED_MONO_TRUE@	make -w -C $(top_srcdir)/mono/sgen libmonosgen.la
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

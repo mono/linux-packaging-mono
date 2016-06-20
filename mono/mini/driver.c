@@ -1026,10 +1026,10 @@ mono_jit_exec (MonoDomain *domain, MonoAssembly *assembly, int argc, char *argv[
 	}
 	
 	if (mono_llvm_only) {
-		MonoObject *exc;
+		MonoObject *exc = NULL;
 		int res;
 
-		res = mono_runtime_run_main (method, argc, argv, &exc);
+		res = mono_runtime_try_run_main (method, argc, argv, &exc);
 		if (exc) {
 			mono_unhandled_exception (exc);
 			mono_invoke_unhandled_exception_hook (exc);
@@ -1037,7 +1037,13 @@ mono_jit_exec (MonoDomain *domain, MonoAssembly *assembly, int argc, char *argv[
 		}
 		return res;
 	} else {
-		return mono_runtime_run_main (method, argc, argv, NULL);
+		int res = mono_runtime_run_main_checked (method, argc, argv, &error);
+		if (!is_ok (&error)) {
+			MonoException *ex = mono_error_convert_to_exception (&error);
+			if (ex)
+				mono_unhandled_exception ((MonoObject*)ex);
+		}
+		return res;
 	}
 }
 
