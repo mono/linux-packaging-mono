@@ -4157,12 +4157,17 @@ property_hash (gconstpointer data)
 }
 
 static gboolean
-method_declaring_signatures_equal (MonoMethod *method1, MonoMethod *method2)
+property_accessor_override (MonoMethod *method1, MonoMethod *method2)
 {
-	if (method1->is_inflated)
-		method1 = ((MonoMethodInflated*) method1)->declaring;
-	if (method2->is_inflated)
-		method2 = ((MonoMethodInflated*) method2)->declaring;
+	if (method1->slot != -1 && method1->slot == method2->slot)
+		return TRUE;
+
+	if (mono_class_get_generic_type_definition (method1->klass) == mono_class_get_generic_type_definition (method2->klass)) {
+		if (method1->is_inflated)
+			method1 = ((MonoMethodInflated*) method1)->declaring;
+		if (method2->is_inflated)
+			method2 = ((MonoMethodInflated*) method2)->declaring;
+	}
 
 	return mono_metadata_signature_equal (mono_method_signature (method1), mono_method_signature (method2));
 }
@@ -4188,10 +4193,10 @@ property_equal (MonoProperty *prop1, MonoProperty *prop2)
 	   the indexer came from method 1 or from method 2, and we
 	   shouldn't conflate them.   (Bugzilla 36283)
 	*/
-	if (prop1->get && prop2->get && !method_declaring_signatures_equal (prop1->get, prop2->get))
+	if (prop1->get && prop2->get && !property_accessor_override (prop1->get, prop2->get))
 		return FALSE;
 
-	if (prop1->set && prop2->set && !method_declaring_signatures_equal (prop1->set, prop2->set))
+	if (prop1->set && prop2->set && !property_accessor_override (prop1->set, prop2->set))
 		return FALSE;
 
 	return TRUE;
@@ -7329,16 +7334,6 @@ ICALL_EXPORT gint32
 ves_icall_System_Runtime_Versioning_VersioningHelper_GetRuntimeId (void)
 {
 	return 9;
-}
-
-ICALL_EXPORT void
-ves_icall_MonoMethodMessage_InitMessage (MonoMethodMessage *this_obj, 
-					 MonoReflectionMethod *method,
-					 MonoArray *out_args)
-{
-	MonoError error;
-	mono_message_init (mono_object_domain (this_obj), this_obj, method, out_args, &error);
-	mono_error_set_pending_exception (&error);
 }
 
 #ifndef DISABLE_REMOTING

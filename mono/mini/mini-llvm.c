@@ -94,6 +94,7 @@ typedef struct {
 	LLVMContextRef context;
 	LLVMValueRef sentinel_exception;
 	void *di_builder, *cu;
+	GHashTable *objc_selector_to_var;
 } MonoLLVMModule;
 
 /*
@@ -2036,7 +2037,10 @@ emit_store_general (EmitContext *ctx, MonoBasicBlock *bb, LLVMBuilderRef *builde
 		args [4] = LLVMConstInt (LLVMInt32Type (), ordering, FALSE);
 		emit_call (ctx, bb, builder_ref, get_intrinsic (ctx, intrins_name), args, 5);
 	} else {
-		mono_llvm_build_store (*builder_ref, value, addr, is_faulting, barrier);
+		if (barrier != LLVM_BARRIER_NONE)
+			mono_llvm_build_aligned_store (*builder_ref, value, addr, barrier, size);
+		else
+			mono_llvm_build_store (*builder_ref, value, addr, is_faulting, barrier);
 	}
 }
 
@@ -5478,15 +5482,17 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 		case OP_ATOMIC_STORE_U8:
 		case OP_ATOMIC_STORE_R4:
 		case OP_ATOMIC_STORE_R8: {
-			set_failure (ctx, "atomic mono.store intrinsic");
-			break;
-#if 0
 			int size;
 			gboolean sext, zext;
 			LLVMTypeRef t;
 			gboolean is_volatile = (ins->flags & MONO_INST_FAULT);
 			BarrierKind barrier = (BarrierKind) ins->backend.memory_barrier_kind;
 			LLVMValueRef index, addr, value;
+
+			if (!cfg->llvm_only) {
+				set_failure (ctx, "atomic mono.store intrinsic");
+				break;
+			}
 
 			if (!values [ins->inst_destbasereg]) {
 			    set_failure (ctx, "inst_destbasereg");
@@ -5501,7 +5507,6 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 
 			emit_store_general (ctx, bb, &builder, size, value, addr, is_volatile, barrier);
 			break;
-#endif
 		}
 		case OP_RELAXED_NOP: {
 #if defined(TARGET_AMD64) || defined(TARGET_X86)
@@ -5761,6 +5766,38 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 				}
 				addresses [ins->dreg] = addresses [ins->sreg1];
 			}
+			break;
+		}
+		case OP_OBJC_GET_SELECTOR: {
+			const char *name = (const char*)ins->inst_p0;
+			LLVMValueRef var;
+
+			if (!ctx->module->objc_selector_to_var)
+				ctx->module->objc_selector_to_var = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+			var = g_hash_table_lookup (ctx->module->objc_selector_to_var, name);
+			if (!var) {
+				LLVMValueRef indexes [16];
+
+				LLVMValueRef name_var = LLVMAddGlobal (ctx->lmodule, LLVMArrayType (LLVMInt8Type (), strlen (name) + 1), "@OBJC_METH_VAR_NAME");
+				LLVMSetInitializer (name_var, mono_llvm_create_constant_data_array ((const uint8_t*)name, strlen (name) + 1));
+				LLVMSetLinkage (name_var, LLVMPrivateLinkage);
+				LLVMSetSection (name_var, "__TEXT,__objc_methname,cstring_literals");
+
+				LLVMValueRef ref_var = LLVMAddGlobal (ctx->lmodule, LLVMPointerType (LLVMInt8Type (), 0), "@OBJC_SELECTOR_REFERENCES");
+
+				indexes [0] = LLVMConstInt (LLVMInt32Type (), 0, 0);
+				indexes [1] = LLVMConstInt (LLVMInt32Type (), 0, 0);
+				LLVMSetInitializer (ref_var, LLVMConstGEP (name_var, indexes, 2));
+				LLVMSetLinkage (ref_var, LLVMPrivateLinkage);
+				LLVMSetExternallyInitialized (ref_var, TRUE);
+				LLVMSetSection (ref_var, "__DATA, __objc_selrefs, literal_pointers, no_dead_strip");
+				LLVMSetAlignment (ref_var, sizeof (mgreg_t));
+
+				g_hash_table_insert (ctx->module->objc_selector_to_var, g_strdup (name), ref_var);
+				var = ref_var;
+			}
+
+			values [ins->dreg] = LLVMBuildLoad (builder, var, "");
 			break;
 		}
 
@@ -8648,6 +8685,7 @@ mono_llvm_emit_aot_module (const char *filename, const char *cu_name)
 		char *verifier_err;
 
 		if (LLVMVerifyModule (module->lmodule, LLVMReturnStatusAction, &verifier_err)) {
+			printf ("%s\n", verifier_err);
 			g_assert_not_reached ();
 		}
 	}

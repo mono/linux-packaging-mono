@@ -2348,8 +2348,10 @@ mono_llvmonly_runtime_invoke (MonoMethod *method, RuntimeInvokeInfo *info, void 
 	runtime_invoke = (MonoObject *(*)(MonoObject *, void **, MonoObject **, void *))info->runtime_invoke;
 
 	runtime_invoke (NULL, args, exc, info->compiled_method);
-	if (exc && *exc)
+	if (exc && *exc) {
 		mono_error_set_exception_instance (error, (MonoException*) *exc);
+		return NULL;
+	}
 
 	if (sig->ret->type != MONO_TYPE_VOID && info->ret_box_class)
 		return mono_value_box_checked (domain, info->ret_box_class, retval, error);
@@ -2521,10 +2523,12 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 		mono_arch_start_dyn_call (info->dyn_call_info, (gpointer**)args, retval, buf, sizeof (buf));
 
 		dyn_runtime_invoke (buf, exc, info->compiled_method);
-		if (catchExcInMonoError && *exc != NULL)
-			mono_error_set_exception_instance (error, (MonoException*) *exc);
-
 		mono_arch_finish_dyn_call (info->dyn_call_info, buf);
+
+		if (catchExcInMonoError && *exc != NULL) {
+			mono_error_set_exception_instance (error, (MonoException*) *exc);
+			return NULL;
+		}
 
 		if (info->ret_box_class)
 			return mono_value_box_checked (domain, info->ret_box_class, retval, error);
@@ -3254,6 +3258,7 @@ register_jit_stats (void)
 	mono_counters_register ("JIT/liveness_handle_exception_clauses (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_liveness_handle_exception_clauses);
 	mono_counters_register ("JIT/handle_out_of_line_bblock (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_handle_out_of_line_bblock);
 	mono_counters_register ("JIT/decompose_long_opts (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_decompose_long_opts);
+	mono_counters_register ("JIT/decompose_typechecks (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_decompose_typechecks);
 	mono_counters_register ("JIT/local_cprop (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_cprop);
 	mono_counters_register ("JIT/local_emulate_ops (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_local_emulate_ops);
 	mono_counters_register ("JIT/optimize_branches (sec)", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &mono_jit_stats.jit_optimize_branches);

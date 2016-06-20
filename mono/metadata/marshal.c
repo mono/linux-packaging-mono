@@ -962,7 +962,7 @@ mono_string_utf16_to_builder (MonoStringBuilder *sb, gunichar2 *text)
  *
  * Returns: a utf8 string with the contents of the StringBuilder.
  *
- * The return value must be released with g_free.
+ * The return value must be released with mono_marshal_free.
  *
  * This is a JIT icall, it sets the pending exception and returns NULL on error.
  */
@@ -983,14 +983,14 @@ mono_string_builder_to_utf8 (MonoStringBuilder *sb)
 
 	if (gerror) {
 		g_error_free (gerror);
-		g_free (str_utf16);
+		mono_marshal_free (str_utf16);
 		mono_set_pending_exception (mono_get_exception_execution_engine ("Failed to convert StringBuilder from utf16 to utf8"));
 		return NULL;
 	} else {
 		guint len = mono_string_builder_capacity (sb) + 1;
 		gchar *res = (gchar *)mono_marshal_alloc (len * sizeof (gchar), &error);
 		if (!mono_error_ok (&error)) {
-			g_free (str_utf16);
+			mono_marshal_free (str_utf16);
 			g_free (tmp);
 			mono_error_set_pending_exception (&error);
 			return NULL;
@@ -1000,7 +1000,7 @@ mono_string_builder_to_utf8 (MonoStringBuilder *sb)
 		memcpy (res, tmp, str_len * sizeof (gchar));
 		res[str_len] = '\0';
 
-		g_free (str_utf16);
+		mono_marshal_free (str_utf16);
 		g_free (tmp);
 		return res;
 	}
@@ -1014,7 +1014,8 @@ mono_string_builder_to_utf8 (MonoStringBuilder *sb)
  *
  * Returns: a utf16 string with the contents of the StringBuilder.
  *
- * The return value must not be freed.
+ * The return value must be released with mono_marshal_free.
+ *
  * This is a JIT icall, it sets the pending exception and returns NULL on error.
  */
 gunichar2*
@@ -4457,6 +4458,10 @@ mono_marshal_get_icall_wrapper (MonoMethodSignature *sig, const char *name, gcon
 	int i;
 	WrapperInfo *info;
 	
+	GHashTable *cache = get_cache (&mono_defaults.object_class->image->icall_wrapper_cache, mono_aligned_addr_hash, NULL);
+	if ((res = mono_marshal_find_in_cache (cache, (gpointer) func)))
+		return res;
+
 	g_assert (sig->pinvoke);
 
 	mb = mono_mb_new (mono_defaults.object_class, name, MONO_WRAPPER_MANAGED_TO_NATIVE);
@@ -4491,7 +4496,7 @@ mono_marshal_get_icall_wrapper (MonoMethodSignature *sig, const char *name, gcon
 
 	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_ICALL_WRAPPER);
 	info->d.icall.func = (gpointer)func;
-	res = mono_mb_create (mb, csig, csig->param_count + 16, info);
+	res = mono_mb_create_and_cache_full (cache, (gpointer) func, mb, csig, csig->param_count + 16, info, NULL);
 	mono_mb_free (mb);
 
 	return res;

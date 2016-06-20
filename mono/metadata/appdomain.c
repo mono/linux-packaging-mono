@@ -82,7 +82,7 @@
  * Changes which are already detected at runtime, like the addition
  * of icalls, do not require an increment.
  */
-#define MONO_CORLIB_VERSION 149
+#define MONO_CORLIB_VERSION 150
 
 typedef struct
 {
@@ -2235,7 +2235,9 @@ ves_icall_System_AppDomain_ExecuteAssembly (MonoAppDomain *ad,
 		mono_error_assert_ok (&error);
 	}
 
-	return mono_runtime_exec_main (method, (MonoArray *)args, NULL);
+	int res = mono_runtime_exec_main_checked (method, (MonoArray *)args, &error);
+	mono_error_set_pending_exception (&error);
+	return res;
 }
 
 gint32 

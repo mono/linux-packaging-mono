@@ -79,7 +79,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@SUPPORT_BOEHM_TRUE@bin_PROGRAMS = monograph$(EXEEXT)
+@DISABLE_EXECUTABLES_FALSE@@DISABLE_LIBRARIES_FALSE@@SUPPORT_SGEN_TRUE@bin_PROGRAMS = monograph$(EXEEXT)
 subdir = tools/monograph
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp
@@ -103,15 +103,14 @@ PROGRAMS = $(bin_PROGRAMS)
 monograph_SOURCES = monograph.c
 monograph_OBJECTS = monograph.$(OBJEXT)
 am__DEPENDENCIES_1 =
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntime-static.la \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1) \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1) \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_1)
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@am__DEPENDENCIES_3 = $(top_builddir)/mono/mini/$(LIBMONO_LA) \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(am__DEPENDENCIES_2)
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@am__DEPENDENCIES_3 = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_2 = $(top_builddir)/mono/metadata/libmonoruntimesgen-static.la \
+@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la \
+@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
+@DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1) \
+@DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1) \
+@DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_1)
+@DISABLE_EXECUTABLES_FALSE@am__DEPENDENCIES_3 = $(top_builddir)/mono/mini/$(LIBMONO_LA) \
+@DISABLE_EXECUTABLES_FALSE@	$(am__DEPENDENCIES_2)
 @DISABLE_EXECUTABLES_TRUE@am__DEPENDENCIES_3 = $(top_builddir)/mono/mini/$(LIBMONO_LA) \
 @DISABLE_EXECUTABLES_TRUE@	$(am__DEPENDENCIES_2)
 monograph_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_1) \
@@ -190,6 +189,7 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BITCODE = @BITCODE@
 BOEHM_DEFINES = @BOEHM_DEFINES@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
@@ -266,6 +266,7 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
+MONO_LLVMONLY = @MONO_LLVMONLY@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -294,6 +295,7 @@ SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
+TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
@@ -382,15 +384,14 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA)
+@DISABLE_EXECUTABLES_FALSE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
 @DISABLE_EXECUTABLES_TRUE@runtime_lib = $(top_builddir)/mono/mini/$(LIBMONO_LA) $(static_libs)
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@static_libs = \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/metadata/libmonoruntime-static.la	\
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la	\
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(GLIB_LIBS) $(LIBICONV) \
-@DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_FALSE@	$(LIBGC_STATIC_LIBS)
+@DISABLE_EXECUTABLES_FALSE@static_libs = \
+@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/metadata/libmonoruntimesgen-static.la	\
+@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/io-layer/libwapi.la	\
+@DISABLE_EXECUTABLES_FALSE@	$(top_builddir)/mono/utils/libmonoutils.la \
+@DISABLE_EXECUTABLES_FALSE@	$(GLIB_LIBS) $(LIBICONV) \
+@DISABLE_EXECUTABLES_FALSE@	$(LIBGC_STATIC_LIBS)
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)			\
