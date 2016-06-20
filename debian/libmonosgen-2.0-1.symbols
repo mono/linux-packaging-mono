@@ -667,6 +667,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_object_unbox@Base 4.1.0.1738
  mono_opcode_name@Base 4.1.0.1738
  mono_opcode_value@Base 4.1.0.1738
+ mono_opcodes@Base 4.5.2.363-0nightly1
  mono_pagesize@Base 4.1.0.1738
  mono_param_get_objects@Base 4.1.0.1738
  mono_parse_default_optimizations@Base 4.1.0.1738
