@@ -154,8 +154,8 @@ libmono_profiler_aot_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_aot_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_la_rpath = -rpath \
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_iomap_static_la_LIBADD =
 am_libmono_profiler_iomap_static_la_OBJECTS = mono-profiler-iomap.lo
 libmono_profiler_iomap_static_la_OBJECTS =  \
@@ -175,8 +175,8 @@ libmono_profiler_iomap_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_iomap_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_iomap_la_rpath = -rpath \
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_iomap_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_log_static_la_LIBADD =
 am_libmono_profiler_log_static_la_OBJECTS = proflog.lo
 libmono_profiler_log_static_la_OBJECTS =  \
@@ -196,8 +196,8 @@ libmono_profiler_log_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_log_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_la_rpath = -rpath \
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_vtune_static_la_LIBADD =
 am__libmono_profiler_vtune_static_la_SOURCES_DIST =  \
 	mono-profiler-vtune.c
@@ -222,8 +222,8 @@ libmono_profiler_vtune_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libmono_profiler_vtune_la_CFLAGS) $(CFLAGS) \
 	$(libmono_profiler_vtune_la_LDFLAGS) $(LDFLAGS) -o $@
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_la_rpath = -rpath \
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
 PROGRAMS = $(bin_PROGRAMS)
 am_mprof_report_OBJECTS = decode.$(OBJEXT)
 mprof_report_OBJECTS = $(am_mprof_report_OBJECTS)
@@ -514,25 +514,21 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir) 	\
 	$(GLIB_CFLAGS)
 
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@prof_shlibs = \
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot.la \
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-iomap.la \
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log.la
-
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_stlibs = libmono-profiler-vtune-static.la
-@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_shlibs = libmono-profiler-vtune.la
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@vtune_libs = libmono-profiler-vtune.la libmono-profiler-vtune-static.la
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(prof_shlibs) \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot-static.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-iomap.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-iomap-static.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log-static.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_shlibs) \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_stlibs)
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_libs)
 
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppression_DATA = mono-profiler-log.suppression
+@BITCODE_FALSE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@prof_ldflags = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+@BITCODE_TRUE@@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@prof_ldflags = -no-undefined
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@prof_ldflags = -avoid-version
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@prof_ldflags = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 
 # FIXME fix the profiler tests to work with coop.
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_FALSE@@HOST_WIN32_FALSE@@NACL_CODEGEN_FALSE@check_targets = testlog
@@ -543,23 +539,23 @@ AM_CPPFLAGS = \
 # also uses eglib (e.g. the runtime). Automake doesn't support this
 # functionality, so create a separate static version of the library.
 libmono_profiler_aot_la_SOURCES = mono-profiler-aot.c
-libmono_profiler_aot_la_LIBADD = $(GLIB_LIBS) $(LIBICONV)
+libmono_profiler_aot_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_aot_static_la_SOURCES = mono-profiler-aot.c
 libmono_profiler_aot_static_la_LDFLAGS = -static
 libmono_profiler_iomap_la_SOURCES = mono-profiler-iomap.c
-libmono_profiler_iomap_la_LIBADD = $(GLIB_LIBS) $(LIBICONV)
+libmono_profiler_iomap_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_iomap_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_iomap_static_la_SOURCES = mono-profiler-iomap.c
 libmono_profiler_iomap_static_la_LDFLAGS = -static
 libmono_profiler_log_la_SOURCES = proflog.c
-libmono_profiler_log_la_LIBADD = $(GLIB_LIBS) $(Z_LIBS)
+libmono_profiler_log_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(Z_LIBS)
 libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_log_static_la_SOURCES = proflog.c
 libmono_profiler_log_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_SOURCES = mono-profiler-vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
-@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(GLIB_LIBS) $(LIBICONV)
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LDFLAGS = $(prof_ldflags)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_SOURCES = mono-profiler-vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LDFLAGS = -static
