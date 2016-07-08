@@ -1550,9 +1550,11 @@ mono_arch_allocate_vars (MonoCompile *cfg)
 	}
 
 	cfg->arch.saved_iregs = cfg->used_int_regs;
-	if (cfg->method->save_lmf)
-		/* Save all callee-saved registers normally, and restore them when unwinding through an LMF */
-		cfg->arch.saved_iregs |= (1 << AMD64_RBX) | (1 << AMD64_R12) | (1 << AMD64_R13) | (1 << AMD64_R14) | (1 << AMD64_R15);
+	if (cfg->method->save_lmf) {
+		/* Save all callee-saved registers normally (except RBP, if not already used), and restore them when unwinding through an LMF */
+		guint32 iregs_to_save = AMD64_CALLEE_SAVED_REGS & ~(1<<AMD64_RBP);
+		cfg->arch.saved_iregs |= iregs_to_save;
+	}
 
 	if (cfg->arch.omit_fp)
 		cfg->arch.reg_save_area_offset = offset;
@@ -6708,7 +6710,7 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 #if defined(TARGET_WIN32) || defined(MONO_ARCH_SIGSEGV_ON_ALTSTACK)
 		guint32 remaining_size = alloc_size;
 		/*FIXME handle unbounded code expansion, we should use a loop in case of more than X interactions*/
-		guint32 required_code_size = ((remaining_size / 0x1000) + 1) * 10; /*10 is the max size of amd64_alu_reg_imm + amd64_test_membase_reg*/
+		guint32 required_code_size = ((remaining_size / 0x1000) + 1) * 11; /*11 is the max size of amd64_alu_reg_imm + amd64_test_membase_reg*/
 		guint32 offset = code - cfg->native_code;
 		if (G_UNLIKELY (required_code_size >= (cfg->code_size - offset))) {
 			while (required_code_size >= (cfg->code_size - offset))

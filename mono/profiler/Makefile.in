@@ -145,7 +145,8 @@ libmono_profiler_aot_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 am__DEPENDENCIES_1 =
-libmono_profiler_aot_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libmono_profiler_aot_la_DEPENDENCIES =  \
+	$(monodir)/mono/mini/$(LIBMONO_LA) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_libmono_profiler_aot_la_OBJECTS = mono-profiler-aot.lo
 libmono_profiler_aot_la_OBJECTS =  \
@@ -166,7 +167,8 @@ libmono_profiler_iomap_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_profiler_iomap_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_iomap_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-libmono_profiler_iomap_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libmono_profiler_iomap_la_DEPENDENCIES =  \
+	$(monodir)/mono/mini/$(LIBMONO_LA) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_libmono_profiler_iomap_la_OBJECTS = mono-profiler-iomap.lo
 libmono_profiler_iomap_la_OBJECTS =  \
@@ -187,7 +189,8 @@ libmono_profiler_log_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmono_profiler_log_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-libmono_profiler_log_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+libmono_profiler_log_la_DEPENDENCIES =  \
+	$(monodir)/mono/mini/$(LIBMONO_LA) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_libmono_profiler_log_la_OBJECTS = proflog.lo
 libmono_profiler_log_la_OBJECTS =  \
@@ -532,6 +535,7 @@ AM_CPPFLAGS = \
 
 # FIXME fix the profiler tests to work with coop.
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@ENABLE_COOP_FALSE@@HOST_WIN32_FALSE@@NACL_CODEGEN_FALSE@check_targets = testlog
+monodir = $(top_builddir)
 
 # The log profiler uses eglib functions, so it needs to be linked against
 # libeglib in shared mode, but not in static mode, since that would
@@ -539,17 +543,17 @@ AM_CPPFLAGS = \
 # also uses eglib (e.g. the runtime). Automake doesn't support this
 # functionality, so create a separate static version of the library.
 libmono_profiler_aot_la_SOURCES = mono-profiler-aot.c
-libmono_profiler_aot_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
+libmono_profiler_aot_la_LIBADD = $(monodir)/mono/mini/$(LIBMONO_LA) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_aot_static_la_SOURCES = mono-profiler-aot.c
 libmono_profiler_aot_static_la_LDFLAGS = -static
 libmono_profiler_iomap_la_SOURCES = mono-profiler-iomap.c
-libmono_profiler_iomap_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
+libmono_profiler_iomap_la_LIBADD = $(monodir)/mono/mini/$(LIBMONO_LA) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_iomap_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_iomap_static_la_SOURCES = mono-profiler-iomap.c
 libmono_profiler_iomap_static_la_LDFLAGS = -static
 libmono_profiler_log_la_SOURCES = proflog.c
-libmono_profiler_log_la_LIBADD = $(LIBMONO) $(GLIB_LIBS) $(Z_LIBS)
+libmono_profiler_log_la_LIBADD = $(monodir)/mono/mini/$(LIBMONO_LA) $(GLIB_LIBS) $(Z_LIBS)
 libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_log_static_la_SOURCES = proflog.c
 libmono_profiler_log_static_la_LDFLAGS = -static
