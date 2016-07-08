@@ -799,7 +799,11 @@ common_call_trampoline (mgreg_t *regs, guint8 *code, MonoMethod *m, MonoVTable *
 				 */
 				no_patch = TRUE;
 			}
-
+#if LLVM_API_VERSION > 100
+			/* LLVM code doesn't make direct calls */
+			if (ji && ji->from_llvm)
+				no_patch = TRUE;
+#endif
 			if (!no_patch && mono_method_same_domain (ji, target_ji))
 				mono_arch_patch_callsite ((guint8 *)ji->code_start, code, (guint8 *)addr);
 		}
@@ -1505,6 +1509,9 @@ mono_create_jit_trampoline (MonoDomain *domain, MonoMethod *method, MonoError *e
 	mono_error_init (error);
 
 	if (mono_aot_only) {
+		if (mono_llvm_only && method->iflags & METHOD_IMPL_ATTRIBUTE_SYNCHRONIZED)
+			method = mono_marshal_get_synchronized_wrapper (method);
+
 		/* Avoid creating trampolines if possible */
 		gpointer code = mono_jit_find_compiled_method (domain, method);
 		

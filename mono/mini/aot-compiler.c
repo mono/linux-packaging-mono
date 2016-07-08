@@ -902,7 +902,10 @@ arch_init (MonoAotCompile *acfg)
 	if (acfg->aot_opts.mtriple && strstr (acfg->aot_opts.mtriple, "darwin")) {
 		g_string_append (acfg->llc_args, "-mattr=+v6");
 	} else {
-#ifdef ARM_FPU_VFP
+#if defined(ARM_FPU_VFP_HARD)
+		g_string_append (acfg->llc_args, " -mattr=+vfp2,-neon,+d16 -float-abi=hard");
+		g_string_append (acfg->as_args, " -mfpu=vfp3");
+#elif defined(ARM_FPU_VFP)
 		g_string_append (acfg->llc_args, " -mattr=+vfp2,-neon,+d16");
 		g_string_append (acfg->as_args, " -mfpu=vfp3");
 #else
@@ -4057,7 +4060,7 @@ add_wrappers (MonoAotCompile *acfg)
 			continue;
 		}
 
-		if (!acfg->aot_opts.llvm_only && klass->rank && MONO_TYPE_IS_PRIMITIVE (&klass->element_class->byval_arg)) {
+		if (klass->rank && MONO_TYPE_IS_PRIMITIVE (&klass->element_class->byval_arg)) {
 			MonoMethod *m, *wrapper;
 
 			/* Add runtime-invoke wrappers too */
@@ -4066,13 +4069,15 @@ add_wrappers (MonoAotCompile *acfg)
 			g_assert (m);
 			wrapper = mono_marshal_get_array_accessor_wrapper (m);
 			add_extra_method (acfg, wrapper);
-			add_extra_method (acfg, get_runtime_invoke (acfg, wrapper, FALSE));
+			if (!acfg->aot_opts.llvm_only)
+				add_extra_method (acfg, get_runtime_invoke (acfg, wrapper, FALSE));
 
 			m = mono_class_get_method_from_name (klass, "Set", -1);
 			g_assert (m);
 			wrapper = mono_marshal_get_array_accessor_wrapper (m);
 			add_extra_method (acfg, wrapper);
-			add_extra_method (acfg, get_runtime_invoke (acfg, wrapper, FALSE));
+			if (!acfg->aot_opts.llvm_only)
+				add_extra_method (acfg, get_runtime_invoke (acfg, wrapper, FALSE));
 		}
 	}
 
@@ -4942,7 +4947,7 @@ add_generic_instances (MonoAotCompile *acfg)
 		}
 
 		/* object[] accessor wrappers. */
-		for (i = 1; i < 3; ++i) {
+		for (i = 1; i < 4; ++i) {
 			MonoClass *obj_array_class = mono_array_class_get (mono_defaults.object_class, i);
 			MonoMethod *m;
 
