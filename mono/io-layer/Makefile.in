@@ -100,22 +100,22 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwapi_la_DEPENDENCIES =
 am__libwapi_la_SOURCES_DIST = access.h context.c context.h error.c \
-	error.h events.c events.h event-private.h handles.c handles.h \
-	handles-private.h io.c io.h io-portability.c io-portability.h \
-	io-private.h io-layer.h locking.c macros.h messages.c \
-	messages.h mutexes.c mutexes.h mutex-private.h posix.c \
-	processes.c processes.h process-private.h security.c \
-	security.h semaphores.c semaphores.h semaphore-private.h \
-	shared.c shared.h sockets.c sockets.h socket-private.h \
-	socket-wrappers.h status.h threads.h thread-private.h \
-	timefuncs.c timefuncs.h timefuncs-private.h types.h uglify.h \
-	versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
-	wapi_glob.c wapi.h wapi-private.h wthreads.c io-trace.h \
-	wapi-remap.h io-layer-dummy.c
-am__objects_1 = context.lo error.lo events.lo handles.lo io.lo \
-	io-portability.lo locking.lo messages.lo mutexes.lo posix.lo \
-	processes.lo security.lo semaphores.lo shared.lo sockets.lo \
-	timefuncs.lo versioninfo.lo wait.lo wapi_glob.lo wthreads.lo
+	error.h events.c events.h event-private.h io.c io.h \
+	io-portability.c io-portability.h io-private.h io-layer.h \
+	locking.c macros.h messages.c messages.h mutexes.c mutexes.h \
+	mutex-private.h posix.c processes.c processes.h \
+	process-private.h security.c security.h semaphores.c \
+	semaphores.h semaphore-private.h shared.c shared.h sockets.c \
+	sockets.h socket-private.h socket-wrappers.h status.h \
+	threads.h thread-private.h timefuncs.c timefuncs.h \
+	timefuncs-private.h types.h uglify.h versioninfo.c \
+	versioninfo.h wait.c wait.h wapi_glob.h wapi_glob.c wapi.h \
+	wapi-private.h wapi.c wthreads.c io-trace.h wapi-remap.h \
+	io-layer-dummy.c
+am__objects_1 = context.lo error.lo events.lo io.lo io-portability.lo \
+	locking.lo messages.lo mutexes.lo posix.lo processes.lo \
+	security.lo semaphores.lo shared.lo sockets.lo timefuncs.lo \
+	versioninfo.lo wait.lo wapi_glob.lo wapi.lo wthreads.lo
 am__objects_2 =
 am__objects_3 = io-layer-dummy.lo
 @HOST_WIN32_FALSE@am_libwapi_la_OBJECTS = $(am__objects_1) \
@@ -403,7 +403,6 @@ OTHER_H = \
 	context.h	\
 	error.h		\
 	events.h	\
-	handles.h	\
 	io.h		\
 	io-trace.h	\
 	io-layer.h	\
@@ -434,9 +433,6 @@ OTHER_SRC = \
 	events.c		\
 	events.h		\
 	event-private.h		\
-	handles.c		\
-	handles.h		\
-	handles-private.h	\
 	io.c			\
 	io.h			\
 	io-portability.c	\
@@ -481,6 +477,7 @@ OTHER_SRC = \
 	wapi_glob.c		\
 	wapi.h			\
 	wapi-private.h		\
+	wapi.c		\
 	wthreads.c
 
 WINDOWS_H = \
@@ -554,7 +551,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/events.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/handles.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io-layer-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io-portability.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Plo@am__quote@
@@ -570,6 +566,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timefuncs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/versioninfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wait.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wapi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wapi_glob.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wthreads.Plo@am__quote@
 
