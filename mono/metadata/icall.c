@@ -2881,45 +2881,10 @@ ves_icall_RuntimeType_GetGenericParameterPosition (MonoReflectionType *type)
 	return -1;
 }
 
-ICALL_EXPORT GenericParameterAttributes
-ves_icall_RuntimeType_GetGenericParameterAttributes (MonoReflectionType *type)
+ICALL_EXPORT MonoGenericParamInfo *
+ves_icall_RuntimeTypeHandle_GetGenericParameterInfo (MonoReflectionType *type)
 {
-	g_assert (IS_MONOTYPE (type));
-	g_assert (is_generic_parameter (type->type));
-	return (GenericParameterAttributes)mono_generic_param_info (type->type->data.generic_param)->flags;
-}
-
-ICALL_EXPORT MonoArray *
-ves_icall_RuntimeType_GetGenericParameterConstraints (MonoReflectionType *type)
-{
-	MonoError error;
-	MonoReflectionType *rt;
-	MonoGenericParamInfo *param_info;
-	MonoDomain *domain;
-	MonoClass **ptr;
-	MonoArray *res;
-	int i, count;
-
-	g_assert (IS_MONOTYPE (type));
-
-	domain = mono_object_domain (type);
-	param_info = mono_generic_param_info (type->type->data.generic_param);
-	for (count = 0, ptr = param_info->constraints; ptr && *ptr; ptr++, count++)
-		;
-
-	res = mono_array_new_checked (domain, mono_defaults.runtimetype_class, count, &error);
-	if (mono_error_set_pending_exception (&error))
-		return NULL;
-	for (i = 0; i < count; i++) {
-		rt = mono_type_get_object_checked (domain, &param_info->constraints [i]->byval_arg, &error);
-		if (mono_error_set_pending_exception (&error))
-			return NULL;
-
-		mono_array_setref (res, i, rt);
-	}
-
-
-	return res;
+	return mono_generic_param_info (type->type->data.generic_param);
 }
 
 ICALL_EXPORT MonoBoolean
@@ -4897,6 +4862,27 @@ ves_icall_System_Reflection_Assembly_GetManifestResourceNames (MonoReflectionAss
 		mono_array_setref (result, i, mono_string_new (mono_object_domain (assembly), val));
 	}
 	return result;
+}
+
+ICALL_EXPORT MonoString*
+ves_icall_System_Reflection_Assembly_GetAotId ()
+{
+	int i;
+	guint8 aotid_sum = 0;
+	MonoDomain* domain = mono_domain_get ();
+
+	if (!domain->entry_assembly || !domain->entry_assembly->image)
+		return NULL;
+
+	guint8 (*aotid)[16] = &domain->entry_assembly->image->aotid;
+
+	for (i = 0; i < 16; ++i)
+		aotid_sum |= (*aotid)[i];
+
+	if (aotid_sum == 0)
+		return NULL;
+	
+	return mono_string_new (domain, mono_guid_to_string((guint8*) aotid));
 }
 
 static MonoObject*
