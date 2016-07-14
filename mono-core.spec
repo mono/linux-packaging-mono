@@ -367,6 +367,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/System.Numerics
 %{_prefix}/lib/mono/gac/System.Numerics.Vectors
 %{_prefix}/lib/mono/gac/System.Reflection.Context
+%{_prefix}/lib/mono/gac/System.Runtime.InteropServices.RuntimeInformation
 %{_prefix}/lib/mono/gac/System.Security
 %{_prefix}/lib/mono/gac/System.Threading.Tasks.Dataflow
 %{_prefix}/lib/mono/gac/System.Web.Mobile
