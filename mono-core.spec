@@ -315,6 +315,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Net.Http.WebRequest.dll
 %{_prefix}/lib/mono/4.5/System.Numerics.dll
 %{_prefix}/lib/mono/4.5/System.Numerics.Vectors.dll
+%{_prefix}/lib/mono/4.5/System.Reflection.Context.dll
 %{_prefix}/lib/mono/4.5/System.Runtime.InteropServices.RuntimeInformation.dll
 %{_prefix}/lib/mono/4.5/System.Security.dll
 %{_prefix}/lib/mono/4.5/System.Threading.Tasks.Dataflow.dll
@@ -365,6 +366,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/System.Net.Http.WebRequest
 %{_prefix}/lib/mono/gac/System.Numerics
 %{_prefix}/lib/mono/gac/System.Numerics.Vectors
+%{_prefix}/lib/mono/gac/System.Reflection.Context
 %{_prefix}/lib/mono/gac/System.Security
 %{_prefix}/lib/mono/gac/System.Threading.Tasks.Dataflow
 %{_prefix}/lib/mono/gac/System.Web.Mobile
