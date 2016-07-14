@@ -427,6 +427,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_get_uintptr_class@Base 4.1.0.1738
  mono_get_void_class@Base 4.1.0.1738
  mono_guid_to_string@Base 4.1.0.1738
+ mono_guid_to_string_minimal@Base 4.5.2.618
  mono_image_add_to_name_cache@Base 4.1.0.1738
  mono_image_addref@Base 4.1.0.1738
  mono_image_close@Base 4.1.0.1738
@@ -780,6 +781,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_security_core_clr_set_options@Base 4.1.0.1738
  mono_security_enable_core_clr@Base 4.1.0.1738
  mono_security_set_core_clr_platform_callback@Base 4.1.0.1738
+ mono_set_allocator_vtable@Base 4.5.2.618
  mono_set_assemblies_path@Base 4.1.0.1738
  mono_set_break_policy@Base 4.1.0.1738
  mono_set_config_dir@Base 4.1.0.1738
