@@ -305,6 +305,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Configuration.dll
 %{_prefix}/lib/mono/4.5/System.Core.dll
 %{_prefix}/lib/mono/4.5/System.Drawing.dll
+%{_prefix}/lib/mono/4.5/System.Deployment.dll
 %{_prefix}/lib/mono/4.5/System.Dynamic.dll
 %{_prefix}/lib/mono/4.5/System.Json.dll
 %{_prefix}/lib/mono/4.5/System.Json.Microsoft.dll
@@ -314,8 +315,14 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Net.Http.WebRequest.dll
 %{_prefix}/lib/mono/4.5/System.Numerics.dll
 %{_prefix}/lib/mono/4.5/System.Numerics.Vectors.dll
+%{_prefix}/lib/mono/4.5/System.Runtime.InteropServices.RuntimeInformation.dll
 %{_prefix}/lib/mono/4.5/System.Security.dll
 %{_prefix}/lib/mono/4.5/System.Threading.Tasks.Dataflow.dll
+%{_prefix}/lib/mono/4.5/System.Web.Mobile.dll
+%{_prefix}/lib/mono/4.5/System.Web.RegularExpressions.dll
+%{_prefix}/lib/mono/4.5/System.Workflow.Activities.dll
+%{_prefix}/lib/mono/4.5/System.Workflow.ComponentModel.dll
+%{_prefix}/lib/mono/4.5/System.Workflow.Runtime.dll
 %{_prefix}/lib/mono/4.5/System.Windows.dll
 %{_prefix}/lib/mono/4.5/System.Xml.Serialization.dll
 %{_prefix}/lib/mono/4.5/System.Xml.Linq.dll
@@ -350,6 +357,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/System.Configuration
 %{_prefix}/lib/mono/gac/System.Core
 %{_prefix}/lib/mono/gac/System.Drawing
+%{_prefix}/lib/mono/gac/System.Deployment
 %{_prefix}/lib/mono/gac/System.Dynamic
 %{_prefix}/lib/mono/gac/System.Net
 %{_prefix}/lib/mono/gac/System.Net.Http
@@ -359,6 +367,11 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/System.Numerics.Vectors
 %{_prefix}/lib/mono/gac/System.Security
 %{_prefix}/lib/mono/gac/System.Threading.Tasks.Dataflow
+%{_prefix}/lib/mono/gac/System.Web.Mobile
+%{_prefix}/lib/mono/gac/System.Web.RegularExpressions
+%{_prefix}/lib/mono/gac/System.Workflow.Activities
+%{_prefix}/lib/mono/gac/System.Workflow.ComponentModel
+%{_prefix}/lib/mono/gac/System.Workflow.Runtime
 %{_prefix}/lib/mono/gac/System.Windows
 %{_prefix}/lib/mono/gac/System.Xml.Serialization
 %{_prefix}/lib/mono/gac/System.Xml
@@ -1068,6 +1081,7 @@ Mono development tools.
 %{_bindir}/mono-xmltool
 %{_bindir}/monodis
 %{_bindir}/monolinker
+%{_bindir}/monograph
 %{_bindir}/monop
 %{_bindir}/monop2
 %{_bindir}/mprof-report
@@ -1079,6 +1093,7 @@ Mono development tools.
 %{_bindir}/resgen2
 %{_bindir}/secutil
 %{_bindir}/sgen
+%{_bindir}/sgen-grep-binprot
 %{_bindir}/signcode
 %{_bindir}/xbuild
 %dir %{_datadir}/mono-2.0
