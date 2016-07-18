@@ -27,8 +27,8 @@
 %define sgen yes
 
 Name:           mono-core
-%define __majorver 4.4.0
-%define __minorver 148
+%define __majorver 4.4.1
+%define __minorver 0
 Version:	%{__majorver}.%{__minorver}
 Release:	0.xamarin.1
 Summary:        Cross-platform, Open Source, .NET development framework
