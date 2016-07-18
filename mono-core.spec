@@ -27,7 +27,7 @@
 %define sgen yes
 
 Name:           mono-core
-%define __majorver 4.2.3
+%define __majorver 4.2.4
 %define __minorver 4
 Version:	%{__majorver}.%{__minorver}
 Release:	0.xamarin.1
