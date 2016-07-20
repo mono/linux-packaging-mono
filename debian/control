@@ -35,6 +35,7 @@ Suggests: xdg-utils | libgnome2-0 | konqueror
 Recommends: binfmt-support (>= 1.1.2)
 Depends: ${shlibs:Depends},
          ${misc:Depends},
+         binutils,
          mono-gac (= ${source:Version})
 Description: Mono runtime - common files
  Mono is a platform for running and developing applications based on the
