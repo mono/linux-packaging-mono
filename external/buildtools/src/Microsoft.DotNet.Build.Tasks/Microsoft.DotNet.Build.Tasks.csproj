@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{17C66BCE-EB35-44CA-893C-8AAFB67708E9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Microsoft.DotNet.Build.Tasks</RootNamespace>
+    <AssemblyName>Microsoft.DotNet.Build.Tasks</AssemblyName>
+    <CLSCompliant>false</CLSCompliant>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="BinClashLogger.cs" />
+    <Compile Include="Delegates.cs" />
+    <Compile Include="ExceptionFromResource.cs" />
+    <Compile Include="ExecWithMutex.cs" />
+    <Compile Include="GatherFoldersToRestore.cs" />
+    <Compile Include="GenerateAssemblyList.cs" />
+    <Compile Include="AddDependenciesToProjectJson.cs" />
+    <Compile Include="ParsePackageNames.cs" />
+    <Compile Include="GenerateCurrentVersion.cs" />
+    <Compile Include="GenerateResourcesCode.cs" />
+    <Compile Include="GenerateEncodingTable.cs" />
+    <Compile Include="GetPackageVersion.cs" />
+    <Compile Include="GetPackageDependencies.cs" />
+    <Compile Include="GetNextRevisionNumber.cs" />
+    <Compile Include="GetTargetMachineInfo.cs" />
+    <Compile Include="LocatePreviousContract.cs" />
+    <Compile Include="NormalizePaths.cs" />
+    <Compile Include="GetDoItemsIntersect.cs" />
+    <Compile Include="NuGetPackageObject.cs" />
+    <Compile Include="OpenSourceSign.cs" />
+    <Compile Include="ParseTestCoverageInfo.cs" />
+    <Compile Include="PreprocessFile.cs" />
+    <Compile Include="Preprocessor.cs" />
+    <Compile Include="ReadSigningRequired.cs" />
+    <Compile Include="RemoveDuplicatesWithLastOneWinsPolicy.cs" />
+    <Compile Include="PrereleaseResolveNuGetPackageAssets.cs" />
+    <Compile Include="SignTypeItem.cs" />
+    <Compile Include="UpdatePackageDependencyVersion.cs" />
+    <Compile Include="VisitProjectDependencies.cs" />
+    <Compile Include="ValidateProjectDependencyVersions.cs" />
+    <Compile Include="WriteSigningRequired.cs" />
+    <Compile Include="ZipFileExtractToDirectory.cs" />
+    <Compile Include="ZipFileCreateFromDirectory.cs" />
+    <Compile Include="Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
+    <None Include="PackageFiles\**\*.*" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+  <Target Name="AfterBuild">
+    <PropertyGroup>
+      <!-- This version should be kept up to date with project.json -->
+      <NuProjVersion>0.10.4-beta-gf7fc34e7d8</NuProjVersion>
+    </PropertyGroup>
+    <ItemGroup>
+      <PackageFiles Include="$(MSBuildThisProjectDirectory)PackageFiles\**\*.*" />
+      <NuProjFiles Include="$(PackagesDir)NuProj\$(NuProjVersion)\tools\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(OutputPath)\PackageFiles\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(NuProjFiles)" DestinationFolder="$(OutputPath)\NuProj\%(RecursiveDir)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

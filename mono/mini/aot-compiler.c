@@ -6693,6 +6693,11 @@ emit_trampolines (MonoAotCompile *acfg)
 			}
 		}
 
+#ifdef MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD_AOT
+		mono_arch_create_handler_block_trampoline (&info, TRUE);
+		emit_trampoline (acfg, acfg->got_offset, info);
+#endif
+
 #endif /* #ifdef MONO_ARCH_HAVE_FULL_AOT_TRAMPOLINES */
 
 		/* Emit trampolines which are numerous */
@@ -7067,6 +7072,8 @@ mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 			opts->soft_debug = TRUE;
 		} else if (str_begins_with (arg, "gen-seq-points-file=")) {
 			fprintf (stderr, "Mono Warning: aot option gen-seq-points-file= is deprecated.\n");
+		} else if (str_begins_with (arg, "gen-seq-points-file")) {
+			fprintf (stderr, "Mono Warning: aot option gen-seq-points-file is deprecated.\n");
 		} else if (str_begins_with (arg, "msym-dir=")) {
 			debug_options.no_seq_points_compact_data = FALSE;
 			opts->gen_msym_dir = TRUE;
@@ -8240,7 +8247,7 @@ emit_llvm_file (MonoAotCompile *acfg)
 		opts = g_strdup ("");
 	else
 #if LLVM_API_VERSION > 100
-		opts = g_strdup ("-O2");
+		opts = g_strdup ("-O2 -disable-tail-calls");
 #else
 		opts = g_strdup ("-targetlibinfo -no-aa -basicaa -notti -instcombine -simplifycfg -inline-cost -inline -sroa -domtree -early-cse -lazy-value-info -correlated-propagation -simplifycfg -instcombine -simplifycfg -reassociate -domtree -loops -loop-simplify -lcssa -loop-rotate -licm -lcssa -loop-unswitch -instcombine -scalar-evolution -loop-simplify -lcssa -indvars -loop-idiom -loop-deletion -loop-unroll -memdep -gvn -memdep -memcpyopt -sccp -instcombine -lazy-value-info -correlated-propagation -domtree -memdep -adce -simplifycfg -instcombine -strip-dead-prototypes -domtree -verify");
 #endif
