@@ -94,8 +94,8 @@ target_triplet = @target@
 @LOADED_LLVM_TRUE@am__append_1 = libmono-llvm.la
 @LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
 @BITCODE_TRUE@am__append_3 = -no-undefined
-@NACL_CODEGEN_TRUE@am__append_4 = nacl.cs
-@NACL_CODEGEN_TRUE@am__append_5 = nacl.exe
+@INSTALL_MOBILE_STATIC_TRUE@@NACL_CODEGEN_TRUE@am__append_4 = nacl.cs
+@INSTALL_MOBILE_STATIC_TRUE@@NACL_CODEGEN_TRUE@am__append_5 = nacl.exe
 subdir = mono/mini
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -616,6 +616,8 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
+AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
 API_VER = @API_VER@
 AR = @AR@
 AS = @AS@
@@ -669,6 +671,7 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -700,7 +703,6 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
-MONO_LLVMONLY = @MONO_LLVMONLY@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -720,6 +722,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -1140,10 +1143,13 @@ test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	devirtualization.cs iltests.il test.cs generics.cs \
 	generics-variant-types.il basic-simd.cs aot-tests.cs \
 	gc-test.cs gshared.cs $(am__append_4)
-regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
-	objects.exe arrays.exe basic-math.exe exceptions.exe \
-	iltests.exe devirtualization.exe generics.exe basic-simd.exe \
-	$(am__append_5)
+regtests_UNIVERSAL = basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe
+@INSTALL_MOBILE_STATIC_FALSE@regtests = \
+@INSTALL_MOBILE_STATIC_FALSE@	$(regtests_UNIVERSAL) \
+@INSTALL_MOBILE_STATIC_FALSE@	$(regtests_MOBILE_STATIC_BLACKLIST)
+
+@INSTALL_MOBILE_STATIC_TRUE@regtests = $(regtests_UNIVERSAL) \
+@INSTALL_MOBILE_STATIC_TRUE@	$(am__append_5)
 @AMD64_TRUE@arch_sources = $(amd64_sources)
 @ARM64_TRUE@arch_sources = $(arm64_sources)
 @ARM_TRUE@arch_sources = $(arm_sources)
@@ -1193,11 +1199,11 @@ libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
 libmonoboehm_2_0_la_LIBADD = libmini.la $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags)
+libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
 libmonosgen_2_0_la_SOURCES = 
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
 libmonosgen_2_0_la_LIBADD = libmini.la $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags)
+libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
 
 #
 # This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
@@ -1223,17 +1229,32 @@ CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649
 LLVM_AOT_RUNTIME_OPTS = $(if $(LLVM),--llvm,)
 GSHAREDVT_RUNTIME_OPTS = $(if $(GSHAREDVT),-O=gsharedvt,)
 fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
-FULLAOT_LIBS = \
+
+# Skip aoting the tests that aren't compiled 
+# on the mobile_static profile because they're skipped
+# on mobile profiles
+FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST = \
+	Mono.Posix.dll \
+	System.Configuration.dll \
+	Mono.Simd.dll
+
+FULLAOT_LIBS_UNIVERSAL = \
 	mscorlib.dll \
 	System.Core.dll \
 	System.dll \
-	Mono.Posix.dll \
-	System.Configuration.dll \
-	System.Security.dll \
 	System.Xml.dll \
-	Mono.Security.dll \
-	Mono.Simd.dll
+	System.Security.dll \
+	Mono.Security.dll
 
+@INSTALL_MOBILE_STATIC_FALSE@FULLAOT_LIBS = \
+@INSTALL_MOBILE_STATIC_FALSE@	$(FULLAOT_LIBS_UNIVERSAL) \
+@INSTALL_MOBILE_STATIC_FALSE@	$(FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST)
+
+@INSTALL_MOBILE_STATIC_TRUE@FULLAOT_LIBS = \
+@INSTALL_MOBILE_STATIC_TRUE@	Mono.Dynamic.Interpreter.dll \
+@INSTALL_MOBILE_STATIC_TRUE@	$(FULLAOT_LIBS_UNIVERSAL)
+
+FULLAOT_TMP_DIR = $(top_builddir)/mono/mini/fullaot-tmp
 llvmonly_regtests = $(fullaot_regtests) gshared.exe
 pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = version.h $(arch_built)
@@ -3263,13 +3284,13 @@ gsharedvtcheck:
 
 # This currently only works on amd64/arm
 fullaotcheck: $(mono) $(fullaot_regtests)
-	rm -rf fullaot-tmp
-	mkdir fullaot-tmp
+	rm -rf $(FULLAOT_TMP_DIR)
+	mkdir $(FULLAOT_TMP_DIR)
 	$(MAKE) fullaot-libs AOT_FLAGS="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" GSHAREDVT=$(GSHAREDVT)
-	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
-	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
-	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) fullaot-tmp/
-	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --full-aot fullaot-tmp/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
+	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll $(FULLAOT_TMP_DIR)/
+	MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" $(FULLAOT_TMP_DIR)/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
+	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) $(FULLAOT_TMP_DIR)/
+	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper --full-aot $(FULLAOT_TMP_DIR)/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
 
 # This can run in parallel
 fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
@@ -3322,7 +3343,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.5.2.619/c1461e8\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.5.2.770/321e474\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

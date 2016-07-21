@@ -131,6 +131,8 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
+AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
 API_VER = @API_VER@
 AR = @AR@
 AS = @AS@
@@ -184,6 +186,7 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -215,7 +218,6 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
-MONO_LLVMONLY = @MONO_LLVMONLY@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -235,6 +237,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -353,6 +356,12 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
+@INSTALL_MOBILE_STATIC_FALSE@MOBILE_STATIC_FILTER = echo
+
+#  ILASM.exe has features which a mobile_static runtime will not support.
+#  It is invoked with an external mono when used in the runtime.
+#  We skip it here because otherwise it will fail to verify.
+@INSTALL_MOBILE_STATIC_TRUE@MOBILE_STATIC_FILTER = grep -v ilasm
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
@@ -574,6 +583,7 @@ mcs-do-run-test-profiles: test-support-files
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
 # Skip binary_reference_assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
+	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(MOBILE_STATIC_FILTER)` ; \
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
 	  if [ "binary_reference_assemblies" = "$$profile" ]; then \
@@ -587,7 +597,9 @@ mcs-compileall: mono-wrapper etc/mono/config
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  fi; \
 	  export MONO_PATH; \
-	  for i in $(mcs_topdir)/class/lib/$$profile/*.{dll,exe}; do \
+	  for stub in $$verifiable_files; do \
+	  i=$(mcs_topdir)/class/lib/$$profile/$$stub ; \
+	  echo $$i ; \
 		if [ ! -f $$i ] ; then \
 			continue ; \
 		fi ;  \

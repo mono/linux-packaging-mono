@@ -1,0 +1,15 @@
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="GetNextRevisionNumber" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll" />
+
+  <Target Name="GetNextRevisionNumber"
+    BeforeTargets="Build;BuildAllProjects"
+    Condition="'$(UpdateBuildValues)' == 'true'"
+    >
+    <GetNextRevisionNumber
+      VersionPropsFile="$(SourceDir)BuildValues.props">
+      <Output PropertyName="RevisionNumber" TaskParameter="RevisionNumber" />
+    </GetNextRevisionNumber>
+  </Target>
+
+</Project>
