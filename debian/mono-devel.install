@@ -62,6 +62,7 @@ debian/tmp/usr/lib/mono/4.5/ilasm.exe*
 debian/tmp/usr/lib/mono/4.5/installutil.exe*
 debian/tmp/usr/lib/mono/4.5/installvst.exe*
 debian/tmp/usr/lib/mono/4.5/lc.exe*
+debian/tmp/usr/lib/mono/4.5/linkeranalyzer.exe*
 debian/tmp/usr/lib/mono/4.5/macpack.exe*
 debian/tmp/usr/lib/mono/4.5/makecert.exe*
 debian/tmp/usr/lib/mono/4.5/mconfig.exe*

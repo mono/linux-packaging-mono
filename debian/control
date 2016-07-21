@@ -406,9 +406,11 @@ Depends: ${misc:Depends},
          libmono-system-reactive-runtime-remoting2.2-cil (= ${source:Version}),
          libmono-system-reactive-windows-forms2.2-cil (= ${source:Version}),
          libmono-system-reactive-windows-threading2.2-cil (= ${source:Version}),
+         libmono-system-reflection-context4.0-cil (= ${source:Version}),
          libmono-system-runtime4.0-cil (= ${source:Version}),
          libmono-system-runtime-caching4.0-cil (= ${source:Version}),
          libmono-system-runtime-durableinstancing4.0-cil (= ${source:Version}),
+         libmono-system-runtime-interopservices-runtimeinformation4.0-cil (= ${source:Version}),
          libmono-system-runtime-serialization4.0-cil (= ${source:Version}),
          libmono-system-runtime-serialization-formatters-soap4.0-cil (= ${source:Version}),
          libmono-system-security4.0-cil (= ${source:Version}),
@@ -1515,6 +1517,37 @@ Description: Mono System.Reactive.Windows.Threading Library (for CLI 4.5)
  This package contains the System.Reactive.windows.Threading library which is part
  of Reactive Extensions.
 
+
+Package: libmono-system-reflection-context4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Homepage: http://mono-project.com/
+Description: Mono System.Reflection.Context Library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Reflection.Context library.
+ Its development is in early stages.
+
+Package: libmono-system-runtime-interopservices-runtimeinformation4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Homepage: http://mono-project.com/
+Description: Mono InteropServices.RuntimeInformation Library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Runtime.InteropServices.RuntimeInformation
+ library.
+ Its development is in early stages.
 
 Package: libmono-system-runtime-serialization4.0-cil
 Architecture: all
