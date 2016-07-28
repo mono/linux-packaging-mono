@@ -1256,10 +1256,14 @@ FULLAOT_LIBS_UNIVERSAL = \
 
 FULLAOT_TMP_DIR = $(top_builddir)/mono/mini/fullaot-tmp
 llvmonly_regtests = $(fullaot_regtests) gshared.exe
+
+# We need these because automake can't process normal make conditionals
+check_local_targets = $(if $(EMIT_NUNIT), rcheck-nunit, rcheck)
 pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = version.h $(arch_built)
 CLEANFILES = $(BUILT_SOURCES) *.exe *.dll
 EXTRA_DIST = TestDriver.cs \
+	TestHelpers.cs \
 	genmdesc.pl				\
 	emitnunit.pl			\
 	$(test_sources) 			\
@@ -3209,8 +3213,8 @@ generics.exe: generics.cs TestDriver.dll generics-variant-types.dll
 %.exe: %.il
 	$(ILASM) -output=$@ $<
 
-TestDriver.dll: $(srcdir)/TestDriver.cs
-	$(MCS) -out:$@ -target:library $<
+TestDriver.dll: $(srcdir)/TestDriver.cs $(srcdir)/TestHelpers.cs
+	$(MCS) -out:$@ -target:library $^
 
 generics-variant-types.dll: generics-variant-types.il
 	$(ILASM) -dll -output=$@ $<
@@ -3252,12 +3256,11 @@ testi: mono test.exe
 checktests: $(regtests)
 	for i in $(regtests); do $(MINI_RUNTIME) $$i; done
 
-rcheck: mono $(regtests)
-@NACL_CODEGEN_TRUE@	for i in $(regtests); do echo "running test $$i"; $(MINI_RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
-@NACL_CODEGEN_FALSE@	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
-@NACL_CODEGEN_FALSE@	exit $$(cat regressionexitcode.out)
+rcheck-nunit: mono $(regtests)
+	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
+	exit $$(cat regressionexitcode.out)
 
-rcheck2: mono $(regtests)
+rcheck: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
 @ARM_TRUE@check-seq-points:
@@ -3337,13 +3340,13 @@ stat3: mono bench.exe
 docu: mini.sgm
 	docbook2txt mini.sgm
 
-check-local: rcheck check-seq-points
+check-local: $(check_local_targets)
 
 clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.5.2.770/321e474\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.5.2.799/ce8e905\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

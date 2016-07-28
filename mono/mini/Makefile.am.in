@@ -632,8 +632,8 @@ generics.exe: generics.cs TestDriver.dll generics-variant-types.dll
 %.exe: %.il
 	$(ILASM) -output=$@ $<
 
-TestDriver.dll: $(srcdir)/TestDriver.cs
-	$(MCS) -out:$@ -target:library $<
+TestDriver.dll: $(srcdir)/TestDriver.cs $(srcdir)/TestHelpers.cs
+	$(MCS) -out:$@ -target:library $^
 
 generics-variant-types.dll: generics-variant-types.il
 	$(ILASM) -dll -output=$@ $<
@@ -695,15 +695,11 @@ testi: mono test.exe
 checktests: $(regtests)
 	for i in $(regtests); do $(MINI_RUNTIME) $$i; done
 
-rcheck: mono $(regtests)
-if NACL_CODEGEN
-	for i in $(regtests); do echo "running test $$i"; $(MINI_RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
-else
+rcheck-nunit: mono $(regtests)
 	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
 	exit $$(cat regressionexitcode.out)
-endif
 
-rcheck2: mono $(regtests)
+rcheck: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
 if ARM
@@ -821,7 +817,10 @@ stat3: mono bench.exe
 docu: mini.sgm
 	docbook2txt mini.sgm
 
-check-local: rcheck check-seq-points
+# We need these because automake can't process normal make conditionals
+check_local_targets = $(if $(EMIT_NUNIT), rcheck-nunit, rcheck)
+
+check-local: $(check_local_targets)
 
 clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
@@ -832,6 +831,7 @@ BUILT_SOURCES = version.h $(arch_built)
 
 CLEANFILES= $(BUILT_SOURCES) *.exe *.dll
 EXTRA_DIST = TestDriver.cs \
+	TestHelpers.cs \
 	genmdesc.pl				\
 	emitnunit.pl			\
 	$(test_sources) 			\
@@ -852,7 +852,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.5.2.770/321e474\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.5.2.799/ce8e905\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

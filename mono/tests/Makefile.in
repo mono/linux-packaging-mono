@@ -441,8 +441,14 @@ JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_
 TEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
 JITTEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
 RUNTIME_ARGS = --config tests-config --optimize=all --debug
-@HOST_WIN32_FALSE@TEST_RUNNER_ARGS = --config tests-config --runtime $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
-@HOST_WIN32_TRUE@TEST_RUNNER_ARGS = --config tests-config --runtime $(if $(MONO_EXECUTABLE),$(shell cygpath -w -a $(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),mono)
+@HOST_WIN32_FALSE@TEST_RUNNER_ARGS = --config tests-config --runtime \
+@HOST_WIN32_FALSE@	$(if \
+@HOST_WIN32_FALSE@	$(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono) \
+@HOST_WIN32_FALSE@	$(if $(V), --verbose,)
+@HOST_WIN32_TRUE@TEST_RUNNER_ARGS = --config tests-config --runtime \
+@HOST_WIN32_TRUE@	$(if $(MONO_EXECUTABLE),$(shell cygpath -w -a \
+@HOST_WIN32_TRUE@	$(MONO_EXECUTABLE) | sed 's/\\/\\\\/g'),mono) \
+@HOST_WIN32_TRUE@	$(if $(V), --verbose,)
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(with_mono_path) $(top_builddir)/runtime/mono-wrapper
@@ -1172,6 +1178,8 @@ EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	console-output.exe.stderr.expected \
 	console-output.exe.stdout.expected
 @INSTALL_MOBILE_STATIC_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
+@INSTALL_MOBILE_STATIC_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
+@INSTALL_MOBILE_STATIC_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 AOT_EXTRA_LIBS = \
 bug-382986-lib.dll$(PLATFORM_AOT_SUFFIX)	\
 bug-324535-il.dll$(PLATFORM_AOT_SUFFIX)	\
@@ -1694,7 +1702,7 @@ aotcheck: testaot gshared-aot
 %.exe: %.il
 	$(ILASM) -out:$@ $<
 
-%.exe: %.cs TestDriver.dll
+%.exe: %.cs $(TEST_DRIVER_DEPEND)
 	$(MCS) -r:System.dll -r:System.Xml.dll -r:System.Core.dll -r:TestDriver.dll $(TEST_DRIVER_HARD_KILL_FEATURE) -out:$@ $<
 
 %.exe$(PLATFORM_AOT_SUFFIX): %.exe 
@@ -1753,8 +1761,7 @@ assemblyresolve/test/asm.dll:
 	$(MAKE) -C assemblyresolve prereq
 
 TestDriver.dll:
-	$(MCS) -target:library -out:$@ $(srcdir)/../mini/TestDriver.cs
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+	$(MCS) -target:library -out:$@ $(srcdir)/../mini/TestDriver.cs $(srcdir)/../mini/TestHelpers.cs
 
 test_cs: $(TEST_PROG) $(TESTSI_CS) libtest.la
 	@failed=0; \
@@ -1883,14 +1890,14 @@ testbundle: console.exe
 	@$(MKBUNDLE) --static console.exe > mkbundle.stdout
 	@$(with_mono_path) MONO_CFG_DIR=$(mono_cfg_dir) ./a.out >> mkbundle.stdout
 	@- rm -rf a.out
-test-type-load: TestDriver.dll
+test-type-load: $(TEST_DRIVER_DEPEND)
 	@$(ILASM) /dll /output:load-missing.dll $(srcdir)/load-missing.il > /dev/null
 	@$(MCS) -t:library -out:t.dll -d:FOUND $(srcdir)/t-missing.cs
 	@$(MCS) -r:TestDriver.dll -r:load-missing.dll -r:t.dll -out:load-exceptions.exe $(srcdir)/load-exceptions.cs
 	@$(MCS) -t:library -out:t.dll $(srcdir)/t-missing.cs
 	@echo "Testing load-exception.exe..."
 	@$(RUNTIME) load-exceptions.exe > load-exceptions.exe.stdout 2> load-exceptions.exe.stderr
-test-cattr-type-load: TestDriver.dll custom-attr-errors.cs custom-attr-errors-lib.cs
+test-cattr-type-load: $(TEST_DRIVER_DEPEND) custom-attr-errors.cs custom-attr-errors-lib.cs
 	$(MCS) -D:WITH_MEMBERS /t:library $(srcdir)/custom-attr-errors-lib.cs
 	$(MCS) -r:TestDriver.dll -r:custom-attr-errors-lib.dll  $(srcdir)/custom-attr-errors.cs
 	$(MCS) /t:library $(srcdir)/custom-attr-errors-lib.cs
@@ -2081,17 +2088,17 @@ test-aot:
 	echo "$${passed} test(s) passed. $${failed} test(s) did not pass."; \
 	if [ $${failed} != 0 ]; then echo -e "\nFailed tests:\n"; \
 	for i in $${failed_tests}; do echo $${i}; done; exit 1; fi
-runtime-invoke.gen.exe: TestDriver.dll gen-runtime-invoke.exe
+runtime-invoke.gen.exe: $(TEST_DRIVER_DEPEND) gen-runtime-invoke.exe
 	$(RUNTIME) gen-runtime-invoke.exe > runtime-invoke.gen.cs
 	$(MCS) -out:runtime-invoke.gen.exe -r:TestDriver.dll runtime-invoke.gen.cs
-imt_big_iface_test.exe: TestDriver.dll make-imt-test.exe
+imt_big_iface_test.exe: $(TEST_DRIVER_DEPEND) make-imt-test.exe
 	$(RUNTIME) make-imt-test.exe > imt_big_iface_test.cs
 	$(MCS) -out:imt_big_iface_test.exe -r:TestDriver.dll imt_big_iface_test.cs
-test-inline-call-stack-library.dll: TestDriver.dll $(srcdir)/test-inline-call-stack-library.cs
+test-inline-call-stack-library.dll: $(TEST_DRIVER_DEPEND) $(srcdir)/test-inline-call-stack-library.cs
 	$(MCS) -t:library -out:test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack-library.cs
 @INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 
-test-inline-call-stack.exe: TestDriver.dll test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack.cs
+test-inline-call-stack.exe: $(TEST_DRIVER_DEPEND) test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack.cs
 	$(MCS) -r:TestDriver.dll -r:test-inline-call-stack-library.dll -out:test-inline-call-stack.exe $(srcdir)/test-inline-call-stack.cs
 unhandled-exception-test-case.1.cs: unhandled-exception-test-case.2.cs
 	cp unhandled-exception-test-case.2.cs unhandled-exception-test-case.1.cs
@@ -2219,7 +2226,7 @@ test-async-exceptions : async-exceptions.exe
 	for i in `echo 0 1 2 3 4 5 6 7 8 9 10`; do $(RUNTIME) --inject-async-exc Tests:bar $$i async-exceptions.exe || exit 1; done
 modules-m1.netmodule: modules-m1.cs
 	$(MCS) -out:$@ /target:module $(srcdir)/modules-m1.cs
-modules.exe: modules.cs modules-m1.netmodule TestDriver.dll
+modules.exe: modules.cs modules-m1.netmodule $(TEST_DRIVER_DEPEND) 
 	$(MCS) -out:$@ /addmodule:modules-m1.netmodule -r:TestDriver.dll $(srcdir)/modules.cs
 
 # Useful if mono is compiled with --enable-shared=no

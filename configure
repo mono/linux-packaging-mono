@@ -19894,7 +19894,12 @@ fi
 
 
 
+if test -z "$BITCODE_TRUE"; then :
 
+	BITCODE=TRUE
+
+
+fi
 
 default_profile=net_4_x
 if test -z "$INSTALL_MONODROID_TRUE"; then :
