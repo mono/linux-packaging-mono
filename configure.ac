@@ -2,7 +2,7 @@
 #AC_PREREQ([2.62])
 
 # when bumping version number below, keep it in sync with man/mono.1 too
-AC_INIT(mono, [4.5.2],
+AC_INIT(mono, [4.7.0],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -532,6 +532,9 @@ if test x"$GCC" = xyes; then
 		# We rely on signed overflow to behave
 		CFLAGS="$CFLAGS -fwrapv"
 
+		# We rely on zero length arrays in structs
+		CFLAGS="$CFLAGS -Wno-zero-length-array"
+
 		CFLAGS="$CFLAGS -DMONO_DLL_EXPORT"
 		if test x"$disable_visibility_hidden" = xno; then
 		   # Don't export any symbols by default
@@ -852,6 +855,8 @@ fi
 if test "x$AOT_BUILD_FLAGS" != "x"; then :
    AC_SUBST(AOT_BUILD_FLAGS)
    AC_SUBST(AOT_RUN_FLAGS)
+   # For llvmonlycheck + fullaotcheck
+   AC_SUBST(INVARIANT_AOT_OPTIONS)
 fi
 
 AC_SUBST(TEST_PROFILE)
@@ -891,11 +896,6 @@ AM_CONDITIONAL(INSTALL_XAMMAC, [test "x$with_xammac" != "xno"])
 AM_CONDITIONAL(INSTALL_MOBILE_STATIC, [test "x$with_mobile_static" != "xno"])
 
 AC_SUBST(INSTALL_MOBILE_STATIC)
-
-AM_COND_IF(BITCODE, [
-	BITCODE=TRUE
-	AC_SUBST(BITCODE)
-])
 
 default_profile=net_4_x
 if test -z "$INSTALL_MONODROID_TRUE"; then :

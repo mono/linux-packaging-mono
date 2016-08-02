@@ -745,7 +745,17 @@ static guint32 WINAPI start_wrapper_internal(void *data)
 		args [0] = start_arg;
 		/* we may want to handle the exception here. See comment below on unhandled exceptions */
 		mono_runtime_delegate_invoke_checked (start_delegate, args, &error);
-		mono_error_raise_exception (&error); /* OK, triggers unhandled exn handler */
+
+		if (!mono_error_ok (&error)) {
+			MonoException *ex = mono_error_convert_to_exception (&error);
+			if (ex) {
+				mono_unhandled_exception (&ex->object);
+				mono_invoke_unhandled_exception_hook (&ex->object);
+				g_assert_not_reached ();
+			}
+		} else {
+			mono_error_cleanup (&error);
+		}
 	}
 
 	/* If the thread calls ExitThread at all, this remaining code
@@ -5061,8 +5071,11 @@ mono_thread_internal_unhandled_exception (MonoObject* exc)
 			mono_thread_internal_reset_abort (mono_thread_internal_current ());
 		} else if (!is_appdomainunloaded_exception (klass)) {
 			mono_unhandled_exception (exc);
-			if (mono_environment_exitcode_get () == 1)
-				exit (255);
+			if (mono_environment_exitcode_get () == 1) {
+				mono_environment_exitcode_set (255);
+				mono_invoke_unhandled_exception_hook (exc);
+				g_assert_not_reached ();
+			}
 		}
 	}
 }

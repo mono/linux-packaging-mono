@@ -125,7 +125,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 135
+#define MONO_AOT_FILE_VERSION 136
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -2865,14 +2865,6 @@ MonoBoolean ves_icall_get_frame_info            (gint32 skip, MonoBoolean need_f
 						 gint32 *iloffset, gint32 *native_offset,
 						 MonoString **file, gint32 *line, gint32 *column);
 void mono_set_cast_details                      (MonoClass *from, MonoClass *to);
-
-/* Installs a function which is called when the runtime encounters an unhandled exception.
- * This hook isn't expected to return.
- * If no hook has been installed, the runtime will print a message before aborting.
- */
-typedef void  (*MonoUnhandledExceptionFunc)         (MonoObject *exc, gpointer user_data);
-MONO_API void mono_install_unhandled_exception_hook (MonoUnhandledExceptionFunc func, gpointer user_data);
-void          mono_invoke_unhandled_exception_hook  (MonoObject *exc);
 
 void mono_decompose_typechecks (MonoCompile *cfg);
 /* Dominator/SSA methods */

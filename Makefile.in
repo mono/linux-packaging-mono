@@ -214,7 +214,6 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BITCODE = @BITCODE@
 BOEHM_DEFINES = @BOEHM_DEFINES@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
@@ -265,6 +264,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
+INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -444,6 +444,7 @@ mcslib = $(mcs_topdir)/class/lib
 monolite = $(mcslib)/monolite
 mono_corlib_version = $(shell sed -n "s/\#define MONO_CORLIB_VERSION //p" $(srcdir)/mono/metadata/appdomain.c)
 monolite_url = http://download.mono-project.com/monolite/monolite-$(mono_corlib_version)-latest.tar.gz
+@BITCODE_TRUE@BITCODE_CHECK = yes
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -958,7 +959,7 @@ get-monolite-latest:
 
 .PHONY: check-ci
 check-ci:
-	MONO_LLVMONLY=$(BITCODE) $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
+	MONO_LLVMONLY=$(BITCODE_CHECK) $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
 
 .PHONY: validate do-build-mono-mcs mcs-do-clean mcs-do-tests
 validate: do-build-mono-mcs
