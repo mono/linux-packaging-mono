@@ -3695,9 +3695,7 @@ mini_init (const char *filename, const char *runtime_version)
 	mono_simd_intrinsics_init ();
 #endif
 
-#if MONO_SUPPORT_TASKLETS
 	mono_tasklets_init ();
-#endif
 
 	register_trampolines (domain);
 
@@ -3778,9 +3776,6 @@ register_icalls (void)
 	register_icall (mono_thread_get_undeniable_exception, "mono_thread_get_undeniable_exception", "object", FALSE);
 	register_icall (mono_thread_interruption_checkpoint, "mono_thread_interruption_checkpoint", "object", FALSE);
 	register_icall (mono_thread_force_interruption_checkpoint_noraise, "mono_thread_force_interruption_checkpoint_noraise", "object", FALSE);
-#ifndef DISABLE_REMOTING
-	register_icall (mono_store_remote_field_new_icall, "mono_store_remote_field_new_icall", "void object ptr ptr object", FALSE);
-#endif
 
 #if defined(__native_client__) || defined(__native_client_codegen__)
 	register_icall (mono_nacl_gc, "mono_nacl_gc", "void", FALSE);

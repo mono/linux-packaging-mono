@@ -1043,25 +1043,19 @@ gboolean CreateProcess (const gunichar2 *appname, const gunichar2 *cmdline,
 			mono_process = (struct MonoProcess *) g_malloc0 (sizeof (struct MonoProcess));
 			mono_process->pid = pid;
 			mono_process->handle_count = 1;
-			if (mono_os_sem_init (&mono_process->exit_sem, 0) != 0) {
-				/* If we can't create the exit semaphore, we just don't add anything
-				 * to our list of mono processes. Waiting on the process will return 
-				 * immediately. */
-				g_warning ("%s: could not create exit semaphore for process.", strerror (errno));
-				g_free (mono_process);
-			} else {
-				/* Keep the process handle artificially alive until the process
-				 * exits so that the information in the handle isn't lost. */
-				mono_w32handle_ref (handle);
-				mono_process->handle = handle;
+			mono_os_sem_init (&mono_process->exit_sem, 0);
 
-				process_handle_data->mono_process = mono_process;
+			/* Keep the process handle artificially alive until the process
+			 * exits so that the information in the handle isn't lost. */
+			mono_w32handle_ref (handle);
+			mono_process->handle = handle;
 
-				mono_os_mutex_lock (&mono_processes_mutex);
-				mono_process->next = mono_processes;
-				mono_processes = mono_process;
-				mono_os_mutex_unlock (&mono_processes_mutex);
-			}
+			process_handle_data->mono_process = mono_process;
+
+			mono_os_mutex_lock (&mono_processes_mutex);
+			mono_process->next = mono_processes;
+			mono_processes = mono_process;
+			mono_os_mutex_unlock (&mono_processes_mutex);
 
 			if (process_info != NULL) {
 				process_info->hProcess = handle;
@@ -2815,19 +2809,13 @@ process_wait (gpointer handle, guint32 timeout, gboolean alertable)
 			ret = mono_os_sem_wait (&mp->exit_sem, alertable ? MONO_SEM_FLAGS_ALERTABLE : MONO_SEM_FLAGS_NONE);
 		}
 
-		if (ret == -1 && errno != EINTR && errno != ETIMEDOUT) {
-			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): sem_timedwait failure: %s", 
-				   __func__, handle, timeout, g_strerror (errno));
-			/* Should we return a failure here? */
-		}
-
-		if (ret == 0) {
+		if (ret == MONO_SEM_TIMEDWAIT_RET_SUCCESS) {
 			/* Success, process has exited */
 			mono_os_sem_post (&mp->exit_sem);
 			break;
 		}
 
-		if (timeout == 0) {
+		if (ret == MONO_SEM_TIMEDWAIT_RET_TIMEDOUT) {
 			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): WAIT_TIMEOUT (timeout = 0)", __func__, handle, timeout);
 			return WAIT_TIMEOUT;
 		}
@@ -2838,7 +2826,7 @@ process_wait (gpointer handle, guint32 timeout, gboolean alertable)
 			return WAIT_TIMEOUT;
 		}
 		
-		if (alertable && _wapi_thread_cur_apc_pending ()) {
+		if (alertable && ret == MONO_SEM_TIMEDWAIT_RET_ALERTED) {
 			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): WAIT_IO_COMPLETION", __func__, handle, timeout);
 			return WAIT_IO_COMPLETION;
 		}
