@@ -1,0 +1,290 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="GenerateCurrentVersion" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll" />
+
+  <!-- Setup the default file version information -->
+  <PropertyGroup>
+    <MajorVersion Condition="'$(MajorVersion)' == ''">1</MajorVersion>
+    <MinorVersion Condition="'$(MinorVersion)' == ''">0</MinorVersion>
+
+    <!-- These should be set by importing the targets below but initializing to 0 for consistency -->
+    <BuildNumberMajor Condition="'$(BuildNumberMajor)' == ''">0</BuildNumberMajor>
+    <BuildNumberMinor Condition="'$(BuildNumberMinor)' == ''">0</BuildNumberMinor>
+  </PropertyGroup>
+
+  <!-- Import a build target that includes the build numbers -->
+  <Import Project="$(BuildNumberTarget)" Condition="Exists('$(BuildNumberTarget)')" />
+
+  <!-- #################################### -->
+  <!-- Generate Assembly Info -->
+  <!-- #################################### -->
+  <PropertyGroup>
+    <AssemblyVersion Condition="'$(AssemblyVersion)'==''">1.0.0.0</AssemblyVersion>
+    <CLSCompliant Condition="'$(CLSCompliant)'==''">false</CLSCompliant>
+    <AssemblyFileVersion Condition="'$(AssemblyFileVersion)'==''">$(MajorVersion).$(MinorVersion).$(BuildNumberMajor).$(BuildNumberMinor)</AssemblyFileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo Condition="'$(GenerateAssemblyInfo)'==''">true</GenerateAssemblyInfo>
+    <BuiltByString Condition="'$(BuiltByString)'==''">%20built by: $(COMPUTERNAME)-$(USERNAME)</BuiltByString>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GenerateAssemblyInfo)'=='true'">
+    <AssemblyInfoFile Condition="'$(MSBuildProjectExtension)' == '.csproj'">$(IntermediateOutputPath)_AssemblyInfo.cs</AssemblyInfoFile>
+    <AssemblyInfoFile Condition="'$(MSBuildProjectExtension)' == '.vbproj'">$(IntermediateOutputPath)_AssemblyInfo.vb</AssemblyInfoFile>
+    <AssemblyInfoPartialFile Condition="'$(MSBuildProjectExtension)' == '.csproj'">$(MSBuildThisFileDirectory)AssemblyInfoPartial.cs</AssemblyInfoPartialFile>
+    <AssemblyInfoPartialFile Condition="'$(MSBuildProjectExtension)' == '.vbproj'">$(MSBuildThisFileDirectory)AssemblyInfoPartial.vb</AssemblyInfoPartialFile>
+    <AssemblyInfoPartialFileLink Condition="'$(MSBuildProjectExtension)' == '.csproj'">Properties/_AssemblyInfo.cs</AssemblyInfoPartialFileLink>
+    <AssemblyInfoPartialFileLink Condition="'$(MSBuildProjectExtension)' == '.vbproj'">My Project/_AssemblyInfo.vb</AssemblyInfoPartialFileLink>
+    <CoreCompileDependsOn>$(CoreCompileDependsOn);GenerateAssemblyInfo</CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GenerateAssemblyInfo"
+      Inputs="$(MSBuildProjectFile)"
+      Outputs="$(AssemblyInfoFile)"
+      Condition="'$(GenerateAssemblyInfo)'=='true'"
+      DependsOnTargets="CreateVersionFileDuringBuild">
+
+    <Error Condition="!Exists('$(IntermediateOutputPath)')" Text="GenerateAssemblyInfo failed because IntermediateOutputPath isn't set to a valid directory" />
+
+    <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+      <AssemblyInfoUsings Include="using System%3B" />
+      <AssemblyInfoUsings Include="using System.Reflection%3B" />
+      <AssemblyInfoLines Include="[assembly:AssemblyTitle(&quot;$(AssemblyName)&quot;)]" />
+      <AssemblyInfoLines Include="[assembly:AssemblyDescription(&quot;$(AssemblyName)&quot;)]" />
+      <AssemblyInfoLines Include="[assembly:AssemblyDefaultAlias(&quot;$(AssemblyName)&quot;)]" />
+      <AssemblyInfoLines Include="[assembly:AssemblyCompany(&quot;Microsoft Corporation&quot;)]" />
+      <AssemblyInfoLines Include="[assembly:AssemblyProduct(&quot;Microsoft\x00ae .NET Framework&quot;)]" />
+      <AssemblyInfoLines Include="[assembly:AssemblyCopyright(&quot;\x00a9 Microsoft Corporation.  All rights reserved.&quot;)]" />
+      <AssemblyInfoLines Include="[assembly:AssemblyVersion(&quot;$(AssemblyVersion)&quot;)]" />
+      <AssemblyInfoLines Include="[assembly:AssemblyFileVersion(&quot;$(AssemblyFileVersion)&quot;)]" />
+      <AssemblyInfoLines Include="[assembly:AssemblyInformationalVersion(@&quot;$(AssemblyFileVersion)$(BuiltByString)&quot;)]" />
+      <AssemblyInfoLines Condition="'$(CLSCompliant)'=='true'" Include="[assembly:CLSCompliant(true)]" />
+      <AssemblyInfoLines Condition="'$(AssemblyComVisible)'!=''" Include="[assembly:System.Runtime.InteropServices.ComVisible($(AssemblyComVisible))]" />
+      <AssemblyInfoLines Condition="'$(SkipFrameworkAssemblyMetadata)' != 'true'"
+        Include="[assembly:System.Reflection.AssemblyMetadata(&quot;%(AssemblyMetadata.Identity)&quot;, &quot;%(AssemblyMetadata.Value)&quot;)]" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vbproj'">
+      <AssemblyInfoUsings Include="Imports System" />
+      <AssemblyInfoUsings Include="Imports System.Reflection" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyTitle(&quot;$(AssemblyName)&quot;)&gt;" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyDescription(&quot;$(AssemblyName)&quot;)&gt;" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyDefaultAlias(&quot;$(AssemblyName)&quot;)&gt;" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyCompany(&quot;Microsoft Corporation&quot;)&gt;" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyProduct(&quot;Microsoft\x00ae .NET Framework&quot;)&gt;" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyCopyright(&quot;\x00a9 Microsoft Corporation.  All rights reserved.&quot;)&gt;" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyVersion(&quot;$(AssemblyVersion)&quot;)&gt;" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyFileVersion(&quot;$(AssemblyFileVersion)&quot;)&gt;" />
+      <AssemblyInfoLines Include="&lt;Assembly:AssemblyInformationalVersion(&quot;$(AssemblyFileVersion)$(BuiltByString)&quot;)&gt;" />
+      <AssemblyInfoLines Condition="'$(CLSCompliant)'=='true'" Include="&lt;Assembly:CLSCompliant(True)&gt;" />
+      <AssemblyInfoLines Condition="'$(AssemblyComVisible)'!=''" Include="&lt;Assembly:System.Runtime.InteropServices.ComVisible($(AssemblyComVisible))&gt;" />
+      <AssemblyInfoLines Condition="'$(SkipFrameworkAssemblyMetadata)' != 'true'"
+          Include="&lt;assembly:System.Reflection.AssemblyMetadata(&quot;%(AssemblyMetadata.Identity)&quot;, &quot;%(AssemblyMetadata.Value)&quot;)&gt;" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj' And '$(GenerateThisAssemblyClass)' == 'true'">
+      <AssemblyInfoLines Include="internal static class ThisAssembly" />
+      <AssemblyInfoLines Include="{" />
+      <AssemblyInfoLines Include="%20%20%20%20internal const string Title = &quot;$(AssemblyName)&quot;%3B" />
+      <AssemblyInfoLines Include="%20%20%20%20internal const string Copyright = &quot;\u00A9 Microsoft Corporation.  All rights reserved.&quot;%3B" />
+      <AssemblyInfoLines Include="%20%20%20%20internal const string Version = &quot;$(AssemblyVersion)&quot;%3B" />
+      <AssemblyInfoLines Include="%20%20%20%20internal const string InformationalVersion = &quot;$(AssemblyFileVersion)&quot;%3B" />
+      <AssemblyInfoLines Include="}" />
+    </ItemGroup>
+
+    <WriteLinesToFile
+      File="$(AssemblyInfoFile)"
+      Lines="@(AssemblyInfoUsings);@(AssemblyInfoLines)"
+      Overwrite="true" />
+
+    <ItemGroup>
+      <Compile Include="$(AssemblyInfoFile)" />
+      <FileWrites Include="$(AssemblyInfoFile)" />
+    </ItemGroup>
+
+  </Target>
+
+  <ItemGroup Condition="'$(GenerateAssemblyInfo)'=='true' AND '$(StringResourcesPath)' != '' AND '$(ExcludeAssemblyInfoPartialFile)' != 'true'">
+    <Compile Include="$(AssemblyInfoPartialFile)">
+      <Visible>true</Visible>
+      <Link>$(AssemblyInfoPartialFileLink)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <GenerateNativeVersionInfo Condition="'$(GenerateNativeVersionInfo)'==''">false</GenerateNativeVersionInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GenerateNativeVersionInfo)'=='true'">
+    <NativeVersionHeaderFile>$(IntermediateOutputPath)_version.h</NativeVersionHeaderFile>
+    <BeforeResourceCompileTargets>$(BeforeResourceCompileTargets);GenerateVersionHeader</BeforeResourceCompileTargets>
+    <GenerateVersionHeader>true</GenerateVersionHeader>
+    <Win32Resource>$(IntermediateOutputPath)/Native.res</Win32Resource>
+    <CoreCompileDependsOn>$(CoreCompileDependsOn);NativeResourceCompile</CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GenerateVersionHeader"
+      Inputs="$(MSBuildProjectFile)"
+      Outputs="$(NativeVersionHeaderFile)"
+      DependsOnTargets="CreateVersionFileDuringBuild"
+      Condition="'$(NativeVersionHeaderFile)'!='' and '$(GenerateVersionHeader)'=='true'">
+
+    <ItemGroup>
+      <!-- Some of these variables might be defined by macros, so undefine them first to avoid build warnings. -->
+      <NativeVersionLines Include="#undef VER_COMPANYNAME_STR" />
+      <NativeVersionLines Include="#undef VER_FILEDESCRIPTION_STR" />
+      <NativeVersionLines Include="#undef VER_INTERNALNAME_STR" />
+      <NativeVersionLines Include="#undef VER_ORIGINALFILENAME_STR" />
+      <NativeVersionLines Include="#undef VER_PRODUCTNAME_STR" />
+      <NativeVersionLines Include="#undef VER_PRODUCTVERSION" />
+      <NativeVersionLines Include="#undef VER_PRODUCTVERSION_STR" />
+      <NativeVersionLines Include="#undef VER_FILEVERSION" />
+      <NativeVersionLines Include="#undef VER_FILEVERSION_STR" />
+      <NativeVersionLines Include="#undef VER_LEGALCOPYRIGHT_STR" />
+      <NativeVersionLines Include="#undef VER_DEBUG" />
+
+      <!-- Defining versioning variables -->
+      <NativeVersionLines Include="#define VER_COMPANYNAME_STR         &quot;Microsoft Corporation&quot;" />
+      <NativeVersionLines Include="#define VER_FILEDESCRIPTION_STR     &quot;$(AssemblyName)&quot;" />
+      <NativeVersionLines Include="#define VER_INTERNALNAME_STR        VER_FILEDESCRIPTION_STR" />
+      <NativeVersionLines Include="#define VER_ORIGINALFILENAME_STR    VER_FILEDESCRIPTION_STR" />
+      <NativeVersionLines Include="#define VER_PRODUCTNAME_STR         &quot;Microsoft\xae .NET Framework&quot;" />
+      <NativeVersionLines Include="#define VER_PRODUCTVERSION          $(MajorVersion),$(MinorVersion),$(BuildNumberMajor),$(BuildNumberMinor)" />
+      <NativeVersionLines Include="#define VER_PRODUCTVERSION_STR      &quot;$(MajorVersion).$(MinorVersion).$(BuildNumberMajor).$(BuildNumberMinor)$(BuiltByString)&quot;" />
+      <NativeVersionLines Include="#define VER_FILEVERSION             $(MajorVersion),$(MinorVersion),$(BuildNumberMajor),$(BuildNumberMinor)" />
+      <NativeVersionLines Include="#define VER_FILEVERSION_STR         &quot;$(MajorVersion).$(MinorVersion).$(BuildNumberMajor).$(BuildNumberMinor)$(BuiltByString)&quot;" />
+      <NativeVersionLines Include="#define VER_LEGALCOPYRIGHT_STR      &quot;\xa9 Microsoft Corporation.  All rights reserved.&quot;" />
+      <NativeVersionLines Condition="'$(Configuration)'=='Debug'" Include="#define VER_DEBUG                   VS_FF_DEBUG" />
+      <NativeVersionLines Condition="'$(Configuration)'!='Debug'" Include="#define VER_DEBUG                   0" />
+    </ItemGroup>
+
+    <WriteLinesToFile
+      File="$(NativeVersionHeaderFile)"
+      Lines="@(NativeVersionLines)"
+      Overwrite="true" />
+
+    <ItemGroup>
+      <FileWrites Include="$(NativeVersionHeaderFile)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Non Windows versioning requires to generate a source file and include it on the compilation. -->
+  <Target Name="GenerateVersionSourceFile"
+      Inputs="$(MSBuildProjectFile)"
+      Outputs="$(NativeVersionSourceFile)"
+      DependsOnTargets="CreateVersionFileDuringBuild"
+      Condition="'$(NativeVersionSourceFile)'!='' and '$(GenerateVersionSourceFile)'=='true'">
+
+    <ItemGroup>
+      <SourceFileLines />
+      <SourceFileLines Include="static char sccsid%5B%5D %5F%5Fattribute%5F%5F%28%28used%29%29 %3D %22%40%28%23%29Version $(MajorVersion).$(MinorVersion).$(BuildNumberMajor).$(BuildNumberMinor)%22%3B" />
+      <!-- Since this is a source file, compiler will complain if there is no new line at end of file, so adding one bellow. -->
+      <SourceFileLines Include=" " />
+    </ItemGroup>
+
+    <WriteLinesToFile
+      File="$(NativeVersionSourceFile)"
+      Lines="@(SourceFileLines)"
+      Overwrite="true" />
+
+    <ItemGroup>
+      <FileWrites Include="$(NativeVersionSourceFile)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- #################################### -->
+  <!-- Generate BuildVersion.props -->
+  <!-- #################################### -->
+  <Target Name="CreateOrUpdateCurrentVersionFile" Condition="'$(SkipVersionGeneration)'!='true'" DependsOnTargets="GenerateCurrentVersion">
+    <!-- Error out if GeneratedBuildNumberMajor is empty since GenerateCurrentVersion should have calculated it already. -->
+    <Error Condition="'$(GeneratedBuildNumberMajor)'==''" Text="Error when generating current version." />
+
+    <PropertyGroup>
+      <VersionSeedSourceComment Condition="'$(VersionSeedSourceComment)'==''">VersionSeedData was produced by taking the timestamp of the last git commit.</VersionSeedSourceComment>
+    </PropertyGroup>
+      
+    <ItemGroup>
+      <CurrentVersionLines Include="%3C%3Fxml version=%221.0%22 encoding=%22utf-8%22%3F%3E" />
+      <CurrentVersionLines Include="%3C!-- This is a generated file. $(VersionSeedSourceComment) Seed Date is $(VersionSeedDate). --%3E" />
+      <CurrentVersionLines Include="%3CProject xmlns=%22http://schemas.microsoft.com/developer/msbuild/2003%22%3E" />
+      <CurrentVersionLines Include="%3CPropertyGroup%3E" />
+      <CurrentVersionLines Include="%3CBuildNumberMajor Condition=%22%27%24(BuildNumberMajor)%27==%27%27%22%3E$(GeneratedBuildNumberMajor)%3C/BuildNumberMajor%3E" />
+      <CurrentVersionLines Include="%3CBuildNumberMinor Condition=%22%27%24(BuildNumberMinor)%27==%27%27%22%3E$(GeneratedBuildNumberMinor)%3C/BuildNumberMinor%3E" />
+      <CurrentVersionLines Include="%3C/PropertyGroup%3E" />
+      <CurrentVersionLines Include="%3C/Project%3E" />
+    </ItemGroup>
+    
+    <!-- Since by default the file will get dropped at the obj dir, make sure that the dir is created already or else WriteLinesToFile will error. -->
+    <MakeDir Condition="!Exists('$(BuildVersionFilePath)')" Directories="$(BuildVersionFilePath)" />
+      
+    <WriteLinesToFile
+      ContinueOnError="WarnAndContinue"
+      Condition="!Exists('$(BuildVersionFile)')"
+      File="$(BuildVersionFile)"
+      Lines="@(CurrentVersionLines)"
+      Overwrite="true" />
+    
+    <!-- Delete old BuildVersion.props files -->
+    <ItemGroup>
+      <OldBuildVersionFiles Include="$(BuildVersionFilePath)BuildVersions-*.props" Exclude="$(BuildVersionFilePath)%(BuildVersionFileItem.Filename).props" />
+    </ItemGroup>
+    <Delete Files="@(OldBuildVersionFiles)" TreatErrorsAsWarnings="true"/>
+
+  </Target>
+
+  <Target Name="GenerateCurrentVersion" DependsOnTargets="GetVersionSeedDate">
+    <Error Condition="'$(VersionSeedDate)'==''" Text="A date is needed to Generate the current version." />
+
+    <!-- Setting default parameters in case that they are not set before. -->
+    <PropertyGroup>
+      <!-- Padding should be equal or greater to 5. Using 5 to align with internal build system. -->
+      <VersionPadding Condition="'$(VersionPadding)'==''">5</VersionPadding>
+      <!-- Using the following default comparison date will produce versions that align with our internal build system. -->
+      <VersionComparisonDate Condition="'$(VersionComparisonDate)'==''">1996-04-01</VersionComparisonDate>
+    </PropertyGroup>
+      
+    <GenerateCurrentVersion SeedDate="$(VersionSeedDate)" OfficialBuildId="$(OfficialBuildId)" ComparisonDate="$(VersionComparisonDate)" Padding="$(VersionPadding)">
+      <Output PropertyName="GeneratedBuildNumberMajor" TaskParameter="GeneratedVersion" />
+      <Output PropertyName="GeneratedBuildNumberMinor" TaskParameter="GeneratedRevision" />
+    </GenerateCurrentVersion>
+  </Target>
+
+  <Target Name="GetVersionSeedDate" Condition="'$(VersionSeedDate)'==''">
+    <ItemGroup>
+      <VersionTargetsFile Include="$(MSBuildThisFileFullPath)" />
+    </ItemGroup>
+      
+    <!-- Windows Exec command requires DOS escaping for the percent sign since it secretly runs the process in a shell instead of calling createprocess. -->
+    <PropertyGroup>
+      <GitCommand Condition="'$(OsEnvironment)'=='Windows_NT'">git show -s --format=^%25%25cd --date=short HEAD</GitCommand>
+      <GitCommand Condition="'$(OsEnvironment)'!='Windows_NT'">git show -s --format=%25cd --date=short HEAD</GitCommand>
+    </PropertyGroup>
+      
+    <Exec Command="$(GitCommand)" StandardOutputImportance="Low" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="VersionSeedDate" />
+      <Output TaskParameter="ExitCode" PropertyName="GitCommandExitCode" />
+    </Exec>
+    <PropertyGroup Condition="'$(GitCommandExitCode)'!='0'">
+      <VersionSeedDate>%(VersionTargetsFile.ModifiedTime)</VersionSeedDate>
+      <VersionSeedSourceComment>VersionSeedDate was produced by getting the timestamp of versioning.targets.</VersionSeedSourceComment>
+    </PropertyGroup>
+  </Target>
+
+  <!-- This target will only be executed if BuildVersion.props doesn't exist yet -->
+  <Target Name="CreateVersionFileDuringBuild" Condition="'$(SkipVersionGeneration)'!='true' AND '$(ShouldCreateVersionFileDuringBuild)'=='true'" DependsOnTargets="CreateOrUpdateCurrentVersionFile">
+    <PropertyGroup Condition="'$(SkipVersionGeneration)'!='true'">
+      <BuildNumberMajor >$(GeneratedBuildNumberMajor)</BuildNumberMajor>
+      <BuildNumberMinor>$(GeneratedBuildNumberMinor)</BuildNumberMinor>
+      <AssemblyFileVersion>$(MajorVersion).$(MinorVersion).$(BuildNumberMajor).$(BuildNumberMinor)</AssemblyFileVersion>
+      <VersionSuffix Condition="'$(PreReleaseLabel)' != ''">-$(PreReleaseLabel)</VersionSuffix>
+      <VersionSuffix Condition="'$(IncludeBuildNumberInPackageVersion)' == 'true'">$(VersionSuffix)-$(BuildNumberMajor)-$(BuildNumberMinor)</VersionSuffix>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="NativeResourceCompile" DependsOnTargets="$(BeforeResourceCompileTargets)" Inputs="$(MsBuildThisFileDirectory)NativeVersion.rc" Outputs="$(Win32Resource)">
+    <Error Condition="!Exists('$(RCPATH)')" Text="NativeResourceCompile failed because RCPath is set to an non-existing rc.exe path." />
+
+    <Exec Command="&quot;$(RCPath)&quot; /i $(IntermediateOutputPath) /i $(WindowsSDKPath)\inc /i $(VCSDKPath)\Include /D _UNICODE /D UNICODE /l&quot;0x0409&quot; /r /fo &quot;$(Win32Resource)&quot; &quot;$(MsBuildThisFileDirectory)NativeVersion.rc&quot;" />
+  </Target>
+</Project>

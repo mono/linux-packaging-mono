@@ -82,11 +82,10 @@ subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in $(top_srcdir)/../mkinstalldirs AUTHORS \
-	COPYING ChangeLog NEWS README TODO config.rpath \
-	$(top_srcdir)/../compile $(top_srcdir)/../config.guess \
-	$(top_srcdir)/../config.rpath $(top_srcdir)/../config.sub \
-	$(top_srcdir)/../install-sh $(top_srcdir)/../ltmain.sh \
-	$(top_srcdir)/../missing
+	COPYING NEWS README TODO config.rpath $(top_srcdir)/../compile \
+	$(top_srcdir)/../config.guess $(top_srcdir)/../config.rpath \
+	$(top_srcdir)/../config.sub $(top_srcdir)/../install-sh \
+	$(top_srcdir)/../ltmain.sh $(top_srcdir)/../missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -354,7 +353,7 @@ AM_CFLAGS = $(WERROR_CFLAGS)
 @CROSS_COMPILING_TRUE@@HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@SUBDIRS = m4 src
 @HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@SUBDIRS = m4 src
 @HOST_WIN32_TRUE@SUBDIRS = m4 src
-EXTRA_DIST = autogen.sh README NEWS AUTHORS ChangeLog winconfig.h
+EXTRA_DIST = autogen.sh README NEWS AUTHORS winconfig.h
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 

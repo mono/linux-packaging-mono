@@ -211,8 +211,6 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPROFILE_CFLAGS = @OPROFILE_CFLAGS@
-OPROFILE_LIBS = @OPROFILE_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -321,6 +319,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+EXTRA_DIST = arm64-codegen.h
 all: all-am
 
 .SUFFIXES:

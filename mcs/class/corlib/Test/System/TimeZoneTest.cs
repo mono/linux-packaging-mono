@@ -326,6 +326,16 @@ public class TimeZoneTest {
 			Assert.IsTrue (tzi.SupportsDaylightSavingTime, "SupportsDaylightSavingTime");
 		}
 
+		[Test]
+		public void OldEraToLocalTime ()
+		{
+			TimeSpan offset = TimeSpan.Zero;
+			var dto = new DateTimeOffset (new DateTime (1900, 1, 1).Ticks, offset);
+
+			// Should never throw
+			dto.ToLocalTime ();
+		}
+
 #if MOBILE
 		// On device we cannot read the OS file system to look for /etc/localtime
 		// and /usr/share/zoneinfo - so we must initialize the BCL TimeZoneInfo
@@ -349,12 +359,15 @@ public class TimeZoneTest {
 				// now it fails on Snow Leopard the same way (incomplete data) with iOS5 simulator (OS update ?)
 				// but it *never*ever* failed on devices
 				incomplete_data_on_simulator_only_bug = true;
+#if XAMCORE_2_0 || MONOTOUCH
+
 #if XAMCORE_2_0
 				if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.SIMULATOR)
-#else
+#elif MONOTOUCH
 				if (MonoTouch.ObjCRuntime.Runtime.Arch == MonoTouch.ObjCRuntime.Arch.SIMULATOR)
 #endif
 					Assert.Ignore ("known to fail on some iOS simulator versions - see source comments");
+#endif // XAMCORE_2_0 || MONOTOUCH
 			}
 		}
 #endif

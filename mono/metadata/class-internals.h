@@ -1,5 +1,6 @@
 /* 
  * Copyright 2012 Xamarin Inc
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 #ifndef __MONO_METADATA_CLASS_INTERNALS_H__
 #define __MONO_METADATA_CLASS_INTERNALS_H__
@@ -720,16 +721,6 @@ typedef struct {
 	gboolean no_raise;
 } MonoJitICallInfo;
 
-typedef struct {
-	guint8 exception_type;
-	char *class_name; /* If kind == TYPE */
-	char *assembly_name; /* If kind == TYPE or ASSEMBLY */
-	MonoClass *klass; /* If kind != TYPE */
-	const char *member_name; /* If kind != TYPE */
-	gboolean ref_only; /* If kind == ASSEMBLY */
-	char *msg; /* If kind == BAD_IMAGE */
-} MonoLoaderError;
-
 void
 mono_class_setup_supertypes (MonoClass *klass);
 
@@ -914,12 +905,8 @@ typedef struct {
 
 extern MonoStats mono_stats;
 
-typedef gpointer (*MonoTrampoline)       (MonoMethod *method);
-typedef gpointer (*MonoJumpTrampoline)       (MonoDomain *domain, MonoMethod *method, gboolean add_sync_wrapper);
-typedef gpointer (*MonoRemotingTrampoline)       (MonoDomain *domain, MonoMethod *method, MonoRemotingTarget target);
+typedef gpointer (*MonoRemotingTrampoline)       (MonoDomain *domain, MonoMethod *method, MonoRemotingTarget target, MonoError *error);
 typedef gpointer (*MonoDelegateTrampoline)       (MonoDomain *domain, MonoClass *klass);
-
-typedef gpointer (*MonoLookupDynamicToken) (MonoImage *image, guint32 token, gboolean valid_token, MonoClass **handle_class, MonoGenericContext *context);
 
 typedef gboolean (*MonoGetCachedClassInfo) (MonoClass *klass, MonoCachedClassInfo *res);
 
@@ -942,7 +929,7 @@ void
 mono_classes_cleanup (void);
 
 void
-mono_class_layout_fields   (MonoClass *klass);
+mono_class_layout_fields   (MonoClass *klass, int instance_size);
 
 void
 mono_class_setup_interface_offsets (MonoClass *klass);
@@ -1009,25 +996,16 @@ const char*
 mono_class_get_property_default_value (MonoProperty *property, MonoTypeEnum *def_type);
 
 void
-mono_install_trampoline (MonoTrampoline func);
-
-void
-mono_install_jump_trampoline (MonoJumpTrampoline func);
-
-void
 mono_install_delegate_trampoline (MonoDelegateTrampoline func);
 
 gpointer
-mono_lookup_dynamic_token (MonoImage *image, guint32 token, MonoGenericContext *context);
+mono_lookup_dynamic_token (MonoImage *image, guint32 token, MonoGenericContext *context, MonoError *error);
 
 gpointer
-mono_lookup_dynamic_token_class (MonoImage *image, guint32 token, gboolean check_token, MonoClass **handle_class, MonoGenericContext *context);
-
-void
-mono_install_lookup_dynamic_token (MonoLookupDynamicToken func);
+mono_lookup_dynamic_token_class (MonoImage *image, guint32 token, gboolean check_token, MonoClass **handle_class, MonoGenericContext *context, MonoError *error);
 
 gpointer
-mono_runtime_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean add_sync_wrapper);
+mono_runtime_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean add_sync_wrapper, MonoError *error);
 
 gpointer
 mono_runtime_create_delegate_trampoline (MonoClass *klass);
@@ -1081,9 +1059,6 @@ mono_metadata_get_inflated_signature (MonoMethodSignature *sig, MonoGenericConte
 MonoType*
 mono_class_inflate_generic_type_with_mempool (MonoImage *image, MonoType *type, MonoGenericContext *context, MonoError *error);
 
-MonoClass*
-mono_class_inflate_generic_class (MonoClass *gklass, MonoGenericContext *context);
-
 MonoType*
 mono_class_inflate_generic_type_checked (MonoType *type, MonoGenericContext *context, MonoError *error);
 
@@ -1122,7 +1097,6 @@ typedef struct {
 	MonoClass *fieldhandle_class;
 	MonoClass *methodhandle_class;
 	MonoClass *systemtype_class;
-	MonoClass *monotype_class;
 	MonoClass *runtimetype_class;
 	MonoClass *exception_class;
 	MonoClass *threadabortexception_class;
@@ -1146,16 +1120,12 @@ typedef struct {
 	MonoClass *typed_reference_class;
 	MonoClass *argumenthandle_class;
 	MonoClass *monitor_class;
-	MonoClass *runtimesecurityframe_class;
-	MonoClass *executioncontext_class;
-	MonoClass *internals_visible_class;
 	MonoClass *generic_ilist_class;
 	MonoClass *generic_nullable_class;
-	MonoClass *safehandle_class;
 	MonoClass *handleref_class;
 	MonoClass *attribute_class;
 	MonoClass *customattribute_data_class;
-	MonoClass *critical_finalizer_object;
+	MonoClass *critical_finalizer_object; /* MAYBE NULL */
 	MonoClass *generic_ireadonlylist_class;
 	MonoClass *threadpool_wait_callback_class;
 	MonoMethod *threadpool_perform_wait_callback_method;
@@ -1167,7 +1137,7 @@ typedef struct {
 #define mono_object_is_transparent_proxy(object) (FALSE)
 #else
 MonoRemoteClass*
-mono_remote_class (MonoDomain *domain, MonoString *class_name, MonoClass *proxy_class);
+mono_remote_class (MonoDomain *domain, MonoString *class_name, MonoClass *proxy_class, MonoError *error);
 
 void
 mono_install_remoting_trampoline (MonoRemotingTrampoline func);
@@ -1181,6 +1151,9 @@ mono_install_remoting_trampoline (MonoRemotingTrampoline func);
 #define GENERATE_GET_CLASS_WITH_CACHE_DECL(shortname) \
 MonoClass* mono_class_get_##shortname##_class (void);
 
+#define GENERATE_TRY_GET_CLASS_WITH_CACHE_DECL(shortname) \
+MonoClass* mono_class_try_get_##shortname##_class (void);
+
 #define GENERATE_GET_CLASS_WITH_CACHE(shortname,namespace,name) \
 MonoClass*	\
 mono_class_get_##shortname##_class (void)	\
@@ -1188,17 +1161,31 @@ mono_class_get_##shortname##_class (void)	\
 	static MonoClass *tmp_class;	\
 	MonoClass *klass = tmp_class;	\
 	if (!klass) {	\
-		klass = mono_class_from_name (mono_defaults.corlib, #namespace, #name);	\
-		g_assert (klass);	\
+		klass = mono_class_load_from_name (mono_defaults.corlib, #namespace, #name);	\
 		mono_memory_barrier ();	\
 		tmp_class = klass;	\
 	}	\
 	return klass;	\
 }
 
-#define GENERATE_STATIC_GET_CLASS_WITH_CACHE(shortname,namespace,name) \
-static GENERATE_GET_CLASS_WITH_CACHE (shortname,namespace,name)
+#define GENERATE_TRY_GET_CLASS_WITH_CACHE(shortname,namespace,name) \
+MonoClass*	\
+mono_class_try_get_##shortname##_class (void)	\
+{	\
+	static volatile MonoClass *tmp_class;	\
+	static volatile gboolean inited;	\
+	MonoClass *klass = (MonoClass *)tmp_class;	\
+	mono_memory_barrier ();	\
+	if (!inited) {	\
+		klass = mono_class_try_load_from_name (mono_defaults.corlib, #namespace, #name);	\
+		tmp_class = klass;	\
+		mono_memory_barrier ();	\
+		inited = TRUE;	\
+	}	\
+	return klass;	\
+}
 
+GENERATE_TRY_GET_CLASS_WITH_CACHE_DECL (safehandle)
 
 #ifndef DISABLE_COM
 
@@ -1235,32 +1222,6 @@ mono_loader_lock_if_inited (void);
 
 void
 mono_loader_unlock_if_inited (void);
-
-void
-mono_loader_set_error_assembly_load (const char *assembly_name, gboolean ref_only);
-
-void
-mono_loader_set_error_type_load (const char *class_name, const char *assembly_name);
-
-void
-mono_loader_set_error_method_load (const char *class_name, const char *member_name);
-
-void
-mono_loader_set_error_field_load (MonoClass *klass, const char *member_name);
-void
-mono_loader_set_error_bad_image (char *msg);
-
-MonoException *
-mono_loader_error_prepare_exception (MonoLoaderError *error);
-
-MonoLoaderError *
-mono_loader_get_last_error (void);
-
-void
-mono_loader_clear_error    (void);
-
-void
-mono_loader_assert_no_error (void);
 
 void
 mono_reflection_init       (void);
@@ -1412,7 +1373,7 @@ MonoClassField*
 mono_class_get_field_from_name_full (MonoClass *klass, const char *name, MonoType *type);
 
 MonoVTable*
-mono_class_vtable_full (MonoDomain *domain, MonoClass *klass, gboolean raise_on_error);
+mono_class_vtable_full (MonoDomain *domain, MonoClass *klass, MonoError *error);
 
 gboolean
 mono_class_is_assignable_from_slow (MonoClass *target, MonoClass *candidate);
@@ -1475,5 +1436,25 @@ get_image_for_generic_param (MonoGenericParam *param);
 
 char *
 make_generic_name_string (MonoImage *image, int num);
+
+MonoClass *
+mono_class_load_from_name (MonoImage *image, const char* name_space, const char *name) MONO_LLVM_INTERNAL;
+
+MonoClass*
+mono_class_try_load_from_name (MonoImage *image, const char* name_space, const char *name);
+
+static inline guint8
+mono_class_get_failure (MonoClass *klass)
+{
+	g_assert (klass != NULL);
+	return klass->exception_type;
+}
+
+static inline gboolean
+mono_class_has_failure (MonoClass *klass)
+{
+	g_assert (klass != NULL);
+	return mono_class_get_failure (klass) != MONO_EXCEPTION_NONE;
+}
 
 #endif /* __MONO_METADATA_CLASS_INTERNALS_H__ */

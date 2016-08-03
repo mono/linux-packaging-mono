@@ -1,8 +1,6 @@
 thisdir = class
 
-# Note that Mono.Security and System.Security aren't listed.
-# We may have to add those if 'mcs' starts using them.
-basic_SUBDIRS := corlib System System.XML System Mono.Security System.Core 
+basic_SUBDIRS := corlib Mono.Security System System.XML System.Core 
 
 # resgen is corlib specific so we need to wait until corlib is build
 # and build it just a step before first dll needs it
@@ -10,22 +8,23 @@ resgen_dir = ../tools/resgen
 
 build_SUBDIRS :=  \
 	corlib \
+	Mono.Security \
 	System \
 	System.XML \
-	System Mono.Security \
 	Mono.Posix \
-	System.Core
+	System.Core \
+	Mono.Cecil \
+	Mono.Cecil.Mdb
 
 pcl_facade_dirs := Facades
 
 mobile_common_dirs := \
 	corlib	\
+	Mono.Security \
 	System	\
 	System.Core	\
 	System.Security	\
 	System.XML	\
-	Mono.Security	\
-	System	\
 	I18N		\
 	System.ServiceModel.Internals	\
 	SMDiagnostics	\
@@ -86,6 +85,7 @@ monotouch_tv_dirs   := $(monotouch_dirs)
 
 monotouch_runtime_dirs := \
 	corlib \
+	Mono.Security \
 	System \
 	System.Core \
 	System.XML \
@@ -96,13 +96,12 @@ monotouch_tv_runtime_dirs := $(monotouch_runtime_dirs)
 
 xammac_4_5_dirs := \
 	corlib	\
+	Mono.Security \
 	System	\
 	Mono.Posix			\
 	System.Core	\
 	System.Security			\
 	System.XML	\
-	Mono.Security	\
-	System	\
 	I18N		\
 	System.ServiceModel.Internals	\
 	SMDiagnostics	\
@@ -149,12 +148,12 @@ xammac_4_5_dirs := \
 
 net_4_x_dirs := \
 	corlib				\
+	Mono.Security \
 	System				\
 	System.XML			\
 	Mono.CompilerServices.SymbolWriter \
 	Mono.Posix			\
 	System.Core			\
-	Mono.Security			\
 	System.Security			\
 	System.Configuration	\
 	$(resgen_dir)			\
@@ -282,6 +281,12 @@ net_4_x_parallel_dirs := \
 	Microsoft.VisualC		\
 	WebMatrix.Data \
 	monodoc	\
+	System.Deployment \
+	System.Web.Mobile \
+	System.Web.RegularExpressions \
+	System.Workflow.Activities \
+	System.Workflow.ComponentModel \
+	System.Workflow.Runtime \
 	System.Reflection.Context \
 	$(pcl_facade_dirs)
 
@@ -311,13 +316,13 @@ binary_reference_assemblies_SUBDIRS := reference-assemblies
 net_4_x_SUBDIRS := $(net_4_x_dirs) $(xbuild_4_0_dirs)
 net_4_x_PARALLEL_SUBDIRS := $(net_4_x_parallel_dirs) aot-compiler
 xbuild_12_SUBDIRS := $(xbuild_4_0_dirs)
-xbuild_14_SUBDIRS := $(xbuild_4_0_dirs)
+xbuild_14_SUBDIRS := $(xbuild_4_0_dirs) Microsoft.NuGet.Build.Tasks
 
 include ../build/rules.make
 
 SUBDIRS = $(mobile_static_dirs) $(mobile_dynamic_dirs) $(monotouch_dirs) $(monodroid_dirs) $(xammac_dirs) $(net_4_x_dirs) $(net_4_x_parallel_dirs) $(xammac_net_4_5_SUBDIRS)
 
-DIST_ONLY_SUBDIRS = dlr aot-compiler reference-assemblies $(xbuild_4_0_dirs)
+DIST_ONLY_SUBDIRS = dlr aot-compiler reference-assemblies $(xbuild_4_0_dirs) Microsoft.NuGet.Build.Tasks
 
 # No new makefiles for: System.Messaging, System.Web.Mobile,
 # System.ServiceProcess
@@ -345,6 +350,8 @@ DISTFILES = \
 .PHONY: all-local $(STD_TARGETS:=-local)
 all-local $(STD_TARGETS:=-local):
 	@:
+
+all-local-aot:
 
 # Files needed to bootstrap C# compiler
 basic_files = basic.exe mscorlib.dll System.dll System.Xml.dll Mono.Security.dll System.Core.dll System.Security.dll System.Configuration.dll

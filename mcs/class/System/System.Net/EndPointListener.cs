@@ -73,7 +73,8 @@ namespace System.Net {
 			SocketAsyncEventArgs args = new SocketAsyncEventArgs ();
 			args.UserToken = this;
 			args.Completed += OnAccept;
-			sock.AcceptAsync (args);
+			Socket dummy = null;
+			Accept (sock, args, ref dummy);
 			prefixes = new Hashtable ();
 			unregistered = new Dictionary<HttpConnection, HttpConnection> ();
 		}
@@ -82,28 +83,37 @@ namespace System.Net {
 			get { return listener; }
 		}
 
-		static void OnAccept (object sender, EventArgs e)
-		{
-			SocketAsyncEventArgs args = (SocketAsyncEventArgs) e;
-			EndPointListener epl = (EndPointListener) args.UserToken;
-			Socket accepted = null;
-			if (args.SocketError == SocketError.Success) {
-				accepted = args.AcceptSocket;
-				args.AcceptSocket = null;
-			}
-
+		static void Accept (Socket socket, SocketAsyncEventArgs e, ref Socket accepted) {
+			e.AcceptSocket = null;
+			bool asyn;
 			try {
-				if (epl.sock != null)
-					epl.sock.AcceptAsync (args);
+				asyn = socket.AcceptAsync(e);
 			} catch {
 				if (accepted != null) {
 					try {
 						accepted.Close ();
-					} catch {}
+					} catch {
+					}
 					accepted = null;
 				}
-			} 
+				return;
+			}
+			if (!asyn) {
+				ProcessAccept(e);
+			}
+		}
 
+
+		static void ProcessAccept (SocketAsyncEventArgs args) 
+		{
+			Socket accepted = null;
+			if (args.SocketError == SocketError.Success)
+				accepted = args.AcceptSocket;
+
+			EndPointListener epl = (EndPointListener) args.UserToken;
+
+
+			Accept (epl.sock, args, ref accepted);
 			if (accepted == null)
 				return;
 
@@ -118,7 +128,12 @@ namespace System.Net {
 			conn.BeginReadRequest ();
 		}
 
-		internal void RemoveConnection (HttpConnection conn)
+		static void OnAccept (object sender, SocketAsyncEventArgs e) 
+		{
+			ProcessAccept (e);
+		}
+
+		internal void RemoveConnection (HttpConnection conn) 
 		{
 			lock (unregistered) {
 				unregistered.Remove (conn);

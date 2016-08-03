@@ -3,18 +3,7 @@
  *
  * Copyright (C) 2014 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include "config.h"
@@ -34,8 +23,11 @@
 #include "metadata/runtime.h"
 #include "metadata/sgen-bridge-internals.h"
 #include "metadata/gc-internals.h"
+#include "metadata/handle.h"
 #include "utils/mono-memory-model.h"
 #include "utils/mono-logger-internals.h"
+#include "utils/mono-threads-coop.h"
+#include "sgen/sgen-thread-pool.h"
 
 #ifdef HEAVY_STATISTICS
 static guint64 stat_wbarrier_set_arrayref = 0;
@@ -533,17 +525,19 @@ object_in_domain_predicate (MonoObject *obj, void *user_data)
  * @out_array: output array
  * @out_size: size of output array
  *
- * Store inside @out_array up to @out_size objects that belong to the unloading
- * appdomain @domain. Returns the number of stored items. Can be called repeteadly
- * until it returns 0.
- * The items are removed from the finalizer data structure, so the caller is supposed
- * to finalize them.
- * @out_array should be on the stack to allow the GC to know the objects are still alive.
+ * Enqueue for finalization all objects that belong to the unloading appdomain @domain
+ * @suspend is used for early termination of the enqueuing process.
  */
-int
-mono_gc_finalizers_for_domain (MonoDomain *domain, MonoObject **out_array, int out_size)
+void
+mono_gc_finalize_domain (MonoDomain *domain)
 {
-	return sgen_gather_finalizers_if (object_in_domain_predicate, domain, out_array, out_size);
+	sgen_finalize_if (object_in_domain_predicate, domain);
+}
+
+void
+mono_gc_suspend_finalizers (void)
+{
+	sgen_set_suspend_finalizers ();
 }
 
 /*
@@ -849,7 +843,7 @@ mono_gc_clear_domain (MonoDomain * domain)
 	sgen_stop_world (0);
 
 	if (sgen_concurrent_collection_in_progress ())
-		sgen_perform_collection (0, GENERATION_OLD, "clear domain", TRUE);
+		sgen_perform_collection (0, GENERATION_OLD, "clear domain", TRUE, FALSE);
 	SGEN_ASSERT (0, !sgen_concurrent_collection_in_progress (), "We just ordered a synchronous collection.  Why are we collecting concurrently?");
 
 	major_collector.finish_sweeping ();
@@ -910,7 +904,7 @@ mono_gc_clear_domain (MonoDomain * domain)
 		sgen_object_layout_dump (stdout);
 	}
 
-	sgen_restart_world (0, NULL);
+	sgen_restart_world (0);
 
 	binary_protocol_domain_unload_end (domain);
 	binary_protocol_flush_buffers (FALSE);
@@ -935,8 +929,10 @@ mono_gc_alloc_obj (MonoVTable *vtable, size_t size)
 {
 	MonoObject *obj = sgen_alloc_obj (vtable, size);
 
-	if (G_UNLIKELY (alloc_events))
-		mono_profiler_allocation (obj);
+	if (G_UNLIKELY (alloc_events)) {
+		if (obj)
+			mono_profiler_allocation (obj);
+	}
 
 	return obj;
 }
@@ -946,22 +942,23 @@ mono_gc_alloc_pinned_obj (MonoVTable *vtable, size_t size)
 {
 	MonoObject *obj = sgen_alloc_obj_pinned (vtable, size);
 
-	if (G_UNLIKELY (alloc_events))
-		mono_profiler_allocation (obj);
+	if (G_UNLIKELY (alloc_events)) {
+		if (obj)
+			mono_profiler_allocation (obj);
+	}
 
 	return obj;
 }
 
 void*
-mono_gc_alloc_mature (MonoVTable *vtable)
+mono_gc_alloc_mature (MonoVTable *vtable, size_t size)
 {
-	MonoObject *obj = sgen_alloc_obj_mature (vtable, vtable->klass->instance_size);
+	MonoObject *obj = sgen_alloc_obj_mature (vtable, size);
 
-	if (obj && G_UNLIKELY (obj->vtable->klass->has_finalize))
-		mono_object_register_finalizer (obj);
-
-	if (G_UNLIKELY (alloc_events))
-		mono_profiler_allocation (obj);
+	if (G_UNLIKELY (alloc_events)) {
+		if (obj)
+			mono_profiler_allocation (obj);
+	}
 
 	return obj;
 }
@@ -999,13 +996,22 @@ static gboolean use_managed_allocator = TRUE;
 
 #ifdef HAVE_KW_THREAD
 
-#define EMIT_TLS_ACCESS_NEXT_ADDR(mb)	do {	\
+#define EMIT_TLS_ACCESS_VAR(_mb, _var) /* nothing to do */
+
+#define EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR(mb, _var) \
+	do { \
+		mono_mb_emit_byte ((mb), MONO_CUSTOM_PREFIX); \
+		mono_mb_emit_byte ((mb), CEE_MONO_TLS); \
+		mono_mb_emit_i4 ((mb), TLS_KEY_SGEN_IN_CRITICAL_REGION_ADDR); \
+	} while (0)
+
+#define EMIT_TLS_ACCESS_NEXT_ADDR(mb, _var)	do {	\
 	mono_mb_emit_byte ((mb), MONO_CUSTOM_PREFIX);	\
 	mono_mb_emit_byte ((mb), CEE_MONO_TLS);		\
 	mono_mb_emit_i4 ((mb), TLS_KEY_SGEN_TLAB_NEXT_ADDR);		\
 	} while (0)
 
-#define EMIT_TLS_ACCESS_TEMP_END(mb)	do {	\
+#define EMIT_TLS_ACCESS_TEMP_END(mb, _var)	do {	\
 	mono_mb_emit_byte ((mb), MONO_CUSTOM_PREFIX);	\
 	mono_mb_emit_byte ((mb), CEE_MONO_TLS);		\
 	mono_mb_emit_i4 ((mb), TLS_KEY_SGEN_TLAB_TEMP_END);		\
@@ -1014,27 +1020,43 @@ static gboolean use_managed_allocator = TRUE;
 #else
 
 #if defined(TARGET_OSX) || defined(TARGET_WIN32) || defined(TARGET_ANDROID) || defined(TARGET_IOS)
-#define EMIT_TLS_ACCESS_NEXT_ADDR(mb)	do {	\
-	mono_mb_emit_byte ((mb), MONO_CUSTOM_PREFIX);	\
-	mono_mb_emit_byte ((mb), CEE_MONO_TLS);		\
-	mono_mb_emit_i4 ((mb), TLS_KEY_SGEN_THREAD_INFO);	\
+
+// Cache the SgenThreadInfo pointer in a local 'var'.
+#define EMIT_TLS_ACCESS_VAR(mb, var) \
+	do { \
+		var = mono_mb_add_local ((mb), &mono_defaults.int_class->byval_arg); \
+		mono_mb_emit_byte ((mb), MONO_CUSTOM_PREFIX); \
+		mono_mb_emit_byte ((mb), CEE_MONO_TLS); \
+		mono_mb_emit_i4 ((mb), TLS_KEY_SGEN_THREAD_INFO); \
+		mono_mb_emit_stloc ((mb), (var)); \
+	} while (0)
+
+#define EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR(mb, var) \
+	do { \
+		mono_mb_emit_ldloc ((mb), (var)); \
+		mono_mb_emit_icon ((mb), MONO_STRUCT_OFFSET (SgenClientThreadInfo, in_critical_region)); \
+		mono_mb_emit_byte ((mb), CEE_ADD); \
+	} while (0)
+
+#define EMIT_TLS_ACCESS_NEXT_ADDR(mb, var)	do {	\
+	mono_mb_emit_ldloc ((mb), (var));		\
 	mono_mb_emit_icon ((mb), MONO_STRUCT_OFFSET (SgenThreadInfo, tlab_next_addr));	\
 	mono_mb_emit_byte ((mb), CEE_ADD);		\
 	mono_mb_emit_byte ((mb), CEE_LDIND_I);		\
 	} while (0)
 
-#define EMIT_TLS_ACCESS_TEMP_END(mb)	do {	\
-	mono_mb_emit_byte ((mb), MONO_CUSTOM_PREFIX);	\
-	mono_mb_emit_byte ((mb), CEE_MONO_TLS);		\
-	mono_mb_emit_i4 ((mb), TLS_KEY_SGEN_THREAD_INFO);	\
+#define EMIT_TLS_ACCESS_TEMP_END(mb, var)	do {	\
+	mono_mb_emit_ldloc ((mb), (var));		\
 	mono_mb_emit_icon ((mb), MONO_STRUCT_OFFSET (SgenThreadInfo, tlab_temp_end));	\
 	mono_mb_emit_byte ((mb), CEE_ADD);		\
 	mono_mb_emit_byte ((mb), CEE_LDIND_I);		\
 	} while (0)
 
 #else
-#define EMIT_TLS_ACCESS_NEXT_ADDR(mb)	do { g_error ("sgen is not supported when using --with-tls=pthread.\n"); } while (0)
-#define EMIT_TLS_ACCESS_TEMP_END(mb)	do { g_error ("sgen is not supported when using --with-tls=pthread.\n"); } while (0)
+#define EMIT_TLS_ACCESS_VAR(mb, _var)	do { g_error ("sgen is not supported when using --with-tls=pthread.\n"); } while (0)
+#define EMIT_TLS_ACCESS_NEXT_ADDR(mb, _var)	do { g_error ("sgen is not supported when using --with-tls=pthread.\n"); } while (0)
+#define EMIT_TLS_ACCESS_TEMP_END(mb, _var)	do { g_error ("sgen is not supported when using --with-tls=pthread.\n"); } while (0)
+#define EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR(mb, _var)	do { g_error ("sgen is not supported when using --with-tls=pthread.\n"); } while (0)
 #endif
 
 #endif
@@ -1048,9 +1070,10 @@ static gboolean use_managed_allocator = TRUE;
  * that they are executed atomically via the restart mechanism.
  */
 static MonoMethod*
-create_allocator (int atype, gboolean slowpath)
+create_allocator (int atype, ManagedAllocatorVariant variant)
 {
-	int p_var, size_var;
+	int p_var, size_var, thread_var G_GNUC_UNUSED;
+	gboolean slowpath = variant == MANAGED_ALLOCATOR_SLOW_PATH;
 	guint32 slowpath_branch, max_size_branch;
 	MonoMethodBuilder *mb;
 	MonoMethod *res;
@@ -1104,16 +1127,16 @@ create_allocator (int atype, gboolean slowpath)
 		case ATYPE_NORMAL:
 		case ATYPE_SMALL:
 			mono_mb_emit_ldarg (mb, 0);
-			mono_mb_emit_icall (mb, mono_object_new_specific);
+			mono_mb_emit_icall (mb, ves_icall_object_new_specific);
 			break;
 		case ATYPE_VECTOR:
 			mono_mb_emit_ldarg (mb, 0);
 			mono_mb_emit_ldarg (mb, 1);
-			mono_mb_emit_icall (mb, mono_array_new_specific);
+			mono_mb_emit_icall (mb, ves_icall_array_new_specific);
 			break;
 		case ATYPE_STRING:
 			mono_mb_emit_ldarg (mb, 1);
-			mono_mb_emit_icall (mb, mono_string_alloc);
+			mono_mb_emit_icall (mb, ves_icall_string_alloc);
 			break;
 		default:
 			g_assert_not_reached ();
@@ -1121,6 +1144,16 @@ create_allocator (int atype, gboolean slowpath)
 
 		goto done;
 	}
+
+	EMIT_TLS_ACCESS_VAR (mb, thread_var);
+
+#ifdef MANAGED_ALLOCATOR_CAN_USE_CRITICAL_REGION
+	EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR (mb, thread_var);
+	mono_mb_emit_byte (mb, CEE_LDC_I4_1);
+	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (mb, CEE_MONO_ATOMIC_STORE_I4);
+	mono_mb_emit_i4 (mb, MONO_MEMORY_BARRIER_NONE);
+#endif
 
 	size_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
 	if (atype == ATYPE_SMALL) {
@@ -1194,14 +1227,12 @@ create_allocator (int atype, gboolean slowpath)
 		/* catch */
 		clause->flags = MONO_EXCEPTION_CLAUSE_NONE;
 		clause->try_len = mono_mb_get_pos (mb) - clause->try_offset;
-		clause->data.catch_class = mono_class_from_name (mono_defaults.corlib,
+		clause->data.catch_class = mono_class_load_from_name (mono_defaults.corlib,
 				"System", "OverflowException");
-		g_assert (clause->data.catch_class);
 		clause->handler_offset = mono_mb_get_label (mb);
 
-		oom_exc_class = mono_class_from_name (mono_defaults.corlib,
+		oom_exc_class = mono_class_load_from_name (mono_defaults.corlib,
 				"System", "OutOfMemoryException");
-		g_assert (oom_exc_class);
 		ctor = mono_class_get_method_from_name (oom_exc_class, ".ctor", 0);
 		g_assert (ctor);
 
@@ -1250,16 +1281,14 @@ create_allocator (int atype, gboolean slowpath)
 		g_assert_not_reached ();
 	}
 
-	if (atype != ATYPE_SMALL) {
-		/* size += ALLOC_ALIGN - 1; */
-		mono_mb_emit_ldloc (mb, size_var);
-		mono_mb_emit_icon (mb, SGEN_ALLOC_ALIGN - 1);
-		mono_mb_emit_byte (mb, CEE_ADD);
-		/* size &= ~(ALLOC_ALIGN - 1); */
-		mono_mb_emit_icon (mb, ~(SGEN_ALLOC_ALIGN - 1));
-		mono_mb_emit_byte (mb, CEE_AND);
-		mono_mb_emit_stloc (mb, size_var);
-	}
+	/* size += ALLOC_ALIGN - 1; */
+	mono_mb_emit_ldloc (mb, size_var);
+	mono_mb_emit_icon (mb, SGEN_ALLOC_ALIGN - 1);
+	mono_mb_emit_byte (mb, CEE_ADD);
+	/* size &= ~(ALLOC_ALIGN - 1); */
+	mono_mb_emit_icon (mb, ~(SGEN_ALLOC_ALIGN - 1));
+	mono_mb_emit_byte (mb, CEE_AND);
+	mono_mb_emit_stloc (mb, size_var);
 
 	/* if (size > MAX_SMALL_OBJ_SIZE) goto slowpath */
 	if (atype != ATYPE_SMALL) {
@@ -1275,7 +1304,7 @@ create_allocator (int atype, gboolean slowpath)
 
 	/* tlab_next_addr (local) = tlab_next_addr (TLS var) */
 	tlab_next_addr_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
-	EMIT_TLS_ACCESS_NEXT_ADDR (mb);
+	EMIT_TLS_ACCESS_NEXT_ADDR (mb, thread_var);
 	mono_mb_emit_stloc (mb, tlab_next_addr_var);
 
 	/* p = (void**)tlab_next; */
@@ -1294,7 +1323,7 @@ create_allocator (int atype, gboolean slowpath)
 
 	/* if (G_LIKELY (new_next < tlab_temp_end)) */
 	mono_mb_emit_ldloc (mb, new_next_var);
-	EMIT_TLS_ACCESS_TEMP_END (mb);
+	EMIT_TLS_ACCESS_TEMP_END (mb, thread_var);
 	slowpath_branch = mono_mb_emit_short_branch (mb, MONO_CEE_BLT_UN_S);
 
 	/* Slowpath */
@@ -1303,6 +1332,18 @@ create_allocator (int atype, gboolean slowpath)
 
 	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
 	mono_mb_emit_byte (mb, CEE_MONO_NOT_TAKEN);
+	/*
+	 * We are no longer in a critical section. We need to do this before calling
+	 * to unmanaged land in order to avoid stw deadlocks since unmanaged code
+	 * might take locks.
+	 */
+#ifdef MANAGED_ALLOCATOR_CAN_USE_CRITICAL_REGION
+	EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR (mb, thread_var);
+	mono_mb_emit_byte (mb, CEE_LDC_I4_0);
+	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (mb, CEE_MONO_ATOMIC_STORE_I4);
+	mono_mb_emit_i4 (mb, MONO_MEMORY_BARRIER_NONE);
+#endif
 
 	/* FIXME: mono_gc_alloc_obj takes a 'size_t' as an argument, not an int32 */
 	mono_mb_emit_ldarg (mb, 0);
@@ -1330,11 +1371,6 @@ create_allocator (int atype, gboolean slowpath)
 	mono_mb_emit_ldloc (mb, new_next_var);
 	mono_mb_emit_byte (mb, CEE_STIND_I);
 
-	/*The tlab store must be visible before the the vtable store. This could be replaced with a DDS but doing it with IL would be tricky. */
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_MEMORY_BARRIER);
-	mono_mb_emit_i4 (mb, MONO_MEMORY_BARRIER_REL);
-
 	/* *p = vtable; */
 	mono_mb_emit_ldloc (mb, p_var);
 	mono_mb_emit_ldarg (mb, 0);
@@ -1358,21 +1394,20 @@ create_allocator (int atype, gboolean slowpath)
 		mono_mb_emit_byte (mb, MONO_CEE_ADD);
 		mono_mb_emit_ldarg (mb, 1);
 		mono_mb_emit_byte (mb, MONO_CEE_STIND_I4);
-		/* s->chars [len] = 0; */
-		mono_mb_emit_ldloc (mb, p_var);
-		mono_mb_emit_ldloc (mb, size_var);
-		mono_mb_emit_icon (mb, 2);
-		mono_mb_emit_byte (mb, MONO_CEE_SUB);
-		mono_mb_emit_byte (mb, MONO_CEE_ADD);
-		mono_mb_emit_icon (mb, 0);
-		mono_mb_emit_byte (mb, MONO_CEE_STIND_I2);
 	}
 
+#ifdef MANAGED_ALLOCATOR_CAN_USE_CRITICAL_REGION
+	EMIT_TLS_ACCESS_IN_CRITICAL_REGION_ADDR (mb, thread_var);
+	mono_mb_emit_byte (mb, CEE_LDC_I4_0);
+	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (mb, CEE_MONO_ATOMIC_STORE_I4);
+#else
+	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (mb, CEE_MONO_MEMORY_BARRIER);
+#endif
 	/*
 	We must make sure both vtable and max_length are globaly visible before returning to managed land.
 	*/
-	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
-	mono_mb_emit_byte (mb, CEE_MONO_MEMORY_BARRIER);
 	mono_mb_emit_i4 (mb, MONO_MEMORY_BARRIER_REL);
 
 	/* return p */
@@ -1386,11 +1421,12 @@ create_allocator (int atype, gboolean slowpath)
 	info->d.alloc.gc_name = "sgen";
 	info->d.alloc.alloc_type = atype;
 
+#ifndef DISABLE_JIT
+	mb->init_locals = FALSE;
+#endif
+
 	res = mono_mb_create (mb, csig, 8, info);
 	mono_mb_free (mb);
-#ifndef DISABLE_JIT
-	mono_method_get_header (res)->init_locals = FALSE;
-#endif
 
 
 	return res;
@@ -1400,10 +1436,7 @@ create_allocator (int atype, gboolean slowpath)
 int
 mono_gc_get_aligned_size_for_allocator (int size)
 {
-	int aligned_size = size;
-	aligned_size += SGEN_ALLOC_ALIGN - 1;
-	aligned_size &= ~(SGEN_ALLOC_ALIGN - 1);
-	return aligned_size;
+	return SGEN_ALIGN_UP (size);
 }
 
 /*
@@ -1423,17 +1456,19 @@ mono_gc_get_managed_allocator (MonoClass *klass, gboolean for_box, gboolean know
 		return NULL;
 	if (known_instance_size && ALIGN_TO (klass->instance_size, SGEN_ALLOC_ALIGN) >= SGEN_MAX_SMALL_OBJ_SIZE)
 		return NULL;
-	if (mono_class_has_finalizer (klass) || mono_class_is_marshalbyref (klass) || (mono_profiler_get_events () & MONO_PROFILE_ALLOCATIONS))
+	if (mono_class_has_finalizer (klass) || mono_class_is_marshalbyref (klass))
 		return NULL;
 	if (klass->rank)
 		return NULL;
+	if (mono_profiler_get_events () & MONO_PROFILE_ALLOCATIONS)
+		return NULL;
 	if (klass->byval_arg.type == MONO_TYPE_STRING)
-		return mono_gc_get_managed_allocator_by_type (ATYPE_STRING, FALSE);
+		return mono_gc_get_managed_allocator_by_type (ATYPE_STRING, MANAGED_ALLOCATOR_REGULAR);
 	/* Generic classes have dynamic field and can go above MAX_SMALL_OBJ_SIZE. */
 	if (known_instance_size)
-		return mono_gc_get_managed_allocator_by_type (ATYPE_SMALL, FALSE);
+		return mono_gc_get_managed_allocator_by_type (ATYPE_SMALL, MANAGED_ALLOCATOR_REGULAR);
 	else
-		return mono_gc_get_managed_allocator_by_type (ATYPE_NORMAL, FALSE);
+		return mono_gc_get_managed_allocator_by_type (ATYPE_NORMAL, MANAGED_ALLOCATOR_REGULAR);
 #else
 	return NULL;
 #endif
@@ -1453,7 +1488,7 @@ mono_gc_get_managed_array_allocator (MonoClass *klass)
 		return NULL;
 	g_assert (!mono_class_has_finalizer (klass) && !mono_class_is_marshalbyref (klass));
 
-	return mono_gc_get_managed_allocator_by_type (ATYPE_VECTOR, FALSE);
+	return mono_gc_get_managed_allocator_by_type (ATYPE_VECTOR, MANAGED_ALLOCATOR_REGULAR);
 #else
 	return NULL;
 #endif
@@ -1466,11 +1501,11 @@ sgen_set_use_managed_allocator (gboolean flag)
 }
 
 MonoMethod*
-mono_gc_get_managed_allocator_by_type (int atype, gboolean slowpath)
+mono_gc_get_managed_allocator_by_type (int atype, ManagedAllocatorVariant variant)
 {
 #ifdef MANAGED_ALLOCATION
 	MonoMethod *res;
-	MonoMethod **cache = slowpath ? slowpath_alloc_method_cache : alloc_method_cache;
+	MonoMethod **cache;
 
 	if (!use_managed_allocator)
 		return NULL;
@@ -1478,11 +1513,17 @@ mono_gc_get_managed_allocator_by_type (int atype, gboolean slowpath)
 	if (!mono_runtime_has_tls_get ())
 		return NULL;
 
+	switch (variant) {
+	case MANAGED_ALLOCATOR_REGULAR: cache = alloc_method_cache; break;
+	case MANAGED_ALLOCATOR_SLOW_PATH: cache = slowpath_alloc_method_cache; break;
+	default: g_assert_not_reached (); break;
+	}
+
 	res = cache [atype];
 	if (res)
 		return res;
 
-	res = create_allocator (atype, slowpath);
+	res = create_allocator (atype, variant);
 	LOCK_GC;
 	if (cache [atype]) {
 		mono_free_method (res);
@@ -1591,7 +1632,7 @@ find_next_card (guint8 *card_data, guint8 *end)
 #define ARRAY_OBJ_INDEX(ptr,array,elem_size) (((char*)(ptr) - ((char*)(array) + G_STRUCT_OFFSET (MonoArray, vector))) / (elem_size))
 
 gboolean
-sgen_client_cardtable_scan_object (GCObject *obj, mword block_obj_size, guint8 *cards, gboolean mod_union, ScanCopyContext ctx)
+sgen_client_cardtable_scan_object (GCObject *obj, mword block_obj_size, guint8 *cards, ScanCopyContext ctx)
 {
 	MonoVTable *vt = SGEN_LOAD_VTABLE (obj);
 	MonoClass *klass = vt->klass;
@@ -1671,20 +1712,11 @@ LOOP_HEAD:
 				for (; elem < card_end; elem += elem_size)
 					scan_vtype_func (obj, elem, desc, ctx.queue BINARY_PROTOCOL_ARG (elem_size));
 			} else {
-				CopyOrMarkObjectFunc copy_func = ctx.ops->copy_or_mark_object;
+				ScanPtrFieldFunc scan_ptr_field_func = ctx.ops->scan_ptr_field;
 
 				HEAVY_STAT (++los_array_cards);
-				for (; elem < card_end; elem += SIZEOF_VOID_P) {
-					GCObject *new_;
-					gpointer old = *(gpointer*)elem;
-					if ((mod_union && old) || G_UNLIKELY (sgen_ptr_in_nursery (old))) {
-						HEAVY_STAT (++los_array_remsets);
-						copy_func ((GCObject**)elem, ctx.queue);
-						new_ = *(GCObject **)elem;
-						if (G_UNLIKELY (sgen_ptr_in_nursery (new_)))
-							sgen_add_to_global_remset (elem, new_);
-					}
-				}
+				for (; elem < card_end; elem += SIZEOF_VOID_P)
+					scan_ptr_field_func (obj, (GCObject**)elem, ctx.queue);
 			}
 
 			binary_protocol_card_scan (first_elem, elem - first_elem);
@@ -1735,7 +1767,7 @@ mono_gc_alloc_vector (MonoVTable *vtable, size_t size, uintptr_t max_length)
 	arr = (MonoArray*)sgen_alloc_obj_nolock (vtable, size);
 	if (G_UNLIKELY (!arr)) {
 		UNLOCK_GC;
-		return mono_gc_out_of_memory (size);
+		return NULL;
 	}
 
 	arr->max_length = (mono_array_size_t)max_length;
@@ -1780,7 +1812,7 @@ mono_gc_alloc_array (MonoVTable *vtable, size_t size, uintptr_t max_length, uint
 	arr = (MonoArray*)sgen_alloc_obj_nolock (vtable, size);
 	if (G_UNLIKELY (!arr)) {
 		UNLOCK_GC;
-		return mono_gc_out_of_memory (size);
+		return NULL;
 	}
 
 	arr->max_length = (mono_array_size_t)max_length;
@@ -1824,7 +1856,7 @@ mono_gc_alloc_string (MonoVTable *vtable, size_t size, gint32 len)
 	str = (MonoString*)sgen_alloc_obj_nolock (vtable, size);
 	if (G_UNLIKELY (!str)) {
 		UNLOCK_GC;
-		return mono_gc_out_of_memory (size);
+		return NULL;
 	}
 
 	str->length = len;
@@ -2212,11 +2244,7 @@ sgen_client_thread_register (SgenThreadInfo* info, void *stack_bottom_fallback)
 		info->client_info.stack_end = (char*)stack_bottom;
 	}
 
-#ifdef USE_MONO_CTX
 	memset (&info->client_info.ctx, 0, sizeof (MonoContext));
-#else
-	memset (&info->client_info.regs, 0, sizeof (info->client_info.regs));
-#endif
 
 	if (mono_gc_get_gc_callbacks ()->thread_attach_func)
 		info->client_info.runtime_data = mono_gc_get_gc_callbacks ()->thread_attach_func ();
@@ -2276,6 +2304,8 @@ thread_in_critical_region (SgenThreadInfo *info)
 static void
 sgen_thread_attach (SgenThreadInfo *info)
 {
+	mono_handle_arena_init ((MonoHandleArena**) &info->client_info.info.handle_arena);
+
 	if (mono_gc_get_gc_callbacks ()->thread_attach_func && !info->client_info.runtime_data)
 		info->client_info.runtime_data = mono_gc_get_gc_callbacks ()->thread_attach_func ();
 }
@@ -2284,13 +2314,15 @@ static void
 sgen_thread_detach (SgenThreadInfo *p)
 {
 	/* If a delegate is passed to native code and invoked on a thread we dont
-	 * know about, the jit will register it with mono_jit_thread_attach, but
+	 * know about, marshal will register it with mono_threads_attach_coop, but
 	 * we have no way of knowing when that thread goes away.  SGen has a TSD
 	 * so we assume that if the domain is still registered, we can detach
 	 * the thread
 	 */
 	if (mono_domain_get ())
 		mono_thread_detach_internal (mono_thread_internal_current ());
+
+	mono_handle_arena_cleanup ((MonoHandleArena**) &p->client_info.info.handle_arena);
 }
 
 gboolean
@@ -2313,6 +2345,7 @@ void
 sgen_client_thread_register_worker (void)
 {
 	mono_thread_info_register_small_id ();
+	mono_native_thread_set_name (mono_native_thread_id_get (), "SGen worker");
 }
 
 /* Variables holding start/end nursery so it won't have to be passed at every call */
@@ -2343,7 +2376,7 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 
 	FOREACH_THREAD (info) {
 		int skip_reason = 0;
-		void *aligned_stack_start = (void*)(mword) ALIGN_TO ((mword)info->client_info.stack_start, SIZEOF_VOID_P);
+		void *aligned_stack_start;
 
 		if (info->client_info.skip) {
 			SGEN_LOG (3, "Skipping dead thread %p, range: %p-%p, size: %zd", info, info->client_info.stack_start, info->client_info.stack_end, (char*)info->client_info.stack_end - (char*)info->client_info.stack_start);
@@ -2354,12 +2387,20 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 		} else if (!mono_thread_info_is_live (info)) {
 			SGEN_LOG (3, "Skipping non-running thread %p, range: %p-%p, size: %zd (state %x)", info, info->client_info.stack_start, info->client_info.stack_end, (char*)info->client_info.stack_end - (char*)info->client_info.stack_start, info->client_info.info.thread_state);
 			skip_reason = 3;
+		} else if (!info->client_info.stack_start) {
+			SGEN_LOG (3, "Skipping starting or detaching thread %p", info);
+			skip_reason = 4;
 		}
 
 		binary_protocol_scan_stack ((gpointer)mono_thread_info_get_tid (info), info->client_info.stack_start, info->client_info.stack_end, skip_reason);
 
 		if (skip_reason)
 			continue;
+
+		g_assert (info->client_info.stack_start);
+		g_assert (info->client_info.stack_end);
+
+		aligned_stack_start = (void*)(mword) ALIGN_TO ((mword)info->client_info.stack_start, SIZEOF_VOID_P);
 
 		g_assert (info->client_info.suspend_done);
 		SGEN_LOG (3, "Scanning thread %p, range: %p-%p, size: %zd, pinned=%zd", info, info->client_info.stack_start, info->client_info.stack_end, (char*)info->client_info.stack_end - (char*)info->client_info.stack_start, sgen_get_pinned_count ());
@@ -2374,13 +2415,9 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 		}
 
 		if (!precise) {
-#ifdef USE_MONO_CTX
 			sgen_conservatively_pin_objects_from ((void**)&info->client_info.ctx, (void**)(&info->client_info.ctx + 1),
 				start_nursery, end_nursery, PIN_TYPE_STACK);
-#else
-			sgen_conservatively_pin_objects_from ((void**)&info->client_info.regs, (void**)&info->client_info.regs + ARCH_NUM_REGS,
-					start_nursery, end_nursery, PIN_TYPE_STACK);
-#endif
+
 			{
 				// This is used on Coop GC for platforms where we cannot get the data for individual registers.
 				// We force a spill of all registers into the stack and pass a chunk of data into sgen.
@@ -2492,7 +2529,11 @@ mono_gc_get_gc_name (void)
 char*
 mono_gc_get_description (void)
 {
+#ifdef HAVE_CONC_GC_AS_DEFAULT
+	return g_strdup ("sgen (concurrent by default)");
+#else
 	return g_strdup ("sgen");
+#endif
 }
 
 void
@@ -2598,7 +2639,7 @@ sgen_client_metadata_for_object (GCObject *obj)
  * @gchandle: a GCHandle's handle.
  * @domain: An application domain.
  *
- * Returns: true if the object wrapped by the @gchandle belongs to the specific @domain.
+ * Returns: TRUE if the object wrapped by the @gchandle belongs to the specific @domain.
  */
 gboolean
 mono_gchandle_is_in_domain (guint32 gchandle, MonoDomain *domain)
@@ -2702,12 +2743,6 @@ mono_gc_register_altstack (gpointer stack, gint32 stack_size, gpointer altstack,
 	// FIXME:
 }
 
-void
-sgen_client_out_of_memory (size_t size)
-{
-	mono_gc_out_of_memory (size);
-}
-
 guint8*
 mono_gc_get_card_table (int *shift_bits, gpointer *mask)
 {
@@ -2737,7 +2772,7 @@ sgen_client_degraded_allocation (size_t size)
 	static int last_major_gc_warned = -1;
 	static int num_degraded = 0;
 
-	if (last_major_gc_warned < gc_stats.major_gc_count) {
+	if (last_major_gc_warned < (int)gc_stats.major_gc_count) {
 		++num_degraded;
 		if (num_degraded == 1 || num_degraded == 3)
 			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "Warning: Degraded allocation.  Consider increasing nursery-size if the warning persists.");
@@ -2745,37 +2780,6 @@ sgen_client_degraded_allocation (size_t size)
 			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "Warning: Repeated degraded allocation.  Consider increasing nursery-size.");
 		last_major_gc_warned = gc_stats.major_gc_count;
 	}
-}
-
-void
-sgen_client_log_timing (GGTimingInfo *info, mword last_major_num_sections, mword last_los_memory_usage)
-{
-	SgenMajorCollector *major_collector = sgen_get_major_collector ();
-	mword num_major_sections = major_collector->get_num_major_sections ();
-	char full_timing_buff [1024];
-	full_timing_buff [0] = '\0';
-
-	if (!info->is_overflow)
-	        sprintf (full_timing_buff, "total %.2fms, bridge %.2fms", info->stw_time / 10000.0f, (int)info->bridge_time / 10000.0f);
-	if (info->generation == GENERATION_OLD)
-	        mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR%s: (%s) pause %.2fms, %s major %dK/%dK los %dK/%dK",
-	                info->is_overflow ? "_OVERFLOW" : "",
-	                info->reason ? info->reason : "",
-	                (int)info->total_time / 10000.0f,
-	                full_timing_buff,
-	                major_collector->section_size * num_major_sections / 1024,
-	                major_collector->section_size * last_major_num_sections / 1024,
-	                los_memory_usage / 1024,
-	                last_los_memory_usage / 1024);
-	else
-	        mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MINOR%s: (%s) pause %.2fms, %s promoted %dK major %dK los %dK",
-	        		info->is_overflow ? "_OVERFLOW" : "",
-	                info->reason ? info->reason : "",
-	                (int)info->total_time / 10000.0f,
-	                full_timing_buff,
-	                (num_major_sections - last_major_num_sections) * major_collector->section_size / 1024,
-	                major_collector->section_size * num_major_sections / 1024,
-	                los_memory_usage / 1024);
 }
 
 /*
@@ -2959,9 +2963,14 @@ sgen_client_describe_invalid_pointer (GCObject *ptr)
 	sgen_bridge_describe_pointer (ptr);
 }
 
+static gboolean gc_inited;
+
 void
 mono_gc_base_init (void)
 {
+	if (gc_inited)
+		return;
+
 	mono_counters_init ();
 
 #ifdef HEAVY_STATISTICS
@@ -2984,11 +2993,14 @@ mono_gc_base_init (void)
 	if (mono_tls_key_get_offset (TLS_KEY_SGEN_TLAB_NEXT_ADDR) == -1)
 		sgen_set_use_managed_allocator (FALSE);
 #endif
+
+	gc_inited = TRUE;
 }
 
 void
 mono_gc_base_cleanup (void)
 {
+	sgen_thread_pool_shutdown ();
 }
 
 gboolean

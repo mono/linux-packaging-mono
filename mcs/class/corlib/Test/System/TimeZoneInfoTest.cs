@@ -782,6 +782,17 @@ namespace MonoTests.System
 				var timeZones = (global::System.Collections.ObjectModel.ReadOnlyCollection<TimeZoneInfo>) method.Invoke (null, null);
 				Assert.IsTrue (timeZones.Count > 0, "GetSystemTimeZones should not return an empty collection.");
 			}
+
+#if !MOBILE
+			[Test]
+			public void WindowsRegistryTimezoneWithParentheses ()
+			{
+				var method = (MethodInfo) typeof (TimeZoneInfo).GetMember ("TrimSpecial", MemberTypes.Method, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)[0];
+
+				var name = method.Invoke (null, new object [] { " <--->  Central Standard Time (Mexico)   ||<<>>" });
+				Assert.AreEqual (name, "Central Standard Time (Mexico)", "#1");
+			}
+#endif
 		}
 		
 		[TestFixture]
@@ -912,17 +923,17 @@ namespace MonoTests.System
 					"Canada/Newfoundland",
 					"Europe/Moscow",
 					"Europe/Riga",
-					"N/A", // testing that the test doesn't fail with inexistent TZs
 				};
 				foreach (var tz in subMinuteDSTs) {
-					try {
-						TimeZoneInfo.FindSystemTimeZoneById (tz);
-					} catch (TimeZoneNotFoundException) {
-						// ok;
-					} catch (Exception ex) {
-						Assert.Fail (string.Format ("Failed to load TZ {0}: {1}", tz, ex.ToString ()));
-					}
+					TimeZoneInfo.FindSystemTimeZoneById (tz);
 				}
+			}
+
+			[Test]
+			[ExpectedException (typeof (TimeZoneNotFoundException))]
+			public void InvalidName ()
+			{
+				TimeZoneInfo.FindSystemTimeZoneById ("N/A");
 			}
 		}
 		
@@ -1121,7 +1132,49 @@ namespace MonoTests.System
 				Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset (d));
 				Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset (d.Add (new TimeSpan(0,0,0, 1))));
 			}
-		}
+
+		  [Test]
+		  public void  GetUtcOffset_FromDateTimeOffset ()
+		  {
+			  DateTimeOffset offset;
+
+			  offset = new DateTimeOffset(dst1Start, baseUtcOffset);
+			  Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset(offset.Add(new TimeSpan(0, 0, 0, -1))), "dst1Start_with_baseUtcOffset#before");
+			  Assert.AreEqual(dstUtcOffset, cairo.GetUtcOffset(offset), "dst1Start_with_baseUtcOffset#exact");
+			  Assert.AreEqual(dstUtcOffset, cairo.GetUtcOffset(offset.Add(new TimeSpan(0, 0, 0, 1))), "dst1Start_with_baseUtcOffset#after");
+
+			  offset = new DateTimeOffset(dst1End, dstOffset + baseUtcOffset);
+			  Assert.AreEqual(dstUtcOffset, cairo.GetUtcOffset(offset.Add(new TimeSpan(0, 0, 0, -1))), "dst1End_with_dstOffset+baseUtcOffset#before");
+			  Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset(offset), "dst1End_with_dstOffset+baseUtcOffset#exact");
+			  Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset(offset.Add(new TimeSpan(0, 0, 0, 1))), "dst1End_with_dstOffset+baseUtcOffset#after");
+
+			  offset = new DateTimeOffset(dst2Start, baseUtcOffset);
+			  Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset(offset.Add(new TimeSpan(0, 0, 0, -1))), "dst2Start_with_baseUtcOffset#before");
+			  Assert.AreEqual(dstUtcOffset, cairo.GetUtcOffset(offset), "dst2Start_with_baseUtcOffset#exact");
+			  Assert.AreEqual(dstUtcOffset, cairo.GetUtcOffset(offset.Add(new TimeSpan(0, 0, 0, 1))), "dst2Start_with_baseUtcOffset#after");
+
+			  offset = new DateTimeOffset(dst2End, baseUtcOffset + dstOffset);
+			  Assert.AreEqual(dstUtcOffset, cairo.GetUtcOffset(offset.Add(new TimeSpan(0, 0, 0, -1))), "dst2End_with_dstOffset+baseUtcOffset#before");
+			  Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset(offset), "dst2End_with_dstOffset+baseUtcOffset#exact");
+			  Assert.AreEqual(baseUtcOffset, cairo.GetUtcOffset(offset.Add(new TimeSpan(0, 0, 0, 1))), "dst2End_with_dstOffset+baseUtcOffset#after");
+		  }
+
+			[Test]
+			public void DTS_WithMinimalDate ()
+			{
+				TimeZoneInfo.TransitionTime startTransition, endTransition;
+				startTransition = TimeZoneInfo.TransitionTime.CreateFloatingDateRule (new DateTime (1, 1, 1, 4, 0, 0),
+																				  10, 2, DayOfWeek.Sunday);
+				endTransition = TimeZoneInfo.TransitionTime.CreateFloatingDateRule (new DateTime (1, 1, 1, 3, 0, 0),
+																				3, 2, DayOfWeek.Sunday);
+
+				var ctz = TimeZoneInfo.CreateCustomTimeZone ("test", TimeSpan.FromHours (-5), "display", "sdisplay", "dst", new [] {
+					TimeZoneInfo.AdjustmentRule.CreateAdjustmentRule (DateTime.MinValue, DateTime.MaxValue.Date, TimeSpan.FromHours (-1), startTransition, endTransition) });
+
+				var offset = ctz.GetUtcOffset (DateTime.MinValue);
+				Assert.AreEqual (TimeSpan.FromHours (-5), offset); // TODO: Wrong it should be -6
+			}
+    }
 
 		[TestFixture]
 		public class GetDaylightChanges

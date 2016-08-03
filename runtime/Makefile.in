@@ -85,7 +85,8 @@ target_triplet = @target@
 @INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime
 @INSTALL_MONOTOUCH_WATCH_TRUE@am__append_5 = monotouch_watch monotouch_watch_runtime
 @INSTALL_MONOTOUCH_TV_TRUE@am__append_6 = monotouch_tv monotouch_tv_runtime
-@INSTALL_XAMMAC_TRUE@am__append_7 = xammac xammac_net_4_5
+@INSTALL_MOBILE_STATIC_TRUE@am__append_7 = mobile_static
+@INSTALL_XAMMAC_TRUE@am__append_8 = xammac xammac_net_4_5
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -221,8 +222,6 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPROFILE_CFLAGS = @OPROFILE_CFLAGS@
-OPROFILE_LIBS = @OPROFILE_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -339,11 +338,12 @@ symlinks = etc/mono/1.0/machine.config etc/mono/2.0/machine.config \
 	etc/mono/2.0/Browsers/Compat.browser $(am__append_1)
 SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7)
+	$(am__append_5) $(am__append_6) $(am__append_7) \
+	$(am__append_8)
 @INSTALL_4_x_TRUE@al_profile = net_4_x
 test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
-TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/dmcs $(tmpinst)/bin/al2 $(tmpinst)/bin/al
+TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@cur_dir_cmd = pwd
 @HOST_WIN32_FALSE@cur_dir_cmd = pwd
@@ -621,22 +621,10 @@ $(tmpinst)/bin/mcs: $(tmpinst)/bin/mono Makefile
 	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/build/mcs.exe"'" "$$@"' >> $@ ; \
 	chmod +x $@
 
-$(tmpinst)/bin/dmcs: $(tmpinst)/bin/mono Makefile
-	echo '#! /bin/sh' > $@ ; \
-	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
-	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/build/mcs.exe -sdk:4"'" "$$@"' >> $@ ; \
-	chmod +x $@
-
 $(tmpinst)/bin/ilasm: $(tmpinst)/bin/mono Makefile
 	echo '#! /bin/sh' > $@ ; \
 	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
 	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/ilasm/ilasm.exe"'" "$$@"' >> $@ ; \
-	chmod +x $@
-
-$(tmpinst)/bin/al2: $(tmpinst)/bin/mono Makefile
-	echo '#! /bin/sh' > $@ ; \
-	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
-	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/net_2_0/al.exe"'" "$$@"' >> $@ ; \
 	chmod +x $@
 
 $(tmpinst)/bin/al: $(tmpinst)/bin/mono Makefile

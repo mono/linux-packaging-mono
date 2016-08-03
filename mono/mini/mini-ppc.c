@@ -1681,13 +1681,13 @@ mono_arch_emit_call (MonoCompile *cfg, MonoCallInst *call)
 			if (!t->byref && ((t->type == MONO_TYPE_I8) || (t->type == MONO_TYPE_U8))) {
 				MONO_INST_NEW (cfg, ins, OP_MOVE);
 				ins->dreg = mono_alloc_ireg (cfg);
-				ins->sreg1 = in->dreg + 1;
+				ins->sreg1 = MONO_LVREG_LS (in->dreg);
 				MONO_ADD_INS (cfg->cbb, ins);
 				mono_call_inst_add_outarg_reg (cfg, call, ins->dreg, ainfo->reg + 1, FALSE);
 
 				MONO_INST_NEW (cfg, ins, OP_MOVE);
 				ins->dreg = mono_alloc_ireg (cfg);
-				ins->sreg1 = in->dreg + 2;
+				ins->sreg1 = MONO_LVREG_MS (in->dreg);
 				MONO_ADD_INS (cfg->cbb, ins);
 				mono_call_inst_add_outarg_reg (cfg, call, ins->dreg, ainfo->reg, FALSE);
 			} else
@@ -1910,8 +1910,8 @@ mono_arch_emit_setret (MonoCompile *cfg, MonoMethod *method, MonoInst *val)
 			MonoInst *ins;
 
 			MONO_INST_NEW (cfg, ins, OP_SETLRET);
-			ins->sreg1 = val->dreg + 1;
-			ins->sreg2 = val->dreg + 2;
+			ins->sreg1 = MONO_LVREG_LS (val->dreg);
+			ins->sreg2 = MONO_LVREG_MS (val->dreg);
 			MONO_ADD_INS (cfg->cbb, ins);
 			return;
 		}
@@ -2411,32 +2411,32 @@ mono_arch_decompose_long_opts (MonoCompile *cfg, MonoInst *ins)
 	switch (ins->opcode) {
 	case OP_LADD_OVF:
 		/* ADC sets the condition code */
-		MONO_EMIT_NEW_BIALU (cfg, OP_ADDCC, ins->dreg + 1, ins->sreg1 + 1, ins->sreg2 + 1);
-		MONO_EMIT_NEW_BIALU (cfg, OP_ADD_OVF_CARRY, ins->dreg + 2, ins->sreg1 + 2, ins->sreg2 + 2);
+		MONO_EMIT_NEW_BIALU (cfg, OP_ADDCC, MONO_LVREG_LS (ins->dreg), MONO_LVREG_LS (ins->sreg1), MONO_LVREG_LS (ins->sreg2));
+		MONO_EMIT_NEW_BIALU (cfg, OP_ADD_OVF_CARRY, MONO_LVREG_MS (ins->dreg), MONO_LVREG_MS (ins->sreg1), MONO_LVREG_MS (ins->sreg2));
 		NULLIFY_INS (ins);
 		break;
 	case OP_LADD_OVF_UN:
 		/* ADC sets the condition code */
-		MONO_EMIT_NEW_BIALU (cfg, OP_ADDCC, ins->dreg + 1, ins->sreg1 + 1, ins->sreg2 + 1);
-		MONO_EMIT_NEW_BIALU (cfg, OP_ADD_OVF_UN_CARRY, ins->dreg + 2, ins->sreg1 + 2, ins->sreg2 + 2);
+		MONO_EMIT_NEW_BIALU (cfg, OP_ADDCC, MONO_LVREG_LS (ins->dreg), MONO_LVREG_LS (ins->sreg1), MONO_LVREG_LS (ins->sreg2));
+		MONO_EMIT_NEW_BIALU (cfg, OP_ADD_OVF_UN_CARRY, MONO_LVREG_MS (ins->dreg), MONO_LVREG_MS (ins->sreg1), MONO_LVREG_MS (ins->sreg2));
 		NULLIFY_INS (ins);
 		break;
 	case OP_LSUB_OVF:
 		/* SBB sets the condition code */
-		MONO_EMIT_NEW_BIALU (cfg, OP_SUBCC, ins->dreg + 1, ins->sreg1 + 1, ins->sreg2 + 1);
-		MONO_EMIT_NEW_BIALU (cfg, OP_SUB_OVF_CARRY, ins->dreg + 2, ins->sreg1 + 2, ins->sreg2 + 2);
+		MONO_EMIT_NEW_BIALU (cfg, OP_SUBCC, MONO_LVREG_LS (ins->dreg), MONO_LVREG_LS (ins->sreg1), MONO_LVREG_LS (ins->sreg2));
+		MONO_EMIT_NEW_BIALU (cfg, OP_SUB_OVF_CARRY, MONO_LVREG_MS (ins->dreg), MONO_LVREG_MS (ins->sreg1), MONO_LVREG_MS (ins->sreg2));
 		NULLIFY_INS (ins);
 		break;
 	case OP_LSUB_OVF_UN:
 		/* SBB sets the condition code */
-		MONO_EMIT_NEW_BIALU (cfg, OP_SUBCC, ins->dreg + 1, ins->sreg1 + 1, ins->sreg2 + 1);
-		MONO_EMIT_NEW_BIALU (cfg, OP_SUB_OVF_UN_CARRY, ins->dreg + 2, ins->sreg1 + 2, ins->sreg2 + 2);
+		MONO_EMIT_NEW_BIALU (cfg, OP_SUBCC, MONO_LVREG_LS (ins->dreg), MONO_LVREG_LS (ins->sreg1), MONO_LVREG_LS (ins->sreg2));
+		MONO_EMIT_NEW_BIALU (cfg, OP_SUB_OVF_UN_CARRY, MONO_LVREG_MS (ins->dreg), MONO_LVREG_MS (ins->sreg1), MONO_LVREG_MS (ins->sreg2));
 		NULLIFY_INS (ins);
 		break;
 	case OP_LNEG:
 		/* From gcc generated code */
-		MONO_EMIT_NEW_BIALU_IMM (cfg, OP_PPC_SUBFIC, ins->dreg + 1, ins->sreg1 + 1, 0);
-		MONO_EMIT_NEW_UNALU (cfg, OP_PPC_SUBFZE, ins->dreg + 2, ins->sreg1 + 2);
+		MONO_EMIT_NEW_BIALU_IMM (cfg, OP_PPC_SUBFIC, MONO_LVREG_LS (ins->dreg), MONO_LVREG_LS (ins->sreg1), 0);
+		MONO_EMIT_NEW_UNALU (cfg, OP_PPC_SUBFZE, MONO_LVREG_MS (ins->dreg), MONO_LVREG_MS (ins->sreg1));
 		NULLIFY_INS (ins);
 		break;
 	default:
@@ -2568,6 +2568,8 @@ map_to_reg_reg_op (int op)
 	case OP_STOREI8_MEMBASE_IMM:
 		return OP_STOREI8_MEMBASE_REG;
 	}
+	if (mono_op_imm_to_op (op) == -1)
+		g_error ("mono_op_imm_to_op failed for %s\n", mono_inst_name (op));
 	return mono_op_imm_to_op (op);
 }
 
@@ -4741,17 +4743,20 @@ mono_arch_register_lowlevel_calls (void)
 
 #ifndef DISABLE_JIT
 void
-mono_arch_patch_code (MonoCompile *cfg, MonoMethod *method, MonoDomain *domain, guint8 *code, MonoJumpInfo *ji, gboolean run_cctors)
+mono_arch_patch_code (MonoCompile *cfg, MonoMethod *method, MonoDomain *domain, guint8 *code, MonoJumpInfo *ji, gboolean run_cctors, MonoError *error)
 {
 	MonoJumpInfo *patch_info;
 	gboolean compile_aot = !run_cctors;
+
+	mono_error_init (error);
 
 	for (patch_info = ji; patch_info; patch_info = patch_info->next) {
 		unsigned char *ip = patch_info->ip.i + code;
 		unsigned char *target;
 		gboolean is_fd = FALSE;
 
-		target = mono_resolve_patch_target (method, domain, code, patch_info, run_cctors);
+		target = mono_resolve_patch_target (method, domain, code, patch_info, run_cctors, error);
+		return_if_nok (error);
 
 		if (compile_aot) {
 			switch (patch_info->type) {
@@ -5617,8 +5622,7 @@ mono_arch_emit_exceptions (MonoCompile *cfg)
 				exc_throw_pos [i] = code;
 			}
 
-			exc_class = mono_class_from_name (mono_defaults.corlib, "System", patch_info->data.name);
-			g_assert (exc_class);
+			exc_class = mono_class_load_from_name (mono_defaults.corlib, "System", patch_info->data.name);
 
 			ppc_patch (ip, code);
 			/*mono_add_patch_info (cfg, code - cfg->native_code, MONO_PATCH_INFO_EXC_NAME, patch_info->data.target);*/

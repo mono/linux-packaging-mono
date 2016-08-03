@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PackagingTaskDir Condition="'$(PackagingTaskDir)' == ''">$(MSBuildThisFileDirectory)</PackagingTaskDir>
+    <GenerationDefinitionFile Condition="'$(GenerationDefinitionFile)' == ''">$(MSBuildThisFileDirectory)Generations.json</GenerationDefinitionFile>
+  </PropertyGroup>
+
+  <UsingTask TaskName="ValidatePackageTargetFramework" AssemblyFile="$(PackagingTaskDir)Microsoft.DotNet.Build.Tasks.Packaging.dll"/>
+
+  <!-- Returns the set of files to be included in the nuget package
+       with appropriate metadata.-->
+  <Target Name="GetFilesToPackage"
+          Returns="@(FilesToPackage)">
+    <PropertyGroup>
+      <PackagePath Condition="'$(PackagePath)' == ''">$(TargetPath)</PackagePath>
+      <PackageIncludeDocs Condition="'$(PackageIncludeDocs)' == '' AND '$(IsReferenceAssembly)' == 'true'">true</PackageIncludeDocs>
+      <PackageIncludeDocs Condition="'$(PackageIncludeDocs)' == '' AND '$(DocumentationFile)' != ''">true</PackageIncludeDocs>
+    </PropertyGroup>
+
+    <!-- Find a root directory that is an ancestor of every possible source file, including
+         ones in bin and Tools. Allow configuration, otherwise prefer TFS root. -->
+    <PropertyGroup>
+      <ProjectRoot Condition="'$(ProjectRoot)'==''">$(SourcesRootPath)</ProjectRoot>
+      <ProjectRoot Condition="'$(ProjectRoot)'==''">$(ProjectDir)</ProjectRoot>
+      <ProjectRootLength>$(ProjectRoot.Length)</ProjectRootLength>
+    </PropertyGroup>
+
+    <!-- XmlDocFileRoot should be defined externally since these are currently not
+         part of the corefx repo. -->
+    <!-- This isn't a straight mapping to an algorithm using CultureInfo.
+         There are special cases for en-US and zh-* so we manually list
+         the mapping.-->
+    <ItemGroup>
+      <XmlDocFile Include="$(XmlDocFileRoot)/1028/$(TargetName).xml">
+        <SubFolder>/zh-hant</SubFolder>
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/1031/$(TargetName).xml">
+        <SubFolder>/de</SubFolder>
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/1033/$(TargetName).xml">
+        <SubFolder />
+        <!-- en docs go in root as neutral fall back -->
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/1036/$(TargetName).xml">
+        <SubFolder>/fr</SubFolder>
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/1040/$(TargetName).xml">
+        <SubFolder>/it</SubFolder>
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/1041/$(TargetName).xml">
+        <SubFolder>/ja</SubFolder>
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/1042/$(TargetName).xml">
+        <SubFolder>/ko</SubFolder>
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/1049/$(TargetName).xml">
+        <SubFolder>/ru</SubFolder>
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/2052/$(TargetName).xml">
+        <SubFolder>/zh-hans</SubFolder>
+      </XmlDocFile>
+      <XmlDocFile Include="$(XmlDocFileRoot)/3082/$(TargetName).xml">
+        <SubFolder>/es</SubFolder>
+      </XmlDocFile>
+    </ItemGroup>
+
+    <!-- currently behind a flag to avoid noise in the build -->
+    <Warning Condition="'$(ValidateDocs)' == 'true' AND '$(PackageIncludeDocs)' == 'true' AND !Exists('%(XmlDocFile.Identity)')"
+             Text="Documentation file %(XmlDocFile.Identity) was not found." />
+
+    <!-- remove any missing docs-->
+    <ItemGroup>
+      <XmlDocFile Remove="@(XmlDocFile)" Condition="!Exists('%(XmlDocFile.Identity)')"/>
+    </ItemGroup>
+
+    <!-- Desktop libraries that contain types in classic assemblies need to be included in ref
+         so that the types unify with the classic assemblies from the targeting pack. -->
+    <PropertyGroup>
+      <PackageAsRefAndLib Condition="'$(PackageAsRefAndLib)' == '' AND '$(IsPartialFacadeAssembly)' == 'true' AND $(PackageTargetFramework.StartsWith('net4', StringComparison.OrdinalIgnoreCase))">true</PackageAsRefAndLib>
+
+      <!-- A reference asset is any file contributed from a project that is contributing a reference,
+           not just the file in the ref folder. -->
+      <IsReferenceAsset>false</IsReferenceAsset>
+      <IsReferenceAsset Condition="'$(IsReferenceAssembly)' == 'true' OR '$(PackageAsRefAndLib)' == 'true'">true</IsReferenceAsset>
+    </PropertyGroup>
+
+    <Error Condition="'$(IsReferenceAsset)' == 'true' AND '$(PackageTargetRuntime)' != ''"
+           Text="Reference assemblies should not specify the PackageTargetRuntime property since runtimes cannot effect compile time assets."/>
+
+    <!-- PackageTargetRuntime Defaults -->
+    <PropertyGroup Condition="'$(UsePackageTargetRuntimeDefaults)' == 'true' AND '$(PackageTargetRuntime)' == ''">
+      <PackageTargetRuntime Condition=" '$(TargetsWindows)' == 'true'">win7</PackageTargetRuntime>
+      <PackageTargetRuntime Condition="'$(TargetsUnix)' == 'true'">unix</PackageTargetRuntime>
+    </PropertyGroup>
+
+    <!-- *** determine destination path for assets *** -->
+    <PropertyGroup>
+      <_packageTargetRefLib>lib</_packageTargetRefLib>
+      <_packageTargetRefLib Condition="'$(IsReferenceAssembly)' == 'true'">ref</_packageTargetRefLib>
+
+      <!-- no path or runtime, but framework: lib/{txm}-->
+      <PackageTargetPath Condition="'$(PackageTargetPath)' == '' AND '$(PackageTargetRuntime)' == '' AND '$(PackageTargetFramework)' != ''">$(_packageTargetRefLib)/$(PackageTargetFramework)</PackageTargetPath>
+
+      <!-- no path but runtime and framework: runtimes/{rid}/lib/{txm}-->
+      <PackageTargetPath Condition="'$(PackageTargetPath)' == '' AND '$(PackageTargetFramework)' != '' AND '$(PackageTargetRuntime)' != ''">runtimes/$(PackageTargetRuntime)/lib/$(PackageTargetFramework)</PackageTargetPath>
+    </PropertyGroup>
+
+    <!-- specifying $(PackageTargetPath) overrides defaults and project specific items -->
+    <ItemGroup Condition="'$(PackageTargetPath)' != ''">
+      <!-- remove anything specified by the project-->
+      <PackageDestination Remove="@(PackageDestination)" />
+
+      <!-- only use $(PackageTargetPath) -->
+      <PackageDestination Include="$(PackageTargetPath)">
+        <TargetFramework Condition="'$(PackageTargetFramework)' != ''">$(PackageTargetFramework)</TargetFramework>
+      </PackageDestination>
+      <PackageDestination Condition="'$(PackageAsRefAndLib)' == 'true'" Include="ref/$(PackageTargetFramework)">
+        <TargetFramework>$(PackageTargetFramework)</TargetFramework>
+      </PackageDestination>
+    </ItemGroup>
+
+    <!-- fail if not specified by the project  -->
+    <Error Condition="'@(PackageDestination)' == ''" Text="Error could not determine packaging destination.  Please set either PackageTargetFramework property or PackageDestination item." />
+
+    <!-- *** include assets *** -->
+    <ItemGroup>
+      <!-- Include symbols output -->
+      <SymbolFileToPackage Include="$(PackagePath.Replace('.dll', '.pdb'))" Condition="Exists($(PackagePath.Replace('.dll', '.pdb')))">
+        <IsSymbolFile>true</IsSymbolFile>
+      </SymbolFileToPackage>
+
+      <!-- Include primary output -->
+      <FilesToPackage Include="$(PackagePath);@(SymbolFileToPackage)">
+        <AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
+        <TargetFramework>%(PackageDestination.TargetFramework)</TargetFramework>
+        <TargetPath>%(PackageDestination.Identity)</TargetPath>
+        <IsReferenceAsset>$(IsReferenceAsset)</IsReferenceAsset>
+      </FilesToPackage>
+
+      <!-- Include doc output if it isn't centrally authored -->
+      <FilesToPackage Include="$(DocumentationFile)" Condition="'$(DocumentationFile)' != '' AND '@(XmlDocFile)' == '' AND '$(PackageIncludeDocs)' == 'true'">
+        <TargetPath>%(PackageDestination.Identity)</TargetPath>
+        <IsReferenceAsset>$(IsReferenceAsset)</IsReferenceAsset>
+        <!-- intentionally omit TargetFramework: no dependencies for docs -->
+      </FilesToPackage>
+
+      <!-- Include pre-authored docs if available and required -->
+      <FilesToPackage Include="@(XmlDocFile)" Condition="'$(PackageIncludeDocs)' == 'true'">
+        <TargetPath>%(PackageDestination.Identity)</TargetPath>
+        <IsReferenceAsset>$(IsReferenceAsset)</IsReferenceAsset>
+        <!-- intentionally omit TargetFramework: no dependencies for docs -->
+      </FilesToPackage>
+      <FilesToPackage Condition="'%(FilesToPackage.SubFolder)' != ''">
+        <TargetPath>%(TargetPath)%(FilesToPackage.SubFolder)</TargetPath>
+      </FilesToPackage>
+
+      <!-- Include source files for symbol packages. -->
+      <FilesToPackage Include="@(Compile->'%(FullPath)')">
+        <TargetPath>src</TargetPath>
+        <TargetPath Condition="$([System.String]::new('%(FullPath)').StartsWith('$(ProjectRoot)'))">src\$([System.String]::new('%(FullPath)').Substring('$(ProjectRootLength)'))</TargetPath>
+        <IsSourceCodeFile>true</IsSourceCodeFile>
+      </FilesToPackage>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ValidatePackageTargetFramework"
+          Inputs="$(MSBuildAllProjects);@(CustomAdditionalCompileInputs);@(ReferencePath)"
+          Outputs="@(IntermediateAssembly)"
+          Condition="'$(PackageTargetFramework)' != '' AND '$(SkipValidatePackageTargetFramework)' != 'true'"
+          AfterTargets="ResolveReferences">
+    <ItemGroup Condition="'@(ValidateIgnoreReference)' == ''">
+      <ValidateIgnoreReference Include="mscorlib;System.Private.Uri;Windows" />
+    </ItemGroup>
+
+    <ValidatePackageTargetFramework AssemblyName="$(AssemblyName)"
+                                    AssemblyVersion="$(AssemblyVersion)"
+                                    GenerationDefinitionsFile="$(GenerationDefinitionFile)"
+                                    PackageTargetFramework="$(PackageTargetFramework)"
+                                    DirectReferences="@(ReferencePath)"
+                                    CandidateReferences="@(ReferencePath);@(IndirectReference)"
+                                    IgnoredReferences="@(ValidateIgnoreReference)"
+                                    UseNetPlatform="$(UseNetPlatform)"/>
+  </Target>
+
+</Project>

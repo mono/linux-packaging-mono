@@ -3,18 +3,7 @@
  *
  * Copyright (C) 2012 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include "config.h"
@@ -107,8 +96,10 @@ sgen_register_fixed_internal_mem_type (int type, size_t size)
 
 	if (fixed_type_allocator_indexes [type] == -1)
 		fixed_type_allocator_indexes [type] = slot;
-	else
-		g_assert (fixed_type_allocator_indexes [type] == slot);
+	else {
+		if (fixed_type_allocator_indexes [type] != slot)
+			g_error ("Invalid double registration of type %d old slot %d new slot %d", type, fixed_type_allocator_indexes [type], slot);
+	}
 }
 
 static const char*
@@ -150,6 +141,8 @@ description_for_type (int type)
 	case INTERNAL_MEM_CARDTABLE_MOD_UNION: return "cardtable-mod-union";
 	case INTERNAL_MEM_BINARY_PROTOCOL: return "binary-protocol";
 	case INTERNAL_MEM_TEMPORARY: return "temporary";
+	case INTERNAL_MEM_LOG_ENTRY: return "log-entry";
+	case INTERNAL_MEM_COMPLEX_DESCRIPTORS: return "complex-descriptors";
 	default: {
 		const char *description = sgen_client_description_for_internal_mem_type (type);
 		SGEN_ASSERT (0, description, "Unknown internal mem type");

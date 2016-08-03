@@ -4,18 +4,7 @@
  *
  * Copyright (C) 2014 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 /*
@@ -40,7 +29,7 @@ COPY_OR_MARK_FUNCTION_NAME (GCObject **ptr, GCObject *obj, SgenGrayQueue *queue)
 #ifdef HEAVY_STATISTICS
 	++stat_optimized_copy;
 	{
-		char *forwarded;
+		GCObject *forwarded;
 		SgenDescriptor desc;
 		if ((forwarded = SGEN_OBJECT_IS_FORWARDED (obj)))
 			desc = sgen_obj_get_descriptor_safe (forwarded);
@@ -52,12 +41,12 @@ COPY_OR_MARK_FUNCTION_NAME (GCObject **ptr, GCObject *obj, SgenGrayQueue *queue)
 #endif
 
 	SGEN_ASSERT (9, obj, "null object from pointer %p", ptr);
-#ifndef COPY_OR_MARK_CONCURRENT
+#if !defined(COPY_OR_MARK_CONCURRENT) && !defined(COPY_OR_MARK_CONCURRENT_WITH_EVACUATION)
 	SGEN_ASSERT (9, current_collection_generation == GENERATION_OLD, "old gen parallel allocator called from a %d collection", current_collection_generation);
 #endif
 
 	if (sgen_ptr_in_nursery (obj)) {
-#ifndef COPY_OR_MARK_CONCURRENT
+#if !defined(COPY_OR_MARK_CONCURRENT) && !defined(COPY_OR_MARK_CONCURRENT_WITH_EVACUATION)
 		int word, bit;
 		GCObject *forwarded, *old_obj;
 		mword vtable_word = *(mword*)obj;
@@ -166,7 +155,7 @@ COPY_OR_MARK_FUNCTION_NAME (GCObject **ptr, GCObject *obj, SgenGrayQueue *queue)
 
 			block = MS_BLOCK_FOR_OBJ (obj);
 
-#ifdef COPY_OR_MARK_CONCURRENT
+#ifdef COPY_OR_MARK_CONCURRENT_WITH_EVACUATION
 			if (G_UNLIKELY (major_block_is_evacuating (block))) {
 				/*
 				 * We don't copy within the concurrent phase. These objects will
@@ -220,22 +209,33 @@ SCAN_OBJECT_FUNCTION_NAME (GCObject *full_object, SgenDescriptor desc, SgenGrayQ
 	/* Now scan the object. */
 
 #undef HANDLE_PTR
-#ifdef COPY_OR_MARK_CONCURRENT
+#if defined(COPY_OR_MARK_CONCURRENT_WITH_EVACUATION)
 #define HANDLE_PTR(ptr,obj)	do {					\
 		GCObject *__old = *(ptr);				\
 		binary_protocol_scan_process_reference ((full_object), (ptr), __old); \
 		if (__old && !sgen_ptr_in_nursery (__old)) {            \
-			MSBlockInfo *block = MS_BLOCK_FOR_OBJ (__old);	\
 			if (G_UNLIKELY (!sgen_ptr_in_nursery (ptr) &&	\
 					sgen_safe_object_is_small (__old, sgen_obj_get_descriptor (__old) & DESC_TYPE_MASK) && \
-					major_block_is_evacuating (block))) { \
+					major_block_is_evacuating (MS_BLOCK_FOR_OBJ (__old)))) { \
 				mark_mod_union_card ((full_object), (void**)(ptr), __old); \
 			} else {					\
 				PREFETCH_READ (__old);			\
 				COPY_OR_MARK_FUNCTION_NAME ((ptr), __old, queue); \
 			}						\
 		} else {                                                \
-			if (G_UNLIKELY (sgen_ptr_in_nursery (__old) && !sgen_ptr_in_nursery ((ptr)))) \
+			if (G_UNLIKELY (sgen_ptr_in_nursery (__old) && !sgen_ptr_in_nursery ((ptr)) && !sgen_cement_is_forced (__old))) \
+				mark_mod_union_card ((full_object), (void**)(ptr), __old); \
+			}						\
+		} while (0)
+#elif defined(COPY_OR_MARK_CONCURRENT)
+#define HANDLE_PTR(ptr,obj)	do {					\
+		GCObject *__old = *(ptr);				\
+		binary_protocol_scan_process_reference ((full_object), (ptr), __old); \
+		if (__old && !sgen_ptr_in_nursery (__old)) {            \
+			PREFETCH_READ (__old);			\
+			COPY_OR_MARK_FUNCTION_NAME ((ptr), __old, queue); \
+		} else {                                                \
+			if (G_UNLIKELY (sgen_ptr_in_nursery (__old) && !sgen_ptr_in_nursery ((ptr)) && !sgen_cement_is_forced (__old))) \
 				mark_mod_union_card ((full_object), (void**)(ptr), __old); \
 			}						\
 		} while (0)
@@ -257,10 +257,41 @@ SCAN_OBJECT_FUNCTION_NAME (GCObject *full_object, SgenDescriptor desc, SgenGrayQ
 #include "sgen-scan-object.h"
 }
 
+#ifdef SCAN_VTYPE_FUNCTION_NAME 
+static void
+SCAN_VTYPE_FUNCTION_NAME (GCObject *full_object, char *start, SgenDescriptor desc, SgenGrayQueue *queue BINARY_PROTOCOL_ARG (size_t size))
+{
+	SGEN_OBJECT_LAYOUT_STATISTICS_DECLARE_BITMAP;
+
+#ifdef HEAVY_STATISTICS
+	/* FIXME: We're half scanning this object.  How do we account for that? */
+	//add_scanned_object (start);
+#endif
+
+	/* The descriptors include info about the object header as well */
+	start -= SGEN_CLIENT_OBJECT_HEADER_SIZE;
+
+	/* We use the same HANDLE_PTR from the obj scan function */
+#define SCAN_OBJECT_NOVTABLE
+#define SCAN_OBJECT_PROTOCOL
+#include "sgen-scan-object.h"
+
+	SGEN_OBJECT_LAYOUT_STATISTICS_COMMIT_BITMAP;
+}
+#endif
+
+#ifdef SCAN_PTR_FIELD_FUNCTION_NAME
+static void
+SCAN_PTR_FIELD_FUNCTION_NAME (GCObject *full_object, GCObject **ptr, SgenGrayQueue *queue)
+{
+	HANDLE_PTR (ptr, NULL);
+}
+#endif
+
 static gboolean
 DRAIN_GRAY_STACK_FUNCTION_NAME (SgenGrayQueue *queue)
 {
-#ifdef COPY_OR_MARK_CONCURRENT
+#if defined(COPY_OR_MARK_CONCURRENT) || defined(COPY_OR_MARK_CONCURRENT_WITH_EVACUATION)
 	int i;
 	for (i = 0; i < 32; i++) {
 #else
@@ -282,5 +313,9 @@ DRAIN_GRAY_STACK_FUNCTION_NAME (SgenGrayQueue *queue)
 
 #undef COPY_OR_MARK_FUNCTION_NAME
 #undef COPY_OR_MARK_WITH_EVACUATION
+#undef COPY_OR_MARK_CONCURRENT
+#undef COPY_OR_MARK_CONCURRENT_WITH_EVACUATION
 #undef SCAN_OBJECT_FUNCTION_NAME
+#undef SCAN_VTYPE_FUNCTION_NAME
+#undef SCAN_PTR_FIELD_FUNCTION_NAME
 #undef DRAIN_GRAY_STACK_FUNCTION_NAME

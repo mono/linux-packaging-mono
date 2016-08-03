@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="PrereleaseResolveNuGetPackageAssets" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
+
+  <PropertyGroup>
+    <!-- Invoke with the correct casing of corerun per-OS.  There are some process Tools
+         that check the invoked process name against known casing which fail under code coverage.
+         This is probably because the code coverage target invocation does not canonicalize the
+         process name. -->
+    <ToolHost Condition="'$(OS)' == 'Windows_NT'">CoreRun.exe</ToolHost>
+    <ToolHost Condition="'$(OS)' != 'Windows_NT'">corerun</ToolHost>
+
+    <ToolRuntimePath Condition="'$(ToolRuntimePath)' == ''">$(ProjectDir)Tools/</ToolRuntimePath>
+    <ToolHostCmd>"$(ToolRuntimePath)$(ToolHost)"</ToolHostCmd>
+    <!-- If COMPLUS_InstallRoot is set clear it before calling the ToolHost otherwise some root activations like PDB COM activation will fail -->
+    <ToolHostCmd Condition="'$(COMPLUS_InstallRoot)' != ''">(set COMPLUS_InstallRoot=) &amp; $(ToolHostCmd)</ToolHostCmd>
+  </PropertyGroup>
+  
+  <Target Name="EnsureBuildToolsRuntime">
+    <Error Condition="!Exists('$(ToolRuntimePath)')"
+           Text="The Tool Runtime directory [$(ToolRuntimePath)] does not exist. Please run $(SourceDir)Build.cmd to ensure the tools are installed before attempting to build an individual project." />
+  </Target>
+</Project>

@@ -95,8 +95,8 @@ host_triplet = @host@
 subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) mkinstalldirs \
-	depcomp ChangeLog compile config.guess config.sub install-sh \
-	missing ltmain.sh ltconfig
+	depcomp compile config.guess config.sub install-sh missing \
+	ltmain.sh ltconfig
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -462,7 +462,7 @@ EXTRA_DIST = alpha_mach_dep.S mips_sgi_mach_dep.s sparc_mach_dep.S \
 	hpux_test_and_clear.s pc_excludes gc.mak MacOS.c \
 	MacProjects.sit.hqx mach_dep.c setjmp_t.c threadlibs.c \
 	AmigaOS.c version.h Mac_files/datastart.c Mac_files/dataend.c \
-	Mac_files/MacOS_config.h Mac_files/MacOS_Test_config.h \
+	Mac_files/MacOS_config.h Mac_files/MacOS_Test_config.h cord \
 	cord/cordbscs.c cord/cordtest.c cord/de.c cord/de_win.c \
 	cord/de_win.ICO cord/cordprnt.c cord/cordxtra.c cord/de_cmds.h \
 	cord/de_win.h cord/de_win.RC configure.host

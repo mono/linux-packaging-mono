@@ -3,6 +3,8 @@ create cross platform applications.  It is an open source
 implementation of Microsoft's .NET Framework based on the ECMA
 standards for C# and the Common Language Runtime.
 
+The Mono project is part of the [.NET Foundation](http://www.dotnetfoundation.org/)
+
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mono/mono?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 1. [Compilation and Installation](#compilation-and-installation)
@@ -17,28 +19,30 @@ standards for C# and the Common Language Runtime.
 
 Officially supported architectures:
 
-| debian-amd64            | debian-i386            | debian-armel            | debian-armhf            | windows-amd64             |
-|-------------------------|------------------------|-------------------------|-------------------------|---------------------------|
-| [![debian-amd64][1]][2] | [![debian-i386][3]][4] | [![debian-armel][5]][6] | [![debian-armhf][7]][8] | [![windows-amd64][9]][10] |
+| ubuntu-1404-amd64            | ubuntu-1404-i386            | debian-8-armel            | debian-8-armhf            | debian-8-arm64              | windows-amd64              |
+|------------------------------|-----------------------------|---------------------------|---------------------------|-----------------------------|----------------------------|
+| [![ubuntu-1404-amd64][1]][2] | [![ubuntu-1404-i386][3]][4] | [![debian-8-armel][5]][6] | [![debian-8-armhf][7]][8] | [![debian-8-arm64][9]][10]  | [![windows-amd64][11]][12] |
 
 Community supported architectures:
 
 | centos-s390x              |
 |---------------------------|
-| [![centos-s390x][11]][12] |
+| [![centos-s390x][13]][14] |
 
-[1]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-amd64/badge/icon
-[2]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-amd64/
-[3]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-i386/badge/icon
-[4]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-i386/
-[5]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-armel/badge/icon
-[6]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-armel/
-[7]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-armhf/badge/icon
-[8]: http://jenkins.mono-project.com/job/test-mono-mainline/label=debian-armhf/
-[9]: https://ci.appveyor.com/api/projects/status/1e61ebdfpbiei58v/branch/master?svg=true
-[10]: https://ci.appveyor.com/project/ajlennon/mono-817/branch/master
-[11]: https://jenkins.mono-project.com/job/z/label=centos-s390x/badge/icon
-[12]: https://jenkins.mono-project.com/job/z/label=centos-s390x
+[1]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=ubuntu-1404-amd64/badge/icon
+[2]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=ubuntu-1404-amd64
+[3]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=ubuntu-1404-i386/badge/icon
+[4]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=ubuntu-1404-i386/
+[5]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=debian-8-armel/badge/icon
+[6]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=debian-8-armel/
+[7]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=debian-8-armhf/badge/icon
+[8]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=debian-8-armhf/
+[9]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=debian-8-arm64/badge/icon
+[10]: https://jenkins.mono-project.com/job/test-mono-mainline-linux/label=debian-8-arm64/
+[11]: https://ci.appveyor.com/api/projects/status/1e61ebdfpbiei58v/branch/master?svg=true
+[12]: https://ci.appveyor.com/project/ajlennon/mono-817/branch/master
+[13]: https://jenkins.mono-project.com/job/z/label=centos-s390x/badge/icon
+[14]: https://jenkins.mono-project.com/job/z/label=centos-s390x
 
 Compilation and Installation
 ============================
@@ -103,6 +107,8 @@ See the man pages for mono(1), mcs(1) and monodis(1) for further details.
 
 Directory Roadmap
 =================
+
+* `acceptance-tests/` - Optional third party test suites used to validate Mono against a wider range of test cases.
 
 * `data/` - Configuration files installed as part of the Mono runtime.
 
@@ -181,7 +187,7 @@ while `mono-sgen` uses the Simple Generational GC.
 * `--with-gc=[included, boehm, none]` - Selects the default Boehm
 garbage collector engine to use.
 
-  * *included*: (*slighty modified Boehm GC*) This is the default
+  * *included*: (*slightly modified Boehm GC*) This is the default
 value for the Boehm GC, and it's the most feature complete, it will
 allow Mono to use typed allocations and support the debugger.
 
@@ -194,6 +200,13 @@ Disables the inclusion of a garbage collector.
 
   * This defaults to `included`.
 
+* `--with-cooperative-gc`
+
+  * If you pass this flag the Mono runtime is configured to only use
+  the cooperative mode of the garbage collector.  If you do not pass
+  this flag, then you can control at runtime the use of the
+  cooperative GC mode by setting the `MONO_ENABLE_COOP` flag.
+  
 * `--with-tls=__thread,pthread`
 
   * Controls how Mono should access thread local storage,
@@ -419,8 +432,10 @@ cycle.
 multiple CPUs to do its work.  This helps performance
 on multi-CPU machines as the work is divided across CPUS.
 
-  * This option is not currently the default as we have
-not done much testing with Mono.
+  * This option is not currently the default on OSX
+as it runs into issues there.
+
+  * This option only applies to the Boehm GC.
 
 * `--enable-dtrace`
 
@@ -496,3 +511,32 @@ to do at all), first edit `.gitmodules` to point to the new location, then:
 The desired output diff is a change in `.gitmodules` to reflect the
 change in the remote URL, and a change in /<submodule> where you see
 the desired change in the commit hash.
+
+License
+=======
+
+See the LICENSE file for licensing information, and the PATENTS.TXT
+file for information about Microsoft's patent grant.
+
+Mono Trademark Use Policy
+=========================
+
+The use of trademarks and logos for Mono can be found [here] (http://www.dotnetfoundation.org/legal/mono-tm). 
+
+Maintaining the Class Library Solution Files
+============================================
+
+Mono now ships with a solution file that can be used to build the
+assemblies from an IDE.  Either by opening the topmost `net_4_x.sln`
+file, or to by loading one of the individual `csproj` files located in
+each directory.
+
+These are maintained by extracting the configuration information from
+our Makefiles, which as of May 2016 remain the canonical location for
+configuration information.
+
+When changes are made to the Makefiles, a user would need to run the
+following command to re-generate the solution files at the top level:
+
+	$ make update-solution-files
+

@@ -5,6 +5,7 @@
  *	Mono Project (http://www.mono-project.com)
  *
  * Copyright (C) 2005-2008 Novell, Inc. (http://www.novell.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include <string.h>
@@ -333,6 +334,7 @@ mono_method_desc_new (const char *name, gboolean include_namespace)
 	MonoMethodDesc *result;
 	char *class_name, *class_nspace, *method_name, *use_args, *end;
 	int use_namespace;
+	int generic_delim_stack;
 	
 	class_nspace = g_strdup (name);
 	use_args = strchr (class_nspace, '(');
@@ -379,8 +381,14 @@ mono_method_desc_new (const char *name, gboolean include_namespace)
 		end = use_args;
 		if (*end)
 			result->num_args = 1;
+		generic_delim_stack = 0;
 		while (*end) {
-			if (*end == ',')
+			if (*end == '<')
+				generic_delim_stack++;
+			else if (*end == '>')
+				generic_delim_stack--;
+
+			if (*end == ',' && generic_delim_stack == 0)
 				result->num_args++;
 			++end;
 		}
@@ -419,8 +427,15 @@ mono_method_desc_free (MonoMethodDesc *desc)
 	g_free (desc);
 }
 
-/*
+/**
+ * mono_method_descr_match:
+ * @desc: MonoMethoDescription
+ * @method: MonoMethod to test
+ *
+ * Determines whether the specified @method matches the provided @desc description.
+ *
  * namespace and class are supposed to match already if this function is used.
+ * Returns: True if the method matches the description, false otherwise.
  */
 gboolean
 mono_method_desc_match (MonoMethodDesc *desc, MonoMethod *method)
@@ -429,10 +444,6 @@ mono_method_desc_match (MonoMethodDesc *desc, MonoMethod *method)
 	gboolean name_match;
 
 	name_match = strcmp (desc->name, method->name) == 0;
-#ifndef _EGLIB_MAJOR
-	if (!name_match && desc->name_glob)
-		name_match = g_pattern_match_simple (desc->name, method->name);
-#endif
 	if (!name_match)
 		return FALSE;
 	if (!desc->args)
@@ -531,7 +542,7 @@ mono_method_desc_search_in_image (MonoMethodDesc *desc, MonoImage *image)
 	}
 
 	if (desc->name_space && desc->klass) {
-		klass = mono_class_from_name (image, desc->name_space, desc->klass);
+		klass = mono_class_try_load_from_name (image, desc->name_space, desc->klass);
 		if (!klass)
 			return NULL;
 		return mono_method_desc_search_in_class (desc, klass);
@@ -541,12 +552,17 @@ mono_method_desc_search_in_image (MonoMethodDesc *desc, MonoImage *image)
 	mono_image_get_table_info (image, MONO_TABLE_TYPEDEF);
 	methods = mono_image_get_table_info (image, MONO_TABLE_METHOD);
 	for (i = 0; i < mono_table_info_get_rows (methods); ++i) {
+		MonoError error;
 		guint32 token = mono_metadata_decode_row_col (methods, i, MONO_METHOD_NAME);
 		const char *n = mono_metadata_string_heap (image, token);
 
 		if (strcmp (n, desc->name))
 			continue;
-		method = mono_get_method (image, MONO_TOKEN_METHOD_DEF | (i + 1), NULL);
+		method = mono_get_method_checked (image, MONO_TOKEN_METHOD_DEF | (i + 1), NULL, NULL, &error);
+		if (!method) {
+			mono_error_cleanup (&error);
+			continue;
+		}
 		if (mono_method_desc_full_match (desc, method))
 			return method;
 	}
@@ -556,13 +572,21 @@ mono_method_desc_search_in_image (MonoMethodDesc *desc, MonoImage *image)
 static const unsigned char*
 dis_one (GString *str, MonoDisHelper *dh, MonoMethod *method, const unsigned char *ip, const unsigned char *end)
 {
-	MonoMethodHeader *header = mono_method_get_header (method);
+	MonoError error;
+	MonoMethodHeader *header = mono_method_get_header_checked (method, &error);
 	const MonoOpcode *opcode;
 	guint32 label, token;
 	gint32 sval;
 	int i;
 	char *tmp;
-	const unsigned char* il_code = mono_method_header_get_code (header, NULL, NULL);
+	const unsigned char* il_code;
+
+	if (!header) {
+		g_string_append_printf (str, "could not disassemble, bad header due to %s", mono_error_get_message (&error));
+		mono_error_cleanup (&error);
+		return end;
+	}
+	il_code = mono_method_header_get_code (header, NULL, NULL);
 
 	label = ip - il_code;
 	if (dh->indenter) {
@@ -762,6 +786,12 @@ mono_disasm_code (MonoDisHelper *dh, MonoMethod *method, const guchar *ip, const
 	return result;
 }
 
+/**
+ * mono_field_full_name:
+ * @field: field to retrieve information for
+ *
+ * Returns: the full name for the field, made up of the namespace, type name and the field name.
+ */
 char *
 mono_field_full_name (MonoClassField *field)
 {
@@ -888,6 +918,7 @@ print_name_space (MonoClass *klass)
 void
 mono_object_describe (MonoObject *obj)
 {
+	MonoError error;
 	MonoClass* klass;
 	const char* sep;
 	if (!obj) {
@@ -896,7 +927,8 @@ mono_object_describe (MonoObject *obj)
 	}
 	klass = mono_object_class (obj);
 	if (klass == mono_defaults.string_class) {
-		char *utf8 = mono_string_to_utf8 ((MonoString*)obj);
+		char *utf8 = mono_string_to_utf8_checked ((MonoString*)obj, &error);
+		mono_error_raise_exception (&error); /* FIXME don't raise here */
 		if (strlen (utf8) > 60) {
 			utf8 [57] = '.';
 			utf8 [58] = '.';
@@ -1061,14 +1093,18 @@ mono_value_describe_fields (MonoClass* klass, const char* addr)
 void
 mono_class_describe_statics (MonoClass* klass)
 {
+	MonoError error;
 	MonoClassField *field;
 	MonoClass *p;
 	const char *field_ptr;
-	MonoVTable *vtable = mono_class_vtable_full (mono_domain_get (), klass, FALSE);
+	MonoVTable *vtable = mono_class_vtable_full (mono_domain_get (), klass, &error);
 	const char *addr;
 
-	if (!vtable)
+	if (!vtable || !is_ok (&error)) {
+		mono_error_cleanup (&error);
 		return;
+	}
+
 	if (!(addr = (const char *)mono_vtable_get_static_field_data (vtable)))
 		return;
 
@@ -1098,10 +1134,12 @@ mono_class_describe_statics (MonoClass* klass)
 void
 mono_method_print_code (MonoMethod *method)
 {
+	MonoError error;
 	char *code;
-	MonoMethodHeader *header = mono_method_get_header (method);
+	MonoMethodHeader *header = mono_method_get_header_checked (method, &error);
 	if (!header) {
-		printf ("METHOD HEADER NOT FOUND\n");
+		printf ("METHOD HEADER NOT FOUND DUE TO: %s\n", mono_error_get_message (&error));
+		mono_error_cleanup (&error);
 		return;
 	}
 	code = mono_disasm_code (0, method, header->code, header->code + header->code_size);

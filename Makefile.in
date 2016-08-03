@@ -83,9 +83,9 @@ subdir = .
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in mkinstalldirs \
-	$(srcdir)/mono-uninstalled.pc.in COPYING.LIB ChangeLog NEWS \
-	compile config.guess config.rpath config.sub install-sh \
-	missing ltmain.sh
+	$(srcdir)/mono-uninstalled.pc.in COPYING.LIB NEWS compile \
+	config.guess config.rpath config.sub install-sh missing \
+	ltmain.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -296,8 +296,6 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPROFILE_CFLAGS = @OPROFILE_CFLAGS@
-OPROFILE_LIBS = @OPROFILE_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -424,7 +422,8 @@ EXTRA_DIST = \
 	mono-uninstalled.pc.in 	\
 	winconfig.h 		\
 	code_of_conduct.md 	\
-	external
+	external		\
+	mcs/class/referencesource
 
 DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_MCS=false EXTERNAL_RUNTIME=false
 # Disable this for now because it is very slow and causes wrench to timeout:
@@ -1041,6 +1040,11 @@ package-inputs:
 update-llvm-version:
 	if test "x$$LLVM_DIR" = "x"; then echo "Set the make variable LLVM_DIR to the directory containing the LLVM installation."; exit 1; fi
 	REV=`$(LLVM_DIR)/bin/llvm-config --version` && sed -e "s,expected_llvm_version=.*,expected_llvm_version=\"$$REV\"," < configure.ac > tmp && mv tmp configure.ac && echo "Version set to $$REV."
+
+update-solution-files:
+	make update-csproj
+	make package-inputs
+	(cd msvc/scripts; make genproj.exe; mono genproj.exe)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

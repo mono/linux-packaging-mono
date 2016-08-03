@@ -42,6 +42,7 @@ class MakeBundle {
 	static string os_message = "";
 	static bool compress;
 	static bool nomain;
+	static string custom_main = null;
 	static bool? use_dos2unix = null;
 	static bool skip_scan;
 	static string ctor_func;
@@ -169,10 +170,6 @@ class MakeBundle {
 				
 			case "--static":
 				static_link = true;
-				if (!quiet) {
-					Console.WriteLine ("Note that statically linking the LGPL Mono runtime has more licensing restrictions than dynamically linking.");
-					Console.WriteLine ("See http://www.mono-project.com/Licensing for details on licensing.");
-				}
 				break;
 			case "--config":
 				if (i+1 == top) {
@@ -206,6 +203,13 @@ class MakeBundle {
 				break;
 			case "--nomain":
 				nomain = true;
+				break;
+			case "--custom-main":
+				if (i+1 == top) {
+					Help ();
+					return 1;
+				}
+				custom_main = args [++i];
 				break;
 			case "--style":
 				if (i+1 == top) {
@@ -730,7 +734,7 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 			string template = s.ReadToEnd ();
 			tc.Write (template);
 
-			if (!nomain) {
+			if (!nomain && custom_main == null) {
 				Stream template_main_stream = System.Reflection.Assembly.GetAssembly (typeof(MakeBundle)).GetManifestResourceStream ("template_main.c");
 				StreamReader st = new StreamReader (template_main_stream);
 				string maintemplate = st.ReadToEnd ();
@@ -756,37 +760,79 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 
 				string compiler = GetEnv("CC", "cl.exe");
 				string winsdkPath = GetEnv("WINSDK", @"C:\Program Files (x86)\Windows Kits\8.1");
-				string vsPath = GetEnv("VSINCLUDE", @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC");
+				string vsPath = GetEnv("VSINCLUDE", @"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC");
 				string monoPath = GetEnv("MONOPREFIX", @"C:\Program Files (x86)\Mono");
 
-				string[] includes = new string[] {winsdkPath + @"\Include\um", winsdkPath + @"\Include\shared", vsPath + @"\include", monoPath + @"\include\mono-2.0"};
+				string[] includes = new string[] {winsdkPath + @"\Include\um", winsdkPath + @"\Include\shared", vsPath + @"\include", monoPath + @"\include\mono-2.0", "." };
 				string[] libs = new string[] { winsdkPath + @"\Lib\winv6.3\um\x86" , vsPath + @"\lib" };
-				string monoFile;
+				var linkLibraries = new string[] {  "kernel32.lib",
+												"version.lib",
+												"Ws2_32.lib",
+												"Mswsock.lib",
+												"Psapi.lib",
+												"shell32.lib",
+												"OleAut32.lib",
+												"ole32.lib",
+												"winmm.lib",
+												"user32.lib",
+												"libvcruntime.lib",
+												"advapi32.lib",
+												"OLDNAMES.lib",
+												"libucrt.lib" };
+
+				string glue_obj = "mkbundle_glue.obj";
+				string monoLib;
+
+				if (static_link)
+					monoLib = LocateFile (monoPath + @"\lib\monosgen-2.0-static.lib");
+
+				else {
+					Console.WriteLine ("WARNING: Dynamically linking the Mono runtime on Windows is not a tested option.");
+					monoLib = LocateFile (monoPath + @"\lib\monosgen-2.0.lib");
+					LocateFile (monoPath + @"\lib\monosgen-2.0.dll"); // in this case, the .lib is just the import library, and the .dll is also needed
+				}
 
 				var compilerArgs = new List<string>();
+				compilerArgs.Add("/MT");
+
 				foreach (string include in includes)
 					compilerArgs.Add(String.Format ("/I {0}", quote (include)));
 
-				if (static_link)
-					monoFile = LocateFile (monoPath + @"\lib\monosgen-2.0.lib");
+				if (!nomain || custom_main != null) {
+					compilerArgs.Add(quote(temp_c));
+					compilerArgs.Add(quote(temp_o));
+					if (custom_main != null)
+						compilerArgs.Add(quote(custom_main));
+					compilerArgs.Add(quote(monoLib));
+					compilerArgs.Add("/link");
+					compilerArgs.Add("/NODEFAULTLIB");
+					compilerArgs.Add("/SUBSYSTEM:windows");
+					compilerArgs.Add("/ENTRY:mainCRTStartup");
+					compilerArgs.AddRange(linkLibraries);
+					compilerArgs.Add("/out:"+ output);
+
+					string cl_cmd = String.Format("{0} {1}", compiler, String.Join(" ", compilerArgs.ToArray()));
+					Execute (cl_cmd);
+				}
 				else
-					monoFile = LocateFile (monoPath + @"\lib\monosgen-2.0.dll");
+				{
+					// we are just creating a .lib
+					compilerArgs.Add("/c"); // compile only
+					compilerArgs.Add(temp_c);
+					compilerArgs.Add(String.Format("/Fo" + glue_obj)); // .obj output name
 
-				compilerArgs.Add("/MD");
-				compilerArgs.Add(temp_c);
-				compilerArgs.Add(temp_o);
-				compilerArgs.Add("/link");
+					string cl_cmd = String.Format("{0} {1}", compiler, String.Join(" ", compilerArgs.ToArray()));
+					Execute (cl_cmd);
 
-				if (nomain)
-					compilerArgs.Add("/NOENTRY");
-					compilerArgs.Add("/DLL");
-
-				foreach (string lib in libs)
-					compilerArgs.Add(String.Format ("/LIBPATH:{0}", quote(lib)));
-				compilerArgs.Add (quote(monoFile));
-
-				string cl_cmd = String.Format("{0} {1}", compiler, String.Join(" ", compilerArgs.ToArray()));
-				Execute (cl_cmd);
+					string librarian = GetEnv ("LIB", "lib.exe");
+					var librarianArgs = new List<string> ();
+					librarianArgs.Add (String.Format ("/out:{0}.lib" + output));
+					librarianArgs.Add (temp_o);
+					librarianArgs.Add (glue_obj);
+					librarianArgs.Add (monoLib);
+					string lib_cmd = String.Format("{0} {1}", librarian, String.Join(" ", librarianArgs.ToArray()));
+					Execute (lib_cmd);
+				}
 			}
 			else
 			{
@@ -989,6 +1035,7 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 				   "    --keeptemp          Keeps the temporary files\n" +
 				   "    --static            Statically link to mono libs\n" +
 				   "    --nomain            Don't include a main() function, for libraries\n" +
+				   "	--custom-main C     Link the specified compilation unit (.c or .obj) with entry point/init code\n" +
 				   "    -z                  Compress the assemblies before embedding.\n" +
 				   "    --static-ctor ctor  Add a constructor call to the supplied function.\n" +
 				   "                        You need zlib development headers and libraries.\n");

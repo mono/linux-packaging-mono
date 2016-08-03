@@ -5,6 +5,7 @@
  *	Ludovic Henry (ludovic.henry@xamarin.com)
  *
  * Copyright 2015 Xamarin, Inc (http://www.xamarin.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include <config.h>
@@ -244,6 +245,8 @@ filter_jobs_for_domain (gpointer key, gpointer value, gpointer user_data)
 static void
 wait_callback (gint fd, gint events, gpointer user_data)
 {
+	MonoError error;
+
 	if (mono_runtime_is_shutting_down ())
 		return;
 
@@ -268,13 +271,18 @@ wait_callback (gint fd, gint events, gpointer user_data)
 
 		if (list && (events & EVENT_IN) != 0) {
 			MonoIOSelectorJob *job = get_job_for_event (&list, EVENT_IN);
-			if (job)
-				mono_threadpool_ms_enqueue_work_item (((MonoObject*) job)->vtable->domain, (MonoObject*) job);
+			if (job) {
+				mono_threadpool_ms_enqueue_work_item (((MonoObject*) job)->vtable->domain, (MonoObject*) job, &error);
+				mono_error_assert_ok (&error);
+			}
+
 		}
 		if (list && (events & EVENT_OUT) != 0) {
 			MonoIOSelectorJob *job = get_job_for_event (&list, EVENT_OUT);
-			if (job)
-				mono_threadpool_ms_enqueue_work_item (((MonoObject*) job)->vtable->domain, (MonoObject*) job);
+			if (job) {
+				mono_threadpool_ms_enqueue_work_item (((MonoObject*) job)->vtable->domain, (MonoObject*) job, &error);
+				mono_error_assert_ok (&error);
+			}
 		}
 
 		remove_fd = (events & EVENT_ERR) == EVENT_ERR;
@@ -300,6 +308,7 @@ wait_callback (gint fd, gint events, gpointer user_data)
 static void
 selector_thread (gpointer data)
 {
+	MonoError error;
 	MonoGHashTable *states;
 
 	io_selector_running = TRUE;
@@ -338,7 +347,8 @@ selector_thread (gpointer data)
 				g_assert (job);
 
 				exists = mono_g_hash_table_lookup_extended (states, GINT_TO_POINTER (fd), &k, (gpointer*) &list);
-				list = mono_mlist_append (list, (MonoObject*) job);
+				list = mono_mlist_append_checked (list, (MonoObject*) job, &error);
+				mono_error_assert_ok (&error);
 				mono_g_hash_table_replace (states, GINT_TO_POINTER (fd), list);
 
 				operations = get_operations_for_jobs (list);
@@ -367,8 +377,10 @@ selector_thread (gpointer data)
 							memset (update, 0, sizeof (ThreadPoolIOUpdate));
 					}
 
-					for (; list; list = mono_mlist_remove_item (list, list))
-						mono_threadpool_ms_enqueue_work_item (mono_object_domain (mono_mlist_get_data (list)), mono_mlist_get_data (list));
+					for (; list; list = mono_mlist_remove_item (list, list)) {
+						mono_threadpool_ms_enqueue_work_item (mono_object_domain (mono_mlist_get_data (list)), mono_mlist_get_data (list), &error);
+						mono_error_assert_ok (&error);
+					}
 
 					mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_THREADPOOL, "io threadpool: del fd %3d", fd);
 					threadpool_io->backend.remove_fd (fd);
@@ -525,8 +537,9 @@ initialize (void)
 	if (!threadpool_io->backend.init (threadpool_io->wakeup_pipes [0]))
 		g_error ("initialize: backend->init () failed");
 
-	if (!mono_thread_create_internal (mono_get_root_domain (), selector_thread, NULL, TRUE, SMALL_STACK))
-		g_error ("initialize: mono_thread_create_internal () failed");
+	MonoError error;
+	if (!mono_thread_create_internal (mono_get_root_domain (), selector_thread, NULL, TRUE, SMALL_STACK, &error))
+		g_error ("initialize: mono_thread_create_internal () failed due to %s", mono_error_get_message (&error));
 }
 
 static void
@@ -538,7 +551,7 @@ cleanup (void)
 
 	selector_thread_wakeup ();
 	while (io_selector_running)
-		g_usleep (1000);
+		mono_thread_info_usleep (1000);
 }
 
 void
@@ -554,7 +567,7 @@ ves_icall_System_IOSelector_Add (gpointer handle, MonoIOSelectorJob *job)
 
 	g_assert (handle >= 0);
 
-	g_assert (job->operation == EVENT_IN ^ job->operation == EVENT_OUT);
+	g_assert ((job->operation == EVENT_IN) ^ (job->operation == EVENT_OUT));
 	g_assert (job->callback);
 
 	if (mono_runtime_is_shutting_down ())

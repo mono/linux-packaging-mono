@@ -7,6 +7,7 @@
  * (C) 2002 Ximian, Inc.
  * Copyright (c) 2002-2006 Novell, Inc.
  * Copyright 2011 Xamarin Inc (http://www.xamarin.com).
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include <config.h>
@@ -240,7 +241,7 @@ static void io_ops_init (void)
  * This is is a best effort kind of thing. It assumes a reasonable sane set
  * of permissions by the underlying OS.
  *
- * We assume that basic unix permission bits are authoritative. Which might not
+ * We generally assume that basic unix permission bits are authoritative. Which might not
  * be the case under systems with extended permissions systems (posix ACLs, SELinux, OSX/iOS sandboxing, etc)
  *
  * The choice of access as the fallback is due to the expected lower overhead compared to trying to open the file.
@@ -252,6 +253,13 @@ static void io_ops_init (void)
 static gboolean
 is_file_writable (struct stat *st, const char *path)
 {
+#if __APPLE__
+	// OS X Finder "locked" or `ls -lO` "uchg".
+	// This only covers one of several cases where an OS X file could be unwritable through special flags.
+	if (st->st_flags & (UF_IMMUTABLE|SF_IMMUTABLE))
+		return 0;
+#endif
+
 	/* Is it globally writable? */
 	if (st->st_mode & S_IWOTH)
 		return 1;
@@ -982,7 +990,14 @@ static gboolean file_setfiletime(gpointer handle,
 			SetLastError (ERROR_INVALID_PARAMETER);
 			return(FALSE);
 		}
-		
+
+		if (sizeof (utbuf.actime) == 4 && ((access_ticks - 116444736000000000ULL) / 10000000) > INT_MAX) {
+			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: attempt to set write time that is too big for a 32bits time_t",
+				   __func__);
+			SetLastError (ERROR_INVALID_PARAMETER);
+			return(FALSE);
+		}
+
 		utbuf.actime=(access_ticks - 116444736000000000ULL) / 10000000;
 	} else {
 		utbuf.actime=statbuf.st_atime;
@@ -996,6 +1011,12 @@ static gboolean file_setfiletime(gpointer handle,
 		 */
 		if (write_ticks < 116444736000000000ULL) {
 			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: attempt to set write time too early",
+				   __func__);
+			SetLastError (ERROR_INVALID_PARAMETER);
+			return(FALSE);
+		}
+		if (sizeof (utbuf.modtime) == 4 && ((write_ticks - 116444736000000000ULL) / 10000000) > INT_MAX) {
+			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: attempt to set write time that is too big for a 32bits time_t",
 				   __func__);
 			SetLastError (ERROR_INVALID_PARAMETER);
 			return(FALSE);
@@ -1151,7 +1172,7 @@ static void pipe_close (gpointer handle, gpointer data)
 	struct _WapiHandle_file *pipe_handle = (struct _WapiHandle_file*)data;
 	int fd = pipe_handle->fd;
 
-	MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: closing pipe handle %p", __func__, handle);
+	MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: closing pipe handle %p fd %d", __func__, handle, fd);
 
 	/* No filename with pipe handles */
 
@@ -3726,9 +3747,14 @@ add_drive_string (guint32 len, gunichar2 *buf, LinuxMountInfoParseState *state)
 
 	if (state->fsname_index == 1 && state->fsname [0] == '/')
 		ignore_entry = FALSE;
-	else if (state->fsname_index == 0 || memcmp ("none", state->fsname, state->fsname_index) == 0)
+	else if (memcmp ("overlay", state->fsname, state->fsname_index) == 0 ||
+		memcmp ("aufs", state->fstype, state->fstype_index) == 0) {
+		/* Don't ignore overlayfs and aufs - these might be used on Docker
+		 * (https://bugzilla.xamarin.com/show_bug.cgi?id=31021) */
+		ignore_entry = FALSE;
+	} else if (state->fsname_index == 0 || memcmp ("none", state->fsname, state->fsname_index) == 0) {
 		ignore_entry = TRUE;
-	else if (state->fstype_index >= 5 && memcmp ("fuse.", state->fstype, 5) == 0) {
+	} else if (state->fstype_index >= 5 && memcmp ("fuse.", state->fstype, 5) == 0) {
 		/* Ignore GNOME's gvfs */
 		if (state->fstype_index == 21 && memcmp ("fuse.gvfs-fuse-daemon", state->fstype, state->fstype_index) == 0)
 			ignore_entry = TRUE;

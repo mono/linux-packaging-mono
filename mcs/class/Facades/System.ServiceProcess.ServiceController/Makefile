@@ -19,7 +19,7 @@ LIB_REFS += System.ServiceProcess
 endif
 endif
 
-LIB_MCS_FLAGS = $(SIGN_FLAGS) /r:mscorlib
+LIB_MCS_FLAGS = $(SIGN_FLAGS)
 
 PLATFORM_DEBUG_FLAGS =
 

@@ -5,7 +5,7 @@
 
 using System;
 using System.Reflection;
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 using System.Reflection.Emit;
 #endif
 using System.Threading;
@@ -26,7 +26,7 @@ namespace MonoTests.System
 
 
 		[Test] //See bug #372406
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[Category ("NotWorking")] // #10539
 #endif
 		public void CreateDelegate1_Method_Private_Instance ()
@@ -64,7 +64,7 @@ namespace MonoTests.System
 		}
 
 		[Test] // CreateDelegate (Type, MethodInfo)
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[Category ("NotWorking")] // #14163
 #endif
 		public void CreateDelegate1_Method_Instance ()
@@ -925,7 +925,7 @@ namespace MonoTests.System
 		}
 
 		[Test]
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[Category ("NotWorking")] // #10539
 #endif
 		public void Virtual ()
@@ -956,7 +956,7 @@ namespace MonoTests.System
 		}
 
 		[Test]
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[Category ("NotWorking")] // #14163
 #endif
 		public void NullTarget_Instance ()
@@ -1021,7 +1021,7 @@ namespace MonoTests.System
 		}
 
 		[Test] // #617161
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[Category ("NotWorking")] // #10539
 #endif
 		public void ClosedOverNullReferenceStaticMethod ()
@@ -1045,7 +1045,7 @@ namespace MonoTests.System
 		}
 
 		[Test] // #475962
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[Category ("NotWorking")] // #10539
 #endif
 		public void ClosedOverNullReferenceInstanceMethod ()
@@ -1079,7 +1079,7 @@ namespace MonoTests.System
 
 		delegate int ByRefDelegate (ref FooStruct s, int a, int b, int c, int d);
 
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[Category ("NotWorking")]
 #endif
 		[Test]
@@ -1279,7 +1279,7 @@ namespace MonoTests.System
 		{
 			string retarg (string s);
 		}
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 		[Test]
 		public void CreateDelegateWithLdFtnAndAbstractMethod ()
 		{
@@ -1388,7 +1388,7 @@ namespace MonoTests.System
 			Assert.IsTrue (d (0, 0));
 		}
 
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 		public static void DynInvokeWithClosedFirstArg (object a, object b)
 		{
 		}
@@ -1423,6 +1423,27 @@ namespace MonoTests.System
 			ac.DynamicInvoke (new object[] { null });
 		}
 #endif
+
+		public delegate void DoExecuteDelegate1 (C c);
+		public delegate void DoExecuteDelegate2 (C c);
+
+		[Test]
+		[ExpectedException (typeof (ArgumentException))]
+		public void DelegateCombineDifferentTypes () {
+			var b = new B ();
+			var del1 = new DoExecuteDelegate1 (b.DoExecute);
+			var del2 = new DoExecuteDelegate2 (b.DoExecute);
+			var del = Delegate.Combine (del1, del2);
+		}
+
+		[Test]
+		[ExpectedException (typeof (ArgumentException))]
+		public void DelegateRemoveDifferentTypes () {
+			var b = new B ();
+			var del1 = new DoExecuteDelegate1 (b.DoExecute);
+			var del2 = new DoExecuteDelegate2 (b.DoExecute);
+			var del = Delegate.Remove (del1, del2);
+		}
 
 		static bool Int32D2 (int x, int y)
 		{

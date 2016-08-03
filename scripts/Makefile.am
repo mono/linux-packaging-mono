@@ -84,6 +84,7 @@ scripts_4_0 = \
 	mod$(SCRIPT_SUFFIX)			\
 	monolinker$(SCRIPT_SUFFIX)		\
 	mono-api-info$(SCRIPT_SUFFIX) 		\
+	mono-api-html$(SCRIPT_SUFFIX) 		\
 	mono-shlib-cop$(SCRIPT_SUFFIX) 		\
 	mozroots$(SCRIPT_SUFFIX)		\
 	permview$(SCRIPT_SUFFIX)		\
@@ -159,7 +160,9 @@ EXTRA_DIST =			\
 	mono-heapviz		\
 	$(MDOC_COMPAT)		\
 	get-cygwin-deps.sh	\
-	mono-configuration-crypto.in
+	mono-configuration-crypto.in	\
+	submodules/versions.mk	\
+	submodules/versions.py
 
 mono_interp = mono
 

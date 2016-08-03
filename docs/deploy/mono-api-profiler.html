@@ -1,55 +1,192 @@
-﻿<?xml version="1.0" encoding="utf-8"?><span>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-   <title>mono-api-profiler.html</title>
-   <style type="text/css">
+    <title>mono-api-profiler.html</title>
+    <style type="text/css">
+    .mapi-docs {
+	line-height: 1.5;
+	padding-left: 2em;
+	padding-right: 2em;
+    }
+    .mapi-docs p {
+	max-width: 60em;
+    }
+    .mapi-docs .mapi-body {
+	max-width: 60em;
+    }
+    .mapi-docs code {
+        border: 1px solid rgba(214,214,214,1);
+	background-color: rgba(249,249,249,1);
+	padding: 0.1em 0.5em;
+    }
+    .mapi-description code {
+        font-family: "Consolas", "Courier", monospace;
+        border: 1px solid rgba(214,214,214,1);
+	background-color: rgba(249,249,249,1);
+	padding: 0.1em 0.2em;
+    }
 
+    .mapi-header {
+        padding: 0 0 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+	background-color: rgba(249,249,249,1);
+    }
 
-   h3 { 
-       font-size: 18px;
-       padding-bottom: 4pt;
-       border-bottom: 2px solid #dddddd;
-   }
-       
-   .api {
-     border: 1px solid;
-     padding: 10pt;
-     margin: 10pt;
-   } 
+    .mapi-code {
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+	background-color: rgba(249,249,249,1);
+    }
 
-   .api-entry { 
-       border-bottom: none;
-       font-size: 18px;
-   }
+    .mapi-code:first-line {
+        line-height: 0px;
+    }
 
-   .prototype {
-     border: 1px solid;
-     background-color: #f2f2f2;
-     padding: 5pt;
-     margin-top: 5pt;
-     margin-bottom: 5pt;  
-   } 
-
-   .header {
-     border: 1px solid;
-     padding: 0 0 5pt 5pt;
-     margin: 10pt;
-     white-space: pre;
-       font-family: monospace;
-   }
+    .mapi-entry code {
+        border: none;
+        background-color: transparent;
+    }
     
-   .code {
-     border: 1px solid;
-     padding: 0 0 5pt 5pt;
-     margin: 10pt;
-     white-space: pre;
-       font-family: monospace;
-   }
-   
+    .mapi-parameters {
+        border-collapse: collapse;
+        border-spacing: 0;
+        empty-cells: hide;
+        border: 0;
+        margin: 5px 0 26px;	    
+    }
 
+    .mapi-parameters td {
+        border: 1px solid rgba(214,214,214,1);
+	  border-left-style: none;
+	padding: 5px 25px 5px 10px;
+    }
+
+    .mapi-parameters tr>td:last-child  {
+        border-right: 0;
+    }
+	
+    .mapi-parameters td:first-of-type {
+        text-align: right;
+        padding: 7px;
+        vertical-align: top;
+        word-break: normal;
+        width: 40px;
+    }
+
+    .mapi-parameters tr:last-child>td {
+        border-bottom: 0;
+    }
+
+    .mapi-parameters tr:first-child>td {
+        border-top: 0;
+    }
+
+    .mapi-parameters tr td:first-of-type {
+        text-align: right;
+        padding: 7px;
+        vertical-align: top;
+        word-break: normal;
+        width: 40px;
+    }
+
+   .mapi {
+        left: -25px;
+        margin: 0;
+        padding: 13px 25px 0;
+        position: relative;
+        width: 100%;
+    } 
+
+    .mapi-description {
+        background: rgba(249,249,249,1);
+        border-bottom: 1px solid rgba(233,233,233,1);
+        left: -25px;
+        margin: 0;
+        padding: 13px 25px 0;
+        position: relative;
+        width: 100%;	 
+    }
+
+     .mapi-entry {
+         background: transparent;
+     }
+
+     .mapi-docs {
+     }
+	
+     .mapi-prototype {
+         border-left: 5px solid rgba(205,233,244,1);
+         padding: .5em;
+         margin-top: 5pt;
+         margin-bottom: 5pt;
+         font-family: "Consolas", "Courier", monospace;
+         display: block;
+         overflow: auto;
+         background-color: #f9f9f9;
+    } 
+
+    .mapi-declaration {
+	margin-top: 21px;
+    }
+
+    .mapi-section {
+        font-size: smaller;
+	font-weight: bold;
+	margin-top: 21px;
+	line-height: 1.5;
+    }
+	
+    .mapi-strike {
+        text-decoration: line-through;
+    }
+
+    .mapi-deprecated {
+        color: red;
+    }
+
+    .mapi-ptr-container {
+        background: white;
+	border-bottom: 1px solid rgba(233,233,233,1);
+        left: -25px;
+        padding-left: 25px;
+        padding-right: 25px;
+        padding-bottom: 13px;
+        position: relative;
+        width: 100%;
+    }
+
+    .mapi-ptr {
+        background: rgba(249,249,249,1);
+	border-left: 1px solid rgba(233,233,233,1);
+	border-top: 1px solid rgba(233,233,233,1);
+        height: 12px;
+        left: 37px;
+        top: -7px;
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        transform: rotate(45deg);
+        position: absolute;
+        width: 12px;
+    }
+
+    .mapi-height-container {
+        left: -25px;
+        padding: 0 25px;
+        position: relative;
+        width: 100%;
+    }
+	
 </style>
 </head>
 <body>
+<div class="mapi-docs">
 <h1>Profiling Interface</h1>
 
 <h3>Profiler Operation</h3>
@@ -99,170 +236,284 @@
 	<p />Developers can change the set of monitored events at
 	runtime by calling <tt>mono_profiler_set_events</tt>.
 	
- <a name="api:mono_profiler_install"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install</div>
+<a name="api:mono_profiler_install"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">void
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">void
 mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
 
 </div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>prof:</i></dt><dd> a MonoProfiler structure pointer, or a pointer to a derived structure.</dd><dt><i>callback:</i></dt><dd> the function to invoke at shutdown</dd></blockquote>
-<b>Remarks</b>
-<p />	 
+            <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>prof</i><td> a MonoProfiler structure pointer, or a pointer to a derived structure.</td></td></tr><tr><td><i>callback</i><td> the function to invoke at shutdown</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div>	<p /> 
 	 Use mono_profiler_install to activate profiling in the Mono runtime.
 	 Typically developers of new profilers will create a new structure whose
 	 first field is a MonoProfiler and put any extra information that they need
 	 to access from the various profiling callbacks there.
-	
+	<p /></div>
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_allocation"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_allocation</div>
+<a name="api:mono_profiler_install_allocation"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_allocation</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_allocation</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_allocation</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_appdomain"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_appdomain</div>
+<a name="api:mono_profiler_install_appdomain"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_appdomain</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_appdomain</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_appdomain</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_assembly"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_assembly</div>
+<a name="api:mono_profiler_install_assembly"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_assembly</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_assembly</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_assembly</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_class"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_class</div>
+<a name="api:mono_profiler_install_class"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_class</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_class</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_class</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_coverage_filter"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_coverage_filter</div>
+<a name="api:mono_profiler_install_coverage_filter"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_coverage_filter</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_coverage_filter</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_coverage_filter</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_enter_leave"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_enter_leave</div>
+<a name="api:mono_profiler_install_enter_leave"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_enter_leave</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">void
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">void
 mono_profiler_install_enter_leave (MonoProfileMethodFunc enter, MonoProfileMethodFunc fleave)
 
 </div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>enter:</i></dt><dd> the routine to be called on each method entry</dd><dt><i>fleave:</i></dt><dd> the routine to be called each time a method returns</dd></blockquote>
-<b>Remarks</b>
-<p />	 
+            <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>enter</i><td> the routine to be called on each method entry</td></td></tr><tr><td><i>fleave</i><td> the routine to be called each time a method returns</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div>	<p /> 
 	 Use this routine to install routines that will be called everytime
 	 a method enters and leaves.   The routines will receive as an argument
-	 the MonoMethod representing the method that is entering or leaving.
+	 the MonoMethod representing the method that is entering or leaving.</div>
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_jit_compile"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_jit_compile</div>
+<a name="api:mono_profiler_install_jit_compile"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_jit_compile</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">void 
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">void 
 mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMethodResult end)
 
 </div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>start:</i></dt><dd> the routine to be called when the JIT process starts.</dd><dt><i>end:</i></dt><dd> the routine to be called when the JIT process ends.</dd></blockquote>
-<b>Remarks</b>
-<p />	 
+            <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>start</i><td> the routine to be called when the JIT process starts.</td></td></tr><tr><td><i>end</i><td> the routine to be called when the JIT process ends.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div>	<p /> 
 	 Use this routine to install routines that will be called when JIT 
-	 compilation of a method starts and completes.
+	 compilation of a method starts and completes.</div>
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_module"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_module</div>
+<a name="api:mono_profiler_install_module"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_module</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_module</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_module</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_thread"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_thread</div>
+<a name="api:mono_profiler_install_thread"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_thread</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_thread</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_thread</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_transition"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_transition</div>
+<a name="api:mono_profiler_install_transition"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_transition</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_transition</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_transition</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_gc"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_gc</div>
+<a name="api:mono_profiler_install_gc"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_gc</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_gc</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_gc</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_install_statistical"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_install_statistical</div>
+<a name="api:mono_profiler_install_statistical"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_install_statistical</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_profiler_install_statistical</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_profiler_install_statistical</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_set_events"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_set_events</div>
+<a name="api:mono_profiler_set_events"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_set_events</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">void
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">void
 mono_profiler_set_events (MonoProfileFlags events)
 
 </div>
-<p />
-<b>Parameters</b>
-<blockquote><dt><i>events:</i></dt><dd> an ORed set of values made up of MONO_PROFILER_ flags</dd></blockquote>
-<b>Remarks</b>
-<p />	 
+            <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>events</i><td> an ORed set of values made up of MONO_PROFILER_ flags</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div>	<p /> 
 	 The events descriped in the <i>events</i> argument is a set of flags
 	 that represent which profiling events must be triggered.  For
 	 example if you have registered a set of methods for tracking
 	 JIT compilation start and end with mono_profiler_install_jit_compile,
 	 you will want to pass the MONO_PROFILE_JIT_COMPILATION flag to
 	 this routine.
-	
+	<p />
 	 You can call mono_profile_set_events more than once and you can
-	 do this at runtime to modify which methods are invoked.
+	 do this at runtime to modify which methods are invoked.</div>
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_profiler_get_events"></a>
- <div class="api">
-    <div class="api-entry">mono_profiler_get_events</div>
+<a name="api:mono_profiler_get_events"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_profiler_get_events</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">MonoProfileFlags
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">MonoProfileFlags
 mono_profiler_get_events (void)
 
 </div>
-<p />
-<b>Remarks</b>
-<p />	 
-	 Returns a list of active events that will be intercepted. 
+            <p />
+             <div class="mapi-section">Description</div>
+             <div>	<p /> 
+	 Returns a list of active events that will be intercepted. </div>
+        </div><!--mapi-description -->
+    </div><!--height container -->
 
-
-</div><h3>Coverage</h3>
+<h3>Coverage</h3>
 
 	<p />To support profiling modules that need to do code coverage
 	analysis, the following routines is provided:
 	
-</body>
+   </div>
+</div></body>
 </html>
-</span>

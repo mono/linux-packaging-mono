@@ -6,6 +6,7 @@
  *
  * (C) 2002-2011 Novell, Inc.
  * Copyright 2011 Xamarin Inc
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include <config.h>
@@ -54,7 +55,19 @@
 #endif
 #endif
 
-#if defined(PLATFORM_MACOSX) || defined(__OpenBSD__) || defined(__FreeBSD__)
+#if defined(PLATFORM_MACOSX)
+#define USE_OSX_LOADER
+#endif
+
+#if ( defined(__OpenBSD__) || defined(__FreeBSD__) ) && defined(HAVE_LINK_H)
+#define USE_BSD_LOADER
+#endif
+
+#if defined(__HAIKU__)
+#define USE_HAIKU_LOADER
+#endif
+
+#if defined(USE_OSX_LOADER) || defined(USE_BSD_LOADER)
 #include <sys/proc.h>
 #include <sys/sysctl.h>
 #  if !defined(__OpenBSD__)
@@ -118,7 +131,7 @@ static guint32 process_wait (gpointer handle, guint32 timeout, gboolean alertabl
 static void process_close (gpointer handle, gpointer data);
 static gboolean is_pid_valid (pid_t pid);
 
-#if !(defined(PLATFORM_MACOSX) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__HAIKU__))
+#if !(defined(USE_OSX_LOADER) || defined(USE_BSD_LOADER) || defined(USE_HAIKU_LOADER))
 static FILE *
 open_process_map (int pid, const char *mode);
 #endif
@@ -958,19 +971,14 @@ gboolean CreateProcess (const gunichar2 *appname, const gunichar2 *cmdline,
 		MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: new process startup not synchronized. We may not notice if the newly created process exits immediately.", __func__);
 	}
 
-	thr_ret = _wapi_handle_lock_shared_handles ();
-	g_assert (thr_ret == 0);
-	
-	pid = fork ();
-	if (pid == -1) {
-		/* Error */
+	switch (pid = fork ()) {
+	case -1: /* Error */ {
 		SetLastError (ERROR_OUTOFMEMORY);
 		ret = FALSE;
 		fork_failed = TRUE;
-		goto cleanup;
-	} else if (pid == 0) {
-		/* Child */
-		
+		break;
+	}
+	case 0: /* Child */ {
 		if (startup_pipe [0] != -1) {
 			/* Wait until the parent has updated it's internal data */
 			ssize_t _i G_GNUC_UNUSED = read (startup_pipe [0], &dummy, 1);
@@ -1015,56 +1023,59 @@ gboolean CreateProcess (const gunichar2 *appname, const gunichar2 *cmdline,
 		
 		/* set error */
 		_exit (-1);
+
+		break;
 	}
-	/* parent */
-	
-	process_handle_data = lookup_process_handle (handle);
-	if (!process_handle_data) {
-		g_warning ("%s: error looking up process handle %p", __func__,
-			   handle);
-		_wapi_handle_unref (handle);
-		goto cleanup;
+	default: /* Parent */ {
+		thr_ret = _wapi_handle_lock_shared_handles ();
+		g_assert (thr_ret == 0);
+
+		process_handle_data = lookup_process_handle (handle);
+		if (!process_handle_data) {
+			g_warning ("%s: error looking up process handle %p", __func__, handle);
+			_wapi_handle_unref (handle);
+		} else {
+			process_handle_data->id = pid;
+
+			/* Add our mono_process into the linked list of mono_processes */
+			mono_process = (struct MonoProcess *) g_malloc0 (sizeof (struct MonoProcess));
+			mono_process->pid = pid;
+			mono_process->handle_count = 1;
+			if (mono_os_sem_init (&mono_process->exit_sem, 0) != 0) {
+				/* If we can't create the exit semaphore, we just don't add anything
+				 * to our list of mono processes. Waiting on the process will return 
+				 * immediately. */
+				g_warning ("%s: could not create exit semaphore for process.", strerror (errno));
+				g_free (mono_process);
+			} else {
+				/* Keep the process handle artificially alive until the process
+				 * exits so that the information in the handle isn't lost. */
+				_wapi_handle_ref (handle);
+				mono_process->handle = handle;
+
+				process_handle_data->mono_process = mono_process;
+
+				mono_os_mutex_lock (&mono_processes_mutex);
+				mono_process->next = mono_processes;
+				mono_processes = mono_process;
+				mono_os_mutex_unlock (&mono_processes_mutex);
+			}
+
+			if (process_info != NULL) {
+				process_info->hProcess = handle;
+				process_info->dwProcessId = pid;
+
+				/* FIXME: we might need to handle the thread info some day */
+				process_info->hThread = INVALID_HANDLE_VALUE;
+				process_info->dwThreadId = 0;
+			}
+		}
+
+		_wapi_handle_unlock_shared_handles ();
+
+		break;
 	}
-	
-	process_handle_data->id = pid;
-
-	/* Add our mono_process into the linked list of mono_processes */
-	mono_process = (struct MonoProcess *) g_malloc0 (sizeof (struct MonoProcess));
-	mono_process->pid = pid;
-	mono_process->handle_count = 1;
-	if (mono_os_sem_init (&mono_process->exit_sem, 0) != 0) {
-		/* If we can't create the exit semaphore, we just don't add anything
-		 * to our list of mono processes. Waiting on the process will return 
-		 * immediately. */
-		g_warning ("%s: could not create exit semaphore for process.", strerror (errno));
-		g_free (mono_process);
-	} else {
-		/* Keep the process handle artificially alive until the process
-		 * exits so that the information in the handle isn't lost. */
-		_wapi_handle_ref (handle);
-		mono_process->handle = handle;
-
-		process_handle_data->mono_process = mono_process;
-
-		mono_os_mutex_lock (&mono_processes_mutex);
-		mono_process->next = mono_processes;
-		mono_processes = mono_process;
-		mono_os_mutex_unlock (&mono_processes_mutex);
 	}
-	
-	if (process_info != NULL) {
-		process_info->hProcess = handle;
-		process_info->dwProcessId = pid;
-
-		/* FIXME: we might need to handle the thread info some
-		 * day
-		 */
-		process_info->hThread = INVALID_HANDLE_VALUE;
-		process_info->dwThreadId = 0;
-	}
-
-cleanup:
-	_wapi_handle_unlock_shared_handles ();
 
 	if (fork_failed)
 		_wapi_handle_unref (handle);
@@ -1274,7 +1285,8 @@ GetExitCodeProcess (gpointer process, guint32 *code)
 			*code = STILL_ACTIVE;
 			return TRUE;
 		} else {
-			return FALSE;
+			*code = -1;
+			return TRUE;
 		}
 	}
 
@@ -1403,7 +1415,7 @@ static gint find_procmodule (gconstpointer a, gconstpointer b)
 	}
 }
 
-#ifdef PLATFORM_MACOSX
+#if defined(USE_OSX_LOADER)
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
 
@@ -1458,7 +1470,7 @@ static GSList *load_modules (void)
 	
 	return(ret);
 }
-#elif defined(__OpenBSD__) || defined(__FreeBSD__)
+#elif defined(USE_BSD_LOADER)
 #include <link.h>
 static int load_modules_callback (struct dl_phdr_info *info, size_t size, void *ptr)
 {
@@ -1517,7 +1529,7 @@ static GSList *load_modules (void)
 
 	return(ret);
 }
-#elif defined(__HAIKU__)
+#elif defined(USE_HAIKU_LOADER)
 
 static GSList *load_modules (void)
 {
@@ -1713,7 +1725,7 @@ static gboolean match_procname_to_modulename (char *procname, char *modulename)
 	return result;
 }
 
-#if !(defined(PLATFORM_MACOSX) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__HAIKU__))
+#if !(defined(USE_OSX_LOADER) || defined(USE_BSD_LOADER) || defined(USE_HAIKU_LOADER))
 static FILE *
 open_process_map (int pid, const char *mode)
 {
@@ -1742,7 +1754,7 @@ gboolean EnumProcessModules (gpointer process, gpointer *modules,
 			     guint32 size, guint32 *needed)
 {
 	WapiHandle_process *process_handle;
-#if !defined(__OpenBSD__) && !defined(PLATFORM_MACOSX) && !defined(__FreeBSD__)
+#if !defined(USE_OSX_LOADER) && !defined(USE_BSD_LOADER)
 	FILE *fp;
 #endif
 	GSList *mods = NULL;
@@ -1778,7 +1790,7 @@ gboolean EnumProcessModules (gpointer process, gpointer *modules,
 		proc_name = g_strdup (process_handle->proc_name);
 	}
 	
-#if defined(PLATFORM_MACOSX) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__HAIKU__)
+#if defined(USE_OSX_LOADER) || defined(USE_BSD_LOADER) || defined(USE_HAIKU_LOADER)
 	mods = load_modules ();
 	if (!proc_name) {
 		modules[0] = NULL;
@@ -1835,11 +1847,11 @@ gboolean EnumProcessModules (gpointer process, gpointer *modules,
 static char *
 get_process_name_from_proc (pid_t pid)
 {
-#if defined(__OpenBSD__) || defined(__FreeBSD__)
+#if defined(USE_BSD_LOADER)
 	int mib [6];
 	size_t size;
 	struct kinfo_proc *pi;
-#elif defined(PLATFORM_MACOSX)
+#elif defined(USE_OSX_LOADER)
 #if !(!defined (__mono_ppc__) && defined (TARGET_OSX))
 	size_t size;
 	struct kinfo_proc *pi;
@@ -1866,7 +1878,7 @@ get_process_name_from_proc (pid_t pid)
 		fclose (fp);
 	}
 	g_free (filename);
-#elif defined(PLATFORM_MACOSX)
+#elif defined(USE_OSX_LOADER)
 #if !defined (__mono_ppc__) && defined (TARGET_OSX)
 	/* No proc name on OSX < 10.5 nor ppc nor iOS */
 	memset (buf, '\0', sizeof(buf));
@@ -1917,7 +1929,8 @@ get_process_name_from_proc (pid_t pid)
 
 	free(pi);
 #endif
-#elif defined(__FreeBSD__)
+#elif defined(USE_BSD_LOADER)
+#if defined(__FreeBSD__)
 	mib [0] = CTL_KERN;
 	mib [1] = KERN_PROC;
 	mib [2] = KERN_PROC_PID;
@@ -1969,16 +1982,12 @@ retry:
 		return(ret);
 	}
 
-#if defined(__OpenBSD__)
 	if (strlen (pi->p_comm) > 0)
 		ret = g_strdup (pi->p_comm);
-#elif defined(__FreeBSD__)
-	if (strlen (pi->ki_comm) > 0)
-		ret = g_strdup (pi->ki_comm);
-#endif
 
 	free(pi);
-#elif defined(__HAIKU__)
+#endif
+#elif defined(USE_HAIKU_LOADER)
 	image_info imageInfo;
 	int32 cookie = 0;
 
@@ -2082,7 +2091,7 @@ get_module_name (gpointer process, gpointer module,
 	char *procname_ext = NULL;
 	glong len;
 	gsize bytes;
-#if !defined(__OpenBSD__) && !defined(PLATFORM_MACOSX) && !defined(__FreeBSD__)
+#if !defined(USE_OSX_LOADER) && !defined(USE_BSD_LOADER)
 	FILE *fp;
 #endif
 	GSList *mods = NULL;
@@ -2116,7 +2125,7 @@ get_module_name (gpointer process, gpointer module,
 	}
 
 	/* Look up the address in /proc/<pid>/maps */
-#if defined(PLATFORM_MACOSX) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__HAIKU__)
+#if defined(USE_OSX_LOADER) || defined(USE_BSD_LOADER) || defined(USE_HAIKU_LOADER)
 	mods = load_modules ();
 #else
 	fp = open_process_map (pid, "r");
@@ -2269,7 +2278,7 @@ GetModuleInformation (gpointer process, gpointer module,
 {
 	WapiHandle_process *process_handle;
 	pid_t pid;
-#if !defined(__OpenBSD__) && !defined(PLATFORM_MACOSX) && !defined(__FreeBSD__)
+#if !defined(USE_OSX_LOADER) && !defined(USE_BSD_LOADER)
 	FILE *fp;
 #endif
 	GSList *mods = NULL;
@@ -2300,7 +2309,7 @@ GetModuleInformation (gpointer process, gpointer module,
 		proc_name = g_strdup (process_handle->proc_name);
 	}
 
-#if defined(PLATFORM_MACOSX) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__HAIKU__)
+#if defined(USE_OSX_LOADER) || defined(USE_BSD_LOADER) || defined(USE_HAIKU_LOADER)
 	mods = load_modules ();
 #else
 	/* Look up the address in /proc/<pid>/maps */
@@ -2716,8 +2725,7 @@ process_wait (gpointer handle, guint32 timeout, gboolean alertable)
 	WapiHandle_process *process_handle;
 	pid_t pid G_GNUC_UNUSED, ret;
 	int status;
-	guint32 start;
-	guint32 now;
+	gint64 start, now;
 	struct MonoProcess *mp;
 
 	/* FIXME: We can now easily wait on processes that aren't our own children,
@@ -2745,7 +2753,34 @@ process_wait (gpointer handle, guint32 timeout, gboolean alertable)
 	/* We don't need to lock mono_processes here, the entry
 	 * has a handle_count > 0 which means it will not be freed. */
 	mp = process_handle->mono_process;
-	g_assert (mp);
+	if (!mp) {
+		pid_t res;
+
+		if (pid == mono_process_current_pid ()) {
+			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): waiting on current process", __func__, handle, timeout);
+			return WAIT_TIMEOUT;
+		}
+
+		/* This path is used when calling Process.HasExited, so
+		 * it is only used to poll the state of the process, not
+		 * to actually wait on it to exit */
+		g_assert (timeout == 0);
+
+		MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): waiting on non-child process", __func__, handle, timeout);
+
+		res = waitpid (pid, &status, WNOHANG);
+		if (res == 0) {
+			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): non-child process WAIT_TIMEOUT", __func__, handle, timeout);
+			return WAIT_TIMEOUT;
+		}
+		if (res > 0) {
+			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): non-child process waited successfully", __func__, handle, timeout);
+			return WAIT_OBJECT_0;
+		}
+
+		MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): non-child process WAIT_FAILED, error : %s (%d))", __func__, handle, timeout, g_strerror (errno), errno);
+		return WAIT_FAILED;
+	}
 
 	start = mono_msec_ticks ();
 	now = start;
