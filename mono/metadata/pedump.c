@@ -6,6 +6,7 @@
  *
  * Copyright 2001-2003 Ximian, Inc (http://www.ximian.com)
  * Copyright 2004-2009 Novell, Inc (http://www.novell.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 #include <config.h>
 #include <stdio.h>
@@ -361,7 +362,6 @@ dump_verify_info (MonoImage *image, int flags)
 		for (i = 0; i < m->rows; ++i) {
 			MonoMethod *method;
 			MonoError error;
-			mono_loader_clear_error ();
 
 			method = mono_get_method_checked (image, MONO_TOKEN_METHOD_DEF | (i+1), NULL, NULL, &error);
 			if (!method) {
@@ -467,6 +467,7 @@ verify_image_file (const char *fname)
 
 	mono_install_assembly_preload_hook (pedump_preload, GUINT_TO_POINTER (FALSE));
 
+	mono_icall_init ();
 	mono_marshal_init ();
 
 
@@ -485,16 +486,14 @@ verify_image_file (const char *fname)
 			continue;
 		}
 		mono_class_init (klass);
-		if (klass->exception_type != MONO_EXCEPTION_NONE || mono_loader_get_last_error ()) {
+		if (mono_class_has_failure (klass)) {
 			printf ("Error verifying class(0x%08x) %s.%s a type load error happened\n", token, klass->name_space, klass->name);
-			mono_loader_clear_error ();
 			++count;
 		}
 
 		mono_class_setup_vtable (klass);
-		if (klass->exception_type != MONO_EXCEPTION_NONE || mono_loader_get_last_error ()) {
+		if (mono_class_has_failure (klass)) {
 			printf ("Error verifying class(0x%08x) %s.%s a type load error happened\n", token, klass->name_space, klass->name);
-			mono_loader_clear_error ();
 			++count;
 		}
 	}

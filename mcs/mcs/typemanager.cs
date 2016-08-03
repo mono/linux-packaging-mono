@@ -198,6 +198,8 @@ namespace Mono.CSharp
 		public readonly PredefinedType SecurityAction;
 		public readonly PredefinedType Dictionary;
 		public readonly PredefinedType Hashtable;
+		public readonly PredefinedType Array;
+
 		public readonly TypeSpec[] SwitchUserTypes;
 
 		//
@@ -266,6 +268,7 @@ namespace Mono.CSharp
 			SecurityAction = new PredefinedType (module, MemberKind.Enum, "System.Security.Permissions", "SecurityAction");
 			Dictionary = new PredefinedType (module, MemberKind.Class, "System.Collections.Generic", "Dictionary", 2);
 			Hashtable = new PredefinedType (module, MemberKind.Class, "System.Collections", "Hashtable");
+			Array = new PredefinedType (module, MemberKind.Class, "System", "Array");
 
 			Expression = new PredefinedType (module, MemberKind.Class, "System.Linq.Expressions", "Expression");
 			ExpressionGeneric = new PredefinedType (module, MemberKind.Class, "System.Linq.Expressions", "Expression", 1);
@@ -340,6 +343,7 @@ namespace Mono.CSharp
 	class PredefinedMembers
 	{
 		public readonly PredefinedMember<MethodSpec> ActivatorCreateInstance;
+		public readonly PredefinedMember<MethodSpec> ArrayEmpty;
 		public readonly PredefinedMember<MethodSpec> AsyncTaskMethodBuilderCreate;
 		public readonly PredefinedMember<MethodSpec> AsyncTaskMethodBuilderStart;
 		public readonly PredefinedMember<MethodSpec> AsyncTaskMethodBuilderSetResult;
@@ -384,6 +388,7 @@ namespace Mono.CSharp
 		public readonly PredefinedMember<MethodSpec> FixedBufferAttributeCtor;
 		public readonly PredefinedMember<MethodSpec> MethodInfoGetMethodFromHandle;
 		public readonly PredefinedMember<MethodSpec> MethodInfoGetMethodFromHandle2;
+		public readonly PredefinedMember<MethodSpec> MethodInfoCreateDelegate;
 		public readonly PredefinedMember<MethodSpec> MonitorEnter;
 		public readonly PredefinedMember<MethodSpec> MonitorEnter_v4;
 		public readonly PredefinedMember<MethodSpec> MonitorExit;
@@ -409,6 +414,9 @@ namespace Mono.CSharp
 
 			ActivatorCreateInstance = new PredefinedMember<MethodSpec> (module, types.Activator,
 				MemberFilter.Method ("CreateInstance", 1, ParametersCompiled.EmptyReadOnlyParameters, null));
+
+			ArrayEmpty = new PredefinedMember<MethodSpec> (module, types.Array,
+				MemberFilter.Method ("Empty", 1, ParametersCompiled.EmptyReadOnlyParameters, null));
 
 			AsyncTaskMethodBuilderCreate = new PredefinedMember<MethodSpec> (module, types.AsyncTaskMethodBuilder,
 				MemberFilter.Method ("Create", 0, ParametersCompiled.EmptyReadOnlyParameters, types.AsyncTaskMethodBuilder.TypeSpec));
@@ -658,6 +666,10 @@ namespace Mono.CSharp
 
 			MethodInfoGetMethodFromHandle2 = new PredefinedMember<MethodSpec> (module, types.MethodBase,
 				"GetMethodFromHandle", MemberKind.Method, types.RuntimeMethodHandle, new PredefinedType (btypes.RuntimeTypeHandle));
+
+			MethodInfoCreateDelegate = new PredefinedMember<MethodSpec> (module, types.MethodInfo,
+			                                                             "CreateDelegate", MemberKind.Method,
+			                                                             new PredefinedType (btypes.Type), new PredefinedType (btypes.Object));
 
 			MonitorEnter = new PredefinedMember<MethodSpec> (module, types.Monitor, "Enter", btypes.Object);
 

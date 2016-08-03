@@ -3,38 +3,10 @@
  *
  * Copyright 2011 Novell, Inc (http://www.novell.com)
  * Copyright 2011 Xamarin Inc (http://www.xamarin.com)
- *
- * THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED
- * OR IMPLIED.  ANY USE IS AT YOUR OWN RISK.
- *
- * Permission is hereby granted to use or copy this program
- * for any purpose,  provided the above notices are retained on all copies.
- * Permission to modify the code and to distribute modified code is granted,
- * provided the above notices are retained, and a notice that the code was
- * modified is included with the above copyright notice.
- *
- *
  * Copyright 2001-2003 Ximian, Inc
  * Copyright 2003-2010 Novell, Inc.
  *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include "config.h"
@@ -49,12 +21,29 @@
 #include "sgen/sgen-qsort.h"
 #include "utils/mono-logger-internals.h"
 
+typedef enum {
+	BRIDGE_PROCESSOR_INVALID,
+	BRIDGE_PROCESSOR_OLD,
+	BRIDGE_PROCESSOR_NEW,
+	BRIDGE_PROCESSOR_TARJAN,
+	BRIDGE_PROCESSOR_DEFAULT = BRIDGE_PROCESSOR_TARJAN
+} BridgeProcessorSelection;
+
+// Bridge processor type pending / in use
+static BridgeProcessorSelection bridge_processor_selection = BRIDGE_PROCESSOR_DEFAULT;
+// Most recently requested callbacks
+static MonoGCBridgeCallbacks pending_bridge_callbacks;
+// Currently-in-use callbacks
 MonoGCBridgeCallbacks bridge_callbacks;
+
+// Bridge processor state
 static SgenBridgeProcessor bridge_processor;
+// This is used for a special debug feature
 static SgenBridgeProcessor compare_to_bridge_processor;
 
 volatile gboolean bridge_processing_in_progress = FALSE;
 
+// FIXME: The current usage pattern for this function is unsafe. Bridge processing could start immediately after unlock
 void
 mono_gc_wait_for_bridge_processing (void)
 {
@@ -67,42 +56,101 @@ mono_gc_wait_for_bridge_processing (void)
 	sgen_gc_unlock ();
 }
 
-
 void
 mono_gc_register_bridge_callbacks (MonoGCBridgeCallbacks *callbacks)
 {
 	if (callbacks->bridge_version != SGEN_BRIDGE_VERSION)
 		g_error ("Invalid bridge callback version. Expected %d but got %d\n", SGEN_BRIDGE_VERSION, callbacks->bridge_version);
 
-	bridge_callbacks = *callbacks;
+	// Defer assigning to bridge_callbacks until we have the gc lock.
+	// Note: This line is unsafe if we are on a separate thread from the one the runtime was initialized on.
+	pending_bridge_callbacks = *callbacks;
 
-	if (!bridge_processor.reset_data)
-		sgen_old_bridge_init (&bridge_processor);
+	// If sgen has started, will assign bridge callbacks and init bridge
+	sgen_init_bridge ();
 }
 
-static gboolean
-init_bridge_processor (SgenBridgeProcessor *processor, const char *name)
+static BridgeProcessorSelection
+bridge_processor_name (const char *name)
 {
 	if (!strcmp ("old", name)) {
-		memset (processor, 0, sizeof (SgenBridgeProcessor));
-		sgen_old_bridge_init (processor);
+		return BRIDGE_PROCESSOR_OLD;
 	} else if (!strcmp ("new", name)) {
-		memset (processor, 0, sizeof (SgenBridgeProcessor));
-		sgen_new_bridge_init (processor);
+		return BRIDGE_PROCESSOR_NEW;
 	} else if (!strcmp ("tarjan", name)) {
-		memset (processor, 0, sizeof (SgenBridgeProcessor));
-		sgen_tarjan_bridge_init (processor);
+		return BRIDGE_PROCESSOR_TARJAN;
 	} else {
-		return FALSE;
+		return BRIDGE_PROCESSOR_INVALID;
 	}
-	return TRUE;
+}
+
+// Initialize a single bridge processor
+static void
+init_bridge_processor (SgenBridgeProcessor *processor, BridgeProcessorSelection selection)
+{
+	memset (processor, 0, sizeof (SgenBridgeProcessor));
+
+	switch (selection) {
+		case BRIDGE_PROCESSOR_OLD:
+			sgen_old_bridge_init (processor);
+			break;
+		case BRIDGE_PROCESSOR_NEW:
+			sgen_new_bridge_init (processor);
+			break;
+		case BRIDGE_PROCESSOR_TARJAN:
+			sgen_tarjan_bridge_init (processor);
+			break;
+		default:
+			g_assert_not_reached ();
+	}
+}
+
+/*
+ * Initializing the sgen bridge consists of setting the bridge callbacks,
+ * and initializing the bridge processor. Init should follow these rules:
+ *
+ *   - Init happens only after sgen is initialized (because we don't
+ *     know which bridge processor to initialize until then, and also
+ *     to allow bridge processor init to interact with sgen if it wants)
+ *
+ *   - Init happens only after mono_gc_register_bridge_callbacks is called
+ *
+ *   - Init should not happen concurrently with a GC (because a GC will
+ *     call sgen_need_bridge_processing at various times)
+ *
+ *   - Initializing the bridge processor should happen only once
+ *
+ * We call sgen_init_bridge when the callbacks are set, and also when sgen
+ * is done initing. Actual initialization then only occurs if it is ready.
+ */
+void
+sgen_init_bridge ()
+{
+	if (sgen_gc_initialized ()) {
+		// This lock is not initialized until the GC is
+		sgen_gc_lock ();
+
+		bridge_callbacks = pending_bridge_callbacks;
+
+		// If a bridge was registered but there is no bridge processor yet
+		if (bridge_callbacks.cross_references && !bridge_processor.reset_data)
+			init_bridge_processor (&bridge_processor, bridge_processor_selection);
+
+		sgen_gc_unlock ();
+	}
 }
 
 void
 sgen_set_bridge_implementation (const char *name)
 {
-	if (!init_bridge_processor (&bridge_processor, name))
-		g_warning ("Invalid value for bridge implementation, valid values are: 'new' and 'old'.");
+	BridgeProcessorSelection selection = bridge_processor_name (name);
+
+	if (selection == BRIDGE_PROCESSOR_INVALID)
+		g_warning ("Invalid value for bridge processor implementation, valid values are: 'new', 'old' and 'tarjan'.");
+	else if (bridge_processor.reset_data)
+		g_warning ("Cannot set bridge processor implementation once bridge has already started");
+	else
+		bridge_processor_selection = selection;
 }
 
 gboolean
@@ -403,6 +451,8 @@ sgen_bridge_processing_finish (int generation)
 	if (compare_bridge_processors ())
 		compare_to_bridge_processor.processing_after_callback (generation);
 
+	mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_BRIDGE: Complete, was running for %.2fms", mono_time_since_last_stw () / 10000.0f);
+
 	bridge_processing_in_progress = FALSE;
 }
 
@@ -554,6 +604,30 @@ bridge_test_cross_reference2 (int num_sccs, MonoGCBridgeSCC **sccs, int num_xref
 		sccs [i]->is_alive = TRUE;
 }
 
+/* This bridge keeps all peers with __test > 0 */
+static void
+bridge_test_positive_status (int num_sccs, MonoGCBridgeSCC **sccs, int num_xrefs, MonoGCBridgeXRef *xrefs)
+{
+	int i;
+
+	if (!mono_bridge_test_field) {
+		mono_bridge_test_field = mono_class_get_field_from_name (mono_object_get_class (sccs[0]->objs [0]), "__test");
+		g_assert (mono_bridge_test_field);
+	}
+
+	/*We mark all objects in a scc with live objects as reachable by scc*/
+	for (i = 0; i < num_sccs; ++i) {
+		int j;
+		for (j = 0; j < sccs [i]->num_objs; ++j) {
+			if (test_scc (sccs [i], j)) {
+				sccs [i]->is_alive = TRUE;
+				break;
+			}
+		}
+	}
+}
+
+
 static void
 register_test_bridge_callbacks (const char *bridge_class_name)
 {
@@ -561,9 +635,21 @@ register_test_bridge_callbacks (const char *bridge_class_name)
 	callbacks.bridge_version = SGEN_BRIDGE_VERSION;
 	callbacks.bridge_class_kind = bridge_test_bridge_class_kind;
 	callbacks.is_bridge_object = bridge_test_is_bridge_object;
-	callbacks.cross_references = bridge_class_name[0] == '2' ? bridge_test_cross_reference2 : bridge_test_cross_reference;
+
+	switch (bridge_class_name [0]) {
+	case '2':
+		bridge_class = bridge_class_name + 1;
+		callbacks.cross_references = bridge_test_cross_reference2;
+		break;
+	case '3':
+		bridge_class = bridge_class_name + 1;
+		callbacks.cross_references = bridge_test_positive_status;
+		break;
+	default:
+		bridge_class = bridge_class_name;
+		callbacks.cross_references = bridge_test_cross_reference;
+	}
 	mono_gc_register_bridge_callbacks (&callbacks);
-	bridge_class = bridge_class_name + (bridge_class_name[0] == '2' ? 1 : 0);
 }
 
 gboolean
@@ -579,11 +665,10 @@ sgen_bridge_handle_gc_debug (const char *opt)
 		set_dump_prefix (prefix);
 	} else if (g_str_has_prefix (opt, "bridge-compare-to=")) {
 		const char *name = strchr (opt, '=') + 1;
-		if (init_bridge_processor (&compare_to_bridge_processor, name)) {
-			if (compare_to_bridge_processor.reset_data == bridge_processor.reset_data) {
-				g_warning ("Cannot compare bridge implementation to itself - ignoring.");
-				memset (&compare_to_bridge_processor, 0, sizeof (SgenBridgeProcessor));
-			}
+		BridgeProcessorSelection selection = bridge_processor_name (name);
+
+		if (selection != BRIDGE_PROCESSOR_INVALID) {
+			init_bridge_processor (&compare_to_bridge_processor, selection);
 		} else {
 			g_warning ("Invalid bridge implementation to compare against - ignoring.");
 		}

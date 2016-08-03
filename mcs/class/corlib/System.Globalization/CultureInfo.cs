@@ -59,7 +59,6 @@ namespace System.Globalization
 		[NonSerialized]
 		int default_calendar_type;
 		bool m_useUserOverride;
-		[NonSerialized]
 		internal volatile NumberFormatInfo numInfo;
 		internal volatile DateTimeFormatInfo dateTimeInfo;
 		volatile TextInfo textInfo;
@@ -639,7 +638,7 @@ namespace System.Globalization
 				numInfo = (NumberFormatInfo) numInfo.Clone ();
 			}
 
-			textInfo = CreateTextInfo (read_only);
+			textInfo = TextInfo.Invariant;
 
 			m_name=String.Empty;
 			englishname=
@@ -742,6 +741,9 @@ namespace System.Globalization
 		
 		public static CultureInfo GetCultureInfo (int culture)
 		{
+			if (culture < 1)
+				throw new ArgumentOutOfRangeException ("culture", "Positive number required.");
+
 			CultureInfo c;
 			
 			lock (shared_table_lock){

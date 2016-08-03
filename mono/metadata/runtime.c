@@ -5,6 +5,7 @@
  *  Jonathan Pryor 
  *
  * Copyright 2010 Novell, Inc (http://www.novell.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include <config.h>
@@ -56,6 +57,7 @@ mono_runtime_is_shutting_down (void)
 static void
 fire_process_exit_event (MonoDomain *domain, gpointer user_data)
 {
+	MonoError error;
 	MonoClassField *field;
 	gpointer pa [2];
 	MonoObject *delegate, *exc;
@@ -69,7 +71,8 @@ fire_process_exit_event (MonoDomain *domain, gpointer user_data)
 
 	pa [0] = domain;
 	pa [1] = NULL;
-	mono_runtime_delegate_invoke (delegate, pa, &exc);
+	mono_runtime_delegate_try_invoke (delegate, pa, &exc, &error);
+	mono_error_cleanup (&error);
 }
 
 static void
@@ -81,11 +84,14 @@ mono_runtime_fire_process_exit_event (void)
 }
 
 
-/*
+/**
+ * mono_runtime_try_shutdown:
+ *
  * Try to initialize runtime shutdown.
+ *
  * After this call completes the thread pool will stop accepting new jobs and no further threads will be created.
  *
- * @return true if shutdown was initiated by this call or false is other thread beat this one
+ * Returns: TRUE if shutdown was initiated by this call or false is other thread beat this one.
  */
 gboolean
 mono_runtime_try_shutdown (void)

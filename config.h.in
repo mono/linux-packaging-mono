@@ -1,8 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Enable checked build. */
-#undef CHECKED_BUILD
-
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -35,6 +32,9 @@
 
 /* Disable generics support */
 #undef DISABLE_GENERICS
+
+/* ... */
+#undef DISABLE_HW_TRAPS
 
 /* Icall tables disabled */
 #undef DISABLE_ICALL_TABLES
@@ -112,14 +112,23 @@
 /* Disables the verifier */
 #undef DISABLE_VERIFIER
 
+/* Enable checked build */
+#undef ENABLE_CHECKED_BUILD
+
+/* Enable GC checked build */
+#undef ENABLE_CHECKED_BUILD_GC
+
+/* Enable metadata checked build */
+#undef ENABLE_CHECKED_BUILD_METADATA
+
+/* Enable thread checked build */
+#undef ENABLE_CHECKED_BUILD_THREAD
+
 /* Enable DTrace probes */
 #undef ENABLE_DTRACE
 
 /* Extension module enabled */
 #undef ENABLE_EXTENSION_MODULE
-
-/* Gsharedvt */
-#undef ENABLE_GSHAREDVT
 
 /* Icall export enabled */
 #undef ENABLE_ICALL_EXPORT
@@ -138,6 +147,9 @@
 
 /* Have GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY */
 #undef GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY
+
+/* Define to 1 if you have the `accept4' function. */
+#undef HAVE_ACCEPT4
 
 /* Has the 'aintl' function */
 #undef HAVE_AINTL
@@ -178,11 +190,17 @@
 /* Define to 1 if you have the <checklist.h> header file. */
 #undef HAVE_CHECKLIST_H
 
+/* Define to 1 if you have the `clock_nanosleep' function. */
+#undef HAVE_CLOCK_NANOSLEEP
+
 /* Define to 1 if you have the <CommonCrypto/CommonDigest.h> header file. */
 #undef HAVE_COMMONCRYPTO_COMMONDIGEST_H
 
 /* Define to 1 if you have the <complex.h> header file. */
 #undef HAVE_COMPLEX_H
+
+/* Defaults to concurrent GC */
+#undef HAVE_CONC_GC_AS_DEFAULT
 
 /* Define to 1 if you have the `confstr' function. */
 #undef HAVE_CONFSTR
@@ -506,9 +524,6 @@
 /* No GC support. */
 #undef HAVE_NULL_GC
 
-/* Have oprofile support */
-#undef HAVE_OPROFILE
-
 /* Define to 1 if you have the <pathconf.h> header file. */
 #undef HAVE_PATHCONF_H
 
@@ -586,6 +601,9 @@
 
 /* Define to 1 if you have the `remap_file_pages' function. */
 #undef HAVE_REMAP_FILE_PAGES
+
+/* Define to 1 if you have the `sched_getaffinity' function. */
+#undef HAVE_SCHED_GETAFFINITY
 
 /* Define to 1 if you have the `sched_getcpu' function. */
 #undef HAVE_SCHED_GETCPU
@@ -692,6 +710,9 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
+/* Define to 1 if the system has the type `struct cmsghdr'. */
+#undef HAVE_STRUCT_CMSGHDR
+
 /* Define to 1 if `d_off' is a member of `struct dirent'. */
 #undef HAVE_STRUCT_DIRENT_D_OFF
 
@@ -724,6 +745,21 @@
 
 /* Define to 1 if the system has the type `struct pollfd'. */
 #undef HAVE_STRUCT_POLLFD
+
+/* Define to 1 if the system has the type `struct sockaddr'. */
+#undef HAVE_STRUCT_SOCKADDR
+
+/* Define to 1 if the system has the type `struct sockaddr_in'. */
+#undef HAVE_STRUCT_SOCKADDR_IN
+
+/* Define to 1 if the system has the type `struct sockaddr_in6'. */
+#undef HAVE_STRUCT_SOCKADDR_IN6
+
+/* Define to 1 if the system has the type `struct sockaddr_storage'. */
+#undef HAVE_STRUCT_SOCKADDR_STORAGE
+
+/* Define to 1 if the system has the type `struct sockaddr_un'. */
+#undef HAVE_STRUCT_SOCKADDR_UN
 
 /* Define to 1 if the system has the type `struct stat'. */
 #undef HAVE_STRUCT_STAT
@@ -941,8 +977,41 @@
 /* Define to 1 if you have the `_finite' function. */
 #undef HAVE__FINITE
 
+/* ... */
+#undef HOST_AMD64
+
+/* ... */
+#undef HOST_ARM
+
+/* ... */
+#undef HOST_ARM64
+
+/* ... */
+#undef HOST_IA64
+
+/* ... */
+#undef HOST_MIPS
+
+/* ... */
+#undef HOST_POWERPC
+
+/* ... */
+#undef HOST_POWERPC64
+
+/* ... */
+#undef HOST_S390X
+
+/* ... */
+#undef HOST_SPARC
+
+/* ... */
+#undef HOST_SPARC64
+
 /* Host Platform is Win32 */
 #undef HOST_WIN32
+
+/* ... */
+#undef HOST_X86
 
 /* Define as const if the declaration of iconv() needs const. */
 #undef ICONV_CONST
@@ -966,11 +1035,11 @@
 /* The runtime is compiled for cross-compiling mode */
 #undef MONO_CROSS_COMPILE
 
+/* Disable banned functions from being used by the runtime */
+#undef MONO_INSIDE_RUNTIME
+
 /* The LLVM back end is dynamically loaded */
 #undef MONO_LLVM_LOADED
-
-/* native types */
-#undef MONO_NATIVE_TYPES
 
 /* AOT cross offsets file */
 #undef MONO_OFFSETS_FILE
@@ -1104,9 +1173,6 @@
 /* ... */
 #undef USE_GCC_ATOMIC_OPS
 
-/* Use jump tables in JIT */
-#undef USE_JUMP_TABLES
-
 /* Use kqueue for the threadpool */
 #undef USE_KQUEUE_FOR_THREADPOOL
 
@@ -1118,9 +1184,6 @@
 
 /* Version number of package */
 #undef VERSION
-
-/* ... */
-#undef __default_codegen__
 
 /* 64 bit mode with 4 byte longs and pointers */
 #undef __mono_ilp32__

@@ -13,6 +13,7 @@
 /* 		 Dietmar Maurer (dietmar@ximian.com)		    */
 /* 								    */
 /* Copyright   - 2001 Ximian, Inc.				    */
+/* Licensed under the MIT license. See LICENSE file in the project root for full license information. */
 /* 								    */
 /*------------------------------------------------------------------*/
 
@@ -59,6 +60,7 @@
 
 #include "mini.h"
 #include "mini-s390x.h"
+#include "support-s390x.h"
 
 /*========================= End of Includes ========================*/
 
@@ -239,6 +241,7 @@ throw_exception (MonoObject *exc, unsigned long ip, unsigned long sp,
 		 gulong *int_regs, gdouble *fp_regs, gint32 *acc_regs, 
 		 guint fpc, gboolean rethrow)
 {
+	MonoError error;
 	MonoContext ctx;
 	int iReg;
 
@@ -260,13 +263,14 @@ throw_exception (MonoObject *exc, unsigned long ip, unsigned long sp,
 	MONO_CONTEXT_SET_BP (&ctx, sp);
 	MONO_CONTEXT_SET_IP (&ctx, ip);
 	
-	if (mono_object_isinst (exc, mono_defaults.exception_class)) {
+	if (mono_object_isinst_checked (exc, mono_defaults.exception_class, &error)) {
 		MonoException *mono_ex = (MonoException*)exc;
 		if (!rethrow) {
 			mono_ex->stack_trace = NULL;
 			mono_ex->trace_ips = NULL;
 		}
 	}
+	mono_error_assert_ok (&error);
 //	mono_arch_handle_exception (&ctx, exc, FALSE);
 	mono_handle_exception (&ctx, exc);
 	mono_restore_context(&ctx);
@@ -306,12 +310,8 @@ mono_arch_get_throw_exception_generic (int size, MonoTrampInfo **info,
 	s390_stg  (code, s390_r14, 0, STK_BASE, 0);
 	s390_lgr  (code, s390_r3, s390_r2);
 	if (corlib) {
-		s390_basr (code, s390_r13, 0);
-		s390_j    (code, 10);
-		s390_llong(code, mono_defaults.exception_class->image);
-		s390_llong(code, mono_exception_from_token);
-		s390_lg   (code, s390_r2, 0, s390_r13, 4);
-		s390_lg   (code, s390_r1, 0, s390_r13, 12);
+		S390_SET  (code, s390_r1, (guint8 *)mono_exception_from_token);
+		S390_SET  (code, s390_r2, (guint8 *)mono_defaults.exception_class->image);
 		s390_basr (code, s390_r14, s390_r1);
 	}
 
@@ -354,12 +354,9 @@ mono_arch_get_throw_exception_generic (int size, MonoTrampInfo **info,
 	s390_la   (code, s390_r7, 0, STK_BASE, S390_THROWSTACK_ACCREGS);
 	s390_stg  (code, s390_r7, 0, STK_BASE, S390_THROWSTACK_ACCPRM);
 	s390_stfpc(code, STK_BASE, S390_THROWSTACK_FPCPRM+4);
+	S390_SET  (code, s390_r1, (guint8 *)throw_exception);
 	s390_lghi (code, s390_r7, rethrow);
 	s390_stg  (code, s390_r7, 0, STK_BASE, S390_THROWSTACK_RETHROW);
-	s390_basr (code, s390_r13, 0);
-	s390_j    (code, 6);
-	s390_llong(code, throw_exception);
-	s390_lg   (code, s390_r1, 0, s390_r13, 4);
 	s390_basr (code, s390_r14, s390_r1);
 	/* we should never reach this breakpoint */
 	s390_break (code);

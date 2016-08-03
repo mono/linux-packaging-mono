@@ -1,56 +1,193 @@
-﻿<?xml version="1.0" encoding="utf-8"?><span>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-   <title>mono-api-dynamic-codegen.html</title>
-   <style type="text/css">
+    <title>mono-api-dynamic-codegen.html</title>
+    <style type="text/css">
+    .mapi-docs {
+	line-height: 1.5;
+	padding-left: 2em;
+	padding-right: 2em;
+    }
+    .mapi-docs p {
+	max-width: 60em;
+    }
+    .mapi-docs .mapi-body {
+	max-width: 60em;
+    }
+    .mapi-docs code {
+        border: 1px solid rgba(214,214,214,1);
+	background-color: rgba(249,249,249,1);
+	padding: 0.1em 0.5em;
+    }
+    .mapi-description code {
+        font-family: "Consolas", "Courier", monospace;
+        border: 1px solid rgba(214,214,214,1);
+	background-color: rgba(249,249,249,1);
+	padding: 0.1em 0.2em;
+    }
 
+    .mapi-header {
+        padding: 0 0 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+	background-color: rgba(249,249,249,1);
+    }
 
-   h3 { 
-       font-size: 18px;
-       padding-bottom: 4pt;
-       border-bottom: 2px solid #dddddd;
-   }
-       
-   .api {
-     border: 1px solid;
-     padding: 10pt;
-     margin: 10pt;
-   } 
+    .mapi-code {
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+	background-color: rgba(249,249,249,1);
+    }
 
-   .api-entry { 
-       border-bottom: none;
-       font-size: 18px;
-   }
+    .mapi-code:first-line {
+        line-height: 0px;
+    }
 
-   .prototype {
-     border: 1px solid;
-     background-color: #f2f2f2;
-     padding: 5pt;
-     margin-top: 5pt;
-     margin-bottom: 5pt;  
-   } 
-
-   .header {
-     border: 1px solid;
-     padding: 0 0 5pt 5pt;
-     margin: 10pt;
-     white-space: pre;
-       font-family: monospace;
-   }
+    .mapi-entry code {
+        border: none;
+        background-color: transparent;
+    }
     
-   .code {
-     border: 1px solid;
-     padding: 0 0 5pt 5pt;
-     margin: 10pt;
-     white-space: pre;
-       font-family: monospace;
-   }
-   
+    .mapi-parameters {
+        border-collapse: collapse;
+        border-spacing: 0;
+        empty-cells: hide;
+        border: 0;
+        margin: 5px 0 26px;	    
+    }
 
+    .mapi-parameters td {
+        border: 1px solid rgba(214,214,214,1);
+	  border-left-style: none;
+	padding: 5px 25px 5px 10px;
+    }
+
+    .mapi-parameters tr>td:last-child  {
+        border-right: 0;
+    }
+	
+    .mapi-parameters td:first-of-type {
+        text-align: right;
+        padding: 7px;
+        vertical-align: top;
+        word-break: normal;
+        width: 40px;
+    }
+
+    .mapi-parameters tr:last-child>td {
+        border-bottom: 0;
+    }
+
+    .mapi-parameters tr:first-child>td {
+        border-top: 0;
+    }
+
+    .mapi-parameters tr td:first-of-type {
+        text-align: right;
+        padding: 7px;
+        vertical-align: top;
+        word-break: normal;
+        width: 40px;
+    }
+
+   .mapi {
+        left: -25px;
+        margin: 0;
+        padding: 13px 25px 0;
+        position: relative;
+        width: 100%;
+    } 
+
+    .mapi-description {
+        background: rgba(249,249,249,1);
+        border-bottom: 1px solid rgba(233,233,233,1);
+        left: -25px;
+        margin: 0;
+        padding: 13px 25px 0;
+        position: relative;
+        width: 100%;	 
+    }
+
+     .mapi-entry {
+         background: transparent;
+     }
+
+     .mapi-docs {
+     }
+	
+     .mapi-prototype {
+         border-left: 5px solid rgba(205,233,244,1);
+         padding: .5em;
+         margin-top: 5pt;
+         margin-bottom: 5pt;
+         font-family: "Consolas", "Courier", monospace;
+         display: block;
+         overflow: auto;
+         background-color: #f9f9f9;
+    } 
+
+    .mapi-declaration {
+	margin-top: 21px;
+    }
+
+    .mapi-section {
+        font-size: smaller;
+	font-weight: bold;
+	margin-top: 21px;
+	line-height: 1.5;
+    }
+	
+    .mapi-strike {
+        text-decoration: line-through;
+    }
+
+    .mapi-deprecated {
+        color: red;
+    }
+
+    .mapi-ptr-container {
+        background: white;
+	border-bottom: 1px solid rgba(233,233,233,1);
+        left: -25px;
+        padding-left: 25px;
+        padding-right: 25px;
+        padding-bottom: 13px;
+        position: relative;
+        width: 100%;
+    }
+
+    .mapi-ptr {
+        background: rgba(249,249,249,1);
+	border-left: 1px solid rgba(233,233,233,1);
+	border-top: 1px solid rgba(233,233,233,1);
+        height: 12px;
+        left: 37px;
+        top: -7px;
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        transform: rotate(45deg);
+        position: absolute;
+        width: 12px;
+    }
+
+    .mapi-height-container {
+        left: -25px;
+        padding: 0 25px;
+        position: relative;
+        width: 100%;
+    }
+	
 </style>
 </head>
 <body>
-<h2>Dynamic Code Generation</h2>
+<div class="mapi-docs">
+<h2>Internal: Dynamic Code Generation</h2>
 
 	<p />The dynamic code generation interface inside the Mono
 	runtime is similar to the API exposed by
@@ -130,13 +267,19 @@ MonoMethod *adder ()
 }
 	</pre>
 	
- <a name="api:mono_mb_new"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_new</div>
+<a name="api:mono_mb_new"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_new</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_mb_new</div>
-<p />
-
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_new</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
 
 	<p />The possible values for the <i>type</i> argument are:
 
@@ -167,195 +310,387 @@ MonoMethod *adder ()
         MONO_WRAPPER_UNKNOWN
 </pre>
 
-</div><h3>Emitting IL</h3>
+<h3>Emitting IL</h3>
 
 	<p />Functions that can be used to generate IL on the flight,
 	similar in spirit to System.Reflection.Emit.ILGenerator.
 	
- <a name="api:mono_mb_emit_add_to_local"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_add_to_local</div>
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_add_to_local</div>
-<p />
+<a name="api:mono_mb_emit_add_to_local"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_add_to_local</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_branch"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_branch</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_add_to_local</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_branch</div>
-<p />
+<a name="api:mono_mb_emit_branch"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_branch</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_byte"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_byte</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_branch</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_byte</div>
-<p />
+<a name="api:mono_mb_emit_byte"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_byte</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_exception"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_exception</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_byte</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_exception</div>
-<p />
+<a name="api:mono_mb_emit_exception"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_exception</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_i2"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_i2</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_exception</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_i2</div>
-<p />
+<a name="api:mono_mb_emit_i2"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_i2</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_i4"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_i4</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_i2</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_i4</div>
-<p />
+<a name="api:mono_mb_emit_i4"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_i4</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_icon"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_icon</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_i4</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_icon</div>
-<p />
+<a name="api:mono_mb_emit_icon"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_icon</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_ldarg_addr"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_ldarg_addr</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_icon</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_ldarg_addr</div>
-<p />
+<a name="api:mono_mb_emit_ldarg_addr"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_ldarg_addr</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_ldarg"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_ldarg</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_ldarg_addr</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_ldarg</div>
-<p />
+<a name="api:mono_mb_emit_ldarg"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_ldarg</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_ldflda"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_ldflda</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_ldarg</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_ldflda</div>
-<p />
+<a name="api:mono_mb_emit_ldflda"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_ldflda</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_ldloc_addr"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_ldloc_addr</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_ldflda</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_ldloc_addr</div>
-<p />
+<a name="api:mono_mb_emit_ldloc_addr"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_ldloc_addr</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_ldloc"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_ldloc</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_ldloc_addr</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_ldloc</div>
-<p />
+<a name="api:mono_mb_emit_ldloc"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_ldloc</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_ldstr"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_ldstr</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_ldloc</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_ldstr</div>
-<p />
+<a name="api:mono_mb_emit_ldstr"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_ldstr</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_managed_call"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_managed_call</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_ldstr</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_managed_call</div>
-<p />
+<a name="api:mono_mb_emit_managed_call"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_managed_call</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_native_call"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_native_call</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_managed_call</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_native_call</div>
-<p />
+<a name="api:mono_mb_emit_native_call"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_native_call</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-</div> <a name="api:mono_mb_emit_stloc"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_emit_stloc</div>
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_native_call</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">Prototype: mono_mb_emit_stloc</div>
-<p />
+<a name="api:mono_mb_emit_stloc"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_emit_stloc</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_emit_stloc</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
 
-</div><h3>Local variables and Methods</h3>
- <a name="api:mono_mb_create_method"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_create_method</div>
+<h3>Local variables and Methods</h3>
+</div> <!-- class=mapi  -->
 
-    <div class="prototype">MonoMethod*
+<a name="api:mono_mb_create_method"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_create_method</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
+
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">MonoMethod*
 mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, int max_stack)
 
 </div>
-<p />
-<b>Returns</b>
-<blockquote>	  the newly created method.
+            <p />
+             <div class="mapi-section">Return value</div>
+             <div>	  the newly created method.
 
-	</blockquote>
-<b>Remarks</b>
-<p />	 
-	 Create a MonoMethod from this method builder.
+	<p /></div>
+             <div class="mapi-section">Description</div>
+             <div>	<p /> 
+	 Create a MonoMethod from this method builder.</div>
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_mb_add_data"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_add_data</div>
+<a name="api:mono_mb_add_data"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_add_data</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_mb_add_data</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_add_data</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_mb_add_local"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_add_local</div>
+<a name="api:mono_mb_add_local"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_add_local</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_mb_add_local</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_add_local</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_mb_free"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_free</div>
+<a name="api:mono_mb_free"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_free</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_mb_free</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_free</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
 
+<h3>Patching Addresses</h3>
+</div> <!-- class=mapi  -->
 
-</div><h3>Patching Addresses</h3>
- <a name="api:mono_mb_patch_addr"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_patch_addr</div>
+<a name="api:mono_mb_patch_addr"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_patch_addr</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_mb_patch_addr</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_patch_addr</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_mb_patch_addr_s"></a>
- <div class="api">
-    <div class="api-entry">mono_mb_patch_addr_s</div>
+<a name="api:mono_mb_patch_addr_s"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_mb_patch_addr_s</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_mb_patch_addr_s</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_mb_patch_addr_s</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
 
+<h3>Method Signatures</h3>
+</div> <!-- class=mapi  -->
 
-</div><h3>Method Signatures</h3>
- <a name="api:mono_metadata_signature_alloc"></a>
- <div class="api">
-    <div class="api-entry">mono_metadata_signature_alloc</div>
+<a name="api:mono_metadata_signature_alloc"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_metadata_signature_alloc</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_metadata_signature_alloc</div>
-<p />
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_metadata_signature_alloc</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
-</div> <a name="api:mono_metadata_signature_dup"></a>
- <div class="api">
-    <div class="api-entry">mono_metadata_signature_dup</div>
+<a name="api:mono_metadata_signature_dup"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_metadata_signature_dup</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
 
-    <div class="prototype">Prototype: mono_metadata_signature_dup</div>
-<p />
-
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_metadata_signature_dup</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+   </div>
 </div></body>
 </html>
-</span>

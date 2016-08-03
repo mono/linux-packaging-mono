@@ -6,6 +6,7 @@
  *
  * (C) 2005 Ximian, Inc.  http://www.ximian.com
  * Copyright 2011 Xamarin Inc.  http://www.xamarin.com
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
  #include "mini.h"
 
@@ -44,7 +45,7 @@ mono_branch_optimize_exception_target (MonoCompile *cfg, MonoBasicBlock *bb, con
 	if (bb->region == -1 || !MONO_BBLOCK_IS_IN_REGION (bb, MONO_REGION_TRY))
 		return NULL;
 
-	exclass = mono_class_from_name (mono_get_corlib (), "System", exname);
+	exclass = mono_class_load_from_name (mono_get_corlib (), "System", exname);
 	/* search for the handler */
 	for (i = 0; i < header->num_clauses; ++i) {
 		clause = &header->clauses [i];

@@ -270,8 +270,6 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPROFILE_CFLAGS = @OPROFILE_CFLAGS@
-OPROFILE_LIBS = @OPROFILE_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -382,7 +380,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @SUPPORT_SGEN_TRUE@sgen_dirs = sgen
 @CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_FALSE@SUBDIRS = arch utils io-layer cil metadata $(sgen_dirs) mini dis tests unit-tests benchmark profiler
-@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@SUBDIRS = utils io-layer metadata arch $(sgen_dirs) mini profiler
+@CROSS_COMPILING_FALSE@@INSTALL_MONOTOUCH_TRUE@SUBDIRS = arch utils io-layer metadata $(sgen_dirs) mini profiler
 @CROSS_COMPILING_TRUE@SUBDIRS = arch utils io-layer cil metadata $(sgen_dirs) mini dis profiler
 DIST_SUBDIRS = arch utils io-layer cil metadata $(sgen_dirs) mini dis tests unit-tests benchmark profiler
 all: all-recursive

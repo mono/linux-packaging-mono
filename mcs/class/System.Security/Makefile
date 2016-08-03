@@ -3,13 +3,12 @@ SUBDIRS =
 include ../../build/rules.make
 
 LIBRARY = System.Security.dll
-LIB_REFS = System System.Xml Mono.Security
+LIB_REFS = secxml/System bare/System.Xml Mono.Security
 LIB_MCS_FLAGS = -nowarn:618 \
 	-d:SECURITY_DEP \
-	-r:$(corlib) \
 	-nowarn:414
 
-LOCAL_MCS_FLAGS = -lib:$(secxml_libdir) -lib:$(bare_libdir)
+LOCAL_MCS_FLAGS =
 
 TEST_MCS_FLAGS = $(LIB_MCS_FLAGS) -nowarn:168,169,183,219,414
 

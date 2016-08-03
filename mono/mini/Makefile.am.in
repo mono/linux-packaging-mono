@@ -1,6 +1,13 @@
 count=100000
 mtest=for_loop
 monodir=$(top_builddir)
+mono=$(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
+
+if HOST_WIN32
+PLATFORM_PATH_SEPARATOR=;
+else
+PLATFORM_PATH_SEPARATOR=:
+endif
 
 # This is needed for automake dependency generation
 libgc_libs=$(monodir)/libgc/libmonogc.la
@@ -39,9 +46,10 @@ CLASS=$(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 RUNTIME_EXECUTABLE = $(if $(BOEHM),$(top_builddir)/mono/mini/mono-boehm,$(top_builddir)/runtime/mono-wrapper)
 
 MINI_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE)
-RUNTIME_AOTCHECK = MONO_PATH=$(CLASS):. $(RUNTIME_EXECUTABLE)
+RUNTIME_AOTCHECK = MONO_PATH="$(CLASS)$(PLATFORM_PATH_SEPARATOR)." $(RUNTIME_EXECUTABLE)
 
-MCS = $(MINI_RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -nowarn:0162
+CSC = $(mcs_topdir)/class/lib/build/mcs.exe
+MCS = CSC_SDK_PATH_DISABLED= $(MINI_RUNTIME) $(CSC) -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
 ILASM = $(MINI_RUNTIME) $(CLASS)/ilasm.exe
 
 AM_CFLAGS = \
@@ -297,13 +305,18 @@ x86_sources = \
 	mini-x86.c		\
 	mini-x86.h		\
 	exceptions-x86.c	\
-	tramp-x86.c
+	tramp-x86.c	\
+	mini-x86-gsharedvt.c	\
+	tramp-x86-gsharedvt.c
 
 amd64_sources = \
 	mini-amd64.c		\
 	mini-amd64.h		\
 	exceptions-amd64.c	\
-	tramp-amd64.c
+	tramp-amd64.c	\
+	mini-amd64-gsharedvt.c	\
+	mini-amd64-gsharedvt.h	\
+	tramp-amd64-gsharedvt.c
 
 ppc_sources = \
 	mini-ppc.c		\
@@ -317,13 +330,18 @@ arm_sources = \
 	mini-arm.h		\
 	mini-arm-tls.h		\
 	exceptions-arm.c	\
-	tramp-arm.c
+	tramp-arm.c	\
+	mini-arm-gsharedvt.c	\
+	tramp-arm-gsharedvt.c
 
 arm64_sources = \
 	mini-arm64.c		\
 	mini-arm64.h		\
 	exceptions-arm64.c	\
-	tramp-arm64.c
+	tramp-arm64.c	\
+	mini-arm64-gsharedvt.c	\
+	mini-arm64-gsharedvt.h	\
+	tramp-arm64-gsharedvt.c
 
 mips_sources = \
 	mini-mips.c		\
@@ -389,6 +407,8 @@ common_sources = \
 	seq-points.h	\
 	ir-emit.h		\
 	method-to-ir.c		\
+	cfgdump.h		\
+	cfgdump.c		\
 	decompose.c		\
 	mini.h			\
 	version.h		\
@@ -418,6 +438,7 @@ common_sources = \
 	graph.c			\
 	mini-codegen.c		\
 	mini-exceptions.c	\
+	mini-exceptions-native-unwinder.c	\
 	mini-trampolines.c  	\
 	branch-opts.c		\
 	mini-generic-sharing.c	\
@@ -439,6 +460,7 @@ common_sources = \
 	xdebug.c			\
 	mini-llvm.h			\
 	mini-llvm-cpp.h	\
+	llvm-jit.h		\
 	alias-analysis.c	\
 	mini-cross-helpers.c \
 	arch-stubs.c		\
@@ -480,7 +502,7 @@ if AMD64
 arch_sources = $(amd64_sources)
 arch_built=cpu-amd64.h
 arch_define=__x86_64__
-ARCH_FULLAOT_EXCLUDE=--exclude DYNCALL --exclude GSHAREDVT
+ARCH_FULLAOT_EXCLUDE=--exclude DYNCALL
 endif
 
 if POWERPC
@@ -584,13 +606,13 @@ libmonoinclude_HEADERS = jit.h
 CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649
 
 basic-simd.exe: basic-simd.cs TestDriver.dll
-	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:Mono.Simd.dll
+	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/Mono.Simd.dll
 
 nacl.exe: nacl.cs TestDriver.dll
-	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:Mono.Simd.dll
+	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/Mono.Simd.dll
 
 generics.exe: generics.cs TestDriver.dll generics-variant-types.dll
-	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:generics-variant-types.dll
+	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:generics-variant-types.dll -r:$(CLASS)/System.Core.dll
 
 %.exe: %.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll
@@ -598,8 +620,8 @@ generics.exe: generics.cs TestDriver.dll generics-variant-types.dll
 %.exe: %.il
 	$(ILASM) -output=$@ $<
 
-TestDriver.dll: $(srcdir)/TestDriver.cs
-	$(MCS) -out:$@ -target:library $<
+TestDriver.dll: $(srcdir)/TestDriver.cs $(srcdir)/TestHelpers.cs
+	$(MCS) -out:$@ -target:library $^
 
 generics-variant-types.dll: generics-variant-types.il
 	$(ILASM) -dll -output=$@ $<
@@ -714,13 +736,13 @@ FULLAOT_LIBS = \
 	Mono.Simd.dll
 
 # This currently only works on amd64/arm
-fullaotcheck: mono $(fullaot_regtests)
+fullaotcheck: $(mono) $(fullaot_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS=full GSHAREDVT=$(GSHAREDVT)
+	$(MAKE) fullaot-libs AOT_FLAGS="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" GSHAREDVT=$(GSHAREDVT)
 	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
-	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot=full fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
-	ln -s $$PWD/mono fullaot-tmp/
+	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
+	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) fullaot-tmp/
 	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --full-aot fullaot-tmp/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
 
 # This can run in parallel
@@ -729,7 +751,7 @@ fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
 fullaot-tmp/%.dylib: $(CLASS)/%
 	cp $(CLASS)/$* fullaot-tmp/
 	mkdir fullaot-tmp/$*-tmp
-	MONO_PATH=fullaot-tmp/:$(CLASS) $(top_builddir)/runtime/mono-wrapper $(if $(GSHAREDVT),-O=gsharedvt) --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
+	MONO_PATH="fullaot-tmp/$(PLATFORM_PATH_SEPARATOR)$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(if $(GSHAREDVT),-O=gsharedvt) --aot=$(AOT_FLAGS),temp-path=fullaot-tmp/$*-tmp fullaot-tmp/$*
 	rm -rf fullaot-tmp/$*-tmp
 
 llvmfullaotcheck:
@@ -740,7 +762,7 @@ llvmonly_regtests = $(fullaot_regtests) gshared.exe
 llvmonlycheck: mono $(llvmonly_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS=llvmonly
+	$(MAKE) fullaot-libs AOT_FLAGS="llvmonly,$(MONO_FULLAOT_ADDITIONAL_ARGS)"
 	cp $(llvmonly_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  --aot=llvmonly fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
@@ -781,6 +803,7 @@ BUILT_SOURCES = version.h $(arch_built)
 
 CLEANFILES= $(BUILT_SOURCES) *.exe *.dll
 EXTRA_DIST = TestDriver.cs \
+	TestHelpers.cs \
 	genmdesc.pl				\
 	emitnunit.pl			\
 	$(test_sources) 			\
@@ -801,7 +824,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.4.2.11/f72fe45\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.6.0.125/753c323\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

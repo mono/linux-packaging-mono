@@ -3,18 +3,7 @@
  *
  * Copyright (C) 2014 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #ifdef SGEN_DEFINE_OBJECT_VTABLE
@@ -75,12 +64,7 @@ struct _SgenClientThreadInfo {
 	void *stack_start;
 	void *stack_start_limit;
 
-	/*FIXME pretty please finish killing ARCH_NUM_REGS */
-#ifdef USE_MONO_CTX
 	MonoContext ctx;		/* ditto */
-#else
-	gpointer regs[ARCH_NUM_REGS];	    /* ditto */
-#endif
 };
 
 #else
@@ -660,6 +644,56 @@ sgen_client_binary_protocol_gray_dequeue (gpointer queue, gpointer cursor, gpoin
 {
 }
 
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_major_card_table_scan_start (long long timestamp, gboolean mod_union)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_major_card_table_scan_end (long long timestamp, gboolean mod_union)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_los_card_table_scan_start (long long timestamp, gboolean mod_union)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_los_card_table_scan_end (long long timestamp, gboolean mod_union)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_finish_gray_stack_start (long long timestamp, int generation)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_finish_gray_stack_end (long long timestamp, int generation)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_worker_finish (long long timestamp, gboolean forced)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_evacuating_blocks (size_t block_size)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_concurrent_sweep_end (long long timestamp)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_header (long long check, int version, int ptr_size, gboolean little_endian)
+{
+}
+
 int sgen_thread_handshake (BOOL suspend);
 gboolean sgen_suspend_thread (SgenThreadInfo *info);
 gboolean sgen_resume_thread (SgenThreadInfo *info);
@@ -675,8 +709,6 @@ extern MonoNativeTlsKey thread_info_key;
 #define IN_CRITICAL_REGION (__thread_info__->client_info.in_critical_region)
 #endif
 
-#ifndef DISABLE_CRITICAL_REGION
-
 #ifdef HAVE_KW_THREAD
 #define IN_CRITICAL_REGION sgen_thread_info->client_info.in_critical_region
 #else
@@ -691,11 +723,22 @@ extern MonoNativeTlsKey thread_info_key;
  */
 #define EXIT_CRITICAL_REGION  do { mono_atomic_store_release (&IN_CRITICAL_REGION, 0); } while (0)
 
+#ifndef DISABLE_CRITICAL_REGION
+/*
+ * We can only use a critical region in the managed allocator if the JIT supports OP_ATOMIC_STORE_I4.
+ *
+ * TODO: Query the JIT instead of this ifdef hack.
+ */
+#if defined (TARGET_X86) || defined (TARGET_AMD64) || (defined (TARGET_ARM) && defined (HAVE_ARMV7)) || defined (TARGET_ARM64)
+#define MANAGED_ALLOCATOR_CAN_USE_CRITICAL_REGION
+#endif
 #endif
 
 #define SGEN_TV_DECLARE(name) gint64 name
 #define SGEN_TV_GETTIME(tv) tv = mono_100ns_ticks ()
-#define SGEN_TV_ELAPSED(start,end) ((long)(end-start))
+#define SGEN_TV_ELAPSED(start,end) ((gint64)(end-start))
+
+guint64 mono_time_since_last_stw (void);
 
 typedef MonoSemType SgenSemaphore;
 

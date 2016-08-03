@@ -13,6 +13,11 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
+#
+# This is a python script and a set of make targets to implement support for conditional submodules
+# Set the SUBMODULES_CONFIG_FILE make variable to the srcdir path of a SUBMODULES.json file which contains information about the submodules.
+#
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -78,7 +83,10 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-DIST_COMMON = $(srcdir)/versions.mk $(srcdir)/Makefile.in \
+DIST_COMMON = $(srcdir)/versions.mk \
+	$(top_srcdir)/scripts/submodules/versions.mk \
+	$(srcdir)/roslyn.mk $(srcdir)/coreclr.mk \
+	$(srcdir)/ms-test-suite.mk $(srcdir)/Makefile.in \
 	$(srcdir)/Makefile.am $(top_srcdir)/mkinstalldirs
 subdir = acceptance-tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -211,8 +219,6 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPROFILE_CFLAGS = @OPROFILE_CFLAGS@
-OPROFILE_LIBS = @OPROFILE_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -321,17 +327,20 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-TOP = ..
-ROSLYN_PATH = $(TOP)/../roslyn
-CORECLR_PATH = $(TOP)/../coreclr
-MSTESTSUITE_PATH = $(TOP)/../ms-test-suite
-CONFIG = SUBMODULES.json
-EXTRA_DIST = README.md SUBMODULES.json versions.mk versions.py
+ACCEPTANCE_TESTS_PATH = external
+ROSLYN_PATH = $(ACCEPTANCE_TESTS_PATH)/roslyn
+CORECLR_PATH = $(ACCEPTANCE_TESTS_PATH)/coreclr
+MSTESTSUITE_PATH = $(ACCEPTANCE_TESTS_PATH)/ms-test-suite
+CLEANFILES = *.dll *.exe *.mdb $(CORECLR_STRESSTESTSI_CS) \
+	GCStressTests.exe coreclr-testlibrary.dll
+EXTRA_DIST = README.md SUBMODULES.json versions.mk roslyn.mk coreclr.mk ms-test-suite.mk
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(with_mono_path) $(abs_top_builddir)/runtime/mono-wrapper --debug
 MCS = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe
 ILASM = $(RUNTIME) $(CLASS)/ilasm.exe
+SUBMODULES_CONFIG_FILE = $(top_srcdir)/acceptance-tests/SUBMODULES.json
+SCRIPT = $(top_srcdir)/scripts/submodules/versions.py
 CORECLR_TEST_CS_SRC = \
 	$(CORECLR_PATH)/tests/src/GC/Coverage/LargeObjectAlloc.cs	\
 	$(CORECLR_PATH)/tests/src/GC/Coverage/LargeObjectAlloc2.cs	\
@@ -1476,7 +1485,6 @@ CORECLR_TEST_CS_SRC = \
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0576/test0576.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0582/csgen.1.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0583/test583.cs	\
-	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0584/test584.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0792/test0792.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0828/test0828.cs	\
 	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0829/test0829.cs	\
@@ -4075,6 +4083,8 @@ CORECLR_TESTLIBRARY_CS_SRC = \
 # has no entrypoint or Main method
 
 # samples (should probably be removed upstream)
+
+# this test makes no sense, the expected pattern is the English one for all cultures
 CORECLR_DISABLED_TEST_CS_SRC = $(CORECLR_PATH)/tests/src/Loader/regressions/polyrec/polyrec.cs \
 	$(CORECLR_PATH)/tests/src/managed/Compilation/Compilation.cs \
 	$(CORECLR_PATH)/tests/src/Loader/NativeLibs/FromNativePaths.cs \
@@ -4269,7 +4279,8 @@ CORECLR_DISABLED_TEST_CS_SRC = $(CORECLR_PATH)/tests/src/Loader/regressions/poly
 	$(CORECLR_PATH)/tests/src/CoreMangLib/system/delegate/threatmodel/tests/bindingtarget.cs \
 	$(CORECLR_PATH)/tests/src/CoreMangLib/system/delegate/threatmodel/tests/testclass.cs \
 	$(CORECLR_PATH)/tests/src/hosting/samples/hosting/usercode/usercode.cs \
-	$(CORECLR_PATH)/tests/src/hosting/samples/resolveevent/usercodedependency/usercodedependency.cs
+	$(CORECLR_PATH)/tests/src/hosting/samples/resolveevent/usercodedependency/usercodedependency.cs \
+	$(CORECLR_PATH)/tests/src/Regressions/coreclr/0584/test584.cs
 CORECLR_TEST_IL_SRC = \
 	$(CORECLR_PATH)/tests/src/JIT/BBT/Scenario4/Not-Int32.il	\
 	$(CORECLR_PATH)/tests/src/JIT/Directed/Convert/implicitConv.il	\
@@ -5398,11 +5409,10 @@ CORECLR_TESTSI_CS = $(CORECLR_TEST_CS_SRC:.cs=.exe)
 CORECLR_TESTSI_IL = $(CORECLR_TEST_IL_SRC:.il=_il.exe)
 CORECLR_STRESSTESTSI_CS = $(CORECLR_STRESSTEST_CS_SRC:%.cs=%.exe)
 CORECLR_COREMANGLIB_TESTSI_CS = $(CORECLR_COREMANGLIB_TEST_CS_SRC:.cs=.exe)
-CLEANFILES = *.dll *.exe *.mdb $(CORECLR_STRESSTESTSI_CS) GCStressTests.exe coreclr-testlibrary.dll
 all: all-am
 
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/versions.mk $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(srcdir)/versions.mk $(top_srcdir)/scripts/submodules/versions.mk $(srcdir)/roslyn.mk $(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -5423,7 +5433,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(srcdir)/versions.mk:
+$(srcdir)/versions.mk $(top_srcdir)/scripts/submodules/versions.mk $(srcdir)/roslyn.mk $(srcdir)/coreclr.mk $(srcdir)/ms-test-suite.mk:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -5598,11 +5608,11 @@ uninstall-am:
 
 define ValidateVersionTemplate
 #$(eval REPOSITORY_$(2):=$(shell test -z $(3) && echo $(1) || echo "$(3)"))
-#$(eval DIRECTORY_$(2):=$(shell python versions.py get-dir $(1)))
+#$(eval DIRECTORY_$(2):=$(shell python $(SCRIPT) $(SUBMODULES_CONFIG_FILE) get-dir $(1)))
 #$(eval DIRECTORY_$(2):=$(shell test -z $(DIRECTORY_$(2)) && echo $(1) || echo $(DIRECTORY_$(2))))
-#$(eval MODULE_$(2):=$(shell python versions.py get-url $(1)))
-#$(eval NEEDED_$(2)_VERSION:=$(shell python versions.py get-rev $(1)))
-#$(eval $(2)_BRANCH_AND_REMOTE:=$(shell python versions.py get-remote-branch $(1)))
+#$(eval MODULE_$(2):=$(shell python $(SCRIPT) $(SUBMODULES_CONFIG_FILE) get-url $(1)))
+#$(eval NEEDED_$(2)_VERSION:=$(shell python $(SCRIPT) $(SUBMODULES_CONFIG_FILE) get-rev $(1)))
+#$(eval $(2)_BRANCH_AND_REMOTE:=$(shell python $(SCRIPT) $(SUBMODULES_CONFIG_FILE) get-remote-branch $(1)))
 
 #$(eval $(2)_VERSION:=$$$$(shell cd $($(2)_PATH) 2>/dev/null && git rev-parse HEAD ))
 
@@ -5673,14 +5683,10 @@ print-$(1)::
 .PHONY: validate-$(1) reset-$(1) print-$(1)
 
 reset-versions:: reset-$(1)
-validate-versions:: Validate-$(1)
+validate-versions:: validate-$(1)
 print-versions:: print-$(1)
 
 endef
-
-$(eval $(call ValidateVersionTemplate,roslyn,ROSLYN))
-$(eval $(call ValidateVersionTemplate,coreclr,CORECLR))
-$(eval $(call ValidateVersionTemplate,ms-test-suite,MSTESTSUITE))
 
 reset-versions::
 
@@ -5698,20 +5704,24 @@ reset:
 
 __bump-version-%:
 	@if [ "$(REV)" = "" ]; then echo "Usage: make bump-version-$* REV=<ref>"; exit 1; fi
-	python versions.py set-rev $* $(REV)
-	@if [ "$(COMMIT)" = "1" ]; then echo "[acceptance-tests] Bump $* to pick up $(REV)." | git commit -F - $(CONFIG); fi
+	python $(SCRIPT) $(SUBMODULES_CONFIG_FILE) set-rev $* $(REV)
+	@if [ "$(COMMIT)" = "1" ]; then echo "[submodules] Bump $* to pick up $(REV)." | git commit -F - $(SUBMODULES_CONFIG_FILE); fi
 
 __bump-branch-%:
 	@if [ "$(BRANCH)" = "" ]; then echo "Usage: make bump-branch-$* BRANCH=<branch> REMOTE_BRANCH=<remote branch>"; exit 1; fi
 	@if [ "$(REMOTE_BRANCH)" == "" ]; then echo "Usage: make bump-branch-$* BRANCH=<branch> REMOTE_BRANCH=<remote branch>"; exit 1; fi
-	python versions.py set-branch $* $(BRANCH)
-	python versions.py set-remote-branch $* $(REMOTE_BRANCH)
-	@if [ "$(COMMIT)" = "1" ]; then echo "[acceptance-tests] Bump $* to switch to $(BRANCH) $(REMOTE BRANCH)." | git commit -F - $(CONFIG); fi
+	python $(SCRIPT) $(SUBMODULES_CONFIG_FILE) set-branch $* $(BRANCH)
+	python $(SCRIPT) $(SUBMODULES_CONFIG_FILE) set-remote-branch $* $(REMOTE_BRANCH)
+	@if [ "$(COMMIT)" = "1" ]; then echo "[submodules] Bump $* to switch to $(BRANCH) $(REMOTE BRANCH)." | git commit -F - $(SUBMODULES_CONFIG_FILE); fi
 
 __bump-current-version-%:
-	REV=$(shell cd $(TOP)/../$* && git log -1 --pretty=format:%H); \
-	python versions.py set-rev $* $$REV; \
-	if [ "$(COMMIT)" = "1" ]; then echo "[acceptance-tests] Bump $* to pick up $$REV:" | git commit -F - $(CONFIG); fi
+	REV=$(shell cd $(ACCEPTANCE_TESTS_PATH)/$* && git log -1 --pretty=format:%H); \
+	python $(SCRIPT) $(SUBMODULES_CONFIG_FILE) set-rev $* $$REV; \
+	if [ "$(COMMIT)" = "1" ]; then echo "[submodules] Bump $* to pick up $$REV:" | git commit -F - $(SUBMODULES_CONFIG_FILE); fi
+
+$(eval $(call ValidateVersionTemplate,roslyn,ROSLYN))
+$(eval $(call ValidateVersionTemplate,coreclr,CORECLR))
+$(eval $(call ValidateVersionTemplate,ms-test-suite,MSTESTSUITE))
 
 # Bump the given submodule to the revision given by the REV make variable
 # If COMMIT is 1, commit the change
@@ -5748,22 +5758,10 @@ commit-bump-current-coreclr:
 
 commit-bump-current-ms-test-suite:
 	$(MAKE) bump-current-ms-test-suite COMMIT=1
-
-check-full: check-roslyn check-coreclr check-ms-test-suite
-
-check-ms-test-suite:
-	@if $(MAKE) validate-ms-test-suite RESET_VERSIONS=1; then \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance build MCS="$(MCS) -t:library -warn:1 -r:nunit.framework"; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-console.exe -nologo -exclude=MonoBug,BadTest" NUNIT_XML_RESULT=$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-conformance.xml; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug -warn:1"; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run MONO="$(RUNTIME)"; \
-	else \
-		echo "*** [ms-test-suite] Getting the repository failed, you probably don't have access to this Xamarin-internal resource. Skipping."; \
-	fi
-
 check-roslyn:
 	@$(MAKE) validate-roslyn RESET_VERSIONS=1
 	@if [ -z $$PREFIX ]; then echo "You need to set PREFIX to the prefix of the Mono installation that should be used for testing Roslyn." && exit 1; fi
+	sed -i -e 's/\\4.5-api"/\\4.5"/g' $$PREFIX/lib/mono/xbuild-frameworks/.NETFramework/v4.5/RedistList/FrameworkList.xml; \
 	export MSBuildExtensionsPath=$$PREFIX/lib/mono/xbuild; \
 	MONO_DOTNET_PORTABLE_DIR=$$PREFIX/lib/mono/xbuild-frameworks/.NETPortable/; \
 	MONO_NUGET_TARGETS_DIR=$$PREFIX/lib/mono/xbuild/Microsoft/NuGet/; \
@@ -5772,7 +5770,7 @@ check-roslyn:
 		mkdir -p $$MONO_DOTNET_PORTABLE_DIR; \
 		mkdir -p $$MONO_NUGET_TARGETS_DIR; \
 		mkdir -p $$MONO_PORTABLE_TARGETS_DIR; \
-		curl -SL "http://storage.bos.internalx.com/bot-provisioning/RoslynBuildDependencies.zip" > /tmp/RoslynBuildDependencies.zip; \
+		curl -SL "http://download.mono-project.com/third-party/RoslynBuildDependencies.zip" > /tmp/RoslynBuildDependencies.zip; \
 		unzip -o /tmp/RoslynBuildDependencies.zip -d /tmp/RoslynBuildDependencies; \
 		cp -r /tmp/RoslynBuildDependencies/PortableReferenceAssemblies/* $$MONO_DOTNET_PORTABLE_DIR; \
 		cp /tmp/RoslynBuildDependencies/NuGetTargets/* $$MONO_NUGET_TARGETS_DIR; \
@@ -5781,7 +5779,13 @@ check-roslyn:
 	cd $(ROSLYN_PATH); \
 	sed -i -e 'N; s/bootstrapArg=".*\n.*"/bootstrapArg=""/g' cibuild.sh; \
 	sed -i -e 's#-xml Binaries/\$$BUILD_CONFIGURATION/xUnitResults/#-nunit $(abs_top_builddir)/acceptance-tests/TestResult-#g' cibuild.sh; \
-	./cibuild.sh --mono-path $$PREFIX/bin
+	./cibuild.sh --mono-path $$PREFIX/bin || EXIT_CODE=1; \
+	sed -i -e 's/\\4.5"/\\4.5-api"/g' $$PREFIX/lib/mono/xbuild-frameworks/.NETFramework/v4.5/RedistList/FrameworkList.xml; \
+	exit $$EXIT_CODE
+clean-local-coreclr:
+	-rm -f $(CORECLR_TESTSI_CS)
+	-rm -f $(CORECLR_COREMANGLIB_TESTSI_CS)
+	-rm -f $(CORECLR_TESTSI_IL)
 
 coreclr-validate:
 	$(MAKE) validate-coreclr RESET_VERSIONS=1
@@ -5791,14 +5795,12 @@ coreclr-compile-tests: coreclr-validate
 	$(MAKE) -j4 $(CORECLR_COREMANGLIB_TESTSI_CS)
 	$(MAKE) -j4 $(CORECLR_TESTSI_IL)
 
-# the CoreCLR IL tests use the System.Console facade, we need to copy it to the test directory
-# all the other tests rely on the coreclr-testlibrary.dll
+# the CoreCLR tests rely on the coreclr-testlibrary.dll, we need to copy it to the test directory
 coreclr-runtest-basic: coreclr-validate test-runner.exe $(CORECLR_TESTSI_CS) $(CORECLR_TESTSI_IL)
 	@rm -f coreclr-testlist.txt
 	@$(call dumpvariabletofile, coreclr-testlist.txt, $(CORECLR_TESTSI_CS))
 	@$(call dumpvariabletofile, coreclr-testlist.txt, $(CORECLR_TESTSI_IL))
 	@for var in $(sort $(dir $(CORECLR_TESTSI_CS))); do ln -sf $(abspath coreclr-testlibrary.dll) "$$var"; done
-	@for var in $(sort $(dir $(CORECLR_TESTSI_IL))); do ln -sf "$(abspath $(CLASS)/Facades/System.Console.dll)" "$$var"; done
 	$(RUNTIME) ./test-runner.exe -j a --testsuite-name "coreclr" --expected-exit-code 100 --input-file coreclr-testlist.txt
 	@rm -f coreclr-testlist.txt
 
@@ -5840,15 +5842,24 @@ $(CORECLR_PATH)%.exe: $(CORECLR_PATH)%.cs coreclr-testlibrary.dll
 	$(MCS) -unsafe -debug -nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 -nowarn:0169 -nowarn:1690 -nowarn:0649 -nowarn:0612 -nowarn:3021 -nowarn:0197 -r:coreclr-testlibrary.dll -d:MONO -out:$@ $<
 
 test-runner.exe: $(top_srcdir)/mono/tests/test-runner.cs
-	$(MCS) -debug -out:$@ $<
+	$(MCS) -debug -r:Mono.Posix.dll -out:$@ $<
 
 GCStressTests.exe: $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
 	$(MCS) -out:$@ -debug -d:PROJECTK_BUILD $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
+check-ms-test-suite:
+	@if $(MAKE) validate-ms-test-suite RESET_VERSIONS=1; then \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance build MCS="$(MCS) -t:library -warn:1 -r:nunit.framework" && \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-console.exe -nologo -exclude=MonoBug,BadTest" NUNIT_XML_RESULT=$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-conformance.xml || EXIT_CODE=1; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug -warn:1" && \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run MONO="$(RUNTIME)" || EXIT_CODE=1; \
+		exit $$EXIT_CODE; \
+	else \
+		echo "*** [ms-test-suite] Getting the repository failed, you probably don't have access to this Xamarin-internal resource. Skipping."; \
+	fi
 
-clean-local:
-	-rm -f $(CORECLR_TESTSI_CS)
-	-rm -f $(CORECLR_COREMANGLIB_TESTSI_CS)
-	-rm -f $(CORECLR_TESTSI_IL)
+check-full: check-roslyn check-coreclr check-ms-test-suite
+
+clean-local: clean-local-coreclr
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

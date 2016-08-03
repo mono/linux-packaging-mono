@@ -1,6 +1,7 @@
 /*
  * Appdomain-related internal data structures and functions.
  * Copyright 2012 Xamarin Inc (http://www.xamarin.com)
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 #ifndef __MONO_METADATA_DOMAIN_INTERNALS_H__
 #define __MONO_METADATA_DOMAIN_INTERNALS_H__
@@ -60,6 +61,7 @@ struct _MonoJitInfoTableChunk
 	int		       refcount;
 	volatile int           num_elements;
 	volatile gint8        *last_code_end;
+	MonoJitInfo *next_tombstone;
 	MonoJitInfo * volatile data [MONO_JIT_INFO_TABLE_CHUNK_SIZE];
 };
 
@@ -201,7 +203,10 @@ struct _MonoJitInfo {
 		gpointer aot_info;
 		gpointer tramp_info;
 	} d;
-	struct _MonoJitInfo *next_jit_code_hash;
+	union {
+		struct _MonoJitInfo *next_jit_code_hash;
+		struct _MonoJitInfo *next_tombstone;
+	} n;
 	gpointer    code_start;
 	guint32     unwind_info;
 	int         code_size;
@@ -404,6 +409,7 @@ struct _MonoDomain {
 	MonoImage *socket_assembly;
 	MonoClass *sockaddr_class;
 	MonoClassField *sockaddr_data_field;
+	MonoClassField *sockaddr_data_length_field;
 
 	/* Cache function pointers for architectures  */
 	/* that require wrappers */
@@ -493,7 +499,7 @@ void
 mono_jit_info_set_generic_sharing_context (MonoJitInfo *ji, MonoGenericSharingContext *gsctx);
 
 char *
-mono_make_shadow_copy (const char *filename);
+mono_make_shadow_copy (const char *filename, MonoError *error);
 
 gboolean
 mono_is_shadow_copy_enabled (MonoDomain *domain, const gchar *dir_name);
@@ -515,12 +521,6 @@ mono_domain_code_reserve_align (MonoDomain *domain, int size, int alignment);
 
 void
 mono_domain_code_commit (MonoDomain *domain, void *data, int size, int newsize);
-
-void *
-nacl_domain_get_code_dest (MonoDomain *domain, void *data);
-
-void 
-nacl_domain_code_validate (MonoDomain *domain, guint8 **buf_base, int buf_size, guint8 **code_end);
 
 void
 mono_domain_code_foreach (MonoDomain *domain, MonoCodeManagerFunc func, void *user_data);
@@ -666,7 +666,7 @@ MONO_API void
 mono_domain_add_class_static_data (MonoDomain *domain, MonoClass *klass, gpointer data, guint32 *bitmap);
 
 MonoReflectionAssembly *
-mono_try_assembly_resolve (MonoDomain *domain, MonoString *fname, MonoAssembly *requesting, gboolean refonly);
+mono_try_assembly_resolve (MonoDomain *domain, MonoString *fname, MonoAssembly *requesting, gboolean refonly, MonoError *error);
 
 MonoAssembly *
 mono_domain_assembly_postload_search (MonoAssemblyName *aname, MonoAssembly *requesting, gboolean refonly);
@@ -687,5 +687,14 @@ void mono_assembly_cleanup_domain_bindings (guint32 domain_id);
 MonoJitInfo* mono_jit_info_table_find_internal (MonoDomain *domain, char *addr, gboolean try_aot, gboolean allow_trampolines);
 
 void mono_enable_debug_domain_unload (gboolean enable);
+
+MonoReflectionAssembly *
+mono_domain_try_type_resolve_checked (MonoDomain *domain, char *name, MonoObject *tb, MonoError *error);
+
+void
+mono_runtime_init_checked (MonoDomain *domain, MonoThreadStartCB start_cb, MonoThreadAttachCB attach_cb, MonoError *error);
+
+void
+mono_context_init_checked (MonoDomain *domain, MonoError *error);
 
 #endif /* __MONO_METADATA_DOMAIN_INTERNALS_H__ */

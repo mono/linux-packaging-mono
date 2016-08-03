@@ -9,18 +9,7 @@
  * Copyright 2010 Novell, Inc (http://www.novell.com)
  * Copyright (C) 2012 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include "config.h"
@@ -53,9 +42,6 @@ static void
 suspend_thread (SgenThreadInfo *info, void *context)
 {
 	int stop_count;
-#ifndef USE_MONO_CTX
-	gpointer regs [ARCH_NUM_REGS];
-#endif
 	MonoContext ctx;
 	gpointer stack_start;
 
@@ -66,7 +52,6 @@ suspend_thread (SgenThreadInfo *info, void *context)
 	if (0 && info->client_info.stop_count == stop_count)
 		return;
 
-#ifdef USE_MONO_CTX
 	if (context) {
 		mono_sigctx_to_monoctx (context, &ctx);
 		info->client_info.stopped_ip = MONO_CONTEXT_GET_IP (&ctx);
@@ -75,30 +60,17 @@ suspend_thread (SgenThreadInfo *info, void *context)
 		info->client_info.stopped_ip = NULL;
 		stack_start = NULL;
 	}
-#else
-	info->client_info.stopped_ip = context ? (gpointer) ARCH_SIGCTX_IP (context) : NULL;
-	stack_start = context ? (char*) ARCH_SIGCTX_SP (context) - REDZONE_SIZE : NULL;
-#endif
 
 	/* If stack_start is not within the limits, then don't set it
 	   in info and we will be restarted. */
 	if (stack_start >= info->client_info.stack_start_limit && stack_start <= info->client_info.stack_end) {
 		info->client_info.stack_start = stack_start;
 
-#ifdef USE_MONO_CTX
 		if (context) {
 			memcpy (&info->client_info.ctx, &ctx, sizeof (MonoContext));
 		} else {
 			memset (&info->client_info.ctx, 0, sizeof (MonoContext));
 		}
-#else
-		if (context) {
-			ARCH_COPY_SIGCTX_REGS (regs, context);
-			memcpy (&info->client_info.regs, regs, sizeof (info->client_info.regs));
-		} else {
-			memset (&info->client_info.regs, 0, sizeof (info->client_info.regs));
-		}
-#endif
 	} else {
 		g_assert (!info->client_info.stack_start);
 	}
@@ -107,7 +79,7 @@ suspend_thread (SgenThreadInfo *info, void *context)
 	if (mono_gc_get_gc_callbacks ()->thread_suspend_func)
 		mono_gc_get_gc_callbacks ()->thread_suspend_func (info->client_info.runtime_data, context, NULL);
 
-	SGEN_LOG (4, "Posting suspend_ack_semaphore for suspend from %p %p", info, (gpointer)mono_native_thread_id_get ());
+	SGEN_LOG (4, "Posting suspend_ack_semaphore for suspend from %p %p", info, (gpointer) (gsize) mono_native_thread_id_get ());
 
 	/*
 	Block the restart signal. 
@@ -129,7 +101,7 @@ suspend_thread (SgenThreadInfo *info, void *context)
 	/* Unblock the restart signal. */
 	pthread_sigmask (SIG_UNBLOCK, &suspend_ack_signal_mask, NULL);
 
-	SGEN_LOG (4, "Posting suspend_ack_semaphore for resume from %p %p\n", info, (gpointer)mono_native_thread_id_get ());
+	SGEN_LOG (4, "Posting suspend_ack_semaphore for resume from %p %p\n", info, (gpointer) (gsize) mono_native_thread_id_get ());
 	/* notify the waiting thread */
 	SGEN_SEMAPHORE_POST (suspend_ack_semaphore_ptr);
 }
@@ -163,7 +135,7 @@ MONO_SIG_HANDLER_FUNC (static, restart_handler)
 
 	info = mono_thread_info_current ();
 	info->client_info.signal = restart_signal_num;
-	SGEN_LOG (4, "Restart handler in %p %p", info, (gpointer)mono_native_thread_id_get ());
+	SGEN_LOG (4, "Restart handler in %p %p", info, (gpointer) (gsize) mono_native_thread_id_get ());
 	errno = old_errno;
 }
 

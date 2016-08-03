@@ -1117,6 +1117,14 @@ mono_test_marshal_virtual_delegate (VirtualDelegate del)
 	return del (42);
 }
 
+typedef char* (STDCALL *IcallDelegate) (const char *);
+LIBTEST_API int STDCALL
+mono_test_marshal_icall_delegate (IcallDelegate del)
+{
+	char *res = del ("ABC");
+	return strcmp (res, "ABC") == 0 ? 0 : 1;
+}
+
 LIBTEST_API int STDCALL  
 mono_test_marshal_stringbuilder (char *s, int n)
 {
@@ -1330,6 +1338,8 @@ LIBTEST_API EmptyStruct STDCALL
 mono_test_return_empty_struct (int a)
 {
 	EmptyStruct s;
+
+	memset (&s, 0, sizeof (s));
 
 	g_assert (a == 42);
 

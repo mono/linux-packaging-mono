@@ -6,33 +6,18 @@
 //
 // Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-// 
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 //
 using System;
 using System.IO;
 using System.Threading;
+using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using System.Text.RegularExpressions;
+using Mono.Unix.Native;
 
 //
 // This is a simple test runner with support for parallel execution
@@ -45,8 +30,8 @@ public class TestRunner
 
 	class ProcessData {
 		public string test;
-		public StreamWriter stdout, stderr;
-		public string stdoutFile, stderrFile;
+		public StringBuilder stdout, stderr;
+		public string stdoutName, stderrName;
 	}
 
 	class TestInfo {
@@ -232,27 +217,21 @@ public class TestRunner
 					if (opt_set != null)
 						log_prefix = "." + opt_set.Replace ("-", "no").Replace (",", "_");
 
-					data.stdoutFile = test + log_prefix + ".stdout";
-					data.stdout = new StreamWriter (new FileStream (data.stdoutFile, FileMode.Create));
+					data.stdoutName = test + log_prefix + ".stdout";
+					data.stdout = new StringBuilder ();
 
-					data.stderrFile = test + log_prefix + ".stderr";
-					data.stderr = new StreamWriter (new FileStream (data.stderrFile, FileMode.Create));
+					data.stderrName = test + log_prefix + ".stderr";
+					data.stderr = new StringBuilder ();
 
 					p.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e) {
 						if (e.Data != null) {
-							data.stdout.WriteLine (e.Data);
-						} else {
-							data.stdout.Flush ();
-							data.stdout.Close ();
+							data.stdout.AppendLine (e.Data);
 						}
 					};
 
 					p.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e) {
 						if (e.Data != null) {
-							data.stderr.WriteLine (e.Data);
-						} else {
-							data.stderr.Flush ();
-							data.stderr.Close ();
+							data.stderr.AppendLine (e.Data);
 						}
 					};
 
@@ -268,9 +247,19 @@ public class TestRunner
 							timedout.Add (data);
 						}
 
-						output.Write ("timed out");
+						// Force the process to print a thread dump
+						try {
+							Syscall.kill (p.Id, Signum.SIGQUIT);
+							Thread.Sleep (1000);
+						} catch {
+						}
 
-						p.Kill ();
+						output.Write ($"timed out ({timeout}s)");
+
+						try {
+							p.Kill ();
+						} catch {
+						}
 					} else if (p.ExitCode != expectedExitCode) {
 						var end = DateTime.UtcNow;
 
@@ -389,10 +378,10 @@ public class TestRunner
 				writer.WriteAttributeString ("asserts", "1");
 				writer.WriteStartElement ("failure");
 				writer.WriteStartElement ("message");
-				writer.WriteCData (DumpPseudoTrace (pd.stdoutFile));
+				writer.WriteCData (FilterInvalidXmlChars (pd.stdout.ToString ()));
 				writer.WriteEndElement ();
 				writer.WriteStartElement ("stack-trace");
-				writer.WriteCData (DumpPseudoTrace (pd.stderrFile));
+				writer.WriteCData (FilterInvalidXmlChars (pd.stderr.ToString ()));
 				writer.WriteEndElement ();
 				writer.WriteEndElement ();
 				writer.WriteEndElement ();
@@ -408,10 +397,10 @@ public class TestRunner
 				writer.WriteAttributeString ("asserts", "1");
 				writer.WriteStartElement ("failure");
 				writer.WriteStartElement ("message");
-				writer.WriteCData (DumpPseudoTrace (pd.stdoutFile));
+				writer.WriteCData (FilterInvalidXmlChars (pd.stdout.ToString ()));
 				writer.WriteEndElement ();
 				writer.WriteStartElement ("stack-trace");
-				writer.WriteCData (DumpPseudoTrace (pd.stderrFile));
+				writer.WriteCData (FilterInvalidXmlChars (pd.stderr.ToString ()));
 				writer.WriteEndElement ();
 				writer.WriteEndElement ();
 				writer.WriteEndElement ();
@@ -446,8 +435,8 @@ public class TestRunner
 			foreach (ProcessData pd in failed) {
 				Console.WriteLine ();
 				Console.WriteLine (pd.test);
-				DumpFile (pd.stdoutFile);
-				DumpFile (pd.stderrFile);
+				DumpFile (pd.stdoutName, pd.stdout.ToString ());
+				DumpFile (pd.stderrName, pd.stderr.ToString ());
 			}
 		}
 
@@ -457,27 +446,18 @@ public class TestRunner
 			foreach (ProcessData pd in timedout) {
 				Console.WriteLine ();
 				Console.WriteLine (pd.test);
-				DumpFile (pd.stdoutFile);
-				DumpFile (pd.stderrFile);
+				DumpFile (pd.stdoutName, pd.stdout.ToString ());
+				DumpFile (pd.stderrName, pd.stderr.ToString ());
 			}
 		}
 
 		return (ntimedout == 0 && nfailed == 0) ? 0 : 1;
 	}
 	
-	static void DumpFile (string filename) {
-		if (File.Exists (filename)) {
-			Console.WriteLine ("=============== {0} ===============", filename);
-			Console.WriteLine (File.ReadAllText (filename));
-			Console.WriteLine ("=============== EOF ===============");
-		}
-	}
-
-	static string DumpPseudoTrace (string filename) {
-		if (File.Exists (filename))
-			return FilterInvalidXmlChars (File.ReadAllText (filename));
-		else
-			return string.Empty;
+	static void DumpFile (string filename, string text) {
+		Console.WriteLine ("=============== {0} ===============", filename);
+		Console.WriteLine (text);
+		Console.WriteLine ("=============== EOF ===============");
 	}
 
 	static string FilterInvalidXmlChars (string text) {

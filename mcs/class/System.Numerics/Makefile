@@ -7,7 +7,7 @@ LIB_REFS = System
 LIB_MCS_FLAGS = /unsafe -nowarn:414
 TEST_MCS_FLAGS = $(LIB_MCS_FLAGS)
 
-RESOURCE_STRINGS = ../../../external/referencesource/System.Numerics/System.Numerics.txt
+TXT_RESOURCE_STRINGS = ../referencesource/System.Numerics/System.Numerics.txt
 
 EXTRA_DISTFILES =
 

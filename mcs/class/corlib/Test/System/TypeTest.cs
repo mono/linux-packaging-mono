@@ -16,7 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 using System.Reflection.Emit;
 #endif
 using System.Runtime.InteropServices;
@@ -261,7 +261,7 @@ namespace MonoTests.System
 	[TestFixture]
 	public class TypeTest
 	{
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 		private ModuleBuilder module;
 #endif
 		const string ASSEMBLY_NAME = "MonoTests.System.TypeTest";
@@ -272,7 +272,7 @@ namespace MonoTests.System
 		{
 			AssemblyName assemblyName = new AssemblyName ();
 			assemblyName.Name = ASSEMBLY_NAME;
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 			var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly (
 					assemblyName, AssemblyBuilderAccess.RunAndSave, Path.GetTempPath ());
 			module = assembly.DefineDynamicModule ("module1");
@@ -3150,7 +3150,7 @@ namespace MonoTests.System
 		}
 
 		[Test]
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[ExpectedException (typeof (NotSupportedException))]
 #endif
 		public void MakeGenericType_UserDefinedType ()
@@ -3167,7 +3167,7 @@ namespace MonoTests.System
 		}
 
 		[Test]
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[ExpectedException (typeof (NotSupportedException))]
 #endif
 		public void MakeGenericType_NestedUserDefinedType ()
@@ -3184,7 +3184,7 @@ namespace MonoTests.System
 		}
 		
 		[Test]
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[ExpectedException (typeof (NotSupportedException))]
 #endif
 		public void TestMakeGenericType_UserDefinedType_DotNet20SP1 () 
@@ -3197,7 +3197,7 @@ namespace MonoTests.System
 		}
 		
 		[Test]
-#if MONOTOUCH
+#if MONOTOUCH || MOBILE_STATIC
 		[ExpectedException (typeof (NotSupportedException))]
 #endif
 		public void MakeGenericType_BadUserType ()
@@ -3333,7 +3333,7 @@ namespace MonoTests.System
 			Assert.AreEqual (t1, t2);
 		}
 
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 		[Test]
 		public void SpaceAfterComma () {
 			string strType = "System.Collections.Generic.Dictionary`2[[System.Int32,mscorlib], [System.String,mscorlib]],mscorlib";
@@ -3341,7 +3341,7 @@ namespace MonoTests.System
 		}
 #endif
 
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 		[Test]
 		public void Bug506757 ()
 		{
@@ -4271,7 +4271,7 @@ namespace MonoTests.System
 
 		}
 
-#if !MONOTOUCH
+#if !MONOTOUCH && !MOBILE_STATIC
 		[Test]
 		[Category ("AndroidNotWorking")] // requires symbol writer
 		public void FullNameGetTypeParseEscapeRoundtrip () // bug #26384

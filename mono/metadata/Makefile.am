@@ -125,6 +125,7 @@ common_sources = \
 	environment.h		\
 	exception.c		\
 	exception.h		\
+	exception-internals.h	\
 	file-io.c		\
 	file-io.h		\
 	filewatcher.c		\
@@ -216,8 +217,7 @@ common_sources = \
 	seq-points-data.h	\
 	seq-points-data.c	\
 	handle.c	\
-	handle.h	\
-	handle-private.h
+	handle.h
 
 
 # These source files have compile time dependencies on GC code

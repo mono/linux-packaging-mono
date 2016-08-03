@@ -10,18 +10,7 @@
  * Copyright 2011 Xamarin, Inc.
  * Copyright (C) 2012 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 /*
@@ -79,6 +68,9 @@ static __thread char *tlab_temp_end;
 static __thread char *tlab_real_end;
 /* Used by the managed allocator/wbarrier */
 static __thread char **tlab_next_addr MONO_ATTR_USED;
+#ifndef SGEN_WITHOUT_MONO
+static __thread volatile int *in_critical_region_addr MONO_ATTR_USED;
+#endif
 #endif
 
 #ifdef HAVE_KW_THREAD
@@ -101,10 +93,10 @@ alloc_degraded (GCVTable vtable, size_t size, gboolean for_mature)
 	if (!for_mature) {
 		sgen_client_degraded_allocation (size);
 		SGEN_ATOMIC_ADD_P (degraded_mode, size);
-		sgen_ensure_free_space (size);
+		sgen_ensure_free_space (size, GENERATION_OLD);
 	} else {
 		if (sgen_need_major_collection (size))
-			sgen_perform_collection (size, GENERATION_OLD, "mature allocation failure", !for_mature);
+			sgen_perform_collection (size, GENERATION_OLD, "mature allocation failure", !for_mature, TRUE);
 	}
 
 
@@ -172,7 +164,7 @@ sgen_alloc_obj_nolock (GCVTable vtable, size_t size)
 
 		if (collect_before_allocs) {
 			if (((current_alloc % collect_before_allocs) == 0) && nursery_section) {
-				sgen_perform_collection (0, GENERATION_NURSERY, "collect-before-alloc-triggered", TRUE);
+				sgen_perform_collection (0, GENERATION_NURSERY, "collect-before-alloc-triggered", TRUE, TRUE);
 				if (!degraded_mode && sgen_can_alloc_size (size) && real_size <= SGEN_MAX_SMALL_OBJ_SIZE) {
 					// FIXME:
 					g_assert_not_reached ();
@@ -207,11 +199,6 @@ sgen_alloc_obj_nolock (GCVTable vtable, size_t size)
 
 		if (G_LIKELY (new_next < TLAB_TEMP_END)) {
 			/* Fast path */
-
-			/* 
-			 * FIXME: We might need a memory barrier here so the change to tlab_next is 
-			 * visible before the vtable store.
-			 */
 
 			CANARIFY_ALLOC(p,real_size);
 			SGEN_LOG (6, "Allocated object %p, vtable: %p (%s), size: %zd", p, vtable, sgen_client_vtable_get_name (vtable), size);
@@ -271,7 +258,7 @@ sgen_alloc_obj_nolock (GCVTable vtable, size_t size)
 					 * always loop we will loop endlessly in the case of
 					 * OOM).
 					 */
-					sgen_ensure_free_space (real_size);
+					sgen_ensure_free_space (real_size, GENERATION_NURSERY);
 					if (!degraded_mode)
 						p = (void **)sgen_nursery_alloc (size);
 				}
@@ -288,7 +275,7 @@ sgen_alloc_obj_nolock (GCVTable vtable, size_t size)
 				p = (void **)sgen_nursery_alloc_range (tlab_size, size, &alloc_size);
 				if (!p) {
 					/* See comment above in similar case. */
-					sgen_ensure_free_space (tlab_size);
+					sgen_ensure_free_space (tlab_size, GENERATION_NURSERY);
 					if (!degraded_mode)
 						p = (void **)sgen_nursery_alloc_range (tlab_size, size, &alloc_size);
 				}
@@ -426,8 +413,6 @@ sgen_alloc_obj (GCVTable vtable, size_t size)
 	if (!SGEN_CAN_ALIGN_UP (size))
 		return NULL;
 
-#ifndef DISABLE_CRITICAL_REGION
-
 	if (G_UNLIKELY (has_per_allocation_action)) {
 		static int alloc_count;
 		int current_alloc = InterlockedIncrement (&alloc_count);
@@ -439,7 +424,7 @@ sgen_alloc_obj (GCVTable vtable, size_t size)
 		if (collect_before_allocs) {
 			if (((current_alloc % collect_before_allocs) == 0) && nursery_section) {
 				LOCK_GC;
-				sgen_perform_collection (0, GENERATION_NURSERY, "collect-before-alloc-triggered", TRUE);
+				sgen_perform_collection (0, GENERATION_NURSERY, "collect-before-alloc-triggered", TRUE, TRUE);
 				UNLOCK_GC;
 			}
 		}
@@ -452,12 +437,10 @@ sgen_alloc_obj (GCVTable vtable, size_t size)
 		return res;
 	}
 	EXIT_CRITICAL_REGION;
-#endif
+
 	LOCK_GC;
 	res = sgen_alloc_obj_nolock (vtable, size);
 	UNLOCK_GC;
-	if (G_UNLIKELY (!res))
-		sgen_client_out_of_memory (size);
 	return res;
 }
 
@@ -521,6 +504,9 @@ sgen_init_tlab_info (SgenThreadInfo* info)
 
 #ifdef HAVE_KW_THREAD
 	tlab_next_addr = &tlab_next;
+#ifndef SGEN_WITHOUT_MONO
+	in_critical_region_addr = &info->client_info.in_critical_region;
+#endif
 #endif
 }
 
@@ -545,13 +531,15 @@ sgen_init_allocator (void)
 #if defined(HAVE_KW_THREAD) && !defined(SGEN_WITHOUT_MONO)
 	int tlab_next_addr_offset = -1;
 	int tlab_temp_end_offset = -1;
-
+	int in_critical_region_addr_offset = -1;
 
 	MONO_THREAD_VAR_OFFSET (tlab_next_addr, tlab_next_addr_offset);
 	MONO_THREAD_VAR_OFFSET (tlab_temp_end, tlab_temp_end_offset);
+	MONO_THREAD_VAR_OFFSET (in_critical_region_addr, in_critical_region_addr_offset);
 
 	mono_tls_key_set_offset (TLS_KEY_SGEN_TLAB_NEXT_ADDR, tlab_next_addr_offset);
 	mono_tls_key_set_offset (TLS_KEY_SGEN_TLAB_TEMP_END, tlab_temp_end_offset);
+	mono_tls_key_set_offset (TLS_KEY_SGEN_IN_CRITICAL_REGION_ADDR, in_critical_region_addr_offset);
 #endif
 
 #ifdef HEAVY_STATISTICS

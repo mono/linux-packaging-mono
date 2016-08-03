@@ -855,9 +855,9 @@ namespace MonoTests.System.Diagnostics
 
 			p.EnableRaisingEvents = false;
 
-			var exitedCalledCounter = 0;
+			ManualResetEvent mre = new ManualResetEvent (false);
 			p.Exited += (object sender, EventArgs e) => {
-				exitedCalledCounter++;
+				mre.Set ();
 			};
 
 			p.Start ();
@@ -865,7 +865,7 @@ namespace MonoTests.System.Diagnostics
 			p.BeginOutputReadLine ();
 			p.WaitForExit ();
 
-			Assert.AreEqual (0, exitedCalledCounter);
+			Assert.IsFalse (mre.WaitOne (1000));
 		}
 
 		ProcessStartInfo GetCrossPlatformStartInfo ()
@@ -880,6 +880,20 @@ namespace MonoTests.System.Diagnostics
 				return new ProcessStartInfo (path, "/");
 			} else
 				return new ProcessStartInfo ("help", "");
+		}
+
+		ProcessStartInfo GetEchoCrossPlatformStartInfo ()
+		{
+			if (RunningOnUnix) {
+				string path;
+#if MONODROID
+				path = "/system/bin/cat";
+#else
+				path = "/bin/cat";
+#endif
+				return new ProcessStartInfo (path);
+			} else
+				return new ProcessStartInfo ("type");
 		}
 #endif // MONO_FEATURE_PROCESS_START
 
@@ -972,14 +986,25 @@ namespace MonoTests.System.Diagnostics
 		[NUnit.Framework.Category ("MobileNotWorking")]
 		public void StandardInputWrite ()
 		{
-			var psi = GetCrossPlatformStartInfo ();
+			var psi = GetEchoCrossPlatformStartInfo ();
 			psi.RedirectStandardInput = true;
 			psi.RedirectStandardOutput = true;
 			psi.UseShellExecute = false;
 
 			using (var p = Process.Start (psi)) {
-				for (int i = 0; i < 1024 * 9; ++i)
+				// drain stdout
+				p.OutputDataReceived += (s, e) => {};
+				p.BeginOutputReadLine ();
+
+				for (int i = 0; i < 1024 * 9; ++i) {
 					p.StandardInput.Write ('x');
+					if (i > 0 && i % 128 == 0)
+						p.StandardInput.WriteLine ();
+				}
+
+				p.StandardInput.Close ();
+
+				p.WaitForExit ();
 			}
 		}
 #endif // MONO_FEATURE_PROCESS_START

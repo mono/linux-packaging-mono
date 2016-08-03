@@ -85,17 +85,10 @@ package := mcs-$(VERSION)
 
 DISTFILES = \
 	AUTHORS			\
-	ChangeLog		\
 	COPYING			\
-	COPYING.LIB		\
 	INSTALL.txt		\
-	LICENSE			\
-	LICENSE.GPL		\
-	LICENSE.LGPL		\
-	LICENSE.MPL		\
 	Makefile		\
 	mkinstalldirs		\
-	MIT.X11			\
 	MonoIcon.png		\
 	README			\
 	ScalableMonoIcon.svg	\

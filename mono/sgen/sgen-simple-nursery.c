@@ -6,18 +6,7 @@
  * Copyright 2011 Xamarin Inc (http://www.xamarin.com)
  * Copyright (C) 2012 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include "config.h"
@@ -29,10 +18,12 @@
 #include "mono/sgen/sgen-protocol.h"
 #include "mono/sgen/sgen-layout-stats.h"
 #include "mono/sgen/sgen-client.h"
+#include "mono/utils/mono-memory-model.h"
 
 static inline GCObject*
 alloc_for_promotion (GCVTable vtable, GCObject *obj, size_t objsize, gboolean has_references)
 {
+	total_promoted_size += objsize;
 	return major_collector.alloc_object (vtable, objsize, has_references);
 }
 
@@ -71,13 +62,34 @@ init_nursery (SgenFragmentAllocator *allocator, char *start, char *end)
 
 /******************************************Copy/Scan functins ************************************************/
 
-#define SGEN_SIMPLE_NURSERY
+#define collector_pin_object(obj, queue) sgen_pin_object (obj, queue);
+#define COLLECTOR_SERIAL_ALLOC_FOR_PROMOTION alloc_for_promotion
 
-#define SERIAL_COPY_OBJECT simple_nursery_serial_copy_object
-#define SERIAL_COPY_OBJECT_FROM_OBJ simple_nursery_serial_copy_object_from_obj
+#include "sgen-copy-object.h"
+
+#define SGEN_SIMPLE_NURSERY
 
 #include "sgen-minor-copy-object.h"
 #include "sgen-minor-scan-object.h"
+
+static void
+fill_serial_ops (SgenObjectOperations *ops)
+{
+	ops->copy_or_mark_object = SERIAL_COPY_OBJECT;
+	FILL_MINOR_COLLECTOR_SCAN_OBJECT (ops);
+}
+
+#define SGEN_CONCURRENT_MAJOR
+
+#include "sgen-minor-copy-object.h"
+#include "sgen-minor-scan-object.h"
+
+static void
+fill_serial_with_concurrent_major_ops (SgenObjectOperations *ops)
+{
+	ops->copy_or_mark_object = SERIAL_COPY_OBJECT;
+	FILL_MINOR_COLLECTOR_SCAN_OBJECT (ops);
+}
 
 void
 sgen_simple_nursery_init (SgenMinorCollector *collector)
@@ -93,8 +105,8 @@ sgen_simple_nursery_init (SgenMinorCollector *collector)
 	collector->build_fragments_finish = build_fragments_finish;
 	collector->init_nursery = init_nursery;
 
-	FILL_MINOR_COLLECTOR_COPY_OBJECT (collector);
-	FILL_MINOR_COLLECTOR_SCAN_OBJECT (collector);
+	fill_serial_ops (&collector->serial_ops);
+	fill_serial_with_concurrent_major_ops (&collector->serial_ops_with_concurrent_major);
 }
 
 

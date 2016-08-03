@@ -92,7 +92,7 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(srcdir)/system.web.extensions.design_1.0.pc.in \
 	$(srcdir)/system.web.mvc.pc.in $(srcdir)/system.web.mvc2.pc.in \
 	$(srcdir)/system.web.mvc3.pc.in $(srcdir)/aspnetwebstack.pc.in \
-	$(srcdir)/reactive.pc.in $(srcdir)/config.in ChangeLog README
+	$(srcdir)/reactive.pc.in $(srcdir)/config.in README
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/lib-ld.m4 $(top_srcdir)/m4/lib-link.m4 \
@@ -319,8 +319,6 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OPROFILE_CFLAGS = @OPROFILE_CFLAGS@
-OPROFILE_LIBS = @OPROFILE_LIBS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -434,7 +432,7 @@ monodir = $(sysconfdir)/mono
 monolldbdir = $(libdir)/mono/lldb
 EXTRA_DIST = \
 	config.in \
-	browscap.ini mono.supp mono.d README ChangeLog \
+	browscap.ini mono.supp mono.d README \
 	mono.pc.in mono-2.pc.in monosgen-2.pc.in mint.pc.in dotnet.pc.in dotnet35.pc.in wcf.pc.in monodoc.pc.in \
 	mono-nunit.pc.in mono-cairo.pc.in mono-options.pc.in cecil.pc.in \
 	mono-lineeditor.pc.in system.web.extensions_1.0.pc.in system.web.extensions.design_1.0.pc.in\

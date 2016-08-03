@@ -128,9 +128,11 @@ namespace System.Reflection {
 
                 if (!suppressSecurityChecks)
                 {
+#if FEATURE_MONO_CAS
 #pragma warning disable 618
                     new SecurityPermission(SecurityPermissionFlag.ControlEvidence).Demand();
 #pragma warning restore 618
+#endif
                 }
             }
 

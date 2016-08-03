@@ -714,7 +714,9 @@ namespace Ildasm
             WriteCallingConvention(lw, mb.CallingConvention);
             if (mb is ConstructorInfo)
             {
-                lw.Write("void ");
+                WriteSignatureType(lw, ((ConstructorInfo)mb).__ReturnParameter.ParameterType);
+                WriteCustomModifiers(lw, ((ConstructorInfo)mb).__ReturnParameter.__GetCustomModifiers());
+                lw.Write(" ");
             }
             else
             {

@@ -9,18 +9,7 @@
  * Copyright 2010 Novell, Inc (http://www.novell.com)
  * Copyright (C) 2012 Xamarin Inc
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License 2.0 as published by the Free Software Foundation;
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License 2.0 along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
 
 #include "config.h"
@@ -45,7 +34,11 @@
 gboolean
 sgen_resume_thread (SgenThreadInfo *info)
 {
-	return thread_resume (info->client_info.info.native_handle) == KERN_SUCCESS;
+	kern_return_t ret;
+	do {
+		ret = thread_resume (info->client_info.info.native_handle);
+	} while (ret == KERN_ABORTED);
+	return ret == KERN_SUCCESS;
 }
 
 gboolean
@@ -62,11 +55,15 @@ sgen_suspend_thread (SgenThreadInfo *info)
 	state = (thread_state_t) alloca (mono_mach_arch_get_thread_state_size ());
 	mctx = (mcontext_t) alloca (mono_mach_arch_get_mcontext_size ());
 
-	ret = thread_suspend (info->client_info.info.native_handle);
+	do {
+		ret = thread_suspend (info->client_info.info.native_handle);
+	} while (ret == KERN_ABORTED);
 	if (ret != KERN_SUCCESS)
 		return FALSE;
 
-	ret = mono_mach_arch_get_thread_state (info->client_info.info.native_handle, state, &num_state);
+	do {
+		ret = mono_mach_arch_get_thread_state (info->client_info.info.native_handle, state, &num_state);
+	} while (ret == KERN_ABORTED);
 	if (ret != KERN_SUCCESS)
 		return FALSE;
 
@@ -81,11 +78,7 @@ sgen_suspend_thread (SgenThreadInfo *info)
 	if (stack_start >= info->client_info.stack_start_limit && stack_start <= info->client_info.stack_end) {
 		info->client_info.stack_start = stack_start;
 
-#ifdef USE_MONO_CTX
 		mono_sigctx_to_monoctx (&ctx, &info->client_info.ctx);
-#else
-		ARCH_COPY_SIGCTX_REGS (&info->client_info.regs, &ctx);
-#endif
 	} else {
 		g_assert (!info->client_info.stack_start);
 	}
@@ -128,7 +121,9 @@ sgen_thread_handshake (BOOL suspend)
 			if (!sgen_suspend_thread (info))
 				continue;
 		} else {
-			ret = thread_resume (info->client_info.info.native_handle);
+			do {
+				ret = thread_resume (info->client_info.info.native_handle);
+			} while (ret == KERN_ABORTED);
 			if (ret != KERN_SUCCESS)
 				continue;
 		}

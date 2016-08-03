@@ -5,13 +5,6 @@
 #include <mono/utils/mono-sigcontext.h>
 #include <mono/utils/mono-context.h>
 
-#ifdef __native_client_codegen__
-#define kNaClAlignmentX86 32
-#define kNaClAlignmentMaskX86 (kNaClAlignmentX86 - 1)
-
-#define kNaClLengthOfCallImm kx86NaClLengthOfCallImm
-#endif
-
 #ifdef HOST_WIN32
 #include <windows.h>
 /* use SIG* defines if possible */
@@ -52,7 +45,7 @@ struct sigcontext {
 #define MONO_ARCH_USE_SIGACTION
 #endif
 
-#if defined(__native_client__) || defined(HOST_WATCHOS)
+#if defined(HOST_WATCHOS)
 #undef MONO_ARCH_USE_SIGACTION
 #endif
 
@@ -165,6 +158,7 @@ typedef struct {
 	gboolean need_stack_frame_inited;
 	gboolean need_stack_frame;
 	int sp_fp_offset, param_area_size;
+	gpointer cinfo;
 	gpointer ss_tramp_var;
 	gpointer bp_tramp_var;
 } MonoCompileArch;
@@ -216,9 +210,7 @@ typedef struct {
 #define MONO_ARCH_HAVE_GENERALIZED_IMT_THUNK 1
 #define MONO_ARCH_HAVE_LIVERANGE_OPS 1
 #define MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX 1
-#if !defined(__native_client_codegen__)
 #define MONO_ARCH_HAVE_FULL_AOT_TRAMPOLINES 1
-#endif
 #define MONO_ARCH_GOT_REG X86_EBX
 #define MONO_ARCH_HAVE_GET_TRAMPOLINES 1
 #define MONO_ARCH_HAVE_GENERAL_RGCTX_LAZY_FETCH_TRAMPOLINE 1
@@ -300,6 +292,49 @@ typedef struct {
 	int map [MONO_ZERO_LEN_ARRAY];
 } GSharedVtCallInfo;
 
+typedef enum {
+	ArgInIReg,
+	ArgInFloatSSEReg,
+	ArgInDoubleSSEReg,
+	ArgOnStack,
+	ArgValuetypeInReg,
+	ArgOnFloatFpStack,
+	ArgOnDoubleFpStack,
+	/* gsharedvt argument passed by addr */
+	ArgGSharedVt,
+	ArgNone
+} ArgStorage;
+
+typedef struct {
+	gint16 offset;
+	gint8  reg;
+	ArgStorage storage;
+	int nslots;
+	gboolean is_pair;
+
+	/* Only if storage == ArgValuetypeInReg */
+	ArgStorage pair_storage [2];
+	gint8 pair_regs [2];
+} ArgInfo;
+
+typedef struct {
+	int nargs;
+	guint32 stack_usage;
+	guint32 reg_usage;
+	guint32 freg_usage;
+	gboolean need_stack_align;
+	guint32 stack_align_amount;
+	gboolean vtype_retaddr;
+	/* The index of the vret arg in the argument list */
+	int vret_arg_index;
+	int vret_arg_offset;
+	/* Argument space popped by the callee */
+	int callee_stack_pop;
+	ArgInfo ret;
+	ArgInfo sig_cookie;
+	ArgInfo args [1];
+} CallInfo;
+
 guint8*
 mono_x86_emit_tls_get (guint8* code, int dreg, int tls_offset);
 
@@ -325,6 +360,9 @@ mono_x86_patch (unsigned char* code, gpointer target);
 
 gpointer
 mono_x86_start_gsharedvt_call (GSharedVtCallInfo *info, gpointer *caller, gpointer *callee, gpointer mrgctx_reg);
+
+CallInfo*
+mono_arch_get_call_info (MonoMemPool *mp, MonoMethodSignature *sig);
 
 #endif /* __MONO_MINI_X86_H__ */  
 
