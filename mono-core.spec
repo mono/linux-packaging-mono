@@ -1119,7 +1119,6 @@ Mono development tools.
 %{_bindir}/mono-xmltool
 %{_bindir}/monodis
 %{_bindir}/monolinker
-%{_bindir}/monograph
 %{_bindir}/monop
 %{_bindir}/monop2
 %{_bindir}/mprof-report
@@ -1131,7 +1130,6 @@ Mono development tools.
 %{_bindir}/resgen2
 %{_bindir}/secutil
 %{_bindir}/sgen
-%{_bindir}/sgen-grep-binprot
 %{_bindir}/signcode
 %{_bindir}/xbuild
 %dir %{_datadir}/mono-2.0
