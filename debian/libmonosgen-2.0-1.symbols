@@ -774,7 +774,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_security_core_clr_set_options@Base 4.1.0.1738
  mono_security_enable_core_clr@Base 4.1.0.1738
  mono_security_set_core_clr_platform_callback@Base 4.1.0.1738
- mono_set_allocator_vtable@Base 4.5.2.618
  mono_set_assemblies_path@Base 4.1.0.1738
  mono_set_break_policy@Base 4.1.0.1738
  mono_set_config_dir@Base 4.1.0.1738
@@ -858,9 +857,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_threads_attach_tools_thread@Base 4.1.0.1738
  mono_threads_detach_coop@Base 4.5.2.48
  mono_threads_enter_gc_safe_region@Base 4.3.3.735
+ mono_threads_enter_gc_safe_region_unbalanced@Base 4.6.0.125
  mono_threads_enter_gc_unsafe_region@Base 4.3.0.1080
+ mono_threads_enter_gc_unsafe_region_unbalanced@Base 4.6.0.125
  mono_threads_exit_gc_safe_region@Base 4.3.3.735
+ mono_threads_exit_gc_safe_region_unbalanced@Base 4.6.0.125
  mono_threads_exit_gc_unsafe_region@Base 4.3.0.1080
+ mono_threads_exit_gc_unsafe_region_unbalanced@Base 4.6.0.125
  mono_threads_get_default_stacksize@Base 4.1.0.1738
  mono_threads_request_thread_dump@Base 4.1.0.1738
  mono_threads_set_default_stacksize@Base 4.1.0.1738
