@@ -374,6 +374,7 @@ Depends: ${misc:Depends},
          libmono-system-data-linq4.0-cil (= ${source:Version}),
          libmono-system-data-services4.0-cil (= ${source:Version}),
          libmono-system-data-services-client4.0-cil (= ${source:Version}),
+         libmono-system-deployment4.0-cil (= ${source:Version}),
          libmono-system-design4.0-cil (= ${source:Version}),
          libmono-system-drawing4.0-cil (= ${source:Version}),
          libmono-system-drawing-design4.0-cil (= ${source:Version}),
@@ -432,8 +433,10 @@ Depends: ${misc:Depends},
          libmono-system-web-http4.0-cil (= ${source:Version}),
          libmono-system-web-http-selfhost4.0-cil (= ${source:Version}),
          libmono-system-web-http-webhost4.0-cil (= ${source:Version}),
+         libmono-system-web-mobile4.0-cil (= ${source:Version}),
          libmono-system-web-mvc3.0-cil (= ${source:Version}),
          libmono-system-web-razor2.0-cil (= ${source:Version}),
+         libmono-system-web-regularexpressions4.0-cil (= ${source:Version}),
          libmono-system-web-routing4.0-cil (= ${source:Version}),
          libmono-system-web-services4.0-cil (= ${source:Version}),
          libmono-system-web-webpages2.0-cil (= ${source:Version}),
@@ -442,6 +445,9 @@ Depends: ${misc:Depends},
          libmono-system-windows4.0-cil (= ${source:Version}),
          libmono-system-windows-forms4.0-cil (= ${source:Version}),
          libmono-system-windows-forms-datavisualization4.0a-cil (= ${source:Version}),
+         libmono-system-workflow-activities4.0-cil (= ${source:Version}),
+         libmono-system-workflow-componentmodel4.0-cil (= ${source:Version}),
+         libmono-system-workflow-runtime4.0-cil (= ${source:Version}),
          libmono-system-xaml4.0-cil (= ${source:Version}),
          libmono-system-xml4.0-cil (= ${source:Version}),
          libmono-system-xml-linq4.0-cil (= ${source:Version}),
@@ -1257,6 +1263,19 @@ Description: Mono System.Data.Services.Client library (for CLI 4.0)
  The WFC stack is for building SOA-based applications.
  Its development is in early stages.
 
+Package: libmono-system-deployment4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Description: Mono System.Deployment library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Deployment library.
+
 Package: libmono-system-data-linq4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -1517,6 +1536,18 @@ Description: Mono System.Reactive.Windows.Threading Library (for CLI 4.5)
  This package contains the System.Reactive.windows.Threading library which is part
  of Reactive Extensions.
 
+Package: libmono-system-reflection-context4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Description: Mono System.Reflection.Context library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Reflection.Context library.
 
 Package: libmono-system-reflection-context4.0-cil
 Architecture: all
@@ -1606,6 +1637,20 @@ Description: Mono System.Runtime.DurableInstancing Library (for CLI 4.0)
  .
  This package contains the System.Runtime.DurableInstancing library
  for CLI 4.0.
+
+Package: libmono-system-runtime-interopservices-runtimeinformation4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Description: Mono System.Runtime.InteropServices.RuntimeInformation library
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Runtime.InteropServices.RuntimeInformation
+ library.
 
 Package: libmono-system-servicemodel4.0a-cil
 Provides: libmono-system-servicemodel4.0-cil
@@ -1832,6 +1877,20 @@ Description: Mono System.Web.Razor (for CLI 4.0)
  .
  This package contains the Mono System.Web.Razor library for CLI 4.0.
 
+Package: libmono-system-web-regularexpressions4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Description: Mono System.Web.RegularExpressions library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Web.RegularExpressions
+ library.
+
 Package: libmono-system-web-routing4.0-cil
 Architecture: all
 Depends: ${misc:Depends},
@@ -1948,6 +2007,45 @@ Description: Mono System.Windows.Forms.DataVisualization Library (for CLI 4.0)
  .
  This package contains the Mono System.Windows.Forms.DataVisualization library
  for CLI 4.0.
+
+Package: libmono-system-workflow-activities4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Description: Mono System.Workflow.Activities library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Workflow.Activities library.
+
+Package: libmono-system-workflow-componentmodel4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Description: Mono System.Workflow.ComponentModel library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Workflow.ComponentModel library.
+
+Package: libmono-system-workflow-runtime4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Description: Mono System.Workflow.Runtime library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Workflow.Runtime library.
 
 Package: libmono-system-xaml4.0-cil
 Architecture: all
@@ -2386,6 +2484,19 @@ Description: Mono System.Web.Http.WebHost library (for CLI 4.0)
  bytecode (aka assemblies), and a class library.
  .
  This package contains the Mono System.Web.Http.WebHost library for CLI 4.0.
+
+Package: libmono-system-web-mobile4.0-cil
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends}
+Description: Mono System.Web.Mobile library (for CLI 4.0)
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+ .
+ This package contains the System.Web.Mobile library.
 
 Package: libmono-system-data-entity4.0-cil
 Architecture: all

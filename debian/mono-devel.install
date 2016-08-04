@@ -92,6 +92,7 @@ debian/tmp/usr/lib/mono/4.5/svcutil.exe*
 debian/tmp/usr/lib/mono/4.5/wsdl.exe*
 debian/tmp/usr/lib/mono/4.5/xsd.exe*
 debian/tmp/usr/lib/mono/4.5/ikdasm.exe*
+debian/tmp/usr/lib/mono/lldb/
 debian/tmp/usr/lib/mono/mono-configuration-crypto/
 debian/tmp/usr/lib/mono-source-libs/getline.cs
 debian/tmp/usr/lib/mono-source-libs/Options.cs
