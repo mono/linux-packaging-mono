@@ -63,6 +63,7 @@ debian/tmp/usr/lib/mono/4.5/ilasm.exe*
 debian/tmp/usr/lib/mono/4.5/installutil.exe*
 debian/tmp/usr/lib/mono/4.5/installvst.exe*
 debian/tmp/usr/lib/mono/4.5/lc.exe*
+debian/tmp/usr/lib/mono/4.5/linkeranalyzer.exe*
 debian/tmp/usr/lib/mono/4.5/macpack.exe*
 debian/tmp/usr/lib/mono/4.5/makecert.exe*
 debian/tmp/usr/lib/mono/4.5/mconfig.exe*
@@ -93,6 +94,7 @@ debian/tmp/usr/lib/mono/4.5/svcutil.exe*
 debian/tmp/usr/lib/mono/4.5/wsdl.exe*
 debian/tmp/usr/lib/mono/4.5/xsd.exe*
 debian/tmp/usr/lib/mono/4.5/ikdasm.exe*
+debian/tmp/usr/lib/mono/lldb/
 debian/tmp/usr/lib/mono/mono-configuration-crypto/
 debian/tmp/usr/lib/mono-source-libs/getline.cs
 debian/tmp/usr/lib/mono-source-libs/Options.cs
