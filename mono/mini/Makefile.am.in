@@ -737,8 +737,7 @@ fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
 # on mobile profiles
 FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST = \
 	Mono.Posix.dll \
-	System.Configuration.dll \
-	Mono.Simd.dll
+	System.Configuration.dll
 
 FULLAOT_LIBS_UNIVERSAL = \
 	mscorlib.dll \
@@ -746,6 +745,7 @@ FULLAOT_LIBS_UNIVERSAL = \
 	System.dll \
 	System.Xml.dll \
 	System.Security.dll \
+	Mono.Simd.dll \
 	Mono.Security.dll
 
 if INSTALL_MOBILE_STATIC
@@ -852,7 +852,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.7.0.98/3a98069\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.7.0.108/5ea18d6\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
