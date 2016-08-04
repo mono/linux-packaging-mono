@@ -1,3 +1,9 @@
+mono (4.6.0.125-0xamarin3) alpha; urgency=low
+
+  * "Bugfix - see git log"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 04 Aug 2016 12:39:13 +0000
+
 mono (4.6.0.125-0xamarin2) alpha; urgency=low
 
   * "Bugfix - see git log"
