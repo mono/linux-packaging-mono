@@ -107,15 +107,14 @@ am__libwapi_la_SOURCES_DIST = access.h context.c context.h error.c \
 	process-private.h security.c security.h semaphores.c \
 	semaphores.h semaphore-private.h shared.c shared.h sockets.c \
 	sockets.h socket-private.h socket-wrappers.h status.h \
-	threads.h thread-private.h timefuncs.c timefuncs.h \
-	timefuncs-private.h types.h uglify.h versioninfo.c \
-	versioninfo.h wait.c wait.h wapi_glob.h wapi_glob.c wapi.h \
-	wapi-private.h wapi.c wthreads.c io-trace.h wapi-remap.h \
-	io-layer-dummy.c
+	timefuncs.c timefuncs.h timefuncs-private.h types.h uglify.h \
+	versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
+	wapi_glob.c wapi.h wapi-private.h wapi.c io-trace.h \
+	wapi-remap.h io-layer-dummy.c
 am__objects_1 = context.lo error.lo events.lo io.lo io-portability.lo \
 	locking.lo messages.lo mutexes.lo posix.lo processes.lo \
 	security.lo semaphores.lo shared.lo sockets.lo timefuncs.lo \
-	versioninfo.lo wait.lo wapi_glob.lo wapi.lo wthreads.lo
+	versioninfo.lo wait.lo wapi_glob.lo wapi.lo
 am__objects_2 =
 am__objects_3 = io-layer-dummy.lo
 @HOST_WIN32_FALSE@am_libwapi_la_OBJECTS = $(am__objects_1) \
@@ -418,7 +417,6 @@ OTHER_H = \
 	semaphores.h	\
 	sockets.h	\
 	status.h	\
-	threads.h	\
 	timefuncs.h	\
 	types.h		\
 	uglify.h	\
@@ -465,8 +463,6 @@ OTHER_SRC = \
 	socket-private.h	\
 	socket-wrappers.h	\
 	status.h		\
-	threads.h		\
-	thread-private.h	\
 	timefuncs.c		\
 	timefuncs.h		\
 	timefuncs-private.h	\
@@ -480,8 +476,7 @@ OTHER_SRC = \
 	wapi_glob.c		\
 	wapi.h			\
 	wapi-private.h		\
-	wapi.c		\
-	wthreads.c
+	wapi.c
 
 WINDOWS_H = \
 	io-layer.h
@@ -571,7 +566,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wait.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wapi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wapi_glob.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wthreads.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

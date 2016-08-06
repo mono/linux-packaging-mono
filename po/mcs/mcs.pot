@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 4.7.0\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-08-04 08:38+0000\n"
+"POT-Creation-Date: 2016-08-06 09:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgid ""
 "mismatch"
 msgstr ""
 
-#: mcs/mcs/anonymous.cs:1054 mcs/mcs/ecore.cs:5893
+#: mcs/mcs/anonymous.cs:1054 mcs/mcs/ecore.cs:5898
 #, csharp-format
 msgid "Delegate `{0}' does not take `{1}' arguments"
 msgstr ""
@@ -1293,304 +1293,304 @@ msgid ""
 "reference"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:243
+#: mcs/mcs/ecore.cs:244
 #, csharp-format
 msgid "`{0}' is inaccessible due to its protection level"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:248
+#: mcs/mcs/ecore.cs:249
 #, csharp-format
 msgid "The expression being assigned to `{0}' must be constant"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:253
+#: mcs/mcs/ecore.cs:254
 #, csharp-format
 msgid ""
 "A constant `{0}' of reference type `{1}' can only be initialized with null"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:274
+#: mcs/mcs/ecore.cs:275
 msgid "Keyword `void' cannot be used in this context"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:299
+#: mcs/mcs/ecore.cs:304
 #, csharp-format
 msgid "Cannot convert type `{0}' to `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:310
+#: mcs/mcs/ecore.cs:315
 #, csharp-format
 msgid ""
 "Cannot implicitly convert type `{0}' to `{1}'. An explicit conversion exists "
 "(are you missing a cast?)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:313
+#: mcs/mcs/ecore.cs:318
 #, csharp-format
 msgid "Cannot implicitly convert type `{0}' to `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:344
+#: mcs/mcs/ecore.cs:349
 #, csharp-format
 msgid "The {0} `{1}' cannot be used with type arguments"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:356
+#: mcs/mcs/ecore.cs:361
 #, csharp-format
 msgid "`{0}' does not contain a definition for `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:365
+#: mcs/mcs/ecore.cs:370
 msgid "A ref or out argument must be an assignable variable"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:367
+#: mcs/mcs/ecore.cs:372
 msgid ""
 "The left-hand side of an assignment must be a variable, a property or an "
 "indexer"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:373
+#: mcs/mcs/ecore.cs:378
 msgid "The operation in question is undefined on void pointers"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:524 mcs/mcs/statement.cs:3962 mcs/mcs/statement.cs:3964
+#: mcs/mcs/ecore.cs:529 mcs/mcs/statement.cs:3962 mcs/mcs/statement.cs:3964
 #, csharp-format
 msgid "Internal compiler error: {0}"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:586 mcs/mcs/expression.cs:1840 mcs/mcs/expression.cs:7924
+#: mcs/mcs/ecore.cs:591 mcs/mcs/expression.cs:1840 mcs/mcs/expression.cs:7924
 #: mcs/mcs/expression.cs:7932
 msgid "A constant value is expected"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:598
+#: mcs/mcs/ecore.cs:603
 msgid ""
 "An attribute argument must be a constant expression, typeof expression or "
 "array creation expression"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:601
+#: mcs/mcs/ecore.cs:606
 #, csharp-format
 msgid ""
 "Attribute constructor parameter has type `{0}', which is not a valid "
 "attribute parameter type"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:790
+#: mcs/mcs/ecore.cs:795
 #, csharp-format
 msgid "The class `{0}' has no constructors defined"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1010
+#: mcs/mcs/ecore.cs:1015
 msgid "An element access expression cannot use named argument"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1023
+#: mcs/mcs/ecore.cs:1028
 #, csharp-format
 msgid "The `{0}' operator cannot be applied to operand of type `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1029
+#: mcs/mcs/ecore.cs:1034
 msgid "An expression tree cannot contain an unsafe pointer operation"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1034
+#: mcs/mcs/ecore.cs:1039
 msgid "An expression tree cannot contain a null propagating operator"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1039
+#: mcs/mcs/ecore.cs:1044
 msgid ""
 "The left-hand side of an assignment cannot contain a null propagating "
 "operator"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1135
+#: mcs/mcs/ecore.cs:1140
 #, csharp-format
 msgid "`{0}' is a `{1}' but a `{2}' was expected"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1168
+#: mcs/mcs/ecore.cs:1173
 #, csharp-format
 msgid "Expression denotes a `{0}', where a `{1}' was expected"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1178
+#: mcs/mcs/ecore.cs:1183
 msgid "Pointers and fixed size buffers may only be used in an unsafe context"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:1231
+#: mcs/mcs/ecore.cs:1236
 msgid "A pointer must be indexed by only one value"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:2712
+#: mcs/mcs/ecore.cs:2717
 #, csharp-format
 msgid "The name `{0}' does not exist in the current context"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:2788
+#: mcs/mcs/ecore.cs:2793
 #, csharp-format
 msgid ""
 "Dynamic keyword requires `{0}' to be defined. Are you missing System.Core."
 "dll assembly reference?"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:2869
+#: mcs/mcs/ecore.cs:2874
 #, csharp-format
 msgid ""
 "A local variable `{0}' cannot be used before it is declared. Consider "
 "renaming the local variable when it hides the member `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:2953
+#: mcs/mcs/ecore.cs:2958
 #, csharp-format
 msgid "A local variable `{0}' cannot be used before it is declared"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3106
+#: mcs/mcs/ecore.cs:3111
 msgid "System.Void cannot be used from C#. Consider using `void'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3268
+#: mcs/mcs/ecore.cs:3273
 #, csharp-format
 msgid ""
 "The type or namespace name `{0}' could not be found in the global namespace. "
 "Are you missing {1} assembly reference?"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3272
+#: mcs/mcs/ecore.cs:3277
 #, csharp-format
 msgid ""
 "The type or namespace name `{0}' does not exist in the namespace `{1}'. Are "
 "you missing {2} assembly reference?"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3522
+#: mcs/mcs/ecore.cs:3527
 #, csharp-format
 msgid "Cannot call an abstract base member `{0}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3529
+#: mcs/mcs/ecore.cs:3534
 #, csharp-format
 msgid ""
 "Cannot access protected member `{0}' via a qualifier of type `{1}'. The "
 "qualifier must be of type `{2}' or derived from it"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3562
+#: mcs/mcs/ecore.cs:3567
 #, csharp-format
 msgid ""
 "Fields of static readonly field `{0}' cannot be assigned to (except in a "
 "static constructor or a variable initializer)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3565
+#: mcs/mcs/ecore.cs:3570
 #, csharp-format
 msgid ""
 "Members of readonly field `{0}' cannot be modified (except in a constructor "
 "or a variable initializer)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3574
+#: mcs/mcs/ecore.cs:3579
 #, csharp-format
 msgid ""
 "Members of value type `{0}' cannot be assigned using a property `{1}' object "
 "initializer"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3578
+#: mcs/mcs/ecore.cs:3583
 #, csharp-format
 msgid ""
 "Cannot modify a value type return value of `{0}'. Consider storing the value "
 "in a temporary variable"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3591
+#: mcs/mcs/ecore.cs:3596
 #, csharp-format
 msgid "Cannot assign to members of `{0}' because it is a `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3614
+#: mcs/mcs/ecore.cs:3619
 #, csharp-format
 msgid ""
 "Static member `{0}' cannot be accessed with an instance reference, qualify "
 "it with a type name instead"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3629
+#: mcs/mcs/ecore.cs:3634
 #, csharp-format
 msgid ""
 "A field initializer cannot reference the nonstatic field, method, or "
 "property `{0}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3635
+#: mcs/mcs/ecore.cs:3640
 msgid "Constructor initializer cannot access primary constructor parameters"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3637
+#: mcs/mcs/ecore.cs:3642
 #, csharp-format
 msgid ""
 "An object reference is required to access primary constructor parameter `{0}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3642
+#: mcs/mcs/ecore.cs:3647
 #, csharp-format
 msgid "An object reference is required to access non-static member `{0}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3653
+#: mcs/mcs/ecore.cs:3658
 #, csharp-format
 msgid ""
 "Cannot access a nonstatic member of outer type `{0}' via nested type `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3681
+#: mcs/mcs/ecore.cs:3686
 msgid "Cannot modify the result of an unboxing conversion"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3805
+#: mcs/mcs/ecore.cs:3810
 msgid "An argument to nameof operator cannot be extension method group"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3881
+#: mcs/mcs/ecore.cs:3886
 #, csharp-format
 msgid ""
 "Type `{0}' does not contain a member `{1}' and the best extension method "
 "overload `{2}' requires an instance of type `{3}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:3885
+#: mcs/mcs/ecore.cs:3890
 #, csharp-format
 msgid ""
 "Type `{0}' does not contain a member `{1}' and the best extension method "
 "overload `{2}' has some invalid arguments"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:4033
+#: mcs/mcs/ecore.cs:4038
 msgid "An expression tree cannot contain an expression with method group"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:4039
+#: mcs/mcs/ecore.cs:4044
 msgid ""
 "Partial methods with only a defining declaration or removed conditional "
 "methods cannot be used in an expression tree"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:4093
+#: mcs/mcs/ecore.cs:4098
 #, csharp-format
 msgid ""
 "Cannot convert method group `{0}' to non-delegate type `{1}'. Consider using "
 "parentheses to invoke the method"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:4963
+#: mcs/mcs/ecore.cs:4968
 #, csharp-format
 msgid ""
 "The type `{0}' does not contain a constructor that takes `{1}' arguments"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5677
+#: mcs/mcs/ecore.cs:5682
 #, csharp-format
 msgid ""
 "Type `{0}' does not contain a member `{1}' and the best extension method "
@@ -1598,205 +1598,205 @@ msgid ""
 "without the extension method syntax"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5716
+#: mcs/mcs/ecore.cs:5721
 #, csharp-format
 msgid ""
 "The call is ambiguous between the following methods or properties: `{0}' and "
 "`{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5777
+#: mcs/mcs/ecore.cs:5782
 #, csharp-format
 msgid ""
 "The best overloaded collection initalizer method `{0}' cannot have `ref' or "
 "`out' modifier"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5781
+#: mcs/mcs/ecore.cs:5786
 #, csharp-format
 msgid ""
 "The best overloaded collection initalizer method `{0}' has some invalid "
 "arguments"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5784
+#: mcs/mcs/ecore.cs:5789
 #, csharp-format
 msgid "Delegate `{0}' has some invalid arguments"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5788
+#: mcs/mcs/ecore.cs:5793
 #, csharp-format
 msgid "The best overloaded method match for `{0}' has some invalid arguments"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5797
+#: mcs/mcs/ecore.cs:5802
 #, csharp-format
 msgid ""
 "Argument `#{0}' does not require `{1}' modifier. Consider removing `{1}' "
 "modifier"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5800
+#: mcs/mcs/ecore.cs:5805
 #, csharp-format
 msgid "Argument `#{0}' is missing `{1}' modifier"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5817
+#: mcs/mcs/ecore.cs:5822
 #, csharp-format
 msgid "Argument `#{0}' cannot convert `{1}' expression to type `{2}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5869
+#: mcs/mcs/ecore.cs:5874
 #, csharp-format
 msgid ""
 "The type arguments for method `{0}' cannot be inferred from the usage. Try "
 "specifying the type arguments explicitly"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:5898
+#: mcs/mcs/ecore.cs:5903
 #, csharp-format
 msgid "No overload for method `{0}' takes `{1}' arguments"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6001
+#: mcs/mcs/ecore.cs:6006
 #, csharp-format
 msgid "The delegate `{0}' does not contain a parameter named `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6006
+#: mcs/mcs/ecore.cs:6011
 #, csharp-format
 msgid ""
 "The best overloaded method match for `{0}' does not contain a parameter "
 "named `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6016
+#: mcs/mcs/ecore.cs:6021
 #, csharp-format
 msgid ""
 "Named argument `{0}' cannot be used for a parameter which has positional "
 "argument specified"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6391
+#: mcs/mcs/ecore.cs:6396
 msgid ""
 "You cannot use fixed size buffers contained in unfixed expressions. Try "
 "using the fixed statement"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6396
+#: mcs/mcs/ecore.cs:6401
 #, csharp-format
 msgid "`{0}': Fixed size buffers can only be accessed through locals or fields"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6476
+#: mcs/mcs/ecore.cs:6481
 #, csharp-format
 msgid ""
 "A static readonly field `{0}' cannot be passed ref or out (except in a "
 "static constructor)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6479
+#: mcs/mcs/ecore.cs:6484
 #, csharp-format
 msgid ""
 "A readonly field `{0}' cannot be passed ref or out (except in a constructor)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6493
+#: mcs/mcs/ecore.cs:6498
 #, csharp-format
 msgid ""
 "Fields of static readonly field `{0}' cannot be passed ref or out (except in "
 "a static constructor)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6496
+#: mcs/mcs/ecore.cs:6501
 #, csharp-format
 msgid ""
 "Members of readonly field `{0}' cannot be passed ref or out (except in a "
 "constructor)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6503
+#: mcs/mcs/ecore.cs:6508
 #, csharp-format
 msgid ""
 "A static readonly field `{0}' cannot be assigned to (except in a static "
 "constructor or a variable initializer)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6506
+#: mcs/mcs/ecore.cs:6511
 #, csharp-format
 msgid ""
 "A readonly field `{0}' cannot be assigned to (except in a constructor or a "
 "variable initializer)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6573
+#: mcs/mcs/ecore.cs:6578
 #, csharp-format
 msgid "Use of possibly unassigned field `{0}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:6989
+#: mcs/mcs/ecore.cs:6994
 #, csharp-format
 msgid "Property or event `{0}' is not supported by the C# language"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7109
+#: mcs/mcs/ecore.cs:7114
 #, csharp-format
 msgid "Use of possibly unassigned auto-implemented property `{0}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7294
+#: mcs/mcs/ecore.cs:7299
 #, csharp-format
 msgid "A range variable `{0}' may not be passes as `ref' or `out' parameter"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7317
+#: mcs/mcs/ecore.cs:7322
 #, csharp-format
 msgid "Property or indexer `{0}' cannot be assigned to (it is read-only)"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7325
+#: mcs/mcs/ecore.cs:7330
 #, csharp-format
 msgid ""
 "The property or indexer `{0}' cannot be used in this context because the set "
 "accessor is inaccessible"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7405
+#: mcs/mcs/ecore.cs:7410
 #, csharp-format
 msgid ""
 "The property or indexer `{0}' cannot be used in this context because it "
 "lacks the `get' accessor"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7412
+#: mcs/mcs/ecore.cs:7417
 #, csharp-format
 msgid ""
 "The property or indexer `{0}' cannot be used in this context because the get "
 "accessor is inaccessible"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7594
+#: mcs/mcs/ecore.cs:7599
 #, csharp-format
 msgid ""
 "The event `{0}' can only appear on the left hand side of `+=' or `-=' "
 "operator"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7598
+#: mcs/mcs/ecore.cs:7603
 #, csharp-format
 msgid ""
 "The event `{0}' can only appear on the left hand side of += or -= when used "
 "outside of the type `{1}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7770
+#: mcs/mcs/ecore.cs:7775
 #, csharp-format
 msgid ""
 "An implicitly typed local variable declaration cannot be initialized with "
 "`{0}'"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:7785
+#: mcs/mcs/ecore.cs:7790
 msgid ""
 "The contextual keyword `var' may only appear within a local variable "
 "declaration"
