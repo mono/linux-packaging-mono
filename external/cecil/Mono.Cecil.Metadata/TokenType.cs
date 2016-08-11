@@ -1,29 +1,11 @@
 //
-// TokenType.cs
-//
 // Author:
 //   Jb Evain (jbevain@gmail.com)
 //
-// Copyright (c) 2008 - 2011 Jb Evain
+// Copyright (c) 2008 - 2015 Jb Evain
+// Copyright (c) 2008 - 2011 Novell, Inc.
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// Licensed under the MIT/X11 license.
 //
 
 namespace Mono.Cecil {
@@ -51,6 +33,17 @@ namespace Mono.Cecil {
 		ManifestResource = 0x28000000,
 		GenericParam = 0x2a000000,
 		MethodSpec = 0x2b000000,
+		GenericParamConstraint = 0x2c000000,
+
+		Document = 0x30000000,
+		MethodDebugInformation = 0x31000000,
+		LocalScope = 0x32000000,
+		LocalVariable = 0x33000000,
+		LocalConstant = 0x34000000,
+		ImportScope = 0x35000000,
+		StateMachineMethod = 0x36000000,
+		CustomDebugInformation = 0x37000000,
+
 		String = 0x70000000,
 	}
 }

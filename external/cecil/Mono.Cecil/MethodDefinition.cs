@@ -1,31 +1,14 @@
 //
-// MethodDefinition.cs
-//
 // Author:
 //   Jb Evain (jbevain@gmail.com)
 //
-// Copyright (c) 2008 - 2011 Jb Evain
+// Copyright (c) 2008 - 2015 Jb Evain
+// Copyright (c) 2008 - 2011 Novell, Inc.
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// Licensed under the MIT/X11 license.
 //
 
+using System;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 
@@ -33,11 +16,12 @@ using RVA = System.UInt32;
 
 namespace Mono.Cecil {
 
-	public sealed class MethodDefinition : MethodReference, IMemberDefinition, ISecurityDeclarationProvider {
+	public sealed class MethodDefinition : MethodReference, IMemberDefinition, ISecurityDeclarationProvider, ICustomDebugInformationProvider {
 
 		ushort attributes;
 		ushort impl_attributes;
-		internal MethodSemanticsAttributes? sem_attrs;
+		internal volatile bool sem_attrs_ready;
+		internal MethodSemanticsAttributes sem_attrs;
 		Collection<CustomAttribute> custom_attributes;
 		Collection<SecurityDeclaration> security_declarations;
 
@@ -46,36 +30,64 @@ namespace Mono.Cecil {
 		Collection<MethodReference> overrides;
 
 		internal MethodBody body;
+		internal MethodDebugInformation debug_info;
+		internal Collection<CustomDebugInformation> custom_infos;
+
+		public override string Name {
+			get { return base.Name; }
+			set {
+				if (IsWindowsRuntimeProjection && value != base.Name)
+					throw new InvalidOperationException ();
+
+				base.Name = value;
+			}
+		}
 
 		public MethodAttributes Attributes {
 			get { return (MethodAttributes) attributes; }
-			set { attributes = (ushort) value; }
+			set {
+				if (IsWindowsRuntimeProjection && (ushort) value != attributes)
+					throw new InvalidOperationException ();
+
+				attributes = (ushort) value;
+			}
 		}
 
 		public MethodImplAttributes ImplAttributes {
 			get { return (MethodImplAttributes) impl_attributes; }
-			set { impl_attributes = (ushort) value; }
+			set {
+				if (IsWindowsRuntimeProjection && (ushort) value != impl_attributes)
+					throw new InvalidOperationException ();
+
+				impl_attributes = (ushort) value;
+			}
 		}
 
 		public MethodSemanticsAttributes SemanticsAttributes {
 			get {
-				if (sem_attrs.HasValue)
-					return sem_attrs.Value;
+				if (sem_attrs_ready)
+					return sem_attrs;
 
 				if (HasImage) {
 					ReadSemantics ();
-					return sem_attrs.Value;
+					return sem_attrs;
 				}
 
 				sem_attrs = MethodSemanticsAttributes.None;
-				return sem_attrs.Value;
+				sem_attrs_ready = true;
+				return sem_attrs;
 			}
 			set { sem_attrs = value; }
 		}
 
+		internal new MethodDefinitionProjection WindowsRuntimeProjection {
+			get { return (MethodDefinitionProjection) projection; }
+			set { projection = value; }
+		}
+
 		internal void ReadSemantics ()
 		{
-			if (sem_attrs.HasValue)
+			if (sem_attrs_ready)
 				return;
 
 			var module = this.Module;
@@ -98,7 +110,7 @@ namespace Mono.Cecil {
 		}
 
 		public Collection<SecurityDeclaration> SecurityDeclarations {
-			get { return security_declarations ?? (security_declarations = this.GetSecurityDeclarations (Module)); }
+			get { return security_declarations ?? (this.GetSecurityDeclarations (ref security_declarations, Module)); }
 		}
 
 		public bool HasCustomAttributes {
@@ -111,7 +123,7 @@ namespace Mono.Cecil {
 		}
 
 		public Collection<CustomAttribute> CustomAttributes {
-			get { return custom_attributes ?? (custom_attributes = this.GetCustomAttributes (Module)); }
+			get { return custom_attributes ?? (this.GetCustomAttributes (ref custom_attributes, Module)); }
 		}
 
 		public int RVA {
@@ -131,18 +143,41 @@ namespace Mono.Cecil {
 
 		public MethodBody Body {
 			get {
-				if (body != null)
-					return body;
+				MethodBody localBody = this.body;
+				if (localBody != null)
+					return localBody;
 
 				if (!HasBody)
 					return null;
 
 				if (HasImage && rva != 0)
-					return body = Module.Read (this, (method, reader) => reader.ReadMethodBody (method));
+					return Module.Read (ref body, this, (method, reader) => reader.ReadMethodBody (method));
 
 				return body = new MethodBody (this);
 			}
-			set { body = value; }
+			set {
+				var module = this.Module;
+				if (module == null) {
+					body = value;
+					return;
+				}
+
+				// we reset Body to null in ILSpy to save memory; so we need that operation to be thread-safe
+				lock (module.SyncRoot) {
+					body = value;
+				}
+			}
+		}
+
+		public MethodDebugInformation DebugInformation {
+			get {
+				if (debug_info != null)
+					return debug_info;
+
+				Mixin.Read (Body);
+
+				return debug_info ?? (debug_info = new MethodDebugInformation (this));
+			}
 		}
 
 		public bool HasPInvokeInfo {
@@ -160,7 +195,7 @@ namespace Mono.Cecil {
 					return pinvoke;
 
 				if (HasImage && IsPInvokeImpl)
-					return pinvoke = Module.Read (this, (method, reader) => reader.ReadPInvokeInfo (method));
+					return Module.Read (ref pinvoke, this, (method, reader) => reader.ReadPInvokeInfo (method));
 
 				return null;
 			}
@@ -175,10 +210,7 @@ namespace Mono.Cecil {
 				if (overrides != null)
 					return overrides.Count > 0;
 
-				if (HasImage)
-					return Module.Read (this, (method, reader) => reader.HasOverrides (method));
-
-				return false;
+				return HasImage && Module.Read (this, (method, reader) => reader.HasOverrides (method));
 			}
 		}
 
@@ -188,7 +220,7 @@ namespace Mono.Cecil {
 					return overrides;
 
 				if (HasImage)
-					return overrides = Module.Read (this, (method, reader) => reader.ReadOverrides (method));
+					return Module.Read (ref overrides, this, (method, reader) => reader.ReadOverrides (method));
 
 				return overrides = new Collection<MethodReference> ();
 			}
@@ -204,7 +236,23 @@ namespace Mono.Cecil {
 		}
 
 		public override Collection<GenericParameter> GenericParameters {
-			get { return generic_parameters ?? (generic_parameters = this.GetGenericParameters (Module)); }
+			get { return generic_parameters ?? (this.GetGenericParameters (ref generic_parameters, Module)); }
+		}
+
+		public bool HasCustomDebugInformations {
+			get {
+				Mixin.Read (Body);
+
+				return !custom_infos.IsNullOrEmpty ();
+			}
+		}
+
+		public Collection<CustomDebugInformation> CustomDebugInformations {
+			get {
+				Mixin.Read (Body);
+
+				return custom_infos ?? (custom_infos = new Collection<CustomDebugInformation> ());
+			}
 		}
 
 		#region MethodAttributes

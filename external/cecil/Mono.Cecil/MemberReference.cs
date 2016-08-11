@@ -1,30 +1,14 @@
 //
-// MemberReference.cs
-//
 // Author:
 //   Jb Evain (jbevain@gmail.com)
 //
-// Copyright (c) 2008 - 2011 Jb Evain
+// Copyright (c) 2008 - 2015 Jb Evain
+// Copyright (c) 2008 - 2011 Novell, Inc.
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
+// Licensed under the MIT/X11 license.
 //
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
+
+using System;
 
 namespace Mono.Cecil {
 
@@ -34,10 +18,16 @@ namespace Mono.Cecil {
 		TypeReference declaring_type;
 
 		internal MetadataToken token;
+		internal object projection;
 
 		public virtual string Name {
 			get { return name; }
-			set { name = value; }
+			set {
+				if (IsWindowsRuntimeProjection && value != name)
+					throw new InvalidOperationException ();
+
+				name = value;
+			}
 		}
 
 		public abstract string FullName {
@@ -52,6 +42,15 @@ namespace Mono.Cecil {
 		public MetadataToken MetadataToken {
 			get { return token; }
 			set { token = value; }
+		}
+
+		public bool IsWindowsRuntimeProjection {
+			get { return projection != null; }
+		}
+
+		internal MemberReferenceProjection WindowsRuntimeProjection {
+			get { return (MemberReferenceProjection) projection; }
+			set { projection = value; }
 		}
 
 		internal bool HasImage {
@@ -72,7 +71,7 @@ namespace Mono.Cecil {
 			get { return false; }
 		}
 
-		internal virtual bool ContainsGenericParameter {
+		public virtual bool ContainsGenericParameter {
 			get { return declaring_type != null && declaring_type.ContainsGenericParameter; }
 		}
 
@@ -92,6 +91,13 @@ namespace Mono.Cecil {
 
 			return declaring_type.FullName + "::" + name;
 		}
+
+		public IMemberDefinition Resolve ()
+		{
+			return ResolveDefinition ();
+		}
+
+		protected abstract IMemberDefinition ResolveDefinition ();
 
 		public override string ToString ()
 		{

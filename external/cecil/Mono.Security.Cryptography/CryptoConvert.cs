@@ -27,10 +27,12 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#if !READ_ONLY
+
+#if !PCL && !NET_CORE
+
 using System;
 using System.Security.Cryptography;
-
-#if !(SILVERLIGHT || READ_ONLY)
 
 namespace Mono.Security.Cryptography {
 
@@ -139,10 +141,11 @@ namespace Mono.Security.Cryptography {
 				rsa = RSA.Create ();
 				rsa.ImportParameters (rsap);
 			}
-			catch (CryptographicException ce) {
+			catch (CryptographicException) {
 				// this may cause problem when this code is run under
 				// the SYSTEM identity on Windows (e.g. ASP.NET). See
 				// http://bugzilla.ximian.com/show_bug.cgi?id=77559
+				bool throws = false;
 				try {
 					CspParameters csp = new CspParameters ();
 					csp.Flags = CspProviderFlags.UseMachineKeyStore;
@@ -150,8 +153,12 @@ namespace Mono.Security.Cryptography {
 					rsa.ImportParameters (rsap);
 				}
 				catch {
-					// rethrow original, not the later, exception if this fails
-					throw ce;
+					throws = true;
+				}
+
+				if (throws) {
+					// rethrow original, not the latter, exception if this fails
+					throw;
 				}
 			}
 			return rsa;
@@ -241,3 +248,6 @@ namespace Mono.Security.Cryptography {
 }
 
 #endif
+
+#endif
+

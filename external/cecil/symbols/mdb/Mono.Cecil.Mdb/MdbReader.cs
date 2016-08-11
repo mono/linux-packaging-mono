@@ -1,29 +1,11 @@
 //
-// MdbReader.cs
-//
 // Author:
 //   Jb Evain (jbevain@gmail.com)
 //
-// Copyright (c) 2008 - 2011 Jb Evain
+// Copyright (c) 2008 - 2015 Jb Evain
+// Copyright (c) 2008 - 2011 Novell, Inc.
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// Licensed under the MIT/X11 license.
 //
 
 using System;
@@ -36,20 +18,34 @@ using Mono.CompilerServices.SymbolWriter;
 
 namespace Mono.Cecil.Mdb {
 
-	public class MdbReaderProvider : ISymbolReaderProvider {
+	public sealed class MdbReaderProvider : ISymbolReaderProvider {
 
 		public ISymbolReader GetSymbolReader (ModuleDefinition module, string fileName)
 		{
-			return new MdbReader (module, MonoSymbolFile.ReadSymbolFile (module, fileName));
+			Mixin.CheckModule (module);
+			Mixin.CheckFileName (fileName);
+
+			return new MdbReader (module, MonoSymbolFile.ReadSymbolFile (Mixin.GetMdbFileName (fileName), module.Mvid));
 		}
 
 		public ISymbolReader GetSymbolReader (ModuleDefinition module, Stream symbolStream)
 		{
-			throw new NotImplementedException ();
+			Mixin.CheckModule (module);
+			Mixin.CheckStream (symbolStream);
+
+			var file = MonoSymbolFile.ReadSymbolFile (symbolStream);
+			if (module.Mvid != file.Guid) {
+				var file_stream = symbolStream as FileStream;
+				if (file_stream != null)
+					throw new MonoSymbolFileException ("Symbol file `{0}' does not match assembly", file_stream.Name);
+
+				throw new MonoSymbolFileException ("Symbol file from stream does not match assembly");
+			}
+			return new MdbReader (module, file);
 		}
 	}
 
-	public class MdbReader : ISymbolReader {
+	public sealed class MdbReader : ISymbolReader {
 
 		readonly ModuleDefinition module;
 		readonly MonoSymbolFile symbol_file;
@@ -67,28 +63,28 @@ namespace Mono.Cecil.Mdb {
 			return symbol_file.Guid == module.Mvid;
 		}
 
-		public void Read (MethodBody body, InstructionMapper mapper)
+		public MethodDebugInformation Read (MethodDefinition method)
 		{
-			var method_token = body.Method.MetadataToken;
+			var method_token = method.MetadataToken;
 			var entry = symbol_file.GetMethodByToken (method_token.ToInt32	());
 			if (entry == null)
-				return;
+				return null;
 
-			var scopes = ReadScopes (entry, body, mapper);
-			ReadLineNumbers (entry, mapper);
-			ReadLocalVariables (entry, body, scopes);
+			var info = new MethodDebugInformation (method);
+
+			var scopes = ReadScopes (entry, info);
+			ReadLineNumbers (entry, info);
+			ReadLocalVariables (entry, scopes);
+
+			return info;
 		}
 
-		static void ReadLocalVariables (MethodEntry entry, MethodBody body, Scope [] scopes)
+		static void ReadLocalVariables (MethodEntry entry, ScopeDebugInformation [] scopes)
 		{
 			var locals = entry.GetLocals ();
 
 			foreach (var local in locals) {
-				if (local.Index < 0 || local.Index >= body.Variables.Count) // Mono 2.6 emits wrong local infos for iterators
-					continue;
-				
-				var variable = body.Variables [local.Index];
-				variable.Name = local.Name;
+				var variable = new VariableDebugInformation (local.Index, local.Name);
 
 				var index = local.BlockIndex;
 				if (index < 0 || index >= scopes.Length)
@@ -102,23 +98,22 @@ namespace Mono.Cecil.Mdb {
 			}
 		}
 
-		void ReadLineNumbers (MethodEntry entry, InstructionMapper mapper)
+		void ReadLineNumbers (MethodEntry entry, MethodDebugInformation info)
 		{
 			Document document = null;
 			var table = entry.GetLineNumberTable ();
 
-			foreach (var line in table.LineNumbers) {
-				var instruction = mapper (line.Offset);
-				if (instruction == null)
-					continue;
+			info.sequence_points = new Collection<SequencePoint> (table.LineNumbers.Length);
 
+			for (var i = 0; i < table.LineNumbers.Length; i++) {
+				var line = table.LineNumbers [i];
 				if (document == null)
 					document = GetDocument (entry.CompileUnit.SourceFile);
 
-				instruction.SequencePoint = new SequencePoint (document) {
-					StartLine = line.Row,
-					EndLine = line.Row,
-				};
+				if (i > 0 && table.LineNumbers [i - 1].Offset == line.Offset)
+					continue;
+
+				info.sequence_points.Add (LineToSequencePoint (line, entry, document));
 			}
 		}
 
@@ -130,41 +125,46 @@ namespace Mono.Cecil.Mdb {
 			if (documents.TryGetValue (file_name, out document))
 				return document;
 
-			document = new Document (file_name);
+			document = new Document (file_name) {
+				Hash = file.Checksum,
+			};
+
 			documents.Add (file_name, document);
 
 			return document;
 		}
 
-		static Scope [] ReadScopes (MethodEntry entry, MethodBody body, InstructionMapper mapper)
+		static ScopeDebugInformation [] ReadScopes (MethodEntry entry, MethodDebugInformation info)
 		{
 			var blocks = entry.GetCodeBlocks ();
-			var scopes = new Scope [blocks.Length];
+			var scopes = new ScopeDebugInformation [blocks.Length + 1];
+
+			info.scope = scopes [0] = new ScopeDebugInformation {
+				Start = new InstructionOffset (0),
+				End = new InstructionOffset (info.code_size),
+			};
 
 			foreach (var block in blocks) {
-				if (block.BlockType != CodeBlockEntry.Type.Lexical)
+				if (block.BlockType != CodeBlockEntry.Type.Lexical && block.BlockType != CodeBlockEntry.Type.CompilerGenerated)
 					continue;
 
-				var scope = new Scope ();
-				scope.Start = mapper (block.StartOffset);
-				scope.End = mapper (block.EndOffset);
+				var scope = new ScopeDebugInformation ();
+				scope.Start = new InstructionOffset (block.StartOffset);
+				scope.End = new InstructionOffset (block.EndOffset);
 
-				scopes [block.Index] = scope;
+				scopes [block.Index + 1] = scope;
 
-				if (body.Scope == null)
-					body.Scope = scope;
-
-				if (!AddScope (body.Scope, scope))
-					body.Scope = scope;
+				if (!AddScope (info.scope.Scopes, scope))
+					info.scope.Scopes.Add (scope);
 			}
 
 			return scopes;
 		}
 
-		static bool AddScope (Scope provider, Scope scope)
+		static bool AddScope (Collection<ScopeDebugInformation> scopes, ScopeDebugInformation scope)
 		{
-			foreach (var sub_scope in provider.Scopes) {
-				if (AddScope (sub_scope, scope))
+			foreach (var sub_scope in scopes) {
+				if (sub_scope.HasScopes && AddScope (sub_scope.Scopes, scope))
 					return true;
 
 				if (scope.Start.Offset >= sub_scope.Start.Offset && scope.End.Offset <= sub_scope.End.Offset) {
@@ -176,47 +176,32 @@ namespace Mono.Cecil.Mdb {
 			return false;
 		}
 
-		public void Read (MethodSymbols symbols)
+		static SequencePoint LineToSequencePoint (LineNumberEntry line, MethodEntry entry, Document document)
 		{
-			var entry = symbol_file.GetMethodByToken (symbols.MethodToken.ToInt32 ());
-			if (entry == null)
-				return;
-
-			ReadLineNumbers (entry, symbols);
-			ReadLocalVariables (entry, symbols);
-		}
-
-		void ReadLineNumbers (MethodEntry entry, MethodSymbols symbols)
-		{
-			var table = entry.GetLineNumberTable ();
-			var lines = table.LineNumbers;
-
-			var instructions = symbols.instructions = new Collection<InstructionSymbol> (lines.Length);
-
-			for (int i = 0; i < lines.Length; i++) {
-				var line = lines [i];
-
-				instructions.Add (new InstructionSymbol (line.Offset, new SequencePoint (GetDocument (entry.CompileUnit.SourceFile)) {
-					StartLine = line.Row,
-					EndLine = line.Row,
-				}));
-			}
-		}
-
-		static void ReadLocalVariables (MethodEntry entry, MethodSymbols symbols)
-		{
-			foreach (var local in entry.GetLocals ()) {
-				if (local.Index < 0 || local.Index >= symbols.Variables.Count) // Mono 2.6 emits wrong local infos for iterators
-					continue;
-
-				var variable = symbols.Variables [local.Index];
-				variable.Name = local.Name;
-			}
+			return new SequencePoint (line.Offset, document) {
+				StartLine = line.Row,
+				EndLine = line.EndRow,
+				StartColumn = line.Column,
+				EndColumn = line.EndColumn,
+			};
 		}
 
 		public void Dispose ()
 		{
 			symbol_file.Dispose ();
+		}
+	}
+
+	static class MethodEntryExtensions {
+
+		public static bool HasColumnInfo (this MethodEntry entry)
+		{
+			return (entry.MethodFlags & MethodEntry.Flags.ColumnsInfoIncluded) != 0;
+		}
+
+		public static bool HasEndInfo (this MethodEntry entry)
+		{
+			return (entry.MethodFlags & MethodEntry.Flags.EndInfoIncluded) != 0;
 		}
 	}
 }
