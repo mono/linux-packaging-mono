@@ -28,7 +28,7 @@ namespace Mono.Cecil.Tests {
 			WriteVariables (writer, body);
 
 			foreach (Instruction instruction in body.Instructions) {
-				var sequence_point = instruction.SequencePoint;
+				var sequence_point = body.Method.DebugInformation.GetSequencePoint (instruction);
 				if (sequence_point != null) {
 					writer.Write ('\t');
 					WriteSequencePoint (writer, sequence_point);
@@ -56,9 +56,18 @@ namespace Mono.Cecil.Tests {
 
 				var variable = variables [i];
 
-				writer.Write ("{0} {1}", variable.VariableType, variable);
+				writer.Write ("{0} {1}", variable.VariableType, GetVariableName (variable, body));
 			}
 			writer.WriteLine (")");
+		}
+
+		static string GetVariableName (VariableDefinition variable, MethodBody body)
+		{
+			string name;
+			if (body.Method.DebugInformation.TryGetName (variable, out name))
+				return name;
+
+			return variable.ToString ();
 		}
 
 		static void WriteInstruction (TextWriter writer, Instruction instruction)

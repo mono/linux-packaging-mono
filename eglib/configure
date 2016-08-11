@@ -12690,7 +12690,7 @@ if test "${with_overridable_allocators+set}" = set; then :
 fi
 
 
-if test x$with_overridable_allocators == xyes; then
+if test x$with_overridable_allocators = xyes; then
 
 $as_echo "#define ENABLE_OVERRIDABLE_ALLOCATORS 1" >>confdefs.h
 
@@ -12735,7 +12735,7 @@ done
 
 fi
 
- if test x$ac_cv_func_vasprintf = xno || test x$with_overridable_allocators == xyes; then
+ if test x$ac_cv_func_vasprintf = xno || test x$with_overridable_allocators = xyes; then
   NEED_VASPRINTF_TRUE=
   NEED_VASPRINTF_FALSE='#'
 else

@@ -1,29 +1,11 @@
 //
-// Instruction.cs
-//
 // Author:
 //   Jb Evain (jbevain@gmail.com)
 //
-// Copyright (c) 2008 - 2011 Jb Evain
+// Copyright (c) 2008 - 2015 Jb Evain
+// Copyright (c) 2008 - 2011 Novell, Inc.
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// Licensed under the MIT/X11 license.
 //
 
 using System;
@@ -39,8 +21,6 @@ namespace Mono.Cecil.Cil {
 
 		internal Instruction previous;
 		internal Instruction next;
-
-		SequencePoint sequence_point;
 
 		public int Offset {
 			get { return offset; }
@@ -65,11 +45,6 @@ namespace Mono.Cecil.Cil {
 		public Instruction Next {
 			get { return next; }
 			set { next = value; }
-		}
-
-		public SequencePoint SequencePoint {
-			get { return sequence_point; }
-			set { sequence_point = value; }
 		}
 
 		internal Instruction (int offset, OpCode opCode)
@@ -134,7 +109,7 @@ namespace Mono.Cecil.Cil {
 			switch (opcode.OperandType) {
 			case OperandType.ShortInlineBrTarget:
 			case OperandType.InlineBrTarget:
-				AppendLabel (instruction, (Instruction) operand);
+				AppendLabel (instruction, operand);
 				break;
 			case OperandType.InlineSwitch:
 				var labels = (Instruction []) operand;
@@ -158,10 +133,15 @@ namespace Mono.Cecil.Cil {
 			return instruction.ToString ();
 		}
 
-		static void AppendLabel (StringBuilder builder, Instruction instruction)
+		static void AppendLabel (StringBuilder builder, object o)
 		{
 			builder.Append ("IL_");
-			builder.Append (instruction.offset.ToString ("x4"));
+			if (o is Instruction)
+				builder.Append ((o as Instruction).offset.ToString ("x4"));
+			else if (o is int) {
+				builder.Append (((int)o).ToString ("x4"));
+				builder.Append (" (invalid)");
+			}
 		}
 
 		public static Instruction Create (OpCode opcode)

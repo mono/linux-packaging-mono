@@ -148,9 +148,9 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	mono-threads-posix-signals.c mono-threads-posix-signals.h \
 	mono-threads-mach.c mono-threads-mach-helper.c \
 	mono-threads-windows.c mono-threads-linux.c \
-	mono-threads-freebsd.c mono-threads-openbsd.c \
-	mono-threads-android.c mono-threads.h mono-threads-api.h \
-	mono-threads-coop.c mono-threads-coop.h \
+	mono-threads-freebsd.c mono-threads-netbsd.c \
+	mono-threads-openbsd.c mono-threads-android.c mono-threads.h \
+	mono-threads-api.h mono-threads-coop.c mono-threads-coop.h \
 	mono-threads-mach-abort-syscall.c \
 	mono-threads-posix-abort-syscall.c \
 	mono-threads-windows-abort-syscall.c mono-tls.h mono-tls.c \
@@ -185,9 +185,9 @@ am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	mono-threads-posix.lo mono-threads-posix-signals.lo \
 	mono-threads-mach.lo mono-threads-mach-helper.lo \
 	mono-threads-windows.lo mono-threads-linux.lo \
-	mono-threads-freebsd.lo mono-threads-openbsd.lo \
-	mono-threads-android.lo mono-threads-coop.lo \
-	mono-threads-mach-abort-syscall.lo \
+	mono-threads-freebsd.lo mono-threads-netbsd.lo \
+	mono-threads-openbsd.lo mono-threads-android.lo \
+	mono-threads-coop.lo mono-threads-mach-abort-syscall.lo \
 	mono-threads-posix-abort-syscall.lo \
 	mono-threads-windows-abort-syscall.lo mono-tls.lo atomic.lo \
 	mono-hwcap.lo bsearch.lo mono-conc-hashtable.lo sha1.lo \
@@ -623,6 +623,7 @@ monoutils_sources = \
 	mono-threads-windows.c	\
 	mono-threads-linux.c	\
 	mono-threads-freebsd.c	\
+	mono-threads-netbsd.c	\
 	mono-threads-openbsd.c	\
 	mono-threads-android.c	\
 	mono-threads.h	\
@@ -799,6 +800,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach-abort-syscall.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach-helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-netbsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-openbsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix-abort-syscall.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix-signals.Plo@am__quote@

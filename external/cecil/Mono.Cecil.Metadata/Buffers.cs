@@ -1,29 +1,11 @@
 //
-// TableHeapBuffer.cs
-//
 // Author:
 //   Jb Evain (jbevain@gmail.com)
 //
-// Copyright (c) 2008 - 2011 Jb Evain
+// Copyright (c) 2008 - 2015 Jb Evain
+// Copyright (c) 2008 - 2011 Novell, Inc.
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// Licensed under the MIT/X11 license.
 //
 
 using System;
@@ -43,11 +25,13 @@ namespace Mono.Cecil.Metadata {
 		readonly ModuleDefinition module;
 		readonly MetadataBuilder metadata;
 
-		internal MetadataTable [] tables = new MetadataTable [45];
+		internal MetadataTable [] tables = new MetadataTable [Mixin.TableCount];
 
 		bool large_string;
 		bool large_blob;
-		readonly int [] coded_index_sizes = new int [13];
+		bool large_guid;
+
+		readonly int [] coded_index_sizes = new int [Mixin.CodedIndexCount];
 		readonly Func<Table, int> counter;
 
 		public override bool IsEmpty {
@@ -105,6 +89,11 @@ namespace Mono.Cecil.Metadata {
 			WriteBySize (blob, large_blob);
 		}
 
+		public void WriteGuid (uint guid)
+		{
+			WriteBySize (guid, large_guid);
+		}
+
 		public void WriteRID (uint rid, Table table)
 		{
 			var md_table = tables [(int) table];
@@ -134,7 +123,7 @@ namespace Mono.Cecil.Metadata {
 			WriteByte (GetHeapSizes ());		// HeapSizes
 			WriteByte (10);						// Reserved2
 			WriteUInt64 (GetValid ());			// Valid
-			WriteUInt64 (0x0016003301fa00);		// Sorted
+			WriteUInt64 (0xc416003301fa00);		// Sorted
 
 			WriteRowCount ();
 			WriteTables ();
@@ -185,6 +174,11 @@ namespace Mono.Cecil.Metadata {
 			if (metadata.string_heap.IsLarge) {
 				large_string = true;
 				heap_sizes |= 0x01;
+			}
+
+			if (metadata.guid_heap.IsLarge) {
+				large_guid = true;
+				heap_sizes |= 0x02;
 			}
 
 			if (metadata.blob_heap.IsLarge) {
@@ -269,6 +263,37 @@ namespace Mono.Cecil.Metadata {
 		protected HeapBuffer (int length)
 			: base (length)
 		{
+		}
+	}
+
+	sealed class GuidHeapBuffer : HeapBuffer {
+
+		readonly Dictionary<Guid, uint> guids = new Dictionary<Guid, uint> ();
+
+		public override bool IsEmpty {
+			get { return length == 0; }
+		}
+
+		public GuidHeapBuffer ()
+			: base (16)
+		{
+		}
+
+		public uint GetGuidIndex (Guid guid)
+		{
+			uint index;
+			if (guids.TryGetValue (guid, out index))
+				return index;
+
+			index = (uint) guids.Count + 1;
+			WriteGuid (guid);
+			guids.Add (guid, index);
+			return index;
+		}
+
+		void WriteGuid (Guid guid)
+		{
+			WriteBytes (guid.ToByteArray ());
 		}
 	}
 
@@ -366,6 +391,18 @@ namespace Mono.Cecil.Metadata {
 			}
 
 			WriteByte (special);
+		}
+	}
+
+	sealed class PdbHeapBuffer : HeapBuffer {
+
+		public override bool IsEmpty {
+			get { return false; }
+		}
+
+		public PdbHeapBuffer ()
+			: base (0)
+		{
 		}
 	}
 }

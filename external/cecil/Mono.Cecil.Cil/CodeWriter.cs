@@ -1,29 +1,11 @@
 //
-// CodeWriter.cs
-//
 // Author:
 //   Jb Evain (jbevain@gmail.com)
 //
-// Copyright (c) 2008 - 2011 Jb Evain
+// Copyright (c) 2008 - 2015 Jb Evain
+// Copyright (c) 2008 - 2011 Novell, Inc.
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// Licensed under the MIT/X11 license.
 //
 
 using System;
@@ -93,31 +75,23 @@ namespace Mono.Cecil.Cil {
 
 		void WriteUnresolvedMethodBody (MethodDefinition method)
 		{
-			var code_reader = metadata.module.Read (method, (_, reader) => reader.code);
+			var code_reader = metadata.module.reader.code;
 
-			MethodSymbols symbols;
-			var buffer = code_reader.PatchRawMethodBody (method, this, out symbols);
+			int code_size;
+			MetadataToken local_var_token;
+			var buffer = code_reader.PatchRawMethodBody (method, this, out code_size, out local_var_token);
 
 			WriteBytes (buffer);
 
-			if (symbols.instructions.IsNullOrEmpty ())
+			if (method.debug_info == null)
 				return;
 
-			symbols.method_token = method.token;
-			symbols.local_var_token = GetLocalVarToken (buffer, symbols);
-
 			var symbol_writer = metadata.symbol_writer;
-			if (symbol_writer != null)
-				symbol_writer.Write (symbols);
-		}
-
-		static MetadataToken GetLocalVarToken (ByteBuffer buffer, MethodSymbols symbols)
-		{
-			if (symbols.variables.IsNullOrEmpty ())
-				return MetadataToken.Zero;
-
-			buffer.position = 8;
-			return new MetadataToken (buffer.ReadUInt32 ());
+			if (symbol_writer != null) {
+				method.debug_info.code_size = code_size;
+				method.debug_info.local_var_token = local_var_token;
+				symbol_writer.Write (method.debug_info);
+			}
 		}
 
 		void WriteResolvedMethodBody (MethodDefinition method)
@@ -135,8 +109,11 @@ namespace Mono.Cecil.Cil {
 				WriteExceptionHandlers ();
 
 			var symbol_writer = metadata.symbol_writer;
-			if (symbol_writer != null)
-				symbol_writer.Write (body);
+			if (symbol_writer != null && method.debug_info != null) {
+				method.debug_info.code_size = body.CodeSize;
+				method.debug_info.local_var_token = body.local_var_token;
+				symbol_writer.Write (method.debug_info);
+			}
 		}
 
 		void WriteFatHeader ()
@@ -202,13 +179,11 @@ namespace Mono.Cecil.Cil {
 				break;
 			}
 			case OperandType.ShortInlineBrTarget: {
-				var target = (Instruction) operand;
-				WriteSByte ((sbyte) (GetTargetOffset (target) - (instruction.Offset + opcode.Size + 1)));
+				WriteSByte ((sbyte) (GetTargetOffset (operand) - (instruction.Offset + opcode.Size + 1)));
 				break;
 			}
 			case OperandType.InlineBrTarget: {
-				var target = (Instruction) operand;
-				WriteInt32 (GetTargetOffset (target) - (instruction.Offset + opcode.Size + 4));
+				WriteInt32 (GetTargetOffset (operand) - (instruction.Offset + opcode.Size + 4));
 				break;
 			}
 			case OperandType.ShortInlineVar:
@@ -261,8 +236,12 @@ namespace Mono.Cecil.Cil {
 			}
 		}
 
-		int GetTargetOffset (Instruction instruction)
+		int GetTargetOffset (object o)
 		{
+			if (o is int)
+				return (int) o;
+
+			Instruction instruction = o as Instruction;
 			if (instruction == null) {
 				var last = body.instructions [body.instructions.size - 1];
 				return last.offset + last.GetSize ();
