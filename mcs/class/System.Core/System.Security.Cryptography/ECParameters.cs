@@ -1,5 +1,5 @@
 //
-// RSAOpenSsl.cs
+// ECPArameters.cs
 //
 // Authors:
 //	Marek Safar  <marek.safar@gmail.com>
@@ -26,30 +26,18 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#if NETSTANDARD
+
 namespace System.Security.Cryptography
 {
-	public sealed class RSAOpenSsl : RSA
-	{
-		public override RSAParameters ExportParameters (bool includePrivateParameters)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override void ImportParameters (RSAParameters parameters)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override byte[] SignHash (byte[] hash, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override bool VerifyHash (byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm, RSASignaturePadding padding)
-		{
-			throw new NotImplementedException ();
-		}
-
-		// TODO: Implement full contract API
-	}
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct ECParameters
+    {
+        public ECCurve Curve;
+        public byte[] D;
+        public ECPoint Q;
+        public void Validate () { throw new NotImplementedException (); }
+    }
 }
+
+#endif

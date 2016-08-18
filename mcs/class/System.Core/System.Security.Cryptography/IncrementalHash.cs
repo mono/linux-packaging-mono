@@ -1,5 +1,5 @@
 //
-// ECDsaOpenSsl.cs
+// IncrementalHash.cs
 //
 // Authors:
 //	Marek Safar  <marek.safar@gmail.com>
@@ -26,20 +26,21 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#if NETSTANDARD
+
 namespace System.Security.Cryptography
 {
-	public sealed class ECDsaOpenSsl : ECDsa
-	{
-		public override byte[] SignHash (byte[] hash)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override bool VerifyHash (byte[] hash, byte[] signature)
-		{
-			throw new NotImplementedException ();
-		}
-
-		// TODO: Implement full contract API
-	}
+    public sealed class IncrementalHash : IDisposable
+    {
+        private IncrementalHash () { }
+        public HashAlgorithmName AlgorithmName { get { throw new NotImplementedException (); } }
+        public void AppendData (byte[] data) { }
+        public void AppendData (byte[] data, int offset, int count) { }
+        public static IncrementalHash CreateHash (HashAlgorithmName hashAlgorithm) { throw new NotImplementedException (); }
+        public static IncrementalHash CreateHMAC (HashAlgorithmName hashAlgorithm, byte[] key) { throw new NotImplementedException (); }
+        public void Dispose () { }
+        public byte[] GetHashAndReset () { throw new NotImplementedException (); }
+    }
 }
+
+#endif
