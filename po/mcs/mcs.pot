@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 4.6.0\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-08-23 11:42+0000\n"
+"POT-Creation-Date: 2016-08-23 12:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,67 +135,67 @@ msgstr ""
 msgid "Cannot assign to `{0}' because it is a `{1}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:211
+#: mcs/mcs/assembly.cs:226
 msgid ""
 "Executables cannot be satellite assemblies. Remove the attribute or keep it "
 "empty"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:235
+#: mcs/mcs/assembly.cs:250
 #, csharp-format
 msgid ""
 "The specified version string `{0}' does not conform to the required format - "
 "major[.minor[.build[.revision]]]"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:289
+#: mcs/mcs/assembly.cs:304
 msgid "Invalid type specified as an argument for TypeForwardedTo attribute"
-msgstr ""
-
-#: mcs/mcs/assembly.cs:297
-#, csharp-format
-msgid "A duplicate type forward of type `{0}'"
-msgstr ""
-
-#: mcs/mcs/assembly.cs:306
-#, csharp-format
-msgid "Cannot forward type `{0}' because it is defined in this assembly"
 msgstr ""
 
 #: mcs/mcs/assembly.cs:312
 #, csharp-format
+msgid "A duplicate type forward of type `{0}'"
+msgstr ""
+
+#: mcs/mcs/assembly.cs:321
+#, csharp-format
+msgid "Cannot forward type `{0}' because it is defined in this assembly"
+msgstr ""
+
+#: mcs/mcs/assembly.cs:327
+#, csharp-format
 msgid "Cannot forward type `{0}' because it is a nested type"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:329
+#: mcs/mcs/assembly.cs:344
 msgid "Friend assembly reference cannot have `null' value"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:346
+#: mcs/mcs/assembly.cs:361
 #, csharp-format
 msgid ""
 "Friend assembly reference `{0}' is invalid. InternalsVisibleTo declarations "
 "cannot have a version, culture or processor architecture specified"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:354
+#: mcs/mcs/assembly.cs:369
 #, csharp-format
 msgid ""
 "Friend assembly reference `{0}' is invalid. Strong named assemblies must "
 "specify a public key in their InternalsVisibleTo declarations"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:421
+#: mcs/mcs/assembly.cs:437
 #, csharp-format
 msgid "Referenced assembly `{0}' does not have a strong name"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:427
+#: mcs/mcs/assembly.cs:443
 #, csharp-format
 msgid "Referenced assembly `{0}' has different culture setting of `{1}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:454
+#: mcs/mcs/assembly.cs:476
 #, csharp-format
 msgid ""
 "Friend access was granted to `{0}', but the output assembly is named `{1}'. "
@@ -203,95 +203,95 @@ msgid ""
 "it"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:468
+#: mcs/mcs/assembly.cs:490
 msgid ""
 "Could not sign the assembly. ECMA key can only be used to delay-sign "
 "assemblies"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:727
+#: mcs/mcs/assembly.cs:749
 msgid ""
 "Added modules must be marked with the CLSCompliant attribute to match the "
 "assembly"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:762 mcs/mcs/assembly.cs:777
+#: mcs/mcs/assembly.cs:784 mcs/mcs/assembly.cs:799
 #, csharp-format
 msgid ""
 "Option `{0}' overrides attribute `{1}' given in a source file or added module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:812
+#: mcs/mcs/assembly.cs:834
 msgid "Delay signing was requested but no key file was given"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:837
+#: mcs/mcs/assembly.cs:859
 msgid "Cannot link resource file when building a module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:842 mcs/mcs/module.cs:752
+#: mcs/mcs/assembly.cs:864 mcs/mcs/module.cs:752
 #, csharp-format
 msgid "Error reading resource file `{0}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:912
+#: mcs/mcs/assembly.cs:934
 #, csharp-format
 msgid "Output file `{0}' exceeds the 4GB limit"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:914
+#: mcs/mcs/assembly.cs:936
 #, csharp-format
 msgid "Could not write to file `{0}'. {1}"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:958
+#: mcs/mcs/assembly.cs:980
 msgid "Cannot specify -main if building a module or library"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:984
+#: mcs/mcs/assembly.cs:1006
 #, csharp-format
 msgid "Could not find `{0}' specified for Main method"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:990
+#: mcs/mcs/assembly.cs:1012
 #, csharp-format
 msgid "`{0}' specified for Main method must be a valid class or struct"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:994
+#: mcs/mcs/assembly.cs:1016
 #, csharp-format
 msgid "`{0}' does not have a suitable static Main method"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:997
+#: mcs/mcs/assembly.cs:1019
 #, csharp-format
 msgid ""
 "Program `{0}' does not contain a static `Main' method suitable for an entry "
 "point"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1016
+#: mcs/mcs/assembly.cs:1038
 msgid "Error during assembly signing. "
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1206
+#: mcs/mcs/assembly.cs:1228
 #, csharp-format
 msgid "Metadata file `{0}' could not be found"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1211
+#: mcs/mcs/assembly.cs:1233
 #, csharp-format
 msgid "Metadata file `{0}' does not contain valid metadata"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1217
+#: mcs/mcs/assembly.cs:1239
 #, csharp-format
 msgid ""
 "Referenced assembly file `{0}' is a module. Consider using `-addmodule' "
 "option to add the module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1224
+#: mcs/mcs/assembly.cs:1246
 #, csharp-format
 msgid ""
 "Added module file `{0}' is an assembly. Consider using `-r' option to "
@@ -2288,11 +2288,11 @@ msgid ""
 "Object and collection initializers cannot be used to instantiate a delegate"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12386
+#: mcs/mcs/expression.cs:12387
 msgid "Anonymous types cannot be used in this expression"
 msgstr ""
 
-#: mcs/mcs/expression.cs:12480
+#: mcs/mcs/expression.cs:12481
 #, csharp-format
 msgid "An anonymous type property `{0}' cannot be initialized with `{1}'"
 msgstr ""
@@ -2585,28 +2585,28 @@ msgstr ""
 msgid "SDK path could not be resolved"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:387 mcs/mcs/ikvm.cs:391
+#: mcs/mcs/ikvm.cs:386 mcs/mcs/ikvm.cs:390
 #, csharp-format
 msgid ""
 "Assuming assembly reference `{0}' matches assembly `{1}'. You may need to "
 "supply runtime policy"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:499
+#: mcs/mcs/ikvm.cs:498
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:508
+#: mcs/mcs/ikvm.cs:507
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
 "removing one of the references"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:627
+#: mcs/mcs/ikvm.cs:626
 #, csharp-format
 msgid "Error opening icon file `{0}'. {1}"
 msgstr ""
@@ -3069,21 +3069,21 @@ msgstr ""
 msgid "Namespace `{0}' contains a definition with same name as alias `{1}'"
 msgstr ""
 
-#: mcs/mcs/namespace.cs:1450
+#: mcs/mcs/namespace.cs:1430
 #, csharp-format
 msgid ""
 "A `using' directive can only be applied to namespaces but `{0}' denotes a "
 "type. Consider using a `using static' instead"
 msgstr ""
 
-#: mcs/mcs/namespace.cs:1474
+#: mcs/mcs/namespace.cs:1454
 #, csharp-format
 msgid ""
 "A 'using static' directive can only be applied to types but `{0}' denotes a "
 "namespace. Consider using a `using' directive instead"
 msgstr ""
 
-#: mcs/mcs/namespace.cs:1555
+#: mcs/mcs/namespace.cs:1535
 #, csharp-format
 msgid "The extern alias `{0}' was not specified in -reference option"
 msgstr ""
@@ -3613,28 +3613,28 @@ msgid ""
 "clause"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7326
+#: mcs/mcs/statement.cs:7327
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
 "type `{0}'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7559
+#: mcs/mcs/statement.cs:7560
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
 "`System.IDisposable'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7975
+#: mcs/mcs/statement.cs:7976
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
 "suitable public MoveNext method and public Current property"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8019
+#: mcs/mcs/statement.cs:8020
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -3642,18 +3642,18 @@ msgid ""
 "implementation"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8041
+#: mcs/mcs/statement.cs:8042
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
 "not contain a definition for `{1}' or is inaccessible"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8279
+#: mcs/mcs/statement.cs:8280
 msgid "Use of null is not valid in this context"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8291
+#: mcs/mcs/statement.cs:8292
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr ""
