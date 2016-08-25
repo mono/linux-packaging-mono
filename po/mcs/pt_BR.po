@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-08-23 12:59+0000\n"
+"POT-Creation-Date: 2016-08-25 09:40+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -161,71 +161,71 @@ msgstr "Uma árvore de expressão não pode conter um operador de atribuição"
 msgid "Cannot assign to `{0}' because it is a `{1}'"
 msgstr "Não foi possível atribuir a \"{0}\" por que este é um \"{1}\""
 
-#: mcs/mcs/assembly.cs:226
+#: mcs/mcs/assembly.cs:224
 msgid ""
 "Executables cannot be satellite assemblies. Remove the attribute or keep it "
 "empty"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:250
+#: mcs/mcs/assembly.cs:248
 #, csharp-format
 msgid ""
 "The specified version string `{0}' does not conform to the required format - "
 "major[.minor[.build[.revision]]]"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:304
+#: mcs/mcs/assembly.cs:302
 msgid "Invalid type specified as an argument for TypeForwardedTo attribute"
 msgstr ""
 "Tipo inválido especificado com um argumento para um atributo TypeForwardedTo"
 
-#: mcs/mcs/assembly.cs:312
+#: mcs/mcs/assembly.cs:310
 #, csharp-format
 msgid "A duplicate type forward of type `{0}'"
 msgstr "Um encaminhamento de tipo duplicado do tipo \"{0}\""
 
-#: mcs/mcs/assembly.cs:321
+#: mcs/mcs/assembly.cs:319
 #, csharp-format
 msgid "Cannot forward type `{0}' because it is defined in this assembly"
 msgstr ""
 "Não foi possível encaminhar o tipo \"{0}\" porque este está definido neste "
 "assembly"
 
-#: mcs/mcs/assembly.cs:327
+#: mcs/mcs/assembly.cs:325
 #, csharp-format
 msgid "Cannot forward type `{0}' because it is a nested type"
 msgstr "Não foi possível encaminhar tipo \"{0}\" por que é um tipo aninhado"
 
-#: mcs/mcs/assembly.cs:344
+#: mcs/mcs/assembly.cs:342
 #, fuzzy
 msgid "Friend assembly reference cannot have `null' value"
 msgstr "Referência amiga do assembly \""
 
-#: mcs/mcs/assembly.cs:361
+#: mcs/mcs/assembly.cs:359
 #, csharp-format
 msgid ""
 "Friend assembly reference `{0}' is invalid. InternalsVisibleTo declarations "
 "cannot have a version, culture or processor architecture specified"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:369
+#: mcs/mcs/assembly.cs:367
 #, csharp-format
 msgid ""
 "Friend assembly reference `{0}' is invalid. Strong named assemblies must "
 "specify a public key in their InternalsVisibleTo declarations"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:437
+#: mcs/mcs/assembly.cs:435
 #, csharp-format
 msgid "Referenced assembly `{0}' does not have a strong name"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:443
+#: mcs/mcs/assembly.cs:441
 #, csharp-format
 msgid "Referenced assembly `{0}' has different culture setting of `{1}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:476
+#: mcs/mcs/assembly.cs:473
 #, csharp-format
 msgid ""
 "Friend access was granted to `{0}', but the output assembly is named `{1}'. "
@@ -236,7 +236,7 @@ msgstr ""
 "nomeada \"{1}\".  Tente adicionar uma referência para \"{0}\"  ou alterar a "
 "saída do assembly para igualar isso"
 
-#: mcs/mcs/assembly.cs:490
+#: mcs/mcs/assembly.cs:487
 msgid ""
 "Could not sign the assembly. ECMA key can only be used to delay-sign "
 "assemblies"
@@ -244,7 +244,7 @@ msgstr ""
 "Não foi possível assinar o assembly. Chave ECMA pode apenas ser utilizada "
 "para assinar o adiamento do assembly"
 
-#: mcs/mcs/assembly.cs:749
+#: mcs/mcs/assembly.cs:746
 msgid ""
 "Added modules must be marked with the CLSCompliant attribute to match the "
 "assembly"
@@ -252,7 +252,7 @@ msgstr ""
 "Módulos adicionados devem ser marcados com o atributo CLSCompliant para "
 "coincidir com o assembly"
 
-#: mcs/mcs/assembly.cs:784 mcs/mcs/assembly.cs:799
+#: mcs/mcs/assembly.cs:781 mcs/mcs/assembly.cs:796
 #, csharp-format
 msgid ""
 "Option `{0}' overrides attribute `{1}' given in a source file or added module"
@@ -260,54 +260,54 @@ msgstr ""
 "Opção \"{0}\" sobrescreve atributo \"{1}\" dado num código-fonte ou módulo "
 "adicionado"
 
-#: mcs/mcs/assembly.cs:834
+#: mcs/mcs/assembly.cs:831
 msgid "Delay signing was requested but no key file was given"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:859
+#: mcs/mcs/assembly.cs:856
 msgid "Cannot link resource file when building a module"
 msgstr ""
 "Não é possível apontar arquivo de recursos quando estiver compilando um "
 "módulo"
 
-#: mcs/mcs/assembly.cs:864 mcs/mcs/module.cs:752
+#: mcs/mcs/assembly.cs:861 mcs/mcs/module.cs:752
 #, csharp-format
 msgid "Error reading resource file `{0}'"
 msgstr "Erro ao ler arquivo de recurso \"{0}\""
 
-#: mcs/mcs/assembly.cs:934
+#: mcs/mcs/assembly.cs:931
 #, csharp-format
 msgid "Output file `{0}' exceeds the 4GB limit"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:936
+#: mcs/mcs/assembly.cs:933
 #, fuzzy, csharp-format
 msgid "Could not write to file `{0}'. {1}"
 msgstr "Não foi possível escrever para o arquivo \""
 
-#: mcs/mcs/assembly.cs:980
+#: mcs/mcs/assembly.cs:977
 msgid "Cannot specify -main if building a module or library"
 msgstr ""
 "Não é possível especificar -main se estiver compilando um módulo ou "
 "biblioteca"
 
-#: mcs/mcs/assembly.cs:1006
+#: mcs/mcs/assembly.cs:1003
 #, csharp-format
 msgid "Could not find `{0}' specified for Main method"
 msgstr "Não foi possível encontrar o \"{0}\" especificado para o método Main"
 
-#: mcs/mcs/assembly.cs:1012
+#: mcs/mcs/assembly.cs:1009
 #, csharp-format
 msgid "`{0}' specified for Main method must be a valid class or struct"
 msgstr ""
 "\"{0}\" especificado para o método Main deve ser uma classe válida ou struct"
 
-#: mcs/mcs/assembly.cs:1016
+#: mcs/mcs/assembly.cs:1013
 #, csharp-format
 msgid "`{0}' does not have a suitable static Main method"
 msgstr "\"{0}\" não possue um método Main estático apropriado"
 
-#: mcs/mcs/assembly.cs:1019
+#: mcs/mcs/assembly.cs:1016
 #, csharp-format
 msgid ""
 "Program `{0}' does not contain a static `Main' method suitable for an entry "
@@ -316,21 +316,21 @@ msgstr ""
 "Programa \"{0}\" não contém um método estático \"Main\" apropriado para um "
 "ponto de entrada"
 
-#: mcs/mcs/assembly.cs:1038
+#: mcs/mcs/assembly.cs:1035
 msgid "Error during assembly signing. "
 msgstr "Erro durante a assinatura do assembly. "
 
-#: mcs/mcs/assembly.cs:1228
+#: mcs/mcs/assembly.cs:1225
 #, fuzzy, csharp-format
 msgid "Metadata file `{0}' could not be found"
 msgstr "Arquivo fonte \"{0}\" não pôde ser encontrado"
 
-#: mcs/mcs/assembly.cs:1233
+#: mcs/mcs/assembly.cs:1230
 #, fuzzy, csharp-format
 msgid "Metadata file `{0}' does not contain valid metadata"
 msgstr "arquivo \"{0}\" possui metadados inválidos \"{1}\""
 
-#: mcs/mcs/assembly.cs:1239
+#: mcs/mcs/assembly.cs:1236
 #, fuzzy, csharp-format
 msgid ""
 "Referenced assembly file `{0}' is a module. Consider using `-addmodule' "
@@ -339,7 +339,7 @@ msgstr ""
 "Arquivo referenciado \"{0}\" não é um assembly. Considere, ao invés disso, "
 "utilizar a opção \"-addmodule\""
 
-#: mcs/mcs/assembly.cs:1246
+#: mcs/mcs/assembly.cs:1243
 #, fuzzy, csharp-format
 msgid ""
 "Added module file `{0}' is an assembly. Consider using `-r' option to "
@@ -3064,28 +3064,21 @@ msgstr "Código inseguro não pode aparecer em iteradores"
 msgid "SDK path could not be resolved"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:386 mcs/mcs/ikvm.cs:390
-#, csharp-format
-msgid ""
-"Assuming assembly reference `{0}' matches assembly `{1}'. You may need to "
-"supply runtime policy"
-msgstr ""
-
-#: mcs/mcs/ikvm.cs:498
+#: mcs/mcs/ikvm.cs:509
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:507
+#: mcs/mcs/ikvm.cs:518
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
 "removing one of the references"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:626
+#: mcs/mcs/ikvm.cs:637
 #, fuzzy, csharp-format
 msgid "Error opening icon file `{0}'. {1}"
 msgstr "Erro ao gerar arquivo de documentação XML \"{0}\" (\"{1}\")"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 4.6.0\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-08-23 12:59+0000\n"
+"POT-Creation-Date: 2016-08-25 09:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,67 +135,67 @@ msgstr ""
 msgid "Cannot assign to `{0}' because it is a `{1}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:226
+#: mcs/mcs/assembly.cs:224
 msgid ""
 "Executables cannot be satellite assemblies. Remove the attribute or keep it "
 "empty"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:250
+#: mcs/mcs/assembly.cs:248
 #, csharp-format
 msgid ""
 "The specified version string `{0}' does not conform to the required format - "
 "major[.minor[.build[.revision]]]"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:304
+#: mcs/mcs/assembly.cs:302
 msgid "Invalid type specified as an argument for TypeForwardedTo attribute"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:312
+#: mcs/mcs/assembly.cs:310
 #, csharp-format
 msgid "A duplicate type forward of type `{0}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:321
+#: mcs/mcs/assembly.cs:319
 #, csharp-format
 msgid "Cannot forward type `{0}' because it is defined in this assembly"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:327
+#: mcs/mcs/assembly.cs:325
 #, csharp-format
 msgid "Cannot forward type `{0}' because it is a nested type"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:344
+#: mcs/mcs/assembly.cs:342
 msgid "Friend assembly reference cannot have `null' value"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:361
+#: mcs/mcs/assembly.cs:359
 #, csharp-format
 msgid ""
 "Friend assembly reference `{0}' is invalid. InternalsVisibleTo declarations "
 "cannot have a version, culture or processor architecture specified"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:369
+#: mcs/mcs/assembly.cs:367
 #, csharp-format
 msgid ""
 "Friend assembly reference `{0}' is invalid. Strong named assemblies must "
 "specify a public key in their InternalsVisibleTo declarations"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:437
+#: mcs/mcs/assembly.cs:435
 #, csharp-format
 msgid "Referenced assembly `{0}' does not have a strong name"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:443
+#: mcs/mcs/assembly.cs:441
 #, csharp-format
 msgid "Referenced assembly `{0}' has different culture setting of `{1}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:476
+#: mcs/mcs/assembly.cs:473
 #, csharp-format
 msgid ""
 "Friend access was granted to `{0}', but the output assembly is named `{1}'. "
@@ -203,95 +203,95 @@ msgid ""
 "it"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:490
+#: mcs/mcs/assembly.cs:487
 msgid ""
 "Could not sign the assembly. ECMA key can only be used to delay-sign "
 "assemblies"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:749
+#: mcs/mcs/assembly.cs:746
 msgid ""
 "Added modules must be marked with the CLSCompliant attribute to match the "
 "assembly"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:784 mcs/mcs/assembly.cs:799
+#: mcs/mcs/assembly.cs:781 mcs/mcs/assembly.cs:796
 #, csharp-format
 msgid ""
 "Option `{0}' overrides attribute `{1}' given in a source file or added module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:834
+#: mcs/mcs/assembly.cs:831
 msgid "Delay signing was requested but no key file was given"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:859
+#: mcs/mcs/assembly.cs:856
 msgid "Cannot link resource file when building a module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:864 mcs/mcs/module.cs:752
+#: mcs/mcs/assembly.cs:861 mcs/mcs/module.cs:752
 #, csharp-format
 msgid "Error reading resource file `{0}'"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:934
+#: mcs/mcs/assembly.cs:931
 #, csharp-format
 msgid "Output file `{0}' exceeds the 4GB limit"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:936
+#: mcs/mcs/assembly.cs:933
 #, csharp-format
 msgid "Could not write to file `{0}'. {1}"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:980
+#: mcs/mcs/assembly.cs:977
 msgid "Cannot specify -main if building a module or library"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1006
+#: mcs/mcs/assembly.cs:1003
 #, csharp-format
 msgid "Could not find `{0}' specified for Main method"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1012
+#: mcs/mcs/assembly.cs:1009
 #, csharp-format
 msgid "`{0}' specified for Main method must be a valid class or struct"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1016
+#: mcs/mcs/assembly.cs:1013
 #, csharp-format
 msgid "`{0}' does not have a suitable static Main method"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1019
+#: mcs/mcs/assembly.cs:1016
 #, csharp-format
 msgid ""
 "Program `{0}' does not contain a static `Main' method suitable for an entry "
 "point"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1038
+#: mcs/mcs/assembly.cs:1035
 msgid "Error during assembly signing. "
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1228
+#: mcs/mcs/assembly.cs:1225
 #, csharp-format
 msgid "Metadata file `{0}' could not be found"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1233
+#: mcs/mcs/assembly.cs:1230
 #, csharp-format
 msgid "Metadata file `{0}' does not contain valid metadata"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1239
+#: mcs/mcs/assembly.cs:1236
 #, csharp-format
 msgid ""
 "Referenced assembly file `{0}' is a module. Consider using `-addmodule' "
 "option to add the module"
 msgstr ""
 
-#: mcs/mcs/assembly.cs:1246
+#: mcs/mcs/assembly.cs:1243
 #, csharp-format
 msgid ""
 "Added module file `{0}' is an assembly. Consider using `-r' option to "
@@ -2585,28 +2585,21 @@ msgstr ""
 msgid "SDK path could not be resolved"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:386 mcs/mcs/ikvm.cs:390
-#, csharp-format
-msgid ""
-"Assuming assembly reference `{0}' matches assembly `{1}'. You may need to "
-"supply runtime policy"
-msgstr ""
-
-#: mcs/mcs/ikvm.cs:498
+#: mcs/mcs/ikvm.cs:509
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:507
+#: mcs/mcs/ikvm.cs:518
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
 "removing one of the references"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:626
+#: mcs/mcs/ikvm.cs:637
 #, csharp-format
 msgid "Error opening icon file `{0}'. {1}"
 msgstr ""
