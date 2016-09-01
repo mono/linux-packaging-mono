@@ -273,7 +273,7 @@ namespace System
 #endif
 		private AdjustmentRule [] adjustmentRules;
 
-#if !NET_2_1 || MOBILE_STATIC
+#if !MOBILE || MOBILE_STATIC
 		/// <summary>
 		/// Determine whether windows of not (taken Stephane Delcroix's code)
 		/// </summary>
@@ -412,7 +412,14 @@ namespace System
 
 		public static DateTime ConvertTimeBySystemTimeZoneId (DateTime dateTime, string sourceTimeZoneId, string destinationTimeZoneId)
 		{
-			return ConvertTime (dateTime, FindSystemTimeZoneById (sourceTimeZoneId), FindSystemTimeZoneById (destinationTimeZoneId));
+			TimeZoneInfo source_tz;
+			if (dateTime.Kind == DateTimeKind.Utc && sourceTimeZoneId == TimeZoneInfo.Utc.Id) {
+				source_tz = Utc;
+			} else {
+				source_tz = FindSystemTimeZoneById (sourceTimeZoneId);
+			}
+
+			return ConvertTime (dateTime, source_tz, FindSystemTimeZoneById (destinationTimeZoneId));
 		}
 
 		public static DateTimeOffset ConvertTimeBySystemTimeZoneId (DateTimeOffset dateTimeOffset, string destinationTimeZoneId)
@@ -531,7 +538,7 @@ namespace System
 			//FIXME: this method should check for cached values in systemTimeZones
 			if (id == null)
 				throw new ArgumentNullException ("id");
-#if !NET_2_1
+#if !MOBILE
 			if (TimeZoneKey != null)
 			{
 				if (id == "Coordinated Universal Time")
@@ -561,7 +568,7 @@ namespace System
 		}
 #endif
 
-#if !NET_2_1
+#if !MOBILE
 		private static TimeZoneInfo FromRegistryKey (string id, RegistryKey key)
 		{
 			byte [] reg_tzi = (byte []) key.GetValue ("TZI");

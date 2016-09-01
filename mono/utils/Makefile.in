@@ -85,17 +85,18 @@ target_triplet = @target@
 @ARM_TRUE@@CROSS_COMPILE_FALSE@am__append_3 = mach-support-arm.c
 @ARM64_TRUE@@CROSS_COMPILE_FALSE@am__append_4 = mach-support-arm64.c
 @CROSS_COMPILE_TRUE@am__append_5 = mach-support-unknown.c
-@X86_TRUE@am__append_6 = mono-hwcap-x86.c mono-hwcap-x86.h
-@AMD64_TRUE@am__append_7 = mono-hwcap-x86.c mono-hwcap-x86.h
-@ARM_TRUE@am__append_8 = mono-hwcap-arm.c mono-hwcap-arm.h
-@ARM64_TRUE@am__append_9 = mono-hwcap-arm64.c mono-hwcap-arm64.h
-@MIPS_TRUE@am__append_10 = mono-hwcap-mips.c mono-hwcap-mips.h
-@POWERPC_TRUE@am__append_11 = mono-hwcap-ppc.c mono-hwcap-ppc.h
-@POWERPC64_TRUE@am__append_12 = mono-hwcap-ppc.c mono-hwcap-ppc.h
-@SPARC_TRUE@am__append_13 = mono-hwcap-sparc.c mono-hwcap-sparc.h
-@SPARC64_TRUE@am__append_14 = mono-hwcap-sparc.c mono-hwcap-sparc.h
-@IA64_TRUE@am__append_15 = mono-hwcap-ia64.c mono-hwcap-ia64.h
-@S390X_TRUE@am__append_16 = mono-hwcap-s390x.c mono-hwcap-s390x.h
+@CROSS_COMPILE_FALSE@@X86_TRUE@am__append_6 = mono-hwcap-x86.c
+@AMD64_TRUE@@CROSS_COMPILE_FALSE@am__append_7 = mono-hwcap-x86.c
+@ARM_TRUE@@CROSS_COMPILE_FALSE@am__append_8 = mono-hwcap-arm.c
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__append_9 = mono-hwcap-arm64.c
+@CROSS_COMPILE_FALSE@@MIPS_TRUE@am__append_10 = mono-hwcap-mips.c
+@CROSS_COMPILE_FALSE@@POWERPC_TRUE@am__append_11 = mono-hwcap-ppc.c
+@CROSS_COMPILE_FALSE@@POWERPC64_TRUE@am__append_12 = mono-hwcap-ppc.c
+@CROSS_COMPILE_FALSE@@SPARC_TRUE@am__append_13 = mono-hwcap-sparc.c
+@CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__append_14 = mono-hwcap-sparc.c
+@CROSS_COMPILE_FALSE@@IA64_TRUE@am__append_15 = mono-hwcap-ia64.c
+@CROSS_COMPILE_FALSE@@S390X_TRUE@am__append_16 = mono-hwcap-s390x.c
+@CROSS_COMPILE_TRUE@am__append_17 = mono-hwcap-cross.c
 subdir = mono/utils
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -155,20 +156,18 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	mono-threads-posix-abort-syscall.c \
 	mono-threads-windows-abort-syscall.c mono-tls.h mono-tls.c \
 	linux_magic.h mono-memory-model.h atomic.h atomic.c \
-	mono-hwcap.h mono-hwcap.c bsearch.h bsearch.c \
-	mono-signal-handler.h mono-conc-hashtable.h \
+	mono-hwcap.h mono-hwcap.c mono-hwcap-vars.h bsearch.h \
+	bsearch.c mono-signal-handler.h mono-conc-hashtable.h \
 	mono-conc-hashtable.c sha1.h sha1.c json.h json.c networking.c \
 	networking-posix.c networking-fallback.c networking-missing.c \
 	networking-windows.c networking.h mono-rand.c mono-rand.h \
 	memfuncs.c memfuncs.h parse.c parse.h checked-build.c \
 	checked-build.h w32handle.c w32handle.h mach-support-x86.c \
 	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
-	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-x86.h \
-	mono-hwcap-arm.c mono-hwcap-arm.h mono-hwcap-arm64.c \
-	mono-hwcap-arm64.h mono-hwcap-mips.c mono-hwcap-mips.h \
-	mono-hwcap-ppc.c mono-hwcap-ppc.h mono-hwcap-sparc.c \
-	mono-hwcap-sparc.h mono-hwcap-ia64.c mono-hwcap-ia64.h \
-	mono-hwcap-s390x.c mono-hwcap-s390x.h
+	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
+	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
+	mono-hwcap-sparc.c mono-hwcap-ia64.c mono-hwcap-s390x.c \
+	mono-hwcap-cross.c
 am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	mono-codeman.lo dlmalloc.lo mono-counters.lo mono-dl.lo \
 	mono-dl-windows.lo mono-dl-darwin.lo mono-dl-posix.lo \
@@ -202,24 +201,27 @@ am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 @ARM64_TRUE@@CROSS_COMPILE_FALSE@am__objects_5 =  \
 @ARM64_TRUE@@CROSS_COMPILE_FALSE@	mach-support-arm64.lo
 @CROSS_COMPILE_TRUE@am__objects_6 = mach-support-unknown.lo
-@X86_TRUE@am__objects_7 = mono-hwcap-x86.lo
-@AMD64_TRUE@am__objects_8 = mono-hwcap-x86.lo
-@ARM_TRUE@am__objects_9 = mono-hwcap-arm.lo
-@ARM64_TRUE@am__objects_10 = mono-hwcap-arm64.lo
-@MIPS_TRUE@am__objects_11 = mono-hwcap-mips.lo
-@POWERPC_TRUE@am__objects_12 = mono-hwcap-ppc.lo
-@POWERPC64_TRUE@am__objects_13 = mono-hwcap-ppc.lo
-@SPARC_TRUE@am__objects_14 = mono-hwcap-sparc.lo
-@SPARC64_TRUE@am__objects_15 = mono-hwcap-sparc.lo
-@IA64_TRUE@am__objects_16 = mono-hwcap-ia64.lo
-@S390X_TRUE@am__objects_17 = mono-hwcap-s390x.lo
-am__objects_18 = $(am__objects_2) $(am__objects_3) $(am__objects_4) \
+@CROSS_COMPILE_FALSE@@X86_TRUE@am__objects_7 = mono-hwcap-x86.lo
+@AMD64_TRUE@@CROSS_COMPILE_FALSE@am__objects_8 = mono-hwcap-x86.lo
+@ARM_TRUE@@CROSS_COMPILE_FALSE@am__objects_9 = mono-hwcap-arm.lo
+@ARM64_TRUE@@CROSS_COMPILE_FALSE@am__objects_10 = mono-hwcap-arm64.lo
+@CROSS_COMPILE_FALSE@@MIPS_TRUE@am__objects_11 = mono-hwcap-mips.lo
+@CROSS_COMPILE_FALSE@@POWERPC_TRUE@am__objects_12 = mono-hwcap-ppc.lo
+@CROSS_COMPILE_FALSE@@POWERPC64_TRUE@am__objects_13 =  \
+@CROSS_COMPILE_FALSE@@POWERPC64_TRUE@	mono-hwcap-ppc.lo
+@CROSS_COMPILE_FALSE@@SPARC_TRUE@am__objects_14 = mono-hwcap-sparc.lo
+@CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__objects_15 =  \
+@CROSS_COMPILE_FALSE@@SPARC64_TRUE@	mono-hwcap-sparc.lo
+@CROSS_COMPILE_FALSE@@IA64_TRUE@am__objects_16 = mono-hwcap-ia64.lo
+@CROSS_COMPILE_FALSE@@S390X_TRUE@am__objects_17 = mono-hwcap-s390x.lo
+@CROSS_COMPILE_TRUE@am__objects_18 = mono-hwcap-cross.lo
+am__objects_19 = $(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
 	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
-	$(am__objects_17)
-am_libmonoutils_la_OBJECTS = $(am__objects_1) $(am__objects_18)
+	$(am__objects_17) $(am__objects_18)
+am_libmonoutils_la_OBJECTS = $(am__objects_1) $(am__objects_19)
 libmonoutils_la_OBJECTS = $(am_libmonoutils_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -641,6 +643,7 @@ monoutils_sources = \
 	atomic.c	\
 	mono-hwcap.h	\
 	mono-hwcap.c	\
+	mono-hwcap-vars.h	\
 	bsearch.h	\
 	bsearch.c	\
 	mono-signal-handler.h	\
@@ -672,7 +675,7 @@ arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \
 	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16)
+	$(am__append_16) $(am__append_17)
 libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
 libmonoutilsincludedir = $(includedir)/mono-$(API_VER)/mono/utils
 libmonoutilsinclude_HEADERS = \
@@ -767,6 +770,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-filemap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-arm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-arm64.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-cross.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-ia64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-mips.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-ppc.Plo@am__quote@
