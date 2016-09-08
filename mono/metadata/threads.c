@@ -89,6 +89,7 @@ typedef struct
 	MonoThread *obj;
 	MonoObject *delegate;
 	void *start_arg;
+	MonoCoopSem registered;
 } StartInfo;
 
 typedef union {
@@ -662,9 +663,15 @@ static guint32 WINAPI start_wrapper_internal(void *data)
 	 * We don't create a local to hold start_info->obj, so hopefully it won't get pinned during a
 	 * GC stack walk.
 	 */
-	MonoInternalThread *internal = start_info->obj->internal_thread;
-	MonoObject *start_delegate = start_info->delegate;
-	MonoDomain *domain = start_info->obj->obj.vtable->domain;
+	MonoInternalThread *internal;
+	MonoObject *start_delegate;
+	MonoDomain *domain;
+
+	mono_coop_sem_wait (&start_info->registered, MONO_SEM_FLAGS_NONE);
+
+	internal = start_info->obj->internal_thread;
+	start_delegate = start_info->delegate;
+	domain = start_info->obj->obj.vtable->domain;
 
 	THREAD_DEBUG (g_message ("%s: (%"G_GSIZE_FORMAT") Start wrapper", __func__, mono_native_thread_id_get ()));
 
@@ -860,6 +867,8 @@ create_thread (MonoThread *thread, MonoInternalThread *internal, StartInfo *star
 	mono_coop_sem_init (internal->start_notify, 0);
 	internal->start_notify_refcount = 2;
 
+	mono_coop_sem_init (&start_info->registered, 0);
+
 	if (stack_size == 0)
 		stack_size = default_stacksize_for_thread (internal);
 
@@ -868,7 +877,7 @@ create_thread (MonoThread *thread, MonoInternalThread *internal, StartInfo *star
 	 */
 	tp.priority = thread->priority;
 	tp.stack_size = stack_size;
-	tp.creation_flags = CREATE_SUSPENDED;
+	tp.creation_flags = 0;
 
 	thread_handle = mono_threads_create_thread (start_wrapper, start_info, &tp, &tid);
 
@@ -877,6 +886,7 @@ create_thread (MonoThread *thread, MonoInternalThread *internal, StartInfo *star
 		mono_threads_lock ();
 		mono_g_hash_table_remove (threads_starting_up, thread);
 		mono_threads_unlock ();
+		mono_coop_sem_destroy (&start_info->registered);
 		g_free (start_info);
 		mono_error_set_execution_engine (error, "Couldn't create thread. Error 0x%x", GetLastError());
 		return FALSE;
@@ -896,10 +906,12 @@ create_thread (MonoThread *thread, MonoInternalThread *internal, StartInfo *star
 	 * launched, to avoid the main thread deadlocking while trying
 	 * to clean up a thread that will never be signalled.
 	 */
-	if (!handle_store (thread, FALSE))
+	if (!handle_store (thread, FALSE)) {
+		mono_coop_sem_destroy (&start_info->registered);
 		return FALSE;
+	}
 
-	mono_thread_info_resume (tid);
+	mono_coop_sem_post (&start_info->registered);
 
 	/*
 	 * Wait for the thread to set up its TLS data etc, so
@@ -971,7 +983,7 @@ mono_thread_create_internal (MonoDomain *domain, gpointer func, gpointer arg, gb
 	/* Check that the managed and unmanaged layout of MonoInternalThread matches */
 #ifndef MONO_CROSS_COMPILE
 	if (mono_check_corlib_version () == NULL)
-		g_assert (((char*)&internal->unused2 - (char*)internal) == mono_defaults.internal_thread_class->fields [mono_defaults.internal_thread_class->field.count - 1].offset);
+		g_assert (((char*)&internal->abort_protected_block_count - (char*)internal) == mono_defaults.internal_thread_class->fields [mono_defaults.internal_thread_class->field.count - 1].offset);
 #endif
 
 	return internal;
@@ -1085,7 +1097,7 @@ mono_thread_detach_internal (MonoInternalThread *thread)
 	SET_CURRENT_OBJECT (NULL);
 	mono_domain_unset ();
 
-	/* Don't need to CloseHandle this thread, even though we took a
+	/* Don't need to close the handle to this thread, even though we took a
 	 * reference in mono_thread_attach (), because the GC will do it
 	 * when the Thread object is finalised.
 	 */
@@ -1214,7 +1226,7 @@ ves_icall_System_Threading_InternalThread_Thread_free_internal (MonoInternalThre
 	 * when thread_cleanup () can be called after this.
 	 */
 	if (thread)
-		CloseHandle (thread);
+		mono_threads_close_thread_handle (thread);
 
 	if (this_obj->synch_cs) {
 		MonoCoopMutex *synch_cs = this_obj->synch_cs;
@@ -2989,7 +3001,8 @@ struct wait_data
 	guint32 num;
 };
 
-static void wait_for_tids (struct wait_data *wait, guint32 timeout)
+static void
+wait_for_tids (struct wait_data *wait, guint32 timeout)
 {
 	guint32 i, ret;
 	
@@ -3006,7 +3019,7 @@ static void wait_for_tids (struct wait_data *wait, guint32 timeout)
 	}
 	
 	for(i=0; i<wait->num; i++)
-		CloseHandle (wait->handles[i]);
+		mono_threads_close_thread_handle (wait->handles [i]);
 
 	if (ret == WAIT_TIMEOUT)
 		return;
@@ -3069,7 +3082,7 @@ static void wait_for_tids_or_state_change (struct wait_data *wait, guint32 timeo
 	}
 	
 	for(i=0; i<wait->num; i++)
-		CloseHandle (wait->handles[i]);
+		mono_threads_close_thread_handle (wait->handles [i]);
 
 	if (ret == WAIT_TIMEOUT)
 		return;
@@ -3389,7 +3402,7 @@ void mono_thread_suspend_all_other_threads (void)
 			     || mono_gc_is_finalizer_internal_thread (thread)
 			     || (thread->flags & MONO_THREAD_FLAG_DONT_MANAGE)
 			) {
-				//CloseHandle (wait->handles [i]);
+				//mono_threads_close_thread_handle (wait->handles [i]);
 				wait->threads [i] = NULL; /* ignore this thread in next loop */
 				continue;
 			}
@@ -3400,7 +3413,7 @@ void mono_thread_suspend_all_other_threads (void)
 				(thread->state & ThreadState_StopRequested) != 0 ||
 				(thread->state & ThreadState_Stopped) != 0) {
 				UNLOCK_THREAD (thread);
-				CloseHandle (wait->handles [i]);
+				mono_threads_close_thread_handle (wait->handles [i]);
 				wait->threads [i] = NULL; /* ignore this thread in next loop */
 				continue;
 			}
@@ -4515,7 +4528,6 @@ mono_thread_request_interruption (gboolean running_managed)
 		thread->state & ThreadState_Background)
 		ExitThread (1);
 #endif
-	
 	if (InterlockedCompareExchange (&thread->interruption_requested, 1, 0) == 1)
 		return NULL;
 	InterlockedIncrement (&thread_interruption_requested);
@@ -4794,6 +4806,13 @@ async_abort_critical (MonoThreadInfo *info, gpointer ud)
 	if (mono_get_eh_callbacks ()->mono_install_handler_block_guard (mono_thread_info_get_suspend_state (info)))
 		return MonoResumeThread;
 
+	/*
+	The target thread is running at least one protected block, which must not be interrupted, so we give up.
+	The protected block code will give them a chance when appropriate.
+	*/
+	if (thread->abort_protected_block_count)
+		return MonoResumeThread;
+
 	/*someone is already interrupting it*/
 	if (InterlockedCompareExchange (&thread->interruption_requested, 1, 0) == 1)
 		return MonoResumeThread;
@@ -4851,6 +4870,9 @@ self_abort_internal (MonoError *error)
 	/* FIXME this is insanely broken, it doesn't cause interruption to happen synchronously
 	 * since passing FALSE to mono_thread_request_interruption makes sure it returns NULL */
 
+	/*
+	Self aborts ignore the protected block logic and raise the TAE regardless. This is verified by one of the tests in mono/tests/abort-cctor.cs.
+	*/
 	exc = mono_thread_request_interruption (TRUE);
 	if (exc)
 		mono_error_set_exception_instance (error, exc);
@@ -5174,4 +5196,37 @@ mono_threads_detach_coop (gpointer cookie, gpointer *dummy)
 				mono_domain_set (orig, TRUE);
 		}
 	}
+}
+
+void
+mono_threads_begin_abort_protected_block (void)
+{
+	MonoInternalThread *thread;
+
+	thread = mono_thread_internal_current ();
+	++thread->abort_protected_block_count;
+	mono_memory_barrier ();
+}
+
+void
+mono_threads_end_abort_protected_block (void)
+{
+	MonoInternalThread *thread;
+
+	thread = mono_thread_internal_current ();
+
+	mono_memory_barrier ();
+	--thread->abort_protected_block_count;
+}
+
+MonoException*
+mono_thread_try_resume_interruption (void)
+{
+	MonoInternalThread *thread;
+
+	thread = mono_thread_internal_current ();
+	if (thread->abort_protected_block_count || mono_get_eh_callbacks ()->mono_current_thread_has_handle_block_guard ())
+		return NULL;
+
+	return mono_thread_resume_interruption ();
 }
