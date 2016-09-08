@@ -387,7 +387,7 @@ struct _MonoInternalThread {
 	 * same field there.
 	 */
 	gsize start_notify_refcount;
-	gpointer unused2;
+	gsize abort_protected_block_count;
 };
 
 struct _MonoThread {
@@ -588,6 +588,7 @@ typedef struct {
 	void (*mono_raise_exception_with_ctx) (MonoException *ex, MonoContext *ctx);
 	gboolean (*mono_exception_walk_trace) (MonoException *ex, MonoInternalExceptionFrameWalk func, gpointer user_data);
 	gboolean (*mono_install_handler_block_guard) (MonoThreadUnwindState *unwind_state);
+	gboolean (*mono_current_thread_has_handle_block_guard) (void);
 } MonoRuntimeExceptionHandlingCallbacks;
 
 /* used to free a dynamic method */
@@ -1348,9 +1349,6 @@ void          mono_dynamic_image_free_image (MonoDynamicImage *image);
 void          mono_dynamic_image_release_gc_roots (MonoDynamicImage *image);
 
 void        mono_reflection_setup_internal_class  (MonoReflectionTypeBuilder *tb);
-
-void
-ves_icall_TypeBuilder_setup_generic_class (MonoReflectionTypeBuilder *tb);
 
 MonoReflectionType*
 ves_icall_TypeBuilder_create_runtime_class (MonoReflectionTypeBuilder *tb);
