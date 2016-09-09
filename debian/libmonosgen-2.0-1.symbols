@@ -336,6 +336,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_gc_get_used_size@Base 4.1.0.1738
  mono_gc_invoke_finalizers@Base 4.1.0.1738
  mono_gc_max_generation@Base 4.1.0.1738
+ mono_gc_pending_finalizers@Base 4.6.0.243
  mono_hazard_pointer_get@Base 4.6.0.243
  mono_gc_reference_queue_add@Base 4.1.0.1738
  mono_gc_reference_queue_free@Base 4.1.0.1738
