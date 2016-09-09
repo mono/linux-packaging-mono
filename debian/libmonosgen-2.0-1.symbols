@@ -152,6 +152,9 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_conc_hashtable_new_full@Base 4.1.0.1738
  mono_conc_hashtable_remove@Base 4.1.0.1738
  mono_config_cleanup@Base 4.1.0.1738
+ mono_config_get_cpu@Base 4.6.0.243
+ mono_config_get_os@Base 4.6.0.243
+ mono_config_get_wordsize@Base 4.6.0.243
  mono_config_for_assembly@Base 4.1.0.1738
  mono_config_is_server_mode@Base 4.1.0.1738
  mono_config_parse@Base 4.1.0.1738
@@ -327,11 +330,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_g_hash_table_size@Base 4.1.0.1738
  mono_gc_collect@Base 4.1.0.1738
  mono_gc_collection_count@Base 4.1.0.1738
+ mono_gc_finalize_notify@Base 4.6.0.243
  mono_gc_get_generation@Base 4.1.0.1738
  mono_gc_get_heap_size@Base 4.1.0.1738
  mono_gc_get_used_size@Base 4.1.0.1738
  mono_gc_invoke_finalizers@Base 4.1.0.1738
  mono_gc_max_generation@Base 4.1.0.1738
+ mono_hazard_pointer_get@Base 4.6.0.243
  mono_gc_reference_queue_add@Base 4.1.0.1738
  mono_gc_reference_queue_free@Base 4.1.0.1738
  mono_gc_reference_queue_new@Base 4.1.0.1738
@@ -497,6 +502,11 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_jit_thread_attach@Base 4.1.0.1738
  mono_ldstr@Base 4.1.0.1738
  mono_ldtoken@Base 4.1.0.1738
+ mono_lls_find@Base 4.6.0.243-0xamarin1
+ mono_lls_get_hazardous_pointer_with_mask@Base 4.6.0.243
+ mono_lls_init@Base 4.6.0.243
+ mono_lls_insert@Base 4.6.0.243
+ mono_lls_remove@Base 4.6.0.243
  mono_load_remote_field@Base 4.1.0.1738
  mono_load_remote_field_new@Base 4.1.0.1738
  mono_lock_free_alloc@Base 4.5.2.48-0nightly2
@@ -701,6 +711,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_install_enter_leave@Base 4.1.0.1738
  mono_profiler_install_exception@Base 4.1.0.1738
  mono_profiler_install_gc@Base 4.1.0.1738
+ mono_profiler_install_gc_finalize@Base 4.6.0.243
  mono_profiler_install_gc_moves@Base 4.1.0.1738
  mono_profiler_install_gc_roots@Base 4.1.0.1738
  mono_profiler_install_iomap@Base 4.1.0.1738
@@ -842,8 +853,11 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_get_managed_id@Base 4.3.3.735
  mono_thread_get_name_utf8@Base 4.3.3.735
  mono_thread_get_undeniable_exception@Base 4.1.0.1738
+ mono_thread_hazardous_queue_free@Base 4.6.0.243
  mono_thread_hazardous_try_free@Base 4.5.2.48
+ mono_thread_hazardous_try_free_all@Base 4.6.0.243
  mono_thread_info_detach@Base 4.5.2.48
+ mono_thread_info_yield@Base 4.6.0.243
  mono_thread_init@Base 4.1.0.1738
  mono_thread_is_foreign@Base 4.1.0.1738
  mono_thread_manage@Base 4.1.0.1738
