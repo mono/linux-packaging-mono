@@ -4468,6 +4468,16 @@ icall_is_direct_callable (MonoCompile *cfg, MonoMethod *cmethod)
 	return FALSE;
 }
 
+static gboolean
+method_needs_stack_walk (MonoCompile *cfg, MonoMethod *cmethod)
+{
+	if (cmethod->klass == mono_defaults.systemtype_class) {
+		if (!strcmp (cmethod->name, "GetType"))
+			return TRUE;
+	}
+	return FALSE;
+}
+
 #define is_complex_isinst(klass) ((klass->flags & TYPE_ATTRIBUTE_INTERFACE) || klass->rank || mono_class_is_nullable (klass) || mono_class_is_marshalbyref (klass) || (klass->flags & TYPE_ATTRIBUTE_SEALED) || klass->byval_arg.type == MONO_TYPE_VAR || klass->byval_arg.type == MONO_TYPE_MVAR)
 
 static MonoInst*
@@ -9726,6 +9736,10 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				}
 
 				if (!has_vtargs) {
+					if (need_seq_point) {
+						emit_seq_point (cfg, method, ip, FALSE, TRUE);
+						need_seq_point = FALSE;
+					}
 					for (i = 0; i < n; ++i)
 						EMIT_NEW_ARGSTORE (cfg, ins, i, sp [i]);
 					MONO_INST_NEW (cfg, ins, OP_BR);
@@ -10024,6 +10038,16 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 				/* See mono_emit_method_call_full () */
 				EMIT_NEW_DUMMY_USE (cfg, dummy_use, keep_this_alive);
+			}
+
+			if (cfg->llvm_only && cmethod && method_needs_stack_walk (cfg, cmethod)) {
+				/*
+				 * Clang can convert these calls to tail calls which screw up the stack
+				 * walk. This happens even when the -fno-optimize-sibling-calls
+				 * option is passed to clang.
+				 * Work around this by emitting a dummy call.
+				 */
+				mono_emit_jit_icall (cfg, mono_dummy_jit_icall, NULL);
 			}
 
 			CHECK_CFG_EXCEPTION;
