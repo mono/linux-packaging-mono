@@ -256,6 +256,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/sn
 %{_libdir}/libMonoPosixHelper.so*
 %{_libdir}/libikvm-native.so
+%{_mandir}/man1/cert-sync.1%ext_man
 %{_mandir}/man1/certmgr.1%ext_man
 %{_mandir}/man1/chktrust.1%ext_man
 %{_mandir}/man1/crlupdate.1%ext_man
