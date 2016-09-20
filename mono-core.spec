@@ -169,7 +169,7 @@ make
 %make_install
 
 # Remove hardcoded lib directory from the config
-sed -i s,%{_prefix}/lib/,,g %{buildroot}%{_sysconfdir}/mono/config
+sed -i 's,$mono_libdir/,,g' %{buildroot}%{_sysconfdir}/mono/config
 
 # remove .la files (they are generally bad news)
 rm -f %{buildroot}%{_libdir}/*.la
