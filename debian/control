@@ -196,7 +196,7 @@ Package: libmono-2.0-1
 Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
 Replaces: libmono-dev (<= 1.1.6-4)
 Conflicts: mono-utils (<< 1.2.3.1-4)
-Depends: ${shlibs:Depends}, ${misc:Depends}, libmonoboehm-2.0-1 (= ${binary:Version}) [amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x], libmonosgen-2.0-1 (= ${binary:Version}) [arm64]
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmonosgen-2.0-1 (= ${binary:Version})
 Description: Mono JIT library (Default version)
  Shared library for Mono, used for embedding/hosting of the JIT.
  .
@@ -208,7 +208,7 @@ Description: Mono JIT library (Default version)
 
 Package: libmono-2.0-dev
 Architecture: amd64 armel arm64 armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x
-Depends: ${misc:Depends}, libmonoboehm-2.0-dev (= ${binary:Version}) [amd64 armel armhf i386 mipsel kfreebsd-amd64 kfreebsd-i386 ppc64 ppc64el s390x], libmonosgen-2.0-dev (= ${binary:Version}) [arm64]
+Depends: ${misc:Depends}, libmonosgen-2.0-dev (= ${binary:Version})
 Description: Mono JIT library - Development files (Default version)
  Header files and static libraries for libmono-2.0.
  .
