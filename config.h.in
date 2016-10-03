@@ -142,9 +142,6 @@
 /* Runtime support code for llvm enabled */
 #undef ENABLE_LLVM_RUNTIME
 
-/* Enable using `perf` for profiling on Linux */
-#undef ENABLE_PERF_EVENTS
-
 /* Have GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY */
 #undef GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY
 

@@ -112,7 +112,8 @@ am__v_lt_0 = --silent
 am__v_lt_1 = 
 @DISABLE_EXECUTABLES_FALSE@am_libmonoruntime_config_la_rpath =
 @DISABLE_EXECUTABLES_TRUE@am_libmonoruntime_config_la_rpath =
-libmonoruntime_static_la_DEPENDENCIES = $(libmonoruntime_la_LIBADD)
+libmonoruntime_static_la_DEPENDENCIES = libmonoruntime-config.la \
+	$(btls_static_libs)
 am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
 	../../support/libm/complex.c console-win32.c w32mutex-win32.c \
@@ -250,7 +251,7 @@ libmonoruntime_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmonoruntime_static_la_CFLAGS) $(CFLAGS) \
 	$(libmonoruntime_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_EXECUTABLES_FALSE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_static_la_rpath =
-libmonoruntime_la_DEPENDENCIES = libmonoruntime-config.la
+libmonoruntime_la_DEPENDENCIES = libmonoruntime-config.la $(btls_libs)
 am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32semaphore-unix.c w32event-unix.c \
 	../../support/libm/complex.c console-win32.c w32mutex-win32.c \
@@ -365,8 +366,8 @@ libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	-o $@
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
-libmonoruntimesgen_static_la_DEPENDENCIES =  \
-	$(libmonoruntimesgen_la_LIBADD)
+libmonoruntimesgen_static_la_DEPENDENCIES = libmonoruntime-config.la \
+	$(btls_static_libs)
 am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
 	../../support/libm/complex.c console-win32.c w32mutex-win32.c \
@@ -514,7 +515,8 @@ libmonoruntimesgen_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) \
 	$(libmonoruntimesgen_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_EXECUTABLES_FALSE@@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_static_la_rpath =
-libmonoruntimesgen_la_DEPENDENCIES = libmonoruntime-config.la
+libmonoruntimesgen_la_DEPENDENCIES = libmonoruntime-config.la \
+	$(btls_libs)
 am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
 	../../support/libm/complex.c console-win32.c w32mutex-win32.c \
@@ -802,7 +804,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLE_PERF_EVENTS = @ENABLE_PERF_EVENTS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
@@ -995,6 +996,11 @@ top_srcdir = @top_srcdir@
 @HOST_WIN32_FALSE@	w32semaphore-unix.c \
 @HOST_WIN32_FALSE@	w32event-unix.c
 
+@BTLS_TRUE@btls_file_list := $(shell cat ../btls/build-shared/mono-btls-shared-lo.txt)
+@BTLS_TRUE@btls_static_file_list := $(shell cat ../btls/build-static/mono-btls-static-lo.txt)
+@BTLS_TRUE@btls_libs = $(btls_file_list)
+@BTLS_TRUE@btls_static_libs = $(btls_static_file_list)
+@BTLS_TRUE@btls_cflags = -I$(top_srcdir)/external/boringssl/include -I$(top_srcdir)/mono/btls
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@shared_sgen_libraries = libmonoruntimesgen.la 
 
 #
@@ -1008,7 +1014,7 @@ top_srcdir = @top_srcdir@
 @SUPPORT_BOEHM_TRUE@boehm_libraries = $(shared_boehm_libraries) libmonoruntime-static.la
 @DISABLE_EXECUTABLES_FALSE@noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
 @DISABLE_EXECUTABLES_TRUE@noinst_LTLIBRARIES = libmonoruntime-config.la $(shared_sgen_libraries) $(shared_boehm_libraries)
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS) $(btls_cflags)
 
 #
 # This library is used to localize the usage of MONO_BINDIR etc. to just one source file, thus enabling
@@ -1199,18 +1205,18 @@ sgen_sources = \
 
 libmonoruntime_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES)
-libmonoruntime_la_LIBADD = libmonoruntime-config.la
+libmonoruntime_la_LIBADD = libmonoruntime-config.la $(btls_libs)
 libmonoruntimesgen_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(sgen_sources)
 libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES)
-libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la
+libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(btls_libs)
 libmonoruntime_static_la_SOURCES = $(libmonoruntime_la_SOURCES)
 libmonoruntime_static_la_LDFLAGS = -static
 libmonoruntime_static_la_CFLAGS = $(BOEHM_DEFINES)
-libmonoruntime_static_la_LIBADD = $(bundle_obj) $(libmonoruntime_la_LIBADD)
+libmonoruntime_static_la_LIBADD = $(bundle_obj) libmonoruntime-config.la $(btls_static_libs)
 libmonoruntimesgen_static_la_SOURCES = $(libmonoruntimesgen_la_SOURCES)
 libmonoruntimesgen_static_la_LDFLAGS = -static
 libmonoruntimesgen_static_la_CFLAGS = $(SGEN_DEFINES)
-libmonoruntimesgen_static_la_LIBADD = $(libmonoruntimesgen_la_LIBADD)
+libmonoruntimesgen_static_la_LIBADD = libmonoruntime-config.la $(btls_static_libs)
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
 libmonoruntimeinclude_HEADERS = \
 	assembly.h		\

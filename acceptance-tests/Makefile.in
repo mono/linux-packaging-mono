@@ -174,7 +174,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLE_PERF_EVENTS = @ENABLE_PERF_EVENTS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
@@ -361,7 +360,8 @@ SYS_REFS = \
 	System.Data.dll \
 	System.Runtime.Serialization.dll \
 	System.Xml.dll \
-	System.Xml.Linq.dll
+	System.Xml.Linq.dll \
+	Mono.Posix.dll
 
 CORECLR_TEST_CS_SRC = \
 	$(CORECLR_PATH)/tests/src/GC/Coverage/LargeObjectAlloc.cs	\
