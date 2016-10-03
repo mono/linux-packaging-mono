@@ -56,6 +56,10 @@
 #include <signal.h>
 #endif
 
+#if defined(HOST_WIN32)
+#include <objbase.h>
+#endif
+
 #if defined(PLATFORM_ANDROID) && !defined(TARGET_ARM64) && !defined(TARGET_AMD64)
 #define USE_TKILL_ON_ANDROID 1
 #endif
@@ -2929,34 +2933,14 @@ wait_for_tids (struct wait_data *wait, guint32 timeout)
 		return;
 
 	for(i=0; i<wait->num; i++) {
-		gsize tid = wait->threads[i]->tid;
+		MonoInternalThread *internal;
 
-		/*
-		 * On !win32, when the thread handle becomes signalled, it just means the thread has exited user code,
-		 * it can still run io-layer etc. code. So wait for it to really exit.
-		 * FIXME: This won't join threads which are not in the joinable_hash yet.
-		 */
-		mono_thread_join ((gpointer)tid);
+		internal = wait->threads [i];
 
 		mono_threads_lock ();
-		if(mono_g_hash_table_lookup (threads, (gpointer)tid)!=NULL) {
-			/* This thread must have been killed, because
-			 * it hasn't cleaned itself up. (It's just
-			 * possible that the thread exited before the
-			 * parent thread had a chance to store the
-			 * handle, and now there is another pointer to
-			 * the already-exited thread stored.  In this
-			 * case, we'll just get two
-			 * mono_profiler_thread_end() calls for the
-			 * same thread.)
-			 */
-	
-			mono_threads_unlock ();
-			THREAD_DEBUG (g_message ("%s: cleaning up after thread %p (%"G_GSIZE_FORMAT")", __func__, wait->threads[i], tid));
-			thread_cleanup (wait->threads[i]);
-		} else {
-			mono_threads_unlock ();
-		}
+		if (mono_g_hash_table_lookup (threads, (gpointer) internal->tid) == internal)
+			g_error ("%s: failed to call mono_thread_detach_internal on thread %p, InternalThread: %p", __func__, internal->tid, internal);
+		mono_threads_unlock ();
 	}
 }
 
@@ -2992,15 +2976,14 @@ static void wait_for_tids_or_state_change (struct wait_data *wait, guint32 timeo
 		return;
 	
 	if (ret < wait->num) {
-		gsize tid = wait->threads[ret]->tid;
+		MonoInternalThread *internal;
+
+		internal = wait->threads [ret];
+
 		mono_threads_lock ();
-		if (mono_g_hash_table_lookup (threads, (gpointer)tid)!=NULL) {
-			/* See comment in wait_for_tids about thread cleanup */
-			mono_threads_unlock ();
-			THREAD_DEBUG (g_message ("%s: cleaning up after thread %"G_GSIZE_FORMAT, __func__, tid));
-			thread_cleanup (wait->threads [ret]);
-		} else
-			mono_threads_unlock ();
+		if (mono_g_hash_table_lookup (threads, (gpointer) internal->tid) == internal)
+			g_error ("%s: failed to call mono_thread_detach_internal on thread %p, InternalThread: %p", __func__, internal->tid, internal);
+		mono_threads_unlock ();
 	}
 }
 
@@ -4938,7 +4921,7 @@ mono_threads_join_threads (void)
 			if (thread != pthread_self ()) {
 				MONO_ENTER_GC_SAFE;
 				/* This shouldn't block */
-				pthread_join (thread, NULL);
+				mono_native_thread_join (thread);
 				MONO_EXIT_GC_SAFE;
 			}
 		} else {
@@ -4974,7 +4957,7 @@ mono_thread_join (gpointer tid)
 		return;
 	thread = (pthread_t)tid;
 	MONO_ENTER_GC_SAFE;
-	pthread_join (thread, NULL);
+	mono_native_thread_join (thread);
 	MONO_EXIT_GC_SAFE;
 #endif
 }
@@ -5142,6 +5125,7 @@ mono_thread_try_resume_interruption (void)
 	return mono_thread_resume_interruption ();
 }
 
+#if 0
 /* Returns TRUE if the current thread is ready to be interrupted. */
 gboolean
 mono_threads_is_ready_to_be_interrupted (void)
@@ -5163,6 +5147,7 @@ mono_threads_is_ready_to_be_interrupted (void)
 	UNLOCK_THREAD (thread);
 	return TRUE;
 }
+#endif
 
 void
 mono_thread_internal_describe (MonoInternalThread *internal, GString *text)

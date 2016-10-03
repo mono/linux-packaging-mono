@@ -83,7 +83,7 @@ monodroid_dirs := \
 monotouch_dirs := \
 	$(mobile_static_dirs)
 
-monotouch_watch_dirs := $(monotouch_dirs)
+monotouch_watch_dirs := $(filter-out Mono.Security Mono.Data.Tds,$(monotouch_dirs))
 monotouch_tv_dirs   := $(monotouch_dirs)
 
 monotouch_runtime_dirs := \
@@ -94,7 +94,7 @@ monotouch_runtime_dirs := \
 	System.XML \
 	Mono.CSharp
 
-monotouch_watch_runtime_dirs := $(monotouch_runtime_dirs)
+monotouch_watch_runtime_dirs := $(filter-out Mono.Security Mono.Data.Tds,$(monotouch_runtime_dirs))
 monotouch_tv_runtime_dirs := $(monotouch_runtime_dirs)
 
 xammac_4_5_dirs := \
@@ -141,6 +141,7 @@ xammac_4_5_dirs := \
 	System.Data.Linq		\
 	System.Net.Http \
 	System.Net.Http.WebRequest \
+	Mono.Btls.Interface \
 	System.Runtime.InteropServices.RuntimeInformation \
 	System.Reflection.Context	\
 	System.Net.Http.WinHttpHandler	\
@@ -236,6 +237,7 @@ net_4_x_dirs := \
 net_4_x_parallel_dirs := \
 	PEAPI				\
 	I18N				\
+	Mono.Btls.Interface		\
 	Mono.Http			\
 	Mono.Cairo                      \
 	Mono.Cecil			\

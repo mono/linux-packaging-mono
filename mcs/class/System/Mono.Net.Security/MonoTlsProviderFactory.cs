@@ -156,10 +156,12 @@ namespace Mono.Net.Security
 					return;
 				providerRegistration = new Dictionary<string,string> ();
 				providerRegistration.Add ("legacy", "Mono.Net.Security.LegacyTlsProvider");
-#if HAVE_BTLS
-				if (Mono.Btls.MonoBtlsProvider.IsSupported ())
+				if (Mono.Btls.MonoBtlsProvider.IsSupported ()) {
 					providerRegistration.Add ("btls", "Mono.Btls.MonoBtlsProvider");
-#endif
+					providerRegistration.Add ("default", "Mono.Btls.MonoBtlsProvider");
+				} else {
+					providerRegistration.Add ("default", "Mono.Net.Security.LegacyTlsProvider");
+				}
 				X509Helper2.Initialize ();
 			}
 		}
@@ -168,11 +170,8 @@ namespace Mono.Net.Security
 		static MSI.MonoTlsProvider TryDynamicLoad ()
 		{
 			var variable = Environment.GetEnvironmentVariable ("MONO_TLS_PROVIDER");
-			if (variable == null)
-				return null;
-
-			if (string.Equals (variable, "default", StringComparison.OrdinalIgnoreCase))
-				return null;
+			if (string.IsNullOrEmpty (variable))
+				variable = "default";
 
 			return LookupProvider (variable, true);
 		}

@@ -734,7 +734,6 @@ ENABLE_DTRACE_FALSE
 ENABLE_DTRACE_TRUE
 DTRACEFLAGS
 DTRACE
-ENABLE_PERF_EVENTS
 XATTR_LIB
 ikvm_native_dir
 MONO_DL_NEED_USCORE
@@ -1017,7 +1016,6 @@ with_large_heap
 with_ikvm_native
 enable_dev_random
 enable_bcl_opt
-enable_perf_events
 enable_big_arrays
 enable_dtrace
 enable_nacl_codegen
@@ -1719,7 +1717,6 @@ Optional Features:
   --enable-parallel-mark     Enables Boehm GC Parallel Marking
   --disable-dev-random    disable the use of the random device (enabled by default)
   --disable-bcl-opt	BCL is compiled with no optimizations (allows accurate BCL debugging)
-  --enable-perf-events Enable using `perf` for profiling on Linux
   --enable-big-arrays	Enable the allocation and indexing of arrays greater than Int32.MaxValue
   --enable-dtrace	Enable DTrace probes
   --enable-nacl-codegen      Enable Native Client code generation
@@ -20342,39 +20339,6 @@ $as_echo "no" >&6; }
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for deprecated __attribute__" >&5
-$as_echo_n "checking for deprecated __attribute__... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-     int doit (void) __attribute__ ((deprecated));
-     int doit (void) { return 0; }
-
-int
-main ()
-{
-
-	return 0;
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-
-   have_deprecated=yes
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-else
-
-   have_deprecated=no
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
 
 
 # Check whether --with-libgc was given.
@@ -25266,20 +25230,6 @@ else
 fi
 
 
-# Check whether --enable-perf-events was given.
-if test "${enable_perf_events+set}" = set; then :
-  enableval=$enable_perf_events; test_perf_events=$enableval
-else
-  test_perf_events=no
-fi
-
-if test "x$test_perf_events" = "xyes"; then
-
-$as_echo "#define ENABLE_PERF_EVENTS 1" >>confdefs.h
-
-
-fi
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking if big-arrays are to be enabled" >&5
 $as_echo_n "checking if big-arrays are to be enabled... " >&6; }
 # Check whether --enable-big-arrays was given.
@@ -27439,7 +27389,11 @@ fi
 	case "$BTLS_PLATFORM" in
 	i386)
 		btls_arch=i386
-		btls_cflags="-m32 -arch i386"
+		btls_cflags="-m32"
+		case $host_os in
+			darwin*)
+				btls_cflags="$btls_cflags -arch i386"
+		esac
 		;;
 	x86_64)
 		btls_arch=x86_64
@@ -27751,7 +27705,7 @@ ac_config_commands="$ac_config_commands quiet-libtool"
 ac_config_commands="$ac_config_commands nolock-libtool"
 
 
-ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/io-layer/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile tools/pedump/Makefile runtime/Makefile msvc/Makefile po/Makefile"
+ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/btls/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/io-layer/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile tools/pedump/Makefile runtime/Makefile msvc/Makefile po/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -29132,6 +29086,7 @@ do
     "scripts/mono-find-provides") CONFIG_FILES="$CONFIG_FILES scripts/mono-find-provides" ;;
     "scripts/mono-find-requires") CONFIG_FILES="$CONFIG_FILES scripts/mono-find-requires" ;;
     "mono/Makefile") CONFIG_FILES="$CONFIG_FILES mono/Makefile" ;;
+    "mono/btls/Makefile") CONFIG_FILES="$CONFIG_FILES mono/btls/Makefile" ;;
     "mono/utils/Makefile") CONFIG_FILES="$CONFIG_FILES mono/utils/Makefile" ;;
     "mono/metadata/Makefile") CONFIG_FILES="$CONFIG_FILES mono/metadata/Makefile" ;;
     "mono/dis/Makefile") CONFIG_FILES="$CONFIG_FILES mono/dis/Makefile" ;;
