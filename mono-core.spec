@@ -41,6 +41,7 @@ BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
 BuildRequires:  which
+BuildRequires:  cmake
 BuildRequires:  gettext
 BuildRequires:  fdupes
 BuildRequires:  gcc-c++
