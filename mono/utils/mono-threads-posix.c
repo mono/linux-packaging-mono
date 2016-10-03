@@ -45,9 +45,6 @@ mono_threads_platform_register (MonoThreadInfo *info)
 {
 	gpointer thread_handle;
 
-	info->owned_mutexes = g_ptr_array_new ();
-	info->priority = MONO_THREAD_PRIORITY_NORMAL;
-
 	thread_handle = mono_w32handle_new (MONO_W32HANDLE_THREAD, NULL);
 	if (thread_handle == INVALID_HANDLE_VALUE)
 		g_error ("%s: failed to create handle", __func__);
@@ -61,6 +58,8 @@ mono_threads_platform_create_thread (MonoThreadStart thread_fn, gpointer thread_
 {
 	pthread_attr_t attr;
 	pthread_t thread;
+	int policy;
+	struct sched_param param;
 	gint res;
 
 	res = pthread_attr_init (&attr);
@@ -86,6 +85,45 @@ mono_threads_platform_create_thread (MonoThreadStart thread_fn, gpointer thread_
 	res = pthread_attr_setstacksize (&attr, stack_size);
 	g_assert (!res);
 #endif /* HAVE_PTHREAD_ATTR_SETSTACKSIZE */
+
+	memset (&param, 0, sizeof (param));
+
+	res = pthread_attr_getschedpolicy (&attr, &policy);
+	if (res != 0)
+		g_error ("%s: pthread_attr_getschedpolicy failed, error: \"%s\" (%d)", g_strerror (res), res);
+
+#ifdef _POSIX_PRIORITY_SCHEDULING
+	int max, min;
+
+	/* Necessary to get valid priority range */
+
+	min = sched_get_priority_min (policy);
+	max = sched_get_priority_max (policy);
+
+	if (max > 0 && min >= 0 && max > min)
+		param.sched_priority = (max - min) / 2 + min;
+	else
+#endif
+	{
+		switch (policy) {
+		case SCHED_FIFO:
+		case SCHED_RR:
+			param.sched_priority = 50;
+			break;
+#ifdef SCHED_BATCH
+		case SCHED_BATCH:
+#endif
+		case SCHED_OTHER:
+			param.sched_priority = 0;
+			break;
+		default:
+			g_error ("%s: unknown policy %d", __func__, policy);
+		}
+	}
+
+	res = pthread_attr_setschedparam (&attr, &param);
+	if (res != 0)
+		g_error ("%s: pthread_attr_setschedparam failed, error: \"%s\" (%d)", g_strerror (res), res);
 
 	/* Actually start the thread */
 	res = mono_gc_pthread_create (&thread, &attr, (gpointer (*)(gpointer)) thread_fn, thread_data);
@@ -119,7 +157,11 @@ mono_threads_platform_exit (int exit_code)
 void
 mono_threads_platform_unregister (MonoThreadInfo *info)
 {
-	mono_threads_platform_set_exited (info);
+	g_assert (info->handle);
+
+	/* The thread is no longer active, so unref it */
+	mono_w32handle_unref (info->handle);
+	info->handle = NULL;
 }
 
 int
@@ -247,144 +289,23 @@ mono_native_thread_set_name (MonoNativeThreadId tid, const char *name)
 }
 
 void
-mono_threads_platform_set_exited (MonoThreadInfo *info)
+mono_threads_platform_set_exited (gpointer handle)
 {
-	gpointer mutex_handle;
-	int i, thr_ret;
-	pid_t pid;
-	pthread_t tid;
+	int thr_ret;
 
-	g_assert (info->handle);
+	g_assert (handle);
+	if (mono_w32handle_issignalled (handle))
+		g_error ("%s: handle %p thread %p has already exited, it's handle is signalled", __func__, handle, mono_native_thread_id_get ());
+	if (mono_w32handle_get_type (handle) == MONO_W32HANDLE_UNUSED)
+		g_error ("%s: handle %p thread %p has already exited, it's handle type is 'unused'", __func__, handle, mono_native_thread_id_get ());
 
-	if (mono_w32handle_issignalled (info->handle))
-		g_error ("%s: handle %p thread %p has already exited, it's handle is signalled", __func__, info->handle, mono_thread_info_get_tid (info));
-	if (mono_w32handle_get_type (info->handle) == MONO_W32HANDLE_UNUSED)
-		g_error ("%s: handle %p thread %p has already exited, it's handle type is 'unused'", __func__, info->handle, mono_thread_info_get_tid (info));
-
-	pid = wapi_getpid ();
-	tid = pthread_self ();
-
-	for (i = 0; i < info->owned_mutexes->len; i++) {
-		mutex_handle = g_ptr_array_index (info->owned_mutexes, i);
-		wapi_mutex_abandon (mutex_handle, pid, tid);
-		mono_thread_info_disown_mutex (info, mutex_handle);
-	}
-
-	g_ptr_array_free (info->owned_mutexes, TRUE);
-
-	thr_ret = mono_w32handle_lock_handle (info->handle);
+	thr_ret = mono_w32handle_lock_handle (handle);
 	g_assert (thr_ret == 0);
 
-	mono_w32handle_set_signal_state (info->handle, TRUE, TRUE);
+	mono_w32handle_set_signal_state (handle, TRUE, TRUE);
 
-	thr_ret = mono_w32handle_unlock_handle (info->handle);
+	thr_ret = mono_w32handle_unlock_handle (handle);
 	g_assert (thr_ret == 0);
-
-	/* The thread is no longer active, so unref it */
-	mono_w32handle_unref (info->handle);
-
-	info->handle = NULL;
-}
-
-void
-mono_threads_platform_describe (MonoThreadInfo *info, GString *text)
-{
-	int i;
-
-	g_string_append_printf (text, "thread handle %p state : ", info->handle);
-
-	mono_thread_info_describe_interrupt_token (info, text);
-
-	g_string_append_printf (text, ", owns (");
-	for (i = 0; i < info->owned_mutexes->len; i++)
-		g_string_append_printf (text, i > 0 ? ", %p" : "%p", g_ptr_array_index (info->owned_mutexes, i));
-	g_string_append_printf (text, ")");
-}
-
-void
-mono_threads_platform_own_mutex (MonoThreadInfo *info, gpointer mutex_handle)
-{
-	mono_w32handle_ref (mutex_handle);
-
-	g_ptr_array_add (info->owned_mutexes, mutex_handle);
-}
-
-void
-mono_threads_platform_disown_mutex (MonoThreadInfo *info, gpointer mutex_handle)
-{
-	mono_w32handle_unref (mutex_handle);
-
-	g_ptr_array_remove (info->owned_mutexes, mutex_handle);
-}
-
-MonoThreadPriority
-mono_threads_platform_get_priority (MonoThreadInfo *info)
-{
-	return info->priority;
-}
-
-void
-mono_threads_platform_set_priority (MonoThreadInfo *info, MonoThreadPriority priority)
-{
-	int policy;
-	struct sched_param param;
-	pthread_t tid;
-	gint res;
-
-	g_assert (priority >= MONO_THREAD_PRIORITY_LOWEST);
-	g_assert (priority <= MONO_THREAD_PRIORITY_HIGHEST);
-	g_assert (MONO_THREAD_PRIORITY_LOWEST < MONO_THREAD_PRIORITY_HIGHEST);
-
-	tid = mono_thread_info_get_tid (info);
-
-	res = pthread_getschedparam (tid, &policy, &param);
-	if (res != 0)
-		g_error ("%s: pthread_getschedparam failed, error: \"%s\" (%d)", g_strerror (res), res);
-
-#ifdef _POSIX_PRIORITY_SCHEDULING
-	int max, min;
-
-	/* Necessary to get valid priority range */
-
-	min = sched_get_priority_min (policy);
-	max = sched_get_priority_max (policy);
-
-	if (max > 0 && min >= 0 && max > min) {
-		double srange, drange, sposition, dposition;
-		srange = MONO_THREAD_PRIORITY_HIGHEST - MONO_THREAD_PRIORITY_LOWEST;
-		drange = max - min;
-		sposition = priority - MONO_THREAD_PRIORITY_LOWEST;
-		dposition = (sposition / srange) * drange;
-		param.sched_priority = (int)(dposition + min);
-	} else
-#endif
-	{
-		switch (policy) {
-		case SCHED_FIFO:
-		case SCHED_RR:
-			param.sched_priority = 50;
-			break;
-#ifdef SCHED_BATCH
-		case SCHED_BATCH:
-#endif
-		case SCHED_OTHER:
-			param.sched_priority = 0;
-			break;
-		default:
-			g_error ("%s: unknown policy %d", __func__, policy);
-		}
-	}
-
-	res = pthread_setschedparam (tid, policy, &param);
-	if (res != 0) {
-		if (res == EPERM) {
-			g_warning ("%s: pthread_setschedparam failed, error: \"%s\" (%d)", g_strerror (res), res);
-			return;
-		}
-		g_error ("%s: pthread_setschedparam failed, error: \"%s\" (%d)", g_strerror (res), res);
-	}
-
-	info->priority = priority;
 }
 
 static const gchar* thread_typename (void)

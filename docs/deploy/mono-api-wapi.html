@@ -317,29 +317,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer CreateEvent(WapiSecurityAttributes *security G_GNUC_UNUSED,
-		     gboolean manual, gboolean initial,
-		     const gunichar2 *name G_GNUC_UNUSED)
-
-</div>
+            <div class="mapi-prototype">CreateEvent</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>security</i><td> Ignored for now.</td></td></tr><tr><td><i>manual</i><td> Specifies whether the new event handle has manual or auto</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 reset behaviour. 
-	 <i>initial</i>: Specifies whether the new event handle is initially
-	 signalled or not.
-	 <i>name</i>:Pointer to a string specifying the name of this name, or
-	 %<code>NULL</code>.  Currently ignored.
-	<p />
-	 Creates a new event handle.
-	<p />
-	 An event handle is signalled with SetEvent().  If the new handle is
-	 a manual reset event handle, it remains signalled until it is reset
-	 with ResetEvent().  An auto reset event remains signalled until a
-	 single thread has waited for it, at which time the event handle is
-	 automatically reset to unsignalled.
-	<p />
-	 Return value: A new handle, or %<code>NULL</code> on error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -396,26 +375,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer CreateMutex(WapiSecurityAttributes *security G_GNUC_UNUSED, gboolean owned, const gunichar2 *name)
-
-</div>
+            <div class="mapi-prototype">CreateMutex</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>security</i><td> Ignored for now.</td></td></tr><tr><td><i>owned</i><td> If %<code>TRUE</code>, the mutex is created with the calling thread</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 already owning the mutex. 
-	 <i>name</i>:Pointer to a string specifying the name of this mutex, or
-	 %<code>NULL</code>.
-	<p />
-	 Creates a new mutex handle.  A mutex is signalled when no thread
-	 owns it.  A thread acquires ownership of the mutex by waiting for
-	 it with WaitForSingleObject() or WaitForMultipleObjects().  A
-	 thread relinquishes ownership with ReleaseMutex().
-	<p />
-	 A thread that owns a mutex can specify the same mutex in repeated
-	 wait function calls without blocking.  The thread must call
-	 ReleaseMutex() an equal number of times to release the mutex.
-	<p />
-	 Return value: A new handle, or %<code>NULL</code> on error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -474,25 +435,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer CreateSemaphore(WapiSecurityAttributes *security G_GNUC_UNUSED, gint32 initial, gint32 max, const gunichar2 *name)
-
-</div>
+            <div class="mapi-prototype">CreateSemaphore</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>security</i><td> Ignored for now.</td></td></tr><tr><td><i>initial</i><td> The initial count for the semaphore.  The value must be</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 greater than or equal to zero, and less than or equal to <i>max</i>. 
-	 <i>max</i>: The maximum count for this semaphore.  The value must be
-	 greater than zero.
-	 <i>name</i>: Pointer to a string specifying the name of this semaphore,
-	 or %<code>NULL</code>.  Currently ignored.
-	<p />
-	 Creates a new semaphore handle.  A semaphore is signalled when its
-	 count is greater than zero, and unsignalled otherwise.  The count
-	 is decreased by one whenever a wait function releases a thread that
-	 was waiting for the semaphore.  The count is increased by calling
-	 ReleaseSemaphore().
-	<p />
-	 Return value: a new handle, or <code>NULL</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1510,23 +1454,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean PulseEvent(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">PulseEvent</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The event handle.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Sets the event handle <i>handle</i> to the signalled state, and then
-	 resets it to unsignalled after informing any waiting threads.
-	<p />
-	 If <i>handle</i> is a manual reset event, all waiting threads that can be
-	 released immediately are released.  <i>handle</i> is then reset.  If
-	 <i>handle</i> is an auto reset event, one waiting thread is released even
-	 if multiple threads are waiting.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.  (Currently only
-	 ever returns %<code>TRUE</code>).</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1628,17 +1557,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean ReleaseMutex(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">ReleaseMutex</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The mutex handle.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Releases ownership if the mutex handle <i>handle</i>.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.  This function
-	 fails if the calling thread does not own the mutex <i>handle</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1652,19 +1572,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean ReleaseSemaphore(gpointer handle, gint32 count, gint32 *prevcount)
-
-</div>
+            <div class="mapi-prototype">ReleaseSemaphore</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The semaphore handle to release.</td></td></tr><tr><td><i>count</i><td> The amount by which the semaphore's count should be</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 increased. 
-	 <i>prevcount</i>: Pointer to a location to store the previous count of
-	 the semaphore, or %<code>NULL</code>.
-	<p />
-	 Increases the count of semaphore <i>handle</i> by <i>count</i>.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1717,17 +1626,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean ResetEvent(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">ResetEvent</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The event handle.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Resets the event handle <i>handle</i> to the unsignalled state.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.  (Currently only
-	 ever returns %<code>TRUE</code>).</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1834,22 +1734,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean SetEvent(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">SetEvent</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The event handle</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Sets the event handle <i>handle</i> to the signalled state.
-	<p />
-	 If <i>handle</i> is a manual reset event, it remains signalled until it
-	 is reset with ResetEvent().  An auto reset event remains signalled
-	 until a single thread has waited for it, at which time <i>handle</i> is
-	 automatically reset to unsignalled.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.  (Currently only
-	 ever returns %<code>TRUE</code>).</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

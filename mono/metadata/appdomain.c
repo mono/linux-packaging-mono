@@ -58,6 +58,7 @@
 #include <mono/metadata/tokentype.h>
 #include <mono/metadata/profiler-private.h>
 #include <mono/metadata/reflection-internals.h>
+#include <mono/metadata/abi-details.h>
 #include <mono/utils/mono-uri.h>
 #include <mono/utils/mono-logger-internals.h>
 #include <mono/utils/mono-path.h>
@@ -83,7 +84,7 @@
  * Changes which are already detected at runtime, like the addition
  * of icalls, do not require an increment.
  */
-#define MONO_CORLIB_VERSION 155
+#define MONO_CORLIB_VERSION 157
 
 typedef struct
 {
@@ -343,8 +344,14 @@ mono_check_corlib_version (void)
 	int version = mono_get_corlib_version ();
 	if (version != MONO_CORLIB_VERSION)
 		return g_strdup_printf ("expected corlib version %d, found %d.", MONO_CORLIB_VERSION, version);
-	else
-		return NULL;
+
+	/* Check that the managed and unmanaged layout of MonoInternalThread matches */
+	guint32 native_offset = (guint32) MONO_STRUCT_OFFSET (MonoInternalThread, last);
+	guint32 managed_offset = mono_field_get_offset (mono_class_get_field_from_name (mono_defaults.internal_thread_class, "last"));
+	if (native_offset != managed_offset)
+		return g_strdup_printf ("expected InternalThread.last field offset %u, found %u. See InternalThread.last comment", native_offset, managed_offset);
+
+	return NULL;
 }
 
 /**
@@ -1934,20 +1941,6 @@ mono_domain_assembly_search (MonoAssemblyName *aname,
 	return NULL;
 }
 
-static gboolean
-prevent_running_reference_assembly (MonoAssembly *ass, MonoError *error)
-{
-	mono_error_init (error);
-	gboolean refasm = mono_assembly_get_reference_assembly_attribute (ass, error);
-	if (!is_ok (error))
-		return TRUE;
-	if (refasm) {
-		mono_error_set_bad_image (error, ass->image, "Could not load file or assembly or one of its dependencies. Reference assemblies should not be loaded for execution.  They can only be loaded in the Reflection-only loader context.\n");
-		return TRUE;
-	}
-	return FALSE;
-}
-
 MonoReflectionAssembly *
 ves_icall_System_Reflection_Assembly_LoadFrom (MonoString *fname, MonoBoolean refOnly)
 {
@@ -1956,40 +1949,37 @@ ves_icall_System_Reflection_Assembly_LoadFrom (MonoString *fname, MonoBoolean re
 	MonoDomain *domain = mono_domain_get ();
 	char *name, *filename;
 	MonoImageOpenStatus status = MONO_IMAGE_OK;
-	MonoAssembly *ass = NULL;
-
-	name = NULL;
-	result = NULL;
-
-	mono_error_init (&error);
+	MonoAssembly *ass;
 
 	if (fname == NULL) {
-		mono_error_set_argument_null (&error, "assemblyFile", "");
-		goto leave;
+		MonoException *exc = mono_get_exception_argument_null ("assemblyFile");
+		mono_set_pending_exception (exc);
+		return NULL;
 	}
 		
 	name = filename = mono_string_to_utf8_checked (fname, &error);
-	if (!is_ok (&error))
-		goto leave;
+	if (mono_error_set_pending_exception (&error))
+		return NULL;
 	
 	ass = mono_assembly_open_full (filename, &status, refOnly);
 	
 	if (!ass) {
+		MonoException *exc;
+
 		if (status == MONO_IMAGE_IMAGE_INVALID)
-			mono_error_set_bad_image_name (&error, name, "");
+			exc = mono_get_exception_bad_image_format2 (NULL, fname);
 		else
-			mono_error_set_exception_instance (&error, mono_get_exception_file_not_found2 (NULL, fname));
-		goto leave;
+			exc = mono_get_exception_file_not_found2 (NULL, fname);
+		g_free (name);
+		mono_set_pending_exception (exc);
+		return NULL;
 	}
 
-	if (!refOnly && prevent_running_reference_assembly (ass, &error))
-		goto leave;
+	g_free (name);
 
 	result = mono_assembly_get_object_checked (domain, ass, &error);
-
-leave:
-	mono_error_set_pending_exception (&error);
-	g_free (name);
+	if (!result)
+		mono_error_set_pending_exception (&error);
 	return result;
 }
 
@@ -2024,11 +2014,6 @@ ves_icall_System_AppDomain_LoadAssemblyRaw (MonoAppDomain *ad,
 		return NULL; 
 	}
 
-	if (!refonly && prevent_running_reference_assembly (ass, &error)) {
-		mono_error_set_pending_exception (&error);
-		return NULL;
-	}
-
 	refass = mono_assembly_get_object_checked (domain, ass, &error);
 	if (!refass)
 		mono_error_set_pending_exception (&error);
@@ -2046,7 +2031,7 @@ ves_icall_System_AppDomain_LoadAssembly (MonoAppDomain *ad,  MonoString *assRef,
 	MonoAssembly *ass;
 	MonoAssemblyName aname;
 	MonoReflectionAssembly *refass = NULL;
-	gchar *name = NULL;
+	gchar *name;
 	gboolean parsed;
 
 	g_assert (assRef);
@@ -2055,13 +2040,16 @@ ves_icall_System_AppDomain_LoadAssembly (MonoAppDomain *ad,  MonoString *assRef,
 	if (mono_error_set_pending_exception (&error))
 		return NULL;
 	parsed = mono_assembly_name_parse (name, &aname);
+	g_free (name);
 
 	if (!parsed) {
 		/* This is a parse error... */
 		if (!refOnly) {
 			refass = mono_try_assembly_resolve (domain, assRef, NULL, refOnly, &error);
-			if (!is_ok (&error))
-				goto leave;
+			if (!mono_error_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return NULL;
+			}
 		}
 		return refass;
 	}
@@ -2073,31 +2061,25 @@ ves_icall_System_AppDomain_LoadAssembly (MonoAppDomain *ad,  MonoString *assRef,
 		/* MS.NET doesn't seem to call the assembly resolve handler for refonly assemblies */
 		if (!refOnly) {
 			refass = mono_try_assembly_resolve (domain, assRef, NULL, refOnly, &error);
-			if (!is_ok (&error))
-				goto leave;
+			if (!mono_error_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return NULL;
+			}
 		}
 		else
 			refass = NULL;
-		if (!refass)
-			goto leave;
-		ass = refass->assembly;
+		if (!refass) {
+			return NULL;
+		}
 	}
 
-	if (!refOnly && prevent_running_reference_assembly (ass, &error))
-		goto leave;
-
-	g_assert (ass);
-	if (refass == NULL) {
+	if (refass == NULL)
 		refass = mono_assembly_get_object_checked (domain, ass, &error);
-		if (!is_ok (&error))
-			goto leave;
-	}
 
-	MONO_OBJECT_SETREF (refass, evidence, evidence);
-
-leave:
-	g_free (name);
-	mono_error_set_pending_exception (&error);
+	if (refass == NULL)
+		mono_error_set_pending_exception (&error);
+	else
+		MONO_OBJECT_SETREF (refass, evidence, evidence);
 	return refass;
 }
 
@@ -2530,7 +2512,6 @@ mono_domain_try_unload (MonoDomain *domain, MonoObject **exc)
 	unload_data *thread_data;
 	MonoNativeThreadId tid;
 	MonoDomain *caller_domain = mono_domain_get ();
-	MonoThreadParm tp;
 
 	/* printf ("UNLOAD STARTING FOR %s (%p) IN THREAD 0x%x.\n", domain->friendly_name, domain, mono_native_thread_id_get ()); */
 
@@ -2587,10 +2568,7 @@ mono_domain_try_unload (MonoDomain *domain, MonoObject **exc)
 	 * First we create a separate thread for unloading, since
 	 * we might have to abort some threads, including the current one.
 	 */
-	tp.priority = MONO_THREAD_PRIORITY_NORMAL;
-	tp.stack_size = 0;
-	tp.creation_flags = 0;
-	thread_handle = mono_threads_create_thread (unload_thread_main, thread_data, &tp, &tid);
+	thread_handle = mono_threads_create_thread (unload_thread_main, thread_data, 0, &tid);
 	if (thread_handle == NULL)
 		return;
 

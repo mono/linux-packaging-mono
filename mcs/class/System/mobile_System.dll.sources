@@ -11,11 +11,9 @@ System.Diagnostics/FileVersionInfo.cs
 System.Diagnostics/MonitoringDescriptionAttribute.cs
 System.Diagnostics/Process.cs
 System.Diagnostics/ProcessModule.cs
-System.Diagnostics/ProcessModuleCollection.cs
 System.Diagnostics/ProcessPriorityClass.cs
 System.Diagnostics/ProcessStartInfo.cs
 System.Diagnostics/ProcessThread.cs
-System.Diagnostics/ProcessThreadCollection.cs
 System.Diagnostics/ProcessWindowStyle.cs
 System.Diagnostics/Stopwatch.cs
 System.Diagnostics/ThreadPriorityLevel.cs
@@ -28,6 +26,7 @@ System.IO.Compression/DeflateStream.cs
 System.IO.Compression/GZipStream.cs
 System.IO/InternalBufferOverflowException.cs
 System.IO/InvalidDataException.cs
+System.IO/IODescriptionAttribute.cs
 System.IO/ErrorEventArgs.cs
 System.IO/ErrorEventHandler.cs
 System.IO/FileSystemEventArgs.cs
@@ -130,6 +129,7 @@ System.Net.Sockets/SafeSocketHandle.cs
 ../referencesource/System/net/System/Net/Sockets/SelectMode.cs
 System.Net.Sockets/SendPacketsElement.cs
 System.Net.Sockets/Socket.cs
+../referencesource/System/net/System/Net/Sockets/Socket.cs
 System.Net.Sockets/SocketAsyncEventArgs.cs
 System.Net.Sockets/SocketAsyncOperation.cs
 System.Net.Sockets/SocketAsyncResult.cs
@@ -173,6 +173,7 @@ System.Net/HttpListenerContext.cs
 System.Net/HttpListenerPrefixCollection.cs
 System.Net/HttpListenerRequest.cs
 System.Net/HttpListenerResponse.cs
+System.Net/HttpListenerResponseHelper.cs
 System.Net/HttpListenerTimeoutManager.cs
 System.Net/HttpRequestCreator.cs
 System.Net/HttpStreamAsyncResult.cs
@@ -227,7 +228,6 @@ System.Security.Authentication.ExtendedProtection/ExtendedProtectionPolicy.cs
 System.Security.Authentication.ExtendedProtection/ExtendedProtectionPolicyTypeConverter.cs
 System.Security.Authentication.ExtendedProtection/PolicyEnforcement.cs
 System.Security.Authentication.ExtendedProtection/ProtectionScenario.cs
-System.Security.Authentication.ExtendedProtection/ServiceNameCollection.cs
 System.Security.Authentication.ExtendedProtection.Configuration/ConfigUtil.cs
 System.Security.Authentication.ExtendedProtection.Configuration/ExtendedProtectionPolicyElement.cs
 System.Security.Authentication.ExtendedProtection.Configuration/ServiceNameElement.cs
@@ -293,7 +293,7 @@ Mono.Net.Security/IMonoSslStream.cs
 Mono.Net.Security/LegacySslStream.cs
 Mono.Net.Security/MobileAuthenticatedStream.cs
 Mono.Net.Security/MobileTlsContext.cs
-Mono.Net.Security/MonoLegacyTlsProvider.cs
+Mono.Net.Security/LegacyTlsProvider.cs
 Mono.Net.Security/MonoSslStreamImpl.cs
 Mono.Net.Security/MonoSslStreamWrapper.cs
 Mono.Net.Security/MonoTlsProviderFactory.cs
@@ -308,7 +308,6 @@ ReferenceSources/AssertWrapper.cs
 ReferenceSources/CAPI.cs
 ReferenceSources/EnvironmentHelpers.cs
 ReferenceSources/HttpApi.cs
-ReferenceSources/Internal.cs
 ReferenceSources/LocalAppContextSwitches.cs
 ReferenceSources/HttpSysSettings.cs
 ReferenceSources/Logging.cs
@@ -706,6 +705,7 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/_ProxyChain.cs
 ../referencesource/System/net/System/Net/_ScatterGatherBuffers.cs
 ../referencesource/System/net/System/Net/_Semaphore.cs
+../referencesource/System/net/System/Net/_ServiceNameStore.cs
 ../referencesource/System/net/System/Net/_TimerThread.cs
 ../referencesource/System/net/System/Net/_WebProxyDataBuilder.cs
 ../referencesource/System/net/System/Net/AuthenticationScheme.cs
@@ -814,6 +814,8 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/NetworkInformation/nodetype.cs
 ../referencesource/System/net/System/Net/NetworkInformation/pingexception.cs
 
+../referencesource/System/sys/system/Diagnostics/CodeAnalysis/ExcludeFromCodeCoverageAttribute.cs
+
 ../referencesource/System/sys/system/IO/ports/InternalResources.cs
 
 ../referencesource/System/sys/system/runtime/interopservices/DefaultParameterValueAttribute.cs
@@ -824,13 +826,19 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/sys/system/threading/Barrier.cs
 ../referencesource/System/sys/system/threading/semaphore.cs
 
+../referencesource/System/sys/system/windows/markup/ValueSerializerAttribute.cs
+
 ../referencesource/System/security/system/security/Authentication/ExtendedProtection/TokenBinding.cs
+../referencesource/System/security/system/security/Authentication/ExtendedProtection/ServiceNameCollection.cs
 
 ../referencesource/System/security/system/security/cryptography/oid.cs
 
 ../referencesource/System/security/system/security/cryptography/x509/x509utils.cs
 
 ../referencesource/System/security/system/security/permissions/typedescriptorpermission.cs
+
+../referencesource/System/services/monitoring/system/diagnosticts/ProcessModuleCollection.cs
+../referencesource/System/services/monitoring/system/diagnosticts/ProcessThreadCollection.cs
 
 ../referencesource/System/services/timers/system/timers/ElapsedEventHandler.cs
 ../referencesource/System/services/timers/system/timers/Timer.cs

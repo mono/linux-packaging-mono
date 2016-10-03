@@ -1500,6 +1500,7 @@ switch_gc (char* argv[], const char* target_gc)
 
 #ifdef HAVE_EXECVP
 	execvp (path->str, argv);
+	fprintf (stderr, "Error: Failed to switch to %s gc. mono-%s is not installed.\n", target_gc, target_gc);
 #else
 	fprintf (stderr, "Error: --gc=<NAME> option not supported on this platform.\n");
 #endif
@@ -1748,6 +1749,7 @@ mono_main (int argc, char* argv[])
 		} else if (strcmp (argv [i], "--llvmonly") == 0) {
 			mono_aot_only = TRUE;
 			mono_llvm_only = TRUE;
+		} else if (strcmp (argv [i], "--hybrid-aot") == 0) {
 		} else if (strcmp (argv [i], "--print-vtable") == 0) {
 			mono_print_vtable = TRUE;
 		} else if (strcmp (argv [i], "--stats") == 0) {

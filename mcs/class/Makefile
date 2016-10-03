@@ -1,6 +1,8 @@
 thisdir = class
 
-basic_SUBDIRS := corlib Mono.Security System System.XML System.Core 
+basic_SUBDIRS := corlib Mono.Security System System.XML System.Core
+
+pcl_facade_dirs := Facades
 
 # resgen is corlib specific so we need to wait until corlib is build
 # and build it just a step before first dll needs it
@@ -14,9 +16,11 @@ build_SUBDIRS :=  \
 	Mono.Posix \
 	System.Core \
 	Mono.Cecil \
-	Mono.Cecil.Mdb
-
-pcl_facade_dirs := Facades
+	Mono.Cecil.Mdb \
+	System.ComponentModel.Composition.4.5 \
+	System.Numerics \
+	System.Xml.Linq \
+	$(pcl_facade_dirs)
 
 mobile_common_dirs := \
 	corlib	\
@@ -51,9 +55,6 @@ mobile_common_dirs := \
 	System.Xml.Serialization \
 	Mono.CSharp	\
 	Microsoft.CSharp \
-	Mono.Security.Providers.DotNet	\
-	Mono.Security.Providers.NewSystemSource \
-	Mono.Security.Providers.NewTls	\
 	System.Runtime.InteropServices.RuntimeInformation	\
 	System.Reflection.DispatchProxy	\
 	System.Xml.XPath.XmlDocument \
@@ -108,6 +109,7 @@ xammac_4_5_dirs := \
 	System.ServiceModel.Internals	\
 	SMDiagnostics	\
 	System.Numerics	\
+	System.Numerics.Vectors		\
 	Mono.Data.Tds	\
 	System.Transactions	\
 	System.EnterpriseServices	\
@@ -139,10 +141,6 @@ xammac_4_5_dirs := \
 	System.Data.Linq		\
 	System.Net.Http \
 	System.Net.Http.WebRequest \
-	Mono.Security.Providers.DotNet \
-	Mono.Security.Providers.OldTls \
-	Mono.Security.Providers.NewSystemSource \
-	Mono.Security.Providers.NewTls \
 	System.Runtime.InteropServices.RuntimeInformation \
 	System.Reflection.Context	\
 	System.Net.Http.WinHttpHandler	\
@@ -231,8 +229,6 @@ net_4_x_dirs := \
 	System.Web.Http \
 	System.Web.Http.SelfHost \
 	System.Web.Http.WebHost \
-	Mono.Security.Providers.NewSystemSource \
-	Mono.Security.Providers.NewTls \
 	System.Runtime.InteropServices.RuntimeInformation
 
 # These are the subdirs which depends on libs in net_4_x_dirs
@@ -276,8 +272,6 @@ net_4_x_parallel_dirs := \
 	System.ComponentModel.Composition.4.5 \
 	System.Windows \
 	System.Xml.Serialization \
-	Mono.Security.Providers.DotNet \
-	Mono.Security.Providers.OldTls \
 	System.DirectoryServices.Protocols	\
 	RabbitMQ.Client			\
 	Microsoft.VisualC		\
@@ -356,21 +350,38 @@ all-local $(STD_TARGETS:=-local):
 
 all-local-aot:
 
-# Files needed to bootstrap C# compiler
-basic_files = basic.exe mscorlib.dll System.dll System.Xml.dll Mono.Security.dll System.Core.dll System.Security.dll System.Configuration.dll
-monolite_files = $(basic_files:%=lib/monolite/%)
+monolite_dir := monolite
 
-lib/monolite:
+# Files needed to bootstrap C# compiler
+build_files = mscorlib.dll System.dll System.Xml.dll Mono.Security.dll System.Core.dll System.Security.dll System.Configuration.dll \
+	System.Numerics.dll System.Xml.Linq.dll \
+	Facades/System.Collections.Concurrent.dll Facades/System.Linq.dll Facades/System.Runtime.dll Facades/System.Collections.dll	\
+	Facades/System.Reflection.Extensions.dll Facades/System.Text.Encoding.Extensions.dll Facades/System.Diagnostics.Debug.dll \
+	Facades/System.Reflection.Primitives.dll Facades/System.Text.Encoding.dll Facades/System.Diagnostics.Tools.dll Facades/System.Reflection.dll \
+	Facades/System.Threading.Tasks.Parallel.dll Facades/System.Dynamic.Runtime.dll Facades/System.Resources.ResourceManager.dll \
+	Facades/System.Threading.Tasks.dll Facades/System.Globalization.dll Facades/System.Runtime.Extensions.dll Facades/System.Threading.dll \
+	Facades/System.IO.dll Facades/System.Runtime.InteropServices.dll Facades/System.Xml.ReaderWriter.dll Facades/System.Linq.Expressions.dll \
+	Facades/System.Runtime.Numerics.dll Facades/System.Xml.XDocument.dll
+
+monolite_files = $(build_files:%=lib/$(monolite_dir)/%)
+
+lib/$(monolite_dir):
+lib/$(monolite_dir)/Facades:
 	$(MKINSTALLDIRS) $@
 
-$(monolite_files): | lib/monolite
-$(monolite_files): lib/monolite/%: lib/basic/%
+$(monolite_files): | lib/$(monolite_dir)
+$(monolite_files): | lib/$(monolite_dir)/Facades
+$(monolite_files): lib/$(monolite_dir)/%: lib/build/%
 	cp -p $< $@
 
-$(basic_files:%=lib/basic/%):
-	cd $(topdir) && $(MAKE) profile-do--basic--all NO_DIR_CHECK=1 SKIP_AOT=1
+$(build_files:%=lib/build/%):
+	cd $(topdir) && $(MAKE) profile-do--build--all NO_DIR_CHECK=1 SKIP_AOT=1
 
-dist-default: $(monolite_files)
+dist-monolite: $(monolite_files)
+	cp -p lib/basic/basic.exe lib/$(monolite_dir)
+
+dist-default: dist-monolite
+
 dist-local: dist-default
 
 csproj-local:

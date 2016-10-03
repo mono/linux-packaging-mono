@@ -57,7 +57,7 @@ namespace System {
 		 * of icalls, do not require an increment.
 		 */
 #pragma warning disable 169
-		private const int mono_corlib_version = 155;
+		private const int mono_corlib_version = 157;
 #pragma warning restore 169
 
 		[ComVisible (true)]
@@ -322,7 +322,7 @@ namespace System {
 				return trace.ToString ();
 			}
 		}
-#if !MOBILE
+
 		/// <summary>
 		/// Get a fully qualified path to the system directory
 		/// </summary>
@@ -331,7 +331,7 @@ namespace System {
 				return GetFolderPath (SpecialFolder.System);
 			}
 		}
-#endif
+
 		/// <summary>
 		/// Get the number of milliseconds that have elapsed since the system was booted
 		/// </summary>

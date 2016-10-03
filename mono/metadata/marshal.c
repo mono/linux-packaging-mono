@@ -778,7 +778,7 @@ mono_free_lparray (MonoArray *array, gpointer* nativeArray)
 	if (klass->element_class->byval_arg.type == MONO_TYPE_CLASS) {
 		for(i = 0; i < array->max_length; ++i)
 			mono_marshal_free_ccw (mono_array_get (array, MonoObject*, i));
-		free(nativeArray);
+		g_free (nativeArray);
 	}
 #endif
 }
@@ -2689,6 +2689,11 @@ mono_marshal_method_from_wrapper (MonoMethod *wrapper)
 	case MONO_WRAPPER_RUNTIME_INVOKE:
 		if (info && (info->subtype == WRAPPER_SUBTYPE_RUNTIME_INVOKE_DIRECT || info->subtype == WRAPPER_SUBTYPE_RUNTIME_INVOKE_VIRTUAL))
 			return info->d.runtime_invoke.method;
+		else
+			return NULL;
+	case MONO_WRAPPER_DELEGATE_INVOKE:
+		if (info)
+			return info->d.delegate_invoke.method;
 		else
 			return NULL;
 	default:

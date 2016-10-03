@@ -1,4 +1,3 @@
-#if !MONO_FEATURE_NEW_TLS
 using System.Diagnostics;
 
 namespace System.Net {
@@ -16,6 +15,12 @@ namespace System.Net {
 		}
 
 		internal static TraceSource HttpListener {
+			get {
+				return null;
+			}
+		}
+
+		internal static TraceSource Sockets {
 			get {
 				return null;
 			}
@@ -75,4 +80,3 @@ namespace System.Net {
 
 #endif
 }
-#endif

@@ -40,6 +40,9 @@
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/runtime.h>
+#include <mono/metadata/w32mutex.h>
+#include <mono/metadata/w32semaphore.h>
+#include <mono/metadata/w32event.h>
 #include <metadata/threads.h>
 #include <metadata/profiler-private.h>
 #include <mono/metadata/coree.h>
@@ -179,7 +182,7 @@ lock_free_mempool_free (LockFreeMempool *mp)
 	chunk = mp->chunks;
 	while (chunk) {
 		next = (LockFreeMempoolChunk *)chunk->prev;
-		mono_vfree (chunk, mono_pagesize ());
+		mono_vfree (chunk, mono_pagesize (), MONO_MEM_ACCOUNT_DOMAIN);
 		chunk = next;
 	}
 	g_free (mp);
@@ -197,7 +200,7 @@ lock_free_mempool_chunk_new (LockFreeMempool *mp, int len)
 	size = mono_pagesize ();
 	while (size - sizeof (LockFreeMempoolChunk) < len)
 		size += mono_pagesize ();
-	chunk = (LockFreeMempoolChunk *)mono_valloc (0, size, MONO_MMAP_READ|MONO_MMAP_WRITE);
+	chunk = (LockFreeMempoolChunk *)mono_valloc (0, size, MONO_MMAP_READ|MONO_MMAP_WRITE, MONO_MEM_ACCOUNT_DOMAIN);
 	g_assert (chunk);
 	chunk->mem = (guint8 *)ALIGN_PTR_TO ((char*)chunk + sizeof (LockFreeMempoolChunk), 16);
 	chunk->size = ((char*)chunk + size) - (char*)chunk->mem;
@@ -526,8 +529,13 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 
 #ifndef HOST_WIN32
 	mono_w32handle_init ();
+	mono_w32handle_namespace_init ();
 	wapi_init ();
 #endif
+
+	mono_w32mutex_init ();
+	mono_w32semaphore_init ();
+	mono_w32event_init ();
 
 #ifndef DISABLE_PERFCOUNTERS
 	mono_perfcounters_init ();
@@ -807,16 +815,6 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	domain->friendly_name = g_path_get_basename (filename);
 
 	mono_profiler_appdomain_name (domain, domain->friendly_name);
-
-	/* Have to do this quite late so that we at least have System.Object */
-	MonoError custom_attr_error;
-	if (mono_assembly_get_reference_assembly_attribute (ass, &custom_attr_error)) {
-		char *corlib_file = g_build_filename (mono_assembly_getrootdir (), "mono", current_runtime->framework_version, "mscorlib.dll", NULL);
-		g_print ("Could not load file or assembly %s. Reference assemblies should not be loaded for execution.  They can only be loaded in the Reflection-only loader context.", corlib_file);
-		g_free (corlib_file);
-		exit (1);
-	}
-	mono_error_assert_ok (&custom_attr_error);
 
 	return domain;
 }
@@ -1249,10 +1247,6 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 	if (domain->generic_virtual_cases) {
 		g_hash_table_destroy (domain->generic_virtual_cases);
 		domain->generic_virtual_cases = NULL;
-	}
-	if (domain->generic_virtual_thunks) {
-		g_hash_table_destroy (domain->generic_virtual_thunks);
-		domain->generic_virtual_thunks = NULL;
 	}
 	if (domain->ftnptrs_hash) {
 		g_hash_table_destroy (domain->ftnptrs_hash);

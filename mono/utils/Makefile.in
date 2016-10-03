@@ -123,7 +123,8 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	dlmalloc.h dlmalloc.c mono-counters.c mono-compiler.h \
 	mono-complex.h mono-dl.c mono-dl-windows.c mono-dl-darwin.c \
 	mono-dl-posix.c mono-dl.h mono-log-windows.c mono-log-common.c \
-	mono-log-posix.c mono-internal-hash.c mono-internal-hash.h \
+	mono-log-posix.c mono-log-android.c mono-log-darwin.c \
+	mono-internal-hash.c mono-internal-hash.h \
 	mono-io-portability.c mono-io-portability.h monobitset.c \
 	mono-filemap.c mono-math.c mono-mmap.c mono-mmap.h \
 	mono-mmap-internals.h mono-os-mutex.h mono-coop-mutex.h \
@@ -172,21 +173,22 @@ am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	mono-codeman.lo dlmalloc.lo mono-counters.lo mono-dl.lo \
 	mono-dl-windows.lo mono-dl-darwin.lo mono-dl-posix.lo \
 	mono-log-windows.lo mono-log-common.lo mono-log-posix.lo \
-	mono-internal-hash.lo mono-io-portability.lo monobitset.lo \
-	mono-filemap.lo mono-math.lo mono-mmap.lo \
-	mono-networkinterfaces.lo mono-proclib.lo mono-publib.lo \
-	mono-time.lo strenc.lo mono-uri.lo mono-poll.lo mono-path.lo \
-	mono-stdlib.lo mono-property-hash.lo mono-value-hash.lo \
-	mono-error.lo mach-support.lo mono-context.lo \
-	hazard-pointer.lo lock-free-queue.lo lock-free-alloc.lo \
-	lock-free-array-queue.lo mono-linked-list-set.lo \
-	mono-threads.lo mono-threads-state-machine.lo \
-	mono-threads-posix.lo mono-threads-posix-signals.lo \
-	mono-threads-mach.lo mono-threads-mach-helper.lo \
-	mono-threads-windows.lo mono-threads-linux.lo \
-	mono-threads-freebsd.lo mono-threads-netbsd.lo \
-	mono-threads-openbsd.lo mono-threads-android.lo \
-	mono-threads-coop.lo mono-threads-mach-abort-syscall.lo \
+	mono-log-android.lo mono-log-darwin.lo mono-internal-hash.lo \
+	mono-io-portability.lo monobitset.lo mono-filemap.lo \
+	mono-math.lo mono-mmap.lo mono-networkinterfaces.lo \
+	mono-proclib.lo mono-publib.lo mono-time.lo strenc.lo \
+	mono-uri.lo mono-poll.lo mono-path.lo mono-stdlib.lo \
+	mono-property-hash.lo mono-value-hash.lo mono-error.lo \
+	mach-support.lo mono-context.lo hazard-pointer.lo \
+	lock-free-queue.lo lock-free-alloc.lo lock-free-array-queue.lo \
+	mono-linked-list-set.lo mono-threads.lo \
+	mono-threads-state-machine.lo mono-threads-posix.lo \
+	mono-threads-posix-signals.lo mono-threads-mach.lo \
+	mono-threads-mach-helper.lo mono-threads-windows.lo \
+	mono-threads-linux.lo mono-threads-freebsd.lo \
+	mono-threads-netbsd.lo mono-threads-openbsd.lo \
+	mono-threads-android.lo mono-threads-coop.lo \
+	mono-threads-mach-abort-syscall.lo \
 	mono-threads-posix-abort-syscall.lo \
 	mono-threads-windows-abort-syscall.lo mono-tls.lo atomic.lo \
 	mono-hwcap.lo bsearch.lo mono-conc-hashtable.lo sha1.lo \
@@ -326,6 +328,11 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BTLS_ARCH = @BTLS_ARCH@
+BTLS_CFLAGS = @BTLS_CFLAGS@
+BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
+BTLS_PLATFORM = @BTLS_PLATFORM@
+BTLS_ROOT = @BTLS_ROOT@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
@@ -335,6 +342,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -543,6 +551,8 @@ monoutils_sources = \
 	mono-log-windows.c	\
 	mono-log-common.c	\
 	mono-log-posix.c	\
+	mono-log-android.c \
+	mono-log-darwin.c \
 	mono-internal-hash.c	\
 	mono-internal-hash.h	\
 	mono-io-portability.c 	\
@@ -781,7 +791,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-internal-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-io-portability.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-linked-list-set.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-android.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-common.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-darwin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-logger.Plo@am__quote@

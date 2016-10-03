@@ -968,11 +968,11 @@ void*
 mono_gc_alloc_fixed (size_t size, MonoGCDescriptor descr, MonoGCRootSource source, const char *msg)
 {
 	/* FIXME: do a single allocation */
-	void *res = calloc (1, size);
+	void *res = g_calloc (1, size);
 	if (!res)
 		return NULL;
 	if (!mono_gc_register_root ((char *)res, size, descr, source, msg)) {
-		free (res);
+		g_free (res);
 		res = NULL;
 	}
 	return res;
@@ -982,7 +982,7 @@ void
 mono_gc_free_fixed (void* addr)
 {
 	mono_gc_deregister_root ((char *)addr);
-	free (addr);
+	g_free (addr);
 }
 
 /*
@@ -2208,12 +2208,9 @@ sgen_client_thread_register (SgenThreadInfo* info, void *stack_bottom_fallback)
 	info->client_info.signal = 0;
 #endif
 
-	/* On win32, stack_start_limit should be 0, since the stack can grow dynamically */
 	mono_thread_info_get_stack_bounds (&staddr, &stsize);
 	if (staddr) {
-#ifndef HOST_WIN32
 		info->client_info.stack_start_limit = staddr;
-#endif
 		info->client_info.stack_end = staddr + stsize;
 	} else {
 		gsize stack_bottom = (gsize)stack_bottom_fallback;
@@ -2301,7 +2298,7 @@ sgen_thread_detach (SgenThreadInfo *p)
 	 * so we assume that if the domain is still registered, we can detach
 	 * the thread
 	 */
-	if (mono_domain_get ())
+	if (mono_thread_internal_current_is_attached ())
 		mono_thread_detach_internal (mono_thread_internal_current ());
 }
 
@@ -2972,6 +2969,10 @@ mono_gc_base_init (void)
 		return;
 
 	mono_counters_init ();
+
+#ifndef HOST_WIN32
+	mono_w32handle_init ();
+#endif
 
 #ifdef HEAVY_STATISTICS
 	mono_counters_register ("los marked cards", MONO_COUNTER_GC | MONO_COUNTER_ULONG, &los_marked_cards);

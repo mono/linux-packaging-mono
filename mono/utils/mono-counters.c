@@ -166,7 +166,7 @@ register_internal (const char *name, int type, void *addr, int size)
 		}
 	}
 
-	counter = (MonoCounter *) malloc (sizeof (MonoCounter));
+	counter = (MonoCounter *) g_malloc (sizeof (MonoCounter));
 	if (!counter) {
 		mono_os_mutex_unlock (&counters_mutex);
 		return;
@@ -347,6 +347,13 @@ page_faults (void)
 	return mono_process_get_data (GINT_TO_POINTER (mono_process_current_pid ()), MONO_PROCESS_FAULTS);
 }
 
+
+// If cpu_load gets inlined on Windows then cpu_load_1min, cpu_load_5min and cpu_load_15min can be folded into a single function and that will
+// cause a failure when registering counters since the same function address will be used by all three functions. Preventing this method from being inlined
+// will make sure the registered callback functions remains unique.
+#ifdef _MSC_VER
+__declspec(noinline)
+#endif
 static double
 cpu_load (int kind)
 {
@@ -648,8 +655,8 @@ mono_counters_cleanup (void)
 	while (counter) {
 		MonoCounter *tmp = counter;
 		counter = counter->next;
-		free ((void*)tmp->name);
-		free (tmp);
+		g_free ((void*)tmp->name);
+		g_free (tmp);
 	}
 
 	mono_os_mutex_unlock (&counters_mutex);

@@ -187,8 +187,14 @@
 /* Define to 1 if the system has the type `blksize_t'. */
 #undef HAVE_BLKSIZE_T
 
+/* BoringTls is supported */
+#undef HAVE_BTLS
+
 /* Define to 1 if you have the <checklist.h> header file. */
 #undef HAVE_CHECKLIST_H
+
+/* Use classic Windows API support */
+#undef HAVE_CLASSIC_WINAPI_SUPPORT
 
 /* Define to 1 if you have the `clock_nanosleep' function. */
 #undef HAVE_CLOCK_NANOSLEEP
@@ -952,6 +958,9 @@
 
 /* Define to 1 if you have the <utime.h> header file. */
 #undef HAVE_UTIME_H
+
+/* Don't use UWP Windows API support */
+#undef HAVE_UWP_WINAPI_SUPPORT
 
 /* Support for the visibility ("hidden") attribute */
 #undef HAVE_VISIBILITY_HIDDEN

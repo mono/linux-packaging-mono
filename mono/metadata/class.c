@@ -18,7 +18,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <mono/metadata/image.h>
+#include <mono/metadata/image-internals.h>
 #include <mono/metadata/assembly.h>
+#include <mono/metadata/assembly-internals.h>
 #include <mono/metadata/metadata.h>
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/profiler-private.h>
@@ -216,7 +218,7 @@ mono_class_from_typeref_checked (MonoImage *image, guint32 type_token, MonoError
 		goto done;
 
 	case MONO_RESOLUTION_SCOPE_MODULEREF:
-		module = mono_image_load_module (image, idx);
+		module = mono_image_load_module_checked (image, idx, error);
 		if (module)
 			res = mono_class_from_name_checked (module, nspace, name, error);
 		goto done;
@@ -1130,6 +1132,15 @@ mono_class_inflate_generic_method_full_checked (MonoMethod *method, MonoClass *k
 	result->sre_method = FALSE;
 	result->signature = NULL;
 
+	if (method->wrapper_type) {
+		MonoMethodWrapper *mw = (MonoMethodWrapper*)method;
+		MonoMethodWrapper *resw = (MonoMethodWrapper*)result;
+		int len = GPOINTER_TO_INT (((void**)mw->method_data) [0]);
+
+		resw->method_data = (void **)g_malloc (sizeof (gpointer) * (len + 1));
+		memcpy (resw->method_data, mw->method_data, sizeof (gpointer) * (len + 1));
+	}
+
 	if (iresult->context.method_inst) {
 		/* Set the generic_container of the result to the generic_container of method */
 		MonoGenericContainer *generic_container = mono_method_get_generic_container (method);
@@ -1422,7 +1433,7 @@ mono_error_set_for_class_failure (MonoError *oerror, MonoClass *klass)
  *   Allocate memory for some data belonging to CLASS, either from its image's mempool,
  * or from the heap.
  */
-static gpointer
+gpointer
 mono_class_alloc (MonoClass *klass, int size)
 {
 	if (klass->generic_class)
@@ -1431,7 +1442,7 @@ mono_class_alloc (MonoClass *klass, int size)
 		return mono_image_alloc (klass->image, size);
 }
 
-static gpointer
+gpointer
 mono_class_alloc0 (MonoClass *klass, int size)
 {
 	gpointer res;
@@ -5591,7 +5602,6 @@ mono_class_setup_parent (MonoClass *klass, MonoClass *parent)
 			/* set the parent to something useful and safe, but mark the type as broken */
 			parent = mono_defaults.object_class;
 			mono_class_set_failure (klass, MONO_EXCEPTION_TYPE_LOAD, NULL);
-			g_assert (parent);
 		}
 
 		klass->parent = parent;
@@ -7814,7 +7824,7 @@ search_modules (MonoImage *image, const char *name_space, const char *name, Mono
 		if (cols [MONO_FILE_FLAGS] == FILE_CONTAINS_NO_METADATA)
 			continue;
 
-		file_image = mono_image_load_file_for_image (image, i + 1);
+		file_image = mono_image_load_file_for_image_checked (image, i + 1, error);
 		if (file_image) {
 			klass = mono_class_from_name_checked (file_image, name_space, name, error);
 			if (klass || !is_ok (error))
@@ -7910,7 +7920,7 @@ mono_class_from_name_checked_aux (MonoImage *image, const char* name_space, cons
 
 		impl = cols [MONO_EXP_TYPE_IMPLEMENTATION];
 		if ((impl & MONO_IMPLEMENTATION_MASK) == MONO_IMPLEMENTATION_FILE) {
-			loaded_image = mono_assembly_load_module (image->assembly, impl >> MONO_IMPLEMENTATION_BITS);
+			loaded_image = mono_assembly_load_module_checked (image->assembly, impl >> MONO_IMPLEMENTATION_BITS, error);
 			if (!loaded_image)
 				return NULL;
 			klass = mono_class_from_name_checked_aux (loaded_image, name_space, name, visited_images, error);
