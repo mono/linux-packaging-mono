@@ -69,9 +69,17 @@ public class DebuggerTests
 		if (!listening) {
 			var pi = new Diag.ProcessStartInfo ();
 
-			if (runtime != null)
+			if (runtime != null) {
 				pi.FileName = runtime;
-			else
+			} else if (Path.DirectorySeparatorChar == '\\') {
+				string processExe = Diag.Process.GetCurrentProcess ().MainModule.FileName;
+				if (processExe != null) {
+					string fileName = Path.GetFileName (processExe);
+					if (fileName.StartsWith ("mono") && fileName.EndsWith (".exe"))
+						pi.FileName = processExe;
+				}
+			}
+			if (string.IsNullOrEmpty (pi.FileName))
 				pi.FileName = "mono";
 			pi.Arguments = String.Join (" ", args);
 			vm = VirtualMachineManager.Launch (pi, new LaunchOptions { AgentArgs = agent_args });
@@ -1764,6 +1772,16 @@ public class DebuggerTests
 		Assert.IsTrue (obj is StructMirror);
 		s = obj as StructMirror;
 		AssertValue (44, s ["i"]);
+		AssertValue ("T", s ["s"]);
+		AssertValue (45, s ["k"]);
+
+		// Test SetThis ()
+		s ["i"] = vm.CreateValue (55);
+		frame.SetThis (s);
+		obj = frame.GetThis ();
+		Assert.IsTrue (obj is StructMirror);
+		s = obj as StructMirror;
+		AssertValue (55, s ["i"]);
 		AssertValue ("T", s ["s"]);
 		AssertValue (45, s ["k"]);
 

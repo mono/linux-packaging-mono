@@ -175,6 +175,19 @@ void mono_log_open_logfile (const char *, void *);
 void mono_log_write_logfile (const char *, GLogLevelFlags, mono_bool, const char *);
 void mono_log_close_logfile (void);
 
+#if PLATFORM_ANDROID
+void mono_log_open_logcat (const char *path, void *userData);
+void mono_log_write_logcat (const char *log_domain, GLogLevelFlags level, mono_bool hdr, const char *message);
+void mono_log_close_logcat (void);
+#endif
+
+#if defined(HOST_IOS)
+void mono_log_open_asl (const char *path, void *userData);
+void mono_log_write_asl (const char *log_domain, GLogLevelFlags level, mono_bool hdr, const char *message);
+void mono_log_close_asl (void);
+
+#endif
+
 G_END_DECLS
 
 #endif /* __MONO_LOGGER_INTERNAL_H__ */

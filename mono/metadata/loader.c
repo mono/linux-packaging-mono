@@ -1123,6 +1123,14 @@ cached_module_load (const char *name, int flags, char **err)
 	return res;
 }
 
+void
+mono_loader_register_module (const char *name, MonoDl *module)
+{
+	if (!global_module_map)
+		global_module_map = g_hash_table_new (g_str_hash, g_str_equal);
+	g_hash_table_insert (global_module_map, g_strdup (name), module);
+}
+
 static MonoDl *internal_module;
 
 static gboolean
@@ -2133,8 +2141,6 @@ mono_method_get_wrapper_data (MonoMethod *method, guint32 id)
 	g_assert (method != NULL);
 	g_assert (method->wrapper_type != MONO_WRAPPER_NONE);
 
-	if (method->is_inflated)
-		method = ((MonoMethodInflated *) method)->declaring;
 	data = (void **)((MonoMethodWrapper *)method)->method_data;
 	g_assert (data != NULL);
 	g_assert (id <= GPOINTER_TO_UINT (*data));
@@ -2224,7 +2230,7 @@ mono_stack_walk_async_safe (MonoStackWalkAsyncSafe func, void *initial_sig_conte
 	AsyncStackWalkUserData ud = { func, user_data };
 
 	mono_sigctx_to_monoctx (initial_sig_context, &ctx);
-	mono_get_eh_callbacks ()->mono_walk_stack_with_ctx (async_stack_walk_adapter, NULL, MONO_UNWIND_SIGNAL_SAFE, &ud);
+	mono_get_eh_callbacks ()->mono_walk_stack_with_ctx (async_stack_walk_adapter, &ctx, MONO_UNWIND_SIGNAL_SAFE, &ud);
 }
 
 static gboolean

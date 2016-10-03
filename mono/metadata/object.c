@@ -41,6 +41,7 @@
 #include <mono/metadata/gc-internals.h>
 #include <mono/metadata/verify-internals.h>
 #include <mono/metadata/reflection-internals.h>
+#include <mono/metadata/w32event.h>
 #include <mono/utils/strenc.h>
 #include <mono/utils/mono-counters.h>
 #include <mono/utils/mono-error-internals.h>
@@ -571,8 +572,8 @@ default_delegate_trampoline (MonoDomain *domain, MonoClass *klass)
 }
 
 static MonoDelegateTrampoline arch_create_delegate_trampoline = default_delegate_trampoline;
-static MonoImtThunkBuilder imt_thunk_builder;
-static gboolean always_build_imt_thunks;
+static MonoImtTrampolineBuilder imt_trampoline_builder;
+static gboolean always_build_imt_trampolines;
 
 #if (MONO_IMT_SIZE > 32)
 #error "MONO_IMT_SIZE cannot be larger than 32"
@@ -605,14 +606,15 @@ mono_install_delegate_trampoline (MonoDelegateTrampoline func)
 }
 
 void
-mono_install_imt_thunk_builder (MonoImtThunkBuilder func) {
-	imt_thunk_builder = func;
+mono_install_imt_trampoline_builder (MonoImtTrampolineBuilder func)
+{
+	imt_trampoline_builder = func;
 }
 
 void
-mono_set_always_build_imt_thunks (gboolean value)
+mono_set_always_build_imt_trampolines (gboolean value)
 {
-	always_build_imt_thunks = value;
+	always_build_imt_trampolines = value;
 }
 
 /**
@@ -1206,7 +1208,7 @@ mono_method_get_imt_slot (MonoMethod *method)
 		break;
 	}
 	
-	free (hashes_start);
+	g_free (hashes_start);
 	/* Report the result */
 	return c % MONO_IMT_SIZE;
 }
@@ -1334,7 +1336,7 @@ imt_sort_slot_entries (MonoImtBuilderEntry *entries) {
 
 	imt_emit_ir (sorted_array, 0, number_of_entries, result);
 
-	free (sorted_array);
+	g_free (sorted_array);
 	return result;
 }
 
@@ -1344,15 +1346,15 @@ initialize_imt_slot (MonoVTable *vtable, MonoDomain *domain, MonoImtBuilderEntry
 	MONO_REQ_GC_NEUTRAL_MODE;
 
 	if (imt_builder_entry != NULL) {
-		if (imt_builder_entry->children == 0 && !fail_tramp && !always_build_imt_thunks) {
+		if (imt_builder_entry->children == 0 && !fail_tramp && !always_build_imt_trampolines) {
 			/* No collision, return the vtable slot contents */
 			return vtable->vtable [imt_builder_entry->value.vtable_slot];
 		} else {
-			/* Collision, build the thunk */
+			/* Collision, build the trampoline */
 			GPtrArray *imt_ir = imt_sort_slot_entries (imt_builder_entry);
 			gpointer result;
 			int i;
-			result = imt_thunk_builder (vtable, domain,
+			result = imt_trampoline_builder (vtable, domain,
 				(MonoIMTCheckItem**)imt_ir->pdata, imt_ir->len, fail_tramp);
 			for (i = 0; i < imt_ir->len; ++i)
 				g_free (g_ptr_array_index (imt_ir, i));
@@ -1474,12 +1476,12 @@ build_imt_slots (MonoClass *klass, MonoVTable *vt, MonoDomain *domain, gpointer*
 
 			if (has_generic_virtual || has_variant_iface) {
 				/*
-				 * There might be collisions later when the the thunk is expanded.
+				 * There might be collisions later when the the trampoline is expanded.
 				 */
 				imt_collisions_bitmap |= (1 << i);
 
 				/* 
-				 * The IMT thunk might be called with an instance of one of the 
+				 * The IMT trampoline might be called with an instance of one of the 
 				 * generic virtual methods, so has to fallback to the IMT trampoline.
 				 */
 				imt [i] = initialize_imt_slot (vt, domain, imt_builder [i], callbacks.get_imt_trampoline (vt, i));
@@ -1514,7 +1516,7 @@ build_imt_slots (MonoClass *klass, MonoVTable *vt, MonoDomain *domain, gpointer*
 			entry = next;
 		}
 	}
-	free (imt_builder);
+	g_free (imt_builder);
 	/* we OR the bitmap since we may build just a single imt slot at a time */
 	vt->imt_collisions_bitmap |= imt_collisions_bitmap;
 }
@@ -1532,7 +1534,7 @@ build_imt (MonoClass *klass, MonoVTable *vt, MonoDomain *domain, gpointer* imt, 
  * @imt_slot: slot in the IMT table
  *
  * Fill the given @imt_slot in the IMT table of @vtable with
- * a trampoline or a thunk for the case of collisions.
+ * a trampoline or a trampoline for the case of collisions.
  * This is part of the internal mono API.
  *
  * LOCKING: Take the domain lock.
@@ -1560,167 +1562,35 @@ mono_vtable_build_imt_slot (MonoVTable* vtable, int imt_slot)
 	mono_loader_unlock ();
 }
 
-
-/*
- * The first two free list entries both belong to the wait list: The
- * first entry is the pointer to the head of the list and the second
- * entry points to the last element.  That way appending and removing
- * the first element are both O(1) operations.
- */
-#ifdef MONO_SMALL_CONFIG
-#define NUM_FREE_LISTS		6
-#else
-#define NUM_FREE_LISTS		12
-#endif
-#define FIRST_FREE_LIST_SIZE	64
-#define MAX_WAIT_LENGTH 	50
 #define THUNK_THRESHOLD		10
 
-/*
- * LOCKING: The domain lock must be held.
- */
-static void
-init_thunk_free_lists (MonoDomain *domain)
-{
-	MONO_REQ_GC_NEUTRAL_MODE;
-
-	if (domain->thunk_free_lists)
-		return;
-	domain->thunk_free_lists = (MonoThunkFreeList **)mono_domain_alloc0 (domain, sizeof (gpointer) * NUM_FREE_LISTS);
-}
-
-static int
-list_index_for_size (int item_size)
-{
-	int i = 2;
-	int size = FIRST_FREE_LIST_SIZE;
-
-	while (item_size > size && i < NUM_FREE_LISTS - 1) {
-		i++;
-		size <<= 1;
-	}
-
-	return i;
-}
-
 /**
- * mono_method_alloc_generic_virtual_thunk:
+ * mono_method_alloc_generic_virtual_trampoline:
  * @domain: a domain
  * @size: size in bytes
  *
  * Allocs size bytes to be used for the code of a generic virtual
- * thunk.  It's either allocated from the domain's code manager or
+ * trampoline.  It's either allocated from the domain's code manager or
  * reused from a previously invalidated piece.
  *
  * LOCKING: The domain lock must be held.
  */
 gpointer
-mono_method_alloc_generic_virtual_thunk (MonoDomain *domain, int size)
+mono_method_alloc_generic_virtual_trampoline (MonoDomain *domain, int size)
 {
 	MONO_REQ_GC_NEUTRAL_MODE;
 
 	static gboolean inited = FALSE;
-	static int generic_virtual_thunks_size = 0;
+	static int generic_virtual_trampolines_size = 0;
 
-	guint32 *p;
-	int i;
-	MonoThunkFreeList **l;
-
-	init_thunk_free_lists (domain);
-
-	size += sizeof (guint32);
-	if (size < sizeof (MonoThunkFreeList))
-		size = sizeof (MonoThunkFreeList);
-
-	i = list_index_for_size (size);
-	for (l = &domain->thunk_free_lists [i]; *l; l = &(*l)->next) {
-		if ((*l)->size >= size) {
-			MonoThunkFreeList *item = *l;
-			*l = item->next;
-			return ((guint32*)item) + 1;
-		}
-	}
-
-	/* no suitable item found - search lists of larger sizes */
-	while (++i < NUM_FREE_LISTS) {
-		MonoThunkFreeList *item = domain->thunk_free_lists [i];
-		if (!item)
-			continue;
-		g_assert (item->size > size);
-		domain->thunk_free_lists [i] = item->next;
-		return ((guint32*)item) + 1;
-	}
-
-	/* still nothing found - allocate it */
 	if (!inited) {
-		mono_counters_register ("Generic virtual thunk bytes",
-				MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &generic_virtual_thunks_size);
+		mono_counters_register ("Generic virtual trampoline bytes",
+				MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &generic_virtual_trampolines_size);
 		inited = TRUE;
 	}
-	generic_virtual_thunks_size += size;
+	generic_virtual_trampolines_size += size;
 
-	p = (guint32 *)mono_domain_code_reserve (domain, size);
-	*p = size;
-
-	mono_domain_lock (domain);
-	if (!domain->generic_virtual_thunks)
-		domain->generic_virtual_thunks = g_hash_table_new (NULL, NULL);
-	g_hash_table_insert (domain->generic_virtual_thunks, p, p);
-	mono_domain_unlock (domain);
-
-	return p + 1;
-}
-
-/*
- * LOCKING: The domain lock must be held.
- */
-static void
-invalidate_generic_virtual_thunk (MonoDomain *domain, gpointer code)
-{
-	MONO_REQ_GC_NEUTRAL_MODE;
-
-	guint32 *p = (guint32 *)code;
-	MonoThunkFreeList *l = (MonoThunkFreeList*)(p - 1);
-	gboolean found = FALSE;
-
-	mono_domain_lock (domain);
-	if (!domain->generic_virtual_thunks)
-		domain->generic_virtual_thunks = g_hash_table_new (NULL, NULL);
-	if (g_hash_table_lookup (domain->generic_virtual_thunks, l))
-		found = TRUE;
-	mono_domain_unlock (domain);
-
-	if (!found)
-		/* Not allocated by mono_method_alloc_generic_virtual_thunk (), i.e. AOT */
-		return;
-	init_thunk_free_lists (domain);
-
-	while (domain->thunk_free_lists [0] && domain->thunk_free_lists [0]->length >= MAX_WAIT_LENGTH) {
-		MonoThunkFreeList *item = domain->thunk_free_lists [0];
-		int length = item->length;
-		int i;
-
-		/* unlink the first item from the wait list */
-		domain->thunk_free_lists [0] = item->next;
-		domain->thunk_free_lists [0]->length = length - 1;
-
-		i = list_index_for_size (item->size);
-
-		/* put it in the free list */
-		item->next = domain->thunk_free_lists [i];
-		domain->thunk_free_lists [i] = item;
-	}
-
-	l->next = NULL;
-	if (domain->thunk_free_lists [1]) {
-		domain->thunk_free_lists [1] = domain->thunk_free_lists [1]->next = l;
-		domain->thunk_free_lists [0]->length++;
-	} else {
-		g_assert (!domain->thunk_free_lists [0]);
-
-		domain->thunk_free_lists [0] = domain->thunk_free_lists [1] = l;
-		domain->thunk_free_lists [0]->length = 1;
-	}
+	return mono_domain_code_reserve (domain, size);
 }
 
 typedef struct _GenericVirtualCase {
@@ -1784,7 +1654,7 @@ get_generic_virtual_entries (MonoDomain *domain, gpointer *vtable_slot)
  * Registers a call via unmanaged code to a generic virtual method
  * instantiation or variant interface method.  If the number of calls reaches a threshold
  * (THUNK_THRESHOLD), the method is added to the vtable slot's generic
- * virtual method thunk.
+ * virtual method trampoline.
  */
 void
 mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtable,
@@ -1795,6 +1665,7 @@ mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtab
 
 	static gboolean inited = FALSE;
 	static int num_added = 0;
+	static int num_freed = 0;
 
 	GenericVirtualCase *gvc, *list;
 	MonoImtBuilderEntry *entries;
@@ -1804,6 +1675,12 @@ mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtab
 	mono_domain_lock (domain);
 	if (!domain->generic_virtual_cases)
 		domain->generic_virtual_cases = g_hash_table_new (mono_aligned_addr_hash, NULL);
+
+	if (!inited) {
+		mono_counters_register ("Generic virtual cases", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_added);
+		mono_counters_register ("Freed IMT trampolines", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_freed);
+		inited = TRUE;
+	}
 
 	/* Check whether the case was already added */
 	list = (GenericVirtualCase *)g_hash_table_lookup (domain->generic_virtual_cases, vtable_slot);
@@ -1824,10 +1701,6 @@ mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtab
 
 		g_hash_table_insert (domain->generic_virtual_cases, vtable_slot, gvc);
 
-		if (!inited) {
-			mono_counters_register ("Generic virtual cases", MONO_COUNTER_GENERICS | MONO_COUNTER_INT, &num_added);
-			inited = TRUE;
-		}
 		num_added++;
 	}
 
@@ -1840,7 +1713,7 @@ mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtab
 			int displacement = (gpointer*)vtable_slot - (gpointer*)vtable;
 			int imt_slot = MONO_IMT_SIZE + displacement;
 
-			/* Force the rebuild of the thunk at the next call */
+			/* Force the rebuild of the trampoline at the next call */
 			imt_trampoline = callbacks.get_imt_trampoline (vtable, imt_slot);
 			*vtable_slot = imt_trampoline;
 		} else {
@@ -1850,8 +1723,8 @@ mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtab
 
 			sorted = imt_sort_slot_entries (entries);
 
-			*vtable_slot = imt_thunk_builder (NULL, domain, (MonoIMTCheckItem**)sorted->pdata, sorted->len,
-											  vtable_trampoline);
+			*vtable_slot = imt_trampoline_builder (NULL, domain, (MonoIMTCheckItem**)sorted->pdata, sorted->len,
+												   vtable_trampoline);
 
 			while (entries) {
 				MonoImtBuilderEntry *next = entries->next;
@@ -1862,14 +1735,10 @@ mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtab
 			for (i = 0; i < sorted->len; ++i)
 				g_free (g_ptr_array_index (sorted, i));
 			g_ptr_array_free (sorted, TRUE);
-		}
 
-#ifndef __native_client__
-		/* We don't re-use any thunks as there is a lot of overhead */
-		/* to deleting and re-using code in Native Client.          */
-		if (old_thunk != vtable_trampoline && old_thunk != imt_trampoline)
-			invalidate_generic_virtual_thunk (domain, old_thunk);
-#endif
+			if (old_thunk != vtable_trampoline && old_thunk != imt_trampoline)
+				num_freed ++;
+		}
 	}
 
 	mono_domain_unlock (domain);
@@ -7568,7 +7437,7 @@ ves_icall_System_Runtime_Remoting_Messaging_AsyncResult_Invoke (MonoAsyncResult 
 		mono_monitor_exit ((MonoObject*) ares);
 
 		if (wait_event != NULL)
-			SetEvent (wait_event);
+			mono_w32event_set (wait_event);
 
 		mono_error_init (&error); //the else branch would leave it in an undefined state
 		if (ac->cb_method)

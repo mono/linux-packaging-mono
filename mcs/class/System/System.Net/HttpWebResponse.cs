@@ -106,7 +106,7 @@ namespace System.Net
 			version = (Version) info.GetValue ("version", typeof (Version));
 			statusCode = (HttpStatusCode) info.GetValue ("statusCode", typeof (HttpStatusCode));
 		}
-		
+
 		// Properties
 		
 		public string CharacterSet {

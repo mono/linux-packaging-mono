@@ -100,21 +100,17 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwapi_la_DEPENDENCIES =
 am__libwapi_la_SOURCES_DIST = access.h context.c context.h error.c \
-	error.h events.c events.h event-private.h io.c io.h \
-	io-portability.c io-portability.h io-private.h io-layer.h \
-	locking.c macros.h messages.c messages.h mutexes.c mutexes.h \
-	mutex-private.h posix.c processes.c processes.h \
-	process-private.h security.c security.h semaphores.c \
-	semaphores.h semaphore-private.h shared.c shared.h sockets.c \
-	sockets.h socket-private.h socket-wrappers.h status.h \
-	timefuncs.c timefuncs.h timefuncs-private.h types.h uglify.h \
-	versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
-	wapi_glob.c wapi.h wapi-private.h wapi.c io-trace.h \
-	wapi-remap.h io-layer-dummy.c
-am__objects_1 = context.lo error.lo events.lo io.lo io-portability.lo \
-	locking.lo messages.lo mutexes.lo posix.lo processes.lo \
-	security.lo semaphores.lo shared.lo sockets.lo timefuncs.lo \
-	versioninfo.lo wait.lo wapi_glob.lo wapi.lo
+	error.h io.c io.h io-portability.c io-portability.h \
+	io-private.h io-layer.h locking.c macros.h messages.c \
+	messages.h posix.c processes.c processes.h process-private.h \
+	security.c security.h sockets.c sockets.h socket-private.h \
+	socket-wrappers.h status.h timefuncs.c timefuncs.h \
+	timefuncs-private.h types.h uglify.h versioninfo.c \
+	versioninfo.h wait.c wait.h wapi_glob.h wapi_glob.c wapi.h \
+	wapi-private.h wapi.c io-trace.h wapi-remap.h io-layer-dummy.c
+am__objects_1 = context.lo error.lo io.lo io-portability.lo locking.lo \
+	messages.lo posix.lo processes.lo security.lo sockets.lo \
+	timefuncs.lo versioninfo.lo wait.lo wapi_glob.lo wapi.lo
 am__objects_2 =
 am__objects_3 = io-layer-dummy.lo
 @HOST_WIN32_FALSE@am_libwapi_la_OBJECTS = $(am__objects_1) \
@@ -196,6 +192,11 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BTLS_ARCH = @BTLS_ARCH@
+BTLS_CFLAGS = @BTLS_CFLAGS@
+BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
+BTLS_PLATFORM = @BTLS_PLATFORM@
+BTLS_ROOT = @BTLS_ROOT@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
@@ -205,6 +206,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -404,17 +406,14 @@ OTHER_H = \
 	access.h	\
 	context.h	\
 	error.h		\
-	events.h	\
 	io.h		\
 	io-trace.h	\
 	io-layer.h	\
 	io-portability.h	\
 	macros.h	\
 	messages.h	\
-	mutexes.h	\
 	processes.h	\
 	security.h	\
-	semaphores.h	\
 	sockets.h	\
 	status.h	\
 	timefuncs.h	\
@@ -431,9 +430,6 @@ OTHER_SRC = \
 	context.h		\
 	error.c			\
 	error.h			\
-	events.c		\
-	events.h		\
-	event-private.h		\
 	io.c			\
 	io.h			\
 	io-portability.c	\
@@ -444,20 +440,12 @@ OTHER_SRC = \
 	macros.h		\
 	messages.c		\
 	messages.h		\
-	mutexes.c		\
-	mutexes.h		\
-	mutex-private.h		\
 	posix.c			\
 	processes.c		\
 	processes.h		\
 	process-private.h	\
 	security.c		\
 	security.h		\
-	semaphores.c		\
-	semaphores.h		\
-	semaphore-private.h	\
-	shared.c		\
-	shared.h		\
 	sockets.c		\
 	sockets.h		\
 	socket-private.h	\
@@ -548,18 +536,14 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/events.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io-layer-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io-portability.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/locking.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/messages.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mutexes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/processes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/security.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/semaphores.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shared.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sockets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timefuncs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/versioninfo.Plo@am__quote@

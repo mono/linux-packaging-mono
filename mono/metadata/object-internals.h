@@ -380,6 +380,8 @@ struct _MonoInternalThread {
 	gsize    flags;
 	gpointer thread_pinning_ref;
 	gsize abort_protected_block_count;
+	gint32 priority;
+	GPtrArray *owned_mutexes;
 	/* 
 	 * These fields are used to avoid having to increment corlib versions
 	 * when a new field is added to this structure.
@@ -401,7 +403,6 @@ struct _MonoThread {
 	struct _MonoInternalThread *internal_thread;
 	MonoObject *start_obj;
 	MonoException *pending_exception;
-	gint32 priority;
 };
 
 typedef struct {
@@ -1523,14 +1524,14 @@ struct _MonoIMTCheckItem {
 	guint8            has_target_code;
 };
 
-typedef gpointer (*MonoImtThunkBuilder) (MonoVTable *vtable, MonoDomain *domain,
+typedef gpointer (*MonoImtTrampolineBuilder) (MonoVTable *vtable, MonoDomain *domain,
 		MonoIMTCheckItem **imt_entries, int count, gpointer fail_trunk);
 
 void
-mono_install_imt_thunk_builder (MonoImtThunkBuilder func);
+mono_install_imt_trampoline_builder (MonoImtTrampolineBuilder func);
 
 void
-mono_set_always_build_imt_thunks (gboolean value);
+mono_set_always_build_imt_trampolines (gboolean value);
 
 void
 mono_vtable_build_imt_slot (MonoVTable* vtable, int imt_slot);
@@ -1544,7 +1545,7 @@ mono_method_add_generic_virtual_invocation (MonoDomain *domain, MonoVTable *vtab
 											MonoMethod *method, gpointer code);
 
 gpointer
-mono_method_alloc_generic_virtual_thunk (MonoDomain *domain, int size);
+mono_method_alloc_generic_virtual_trampoline (MonoDomain *domain, int size);
 
 typedef enum {
 	MONO_UNHANDLED_POLICY_LEGACY,
@@ -1799,9 +1800,6 @@ ves_icall_TypeBuilder_get_IsGenericParameter (MonoReflectionTypeBuilder *tb);
 void
 ves_icall_EnumBuilder_setup_enum_type (MonoReflectionType *enumtype,
 									   MonoReflectionType *t);
-
-MonoReflectionType*
-ves_icall_ModuleBuilder_create_modified_type (MonoReflectionTypeBuilder *tb, MonoString *smodifiers);
 
 void
 ves_icall_ModuleBuilder_basic_init (MonoReflectionModuleBuilder *moduleb);

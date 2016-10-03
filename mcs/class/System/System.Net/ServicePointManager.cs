@@ -132,7 +132,7 @@ namespace System.Net
 		// Fields
 		
 		public const int DefaultNonPersistentConnectionLimit = 4;
-#if MONOTOUCH
+#if MOBILE
 		public const int DefaultPersistentConnectionLimit = 10;
 #else
 		public const int DefaultPersistentConnectionLimit = 2;
@@ -256,6 +256,12 @@ namespace System.Net
 			}
 		}
 
+		[MonoTODO]
+		public static bool ReusePort {
+			get { return false; }
+			set { throw new NotImplementedException (); }
+		}
+
 		public static SecurityProtocolType SecurityProtocol {
 			get { return _securityProtocol; }
 			set { _securityProtocol = value; }
@@ -277,6 +283,13 @@ namespace System.Net
 					server_cert_cb = null;
 				else
 					server_cert_cb = new ServerCertValidationCallback (value);
+			}
+		}
+
+		[MonoTODO ("Always returns EncryptionPolicy.RequireEncryption.")]
+		public static EncryptionPolicy EncryptionPolicy {
+			get {
+				return EncryptionPolicy.RequireEncryption;
 			}
 		}
 

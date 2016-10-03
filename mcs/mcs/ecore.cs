@@ -841,22 +841,29 @@ namespace Mono.CSharp {
 		public static Expression MemberLookup (IMemberContext rc, bool errorMode, TypeSpec queried_type, string name, int arity, MemberLookupRestrictions restrictions, Location loc)
 		{
 			var members = MemberCache.FindMembers (queried_type, name, false);
-			if (members == null)
-				return null;
 
-			Expression expr;
-			do {
-				expr = MemberLookupToExpression (rc, members, errorMode, queried_type, name, arity, restrictions, loc);
-				if (expr != null)
-					return expr;
+			if (members != null) {
+				Expression expr;
+				do {
+					expr = MemberLookupToExpression (rc, members, errorMode, queried_type, name, arity, restrictions, loc);
+					if (expr != null)
+						return expr;
 
-				if (members [0].DeclaringType.BaseType == null)
-					members = null;
-				else
-					members = MemberCache.FindMembers (members [0].DeclaringType.BaseType, name, false);
-			} while (members != null);
+					if (members [0].DeclaringType.BaseType == null)
+						members = null;
+					else
+						members = MemberCache.FindMembers (members [0].DeclaringType.BaseType, name, false);
+				} while (members != null);
+			}
 
-			return expr;
+			var tps = queried_type as TypeParameterSpec;
+			if (tps != null) {
+				members = MemberCache.FindInterfaceMembers (tps, name);
+				if (members != null)
+					return MemberLookupToExpression (rc, members, errorMode, queried_type, name, arity, restrictions, loc);
+			}
+
+			return null;
 		}
 
 		public static Expression MemberLookupToExpression (IMemberContext rc, IList<MemberSpec> members, bool errorMode, TypeSpec queried_type, string name, int arity, MemberLookupRestrictions restrictions, Location loc)
@@ -901,15 +908,6 @@ namespace Mono.CSharp {
 
 				if ((restrictions & MemberLookupRestrictions.InvocableOnly) != 0) {
 					if (member is MethodSpec) {
-						//
-						// Interface members that are hidden by class members are removed from the set. This
-						// step only has an effect if T is a type parameter and T has both an effective base 
-						// class other than object and a non-empty effective interface set
-						//
-						var tps = queried_type as TypeParameterSpec;
-						if (tps != null && tps.HasTypeConstraint)
-							members = RemoveHiddenTypeParameterMethods (members);
-
 						return new MethodGroupExpr (members, queried_type, loc);
 					}
 
@@ -957,57 +955,6 @@ namespace Mono.CSharp {
 			}
 
 			return null;
-		}
-
-		static IList<MemberSpec> RemoveHiddenTypeParameterMethods (IList<MemberSpec> members)
-		{
-			if (members.Count < 2)
-				return members;
-
-			//
-			// If M is a method, then all non-method members declared in an interface declaration
-			// are removed from the set, and all methods with the same signature as M declared in
-			// an interface declaration are removed from the set
-			//
-
-			bool copied = false;
-			for (int i = 0; i < members.Count; ++i) {
-				var method = members[i] as MethodSpec;
-				if (method == null) {
-					if (!copied) {
-						copied = true;
-						members = new List<MemberSpec> (members);
-					} 
-					
-					members.RemoveAt (i--);
-					continue;
-				}
-
-				if (!method.DeclaringType.IsInterface)
-					continue;
-
-				for (int ii = 0; ii < members.Count; ++ii) {
-					var candidate = members[ii] as MethodSpec;
-					if (candidate == null || !candidate.DeclaringType.IsClass)
-						continue;
-
-					if (!TypeSpecComparer.Override.IsEqual (candidate.Parameters, method.Parameters))
-						continue;
-
-					if (!AParametersCollection.HasSameParameterDefaults (candidate.Parameters, method.Parameters))
-						continue;
-
-					if (!copied) {
-						copied = true;
-						members = new List<MemberSpec> (members);
-					}
-
-					members.RemoveAt (i--);
-					break;
-				}
-			}
-
-			return members;
 		}
 
 		protected static void Error_NamedArgument (NamedArgument na, Report Report)
@@ -3701,6 +3648,11 @@ namespace Mono.CSharp {
 			return this;
 		}
 
+		public virtual void ResolveNameOf (ResolveContext rc, ATypeNameExpression expr)
+		{
+
+		}
+
 		protected void EmitInstance (EmitContext ec, bool prepare_for_load)
 		{
 			var inst = new InstanceEmitter (InstanceExpression, TypeSpec.IsValueType (InstanceExpression.Type));
@@ -3776,7 +3728,7 @@ namespace Mono.CSharp {
 		// For extension methodgroup we are not looking for base members but parent
 		// namespace extension methods
 		//
-		public override IList<MemberSpec> GetBaseMembers (TypeSpec baseType)
+		public override IList<MemberSpec> GetBaseMembers (TypeSpec type)
 		{
 			// TODO: candidates are null only when doing error reporting, that's
 			// incorrect. We have to discover same extension methods in error mode
@@ -3805,27 +3757,9 @@ namespace Mono.CSharp {
 				Convert.ImplicitBoxingConversion (null, argType, extensionType) != null;
 		}
 
-		public bool ResolveNameOf (ResolveContext rc, MemberAccess ma)
+		public override void ResolveNameOf (ResolveContext rc, ATypeNameExpression expr)
 		{
-			rc.Report.Error (8093, ma.Location, "An argument to nameof operator cannot be extension method group");
-
-			// Not included in C#6
-			/*
-			ExtensionExpression = ExtensionExpression.Resolve (rc);
-			if (ExtensionExpression == null)
-				return false;
-
-			var argType = ExtensionExpression.Type;
-			foreach (MethodSpec candidate in Candidates) {
-				if (ExtensionMethodGroupExpr.IsExtensionTypeCompatible (argType, candidate.Parameters.ExtensionMethodType))
-					return true;
-			}
-
-			// TODO: Scan full hierarchy
-
-			ma.Error_TypeDoesNotContainDefinition (rc, argType, ma.Name);
-			*/
-			return false;
+			rc.Report.Error (8093, expr.Location, "An argument to nameof operator cannot be extension method group");
 		}
 
 		public override MethodGroupExpr LookupExtensionMethod (ResolveContext rc)
@@ -4226,6 +4160,17 @@ namespace Mono.CSharp {
 			return base.ResolveMemberAccess (ec, left, original);
 		}
 
+		public override void ResolveNameOf (ResolveContext rc, ATypeNameExpression expr)
+		{
+			if (!HasAccessibleCandidate (rc)) {
+				ErrorIsInaccesible (rc, expr.GetSignatureForError (), loc);
+			}
+
+			if (expr.HasTypeArguments) {
+				rc.Report.Error (8084, expr.Location, "An argument to nameof operator cannot be method group with type arguments");
+			}
+		}
+
 		public override void SetTypeArguments (ResolveContext ec, TypeArguments ta)
 		{
 			type_arguments = ta;
@@ -4233,9 +4178,19 @@ namespace Mono.CSharp {
 
 		#region IBaseMembersProvider Members
 
-		public virtual IList<MemberSpec> GetBaseMembers (TypeSpec baseType)
+		public virtual IList<MemberSpec> GetBaseMembers (TypeSpec type)
 		{
-			return baseType == null ? null : MemberCache.FindMembers (baseType, Methods [0].Name, false);
+			var baseType = type.BaseType;
+			
+			IList<MemberSpec> members = baseType == null ? null : MemberCache.FindMembers (baseType, Methods [0].Name, false);
+
+			if (members == null && !type.IsInterface) {
+				var tps = queried_type as TypeParameterSpec;
+				if (tps != null)
+					members = MemberCache.FindInterfaceMembers (tps, Methods [0].Name);
+			}
+
+			return members;
 		}
 
 		public IParametersMember GetOverrideMemberParameters (MemberSpec member)
@@ -4829,7 +4784,7 @@ namespace Mono.CSharp {
 				// is no better expression conversion
 				//
 				if (candidate_pd.Count < best_pd.Count) {
-					if (!candidate_params && !candidate_pd.FixedParameters [j - j].HasDefaultValue) {
+					if (!candidate_params && !candidate_pd.FixedParameters [j - 1].HasDefaultValue) {
 						return true;
 					}
 				} else if (candidate_pd.Count == best_pd.Count) {
@@ -5632,7 +5587,7 @@ namespace Mono.CSharp {
 						// Restore expanded arguments
 						candidate_args = args;
 					}
-				} while (best_candidate_rate != 0 && (type_members = base_provider.GetBaseMembers (type_members[0].DeclaringType.BaseType)) != null);
+				} while (best_candidate_rate != 0 && (type_members = base_provider.GetBaseMembers (type_members[0].DeclaringType)) != null);
 
 				//
 				// We've found exact match
@@ -6196,6 +6151,11 @@ namespace Mono.CSharp {
 			return constant.GetSignatureForError ();
 		}
 
+		public override void ResolveNameOf (ResolveContext rc, ATypeNameExpression expr)
+		{
+			constant.CheckObsoleteness (rc, expr.Location);
+		}
+
 		public override void SetTypeArguments (ResolveContext ec, TypeArguments ta)
 		{
 			Error_TypeArgumentsCannotBeUsed (ec, "constant", GetSignatureForError (), loc);
@@ -6423,6 +6383,11 @@ namespace Mono.CSharp {
 
 			eclass = ExprClass.Variable;
 			return this;
+		}
+
+		public override void ResolveNameOf (ResolveContext rc, ATypeNameExpression expr)
+		{
+			spec.CheckObsoleteness (rc, expr.Location);
 		}
 
 		public void SetFieldAssigned (FlowAnalysisContext fc)
@@ -7195,6 +7160,14 @@ namespace Mono.CSharp {
 			return true;
 		}
 
+		public override void ResolveNameOf (ResolveContext rc, ATypeNameExpression expr)
+		{
+			if (!best_candidate.IsAccessible (rc))
+				ErrorIsInaccesible (rc, best_candidate.GetSignatureForError (), expr.Location);
+
+			best_candidate.CheckObsoleteness (rc, expr.Location);
+		}
+
 		public void SetBackingFieldAssigned (FlowAnalysisContext fc)
 		{
 			if (backing_field != null) {
@@ -7614,6 +7587,11 @@ namespace Mono.CSharp {
 		public override string GetSignatureForError ()
 		{
 			return TypeManager.CSharpSignature (spec);
+		}
+
+		public override void ResolveNameOf (ResolveContext rc, ATypeNameExpression expr)
+		{
+			spec.CheckObsoleteness (rc, expr.Location);
 		}
 
 		public override void SetTypeArguments (ResolveContext ec, TypeArguments ta)

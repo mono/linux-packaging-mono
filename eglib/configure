@@ -12515,6 +12515,14 @@ else
 fi
 
 
+# Defined for all targets/platforms using classic Windows API support.
+
+$as_echo "#define HAVE_CLASSIC_WINAPI_SUPPORT 1" >>confdefs.h
+
+
+$as_echo "#define HAVE_UWP_WINAPI_SUPPORT 0" >>confdefs.h
+
+
 # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
 # declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.

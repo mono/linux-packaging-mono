@@ -34,7 +34,7 @@ namespace System.IO {
     [FileIOPermissionAttribute(SecurityAction.InheritanceDemand,Unrestricted=true)]
 #endif
     [ComVisible(true)]
-#if FEATURE_REMOTING        
+#if FEATURE_REMOTING || MONO
     public abstract class FileSystemInfo : MarshalByRefObject, ISerializable {
 #else // FEATURE_REMOTING
     public abstract class FileSystemInfo : ISerializable {   
@@ -97,7 +97,9 @@ namespace System.IO {
             [System.Security.SecuritySafeCritical]
             get 
             {
+#pragma warning disable 219
                 String demandDir;
+#pragma warning restore
                 if (this is DirectoryInfo)
                     demandDir = Directory.GetDemandDir(FullPath, true);
                 else
@@ -119,7 +121,9 @@ namespace System.IO {
             [System.Security.SecurityCritical]
             get
             {
+#pragma warning disable 219
                 String demandDir;
+#pragma warning restore
                 if (this is DirectoryInfo)
                     demandDir = Directory.GetDemandDir(FullPath, true);
                 else

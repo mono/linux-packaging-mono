@@ -33,6 +33,7 @@
 #include <mono/metadata/object-internals.h>
 #include <mono/metadata/threadpool-ms.h>
 #include <mono/metadata/threadpool-ms-io.h>
+#include <mono/metadata/w32event.h>
 #include <mono/utils/atomic.h>
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-complex.h>
@@ -161,7 +162,7 @@ typedef struct {
 
 typedef struct {
 	gint32 ref;
-	MonoCoopSem sem;
+	MonoCoopCond cond;
 } ThreadPoolDomainCleanupSemaphore;
 
 typedef enum {
@@ -438,7 +439,7 @@ domain_get (MonoDomain *domain, gboolean create)
 		ThreadPoolDomainCleanupSemaphore *cleanup_semaphore;
 		cleanup_semaphore = g_new0 (ThreadPoolDomainCleanupSemaphore, 1);
 		cleanup_semaphore->ref = 2;
-		mono_coop_sem_init (&cleanup_semaphore->sem, 0);
+		mono_coop_cond_init (&cleanup_semaphore->cond);
 
 		g_assert(!domain->cleanup_semaphore);
 		domain->cleanup_semaphore = cleanup_semaphore;
@@ -701,11 +702,12 @@ worker_thread (gpointer data)
 			g_assert (removed);
 
 			cleanup_semaphore = (ThreadPoolDomainCleanupSemaphore*) tpdomain->domain->cleanup_semaphore;
+			g_assert (cleanup_semaphore);
 
-			g_assert(cleanup_semaphore);
-			mono_coop_sem_post (&cleanup_semaphore->sem);
+			mono_coop_cond_signal (&cleanup_semaphore->cond);
+
 			if (InterlockedDecrement (&cleanup_semaphore->ref) == 0) {
-				mono_coop_sem_destroy (&cleanup_semaphore->sem);
+				mono_coop_cond_destroy (&cleanup_semaphore->cond);
 				g_free (cleanup_semaphore);
 				tpdomain->domain->cleanup_semaphore = NULL;
 			}
@@ -1426,7 +1428,7 @@ mono_threadpool_ms_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, Mono
 		if (ares->handle) {
 			wait_event = mono_wait_handle_get_handle ((MonoWaitHandle*) ares->handle);
 		} else {
-			wait_event = CreateEvent (NULL, TRUE, FALSE, NULL);
+			wait_event = mono_w32event_create (TRUE, FALSE);
 			g_assert(wait_event);
 			MonoWaitHandle *wait_handle = mono_wait_handle_new (mono_object_domain (ares), wait_event, error);
 			if (!is_ok (error)) {
@@ -1452,10 +1454,10 @@ mono_threadpool_ms_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, Mono
 gboolean
 mono_threadpool_ms_remove_domain_jobs (MonoDomain *domain, int timeout)
 {
-	gint res;
-	gint64 now, end;
+	gint64 end;
 	ThreadPoolDomain *tpdomain;
 	ThreadPoolDomainCleanupSemaphore *cleanup_semaphore;
+	gboolean ret;
 
 	g_assert (domain);
 	g_assert (timeout >= -1);
@@ -1492,29 +1494,41 @@ mono_threadpool_ms_remove_domain_jobs (MonoDomain *domain, int timeout)
 		return TRUE;
 	}
 
-	mono_coop_mutex_unlock(&threadpool->domains_lock);
-
 	g_assert (domain->cleanup_semaphore);
-
 	cleanup_semaphore = (ThreadPoolDomainCleanupSemaphore*) domain->cleanup_semaphore;
 
-	if (timeout == -1) {
-		res = mono_coop_sem_wait (&cleanup_semaphore->sem, MONO_SEM_FLAGS_NONE);
-		g_assert (res == MONO_SEM_TIMEDWAIT_RET_SUCCESS);
-	} else {
-		now = mono_msec_ticks();
-		if (now > end)
-			return FALSE;
-		res = mono_coop_sem_timedwait (&cleanup_semaphore->sem, end - now, MONO_SEM_FLAGS_NONE);
-	}
+	ret = TRUE;
+
+	do {
+		if (timeout == -1) {
+			mono_coop_cond_wait (&cleanup_semaphore->cond, &threadpool->domains_lock);
+		} else {
+			gint64 now;
+			gint res;
+
+			now = mono_msec_ticks();
+			if (now > end) {
+				ret = FALSE;
+				break;
+			}
+
+			res = mono_coop_cond_timedwait (&cleanup_semaphore->cond, &threadpool->domains_lock, end - now);
+			if (res != 0) {
+				ret = FALSE;
+				break;
+			}
+		}
+	} while (tpdomain->outstanding_request != 0);
 
 	if (InterlockedDecrement (&cleanup_semaphore->ref) == 0) {
-		mono_coop_sem_destroy (&cleanup_semaphore->sem);
+		mono_coop_cond_destroy (&cleanup_semaphore->cond);
 		g_free (cleanup_semaphore);
 		domain->cleanup_semaphore = NULL;
 	}
 
-	return res == MONO_SEM_TIMEDWAIT_RET_SUCCESS;
+	mono_coop_mutex_unlock(&threadpool->domains_lock);
+
+	return ret;
 }
 
 void

@@ -43,7 +43,9 @@
 #include <mono/metadata/threadpool-ms-io.h>
 #include <mono/metadata/monitor.h>
 #include <mono/metadata/reflection.h>
+#include <mono/metadata/image-internals.h>
 #include <mono/metadata/assembly.h>
+#include <mono/metadata/assembly-internals.h>
 #include <mono/metadata/tabledefs.h>
 #include <mono/metadata/exception.h>
 #include <mono/metadata/exception-internals.h>
@@ -83,6 +85,9 @@
 #include <mono/metadata/file-mmap.h>
 #include <mono/metadata/seq-points-data.h>
 #include <mono/metadata/handle.h>
+#include <mono/metadata/w32mutex.h>
+#include <mono/metadata/w32semaphore.h>
+#include <mono/metadata/w32event.h>
 #include <mono/io-layer/io-layer.h>
 #include <mono/utils/monobitset.h>
 #include <mono/utils/mono-time.h>
@@ -981,11 +986,6 @@ ves_icall_System_Runtime_CompilerServices_RuntimeHelpers_SufficientExecutionStac
 	/* if we have no info we are optimistic and assume there is enough room */
 	if (!stack_addr)
 		return TRUE;
-#ifdef HOST_WIN32
-	// FIXME: Windows dynamically extends the stack, so stack_addr might be close
-	// to the current sp
-	return TRUE;
-#endif
 	current = (guint8 *)&stack_addr;
 	if (current > stack_addr) {
 		if ((current - stack_addr) < min_size)
@@ -4827,8 +4827,8 @@ ves_icall_System_Reflection_Assembly_GetManifestResourceInternal (MonoReflection
 		g_assert ((impl & MONO_IMPLEMENTATION_MASK) == MONO_IMPLEMENTATION_FILE);
 		file_idx = impl >> MONO_IMPLEMENTATION_BITS;
 
-		module = mono_image_load_file_for_image (assembly->assembly->image, file_idx);
-		if (!module)
+		module = mono_image_load_file_for_image_checked (assembly->assembly->image, file_idx, &error);
+		if (mono_error_set_pending_exception (&error) || !module)
 			return NULL;
 	}
 	else
@@ -5028,7 +5028,9 @@ ves_icall_System_Reflection_Assembly_GetModulesInternal (MonoReflectionAssembly 
 			mono_array_setref (res, j, rm);
 		}
 		else {
-			MonoImage *m = mono_image_load_file_for_image (image, i + 1);
+			MonoImage *m = mono_image_load_file_for_image_checked (image, i + 1, &error);
+			if (mono_error_set_pending_exception (&error))
+				return NULL;
 			if (!m) {
 				MonoString *fname = mono_string_new (mono_domain_get (), mono_metadata_string_heap (image, cols [MONO_FILE_NAME]));
 				mono_set_pending_exception (mono_get_exception_file_not_found2 (NULL, fname));
@@ -5552,7 +5554,9 @@ ves_icall_System_Reflection_Assembly_GetTypes (MonoReflectionAssembly *assembly,
 	/* Append data from all modules in the assembly */
 	for (i = 0; i < table->rows; ++i) {
 		if (!(mono_metadata_decode_row_col (table, i, MONO_FILE_FLAGS) & FILE_CONTAINS_NO_METADATA)) {
-			MonoImage *loaded_image = mono_assembly_load_module (image->assembly, i + 1);
+			MonoImage *loaded_image = mono_assembly_load_module_checked (image->assembly, i + 1, &error);
+			if (mono_error_set_pending_exception (&error))
+				return NULL;
 			if (loaded_image) {
 				MonoArray *ex2;
 				MonoArray *res2;
@@ -6940,7 +6944,7 @@ ves_icall_System_Text_EncodingHelper_InternalCodePage (gint32 *int_code_page)
 	
 	if (strstr (codepage, "utf_8") != NULL)
 		*int_code_page |= 0x10000000;
-	free (codepage);
+	g_free (codepage);
 	
 	if (want_name && *int_code_page == -1)
 		return mono_string_new (mono_domain_get (), cset);
@@ -7389,6 +7393,7 @@ ves_icall_MonoMethod_get_base_method (MonoReflectionMethod *m, gboolean definiti
 		klass = klass->generic_class->container_class;
 	}
 
+retry:
 	if (definition) {
 		/* At the end of the loop, klass points to the eldest class that has this virtual function slot. */
 		for (parent = klass->parent; parent != NULL; parent = parent->parent) {
@@ -7475,14 +7480,38 @@ ves_icall_MonoMethod_get_base_method (MonoReflectionMethod *m, gboolean definiti
 	result = klass->vtable [slot];
 	if (result == NULL) {
 		/* It is an abstract method */
+		gboolean found = FALSE;
 		gpointer iter = NULL;
-		while ((result = mono_class_get_methods (klass, &iter)))
-			if (result->slot == slot)
+		while ((result = mono_class_get_methods (klass, &iter))) {
+			if (result->slot == slot) {
+				found = TRUE;
 				break;
+			}
+		}
+		/* found might be FALSE if we looked in an abstract class
+		 * that doesn't override an abstract method of its
+		 * parent: 
+		 *   abstract class Base {
+		 *     public abstract void Foo ();
+		 *   }
+		 *   abstract class Derived : Base { }
+		 *   class Child : Derived {
+		 *     public override void Foo () { }
+		 *  }
+		 *
+		 *  if m was Child.Foo and we ask for the base method,
+		 *  then we get here with klass == Derived and found == FALSE
+		 */
+		/* but it shouldn't be the case that if we're looking
+		 * for the definition and didn't find a result; the
+		 * loop above should've taken us as far as we could
+		 * go! */
+		g_assert (!(definition && !found));
+		if (!found)
+			goto retry;
 	}
 
-	if (result == NULL)
-		return m;
+	g_assert (result != NULL);
 
 	ret = mono_method_get_object_checked (mono_domain_get (), result, NULL, &error);
 	mono_error_set_pending_exception (&error);

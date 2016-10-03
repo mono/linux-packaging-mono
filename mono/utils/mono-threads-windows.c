@@ -243,7 +243,10 @@ mono_threads_platform_exit (int exit_code)
 void
 mono_threads_platform_unregister (MonoThreadInfo *info)
 {
-	mono_threads_platform_set_exited (info);
+	g_assert (info->handle);
+
+	CloseHandle (info->handle);
+	info->handle = NULL;
 }
 
 int
@@ -309,49 +312,8 @@ mono_native_thread_set_name (MonoNativeThreadId tid, const char *name)
 }
 
 void
-mono_threads_platform_set_exited (MonoThreadInfo *info)
+mono_threads_platform_set_exited (gpointer handle)
 {
-	g_assert (info->handle);
-	// No need to call CloseHandle() here since the InternalThread
-	// destructor will close the handle when the finalizer thread calls it
-	info->handle = NULL;
-}
-
-void
-mono_threads_platform_describe (MonoThreadInfo *info, GString *text)
-{
-	/* TODO */
-}
-
-void
-mono_threads_platform_own_mutex (MonoThreadInfo *info, gpointer mutex_handle)
-{
-	g_assert_not_reached ();
-}
-
-void
-mono_threads_platform_disown_mutex (MonoThreadInfo *info, gpointer mutex_handle)
-{
-	g_assert_not_reached ();
-}
-
-MonoThreadPriority
-mono_threads_platform_get_priority (MonoThreadInfo *info)
-{
-	g_assert (info->handle);
-	return GetThreadPriority (info->handle) + 2;
-}
-
-void
-mono_threads_platform_set_priority (MonoThreadInfo *info, MonoThreadPriority priority)
-{
-	BOOL res;
-
-	g_assert (info->handle);
-
-	res = SetThreadPriority (info->handle, priority - 2);
-	if (!res)
-		g_error ("%s: SetThreadPriority failed, error %d", __func__, GetLastError ());
 }
 
 void

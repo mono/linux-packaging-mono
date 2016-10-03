@@ -226,12 +226,12 @@ namespace System.Net
 			internal set { actualUri = value; } // Used by Ftp+proxy
 		}
 		
-		public bool AllowAutoRedirect {
+		public virtual bool AllowAutoRedirect {
 			get { return allowAutoRedirect; }
 			set { this.allowAutoRedirect = value; }
 		}
 		
-		public bool AllowWriteStreamBuffering {
+		public virtual bool AllowWriteStreamBuffering {
 			get { return allowBuffering; }
 			set { allowBuffering = value; }
 		}
@@ -916,6 +916,12 @@ namespace System.Net
 			}
 
 			return EndGetRequestStream (asyncResult);
+		}
+
+		[MonoTODO]
+		public Stream GetRequestStream (out TransportContext context)
+		{
+			throw new NotImplementedException ();
 		}
 
 		bool CheckIfForceWrite (SimpleAsyncResult result)

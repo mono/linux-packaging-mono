@@ -58,6 +58,8 @@ boehm_thread_register (MonoThreadInfo* info, void *baseptr);
 static void
 boehm_thread_unregister (MonoThreadInfo *p);
 static void
+boehm_thread_detach (MonoThreadInfo *p);
+static void
 register_test_toggleref_callback (void);
 
 #define BOEHM_GC_BIT_FINALIZER_AWARE 1
@@ -108,6 +110,10 @@ mono_gc_base_init (void)
 		return;
 
 	mono_counters_init ();
+
+#ifndef HOST_WIN32
+	mono_w32handle_init ();
+#endif
 
 	/*
 	 * Handle the case when we are called from a thread different from the main thread,
@@ -236,6 +242,7 @@ mono_gc_base_init (void)
 	memset (&cb, 0, sizeof (cb));
 	cb.thread_register = boehm_thread_register;
 	cb.thread_unregister = boehm_thread_unregister;
+	cb.thread_detach = boehm_thread_detach;
 	cb.mono_method_is_critical = (gboolean (*)(void *))mono_runtime_is_critical_method;
 
 	mono_threads_init (&cb, sizeof (MonoThreadInfo));
@@ -404,6 +411,13 @@ boehm_thread_unregister (MonoThreadInfo *p)
 
 	if (p->runtime_thread)
 		mono_threads_add_joinable_thread ((gpointer)tid);
+}
+
+static void
+boehm_thread_detach (MonoThreadInfo *p)
+{
+	if (mono_thread_internal_current_is_attached ())
+		mono_thread_detach_internal (mono_thread_internal_current ());
 }
 
 gboolean
