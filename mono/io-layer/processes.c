@@ -2685,8 +2685,6 @@ MONO_SIGNAL_HANDLER_FUNC (static, mono_sigchld_signal_handler, (int _dummy, sigi
 	int pid;
 	struct MonoProcess *p;
 
-	MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "SIG CHILD handler for pid: %i\n", info->si_pid);
-
 	do {
 		do {
 			pid = waitpid (-1, &status, WNOHANG);
@@ -2694,8 +2692,6 @@ MONO_SIGNAL_HANDLER_FUNC (static, mono_sigchld_signal_handler, (int _dummy, sigi
 
 		if (pid <= 0)
 			break;
-
-		MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "child ended: %i", pid);
 
 		/*
 		 * This can run concurrently with the code in the rest of this module.
@@ -2714,8 +2710,6 @@ MONO_SIGNAL_HANDLER_FUNC (static, mono_sigchld_signal_handler, (int _dummy, sigi
 			p->freeable = TRUE;
 		}
 	} while (1);
-
-	MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "SIG CHILD handler: done looping.");
 }
 
 #endif
@@ -2806,7 +2800,7 @@ process_wait (gpointer handle, guint32 timeout, gboolean *alerted)
 	while (1) {
 		if (timeout != INFINITE) {
 			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): waiting on semaphore for %li ms...", 
-				   __func__, handle, timeout, (timeout - (now - start)));
+				    __func__, handle, timeout, (long)(timeout - (now - start)));
 			ret = mono_os_sem_timedwait (&mp->exit_sem, (timeout - (now - start)), alerted ? MONO_SEM_FLAGS_ALERTABLE : MONO_SEM_FLAGS_NONE);
 		} else {
 			MONO_TRACE (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s (%p, %u): waiting on semaphore forever...", 

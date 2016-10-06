@@ -373,6 +373,7 @@ darwin_sources = \
 
 windows_sources = \
 	mini-windows.c \
+	mini-windows.h \
 	mini-windows-dllmain.c
 
 posix_sources = \
@@ -860,7 +861,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.335/993f805\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.401/6ead724\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
