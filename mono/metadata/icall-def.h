@@ -260,6 +260,7 @@ ICALL(BTLS_X509_NAME_15, "mono_btls_x509_name_print_string", mono_btls_x509_name
 ICALL_TYPE(BTLS_X509_REVOKED, "Mono.Btls.MonoBtlsX509Revoked", BTLS_X509_REVOKED_1)
 ICALL(BTLS_X509_REVOKED_1, "mono_btls_x509_revoked_free", mono_btls_x509_revoked_free)
 ICALL(BTLS_X509_REVOKED_2, "mono_btls_x509_revoked_get_reason", mono_btls_x509_revoked_get_reason)
+ICALL(BTLS_X509_REVOKED_2a, "mono_btls_x509_revoked_get_revocation_date", mono_btls_x509_revoked_get_revocation_date)
 ICALL(BTLS_X509_REVOKED_3, "mono_btls_x509_revoked_get_sequence", mono_btls_x509_revoked_get_sequence)
 ICALL(BTLS_X509_REVOKED_4, "mono_btls_x509_revoked_get_serial_number", mono_btls_x509_revoked_get_serial_number)
 ICALL(BTLS_X509_REVOKED_5, "mono_btls_x509_revoked_new", mono_btls_x509_revoked_new)
@@ -313,6 +314,9 @@ ICALL(BTLS_X509_VERIFY_PARAM_16, "mono_btls_x509_verify_param_set_mono_flags", m
 ICALL(BTLS_X509_VERIFY_PARAM_17, "mono_btls_x509_verify_param_set_name", mono_btls_x509_verify_param_set_name)
 ICALL(BTLS_X509_VERIFY_PARAM_18, "mono_btls_x509_verify_param_set_purpose", mono_btls_x509_verify_param_set_purpose)
 ICALL(BTLS_X509_VERIFY_PARAM_19, "mono_btls_x509_verify_param_set_time", mono_btls_x509_verify_param_set_time)
+#else
+ICALL_TYPE(BTLS_PROVIDER, "Mono.Btls.MonoBtlsProvider", BTLS_PROVIDER_1)
+ICALL(BTLS_PROVIDER_1, "IsSupported", ves_icall_Mono_Btls_Provider_IsSupported)
 #endif
 
 #ifndef DISABLE_COM
@@ -781,12 +785,6 @@ ICALL(DYNM_1, "create_dynamic_method", ves_icall_DynamicMethod_create_dynamic_me
 ICALL_TYPE(ENUMB, "System.Reflection.Emit.EnumBuilder", ENUMB_1)
 ICALL(ENUMB_1, "setup_enum_type", ves_icall_EnumBuilder_setup_enum_type)
 
-ICALL_TYPE(GPARB, "System.Reflection.Emit.GenericTypeParameterBuilder", GPARB_1)
-ICALL(GPARB_1, "initialize", ves_icall_GenericTypeParameterBuilder_initialize)
-
-ICALL_TYPE(METHODB, "System.Reflection.Emit.MethodBuilder", METHODB_1)
-ICALL(METHODB_1, "MakeGenericMethod", ves_icall_MethodBuilder_MakeGenericMethod)
-
 ICALL_TYPE(MODULEB, "System.Reflection.Emit.ModuleBuilder", MODULEB_10)
 ICALL(MODULEB_10, "GetRegisteredToken", ves_icall_ModuleBuilder_GetRegisteredToken)
 ICALL(MODULEB_8, "RegisterToken", ves_icall_ModuleBuilder_RegisterToken)
@@ -803,9 +801,7 @@ ICALL(SIGH_1, "get_signature_field", ves_icall_SignatureHelper_get_signature_fie
 ICALL(SIGH_2, "get_signature_local", ves_icall_SignatureHelper_get_signature_local)
 
 ICALL_TYPE(TYPEB, "System.Reflection.Emit.TypeBuilder", TYPEB_1)
-ICALL(TYPEB_1, "create_generic_class", ves_icall_TypeBuilder_create_generic_class)
-ICALL(TYPEB_3, "create_runtime_class", ves_icall_TypeBuilder_create_runtime_class)
-ICALL(TYPEB_7, "setup_internal_class", ves_icall_TypeBuilder_setup_internal_class)
+ICALL(TYPEB_1, "create_runtime_class", ves_icall_TypeBuilder_create_runtime_class)
 
 ICALL_TYPE(EVENTI, "System.Reflection.EventInfo", EVENTI_1)
 ICALL(EVENTI_1, "internal_from_handle_type", ves_icall_System_Reflection_EventInfo_internal_from_handle_type)

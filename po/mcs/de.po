@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-10-03 18:04+0000\n"
+"POT-Creation-Date: 2016-10-06 08:44+0000\n"
 "PO-Revision-Date: 2008-09-26 15:14+0100\n"
 "Last-Translator: Daniel Nauck <dna@mono-project.de>\n"
 "Language-Team: http://www.mono-project.de\n"
@@ -2649,21 +2649,21 @@ msgstr ""
 msgid "SDK path could not be resolved"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:515
+#: mcs/mcs/ikvm.cs:512
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:524
+#: mcs/mcs/ikvm.cs:521
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
 "removing one of the references"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:643
+#: mcs/mcs/ikvm.cs:640
 #, fuzzy, csharp-format
 msgid "Error opening icon file `{0}'. {1}"
 msgstr "Fehler beim erstellen der XML-Dokumentationsdatei `{0}' (`{1}')"

@@ -179,8 +179,8 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
 	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
 	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-windows.c mini-windows-dllmain.c mini-darwin.c \
-	mini-posix.c
+	mini-windows.c mini-windows.h mini-windows-dllmain.c \
+	mini-darwin.c mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -319,8 +319,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
 	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
 	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-windows.c mini-windows-dllmain.c mini-darwin.c \
-	mini-posix.c
+	mini-windows.c mini-windows.h mini-windows-dllmain.c \
+	mini-darwin.c mini-posix.c
 am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -1062,6 +1062,7 @@ darwin_sources = \
 
 windows_sources = \
 	mini-windows.c \
+	mini-windows.h \
 	mini-windows-dllmain.c
 
 posix_sources = \
@@ -3379,7 +3380,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.335/993f805\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.401/6ead724\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

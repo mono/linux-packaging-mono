@@ -1730,7 +1730,7 @@ Optional Features:
   --enable-icall-export Export icall functions
   --disable-icall-tables Disable the runtime lookup of icalls
   --enable-checked-build=LIST      To enable checked build (expensive asserts), configure with a comma-separated LIST of checked build modules and then include that same list in the environment variable MONO_CHECK_MODE at runtime. Recognized checked build modules: all, gc, metadata, thread
-  --disable-blts             Disable the BoringTls provider
+  --disable-btls             Disable the BoringTls provider
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
