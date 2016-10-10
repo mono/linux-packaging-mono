@@ -305,10 +305,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/Mono.Parallel.dll
 %{_prefix}/lib/mono/4.5/Mono.Posix.dll
 %{_prefix}/lib/mono/4.5/Mono.Security.dll
-%{_prefix}/lib/mono/4.5/Mono.Security.Providers.DotNet.dll
-%{_prefix}/lib/mono/4.5/Mono.Security.Providers.NewSystemSource.dll
-%{_prefix}/lib/mono/4.5/Mono.Security.Providers.NewTls.dll
-%{_prefix}/lib/mono/4.5/Mono.Security.Providers.OldTls.dll
 %{_prefix}/lib/mono/4.5/Mono.Simd.dll
 %{_prefix}/lib/mono/4.5/Mono.Tasklets.dll
 %{_prefix}/lib/mono/4.5/System.Configuration.dll
@@ -357,10 +353,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/Mono.Parallel
 %{_prefix}/lib/mono/gac/Mono.Posix
 %{_prefix}/lib/mono/gac/Mono.Security
-%{_prefix}/lib/mono/gac/Mono.Security.Providers.DotNet
-%{_prefix}/lib/mono/gac/Mono.Security.Providers.NewSystemSource
-%{_prefix}/lib/mono/gac/Mono.Security.Providers.NewTls
-%{_prefix}/lib/mono/gac/Mono.Security.Providers.OldTls
 %{_prefix}/lib/mono/gac/Mono.Simd
 %{_prefix}/lib/mono/gac/Mono.Tasklets
 %{_prefix}/lib/mono/gac/System
