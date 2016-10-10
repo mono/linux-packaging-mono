@@ -31,6 +31,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_load_from_full@Base 4.1.0.1738
  mono_assembly_load_full@Base 4.1.0.1738
  mono_assembly_load_module@Base 4.1.0.1738
+ mono_assembly_load_module_checked@Base 4.9.0.401
  mono_assembly_load_reference@Base 4.1.0.1738
  mono_assembly_load_references@Base 4.1.0.1738
  mono_assembly_load_with_partial_name@Base 4.1.0.1738
@@ -531,6 +532,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_md5_get_digest_from_file@Base 4.1.0.1738
  mono_md5_init@Base 4.1.0.1738
  mono_md5_update@Base 4.1.0.1738
+ mono_mem_account_register_counters@Base 4.9.0.401
+ mono_mem_account_type_name@Base 4.9.0.401
  mono_mempool_alloc0@Base 4.1.0.1738
  mono_mempool_alloc@Base 4.1.0.1738
  mono_mempool_contains_addr@Base 4.1.0.1738
@@ -657,7 +660,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_monitor_exit@Base 4.1.0.1738
  mono_monitor_try_enter@Base 4.1.0.1738
  mono_mprotect@Base 4.1.0.1738
+ mono_native_thread_create@Base 4.9.0.401
+ mono_native_thread_id_equals@Base 4.9.0.401
  mono_native_thread_id_get@Base 4.5.2.48
+ mono_native_thread_join@Base 4.9.0.401
  mono_native_thread_set_name@Base 4.5.2.48
  mono_object_castclass_mbyref@Base 4.1.0.1738
  mono_object_clone@Base 4.1.0.1738
