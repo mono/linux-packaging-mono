@@ -234,6 +234,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %dir %{_sysconfdir}/mono/4.5
 %{_bindir}/al
 %{_bindir}/al2
+%{_bindir}/btls-cert-sync
 %{_bindir}/cert-sync
 %{_bindir}/certmgr
 %{_bindir}/chktrust
@@ -273,6 +274,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.IO.Compression.FileSystem.dll
 %{_prefix}/lib/mono/4.5/System.IO.Compression.dll
 %{_prefix}/lib/mono/4.5/al.exe*
+%{_prefix}/lib/mono/4.5/btls-cert-sync.exe*
 %{_prefix}/lib/mono/4.5/cert-sync.exe*
 %{_prefix}/lib/mono/4.5/certmgr.exe*
 %{_prefix}/lib/mono/4.5/chktrust.exe*
@@ -291,6 +293,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/ICSharpCode.SharpZipLib.dll
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
+%{_prefix}/lib/mono/4.5/Mono.Btls.Interface.dll
 %{_prefix}/lib/mono/4.5/Mono.CSharp.dll
 %{_prefix}/lib/mono/4.5/Mono.Cairo.dll
 %{_prefix}/lib/mono/4.5/Mono.CompilerServices.SymbolWriter.dll
@@ -338,6 +341,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/ICSharpCode.SharpZipLib
 %{_prefix}/lib/mono/gac/Microsoft.CSharp
 %{_prefix}/lib/mono/gac/Microsoft.VisualC
+%{_prefix}/lib/mono/gac/Mono.Btls.Interface
 %{_prefix}/lib/mono/gac/Mono.CSharp
 %{_prefix}/lib/mono/gac/Mono.Cairo
 %{_prefix}/lib/mono/gac/Mono.Cecil
@@ -1073,6 +1077,7 @@ Mono development tools.
 %{_bindir}/mono-find-provides
 %{_bindir}/mono-find-requires
 %{_bindir}/mono-heapviz
+%{_bindir}/mono-package-runtime
 %{_bindir}/mono-shlib-cop
 %{_bindir}/mono-symbolicate
 %{_bindir}/mono-xmltool
