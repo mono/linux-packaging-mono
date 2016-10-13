@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <ProjectGuid>{29EF8D53-8E84-4E49-B90F-5950A2FE7D54}</ProjectGuid>
+    <AssemblyName>System.Data.Common</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <NuGetTargetMoniker Condition="'$(TargetGroup)' == ''">.NETStandard,Version=v1.0</NuGetTargetMoniker>
+    <PackageTargetFramework Condition="'$(TargetGroup)' == ''">netstandard1.2;portable-net451+win8+wp8+wpa81</PackageTargetFramework>
+    <IsPartialFacadeAssembly Condition="'$(TargetGroup)' == 'net451'">true</IsPartialFacadeAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'net451_Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'net451_Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetGroup)' == ''">
+    <Compile Include="System\DBNull.cs" />
+    <Compile Include="System\Data\CommandBehavior.cs" />
+    <Compile Include="System\Data\CommandType.cs" />
+    <Compile Include="System\Data\ConnectionState.cs" />
+    <Compile Include="System\Data\DbType.cs" />
+    <Compile Include="System\Data\IsolationLevel.cs" />
+    <Compile Include="System\Data\ParameterDirection.cs" />
+    <Compile Include="System\Data\StateChangeEvent.cs" />
+    <Compile Include="System\Data\StateChangeEventHandler.cs" />
+    <Compile Include="System\Data\UpdateRowSource.cs" />
+    <Compile Include="System\Data\Common\AdapterUtil.cs" />
+    <Compile Include="System\Data\Common\DbCommand.cs" />
+    <Compile Include="System\Data\Common\DbConnection.cs" />
+    <Compile Include="System\Data\Common\DbConnectionOptions.cs" />
+    <Compile Include="System\Data\Common\DbConnectionStringBuilder.cs" />
+    <Compile Include="System\Data\Common\DbConnectionStringCommon.cs" />
+    <Compile Include="System\Data\Common\DbDataReader.cs" />
+    <Compile Include="System\Data\Common\DbException.cs" />
+    <Compile Include="System\Data\Common\DbParameter.cs" />
+    <Compile Include="System\Data\Common\DbParameterCollection.cs" />
+    <Compile Include="System\Data\Common\DbProviderFactory.cs" />
+    <Compile Include="System\Data\Common\DbTransaction.cs" />
+    <Compile Include="System\Data\Common\NameValuePair.cs" />
+    <Compile Include="System\Data\Common\DbDataReaderExtensions.cs" />
+    <Compile Include="$(CommonPath)\System\Threading\Tasks\TaskHelpers.cs">
+      <Link>Common\System\Threading\Tasks\TaskHelpers.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Data\Common\BasicFieldNameLookup.cs">
+      <Link>System\Data\Common\BasicFieldNameLookup.cs</Link>
+    </Compile>
+    <Compile Include="System\Data\Common\DbEnumerator.cs" />
+    <Compile Include="System\Data\Common\DataRecordInternal.cs" />
+    <Compile Include="System\Data\Common\DbDataRecord.cs" />
+    <Compile Include="System\Data\DataRowVersion.cs" />
+    <Compile Include="System\Data\DataTable.cs" />
+    <Compile Include="System\Data\IDataParameter.cs" />
+    <Compile Include="System\Data\IDataParameterCollection.cs" />
+    <Compile Include="System\Data\IDataReader.cs" />
+    <Compile Include="System\Data\IDataRecord.cs" />
+    <Compile Include="System\Data\IDbCommand.cs" />
+    <Compile Include="System\Data\IDbConnection.cs" />
+    <Compile Include="System\Data\IDbDataParameter.cs" />
+    <Compile Include="System\Data\IDbTransaction.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetGroup)' == 'net451'">
+    <TargetingPackReference Include="mscorlib" />
+    <TargetingPackReference Include="System.Data" />
+    <Compile Include="System\Data\Common\DbDataReaderExtensions.Facade.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetGroup)' == ''">
+    <EmbeddedResource Include="Resources\$(AssemblyName).rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="System\Data\Common\DbColumn.cs" />
+    <Compile Include="System\Data\Common\IDbColumnSchemaGenerator.cs" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>

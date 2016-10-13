@@ -117,36 +117,36 @@ libmonoruntime_static_la_DEPENDENCIES = libmonoruntime-config.la \
 am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
 	../../support/libm/complex.c console-win32.c w32mutex-win32.c \
-	w32semaphore-win32.c w32event-win32.c assembly.c \
-	assembly-internals.h attach.h attach.c cil-coff.h class.c \
-	class-internals.h cominterop.c cominterop.h console-io.h \
-	coree.c coree.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c decimal-ms.c decimal-ms.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h exception-internals.h file-io.c file-io.h \
-	filewatcher.c filewatcher.h gc-internals.h icall.c icall-def.h \
-	image.c image-internals.h jit-info.c loader.c locales.c \
-	locales.h lock-tracer.c lock-tracer.h marshal.c marshal.h \
-	mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
-	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
-	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
-	number-formatter.h number-ms.c number-ms.h object-internals.h \
-	opcodes.c socket-io.c socket-io.h process.c process.h \
-	profiler.c profiler-private.h rand.h rand.c remoting.h \
-	remoting.c runtime.c mono-security.c security.h \
-	security-core-clr.c security-core-clr.h security-manager.c \
-	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
-	dynamic-stream-internals.h reflection-cache.h \
+	w32semaphore-win32.c w32event-win32.c socket-io-windows.c \
+	assembly.c assembly-internals.h attach.h attach.c cil-coff.h \
+	class.c class-internals.h cominterop.c cominterop.h \
+	console-io.h coree.c coree.h culture-info.h \
+	culture-info-tables.h debug-helpers.c debug-mono-symfile.h \
+	debug-mono-symfile.c debug-mono-ppdb.h debug-mono-ppdb.c \
+	decimal-ms.c decimal-ms.h domain-internals.h environment.c \
+	environment.h exception.c exception.h exception-internals.h \
+	file-io.c file-io.h filewatcher.c filewatcher.h gc-internals.h \
+	icall.c icall-def.h image.c image-internals.h jit-info.c \
+	loader.c locales.c locales.h lock-tracer.c lock-tracer.h \
+	marshal.c marshal.h mempool.c mempool.h mempool-internals.h \
+	metadata.c metadata-verify.c metadata-internals.h \
+	method-builder.h method-builder.c mono-basic-block.c \
+	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
+	mono-debug-debugger.h mono-endian.c mono-endian.h mono-hash.h \
+	mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
+	mono-route.c mono-route.h monitor.h nacl-stub.c \
+	normalization-tables.h number-formatter.h number-ms.c \
+	number-ms.h object-internals.h opcodes.c socket-io.c \
+	socket-io.h process.c process.h profiler.c profiler-private.h \
+	rand.h rand.c remoting.h remoting.c runtime.c mono-security.c \
+	security.h security-core-clr.c security-core-clr.h \
+	security-manager.c security-manager.h string-icalls.c \
+	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
+	threads-types.h threadpool-ms.c threadpool-ms.h \
+	threadpool-ms-io.c threadpool-ms-io.h verify.c \
+	verify-internals.h wrapper-types.h dynamic-image-internals.h \
+	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
@@ -167,7 +167,8 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @HOST_WIN32_TRUE@	libmonoruntime_static_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntime_static_la-w32mutex-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntime_static_la-w32semaphore-win32.lo \
-@HOST_WIN32_TRUE@	libmonoruntime_static_la-w32event-win32.lo
+@HOST_WIN32_TRUE@	libmonoruntime_static_la-w32event-win32.lo \
+@HOST_WIN32_TRUE@	libmonoruntime_static_la-socket-io-windows.lo
 @HOST_WIN32_FALSE@am__objects_4 = $(am__objects_1) $(am__objects_2)
 @HOST_WIN32_TRUE@am__objects_4 = $(am__objects_3) $(am__objects_2)
 am__objects_5 = $(am__objects_4) libmonoruntime_static_la-assembly.lo \
@@ -255,36 +256,36 @@ libmonoruntime_la_DEPENDENCIES = libmonoruntime-config.la $(btls_libs)
 am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32semaphore-unix.c w32event-unix.c \
 	../../support/libm/complex.c console-win32.c w32mutex-win32.c \
-	w32semaphore-win32.c w32event-win32.c assembly.c \
-	assembly-internals.h attach.h attach.c cil-coff.h class.c \
-	class-internals.h cominterop.c cominterop.h console-io.h \
-	coree.c coree.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c decimal-ms.c decimal-ms.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h exception-internals.h file-io.c file-io.h \
-	filewatcher.c filewatcher.h gc-internals.h icall.c icall-def.h \
-	image.c image-internals.h jit-info.c loader.c locales.c \
-	locales.h lock-tracer.c lock-tracer.h marshal.c marshal.h \
-	mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
-	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
-	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
-	number-formatter.h number-ms.c number-ms.h object-internals.h \
-	opcodes.c socket-io.c socket-io.h process.c process.h \
-	profiler.c profiler-private.h rand.h rand.c remoting.h \
-	remoting.c runtime.c mono-security.c security.h \
-	security-core-clr.c security-core-clr.h security-manager.c \
-	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
-	dynamic-stream-internals.h reflection-cache.h \
+	w32semaphore-win32.c w32event-win32.c socket-io-windows.c \
+	assembly.c assembly-internals.h attach.h attach.c cil-coff.h \
+	class.c class-internals.h cominterop.c cominterop.h \
+	console-io.h coree.c coree.h culture-info.h \
+	culture-info-tables.h debug-helpers.c debug-mono-symfile.h \
+	debug-mono-symfile.c debug-mono-ppdb.h debug-mono-ppdb.c \
+	decimal-ms.c decimal-ms.h domain-internals.h environment.c \
+	environment.h exception.c exception.h exception-internals.h \
+	file-io.c file-io.h filewatcher.c filewatcher.h gc-internals.h \
+	icall.c icall-def.h image.c image-internals.h jit-info.c \
+	loader.c locales.c locales.h lock-tracer.c lock-tracer.h \
+	marshal.c marshal.h mempool.c mempool.h mempool-internals.h \
+	metadata.c metadata-verify.c metadata-internals.h \
+	method-builder.h method-builder.c mono-basic-block.c \
+	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
+	mono-debug-debugger.h mono-endian.c mono-endian.h mono-hash.h \
+	mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
+	mono-route.c mono-route.h monitor.h nacl-stub.c \
+	normalization-tables.h number-formatter.h number-ms.c \
+	number-ms.h object-internals.h opcodes.c socket-io.c \
+	socket-io.h process.c process.h profiler.c profiler-private.h \
+	rand.h rand.c remoting.h remoting.c runtime.c mono-security.c \
+	security.h security-core-clr.c security-core-clr.h \
+	security-manager.c security-manager.h string-icalls.c \
+	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
+	threads-types.h threadpool-ms.c threadpool-ms.h \
+	threadpool-ms-io.c threadpool-ms-io.h verify.c \
+	verify-internals.h wrapper-types.h dynamic-image-internals.h \
+	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
@@ -302,7 +303,8 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @HOST_WIN32_TRUE@am__objects_12 = libmonoruntime_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntime_la-w32mutex-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntime_la-w32semaphore-win32.lo \
-@HOST_WIN32_TRUE@	libmonoruntime_la-w32event-win32.lo
+@HOST_WIN32_TRUE@	libmonoruntime_la-w32event-win32.lo \
+@HOST_WIN32_TRUE@	libmonoruntime_la-socket-io-windows.lo
 @HOST_WIN32_FALSE@am__objects_13 = $(am__objects_10) $(am__objects_11)
 @HOST_WIN32_TRUE@am__objects_13 = $(am__objects_12) $(am__objects_11)
 am__objects_14 = $(am__objects_13) libmonoruntime_la-assembly.lo \
@@ -371,36 +373,36 @@ libmonoruntimesgen_static_la_DEPENDENCIES = libmonoruntime-config.la \
 am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
 	../../support/libm/complex.c console-win32.c w32mutex-win32.c \
-	w32semaphore-win32.c w32event-win32.c assembly.c \
-	assembly-internals.h attach.h attach.c cil-coff.h class.c \
-	class-internals.h cominterop.c cominterop.h console-io.h \
-	coree.c coree.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c decimal-ms.c decimal-ms.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h exception-internals.h file-io.c file-io.h \
-	filewatcher.c filewatcher.h gc-internals.h icall.c icall-def.h \
-	image.c image-internals.h jit-info.c loader.c locales.c \
-	locales.h lock-tracer.c lock-tracer.h marshal.c marshal.h \
-	mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
-	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
-	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
-	number-formatter.h number-ms.c number-ms.h object-internals.h \
-	opcodes.c socket-io.c socket-io.h process.c process.h \
-	profiler.c profiler-private.h rand.h rand.c remoting.h \
-	remoting.c runtime.c mono-security.c security.h \
-	security-core-clr.c security-core-clr.h security-manager.c \
-	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
-	dynamic-stream-internals.h reflection-cache.h \
+	w32semaphore-win32.c w32event-win32.c socket-io-windows.c \
+	assembly.c assembly-internals.h attach.h attach.c cil-coff.h \
+	class.c class-internals.h cominterop.c cominterop.h \
+	console-io.h coree.c coree.h culture-info.h \
+	culture-info-tables.h debug-helpers.c debug-mono-symfile.h \
+	debug-mono-symfile.c debug-mono-ppdb.h debug-mono-ppdb.c \
+	decimal-ms.c decimal-ms.h domain-internals.h environment.c \
+	environment.h exception.c exception.h exception-internals.h \
+	file-io.c file-io.h filewatcher.c filewatcher.h gc-internals.h \
+	icall.c icall-def.h image.c image-internals.h jit-info.c \
+	loader.c locales.c locales.h lock-tracer.c lock-tracer.h \
+	marshal.c marshal.h mempool.c mempool.h mempool-internals.h \
+	metadata.c metadata-verify.c metadata-internals.h \
+	method-builder.h method-builder.c mono-basic-block.c \
+	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
+	mono-debug-debugger.h mono-endian.c mono-endian.h mono-hash.h \
+	mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
+	mono-route.c mono-route.h monitor.h nacl-stub.c \
+	normalization-tables.h number-formatter.h number-ms.c \
+	number-ms.h object-internals.h opcodes.c socket-io.c \
+	socket-io.h process.c process.h profiler.c profiler-private.h \
+	rand.h rand.c remoting.h remoting.c runtime.c mono-security.c \
+	security.h security-core-clr.c security-core-clr.h \
+	security-manager.c security-manager.h string-icalls.c \
+	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
+	threads-types.h threadpool-ms.c threadpool-ms.h \
+	threadpool-ms-io.c threadpool-ms-io.h verify.c \
+	verify-internals.h wrapper-types.h dynamic-image-internals.h \
+	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
@@ -422,7 +424,8 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_TRUE@am__objects_20 = libmonoruntimesgen_static_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_static_la-w32mutex-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_static_la-w32semaphore-win32.lo \
-@HOST_WIN32_TRUE@	libmonoruntimesgen_static_la-w32event-win32.lo
+@HOST_WIN32_TRUE@	libmonoruntimesgen_static_la-w32event-win32.lo \
+@HOST_WIN32_TRUE@	libmonoruntimesgen_static_la-socket-io-windows.lo
 @HOST_WIN32_FALSE@am__objects_21 = $(am__objects_18) $(am__objects_19)
 @HOST_WIN32_TRUE@am__objects_21 = $(am__objects_20) $(am__objects_19)
 am__objects_22 = $(am__objects_21) \
@@ -520,36 +523,36 @@ libmonoruntimesgen_la_DEPENDENCIES = libmonoruntime-config.la \
 am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32mutex-unix.c w32semaphore-unix.c w32event-unix.c \
 	../../support/libm/complex.c console-win32.c w32mutex-win32.c \
-	w32semaphore-win32.c w32event-win32.c assembly.c \
-	assembly-internals.h attach.h attach.c cil-coff.h class.c \
-	class-internals.h cominterop.c cominterop.h console-io.h \
-	coree.c coree.h culture-info.h culture-info-tables.h \
-	debug-helpers.c debug-mono-symfile.h debug-mono-symfile.c \
-	debug-mono-ppdb.h debug-mono-ppdb.c decimal-ms.c decimal-ms.h \
-	domain-internals.h environment.c environment.h exception.c \
-	exception.h exception-internals.h file-io.c file-io.h \
-	filewatcher.c filewatcher.h gc-internals.h icall.c icall-def.h \
-	image.c image-internals.h jit-info.c loader.c locales.c \
-	locales.h lock-tracer.c lock-tracer.h marshal.c marshal.h \
-	mempool.c mempool.h mempool-internals.h metadata.c \
-	metadata-verify.c metadata-internals.h method-builder.h \
-	method-builder.c mono-basic-block.c mono-basic-block.h \
-	mono-config.c mono-debug.h mono-debug.c mono-debug-debugger.h \
-	mono-endian.c mono-endian.h mono-hash.h mono-mlist.c \
-	mono-mlist.h mono-perfcounters.c mono-perfcounters.h \
-	mono-perfcounters-def.h mono-ptr-array.h mono-route.c \
-	mono-route.h monitor.h nacl-stub.c normalization-tables.h \
-	number-formatter.h number-ms.c number-ms.h object-internals.h \
-	opcodes.c socket-io.c socket-io.h process.c process.h \
-	profiler.c profiler-private.h rand.h rand.c remoting.h \
-	remoting.c runtime.c mono-security.c security.h \
-	security-core-clr.c security-core-clr.h security-manager.c \
-	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
-	dynamic-stream-internals.h reflection-cache.h \
+	w32semaphore-win32.c w32event-win32.c socket-io-windows.c \
+	assembly.c assembly-internals.h attach.h attach.c cil-coff.h \
+	class.c class-internals.h cominterop.c cominterop.h \
+	console-io.h coree.c coree.h culture-info.h \
+	culture-info-tables.h debug-helpers.c debug-mono-symfile.h \
+	debug-mono-symfile.c debug-mono-ppdb.h debug-mono-ppdb.c \
+	decimal-ms.c decimal-ms.h domain-internals.h environment.c \
+	environment.h exception.c exception.h exception-internals.h \
+	file-io.c file-io.h filewatcher.c filewatcher.h gc-internals.h \
+	icall.c icall-def.h image.c image-internals.h jit-info.c \
+	loader.c locales.c locales.h lock-tracer.c lock-tracer.h \
+	marshal.c marshal.h mempool.c mempool.h mempool-internals.h \
+	metadata.c metadata-verify.c metadata-internals.h \
+	method-builder.h method-builder.c mono-basic-block.c \
+	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
+	mono-debug-debugger.h mono-endian.c mono-endian.h mono-hash.h \
+	mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
+	mono-route.c mono-route.h monitor.h nacl-stub.c \
+	normalization-tables.h number-formatter.h number-ms.c \
+	number-ms.h object-internals.h opcodes.c socket-io.c \
+	socket-io.h process.c process.h profiler.c profiler-private.h \
+	rand.h rand.c remoting.h remoting.c runtime.c mono-security.c \
+	security.h security-core-clr.c security-core-clr.h \
+	security-manager.c security-manager.h string-icalls.c \
+	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
+	threads-types.h threadpool-ms.c threadpool-ms.h \
+	threadpool-ms-io.c threadpool-ms-io.h verify.c \
+	verify-internals.h wrapper-types.h dynamic-image-internals.h \
+	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
@@ -573,7 +576,8 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32mutex-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32semaphore-win32.lo \
-@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32event-win32.lo
+@HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32event-win32.lo \
+@HOST_WIN32_TRUE@	libmonoruntimesgen_la-socket-io-windows.lo
 @HOST_WIN32_FALSE@am__objects_29 = $(am__objects_26) $(am__objects_27)
 @HOST_WIN32_TRUE@am__objects_29 = $(am__objects_28) $(am__objects_27)
 am__objects_30 = $(am__objects_29) libmonoruntimesgen_la-assembly.lo \
@@ -973,7 +977,8 @@ top_srcdir = @top_srcdir@
 @HOST_WIN32_TRUE@	console-win32.c \
 @HOST_WIN32_TRUE@	w32mutex-win32.c \
 @HOST_WIN32_TRUE@	w32semaphore-win32.c \
-@HOST_WIN32_TRUE@	w32event-win32.c
+@HOST_WIN32_TRUE@	w32event-win32.c \
+@HOST_WIN32_TRUE@	socket-io-windows.c
 
 @HOST_WIN32_FALSE@platform_sources = $(unix_sources) $(am__append_1)
 @HOST_WIN32_TRUE@platform_sources = $(win32_sources) $(am__append_1)
@@ -1401,6 +1406,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-security-core-clr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-security-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-seq-points-data.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-socket-io-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-socket-io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre-encode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre-save.Plo@am__quote@
@@ -1480,6 +1486,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-security-core-clr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-security-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-seq-points-data.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-socket-io-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-socket-io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sre-encode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sre-save.Plo@am__quote@
@@ -1568,6 +1575,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-stw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-tarjan-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-toggleref.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-socket-io-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-socket-io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sre-encode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sre-save.Plo@am__quote@
@@ -1656,6 +1664,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-stw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-tarjan-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-toggleref.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-socket-io-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-socket-io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sre-encode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sre-save.Plo@am__quote@
@@ -1767,6 +1776,13 @@ libmonoruntime_static_la-w32event-win32.lo: w32event-win32.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='w32event-win32.c' object='libmonoruntime_static_la-w32event-win32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-w32event-win32.lo `test -f 'w32event-win32.c' || echo '$(srcdir)/'`w32event-win32.c
+
+libmonoruntime_static_la-socket-io-windows.lo: socket-io-windows.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-socket-io-windows.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-socket-io-windows.Tpo -c -o libmonoruntime_static_la-socket-io-windows.lo `test -f 'socket-io-windows.c' || echo '$(srcdir)/'`socket-io-windows.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-socket-io-windows.Tpo $(DEPDIR)/libmonoruntime_static_la-socket-io-windows.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='socket-io-windows.c' object='libmonoruntime_static_la-socket-io-windows.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-socket-io-windows.lo `test -f 'socket-io-windows.c' || echo '$(srcdir)/'`socket-io-windows.c
 
 libmonoruntime_static_la-assembly.lo: assembly.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-assembly.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-assembly.Tpo -c -o libmonoruntime_static_la-assembly.lo `test -f 'assembly.c' || echo '$(srcdir)/'`assembly.c
@@ -2328,6 +2344,13 @@ libmonoruntime_la-w32event-win32.lo: w32event-win32.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-w32event-win32.lo `test -f 'w32event-win32.c' || echo '$(srcdir)/'`w32event-win32.c
 
+libmonoruntime_la-socket-io-windows.lo: socket-io-windows.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-socket-io-windows.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-socket-io-windows.Tpo -c -o libmonoruntime_la-socket-io-windows.lo `test -f 'socket-io-windows.c' || echo '$(srcdir)/'`socket-io-windows.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-socket-io-windows.Tpo $(DEPDIR)/libmonoruntime_la-socket-io-windows.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='socket-io-windows.c' object='libmonoruntime_la-socket-io-windows.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-socket-io-windows.lo `test -f 'socket-io-windows.c' || echo '$(srcdir)/'`socket-io-windows.c
+
 libmonoruntime_la-assembly.lo: assembly.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-assembly.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-assembly.Tpo -c -o libmonoruntime_la-assembly.lo `test -f 'assembly.c' || echo '$(srcdir)/'`assembly.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-assembly.Tpo $(DEPDIR)/libmonoruntime_la-assembly.Plo
@@ -2887,6 +2910,13 @@ libmonoruntimesgen_static_la-w32event-win32.lo: w32event-win32.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='w32event-win32.c' object='libmonoruntimesgen_static_la-w32event-win32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-w32event-win32.lo `test -f 'w32event-win32.c' || echo '$(srcdir)/'`w32event-win32.c
+
+libmonoruntimesgen_static_la-socket-io-windows.lo: socket-io-windows.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-socket-io-windows.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-socket-io-windows.Tpo -c -o libmonoruntimesgen_static_la-socket-io-windows.lo `test -f 'socket-io-windows.c' || echo '$(srcdir)/'`socket-io-windows.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-socket-io-windows.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-socket-io-windows.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='socket-io-windows.c' object='libmonoruntimesgen_static_la-socket-io-windows.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-socket-io-windows.lo `test -f 'socket-io-windows.c' || echo '$(srcdir)/'`socket-io-windows.c
 
 libmonoruntimesgen_static_la-assembly.lo: assembly.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-assembly.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-assembly.Tpo -c -o libmonoruntimesgen_static_la-assembly.lo `test -f 'assembly.c' || echo '$(srcdir)/'`assembly.c
@@ -3510,6 +3540,13 @@ libmonoruntimesgen_la-w32event-win32.lo: w32event-win32.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='w32event-win32.c' object='libmonoruntimesgen_la-w32event-win32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-w32event-win32.lo `test -f 'w32event-win32.c' || echo '$(srcdir)/'`w32event-win32.c
+
+libmonoruntimesgen_la-socket-io-windows.lo: socket-io-windows.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-socket-io-windows.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-socket-io-windows.Tpo -c -o libmonoruntimesgen_la-socket-io-windows.lo `test -f 'socket-io-windows.c' || echo '$(srcdir)/'`socket-io-windows.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-socket-io-windows.Tpo $(DEPDIR)/libmonoruntimesgen_la-socket-io-windows.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='socket-io-windows.c' object='libmonoruntimesgen_la-socket-io-windows.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-socket-io-windows.lo `test -f 'socket-io-windows.c' || echo '$(srcdir)/'`socket-io-windows.c
 
 libmonoruntimesgen_la-assembly.lo: assembly.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-assembly.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-assembly.Tpo -c -o libmonoruntimesgen_la-assembly.lo `test -f 'assembly.c' || echo '$(srcdir)/'`assembly.c

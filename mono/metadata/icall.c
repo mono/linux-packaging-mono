@@ -993,15 +993,24 @@ ves_icall_System_Runtime_CompilerServices_RuntimeHelpers_RunModuleConstructor (M
 ICALL_EXPORT MonoBoolean
 ves_icall_System_Runtime_CompilerServices_RuntimeHelpers_SufficientExecutionStack (void)
 {
+#if defined(TARGET_WIN32) || defined(HOST_WIN32)
+	// It does not work on win32
+#else
 	guint8 *stack_addr;
 	guint8 *current;
 	size_t stack_size;
-	/* later make this configurable and per-arch */
-	int min_size = 4096 * 4 * sizeof (void*);
+	int min_size;
+	MonoInternalThread *thread;
+
 	mono_thread_info_get_stack_bounds (&stack_addr, &stack_size);
 	/* if we have no info we are optimistic and assume there is enough room */
 	if (!stack_addr)
 		return TRUE;
+
+	thread = mono_thread_internal_current ();
+	// .net seems to check that at least 50% of stack is available
+	min_size = thread->stack_size / 2;
+
 	current = (guint8 *)&stack_addr;
 	if (current > stack_addr) {
 		if ((current - stack_addr) < min_size)
@@ -1010,6 +1019,7 @@ ves_icall_System_Runtime_CompilerServices_RuntimeHelpers_SufficientExecutionStac
 		if (current - (stack_addr - stack_size) < min_size)
 			return FALSE;
 	}
+#endif
 	return TRUE;
 }
 
@@ -7257,7 +7267,6 @@ get_bundled_app_config (void)
 	return mono_string_new (mono_domain_get (), app_config);
 }
 
-/* this is an icall */
 static MonoStringHandle
 get_bundled_machine_config (MonoError *error)
 {
@@ -7270,6 +7279,19 @@ get_bundled_machine_config (MonoError *error)
 
 	return mono_string_new_handle (mono_domain_get (), machine_config, error);
 }
+
+static MonoStringHandle
+ves_icall_System_Configuration_DefaultConfig_get_bundled_machine_config (MonoError *error)
+{
+	return get_bundled_machine_config (error);
+}
+
+static MonoStringHandle
+ves_icall_System_Configuration_InternalConfigurationHost_get_bundled_machine_config (MonoError *error)
+{
+	return get_bundled_machine_config (error);
+}
+
 
 ICALL_EXPORT MonoString *
 ves_icall_System_Web_Util_ICalls_get_machine_install_dir (void)
