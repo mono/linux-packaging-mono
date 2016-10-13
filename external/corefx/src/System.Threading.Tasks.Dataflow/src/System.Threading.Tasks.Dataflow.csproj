@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <ProjectGuid>{1DD0FF15-6234-4BD6-850A-317F05479554}</ProjectGuid>
+    <RootNamespace>System.Threading.Tasks.Dataflow</RootNamespace>
+    <AssemblyName>System.Threading.Tasks.Dataflow</AssemblyName>
+    <DocumentationFile>$(OutputPath)System.Threading.Tasks.Dataflow.XML</DocumentationFile>
+    <DefineConstants Condition="'$(TargetGroup)' == ''">$(DefineConstants);CONCURRENT_COLLECTIONS;FEATURE_TRACING</DefineConstants>
+    <NuGetTargetMoniker Condition="'$(TargetGroup)' == ''">.NETStandard,Version=v1.1</NuGetTargetMoniker>
+    <PackageTargetFramework Condition="'$(TargetGroup)' == ''">netstandard1.1;portable-net45+win8+wpa81</PackageTargetFramework>
+  </PropertyGroup>
+  <!-- Default configurations to help VS understand the configurations -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+  <ItemGroup>
+    <Compile Include="Base\DataflowBlock.cs" />
+    <Compile Include="Base\DataflowBlockOptions.cs" />
+    <Compile Include="Base\DataflowLinkOptions.cs" />
+    <Compile Include="Base\DataflowMessageHeader.cs" />
+    <Compile Include="Base\DataflowMessageStatus.cs" />
+    <Compile Include="Base\IDataflowBlock.cs" />
+    <Compile Include="Base\IPropagatorBlock.cs" />
+    <Compile Include="Base\IReceivableSourceBlock.cs" />
+    <Compile Include="Base\ISourceBlock.cs" />
+    <Compile Include="Base\ITargetBlock.cs" />
+    <Compile Include="Blocks\ActionBlock.cs" />
+    <Compile Include="Blocks\BatchBlock.cs" />
+    <Compile Include="Blocks\BatchedJoinBlock.cs" />
+    <Compile Include="Blocks\BroadcastBlock.cs" />
+    <Compile Include="Blocks\BufferBlock.cs" />
+    <Compile Include="Blocks\JoinBlock.cs" />
+    <Compile Include="Blocks\TransformBlock.cs" />
+    <Compile Include="Blocks\TransformManyBlock.cs" />
+    <Compile Include="Blocks\WriteOnceBlock.cs" />
+    <Compile Include="Internal\ActionOnDispose.cs" />
+    <Compile Include="Internal\Common.cs" />
+    <Compile Include="Internal\DataflowEtwProvider.cs" />
+    <Compile Include="Internal\EnumerableDebugView.cs" />
+    <Compile Include="Internal\IDebuggerDisplay.cs" />
+    <Compile Include="Internal\ImmutableArray.cs" />
+    <Compile Include="Internal\Padding.cs" />
+    <Compile Include="Internal\ProducerConsumerQueues.cs" />
+    <Compile Include="Internal\QueuedMap.cs" />
+    <Compile Include="Internal\ReorderingBuffer.cs" />
+    <Compile Include="Internal\SourceCore.cs" />
+    <Compile Include="Internal\SpscTargetCore.cs" />
+    <Compile Include="Internal\TargetCore.cs" />
+    <Compile Include="Internal\TargetRegistry.cs" />
+    <Compile Include="Internal\Threading.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetGroup)' == 'netstandard1.0'">
+    <Compile Include="Internal\ConcurrentQueue.cs" />
+    <Compile Include="Internal\IProducerConsumerCollection.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="XmlDocs\CommonXmlDocComments.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XmlDocs\System.Threading.Tasks.Dataflow.xml" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>

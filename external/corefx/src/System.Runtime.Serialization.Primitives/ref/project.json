@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+  },
+  "frameworks": {
+    "netstandard1.7": {
+      "imports": [
+        "dotnet5.8"
+      ]
+    }
+  }
+}

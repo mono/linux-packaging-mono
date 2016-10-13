@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{8CBA022C-635F-4C8D-9D29-CD8AAC68C8E6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NugetTargetMoniker Condition="'$(NugetTargetMoniker)' == ''">.NETStandard,Version=v1.7</NugetTargetMoniker>
+    <RuntimeTargetMonikers>.NETCoreApp,Version=v1.1</RuntimeTargetMonikers>
+  </PropertyGroup>
+  <!-- Help VS understand available configurations -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
+  <ItemGroup>
+    <Compile Include="AcceptAsync.cs" />
+    <Compile Include="AgnosticListenerTest.cs" />
+    <Compile Include="ArgumentValidationTests.cs" />
+    <Compile Include="DisconnectTest.cs" />
+    <Compile Include="Handle.cs" />
+    <Compile Include="ConnectAsync.cs" />
+    <Compile Include="ConnectExTest.cs" />
+    <Compile Include="Close.cs" />
+    <Compile Include="CreateSocketTests.cs" />
+    <Compile Include="DisposedSocketTests.cs" />
+    <Compile Include="DnsEndPointTest.cs" />
+    <Compile Include="DualModeSocketTest.cs" />
+    <Compile Include="IPPacketInformationTest.cs" />
+    <Compile Include="LingerStateTest.cs" />
+    <Compile Include="NetworkStreamTest.cs" />
+    <Compile Include="ReceiveMessageFrom.cs" />
+    <Compile Include="ReceiveMessageFromAsync.cs" />
+    <Compile Include="SelectTest.cs" />
+    <Compile Include="SendPacketsAsync.cs" />
+    <Compile Include="SendPacketsElementTest.cs" />
+    <Compile Include="SendReceive.cs" />
+    <Compile Include="SelectAndPollTests.cs" />
+    <Compile Include="TimeoutTest.cs" />
+    <Compile Include="TcpClientTest.cs" />
+    <Compile Include="Shutdown.cs" />
+    <Compile Include="SocketAPMExtensions.cs" />
+    <Compile Include="SocketAsyncExtensions.cs" />
+    <Compile Include="SocketOptionNameTest.cs" />
+    <Compile Include="UdpClientTest.cs" />
+    <Compile Include="UnixDomainSocketTest.cs" />
+    <!-- Common Sockets files -->
+    <Compile Include="$(CommonTestPath)\System\Net\Configuration.cs">
+      <Link>SocketCommon\Configuration.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Configuration.Sockets.cs">
+      <Link>SocketCommon\Configuration.Sockets.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Sockets\TestSettings.cs">
+      <Link>SocketCommon\TestSettings.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Sockets\Fletcher32.cs">
+      <Link>SocketCommon\Fletcher32.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Sockets\SocketTestExtensions.cs">
+      <Link>SocketCommon\SocketTestExtensions.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Sockets\SocketTestServer.cs">
+      <Link>SocketCommon\SocketTestServer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Sockets\SocketTestServerAsync.cs">
+      <Link>SocketCommon\SocketTestServerAsync.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Sockets\SocketTestServerAPM.cs">
+      <Link>SocketCommon\SocketTestServerAPM.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Sockets\SocketImplementationType.cs">
+      <Link>SocketCommon\SocketImplementationType.cs</Link>
+    </Compile>
+    <!-- Common test files -->
+    <Compile Include="$(CommonTestPath)\System\PlatformDetection.cs">
+      <Link>Common\System\PlatformDetection.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\TestLogging.cs">
+      <Link>Common\System\Net\TestLogging.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\VerboseTestLogging.cs">
+      <Link>Common\System\Net\VerboseTestLogging.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\EventSourceTestLogging.cs">
+      <Link>Common\System\Net\EventSourceTestLogging.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\Net\Capability.Sockets.cs">
+      <Link>Common\System\Net\Capability.Sockets.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonTestPath)\System\ShouldNotBeInvokedException.cs">
+      <Link>Common\System\ShouldNotBeInvokedException.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Net\Sockets\SocketAPMExtensions.cs">
+      <Link>Common\System\Net\Sockets\SocketAPMExtensions.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Threading\Tasks\TaskToApm.cs">
+      <Link>Common\System\Threading\Tasks\TaskToApm.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\System.Security.Principal.Windows\pkg\System.Security.Principal.Windows.pkgproj" />
+    <ProjectReference Include="..\..\pkg\System.Net.Sockets.pkgproj">
+      <Project>{43311AFB-D7C4-4E5A-B1DE-855407F90D1B}</Project>
+      <Name>System.Net.Sockets</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>
