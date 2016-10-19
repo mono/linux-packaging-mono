@@ -169,11 +169,15 @@ endif()
 
 # Declare a dummy target to build all unit tests. Test targets should inject
 # themselves as dependencies next to the target definition.
+if(ENABLE_TESTS)
 add_custom_target(all_tests)
+endif()
 
 add_subdirectory(crypto)
 add_subdirectory(ssl)
+if(ENABLE_TESTS)
 add_subdirectory(ssl/test)
+endif()
 add_subdirectory(tool)
 add_subdirectory(decrepit)
 

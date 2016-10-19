@@ -138,7 +138,9 @@ add_subdirectory(x509v3)
 add_subdirectory(pkcs8)
 
 # Test support code
+if(ENABLE_TESTS)
 add_subdirectory(test)
+endif()
 
 set(
   crypto_objects_dependencies
@@ -268,6 +270,7 @@ if(NOT MSVC AND NOT ANDROID)
   target_link_libraries(crypto pthread)
 endif()
 
+if(ENABLE_TESTS)
 add_executable(
   constant_time_test
 
@@ -298,3 +301,4 @@ add_executable(
 
 target_link_libraries(refcount_test crypto)
 add_dependencies(all_tests refcount_test)
+endif()
