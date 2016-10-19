@@ -43,6 +43,7 @@ add_library(
   v3_utl.c
 )
 
+if(ENABLE_TESTS)
 add_executable(
   v3name_test
 
@@ -64,3 +65,4 @@ add_executable(
 
 target_link_libraries(tab_test crypto)
 add_dependencies(all_tests tab_test)
+endif()

@@ -10,6 +10,7 @@ add_library(
 )
 
 
+if(ENABLE_TESTS)
 add_executable(
   ecdsa_test
 
@@ -20,3 +21,4 @@ add_executable(
 
 target_link_libraries(ecdsa_test crypto)
 add_dependencies(all_tests ecdsa_test)
+endif()

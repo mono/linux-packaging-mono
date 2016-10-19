@@ -8,6 +8,7 @@ add_library(
   base64.c
 )
 
+if(ENABLE_TESTS)
 add_executable(
   base64_test
 
@@ -18,3 +19,4 @@ add_executable(
 
 target_link_libraries(base64_test crypto)
 add_dependencies(all_tests base64_test)
+endif()

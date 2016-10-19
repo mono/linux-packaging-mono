@@ -56,6 +56,7 @@ add_library(
   x_x509a.c
 )
 
+if(ENABLE_TESTS)
 add_executable(
   pkcs7_test
 
@@ -75,3 +76,4 @@ add_executable(
 target_link_libraries(pkcs7_test crypto)
 target_link_libraries(x509_test crypto)
 add_dependencies(all_tests pkcs7_test x509_test)
+endif()

@@ -38,6 +38,7 @@ add_library(
   err_data.c
 )
 
+if(ENABLE_TESTS)
 add_executable(
   err_test
 
@@ -48,3 +49,4 @@ add_executable(
 
 target_link_libraries(err_test crypto)
 add_dependencies(all_tests err_test)
+endif()

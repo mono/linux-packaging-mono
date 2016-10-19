@@ -82,6 +82,7 @@ add_library(
 
 target_link_libraries(ssl crypto)
 
+if(ENABLE_TESTS)
 add_executable(
   ssl_test
 
@@ -92,3 +93,4 @@ add_executable(
 
 target_link_libraries(ssl_test ssl crypto)
 add_dependencies(all_tests ssl_test)
+endif()

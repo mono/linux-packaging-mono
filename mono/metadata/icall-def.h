@@ -124,9 +124,6 @@ ICALL(BTLS_PKCS12_8, "mono_btls_pkcs12_import", mono_btls_pkcs12_import)
 ICALL(BTLS_PKCS12_9, "mono_btls_pkcs12_new", mono_btls_pkcs12_new)
 ICALL(BTLS_PKCS12_10, "mono_btls_pkcs12_up_ref", mono_btls_pkcs12_up_ref)
 
-ICALL_TYPE(BTLS_PROVIDER, "Mono.Btls.MonoBtlsProvider", BTLS_PROVIDER_1)
-ICALL(BTLS_PROVIDER_1, "IsSupported", ves_icall_Mono_Btls_Provider_IsSupported)
-
 ICALL_TYPE(BTLS_SSL, "Mono.Btls.MonoBtlsSsl", BTLS_SSL_1)
 ICALL(BTLS_SSL_1, "mono_btls_ssl_accept", mono_btls_ssl_accept)
 ICALL(BTLS_SSL_2, "mono_btls_ssl_add_chain_certificate", mono_btls_ssl_add_chain_certificate)
@@ -314,9 +311,6 @@ ICALL(BTLS_X509_VERIFY_PARAM_16, "mono_btls_x509_verify_param_set_mono_flags", m
 ICALL(BTLS_X509_VERIFY_PARAM_17, "mono_btls_x509_verify_param_set_name", mono_btls_x509_verify_param_set_name)
 ICALL(BTLS_X509_VERIFY_PARAM_18, "mono_btls_x509_verify_param_set_purpose", mono_btls_x509_verify_param_set_purpose)
 ICALL(BTLS_X509_VERIFY_PARAM_19, "mono_btls_x509_verify_param_set_time", mono_btls_x509_verify_param_set_time)
-#else
-ICALL_TYPE(BTLS_PROVIDER, "Mono.Btls.MonoBtlsProvider", BTLS_PROVIDER_1)
-ICALL(BTLS_PROVIDER_1, "IsSupported", ves_icall_Mono_Btls_Provider_IsSupported)
 #endif
 
 #ifndef DISABLE_COM
@@ -324,6 +318,9 @@ ICALL_TYPE(COMPROX, "Mono.Interop.ComInteropProxy", COMPROX_1)
 ICALL(COMPROX_1, "AddProxy", ves_icall_Mono_Interop_ComInteropProxy_AddProxy)
 ICALL(COMPROX_2, "FindProxy", ves_icall_Mono_Interop_ComInteropProxy_FindProxy)
 #endif
+
+ICALL_TYPE(TLS_PROVIDER_FACTORY, "Mono.Net.Security.MonoTlsProviderFactory", TLS_PROVIDER_FACTORY_1)
+ICALL(TLS_PROVIDER_FACTORY_1, "IsBtlsSupported", ves_icall_Mono_TlsProviderFactory_IsBtlsSupported)
 
 ICALL_TYPE(RUNTIME, "Mono.Runtime", RUNTIME_1)
 ICALL(RUNTIME_1, "GetDisplayName", ves_icall_Mono_Runtime_GetDisplayName)
@@ -521,7 +518,7 @@ ICALL(ENV_13, "get_Platform", ves_icall_System_Environment_get_Platform)
 ICALL(ENV_14, "get_ProcessorCount", mono_cpu_count)
 ICALL(ENV_15, "get_TickCount", ves_icall_System_Environment_get_TickCount)
 ICALL(ENV_16, "get_UserName", ves_icall_System_Environment_get_UserName)
-HANDLES(ICALL(ENV_16b, "get_bundled_machine_config", get_bundled_machine_config))
+HANDLES(ICALL(ENV_16b, "get_bundled_machine_config", ves_icall_System_Environment_get_bundled_machine_config))
 ICALL(ENV_16m, "internalBroadcastSettingChange", ves_icall_System_Environment_BroadcastSettingChange)
 HANDLES(ICALL(ENV_17, "internalGetEnvironmentVariable_native", ves_icall_System_Environment_GetEnvironmentVariable_native))
 HANDLES(ICALL(ENV_18, "internalGetGacPath", ves_icall_System_Environment_GetGacPath))
