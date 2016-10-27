@@ -61,7 +61,6 @@ perlasm(aes-armv4.${ASM_EXT} asm/aes-armv4.pl)
 perlasm(bsaes-armv7.${ASM_EXT} asm/bsaes-armv7.pl)
 perlasm(aesv8-armx.${ASM_EXT} asm/aesv8-armx.pl)
 
-if(ENABLE_TESTS)
 add_executable(
   aes_test
 
@@ -71,4 +70,3 @@ add_executable(
 
 target_link_libraries(aes_test crypto)
 add_dependencies(all_tests aes_test)
-endif()

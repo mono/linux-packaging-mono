@@ -27,7 +27,6 @@ add_library(
   ${CURVE25519_ARCH_SOURCES}
 )
 
-if(ENABLE_TESTS)
 add_executable(
   ed25519_test
 
@@ -46,4 +45,3 @@ add_executable(
 
 target_link_libraries(x25519_test crypto)
 add_dependencies(all_tests x25519_test)
-endif()

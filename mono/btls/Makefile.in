@@ -484,6 +484,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@DYNAMIC_BTLS_FALSE@install-exec-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -510,7 +511,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am:
+install-exec-am: install-exec-local
 
 install-html: install-html-am
 
@@ -557,20 +558,23 @@ uninstall-am:
 	distclean-generic distclean-libtool distdir dvi dvi-am html \
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
-	uninstall-am
+	install-exec-am install-exec-local install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags-am uninstall uninstall-am
 
 
 all-local: $(BTLS_STATIC_LIST) $(BTLS_SHARED_LIST)
 
-build-shared/Makefile:
-	-mkdir -p build-shared
-	(cd build-shared && $(CMAKE) $(CMAKE_ARGS) $(BTLS_CMAKE_ARGS) -DBUILD_SHARED_LIBS=1 $(abs_top_srcdir)/mono/btls)
+@DYNAMIC_BTLS_TRUE@build-shared/Makefile:
+@DYNAMIC_BTLS_TRUE@	-mkdir -p build-shared
+@DYNAMIC_BTLS_TRUE@	(cd build-shared && $(CMAKE) $(CMAKE_ARGS) $(BTLS_CMAKE_ARGS) -DBUILD_DYNAMIC_BTLS=1 $(abs_top_srcdir)/mono/btls)
+@DYNAMIC_BTLS_FALSE@build-shared/Makefile:
+@DYNAMIC_BTLS_FALSE@	-mkdir -p build-shared
+@DYNAMIC_BTLS_FALSE@	(cd build-shared && $(CMAKE) $(CMAKE_ARGS) $(BTLS_CMAKE_ARGS) -DBUILD_SHARED_LIBS=1 $(abs_top_srcdir)/mono/btls)
 
 build-static/Makefile:
 	-mkdir -p build-static
@@ -585,6 +589,9 @@ $(BTLS_SHARED_LIST): build-shared/Makefile
 clean-local:
 	-rm -rf build-static
 	-rm -rf build-shared
+
+@DYNAMIC_BTLS_TRUE@install-exec-local:
+@DYNAMIC_BTLS_TRUE@	$(install_sh) build-shared/libmono-btls-shared.* "$(DESTDIR)/$(libdir)"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

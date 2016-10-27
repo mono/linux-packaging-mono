@@ -12,7 +12,6 @@ add_library(
   rsa_asn1.c
 )
 
-if(ENABLE_TESTS)
 add_executable(
   rsa_test
 
@@ -23,4 +22,3 @@ add_executable(
 
 target_link_libraries(rsa_test crypto)
 add_dependencies(all_tests rsa_test)
-endif()

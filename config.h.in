@@ -260,6 +260,9 @@
 /* dlopen-based dynamic loader available */
 #undef HAVE_DL_LOADER
 
+/* BTLS in a shared libraty */
+#undef HAVE_DYNAMIC_BTLS
+
 /* Define to 1 if you have the <elf.h> header file. */
 #undef HAVE_ELF_H
 

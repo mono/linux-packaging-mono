@@ -8,7 +8,6 @@ add_library(
   pqueue.c
 )
 
-if(ENABLE_TESTS)
 add_executable(
   pqueue_test
 
@@ -19,4 +18,3 @@ add_executable(
 
 target_link_libraries(pqueue_test ssl crypto)
 add_dependencies(all_tests pqueue_test)
-endif()

@@ -8,7 +8,6 @@ add_library(
   lhash.c
 )
 
-if(ENABLE_TESTS)
 add_executable(
   lhash_test
 
@@ -19,4 +18,3 @@ add_executable(
 
 target_link_libraries(lhash_test crypto)
 add_dependencies(all_tests lhash_test)
-endif()

@@ -8,7 +8,6 @@ add_library(
   cmac.c
 )
 
-if(ENABLE_TESTS)
 add_executable(
   cmac_test
 
@@ -19,4 +18,3 @@ add_executable(
 
 target_link_libraries(cmac_test crypto)
 add_dependencies(all_tests cmac_test)
-endif()

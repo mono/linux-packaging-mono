@@ -20,7 +20,6 @@ add_library(
 )
 
 
-if(ENABLE_TESTS)
 add_executable(
   evp_extra_test
 
@@ -49,4 +48,3 @@ target_link_libraries(evp_extra_test crypto)
 target_link_libraries(evp_test crypto)
 target_link_libraries(pbkdf_test crypto)
 add_dependencies(all_tests evp_extra_test evp_test pbkdf_test)
-endif()

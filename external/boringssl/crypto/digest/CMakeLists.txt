@@ -9,7 +9,6 @@ add_library(
   digests.c
 )
 
-if(ENABLE_TESTS)
 add_executable(
   digest_test
 
@@ -20,4 +19,3 @@ add_executable(
 
 target_link_libraries(digest_test crypto)
 add_dependencies(all_tests digest_test)
-endif()

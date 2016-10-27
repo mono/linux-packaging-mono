@@ -66,7 +66,6 @@ MONO_FAST_TLS_DECLARE(tls_appdomain);
 	MonoThreadInfo *info; \
 	MONO_FAST_TLS_SET (tls_appdomain,x); \
 	mono_native_tls_set_value (appdomain_thread_id, x); \
-	mono_gc_set_current_thread_appdomain (x); \
 	info = mono_thread_info_current (); \
 	if (info) \
 		mono_thread_info_tls_set (info, TLS_KEY_DOMAIN, (x));	\
@@ -78,7 +77,6 @@ MONO_FAST_TLS_DECLARE(tls_appdomain);
 #define SET_APPDOMAIN(x) do {						\
 		MonoThreadInfo *info;								\
 		mono_native_tls_set_value (appdomain_thread_id, x);	\
-		mono_gc_set_current_thread_appdomain (x);		\
 		info = mono_thread_info_current ();				\
 		if (info)												 \
 			mono_thread_info_tls_set (info, TLS_KEY_DOMAIN, (x));	\
@@ -815,6 +813,16 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	domain->friendly_name = g_path_get_basename (filename);
 
 	mono_profiler_appdomain_name (domain, domain->friendly_name);
+
+	/* Have to do this quite late so that we at least have System.Object */
+	MonoError custom_attr_error;
+	if (mono_assembly_has_reference_assembly_attribute (ass, &custom_attr_error)) {
+		char *corlib_file = g_build_filename (mono_assembly_getrootdir (), "mono", current_runtime->framework_version, "mscorlib.dll", NULL);
+		g_print ("Could not load file or assembly %s. Reference assemblies should not be loaded for execution.  They can only be loaded in the Reflection-only loader context.", corlib_file);
+		g_free (corlib_file);
+		exit (1);
+	}
+	mono_error_assert_ok (&custom_attr_error);
 
 	return domain;
 }

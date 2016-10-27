@@ -2062,9 +2062,14 @@ mono_class_layout_fields (MonoClass *klass, int base_instance_size, int packing_
 		}
 	}
 
+	if (klass->byval_arg.type == MONO_TYPE_VAR || klass->byval_arg.type == MONO_TYPE_MVAR)
+		instance_size = sizeof (MonoObject) + mono_type_stack_size_internal (&klass->byval_arg, NULL, TRUE);
+	else if (klass->byval_arg.type == MONO_TYPE_PTR)
+		instance_size = sizeof (MonoObject) + sizeof (gpointer);
+
 	/* Publish the data */
 	mono_loader_lock ();
-	if (klass->instance_size && !klass->image->dynamic && top) {
+	if (klass->instance_size && !klass->image->dynamic) {
 		/* Might be already set using cached info */
 		g_assert (klass->instance_size == instance_size);
 	} else {
@@ -5549,6 +5554,7 @@ mono_class_setup_parent (MonoClass *klass, MonoClass *parent)
 			/* set the parent to something useful and safe, but mark the type as broken */
 			parent = mono_defaults.object_class;
 			mono_class_set_type_load_failure (klass, "");
+			g_assert (parent);
 		}
 
 		klass->parent = parent;
