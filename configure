@@ -697,6 +697,8 @@ BTLS_CFLAGS
 BTLS_ARCH
 BTLS_ROOT
 CMAKE
+DYNAMIC_BTLS_FALSE
+DYNAMIC_BTLS_TRUE
 BTLS_FALSE
 BTLS_TRUE
 LIBMONO_LA
@@ -1042,6 +1044,7 @@ with_cooperative_gc
 enable_checked_build
 enable_btls
 with_btls_android_ndk
+enable_dynamic_btls
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1731,6 +1734,7 @@ Optional Features:
   --disable-icall-tables Disable the runtime lookup of icalls
   --enable-checked-build=LIST      To enable checked build (expensive asserts), configure with a comma-separated LIST of checked build modules and then include that same list in the environment variable MONO_CHECK_MODE at runtime. Recognized checked build modules: all, gc, metadata, thread
   --disable-btls             Disable the BoringTls provider
+ --enable-dynamic-btls Place the BTLS provider into a separate shared library/archive.
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -18923,9 +18927,6 @@ if test x"$GCC" = xyes; then
 		# We rely on signed overflow to behave
 		CFLAGS="$CFLAGS -fwrapv"
 
-		# We rely on zero length arrays in structs
-		CFLAGS="$CFLAGS -Wno-zero-length-array"
-
 		CFLAGS="$CFLAGS -DMONO_DLL_EXPORT"
 		if test x"$disable_visibility_hidden" = xno; then
 		   # Don't export any symbols by default
@@ -18971,6 +18972,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 	   	   # https://bugzilla.samba.org/show_bug.cgi?id=8118
 	   	   WARN="$WARN -Qunused-arguments"
 		   WARN="$WARN -Wno-unused-function -Wno-tautological-compare -Wno-parentheses-equality -Wno-self-assign -Wno-return-stack-address -Wno-constant-logical-operand"
+		   # We rely on zero length arrays in structs
+		   WARN="$WARN -Wno-zero-length-array"
 		fi
 else
 	# The Sun Forte compiler complains about inline functions that access static variables
@@ -19742,7 +19745,7 @@ fi
 TEST_PROFILE=default
 enable_llvm_default=no
 
-INVARIANT_AOT_OPTIONS=nimt-trampolines=900,ntrampolines=8000,nrgctx-fetch-trampolines=256,ngsharedvt-trampolines=2800
+INVARIANT_AOT_OPTIONS=nimt-trampolines=2000,ntrampolines=8000,nrgctx-fetch-trampolines=256,ngsharedvt-trampolines=4000
 
 if test x$cross_compiling = xyes -o x$enable_mcs_build = xno; then
    DISABLE_MCS_DOCS_default=yes
@@ -27334,12 +27337,28 @@ if test "${with_btls_android_ndk+set}" = set; then :
 fi
 
 
+# Check whether --enable-dynamic-btls was given.
+if test "${enable_dynamic_btls+set}" = set; then :
+  enableval=$enable_dynamic_btls; enable_dynamic_btls=$enableval
+else
+  enable_dynamic_btls=no
+fi
+
+
  if test x$enable_btls = xyes; then
   BTLS_TRUE=
   BTLS_FALSE='#'
 else
   BTLS_TRUE='#'
   BTLS_FALSE=
+fi
+
+ if test x$enable_dynamic_btls = xyes; then
+  DYNAMIC_BTLS_TRUE=
+  DYNAMIC_BTLS_FALSE='#'
+else
+  DYNAMIC_BTLS_TRUE='#'
+  DYNAMIC_BTLS_FALSE=
 fi
 
 
@@ -27453,6 +27472,12 @@ fi
 
 $as_echo "#define HAVE_BTLS 1" >>confdefs.h
 
+
+	if test "x$enable_dynamic_btls" = "xyes"; then
+
+$as_echo "#define HAVE_DYNAMIC_BTLS 1" >>confdefs.h
+
+	fi
 else
 	enable_btls=no
 fi
@@ -28002,6 +28027,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BTLS_TRUE}" && test -z "${BTLS_FALSE}"; then
   as_fn_error $? "conditional \"BTLS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DYNAMIC_BTLS_TRUE}" && test -z "${DYNAMIC_BTLS_FALSE}"; then
+  as_fn_error $? "conditional \"DYNAMIC_BTLS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BTLS_ANDROID_TRUE}" && test -z "${BTLS_ANDROID_FALSE}"; then
@@ -31181,6 +31210,13 @@ fi
     if test "x$AOT_BUILD_FLAGS" != "x" ; then
       echo "AOT_RUN_FLAGS=$AOT_RUN_FLAGS" >> $srcdir/$mcsdir/build/config.make
       echo "AOT_BUILD_FLAGS=$AOT_BUILD_FLAGS" >> $srcdir/$mcsdir/build/config.make
+    fi
+
+    if test "x$enable_btls" = "xyes"; then
+      echo "HAVE_BTLS=1" >> $srcdir/$mcsdir/build/config.make
+      if test "x$enable_dynamic_btls" = "xyes"; then
+        echo "HAVE_DYNAMIC_BTLS=1" >> $srcdir/$mcsdir/build/config.make
+      fi
     fi
 
   fi

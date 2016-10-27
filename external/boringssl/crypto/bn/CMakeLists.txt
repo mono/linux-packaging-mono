@@ -76,7 +76,6 @@ perlasm(x86-mont.${ASM_EXT} asm/x86-mont.pl)
 perlasm(armv4-mont.${ASM_EXT} asm/armv4-mont.pl)
 perlasm(armv8-mont.${ASM_EXT} asm/armv8-mont.pl)
 
-if(ENABLE_TESTS)
 add_executable(
   bn_test
 
@@ -87,4 +86,3 @@ add_executable(
 
 target_link_libraries(bn_test crypto)
 add_dependencies(all_tests bn_test)
-endif()

@@ -83,12 +83,6 @@ static int ascii_to_ucs2(const char *ascii, size_t ascii_len,
   uint8_t *unitmp;
   size_t ulen, i;
 
-  if (!ascii) {
-    *out = NULL;
-    *out_len = 0;
-    return 1;
-  }
-
   ulen = ascii_len * 2 + 2;
   if (ulen < ascii_len) {
     return 0;

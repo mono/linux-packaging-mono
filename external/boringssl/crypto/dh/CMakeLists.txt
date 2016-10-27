@@ -11,7 +11,6 @@ add_library(
   dh_asn1.c
 )
 
-if(ENABLE_TESTS)
 add_executable(
   dh_test
 
@@ -22,4 +21,3 @@ add_executable(
 
 target_link_libraries(dh_test crypto)
 add_dependencies(all_tests dh_test)
-endif()

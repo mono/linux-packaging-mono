@@ -44,7 +44,6 @@ add_library(
   x_long.c
 )
 
-if(ENABLE_TESTS)
 add_executable(
   asn1_test
 
@@ -55,4 +54,3 @@ add_executable(
 
 target_link_libraries(asn1_test crypto)
 add_dependencies(all_tests asn1_test)
-endif()
