@@ -1432,7 +1432,6 @@ arch_emit_got_access (MonoAotCompile *acfg, const char *got_symbol, guint8 *code
 #elif defined(TARGET_POWERPC)
 	{
 		guint8 buf [32];
-		guint8 *code;
 
 		emit_bytes (acfg, code, mono_arch_get_patch_offset (code));
 		code = buf;
@@ -5809,6 +5808,7 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 		encode_method_ref (acfg, patch_info->data.virt_method->method, p, &p);
 		break;
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
+	case MONO_PATCH_INFO_GET_TLS_TRAMP:
 		break;
 	default:
 		g_warning ("unable to handle jump info %d", patch_info->type);
@@ -8192,7 +8192,7 @@ mono_aot_patch_info_dup (MonoJumpInfo* ji)
 static int
 execute_system (const char * command)
 {
-	int status;
+	int status = 0;
 
 #if _WIN32
 	// We need an extra set of quotes around the whole command to properly handle commands 
@@ -9791,7 +9791,7 @@ compile_methods (MonoAotCompile *acfg)
 		GPtrArray *frag;
 		int len, j;
 		GPtrArray *threads;
-		HANDLE handle;
+		MonoThreadHandle *thread_handle;
 		gpointer *user_data;
 		MonoMethod **methods;
 
@@ -9824,13 +9824,13 @@ compile_methods (MonoAotCompile *acfg)
 			user_data [1] = acfg;
 			user_data [2] = frag;
 			
-			handle = mono_threads_create_thread (compile_thread_main, (gpointer) user_data, NULL, NULL);
-			g_ptr_array_add (threads, handle);
+			thread_handle = mono_threads_create_thread (compile_thread_main, (gpointer) user_data, NULL, NULL);
+			g_ptr_array_add (threads, thread_handle);
 		}
 		g_free (methods);
 
 		for (i = 0; i < threads->len; ++i) {
-			WaitForSingleObjectEx (g_ptr_array_index (threads, i), INFINITE, FALSE);
+			mono_thread_info_wait_one_handle (g_ptr_array_index (threads, i), INFINITE, FALSE);
 			mono_threads_close_thread_handle (g_ptr_array_index (threads, i));
 		}
 	} else {
@@ -10379,6 +10379,11 @@ add_preinit_got_slots (MonoAotCompile *acfg)
 
 	ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
 	ji->type = MONO_PATCH_INFO_GC_NURSERY_BITS;
+	get_got_offset (acfg, FALSE, ji);
+	get_got_offset (acfg, TRUE, ji);
+
+	ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
+	ji->type = MONO_PATCH_INFO_GET_TLS_TRAMP;
 	get_got_offset (acfg, FALSE, ji);
 	get_got_offset (acfg, TRUE, ji);
 

@@ -189,6 +189,11 @@ func (hc *halfConn) changeCipherSpec(config *Config) error {
 	hc.nextMac = nil
 	hc.config = config
 	hc.incEpoch()
+
+	if config.Bugs.NullAllCiphers {
+		hc.cipher = nil
+		hc.mac = nil
+	}
 	return nil
 }
 
@@ -837,6 +842,9 @@ func (c *Conn) sendAlertLocked(level byte, err alert) error {
 	if c.config.Bugs.FragmentAlert {
 		c.writeRecord(recordTypeAlert, c.tmp[0:1])
 		c.writeRecord(recordTypeAlert, c.tmp[1:2])
+	} else if c.config.Bugs.DoubleAlert {
+		copy(c.tmp[2:4], c.tmp[0:2])
+		c.writeRecord(recordTypeAlert, c.tmp[0:4])
 	} else {
 		c.writeRecord(recordTypeAlert, c.tmp[0:2])
 	}
@@ -851,7 +859,7 @@ func (c *Conn) sendAlertLocked(level byte, err alert) error {
 // L < c.out.Mutex.
 func (c *Conn) sendAlert(err alert) error {
 	level := byte(alertLevelError)
-	if err == alertNoRenegotiation || err == alertCloseNotify {
+	if err == alertNoRenegotiation || err == alertCloseNotify || err == alertNoCertficate {
 		level = alertLevelWarning
 	}
 	return c.SendAlert(level, err)
@@ -1284,7 +1292,16 @@ func (c *Conn) Close() error {
 	c.handshakeMutex.Lock()
 	defer c.handshakeMutex.Unlock()
 	if c.handshakeComplete && !c.config.Bugs.NoCloseNotify {
-		alertErr = c.sendAlert(alertCloseNotify)
+		alert := alertCloseNotify
+		if c.config.Bugs.SendAlertOnShutdown != 0 {
+			alert = c.config.Bugs.SendAlertOnShutdown
+		}
+		alertErr = c.sendAlert(alert)
+		// Clear local alerts when sending alerts so we continue to wait
+		// for the peer rather than closing the socket early.
+		if opErr, ok := alertErr.(*net.OpError); ok && opErr.Op == "local error" {
+			alertErr = nil
+		}
 	}
 
 	// Consume a close_notify from the peer if one hasn't been received

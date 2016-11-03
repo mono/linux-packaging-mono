@@ -330,8 +330,6 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-BTLS_STATIC_LIST = build-static/mono-btls-static-lo.txt
-BTLS_SHARED_LIST = build-shared/mono-btls-shared-lo.txt
 EXTRA_DIST = btls-android-utils.c \
 	btls-bio.c \
 	btls-bio.h \
@@ -367,8 +365,7 @@ EXTRA_DIST = btls-android-utils.c \
 	btls-x509-store.h \
 	btls-x509-verify-param.c \
 	btls-x509-verify-param.h \
-	CMakeLists.txt \
-	create-object-library.sh
+	CMakeLists.txt
 
 CMAKE_VERBOSE = $(if $(V),VERBOSE=1,)
 CMAKE_ARGS = -D CMAKE_INSTALL_PREFIX:PATH=$(prefix) -D BTLS_ROOT:PATH=$(BTLS_ROOT) \
@@ -484,7 +481,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@DYNAMIC_BTLS_FALSE@install-exec-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -567,31 +563,29 @@ uninstall-am:
 	tags-am uninstall uninstall-am
 
 
-all-local: $(BTLS_STATIC_LIST) $(BTLS_SHARED_LIST)
+all-local: build-shared/libmono-btls-shared$(libsuffix) build-static/libmono-btls-static.a
 
-@DYNAMIC_BTLS_TRUE@build-shared/Makefile:
-@DYNAMIC_BTLS_TRUE@	-mkdir -p build-shared
-@DYNAMIC_BTLS_TRUE@	(cd build-shared && $(CMAKE) $(CMAKE_ARGS) $(BTLS_CMAKE_ARGS) -DBUILD_DYNAMIC_BTLS=1 $(abs_top_srcdir)/mono/btls)
-@DYNAMIC_BTLS_FALSE@build-shared/Makefile:
-@DYNAMIC_BTLS_FALSE@	-mkdir -p build-shared
-@DYNAMIC_BTLS_FALSE@	(cd build-shared && $(CMAKE) $(CMAKE_ARGS) $(BTLS_CMAKE_ARGS) -DBUILD_SHARED_LIBS=1 $(abs_top_srcdir)/mono/btls)
+build-shared/Makefile:
+	-mkdir -p build-shared
+	(cd build-shared && $(CMAKE) $(CMAKE_ARGS) $(BTLS_CMAKE_ARGS) -DBUILD_SHARED_LIBS=1 $(abs_top_srcdir)/mono/btls)
+
+build-shared/libmono-btls-shared$(libsuffix): build-shared/Makefile
+	$(MAKE) -C build-shared $(CMAKE_VERBOSE)
 
 build-static/Makefile:
 	-mkdir -p build-static
 	(cd build-static && $(CMAKE) $(CMAKE_ARGS) $(BTLS_CMAKE_ARGS) $(abs_top_srcdir)/mono/btls)
 
-$(BTLS_STATIC_LIST): build-static/Makefile
+build-static/libmono-btls-static.a: build-static/Makefile
 	$(MAKE) -C build-static $(CMAKE_VERBOSE)
-
-$(BTLS_SHARED_LIST): build-shared/Makefile
-	$(MAKE) -C build-shared $(CMAKE_VERBOSE)
 
 clean-local:
 	-rm -rf build-static
 	-rm -rf build-shared
 
-@DYNAMIC_BTLS_TRUE@install-exec-local:
-@DYNAMIC_BTLS_TRUE@	$(install_sh) build-shared/libmono-btls-shared.* "$(DESTDIR)/$(libdir)"
+install-exec-local:
+	$(mkinstalldirs) "$(DESTDIR)$(libdir)"
+	$(install_sh) build-shared/libmono-btls-shared.* "$(DESTDIR)$(libdir)"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -114,7 +114,6 @@
 
 #include <assert.h>
 #include <limits.h>
-#include <stdio.h>
 #include <string.h>
 
 #include <openssl/buf.h>
@@ -122,7 +121,7 @@
 #include <openssl/evp.h>
 #include <openssl/mem.h>
 #include <openssl/md5.h>
-#include <openssl/obj.h>
+#include <openssl/nid.h>
 #include <openssl/rand.h>
 #include <openssl/sha.h>
 #include <openssl/x509.h>
@@ -131,29 +130,20 @@
 
 
 /* ssl3_do_write sends |ssl->init_buf| in records of type 'type'
- * (SSL3_RT_HANDSHAKE or SSL3_RT_CHANGE_CIPHER_SPEC). It returns -1 on error, 1
- * on success or zero if the transmission is still incomplete. */
+ * (SSL3_RT_HANDSHAKE or SSL3_RT_CHANGE_CIPHER_SPEC). It returns 1 on success
+ * and <= 0 on error. */
 int ssl3_do_write(SSL *ssl, int type) {
-  int n;
-
-  n = ssl3_write_bytes(ssl, type, &ssl->init_buf->data[ssl->init_off],
-                       ssl->init_num);
-  if (n < 0) {
-    return -1;
+  int ret = ssl3_write_bytes(ssl, type, ssl->init_buf->data, ssl->init_num);
+  if (ret <= 0) {
+    return ret;
   }
 
-  if (n == ssl->init_num) {
-    if (ssl->msg_callback) {
-      ssl->msg_callback(1, ssl->version, type, ssl->init_buf->data,
-                      (size_t)(ssl->init_off + ssl->init_num), ssl,
-                      ssl->msg_callback_arg);
-    }
-    return 1;
-  }
-
-  ssl->init_off += n;
-  ssl->init_num -= n;
-  return 0;
+  /* ssl3_write_bytes writes the data in its entirety. */
+  assert(ret == ssl->init_num);
+  ssl_do_msg_callback(ssl, 1 /* write */, ssl->version, type,
+                      ssl->init_buf->data, (size_t)ssl->init_num);
+  ssl->init_num = 0;
+  return 1;
 }
 
 int ssl3_send_finished(SSL *ssl, int a, int b) {
@@ -212,13 +202,13 @@ static void ssl3_take_mac(SSL *ssl) {
       ssl, !ssl->server, ssl->s3->tmp.peer_finish_md);
 }
 
-int ssl3_get_finished(SSL *ssl, int a, int b) {
+int ssl3_get_finished(SSL *ssl) {
   int al, finished_len, ok;
   long message_len;
   uint8_t *p;
 
-  message_len = ssl->method->ssl_get_message(
-      ssl, a, b, SSL3_MT_FINISHED, EVP_MAX_MD_SIZE, ssl_dont_hash_message, &ok);
+  message_len = ssl->method->ssl_get_message(ssl, SSL3_MT_FINISHED,
+                                             ssl_dont_hash_message, &ok);
 
   if (!ok) {
     return message_len;
@@ -239,7 +229,12 @@ int ssl3_get_finished(SSL *ssl, int a, int b) {
     goto f_err;
   }
 
-  if (CRYPTO_memcmp(p, ssl->s3->tmp.peer_finish_md, finished_len) != 0) {
+  int finished_ret =
+      CRYPTO_memcmp(p, ssl->s3->tmp.peer_finish_md, finished_len);
+#if defined(BORINGSSL_UNSAFE_FUZZER_MODE)
+  finished_ret = 0;
+#endif
+  if (finished_ret != 0) {
     al = SSL_AD_DECRYPT_ERROR;
     OPENSSL_PUT_ERROR(SSL, SSL_R_DIGEST_CHECK_FAILED);
     goto f_err;
@@ -270,7 +265,6 @@ int ssl3_send_change_cipher_spec(SSL *ssl, int a, int b) {
   if (ssl->state == a) {
     *((uint8_t *)ssl->init_buf->data) = SSL3_MT_CCS;
     ssl->init_num = 1;
-    ssl->init_off = 0;
 
     ssl->state = b;
   }
@@ -294,126 +288,120 @@ int ssl3_output_cert_chain(SSL *ssl) {
   return ssl_set_handshake_header(ssl, SSL3_MT_CERTIFICATE, l);
 }
 
-/* Obtain handshake message of message type |msg_type| (any if |msg_type| == -1),
- * maximum acceptable body length |max|. The first four bytes (msg_type and
- * length) are read in state |header_state|, the body is read in state
- * |body_state|. */
-long ssl3_get_message(SSL *ssl, int header_state, int body_state, int msg_type,
-                      long max, enum ssl_hash_message_t hash_message, int *ok) {
-  uint8_t *p;
-  unsigned long l;
-  long n;
-  int al;
+size_t ssl_max_handshake_message_len(const SSL *ssl) {
+  /* kMaxMessageLen is the default maximum message size for handshakes which do
+   * not accept peer certificate chains. */
+  static const size_t kMaxMessageLen = 16384;
+
+  if ((!ssl->server || (ssl->verify_mode & SSL_VERIFY_PEER)) &&
+      kMaxMessageLen < ssl->max_cert_list) {
+    return ssl->max_cert_list;
+  }
+  return kMaxMessageLen;
+}
+
+static int extend_handshake_buffer(SSL *ssl, size_t length) {
+  if (!BUF_MEM_reserve(ssl->init_buf, length)) {
+    return -1;
+  }
+  while (ssl->init_buf->length < length) {
+    int ret =
+        ssl3_read_bytes(ssl, SSL3_RT_HANDSHAKE,
+                        (uint8_t *)ssl->init_buf->data + ssl->init_buf->length,
+                        length - ssl->init_buf->length, 0);
+    if (ret <= 0) {
+      return ret;
+    }
+    ssl->init_buf->length += (size_t)ret;
+  }
+  return 1;
+}
+
+/* Obtain handshake message of message type |msg_type| (any if |msg_type| ==
+ * -1). */
+long ssl3_get_message(SSL *ssl, int msg_type,
+                      enum ssl_hash_message_t hash_message, int *ok) {
+  *ok = 0;
 
   if (ssl->s3->tmp.reuse_message) {
     /* A ssl_dont_hash_message call cannot be combined with reuse_message; the
      * ssl_dont_hash_message would have to have been applied to the previous
      * call. */
     assert(hash_message == ssl_hash_message);
+    assert(ssl->s3->tmp.message_complete);
     ssl->s3->tmp.reuse_message = 0;
     if (msg_type >= 0 && ssl->s3->tmp.message_type != msg_type) {
-      al = SSL_AD_UNEXPECTED_MESSAGE;
+      ssl3_send_alert(ssl, SSL3_AL_FATAL, SSL_AD_UNEXPECTED_MESSAGE);
       OPENSSL_PUT_ERROR(SSL, SSL_R_UNEXPECTED_MESSAGE);
-      goto f_err;
+      return -1;
     }
     *ok = 1;
-    ssl->state = body_state;
+    assert(ssl->init_buf->length >= 4);
     ssl->init_msg = (uint8_t *)ssl->init_buf->data + 4;
-    ssl->init_num = (int)ssl->s3->tmp.message_size;
+    ssl->init_num = (int)ssl->init_buf->length - 4;
     return ssl->init_num;
   }
 
-  p = (uint8_t *)ssl->init_buf->data;
-
-  if (ssl->state == header_state) {
-    assert(ssl->init_num < 4);
-
-    for (;;) {
-      while (ssl->init_num < 4) {
-        int bytes_read = ssl3_read_bytes(
-            ssl, SSL3_RT_HANDSHAKE, &p[ssl->init_num], 4 - ssl->init_num, 0);
-        if (bytes_read <= 0) {
-          *ok = 0;
-          return bytes_read;
-        }
-        ssl->init_num += bytes_read;
-      }
-
-      static const uint8_t kHelloRequest[4] = {SSL3_MT_HELLO_REQUEST, 0, 0, 0};
-      if (ssl->server || memcmp(p, kHelloRequest, sizeof(kHelloRequest)) != 0) {
-        break;
-      }
-
-      /* The server may always send 'Hello Request' messages -- we are doing
-       * a handshake anyway now, so ignore them if their format is correct.
-       * Does not count for 'Finished' MAC. */
-      ssl->init_num = 0;
-
-      if (ssl->msg_callback) {
-        ssl->msg_callback(0, ssl->version, SSL3_RT_HANDSHAKE, p, 4, ssl,
-                        ssl->msg_callback_arg);
-      }
-    }
-
-    /* ssl->init_num == 4 */
-
-    if (msg_type >= 0 && *p != msg_type) {
-      al = SSL_AD_UNEXPECTED_MESSAGE;
-      OPENSSL_PUT_ERROR(SSL, SSL_R_UNEXPECTED_MESSAGE);
-      goto f_err;
-    }
-    ssl->s3->tmp.message_type = *(p++);
-
-    n2l3(p, l);
-    if (l > (unsigned long)max) {
-      al = SSL_AD_ILLEGAL_PARAMETER;
-      OPENSSL_PUT_ERROR(SSL, SSL_R_EXCESSIVE_MESSAGE_SIZE);
-      goto f_err;
-    }
-
-    if (l && !BUF_MEM_grow_clean(ssl->init_buf, l + 4)) {
-      OPENSSL_PUT_ERROR(SSL, ERR_R_BUF_LIB);
-      goto err;
-    }
-    ssl->s3->tmp.message_size = l;
-    ssl->state = body_state;
-
-    ssl->init_msg = (uint8_t *)ssl->init_buf->data + 4;
-    ssl->init_num = 0;
+again:
+  if (ssl->s3->tmp.message_complete) {
+    ssl->s3->tmp.message_complete = 0;
+    ssl->init_buf->length = 0;
   }
 
-  /* next state (body_state) */
-  p = ssl->init_msg;
-  n = ssl->s3->tmp.message_size - ssl->init_num;
-  while (n > 0) {
-    int bytes_read =
-        ssl3_read_bytes(ssl, SSL3_RT_HANDSHAKE, &p[ssl->init_num], n, 0);
-    if (bytes_read <= 0) {
-      ssl->rwstate = SSL_READING;
-      *ok = 0;
-      return bytes_read;
-    }
-    ssl->init_num += bytes_read;
-    n -= bytes_read;
+  /* Read the message header, if we haven't yet. */
+  int ret = extend_handshake_buffer(ssl, 4);
+  if (ret <= 0) {
+    return ret;
   }
+
+  /* Parse out the length. Cap it so the peer cannot force us to buffer up to
+   * 2^24 bytes. */
+  const uint8_t *p = (uint8_t *)ssl->init_buf->data;
+  size_t msg_len = (((uint32_t)p[1]) << 16) | (((uint32_t)p[2]) << 8) | p[3];
+  if (msg_len > ssl_max_handshake_message_len(ssl)) {
+    ssl3_send_alert(ssl, SSL3_AL_FATAL, SSL_AD_ILLEGAL_PARAMETER);
+    OPENSSL_PUT_ERROR(SSL, SSL_R_EXCESSIVE_MESSAGE_SIZE);
+    return -1;
+  }
+
+  /* Read the message body, if we haven't yet. */
+  ret = extend_handshake_buffer(ssl, 4 + msg_len);
+  if (ret <= 0) {
+    return ret;
+  }
+
+  /* We have now received a complete message. */
+  ssl->s3->tmp.message_complete = 1;
+  ssl_do_msg_callback(ssl, 0 /* read */, ssl->version, SSL3_RT_HANDSHAKE,
+                      ssl->init_buf->data, ssl->init_buf->length);
+
+  static const uint8_t kHelloRequest[4] = {SSL3_MT_HELLO_REQUEST, 0, 0, 0};
+  if (!ssl->server && ssl->init_buf->length == sizeof(kHelloRequest) &&
+      memcmp(kHelloRequest, ssl->init_buf->data, sizeof(kHelloRequest)) == 0) {
+    /* The server may always send 'Hello Request' messages -- we are doing a
+     * handshake anyway now, so ignore them if their format is correct.  Does
+     * not count for 'Finished' MAC. */
+    goto again;
+  }
+
+  uint8_t actual_type = ((const uint8_t *)ssl->init_buf->data)[0];
+  if (msg_type >= 0 && actual_type != msg_type) {
+    ssl3_send_alert(ssl, SSL3_AL_FATAL, SSL_AD_UNEXPECTED_MESSAGE);
+    OPENSSL_PUT_ERROR(SSL, SSL_R_UNEXPECTED_MESSAGE);
+    return -1;
+  }
+  ssl->s3->tmp.message_type = actual_type;
+
+  ssl->init_msg = (uint8_t*)ssl->init_buf->data + 4;
+  ssl->init_num = ssl->init_buf->length - 4;
 
   /* Feed this message into MAC computation. */
   if (hash_message == ssl_hash_message && !ssl3_hash_current_message(ssl)) {
-    goto err;
+    return -1;
   }
-  if (ssl->msg_callback) {
-    ssl->msg_callback(0, ssl->version, SSL3_RT_HANDSHAKE, ssl->init_buf->data,
-                    (size_t)ssl->init_num + 4, ssl, ssl->msg_callback_arg);
-  }
+
   *ok = 1;
   return ssl->init_num;
-
-f_err:
-  ssl3_send_alert(ssl, SSL3_AL_FATAL, al);
-
-err:
-  *ok = 0;
-  return -1;
 }
 
 int ssl3_hash_current_message(SSL *ssl) {
@@ -491,6 +479,9 @@ int ssl_verify_alarm_type(long type) {
     case X509_V_ERR_CRL_NOT_YET_VALID:
     case X509_V_ERR_CERT_UNTRUSTED:
     case X509_V_ERR_CERT_REJECTED:
+    case X509_V_ERR_HOSTNAME_MISMATCH:
+    case X509_V_ERR_EMAIL_MISMATCH:
+    case X509_V_ERR_IP_ADDRESS_MISMATCH:
       al = SSL_AD_BAD_CERTIFICATE;
       break;
 
@@ -508,7 +499,10 @@ int ssl_verify_alarm_type(long type) {
       al = SSL_AD_CERTIFICATE_REVOKED;
       break;
 
+    case X509_V_ERR_UNSPECIFIED:
     case X509_V_ERR_OUT_OF_MEM:
+    case X509_V_ERR_INVALID_CALL:
+    case X509_V_ERR_STORE_LOOKUP:
       al = SSL_AD_INTERNAL_ERROR;
       break;
 

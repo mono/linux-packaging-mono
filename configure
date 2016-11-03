@@ -697,8 +697,6 @@ BTLS_CFLAGS
 BTLS_ARCH
 BTLS_ROOT
 CMAKE
-DYNAMIC_BTLS_FALSE
-DYNAMIC_BTLS_TRUE
 BTLS_FALSE
 BTLS_TRUE
 LIBMONO_LA
@@ -1755,7 +1753,7 @@ Optional Packages:
   --with-static_mono=yes,no      link mono statically to libmono (faster) (defaults to yes)
   --with-shared_mono=yes,no      build a shared libmono library (defaults to yes)
   --with-xen_opt=yes,no          Enable Xen-specific behaviour (defaults to yes)
-  --with-profile4=yes,no          If you want to install the 4.x FX (defaults to yes)
+  --with-profile4_x=yes,no        If you want to install the 4.x FX (defaults to yes)
   --with-monodroid=yes,no         If you want to build the MonoDroid assemblies (defaults to no)
   --with-monotouch=yes,no         If you want to build the Xamarin.iOS assemblies (defaults to no)
   --with-monotouch_watch=yes,no   If you want to build the Xamarin.WatchOS assemblies (defaults to no)
@@ -27353,14 +27351,6 @@ else
   BTLS_FALSE=
 fi
 
- if test x$enable_dynamic_btls = xyes; then
-  DYNAMIC_BTLS_TRUE=
-  DYNAMIC_BTLS_FALSE='#'
-else
-  DYNAMIC_BTLS_TRUE='#'
-  DYNAMIC_BTLS_FALSE=
-fi
-
 
 btls_android=no
 if test "x$enable_btls" = "xyes"; then
@@ -27472,12 +27462,6 @@ fi
 
 $as_echo "#define HAVE_BTLS 1" >>confdefs.h
 
-
-	if test "x$enable_dynamic_btls" = "xyes"; then
-
-$as_echo "#define HAVE_DYNAMIC_BTLS 1" >>confdefs.h
-
-	fi
 else
 	enable_btls=no
 fi
@@ -28027,10 +28011,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BTLS_TRUE}" && test -z "${BTLS_FALSE}"; then
   as_fn_error $? "conditional \"BTLS\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${DYNAMIC_BTLS_TRUE}" && test -z "${DYNAMIC_BTLS_FALSE}"; then
-  as_fn_error $? "conditional \"DYNAMIC_BTLS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BTLS_ANDROID_TRUE}" && test -z "${BTLS_ANDROID_FALSE}"; then

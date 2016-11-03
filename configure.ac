@@ -763,7 +763,7 @@ DISABLED_FEATURES=none
 # Set the build profiles and options before things which use them
 #
 
-AC_ARG_WITH(profile4_x,      [  --with-profile4=yes,no          If you want to install the 4.x FX (defaults to yes)],                 [], [with_profile4_x=default])
+AC_ARG_WITH(profile4_x,      [  --with-profile4_x=yes,no        If you want to install the 4.x FX (defaults to yes)],                 [], [with_profile4_x=default])
 AC_ARG_WITH(monodroid,       [  --with-monodroid=yes,no         If you want to build the MonoDroid assemblies (defaults to no)],      [], [with_monodroid=default])
 AC_ARG_WITH(monotouch,       [  --with-monotouch=yes,no         If you want to build the Xamarin.iOS assemblies (defaults to no)],    [], [with_monotouch=default])
 AC_ARG_WITH(monotouch_watch, [  --with-monotouch_watch=yes,no   If you want to build the Xamarin.WatchOS assemblies (defaults to no)],[], [with_monotouch_watch=default])
@@ -3932,7 +3932,6 @@ AC_ARG_WITH(btls_android_ndk, [  --with-btls-android-ndk        Android NDK for 
 AC_ARG_ENABLE(dynamic-btls, [ --enable-dynamic-btls Place the BTLS provider into a separate shared library/archive.], enable_dynamic_btls=$enableval, enable_dynamic_btls=no)
 
 AM_CONDITIONAL(BTLS, test x$enable_btls = xyes)
-AM_CONDITIONAL(DYNAMIC_BTLS, test x$enable_dynamic_btls = xyes)
 
 btls_android=no
 if test "x$enable_btls" = "xyes"; then
@@ -4001,10 +4000,6 @@ if test "x$enable_btls" = "xyes"; then
 	AC_SUBST(BTLS_CMAKE_ARGS)
 
 	AC_DEFINE(HAVE_BTLS, 1, [BoringTls is supported])
-
-	if test "x$enable_dynamic_btls" = "xyes"; then
-		AC_DEFINE(HAVE_DYNAMIC_BTLS, 1, [BTLS in a shared libraty])
-	fi
 else
 	enable_btls=no
 fi

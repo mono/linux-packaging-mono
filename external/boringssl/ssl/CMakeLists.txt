@@ -12,21 +12,19 @@ add_library(
   ssl-objects OBJECT
 
   custom_extensions.c
+  handshake_server.c
+  handshake_client.c
   d1_both.c
-  d1_clnt.c
   d1_lib.c
   d1_meth.c
   d1_pkt.c
   d1_srtp.c
-  d1_srvr.c
   dtls_record.c
   s3_both.c
-  s3_clnt.c
   s3_enc.c
   s3_lib.c
   s3_meth.c
   s3_pkt.c
-  s3_srvr.c
   ssl_aead_ctx.c
   ssl_asn1.c
   ssl_buffer.c
@@ -47,21 +45,19 @@ add_library(
   ssl
 
   custom_extensions.c
+  handshake_server.c
+  handshake_client.c
   d1_both.c
-  d1_clnt.c
   d1_lib.c
   d1_meth.c
   d1_pkt.c
   d1_srtp.c
-  d1_srvr.c
   dtls_record.c
   s3_both.c
-  s3_clnt.c
   s3_enc.c
   s3_lib.c
   s3_meth.c
   s3_pkt.c
-  s3_srvr.c
   ssl_aead_ctx.c
   ssl_asn1.c
   ssl_buffer.c
@@ -82,6 +78,7 @@ add_library(
 
 target_link_libraries(ssl crypto)
 
+if(ENABLE_TESTS)
 add_executable(
   ssl_test
 
@@ -92,3 +89,4 @@ add_executable(
 
 target_link_libraries(ssl_test ssl crypto)
 add_dependencies(all_tests ssl_test)
+endif()

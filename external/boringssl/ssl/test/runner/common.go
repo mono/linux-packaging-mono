@@ -424,6 +424,10 @@ type ProtocolBugs struct {
 	// to be wrong.
 	InvalidSKXCurve bool
 
+	// InvalidECDHPoint, if true, causes the ECC points in
+	// ServerKeyExchange or ClientKeyExchange messages to be invalid.
+	InvalidECDHPoint bool
+
 	// BadECDSAR controls ways in which the 'r' value of an ECDSA signature
 	// can be invalid.
 	BadECDSAR BadValue
@@ -468,6 +472,10 @@ type ProtocolBugs struct {
 	// SkipNewSessionTicket causes the server to skip sending the
 	// NewSessionTicket message despite promising to in ServerHello.
 	SkipNewSessionTicket bool
+
+	// SkipClientCertificate causes the client to skip the Certificate
+	// message.
+	SkipClientCertificate bool
 
 	// SkipChangeCipherSpec causes the implementation to skip
 	// sending the ChangeCipherSpec message (and adjusting cipher
@@ -516,6 +524,10 @@ type ProtocolBugs struct {
 	// FragmentAlert will cause all alerts to be fragmented across
 	// two records.
 	FragmentAlert bool
+
+	// DoubleAlert will cause all alerts to be sent as two copies packed
+	// within one record.
+	DoubleAlert bool
 
 	// SendSpuriousAlert, if non-zero, will cause an spurious, unwanted
 	// alert to be sent.
@@ -775,6 +787,10 @@ type ProtocolBugs struct {
 	// on connection shutdown.
 	NoCloseNotify bool
 
+	// SendAlertOnShutdown, if non-zero, is the alert to send instead of
+	// close_notify on shutdown.
+	SendAlertOnShutdown alert
+
 	// ExpectCloseNotify, if true, requires a close_notify from the peer on
 	// shutdown. Records from the peer received after close_notify is sent
 	// are not discard.
@@ -818,6 +834,22 @@ type ProtocolBugs struct {
 	// RequireSessionTickets, if true, causes the client to require new
 	// sessions use session tickets instead of session IDs.
 	RequireSessionTickets bool
+
+	// NullAllCiphers, if true, causes every cipher to behave like the null
+	// cipher.
+	NullAllCiphers bool
+
+	// SendSCTListOnResume, if not nil, causes the server to send the
+	// supplied SCT list in resumption handshakes.
+	SendSCTListOnResume []byte
+
+	// CECPQ1BadX25519Part corrupts the X25519 part of a CECPQ1 key exchange, as
+	// a trivial proof that it is actually used.
+	CECPQ1BadX25519Part bool
+
+	// CECPQ1BadNewhopePart corrupts the Newhope part of a CECPQ1 key exchange,
+	// as a trivial proof that it is actually used.
+	CECPQ1BadNewhopePart bool
 }
 
 func (c *Config) serverInit() {

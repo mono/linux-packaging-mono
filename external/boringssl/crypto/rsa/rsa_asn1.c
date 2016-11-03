@@ -59,8 +59,6 @@
 #include <limits.h>
 #include <string.h>
 
-#include <openssl/asn1.h>
-#include <openssl/asn1t.h>
 #include <openssl/bn.h>
 #include <openssl/bytestring.h>
 #include <openssl/err.h>
@@ -390,6 +388,7 @@ int i2d_RSAPublicKey(const RSA *in, uint8_t **outp) {
   CBB cbb;
   if (!CBB_init(&cbb, 0) ||
       !RSA_marshal_public_key(&cbb, in)) {
+    CBB_cleanup(&cbb);
     return -1;
   }
   return CBB_finish_i2d(&cbb, outp);
@@ -417,19 +416,11 @@ int i2d_RSAPrivateKey(const RSA *in, uint8_t **outp) {
   CBB cbb;
   if (!CBB_init(&cbb, 0) ||
       !RSA_marshal_private_key(&cbb, in)) {
+    CBB_cleanup(&cbb);
     return -1;
   }
   return CBB_finish_i2d(&cbb, outp);
 }
-
-ASN1_SEQUENCE(RSA_PSS_PARAMS) = {
-  ASN1_EXP_OPT(RSA_PSS_PARAMS, hashAlgorithm, X509_ALGOR,0),
-  ASN1_EXP_OPT(RSA_PSS_PARAMS, maskGenAlgorithm, X509_ALGOR,1),
-  ASN1_EXP_OPT(RSA_PSS_PARAMS, saltLength, ASN1_INTEGER,2),
-  ASN1_EXP_OPT(RSA_PSS_PARAMS, trailerField, ASN1_INTEGER,3),
-} ASN1_SEQUENCE_END(RSA_PSS_PARAMS);
-
-IMPLEMENT_ASN1_FUNCTIONS(RSA_PSS_PARAMS);
 
 RSA *RSAPublicKey_dup(const RSA *rsa) {
   uint8_t *der;

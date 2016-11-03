@@ -185,8 +185,15 @@ CERT *ssl_cert_dup(CERT *cert) {
     }
   }
 
+  ret->key_method = cert->key_method;
+
   ret->cert_cb = cert->cert_cb;
   ret->cert_cb_arg = cert->cert_cb_arg;
+
+  if (cert->verify_store != NULL) {
+    X509_STORE_up_ref(cert->verify_store);
+    ret->verify_store = cert->verify_store;
+  }
 
   return ret;
 
@@ -220,6 +227,7 @@ void ssl_cert_free(CERT *c) {
   ssl_cert_clear_certs(c);
   OPENSSL_free(c->peer_sigalgs);
   OPENSSL_free(c->digest_nids);
+  X509_STORE_free(c->verify_store);
 
   OPENSSL_free(c);
 }
@@ -279,10 +287,15 @@ int ssl_verify_cert_chain(SSL *ssl, STACK_OF(X509) *cert_chain) {
     return 0;
   }
 
+  X509_STORE *verify_store = ssl->ctx->cert_store;
+  if (ssl->cert->verify_store != NULL) {
+    verify_store = ssl->cert->verify_store;
+  }
+
   X509 *leaf = sk_X509_value(cert_chain, 0);
   int ret = 0;
   X509_STORE_CTX ctx;
-  if (!X509_STORE_CTX_init(&ctx, ssl->ctx->cert_store, leaf, cert_chain)) {
+  if (!X509_STORE_CTX_init(&ctx, verify_store, leaf, cert_chain)) {
     OPENSSL_PUT_ERROR(SSL, ERR_R_X509_LIB);
     return 0;
   }
@@ -409,13 +422,18 @@ static int ssl_add_cert_to_buf(BUF_MEM *buf, unsigned long *l, X509 *x) {
   uint8_t *p;
 
   n = i2d_X509(x, NULL);
-  if (!BUF_MEM_grow_clean(buf, (int)(n + (*l) + 3))) {
+  if (n < 0 || !BUF_MEM_grow_clean(buf, (int)(n + (*l) + 3))) {
     OPENSSL_PUT_ERROR(SSL, ERR_R_BUF_LIB);
     return 0;
   }
   p = (uint8_t *)&(buf->data[*l]);
   l2n3(n, p);
-  i2d_X509(x, &p);
+  n = i2d_X509(x, &p);
+  if (n < 0) {
+      /* This shouldn't happen. */
+      OPENSSL_PUT_ERROR(SSL, ERR_R_BUF_LIB);
+      return 0;
+  }
   *l += n + 3;
 
   return 1;
@@ -473,6 +491,33 @@ int ssl_add_cert_chain(SSL *ssl, unsigned long *l) {
   }
 
   return 1;
+}
+
+static int set_cert_store(X509_STORE **store_ptr, X509_STORE *new_store, int take_ref) {
+  X509_STORE_free(*store_ptr);
+  *store_ptr = new_store;
+
+  if (new_store != NULL && take_ref) {
+    X509_STORE_up_ref(new_store);
+  }
+
+  return 1;
+}
+
+int SSL_CTX_set0_verify_cert_store(SSL_CTX *ctx, X509_STORE *store) {
+  return set_cert_store(&ctx->cert->verify_store, store, 0);
+}
+
+int SSL_CTX_set1_verify_cert_store(SSL_CTX *ctx, X509_STORE *store) {
+  return set_cert_store(&ctx->cert->verify_store, store, 1);
+}
+
+int SSL_set0_verify_cert_store(SSL *ssl, X509_STORE *store) {
+  return set_cert_store(&ssl->cert->verify_store, store, 0);
+}
+
+int SSL_set1_verify_cert_store(SSL *ssl, X509_STORE *store) {
+  return set_cert_store(&ssl->cert->verify_store, store, 1);
 }
 
 int SSL_CTX_set0_chain(SSL_CTX *ctx, STACK_OF(X509) *chain) {

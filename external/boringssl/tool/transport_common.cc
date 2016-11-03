@@ -33,10 +33,10 @@
 #include <unistd.h>
 #else
 #include <io.h>
-#pragma warning(push, 3)
+OPENSSL_MSVC_PRAGMA(warning(push, 3))
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#pragma warning(pop)
+OPENSSL_MSVC_PRAGMA(warning(pop))
 
 typedef int ssize_t;
 #pragma comment(lib, "Ws2_32.lib")
@@ -44,8 +44,10 @@ typedef int ssize_t;
 
 #include <openssl/err.h>
 #include <openssl/ssl.h>
+#include <openssl/x509.h>
 
 #include "internal.h"
+#include "transport_common.h"
 
 
 #if !defined(OPENSSL_WINDOWS)
@@ -179,6 +181,8 @@ void PrintConnectionInfo(const SSL *ssl) {
   }
   fprintf(stderr, "  Secure renegotiation: %s\n",
           SSL_get_secure_renegotiation_support(ssl) ? "yes" : "no");
+  fprintf(stderr, "  Extended master secret: %s\n",
+          SSL_get_extms_support(ssl) ? "yes" : "no");
 
   const uint8_t *next_proto;
   unsigned next_proto_len;
@@ -190,6 +194,19 @@ void PrintConnectionInfo(const SSL *ssl) {
   unsigned alpn_len;
   SSL_get0_alpn_selected(ssl, &alpn, &alpn_len);
   fprintf(stderr, "  ALPN protocol: %.*s\n", alpn_len, alpn);
+
+  // Print the server cert subject and issuer names.
+  X509 *peer = SSL_get_peer_certificate(ssl);
+  if (peer != NULL) {
+    fprintf(stderr, "  Cert subject: ");
+    X509_NAME_print_ex_fp(stderr, X509_get_subject_name(peer), 0,
+                          XN_FLAG_ONELINE);
+    fprintf(stderr, "\n  Cert issuer: ");
+    X509_NAME_print_ex_fp(stderr, X509_get_issuer_name(peer), 0,
+                          XN_FLAG_ONELINE);
+    fprintf(stderr, "\n");
+    X509_free(peer);
+  }
 }
 
 bool SocketSetNonBlocking(int sock, bool is_non_blocking) {
@@ -250,7 +267,7 @@ bool TransferData(SSL *ssl, int sock) {
       ssize_t n;
 
       do {
-        n = read(0, buffer, sizeof(buffer));
+        n = BORINGSSL_READ(0, buffer, sizeof(buffer));
       } while (n == -1 && errno == EINTR);
 
       if (n == 0) {
@@ -304,7 +321,7 @@ bool TransferData(SSL *ssl, int sock) {
 
       ssize_t n;
       do {
-        n = write(1, buffer, ssl_ret);
+        n = BORINGSSL_WRITE(1, buffer, ssl_ret);
       } while (n == -1 && errno == EINTR);
 
       if (n != ssl_ret) {

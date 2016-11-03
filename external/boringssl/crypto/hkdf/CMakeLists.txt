@@ -8,6 +8,7 @@ add_library(
   hkdf.c
 )
 
+if(ENABLE_TESTS)
 add_executable(
   hkdf_test
 
@@ -18,3 +19,4 @@ add_executable(
 
 target_link_libraries(hkdf_test crypto)
 add_dependencies(all_tests hkdf_test)
+endif()

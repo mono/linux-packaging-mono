@@ -65,7 +65,7 @@
 #include <mono/utils/mono-threads.h>
 #include <mono/utils/mono-threads-coop.h>
 #include <mono/utils/checked-build.h>
-#include <mono/utils/w32handle.h>
+#include <mono/metadata/w32handle.h>
 #include <mono/io-layer/io-layer.h>
 
 #include "mini.h"
@@ -1222,6 +1222,7 @@ mono_patch_info_hash (gconstpointer data)
 	case MONO_PATCH_INFO_GOT_OFFSET:
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
 	case MONO_PATCH_INFO_AOT_MODULE:
+	case MONO_PATCH_INFO_GET_TLS_TRAMP:
 		return (ji->type << 8);
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:
 		return (ji->type << 8) | (ji->data.index);
@@ -1661,6 +1662,13 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 	case MONO_PATCH_INFO_GSHAREDVT_IN_WRAPPER:
 		target = mini_get_gsharedvt_wrapper (TRUE, NULL, patch_info->data.sig, NULL, -1, FALSE);
 		break;
+	case MONO_PATCH_INFO_GET_TLS_TRAMP:
+#ifdef MONO_ARCH_HAVE_GET_TLS_TRAMP
+		target = mono_arch_get_get_tls_tramp ();
+#else
+		target = NULL;
+#endif
+		break;
 	default:
 		g_assert_not_reached ();
 	}
@@ -1878,6 +1886,15 @@ mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, MonoError *er
 
 		if ((code = mono_aot_get_method_checked (domain, method, error))) {
 			MonoVTable *vtable;
+
+			if (mono_runtime_is_critical_method (method) || mono_gc_is_critical_method (method)) {
+				/*
+				 * The suspend code needs to be able to lookup these methods by ip in async context,
+				 * so preload their jit info.
+				 */
+				MonoJitInfo *ji = mono_jit_info_table_find (domain, code);
+				g_assert (ji);
+			}
 
 			/*
 			 * In llvm-only mode, method might be a shared method, so we can't initialize its class.

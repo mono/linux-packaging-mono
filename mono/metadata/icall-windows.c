@@ -8,8 +8,8 @@
 #include <glib.h>
 
 #if defined(HOST_WIN32)
-#include <WinSock2.h>
-#include <Windows.h>
+#include <winsock2.h>
+#include <windows.h>
 #include "mono/metadata/icall-windows-internals.h"
 
 #if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
@@ -213,9 +213,4 @@ mono_icall_write_windows_debug_string (MonoString *message)
 	OutputDebugString (mono_string_chars (message));
 }
 
-MonoBoolean
-mono_icall_close_process (gpointer handle)
-{
-	return (MonoBoolean)(CloseHandle (handle));
-}
 #endif /* HOST_WIN32 */

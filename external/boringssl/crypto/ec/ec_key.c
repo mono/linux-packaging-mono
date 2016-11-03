@@ -365,15 +365,24 @@ int EC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUM *x,
     return 0;
   }
   ctx = BN_CTX_new();
+
+  if (ctx == NULL) {
+    return 0;
+  }
+
+  BN_CTX_start(ctx);
   point = EC_POINT_new(key->group);
 
-  if (ctx == NULL ||
-      point == NULL) {
+  if (point == NULL) {
     goto err;
   }
 
   tx = BN_CTX_get(ctx);
   ty = BN_CTX_get(ctx);
+  if (tx == NULL ||
+      ty == NULL) {
+    goto err;
+  }
 
   if (!EC_POINT_set_affine_coordinates_GFp(key->group, point, x, y, ctx) ||
       !EC_POINT_get_affine_coordinates_GFp(key->group, point, tx, ty, ctx)) {
@@ -398,6 +407,7 @@ int EC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUM *x,
   ok = 1;
 
 err:
+  BN_CTX_end(ctx);
   BN_CTX_free(ctx);
   EC_POINT_free(point);
   return ok;

@@ -2444,7 +2444,7 @@ mono_aot_get_cached_class_info (MonoClass *klass, MonoCachedClassInfo *res)
 	guint8 *p;
 	gboolean err;
 
-	if (klass->rank || !amodule)
+	if (klass->rank || !klass->type_token || !amodule)
 		return FALSE;
 
 	p = (guint8*)&amodule->blob [mono_aot_get_offset (amodule->class_info_offsets, mono_metadata_token_index (klass->type_token) - 1)];
@@ -3702,6 +3702,7 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 		break;
 	}
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
+	case MONO_PATCH_INFO_GET_TLS_TRAMP:
 		break;
 	case MONO_PATCH_INFO_AOT_JIT_INFO:
 		ji->data.index = decode_value (p, &p);

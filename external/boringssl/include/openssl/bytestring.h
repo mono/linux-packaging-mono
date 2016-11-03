@@ -95,6 +95,10 @@ OPENSSL_EXPORT int CBS_get_u24(CBS *cbs, uint32_t *out);
  * and advances |cbs|. It returns one on success and zero on error. */
 OPENSSL_EXPORT int CBS_get_u32(CBS *cbs, uint32_t *out);
 
+/* CBS_get_last_u8 sets |*out| to the last uint8_t from |cbs| and shortens
+ * |cbs|. It returns one on success and zero on error. */
+OPENSSL_EXPORT int CBS_get_last_u8(CBS *cbs, uint8_t *out);
+
 /* CBS_get_bytes sets |*out| to the next |len| bytes from |cbs| and advances
  * |cbs|. It returns one on success and zero on error. */
 OPENSSL_EXPORT int CBS_get_bytes(CBS *cbs, CBS *out, size_t len);
@@ -128,6 +132,7 @@ OPENSSL_EXPORT int CBS_get_u24_length_prefixed(CBS *cbs, CBS *out);
 #define CBS_ASN1_NULL 0x5
 #define CBS_ASN1_OBJECT 0x6
 #define CBS_ASN1_ENUMERATED 0xa
+#define CBS_ASN1_UTF8STRING 0xc
 #define CBS_ASN1_SEQUENCE (0x10 | CBS_ASN1_CONSTRUCTED)
 #define CBS_ASN1_SET (0x11 | CBS_ASN1_CONSTRUCTED)
 #define CBS_ASN1_NUMERICSTRING 0x12

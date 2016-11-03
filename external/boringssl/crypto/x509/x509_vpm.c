@@ -99,7 +99,7 @@ static int int_x509_param_set_hosts(X509_VERIFY_PARAM_ID *id, int mode,
         string_stack_free(id->hosts);
         id->hosts = NULL;
     }
-    if (name == NULL || namelen == 0)
+    if (name == NULL)
         return 1;
 
     copy = BUF_strndup(name, namelen);
