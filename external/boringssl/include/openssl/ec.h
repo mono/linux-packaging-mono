@@ -189,12 +189,13 @@ OPENSSL_EXPORT int EC_POINT_is_at_infinity(const EC_GROUP *group,
                                            const EC_POINT *point);
 
 /* EC_POINT_is_on_curve returns one if |point| is an element of |group| and
- * zero otheriwse. If |ctx| is non-NULL, it may be used. */
+ * and zero otherwise or when an error occurs. This is different from OpenSSL,
+ * which returns -1 on error. If |ctx| is non-NULL, it may be used. */
 OPENSSL_EXPORT int EC_POINT_is_on_curve(const EC_GROUP *group,
                                         const EC_POINT *point, BN_CTX *ctx);
 
-/* EC_POINT_cmp returns zero if |a| is equal to |b|, greater than zero is
- * non-equal and -1 on error. If |ctx| is not NULL, it may be used. */
+/* EC_POINT_cmp returns zero if |a| is equal to |b|, greater than zero if
+ * not equal and -1 on error. If |ctx| is not NULL, it may be used. */
 OPENSSL_EXPORT int EC_POINT_cmp(const EC_GROUP *group, const EC_POINT *a,
                                 const EC_POINT *b, BN_CTX *ctx);
 
@@ -220,10 +221,10 @@ OPENSSL_EXPORT int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *group,
                                                        BIGNUM *x, BIGNUM *y,
                                                        BN_CTX *ctx);
 
-/* EC_POINT_set_affine_coordinates_GFp sets the value of |p| to be (|x|, |y|).
- * The |ctx| argument may be used if not NULL. It returns one on success or
- * zero on error. Note that, unlike with OpenSSL, it's considered an error if
- * the point is not on the curve. */
+/* EC_POINT_set_affine_coordinates_GFp sets the value of |point| to be
+ * (|x|, |y|). The |ctx| argument may be used if not NULL. It returns one
+ * on success or zero on error. Note that, unlike with OpenSSL, it's
+ * considered an error if the point is not on the curve. */
 OPENSSL_EXPORT int EC_POINT_set_affine_coordinates_GFp(const EC_GROUP *group,
                                                        EC_POINT *point,
                                                        const BIGNUM *x,
@@ -288,13 +289,37 @@ OPENSSL_EXPORT int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r,
 
 /* Deprecated functions. */
 
-/* EC_GROUP_new_arbitrary creates a new, arbitrary elliptic curve group based on
- * the equation y² = x³ + a·x + b. The generator is set to (gx, gy) which must
- * have the given order and cofactor. It returns the new group or NULL on error.
+/* EC_GROUP_new_curve_GFp creates a new, arbitrary elliptic curve group based
+ * on the equation y² = x³ + a·x + b. It returns the new group or NULL on
+ * error.
+ *
+ * This new group has no generator. It is an error to use a generator-less group
+ * with any functions except for |EC_GROUP_free|, |EC_POINT_new|,
+ * |EC_POINT_set_affine_coordinates_GFp|, and |EC_GROUP_set_generator|.
  *
  * |EC_GROUP|s returned by this function will always compare as unequal via
  * |EC_GROUP_cmp| (even to themselves). |EC_GROUP_get_curve_name| will always
- * return |NID_undef|. */
+ * return |NID_undef|.
+ *
+ * Avoid using arbitrary curves and use |EC_GROUP_new_by_curve_name| instead. */
+OPENSSL_EXPORT EC_GROUP *EC_GROUP_new_curve_GFp(const BIGNUM *p,
+                                                const BIGNUM *a,
+                                                const BIGNUM *b, BN_CTX *ctx);
+
+/* EC_GROUP_set_generator sets the generator for |group| to |generator|, which
+ * must have the given order and cofactor. It may only be used with |EC_GROUP|
+ * objects returned by |EC_GROUP_new_curve_GFp| and may only be used once on
+ * each group. */
+OPENSSL_EXPORT int EC_GROUP_set_generator(EC_GROUP *group,
+                                          const EC_POINT *generator,
+                                          const BIGNUM *order,
+                                          const BIGNUM *cofactor);
+
+/* EC_GROUP_new_arbitrary calls |EC_GROUP_new_curve_GFp| and
+ * |EC_GROUP_set_generator|.
+ *
+ * TODO(davidben): Remove this once
+ * https://android-review.googlesource.com/#/c/207990/ has cycled in. */
 OPENSSL_EXPORT EC_GROUP *EC_GROUP_new_arbitrary(
     const BIGNUM *p, const BIGNUM *a, const BIGNUM *b, const BIGNUM *gx,
     const BIGNUM *gy, const BIGNUM *order, const BIGNUM *cofactor);

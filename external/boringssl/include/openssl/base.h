@@ -60,7 +60,11 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-#include <openssl/opensslfeatures.h>
+#include <openssl/opensslconf.h>
+
+#if defined(BORINGSSL_PREFIX)
+#include <boringssl_prefix_symbols.h>
+#endif
 
 #if defined(__cplusplus)
 extern "C" {
@@ -90,6 +94,9 @@ extern "C" {
 #elif defined(__pnacl__)
 #define OPENSSL_32_BIT
 #define OPENSSL_PNACL
+#elif defined(__s390x__)
+#define OPENSSL_64_BIT
+#define OPENSSL_S390X
 #else
 #error "Unknown target CPU"
 #endif
@@ -109,8 +116,19 @@ extern "C" {
 
 #define OPENSSL_IS_BORINGSSL
 #define BORINGSSL_201512
+#define BORINGSSL_201603
 #define OPENSSL_VERSION_NUMBER 0x10002000
 #define SSLEAY_VERSION_NUMBER OPENSSL_VERSION_NUMBER
+
+/* BORINGSSL_API_VERSION is a positive integer that increments as BoringSSL
+ * changes over time. The value itself is not meaningful. It will be incremented
+ * whenever is convenient to coordinate an API change with consumers. This will
+ * not denote any special point in development.
+ *
+ * A consumer may use this symbol in the preprocessor to temporarily build
+ * against multiple revisions of BoringSSL at the same time. It is not
+ * recommended to do so for longer than is necessary. */
+#define BORINGSSL_API_VERSION 1
 
 #if defined(BORINGSSL_SHARED_LIBRARY)
 
@@ -141,9 +159,16 @@ extern "C" {
 
 #if defined(__GNUC__)
 #define OPENSSL_PRINTF_FORMAT_FUNC(string_index, first_to_check) \
-        __attribute__((format(printf, string_index, first_to_check)))
+        __attribute__((__format__(__printf__, string_index, first_to_check)))
 #else
 #define OPENSSL_PRINTF_FORMAT_FUNC(string_index, first_to_check)
+#endif
+
+/* OPENSSL_MSVC_PRAGMA emits a pragma on MSVC and nothing on other compilers. */
+#if defined(_MSC_VER)
+#define OPENSSL_MSVC_PRAGMA(arg) __pragma(arg)
+#else
+#define OPENSSL_MSVC_PRAGMA(arg)
 #endif
 
 
@@ -182,6 +207,7 @@ typedef struct Netscape_spki_st NETSCAPE_SPKI;
 typedef struct PBE2PARAM_st PBE2PARAM;
 typedef struct PBEPARAM_st PBEPARAM;
 typedef struct PBKDF2PARAM_st PBKDF2PARAM;
+typedef struct RIPEMD160state_st RIPEMD160_CTX;
 typedef struct X509_POLICY_CACHE_st X509_POLICY_CACHE;
 typedef struct X509_POLICY_LEVEL_st X509_POLICY_LEVEL;
 typedef struct X509_POLICY_NODE_st X509_POLICY_NODE;
@@ -230,6 +256,7 @@ typedef struct evp_pkey_st EVP_PKEY;
 typedef struct hmac_ctx_st HMAC_CTX;
 typedef struct md4_state_st MD4_CTX;
 typedef struct md5_state_st MD5_CTX;
+typedef struct newhope_poly_st NEWHOPE_POLY;
 typedef struct pkcs12_st PKCS12;
 typedef struct pkcs8_priv_key_info_st PKCS8_PRIV_KEY_INFO;
 typedef struct private_key_st X509_PKEY;
@@ -240,6 +267,7 @@ typedef struct rsa_st RSA;
 typedef struct sha256_state_st SHA256_CTX;
 typedef struct sha512_state_st SHA512_CTX;
 typedef struct sha_state_st SHA_CTX;
+typedef struct spake2_ctx_st SPAKE2_CTX;
 typedef struct srtp_protection_profile_st SRTP_PROTECTION_PROFILE;
 typedef struct ssl_cipher_st SSL_CIPHER;
 typedef struct ssl_ctx_st SSL_CTX;

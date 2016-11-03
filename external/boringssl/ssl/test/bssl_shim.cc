@@ -28,14 +28,15 @@
 #include <unistd.h>
 #else
 #include <io.h>
-#pragma warning(push, 3)
+OPENSSL_MSVC_PRAGMA(warning(push, 3))
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#pragma warning(pop)
+OPENSSL_MSVC_PRAGMA(warning(pop))
 
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
+#include <assert.h>
 #include <inttypes.h>
 #include <string.h>
 
@@ -46,7 +47,7 @@
 #include <openssl/crypto.h>
 #include <openssl/err.h>
 #include <openssl/hmac.h>
-#include <openssl/obj.h>
+#include <openssl/nid.h>
 #include <openssl/rand.h>
 #include <openssl/ssl.h>
 
@@ -81,19 +82,10 @@ static int Usage(const char *program) {
 }
 
 struct TestState {
-  TestState() {
-    // MSVC cannot initialize these inline.
-    memset(&clock, 0, sizeof(clock));
-    memset(&clock_delta, 0, sizeof(clock_delta));
-  }
-
   // async_bio is async BIO which pauses reads and writes.
   BIO *async_bio = nullptr;
-  // clock is the current time for the SSL connection.
-  timeval clock;
-  // clock_delta is how far the clock advanced in the most recent failed
-  // |BIO_read|.
-  timeval clock_delta;
+  // packeted_bio is the packeted BIO which simulates read timeouts.
+  BIO *packeted_bio = nullptr;
   ScopedEVP_PKEY channel_id;
   bool cert_ready = false;
   ScopedSSL_SESSION session;
@@ -117,11 +109,11 @@ static void TestStateExFree(void *parent, void *ptr, CRYPTO_EX_DATA *ad,
 static int g_config_index = 0;
 static int g_state_index = 0;
 
-static bool SetConfigPtr(SSL *ssl, const TestConfig *config) {
+static bool SetTestConfig(SSL *ssl, const TestConfig *config) {
   return SSL_set_ex_data(ssl, g_config_index, (void *)config) == 1;
 }
 
-static const TestConfig *GetConfigPtr(const SSL *ssl) {
+static const TestConfig *GetTestConfig(const SSL *ssl) {
   return (const TestConfig *)SSL_get_ex_data(ssl, g_config_index);
 }
 
@@ -138,13 +130,20 @@ static TestState *GetTestState(const SSL *ssl) {
   return (TestState *)SSL_get_ex_data(ssl, g_state_index);
 }
 
+static ScopedX509 LoadCertificate(const std::string &file) {
+  ScopedBIO bio(BIO_new(BIO_s_file()));
+  if (!bio || !BIO_read_filename(bio.get(), file.c_str())) {
+    return nullptr;
+  }
+  return ScopedX509(PEM_read_bio_X509(bio.get(), NULL, NULL, NULL));
+}
+
 static ScopedEVP_PKEY LoadPrivateKey(const std::string &file) {
   ScopedBIO bio(BIO_new(BIO_s_file()));
   if (!bio || !BIO_read_filename(bio.get(), file.c_str())) {
     return nullptr;
   }
-  ScopedEVP_PKEY pkey(PEM_read_bio_PrivateKey(bio.get(), NULL, NULL, NULL));
-  return pkey;
+  return ScopedEVP_PKEY(PEM_read_bio_PrivateKey(bio.get(), NULL, NULL, NULL));
 }
 
 static int AsyncPrivateKeyType(SSL *ssl) {
@@ -291,9 +290,9 @@ struct Free {
   }
 };
 
-static bool InstallCertificate(SSL *ssl) {
-  const TestConfig *config = GetConfigPtr(ssl);
-  TestState *test_state = GetTestState(ssl);
+static bool GetCertificate(SSL *ssl, ScopedX509 *out_x509,
+                           ScopedEVP_PKEY *out_pkey) {
+  const TestConfig *config = GetTestConfig(ssl);
 
   if (!config->digest_prefs.empty()) {
     std::unique_ptr<char, Free<char>> digest_prefs(
@@ -317,21 +316,16 @@ static bool InstallCertificate(SSL *ssl) {
   }
 
   if (!config->key_file.empty()) {
-    if (config->async) {
-      test_state->private_key = LoadPrivateKey(config->key_file.c_str());
-      if (!test_state->private_key) {
-        return false;
-      }
-      SSL_set_private_key_method(ssl, &g_async_private_key_method);
-    } else if (!SSL_use_PrivateKey_file(ssl, config->key_file.c_str(),
-                                        SSL_FILETYPE_PEM)) {
+    *out_pkey = LoadPrivateKey(config->key_file.c_str());
+    if (!*out_pkey) {
       return false;
     }
   }
-  if (!config->cert_file.empty() &&
-      !SSL_use_certificate_file(ssl, config->cert_file.c_str(),
-                                SSL_FILETYPE_PEM)) {
-    return false;
+  if (!config->cert_file.empty()) {
+    *out_x509 = LoadCertificate(config->cert_file.c_str());
+    if (!*out_x509) {
+      return false;
+    }
   }
   if (!config->ocsp_response.empty() &&
       !SSL_CTX_set_ocsp_response(ssl->ctx,
@@ -342,8 +336,33 @@ static bool InstallCertificate(SSL *ssl) {
   return true;
 }
 
+static bool InstallCertificate(SSL *ssl) {
+  ScopedX509 x509;
+  ScopedEVP_PKEY pkey;
+  if (!GetCertificate(ssl, &x509, &pkey)) {
+    return false;
+  }
+
+  if (pkey) {
+    TestState *test_state = GetTestState(ssl);
+    const TestConfig *config = GetTestConfig(ssl);
+    if (config->async) {
+      test_state->private_key = std::move(pkey);
+      SSL_set_private_key_method(ssl, &g_async_private_key_method);
+    } else if (!SSL_use_PrivateKey(ssl, pkey.get())) {
+      return false;
+    }
+  }
+
+  if (x509 && !SSL_use_certificate(ssl, x509.get())) {
+    return false;
+  }
+
+  return true;
+}
+
 static int SelectCertificateCallback(const struct ssl_early_callback_ctx *ctx) {
-  const TestConfig *config = GetConfigPtr(ctx->ssl);
+  const TestConfig *config = GetTestConfig(ctx->ssl);
   GetTestState(ctx->ssl)->early_callback_called = true;
 
   if (!config->expected_server_name.empty()) {
@@ -394,10 +413,32 @@ static int SelectCertificateCallback(const struct ssl_early_callback_ctx *ctx) {
   return 1;
 }
 
+static int ClientCertCallback(SSL *ssl, X509 **out_x509, EVP_PKEY **out_pkey) {
+  if (GetTestConfig(ssl)->async && !GetTestState(ssl)->cert_ready) {
+    return -1;
+  }
+
+  ScopedX509 x509;
+  ScopedEVP_PKEY pkey;
+  if (!GetCertificate(ssl, &x509, &pkey)) {
+    return -1;
+  }
+
+  // Return zero for no certificate.
+  if (!x509) {
+    return 0;
+  }
+
+  // Asynchronous private keys are not supported with client_cert_cb.
+  *out_x509 = x509.release();
+  *out_pkey = pkey.release();
+  return 1;
+}
+
 static int VerifySucceed(X509_STORE_CTX *store_ctx, void *arg) {
   SSL* ssl = (SSL*)X509_STORE_CTX_get_ex_data(store_ctx,
       SSL_get_ex_data_X509_STORE_CTX_idx());
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
 
   if (!config->expected_ocsp_response.empty()) {
     const uint8_t *data;
@@ -419,7 +460,7 @@ static int VerifyFail(X509_STORE_CTX *store_ctx, void *arg) {
 
 static int NextProtosAdvertisedCallback(SSL *ssl, const uint8_t **out,
                                         unsigned int *out_len, void *arg) {
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
   if (config->advertise_npn.empty()) {
     return SSL_TLSEXT_ERR_NOACK;
   }
@@ -431,7 +472,7 @@ static int NextProtosAdvertisedCallback(SSL *ssl, const uint8_t **out,
 
 static int NextProtoSelectCallback(SSL* ssl, uint8_t** out, uint8_t* outlen,
                                    const uint8_t* in, unsigned inlen, void* arg) {
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
   if (config->select_next_proto.empty()) {
     return SSL_TLSEXT_ERR_NOACK;
   }
@@ -443,8 +484,8 @@ static int NextProtoSelectCallback(SSL* ssl, uint8_t** out, uint8_t* outlen,
 
 static int AlpnSelectCallback(SSL* ssl, const uint8_t** out, uint8_t* outlen,
                               const uint8_t* in, unsigned inlen, void* arg) {
-  const TestConfig *config = GetConfigPtr(ssl);
-  if (config->select_alpn.empty()) {
+  const TestConfig *config = GetTestConfig(ssl);
+  if (config->decline_alpn) {
     return SSL_TLSEXT_ERR_NOACK;
   }
 
@@ -465,7 +506,7 @@ static unsigned PskClientCallback(SSL *ssl, const char *hint,
                                   char *out_identity,
                                   unsigned max_identity_len,
                                   uint8_t *out_psk, unsigned max_psk_len) {
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
 
   if (strcmp(hint ? hint : "", config->psk_identity.c_str()) != 0) {
     fprintf(stderr, "Server PSK hint did not match.\n");
@@ -487,7 +528,7 @@ static unsigned PskClientCallback(SSL *ssl, const char *hint,
 
 static unsigned PskServerCallback(SSL *ssl, const char *identity,
                                   uint8_t *out_psk, unsigned max_psk_len) {
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
 
   if (strcmp(identity, config->psk_identity.c_str()) != 0) {
     fprintf(stderr, "Client PSK identity did not match.\n");
@@ -504,7 +545,7 @@ static unsigned PskServerCallback(SSL *ssl, const char *identity,
 }
 
 static void CurrentTimeCallback(const SSL *ssl, timeval *out_clock) {
-  *out_clock = GetTestState(ssl)->clock;
+  *out_clock = PacketedBioGetClock(GetTestState(ssl)->packeted_bio);
 }
 
 static void ChannelIdCallback(SSL *ssl, EVP_PKEY **out_pkey) {
@@ -535,7 +576,7 @@ static SSL_SESSION *GetSessionCallback(SSL *ssl, uint8_t *data, int len,
 }
 
 static int DDoSCallback(const struct ssl_early_callback_ctx *early_context) {
-  const TestConfig *config = GetConfigPtr(early_context->ssl);
+  const TestConfig *config = GetTestConfig(early_context->ssl);
   static int callback_num = 0;
 
   callback_num++;
@@ -548,7 +589,7 @@ static int DDoSCallback(const struct ssl_early_callback_ctx *early_context) {
 
 static void InfoCallback(const SSL *ssl, int type, int val) {
   if (type == SSL_CB_HANDSHAKE_DONE) {
-    if (GetConfigPtr(ssl)->handshake_never_done) {
+    if (GetTestConfig(ssl)->handshake_never_done) {
       fprintf(stderr, "handshake completed\n");
       // Abort before any expected error code is printed, to ensure the overall
       // test fails.
@@ -584,7 +625,7 @@ static int TicketKeyCallback(SSL *ssl, uint8_t *key_name, uint8_t *iv,
   }
 
   if (!encrypt) {
-    return GetConfigPtr(ssl)->renew_ticket ? 2 : 1;
+    return GetTestConfig(ssl)->renew_ticket ? 2 : 1;
   }
   return 1;
 }
@@ -606,10 +647,10 @@ static int CustomExtensionAddCallback(SSL *ssl, unsigned extension_value,
     abort();
   }
 
-  if (GetConfigPtr(ssl)->custom_extension_skip) {
+  if (GetTestConfig(ssl)->custom_extension_skip) {
     return 0;
   }
-  if (GetConfigPtr(ssl)->custom_extension_fail_add) {
+  if (GetTestConfig(ssl)->custom_extension_fail_add) {
     return -1;
   }
 
@@ -732,6 +773,9 @@ static ScopedSSL_CTX SetupCtx(const TestConfig *config) {
   }
 
   ScopedDH dh(DH_get_2048_256(NULL));
+  if (!dh) {
+    return nullptr;
+  }
 
   if (config->use_sparse_dh_prime) {
     // This prime number is 2^1024 + 643 – a value just above a power of two.
@@ -752,7 +796,7 @@ static ScopedSSL_CTX SetupCtx(const TestConfig *config) {
     dh->priv_length = 0;
   }
 
-  if (!dh || !SSL_CTX_set_tmp_dh(ssl_ctx.get(), dh.get())) {
+  if (!SSL_CTX_set_tmp_dh(ssl_ctx.get(), dh.get())) {
     return nullptr;
   }
 
@@ -768,6 +812,10 @@ static ScopedSSL_CTX SetupCtx(const TestConfig *config) {
 
   SSL_CTX_set_select_certificate_cb(ssl_ctx.get(), SelectCertificateCallback);
 
+  if (config->use_old_client_cert_callback) {
+    SSL_CTX_set_client_cert_cb(ssl_ctx.get(), ClientCertCallback);
+  }
+
   SSL_CTX_set_next_protos_advertised_cb(
       ssl_ctx.get(), NextProtosAdvertisedCallback, NULL);
   if (!config->select_next_proto.empty()) {
@@ -775,14 +823,14 @@ static ScopedSSL_CTX SetupCtx(const TestConfig *config) {
                                      NULL);
   }
 
-  if (!config->select_alpn.empty()) {
+  if (!config->select_alpn.empty() || config->decline_alpn) {
     SSL_CTX_set_alpn_select_cb(ssl_ctx.get(), AlpnSelectCallback, NULL);
   }
 
   SSL_CTX_enable_tls_channel_id(ssl_ctx.get());
   SSL_CTX_set_channel_id_cb(ssl_ctx.get(), ChannelIdCallback);
 
-  ssl_ctx->current_time_cb = CurrentTimeCallback;
+  SSL_CTX_set_current_time_cb(ssl_ctx.get(), CurrentTimeCallback);
 
   SSL_CTX_set_info_callback(ssl_ctx.get(), InfoCallback);
   SSL_CTX_sess_set_new_cb(ssl_ctx.get(), NewSessionCallback);
@@ -832,26 +880,16 @@ static bool RetryAsync(SSL *ssl, int ret) {
     return false;
   }
 
-  const TestConfig *config = GetConfigPtr(ssl);
   TestState *test_state = GetTestState(ssl);
-  if (test_state->clock_delta.tv_usec != 0 ||
-      test_state->clock_delta.tv_sec != 0) {
-    // Process the timeout and retry.
-    test_state->clock.tv_usec += test_state->clock_delta.tv_usec;
-    test_state->clock.tv_sec += test_state->clock.tv_usec / 1000000;
-    test_state->clock.tv_usec %= 1000000;
-    test_state->clock.tv_sec += test_state->clock_delta.tv_sec;
-    memset(&test_state->clock_delta, 0, sizeof(test_state->clock_delta));
+  assert(GetTestConfig(ssl)->async);
 
+  if (test_state->packeted_bio != nullptr &&
+      PacketedBioAdvanceClock(test_state->packeted_bio)) {
     // The DTLS retransmit logic silently ignores write failures. So the test
     // may progress, allow writes through synchronously.
-    if (config->async) {
-      AsyncBioEnforceWriteQuota(test_state->async_bio, false);
-    }
+    AsyncBioEnforceWriteQuota(test_state->async_bio, false);
     int timeout_ret = DTLSv1_handle_timeout(ssl);
-    if (config->async) {
-      AsyncBioEnforceWriteQuota(test_state->async_bio, true);
-    }
+    AsyncBioEnforceWriteQuota(test_state->async_bio, true);
 
     if (timeout_ret < 0) {
       fprintf(stderr, "Error retransmitting.\n");
@@ -870,7 +908,7 @@ static bool RetryAsync(SSL *ssl, int ret) {
       AsyncBioAllowWrite(test_state->async_bio, 1);
       return true;
     case SSL_ERROR_WANT_CHANNEL_ID_LOOKUP: {
-      ScopedEVP_PKEY pkey = LoadPrivateKey(GetConfigPtr(ssl)->send_channel_id);
+      ScopedEVP_PKEY pkey = LoadPrivateKey(GetTestConfig(ssl)->send_channel_id);
       if (!pkey) {
         return false;
       }
@@ -897,7 +935,7 @@ static bool RetryAsync(SSL *ssl, int ret) {
 // DoRead reads from |ssl|, resolving any asynchronous operations. It returns
 // the result value of the final |SSL_read| call.
 static int DoRead(SSL *ssl, uint8_t *out, size_t max_out) {
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
   TestState *test_state = GetTestState(ssl);
   int ret;
   do {
@@ -918,7 +956,7 @@ static int DoRead(SSL *ssl, uint8_t *out, size_t max_out) {
 // WriteAll writes |in_len| bytes from |in| to |ssl|, resolving any asynchronous
 // operations. It returns the result of the final |SSL_write| call.
 static int WriteAll(SSL *ssl, const uint8_t *in, size_t in_len) {
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
   int ret;
   do {
     ret = SSL_write(ssl, in, in_len);
@@ -933,7 +971,7 @@ static int WriteAll(SSL *ssl, const uint8_t *in, size_t in_len) {
 // DoShutdown calls |SSL_shutdown|, resolving any asynchronous operations. It
 // returns the result of the final |SSL_shutdown| call.
 static int DoShutdown(SSL *ssl) {
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
   int ret;
   do {
     ret = SSL_shutdown(ssl);
@@ -945,7 +983,7 @@ static int DoShutdown(SSL *ssl) {
 // initial handshake (or False Starts), whether all the properties are
 // consistent with the test configuration and invariants.
 static bool CheckHandshakeProperties(SSL *ssl, bool is_resume) {
-  const TestConfig *config = GetConfigPtr(ssl);
+  const TestConfig *config = GetTestConfig(ssl);
 
   if (SSL_get_current_cipher(ssl) == nullptr) {
     fprintf(stderr, "null cipher after handshake\n");
@@ -1131,7 +1169,7 @@ static bool DoExchange(ScopedSSL_SESSION *out_session, SSL_CTX *ssl_ctx,
     return false;
   }
 
-  if (!SetConfigPtr(ssl.get(), config) ||
+  if (!SetTestConfig(ssl.get(), config) ||
       !SetTestState(ssl.get(), std::unique_ptr<TestState>(new TestState))) {
     return false;
   }
@@ -1140,9 +1178,8 @@ static bool DoExchange(ScopedSSL_SESSION *out_session, SSL_CTX *ssl_ctx,
       !SSL_set_mode(ssl.get(), SSL_MODE_SEND_FALLBACK_SCSV)) {
     return false;
   }
-  if (!config->use_early_callback) {
+  if (!config->use_early_callback && !config->use_old_client_cert_callback) {
     if (config->async) {
-      // TODO(davidben): Also test |s->ctx->client_cert_cb| on the client.
       SSL_set_cert_cb(ssl.get(), CertCallback, NULL);
     } else if (!InstallCertificate(ssl.get())) {
       return false;
@@ -1163,6 +1200,9 @@ static bool DoExchange(ScopedSSL_SESSION *out_session, SSL_CTX *ssl_ctx,
   }
   if (config->partial_write) {
     SSL_set_mode(ssl.get(), SSL_MODE_ENABLE_PARTIAL_WRITE);
+  }
+  if (config->no_tls13) {
+    SSL_set_options(ssl.get(), SSL_OP_NO_TLSv1_3);
   }
   if (config->no_tls12) {
     SSL_set_options(ssl.get(), SSL_OP_NO_TLSv1_2);
@@ -1255,12 +1295,16 @@ static bool DoExchange(ScopedSSL_SESSION *out_session, SSL_CTX *ssl_ctx,
   }
   if (config->enable_all_curves) {
     static const int kAllCurves[] = {
-        NID_X9_62_prime256v1, NID_secp384r1, NID_secp521r1, NID_x25519,
+      NID_X9_62_prime256v1, NID_secp384r1, NID_secp521r1, NID_X25519,
     };
     if (!SSL_set1_curves(ssl.get(), kAllCurves,
                          sizeof(kAllCurves) / sizeof(kAllCurves[0]))) {
       return false;
     }
+  }
+  if (config->initial_timeout_duration_ms > 0) {
+    DTLSv1_set_initial_timeout_duration(ssl.get(),
+                                        config->initial_timeout_duration_ms);
   }
 
   int sock = Connect(config->port);
@@ -1274,14 +1318,20 @@ static bool DoExchange(ScopedSSL_SESSION *out_session, SSL_CTX *ssl_ctx,
     return false;
   }
   if (config->is_dtls) {
-    ScopedBIO packeted =
-        PacketedBioCreate(&GetTestState(ssl.get())->clock_delta);
+    ScopedBIO packeted = PacketedBioCreate(!config->async);
+    if (!packeted) {
+      return false;
+    }
+    GetTestState(ssl.get())->packeted_bio = packeted.get();
     BIO_push(packeted.get(), bio.release());
     bio = std::move(packeted);
   }
   if (config->async) {
     ScopedBIO async_scoped =
         config->is_dtls ? AsyncBioCreateDatagram() : AsyncBioCreate();
+    if (!async_scoped) {
+      return false;
+    }
     BIO_push(async_scoped.get(), bio.release());
     GetTestState(ssl.get())->async_bio = async_scoped.get();
     bio = std::move(async_scoped);
@@ -1485,7 +1535,16 @@ static bool DoExchange(ScopedSSL_SESSION *out_session, SSL_CTX *ssl_ctx,
   return true;
 }
 
+class StderrDelimiter {
+ public:
+  ~StderrDelimiter() { fprintf(stderr, "--- DONE ---\n"); }
+};
+
 int main(int argc, char **argv) {
+  // To distinguish ASan's output from ours, add a trailing message to stderr.
+  // Anything following this line will be considered an error.
+  StderrDelimiter delimiter;
+
 #if defined(OPENSSL_WINDOWS)
   /* Initialize Winsock. */
   WORD wsa_version = MAKEWORD(2, 2);

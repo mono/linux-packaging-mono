@@ -99,18 +99,17 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwapi_la_DEPENDENCIES =
-am__libwapi_la_SOURCES_DIST = access.h context.c context.h error.c \
-	error.h io.c io.h io-portability.c io-portability.h \
-	io-private.h io-layer.h locking.c macros.h messages.c \
-	messages.h posix.c processes.c processes.h process-private.h \
-	security.c security.h sockets.c sockets.h socket-private.h \
-	socket-wrappers.h status.h timefuncs.c timefuncs.h \
-	timefuncs-private.h types.h uglify.h versioninfo.c \
-	versioninfo.h wait.c wait.h wapi_glob.h wapi_glob.c wapi.h \
-	wapi-private.h wapi.c io-trace.h wapi-remap.h io-layer-dummy.c
+am__libwapi_la_SOURCES_DIST = context.c context.h error.c error.h io.c \
+	io.h io-portability.c io-portability.h io-private.h io-layer.h \
+	locking.c macros.h messages.c messages.h posix.c security.c \
+	security.h sockets.c sockets.h socket-private.h \
+	socket-wrappers.h status.h timefuncs.c timefuncs.h types.h \
+	uglify.h versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
+	wapi_glob.c wapi.h wapi-private.h wapi.c io-trace.h \
+	wapi-remap.h io-layer-dummy.c
 am__objects_1 = context.lo error.lo io.lo io-portability.lo locking.lo \
-	messages.lo posix.lo processes.lo security.lo sockets.lo \
-	timefuncs.lo versioninfo.lo wait.lo wapi_glob.lo wapi.lo
+	messages.lo posix.lo security.lo sockets.lo timefuncs.lo \
+	versioninfo.lo wait.lo wapi_glob.lo wapi.lo
 am__objects_2 =
 am__objects_3 = io-layer-dummy.lo
 @HOST_WIN32_FALSE@am_libwapi_la_OBJECTS = $(am__objects_1) \
@@ -402,7 +401,6 @@ AM_CPPFLAGS = \
 
 libwapiincludedir = $(includedir)/mono-$(API_VER)/mono/io-layer
 OTHER_H = \
-	access.h	\
 	context.h	\
 	error.h		\
 	io.h		\
@@ -411,7 +409,6 @@ OTHER_H = \
 	io-portability.h	\
 	macros.h	\
 	messages.h	\
-	processes.h	\
 	security.h	\
 	sockets.h	\
 	status.h	\
@@ -424,7 +421,6 @@ OTHER_H = \
 	wapi-remap.h
 
 OTHER_SRC = \
-	access.h		\
 	context.c		\
 	context.h		\
 	error.c			\
@@ -440,9 +436,6 @@ OTHER_SRC = \
 	messages.c		\
 	messages.h		\
 	posix.c			\
-	processes.c		\
-	processes.h		\
-	process-private.h	\
 	security.c		\
 	security.h		\
 	sockets.c		\
@@ -452,7 +445,6 @@ OTHER_SRC = \
 	status.h		\
 	timefuncs.c		\
 	timefuncs.h		\
-	timefuncs-private.h	\
 	types.h			\
 	uglify.h		\
 	versioninfo.c		\
@@ -541,7 +533,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/locking.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/messages.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/posix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/processes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/security.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sockets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timefuncs.Plo@am__quote@

@@ -116,7 +116,6 @@ struct ec_method_st {
                       BN_CTX *); /* e.g. to Montgomery */
   int (*field_decode)(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
                       BN_CTX *); /* e.g. from Montgomery */
-  int (*field_set_to_one)(const EC_GROUP *, BIGNUM *r, BN_CTX *);
 } /* EC_METHOD */;
 
 const EC_METHOD* EC_GFp_mont_method(void);
@@ -141,7 +140,8 @@ struct ec_group_st {
   int a_is_minus3; /* enable optimized point arithmetics for special case */
 
   BN_MONT_CTX *mont; /* Montgomery structure. */
-  BIGNUM *one; /* The value one */
+
+  BIGNUM one; /* The value one. */
 } /* EC_GROUP */;
 
 struct ec_point_st {
@@ -151,7 +151,6 @@ struct ec_point_st {
   BIGNUM Y;
   BIGNUM Z; /* Jacobian projective coordinates:
              * (X, Y, Z)  represents  (X/Z^2, Y/Z^3)  if  Z != 0 */
-  int Z_is_one; /* enable optimized point arithmetics for special case */
 } /* EC_POINT */;
 
 EC_GROUP *ec_group_new(const EC_METHOD *meth);
@@ -190,9 +189,6 @@ int ec_GFp_simple_get_Jprojective_coordinates_GFp(const EC_GROUP *,
 int ec_GFp_simple_point_set_affine_coordinates(const EC_GROUP *, EC_POINT *,
                                                const BIGNUM *x, const BIGNUM *y,
                                                BN_CTX *);
-int ec_GFp_simple_point_get_affine_coordinates(const EC_GROUP *,
-                                               const EC_POINT *, BIGNUM *x,
-                                               BIGNUM *y, BN_CTX *);
 int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *, EC_POINT *,
                                              const BIGNUM *x, int y_bit,
                                              BN_CTX *);
@@ -227,21 +223,11 @@ int ec_GFp_mont_field_encode(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
                              BN_CTX *);
 int ec_GFp_mont_field_decode(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
                              BN_CTX *);
-int ec_GFp_mont_field_set_to_one(const EC_GROUP *, BIGNUM *r, BN_CTX *);
 
 int ec_point_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
                                              EC_POINT *point, const BIGNUM *x,
                                              const BIGNUM *y, const BIGNUM *z,
                                              BN_CTX *ctx);
-
-void ec_GFp_nistp_points_make_affine_internal(
-    size_t num, void *point_array, size_t felem_size, void *tmp_felems,
-    void (*felem_one)(void *out), int (*felem_is_zero)(const void *in),
-    void (*felem_assign)(void *out, const void *in),
-    void (*felem_square)(void *out, const void *in),
-    void (*felem_mul)(void *out, const void *in1, const void *in2),
-    void (*felem_inv)(void *out, const void *in),
-    void (*felem_contract)(void *out, const void *in));
 
 void ec_GFp_nistp_recode_scalar_bits(uint8_t *sign, uint8_t *digit, uint8_t in);
 
@@ -285,6 +271,8 @@ struct curve_data {
 
 struct built_in_curve {
   int nid;
+  uint8_t oid[8];
+  uint8_t oid_len;
   const struct curve_data *data;
   const EC_METHOD *(*method)(void);
 };

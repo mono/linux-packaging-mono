@@ -43,6 +43,7 @@
 #include <mono/metadata/w32mutex.h>
 #include <mono/metadata/w32semaphore.h>
 #include <mono/metadata/w32event.h>
+#include <mono/metadata/w32process.h>
 #include <metadata/threads.h>
 #include <metadata/profiler-private.h>
 #include <mono/metadata/coree.h>
@@ -510,7 +511,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	static MonoDomain *domain = NULL;
 	MonoAssembly *ass = NULL;
 	MonoImageOpenStatus status = MONO_IMAGE_OK;
-	const MonoRuntimeInfo* runtimes [G_N_ELEMENTS (supported_runtimes) + 1];
+	const MonoRuntimeInfo* runtimes [G_N_ELEMENTS (supported_runtimes) + 1] = { NULL };
 	int n, dummy;
 
 #ifdef DEBUG_DOMAIN_UNLOAD
@@ -534,6 +535,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_w32mutex_init ();
 	mono_w32semaphore_init ();
 	mono_w32event_init ();
+	mono_w32process_init ();
 
 #ifndef DISABLE_PERFCOUNTERS
 	mono_perfcounters_init ();
@@ -814,16 +816,6 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 
 	mono_profiler_appdomain_name (domain, domain->friendly_name);
 
-	/* Have to do this quite late so that we at least have System.Object */
-	MonoError custom_attr_error;
-	if (mono_assembly_has_reference_assembly_attribute (ass, &custom_attr_error)) {
-		char *corlib_file = g_build_filename (mono_assembly_getrootdir (), "mono", current_runtime->framework_version, "mscorlib.dll", NULL);
-		g_print ("Could not load file or assembly %s. Reference assemblies should not be loaded for execution.  They can only be loaded in the Reflection-only loader context.", corlib_file);
-		g_free (corlib_file);
-		exit (1);
-	}
-	mono_error_assert_ok (&custom_attr_error);
-
 	return domain;
 }
 
@@ -907,6 +899,8 @@ mono_cleanup (void)
 
 	mono_native_tls_free (appdomain_thread_id);
 	mono_coop_mutex_destroy (&appdomains_mutex);
+
+	mono_w32process_cleanup ();
 
 #ifndef HOST_WIN32
 	wapi_cleanup ();

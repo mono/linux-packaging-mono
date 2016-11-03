@@ -14,12 +14,12 @@
 
 #include <openssl/rand.h>
 
-#if defined(OPENSSL_WINDOWS)
+#if defined(OPENSSL_WINDOWS) && !defined(BORINGSSL_UNSAFE_FUZZER_MODE)
 
 #include <limits.h>
 #include <stdlib.h>
 
-#pragma warning(push, 3)
+OPENSSL_MSVC_PRAGMA(warning(push, 3))
 
 #include <windows.h>
 
@@ -30,7 +30,7 @@
 #include <ntsecapi.h>
 #undef SystemFunction036
 
-#pragma warning(pop)
+OPENSSL_MSVC_PRAGMA(warning(pop))
 
 #include "internal.h"
 
@@ -53,4 +53,4 @@ void CRYPTO_sysrand(uint8_t *out, size_t requested) {
   return;
 }
 
-#endif  /* OPENSSL_WINDOWS */
+#endif  /* OPENSSL_WINDOWS && !BORINGSSL_UNSAFE_FUZZER_MODE */

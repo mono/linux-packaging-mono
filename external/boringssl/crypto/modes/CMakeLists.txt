@@ -54,6 +54,7 @@ perlasm(ghash-x86.${ASM_EXT} asm/ghash-x86.pl)
 perlasm(ghash-armv4.${ASM_EXT} asm/ghash-armv4.pl)
 perlasm(ghashv8-armx.${ASM_EXT} asm/ghashv8-armx.pl)
 
+if(ENABLE_TESTS)
 add_executable(
   gcm_test
 
@@ -64,3 +65,4 @@ add_executable(
 
 target_link_libraries(gcm_test crypto)
 add_dependencies(all_tests gcm_test)
+endif()

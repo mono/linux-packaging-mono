@@ -63,7 +63,7 @@
 #include <mono/metadata/sysmath.h>
 #include <mono/metadata/string-icalls.h>
 #include <mono/metadata/debug-helpers.h>
-#include <mono/metadata/process.h>
+#include <mono/metadata/w32process.h>
 #include <mono/metadata/environment.h>
 #include <mono/metadata/profiler-private.h>
 #include <mono/metadata/locales.h>
@@ -103,22 +103,6 @@
 
 #if !defined(HOST_WIN32) && defined(HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
-#endif
-
-#if defined(HAVE_BTLS) && !defined(HAVE_DYNAMIC_BTLS)
-#include <btls/btls-ssl.h>
-#include <btls/btls-bio.h>
-#include <btls/btls-error.h>
-#include <btls/btls-key.h>
-#include <btls/btls-pkcs12.h>
-#include <btls/btls-x509-crl.h>
-#include <btls/btls-x509-chain.h>
-#include <btls/btls-x509-lookup.h>
-#include <btls/btls-x509-lookup-mono.h>
-#include <btls/btls-x509-name.h>
-#include <btls/btls-x509-revoked.h>
-#include <btls/btls-x509-store-ctx.h>
-#include <btls/btls-x509-verify-param.h>
 #endif
 
 extern MonoString* ves_icall_System_Environment_GetOSVersionString (void);
@@ -1318,7 +1302,7 @@ get_caller_no_system_or_reflection (MonoMethod *m, gint32 no, gint32 ilo, gboole
 }
 
 static MonoReflectionType *
-type_from_parsed_name (MonoTypeNameParse *info, MonoBoolean ignoreCase, MonoError *error)
+type_from_parsed_name (MonoTypeNameParse *info, MonoBoolean ignoreCase, MonoAssembly **caller_assembly, MonoError *error)
 {
 	MonoMethod *m, *dest;
 
@@ -1369,6 +1353,7 @@ type_from_parsed_name (MonoTypeNameParse *info, MonoBoolean ignoreCase, MonoErro
 	} else {
 		g_warning (G_STRLOC);
 	}
+	*caller_assembly = assembly;
 
 	if (info->assembly.name)
 		assembly = mono_assembly_load (&info->assembly, assembly ? assembly->basedir : NULL, NULL);
@@ -1413,6 +1398,7 @@ ves_icall_System_Type_internal_from_name (MonoString *name,
 	MonoTypeNameParse info;
 	MonoReflectionType *type = NULL;
 	gboolean parsedOk;
+	MonoAssembly *caller_assembly;
 
 	char *str = mono_string_to_utf8_checked (name, &error);
 	if (!is_ok (&error))
@@ -1428,18 +1414,27 @@ ves_icall_System_Type_internal_from_name (MonoString *name,
 		goto leave;
 	}
 
-	type = type_from_parsed_name (&info, ignoreCase, &error);
+	type = type_from_parsed_name (&info, ignoreCase, &caller_assembly, &error);
 
-	mono_reflection_free_type_info (&info);
-
-	if (!is_ok (&error))
+	if (!is_ok (&error)) {
+		mono_reflection_free_type_info (&info);
 		goto leave;
+	}
 
-	if (type == NULL){
+	if (type == NULL) {
 		if (throwOnError) {
-			mono_error_set_type_load_name (&error, g_strdup (str), g_strdup (""), "");
-			goto leave;
+			char *tname = info.name_space ? g_strdup_printf ("%s.%s", info.name_space, info.name) : g_strdup (info.name);
+			char *aname;
+			if (info.assembly.name)
+				aname = mono_stringify_assembly_name (&info.assembly);
+			else if (caller_assembly)
+				aname = mono_stringify_assembly_name (mono_assembly_get_name (caller_assembly));
+			else
+				aname = g_strdup ("");
+			mono_error_set_type_load_name (&error, tname, aname, "");
 		}
+		mono_reflection_free_type_info (&info);
+		goto leave;
 	}
 	
 leave:
@@ -1898,8 +1893,6 @@ ICALL_EXPORT gint32
 ves_icall_MonoField_GetFieldOffset (MonoReflectionField *field)
 {
 	MonoClass *parent = field->field->parent;
-	if (!parent->size_inited)
-		mono_class_init (parent);
 	mono_class_setup_fields (parent);
 
 	return field->field->offset - sizeof (MonoObject);
@@ -7975,38 +7968,6 @@ ves_icall_System_ComponentModel_Win32Exception_W32ErrorMessage (guint32 code)
 	return message;
 }
 
-ICALL_EXPORT gpointer
-ves_icall_Microsoft_Win32_NativeMethods_GetCurrentProcess (void)
-{
-	return GetCurrentProcess ();
-}
-
-ICALL_EXPORT MonoBoolean
-ves_icall_Microsoft_Win32_NativeMethods_GetExitCodeProcess (gpointer handle, gint32 *exitcode)
-{
-	return GetExitCodeProcess (handle, (guint32*) exitcode);
-}
-
-#ifndef HOST_WIN32
-static inline MonoBoolean
-mono_icall_close_process (gpointer handle)
-{
-	return CloseProcess (handle);
-}
-#endif /* !HOST_WIN32 */
-
-ICALL_EXPORT MonoBoolean
-ves_icall_Microsoft_Win32_NativeMethods_CloseProcess (gpointer handle)
-{
-	return mono_icall_close_process (handle);
-}
-
-ICALL_EXPORT MonoBoolean
-ves_icall_Microsoft_Win32_NativeMethods_TerminateProcess (gpointer handle, gint32 exitcode)
-{
-	return TerminateProcess (handle, exitcode);
-}
-
 #ifndef HOST_WIN32
 static inline gint32
 mono_icall_wait_for_input_idle (gpointer handle, gint32 milliseconds)
@@ -8021,72 +7982,10 @@ ves_icall_Microsoft_Win32_NativeMethods_WaitForInputIdle (gpointer handle, gint3
 	return mono_icall_wait_for_input_idle (handle, milliseconds);
 }
 
-#if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
-static inline MonoBoolean
-mono_icall_get_process_working_set_size (gpointer handle, gsize *min, gsize *max)
-{
-	return GetProcessWorkingSetSize (handle, min, max);
-}
-#endif /* G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT) */
-
-ICALL_EXPORT MonoBoolean
-ves_icall_Microsoft_Win32_NativeMethods_GetProcessWorkingSetSize (gpointer handle, gsize *min, gsize *max)
-{
-	return mono_icall_get_process_working_set_size (handle, min, max);
-}
-
-#if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
-static inline MonoBoolean
-mono_icall_set_process_working_set_size (gpointer handle, gsize min, gsize max)
-{
-	return SetProcessWorkingSetSize (handle, min, max);
-}
-#endif /* G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT) */
-
-ICALL_EXPORT MonoBoolean
-ves_icall_Microsoft_Win32_NativeMethods_SetProcessWorkingSetSize (gpointer handle, gsize min, gsize max)
-{
-	return mono_icall_set_process_working_set_size (handle, min, max);
-}
-
-ICALL_EXPORT MonoBoolean
-ves_icall_Microsoft_Win32_NativeMethods_GetProcessTimes (gpointer handle, gint64 *creationtime, gint64 *exittime, gint64 *kerneltime, gint64 *usertime)
-{
-	return GetProcessTimes (handle, (LPFILETIME) creationtime, (LPFILETIME) exittime, (LPFILETIME) kerneltime, (LPFILETIME) usertime);
-}
-
 ICALL_EXPORT gint32
 ves_icall_Microsoft_Win32_NativeMethods_GetCurrentProcessId (void)
 {
 	return mono_process_current_pid ();
-}
-
-#if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
-static inline gint32
-mono_icall_get_priority_class (gpointer handle)
-{
-	return GetPriorityClass (handle);
-}
-#endif /* G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT) */
-
-ICALL_EXPORT gint32
-ves_icall_Microsoft_Win32_NativeMethods_GetPriorityClass (gpointer handle)
-{
-	return mono_icall_get_priority_class (handle);
-}
-
-#if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
-static inline MonoBoolean
-mono_icall_set_priority_class (gpointer handle, gint32 priorityClass)
-{
-	return SetPriorityClass (handle, priorityClass);
-}
-#endif /* G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT) */
-
-ICALL_EXPORT MonoBoolean
-ves_icall_Microsoft_Win32_NativeMethods_SetPriorityClass (gpointer handle, gint32 priorityClass)
-{
-	return mono_icall_set_priority_class (handle, priorityClass);
 }
 
 ICALL_EXPORT MonoBoolean

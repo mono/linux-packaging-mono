@@ -105,6 +105,9 @@ namespace NUnitLite.Runner
         /// </summary>
         public void PrintNotRunReport()
         {
+#if MONO
+            return;
+#endif
             reportCount = 0;
             writer.WriteLine();
             writer.WriteLine("Tests Not Run:");

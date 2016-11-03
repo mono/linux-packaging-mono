@@ -17,7 +17,6 @@
 #if !defined(OPENSSL_WINDOWS) && !defined(OPENSSL_NO_THREADS)
 
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -46,7 +45,13 @@ void CRYPTO_MUTEX_lock_write(CRYPTO_MUTEX *lock) {
   }
 }
 
-void CRYPTO_MUTEX_unlock(CRYPTO_MUTEX *lock) {
+void CRYPTO_MUTEX_unlock_read(CRYPTO_MUTEX *lock) {
+  if (pthread_rwlock_unlock((pthread_rwlock_t *) lock) != 0) {
+    abort();
+  }
+}
+
+void CRYPTO_MUTEX_unlock_write(CRYPTO_MUTEX *lock) {
   if (pthread_rwlock_unlock((pthread_rwlock_t *) lock) != 0) {
     abort();
   }
@@ -68,7 +73,13 @@ void CRYPTO_STATIC_MUTEX_lock_write(struct CRYPTO_STATIC_MUTEX *lock) {
   }
 }
 
-void CRYPTO_STATIC_MUTEX_unlock(struct CRYPTO_STATIC_MUTEX *lock) {
+void CRYPTO_STATIC_MUTEX_unlock_read(struct CRYPTO_STATIC_MUTEX *lock) {
+  if (pthread_rwlock_unlock(&lock->lock) != 0) {
+    abort();
+  }
+}
+
+void CRYPTO_STATIC_MUTEX_unlock_write(struct CRYPTO_STATIC_MUTEX *lock) {
   if (pthread_rwlock_unlock(&lock->lock) != 0) {
     abort();
   }
@@ -76,8 +87,6 @@ void CRYPTO_STATIC_MUTEX_unlock(struct CRYPTO_STATIC_MUTEX *lock) {
 
 void CRYPTO_once(CRYPTO_once_t *once, void (*init)(void)) {
   if (pthread_once(once, init) != 0) {
-    fprintf(stderr,
-            "pthread_once failed. Did you link against a threading library?\n");
     abort();
   }
 }

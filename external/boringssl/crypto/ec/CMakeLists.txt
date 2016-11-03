@@ -30,6 +30,7 @@ add_library(
 
 perlasm(p256-x86_64-asm.${ASM_EXT} asm/p256-x86_64-asm.pl)
 
+if(ENABLE_TESTS)
 add_executable(
   example_mul
 
@@ -49,3 +50,4 @@ add_executable(
 target_link_libraries(example_mul crypto)
 target_link_libraries(ec_test crypto)
 add_dependencies(all_tests example_mul ec_test)
+endif()

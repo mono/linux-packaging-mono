@@ -54,10 +54,11 @@
 #include <string.h>
 
 #include <openssl/digest.h>
-#include <openssl/obj.h>
+#include <openssl/nid.h>
 #include <openssl/sha.h>
 
 #include "../internal.h"
+#include "internal.h"
 
 
 /* TODO(davidben): unsigned should be size_t. The various constant_time
@@ -175,6 +176,45 @@ void EVP_tls_cbc_copy_mac(uint8_t *out, unsigned md_size,
   /* rotate_offset can be, at most, 255 (bytes of padding) + 1 (padding length)
    * + md_size = 256 + 48 (since SHA-384 is the largest hash) = 304. */
   assert(rotate_offset <= 304);
+
+  /* Below is an SMT-LIB2 verification that the Barrett reductions below are
+   * correct within this range:
+   *
+   * (define-fun barrett (
+   *     (x (_ BitVec 32))
+   *     (mul (_ BitVec 32))
+   *     (shift (_ BitVec 32))
+   *     (divisor (_ BitVec 32)) ) (_ BitVec 32)
+   *   (let ((q (bvsub x (bvmul divisor (bvlshr (bvmul x mul) shift))) ))
+   *     (ite (bvuge q divisor)
+   *       (bvsub q divisor)
+   *       q)))
+   *
+   * (declare-fun x () (_ BitVec 32))
+   *
+   * (assert (or
+   *   (let (
+   *     (divisor (_ bv20 32))
+   *     (mul (_ bv25 32))
+   *     (shift (_ bv9 32))
+   *     (limit (_ bv853 32)))
+   *
+   *     (and (bvule x limit) (not (= (bvurem x divisor)
+   *                                  (barrett x mul shift divisor)))))
+   *
+   *   (let (
+   *     (divisor (_ bv48 32))
+   *     (mul (_ bv10 32))
+   *     (shift (_ bv9 32))
+   *     (limit (_ bv768 32)))
+   *
+   *     (and (bvule x limit) (not (= (bvurem x divisor)
+   *                                  (barrett x mul shift divisor)))))
+   * ))
+   *
+   * (check-sat)
+   * (get-model)
+   */
 
   if (md_size == 16) {
     rotate_offset &= 15;

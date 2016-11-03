@@ -26,24 +26,21 @@ add_library(
   asn1_lib.c
   asn1_par.c
   asn_pack.c
-  bio_asn1.c
-  bio_ndef.c
   f_enum.c
   f_int.c
   f_string.c
   t_bitst.c
-  t_pkey.c
   tasn_dec.c
   tasn_enc.c
   tasn_fre.c
   tasn_new.c
-  tasn_prn.c
   tasn_typ.c
   tasn_utl.c
   x_bignum.c
   x_long.c
 )
 
+if(ENABLE_TESTS)
 add_executable(
   asn1_test
 
@@ -54,3 +51,4 @@ add_executable(
 
 target_link_libraries(asn1_test crypto)
 add_dependencies(all_tests asn1_test)
+endif()

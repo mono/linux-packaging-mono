@@ -117,7 +117,7 @@ static int seal_impl(aead_poly1305_update poly1305_update,
    * 32-bits and this produces a warning because it's always false.
    * Casting to uint64_t inside the conditional is not sufficient to stop
    * the warning. */
-  if (in_len_64 >= (1ull << 32) * 64 - 64) {
+  if (in_len_64 >= (UINT64_C(1) << 32) * 64 - 64) {
     OPENSSL_PUT_ERROR(CIPHER, CIPHER_R_TOO_LARGE);
     return 0;
   }
@@ -162,7 +162,7 @@ static int open_impl(aead_poly1305_update poly1305_update,
    * 32-bits and this produces a warning because it's always false.
    * Casting to uint64_t inside the conditional is not sufficient to stop
    * the warning. */
-  if (in_len_64 >= (1ull << 32) * 64 - 64) {
+  if (in_len_64 >= (UINT64_C(1) << 32) * 64 - 64) {
     OPENSSL_PUT_ERROR(CIPHER, CIPHER_R_TOO_LARGE);
     return 0;
   }
@@ -242,10 +242,6 @@ static const EVP_AEAD aead_chacha20_poly1305 = {
 
 const EVP_AEAD *EVP_aead_chacha20_poly1305(void) {
   return &aead_chacha20_poly1305;
-}
-
-const EVP_AEAD *EVP_aead_chacha20_poly1305_rfc7539(void) {
-  return EVP_aead_chacha20_poly1305();
 }
 
 static void poly1305_update_old(poly1305_state *ctx, const uint8_t *ad,

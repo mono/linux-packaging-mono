@@ -141,7 +141,6 @@
 #include <openssl/ssl.h>
 
 #include <assert.h>
-#include <stdio.h>
 #include <string.h>
 
 #include <openssl/buf.h>
@@ -371,6 +370,52 @@ static const SSL_CIPHER kCiphers[] = {
      TLS1_CK_DHE_RSA_WITH_AES_256_GCM_SHA384,
      SSL_kDHE,
      SSL_aRSA,
+     SSL_AES256GCM,
+     SSL_AEAD,
+     SSL_HANDSHAKE_MAC_SHA384,
+    },
+
+    /* CECPQ1 (combined elliptic curve + post-quantum) suites. */
+
+    /* Cipher 16B7 */
+    {
+     TLS1_TXT_CECPQ1_RSA_WITH_CHACHA20_POLY1305_SHA256,
+     TLS1_CK_CECPQ1_RSA_WITH_CHACHA20_POLY1305_SHA256,
+     SSL_kCECPQ1,
+     SSL_aRSA,
+     SSL_CHACHA20POLY1305,
+     SSL_AEAD,
+     SSL_HANDSHAKE_MAC_SHA256,
+    },
+
+    /* Cipher 16B8 */
+    {
+     TLS1_TXT_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
+     TLS1_CK_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
+     SSL_kCECPQ1,
+     SSL_aECDSA,
+     SSL_CHACHA20POLY1305,
+     SSL_AEAD,
+     SSL_HANDSHAKE_MAC_SHA256,
+    },
+
+    /* Cipher 16B9 */
+    {
+     TLS1_TXT_CECPQ1_RSA_WITH_AES_256_GCM_SHA384,
+     TLS1_CK_CECPQ1_RSA_WITH_AES_256_GCM_SHA384,
+     SSL_kCECPQ1,
+     SSL_aRSA,
+     SSL_AES256GCM,
+     SSL_AEAD,
+     SSL_HANDSHAKE_MAC_SHA384,
+    },
+
+    /* Cipher 16BA */
+    {
+     TLS1_TXT_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384,
+     TLS1_CK_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384,
+     SSL_kCECPQ1,
+     SSL_aECDSA,
      SSL_AES256GCM,
      SSL_AEAD,
      SSL_HANDSHAKE_MAC_SHA384,
@@ -616,6 +661,29 @@ static const SSL_CIPHER kCiphers[] = {
      SSL_AEAD,
      SSL_HANDSHAKE_MAC_SHA256,
     },
+
+    /* Cipher D001 */
+    {
+     TLS1_TXT_ECDHE_PSK_WITH_AES_128_GCM_SHA256,
+     TLS1_CK_ECDHE_PSK_WITH_AES_128_GCM_SHA256,
+     SSL_kECDHE,
+     SSL_aPSK,
+     SSL_AES128GCM,
+     SSL_SHA256,
+     SSL_HANDSHAKE_MAC_SHA256,
+    },
+
+    /* Cipher D002 */
+    {
+     TLS1_TXT_ECDHE_PSK_WITH_AES_256_GCM_SHA384,
+     TLS1_CK_ECDHE_PSK_WITH_AES_256_GCM_SHA384,
+     SSL_kECDHE,
+     SSL_aPSK,
+     SSL_AES256GCM,
+     SSL_SHA384,
+     SSL_HANDSHAKE_MAC_SHA384,
+    },
+
 };
 
 static const size_t kCiphersLen = sizeof(kCiphers) / sizeof(kCiphers[0]);
@@ -652,8 +720,9 @@ typedef struct cipher_alias_st {
 } CIPHER_ALIAS;
 
 static const CIPHER_ALIAS kCipherAliases[] = {
-    /* "ALL" doesn't include eNULL (must be specifically enabled) */
-    {"ALL", ~0u, ~0u, ~SSL_eNULL, ~0u, 0},
+    /* "ALL" doesn't include eNULL nor kCECPQ1. These must be explicitly
+     * enabled. */
+    {"ALL", ~SSL_kCECPQ1, ~0u, ~SSL_eNULL, ~0u, 0},
 
     /* The "COMPLEMENTOFDEFAULT" rule is omitted. It matches nothing. */
 
@@ -668,15 +737,16 @@ static const CIPHER_ALIAS kCipherAliases[] = {
     {"DH", SSL_kDHE, ~0u, ~0u, ~0u, 0},
 
     {"kECDHE", SSL_kECDHE, ~0u, ~0u, ~0u, 0},
+    {"kCECPQ1", SSL_kCECPQ1, ~0u, ~0u, ~0u, 0},
     {"kEECDH", SSL_kECDHE, ~0u, ~0u, ~0u, 0},
     {"ECDH", SSL_kECDHE, ~0u, ~0u, ~0u, 0},
 
     {"kPSK", SSL_kPSK, ~0u, ~0u, ~0u, 0},
 
     /* server authentication aliases */
-    {"aRSA", ~0u, SSL_aRSA, ~SSL_eNULL, ~0u, 0},
-    {"aECDSA", ~0u, SSL_aECDSA, ~0u, ~0u, 0},
-    {"ECDSA", ~0u, SSL_aECDSA, ~0u, ~0u, 0},
+    {"aRSA", ~SSL_kCECPQ1, SSL_aRSA, ~SSL_eNULL, ~0u, 0},
+    {"aECDSA", ~SSL_kCECPQ1, SSL_aECDSA, ~0u, ~0u, 0},
+    {"ECDSA", ~SSL_kCECPQ1, SSL_aECDSA, ~0u, ~0u, 0},
     {"aPSK", ~0u, SSL_aPSK, ~0u, ~0u, 0},
 
     /* aliases combining key exchange and server authentication */
@@ -691,29 +761,29 @@ static const CIPHER_ALIAS kCipherAliases[] = {
     {"3DES", ~0u, ~0u, SSL_3DES, ~0u, 0},
     {"RC4", ~0u, ~0u, SSL_RC4, ~0u, 0},
     {"AES128", ~0u, ~0u, SSL_AES128 | SSL_AES128GCM, ~0u, 0},
-    {"AES256", ~0u, ~0u, SSL_AES256 | SSL_AES256GCM, ~0u, 0},
-    {"AES", ~0u, ~0u, SSL_AES, ~0u, 0},
-    {"AESGCM", ~0u, ~0u, SSL_AES128GCM | SSL_AES256GCM, ~0u, 0},
-    {"CHACHA20", ~0u, ~0u, SSL_CHACHA20POLY1305 | SSL_CHACHA20POLY1305_OLD, ~0u,
+    {"AES256", ~SSL_kCECPQ1, ~0u, SSL_AES256 | SSL_AES256GCM, ~0u, 0},
+    {"AES", ~SSL_kCECPQ1, ~0u, SSL_AES, ~0u, 0},
+    {"AESGCM", ~SSL_kCECPQ1, ~0u, SSL_AES128GCM | SSL_AES256GCM, ~0u, 0},
+    {"CHACHA20", ~SSL_kCECPQ1, ~0u, SSL_CHACHA20POLY1305 | SSL_CHACHA20POLY1305_OLD, ~0u,
      0},
 
     /* MAC aliases */
     {"MD5", ~0u, ~0u, ~0u, SSL_MD5, 0},
     {"SHA1", ~0u, ~0u, ~SSL_eNULL, SSL_SHA1, 0},
     {"SHA", ~0u, ~0u, ~SSL_eNULL, SSL_SHA1, 0},
-    {"SHA256", ~0u, ~0u, ~0u, SSL_SHA256, 0},
-    {"SHA384", ~0u, ~0u, ~0u, SSL_SHA384, 0},
+    {"SHA256", ~SSL_kCECPQ1, ~0u, ~0u, SSL_SHA256, 0},
+    {"SHA384", ~SSL_kCECPQ1, ~0u, ~0u, SSL_SHA384, 0},
 
     /* Legacy protocol minimum version aliases. "TLSv1" is intentionally the
      * same as "SSLv3". */
-    {"SSLv3", ~0u, ~0u, ~SSL_eNULL, ~0u, SSL3_VERSION},
-    {"TLSv1", ~0u, ~0u, ~SSL_eNULL, ~0u, SSL3_VERSION},
-    {"TLSv1.2", ~0u, ~0u, ~SSL_eNULL, ~0u, TLS1_2_VERSION},
+    {"SSLv3", ~SSL_kCECPQ1, ~0u, ~SSL_eNULL, ~0u, SSL3_VERSION},
+    {"TLSv1", ~SSL_kCECPQ1, ~0u, ~SSL_eNULL, ~0u, SSL3_VERSION},
+    {"TLSv1.2", ~SSL_kCECPQ1, ~0u, ~SSL_eNULL, ~0u, TLS1_2_VERSION},
 
     /* Legacy strength classes. */
     {"MEDIUM", ~0u, ~0u, SSL_RC4, ~0u, 0},
-    {"HIGH", ~0u, ~0u, ~(SSL_eNULL|SSL_RC4), ~0u, 0},
-    {"FIPS", ~0u, ~0u, ~(SSL_eNULL|SSL_RC4), ~0u, 0},
+    {"HIGH", ~SSL_kCECPQ1, ~0u, ~(SSL_eNULL|SSL_RC4), ~0u, 0},
+    {"FIPS", ~SSL_kCECPQ1, ~0u, ~(SSL_eNULL|SSL_RC4), ~0u, 0},
 };
 
 static const size_t kCipherAliasesLen =
@@ -756,24 +826,24 @@ int ssl_cipher_get_evp_aead(const EVP_AEAD **out_aead,
     case SSL_AES128GCM:
       *out_aead = EVP_aead_aes_128_gcm();
       *out_fixed_iv_len = 4;
-      return 1;
+      break;
 
     case SSL_AES256GCM:
       *out_aead = EVP_aead_aes_256_gcm();
       *out_fixed_iv_len = 4;
-      return 1;
+      break;
 
 #if !defined(BORINGSSL_ANDROID_SYSTEM)
     case SSL_CHACHA20POLY1305_OLD:
       *out_aead = EVP_aead_chacha20_poly1305_old();
       *out_fixed_iv_len = 0;
-      return 1;
+      break;
 #endif
 
     case SSL_CHACHA20POLY1305:
       *out_aead = EVP_aead_chacha20_poly1305();
       *out_fixed_iv_len = 12;
-      return 1;
+      break;
 
     case SSL_RC4:
       switch (cipher->algorithm_mac) {
@@ -784,7 +854,7 @@ int ssl_cipher_get_evp_aead(const EVP_AEAD **out_aead,
             *out_aead = EVP_aead_rc4_md5_tls();
           }
           *out_mac_secret_len = MD5_DIGEST_LENGTH;
-          return 1;
+          break;
         case SSL_SHA1:
           if (version == SSL3_VERSION) {
             *out_aead = EVP_aead_rc4_sha1_ssl3();
@@ -792,10 +862,11 @@ int ssl_cipher_get_evp_aead(const EVP_AEAD **out_aead,
             *out_aead = EVP_aead_rc4_sha1_tls();
           }
           *out_mac_secret_len = SHA_DIGEST_LENGTH;
-          return 1;
+          break;
         default:
           return 0;
       }
+      break;
 
     case SSL_AES128:
       switch (cipher->algorithm_mac) {
@@ -810,14 +881,15 @@ int ssl_cipher_get_evp_aead(const EVP_AEAD **out_aead,
             *out_aead = EVP_aead_aes_128_cbc_sha1_tls();
           }
           *out_mac_secret_len = SHA_DIGEST_LENGTH;
-          return 1;
+          break;
         case SSL_SHA256:
           *out_aead = EVP_aead_aes_128_cbc_sha256_tls();
           *out_mac_secret_len = SHA256_DIGEST_LENGTH;
-          return 1;
+          break;
         default:
           return 0;
       }
+      break;
 
     case SSL_AES256:
       switch (cipher->algorithm_mac) {
@@ -832,18 +904,19 @@ int ssl_cipher_get_evp_aead(const EVP_AEAD **out_aead,
             *out_aead = EVP_aead_aes_256_cbc_sha1_tls();
           }
           *out_mac_secret_len = SHA_DIGEST_LENGTH;
-          return 1;
+          break;
         case SSL_SHA256:
           *out_aead = EVP_aead_aes_256_cbc_sha256_tls();
           *out_mac_secret_len = SHA256_DIGEST_LENGTH;
-          return 1;
+          break;
         case SSL_SHA384:
           *out_aead = EVP_aead_aes_256_cbc_sha384_tls();
           *out_mac_secret_len = SHA384_DIGEST_LENGTH;
-          return 1;
+          break;
         default:
           return 0;
       }
+      break;
 
     case SSL_3DES:
       switch (cipher->algorithm_mac) {
@@ -858,10 +931,11 @@ int ssl_cipher_get_evp_aead(const EVP_AEAD **out_aead,
             *out_aead = EVP_aead_des_ede3_cbc_sha1_tls();
           }
           *out_mac_secret_len = SHA_DIGEST_LENGTH;
-          return 1;
+          break;
         default:
           return 0;
       }
+      break;
 
     case SSL_eNULL:
       switch (cipher->algorithm_mac) {
@@ -872,14 +946,25 @@ int ssl_cipher_get_evp_aead(const EVP_AEAD **out_aead,
             *out_aead = EVP_aead_null_sha1_tls();
           }
           *out_mac_secret_len = SHA_DIGEST_LENGTH;
-          return 1;
+          break;
         default:
           return 0;
       }
+      break;
 
     default:
       return 0;
   }
+
+  /* In TLS 1.3, the iv_len is equal to the AEAD nonce length whereas the code
+   * above computes the TLS 1.2 construction.
+   *
+   * TODO(davidben,svaldez): Avoid computing the wrong value and fixing it. */
+  if (version >= TLS1_3_VERSION) {
+    *out_fixed_iv_len = EVP_AEAD_nonce_length(*out_aead);
+    assert(*out_fixed_iv_len >= 8);
+  }
+  return 1;
 }
 
 const EVP_MD *ssl_get_handshake_digest(uint32_t algorithm_prf) {
@@ -1405,6 +1490,7 @@ ssl_create_cipher_list(const SSL_PROTOCOL_METHOD *ssl_method,
 
   /* Everything else being equal, prefer ECDHE_ECDSA then ECDHE_RSA over other
    * key exchange mechanisms */
+
   ssl_cipher_apply_rule(0, SSL_kECDHE, SSL_aECDSA, ~0u, ~0u, 0, CIPHER_ADD, -1,
                         0, &head, &tail);
   ssl_cipher_apply_rule(0, SSL_kECDHE, ~0u, ~0u, ~0u, 0, CIPHER_ADD, -1, 0,
@@ -1417,9 +1503,9 @@ ssl_create_cipher_list(const SSL_PROTOCOL_METHOD *ssl_method,
    * AES_GCM. Of the two CHACHA20 variants, the new one is preferred over the
    * old one. */
   if (EVP_has_aes_hardware()) {
-    ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES256GCM, ~0u, 0, CIPHER_ADD, -1, 0,
-                          &head, &tail);
     ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES128GCM, ~0u, 0, CIPHER_ADD, -1, 0,
+                          &head, &tail);
+    ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES256GCM, ~0u, 0, CIPHER_ADD, -1, 0,
                           &head, &tail);
     ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_CHACHA20POLY1305, ~0u, 0, CIPHER_ADD,
                           -1, 0, &head, &tail);
@@ -1430,24 +1516,24 @@ ssl_create_cipher_list(const SSL_PROTOCOL_METHOD *ssl_method,
                           -1, 0, &head, &tail);
     ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_CHACHA20POLY1305_OLD, ~0u, 0,
                           CIPHER_ADD, -1, 0, &head, &tail);
-    ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES256GCM, ~0u, 0, CIPHER_ADD, -1, 0,
-                          &head, &tail);
     ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES128GCM, ~0u, 0, CIPHER_ADD, -1, 0,
+                          &head, &tail);
+    ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES256GCM, ~0u, 0, CIPHER_ADD, -1, 0,
                           &head, &tail);
   }
 
-  /* Then the legacy non-AEAD ciphers: AES_256_CBC, AES-128_CBC, RC4_128_SHA,
-   * RC4_128_MD5, 3DES_EDE_CBC_SHA. */
-  ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES256, ~0u, 0, CIPHER_ADD, -1, 0,
-                        &head, &tail);
+  /* Then the legacy non-AEAD ciphers: AES_128_CBC, AES_256_CBC,
+   * 3DES_EDE_CBC_SHA, RC4_128_SHA, RC4_128_MD5. */
   ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES128, ~0u, 0, CIPHER_ADD, -1, 0,
                         &head, &tail);
+  ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_AES256, ~0u, 0, CIPHER_ADD, -1, 0,
+                        &head, &tail);
+  ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_3DES, ~0u, 0, CIPHER_ADD, -1, 0, &head,
+                        &tail);
   ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_RC4, ~SSL_MD5, 0, CIPHER_ADD, -1, 0,
                         &head, &tail);
   ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_RC4, SSL_MD5, 0, CIPHER_ADD, -1, 0,
                         &head, &tail);
-  ssl_cipher_apply_rule(0, ~0u, ~0u, SSL_3DES, ~0u, 0, CIPHER_ADD, -1, 0, &head,
-                        &tail);
 
   /* Temporarily enable everything else for sorting */
   ssl_cipher_apply_rule(0, ~0u, ~0u, ~0u, ~0u, 0, CIPHER_ADD, -1, 0, &head,
@@ -1577,6 +1663,10 @@ int SSL_CIPHER_has_SHA1_HMAC(const SSL_CIPHER *cipher) {
   return (cipher->algorithm_mac & SSL_SHA1) != 0;
 }
 
+int SSL_CIPHER_has_SHA256_HMAC(const SSL_CIPHER *cipher) {
+  return (cipher->algorithm_mac & SSL_SHA256) != 0;
+}
+
 int SSL_CIPHER_is_AESGCM(const SSL_CIPHER *cipher) {
   return (cipher->algorithm_enc & (SSL_AES128GCM | SSL_AES256GCM)) != 0;
 }
@@ -1616,8 +1706,16 @@ int SSL_CIPHER_is_ECDSA(const SSL_CIPHER *cipher) {
   return (cipher->algorithm_auth & SSL_aECDSA) != 0;
 }
 
+int SSL_CIPHER_is_DHE(const SSL_CIPHER *cipher) {
+  return (cipher->algorithm_mkey & SSL_kDHE) != 0;
+}
+
 int SSL_CIPHER_is_ECDHE(const SSL_CIPHER *cipher) {
   return (cipher->algorithm_mkey & SSL_kECDHE) != 0;
+}
+
+int SSL_CIPHER_is_CECPQ1(const SSL_CIPHER *cipher) {
+  return (cipher->algorithm_mkey & SSL_kCECPQ1) != 0;
 }
 
 uint16_t SSL_CIPHER_get_min_version(const SSL_CIPHER *cipher) {
@@ -1664,6 +1762,17 @@ const char *SSL_CIPHER_get_kx_name(const SSL_CIPHER *cipher) {
           return "ECDHE_RSA";
         case SSL_aPSK:
           return "ECDHE_PSK";
+        default:
+          assert(0);
+          return "UNKNOWN";
+      }
+
+    case SSL_kCECPQ1:
+      switch (cipher->algorithm_auth) {
+        case SSL_aECDSA:
+          return "CECPQ1_ECDSA";
+        case SSL_aRSA:
+          return "CECPQ1_RSA";
         default:
           assert(0);
           return "UNKNOWN";
@@ -1823,6 +1932,10 @@ const char *SSL_CIPHER_description(const SSL_CIPHER *cipher, char *buf,
       kx = "ECDH";
       break;
 
+    case SSL_kCECPQ1:
+      kx = "CECPQ1";
+      break;
+
     case SSL_kPSK:
       kx = "PSK";
       break;
@@ -1954,20 +2067,15 @@ int ssl_cipher_get_key_type(const SSL_CIPHER *cipher) {
   return EVP_PKEY_NONE;
 }
 
-int ssl_cipher_has_server_public_key(const SSL_CIPHER *cipher) {
-  /* PSK-authenticated ciphers do not use a certificate. (RSA_PSK is not
-   * supported.) */
-  if (cipher->algorithm_auth & SSL_aPSK) {
-    return 0;
-  }
-
-  /* All other ciphers include it. */
-  return 1;
+int ssl_cipher_uses_certificate_auth(const SSL_CIPHER *cipher) {
+  return (cipher->algorithm_auth & SSL_aCERT) != 0;
 }
 
 int ssl_cipher_requires_server_key_exchange(const SSL_CIPHER *cipher) {
   /* Ephemeral Diffie-Hellman key exchanges require a ServerKeyExchange. */
-  if (cipher->algorithm_mkey & SSL_kDHE || cipher->algorithm_mkey & SSL_kECDHE) {
+  if (cipher->algorithm_mkey & SSL_kDHE ||
+      cipher->algorithm_mkey & SSL_kECDHE ||
+      cipher->algorithm_mkey & SSL_kCECPQ1) {
     return 1;
   }
 

@@ -143,6 +143,9 @@ OPENSSL_EXPORT int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data,
  * at least this much space. */
 #define EVP_MAX_MD_SIZE 64 /* SHA-512 is the longest so far. */
 
+/* EVP_MAX_MD_BLOCK_SIZE is the largest digest block size supported, in bytes. */
+#define EVP_MAX_MD_BLOCK_SIZE 128 /* SHA-512 is the longest so far. */
+
 /* EVP_DigestFinal_ex finishes the digest in |ctx| and writes the output to
  * |md_out|. At most |EVP_MAX_MD_SIZE| bytes are written. If |out_size| is not
  * NULL then |*out_size| is set to the number of bytes written. It returns one.
@@ -209,6 +212,12 @@ OPENSSL_EXPORT int EVP_add_digest(const EVP_MD *digest);
  * |name|, or NULL if the name is unknown. */
 OPENSSL_EXPORT const EVP_MD *EVP_get_digestbyname(const char *);
 
+/* EVP_dss1 returns the value of EVP_sha1(). This was provided by OpenSSL to
+ * specifiy the original DSA signatures, which were fixed to use SHA-1. Note,
+ * however, that attempting to sign or verify DSA signatures with the EVP
+ * interface will always fail. */
+OPENSSL_EXPORT const EVP_MD *EVP_dss1(void);
+
 
 /* Digest operation accessors. */
 
@@ -218,11 +227,11 @@ OPENSSL_EXPORT const EVP_MD *EVP_MD_CTX_md(const EVP_MD_CTX *ctx);
 
 /* EVP_MD_CTX_size returns the digest size of |ctx|, in bytes. It
  * will crash if a digest hasn't been set on |ctx|. */
-OPENSSL_EXPORT unsigned EVP_MD_CTX_size(const EVP_MD_CTX *ctx);
+OPENSSL_EXPORT size_t EVP_MD_CTX_size(const EVP_MD_CTX *ctx);
 
 /* EVP_MD_CTX_block_size returns the block size of the digest function used by
  * |ctx|, in bytes. It will crash if a digest hasn't been set on |ctx|. */
-OPENSSL_EXPORT unsigned EVP_MD_CTX_block_size(const EVP_MD_CTX *ctx);
+OPENSSL_EXPORT size_t EVP_MD_CTX_block_size(const EVP_MD_CTX *ctx);
 
 /* EVP_MD_CTX_type returns a NID describing the digest function used by |ctx|.
  * (For example, |NID_sha256|.) It will crash if a digest hasn't been set on

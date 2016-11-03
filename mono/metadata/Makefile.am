@@ -10,11 +10,11 @@ win32_sources = \
 	marshal-windows-internals.h \
 	mono-security-windows.c \
 	mono-security-windows-internals.h \
-	process-windows.c \
-	process-windows-internals.h \
 	w32mutex-win32.c \
 	w32semaphore-win32.c \
 	w32event-win32.c \
+	w32process-win32.c \
+	w32process-win32-internals.h \
 	socket-io-windows.c
 
 platform_sources = $(win32_sources)
@@ -41,23 +41,19 @@ unix_sources = \
 	console-unix.c \
 	w32mutex-unix.c \
 	w32semaphore-unix.c \
-	w32event-unix.c
+	w32event-unix.c \
+	w32process-unix.c \
+	w32process-unix-internals.h \
+	w32process-unix-osx.c \
+	w32process-unix-bsd.c \
+	w32process-unix-haiku.c \
+	w32process-unix-default.c
 
 platform_sources = $(unix_sources)
 endif
 
 if PLATFORM_ANDROID
 platform_sources += ../../support/libm/complex.c
-endif
-
-if !DYNAMIC_BTLS
-if BTLS
-btls_file_list := $(shell cat ../btls/build-shared/mono-btls-shared-lo.txt)
-btls_static_file_list := $(shell cat ../btls/build-static/mono-btls-static-lo.txt)
-btls_libs = $(btls_file_list)
-btls_static_libs = $(btls_static_file_list)
-btls_cflags = -I$(top_srcdir)/external/boringssl/include -I$(top_srcdir)/mono/btls
-endif
 endif
 
 #
@@ -92,7 +88,7 @@ else
 noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
 endif
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS) $(btls_cflags)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
 
 #
 # Make sure any prefix changes are updated in the binaries too.
@@ -205,9 +201,9 @@ common_sources = \
 	opcodes.c		\
 	socket-io.c		\
 	socket-io.h		\
-	process.c		\
-	process.h		\
-	process-internals.h \
+	w32process.c		\
+	w32process.h		\
+	w32process-internals.h		\
 	profiler.c		\
 	profiler-private.h	\
 	rand.h			\
@@ -256,7 +252,9 @@ common_sources = \
 	w32semaphore.h	\
 	w32event.h	\
 	w32handle-namespace.h	\
-	w32handle-namespace.c
+	w32handle-namespace.c	\
+	w32handle.h	\
+	w32handle.c
 
 # These source files have compile time dependencies on GC code
 gc_dependent_sources = \
@@ -293,21 +291,21 @@ sgen_sources = \
 
 libmonoruntime_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES)
-libmonoruntime_la_LIBADD = libmonoruntime-config.la $(btls_libs)
+libmonoruntime_la_LIBADD = libmonoruntime-config.la
 
 libmonoruntimesgen_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(sgen_sources)
 libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES)
-libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(btls_libs)
+libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la
 
 libmonoruntime_static_la_SOURCES = $(libmonoruntime_la_SOURCES)
 libmonoruntime_static_la_LDFLAGS = -static
 libmonoruntime_static_la_CFLAGS = $(BOEHM_DEFINES)
-libmonoruntime_static_la_LIBADD = $(bundle_obj) libmonoruntime-config.la $(btls_static_libs)
+libmonoruntime_static_la_LIBADD = $(bundle_obj) libmonoruntime-config.la
 
 libmonoruntimesgen_static_la_SOURCES = $(libmonoruntimesgen_la_SOURCES)
 libmonoruntimesgen_static_la_LDFLAGS = -static
 libmonoruntimesgen_static_la_CFLAGS = $(SGEN_DEFINES)
-libmonoruntimesgen_static_la_LIBADD = libmonoruntime-config.la $(btls_static_libs)
+libmonoruntimesgen_static_la_LIBADD = libmonoruntime-config.la
 
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
 

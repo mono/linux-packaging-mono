@@ -20,6 +20,7 @@ add_library(
   ${POLY1305_ARCH_SOURCES}
 )
 
+if(ENABLE_TESTS)
 add_executable(
   poly1305_test
 
@@ -29,3 +30,4 @@ add_executable(
 
 target_link_libraries(poly1305_test crypto)
 add_dependencies(all_tests poly1305_test)
+endif()

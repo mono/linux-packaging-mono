@@ -21,6 +21,7 @@ add_library(
   e_ssl3.c
 )
 
+if(ENABLE_TESTS)
 add_executable(
   cipher_test
 
@@ -38,3 +39,4 @@ add_executable(
 target_link_libraries(cipher_test crypto)
 target_link_libraries(aead_test crypto)
 add_dependencies(all_tests cipher_test aead_test)
+endif()
