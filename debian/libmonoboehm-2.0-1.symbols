@@ -1432,6 +1432,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_utf8_validate_and_len_with_bounds@Base 4.1.0.1738
  mono_valloc@Base 4.1.0.1738
  mono_valloc_aligned@Base 4.1.0.1738
+ mono_valloc_granule@Base 4.9.0.833
  mono_value_box@Base 4.1.0.1738
  mono_value_copy@Base 4.1.0.1738
  mono_value_copy_array@Base 4.1.0.1738
