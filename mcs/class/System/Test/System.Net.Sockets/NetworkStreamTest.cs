@@ -20,7 +20,12 @@ namespace MonoTests.System.Net.Sockets
 	{
 	        [Test]
 		// See bug #371923
+
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#else
 		[ExpectedException(typeof(IOException))]
+#endif
 		public void NetworkStreamConnection ()
 		{
 			IPEndPoint ipe = new IPEndPoint(Dns.GetHostEntry ("www.google.com").AddressList [0], 80);
@@ -30,6 +35,9 @@ namespace MonoTests.System.Net.Sockets
 		}
 		
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void ReadTimeout ()
 		{
 			Socket sock = new Socket (AddressFamily.InterNetwork,

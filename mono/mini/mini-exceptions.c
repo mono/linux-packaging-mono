@@ -89,14 +89,12 @@ static gpointer throw_corlib_exception_func;
 static gpointer try_more_restore_tramp = NULL;
 static gpointer restore_stack_protection_tramp = NULL;
 
-static MonoUnhandledExceptionFunc unhandled_exception_hook = NULL;
-static gpointer unhandled_exception_hook_data = NULL;
-
 static void try_more_restore (void);
 static void restore_stack_protection (void);
 static void mono_walk_stack_full (MonoJitStackWalk func, MonoContext *start_ctx, MonoDomain *domain, MonoJitTlsData *jit_tls, MonoLMF *lmf, MonoUnwindOptions unwind_options, gpointer user_data);
 static void mono_raise_exception_with_ctx (MonoException *exc, MonoContext *ctx);
 static void mono_runtime_walk_stack_with_ctx (MonoJitStackWalk func, MonoContext *start_ctx, MonoUnwindOptions unwind_options, void *user_data);
+static gboolean mono_current_thread_has_handle_block_guard (void);
 
 void
 mono_exceptions_init (void)
@@ -139,6 +137,7 @@ mono_exceptions_init (void)
 	cbs.mono_raise_exception_with_ctx = mono_raise_exception_with_ctx;
 	cbs.mono_exception_walk_trace = mono_exception_walk_trace;
 	cbs.mono_install_handler_block_guard = mono_install_handler_block_guard;
+	cbs.mono_current_thread_has_handle_block_guard = mono_current_thread_has_handle_block_guard;
 	mono_install_eh_callbacks (&cbs);
 }
 
@@ -1230,7 +1229,7 @@ wrap_non_exception_throws (MonoMethod *m)
 
 	klass = mono_class_get_runtime_compat_attr_class ();
 
-	attrs = mono_custom_attrs_from_assembly_checked (ass, &error);
+	attrs = mono_custom_attrs_from_assembly_checked (ass, FALSE, &error);
 	mono_error_cleanup (&error); /* FIXME don't swallow the error */
 	if (attrs) {
 		for (i = 0; i < attrs->num_attrs; ++i) {
@@ -1291,7 +1290,10 @@ build_native_trace (MonoError *error)
 #if defined (HAVE_BACKTRACE_SYMBOLS) && defined (TARGET_ARM)
 	MonoArray *res;
 	void *native_trace [MAX_UNMANAGED_BACKTRACE];
-	int size = backtrace (native_trace, MAX_UNMANAGED_BACKTRACE);
+	int size = -1;
+	MONO_ENTER_GC_SAFE;
+	size = backtrace (native_trace, MAX_UNMANAGED_BACKTRACE);
+	MONO_EXIT_GC_SAFE;
 	int i;
 
 	if (!size)
@@ -2390,7 +2392,7 @@ mono_handle_native_sigsegv (int signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *i
 	for (i =0; i < size; ++i) {
 		mono_runtime_printf_err ("\t%s", names [i]);
 	}
-	free (names);
+	g_free (names);
 
 	/* Try to get more meaningful information using gdb */
 
@@ -2487,9 +2489,6 @@ mono_print_thread_dump_internal (void *sigctx, MonoContext *start_ctx)
 #endif
 	GString* text;
 	char *name;
-#ifndef HOST_WIN32
-	char *wapi_desc;
-#endif
 	GError *error = NULL;
 
 	if (!thread)
@@ -2507,11 +2506,9 @@ mono_print_thread_dump_internal (void *sigctx, MonoContext *start_ctx)
 	else
 		g_string_append (text, "\n\"<unnamed thread>\"");
 
-#ifndef HOST_WIN32
-	wapi_desc = wapi_current_thread_desc ();
-	g_string_append_printf (text, " tid=0x%p this=0x%p %s\n", (gpointer)(gsize)thread->tid, thread,  wapi_desc);
-	free (wapi_desc);
-#endif
+	g_string_append_printf (text, " tid=0x%p this=0x%p ", (gpointer)(gsize)thread->tid, thread);
+	mono_thread_info_describe ((MonoThreadInfo*) thread->thread_info, text);
+	g_string_append (text, "\n");
 
 #ifdef MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX
 	if (start_ctx) {
@@ -2645,7 +2642,6 @@ install_handler_block_guard (MonoJitInfo *ji, MonoContext *ctx)
 
 /*
  * Finds the bottom handler block running and install a block guard if needed.
- * FIXME add full-aot support.
  */
 gboolean
 mono_install_handler_block_guard (MonoThreadUnwindState *ctx)
@@ -2654,9 +2650,10 @@ mono_install_handler_block_guard (MonoThreadUnwindState *ctx)
 	MonoJitTlsData *jit_tls = (MonoJitTlsData *)ctx->unwind_data [MONO_UNWIND_DATA_JIT_TLS];
 	gpointer resume_ip;
 
-	/* FIXME */
+#ifndef MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD_AOT
 	if (mono_aot_only)
 		return FALSE;
+#endif
 
 	/* Guard against a null MonoJitTlsData. This can happens if the thread receives the
          * interrupt signal before the JIT has time to initialize its TLS data for the given thread.
@@ -2684,9 +2681,22 @@ mono_install_handler_block_guard (MonoThreadUnwindState *ctx)
 	return TRUE;
 }
 
+static gboolean
+mono_current_thread_has_handle_block_guard (void)
+{
+	MonoJitTlsData *jit_tls = (MonoJitTlsData *)mono_native_tls_get_value (mono_jit_tls_id);
+	return jit_tls && jit_tls->handler_block_return_address != NULL;
+}
+
 #else
 gboolean
 mono_install_handler_block_guard (MonoThreadUnwindState *ctx)
+{
+	return FALSE;
+}
+
+static gboolean
+mono_current_thread_has_handle_block_guard (void)
 {
 	return FALSE;
 }
@@ -2824,55 +2834,6 @@ mono_setup_async_callback (MonoContext *ctx, void (*async_cb)(void *fun), gpoint
 #endif
 }
 
-void
-mono_install_unhandled_exception_hook (MonoUnhandledExceptionFunc func, gpointer user_data)
-{
-	unhandled_exception_hook = func;
-	unhandled_exception_hook_data = user_data;
-}
-
-void
-mono_invoke_unhandled_exception_hook (MonoObject *exc)
-{
-	if (unhandled_exception_hook) {
-		unhandled_exception_hook (exc, unhandled_exception_hook_data);
-	} else {
-		MonoObject *other = NULL;
-		MonoString *str = mono_object_to_string (exc, &other);
-		char *msg = NULL;
-		
-		if (str) {
-			MonoError inner_error;
-			msg = mono_string_to_utf8_checked (str, &inner_error);
-			if (!is_ok (&inner_error)) {
-				msg = g_strdup_printf ("Nested exception while formatting original exception");
-				mono_error_cleanup (&inner_error);
-			}
-		}
-		else if (other) {
-			char *original_backtrace = mono_exception_get_managed_backtrace ((MonoException*)exc);
-			char *nested_backtrace = mono_exception_get_managed_backtrace ((MonoException*)other);
-
-			msg = g_strdup_printf ("Nested exception detected.\nOriginal Exception: %s\nNested exception:%s\n",
-				original_backtrace, nested_backtrace);
-
-			g_free (original_backtrace);
-			g_free (nested_backtrace);
-		} else {
-			msg = g_strdup ("Nested exception trying to figure out what went wrong");
-		}
-		mono_runtime_printf_err ("[ERROR] FATAL UNHANDLED EXCEPTION: %s", msg);
-		g_free (msg);
-#if defined(HOST_IOS)
-		g_assertion_message ("Terminating runtime due to unhandled exception");
-#else
-		exit (mono_environment_exitcode_get ());
-#endif
-	}
-
-	g_assert_not_reached ();
-}
-
 /*
  * mono_restore_context:
  *
@@ -2931,6 +2892,7 @@ throw_exception (MonoObject *ex, gboolean rethrow)
 		mono_error_assert_ok (&error);
 		mono_ex = mono_get_exception_runtime_wrapped_checked (ex, &error);
 		mono_error_assert_ok (&error);
+		jit_tls->thrown_non_exc = mono_gchandle_new (ex, FALSE);
 	}
 	else
 		mono_ex = (MonoException*)ex;
@@ -3010,7 +2972,7 @@ mono_llvm_resume_exception (void)
 MonoObject *
 mono_llvm_load_exception (void)
 {
-		MonoError error;
+	MonoError error;
 	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
 
 	MonoException *mono_ex = (MonoException*)mono_gchandle_get_target (jit_tls->thrown_exc);
@@ -3062,6 +3024,9 @@ mono_llvm_clear_exception (void)
 	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
 	mono_gchandle_free (jit_tls->thrown_exc);
 	jit_tls->thrown_exc = 0;
+	if (jit_tls->thrown_non_exc)
+		mono_gchandle_free (jit_tls->thrown_non_exc);
+	jit_tls->thrown_non_exc = 0;
 
 	mono_memory_barrier ();
 }
@@ -3075,13 +3040,22 @@ mono_llvm_clear_exception (void)
 gint32
 mono_llvm_match_exception (MonoJitInfo *jinfo, guint32 region_start, guint32 region_end, gpointer rgctx, MonoObject *this_obj)
 {
-			MonoError error;
+	MonoError error;
 	MonoJitTlsData *jit_tls = mono_get_jit_tls ();
 	MonoObject *exc;
 	gint32 index = -1;
 
 	g_assert (jit_tls->thrown_exc);
 	exc = mono_gchandle_get_target (jit_tls->thrown_exc);
+	if (jit_tls->thrown_non_exc) {
+		/*
+		 * Have to unwrap RuntimeWrappedExceptions if the
+		 * method's assembly doesn't have a RuntimeCompatibilityAttribute.
+		 */
+		if (!wrap_non_exception_throws (jinfo_get_method (jinfo)))
+			exc = mono_gchandle_get_target (jit_tls->thrown_non_exc);
+	}
+
 	for (int i = 0; i < jinfo->num_clauses; i++) {
 		MonoJitExceptionInfo *ei = &jinfo->clauses [i];
 		MonoClass *catch_class;
@@ -3090,7 +3064,7 @@ mono_llvm_match_exception (MonoJitInfo *jinfo, guint32 region_start, guint32 reg
 			continue;
 
 		catch_class = ei->data.catch_class;
-		if (catch_class->byval_arg.type == MONO_TYPE_VAR || catch_class->byval_arg.type == MONO_TYPE_MVAR || catch_class->byval_arg.type == MONO_TYPE_GENERICINST) {
+		if (mono_class_is_open_constructed_type (&catch_class->byval_arg)) {
 			MonoGenericContext context;
 			MonoType *inflated_type;
 

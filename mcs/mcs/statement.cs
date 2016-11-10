@@ -270,10 +270,14 @@ namespace Mono.CSharp {
 			var da_false = new DefiniteAssignmentBitSet (fc.DefiniteAssignmentOnFalse);
 
 			fc.DefiniteAssignment = fc.DefiniteAssignmentOnTrue;
+			var labels = fc.CopyLabelStack ();
 
 			var res = TrueStatement.FlowAnalysis (fc);
 
+			fc.SetLabelStack (labels);
+
 			if (FalseStatement == null) {
+
 				var c = expr as Constant;
 				if (c != null && !c.IsDefaultValue)
 					return true_returns;
@@ -288,13 +292,19 @@ namespace Mono.CSharp {
 
 			if (true_returns) {
 				fc.DefiniteAssignment = da_false;
-				return FalseStatement.FlowAnalysis (fc);
+
+				res = FalseStatement.FlowAnalysis (fc);
+				fc.SetLabelStack (labels);
+				return res;
 			}
 
 			var da_true = fc.DefiniteAssignment;
 
 			fc.DefiniteAssignment = da_false;
+
 			res &= FalseStatement.FlowAnalysis (fc);
+
+			fc.SetLabelStack (labels);
 
 			if (!TrueStatement.IsUnreachable) {
 				if (false_returns || FalseStatement.IsUnreachable)
@@ -3224,9 +3234,10 @@ namespace Mono.CSharp {
 
 		public override void Emit (EmitContext ec)
 		{
-			if (Parent != null) {
-				// TODO: It's needed only when scope has variable (normal or lifted)
-				ec.BeginScope (GetDebugSymbolScopeIndex ());
+			// TODO: It's needed only when scope has variable (normal or lifted)
+			var scopeIndex = GetDebugSymbolScopeIndex ();
+			if (scopeIndex > 0) {
+				ec.BeginScope (scopeIndex);
 			}
 
 			EmitScopeInitialization (ec);
@@ -3237,7 +3248,7 @@ namespace Mono.CSharp {
 
 			DoEmit (ec);
 
-			if (Parent != null)
+			if (scopeIndex > 0)
 				ec.EndScope ();
 
 			if (ec.EmitAccurateDebugInfo && HasReachableClosingBrace && !(this is ParametersBlock) &&
@@ -3258,6 +3269,7 @@ namespace Mono.CSharp {
 			//
 			storey.CreateContainer ();
 			storey.DefineContainer ();
+			storey.ExpandBaseInterfaces ();
 
 			if (Original.Explicit.HasCapturedThis && Original.ParametersBlock.TopBlock.ThisReferencesFromChildrenBlock != null) {
 
@@ -3429,7 +3441,12 @@ namespace Mono.CSharp {
 			storey.Parent.PartialContainer.AddCompilerGeneratedClass (storey);
 		}
 
-		public int GetDebugSymbolScopeIndex ()
+		public void DisableDebugScopeIndex ()
+		{
+			debug_scope_index = -1;
+		}
+
+		public virtual int GetDebugSymbolScopeIndex ()
 		{
 			if (debug_scope_index == 0)
 				debug_scope_index = ++ParametersBlock.debug_scope_index;
@@ -3835,6 +3852,11 @@ namespace Mono.CSharp {
 				CheckControlExit (fc);
 
 			return res;
+		}
+
+		public override int GetDebugSymbolScopeIndex ()
+		{
+			return 0;
 		}
 
 		public LabeledStatement GetLabel (string name, Block block)
@@ -8316,15 +8338,14 @@ namespace Mono.CSharp {
 			ec.LoopBegin = ec.DefineLabel ();
 			ec.LoopEnd = ec.DefineLabel ();
 
-			if (!(Statement is Block))
-				ec.BeginCompilerScope (variable.Block.Explicit.GetDebugSymbolScopeIndex ());
+			ec.BeginCompilerScope (variable.Block.Explicit.GetDebugSymbolScopeIndex ());
+			body.Explicit.DisableDebugScopeIndex ();
 
 			variable.CreateBuilder (ec);
 
 			Statement.Emit (ec);
 
-			if (!(Statement is Block))
-				ec.EndScope ();
+			ec.EndScope ();
 
 			ec.LoopBegin = old_begin;
 			ec.LoopEnd = old_end;

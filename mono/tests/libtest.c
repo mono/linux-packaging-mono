@@ -889,12 +889,12 @@ mono_test_marshal_return_delegate (SimpleDelegate delegate)
 	return delegate;
 }
 
-typedef int DelegateByrefDelegate (void *);
+typedef int (STDCALL *DelegateByrefDelegate) (void *);
 
 LIBTEST_API int STDCALL
 mono_test_marshal_delegate_ref_delegate (DelegateByrefDelegate del)
 {
-	int (*ptr) (int i);
+	int (STDCALL *ptr) (int i);
 
 	del (&ptr);
 
@@ -1228,14 +1228,29 @@ mono_test_marshal_stringbuilder_ref (char **s)
 	return 0;
 }
 
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wc++-compat"
+#endif
+
+/*
+* Standard C and C++ doesn't allow empty structs, empty structs will always have a size of 1 byte.
+* GCC have an extension to allow empty structs, https://gcc.gnu.org/onlinedocs/gcc/Empty-Structures.html.
+* This cause a little dilemma since runtime build using none GCC compiler will not be compatible with
+* GCC build C libraries and the other way around. On platforms where empty structs has size of 1 byte
+* it must be represented in call and cannot be dropped. On Windows x64 structs will always be represented in the call
+* meaning that an empty struct must have a representation in the callee in order to correctly follow the ABI used by the
+* C/C++ standard and the runtime.
+*/
 typedef struct {
-#ifndef __GNUC__
+#if !defined(__GNUC__) || defined(TARGET_WIN32)
     char a;
 #endif
 } EmptyStruct;
+
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
 
 LIBTEST_API int STDCALL 
 mono_test_marshal_empty_string_array (char **array)
@@ -7205,3 +7220,24 @@ mono_return_double_array4 (double_array4 sa4, int addend) {
 	return sa4;
 }
 
+typedef struct {
+	int array [3];
+} FixedArrayStruct;
+
+LIBTEST_API int STDCALL
+mono_test_marshal_fixed_array (FixedArrayStruct s)
+{
+	return s.array [0] + s.array [1] + s.array [2];
+}
+
+LIBTEST_API int STDCALL
+mono_test_marshal_pointer_array (int *arr[])
+{
+	int i;
+
+	for (i = 0; i < 10; ++i) {
+		if (*arr [i] != -1)
+			return 1;
+	}
+	return 0;
+}

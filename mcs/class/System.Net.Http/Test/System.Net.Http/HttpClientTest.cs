@@ -263,6 +263,10 @@ namespace MonoTests.System.Net.Http
 
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		// Using HttpClientHandler, which indirectly requires BSD sockets.
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void CancelRequestViaProxy ()
 		{
 			var handler = new HttpClientHandler {
@@ -321,6 +325,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Proxy_Disabled ()
 		{
 			var pp = WebRequest.DefaultWebProxy;
@@ -397,6 +404,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_Default ()
 		{
 			bool? failed = null;
@@ -441,6 +451,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_Version_1_0 ()
 		{
 			bool? failed = null;
@@ -488,6 +501,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_ClientHandlerSettings ()
 		{
 			bool? failed = null;
@@ -552,6 +568,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_CustomHeaders ()
 		{
 			bool? failed = null;
@@ -616,6 +635,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_CustomHeaders_SpecialSeparators ()
 		{
 			bool? failed = null;
@@ -650,6 +672,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_CustomHeaders_Host ()
 		{
 			bool? failed = null;
@@ -683,6 +708,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Transfer_Encoding_Chunked ()
 		{
 			bool? failed = null;
@@ -712,6 +740,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Transfer_Encoding_Custom ()
 		{
 			bool? failed = null;
@@ -740,6 +771,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_Content ()
 		{
 			var listener = CreateListener (l => {
@@ -767,6 +801,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_Content_MaxResponseContentBufferSize ()
 		{
 			var listener = CreateListener (l => {
@@ -789,6 +826,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_Content_MaxResponseContentBufferSize_Error ()
 		{
 			var listener = CreateListener (l => {
@@ -815,6 +855,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_NoContent ()
 		{
 			foreach (var method in new HttpMethod[] { HttpMethod.Post, HttpMethod.Put, HttpMethod.Delete }) {
@@ -847,6 +890,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Complete_Error ()
 		{
 			var listener = CreateListener (l => {
@@ -867,6 +913,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Content_Get ()
 		{
 			var listener = CreateListener (l => {
@@ -886,6 +935,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Content_BomEncoding ()
 		{
 			var listener = CreateListener (l => {
@@ -910,6 +962,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Content_Put ()
 		{
 			bool passed = false;
@@ -935,6 +990,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Send_Content_Put_CustomStream ()
 		{
 			bool passed = false;
@@ -1037,6 +1095,9 @@ namespace MonoTests.System.Net.Http
 
 		[Test]
 		[Category ("MobileNotWorking")] // Missing encoding
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void GetString_Many ()
 		{
 			Action<HttpListenerContext> context = (HttpListenerContext l) => {
@@ -1066,6 +1127,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void GetByteArray_ServerError ()
 		{
 			var listener = CreateListener (l => {
@@ -1088,6 +1152,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void DisallowAutoRedirect ()
 		{
 			var listener = CreateListener (l => {
@@ -1116,6 +1183,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void RequestUriAfterRedirect ()
 		{
 			var listener = CreateListener (l => {
@@ -1156,6 +1226,9 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		/*
 		 * Properties may only be modified before sending the first request.
 		 */
@@ -1186,6 +1259,10 @@ namespace MonoTests.System.Net.Http
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		// Using HttpClientHandler, which indirectly requires BSD sockets.
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		/*
 		 * However, this policy is not enforced for custom handlers and there
 		 * is also no way a derived class could tell its HttpClientHandler parent

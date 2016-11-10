@@ -757,49 +757,72 @@ mono_arch_invalidate_method (MonoJitInfo *ji, void *func, gpointer func_arg)
 	amd64_call_reg (code, AMD64_R11);
 }
 
-
-static void
-handler_block_trampoline_helper (gpointer *ptr)
+gpointer
+mono_amd64_handler_block_trampoline_helper (void)
 {
 	MonoJitTlsData *jit_tls = (MonoJitTlsData *)mono_native_tls_get_value (mono_jit_tls_id);
-	*ptr = jit_tls->handler_block_return_address;
+	return jit_tls->handler_block_return_address;
 }
 
 gpointer
 mono_arch_create_handler_block_trampoline (MonoTrampInfo **info, gboolean aot)
 {
-	guint8 *tramp = mono_get_trampoline_code (MONO_TRAMPOLINE_HANDLER_BLOCK_GUARD);
 	guint8 *code, *buf;
 	int tramp_size = 64;
 	MonoJumpInfo *ji = NULL;
 	GSList *unwind_ops;
-
-	g_assert (!aot);
 
 	code = buf = (guint8 *)mono_global_codeman_reserve (tramp_size);
 
 	unwind_ops = mono_arch_get_cie_program ();
 
 	/*
-	This trampoline restore the call chain of the handler block then jumps into the code that deals with it.
-	*/
-	if (mono_get_jit_tls_offset () != -1) {
-		code = mono_amd64_emit_tls_get (code, MONO_AMD64_ARG_REG1, mono_get_jit_tls_offset ());
-		amd64_mov_reg_membase (code, MONO_AMD64_ARG_REG1, MONO_AMD64_ARG_REG1, MONO_STRUCT_OFFSET (MonoJitTlsData, handler_block_return_address), 8);
-		/* Simulate a call */
-		amd64_push_reg (code, AMD64_RAX);
-		mono_add_unwind_op_def_cfa_offset (unwind_ops, code, buf, 16);
-		amd64_jump_code (code, tramp);
+	 * This trampoline restore the call chain of the handler block then jumps into the code that deals with it.
+	 * We get here from the ret emitted by CEE_ENDFINALLY.
+	 * The stack is misaligned.
+	 */
+	/* Align the stack before the call to mono_amd64_handler_block_trampoline_helper() */
+#ifdef TARGET_WIN32
+	/* Also make room for the "register parameter stack area" as specified by the Windows x64 ABI (4 64-bit registers) */
+	amd64_alu_reg_imm (code, X86_SUB, AMD64_RSP, 8 + 4 * 8);
+#else
+	amd64_alu_reg_imm (code, X86_SUB, AMD64_RSP, 8);
+#endif
+	if (aot) {
+		code = mono_arch_emit_load_aotconst (buf, code, &ji, MONO_PATCH_INFO_JIT_ICALL_ADDR, "mono_amd64_handler_block_trampoline_helper");
+		amd64_call_reg (code, AMD64_R11);
 	} else {
-		/*Slow path uses a c helper*/
-		amd64_mov_reg_reg (code, MONO_AMD64_ARG_REG1, AMD64_RSP, 8);
-		amd64_mov_reg_imm (code, AMD64_RAX, tramp);
-		amd64_push_reg (code, AMD64_RAX);
-		mono_add_unwind_op_def_cfa_offset (unwind_ops, code, buf, 16);
-		amd64_push_reg (code, AMD64_RAX);
-		mono_add_unwind_op_def_cfa_offset (unwind_ops, code, buf, 24);
-		amd64_jump_code (code, handler_block_trampoline_helper);
+		amd64_mov_reg_imm (code, AMD64_RAX, mono_amd64_handler_block_trampoline_helper);
+		amd64_call_reg (code, AMD64_RAX);
 	}
+	/* Undo stack alignment */
+#ifdef TARGET_WIN32
+	amd64_alu_reg_imm (code, X86_ADD, AMD64_RSP, 8 + 4 * 8);
+#else
+	amd64_alu_reg_imm (code, X86_ADD, AMD64_RSP, 8);
+#endif
+	/* Save the result to the stack */
+	amd64_push_reg (code, AMD64_RAX);
+#ifdef TARGET_WIN32
+	/* Make room for the "register parameter stack area" as specified by the Windows x64 ABI (4 64-bit registers) */
+	amd64_alu_reg_imm (code, X86_SUB, AMD64_RSP, 4 * 8);
+#endif
+	if (aot) {
+		char *name = g_strdup_printf ("trampoline_func_%d", MONO_TRAMPOLINE_HANDLER_BLOCK_GUARD);
+		code = mono_arch_emit_load_aotconst (buf, code, &ji, MONO_PATCH_INFO_JIT_ICALL_ADDR, name);
+		amd64_mov_reg_reg (code, AMD64_RAX, AMD64_R11, 8);
+	} else {
+		amd64_mov_reg_imm (code, AMD64_RAX, mono_get_trampoline_func (MONO_TRAMPOLINE_HANDLER_BLOCK_GUARD));
+	}
+	/* The stack is aligned */
+	amd64_call_reg (code, AMD64_RAX);
+#ifdef TARGET_WIN32
+	amd64_alu_reg_imm (code, X86_ADD, AMD64_RSP, 4 * 8);
+#endif
+	/* Load return address */
+	amd64_pop_reg (code, AMD64_RAX);
+	/* The stack is misaligned, thats what the code we branch to expects */
+	amd64_jump_reg (code, AMD64_RAX);
 
 	mono_arch_flush_icache (buf, code - buf);
 	mono_profiler_code_buffer_new (buf, code - buf, MONO_PROFILER_CODE_BUFFER_HELPER, NULL);

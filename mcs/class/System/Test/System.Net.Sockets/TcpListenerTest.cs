@@ -23,6 +23,9 @@ namespace MonoTests.System.Net.Sockets
 	public class TcpListenerTest
 	{
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void TcpListener ()
 		{
 			var port = NetworkHelpers.FindFreePort ();
@@ -74,6 +77,9 @@ namespace MonoTests.System.Net.Sockets
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void CtorInt1 ()
 		{
 			int nex = 0;
@@ -86,21 +92,33 @@ namespace MonoTests.System.Net.Sockets
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#else
 		[ExpectedException (typeof (ArgumentNullException))]
+#endif
 		public void CtorIPEndPoint ()
 		{
 			new TcpListener (null);
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#else
 		[ExpectedException (typeof (ArgumentNullException))]
+#endif
 		public void CtorIPAddressInt1 ()
 		{
 			new TcpListener (null, 100000);
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#else
 		[ExpectedException (typeof (ArgumentOutOfRangeException))]
+#endif
 		public void CtorIPAddressInt2 ()
 		{
 			new TcpListener (IPAddress.Any, 100000);
@@ -124,6 +142,9 @@ namespace MonoTests.System.Net.Sockets
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void PreStartStatus ()
 		{
 			MyListener listener = new MyListener ();
@@ -151,6 +172,9 @@ namespace MonoTests.System.Net.Sockets
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void PostStartStatus ()
 		{
 			MyListener listener = new MyListener ();
@@ -172,6 +196,9 @@ namespace MonoTests.System.Net.Sockets
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void StartListenMoreThan5 ()
 		{
 			var port = NetworkHelpers.FindFreePort ();

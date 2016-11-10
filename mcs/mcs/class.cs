@@ -22,7 +22,7 @@ using System.Text;
 using System.Diagnostics;
 using Mono.CompilerServices.SymbolWriter;
 
-#if NET_2_1
+#if MOBILE
 using XmlElement = System.Object;
 #endif
 
@@ -296,6 +296,10 @@ namespace Mono.CSharp
 
 						throw new InternalErrorException (tc, e);
 					}
+				}
+
+				if (PartialContainer != null && PartialContainer != this) {
+					containers = null;
 				}
 			}
 
@@ -1661,6 +1665,8 @@ namespace Mono.CSharp
 
 		public override void ExpandBaseInterfaces ()
 		{
+			DoResolveTypeParameters ();
+
 			if (!IsPartialPart)
 				DoExpandBaseInterfaces ();
 
@@ -1766,8 +1772,6 @@ namespace Mono.CSharp
 		protected override void DoDefineContainer ()
 		{
 			DefineBaseTypes ();
-
-			DoResolveTypeParameters ();
 		}
 
 		//
@@ -2383,7 +2387,7 @@ namespace Mono.CSharp
 			var ifaces = PartialContainer.Interfaces;
 			if (ifaces != null) {
 				foreach (TypeSpec t in ifaces){
-					if (t == mb.InterfaceType)
+					if (t == mb.InterfaceType || t == null)
 						return true;
 
 					var expanded_base = t.Interfaces;

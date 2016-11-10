@@ -1846,6 +1846,9 @@ public class DebuggerTests
 				Assert.Fail ();
 			}
 		}
+
+		var scopes = frame.Method.GetScopes ();
+		Assert.AreEqual (2, scopes.Length);
 	}
 
 	Event step_once () {
@@ -2447,7 +2450,6 @@ public class DebuggerTests
 			Assert.AreEqual ("Exception", ex.Exception.Type.Name);
 		}
 
-#if NET_4_5
 		// out argument
 		m = t.GetMethod ("invoke_out");
 		var out_task = this_obj.InvokeMethodAsyncWithResult (e.Thread, m, new Value [] { vm.CreateValue (1), vm.CreateValue (null) }, InvokeOptions.ReturnOutArgs);
@@ -2460,7 +2462,6 @@ public class DebuggerTests
 		out_task = this_obj.InvokeMethodAsyncWithResult (e.Thread, m, new Value [] { vm.CreateValue (1), vm.CreateValue (null) });
 		out_args = out_task.Result.OutArgs;
 		Assert.IsNull (out_args);
-#endif
 
 		// newobj
 		m = t.GetMethod (".ctor");
@@ -2484,7 +2485,6 @@ public class DebuggerTests
 		v = t.InvokeMethod (e.Thread, m, new Value [] { vm.RootDomain.CreateString ("ABC") }, InvokeOptions.Virtual);
 		AssertValue ("ABC", v);
 
-#if NET_4_5
 		// instance
 		m = t.GetMethod ("invoke_pass_ref");
 		var task = this_obj.InvokeMethodAsync (e.Thread, m, new Value [] { vm.RootDomain.CreateString ("ABC") });
@@ -2494,7 +2494,6 @@ public class DebuggerTests
 		m = t.GetMethod ("invoke_static_pass_ref");
 		task = t.InvokeMethodAsync (e.Thread, m, new Value [] { vm.RootDomain.CreateString ("ABC") });
 		AssertValue ("ABC", task.Result);
-#endif
 
 		// Argument checking
 		
@@ -2588,7 +2587,6 @@ public class DebuggerTests
 		v = t.InvokeMethod (e.Thread, m, new Value [] { vm.CreateValue (1) });
 		AssertValue (1, (v as StructMirror)["i"]);
 
-#if NET_4_5
 		// Invoke a method which changes state
 		s = frame.GetArgument (1) as StructMirror;
 		t = s.Type;
@@ -2615,7 +2613,6 @@ public class DebuggerTests
 		m = vm.RootDomain.Corlib.GetType ("System.Object").GetMethod ("ToString");
 		v = s.InvokeMethod (e.Thread, m, null, InvokeOptions.Virtual);
 		AssertValue ("42", v);
-#endif
 	}
 
 	[Test]
@@ -3790,7 +3787,6 @@ public class DebuggerTests
 		vm = null;
 	}
 
-#if NET_4_5
 	[Test]
 	public void UnhandledExceptionUserCode () {
 		vm.Detach ();
@@ -3811,7 +3807,6 @@ public class DebuggerTests
 		vm.Exit (0);
 		vm = null;
 	}
-#endif
 
 	[Test]
 	public void GCWhileSuspended () {
@@ -4034,6 +4029,22 @@ public class DebuggerTests
 		e = step_into ();
 		// Make sure we are still in the cctor
 		Assert.AreEqual (".cctor", e.Thread.GetFrames ()[0].Location.Method.Name);
+	}
+
+	[Test]
+	public void ThreadpoolIOsinglestep () {
+		TearDown ();
+		Start ("dtest-app.exe", "threadpool-io");
+		// This is a regression test for #42625.  It tests the
+		// interaction (particularly in coop GC) of the
+		// threadpool I/O mechanism and the soft debugger.
+		Event e = run_until ("threadpool_io");
+		// run until we sent the task half the bytes it
+		// expects, so that it blocks waiting for the rest.
+		e = run_until ("threadpool_bp");
+		var req = create_step (e);
+		e = step_out (); // leave threadpool_bp
+		e = step_out (); // leave threadpool_io
 	}
 }
 

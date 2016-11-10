@@ -37,17 +37,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Security;
+using System.Security.AccessControl;
 using System.Security.Permissions;
 using System.Threading;
-using Microsoft.Win32.SafeHandles;
-
-#if NET_2_1
-using System.IO.IsolatedStorage;
-#else
-using System.Security.AccessControl;
-#endif
-
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 
 namespace System.IO
 {
@@ -129,7 +123,6 @@ namespace System.IO
 			Init (handle, access, false, bufferSize, isAsync, false);
 		}
 
-#if !MOBILE
 		[MonoLimitation ("This ignores the rights parameter")]
 		public FileStream (string path, FileMode mode,
 				   FileSystemRights rights, FileShare share,
@@ -146,7 +139,6 @@ namespace System.IO
 			: this (path, mode, (mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite), share, bufferSize, false, options)
 		{
 		}
-#endif
 
 		internal FileStream (string path, FileMode mode, FileAccess access, FileShare share, int bufferSize, FileOptions options, string msgPath, bool bFromProxy, bool useLongPath = false, bool checkHost = false)
 			: this (path, mode, access, share, bufferSize, false, options)
@@ -176,7 +168,7 @@ namespace System.IO
 				throw new ArgumentOutOfRangeException ("bufferSize", "Positive number required.");
 
 			if (mode < FileMode.CreateNew || mode > FileMode.Append) {
-#if NET_2_1
+#if MOBILE
 				if (anonymous)
 					throw new ArgumentException ("mode", "Enum value was out of legal range.");
 				else
@@ -942,7 +934,6 @@ namespace System.IO
 				throw exc;
 		}
 
-#if !NET_2_1
 		public FileSecurity GetAccessControl ()
 		{
 			if (safeHandle.IsClosed)
@@ -964,7 +955,6 @@ namespace System.IO
 				
 			fileSecurity.PersistModifications (SafeFileHandle);
 		}
-#endif
 
 		public override Task FlushAsync (CancellationToken cancellationToken)
 		{

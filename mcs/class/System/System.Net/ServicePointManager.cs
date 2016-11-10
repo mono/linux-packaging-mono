@@ -132,20 +132,20 @@ namespace System.Net
 		// Fields
 		
 		public const int DefaultNonPersistentConnectionLimit = 4;
-#if MONOTOUCH
+#if MOBILE
 		public const int DefaultPersistentConnectionLimit = 10;
 #else
 		public const int DefaultPersistentConnectionLimit = 2;
 #endif
 
-#if !NET_2_1
+#if !MOBILE
 		const string configKey = "system.net/connectionManagement";
 		static ConnectionManagementData manager;
 #endif
 		
 		static ServicePointManager ()
 		{
-#if !NET_2_1
+#if !MOBILE
 #if CONFIGURATION_DEP
 			object cfg = ConfigurationManager.GetSection (configKey);
 			ConnectionManagementSection s = cfg as ConnectionManagementSection;
@@ -200,7 +200,7 @@ namespace System.Net
 					throw new ArgumentOutOfRangeException ("value");
 
 				defaultConnectionLimit = value; 
-#if !NET_2_1
+#if !MOBILE
                 if (manager != null)
 					manager.Add ("*", defaultConnectionLimit);
 #endif
@@ -256,6 +256,12 @@ namespace System.Net
 			}
 		}
 
+		[MonoTODO]
+		public static bool ReusePort {
+			get { return false; }
+			set { throw new NotImplementedException (); }
+		}
+
 		public static SecurityProtocolType SecurityProtocol {
 			get { return _securityProtocol; }
 			set { _securityProtocol = value; }
@@ -280,6 +286,13 @@ namespace System.Net
 			}
 		}
 
+		[MonoTODO ("Always returns EncryptionPolicy.RequireEncryption.")]
+		public static EncryptionPolicy EncryptionPolicy {
+			get {
+				return EncryptionPolicy.RequireEncryption;
+			}
+		}
+
 		public static bool Expect100Continue {
 			get { return expectContinue; }
 			set { expectContinue = value; }
@@ -291,6 +304,10 @@ namespace System.Net
 		}
 
 		internal static bool DisableStrongCrypto {
+			get { return false; }
+		}
+
+		internal static bool DisableSendAuxRecord {
 			get { return false; }
 		}
 
@@ -311,7 +328,7 @@ namespace System.Net
 
 		public static ServicePoint FindServicePoint (Uri address) 
 		{
-			return FindServicePoint (address, GlobalProxySelection.Select);
+			return FindServicePoint (address, null);
 		}
 		
 		public static ServicePoint FindServicePoint (string uriString, IWebProxy proxy)
@@ -352,7 +369,7 @@ namespace System.Net
 					throw new InvalidOperationException ("maximum number of service points reached");
 
 				int limit;
-#if NET_2_1
+#if MOBILE
 				limit = defaultConnectionLimit;
 #else
 				string addr = address.ToString ();

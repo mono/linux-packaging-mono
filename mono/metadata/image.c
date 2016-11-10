@@ -1300,6 +1300,7 @@ mono_image_open_from_data_internal (char *data, guint32 data_len, gboolean need_
 	image->image_info = iinfo;
 	image->ref_only = refonly;
 	image->metadata_only = metadata_only;
+	image->ref_count = 1;
 
 	image = do_mono_image_load (image, status, TRUE, TRUE);
 	if (image == NULL)
@@ -1801,6 +1802,7 @@ mono_image_close_except_pools (MonoImage *image)
 	free_hash (image->stfld_wrapper_cache);
 	free_hash (image->isinst_cache);
 	free_hash (image->castclass_cache);
+	free_hash (image->icall_wrapper_cache);
 	free_hash (image->proxy_isinst_cache);
 	free_hash (image->var_cache_slow);
 	free_hash (image->mvar_cache_slow);
@@ -1991,13 +1993,13 @@ mono_image_walk_resource_tree (MonoCLIImageInfo *info, guint32 res_id,
 		}
 #endif
 	} else if (level==2) {
-		if (is_string == TRUE || (is_string == FALSE && lang_id != 0 && name_offset != lang_id))
+		if (is_string || (lang_id != 0 && name_offset != lang_id))
 			return NULL;
 	} else {
 		g_assert_not_reached ();
 	}
 
-	if(is_dir==TRUE) {
+	if (is_dir) {
 		MonoPEResourceDir *res_dir=(MonoPEResourceDir *)(((char *)root)+dir_offset);
 		MonoPEResourceDirEntry *sub_entries=(MonoPEResourceDirEntry *)(res_dir+1);
 		guint32 entries, i;

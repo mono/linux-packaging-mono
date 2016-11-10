@@ -94,8 +94,8 @@ target_triplet = @target@
 @LOADED_LLVM_TRUE@am__append_1 = libmono-llvm.la
 @LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
 @BITCODE_TRUE@am__append_3 = -no-undefined
-@NACL_CODEGEN_TRUE@am__append_4 = nacl.cs
-@NACL_CODEGEN_TRUE@am__append_5 = nacl.exe
+@INSTALL_MOBILE_STATIC_TRUE@@NACL_CODEGEN_TRUE@am__append_4 = nacl.cs
+@INSTALL_MOBILE_STATIC_TRUE@@NACL_CODEGEN_TRUE@am__append_5 = nacl.exe
 subdir = mono/mini
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -179,7 +179,8 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
 	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
 	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-windows.c mini-darwin.c mini-posix.c
+	mini-windows.c mini-windows-dllmain.c mini-darwin.c \
+	mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -264,7 +265,8 @@ am__objects_12 = libmini_static_la-mini-x86.lo \
 @AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_13 = $(am__objects_6)
 @AMD64_FALSE@@ARM64_TRUE@am__objects_13 = $(am__objects_5)
 @AMD64_TRUE@am__objects_13 = $(am__objects_4)
-am__objects_14 = libmini_static_la-mini-windows.lo
+am__objects_14 = libmini_static_la-mini-windows.lo \
+	libmini_static_la-mini-windows-dllmain.lo
 am__objects_15 = libmini_static_la-mini-darwin.lo
 am__objects_16 = libmini_static_la-mini-posix.lo
 @HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@@PLATFORM_SIGPOSIX_TRUE@am__objects_17 = $(am__objects_16)
@@ -317,7 +319,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
 	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
 	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-windows.c mini-darwin.c mini-posix.c
+	mini-windows.c mini-windows-dllmain.c mini-darwin.c \
+	mini-posix.c
 am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -381,7 +384,8 @@ am__objects_29 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 @AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@	$(am__objects_23)
 @AMD64_FALSE@@ARM64_TRUE@am__objects_30 = $(am__objects_22)
 @AMD64_TRUE@am__objects_30 = $(am__objects_21)
-am__objects_31 = libmini_la-mini-windows.lo
+am__objects_31 = libmini_la-mini-windows.lo \
+	libmini_la-mini-windows-dllmain.lo
 am__objects_32 = libmini_la-mini-darwin.lo
 am__objects_33 = libmini_la-mini-posix.lo
 @HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@@PLATFORM_SIGPOSIX_TRUE@am__objects_34 = $(am__objects_33)
@@ -616,6 +620,8 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
+AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
 API_VER = @API_VER@
 AR = @AR@
 AS = @AS@
@@ -624,6 +630,11 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BTLS_ARCH = @BTLS_ARCH@
+BTLS_CFLAGS = @BTLS_CFLAGS@
+BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
+BTLS_PLATFORM = @BTLS_PLATFORM@
+BTLS_ROOT = @BTLS_ROOT@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
@@ -633,6 +644,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -653,7 +665,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLE_PERF_EVENTS = @ENABLE_PERF_EVENTS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
@@ -668,10 +679,12 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
+INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -718,6 +731,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -727,6 +741,7 @@ SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
+TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
@@ -1046,7 +1061,8 @@ darwin_sources = \
 	mini-darwin.c
 
 windows_sources = \
-	mini-windows.c
+	mini-windows.c \
+	mini-windows-dllmain.c
 
 posix_sources = \
 	mini-posix.c
@@ -1137,10 +1153,13 @@ test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	devirtualization.cs iltests.il test.cs generics.cs \
 	generics-variant-types.il basic-simd.cs aot-tests.cs \
 	gc-test.cs gshared.cs $(am__append_4)
-regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
-	objects.exe arrays.exe basic-math.exe exceptions.exe \
-	iltests.exe devirtualization.exe generics.exe basic-simd.exe \
-	$(am__append_5)
+regtests_UNIVERSAL = basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe
+@INSTALL_MOBILE_STATIC_FALSE@regtests = \
+@INSTALL_MOBILE_STATIC_FALSE@	$(regtests_UNIVERSAL) \
+@INSTALL_MOBILE_STATIC_FALSE@	$(regtests_MOBILE_STATIC_BLACKLIST)
+
+@INSTALL_MOBILE_STATIC_TRUE@regtests = $(regtests_UNIVERSAL) \
+@INSTALL_MOBILE_STATIC_TRUE@	$(am__append_5)
 @AMD64_TRUE@arch_sources = $(amd64_sources)
 @ARM64_TRUE@arch_sources = $(arm64_sources)
 @ARM_TRUE@arch_sources = $(arm_sources)
@@ -1174,7 +1193,7 @@ regtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe \
 @SPARC64_TRUE@arch_define = __sparc__
 @SPARC_TRUE@arch_define = __sparc__
 @X86_TRUE@arch_define = __i386__
-@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = --exclude DYNCALL
+@AMD64_TRUE@ARCH_FULLAOT_EXCLUDE = 
 
 # pick up arm_dpimacros.h
 @ARM_TRUE@ARCH_CFLAGS = -I../arch/arm
@@ -1190,11 +1209,11 @@ libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
 libmonoboehm_2_0_la_LIBADD = libmini.la $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags)
+libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
 libmonosgen_2_0_la_SOURCES = 
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
 libmonosgen_2_0_la_LIBADD = libmini.la $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags)
+libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
 
 #
 # This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
@@ -1220,25 +1239,42 @@ CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649
 LLVM_AOT_RUNTIME_OPTS = $(if $(LLVM),--llvm,)
 GSHAREDVT_RUNTIME_OPTS = $(if $(GSHAREDVT),-O=gsharedvt,)
 fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
-FULLAOT_LIBS = \
+
+# Skip aoting the tests that aren't compiled 
+# on the mobile_static profile because they're skipped
+# on mobile profiles
+FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST = \
+	Mono.Posix.dll \
+	System.Configuration.dll
+
+FULLAOT_LIBS_UNIVERSAL = \
 	mscorlib.dll \
 	System.Core.dll \
 	System.dll \
-	Mono.Posix.dll \
-	System.Configuration.dll \
-	System.Security.dll \
 	System.Xml.dll \
-	Mono.Security.dll \
-	Mono.Simd.dll
+	System.Security.dll \
+	Mono.Simd.dll \
+	Mono.Security.dll
 
+@INSTALL_MOBILE_STATIC_FALSE@FULLAOT_LIBS = \
+@INSTALL_MOBILE_STATIC_FALSE@	$(FULLAOT_LIBS_UNIVERSAL) \
+@INSTALL_MOBILE_STATIC_FALSE@	$(FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST)
+
+@INSTALL_MOBILE_STATIC_TRUE@FULLAOT_LIBS = \
+@INSTALL_MOBILE_STATIC_TRUE@	Mono.Dynamic.Interpreter.dll \
+@INSTALL_MOBILE_STATIC_TRUE@	$(FULLAOT_LIBS_UNIVERSAL)
+
+FULLAOT_TMP_DIR = $(top_builddir)/mono/mini/fullaot-tmp
 llvmonly_regtests = $(fullaot_regtests) gshared.exe
+
+# We need these because automake can't process normal make conditionals
+check_local_targets = $(if $(EMIT_NUNIT), rcheck-nunit, rcheck)
 pkgconfigdir = $(libdir)/pkgconfig
 BUILT_SOURCES = version.h $(arch_built)
 CLEANFILES = $(BUILT_SOURCES) *.exe *.dll
 EXTRA_DIST = TestDriver.cs \
 	TestHelpers.cs \
 	genmdesc.pl				\
-	emitnunit.pl			\
 	$(test_sources) 			\
 	$(x86_sources) cpu-x86.md 		\
 	$(amd64_sources) cpu-amd64.md 		\
@@ -1504,6 +1540,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-trampolines.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows-dllmain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-x86-gsharedvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-x86.Plo@am__quote@
@@ -1583,6 +1620,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-sparc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-trampolines.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-windows-dllmain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-x86-gsharedvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-x86.Plo@am__quote@
@@ -2205,6 +2243,13 @@ libmini_static_la-mini-windows.lo: mini-windows.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-windows.lo `test -f 'mini-windows.c' || echo '$(srcdir)/'`mini-windows.c
 
+libmini_static_la-mini-windows-dllmain.lo: mini-windows-dllmain.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-windows-dllmain.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-windows-dllmain.Tpo -c -o libmini_static_la-mini-windows-dllmain.lo `test -f 'mini-windows-dllmain.c' || echo '$(srcdir)/'`mini-windows-dllmain.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-windows-dllmain.Tpo $(DEPDIR)/libmini_static_la-mini-windows-dllmain.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-dllmain.c' object='libmini_static_la-mini-windows-dllmain.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-windows-dllmain.lo `test -f 'mini-windows-dllmain.c' || echo '$(srcdir)/'`mini-windows-dllmain.c
+
 libmini_static_la-mini-darwin.lo: mini-darwin.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-darwin.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-darwin.Tpo -c -o libmini_static_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-darwin.Tpo $(DEPDIR)/libmini_static_la-mini-darwin.Plo
@@ -2758,6 +2803,13 @@ libmini_la-mini-windows.lo: mini-windows.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows.lo `test -f 'mini-windows.c' || echo '$(srcdir)/'`mini-windows.c
 
+libmini_la-mini-windows-dllmain.lo: mini-windows-dllmain.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-windows-dllmain.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-windows-dllmain.Tpo -c -o libmini_la-mini-windows-dllmain.lo `test -f 'mini-windows-dllmain.c' || echo '$(srcdir)/'`mini-windows-dllmain.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-windows-dllmain.Tpo $(DEPDIR)/libmini_la-mini-windows-dllmain.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-dllmain.c' object='libmini_la-mini-windows-dllmain.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows-dllmain.lo `test -f 'mini-windows-dllmain.c' || echo '$(srcdir)/'`mini-windows-dllmain.c
+
 libmini_la-mini-darwin.lo: mini-darwin.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-darwin.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-darwin.Tpo -c -o libmini_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-darwin.Tpo $(DEPDIR)/libmini_la-mini-darwin.Plo
@@ -3229,12 +3281,19 @@ testi: mono test.exe
 checktests: $(regtests)
 	for i in $(regtests); do $(MINI_RUNTIME) $$i; done
 
-rcheck: mono $(regtests)
-@NACL_CODEGEN_TRUE@	for i in $(regtests); do echo "running test $$i"; $(MINI_RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
-@NACL_CODEGEN_FALSE@	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
-@NACL_CODEGEN_FALSE@	exit $$(cat regressionexitcode.out)
+rcheck-nunit: mono $(regtests)
+	$(MINI_RUNTIME) --regression $(regtests) > regressiontests.out 2>&1; cat regressiontests.out; \
+	if grep -q "100% pass" regressiontests.out; then successbool=True; failurescount=0; else successbool=False; failurescount=1; fi; \
+	echo "<?xml version='1.0' encoding='utf-8'?>\
+		<test-results failures='$$failurescount' total='1' not-run='0' name='regression-tests.dummy' date='$$(date +%F)' time='$$(date +%T)'>\
+			<test-suite name='regression-tests.dummy' success='$$successbool' time='0'>\
+				<results><test-case name='MonoTests.regressions.100percentsuccess' executed='True' success='$$successbool' time='0'>" > TestResult-regression.xml; \
+					if [ "$$successbool" = "False" ]; then echo "<failure><message><![CDATA[$$(cat regressiontests.out)]]></message><stack-trace></stack-trace></failure>" >> TestResult-regression.xml; fi; \
+				echo "</test-case></results>\
+			</test-suite>\
+		</test-results>" >> TestResult-regression.xml; exit $$failurescount
 
-rcheck2: mono $(regtests)
+rcheck: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
 @ARM_TRUE@check-seq-points:
@@ -3261,13 +3320,13 @@ gsharedvtcheck:
 
 # This currently only works on amd64/arm
 fullaotcheck: $(mono) $(fullaot_regtests)
-	rm -rf fullaot-tmp
-	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" GSHAREDVT=$(GSHAREDVT)
-	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
-	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
-	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) fullaot-tmp/
-	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --full-aot fullaot-tmp/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
+	rm -rf $(FULLAOT_TMP_DIR)
+	mkdir $(FULLAOT_TMP_DIR)
+	$(MAKE) fullaot-libs AOT_FLAGS="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)" GSHAREDVT=$(GSHAREDVT)
+	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll $(FULLAOT_TMP_DIR)/
+	MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)" $(FULLAOT_TMP_DIR)/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
+	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) $(FULLAOT_TMP_DIR)/
+	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper --full-aot $(FULLAOT_TMP_DIR)/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
 
 # This can run in parallel
 fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
@@ -3284,7 +3343,7 @@ llvmfullaotcheck:
 llvmonlycheck: mono $(llvmonly_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS="llvmonly,$(MONO_FULLAOT_ADDITIONAL_ARGS)"
+	$(MAKE) fullaot-libs AOT_FLAGS="llvmonly,$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)"
 	cp $(llvmonly_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  --aot=llvmonly fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
@@ -3314,13 +3373,13 @@ stat3: mono bench.exe
 docu: mini.sgm
 	docbook2txt mini.sgm
 
-check-local: rcheck check-seq-points
+check-local: $(check_local_targets)
 
 clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.6.2.6/db69866\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.8.0.309/dea12ad\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

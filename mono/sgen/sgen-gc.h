@@ -116,16 +116,40 @@ extern guint64 stat_objects_copied_major;
 		g_error (__VA_ARGS__);	\
 } } while (0)
 
+#ifndef HOST_WIN32
+# define LOG_TIMESTAMP  \
+	do {	\
+		time_t t;									\
+		struct tm tod;									\
+		time(&t);									\
+		localtime_r(&t, &tod);								\
+		strftime(logTime, sizeof(logTime), "%Y-%m-%d %H:%M:%S", &tod);			\
+	} while (0)
+#else
+# define LOG_TIMESTAMP  \
+	do {	\
+		time_t t;									\
+		struct tm *tod;									\
+		time(&t);									\
+		tod = localtime(&t);								\
+		strftime(logTime, sizeof(logTime), "%F %T", tod);				\
+	} while (0)
+#endif
 
 #define SGEN_LOG(level, format, ...) do {      \
 	if (G_UNLIKELY ((level) <= SGEN_MAX_DEBUG_LEVEL && (level) <= gc_debug_level)) {	\
-		mono_gc_printf (gc_debug_file, format "\n", ##__VA_ARGS__);	\
+		char logTime[80];								\
+		LOG_TIMESTAMP;									\
+		mono_gc_printf (gc_debug_file, "%s " format "\n", logTime, ##__VA_ARGS__);	\
 } } while (0)
 
 #define SGEN_COND_LOG(level, cond, format, ...) do {	\
-	if (G_UNLIKELY ((level) <= SGEN_MAX_DEBUG_LEVEL && (level) <= gc_debug_level)) {	\
-		if (cond)	\
-			mono_gc_printf (gc_debug_file, format "\n", ##__VA_ARGS__);	\
+	if (G_UNLIKELY ((level) <= SGEN_MAX_DEBUG_LEVEL && (level) <= gc_debug_level)) {		\
+		if (cond) {										\
+			char logTime[80];								\
+			LOG_TIMESTAMP;									\
+			mono_gc_printf (gc_debug_file, "%s " format "\n", logTime, ##__VA_ARGS__);	\
+		}											\
 } } while (0)
 
 extern int gc_debug_level;
@@ -263,6 +287,7 @@ sgen_get_nursery_end (void)
 List of what each bit on of the vtable gc bits means. 
 */
 enum {
+	// When the Java bridge has determined an object is "bridged", it uses these two bits to cache that information.
 	SGEN_GC_BIT_BRIDGE_OBJECT = 1,
 	SGEN_GC_BIT_BRIDGE_OPAQUE_OBJECT = 2,
 	SGEN_GC_BIT_FINALIZER_AWARE = 4,
@@ -428,9 +453,9 @@ void* sgen_alloc_internal_dynamic (size_t size, int type, gboolean assert_on_fai
 void sgen_free_internal_dynamic (void *addr, size_t size, int type);
 
 void sgen_pin_stats_enable (void);
-void sgen_pin_stats_register_object (GCObject *obj, size_t size);
+void sgen_pin_stats_register_object (GCObject *obj, int generation);
 void sgen_pin_stats_register_global_remset (GCObject *obj);
-void sgen_pin_stats_print_class_stats (void);
+void sgen_pin_stats_report (void);
 
 void sgen_sort_addresses (void **array, size_t size);
 void sgen_add_to_global_remset (gpointer ptr, GCObject *obj);
@@ -568,12 +593,12 @@ sgen_update_reference (GCObject **p, GCObject *o, gboolean allow_null)
 
 typedef void (*sgen_cardtable_block_callback) (mword start, mword size);
 void sgen_major_collector_iterate_live_block_ranges (sgen_cardtable_block_callback callback);
+void sgen_major_collector_iterate_block_ranges (sgen_cardtable_block_callback callback);
 
 typedef enum {
 	ITERATE_OBJECTS_SWEEP = 1,
 	ITERATE_OBJECTS_NON_PINNED = 2,
 	ITERATE_OBJECTS_PINNED = 4,
-	ITERATE_OBJECTS_ALL = ITERATE_OBJECTS_NON_PINNED | ITERATE_OBJECTS_PINNED,
 	ITERATE_OBJECTS_SWEEP_NON_PINNED = ITERATE_OBJECTS_SWEEP | ITERATE_OBJECTS_NON_PINNED,
 	ITERATE_OBJECTS_SWEEP_PINNED = ITERATE_OBJECTS_SWEEP | ITERATE_OBJECTS_PINNED,
 	ITERATE_OBJECTS_SWEEP_ALL = ITERATE_OBJECTS_SWEEP | ITERATE_OBJECTS_NON_PINNED | ITERATE_OBJECTS_PINNED
@@ -622,6 +647,7 @@ struct _SgenMajorCollector {
 	void (*pin_major_object) (GCObject *obj, SgenGrayQueue *queue);
 	void (*scan_card_table) (CardTableScanType scan_type, ScanCopyContext ctx);
 	void (*iterate_live_block_ranges) (sgen_cardtable_block_callback callback);
+	void (*iterate_block_ranges) (sgen_cardtable_block_callback callback);
 	void (*update_cardtable_mod_union) (void);
 	void (*init_to_space) (void);
 	void (*sweep) (void);
@@ -978,7 +1004,7 @@ GCObject* sgen_alloc_obj_mature (GCVTable vtable, size_t size);
 
 /* Debug support */
 
-void sgen_check_consistency (void);
+void sgen_check_remset_consistency (void);
 void sgen_check_mod_union_consistency (void);
 void sgen_check_major_refs (void);
 void sgen_check_whole_heap (gboolean allow_missing_pinning);

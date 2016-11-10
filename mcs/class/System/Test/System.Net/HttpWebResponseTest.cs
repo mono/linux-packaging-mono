@@ -24,6 +24,9 @@ namespace MonoTests.System.Net
 	public class HttpWebResponseTest
 	{
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void CharacterSet_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -52,6 +55,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Close_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -71,6 +77,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void ContentEncoding_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -99,6 +108,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void ContentLength_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -119,6 +131,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void ContentType_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -147,6 +162,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Cookies_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -185,6 +203,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void GetResponseHeader_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -213,6 +234,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void GetResponseStream_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -241,6 +265,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Headers_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -268,6 +295,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void LastModified_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -296,6 +326,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Method_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -324,6 +357,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void ProtocolVersion_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -352,6 +388,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void ResponseUri_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -380,6 +419,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Server_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -408,6 +450,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void StatusCode_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -428,6 +473,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void StatusDescription_Disposed ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -479,6 +527,9 @@ namespace MonoTests.System.Net
 	public class HttpResponseStreamTest
 	{
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void BeginRead_Buffer_Null ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -528,6 +579,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void BeginWrite ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -588,6 +642,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void CanSeek ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -615,6 +672,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test] // bug #324182
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void CanTimeout ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -642,6 +702,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void CanWrite ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -669,6 +732,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Read ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -706,6 +772,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Read_Buffer_Null ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -755,6 +824,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Read_Count_Negative ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -805,6 +877,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Read_Count_Overflow ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -855,6 +930,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Read_Offset_Negative ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -905,6 +983,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Read_Offset_Overflow ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -1019,6 +1100,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void ReadTimeout ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -1046,6 +1130,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Write ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();
@@ -1078,6 +1165,9 @@ namespace MonoTests.System.Net
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void WriteTimeout ()
 		{
 			IPEndPoint ep = NetworkHelpers.LocalEphemeralEndPoint();

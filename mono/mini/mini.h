@@ -76,8 +76,16 @@
 #define MINI_DEBUG(level,limit,code) do {if (G_UNLIKELY ((level) >= (limit))) code} while (0)
 #endif
 
-#if !defined(DISABLE_TASKLETS) && defined(MONO_ARCH_SUPPORT_TASKLETS) && defined(__GNUC__)
+#if !defined(DISABLE_TASKLETS) && defined(MONO_ARCH_SUPPORT_TASKLETS)
+#if defined(__GNUC__)
 #define MONO_SUPPORT_TASKLETS 1
+#elif defined(HOST_WIN32)
+#define MONO_SUPPORT_TASKLETS 1
+// Replace some gnu intrinsics needed for tasklets with MSVC equivalents.
+#define __builtin_extract_return_addr(x) x
+#define __builtin_return_address(x) _ReturnAddress()
+#define __builtin_frame_address(x) _AddressOfReturnAddress()
+#endif
 #endif
 
 #if ENABLE_LLVM
@@ -721,7 +729,13 @@ struct MonoBasicBlock {
 	guint real_offset;
 
 	GSList *seq_points;
+
+	// The MonoInst of the last sequence point for the current basic block.
 	MonoInst *last_seq_point;
+	
+	// This will hold a list of last sequence points of incoming basic blocks
+	MonoInst **pred_seq_points;
+	guint num_pred_seq_points;
 
 	GSList *spill_slot_defs;
 
@@ -1167,6 +1181,11 @@ typedef struct {
 	 * The current exception in flight
 	 */
 	guint32 thrown_exc;
+	/*
+	 * If the current exception is not a subclass of Exception,
+	 * the original exception.
+	 */
+	guint32 thrown_non_exc;
 
 	/*
 	 * The calling assembly in llvmonly mode.
@@ -1872,7 +1891,8 @@ typedef enum {
 	MONO_CFG_HAS_FPOUT    = 1 << 5, /* there are fp values passed in int registers */
 	MONO_CFG_HAS_SPILLUP  = 1 << 6, /* spill var slots are allocated from bottom to top */
 	MONO_CFG_HAS_CHECK_THIS  = 1 << 7,
-	MONO_CFG_HAS_ARRAY_ACCESS = 1 << 8
+	MONO_CFG_HAS_ARRAY_ACCESS = 1 << 8,
+	MONO_CFG_HAS_TYPE_CHECK = 1 << 9
 } MonoCompileFlags;
 
 typedef struct {
@@ -1898,6 +1918,7 @@ typedef struct {
 	gint32 alias_removed;
 	gint32 loads_eliminated;
 	gint32 stores_eliminated;
+	gint32 optimized_divisions;
 	int methods_with_llvm;
 	int methods_without_llvm;
 	char *max_ratio_method;
@@ -1906,6 +1927,7 @@ typedef struct {
 	double jit_liveness_handle_exception_clauses;
 	double jit_handle_out_of_line_bblock;
 	double jit_decompose_long_opts;
+	double jit_decompose_typechecks;
 	double jit_local_cprop;
 	double jit_local_emulate_ops;
 	double jit_optimize_branches;
@@ -2414,6 +2436,7 @@ void      mono_global_regalloc              (MonoCompile *cfg);
 void      mono_create_jump_table            (MonoCompile *cfg, MonoInst *label, MonoBasicBlock **bbs, int num_blocks);
 MonoCompile *mini_method_compile            (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFlags flags, int parts, int aot_method_index);
 void      mono_destroy_compile              (MonoCompile *cfg);
+void      mono_empty_compile              (MonoCompile *cfg);
 MonoJitICallInfo *mono_find_jit_opcode_emulation (int opcode);
 void	  mono_print_ins_index (int i, MonoInst *ins);
 void	  mono_print_ins (MonoInst *ins);
@@ -2575,7 +2598,8 @@ gpointer          mini_add_method_trampoline (MonoMethod *m, gpointer compiled_m
 gpointer          mini_add_method_wrappers_llvmonly (MonoMethod *m, gpointer compiled_method, gboolean caller_gsharedvt, gboolean add_unbox_tramp, gpointer *out_arg);
 gboolean          mini_jit_info_is_gsharedvt (MonoJitInfo *ji);
 gpointer*         mini_resolve_imt_method (MonoVTable *vt, gpointer *vtable_slot, MonoMethod *imt_method, MonoMethod **impl_method, gpointer *out_aot_addr,
-										   gboolean *out_need_rgctx_tramp, MonoMethod **variant_iface);
+					   gboolean *out_need_rgctx_tramp, MonoMethod **variant_iface,
+					   MonoError *error);
 MonoFtnDesc      *mini_create_llvmonly_ftndesc (MonoDomain *domain, gpointer addr, gpointer arg);
 
 gboolean          mono_running_on_valgrind (void);
@@ -2625,6 +2649,7 @@ void              mono_if_conversion (MonoCompile *cfg);
 /* Delegates */
 gpointer          mini_get_delegate_arg (MonoMethod *method, gpointer method_ptr);
 void              mini_init_delegate (MonoDelegate *del);
+char*             mono_get_delegate_virtual_invoke_impl_name (gboolean load_imt_reg, int offset);
 gpointer          mono_get_delegate_virtual_invoke_impl  (MonoMethodSignature *sig, MonoMethod *method);
 
 /* methods that must be provided by the arch-specific port */
@@ -2651,6 +2676,7 @@ guint8*   mono_arch_create_sdb_trampoline (gboolean single_step, MonoTrampInfo *
 gpointer  mono_arch_create_monitor_enter_trampoline (MonoTrampInfo **info, gboolean is_v4, gboolean aot);
 gpointer  mono_arch_create_monitor_exit_trampoline (MonoTrampInfo **info, gboolean aot);
 guint8   *mono_arch_create_llvm_native_thunk     (MonoDomain *domain, guint8* addr) MONO_LLVM_INTERNAL;
+gpointer  mono_arch_get_get_tls_tramp (void);
 GList    *mono_arch_get_allocatable_int_vars    (MonoCompile *cfg);
 GList    *mono_arch_get_global_int_regs         (MonoCompile *cfg);
 GList    *mono_arch_get_global_fp_regs          (MonoCompile *cfg);
@@ -2849,14 +2875,7 @@ MonoBoolean ves_icall_get_frame_info            (gint32 skip, MonoBoolean need_f
 						 MonoString **file, gint32 *line, gint32 *column);
 void mono_set_cast_details                      (MonoClass *from, MonoClass *to);
 
-/* Installs a function which is called when the runtime encounters an unhandled exception.
- * This hook isn't expected to return.
- * If no hook has been installed, the runtime will print a message before aborting.
- */
-typedef void  (*MonoUnhandledExceptionFunc)         (MonoObject *exc, gpointer user_data);
-MONO_API void mono_install_unhandled_exception_hook (MonoUnhandledExceptionFunc func, gpointer user_data);
-void          mono_invoke_unhandled_exception_hook  (MonoObject *exc);
-
+void mono_decompose_typechecks (MonoCompile *cfg);
 /* Dominator/SSA methods */
 void        mono_compile_dominator_info         (MonoCompile *cfg, int dom_flags);
 void        mono_compute_natural_loops          (MonoCompile *cfg);

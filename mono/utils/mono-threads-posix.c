@@ -18,6 +18,7 @@
 #include <mono/utils/mono-threads-posix-signals.h>
 #include <mono/utils/mono-coop-semaphore.h>
 #include <mono/metadata/gc-internals.h>
+#include <mono/utils/w32handle.h>
 
 #include <errno.h>
 
@@ -31,81 +32,41 @@ extern int tkill (pid_t tid, int signal);
 
 #if defined(_POSIX_VERSION) || defined(__native_client__)
 
+#include <pthread.h>
+
 #include <sys/resource.h>
 
 #if defined(__native_client__)
 void nacl_shutdown_gc_thread(void);
 #endif
 
-typedef struct {
-	void *(*start_routine)(void*);
-	void *arg;
-	int flags;
-	MonoCoopSem registered;
-	HANDLE handle;
-} StartInfo;
-
-static void*
-inner_start_thread (void *arg)
+void
+mono_threads_platform_register (MonoThreadInfo *info)
 {
-	StartInfo *start_info = (StartInfo *) arg;
-	void *t_arg = start_info->arg;
-	int res;
-	void *(*start_func)(void*) = start_info->start_routine;
-	guint32 flags = start_info->flags;
-	void *result;
-	HANDLE handle;
-	MonoThreadInfo *info;
+	gpointer thread_handle;
 
-	/* Register the thread with the io-layer */
-	handle = wapi_create_thread_handle ();
-	if (!handle) {
-		res = mono_coop_sem_post (&(start_info->registered));
-		g_assert (!res);
-		return NULL;
-	}
-	start_info->handle = handle;
+	info->owned_mutexes = g_ptr_array_new ();
+	info->priority = MONO_THREAD_PRIORITY_NORMAL;
 
-	info = mono_thread_info_attach (&result);
+	thread_handle = mono_w32handle_new (MONO_W32HANDLE_THREAD, NULL);
+	if (thread_handle == INVALID_HANDLE_VALUE)
+		g_error ("%s: failed to create handle", __func__);
 
-	info->runtime_thread = TRUE;
-	info->handle = handle;
-
-	if (flags & CREATE_SUSPENDED) {
-		info->create_suspended = TRUE;
-		mono_coop_sem_init (&info->create_suspended_sem, 0);
-	}
-
-	/* start_info is not valid after this */
-	res = mono_coop_sem_post (&(start_info->registered));
-	g_assert (!res);
-	start_info = NULL;
-
-	if (flags & CREATE_SUSPENDED) {
-		res = mono_coop_sem_wait (&info->create_suspended_sem, MONO_SEM_FLAGS_NONE);
-		g_assert (res != -1);
-
-		mono_coop_sem_destroy (&info->create_suspended_sem);
-	}
-
-	/* Run the actual main function of the thread */
-	result = start_func (t_arg);
-
-	mono_threads_core_exit (GPOINTER_TO_UINT (result));
-	g_assert_not_reached ();
+	g_assert (!info->handle);
+	info->handle = thread_handle;
 }
 
-HANDLE
-mono_threads_core_create_thread (LPTHREAD_START_ROUTINE start_routine, gpointer arg, guint32 stack_size, guint32 creation_flags, MonoNativeThreadId *out_tid)
+int
+mono_threads_platform_create_thread (MonoThreadStart thread_fn, gpointer thread_data, gsize stack_size, MonoNativeThreadId *out_tid)
 {
 	pthread_attr_t attr;
-	int res;
 	pthread_t thread;
-	StartInfo start_info;
+	gint res;
 
 	res = pthread_attr_init (&attr);
 	g_assert (!res);
 
+#ifdef HAVE_PTHREAD_ATTR_SETSTACKSIZE
 	if (stack_size == 0) {
 #if HAVE_VALGRIND_MEMCHECK_H
 		if (RUNNING_ON_VALGRIND)
@@ -122,63 +83,33 @@ mono_threads_core_create_thread (LPTHREAD_START_ROUTINE start_routine, gpointer 
 		stack_size = PTHREAD_STACK_MIN;
 #endif
 
-#ifdef HAVE_PTHREAD_ATTR_SETSTACKSIZE
 	res = pthread_attr_setstacksize (&attr, stack_size);
 	g_assert (!res);
-#endif
-
-	memset (&start_info, 0, sizeof (StartInfo));
-	start_info.start_routine = (void *(*)(void *)) start_routine;
-	start_info.arg = arg;
-	start_info.flags = creation_flags;
-	mono_coop_sem_init (&(start_info.registered), 0);
+#endif /* HAVE_PTHREAD_ATTR_SETSTACKSIZE */
 
 	/* Actually start the thread */
-	res = mono_gc_pthread_create (&thread, &attr, inner_start_thread, &start_info);
-	if (res) {
-		mono_coop_sem_destroy (&(start_info.registered));
-		return NULL;
-	}
-
-	/* Wait until the thread register itself in various places */
-	res = mono_coop_sem_wait (&start_info.registered, MONO_SEM_FLAGS_NONE);
-	g_assert (res != -1);
-
-	mono_coop_sem_destroy (&(start_info.registered));
+	res = mono_gc_pthread_create (&thread, &attr, (gpointer (*)(gpointer)) thread_fn, thread_data);
+	if (res)
+		return -1;
 
 	if (out_tid)
 		*out_tid = thread;
 
-	return start_info.handle;
-}
-
-/*
- * mono_threads_core_resume_created:
- *
- *   Resume a newly created thread created using CREATE_SUSPENDED.
- */
-void
-mono_threads_core_resume_created (MonoThreadInfo *info, MonoNativeThreadId tid)
-{
-	mono_coop_sem_post (&info->create_suspended_sem);
+	return 0;
 }
 
 gboolean
-mono_threads_core_yield (void)
+mono_threads_platform_yield (void)
 {
 	return sched_yield () == 0;
 }
 
 void
-mono_threads_core_exit (int exit_code)
+mono_threads_platform_exit (int exit_code)
 {
-	MonoThreadInfo *current = mono_thread_info_current ();
-
 #if defined(__native_client__)
 	nacl_shutdown_gc_thread();
 #endif
-
-	wapi_thread_handle_set_exited (current->handle, exit_code);
 
 	mono_thread_info_detach ();
 
@@ -186,27 +117,9 @@ mono_threads_core_exit (int exit_code)
 }
 
 void
-mono_threads_core_unregister (MonoThreadInfo *info)
+mono_threads_platform_unregister (MonoThreadInfo *info)
 {
-	if (info->handle) {
-		wapi_thread_handle_set_exited (info->handle, 0);
-		info->handle = NULL;
-	}
-}
-
-HANDLE
-mono_threads_core_open_handle (void)
-{
-	MonoThreadInfo *info;
-
-	info = mono_thread_info_current ();
-	g_assert (info);
-
-	if (!info->handle)
-		info->handle = wapi_create_thread_handle ();
-	else
-		wapi_ref_thread_handle (info->handle);
-	return info->handle;
+	mono_threads_platform_set_exited (info);
 }
 
 int
@@ -223,12 +136,26 @@ mono_threads_get_max_stack_size (void)
 	return (int)lim.rlim_max;
 }
 
-HANDLE
-mono_threads_core_open_thread_handle (HANDLE handle, MonoNativeThreadId tid)
+gpointer
+mono_threads_platform_duplicate_handle (MonoThreadInfo *info)
 {
-	wapi_ref_thread_handle (handle);
+	g_assert (info->handle);
+	mono_w32handle_ref (info->handle);
+	return info->handle;
+}
+
+HANDLE
+mono_threads_platform_open_thread_handle (HANDLE handle, MonoNativeThreadId tid)
+{
+	mono_w32handle_ref (handle);
 
 	return handle;
+}
+
+void
+mono_threads_platform_close_thread_handle (HANDLE handle)
+{
+	mono_w32handle_unref (handle);
 }
 
 int
@@ -319,12 +246,191 @@ mono_native_thread_set_name (MonoNativeThreadId tid, const char *name)
 #endif
 }
 
+gboolean
+mono_native_thread_join (MonoNativeThreadId tid)
+{
+	void *res;
+
+	return !pthread_join (tid, &res);
+}
+
+void
+mono_threads_platform_set_exited (MonoThreadInfo *info)
+{
+	gpointer mutex_handle;
+	int i, thr_ret;
+	pid_t pid;
+	pthread_t tid;
+
+	g_assert (info->handle);
+
+	if (mono_w32handle_issignalled (info->handle))
+		g_error ("%s: handle %p thread %p has already exited, it's handle is signalled", __func__, info->handle, mono_thread_info_get_tid (info));
+	if (mono_w32handle_get_type (info->handle) == MONO_W32HANDLE_UNUSED)
+		g_error ("%s: handle %p thread %p has already exited, it's handle type is 'unused'", __func__, info->handle, mono_thread_info_get_tid (info));
+
+	pid = wapi_getpid ();
+	tid = pthread_self ();
+
+	for (i = 0; i < info->owned_mutexes->len; i++) {
+		mutex_handle = g_ptr_array_index (info->owned_mutexes, i);
+		wapi_mutex_abandon (mutex_handle, pid, tid);
+		mono_thread_info_disown_mutex (info, mutex_handle);
+	}
+
+	g_ptr_array_free (info->owned_mutexes, TRUE);
+
+	thr_ret = mono_w32handle_lock_handle (info->handle);
+	g_assert (thr_ret == 0);
+
+	mono_w32handle_set_signal_state (info->handle, TRUE, TRUE);
+
+	thr_ret = mono_w32handle_unlock_handle (info->handle);
+	g_assert (thr_ret == 0);
+
+	/* The thread is no longer active, so unref it */
+	mono_w32handle_unref (info->handle);
+
+	info->handle = NULL;
+}
+
+void
+mono_threads_platform_describe (MonoThreadInfo *info, GString *text)
+{
+	int i;
+
+	g_string_append_printf (text, "thread handle %p state : ", info->handle);
+
+	mono_thread_info_describe_interrupt_token (info, text);
+
+	g_string_append_printf (text, ", owns (");
+	for (i = 0; i < info->owned_mutexes->len; i++)
+		g_string_append_printf (text, i > 0 ? ", %p" : "%p", g_ptr_array_index (info->owned_mutexes, i));
+	g_string_append_printf (text, ")");
+}
+
+void
+mono_threads_platform_own_mutex (MonoThreadInfo *info, gpointer mutex_handle)
+{
+	mono_w32handle_ref (mutex_handle);
+
+	g_ptr_array_add (info->owned_mutexes, mutex_handle);
+}
+
+void
+mono_threads_platform_disown_mutex (MonoThreadInfo *info, gpointer mutex_handle)
+{
+	mono_w32handle_unref (mutex_handle);
+
+	g_ptr_array_remove (info->owned_mutexes, mutex_handle);
+}
+
+MonoThreadPriority
+mono_threads_platform_get_priority (MonoThreadInfo *info)
+{
+	return info->priority;
+}
+
+void
+mono_threads_platform_set_priority (MonoThreadInfo *info, MonoThreadPriority priority)
+{
+	int policy;
+	struct sched_param param;
+	pthread_t tid;
+	gint res;
+
+	g_assert (priority >= MONO_THREAD_PRIORITY_LOWEST);
+	g_assert (priority <= MONO_THREAD_PRIORITY_HIGHEST);
+	g_assert (MONO_THREAD_PRIORITY_LOWEST < MONO_THREAD_PRIORITY_HIGHEST);
+
+	tid = mono_thread_info_get_tid (info);
+
+	res = pthread_getschedparam (tid, &policy, &param);
+	if (res != 0)
+		g_error ("%s: pthread_getschedparam failed, error: \"%s\" (%d)", g_strerror (res), res);
+
+#ifdef _POSIX_PRIORITY_SCHEDULING
+	int max, min;
+
+	/* Necessary to get valid priority range */
+
+	min = sched_get_priority_min (policy);
+	max = sched_get_priority_max (policy);
+
+	if (max > 0 && min >= 0 && max > min) {
+		double srange, drange, sposition, dposition;
+		srange = MONO_THREAD_PRIORITY_HIGHEST - MONO_THREAD_PRIORITY_LOWEST;
+		drange = max - min;
+		sposition = priority - MONO_THREAD_PRIORITY_LOWEST;
+		dposition = (sposition / srange) * drange;
+		param.sched_priority = (int)(dposition + min);
+	} else
+#endif
+	{
+		switch (policy) {
+		case SCHED_FIFO:
+		case SCHED_RR:
+			param.sched_priority = 50;
+			break;
+#ifdef SCHED_BATCH
+		case SCHED_BATCH:
+#endif
+		case SCHED_OTHER:
+			param.sched_priority = 0;
+			break;
+		default:
+			g_error ("%s: unknown policy %d", __func__, policy);
+		}
+	}
+
+	res = pthread_setschedparam (tid, policy, &param);
+	if (res != 0) {
+		if (res == EPERM) {
+			g_warning ("%s: pthread_setschedparam failed, error: \"%s\" (%d)", g_strerror (res), res);
+			return;
+		}
+		g_error ("%s: pthread_setschedparam failed, error: \"%s\" (%d)", g_strerror (res), res);
+	}
+
+	info->priority = priority;
+}
+
+static const gchar* thread_typename (void)
+{
+	return "Thread";
+}
+
+static gsize thread_typesize (void)
+{
+	return 0;
+}
+
+static MonoW32HandleOps thread_ops = {
+	NULL,				/* close */
+	NULL,				/* signal */
+	NULL,				/* own */
+	NULL,				/* is_owned */
+	NULL,				/* special_wait */
+	NULL,				/* prewait */
+	NULL,				/* details */
+	thread_typename,	/* typename */
+	thread_typesize,	/* typesize */
+};
+
+void
+mono_threads_platform_init (void)
+{
+	mono_w32handle_register_ops (MONO_W32HANDLE_THREAD, &thread_ops);
+
+	mono_w32handle_register_capabilities (MONO_W32HANDLE_THREAD, MONO_W32HANDLE_CAP_WAIT);
+}
+
 #endif /* defined(_POSIX_VERSION) || defined(__native_client__) */
 
 #if defined(USE_POSIX_BACKEND)
 
 gboolean
-mono_threads_core_begin_async_suspend (MonoThreadInfo *info, gboolean interrupt_kernel)
+mono_threads_suspend_begin_async_suspend (MonoThreadInfo *info, gboolean interrupt_kernel)
 {
 	int sig = interrupt_kernel ? mono_threads_posix_get_abort_signal () :  mono_threads_posix_get_suspend_signal ();
 
@@ -336,7 +442,7 @@ mono_threads_core_begin_async_suspend (MonoThreadInfo *info, gboolean interrupt_
 }
 
 gboolean
-mono_threads_core_check_suspend_result (MonoThreadInfo *info)
+mono_threads_suspend_check_suspend_result (MonoThreadInfo *info)
 {
 	return info->suspend_can_continue;
 }
@@ -348,14 +454,14 @@ This begins async resume. This function must do the following:
 - Notify the target to resume.
 */
 gboolean
-mono_threads_core_begin_async_resume (MonoThreadInfo *info)
+mono_threads_suspend_begin_async_resume (MonoThreadInfo *info)
 {
 	mono_threads_add_to_pending_operation_set (info);
 	return mono_threads_pthread_kill (info, mono_threads_posix_get_restart_signal ()) == 0;
 }
 
 void
-mono_threads_platform_register (MonoThreadInfo *info)
+mono_threads_suspend_register (MonoThreadInfo *info)
 {
 #if defined (PLATFORM_ANDROID)
 	info->native_handle = gettid ();
@@ -363,12 +469,12 @@ mono_threads_platform_register (MonoThreadInfo *info)
 }
 
 void
-mono_threads_platform_free (MonoThreadInfo *info)
+mono_threads_suspend_free (MonoThreadInfo *info)
 {
 }
 
 void
-mono_threads_init_platform (void)
+mono_threads_suspend_init (void)
 {
 	mono_threads_posix_init_signals (MONO_THREADS_POSIX_INIT_SIGNALS_SUSPEND_RESTART);
 }

@@ -1,38 +1,21 @@
 //
-// MethodBody.cs
-//
 // Author:
 //   Jb Evain (jbevain@gmail.com)
 //
-// Copyright (c) 2008 - 2011 Jb Evain
+// Copyright (c) 2008 - 2015 Jb Evain
+// Copyright (c) 2008 - 2011 Novell, Inc.
 //
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// Licensed under the MIT/X11 license.
 //
 
 using System;
+using System.Threading;
 
 using Mono.Collections.Generic;
 
 namespace Mono.Cecil.Cil {
 
-	public sealed class MethodBody : IVariableDefinitionProvider {
+	public sealed class MethodBody {
 
 		readonly internal MethodDefinition method;
 
@@ -45,7 +28,6 @@ namespace Mono.Cecil.Cil {
 		internal Collection<Instruction> instructions;
 		internal Collection<ExceptionHandler> exceptions;
 		internal Collection<VariableDefinition> variables;
-		Scope scope;
 
 		public MethodDefinition Method {
 			get { return method; }
@@ -71,7 +53,7 @@ namespace Mono.Cecil.Cil {
 		}
 
 		public Collection<Instruction> Instructions {
-			get { return instructions ?? (instructions = new InstructionCollection ()); }
+			get { return instructions ?? (instructions = new InstructionCollection (method)); }
 		}
 
 		public bool HasExceptionHandlers {
@@ -90,11 +72,6 @@ namespace Mono.Cecil.Cil {
 			get { return variables ?? (variables = new VariableDefinitionCollection ()); }
 		}
 
-		public Scope Scope {
-			get { return scope; }
-			set { scope = value; }
-		}
-
 		public ParameterDefinition ThisParameter {
 			get {
 				if (method == null || method.DeclaringType == null)
@@ -103,16 +80,30 @@ namespace Mono.Cecil.Cil {
 				if (!method.HasThis)
 					return null;
 
-				if (this_parameter != null)
-					return this_parameter;
+				if (this_parameter == null)
+					Interlocked.CompareExchange (ref this_parameter, CreateThisParameter (method), null);
 
-				var declaring_type = method.DeclaringType;
-				var type = declaring_type.IsValueType || declaring_type.IsPrimitive
-					? new PointerType (declaring_type)
-					: declaring_type as TypeReference;
-
-				return this_parameter = new ParameterDefinition (type, method);
+				return this_parameter;
 			}
+		}
+
+		static ParameterDefinition CreateThisParameter (MethodDefinition method)
+		{
+			var parameter_type = method.DeclaringType as TypeReference;
+
+			if (parameter_type.HasGenericParameters) {
+				var instance = new GenericInstanceType (parameter_type);
+				for (int i = 0; i < parameter_type.GenericParameters.Count; i++)
+					instance.GenericArguments.Add (parameter_type.GenericParameters [i]);
+
+				parameter_type = instance;
+
+			}
+
+			if (parameter_type.IsValueType || parameter_type.IsPrimitive)
+				parameter_type = new ByReferenceType (parameter_type);
+
+			return new ParameterDefinition (parameter_type, method);
 		}
 
 		public MethodBody (MethodDefinition method)
@@ -126,12 +117,7 @@ namespace Mono.Cecil.Cil {
 		}
 	}
 
-	public interface IVariableDefinitionProvider {
-		bool HasVariables { get; }
-		Collection<VariableDefinition> Variables { get; }
-	}
-
-	class VariableDefinitionCollection : Collection<VariableDefinition> {
+	sealed class VariableDefinitionCollection : Collection<VariableDefinition> {
 
 		internal VariableDefinitionCollection ()
 		{
@@ -171,13 +157,17 @@ namespace Mono.Cecil.Cil {
 
 	class InstructionCollection : Collection<Instruction> {
 
-		internal InstructionCollection ()
+		readonly MethodDefinition method;
+
+		internal InstructionCollection (MethodDefinition method)
 		{
+			this.method = method;
 		}
 
-		internal InstructionCollection (int capacity)
+		internal InstructionCollection (MethodDefinition method, int capacity)
 			: base (capacity)
 		{
+			this.method = method;
 		}
 
 		protected override void OnAdd (Instruction item, int index)
@@ -234,8 +224,25 @@ namespace Mono.Cecil.Cil {
 			if (next != null)
 				next.previous = item.previous;
 
+			RemoveSequencePoint (item);
+
 			item.previous = null;
 			item.next = null;
+		}
+
+		void RemoveSequencePoint (Instruction instruction)
+		{
+			var debug_info = method.debug_info;
+			if (debug_info == null || !debug_info.HasSequencePoints)
+				return;
+
+			var sequence_points = debug_info.sequence_points;
+			for (int i = 0; i < sequence_points.Count; i++) {
+				if (sequence_points [i].Offset == instruction.offset) {
+					sequence_points.RemoveAt (i);
+					return;
+				}
+			}
 		}
 	}
 }

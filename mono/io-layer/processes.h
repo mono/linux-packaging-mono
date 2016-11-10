@@ -10,12 +10,12 @@
 #ifndef _WAPI_PROCESSES_H_
 #define _WAPI_PROCESSES_H_
 
+#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <glib.h>
 
-#include <mono/io-layer/handles.h>
 #include <mono/io-layer/access.h>
 #include <mono/io-layer/versioninfo.h>
 
@@ -130,7 +130,6 @@ struct _WapiShellExecuteInfo
 	
 #define DEBUG_PROCESS 0x00000001
 #define DEBUG_ONLY_THIS_PROCESS 0x00000002
-#define CREATE_SUSPENDED 0x00000004
 #define DETACHED_PROCESS 0x00000008
 #define CREATE_NEW_CONSOLE 0x00000010
 #define NORMAL_PRIORITY_CLASS 0x00000020

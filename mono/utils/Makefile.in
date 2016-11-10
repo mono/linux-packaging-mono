@@ -122,20 +122,21 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	mono-logger.c mono-logger-internals.h mono-codeman.c \
 	dlmalloc.h dlmalloc.c mono-counters.c mono-compiler.h \
 	mono-complex.h mono-dl.c mono-dl-windows.c mono-dl-darwin.c \
-	mono-dl-posix.c mono-dl.h mono-internal-hash.c \
-	mono-internal-hash.h mono-io-portability.c \
-	mono-io-portability.h monobitset.c mono-filemap.c mono-math.c \
-	mono-mmap.c mono-mmap.h mono-mmap-internals.h mono-os-mutex.h \
-	mono-coop-mutex.h mono-once.h mono-lazy-init.h \
-	mono-networkinterfaces.c mono-networkinterfaces.h \
-	mono-proclib.c mono-proclib.h mono-publib.c mono-string.h \
-	mono-time.c mono-time.h strenc.h strenc.c mono-uri.c \
-	mono-poll.c mono-path.c mono-os-semaphore.h \
-	mono-coop-semaphore.h mono-sigcontext.h mono-stdlib.c \
-	mono-property-hash.h mono-property-hash.c mono-value-hash.h \
-	mono-value-hash.c freebsd-elf_common.h freebsd-elf32.h \
-	freebsd-elf64.h freebsd-dwarf.h dtrace.h gc_wrapper.h \
-	mono-error.c mono-error-internals.h monobitset.h \
+	mono-dl-posix.c mono-dl.h mono-log-windows.c mono-log-common.c \
+	mono-log-posix.c mono-log-android.c mono-log-darwin.c \
+	mono-internal-hash.c mono-internal-hash.h \
+	mono-io-portability.c mono-io-portability.h monobitset.c \
+	mono-filemap.c mono-math.c mono-mmap.c mono-mmap.h \
+	mono-mmap-internals.h mono-os-mutex.h mono-coop-mutex.h \
+	mono-once.h mono-lazy-init.h mono-networkinterfaces.c \
+	mono-networkinterfaces.h mono-proclib.c mono-proclib.h \
+	mono-publib.c mono-string.h mono-time.c mono-time.h strenc.h \
+	strenc.c mono-uri.c mono-poll.c mono-path.c \
+	mono-os-semaphore.h mono-coop-semaphore.h mono-sigcontext.h \
+	mono-stdlib.c mono-property-hash.h mono-property-hash.c \
+	mono-value-hash.h mono-value-hash.c freebsd-elf_common.h \
+	freebsd-elf32.h freebsd-elf64.h freebsd-dwarf.h dtrace.h \
+	gc_wrapper.h mono-error.c mono-error-internals.h monobitset.h \
 	mono-codeman.h mono-counters.h mono-digest.h mono-error.h \
 	mono-machine.h mono-math.h mono-membar.h mono-path.h \
 	mono-poll.h mono-uri.h mono-stdlib.h valgrind.h mach-support.c \
@@ -149,9 +150,9 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	mono-threads-posix-signals.c mono-threads-posix-signals.h \
 	mono-threads-mach.c mono-threads-mach-helper.c \
 	mono-threads-windows.c mono-threads-linux.c \
-	mono-threads-freebsd.c mono-threads-openbsd.c \
-	mono-threads-android.c mono-threads.h mono-threads-api.h \
-	mono-threads-coop.c mono-threads-coop.h \
+	mono-threads-freebsd.c mono-threads-netbsd.c \
+	mono-threads-openbsd.c mono-threads-android.c mono-threads.h \
+	mono-threads-api.h mono-threads-coop.c mono-threads-coop.h \
 	mono-threads-mach-abort-syscall.c \
 	mono-threads-posix-abort-syscall.c \
 	mono-threads-windows-abort-syscall.c mono-tls.h mono-tls.c \
@@ -162,27 +163,30 @@ am__libmonoutils_la_SOURCES_DIST = mono-md5.c mono-sha1.c \
 	networking-posix.c networking-fallback.c networking-missing.c \
 	networking-windows.c networking.h mono-rand.c mono-rand.h \
 	memfuncs.c memfuncs.h parse.c parse.h checked-build.c \
-	checked-build.h mach-support-x86.c mach-support-amd64.c \
-	mach-support-arm.c mach-support-arm64.c mach-support-unknown.c \
-	mono-hwcap-x86.c mono-hwcap-arm.c mono-hwcap-arm64.c \
-	mono-hwcap-mips.c mono-hwcap-ppc.c mono-hwcap-sparc.c \
-	mono-hwcap-ia64.c mono-hwcap-s390x.c mono-hwcap-cross.c
+	checked-build.h w32handle.c w32handle.h mach-support-x86.c \
+	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
+	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
+	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
+	mono-hwcap-sparc.c mono-hwcap-ia64.c mono-hwcap-s390x.c \
+	mono-hwcap-cross.c
 am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	mono-codeman.lo dlmalloc.lo mono-counters.lo mono-dl.lo \
 	mono-dl-windows.lo mono-dl-darwin.lo mono-dl-posix.lo \
-	mono-internal-hash.lo mono-io-portability.lo monobitset.lo \
-	mono-filemap.lo mono-math.lo mono-mmap.lo \
-	mono-networkinterfaces.lo mono-proclib.lo mono-publib.lo \
-	mono-time.lo strenc.lo mono-uri.lo mono-poll.lo mono-path.lo \
-	mono-stdlib.lo mono-property-hash.lo mono-value-hash.lo \
-	mono-error.lo mach-support.lo mono-context.lo \
-	hazard-pointer.lo lock-free-queue.lo lock-free-alloc.lo \
-	lock-free-array-queue.lo mono-linked-list-set.lo \
-	mono-threads.lo mono-threads-state-machine.lo \
-	mono-threads-posix.lo mono-threads-posix-signals.lo \
-	mono-threads-mach.lo mono-threads-mach-helper.lo \
-	mono-threads-windows.lo mono-threads-linux.lo \
-	mono-threads-freebsd.lo mono-threads-openbsd.lo \
+	mono-log-windows.lo mono-log-common.lo mono-log-posix.lo \
+	mono-log-android.lo mono-log-darwin.lo mono-internal-hash.lo \
+	mono-io-portability.lo monobitset.lo mono-filemap.lo \
+	mono-math.lo mono-mmap.lo mono-networkinterfaces.lo \
+	mono-proclib.lo mono-publib.lo mono-time.lo strenc.lo \
+	mono-uri.lo mono-poll.lo mono-path.lo mono-stdlib.lo \
+	mono-property-hash.lo mono-value-hash.lo mono-error.lo \
+	mach-support.lo mono-context.lo hazard-pointer.lo \
+	lock-free-queue.lo lock-free-alloc.lo lock-free-array-queue.lo \
+	mono-linked-list-set.lo mono-threads.lo \
+	mono-threads-state-machine.lo mono-threads-posix.lo \
+	mono-threads-posix-signals.lo mono-threads-mach.lo \
+	mono-threads-mach-helper.lo mono-threads-windows.lo \
+	mono-threads-linux.lo mono-threads-freebsd.lo \
+	mono-threads-netbsd.lo mono-threads-openbsd.lo \
 	mono-threads-android.lo mono-threads-coop.lo \
 	mono-threads-mach-abort-syscall.lo \
 	mono-threads-posix-abort-syscall.lo \
@@ -191,7 +195,7 @@ am__objects_1 = mono-md5.lo mono-sha1.lo mono-logger.lo \
 	json.lo networking.lo networking-posix.lo \
 	networking-fallback.lo networking-missing.lo \
 	networking-windows.lo mono-rand.lo memfuncs.lo parse.lo \
-	checked-build.lo
+	checked-build.lo w32handle.lo
 @CROSS_COMPILE_FALSE@@X86_TRUE@am__objects_2 = mach-support-x86.lo
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@am__objects_3 =  \
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@	mach-support-amd64.lo
@@ -314,6 +318,8 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
+AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
 API_VER = @API_VER@
 AR = @AR@
 AS = @AS@
@@ -322,6 +328,11 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BTLS_ARCH = @BTLS_ARCH@
+BTLS_CFLAGS = @BTLS_CFLAGS@
+BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
+BTLS_PLATFORM = @BTLS_PLATFORM@
+BTLS_ROOT = @BTLS_ROOT@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
@@ -331,6 +342,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -351,7 +363,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLE_PERF_EVENTS = @ENABLE_PERF_EVENTS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
@@ -366,10 +377,12 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
+INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -416,6 +429,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -425,6 +439,7 @@ SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
+TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
@@ -532,6 +547,11 @@ monoutils_sources = \
 	mono-dl-darwin.c	\
 	mono-dl-posix.c		\
 	mono-dl.h		\
+	mono-log-windows.c	\
+	mono-log-common.c	\
+	mono-log-posix.c	\
+	mono-log-android.c \
+	mono-log-darwin.c \
 	mono-internal-hash.c	\
 	mono-internal-hash.h	\
 	mono-io-portability.c 	\
@@ -614,6 +634,7 @@ monoutils_sources = \
 	mono-threads-windows.c	\
 	mono-threads-linux.c	\
 	mono-threads-freebsd.c	\
+	mono-threads-netbsd.c	\
 	mono-threads-openbsd.c	\
 	mono-threads-android.c	\
 	mono-threads.h	\
@@ -654,7 +675,9 @@ monoutils_sources = \
 	parse.c \
 	parse.h	\
 	checked-build.c \
-	checked-build.h
+	checked-build.h \
+	w32handle.c \
+	w32handle.h
 
 arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
@@ -767,6 +790,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-internal-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-io-portability.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-linked-list-set.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-android.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-common.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-darwin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-posix.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-log-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-logger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-math.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-md5.Plo@am__quote@
@@ -787,6 +815,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach-abort-syscall.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach-helper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-mach.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-netbsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-openbsd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix-abort-syscall.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix-signals.Plo@am__quote@
@@ -808,6 +837,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sha1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strenc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/w32handle.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

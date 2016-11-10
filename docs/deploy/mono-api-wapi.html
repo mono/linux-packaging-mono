@@ -396,8 +396,7 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer CreateMutex(WapiSecurityAttributes *security G_GNUC_UNUSED, gboolean owned,
-			const gunichar2 *name)
+            <div class="mapi-prototype">gpointer CreateMutex(WapiSecurityAttributes *security G_GNUC_UNUSED, gboolean owned, const gunichar2 *name)
 
 </div>
             <p />
@@ -2281,22 +2280,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 WaitForInputIdle(gpointer handle, guint32 timeout)
-
-</div>
+            <div class="mapi-prototype">WaitForInputIdle</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> a handle to the process to wait for</td></td></tr><tr><td><i>timeout</i><td> the maximum time in milliseconds to wait for</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This function returns when either <i>handle</i> process is waiting
-	 for input, or <i>timeout</i> ms elapses.  If <i>timeout</i> is zero, the
-	 process state is tested and the function returns immediately.
-	 If <i>timeout</i> is %INFINITE, the function waits forever.
-	<p />
-	 Return value: 0 - <i>handle</i> process is waiting for input.
-	 %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and
-	 <i>handle</i> process is not waiting for input.  %WAIT_FAILED - an error
-	 occurred. </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -2372,8 +2357,7 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 WaitForSingleObjectEx(gpointer handle, guint32 timeout,
-			      gboolean alertable)
+            <div class="mapi-prototype">guint32 WaitForSingleObjectEx(gpointer handle, guint32 timeout, gboolean alertable)
 
 </div>
             <p />

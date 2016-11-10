@@ -123,7 +123,7 @@ namespace System.Net.Sockets
 				//
 				// Also note that catching ConfigurationErrorsException specifically would require library dependency
 				// System.Configuration, and wanted to avoid that.
-#if !NET_2_1
+#if !MOBILE
 #if CONFIGURATION_DEP
 				try {
 					SettingsSection config;
@@ -170,34 +170,6 @@ namespace System.Net.Sockets
 		
 		public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
 		{
-#if NET_2_1 && !MOBILE
-			switch (addressFamily) {
-			case AddressFamily.InterNetwork:    // ok
-			case AddressFamily.InterNetworkV6:  // ok
-			case AddressFamily.Unknown:         // SocketException will be thrown later (with right error #)
-				break;
-			// case AddressFamily.Unspecified:
-			default:
-				throw new ArgumentException ("addressFamily");
-			}
-
-			switch (socketType) {
-			case SocketType.Stream:             // ok
-			case SocketType.Unknown:            // SocketException will be thrown later (with right error #)
-				break;
-			default:
-				throw new ArgumentException ("socketType");
-			}
-
-			switch (protocolType) {
-			case ProtocolType.Tcp:              // ok
-			case ProtocolType.Unspecified:      // ok
-			case ProtocolType.Unknown:          // SocketException will be thrown later (with right error #)
-				break;
-			default:
-				throw new ArgumentException ("protocolType");
-			}
-#endif
 			this.address_family = addressFamily;
 			this.socket_type = socketType;
 			this.protocol_type = protocolType;
@@ -208,12 +180,9 @@ namespace System.Net.Sockets
 			if (error != 0)
 				throw new SocketException (error);
 
-#if !NET_2_1 || MOBILE
 			SocketDefaults ();
-#endif
 		}
 
-#if !MOBILE
 		public Socket (SocketInformation socketInformation)
 		{
 			this.is_listening      = (socketInformation.Options & SocketInformationOptions.Listening) != 0;
@@ -231,7 +200,6 @@ namespace System.Net.Sockets
 
 			SocketDefaults ();
 		}
-#endif
 
 		/* private constructor used by Accept, which already has a socket handle to use */
 		internal Socket(AddressFamily family, SocketType type, ProtocolType proto, SafeSocketHandle safe_handle)
@@ -260,6 +228,10 @@ namespace System.Net.Sockets
 					 * effects on Linux, as the socket option is kludged by
 					 * turning on or off PMTU discovery... */
 					this.DontFragment = false;
+					if (protocol_type == ProtocolType.Tcp)
+						this.NoDelay = false;
+				} else if (address_family == AddressFamily.InterNetworkV6) {
+					this.DualMode = true;
 				}
 
 				/* Microsoft sets these to 8192, but we are going to keep them
@@ -289,7 +261,7 @@ namespace System.Net.Sockets
 			get { return ipv6_supported == 1; }
 		}
 
-#if NET_2_1
+#if MOBILE
 		public static bool OSSupportsIPv4 {
 			get { return ipv4_supported == 1; }
 		}
@@ -308,7 +280,7 @@ namespace System.Net.Sockets
 		}
 #endif
 
-#if NET_2_1
+#if MOBILE
 		public static bool OSSupportsIPv6 {
 			get { return ipv6_supported == 1; }
 		}
@@ -649,7 +621,6 @@ namespace System.Net.Sockets
 			set {
 				ThrowIfDisposedAndClosed ();
 				ThrowIfUdp ();
-
 				SetSocketOption (SocketOptionLevel.Tcp, SocketOptionName.NoDelay, value ? 1 : 0);
 			}
 		}
@@ -1147,6 +1118,9 @@ namespace System.Net.Sockets
 
 		public void Bind (EndPoint localEP)
 		{
+#if FEATURE_NO_BSD_SOCKETS
+			throw new PlatformNotSupportedException ("System.Net.Sockets.Socket:Bind is not supported on this platform.");
+#else
 			ThrowIfDisposedAndClosed ();
 
 			if (localEP == null)
@@ -1166,6 +1140,7 @@ namespace System.Net.Sockets
 				is_bound = true;
 
 			seed_endpoint = localEP;
+#endif // FEATURE_NO_BSD_SOCKETS
 		}
 
 		private static void Bind_internal (SafeSocketHandle safeHandle, SocketAddress sa, out int error)
@@ -1354,12 +1329,6 @@ namespace System.Net.Sockets
 			}
 
 			return true;
-		}
-
-		public static bool ConnectAsync (SocketType socketType, ProtocolType protocolType, SocketAsyncEventArgs e)
-		{
-			var sock = new Socket (e.RemoteEndPoint.AddressFamily, socketType, protocolType);
-			return sock.ConnectAsync (e);
 		}
 
 		public static void CancelConnectAsync (SocketAsyncEventArgs e)
@@ -2338,6 +2307,22 @@ namespace System.Net.Sockets
 
 #endregion
 
+#region SetIPProtectionLevel
+
+		public void SetIPProtectionLevel (IPProtectionLevel level) {
+			if (level == IPProtectionLevel.Unspecified)
+				throw new ArgumentException (SR.GetString (SR.net_sockets_invalid_optionValue_all), "level");
+
+			if (address_family == AddressFamily.InterNetworkV6)
+				SetSocketOption (SocketOptionLevel.IPv6, SocketOptionName.IPProtectionLevel, (int)level);
+			else if (address_family == AddressFamily.InterNetwork)
+				SetSocketOption (SocketOptionLevel.IP, SocketOptionName.IPProtectionLevel, (int)level);
+			else
+				throw new NotSupportedException (SR.GetString (SR.net_invalidversion));
+		}
+
+#endregion
+
 #region Send
 
 		public int Send (byte [] buffer)
@@ -3023,7 +3008,6 @@ namespace System.Net.Sockets
 
 #region DuplicateAndClose
 
-#if !MOBILE
 		[MonoLimitation ("We do not support passing sockets across processes, we merely allow this API to pass the socket across AppDomains")]
 		public SocketInformation DuplicateAndClose (int targetProcessId)
 		{
@@ -3039,7 +3023,6 @@ namespace System.Net.Sockets
 
 			return si;
 		}
-#endif
 
 #endregion
 
@@ -3192,9 +3175,6 @@ namespace System.Net.Sockets
 		public void SetSocketOption (SocketOptionLevel optionLevel, SocketOptionName optionName, int optionValue)
 		{
 			ThrowIfDisposedAndClosed ();
-
-			if (optionLevel == SocketOptionLevel.Socket && optionName == SocketOptionName.ReuseAddress && optionValue != 0 && !SupportsPortReuse (protocol_type))
-				throw new SocketException ((int) SocketError.OperationNotSupported, "Operating system sockets do not support ReuseAddress.\nIf your socket is not intended to bind to the same address and port multiple times remove this option, otherwise you should ignore this exception inside a try catch and check that ReuseAddress is true before binding to the same address and port multiple times.");
 
 			int error;
 			SetSocketOption_internal (safe_handle, optionLevel, optionName, null, null, optionValue, out error);
@@ -3410,10 +3390,8 @@ namespace System.Net.Sockets
 
 		void ThrowIfUdp ()
 		{
-#if !NET_2_1 || MOBILE
 			if (protocol_type == ProtocolType.Udp)
 				throw new SocketException ((int)SocketError.ProtocolOption);
-#endif
 		}
 
 		SocketAsyncResult ValidateEndIAsyncResult (IAsyncResult ares, string methodName, string argName)

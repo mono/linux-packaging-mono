@@ -48,6 +48,10 @@
 #    define kinfo_starttime_member kp_proc.p_starttime
 #    define kinfo_pid_member kp_proc.p_pid
 #    define kinfo_name_member kp_proc.p_comm
+#elif defined(__NetBSD__)
+#    define kinfo_starttime_member p_ustart_sec
+#    define kinfo_pid_member p_pid
+#    define kinfo_name_member p_comm
 #elif defined(__OpenBSD__)
 // Can not figure out how to get the proc's start time on OpenBSD
 #    undef kinfo_starttime_member 
@@ -76,7 +80,7 @@ mono_process_list (int *size)
 #ifdef KERN_PROC2
 	int mib [6];
 	size_t data_len = sizeof (struct kinfo_proc2) * 400;
-	struct kinfo_proc2 *processes = malloc (data_len);
+	struct kinfo_proc2 *processes = g_malloc (data_len);
 #else
 	int mib [4];
 	size_t data_len = sizeof (struct kinfo_proc) * 16;
@@ -101,7 +105,7 @@ mono_process_list (int *size)
 
 	res = sysctl (mib, 6, processes, &data_len, NULL, 0);
 	if (res < 0) {
-		free (processes);
+		g_free (processes);
 		return NULL;
 	}
 #else
@@ -115,10 +119,10 @@ mono_process_list (int *size)
 		res = sysctl (mib, 4, NULL, &data_len, NULL, 0);
 		if (res)
 			return NULL;
-		processes = (struct kinfo_proc *) malloc (data_len);
+		processes = (struct kinfo_proc *) g_malloc (data_len);
 		res = sysctl (mib, 4, processes, &data_len, NULL, 0);
 		if (res < 0) {
-			free (processes);
+			g_free (processes);
 			if (errno != ENOMEM)
 				return NULL;
 			limit --;
@@ -136,7 +140,7 @@ mono_process_list (int *size)
 	buf = (void **) g_realloc (buf, res * sizeof (void*));
 	for (i = 0; i < res; ++i)
 		buf [i] = GINT_TO_POINTER (processes [i].kinfo_pid_member);
-	free (processes);
+	g_free (processes);
 	if (size)
 		*size = res;
 	return buf;
@@ -317,8 +321,16 @@ mono_process_get_times (gpointer pid, gint64 *start_time, gint64 *user_time, gin
 		{
 			KINFO_PROC processi;
 
-			if (sysctl_kinfo_proc (pid, &processi))
+			if (sysctl_kinfo_proc (pid, &processi)) {
+#if defined(__NetBSD__)
+				struct timeval tv;
+				tv.tv_sec = processi.kinfo_starttime_member;
+				tv.tv_usec = processi.p_ustart_usec;
+				*start_time = mono_100ns_datetime_from_timeval(tv);
+#else
 				*start_time = mono_100ns_datetime_from_timeval (processi.kinfo_starttime_member);
+#endif
+			}
 		}
 #endif
 

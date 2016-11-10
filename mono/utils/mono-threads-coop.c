@@ -145,11 +145,14 @@ mono_threads_state_poll_with_info (MonoThreadInfo *info)
 	}
 }
 
-static void *
-return_stack_ptr ()
+static volatile gpointer* dummy_global;
+
+static MONO_NEVER_INLINE
+void*
+return_stack_ptr (gpointer *i)
 {
-	gpointer i;
-	return &i;
+	dummy_global = i;
+	return i;
 }
 
 static void
@@ -157,7 +160,8 @@ copy_stack_data (MonoThreadInfo *info, gpointer *stackdata_begin)
 {
 	MonoThreadUnwindState *state;
 	int stackdata_size;
-	void* stackdata_end = return_stack_ptr ();
+	gpointer dummy;
+	void* stackdata_end = return_stack_ptr (&dummy);
 
 	SAVE_REGS_ON_STACK;
 
@@ -413,7 +417,7 @@ mono_threads_is_coop_enabled (void)
 
 
 void
-mono_threads_init_coop (void)
+mono_threads_coop_init (void)
 {
 	if (!mono_threads_is_coop_enabled ())
 		return;

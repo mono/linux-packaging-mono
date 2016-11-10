@@ -61,6 +61,7 @@ using System.Runtime.InteropServices;
 [assembly: ComCompatibleVersion (1, 0, 3300, 0)]
 [assembly: AllowPartiallyTrustedCallers]
 
-#if !NET_2_1
+#if !MOBILE
 [assembly: SecurityCritical (SecurityCriticalScope.Explicit)]
+[assembly: InternalsVisibleTo ("System.ServiceModel, PublicKey=00000000000000000400000000000000")]
 #endif

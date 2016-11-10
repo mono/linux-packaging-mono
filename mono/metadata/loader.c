@@ -994,6 +994,7 @@ mono_dllmap_lookup_list (MonoDllMap *dll_map, const char *dll, const char* func,
 			 */
 		}
 		if (dll_map->func && strcmp (dll_map->func, func) == 0) {
+			*rdll = dll_map->target;
 			*rfunc = dll_map->target_func;
 			break;
 		}
@@ -1021,7 +1022,7 @@ mono_dllmap_lookup (MonoImage *assembly, const char *dll, const char* func, cons
  * @dll: The name of the external library, as it would be found in the DllImport declaration.  If prefixed with 'i:' the matching of the library name is done without case sensitivity
  * @func: if not null, the mapping will only applied to the named function (the value of EntryPoint)
  * @tdll: The name of the library to map the specified @dll if it matches.
- * @tfunc: if func is not NULL, the name of the function that replaces the invocation
+ * @tfunc: The name of the function that replaces the invocation.  If NULL, it is replaced with a copy of @func.
  *
  * LOCKING: Acquires the loader lock.
  *
@@ -1056,7 +1057,7 @@ mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, cons
 		entry->dll = dll? g_strdup (dll): NULL;
 		entry->target = tdll? g_strdup (tdll): NULL;
 		entry->func = func? g_strdup (func): NULL;
-		entry->target_func = tfunc? g_strdup (tfunc): NULL;
+		entry->target_func = tfunc? g_strdup (tfunc): (func? g_strdup (func): NULL);
 
 		global_loader_data_lock ();
 		entry->next = global_dll_map;
@@ -1067,7 +1068,7 @@ mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, cons
 		entry->dll = dll? mono_image_strdup (assembly, dll): NULL;
 		entry->target = tdll? mono_image_strdup (assembly, tdll): NULL;
 		entry->func = func? mono_image_strdup (assembly, func): NULL;
-		entry->target_func = tfunc? mono_image_strdup (assembly, tfunc): NULL;
+		entry->target_func = tfunc? mono_image_strdup (assembly, tfunc): (func? mono_image_strdup (assembly, func): NULL);
 
 		mono_image_lock (assembly);
 		entry->next = assembly->dll_map;
@@ -1120,6 +1121,14 @@ cached_module_load (const char *name, int flags, char **err)
 		g_hash_table_insert (global_module_map, g_strdup (name), res);
 	global_loader_data_unlock ();
 	return res;
+}
+
+void
+mono_loader_register_module (const char *name, MonoDl *module)
+{
+	if (!global_module_map)
+		global_module_map = g_hash_table_new (g_str_hash, g_str_equal);
+	g_hash_table_insert (global_module_map, g_strdup (name), module);
 }
 
 static MonoDl *internal_module;
@@ -2223,7 +2232,7 @@ mono_stack_walk_async_safe (MonoStackWalkAsyncSafe func, void *initial_sig_conte
 	AsyncStackWalkUserData ud = { func, user_data };
 
 	mono_sigctx_to_monoctx (initial_sig_context, &ctx);
-	mono_get_eh_callbacks ()->mono_walk_stack_with_ctx (async_stack_walk_adapter, NULL, MONO_UNWIND_SIGNAL_SAFE, &ud);
+	mono_get_eh_callbacks ()->mono_walk_stack_with_ctx (async_stack_walk_adapter, &ctx, MONO_UNWIND_SIGNAL_SAFE, &ud);
 }
 
 static gboolean

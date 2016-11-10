@@ -34,12 +34,12 @@ static class Consts
 	// Use these assembly version constants to make code more maintainable.
 	//
 
-	public const string MonoVersion = "4.6.2.0";
+	public const string MonoVersion = "4.8.0.0";
 	public const string MonoCompany = "Mono development team";
 	public const string MonoProduct = "Mono Common Language Infrastructure";
 	public const string MonoCopyright = "(c) Various Mono authors";
 
-#if NET_2_1
+#if MOBILE
 	// Versions of .NET Framework for Silverlight 4.0
 	public const string FxVersion = "2.0.5.0";
 	public const string VsVersion = "9.0.0.0"; // unused, but needed for compilation
@@ -118,7 +118,7 @@ static class Consts
 	public const string AssemblyPresentationCore_4_0 = "PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
 	public const string AssemblyPresentationFramework_3_5 = "PresentationFramework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
 	public const string AssemblySystemServiceModel_3_0 = "System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-#elif NET_2_1
+#elif MOBILE
 	public const string AssemblySystem_Core = "System.Core, Version=" + FxVersion + ", Culture=neutral, PublicKeyToken=b77a5c561934e089";
 #endif
 }

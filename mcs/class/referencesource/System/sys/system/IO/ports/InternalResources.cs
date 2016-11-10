@@ -34,6 +34,7 @@ namespace System.IO.Ports
 #endif
         internal static String GetMessage(int errorCode) 
         {
+#if !MONO
             StringBuilder sb = new StringBuilder(512);
             int result = SafeNativeMethods.FormatMessage(NativeMethods.FORMAT_MESSAGE_IGNORE_INSERTS |
                 NativeMethods.FORMAT_MESSAGE_FROM_SYSTEM | NativeMethods.FORMAT_MESSAGE_ARGUMENT_ARRAY,
@@ -47,6 +48,7 @@ namespace System.IO.Ports
                 return s;
             }
             else 
+#endif
             {
                 return SR.GetString(SR.IO_UnknownError, errorCode);
             }
@@ -76,6 +78,7 @@ namespace System.IO.Ports
         }
 #endif
 
+#if !MONO
 #if FEATURE_NETCORE
         [SecuritySafeCritical]
 #endif
@@ -93,6 +96,7 @@ namespace System.IO.Ports
             int errorCode = Marshal.GetLastWin32Error();
             WinIOError(errorCode, str);
         }
+#endif
         
         // After calling GetLastWin32Error(), it clears the last error field,
         // so you must save the HResult and pass it to this method.  This method

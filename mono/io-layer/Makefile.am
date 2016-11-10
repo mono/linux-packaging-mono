@@ -15,7 +15,6 @@ OTHER_H = \
 	context.h	\
 	error.h		\
 	events.h	\
-	handles.h	\
 	io.h		\
 	io-trace.h	\
 	io-layer.h	\
@@ -28,7 +27,6 @@ OTHER_H = \
 	semaphores.h	\
 	sockets.h	\
 	status.h	\
-	threads.h	\
 	timefuncs.h	\
 	types.h		\
 	uglify.h	\
@@ -46,9 +44,6 @@ OTHER_SRC = \
 	events.c		\
 	events.h		\
 	event-private.h		\
-	handles.c		\
-	handles.h		\
-	handles-private.h	\
 	io.c			\
 	io.h			\
 	io-portability.c	\
@@ -78,8 +73,6 @@ OTHER_SRC = \
 	socket-private.h	\
 	socket-wrappers.h	\
 	status.h		\
-	threads.h		\
-	thread-private.h	\
 	timefuncs.c		\
 	timefuncs.h		\
 	timefuncs-private.h	\
@@ -93,7 +86,7 @@ OTHER_SRC = \
 	wapi_glob.c		\
 	wapi.h			\
 	wapi-private.h		\
-	wthreads.c
+	wapi.c
 
 
 WINDOWS_H = \

@@ -11,11 +11,9 @@ System.Diagnostics/FileVersionInfo.cs
 System.Diagnostics/MonitoringDescriptionAttribute.cs
 System.Diagnostics/Process.cs
 System.Diagnostics/ProcessModule.cs
-System.Diagnostics/ProcessModuleCollection.cs
 System.Diagnostics/ProcessPriorityClass.cs
 System.Diagnostics/ProcessStartInfo.cs
 System.Diagnostics/ProcessThread.cs
-System.Diagnostics/ProcessThreadCollection.cs
 System.Diagnostics/ProcessWindowStyle.cs
 System.Diagnostics/Stopwatch.cs
 System.Diagnostics/ThreadPriorityLevel.cs
@@ -28,6 +26,7 @@ System.IO.Compression/DeflateStream.cs
 System.IO.Compression/GZipStream.cs
 System.IO/InternalBufferOverflowException.cs
 System.IO/InvalidDataException.cs
+System.IO/IODescriptionAttribute.cs
 System.IO/ErrorEventArgs.cs
 System.IO/ErrorEventHandler.cs
 System.IO/FileSystemEventArgs.cs
@@ -142,6 +141,9 @@ System.Net.Sockets/SocketOperation.cs
 ../referencesource/System/net/System/Net/Sockets/SocketOptionLevel.cs
 ../referencesource/System/net/System/Net/Sockets/SocketOptionName.cs
 ../referencesource/System/net/System/Net/Sockets/SocketShutdown.cs
+System.Net.Sockets/SocketReceiveFromResult.cs
+System.Net.Sockets/SocketReceiveMessageFromResult.cs
+System.Net.Sockets/SocketTaskExtensions.cs
 ../referencesource/System/net/System/Net/Sockets/SocketType.cs
 System.Net.Sockets/TcpClient.cs
 System.Net.Sockets/TcpListener.cs
@@ -153,7 +155,6 @@ System.Net/BasicClient.cs
 System.Net/BindIPEndPoint.cs
 System.Net/ChunkStream.cs
 System.Net/ChunkedInputStream.cs
-System.Net/CredentialCache.cs
 System.Net/DecompressionMethods.cs
 System.Net/DefaultCertificatePolicy.cs
 System.Net/DigestClient.cs
@@ -167,7 +168,6 @@ System.Net/FtpRequestCreator.cs
 System.Net/FtpStatus.cs
 System.Net/FtpWebRequest.cs
 System.Net/FtpWebResponse.cs
-System.Net/GlobalProxySelection.cs
 System.Net/HttpConnection.cs
 System.Net/HttpListener.cs
 System.Net/HttpListenerBasicIdentity.cs
@@ -175,13 +175,13 @@ System.Net/HttpListenerContext.cs
 System.Net/HttpListenerPrefixCollection.cs
 System.Net/HttpListenerRequest.cs
 System.Net/HttpListenerResponse.cs
+System.Net/HttpListenerResponseHelper.cs
 System.Net/HttpListenerTimeoutManager.cs
 System.Net/HttpRequestCreator.cs
 System.Net/HttpStreamAsyncResult.cs
 System.Net/HttpWebRequest.cs
 System.Net/HttpWebResponse.cs
 System.Net/ICredentialPolicy.cs
-System.Net/IPv6Address.cs
 System.Net/IPv6Address.cs
 System.Net/IWebConnectionState.cs
 System.Net/IWebProxyScript.cs
@@ -190,7 +190,6 @@ System.Net/ListenerPrefix.cs
 System.Net/MacProxy.cs
 System.Net/MonoHttpDate.cs
 System.Net/NetConfig.cs
-System.Net/NetworkCredential.cs
 System.Net/NtlmClient.cs
 System.Net/RequestStream.cs
 System.Net/ResponseStream.cs
@@ -203,8 +202,6 @@ System.Net/WebConnection.cs
 System.Net/WebConnectionData.cs
 System.Net/WebConnectionGroup.cs
 System.Net/WebConnectionStream.cs
-System.Net/WebProxy.cs
-System.Net/WebRequest.cs
 System.Net.WebSockets/ClientWebSocket.cs
 System.Net.WebSockets/ClientWebSocketOptions.cs
 System.Net.WebSockets/HttpListenerWebSocketContext.cs
@@ -232,7 +229,6 @@ System.Security.Authentication.ExtendedProtection/ExtendedProtectionPolicy.cs
 System.Security.Authentication.ExtendedProtection/ExtendedProtectionPolicyTypeConverter.cs
 System.Security.Authentication.ExtendedProtection/PolicyEnforcement.cs
 System.Security.Authentication.ExtendedProtection/ProtectionScenario.cs
-System.Security.Authentication.ExtendedProtection/ServiceNameCollection.cs
 System.Security.Authentication.ExtendedProtection.Configuration/ConfigUtil.cs
 System.Security.Authentication.ExtendedProtection.Configuration/ExtendedProtectionPolicyElement.cs
 System.Security.Authentication.ExtendedProtection.Configuration/ServiceNameElement.cs
@@ -280,7 +276,6 @@ System.Security.Cryptography.X509Certificates/X509VerificationFlags.cs
 System.Security.Cryptography/AsnEncodedData.cs
 System.Security.Cryptography/AsnEncodedDataCollection.cs
 System.Security.Cryptography/AsnEncodedDataEnumerator.cs
-System.Threading/Semaphore.cs
 System.Threading/ThreadExceptionEventArgs.cs
 System.Threading/ThreadExceptionEventHandler.cs
 System.Timers/ElapsedEventArgs.cs
@@ -299,29 +294,68 @@ Mono.Net.Security/IMonoSslStream.cs
 Mono.Net.Security/LegacySslStream.cs
 Mono.Net.Security/MobileAuthenticatedStream.cs
 Mono.Net.Security/MobileTlsContext.cs
-Mono.Net.Security/MonoLegacyTlsProvider.cs
+Mono.Net.Security/LegacyTlsProvider.cs
 Mono.Net.Security/MonoSslStreamImpl.cs
 Mono.Net.Security/MonoSslStreamWrapper.cs
 Mono.Net.Security/MonoTlsProviderFactory.cs
-Mono.Net.Security/MonoTlsProviderImpl.cs
 Mono.Net.Security/MonoTlsProviderWrapper.cs
 Mono.Net.Security/MonoTlsStream.cs
 Mono.Net.Security/NoReflectionHelper.cs
 Mono.Net.Security/SystemCertificateValidator.cs
 
+Mono.Btls/MonoBtlsBio.cs
+Mono.Btls/MonoBtlsContext.cs
+Mono.Btls/MonoBtlsError.cs
+Mono.Btls/MonoBtlsException.cs
+Mono.Btls/MonoBtlsKey.cs
+Mono.Btls/MonoBtlsObject.cs
+Mono.Btls/MonoBtlsPkcs12.cs
+Mono.Btls/MonoBtlsProvider.cs
+Mono.Btls/MonoBtlsSsl.cs
+Mono.Btls/MonoBtlsSslCtx.cs
+Mono.Btls/MonoBtlsSslError.cs
+Mono.Btls/MonoBtlsStream.cs
+Mono.Btls/MonoBtlsUtils.cs
+Mono.Btls/MonoBtlsX509.cs
+Mono.Btls/MonoBtlsX509Chain.cs
+Mono.Btls/MonoBtlsX509Crl.cs
+Mono.Btls/MonoBtlsX509Error.cs
+Mono.Btls/MonoBtlsX509Exception.cs
+Mono.Btls/MonoBtlsX509FileType.cs
+Mono.Btls/MonoBtlsX509Format.cs
+Mono.Btls/MonoBtlsX509Lookup.cs
+Mono.Btls/MonoBtlsX509LookupMonoCollection.cs
+Mono.Btls/MonoBtlsX509LookupMono.cs
+Mono.Btls/MonoBtlsX509LookupType.cs
+Mono.Btls/MonoBtlsX509Name.cs
+Mono.Btls/MonoBtlsX509NameEntryType.cs
+Mono.Btls/MonoBtlsX509Purpose.cs
+Mono.Btls/MonoBtlsX509Revoked.cs
+Mono.Btls/MonoBtlsX509Store.cs
+Mono.Btls/MonoBtlsX509StoreCtx.cs
+Mono.Btls/MonoBtlsX509StoreManager.cs
+Mono.Btls/MonoBtlsX509StoreType.cs
+Mono.Btls/MonoBtlsX509TrustKind.cs
+Mono.Btls/MonoBtlsX509VerifyFlags.cs
+Mono.Btls/MonoBtlsX509VerifyParam.cs
+Mono.Btls/X509CertificateImplBtls.cs
+Mono.Btls/X509ChainImplBtls.cs
+
+ReferenceSources/AutoWebProxyScriptEngine.cs
 ReferenceSources/AssertWrapper.cs
 ReferenceSources/CAPI.cs
 ReferenceSources/EnvironmentHelpers.cs
 ReferenceSources/HttpApi.cs
-ReferenceSources/Internal.cs
+ReferenceSources/LocalAppContextSwitches.cs
 ReferenceSources/HttpSysSettings.cs
 ReferenceSources/Logging.cs
 ReferenceSources/NativeMethods.cs
+ReferenceSources/RequestCacheProtocol.cs
 ReferenceSources/SettingsSectionInternal.cs
+ReferenceSources/SecureStringHelper.cs
 ReferenceSources/Socket.cs
 ReferenceSources/SR.cs
 ReferenceSources/SRCategoryAttribute.cs
-ReferenceSources/SystemNetworkCredential.cs
 ReferenceSources/Win32Exception.cs
 
 ../referencesource/System/regex/system/text/regularexpressions/Regex.cs
@@ -698,6 +732,7 @@ ReferenceSources/Win32Exception.cs
 
 ../referencesource/System/net/System/Net/_BufferOffsetSize.cs
 ../referencesource/System/net/System/Net/_Connection.cs
+../referencesource/System/net/System/Net/_emptywebproxy.cs
 ../referencesource/System/net/System/Net/_HeaderInfo.cs
 ../referencesource/System/net/System/Net/_HeaderInfoTable.cs
 ../referencesource/System/net/System/Net/_HTTPDateParse.cs
@@ -705,24 +740,33 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/_NetRes.cs
 ../referencesource/System/net/System/Net/_LazyAsyncResult.cs
 ../referencesource/System/net/System/Net/_LoggingObject.cs
+../referencesource/System/net/System/Net/_PooledStream.cs
+../referencesource/System/net/System/Net/_ProxyChain.cs
 ../referencesource/System/net/System/Net/_ScatterGatherBuffers.cs
+../referencesource/System/net/System/Net/_Semaphore.cs
+../referencesource/System/net/System/Net/_ServiceNameStore.cs
+../referencesource/System/net/System/Net/_TimerThread.cs
+../referencesource/System/net/System/Net/_WebProxyDataBuilder.cs
 ../referencesource/System/net/System/Net/AuthenticationScheme.cs
 ../referencesource/System/net/System/Net/AuthenticationSchemeSelector.cs
 ../referencesource/System/net/System/Net/Authorization.cs
+../referencesource/System/net/System/Net/CredentialCache.cs
 ../referencesource/System/net/System/Net/cookie.cs
 ../referencesource/System/net/System/Net/cookiecollection.cs
 ../referencesource/System/net/System/Net/cookiecontainer.cs
 ../referencesource/System/net/System/Net/cookieexception.cs
+../referencesource/System/net/System/Net/connectionpool.cs
 ../referencesource/System/net/System/Net/DnsEndPoint.cs
 ../referencesource/System/net/System/Net/EndPoint.cs
 ../referencesource/System/net/System/Net/FtpStatusCode.cs
 ../referencesource/System/net/System/Net/filewebrequest.cs
 ../referencesource/System/net/System/Net/filewebresponse.cs
+../referencesource/System/net/System/Net/GlobalProxySelection.cs
 ../referencesource/System/net/System/Net/HttpListenerException.cs
+../referencesource/System/net/System/Net/HttpListenerRequestUriBuilder.cs
 ../referencesource/System/net/System/Net/HttpRequestHeader.cs
 ../referencesource/System/net/System/Net/HttpResponseHeader.cs
 ../referencesource/System/net/System/Net/HttpStatusCode.cs
-../referencesource/System/net/System/Net/HttpListenerRequestUriBuilder.cs
 ../referencesource/System/net/System/Net/HttpVersion.cs
 ../referencesource/System/net/System/Net/IAuthenticationModule.cs
 ../referencesource/System/net/System/Net/ICertificatePolicy.cs
@@ -733,8 +777,10 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/IPEndPoint.cs
 ../referencesource/System/net/System/Net/IPHostEntry.cs
 ../referencesource/System/net/System/Net/iwebproxy.cs
+../referencesource/System/net/System/Net/IWebProxyFinder.cs
 ../referencesource/System/net/System/Net/IWebRequestCreate.cs
 ../referencesource/System/net/System/Net/NetworkAccess.cs
+../referencesource/System/net/System/Net/NetworkCredential.cs
 ../referencesource/System/net/System/Net/ProtocolViolationException.cs
 ../referencesource/System/net/System/Net/TransportContext.cs
 ../referencesource/System/net/System/Net/TransportType.cs
@@ -747,13 +793,21 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/WebExceptionStatus.cs
 ../referencesource/System/net/System/Net/WebHeaderCollection.cs
 ../referencesource/System/net/System/Net/WebPermission.cs
+../referencesource/System/net/System/Net/webproxy.cs
 ../referencesource/System/net/System/Net/WebRequestMethods.cs
+../referencesource/System/net/System/Net/WebRequest.cs
 ../referencesource/System/net/System/Net/WebResponse.cs
 ../referencesource/System/net/System/Net/WebUtility.cs
 ../referencesource/System/net/System/Net/WriteStreamClosedEventArgs.cs
 
+../referencesource/System/net/System/Net/Cache/RequestCache.cs
+../referencesource/System/net/System/Net/Cache/RequestCacheEntry.cs
 ../referencesource/System/net/System/Net/Cache/RequestCachePolicy.cs
+../referencesource/System/net/System/Net/Cache/RequestCacheManager.cs
 
+../referencesource/System/net/System/Net/Configuration/DefaultProxySection.cs
+
+../referencesource/System/net/System/Net/Sockets/_MultipleConnectAsync.cs
 ../referencesource/System/net/System/Net/Sockets/IPProtectionLevel.cs
 ../referencesource/System/net/System/Net/Sockets/NetworkStream.cs
 
@@ -801,20 +855,31 @@ ReferenceSources/Win32Exception.cs
 ../referencesource/System/net/System/Net/NetworkInformation/nodetype.cs
 ../referencesource/System/net/System/Net/NetworkInformation/pingexception.cs
 
+../referencesource/System/sys/system/Diagnostics/CodeAnalysis/ExcludeFromCodeCoverageAttribute.cs
+
+../referencesource/System/sys/system/IO/ports/InternalResources.cs
+
 ../referencesource/System/sys/system/runtime/interopservices/DefaultParameterValueAttribute.cs
 ../referencesource/System/sys/system/runtime/interopservices/handlecollector.cs
 
 ../referencesource/System/sys/system/runtime/versioning/FrameworkName.cs
 
 ../referencesource/System/sys/system/threading/Barrier.cs
+../referencesource/System/sys/system/threading/semaphore.cs
+
+../referencesource/System/sys/system/windows/markup/ValueSerializerAttribute.cs
 
 ../referencesource/System/security/system/security/Authentication/ExtendedProtection/TokenBinding.cs
+../referencesource/System/security/system/security/Authentication/ExtendedProtection/ServiceNameCollection.cs
 
 ../referencesource/System/security/system/security/cryptography/oid.cs
 
 ../referencesource/System/security/system/security/cryptography/x509/x509utils.cs
 
 ../referencesource/System/security/system/security/permissions/typedescriptorpermission.cs
+
+../referencesource/System/services/monitoring/system/diagnosticts/ProcessModuleCollection.cs
+../referencesource/System/services/monitoring/system/diagnosticts/ProcessThreadCollection.cs
 
 ../referencesource/System/services/timers/system/timers/ElapsedEventHandler.cs
 ../referencesource/System/services/timers/system/timers/Timer.cs
@@ -918,7 +983,6 @@ ReferenceSources/Win32Exception.cs
 ../Mono.Security/Mono.Security.Interface/HashAlgorithmType.cs
 ../Mono.Security/Mono.Security.Interface/IBufferOffsetSize.cs
 ../Mono.Security/Mono.Security.Interface/IMonoTlsEventSink.cs
-../Mono.Security/Mono.Security.Interface/IMonoTlsContext.cs
 ../Mono.Security/Mono.Security.Interface/IMonoSslStream.cs
 ../Mono.Security/Mono.Security.Interface/MonoTlsConnectionInfo.cs
 ../Mono.Security/Mono.Security.Interface/MonoTlsProvider.cs

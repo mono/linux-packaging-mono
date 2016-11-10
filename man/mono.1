@@ -7,7 +7,7 @@
 .\" Author:
 .\"   Miguel de Icaza (miguel@gnu.org)
 .\"
-.TH Mono "Mono 3.0"
+.TH Mono "Mono 4.7.0"
 .SH NAME
 mono \- Mono's ECMA-CLI native code generator (Just-in-Time and Ahead-of-Time)
 .SH SYNOPSIS
@@ -1100,7 +1100,7 @@ a Mono process through the environment.   This is useful for example
 to force all of your Mono processes to use LLVM or SGEN without having
 to modify any launch scripts.
 .TP
-\fBMONO_ENV_OPTIONS\fR
+\fBMONO_SDB_ENV_OPTIONS\fR
 Used to pass extra options to the debugger agent in the runtime, as they were passed
 using --debugger-agent=.
 .TP
@@ -1302,12 +1302,12 @@ statistics when shutting down.
 .TP
 \fBcollect-before-allocs\fR
 .TP
-\fBcheck-at-minor-collections\fR
-This performs a consistency check on minor collections and also clears
-the nursery at collection time, instead of the default, when buffers
-are allocated (clear-at-gc).   The consistency check ensures that
-there are no major to minor references that are not on the remembered
-sets. 
+\fBcheck-remset-consistency\fR
+This performs a remset consistency check at various opportunities, and
+also clears the nursery at collection time, instead of the default,
+when buffers are allocated (clear-at-gc).  The consistency check
+ensures that there are no major to minor references that are not on
+the remembered sets.
 .TP
 \fBmod-union-consistency-check\fR
 Checks that the mod-union cardtable is consistent before each
@@ -1731,6 +1731,16 @@ The default value is "all". Changing the mask value allows you to display only
 messages for a certain component. You can use multiple masks by comma 
 separating them. For example to see config file messages and assembly loader
 messages set you mask to "asm,cfg".
+.TP
+\fBMONO_LOG_DEST\fR
+Controls where trace log messages are written. If not set then the messages go to stdout. 
+If set, the string either specifies a path to a file that will have messages appended to
+it, or the string "syslog" in which case the messages will be written to the system log.
+Under Windows, this is simulated by writing to a file called "mono.log". 
+\fBMONO_LOG_HEADER\fR
+Controls whether trace log messages not directed to syslog have the id, timestamp, and
+pid as the prefix to the log message. To enable a header this environment variable need
+just be non-null. 
 .TP
 \fBMONO_TRACE\fR
 Used for runtime tracing of method calls. The format of the comma separated

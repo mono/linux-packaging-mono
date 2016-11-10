@@ -30,9 +30,12 @@
 #include <mach/message.h>
 #include <mach/mach_host.h>
 #include <mach/host_info.h>
-#endif
-#if defined (__NetBSD__) || defined (__APPLE__)
 #include <sys/sysctl.h>
+#endif
+#if defined (__NetBSD__)
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <sys/vmmeter.h>
 #endif
 #include "metadata/mono-perfcounters.h"
 #include "metadata/appdomain.h"
@@ -425,7 +428,7 @@ mono_determine_physical_ram_size (void)
 	int mib[2] = {
 		CTL_HW,
 #ifdef __NetBSD__
-		HW_PHYSMEM
+		HW_PHYSMEM64
 #else
 		HW_MEMSIZE
 #endif
@@ -474,29 +477,22 @@ mono_determine_physical_ram_available_size (void)
 #elif defined (__NetBSD__)
 	struct vmtotal vm_total;
 	guint64 page_size;
-	int mib [2];
+	int mib[2];
 	size_t len;
 
+	mib[0] = CTL_VM;
+	mib[1] = VM_METER;
 
-	mib = {
-		CTL_VM,
-#if defined (VM_METER)
-		VM_METER
-#else
-		VM_TOTAL
-#endif
-	};
 	len = sizeof (vm_total);
 	sysctl (mib, 2, &vm_total, &len, NULL, 0);
 
-	mib = {
-		CTL_HW,
-		HW_PAGESIZE
-	};
-	len = sizeof (page_size);
-	sysctl (mib, 2, &page_size, &len, NULL, 0
+	mib[0] = CTL_HW;
+	mib[1] = HW_PAGESIZE;
 
-	return ((guint64) value.t_free * page_size) / 1024;
+	len = sizeof (page_size);
+	sysctl (mib, 2, &page_size, &len, NULL, 0);
+
+	return ((guint64) vm_total.t_free * page_size) / 1024;
 #elif defined (__APPLE__)
 	mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
 	mach_port_t host = mach_host_self();
@@ -802,18 +798,14 @@ fill_sample (MonoCounterSample *sample)
 }
 
 static int
-id_from_string (MonoString *instance, gboolean is_process)
+id_from_string (const gchar *id_str, gboolean is_process)
 {
-	MonoError error;
 	int id = -1;
-	if (mono_string_length (instance)) {
-		char *id_str = mono_string_to_utf8_checked (instance, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+	if (strcmp("", id_str) != 0) {
 		char *end;
 		id = strtol (id_str, &end, 0);
 		if (end == id_str && !is_process)
 			id = -1;
-		g_free (id_str);
 	}
 	return id;
 }
@@ -851,7 +843,7 @@ get_cpu_counter (ImplVtable *vtable, MonoBoolean only_value, MonoCounterSample *
 }
 
 static void*
-cpu_get_impl (MonoString* counter, MonoString* instance, int *type, MonoBoolean *custom)
+cpu_get_impl (MonoString* counter, const gchar* instance, int *type, MonoBoolean *custom)
 {
 	int id = id_from_string (instance, FALSE) << 5;
 	const CounterDesc *cdesc;
@@ -912,9 +904,8 @@ network_cleanup (ImplVtable *vtable)
 }
 
 static void*
-network_get_impl (MonoString* counter, MonoString* instance, int *type, MonoBoolean *custom)
+network_get_impl (MonoString* counter, const gchar* instance, int *type, MonoBoolean *custom)
 {
-	MonoError error;
 	const CounterDesc *cdesc;
 	NetworkVtableArg *narg;
 	ImplVtable *vtable;
@@ -922,8 +913,7 @@ network_get_impl (MonoString* counter, MonoString* instance, int *type, MonoBool
 
 	*custom = FALSE;
 	if ((cdesc = get_counter_in_category (&predef_categories [CATEGORY_NETWORK], counter))) {
-		instance_name = mono_string_to_utf8_checked (instance, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		instance_name = g_strdup (instance);
 		narg = g_new0 (NetworkVtableArg, 1);
 		narg->id = cdesc->id;
 		narg->name = instance_name;
@@ -975,7 +965,7 @@ get_process_counter (ImplVtable *vtable, MonoBoolean only_value, MonoCounterSamp
 }
 
 static void*
-process_get_impl (MonoString* counter, MonoString* instance, int *type, MonoBoolean *custom)
+process_get_impl (MonoString* counter, const gchar* instance, int *type, MonoBoolean *custom)
 {
 	int id = id_from_string (instance, TRUE) << 5;
 	const CounterDesc *cdesc;
@@ -1013,7 +1003,7 @@ mono_mem_counter (ImplVtable *vtable, MonoBoolean only_value, MonoCounterSample 
 }
 
 static void*
-mono_mem_get_impl (MonoString* counter, MonoString* instance, int *type, MonoBoolean *custom)
+mono_mem_get_impl (MonoString* counter, const gchar* instance, int *type, MonoBoolean *custom)
 {
 	const CounterDesc *cdesc;
 	*custom = FALSE;
@@ -1045,17 +1035,13 @@ predef_readonly_counter (ImplVtable *vtable, MonoBoolean only_value, MonoCounter
 }
 
 static ImplVtable*
-predef_vtable (void *arg, MonoString *instance)
+predef_vtable (void *arg, const gchar *pids)
 {
-	MonoError error;
 	MonoSharedArea *area;
 	PredefVtable *vtable;
-	char *pids = mono_string_to_utf8_checked (instance, &error);
-	mono_error_raise_exception (&error); /* FIXME don't raise here */
 	int pid;
 
 	pid = atoi (pids);
-	g_free (pids);
 	area = load_sarea_for_pid (pid);
 	if (!area)
 		return NULL;
@@ -1200,13 +1186,13 @@ predef_writable_update (ImplVtable *vtable, MonoBoolean do_incr, gint64 value)
 }
 
 static void*
-predef_writable_get_impl (int cat, MonoString* counter, MonoString* instance, int *type, MonoBoolean *custom)
+predef_writable_get_impl (int cat, MonoString* counter, const gchar *instance, int *type, MonoBoolean *custom)
 {
 	const CounterDesc *cdesc;
 	*custom = TRUE;
 	if ((cdesc = get_counter_in_category (&predef_categories [cat], counter))) {
 		*type = cdesc->type;
-		if (instance == NULL || mono_string_compare_ascii (instance, "") == 0)
+		if (instance == NULL || strcmp (instance, "") == 0)
 			return create_vtable (GINT_TO_POINTER ((cdesc->id << 16) | cat), predef_writable_counter, predef_writable_update);
 		else
 			return predef_vtable (GINT_TO_POINTER ((cdesc->id << 16) | cat), instance);
@@ -1304,19 +1290,19 @@ custom_get_value_address (SharedCounter *scounter, SharedInstance* sinst)
 }
 
 static void*
-custom_get_impl (SharedCategory *cat, MonoString* counter, MonoString* instance, int *type)
+custom_get_impl (SharedCategory *cat, MonoString *counter, MonoString* instance, int *type, MonoError *error)
 {
-	MonoError error;
 	SharedCounter *scounter;
 	SharedInstance* inst;
 	char *name;
 
+	mono_error_init (error);
 	scounter = find_custom_counter (cat, counter);
 	if (!scounter)
 		return NULL;
+	name = mono_string_to_utf8_checked (counter, error);
+	return_val_if_nok (error, NULL);
 	*type = simple_type_to_type [scounter->type];
-	name = mono_string_to_utf8_checked (counter, &error);
-	mono_error_raise_exception (&error); /* FIXME don't raise here */
 	inst = custom_get_instance (cat, scounter, name);
 	g_free (name);
 	if (!inst)
@@ -1339,7 +1325,9 @@ void*
 mono_perfcounter_get_impl (MonoString* category, MonoString* counter, MonoString* instance,
 		MonoString* machine, int *type, MonoBoolean *custom)
 {
+	MonoError error;
 	const CategoryDesc *cdesc;
+	void *result = NULL;
 	/* no support for counters on other machines */
 	if (mono_string_compare_ascii (machine, "."))
 		return NULL;
@@ -1349,17 +1337,27 @@ mono_perfcounter_get_impl (MonoString* category, MonoString* counter, MonoString
 		if (!scat)
 			return NULL;
 		*custom = TRUE;
-		return custom_get_impl (scat, counter, instance, type);
+		result = custom_get_impl (scat, counter, instance, type, &error);
+		if (mono_error_set_pending_exception (&error))
+			return NULL;
+		return result;
 	}
+	gchar *c_instance = mono_string_to_utf8_checked (instance, &error);
+	if (mono_error_set_pending_exception (&error))
+		return NULL;
 	switch (cdesc->id) {
 	case CATEGORY_CPU:
-		return cpu_get_impl (counter, instance, type, custom);
+		result = cpu_get_impl (counter, c_instance, type, custom);
+		break;
 	case CATEGORY_PROC:
-		return process_get_impl (counter, instance, type, custom);
+		result = process_get_impl (counter, c_instance, type, custom);
+		break;
 	case CATEGORY_MONO_MEM:
-		return mono_mem_get_impl (counter, instance, type, custom);
+		result = mono_mem_get_impl (counter, c_instance, type, custom);
+		break;
 	case CATEGORY_NETWORK:
-		return network_get_impl (counter, instance, type, custom);
+		result = network_get_impl (counter, c_instance, type, custom);
+		break;
 	case CATEGORY_JIT:
 	case CATEGORY_EXC:
 	case CATEGORY_GC:
@@ -1370,9 +1368,11 @@ mono_perfcounter_get_impl (MonoString* category, MonoString* counter, MonoString
 	case CATEGORY_SECURITY:
 	case CATEGORY_ASPNET:
 	case CATEGORY_THREADPOOL:
-		return predef_writable_get_impl (cdesc->id, counter, instance, type, custom);
+		result = predef_writable_get_impl (cdesc->id, counter, c_instance, type, custom);
+		break;
 	}
-	return NULL;
+	g_free (c_instance);
+	return result;
 }
 
 MonoBoolean
@@ -1585,7 +1585,8 @@ mono_perfcounter_instance_exists (MonoString *instance, MonoString *category, Mo
 		if (!scat)
 			return FALSE;
 		name = mono_string_to_utf8_checked (instance, &error);
-		mono_error_raise_exception (&error); /* FIXME don't raise here */
+		if (mono_error_set_pending_exception (&error))
+			return FALSE;
 		sinst = find_custom_instance (scat, name);
 		g_free (name);
 		if (sinst)

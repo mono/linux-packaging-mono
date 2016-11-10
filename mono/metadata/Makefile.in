@@ -15,7 +15,6 @@
 @SET_MAKE@
 
 
-
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -82,7 +81,6 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 @PLATFORM_ANDROID_TRUE@am__append_1 = ../../support/libm/complex.c
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@bin_PROGRAMS = pedump$(EXEEXT)
 subdir = mono/metadata
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -114,7 +112,8 @@ am__v_lt_0 = --silent
 am__v_lt_1 = 
 @DISABLE_EXECUTABLES_FALSE@am_libmonoruntime_config_la_rpath =
 @DISABLE_EXECUTABLES_TRUE@am_libmonoruntime_config_la_rpath =
-libmonoruntime_static_la_DEPENDENCIES = $(libmonoruntime_la_LIBADD)
+libmonoruntime_static_la_DEPENDENCIES = libmonoruntime-config.la \
+	$(btls_static_libs)
 am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	../../support/libm/complex.c console-win32.c assembly.c \
 	attach.h attach.c cil-coff.h class.c class-internals.h \
@@ -144,11 +143,15 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	sysmath.c tabledefs.h threads.c threads-types.h \
 	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
 	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
+	dynamic-image-internals.h dynamic-stream.c \
+	dynamic-stream-internals.h reflection-cache.h \
+	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
 	handle.c handle.h appdomain.c domain.c gc-stats.c gc.c \
-	monitor.c mono-hash.c object.c reflection.c null-gc.c \
+	monitor.c mono-hash.c object.c dynamic-image.c sre.c \
+	sre-encode.c sre-save.c custom-attrs.c reflection.c null-gc.c \
 	boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_1 =  \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-console-unix.lo
@@ -207,6 +210,7 @@ am__objects_5 = $(am__objects_4) libmonoruntime_static_la-assembly.lo \
 	libmonoruntime_static_la-threadpool-ms.lo \
 	libmonoruntime_static_la-threadpool-ms-io.lo \
 	libmonoruntime_static_la-verify.lo \
+	libmonoruntime_static_la-dynamic-stream.lo \
 	libmonoruntime_static_la-file-mmap-posix.lo \
 	libmonoruntime_static_la-file-mmap-windows.lo \
 	libmonoruntime_static_la-metadata-cross-helpers.lo \
@@ -219,6 +223,11 @@ am__objects_6 = libmonoruntime_static_la-appdomain.lo \
 	libmonoruntime_static_la-monitor.lo \
 	libmonoruntime_static_la-mono-hash.lo \
 	libmonoruntime_static_la-object.lo \
+	libmonoruntime_static_la-dynamic-image.lo \
+	libmonoruntime_static_la-sre.lo \
+	libmonoruntime_static_la-sre-encode.lo \
+	libmonoruntime_static_la-sre-save.lo \
+	libmonoruntime_static_la-custom-attrs.lo \
 	libmonoruntime_static_la-reflection.lo
 am__objects_7 = libmonoruntime_static_la-null-gc.lo
 am__objects_8 = libmonoruntime_static_la-boehm-gc.lo
@@ -232,7 +241,7 @@ libmonoruntime_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmonoruntime_static_la_CFLAGS) $(CFLAGS) \
 	$(libmonoruntime_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_EXECUTABLES_FALSE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_static_la_rpath =
-libmonoruntime_la_DEPENDENCIES = libmonoruntime-config.la
+libmonoruntime_la_DEPENDENCIES = libmonoruntime-config.la $(btls_libs)
 am__libmonoruntime_la_SOURCES_DIST = console-unix.c \
 	../../support/libm/complex.c console-win32.c assembly.c \
 	attach.h attach.c cil-coff.h class.c class-internals.h \
@@ -262,11 +271,15 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c \
 	sysmath.c tabledefs.h threads.c threads-types.h \
 	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
 	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
+	dynamic-image-internals.h dynamic-stream.c \
+	dynamic-stream-internals.h reflection-cache.h \
+	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
 	handle.c handle.h appdomain.c domain.c gc-stats.c gc.c \
-	monitor.c mono-hash.c object.c reflection.c null-gc.c \
+	monitor.c mono-hash.c object.c dynamic-image.c sre.c \
+	sre-encode.c sre-save.c custom-attrs.c reflection.c null-gc.c \
 	boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_10 = libmonoruntime_la-console-unix.lo
 @PLATFORM_ANDROID_TRUE@am__objects_11 = ../../support/libm/libmonoruntime_la-complex.lo
@@ -308,6 +321,7 @@ am__objects_14 = $(am__objects_13) libmonoruntime_la-assembly.lo \
 	libmonoruntime_la-threadpool-ms.lo \
 	libmonoruntime_la-threadpool-ms-io.lo \
 	libmonoruntime_la-verify.lo \
+	libmonoruntime_la-dynamic-stream.lo \
 	libmonoruntime_la-file-mmap-posix.lo \
 	libmonoruntime_la-file-mmap-windows.lo \
 	libmonoruntime_la-metadata-cross-helpers.lo \
@@ -317,6 +331,9 @@ am__objects_15 = libmonoruntime_la-appdomain.lo \
 	libmonoruntime_la-domain.lo libmonoruntime_la-gc-stats.lo \
 	libmonoruntime_la-gc.lo libmonoruntime_la-monitor.lo \
 	libmonoruntime_la-mono-hash.lo libmonoruntime_la-object.lo \
+	libmonoruntime_la-dynamic-image.lo libmonoruntime_la-sre.lo \
+	libmonoruntime_la-sre-encode.lo libmonoruntime_la-sre-save.lo \
+	libmonoruntime_la-custom-attrs.lo \
 	libmonoruntime_la-reflection.lo
 am__objects_16 = libmonoruntime_la-null-gc.lo
 am__objects_17 = libmonoruntime_la-boehm-gc.lo
@@ -329,8 +346,8 @@ libmonoruntime_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	-o $@
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoruntime_la_rpath =
-libmonoruntimesgen_static_la_DEPENDENCIES =  \
-	$(libmonoruntimesgen_la_LIBADD)
+libmonoruntimesgen_static_la_DEPENDENCIES = libmonoruntime-config.la \
+	$(btls_static_libs)
 am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	../../support/libm/complex.c console-win32.c assembly.c \
 	attach.h attach.c cil-coff.h class.c class-internals.h \
@@ -360,15 +377,20 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	sysmath.c tabledefs.h threads.c threads-types.h \
 	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
 	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
+	dynamic-image-internals.h dynamic-stream.c \
+	dynamic-stream-internals.h reflection-cache.h \
+	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
 	handle.c handle.h appdomain.c domain.c gc-stats.c gc.c \
-	monitor.c mono-hash.c object.c reflection.c sgen-os-posix.c \
-	sgen-os-mach.c sgen-os-win32.c sgen-os-coop.c sgen-bridge.c \
-	sgen-bridge.h sgen-bridge-internals.h sgen-old-bridge.c \
-	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
-	sgen-toggleref.h sgen-stw.c sgen-mono.c sgen-client-mono.h
+	monitor.c mono-hash.c object.c dynamic-image.c sre.c \
+	sre-encode.c sre-save.c custom-attrs.c reflection.c \
+	sgen-os-posix.c sgen-os-mach.c sgen-os-win32.c sgen-os-coop.c \
+	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
+	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
+	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
+	sgen-client-mono.h
 @HOST_WIN32_FALSE@am__objects_18 = libmonoruntimesgen_static_la-console-unix.lo
 @PLATFORM_ANDROID_TRUE@am__objects_19 = ../../support/libm/libmonoruntimesgen_static_la-complex.lo
 @HOST_WIN32_TRUE@am__objects_20 = libmonoruntimesgen_static_la-console-win32.lo
@@ -424,6 +446,7 @@ am__objects_22 = $(am__objects_21) \
 	libmonoruntimesgen_static_la-threadpool-ms.lo \
 	libmonoruntimesgen_static_la-threadpool-ms-io.lo \
 	libmonoruntimesgen_static_la-verify.lo \
+	libmonoruntimesgen_static_la-dynamic-stream.lo \
 	libmonoruntimesgen_static_la-file-mmap-posix.lo \
 	libmonoruntimesgen_static_la-file-mmap-windows.lo \
 	libmonoruntimesgen_static_la-metadata-cross-helpers.lo \
@@ -436,6 +459,11 @@ am__objects_23 = libmonoruntimesgen_static_la-appdomain.lo \
 	libmonoruntimesgen_static_la-monitor.lo \
 	libmonoruntimesgen_static_la-mono-hash.lo \
 	libmonoruntimesgen_static_la-object.lo \
+	libmonoruntimesgen_static_la-dynamic-image.lo \
+	libmonoruntimesgen_static_la-sre.lo \
+	libmonoruntimesgen_static_la-sre-encode.lo \
+	libmonoruntimesgen_static_la-sre-save.lo \
+	libmonoruntimesgen_static_la-custom-attrs.lo \
 	libmonoruntimesgen_static_la-reflection.lo
 am__objects_24 = libmonoruntimesgen_static_la-sgen-os-posix.lo \
 	libmonoruntimesgen_static_la-sgen-os-mach.lo \
@@ -457,7 +485,8 @@ libmonoruntimesgen_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) \
 	$(libmonoruntimesgen_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_EXECUTABLES_FALSE@@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_static_la_rpath =
-libmonoruntimesgen_la_DEPENDENCIES = libmonoruntime-config.la
+libmonoruntimesgen_la_DEPENDENCIES = libmonoruntime-config.la \
+	$(btls_libs)
 am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	../../support/libm/complex.c console-win32.c assembly.c \
 	attach.h attach.c cil-coff.h class.c class-internals.h \
@@ -487,15 +516,20 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	sysmath.c tabledefs.h threads.c threads-types.h \
 	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
 	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
+	dynamic-image-internals.h dynamic-stream.c \
+	dynamic-stream-internals.h reflection-cache.h \
+	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
 	metadata-cross-helpers.c seq-points-data.h seq-points-data.c \
 	handle.c handle.h appdomain.c domain.c gc-stats.c gc.c \
-	monitor.c mono-hash.c object.c reflection.c sgen-os-posix.c \
-	sgen-os-mach.c sgen-os-win32.c sgen-os-coop.c sgen-bridge.c \
-	sgen-bridge.h sgen-bridge-internals.h sgen-old-bridge.c \
-	sgen-new-bridge.c sgen-tarjan-bridge.c sgen-toggleref.c \
-	sgen-toggleref.h sgen-stw.c sgen-mono.c sgen-client-mono.h
+	monitor.c mono-hash.c object.c dynamic-image.c sre.c \
+	sre-encode.c sre-save.c custom-attrs.c reflection.c \
+	sgen-os-posix.c sgen-os-mach.c sgen-os-win32.c sgen-os-coop.c \
+	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
+	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
+	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
+	sgen-client-mono.h
 @HOST_WIN32_FALSE@am__objects_26 =  \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-console-unix.lo
 @PLATFORM_ANDROID_TRUE@am__objects_27 = ../../support/libm/libmonoruntimesgen_la-complex.lo
@@ -550,6 +584,7 @@ am__objects_30 = $(am__objects_29) libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-threadpool-ms.lo \
 	libmonoruntimesgen_la-threadpool-ms-io.lo \
 	libmonoruntimesgen_la-verify.lo \
+	libmonoruntimesgen_la-dynamic-stream.lo \
 	libmonoruntimesgen_la-file-mmap-posix.lo \
 	libmonoruntimesgen_la-file-mmap-windows.lo \
 	libmonoruntimesgen_la-metadata-cross-helpers.lo \
@@ -561,6 +596,11 @@ am__objects_31 = libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-monitor.lo \
 	libmonoruntimesgen_la-mono-hash.lo \
 	libmonoruntimesgen_la-object.lo \
+	libmonoruntimesgen_la-dynamic-image.lo \
+	libmonoruntimesgen_la-sre.lo \
+	libmonoruntimesgen_la-sre-encode.lo \
+	libmonoruntimesgen_la-sre-save.lo \
+	libmonoruntimesgen_la-custom-attrs.lo \
 	libmonoruntimesgen_la-reflection.lo
 am__objects_32 = libmonoruntimesgen_la-sgen-os-posix.lo \
 	libmonoruntimesgen_la-sgen-os-mach.lo \
@@ -582,26 +622,6 @@ libmonoruntimesgen_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_la_rpath =
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_SGEN_TRUE@am_libmonoruntimesgen_la_rpath =
-am__installdirs = "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(libmonoruntimeincludedir)"
-PROGRAMS = $(bin_PROGRAMS)
-am__pedump_SOURCES_DIST = pedump.c
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@am_pedump_OBJECTS =  \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	pedump.$(OBJEXT)
-pedump_OBJECTS = $(am_pedump_OBJECTS)
-am__DEPENDENCIES_1 =
-@DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_2 = pedump-dtrace.$(OBJEXT)
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_DEPENDENCIES =  \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	libmonoruntime.la \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	../io-layer/libwapi.la \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	../utils/libmonoutils.la \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_1) \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_1) \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_1) \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_2)
-pedump_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(pedump_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -636,13 +656,12 @@ SOURCES = $(libmonoruntime_config_la_SOURCES) \
 	$(libmonoruntime_static_la_SOURCES) \
 	$(libmonoruntime_la_SOURCES) \
 	$(libmonoruntimesgen_static_la_SOURCES) \
-	$(libmonoruntimesgen_la_SOURCES) $(pedump_SOURCES)
+	$(libmonoruntimesgen_la_SOURCES)
 DIST_SOURCES = $(libmonoruntime_config_la_SOURCES) \
 	$(am__libmonoruntime_static_la_SOURCES_DIST) \
 	$(am__libmonoruntime_la_SOURCES_DIST) \
 	$(am__libmonoruntimesgen_static_la_SOURCES_DIST) \
-	$(am__libmonoruntimesgen_la_SOURCES_DIST) \
-	$(am__pedump_SOURCES_DIST)
+	$(am__libmonoruntimesgen_la_SOURCES_DIST)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -675,6 +694,7 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
+am__installdirs = "$(DESTDIR)$(libmonoruntimeincludedir)"
 HEADERS = $(libmonoruntimeinclude_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
@@ -699,6 +719,8 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
+AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
 API_VER = @API_VER@
 AR = @AR@
 AS = @AS@
@@ -707,6 +729,11 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BTLS_ARCH = @BTLS_ARCH@
+BTLS_CFLAGS = @BTLS_CFLAGS@
+BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
+BTLS_PLATFORM = @BTLS_PLATFORM@
+BTLS_ROOT = @BTLS_ROOT@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
@@ -716,6 +743,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -736,7 +764,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLE_PERF_EVENTS = @ENABLE_PERF_EVENTS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
@@ -751,10 +778,12 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
+INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -801,6 +830,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -810,6 +840,7 @@ SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
+TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
@@ -919,6 +950,11 @@ top_srcdir = @top_srcdir@
 @HOST_WIN32_FALSE@unix_sources = \
 @HOST_WIN32_FALSE@	console-unix.c
 
+@BTLS_TRUE@@DYNAMIC_BTLS_FALSE@btls_file_list := $(shell cat ../btls/build-shared/mono-btls-shared-lo.txt)
+@BTLS_TRUE@@DYNAMIC_BTLS_FALSE@btls_static_file_list := $(shell cat ../btls/build-static/mono-btls-static-lo.txt)
+@BTLS_TRUE@@DYNAMIC_BTLS_FALSE@btls_libs = $(btls_file_list)
+@BTLS_TRUE@@DYNAMIC_BTLS_FALSE@btls_static_libs = $(btls_static_file_list)
+@BTLS_TRUE@@DYNAMIC_BTLS_FALSE@btls_cflags = -I$(top_srcdir)/external/boringssl/include -I$(top_srcdir)/mono/btls
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_SGEN_TRUE@shared_sgen_libraries = libmonoruntimesgen.la 
 
 #
@@ -932,7 +968,7 @@ top_srcdir = @top_srcdir@
 @SUPPORT_BOEHM_TRUE@boehm_libraries = $(shared_boehm_libraries) libmonoruntime-static.la
 @DISABLE_EXECUTABLES_FALSE@noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
 @DISABLE_EXECUTABLES_TRUE@noinst_LTLIBRARIES = libmonoruntime-config.la $(shared_sgen_libraries) $(shared_boehm_libraries)
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS) $(btls_cflags)
 
 #
 # This library is used to localize the usage of MONO_BINDIR etc. to just one source file, thus enabling
@@ -1060,6 +1096,12 @@ common_sources = \
 	verify.c		\
 	verify-internals.h	\
 	wrapper-types.h	\
+	dynamic-image-internals.h	\
+	dynamic-stream.c	\
+	dynamic-stream-internals.h	\
+	reflection-cache.h	\
+	custom-attrs-internals.h	\
+	sre-internals.h	\
 	reflection-internals.h	\
 	file-mmap-posix.c	\
 	file-mmap-windows.c	\
@@ -1082,6 +1124,11 @@ gc_dependent_sources = \
 	monitor.c	\
 	mono-hash.c	\
 	object.c	\
+	dynamic-image.c	\
+	sre.c	\
+	sre-encode.c	\
+	sre-save.c	\
+	custom-attrs.c	\
 	reflection.c
 
 boehm_sources = \
@@ -1106,18 +1153,18 @@ sgen_sources = \
 
 libmonoruntime_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES)
-libmonoruntime_la_LIBADD = libmonoruntime-config.la
+libmonoruntime_la_LIBADD = libmonoruntime-config.la $(btls_libs)
 libmonoruntimesgen_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(sgen_sources)
 libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES)
-libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la
+libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(btls_libs)
 libmonoruntime_static_la_SOURCES = $(libmonoruntime_la_SOURCES)
 libmonoruntime_static_la_LDFLAGS = -static
 libmonoruntime_static_la_CFLAGS = $(BOEHM_DEFINES)
-libmonoruntime_static_la_LIBADD = $(bundle_obj) $(libmonoruntime_la_LIBADD)
+libmonoruntime_static_la_LIBADD = $(bundle_obj) libmonoruntime-config.la $(btls_static_libs)
 libmonoruntimesgen_static_la_SOURCES = $(libmonoruntimesgen_la_SOURCES)
 libmonoruntimesgen_static_la_LDFLAGS = -static
 libmonoruntimesgen_static_la_CFLAGS = $(SGEN_DEFINES)
-libmonoruntimesgen_static_la_LIBADD = $(libmonoruntimesgen_la_LIBADD)
+libmonoruntimesgen_static_la_LIBADD = libmonoruntime-config.la $(btls_static_libs)
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
 libmonoruntimeinclude_HEADERS = \
 	assembly.h		\
@@ -1145,17 +1192,8 @@ libmonoruntimeinclude_HEADERS = \
 	tokentype.h		\
 	verify.h		
 
-@DTRACE_G_REQUIRED_FALSE@PEDUMP_DTRACE_OBJECT = 
-@DTRACE_G_REQUIRED_TRUE@PEDUMP_DTRACE_OBJECT = pedump-dtrace.$(OBJEXT)
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_SOURCES = \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	pedump.c
-
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_LDADD = libmonoruntime.la ../io-layer/libwapi.la ../utils/libmonoutils.la \
-@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(LIBGC_LIBS) $(GLIB_LIBS) -lm $(LIBICONV) $(PEDUMP_DTRACE_OBJECT)
-
-@PLATFORM_DARWIN_TRUE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
 EXTRA_DIST = $(win32_sources) $(unix_sources) $(null_sources) runtime.h \
-		threadpool-ms-io-poll.c threadpool-ms-io-epoll.c threadpool-ms-io-kqueue.c
+		threadpool-ms-io-poll.c threadpool-ms-io-epoll.c threadpool-ms-io-kqueue.c sgen-dynarray.h
 
 all: all-am
 
@@ -1235,59 +1273,6 @@ libmonoruntimesgen-static.la: $(libmonoruntimesgen_static_la_OBJECTS) $(libmonor
 
 libmonoruntimesgen.la: $(libmonoruntimesgen_la_OBJECTS) $(libmonoruntimesgen_la_DEPENDENCIES) $(EXTRA_libmonoruntimesgen_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmonoruntimesgen_la_LINK) $(am_libmonoruntimesgen_la_rpath) $(libmonoruntimesgen_la_OBJECTS) $(libmonoruntimesgen_la_LIBADD) $(LIBS)
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(bindir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(bindir)" || exit 1; \
-	fi; \
-	for p in $$list; do echo "$$p $$p"; done | \
-	sed 's/$(EXEEXT)$$//' | \
-	while read p p1; do if test -f $$p \
-	 || test -f $$p1 \
-	  ; then echo "$$p"; echo "$$p"; else :; fi; \
-	done | \
-	sed -e 'p;s,.*/,,;n;h' \
-	    -e 's|.*|.|' \
-	    -e 'p;x;s,.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/' | \
-	sed 'N;N;N;s,\n, ,g' | \
-	$(AWK) 'BEGIN { files["."] = ""; dirs["."] = 1 } \
-	  { d=$$3; if (dirs[d] != 1) { print "d", d; dirs[d] = 1 } \
-	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
-	    else { print "f", $$3 "/" $$4, $$1; } } \
-	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
-	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
-	    test -z "$$files" || { \
-	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
-	    $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files "$(DESTDIR)$(bindir)$$dir" || exit $$?; \
-	    } \
-	; done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
-	files=`for p in $$list; do echo "$$p"; done | \
-	  sed -e 'h;s,^.*/,,;s/$(EXEEXT)$$//;$(transform)' \
-	      -e 's/$$/$(EXEEXT)/' \
-	`; \
-	test -n "$$list" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(bindir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(bindir)" && rm -f $$files
-
-clean-binPROGRAMS:
-	@list='$(bin_PROGRAMS)'; test -n "$$list" || exit 0; \
-	echo " rm -f" $$list; \
-	rm -f $$list || exit $$?; \
-	test -n "$(EXEEXT)" || exit 0; \
-	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
-	echo " rm -f" $$list; \
-	rm -f $$list
-
-pedump$(EXEEXT): $(pedump_OBJECTS) $(pedump_DEPENDENCIES) $(EXTRA_pedump_DEPENDENCIES) 
-	@rm -f pedump$(EXEEXT)
-	$(AM_V_CCLD)$(pedump_LINK) $(pedump_OBJECTS) $(pedump_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1311,11 +1296,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-console-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-console-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-coree.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-custom-attrs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-debug-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-debug-mono-ppdb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-debug-mono-symfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-decimal-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-domain.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-dynamic-image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-dynamic-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-exception.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-file-io.Plo@am__quote@
@@ -1362,6 +1350,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-security-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-seq-points-data.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-socket-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre-encode.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre-save.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-ms-io.Plo@am__quote@
@@ -1377,11 +1368,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-console-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-console-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-coree.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-custom-attrs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-debug-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-debug-mono-ppdb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-debug-mono-symfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-decimal-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-domain.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-dynamic-image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-dynamic-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-exception.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-file-io.Plo@am__quote@
@@ -1428,6 +1422,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-security-manager.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-seq-points-data.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-socket-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sre-encode.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sre-save.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threadpool-ms-io.Plo@am__quote@
@@ -1442,11 +1439,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-console-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-console-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-coree.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-custom-attrs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-debug-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-debug-mono-ppdb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-debug-mono-symfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-decimal-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-domain.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-dynamic-image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-dynamic-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-exception.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-file-io.Plo@am__quote@
@@ -1503,6 +1503,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-tarjan-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sgen-toggleref.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-socket-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sre-encode.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sre-save.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-ms-io.Plo@am__quote@
@@ -1517,11 +1520,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-console-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-console-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-coree.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-custom-attrs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-debug-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-debug-mono-ppdb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-debug-mono-symfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-decimal-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-domain.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-dynamic-image.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-dynamic-stream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-environment.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-exception.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-file-io.Plo@am__quote@
@@ -1578,13 +1584,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-tarjan-bridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sgen-toggleref.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-socket-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sre-encode.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sre-save.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sysmath.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms-io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-verify.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pedump.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -1981,6 +1989,13 @@ libmonoruntime_static_la-verify.lo: verify.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
 
+libmonoruntime_static_la-dynamic-stream.lo: dynamic-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-dynamic-stream.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-dynamic-stream.Tpo -c -o libmonoruntime_static_la-dynamic-stream.lo `test -f 'dynamic-stream.c' || echo '$(srcdir)/'`dynamic-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-dynamic-stream.Tpo $(DEPDIR)/libmonoruntime_static_la-dynamic-stream.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dynamic-stream.c' object='libmonoruntime_static_la-dynamic-stream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-dynamic-stream.lo `test -f 'dynamic-stream.c' || echo '$(srcdir)/'`dynamic-stream.c
+
 libmonoruntime_static_la-file-mmap-posix.lo: file-mmap-posix.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-file-mmap-posix.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-file-mmap-posix.Tpo -c -o libmonoruntime_static_la-file-mmap-posix.lo `test -f 'file-mmap-posix.c' || echo '$(srcdir)/'`file-mmap-posix.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-file-mmap-posix.Tpo $(DEPDIR)/libmonoruntime_static_la-file-mmap-posix.Plo
@@ -2064,6 +2079,41 @@ libmonoruntime_static_la-object.lo: object.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='object.c' object='libmonoruntime_static_la-object.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-object.lo `test -f 'object.c' || echo '$(srcdir)/'`object.c
+
+libmonoruntime_static_la-dynamic-image.lo: dynamic-image.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-dynamic-image.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-dynamic-image.Tpo -c -o libmonoruntime_static_la-dynamic-image.lo `test -f 'dynamic-image.c' || echo '$(srcdir)/'`dynamic-image.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-dynamic-image.Tpo $(DEPDIR)/libmonoruntime_static_la-dynamic-image.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dynamic-image.c' object='libmonoruntime_static_la-dynamic-image.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-dynamic-image.lo `test -f 'dynamic-image.c' || echo '$(srcdir)/'`dynamic-image.c
+
+libmonoruntime_static_la-sre.lo: sre.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-sre.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-sre.Tpo -c -o libmonoruntime_static_la-sre.lo `test -f 'sre.c' || echo '$(srcdir)/'`sre.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-sre.Tpo $(DEPDIR)/libmonoruntime_static_la-sre.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre.c' object='libmonoruntime_static_la-sre.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-sre.lo `test -f 'sre.c' || echo '$(srcdir)/'`sre.c
+
+libmonoruntime_static_la-sre-encode.lo: sre-encode.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-sre-encode.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-sre-encode.Tpo -c -o libmonoruntime_static_la-sre-encode.lo `test -f 'sre-encode.c' || echo '$(srcdir)/'`sre-encode.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-sre-encode.Tpo $(DEPDIR)/libmonoruntime_static_la-sre-encode.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre-encode.c' object='libmonoruntime_static_la-sre-encode.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-sre-encode.lo `test -f 'sre-encode.c' || echo '$(srcdir)/'`sre-encode.c
+
+libmonoruntime_static_la-sre-save.lo: sre-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-sre-save.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-sre-save.Tpo -c -o libmonoruntime_static_la-sre-save.lo `test -f 'sre-save.c' || echo '$(srcdir)/'`sre-save.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-sre-save.Tpo $(DEPDIR)/libmonoruntime_static_la-sre-save.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre-save.c' object='libmonoruntime_static_la-sre-save.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-sre-save.lo `test -f 'sre-save.c' || echo '$(srcdir)/'`sre-save.c
+
+libmonoruntime_static_la-custom-attrs.lo: custom-attrs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-custom-attrs.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-custom-attrs.Tpo -c -o libmonoruntime_static_la-custom-attrs.lo `test -f 'custom-attrs.c' || echo '$(srcdir)/'`custom-attrs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-custom-attrs.Tpo $(DEPDIR)/libmonoruntime_static_la-custom-attrs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='custom-attrs.c' object='libmonoruntime_static_la-custom-attrs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-custom-attrs.lo `test -f 'custom-attrs.c' || echo '$(srcdir)/'`custom-attrs.c
 
 libmonoruntime_static_la-reflection.lo: reflection.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-reflection.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-reflection.Tpo -c -o libmonoruntime_static_la-reflection.lo `test -f 'reflection.c' || echo '$(srcdir)/'`reflection.c
@@ -2450,6 +2500,13 @@ libmonoruntime_la-verify.lo: verify.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
 
+libmonoruntime_la-dynamic-stream.lo: dynamic-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-dynamic-stream.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-dynamic-stream.Tpo -c -o libmonoruntime_la-dynamic-stream.lo `test -f 'dynamic-stream.c' || echo '$(srcdir)/'`dynamic-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-dynamic-stream.Tpo $(DEPDIR)/libmonoruntime_la-dynamic-stream.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dynamic-stream.c' object='libmonoruntime_la-dynamic-stream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-dynamic-stream.lo `test -f 'dynamic-stream.c' || echo '$(srcdir)/'`dynamic-stream.c
+
 libmonoruntime_la-file-mmap-posix.lo: file-mmap-posix.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-file-mmap-posix.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-file-mmap-posix.Tpo -c -o libmonoruntime_la-file-mmap-posix.lo `test -f 'file-mmap-posix.c' || echo '$(srcdir)/'`file-mmap-posix.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-file-mmap-posix.Tpo $(DEPDIR)/libmonoruntime_la-file-mmap-posix.Plo
@@ -2533,6 +2590,41 @@ libmonoruntime_la-object.lo: object.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='object.c' object='libmonoruntime_la-object.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-object.lo `test -f 'object.c' || echo '$(srcdir)/'`object.c
+
+libmonoruntime_la-dynamic-image.lo: dynamic-image.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-dynamic-image.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-dynamic-image.Tpo -c -o libmonoruntime_la-dynamic-image.lo `test -f 'dynamic-image.c' || echo '$(srcdir)/'`dynamic-image.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-dynamic-image.Tpo $(DEPDIR)/libmonoruntime_la-dynamic-image.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dynamic-image.c' object='libmonoruntime_la-dynamic-image.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-dynamic-image.lo `test -f 'dynamic-image.c' || echo '$(srcdir)/'`dynamic-image.c
+
+libmonoruntime_la-sre.lo: sre.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-sre.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-sre.Tpo -c -o libmonoruntime_la-sre.lo `test -f 'sre.c' || echo '$(srcdir)/'`sre.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-sre.Tpo $(DEPDIR)/libmonoruntime_la-sre.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre.c' object='libmonoruntime_la-sre.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-sre.lo `test -f 'sre.c' || echo '$(srcdir)/'`sre.c
+
+libmonoruntime_la-sre-encode.lo: sre-encode.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-sre-encode.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-sre-encode.Tpo -c -o libmonoruntime_la-sre-encode.lo `test -f 'sre-encode.c' || echo '$(srcdir)/'`sre-encode.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-sre-encode.Tpo $(DEPDIR)/libmonoruntime_la-sre-encode.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre-encode.c' object='libmonoruntime_la-sre-encode.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-sre-encode.lo `test -f 'sre-encode.c' || echo '$(srcdir)/'`sre-encode.c
+
+libmonoruntime_la-sre-save.lo: sre-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-sre-save.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-sre-save.Tpo -c -o libmonoruntime_la-sre-save.lo `test -f 'sre-save.c' || echo '$(srcdir)/'`sre-save.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-sre-save.Tpo $(DEPDIR)/libmonoruntime_la-sre-save.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre-save.c' object='libmonoruntime_la-sre-save.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-sre-save.lo `test -f 'sre-save.c' || echo '$(srcdir)/'`sre-save.c
+
+libmonoruntime_la-custom-attrs.lo: custom-attrs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-custom-attrs.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-custom-attrs.Tpo -c -o libmonoruntime_la-custom-attrs.lo `test -f 'custom-attrs.c' || echo '$(srcdir)/'`custom-attrs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-custom-attrs.Tpo $(DEPDIR)/libmonoruntime_la-custom-attrs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='custom-attrs.c' object='libmonoruntime_la-custom-attrs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-custom-attrs.lo `test -f 'custom-attrs.c' || echo '$(srcdir)/'`custom-attrs.c
 
 libmonoruntime_la-reflection.lo: reflection.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-reflection.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-reflection.Tpo -c -o libmonoruntime_la-reflection.lo `test -f 'reflection.c' || echo '$(srcdir)/'`reflection.c
@@ -2919,6 +3011,13 @@ libmonoruntimesgen_static_la-verify.lo: verify.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
 
+libmonoruntimesgen_static_la-dynamic-stream.lo: dynamic-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-dynamic-stream.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-dynamic-stream.Tpo -c -o libmonoruntimesgen_static_la-dynamic-stream.lo `test -f 'dynamic-stream.c' || echo '$(srcdir)/'`dynamic-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-dynamic-stream.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-dynamic-stream.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dynamic-stream.c' object='libmonoruntimesgen_static_la-dynamic-stream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-dynamic-stream.lo `test -f 'dynamic-stream.c' || echo '$(srcdir)/'`dynamic-stream.c
+
 libmonoruntimesgen_static_la-file-mmap-posix.lo: file-mmap-posix.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-file-mmap-posix.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-file-mmap-posix.Tpo -c -o libmonoruntimesgen_static_la-file-mmap-posix.lo `test -f 'file-mmap-posix.c' || echo '$(srcdir)/'`file-mmap-posix.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-file-mmap-posix.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-file-mmap-posix.Plo
@@ -3002,6 +3101,41 @@ libmonoruntimesgen_static_la-object.lo: object.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='object.c' object='libmonoruntimesgen_static_la-object.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-object.lo `test -f 'object.c' || echo '$(srcdir)/'`object.c
+
+libmonoruntimesgen_static_la-dynamic-image.lo: dynamic-image.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-dynamic-image.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-dynamic-image.Tpo -c -o libmonoruntimesgen_static_la-dynamic-image.lo `test -f 'dynamic-image.c' || echo '$(srcdir)/'`dynamic-image.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-dynamic-image.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-dynamic-image.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dynamic-image.c' object='libmonoruntimesgen_static_la-dynamic-image.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-dynamic-image.lo `test -f 'dynamic-image.c' || echo '$(srcdir)/'`dynamic-image.c
+
+libmonoruntimesgen_static_la-sre.lo: sre.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-sre.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-sre.Tpo -c -o libmonoruntimesgen_static_la-sre.lo `test -f 'sre.c' || echo '$(srcdir)/'`sre.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-sre.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-sre.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre.c' object='libmonoruntimesgen_static_la-sre.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-sre.lo `test -f 'sre.c' || echo '$(srcdir)/'`sre.c
+
+libmonoruntimesgen_static_la-sre-encode.lo: sre-encode.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-sre-encode.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-sre-encode.Tpo -c -o libmonoruntimesgen_static_la-sre-encode.lo `test -f 'sre-encode.c' || echo '$(srcdir)/'`sre-encode.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-sre-encode.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-sre-encode.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre-encode.c' object='libmonoruntimesgen_static_la-sre-encode.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-sre-encode.lo `test -f 'sre-encode.c' || echo '$(srcdir)/'`sre-encode.c
+
+libmonoruntimesgen_static_la-sre-save.lo: sre-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-sre-save.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-sre-save.Tpo -c -o libmonoruntimesgen_static_la-sre-save.lo `test -f 'sre-save.c' || echo '$(srcdir)/'`sre-save.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-sre-save.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-sre-save.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre-save.c' object='libmonoruntimesgen_static_la-sre-save.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-sre-save.lo `test -f 'sre-save.c' || echo '$(srcdir)/'`sre-save.c
+
+libmonoruntimesgen_static_la-custom-attrs.lo: custom-attrs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-custom-attrs.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-custom-attrs.Tpo -c -o libmonoruntimesgen_static_la-custom-attrs.lo `test -f 'custom-attrs.c' || echo '$(srcdir)/'`custom-attrs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-custom-attrs.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-custom-attrs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='custom-attrs.c' object='libmonoruntimesgen_static_la-custom-attrs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-custom-attrs.lo `test -f 'custom-attrs.c' || echo '$(srcdir)/'`custom-attrs.c
 
 libmonoruntimesgen_static_la-reflection.lo: reflection.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-reflection.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-reflection.Tpo -c -o libmonoruntimesgen_static_la-reflection.lo `test -f 'reflection.c' || echo '$(srcdir)/'`reflection.c
@@ -3451,6 +3585,13 @@ libmonoruntimesgen_la-verify.lo: verify.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
 
+libmonoruntimesgen_la-dynamic-stream.lo: dynamic-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-dynamic-stream.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-dynamic-stream.Tpo -c -o libmonoruntimesgen_la-dynamic-stream.lo `test -f 'dynamic-stream.c' || echo '$(srcdir)/'`dynamic-stream.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-dynamic-stream.Tpo $(DEPDIR)/libmonoruntimesgen_la-dynamic-stream.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dynamic-stream.c' object='libmonoruntimesgen_la-dynamic-stream.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-dynamic-stream.lo `test -f 'dynamic-stream.c' || echo '$(srcdir)/'`dynamic-stream.c
+
 libmonoruntimesgen_la-file-mmap-posix.lo: file-mmap-posix.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-file-mmap-posix.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-file-mmap-posix.Tpo -c -o libmonoruntimesgen_la-file-mmap-posix.lo `test -f 'file-mmap-posix.c' || echo '$(srcdir)/'`file-mmap-posix.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-file-mmap-posix.Tpo $(DEPDIR)/libmonoruntimesgen_la-file-mmap-posix.Plo
@@ -3534,6 +3675,41 @@ libmonoruntimesgen_la-object.lo: object.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='object.c' object='libmonoruntimesgen_la-object.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-object.lo `test -f 'object.c' || echo '$(srcdir)/'`object.c
+
+libmonoruntimesgen_la-dynamic-image.lo: dynamic-image.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-dynamic-image.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-dynamic-image.Tpo -c -o libmonoruntimesgen_la-dynamic-image.lo `test -f 'dynamic-image.c' || echo '$(srcdir)/'`dynamic-image.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-dynamic-image.Tpo $(DEPDIR)/libmonoruntimesgen_la-dynamic-image.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='dynamic-image.c' object='libmonoruntimesgen_la-dynamic-image.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-dynamic-image.lo `test -f 'dynamic-image.c' || echo '$(srcdir)/'`dynamic-image.c
+
+libmonoruntimesgen_la-sre.lo: sre.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-sre.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-sre.Tpo -c -o libmonoruntimesgen_la-sre.lo `test -f 'sre.c' || echo '$(srcdir)/'`sre.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-sre.Tpo $(DEPDIR)/libmonoruntimesgen_la-sre.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre.c' object='libmonoruntimesgen_la-sre.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-sre.lo `test -f 'sre.c' || echo '$(srcdir)/'`sre.c
+
+libmonoruntimesgen_la-sre-encode.lo: sre-encode.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-sre-encode.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-sre-encode.Tpo -c -o libmonoruntimesgen_la-sre-encode.lo `test -f 'sre-encode.c' || echo '$(srcdir)/'`sre-encode.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-sre-encode.Tpo $(DEPDIR)/libmonoruntimesgen_la-sre-encode.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre-encode.c' object='libmonoruntimesgen_la-sre-encode.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-sre-encode.lo `test -f 'sre-encode.c' || echo '$(srcdir)/'`sre-encode.c
+
+libmonoruntimesgen_la-sre-save.lo: sre-save.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-sre-save.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-sre-save.Tpo -c -o libmonoruntimesgen_la-sre-save.lo `test -f 'sre-save.c' || echo '$(srcdir)/'`sre-save.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-sre-save.Tpo $(DEPDIR)/libmonoruntimesgen_la-sre-save.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='sre-save.c' object='libmonoruntimesgen_la-sre-save.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-sre-save.lo `test -f 'sre-save.c' || echo '$(srcdir)/'`sre-save.c
+
+libmonoruntimesgen_la-custom-attrs.lo: custom-attrs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-custom-attrs.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-custom-attrs.Tpo -c -o libmonoruntimesgen_la-custom-attrs.lo `test -f 'custom-attrs.c' || echo '$(srcdir)/'`custom-attrs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-custom-attrs.Tpo $(DEPDIR)/libmonoruntimesgen_la-custom-attrs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='custom-attrs.c' object='libmonoruntimesgen_la-custom-attrs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-custom-attrs.lo `test -f 'custom-attrs.c' || echo '$(srcdir)/'`custom-attrs.c
 
 libmonoruntimesgen_la-reflection.lo: reflection.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-reflection.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-reflection.Tpo -c -o libmonoruntimesgen_la-reflection.lo `test -f 'reflection.c' || echo '$(srcdir)/'`reflection.c
@@ -3731,9 +3907,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libmonoruntimeincludedir)"; do \
+	for dir in "$(DESTDIR)$(libmonoruntimeincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -3771,8 +3947,8 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-binPROGRAMS clean-generic clean-libtool \
-	clean-noinstLTLIBRARIES mostlyclean-am
+clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
+	mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ../../support/libm/$(DEPDIR) ./$(DEPDIR)
@@ -3798,7 +3974,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-binPROGRAMS
+install-exec-am:
 
 install-html: install-html-am
 
@@ -3838,17 +4014,15 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS \
-	uninstall-libmonoruntimeincludeHEADERS
+uninstall-am: uninstall-libmonoruntimeincludeHEADERS
 
 .MAKE: install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
-	clean-binPROGRAMS clean-generic clean-libtool \
-	clean-noinstLTLIBRARIES cscopelist-am ctags ctags-am distclean \
-	distclean-compile distclean-generic distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
+.PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
+	clean-libtool clean-noinstLTLIBRARIES cscopelist-am ctags \
+	ctags-am distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
 	install-info-am install-libmonoruntimeincludeHEADERS \
@@ -3857,8 +4031,7 @@ uninstall-am: uninstall-binPROGRAMS \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-compile mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-binPROGRAMS \
-	uninstall-libmonoruntimeincludeHEADERS
+	uninstall-am uninstall-libmonoruntimeincludeHEADERS
 
 @HOST_WIN32_TRUE@export HOST_CC
 
@@ -3869,10 +4042,6 @@ uninstall-am: uninstall-binPROGRAMS \
 # in configure.ac.
 #
 mono-config-dirs.lo: Makefile
-
-@DTRACE_G_REQUIRED_TRUE@pedump-dtrace.$(OBJEXT): $(top_srcdir)/data/mono.d libmonoruntime.la ../io-layer/libwapi.la ../utils/libmonoutils.la
-@DTRACE_G_REQUIRED_TRUE@	DTRACE="$(DTRACE)" DTRACEFLAGS="$(DTRACEFLAGS)" AR="$(AR)" $(SHELL) $(top_srcdir)/data/dtrace-prelink.sh \
-@DTRACE_G_REQUIRED_TRUE@	--pic pedump-dtrace.$(OBJEXT) $(top_srcdir)/data/mono.d libmonoruntime.la ../io-layer/libwapi.la ../utils/libmonoutils.la
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

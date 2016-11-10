@@ -142,9 +142,6 @@
 /* Runtime support code for llvm enabled */
 #undef ENABLE_LLVM_RUNTIME
 
-/* Enable using `perf` for profiling on Linux */
-#undef ENABLE_PERF_EVENTS
-
 /* Have GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY */
 #undef GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY
 
@@ -186,6 +183,9 @@
 
 /* Define to 1 if the system has the type `blksize_t'. */
 #undef HAVE_BLKSIZE_T
+
+/* BoringTls is supported */
+#undef HAVE_BTLS
 
 /* Define to 1 if you have the <checklist.h> header file. */
 #undef HAVE_CHECKLIST_H
@@ -256,6 +256,9 @@
 
 /* dlopen-based dynamic loader available */
 #undef HAVE_DL_LOADER
+
+/* BTLS in a shared libraty */
+#undef HAVE_DYNAMIC_BTLS
 
 /* Define to 1 if you have the <elf.h> header file. */
 #undef HAVE_ELF_H

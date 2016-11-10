@@ -809,6 +809,7 @@ enable_fast_install
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
+with_overridable_allocators
 enable_rpath
 with_libiconv_prefix
 with_crosspkgdir
@@ -1467,6 +1468,7 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
+  --with-overridable-allocators	allow g_*alloc/g_free to call custom allocators set via g_mem_set_vtable
   --with-gnu-ld           assume the C compiler uses GNU ld default=no
   --with-libiconv-prefix[=DIR]  search for libiconv in DIR/include and DIR/lib
   --without-libiconv-prefix     don't search for libiconv in includedir and libdir
@@ -12681,6 +12683,24 @@ fi
 done
 
 
+
+# Check whether --with-overridable-allocators was given.
+if test "${with_overridable_allocators+set}" = set; then :
+  withval=$with_overridable_allocators;
+fi
+
+
+if test x$with_overridable_allocators = xyes; then
+
+$as_echo "#define ENABLE_OVERRIDABLE_ALLOCATORS 1" >>confdefs.h
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Overridable allocator support enabled" >&5
+$as_echo "$as_me: Overridable allocator support enabled" >&6;}
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Overridable allocator support disabled" >&5
+$as_echo "$as_me: Overridable allocator support disabled" >&6;}
+fi
+
 #
 # Mono currently supports 10.6, but strndup is not available prior to 10.7; avoiding
 # the detection of strndup on OS X so Mono built on 10.7+ still runs on 10.6. This can be
@@ -12715,7 +12735,7 @@ done
 
 fi
 
- if test x$ac_cv_func_vasprintf = xno ; then
+ if test x$ac_cv_func_vasprintf = xno || test x$with_overridable_allocators = xyes; then
   NEED_VASPRINTF_TRUE=
   NEED_VASPRINTF_FALSE='#'
 else

@@ -159,6 +159,11 @@ typedef struct {
 	gboolean suspended;
 } ThreadPool;
 
+typedef struct {
+	gint32 ref;
+	MonoCoopCond cond;
+} ThreadPoolDomainCleanupSemaphore;
+
 typedef enum {
 	TRANSITION_WARMUP,
 	TRANSITION_INITIALIZING,
@@ -430,6 +435,14 @@ domain_get (MonoDomain *domain, gboolean create)
 	}
 
 	if (create) {
+		ThreadPoolDomainCleanupSemaphore *cleanup_semaphore;
+		cleanup_semaphore = g_new0 (ThreadPoolDomainCleanupSemaphore, 1);
+		cleanup_semaphore->ref = 2;
+		mono_coop_cond_init (&cleanup_semaphore->cond);
+
+		g_assert(!domain->cleanup_semaphore);
+		domain->cleanup_semaphore = cleanup_semaphore;
+
 		tpdomain = g_new0 (ThreadPoolDomain, 1);
 		tpdomain->domain = domain;
 		domain_add (tpdomain);
@@ -476,7 +489,7 @@ domain_get_next (ThreadPoolDomain *current)
 					break;
 				}
 			}
-			g_assert (current_idx >= 0);
+			g_assert (current_idx != (guint)-1);
 		}
 		for (i = current_idx + 1; i < len + current_idx + 1; ++i) {
 			ThreadPoolDomain *tmp = (ThreadPoolDomain *)g_ptr_array_index (threadpool->domains, i % len);
@@ -635,6 +648,9 @@ worker_thread (gpointer data)
 			if (retire)
 				retire = FALSE;
 
+			/* The tpdomain->domain might have unloaded, while this thread was parked */
+			previous_tpdomain = NULL;
+
 			continue;
 		}
 
@@ -678,10 +694,23 @@ worker_thread (gpointer data)
 		g_assert (tpdomain->domain->threadpool_jobs >= 0);
 
 		if (tpdomain->domain->threadpool_jobs == 0 && mono_domain_is_unloading (tpdomain->domain)) {
-			gboolean removed = domain_remove (tpdomain);
+			ThreadPoolDomainCleanupSemaphore *cleanup_semaphore;
+			gboolean removed;
+
+			removed = domain_remove(tpdomain);
 			g_assert (removed);
-			if (tpdomain->domain->cleanup_semaphore)
-				ReleaseSemaphore (tpdomain->domain->cleanup_semaphore, 1, NULL);
+
+			cleanup_semaphore = (ThreadPoolDomainCleanupSemaphore*) tpdomain->domain->cleanup_semaphore;
+			g_assert (cleanup_semaphore);
+
+			mono_coop_cond_signal (&cleanup_semaphore->cond);
+
+			if (InterlockedDecrement (&cleanup_semaphore->ref) == 0) {
+				mono_coop_cond_destroy (&cleanup_semaphore->cond);
+				g_free (cleanup_semaphore);
+				tpdomain->domain->cleanup_semaphore = NULL;
+			}
+
 			domain_free (tpdomain);
 			tpdomain = NULL;
 		}
@@ -1424,9 +1453,10 @@ mono_threadpool_ms_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, Mono
 gboolean
 mono_threadpool_ms_remove_domain_jobs (MonoDomain *domain, int timeout)
 {
-	gboolean res = TRUE;
 	gint64 end;
-	gpointer sem;
+	ThreadPoolDomain *tpdomain;
+	ThreadPoolDomainCleanupSemaphore *cleanup_semaphore;
+	gboolean ret;
 
 	g_assert (domain);
 	g_assert (timeout >= -1);
@@ -1445,38 +1475,59 @@ mono_threadpool_ms_remove_domain_jobs (MonoDomain *domain, int timeout)
 #endif
 
 	/*
-	 * There might be some threads out that could be about to execute stuff from the given domain.
-	 * We avoid that by setting up a semaphore to be pulsed by the thread that reaches zero.
-	 */
-	sem = domain->cleanup_semaphore = CreateSemaphore (NULL, 0, 1, NULL);
+	* There might be some threads out that could be about to execute stuff from the given domain.
+	* We avoid that by waiting on a semaphore to be pulsed by the thread that reaches zero.
+	* The semaphore is only created for domains which queued threadpool jobs.
+	* We always wait on the semaphore rather than ensuring domain->threadpool_jobs is 0.
+	* There may be pending outstanding requests which will create new jobs.
+	* The semaphore is signaled the threadpool domain has been removed from list
+	* and we know no more jobs for the domain will be processed.
+	*/
 
-	/*
-	 * The memory barrier here is required to have global ordering between assigning to cleanup_semaphone
-	 * and reading threadpool_jobs. Otherwise this thread could read a stale version of threadpool_jobs
-	 * and wait forever.
-	 */
-	mono_memory_write_barrier ();
+	mono_lazy_initialize(&status, initialize);
+	mono_coop_mutex_lock(&threadpool->domains_lock);
 
-	while (domain->threadpool_jobs) {
-		gint64 now;
+	tpdomain = domain_get (domain, FALSE);
+	if (!tpdomain || tpdomain->outstanding_request == 0) {
+		mono_coop_mutex_unlock(&threadpool->domains_lock);
+		return TRUE;
+	}
 
-		if (timeout != -1) {
-			now = mono_msec_ticks ();
+	g_assert (domain->cleanup_semaphore);
+	cleanup_semaphore = (ThreadPoolDomainCleanupSemaphore*) domain->cleanup_semaphore;
+
+	ret = TRUE;
+
+	do {
+		if (timeout == -1) {
+			mono_coop_cond_wait (&cleanup_semaphore->cond, &threadpool->domains_lock);
+		} else {
+			gint64 now;
+			gint res;
+
+			now = mono_msec_ticks();
 			if (now > end) {
-				res = FALSE;
+				ret = FALSE;
+				break;
+			}
+
+			res = mono_coop_cond_timedwait (&cleanup_semaphore->cond, &threadpool->domains_lock, end - now);
+			if (res != 0) {
+				ret = FALSE;
 				break;
 			}
 		}
+	} while (tpdomain->outstanding_request != 0);
 
-		MONO_ENTER_GC_SAFE;
-		WaitForSingleObject (sem, timeout != -1 ? end - now : timeout);
-		MONO_EXIT_GC_SAFE;
+	if (InterlockedDecrement (&cleanup_semaphore->ref) == 0) {
+		mono_coop_cond_destroy (&cleanup_semaphore->cond);
+		g_free (cleanup_semaphore);
+		domain->cleanup_semaphore = NULL;
 	}
 
-	domain->cleanup_semaphore = NULL;
-	CloseHandle (sem);
+	mono_coop_mutex_unlock(&threadpool->domains_lock);
 
-	return res;
+	return ret;
 }
 
 void

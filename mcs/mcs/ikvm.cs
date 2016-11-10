@@ -239,6 +239,7 @@ namespace Mono.CSharp
 		readonly List<Tuple<AssemblyName, string, Assembly>> loaded_names;
 		static readonly Dictionary<string, string[]> sdk_directory;
 		Dictionary<AssemblyName, List<AssemblyReferenceMessageInfo>> resolved_version_mismatches;
+		static readonly TypeName objectTypeName = new TypeName ("System", "Object");
 
 		static StaticLoader ()
 		{
@@ -257,7 +258,7 @@ namespace Mono.CSharp
 			this.importer = importer;
 			domain = new Universe (UniverseOptions.MetadataOnly | UniverseOptions.ResolveMissingMembers | 
 				UniverseOptions.DisableFusion | UniverseOptions.DecodeVersionInfoAttributeBlobs |
-				UniverseOptions.DeterministicOutput);
+				UniverseOptions.DeterministicOutput | UniverseOptions.DisableDefaultAssembliesLookup);
 			
 			domain.AssemblyResolve += AssemblyReferenceResolver;
 			loaded_names = new List<Tuple<AssemblyName, string, Assembly>> ();
@@ -355,26 +356,23 @@ namespace Mono.CSharp
 			}
 
 			if (version_mismatch != null) {
-				if (version_mismatch is AssemblyBuilder)
+				if (is_fx_assembly || version_mismatch is AssemblyBuilder)
 					return version_mismatch;
 
 				var ref_an = new AssemblyName (refname);
 				var v1 = ref_an.Version;
 				var v2 = version_mismatch.GetName ().Version;
+				AssemblyReferenceMessageInfo messageInfo;
 
 				if (v1 > v2) {
-					var messageInfo = new AssemblyReferenceMessageInfo (ref_an, report => {
+					messageInfo = new AssemblyReferenceMessageInfo (ref_an, report => {
 						report.SymbolRelatedToPreviousError (args.RequestingAssembly.Location);
 						report.Error (1705, string.Format ("Assembly `{0}' depends on `{1}' which has a higher version number than referenced assembly `{2}'",
 														   args.RequestingAssembly.FullName, refname, version_mismatch.GetName ().FullName));
 					});
 
-					AddReferenceVersionMismatch (args.RequestingAssembly.GetName (), messageInfo);
-					return version_mismatch;
-				}
-
-				if (!is_fx_assembly) {
-					var messageInfo = new AssemblyReferenceMessageInfo (ref_an, report => {
+				} else {
+					messageInfo = new AssemblyReferenceMessageInfo (ref_an, report => {
 						if (v1.Major != v2.Major || v1.Minor != v2.Minor) {
 							report.Warning (1701, 2,
 								"Assuming assembly reference `{0}' matches assembly `{1}'. You may need to supply runtime policy",
@@ -385,9 +383,9 @@ namespace Mono.CSharp
 								refname, version_mismatch.GetName ().FullName);
 						}
 					});
-
-					AddReferenceVersionMismatch (args.RequestingAssembly.GetName (), messageInfo);
 				}
+
+				AddReferenceVersionMismatch (args.RequestingAssembly.GetName (), messageInfo);
 
 				return version_mismatch;
 			}
@@ -452,10 +450,15 @@ namespace Mono.CSharp
 			return list;
 		}
 
-		public override bool HasObjectType (Assembly assembly)
+		public override Assembly HasObjectType (Assembly assembly)
 		{
 			try {
-				return assembly.GetType (compiler.BuiltinTypes.Object.FullName) != null;
+				// System.Object can be forwarded and ikvm
+				// transparently finds it in target assembly therefore
+				// need to return actual obj assembly becauase in such
+				// case it's different to assembly parameter
+				var obj = assembly.FindType (objectTypeName);
+				return obj == null ? null : obj.Assembly;
 			} catch (Exception e) {
 				throw new InternalErrorException (e, "Failed to load assembly `{0}'", assembly.FullName);
 			}
