@@ -135,7 +135,7 @@ class MDocUpdater : MDocCommand
 	
 	string apistyle = string.Empty;
 	bool isClassicRun;
-	bool multiassembly;
+	
 	bool delete;
 	bool show_exceptions;
 	bool no_assembly_versions, ignore_missing_types;
@@ -194,7 +194,14 @@ class MDocUpdater : MDocCommand
 	{
 		return !string.IsNullOrWhiteSpace (droppedNamespace);
 	}
-
+	
+	/// <summary>Logic flag to signify that we should list assemblies at the method level, since there are multiple
+	/// assemblies for a given type/method.</summary>
+	public bool IsMultiAssembly {
+		get { 
+			return apistyle == "classic" || apistyle == "unified";
+		}
+	}
 	
 	static List<string> droppedAssemblies = new List<string>();
 
@@ -281,12 +288,9 @@ class MDocUpdater : MDocCommand
 			{ "preserve",
 				"Do not delete members that don't exist in the assembly, but rather mark them as preserved.",
 				v => PreserveTag = "true" },
-			{ "multiassembly",
-				"Allow types to be in multiple assemblies.",
-				v => multiassembly = true },
 			{ "api-style=",
 				"Denotes the apistyle. Currently, only `classic` and `unified` are supported. `classic` set of assemblies should be run first, immediately followed by 'unified' assemblies with the `dropns` parameter.",
-				v => apistyle = v.ToLowerInvariant ()},
+				v => { apistyle = v.ToLowerInvariant (); }},
 		};
 		var assemblies = Parse (p, args, "update", 
 				"[OPTIONS]+ ASSEMBLIES",
@@ -787,7 +791,7 @@ class MDocUpdater : MDocCommand
 	private void AddIndexAssembly (AssemblyDefinition assembly, XmlElement parent)
 	{
 		XmlElement index_assembly = null;
-		if (multiassembly) 
+		if (IsMultiAssembly) 
 			index_assembly = (XmlElement)parent.SelectSingleNode ("Assembly[@Name='"+ assembly.Name.Name +"']");
 		
 		if (index_assembly == null) 
@@ -867,7 +871,7 @@ class MDocUpdater : MDocCommand
 		
 		XmlElement index_types = WriteElement(index.DocumentElement, "Types");
 		XmlElement index_assemblies = WriteElement(index.DocumentElement, "Assemblies");
-		if (!multiassembly) 
+		if (!IsMultiAssembly) 
 			index_assemblies.RemoveAll ();
 
 
@@ -1765,7 +1769,7 @@ class MDocUpdater : MDocCommand
 		WriteElementText(me, "MemberType", GetMemberType(mi));
 
 		if (!no_assembly_versions) {
-			if (!multiassembly)
+			if (!IsMultiAssembly)
 				UpdateAssemblyVersions (me, mi, true);
 			else {
 				var node = AddAssemblyNameToNode (me, mi.Module);
@@ -2013,7 +2017,10 @@ class MDocUpdater : MDocCommand
 		member.AppendChild (link);
 		AddTargets (em, info);
 
-		extensionMethods.Add (em);
+		var sig = em.SelectSingleNode ("Member/MemberSignature[@Language='C#']/@Value");
+		if (!IsMultiAssembly || (IsMultiAssembly && sig != null && !extensionMethods.Any (ex => ex.SelectSingleNode ("Member/MemberSignature[@Language='C#']/@Value").Value == sig.Value))) {
+			extensionMethods.Add (em);
+		}
 	}
 
 	private static void RemoveExcept (XmlNode node, string[] except)
@@ -2404,7 +2411,7 @@ class MDocUpdater : MDocCommand
 	
 	private bool UpdateAssemblyVersions(XmlElement root, AssemblyDefinition assembly, string[] assemblyVersions, bool add)
 	{
-		if (multiassembly)
+		if (IsMultiAssembly)
 			return false;
 			
 		XmlElement av = (XmlElement) root.SelectSingleNode ("AssemblyVersions");
@@ -3000,26 +3007,6 @@ static class CecilExtensions {
 		return method.GenericParameters.Count > 0;
 	}
 
-	public static MemberReference Resolve (this MemberReference member)
-	{
-		FieldReference fr = member as FieldReference;
-		if (fr != null)
-			return fr.Resolve ();
-		MethodReference mr = member as MethodReference;
-		if (mr != null)
-			return mr.Resolve ();
-		TypeReference tr = member as TypeReference;
-		if (tr != null)
-			return tr.Resolve ();
-		PropertyReference pr = member as PropertyReference;
-		if (pr != null)
-			return pr;
-		EventReference er = member as EventReference;
-		if (er != null)
-			return er;
-		throw new NotSupportedException ("Cannot find definition for " + member.ToString ());
-	}
-
 	public static TypeReference GetUnderlyingType (this TypeDefinition type)
 	{
 		if (!type.IsEnum)
@@ -3249,7 +3236,8 @@ static class DocUtils {
 	{
 		HashSet<string> inheritedInterfaces = GetInheritedInterfaces (type);
 		List<TypeReference> userInterfaces = new List<TypeReference> ();
-		foreach (TypeReference iface in type.Interfaces) {
+		foreach (var ii in type.Interfaces) {
+			var iface = ii.InterfaceType;
 			TypeReference lookup = iface.Resolve () ?? iface;
 			if (!inheritedInterfaces.Contains (GetQualifiedTypeName (lookup)))
 				userInterfaces.Add (iface);
@@ -3268,9 +3256,9 @@ static class DocUtils {
 		Action<TypeDefinition> a = null;
 		a = t => {
 			if (t == null) return;
-			foreach (TypeReference r in t.Interfaces) {
-				inheritedInterfaces.Add (GetQualifiedTypeName (r));
-				a (r.Resolve ());
+			foreach (var r in t.Interfaces) {
+				inheritedInterfaces.Add (GetQualifiedTypeName (r.InterfaceType));
+				a (r.InterfaceType.Resolve ());
 			}
 		};
 		TypeReference baseRef = type.BaseType;
@@ -3283,8 +3271,8 @@ static class DocUtils {
 			else
 				baseRef = null;
 		}
-		foreach (TypeReference r in type.Interfaces)
-			a (r.Resolve ());
+		foreach (var r in type.Interfaces)
+			a (r.InterfaceType.Resolve ());
 		return inheritedInterfaces;
 	}
 }
@@ -4359,8 +4347,13 @@ public abstract class MemberFormatter {
 	{
 		return e.Name;
 	}
+	
+	public string GetDeclaration (MemberReference mreference)
+	{
+		return GetDeclaration (mreference.Resolve ());
+	}
 
-	public virtual string GetDeclaration (MemberReference member)
+	string GetDeclaration (IMemberDefinition member)
 	{
 		if (member == null)
 			throw new ArgumentNullException ("member");
@@ -4624,8 +4617,8 @@ class ILFullMemberFormatter : MemberFormatter {
 				buf.Append (full.GetName (type.BaseType).Substring ("class ".Length));
 		}
 		bool first = true;
-		foreach (var name in type.Interfaces.Where (i => MDocUpdater.IsPublic (i.Resolve ()))
-				.Select (i => full.GetName (i))
+		foreach (var name in type.Interfaces.Where (i => MDocUpdater.IsPublic (i.InterfaceType.Resolve ()))
+				.Select (i => full.GetName (i.InterfaceType))
 				.OrderBy (n => n)) {
 			if (first) {
 				buf.Append (" implements ");
@@ -5675,15 +5668,6 @@ class SlashDocMemberFormatter : MemberFormatter {
 				buf.Append ('`').Append (numArgs);
 		}
 		return buf;
-	}
-
-	public override string GetDeclaration (MemberReference member)
-	{
-		TypeReference r = member as TypeReference;
-		if (r != null) {
-			return "T:" + GetTypeName (r);
-		}
-		return base.GetDeclaration (member);
 	}
 
 	protected override string GetConstructorName (MethodReference constructor)

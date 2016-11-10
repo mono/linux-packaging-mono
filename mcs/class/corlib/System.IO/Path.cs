@@ -140,6 +140,7 @@ namespace System.IO {
 		{
 			int l = s.Length;
 			int sub = 0;
+			int alt = 0;
 			int start = 0;
 
 			// Host prefix?
@@ -158,6 +159,8 @@ namespace System.IO {
 				
 				if (c != DirectorySeparatorChar && c != AltDirectorySeparatorChar)
 					continue;
+				if (DirectorySeparatorChar != AltDirectorySeparatorChar && c == AltDirectorySeparatorChar)
+					alt++;
 				if (i+1 == l)
 					sub++;
 				else {
@@ -167,7 +170,7 @@ namespace System.IO {
 				}
 			}
 
-			if (sub == 0)
+			if (sub == 0 && alt == 0)
 				return s;
 
 			char [] copy = new char [l-sub];
@@ -281,7 +284,7 @@ namespace System.IO {
 
 			SecurityManager.EnsureElevatedPermissions (); // this is a no-op outside moonlight
 
-#if !NET_2_1
+#if !MOBILE
 			if (SecurityManager.SecurityEnabled) {
 				new FileIOPermission (FileIOPermissionAccess.PathDiscovery, fullpath).Demand ();
 			}
@@ -320,9 +323,12 @@ namespace System.IO {
 
 		internal static string WindowsDriveAdjustment (string path)
 		{
-			// two special cases to consider when a drive is specified
-			if (path.Length < 2)
+			// three special cases to consider when a drive is specified
+			if (path.Length < 2) {
+				if (path.Length == 1 && (path[0] == '\\' || path[0] == '/'))
+					return Path.GetPathRoot(Directory.GetCurrentDirectory());
 				return path;
+			}
 			if ((path [1] != ':') || !Char.IsLetter (path [0]))
 				return path;
 
@@ -882,5 +888,7 @@ namespace System.IO {
 				return DirectorySeparatorStr;
 			}
 		}
+
+		internal const int MAX_PATH = 260;  // From WinDef.h
 	}
 }

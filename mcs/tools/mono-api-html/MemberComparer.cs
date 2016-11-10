@@ -138,9 +138,13 @@ namespace Xamarin.ApiDiff {
 		void Modify (ApiChanges modified)
 		{
 			foreach (var changes in modified) {
+				if (State.IgnoreNonbreaking && changes.Value.All (c => !c.Breaking))
+					continue;
 				Output.WriteLine ("<p>{0}:</p>", changes.Key);
 				Output.WriteLine ("<pre>");
 				foreach (var element in changes.Value) {
+					if (State.IgnoreNonbreaking && !element.Breaking)
+						continue;
 					Output.Write ("<div {0}>", element.Breaking ? "data-is-breaking" : "data-is-non-breaking");
 					foreach (var line in element.Member.ToString ().Split ('\n'))
 						Output.WriteLine ("\t{0}", line);
@@ -158,6 +162,8 @@ namespace Xamarin.ApiDiff {
 				if (State.IgnoreRemoved.Any (re => re.IsMatch (GetDescription (item))))
 					continue;
 				SetContext (item);
+				if (State.IgnoreNonbreaking && !IsBreakingRemoval (item))
+					continue;
 				if (!r) {
 					BeforeRemoving (elements);
 					r = true;
@@ -336,16 +342,31 @@ namespace Xamarin.ApiDiff {
 				if (i > 0)
 					change.Append (", ");
 
+				string mods_tgt = tgt [i].GetAttribute ("direction") ?? "";
+				string mods_src = src [i].GetAttribute ("direction") ?? "";
+
+				if (mods_tgt.Length > 0)
+					mods_tgt = mods_tgt + " ";
+
+				if (mods_src.Length > 0)
+					mods_src = mods_src + " ";
+
 				if (i >= srcCount) {
-					change.AppendAdded (tgt [i].GetTypeName ("type") + " " + tgt [i].GetAttribute ("name"), true);
+					change.AppendAdded (mods_tgt + tgt [i].GetTypeName ("type") + " " + tgt [i].GetAttribute ("name"), true);
 				} else if (i >= tgtCount) {
-					change.AppendRemoved (src [i].GetTypeName ("type") + " " + src [i].GetAttribute ("name"), true);
+					change.AppendRemoved (mods_src + src [i].GetTypeName ("type") + " " + src [i].GetAttribute ("name"), true);
 				} else {
 					var paramSourceType = src [i].GetTypeName ("type");
 					var paramTargetType = tgt [i].GetTypeName ("type");
 
 					var paramSourceName = src [i].GetAttribute ("name");
 					var paramTargetName = tgt [i].GetAttribute ("name");
+
+					if (mods_src != mods_tgt) {
+						change.AppendModified (mods_src, mods_tgt, true);
+					} else {
+						change.Append (mods_src);
+					}
 
 					if (paramSourceType != paramTargetType) {
 						change.AppendModified (paramSourceType, paramTargetType, true);
@@ -354,7 +375,7 @@ namespace Xamarin.ApiDiff {
 					}
 					change.Append (" ");
 					if (paramSourceName != paramTargetName) {
-						change.AppendModified (paramSourceName, paramTargetName, false);
+						change.AppendModified (paramSourceName, paramTargetName, true);
 					} else {
 						change.Append (paramSourceName);
 					}
@@ -418,8 +439,13 @@ namespace Xamarin.ApiDiff {
 				if (tgtAbstract) {
 					change.AppendAdded ("abstract", true).Append (" ");
 				} else if (srcWord != tgtWord) {
-					if (!tgtFinal)
-						change.AppendModified (srcWord, tgtWord, breaking).Append (" ");
+					if (!tgtFinal) {
+						if (State.IgnoreVirtualChanges) {
+							change.HasIgnoredChanges = true;
+						} else {
+							change.AppendModified (srcWord, tgtWord, breaking).Append (" ");
+						}
+					}
 				} else if (tgtWord.Length > 0) {
 					change.Append (tgtWord).Append (" ");
 				} else if (srcWord.Length > 0) {
@@ -431,7 +457,11 @@ namespace Xamarin.ApiDiff {
 				if (tgtFinal) {
 					change.Append ("final ");
 				} else {
-					change.AppendRemoved ("final", false).Append (" "); // removing 'final' is not a breaking change.
+					if (srcVirtual && !tgtVirtual && State.IgnoreVirtualChanges) {
+						change.HasIgnoredChanges = true;
+					} else {
+						change.AppendRemoved ("final", false).Append (" "); // removing 'final' is not a breaking change.
+					}
 				}
 			} else {
 				if (tgtFinal && srcVirtual) {

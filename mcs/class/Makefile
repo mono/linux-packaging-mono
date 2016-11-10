@@ -27,7 +27,6 @@ mobile_common_dirs := \
 	System.XML	\
 	I18N		\
 	System.ServiceModel.Internals	\
-	SMDiagnostics	\
 	System.Runtime.Serialization	\
 	System.Xml.Linq	\
 	System.IdentityModel		\
@@ -40,7 +39,6 @@ mobile_common_dirs := \
 	System.Numerics	\
 	System.Numerics.Vectors		\
 	System.Data	\
-	Mono.Cairo	\
 	Mono.Data.Sqlite	\
 	System.Data.Services.Client \
 	System.IO.Compression \
@@ -53,9 +51,6 @@ mobile_common_dirs := \
 	System.Xml.Serialization \
 	Mono.CSharp	\
 	Microsoft.CSharp \
-	Mono.Security.Providers.DotNet	\
-	Mono.Security.Providers.NewSystemSource \
-	Mono.Security.Providers.NewTls	\
 	System.Runtime.InteropServices.RuntimeInformation	\
 	System.Reflection.DispatchProxy	\
 	System.Xml.XPath.XmlDocument \
@@ -65,6 +60,9 @@ mobile_common_dirs := \
 mobile_static_dirs := \
 	$(mobile_common_dirs)	\
 	Mono.Dynamic.Interpreter	\
+	PEAPI	\
+	Mono.CompilerServices.SymbolWriter	\
+	Mono.Simd			\
 	$(pcl_facade_dirs)
 
 mobile_dynamic_dirs := \
@@ -76,12 +74,13 @@ xammac_dirs := \
 	$(mobile_dynamic_dirs)
 
 monodroid_dirs := \
-	$(mobile_dynamic_dirs)
+	$(mobile_dynamic_dirs) \
+	Mono.Btls.Interface
 
 monotouch_dirs := \
 	$(mobile_static_dirs)
 
-monotouch_watch_dirs := $(monotouch_dirs)
+monotouch_watch_dirs := $(filter-out Mono.Security Mono.Data.Tds,$(monotouch_dirs))
 monotouch_tv_dirs   := $(monotouch_dirs)
 
 monotouch_runtime_dirs := \
@@ -92,7 +91,7 @@ monotouch_runtime_dirs := \
 	System.XML \
 	Mono.CSharp
 
-monotouch_watch_runtime_dirs := $(monotouch_runtime_dirs)
+monotouch_watch_runtime_dirs := $(filter-out Mono.Security Mono.Data.Tds,$(monotouch_runtime_dirs))
 monotouch_tv_runtime_dirs := $(monotouch_runtime_dirs)
 
 xammac_4_5_dirs := \
@@ -139,10 +138,6 @@ xammac_4_5_dirs := \
 	System.Data.Linq		\
 	System.Net.Http \
 	System.Net.Http.WebRequest \
-	Mono.Security.Providers.DotNet \
-	Mono.Security.Providers.OldTls \
-	Mono.Security.Providers.NewSystemSource \
-	Mono.Security.Providers.NewTls \
 	System.Runtime.InteropServices.RuntimeInformation \
 	System.Reflection.Context	\
 	System.Net.Http.WinHttpHandler	\
@@ -231,8 +226,6 @@ net_4_x_dirs := \
 	System.Web.Http \
 	System.Web.Http.SelfHost \
 	System.Web.Http.WebHost \
-	Mono.Security.Providers.NewSystemSource \
-	Mono.Security.Providers.NewTls \
 	System.Runtime.InteropServices.RuntimeInformation
 
 # These are the subdirs which depends on libs in net_4_x_dirs
@@ -240,6 +233,7 @@ net_4_x_dirs := \
 net_4_x_parallel_dirs := \
 	PEAPI				\
 	I18N				\
+	Mono.Btls.Interface		\
 	Mono.Http			\
 	Mono.Cairo                      \
 	Mono.Cecil			\
@@ -276,8 +270,6 @@ net_4_x_parallel_dirs := \
 	System.ComponentModel.Composition.4.5 \
 	System.Windows \
 	System.Xml.Serialization \
-	Mono.Security.Providers.DotNet \
-	Mono.Security.Providers.OldTls \
 	System.DirectoryServices.Protocols	\
 	RabbitMQ.Client			\
 	Microsoft.VisualC		\
@@ -290,6 +282,7 @@ net_4_x_parallel_dirs := \
 	System.Workflow.ComponentModel \
 	System.Workflow.Runtime \
 	System.Reflection.Context \
+	legacy/Mono.Cecil \
 	$(pcl_facade_dirs)
 
 xbuild_2_0_dirs := \

@@ -525,6 +525,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 #endif
 
 #ifndef HOST_WIN32
+	mono_w32handle_init ();
 	wapi_init ();
 #endif
 
@@ -1166,6 +1167,12 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 	g_slist_free (domain->domain_assemblies);
 	domain->domain_assemblies = NULL;
 
+	/* 
+	 * Send this after the assemblies have been unloaded and the domain is still in a 
+	 * usable state.
+	 */
+	mono_profiler_appdomain_event (domain, MONO_PROFILE_END_UNLOAD);
+
 	if (free_domain_hook)
 		free_domain_hook (domain);
 
@@ -1479,8 +1486,10 @@ mono_context_get_domain_id (MonoAppContext *context)
 void
 mono_domain_add_class_static_data (MonoDomain *domain, MonoClass *klass, gpointer data, guint32 *bitmap)
 {
-	/* The first entry in the array is the index of the next free slot
-	 * and the total size of the array
+	/* Note [Domain Static Data Array]:
+	 *
+	 * Entry 0 in the array is the index of the next free slot.
+	 * Entry 1 is the total size of the array.
 	 */
 	int next;
 	if (domain->static_data_array) {

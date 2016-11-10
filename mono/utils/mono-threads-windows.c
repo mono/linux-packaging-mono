@@ -16,7 +16,7 @@
 
 
 void
-mono_threads_init_platform (void)
+mono_threads_suspend_init (void)
 {
 }
 
@@ -26,7 +26,7 @@ interrupt_apc (ULONG_PTR param)
 }
 
 gboolean
-mono_threads_core_begin_async_suspend (MonoThreadInfo *info, gboolean interrupt_kernel)
+mono_threads_suspend_begin_async_suspend (MonoThreadInfo *info, gboolean interrupt_kernel)
 {
 	DWORD id = mono_thread_info_get_tid (info);
 	HANDLE handle;
@@ -67,13 +67,13 @@ mono_threads_core_begin_async_suspend (MonoThreadInfo *info, gboolean interrupt_
 }
 
 gboolean
-mono_threads_core_check_suspend_result (MonoThreadInfo *info)
+mono_threads_suspend_check_suspend_result (MonoThreadInfo *info)
 {
 	return info->suspend_can_continue;
 }
 
 gboolean
-mono_threads_core_begin_async_resume (MonoThreadInfo *info)
+mono_threads_suspend_begin_async_resume (MonoThreadInfo *info)
 {
 	DWORD id = mono_thread_info_get_tid (info);
 	HANDLE handle;
@@ -119,12 +119,12 @@ mono_threads_core_begin_async_resume (MonoThreadInfo *info)
 
 
 void
-mono_threads_platform_register (MonoThreadInfo *info)
+mono_threads_suspend_register (MonoThreadInfo *info)
 {
 }
 
 void
-mono_threads_platform_free (MonoThreadInfo *info)
+mono_threads_suspend_free (MonoThreadInfo *info)
 {
 }
 
@@ -132,84 +132,40 @@ mono_threads_platform_free (MonoThreadInfo *info)
 
 #if defined (HOST_WIN32)
 
-typedef struct {
-	LPTHREAD_START_ROUTINE start_routine;
-	void *arg;
-	MonoCoopSem registered;
-	gboolean suspend;
-	HANDLE suspend_event;
-} ThreadStartInfo;
-
-static DWORD WINAPI
-inner_start_thread (LPVOID arg)
+void
+mono_threads_platform_register (MonoThreadInfo *info)
 {
-	ThreadStartInfo *start_info = arg;
-	void *t_arg = start_info->arg;
-	int post_result;
-	LPTHREAD_START_ROUTINE start_func = start_info->start_routine;
-	DWORD result;
-	gboolean suspend = start_info->suspend;
-	HANDLE suspend_event = start_info->suspend_event;
-	MonoThreadInfo *info;
+	HANDLE thread_handle;
 
-	info = mono_thread_info_attach (&result);
-	info->runtime_thread = TRUE;
-	info->create_suspended = suspend;
+	thread_handle = GetCurrentThread ();
+	g_assert (thread_handle);
 
-	post_result = mono_coop_sem_post (&(start_info->registered));
-	g_assert (!post_result);
+	/* The handle returned by GetCurrentThread () is a pseudo handle, so it can't
+	 * be used to refer to the thread from other threads for things like aborting. */
+	DuplicateHandle (GetCurrentProcess (), thread_handle, GetCurrentProcess (), &thread_handle, THREAD_ALL_ACCESS, TRUE, 0);
 
-	if (suspend) {
-		WaitForSingleObject (suspend_event, INFINITE); /* caller will suspend the thread before setting the event. */
-		CloseHandle (suspend_event);
-	}
-
-	result = start_func (t_arg);
-
-	mono_thread_info_detach ();
-
-	return result;
+	g_assert (!info->handle);
+	info->handle = thread_handle;
 }
 
-HANDLE
-mono_threads_core_create_thread (LPTHREAD_START_ROUTINE start_routine, gpointer arg, guint32 stack_size, guint32 creation_flags, MonoNativeThreadId *out_tid)
+int
+mono_threads_platform_create_thread (MonoThreadStart thread_fn, gpointer thread_data, gsize stack_size, MonoNativeThreadId *out_tid)
 {
-	ThreadStartInfo *start_info;
 	HANDLE result;
 	DWORD thread_id;
-	int res;
 
-	start_info = g_malloc0 (sizeof (ThreadStartInfo));
-	if (!start_info)
-		return NULL;
-	mono_coop_sem_init (&(start_info->registered), 0);
-	start_info->arg = arg;
-	start_info->start_routine = start_routine;
-	start_info->suspend = creation_flags & CREATE_SUSPENDED;
-	creation_flags &= ~CREATE_SUSPENDED;
-	if (start_info->suspend) {
-		start_info->suspend_event = CreateEvent (NULL, TRUE, FALSE, NULL);
-		if (!start_info->suspend_event)
-			return NULL;
-	}
+	result = CreateThread (NULL, stack_size, (LPTHREAD_START_ROUTINE) thread_fn, thread_data, 0, &thread_id);
+	if (!result)
+		return -1;
 
-	result = CreateThread (NULL, stack_size, inner_start_thread, start_info, creation_flags, &thread_id);
-	if (result) {
-		res = mono_coop_sem_wait (&(start_info->registered), MONO_SEM_FLAGS_NONE);
-		g_assert (res != -1);
+	/* A new handle is open when attaching
+	 * the thread, so we don't need this one */
+	CloseHandle (result);
 
-		if (start_info->suspend) {
-			g_assert (SuspendThread (result) != (DWORD)-1);
-			SetEvent (start_info->suspend_event);
-		}
-	} else if (start_info->suspend) {
-		CloseHandle (start_info->suspend_event);
-	}
 	if (out_tid)
 		*out_tid = thread_id;
-	mono_coop_sem_destroy (&(start_info->registered));
-	g_free (start_info);
-	return result;
+
+	return 0;
 }
 
 
@@ -231,15 +187,19 @@ mono_native_thread_create (MonoNativeThreadId *tid, gpointer func, gpointer arg)
 	return CreateThread (NULL, 0, (func), (arg), 0, (tid)) != NULL;
 }
 
-void
-mono_threads_core_resume_created (MonoThreadInfo *info, MonoNativeThreadId tid)
+gboolean
+mono_native_thread_join (MonoNativeThreadId tid)
 {
 	HANDLE handle;
 
-	handle = OpenThread (THREAD_ALL_ACCESS, TRUE, tid);
-	g_assert (handle);
-	ResumeThread (handle);
+	if (!(handle = OpenThread (THREAD_ALL_ACCESS, TRUE, tid)))
+		return FALSE;
+
+	DWORD res = WaitForSingleObject (handle, INFINITE);
+
 	CloseHandle (handle);
+
+	return res != WAIT_FAILED;
 }
 
 #if HAVE_DECL___READFSDWORD==0
@@ -255,7 +215,7 @@ __readfsdword (unsigned long offset)
 #endif
 
 void
-mono_threads_core_get_stack_bounds (guint8 **staddr, size_t *stsize)
+mono_threads_platform_get_stack_bounds (guint8 **staddr, size_t *stsize)
 {
 	MEMORY_BASIC_INFORMATION meminfo;
 #ifdef _WIN64
@@ -283,38 +243,22 @@ mono_threads_core_get_stack_bounds (guint8 **staddr, size_t *stsize)
 }
 
 gboolean
-mono_threads_core_yield (void)
+mono_threads_platform_yield (void)
 {
 	return SwitchToThread ();
 }
 
 void
-mono_threads_core_exit (int exit_code)
+mono_threads_platform_exit (int exit_code)
 {
+	mono_thread_info_detach ();
 	ExitThread (exit_code);
 }
 
 void
-mono_threads_core_unregister (MonoThreadInfo *info)
+mono_threads_platform_unregister (MonoThreadInfo *info)
 {
-}
-
-HANDLE
-mono_threads_core_open_handle (void)
-{
-	HANDLE thread_handle;
-
-	thread_handle = GetCurrentThread ();
-	g_assert (thread_handle);
-
-	/*
-	 * The handle returned by GetCurrentThread () is a pseudo handle, so it can't be used to
-	 * refer to the thread from other threads for things like aborting.
-	 */
-	DuplicateHandle (GetCurrentProcess (), thread_handle, GetCurrentProcess (), &thread_handle,
-					 THREAD_ALL_ACCESS, TRUE, 0);
-
-	return thread_handle;
+	mono_threads_platform_set_exited (info);
 }
 
 int
@@ -324,10 +268,27 @@ mono_threads_get_max_stack_size (void)
 	return INT_MAX;
 }
 
+gpointer
+mono_threads_platform_duplicate_handle (MonoThreadInfo *info)
+{
+	HANDLE thread_handle;
+
+	g_assert (info->handle);
+	DuplicateHandle (GetCurrentProcess (), info->handle, GetCurrentProcess (), &thread_handle, THREAD_ALL_ACCESS, TRUE, 0);
+
+	return thread_handle;
+}
+
 HANDLE
-mono_threads_core_open_thread_handle (HANDLE handle, MonoNativeThreadId tid)
+mono_threads_platform_open_thread_handle (HANDLE handle, MonoNativeThreadId tid)
 {
 	return OpenThread (THREAD_ALL_ACCESS, TRUE, tid);
+}
+
+void
+mono_threads_platform_close_thread_handle (HANDLE handle)
+{
+	CloseHandle (handle);
 }
 
 #if defined(_MSC_VER)
@@ -360,6 +321,57 @@ mono_native_thread_set_name (MonoNativeThreadId tid, const char *name)
 	__except(EXCEPTION_EXECUTE_HANDLER) {
 	}
 #endif
+}
+
+void
+mono_threads_platform_set_exited (MonoThreadInfo *info)
+{
+	g_assert (info->handle);
+	// No need to call CloseHandle() here since the InternalThread
+	// destructor will close the handle when the finalizer thread calls it
+	info->handle = NULL;
+}
+
+void
+mono_threads_platform_describe (MonoThreadInfo *info, GString *text)
+{
+	/* TODO */
+}
+
+void
+mono_threads_platform_own_mutex (MonoThreadInfo *info, gpointer mutex_handle)
+{
+	g_assert_not_reached ();
+}
+
+void
+mono_threads_platform_disown_mutex (MonoThreadInfo *info, gpointer mutex_handle)
+{
+	g_assert_not_reached ();
+}
+
+MonoThreadPriority
+mono_threads_platform_get_priority (MonoThreadInfo *info)
+{
+	g_assert (info->handle);
+	return GetThreadPriority (info->handle) + 2;
+}
+
+void
+mono_threads_platform_set_priority (MonoThreadInfo *info, MonoThreadPriority priority)
+{
+	BOOL res;
+
+	g_assert (info->handle);
+
+	res = SetThreadPriority (info->handle, priority - 2);
+	if (!res)
+		g_error ("%s: SetThreadPriority failed, error %d", __func__, GetLastError ());
+}
+
+void
+mono_threads_platform_init (void)
+{
 }
 
 #endif

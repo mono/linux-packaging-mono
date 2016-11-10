@@ -5,6 +5,7 @@
  *   Zoltan Varga <vargaz@gmail.com>
  *   Rodrigo Kumpera <kumpera@gmail.com>
  *   Andi McClure <andi.mcclure@xamarin.com>
+ *   Johan Lorensson <johan.lorensson@xamarin.com>
  *
  * Copyright 2015 Xamarin, Inc (http://www.xamarin.com)
  * Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -48,6 +49,7 @@ storage_name (ArgStorage st)
 	case ArgOnStack: return "ArgOnStack";
 	case ArgValuetypeInReg: return "ArgValuetypeInReg";
 	case ArgValuetypeAddrInIReg: return "ArgValuetypeAddrInIReg";
+	case ArgValuetypeAddrOnStack: return "ArgValuetypeAddrOnStack";
 	case ArgGSharedVtInReg: return "ArgGSharedVtInReg";
 	case ArgGSharedVtOnStack: return "ArgGSharedVtOnStack";
 	case ArgNone: return "ArgNone";
@@ -80,9 +82,17 @@ add_to_map (GPtrArray *map, int src, int dst)
 
 /*
  * Slot mapping:
+ *
+ * System V:
  * 0..5  - rdi, rsi, rdx, rcx, r8, r9
  * 6..13 - xmm0..xmm7
  * 14..  - stack slots
+ *
+ * Windows:
+ * 0..3 - rcx, rdx, r8, r9
+ * 4..7 - xmm0..xmm3
+ * 8..  - stack slots
+ *
  */
 static inline int
 map_reg (int reg)
@@ -158,6 +168,18 @@ get_arg_slots (ArgInfo *ainfo, int **out_slots, gboolean is_source_argument)
 		src = g_malloc (nsrc * sizeof (int));
 		src [0] = map_freg (sreg);
 		break;
+	case ArgValuetypeAddrInIReg:
+		nsrc = 1;
+		src = g_malloc (nsrc * sizeof (int));
+		src [0] = map_reg (ainfo->pair_regs [0]);
+		break;
+	case ArgValuetypeAddrOnStack:
+		nsrc = 1;
+		src = g_malloc (nsrc * sizeof (int));
+		// is_source_argument adds 2 because we're skipping over the old BBP and the return address
+		// XXX this is a very fragile setup as changes in alignment for the caller reg array can cause the magic number be 3
+		src [0] = map_stack_slot (sslot + (is_source_argument ? 2 : 0));
+		break;
 	default:
 		NOT_IMPLEMENTED;
 		break;
@@ -187,6 +209,11 @@ handle_marshal_when_src_gsharedvt (ArgInfo *dst_info, int *arg_marshal, int *arg
 			*arg_marshal = GSHAREDVT_ARG_BYREF_TO_BYVAL;
 			*arg_slots = dst_info->nregs;
 			break;
+		case ArgValuetypeAddrInIReg:
+		case ArgValuetypeAddrOnStack:
+			*arg_marshal = GSHAREDVT_ARG_NONE;
+			*arg_slots = dst_info->nregs;
+			break;
 		default:
 			NOT_IMPLEMENTED; // Inappropriate value: if dst and src are gsharedvt at once, we shouldn't be here
 			break;
@@ -204,6 +231,10 @@ handle_marshal_when_dst_gsharedvt (ArgInfo *src_info, int *arg_marshal)
 		case ArgValuetypeInReg:
 		case ArgOnStack:
 			*arg_marshal = GSHAREDVT_ARG_BYVAL_TO_BYREF;
+			break;
+		case ArgValuetypeAddrInIReg:
+		case ArgValuetypeAddrOnStack:
+			*arg_marshal = GSHAREDVT_ARG_NONE;
 			break;
 		default:
 			NOT_IMPLEMENTED; // See above
@@ -316,6 +347,10 @@ mono_arch_get_gsharedvt_call_info (gpointer addr, MonoMethodSignature *normal_si
 			handle_marshal_when_src_gsharedvt (dst_info, &arg_marshal, &arg_slots);
 			handle_map_when_gsharedvt_on_stack (src_info, &nsrc, &src, TRUE);
 			break;
+		case ArgValuetypeAddrInIReg:
+		case ArgValuetypeAddrOnStack:
+			nsrc = get_arg_slots (src_info, &src, TRUE);
+			break;
 		default:
 			g_error ("Gsharedvt can't handle source arg type %d", (int)src_info->storage); // Inappropriate value: ArgValuetypeAddrInIReg is for returns only
 		}
@@ -335,6 +370,10 @@ mono_arch_get_gsharedvt_call_info (gpointer addr, MonoMethodSignature *normal_si
 		case ArgGSharedVtOnStack:
 			handle_marshal_when_dst_gsharedvt (src_info, &arg_marshal);
 			handle_map_when_gsharedvt_on_stack (dst_info, &ndst, &dst, FALSE);
+			break;
+		case ArgValuetypeAddrInIReg:
+		case ArgValuetypeAddrOnStack:
+			ndst = get_arg_slots (dst_info, &dst, FALSE);
 			break;
 		default:
 			g_error ("Gsharedvt can't handle dest arg type %d", (int)dst_info->storage); // See above
@@ -356,7 +395,7 @@ mono_arch_get_gsharedvt_call_info (gpointer addr, MonoMethodSignature *normal_si
 	DEBUG_AMD64_GSHAREDVT_PRINT ("-- return in (%s) out (%s) var_ret %d\n", arg_info_desc (&caller_cinfo->ret),  arg_info_desc (&callee_cinfo->ret), var_ret);
 
 	if (cinfo->ret.storage == ArgValuetypeAddrInIReg) {
-		/* Both the caller and the callee pass the vtype ret address in r8 */
+		/* Both the caller and the callee pass the vtype ret address in r8 (System V) and RCX or RDX (Windows) */
 		g_assert (gcinfo->ret.storage == ArgValuetypeAddrInIReg || gcinfo->ret.storage == ArgGsharedvtVariableInReg);
 		add_to_map (map, map_reg (cinfo->ret.reg), map_reg (cinfo->ret.reg));
 	}
@@ -473,6 +512,9 @@ mono_arch_get_gsharedvt_call_info (gpointer addr, MonoMethodSignature *normal_si
 	}
 
 	info->stack_usage = ALIGN_TO (info->stack_usage, MONO_ARCH_FRAME_ALIGNMENT);
+
+	g_free (callee_cinfo);
+	g_free (caller_cinfo);
 
 	DEBUG_AMD64_GSHAREDVT_PRINT ("allocated an info at %p stack usage %d\n", info, info->stack_usage);
 	return info;

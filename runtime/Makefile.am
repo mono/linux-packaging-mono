@@ -109,10 +109,20 @@ cur_dir_cmd = pwd
 PLATFORM_PATH_SEPARATOR = :
 endif
 
+if INSTALL_MOBILE_STATIC
+#  ILASM.exe has features which a mobile_static runtime will not support.
+#  It is invoked with an external mono when used in the runtime.
+#  We skip it here because otherwise it will fail to verify.
+MOBILE_STATIC_FILTER=grep -v ilasm
+else
+MOBILE_STATIC_FILTER=echo
+endif
+
 # Compile all assemblies with the verifier turned on. Code must be valid but not verifiable.
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
 # Skip binary_reference_assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
+	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(MOBILE_STATIC_FILTER)` ; \
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
 	  if [ "binary_reference_assemblies" = "$$profile" ]; then \
@@ -126,7 +136,9 @@ mcs-compileall: mono-wrapper etc/mono/config
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  fi; \
 	  export MONO_PATH; \
-	  for i in $(mcs_topdir)/class/lib/$$profile/*.{dll,exe}; do \
+	  for stub in $$verifiable_files; do \
+	  i=$(mcs_topdir)/class/lib/$$profile/$$stub ; \
+	  echo $$i ; \
 		if [ ! -f $$i ] ; then \
 			continue ; \
 		fi ;  \
@@ -153,10 +165,13 @@ CLEANFILES = etc/mono/config
 etc/mono/config: ../data/config Makefile $(symlinks)
 	d=`cd ../support && pwd`; \
 	sed 's,target="$$mono_libdir/libMonoPosixHelper$(libsuffix)",target="'$$d'/libMonoPosixHelper.la",' ../data/config > $@t
+	d=`cd ../mono/btls/build-shared && pwd`; \
+	sed 's,target="$$mono_libdir/libmono-btls-shared$(libsuffix)",target="'$$d'/libmono-btls-shared$(libsuffix)",' $@t > $@tt
 	if test -z "$(libgdiplus_loc)"; then :; else \
-	  sed 's,target="$(libgdiplus_install_loc)",target="$(libgdiplus_loc)",' $@t > $@tt; \
-	  mv -f $@tt $@t; fi
-	mv -f $@t $@
+	  sed 's,target="$(libgdiplus_install_loc)",target="$(libgdiplus_loc)",' $@tt > $@ttt; \
+	  mv -f $@ttt $@tt; fi
+	mv -f $@tt $@
+	rm -f $@t
 
 $(tmpinst)/bin/mono: mono-wrapper etc/mono/config
 	$(mkinstalldirs) $(tmpinst)/bin

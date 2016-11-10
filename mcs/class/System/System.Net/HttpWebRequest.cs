@@ -133,7 +133,7 @@ namespace System.Net
 		static HttpWebRequest ()
 		{
 			defaultMaxResponseHeadersLength = 64 * 1024;
-#if !NET_2_1
+#if !MOBILE
 			NetConfig config = ConfigurationSettings.GetConfig ("system.net/settings") as NetConfig;
 			if (config != null) {
 				int x = config.MaxResponseHeadersLength;
@@ -145,7 +145,7 @@ namespace System.Net
 #endif
 		}
 
-#if NET_2_1
+#if MOBILE
 		public
 #else
 		internal
@@ -154,7 +154,7 @@ namespace System.Net
 		{
 			this.requestUri = uri;
 			this.actualUri = uri;
-			this.proxy = GlobalProxySelection.Select;
+			this.proxy = InternalDefaultWebProxy;
 			this.webHeaders = new WebHeaderCollection (WebHeaderCollectionType.HttpWebRequest);
 			ThrowOnError = true;
 			ResetAuthorization ();
@@ -226,12 +226,12 @@ namespace System.Net
 			internal set { actualUri = value; } // Used by Ftp+proxy
 		}
 		
-		public bool AllowAutoRedirect {
+		public virtual bool AllowAutoRedirect {
 			get { return allowAutoRedirect; }
 			set { this.allowAutoRedirect = value; }
 		}
 		
-		public bool AllowWriteStreamBuffering {
+		public virtual bool AllowWriteStreamBuffering {
 			get { return allowBuffering; }
 			set { allowBuffering = value; }
 		}
@@ -382,7 +382,7 @@ namespace System.Net
 				SetSpecialHeaders(headerName, HttpProtocolUtils.date2string(dateTime));
 		}
 
-#if !NET_2_1
+#if !MOBILE
 		[MonoTODO]
 		public static new RequestCachePolicy DefaultCachePolicy
 		{
@@ -918,6 +918,12 @@ namespace System.Net
 			return EndGetRequestStream (asyncResult);
 		}
 
+		[MonoTODO]
+		public Stream GetRequestStream (out TransportContext context)
+		{
+			throw new NotImplementedException ();
+		}
+
 		bool CheckIfForceWrite (SimpleAsyncResult result)
 		{
 			if (writeStream == null || writeStream.RequestWritten || !InternalAllowBuffering)
@@ -1314,8 +1320,11 @@ namespace System.Net
 					msg = "Error: " + status;
 					wex = new WebException (msg, status);
 				} else {
-					msg = String.Format ("Error: {0} ({1})", status, exc.Message);
-					wex = new WebException (msg, status, WebExceptionInternalStatus.RequestFatal, exc);
+					wex = exc as WebException;
+					if (wex == null) {
+						msg = String.Format ("Error: {0} ({1})", status, exc.Message);
+						wex = new WebException (msg, status, WebExceptionInternalStatus.RequestFatal, exc);
+					}
 				}
 				r.SetCompleted (false, wex);
 				r.DoCallback ();
@@ -1474,7 +1483,7 @@ namespace System.Net
 			if (wce != null) {
 				WebConnection cnc = wce.Connection;
 				cnc.PriorityRequest = this;
-				ICredentials creds = !isProxy ? credentials : proxy.Credentials;
+				ICredentials creds = (!isProxy || proxy == null) ? credentials : proxy.Credentials;
 				if (creds != null) {
 					cnc.NtlmCredential = creds.GetCredential (requestUri, "NTLM");
 					cnc.UnsafeAuthenticatedConnectionSharing = unsafe_auth_blah;
@@ -1531,7 +1540,7 @@ namespace System.Net
 					return;
 				}
 
-				bool isProxy = ProxyQuery && !proxy.IsBypassed (actualUri);
+				bool isProxy = ProxyQuery && proxy != null && !proxy.IsBypassed (actualUri);
 
 				bool redirected;
 				try {
@@ -1793,6 +1802,22 @@ namespace System.Net
 		}
 
 		internal WebConnection StoredConnection;
+
+#region referencesource
+        internal static StringBuilder GenerateConnectionGroup(string connectionGroupName, bool unsafeConnectionGroup, bool isInternalGroup)
+        {
+            StringBuilder connectionLine = new StringBuilder(connectionGroupName);
+
+            connectionLine.Append(unsafeConnectionGroup ? "U>" : "S>");
+
+            if (isInternalGroup)
+            {
+                connectionLine.Append("I>");
+            }
+
+            return connectionLine;
+        }
+#endregion
 	}
 }
 

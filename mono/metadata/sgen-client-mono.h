@@ -84,6 +84,7 @@ extern void mono_sgen_init_stw (void);
 
 enum {
 	INTERNAL_MEM_EPHEMERON_LINK = INTERNAL_MEM_FIRST_CLIENT,
+	INTERNAL_MEM_MOVED_OBJECT,
 	INTERNAL_MEM_MAX
 };
 
@@ -691,6 +692,11 @@ sgen_client_binary_protocol_concurrent_sweep_end (long long timestamp)
 
 static void G_GNUC_UNUSED
 sgen_client_binary_protocol_header (long long check, int version, int ptr_size, gboolean little_endian)
+{
+}
+
+static void G_GNUC_UNUSED
+sgen_client_binary_protocol_pin_stats (int objects_pinned_in_nursery, size_t bytes_pinned_in_nursery, int objects_pinned_in_major, size_t bytes_pinned_in_major)
 {
 }
 

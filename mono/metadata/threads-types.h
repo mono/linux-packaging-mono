@@ -42,21 +42,12 @@ typedef enum {
 	ThreadApartmentState_Unknown = 0x00000002
 } MonoThreadApartmentState;
 
-typedef enum {
-	ThreadPriority_Lowest = 0,
-	ThreadPriority_BelowNormal = 1,
-	ThreadPriority_Normal = 2,
-	ThreadPriority_AboveNormal = 3,
-	ThreadPriority_Highest = 4
-} MonoThreadPriority;
-
 #define SPECIAL_STATIC_NONE 0
 #define SPECIAL_STATIC_THREAD 1
 #define SPECIAL_STATIC_CONTEXT 2
 
 #ifdef HOST_WIN32
 typedef SECURITY_ATTRIBUTES WapiSecurityAttributes;
-typedef LPTHREAD_START_ROUTINE WapiThreadStart;
 #endif
 
 typedef struct _MonoInternalThread MonoInternalThread;
@@ -87,10 +78,10 @@ void ves_icall_System_Threading_Thread_SetCachedCurrentUICulture (MonoThread *th
 HANDLE ves_icall_System_Threading_Mutex_CreateMutex_internal(MonoBoolean owned, MonoString *name, MonoBoolean *created);
 MonoBoolean ves_icall_System_Threading_Mutex_ReleaseMutex_internal (HANDLE handle );
 HANDLE ves_icall_System_Threading_Mutex_OpenMutex_internal (MonoString *name, gint32 rights, gint32 *error);
-HANDLE ves_icall_System_Threading_Semaphore_CreateSemaphore_internal (gint32 initialCount, gint32 maximumCount, MonoString *name, MonoBoolean *created);
-gint32 ves_icall_System_Threading_Semaphore_ReleaseSemaphore_internal (HANDLE handle, gint32 releaseCount, MonoBoolean *fail);
+HANDLE ves_icall_System_Threading_Semaphore_CreateSemaphore_internal (gint32 initialCount, gint32 maximumCount, MonoString *name, gint32 *error);
+MonoBoolean ves_icall_System_Threading_Semaphore_ReleaseSemaphore_internal (HANDLE handle, gint32 releaseCount, gint32 *prevcount);
 HANDLE ves_icall_System_Threading_Semaphore_OpenSemaphore_internal (MonoString *name, gint32 rights, gint32 *error);
-HANDLE ves_icall_System_Threading_Events_CreateEvent_internal (MonoBoolean manual, MonoBoolean initial, MonoString *name, MonoBoolean *created);
+HANDLE ves_icall_System_Threading_Events_CreateEvent_internal (MonoBoolean manual, MonoBoolean initial, MonoString *name, gint32 *error);
 gboolean ves_icall_System_Threading_Events_SetEvent_internal (HANDLE handle);
 gboolean ves_icall_System_Threading_Events_ResetEvent_internal (HANDLE handle);
 void ves_icall_System_Threading_Events_CloseEvent_internal (HANDLE handle);
@@ -266,5 +257,9 @@ mono_threads_attach_coop (MonoDomain *domain, gpointer *dummy);
 
 MONO_API void
 mono_threads_detach_coop (gpointer cookie, gpointer *dummy);
+
+void mono_threads_begin_abort_protected_block (void);
+void mono_threads_end_abort_protected_block (void);
+MonoException* mono_thread_try_resume_interruption (void);
 
 #endif /* _MONO_METADATA_THREADS_TYPES_H_ */

@@ -102,7 +102,7 @@ static gboolean needs_to_start, started;
 
 static void transport_connect (void);
 
-static guint32 WINAPI receiver_thread (void *arg);
+static gsize WINAPI receiver_thread (void *arg);
 
 static void transport_start_receive (void);
 
@@ -475,16 +475,21 @@ transport_send (int fd, guint8 *data, int len)
 static void
 transport_start_receive (void)
 {
+	MonoThreadParm tp;
+
 	transport_connect ();
 
 	if (!listen_fd)
 		return;
 
-	receiver_thread_handle = mono_threads_create_thread (receiver_thread, NULL, 0, 0, NULL);
+	tp.priority = MONO_THREAD_PRIORITY_NORMAL;
+	tp.stack_size = 0;
+	tp.creation_flags = 0;
+	receiver_thread_handle = mono_threads_create_thread (receiver_thread, NULL, &tp, NULL);
 	g_assert (receiver_thread_handle);
 }
 
-static guint32 WINAPI
+static gsize WINAPI
 receiver_thread (void *arg)
 {
 	MonoError error;

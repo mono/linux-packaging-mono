@@ -271,7 +271,7 @@ typedef struct {
 #define HEADER_LENGTH 11
 
 #define MAJOR_VERSION 2
-#define MINOR_VERSION 42
+#define MINOR_VERSION 43
 
 typedef enum {
 	CMD_SET_VM = 1,
@@ -727,7 +727,7 @@ static void transport_connect (const char *address);
 static gboolean transport_handshake (void);
 static void register_transport (DebuggerTransport *trans);
 
-static guint32 WINAPI debugger_thread (void *arg);
+static gsize WINAPI debugger_thread (void *arg);
 
 static void runtime_initialized (MonoProfiler *prof);
 
@@ -1627,7 +1627,12 @@ stop_debugger_thread (void)
 static void
 start_debugger_thread (void)
 {
-	debugger_thread_handle = mono_threads_create_thread (debugger_thread, NULL, 0, 0, NULL);
+	MonoThreadParm tp;
+
+	tp.priority = MONO_THREAD_PRIORITY_NORMAL;
+	tp.stack_size = 0;
+	tp.creation_flags = 0;
+	debugger_thread_handle = mono_threads_create_thread (debugger_thread, NULL, &tp, NULL);
 	g_assert (debugger_thread_handle);
 }
 
@@ -2785,8 +2790,6 @@ suspend_vm (void)
 static void
 resume_vm (void)
 {
-	int err;
-
 	g_assert (is_debugger_thread ());
 
 	mono_loader_lock ();
@@ -2805,8 +2808,7 @@ resume_vm (void)
 	}
 
 	/* Signal this even when suspend_count > 0, since some threads might have resume_count > 0 */
-	err = mono_coop_cond_broadcast (&suspend_cond);
-	g_assert (err == 0);
+	mono_coop_cond_broadcast (&suspend_cond);
 
 	mono_coop_mutex_unlock (&suspend_mutex);
 	//g_assert (err == 0);
@@ -2825,7 +2827,6 @@ resume_vm (void)
 static void
 resume_thread (MonoInternalThread *thread)
 {
-	int err;
 	DebuggerTlsData *tls;
 
 	g_assert (is_debugger_thread ());
@@ -2847,8 +2848,7 @@ resume_thread (MonoInternalThread *thread)
 	 * Signal suspend_count without decreasing suspend_count, the threads will wake up
 	 * but only the one whose resume_count field is > 0 will be resumed.
 	 */
-	err = mono_coop_cond_broadcast (&suspend_cond);
-	g_assert (err == 0);
+	mono_coop_cond_broadcast (&suspend_cond);
 
 	mono_coop_mutex_unlock (&suspend_mutex);
 	//g_assert (err == 0);
@@ -2895,7 +2895,6 @@ static void
 suspend_current (void)
 {
 	DebuggerTlsData *tls;
-	int err;
 
 	g_assert (!is_debugger_thread ());
 
@@ -2923,8 +2922,7 @@ suspend_current (void)
 	DEBUG_PRINTF (1, "[%p] Suspended.\n", (gpointer) (gsize) mono_native_thread_id_get ());
 
 	while (suspend_count - tls->resume_count > 0) {
-		err = mono_coop_cond_wait (&suspend_cond, &suspend_mutex);
-		g_assert (err == 0);
+		mono_coop_cond_wait (&suspend_cond, &suspend_mutex);
 	}
 
 	tls->suspended = FALSE;
@@ -8379,11 +8377,15 @@ type_commands_internal (int command, MonoClass *klass, MonoDomain *domain, guint
 	case CMD_TYPE_GET_METHODS_BY_NAME_FLAGS: {
 		char *name = decode_string (p, &p, end);
 		int i, flags = decode_int (p, &p, end);
-		MonoException *ex = NULL;
-		GPtrArray *array = mono_class_get_methods_by_name (klass, name, flags & ~BINDING_FLAGS_IGNORE_CASE, (flags & BINDING_FLAGS_IGNORE_CASE) != 0, TRUE, &ex);
+		MonoError error;
+		GPtrArray *array;
 
-		if (!array)
+		mono_error_init (&error);
+		array = mono_class_get_methods_by_name (klass, name, flags & ~BINDING_FLAGS_IGNORE_CASE, (flags & BINDING_FLAGS_IGNORE_CASE) != 0, TRUE, &error);
+		if (!is_ok (&error)) {
+			mono_error_cleanup (&error);
 			return ERR_LOADER_ERROR;
+		}
 		buffer_add_int (buf, array->len);
 		for (i = 0; i < array->len; ++i) {
 			MonoMethod *method = (MonoMethod *)g_ptr_array_index (array, i);
@@ -8625,6 +8627,12 @@ method_commands_internal (int command, MonoMethod *method, MonoDomain *domain, g
 
 		locals = mono_debug_lookup_locals (method);
 		if (!locals) {
+			if (CHECK_PROTOCOL_VERSION (2, 43)) {
+				/* Scopes */
+				buffer_add_int (buf, 1);
+				buffer_add_int (buf, 0);
+				buffer_add_int (buf, header->code_size);
+			}
 			buffer_add_int (buf, header->num_locals);
 			/* Types */
 			for (i = 0; i < header->num_locals; ++i) {
@@ -8642,6 +8650,17 @@ method_commands_internal (int command, MonoMethod *method, MonoDomain *domain, g
 				buffer_add_int (buf, header->code_size);
 			}
 		} else {
+			if (CHECK_PROTOCOL_VERSION (2, 43)) {
+				/* Scopes */
+				buffer_add_int (buf, locals->num_blocks);
+				int last_start = 0;
+				for (i = 0; i < locals->num_blocks; ++i) {
+					buffer_add_int (buf, locals->code_blocks [i].start_offset - last_start);
+					buffer_add_int (buf, locals->code_blocks [i].end_offset - locals->code_blocks [i].start_offset);
+					last_start = locals->code_blocks [i].start_offset;
+				}
+			}
+
 			num_locals = locals->num_locals;
 			buffer_add_int (buf, num_locals);
 
@@ -9807,7 +9826,7 @@ wait_for_attach (void)
  *   This thread handles communication with the debugger client using a JDWP
  * like protocol.
  */
-static guint32 WINAPI
+static gsize WINAPI
 debugger_thread (void *arg)
 {
 	MonoError error;
@@ -9831,16 +9850,17 @@ debugger_thread (void *arg)
 	thread->internal_thread->state |= ThreadState_Background;
 	thread->internal_thread->flags |= MONO_THREAD_FLAG_DONT_MANAGE;
 
-	mono_set_is_debugger_attached (TRUE);
-	
 	if (agent_config.defer) {
 		if (!wait_for_attach ()) {
 			DEBUG_PRINTF (1, "[dbg] Can't attach, aborting debugger thread.\n");
 			attach_failed = TRUE; // Don't abort process when we can't listen
 		} else {
+			mono_set_is_debugger_attached (TRUE);
 			/* Send start event to client */
 			process_profiler_event (EVENT_KIND_VM_START, mono_thread_get_main ());
 		}
+	} else {
+		mono_set_is_debugger_attached (TRUE);
 	}
 	
 	while (!attach_failed) {

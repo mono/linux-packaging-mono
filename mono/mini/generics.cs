@@ -898,6 +898,7 @@ class Tests
 	}
 
 	[Category ("!FULLAOT")]
+	[Category ("!BITCODE")]
 	public static int test_0_regress_668095_synchronized_gshared () {
 		return DoSomething (new DefaultRetriever ());
 	}
@@ -1271,7 +1272,6 @@ class Tests
 		c.throw_catch_t ();
 		return 0;
 	}
-
 }
 
 #if !__MOBILE__

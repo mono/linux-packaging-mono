@@ -131,6 +131,8 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
+AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
 API_VER = @API_VER@
 AR = @AR@
 AS = @AS@
@@ -139,6 +141,11 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BTLS_ARCH = @BTLS_ARCH@
+BTLS_CFLAGS = @BTLS_CFLAGS@
+BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
+BTLS_PLATFORM = @BTLS_PLATFORM@
+BTLS_ROOT = @BTLS_ROOT@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
@@ -148,6 +155,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -168,7 +176,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLE_PERF_EVENTS = @ENABLE_PERF_EVENTS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
@@ -183,10 +190,12 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
+INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -233,6 +242,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -242,6 +252,7 @@ SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
+TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
@@ -350,6 +361,12 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
+@INSTALL_MOBILE_STATIC_FALSE@MOBILE_STATIC_FILTER = echo
+
+#  ILASM.exe has features which a mobile_static runtime will not support.
+#  It is invoked with an external mono when used in the runtime.
+#  We skip it here because otherwise it will fail to verify.
+@INSTALL_MOBILE_STATIC_TRUE@MOBILE_STATIC_FILTER = grep -v ilasm
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
@@ -571,6 +588,7 @@ mcs-do-run-test-profiles: test-support-files
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
 # Skip binary_reference_assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
+	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(MOBILE_STATIC_FILTER)` ; \
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
 	  if [ "binary_reference_assemblies" = "$$profile" ]; then \
@@ -584,7 +602,9 @@ mcs-compileall: mono-wrapper etc/mono/config
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  fi; \
 	  export MONO_PATH; \
-	  for i in $(mcs_topdir)/class/lib/$$profile/*.{dll,exe}; do \
+	  for stub in $$verifiable_files; do \
+	  i=$(mcs_topdir)/class/lib/$$profile/$$stub ; \
+	  echo $$i ; \
 		if [ ! -f $$i ] ; then \
 			continue ; \
 		fi ;  \
@@ -606,10 +626,13 @@ test: mcs-do-test-profiles
 etc/mono/config: ../data/config Makefile $(symlinks)
 	d=`cd ../support && pwd`; \
 	sed 's,target="$$mono_libdir/libMonoPosixHelper$(libsuffix)",target="'$$d'/libMonoPosixHelper.la",' ../data/config > $@t
+	d=`cd ../mono/btls/build-shared && pwd`; \
+	sed 's,target="$$mono_libdir/libmono-btls-shared$(libsuffix)",target="'$$d'/libmono-btls-shared$(libsuffix)",' $@t > $@tt
 	if test -z "$(libgdiplus_loc)"; then :; else \
-	  sed 's,target="$(libgdiplus_install_loc)",target="$(libgdiplus_loc)",' $@t > $@tt; \
-	  mv -f $@tt $@t; fi
-	mv -f $@t $@
+	  sed 's,target="$(libgdiplus_install_loc)",target="$(libgdiplus_loc)",' $@tt > $@ttt; \
+	  mv -f $@ttt $@tt; fi
+	mv -f $@tt $@
+	rm -f $@t
 
 $(tmpinst)/bin/mono: mono-wrapper etc/mono/config
 	$(mkinstalldirs) $(tmpinst)/bin

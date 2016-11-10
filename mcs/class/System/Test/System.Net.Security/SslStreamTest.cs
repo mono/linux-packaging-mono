@@ -59,6 +59,9 @@ public class SslStreamTest {
 	}
 
 	[Test] //bug https://bugzilla.novell.com/show_bug.cgi?id=457120
+#if FEATURE_NO_BSD_SOCKETS
+	[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 	public void AuthenticateClientAndServer_ClientSendsNoData ()
 	{
 		AuthenticateClientAndServer (true, true);

@@ -100,22 +100,21 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwapi_la_DEPENDENCIES =
 am__libwapi_la_SOURCES_DIST = access.h context.c context.h error.c \
-	error.h events.c events.h event-private.h handles.c handles.h \
-	handles-private.h io.c io.h io-portability.c io-portability.h \
-	io-private.h io-layer.h locking.c macros.h messages.c \
-	messages.h mutexes.c mutexes.h mutex-private.h posix.c \
-	processes.c processes.h process-private.h security.c \
-	security.h semaphores.c semaphores.h semaphore-private.h \
-	shared.c shared.h sockets.c sockets.h socket-private.h \
-	socket-wrappers.h status.h threads.h thread-private.h \
+	error.h events.c events.h event-private.h io.c io.h \
+	io-portability.c io-portability.h io-private.h io-layer.h \
+	locking.c macros.h messages.c messages.h mutexes.c mutexes.h \
+	mutex-private.h posix.c processes.c processes.h \
+	process-private.h security.c security.h semaphores.c \
+	semaphores.h semaphore-private.h shared.c shared.h sockets.c \
+	sockets.h socket-private.h socket-wrappers.h status.h \
 	timefuncs.c timefuncs.h timefuncs-private.h types.h uglify.h \
 	versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
-	wapi_glob.c wapi.h wapi-private.h wthreads.c io-trace.h \
+	wapi_glob.c wapi.h wapi-private.h wapi.c io-trace.h \
 	wapi-remap.h io-layer-dummy.c
-am__objects_1 = context.lo error.lo events.lo handles.lo io.lo \
-	io-portability.lo locking.lo messages.lo mutexes.lo posix.lo \
-	processes.lo security.lo semaphores.lo shared.lo sockets.lo \
-	timefuncs.lo versioninfo.lo wait.lo wapi_glob.lo wthreads.lo
+am__objects_1 = context.lo error.lo events.lo io.lo io-portability.lo \
+	locking.lo messages.lo mutexes.lo posix.lo processes.lo \
+	security.lo semaphores.lo shared.lo sockets.lo timefuncs.lo \
+	versioninfo.lo wait.lo wapi_glob.lo wapi.lo
 am__objects_2 =
 am__objects_3 = io-layer-dummy.lo
 @HOST_WIN32_FALSE@am_libwapi_la_OBJECTS = $(am__objects_1) \
@@ -187,6 +186,8 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
+AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
 API_VER = @API_VER@
 AR = @AR@
 AS = @AS@
@@ -195,6 +196,11 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BTLS_ARCH = @BTLS_ARCH@
+BTLS_CFLAGS = @BTLS_CFLAGS@
+BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
+BTLS_PLATFORM = @BTLS_PLATFORM@
+BTLS_ROOT = @BTLS_ROOT@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
@@ -204,6 +210,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -224,7 +231,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLE_PERF_EVENTS = @ENABLE_PERF_EVENTS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
@@ -239,10 +245,12 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
+INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -289,6 +297,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -298,6 +307,7 @@ SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
+TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
@@ -400,7 +410,6 @@ OTHER_H = \
 	context.h	\
 	error.h		\
 	events.h	\
-	handles.h	\
 	io.h		\
 	io-trace.h	\
 	io-layer.h	\
@@ -413,7 +422,6 @@ OTHER_H = \
 	semaphores.h	\
 	sockets.h	\
 	status.h	\
-	threads.h	\
 	timefuncs.h	\
 	types.h		\
 	uglify.h	\
@@ -431,9 +439,6 @@ OTHER_SRC = \
 	events.c		\
 	events.h		\
 	event-private.h		\
-	handles.c		\
-	handles.h		\
-	handles-private.h	\
 	io.c			\
 	io.h			\
 	io-portability.c	\
@@ -463,8 +468,6 @@ OTHER_SRC = \
 	socket-private.h	\
 	socket-wrappers.h	\
 	status.h		\
-	threads.h		\
-	thread-private.h	\
 	timefuncs.c		\
 	timefuncs.h		\
 	timefuncs-private.h	\
@@ -478,7 +481,7 @@ OTHER_SRC = \
 	wapi_glob.c		\
 	wapi.h			\
 	wapi-private.h		\
-	wthreads.c
+	wapi.c
 
 WINDOWS_H = \
 	io-layer.h
@@ -551,7 +554,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/events.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/handles.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io-layer-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io-portability.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Plo@am__quote@
@@ -567,8 +569,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timefuncs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/versioninfo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wait.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wapi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wapi_glob.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wthreads.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

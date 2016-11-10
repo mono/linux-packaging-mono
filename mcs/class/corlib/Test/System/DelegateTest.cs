@@ -1251,7 +1251,7 @@ namespace MonoTests.System
 			}
 		}
 	
-		delegate int IntNoArgs ();
+		public delegate int IntNoArgs ();
 
 		[Test]
 		public void CreateDelegateWithAbstractMethods ()
@@ -1443,6 +1443,18 @@ namespace MonoTests.System
 			var del1 = new DoExecuteDelegate1 (b.DoExecute);
 			var del2 = new DoExecuteDelegate2 (b.DoExecute);
 			var del = Delegate.Remove (del1, del2);
+		}
+
+		[Test]
+		[ExpectedException (typeof (ArgumentException))]
+		public void CreateDelegateThrowsAnArgumentExceptionWhenCalledWithAnOpenGeneric()
+		{
+			var m = GetType().GetMethod("AnyGenericMethod");
+			Delegate.CreateDelegate(typeof(Action), this, m);
+		}
+
+		public void AnyGenericMethod<T>()
+		{
 		}
 
 		static bool Int32D2 (int x, int y)

@@ -17,6 +17,9 @@ namespace MonoTests.System.Net.Sockets {
 	[TestFixture]
 	public class UdpClientTest {
 		[Test] // .ctor ()
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor1 ()
 		{
 			MyUdpClient client;
@@ -42,6 +45,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (AddressFamily)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor2 ()
 		{
 			MyUdpClient client;
@@ -87,6 +93,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (AddressFamily)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor2_Family_Invalid ()
 		{
 			try {
@@ -113,6 +122,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor3 ()
 		{
 			Socket s;
@@ -162,6 +174,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor3_Port_OutOfRange ()
 		{
 			try {
@@ -188,6 +203,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (IPEndPoint)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor4 ()
 		{
 			Socket s;
@@ -220,6 +238,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (IPEndPoint)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor4_LocalEP_Null ()
 		{
 			try {
@@ -234,6 +255,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (Int32, AddressFamily)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor5 ()
 		{
 			Socket s;
@@ -287,6 +311,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (Int32, AddressFamily)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor5_Family_Invalid ()
 		{
 			try {
@@ -317,6 +344,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (Int32, AddressFamily)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor5_Port_OutOfRange ()
 		{
 			try {
@@ -343,6 +373,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (String, Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor6 ()
 		{
 			Socket s;
@@ -393,6 +426,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (String, Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor6_HostName_Null ()
 		{
 			try {
@@ -407,6 +443,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // .ctor (String, Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Constructor6_Port_OutOfRange ()
 		{
 			try {
@@ -433,6 +472,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void UdpClientBroadcastTest () 
 		{
 			UdpClient client = new UdpClient ();
@@ -446,6 +488,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup1_IPv4 ()
 		{
 			IPAddress mcast_addr = IPAddress.Parse ("224.0.0.23");
@@ -456,6 +501,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup1_IPv6 ()
 		{
 			if (!Socket.OSSupportsIPv6)
@@ -469,6 +517,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup1_MulticastAddr_Null ()
 		{
 			using (UdpClient client = new UdpClient (new IPEndPoint (IPAddress.Loopback, 1234))) {
@@ -485,6 +536,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup1_Socket_Closed ()
 		{
 			IPAddress mcast_addr = null;
@@ -527,6 +581,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (In32, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup2_IPv4 ()
 		{
 			IPAddress mcast_addr = IPAddress.Parse ("224.0.0.23");
@@ -549,6 +606,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (In32, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup2_IPv6 ()
 		{
 			if (!Socket.OSSupportsIPv6)
@@ -562,6 +622,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (Int32, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup2_MulticastAddr_Null ()
 		{
 			using (UdpClient client = new UdpClient (new IPEndPoint (IPAddress.Loopback, 1234))) {
@@ -578,6 +641,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (Int32, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup2_Socket_Closed ()
 		{
 			if (!Socket.OSSupportsIPv6)
@@ -623,6 +689,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup3_IPv4 ()
 		{
 			IPAddress mcast_addr = IPAddress.Parse ("224.0.0.23");
@@ -637,6 +706,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup3_IPv6 ()
 		{
 			if (!Socket.OSSupportsIPv6)
@@ -654,6 +726,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup3_MulticastAddr_Null ()
 		{
 			using (UdpClient client = new UdpClient (new IPEndPoint (IPAddress.Loopback, 1234))) {
@@ -670,6 +745,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, Int32)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup3_Socket_Closed ()
 		{
 			IPAddress mcast_addr = null;
@@ -712,6 +790,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup4_IPv4 ()
 		{
 			IPAddress mcast_addr = IPAddress.Parse ("224.0.0.23");
@@ -723,6 +804,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup4_IPv6 ()
 		{
 			if (!Socket.OSSupportsIPv6)
@@ -749,6 +833,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup4_LocalAddress_Null ()
 		{
 			IPAddress mcast_addr = IPAddress.Parse ("224.0.0.23");
@@ -767,6 +854,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup4_MulticastAddr_Null ()
 		{
 			using (UdpClient client = new UdpClient (new IPEndPoint (IPAddress.Loopback, 1234))) {
@@ -783,6 +873,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // JoinMulticastGroup (IPAddress, IPAddress)
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroup4_Socket_Closed ()
 		{
 			IPAddress mcast_addr = null;
@@ -827,6 +920,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void CloseInReceive ()
 		{
 			UdpClient client = null;
@@ -867,6 +963,9 @@ namespace MonoTests.System.Net.Sockets {
 
 		// Test for bug 324033
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void JoinMulticastGroupWithLocal ()
 		{
 			UdpClient client = new UdpClient (9001);
@@ -881,7 +980,11 @@ namespace MonoTests.System.Net.Sockets {
 		}
 		
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#else
 		[ExpectedException (typeof(ArgumentNullException))]
+#endif
 		public void BeginSendNull ()
 		{
 			UdpClient client = new UdpClient ();
@@ -904,6 +1007,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 		
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void BeginSend ()
 		{
 			UdpClient client = new UdpClient ();
@@ -958,6 +1064,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 		
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void BeginReceive ()
 		{
 			UdpClient client = new UdpClient (1237);
@@ -983,6 +1092,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 		
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void Available ()
 		{
 			using (UdpClient client = new UdpClient (1238)) {
@@ -1017,6 +1129,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 		
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void EnableBroadcastDefault ()
 		{
 			UdpClient client = new UdpClient ();
@@ -1056,6 +1171,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 		
 		[Test]
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void MulticastLoopbackDefault ()
 		{
 			UdpClient client = new UdpClient ();
@@ -1066,6 +1184,9 @@ namespace MonoTests.System.Net.Sockets {
 		}
 
 		[Test] // #6057
+#if FEATURE_NO_BSD_SOCKETS
+		[ExpectedException (typeof (PlatformNotSupportedException))]
+#endif
 		public void ReceiveIPv6 ()
 		{
 			if (!Socket.OSSupportsIPv6)

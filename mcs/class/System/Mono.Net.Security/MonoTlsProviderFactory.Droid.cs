@@ -2,7 +2,7 @@
 #if SECURITY_DEP
 using System;
 using MSI = Mono.Security.Interface;
-#if HAVE_BTLS
+#if MONO_FEATURE_BTLS
 using Mono.Btls;
 #endif
 
@@ -18,14 +18,12 @@ namespace Mono.Net.Security
 			case null:
 			case "default":
 			case "legacy":
-				return new Private.MonoLegacyTlsProvider ();
+				return new LegacyTlsProvider ();
+#if MONO_FEATURE_BTLS
 			case "btls":
-#if HAVE_BTLS
-				if (!MonoBtlsProvider.IsSupported ())
+				if (!IsBtlsSupported ())
 					throw new NotSupportedException ("BTLS in not supported!");
 				return new MonoBtlsProvider ();
-#else
-				throw new NotSupportedException ("BTLS in not supported!");
 #endif
 			default:
 				throw new NotSupportedException (string.Format ("Invalid TLS Provider: `{0}'.", provider));

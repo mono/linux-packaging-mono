@@ -325,7 +325,10 @@ struct _MonoDomain {
 	/* hashtables for Reflection handles */
 	MonoGHashTable     *type_hash;
 	MonoGHashTable     *refobject_hash;
-	/* a GC-tracked array to keep references to the static fields of types */
+	/*
+	 * A GC-tracked array to keep references to the static fields of types.
+	 * See note [Domain Static Data Array].
+	 */
 	gpointer           *static_data_array;
 	/* maps class -> type initialization exception object */
 	MonoGHashTable    *type_init_exception_hash;
@@ -386,7 +389,7 @@ struct _MonoDomain {
 
 	/*thread pool jobs, used to coordinate shutdown.*/
 	volatile int			threadpool_jobs;
-	HANDLE				cleanup_semaphore;
+	gpointer				cleanup_semaphore;
 	
 	/* Contains the compiled runtime invoke wrapper used by finalizers */
 	gpointer            finalize_runtime_invoke;
@@ -439,8 +442,8 @@ typedef struct  {
 
 typedef MonoDomain* (*MonoLoadFunc) (const char *filename, const char *runtime_version);
 
-void mono_domain_lock (MonoDomain *domain);
-void mono_domain_unlock (MonoDomain *domain);
+void mono_domain_lock (MonoDomain *domain) MONO_LLVM_INTERNAL;
+void mono_domain_unlock (MonoDomain *domain) MONO_LLVM_INTERNAL;
 
 void
 mono_install_runtime_load  (MonoLoadFunc func);
@@ -693,5 +696,9 @@ mono_runtime_init_checked (MonoDomain *domain, MonoThreadStartCB start_cb, MonoT
 
 void
 mono_context_init_checked (MonoDomain *domain, MonoError *error);
+
+gboolean
+mono_assembly_has_reference_assembly_attribute (MonoAssembly *assembly, MonoError *error);
+
 
 #endif /* __MONO_METADATA_DOMAIN_INTERNALS_H__ */

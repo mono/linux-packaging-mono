@@ -323,7 +323,7 @@ sgen_los_free_object (LOSObject *obj)
 	los_num_objects--;
 
 #ifdef USE_MALLOC
-	free (obj);
+	g_free (obj);
 #else
 	if (size > LOS_SECTION_OBJECT_LIMIT) {
 		int pagesize = mono_pagesize ();
@@ -379,7 +379,7 @@ sgen_los_alloc_large_inner (GCVTable vtable, size_t size)
 	sgen_ensure_free_space (size, GENERATION_OLD);
 
 #ifdef USE_MALLOC
-	obj = malloc (size + sizeof (LOSObject));
+	obj = g_malloc (size + sizeof (LOSObject));
 	memset (obj, 0, size + sizeof (LOSObject));
 #else
 	if (size > LOS_SECTION_OBJECT_LIMIT) {
@@ -526,12 +526,14 @@ sgen_ptr_is_in_los (char *ptr, char **start)
 {
 	LOSObject *obj;
 
-	*start = NULL;
+	if (start)
+		*start = NULL;
 	for (obj = los_object_list; obj; obj = obj->next) {
 		char *end = (char*)obj->data + sgen_los_object_size (obj);
 
 		if (ptr >= (char*)obj->data && ptr < end) {
-			*start = (char*)obj->data;
+			if (start)
+				*start = (char*)obj->data;
 			return TRUE;
 		}
 	}

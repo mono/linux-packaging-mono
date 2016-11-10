@@ -205,6 +205,8 @@ distcleancheck_listfiles = find . -type f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+AOT_BUILD_FLAGS = @AOT_BUILD_FLAGS@
+AOT_RUN_FLAGS = @AOT_RUN_FLAGS@
 API_VER = @API_VER@
 AR = @AR@
 AS = @AS@
@@ -213,6 +215,11 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BTLS_ARCH = @BTLS_ARCH@
+BTLS_CFLAGS = @BTLS_CFLAGS@
+BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
+BTLS_PLATFORM = @BTLS_PLATFORM@
+BTLS_ROOT = @BTLS_ROOT@
 BUILD_EXEEXT = @BUILD_EXEEXT@
 CC = @CC@
 CCAS = @CCAS@
@@ -222,6 +229,7 @@ CCDEPMODE = @CCDEPMODE@
 CC_FOR_BUILD = @CC_FOR_BUILD@
 CFLAGS = @CFLAGS@
 CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
+CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -242,7 +250,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLE_PERF_EVENTS = @ENABLE_PERF_EVENTS@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
@@ -257,10 +264,12 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 INTL = @INTL@
+INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBC = @LIBC@
@@ -307,6 +316,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
@@ -316,6 +326,7 @@ SHELL = @SHELL@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
+TEST_PROFILE = @TEST_PROFILE@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 VTUNE_CFLAGS = @VTUNE_CFLAGS@
@@ -407,12 +418,13 @@ top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = $(WERROR_CFLAGS)
 MONOTOUCH_SUBDIRS = $(libgc_dir) eglib/src mono
-@CROSS_COMPILING_FALSE@SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples msvc $(docs_dir) acceptance-tests
-@CROSS_COMPILING_TRUE@SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples msvc $(docs_dir) acceptance-tests
+@CROSS_COMPILING_FALSE@tools_dir = tools
+
+# Some tools might not build when cross-compiling
+@CROSS_COMPILING_TRUE@tools_dir = 
+SUBDIRS = po $(libgc_dir) eglib mono $(ikvm_native_dir) support data runtime scripts man samples $(tools_dir) msvc $(docs_dir) acceptance-tests llvm
 # Keep in sync with SUBDIRS
-@CROSS_COMPILING_FALSE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs acceptance-tests
-# Keep in sync with SUBDIRS
-@CROSS_COMPILING_TRUE@DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs acceptance-tests
+DIST_SUBDIRS = m4 po $(libgc_dir) eglib mono ikvm-native support data runtime scripts man samples tools msvc docs acceptance-tests llvm
 SUBMODULE_ERROR = 'Could not recursively update all git submodules. You may experience compilation problems if some submodules are out of date'
 EXTRA_DIST = \
 	README.md 		\
@@ -437,6 +449,7 @@ mcslib = $(mcs_topdir)/class/lib
 monolite = $(mcslib)/monolite
 mono_corlib_version = $(shell sed -n "s/\#define MONO_CORLIB_VERSION //p" $(srcdir)/mono/metadata/appdomain.c)
 monolite_url = http://download.mono-project.com/monolite/monolite-$(mono_corlib_version)-latest.tar.gz
+@BITCODE_TRUE@BITCODE_CHECK = yes
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -949,6 +962,10 @@ get-monolite-latest:
 	cd $(mcslib) && { (wget -O- $(monolite_url) || curl $(monolite_url)) | gzip -d | tar xf - ; }
 	cd $(mcslib) && mv -f monolite-* monolite
 
+.PHONY: check-ci
+check-ci:
+	MONO_LLVMONLY=$(BITCODE_CHECK) $(srcdir)/scripts/ci/run-test-$(TEST_PROFILE).sh
+
 .PHONY: validate do-build-mono-mcs mcs-do-clean mcs-do-tests
 validate: do-build-mono-mcs
 	$(MAKE) mcs-do-tests
@@ -1031,6 +1048,7 @@ package-inputs:
 		 read libou;  echo "      <library_output>$$libou</library_output>"; \
 		 read fx_ver; echo "      <fx_version>$$fx_ver</fx_version>"; \
 		 read profile; echo "      <profile>$$profile</profile>"; \
+		 read resxt;  echo "      <resources>$$resxt</resources>"; \
 		 read resp;   echo "      <response>$$resp</response>"; \
 		 echo "    </project>") >> msvc/scripts/order.xml; \
 	done

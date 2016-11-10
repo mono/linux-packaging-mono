@@ -52,6 +52,7 @@
 #include "mono/utils/mono-counters.h"
 #include "mono/utils/mono-hwcap.h"
 #include "mono/utils/mono-logger-internals.h"
+#include "mono/utils/w32handle.h"
 
 #include "mini.h"
 #include "jit.h"
@@ -1026,18 +1027,27 @@ mono_jit_exec (MonoDomain *domain, MonoAssembly *assembly, int argc, char *argv[
 	}
 	
 	if (mono_llvm_only) {
-		MonoObject *exc;
+		MonoObject *exc = NULL;
 		int res;
 
-		res = mono_runtime_run_main (method, argc, argv, &exc);
+		res = mono_runtime_try_run_main (method, argc, argv, &exc);
 		if (exc) {
 			mono_unhandled_exception (exc);
 			mono_invoke_unhandled_exception_hook (exc);
-			return 1;
+			g_assert_not_reached ();
 		}
 		return res;
 	} else {
-		return mono_runtime_run_main (method, argc, argv, NULL);
+		int res = mono_runtime_run_main_checked (method, argc, argv, &error);
+		if (!is_ok (&error)) {
+			MonoException *ex = mono_error_convert_to_exception (&error);
+			if (ex) {
+				mono_unhandled_exception (&ex->object);
+				mono_invoke_unhandled_exception_hook (&ex->object);
+				g_assert_not_reached ();
+			}
+		}
+		return res;
 	}
 }
 
@@ -1356,30 +1366,6 @@ static const char info[] =
 #define error_if_aot_unsupported() do {fprintf (stderr, "AOT compilation is not supported on this platform.\n"); exit (1);} while (0)
 #else
 #define error_if_aot_unsupported()
-#endif
-
-#ifdef HOST_WIN32
-BOOL APIENTRY DllMain (HMODULE module_handle, DWORD reason, LPVOID reserved)
-{
-	if (!mono_gc_dllmain (module_handle, reason, reserved))
-		return FALSE;
-
-	switch (reason)
-	{
-	case DLL_PROCESS_ATTACH:
-		mono_install_runtime_load (mini_init);
-		break;
-	case DLL_PROCESS_DETACH:
-		if (coree_module_handle)
-			FreeLibrary (coree_module_handle);
-		break;
-	case DLL_THREAD_DETACH:
-		mono_thread_info_detach ();
-		break;
-	
-	}
-	return TRUE;
-}
 #endif
 
 static gboolean enable_debugging;
@@ -1758,10 +1744,11 @@ mono_main (int argc, char* argv[])
 		} else if (strcmp (argv [i], "--verify-all") == 0) {
 			mono_verifier_enable_verify_all ();
 		} else if (strcmp (argv [i], "--full-aot") == 0) {
-			mono_aot_only = TRUE;
+			mono_jit_set_aot_mode (MONO_AOT_MODE_FULL);
 		} else if (strcmp (argv [i], "--llvmonly") == 0) {
-			mono_aot_only = TRUE;
-			mono_llvm_only = TRUE;
+			mono_jit_set_aot_mode (MONO_AOT_MODE_LLVMONLY);
+		} else if (strcmp (argv [i], "--hybrid-aot") == 0) {
+			mono_jit_set_aot_mode (MONO_AOT_MODE_HYBRID);
 		} else if (strcmp (argv [i], "--print-vtable") == 0) {
 			mono_print_vtable = TRUE;
 		} else if (strcmp (argv [i], "--stats") == 0) {
@@ -1977,14 +1964,12 @@ mono_main (int argc, char* argv[])
 
 	mono_counters_init ();
 
+#ifndef HOST_WIN32
+	mono_w32handle_init ();
+#endif
+
 	/* Set rootdir before loading config */
 	mono_set_rootdir ();
-
-	/*
-	 * We only set the native name of the thread since MS.NET leaves the
-	 * managed thread name for the main thread as null.
-	 */
-	mono_native_thread_set_name (mono_native_thread_id_get (), "Main");
 
 	if (enable_profile) {
 		mono_profiler_load (profile_options);
@@ -2312,10 +2297,20 @@ mono_jit_set_aot_only (gboolean val)
 void
 mono_jit_set_aot_mode (MonoAotMode mode)
 {
+	/* we don't want to set mono_aot_mode twice */
+	g_assert (mono_aot_mode == MONO_AOT_MODE_NONE);
 	mono_aot_mode = mode;
+
 	if (mono_aot_mode == MONO_AOT_MODE_LLVMONLY) {
 		mono_aot_only = TRUE;
 		mono_llvm_only = TRUE;
+	}
+	if (mono_aot_mode == MONO_AOT_MODE_FULL) {
+		mono_aot_only = TRUE;
+	}
+	if (mono_aot_mode == MONO_AOT_MODE_HYBRID) {
+		mono_set_generic_sharing_vt_supported (TRUE);
+		mono_set_partial_sharing_supported (TRUE);
 	}
 }
 

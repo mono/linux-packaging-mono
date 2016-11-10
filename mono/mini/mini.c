@@ -1169,7 +1169,7 @@ mono_allocate_stack_slots2 (MonoCompile *cfg, gboolean backward, guint32 *stack_
 		vars = g_list_prepend (vars, vmv);
 	}
 
-	vars = g_list_sort (g_list_copy (vars), compare_by_interval_start_pos_func);
+	vars = g_list_sort (vars, compare_by_interval_start_pos_func);
 
 	/* Sanity check */
 	/*
@@ -1886,28 +1886,59 @@ mono_verify_cfg (MonoCompile *cfg)
 		mono_verify_bblock (bb);
 }
 
+// This will free many fields in cfg to save
+// memory. Note that this must be safe to call
+// multiple times. It must be idempotent. 
+void
+mono_empty_compile (MonoCompile *cfg)
+{
+	mono_free_loop_info (cfg);
+
+	// These live in the mempool, and so must be freed
+	// first
+	for (GSList *l = cfg->headers_to_free; l; l = l->next) {
+		mono_metadata_free_mh ((MonoMethodHeader *)l->data);
+	}
+	cfg->headers_to_free = NULL;
+
+	if (cfg->mempool) {
+	//mono_mempool_stats (cfg->mempool);
+		mono_mempool_destroy (cfg->mempool);
+		cfg->mempool = NULL;
+	}
+
+	g_free (cfg->varinfo);
+	cfg->varinfo = NULL;
+
+	g_free (cfg->vars);
+	cfg->vars = NULL;
+
+	if (cfg->rs) {
+		mono_regstate_free (cfg->rs);
+		cfg->rs = NULL;
+	}
+}
+
 void
 mono_destroy_compile (MonoCompile *cfg)
 {
-	GSList *l;
+	mono_empty_compile (cfg);
 
 	if (cfg->header)
 		mono_metadata_free_mh (cfg->header);
-	//mono_mempool_stats (cfg->mempool);
-	mono_free_loop_info (cfg);
-	if (cfg->rs)
-		mono_regstate_free (cfg->rs);
+
 	if (cfg->spvars)
 		g_hash_table_destroy (cfg->spvars);
 	if (cfg->exvars)
 		g_hash_table_destroy (cfg->exvars);
-	for (l = cfg->headers_to_free; l; l = l->next)
-		mono_metadata_free_mh ((MonoMethodHeader *)l->data);
+
 	g_list_free (cfg->ldstr_list);
-	g_hash_table_destroy (cfg->token_info_hash);
+
+	if (cfg->token_info_hash)
+		g_hash_table_destroy (cfg->token_info_hash);
+
 	if (cfg->abs_patches)
 		g_hash_table_destroy (cfg->abs_patches);
-	mono_mempool_destroy (cfg->mempool);
 
 	mono_debug_free_method (cfg);
 
@@ -2908,6 +2939,17 @@ is_open_method (MonoMethod *method)
 	return FALSE;
 }
 
+static void mono_insert_nop_in_empty_bb (MonoCompile *cfg)
+{
+	MonoBasicBlock *bb;
+	for (bb = cfg->bb_entry; bb; bb = bb->next_bb) {
+		if (bb->code)
+			continue;
+		MonoInst *nop;
+		MONO_INST_NEW (cfg, nop, OP_NOP);
+		MONO_ADD_INS (bb, nop);
+	}
+}
 static void
 mono_create_gc_safepoint (MonoCompile *cfg, MonoBasicBlock *bblock)
 {
@@ -3369,6 +3411,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 					//g_free (nm);
 				}
 				if (cfg->llvm_only) {
+					g_free (cfg->exception_message);
 					cfg->disable_aot = TRUE;
 					return cfg;
 				}
@@ -3516,6 +3559,12 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	MONO_TIME_TRACK (mono_jit_stats.jit_method_to_ir, i = mono_method_to_ir (cfg, method_to_compile, NULL, NULL, NULL, NULL, 0, FALSE));
 	mono_cfg_dump_ir (cfg, "method-to-ir");
 
+	if (cfg->gdump_ctx != NULL) {
+		/* workaround for graph visualization, as it doesn't handle empty basic blocks properly */
+		mono_insert_nop_in_empty_bb (cfg);
+		mono_cfg_dump_ir (cfg, "mono_insert_nop_in_empty_bb");
+	}
+
 	if (i < 0) {
 		if (try_generic_shared && cfg->exception_type == MONO_EXCEPTION_GENERIC_SHARING_FAILED) {
 			if (compile_aot) {
@@ -3592,6 +3641,15 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	if (cfg->opt & (MONO_OPT_CONSPROP | MONO_OPT_COPYPROP)) {
 		MONO_TIME_TRACK (mono_jit_stats.jit_local_cprop, mono_local_cprop (cfg));
 		mono_cfg_dump_ir (cfg, "local_cprop");
+	}
+
+	if (cfg->flags & MONO_CFG_HAS_TYPE_CHECK) {
+		MONO_TIME_TRACK (mono_jit_stats.jit_decompose_typechecks, mono_decompose_typechecks (cfg));
+		if (cfg->gdump_ctx != NULL) {
+			/* workaround for graph visualization, as it doesn't handle empty basic blocks properly */
+			mono_insert_nop_in_empty_bb (cfg);
+		}
+		mono_cfg_dump_ir (cfg, "decompose_typechecks");
 	}
 
 	/*
@@ -4183,13 +4241,9 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 
 	if (mono_aot_only) {
 		char *fullname = mono_method_full_name (method, TRUE);
-		char *msg = g_strdup_printf ("Attempting to JIT compile method '%s' while running with --aot-only. See http://docs.xamarin.com/ios/about/limitations for more information.\n", fullname);
-
-		ex = mono_get_exception_execution_engine (msg);
-		mono_error_set_exception_instance (error, ex);
+		mono_error_set_execution_engine (error, "Attempting to JIT compile method '%s' while running with --aot-only. See http://docs.xamarin.com/ios/about/limitations for more information.\n", fullname);
 		g_free (fullname);
-		g_free (msg);
-		
+
 		return NULL;
 	}
 

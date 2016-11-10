@@ -12,6 +12,7 @@
 #include <config.h>
 
 #include <mono/metadata/object-internals.h>
+#include <mono/metadata/dynamic-image-internals.h>
 #include <mono/metadata/verify.h>
 #include <mono/metadata/verify-internals.h>
 #include <mono/metadata/opcodes.h>
@@ -371,7 +372,7 @@ static gboolean
 token_bounds_check (MonoImage *image, guint32 token)
 {
 	if (image_is_dynamic (image))
-		return mono_reflection_is_valid_dynamic_token ((MonoDynamicImage*)image, token);
+		return mono_dynamic_image_is_valid_token ((MonoDynamicImage*)image, token);
 	return image->tables [mono_metadata_token_table (token)].rows >= mono_metadata_token_index (token) && mono_metadata_token_index (token) > 0;
 }
 
@@ -2768,7 +2769,7 @@ verify_delegate_compatibility (VerifyContext *ctx, MonoClass *delegate, ILStackD
 			CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("This object not compatible with function pointer for delegate creation at 0x%04x", ctx->ip_offset));
 	} else {
 		if (method->flags & METHOD_ATTRIBUTE_STATIC) {
-			if (!stack_slot_is_null_literal (value) && !is_first_arg_bound)
+			if (!stack_slot_is_null_literal (value))
 				CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("Non-null this args used with static function for delegate creation at 0x%04x", ctx->ip_offset));
 		} else {
 			if (!verify_stack_type_compatibility_full (ctx, &method->klass->byval_arg, value, FALSE, TRUE) && !stack_slot_is_null_literal (value))

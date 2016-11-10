@@ -57,7 +57,7 @@ namespace System {
 		 * of icalls, do not require an increment.
 		 */
 #pragma warning disable 169
-		private const int mono_corlib_version = 149;
+		private const int mono_corlib_version = 156;
 #pragma warning restore 169
 
 		[ComVisible (true)]
@@ -322,7 +322,7 @@ namespace System {
 				return trace.ToString ();
 			}
 		}
-#if !NET_2_1
+
 		/// <summary>
 		/// Get a fully qualified path to the system directory
 		/// </summary>
@@ -331,7 +331,7 @@ namespace System {
 				return GetFolderPath (SpecialFolder.System);
 			}
 		}
-#endif
+
 		/// <summary>
 		/// Get the number of milliseconds that have elapsed since the system was booted
 		/// </summary>
@@ -472,7 +472,15 @@ namespace System {
 		public extern static string[] GetCommandLineArgs ();
 
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
-		internal extern static string internalGetEnvironmentVariable (string variable);
+		internal extern static string internalGetEnvironmentVariable_native (IntPtr variable);
+
+		internal static string internalGetEnvironmentVariable (string variable) {
+			if (variable == null)
+				return null;
+			using (var h = Mono.RuntimeMarshal.MarshalString (variable)) {
+				return internalGetEnvironmentVariable_native (h.Value);
+			}
+		}
 
 		/// <summary>
 		/// Return a string containing the value of the environment
@@ -480,7 +488,7 @@ namespace System {
 		/// </summary>
 		public static string GetEnvironmentVariable (string variable)
 		{
-#if !NET_2_1
+#if !MOBILE
 			if (SecurityManager.SecurityEnabled) {
 				new EnvironmentPermission (EnvironmentPermissionAccess.Read, variable).Demand ();
 			}
@@ -503,7 +511,7 @@ namespace System {
 		/// <summary>
 		/// Return a set of all environment variables and their values
 		/// </summary>
-#if !NET_2_1
+#if !MOBILE
 		public static IDictionary GetEnvironmentVariables ()
 		{
 			StringBuilder sb = null;
@@ -565,7 +573,7 @@ namespace System {
 			else
 				dir = UnixGetFolderPath (folder, option);
 
-#if !NET_2_1
+#if !MOBILE
 			if ((dir != null) && (dir.Length > 0) && SecurityManager.SecurityEnabled) {
 				new FileIOPermission (FileIOPermissionAccess.PathDiscovery, dir).Demand ();
 			}
@@ -917,7 +925,9 @@ namespace System {
 		[SecurityCritical]
 		public static void FailFast (string message, Exception exception)
 		{
-			throw new NotImplementedException ();
+#pragma warning disable 618
+			throw new ExecutionEngineException (message, exception);
+#pragma warning restore
 		}
 
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
@@ -951,7 +961,7 @@ namespace System {
 		}
 #endif
 
-#if !NET_2_1
+#if !MOBILE
 		//
 		// Used by gacutil.exe
 		//
@@ -985,6 +995,14 @@ namespace System {
 
 		[MethodImplAttribute (MethodImplOptions.InternalCall)]
 		internal extern static int GetPageSize ();
+
+		[MethodImplAttribute(MethodImplOptions.InternalCall)]
+		extern private static string get_bundled_machine_config ();
+
+		internal static string GetBundledMachineConfig ()
+		{
+			return get_bundled_machine_config ();
+		}
 
 		static internal bool IsUnix {
 			get {

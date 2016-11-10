@@ -372,7 +372,8 @@ darwin_sources = \
 	mini-darwin.c
 
 windows_sources = \
-	mini-windows.c
+	mini-windows.c \
+	mini-windows-dllmain.c
 
 posix_sources = \
 	mini-posix.c
@@ -486,10 +487,22 @@ test_sources = 			\
 	gc-test.cs \
 	gshared.cs
 
-regtests=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe
+
+regtests_UNIVERSAL=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe
+
+if INSTALL_MOBILE_STATIC
+regtests= \
+	$(regtests_UNIVERSAL)
+
 if NACL_CODEGEN
 test_sources += nacl.cs
 regtests += nacl.exe
+endif
+
+else
+regtests= \
+	$(regtests_UNIVERSAL) \
+	$(regtests_MOBILE_STATIC_BLACKLIST)
 endif
 
 if X86
@@ -502,7 +515,7 @@ if AMD64
 arch_sources = $(amd64_sources)
 arch_built=cpu-amd64.h
 arch_define=__x86_64__
-ARCH_FULLAOT_EXCLUDE=--exclude DYNCALL
+ARCH_FULLAOT_EXCLUDE=
 endif
 
 if POWERPC
@@ -583,12 +596,12 @@ libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES =
 libmonoboehm_2_0_la_CFLAGS = $(mono_boehm_CFLAGS)
 libmonoboehm_2_0_la_LIBADD = libmini.la $(boehm_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags)
+libmonoboehm_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
 
 libmonosgen_2_0_la_SOURCES =
 libmonosgen_2_0_la_CFLAGS = $(mono_sgen_CFLAGS)
 libmonosgen_2_0_la_LIBADD = libmini.la $(sgen_libs) $(LIBMONO_DTRACE_OBJECT) $(LLVMMONOF)
-libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags)
+libmonosgen_2_0_la_LDFLAGS = $(libmonoldflags) $(monobin_platform_ldflags)
 
 #
 # This library is shared between mono and mono-sgen, since the code in mini/ doesn't contain
@@ -683,15 +696,19 @@ testi: mono test.exe
 checktests: $(regtests)
 	for i in $(regtests); do $(MINI_RUNTIME) $$i; done
 
-rcheck: mono $(regtests)
-if NACL_CODEGEN
-	for i in $(regtests); do echo "running test $$i"; $(MINI_RUNTIME) $$i --exclude 'NaClDisable' || exit 1; done
-else
-	-($(MINI_RUNTIME) --regression $(regtests); echo $$? > regressionexitcode.out) | $(srcdir)/emitnunit.pl
-	exit $$(cat regressionexitcode.out)
-endif
+rcheck-nunit: mono $(regtests)
+	$(MINI_RUNTIME) --regression $(regtests) > regressiontests.out 2>&1; cat regressiontests.out; \
+	if grep -q "100% pass" regressiontests.out; then successbool=True; failurescount=0; else successbool=False; failurescount=1; fi; \
+	echo "<?xml version='1.0' encoding='utf-8'?>\
+		<test-results failures='$$failurescount' total='1' not-run='0' name='regression-tests.dummy' date='$$(date +%F)' time='$$(date +%T)'>\
+			<test-suite name='regression-tests.dummy' success='$$successbool' time='0'>\
+				<results><test-case name='MonoTests.regressions.100percentsuccess' executed='True' success='$$successbool' time='0'>" > TestResult-regression.xml; \
+					if [ "$$successbool" = "False" ]; then echo "<failure><message><![CDATA[$$(cat regressiontests.out)]]></message><stack-trace></stack-trace></failure>" >> TestResult-regression.xml; fi; \
+				echo "</test-case></results>\
+			</test-suite>\
+		</test-results>" >> TestResult-regression.xml; exit $$failurescount
 
-rcheck2: mono $(regtests)
+rcheck: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
 if ARM
@@ -724,26 +741,43 @@ gsharedvtcheck:
 
 fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
 
-FULLAOT_LIBS = \
+# Skip aoting the tests that aren't compiled 
+# on the mobile_static profile because they're skipped
+# on mobile profiles
+FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST = \
+	Mono.Posix.dll \
+	System.Configuration.dll
+
+FULLAOT_LIBS_UNIVERSAL = \
 	mscorlib.dll \
 	System.Core.dll \
 	System.dll \
-	Mono.Posix.dll \
-	System.Configuration.dll \
-	System.Security.dll \
 	System.Xml.dll \
-	Mono.Security.dll \
-	Mono.Simd.dll
+	System.Security.dll \
+	Mono.Simd.dll \
+	Mono.Security.dll
+
+if INSTALL_MOBILE_STATIC
+FULLAOT_LIBS= \
+	Mono.Dynamic.Interpreter.dll \
+	$(FULLAOT_LIBS_UNIVERSAL)
+else
+FULLAOT_LIBS= \
+	$(FULLAOT_LIBS_UNIVERSAL) \
+	$(FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST)
+endif
+
+FULLAOT_TMP_DIR=$(top_builddir)/mono/mini/fullaot-tmp
 
 # This currently only works on amd64/arm
 fullaotcheck: $(mono) $(fullaot_regtests)
-	rm -rf fullaot-tmp
-	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" GSHAREDVT=$(GSHAREDVT)
-	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
-	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)" fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
-	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) fullaot-tmp/
-	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper --full-aot fullaot-tmp/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
+	rm -rf $(FULLAOT_TMP_DIR)
+	mkdir $(FULLAOT_TMP_DIR)
+	$(MAKE) fullaot-libs AOT_FLAGS="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)" GSHAREDVT=$(GSHAREDVT)
+	cp $(regtests) $(fullaot_regtests) generics-variant-types.dll TestDriver.dll $(FULLAOT_TMP_DIR)/
+	MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper $(LLVM_AOT_RUNTIME_OPTS) $(GSHAREDVT_RUNTIME_OPTS) --aot="full,$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)" $(FULLAOT_TMP_DIR)/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
+	ln -s $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),$$PWD/mono) $(FULLAOT_TMP_DIR)/
+	for i in $(fullaot_regtests); do echo $$i; MONO_PATH=$(FULLAOT_TMP_DIR) $(top_builddir)/runtime/mono-wrapper --full-aot $(FULLAOT_TMP_DIR)/$$i --exclude '!FULLAOT' $(ARCH_FULLAOT_EXCLUDE) || exit 1; done
 
 # This can run in parallel
 fullaot-libs: $(patsubst %,fullaot-tmp/%.dylib,$(FULLAOT_LIBS))
@@ -762,7 +796,7 @@ llvmonly_regtests = $(fullaot_regtests) gshared.exe
 llvmonlycheck: mono $(llvmonly_regtests)
 	rm -rf fullaot-tmp
 	mkdir fullaot-tmp
-	$(MAKE) fullaot-libs AOT_FLAGS="llvmonly,$(MONO_FULLAOT_ADDITIONAL_ARGS)"
+	$(MAKE) fullaot-libs AOT_FLAGS="llvmonly,$(MONO_FULLAOT_ADDITIONAL_ARGS)$(INVARIANT_AOT_OPTIONS)"
 	cp $(llvmonly_regtests) generics-variant-types.dll TestDriver.dll fullaot-tmp/
 	MONO_PATH=fullaot-tmp $(top_builddir)/runtime/mono-wrapper  --aot=llvmonly fullaot-tmp/{generics-variant-types.dll,TestDriver.dll,*.exe} || exit 1
 	ln -s $$PWD/mono fullaot-tmp/
@@ -792,7 +826,10 @@ stat3: mono bench.exe
 docu: mini.sgm
 	docbook2txt mini.sgm
 
-check-local: rcheck check-seq-points
+# We need these because automake can't process normal make conditionals
+check_local_targets = $(if $(EMIT_NUNIT), rcheck-nunit, rcheck)
+
+check-local: $(check_local_targets)
 
 clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
@@ -805,7 +842,6 @@ CLEANFILES= $(BUILT_SOURCES) *.exe *.dll
 EXTRA_DIST = TestDriver.cs \
 	TestHelpers.cs \
 	genmdesc.pl				\
-	emitnunit.pl			\
 	$(test_sources) 			\
 	$(x86_sources) cpu-x86.md 		\
 	$(amd64_sources) cpu-amd64.md 		\
@@ -824,7 +860,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.6.2.6/db69866\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.8.0.309/dea12ad\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
