@@ -364,13 +364,15 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 
 	/* FIXME: !mono_class_is_ginst (from_class) condition causes test failures. */
 	if (klass->type_token && !image_is_dynamic (klass->image) && !klass->methods && !klass->rank && klass == from_class && !mono_class_is_ginst (from_class)) {
-		for (i = 0; i < klass->method.count; ++i) {
+		int first_idx = mono_class_get_first_method_idx (klass);
+		int mcount = mono_class_get_method_count (klass);
+		for (i = 0; i < mcount; ++i) {
 			guint32 cols [MONO_METHOD_SIZE];
 			MonoMethod *method;
 			const char *m_name;
 			MonoMethodSignature *other_sig;
 
-			mono_metadata_decode_table_row (klass->image, MONO_TABLE_METHOD, klass->method.first + i, cols, MONO_METHOD_SIZE);
+			mono_metadata_decode_table_row (klass->image, MONO_TABLE_METHOD, first_idx + i, cols, MONO_METHOD_SIZE);
 
 			m_name = mono_metadata_string_heap (klass->image, cols [MONO_METHOD_NAME]);
 
@@ -379,7 +381,7 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 				  (name && !strcmp (m_name, name))))
 				continue;
 
-			method = mono_get_method_checked (klass->image, MONO_TOKEN_METHOD_DEF | (klass->method.first + i + 1), klass, NULL, error);
+			method = mono_get_method_checked (klass->image, MONO_TOKEN_METHOD_DEF | (first_idx + i + 1), klass, NULL, error);
 			if (!mono_error_ok (error)) //bail out if we hit a loader error
 				return NULL;
 			if (method) {
@@ -403,7 +405,8 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 
 		return NULL;
 	}
-	for (i = 0; i < klass->method.count; ++i) {
+	int mcount = mono_class_get_method_count (klass);
+	for (i = 0; i < mcount; ++i) {
 		MonoMethod *m = klass->methods [i];
 		MonoMethodSignature *msig;
 
@@ -431,7 +434,7 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 		}
 	}
 
-	if (i < klass->method.count)
+	if (i < mcount)
 		return mono_class_get_method_by_index (from_class, i);
 	return NULL;
 }
@@ -751,7 +754,8 @@ mono_method_search_in_array_class (MonoClass *klass, const char *name, MonoMetho
 
 	mono_class_setup_methods (klass);
 	g_assert (!mono_class_has_failure (klass)); /*FIXME this should not fail, right?*/
-	for (i = 0; i < klass->method.count; ++i) {
+	int mcount = mono_class_get_method_count (klass);
+	for (i = 0; i < mcount; ++i) {
 		MonoMethod *method = klass->methods [i];
 		if (strcmp (method->name, name) == 0 && sig->param_count == method->signature->param_count)
 			return method;
@@ -2620,12 +2624,14 @@ mono_method_get_index (MonoMethod *method)
 	mono_class_setup_methods (klass);
 	if (mono_class_has_failure (klass))
 		return 0;
-	for (i = 0; i < klass->method.count; ++i) {
+	int first_idx = mono_class_get_first_method_idx (klass);
+	int mcount = mono_class_get_method_count (klass);
+	for (i = 0; i < mcount; ++i) {
 		if (method == klass->methods [i]) {
 			if (klass->image->uncompressed_metadata)
-				return mono_metadata_translate_token_index (klass->image, MONO_TABLE_METHOD, klass->method.first + i + 1);
+				return mono_metadata_translate_token_index (klass->image, MONO_TABLE_METHOD, first_idx + i + 1);
 			else
-				return klass->method.first + i + 1;
+				return first_idx + i + 1;
 		}
 	}
 	return 0;

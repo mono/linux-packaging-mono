@@ -471,7 +471,8 @@ mono_class_has_default_constructor (MonoClass *klass)
 	if (mono_class_has_failure (klass))
 		return FALSE;
 
-	for (i = 0; i < klass->method.count; ++i) {
+	int mcount = mono_class_get_method_count (klass);
+	for (i = 0; i < mcount; ++i) {
 		method = klass->methods [i];
 		if (mono_method_is_constructor (method) &&
 			mono_method_signature (method) &&
@@ -2674,7 +2675,7 @@ verify_ldftn_delegate (VerifyContext *ctx, MonoClass *delegate, ILStackDesc *val
 	 * the object is a this arg (comes from a ldarg.0), and there is no starg.0.
 	 * This rules doesn't apply if the object on stack is a boxed valuetype.
 	 */
-	if ((method->flags & METHOD_ATTRIBUTE_VIRTUAL) && !(method->flags & METHOD_ATTRIBUTE_FINAL) && !(mono_class_get_flags (method->klass) & TYPE_ATTRIBUTE_SEALED) && !stack_slot_is_boxed_value (value)) {
+	if ((method->flags & METHOD_ATTRIBUTE_VIRTUAL) && !(method->flags & METHOD_ATTRIBUTE_FINAL) && !mono_class_is_sealed (method->klass) && !stack_slot_is_boxed_value (value)) {
 		/*A stdarg 0 must not happen, we fail here only in fail fast mode to avoid double error reports*/
 		if (IS_FAIL_FAST_MODE (ctx) && ctx->has_this_store)
 			CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("Invalid ldftn with virtual function in method with stdarg 0 at  0x%04x", ctx->ip_offset));
@@ -3166,7 +3167,7 @@ do_invoke_method (VerifyContext *ctx, int method_token, gboolean virtual_)
 		if (method->flags & METHOD_ATTRIBUTE_ABSTRACT) 
 			CODE_NOT_VERIFIABLE (ctx, g_strdup_printf ("Cannot use call with an abstract method at 0x%04x", ctx->ip_offset));
 		
-		if ((method->flags & METHOD_ATTRIBUTE_VIRTUAL) && !(method->flags & METHOD_ATTRIBUTE_FINAL) && !(mono_class_get_flags (method->klass) & TYPE_ATTRIBUTE_SEALED)) {
+		if ((method->flags & METHOD_ATTRIBUTE_VIRTUAL) && !(method->flags & METHOD_ATTRIBUTE_FINAL) && !mono_class_is_sealed (method->klass)) {
 			virt_check_this = TRUE;
 			ctx->code [ctx->ip_offset].flags |= IL_CODE_CALL_NONFINAL_VIRTUAL;
 		}
@@ -6102,7 +6103,7 @@ verify_class_for_overlapping_reference_fields (MonoClass *klass)
 	MonoClassField *field;
 	gboolean is_fulltrust = mono_verifier_is_class_full_trust (klass);
 	/*We can't skip types with !has_references since this is calculated after we have run.*/
-	if (!((mono_class_get_flags (klass) & TYPE_ATTRIBUTE_LAYOUT_MASK) == TYPE_ATTRIBUTE_EXPLICIT_LAYOUT))
+	if (!mono_class_is_explicit_layout (klass))
 		return TRUE;
 
 
@@ -6117,7 +6118,8 @@ verify_class_for_overlapping_reference_fields (MonoClass *klass)
 		if (mono_field_is_deleted (field) || (field->type->attrs & FIELD_ATTRIBUTE_STATIC))
 			continue;
 
-		for (j = i; j < klass->field.count; ++j) {
+		int fcount = mono_class_get_field_count (klass);
+		for (j = i; j < fcount; ++j) {
 			MonoClassField *other = &klass->fields [j];
 			int otherEnd = get_field_end (other);
 			if (mono_field_is_deleted (other) || (is_valuetype && !MONO_TYPE_IS_REFERENCE (other->type)) || (other->type->attrs & FIELD_ATTRIBUTE_STATIC))
@@ -6327,7 +6329,7 @@ mono_verifier_verify_class (MonoClass *klass)
 				return FALSE;
 		}
 	}
-	if (mono_class_is_gtd (klass) && (mono_class_get_flags (klass) & TYPE_ATTRIBUTE_LAYOUT_MASK) == TYPE_ATTRIBUTE_EXPLICIT_LAYOUT)
+	if (mono_class_is_gtd (klass) && (mono_class_is_explicit_layout (klass)))
 		return FALSE;
 	if (mono_class_is_gtd (klass) && !verify_generic_parameters (klass))
 		return FALSE;

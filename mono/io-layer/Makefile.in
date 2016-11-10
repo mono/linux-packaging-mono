@@ -99,15 +99,15 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libwapi_la_DEPENDENCIES =
-am__libwapi_la_SOURCES_DIST = context.c context.h error.c error.h io.c \
-	io.h io-portability.c io-portability.h io-private.h io-layer.h \
+am__libwapi_la_SOURCES_DIST = error.c error.h io.c io.h \
+	io-portability.c io-portability.h io-private.h io-layer.h \
 	locking.c macros.h messages.c messages.h posix.c security.c \
 	security.h sockets.c sockets.h socket-private.h \
 	socket-wrappers.h status.h timefuncs.c timefuncs.h types.h \
 	uglify.h versioninfo.c versioninfo.h wait.c wait.h wapi_glob.h \
 	wapi_glob.c wapi.h wapi-private.h wapi.c io-trace.h \
 	wapi-remap.h io-layer-dummy.c
-am__objects_1 = context.lo error.lo io.lo io-portability.lo locking.lo \
+am__objects_1 = error.lo io.lo io-portability.lo locking.lo \
 	messages.lo posix.lo security.lo sockets.lo timefuncs.lo \
 	versioninfo.lo wait.lo wapi_glob.lo wapi.lo
 am__objects_2 =
@@ -401,7 +401,6 @@ AM_CPPFLAGS = \
 
 libwapiincludedir = $(includedir)/mono-$(API_VER)/mono/io-layer
 OTHER_H = \
-	context.h	\
 	error.h		\
 	io.h		\
 	io-trace.h	\
@@ -421,8 +420,6 @@ OTHER_H = \
 	wapi-remap.h
 
 OTHER_SRC = \
-	context.c		\
-	context.h		\
 	error.c			\
 	error.h			\
 	io.c			\
@@ -525,7 +522,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/context.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io-layer-dummy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io-portability.Plo@am__quote@
