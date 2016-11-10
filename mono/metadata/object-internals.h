@@ -383,6 +383,8 @@ struct _MonoInternalThread {
 	gsize abort_protected_block_count;
 	gint32 priority;
 	GPtrArray *owned_mutexes;
+	MonoOSEvent *suspended;
+	gint32 self_suspended; // TRUE | FALSE
 	/* 
 	 * These fields are used to avoid having to increment corlib versions
 	 * when a new field is added to this structure.

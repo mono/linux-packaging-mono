@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 4.9.0\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2016-11-03 20:21+0000\n"
+"POT-Creation-Date: 2016-11-10 08:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1349,7 +1349,7 @@ msgstr ""
 msgid "The operation in question is undefined on void pointers"
 msgstr ""
 
-#: mcs/mcs/ecore.cs:529 mcs/mcs/statement.cs:3994 mcs/mcs/statement.cs:3996
+#: mcs/mcs/ecore.cs:529 mcs/mcs/statement.cs:4005 mcs/mcs/statement.cs:4007
 #, csharp-format
 msgid "Internal compiler error: {0}"
 msgstr ""
@@ -2558,26 +2558,26 @@ msgstr ""
 msgid "Cannot yield a value in the body of a catch clause"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1191
+#: mcs/mcs/iterators.cs:1192
 #, csharp-format
 msgid ""
 "The body of `{0}' cannot be an iterator block because `{1}' is not an "
 "iterator interface type"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1204
+#: mcs/mcs/iterators.cs:1205
 msgid "Iterators cannot have ref or out parameters"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1210
+#: mcs/mcs/iterators.cs:1211
 msgid "__arglist is not allowed in parameter list of iterators"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1216
+#: mcs/mcs/iterators.cs:1217
 msgid "Iterators cannot have unsafe parameters or yield types"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1222 mcs/mcs/statement.cs:6349
+#: mcs/mcs/iterators.cs:1223 mcs/mcs/statement.cs:6360
 msgid "Unsafe code may not appear in iterators"
 msgstr ""
 
@@ -3475,7 +3475,7 @@ msgid ""
 "clause nested inside of the innermost catch clause"
 msgstr ""
 
-#: mcs/mcs/statement.cs:1797 mcs/mcs/statement.cs:6908
+#: mcs/mcs/statement.cs:1797 mcs/mcs/statement.cs:6919
 msgid "The type caught or thrown must be derived from System.Exception"
 msgstr ""
 
@@ -3521,113 +3521,113 @@ msgid ""
 "The type parameter name `{0}' is the same as local variable or parameter name"
 msgstr ""
 
-#: mcs/mcs/statement.cs:3774
+#: mcs/mcs/statement.cs:3780
 #, csharp-format
 msgid ""
 "The out parameter `{0}' must be assigned to before control leaves the "
 "current method"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4050
+#: mcs/mcs/statement.cs:4061
 msgid "Async methods cannot have ref or out parameters"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4056
+#: mcs/mcs/statement.cs:4067
 msgid "__arglist is not allowed in parameter list of async methods"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4062
+#: mcs/mcs/statement.cs:4073
 msgid "Async methods cannot have unsafe parameters"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4259
+#: mcs/mcs/statement.cs:4270
 #, csharp-format
 msgid "The label `{0}' is a duplicate"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4268 mcs/mcs/statement.cs:4279
+#: mcs/mcs/statement.cs:4279 mcs/mcs/statement.cs:4290
 #, csharp-format
 msgid ""
 "The label `{0}' shadows another label by the same name in a contained scope"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4557
+#: mcs/mcs/statement.cs:4568
 #, csharp-format
 msgid "`{0}': not all code paths return a value"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4689
+#: mcs/mcs/statement.cs:4700
 #, csharp-format
 msgid "The label `{0}' already occurs in this switch statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4816
+#: mcs/mcs/statement.cs:4827
 #, csharp-format
 msgid ""
 "Control cannot fall out of switch statement through final case label `{0}'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:4819
+#: mcs/mcs/statement.cs:4830
 #, csharp-format
 msgid "Control cannot fall through from one case label `{0}' to another"
 msgstr ""
 
-#: mcs/mcs/statement.cs:5256
+#: mcs/mcs/statement.cs:5267
 #, csharp-format
 msgid ""
 "A switch expression of type `{0}' cannot be converted to an integral type, "
 "bool, char, string, enum or nullable type"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6115
+#: mcs/mcs/statement.cs:6126
 #, csharp-format
 msgid "`{0}' is not a reference type as required by the lock statement"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6497
+#: mcs/mcs/statement.cs:6508
 msgid "The type of locals declared in a fixed statement must be a pointer type"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6577
+#: mcs/mcs/statement.cs:6588
 msgid ""
 "The right hand side of a fixed statement assignment may not be a cast "
 "expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6582
+#: mcs/mcs/statement.cs:6593
 msgid ""
 "You cannot use the fixed statement to take the address of an already fixed "
 "expression"
 msgstr ""
 
-#: mcs/mcs/statement.cs:6768
+#: mcs/mcs/statement.cs:6779
 msgid ""
 "The `await' operator cannot be used in the filter expression of a catch "
 "clause"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7359
+#: mcs/mcs/statement.cs:7370
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
 "type `{0}'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7592
+#: mcs/mcs/statement.cs:7603
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
 "`System.IDisposable'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8008
+#: mcs/mcs/statement.cs:8019
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
 "suitable public MoveNext method and public Current property"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8052
+#: mcs/mcs/statement.cs:8063
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -3635,18 +3635,18 @@ msgid ""
 "implementation"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8074
+#: mcs/mcs/statement.cs:8085
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
 "not contain a definition for `{1}' or is inaccessible"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8312
+#: mcs/mcs/statement.cs:8323
 msgid "Use of null is not valid in this context"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8324
+#: mcs/mcs/statement.cs:8335
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr ""

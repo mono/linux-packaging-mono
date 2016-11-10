@@ -342,8 +342,8 @@ struct _MonoClass {
 	int        vtable_size; /* number of slots */
 
 	guint16     interface_count;
-	guint16     interface_id;        /* unique inderface id (for interfaces) */
-	guint16     max_interface_id;
+	guint32     interface_id;        /* unique inderface id (for interfaces) */
+	guint32     max_interface_id;
 	
 	guint16     interface_offsets_count;
 	MonoClass **interfaces_packed;
@@ -361,17 +361,6 @@ struct _MonoClass {
 		int element_size; /* for array types */
 		int generic_param_token; /* for generic param types, both var and mvar */
 	} sizes;
-
-	/*
-	 * From the TypeDef table
-	 */
-	struct {
-#if MONO_SMALL_CONFIG
-		guint16 first, count;
-#else
-		guint32 first, count;
-#endif
-	} field, method;
 
 	/* A GC handle pointing to the corresponding type builder/generic param builder */
 	guint32 ref_info_handle;
@@ -404,6 +393,12 @@ struct _MonoClass {
 typedef struct {
 	MonoClass class;
 	guint32	flags;
+	/*
+	 * From the TypeDef table
+	 */
+	guint32 first_method_idx;
+	guint32 first_field_idx;
+	guint32 method_count, field_count;
 	/* next element in the class_cache hash list (in MonoImage) */
 	MonoClass *next_class_cache;
 } MonoClassDef;
@@ -424,6 +419,7 @@ typedef struct {
 
 typedef struct {
 	MonoClass class;
+	guint32 method_count;
 } MonoClassArray;
 
 typedef struct {
@@ -478,7 +474,7 @@ struct MonoVTable {
 	MonoDomain *domain;  /* each object/vtable belongs to exactly one domain */
         gpointer    type; /* System.Type type for klass */
 	guint8     *interface_bitmap;
-	guint16     max_interface_id;
+	guint32     max_interface_id;
 	guint8      rank;
 	guint remote          : 1; /* class is remotely activated */
 	guint initialized     : 1; /* cctor has been run */
@@ -1473,6 +1469,30 @@ mono_class_try_get_generic_container (MonoClass *klass);
 
 void
 mono_class_set_generic_container (MonoClass *klass, MonoGenericContainer *container);
+
+guint32
+mono_class_get_first_method_idx (MonoClass *klass);
+
+void
+mono_class_set_first_method_idx (MonoClass *klass, guint32 idx);
+
+guint32
+mono_class_get_first_field_idx (MonoClass *klass);
+
+void
+mono_class_set_first_field_idx (MonoClass *klass, guint32 idx);
+
+guint32
+mono_class_get_method_count (MonoClass *klass);
+
+void
+mono_class_set_method_count (MonoClass *klass, guint32 count);
+
+guint32
+mono_class_get_field_count (MonoClass *klass);
+
+void
+mono_class_set_field_count (MonoClass *klass, guint32 count);
 
 /*Now that everything has been defined, let's include the inline functions */
 #include <mono/metadata/class-inlines.h>

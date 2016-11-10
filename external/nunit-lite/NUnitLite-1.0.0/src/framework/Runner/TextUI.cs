@@ -387,7 +387,11 @@ namespace NUnitLite.Runner
             if (!result.Test.IsSuite) {
                 Xamarin.BabysitterSupport.RecordLeaveTest (result.Test.FullName);
                 if (result.ResultState.Status == TestStatus.Failed)
+                {
                     Xamarin.BabysitterSupport.RecordFailedTest (result.Test.FullName);
+                    if (!commandLineOptions.LabelTestsInOutput)
+                        writer.Write("F");
+                }
             }
 #endif
         }

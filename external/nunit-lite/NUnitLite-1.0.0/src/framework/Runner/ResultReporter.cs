@@ -80,6 +80,9 @@ namespace NUnitLite.Runner
         /// </summary>
         public void PrintSummaryReport()
         {
+#if MONO
+            writer.WriteLine();
+#endif
             writer.WriteLine(
                 "Tests run: {0}, Passed: {1}, Errors: {2}, Failures: {3}, Inconclusive: {4}",
                 summary.TestCount, summary.PassCount, summary.ErrorCount, summary.FailureCount, summary.InconclusiveCount);

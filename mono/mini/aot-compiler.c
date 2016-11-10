@@ -2488,9 +2488,10 @@ mono_get_field_token (MonoClassField *field)
 	MonoClass *klass = field->parent;
 	int i;
 
-	for (i = 0; i < klass->field.count; ++i) {
+	int fcount = mono_class_get_field_count (klass);
+	for (i = 0; i < fcount; ++i) {
 		if (field == &klass->fields [i])
-			return MONO_TOKEN_FIELD_DEF | (klass->field.first + 1 + i);
+			return MONO_TOKEN_FIELD_DEF | (mono_class_get_first_field_idx (klass) + 1 + i);
 	}
 
 	g_assert_not_reached ();
@@ -3615,7 +3616,7 @@ can_marshal_struct (MonoClass *klass)
 	MonoMarshalType *info;
 	int i;
 
-	if ((mono_class_get_flags (klass) & TYPE_ATTRIBUTE_LAYOUT_MASK) == TYPE_ATTRIBUTE_AUTO_LAYOUT)
+	if (mono_class_is_auto_layout (klass))
 		return FALSE;
 
 	info = mono_marshal_load_type_info (klass);
@@ -5012,7 +5013,7 @@ is_direct_callable (MonoAotCompile *acfg, MonoMethod *method, MonoJumpInfo *patc
 		if (callee_cfg) {
 			gboolean direct_callable = TRUE;
 
-			if (direct_callable && !(!callee_cfg->has_got_slots && (mono_class_get_flags (callee_cfg->method->klass) & TYPE_ATTRIBUTE_BEFORE_FIELD_INIT)))
+			if (direct_callable && !(!callee_cfg->has_got_slots && mono_class_is_before_field_init (callee_cfg->method->klass)))
 				direct_callable = FALSE;
 			if ((callee_cfg->method->iflags & METHOD_IMPL_ATTRIBUTE_SYNCHRONIZED) && (!method || method->wrapper_type != MONO_WRAPPER_SYNCHRONIZED))
 				// FIXME: Maybe call the wrapper directly ?
@@ -10652,7 +10653,7 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 			acfg->tmpfname = g_strdup_printf ("%s", acfg->aot_opts.outfile);
 		else
 			acfg->tmpfname = g_strdup_printf ("%s.s", acfg->image->name);
-			acfg->fp = fopen (acfg->tmpfname, "w+");
+		acfg->fp = fopen (acfg->tmpfname, "w+");
 	} else {
 		int i = g_file_open_tmp ("mono_aot_XXXXXX", &acfg->tmpfname, NULL);
 		acfg->fp = fdopen (i, "w+");
