@@ -1,0 +1,2 @@
+#include "libmonoboehm-2.0-1.symbols"
+ GC_allocate_lock@Base 4.6.2.7
