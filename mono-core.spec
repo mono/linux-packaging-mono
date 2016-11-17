@@ -397,7 +397,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 
 %post 
 cert-sync /etc/pki/tls/certs/ca-bundle.crt
-btls-cert-sync /etc/pki/tls/certs/ca-bundle.crt
 
 %package -n libmono-2_0-1
 Summary:        A Library for embedding Mono in your Application
