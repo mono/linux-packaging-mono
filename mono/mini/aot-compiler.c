@@ -4,6 +4,7 @@
  * Author:
  *   Dietmar Maurer (dietmar@ximian.com)
  *   Zoltan Varga (vargaz@gmail.com)
+ *   Johan Lorensson (lateralusx.github@gmail.com)
  *
  * (C) 2002 Ximian, Inc.
  * Copyright 2003-2011 Novell, Inc 
@@ -64,10 +65,22 @@
 
 #if !defined(DISABLE_AOT) && !defined(DISABLE_JIT)
 
+// Use MSVC toolchain, Clang for MSVC using MSVC codegen and linker, when compiling for AMD64
+// targeting WIN32 platforms running AOT compiler on WIN32 platform with VS installation.
+#if defined(TARGET_AMD64) && defined(TARGET_WIN32) && defined(HOST_WIN32) && defined(_MSC_VER)
+#define TARGET_X86_64_WIN32_MSVC
+#endif
+
+#if defined(TARGET_X86_64_WIN32_MSVC)
+#define TARGET_WIN32_MSVC
+#endif
+
 #if defined(__linux__) || defined(__native_client_codegen__)
 #define RODATA_SECT ".rodata"
 #elif defined(TARGET_MACH)
 #define RODATA_SECT ".section __TEXT, __const"
+#elif defined(TARGET_WIN32_MSVC)
+#define RODATA_SECT ".rdata"
 #else
 #define RODATA_SECT ".text"
 #endif
@@ -605,11 +618,29 @@ emit_global_inner (MonoAotCompile *acfg, const char *name, gboolean func)
 
 #endif
 
+static inline gboolean
+link_shared_library (MonoAotCompile *acfg)
+{
+	return !acfg->aot_opts.static_link && !acfg->aot_opts.asm_only;
+}
+
+static inline gboolean
+add_to_global_symbol_table (MonoAotCompile *acfg)
+{
+#ifdef TARGET_WIN32_MSVC
+	return acfg->aot_opts.no_dlsym || link_shared_library (acfg);
+#else
+	return acfg->aot_opts.no_dlsym;
+#endif
+}
+
 static void
 emit_global (MonoAotCompile *acfg, const char *name, gboolean func)
 {
-	if (acfg->aot_opts.no_dlsym) {
+	if (add_to_global_symbol_table (acfg))
 		g_ptr_array_add (acfg->globals, g_strdup (name));
+
+	if (acfg->aot_opts.no_dlsym) {
 		mono_img_writer_emit_local_symbol (acfg->w, name, NULL, func);
 	} else {
 		emit_global_inner (acfg, name, func);
@@ -814,6 +845,10 @@ emit_code_bytes (MonoAotCompile *acfg, const guint8* buf, int size)
 #define EMIT_DWARF_INFO 1
 #endif
 
+#ifdef TARGET_WIN32_MSVC
+#undef EMIT_DWARF_INFO
+#endif
+
 #if defined(TARGET_ARM)
 #define AOT_FUNC_ALIGNMENT 4
 #else
@@ -828,7 +863,9 @@ emit_code_bytes (MonoAotCompile *acfg, const guint8* buf, int size)
 #define PPC_LDX_OP "lwzx"
 #endif
 
-#ifdef TARGET_AMD64
+#ifdef TARGET_X86_64_WIN32_MSVC
+#define AOT_TARGET_STR "AMD64 (WIN32) (MSVC codegen)"
+#elif TARGET_AMD64
 #define AOT_TARGET_STR "AMD64"
 #endif
 
@@ -6277,7 +6314,7 @@ emit_klass_info (MonoAotCompile *acfg, guint32 token)
 		encode_value (-1, p, &p);
 	} else {
 		encode_value (klass->vtable_size, p, &p);
-		encode_value ((mono_class_is_gtd (klass) ? (1 << 8) : 0) | (no_special_static << 7) | (klass->has_static_refs << 6) | (klass->has_references << 5) | ((klass->blittable << 4) | ((klass->ext && klass->ext->nested_classes) ? 1 : 0) << 3) | (klass->has_cctor << 2) | (klass->has_finalize << 1) | klass->ghcimpl, p, &p);
+		encode_value ((mono_class_is_gtd (klass) ? (1 << 8) : 0) | (no_special_static << 7) | (klass->has_static_refs << 6) | (klass->has_references << 5) | ((klass->blittable << 4) | ((mono_class_get_ext (klass) && mono_class_get_ext (klass)->nested_classes) ? 1 : 0) << 3) | (klass->has_cctor << 2) | (klass->has_finalize << 1) | klass->ghcimpl, p, &p);
 		if (klass->has_cctor)
 			encode_method_ref (acfg, mono_class_get_cctor (klass), p, &p);
 		if (klass->has_finalize)
@@ -7490,6 +7527,8 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 		flags = (JitFlags)(flags | JIT_FLAG_LLVM_ONLY | JIT_FLAG_EXPLICIT_NULL_CHECKS);
 	if (acfg->aot_opts.no_direct_calls)
 		flags = (JitFlags)(flags | JIT_FLAG_NO_DIRECT_ICALLS);
+	if (acfg->aot_opts.direct_pinvoke)
+		flags = (JitFlags)(flags | JIT_FLAG_DIRECT_PINVOKE);
 
 	jit_timer = mono_time_track_start ();
 	cfg = mini_method_compile (method, acfg->opts, mono_get_root_domain (), flags, 0, index);
@@ -7794,7 +7833,7 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 	InterlockedIncrement (&acfg->stats.ccount);
 }
  
-static gsize WINAPI
+static mono_thread_start_return_t WINAPI
 compile_thread_main (gpointer user_data)
 {
 	MonoDomain *domain = ((MonoDomain **)user_data) [0];
@@ -8195,18 +8234,18 @@ execute_system (const char * command)
 {
 	int status = 0;
 
-#if _WIN32
+#if HOST_WIN32
 	// We need an extra set of quotes around the whole command to properly handle commands 
 	// with spaces since internally the command is called through "cmd /c.
-	command = g_strdup_printf ("\"%s\"", command);
+	char * quoted_command = g_strdup_printf ("\"%s\"", command);
 
-	int size =  MultiByteToWideChar (CP_UTF8, 0 , command , -1, NULL , 0);
+	int size =  MultiByteToWideChar (CP_UTF8, 0 , quoted_command , -1, NULL , 0);
 	wchar_t* wstr = g_malloc (sizeof (wchar_t) * size);
-	MultiByteToWideChar (CP_UTF8, 0, command, -1, wstr , size);
+	MultiByteToWideChar (CP_UTF8, 0, quoted_command, -1, wstr , size);
 	status = _wsystem (wstr);
 	g_free (wstr);
 
-	g_free (command);
+	g_free (quoted_command);
 #elif defined (HAVE_SYSTEM)
 	status = system (command);
 #else
@@ -8459,7 +8498,8 @@ emit_code (MonoAotCompile *acfg)
 	emit_section_change (acfg, ".text", 1);
 	emit_alignment_code (acfg, 8);
 	emit_info_symbol (acfg, symbol);
-	emit_local_symbol (acfg, symbol, "method_addresses_end", TRUE);
+	if (acfg->aot_opts.write_symbols)
+		emit_local_symbol (acfg, symbol, "method_addresses_end", TRUE);
 	emit_unset_mode (acfg);
 	if (acfg->need_no_dead_strip)
 		fprintf (acfg->fp, "	.no_dead_strip %s\n", symbol);
@@ -9254,7 +9294,8 @@ emit_got (MonoAotCompile *acfg)
 #else
 	emit_section_change (acfg, ".bss", 0);
 	emit_alignment (acfg, 8);
-	emit_local_symbol (acfg, symbol, "got_end", FALSE);
+	if (acfg->aot_opts.write_symbols)
+		emit_local_symbol (acfg, symbol, "got_end", FALSE);
 	emit_label (acfg, symbol);
 	if (acfg->llvm)
 		emit_info_symbol (acfg, "jit_got");
@@ -9271,6 +9312,53 @@ typedef struct GlobalsTableEntry {
 	struct GlobalsTableEntry *next;
 } GlobalsTableEntry;
 
+#ifdef TARGET_WIN32_MSVC
+#define DLL_ENTRY_POINT "DllMain"
+
+static void
+emit_library_info (MonoAotCompile *acfg)
+{
+	// Only include for shared libraries linked directly from generated object.
+	if (link_shared_library (acfg)) {
+		char	*name = NULL;
+		char	symbol [MAX_SYMBOL_SIZE];
+
+		// Ask linker to export all global symbols.
+		emit_section_change (acfg, ".drectve", 0);
+		for (guint i = 0; i < acfg->globals->len; ++i) {
+			name = (char *)g_ptr_array_index (acfg->globals, i);
+			g_assert (name != NULL);
+			sprintf_s (symbol, MAX_SYMBOL_SIZE, " /EXPORT:%s", name);
+			emit_string (acfg, symbol);
+		}
+
+		// Emit DLLMain function, needed by MSVC linker for DLL's.
+		// NOTE, DllMain should not go into exports above.
+		emit_section_change (acfg, ".text", 0);
+		emit_global (acfg, DLL_ENTRY_POINT, TRUE);
+		emit_label (acfg, DLL_ENTRY_POINT);
+
+		// Simple implementation of DLLMain, just returning TRUE.
+		// For more information about DLLMain: https://msdn.microsoft.com/en-us/library/windows/desktop/ms682583(v=vs.85).aspx
+		fprintf (acfg->fp, "movl $1, %%eax\n");
+		fprintf (acfg->fp, "ret\n");
+
+		// Inform linker about our dll entry function.
+		emit_section_change (acfg, ".drectve", 0);
+		emit_string (acfg, "/ENTRY:" DLL_ENTRY_POINT);
+		return;
+	}
+}
+
+#else
+
+static inline void
+emit_library_info (MonoAotCompile *acfg)
+{
+	return;
+}
+#endif
+
 static void
 emit_globals (MonoAotCompile *acfg)
 {
@@ -9282,6 +9370,7 @@ emit_globals (MonoAotCompile *acfg)
 
 	if (!acfg->aot_opts.static_link)
 		return;
+
 	if (acfg->aot_opts.llvm_only) {
 		g_assert (acfg->globals->len == 0);
 		return;
@@ -9853,7 +9942,9 @@ compile_asm (MonoAotCompile *acfg)
 	const char *tool_prefix = acfg->aot_opts.tool_prefix ? acfg->aot_opts.tool_prefix : "";
 	char *ld_flags = acfg->aot_opts.ld_flags ? acfg->aot_opts.ld_flags : g_strdup("");
 
-#if defined(TARGET_AMD64) && !defined(TARGET_MACH)
+#ifdef TARGET_WIN32_MSVC
+#define AS_OPTIONS "-c -x assembler"
+#elif defined(TARGET_AMD64) && !defined(TARGET_MACH)
 #define AS_OPTIONS "--64"
 #elif defined(TARGET_POWERPC64)
 #define AS_OPTIONS "-a64 -mppc64"
@@ -9873,8 +9964,16 @@ compile_asm (MonoAotCompile *acfg)
 #endif
 #elif defined(TARGET_OSX)
 #define AS_NAME "clang"
+#elif defined(TARGET_WIN32_MSVC)
+#define AS_NAME "clang.exe"
 #else
 #define AS_NAME "as"
+#endif
+
+#ifdef TARGET_WIN32_MSVC
+#define AS_OBJECT_FILE_SUFFIX "obj"
+#else
+#define AS_OBJECT_FILE_SUFFIX "o"
 #endif
 
 #if defined(sparc)
@@ -9886,6 +9985,9 @@ compile_asm (MonoAotCompile *acfg)
 #elif defined(TARGET_AMD64) && defined(TARGET_MACH)
 #define LD_NAME "clang"
 #define LD_OPTIONS "--shared"
+#elif defined(TARGET_WIN32_MSVC)
+#define LD_NAME "link.exe"
+#define LD_OPTIONS "/DLL /MACHINE:X64 /NOLOGO"
 #elif defined(TARGET_WIN32) && !defined(TARGET_ANDROID)
 #define LD_NAME "gcc"
 #define LD_OPTIONS "-shared"
@@ -9916,9 +10018,9 @@ compile_asm (MonoAotCompile *acfg)
 		if (acfg->aot_opts.outfile)
 			objfile = g_strdup_printf ("%s", acfg->aot_opts.outfile);
 		else
-			objfile = g_strdup_printf ("%s.o", acfg->image->name);
+			objfile = g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->image->name);
 	} else {
-		objfile = g_strdup_printf ("%s.o", acfg->tmpfname);
+		objfile = g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->tmpfname);
 	}
 
 #ifdef TARGET_OSX
@@ -9975,21 +10077,26 @@ compile_asm (MonoAotCompile *acfg)
 	if (acfg->aot_opts.llvm_only)
 		ld_flags = g_strdup_printf ("%s %s", ld_flags, "-lstdc++");
 
-#ifdef LD_NAME
+#ifdef TARGET_WIN32_MSVC
+	g_assert (tmp_outfile_name != NULL);
+	g_assert (objfile != NULL);
+	command = g_strdup_printf ("\"%s%s\" %s %s /OUT:\"%s\" \"%s\"", tool_prefix, LD_NAME, LD_OPTIONS,
+		ld_flags, tmp_outfile_name, objfile);
+#elif defined(LD_NAME)
 	command = g_strdup_printf ("%s%s %s -o %s %s %s %s", tool_prefix, LD_NAME, LD_OPTIONS,
 		wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
-		wrap_path (g_strdup_printf ("%s.o", acfg->tmpfname)), ld_flags);
+		wrap_path (g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->tmpfname)), ld_flags);
 #else
 	// Default (linux)
 	if (acfg->aot_opts.tool_prefix) {
 		/* Cross compiling */
 		command = g_strdup_printf ("\"%sld\" %s -shared -o %s %s %s %s", tool_prefix, LD_OPTIONS,
 								   wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
-								   wrap_path (g_strdup_printf ("%s.o", acfg->tmpfname)), ld_flags);
+								   wrap_path (g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->tmpfname)), ld_flags);
 	} else {
 		char *args = g_strdup_printf ("%s -shared -o %s %s %s %s", LD_OPTIONS,
 									  wrap_path (tmp_outfile_name), wrap_path (llvm_ofile),
-									  wrap_path (g_strdup_printf ("%s.o", acfg->tmpfname)), ld_flags);
+									  wrap_path (g_strdup_printf ("%s." AS_OBJECT_FILE_SUFFIX, acfg->tmpfname)), ld_flags);
 
 		if (acfg->llvm) {
 			command = g_strdup_printf ("clang++ %s", args);
@@ -9998,7 +10105,6 @@ compile_asm (MonoAotCompile *acfg)
 		}
 		g_free (args);
 	}
-
 #endif
 	aot_printf (acfg, "Executing the native linker: %s\n", command);
 	if (execute_system (command) != 0) {
@@ -10691,6 +10797,7 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 		acfg->gas_line_numbers = TRUE;
 	}
 
+#ifdef EMIT_DWARF_INFO
 	if ((!acfg->aot_opts.nodebug || acfg->aot_opts.dwarf_debug) && acfg->has_jitted_code) {
 		if (acfg->aot_opts.dwarf_debug && !mono_debug_enabled ()) {
 			aot_printerrf (acfg, "The dwarf AOT option requires the --debug option.\n");
@@ -10698,6 +10805,7 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 		}
 		acfg->dwarf = mono_dwarf_writer_create (acfg->w, NULL, 0, !acfg->gas_line_numbers);
 	}
+#endif /* EMIT_DWARF_INFO */
 
 	if (acfg->w)
 		mono_img_writer_emit_start (acfg->w);
@@ -10747,6 +10855,8 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 	emit_globals (acfg);
 
 	emit_file_info (acfg);
+
+	emit_library_info (acfg);
 
 	if (acfg->dwarf) {
 		emit_dwarf_info (acfg);

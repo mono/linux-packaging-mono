@@ -52,7 +52,7 @@ def find_profiles (base_path):
                     Profile.loaded = None
                     progress_made = True
                     description = ""
-                    if hasattr(profile, 'description'):
+                    if hasattr(profile.__class__, 'description'):
                         description = profile.__class__.description
                     profiles.append (ProfileDesc (name = name, description = description, path = path, modes = ""))
                     resolved_names.append(name)

@@ -690,20 +690,30 @@ endif
 # delegate-invoke.exe depends on 929c6bc9b6d76a273f251e6f5dfacac36e9c38bd which was
 # reverted.
 # bug-Xamarin-5278.exe got broken by 5d26590e79da139a284459299aee95c25f4cd835
+# bug-45841-fpstack-exceptions.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47053
+# appdomain-thread-abort.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47054
 DISABLED_TESTS=			\
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
 	bug-459094.exe \
 	delegate-invoke.exe \
 	bug-Xamarin-5278.exe \
+	bug-45841-fpstack-exceptions.exe \
+	appdomain-thread-abort.exe \
 	$(PLATFORM_DISABLED_TESTS) \
 	$(EXTRA_DISABLED_TESTS) \
 	$(COOP_DISABLED_TESTS) \
 	$(PROFILE_DISABLED_TESTS)
 
-DISABLED_TESTS_WRENCH=	\
+# failing tests which we temporarily disable for PRs
+# so they don't interfere with other people's work
+DISABLED_TESTS_CI_PR =	\
+	appdomain-threadpool-unload.exe	\
+	appdomain-thread-abort.exe
+
+DISABLED_TESTS_CI=	\
 	$(DISABLED_TESTS)	\
-	$(PLATFORM_DISABLED_TESTS_WRENCH)	\
+	$(shell if [ "x$(CI_PR)" != "x" ]; then echo $(DISABLED_TESTS_CI_PR); fi)	\
 	main-returns-background-resetabort.exe \
 	main-returns-background-abort-resetabort.exe	\
 	thread6.exe	\
@@ -952,7 +962,7 @@ test_cs: $(TEST_PROG) $(TESTSI_CS) libtest.la
 	@failed=0; \
 	passed=0; \
 	if [ "x$$V" = "x1" ]; then dump_action="dump-output"; else dump_action="no-dump"; fi; \
-	if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_WRENCH)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
+	if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_CI)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
 	for i in $(TESTSI_CS); do	\
 		if $(srcdir)/test-driver '$(with_mono_path) $(TEST_PROG_RUN)' $$i "$${disabled_tests}" "$${dump_action}" $(RUNTIME_ARGS); \
 		then \
@@ -968,7 +978,7 @@ test_il: $(TEST_PROG) $(TESTSI_IL) libtest.la
 	@failed=0; \
 	passed=0; \
 	if [ "x$$V" = "x1" ]; then dump_action="dump-output"; else dump_action="no-dump"; fi; \
-	if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_WRENCH)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
+	if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_CI)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
 	for i in $(TESTSI_IL); do	\
 		if $(srcdir)/test-driver '$(with_mono_path) $(TEST_PROG_RUN)' $$i "$${disabled_tests}" "$${dump_action}" $(RUNTIME_ARGS); \
 		then \
@@ -982,7 +992,7 @@ test_il: $(TEST_PROG) $(TESTSI_IL) libtest.la
 
 testb: $(TEST_PROG) $(TESTBS)
 	if [ "x$$V" = "x1" ]; then dump_action="dump-output"; else dump_action="no-dump"; fi; \
-	if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_WRENCH)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
+	if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_CI)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
 	for i in $(TESTBS); do	\
 		$(srcdir)/test-driver '$(with_mono_path) $(TEST_PROG_RUN)' $$i "$${disabled_tests}" "$${dump_action}" $(RUNTIME_ARGS);	\
 	done
@@ -992,7 +1002,7 @@ runtest: $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQS
 	passed=0; \
 	failed_tests="";\
 	if [ "x$$V" = "x1" ]; then dump_action="dump-output"; else dump_action="no-dump"; fi; \
-	if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_WRENCH)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
+	if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_CI)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
 	rm -f testlist testlist.sorted; \
 	for i in $(TESTSI_CS) $(TESTBS) $(TESTSI_IL); do echo $${i} >> testlist; sort testlist > testlist.sorted; done; \
 	for i in `cat testlist.sorted`; do \
@@ -1022,11 +1032,11 @@ runtest: $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQS
 	fi
 
 runtest-managed: test-runner.exe $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS)
-	@if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_WRENCH)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
+	@if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_CI)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
 	$(RUNTIME) --debug $(TEST_RUNNER) $(TEST_RUNNER_ARGS) -j a --testsuite-name "runtime" --timeout 300 --disabled "$${disabled_tests}" $(TESTSI_CS) $(TESTBS) $(TESTSI_IL)
 
 runtest-managed-serial: test-runner.exe $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS)
-	@if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_WRENCH)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
+	@if [ "x$$CI" = "x1" ]; then disabled_tests="$(DISABLED_TESTS_CI)"; else disabled_tests="$(DISABLED_TESTS)"; fi; \
 	$(RUNTIME) --debug $(TEST_RUNNER) $(TEST_RUNNER_ARGS) -j 1 --testsuite-name "runtime" --disabled "$${disabled_tests}" $(TESTSI_CS) $(TESTBS) $(TESTSI_IL)
 
 testjit:

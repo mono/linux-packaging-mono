@@ -147,17 +147,17 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
 	mono-route.c mono-route.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h number-ms.c \
-	number-ms.h object-internals.h opcodes.c socket-io.c \
-	socket-io.h w32process.c w32process.h w32process-internals.h \
-	profiler.c profiler-private.h rand.h rand.c remoting.h \
-	remoting.c runtime.c mono-security.c security.h \
-	security-core-clr.c security-core-clr.h security-manager.c \
-	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
-	dynamic-stream-internals.h reflection-cache.h \
+	number-ms.h object-internals.h opcodes.c property-bag.h \
+	property-bag.c socket-io.c socket-io.h w32process.c \
+	w32process.h w32process-internals.h profiler.c \
+	profiler-private.h rand.h rand.c remoting.h remoting.c \
+	runtime.c mono-security.c security.h security-core-clr.c \
+	security-core-clr.h security-manager.c security-manager.h \
+	string-icalls.c string-icalls.h sysmath.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool-ms.c \
+	threadpool-ms.h threadpool-ms-io.c threadpool-ms-io.h verify.c \
+	verify-internals.h wrapper-types.h dynamic-image-internals.h \
+	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
@@ -227,6 +227,7 @@ am__objects_5 = $(am__objects_4) libmonoruntime_static_la-assembly.lo \
 	libmonoruntime_static_la-nacl-stub.lo \
 	libmonoruntime_static_la-number-ms.lo \
 	libmonoruntime_static_la-opcodes.lo \
+	libmonoruntime_static_la-property-bag.lo \
 	libmonoruntime_static_la-socket-io.lo \
 	libmonoruntime_static_la-w32process.lo \
 	libmonoruntime_static_la-profiler.lo \
@@ -309,17 +310,17 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
 	mono-route.c mono-route.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h number-ms.c \
-	number-ms.h object-internals.h opcodes.c socket-io.c \
-	socket-io.h w32process.c w32process.h w32process-internals.h \
-	profiler.c profiler-private.h rand.h rand.c remoting.h \
-	remoting.c runtime.c mono-security.c security.h \
-	security-core-clr.c security-core-clr.h security-manager.c \
-	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
-	dynamic-stream-internals.h reflection-cache.h \
+	number-ms.h object-internals.h opcodes.c property-bag.h \
+	property-bag.c socket-io.c socket-io.h w32process.c \
+	w32process.h w32process-internals.h profiler.c \
+	profiler-private.h rand.h rand.c remoting.h remoting.c \
+	runtime.c mono-security.c security.h security-core-clr.c \
+	security-core-clr.h security-manager.c security-manager.h \
+	string-icalls.c string-icalls.h sysmath.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool-ms.c \
+	threadpool-ms.h threadpool-ms-io.c threadpool-ms-io.h verify.c \
+	verify-internals.h wrapper-types.h dynamic-image-internals.h \
+	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
@@ -376,6 +377,7 @@ am__objects_14 = $(am__objects_13) libmonoruntime_la-assembly.lo \
 	libmonoruntime_la-mono-perfcounters.lo \
 	libmonoruntime_la-mono-route.lo libmonoruntime_la-nacl-stub.lo \
 	libmonoruntime_la-number-ms.lo libmonoruntime_la-opcodes.lo \
+	libmonoruntime_la-property-bag.lo \
 	libmonoruntime_la-socket-io.lo libmonoruntime_la-w32process.lo \
 	libmonoruntime_la-profiler.lo libmonoruntime_la-rand.lo \
 	libmonoruntime_la-remoting.lo libmonoruntime_la-runtime.lo \
@@ -449,17 +451,17 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
 	mono-route.c mono-route.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h number-ms.c \
-	number-ms.h object-internals.h opcodes.c socket-io.c \
-	socket-io.h w32process.c w32process.h w32process-internals.h \
-	profiler.c profiler-private.h rand.h rand.c remoting.h \
-	remoting.c runtime.c mono-security.c security.h \
-	security-core-clr.c security-core-clr.h security-manager.c \
-	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
-	dynamic-stream-internals.h reflection-cache.h \
+	number-ms.h object-internals.h opcodes.c property-bag.h \
+	property-bag.c socket-io.c socket-io.h w32process.c \
+	w32process.h w32process-internals.h profiler.c \
+	profiler-private.h rand.h rand.c remoting.h remoting.c \
+	runtime.c mono-security.c security.h security-core-clr.c \
+	security-core-clr.h security-manager.c security-manager.h \
+	string-icalls.c string-icalls.h sysmath.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool-ms.c \
+	threadpool-ms.h threadpool-ms-io.c threadpool-ms-io.h verify.c \
+	verify-internals.h wrapper-types.h dynamic-image-internals.h \
+	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
@@ -530,6 +532,7 @@ am__objects_22 = $(am__objects_21) \
 	libmonoruntimesgen_static_la-nacl-stub.lo \
 	libmonoruntimesgen_static_la-number-ms.lo \
 	libmonoruntimesgen_static_la-opcodes.lo \
+	libmonoruntimesgen_static_la-property-bag.lo \
 	libmonoruntimesgen_static_la-socket-io.lo \
 	libmonoruntimesgen_static_la-w32process.lo \
 	libmonoruntimesgen_static_la-profiler.lo \
@@ -617,17 +620,17 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
 	mono-route.c mono-route.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h number-ms.c \
-	number-ms.h object-internals.h opcodes.c socket-io.c \
-	socket-io.h w32process.c w32process.h w32process-internals.h \
-	profiler.c profiler-private.h rand.h rand.c remoting.h \
-	remoting.c runtime.c mono-security.c security.h \
-	security-core-clr.c security-core-clr.h security-manager.c \
-	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
-	dynamic-stream-internals.h reflection-cache.h \
+	number-ms.h object-internals.h opcodes.c property-bag.h \
+	property-bag.c socket-io.c socket-io.h w32process.c \
+	w32process.h w32process-internals.h profiler.c \
+	profiler-private.h rand.h rand.c remoting.h remoting.c \
+	runtime.c mono-security.c security.h security-core-clr.c \
+	security-core-clr.h security-manager.c security-manager.h \
+	string-icalls.c string-icalls.h sysmath.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool-ms.c \
+	threadpool-ms.h threadpool-ms-io.c threadpool-ms-io.h verify.c \
+	verify-internals.h wrapper-types.h dynamic-image-internals.h \
+	dynamic-stream.c dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
 	file-mmap.h object-offsets.h abi-details.h \
@@ -697,6 +700,7 @@ am__objects_30 = $(am__objects_29) libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-nacl-stub.lo \
 	libmonoruntimesgen_la-number-ms.lo \
 	libmonoruntimesgen_la-opcodes.lo \
+	libmonoruntimesgen_la-property-bag.lo \
 	libmonoruntimesgen_la-socket-io.lo \
 	libmonoruntimesgen_la-w32process.lo \
 	libmonoruntimesgen_la-profiler.lo \
@@ -1217,6 +1221,8 @@ common_sources = \
 	number-ms.h		\
 	object-internals.h	\
 	opcodes.c		\
+	property-bag.h	\
+	property-bag.c	\
 	socket-io.c		\
 	socket-io.h		\
 	w32process.c		\
@@ -1502,6 +1508,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-opcodes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-profiler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-property-bag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-reflection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-remoting.Plo@am__quote@
@@ -1594,6 +1601,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-opcodes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-profiler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-property-bag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-reflection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-remoting.Plo@am__quote@
@@ -1684,6 +1692,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-opcodes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-profiler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-property-bag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-reflection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-remoting.Plo@am__quote@
@@ -1781,6 +1790,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-opcodes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-profiler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-property-bag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-rand.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-reflection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-remoting.Plo@am__quote@
@@ -2237,6 +2247,13 @@ libmonoruntime_static_la-opcodes.lo: opcodes.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='opcodes.c' object='libmonoruntime_static_la-opcodes.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-opcodes.lo `test -f 'opcodes.c' || echo '$(srcdir)/'`opcodes.c
+
+libmonoruntime_static_la-property-bag.lo: property-bag.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-property-bag.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-property-bag.Tpo -c -o libmonoruntime_static_la-property-bag.lo `test -f 'property-bag.c' || echo '$(srcdir)/'`property-bag.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-property-bag.Tpo $(DEPDIR)/libmonoruntime_static_la-property-bag.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='property-bag.c' object='libmonoruntime_static_la-property-bag.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-property-bag.lo `test -f 'property-bag.c' || echo '$(srcdir)/'`property-bag.c
 
 libmonoruntime_static_la-socket-io.lo: socket-io.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-socket-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-socket-io.Tpo -c -o libmonoruntime_static_la-socket-io.lo `test -f 'socket-io.c' || echo '$(srcdir)/'`socket-io.c
@@ -2889,6 +2906,13 @@ libmonoruntime_la-opcodes.lo: opcodes.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-opcodes.lo `test -f 'opcodes.c' || echo '$(srcdir)/'`opcodes.c
 
+libmonoruntime_la-property-bag.lo: property-bag.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-property-bag.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-property-bag.Tpo -c -o libmonoruntime_la-property-bag.lo `test -f 'property-bag.c' || echo '$(srcdir)/'`property-bag.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-property-bag.Tpo $(DEPDIR)/libmonoruntime_la-property-bag.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='property-bag.c' object='libmonoruntime_la-property-bag.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-property-bag.lo `test -f 'property-bag.c' || echo '$(srcdir)/'`property-bag.c
+
 libmonoruntime_la-socket-io.lo: socket-io.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-socket-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-socket-io.Tpo -c -o libmonoruntime_la-socket-io.lo `test -f 'socket-io.c' || echo '$(srcdir)/'`socket-io.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-socket-io.Tpo $(DEPDIR)/libmonoruntime_la-socket-io.Plo
@@ -3539,6 +3563,13 @@ libmonoruntimesgen_static_la-opcodes.lo: opcodes.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='opcodes.c' object='libmonoruntimesgen_static_la-opcodes.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-opcodes.lo `test -f 'opcodes.c' || echo '$(srcdir)/'`opcodes.c
+
+libmonoruntimesgen_static_la-property-bag.lo: property-bag.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-property-bag.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-property-bag.Tpo -c -o libmonoruntimesgen_static_la-property-bag.lo `test -f 'property-bag.c' || echo '$(srcdir)/'`property-bag.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-property-bag.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-property-bag.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='property-bag.c' object='libmonoruntimesgen_static_la-property-bag.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-property-bag.lo `test -f 'property-bag.c' || echo '$(srcdir)/'`property-bag.c
 
 libmonoruntimesgen_static_la-socket-io.lo: socket-io.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-socket-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-socket-io.Tpo -c -o libmonoruntimesgen_static_la-socket-io.lo `test -f 'socket-io.c' || echo '$(srcdir)/'`socket-io.c
@@ -4225,6 +4256,13 @@ libmonoruntimesgen_la-opcodes.lo: opcodes.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='opcodes.c' object='libmonoruntimesgen_la-opcodes.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-opcodes.lo `test -f 'opcodes.c' || echo '$(srcdir)/'`opcodes.c
+
+libmonoruntimesgen_la-property-bag.lo: property-bag.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-property-bag.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-property-bag.Tpo -c -o libmonoruntimesgen_la-property-bag.lo `test -f 'property-bag.c' || echo '$(srcdir)/'`property-bag.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-property-bag.Tpo $(DEPDIR)/libmonoruntimesgen_la-property-bag.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='property-bag.c' object='libmonoruntimesgen_la-property-bag.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-property-bag.lo `test -f 'property-bag.c' || echo '$(srcdir)/'`property-bag.c
 
 libmonoruntimesgen_la-socket-io.lo: socket-io.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-socket-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-socket-io.Tpo -c -o libmonoruntimesgen_la-socket-io.lo `test -f 'socket-io.c' || echo '$(srcdir)/'`socket-io.c
