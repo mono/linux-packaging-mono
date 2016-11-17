@@ -23,3 +23,5 @@ cache
 /logs/
 /scratch/
 /.idea/
+/distribution/
+/last-successful-build.env

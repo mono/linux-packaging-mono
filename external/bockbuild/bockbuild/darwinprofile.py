@@ -12,7 +12,7 @@ import stat
 def match_stageable_text(path, filetype):
     if os.path.islink(path) or os.path.isdir(path):
         return False
-    return path.endswith('.pc') or filetype.startswith('libtool library file') or filetype.endswith('text executable')
+    return path.endswith('.pc') or 'libtool library file' in filetype or 'text executable' in filetype
 
 
 def match_text(path, filetype):
@@ -121,8 +121,11 @@ class DarwinProfile (UnixProfile):
         else:
             error('Unknown arch %s' % arch)
 
+        configure_cache =  '%s/%s-%s.cache' % (self.bockbuild.build_root, package.name, arch)
+        package.aux_files.append (configure_cache)
+
         package.local_configure_flags.extend(
-            ['--cache-file=%s/%s-%s.cache' % (self.bockbuild.build_root, package.name, arch)])
+            ['--cache-file=%s' % configure_cache])
 
         if package.name in self.debug_info:
             package.local_gcc_flags.extend(['-g'])
