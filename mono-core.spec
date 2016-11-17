@@ -36,6 +36,7 @@ License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
+Patch0:		3975.diff
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -131,6 +132,7 @@ technologies that have been submitted to the ECMA for standardization.
 
 %prep
 %setup -q -n mono-%{__majorver}
+%patch0 -p1
 
 %build
 ./autogen.sh
