@@ -311,9 +311,6 @@ ifndef SKIP_LIBGC
 endif
 ifdef BTLS_ARCH
 	install -D -m 644 debian/tmp/usr/lib/libmono-btls-shared.so debian/mono-runtime-common/usr/lib/
-	install -D -m 644 debian/tmp/usr/lib/mono/4.5/Mono.Btls.Interface.dll debian/mono-runtime-common/usr/lib/mono/4.5/
-	install -D -m 644 debian/tmp/usr/lib/mono/gac/Mono.Btls.Interface/4.0.0.0__0738eb9f132ed756/Mono.Btls.Interface.dll debian/mono-runtime-common/usr/lib/mono/gac/Mono.Btls.Interface/4.0.0.0__0738eb9f132ed756/
-	install -D -m 644 debian/tmp/usr/lib/mono/gac/Mono.Btls.Interface/4.0.0.0__0738eb9f132ed756/Mono.Btls.Interface.dll.mdb debian/mono-runtime-common/usr/lib/mono/gac/Mono.Btls.Interface/4.0.0.0__0738eb9f132ed756/
 endif
 	dh_link -s
 	dh_installchangelogs -s -X ChangeLog
