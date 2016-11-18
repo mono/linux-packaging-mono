@@ -33,21 +33,21 @@ else
 	CONF_FLAGS += --build $(DEB_BUILD_GNU_TYPE) --host $(DEB_HOST_GNU_TYPE)
 endif
 
-ifeq ($(DEB_BUILD_ARCH_OS), kfreebsd)
+ifeq ($(DEB_HOST_ARCH_OS), kfreebsd)
         CONF_FLAGS += --enable-minimal=aot
 endif
 
-ifeq ($(DEB_BUILD_ARCH), armel)
+ifeq ($(DEB_HOST_ARCH), armel)
 	CONF_FLAGS += --with-fpu=NONE
 endif
 
-ifneq (,$(findstring $(DEB_BUILD_ARCH),$(DEB_MONO_SGEN_ARCHS)))
+ifneq (,$(findstring $(DEB_HOST_ARCH),$(DEB_MONO_SGEN_ARCHS)))
 	CONF_FLAGS += --with-sgen=yes
 else
 	CONF_FLAGS += --with-sgen=no
 endif
 
-ifeq ($(DEB_BUILD_ARCH), arm64)
+ifeq ($(DEB_HOST_ARCH), arm64)
 	MONO_BOEHM_TEST = true
 	CONF_FLAGS += --disable-boehm
 	SKIP_LIBGC = true
