@@ -53,6 +53,16 @@ ifeq ($(DEB_BUILD_ARCH), arm64)
 	SKIP_LIBGC = true
 endif
 
+ifeq ($(DEB_HOST_ARCH), i386)
+	CONF_FLAGS += --enable-dynamic-btls
+	BTLS_ARCH = true
+endif
+
+ifeq ($(DEB_HOST_ARCH), amd64)
+	CONF_FLAGS += --enable-dynamic-btls
+	BTLS_ARCH = true
+endif
+
 
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
@@ -298,6 +308,12 @@ binary-arch: build-stamp install-stamp
 	dh_install -s
 ifndef SKIP_LIBGC
 	install -m 644 debian/tmp/usr/bin/pedump debian/mono-utils/usr/bin/
+endif
+ifdef BTLS_ARCH
+	install -D -m 644 debian/tmp/usr/lib/libmono-btls-shared.so debian/mono-runtime-common/usr/lib/
+	install -D -m 644 debian/tmp/usr/lib/mono/4.5/Mono.Btls.Interface.dll debian/mono-runtime-common/usr/lib/mono/4.5/
+	install -D -m 644 debian/tmp/usr/lib/mono/gac/Mono.Btls.Interface/4.0.0.0__0738eb9f132ed756/Mono.Btls.Interface.dll debian/mono-runtime-common/usr/lib/mono/gac/Mono.Btls.Interface/4.0.0.0__0738eb9f132ed756/
+	install -D -m 644 debian/tmp/usr/lib/mono/gac/Mono.Btls.Interface/4.0.0.0__0738eb9f132ed756/Mono.Btls.Interface.dll.mdb debian/mono-runtime-common/usr/lib/mono/gac/Mono.Btls.Interface/4.0.0.0__0738eb9f132ed756/
 endif
 	dh_link -s
 	dh_installchangelogs -s -X ChangeLog
