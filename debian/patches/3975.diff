@@ -1,0 +1,43 @@
+commit 1514322fc90090b9a706c221d074ae80b3e1e079
+Author: 173210 <root.3.173210@live.com>
+Date:   Mon Nov 14 17:32:24 2016 +0900
+
+    [btls] Set CMAKE_POSITION_INDEPENDENT_CODE TRUE for BUILD_DYNAMIC_BTLS
+    
+    While CMAKE_POSITION_INDEPENDENT_CODE will be automatically set if
+    BUILD_SHARED_LIBS is TRUE, it won't if BUILD_DYNAMIC_BTLS is TRUE.
+    This change sets CMAKE_POSITION_INDEPENDENT_CODE manually in such a case.
+
+diff --git a/mono/btls/CMakeLists.txt b/mono/btls/CMakeLists.txt
+index 133f5e3..7e5e84f 100644
+--- a/mono/btls/CMakeLists.txt
++++ b/mono/btls/CMakeLists.txt
+@@ -22,6 +22,9 @@ if (NOT "${BTLS_ARCH}" STREQUAL "")
+ 	message (WARNING "SET ARCH: ${BTLS_ARCH}")
+ 	set (CMAKE_SYSTEM_PROCESSOR "${BTLS_ARCH}")
+ endif ()
++if (BUILD_DYNAMIC_BTLS)
++	set (CMAKE_POSITION_INDEPENDENT_CODE TRUE)
++endif ()
+ set (C_CXX_FLAGS "-Wall -Wsign-compare -Wmissing-field-initializers -ggdb -fvisibility=hidden")
+ set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_CXX_FLAGS} ${BTLS_CFLAGS}")
+ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${C_CXX_FLAGS} ${BTLS_CFLAGS}")
+diff --git a/mono/btls/CMakeLists.txt b/mono/btls/CMakeLists.txt
+index 7e5e84f..8734b71 100644
+--- a/mono/btls/CMakeLists.txt
++++ b/mono/btls/CMakeLists.txt
+@@ -24,8 +24,12 @@ if (NOT "${BTLS_ARCH}" STREQUAL "")
+ endif ()
+ if (BUILD_DYNAMIC_BTLS)
+ 	set (CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+-endif ()
+-set (C_CXX_FLAGS "-Wall -Wsign-compare -Wmissing-field-initializers -ggdb -fvisibility=hidden")
++	set (C_CXX_FLAGS "-Wall -Wsign-compare -Wmissing-field-initializers -fPIC -ggdb -fvisibility=hidden")
++elseif (BUILD_SHARED_LIBS)
++	set (C_CXX_FLAGS "-Wall -Wsign-compare -Wmissing-field-initializers -fPIC -ggdb -fvisibility=hidden")
++else ()
++	set (C_CXX_FLAGS "-Wall -Wsign-compare -Wmissing-field-initializers -ggdb -fvisibility=hidden")
++endif()
+ set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_CXX_FLAGS} ${BTLS_CFLAGS}")
+ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${C_CXX_FLAGS} ${BTLS_CFLAGS}")
+ set (CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} ${BTLS_CFLAGS}")
