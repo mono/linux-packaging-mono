@@ -46,7 +46,7 @@ class CommandException (Exception):  # shell command failure
         if cwd is None:
             cwd = os.getcwd()
         Exception.__init__(self, '%s: %s (path: %s)' %
-                           (get_caller(), cwd, message))
+                           (get_caller(), message, cwd))
         verbose(message)
 
 
@@ -220,26 +220,21 @@ def test(func):
     if func() == False:
         error('Test ''%s'' failed.' % func.__name__)
 
-
-def retry(func, tries=3, delay=5, **kwargs):
-    result = None
-    exc = None
-    cwd = os.getcwd()
-    result = None
-    for x in range(tries):
-        try:
-            os.chdir(cwd)
-            result = func(**kwargs)
-            break
-        except CommandException as e:
-            if x == tries - 1:
-                error(str(e))
-            info(str(e))
-            info("Retrying ''%s'' in %s secs" % (func.__name__, delay))
-            time.sleep(delay)
-
-    return result
-
+def retry(fn, attempts = 3, delay = 5):
+    def decorator(*args, **kwargs):
+        result = None
+        for x in range(attempts):
+            try:
+                 result = fn (*args, **kwargs)
+                 break
+            except CommandException as e:
+                if x == attempts -1:
+                    raise BockbuildException (e)
+                info(str(e))
+                info('Retrying <%s> in %s secs...' % (fn.__name__, delay))
+                time.sleep(delay)
+        return result
+    return decorator
 
 def ensure_dir(d, purge=False):
     trace('ensuring:' + d)
@@ -336,6 +331,7 @@ def find_git(self, echo=False):
     if not git_bin:
         error('git not found in PATH')
 
+    @retry
     def git_func(self, args, cwd, hazard = False):
         if hazard:
             root = git_rootdir (self, cwd)

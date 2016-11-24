@@ -223,3 +223,38 @@ mono_handle_verify (MonoRawHandle raw_handle)
 	
 }
 #endif
+
+uintptr_t
+mono_array_handle_length (MonoArrayHandle arr)
+{
+	MONO_REQ_GC_UNSAFE_MODE;
+
+	return MONO_HANDLE_RAW (arr)->max_length;
+}
+
+uint32_t
+mono_gchandle_from_handle (MonoObjectHandle handle, mono_bool pinned)
+{
+	return mono_gchandle_new (MONO_HANDLE_RAW(handle), pinned);
+}
+
+MonoObjectHandle
+mono_gchandle_get_target_handle (uint32_t gchandle)
+{
+	return MONO_HANDLE_NEW (MonoObject, mono_gchandle_get_target);
+}
+
+gpointer
+mono_array_handle_pin_with_size (MonoArrayHandle handle, int size, uintptr_t idx, uint32_t *gchandle)
+{
+	g_assert (gchandle != NULL);
+	*gchandle = mono_gchandle_from_handle (MONO_HANDLE_CAST(MonoObject,handle), TRUE);
+	MonoArray *raw = MONO_HANDLE_RAW (handle);
+	return mono_array_addr_with_size (raw, size, idx);
+}
+
+void
+mono_array_handle_memcpy_refs (MonoArrayHandle dest, uintptr_t dest_idx, MonoArrayHandle src, uintptr_t src_idx, uintptr_t len)
+{
+	mono_array_memcpy_refs (MONO_HANDLE_RAW (dest), dest_idx, MONO_HANDLE_RAW (src), src_idx, len);
+}

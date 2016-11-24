@@ -193,7 +193,8 @@ class Bockbuild:
             if os.path.exists(package.log):
                 delete(package.log)
 
-            retry(package.fetch)
+            dest = os.path.join(self.build_root, package.source_dir_name)
+            package.fetch(dest)
 
             if self.full_rebuild:
                 package.request_build('Full rebuild')
