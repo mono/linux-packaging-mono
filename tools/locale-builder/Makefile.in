@@ -178,6 +178,7 @@ GTKX11 = @GTKX11@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
+INSTALL_AOT_HYBRID = @INSTALL_AOT_HYBRID@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -561,7 +562,7 @@ minimal: locale-builder.exe locale-data
 
 locale-data:
 	if ! test -d CLDR/common ; then \
-		curl http://www.unicode.org/Public/cldr/24/core.zip -o core.zip ; \
+		curl http://www.unicode.org/Public/cldr/30.0.2/core.zip -o core.zip ; \
 		unzip core.zip -d CLDR ; \
 	fi
 

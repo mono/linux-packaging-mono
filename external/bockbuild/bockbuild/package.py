@@ -138,8 +138,8 @@ class Package:
                  (found_version, package_version))
         self.version = package_version
 
-    def fetch(self):
-        build_root = self.profile.bockbuild.build_root
+    @retry
+    def fetch(self, dest):
         scratch = self.profile.bockbuild.scratch
         resources = self.profile.bockbuild.resources
         source_cache_dir = self.profile.bockbuild.source_cache
@@ -147,11 +147,10 @@ class Package:
         self.buildstring = []
         self.is_local = False
         scratch_workspace = os.path.join(scratch, '%s.workspace' % self.name)
-        final_workspace = os.path.join(build_root, self.source_dir_name)
 
         self.rm_if_exists(scratch_workspace)
-        if os.path.exists(final_workspace):
-            shutil.move(final_workspace, scratch_workspace)
+        if os.path.exists(dest):
+            shutil.move(dest, scratch_workspace)
 
         def checkout(self, source_url, cache_dir, workspace_dir):
             self.is_local = os.path.isdir (source_url)
@@ -284,7 +283,7 @@ class Package:
                 try:
                     filename, message = MyUrlOpener().retrieve(archive, cache_dest)
                 except IOError as e:
-                    raise BockbuildException(
+                    raise CommandException(
                         '%s error downloading %s' % (e[1], archive))
 
             def update_cache():
@@ -365,7 +364,7 @@ class Package:
                             clean_func = checkout_archive(
                                 cached_source, cache, scratch_workspace)
                             source = cached_source
-                        except BockbuildException as e:
+                        except CommandException as e:
                             warn(repr(e))
                             verbose('Trying original source')
                             clean_func = checkout_archive(
@@ -429,7 +428,7 @@ class Package:
         if not os.path.exists(scratch_workspace):
             os.mkdir(scratch_workspace)
 
-        self.workspace = final_workspace
+        self.workspace = dest
         shutil.move(scratch_workspace, self.workspace)
 
     def request_build(self, reason):
@@ -580,7 +579,7 @@ class Package:
             self.profile.process_package(self)
 
             if not self.dont_clean:
-                retry(self.clean, dir=self.workspace)
+                self.clean (dir=self.workspace)
         except (Exception, KeyboardInterrupt) as e:
             self.rm_if_exists(self.stage_root)
             if isinstance(e, CommandException):

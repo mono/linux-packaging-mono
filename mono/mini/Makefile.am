@@ -484,12 +484,13 @@ test_sources = 			\
 	generics.cs		\
 	generics-variant-types.il\
 	basic-simd.cs \
+	basic-vectors.cs \
 	aot-tests.cs \
 	gc-test.cs \
 	gshared.cs
 
 
-regtests_UNIVERSAL=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe
+regtests_UNIVERSAL=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe basic-vectors.exe
 
 if INSTALL_MOBILE_STATIC
 regtests= \
@@ -621,6 +622,9 @@ CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649
 
 basic-simd.exe: basic-simd.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/Mono.Simd.dll
+
+basic-vectors.exe: basic-vectors.cs TestDriver.dll
+	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/System.Numerics.dll
 
 nacl.exe: nacl.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/Mono.Simd.dll
@@ -861,7 +865,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.925/eb1ae9f\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1028/e8ad984\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

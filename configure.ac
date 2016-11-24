@@ -539,7 +539,7 @@ AC_ARG_ENABLE(visibility-hidden,
 
 WARN=''
 if test x"$GCC" = xyes; then
-        WARN='-Wall -Wunused -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes  -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wno-cast-qual -Wwrite-strings -Wno-switch -Wno-switch-enum -Wno-unused-value -Wno-attributes'
+        WARN='-Wall -Wunused -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes  -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wno-cast-qual -Wwrite-strings -Wno-switch -Wno-switch-enum -Wno-unused-value -Wno-attributes -Wno-format-zero-length'
 
 		# We require C99 with some GNU extensions, e.g. `linux` macro
 		CFLAGS="$CFLAGS -std=gnu99"
@@ -770,9 +770,10 @@ AC_ARG_WITH(monotouch_watch, [  --with-monotouch_watch=yes,no   If you want to b
 AC_ARG_WITH(monotouch_tv,    [  --with-monotouch_tv=yes,no      If you want to build the Xamarin.TVOS assemblies (defaults to no)],   [], [with_monotouch_tv=default])
 AC_ARG_WITH(bitcode,         [  --with-bitcode=yes,no           If bitcode is enabled (defaults to no)],                              [], [with_bitcode=default])
 AC_ARG_WITH(xammac,          [  --with-xammac=yes,no            If you want to build the Xamarin.Mac assemblies (defaults to no)],    [], [with_xammac=default])
+AC_ARG_WITH(aot_hybrid,      [  --with-aot_hybrid=yes,no        If you want to build the aot_hybrid assemblies (defaults to no)],     [], [with_aot_hybrid=default])
 AC_ARG_WITH(mobile_static,   [  --with-mobile_static=yes,no     If you want to build the mobile_static assemblies (defaults to no)],  [], [with_mobile_static=default])
 
-AC_ARG_WITH(runtime_preset, [  --with-runtime_preset=net_4_x,all,mobile_static,bitcode_mobile_static   Which default profile to build (defaults to net_4_x)],  [], [with_runtime_preset=net_4_x])
+AC_ARG_WITH(runtime_preset, [  --with-runtime_preset=net_4_x,all,aot_hybrid,mobile_static,bitcode_mobile_static   Which default profile to build (defaults to net_4_x)],  [], [with_runtime_preset=net_4_x])
 
 dnl
 dnl Profile defaults
@@ -780,51 +781,34 @@ dnl
 TEST_PROFILE=default
 enable_llvm_default=no
 
+with_profile4_x_default=no
+with_monodroid_default=no
+with_monotouch_default=no
+with_monotouch_watch_default=no
+with_monotouch_tv_default=no
+with_xammac_default=no
+with_aot_hybrid_default=no
+with_mobile_static_default=no
+
+with_bitcode_default=no
+with_cooperative_gc_default=no
+
 INVARIANT_AOT_OPTIONS=nimt-trampolines=2000,ntrampolines=8000,nrgctx-fetch-trampolines=256,ngsharedvt-trampolines=4000
 
 if test x$cross_compiling = xyes -o x$enable_mcs_build = xno; then
    DISABLE_MCS_DOCS_default=yes
-   with_profile4_x_default=no
-   with_monodroid_default=no
-   with_monotouch_default=no
-   with_monotouch_watch_default=no
-   with_monotouch_tv_default=no
-   with_xammac_default=no
-   with_mobile_static_default=no
-   with_bitcode_default=no
-   with_cooperative_gc_default=no
 elif test x$with_runtime_preset = xnet_4_x; then
-   with_cooperative_gc_default=no
    with_profile4_x_default=yes
-   with_monodroid_default=no
-   with_monotouch_default=no
-   with_monotouch_watch_default=no
-   with_monotouch_tv_default=no
-   with_xammac_default=no
-   with_mobile_static_default=no
-   with_bitcode_default=no
 elif test x$with_runtime_preset = xall; then
-   with_cooperative_gc_default=no
    with_profile4_x_default=yes
    with_monodroid_default=yes
    with_monotouch_default=yes
    with_monotouch_watch_default=yes
    with_monotouch_tv_default=yes
    with_xammac_default=yes
-   with_mobile_static_default=no
-   with_bitcode_default=no
 elif test x$with_runtime_preset = xmobile_static; then
    DISABLE_MCS_DOCS_default=yes
-   with_cooperative_gc_default=no
-   with_profile4_x_default=no
-   with_monodroid_default=no
-   with_monotouch_default=no
-   with_monotouch_watch_default=no
-   with_monotouch_tv_default=no
-   with_xammac_default=no
    with_mobile_static_default=yes
-   with_bitcode_default=no
-   with_cooperative_gc_default=no
    TEST_PROFILE=mobile_static 
 
    mono_feature_disable_com='yes'
@@ -837,12 +821,6 @@ elif test x$with_runtime_preset = xmobile_static; then
    AOT_RUN_FLAGS="--full-aot"
 elif test x$with_runtime_preset = xbitcode_mobile_static; then
    DISABLE_MCS_DOCS_default=yes
-   with_profile4_x_default=no
-   with_monodroid_default=no
-   with_monotouch_default=no
-   with_monotouch_watch_default=no
-   with_monotouch_tv_default=no
-   with_xammac_default=no
    with_mobile_static_default=yes
    with_bitcode_default=yes
    with_cooperative_gc_default=yes
@@ -857,16 +835,20 @@ elif test x$with_runtime_preset = xbitcode_mobile_static; then
 
    AOT_BUILD_FLAGS="--aot=llvmonly,$INVARIANT_AOT_OPTIONS"
    AOT_RUN_FLAGS="--llvmonly"
+elif test x$with_runtime_preset = xhybrid; then
+   DISABLE_MCS_DOCS_default=yes
+   with_aot_hybrid_default=yes
+   TEST_PROFILE=aot_hybrid 
+   enable_llvm_default=yes
+
+   mono_feature_disable_com='yes'
+   mono_feature_disable_remoting='yes'
+   mono_feature_disable_appdomains='yes'
+
+   AOT_BUILD_FLAGS="--aot=hybrid,$INVARIANT_AOT_OPTIONS"
+   AOT_RUN_FLAGS="--hybrid-aot"
 else
    with_profile4_x_default=yes
-   with_monodroid_default=no
-   with_monotouch_default=no
-   with_monotouch_watch_default=no
-   with_monotouch_tv_default=no
-   with_bitcode_default=no
-   with_xammac_default=no
-   with_mobile_static_default=no
-   with_cooperative_gc_default=no
 fi
 
 if test "x$AOT_BUILD_FLAGS" != "x"; then :
@@ -899,6 +881,9 @@ fi
 if test "x$with_xammac" = "xdefault"; then
    with_xammac=$with_xammac_default
 fi
+if test "x$with_aot_hybrid" = "xdefault"; then
+   with_aot_hybrid=$with_aot_hybrid_default
+fi
 if test "x$with_mobile_static" = "xdefault"; then
    with_mobile_static=$with_mobile_static_default
 fi
@@ -910,8 +895,10 @@ AM_CONDITIONAL(INSTALL_MONOTOUCH_WATCH, [test "x$with_monotouch_watch" != "xno"]
 AM_CONDITIONAL(INSTALL_MONOTOUCH_TV, [test "x$with_monotouch_tv" != "xno"])
 AM_CONDITIONAL(BITCODE, test "x$with_bitcode" = "xyes")
 AM_CONDITIONAL(INSTALL_XAMMAC, [test "x$with_xammac" != "xno"])
+AM_CONDITIONAL(INSTALL_AOT_HYBRID, [test "x$with_aot_hybrid" != "xno"])
 AM_CONDITIONAL(INSTALL_MOBILE_STATIC, [test "x$with_mobile_static" != "xno"])
 
+AC_SUBST(INSTALL_AOT_HYBRID)
 AC_SUBST(INSTALL_MOBILE_STATIC)
 
 default_profile=net_4_x
@@ -923,6 +910,9 @@ if test -z "$INSTALL_MONOTOUCH_TRUE"; then :
 fi
 if test -z "$INSTALL_XAMMAC_TRUE"; then :
    default_profile=xammac
+fi
+if test -z "$INSTALL_AOT_HYBRID_TRUE"; then :
+   default_profile=aot_hybrid
 fi
 if test -z "$INSTALL_MOBILE_STATIC_TRUE"; then :
    default_profile=mobile_static
@@ -4451,6 +4441,7 @@ echo "
 	Xamarin.WatchOS: $with_monotouch_watch
 	Xamarin.TVOS:    $with_monotouch_tv
 	Xamarin.Mac:     $with_xammac
+	aot_hybrid:      $with_aot_hybrid
 	mobile_static:   $with_mobile_static
 	JNI support:     $jdk_headers_found
 	libgdiplus:      $libgdiplus_msg
