@@ -48,7 +48,6 @@ RUNTIME_EXECUTABLE = $(if $(BOEHM),$(top_builddir)/mono/mini/mono-boehm,$(top_bu
 MINI_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE)
 RUNTIME_AOTCHECK = MONO_PATH="$(CLASS)$(PLATFORM_PATH_SEPARATOR)." $(RUNTIME_EXECUTABLE)
 
-CSC = $(mcs_topdir)/class/lib/build/mcs.exe
 MCS = CSC_SDK_PATH_DISABLED= $(MINI_RUNTIME) $(CSC) -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
 ILASM = $(MINI_RUNTIME) $(CLASS)/ilasm.exe
 
@@ -466,7 +465,8 @@ common_sources = \
 	alias-analysis.c	\
 	mini-cross-helpers.c \
 	arch-stubs.c		\
-	llvm-runtime.h
+	llvm-runtime.h	\
+	type-checking.c
 
 test_sources = 			\
 	basic-calls.cs 		\
@@ -492,7 +492,7 @@ test_sources = 			\
 
 regtests_UNIVERSAL=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe basic-vectors.exe
 
-if INSTALL_MOBILE_STATIC
+if INSTALL_AOT_ONLY
 regtests= \
 	$(regtests_UNIVERSAL)
 
@@ -504,7 +504,7 @@ endif
 else
 regtests= \
 	$(regtests_UNIVERSAL) \
-	$(regtests_MOBILE_STATIC_BLACKLIST)
+	$(regtests_AOT_ONLY_BLACKLIST)
 endif
 
 if X86
@@ -747,9 +747,9 @@ gsharedvtcheck:
 fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
 
 # Skip aoting the tests that aren't compiled 
-# on the mobile_static profile because they're skipped
+# on the aot_only profile because they're skipped
 # on mobile profiles
-FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST = \
+FULLAOT_LIBS_AOT_ONLY_BLACKLIST = \
 	Mono.Posix.dll \
 	System.Configuration.dll
 
@@ -762,14 +762,14 @@ FULLAOT_LIBS_UNIVERSAL = \
 	Mono.Simd.dll \
 	Mono.Security.dll
 
-if INSTALL_MOBILE_STATIC
+if INSTALL_AOT_ONLY
 FULLAOT_LIBS= \
 	Mono.Dynamic.Interpreter.dll \
 	$(FULLAOT_LIBS_UNIVERSAL)
 else
 FULLAOT_LIBS= \
 	$(FULLAOT_LIBS_UNIVERSAL) \
-	$(FULLAOT_LIBS_MOBILE_STATIC_BLACKLIST)
+	$(FULLAOT_LIBS_AOT_ONLY_BLACKLIST)
 endif
 
 FULLAOT_TMP_DIR=$(top_builddir)/mono/mini/fullaot-tmp
@@ -865,7 +865,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1028/e8ad984\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1204/8fc79cf\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

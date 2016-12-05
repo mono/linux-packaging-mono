@@ -147,6 +147,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -179,8 +180,8 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_AOT_HYBRID = @INSTALL_AOT_HYBRID@
+INSTALL_AOT_ONLY = @INSTALL_AOT_ONLY@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -334,7 +335,7 @@ top_srcdir = @top_srcdir@
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(top_builddir)/runtime/mono-wrapper --debug
-MCS = $(with_mono_path) $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -debug:full -target:library
+MCS = $(with_mono_path) $(RUNTIME) $(CSC) -noconfig -nologo -debug:portable -target:library
 EXTRA_DIST = asm.cs Test.cs TestBase.cs
 all: all-am
 
@@ -525,8 +526,8 @@ uninstall-am:
 	tags-am uninstall uninstall-am
 
 
-@INSTALL_MOBILE_STATIC_TRUE@prereq: aot
-@INSTALL_MOBILE_STATIC_FALSE@prereq: test/asm.dll
+@INSTALL_AOT_ONLY_TRUE@prereq: aot
+@INSTALL_AOT_ONLY_FALSE@prereq: test/asm.dll
 
 test/.dirstamp deps/.dirstamp:
 	-mkdir $(@D)

@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -26,9 +29,6 @@
 
 /* Disable System.Decimal support */
 #undef DISABLE_DECIMAL
-
-/* Disables building in the full table of WAPI messages */
-#undef DISABLE_FULL_MESSAGES
 
 /* Disable generics support */
 #undef DISABLE_GENERICS
@@ -144,6 +144,9 @@
 
 /* Have GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY */
 #undef GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY
+
+/* GLIBC has CPU_COUNT macro in sched.h */
+#undef GLIBC_HAS_CPU_COUNT
 
 /* Define to 1 if you have the `accept4' function. */
 #undef HAVE_ACCEPT4
@@ -1190,6 +1193,18 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
 
 /* 64 bit mode with 4 byte longs and pointers */
 #undef __mono_ilp32__

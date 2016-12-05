@@ -75,6 +75,7 @@ static GENERATE_GET_CLASS_WITH_CACHE (activation_services, System.Runtime.Remoti
 #define ldstr_unlock() mono_os_mutex_unlock (&ldstr_section)
 static mono_mutex_t ldstr_section;
 
+
 /**
  * mono_runtime_object_init:
  * @this_obj: the object to initialize
@@ -482,7 +483,7 @@ mono_runtime_class_init_full (MonoVTable *vtable, MonoError *error)
 		if (exc && mono_object_class (exc) == mono_defaults.threadabortexception_class)
 			pending_tae = exc;
 		//TAEs are blocked around .cctors, they must escape as soon as no cctor is left to run.
-		if (!pending_tae)
+		if (!pending_tae && mono_get_eh_callbacks ()->mono_above_abort_threshold ())
 			pending_tae = mono_thread_try_resume_interruption ();
 	} else {
 		/* this just blocks until the initializing thread is done */
@@ -973,6 +974,7 @@ ves_icall_string_alloc (int length)
 	return str;
 }
 
+/* LOCKING: Acquires the loader lock */
 void
 mono_class_compute_gc_descriptor (MonoClass *klass)
 {
@@ -982,6 +984,7 @@ mono_class_compute_gc_descriptor (MonoClass *klass)
 	gsize *bitmap;
 	gsize default_bitmap [4] = {0};
 	static gboolean gcj_inited = FALSE;
+	MonoGCDescriptor gc_descr;
 
 	if (!gcj_inited) {
 		mono_loader_lock ();
@@ -999,23 +1002,20 @@ mono_class_compute_gc_descriptor (MonoClass *klass)
 	if (klass->gc_descr_inited)
 		return;
 
-	klass->gc_descr_inited = TRUE;
-	klass->gc_descr = MONO_GC_DESCRIPTOR_NULL;
-
 	bitmap = default_bitmap;
 	if (klass == mono_defaults.string_class) {
-		klass->gc_descr = mono_gc_make_descr_for_string (bitmap, 2);
+		gc_descr = mono_gc_make_descr_for_string (bitmap, 2);
 	} else if (klass->rank) {
 		mono_class_compute_gc_descriptor (klass->element_class);
 		if (MONO_TYPE_IS_REFERENCE (&klass->element_class->byval_arg)) {
 			gsize abm = 1;
-			klass->gc_descr = mono_gc_make_descr_for_array (klass->byval_arg.type == MONO_TYPE_SZARRAY, &abm, 1, sizeof (gpointer));
+			gc_descr = mono_gc_make_descr_for_array (klass->byval_arg.type == MONO_TYPE_SZARRAY, &abm, 1, sizeof (gpointer));
 			/*printf ("new array descriptor: 0x%x for %s.%s\n", class->gc_descr,
 				class->name_space, class->name);*/
 		} else {
 			/* remove the object header */
 			bitmap = compute_class_bitmap (klass->element_class, default_bitmap, sizeof (default_bitmap) * 8, - (int)(sizeof (MonoObject) / sizeof (gpointer)), &max_set, FALSE);
-			klass->gc_descr = mono_gc_make_descr_for_array (klass->byval_arg.type == MONO_TYPE_SZARRAY, bitmap, mono_array_element_size (klass) / sizeof (gpointer), mono_array_element_size (klass));
+			gc_descr = mono_gc_make_descr_for_array (klass->byval_arg.type == MONO_TYPE_SZARRAY, bitmap, mono_array_element_size (klass) / sizeof (gpointer), mono_array_element_size (klass));
 			/*printf ("new vt array descriptor: 0x%x for %s.%s\n", class->gc_descr,
 				class->name_space, class->name);*/
 			if (bitmap != default_bitmap)
@@ -1026,7 +1026,7 @@ mono_class_compute_gc_descriptor (MonoClass *klass)
 		if (count++ > 58)
 			return;*/
 		bitmap = compute_class_bitmap (klass, default_bitmap, sizeof (default_bitmap) * 8, 0, &max_set, FALSE);
-		klass->gc_descr = mono_gc_make_descr_for_object (bitmap, max_set + 1, klass->instance_size);
+		gc_descr = mono_gc_make_descr_for_object (bitmap, max_set + 1, klass->instance_size);
 		/*
 		if (class->gc_descr == MONO_GC_DESCRIPTOR_NULL)
 			g_print ("disabling typed alloc (%d) for %s.%s\n", max_set, class->name_space, class->name);
@@ -1035,6 +1035,13 @@ mono_class_compute_gc_descriptor (MonoClass *klass)
 		if (bitmap != default_bitmap)
 			g_free (bitmap);
 	}
+
+	/* Publish the data */
+	mono_loader_lock ();
+	klass->gc_descr = gc_descr;
+	mono_memory_barrier ();
+	klass->gc_descr_inited = TRUE;
+	mono_loader_unlock ();
 }
 
 /**
@@ -5915,6 +5922,31 @@ ves_icall_array_new_specific (MonoVTable *vtable, uintptr_t n)
 }
 
 /**
+ * mono_string_empty_wrapper:
+ *
+ * Returns: The same empty string instance as the managed string.Empty
+ */
+MonoString*
+mono_string_empty_wrapper (void)
+{
+	MonoDomain *domain = mono_domain_get ();
+	return mono_string_empty (domain);
+}
+
+/**
+ * mono_string_empty:
+ *
+ * Returns: The same empty string instance as the managed string.Empty
+ */
+MonoString*
+mono_string_empty (MonoDomain *domain)
+{
+	g_assert (domain);
+	g_assert (domain->empty_string);
+	return domain->empty_string;
+}
+
+/**
  * mono_string_new_utf16:
  * @text: a pointer to an utf16 string
  * @len: the length of the string
@@ -6489,8 +6521,14 @@ mono_object_isinst_mbyref_checked (MonoObject *obj, MonoClass *klass, MonoError 
 			return obj;
 		}
 
+		/* casting an array one of the invariant interfaces that must act as such */
+		if (klass->is_array_special_interface) {
+			if (mono_class_is_assignable_from (klass, vt->klass))
+				return obj;
+		}
+
 		/*If the above check fails we are in the slow path of possibly raising an exception. So it's ok to it this way.*/
-		if (mono_class_has_variant_generic_params (klass) && mono_class_is_assignable_from (klass, obj->vtable->klass))
+		else if (mono_class_has_variant_generic_params (klass) && mono_class_is_assignable_from (klass, obj->vtable->klass))
 			return obj;
 	} else {
 		MonoClass *oklass = vt->klass;

@@ -1282,6 +1282,7 @@ mono_patch_info_hash (gconstpointer data)
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
 	case MONO_PATCH_INFO_AOT_MODULE:
 	case MONO_PATCH_INFO_GET_TLS_TRAMP:
+	case MONO_PATCH_INFO_JIT_THREAD_ATTACH:
 		return (ji->type << 8);
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:
 		return (ji->type << 8) | (ji->data.index);
@@ -1728,6 +1729,12 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		target = NULL;
 #endif
 		break;
+	case MONO_PATCH_INFO_JIT_THREAD_ATTACH: {
+		MonoJitICallInfo *mi = mono_find_jit_icall_by_name ("mono_jit_thread_attach");
+		g_assert (mi);
+		target = mi->func;
+		break;
+	}
 	default:
 		g_assert_not_reached ();
 	}
@@ -3588,6 +3595,8 @@ mini_init (const char *filename, const char *runtime_version)
 
 	mono_cross_helpers_run ();
 
+	mono_counters_init ();
+
 	mini_jit_init ();
 
 	/* Happens when using the embedding interface */
@@ -3650,8 +3659,6 @@ mini_init (const char *filename, const char *runtime_version)
 	ticallbacks.thread_state_init_from_sigctx = mono_thread_state_init_from_sigctx;
 	ticallbacks.thread_state_init_from_handle = mono_thread_state_init_from_handle;
 	ticallbacks.thread_state_init = mono_thread_state_init;
-
-	mono_counters_init ();
 
 #ifndef HOST_WIN32
 	mono_w32handle_init ();

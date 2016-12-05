@@ -193,6 +193,7 @@ class Bockbuild:
             if os.path.exists(package.log):
                 delete(package.log)
 
+            package.source_dir_name = expand_macros(package.source_dir_name, package)
             dest = os.path.join(self.build_root, package.source_dir_name)
             package.fetch(dest)
 
