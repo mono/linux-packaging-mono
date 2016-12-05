@@ -16,7 +16,6 @@
 #include "mono/metadata/gc-internals.h"
 #include "mono/metadata/mono-endian.h"
 #include "mono/metadata/object-internals.h"
-#include "mono/metadata/reflection-cache.h"
 #include "mono/metadata/custom-attrs-internals.h"
 #include "mono/metadata/sre-internals.h"
 #include "mono/metadata/reflection-internals.h"
@@ -132,13 +131,14 @@ find_field_index (MonoClass *klass, MonoClassField *field) {
  * Find the property index in the metadata Property table.
  */
 static guint32
-find_property_index (MonoClass *klass, MonoProperty *property) {
+find_property_index (MonoClass *klass, MonoProperty *property)
+{
 	int i;
-	MonoClassExt *ext = mono_class_get_ext (klass);
+	MonoClassPropertyInfo *info = mono_class_get_property_info (klass);
 
-	for (i = 0; i < ext->property.count; ++i) {
-		if (property == &ext->properties [i])
-			return ext->property.first + 1 + i;
+	for (i = 0; i < info->count; ++i) {
+		if (property == &info->properties [i])
+			return info->first + 1 + i;
 	}
 	return 0;
 }
@@ -147,13 +147,14 @@ find_property_index (MonoClass *klass, MonoProperty *property) {
  * Find the event index in the metadata Event table.
  */
 static guint32
-find_event_index (MonoClass *klass, MonoEvent *event) {
+find_event_index (MonoClass *klass, MonoEvent *event)
+{
 	int i;
-	MonoClassExt *ext = mono_class_get_ext (klass);
+	MonoClassEventInfo *info = mono_class_get_event_info (klass);
 
-	for (i = 0; i < ext->event.count; ++i) {
-		if (event == &ext->events [i])
-			return ext->event.first + 1 + i;
+	for (i = 0; i < info->count; ++i) {
+		if (event == &info->events [i])
+			return info->first + 1 + i;
 	}
 	return 0;
 }
@@ -961,13 +962,12 @@ ves_icall_System_Reflection_CustomAttributeData_ResolveArgumentsInternal (MonoRe
 	mono_error_set_pending_exception (&error);
 }
 
-static MonoObject*
-create_custom_attr_data (MonoImage *image, MonoCustomAttrEntry *cattr, MonoError *error)
+static MonoObjectHandle
+create_custom_attr_data_handle (MonoImage *image, MonoCustomAttrEntry *cattr, MonoError *error)
 {
 	static MonoMethod *ctor;
 
 	MonoDomain *domain;
-	MonoObject *attr;
 	void *params [4];
 
 	mono_error_init (error);
@@ -978,18 +978,34 @@ create_custom_attr_data (MonoImage *image, MonoCustomAttrEntry *cattr, MonoError
 		ctor = mono_class_get_method_from_name (mono_defaults.customattribute_data_class, ".ctor", 4);
 
 	domain = mono_domain_get ();
-	attr = mono_object_new_checked (domain, mono_defaults.customattribute_data_class, error);
-	return_val_if_nok (error, NULL);
-	params [0] = mono_method_get_object_checked (domain, cattr->ctor, NULL, error);
-	return_val_if_nok (error, NULL);
-	params [1] = mono_assembly_get_object_checked (domain, image->assembly, error);
-	return_val_if_nok (error, NULL);
+
+	MonoObjectHandle attr = MONO_HANDLE_NEW (MonoObject, mono_object_new_checked (domain, mono_defaults.customattribute_data_class, error));
+	if (!is_ok (error))
+		goto fail;
+
+	MonoReflectionMethod *ctor_obj = mono_method_get_object_checked (domain, cattr->ctor, NULL, error);
+	if (!is_ok (error))
+		goto fail;
+	MonoReflectionAssemblyHandle assm = mono_assembly_get_object_handle (domain, image->assembly, error);
+	if (!is_ok (error))
+		goto fail;
+	params [0] = ctor_obj;
+	params [1] = MONO_HANDLE_RAW (assm);
 	params [2] = (gpointer)&cattr->data;
 	params [3] = &cattr->data_size;
 
-	mono_runtime_invoke_checked (ctor, attr, params, error);
-	return_val_if_nok (error, NULL);
+	mono_runtime_invoke_checked (ctor, MONO_HANDLE_RAW (attr), params, error);
 	return attr;
+fail:
+	return MONO_HANDLE_NEW (MonoObject, NULL);
+}
+
+static MonoObject *
+create_custom_attr_data (MonoImage *image, MonoCustomAttrEntry *cattr, MonoError *error)
+{
+	HANDLE_FUNCTION_ENTER ();
+	MonoObjectHandle obj = create_custom_attr_data_handle (image, cattr, error);
+	HANDLE_FUNCTION_RETURN_OBJ (obj);
 }
 
 static MonoArray*

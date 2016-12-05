@@ -6,7 +6,7 @@ LIBRARY = System.Core.dll
 
 REFERENCE_SOURCES_FLAGS = -d:FEATURE_PAL,PFX_LEGACY_3_5,FEATURE_NETCORE
 LIB_REFS = System
-LIB_MCS_FLAGS = $(REFERENCE_SOURCES_FLAGS) -d:INSIDE_SYSCORE -d:LIBC -unsafe
+LIB_MCS_FLAGS = $(REFERENCE_SOURCES_FLAGS) -d:INSIDE_SYSCORE -d:LIBC -unsafe -nowarn:436
 TXT_RESOURCE_STRINGS = ../referencesource/System.Core/System.Core.txt
 
 ifneq (2.1, $(FRAMEWORK_VERSION))
@@ -19,7 +19,7 @@ endif
 
 system_core_plain_libdir = $(the_libdir_base)plaincore
 
-ifdef MOBILE_STATIC
+ifdef AOT_FRIENDLY_PROFILE
 extra_test_flags := -exclude:NotWorkingInterpreter
 system_core_library_deps = $(the_libdir_base)Mono.Dynamic.Interpreter.dll $(system_core_plain_libdir)/System.Core.dll
 LIB_MCS_FLAGS += -d:FEATURE_CORE_DLR

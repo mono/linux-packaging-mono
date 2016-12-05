@@ -86,7 +86,7 @@ target_triplet = @target@
 @INSTALL_MONOTOUCH_WATCH_TRUE@am__append_5 = monotouch_watch monotouch_watch_runtime
 @INSTALL_MONOTOUCH_TV_TRUE@am__append_6 = monotouch_tv monotouch_tv_runtime
 @INSTALL_AOT_HYBRID_TRUE@am__append_7 = aot_hybrid
-@INSTALL_MOBILE_STATIC_TRUE@am__append_8 = mobile_static
+@INSTALL_AOT_ONLY_TRUE@am__append_8 = aot_only
 @INSTALL_XAMMAC_TRUE@am__append_9 = xammac xammac_net_4_5
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -159,6 +159,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -191,8 +192,8 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_AOT_HYBRID = @INSTALL_AOT_HYBRID@
+INSTALL_AOT_ONLY = @INSTALL_AOT_ONLY@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -356,19 +357,19 @@ build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 @INSTALL_4_x_TRUE@al_profile = net_4_x
 test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
-TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/mcs $(tmpinst)/bin/al
+TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@cur_dir_cmd = pwd
 @HOST_WIN32_FALSE@cur_dir_cmd = pwd
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
-@INSTALL_MOBILE_STATIC_FALSE@MOBILE_STATIC_FILTER = echo
+@INSTALL_AOT_ONLY_FALSE@AOT_ONLY_FILTER = echo
 
-#  ILASM.exe has features which a mobile_static runtime will not support.
+#  ILASM.exe has features which a aot_only runtime will not support.
 #  It is invoked with an external mono when used in the runtime.
 #  We skip it here because otherwise it will fail to verify.
-@INSTALL_MOBILE_STATIC_TRUE@MOBILE_STATIC_FILTER = grep -v ilasm
+@INSTALL_AOT_ONLY_TRUE@AOT_ONLY_FILTER = grep -v ilasm
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
@@ -590,7 +591,7 @@ mcs-do-run-test-profiles: test-support-files
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
 # Skip binary_reference_assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
-	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(MOBILE_STATIC_FILTER)` ; \
+	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(AOT_ONLY_FILTER)` ; \
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
 	  if [ "binary_reference_assemblies" = "$$profile" ]; then \
@@ -640,10 +641,10 @@ $(tmpinst)/bin/mono: mono-wrapper etc/mono/config
 	$(mkinstalldirs) $(tmpinst)/bin
 	cp mono-wrapper $@
 
-$(tmpinst)/bin/mcs: $(tmpinst)/bin/mono Makefile
+$(tmpinst)/bin/csc: $(tmpinst)/bin/mono Makefile
 	echo '#! /bin/sh' > $@ ; \
 	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
-	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/build/mcs.exe"'" "$$@"' >> $@ ; \
+	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$(CSC)"'" "$$@"' >> $@ ; \
 	chmod +x $@
 
 $(tmpinst)/bin/ilasm: $(tmpinst)/bin/mono Makefile

@@ -3144,8 +3144,7 @@ encode_method_ref (MonoAotCompile *acfg, MonoMethod *method, guint8 *buf, guint8
 		case MONO_WRAPPER_PROXY_ISINST:
 		case MONO_WRAPPER_LDFLD:
 		case MONO_WRAPPER_LDFLDA:
-		case MONO_WRAPPER_STFLD:
-		case MONO_WRAPPER_ISINST: {
+		case MONO_WRAPPER_STFLD: {
 			g_assert (info);
 			encode_klass_ref (acfg, info->d.proxy.klass, p, &p);
 			break;
@@ -5847,6 +5846,7 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 		break;
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
 	case MONO_PATCH_INFO_GET_TLS_TRAMP:
+	case MONO_PATCH_INFO_JIT_THREAD_ATTACH:
 		break;
 	default:
 		g_warning ("unable to handle jump info %d", patch_info->type);
@@ -6309,12 +6309,15 @@ emit_klass_info (MonoAotCompile *acfg, guint32 token)
 	}
 
 	mono_class_has_finalizer (klass);
+	if (mono_class_has_failure (klass))
+		cant_encode = TRUE;
 
 	if (mono_class_is_gtd (klass) || cant_encode) {
 		encode_value (-1, p, &p);
 	} else {
+		gboolean has_nested = mono_class_get_nested_classes_property (klass) != NULL;
 		encode_value (klass->vtable_size, p, &p);
-		encode_value ((mono_class_is_gtd (klass) ? (1 << 8) : 0) | (no_special_static << 7) | (klass->has_static_refs << 6) | (klass->has_references << 5) | ((klass->blittable << 4) | ((mono_class_get_ext (klass) && mono_class_get_ext (klass)->nested_classes) ? 1 : 0) << 3) | (klass->has_cctor << 2) | (klass->has_finalize << 1) | klass->ghcimpl, p, &p);
+		encode_value ((mono_class_is_gtd (klass) ? (1 << 8) : 0) | (no_special_static << 7) | (klass->has_static_refs << 6) | (klass->has_references << 5) | ((klass->blittable << 4) | (has_nested ? 1 : 0) << 3) | (klass->has_cctor << 2) | (klass->has_finalize << 1) | klass->ghcimpl, p, &p);
 		if (klass->has_cctor)
 			encode_method_ref (acfg, mono_class_get_cctor (klass), p, &p);
 		if (klass->has_finalize)
@@ -7269,7 +7272,6 @@ can_encode_method (MonoAotCompile *acfg, MonoMethod *method)
 			case MONO_WRAPPER_LDFLD:
 			case MONO_WRAPPER_LDFLDA:
 			case MONO_WRAPPER_STELEMREF:
-			case MONO_WRAPPER_ISINST:
 			case MONO_WRAPPER_PROXY_ISINST:
 			case MONO_WRAPPER_ALLOC:
 			case MONO_WRAPPER_REMOTING_INVOKE:
@@ -7641,7 +7643,7 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 	 * encountered.
 	 */
 	depth = GPOINTER_TO_UINT (g_hash_table_lookup (acfg->method_depth, method));
-	if (!acfg->aot_opts.no_instances && depth < 32) {
+	if (!acfg->aot_opts.no_instances && depth < 32 && mono_aot_mode_is_full (&acfg->aot_opts)) {
 		for (patch_info = cfg->patch_info; patch_info; patch_info = patch_info->next) {
 			switch (patch_info->type) {
 			case MONO_PATCH_INFO_RGCTX_FETCH:
@@ -7660,7 +7662,7 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 
 				if (!m)
 					break;
-				if (m->is_inflated) {
+				if (m->is_inflated && mono_aot_mode_is_full (&acfg->aot_opts)) {
 					if (!(mono_class_generic_sharing_enabled (m->klass) &&
 						  mono_method_is_generic_sharable_full (m, FALSE, FALSE, FALSE)) &&
 						(!method_has_type_vars (m) || mono_method_is_generic_sharable_full (m, TRUE, TRUE, FALSE))) {
@@ -9865,7 +9867,8 @@ collect_methods (MonoAotCompile *acfg)
 		}
 	}
 
-	add_generic_instances (acfg);
+	if (mono_aot_mode_is_full (&acfg->aot_opts))
+		add_generic_instances (acfg);
 
 	if (mono_aot_mode_is_full (&acfg->aot_opts))
 		add_wrappers (acfg);
@@ -9920,7 +9923,7 @@ compile_methods (MonoAotCompile *acfg)
 		g_free (methods);
 
 		for (i = 0; i < threads->len; ++i) {
-			mono_thread_info_wait_one_handle (g_ptr_array_index (threads, i), INFINITE, FALSE);
+			mono_thread_info_wait_one_handle (g_ptr_array_index (threads, i), MONO_INFINITE_WAIT, FALSE);
 			mono_threads_close_thread_handle (g_ptr_array_index (threads, i));
 		}
 	} else {
@@ -10491,6 +10494,11 @@ add_preinit_got_slots (MonoAotCompile *acfg)
 
 	ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
 	ji->type = MONO_PATCH_INFO_GET_TLS_TRAMP;
+	get_got_offset (acfg, FALSE, ji);
+	get_got_offset (acfg, TRUE, ji);
+
+	ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
+	ji->type = MONO_PATCH_INFO_JIT_THREAD_ATTACH;
 	get_got_offset (acfg, FALSE, ji);
 	get_got_offset (acfg, TRUE, ji);
 

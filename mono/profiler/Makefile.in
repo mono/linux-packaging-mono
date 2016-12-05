@@ -335,6 +335,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -367,8 +368,8 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_AOT_HYBRID = @INSTALL_AOT_HYBRID@
+INSTALL_AOT_ONLY = @INSTALL_AOT_ONLY@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -581,7 +582,7 @@ PLOG_TESTS = $(PLOG_TESTS_SRC:.cs=.exe)
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(with_mono_path) $(top_builddir)/runtime/mono-wrapper
-MCS = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug
+MCS = $(RUNTIME) $(CSC) -lib:$(CLASS) -unsafe -nologo -noconfig -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug:portable
 EXTRA_DIST = mono-profiler-log.h \
 	$(PLOG_TESTS_SRC) \
 	ptestrunner.pl \

@@ -44,6 +44,8 @@ static guint32 mono_image_get_sighelper_token (MonoDynamicImage *assembly, MonoR
 static gboolean ensure_runtime_vtable (MonoClass *klass, MonoError  *error);
 static void reflection_methodbuilder_from_dynamic_method (ReflectionMethodBuilder *rmb, MonoReflectionDynamicMethod *mb);
 static gboolean reflection_setup_internal_class (MonoReflectionTypeBuilder *tb, MonoError *error);
+static gboolean reflection_create_generic_class (MonoReflectionTypeBuilder *tb, MonoError *error);
+
 
 static gpointer register_assembly (MonoDomain *domain, MonoReflectionAssembly *res, MonoAssembly *assembly);
 #endif
@@ -1304,13 +1306,13 @@ mono_reflection_dynimage_basic_init (MonoReflectionAssemblyBuilder *assemblyb)
 static gpointer
 register_assembly (MonoDomain *domain, MonoReflectionAssembly *res, MonoAssembly *assembly)
 {
-	CACHE_OBJECT (MonoReflectionAssembly *, assembly, res, NULL);
+	return CACHE_OBJECT (MonoReflectionAssembly *, assembly, &res->object, NULL);
 }
 
 static gpointer
 register_module (MonoDomain *domain, MonoReflectionModuleBuilder *res, MonoDynamicImage *module)
 {
-	CACHE_OBJECT (MonoReflectionModuleBuilder *, module, res, NULL);
+	return CACHE_OBJECT (MonoReflectionModuleBuilder *, module, &res->module.obj, NULL);
 }
 
 static gboolean
@@ -1547,7 +1549,21 @@ mono_reflection_type_get_handle (MonoReflectionType* ref, MonoError *error)
 				return NULL;
 			}
 		}
-
+		/* Need to resolve the generic_type in order for it to create its generic context. */
+		MonoType *gtd = mono_reflection_type_get_handle (gclass->generic_type, error);
+		if (!is_ok (error)) {
+			g_free (types);
+			return NULL;
+		}
+		MonoClass *gtd_klass = mono_class_from_mono_type (gtd);
+		if (is_sre_type_builder (mono_object_class (gclass->generic_type))) {
+			reflection_create_generic_class ((MonoReflectionTypeBuilder*)gclass->generic_type, error);
+			if (!is_ok (error)) {
+				g_free (types);
+				return NULL;
+			}
+		}
+		g_assert (count == 0 || mono_class_is_gtd (gtd_klass));
 		res = mono_reflection_bind_generic_parameters (gclass->generic_type, count, types, error);
 		g_free (types);
 		g_assert (res);
@@ -2408,6 +2424,7 @@ reflection_create_generic_class (MonoReflectionTypeBuilder *tb, MonoError *error
 	mono_error_init (error);
 
 	reflection_setup_internal_class (tb, error);
+	return_val_if_nok (error, FALSE);
 
 	klass = mono_class_from_mono_type (tb->type.type);
 
@@ -2415,6 +2432,9 @@ reflection_create_generic_class (MonoReflectionTypeBuilder *tb, MonoError *error
 
 	if (count == 0)
 		return TRUE;
+
+	if (mono_class_try_get_generic_container (klass) != NULL)
+		return TRUE; /* already setup */
 
 	MonoGenericContainer *generic_container = (MonoGenericContainer *)mono_image_alloc0 (klass->image, sizeof (MonoGenericContainer));
 
@@ -3190,7 +3210,7 @@ typebuilder_setup_fields (MonoClass *klass, MonoError *error)
 	MonoReflectionTypeBuilder *tb = (MonoReflectionTypeBuilder *)mono_class_get_ref_info (klass);
 	MonoReflectionFieldBuilder *fb;
 	MonoClassField *field;
-	MonoClassExt *ext;
+	MonoFieldDefaultValue *def_values;
 	MonoImage *image = klass->image;
 	const char *p, *p2;
 	int i, instance_size, packing_size = 0;
@@ -3215,9 +3235,8 @@ typebuilder_setup_fields (MonoClass *klass, MonoError *error)
 	}
 	
 	klass->fields = image_g_new0 (image, MonoClassField, fcount);
-	mono_class_alloc_ext (klass);
-	ext = mono_class_get_ext (klass);
-	ext->field_def_values = image_g_new0 (image, MonoFieldDefaultValue, fcount);
+	def_values = image_g_new0 (image, MonoFieldDefaultValue, fcount);
+	mono_class_set_field_def_values (klass, def_values);
 	/*
 	This is, guess what, a hack.
 	The issue is that the runtime doesn't know how to setup the fields of a typebuider and crash.
@@ -3250,7 +3269,7 @@ typebuilder_setup_fields (MonoClass *klass, MonoError *error)
 			size_t size = mono_array_length (rva_data);
 			char *data = (char *)mono_image_alloc (klass->image, size);
 			memcpy (data, base, size);
-			ext->field_def_values [i].data = data;
+			def_values [i].data = data;
 		}
 		if (fb->offset != -1)
 			field->offset = fb->offset;
@@ -3260,13 +3279,13 @@ typebuilder_setup_fields (MonoClass *klass, MonoError *error)
 		if (fb->def_value) {
 			MonoDynamicImage *assembly = (MonoDynamicImage*)klass->image;
 			field->type->attrs |= FIELD_ATTRIBUTE_HAS_DEFAULT;
-			idx = mono_dynimage_encode_constant (assembly, fb->def_value, &ext->field_def_values [i].def_type);
+			idx = mono_dynimage_encode_constant (assembly, fb->def_value, &def_values [i].def_type);
 			/* Copy the data from the blob since it might get realloc-ed */
 			p = assembly->blob.data + idx;
 			len = mono_metadata_decode_blob_size (p, &p2);
 			len += p2 - p;
-			ext->field_def_values [i].data = (const char *)mono_image_alloc (image, len);
-			memcpy ((gpointer)ext->field_def_values [i].data, p, len);
+			def_values [i].data = (const char *)mono_image_alloc (image, len);
+			memcpy ((gpointer)def_values [i].data, p, len);
 		}
 	}
 
@@ -3280,21 +3299,23 @@ typebuilder_setup_properties (MonoClass *klass, MonoError *error)
 	MonoReflectionPropertyBuilder *pb;
 	MonoImage *image = klass->image;
 	MonoProperty *properties;
-	MonoClassExt *ext;
+	MonoClassPropertyInfo *info;
 	int i;
 
 	mono_error_init (error);
 
-	ext = mono_class_get_ext (klass);
-	if (!ext)
-		mono_class_set_ext (klass, ext = image_g_new0 (image, MonoClassExt, 1));
+	info = mono_class_get_property_info (klass);
+	if (!info) {
+		info = mono_class_alloc0 (klass, sizeof (MonoClassPropertyInfo));
+		mono_class_set_property_info (klass, info);
+	}
 
-	ext->property.count = tb->properties ? mono_array_length (tb->properties) : 0;
-	ext->property.first = 0;
+	info->count = tb->properties ? mono_array_length (tb->properties) : 0;
+	info->first = 0;
 
-	properties = image_g_new0 (image, MonoProperty, ext->property.count);
-	ext->properties = properties;
-	for (i = 0; i < ext->property.count; ++i) {
+	properties = image_g_new0 (image, MonoProperty, info->count);
+	info->properties = properties;
+	for (i = 0; i < info->count; ++i) {
 		pb = mono_array_get (tb->properties, MonoReflectionPropertyBuilder*, i);
 		properties [i].parent = klass;
 		properties [i].attrs = pb->attrs;
@@ -3311,16 +3332,16 @@ typebuilder_setup_properties (MonoClass *klass, MonoError *error)
 			guint32 len, idx;
 			const char *p, *p2;
 			MonoDynamicImage *assembly = (MonoDynamicImage*)klass->image;
-			if (!ext->prop_def_values)
-				ext->prop_def_values = image_g_new0 (image, MonoFieldDefaultValue, ext->property.count);
+			if (!info->def_values)
+				info->def_values = image_g_new0 (image, MonoFieldDefaultValue, info->count);
 			properties [i].attrs |= PROPERTY_ATTRIBUTE_HAS_DEFAULT;
-			idx = mono_dynimage_encode_constant (assembly, pb->def_value, &ext->prop_def_values [i].def_type);
+			idx = mono_dynimage_encode_constant (assembly, pb->def_value, &info->def_values [i].def_type);
 			/* Copy the data from the blob since it might get realloc-ed */
 			p = assembly->blob.data + idx;
 			len = mono_metadata_decode_blob_size (p, &p2);
 			len += p2 - p;
-			ext->prop_def_values [i].data = (const char *)mono_image_alloc (image, len);
-			memcpy ((gpointer)ext->prop_def_values [i].data, p, len);
+			info->def_values [i].data = (const char *)mono_image_alloc (image, len);
+			memcpy ((gpointer)info->def_values [i].data, p, len);
 		}
 	}
 }
@@ -3332,21 +3353,20 @@ typebuilder_setup_events (MonoClass *klass, MonoError *error)
 	MonoReflectionEventBuilder *eb;
 	MonoImage *image = klass->image;
 	MonoEvent *events;
-	MonoClassExt *ext;
+	MonoClassEventInfo *info;
 	int i;
 
 	mono_error_init (error);
 
-	ext = mono_class_get_ext (klass);
-	if (!ext)
-		mono_class_set_ext (klass, ext = image_g_new0 (image, MonoClassExt, 1));
+	info = mono_class_alloc0 (klass, sizeof (MonoClassEventInfo));
+	mono_class_set_event_info (klass, info);
 
-	ext->event.count = tb->events ? mono_array_length (tb->events) : 0;
-	ext->event.first = 0;
+	info->count = tb->events ? mono_array_length (tb->events) : 0;
+	info->first = 0;
 
-	events = image_g_new0 (image, MonoEvent, ext->event.count);
-	ext->events = events;
-	for (i = 0; i < ext->event.count; ++i) {
+	events = image_g_new0 (image, MonoEvent, info->count);
+	info->events = events;
+	for (i = 0; i < info->count; ++i) {
 		eb = mono_array_get (tb->events, MonoReflectionEventBuilder*, i);
 		events [i].parent = klass;
 		events [i].attrs = eb->attrs;
@@ -3462,9 +3482,9 @@ ves_icall_TypeBuilder_create_runtime_class (MonoReflectionTypeBuilder *tb)
 			goto failure;
 
 	if (tb->subtypes) {
+		GList *nested = NULL;
 		for (i = 0; i < mono_array_length (tb->subtypes); ++i) {
 			MonoReflectionTypeBuilder *subtb = mono_array_get (tb->subtypes, MonoReflectionTypeBuilder*, i);
-			mono_class_alloc_ext (klass);
 
 			if (!subtb->type.type) {
 				reflection_setup_internal_class (subtb, &error);
@@ -3473,8 +3493,9 @@ ves_icall_TypeBuilder_create_runtime_class (MonoReflectionTypeBuilder *tb)
 
 			MonoType *subtype = mono_reflection_type_get_handle ((MonoReflectionType*)subtb, &error);
 			if (!is_ok (&error)) goto failure;
-			mono_class_get_ext (klass)->nested_classes = g_list_prepend_image (klass->image, mono_class_get_ext (klass)->nested_classes, mono_class_from_mono_type (subtype));
+			nested = g_list_prepend_image (klass->image, nested, mono_class_from_mono_type (subtype));
 		}
+		mono_class_set_nested_classes_property (klass, nested);
 	}
 
 	klass->nested_classes_inited = TRUE;

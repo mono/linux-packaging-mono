@@ -104,7 +104,7 @@ target_triplet = @target@
 # functionality
 
 # Tests which load assemblies which are not
-# in the mobile_static profile
+# in the aot_only profile
 
 # Test which needs remoting support
 
@@ -121,86 +121,77 @@ target_triplet = @target@
 # constraints-load.il: 
 # Failed to load method 0x6000007 from '..../mono/tests/constraints-load.exe' due to 
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
-@INSTALL_MOBILE_STATIC_TRUE@am__append_3 = typeload-unaligned.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	field-access.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	invalid_generic_instantiation.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-481403.exe array_ldelema.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	array_load_exception.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug445361.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	generic-type-load-exception.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	invalid-token.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	call_missing_method.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	call_missing_class.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	ldfld_missing_field.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	ldfld_missing_class.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	vt-sync-method.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	context-static.exe bug-415577.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	generic-marshalbyref.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	unhandled-exception-7.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	marshal.exe marshal2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	marshal6.exe marshal7.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	marshal8.exe pinvoke-2.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	pinvoke3.exe thunks.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	assembly-load-remap.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	remoting4.exe remoting1.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	remoting2.exe remoting3.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	remoting5.exe appdomain.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain-client.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain-unload.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain-async-invoke.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain-thread-abort.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain1.exe appdomain2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain-exit.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain-unload-callback.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	unload-appdomain-on-shutdown.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	assemblyresolve_event2.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-544446.exe bug-36848.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	generic-marshalbyref.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	stackframes-async.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	transparentproxy.exe bug-48015.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	delegate9.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	marshal-valuetypes.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	xdomain-threads.exe monitor.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	generic-xdomain.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	threadpool-exceptions7.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	cross-domain.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	generic-unloading.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	appdomain-threadpool-unload.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-47295.exe loader.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	pinvoke2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	generic-type-builder.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	dynamic-generic-size.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	cominterop.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	dynamic-method-access.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	dynamic-method-finalize.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	dynamic-method-stack-traces.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	generic_type_definition.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-333798-tb.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-335131.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-322722_patch_bx.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-322722_dyn_method_throw.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-389886-2.exe bug-349190.2.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-389886-sre-generic-interface-instances.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-462592.exe bug-575941.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-389886-3.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	constant-division.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	dynamic-method-resurrection.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	assembly_append_ordering.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-80307.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	namedmutex-destroy-race.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	thread6.exe constraints-load.exe \
-@INSTALL_MOBILE_STATIC_TRUE@	bug-515884.exe
+@INSTALL_AOT_ONLY_TRUE@am__append_3 = typeload-unaligned.exe \
+@INSTALL_AOT_ONLY_TRUE@	field-access.exe \
+@INSTALL_AOT_ONLY_TRUE@	invalid_generic_instantiation.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-481403.exe array_ldelema.exe \
+@INSTALL_AOT_ONLY_TRUE@	array_load_exception.exe bug445361.exe \
+@INSTALL_AOT_ONLY_TRUE@	generic-type-load-exception.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	invalid-token.exe \
+@INSTALL_AOT_ONLY_TRUE@	call_missing_method.exe \
+@INSTALL_AOT_ONLY_TRUE@	call_missing_class.exe \
+@INSTALL_AOT_ONLY_TRUE@	ldfld_missing_field.exe \
+@INSTALL_AOT_ONLY_TRUE@	ldfld_missing_class.exe \
+@INSTALL_AOT_ONLY_TRUE@	vt-sync-method.exe context-static.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-415577.exe \
+@INSTALL_AOT_ONLY_TRUE@	generic-marshalbyref.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	unhandled-exception-7.exe marshal.exe \
+@INSTALL_AOT_ONLY_TRUE@	marshal2.exe marshal6.exe marshal7.exe \
+@INSTALL_AOT_ONLY_TRUE@	marshal8.exe pinvoke-2.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	pinvoke3.exe thunks.exe \
+@INSTALL_AOT_ONLY_TRUE@	assembly-load-remap.exe remoting4.exe \
+@INSTALL_AOT_ONLY_TRUE@	remoting1.exe remoting2.exe \
+@INSTALL_AOT_ONLY_TRUE@	remoting3.exe remoting5.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain.exe appdomain-client.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain-unload.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain-async-invoke.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain-thread-abort.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain1.exe appdomain2.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain-exit.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain-unload-callback.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
+@INSTALL_AOT_ONLY_TRUE@	unload-appdomain-on-shutdown.exe \
+@INSTALL_AOT_ONLY_TRUE@	assemblyresolve_event2.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-544446.exe bug-36848.exe \
+@INSTALL_AOT_ONLY_TRUE@	generic-marshalbyref.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	stackframes-async.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	transparentproxy.exe bug-48015.exe \
+@INSTALL_AOT_ONLY_TRUE@	delegate9.exe marshal-valuetypes.exe \
+@INSTALL_AOT_ONLY_TRUE@	xdomain-threads.exe monitor.exe \
+@INSTALL_AOT_ONLY_TRUE@	generic-xdomain.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	threadpool-exceptions7.exe \
+@INSTALL_AOT_ONLY_TRUE@	cross-domain.exe \
+@INSTALL_AOT_ONLY_TRUE@	generic-unloading.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	appdomain-threadpool-unload.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-47295.exe loader.exe pinvoke2.exe \
+@INSTALL_AOT_ONLY_TRUE@	generic-type-builder.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	dynamic-generic-size.exe cominterop.exe \
+@INSTALL_AOT_ONLY_TRUE@	dynamic-method-access.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	dynamic-method-finalize.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	dynamic-method-stack-traces.exe \
+@INSTALL_AOT_ONLY_TRUE@	generic_type_definition.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-333798-tb.2.exe bug-335131.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-322722_patch_bx.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-322722_dyn_method_throw.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-389886-2.exe bug-349190.2.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-389886-sre-generic-interface-instances.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-462592.exe bug-575941.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-389886-3.exe constant-division.exe \
+@INSTALL_AOT_ONLY_TRUE@	dynamic-method-resurrection.exe \
+@INSTALL_AOT_ONLY_TRUE@	assembly_append_ordering.exe \
+@INSTALL_AOT_ONLY_TRUE@	bug-80307.exe \
+@INSTALL_AOT_ONLY_TRUE@	namedmutex-destroy-race.exe thread6.exe \
+@INSTALL_AOT_ONLY_TRUE@	constraints-load.exe bug-515884.exe
 @INSTALL_AOT_HYBRID_TRUE@am__append_4 = \
 @INSTALL_AOT_HYBRID_TRUE@	bug-80307.exe \
 @INSTALL_AOT_HYBRID_TRUE@	namedmutex-destroy-race.exe
 
-@INSTALL_MOBILE_STATIC_TRUE@am__append_5 = \
-@INSTALL_MOBILE_STATIC_TRUE@	sgen-domain-unload.exe	\
-@INSTALL_MOBILE_STATIC_TRUE@	sgen-domain-unload-2.exe
+@INSTALL_AOT_ONLY_TRUE@am__append_5 = \
+@INSTALL_AOT_ONLY_TRUE@	sgen-domain-unload.exe	\
+@INSTALL_AOT_ONLY_TRUE@	sgen-domain-unload-2.exe
 
-@INSTALL_MOBILE_STATIC_TRUE@am__append_6 = \
-@INSTALL_MOBILE_STATIC_TRUE@	generic-type-builder.2.exe
+@INSTALL_AOT_ONLY_TRUE@am__append_6 = \
+@INSTALL_AOT_ONLY_TRUE@	generic-type-builder.2.exe
 
 @NACL_CODEGEN_FALSE@am__append_7 = threadpool-in-processexit.cs threadpool-in-processexit.exe.stdout.expected
 subdir = mono/tests
@@ -363,6 +354,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -395,8 +387,8 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_AOT_HYBRID = @INSTALL_AOT_HYBRID@
+INSTALL_AOT_ONLY = @INSTALL_AOT_ONLY@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -548,8 +540,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = assemblyresolve gc-descriptors
-@INSTALL_MOBILE_STATIC_FALSE@FEATUREFUL_RUNTIME_TEST = test-appdomain-unload
-@INSTALL_MOBILE_STATIC_TRUE@FEATUREFUL_RUNTIME_TEST = 
+@INSTALL_AOT_ONLY_FALSE@FEATUREFUL_RUNTIME_TEST = test-appdomain-unload
+@INSTALL_AOT_ONLY_TRUE@FEATUREFUL_RUNTIME_TEST = 
 TEST_PROG = ../interpreter/mint
 JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_builddir)/mono/mini/mono-sgen,$(top_builddir)/mono/mini/mono)
 TEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
@@ -571,8 +563,8 @@ MKBUNDLE = \
 	$(RUNTIME) $(CLASS)/mkbundle.exe
 
 @INSTALL_AOT_HYBRID_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
-@INSTALL_MOBILE_STATIC_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_STATIC,MOBILE_LEGACY 
-MCS_NO_LIB = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -debug \
+@INSTALL_AOT_ONLY_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
+MCS_NO_LIB = $(RUNTIME) $(CSC) -unsafe -debug:portable \
 	-noconfig -nologo \
 	-nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 \
 	-nowarn:0169 -nowarn:1690 -nowarn:0649 -nowarn:0612 -nowarn:3021 \
@@ -580,8 +572,8 @@ MCS_NO_LIB = $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -unsafe -debug \
 
 MCS = $(MCS_NO_LIB) -lib:$(CLASS)
 ILASM = $(RUNTIME) $(CLASS)/ilasm.exe
-@INSTALL_MOBILE_STATIC_FALSE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)"
-@INSTALL_MOBILE_STATIC_TRUE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)" --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
+@INSTALL_AOT_ONLY_FALSE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)"
+@INSTALL_AOT_ONLY_TRUE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)" --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
 BENCHSRC = fib.cs random.cs nested-loops.cs ackermann.cs tight-loop.cs sieve.cs
 STRESS_TESTS_SRC = \
 	abort-stress-1.cs	\
@@ -1183,7 +1175,6 @@ AOT_DISABLED_TESTS = \
 CI_DISABLED_TESTS = \
 	main-returns-background-resetabort.exe \
 	main-returns-background-abort-resetabort.exe	\
-	thread6.exe	\
 	assemblyresolve_event3.exe \
 	delegate2.exe	\
 	finally_guard.exe \
@@ -1289,9 +1280,9 @@ EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
 	console-output.exe.stdout.expected
-@INSTALL_AOT_HYBRID_FALSE@@INSTALL_MOBILE_STATIC_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
-@INSTALL_MOBILE_STATIC_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
-@INSTALL_MOBILE_STATIC_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
+@INSTALL_AOT_HYBRID_FALSE@@INSTALL_AOT_ONLY_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
+@INSTALL_AOT_ONLY_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
+@INSTALL_AOT_ONLY_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 AOT_EXTRA_LIBS = \
 bug-382986-lib.dll$(PLATFORM_AOT_SUFFIX)	\
 bug-324535-il.dll$(PLATFORM_AOT_SUFFIX)	\
@@ -1855,8 +1846,8 @@ TestingReferenceReferenceAssembly.dll: TestingReferenceReferenceAssembly.cs Test
 
 @HOST_WIN32_FALSE@@X86_TRUE@test_platform: test-eglib-remap
 
-@INSTALL_MOBILE_STATIC_TRUE@prereqs: $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
-@INSTALL_MOBILE_STATIC_FALSE@prereqs: $(PREREQSI_IL) $(PREREQSI_CS)
+@INSTALL_AOT_ONLY_TRUE@prereqs: $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
+@INSTALL_AOT_ONLY_FALSE@prereqs: $(PREREQSI_IL) $(PREREQSI_CS)
 
 # Target to precompile the test executables
 tests: $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la prereqs $(GSHARED_TESTS)
@@ -1883,7 +1874,7 @@ test-sgen : sgen-tests
 # Precompile the test assemblies in parallel
 compile-tests:
 	$(MAKE) -j4 $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS)
-@INSTALL_MOBILE_STATIC_TRUE@	$(MAKE) $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
+@INSTALL_AOT_ONLY_TRUE@	$(MAKE) $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
 
 # Remove empty .stdout and .stderr files for wrench
 rm-empty-logs:
@@ -2198,7 +2189,7 @@ test-aot:
 	passed=0; \
 	failed_tests="";\
 	profile=$(DEFAULT_PROFILE);	\
-	tmpfile=`mktemp -t mono_aot_output` || exit 1;	\
+	tmpfile=`mktemp -t mono_aot_outputXXXXXX` || exit 1;	\
 	rm -f test-aot-$${name}.stdout test-aot-$${name}.stderr; \
 	for assembly in $(mcs_topdir)/class/lib/$$profile/*.dll	; do	\
 		asm_name=`basename $$assembly`;	\
@@ -2229,7 +2220,7 @@ imt_big_iface_test.exe: $(TEST_DRIVER_DEPEND) make-imt-test.exe
 	$(MCS) -out:imt_big_iface_test.exe -r:TestDriver.dll imt_big_iface_test.cs
 test-inline-call-stack-library.dll: $(TEST_DRIVER_DEPEND) $(srcdir)/test-inline-call-stack-library.cs
 	$(MCS) -t:library -out:test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack-library.cs
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 
 test-inline-call-stack.exe: $(TEST_DRIVER_DEPEND) test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack.cs
 	$(MCS) -r:TestDriver.dll -r:test-inline-call-stack-library.dll -out:test-inline-call-stack.exe $(srcdir)/test-inline-call-stack.cs
@@ -2266,12 +2257,12 @@ bug-81673.exe bug-81673-interface.dll: $(srcdir)/bug-81673.cs $(srcdir)/bug-8167
 	$(MCS) -target:library -out:bug-81673-interface.dll $(srcdir)/bug-81673-interface.cs
 	$(MCS) -out:bug-81673.exe -r:bug-81673-interface.dll $(srcdir)/bug-81673.cs
 	$(MCS) -define:WITH_STOP -target:library -out:bug-81673-interface.dll $(srcdir)/bug-81673-interface.cs
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-36848.exe bug-36848-a.dll: $(srcdir)/bug-36848.cs $(srcdir)/bug-36848-a.cs
 	$(MCS) -target:library -out:bug-36848-a.dll $(srcdir)/bug-36848-a.cs
 	$(MCS) -r:bug-36848-a.dll -out:bug-36848.exe $(srcdir)/bug-36848.cs
 	$(MCS) -target:library -out:bug-36848-a.dll $(srcdir)/bug-36848-a.cs /define:WITH_STOP
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-81691.exe bug-81691-b.dll: $(srcdir)/bug-81691.cs $(srcdir)/bug-81691-a.cs $(srcdir)/bug-81691-b.cs
 	$(MCS) -target:library -out:bug-81691-a.dll $(srcdir)/bug-81691-a.cs
 	$(MCS) -target:library -out:bug-81691-b.dll -r:bug-81691-a.dll $(srcdir)/bug-81691-b.cs
@@ -2280,22 +2271,22 @@ bug-81691.exe bug-81691-b.dll: $(srcdir)/bug-81691.cs $(srcdir)/bug-81691-a.cs $
 bug-81691.exe: bug-81691-b.dll
 bug-81466-lib.dll: bug-81466-lib.il
 	$(ILASM) /dll /output:bug-81466-lib.dll $(srcdir)/bug-81466-lib.il
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-81466.exe: bug-81466.il bug-81466-lib.dll
 	$(ILASM) /exe /output:bug-81466.exe $(srcdir)/bug-81466.il
 bug-324535-il.dll : bug-324535-il.il
 	$(ILASM) /dll /output:bug-324535-il.dll $(srcdir)/bug-324535-il.il
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-324535.exe : bug-324535.cs bug-324535-il.dll
 	$(MCS) -r:bug-324535-il.dll -out:bug-324535.exe $(srcdir)/bug-324535.cs
 custom-modifiers-lib.dll: custom-modifiers-lib.il
 	$(ILASM) /dll /output:custom-modifiers-lib.dll $(srcdir)/custom-modifiers-lib.il
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 custom-modifiers.2.exe: custom-modifiers.2.cs custom-modifiers-lib.dll
 	$(MCS) -r:custom-modifiers-lib.dll -out:custom-modifiers.2.exe $(srcdir)/custom-modifiers.2.cs
 bug-382986-lib.dll: bug-382986-lib.cs
 	$(MCS) -target:library -out:$@ $(srcdir)/bug-382986-lib.cs
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 
 bug-382986.exe: bug-382986.cs bug-382986-lib.dll
 	$(MCS) -out:$@ -r:bug-382986-lib.dll $(srcdir)/bug-382986.cs
@@ -2314,17 +2305,17 @@ test-coreclr-security : coreclr-security.exe
 	@$(RUNTIME_MOONLIGHT) --security=core-clr-test coreclr-security.exe
 generic-unboxing.2.dll : generic-unboxing.2.il
 	$(ILASM) /dll /output:generic-unboxing.2.dll $(srcdir)/generic-unboxing.2.il
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-boxing.2.dll : generic-boxing.2.il generic-unboxing.2.dll
 	$(ILASM) /dll /output:generic-boxing.2.dll $(srcdir)/generic-boxing.2.il
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-unbox.2.exe : generic-unbox.2.cs generic-unboxing.2.dll
 	$(MCS) -r:generic-unboxing.2.dll -out:$@ $(srcdir)/generic-unbox.2.cs
 generic-box.2.exe : generic-box.2.cs generic-unboxing.2.dll generic-boxing.2.dll
 	$(MCS) -r:generic-unboxing.2.dll,generic-boxing.2.dll -out:$@ $(srcdir)/generic-box.2.cs
 generic-delegate2-lib.2.dll : generic-delegate2-lib.2.il
 	$(ILASM) /dll /output:$@ $(srcdir)/generic-delegate2-lib.2.il
-@INSTALL_MOBILE_STATIC_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@INSTALL_AOT_ONLY_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-delegate2.2.exe : generic-delegate2.2.cs generic-delegate2-lib.2.dll
 	$(MCS) -r:generic-delegate2-lib.2.dll -out:$@ $(srcdir)/generic-delegate2.2.cs
 

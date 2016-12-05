@@ -47,6 +47,7 @@
 #include <mono/metadata/mempool-internals.h>
 #include <mono/metadata/attach.h>
 #include <mono/metadata/runtime.h>
+#include <mono/metadata/attrdefs.h>
 #include <mono/utils/mono-math.h>
 #include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-counters.h>
@@ -84,6 +85,10 @@ MonoMethodDesc *mono_break_at_bb_method;
 int mono_break_at_bb_bb_num;
 gboolean mono_do_x86_stack_align = TRUE;
 gboolean mono_using_xdebug;
+
+/* Counters */
+static guint32 discarded_code;
+static double discarded_jit_time;
 
 #define mono_jit_lock() mono_os_mutex_lock (&jit_mutex)
 #define mono_jit_unlock() mono_os_mutex_unlock (&jit_mutex)
@@ -365,6 +370,8 @@ handle_enum:
 	case MONO_TYPE_TYPEDBYREF:
 		return OP_STOREV_MEMBASE;
 	case MONO_TYPE_GENERICINST:
+		if (MONO_CLASS_IS_SIMD (cfg, mono_class_from_mono_type (type)))
+			return OP_STOREX_MEMBASE;
 		type = &type->data.generic_class->container_class->byval_arg;
 		goto handle_enum;
 	case MONO_TYPE_VAR:
@@ -2140,8 +2147,10 @@ mono_compile_create_vars (MonoCompile *cfg)
 
 	cfg->args = (MonoInst **)mono_mempool_alloc0 (cfg->mempool, (sig->param_count + sig->hasthis) * sizeof (MonoInst*));
 
-	if (sig->hasthis)
+	if (sig->hasthis) {
 		cfg->args [0] = mono_compile_create_var (cfg, &cfg->method->klass->this_arg, OP_ARG);
+		cfg->this_arg = cfg->args [0];
+	}
 
 	for (i = 0; i < sig->param_count; ++i) {
 		cfg->args [i + sig->hasthis] = mono_compile_create_var (cfg, sig->params [i], OP_ARG);
@@ -2411,13 +2420,10 @@ mono_codegen (MonoCompile *cfg)
  
 	if (cfg->verbose_level > 0) {
 		char* nm = mono_method_get_full_name (cfg->method);
-		char *opt_descr = mono_opt_descr (cfg->opt);
-		g_print ("Method %s emitted at %p to %p (code length %d) [%s] with opts %s\n", 
+		g_print ("Method %s emitted at %p to %p (code length %d) [%s]\n",
 				 nm, 
-				 cfg->native_code, cfg->native_code + cfg->code_len, cfg->code_len, cfg->domain->friendly_name,
-				 opt_descr);
+				 cfg->native_code, cfg->native_code + cfg->code_len, cfg->code_len, cfg->domain->friendly_name);
 		g_free (nm);
-		g_free (opt_descr);
 	}
 
 	{
@@ -2941,7 +2947,8 @@ is_open_method (MonoMethod *method)
 	return FALSE;
 }
 
-static void mono_insert_nop_in_empty_bb (MonoCompile *cfg)
+static void
+mono_insert_nop_in_empty_bb (MonoCompile *cfg)
 {
 	MonoBasicBlock *bb;
 	for (bb = cfg->bb_entry; bb; bb = bb->next_bb) {
@@ -4031,6 +4038,34 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	return cfg;
 }
 
+gboolean
+mini_class_has_reference_variant_generic_argument (MonoCompile *cfg, MonoClass *klass, int context_used)
+{
+	int i;
+	MonoGenericContainer *container;
+	MonoGenericInst *ginst;
+
+	if (mono_class_is_ginst (klass)) {
+		container = mono_class_get_generic_container (mono_class_get_generic_class (klass)->container_class);
+		ginst = mono_class_get_generic_class (klass)->context.class_inst;
+	} else if (mono_class_is_gtd (klass) && context_used) {
+		container = mono_class_get_generic_container (klass);
+		ginst = container->context.class_inst;
+	} else {
+		return FALSE;
+	}
+
+	for (i = 0; i < container->type_argc; ++i) {
+		MonoType *type;
+		if (!(mono_generic_container_get_param_info (container, i)->flags & (MONO_GEN_PARAM_VARIANT|MONO_GEN_PARAM_COVARIANT)))
+			continue;
+		type = ginst->type_argv [i];
+		if (mini_type_is_reference (type))
+			return TRUE;
+	}
+	return FALSE;
+}
+
 void*
 mono_arch_instrument_epilog (MonoCompile *cfg, void *func, void *p, gboolean enable_arguments)
 {
@@ -4255,7 +4290,9 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 
 	jit_timer = mono_time_track_start ();
 	cfg = mini_method_compile (method, opt, target_domain, JIT_FLAG_RUN_CCTORS, 0, -1);
-	mono_time_track_end (&mono_jit_stats.jit_time, jit_timer);
+	double jit_time = 0.0;
+	mono_time_track_end (&jit_time, jit_timer);
+	mono_jit_stats.jit_time += jit_time;
 
 	prof_method = cfg->method;
 
@@ -4323,7 +4360,8 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 		/* We can't use a domain specific method in another domain */
 		if ((target_domain == mono_domain_get ()) || info->domain_neutral) {
 			code = info->code_start;
-//			printf("Discarding code for method %s\n", method->name);
+			discarded_code ++;
+			discarded_jit_time += jit_time;
 		}
 	}
 	if (code == NULL) {
@@ -4443,6 +4481,9 @@ mini_get_underlying_type (MonoType *type)
 void
 mini_jit_init (void)
 {
+	mono_counters_register ("Discarded method code", MONO_COUNTER_JIT | MONO_COUNTER_INT, &discarded_code);
+	mono_counters_register ("Time spent JITting discarded code", MONO_COUNTER_JIT | MONO_COUNTER_DOUBLE, &discarded_jit_time);
+
 	mono_os_mutex_init_recursive (&jit_mutex);
 #ifndef DISABLE_JIT
 	current_backend = g_new0 (MonoBackend, 1);

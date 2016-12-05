@@ -607,6 +607,7 @@ cvttps2dq: dest:x src1:x len:4 clob:1
 
 xmove: dest:x src1:x len:4
 xzero: dest:x len:4
+xones: dest:x len:4
 
 iconv_to_x: dest:x src1:i len:4
 extract_i4: dest:i src1:x len:4
@@ -642,8 +643,8 @@ prefetch_membase: src1:b len:4
 expand_i1: dest:x src1:y len:17 clob:1
 expand_i2: dest:x src1:i len:15
 expand_i4: dest:x src1:i len:9
-expand_r4: dest:x src1:f len:13
-expand_r8: dest:x src1:f len:13
+expand_r4: dest:x src1:f len:20
+expand_r8: dest:x src1:f len:20
 
 liverange_start: len:0
 liverange_end: len:0

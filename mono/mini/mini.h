@@ -125,7 +125,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 137
+#define MONO_AOT_FILE_VERSION 138
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -1193,6 +1193,14 @@ typedef struct {
 	 * The calling assembly in llvmonly mode.
 	 */
 	MonoImage *calling_image;
+
+	/*
+	 * The stack frame "high water mark" for ThreadAbortExceptions.
+	 * We will rethrow the exception upon exiting a catch clause that's
+	 * in a function stack frame above the water mark(isn't being called by
+	 * the catch block that caught the ThreadAbortException).
+	 */
+	gpointer abort_exc_stack_threshold;
 } MonoJitTlsData;
 
 /*
@@ -1585,6 +1593,7 @@ typedef struct {
 	MonoMethod      *current_method; /* The method currently processed by method_to_ir () */
 	MonoMethod      *method_to_register; /* The method to register in JIT info tables */
 	MonoGenericContext *generic_context;
+	MonoInst        *this_arg;
 
 	MonoBackend *backend;
 
@@ -2642,6 +2651,19 @@ int               mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoB
 									 MonoInst *return_var, MonoInst **inline_args,
 									 guint inline_offset, gboolean is_virtual_call);
 
+//the following methods could just be renamed/moved from method-to-ir.c
+int               mini_inline_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature *fsig, MonoInst **sp, guchar *ip,
+									  guint real_offset, gboolean inline_always);
+
+MonoInst*         mini_emit_get_rgctx_klass (MonoCompile *cfg, int context_used, MonoClass *klass, MonoRgctxInfoType rgctx_type);
+MonoInst*         mini_emit_runtime_constant (MonoCompile *cfg, MonoJumpInfoType patch_type, gpointer data);
+void              mini_save_cast_details (MonoCompile *cfg, MonoClass *klass, int obj_reg, gboolean null_check);
+void              mini_reset_cast_details (MonoCompile *cfg);
+void              mini_emit_class_check (MonoCompile *cfg, int klass_reg, MonoClass *klass);
+
+gboolean          mini_class_has_reference_variant_generic_argument (MonoCompile *cfg, MonoClass *klass, int context_used);
+
+
 MonoInst         *mono_decompose_opcode (MonoCompile *cfg, MonoInst *ins);
 void              mono_decompose_long_opts (MonoCompile *cfg);
 void              mono_decompose_vtype_opts (MonoCompile *cfg);
@@ -2652,6 +2674,8 @@ void              mono_handle_global_vregs (MonoCompile *cfg);
 void              mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts);
 void              mono_allocate_gsharedvt_vars (MonoCompile *cfg);
 void              mono_if_conversion (MonoCompile *cfg);
+
+
 
 /* Delegates */
 gpointer          mini_get_delegate_arg (MonoMethod *method, gpointer method_ptr);

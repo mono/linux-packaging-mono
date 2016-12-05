@@ -143,7 +143,6 @@ class Package:
         scratch = self.profile.bockbuild.scratch
         resources = self.profile.bockbuild.resources
         source_cache_dir = self.profile.bockbuild.source_cache
-        self.source_dir_name = expand_macros(self.source_dir_name, self)
         self.buildstring = []
         self.is_local = False
         scratch_workspace = os.path.join(scratch, '%s.workspace' % self.name)
@@ -589,13 +588,12 @@ class Package:
                     problem_dir = os.path.join(
                         self.profile.bockbuild.execution_root, os.path.basename(self.workspace) + '.problem')
 
-                    shutil.move(self.workspace, problem_dir)
-
                     # take this chance to clear out older .problems
                     for d in os.listdir(self.profile.bockbuild.execution_root):
                         if d.endswith('.problem'):
                             self.rm(os.path.join(self.profile.bockbuild.execution_root, d))
 
+                    shutil.move(self.workspace, problem_dir)
                     info('Build moved to ./%s\n' % os.path.basename(problem_dir))
                 info('Run "source ./%s" first to replicate bockbuild environment.' %
                     os.path.basename(self.profile.bockbuild.env_script))

@@ -1923,41 +1923,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 SignalObjectAndWait(gpointer signal_handle, gpointer wait,
-			    guint32 timeout, gboolean alertable)
-
-</div>
+            <div class="mapi-prototype">SignalObjectAndWait</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>signal_handle</i><td> An object to signal</td></td></tr><tr><td><i>wait</i><td> An object to wait for</td></td></tr><tr><td><i>timeout</i><td> The maximum time in milliseconds to wait for</td></td></tr><tr><td><i>alertable</i><td> Specifies whether the function returnes when the system</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 queues an I/O completion routine or an APC for the calling thread. 
-	<p />
-	 Atomically signals <i>signal</i> and waits for <i>wait</i> to become signalled,
-	 or <i>timeout</i> ms elapses.  If <i>timeout</i> is zero, the object's state is
-	 tested and the function returns immediately.  If <i>timeout</i> is
-	 %INFINITE, the function waits forever.
-	<p />
-	 <i>signal</i> can be a semaphore, mutex or event object.
-	<p />
-	 If <i>alertable</i> is %<code>TRUE</code> and the system queues an I/O completion
-	 routine or an APC for the calling thread, the function returns and
-	 the thread calls the completion routine or APC function.  If
-	 %<code>FALSE</code>, the function does not return, and the thread does not call
-	 the completion routine or APC function.  A completion routine is
-	 queued when the ReadFileEx() or WriteFileEx() function in which it
-	 was specified has completed.  The calling thread is the thread that
-	 initiated the read or write operation.  An APC is queued when
-	 QueueUserAPC() is called.  Currently completion routines and APC
-	 functions are not supported.
-	<p />
-	 Return value: %WAIT_ABANDONED - <i>wait</i> is a mutex that was not
-	 released by the owning thread when it exited.  Ownershop of the
-	 mutex object is granted to the calling thread and the mutex is set
-	 to nonsignalled.  %WAIT_IO_COMPLETION - the wait was ended by one
-	 or more user-mode asynchronous procedure calls queued to the
-	 thread.  %WAIT_OBJECT_0 - The state of <i>wait</i> is signalled.
-	 %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and <i>wait</i>'s state is
-	 still not signalled.  %WAIT_FAILED - an error occurred.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -2181,40 +2148,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 WaitForMultipleObjectsEx(guint32 numobjects, gpointer *handles,
-				 gboolean waitall, guint32 timeout,
-				 gboolean alertable)
-
-</div>
+            <div class="mapi-prototype">WaitForMultipleObjectsEx</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>numobjects</i><td> The number of objects in <i>handles</i>. The maximum allowed</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 is %MAXIMUM_WAIT_OBJECTS. 
-	 <i>handles</i>: An array of object handles.  Duplicates are not allowed.
-	 <i>waitall</i>: If %<code>TRUE</code>, this function waits until all of the handles
-	 are signalled.  If %<code>FALSE</code>, this function returns when any object is
-	 signalled.
-	 <i>timeout</i>: The maximum time in milliseconds to wait for.
-	 <i>alertable</i>: if <code>TRUE</code>, the wait can be interrupted by an APC call
-	<p />
-	 This function returns when either one or more of <i>handles</i> is
-	 signalled, or <i>timeout</i> ms elapses.  If <i>timeout</i> is zero, the state
-	 of each item of <i>handles</i> is tested and the function returns
-	 immediately.  If <i>timeout</i> is %INFINITE, the function waits forever.
-	<p />
-	 Return value: %WAIT_OBJECT_0 to %WAIT_OBJECT_0 + <i>numobjects</i> - 1 -
-	 if <i>waitall</i> is %<code>TRUE</code>, indicates that all objects are signalled.  If
-	 <i>waitall</i> is %<code>FALSE</code>, the return value minus %WAIT_OBJECT_0 indicates
-	 the first index into <i>handles</i> of the objects that are signalled.
-	 %WAIT_ABANDONED_0 to %WAIT_ABANDONED_0 + <i>numobjects</i> - 1 - if
-	 <i>waitall</i> is %<code>TRUE</code>, indicates that all objects are signalled, and at
-	 least one object is an abandoned mutex object (See
-	 WaitForSingleObject() for a description of abandoned mutexes.)  If
-	 <i>waitall</i> is %<code>FALSE</code>, the return value minus %WAIT_ABANDONED_0
-	 indicates the first index into <i>handles</i> of an abandoned mutex.
-	 %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and no objects in
-	 <i>handles</i> are signalled.  %WAIT_FAILED - an error occurred.
-	 %WAIT_IO_COMPLETION - the wait was ended by an APC.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -2243,25 +2178,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 WaitForSingleObjectEx(gpointer handle, guint32 timeout, gboolean alertable)
-
-</div>
+            <div class="mapi-prototype">WaitForSingleObjectEx</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> an object to wait for</td></td></tr><tr><td><i>timeout</i><td> the maximum time in milliseconds to wait for</td></td></tr><tr><td><i>alertable</i><td> if <code>TRUE</code>, the wait can be interrupted by an APC call</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This function returns when either <i>handle</i> is signalled, or <i>timeout</i>
-	 ms elapses.  If <i>timeout</i> is zero, the object's state is tested and
-	 the function returns immediately.  If <i>timeout</i> is %INFINITE, the
-	 function waits forever.
-	<p />
-	 Return value: %WAIT_ABANDONED - <i>handle</i> is a mutex that was not
-	 released by the owning thread when it exited.  Ownership of the
-	 mutex object is granted to the calling thread and the mutex is set
-	 to nonsignalled.  %WAIT_OBJECT_0 - The state of <i>handle</i> is
-	 signalled.  %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and
-	 <i>handle</i>'s state is still not signalled.  %WAIT_FAILED - an error
-	 occurred. %WAIT_IO_COMPLETION - the wait was ended by an APC.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
