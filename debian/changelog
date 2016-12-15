@@ -1,3 +1,9 @@
+mono (4.8.0.382-0xamarin2) alpha; urgency=low
+
+  * "Bugfix - see git log"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 15 Dec 2016 14:23:11 +0000
+
 mono (4.8.0.382-0xamarin1) alpha; urgency=low
 
   * "New release - mono-4.8.0.382.tar.bz2"
