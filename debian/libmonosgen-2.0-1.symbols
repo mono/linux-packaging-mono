@@ -657,6 +657,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_monitor_exit@Base 4.1.0.1738
  mono_monitor_try_enter@Base 4.1.0.1738
  mono_mprotect@Base 4.1.0.1738
+ mono_native_getrootdir@Base 4.8.0.382
  mono_native_thread_create@Base 4.8.0.344
  mono_native_thread_id_equals@Base 4.8.0.344
  mono_native_thread_id_get@Base 4.5.2.48
