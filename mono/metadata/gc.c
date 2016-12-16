@@ -24,7 +24,7 @@
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/mono-mlist.h>
 #include <mono/metadata/threads-types.h>
-#include <mono/metadata/threadpool-ms.h>
+#include <mono/metadata/threadpool.h>
 #include <mono/sgen/sgen-conf.h>
 #include <mono/sgen/sgen-gc.h>
 #include <mono/utils/mono-logger-internals.h>
@@ -42,6 +42,7 @@
 #include <mono/utils/atomic.h>
 #include <mono/utils/mono-coop-semaphore.h>
 #include <mono/utils/hazard-pointer.h>
+#include <mono/io-layer/io-layer.h>
 
 #ifndef HOST_WIN32
 #include <pthread.h>
@@ -556,7 +557,7 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
 	}
 
 	if (domain == mono_get_root_domain ()) {
-		mono_threadpool_ms_cleanup ();
+		mono_threadpool_cleanup ();
 		mono_gc_finalize_threadpool_threads ();
 	}
 
@@ -882,7 +883,7 @@ finalize_domain_objects (void)
 	}
 }
 
-static guint32
+static gsize WINAPI
 finalizer_thread (gpointer unused)
 {
 	MonoError error;

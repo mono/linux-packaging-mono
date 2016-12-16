@@ -354,10 +354,10 @@ SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
 	$(am__append_8) $(am__append_9)
-@INSTALL_4_x_TRUE@al_profile = net_4_x
+@INSTALL_4_x_TRUE@net_profile = net_4_x
 test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
-TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc $(tmpinst)/bin/al
+TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc $(tmpinst)/bin/mcs $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@cur_dir_cmd = pwd
 @HOST_WIN32_FALSE@cur_dir_cmd = pwd
@@ -647,6 +647,12 @@ $(tmpinst)/bin/csc: $(tmpinst)/bin/mono Makefile
 	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$(CSC)"'" "$$@"' >> $@ ; \
 	chmod +x $@
 
+$(tmpinst)/bin/mcs: $(tmpinst)/bin/mono Makefile
+	echo '#! /bin/sh' > $@ ; \
+	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
+	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/$(net_profile)/mcs.exe"'" "$$@"' >> $@ ; \
+	chmod +x $@
+
 $(tmpinst)/bin/ilasm: $(tmpinst)/bin/mono Makefile
 	echo '#! /bin/sh' > $@ ; \
 	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
@@ -656,7 +662,7 @@ $(tmpinst)/bin/ilasm: $(tmpinst)/bin/mono Makefile
 $(tmpinst)/bin/al: $(tmpinst)/bin/mono Makefile
 	echo '#! /bin/sh' > $@ ; \
 	r=`pwd`; m=`cd $(mcs_topdir) && pwd`; \
-	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/$(al_profile)/al.exe"'" "$$@"' >> $@ ; \
+	echo 'exec "'"$$r/$(tmpinst)/bin/mono"'" "'"$$m/class/lib/$(net_profile)/al.exe"'" "$$@"' >> $@ ; \
 	chmod +x $@
 
 test-support-files: $(TEST_SUPPORT_FILES)

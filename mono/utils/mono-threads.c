@@ -32,6 +32,8 @@
 #include <mono/utils/mono-threads-debug.h>
 #include <mono/utils/os-event.h>
 
+#include <mono/io-layer/io-layer.h>
+
 #include <errno.h>
 
 #if defined(__MACH__)
@@ -64,7 +66,7 @@ static MonoThreadInfoCallbacks threads_callbacks;
 static MonoThreadInfoRuntimeCallbacks runtime_callbacks;
 static MonoNativeTlsKey thread_info_key, thread_exited_key;
 #ifdef HAVE_KW_THREAD
-static __thread guint32 tls_small_id MONO_TLS_FAST;
+static __thread guint32 tls_small_id;
 #else
 static MonoNativeTlsKey small_id_key;
 #endif
@@ -708,8 +710,8 @@ mono_threads_init (MonoThreadInfoCallbacks *callbacks, size_t info_size)
 	mono_lls_init (&thread_list, NULL);
 	mono_thread_smr_init ();
 	mono_threads_suspend_init ();
-	mono_threads_suspend_init_signals ();
 	mono_threads_coop_init ();
+	mono_threads_platform_init ();
 
 #if defined(__MACH__)
 	mono_mach_init (thread_info_key);
@@ -718,6 +720,12 @@ mono_threads_init (MonoThreadInfoCallbacks *callbacks, size_t info_size)
 	mono_threads_inited = TRUE;
 
 	g_assert (sizeof (MonoNativeThreadId) <= sizeof (uintptr_t));
+}
+
+void
+mono_threads_signals_init (void)
+{
+	mono_threads_suspend_init_signals ();
 }
 
 void
@@ -823,6 +831,9 @@ is_thread_in_critical_region (MonoThreadInfo *info)
 	MonoJitInfo *ji;
 	gpointer stack_start;
 	MonoThreadUnwindState *state;
+
+	if (mono_threads_platform_in_critical_region (mono_thread_info_get_tid (info)))
+		return TRUE;
 
 	/* Are we inside a system critical region? */
 	if (info->inside_critical_region)

@@ -1,9 +1,0 @@
-#!/bin/sh -e
-
-# Install the GAC
-if [ -x /usr/share/cli-common/gac-install ]; then
-        /usr/share/cli-common/gac-install mono-%SNAPVER%
-fi
-
-#DEBHELPER#
-

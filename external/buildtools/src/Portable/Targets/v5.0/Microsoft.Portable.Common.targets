@@ -17,7 +17,7 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
         <NoStdLib>true</NoStdLib>
         <!--The build requires this list of TFMs to determine what part of the lockfile to use.
             When it's updated in the future to no longer require it, this list can be removed. -->
-        <NuGetTargetMoniker>.NETPlatform,Version=v5.0;.NETStandard,Version=v1.0;.NETStandard,Version=v1.1;.NETStandard,Version=v1.2;.NETStandard,Version=v1.3;.NETStandard,Version=v1.4;.NETStandard,Version=v1.5</NuGetTargetMoniker>
+        <NuGetTargetMoniker>.NETPlatform,Version=v5.0;.NETStandard,Version=v1.0;.NETStandard,Version=v1.1;.NETStandard,Version=v1.2;.NETStandard,Version=v1.3;.NETStandard,Version=v1.4;.NETStandard,Version=v1.5;.NETStandard,Version=v1.6</NuGetTargetMoniker>
     </PropertyGroup>
     <Import Project="..\Microsoft.Portable.Core.props" />
 

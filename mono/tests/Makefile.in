@@ -979,7 +979,8 @@ BASE_TEST_CS_SRC = \
 	generic-unloading.2.cs	\
 	namedmutex-destroy-race.cs	\
 	thread6.cs	\
-	appdomain-threadpool-unload.cs
+	appdomain-threadpool-unload.cs	\
+	process-unref-race.cs
 
 TEST_CS_SRC_DIST = \
 	$(BASE_TEST_CS_SRC)	\
@@ -1083,6 +1084,7 @@ TEST_IL_SRC = \
 @HOST_WIN32_TRUE@@X86_TRUE@	finally_block_ending_in_dead_bb.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	threadpool-exceptions5.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	process-unref-race.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	$(am__append_2)
 
 # bug #319249

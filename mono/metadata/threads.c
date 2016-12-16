@@ -157,28 +157,13 @@ static MonoReferenceQueue *context_queue;
  */
 static MonoGHashTable *threads_starting_up = NULL;
 
-/* The TLS key that holds the MonoObject assigned to each thread */
-static MonoNativeTlsKey current_object_key;
-
 /* Contains tids */
 /* Protected by the threads lock */
 static GHashTable *joinable_threads;
 static int joinable_thread_count;
 
-#ifdef MONO_HAVE_FAST_TLS
-/* we need to use both the Tls* functions and __thread because
- * the gc needs to see all the threads 
- */
-MONO_FAST_TLS_DECLARE(tls_current_object);
-#define SET_CURRENT_OBJECT(x) do { \
-	MONO_FAST_TLS_SET (tls_current_object, x); \
-	mono_native_tls_set_value (current_object_key, x); \
-} while (FALSE)
-#define GET_CURRENT_OBJECT() ((MonoInternalThread*) MONO_FAST_TLS_GET (tls_current_object))
-#else
-#define SET_CURRENT_OBJECT(x) mono_native_tls_set_value (current_object_key, x)
-#define GET_CURRENT_OBJECT() (MonoInternalThread*) mono_native_tls_get_value (current_object_key)
-#endif
+#define SET_CURRENT_OBJECT(x) mono_tls_set_thread (x)
+#define GET_CURRENT_OBJECT() (MonoInternalThread*) mono_tls_get_thread ()
 
 /* function called at thread start */
 static MonoThreadStartCB mono_thread_start_cb = NULL;
@@ -243,26 +228,6 @@ get_next_managed_thread_id (void)
 	return InterlockedIncrement (&managed_thread_id_counter);
 }
 
-MonoNativeTlsKey
-mono_thread_get_tls_key (void)
-{
-	return current_object_key;
-}
-
-gint32
-mono_thread_get_tls_offset (void)
-{
-	int offset = -1;
-
-#ifdef HOST_WIN32
-	if (current_object_key)
-		offset = current_object_key;
-#else
-	MONO_THREAD_VAR_OFFSET (tls_current_object,offset);
-#endif
-	return offset;
-}
-
 static inline MonoNativeThreadId
 thread_get_tid (MonoInternalThread *thread)
 {
@@ -316,147 +281,6 @@ static inline gboolean
 is_threadabort_exception (MonoClass *klass)
 {
 	return klass == mono_defaults.threadabortexception_class;
-}
-
-/*
- * NOTE: this function can be called also for threads different from the current one:
- * make sure no code called from it will ever assume it is run on the thread that is
- * getting cleaned up.
- */
-static void thread_cleanup (MonoInternalThread *thread)
-{
-	gboolean ret;
-
-	g_assert (thread != NULL);
-
-	if (thread->abort_state_handle) {
-		mono_gchandle_free (thread->abort_state_handle);
-		thread->abort_state_handle = 0;
-	}
-	thread->abort_exc = NULL;
-	thread->current_appcontext = NULL;
-
-	/*
-	 * This is necessary because otherwise we might have
-	 * cross-domain references which will not get cleaned up when
-	 * the target domain is unloaded.
-	 */
-	if (thread->cached_culture_info) {
-		int i;
-		for (i = 0; i < NUM_CACHED_CULTURES * 2; ++i)
-			mono_array_set (thread->cached_culture_info, MonoObject*, i, NULL);
-	}
-
-	/*
-	 * thread->synch_cs can be NULL if this was called after
-	 * ves_icall_System_Threading_InternalThread_Thread_free_internal.
-	 * This can happen only during shutdown.
-	 * The shutting_down flag is not always set, so we can't assert on it.
-	 */
-	if (thread->synch_cs)
-		LOCK_THREAD (thread);
-
-	thread->state |= ThreadState_Stopped;
-	thread->state &= ~ThreadState_Background;
-
-	if (thread->synch_cs)
-		UNLOCK_THREAD (thread);
-
-	/*
-	An interruption request has leaked to cleanup. Adjust the global counter.
-
-	This can happen is the abort source thread finds the abortee (this) thread
-	in unmanaged code. If this thread never trips back to managed code or check
-	the local flag it will be left set and positively unbalance the global counter.
-	
-	Leaving the counter unbalanced will cause a performance degradation since all threads
-	will now keep checking their local flags all the time.
-	*/
-	if (InterlockedExchange (&thread->interruption_requested, 0))
-		InterlockedDecrement (&thread_interruption_requested);
-
-	mono_threads_lock ();
-
-	if (!threads) {
-		ret = FALSE;
-	} else if (mono_g_hash_table_lookup (threads, (gpointer)thread->tid) != thread) {
-		/* We have to check whether the thread object for the
-		 * tid is still the same in the table because the
-		 * thread might have been destroyed and the tid reused
-		 * in the meantime, in which case the tid would be in
-		 * the table, but with another thread object.
-		 */
-		ret = FALSE;
-	} else {
-		mono_g_hash_table_remove (threads, (gpointer)thread->tid);
-		ret = TRUE;
-	}
-
-	mono_threads_unlock ();
-
-	/* Don't close the handle here, wait for the object finalizer
-	 * to do it. Otherwise, the following race condition applies:
-	 *
-	 * 1) Thread exits (and thread_cleanup() closes the handle)
-	 *
-	 * 2) Some other handle is reassigned the same slot
-	 *
-	 * 3) Another thread tries to join the first thread, and
-	 * blocks waiting for the reassigned handle to be signalled
-	 * (which might never happen).  This is possible, because the
-	 * thread calling Join() still has a reference to the first
-	 * thread's object.
-	 */
-
-	/* if the thread is not in the hash it has been removed already */
-	if (!ret) {
-		if (thread == mono_thread_internal_current ()) {
-			mono_domain_unset ();
-			mono_memory_barrier ();
-		}
-		if (mono_thread_cleanup_fn)
-			mono_thread_cleanup_fn (thread_get_tid (thread));
-		return;
-	}
-	mono_release_type_locks (thread);
-
-	/* Can happen when we attach the profiler helper thread in order to heapshot. */
-	if (!mono_thread_info_lookup (MONO_UINT_TO_NATIVE_THREAD_ID (thread->tid))->tools_thread)
-		mono_profiler_thread_end (thread->tid);
-
-	mono_hazard_pointer_clear (mono_hazard_pointer_get (), 1);
-
-	if (thread == mono_thread_internal_current ()) {
-		/*
-		 * This will signal async signal handlers that the thread has exited.
-		 * The profiler callback needs this to be set, so it cannot be done earlier.
-		 */
-		mono_domain_unset ();
-		mono_memory_barrier ();
-	}
-
-	if (thread == mono_thread_internal_current ())
-		mono_thread_pop_appdomain_ref ();
-
-	thread->cached_culture_info = NULL;
-
-	mono_free_static_data (thread->static_data);
-	thread->static_data = NULL;
-	ref_stack_destroy (thread->appdomain_refs);
-	thread->appdomain_refs = NULL;
-
-	if (mono_thread_cleanup_fn)
-		mono_thread_cleanup_fn (thread_get_tid (thread));
-
-	if (mono_gc_is_moving ()) {
-		MONO_GC_UNREGISTER_ROOT (thread->thread_pinning_ref);
-		thread->thread_pinning_ref = NULL;
-	}
-
-	g_assert (thread->suspended);
-	mono_os_event_destroy (thread->suspended);
-	g_free (thread->suspended);
-	thread->suspended = NULL;
 }
 
 /*
@@ -876,14 +700,15 @@ static guint32 WINAPI start_wrapper_internal(StartInfo *start_info, gsize *stack
 
 	/* If the thread calls ExitThread at all, this remaining code
 	 * will not be executed, but the main thread will eventually
-	 * call thread_cleanup() on this thread's behalf.
+	 * call mono_thread_detach_internal() on this thread's behalf.
 	 */
 
 	THREAD_DEBUG (g_message ("%s: (%"G_GSIZE_FORMAT") Start wrapper terminating", __func__, mono_native_thread_id_get ()));
 
 	/* Do any cleanup needed for apartment state. This
-	 * cannot be done in thread_cleanup since thread_cleanup could be 
-	 * called for a thread other than the current thread.
+	 * cannot be done in mono_thread_detach_internal since
+	 * mono_thread_detach_internal could be  called for a
+	 * thread other than the current thread.
 	 * mono_thread_cleanup_apartment_state cleans up apartment
 	 * for the current thead */
 	mono_thread_cleanup_apartment_state ();
@@ -1127,7 +952,9 @@ mono_thread_attach_full (MonoDomain *domain, gboolean force_attach)
 void
 mono_thread_detach_internal (MonoInternalThread *thread)
 {
-	g_return_if_fail (thread != NULL);
+	gboolean removed;
+
+	g_assert (thread != NULL);
 
 	THREAD_DEBUG (g_message ("%s: mono_thread_detach for %p (%"G_GSIZE_FORMAT")", __func__, thread, (gsize)thread->tid));
 
@@ -1135,8 +962,136 @@ mono_thread_detach_internal (MonoInternalThread *thread)
 	mono_w32mutex_abandon ();
 #endif
 
-	thread_cleanup (thread);
+	if (thread->abort_state_handle) {
+		mono_gchandle_free (thread->abort_state_handle);
+		thread->abort_state_handle = 0;
+	}
 
+	thread->abort_exc = NULL;
+	thread->current_appcontext = NULL;
+
+	/*
+	 * This is necessary because otherwise we might have
+	 * cross-domain references which will not get cleaned up when
+	 * the target domain is unloaded.
+	 */
+	if (thread->cached_culture_info) {
+		int i;
+		for (i = 0; i < NUM_CACHED_CULTURES * 2; ++i)
+			mono_array_set (thread->cached_culture_info, MonoObject*, i, NULL);
+	}
+
+	/*
+	 * thread->synch_cs can be NULL if this was called after
+	 * ves_icall_System_Threading_InternalThread_Thread_free_internal.
+	 * This can happen only during shutdown.
+	 * The shutting_down flag is not always set, so we can't assert on it.
+	 */
+	if (thread->synch_cs)
+		LOCK_THREAD (thread);
+
+	thread->state |= ThreadState_Stopped;
+	thread->state &= ~ThreadState_Background;
+
+	if (thread->synch_cs)
+		UNLOCK_THREAD (thread);
+
+	/*
+	An interruption request has leaked to cleanup. Adjust the global counter.
+
+	This can happen is the abort source thread finds the abortee (this) thread
+	in unmanaged code. If this thread never trips back to managed code or check
+	the local flag it will be left set and positively unbalance the global counter.
+	
+	Leaving the counter unbalanced will cause a performance degradation since all threads
+	will now keep checking their local flags all the time.
+	*/
+	if (InterlockedExchange (&thread->interruption_requested, 0) != 0)
+		InterlockedDecrement (&thread_interruption_requested);
+
+	mono_threads_lock ();
+
+	if (!threads) {
+		removed = FALSE;
+	} else if (mono_g_hash_table_lookup (threads, (gpointer)thread->tid) != thread) {
+		/* We have to check whether the thread object for the
+		 * tid is still the same in the table because the
+		 * thread might have been destroyed and the tid reused
+		 * in the meantime, in which case the tid would be in
+		 * the table, but with another thread object.
+		 */
+		removed = FALSE;
+	} else {
+		mono_g_hash_table_remove (threads, (gpointer)thread->tid);
+		removed = TRUE;
+	}
+
+	mono_threads_unlock ();
+
+	/* Don't close the handle here, wait for the object finalizer
+	 * to do it. Otherwise, the following race condition applies:
+	 *
+	 * 1) Thread exits (and mono_thread_detach_internal() closes the handle)
+	 *
+	 * 2) Some other handle is reassigned the same slot
+	 *
+	 * 3) Another thread tries to join the first thread, and
+	 * blocks waiting for the reassigned handle to be signalled
+	 * (which might never happen).  This is possible, because the
+	 * thread calling Join() still has a reference to the first
+	 * thread's object.
+	 */
+
+	/* if the thread is not in the hash it has been removed already */
+	if (!removed) {
+		mono_domain_unset ();
+		mono_memory_barrier ();
+
+		if (mono_thread_cleanup_fn)
+			mono_thread_cleanup_fn (thread_get_tid (thread));
+
+		goto done;
+	}
+
+	mono_release_type_locks (thread);
+
+	/* Can happen when we attach the profiler helper thread in order to heapshot. */
+	if (!mono_thread_info_lookup (MONO_UINT_TO_NATIVE_THREAD_ID (thread->tid))->tools_thread)
+		mono_profiler_thread_end (thread->tid);
+
+	mono_hazard_pointer_clear (mono_hazard_pointer_get (), 1);
+
+	/*
+	 * This will signal async signal handlers that the thread has exited.
+	 * The profiler callback needs this to be set, so it cannot be done earlier.
+	 */
+	mono_domain_unset ();
+	mono_memory_barrier ();
+
+	if (thread == mono_thread_internal_current ())
+		mono_thread_pop_appdomain_ref ();
+
+	thread->cached_culture_info = NULL;
+
+	mono_free_static_data (thread->static_data);
+	thread->static_data = NULL;
+	ref_stack_destroy (thread->appdomain_refs);
+	thread->appdomain_refs = NULL;
+
+	g_assert (thread->suspended);
+	mono_os_event_destroy (thread->suspended);
+	g_free (thread->suspended);
+	thread->suspended = NULL;
+
+	if (mono_thread_cleanup_fn)
+		mono_thread_cleanup_fn (thread_get_tid (thread));
+
+	if (mono_gc_is_moving ()) {
+		MONO_GC_UNREGISTER_ROOT (thread->thread_pinning_ref);
+		thread->thread_pinning_ref = NULL;
+	}
+
+done:
 	SET_CURRENT_OBJECT (NULL);
 	mono_domain_unset ();
 
@@ -1273,9 +1228,10 @@ ves_icall_System_Threading_InternalThread_Thread_free_internal (MonoInternalThre
 	THREAD_DEBUG (g_message ("%s: Closing thread %p, handle %p", __func__, this, this_obj->handle));
 
 	/*
-	 * Since threads keep a reference to their thread object while running, by the time this function is called,
-	 * the thread has already exited/detached, i.e. thread_cleanup () has ran. The exception is during shutdown,
-	 * when thread_cleanup () can be called after this.
+	 * Since threads keep a reference to their thread object while running, by
+	 * the time this function is called, the thread has already exited/detached,
+	 * i.e. mono_thread_detach_internal () has ran. The exception is during
+	 * shutdown, when mono_thread_detach_internal () can be called after this.
 	 */
 	if (this_obj->handle) {
 		mono_threads_close_thread_handle (this_obj->handle);
@@ -1686,9 +1642,7 @@ ves_icall_System_Threading_Thread_Join_internal(MonoThread *this_obj, int ms)
 	
 	mono_thread_set_state (cur_thread, ThreadState_WaitSleepJoin);
 
-	MONO_ENTER_GC_SAFE;
 	ret=mono_join_uninterrupted (handle, ms, &error);
-	MONO_EXIT_GC_SAFE;
 
 	mono_thread_clr_state (cur_thread, ThreadState_WaitSleepJoin);
 
@@ -2914,13 +2868,6 @@ ves_icall_System_Runtime_Remoting_Contexts_Context_ReleaseContext (MonoAppContex
 	mono_profiler_context_unloaded (ctx);
 }
 
-void
-mono_thread_init_tls (void)
-{
-	MONO_FAST_TLS_INIT (tls_current_object);
-	mono_native_tls_alloc (&current_object_key, NULL);
-}
-
 void mono_thread_init (MonoThreadStartCB start_cb,
 		       MonoThreadAttachCB attach_cb)
 {
@@ -2933,8 +2880,6 @@ void mono_thread_init (MonoThreadStartCB start_cb,
 	
 	mono_init_static_data_info (&thread_static_info);
 	mono_init_static_data_info (&context_static_info);
-
-	THREAD_DEBUG (g_message ("%s: Allocated current_object_key %d", __func__, current_object_key));
 
 	mono_thread_start_cb = start_cb;
 	mono_thread_attach_cb = attach_cb;
@@ -2963,8 +2908,6 @@ void mono_thread_cleanup (void)
 	mono_os_mutex_destroy (&small_id_mutex);
 	mono_os_event_destroy (&background_change_event);
 #endif
-
-	mono_native_tls_free (current_object_key);
 }
 
 void
@@ -4660,20 +4603,6 @@ mono_thread_test_state (MonoInternalThread *thread, MonoThreadState test)
 	UNLOCK_THREAD (thread);
 	
 	return ret;
-}
-
-static gboolean has_tls_get = FALSE;
-
-void
-mono_runtime_set_has_tls_get (gboolean val)
-{
-	has_tls_get = val;
-}
-
-gboolean
-mono_runtime_has_tls_get (void)
-{
-	return has_tls_get;
 }
 
 static void
