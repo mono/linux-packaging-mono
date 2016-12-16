@@ -5611,60 +5611,6 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 			break;
 #endif
 		}
-		case OP_TLS_GET: {
-#if (defined(TARGET_AMD64) || defined(TARGET_X86)) && defined(__linux__)
-#ifdef TARGET_AMD64
-			// 257 == FS segment register
-			LLVMTypeRef ptrtype = LLVMPointerType (IntPtrType (), 257);
-#else
-			// 256 == GS segment register
-			LLVMTypeRef ptrtype = LLVMPointerType (IntPtrType (), 256);
-#endif
-			// FIXME: XEN
-			values [ins->dreg] = LLVMBuildLoad (builder, LLVMBuildIntToPtr (builder, LLVMConstInt (IntPtrType (), ins->inst_offset, TRUE), ptrtype, ""), "");
-#elif defined(TARGET_AMD64) && defined(TARGET_OSX)
-			/* See mono_amd64_emit_tls_get () */
-			int offset = mono_amd64_get_tls_gs_offset () + (ins->inst_offset * 8);
-
-			// 256 == GS segment register
-			LLVMTypeRef ptrtype = LLVMPointerType (IntPtrType (), 256);
-			values [ins->dreg] = LLVMBuildLoad (builder, LLVMBuildIntToPtr (builder, LLVMConstInt (IntPtrType (), offset, TRUE), ptrtype, ""), "");
-#else
-			set_failure (ctx, "opcode tls-get");
-			break;
-#endif
-
-			break;
-		}
-		case OP_TLS_GET_REG: {
-#if defined(TARGET_AMD64) && defined(__linux__)
-			// 257 == FS segment register
-			LLVMTypeRef ptrtype = LLVMPointerType (IntPtrType (), 257);
-			values [ins->dreg] = LLVMBuildLoad (builder, LLVMBuildIntToPtr (builder, convert (ctx, lhs, LLVMInt64Type ()), ptrtype, ""), "");
-#elif defined(TARGET_AMD64) && defined(TARGET_OSX)
-			/* See emit_tls_get_reg () */
-			// 256 == GS segment register
-			LLVMTypeRef ptrtype = LLVMPointerType (IntPtrType (), 256);
-			values [ins->dreg] = LLVMBuildLoad (builder, LLVMBuildIntToPtr (builder, convert (ctx, lhs, LLVMInt32Type ()), ptrtype, ""), "");
-#else
-			set_failure (ctx, "opcode tls-get");
-			break;
-#endif
-			break;
-		}
-
-		case OP_TLS_SET_REG: {
-#if defined(TARGET_AMD64) && defined(TARGET_OSX)
-			/* See emit_tls_get_reg () */
-			// 256 == GS segment register
-			LLVMTypeRef ptrtype = LLVMPointerType (IntPtrType (), 256);
-			LLVMBuildStore (builder, convert (ctx, lhs, IntPtrType ()), LLVMBuildIntToPtr (builder, convert (ctx, rhs, LLVMInt32Type ()), ptrtype, ""));
-#else
-			set_failure (ctx, "opcode tls-set-reg");
-			break;
-#endif
-			break;
-		}
 		case OP_GC_SAFE_POINT: {
 			LLVMValueRef val, cmp, callee;
 			LLVMBasicBlockRef poll_bb, cont_bb;
@@ -5871,8 +5817,19 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 			const char *name = (const char*)ins->inst_p0;
 			LLVMValueRef var;
 
-			if (!ctx->module->objc_selector_to_var)
+			if (!ctx->module->objc_selector_to_var) {
 				ctx->module->objc_selector_to_var = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+				LLVMValueRef info_var = LLVMAddGlobal (ctx->lmodule, LLVMArrayType (LLVMInt8Type (), 8), "@OBJC_IMAGE_INFO");
+				int32_t objc_imageinfo [] = { 0, 16 };
+				LLVMSetInitializer (info_var, mono_llvm_create_constant_data_array ((uint8_t *) &objc_imageinfo, 8));
+				LLVMSetLinkage (info_var, LLVMPrivateLinkage);
+				LLVMSetExternallyInitialized (info_var, TRUE);
+				LLVMSetSection (info_var, "__DATA, __objc_imageinfo,regular,no_dead_strip");
+				LLVMSetAlignment (info_var, sizeof (mgreg_t));
+				mark_as_used (ctx->module, info_var);
+			}
+
 			var = g_hash_table_lookup (ctx->module->objc_selector_to_var, name);
 			if (!var) {
 				LLVMValueRef indexes [16];

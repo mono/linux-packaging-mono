@@ -119,8 +119,8 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	w32process-unix-osx.c w32process-unix-bsd.c \
 	w32process-unix-haiku.c w32process-unix-default.c \
 	../../support/libm/complex.c console-win32.c \
-	console-win32-internals.h file-io-windows.c \
-	file-io-windows-internals.h icall-windows.c \
+	console-win32-internals.h cominterop-win32-internals.h \
+	file-io-windows.c file-io-windows-internals.h icall-windows.c \
 	icall-windows-internals.h marshal-windows.c \
 	marshal-windows-internals.h mono-security-windows.c \
 	mono-security-windows-internals.h w32mutex-win32.c \
@@ -154,10 +154,10 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	remoting.c runtime.c mono-security.c security.h \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker-default.c threadpool-worker.h \
+	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
+	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
@@ -241,8 +241,9 @@ am__objects_5 = $(am__objects_4) libmonoruntime_static_la-assembly.lo \
 	libmonoruntime_static_la-string-icalls.lo \
 	libmonoruntime_static_la-sysmath.lo \
 	libmonoruntime_static_la-threads.lo \
-	libmonoruntime_static_la-threadpool-ms.lo \
-	libmonoruntime_static_la-threadpool-ms-io.lo \
+	libmonoruntime_static_la-threadpool.lo \
+	libmonoruntime_static_la-threadpool-worker-default.lo \
+	libmonoruntime_static_la-threadpool-io.lo \
 	libmonoruntime_static_la-verify.lo \
 	libmonoruntime_static_la-dynamic-stream.lo \
 	libmonoruntime_static_la-file-mmap-posix.lo \
@@ -283,7 +284,8 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32process-unix-internals.h w32process-unix-osx.c \
 	w32process-unix-bsd.c w32process-unix-haiku.c \
 	w32process-unix-default.c ../../support/libm/complex.c \
-	console-win32.c console-win32-internals.h file-io-windows.c \
+	console-win32.c console-win32-internals.h \
+	cominterop-win32-internals.h file-io-windows.c \
 	file-io-windows-internals.h icall-windows.c \
 	icall-windows-internals.h marshal-windows.c \
 	marshal-windows-internals.h mono-security-windows.c \
@@ -318,10 +320,10 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	remoting.c runtime.c mono-security.c security.h \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker-default.c threadpool-worker.h \
+	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
+	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
@@ -388,9 +390,9 @@ am__objects_14 = $(am__objects_13) libmonoruntime_la-assembly.lo \
 	libmonoruntime_la-security-manager.lo \
 	libmonoruntime_la-string-icalls.lo \
 	libmonoruntime_la-sysmath.lo libmonoruntime_la-threads.lo \
-	libmonoruntime_la-threadpool-ms.lo \
-	libmonoruntime_la-threadpool-ms-io.lo \
-	libmonoruntime_la-verify.lo \
+	libmonoruntime_la-threadpool.lo \
+	libmonoruntime_la-threadpool-worker-default.lo \
+	libmonoruntime_la-threadpool-io.lo libmonoruntime_la-verify.lo \
 	libmonoruntime_la-dynamic-stream.lo \
 	libmonoruntime_la-file-mmap-posix.lo \
 	libmonoruntime_la-file-mmap-windows.lo \
@@ -425,8 +427,8 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	w32process-unix-osx.c w32process-unix-bsd.c \
 	w32process-unix-haiku.c w32process-unix-default.c \
 	../../support/libm/complex.c console-win32.c \
-	console-win32-internals.h file-io-windows.c \
-	file-io-windows-internals.h icall-windows.c \
+	console-win32-internals.h cominterop-win32-internals.h \
+	file-io-windows.c file-io-windows-internals.h icall-windows.c \
 	icall-windows-internals.h marshal-windows.c \
 	marshal-windows-internals.h mono-security-windows.c \
 	mono-security-windows-internals.h w32mutex-win32.c \
@@ -460,10 +462,10 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	remoting.c runtime.c mono-security.c security.h \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker-default.c threadpool-worker.h \
+	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
+	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
@@ -548,8 +550,9 @@ am__objects_22 = $(am__objects_21) \
 	libmonoruntimesgen_static_la-string-icalls.lo \
 	libmonoruntimesgen_static_la-sysmath.lo \
 	libmonoruntimesgen_static_la-threads.lo \
-	libmonoruntimesgen_static_la-threadpool-ms.lo \
-	libmonoruntimesgen_static_la-threadpool-ms-io.lo \
+	libmonoruntimesgen_static_la-threadpool.lo \
+	libmonoruntimesgen_static_la-threadpool-worker-default.lo \
+	libmonoruntimesgen_static_la-threadpool-io.lo \
 	libmonoruntimesgen_static_la-verify.lo \
 	libmonoruntimesgen_static_la-dynamic-stream.lo \
 	libmonoruntimesgen_static_la-file-mmap-posix.lo \
@@ -595,8 +598,8 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32process-unix-osx.c w32process-unix-bsd.c \
 	w32process-unix-haiku.c w32process-unix-default.c \
 	../../support/libm/complex.c console-win32.c \
-	console-win32-internals.h file-io-windows.c \
-	file-io-windows-internals.h icall-windows.c \
+	console-win32-internals.h cominterop-win32-internals.h \
+	file-io-windows.c file-io-windows-internals.h icall-windows.c \
 	icall-windows-internals.h marshal-windows.c \
 	marshal-windows-internals.h mono-security-windows.c \
 	mono-security-windows-internals.h w32mutex-win32.c \
@@ -630,10 +633,10 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	remoting.c runtime.c mono-security.c security.h \
 	security-core-clr.c security-core-clr.h security-manager.c \
 	security-manager.h string-icalls.c string-icalls.h sysmath.h \
-	sysmath.c tabledefs.h threads.c threads-types.h \
-	threadpool-ms.c threadpool-ms.h threadpool-ms-io.c \
-	threadpool-ms-io.h verify.c verify-internals.h wrapper-types.h \
-	dynamic-image-internals.h dynamic-stream.c \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker-default.c threadpool-worker.h \
+	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
+	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
 	custom-attrs-internals.h sre-internals.h \
 	reflection-internals.h file-mmap-posix.c file-mmap-windows.c \
@@ -717,8 +720,9 @@ am__objects_30 = $(am__objects_29) libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-string-icalls.lo \
 	libmonoruntimesgen_la-sysmath.lo \
 	libmonoruntimesgen_la-threads.lo \
-	libmonoruntimesgen_la-threadpool-ms.lo \
-	libmonoruntimesgen_la-threadpool-ms-io.lo \
+	libmonoruntimesgen_la-threadpool.lo \
+	libmonoruntimesgen_la-threadpool-worker-default.lo \
+	libmonoruntimesgen_la-threadpool-io.lo \
 	libmonoruntimesgen_la-verify.lo \
 	libmonoruntimesgen_la-dynamic-stream.lo \
 	libmonoruntimesgen_la-file-mmap-posix.lo \
@@ -1068,6 +1072,7 @@ top_srcdir = @top_srcdir@
 @HOST_WIN32_TRUE@win32_sources = \
 @HOST_WIN32_TRUE@	console-win32.c \
 @HOST_WIN32_TRUE@	console-win32-internals.h \
+@HOST_WIN32_TRUE@	cominterop-win32-internals.h \
 @HOST_WIN32_TRUE@	file-io-windows.c \
 @HOST_WIN32_TRUE@	file-io-windows-internals.h \
 @HOST_WIN32_TRUE@	icall-windows.c \
@@ -1255,10 +1260,12 @@ common_sources = \
 	tabledefs.h 		\
 	threads.c		\
 	threads-types.h		\
-	threadpool-ms.c	\
-	threadpool-ms.h	\
-	threadpool-ms-io.c	\
-	threadpool-ms-io.h	\
+	threadpool.c	\
+	threadpool.h	\
+	threadpool-worker-default.c	\
+	threadpool-worker.h	\
+	threadpool-io.c	\
+	threadpool-io.h	\
 	verify.c		\
 	verify-internals.h	\
 	wrapper-types.h	\
@@ -1362,7 +1369,7 @@ libmonoruntimeinclude_HEADERS = \
 	verify.h		
 
 EXTRA_DIST = $(win32_sources) $(unix_sources) $(null_sources) runtime.h \
-		threadpool-ms-io-poll.c threadpool-ms-io-epoll.c threadpool-ms-io-kqueue.c sgen-dynarray.h
+		threadpool-io-poll.c threadpool-io-epoll.c threadpool-io-kqueue.c sgen-dynarray.h
 
 all: all-am
 
@@ -1530,8 +1537,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-sysmath.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-ms-io.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-ms.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool-worker-default.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threadpool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-w32event-unix.Plo@am__quote@
@@ -1623,8 +1631,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-sysmath.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threadpool-ms-io.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threadpool-ms.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threadpool-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threadpool-worker-default.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threadpool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-w32event-unix.Plo@am__quote@
@@ -1721,8 +1730,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-sysmath.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-ms-io.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-ms.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool-worker-default.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threadpool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-w32event-unix.Plo@am__quote@
@@ -1819,8 +1829,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sre.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-string-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-sysmath.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms-io.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool-io.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool-worker-default.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threadpool.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-verify.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-w32event-unix.Plo@am__quote@
@@ -2346,19 +2357,26 @@ libmonoruntime_static_la-threads.lo: threads.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-threads.lo `test -f 'threads.c' || echo '$(srcdir)/'`threads.c
 
-libmonoruntime_static_la-threadpool-ms.lo: threadpool-ms.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-threadpool-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-threadpool-ms.Tpo -c -o libmonoruntime_static_la-threadpool-ms.lo `test -f 'threadpool-ms.c' || echo '$(srcdir)/'`threadpool-ms.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-threadpool-ms.Tpo $(DEPDIR)/libmonoruntime_static_la-threadpool-ms.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-ms.c' object='libmonoruntime_static_la-threadpool-ms.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_static_la-threadpool.lo: threadpool.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-threadpool.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-threadpool.Tpo -c -o libmonoruntime_static_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-threadpool.Tpo $(DEPDIR)/libmonoruntime_static_la-threadpool.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntime_static_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-threadpool-ms.lo `test -f 'threadpool-ms.c' || echo '$(srcdir)/'`threadpool-ms.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
 
-libmonoruntime_static_la-threadpool-ms-io.lo: threadpool-ms-io.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-threadpool-ms-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-threadpool-ms-io.Tpo -c -o libmonoruntime_static_la-threadpool-ms-io.lo `test -f 'threadpool-ms-io.c' || echo '$(srcdir)/'`threadpool-ms-io.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-threadpool-ms-io.Tpo $(DEPDIR)/libmonoruntime_static_la-threadpool-ms-io.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-ms-io.c' object='libmonoruntime_static_la-threadpool-ms-io.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_static_la-threadpool-worker-default.lo: threadpool-worker-default.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-threadpool-worker-default.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-threadpool-worker-default.Tpo -c -o libmonoruntime_static_la-threadpool-worker-default.lo `test -f 'threadpool-worker-default.c' || echo '$(srcdir)/'`threadpool-worker-default.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-threadpool-worker-default.Tpo $(DEPDIR)/libmonoruntime_static_la-threadpool-worker-default.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-worker-default.c' object='libmonoruntime_static_la-threadpool-worker-default.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-threadpool-ms-io.lo `test -f 'threadpool-ms-io.c' || echo '$(srcdir)/'`threadpool-ms-io.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-threadpool-worker-default.lo `test -f 'threadpool-worker-default.c' || echo '$(srcdir)/'`threadpool-worker-default.c
+
+libmonoruntime_static_la-threadpool-io.lo: threadpool-io.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-threadpool-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-threadpool-io.Tpo -c -o libmonoruntime_static_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-threadpool-io.Tpo $(DEPDIR)/libmonoruntime_static_la-threadpool-io.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-io.c' object='libmonoruntime_static_la-threadpool-io.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
 
 libmonoruntime_static_la-verify.lo: verify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-verify.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-verify.Tpo -c -o libmonoruntime_static_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
@@ -3004,19 +3022,26 @@ libmonoruntime_la-threads.lo: threads.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threads.lo `test -f 'threads.c' || echo '$(srcdir)/'`threads.c
 
-libmonoruntime_la-threadpool-ms.lo: threadpool-ms.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-threadpool-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-threadpool-ms.Tpo -c -o libmonoruntime_la-threadpool-ms.lo `test -f 'threadpool-ms.c' || echo '$(srcdir)/'`threadpool-ms.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-threadpool-ms.Tpo $(DEPDIR)/libmonoruntime_la-threadpool-ms.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-ms.c' object='libmonoruntime_la-threadpool-ms.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_la-threadpool.lo: threadpool.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-threadpool.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-threadpool.Tpo -c -o libmonoruntime_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-threadpool.Tpo $(DEPDIR)/libmonoruntime_la-threadpool.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntime_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threadpool-ms.lo `test -f 'threadpool-ms.c' || echo '$(srcdir)/'`threadpool-ms.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
 
-libmonoruntime_la-threadpool-ms-io.lo: threadpool-ms-io.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-threadpool-ms-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-threadpool-ms-io.Tpo -c -o libmonoruntime_la-threadpool-ms-io.lo `test -f 'threadpool-ms-io.c' || echo '$(srcdir)/'`threadpool-ms-io.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-threadpool-ms-io.Tpo $(DEPDIR)/libmonoruntime_la-threadpool-ms-io.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-ms-io.c' object='libmonoruntime_la-threadpool-ms-io.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntime_la-threadpool-worker-default.lo: threadpool-worker-default.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-threadpool-worker-default.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-threadpool-worker-default.Tpo -c -o libmonoruntime_la-threadpool-worker-default.lo `test -f 'threadpool-worker-default.c' || echo '$(srcdir)/'`threadpool-worker-default.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-threadpool-worker-default.Tpo $(DEPDIR)/libmonoruntime_la-threadpool-worker-default.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-worker-default.c' object='libmonoruntime_la-threadpool-worker-default.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threadpool-ms-io.lo `test -f 'threadpool-ms-io.c' || echo '$(srcdir)/'`threadpool-ms-io.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threadpool-worker-default.lo `test -f 'threadpool-worker-default.c' || echo '$(srcdir)/'`threadpool-worker-default.c
+
+libmonoruntime_la-threadpool-io.lo: threadpool-io.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-threadpool-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-threadpool-io.Tpo -c -o libmonoruntime_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-threadpool-io.Tpo $(DEPDIR)/libmonoruntime_la-threadpool-io.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-io.c' object='libmonoruntime_la-threadpool-io.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
 
 libmonoruntime_la-verify.lo: verify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-verify.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-verify.Tpo -c -o libmonoruntime_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
@@ -3662,19 +3687,26 @@ libmonoruntimesgen_static_la-threads.lo: threads.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-threads.lo `test -f 'threads.c' || echo '$(srcdir)/'`threads.c
 
-libmonoruntimesgen_static_la-threadpool-ms.lo: threadpool-ms.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-threadpool-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms.Tpo -c -o libmonoruntimesgen_static_la-threadpool-ms.lo `test -f 'threadpool-ms.c' || echo '$(srcdir)/'`threadpool-ms.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-ms.c' object='libmonoruntimesgen_static_la-threadpool-ms.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntimesgen_static_la-threadpool.lo: threadpool.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-threadpool.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-threadpool.Tpo -c -o libmonoruntimesgen_static_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-threadpool.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-threadpool.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntimesgen_static_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-threadpool-ms.lo `test -f 'threadpool-ms.c' || echo '$(srcdir)/'`threadpool-ms.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
 
-libmonoruntimesgen_static_la-threadpool-ms-io.lo: threadpool-ms-io.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-threadpool-ms-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms-io.Tpo -c -o libmonoruntimesgen_static_la-threadpool-ms-io.lo `test -f 'threadpool-ms-io.c' || echo '$(srcdir)/'`threadpool-ms-io.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms-io.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-ms-io.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-ms-io.c' object='libmonoruntimesgen_static_la-threadpool-ms-io.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntimesgen_static_la-threadpool-worker-default.lo: threadpool-worker-default.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-threadpool-worker-default.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-worker-default.Tpo -c -o libmonoruntimesgen_static_la-threadpool-worker-default.lo `test -f 'threadpool-worker-default.c' || echo '$(srcdir)/'`threadpool-worker-default.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-worker-default.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-worker-default.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-worker-default.c' object='libmonoruntimesgen_static_la-threadpool-worker-default.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-threadpool-ms-io.lo `test -f 'threadpool-ms-io.c' || echo '$(srcdir)/'`threadpool-ms-io.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-threadpool-worker-default.lo `test -f 'threadpool-worker-default.c' || echo '$(srcdir)/'`threadpool-worker-default.c
+
+libmonoruntimesgen_static_la-threadpool-io.lo: threadpool-io.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-threadpool-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-io.Tpo -c -o libmonoruntimesgen_static_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-io.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-threadpool-io.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-io.c' object='libmonoruntimesgen_static_la-threadpool-io.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
 
 libmonoruntimesgen_static_la-verify.lo: verify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-verify.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-verify.Tpo -c -o libmonoruntimesgen_static_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c
@@ -4355,19 +4387,26 @@ libmonoruntimesgen_la-threads.lo: threads.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threads.lo `test -f 'threads.c' || echo '$(srcdir)/'`threads.c
 
-libmonoruntimesgen_la-threadpool-ms.lo: threadpool-ms.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-threadpool-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-threadpool-ms.Tpo -c -o libmonoruntimesgen_la-threadpool-ms.lo `test -f 'threadpool-ms.c' || echo '$(srcdir)/'`threadpool-ms.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-threadpool-ms.Tpo $(DEPDIR)/libmonoruntimesgen_la-threadpool-ms.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-ms.c' object='libmonoruntimesgen_la-threadpool-ms.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntimesgen_la-threadpool.lo: threadpool.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-threadpool.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-threadpool.Tpo -c -o libmonoruntimesgen_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-threadpool.Tpo $(DEPDIR)/libmonoruntimesgen_la-threadpool.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool.c' object='libmonoruntimesgen_la-threadpool.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threadpool-ms.lo `test -f 'threadpool-ms.c' || echo '$(srcdir)/'`threadpool-ms.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threadpool.lo `test -f 'threadpool.c' || echo '$(srcdir)/'`threadpool.c
 
-libmonoruntimesgen_la-threadpool-ms-io.lo: threadpool-ms-io.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-threadpool-ms-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-threadpool-ms-io.Tpo -c -o libmonoruntimesgen_la-threadpool-ms-io.lo `test -f 'threadpool-ms-io.c' || echo '$(srcdir)/'`threadpool-ms-io.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-threadpool-ms-io.Tpo $(DEPDIR)/libmonoruntimesgen_la-threadpool-ms-io.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-ms-io.c' object='libmonoruntimesgen_la-threadpool-ms-io.lo' libtool=yes @AMDEPBACKSLASH@
+libmonoruntimesgen_la-threadpool-worker-default.lo: threadpool-worker-default.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-threadpool-worker-default.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-threadpool-worker-default.Tpo -c -o libmonoruntimesgen_la-threadpool-worker-default.lo `test -f 'threadpool-worker-default.c' || echo '$(srcdir)/'`threadpool-worker-default.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-threadpool-worker-default.Tpo $(DEPDIR)/libmonoruntimesgen_la-threadpool-worker-default.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-worker-default.c' object='libmonoruntimesgen_la-threadpool-worker-default.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threadpool-ms-io.lo `test -f 'threadpool-ms-io.c' || echo '$(srcdir)/'`threadpool-ms-io.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threadpool-worker-default.lo `test -f 'threadpool-worker-default.c' || echo '$(srcdir)/'`threadpool-worker-default.c
+
+libmonoruntimesgen_la-threadpool-io.lo: threadpool-io.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-threadpool-io.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-threadpool-io.Tpo -c -o libmonoruntimesgen_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-threadpool-io.Tpo $(DEPDIR)/libmonoruntimesgen_la-threadpool-io.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='threadpool-io.c' object='libmonoruntimesgen_la-threadpool-io.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-threadpool-io.lo `test -f 'threadpool-io.c' || echo '$(srcdir)/'`threadpool-io.c
 
 libmonoruntimesgen_la-verify.lo: verify.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-verify.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-verify.Tpo -c -o libmonoruntimesgen_la-verify.lo `test -f 'verify.c' || echo '$(srcdir)/'`verify.c

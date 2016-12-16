@@ -220,7 +220,7 @@ MONO_SIG_HANDLER_FUNC (static, sigabrt_signal_handler)
 	if (!ji) {
         if (mono_chain_signal (MONO_SIG_HANDLER_PARAMS))
 			return;
-		mono_handle_native_sigsegv (SIGABRT, ctx, info);
+		mono_handle_native_crash ("SIGABRT", ctx, info);
 	}
 }
 
@@ -254,7 +254,7 @@ per_thread_profiler_hit (void *ctx)
 	if (call_chain_depth == 0) {
 		mono_profiler_stat_hit ((guchar *)mono_arch_ip_from_context (ctx), ctx);
 	} else {
-		MonoJitTlsData *jit_tls = (MonoJitTlsData *)mono_native_tls_get_value (mono_jit_tls_id);
+		MonoJitTlsData *jit_tls = (MonoJitTlsData *)mono_tls_get_jit_tls ();
 		int current_frame_index = 1;
 		MonoContext mono_context;
 		guchar *ips [call_chain_depth + 1];
@@ -343,7 +343,7 @@ MONO_SIG_HANDLER_FUNC (static, profiler_signal_handler)
 	if (mono_thread_info_get_small_id () == -1)
 		return; //an non-attached thread got the signal
 
-	if (!mono_domain_get () || !mono_native_tls_get_value (mono_jit_tls_id))
+	if (!mono_domain_get () || !mono_tls_get_jit_tls ())
 		return; //thread in the process of dettaching
 
 	InterlockedIncrement (&profiler_signals_accepted);
@@ -861,7 +861,7 @@ mono_runtime_syscall_fork ()
 void
 mono_gdb_render_native_backtraces (pid_t crashed_pid)
 {
-	const char *argv [9];
+	const char *argv [10];
 	char template_ [] = "/tmp/mono-lldb-commands.XXXXXX";
 	char buf1 [128];
 	FILE *commands;
@@ -903,7 +903,8 @@ mono_gdb_render_native_backtraces (pid_t crashed_pid)
 		argv [5] = "--ex";
 		argv [6] = "thread apply all bt";
 		argv [7] = "--batch";
-		argv [8] = 0;
+		argv [8] = "-nx";
+		argv [9] = 0;
 	}
 
 	execv (argv [0], (char**)argv);

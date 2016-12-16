@@ -25,7 +25,7 @@ System.Security.Cryptography.Hashing.Algorithms System.Security.Cryptography.RSA
 System.Security.Principal.Windows System.Threading.Thread System.Threading.ThreadPool \
 System.Xml.XPath System.Xml.XmlDocument System.Xml.Xsl.Primitives Microsoft.Win32.Registry.AccessControl System.Diagnostics.StackTrace System.Globalization.Extensions \
 System.IO.FileSystem.AccessControl System.Reflection.TypeExtensions System.Reflection.Emit.Lightweight System.Reflection.Emit.ILGeneration System.Reflection.Emit \
-System.Security.SecureString System.Threading.AccessControl System.Threading.Overlapped System.Xml.XPath.XDocument \
+System.Security.SecureString System.Threading.AccessControl System.Threading.Overlapped System.ValueTuple System.Xml.XPath.XDocument \
 System.Security.Cryptography.Primitives System.Text.Encoding.CodePages System.IO.FileSystem.Watcher \
 System.Security.Cryptography.ProtectedData System.ServiceProcess.ServiceController System.IO.Pipes
 
@@ -49,7 +49,7 @@ System.Threading.Tasks System.Collections.Concurrent System.Text.Encoding System
 System.Linq.Expressions System.Dynamic.Runtime System.Linq System.Threading.Tasks.Parallel System.Xml.ReaderWriter \
 System.Diagnostics.Tools System.Reflection.Primitives System.Runtime.Extensions System.Runtime.InteropServices System.Text.Encoding.Extensions \
 System.Runtime.Numerics System.Xml.XDocument System.Reflection.Extensions System.IO.FileSystem.Primitives System.IO.FileSystem \
-System.Diagnostics.FileVersionInfo System.Security.Cryptography.Algorithms
+System.Diagnostics.FileVersionInfo System.Security.Cryptography.Primitives System.Security.Cryptography.Algorithms System.ValueTuple
 
 build_PARALLEL_SUBDIRS = $(basic_PARALLEL_SUBDIRS)
 

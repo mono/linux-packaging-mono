@@ -325,9 +325,7 @@ ppc_sources = \
 
 arm_sources = \
 	mini-arm.c		\
-	mini-arm-tls.S		\
 	mini-arm.h		\
-	mini-arm-tls.h		\
 	exceptions-arm.c	\
 	tramp-arm.c	\
 	mini-arm-gsharedvt.c	\
@@ -865,7 +863,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1204/8fc79cf\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1306/ed1006c\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
