@@ -20,7 +20,7 @@ namespace System.Buffers
     /// This class is thread-safe.  All members may be used by multiple threads concurrently.
     /// </para>
     /// </remarks>
-    public abstract class ArrayPool<T>
+    /*public*/ abstract class ArrayPool<T>
     {
         /// <summary>The lazily-initialized shared pool instance.</summary>
         private static ArrayPool<T> s_sharedInstance = null;

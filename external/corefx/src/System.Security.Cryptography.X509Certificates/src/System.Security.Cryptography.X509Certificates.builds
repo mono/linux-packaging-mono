@@ -9,16 +9,16 @@
       <OSGroup>Windows_NT</OSGroup>
     </Project>
     <Project Include="System.Security.Cryptography.X509Certificates.csproj">
-      <OSGroup>Windows_NT</OSGroup>
-      <TargetGroup>netcore50</TargetGroup>
+      <OSGroup>Unix</OSGroup>
+      <TargetGroup>netstandard1.7</TargetGroup>
     </Project>
     <Project Include="System.Security.Cryptography.X509Certificates.csproj">
       <OSGroup>Windows_NT</OSGroup>
-      <TargetGroup>net46</TargetGroup>
+      <TargetGroup>netstandard1.7</TargetGroup>
     </Project>
     <Project Include="System.Security.Cryptography.X509Certificates.csproj">
       <OSGroup>Windows_NT</OSGroup>
-      <TargetGroup>net461</TargetGroup>
+      <TargetGroup>net463</TargetGroup>
     </Project>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.traversal.targets))\dir.traversal.targets" />

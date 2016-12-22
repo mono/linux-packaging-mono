@@ -691,7 +691,7 @@ register_dyn_icall (gpointer func, const char *name, const char *sigstr, gboolea
 MonoLMF *
 mono_get_lmf (void)
 {
-#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR)
+#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR) && defined(HAVE_GET_TLS_ADDR)
 	return (MonoLMF *)mono_tls_get_lmf ();
 #else
 	MonoJitTlsData *jit_tls;
@@ -716,11 +716,11 @@ mono_get_lmf_addr (void)
 void
 mono_set_lmf (MonoLMF *lmf)
 {
-#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR)
+#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR) && defined(HAVE_GET_TLS_ADDR)
 	mono_tls_set_lmf (lmf);
-#endif
-
+#else
 	(*mono_get_lmf_addr ()) = lmf;
+#endif
 }
 
 MonoJitTlsData*
@@ -852,7 +852,15 @@ setup_jit_tls_data (gpointer stack_start, gpointer abort_func)
 
 	jit_tls->first_lmf = lmf;
 
-#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR)
+	/*
+	 * We can have 2 configurations for accessing lmf.
+	 * We can use only the tls_lmf_addr variable, which will store the address of
+	 * jit_tls->lmf, or, if we have MONO_ARCH_ENABLE_MONO_LMF_VAR enabled, we can
+	 * use both tls_lmf_addr and tls_lmf variables (in this case we need to have
+	 * means of getting the address of a tls variable; this can be done always
+	 * when using __thread or, on osx, even when using pthread)
+	 */
+#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR) && defined(HAVE_GET_TLS_ADDR)
 	/* jit_tls->lmf is unused */
 	mono_tls_set_lmf (lmf);
 	mono_set_lmf_addr (mono_tls_get_tls_addr (TLS_KEY_LMF));
@@ -2688,6 +2696,8 @@ MONO_SIG_HANDLER_FUNC (, mono_sigfpe_signal_handler)
 
 	ji = mono_jit_info_table_find_internal (mono_domain_get (), (char *)mono_arch_ip_from_context (ctx), TRUE, TRUE);
 
+	MONO_ENTER_GC_UNSAFE_UNBALANCED;
+
 #if defined(MONO_ARCH_HAVE_IS_INT_OVERFLOW)
 	if (mono_arch_is_int_overflow (ctx, info))
 		/*
@@ -2703,16 +2713,19 @@ MONO_SIG_HANDLER_FUNC (, mono_sigfpe_signal_handler)
 
 	if (!ji) {
 		if (!mono_do_crash_chaining && mono_chain_signal (MONO_SIG_HANDLER_PARAMS))
-			return;
+			goto exit;
 
 		mono_handle_native_crash ("SIGFPE", ctx, info);
 		if (mono_do_crash_chaining) {
 			mono_chain_signal (MONO_SIG_HANDLER_PARAMS);
-			return;
+			goto exit;
 		}
 	}
 
 	mono_arch_handle_exception (ctx, exc);
+
+exit:
+	MONO_EXIT_GC_UNSAFE_UNBALANCED;
 }
 
 MONO_SIG_HANDLER_FUNC (, mono_sigill_signal_handler)
@@ -2836,9 +2849,13 @@ MONO_SIG_HANDLER_FUNC (, mono_sigint_signal_handler)
 	MonoException *exc;
 	MONO_SIG_HANDLER_GET_CONTEXT;
 
+	MONO_ENTER_GC_UNSAFE_UNBALANCED;
+
 	exc = mono_get_exception_execution_engine ("Interrupted (SIGINT).");
 
 	mono_arch_handle_exception (ctx, exc);
+
+	MONO_EXIT_GC_UNSAFE_UNBALANCED;
 }
 
 #ifndef DISABLE_REMOTING

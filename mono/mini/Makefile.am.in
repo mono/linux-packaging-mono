@@ -437,7 +437,6 @@ common_sources = \
 	graph.c			\
 	mini-codegen.c		\
 	mini-exceptions.c	\
-	mini-exceptions-native-unwinder.c	\
 	mini-trampolines.c  	\
 	branch-opts.c		\
 	mini-generic-sharing.c	\
@@ -490,7 +489,7 @@ test_sources = 			\
 
 regtests_UNIVERSAL=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe basic-vectors.exe
 
-if INSTALL_AOT_ONLY
+if INSTALL_TESTING_AOT_FULL
 regtests= \
 	$(regtests_UNIVERSAL)
 
@@ -502,7 +501,7 @@ endif
 else
 regtests= \
 	$(regtests_UNIVERSAL) \
-	$(regtests_AOT_ONLY_BLACKLIST)
+	$(regtests_TESTING_AOT_FULL_BLACKLIST)
 endif
 
 if X86
@@ -622,7 +621,7 @@ basic-simd.exe: basic-simd.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/Mono.Simd.dll
 
 basic-vectors.exe: basic-vectors.cs TestDriver.dll
-	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/System.Numerics.dll
+	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/System.Numerics.dll -r:$(CLASS)/System.Numerics.Vectors.dll
 
 nacl.exe: nacl.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/Mono.Simd.dll
@@ -745,9 +744,9 @@ gsharedvtcheck:
 fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
 
 # Skip aoting the tests that aren't compiled 
-# on the aot_only profile because they're skipped
+# on the testing_aot_full profile because they're skipped
 # on mobile profiles
-FULLAOT_LIBS_AOT_ONLY_BLACKLIST = \
+FULLAOT_LIBS_TESTING_AOT_FULL_BLACKLIST = \
 	Mono.Posix.dll \
 	System.Configuration.dll
 
@@ -758,16 +757,17 @@ FULLAOT_LIBS_UNIVERSAL = \
 	System.Xml.dll \
 	System.Security.dll \
 	Mono.Simd.dll \
-	Mono.Security.dll
+	Mono.Security.dll \
+	System.Numerics.Vectors.dll
 
-if INSTALL_AOT_ONLY
+if INSTALL_TESTING_AOT_FULL
 FULLAOT_LIBS= \
 	Mono.Dynamic.Interpreter.dll \
 	$(FULLAOT_LIBS_UNIVERSAL)
 else
 FULLAOT_LIBS= \
 	$(FULLAOT_LIBS_UNIVERSAL) \
-	$(FULLAOT_LIBS_AOT_ONLY_BLACKLIST)
+	$(FULLAOT_LIBS_TESTING_AOT_FULL_BLACKLIST)
 endif
 
 FULLAOT_TMP_DIR=$(top_builddir)/mono/mini/fullaot-tmp
@@ -863,7 +863,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1306/ed1006c\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1384/453e9fe\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

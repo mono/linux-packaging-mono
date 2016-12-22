@@ -7,7 +7,6 @@
  * Copyright 2013 Xamarin, Inc (http://www.xamarin.com)
  */
 
-#include <config.h>
 #include <mono/utils/mach-support.h>
 
 #include "mono-tls.h"
@@ -34,9 +33,6 @@
  * wrappers and managed allocators, both of which are not aot-ed by default.
  * So far, we never supported inlined fast tls on full-aot systems.
  */
-#ifdef HAVE_KW_THREAD
-#define USE_KW_THREAD
-#endif
 
 #ifdef USE_KW_THREAD
 
@@ -116,6 +112,44 @@
 
 #define MONO_THREAD_VAR_OFFSET(var,offset) __asm ("     ldr     %0, 1f; b 2f; 1: .word " #var "(tpoff); 2:" : "=r" (offset))
 
+#elif defined(TARGET_S390X)
+# if defined(__PIC__)
+#  if !defined(__PIE__)
+// This only works if libmono is linked into the application
+#   define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  				\
+						__asm__ ("basr  %%r1,0\n\t"			\
+							 "j     0f\n\t"				\
+							 ".quad " #var "@TLSGD\n"		\
+							 "0:\n\t"				\
+							 "lg    %%r2,4(%%r1)\n\t"		\
+							 "brasl	%%r14,__tls_get_offset@PLT:tls_gdcall:"#var"\n\t" \
+							 "lgr	%0,%%r2\n\t"			\
+							: "=r" (foo) : 				\
+							: "1", "2", "14", "cc");		\
+						offset = foo; } while (0)
+#  elif __PIE__ == 1
+#   define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  					\
+						__asm__ ("lg	%0," #var "@GOTNTPOFF(%%r12)\n\t"	\
+							 : "=r" (foo));					\
+						offset = foo; } while (0)
+#  elif __PIE__ == 2
+#   define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  				\
+						__asm__ ("larl	%%r1," #var "@INDNTPOFF\n\t"	\
+							 "lg	%0,0(%%r1)\n\t"			\
+							 : "=r" (foo) :				\
+							 : "1", "cc");				\
+						offset = foo; } while (0)
+#  endif
+# else
+#  define MONO_THREAD_VAR_OFFSET(var,offset) do { guint64 foo;  			\
+						__asm__ ("basr  %%r1,0\n\t"		\
+							 "j     0f\n\t"			\
+							 ".quad " #var "@NTPOFF\n"	\
+							 "0:\n\t"			\
+							 "lg    %0,4(%%r1)\n\t"		\
+							: "=r" (foo) : : "1");		\
+						offset = foo; } while (0)
+# endif
 #else
 
 #define MONO_THREAD_VAR_OFFSET(var,offset) (offset) = -1
@@ -270,6 +304,7 @@ mono_tls_get_tls_setter (MonoTlsKey key, gboolean name)
 gpointer
 mono_tls_get_tls_addr (MonoTlsKey key)
 {
+#ifdef HAVE_GET_TLS_ADDR
 	if (key == TLS_KEY_LMF) {
 #if defined(USE_KW_THREAD)
 		return &mono_tls_lmf;
@@ -277,6 +312,7 @@ mono_tls_get_tls_addr (MonoTlsKey key)
 		return mono_mach_get_tls_address_from_thread (pthread_self (), mono_tls_key_lmf);
 #endif
 	}
+#endif
 	/* Implement if we ever need for other targets/keys */
 	g_assert_not_reached ();
 	return NULL;

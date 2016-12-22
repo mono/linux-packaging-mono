@@ -85,8 +85,8 @@ target_triplet = @target@
 @INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime
 @INSTALL_MONOTOUCH_WATCH_TRUE@am__append_5 = monotouch_watch monotouch_watch_runtime
 @INSTALL_MONOTOUCH_TV_TRUE@am__append_6 = monotouch_tv monotouch_tv_runtime
-@INSTALL_AOT_HYBRID_TRUE@am__append_7 = aot_hybrid
-@INSTALL_AOT_ONLY_TRUE@am__append_8 = aot_only
+@INSTALL_TESTING_AOT_HYBRID_TRUE@am__append_7 = testing_aot_hybrid
+@INSTALL_TESTING_AOT_FULL_TRUE@am__append_8 = testing_aot_full
 @INSTALL_XAMMAC_TRUE@am__append_9 = xammac xammac_net_4_5
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -191,12 +191,12 @@ GTKX11 = @GTKX11@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
-INSTALL_AOT_HYBRID = @INSTALL_AOT_HYBRID@
-INSTALL_AOT_ONLY = @INSTALL_AOT_ONLY@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INSTALL_TESTING_AOT_FULL = @INSTALL_TESTING_AOT_FULL@
+INSTALL_TESTING_AOT_HYBRID = @INSTALL_TESTING_AOT_HYBRID@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
@@ -364,12 +364,12 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
-@INSTALL_AOT_ONLY_FALSE@AOT_ONLY_FILTER = echo
+@INSTALL_TESTING_AOT_FULL_FALSE@TESTING_AOT_FULL_FILTER = echo
 
-#  ILASM.exe has features which a aot_only runtime will not support.
+#  ILASM.exe has features which a testing_aot_full runtime will not support.
 #  It is invoked with an external mono when used in the runtime.
 #  We skip it here because otherwise it will fail to verify.
-@INSTALL_AOT_ONLY_TRUE@AOT_ONLY_FILTER = grep -v ilasm
+@INSTALL_TESTING_AOT_FULL_TRUE@TESTING_AOT_FULL_FILTER = grep -v ilasm
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
@@ -591,7 +591,7 @@ mcs-do-run-test-profiles: test-support-files
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
 # Skip binary_reference_assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
-	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(AOT_ONLY_FILTER)` ; \
+	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(TESTING_AOT_FULL_FILTER)` ; \
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
 	  if [ "binary_reference_assemblies" = "$$profile" ]; then \
