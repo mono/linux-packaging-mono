@@ -74,7 +74,7 @@ namespace System.ComponentModel
         public System.ComponentModel.BindingDirection Direction { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     public enum BindableSupport
     {
@@ -161,8 +161,7 @@ namespace System.ComponentModel
     }
     public partial class ComponentResourceManager : System.Resources.ResourceManager
     {
-        //public ComponentResourceManager() { }
-        //TODO NETSTANDARD2.0: I had to update the ctor to call the base ctor for this type
+        public ComponentResourceManager() { }
         public ComponentResourceManager(System.Type t) : base(t) { }
         public void ApplyResources(object value, string objectName) { }
         public virtual void ApplyResources(object value, string objectName, System.Globalization.CultureInfo culture) { }
@@ -210,7 +209,7 @@ namespace System.ComponentModel
         public bool IsDataObject { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(128))]
     public sealed partial class DataObjectFieldAttribute : System.Attribute
@@ -235,7 +234,7 @@ namespace System.ComponentModel
         public System.ComponentModel.DataObjectMethodType MethodType { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose Match on Attribute public override bool Match(object obj) { throw null; }
+        public override bool Match(object obj) { throw null; }
     }
     public enum DataObjectMethodType
     {
@@ -265,7 +264,7 @@ namespace System.ComponentModel
         public DesignerAttribute(System.Type designerType, System.Type designerBaseType) { }
         public string DesignerBaseTypeName { get { throw null; } }
         public string DesignerTypeName { get { throw null; } }
-        //TODO - expose TypeID on Attribute public override object TypeId { get { throw null; } }
+        public override object TypeId { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
@@ -280,7 +279,7 @@ namespace System.ComponentModel
         public bool Visible { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple = true, Inherited = true)]
     public sealed partial class EditorAttribute : System.Attribute
@@ -291,7 +290,7 @@ namespace System.ComponentModel
         public EditorAttribute(System.Type type, System.Type baseType) { }
         public string EditorBaseTypeName { get { throw null; } }
         public string EditorTypeName { get { throw null; } }
-        //TODO - expose TypeID on Attribute public override object TypeId { get { throw null; } }
+        public override object TypeId { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
     }
@@ -380,7 +379,7 @@ namespace System.ComponentModel
         public System.ComponentModel.InheritanceLevel InheritanceLevel { get { throw null; } }
         public override bool Equals(object value) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
         public override string ToString() { throw null; }
     }
     public enum InheritanceLevel
@@ -454,7 +453,7 @@ namespace System.ComponentModel
         public static object CreateWithContext(System.Type type, System.ComponentModel.LicenseContext creationContext, object[] args) { throw null; }
         public static bool IsLicensed(System.Type type) { throw null; }
         public static bool IsValid(System.Type type) { throw null; }
-        public static bool IsValid(System.Type type, object instance, out System.ComponentModel.License license) { license = default(System.ComponentModel.License); throw null; }
+        public static bool IsValid(System.Type type, object instance, out System.ComponentModel.License license) { throw null; }
         public static void LockContext(object contextUser) { }
         public static void UnlockContext(object contextUser) { }
         public static void Validate(System.Type type) { }
@@ -473,7 +472,7 @@ namespace System.ComponentModel
         public LicenseProviderAttribute(string typeName) { }
         public LicenseProviderAttribute(System.Type type) { }
         public System.Type LicenseProvider { get { throw null; } }
-        //TODO - expose TypeID on Attribute public override object TypeId { get { throw null; } }
+        public override object TypeId { get { throw null; } }
         public override bool Equals(object value) { throw null; }
         public override int GetHashCode() { throw null; }
     }
@@ -500,7 +499,7 @@ namespace System.ComponentModel
         public bool ListBindable { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NEtstandARd2.0 - eXpose isdefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; } on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     public partial class ListChangedEventArgs : System.EventArgs
     {
@@ -603,11 +602,11 @@ namespace System.ComponentModel
         public bool ResetOnSpace { get { throw null; } set { } }
         public bool SkipLiterals { get { throw null; } set { } }
         public bool Add(char input) { throw null; }
-        public bool Add(char input, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool Add(char input, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public bool Add(string input) { throw null; }
-        public bool Add(string input, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool Add(string input, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public void Clear() { }
-        public void Clear(out System.ComponentModel.MaskedTextResultHint resultHint) { resultHint = default(System.ComponentModel.MaskedTextResultHint); }
+        public void Clear(out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public object Clone() { throw null; }
         public int FindAssignedEditPositionFrom(int position, bool direction) { throw null; }
         public int FindAssignedEditPositionInRange(int startPosition, int endPosition, bool direction) { throw null; }
@@ -619,27 +618,27 @@ namespace System.ComponentModel
         public int FindUnassignedEditPositionInRange(int startPosition, int endPosition, bool direction) { throw null; }
         public static bool GetOperationResultFromHint(System.ComponentModel.MaskedTextResultHint hint) { throw null; }
         public bool InsertAt(char input, int position) { throw null; }
-        public bool InsertAt(char input, int position, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool InsertAt(char input, int position, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public bool InsertAt(string input, int position) { throw null; }
-        public bool InsertAt(string input, int position, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool InsertAt(string input, int position, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public bool IsAvailablePosition(int position) { throw null; }
         public bool IsEditPosition(int position) { throw null; }
         public static bool IsValidInputChar(char c) { throw null; }
         public static bool IsValidMaskChar(char c) { throw null; }
         public static bool IsValidPasswordChar(char c) { throw null; }
         public bool Remove() { throw null; }
-        public bool Remove(out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool Remove(out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public bool RemoveAt(int position) { throw null; }
         public bool RemoveAt(int startPosition, int endPosition) { throw null; }
-        public bool RemoveAt(int startPosition, int endPosition, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool RemoveAt(int startPosition, int endPosition, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public bool Replace(char input, int position) { throw null; }
-        public bool Replace(char input, int startPosition, int endPosition, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
-        public bool Replace(char input, int position, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool Replace(char input, int startPosition, int endPosition, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
+        public bool Replace(char input, int position, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public bool Replace(string input, int position) { throw null; }
-        public bool Replace(string input, int startPosition, int endPosition, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
-        public bool Replace(string input, int position, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool Replace(string input, int startPosition, int endPosition, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
+        public bool Replace(string input, int position, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public bool Set(string input) { throw null; }
-        public bool Set(string input, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool Set(string input, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
         public string ToDisplayString() { throw null; }
         public override string ToString() { throw null; }
         public string ToString(bool ignorePasswordChar) { throw null; }
@@ -648,10 +647,10 @@ namespace System.ComponentModel
         public string ToString(bool includePrompt, bool includeLiterals, int startPosition, int length) { throw null; }
         public string ToString(bool ignorePasswordChar, int startPosition, int length) { throw null; }
         public string ToString(int startPosition, int length) { throw null; }
-        public bool VerifyChar(char input, int position, out System.ComponentModel.MaskedTextResultHint hint) { hint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool VerifyChar(char input, int position, out System.ComponentModel.MaskedTextResultHint hint) { throw null; }
         public bool VerifyEscapeChar(char input, int position) { throw null; }
         public bool VerifyString(string input) { throw null; }
-        public bool VerifyString(string input, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { testPosition = default(int); resultHint = default(System.ComponentModel.MaskedTextResultHint); throw null; }
+        public bool VerifyString(string input, out int testPosition, out System.ComponentModel.MaskedTextResultHint resultHint) { throw null; }
     }
     public enum MaskedTextResultHint
     {
@@ -691,7 +690,7 @@ namespace System.ComponentModel
         public bool Password { get { throw null; } }
         public override bool Equals(object o) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767))]
     public partial class PropertyTabAttribute : System.Attribute
@@ -728,7 +727,7 @@ namespace System.ComponentModel
         public bool RecommendedAsConfigurable { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     public partial class ReferenceConverter : System.ComponentModel.TypeConverter
     {
@@ -751,7 +750,7 @@ namespace System.ComponentModel
         public bool RunInstaller { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     public static partial class SyntaxCheck
     {
@@ -771,7 +770,7 @@ namespace System.ComponentModel
         public string ToolboxItemTypeName { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(4), AllowMultiple = true, Inherited = true)]
     public sealed partial class ToolboxItemFilterAttribute : System.Attribute
@@ -780,10 +779,10 @@ namespace System.ComponentModel
         public ToolboxItemFilterAttribute(string filterString, System.ComponentModel.ToolboxItemFilterType filterType) { }
         public string FilterString { get { throw null; } }
         public System.ComponentModel.ToolboxItemFilterType FilterType { get { throw null; } }
-        //TODO NETSTANDARD2.0- expose TypeID on Attribute public override object TypeId { get { throw null; } }
+        public override object TypeId { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose Match on Attribute public override bool Match(object obj) { throw null; }
+        public override bool Match(object obj) { throw null; }
         public override string ToString() { throw null; }
     }
     public enum ToolboxItemFilterType
@@ -998,7 +997,7 @@ namespace System.ComponentModel.Design
         public string HelpKeyword { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public override int GetHashCode() { throw null; }
-        //TODO NETSTANDARD2.0 - expose IsDefaultAttribute on Attribute public override bool IsDefaultAttribute() { throw null; }
+        public override bool IsDefaultAttribute() { throw null; }
     }
     public enum HelpKeywordType
     {
@@ -1388,7 +1387,7 @@ namespace System.ComponentModel.Design.Serialization
         public DesignerSerializerAttribute(System.Type serializerType, System.Type baseSerializerType) { }
         public string SerializerBaseTypeName { get { throw null; } }
         public string SerializerTypeName { get { throw null; } }
-        //TODO - expose TypeID on Attribute public override object TypeId { get { throw null; } }
+        public override object TypeId { get { throw null; } }
     }
     public partial interface IDesignerLoaderHost : System.ComponentModel.Design.IDesignerHost, System.ComponentModel.Design.IServiceContainer, System.IServiceProvider
     {
@@ -1485,7 +1484,7 @@ namespace System.ComponentModel.Design.Serialization
         public bool Reloadable { get { throw null; } }
         public string SerializerBaseTypeName { get { throw null; } }
         public string SerializerTypeName { get { throw null; } }
-        //TODO - expose TypeID on Attribute public override object TypeId { get { throw null; } }
+        public override object TypeId { get { throw null; } }
     }
     public abstract partial class SerializationStore : System.IDisposable
     {
@@ -1495,22 +1494,5 @@ namespace System.ComponentModel.Design.Serialization
         protected virtual void Dispose(bool disposing) { }
         public abstract void Save(System.IO.Stream stream);
         void System.IDisposable.Dispose() { }
-    }
-}
-
-namespace System.Resources
-{
-    public partial interface IResourceReader : System.Collections.IEnumerable, System.IDisposable
-    {
-        void Close();
-        new System.Collections.IDictionaryEnumerator GetEnumerator();
-    }
-    public partial interface IResourceWriter : System.IDisposable
-    {
-        void AddResource(string name, byte[] value);
-        void AddResource(string name, object value);
-        void AddResource(string name, string value);
-        void Close();
-        void Generate();
     }
 }

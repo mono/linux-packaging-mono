@@ -125,7 +125,7 @@
 #endif
 
 /* Version number of the AOT file format */
-#define MONO_AOT_FILE_VERSION 138
+#define MONO_AOT_FILE_VERSION 139
 
 //TODO: This is x86/amd64 specific.
 #define mono_simd_shuffle_mask(a,b,c,d) ((a) | ((b) << 2) | ((c) << 4) | ((d) << 6))
@@ -3176,7 +3176,6 @@ void mono_runtime_cleanup_handlers (void);
 void mono_runtime_setup_stat_profiler (void);
 void mono_runtime_shutdown_stat_profiler (void);
 void mono_runtime_posix_install_handlers (void);
-pid_t mono_runtime_syscall_fork (void);
 void mono_gdb_render_native_backtraces (pid_t crashed_pid);
 
 void mono_cross_helpers_run (void);
@@ -3201,11 +3200,6 @@ gboolean MONO_SIG_HANDLER_SIGNATURE (mono_chain_signal);
 #else
 #define ARCH_VARARG_ICALLS 0
 #endif
-
-/*
- * Native unwinder integration
- */
-void mono_exception_native_unwind (void *ctx, MONO_SIG_HANDLER_INFO_TYPE *info);
 
 /*
  * Coop support for trampolines

@@ -19,9 +19,9 @@ namespace System.Linq
         // Finding equivalent types can be relatively expensive, and hitting with the same types repeatedly is quite likely.
         private Dictionary<Type, Type> _equivalentTypeCache;
 
-        protected override Expression VisitMethodCall(MethodCallExpression m)
+        protected internal override Expression VisitMethodCall(MethodCallExpression m)
         {
-            Expression obj = this.Visit(m.Object);
+            Expression obj = Visit(m.Object);
             ReadOnlyCollection<Expression> args = Visit(m.Arguments);
 
             // check for args changed
@@ -40,14 +40,14 @@ namespace System.Linq
                 {
                     // convert Queryable method to Enumerable method
                     MethodInfo seqMethod = FindEnumerableMethod(mInfo.Name, args, typeArgs);
-                    args = this.FixupQuotedArgs(seqMethod, args);
+                    args = FixupQuotedArgs(seqMethod, args);
                     return Expression.Call(obj, seqMethod, args);
                 }
                 else
                 {
                     // rebind to new method
                     MethodInfo method = FindMethod(mInfo.DeclaringType, mInfo.Name, args, typeArgs);
-                    args = this.FixupQuotedArgs(method, args);
+                    args = FixupQuotedArgs(method, args);
                     return Expression.Call(obj, method, args);
                 }
             }
@@ -73,10 +73,8 @@ namespace System.Linq
                             newArgs.Add(argList[j]);
                         }
                     }
-                    if (newArgs != null)
-                    {
-                        newArgs.Add(arg);
-                    }
+
+                    newArgs?.Add(arg);
                 }
                 if (newArgs != null)
                     argList = newArgs.AsReadOnly();
@@ -105,7 +103,7 @@ namespace System.Linq
                     List<Expression> exprs = new List<Expression>(na.Expressions.Count);
                     for (int i = 0, n = na.Expressions.Count; i < n; i++)
                     {
-                        exprs.Add(this.FixupQuotedExpression(elementType, na.Expressions[i]));
+                        exprs.Add(FixupQuotedExpression(elementType, na.Expressions[i]));
                     }
                     expression = Expression.NewArrayInit(elementType, exprs);
                 }
@@ -113,10 +111,7 @@ namespace System.Linq
             return expression;
         }
 
-        protected override Expression VisitLambda<T>(Expression<T> node)
-        {
-            return node;
-        }
+        protected internal override Expression VisitLambda<T>(Expression<T> node) => node;
 
         private static Type GetPublicType(Type t)
         {
@@ -173,16 +168,25 @@ namespace System.Linq
                 }
                 if (equiv == null)
                 {
-                    var interfacesWithInfo = info.ImplementedInterfaces.Select(i => new { Type = i, Info = i.GetTypeInfo() }).ToArray();
+                    var interfacesWithInfo = info.ImplementedInterfaces.Select(IntrospectionExtensions.GetTypeInfo).ToArray();
                     var singleTypeGenInterfacesWithGetType = interfacesWithInfo
-                        .Where(i => i.Info.IsGenericType && i.Info.GenericTypeArguments.Length == 1)
-                        .Select(i => new { Type = i.Type, Info = i.Info, GenType = i.Info.GetGenericTypeDefinition() });
-                    Type typeArg = singleTypeGenInterfacesWithGetType.Where(i => i.GenType == typeof(IOrderedQueryable<>) || i.GenType == typeof(IOrderedEnumerable<>)).Select(i => i.Info.GenericTypeArguments[0]).Distinct().SingleOrDefault();
+                        .Where(i => i.IsGenericType && i.GenericTypeArguments.Length == 1)
+                        .Select(i => new {Info = i, GenType = i.GetGenericTypeDefinition() })
+                        .ToArray();
+                    Type typeArg = singleTypeGenInterfacesWithGetType
+                        .Where(i => i.GenType == typeof(IOrderedQueryable<>) || i.GenType == typeof(IOrderedEnumerable<>))
+                        .Select(i => i.Info.GenericTypeArguments[0])
+                        .Distinct()
+                        .SingleOrDefault();
                     if (typeArg != null)
                         equiv = typeof(IOrderedEnumerable<>).MakeGenericType(typeArg);
                     else
                     {
-                        typeArg = singleTypeGenInterfacesWithGetType.Where(i => i.GenType == typeof(IQueryable<>) || i.GenType == typeof(IEnumerable<>)).Select(i => i.Info.GenericTypeArguments[0]).Distinct().Single();
+                        typeArg = singleTypeGenInterfacesWithGetType
+                            .Where(i => i.GenType == typeof(IQueryable<>) || i.GenType == typeof(IEnumerable<>))
+                            .Select(i => i.Info.GenericTypeArguments[0])
+                            .Distinct()
+                            .Single();
                         equiv = typeof(IEnumerable<>).MakeGenericType(typeArg);
                     }
                 }
@@ -191,7 +195,7 @@ namespace System.Linq
             return equiv;
         }
 
-        protected override Expression VisitConstant(ConstantExpression c)
+        protected internal override Expression VisitConstant(ConstantExpression c)
         {
             EnumerableQuery sq = c.Value as EnumerableQuery;
             if (sq != null)
@@ -210,7 +214,7 @@ namespace System.Linq
 
 
 
-        private static volatile ILookup<string, MethodInfo> s_seqMethods;
+        private static ILookup<string, MethodInfo> s_seqMethods;
         private static MethodInfo FindEnumerableMethod(string name, ReadOnlyCollection<Expression> args, params Type[] typeArgs)
         {
             if (s_seqMethods == null)
@@ -301,7 +305,7 @@ namespace System.Linq
             return type;
         }
 
-        protected override Expression VisitConditional(ConditionalExpression c)
+        protected internal override Expression VisitConditional(ConditionalExpression c)
         {
             Type type = c.Type;
             if (!typeof(IQueryable).IsAssignableFrom(type))
@@ -315,11 +319,10 @@ namespace System.Linq
                 return Expression.Condition(test, ifTrue, ifFalse, trueType);
             if (falseType.IsAssignableFrom(trueType))
                 return Expression.Condition(test, ifTrue, ifFalse, falseType);
-            TypeInfo info = type.GetTypeInfo();
             return Expression.Condition(test, ifTrue, ifFalse, GetEquivalentType(type));
         }
 
-        protected override Expression VisitBlock(BlockExpression node)
+        protected internal override Expression VisitBlock(BlockExpression node)
         {
             Type type = node.Type;
             if (!typeof(IQueryable).IsAssignableFrom(type))
@@ -331,7 +334,7 @@ namespace System.Linq
             return Expression.Block(GetEquivalentType(type), variables, nodes);
         }
 
-        protected override Expression VisitGoto(GotoExpression node)
+        protected internal override Expression VisitGoto(GotoExpression node)
         {
             Type type = node.Value.Type;
             if (!typeof(IQueryable).IsAssignableFrom(type))

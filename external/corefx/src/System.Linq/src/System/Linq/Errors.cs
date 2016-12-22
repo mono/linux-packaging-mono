@@ -4,7 +4,7 @@
 
 namespace System.Linq
 {
-    internal static class Error
+    internal static partial class Error
     {
         internal static Exception ArgumentNull(string s) => new ArgumentNullException(s);
 

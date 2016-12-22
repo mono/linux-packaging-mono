@@ -58,11 +58,11 @@ namespace System.ComponentModel.Design
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             for (int i = 0; ((i) < (value.Length)); i = ((i) + (1)))
             {
-                this.Add(value[i]);
+                Add(value[i]);
             }
         }
         /// <summary>
@@ -72,12 +72,12 @@ namespace System.ComponentModel.Design
         {
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
             int currentCount = value.Count;
             for (int i = 0; i < currentCount; i = ((i) + (1)))
             {
-                this.Add(value[i]);
+                Add(value[i]);
             }
         }
         /// <summary>

@@ -717,7 +717,6 @@ public class VectorTests {
 		return 0;
 	}
 
-#if FALSE
 	//
 	// Vector<T>
 	//
@@ -1410,11 +1409,8 @@ public class VectorTests {
 		try {
 			vector_copyto (v1, arr, 241);
 			return 1;
-		} catch (IndexOutOfRangeException) {
+		} catch (ArgumentException) {
 		}
 		return 0;
 	}
-
-#endif
-
 }

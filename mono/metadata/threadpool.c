@@ -187,17 +187,12 @@ cleanup (void)
 	mono_coop_mutex_lock (&threadpool->threads_lock);
 
 	for (;;) {
-		ThreadPoolCounter counter;
-
-		counter = COUNTER_READ (threadpool);
-		if (counter._.working == 0)
+		if (threadpool->threads->len == 0)
 			break;
 
-		if (counter._.working == 1) {
-			if (threadpool->threads->len == 1 && g_ptr_array_index (threadpool->threads, 0) == current) {
-				/* We are waiting on ourselves */
-				break;
-			}
+		if (threadpool->threads->len == 1 && g_ptr_array_index (threadpool->threads, 0) == current) {
+			/* We are waiting on ourselves */
+			break;
 		}
 
 		mono_coop_cond_wait (&threadpool->threads_exit_cond, &threadpool->threads_lock);
@@ -458,15 +453,15 @@ worker_callback (gpointer unused)
 
 	mono_coop_mutex_lock (&threadpool->threads_lock);
 
-	COUNTER_ATOMIC (threadpool, counter, {
-		counter._.working --;
-	});
-
 	g_ptr_array_remove_fast (threadpool->threads, thread);
 
 	mono_coop_cond_signal (&threadpool->threads_exit_cond);
 
 	mono_coop_mutex_unlock (&threadpool->threads_lock);
+
+	COUNTER_ATOMIC (threadpool, counter, {
+		counter._.working --;
+	});
 
 	mono_refcount_dec (threadpool);
 }
@@ -806,18 +801,18 @@ ves_icall_System_Threading_ThreadPool_RequestWorkerThread (void)
 	tpdomain->outstanding_request ++;
 	g_assert (tpdomain->outstanding_request >= 1);
 
-	mono_refcount_inc (threadpool);
+	domains_unlock ();
 
 	COUNTER_ATOMIC (threadpool, counter, {
-		if (!(counter._.starting < 32767 /* G_MAXINT16 */))
-			g_error ("%s: counter._.starting = %d, but should be < 32767", __func__, counter._.starting);
+		if (counter._.starting == 16)
+			return TRUE;
 
 		counter._.starting ++;
 	});
 
-	mono_threadpool_worker_enqueue (threadpool->worker, worker_callback, NULL);
+	mono_refcount_inc (threadpool);
 
-	domains_unlock ();
+	mono_threadpool_worker_enqueue (threadpool->worker, worker_callback, NULL);
 
 	return TRUE;
 }

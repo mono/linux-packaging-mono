@@ -44,7 +44,7 @@ namespace System.ComponentModel
         /// </summary>
         public override bool IsDefaultAttribute()
         {
-            return this.Equals(Default);
+            return Equals(Default);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace System.ComponentModel
         public ToolboxItemAttribute(string toolboxItemTypeName)
         {
             string temp = toolboxItemTypeName.ToUpper(CultureInfo.InvariantCulture);
-            Debug.Assert(temp.IndexOf(".DLL") == -1, "Came across: " + toolboxItemTypeName + " . Please remove the .dll extension");
+            Debug.Assert(temp.IndexOf(".DLL") == -1, $"Came across: {toolboxItemTypeName}. Please remove the .dll extension");
             _toolboxItemTypeName = toolboxItemTypeName;
         }
 

@@ -278,8 +278,15 @@ namespace System.Xml.Serialization
 
                 if (text.Mapping is SpecialMapping)
                 {
-                    // #10592: To Support text.Mapping being SpecialMapping
-                    throw new NotImplementedException("text.Mapping is SpecialMapping");
+                    SpecialMapping special = (SpecialMapping)text.Mapping;
+                    if (special.TypeDesc.Kind == TypeKind.Node)
+                    {
+                        o = Document.CreateTextNode(ReadString());
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(SR.Format(SR.XmlInternalError));
+                    }
                 }
                 else
                 {
@@ -666,16 +673,73 @@ namespace System.Xml.Serialization
             }
             else
             {
-                string methodName = $"To{mapping.TypeDesc.FormatterName}";
                 if (!mapping.TypeDesc.HasCustomFormatter)
                 {
-                    MethodInfo method = typeof(XmlConvert).GetMethod(methodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, new Type[] { typeof(string) });
-                    return method.Invoke(null, new object[] { readFunc() });
+                    string value = readFunc();
+                    object retObj;
+                    switch (mapping.TypeDesc.FormatterName)
+                    {
+                        case "Boolean":
+                            retObj = XmlConvert.ToBoolean(value);
+                            break;
+                        case "Int32":
+                            retObj = XmlConvert.ToInt32(value);
+                            break;
+                        case "Int16":
+                            retObj = XmlConvert.ToInt16(value);
+                            break;
+                        case "Int64":
+                            retObj = XmlConvert.ToInt64(value);
+                            break;
+                        case "Single":
+                            retObj = XmlConvert.ToSingle(value);
+                            break;
+                        case "Double":
+                            retObj = XmlConvert.ToDouble(value);
+                            break;
+                        case "Decimal":
+                            retObj = XmlConvert.ToDecimal(value);
+                            break;
+                        case "Byte":
+                            retObj = XmlConvert.ToByte(value);
+                            break;
+                        case "SByte":
+                            retObj = XmlConvert.ToSByte(value);
+                            break;
+                        case "UInt16":
+                            retObj = XmlConvert.ToUInt16(value);
+                            break;
+                        case "UInt32":
+                            retObj = XmlConvert.ToUInt32(value);
+                            break;
+                        case "UInt64":
+                            retObj = XmlConvert.ToUInt64(value);
+                            break;
+                        case "Guid":
+                            retObj = XmlConvert.ToGuid(value);
+                            break;
+                        case "Char":
+                            retObj = XmlConvert.ToChar(value);
+                            break;
+                        case "TimeSpan":
+                            retObj = XmlConvert.ToTimeSpan(value);
+                            break;
+                        default:
+                            throw new InvalidOperationException(SR.Format(SR.XmlInternalErrorDetails, $"unknown FormatterName: {mapping.TypeDesc.FormatterName}"));
+                    }
+
+                    return retObj;
                 }
                 else
                 {
-                        MethodInfo method = typeof(XmlSerializationReader).GetMethod(methodName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, new Type[] { typeof(string) });
-                        return method.Invoke(this, new object[] { readFunc() });
+                    string methodName = "To" + mapping.TypeDesc.FormatterName;
+                    MethodInfo method = typeof(XmlSerializationReader).GetMethod(methodName, BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, new Type[] { typeof(string) });
+                    if (method == null)
+                    {
+                        throw new InvalidOperationException(SR.Format(SR.XmlInternalErrorDetails, $"unknown FormatterName: {mapping.TypeDesc.FormatterName}"));
+                    }
+
+                    return method.Invoke(this, new object[] { readFunc() });
                 }
             }
         }

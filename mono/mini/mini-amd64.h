@@ -467,11 +467,11 @@ mono_amd64_start_gsharedvt_call (GSharedVtCallInfo *info, gpointer *caller, gpoi
 guint64
 mono_amd64_get_original_ip (void);
 
-gboolean
-mono_amd64_have_fast_tls (void);
-
 GSList*
 mono_amd64_get_exception_trampolines (gboolean aot);
+
+int
+mono_amd64_get_tls_gs_offset (void) MONO_LLVM_INTERNAL;
 
 gpointer
 mono_amd64_handler_block_trampoline_helper (void);

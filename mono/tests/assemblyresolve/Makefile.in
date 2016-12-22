@@ -179,12 +179,12 @@ GTKX11 = @GTKX11@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
-INSTALL_AOT_HYBRID = @INSTALL_AOT_HYBRID@
-INSTALL_AOT_ONLY = @INSTALL_AOT_ONLY@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+INSTALL_TESTING_AOT_FULL = @INSTALL_TESTING_AOT_FULL@
+INSTALL_TESTING_AOT_HYBRID = @INSTALL_TESTING_AOT_HYBRID@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
@@ -332,10 +332,8 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
-with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(top_builddir)/runtime/mono-wrapper --debug
-MCS = $(with_mono_path) $(RUNTIME) $(CSC) -noconfig -nologo -debug:portable -target:library
+MCS = MONO_PATH=$(mcs_topdir)/class/lib/build $(RUNTIME) $(CSC) -noconfig -nologo -debug:portable -target:library
 EXTRA_DIST = asm.cs Test.cs TestBase.cs
 all: all-am
 
@@ -526,8 +524,8 @@ uninstall-am:
 	tags-am uninstall uninstall-am
 
 
-@INSTALL_AOT_ONLY_TRUE@prereq: aot
-@INSTALL_AOT_ONLY_FALSE@prereq: test/asm.dll
+@INSTALL_TESTING_AOT_FULL_TRUE@prereq: aot
+@INSTALL_TESTING_AOT_FULL_FALSE@prereq: test/asm.dll
 
 test/.dirstamp deps/.dirstamp:
 	-mkdir $(@D)
