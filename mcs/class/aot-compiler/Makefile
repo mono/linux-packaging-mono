@@ -10,21 +10,23 @@ include ../../build/rules.make
 
 the_libdir = $(topdir)/class/lib/$(PROFILE)/
 CSC_DIR = $(dir $(CSC_LOCATION))
+# The directory where the AOT images are stored
+images_dir = $(the_libdir)
 
 # mcs.exe is only in the build profile, but the aot image should be compiled against the current
 # profile
 mcs_exe = $(the_libdir)/mcs.exe
 mcs_aot_image = $(the_libdir)/mcs.exe$(PLATFORM_AOT_SUFFIX)
 csc_exe = $(CSC_LOCATION)
-csc_aot_image = $(csc_exe)$(PLATFORM_AOT_SUFFIX)
+csc_aot_image = $(images_dir)/csc.exe$(PLATFORM_AOT_SUFFIX)
 csc_MCS_dll = $(CSC_DIR)/Microsoft.CodeAnalysis.CSharp.dll
-csc_MCS_image = $(csc_MCS_dll)$(PLATFORM_AOT_SUFFIX)
+csc_MCS_image = $(images_dir)/Microsoft.CodeAnalysis.CSharp.dll$(PLATFORM_AOT_SUFFIX)
 csc_MC_dll = $(CSC_DIR)/Microsoft.CodeAnalysis.dll
-csc_MC_image = $(csc_MC_dll)$(PLATFORM_AOT_SUFFIX)
+csc_MC_image = $(images_dir)/Microsoft.CodeAnalysis.dll$(PLATFORM_AOT_SUFFIX)
 csc_SRM_dll = $(CSC_DIR)/System.Reflection.Metadata.dll
-csc_SRM_image = $(csc_SRM_dll)$(PLATFORM_AOT_SUFFIX)
+csc_SRM_image = $(images_dir)/System.Reflection.Metadata.dll$(PLATFORM_AOT_SUFFIX)
 csc_SCI_dll = $(CSC_DIR)/System.Collections.Immutable.dll
-csc_SCI_image = $(csc_SCI_dll)$(PLATFORM_AOT_SUFFIX)
+csc_SCI_image = $(images_dir)/System.Collections.Immutable.dll$(PLATFORM_AOT_SUFFIX)
 
 mscorlib_dll = $(the_libdir)/mscorlib.dll
 mscorlib_aot_image = $(mscorlib_dll)$(PLATFORM_AOT_SUFFIX)
@@ -76,12 +78,20 @@ IMAGES = $(mscorlib_aot_image)
 
 ifdef MCS_MODE
 IMAGES += $(mcs_aot_image)
+
+install-local:
+
 else
 IMAGES += $(CSC_IMAGES)
+
+install-local:
+	$(MKINSTALLDIRS) $(DESTDIR)$(LIBRARY_INSTALL_DIR)
+	$(INSTALL_LIB) $(CSC_IMAGES) $(DESTDIR)$(LIBRARY_INSTALL_DIR)
+
 endif
 
 all-local: $(IMAGES)
-install-local:
+
 endif
 
 ifeq ($(PROFILE), $(DEFAULT_PROFILE))
