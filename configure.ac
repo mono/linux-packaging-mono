@@ -295,6 +295,11 @@ case "$host" in
 		target_mach=yes
 		CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE -DGC_MACOSX_THREADS -DPLATFORM_MACOSX -DUSE_MMAP -DUSE_MUNMAP"
 		libmono_cflags="-D_THREAD_SAFE"
+
+		# avoid AR calling ranlib, libtool calls it anyway. suppress no symbols warning.
+		AR_FLAGS="Scru"
+		RANLIB="ranlib -no_warning_for_no_symbols"
+
 		need_link_unlink=yes
 		AC_DEFINE(PTHREAD_POINTER_ID)
 		AC_DEFINE(USE_MACH_SEMA, 1, [...])
@@ -3037,6 +3042,7 @@ case "$host" in
 			AOT_SUPPORTED="yes"
 			BTLS_SUPPORTED=yes
 			BTLS_PLATFORM=i386
+			AC_CHECK_HEADER(stdalign.h,[],[BTLS_SUPPORTED=no])
 			;;
 		  darwin*)
 			AOT_SUPPORTED="yes"
@@ -3059,6 +3065,7 @@ case "$host" in
 			AOT_SUPPORTED="yes"
 			BTLS_SUPPORTED=yes
 			BTLS_PLATFORM=x86_64
+			AC_CHECK_HEADER(stdalign.h,[],[BTLS_SUPPORTED=no])
 			;;
 		  darwin*)
 			AOT_SUPPORTED="yes"
@@ -4098,7 +4105,7 @@ AC_SUBST(mono_build_root)
 mono_runtime=mono/mini/mono
 AC_SUBST(mono_runtime)
 
-CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.1.3.2/tools/csc.exe
+CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.2.0.0/tools/csc.exe
 
 if test $csc_compiler = mcs; then
   CSC=$mcs_topdir/class/lib/build/mcs.exe

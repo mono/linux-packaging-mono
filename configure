@@ -4259,6 +4259,11 @@ $as_echo "#define DISABLE_ATTACH 1" >>confdefs.h
 		target_mach=yes
 		CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE -DGC_MACOSX_THREADS -DPLATFORM_MACOSX -DUSE_MMAP -DUSE_MUNMAP"
 		libmono_cflags="-D_THREAD_SAFE"
+
+		# avoid AR calling ranlib, libtool calls it anyway. suppress no symbols warning.
+		AR_FLAGS="Scru"
+		RANLIB="ranlib -no_warning_for_no_symbols"
+
 		need_link_unlink=yes
 		$as_echo "#define PTHREAD_POINTER_ID 1" >>confdefs.h
 
@@ -26170,6 +26175,14 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 			AOT_SUPPORTED="yes"
 			BTLS_SUPPORTED=yes
 			BTLS_PLATFORM=i386
+			ac_fn_c_check_header_mongrel "$LINENO" "stdalign.h" "ac_cv_header_stdalign_h" "$ac_includes_default"
+if test "x$ac_cv_header_stdalign_h" = xyes; then :
+
+else
+  BTLS_SUPPORTED=no
+fi
+
+
 			;;
 		  darwin*)
 			AOT_SUPPORTED="yes"
@@ -26194,6 +26207,14 @@ $as_echo "#define __mono_ilp32__ 1" >>confdefs.h
 			AOT_SUPPORTED="yes"
 			BTLS_SUPPORTED=yes
 			BTLS_PLATFORM=x86_64
+			ac_fn_c_check_header_mongrel "$LINENO" "stdalign.h" "ac_cv_header_stdalign_h" "$ac_includes_default"
+if test "x$ac_cv_header_stdalign_h" = xyes; then :
+
+else
+  BTLS_SUPPORTED=no
+fi
+
+
 			;;
 		  darwin*)
 			AOT_SUPPORTED="yes"
@@ -28042,7 +28063,7 @@ mono_build_root=`pwd`
 mono_runtime=mono/mini/mono
 
 
-CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.1.3.2/tools/csc.exe
+CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.2.0.0/tools/csc.exe
 
 if test $csc_compiler = mcs; then
   CSC=$mcs_topdir/class/lib/build/mcs.exe
