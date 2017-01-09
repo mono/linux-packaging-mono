@@ -155,8 +155,7 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	helpers.c liveness.c ssa.c abcremoval.c abcremoval.h \
 	local-propagation.c driver.c debug-mini.c linear-scan.c \
 	aot-compiler.h aot-compiler.c aot-runtime.c graph.c \
-	mini-codegen.c mini-exceptions.c \
-	mini-exceptions-native-unwinder.c mini-trampolines.c \
+	mini-codegen.c mini-exceptions.c mini-trampolines.c \
 	branch-opts.c mini-generic-sharing.c simd-methods.h tasklets.c \
 	tasklets.h simd-intrinsics.c mini-native-types.c mini-unwind.h \
 	unwind.c image-writer.h image-writer.c dwarfwriter.h \
@@ -197,7 +196,6 @@ am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-aot-runtime.lo libmini_static_la-graph.lo \
 	libmini_static_la-mini-codegen.lo \
 	libmini_static_la-mini-exceptions.lo \
-	libmini_static_la-mini-exceptions-native-unwinder.lo \
 	libmini_static_la-mini-trampolines.lo \
 	libmini_static_la-branch-opts.lo \
 	libmini_static_la-mini-generic-sharing.lo \
@@ -296,13 +294,12 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	liveness.c ssa.c abcremoval.c abcremoval.h local-propagation.c \
 	driver.c debug-mini.c linear-scan.c aot-compiler.h \
 	aot-compiler.c aot-runtime.c graph.c mini-codegen.c \
-	mini-exceptions.c mini-exceptions-native-unwinder.c \
-	mini-trampolines.c branch-opts.c mini-generic-sharing.c \
-	simd-methods.h tasklets.c tasklets.h simd-intrinsics.c \
-	mini-native-types.c mini-unwind.h unwind.c image-writer.h \
-	image-writer.c dwarfwriter.h dwarfwriter.c mini-gc.h mini-gc.c \
-	debugger-agent.h debugger-agent.c xdebug.c mini-llvm.h \
-	mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
+	mini-exceptions.c mini-trampolines.c branch-opts.c \
+	mini-generic-sharing.c simd-methods.h tasklets.c tasklets.h \
+	simd-intrinsics.c mini-native-types.c mini-unwind.h unwind.c \
+	image-writer.h image-writer.c dwarfwriter.h dwarfwriter.c \
+	mini-gc.h mini-gc.c debugger-agent.h debugger-agent.c xdebug.c \
+	mini-llvm.h mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
 	mini-cross-helpers.c arch-stubs.c llvm-runtime.h mini-llvm.c \
 	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
 	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
@@ -332,7 +329,6 @@ am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-linear-scan.lo libmini_la-aot-compiler.lo \
 	libmini_la-aot-runtime.lo libmini_la-graph.lo \
 	libmini_la-mini-codegen.lo libmini_la-mini-exceptions.lo \
-	libmini_la-mini-exceptions-native-unwinder.lo \
 	libmini_la-mini-trampolines.lo libmini_la-branch-opts.lo \
 	libmini_la-mini-generic-sharing.lo libmini_la-tasklets.lo \
 	libmini_la-simd-intrinsics.lo libmini_la-mini-native-types.lo \
@@ -1120,7 +1116,6 @@ common_sources = \
 	graph.c			\
 	mini-codegen.c		\
 	mini-exceptions.c	\
-	mini-exceptions-native-unwinder.c	\
 	mini-trampolines.c  	\
 	branch-opts.c		\
 	mini-generic-sharing.c	\
@@ -1525,7 +1520,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-codegen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-cross-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-darwin.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-exceptions-native-unwinder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-exceptions.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-gc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-generic-sharing.Plo@am__quote@
@@ -1605,7 +1599,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-codegen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-cross-helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-darwin.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-exceptions-native-unwinder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-exceptions.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-gc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-generic-sharing.Plo@am__quote@
@@ -1864,13 +1857,6 @@ libmini_static_la-mini-exceptions.lo: mini-exceptions.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-exceptions.c' object='libmini_static_la-mini-exceptions.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-exceptions.lo `test -f 'mini-exceptions.c' || echo '$(srcdir)/'`mini-exceptions.c
-
-libmini_static_la-mini-exceptions-native-unwinder.lo: mini-exceptions-native-unwinder.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-exceptions-native-unwinder.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-exceptions-native-unwinder.Tpo -c -o libmini_static_la-mini-exceptions-native-unwinder.lo `test -f 'mini-exceptions-native-unwinder.c' || echo '$(srcdir)/'`mini-exceptions-native-unwinder.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-exceptions-native-unwinder.Tpo $(DEPDIR)/libmini_static_la-mini-exceptions-native-unwinder.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-exceptions-native-unwinder.c' object='libmini_static_la-mini-exceptions-native-unwinder.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-exceptions-native-unwinder.lo `test -f 'mini-exceptions-native-unwinder.c' || echo '$(srcdir)/'`mini-exceptions-native-unwinder.c
 
 libmini_static_la-mini-trampolines.lo: mini-trampolines.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-trampolines.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-trampolines.Tpo -c -o libmini_static_la-mini-trampolines.lo `test -f 'mini-trampolines.c' || echo '$(srcdir)/'`mini-trampolines.c
@@ -2424,13 +2410,6 @@ libmini_la-mini-exceptions.lo: mini-exceptions.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-exceptions.c' object='libmini_la-mini-exceptions.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-exceptions.lo `test -f 'mini-exceptions.c' || echo '$(srcdir)/'`mini-exceptions.c
-
-libmini_la-mini-exceptions-native-unwinder.lo: mini-exceptions-native-unwinder.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-exceptions-native-unwinder.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-exceptions-native-unwinder.Tpo -c -o libmini_la-mini-exceptions-native-unwinder.lo `test -f 'mini-exceptions-native-unwinder.c' || echo '$(srcdir)/'`mini-exceptions-native-unwinder.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-exceptions-native-unwinder.Tpo $(DEPDIR)/libmini_la-mini-exceptions-native-unwinder.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-exceptions-native-unwinder.c' object='libmini_la-mini-exceptions-native-unwinder.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-exceptions-native-unwinder.lo `test -f 'mini-exceptions-native-unwinder.c' || echo '$(srcdir)/'`mini-exceptions-native-unwinder.c
 
 libmini_la-mini-trampolines.lo: mini-trampolines.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-trampolines.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-trampolines.Tpo -c -o libmini_la-mini-trampolines.lo `test -f 'mini-trampolines.c' || echo '$(srcdir)/'`mini-trampolines.c
@@ -3379,7 +3358,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.8.0.395/df81fe4\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.8.0.425/038ff4a\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

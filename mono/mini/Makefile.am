@@ -439,7 +439,6 @@ common_sources = \
 	graph.c			\
 	mini-codegen.c		\
 	mini-exceptions.c	\
-	mini-exceptions-native-unwinder.c	\
 	mini-trampolines.c  	\
 	branch-opts.c		\
 	mini-generic-sharing.c	\
@@ -860,7 +859,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.8.0.395/df81fe4\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.8.0.425/038ff4a\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
