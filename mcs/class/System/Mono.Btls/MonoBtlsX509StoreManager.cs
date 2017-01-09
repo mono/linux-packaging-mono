@@ -45,12 +45,14 @@ namespace Mono.Btls
 	static class MonoBtlsX509StoreManager
 	{
 		static bool initialized;
+#if !ANDROID
 		static string machineTrustedRootPath;
 		static string machineIntermediateCAPath;
 		static string machineUntrustedPath;
 		static string userTrustedRootPath;
 		static string userIntermediateCAPath;
 		static string userUntrustedPath;
+#endif
 
 		static void Initialize ()
 		{
@@ -75,9 +77,9 @@ namespace Mono.Btls
 			userUntrustedPath = Path.Combine (userPath, MX.X509Stores.Names.Untrusted);
 
 			var machinePath = MX.X509StoreManager.NewLocalMachinePath;
-			machineTrustedRootPath = Path.Combine (userPath, MX.X509Stores.Names.TrustedRoot);
-			machineIntermediateCAPath = Path.Combine (userPath, MX.X509Stores.Names.IntermediateCA);
-			machineUntrustedPath = Path.Combine (userPath, MX.X509Stores.Names.Untrusted);
+			machineTrustedRootPath = Path.Combine (machinePath, MX.X509Stores.Names.TrustedRoot);
+			machineIntermediateCAPath = Path.Combine (machinePath, MX.X509Stores.Names.IntermediateCA);
+			machineUntrustedPath = Path.Combine (machinePath, MX.X509Stores.Names.Untrusted);
 #endif
 		}
 

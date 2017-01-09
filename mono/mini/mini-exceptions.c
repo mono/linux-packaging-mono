@@ -96,6 +96,15 @@ static void mono_raise_exception_with_ctx (MonoException *exc, MonoContext *ctx)
 static void mono_runtime_walk_stack_with_ctx (MonoJitStackWalk func, MonoContext *start_ctx, MonoUnwindOptions unwind_options, void *user_data);
 static gboolean mono_current_thread_has_handle_block_guard (void);
 
+static int
+mono_get_seq_point_for_native_offset (MonoDomain *domain, MonoMethod *method, gint32 native_offset)
+{
+	SeqPoint sp;
+	if (mono_find_prev_seq_point_for_native_offset (domain, method, native_offset, NULL, &sp))
+		return sp.il_offset;
+	return -1;
+}
+
 void
 mono_exceptions_init (void)
 {
@@ -139,6 +148,7 @@ mono_exceptions_init (void)
 	cbs.mono_install_handler_block_guard = mono_install_handler_block_guard;
 	cbs.mono_current_thread_has_handle_block_guard = mono_current_thread_has_handle_block_guard;
 	mono_install_eh_callbacks (&cbs);
+	mono_install_get_seq_point (mono_get_seq_point_for_native_offset);
 }
 
 gpointer
@@ -2336,6 +2346,34 @@ print_stack_frame_to_string (StackFrameInfo *frame, MonoContext *ctx, gpointer d
 
 #ifndef MONO_CROSS_COMPILE
 
+static void print_process_map ()
+{
+#ifdef __linux__
+	FILE *fp = fopen ("/proc/self/maps", "r");
+	char line [256];
+
+	if (fp == NULL) {
+		mono_runtime_printf_err ("no /proc/self/maps, not on linux?\n");
+		return;
+	}
+
+	mono_runtime_printf_err ("/proc/self/maps:");
+
+	while (fgets (line, sizeof (line), fp)) {
+		// strip newline
+		size_t len = strlen (line) - 1;
+		if (len >= 0 && line [len] == '\n')
+			line [len] = '\0';
+
+		mono_runtime_printf_err ("%s", line);
+	}
+
+	fclose (fp);
+#else
+	/* do nothing */
+#endif
+}
+
 static gboolean handling_sigsegv = FALSE;
 
 /*
@@ -2378,6 +2416,8 @@ mono_handle_native_sigsegv (int signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *i
 		/* FIXME: Is MONO_UNWIND_LOOKUP_IL_OFFSET correct here? */
 		mono_walk_stack (print_stack_frame_to_stderr, MONO_UNWIND_LOOKUP_IL_OFFSET, NULL);
 	}
+
+	print_process_map ();
 
 #ifdef HAVE_BACKTRACE_SYMBOLS
  {
@@ -2431,7 +2471,15 @@ mono_handle_native_sigsegv (int signal, void *ctx, MONO_SIG_HANDLER_INFO_TYPE *i
 #endif
  }
 #else
-	mono_exception_native_unwind (ctx, info);
+#ifdef PLATFORM_ANDROID
+	/* set DUMPABLE for this process so debuggerd can attach with ptrace(2), see:
+	 * https://android.googlesource.com/platform/bionic/+/151da681000c07da3c24cd30a3279b1ca017f452/linker/debugger.cpp#206
+	 * this has changed on later versions of Android.  Also, we don't want to
+	 * set this on start-up as DUMPABLE has security implications. */
+	prctl (PR_SET_DUMPABLE, 1);
+
+	mono_runtime_printf_err ("\nNo native Android stacktrace (see debuggerd output).\n");
+#endif
 #endif
 
 	/*
