@@ -758,6 +758,7 @@ FULLAOT_LIBS_UNIVERSAL = \
 	System.Security.dll \
 	Mono.Simd.dll \
 	Mono.Security.dll \
+	System.Numerics.dll \
 	System.Numerics.Vectors.dll
 
 if INSTALL_TESTING_AOT_FULL
@@ -863,7 +864,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1448/c1f39f3\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1456/b428249\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

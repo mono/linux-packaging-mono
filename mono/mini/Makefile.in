@@ -1240,6 +1240,7 @@ FULLAOT_LIBS_UNIVERSAL = \
 	System.Security.dll \
 	Mono.Simd.dll \
 	Mono.Security.dll \
+	System.Numerics.dll \
 	System.Numerics.Vectors.dll
 
 @INSTALL_TESTING_AOT_FULL_FALSE@FULLAOT_LIBS = \
@@ -3343,7 +3344,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1448/c1f39f3\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1456/b428249\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
