@@ -25784,6 +25784,14 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 			AOT_SUPPORTED="yes"
 			BTLS_SUPPORTED=yes
 			BTLS_PLATFORM=i386
+			ac_fn_c_check_header_mongrel "$LINENO" "stdalign.h" "ac_cv_header_stdalign_h" "$ac_includes_default"
+if test "x$ac_cv_header_stdalign_h" = xyes; then :
+
+else
+  BTLS_SUPPORTED=no
+fi
+
+
 			;;
 		  darwin*)
 			AOT_SUPPORTED="yes"
@@ -25808,6 +25816,14 @@ $as_echo "#define __mono_ilp32__ 1" >>confdefs.h
 			AOT_SUPPORTED="yes"
 			BTLS_SUPPORTED=yes
 			BTLS_PLATFORM=x86_64
+			ac_fn_c_check_header_mongrel "$LINENO" "stdalign.h" "ac_cv_header_stdalign_h" "$ac_includes_default"
+if test "x$ac_cv_header_stdalign_h" = xyes; then :
+
+else
+  BTLS_SUPPORTED=no
+fi
+
+
 			;;
 		  darwin*)
 			AOT_SUPPORTED="yes"
