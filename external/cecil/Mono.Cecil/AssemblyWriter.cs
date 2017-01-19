@@ -85,6 +85,9 @@ namespace Mono.Cecil {
 
 			module.MetadataSystem.Clear ();
 
+			if (module.symbol_reader != null)
+				module.symbol_reader.Dispose ();
+
 			var name = module.assembly != null ? module.assembly.Name : null;
 			var fq_name = stream.value.GetFileName ();
 			var symbol_writer_provider = parameters.SymbolWriterProvider;
@@ -104,9 +107,6 @@ namespace Mono.Cecil {
 			var metadata = new MetadataBuilder (module, fq_name, symbol_writer_provider, symbol_writer);
 
 			BuildMetadata (module, metadata);
-
-			if (module.symbol_reader != null)
-				module.symbol_reader.Dispose ();
 
 			var writer = ImageWriter.CreateWriter (module, metadata, stream);
 
@@ -2257,7 +2257,7 @@ namespace Mono.Cecil {
 		{
 			var rid = local_scope_table.AddRow (new LocalScopeRow (
 				method_info.Method.MetadataToken.RID,
-				AddImportScope (scope.Import),
+				scope.import != null ? AddImportScope (scope.import) : 0,
 				local_variable_rid,
 				local_constant_rid,
 				(uint) scope.Start.Offset,
@@ -2272,9 +2272,6 @@ namespace Mono.Cecil {
 
 			if (scope.HasConstants)
 				AddLocalConstants (scope);
-
-			if (scope.Import != null)
-				AddImportScope (scope.Import);
 
 			for (int i = 0; i < scope.Scopes.Count; i++)
 				AddLocalScope (method_info, scope.Scopes [i]);
@@ -2516,10 +2513,13 @@ namespace Mono.Cecil {
 			}
 
 			signature.WriteByte ((byte) separator);
-
-			var parts = name.Split (new [] { separator }, StringSplitOptions.RemoveEmptyEntries);
-			for (int i = 0; i < parts.Length; i++)
-				signature.WriteCompressedUInt32 (GetUTF8StringBlobIndex (parts [i]));
+			var parts = name.Split (new [] { separator });
+			for (int i = 0; i < parts.Length; i++) {
+				if (parts [i] == String.Empty)
+					signature.WriteCompressedUInt32 (0);
+				else
+					signature.WriteCompressedUInt32 (GetUTF8StringBlobIndex (parts [i]));
+			}
 
 			return signature;
 		}
