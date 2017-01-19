@@ -242,7 +242,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %dir %{_sysconfdir}/mono/4.5
 %{_bindir}/al
 %{_bindir}/al2
-%{_bindir}/btls-cert-sync
 %{_bindir}/cert-sync
 %{_bindir}/certmgr
 %{_bindir}/chktrust
@@ -283,7 +282,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.IO.Compression.FileSystem.dll
 %{_prefix}/lib/mono/4.5/System.IO.Compression.dll
 %{_prefix}/lib/mono/4.5/al.exe*
-%{_prefix}/lib/mono/4.5/btls-cert-sync.exe*
 %{_prefix}/lib/mono/4.5/cert-sync.exe*
 %{_prefix}/lib/mono/4.5/certmgr.exe*
 %{_prefix}/lib/mono/4.5/chktrust.exe*
