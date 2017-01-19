@@ -45,6 +45,9 @@
 /* Disable support for huge assemblies */
 #undef DISABLE_LARGE_CODE
 
+/* Disable support code for the LLDB plugin. */
+#undef DISABLE_LLDB
+
 /* Disable support debug logging */
 #undef DISABLE_LOGGING
 

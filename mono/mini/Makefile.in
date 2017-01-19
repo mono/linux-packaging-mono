@@ -162,7 +162,7 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
 	debugger-agent.c xdebug.c mini-llvm.h mini-llvm-cpp.h \
 	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
-	llvm-runtime.h mini-llvm.c mini-llvm-loaded.c \
+	llvm-runtime.h lldb.h lldb.c mini-llvm.c mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp mini-amd64.c \
 	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
 	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
@@ -208,7 +208,7 @@ am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-xdebug.lo \
 	libmini_static_la-alias-analysis.lo \
 	libmini_static_la-mini-cross-helpers.lo \
-	libmini_static_la-arch-stubs.lo
+	libmini_static_la-arch-stubs.lo libmini_static_la-lldb.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_2 = libmini_static_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_static_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
@@ -300,8 +300,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	image-writer.h image-writer.c dwarfwriter.h dwarfwriter.c \
 	mini-gc.h mini-gc.c debugger-agent.h debugger-agent.c xdebug.c \
 	mini-llvm.h mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
-	mini-cross-helpers.c arch-stubs.c llvm-runtime.h mini-llvm.c \
-	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	mini-cross-helpers.c arch-stubs.c llvm-runtime.h lldb.h lldb.c \
+	mini-llvm.c mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
 	llvm-runtime.cpp mini-amd64.c mini-amd64.h exceptions-amd64.c \
 	tramp-amd64.c mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
 	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
@@ -336,7 +336,7 @@ am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-dwarfwriter.lo libmini_la-mini-gc.lo \
 	libmini_la-debugger-agent.lo libmini_la-xdebug.lo \
 	libmini_la-alias-analysis.lo libmini_la-mini-cross-helpers.lo \
-	libmini_la-arch-stubs.lo
+	libmini_la-arch-stubs.lo libmini_la-lldb.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_20 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
@@ -1141,7 +1141,9 @@ common_sources = \
 	alias-analysis.c	\
 	mini-cross-helpers.c \
 	arch-stubs.c		\
-	llvm-runtime.h
+	llvm-runtime.h	\
+	lldb.h			\
+	lldb.c
 
 test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	arrays.cs basic-float.cs basic-math.cs basic.cs exceptions.cs \
@@ -1509,6 +1511,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-jit-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-linear-scan.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-liveness.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-lldb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-local-propagation.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-method-to-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-amd64-gsharedvt.Plo@am__quote@
@@ -1588,6 +1591,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-jit-icalls.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-linear-scan.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-liveness.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-lldb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-local-propagation.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-method-to-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-amd64-gsharedvt.Plo@am__quote@
@@ -1962,6 +1966,13 @@ libmini_static_la-arch-stubs.lo: arch-stubs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='arch-stubs.c' object='libmini_static_la-arch-stubs.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-arch-stubs.lo `test -f 'arch-stubs.c' || echo '$(srcdir)/'`arch-stubs.c
+
+libmini_static_la-lldb.lo: lldb.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-lldb.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-lldb.Tpo -c -o libmini_static_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-lldb.Tpo $(DEPDIR)/libmini_static_la-lldb.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lldb.c' object='libmini_static_la-lldb.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
 
 libmini_static_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-llvm.Tpo -c -o libmini_static_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
@@ -2515,6 +2526,13 @@ libmini_la-arch-stubs.lo: arch-stubs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='arch-stubs.c' object='libmini_la-arch-stubs.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-arch-stubs.lo `test -f 'arch-stubs.c' || echo '$(srcdir)/'`arch-stubs.c
+
+libmini_la-lldb.lo: lldb.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-lldb.lo -MD -MP -MF $(DEPDIR)/libmini_la-lldb.Tpo -c -o libmini_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-lldb.Tpo $(DEPDIR)/libmini_la-lldb.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lldb.c' object='libmini_la-lldb.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
 
 libmini_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-llvm.Tpo -c -o libmini_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
@@ -3358,7 +3376,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.8.0.429/9e8f0ee\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.8.0.459/cd26828\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

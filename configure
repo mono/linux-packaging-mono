@@ -1712,7 +1712,7 @@ Optional Features:
   --enable-minimal=LIST      drop support for LIST subsystems.
      LIST is a comma-separated list from: aot, profiler, decimal, pinvoke, debug, appdomains, verifier,
      reflection_emit, reflection_emit_save, large_code, logging, com, ssa, generics, attach, jit, simd, soft_debug, perfcounters, normalization, assembly_remapping, shared_perfcounters, remoting,
-	 security, sgen_remset, sgen_marksweep_par, sgen_marksweep_fixed, sgen_marksweep_fixed_par, sgen_copying.
+	 security, lldb, sgen_remset, sgen_marksweep_par, sgen_marksweep_fixed, sgen_marksweep_fixed_par, sgen_copying.
   --disable-executables disable the build of the runtime executables
   --enable-extension-module=LIST enable the core-extensions from LIST
   --enable-gsharedvt Enable generic valuetype sharing (Deprecated)
@@ -20213,6 +20213,14 @@ $as_echo "#define DISABLE_SECURITY 1" >>confdefs.h
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: Disabled CAS/CoreCLR security manager (used e.g. for Moonlight)" >&5
 $as_echo "$as_me: Disabled CAS/CoreCLR security manager (used e.g. for Moonlight)" >&6;}
+fi
+
+if test "x$mono_feature_disable_lldb" = "xyes"; then
+
+$as_echo "#define DISABLE_LLDB 1" >>confdefs.h
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: Disabled LLDB plugin support code." >&5
+$as_echo "$as_me: Disabled LLDB plugin support code." >&6;}
 fi
 
 if test "x$mono_feature_disable_sgen_remset" = "xyes"; then

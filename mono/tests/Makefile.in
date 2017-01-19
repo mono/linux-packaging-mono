@@ -1163,6 +1163,8 @@ PREREQSI_CS_AOT = $(PREREQ_CS_SRC:.cs=.exe$(PLATFORM_AOT_SUFFIX)) \
 
 
 # Generated tests for runtime invoke
+
+# Tests for the Mono lldb plugin
 EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	$(TEST_IL_SRC) $(BENCHSRC) $(STRESS_TESTS_SRC) \
 	stress-runner.pl $(PREREQ_IL_SRC) $(PREREQ_CS_SRC) \
@@ -1194,7 +1196,7 @@ EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	modules-m1.cs $(am__append_3) appdomain-loader.cs \
 	appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
-	console-output.exe.stdout.expected
+	console-output.exe.stdout.expected test_lldb.py test-lldb.cs
 @INSTALL_MOBILE_STATIC_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
 @INSTALL_MOBILE_STATIC_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @INSTALL_MOBILE_STATIC_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
@@ -2306,6 +2308,8 @@ test-process-stress: $(PROCESS_STRESS_TESTS) test-runner.exe
 
 coreclr-gcstress:
 	$(MAKE) -C $(mono_build_root)/acceptance-tests coreclr-gcstress
+test-lldb: test-lldb.exe
+	python test_lldb.py $(JITTEST_PROG)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

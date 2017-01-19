@@ -464,7 +464,9 @@ common_sources = \
 	alias-analysis.c	\
 	mini-cross-helpers.c \
 	arch-stubs.c		\
-	llvm-runtime.h
+	llvm-runtime.h	\
+	lldb.h			\
+	lldb.c
 
 test_sources = 			\
 	basic-calls.cs 		\
@@ -859,7 +861,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Stable 4.8.0.429/9e8f0ee\"" > version.h
+	echo "#define FULL_VERSION \"Stable 4.8.0.459/cd26828\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
