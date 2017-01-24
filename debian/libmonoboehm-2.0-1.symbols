@@ -1336,6 +1336,8 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_store_remote_field@Base 4.1.0.1738
  mono_store_remote_field_new@Base 4.1.0.1738
  mono_string_chars@Base 4.1.0.1738
+ mono_string_empty@Base 4.9.0.1456
+ mono_string_empty_wrapper@Base 4.9.0.1456
  mono_string_equal@Base 4.1.0.1738
  mono_string_from_bstr@Base 4.1.0.1738
  mono_string_from_utf16@Base 4.1.0.1738
