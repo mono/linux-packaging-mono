@@ -1594,7 +1594,7 @@ handle_enum:
 	return 0;
 }
 
-static gboolean
+gboolean
 mono_type_is_primitive (MonoType *type)
 {
 	return (type->type >= MONO_TYPE_BOOLEAN && type->type <= MONO_TYPE_R8) ||
@@ -5423,7 +5423,7 @@ ves_icall_System_Reflection_Assembly_InternalGetAssemblyName (MonoString *fname,
 	replace_shadow_path (mono_domain_get (), dirname, &filename);
 	g_free (dirname);
 
-	image = mono_image_open (filename, &status);
+	image = mono_image_open_full (filename, &status, TRUE);
 
 	if (!image){
 		MonoException *exc;
