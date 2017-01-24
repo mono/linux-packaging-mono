@@ -239,6 +239,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/certmgr
 %{_bindir}/chktrust
 %{_bindir}/crlupdate
+%{_bindir}/csc
 %{_bindir}/csharp
 %{_bindir}/dmcs
 %{_bindir}/gacutil
@@ -282,6 +283,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/certmgr.exe*
 %{_prefix}/lib/mono/4.5/chktrust.exe*
 %{_prefix}/lib/mono/4.5/crlupdate.exe*
+%{_prefix}/lib/mono/4.5/csc.*
 %{_prefix}/lib/mono/4.5/csharp.exe*
 %{_prefix}/lib/mono/4.5/csharp.pdb
 %{_prefix}/lib/mono/4.5/gacutil.exe*
@@ -298,6 +300,8 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/I18N.West.dll
 %{_prefix}/lib/mono/4.5/I18N.dll
 %{_prefix}/lib/mono/4.5/ICSharpCode.SharpZipLib.dll
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.dll
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
 %{_prefix}/lib/mono/4.5/Mono.Btls.Interface.dll
@@ -311,6 +315,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/Mono.Simd.dll
 %{_prefix}/lib/mono/4.5/Mono.Tasklets.dll
 %{_prefix}/lib/mono/4.5/System.Configuration.dll
+%{_prefix}/lib/mono/4.5/System.Collections.Immutable.dll*
 %{_prefix}/lib/mono/4.5/System.Core.dll
 %{_prefix}/lib/mono/4.5/System.Drawing.dll
 %{_prefix}/lib/mono/4.5/System.Deployment.dll
@@ -324,6 +329,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Numerics.dll
 %{_prefix}/lib/mono/4.5/System.Numerics.Vectors.dll
 %{_prefix}/lib/mono/4.5/System.Reflection.Context.dll
+%{_prefix}/lib/mono/4.5/System.Reflection.Metadata.dll*
 %{_prefix}/lib/mono/4.5/System.Runtime.InteropServices.RuntimeInformation.dll
 %{_prefix}/lib/mono/4.5/System.Security.dll
 %{_prefix}/lib/mono/4.5/System.Threading.Tasks.Dataflow.dll
