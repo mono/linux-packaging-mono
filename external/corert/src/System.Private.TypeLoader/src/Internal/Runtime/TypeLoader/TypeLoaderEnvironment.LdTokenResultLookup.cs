@@ -34,7 +34,7 @@ namespace Internal.Runtime.TypeLoader
         {
             public IntPtr DeclaringType;
             public IntPtr MethodName;
-            public RuntimeMethodSignature MethodSignature;
+            public RuntimeSignature MethodSignature;
             public int NumGenericArgs;
             public IntPtr GenericArgsArray;
         }
@@ -76,14 +76,14 @@ namespace Internal.Runtime.TypeLoader
             return true;
         }
 
-        private unsafe static string GetStringFromMemoryInNativeFormat(IntPtr pointerToDataStream)
+        private static unsafe string GetStringFromMemoryInNativeFormat(IntPtr pointerToDataStream)
         {
             byte* dataStream = (byte*)pointerToDataStream.ToPointer();
             uint stringLen = NativePrimitiveDecoder.DecodeUnsigned(ref dataStream);
             return Encoding.UTF8.GetString(dataStream, checked((int)stringLen));
         }
 
-        private static LowLevelDictionary<string, IntPtr> s_nativeFormatStrings = new LowLevelDictionary<string, IntPtr>();
+        private static LowLevelDictionary<string, IntPtr> s_nativeFormatStrings;
 
         /// <summary>
         /// From a string, get a pointer to an allocated memory location that holds a NativeFormat encoded string.
@@ -126,14 +126,31 @@ namespace Internal.Runtime.TypeLoader
 
             RuntimeFieldHandleInfo* fieldData = *(RuntimeFieldHandleInfo**)&runtimeFieldHandle;
 
-            IntPtr remainingSignature;
-            if (!GetTypeFromSignatureAndContext(fieldData->NativeLayoutInfoSignature, null, null, out declaringTypeHandle, out remainingSignature))
+#if CORERT
+            // The native layout info signature is a pair. 
+            // The first is a pointer that points to the TypeManager indirection cell.
+            // The second is the offset into the native layout info blob in that TypeManager, where the native signature is encoded.
+            IntPtr* nativeLayoutInfoSignatureData = (IntPtr*)fieldData->NativeLayoutInfoSignature;
+
+            RuntimeSignature signature = RuntimeSignature.CreateFromNativeLayoutSignature(
+                *(IntPtr*)nativeLayoutInfoSignatureData[0],
+                (uint)nativeLayoutInfoSignatureData[1].ToInt32());
+#else
+            IntPtr moduleHandle = RuntimeAugments.GetModuleFromPointer(fieldData->NativeLayoutInfoSignature);
+
+            RuntimeSignature signature = RuntimeSignature.CreateFromNativeLayoutSignature(
+                moduleHandle,
+                GetNativeLayoutInfoReader(moduleHandle).AddressToOffset(fieldData->NativeLayoutInfoSignature));
+#endif
+
+            RuntimeSignature remainingSignature;
+            if (!GetTypeFromSignatureAndContext(signature, null, null, out declaringTypeHandle, out remainingSignature))
                 return false;
 
             // GetTypeFromSignatureAndContext parses the type from the signature and returns a pointer to the next
             // part of the native layout signature to read which we get the field name from
-            var reader = GetNativeLayoutInfoReader(RuntimeAugments.GetModuleFromPointer(remainingSignature));
-            var parser = new NativeParser(reader, reader.AddressToOffset(remainingSignature));
+            var reader = GetNativeLayoutInfoReader(remainingSignature.ModuleHandle);
+            var parser = new NativeParser(reader, remainingSignature.NativeLayoutOffset);
             fieldName = parser.GetString();
 
             return true;
@@ -147,7 +164,7 @@ namespace Internal.Runtime.TypeLoader
         /// is constructed from a metadata token, the methodName should be IntPtr.Zero, as it already encodes the method
         /// name.
         /// </summary>
-        internal unsafe IntPtr TryGetRuntimeMethodHandleForComponents(RuntimeTypeHandle declaringTypeHandle, IntPtr methodName, RuntimeMethodSignature methodSignature, RuntimeTypeHandle[] genericMethodArgs)
+        internal unsafe IntPtr TryGetRuntimeMethodHandleForComponents(RuntimeTypeHandle declaringTypeHandle, IntPtr methodName, RuntimeSignature methodSignature, RuntimeTypeHandle[] genericMethodArgs)
         {
             int sizeToAllocate = sizeof(DynamicMethodHandleInfo);
             // Use checked arithmetics to ensure there aren't any overflows/truncations
@@ -170,7 +187,7 @@ namespace Internal.Runtime.TypeLoader
             return runtimeMethodHandleValue + 1;
         }
 
-        public unsafe bool TryGetRuntimeMethodHandleForComponents(RuntimeTypeHandle declaringTypeHandle, IntPtr methodName, RuntimeMethodSignature methodSignature, RuntimeTypeHandle[] genericMethodArgs, out RuntimeMethodHandle handle)
+        public unsafe bool TryGetRuntimeMethodHandleForComponents(RuntimeTypeHandle declaringTypeHandle, IntPtr methodName, RuntimeSignature methodSignature, RuntimeTypeHandle[] genericMethodArgs, out RuntimeMethodHandle handle)
         {
             handle = default(RuntimeMethodHandle);
             fixed (RuntimeMethodHandle* pRMH = &handle)
@@ -240,8 +257,25 @@ namespace Internal.Runtime.TypeLoader
 
             RuntimeMethodHandleInfo* methodData = *(RuntimeMethodHandleInfo**)&runtimeMethodHandle;
 
-            IntPtr remainingSignature;
-            return GetMethodFromSignatureAndContext(methodData->NativeLayoutInfoSignature, null, null, out declaringTypeHandle, out nameAndSignature, out genericMethodArgs, out remainingSignature);
+#if CORERT
+            // The native layout info signature is a pair. 
+            // The first is a pointer that points to the TypeManager indirection cell.
+            // The second is the offset into the native layout info blob in that TypeManager, where the native signature is encoded.
+            IntPtr* nativeLayoutInfoSignatureData = (IntPtr*)methodData->NativeLayoutInfoSignature;
+
+            RuntimeSignature signature = RuntimeSignature.CreateFromNativeLayoutSignature(
+                *(IntPtr*)nativeLayoutInfoSignatureData[0],
+                (uint)nativeLayoutInfoSignatureData[1].ToInt32());
+#else
+            IntPtr moduleHandle = RuntimeAugments.GetModuleFromPointer(methodData->NativeLayoutInfoSignature);
+
+            RuntimeSignature signature = RuntimeSignature.CreateFromNativeLayoutSignature(
+                moduleHandle,
+                GetNativeLayoutInfoReader(moduleHandle).AddressToOffset(methodData->NativeLayoutInfoSignature));
+#endif
+
+            RuntimeSignature remainingSignature;
+            return GetMethodFromSignatureAndContext(signature, null, null, out declaringTypeHandle, out nameAndSignature, out genericMethodArgs, out remainingSignature);
         }
         #endregion
     }

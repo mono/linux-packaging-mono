@@ -710,6 +710,8 @@ XMKMF
 SUPPORT_SGEN_FALSE
 SUPPORT_SGEN_TRUE
 SGEN_DEFINES
+ENABLE_INTERPRETER_FALSE
+ENABLE_INTERPRETER_TRUE
 VTUNE_CFLAGS
 VTUNE_LIBS
 HAVE_VTUNE_FALSE
@@ -756,6 +758,10 @@ DISABLE_PROFILER_TRUE
 DEFAULT_PROFILE
 INSTALL_TESTING_AOT_FULL
 INSTALL_TESTING_AOT_HYBRID
+FULL_AOT_TESTS_FALSE
+FULL_AOT_TESTS_TRUE
+INSTALL_ORBIS_FALSE
+INSTALL_ORBIS_TRUE
 INSTALL_WINAOT_FALSE
 INSTALL_WINAOT_TRUE
 INSTALL_TESTING_AOT_FULL_FALSE
@@ -1013,6 +1019,7 @@ with_xammac
 with_testing_aot_hybrid
 with_testing_aot_full
 with_winaot
+with_orbis
 with_runtime_preset
 enable_minimal
 enable_executables
@@ -1037,6 +1044,7 @@ enable_llvm_runtime
 with_llvm
 enable_vtune
 with_vtune
+with_interpreter
 with_sgen
 with_sgen_default_concurrent
 with_x
@@ -1719,7 +1727,7 @@ Optional Features:
   --enable-minimal=LIST      drop support for LIST subsystems.
      LIST is a comma-separated list from: aot, profiler, decimal, pinvoke, debug, appdomains, verifier,
      reflection_emit, reflection_emit_save, large_code, logging, com, ssa, generics, attach, jit, simd, soft_debug, perfcounters, normalization, assembly_remapping, shared_perfcounters, remoting,
-	 security, sgen_remset, sgen_marksweep_par, sgen_marksweep_fixed, sgen_marksweep_fixed_par, sgen_copying.
+	 security, lldb, mdb, sgen_remset, sgen_marksweep_par, sgen_marksweep_fixed, sgen_marksweep_fixed_par, sgen_copying.
   --disable-executables disable the build of the runtime executables
   --enable-extension-module=LIST enable the core-extensions from LIST
   --enable-gsharedvt Enable generic valuetype sharing (Deprecated)
@@ -1773,6 +1781,7 @@ Optional Packages:
   --with-testing_aot_hybrid=yes,no    If you want to build the testing_aot_hybrid assemblies (defaults to no)
   --with-testing_aot_full=yes,no      If you want to build the testing_aot_full assemblies (defaults to no)
   --with-winaot=yes,no                If you want to build the Windows friendly AOT assemblies (defaults to no)
+  --with-orbis=yes,no                  If you want to build the Orbis assemblies (defaults to no)
   --with-runtime_preset=net_4_x,all,aot,hybridaot,fullaot,bitcode   Which default profile to build (defaults to net_4_x)
   --with-gc=included,none  Controls the Boehm GC config, default=included
   --with-large-heap=yes,no       Enable support for GC heaps larger than 3GB (defaults to no)
@@ -1780,6 +1789,7 @@ Optional Packages:
   --with-cross-offsets=<offsets file path>    Explicit AOT cross offsets file
   --with-llvm=<llvm prefix>    Enable the LLVM back-end
   --with-vtune=<vtune prefix>	Enable jit vtune profiling
+  --with-interpreter=yes|no       Interpreter, default=no
   --with-sgen=yes,no             Extra Generational GC, default=yes
   --with-sgen-default-concurrent=yes,no             Use Concurrent GC, default=no
   --with-x                use the X Window System
@@ -4259,11 +4269,6 @@ $as_echo "#define DISABLE_ATTACH 1" >>confdefs.h
 		target_mach=yes
 		CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE -DGC_MACOSX_THREADS -DPLATFORM_MACOSX -DUSE_MMAP -DUSE_MUNMAP"
 		libmono_cflags="-D_THREAD_SAFE"
-
-		# avoid AR calling ranlib, libtool calls it anyway. suppress no symbols warning.
-		AR_FLAGS="Scru"
-		RANLIB="ranlib -no_warning_for_no_symbols"
-
 		need_link_unlink=yes
 		$as_echo "#define PTHREAD_POINTER_ID 1" >>confdefs.h
 
@@ -4400,6 +4405,10 @@ fi
 
 if test -z "$PLATFORM_LINUX_TRUE"; then :
 PLATFORM_AOT_SUFFIX=.so
+fi
+
+if test -z "$HOST_WIN32_TRUE"; then :
+PLATFORM_AOT_SUFFIX=.dll
 fi
 
 
@@ -20073,6 +20082,15 @@ else
 fi
 
 
+# Check whether --with-orbis was given.
+if test "${with_orbis+set}" = set; then :
+  withval=$with_orbis;
+else
+  with_orbis=default
+fi
+
+
+
 
 # Check whether --with-runtime_preset was given.
 if test "${with_runtime_preset+set}" = set; then :
@@ -20094,6 +20112,7 @@ with_xammac_default=no
 with_testing_aot_hybrid_default=no
 with_testing_aot_full_default=no
 with_winaot_default=no
+with_orbis_default=no
 
 with_bitcode_default=no
 with_cooperative_gc_default=no
@@ -20112,6 +20131,7 @@ elif test x$with_runtime_preset = xall; then
    with_monotouch_tv_default=yes
    with_xammac_default=yes
    with_winaot_default=yes
+   with_orbis_default=yes
 elif test x$with_runtime_preset = xfullaot; then
    DISABLE_MCS_DOCS_default=yes
    with_testing_aot_full_default=yes
@@ -20124,6 +20144,7 @@ elif test x$with_runtime_preset = xfullaot; then
    mono_feature_disable_appdomains='yes'
 
    AOT_BUILD_FLAGS="-O=gsharedvt --aot=full,$INVARIANT_AOT_OPTIONS"
+
    AOT_RUN_FLAGS="--full-aot"
 elif test x$with_runtime_preset = xbitcode; then
    DISABLE_MCS_DOCS_default=yes
@@ -20159,6 +20180,32 @@ elif test x$with_runtime_preset = xaot; then
    AOT_RUN_FLAGS=""
 
    DISABLE_MCS_DOCS_default=yes
+elif test x$with_runtime_preset = xwinaot; then
+   DISABLE_MCS_DOCS_default=yes
+   with_winaot_default=yes
+   TEST_PROFILE=winaot
+
+   mono_feature_disable_com='yes'
+   mono_feature_disable_remoting='yes'
+   mono_feature_disable_reflection_emit_save='yes'
+   mono_feature_disable_reflection_emit='yes'
+   mono_feature_disable_appdomains='yes'
+
+   AOT_BUILD_FLAGS="--aot=full,$INVARIANT_AOT_OPTIONS"
+   AOT_RUN_FLAGS="--full-aot"
+elif test x$with_runtime_preset = xorbis; then
+   DISABLE_MCS_DOCS_default=yes
+   with_orbis_default=yes
+   TEST_PROFILE=orbis
+
+   mono_feature_disable_com='yes'
+   mono_feature_disable_remoting='yes'
+   mono_feature_disable_reflection_emit_save='yes'
+   mono_feature_disable_reflection_emit='yes'
+   mono_feature_disable_appdomains='yes'
+
+   AOT_BUILD_FLAGS="--aot=full,$INVARIANT_AOT_OPTIONS"
+   AOT_RUN_FLAGS="--full-aot"
 else
    with_profile4_x_default=yes
 fi
@@ -20201,6 +20248,9 @@ if test "x$with_testing_aot_full" = "xdefault"; then
 fi
 if test "x$with_winaot" = "xdefault"; then
    with_winaot=$with_winaot_default
+fi
+if test "x$with_orbis" = "xdefault"; then
+   with_orbis=$with_orbis_default
 fi
 
 
@@ -20284,6 +20334,22 @@ else
   INSTALL_WINAOT_FALSE=
 fi
 
+ if test "x$with_orbis" != "xno"; then
+  INSTALL_ORBIS_TRUE=
+  INSTALL_ORBIS_FALSE='#'
+else
+  INSTALL_ORBIS_TRUE='#'
+  INSTALL_ORBIS_FALSE=
+fi
+
+ if test "x$with_testing_aot_full" != "xno" || test "x$with_winaot" != "xno"; then
+  FULL_AOT_TESTS_TRUE=
+  FULL_AOT_TESTS_FALSE='#'
+else
+  FULL_AOT_TESTS_TRUE='#'
+  FULL_AOT_TESTS_FALSE=
+fi
+
 
 
 
@@ -20303,6 +20369,12 @@ if test -z "$INSTALL_TESTING_AOT_HYBRID_TRUE"; then :
 fi
 if test -z "$INSTALL_TESTING_AOT_FULL_TRUE"; then :
    default_profile=testing_aot_full
+fi
+if test -z "$INSTALL_WINAOT_TRUE"; then :
+   default_profile=winaot
+fi
+if test -z "$INSTALL_ORBIS_TRUE"; then :
+   default_profile=orbis
 fi
 if test -z "$INSTALL_4_x_TRUE"; then :
    default_profile=net_4_x
@@ -20576,6 +20648,22 @@ $as_echo "#define DISABLE_SECURITY 1" >>confdefs.h
 
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: Disabled CAS/CoreCLR security manager (used e.g. for Moonlight)" >&5
 $as_echo "$as_me: Disabled CAS/CoreCLR security manager (used e.g. for Moonlight)" >&6;}
+fi
+
+if test "x$mono_feature_disable_lldb" = "xyes"; then
+
+$as_echo "#define DISABLE_LLDB 1" >>confdefs.h
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: Disabled LLDB plugin support code." >&5
+$as_echo "$as_me: Disabled LLDB plugin support code." >&6;}
+fi
+
+if test "x$mono_feature_disable_mdb" = "xyes"; then
+
+$as_echo "#define DISABLE_MDB 1" >>confdefs.h
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: Disabled support for .mdb symbol files." >&5
+$as_echo "$as_me: Disabled support for .mdb symbol files." >&6;}
 fi
 
 if test "x$mono_feature_disable_sgen_remset" = "xyes"; then
@@ -26873,6 +26961,32 @@ $as_echo "#define HAVE_DEPRECATED 1" >>confdefs.h
 
 fi
 
+
+# Check whether --with-interpreter was given.
+if test "${with_interpreter+set}" = set; then :
+  withval=$with_interpreter; buildinterpreter=$with_interpreter
+else
+  buildinterpreter=no
+fi
+
+if test "x$buildinterpreter" = "xyes"; then
+
+$as_echo "#define ENABLE_INTERPRETER 1" >>confdefs.h
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: Enable interpreter in the runtime." >&5
+$as_echo "$as_me: Enable interpreter in the runtime." >&6;}
+fi
+
+ if test x$buildinterpreter != xno; then
+  ENABLE_INTERPRETER_TRUE=
+  ENABLE_INTERPRETER_FALSE='#'
+else
+  ENABLE_INTERPRETER_TRUE='#'
+  ENABLE_INTERPRETER_FALSE=
+fi
+
+
+
 SGEN_DEFINES=
 
 # Check whether --with-sgen was given.
@@ -27542,6 +27656,24 @@ if test ${ACCESS_UNALIGNED} = no; then
 	CPPFLAGS="$CPPFLAGS -DNO_UNALIGNED_ACCESS"
 fi
 
+if test x$host_darwin = xyes; then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ranlib that supports -no_warning_for_no_symbols option" >&5
+$as_echo_n "checking for ranlib that supports -no_warning_for_no_symbols option... " >&6; }
+	if $RANLIB -no_warning_for_no_symbols 2>&1 | grep -q "unknown option"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+else
+
+			# avoid AR calling ranlib, libtool calls it anyway. suppress no symbols warning.
+			AR_FLAGS="Scru"
+			RANLIB="$RANLIB -no_warning_for_no_symbols"
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+
+fi
+fi
+
 case "x$libgc" in
 	xincluded)
 		# Pass CPPFLAGS to libgc configure
@@ -28075,8 +28207,8 @@ mono_cfg_root=$mono_build_root/runtime
 if test x$host_win32 = xyes; then
   if test "x$cross_compiling" = "xno"; then
     mono_cfg_dir=`cygpath -w -a $mono_cfg_root`\\etc
-    CSC="'"`cygpath -w -a $CSC`"'"
-	CSC_LOCATION="'"`cygpath -w -a $CSC_LOCATION`"'"
+    CSC=`cygpath -m -a $CSC`
+    CSC_LOCATION=`cygpath -m -a $CSC_LOCATION`
   else
     mono_cfg_dir=`echo $mono_cfg_root | tr '/' '\\'`\\etc
   fi
@@ -28133,7 +28265,7 @@ ac_config_commands="$ac_config_commands quiet-libtool"
 ac_config_commands="$ac_config_commands nolock-libtool"
 
 
-ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/btls/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/io-layer/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile tools/pedump/Makefile runtime/Makefile msvc/Makefile po/Makefile"
+ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/btls/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile tools/pedump/Makefile runtime/Makefile msvc/Makefile po/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -28369,6 +28501,14 @@ if test -z "${INSTALL_WINAOT_TRUE}" && test -z "${INSTALL_WINAOT_FALSE}"; then
   as_fn_error $? "conditional \"INSTALL_WINAOT\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${INSTALL_ORBIS_TRUE}" && test -z "${INSTALL_ORBIS_FALSE}"; then
+  as_fn_error $? "conditional \"INSTALL_ORBIS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${FULL_AOT_TESTS_TRUE}" && test -z "${FULL_AOT_TESTS_FALSE}"; then
+  as_fn_error $? "conditional \"FULL_AOT_TESTS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${DISABLE_PROFILER_TRUE}" && test -z "${DISABLE_PROFILER_FALSE}"; then
   as_fn_error $? "conditional \"DISABLE_PROFILER\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -28415,6 +28555,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_VTUNE_TRUE}" && test -z "${HAVE_VTUNE_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_VTUNE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_INTERPRETER_TRUE}" && test -z "${ENABLE_INTERPRETER_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_INTERPRETER\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${SUPPORT_SGEN_TRUE}" && test -z "${SUPPORT_SGEN_FALSE}"; then
@@ -29545,7 +29689,6 @@ do
     "mono/tests/gc-descriptors/Makefile") CONFIG_FILES="$CONFIG_FILES mono/tests/gc-descriptors/Makefile" ;;
     "mono/unit-tests/Makefile") CONFIG_FILES="$CONFIG_FILES mono/unit-tests/Makefile" ;;
     "mono/benchmark/Makefile") CONFIG_FILES="$CONFIG_FILES mono/benchmark/Makefile" ;;
-    "mono/io-layer/Makefile") CONFIG_FILES="$CONFIG_FILES mono/io-layer/Makefile" ;;
     "mono/mini/Makefile") CONFIG_FILES="$CONFIG_FILES mono/mini/Makefile" ;;
     "mono/profiler/Makefile") CONFIG_FILES="$CONFIG_FILES mono/profiler/Makefile" ;;
     "m4/Makefile") CONFIG_FILES="$CONFIG_FILES m4/Makefile" ;;
@@ -31651,6 +31794,7 @@ echo "
 	BigArrays:     $enable_big_arrays
 	DTrace:        $enable_dtrace
 	LLVM Back End: $enable_llvm (dynamically loaded: $enable_loadedllvm)
+	Interpreter:   $buildinterpreter
 
    Libraries:
 	.NET 4.x:        $with_profile4_x
@@ -31660,6 +31804,7 @@ echo "
 	Xamarin.TVOS:    $with_monotouch_tv
 	Xamarin.Mac:     $with_xammac
 	Windows AOT:     $with_winaot
+	Orbis:           $with_orbis
 	Test profiles:   AOT Full ($with_testing_aot_full), AOT Hybrid ($with_testing_aot_hybrid)
 	JNI support:     $jdk_headers_found
 	libgdiplus:      $libgdiplus_msg

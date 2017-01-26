@@ -28,6 +28,47 @@ namespace Internal.TypeSystem
         {
             return default(PInvokeMetadata);
         }
+
+        /// <summary>
+        /// Retrieves the metadata related to the parameters of the method.
+        /// </summary>
+        public virtual ParameterMetadata[] GetParameterMetadata()
+        {
+            return default(ParameterMetadata[]);
+        }
+    }
+
+    [Flags]
+    public enum ParameterMetadataAttributes
+    {
+        None = 0,
+        In = 1,
+        Out = 2,
+        Optional = 16,
+        HasDefault = 4096,
+        HasFieldMarshal = 8192
+    }
+
+    public struct ParameterMetadata
+    {
+        private  readonly ParameterMetadataAttributes _attributes;
+        public readonly MarshalAsDescriptor MarshalAsDescriptor;
+        public readonly int Index;
+
+        public bool In { get { return (_attributes & ParameterMetadataAttributes.In) == ParameterMetadataAttributes.In; } }
+        public bool Out { get { return (_attributes & ParameterMetadataAttributes.Out) == ParameterMetadataAttributes.Out; } }
+        public bool Return { get { return Index == 0;  } }
+        public bool Optional { get { return (_attributes & ParameterMetadataAttributes.Optional) == ParameterMetadataAttributes.Optional;  } }
+        public bool HasDefault { get { return (_attributes & ParameterMetadataAttributes.HasDefault) == ParameterMetadataAttributes.HasDefault; } }
+        public bool HasFieldMarshal { get { return (_attributes & ParameterMetadataAttributes.HasFieldMarshal) == ParameterMetadataAttributes.HasFieldMarshal; } }
+
+
+        public ParameterMetadata(int index, ParameterMetadataAttributes attributes, MarshalAsDescriptor marshalAsDescriptor)
+        {
+            Index = index;
+            _attributes = attributes;
+            MarshalAsDescriptor = marshalAsDescriptor;
+        }
     }
 
     [Flags]

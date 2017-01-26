@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using Internal.Runtime;
 
 namespace System.Runtime
 {
@@ -256,19 +257,19 @@ namespace System.Runtime
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhBox")]
-        internal static unsafe extern object RhBox(EETypePtr pEEType, void* pData);
+        internal static extern unsafe object RhBox(EETypePtr pEEType, void* pData);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhBox")]
-        internal static unsafe extern object RhBox(EETypePtr pEEType, ref byte data);
+        internal static extern unsafe object RhBox(EETypePtr pEEType, ref byte data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhUnbox")]
-        internal static unsafe extern void RhUnbox(object obj, void* pData, EETypePtr pUnboxToEEType);
+        internal static extern unsafe void RhUnbox(object obj, void* pData, EETypePtr pUnboxToEEType);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhUnbox")]
-        internal static unsafe extern void RhUnbox(object obj, ref byte data, EETypePtr pUnboxToEEType);
+        internal static extern unsafe void RhUnbox(object obj, ref byte data, EETypePtr pUnboxToEEType);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhMemberwiseClone")]
@@ -287,7 +288,7 @@ namespace System.Runtime
         // Wait for any object to be signalled, in a way that's compatible with the CLR's behavior in an STA.
         // ExactSpelling = 'true' to force MCG to resolve it to default
         [DllImport(RuntimeLibrary, ExactSpelling = true)]
-        private static unsafe extern int RhCompatibleReentrantWaitAny(int alertable, int timeout, int count, IntPtr* handles);
+        private static extern unsafe int RhCompatibleReentrantWaitAny(int alertable, int timeout, int count, IntPtr* handles);
 
         // Temporary workaround to unblock shareable assembly bring-up - without shared interop,
         // we must prevent RhCompatibleReentrantWaitAny from using marshaling because it would
@@ -309,12 +310,12 @@ namespace System.Runtime
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhCreateGenericInstanceDescForType2")]
-        internal static unsafe extern bool RhCreateGenericInstanceDescForType2(EETypePtr pEEType, int arity, int nonGcStaticDataSize,
+        internal static extern unsafe bool RhCreateGenericInstanceDescForType2(EETypePtr pEEType, int arity, int nonGcStaticDataSize,
             int nonGCStaticDataOffset, int gcStaticDataSize, int threadStaticsOffset, void* pGcStaticsDesc, void* pThreadStaticsDesc, int* pGenericVarianceFlags);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhNewInterfaceDispatchCell")]
-        internal static unsafe extern IntPtr RhNewInterfaceDispatchCell(EETypePtr pEEType, int slotNumber);
+        internal static extern unsafe IntPtr RhNewInterfaceDispatchCell(EETypePtr pEEType, int slotNumber);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhResolveDispatch")]
@@ -322,11 +323,11 @@ namespace System.Runtime
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetNonGcStaticFieldData")]
-        internal static unsafe extern IntPtr RhGetNonGcStaticFieldData(EETypePtr pEEType);
+        internal static extern unsafe IntPtr RhGetNonGcStaticFieldData(EETypePtr pEEType);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetGcStaticFieldData")]
-        internal static unsafe extern IntPtr RhGetGcStaticFieldData(EETypePtr pEEType);
+        internal static extern unsafe IntPtr RhGetGcStaticFieldData(EETypePtr pEEType);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhCreateThunksHeap")]
@@ -372,11 +373,11 @@ namespace System.Runtime
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetRuntimeHelperForType")]
-        internal static unsafe extern IntPtr RhGetRuntimeHelperForType(EETypePtr pEEType, RuntimeHelperKind kind);
+        internal static extern unsafe IntPtr RhGetRuntimeHelperForType(EETypePtr pEEType, RuntimeHelperKind kind);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetDispatchMapForType")]
-        internal static unsafe extern IntPtr RhGetDispatchMapForType(EETypePtr pEEType);
+        internal static extern unsafe IntPtr RhGetDispatchMapForType(EETypePtr pEEType);
 
         //
         // Support for GC and HandleTable callouts.
@@ -415,9 +416,13 @@ namespace System.Runtime
         //
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhFindBlob")]
-        internal static unsafe extern bool RhFindBlob(IntPtr hOsModule, uint blobId, byte** ppbBlob, uint* pcbBlob);
+        internal static extern unsafe bool RhFindBlob(IntPtr hOsModule, uint blobId, byte** ppbBlob, uint* pcbBlob);
 
 #if CORERT
+        [RuntimeImport(RuntimeLibrary, "RhpGetModuleSection")]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal static extern IntPtr RhGetModuleSection(IntPtr module, ReadyToRunSectionType section, out int length);
+
         internal static uint RhGetLoadedModules(IntPtr[] resultArray)
         {
             IntPtr[] loadedModules = Internal.Runtime.CompilerHelpers.StartupCodeHelpers.Modules;
@@ -443,7 +448,17 @@ namespace System.Runtime
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetThreadStaticFieldAddress")]
-        internal static unsafe extern byte* RhGetThreadStaticFieldAddress(EETypePtr pEEType, IntPtr fieldCookie);
+        internal static extern unsafe byte* RhGetThreadStaticFieldAddress(EETypePtr pEEType, IntPtr fieldCookie);
+
+#if CORERT
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhGetThreadStaticStorageForModule")]
+        internal static unsafe extern Array RhGetThreadStaticStorageForModule(Int32 moduleIndex);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhSetThreadStaticStorageForModule")]
+        internal static unsafe extern bool RhSetThreadStaticStorageForModule(Array storage, Int32 moduleIndex);
+#endif
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetCodeTarget")]
@@ -713,20 +728,20 @@ namespace System.Runtime
         [Intrinsic]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "modf")]
-        internal static unsafe extern double modf(double x, double* intptr);
+        internal static extern unsafe double modf(double x, double* intptr);
 
 #if !PLATFORM_UNIX
         // ExactSpelling = 'true' to force MCG to resolve it to default
         [DllImport(RuntimeImports.RuntimeLibrary, ExactSpelling = true)]
-        internal static unsafe extern void _ecvt_s(byte* buffer, int sizeInBytes, double value, int count, int* dec, int* sign);
+        internal static extern unsafe void _ecvt_s(byte* buffer, int sizeInBytes, double value, int count, int* dec, int* sign);
 #endif
 
 #if BIT64
         [DllImport(RuntimeImports.RuntimeLibrary, ExactSpelling = true)]
-        internal static unsafe extern void memmove(byte* dmem, byte* smem, ulong size);
+        internal static extern unsafe void memmove(byte* dmem, byte* smem, ulong size);
 #else
         [DllImport(RuntimeImports.RuntimeLibrary, ExactSpelling = true)]
-        internal static unsafe extern void memmove(byte* dmem, byte* smem, uint size);
+        internal static extern unsafe void memmove(byte* dmem, byte* smem, uint size);
 #endif
 
         [MethodImpl(MethodImplOptions.InternalCall)]

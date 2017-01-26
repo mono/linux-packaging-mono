@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 
 using Internal.TypeSystem;
 
@@ -18,13 +19,15 @@ namespace Internal.IL.Stubs.StartupCode
     public sealed class StartupCodeMainMethod : ILStubMethod
     {
         private TypeDesc _owningType;
-        private MethodDesc _mainMethod;
+        private MainMethodWrapper _mainMethod;
         private MethodSignature _signature;
+        private IList<MethodDesc> _libraryInitializers;
 
-        public StartupCodeMainMethod(TypeDesc owningType, MethodDesc mainMethod)
+        public StartupCodeMainMethod(TypeDesc owningType, MethodDesc mainMethod, IList<MethodDesc> libraryInitializers)
         {
             _owningType = owningType;
-            _mainMethod = mainMethod;
+            _mainMethod = new MainMethodWrapper(owningType, mainMethod);
+            _libraryInitializers = libraryInitializers;
         }
 
         public override TypeSystemContext Context
@@ -56,14 +59,15 @@ namespace Internal.IL.Stubs.StartupCode
             ILEmitter emitter = new ILEmitter();
             ILCodeStream codeStream = emitter.NewCodeStream();
 
-            ModuleDesc developerExperience = Context.ResolveAssembly(new AssemblyName("System.Private.DeveloperExperience.Console"), false);
-            if (developerExperience != null)
+            // Allow the class library to run explicitly ordered class constructors first thing in start-up.
+            if (_libraryInitializers != null)
             {
-                TypeDesc connectorType = developerExperience.GetKnownType("Internal.DeveloperExperience", "DeveloperExperienceConnectorConsole");
-                MethodDesc initializeMethod = connectorType.GetKnownMethod("Initialize", null);
-                codeStream.Emit(ILOpcode.call, emitter.NewToken(initializeMethod));
+                foreach (MethodDesc method in _libraryInitializers)
+                {
+                    codeStream.Emit(ILOpcode.call, emitter.NewToken(method));
+                }
             }
-
+            
             MetadataType startup = Context.GetHelperType("StartupCodeHelpers");
 
             // Initialize command line args if the class library supports this
@@ -143,6 +147,70 @@ namespace Internal.IL.Stubs.StartupCode
             get
             {
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Wraps the main method in a layer of indirection. This is necessary to protect the startup code
+        /// infrastructure from situations when the owning type of the main method cannot be loaded, and codegen
+        /// is instructed to generate a throwing body. Without wrapping, this behavior would result in
+        /// replacing the entire startup code sequence with a throwing body, causing us to enter the "rich" managed
+        /// environment without it being fully initialized. (In particular, the unhandled exception experience
+        /// won't be initialized, making this difficult to diagnose.)
+        /// </summary>
+        private class MainMethodWrapper : ILStubMethod
+        {
+            private MethodDesc _mainMethod;
+
+            public MainMethodWrapper(TypeDesc owningType, MethodDesc mainMethod)
+            {
+                _mainMethod = mainMethod;
+
+                OwningType = owningType;
+            }
+
+            public override TypeSystemContext Context
+            {
+                get
+                {
+                    return OwningType.Context;
+                }
+            }
+
+            public override TypeDesc OwningType
+            {
+                get;
+            }
+
+            public override string Name
+            {
+                get
+                {
+                    return "MainMethodWrapper";
+                }
+            }
+
+            public override MethodSignature Signature
+            {
+                get
+                {
+                    return _mainMethod.Signature;
+                }
+            }
+
+            public override MethodIL EmitIL()
+            {
+                ILEmitter emit = new ILEmitter();
+                ILCodeStream codeStream = emit.NewCodeStream();
+
+                for (int i = 0; i < Signature.Length; i++)
+                    codeStream.EmitLdArg(i);
+
+                codeStream.Emit(ILOpcode.call, emit.NewToken(_mainMethod));
+
+                codeStream.Emit(ILOpcode.ret);
+
+                return emit.Link(this);
             }
         }
     }

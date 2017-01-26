@@ -201,16 +201,16 @@ libmono_profiler_log_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_log_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-libmono_profiler_vtune_static_la_LIBADD =
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_DEPENDENCIES =  \
+@HAVE_VTUNE_TRUE@	$(am__DEPENDENCIES_1)
 am__libmono_profiler_vtune_static_la_SOURCES_DIST =  \
 	mono-profiler-vtune.c
-@HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_static_la_OBJECTS =  \
-@HAVE_VTUNE_TRUE@	mono-profiler-vtune.lo
+@HAVE_VTUNE_TRUE@am_libmono_profiler_vtune_static_la_OBJECTS = libmono_profiler_vtune_static_la-mono-profiler-vtune.lo
 libmono_profiler_vtune_static_la_OBJECTS =  \
 	$(am_libmono_profiler_vtune_static_la_OBJECTS)
 libmono_profiler_vtune_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) \
+	$(libmono_profiler_vtune_static_la_CFLAGS) $(CFLAGS) \
 	$(libmono_profiler_vtune_static_la_LDFLAGS) $(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@am_libmono_profiler_vtune_static_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HAVE_VTUNE_TRUE@@HOST_WIN32_FALSE@	$(libdir)
@@ -573,6 +573,8 @@ libmono_profiler_log_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LDFLAGS = $(prof_ldflags)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_SOURCES = mono-profiler-vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LDFLAGS = -static
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_CFLAGS = $(VTUNE_CFLAGS)
+@HAVE_VTUNE_TRUE@libmono_profiler_vtune_static_la_LIBADD = $(VTUNE_LIBS)
 mprof_report_SOURCES = mprof-report.c
 mprof_report_LDADD = $(Z_LIBS) $(GLIB_LIBS) $(LIBICONV)
 PLOG_TESTS_SRC = test-alloc.cs test-busy.cs test-monitor.cs test-excleave.cs \
@@ -580,10 +582,10 @@ PLOG_TESTS_SRC = test-alloc.cs test-busy.cs test-monitor.cs test-excleave.cs \
 
 PLOG_TESTS = $(PLOG_TESTS_SRC:.cs=.exe)
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
-with_mono_path = MONO_PATH=$(CLASS)
-RUNTIME = $(with_mono_path) $(top_builddir)/runtime/mono-wrapper
-MCS = $(RUNTIME) $(CSC) -lib:$(CLASS) -unsafe -nologo -noconfig -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug:portable
+TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/mono-wrapper
+MCS = $(TOOLS_RUNTIME) $(CSC) -lib:$(CLASS) -unsafe -nologo -noconfig -nowarn:0162 -nowarn:0168 -nowarn:0219 -debug:portable
 EXTRA_DIST = mono-profiler-log.h \
+	mono-profiler-aot.h \
 	$(PLOG_TESTS_SRC) \
 	ptestrunner.pl \
 	$(suppression_DATA)
@@ -742,10 +744,10 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_la-mono-profiler-vtune.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_static_la-mono-profiler-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-profiler-aot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-profiler-iomap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-profiler-log.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-profiler-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mprof-report.Po@am__quote@
 
 .c.o:
@@ -771,6 +773,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
+
+libmono_profiler_vtune_static_la-mono-profiler-vtune.lo: mono-profiler-vtune.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_profiler_vtune_static_la_CFLAGS) $(CFLAGS) -MT libmono_profiler_vtune_static_la-mono-profiler-vtune.lo -MD -MP -MF $(DEPDIR)/libmono_profiler_vtune_static_la-mono-profiler-vtune.Tpo -c -o libmono_profiler_vtune_static_la-mono-profiler-vtune.lo `test -f 'mono-profiler-vtune.c' || echo '$(srcdir)/'`mono-profiler-vtune.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmono_profiler_vtune_static_la-mono-profiler-vtune.Tpo $(DEPDIR)/libmono_profiler_vtune_static_la-mono-profiler-vtune.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-profiler-vtune.c' object='libmono_profiler_vtune_static_la-mono-profiler-vtune.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_profiler_vtune_static_la_CFLAGS) $(CFLAGS) -c -o libmono_profiler_vtune_static_la-mono-profiler-vtune.lo `test -f 'mono-profiler-vtune.c' || echo '$(srcdir)/'`mono-profiler-vtune.c
 
 libmono_profiler_vtune_la-mono-profiler-vtune.lo: mono-profiler-vtune.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmono_profiler_vtune_la_CFLAGS) $(CFLAGS) -MT libmono_profiler_vtune_la-mono-profiler-vtune.lo -MD -MP -MF $(DEPDIR)/libmono_profiler_vtune_la-mono-profiler-vtune.Tpo -c -o libmono_profiler_vtune_la-mono-profiler-vtune.lo `test -f 'mono-profiler-vtune.c' || echo '$(srcdir)/'`mono-profiler-vtune.c
@@ -1024,7 +1033,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-libLTLIBRARIES \
 	$(MCS) -out:$@ $<
 
 testlog: $(PLOG_TESTS)
-	$(with_mono_path) perl $(srcdir)/ptestrunner.pl $(top_builddir)
+	MONO_PATH=$(CLASS) perl $(srcdir)/ptestrunner.pl $(top_builddir)
 
 check-local: $(check_targets)
 

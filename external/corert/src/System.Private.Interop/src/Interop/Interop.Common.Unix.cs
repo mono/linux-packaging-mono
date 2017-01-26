@@ -13,11 +13,6 @@ namespace System.Runtime.InteropServices
 {
     public partial class ExternalInterop
     {
-        static internal int GetLastWin32Error()
-        {
-            throw new PlatformNotSupportedException("GetLastWin32Error");
-        }
-
         static unsafe internal int FormatMessage(
                 int dwFlags,
                 IntPtr lpSource,

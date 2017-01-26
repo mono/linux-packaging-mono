@@ -524,8 +524,8 @@ uninstall-am:
 	tags-am uninstall uninstall-am
 
 
-@INSTALL_TESTING_AOT_FULL_TRUE@prereq: aot
-@INSTALL_TESTING_AOT_FULL_FALSE@prereq: test/asm.dll
+@FULL_AOT_TESTS_TRUE@prereq: aot
+@FULL_AOT_TESTS_FALSE@prereq: test/asm.dll
 
 test/.dirstamp deps/.dirstamp:
 	-mkdir $(@D)

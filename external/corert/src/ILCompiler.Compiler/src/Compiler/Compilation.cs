@@ -30,6 +30,7 @@ namespace ILCompiler
         internal NodeFactory NodeFactory => _nodeFactory;
         internal CompilerTypeSystemContext TypeSystemContext => NodeFactory.TypeSystemContext;
         internal Logger Logger => _logger;
+        internal PInvokeILProvider PInvokeILProvider { get; }
 
         private readonly TypeGetTypeMethodThunkCache _typeGetTypeMethodThunks;
 
@@ -55,17 +56,28 @@ namespace ILCompiler
             foreach (var rootProvider in compilationRoots)
                 rootProvider.AddCompilationRoots(rootingService);
 
-            // TODO: use a better owning type for multi-file friendliness
-            _typeGetTypeMethodThunks = new TypeGetTypeMethodThunkCache(TypeSystemContext.SystemModule.GetGlobalModuleType());
+            _typeGetTypeMethodThunks = new TypeGetTypeMethodThunkCache(nodeFactory.CompilationModuleGroup.GeneratedAssembly.GetGlobalModuleType());
+
+            bool? forceLazyPInvokeResolution = null;
+            // TODO: Workaround lazy PInvoke resolution not working with CppCodeGen yet
+            // https://github.com/dotnet/corert/issues/2454
+            // https://github.com/dotnet/corert/issues/2149
+            if (this is CppCodegenCompilation) forceLazyPInvokeResolution = false;
+            // TODO: Workaround missing PInvokes with multifile compilation
+            // https://github.com/dotnet/corert/issues/2454
+            if (!nodeFactory.CompilationModuleGroup.IsSingleFileCompilation) forceLazyPInvokeResolution = true;
+            PInvokeILProvider = new PInvokeILProvider(new PInvokeILEmitterConfiguration(forceLazyPInvokeResolution));
+
+            _methodILCache = new ILProvider(PInvokeILProvider);
         }
 
-        private ILProvider _methodILCache = new ILProvider();
-
+        private ILProvider _methodILCache;
+        
         internal MethodIL GetMethodIL(MethodDesc method)
         {
             // Flush the cache when it grows too big
             if (_methodILCache.Count > 1000)
-                _methodILCache = new ILProvider();
+                _methodILCache = new ILProvider(PInvokeILProvider);
 
             return _methodILCache.GetMethodIL(method);
         }
@@ -184,10 +196,14 @@ namespace ILCompiler
 
             public void AddCompilationRoot(TypeDesc type, string reason)
             {
-                if (type.IsGenericDefinition)
+                if (!ConstructedEETypeNode.CreationAllowed(type))
+                {
                     _graph.AddRoot(_factory.NecessaryTypeSymbol(type), reason);
+                }
                 else
+                {
                     _graph.AddRoot(_factory.ConstructedTypeSymbol(type), reason);
+                }
             }
         }
     }

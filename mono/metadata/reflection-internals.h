@@ -13,10 +13,13 @@
 #include <mono/utils/mono-error.h>
 
 gboolean
-mono_reflection_is_usertype (MonoReflectionType *ref);
+mono_reflection_is_usertype (MonoReflectionTypeHandle ref);
 
 MonoReflectionType*
 mono_reflection_type_resolve_user_types (MonoReflectionType *type, MonoError *error);
+
+MonoType *
+mono_reflection_type_handle_mono_type (MonoReflectionTypeHandle ref_type, MonoError *error);
 
 MonoType*
 mono_reflection_get_type_checked (MonoImage *rootimage, MonoImage* image, MonoTypeNameParse *info, mono_bool ignorecase, mono_bool *type_resolve, MonoError *error);
@@ -25,8 +28,7 @@ MonoType*
 mono_reflection_type_from_name_checked (char *name, MonoImage *image, MonoError *error);
 
 guint32
-mono_reflection_get_token_checked (MonoObject *obj, MonoError *error);
-
+mono_reflection_get_token_checked (MonoObjectHandle obj, MonoError *error);
 
 MonoObject*
 mono_custom_attrs_get_attr_checked (MonoCustomAttrInfo *ainfo, MonoClass *attr_klass, MonoError *error);

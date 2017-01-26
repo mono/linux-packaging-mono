@@ -158,7 +158,7 @@ namespace System
         // both strings are non-null and that their lengths are equal. Ther caller should also have
         // done the Object.ReferenceEquals() fastpath check as we won't repeat it here.
         //
-        private unsafe static bool EqualsHelper(String strA, String strB)
+        private static unsafe bool EqualsHelper(String strA, String strB)
         {
             Debug.Assert(strA != null);
             Debug.Assert(strB != null);
@@ -217,7 +217,7 @@ namespace System
             }
         }
 
-        private unsafe static bool StartsWithOrdinalHelper(String str, String startsWith)
+        private static unsafe bool StartsWithOrdinalHelper(String str, String startsWith)
         {
             Debug.Assert(str != null);
             Debug.Assert(startsWith != null);
@@ -272,7 +272,7 @@ namespace System
             }
         }
 
-        private unsafe static int CompareOrdinalHelper(String strA, String strB)
+        private static unsafe int CompareOrdinalHelper(String strA, String strB)
         {
             Debug.Assert(strA != null);
             Debug.Assert(strB != null);
@@ -391,7 +391,7 @@ namespace System
             }
         }
 
-        internal unsafe static int CompareOrdinalHelper(string strA, int indexA, int countA, string strB, int indexB, int countB)
+        internal static unsafe int CompareOrdinalHelper(string strA, int indexA, int countA, string strB, int indexB, int countB)
         {
             // Argument validation should be handled by callers.
             Debug.Assert(strA != null && strB != null);
@@ -428,7 +428,7 @@ namespace System
             {
                 throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));
             }
-            
+
             if (object.ReferenceEquals(strA, strB))
             {
                 return 0;
@@ -487,7 +487,7 @@ namespace System
         // at indexA of length count is compared with the substring of strB
         // beginning at indexB of the same length.  Case sensitivity is determined by the ignoreCase boolean.
         //
-        
+
         public static int Compare(String strA, int indexA, String strB, int indexB, int length, bool ignoreCase)
         {
             // Ideally we would just forward to the string.Compare overload that takes
@@ -506,7 +506,7 @@ namespace System
 
             int lengthA = length;
             int lengthB = length;
-            
+
             if (strA != null)
             {
                 lengthA = Math.Min(lengthA, strA.Length - indexA);
@@ -516,7 +516,7 @@ namespace System
             {
                 lengthB = Math.Min(lengthB, strB.Length - indexB);
             }
-            
+
             return ignoreCase ?
                 FormatProvider.CompareIgnoreCase(strA, indexA, lengthA, strB, indexB, lengthB) :
                 FormatProvider.Compare(strA, indexA, lengthA, strB, indexB, lengthB);
@@ -557,7 +557,7 @@ namespace System
                 string paramName = strA.Length - indexA < 0 ? nameof(indexA) : nameof(indexB);
                 throw new ArgumentOutOfRangeException(paramName, SR.ArgumentOutOfRange_Index);
             }
-            
+
             if (length == 0 || (object.ReferenceEquals(strA, strB) && indexA == indexB))
             {
                 return 0;
@@ -641,7 +641,7 @@ namespace System
                 string paramName = indexA < 0 ? nameof(indexA) : nameof(indexB);
                 throw new ArgumentOutOfRangeException(paramName, SR.ArgumentOutOfRange_Index);
             }
-            
+
             int lengthA = Math.Min(length, strA.Length - indexA);
             int lengthB = Math.Min(length, strB.Length - indexB);
 

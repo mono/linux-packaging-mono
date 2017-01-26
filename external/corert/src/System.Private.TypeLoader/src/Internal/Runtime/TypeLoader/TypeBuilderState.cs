@@ -22,7 +22,7 @@ namespace Internal.Runtime.TypeLoader
 {
     internal struct NativeLayoutInfo
     {
-        public uint Token;
+        public uint Offset;
         public IntPtr Module;
         public NativeReader Reader;
         public NativeLayoutInfoLoadContext LoadContext;
@@ -36,7 +36,7 @@ namespace Internal.Runtime.TypeLoader
         internal class VTableLayoutInfo
         {
             public uint VTableSlot;
-            public IntPtr MethodSignature;
+            public RuntimeSignature MethodSignature;
             public bool IsSealedVTableSlot;
         }
 
@@ -149,7 +149,7 @@ namespace Internal.Runtime.TypeLoader
                     }
                     if (!_nativeLayoutTokenComputed)
                     {
-                        TypeBeingBuilt.Context.TemplateLookup.TryGetMetadataNativeLayout(TypeBeingBuilt, out _r2rnativeLayoutInfo.Module, out _r2rnativeLayoutInfo.Token);
+                        TypeBeingBuilt.Context.TemplateLookup.TryGetMetadataNativeLayout(TypeBeingBuilt, out _r2rnativeLayoutInfo.Module, out _r2rnativeLayoutInfo.Offset);
 
                         if (_r2rnativeLayoutInfo.Module != IntPtr.Zero)
                             _readyToRunNativeLayout = true;
@@ -224,7 +224,7 @@ namespace Internal.Runtime.TypeLoader
         {
             EnsureNativeLayoutInfoComputed();
             if (_templateTypeLoaderNativeLayout)
-                return new NativeParser(_nativeLayoutInfo.Reader, _nativeLayoutInfo.Token);
+                return new NativeParser(_nativeLayoutInfo.Reader, _nativeLayoutInfo.Offset);
             else
                 return default(NativeParser);
         }
@@ -233,14 +233,14 @@ namespace Internal.Runtime.TypeLoader
         {
             EnsureNativeLayoutInfoComputed();
             if (_readyToRunNativeLayout)
-                return new NativeParser(_r2rnativeLayoutInfo.Reader, _r2rnativeLayoutInfo.Token);
+                return new NativeParser(_r2rnativeLayoutInfo.Reader, _r2rnativeLayoutInfo.Offset);
             else
                 return default(NativeParser);
         }
 
-        public NativeParser GetParserForUniversalNativeLayoutInfo(out NativeLayoutInfoLoadContext universalLayoutLoadContext)
+        public NativeParser GetParserForUniversalNativeLayoutInfo(out NativeLayoutInfoLoadContext universalLayoutLoadContext, out NativeLayoutInfo universalLayoutInfo)
         {
-            NativeLayoutInfo universalLayoutInfo = new NativeLayoutInfo();
+            universalLayoutInfo = new NativeLayoutInfo();
             universalLayoutLoadContext = null;
             TypeDesc universalTemplate = TypeBeingBuilt.Context.TemplateLookup.TryGetUniversalTypeTemplate(TypeBeingBuilt, ref universalLayoutInfo);
             if (universalTemplate == null)
@@ -248,7 +248,7 @@ namespace Internal.Runtime.TypeLoader
 
             FinishInitNativeLayoutInfo(TypeBeingBuilt, ref universalLayoutInfo);
             universalLayoutLoadContext = universalLayoutInfo.LoadContext;
-            return new NativeParser(universalLayoutInfo.Reader, universalLayoutInfo.Token);
+            return new NativeParser(universalLayoutInfo.Reader, universalLayoutInfo.Offset);
         }
 
         // RuntimeInterfaces is the full list of interfaces that the type implements. It can include private internal implementation 
@@ -528,11 +528,13 @@ namespace Internal.Runtime.TypeLoader
         /// <summary>
         /// The instance gc layout of a dynamically laid out type.
         /// null if one of the following is true
-        ///    - the type has no GC instance fields
-        ///    - the type already has a type handle
-        ///    - the type has a non-universal canonical template
-        ///    - the type is a reference type array
-        ///    - the type has already been constructed
+        ///     1) For an array type:
+        ///         - the type is a reference array
+        ///     2) For a generic type:
+        ///         - the type has no GC instance fields
+        ///         - the type already has a type handle
+        ///         - the type has a non-universal canonical template
+        ///         - the type has already been constructed
         ///    
         /// If the type is a valuetype array, this is the layout of the valuetype held in the array if the type has GC reference fields
         /// Otherwise, it is the layout of the fields in the type.
@@ -545,13 +547,7 @@ namespace Internal.Runtime.TypeLoader
                 {
                     LowLevelList<bool> instanceGCLayout = null;
 
-                    if (TypeBeingBuilt.RetrieveRuntimeTypeHandleIfPossible() ||
-                        TypeBeingBuilt.IsTemplateCanonical() ||
-                        (TypeBeingBuilt is PointerType))
-                    {
-                        _instanceGCLayout = s_emptyLayout;
-                    }
-                    else if (TypeBeingBuilt is ArrayType)
+                    if (TypeBeingBuilt is ArrayType)
                     {
                         if (!IsArrayOfReferenceTypes)
                         {
@@ -569,6 +565,12 @@ namespace Internal.Runtime.TypeLoader
                             // Array of reference type returns null
                             _instanceGCLayout = s_emptyLayout;
                         }
+                    }
+                    else if (TypeBeingBuilt.RetrieveRuntimeTypeHandleIfPossible() ||
+                             TypeBeingBuilt.IsTemplateCanonical() ||
+                             (TypeBeingBuilt is PointerType))
+                    {
+                        _instanceGCLayout = s_emptyLayout;
                     }
                     else
                     {

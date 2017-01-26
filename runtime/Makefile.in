@@ -87,7 +87,9 @@ target_triplet = @target@
 @INSTALL_MONOTOUCH_TV_TRUE@am__append_6 = monotouch_tv monotouch_tv_runtime
 @INSTALL_TESTING_AOT_HYBRID_TRUE@am__append_7 = testing_aot_hybrid
 @INSTALL_TESTING_AOT_FULL_TRUE@am__append_8 = testing_aot_full
-@INSTALL_XAMMAC_TRUE@am__append_9 = xammac xammac_net_4_5
+@INSTALL_WINAOT_TRUE@am__append_9 = winaot
+@INSTALL_XAMMAC_TRUE@am__append_10 = xammac xammac_net_4_5
+@INSTALL_ORBIS_TRUE@am__append_11 = orbis
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -353,7 +355,8 @@ symlinks = etc/mono/1.0/machine.config etc/mono/2.0/machine.config \
 SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9)
+	$(am__append_8) $(am__append_9) $(am__append_10) \
+	$(am__append_11)
 @INSTALL_4_x_TRUE@net_profile = net_4_x
 test_profiles = $(build_profiles)
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
@@ -364,12 +367,12 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
-@INSTALL_TESTING_AOT_FULL_FALSE@TESTING_AOT_FULL_FILTER = echo
+@FULL_AOT_TESTS_FALSE@FULL_AOT_TESTS_FILTER = echo
 
 #  ILASM.exe has features which a testing_aot_full runtime will not support.
 #  It is invoked with an external mono when used in the runtime.
 #  We skip it here because otherwise it will fail to verify.
-@INSTALL_TESTING_AOT_FULL_TRUE@TESTING_AOT_FULL_FILTER = grep -v ilasm
+@FULL_AOT_TESTS_TRUE@FULL_AOT_TESTS_FILTER = grep -v ilasm
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
@@ -591,7 +594,7 @@ mcs-do-run-test-profiles: test-support-files
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
 # Skip binary_reference_assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
-	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(TESTING_AOT_FULL_FILTER)` ; \
+	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(FULL_AOT_TESTS_FILTER)` ; \
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
 	  if [ "binary_reference_assemblies" = "$$profile" ]; then \

@@ -99,10 +99,47 @@ namespace ILCompiler.DependencyAnalysis
                     }
                     break;
 
+                case ReadyToRunHelperId.GetThreadStaticBase:
+                    {
+                        MetadataType target = (MetadataType)_target;
+
+                        // Look up the index cell
+                        EmitDictionaryLookup(factory, ref encoder, encoder.TargetRegister.Arg0, encoder.TargetRegister.Arg1, _lookupSignature, relocsOnly);
+
+                        ISymbolNode helperEntrypoint;
+                        if (factory.TypeSystemContext.HasLazyStaticConstructor(target))
+                        {
+                            // There is a lazy class constructor. We need the non-GC static base because that's where the
+                            // class constructor context lives.
+                            GenericLookupResult nonGcRegionLookup = factory.GenericLookup.TypeNonGCStaticBase(target);
+                            EmitDictionaryLookup(factory, ref encoder, encoder.TargetRegister.Arg0, encoder.TargetRegister.Arg2, nonGcRegionLookup, relocsOnly);
+
+                            helperEntrypoint = factory.HelperEntrypoint(HelperEntrypoint.EnsureClassConstructorRunAndReturnThreadStaticBase);
+                        }
+                        else
+                        {
+                            helperEntrypoint = factory.HelperEntrypoint(HelperEntrypoint.GetThreadStaticBaseForType);
+                        }
+
+                        // First arg: address of the TypeManager slot that provides the helper with
+                        // information about module index and the type manager instance (which is used
+                        // for initialization on first access).
+                        AddrMode loadFromArg1 = new AddrMode(encoder.TargetRegister.Arg1, null, 0, 0, AddrModeSize.Int64);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg0, ref loadFromArg1);
+
+                        // Second arg: index of the type in the ThreadStatic section of the modules
+                        AddrMode loadFromArg1AndDelta = new AddrMode(encoder.TargetRegister.Arg1, null, factory.Target.PointerSize, 0, AddrModeSize.Int64);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg1, ref loadFromArg1AndDelta);
+
+                        encoder.EmitJMP(helperEntrypoint);
+                    }
+                    break;
+
                 // These are all simple: just get the thing from the dictionary and we're done
                 case ReadyToRunHelperId.TypeHandle:
                 case ReadyToRunHelperId.MethodDictionary:
                 case ReadyToRunHelperId.VirtualCall:
+                case ReadyToRunHelperId.ResolveVirtualFunction:
                 case ReadyToRunHelperId.MethodEntry:
                     {
                         EmitDictionaryLookup(factory, ref encoder, encoder.TargetRegister.Arg0, encoder.TargetRegister.Result, _lookupSignature, relocsOnly);

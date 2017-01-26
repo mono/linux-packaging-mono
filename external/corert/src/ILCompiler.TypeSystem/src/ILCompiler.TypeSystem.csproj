@@ -20,6 +20,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
+    <PackageDestination Include="Tools">
+      <InProject>false</InProject>
+      <TargetFramework>.NetCoreApp,Version=1.2</TargetFramework>
+    </PackageDestination>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\..\Common\src\TypeSystem\Canon\ArrayType.Canon.cs">
       <Link>TypeSystem\Canon\ArrayType.Canon.cs</Link>
     </Compile>
@@ -206,6 +212,9 @@
     <Compile Include="..\..\Common\src\TypeSystem\Common\TypeSystemHelpers.cs">
       <Link>TypeSystem\Common\TypeSystemHelpers.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\Common\TypeSystemConstaintsHelpers.cs">
+      <Link>TypeSystem\Common\TypeSystemConstaintsHelpers.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\Common\Utilities\TypeNameFormatter.cs">
       <Link>Utilities\TypeNameFormatter.cs</Link>
     </Compile>
@@ -322,6 +331,9 @@
     </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\Interop\MethodDesc.Interop.cs">
       <Link>TypeSystem\Interop\MethodDesc.Interop.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\Interop\MarshalAsDescriptor.cs">
+      <Link>TypeSystem\Interop\MarshalAsDescriptor.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\src\System\Collections\Generic\ArrayBuilder.cs">
       <Link>Utilities\ArrayBuilder.cs</Link>

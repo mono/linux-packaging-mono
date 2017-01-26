@@ -5,6 +5,7 @@
 using System.Text;
 using System.Runtime;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace System
     // sequential layout directive so that Bartok matches it.
     [StructLayout(LayoutKind.Sequential)]
     [DebuggerDisplay("Target method(s) = {GetTargetMethodsDescriptionForDebugger()}")]
-    public abstract partial class Delegate : ICloneable
+    public abstract partial class Delegate : ICloneable, ISerializable
     {
         // This ctor exists solely to prevent C# from generating a protected .ctor that violates the surface area. I really want this to be a
         // "protected-and-internal" rather than "internal" but C# has no keyword for the former.
@@ -30,12 +31,12 @@ namespace System
 
         // New Delegate Implementation
 
-        internal protected object m_firstParameter;
-        internal protected object m_helperObject;
+        protected internal object m_firstParameter;
+        protected internal object m_helperObject;
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2111:PointersShouldNotBeVisible")]
-        internal protected IntPtr m_extraFunctionPointerOrData;
+        protected internal IntPtr m_extraFunctionPointerOrData;
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2111:PointersShouldNotBeVisible")]
-        internal protected IntPtr m_functionPointer;
+        protected internal IntPtr m_functionPointer;
 
         [ThreadStatic]
         protected static string s_DefaultValueString;
@@ -162,7 +163,7 @@ namespace System
                 m_helperObject = firstParameter;
             }
         }
-        
+
         // This is used to implement MethodInfo.CreateDelegate() in a desktop-compatible way. Yes, the desktop really
         // let you use that api to invoke an instance method with a null 'this'.
         private void InitializeClosedInstanceWithoutNullCheck(object firstParameter, IntPtr functionPointer)
@@ -312,7 +313,7 @@ namespace System
             }
         }
 
-        public unsafe static Delegate Combine(Delegate a, Delegate b)
+        public static unsafe Delegate Combine(Delegate a, Delegate b)
         {
             if (a == null)
                 return b;
@@ -630,7 +631,7 @@ namespace System
                 int invocationCount = (int)m_extraFunctionPointerOrData;
                 del = new Delegate[invocationCount];
 
-                for (int i = 0; i < invocationCount; i++)
+                for (int i = 0; i < del.Length; i++)
                     del[i] = invocationList[i];
             }
             return del;
@@ -705,6 +706,11 @@ namespace System
         public virtual object Clone()
         {
             return MemberwiseClone();
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotSupportedException();
         }
 
         internal bool IsOpenStatic

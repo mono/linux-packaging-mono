@@ -141,7 +141,7 @@ namespace Internal.Runtime.Augments
             }
 
             // Create a local copy of the lenghts that cannot be motified by the caller
-            int * pLengths = stackalloc int[lengths.Length];
+            int* pLengths = stackalloc int[lengths.Length];
             for (int i = 0; i < lengths.Length; i++)
                 pLengths[i] = lengths[i];
 
@@ -233,22 +233,22 @@ namespace Internal.Runtime.Augments
             return new RuntimeTypeHandle(new EETypePtr(ldTokenResult));
         }
 
-        public unsafe static IntPtr GetThreadStaticFieldAddress(RuntimeTypeHandle typeHandle, IntPtr fieldCookie)
+        public static unsafe IntPtr GetThreadStaticFieldAddress(RuntimeTypeHandle typeHandle, IntPtr fieldCookie)
         {
             return new IntPtr(RuntimeImports.RhGetThreadStaticFieldAddress(typeHandle.ToEETypePtr(), fieldCookie));
         }
 
-        public unsafe static void StoreValueTypeField(IntPtr address, Object fieldValue, RuntimeTypeHandle fieldType)
+        public static unsafe void StoreValueTypeField(IntPtr address, Object fieldValue, RuntimeTypeHandle fieldType)
         {
             RuntimeImports.RhUnbox(fieldValue, *(void**)&address, fieldType.ToEETypePtr());
         }
 
-        public unsafe static Object LoadValueTypeField(IntPtr address, RuntimeTypeHandle fieldType)
+        public static unsafe Object LoadValueTypeField(IntPtr address, RuntimeTypeHandle fieldType)
         {
             return RuntimeImports.RhBox(fieldType.ToEETypePtr(), *(void**)&address);
         }
 
-        public unsafe static void StoreValueTypeField(Object obj, int fieldOffset, Object fieldValue, RuntimeTypeHandle fieldType)
+        public static unsafe void StoreValueTypeField(Object obj, int fieldOffset, Object fieldValue, RuntimeTypeHandle fieldType)
         {
             fixed (IntPtr* pObj = &obj.m_pEEType)
             {
@@ -258,7 +258,7 @@ namespace Internal.Runtime.Augments
             }
         }
 
-        public unsafe static Object LoadValueTypeField(Object obj, int fieldOffset, RuntimeTypeHandle fieldType)
+        public static unsafe Object LoadValueTypeField(Object obj, int fieldOffset, RuntimeTypeHandle fieldType)
         {
             fixed (IntPtr* pObj = &obj.m_pEEType)
             {
@@ -270,15 +270,15 @@ namespace Internal.Runtime.Augments
 
         public static unsafe void StoreReferenceTypeField(IntPtr address, Object fieldValue)
         {
-            Volatile.Write<Object>(ref Unsafe.As<IntPtr, Object>(ref *(IntPtr *)address), fieldValue);
+            Volatile.Write<Object>(ref Unsafe.As<IntPtr, Object>(ref *(IntPtr*)address), fieldValue);
         }
 
         public static unsafe Object LoadReferenceTypeField(IntPtr address)
         {
-            return Volatile.Read<Object>(ref Unsafe.As<IntPtr, Object>(ref *(IntPtr *)address));
+            return Volatile.Read<Object>(ref Unsafe.As<IntPtr, Object>(ref *(IntPtr*)address));
         }
 
-        public unsafe static void StoreReferenceTypeField(Object obj, int fieldOffset, Object fieldValue)
+        public static unsafe void StoreReferenceTypeField(Object obj, int fieldOffset, Object fieldValue)
         {
             fixed (IntPtr* pObj = &obj.m_pEEType)
             {
@@ -288,7 +288,7 @@ namespace Internal.Runtime.Augments
             }
         }
 
-        public unsafe static Object LoadReferenceTypeField(Object obj, int fieldOffset)
+        public static unsafe Object LoadReferenceTypeField(Object obj, int fieldOffset)
         {
             fixed (IntPtr* pObj = &obj.m_pEEType)
             {
@@ -324,7 +324,7 @@ namespace Internal.Runtime.Augments
             return result;
         }
 
-        public unsafe static void EnsureClassConstructorRun(IntPtr staticClassConstructionContext)
+        public static unsafe void EnsureClassConstructorRun(IntPtr staticClassConstructionContext)
         {
             StaticClassConstructionContext* context = (StaticClassConstructionContext*)staticClassConstructionContext;
             ClassConstructorRunner.EnsureClassConstructorRun(context);
@@ -462,7 +462,7 @@ namespace Internal.Runtime.Augments
             return RuntimeImports.RhGetGCDescSize(eeType);
         }
 
-        public unsafe static bool CreateGenericInstanceDescForType(RuntimeTypeHandle typeHandle, int arity, int nonGcStaticDataSize,
+        public static unsafe bool CreateGenericInstanceDescForType(RuntimeTypeHandle typeHandle, int arity, int nonGcStaticDataSize,
             int nonGCStaticDataOffset, int gcStaticDataSize, int threadStaticsOffset, IntPtr gcStaticsDesc, IntPtr threadStaticsDesc, int[] genericVarianceFlags)
         {
             EETypePtr eeType = CreateEETypePtr(typeHandle);
@@ -775,7 +775,7 @@ namespace Internal.Runtime.Augments
             RuntimeExceptionHelpers.GenerateExceptionInformationForDump(currentException, exceptionCCWPtr);
         }
 
-        public unsafe static RuntimeTypeHandle GetRuntimeTypeHandleFromObjectReference(object obj)
+        public static unsafe RuntimeTypeHandle GetRuntimeTypeHandleFromObjectReference(object obj)
         {
             return new RuntimeTypeHandle(obj.EETypePtr);
         }
@@ -788,7 +788,7 @@ namespace Internal.Runtime.Augments
         // Move memory which may be on the heap which may have object references in it.
         // In general, a memcpy on the heap is unsafe, but this is able to perform the
         // correct write barrier such that the GC is not incorrectly impacted.
-        public unsafe static void BulkMoveWithWriteBarrier(IntPtr dmem, IntPtr smem, int size)
+        public static unsafe void BulkMoveWithWriteBarrier(IntPtr dmem, IntPtr smem, int size)
         {
             RuntimeImports.RhBulkMoveWithWriteBarrier((byte*)dmem.ToPointer(), (byte*)smem.ToPointer(), size);
         }
@@ -811,6 +811,7 @@ namespace Internal.Runtime.Augments
             IntPtr newThunk = RuntimeImports.RhAllocateThunk(thunksHeap);
             if (newThunk == IntPtr.Zero)
                 throw new OutOfMemoryException();
+            TypeLoaderCallbacks.RegisterThunk(newThunk);
             return newThunk;
         }
 
@@ -898,7 +899,7 @@ namespace Internal.Runtime.Augments
             {
                 // This will be filled in by an IL transform
             }
-            public static unsafe void Call<T,U>(System.IntPtr pfn, void* arg1, ref T arg2, ref U arg3)
+            public static unsafe void Call<T, U>(System.IntPtr pfn, void* arg1, ref T arg2, ref U arg3)
             {
                 // This will be filled in by an IL transform
             }
@@ -949,7 +950,7 @@ namespace Internal.Runtime.Augments
         /// <param name="context">context to pass to inner function. Passed by-ref to allow for efficient use of a struct as a context.</param>
         /// <param name="context2">context2 to pass to inner function. Passed by-ref to allow for efficient use of a struct as a context.</param>
         [DebuggerGuidedStepThroughAttribute]
-        public static void RunFunctionWithConservativelyReportedBuffer<T,U>(int cbBuffer, IntPtr pfnTargetToInvoke, ref T context, ref U context2)
+        public static void RunFunctionWithConservativelyReportedBuffer<T, U>(int cbBuffer, IntPtr pfnTargetToInvoke, ref T context, ref U context2)
         {
             RuntimeImports.ConservativelyReportedRegionDesc regionDesc = new RuntimeImports.ConservativelyReportedRegionDesc();
             RunFunctionWithConservativelyReportedBufferInternal(cbBuffer, pfnTargetToInvoke, ref context, ref context2, ref regionDesc);
@@ -961,7 +962,7 @@ namespace Internal.Runtime.Augments
         // will be ignored.
         [DebuggerGuidedStepThroughAttribute]
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static unsafe void RunFunctionWithConservativelyReportedBufferInternal<T,U>(int cbBuffer, IntPtr pfnTargetToInvoke, ref T context, ref U context2, ref RuntimeImports.ConservativelyReportedRegionDesc regionDesc)
+        private static unsafe void RunFunctionWithConservativelyReportedBufferInternal<T, U>(int cbBuffer, IntPtr pfnTargetToInvoke, ref T context, ref U context2, ref RuntimeImports.ConservativelyReportedRegionDesc regionDesc)
         {
             fixed (RuntimeImports.ConservativelyReportedRegionDesc* pRegionDesc = &regionDesc)
             {
@@ -970,7 +971,7 @@ namespace Internal.Runtime.Augments
                 void* region = stackalloc IntPtr[cbBufferAligned / sizeof(IntPtr)];
                 RuntimeImports.RhInitializeConservativeReportingRegion(pRegionDesc, region, cbBufferAligned);
 
-                RawCalliHelper.Call<T,U>(pfnTargetToInvoke, region, ref context, ref context2);
+                RawCalliHelper.Call<T, U>(pfnTargetToInvoke, region, ref context, ref context2);
                 System.Diagnostics.DebugAnnotations.PreviousCallContainsDebuggerStepInCode();
 
                 RuntimeImports.RhDisableConservativeReportingRegion(pRegionDesc);

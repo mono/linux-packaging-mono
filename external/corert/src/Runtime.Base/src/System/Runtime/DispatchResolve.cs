@@ -8,7 +8,7 @@ using Internal.Runtime;
 
 namespace System.Runtime
 {
-    internal unsafe static class DispatchResolve
+    internal static unsafe class DispatchResolve
     {
         // CS0649: Field '{blah}' is never assigned to, and will always have its default value
 #pragma warning disable 649
@@ -35,7 +35,7 @@ namespace System.Runtime
             // Use the dynamic module resolver if it's present
             if ((dynamicModule != null) && (dynamicModule->DynamicTypeSlotDispatchResolve != IntPtr.Zero))
             {
-                return CalliIntrinsics.Call<IntPtr>(dynamicModule->DynamicTypeSlotDispatchResolve, 
+                return CalliIntrinsics.Call<IntPtr>(dynamicModule->DynamicTypeSlotDispatchResolve,
                                                     (IntPtr)pTgtType, (IntPtr)pItfType, itfSlotNumber);
             }
 

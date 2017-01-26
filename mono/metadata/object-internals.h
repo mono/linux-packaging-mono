@@ -171,6 +171,9 @@ struct _MonoAppDomain {
 /* Safely access System.AppDomain from native code */
 TYPED_HANDLE_DECL (MonoAppDomain);
 
+/* Safely access System.AppDomainSetup from native code.  (struct is in domain-internals.h) */
+TYPED_HANDLE_DECL (MonoAppDomainSetup);
+
 typedef struct _MonoStringBuilder MonoStringBuilder;
 
 struct _MonoStringBuilder {
@@ -286,6 +289,9 @@ typedef struct {
 	MonoObject *stub_data;
 } MonoRealProxy;
 
+/* Safely access System.Runtime.Remoting.Proxies.RealProxy from native code */
+TYPED_HANDLE_DECL (MonoRealProxy);
+
 typedef struct {
 	MonoMarshalByRefObject object;
 	gpointer iunknown;
@@ -305,6 +311,9 @@ typedef struct {
 	MonoRemoteClass *remote_class;
 	MonoBoolean	 custom_type_info;
 } MonoTransparentProxy;
+
+/* Safely access System.Runtime.Remoting.Proxies.TransparentProxy from native code */
+TYPED_HANDLE_DECL (MonoTransparentProxy);
 
 typedef struct {
 	MonoObject obj;
@@ -369,7 +378,7 @@ struct _MonoInternalThread {
 	int _serialized_principal_version;
 	gpointer appdomain_refs;
 	/* This is modified using atomic ops, so keep it a gint32 */
-	gint32 interruption_requested;
+	gint32 __interruption_requested;
 	MonoCoopMutex *synch_cs;
 	MonoBoolean threadpool_thread;
 	MonoBoolean thread_interrupt_requested;
@@ -382,18 +391,19 @@ struct _MonoInternalThread {
 	gpointer interrupt_on_stop;
 	gsize    flags;
 	gpointer thread_pinning_ref;
-	gsize abort_protected_block_count;
+	gsize __abort_protected_block_count;
 	gint32 priority;
 	GPtrArray *owned_mutexes;
 	MonoOSEvent *suspended;
 	gint32 self_suspended; // TRUE | FALSE
+
+	gsize thread_state;
 	/* 
 	 * These fields are used to avoid having to increment corlib versions
 	 * when a new field is added to this structure.
 	 * Please synchronize any changes with InternalThread in Thread.cs, i.e. add the
 	 * same field there.
 	 */
-	gsize unused1;
 	gsize unused2;
 
 	/* This is used only to check that we are in sync between the representation
@@ -701,6 +711,8 @@ mono_domain_get_tls_offset (void);
 
 #define IS_MONOTYPE(obj) (!(obj) || (((MonoObject*)(obj))->vtable->klass->image == mono_defaults.corlib && ((MonoReflectionType*)(obj))->type != NULL))
 
+#define IS_MONOTYPE_HANDLE(obj) IS_MONOTYPE (MONO_HANDLE_RAW (obj))
+
 /* This should be used for accessing members of Type[] arrays */
 #define mono_type_array_get(arr,index) monotype_cast (mono_array_get ((arr), gpointer, (index)))
 
@@ -999,6 +1011,9 @@ typedef struct {
 	MonoArray *permissions;
 } MonoReflectionCtorBuilder;
 
+/* Safely access System.Reflection.Emit.ConstructorBuilder from native code */
+TYPED_HANDLE_DECL (MonoReflectionCtorBuilder);
+
 typedef struct {
 	MonoObject object;
 	MonoMethod *mhandle;
@@ -1030,6 +1045,9 @@ typedef struct {
 	MonoArray *permissions;
 } MonoReflectionMethodBuilder;
 
+/* Safely access System.Reflection.Emit.MethodBuilder from native code */
+TYPED_HANDLE_DECL (MonoReflectionMethodBuilder);
+
 typedef struct {
 	MonoObject object;
 	MonoMethod *mhandle;
@@ -1040,6 +1058,9 @@ typedef struct {
 	guint32 table_idx;
 	guint32 call_conv;
 } MonoReflectionArrayMethod;
+
+/* Safely access System.Reflection.Emit.MonoArrayMethod from native code */
+TYPED_HANDLE_DECL (MonoReflectionArrayMethod);
 
 typedef struct {
 	MonoArray *data;
@@ -1111,6 +1132,9 @@ typedef struct {
 	MonoArray *modreq;
 	MonoArray *modopt;
 } MonoReflectionFieldBuilder;
+
+/* Safely access System.Reflection.Emit.FieldBuilder from native code */ 
+TYPED_HANDLE_DECL (MonoReflectionFieldBuilder);
 
 typedef struct {
 	MonoObject object;
@@ -1190,16 +1214,25 @@ typedef struct {
 	MonoReflectionType *created;
 } MonoReflectionTypeBuilder;
 
+/* Safely access System.Reflection.Emit.TypeBuilder from native code */
+TYPED_HANDLE_DECL (MonoReflectionTypeBuilder);
+
 typedef struct {
 	MonoReflectionType type;
 	MonoReflectionType *element_type;
-	int rank;
+	gint32 rank;
 } MonoReflectionArrayType;
+
+/* Safely access System.Reflection.Emit.ArrayType (in DerivedTypes.cs) from native code */
+TYPED_HANDLE_DECL (MonoReflectionArrayType);
 
 typedef struct {
 	MonoReflectionType type;
 	MonoReflectionType *element_type;
 } MonoReflectionDerivedType;
+
+/* Safely access System.Reflection.Emit.SymbolType and subclasses (in DerivedTypes.cs) from native code */
+TYPED_HANDLE_DECL (MonoReflectionDerivedType);
 
 typedef struct {
 	MonoReflectionType type;
@@ -1213,10 +1246,16 @@ typedef struct {
 	guint32 attrs;
 } MonoReflectionGenericParam;
 
+/* Safely access System.Reflection.Emit.GenericTypeParameterBuilder from native code */
+TYPED_HANDLE_DECL (MonoReflectionGenericParam);
+
 typedef struct {
 	MonoReflectionType type;
 	MonoReflectionTypeBuilder *tb;
 } MonoReflectionEnumBuilder;
+
+/* Safely access System.Reflection.Emit.EnumBuilder from native code */
+TYPED_HANDLE_DECL (MonoReflectionEnumBuilder);
 
 typedef struct _MonoReflectionGenericClass MonoReflectionGenericClass;
 struct _MonoReflectionGenericClass {
@@ -1224,6 +1263,9 @@ struct _MonoReflectionGenericClass {
 	MonoReflectionType *generic_type; /*Can be either a MonoType or a TypeBuilder*/
 	MonoArray *type_arguments;
 };
+
+/* Safely access System.Reflection.Emit.TypeBuilderInstantiation from native code */
+TYPED_HANDLE_DECL (MonoReflectionGenericClass);
 
 typedef struct {
 	MonoObject  obj;
@@ -1313,6 +1355,9 @@ typedef struct {
 	MonoReflectionType *owner;
 } MonoReflectionDynamicMethod;	
 
+/* Safely access System.Reflection.Emit.DynamicMethod from native code */
+TYPED_HANDLE_DECL (MonoReflectionDynamicMethod);
+
 typedef struct {
 	MonoObject object;
 	MonoReflectionModuleBuilder *module;
@@ -1324,6 +1369,9 @@ typedef struct {
 	MonoArray *modreqs;
 	MonoArray *modopts;
 } MonoReflectionSigHelper;
+
+/* Safely access System.Reflection.Emit.SignatureHelper from native code */
+TYPED_HANDLE_DECL (MonoReflectionSigHelper);
 
 typedef struct {
 	MonoObject object;
@@ -1373,10 +1421,8 @@ typedef struct {
 } CattrNamedArg;
 
 gboolean          mono_image_create_pefile (MonoReflectionModuleBuilder *module, gpointer file, MonoError *error);
-guint32       mono_image_insert_string (MonoReflectionModuleBuilder *module, MonoString *str);
-guint32       mono_image_create_token  (MonoDynamicImage *assembly, MonoObject *obj, gboolean create_methodspec, gboolean register_token, MonoError *error);
-guint32       mono_image_create_method_token (MonoDynamicImage *assembly, MonoObject *obj, MonoArray *opt_param_types, MonoError *error);
-void          mono_image_register_token (MonoDynamicImage *assembly, guint32 token, MonoObject *obj);
+guint32       mono_image_insert_string (MonoReflectionModuleBuilderHandle module, MonoStringHandle str, MonoError *error);
+guint32       mono_image_create_token  (MonoDynamicImage *assembly, MonoObjectHandle obj, gboolean create_methodspec, gboolean register_token, MonoError *error);
 void          mono_dynamic_image_free (MonoDynamicImage *image);
 void          mono_dynamic_image_free_image (MonoDynamicImage *image);
 void          mono_dynamic_image_release_gc_roots (MonoDynamicImage *image);
@@ -1400,7 +1446,7 @@ MonoArrayHandle mono_param_get_objects_internal  (MonoDomain *domain, MonoMethod
 MonoClass*
 mono_class_bind_generic_parameters (MonoClass *klass, int type_argc, MonoType **types, gboolean is_dynamic);
 MonoType*
-mono_reflection_bind_generic_parameters (MonoReflectionType *type, int type_argc, MonoType **types, MonoError *error);
+mono_reflection_bind_generic_parameters (MonoReflectionTypeHandle type, int type_argc, MonoType **types, MonoError *error);
 void
 mono_reflection_generic_class_initialize (MonoReflectionGenericClass *type, MonoArray *fields);
 
@@ -1437,6 +1483,9 @@ mono_get_constant_value_from_blob (MonoDomain* domain, MonoTypeEnum type, const 
 void
 mono_release_type_locks (MonoInternalThread *thread);
 
+int
+mono_string_handle_length (MonoStringHandle s);
+
 char *
 mono_string_handle_to_utf8 (MonoStringHandle s, MonoError *error);
 
@@ -1444,11 +1493,11 @@ char *
 mono_string_to_utf8_mp	(MonoMemPool *mp, MonoString *s, MonoError *error);
 
 char *
-mono_string_to_utf8_image (MonoImage *image, MonoString *s, MonoError *error);
+mono_string_to_utf8_image (MonoImage *image, MonoStringHandle s, MonoError *error);
 
 
-MonoArray*
-mono_array_clone_in_domain (MonoDomain *domain, MonoArray *array, MonoError *error);
+MonoArrayHandle
+mono_array_clone_in_domain (MonoDomain *domain, MonoArrayHandle array, MonoError *error);
 
 MonoArray*
 mono_array_clone_checked (MonoArray *array, MonoError *error);
@@ -1475,14 +1524,17 @@ MonoArray*
 ves_icall_array_new_specific (MonoVTable *vtable, uintptr_t n);
 
 #ifndef DISABLE_REMOTING
+MonoRemoteClass*
+mono_remote_class (MonoDomain *domain, MonoStringHandle class_name, MonoClass *proxy_class, MonoError *error);
+
 MonoObject *
 mono_remoting_invoke (MonoObject *real_proxy, MonoMethodMessage *msg, MonoObject **exc, MonoArray **out_args, MonoError *error);
 
 gpointer
-mono_remote_class_vtable (MonoDomain *domain, MonoRemoteClass *remote_class, MonoRealProxy *real_proxy, MonoError *error);
+mono_remote_class_vtable (MonoDomain *domain, MonoRemoteClass *remote_class, MonoRealProxyHandle real_proxy, MonoError *error);
 
 gboolean
-mono_upgrade_remote_class (MonoDomain *domain, MonoObject *tproxy, MonoClass *klass, MonoError *error);
+mono_upgrade_remote_class (MonoDomain *domain, MonoObjectHandle tproxy, MonoClass *klass, MonoError *error);
 
 void*
 mono_load_remote_field_checked (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, void **res, MonoError *error);
@@ -1605,11 +1657,17 @@ mono_class_is_reflection_method_or_constructor (MonoClass *klass);
 MonoObject *
 mono_get_object_from_blob (MonoDomain *domain, MonoType *type, const char *blob, MonoError *error);
 
-gpointer
+MonoObjectHandle
 mono_class_get_ref_info (MonoClass *klass);
 
+gboolean
+mono_class_has_ref_info (MonoClass *klass);
+
+MonoObject*
+mono_class_get_ref_info_raw (MonoClass *klass);
+
 void
-mono_class_set_ref_info (MonoClass *klass, gpointer obj);
+mono_class_set_ref_info (MonoClass *klass, MonoObjectHandle obj);
 
 void
 mono_class_free_ref_info (MonoClass *klass);
@@ -1634,6 +1692,9 @@ mono_field_static_get_value_checked (MonoVTable *vt, MonoClassField *field, void
 
 void
 mono_field_static_get_value_for_thread (MonoInternalThread *thread, MonoVTable *vt, MonoClassField *field, void *value, MonoError *error);
+
+MonoMethod*
+mono_object_handle_get_virtual_method (MonoObjectHandle obj, MonoMethod *method, MonoError *error);
 
 /* exported, used by the debugger */
 MONO_API void *
@@ -1708,8 +1769,11 @@ mono_object_clone_checked (MonoObject *obj, MonoError *error);
 MonoObject *
 mono_object_isinst_checked (MonoObject *obj, MonoClass *klass, MonoError *error);
 
-MonoObject *
-mono_object_isinst_mbyref_checked   (MonoObject *obj, MonoClass *klass, MonoError *error);
+MonoObjectHandle
+mono_object_handle_isinst (MonoObjectHandle obj, MonoClass *klass, MonoError *error);
+
+MonoObjectHandle
+mono_object_handle_isinst_mbyref (MonoObjectHandle obj, MonoClass *klass, MonoError *error);
 
 MonoString *
 mono_string_new_size_checked (MonoDomain *domain, gint32 len, MonoError *error);
@@ -1725,6 +1789,9 @@ mono_string_new_checked (MonoDomain *domain, const char *text, MonoError *merror
 
 MonoString *
 mono_string_new_utf16_checked (MonoDomain *domain, const guint16 *text, gint32 len, MonoError *error);
+
+MonoStringHandle
+mono_string_new_utf16_handle (MonoDomain *domain, const guint16 *text, gint32 len, MonoError *error);
 
 MonoString *
 mono_string_from_utf16_checked (mono_unichar2 *data, MonoError *error);
@@ -1780,16 +1847,17 @@ mono_runtime_exec_main_checked (MonoMethod *method, MonoArray *args, MonoError *
 int
 mono_runtime_try_exec_main (MonoMethod *method, MonoArray *args, MonoObject **exc);
 
-MonoReflectionMethod*
-ves_icall_MonoMethod_MakeGenericMethod_impl (MonoReflectionMethod *rmethod, MonoArray *types);
+MonoReflectionMethodHandle
+ves_icall_MonoMethod_MakeGenericMethod_impl (MonoReflectionMethodHandle rmethod, MonoArrayHandle types, MonoError *error);
 
 gint32
-ves_icall_ModuleBuilder_getToken (MonoReflectionModuleBuilder *mb, MonoObject *obj, gboolean create_open_instance);
+ves_icall_ModuleBuilder_getToken (MonoReflectionModuleBuilderHandle mb, MonoObjectHandle obj, gboolean create_open_instance, MonoError *error);
 
 gint32
-ves_icall_ModuleBuilder_getMethodToken (MonoReflectionModuleBuilder *mb,
-										MonoReflectionMethod *method,
-										MonoArray *opt_param_types);
+ves_icall_ModuleBuilder_getMethodToken (MonoReflectionModuleBuilderHandle mb,
+					MonoReflectionMethodHandle method,
+					MonoArrayHandle opt_param_types,
+					MonoError *error);
 
 void
 ves_icall_ModuleBuilder_WriteToFile (MonoReflectionModuleBuilder *mb, gpointer file);
@@ -1798,7 +1866,7 @@ void
 ves_icall_ModuleBuilder_build_metadata (MonoReflectionModuleBuilder *mb);
 
 void
-ves_icall_ModuleBuilder_RegisterToken (MonoReflectionModuleBuilder *mb, MonoObject *obj, guint32 token);
+ves_icall_ModuleBuilder_RegisterToken (MonoReflectionModuleBuilderHandle mb, MonoObjectHandle obj, guint32 token, MonoError *error);
 
 MonoObject*
 ves_icall_ModuleBuilder_GetRegisteredToken (MonoReflectionModuleBuilder *mb, guint32 token);
@@ -1813,20 +1881,20 @@ MonoArray*
 ves_icall_CustomAttributeBuilder_GetBlob (MonoReflectionAssembly *assembly, MonoObject *ctor, MonoArray *ctorArgs, MonoArray *properties, MonoArray *propValues, MonoArray *fields, MonoArray* fieldValues);
 
 void
-ves_icall_DynamicMethod_create_dynamic_method (MonoReflectionDynamicMethod *mb);
+ves_icall_DynamicMethod_create_dynamic_method (MonoReflectionDynamicMethodHandle mb, MonoError *error);
 
-MonoReflectionType*
-ves_icall_TypeBuilder_create_runtime_class (MonoReflectionTypeBuilder *tb);
+MonoReflectionTypeHandle
+ves_icall_TypeBuilder_create_runtime_class (MonoReflectionTypeBuilderHandle tb, MonoError *error);
 
 void
 ves_icall_EnumBuilder_setup_enum_type (MonoReflectionType *enumtype,
 									   MonoReflectionType *t);
 
 void
-ves_icall_ModuleBuilder_basic_init (MonoReflectionModuleBuilder *moduleb);
+ves_icall_ModuleBuilder_basic_init (MonoReflectionModuleBuilderHandle moduleb, MonoError *error);
 
 guint32
-ves_icall_ModuleBuilder_getUSIndex (MonoReflectionModuleBuilder *module, MonoString *str);
+ves_icall_ModuleBuilder_getUSIndex (MonoReflectionModuleBuilderHandle module, MonoStringHandle str, MonoError *error);
 
 void
 ves_icall_ModuleBuilder_set_wrappers_type (MonoReflectionModuleBuilder *moduleb, MonoReflectionType *type);

@@ -18,7 +18,7 @@ namespace System
 {
     public static partial class Environment
     {
-        public unsafe static String ExpandEnvironmentVariables(String name)
+        public static unsafe String ExpandEnvironmentVariables(String name)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -28,7 +28,7 @@ namespace System
             return name;
         }
 
-        public unsafe static String GetEnvironmentVariable(String variable)
+        public static unsafe String GetEnvironmentVariable(String variable)
         {
             if (variable == null)
                 throw new ArgumentNullException(nameof(variable));
@@ -36,12 +36,6 @@ namespace System
             // Environment variable accessors are not approved modern API.
             // Behave as if the variable was not found in this case.
             return null;
-        }
-
-        public static void Exit(int exitCode)
-        {
-            // Store apps have their lifetime managed by the PLM
-            throw new PlatformNotSupportedException();
         }
     }
 }

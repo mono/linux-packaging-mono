@@ -15,7 +15,6 @@ libgc_static_libs=$(monodir)/libgc/libmonogc-static.la
 
 boehm_libs=	\
 	$(monodir)/mono/metadata/libmonoruntime.la	\
-	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV) \
 	$(libgc_libs)
@@ -23,13 +22,11 @@ boehm_libs=	\
 sgen_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
 	$(monodir)/mono/sgen/libmonosgen.la	\
-	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
 
 boehm_static_libs=	\
 	$(monodir)/mono/metadata/libmonoruntime-static.la	\
-	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV) \
 	$(libgc_static_libs)
@@ -37,7 +34,6 @@ boehm_static_libs=	\
 sgen_static_libs = \
 	$(monodir)/mono/metadata/libmonoruntimesgen-static.la	\
 	$(monodir)/mono/sgen/libmonosgen-static.la	\
-	$(monodir)/mono/io-layer/libwapi.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
 
@@ -46,10 +42,12 @@ CLASS=$(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 RUNTIME_EXECUTABLE = $(if $(BOEHM),$(top_builddir)/mono/mini/mono-boehm,$(top_builddir)/runtime/mono-wrapper)
 
 MINI_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME_EXECUTABLE)
+TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/mono-wrapper
+INTERPRETER_RUNTIME = $(MINI_RUNTIME) --interpreter
 RUNTIME_AOTCHECK = MONO_PATH="$(CLASS)$(PLATFORM_PATH_SEPARATOR)." $(RUNTIME_EXECUTABLE)
 
-MCS = CSC_SDK_PATH_DISABLED= $(MINI_RUNTIME) $(CSC) -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
-ILASM = $(MINI_RUNTIME) $(CLASS)/ilasm.exe
+MCS = CSC_SDK_PATH_DISABLED= $(TOOLS_RUNTIME) $(CSC) -unsafe -nowarn:0162 -nologo -noconfig -r:$(CLASS)/mscorlib.dll -r:$(CLASS)/System.dll -r:$(CLASS)/System.Core.dll
+ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 
 AM_CFLAGS = \
 	-I$(top_srcdir) 	\
@@ -389,6 +387,17 @@ llvm_sources = \
 endif
 endif
 
+if ENABLE_INTERPRETER
+interpreter_sources =	\
+	interpreter/hacks.h		\
+	interpreter/interp.h	\
+	interpreter/interp.c	\
+	interpreter/mintops.h	\
+	interpreter/mintops.def	\
+	interpreter/mintops.c	\
+	interpreter/transform.c
+endif
+
 if ENABLE_LLVM
 llvm_runtime_sources = \
 	llvm-runtime.cpp
@@ -463,7 +472,9 @@ common_sources = \
 	mini-cross-helpers.c \
 	arch-stubs.c		\
 	llvm-runtime.h	\
-	type-checking.c
+	type-checking.c \
+	lldb.h			\
+	lldb.c
 
 test_sources = 			\
 	basic-calls.cs 		\
@@ -488,8 +499,9 @@ test_sources = 			\
 
 
 regtests_UNIVERSAL=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe basic-vectors.exe
+iregtests=basic.exe basic-float.exe basic-long.exe basic-calls.exe
 
-if INSTALL_TESTING_AOT_FULL
+if FULL_AOT_TESTS
 regtests= \
 	$(regtests_UNIVERSAL)
 
@@ -501,7 +513,7 @@ endif
 else
 regtests= \
 	$(regtests_UNIVERSAL) \
-	$(regtests_TESTING_AOT_FULL_BLACKLIST)
+	$(regtests_FULL_AOT_TESTS_BLACKLIST)
 endif
 
 if X86
@@ -589,7 +601,7 @@ os_sources = $(darwin_sources) $(posix_sources)
 monobin_platform_ldflags=-framework CoreFoundation -framework Foundation
 endif
 
-libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(arch_sources) $(os_sources)
+libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(interpreter_sources) $(arch_sources) $(os_sources)
 libmini_la_CFLAGS = $(mono_CFLAGS)
 
 libmonoboehm_2_0_la_SOURCES =
@@ -713,6 +725,9 @@ rcheck-nunit: mono $(regtests)
 rcheck: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
+richeck: mono $(iregtests)
+	$(INTERPRETER_RUNTIME) --regression $(iregtests)
+
 if ARM
 check-seq-points:
 else
@@ -744,9 +759,9 @@ gsharedvtcheck:
 fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
 
 # Skip aoting the tests that aren't compiled 
-# on the testing_aot_full profile because they're skipped
+# on the full aot profiles because they're skipped
 # on mobile profiles
-FULLAOT_LIBS_TESTING_AOT_FULL_BLACKLIST = \
+FULLAOT_LIBS_FULL_AOT_TESTS_BLACKLIST = \
 	Mono.Posix.dll \
 	System.Configuration.dll
 
@@ -761,14 +776,13 @@ FULLAOT_LIBS_UNIVERSAL = \
 	System.Numerics.dll \
 	System.Numerics.Vectors.dll
 
-if INSTALL_TESTING_AOT_FULL
+if FULL_AOT_TESTS
 FULLAOT_LIBS= \
-	Mono.Dynamic.Interpreter.dll \
 	$(FULLAOT_LIBS_UNIVERSAL)
 else
 FULLAOT_LIBS= \
 	$(FULLAOT_LIBS_UNIVERSAL) \
-	$(FULLAOT_LIBS_TESTING_AOT_FULL_BLACKLIST)
+	$(FULLAOT_LIBS_FULL_AOT_TESTS_BLACKLIST)
 endif
 
 FULLAOT_TMP_DIR=$(top_builddir)/mono/mini/fullaot-tmp
@@ -864,7 +878,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1456/b428249\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1707/35b66de\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

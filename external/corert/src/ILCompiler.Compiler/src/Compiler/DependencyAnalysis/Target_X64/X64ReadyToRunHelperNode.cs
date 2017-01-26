@@ -108,7 +108,32 @@ namespace ILCompiler.DependencyAnalysis
                     break;
 
                 case ReadyToRunHelperId.GetThreadStaticBase:
-                    encoder.EmitINT3();
+                    {
+                        MetadataType target = (MetadataType)Target;
+
+                        encoder.EmitLEAQ(encoder.TargetRegister.Arg2, factory.TypeThreadStaticIndex(target));
+
+                        // First arg: address of the TypeManager slot that provides the helper with
+                        // information about module index and the type manager instance (which is used
+                        // for initialization on first access).
+                        AddrMode loadFromArg2 = new AddrMode(encoder.TargetRegister.Arg2, null, 0, 0, AddrModeSize.Int64);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg0, ref loadFromArg2);
+
+                        // Second arg: index of the type in the ThreadStatic section of the modules
+                        AddrMode loadFromArg2AndDelta = new AddrMode(encoder.TargetRegister.Arg2, null, factory.Target.PointerSize, 0, AddrModeSize.Int64);
+                        encoder.EmitMOV(encoder.TargetRegister.Arg1, ref loadFromArg2AndDelta);
+
+                        if (!factory.TypeSystemContext.HasLazyStaticConstructor(target))
+                        {
+                            encoder.EmitJMP(factory.HelperEntrypoint(HelperEntrypoint.GetThreadStaticBaseForType));
+                        }
+                        else
+                        {
+                            encoder.EmitLEAQ(encoder.TargetRegister.Arg2, factory.TypeNonGCStaticsSymbol(target));
+                            // TODO: performance optimization - inline the check verifying whether we need to trigger the cctor
+                            encoder.EmitJMP(factory.HelperEntrypoint(HelperEntrypoint.EnsureClassConstructorRunAndReturnThreadStaticBase));
+                        }
+                    }
                     break;
 
                 case ReadyToRunHelperId.GetGCStaticBase:

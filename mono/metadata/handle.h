@@ -311,6 +311,8 @@ This is why we evaluate index and value before any call to MONO_HANDLE_RAW or ot
 		mono_gc_wbarrier_generic_store (&__dest->__obj,  (MonoObject*)(MONO_HANDLE_RAW(HANDLE)->FIELD)); \
 	} while (0)
 
+#define MONO_HANDLE_NEW_GET(TYPE,HANDLE,FIELD) (MONO_HANDLE_NEW(TYPE,MONO_HANDLE_RAW(HANDLE)->FIELD))
+
 #define MONO_HANDLE_GETVAL(HANDLE, FIELD) (MONO_HANDLE_RAW(HANDLE)->FIELD)
 
 /* VS doesn't support typeof :( :( :( */
@@ -377,6 +379,9 @@ mono_handle_assign (MonoObjectHandleOut dest, MonoObjectHandle src)
 //FIXME this should go somewhere else
 MonoStringHandle mono_string_new_handle (MonoDomain *domain, const char *data, MonoError *error);
 MonoArrayHandle mono_array_new_handle (MonoDomain *domain, MonoClass *eclass, uintptr_t n, MonoError *error);
+MonoArrayHandle
+mono_array_new_full_handle (MonoDomain *domain, MonoClass *array_class, uintptr_t *lengths, intptr_t *lower_bounds, MonoError *error);
+
 
 uintptr_t mono_array_handle_length (MonoArrayHandle arr);
 

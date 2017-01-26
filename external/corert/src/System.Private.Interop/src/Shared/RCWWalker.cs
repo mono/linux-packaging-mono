@@ -569,7 +569,7 @@ namespace System.Runtime.InteropServices
         /// <summary>
         /// Initialize RCWWalker
         /// </summary>
-        private unsafe static void Initialize(__com_IJupiterObject* pJupiterObject)
+        private static unsafe void Initialize(__com_IJupiterObject* pJupiterObject)
         {
             IntPtr pGCManager;
             int hr = CalliIntrinsics.StdCall<int>(pJupiterObject->pVtable->pfnGetJupiterGCManager, pJupiterObject, &pGCManager);
@@ -1134,7 +1134,6 @@ namespace System.Runtime.InteropServices
     // This struct intentionally does no self-synchronization. It's up to the caller to
     // to use DependentHandles in a thread-safe way.
     //=========================================================================================
-    [ComVisible(false)]
     struct DependentHandle
     {
         #region Constructors

@@ -34,7 +34,7 @@ namespace System.Runtime
         FirstPassFrameEntered = 8
     }
 
-    internal unsafe static class DebuggerNotify
+    internal static unsafe class DebuggerNotify
     {
         // We cache the events a debugger is interested on the C# side to avoid p/invokes when the
         // debugger isn't attached.
@@ -88,7 +88,7 @@ namespace System.Runtime
         }
     }
 
-    internal unsafe static class EH
+    internal static unsafe class EH
     {
         internal static UIntPtr MaxSP
         {
@@ -204,7 +204,7 @@ namespace System.Runtime
         private const int c_IPAdjustForHardwareFault = 1;
 #endif
 
-        internal unsafe static void* PointerAlign(void* ptr, int alignmentInBytes)
+        internal static unsafe void* PointerAlign(void* ptr, int alignmentInBytes)
         {
             int alignMask = alignmentInBytes - 1;
 #if BIT64
@@ -216,7 +216,7 @@ namespace System.Runtime
 
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        internal unsafe static void UnhandledExceptionFailFastViaClasslib(
+        internal static unsafe void UnhandledExceptionFailFastViaClasslib(
             RhFailFastReason reason, object unhandledException, IntPtr classlibAddress, ref ExInfo exInfo)
         {
             IntPtr pFailFastFunction =
@@ -760,6 +760,10 @@ namespace System.Runtime
                     // previous dispatch.
                     if ((ehClause._tryStartOffset == lastTryStart) && (ehClause._tryEndOffset == lastTryEnd))
                         continue;
+
+                    // We are done skipping. This is required to handle empty finally block markers that are used
+                    // to separate runs of different try blocks with same native code offsets.
+                    idxStart = MaxTryRegionIdx;
                 }
 
                 RhEHClauseKind clauseKind = ehClause._clauseKind;
@@ -800,7 +804,7 @@ namespace System.Runtime
             return false;
         }
 
-        static EEType* s_pLowLevelObjectType;
+        private static EEType* s_pLowLevelObjectType;
 
         private static bool ShouldTypedClauseCatchThisException(object exception, EEType* pClauseType)
         {
@@ -861,6 +865,10 @@ namespace System.Runtime
                     // previous dispatch.
                     if ((ehClause._tryStartOffset == lastTryStart) && (ehClause._tryEndOffset == lastTryEnd))
                         continue;
+
+                    // We are done skipping. This is required to handle empty finally block markers that are used
+                    // to separate runs of different try blocks with same native code offsets.
+                    idxStart = MaxTryRegionIdx;
                 }
 
                 RhEHClauseKind clauseKind = ehClause._clauseKind;
@@ -892,12 +900,12 @@ namespace System.Runtime
         }
 
         [NativeCallable(EntryPoint = "RhpFailFastForPInvokeExceptionPreemp", CallingConvention = CallingConvention.Cdecl)]
-        static public void RhpFailFastForPInvokeExceptionPreemp(IntPtr PInvokeCallsiteReturnAddr, void* pExceptionRecord, void* pContextRecord)
+        public static void RhpFailFastForPInvokeExceptionPreemp(IntPtr PInvokeCallsiteReturnAddr, void* pExceptionRecord, void* pContextRecord)
         {
             FailFastViaClasslib(RhFailFastReason.PN_UnhandledExceptionFromPInvoke, null, PInvokeCallsiteReturnAddr);
         }
         [RuntimeExport("RhpFailFastForPInvokeExceptionCoop")]
-        static public void RhpFailFastForPInvokeExceptionCoop(IntPtr classlibBreadcrumb, void* pExceptionRecord, void* pContextRecord)
+        public static void RhpFailFastForPInvokeExceptionCoop(IntPtr classlibBreadcrumb, void* pExceptionRecord, void* pContextRecord)
         {
             FailFastViaClasslib(RhFailFastReason.PN_UnhandledExceptionFromPInvoke, null, classlibBreadcrumb);
         }

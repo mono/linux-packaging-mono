@@ -112,8 +112,7 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@libtestlib_la_DEPENDENCIES = ../metadata/libmonoruntimesgen.la \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@	../sgen/libmonosgen.la \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@	../utils/libmonoutils.la \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@	../io-layer/libwapi.la
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@	../utils/libmonoutils.la
 am_libtestlib_la_OBJECTS =
 libtestlib_la_OBJECTS = $(am_libtestlib_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -658,7 +657,7 @@ test_ldadd = libtestlib.la \
 @PLATFORM_DARWIN_TRUE@test_ldflags = -framework CoreFoundation -framework Foundation
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@noinst_LTLIBRARIES = libtestlib.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@libtestlib_la_SOURCES = 
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la ../io-layer/libwapi.la 
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_SOURCES = test-sgen-qsort.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_CFLAGS = $(test_cflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@test_sgen_qsort_LDADD = $(test_ldadd)

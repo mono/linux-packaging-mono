@@ -13,6 +13,7 @@ using Internal.Text;
 using Internal.TypeSystem;
 using Internal.Runtime;
 using Internal.IL;
+using Internal.NativeFormat;
 
 namespace ILCompiler.DependencyAnalysis
 {
@@ -152,6 +153,11 @@ namespace ILCompiler.DependencyAnalysis
                 return new ThreadStaticsNode(type, this);
             });
 
+            _typeThreadStaticIndices = new NodeCache<MetadataType, TypeThreadStaticIndexNode>(type =>
+            {
+                return new TypeThreadStaticIndexNode(type);
+            });
+
             _GCStaticEETypes = new NodeCache<GCPointerMap, GCStaticEETypeNode>((GCPointerMap gcMap) =>
             {
                 return new GCStaticEETypeNode(Target, gcMap);
@@ -235,6 +241,11 @@ namespace ILCompiler.DependencyAnalysis
                 return new InterfaceDispatchMapNode(type);
             });
 
+            _runtimeMethodHandles = new NodeCache<MethodDesc, RuntimeMethodHandleNode>((MethodDesc method) =>
+            {
+                return new RuntimeMethodHandleNode(this, method);
+            });
+
             _interfaceDispatchMapIndirectionNodes = new NodeCache<TypeDesc, EmbeddedObjectNode>((TypeDesc type) =>
             {
                 var dispatchMap = InterfaceDispatchMap(type);
@@ -283,6 +294,8 @@ namespace ILCompiler.DependencyAnalysis
             {
                 return new StringAllocatorMethodNode(constructor);
             });
+
+            NativeLayout = new NativeLayoutHelper(this);
         }
 
         protected abstract IMethodNode CreateMethodEntrypointNode(MethodDesc method);
@@ -349,15 +362,27 @@ namespace ILCompiler.DependencyAnalysis
 
         private NodeCache<MetadataType, ThreadStaticsNode> _threadStatics;
 
-        public ISymbolNode TypeThreadStaticsSymbol(MetadataType type)
+        public ThreadStaticsNode TypeThreadStaticsSymbol(MetadataType type)
+        {
+            // This node is always used in the context of its index within the region.
+            // We should never ask for this if the current compilation doesn't contain the
+            // associated type.
+            Debug.Assert(_compilationModuleGroup.ContainsType(type));
+            return _threadStatics.GetOrAdd(type);
+        }
+
+
+        private NodeCache<MetadataType, TypeThreadStaticIndexNode> _typeThreadStaticIndices;
+
+        public ISymbolNode TypeThreadStaticIndex(MetadataType type)
         {
             if (_compilationModuleGroup.ContainsType(type))
             {
-                return _threadStatics.GetOrAdd(type);
+                return _typeThreadStaticIndices.GetOrAdd(type);
             }
             else
             {
-                return ExternSymbol("__ThreadStaticBase_" + NodeFactory.NameMangler.GetMangledTypeName(type));
+                return ExternSymbol("__TypeThreadStaticIndex_" + NameMangler.GetMangledTypeName(type));
             }
         }
 
@@ -366,6 +391,13 @@ namespace ILCompiler.DependencyAnalysis
         internal InterfaceDispatchCellNode InterfaceDispatchCell(MethodDesc method)
         {
             return _interfaceDispatchCells.GetOrAdd(method);
+        }
+
+        private NodeCache<MethodDesc, RuntimeMethodHandleNode> _runtimeMethodHandles;
+
+        internal RuntimeMethodHandleNode RuntimeMethodHandle(MethodDesc method)
+        {
+            return _runtimeMethodHandles.GetOrAdd(method);
         }
 
         private class BlobTupleEqualityComparer : IEqualityComparer<Tuple<Utf8String, byte[], int>>
@@ -504,7 +536,9 @@ namespace ILCompiler.DependencyAnalysis
 
         private static readonly string[][] s_helperEntrypointNames = new string[][] {
             new string[] { "System.Runtime.CompilerServices", "ClassConstructorRunner", "CheckStaticClassConstructionReturnGCStaticBase" },
-            new string[] { "System.Runtime.CompilerServices", "ClassConstructorRunner", "CheckStaticClassConstructionReturnNonGCStaticBase" }
+            new string[] { "System.Runtime.CompilerServices", "ClassConstructorRunner", "CheckStaticClassConstructionReturnNonGCStaticBase" },
+            new string[] { "System.Runtime.CompilerServices", "ClassConstructorRunner", "CheckStaticClassConstructionReturnThreadStaticBase" },
+            new string[] { "Internal.Runtime", "ThreadStatics", "GetThreadStaticBaseForType" }
         };
 
         private ISymbolNode[] _helperEntrypointSymbols;
@@ -631,17 +665,6 @@ namespace ILCompiler.DependencyAnalysis
             return ReadOnlyDataBlob(symbolName, stringBytes, 1);
         }
 
-        public ISymbolNode ConstantUtf16String(string str)
-        {
-            int stringBytesCount = Encoding.Unicode.GetByteCount(str);
-            byte[] stringBytes = new byte[stringBytesCount + 2];
-            Encoding.Unicode.GetBytes(str, 0, str.Length, stringBytes, 0);
-
-            string symbolName = "__utf16str_" + NameMangler.GetMangledStringName(str);
-
-            return ReadOnlyDataBlob(symbolName, stringBytes, 2);
-        }
-
         /// <summary>
         /// Returns alternative symbol name that object writer should produce for given symbols
         /// in addition to the regular one.
@@ -666,7 +689,7 @@ namespace ILCompiler.DependencyAnalysis
         public ArrayOfEmbeddedPointersNode<IMethodNode> EagerCctorTable = new ArrayOfEmbeddedPointersNode<IMethodNode>(
             "__EagerCctorStart",
             "__EagerCctorEnd",
-            new EagerConstructorComparer());
+            null);
 
         public ArrayOfEmbeddedPointersNode<InterfaceDispatchMapNode> DispatchMapTable = new ArrayOfEmbeddedPointersNode<InterfaceDispatchMapNode>(
             "__DispatchMapTableStart",
@@ -716,5 +739,7 @@ namespace ILCompiler.DependencyAnalysis
     {
         EnsureClassConstructorRunAndReturnGCStaticBase,
         EnsureClassConstructorRunAndReturnNonGCStaticBase,
+        EnsureClassConstructorRunAndReturnThreadStaticBase,
+        GetThreadStaticBaseForType,
     }
 }

@@ -89,12 +89,9 @@ namespace NUnitLite.Runner
             this.finallyDelegate = new FinallyDelegate();
             this.runner = new NUnitLiteTestAssemblyRunner(new NUnitLiteTestAssemblyBuilder(), this.finallyDelegate);
             this.listener = listener;
-
-
-	    AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(this.TopLevelHandler);
         }
 
-	public void TopLevelHandler(object sender, UnhandledExceptionEventArgs e)
+	void TopLevelHandler(object sender, UnhandledExceptionEventArgs e)
 	{
 		// Make sure that the test harness knows this exception was thrown
 		if (this.finallyDelegate != null)
@@ -305,6 +302,9 @@ namespace NUnitLite.Runner
         {
             DateTime startTime = DateTime.Now;
 
+            var crashHandler = new UnhandledExceptionEventHandler(TopLevelHandler);
+            AppDomain.CurrentDomain.UnhandledException += crashHandler;
+
             ITestResult result = runner.Run(this, filter);
             new ResultReporter(result, writer).ReportResults();
             string resultFile = commandLineOptions.ResultFile;
@@ -325,6 +325,8 @@ namespace NUnitLite.Runner
                 Console.WriteLine();
                 Console.WriteLine("Results saved as {0}.", resultFile);
             }
+
+            AppDomain.CurrentDomain.UnhandledException -= crashHandler;
         }
 
         private void ExploreTests()
