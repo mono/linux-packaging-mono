@@ -138,7 +138,7 @@ namespace System.Threading.Tasks
         // Get in touch with the diagnostics team if you have questions.
         private volatile int m_taskId; // this task's unique ID. initialized only if it is ever requested
 
-        internal object m_action;    // The body of the task.  Might be Action<object>, Action<TState> or Action.  Or possibly a Func.
+        internal Delegate m_action;    // The body of the task.  Might be Action<object>, Action<TState> or Action.  Or possibly a Func.
         // If m_action is set to null it will indicate that we operate in the
         // "externally triggered completion" mode, which is exclusively meant 
         // for the signalling Task<TResult> (aka. promise). In this mode,
@@ -528,7 +528,7 @@ namespace System.Threading.Tasks
         /// <param name="cancellationToken">A CancellationToken for the Task.</param>
         /// <param name="creationOptions">Options to customize behavior of Task.</param>
         /// <param name="internalOptions">Internal options to customize behavior of Task.</param>
-        internal void TaskConstructorCore(object action, object state, CancellationToken cancellationToken,
+        internal void TaskConstructorCore(Delegate action, object state, CancellationToken cancellationToken,
             TaskCreationOptions creationOptions, InternalTaskOptions internalOptions, TaskScheduler scheduler)
         {
             m_action = action;
@@ -660,7 +660,7 @@ namespace System.Threading.Tasks
 
         // Static delegate to be used as a cancellation callback on unstarted tasks that have a valid cancellation token.
         // This is necessary to transition them into canceled state if their cancellation token is signalled while they are still not queued
-        private readonly static Action<Object> s_taskCancelCallback = new Action<Object>(TaskCancelCallback);
+        private static readonly Action<Object> s_taskCancelCallback = new Action<Object>(TaskCancelCallback);
         private static void TaskCancelCallback(Object o)
         {
             var targetTask = o as Task;
@@ -775,7 +775,7 @@ namespace System.Threading.Tasks
         {
             get
             {
-                Delegate d = (Delegate)m_action;
+                Delegate d = m_action;
                 if (d == null)
                     return "{null}";
                 IntPtr fptr = d.GetNativeFunctionPointer();
@@ -1625,33 +1625,10 @@ namespace System.Threading.Tasks
         /// of <see cref="System.Threading.Tasks.TaskFactory"/>, as would result from using
         /// the default constructor on TaskFactory.
         /// </remarks>
-        public static TaskFactory Factory
-        {
-            get
-            {
-                if (s_defaultTaskFactory == null)
-                    Interlocked.CompareExchange(ref s_defaultTaskFactory, new TaskFactory(), null);
-                return s_defaultTaskFactory;
-            }
-        }
-
-        private static TaskFactory s_defaultTaskFactory;
-
-        /// <summary>A task that's already been completed successfully.</summary>
-        private static Task s_completedTask;
+        public static TaskFactory Factory { get; } = new TaskFactory();
 
         /// <summary>Gets a task that's already been completed successfully.</summary>
-        /// <remarks>May not always return the same instance.</remarks>        
-        public static Task CompletedTask
-        {
-            get
-            {
-                var completedTask = s_completedTask;
-                if (completedTask == null)
-                    s_completedTask = completedTask = new Task(false, (TaskCreationOptions)InternalTaskOptions.DoNotDispose, default(CancellationToken)); // benign initialization race condition
-                return completedTask;
-            }
-        }
+        public static Task CompletedTask { get; } = new Task(false, (TaskCreationOptions)InternalTaskOptions.DoNotDispose, default(CancellationToken));
 
         /// <summary>
         /// Provides an event that can be used to wait for completion.
@@ -2098,7 +2075,7 @@ namespace System.Threading.Tasks
         }
 
         // statically allocated delegate for the removeall expression in Finish()
-        private readonly static Predicate<Task> s_IsExceptionObservedByParentPredicate = new Predicate<Task>((t) => { return t.IsExceptionObservedByParent; });
+        private static readonly Predicate<Task> s_IsExceptionObservedByParentPredicate = new Predicate<Task>((t) => { return t.IsExceptionObservedByParent; });
 
         /// <summary>
         /// FinishStageTwo is to be executed as soon as we known there are no more children to complete. 
@@ -4315,7 +4292,7 @@ namespace System.Threading.Tasks
         }
 
         // statically allocated delegate for the RemoveAll expression in RemoveContinuations() and AddContinuationComplex()
-        private readonly static Predicate<object> s_IsTaskContinuationNullPredicate =
+        private static readonly Predicate<object> s_IsTaskContinuationNullPredicate =
             new Predicate<object>((tc) => { return (tc == null); });
 
 

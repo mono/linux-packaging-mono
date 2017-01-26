@@ -675,7 +675,7 @@ namespace System.Threading
         //requests in the current domain.
         const uint tpQuantum = 30U;
 
-        static internal void Dispatch()
+        internal static void Dispatch()
         {
             var workQueue = ThreadPoolGlobals.workQueue;
 
@@ -818,7 +818,6 @@ namespace System.Threading
         }
     }
 
-    [System.Runtime.InteropServices.ComVisible(true)]
     internal delegate void WaitCallback(Object state);
 
     //
@@ -886,9 +885,9 @@ namespace System.Threading
             }
         }
 
-        static internal ContextCallback ccb = new ContextCallback(WaitCallback_Context);
+        internal static ContextCallback ccb = new ContextCallback(WaitCallback_Context);
 
-        static private void WaitCallback_Context(Object state)
+        private static void WaitCallback_Context(Object state)
         {
             QueueUserWorkItemCallback obj = (QueueUserWorkItemCallback)state;
             WaitCallback wc = obj.callback as WaitCallback;
@@ -944,9 +943,9 @@ namespace System.Threading
             }
         }
 
-        static internal ContextCallback ccb = new ContextCallback(WaitCallback_Context);
+        internal static ContextCallback ccb = new ContextCallback(WaitCallback_Context);
 
-        static private void WaitCallback_Context(Object state)
+        private static void WaitCallback_Context(Object state)
         {
             QueueUserWorkItemCallbackDefaultContext obj = (QueueUserWorkItemCallbackDefaultContext)state;
             WaitCallback wc = obj.callback as WaitCallback;

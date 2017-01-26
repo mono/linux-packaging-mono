@@ -18,14 +18,11 @@
     <ProjectReference Include="..\..\System.Private.CoreLib\src\System.Private.CoreLib.csproj" />
   </ItemGroup>
   <PropertyGroup>
-    <SkipCommonResourcesIncludes>true</SkipCommonResourcesIncludes>
+    <SkipCommonResourcesIncludes Condition="'$(IsProjectNLibrary)' == 'true'">true</SkipCommonResourcesIncludes>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Internal\Reflection\Augments\TypeForwarders.cs" />
     <Compile Include="System\Reflection\TypeForwarders.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\$(AssemblyName).rd.xml" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

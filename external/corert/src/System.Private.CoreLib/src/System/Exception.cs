@@ -175,21 +175,8 @@ namespace System
 
         private string GetClassName()
         {
-            Type thisType = this.GetType();
-            ReflectionExecutionDomainCallbacks callbacks = RuntimeAugments.CallbacksIfAvailable;
-            if (callbacks != null)
-            {
-                String preferredString = callbacks.GetBetterDiagnosticInfoIfAvailable(thisType.TypeHandle);
-                if (preferredString != null)
-                    return preferredString;
-            }
-
-            // If all else fails, fall back to the classic GetType().ToString() behavior (which will likely
-            // provide an unfriendly-looking string on Project N.)
-            return thisType.ToString();
+            return GetType().ToString();
         }
-
-
 
         // Retrieves the lowest exception (inner most) for the given Exception.
         // This will traverse exceptions using the innerException property.
@@ -411,6 +398,7 @@ namespace System
                     ex.AppendStackIP(IP, isFirstRethrowFrame);
 
                 // CORERT-TODO: RhpEtwExceptionThrown
+                // https://github.com/dotnet/corert/issues/2457
 #if !CORERT
                 if (isFirstFrame)
                 {

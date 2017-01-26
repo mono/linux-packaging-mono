@@ -175,7 +175,7 @@ namespace System.Globalization
             }
 
             // auto-generated
-            internal unsafe static void FormatDigits(StringBuilder outputBuffer, int value, int len, bool overrideLengthLimit)
+            internal static unsafe void FormatDigits(StringBuilder outputBuffer, int value, int len, bool overrideLengthLimit)
             {
                 // Limit the use of this function to be two-digits, so that we have the same behavior
                 // as RTM bits.
@@ -1103,7 +1103,7 @@ namespace System.Globalization
 
                 return StringBuilderCache.GetStringAndRelease(result);
             }
-            
+
             private static void AppendHHmmssTimeOfDay(StringBuilder result, DateTime dateTime)
             {
                 // HH:mm:ss
@@ -1113,7 +1113,7 @@ namespace System.Globalization
                 result.Append(':');
                 AppendNumber(result, dateTime.Second, 2);
             }
-        
+
             internal static void AppendNumber(StringBuilder builder, long val, int digits)
             {
                 for (int i = 0; i < digits; i++)

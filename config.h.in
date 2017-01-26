@@ -45,8 +45,14 @@
 /* Disable support for huge assemblies */
 #undef DISABLE_LARGE_CODE
 
+/* Disable support code for the LLDB plugin. */
+#undef DISABLE_LLDB
+
 /* Disable support debug logging */
 #undef DISABLE_LOGGING
+
+/* Disable support for .mdb symbol files. */
+#undef DISABLE_MDB
 
 /* Disable String normalization support. */
 #undef DISABLE_NORMALIZATION
@@ -135,6 +141,9 @@
 
 /* Icall symbol map enabled */
 #undef ENABLE_ICALL_SYMBOL_MAP
+
+/* Enable interpreter in the runtime. */
+#undef ENABLE_INTERPRETER
 
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM

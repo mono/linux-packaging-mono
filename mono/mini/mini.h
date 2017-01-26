@@ -562,6 +562,7 @@ extern const char *mono_build_date;
 extern gboolean mono_do_signal_chaining;
 extern gboolean mono_do_crash_chaining;
 extern MONO_API gboolean mono_use_llvm;
+extern MONO_API gboolean mono_use_interpreter;
 extern gboolean mono_do_single_method_regression;
 extern guint32 mono_single_method_regression_opt;
 extern MonoMethod *mono_current_single_method;
@@ -1526,7 +1527,9 @@ typedef enum {
 	/* Whenever to compile in llvm-only mode */
 	JIT_FLAG_LLVM_ONLY = (1 << 6),
 	/* Whenever calls to pinvoke functions are made directly */
-	JIT_FLAG_DIRECT_PINVOKE = (1 << 7)
+	JIT_FLAG_DIRECT_PINVOKE = (1 << 7),
+	/* Whenever this is a compile-all run and the result should be discarded */
+	JIT_FLAG_DISCARD_RESULTS = (1 << 8),
 } JitFlags;
 
 /* Bit-fields in the MonoBasicBlock.region */
@@ -2136,6 +2139,7 @@ typedef struct {
 	gboolean suspend_on_unhandled;
 	gboolean dyn_runtime_invoke;
 	gboolean gdb;
+	gboolean lldb;
 	gboolean use_fallback_tls;
 	/*
 	 * Whenever data such as next sequence points and flags is required.
@@ -2332,6 +2336,7 @@ MonoDomain* mini_init                      (const char *filename, const char *ru
 void        mini_cleanup                   (MonoDomain *domain);
 MONO_API MonoDebugOptions *mini_get_debug_options   (void);
 MONO_API gboolean    mini_parse_debug_option (const char *option);
+void        mini_profiler_enable_with_options (const char *profile_options);
 
 /* graph dumping */
 void mono_cfg_dump_create_context (MonoCompile *cfg);
@@ -2391,7 +2396,7 @@ void      mono_merge_basic_blocks           (MonoCompile *cfg, MonoBasicBlock *b
 void      mono_optimize_branches            (MonoCompile *cfg);
 
 void      mono_blockset_print               (MonoCompile *cfg, MonoBitSet *set, const char *name, guint idom);
-const char*mono_ji_type_to_string           (MonoJumpInfoType type);
+const char*mono_ji_type_to_string           (MonoJumpInfoType type) MONO_LLVM_INTERNAL;
 void      mono_print_ji                     (const MonoJumpInfo *ji);
 void      mono_print_ins_index              (int i, MonoInst *ins);
 GString  *mono_print_ins_index_strbuf       (int i, MonoInst *ins);
@@ -2607,6 +2612,7 @@ MonoFtnDesc      *mini_create_llvmonly_ftndesc (MonoDomain *domain, gpointer add
 
 gboolean          mono_running_on_valgrind (void);
 void*             mono_global_codeman_reserve (int size);
+void              mono_global_codeman_foreach (MonoCodeManagerFunc func, void *user_data);
 const char       *mono_regname_full (int reg, int bank);
 gint32*           mono_allocate_stack_slots (MonoCompile *cfg, gboolean backward, guint32 *stack_size, guint32 *stack_align);
 void              mono_local_regalloc (MonoCompile *cfg, MonoBasicBlock *bb);
@@ -2816,6 +2822,9 @@ void    mono_arch_notify_pending_exc            (MonoThreadInfo *info);
 guint8* mono_arch_get_call_target               (guint8 *code);
 guint32 mono_arch_get_plt_info_offset           (guint8 *plt_entry, mgreg_t *regs, guint8 *code);
 GSList *mono_arch_get_trampolines               (gboolean aot);
+#ifdef ENABLE_INTERPRETER
+gpointer mono_arch_get_enter_icall_trampoline (MonoTrampInfo **info);
+#endif
 
 /* Handle block guard */
 gpointer mono_arch_install_handler_block_guard (MonoJitInfo *ji, MonoJitExceptionInfo *clause, MonoContext *ctx, gpointer new_value);

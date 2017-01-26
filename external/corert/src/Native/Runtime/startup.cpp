@@ -70,13 +70,13 @@ bool InitDLL(HANDLE hPalInstance)
     if (!RestrictedCallouts::Initialize())
         return false;
 
-#ifndef APP_LOCAL_RUNTIME
+#if !defined(APP_LOCAL_RUNTIME) && !defined(USE_PORTABLE_HELPERS)
 #ifndef PLATFORM_UNIX
     PalAddVectoredExceptionHandler(1, RhpVectoredExceptionHandler);
 #else
     PalSetHardwareExceptionHandler(RhpHardwareExceptionHandler);
 #endif
-#endif
+#endif // !APP_LOCAL_RUNTIME && !USE_PORTABLE_HELPERS
 
     //
     // init per-instance state
@@ -261,15 +261,22 @@ void DllThreadDetach()
     }
 }
 
-void __stdcall RuntimeThreadShutdown(void* thread)
+void RuntimeThreadShutdown(void* thread)
 {
     // Note: loader lock is normally *not* held here!
     // The one exception is that the loader lock may be held during the thread shutdown callback
     // that is made for the single thread that runs the final stages of orderly process
     // shutdown (i.e., the thread that delivers the DLL_PROCESS_DETACH notifications when the
     // process is being torn down via an ExitProcess call).
+
     UNREFERENCED_PARAMETER(thread);
+
+#if _WIN32 || HAVE_THREAD_LOCAL
+    // If the current Unix platform doesn't support thread_local, we don't get the thread pointer
+    // as the parameter, we just get NULL, so we can check the thread validity only if the
+    // thread_local is supported
     ASSERT((Thread*)thread == ThreadStore::GetCurrentThread());
+#endif
 
     if (!g_processShutdownHasStarted)
     {

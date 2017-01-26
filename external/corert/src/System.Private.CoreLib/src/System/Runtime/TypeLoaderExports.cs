@@ -11,8 +11,6 @@ using System.Runtime.InteropServices;
 
 namespace System.Runtime
 {
-    // Initialize the cache eagerly to avoid null checks
-    [EagerOrderedStaticConstructor(EagerStaticConstructorOrder.SystemRuntimeTypeLoaderExports)]
     public static class TypeLoaderExports
     {
         [RuntimeExport("GetThreadStaticsForDynamicType")]
@@ -73,12 +71,19 @@ namespace System.Runtime
         // Initialize the cache eagerly to avoid null checks.
         // Use array with just single element to make this pay-for-play. The actual cache will be allocated only 
         // once the lazy lookups are actually needed.
-        private static Entry[] s_cache = new Entry[1];
+        private static Entry[] s_cache;
 
         private static Lock s_lock;
         private static GCHandle s_previousCache;
-        private volatile static IntPtr[] s_resolutionFunctionPointers = new IntPtr[4];
-        private static int s_nextResolutionFunctionPointerIndex = (int)SignatureKind.Count;
+        private volatile static IntPtr[] s_resolutionFunctionPointers;
+        private static int s_nextResolutionFunctionPointerIndex;
+
+        internal static void Initialize()
+        {
+            s_cache = new Entry[1];
+            s_resolutionFunctionPointers = new IntPtr[4];
+            s_nextResolutionFunctionPointerIndex = (int)SignatureKind.Count;
+        }
 
         [RuntimeExport("GenericLookup")]
         public static IntPtr GenericLookup(IntPtr context, IntPtr signature)
@@ -146,7 +151,7 @@ namespace System.Runtime
             return RawCalliHelper.Call<Object>(entry.Result, arg, entry.AuxResult);
         }
 
-        public unsafe static IntPtr GetDelegateThunk(object delegateObj, int whichThunk)
+        public static unsafe IntPtr GetDelegateThunk(object delegateObj, int whichThunk)
         {
             Entry entry = LookupInCache(s_cache, delegateObj.m_pEEType, new IntPtr(whichThunk));
             if (entry == null)
@@ -156,7 +161,7 @@ namespace System.Runtime
             return entry.Result;
         }
 
-        public unsafe static IntPtr GVMLookupForSlot(object obj, RuntimeMethodHandle slot)
+        public static unsafe IntPtr GVMLookupForSlot(object obj, RuntimeMethodHandle slot)
         {
             Entry entry = LookupInCache(s_cache, obj.m_pEEType, *(IntPtr*)&slot);
             if (entry == null)
@@ -243,7 +248,7 @@ namespace System.Runtime
             return entry.Result;
         }
 
-        private unsafe static Entry CacheMiss(IntPtr context, IntPtr signature, SignatureKind signatureKind = SignatureKind.GenericDictionary, object contextObject = null)
+        private static unsafe Entry CacheMiss(IntPtr context, IntPtr signature, SignatureKind signatureKind = SignatureKind.GenericDictionary, object contextObject = null)
         {
             IntPtr result = IntPtr.Zero, auxResult = IntPtr.Zero;
             bool previouslyCached = false;

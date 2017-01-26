@@ -158,9 +158,6 @@ static uint8_t g_helperPage[OS_PAGE_SIZE] __attribute__((aligned(OS_PAGE_SIZE)))
 // Mutex to make the FlushProcessWriteBuffersMutex thread safe
 pthread_mutex_t g_flushProcessWriteBuffersMutex;
 
-// Key for the thread local storage of the attached thread pointer
-static pthread_key_t g_threadKey;
-
 extern bool PalQueryProcessorTopology();
 bool InitializeFlushProcessWriteBuffers();
 
@@ -413,14 +410,10 @@ public:
 
 typedef UnixHandle<UnixHandleType::Thread, pthread_t> ThreadUnixHandle;
 
-// Destructor of the thread local object represented by the g_threadKey,
-// called when a thread is shut down
-void TlsObjectDestructor(void* data)
-{
-    ASSERT(data == pthread_getspecific(g_threadKey));
-
-    RuntimeThreadShutdown(data);
-}
+#if !HAVE_THREAD_LOCAL
+extern "C" int __cxa_thread_atexit(void (*)(void*), void*, void *);
+extern "C" void *__dso_handle;
+#endif
 
 // The Redhawk PAL must be initialized before any of its exports can be called. Returns true for a successful
 // initialization and false on failure.
@@ -443,17 +436,16 @@ REDHAWK_PALEXPORT bool REDHAWK_PALAPI PalInit()
     {
         return false;
     }
-
+#ifndef USE_PORTABLE_HELPERS
     if (!InitializeHardwareExceptionHandling())
     {
         return false;
     }
+#endif // !USE_PORTABLE_HELPERS
 
-    int status = pthread_key_create(&g_threadKey, TlsObjectDestructor);
-    if (status != 0)
-    {
-        return false;
-    }
+#if !HAVE_THREAD_LOCAL
+    __cxa_thread_atexit(RuntimeThreadShutdown, NULL, &__dso_handle);
+#endif
 
     return true;
 }
@@ -464,6 +456,32 @@ REDHAWK_PALEXPORT bool REDHAWK_PALAPI PalHasCapability(PalCapability capability)
     return (g_dwPALCapabilities & (uint32_t)capability) == (uint32_t)capability;
 }
 
+#if HAVE_THREAD_LOCAL
+
+struct TlsDestructionMonitor
+{
+    void* m_thread = nullptr;
+
+    void SetThread(void* thread)
+    {
+        m_thread = thread;
+    }
+
+    ~TlsDestructionMonitor()
+    {
+        if (m_thread != nullptr)
+        {
+            RuntimeThreadShutdown(m_thread);
+        }
+    }
+};
+
+// This thread local object is used to detect thread shutdown. Its destructor
+// is called when a thread is being shut down.
+thread_local TlsDestructionMonitor tls_destructionMonitor;
+
+#endif // HAVE_THREAD_LOCAL
+
 // Attach thread to PAL. 
 // It can be called multiple times for the same thread.
 // It fails fast if a different thread was already registered.
@@ -471,16 +489,9 @@ REDHAWK_PALEXPORT bool REDHAWK_PALAPI PalHasCapability(PalCapability capability)
 //  thread        - thread to attach
 extern "C" void PalAttachThread(void* thread)
 {
-    void* attachedThread = pthread_getspecific(g_threadKey);
-
-    ASSERT_MSG(attachedThread == NULL, "PalAttachThread called multiple times for the same thread");
-
-    int status = pthread_setspecific(g_threadKey, thread);
-    if (status != 0)
-    {
-        ASSERT_UNCONDITIONALLY("PalAttachThread failed to store thread pointer in thread local storage");
-        RhFailFast();
-    }
+#if HAVE_THREAD_LOCAL
+    tls_destructionMonitor.SetThread(thread);
+#endif
 }
 
 // Detach thread from PAL.
@@ -491,26 +502,8 @@ extern "C" void PalAttachThread(void* thread)
 //  true if the thread was detached, false if there was no attached thread
 extern "C" bool PalDetachThread(void* thread)
 {
-    void* attachedThread = pthread_getspecific(g_threadKey);
-
-    if (attachedThread == thread)
-    {
-        int status = pthread_setspecific(g_threadKey, NULL);
-        if (status != 0)
-        {
-            ASSERT_UNCONDITIONALLY("PalDetachThread failed to clear thread pointer in thread local storage");
-            RhFailFast();
-        }
-        return true;
-    }
-
-    if (attachedThread != NULL)
-    {
-        ASSERT_UNCONDITIONALLY("PalDetachThread called with different thread pointer than PalAttachThread");
-        RhFailFast();
-    }
-
-    return false;
+    UNREFERENCED_PARAMETER(thread);
+    return true;
 }
 
 REDHAWK_PALEXPORT unsigned int REDHAWK_PALAPI PalGetCurrentProcessorNumber()
@@ -1457,13 +1450,12 @@ void GCToOSInterface::YieldThread(uint32_t switchCount)
 
 // Reserve virtual memory range.
 // Parameters:
-//  address   - starting virtual address, it can be NULL to let the function choose the starting address
 //  size      - size of the virtual memory range
 //  alignment - requested memory alignment, 0 means no specific alignment requested
 //  flags     - flags to control special settings like write watching
 // Return:
 //  Starting virtual address of the reserved range
-void* GCToOSInterface::VirtualReserve(void* address, size_t size, size_t alignment, uint32_t flags)
+void* GCToOSInterface::VirtualReserve(size_t size, size_t alignment, uint32_t flags)
 {
     ASSERT_MSG(!(flags & VirtualReserveFlags::WriteWatch), "WriteWatch not supported on Unix");
 
@@ -1474,7 +1466,7 @@ void* GCToOSInterface::VirtualReserve(void* address, size_t size, size_t alignme
 
     size_t alignedSize = size + (alignment - OS_PAGE_SIZE);
 
-    void * pRetVal = mmap(address, alignedSize, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
+    void * pRetVal = mmap(nullptr, alignedSize, PROT_NONE, MAP_ANON | MAP_PRIVATE, -1, 0);
 
     if (pRetVal != NULL)
     {

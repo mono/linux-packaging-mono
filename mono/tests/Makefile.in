@@ -121,90 +121,71 @@ target_triplet = @target@
 # constraints-load.il: 
 # Failed to load method 0x6000007 from '..../mono/tests/constraints-load.exe' due to 
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
-@INSTALL_TESTING_AOT_FULL_TRUE@am__append_3 = typeload-unaligned.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	field-access.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	invalid_generic_instantiation.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-481403.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	array_ldelema.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	array_load_exception.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug445361.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	generic-type-load-exception.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	invalid-token.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	call_missing_method.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	call_missing_class.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	ldfld_missing_field.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	ldfld_missing_class.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	vt-sync-method.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	context-static.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-415577.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	generic-marshalbyref.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	unhandled-exception-7.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	marshal.exe marshal2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	marshal6.exe marshal7.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	marshal8.exe pinvoke-2.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	pinvoke3.exe thunks.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	assembly-load-remap.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	remoting4.exe remoting1.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	remoting2.exe remoting3.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	remoting5.exe appdomain.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain-client.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain-unload.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain-async-invoke.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain-thread-abort.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain1.exe appdomain2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain-exit.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain-unload-callback.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	unload-appdomain-on-shutdown.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	assemblyresolve_event2.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-544446.exe bug-36848.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	generic-marshalbyref.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	stackframes-async.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	transparentproxy.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-48015.exe delegate9.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	marshal-valuetypes.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	xdomain-threads.exe monitor.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	generic-xdomain.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	threadpool-exceptions7.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	cross-domain.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	generic-unloading.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	appdomain-threadpool-unload.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-47295.exe loader.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	pinvoke2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	generic-type-builder.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	dynamic-generic-size.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	cominterop.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	dynamic-method-access.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	dynamic-method-finalize.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	dynamic-method-stack-traces.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	generic_type_definition.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-333798-tb.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-335131.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-322722_patch_bx.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-322722_dyn_method_throw.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-389886-2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-349190.2.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-389886-sre-generic-interface-instances.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-462592.exe bug-575941.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-389886-3.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	constant-division.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	dynamic-method-resurrection.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	assembly_append_ordering.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-80307.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	namedmutex-destroy-race.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	thread6.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	constraints-load.exe \
-@INSTALL_TESTING_AOT_FULL_TRUE@	bug-515884.exe
+@FULL_AOT_TESTS_TRUE@am__append_3 = typeload-unaligned.exe \
+@FULL_AOT_TESTS_TRUE@	field-access.exe \
+@FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
+@FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
+@FULL_AOT_TESTS_TRUE@	array_load_exception.exe bug445361.exe \
+@FULL_AOT_TESTS_TRUE@	generic-type-load-exception.2.exe \
+@FULL_AOT_TESTS_TRUE@	invalid-token.exe call_missing_method.exe \
+@FULL_AOT_TESTS_TRUE@	call_missing_class.exe \
+@FULL_AOT_TESTS_TRUE@	ldfld_missing_field.exe \
+@FULL_AOT_TESTS_TRUE@	ldfld_missing_class.exe \
+@FULL_AOT_TESTS_TRUE@	vt-sync-method.exe context-static.exe \
+@FULL_AOT_TESTS_TRUE@	bug-415577.exe generic-marshalbyref.2.exe \
+@FULL_AOT_TESTS_TRUE@	unhandled-exception-7.exe marshal.exe \
+@FULL_AOT_TESTS_TRUE@	marshal2.exe marshal6.exe marshal7.exe \
+@FULL_AOT_TESTS_TRUE@	marshal8.exe pinvoke-2.2.exe pinvoke3.exe \
+@FULL_AOT_TESTS_TRUE@	thunks.exe assembly-load-remap.exe \
+@FULL_AOT_TESTS_TRUE@	remoting4.exe remoting1.exe remoting2.exe \
+@FULL_AOT_TESTS_TRUE@	remoting3.exe remoting5.exe appdomain.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-client.exe appdomain-unload.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-async-invoke.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-thread-abort.exe appdomain1.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain2.exe appdomain-exit.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-unload-callback.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
+@FULL_AOT_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
+@FULL_AOT_TESTS_TRUE@	assemblyresolve_event2.2.exe \
+@FULL_AOT_TESTS_TRUE@	bug-544446.exe bug-36848.exe \
+@FULL_AOT_TESTS_TRUE@	generic-marshalbyref.2.exe \
+@FULL_AOT_TESTS_TRUE@	stackframes-async.2.exe \
+@FULL_AOT_TESTS_TRUE@	transparentproxy.exe bug-48015.exe \
+@FULL_AOT_TESTS_TRUE@	delegate9.exe marshal-valuetypes.exe \
+@FULL_AOT_TESTS_TRUE@	xdomain-threads.exe monitor.exe \
+@FULL_AOT_TESTS_TRUE@	generic-xdomain.2.exe \
+@FULL_AOT_TESTS_TRUE@	threadpool-exceptions7.exe \
+@FULL_AOT_TESTS_TRUE@	cross-domain.exe generic-unloading.2.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-threadpool-unload.exe \
+@FULL_AOT_TESTS_TRUE@	bug-47295.exe loader.exe pinvoke2.exe \
+@FULL_AOT_TESTS_TRUE@	generic-type-builder.2.exe \
+@FULL_AOT_TESTS_TRUE@	dynamic-generic-size.exe cominterop.exe \
+@FULL_AOT_TESTS_TRUE@	dynamic-method-access.2.exe \
+@FULL_AOT_TESTS_TRUE@	dynamic-method-finalize.2.exe \
+@FULL_AOT_TESTS_TRUE@	dynamic-method-stack-traces.exe \
+@FULL_AOT_TESTS_TRUE@	generic_type_definition.2.exe \
+@FULL_AOT_TESTS_TRUE@	bug-333798-tb.2.exe bug-335131.2.exe \
+@FULL_AOT_TESTS_TRUE@	bug-322722_patch_bx.2.exe \
+@FULL_AOT_TESTS_TRUE@	bug-322722_dyn_method_throw.2.exe \
+@FULL_AOT_TESTS_TRUE@	bug-389886-2.exe bug-349190.2.exe \
+@FULL_AOT_TESTS_TRUE@	bug-389886-sre-generic-interface-instances.exe \
+@FULL_AOT_TESTS_TRUE@	bug-462592.exe bug-575941.exe \
+@FULL_AOT_TESTS_TRUE@	bug-389886-3.exe constant-division.exe \
+@FULL_AOT_TESTS_TRUE@	dynamic-method-resurrection.exe \
+@FULL_AOT_TESTS_TRUE@	assembly_append_ordering.exe \
+@FULL_AOT_TESTS_TRUE@	bug-80307.exe namedmutex-destroy-race.exe \
+@FULL_AOT_TESTS_TRUE@	thread6.exe constraints-load.exe \
+@FULL_AOT_TESTS_TRUE@	bug-515884.exe
 @INSTALL_TESTING_AOT_HYBRID_TRUE@am__append_4 = \
 @INSTALL_TESTING_AOT_HYBRID_TRUE@	bug-80307.exe \
 @INSTALL_TESTING_AOT_HYBRID_TRUE@	namedmutex-destroy-race.exe
 
-@INSTALL_TESTING_AOT_FULL_TRUE@am__append_5 = \
-@INSTALL_TESTING_AOT_FULL_TRUE@	sgen-domain-unload.exe	\
-@INSTALL_TESTING_AOT_FULL_TRUE@	sgen-domain-unload-2.exe
+@FULL_AOT_TESTS_TRUE@am__append_5 = \
+@FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe	\
+@FULL_AOT_TESTS_TRUE@	sgen-domain-unload-2.exe
 
-@INSTALL_TESTING_AOT_FULL_TRUE@am__append_6 = \
-@INSTALL_TESTING_AOT_FULL_TRUE@	generic-type-builder.2.exe
+@FULL_AOT_TESTS_TRUE@am__append_6 = \
+@FULL_AOT_TESTS_TRUE@	generic-type-builder.2.exe
 
 @NACL_CODEGEN_FALSE@am__append_7 = threadpool-in-processexit.cs threadpool-in-processexit.exe.stdout.expected
 subdir = mono/tests
@@ -553,8 +534,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = assemblyresolve gc-descriptors
-@INSTALL_TESTING_AOT_FULL_FALSE@FEATUREFUL_RUNTIME_TEST = test-appdomain-unload
-@INSTALL_TESTING_AOT_FULL_TRUE@FEATUREFUL_RUNTIME_TEST = 
+@FULL_AOT_TESTS_FALSE@FEATUREFUL_RUNTIME_TEST = test-appdomain-unload
+@FULL_AOT_TESTS_TRUE@FEATUREFUL_RUNTIME_TEST = 
 TEST_PROG = ../interpreter/mint
 JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_builddir)/mono/mini/mono-sgen,$(top_builddir)/mono/mini/mono)
 TEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
@@ -576,7 +557,7 @@ MKBUNDLE = \
 	PKG_CONFIG_PATH=$(top_builddir):$(PKG_CONFIG_PATH) \
 	$(RUNTIME) $(CLASS)/mkbundle.exe
 
-@INSTALL_TESTING_AOT_FULL_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
+@FULL_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
 @INSTALL_TESTING_AOT_HYBRID_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
 MCS_NO_LIB = $(TOOLS_RUNTIME) $(CSC) -unsafe -debug:portable \
 	-noconfig -nologo \
@@ -586,8 +567,8 @@ MCS_NO_LIB = $(TOOLS_RUNTIME) $(CSC) -unsafe -debug:portable \
 
 MCS = $(MCS_NO_LIB) -lib:$(CLASS)
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
-@INSTALL_TESTING_AOT_FULL_FALSE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)"
-@INSTALL_TESTING_AOT_FULL_TRUE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)" --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
+@FULL_AOT_TESTS_FALSE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)"
+@FULL_AOT_TESTS_TRUE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)" --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
 BENCHSRC = fib.cs random.cs nested-loops.cs ackermann.cs tight-loop.cs sieve.cs
 STRESS_TESTS_SRC = \
 	abort-stress-1.cs	\
@@ -1260,6 +1241,8 @@ PREREQSI_CS_AOT = $(PREREQ_CS_SRC:.cs=.exe$(PLATFORM_AOT_SUFFIX)) \
 
 
 # Generated tests for runtime invoke
+
+# Tests for the Mono lldb plugin
 EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	$(TEST_IL_SRC) $(BENCHSRC) $(STRESS_TESTS_SRC) \
 	stress-runner.pl $(PREREQ_IL_SRC) $(PREREQ_CS_SRC) \
@@ -1294,10 +1277,10 @@ EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	modules-m1.cs $(am__append_7) appdomain-loader.cs \
 	appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
-	console-output.exe.stdout.expected
-@INSTALL_TESTING_AOT_FULL_FALSE@@INSTALL_TESTING_AOT_HYBRID_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
-@INSTALL_TESTING_AOT_FULL_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
-@INSTALL_TESTING_AOT_FULL_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
+	console-output.exe.stdout.expected test_lldb.py test-lldb.cs
+@FULL_AOT_TESTS_FALSE@@INSTALL_TESTING_AOT_HYBRID_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
+@FULL_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
+@FULL_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 AOT_EXTRA_LIBS = \
 bug-382986-lib.dll$(PLATFORM_AOT_SUFFIX)	\
 bug-324535-il.dll$(PLATFORM_AOT_SUFFIX)	\
@@ -1861,8 +1844,8 @@ TestingReferenceReferenceAssembly.dll: TestingReferenceReferenceAssembly.cs Test
 
 @HOST_WIN32_FALSE@@X86_TRUE@test_platform: test-eglib-remap
 
-@INSTALL_TESTING_AOT_FULL_TRUE@prereqs: $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
-@INSTALL_TESTING_AOT_FULL_FALSE@prereqs: $(PREREQSI_IL) $(PREREQSI_CS)
+@FULL_AOT_TESTS_TRUE@prereqs: $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
+@FULL_AOT_TESTS_FALSE@prereqs: $(PREREQSI_IL) $(PREREQSI_CS)
 
 # Target to precompile the test executables
 tests: $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la prereqs $(GSHARED_TESTS)
@@ -1889,7 +1872,7 @@ test-sgen : sgen-tests
 # Precompile the test assemblies in parallel
 compile-tests:
 	$(MAKE) -j4 $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS)
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(MAKE) $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
+@FULL_AOT_TESTS_TRUE@	$(MAKE) $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
 
 # Remove empty .stdout and .stderr files for wrench
 rm-empty-logs:
@@ -2063,6 +2046,7 @@ sgen-tests:
 sgen-regular-tests: $(SGEN_REGULAR_TESTS)
 	$(MAKE) sgen-regular-tests-ms
 	$(MAKE) sgen-regular-tests-ms-conc
+	$(MAKE) sgen-regular-tests-ms-conc-par
 	$(MAKE) sgen-regular-tests-ms-conc-split
 	$(MAKE) sgen-regular-tests-ms-split
 	$(MAKE) sgen-regular-tests-ms-conc-split-95
@@ -2074,6 +2058,8 @@ sgen-regular-tests-ms: $(SGEN_REGULAR_TESTS) test-runner.exe
 	MONO_ENV_OPTIONS="--gc=sgen" MONO_GC_DEBUG="" MONO_GC_PARAMS="major=marksweep" $(RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name $@ --disabled "$(DISABLED_TESTS)" --timeout 900 $(SGEN_REGULAR_TESTS)
 sgen-regular-tests-ms-conc: $(SGEN_REGULAR_TESTS) test-runner.exe
 	MONO_ENV_OPTIONS="--gc=sgen" MONO_GC_DEBUG="" MONO_GC_PARAMS="major=marksweep-conc" $(RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name $@ --disabled "$(DISABLED_TESTS)" --timeout 900 $(SGEN_REGULAR_TESTS)
+sgen-regular-tests-ms-conc-par: $(SGEN_REGULAR_TESTS) test-runner.exe
+	MONO_ENV_OPTIONS="--gc=sgen" MONO_GC_DEBUG="" MONO_GC_PARAMS="major=marksweep-conc-par" $(RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name $@ --disabled "$(DISABLED_TESTS)" --timeout 900 $(SGEN_REGULAR_TESTS)
 sgen-regular-tests-ms-conc-split: $(SGEN_REGULAR_TESTS) test-runner.exe
 	MONO_ENV_OPTIONS="--gc=sgen" MONO_GC_DEBUG="" MONO_GC_PARAMS="major=marksweep-conc,minor=split" $(RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name $@ --disabled "$(DISABLED_TESTS)" --timeout 900 $(SGEN_REGULAR_TESTS)
 sgen-regular-tests-ms-split: $(SGEN_REGULAR_TESTS) test-runner.exe
@@ -2235,7 +2221,7 @@ imt_big_iface_test.exe: $(TEST_DRIVER_DEPEND) make-imt-test.exe
 	$(MCS) -out:imt_big_iface_test.exe -r:TestDriver.dll imt_big_iface_test.cs
 test-inline-call-stack-library.dll: $(TEST_DRIVER_DEPEND) $(srcdir)/test-inline-call-stack-library.cs
 	$(MCS) -t:library -out:test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack-library.cs
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 
 test-inline-call-stack.exe: $(TEST_DRIVER_DEPEND) test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack.cs
 	$(MCS) -r:TestDriver.dll -r:test-inline-call-stack-library.dll -out:test-inline-call-stack.exe $(srcdir)/test-inline-call-stack.cs
@@ -2272,12 +2258,12 @@ bug-81673.exe bug-81673-interface.dll: $(srcdir)/bug-81673.cs $(srcdir)/bug-8167
 	$(MCS) -target:library -out:bug-81673-interface.dll $(srcdir)/bug-81673-interface.cs
 	$(MCS) -out:bug-81673.exe -r:bug-81673-interface.dll $(srcdir)/bug-81673.cs
 	$(MCS) -define:WITH_STOP -target:library -out:bug-81673-interface.dll $(srcdir)/bug-81673-interface.cs
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-36848.exe bug-36848-a.dll: $(srcdir)/bug-36848.cs $(srcdir)/bug-36848-a.cs
 	$(MCS) -target:library -out:bug-36848-a.dll $(srcdir)/bug-36848-a.cs
 	$(MCS) -r:bug-36848-a.dll -out:bug-36848.exe $(srcdir)/bug-36848.cs
 	$(MCS) -target:library -out:bug-36848-a.dll $(srcdir)/bug-36848-a.cs /define:WITH_STOP
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-81691.exe bug-81691-b.dll: $(srcdir)/bug-81691.cs $(srcdir)/bug-81691-a.cs $(srcdir)/bug-81691-b.cs
 	$(MCS) -target:library -out:bug-81691-a.dll $(srcdir)/bug-81691-a.cs
 	$(MCS) -target:library -out:bug-81691-b.dll -r:bug-81691-a.dll $(srcdir)/bug-81691-b.cs
@@ -2286,22 +2272,22 @@ bug-81691.exe bug-81691-b.dll: $(srcdir)/bug-81691.cs $(srcdir)/bug-81691-a.cs $
 bug-81691.exe: bug-81691-b.dll
 bug-81466-lib.dll: bug-81466-lib.il
 	$(ILASM) /dll /output:bug-81466-lib.dll $(srcdir)/bug-81466-lib.il
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-81466.exe: bug-81466.il bug-81466-lib.dll
 	$(ILASM) /exe /output:bug-81466.exe $(srcdir)/bug-81466.il
 bug-324535-il.dll : bug-324535-il.il
 	$(ILASM) /dll /output:bug-324535-il.dll $(srcdir)/bug-324535-il.il
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-324535.exe : bug-324535.cs bug-324535-il.dll
 	$(MCS) -r:bug-324535-il.dll -out:bug-324535.exe $(srcdir)/bug-324535.cs
 custom-modifiers-lib.dll: custom-modifiers-lib.il
 	$(ILASM) /dll /output:custom-modifiers-lib.dll $(srcdir)/custom-modifiers-lib.il
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 custom-modifiers.2.exe: custom-modifiers.2.cs custom-modifiers-lib.dll
 	$(MCS) -r:custom-modifiers-lib.dll -out:custom-modifiers.2.exe $(srcdir)/custom-modifiers.2.cs
 bug-382986-lib.dll: bug-382986-lib.cs
 	$(MCS) -target:library -out:$@ $(srcdir)/bug-382986-lib.cs
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 
 bug-382986.exe: bug-382986.cs bug-382986-lib.dll
 	$(MCS) -out:$@ -r:bug-382986-lib.dll $(srcdir)/bug-382986.cs
@@ -2320,17 +2306,17 @@ test-coreclr-security : coreclr-security.exe
 	@$(RUNTIME_MOONLIGHT) --security=core-clr-test coreclr-security.exe
 generic-unboxing.2.dll : generic-unboxing.2.il
 	$(ILASM) /dll /output:generic-unboxing.2.dll $(srcdir)/generic-unboxing.2.il
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-boxing.2.dll : generic-boxing.2.il generic-unboxing.2.dll
 	$(ILASM) /dll /output:generic-boxing.2.dll $(srcdir)/generic-boxing.2.il
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-unbox.2.exe : generic-unbox.2.cs generic-unboxing.2.dll
 	$(MCS) -r:generic-unboxing.2.dll -out:$@ $(srcdir)/generic-unbox.2.cs
 generic-box.2.exe : generic-box.2.cs generic-unboxing.2.dll generic-boxing.2.dll
 	$(MCS) -r:generic-unboxing.2.dll,generic-boxing.2.dll -out:$@ $(srcdir)/generic-box.2.cs
 generic-delegate2-lib.2.dll : generic-delegate2-lib.2.il
 	$(ILASM) /dll /output:$@ $(srcdir)/generic-delegate2-lib.2.il
-@INSTALL_TESTING_AOT_FULL_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-delegate2.2.exe : generic-delegate2.2.cs generic-delegate2-lib.2.dll
 	$(MCS) -r:generic-delegate2-lib.2.dll -out:$@ $(srcdir)/generic-delegate2.2.cs
 
@@ -2421,6 +2407,8 @@ test-process-stress: $(PROCESS_STRESS_TESTS) test-runner.exe
 
 coreclr-gcstress:
 	$(MAKE) -C $(mono_build_root)/acceptance-tests coreclr-gcstress
+test-lldb: test-lldb.exe
+	python test_lldb.py $(JITTEST_PROG)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

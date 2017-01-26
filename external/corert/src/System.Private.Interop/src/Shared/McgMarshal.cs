@@ -44,16 +44,13 @@ namespace System.Runtime.InteropServices
     [CLSCompliant(false)]
     public static partial class McgMarshal
     {
-        [ThreadStatic]
-        internal static int s_lastWin32Error;
-
 #if ENABLE_WINRT
         private static object s_thunkPoolHeap;
 #endif
 
         public static void SaveLastWin32Error()
         {
-            s_lastWin32Error = ExternalInterop.GetLastWin32Error();
+            PInvokeMarshal.SaveLastWin32Error();
         }
 
         public static bool GuidEquals(ref Guid left, ref Guid right)
@@ -178,7 +175,7 @@ namespace System.Runtime.InteropServices
 #endif
         }
 
-        public unsafe static void TypeToTypeName(
+        public static unsafe void TypeToTypeName(
             Type type,
             out HSTRING nativeTypeName,
             out int nativeTypeKind)
@@ -718,14 +715,14 @@ namespace System.Runtime.InteropServices
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public unsafe static int ComAddRef(IntPtr pComItf)
+        public static unsafe int ComAddRef(IntPtr pComItf)
         {
             return CalliIntrinsics.StdCall__AddRef(((__com_IUnknown*)(void*)pComItf)->pVtable->
                 pfnAddRef, pComItf);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        internal unsafe static int ComRelease_StdCall(IntPtr pComItf)
+        internal static unsafe int ComRelease_StdCall(IntPtr pComItf)
         {
             return CalliIntrinsics.StdCall__Release(((__com_IUnknown*)(void*)pComItf)->pVtable->
                 pfnRelease, pComItf);
@@ -735,7 +732,7 @@ namespace System.Runtime.InteropServices
         /// Inline version of ComRelease
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)] //reduces MCG-generated code size
-        public unsafe static int ComRelease(IntPtr pComItf)
+        public static unsafe int ComRelease(IntPtr pComItf)
         {
             IntPtr pRelease = ((__com_IUnknown*)(void*)pComItf)->pVtable->pfnRelease;
 
@@ -750,7 +747,7 @@ namespace System.Runtime.InteropServices
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public unsafe static int ComSafeRelease(IntPtr pComItf)
+        public static unsafe int ComSafeRelease(IntPtr pComItf)
         {
             if (pComItf != default(IntPtr))
             {
@@ -883,13 +880,13 @@ namespace System.Runtime.InteropServices
             return result;
         }
 
-        public unsafe static IntPtr ComQueryInterfaceNoThrow(IntPtr pComItf, ref Guid iid)
+        public static unsafe IntPtr ComQueryInterfaceNoThrow(IntPtr pComItf, ref Guid iid)
         {
             int hr = 0;
             return ComQueryInterfaceNoThrow(pComItf, ref iid, out hr);
         }
 
-        public unsafe static IntPtr ComQueryInterfaceNoThrow(IntPtr pComItf, ref Guid iid, out int hr)
+        public static unsafe IntPtr ComQueryInterfaceNoThrow(IntPtr pComItf, ref Guid iid, out int hr)
         {
             IntPtr pComIUnk;
             hr = ComQueryInterfaceWithHR(pComItf, ref iid, out pComIUnk);
@@ -897,7 +894,7 @@ namespace System.Runtime.InteropServices
             return pComIUnk;
         }
 
-        internal unsafe static int ComQueryInterfaceWithHR(IntPtr pComItf, ref Guid iid, out IntPtr ppv)
+        internal static unsafe int ComQueryInterfaceWithHR(IntPtr pComItf, ref Guid iid, out IntPtr ppv)
         {
             IntPtr pComIUnk;
             int hr;
@@ -1393,7 +1390,7 @@ namespace System.Runtime.InteropServices
         /// Return the stub to the pinvoke marshalling stub
         /// </summary>
         /// <param name="del">The delegate</param>
-        static internal IntPtr GetStubForPInvokeDelegate(Delegate del)
+        internal static IntPtr GetStubForPInvokeDelegate(Delegate del)
         {
             if (del == null)
                 return IntPtr.Zero;
@@ -1538,7 +1535,7 @@ namespace System.Runtime.InteropServices
         private static int s_numInteropThunksAllocatedSinceLastCleanup = 0;
 #endif
 
-        static private IntPtr GetOrAllocateThunk(Delegate del)
+        private static IntPtr GetOrAllocateThunk(Delegate del)
         {
 #if ENABLE_WINRT
             System.Collections.Generic.Internal.HashSet<EquatablePInvokeDelegateThunk> delegateHashSet = GetDelegateThunkHashSet();
@@ -1635,7 +1632,7 @@ namespace System.Runtime.InteropServices
         /// <summary>
         /// Retrieve the corresponding P/invoke instance from the stub
         /// </summary>
-        static public Delegate GetPInvokeDelegateForStub(IntPtr pStub, RuntimeTypeHandle delegateType)
+        public static Delegate GetPInvokeDelegateForStub(IntPtr pStub, RuntimeTypeHandle delegateType)
         {
             if (pStub == IntPtr.Zero)
                 return null;
@@ -1643,10 +1640,11 @@ namespace System.Runtime.InteropServices
             //
             // First try to see if this is one of the thunks we've allocated when we marshal a managed
             // delegate to native code
+            // s_thunkPoolHeap will be null if there isn't any managed delegate to native
             //
             IntPtr pContext;
             IntPtr pTarget;
-            if (RuntimeAugments.TryGetThunkData(s_thunkPoolHeap, pStub, out pContext, out pTarget))
+            if (s_thunkPoolHeap != null && RuntimeAugments.TryGetThunkData(s_thunkPoolHeap, pStub, out pContext, out pTarget))
             {
                 GCHandle handle;
                 unsafe
@@ -1692,7 +1690,7 @@ namespace System.Runtime.InteropServices
         /// <summary>
         /// Retrieves the function pointer for the current open static delegate that is being called
         /// </summary>
-        static public IntPtr GetCurrentCalleeOpenStaticDelegateFunctionPointer()
+        public static IntPtr GetCurrentCalleeOpenStaticDelegateFunctionPointer()
         {
 #if RHTESTCL || CORECLR
             throw new NotSupportedException();
@@ -1720,7 +1718,7 @@ namespace System.Runtime.InteropServices
         /// <summary>
         /// Retrieves the current delegate that is being called
         /// </summary>
-        static public T GetCurrentCalleeDelegate<T>() where T : class // constraint can't be System.Delegate
+        public static T GetCurrentCalleeDelegate<T>() where T : class // constraint can't be System.Delegate
         {
 #if RHTESTCL || CORECLR
             throw new NotSupportedException();

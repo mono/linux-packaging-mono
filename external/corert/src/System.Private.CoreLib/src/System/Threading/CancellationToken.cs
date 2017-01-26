@@ -35,7 +35,6 @@ namespace System.Threading
     /// All members of this struct are thread-safe and may be used concurrently from multiple threads.
     /// </para>
     /// </remarks>
-    [ComVisible(false)]
     [DebuggerDisplay("IsCancellationRequested = {IsCancellationRequested}")]
     public struct CancellationToken
     {
@@ -159,7 +158,7 @@ namespace System.Threading
         /* Methods */
 
 
-        private readonly static Action<Object> s_ActionToActionObjShunt = new Action<Object>(ActionToActionObjShunt);
+        private static readonly Action<Object> s_ActionToActionObjShunt = new Action<Object>(ActionToActionObjShunt);
         private static void ActionToActionObjShunt(object obj)
         {
             Action action = obj as Action;

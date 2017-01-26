@@ -11,15 +11,15 @@
 **
 =============================================================================*/
 
-using System;
+using System.Runtime.Serialization;
 
 namespace System
 {
     // The ArrayMismatchException is thrown when an attempt to store
     // an object of the wrong type within an array occurs.
     // 
-    [System.Runtime.InteropServices.ComVisible(true)]
-    public class ArrayTypeMismatchException : Exception
+    [Serializable]
+    public class ArrayTypeMismatchException : SystemException
     {
         // Creates a new ArrayMismatchException with its message string set to
         // the empty string, its HRESULT set to COR_E_ARRAYTYPEMISMATCH, 
@@ -27,7 +27,7 @@ namespace System
         public ArrayTypeMismatchException()
             : base(SR.Arg_ArrayTypeMismatchException)
         {
-            SetErrorCode(__HResults.COR_E_ARRAYTYPEMISMATCH);
+            HResult = __HResults.COR_E_ARRAYTYPEMISMATCH;
         }
 
         // Creates a new ArrayMismatchException with its message string set to
@@ -37,13 +37,15 @@ namespace System
         public ArrayTypeMismatchException(String message)
             : base(message)
         {
-            SetErrorCode(__HResults.COR_E_ARRAYTYPEMISMATCH);
+            HResult = __HResults.COR_E_ARRAYTYPEMISMATCH;
         }
 
         public ArrayTypeMismatchException(String message, Exception innerException)
             : base(message, innerException)
         {
-            SetErrorCode(__HResults.COR_E_ARRAYTYPEMISMATCH);
+            HResult = __HResults.COR_E_ARRAYTYPEMISMATCH;
         }
+
+        protected ArrayTypeMismatchException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

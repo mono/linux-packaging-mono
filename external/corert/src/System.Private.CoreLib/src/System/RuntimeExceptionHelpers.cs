@@ -13,11 +13,15 @@ using Internal.Runtime.Augments;
 
 namespace System
 {
-    // Eagerly preallocate instance of out of memory exception to avoid infinite recursion once we run out of memory
-    [EagerOrderedStaticConstructor(EagerStaticConstructorOrder.SystemPreallocatedOutOfMemoryException)]
     internal class PreallocatedOutOfMemoryException
     {
-        public static readonly OutOfMemoryException Instance = new OutOfMemoryException(message: null);  // Cannot call the nullary constructor as that triggers non-trivial resource manager logic.
+        public static OutOfMemoryException Instance { get; private set; }
+
+        // Eagerly preallocate instance of out of memory exception to avoid infinite recursion once we run out of memory
+        internal static void Initialize()
+        {
+             Instance = new OutOfMemoryException(message: null);  // Cannot call the nullary constructor as that triggers non-trivial resource manager logic.
+        }
     }
 
     public class RuntimeExceptionHelpers
@@ -347,7 +351,7 @@ namespace System
         /// <summary>
         /// Table of exceptions that were on stacks triggering GenerateExceptionInformationForDump
         /// </summary>
-        private readonly static ConditionalWeakTable<Exception, ExceptionData> s_exceptionDataTable = new ConditionalWeakTable<Exception, ExceptionData>();
+        private static readonly ConditionalWeakTable<Exception, ExceptionData> s_exceptionDataTable = new ConditionalWeakTable<Exception, ExceptionData>();
 
         /// <summary>
         /// Counter for exception ID assignment
@@ -398,7 +402,7 @@ namespace System
             LowLevelList<Exception> exceptions = new LowLevelList<Exception>(curThreadExceptions);
             LowLevelList<Exception> nonThrownInnerExceptions = new LowLevelList<Exception>();
 
-            uint currentThreadId = Interop.mincore.GetCurrentThreadId();
+            uint currentThreadId = (uint)Environment.CurrentNativeThreadId;
 
             // Reset nesting levels for exceptions on this thread that might not be currently in flight
             foreach (ExceptionData exceptionData in s_exceptionDataTable.GetValues())
@@ -521,7 +525,7 @@ namespace System
             }
         }
 
-        private unsafe static void GenerateErrorReportForDump(LowLevelList<byte[]> serializedExceptions)
+        private static unsafe void GenerateErrorReportForDump(LowLevelList<byte[]> serializedExceptions)
         {
             checked
             {
@@ -587,7 +591,7 @@ namespace System
         private static GCHandle s_ExceptionInfoBufferPinningHandle;
         private static Lock s_ExceptionInfoBufferLock = new Lock();
 
-        private unsafe static void UpdateErrorReportBuffer(byte[] finalBuffer)
+        private static unsafe void UpdateErrorReportBuffer(byte[] finalBuffer)
         {
             using (LockHolder.Hold(s_ExceptionInfoBufferLock))
             {

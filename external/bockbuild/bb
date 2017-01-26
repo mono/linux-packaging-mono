@@ -370,6 +370,8 @@ class Bockbuild:
 
         new_profile = Profile.loaded
         new_profile._path = fullpath
+        new_profile.directory = path
+
         new_profile.git_root = git_rootdir (self, os.path.dirname (path))
         config.protected_git_repos.append (new_profile.git_root)
         self.profile_name = source

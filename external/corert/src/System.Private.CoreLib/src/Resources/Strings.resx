@@ -120,6 +120,12 @@
   <data name="Arg_AccessException" xml:space="preserve">
     <value>Cannot access member.</value>
   </data>
+  <data name="Arg_AccessViolationException" xml:space="preserve">
+    <value>Attempted to read or write protected memory. This is often an indication that other memory is corrupt.</value>
+  </data>
+  <data name="Arg_ApplicationException" xml:space="preserve">
+    <value>Error in the application.</value>
+  </data>
   <data name="Arg_ArgumentException" xml:space="preserve">
     <value>Value does not fall within the expected range.</value>
   </data>
@@ -156,6 +162,9 @@
   <data name="Arg_CopyOutOfRange" xml:space="preserve">
     <value>Requested range extends past the end of the array.</value>
   </data>
+  <data name="Arg_CryptographyException" xml:space="preserve">
+    <value>Error occurred during a cryptographic operation.</value>
+  </data>
   <data name="Arg_DataMisalignedException" xml:space="preserve">
     <value>A datatype misalignment was detected in a load or store instruction.</value>
   </data>
@@ -171,14 +180,29 @@
   <data name="Arg_DivideByZero" xml:space="preserve">
     <value>Attempted to divide by zero.</value>
   </data>
+  <data name="Arg_DriveNotFoundException" xml:space="preserve">
+    <value>Attempted to access a drive that is not available.</value>
+  </data>
   <data name="Arg_DlgtNullInst" xml:space="preserve">
     <value>Delegate to an instance method cannot have null 'this'.</value>
+  </data>
+  <data name="Arg_DuplicateWaitObjectException" xml:space="preserve">
+    <value>Duplicate objects in argument.</value>
   </data>
   <data name="Arg_EnumAndObjectMustBeSameType" xml:space="preserve">
     <value>Object must be the same type as the enum. The type passed in was '{0}'; the enum type was '{1}'.</value>
   </data>
+  <data name="Arg_EntryPointNotFoundException" xml:space="preserve">
+    <value>Entry point was not found.</value>
+  </data>
   <data name="Arg_EnumIllegalVal" xml:space="preserve">
     <value>Illegal enum value: {0}.</value>
+  </data>
+  <data name="Arg_ExecutionEngineException" xml:space="preserve">
+    <value>Internal error in the runtime.</value>
+  </data>
+  <data name="Arg_ExternalException" xml:space="preserve">
+    <value>External component has thrown an exception.</value>
   </data>
   <data name="Arg_FieldAccessException" xml:space="preserve">
     <value>Attempted to access a field that is not accessible by the caller.</value>
@@ -245,6 +269,9 @@
   </data>
   <data name="Arg_MissingMethodException" xml:space="preserve">
     <value>Attempted to access a missing method.</value>
+  </data>
+  <data name="Arg_MulticastNotSupportedException" xml:space="preserve">
+    <value>Attempted to add multiple callbacks to a delegate that does not support multicast.</value>
   </data>
   <data name="Arg_MustBeBoolean" xml:space="preserve">
     <value>Object must be of type Boolean.</value>
@@ -324,6 +351,9 @@
   <data name="Arg_NegativeArgCount" xml:space="preserve">
     <value>Argument count must not be negative.</value>
   </data>
+  <data name="Arg_NotFiniteNumberException" xml:space="preserve">
+    <value>Arg_NotFiniteNumberException = Number encountered was not a finite quantity.</value>
+  </data>
   <data name="Arg_NonZeroLowerBound" xml:space="preserve">
     <value>The lower bound of target array must be zero.</value>
   </data>
@@ -360,6 +390,12 @@
   <data name="Arg_ParamName_Name" xml:space="preserve">
     <value>Parameter name: {0}</value>
   </data>
+  <data name="Arg_Path2IsRooted" xml:space="preserve">
+    <value>Second path fragment must not be a drive or UNC name.</value>
+  </data>
+  <data name="Arg_PathIllegal" xml:space="preserve">
+    <value>The path is not of a legal form.</value>
+  </data>
   <data name="Arg_PathIllegalUNC" xml:space="preserve">
     <value>The UNC path should be of the form \\\\server\\share.</value>
   </data>
@@ -384,8 +420,14 @@
   <data name="Arg_SecurityException" xml:space="preserve">
     <value>Security error.</value>
   </data>
+  <data name="Arg_StackOverflowException" xml:space="preserve">
+    <value>Operation caused a stack overflow.</value>
+  </data>
   <data name="Arg_SynchronizationLockException" xml:space="preserve">
     <value>Object synchronization method was called from an unsynchronized block of code.</value>
+  </data>
+  <data name="Arg_SystemException" xml:space="preserve">
+    <value>System error.</value>
   </data>
   <data name="Arg_TargetInvocationException" xml:space="preserve">
     <value>Exception has been thrown by the target of an invocation.</value>
@@ -513,6 +555,15 @@
   <data name="Argument_FallbackBufferNotEmpty" xml:space="preserve">
     <value>Cannot change fallback when buffer is not empty. Previous Convert() call left data in the fallback buffer.</value>
   </data>
+  <data name="Argument_IdnBadLabelSize" xml:space="preserve">
+    <value>IDN labels must be between 1 and 63 characters long.</value>
+  </data>
+  <data name="Argument_IdnBadPunycode" xml:space="preserve">
+    <value>Invalid IDN encoded string.</value>
+  </data>
+  <data name="Argument_IdnIllegalName" xml:space="preserve">
+    <value>Decoded string is not a valid IDN name.</value>
+  </data>
   <data name="Argument_ImplementIComparable" xml:space="preserve">
     <value>At least one object must implement IComparable.</value>
   </data>
@@ -527,6 +578,9 @@
   </data>
   <data name="Argument_InvalidCalendar" xml:space="preserve">
     <value>Not a valid calendar for the given culture.</value>
+  </data>
+  <data name="Argument_InvalidCharSequence" xml:space="preserve">
+    <value>Invalid Unicode code point found at index {0}.</value>
   </data>
   <data name="Argument_InvalidCharSequenceNoIndex" xml:space="preserve">
     <value>String contains invalid Unicode code points.</value>
@@ -576,14 +630,26 @@
   <data name="Argument_InvalidNeutralRegionName" xml:space="preserve">
     <value>The region name {0} should not correspond to neutral culture; a specific culture name is required.</value>
   </data>
+  <data name="Argument_InvalidNormalizationForm" xml:space="preserve">
+    <value>Invalid normalization form.</value>
+  </data>
   <data name="Argument_InvalidNumberStyles" xml:space="preserve">
     <value>An undefined NumberStyles value is being used.</value>
   </data>
   <data name="Argument_InvalidOffLen" xml:space="preserve">
     <value>Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.</value>
   </data>
+  <data name="Argument_InvalidPathChars" xml:space="preserve">
+    <value>Illegal characters in path.</value>
+  </data>
+  <data name="Argument_InvalidREG_TZI_FORMAT" xml:space="preserve">
+    <value>The REG_TZI_FORMAT structure is corrupt.</value>
+  </data>
   <data name="Argument_InvalidResourceCultureName" xml:space="preserve">
     <value>The given culture name '{0}' cannot be used to locate a resource file. Resource filenames must consist of only letters, numbers, hyphens or underscores.</value>
+  </data>
+  <data name="Argument_InvalidSerializedString" xml:space="preserve">
+    <value>The specified serialized string '{0}' is not supported.</value>
   </data>
   <data name="Argument_InvalidTimeSpanStyles" xml:space="preserve">
     <value>An undefined TimeSpanStyles value is being used.</value>
@@ -621,6 +687,9 @@
   <data name="Argument_OutOfOrderDateTimes" xml:space="preserve">
     <value>The DateStart property must come before the DateEnd property.</value>
   </data>
+  <data name="ArgumentOutOfRange_HugeArrayNotSupported" xml:space="preserve">
+    <value>Arrays larger than 2GB are not supported.</value>
+  </data>
   <data name="ArgumentOutOfRange_Index" xml:space="preserve">
     <value>Index was out of range. Must be non-negative and less than the size of the collection.</value>
   </data>
@@ -629,6 +698,9 @@
   </data>
   <data name="ArgumentOutOfRange_NeedNonNegNumRequired" xml:space="preserve">
     <value>Non-negative number required.</value>
+  </data>
+  <data name="Argument_PathEmpty" xml:space="preserve">
+    <value>Path cannot be the empty string or all whitespace.</value>
   </data>
   <data name="Argument_PathFormatNotSupported" xml:space="preserve">
     <value>The given path's format is not supported.</value>
@@ -651,6 +723,12 @@
   <data name="Argument_TimeZoneNotFound" xml:space="preserve">
     <value>The time zone ID '{0}' was not found on the local computer.</value>
   </data>
+  <data name="Argument_TimeZoneInfoBadTZif" xml:space="preserve">
+    <value>The tzfile does not begin with the magic characters 'TZif'.  Please verify that the file is not corrupt.</value>
+  </data>
+  <data name="Argument_TimeZoneInfoInvalidTZif" xml:space="preserve">
+    <value>The TZif data structure is corrupt.</value>
+  </data>
   <data name="Argument_TransitionTimesAreIdentical" xml:space="preserve">
     <value>The DaylightTransitionStart property must not equal the DaylightTransitionEnd property.</value>
   </data>
@@ -668,6 +746,12 @@
   </data>
   <data name="ArgumentException_TupleLastArgumentNotATuple" xml:space="preserve">
     <value>The last element of an eight element tuple must be a Tuple.</value>
+  </data>
+  <data name="ArgumentException_ValueTupleIncorrectType" xml:space="preserve">
+    <value>Argument must be of type {0}.</value>
+  </data>
+  <data name="ArgumentException_ValueTupleLastArgumentNotATuple" xml:space="preserve">
+    <value>The TRest type argument of ValueTuple`8 must be a ValueTuple.</value>
   </data>
   <data name="ArgumentNull_Array" xml:space="preserve">
     <value>Array cannot be null.</value>
@@ -710,7 +794,7 @@
   </data>
   <data name="ArgumentOutOfRange_BiggerThanCollection" xml:space="preserve">
     <value>Must be less than or equal to the size of the collection.</value>
-  </data>  
+  </data>
   <data name="ArgumentOutOfRange_Bounds_Lower_Upper" xml:space="preserve">
     <value>Argument must be between {0} and {1}.</value>
   </data>
@@ -1047,6 +1131,15 @@
   <data name="InvalidProgram_Vararg" xml:space="preserve">
     <value>Method '{0}' has a variable argument list. Variable argument lists are not supported in .NET Core.</value>
   </data>
+  <data name="InvalidTimeZone_InvalidRegistryData" xml:space="preserve">
+    <value>The time zone ID '{0}' was found on the local computer, but the registry information was corrupt.</value>
+  </data>
+  <data name="IO_DriveNotFound_Drive" xml:space="preserve">
+    <value>Could not find the drive '{0}'. The drive might not be ready or might not be mapped.</value>
+  </data>
+  <data name="IO_FileExists_Name" xml:space="preserve">
+    <value>The file '{0}' already exists.</value>
+  </data>
   <data name="IO_FileName_Name" xml:space="preserve">
     <value>File name: '{0}'</value>
   </data>
@@ -1059,14 +1152,29 @@
   <data name="IO_FileLoad" xml:space="preserve">
     <value>Could not load the specified file.</value>
   </data>
-  <data name="IO_PathTooLong" xml:space="preserve">
-    <value>The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.</value>
+  <data name="IO_NoPermissionToDirectoryName" xml:space="preserve">
+    <value>&lt;Path discovery permission to the specified directory was denied.%gt;</value>
+  </data>
+  <data name="IO_PathNotFound_NoPathName" xml:space="preserve">
+    <value>Could not find a part of the path.</value>
   </data>
   <data name="IO_PathNotFound_Path" xml:space="preserve">
     <value>Could not find a part of the path '{0}'.</value>
   </data>
+  <data name="IO_PathTooLong" xml:space="preserve">
+    <value>The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.</value>
+  </data>
+  <data name="IO_SharingViolation_File" xml:space="preserve">
+    <value>The process cannot access the file '{0}' because it is being used by another process.</value>
+  </data>
+  <data name="IO_SharingViolation_NoFileName" xml:space="preserve">
+    <value>The process cannot access the file because it is being used by another process.</value>
+  </data>
   <data name="IO_AlreadyExists_Name" xml:space="preserve">
     <value>Cannot create '{0}' because a file or directory with the same name already exists.</value>
+  </data>
+  <data name="UnauthorizedAccess_IODenied_NoPathName" xml:space="preserve">
+    <value>Access to the path is denied.</value>
   </data>
   <data name="UnauthorizedAccess_IODenied_Path" xml:space="preserve">
     <value>Access to the path '{0}' is denied.</value>
@@ -1185,6 +1293,9 @@
   <data name="ObjectDisposed_ObjectName_Name" xml:space="preserve">
     <value>Object name: '{0}'.</value>
   </data>
+  <data name="ObjectDisposed_WriterClosed" xml:space="preserve">
+    <value>Cannot write to a closed TextWriter.</value>
+  </data>
   <data name="Overflow_Byte" xml:space="preserve">
     <value>Value was either too large or too small for an unsigned byte.</value>
   </data>
@@ -1242,8 +1353,20 @@
   <data name="Rank_MultiDimNotSupported" xml:space="preserve">
     <value>Only single dimension arrays are supported here.</value>
   </data>
+  <data name="RuntimeWrappedException" xml:space="preserve">
+    <value>An object that does not derive from System.Exception has been wrapped in a RuntimeWrappedException.</value>
+  </data>
   <data name="SpinWait_SpinUntil_ArgumentNull" xml:space="preserve">
     <value>The condition argument is null.</value>
+  </data>
+  <data name="Serialization_CorruptField" xml:space="preserve">
+    <value>The value of the field '{0}' is invalid.  The serialized data is corrupt.</value>
+  </data>
+  <data name="Serialization_InvalidData" xml:space="preserve">
+    <value>An error occurred while deserializing the object.  The serialized data is corrupt.</value>
+  </data>
+  <data name="Serialization_InvalidEscapeSequence" xml:space="preserve">
+    <value>The serialized data contained an invalid escape sequence '\\{0}'.</value>
   </data>
   <data name="SpinWait_SpinUntil_TimeoutWrong" xml:space="preserve">
     <value>The timeout must represent a value between -1 and Int32.MaxValue, inclusive.</value>
@@ -1259,6 +1382,9 @@
   </data>
   <data name="Threading_WaitHandleCannotBeOpenedException_InvalidHandle" xml:space="preserve">
     <value>A WaitHandle with system-wide name '{0}' cannot be created. A WaitHandle of a different type might have the same name.</value>
+  </data>
+  <data name="TimeZoneNotFound_MissingRegistryData" xml:space="preserve">
+    <value>The time zone ID '{0}' was not found on the local computer.</value>
   </data>
   <data name="TypeInitialization_Default" xml:space="preserve">
     <value>Type constructor threw an exception.</value>
@@ -1427,6 +1553,9 @@
   </data>
   <data name="AggregateException_ctor_InnerExceptionNull" xml:space="preserve">
     <value>An element of innerExceptions was null.</value>
+  </data>
+  <data name="AggregateException_DeserializationFailure" xml:space="preserve">
+    <value>The serialization stream contains no inner exceptions.</value>
   </data>
   <data name="AggregateException_InnerException" xml:space="preserve">
     <value>(Inner Exception #{0}) </value>
@@ -1729,6 +1858,9 @@
   <data name="Format_StringZeroLength" xml:space="preserve">
     <value>String cannot have zero length.</value>
   </data>
+  <data name="Security_CannotReadRegistryData" xml:space="preserve">
+    <value>The time zone ID '{0}' was found on the local computer, but the application does not have permission to read the registry information.</value>
+  </data>
   <data name="Security_InvalidAssemblyPublicKey" xml:space="preserve">
     <value>Invalid assembly public key.</value>
   </data>
@@ -1737,6 +1869,9 @@
   </data>
   <data name="ClassLoad_General" xml:space="preserve">
     <value>Could not load type '{0}' from assembly '{1}'.</value>
+  </data>
+  <data name="ClassLoad_RankTooLarge" xml:space="preserve">
+    <value>'{0}' from assembly '{1}' has too many dimensions.</value>
   </data>
   <data name="ClassLoad_ExplicitGeneric" xml:space="preserve">
     <value>Could not load type '{0}' from assembly '{1}' because generic types cannot have explicit layout.</value>
@@ -1758,5 +1893,242 @@
   </data>
   <data name="UnauthorizedAccess_RegistryKeyGeneric_Key" xml:space="preserve">
     <value>Access to the registry key '{0}' is denied.</value>
+  </data>
+  <data name="UnknownError_Num" xml:space="preserve">
+    <value>Unknown error '{0}'.</value>
+  </data>
+  <data name="Argument_NeedNonGenericType" xml:space="preserve">
+    <value>The specified Type must not be a generic type definition.</value>
+  </data>
+  <data name="Argument_NeedStructWithNoRefs" xml:space="preserve">
+    <value>The specified Type must be a struct containing no references.</value>
+  </data>
+  <data name="ArgumentNull_Buffer" xml:space="preserve">
+    <value>Buffer cannot be null.</value>
+  </data>
+  <data name="ArgumentOutOfRange_AddressSpace" xml:space="preserve">
+    <value>The number of bytes cannot exceed the virtual address space on a 32 bit machine.</value>
+  </data>
+  <data name="ArgumentOutOfRange_UIntPtrMaxMinusOne" xml:space="preserve">
+    <value>The length of the buffer must be less than the maximum UIntPtr value for your platform.</value>
+  </data>
+  <data name="Arg_BufferTooSmall" xml:space="preserve">
+    <value>Not enough space available in the buffer.</value>
+  </data>
+  <data name="InvalidOperation_MustCallInitialize" xml:space="preserve">
+    <value>You must call Initialize on this object instance before using it.</value>
+  </data>
+  <data name="ArgumentException_BufferNotFromPool" xml:space="preserve">
+    <value>The buffer is not associated with this pool and may not be returned to it.</value>
+  </data>
+  <data name="Argument_InvalidSafeBufferOffLen" xml:space="preserve">
+    <value>Offset and length were greater than the size of the SafeBuffer.</value>
+  </data>
+  <data name="Argument_InvalidSeekOrigin" xml:space="preserve">
+    <value>Invalid seek origin.</value>
+  </data>
+  <data name="Argument_NotEnoughBytesToRead" xml:space="preserve">
+    <value>There are not enough bytes remaining in the accessor to read at this position.</value>
+  </data>
+  <data name="Argument_NotEnoughBytesToWrite" xml:space="preserve">
+    <value>There are not enough bytes remaining in the accessor to write at this position.</value>
+  </data>
+  <data name="Argument_OffsetAndCapacityOutOfBounds" xml:space="preserve">
+    <value>Offset and capacity were greater than the size of the view.</value>
+  </data>
+  <data name="Argument_UnmanagedMemAccessorWrapAround" xml:space="preserve">
+    <value>The UnmanagedMemoryAccessor capacity and offset would wrap around the high end of the address space.</value>
+  </data>
+  <data name="ArgumentOutOfRange_StreamLength" xml:space="preserve">
+    <value>Stream length must be non-negative and less than 2^31 - 1 - origin.</value>
+  </data>
+  <data name="ArgumentOutOfRange_UnmanagedMemStreamWrapAround" xml:space="preserve">
+    <value>The UnmanagedMemoryStream capacity would wrap around the high end of the address space.</value>
+  </data>
+  <data name="InvalidOperation_CalledTwice" xml:space="preserve">
+    <value>The method cannot be called twice on the same instance.</value>
+  </data>
+  <data name="IO_FixedCapacity" xml:space="preserve">
+    <value>Unable to expand length of this stream beyond its capacity.</value>
+  </data>
+  <data name="IO_SeekBeforeBegin" xml:space="preserve">
+    <value>An attempt was made to move the position before the beginning of the stream.</value>
+  </data>
+  <data name="IO_StreamTooLong" xml:space="preserve">
+    <value>Stream was too long.</value>
+  </data>
+  <data name="Arg_BadDecimal" xml:space="preserve">
+    <value>Read an invalid decimal value from the buffer.</value>
+  </data>
+  <data name="NotSupported_Reading" xml:space="preserve">
+    <value>Accessor does not support reading.</value>
+  </data>
+  <data name="NotSupported_UmsSafeBuffer" xml:space="preserve">
+    <value>This operation is not supported for an UnmanagedMemoryStream created from a SafeBuffer.</value>
+  </data>
+  <data name="NotSupported_Writing" xml:space="preserve">
+    <value>Accessor does not support writing.</value>
+  </data>
+  <data name="NotSupported_UnseekableStream" xml:space="preserve">
+    <value>Stream does not support seeking.</value>
+  </data>
+  <data name="IndexOutOfRange_UMSPosition" xml:space="preserve">
+    <value>Unmanaged memory stream position was beyond the capacity of the stream.</value>
+  </data>
+  <data name="ObjectDisposed_StreamIsClosed" xml:space="preserve">
+    <value>Cannot access a closed Stream.</value>
+  </data>
+  <data name="ObjectDisposed_ViewAccessorClosed" xml:space="preserve">
+    <value>Cannot access a closed accessor.</value>
+  </data>
+  <data name="ArgumentOutOfRange_PositionLessThanCapacityRequired" xml:space="preserve">
+    <value>The position may not be greater or equal to the capacity of the accessor.</value>
+  </data>
+  <data name="IO_EOF_ReadBeyondEOF" xml:space="preserve">
+    <value>Unable to read beyond the end of the stream.</value>
+  </data>
+  <data name="Arg_EndOfStreamException" xml:space="preserve">
+    <value>Attempted to read past the end of the stream.</value>
+  </data>
+  <data name="ObjectDisposed_FileClosed" xml:space="preserve">
+    <value>Cannot access a closed file.</value>
+  </data>
+  <data name="Arg_InvalidSearchPattern" xml:space="preserve">
+    <value>Search pattern cannot contain \"..\" to move up directories and can be contained only internally in file/directory names, as in \"a..b\".</value>
+  </data>
+  <data name="ArgumentOutOfRange_FileLengthTooBig" xml:space="preserve">
+    <value>Specified file length was too large for the file system.</value>
+  </data>
+  <data name="Argument_InvalidHandle" xml:space="preserve">
+    <value>'handle' has been disposed or is an invalid handle.</value>
+  </data>
+  <data name="Argument_AlreadyBoundOrSyncHandle" xml:space="preserve">
+    <value>'handle' has already been bound to the thread pool, or was not opened for asynchronous I/O.</value>
+  </data>
+  <data name="Argument_PreAllocatedAlreadyAllocated" xml:space="preserve">
+    <value>'preAllocated' is already in use.</value>
+  </data>
+  <data name="Argument_NativeOverlappedAlreadyFree" xml:space="preserve">
+    <value>'overlapped' has already been freed.</value>
+  </data>
+  <data name="Argument_NativeOverlappedWrongBoundHandle" xml:space="preserve">
+    <value>'overlapped' was not allocated by this ThreadPoolBoundHandle instance.</value>
+  </data>
+  <data name="Arg_HandleNotAsync" xml:space="preserve">
+    <value>Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O).</value>
+  </data>
+  <data name="ArgumentNull_Path" xml:space="preserve">
+    <value>Path cannot be null.</value>
+  </data>
+  <data name="Argument_EmptyPath" xml:space="preserve">
+    <value>Empty path name is not legal.</value>
+  </data>
+  <data name="Argument_InvalidFileModeAndAccessCombo" xml:space="preserve">
+    <value>Combining FileMode: {0} with FileAccess: {1} is invalid.</value>
+  </data>
+  <data name="Argument_InvalidAppendMode" xml:space="preserve">
+    <value>Append access can be requested only in write-only mode.</value>
+  </data>
+  <data name="IO_UnknownFileName" xml:space="preserve">
+    <value>[Unknown]</value>
+  </data>
+  <data name="IO_FileStreamHandlePosition" xml:space="preserve">
+    <value>The OS handle's position is not what FileStream expected. Do not use a handle simultaneously in one FileStream and in Win32 code or another FileStream. This may cause data loss.</value>
+  </data>
+  <data name="NotSupported_FileStreamOnNonFiles" xml:space="preserve">
+    <value>FileStream was asked to open a device that was not a file. For support for devices like 'com1:' or 'lpt1:', call CreateFile, then use the FileStream constructors that take an OS handle as an IntPtr.</value>
+  </data>
+  <data name="IO_BindHandleFailed" xml:space="preserve">
+    <value>BindHandle for ThreadPool failed on this handle.</value>
+  </data>
+  <data name="Arg_HandleNotSync" xml:space="preserve">
+    <value>Handle does not support synchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened asynchronously (that is, it was opened explicitly for overlapped I/O).</value>
+  </data>
+  <data name="IO_SetLengthAppendTruncate" xml:space="preserve">
+    <value>Unable to truncate data that previously existed in a file opened in Append mode.</value>
+  </data>
+  <data name="IO_SeekAppendOverwrite" xml:space="preserve">
+    <value>Unable seek backward to overwrite data that previously existed in a file opened in Append mode.</value>
+  </data>
+  <data name="IO_FileTooLongOrHandleNotSync" xml:space="preserve">
+    <value>IO operation will not work. Most likely the file will become too long or the handle was not opened to support synchronous IO operations.</value>
+  </data>
+  <data name="IndexOutOfRange_IORaceCondition" xml:space="preserve">
+    <value>Probable I/O race condition detected while copying memory. The I/O package is not thread safe by default. In multithreaded applications, a stream must be accessed in a thread-safe way, such as a thread-safe wrapper returned by TextReader's or TextWriter's Synchronized methods. This also applies to classes like StreamWriter and StreamReader.</value>
+  </data>
+  <data name="Argument_StreamNotSeekable" xml:space="preserve">
+    <value>Stream was not seekable.</value>
+  </data>
+  <data name="Arg_ResourceFileUnsupportedVersion" xml:space="preserve">
+    <value>The ResourceReader class does not know how to read this version of .resources files.</value>
+  </data>
+  <data name="Resources_StreamNotValid" xml:space="preserve">
+    <value>Stream is not a valid resource file.</value>
+  </data>
+  <data name="BadImageFormat_ResourcesHeaderCorrupted" xml:space="preserve">
+    <value>Corrupt .resources file. Unable to read resources from this file because of invalid header information. Try regenerating the .resources file.</value>
+  </data>
+  <data name="Argument_StreamNotReadable" xml:space="preserve">
+    <value>Stream was not readable.</value>
+  </data>
+  <data name="BadImageFormat_NegativeStringLength" xml:space="preserve">
+    <value>Corrupt .resources file. String length must be non-negative.</value>
+  </data>
+  <data name="BadImageFormat_ResourcesNameInvalidOffset" xml:space="preserve">
+    <value>Corrupt .resources file. The Invalid offset into name section is .</value>
+  </data>
+  <data name="BadImageFormat_TypeMismatch" xml:space="preserve">
+    <value>Corrupt .resources file.  The specified type doesn't match the available data in the stream.</value>
+  </data>
+  <data name="BadImageFormat_ResourceNameCorrupted_NameIndex" xml:space="preserve">
+    <value>Corrupt .resources file. The resource name for name index that extends past the end of the stream is </value>
+  </data>
+  <data name="BadImageFormat_ResourcesDataInvalidOffset" xml:space="preserve">
+    <value>Corrupt .resources file. Invalid offset  into data section is </value>
+  </data>
+  <data name="Format_Bad7BitInt32" xml:space="preserve">
+    <value>Too many bytes in what should have been a 7 bit encoded Int32.</value>
+  </data>
+  <data name="BadImageFormat_InvalidType" xml:space="preserve">
+    <value>Corrupt .resources file.  The specified type doesn't exist.</value>
+  </data>
+  <data name="ResourceReaderIsClosed" xml:space="preserve">
+    <value>ResourceReader is closed.</value>
+  </data>
+  <data name="Arg_MissingManifestResourceException" xml:space="preserve">
+    <value>Unable to find manifest resource.</value>
+  </data>
+  <data name="Serialization_MissingKeys" xml:space="preserve">
+    <value>The keys for this dictionary are missing.</value>
+  </data>
+  <data name="Serialization_NullKey" xml:space="preserve"> 
+    <value>One of the serialized keys is null.</value>
+  </data> 
+  <data name="NotSupported_KeyCollectionSet" xml:space="preserve">
+    <value>Mutating a key collection derived from a dictionary is not allowed.</value>
+  </data>
+  <data name="NotSupported_ValueCollectionSet" xml:space="preserve">
+    <value>Mutating a value collection derived from a dictionary is not allowed.</value>
+  </data>
+  <data name="IO_IO_StreamTooLong" xml:space="preserve">
+    <value>Stream was too long.</value>
+  </data>
+  <data name="UnauthorizedAccess_MemStreamBuffer" xml:space="preserve">
+    <value>MemoryStream's internal buffer cannot be accessed.</value>
+  </data>
+  <data name="NotSupported_MemStreamNotExpandable" xml:space="preserve">
+    <value>Memory stream is not expandable.</value>
+  </data>
+  <data name="IO_IO_SeekBeforeBegin" xml:space="preserve">
+    <value>An attempt was made to move the position before the beginning of the stream.</value>
+  </data>
+  <data name="ArgumentNull_Stream" xml:space="preserve">
+    <value>Stream cannot be null.</value>
+  </data>
+  <data name="IO_IO_InvalidStringLen_Len" xml:space="preserve">
+    <value>BinaryReader encountered an invalid string length of {0} characters.</value>
+  </data>
+  <data name="ArgumentOutOfRange_BinaryReaderFillBuffer" xml:space="preserve">
+    <value>The number of bytes requested does not fit into BinaryReader's internal buffer.</value>
   </data>
 </root>

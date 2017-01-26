@@ -20,7 +20,7 @@ namespace System.Runtime
         // internal calls for allocation
         //
         [RuntimeExport("RhNewObject")]
-        public unsafe static object RhNewObject(EETypePtr pEEType)
+        public static unsafe object RhNewObject(EETypePtr pEEType)
         {
             EEType* ptrEEType = (EEType*)pEEType.ToPointer();
 #if FEATURE_64BIT_ALIGNMENT
@@ -42,7 +42,7 @@ namespace System.Runtime
         }
 
         [RuntimeExport("RhNewArray")]
-        public unsafe static object RhNewArray(EETypePtr pEEType, int length)
+        public static unsafe object RhNewArray(EETypePtr pEEType, int length)
         {
             EEType* ptrEEType = (EEType*)pEEType.ToPointer();
 #if FEATURE_64BIT_ALIGNMENT
@@ -58,7 +58,7 @@ namespace System.Runtime
         }
 
         [RuntimeExport("RhBox")]
-        public unsafe static object RhBox(EETypePtr pEEType, ref byte data)
+        public static unsafe object RhBox(EETypePtr pEEType, ref byte data)
         {
             EEType* ptrEEType = (EEType*)pEEType.ToPointer();
             int dataOffset = 0;
@@ -93,7 +93,7 @@ namespace System.Runtime
         }
 
         [RuntimeExport("RhBoxAny")]
-        public unsafe static object RhBoxAny(ref byte data, EETypePtr pEEType)
+        public static unsafe object RhBoxAny(ref byte data, EETypePtr pEEType)
         {
             EEType* ptrEEType = (EEType*)pEEType.ToPointer();
             if (ptrEEType->IsValueType)
@@ -106,41 +106,36 @@ namespace System.Runtime
             }
         }
 
-        private unsafe static bool UnboxAnyTypeCompare(EEType *pEEType, EEType *ptrUnboxToEEType)
+        private static unsafe bool UnboxAnyTypeCompare(EEType* pEEType, EEType* ptrUnboxToEEType)
         {
-            bool result = false;
+            if (TypeCast.AreTypesEquivalentInternal(pEEType, ptrUnboxToEEType))
+                return true;
 
             if (pEEType->CorElementType == ptrUnboxToEEType->CorElementType)
             {
-                result = TypeCast.AreTypesEquivalentInternal(pEEType, ptrUnboxToEEType);
-
-                if (!result)
+                // Enum's and primitive types should pass the UnboxAny exception cases
+                // if they have an exactly matching cor element type.
+                switch (ptrUnboxToEEType->CorElementType)
                 {
-                    // Enum's and primitive types should pass the UnboxAny exception cases
-                    // if they have an exactly matching cor element type.
-                    switch (ptrUnboxToEEType->CorElementType)
-                    {
-                        case CorElementType.ELEMENT_TYPE_I1:
-                        case CorElementType.ELEMENT_TYPE_U1:
-                        case CorElementType.ELEMENT_TYPE_I2:
-                        case CorElementType.ELEMENT_TYPE_U2:
-                        case CorElementType.ELEMENT_TYPE_I4:
-                        case CorElementType.ELEMENT_TYPE_U4:
-                        case CorElementType.ELEMENT_TYPE_I8:
-                        case CorElementType.ELEMENT_TYPE_U8:
-                        case CorElementType.ELEMENT_TYPE_I:
-                        case CorElementType.ELEMENT_TYPE_U:
-                            result = true;
-                            break;
-                    }
+                    case CorElementType.ELEMENT_TYPE_I1:
+                    case CorElementType.ELEMENT_TYPE_U1:
+                    case CorElementType.ELEMENT_TYPE_I2:
+                    case CorElementType.ELEMENT_TYPE_U2:
+                    case CorElementType.ELEMENT_TYPE_I4:
+                    case CorElementType.ELEMENT_TYPE_U4:
+                    case CorElementType.ELEMENT_TYPE_I8:
+                    case CorElementType.ELEMENT_TYPE_U8:
+                    case CorElementType.ELEMENT_TYPE_I:
+                    case CorElementType.ELEMENT_TYPE_U:
+                        return true;
                 }
             }
 
-            return result;
+            return false;
         }
 
         [RuntimeExport("RhUnboxAny")]
-        public unsafe static void RhUnboxAny(object o, ref byte data, EETypePtr pUnboxToEEType)
+        public static unsafe void RhUnboxAny(object o, ref byte data, EETypePtr pUnboxToEEType)
         {
             EEType* ptrUnboxToEEType = (EEType*)pUnboxToEEType.ToPointer();
             if (ptrUnboxToEEType->IsValueType)
@@ -183,25 +178,22 @@ namespace System.Runtime
         // Unbox helpers with RyuJIT conventions
         //
         [RuntimeExport("RhUnbox2")]
-        static public unsafe ref byte RhUnbox2(EETypePtr pUnboxToEEType, Object obj)
+        public static unsafe ref byte RhUnbox2(EETypePtr pUnboxToEEType, Object obj)
         {
-            EEType * ptrUnboxToEEType = (EEType *)pUnboxToEEType.ToPointer();
-            if (obj.EEType != ptrUnboxToEEType)
+            EEType* ptrUnboxToEEType = (EEType*)pUnboxToEEType.ToPointer();
+            if ((obj == null) || !UnboxAnyTypeCompare(obj.EEType, ptrUnboxToEEType))
             {
-                // We allow enums and their primtive type to be interchangable
-                if (obj.EEType->CorElementType != ptrUnboxToEEType->CorElementType)
-                {
-                    throw ptrUnboxToEEType->GetClasslibException(ExceptionIDs.InvalidCast);
-                }
+                ExceptionIDs exID = obj == null ? ExceptionIDs.NullReference : ExceptionIDs.InvalidCast;
+                throw ptrUnboxToEEType->GetClasslibException(exID);
             }
             return ref obj.GetRawData();
         }
 
         [RuntimeExport("RhUnboxNullable")]
-        static public unsafe void RhUnboxNullable(ref byte data, EETypePtr pUnboxToEEType, Object obj)
+        public static unsafe void RhUnboxNullable(ref byte data, EETypePtr pUnboxToEEType, Object obj)
         {
             EEType* ptrUnboxToEEType = (EEType*)pUnboxToEEType.ToPointer();
-            if ((obj != null) && (obj.EEType != ptrUnboxToEEType->NullableType))
+            if ((obj != null) && !TypeCast.AreTypesEquivalentInternal(obj.EEType, ptrUnboxToEEType->NullableType))
             {
                 throw ptrUnboxToEEType->GetClasslibException(ExceptionIDs.InvalidCast);
             }
@@ -209,7 +201,7 @@ namespace System.Runtime
         }
 
         [RuntimeExport("RhArrayStoreCheckAny")]
-        static public unsafe void RhArrayStoreCheckAny(object array, ref byte data)
+        public static unsafe void RhArrayStoreCheckAny(object array, ref byte data)
         {
             if (array == null)
             {
@@ -228,7 +220,7 @@ namespace System.Runtime
         }
 
         [RuntimeExport("RhBoxAndNullCheck")]
-        static public unsafe bool RhBoxAndNullCheck(ref byte data, EETypePtr pEEType)
+        public static unsafe bool RhBoxAndNullCheck(ref byte data, EETypePtr pEEType)
         {
             EEType* ptrEEType = (EEType*)pEEType.ToPointer();
             if (ptrEEType->IsValueType)
@@ -245,7 +237,7 @@ namespace System.Runtime
 #pragma warning restore 169
 
         [RuntimeExport("RhAllocLocal")]
-        public unsafe static object RhAllocLocal(EETypePtr pEEType)
+        public static unsafe object RhAllocLocal(EETypePtr pEEType)
         {
             EEType* ptrEEType = (EEType*)pEEType.ToPointer();
             if (ptrEEType->IsValueType)
@@ -261,7 +253,7 @@ namespace System.Runtime
         }
 
         [RuntimeExport("RhMemberwiseClone")]
-        public unsafe static object RhMemberwiseClone(object src)
+        public static unsafe object RhMemberwiseClone(object src)
         {
             object objClone;
 
@@ -293,7 +285,7 @@ namespace System.Runtime
         }
 
         [DllImport(Redhawk.BaseName, CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern int RhpGetCurrentThreadStackTrace(IntPtr* pOutputBuffer, uint outputBufferLength);
+        private static extern unsafe int RhpGetCurrentThreadStackTrace(IntPtr* pOutputBuffer, uint outputBufferLength);
 
         // Worker for RhGetCurrentThreadStackTrace.  RhGetCurrentThreadStackTrace just allocates a transition
         // frame that will be used to seed the stack trace and this method does all the real work.
@@ -308,7 +300,7 @@ namespace System.Runtime
         // library's objects the caller understands (we support multiple class libraries with multiple root
         // System.Object types).
         [NativeCallable(EntryPoint = "RhpCalculateStackTraceWorker", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe int RhpCalculateStackTraceWorker(IntPtr * pOutputBuffer, uint outputBufferLength)
+        private static unsafe int RhpCalculateStackTraceWorker(IntPtr* pOutputBuffer, uint outputBufferLength)
         {
             uint nFrames = 0;
             bool success = true;

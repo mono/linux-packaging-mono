@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-01-12 09:11+0000\n"
+"POT-Creation-Date: 2017-01-26 09:10+0000\n"
 "PO-Revision-Date: 2008-09-26 15:14+0100\n"
 "Last-Translator: Daniel Nauck <dna@mono-project.de>\n"
 "Language-Team: http://www.mono-project.de\n"
@@ -2371,40 +2371,40 @@ msgid ""
 "must have a FieldOffset attribute"
 msgstr ""
 
-#: mcs/mcs/field.cs:268
+#: mcs/mcs/field.cs:269
 #, csharp-format
 msgid "`{0}': cannot declare variables of static types"
 msgstr ""
 
-#: mcs/mcs/field.cs:415
+#: mcs/mcs/field.cs:416
 #, csharp-format
 msgid ""
 "`{0}': Fixed size buffers type must be one of the following: bool, byte, "
 "short, int, long, char, sbyte, ushort, uint, ulong, float or double"
 msgstr ""
 
-#: mcs/mcs/field.cs:452
+#: mcs/mcs/field.cs:453
 #, csharp-format
 msgid "`{0}': Fixed size buffer fields may only be members of structs"
 msgstr ""
 
-#: mcs/mcs/field.cs:467
+#: mcs/mcs/field.cs:468
 #, csharp-format
 msgid "`{0}': Fixed size buffers must have a length greater than zero"
 msgstr ""
 
-#: mcs/mcs/field.cs:490
+#: mcs/mcs/field.cs:491
 #, csharp-format
 msgid ""
 "Fixed size buffer `{0}' of length `{1}' and type `{2}' exceeded 2^31 limit"
 msgstr ""
 
-#: mcs/mcs/field.cs:707
+#: mcs/mcs/field.cs:708
 #, csharp-format
 msgid "`{0}': A volatile field cannot be of the type `{1}'"
 msgstr ""
 
-#: mcs/mcs/field.cs:712
+#: mcs/mcs/field.cs:713
 #, fuzzy, csharp-format
 msgid "`{0}': A field cannot be both volatile and readonly"
 msgstr "`{0}' Eine Klasse kann nicht gleichzeitig statisch und versiegelt sein"
@@ -2842,7 +2842,7 @@ msgstr ""
 msgid "`{0}': A partial method parameters cannot use `out' modifier"
 msgstr ""
 
-#: mcs/mcs/method.cs:746
+#: mcs/mcs/method.cs:751
 #, csharp-format
 msgid ""
 "Conditional not valid on `{0}' because it is a constructor, destructor, "
@@ -2851,56 +2851,56 @@ msgstr ""
 "Das Conditional-Attribut ist für `{0}' ungültig, weil dies ein Konstruktor, "
 "Destruktor, Operator oder eine explizite Schnittstellenimplementierung ist"
 
-#: mcs/mcs/method.cs:918
+#: mcs/mcs/method.cs:923
 msgid ""
 "A partial method cannot define access modifier or any of abstract, extern, "
 "new, override, sealed, or virtual modifiers"
 msgstr ""
 
-#: mcs/mcs/method.cs:924
+#: mcs/mcs/method.cs:929
 msgid ""
 "A partial method must be declared within a partial class or partial struct"
 msgstr ""
 
-#: mcs/mcs/method.cs:929
+#: mcs/mcs/method.cs:934
 #, csharp-format
 msgid "`{0}': Extension methods must be declared static"
 msgstr "`{0}': Erweiterungsmethoden müssen statisch sein"
 
-#: mcs/mcs/method.cs:945
+#: mcs/mcs/method.cs:950
 #, csharp-format
 msgid "Program `{0}' has more than one entry point defined: `{1}'"
 msgstr ""
 
-#: mcs/mcs/method.cs:988
+#: mcs/mcs/method.cs:993
 #, csharp-format
 msgid "Conditional not valid on `{0}' because it is an override method"
 msgstr ""
 "Das Conditional-Attribut ist für `{0}' ungültig, da es eine überschriebene "
 "Funktion ist"
 
-#: mcs/mcs/method.cs:993
+#: mcs/mcs/method.cs:998
 #, csharp-format
 msgid "Conditional not valid on `{0}' because its return type is not void"
 msgstr ""
 "Das Conditional-Attribut ist für `{0}' ungültig, da der Rückgabetyp nicht "
 "leer ist"
 
-#: mcs/mcs/method.cs:998
+#: mcs/mcs/method.cs:1003
 msgid "Conditional not valid on interface members"
 msgstr "Das Conditional-Attribut ist für Schnittstellenmember ungültig"
 
-#: mcs/mcs/method.cs:1004
+#: mcs/mcs/method.cs:1009
 #, fuzzy, csharp-format
 msgid "Conditional member `{0}' cannot implement interface member `{1}'"
 msgstr "`{0}' implementiert den Schnittstellenmember `{1}' nicht"
 
-#: mcs/mcs/method.cs:1011
+#: mcs/mcs/method.cs:1016
 #, csharp-format
 msgid "Conditional method `{0}' cannot have an out parameter"
 msgstr ""
 
-#: mcs/mcs/method.cs:1193
+#: mcs/mcs/method.cs:1198
 #, csharp-format
 msgid ""
 "The constraints for type parameter `{0}' of method `{1}' must match the "
@@ -2908,18 +2908,18 @@ msgid ""
 "using an explicit interface implementation instead"
 msgstr ""
 
-#: mcs/mcs/method.cs:1248
+#: mcs/mcs/method.cs:1253
 msgid "The return type of an async method must be void, Task, or Task<T>"
 msgstr ""
 
-#: mcs/mcs/method.cs:1265
+#: mcs/mcs/method.cs:1270
 #, fuzzy, csharp-format
 msgid "`{0}': Extension methods cannot be defined in a nested class"
 msgstr ""
 "`{0}': Erweiterungsmethoden müssen in einer nicht generischen statischen "
 "Klasse definiert werden"
 
-#: mcs/mcs/method.cs:1271
+#: mcs/mcs/method.cs:1276
 #, csharp-format
 msgid ""
 "`{0}': Extension methods require `System.Runtime.CompilerServices."
@@ -2927,165 +2927,165 @@ msgid ""
 "reference?"
 msgstr ""
 
-#: mcs/mcs/method.cs:1280
+#: mcs/mcs/method.cs:1285
 #, csharp-format
 msgid "`{0}': Extension methods must be defined in a non-generic static class"
 msgstr ""
 "`{0}': Erweiterungsmethoden müssen in einer nicht generischen statischen "
 "Klasse definiert werden"
 
-#: mcs/mcs/method.cs:1296
+#: mcs/mcs/method.cs:1301
 #, fuzzy, csharp-format
 msgid "`{0}': an entry point cannot be async method"
 msgstr "`{0}': Abstrakte Eigenschaften können keine privaten-Accessoren haben"
 
-#: mcs/mcs/method.cs:1352
+#: mcs/mcs/method.cs:1357
 #, csharp-format
 msgid ""
 "A partial method `{0}' implementation is missing a partial method declaration"
 msgstr ""
 
-#: mcs/mcs/method.cs:1384
+#: mcs/mcs/method.cs:1389
 #, csharp-format
 msgid "Method or delegate cannot return type `{0}'"
 msgstr ""
 
-#: mcs/mcs/method.cs:1481
+#: mcs/mcs/method.cs:1486
 msgid ""
 "The constructor call cannot be dynamically dispatched within constructor "
 "initializer"
 msgstr ""
 
-#: mcs/mcs/method.cs:1495
+#: mcs/mcs/method.cs:1500
 #, fuzzy, csharp-format
 msgid "`{0}': Struct constructors cannot call base constructors"
 msgstr "`{0}': Statische Klassen können keinen Destruktor enthalten"
 
-#: mcs/mcs/method.cs:1504
+#: mcs/mcs/method.cs:1509
 #, csharp-format
 msgid "Constructor `{0}' cannot call itself"
 msgstr ""
 
-#: mcs/mcs/method.cs:1690
+#: mcs/mcs/method.cs:1695
 #, fuzzy, csharp-format
 msgid ""
 "`{0}': Structs with primary constructor cannot specify default constructor "
 "initializer"
 msgstr "`{0}': Statische Klassen können keinen Destruktor enthalten"
 
-#: mcs/mcs/method.cs:1693
+#: mcs/mcs/method.cs:1698
 #, fuzzy, csharp-format
 msgid ""
 "`{0}': Instance constructor of type with primary constructor must specify "
 "`this' constructor initializer"
 msgstr "`{0}': Statische Klassen können keinen Destruktor enthalten"
 
-#: mcs/mcs/method.cs:1699
+#: mcs/mcs/method.cs:1704
 #, fuzzy, csharp-format
 msgid "`{0}': Contructors cannot be extern and have a constructor initializer"
 msgstr "`{0}': Instanzfeldinitialisierungen können nicht in Strukturen sein"
 
-#: mcs/mcs/method.cs:1734
+#: mcs/mcs/method.cs:1739
 #, csharp-format
 msgid ""
 "`{0}': A class with the ComImport attribute cannot have a user-defined "
 "constructor"
 msgstr ""
 
-#: mcs/mcs/method.cs:1990
+#: mcs/mcs/method.cs:1995
 #, fuzzy, csharp-format
 msgid "`{0}' is an accessor not found in interface member `{1}{2}'"
 msgstr "`{0}' implementiert den Schnittstellenmember `{1}' nicht"
 
-#: mcs/mcs/method.cs:1996
+#: mcs/mcs/method.cs:2001
 #, csharp-format
 msgid ""
 "`{0}.{1}' in explicit interface declaration is not a member of interface"
 msgstr ""
 
-#: mcs/mcs/method.cs:2004
+#: mcs/mcs/method.cs:2009
 #, csharp-format
 msgid ""
 "`{0}' explicit method implementation cannot implement `{1}' because it is an "
 "accessor"
 msgstr ""
 
-#: mcs/mcs/method.cs:2014
+#: mcs/mcs/method.cs:2019
 #, fuzzy, csharp-format
 msgid "Method `{0}' cannot implement interface accessor `{1}'"
 msgstr "`{0}' implementiert den Schnittstellenmember `{1}' nicht"
 
-#: mcs/mcs/method.cs:2021
+#: mcs/mcs/method.cs:2026
 #, csharp-format
 msgid ""
 "Accessor `{0}' cannot implement interface member `{1}' for type `{2}'. Use "
 "an explicit interface implementation"
 msgstr ""
 
-#: mcs/mcs/method.cs:2028
+#: mcs/mcs/method.cs:2033
 #, fuzzy, csharp-format
 msgid ""
 "Accessor `{0}' must be declared public to implement interface member `{1}'"
 msgstr "`{0}' implementiert den Schnittstellenmember `{1}' nicht"
 
-#: mcs/mcs/method.cs:2048
+#: mcs/mcs/method.cs:2053
 #, csharp-format
 msgid ""
 "`{0}': the explicit interface implementation cannot introduce the params "
 "modifier"
 msgstr ""
 
-#: mcs/mcs/method.cs:2392
+#: mcs/mcs/method.cs:2397
 #, csharp-format
 msgid ""
 "Attribute `{0}' is not valid on property or event accessors. It is valid on "
 "`{1}' declarations only"
 msgstr ""
 
-#: mcs/mcs/method.cs:2629
+#: mcs/mcs/method.cs:2634
 #, csharp-format
 msgid "User-defined operator `{0}' must be declared static and public"
 msgstr ""
 
-#: mcs/mcs/method.cs:2673
+#: mcs/mcs/method.cs:2678
 msgid ""
 "User-defined operator cannot take an object of the enclosing type and "
 "convert to an object of the enclosing type"
 msgstr ""
 
-#: mcs/mcs/method.cs:2684
+#: mcs/mcs/method.cs:2689
 msgid "User-defined conversion must convert to or from the enclosing type"
 msgstr ""
 
-#: mcs/mcs/method.cs:2690
+#: mcs/mcs/method.cs:2695
 #, csharp-format
 msgid ""
 "User-defined conversion `{0}' cannot convert to or from the dynamic type"
 msgstr ""
 
-#: mcs/mcs/method.cs:2697
+#: mcs/mcs/method.cs:2702
 #, csharp-format
 msgid ""
 "User-defined conversion `{0}' cannot convert to or from an interface type"
 msgstr ""
 
-#: mcs/mcs/method.cs:2704
+#: mcs/mcs/method.cs:2709
 #, csharp-format
 msgid "User-defined conversion `{0}' cannot convert to or from a base class"
 msgstr ""
 
-#: mcs/mcs/method.cs:2710
+#: mcs/mcs/method.cs:2715
 #, csharp-format
 msgid "User-defined conversion `{0}' cannot convert to or from a derived class"
 msgstr ""
 
-#: mcs/mcs/method.cs:2717
+#: mcs/mcs/method.cs:2722
 msgid ""
 "Overloaded shift operator must have the type of the first operand be the "
 "containing type, and the type of the second operand must be int"
 msgstr ""
 
-#: mcs/mcs/method.cs:2726
+#: mcs/mcs/method.cs:2731
 msgid ""
 "The return type for ++ or -- operator must be the containing type or derived "
 "from the containing type"
@@ -3093,20 +3093,20 @@ msgstr ""
 "Der Rückgabetyp für die Operatoren ++ und -- muss der enthaltene Typ sein "
 "oder vom enthaltenen Typ abgeleitet sein"
 
-#: mcs/mcs/method.cs:2731
+#: mcs/mcs/method.cs:2736
 msgid "The parameter type for ++ or -- operator must be the containing type"
 msgstr "Der Parameter für den ++ oder -- Operator muss der enthaltene Typ sein"
 
-#: mcs/mcs/method.cs:2738
+#: mcs/mcs/method.cs:2743
 #, fuzzy
 msgid "The parameter type of a unary operator must be the containing type"
 msgstr "Der Parameter für den ++ oder -- Operator muss der enthaltene Typ sein"
 
-#: mcs/mcs/method.cs:2746
+#: mcs/mcs/method.cs:2751
 msgid "The return type of operator True or False must be bool"
 msgstr ""
 
-#: mcs/mcs/method.cs:2761
+#: mcs/mcs/method.cs:2766
 #, fuzzy
 msgid "One of the parameters of a binary operator must be the containing type"
 msgstr "Der Parameter für den ++ oder -- Operator muss der enthaltene Typ sein"

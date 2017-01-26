@@ -71,7 +71,6 @@ namespace System
     // constructed itself depends on this class also being eagerly constructed. Plus, it's nice to have this
     // eagerly constructed to avoid the cost of defered ctors. I can't imagine any app that doesn't use string
     //
-    [ComVisible(true)]
     [StructLayout(LayoutKind.Sequential)]
     [System.Runtime.CompilerServices.EagerStaticClassConstructionAttribute]
     public sealed partial class String : IComparable, IEnumerable, IEnumerable<char>, IComparable<String>, IEquatable<String>, IConvertible, ICloneable
@@ -415,7 +414,7 @@ namespace System
 
         // Helper for encodings so they can talk to our buffer directly
         // stringLength must be the exact size we'll expect
-        unsafe static internal String CreateStringFromEncoding(
+        unsafe internal static String CreateStringFromEncoding(
             byte* bytes, int byteLength, Encoding encoding)
         {
             Debug.Assert(bytes != null);
@@ -685,6 +684,30 @@ namespace System
         Object IConvertible.ToType(Type type, IFormatProvider provider)
         {
             return Convert.DefaultToType((IConvertible)this, type, provider);
+        }
+
+        // Normalization Methods
+        // These just wrap calls to Normalization class
+        public bool IsNormalized()
+        {
+            // Default to Form IDNA
+            return IsNormalized((NormalizationForm)ExtendedNormalizationForms.FormIdna);
+        }
+
+        public bool IsNormalized(NormalizationForm normalizationForm)
+        {
+            return Normalization.IsNormalized(this, normalizationForm);
+        }
+
+        public String Normalize()
+        {
+            // Default to Form IDNA
+            return Normalize((NormalizationForm)ExtendedNormalizationForms.FormIdna);
+        }
+
+        public String Normalize(NormalizationForm normalizationForm)
+        {
+            return Normalization.Normalize(this, normalizationForm);
         }
     }
 }

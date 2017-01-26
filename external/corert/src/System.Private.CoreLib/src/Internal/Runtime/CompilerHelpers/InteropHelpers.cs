@@ -49,7 +49,7 @@ namespace Internal.Runtime.CompilerHelpers
                 sb.ReplaceBuffer(p);
         }
 
-        internal unsafe static IntPtr ResolvePInvoke(MethodFixupCell* pCell)
+        internal static unsafe IntPtr ResolvePInvoke(MethodFixupCell* pCell)
         {
             if (pCell->Target != IntPtr.Zero)
                 return pCell->Target;
@@ -57,7 +57,7 @@ namespace Internal.Runtime.CompilerHelpers
             return ResolvePInvokeSlow(pCell);
         }
 
-        internal unsafe static IntPtr ResolvePInvokeSlow(MethodFixupCell* pCell)
+        internal static unsafe IntPtr ResolvePInvokeSlow(MethodFixupCell* pCell)
         {
             ModuleFixupCell* pModuleCell = pCell->Module;
             IntPtr hModule = pModuleCell->Handle;
@@ -71,48 +71,82 @@ namespace Internal.Runtime.CompilerHelpers
             return pCell->Target;
         }
 
-        internal unsafe static void FixupModuleCell(ModuleFixupCell* pCell)
+        internal static unsafe IntPtr TryResolveModule(string moduleName)
         {
-#if !PLATFORM_UNIX
-            char* moduleName = (char*)pCell->ModuleName;
+            IntPtr hModule = IntPtr.Zero;
 
-            IntPtr hModule = Interop.mincore.LoadLibraryEx(moduleName, IntPtr.Zero, 0);
-            if (hModule != IntPtr.Zero)
-            {
-                var oldValue = Interlocked.CompareExchange(ref pCell->Handle, hModule, IntPtr.Zero);
-                if (oldValue != IntPtr.Zero)
-                {
-                    // Some other thread won the race to fix it up.
-                    Interop.mincore.FreeLibrary(hModule);
-                }
-            }
-            else
-            {
-                // TODO: should be DllNotFoundException, but layering...
-                throw new TypeLoadException(new string(moduleName));
-            }
-#else
-            byte* moduleName = (byte*)pCell->ModuleName;
+            // Try original name first
+            hModule = LoadLibrary(moduleName);
+            if (hModule != IntPtr.Zero) return hModule;
 
-            IntPtr hModule = Interop.Sys.LoadLibrary(moduleName);
-            if (hModule != IntPtr.Zero)
-            {
-                var oldValue = Interlocked.CompareExchange(ref pCell->Handle, hModule, IntPtr.Zero);
-                if (oldValue != IntPtr.Zero)
-                {
-                    // Some other thread won the race to fix it up.
-                    Interop.Sys.FreeLibrary(hModule);
-                }
-            }
-            else
-            {
-                // TODO: should be DllNotFoundException, but layering...
-                throw new TypeLoadException(Encoding.UTF8.GetString(moduleName, strlen(moduleName)));
-            }
+#if PLATFORM_UNIX
+            const string PAL_SHLIB_PREFIX = "lib";
+    #if PLATFORM_OSX
+            const string PAL_SHLIB_SUFFIX = ".dylib";
+    #else
+            const string PAL_SHLIB_SUFFIX = ".so";
+    #endif
+
+             // Try prefix+name+suffix
+            hModule = LoadLibrary(PAL_SHLIB_PREFIX + moduleName + PAL_SHLIB_SUFFIX);
+            if (hModule != IntPtr.Zero) return hModule;
+
+            // Try name+suffix
+            hModule = LoadLibrary(moduleName + PAL_SHLIB_SUFFIX);
+            if (hModule != IntPtr.Zero) return hModule;
+
+            // Try prefix+name
+            hModule = LoadLibrary(PAL_SHLIB_PREFIX + moduleName);
+            if (hModule != IntPtr.Zero) return hModule;
 #endif
+            return IntPtr.Zero;
         }
 
-        internal unsafe static void FixupMethodCell(IntPtr hModule, MethodFixupCell* pCell)
+        internal static unsafe IntPtr LoadLibrary(string moduleName)
+        {
+            IntPtr hModule;
+
+#if !PLATFORM_UNIX
+            hModule = Interop.mincore.LoadLibraryEx(moduleName, IntPtr.Zero, 0);
+#else
+            hModule = Interop.Sys.LoadLibrary(moduleName);
+#endif
+
+            return hModule;
+        }        
+
+        internal static unsafe void FreeLibrary(IntPtr hModule)
+        {
+#if !PLATFORM_UNIX
+            Interop.mincore.FreeLibrary(hModule);
+#else
+            Interop.Sys.FreeLibrary(hModule);
+#endif
+        }        
+        
+        internal static unsafe void FixupModuleCell(ModuleFixupCell* pCell)
+        {
+            byte *pModuleName = (byte *)pCell->ModuleName;
+            string moduleName = Encoding.UTF8.GetString(pModuleName, strlen(pModuleName));
+            
+            IntPtr hModule = TryResolveModule(moduleName);
+            if (hModule != IntPtr.Zero)
+            {
+                var oldValue = Interlocked.CompareExchange(ref pCell->Handle, hModule, IntPtr.Zero);
+                if (oldValue != IntPtr.Zero)
+                {
+                    // Some other thread won the race to fix it up.
+                    FreeLibrary(hModule);
+                }
+            }
+            else
+            {
+                // TODO: should be DllNotFoundException, but layering...
+                throw new TypeLoadException(moduleName);
+            }
+        }
+
+        internal static unsafe void FixupMethodCell(IntPtr hModule, MethodFixupCell* pCell)
         {
             byte* methodName = (byte*)pCell->MethodName;
 
@@ -128,12 +162,11 @@ namespace Internal.Runtime.CompilerHelpers
             }
         }
 
-        internal unsafe static int strlen(byte* pString)
+        internal static unsafe int strlen(byte* pString)
         {
-            int length = 0;
-            for (; *pString != 0; pString++)
-                length++;
-            return length;
+            byte* p = pString;
+            while (*p != 0) p++;
+            return checked((int)(p - pString));
         }
 
         [StructLayout(LayoutKind.Sequential)]

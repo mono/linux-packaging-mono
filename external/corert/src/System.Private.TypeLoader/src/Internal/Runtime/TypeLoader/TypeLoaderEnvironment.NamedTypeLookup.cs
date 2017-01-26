@@ -37,7 +37,7 @@ namespace Internal.Runtime.TypeLoader
 
         private NamedTypeRuntimeTypeHandleToMetadataHashtable _runtimeTypeHandleToMetadataHashtable = new NamedTypeRuntimeTypeHandleToMetadataHashtable();
 
-        public readonly static IntPtr NoStaticsData = (IntPtr)1;
+        public static IntPtr NoStaticsData { get; private set; }
 
         private class NamedTypeRuntimeTypeHandleToMetadataHashtable : LockFreeReaderHashtable<RuntimeTypeHandle, NamedTypeLookupResult>
         {

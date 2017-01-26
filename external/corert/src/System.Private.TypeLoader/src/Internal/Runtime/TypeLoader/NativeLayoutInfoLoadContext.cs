@@ -132,11 +132,17 @@ namespace Internal.Runtime.TypeLoader
                         // Skip encoded bounds and lobounds
                         uint boundsCount = parser.GetUnsigned();
                         while (boundsCount > 0)
+                        {
                             parser.GetUnsigned();
+                            boundsCount--;
+                        }
 
                         uint loBoundsCount = parser.GetUnsigned();
                         while (loBoundsCount > 0)
+                        {
                             parser.GetUnsigned();
+                            loBoundsCount--;
+                        }
 
                         return _typeSystemContext.GetArrayType(elementType, rank);
                     }
@@ -152,7 +158,7 @@ namespace Internal.Runtime.TypeLoader
             }
         }
 
-        internal MethodDesc GetMethod(ref NativeParser parser, out IntPtr methodNameSigPtr, out IntPtr methodSigPtr)
+        internal MethodDesc GetMethod(ref NativeParser parser, out RuntimeSignature methodNameSig, out RuntimeSignature methodSig)
         {
             MethodFlags flags = (MethodFlags)parser.GetUnsigned();
 
@@ -161,7 +167,7 @@ namespace Internal.Runtime.TypeLoader
                 functionPointer = GetExternalReferencePointer(parser.GetUnsigned());
 
             DefType containingType = (DefType)GetType(ref parser);
-            MethodNameAndSignature nameAndSignature = TypeLoaderEnvironment.Instance.GetMethodNameAndSignature(ref parser, out methodNameSigPtr, out methodSigPtr);
+            MethodNameAndSignature nameAndSignature = TypeLoaderEnvironment.Instance.GetMethodNameAndSignature(ref parser, _moduleHandle, out methodNameSig, out methodSig);
 
             bool unboxingStub = (flags & MethodFlags.IsUnboxingStub) != 0;
 
@@ -189,9 +195,9 @@ namespace Internal.Runtime.TypeLoader
 
         internal MethodDesc GetMethod(ref NativeParser parser)
         {
-            IntPtr methodSigPtr;
-            IntPtr methodNameSigPtr;
-            return GetMethod(ref parser, out methodNameSigPtr, out methodSigPtr);
+            RuntimeSignature methodSig;
+            RuntimeSignature methodNameSig;
+            return GetMethod(ref parser, out methodNameSig, out methodSig);
         }
 
         internal TypeDesc[] GetTypeSequence(ref NativeParser parser)

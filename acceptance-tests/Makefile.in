@@ -350,10 +350,11 @@ CLEANFILES = *.dll *.exe *.mdb $(CORECLR_STRESSTESTSI_CS) \
 	GCStressTests.exe coreclr-testlibrary.dll
 EXTRA_DIST = README.md SUBMODULES.json versions.mk roslyn.mk coreclr.mk ms-test-suite.mk
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
-with_mono_path = MONO_PATH=$(CLASS)
-RUNTIME = $(with_mono_path) $(abs_top_builddir)/runtime/mono-wrapper --debug
-MCS = $(RUNTIME) $(CSC) -nologo
-ILASM = $(RUNTIME) $(CLASS)/ilasm.exe
+TOOLS_CLASS = $(mcs_topdir)/class/lib/build
+RUNTIME = MONO_PATH=$(CLASS) $(abs_top_builddir)/runtime/mono-wrapper --debug
+TOOLS_RUNTIME = MONO_PATH=$(TOOLS_CLASS) $(abs_top_builddir)/runtime/mono-wrapper --debug
+MCS = $(TOOLS_RUNTIME) $(CSC) -nologo -noconfig -lib:$(CLASS) -r:System.dll -r:System.Core.dll -r:System.Xml.dll -r:Microsoft.CSharp.dll
+ILASM = $(TOOLS_RUNTIME) $(TOOLS_CLASS)/ilasm.exe
 SUBMODULES_CONFIG_FILE = $(top_srcdir)/acceptance-tests/SUBMODULES.json
 SCRIPT = $(top_srcdir)/scripts/submodules/versions.py
 SYS_REFS = \

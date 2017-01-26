@@ -480,24 +480,24 @@ namespace System
             return Join(separator, value, 0, value.Length);
         }
 
-        public unsafe static string Join(char separator, params object[] values)
+        public static unsafe string Join(char separator, params object[] values)
         {
             // Defer argument validation to the internal function
             return JoinCore(&separator, 1, values);
         }
 
-        public unsafe static string Join<T>(char separator, IEnumerable<T> values)
+        public static unsafe string Join<T>(char separator, IEnumerable<T> values)
         {
             // Defer argument validation to the internal function
             return JoinCore(&separator, 1, values);
         }
 
-        public unsafe static string Join(char separator, string[] value, int startIndex, int count)
+        public static unsafe string Join(char separator, string[] value, int startIndex, int count)
         {
             // Defer argument validation to the internal function
             return JoinCore(&separator, 1, value, startIndex, count);
         }
-    
+
         // Joins an array of strings together as one string with a separator between each original string.
         //
         public static string Join(string separator, params string[] value)
@@ -509,7 +509,7 @@ namespace System
             return Join(separator, value, 0, value.Length);
         }
 
-        public unsafe static string Join(string separator, params object[] values)
+        public static unsafe string Join(string separator, params object[] values)
         {
             separator = separator ?? string.Empty;
             fixed (char* pSeparator = &separator._firstChar)
@@ -519,7 +519,7 @@ namespace System
             }
         }
 
-        public unsafe static string Join<T>(string separator, IEnumerable<T> values)
+        public static unsafe string Join<T>(string separator, IEnumerable<T> values)
         {
             separator = separator ?? string.Empty;
             fixed (char* pSeparator = &separator._firstChar)
@@ -568,7 +568,7 @@ namespace System
 
         // Joins an array of strings together as one string with a separator between each original string.
         //
-        public unsafe static string Join(string separator, string[] value, int startIndex, int count)
+        public static unsafe string Join(string separator, string[] value, int startIndex, int count)
         {
             separator = separator ?? string.Empty;
             fixed (char* pSeparator = &separator._firstChar)
@@ -578,7 +578,7 @@ namespace System
             }
         }
 
-        private unsafe static string JoinCore(char* separator, int separatorLength, object[] values)
+        private static unsafe string JoinCore(char* separator, int separatorLength, object[] values)
         {
             if (values == null)
             {
@@ -613,7 +613,7 @@ namespace System
             return StringBuilderCache.GetStringAndRelease(result);
         }
 
-        private unsafe static string JoinCore<T>(char* separator, int separatorLength, IEnumerable<T> values)
+        private static unsafe string JoinCore<T>(char* separator, int separatorLength, IEnumerable<T> values)
         {
             if (values == null)
             {
@@ -626,7 +626,7 @@ namespace System
                 {
                     return string.Empty;
                 }
-                
+
                 // We called MoveNext once, so this will be the first item
                 T currentValue = en.Current;
 
@@ -665,7 +665,7 @@ namespace System
             }
         }
 
-        private unsafe static string JoinCore(char* separator, int separatorLength, string[] value, int startIndex, int count)
+        private static unsafe string JoinCore(char* separator, int separatorLength, string[] value, int startIndex, int count)
         {
             // If the separator is null, it is converted to an empty string before entering this function.
             // Even for empty strings, fixed should never return null (it should return a pointer to a null char).
@@ -688,7 +688,7 @@ namespace System
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_IndexCountBuffer);
             }
-            
+
             if (count <= 1)
             {
                 return count == 0 ?
@@ -743,7 +743,7 @@ namespace System
                     FillStringChecked(result, copiedLength, currentValue);
                     copiedLength += valueLen;
                 }
-                    
+
                 if (i < end - 1)
                 {
                     // Fill in the separator.

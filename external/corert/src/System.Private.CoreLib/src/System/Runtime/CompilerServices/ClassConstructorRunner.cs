@@ -8,11 +8,11 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+using Internal.Runtime;
+using Internal.Runtime.CompilerHelpers;
+
 namespace System.Runtime.CompilerServices
 {
-    // Marked [EagerStaticClassConstruction] because Cctor.GetCctor
-    // uses _cctorGlobalLock
-    [EagerOrderedStaticConstructor(EagerStaticConstructorOrder.CompilerServicesClassConstructorRunner)]
     internal static partial class ClassConstructorRunner
     {
         //==============================================================================================================
@@ -38,16 +38,23 @@ namespace System.Runtime.CompilerServices
             return returnValue;
         }
 #else
-        private unsafe static object CheckStaticClassConstructionReturnGCStaticBase(StaticClassConstructionContext* context, object gcStaticBase)
+        private static unsafe object CheckStaticClassConstructionReturnGCStaticBase(StaticClassConstructionContext* context, object gcStaticBase)
         {
             EnsureClassConstructorRun(context);
             return gcStaticBase;
         }
 
-        private unsafe static IntPtr CheckStaticClassConstructionReturnNonGCStaticBase(StaticClassConstructionContext* context, IntPtr nonGcStaticBase)
+        private static unsafe IntPtr CheckStaticClassConstructionReturnNonGCStaticBase(StaticClassConstructionContext* context, IntPtr nonGcStaticBase)
         {
             EnsureClassConstructorRun(context);
             return nonGcStaticBase;
+        }
+
+        private unsafe static object CheckStaticClassConstructionReturnThreadStaticBase(TypeManagerSlot* pModuleData, Int32 typeTlsIndex, StaticClassConstructionContext* context)
+        {
+            object threadStaticBase = ThreadStatics.GetThreadStaticBaseForType(pModuleData, typeTlsIndex);
+            EnsureClassConstructorRun(context);
+            return threadStaticBase;
         }
 #endif
 
@@ -252,10 +259,8 @@ namespace System.Runtime.CompilerServices
         //==============================================================================================================
         // These structs are allocated on demand whenever the runtime tries to run a class constructor. Once the
         // the class constructor has been successfully initialized, we reclaim this structure. The structure is long-
-        // lived only if the class constructor threw an exception. This must be marked [EagerStaticClassConstruction] to 
-        // avoid infinite mutual recursion in GetCctor.
+        // lived only if the class constructor threw an exception.
         //==============================================================================================================
-        [EagerOrderedStaticConstructor(EagerStaticConstructorOrder.CompilerServicesClassConstructorRunnerCctor)]
         private unsafe struct Cctor
         {
             public Lock Lock;
@@ -263,14 +268,7 @@ namespace System.Runtime.CompilerServices
             public int HoldingThread;
             private int _refCount;
             private StaticClassConstructionContext* _pContext;
-
-            // Because Cctor's are mutable structs, we have to give our callers raw references to the underlying arrays 
-            // for this collection to be usable.  This also means once we place a Cctor in an array, we can't grow or 
-            // reallocate the array.
-            private static Cctor[][] s_cctorArrays = new Cctor[10][];
-            private static int s_cctorArraysCount = 0;
-            private static int s_count;
-
+            
             //==========================================================================================================
             // Gets the Cctor entry associated with a specific class constructor context (creating it if necessary.)
             //==========================================================================================================
@@ -469,8 +467,25 @@ namespace System.Runtime.CompilerServices
             private static int s_nextBlockingRecordIndex;
         }
 
-        private static Lock s_cctorGlobalLock = new Lock();
+        private static Lock s_cctorGlobalLock;
 
+        // These three  statics are used by ClassConstructorRunner.Cctor but moved out to avoid an unnecessary 
+        // extra class constructor call.
+        //
+        // Because Cctor's are mutable structs, we have to give our callers raw references to the underlying arrays 
+        // for this collection to be usable.  This also means once we place a Cctor in an array, we can't grow or 
+        // reallocate the array.
+        private static Cctor[][] s_cctorArrays;
+        private static int s_cctorArraysCount;
+        private static int s_count;
+
+        // Eager construction called from LibraryInitialize Cctor.GetCctor uses _cctorGlobalLock.
+        internal static void Initialize()
+        {
+            s_cctorArrays = new Cctor[10][];
+            s_cctorGlobalLock = new Lock();
+        }
+        
         [Conditional("ENABLE_NOISY_CCTOR_LOG")]
         private static void NoisyLog(string format, IntPtr cctorMethod, int threadId)
         {
@@ -494,22 +509,22 @@ namespace System.Runtime.CompilerServices
         // We cannot utilize any of the typical number formatting code because it triggers globalization code to run 
         // and this cctor code is layered below globalization.
 #if DEBUG
-        static string ToHexString(int num)
+        private static string ToHexString(int num)
         {
             return ToHexStringUnsignedLong((ulong)num, false, 8);
         }
-        static string ToHexString(IntPtr num)
+        private static string ToHexString(IntPtr num)
         {
             return ToHexStringUnsignedLong((ulong)num, false, 16);
         }
-        static char GetHexChar(uint u)
+        private static char GetHexChar(uint u)
         {
             if (u < 10)
                 return unchecked((char)('0' + u));
 
             return unchecked((char)('a' + (u - 10)));
         }
-        static public unsafe string ToHexStringUnsignedLong(ulong u, bool zeroPrepad, int numChars)
+        public static unsafe string ToHexStringUnsignedLong(ulong u, bool zeroPrepad, int numChars)
         {
             char[] chars = new char[numChars];
 

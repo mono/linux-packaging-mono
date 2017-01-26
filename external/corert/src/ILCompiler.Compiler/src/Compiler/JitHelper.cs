@@ -16,7 +16,7 @@ namespace ILCompiler
         /// Returns JIT helper entrypoint. JIT helpers can be either implemented by entrypoint with given mangled name or 
         /// by a method in class library.
         /// </summary>
-        static public void GetEntryPoint(TypeSystemContext context, ReadyToRunHelper id, out string mangledName, out MethodDesc methodDesc)
+        public static void GetEntryPoint(TypeSystemContext context, ReadyToRunHelper id, out string mangledName, out MethodDesc methodDesc)
         {
             mangledName = null;
             methodDesc = null;
@@ -159,6 +159,19 @@ namespace ILCompiler
                     mangledName = "RhTypeCast_IsInstanceOf2";
                     break;
 
+                case ReadyToRunHelper.MonitorEnter:
+                    methodDesc = context.GetHelperEntryPoint("SynchronizedMethodHelpers", "MonitorEnter");
+                    break;
+                case ReadyToRunHelper.MonitorExit:
+                    methodDesc = context.GetHelperEntryPoint("SynchronizedMethodHelpers", "MonitorExit");
+                    break;
+                case ReadyToRunHelper.MonitorEnterStatic:
+                    methodDesc = context.GetHelperEntryPoint("SynchronizedMethodHelpers", "MonitorEnterStatic");
+                    break;
+                case ReadyToRunHelper.MonitorExitStatic:
+                    methodDesc = context.GetHelperEntryPoint("SynchronizedMethodHelpers", "MonitorExitStatic");
+                    break;
+
                 default:
                     throw new NotImplementedException(id.ToString());
             }
@@ -167,7 +180,7 @@ namespace ILCompiler
         //
         // These methods are static compiler equivalent of RhGetRuntimeHelperForType
         //
-        static public string GetNewObjectHelperForType(TypeDesc type)
+        public static string GetNewObjectHelperForType(TypeDesc type)
         {
             if (EETypeBuilderHelpers.ComputeRequiresAlign8(type))
             {
@@ -186,7 +199,7 @@ namespace ILCompiler
             return "RhpNewFast";
         }
 
-        static public string GetNewArrayHelperForType(TypeDesc type)
+        public static string GetNewArrayHelperForType(TypeDesc type)
         {
             if (EETypeBuilderHelpers.ComputeRequiresAlign8(type))
                 return "RhpNewArrayAlign8";
@@ -194,7 +207,7 @@ namespace ILCompiler
             return "RhpNewArray";
         }
 
-        static public string GetCastingHelperNameForType(TypeDesc type, bool throwing)
+        public static string GetCastingHelperNameForType(TypeDesc type, bool throwing)
         {
             if (type.IsArray)
                 return throwing ? "RhTypeCast_CheckCastArray" : "RhTypeCast_IsInstanceOfArray";

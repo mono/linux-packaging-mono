@@ -22,8 +22,8 @@ namespace System.Globalization
         private const int SecondsPerMinute = 60;
         private const int MinutesPerDegree = 60;
 
-        private static readonly long StartOf1810 = GetNumberOfDays(new DateTime(1810, 1, 1));
-        private static readonly long StartOf1900Century = GetNumberOfDays(new DateTime(1900, 1, 1));
+        private static readonly long s_startOf1810 = GetNumberOfDays(new DateTime(1810, 1, 1));
+        private static readonly long s_startOf1900Century = GetNumberOfDays(new DateTime(1900, 1, 1));
 
         private static readonly double[] s_coefficients1900to1987 = new double[] { -0.00002, 0.000297, 0.025184, -0.181133, 0.553040, -0.861938, 0.677066, -0.212591 };
         private static readonly double[] s_coefficients1800to1899 = new double[] { -0.000009, 0.003844, 0.083563, 0.865736, 4.867575, 15.845535, 31.332267, 38.291999, 28.316289, 11.636204, 2.043794 };
@@ -125,7 +125,7 @@ namespace System.Globalization
             return longitude;
         }
 
-        static public double AsDayFraction(double longitude)
+        public static double AsDayFraction(double longitude)
         {
             return longitude / FullCircleOfArc;
         }
@@ -146,7 +146,7 @@ namespace System.Globalization
         private static double CenturiesFrom1900(int gregorianYear)
         {
             long july1stOfYear = GetNumberOfDays(new DateTime(gregorianYear, 7, 1));
-            return (double)(july1stOfYear - StartOf1900Century) / DaysInUniformLengthCentury;
+            return (double)(july1stOfYear - s_startOf1900Century) / DaysInUniformLengthCentury;
         }
 
         // the following formulas defines a polynomial function which gives us the amount that the earth is slowing down for specific year ranges
@@ -154,7 +154,7 @@ namespace System.Globalization
         {
             Debug.Assert(gregorianYear < 1620 || 2020 <= gregorianYear);
             long january1stOfYear = GetNumberOfDays(new DateTime(gregorianYear, 1, 1));
-            double daysSinceStartOf1810 = january1stOfYear - StartOf1810;
+            double daysSinceStartOf1810 = january1stOfYear - s_startOf1810;
             double x = TwelveHours + daysSinceStartOf1810;
             return ((Math.Pow(x, 2) / 41048480) - 15) / SecondsPerDay;
         }
@@ -219,7 +219,7 @@ namespace System.Globalization
             return DefaultEphemerisCorrection(year);
         }
 
-        static public double JulianCenturies(double moment)
+        public static double JulianCenturies(double moment)
         {
             double dynamicalMoment = moment + EphemerisCorrection(moment);
             return (dynamicalMoment - Noon2000Jan01) / DaysInUniformLengthCentury;
@@ -273,7 +273,7 @@ namespace System.Globalization
         }
 
         // midday
-        static public double Midday(double date, double longitude)
+        public static double Midday(double date, double longitude)
         {
             return AsLocalTime(date + TwelveHours, longitude) - AsDayFraction(longitude);
         }
@@ -284,7 +284,7 @@ namespace System.Globalization
         }
 
         // midday-in-tehran
-        static public double MiddayAtPersianObservationSite(double date)
+        public static double MiddayAtPersianObservationSite(double date)
         {
             return Midday(date, InitLongitude(52.5)); // 52.5 degrees east - longitude of UTC+3:30 which defines Iranian Standard Time
         }
@@ -361,7 +361,7 @@ namespace System.Globalization
             return (-0.004778 * SinOfDegree(a)) - (0.0003667 * SinOfDegree(b));
         }
 
-        static public double Compute(double time)
+        public static double Compute(double time)
         {
             double julianCenturies = JulianCenturies(time);
             double lambda = 282.7771834
@@ -372,7 +372,7 @@ namespace System.Globalization
             return InitLongitude(longitude);
         }
 
-        static public double AsSeason(double longitude)
+        public static double AsSeason(double longitude)
         {
             return (longitude < 0) ? (longitude + FullCircleOfArc) : longitude;
         }
