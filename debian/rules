@@ -185,13 +185,13 @@ binary-indep: build-stamp install-stamp
 	# Build the late-GAC tool,
 	# using the built Mono runtime from debian/tmp
 	# (thus the install-arch target dependency!)
-	$(RUN_MONO) mcs/class/lib/build/mcs.exe \
+	$(RUN_MONO) mcs/class/lib/net_4_x/mcs.exe \
 	  -target:exe \
 	  -out:debian/MonoGetAssemblyName.exe \
 	  debian/MonoGetAssemblyName.cs
 
 	# Build mono-api-diff
-	$(RUN_MONO) mcs/class/lib/build/mcs.exe \
+	$(RUN_MONO) mcs/class/lib/net_4_x/mcs.exe \
 	  -target:exe \
 	  -out:debian/mono-api-diff.exe \
 	  debian/mono-api-diff.cs
