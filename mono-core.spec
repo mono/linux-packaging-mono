@@ -234,7 +234,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %dir %{_sysconfdir}/mono/4.5
 %{_bindir}/al
 %{_bindir}/al2
-%{_bindir}/btls-cert-sync
 %{_bindir}/cert-sync
 %{_bindir}/certmgr
 %{_bindir}/chktrust
@@ -277,8 +276,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.IO.Compression.dll
 %{_prefix}/lib/mono/4.5/al.exe*
 %{_prefix}/lib/mono/4.5/al.pdb
-%{_prefix}/lib/mono/4.5/btls-cert-sync.exe*
-%{_prefix}/lib/mono/4.5/btls-cert-sync.pdb
 %{_prefix}/lib/mono/4.5/cert-sync.exe*
 %{_prefix}/lib/mono/4.5/certmgr.exe*
 %{_prefix}/lib/mono/4.5/chktrust.exe*
@@ -400,7 +397,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 
 %post 
 cert-sync /etc/pki/tls/certs/ca-bundle.crt
-btls-cert-sync /etc/pki/tls/certs/ca-bundle.crt
 
 %package -n libmono-2_0-1
 Summary:        A Library for embedding Mono in your Application
