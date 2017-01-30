@@ -1113,7 +1113,6 @@ Mono development tools.
 %{_bindir}/pdb2mdb
 %{_bindir}/pedump
 %{_bindir}/permview
-%{_bindir}/prj2make
 %{_bindir}/resgen
 %{_bindir}/resgen2
 %{_bindir}/secutil
@@ -1158,7 +1157,6 @@ Mono development tools.
 %{_mandir}/man1/mprof-report.1%ext_man
 %{_mandir}/man1/pdb2mdb.1%ext_man
 %{_mandir}/man1/permview.1%ext_man
-%{_mandir}/man1/prj2make.1%ext_man
 %{_mandir}/man1/resgen.1%ext_man
 %{_mandir}/man1/secutil.1%ext_man
 %{_mandir}/man1/sgen.1%ext_man
