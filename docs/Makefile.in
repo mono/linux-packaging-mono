@@ -646,6 +646,7 @@ dist-hook:
 
 clean-local:
 	-rm -Rf html
+	-rm -Rf doxygen-output
 	-rm -f deploy/* convert.exe* AgilityPack.dll*
 	-rm -f $(ASSEMBLED_DOCS)
 
@@ -679,6 +680,11 @@ convert.exe: convert.cs AgilityPack.dll
 
 AgilityPack.dll: 
 	$(TOOL_MAKE) AgilityPack.dll
+
+doxygen:
+	doxygen doxyfile
+
+.PHONY: doxygen
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
