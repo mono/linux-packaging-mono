@@ -1160,7 +1160,7 @@ test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	generics-variant-types.il basic-simd.cs basic-vectors.cs \
 	aot-tests.cs gc-test.cs gshared.cs $(am__append_4)
 regtests_UNIVERSAL = basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe basic-vectors.exe
-iregtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe
+iregtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe generics-interp.exe
 @FULL_AOT_TESTS_FALSE@regtests = \
 @FULL_AOT_TESTS_FALSE@	$(regtests_UNIVERSAL) \
 @FULL_AOT_TESTS_FALSE@	$(regtests_FULL_AOT_TESTS_BLACKLIST)
@@ -3455,7 +3455,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1716/7ef66cc\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1735/fd5bcaa\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

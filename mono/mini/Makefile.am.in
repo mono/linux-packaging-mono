@@ -499,7 +499,7 @@ test_sources = 			\
 
 
 regtests_UNIVERSAL=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe basic-vectors.exe
-iregtests=basic.exe basic-float.exe basic-long.exe basic-calls.exe
+iregtests=basic.exe basic-float.exe basic-long.exe basic-calls.exe generics-interp.exe
 
 if FULL_AOT_TESTS
 regtests= \
@@ -878,7 +878,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1716/7ef66cc\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1735/fd5bcaa\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
