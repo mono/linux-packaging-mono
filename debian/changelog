@@ -1,3 +1,9 @@
+mono (4.9.0.1735-0nightly2) nightly; urgency=medium
+
+  * "Bugfix - see git log"
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 31 Jan 2017 11:04:26 +0000
+
 mono (4.9.0.1735-0nightly1) nightly; urgency=medium
 
   * "New release - mono-4.9.0.1735.tar.bz2"
