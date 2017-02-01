@@ -30,7 +30,7 @@ Name:           mono-core
 %define __majorver 4.9.0
 %define __minorver 1735
 Version:	%{__majorver}.%{__minorver}
-Release:	0.nightly.2
+Release:	0.nightly.3
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
