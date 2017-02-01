@@ -1113,6 +1113,7 @@ Mono development tools.
 %{_bindir}/pdb2mdb
 %{_bindir}/pedump
 %{_bindir}/permview
+%{_bindir}/prj2make
 %{_bindir}/resgen
 %{_bindir}/resgen2
 %{_bindir}/secutil
