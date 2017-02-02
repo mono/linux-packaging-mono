@@ -712,6 +712,8 @@ SUPPORT_SGEN_TRUE
 SGEN_DEFINES
 ENABLE_INTERPRETER_FALSE
 ENABLE_INTERPRETER_TRUE
+TARGET_OSX_FALSE
+TARGET_OSX_TRUE
 VTUNE_CFLAGS
 VTUNE_LIBS
 HAVE_VTUNE_FALSE
@@ -756,8 +758,8 @@ DISABLE_JIT_TRUE
 DISABLE_PROFILER_FALSE
 DISABLE_PROFILER_TRUE
 DEFAULT_PROFILE
-INSTALL_TESTING_AOT_FULL
-INSTALL_TESTING_AOT_HYBRID
+HYBRID_AOT_TESTS_FALSE
+HYBRID_AOT_TESTS_TRUE
 FULL_AOT_TESTS_FALSE
 FULL_AOT_TESTS_TRUE
 INSTALL_ORBIS_FALSE
@@ -19989,7 +19991,10 @@ if test $csc_compiler = default; then
    if test $endian = big; then
       csc_compiler=mcs
    elif test $endian = little; then
-      csc_compiler=roslyn
+      case "$host" in
+        powerpc*) csc_compiler=mcs;;
+        *) csc_compiler=roslyn;;
+      esac
    else
       csc_compiler=mcs
    fi
@@ -20342,7 +20347,7 @@ else
   INSTALL_ORBIS_FALSE=
 fi
 
- if test "x$with_testing_aot_full" != "xno" || test "x$with_winaot" != "xno"; then
+ if test "x$TEST_PROFILE" = "xtesting_aot_full" || test "x$TEST_PROFILE" = "xwinaot" || test "x$TEST_PROFILE" = "xorbis"; then
   FULL_AOT_TESTS_TRUE=
   FULL_AOT_TESTS_FALSE='#'
 else
@@ -20350,8 +20355,13 @@ else
   FULL_AOT_TESTS_FALSE=
 fi
 
-
-
+ if test "x$TEST_PROFILE" = "xtesting_aot_hybrid"; then
+  HYBRID_AOT_TESTS_TRUE=
+  HYBRID_AOT_TESTS_FALSE='#'
+else
+  HYBRID_AOT_TESTS_TRUE='#'
+  HYBRID_AOT_TESTS_FALSE=
+fi
 
 
 default_profile=net_4_x
@@ -26903,6 +26913,7 @@ $as_echo "#define TARGET_OSX 1" >>confdefs.h
 
           CPPFLAGS_FOR_LIBGC="$CPPFLAGS_FOR_LIBGC -DTARGET_OSX"
           CFLAGS_FOR_LIBGC="$CFLAGS_FOR_LIBGC -DTARGET_OSX"
+          target_osx=yes
 
 else
 
@@ -26920,6 +26931,15 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 $as_echo "#define TARGET_MACH 1" >>confdefs.h
 
 fi
+
+ if test x$target_osx = xyes; then
+  TARGET_OSX_TRUE=
+  TARGET_OSX_FALSE='#'
+else
+  TARGET_OSX_TRUE='#'
+  TARGET_OSX_FALSE=
+fi
+
 
 if test "x$sizeof_register" = "x4"; then
 
@@ -28509,6 +28529,10 @@ if test -z "${FULL_AOT_TESTS_TRUE}" && test -z "${FULL_AOT_TESTS_FALSE}"; then
   as_fn_error $? "conditional \"FULL_AOT_TESTS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${HYBRID_AOT_TESTS_TRUE}" && test -z "${HYBRID_AOT_TESTS_FALSE}"; then
+  as_fn_error $? "conditional \"HYBRID_AOT_TESTS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${DISABLE_PROFILER_TRUE}" && test -z "${DISABLE_PROFILER_FALSE}"; then
   as_fn_error $? "conditional \"DISABLE_PROFILER\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -28555,6 +28579,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_VTUNE_TRUE}" && test -z "${HAVE_VTUNE_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_VTUNE\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${TARGET_OSX_TRUE}" && test -z "${TARGET_OSX_FALSE}"; then
+  as_fn_error $? "conditional \"TARGET_OSX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${ENABLE_INTERPRETER_TRUE}" && test -z "${ENABLE_INTERPRETER_FALSE}"; then

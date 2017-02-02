@@ -3656,26 +3656,6 @@ public class Line
     }
 }
 
-public class Transportation
-{
-    // The SoapElementAttribute specifies that the
-    // generated XML element name will be "Wheels"
-    // instead of "Vehicle".
-    [SoapElement("Wheels")]
-    public string Vehicle;
-    [SoapElement(DataType = "dateTime")]
-    public DateTime CreationDate;
-    [SoapElement(IsNullable = true)]
-    public Thing thing;
-
-}
-
-public class Thing
-{
-    [SoapElement(IsNullable = true)]
-    public string ThingName;
-}
-
 public class MyReader : XmlSerializationReader
 {
     protected override void InitCallbacks() { }
@@ -4159,4 +4139,33 @@ public class SampleTextWriter : IXmlTextWriterInitializer
 public class MycodeGenerator : XmlSerializationGeneratedCode
 {
 
+}
+
+public class SoapEncodedTestType1
+{
+    public int IntValue;
+    public double DoubleValue;
+    public string StringValue;
+    public DateTime DateTimeValue;
+}
+
+public enum SoapEncodedTestEnum
+{
+    [SoapEnum("Small")]
+    A,
+    [SoapEnum("Large")]
+    B
+}
+
+public class SoapEncodedTestType2
+{
+    [SoapElement(IsNullable = true)]
+    public SoapEncodedTestType3 TestType3;
+
+}
+
+public class SoapEncodedTestType3
+{
+    [SoapElement(IsNullable = true)]
+    public string StringValue;
 }

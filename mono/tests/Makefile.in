@@ -118,6 +118,10 @@ target_triplet = @target@
 
 # ThreadAbortException doesn't have necessary field for this test
 
+# can't AOT the TestingReferenceAssembly.dll which is a dependency
+# of reference-loader.exe because it contains the [ReferenceAssemblyAttribute]
+# and the runtime errors out with "File does not contain a valid CIL image."
+
 # constraints-load.il: 
 # Failed to load method 0x6000007 from '..../mono/tests/constraints-load.exe' due to 
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
@@ -174,11 +178,11 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	dynamic-method-resurrection.exe \
 @FULL_AOT_TESTS_TRUE@	assembly_append_ordering.exe \
 @FULL_AOT_TESTS_TRUE@	bug-80307.exe namedmutex-destroy-race.exe \
-@FULL_AOT_TESTS_TRUE@	thread6.exe constraints-load.exe \
-@FULL_AOT_TESTS_TRUE@	bug-515884.exe
-@INSTALL_TESTING_AOT_HYBRID_TRUE@am__append_4 = \
-@INSTALL_TESTING_AOT_HYBRID_TRUE@	bug-80307.exe \
-@INSTALL_TESTING_AOT_HYBRID_TRUE@	namedmutex-destroy-race.exe
+@FULL_AOT_TESTS_TRUE@	thread6.exe reference-loader.exe \
+@FULL_AOT_TESTS_TRUE@	constraints-load.exe bug-515884.exe
+@HYBRID_AOT_TESTS_TRUE@am__append_4 = \
+@HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
+@HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
 @FULL_AOT_TESTS_TRUE@am__append_5 = \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe	\
@@ -384,8 +388,6 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-INSTALL_TESTING_AOT_FULL = @INSTALL_TESTING_AOT_FULL@
-INSTALL_TESTING_AOT_HYBRID = @INSTALL_TESTING_AOT_HYBRID@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
@@ -558,7 +560,7 @@ MKBUNDLE = \
 	$(RUNTIME) $(CLASS)/mkbundle.exe
 
 @FULL_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
-@INSTALL_TESTING_AOT_HYBRID_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
+@HYBRID_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
 MCS_NO_LIB = $(TOOLS_RUNTIME) $(CSC) -unsafe -debug:portable \
 	-noconfig -nologo \
 	-nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 \
@@ -1222,7 +1224,7 @@ DISABLED_TESTS = \
 PREREQ_IL_SRC = event-il.il module-cctor.il
 PREREQ_CS_SRC = 
 PREREQ_IL_DLL_SRC = 
-PREREQ_CS_DLL_SRC = TestingReferenceAssembly.cs TestingReferenceReferenceAssembly.cs
+PREREQ_CS_DLL_SRC = 
 PREREQSI_IL = $(PREREQ_IL_SRC:.il=.exe) \
 	$(PREREQ_IL_DLL_SRC:.il=.dll)
 
@@ -1278,7 +1280,7 @@ EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
 	console-output.exe.stdout.expected test_lldb.py test-lldb.cs
-@FULL_AOT_TESTS_FALSE@@INSTALL_TESTING_AOT_HYBRID_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
 @FULL_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @FULL_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 AOT_EXTRA_LIBS = \
@@ -1287,9 +1289,7 @@ bug-324535-il.dll$(PLATFORM_AOT_SUFFIX)	\
 bug-36848-a.dll$(PLATFORM_AOT_SUFFIX)	\
 bug-81691-b.dll$(PLATFORM_AOT_SUFFIX)	\
 bug-327438.2.exe$(PLATFORM_AOT_SUFFIX)	\
-bug-81466-lib.dll$(PLATFORM_AOT_SUFFIX)	\
-TestingReferenceAssembly.dll$(PLATFORM_AOT_SUFFIX)	\
-TestingReferenceReferenceAssembly.dll$(PLATFORM_AOT_SUFFIX)
+bug-81466-lib.dll$(PLATFORM_AOT_SUFFIX)
 
 
 #
@@ -1823,6 +1823,12 @@ aotcheck: testaot gshared-aot
 
 %.dll: %.cs
 	$(MCS) -r:System.dll -target:library -out:$@ $<
+
+reference-loader.exe: reference-loader.cs TestingReferenceAssembly.dll TestingReferenceReferenceAssembly.dll $(TEST_DRIVER_DEPEND)
+	$(MCS) -r:System.dll -r:TestDriver.dll -r:TestingReferenceAssembly.dll -r:TestingReferenceReferenceAssembly.dll $(TEST_DRIVER_HARD_KILL_FEATURE) -out:$@ reference-loader.cs
+
+TestingReferenceAssembly.dll: TestingReferenceAssembly.cs
+	$(MCS) -target:library -out:$@ $<
 
 TestingReferenceReferenceAssembly.dll: TestingReferenceReferenceAssembly.cs TestingReferenceAssembly.dll
 	$(MCS) -r:TestingReferenceAssembly.dll -target:library -out:$@ $<

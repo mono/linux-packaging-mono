@@ -680,8 +680,6 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-INSTALL_TESTING_AOT_FULL = @INSTALL_TESTING_AOT_FULL@
-INSTALL_TESTING_AOT_HYBRID = @INSTALL_TESTING_AOT_HYBRID@
 INTL = @INTL@
 INVARIANT_AOT_OPTIONS = @INVARIANT_AOT_OPTIONS@
 LD = @LD@
@@ -3455,7 +3453,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1735/fd5bcaa\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.0.1766/63df1ea\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
