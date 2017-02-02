@@ -7,6 +7,9 @@ using System.Reflection;
 
 namespace System.Linq.Expressions.Interpreter
 {
+#if !MONO
+    public
+#endif
     partial class LightLambda
     {
 #if NO_FEATURE_STATIC_DELEGATE

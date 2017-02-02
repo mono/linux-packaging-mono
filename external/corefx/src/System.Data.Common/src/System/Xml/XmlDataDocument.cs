@@ -17,7 +17,11 @@ namespace System.Xml
     /// data or relational data (DataSet).
     /// </summary>
     [Obsolete("XmlDataDocument class will be removed in a future release.")]
+#if MONO // keep it public in MONO
+    public class XmlDataDocument : XmlDocument
+#else
     internal class XmlDataDocument : XmlDocument
+#endif
     {
         private DataSet _dataSet;
 

@@ -17,18 +17,22 @@
        These ref versions are pulled from https://github.com/dotnet/versions.
   -->
   <PropertyGroup>
-    <CoreFxCurrentRef>c395eec8bf152b479be9893f311eee3c7dbd4313</CoreFxCurrentRef>
-    <CoreClrCurrentRef>c395eec8bf152b479be9893f311eee3c7dbd4313</CoreClrCurrentRef>
+    <CoreFxCurrentRef>f5464b89102bd67438733300826c5009a1bcdba0</CoreFxCurrentRef>
+    <CoreClrCurrentRef>b0bc0a1565fac8663262ec875665da189fa71b55</CoreClrCurrentRef>
     <ExternalCurrentRef>4e2952b5114bfa90cc45eef908204006a771a62b</ExternalCurrentRef>
-    <ProjectNTfsCurrentRef>c395eec8bf152b479be9893f311eee3c7dbd4313</ProjectNTfsCurrentRef>
+    <ProjectNTfsCurrentRef>afac2c25cbe639ba0b34f360989c338d3360db58</ProjectNTfsCurrentRef>
+    <SniCurrentRef>99a2e18954382a654e66aed649af70c1c61a47c3</SniCurrentRef>
   </PropertyGroup>
 
   <!-- Auto-upgraded properties for each build info dependency. -->
   <PropertyGroup>
-    <CoreFxExpectedPrerelease>beta-24814-01</CoreFxExpectedPrerelease>
-    <CoreClrExpectedPrerelease>beta-24814-02</CoreClrExpectedPrerelease>
+    <CoreFxExpectedPrerelease>beta-24931-01</CoreFxExpectedPrerelease>
+    <CoreClrExpectedPrerelease>beta-24930-03</CoreClrExpectedPrerelease>
     <ExternalExpectedPrerelease>beta-24727-00</ExternalExpectedPrerelease>
-    <ProjectNTfsExpectedPrerelease>beta-24814-00</ProjectNTfsExpectedPrerelease>
+    <ProjectNTfsExpectedPrerelease>beta-24931-00</ProjectNTfsExpectedPrerelease>
+    <StandardExpectedPrerelease>beta-24928-01</StandardExpectedPrerelease>
+    <!-- Use the SNI runtime package -->
+    <SniPackageVersion>4.4.0-beta-24926-02</SniPackageVersion>
   </PropertyGroup>
 
   <!-- Full package version strings that are used in other parts of the build. -->
@@ -56,6 +60,10 @@
     <RemoteDependencyBuildInfo Include="External">
       <BuildInfoPath>$(BaseDotNetBuildInfo)projectk-tfs/$(DependencyBranch)</BuildInfoPath>
       <CurrentRef>$(ExternalCurrentRef)</CurrentRef>
+    </RemoteDependencyBuildInfo>
+    <RemoteDependencyBuildInfo Include="Sni">
+      <BuildInfoPath>$(BaseDotNetBuildInfo)sni/$(DependencyBranch)</BuildInfoPath>
+      <CurrentRef>$(SniCurrentRef)</CurrentRef>
     </RemoteDependencyBuildInfo>
     <RemoteDependencyBuildInfo Condition="'$(DisableProjectNTfsAutoUpgrade)' != 'true'" Include="ProjectNTfs">
       <BuildInfoPath>$(BaseDotNetBuildInfo)projectn-tfs/$(DependencyBranch)</BuildInfoPath>
@@ -86,6 +94,12 @@
       <ElementName>ProjectNTfsExpectedPrerelease</ElementName>
       <BuildInfoName>ProjectNTfs</BuildInfoName>
     </XmlUpdateStep>
+    <XmlUpdateStep Include="Sni">
+      <Path>$(MSBuildThisFileFullPath)</Path>
+      <ElementName>SniPackageVersion</ElementName>
+      <!-- Pick any of the SNI runtime packages. All the runtime packages of sni will have the same version -->
+      <PackageId>runtime.win7-x64.runtime.native.System.Data.SqlClient.sni</PackageId>
+    </XmlUpdateStep>
   </ItemGroup>
 
   <!-- Set up dependencies on packages that aren't found in a BuildInfo. -->
@@ -110,7 +124,7 @@
     <StaticDependency Include="@(XUnitDependency)">
       <Version>2.2.0-beta2-build3300</Version>
     </StaticDependency>
-   
+
     <StaticDependency Include="Microsoft.xunit.netcore.extensions;Microsoft.DotNet.BuildTools.TestSuite">
       <Version>1.0.1-prerelease-01001-04</Version>
     </StaticDependency>
@@ -133,6 +147,10 @@
       <PackageId>microsoft.xunit.runner.uwp</PackageId>
       <Version>$(AppXRunnerVersion)</Version>
     </DependencyBuildInfo>
+
+    <!-- project.json files to update -->
+    <ProjectJsonFiles Include="external\**\project.json" />
+    <ProjectJsonFiles Include="external\**\project.json.template" />
 
   </ItemGroup>
 </Project>

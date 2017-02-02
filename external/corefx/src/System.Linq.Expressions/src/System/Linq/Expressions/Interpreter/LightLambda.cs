@@ -16,6 +16,9 @@ using AstUtils = System.Linq.Expressions.Utils;
 
 namespace System.Linq.Expressions.Interpreter
 {
+#if !MONO
+    public
+#endif
     partial class LightLambda
     {
         private readonly IStrongBox[] _closure;
