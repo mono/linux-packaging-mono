@@ -44,7 +44,6 @@
 #include <mono/metadata/threads.h>
 #include <mono/metadata/threadpool.h>
 #include <mono/metadata/tabledefs.h>
-#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/mono-gc.h>
 #include <mono/metadata/marshal.h>
 #include <mono/metadata/marshal-internals.h>
@@ -131,9 +130,9 @@ get_shadow_assembly_location_base (MonoDomain *domain, MonoError *error);
 static MonoLoadFunc load_function = NULL;
 
 /* Lazy class loading functions */
-static GENERATE_GET_CLASS_WITH_CACHE (assembly, System.Reflection, Assembly);
+static GENERATE_GET_CLASS_WITH_CACHE (assembly, "System.Reflection", "Assembly");
 
-static GENERATE_GET_CLASS_WITH_CACHE (appdomain, System, AppDomain);
+static GENERATE_GET_CLASS_WITH_CACHE (appdomain, "System", "AppDomain");
 
 static MonoDomain *
 mono_domain_from_appdomain_handle (MonoAppDomainHandle appdomain);

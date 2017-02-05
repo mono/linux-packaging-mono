@@ -41,7 +41,6 @@
 #include <mono/utils/mono-tls.h>
 #include <mono/utils/atomic.h>
 #include <mono/utils/mono-memory-model.h>
-#include <mono/utils/mono-threads-coop.h>
 #include <mono/utils/mono-error-internals.h>
 #include <mono/utils/os-event.h>
 #include <mono/utils/mono-threads-debug.h>
@@ -49,7 +48,6 @@
 #include <mono/metadata/w32event.h>
 #include <mono/metadata/w32mutex.h>
 
-#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/reflection-internals.h>
 #include <mono/metadata/abi-details.h>
 #include <mono/metadata/w32error.h>
@@ -208,7 +206,7 @@ static gboolean shutting_down = FALSE;
 static gint32 managed_thread_id_counter = 0;
 
 /* Class lazy loading functions */
-static GENERATE_GET_CLASS_WITH_CACHE (appdomain_unloaded_exception, System, AppDomainUnloadedException)
+static GENERATE_GET_CLASS_WITH_CACHE (appdomain_unloaded_exception, "System", "AppDomainUnloadedException")
 
 static void
 mono_threads_lock (void)
