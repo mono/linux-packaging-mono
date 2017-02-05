@@ -31,14 +31,12 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/marshal.h>
 #include "mono/metadata/debug-helpers.h"
-#include "mono/metadata/marshal.h"
 #include <mono/metadata/threads.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/environment.h>
 #include "mono/metadata/profiler-private.h"
 #include "mono/metadata/security-manager.h"
 #include "mono/metadata/mono-debug-debugger.h"
-#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/verify-internals.h>
 #include <mono/metadata/reflection-internals.h>
 #include <mono/metadata/w32event.h>
@@ -71,11 +69,11 @@ static MonoMethod*
 class_get_virtual_method (MonoClass *klass, MonoMethod *method, gboolean is_proxy, MonoError *error);
 
 /* Class lazy loading functions */
-static GENERATE_GET_CLASS_WITH_CACHE (pointer, System.Reflection, Pointer)
-static GENERATE_GET_CLASS_WITH_CACHE (remoting_services, System.Runtime.Remoting, RemotingServices)
-static GENERATE_GET_CLASS_WITH_CACHE (unhandled_exception_event_args, System, UnhandledExceptionEventArgs)
-static GENERATE_GET_CLASS_WITH_CACHE (sta_thread_attribute, System, STAThreadAttribute)
-static GENERATE_GET_CLASS_WITH_CACHE (activation_services, System.Runtime.Remoting.Activation, ActivationServices)
+static GENERATE_GET_CLASS_WITH_CACHE (pointer, "System.Reflection", "Pointer")
+static GENERATE_GET_CLASS_WITH_CACHE (remoting_services, "System.Runtime.Remoting", "RemotingServices")
+static GENERATE_GET_CLASS_WITH_CACHE (unhandled_exception_event_args, "System", "UnhandledExceptionEventArgs")
+static GENERATE_GET_CLASS_WITH_CACHE (sta_thread_attribute, "System", "STAThreadAttribute")
+static GENERATE_GET_CLASS_WITH_CACHE (activation_services, "System.Runtime.Remoting.Activation", "ActivationServices")
 
 
 #define ldstr_lock() mono_os_mutex_lock (&ldstr_section)
