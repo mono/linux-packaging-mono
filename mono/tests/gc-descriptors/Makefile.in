@@ -527,16 +527,18 @@ uninstall-am:
 	uninstall-am
 
 
-check-local: test
+@INSTALL_TESTING_AOT_FULL_TRUE@check-local:
 
-test : descriptor-tests.exe
+@INSTALL_TESTING_AOT_FULL_FALSE@check-local: test
 
-descriptor-tests.exe : descriptor-tests.cs
-	$(MCS) -Warn:0 descriptor-tests.cs
+@INSTALL_TESTING_AOT_FULL_FALSE@test : descriptor-tests.exe
 
-descriptor-tests.cs : descriptor-tests-driver.cs descriptor-tests-prefix.cs gen-descriptor-tests.py
-	if [ "$(srcdir)" != "$(builddir)" ]; then cp $^ .; fi
-	$(srcdir)/gen-descriptor-tests.py >descriptor-tests.cs
+@INSTALL_TESTING_AOT_FULL_FALSE@descriptor-tests.exe : descriptor-tests.cs
+@INSTALL_TESTING_AOT_FULL_FALSE@	$(MCS) -Warn:0 descriptor-tests.cs
+
+@INSTALL_TESTING_AOT_FULL_FALSE@descriptor-tests.cs : descriptor-tests-driver.cs descriptor-tests-prefix.cs gen-descriptor-tests.py
+@INSTALL_TESTING_AOT_FULL_FALSE@	if [ "$(srcdir)" != "$(builddir)" ]; then cp $^ .; fi
+@INSTALL_TESTING_AOT_FULL_FALSE@	$(srcdir)/gen-descriptor-tests.py >descriptor-tests.cs
 
 .DELETE_ON_ERROR:
 
