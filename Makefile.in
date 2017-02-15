@@ -939,7 +939,7 @@ uninstall-am:
 
 all: update_submodules
 update_submodules:
-	@$(srcdir)/scripts/update_submodules
+	@$(srcdir)/scripts/update_submodules.sh
 
 .PHONY: update_submodules
 
