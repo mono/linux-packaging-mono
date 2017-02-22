@@ -69,46 +69,47 @@ class Bockbuild:
     def run(self):
         self.name = 'bockbuild'
         self.root = os.path.dirname (os.path.realpath(__file__)) # Bockbuild system root
-        config.protected_git_repos.append (self.root)
         self.execution_root = os.getcwd()
-        config.absolute_root = os.path.commonprefix([self.root, self.execution_root])
         self.resources = set([os.path.realpath(
             os.path.join(self.root, 'packages'))]) # list of paths on where to look for packages, patches, etc.
-        self.build_root = os.path.join(self.root, 'builds')
-        self.staged_prefix = os.path.join(self.root, 'stage')
-        self.toolchain_root = os.path.join(self.root, 'toolchain')
-        self.artifact_root = os.path.join(self.root, 'artifacts')
-        self.package_root = os.path.join(self.root, 'distribution')
-        self.scratch = os.path.join(self.root, 'scratch')
-        self.logs = os.path.join(self.root, 'logs')
-        self.env_file = os.path.join(self.root, 'last-successful-build.env')
+
+        config.state_root = self.root # root path for all storage; artifacts, build I/O, cache, storage and output
+        config.protected_git_repos.append (self.root)
+        config.absolute_root = os.path.commonprefix([self.root, self.execution_root])
+
+        self.build_root = os.path.join(config.state_root, 'builds')
+        self.staged_prefix = os.path.join(config.state_root, 'stage')
+        self.toolchain_root = os.path.join(config.state_root, 'toolchain')
+        self.artifact_root = os.path.join(config.state_root, 'artifacts')
+        self.package_root = os.path.join(config.state_root, 'distribution')
+        self.scratch = os.path.join(config.state_root, 'scratch')
+        self.logs = os.path.join(config.state_root, 'logs')
+        self.env_file = os.path.join(config.state_root, 'last-successful-build.env')
         self.source_cache = os.getenv('BOCKBUILD_SOURCE_CACHE') or os.path.realpath(
-            os.path.join(self.root, 'cache'))
+            os.path.join(config.state_root, 'cache'))
         self.cpu_count = get_cpu_count()
         self.host = get_host()
         self.uname = backtick('uname -a')
-
-
 
         self.full_rebuild = False
 
         self.toolchain = []
 
         find_git(self)
-        self.bockbuild_rev = git_get_revision(self, self.root)
+        self.bockbuild_rev = git_shortid(self, self.root)
         self.profile_root = git_rootdir (self, self.execution_root)
         self.profiles = find_profiles (self.profile_root)
 
         for profile in self.profiles:
             self.resources.add(profile.path)
 
-        loginit('bockbuild (%s)' % (git_shortid(self, self.root)))
+        loginit('bockbuild (%s)' % (self.bockbuild_rev))
         info('cmd: %s' % ' '.join(sys.argv))
 
         if len (sys.argv) < 2:
             info ('Profiles in %s --' % self.git ('config --get remote.origin.url', self.profile_root)[0])
             info(map (lambda x: '\t%s: %s' % (x.name, x.description), self.profiles))
-            finish()
+            finish (exit_codes.FAILURE)
 
         global active_profile
         Package.profile = active_profile = self.load_profile (sys.argv[1])
@@ -183,6 +184,9 @@ class Bockbuild:
         # TODO: full relocation means that we shouldn't need dest at this stage
         build_list = []
         stage_invalidated = False #if anything is dirty we flush the stageination path and fill it again
+
+        if self.full_rebuild:
+            ensure_dir (stage, purge = True)
 
         progress('Fetching packages')
         for package in packages.values():
@@ -298,6 +302,8 @@ class Bockbuild:
             profile.process_release(self.package_root)
             profile.package()
 
+        finish(exit_codes.SUCCESS)
+
     def track_env(self):
         env = active_profile.env
         env.compile()
@@ -306,8 +312,6 @@ class Bockbuild:
             self.root, self.profile_name) + '_env.sh'
         env.write_source_script(self.env_script)
 
-        if not os.path.exists (self.env_file):
-            return False
         self.tracked_env.extend(env.serialize())
         return is_changed(self.tracked_env, self.env_file)
 
@@ -385,8 +389,12 @@ if __name__ == "__main__":
         exc_type, exc_value, exc_traceback = sys.exc_info()
         error('%s (%s)' % (e, exc_type.__name__), more_output=True)
         error(('%s:%s @%s\t\t"%s"' % p for p in traceback.extract_tb(
-            exc_traceback)[-5:]), more_output=True)
+            exc_traceback)[-5:]))
     except KeyboardInterrupt:
         error('Interrupted.')
     finally:
-        finish()
+        if config.exit_code == exit_codes.NOTSET:
+            print 'spurious sys.exit() call'
+        if config.exit_code == exit_codes.SUCCESS:
+            logprint('\n** %s **\n' % 'Goodbye!', bcolors.BOLD)
+        sys.exit (config.exit_code)

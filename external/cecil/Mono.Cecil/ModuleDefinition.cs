@@ -88,10 +88,12 @@ namespace Mono.Cecil {
 			set { symbol_reader_provider = value; }
 		}
 
+#if !PCL
 		public bool ReadSymbols {
 			get { return read_symbols; }
 			set { read_symbols = value; }
 		}
+#endif
 
 		public bool ReadWrite {
 			get { return read_write; }
@@ -234,10 +236,13 @@ namespace Mono.Cecil {
 			set { symbol_writer_provider = value; }
 		}
 
+#if !PCL
 		public bool WriteSymbols {
 			get { return write_symbols; }
 			set { write_symbols = value; }
 		}
+#endif
+
 #if !PCL && !NET_CORE
 		public SR.StrongNameKeyPair StrongNameKeyPair {
 			get { return key_pair; }
@@ -271,6 +276,7 @@ namespace Mono.Cecil {
 		ModuleAttributes attributes;
 		ModuleCharacteristics characteristics;
 		Guid mvid;
+		internal uint timestamp;
 
 		internal AssemblyDefinition assembly;
 		MethodDefinition entry_point;
@@ -592,6 +598,7 @@ namespace Mono.Cecil {
 			this.attributes = image.Attributes;
 			this.characteristics = image.Characteristics;
 			this.file_name = image.FileName;
+			this.timestamp = image.TimeStamp;
 
 			this.reader = new MetadataReader (this);
 		}
@@ -615,7 +622,7 @@ namespace Mono.Cecil {
 
 		public bool HasTypeReference (string scope, string fullName)
 		{
-			CheckFullName (fullName);
+			Mixin.CheckFullName (fullName);
 
 			if (!HasImage)
 				return false;
@@ -630,7 +637,7 @@ namespace Mono.Cecil {
 
 		public bool TryGetTypeReference (string scope, string fullName, out TypeReference type)
 		{
-			CheckFullName (fullName);
+			Mixin.CheckFullName (fullName);
 
 			if (!HasImage) {
 				type = null;
@@ -678,7 +685,7 @@ namespace Mono.Cecil {
 
 		public TypeDefinition GetType (string fullName)
 		{
-			CheckFullName (fullName);
+			Mixin.CheckFullName (fullName);
 
 			var position = fullName.IndexOf ('/');
 			if (position > 0)
@@ -712,14 +719,6 @@ namespace Mono.Cecil {
 				foreach (var nested in GetTypes (type.NestedTypes))
 					yield return nested;
 			}
-		}
-
-		static void CheckFullName (string fullName)
-		{
-			if (fullName == null)
-				throw new ArgumentNullException ("fullName");
-			if (fullName.Length == 0)
-				throw new ArgumentException ();
 		}
 
 		TypeDefinition GetNestedType (string fullname)
@@ -1089,10 +1088,7 @@ namespace Mono.Cecil {
 			if (string.IsNullOrEmpty (file_name))
 				throw new InvalidOperationException ();
 
-			var provider = SymbolProvider.GetReaderProvider (this);
-			if (provider == null)
-				throw new InvalidOperationException ();
-
+			var provider = new DefaultSymbolReaderProvider (throwIfNoSymbol: true);
 			ReadSymbols (provider.GetSymbolReader (this, file_name));
 		}
 #endif
@@ -1220,18 +1216,53 @@ namespace Mono.Cecil {
 
 	static partial class Mixin {
 
+		public enum Argument {
+			name,
+			fileName,
+			fullName,
+			stream,
+			type,
+			method,
+			field,
+			parameters,
+			module,
+			modifierType,
+			eventType,
+			fieldType,
+			declaringType,
+			returnType,
+			propertyType,
+			interfaceType,
+		}
+
+		public static void CheckName (object name)
+		{
+			if (name == null)
+				throw new ArgumentNullException (Argument.name.ToString ());
+		}
+
+		public static void CheckName (string name)
+		{
+			if (string.IsNullOrEmpty (name))
+				throw new ArgumentNullOrEmptyException (Argument.name.ToString ());
+		}
+
 		public static void CheckFileName (string fileName)
 		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
-			if (fileName.Length == 0)
-				throw new ArgumentException ();
+			if (string.IsNullOrEmpty (fileName))
+				throw new ArgumentNullOrEmptyException (Argument.fileName.ToString ());
+		}
+
+		public static void CheckFullName (string fullName)
+		{
+			if (string.IsNullOrEmpty (fullName))
+				throw new ArgumentNullOrEmptyException (Argument.fullName.ToString ());
 		}
 
 		public static void CheckStream (object stream)
 		{
 			if (stream == null)
-				throw new ArgumentNullException ("stream");
+				throw new ArgumentNullException (Argument.stream.ToString ());
 		}
 
 		public static void CheckWriteSeek (Stream stream)
@@ -1251,19 +1282,25 @@ namespace Mono.Cecil {
 		public static void CheckType (object type)
 		{
 			if (type == null)
-				throw new ArgumentNullException ("type");
+				throw new ArgumentNullException (Argument.type.ToString ());
+		}
+
+		public static void CheckType (object type, Argument argument)
+		{
+			if (type == null)
+				throw new ArgumentNullException (argument.ToString ());
 		}
 
 		public static void CheckField (object field)
 		{
 			if (field == null)
-				throw new ArgumentNullException ("field");
+				throw new ArgumentNullException (Argument.field.ToString ());
 		}
 
 		public static void CheckMethod (object method)
 		{
 			if (method == null)
-				throw new ArgumentNullException ("method");
+				throw new ArgumentNullException (Argument.method.ToString ());
 		}
 
 #endif
@@ -1271,7 +1308,7 @@ namespace Mono.Cecil {
 		public static void CheckParameters (object parameters)
 		{
 			if (parameters == null)
-				throw new ArgumentNullException ("parameters");
+				throw new ArgumentNullException (Argument.parameters.ToString ());
 		}
 
 		public static bool HasImage (this ModuleDefinition self)

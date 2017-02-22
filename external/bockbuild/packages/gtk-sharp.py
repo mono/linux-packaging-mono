@@ -4,7 +4,7 @@ class GtkSharp212ReleasePackage (Package):
         Package.__init__(self, 'gtk-sharp',
                          sources=['git://github.com/mono/gtk-sharp.git'],
                          git_branch='gtk-sharp-2-12-branch',
-                         revision='f092864bce996c4ac51a13281069067d1e7e6d4b',
+                         revision='3375f9b46c131c1045288b2b5c6278619b2d3fab',
                          override_properties={
                              'configure': './bootstrap-2.12 --prefix=%{package_prefix}',
                          }
