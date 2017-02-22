@@ -62,14 +62,21 @@ class DarwinProfile (UnixProfile):
         self.name = 'darwin'
 
         xcode_version = backtick('xcodebuild -version')[0]
-        self.env.set('xcode_version', xcode_version)
+        self.env.set('xcode_version', xcode_version) # XCode X.X.X
         osx_sdk = backtick('xcrun --show-sdk-path')[0]
-        self.env.set('osx_sdk', osx_sdk)
+        self.env.set('osx_sdk', osx_sdk) # MacOSX10.X.sdk
 
         if not os.path.exists(osx_sdk):
             error('Mac OS X SDK not found under %s' % osx_sdk)
 
         info('%s, %s' % (xcode_version, os.path.basename(osx_sdk)))
+
+        # based on https://github.com/Homebrew/brew/pull/970. This applies to XCode 8, OS X 10.11 and the 10.12 SDK. The following symbols will be unresolved
+        # when running binaries on a system of lower version than 10.12.
+
+        #TODO: Version checking
+
+        map(lambda t : self.configure_flags.append ('ac_cv_func_%s=no' % t), 'basename_r clock_getres clock_gettime clock_settime dirname_r getentropy mkostemp mkostemps'.split(' '))
 
         self.gcc_flags.extend([
             '-D_XOPEN_SOURCE',
@@ -126,6 +133,8 @@ class DarwinProfile (UnixProfile):
 
         package.local_configure_flags.extend(
             ['--cache-file=%s' % configure_cache])
+
+        package.local_configure_flags.extend(self.configure_flags)
 
         if package.name in self.debug_info:
             package.local_gcc_flags.extend(['-g'])

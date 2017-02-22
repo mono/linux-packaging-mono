@@ -236,12 +236,12 @@ namespace System.Dynamic.Utils
             // Primitive runtime conversions
             // All conversions amongst enum, bool, char, integer and float types
             // (and their corresponding nullable types) are legal except for
-            // nonbool==>bool and nonbool==>bool?
-            // Since we have already covered bool==>bool, bool==>bool?, etc, above,
-            // we can just disallow having a bool or bool? destination type here.
-            if (IsConvertible(source) && IsConvertible(dest) && GetNonNullableType(dest) != typeof(bool))
+            // nonbool==>bool and nonbool==>bool? which are only legal from
+            // bool-backed enums.
+            if (IsConvertible(source) && IsConvertible(dest))
             {
-                return true;
+                return GetNonNullableType(dest) != typeof(bool)
+                       || source.IsEnum && source.GetEnumUnderlyingType() == typeof(bool);
             }
             return false;
         }
@@ -714,10 +714,11 @@ namespace System.Dynamic.Utils
         }
 
 #if FEATURE_COMPILE
-        internal static bool IsUnsigned(this Type type)
+        internal static bool IsUnsigned(this Type type) => IsUnsigned(GetNonNullableType(type).GetTypeCode());
+
+        internal static bool IsUnsigned(this TypeCode typeCode)
         {
-            type = GetNonNullableType(type);
-            switch (type.GetTypeCode())
+            switch (typeCode)
             {
                 case TypeCode.Byte:
                 case TypeCode.UInt16:
@@ -730,10 +731,11 @@ namespace System.Dynamic.Utils
             }
         }
 
-        internal static bool IsFloatingPoint(this Type type)
+        internal static bool IsFloatingPoint(this Type type) => IsFloatingPoint(GetNonNullableType(type).GetTypeCode());
+
+        internal static bool IsFloatingPoint(this TypeCode typeCode)
         {
-            type = GetNonNullableType(type);
-            switch (type.GetTypeCode())
+            switch (typeCode)
             {
                 case TypeCode.Single:
                 case TypeCode.Double:

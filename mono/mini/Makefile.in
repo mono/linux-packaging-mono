@@ -165,24 +165,24 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	llvm-runtime.h type-checking.c lldb.h lldb.c mini-llvm.c \
 	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
 	llvm-runtime.cpp interpreter/hacks.h interpreter/interp.h \
-	interpreter/interp.c interpreter/mintops.h \
-	interpreter/mintops.def interpreter/mintops.c \
-	interpreter/transform.c mini-amd64.c mini-amd64.h \
-	exceptions-amd64.c tramp-amd64.c mini-amd64-gsharedvt.c \
-	mini-amd64-gsharedvt.h tramp-amd64-gsharedvt.c mini-arm64.c \
-	mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm64-gsharedvt.c mini-arm64-gsharedvt.h \
-	tramp-arm64-gsharedvt.c mini-arm.c mini-arm.h exceptions-arm.c \
-	tramp-arm.c mini-arm-gsharedvt.c tramp-arm-gsharedvt.c \
-	mini-ia64.c mini-ia64.h exceptions-ia64.c tramp-ia64.c \
-	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
-	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
-	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
-	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
-	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
-	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-windows.c mini-windows.h mini-windows-dllmain.c \
-	mini-darwin.c mini-posix.c
+	interpreter/interp-internals.h interpreter/interp.c \
+	interpreter/mintops.h interpreter/mintops.def \
+	interpreter/mintops.c interpreter/transform.c mini-amd64.c \
+	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
+	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
+	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
+	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
+	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
+	tramp-arm-gsharedvt.c mini-ia64.c mini-ia64.h \
+	exceptions-ia64.c tramp-ia64.c mini-mips.c mini-mips.h \
+	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
+	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
+	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
+	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
+	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
+	tramp-x86-gsharedvt.c mini-windows.c mini-windows.h \
+	mini-windows-dllmain.c mini-darwin.c mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -311,7 +311,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-cross-helpers.c arch-stubs.c llvm-runtime.h \
 	type-checking.c lldb.h lldb.c mini-llvm.c mini-llvm-loaded.c \
 	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp \
-	interpreter/hacks.h interpreter/interp.h interpreter/interp.c \
+	interpreter/hacks.h interpreter/interp.h \
+	interpreter/interp-internals.h interpreter/interp.c \
 	interpreter/mintops.h interpreter/mintops.def \
 	interpreter/mintops.c interpreter/transform.c mini-amd64.c \
 	mini-amd64.h exceptions-amd64.c tramp-amd64.c \
@@ -1072,6 +1073,7 @@ posix_sources = \
 @ENABLE_INTERPRETER_TRUE@interpreter_sources = \
 @ENABLE_INTERPRETER_TRUE@	interpreter/hacks.h		\
 @ENABLE_INTERPRETER_TRUE@	interpreter/interp.h	\
+@ENABLE_INTERPRETER_TRUE@	interpreter/interp-internals.h	\
 @ENABLE_INTERPRETER_TRUE@	interpreter/interp.c	\
 @ENABLE_INTERPRETER_TRUE@	interpreter/mintops.h	\
 @ENABLE_INTERPRETER_TRUE@	interpreter/mintops.def	\
@@ -1158,7 +1160,7 @@ test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	generics-variant-types.il basic-simd.cs basic-vectors.cs \
 	aot-tests.cs gc-test.cs gshared.cs $(am__append_4)
 regtests_UNIVERSAL = basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe basic-vectors.exe
-iregtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe generics-interp.exe
+iregtests = basic.exe basic-float.exe basic-long.exe basic-calls.exe generics.exe objects.exe
 @FULL_AOT_TESTS_FALSE@regtests = \
 @FULL_AOT_TESTS_FALSE@	$(regtests_UNIVERSAL) \
 @FULL_AOT_TESTS_FALSE@	$(regtests_FULL_AOT_TESTS_BLACKLIST)
@@ -3453,7 +3455,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1804/5ceccbe\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.1.99/f8f323d\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

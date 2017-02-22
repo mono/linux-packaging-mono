@@ -99,7 +99,7 @@ namespace Mono.Cecil {
 
 #if !PCL
 			if (symbol_reader_provider == null && parameters.ReadSymbols)
-				symbol_reader_provider = SymbolProvider.GetReaderProvider (module);
+				symbol_reader_provider = new DefaultSymbolReaderProvider ();
 #endif
 
 			if (symbol_reader_provider != null) {
@@ -115,7 +115,8 @@ namespace Mono.Cecil {
 				var reader = symbol_reader_provider.GetSymbolReader (module, parameters.SymbolStream);
 #endif
 
-				module.ReadSymbols (reader);
+				if (reader != null)
+					module.ReadSymbols (reader);
 			}
 
 			if (module.Image.HasDebugTables ())
@@ -417,7 +418,7 @@ namespace Mono.Cecil {
 			for (int i = 0; i < methods.Count; i++) {
 				var method = methods [i];
 
-				if (method.HasBody && method.debug_info == null)
+				if (method.HasBody && method.token.RID != 0 && method.debug_info == null)
 					method.debug_info = symbol_reader.Read (method);
 			}
 		}

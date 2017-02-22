@@ -95,6 +95,7 @@ class Package:
                 self.__dict__[k] = v
 
         self.makeinstall = self.makeinstall or 'make install DESTDIR=%{stage_root}'
+        self.fetched = False
 
     def extract_organization(self, source):
         if (not "git" in source) or ("http" in source):
@@ -140,6 +141,9 @@ class Package:
 
     @retry
     def fetch(self, dest):
+        if self.fetched and not os.path.lexists(dest):
+            return
+
         scratch = self.profile.bockbuild.scratch
         resources = self.profile.bockbuild.resources
         source_cache_dir = self.profile.bockbuild.source_cache
@@ -148,11 +152,16 @@ class Package:
         scratch_workspace = os.path.join(scratch, '%s.workspace' % self.name)
 
         self.rm_if_exists(scratch_workspace)
-        if os.path.exists(dest):
-            shutil.move(dest, scratch_workspace)
+        if os.path.lexists(dest):
+            if os.path.islink(dest):
+                delete(dest)
+            elif os.path.isdir(dest):
+                shutil.move(dest, scratch_workspace)
+            else:
+                error ('Unexpected workspace found at %s' % dest)
+
 
         def checkout(self, source_url, cache_dir, workspace_dir):
-            self.is_local = os.path.isdir (source_url)
             def clean_git_workspace(dir):
                 trace('Cleaning git workspace: ' + self.name)
                 self.git('reset --hard', dir, hazard = True)
@@ -171,7 +180,7 @@ class Package:
                     self.rm(workspace_dir)
                 progress('Cloning git repo: %s' % source_url)
                 self.git('clone --mirror %s %s' %
-                         (source_url, cache_dir), scratch)
+                         (source_url, cache_dir), self.profile.bockbuild.root)
 
             def update_cache():
                 trace('Updating cache: ' + cache_dir)
@@ -181,7 +190,7 @@ class Package:
                     self.git('fetch origin %s' % self.git_branch, cache_dir)
 
             def create_workspace():
-                self.git('clone --local --shared %s %s' %
+                self.git('clone --local --shared --recursive %s %s' %
                          (cache_dir, workspace_dir), cache_dir)
 
             def update_workspace():
@@ -221,6 +230,7 @@ class Package:
                 if target_revision and (current_revision != target_revision):
                     self.git('reset --hard %s' %
                              target_revision, workspace_dir, hazard = True)
+
                 self.git('submodule update --recursive', workspace_dir)
 
                 current_revision = git_get_revision(self, workspace_dir)
@@ -244,25 +254,28 @@ class Package:
                 self.buildstring = ['%s <%s>' % (str, source_url)]
 
             if self.is_local:
-                link_dir (workspace_dir, source_url)
-                if git_is_dirty (self, workspace_dir):
+                self.rm_if_exists(workspace_dir)
+                work_committed = False
+                if git_is_dirty (self, source_url):
                     if self.profile.bockbuild.cmd_options.release_build:
                         error ('Release builds cannot have uncommitted local changes!')
                     else:
                         info ('The repository is dirty, your changes will be committed.')
-                        bockbuild_commit_msg = 'Bockbuild'
-                        top_commit_msg = git_get_commit_msg (self, workspace_dir)
+                        bockbuild_commit_msg = '"WIP (auto-committed by bockbuild)"'
+                        top_commit_msg = git_get_commit_msg (self, source_url)
                         if top_commit_msg == bockbuild_commit_msg:
-                            self.git ('commit -a --allow-empty --amend -m %s' % bockbuild_commit_msg, workspace_dir)
+                            self.git ('commit -a --allow-empty --amend -m', source_url, options = [bockbuild_commit_msg])
                         else:
-                            self.git('commit -a --allow-empty -m %s' % bockbuild_commit_msg, workspace_dir)
-
+                            self.git('commit -a --allow-empty -m', source_url, options = [bockbuild_commit_msg])
+                        work_committed = True
+                self.shadow_copy (source_url, workspace_dir)
+                if work_committed:
+                    self.git ('reset HEAD~1', source_url)
             else:
                 if os.path.exists(cache_dir):
                     update_cache()
                 else:
                     create_cache()
-
                 if os.path.exists(workspace_dir):
                     if self.dont_clean == True:  # previous workspace was left dirty, delete
                         clean_git_workspace(workspace_dir)
@@ -375,7 +388,11 @@ class Package:
                     resolved_source = scratch_workspace
 
                 elif source.startswith(('git://', 'file://', 'ssh://')) or source.endswith('.git') or (os.path.isdir(source) and git_isrootdir (self, source)):
-                    cache = get_git_cache_path()
+                    if os.path.isdir(source):
+                        self.is_local = True
+                        cache = None
+                    else:
+                        cache = get_git_cache_path()
                     clean_func = checkout(
                         self, source, cache, scratch_workspace)
                     resolved_source = scratch_workspace
@@ -430,6 +447,10 @@ class Package:
         self.workspace = dest
         shutil.move(scratch_workspace, self.workspace)
 
+        if not os.path.exists(self.workspace):
+            error ('Workspace was not created')
+        self.fetched = True
+
     def request_build(self, reason):
         self.needs_build = reason
 
@@ -463,7 +484,7 @@ class Package:
                 self.rm_if_exists(workspace_x64)
 
                 shutil.move(workspace, workspace_x86)
-                shutil.copytree(workspace_x86, workspace_x64)
+                self.shadow_copy(workspace_x86, workspace_x64)
 
                 self.link(workspace_x86, workspace)
                 package_stage = self.do_build(
@@ -491,10 +512,6 @@ class Package:
             self.make_artifact(package_stage, build_artifact)
         for target in self.deploy_requests:
             self.deploy_package(build_artifact, target)
-        if self.is_local:
-            verbose ('Cleaning local repo')
-            self.git ('reset --hard', workspace)
-
 
     def deploy_package(self, artifact, dest):
         trace('Deploying (%s -> %s)' %
@@ -582,7 +599,7 @@ class Package:
         except (Exception, KeyboardInterrupt) as e:
             self.rm_if_exists(self.stage_root)
             if isinstance(e, CommandException):
-                if os.path.exists(self.workspace) and not self.is_local:
+                if os.path.exists(self.workspace):
                     for path in self.aux_files:
                         self.rm_if_exists(path)
                     problem_dir = os.path.join(
@@ -618,6 +635,9 @@ class Package:
             return
         if not isinstance(command, str):
             error('command arg must be a string: %s' % repr(command))
+
+        if not os.path.isdir(cwd):
+            error('Directory does not exist: %s' % cwd)
 
         try:
             env_command = '%s %s' % (
@@ -774,6 +794,38 @@ class Package:
                             shutil.move(lipo_file, dir32_file)
                     else:
                         warn("lipo: 32-bit version of file %s not found" % file)
+
+    #creates a deep hardlink copy of a directory
+    def shadow_copy (self, source, dest, exclude_git = False):
+        trace ('shadow_copy %s %s' % (source , dest))
+        if os.path.exists(dest):
+            error ('Destination directory must not exist')
+
+        # Bockbuild state may be under the directory if we are copying a local workspace. Avoid recursive copying
+        stateroot_parent = os.path.dirname (config.state_root)
+        stateroot_name = os.path.basename (config.state_root)
+        stateroot_found = False
+
+        if not os.path.commonprefix  ([source, config.state_root]) == source:
+            stateroot_found = True
+
+        for root, subdirs, filelist in os.walk (source):
+            relpath = os.path.relpath(root, source) # e.g. 'lib/mystuff'
+            destpath = os.path.join(dest, relpath)
+            os.makedirs(destpath)
+            if exclude_git:
+                subdirs[:] = [dir for dir in subdirs if dir != '.git']
+            if not stateroot_found and root == stateroot_parent:
+                subdirs [:] = [dir for dir in subdirs if dir != stateroot_name]
+                stateroot_found = True
+            for file in filelist:
+                fullpath = os.path.join (root, file)
+                if os.path.islink(fullpath):
+                    target = os.path.join(os.path.dirname(fullpath), os.readlink(fullpath))
+                    if not os.path.exists(fullpath) or os.path.commonprefix  ([config.state_root, target]) == config.state_root:
+                        break
+                os.link (fullpath, os.path.join (destpath, file))
+        trace ('shadow_copy done')
 
     def copy_side_by_side(self, src_dir, dest_dir, bin_subdir, suffix, orig_suffix=None):
         def add_suffix(filename, sfx):

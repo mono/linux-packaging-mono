@@ -105,10 +105,8 @@ namespace Mono.Cecil {
 
 		public virtual AssemblyDefinition Resolve (AssemblyNameReference name, ReaderParameters parameters)
 		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-			if (parameters == null)
-				parameters = new ReaderParameters ();
+			Mixin.CheckName (name);
+			Mixin.CheckParameters (parameters);
 
 			var assembly = SearchDirectory (name, directories, parameters);
 			if (assembly != null)
@@ -158,8 +156,13 @@ namespace Mono.Cecil {
 			foreach (var directory in directories) {
 				foreach (var extension in extensions) {
 					string file = Path.Combine (directory, name.Name + extension);
-					if (File.Exists (file))
+					if (!File.Exists (file))
+						continue;
+					try {
 						return GetAssembly (file, parameters);
+					} catch (System.BadImageFormatException) {
+						continue;
+					}
 				}
 			}
 

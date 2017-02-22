@@ -391,6 +391,7 @@ if ENABLE_INTERPRETER
 interpreter_sources =	\
 	interpreter/hacks.h		\
 	interpreter/interp.h	\
+	interpreter/interp-internals.h	\
 	interpreter/interp.c	\
 	interpreter/mintops.h	\
 	interpreter/mintops.def	\
@@ -499,7 +500,7 @@ test_sources = 			\
 
 
 regtests_UNIVERSAL=basic.exe basic-float.exe basic-long.exe basic-calls.exe objects.exe arrays.exe basic-math.exe exceptions.exe iltests.exe devirtualization.exe generics.exe basic-simd.exe basic-vectors.exe
-iregtests=basic.exe basic-float.exe basic-long.exe basic-calls.exe generics-interp.exe
+iregtests=basic.exe basic-float.exe basic-long.exe basic-calls.exe generics.exe objects.exe
 
 if FULL_AOT_TESTS
 regtests= \
@@ -878,7 +879,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.0.1804/5ceccbe\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.1.99/f8f323d\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
