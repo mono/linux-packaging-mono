@@ -16,7 +16,8 @@ namespace System.Linq.Expressions.Compiler
 
         internal void Push(TKey key, TValue value)
         {
-            if (!_data.TryGetValue(key, out Stack<TValue> stack))
+            Stack<TValue> stack;
+            if (!_data.TryGetValue(key, out stack))
             {
                 _data.Add(key, stack = new Stack<TValue>());
             }
@@ -24,7 +25,11 @@ namespace System.Linq.Expressions.Compiler
             stack.Push(value);
         }
 
-        internal TValue TryPop(TKey key) =>
-            _data.TryGetValue(key, out Stack<TValue> stack) && stack.TryPop(out TValue value) ? value : null;
+        internal TValue TryPop(TKey key)
+        {
+            Stack<TValue> stack;
+            TValue value;
+            return _data.TryGetValue(key, out stack) && stack.TryPop(out value) ? value : null;
+        }
     }
 }
