@@ -2408,7 +2408,8 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 nonNullableType2 = nonNullableType1.underlyingEnumType();
             }
 
-            NullableType typeDst = GetTypes().GetNullable(GetEnumBinOpType(ek, nonNullableType1, nonNullableType2, out AggregateType typeEnum));
+            AggregateType typeEnum;
+            NullableType typeDst = GetTypes().GetNullable(GetEnumBinOpType(ek, nonNullableType1, nonNullableType2, out typeEnum));
 
             Debug.Assert(typeEnum != null);
             PredefinedType ptOp;

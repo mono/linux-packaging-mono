@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-02-22 09:15+0000\n"
+"POT-Creation-Date: 2017-02-24 09:00+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -3189,7 +3189,7 @@ msgstr ""
 "Literal do tipo double não pode ser implicitamente convertido para o tipo "
 "\"{0}\". Adicione o sufixo \"{1}\" para criar um literal desse tipo"
 
-#: mcs/mcs/membercache.cs:1483
+#: mcs/mcs/membercache.cs:1488
 msgid ""
 "A partial method declaration and partial method implementation cannot differ "
 "on use of `params' modifier"
@@ -3197,7 +3197,7 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial não "
 "podem diferir no uso do modificador \"params\""
 
-#: mcs/mcs/membercache.cs:1486
+#: mcs/mcs/membercache.cs:1491
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "an extension method or neither"
@@ -3205,7 +3205,7 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial ou "
 "devem ser ambas um método de extenção ou ambas não serem"
 
-#: mcs/mcs/membercache.cs:1490
+#: mcs/mcs/membercache.cs:1495
 #, fuzzy, csharp-format
 msgid ""
 "Overloaded contructor `{0}' cannot differ on use of parameter modifiers only"
@@ -3213,7 +3213,7 @@ msgstr ""
 "Um método sobrecarregado \"{0}\" não pode diferir no uso de modificadores de "
 "parâmetros somente"
 
-#: mcs/mcs/membercache.cs:1494
+#: mcs/mcs/membercache.cs:1499
 #, fuzzy, csharp-format
 msgid ""
 "Overloaded method `{0}' cannot differ on use of parameter modifiers only"
@@ -3221,7 +3221,7 @@ msgstr ""
 "Um método sobrecarregado \"{0}\" não pode diferir no uso de modificadores de "
 "parâmetros somente"
 
-#: mcs/mcs/membercache.cs:1526
+#: mcs/mcs/membercache.cs:1531
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "`static' or neither"
@@ -3229,7 +3229,7 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial ou "
 "devem ser ambas estáticas ou ambas não serem"
 
-#: mcs/mcs/membercache.cs:1532
+#: mcs/mcs/membercache.cs:1537
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "`unsafe' or neither"
@@ -3237,27 +3237,27 @@ msgstr ""
 "Uma declaração de método parcial e uma implementação de método parcial ou "
 "devem ser ambas inseguras ou ambas não serem"
 
-#: mcs/mcs/membercache.cs:1540
+#: mcs/mcs/membercache.cs:1545
 #, csharp-format
 msgid "A partial method `{0}' declaration is already defined"
 msgstr "Uma declaração do método parcial \"{0}\" já está definida"
 
-#: mcs/mcs/membercache.cs:1544
+#: mcs/mcs/membercache.cs:1549
 #, csharp-format
 msgid "A partial method `{0}' implementation is already defined"
 msgstr "Uma implementação do método parcial \"{0}\" já esa definido"
 
-#: mcs/mcs/membercache.cs:1555 mcs/mcs/property.cs:81
+#: mcs/mcs/membercache.cs:1560 mcs/mcs/property.cs:81
 #, csharp-format
 msgid "A member `{0}' is already reserved"
 msgstr "Um membro \"{0}\" já está reservado"
 
-#: mcs/mcs/membercache.cs:1566
+#: mcs/mcs/membercache.cs:1571
 #, csharp-format
 msgid "Duplicate user-defined conversion in type `{0}'"
 msgstr "Conversão definida pelo usuário duplicada no topo \"{0}\""
 
-#: mcs/mcs/membercache.cs:1572
+#: mcs/mcs/membercache.cs:1577
 #, csharp-format
 msgid ""
 "A member `{0}' is already defined. Rename this member or use different "
@@ -4267,7 +4267,7 @@ msgid ""
 msgstr ""
 "O operador \"{0}\" não pode ser aplicado a um operando de tipo estático"
 
-#: mcs/mcs/statement.cs:7370
+#: mcs/mcs/statement.cs:7394
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
@@ -4276,7 +4276,7 @@ msgstr ""
 "Uma cláusula catch anterior já pega todas as exceções do this ou um tipo "
 "super \"{0}\""
 
-#: mcs/mcs/statement.cs:7603
+#: mcs/mcs/statement.cs:7627
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
@@ -4285,7 +4285,7 @@ msgstr ""
 "\"{0}\": tipo utilizado em uma declaração em uso deve ser implicitamente "
 "conversível para \"System.IDisposable\""
 
-#: mcs/mcs/statement.cs:8019
+#: mcs/mcs/statement.cs:8043
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
@@ -4294,7 +4294,7 @@ msgstr ""
 "declaração do foreach requer que o tipo de retorno \"{0}\" de \"{1}\" deve "
 "ter um método apropriado público MoveNext e a propriedade pública Current"
 
-#: mcs/mcs/statement.cs:8063
+#: mcs/mcs/statement.cs:8087
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -4305,7 +4305,7 @@ msgstr ""
 "estas contém múltiplas implementações de \"{1}\". Tente um casting para uma "
 "implementação específica"
 
-#: mcs/mcs/statement.cs:8085
+#: mcs/mcs/statement.cs:8109
 #, fuzzy, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
@@ -4314,11 +4314,11 @@ msgstr ""
 "declaração do foreach não pode operar em variáveis do tipo \"{0}\" pois "
 "estas não contém uma definição para \"GetEnumerator\" ou não estão acessíveis"
 
-#: mcs/mcs/statement.cs:8323
+#: mcs/mcs/statement.cs:8347
 msgid "Use of null is not valid in this context"
 msgstr "Uso do null é inválido neste contexto"
 
-#: mcs/mcs/statement.cs:8335
+#: mcs/mcs/statement.cs:8359
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr "Declaração do foreach não pode operar em um \"{0}\""

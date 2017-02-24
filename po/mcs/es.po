@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-02-22 09:15+0000\n"
+"POT-Creation-Date: 2017-02-24 09:00+0000\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -2852,63 +2852,63 @@ msgid ""
 "suffix `{1}' to create a literal of this type"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1483
+#: mcs/mcs/membercache.cs:1488
 msgid ""
 "A partial method declaration and partial method implementation cannot differ "
 "on use of `params' modifier"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1486
+#: mcs/mcs/membercache.cs:1491
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "an extension method or neither"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1490
+#: mcs/mcs/membercache.cs:1495
 #, csharp-format
 msgid ""
 "Overloaded contructor `{0}' cannot differ on use of parameter modifiers only"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1494
+#: mcs/mcs/membercache.cs:1499
 #, csharp-format
 msgid ""
 "Overloaded method `{0}' cannot differ on use of parameter modifiers only"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1526
+#: mcs/mcs/membercache.cs:1531
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "`static' or neither"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1532
+#: mcs/mcs/membercache.cs:1537
 msgid ""
 "A partial method declaration and partial method implementation must be both "
 "`unsafe' or neither"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1540
+#: mcs/mcs/membercache.cs:1545
 #, csharp-format
 msgid "A partial method `{0}' declaration is already defined"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1544
+#: mcs/mcs/membercache.cs:1549
 #, csharp-format
 msgid "A partial method `{0}' implementation is already defined"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1555 mcs/mcs/property.cs:81
+#: mcs/mcs/membercache.cs:1560 mcs/mcs/property.cs:81
 #, csharp-format
 msgid "A member `{0}' is already reserved"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1566
+#: mcs/mcs/membercache.cs:1571
 #, csharp-format
 msgid "Duplicate user-defined conversion in type `{0}'"
 msgstr ""
 
-#: mcs/mcs/membercache.cs:1572
+#: mcs/mcs/membercache.cs:1577
 #, csharp-format
 msgid ""
 "A member `{0}' is already defined. Rename this member or use different "
@@ -3801,28 +3801,28 @@ msgid ""
 "clause"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7370
+#: mcs/mcs/statement.cs:7394
 #, csharp-format
 msgid ""
 "A previous catch clause already catches all exceptions of this or a super "
 "type `{0}'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:7603
+#: mcs/mcs/statement.cs:7627
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
 "`System.IDisposable'"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8019
+#: mcs/mcs/statement.cs:8043
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
 "suitable public MoveNext method and public Current property"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8063
+#: mcs/mcs/statement.cs:8087
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -3830,18 +3830,18 @@ msgid ""
 "implementation"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8085
+#: mcs/mcs/statement.cs:8109
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
 "not contain a definition for `{1}' or is inaccessible"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8323
+#: mcs/mcs/statement.cs:8347
 msgid "Use of null is not valid in this context"
 msgstr ""
 
-#: mcs/mcs/statement.cs:8335
+#: mcs/mcs/statement.cs:8359
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr "El mandato `foreach' no puede operar en un `{0}'"
