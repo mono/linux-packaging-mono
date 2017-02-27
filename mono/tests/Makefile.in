@@ -79,12 +79,14 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@IA64_TRUE@am__append_1 = async-exc-compilation.cs filter-stack.cs
+@FULL_AOT_TESTS_TRUE@am__append_1 = --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
+@HYBRID_AOT_TESTS_TRUE@am__append_2 = --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
+@IA64_TRUE@am__append_3 = async-exc-compilation.cs filter-stack.cs
 
 # FIXME: There are problems with async callbacks and results on NaCl 32-bit
 
 # FIXME: These tests hang/fail for unknown reasons, deal with exiting
-@NACL_CODEGEN_TRUE@@X86_TRUE@am__append_2 = delegate1.exe \
+@NACL_CODEGEN_TRUE@@X86_TRUE@am__append_4 = delegate1.exe \
 @NACL_CODEGEN_TRUE@@X86_TRUE@	delegate3.exe delegate5.exe \
 @NACL_CODEGEN_TRUE@@X86_TRUE@	delegate8.exe threadpool.exe \
 @NACL_CODEGEN_TRUE@@X86_TRUE@	threadpool1.exe \
@@ -125,7 +127,7 @@ target_triplet = @target@
 # constraints-load.il: 
 # Failed to load method 0x6000007 from '..../mono/tests/constraints-load.exe' due to 
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
-@FULL_AOT_TESTS_TRUE@am__append_3 = typeload-unaligned.exe \
+@FULL_AOT_TESTS_TRUE@am__append_5 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
 @FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
@@ -180,18 +182,18 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	bug-80307.exe namedmutex-destroy-race.exe \
 @FULL_AOT_TESTS_TRUE@	thread6.exe reference-loader.exe \
 @FULL_AOT_TESTS_TRUE@	constraints-load.exe bug-515884.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_4 = \
+@HYBRID_AOT_TESTS_TRUE@am__append_6 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
-@FULL_AOT_TESTS_TRUE@am__append_5 = \
+@FULL_AOT_TESTS_TRUE@am__append_7 = \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe	\
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload-2.exe
 
-@FULL_AOT_TESTS_TRUE@am__append_6 = \
+@FULL_AOT_TESTS_TRUE@am__append_8 = \
 @FULL_AOT_TESTS_TRUE@	generic-type-builder.2.exe
 
-@NACL_CODEGEN_FALSE@am__append_7 = threadpool-in-processexit.cs threadpool-in-processexit.exe.stdout.expected
+@NACL_CODEGEN_FALSE@am__append_9 = threadpool-in-processexit.cs threadpool-in-processexit.exe.stdout.expected
 subdir = mono/tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/tests-config.in \
@@ -569,8 +571,9 @@ MCS_NO_LIB = $(TOOLS_RUNTIME) $(CSC) -unsafe -debug:portable \
 
 MCS = $(MCS_NO_LIB) -lib:$(CLASS)
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
-@FULL_AOT_TESTS_FALSE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)"
-@FULL_AOT_TESTS_TRUE@TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)" --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
+TEST_RUNNER = ./test-runner.exe --runtime \
+	$(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)" \
+	$(am__append_1) $(am__append_2)
 BENCHSRC = fib.cs random.cs nested-loops.cs ackermann.cs tight-loop.cs sieve.cs
 STRESS_TESTS_SRC = \
 	abort-stress-1.cs	\
@@ -992,16 +995,16 @@ TEST_CS_SRC_GEN = \
 	imt_big_iface_test.cs
 
 @AMD64_FALSE@@X86_FALSE@TEST_CS_SRC = $(BASE_TEST_CS_SRC) \
-@AMD64_FALSE@@X86_FALSE@	$(TEST_CS_SRC_GEN) $(am__append_1)
+@AMD64_FALSE@@X86_FALSE@	$(TEST_CS_SRC_GEN) $(am__append_3)
 @AMD64_FALSE@@X86_TRUE@TEST_CS_SRC = $(BASE_TEST_CS_SRC) \
 @AMD64_FALSE@@X86_TRUE@	$(TEST_CS_SRC_GEN) \
 @AMD64_FALSE@@X86_TRUE@	async-exc-compilation.cs \
 @AMD64_FALSE@@X86_TRUE@	finally_guard.cs \
 @AMD64_FALSE@@X86_TRUE@	finally_block_ending_in_dead_bb.cs \
-@AMD64_FALSE@@X86_TRUE@	$(am__append_1)
+@AMD64_FALSE@@X86_TRUE@	$(am__append_3)
 @AMD64_TRUE@TEST_CS_SRC = $(BASE_TEST_CS_SRC) $(TEST_CS_SRC_GEN) \
 @AMD64_TRUE@	async-exc-compilation.cs finally_guard.cs \
-@AMD64_TRUE@	finally_block_ending_in_dead_bb.cs $(am__append_1)
+@AMD64_TRUE@	finally_block_ending_in_dead_bb.cs $(am__append_3)
 TEST_IL_SRC = \
 	field-access.il		\
 	method-access.il	\
@@ -1074,8 +1077,8 @@ TEST_IL_SRC = \
 
 # #651684
 @AMD64_TRUE@PLATFORM_DISABLED_TESTS = finally_guard.exe \
-@AMD64_TRUE@	$(am__append_2)
-@ARM_TRUE@PLATFORM_DISABLED_TESTS = filter-stack.exe $(am__append_2)
+@AMD64_TRUE@	$(am__append_4)
+@ARM_TRUE@PLATFORM_DISABLED_TESTS = filter-stack.exe $(am__append_4)
 @HOST_WIN32_TRUE@@X86_TRUE@PLATFORM_DISABLED_TESTS =  \
 @HOST_WIN32_TRUE@@X86_TRUE@	async-exc-compilation.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	finally_guard.exe \
@@ -1083,15 +1086,15 @@ TEST_IL_SRC = \
 @HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	threadpool-exceptions5.exe \
 @HOST_WIN32_TRUE@@X86_TRUE@	process-unref-race.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	$(am__append_2)
+@HOST_WIN32_TRUE@@X86_TRUE@	$(am__append_4)
 
 # bug #319249
 @IA64_TRUE@PLATFORM_DISABLED_TESTS = exception17.exe winx64structs.exe \
-@IA64_TRUE@	$(am__append_2)
+@IA64_TRUE@	$(am__append_4)
 
 # monitor.exe is racy
 @MIPS_TRUE@PLATFORM_DISABLED_TESTS = filter-stack.exe monitor.exe \
-@MIPS_TRUE@	$(am__append_2)
+@MIPS_TRUE@	$(am__append_4)
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
 
 # Tests that use Thread.Abort()
@@ -1140,7 +1143,7 @@ TEST_IL_SRC = \
 @NACL_CODEGEN_TRUE@	async-with-cb-throws.exe \
 @NACL_CODEGEN_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
 @NACL_CODEGEN_TRUE@	gsharing-valuetype-layout.exe \
-@NACL_CODEGEN_TRUE@	$(am__append_2)
+@NACL_CODEGEN_TRUE@	$(am__append_4)
 
 # FIXME: These tests hang/fail for unknown reasons
 @POWERPC64_TRUE@PLATFORM_DISABLED_TESTS = monitor.exe \
@@ -1158,17 +1161,17 @@ TEST_IL_SRC = \
 @POWERPC64_TRUE@	sgen-new-threads-dont-join-stw.exe \
 @POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe \
 @POWERPC64_TRUE@	sgen-new-threads-collect.exe sgen-bridge.exe \
-@POWERPC64_TRUE@	$(am__append_2)
+@POWERPC64_TRUE@	$(am__append_4)
 
 # bug #71274
 @POWERPC_TRUE@PLATFORM_DISABLED_TESTS = finalizer-abort.exe \
 @POWERPC_TRUE@	finalizer-exception.exe finalizer-exit.exe \
-@POWERPC_TRUE@	$(am__append_2)
+@POWERPC_TRUE@	$(am__append_4)
 @S390X_TRUE@PLATFORM_DISABLED_TESTS = dynamic-method-resurrection.exe \
-@S390X_TRUE@	$(am__append_2)
+@S390X_TRUE@	$(am__append_4)
 @ENABLE_COOP_FALSE@COOP_DISABLED_TESTS = 
 @ENABLE_COOP_TRUE@COOP_DISABLED_TESTS = thunks.exe
-PROFILE_DISABLED_TESTS = $(am__append_3) $(am__append_4)
+PROFILE_DISABLED_TESTS = $(am__append_5) $(am__append_6)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe
 
@@ -1277,12 +1280,13 @@ EXTRA_DIST = test-driver test-runner.cs $(TEST_CS_SRC_DIST) \
 	generic-unboxing.2.il generic-boxing.2.il generic-unbox.2.cs \
 	generic-box.2.cs generic-delegate2.2.cs \
 	generic-delegate2-lib.2.il async-exceptions.cs modules.cs \
-	modules-m1.cs $(am__append_7) appdomain-loader.cs \
+	modules-m1.cs $(am__append_9) appdomain-loader.cs \
 	appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
 	console-output.exe.stdout.expected test_lldb.py test-lldb.cs
-@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
-@FULL_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
+@FULL_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:Mono.Posix.dll
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 @FULL_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
 AOT_EXTRA_LIBS = \
 bug-382986-lib.dll$(PLATFORM_AOT_SUFFIX)	\
@@ -1313,7 +1317,7 @@ SGEN_REGULAR_TESTS_SRC = \
 	sgen-domain-unload.cs	\
 	sgen-domain-unload-2.cs
 
-SGEN_REGULAR_DISABLED_TESTS = $(am__append_5)
+SGEN_REGULAR_DISABLED_TESTS = $(am__append_7)
 SGEN_REGULAR_TESTS = $(filter-out $(SGEN_REGULAR_DISABLED_TESTS),$(SGEN_REGULAR_TESTS_SRC:.cs=.exe))
 SGEN_TOGGLEREF_TESTS = \
 	sgen-toggleref.exe
@@ -1387,7 +1391,7 @@ GSHARED_TESTS_SRC = \
 	bug-1147.cs	\
 	generic-type-builder.2.cs
 
-GSHARED_DISABLED_TESTS = $(am__append_6)
+GSHARED_DISABLED_TESTS = $(am__append_8)
 GSHARED_TESTS = $(filter-out $(GSHARED_DISABLED_TESTS),$(GSHARED_TESTS_SRC:.cs=.exe))
 OOM_TESTS = \
 	gc-oom-handling.exe	\
@@ -1853,7 +1857,8 @@ TestingReferenceReferenceAssembly.dll: TestingReferenceReferenceAssembly.cs Test
 @HOST_WIN32_FALSE@@X86_TRUE@test_platform: test-eglib-remap
 
 @FULL_AOT_TESTS_TRUE@prereqs: $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
-@FULL_AOT_TESTS_FALSE@prereqs: $(PREREQSI_IL) $(PREREQSI_CS)
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@prereqs: $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@prereqs: $(PREREQSI_IL) $(PREREQSI_CS)
 
 # Target to precompile the test executables
 tests: $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la prereqs $(GSHARED_TESTS)
@@ -1881,6 +1886,7 @@ test-sgen : sgen-tests
 compile-tests:
 	$(MAKE) -j4 $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS)
 @FULL_AOT_TESTS_TRUE@	$(MAKE) $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
+@HYBRID_AOT_TESTS_TRUE@	$(MAKE) $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
 
 # Remove empty .stdout and .stderr files for wrench
 rm-empty-logs:
@@ -2230,6 +2236,7 @@ imt_big_iface_test.exe: $(TEST_DRIVER_DEPEND) make-imt-test.exe
 test-inline-call-stack-library.dll: $(TEST_DRIVER_DEPEND) $(srcdir)/test-inline-call-stack-library.cs
 	$(MCS) -t:library -out:test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack-library.cs
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 
 test-inline-call-stack.exe: $(TEST_DRIVER_DEPEND) test-inline-call-stack-library.dll $(srcdir)/test-inline-call-stack.cs
 	$(MCS) -r:TestDriver.dll -r:test-inline-call-stack-library.dll -out:test-inline-call-stack.exe $(srcdir)/test-inline-call-stack.cs
@@ -2267,11 +2274,13 @@ bug-81673.exe bug-81673-interface.dll: $(srcdir)/bug-81673.cs $(srcdir)/bug-8167
 	$(MCS) -out:bug-81673.exe -r:bug-81673-interface.dll $(srcdir)/bug-81673.cs
 	$(MCS) -define:WITH_STOP -target:library -out:bug-81673-interface.dll $(srcdir)/bug-81673-interface.cs
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-36848.exe bug-36848-a.dll: $(srcdir)/bug-36848.cs $(srcdir)/bug-36848-a.cs
 	$(MCS) -target:library -out:bug-36848-a.dll $(srcdir)/bug-36848-a.cs
 	$(MCS) -r:bug-36848-a.dll -out:bug-36848.exe $(srcdir)/bug-36848.cs
 	$(MCS) -target:library -out:bug-36848-a.dll $(srcdir)/bug-36848-a.cs /define:WITH_STOP
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-81691.exe bug-81691-b.dll: $(srcdir)/bug-81691.cs $(srcdir)/bug-81691-a.cs $(srcdir)/bug-81691-b.cs
 	$(MCS) -target:library -out:bug-81691-a.dll $(srcdir)/bug-81691-a.cs
 	$(MCS) -target:library -out:bug-81691-b.dll -r:bug-81691-a.dll $(srcdir)/bug-81691-b.cs
@@ -2281,21 +2290,25 @@ bug-81691.exe: bug-81691-b.dll
 bug-81466-lib.dll: bug-81466-lib.il
 	$(ILASM) /dll /output:bug-81466-lib.dll $(srcdir)/bug-81466-lib.il
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-81466.exe: bug-81466.il bug-81466-lib.dll
 	$(ILASM) /exe /output:bug-81466.exe $(srcdir)/bug-81466.il
 bug-324535-il.dll : bug-324535-il.il
 	$(ILASM) /dll /output:bug-324535-il.dll $(srcdir)/bug-324535-il.il
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 bug-324535.exe : bug-324535.cs bug-324535-il.dll
 	$(MCS) -r:bug-324535-il.dll -out:bug-324535.exe $(srcdir)/bug-324535.cs
 custom-modifiers-lib.dll: custom-modifiers-lib.il
 	$(ILASM) /dll /output:custom-modifiers-lib.dll $(srcdir)/custom-modifiers-lib.il
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 custom-modifiers.2.exe: custom-modifiers.2.cs custom-modifiers-lib.dll
 	$(MCS) -r:custom-modifiers-lib.dll -out:custom-modifiers.2.exe $(srcdir)/custom-modifiers.2.cs
 bug-382986-lib.dll: bug-382986-lib.cs
 	$(MCS) -target:library -out:$@ $(srcdir)/bug-382986-lib.cs
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 
 bug-382986.exe: bug-382986.cs bug-382986-lib.dll
 	$(MCS) -out:$@ -r:bug-382986-lib.dll $(srcdir)/bug-382986.cs
@@ -2315,9 +2328,11 @@ test-coreclr-security : coreclr-security.exe
 generic-unboxing.2.dll : generic-unboxing.2.il
 	$(ILASM) /dll /output:generic-unboxing.2.dll $(srcdir)/generic-unboxing.2.il
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-boxing.2.dll : generic-boxing.2.il generic-unboxing.2.dll
 	$(ILASM) /dll /output:generic-boxing.2.dll $(srcdir)/generic-boxing.2.il
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-unbox.2.exe : generic-unbox.2.cs generic-unboxing.2.dll
 	$(MCS) -r:generic-unboxing.2.dll -out:$@ $(srcdir)/generic-unbox.2.cs
 generic-box.2.exe : generic-box.2.cs generic-unboxing.2.dll generic-boxing.2.dll
@@ -2325,6 +2340,7 @@ generic-box.2.exe : generic-box.2.cs generic-unboxing.2.dll generic-boxing.2.dll
 generic-delegate2-lib.2.dll : generic-delegate2-lib.2.il
 	$(ILASM) /dll /output:$@ $(srcdir)/generic-delegate2-lib.2.il
 @FULL_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+@HYBRID_AOT_TESTS_TRUE@	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
 generic-delegate2.2.exe : generic-delegate2.2.cs generic-delegate2-lib.2.dll
 	$(MCS) -r:generic-delegate2-lib.2.dll -out:$@ $(srcdir)/generic-delegate2.2.cs
 
