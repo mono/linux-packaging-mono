@@ -21271,28 +21271,6 @@ _ACEOF
 fi
 done
 
-	for ac_func in getpwnam_r
-do :
-  ac_fn_c_check_func "$LINENO" "getpwnam_r" "ac_cv_func_getpwnam_r"
-if test "x$ac_cv_func_getpwnam_r" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_GETPWNAM_R 1
-_ACEOF
-
-fi
-done
-
-	for ac_func in getpwuid_r
-do :
-  ac_fn_c_check_func "$LINENO" "getpwuid_r" "ac_cv_func_getpwuid_r"
-if test "x$ac_cv_func_getpwuid_r" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_GETPWUID_R 1
-_ACEOF
-
-fi
-done
-
 	for ac_func in getresuid
 do :
   ac_fn_c_check_func "$LINENO" "getresuid" "ac_cv_func_getresuid"
@@ -21492,6 +21470,31 @@ _ACEOF
 fi
 done
 
+
+	if test x$platform_android != xyes; then
+		for ac_func in getpwnam_r
+do :
+  ac_fn_c_check_func "$LINENO" "getpwnam_r" "ac_cv_func_getpwnam_r"
+if test "x$ac_cv_func_getpwnam_r" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GETPWNAM_R 1
+_ACEOF
+
+fi
+done
+
+		for ac_func in getpwuid_r
+do :
+  ac_fn_c_check_func "$LINENO" "getpwuid_r" "ac_cv_func_getpwuid_r"
+if test "x$ac_cv_func_getpwuid_r" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GETPWUID_R 1
+_ACEOF
+
+fi
+done
+
+	fi
 
 										{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for sched_setaffinity from glibc < 2.3.4" >&5
 $as_echo_n "checking for sched_setaffinity from glibc < 2.3.4... " >&6; }
@@ -26573,9 +26576,6 @@ $as_echo "#define TARGET_X86 1" >>confdefs.h
 
 $as_echo "#define TARGET_ARM 1" >>confdefs.h
 
-
-$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
-
 		ACCESS_UNALIGNED="no"
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
 		# Can't use tls, since it depends on the runtime detection of tls offsets
@@ -26588,6 +26588,15 @@ $as_echo "#define TARGET_ANDROID 1" >>confdefs.h
 			CPPFLAGS="$CPPFLAGS"
 			;;
    		armv5-*-linux-androideabi*)
+
+$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
+
+			CPPFLAGS="$CPPFLAGS"
+			;;
+   		*-linux-androideabi*)
+
+$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
+
 			CPPFLAGS="$CPPFLAGS"
 			;;
 		esac
@@ -26611,14 +26620,19 @@ $as_echo "#define TARGET_ARM 1" >>confdefs.h
 
 $as_echo "#define TARGET_X86 1" >>confdefs.h
 
-
-$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
-
 		CPPFLAGS="$CPPFLAGS"
 		# Can't use tls, since it depends on the runtime detection of tls offsets
 		# in mono-compiler.h
 		with_tls=pthread
 		target_mach=no
+
+		case "$target" in
+		*-linux-android*)
+
+$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
+
+			;;
+		esac
 		;;
    x86_64*-linux-*)
 		TARGET=AMD64;
@@ -26626,14 +26640,19 @@ $as_echo "#define TARGET_ANDROID 1" >>confdefs.h
 
 $as_echo "#define TARGET_AMD64 1" >>confdefs.h
 
-
-$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
-
 		CPPFLAGS="$CPPFLAGS"
 		# Can't use tls, since it depends on the runtime detection of tls offsets
 		# in mono-compiler.h
 		with_tls=pthread
 		target_mach=no
+
+		case "$target" in
+		*-linux-android*)
+
+$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
+
+			;;
+		esac
 		;;
    x86_64-ps4-freebsd)
 		TARGET=AMD64;
@@ -26660,14 +26679,18 @@ $as_echo "#define DISABLE_HW_TRAPS 1" >>confdefs.h
 
 $as_echo "#define TARGET_ARM64 1" >>confdefs.h
 
-
-$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
-
 		CPPFLAGS="$CPPFLAGS"
 		# Can't use tls, since it depends on the runtime detection of tls offsets
 		# in mono-compiler.h
 		with_tls=pthread
 		target_mach=no
+		case "$target" in
+		*-linux-android*)
+
+$as_echo "#define TARGET_ANDROID 1" >>confdefs.h
+
+			;;
+		esac
 		;;
 	aarch64-*)
 		TARGET=ARM64
