@@ -271,7 +271,6 @@ mono_interp_get_runtime_method (MonoDomain *domain, MonoMethod *method, MonoErro
 	rtm->method = method;
 	rtm->param_count = mono_method_signature (method)->param_count;
 	rtm->hasthis = mono_method_signature (method)->hasthis;
-	rtm->valuetype = method->klass->valuetype;
 	mono_internal_hash_table_insert (&domain->jit_code_hash, method, rtm);
 	mono_os_mutex_unlock (&runtime_method_lookup_section);
 
@@ -314,7 +313,20 @@ get_virtual_method (MonoDomain *domain, RuntimeMethod *runtime_method, MonoObjec
 		/* TODO: interface offset lookup is slow, go through IMT instead */
 		slot += mono_class_interface_offset (obj->vtable->klass, m->klass);
 	}
+
 	MonoMethod *virtual_method = obj->vtable->klass->vtable [slot];
+	if (m->is_inflated && mono_method_get_context (m)->method_inst) {
+		MonoGenericContext context = { NULL, NULL };
+
+		if (mono_class_is_ginst (virtual_method->klass))
+			context.class_inst = mono_class_get_generic_class (virtual_method->klass)->context.class_inst;
+		else if (mono_class_is_gtd (virtual_method->klass))
+			context.class_inst = mono_class_get_generic_container (virtual_method->klass)->context.class_inst;
+		context.method_inst = mono_method_get_context (m)->method_inst;
+
+		virtual_method = mono_class_inflate_generic_method_checked (virtual_method, &context, &error);
+		mono_error_cleanup (&error); /* FIXME: don't swallow the error */
+	}
 	RuntimeMethod *virtual_runtime_method = mono_interp_get_runtime_method (domain, virtual_method, &error);
 	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
 	return virtual_runtime_method;
@@ -541,7 +553,7 @@ ves_array_create (MonoDomain *domain, MonoClass *klass, MonoMethodSignature *sig
 static void 
 ves_array_set (MonoInvocation *frame)
 {
-	stackval *sp = frame->stack_args;
+	stackval *sp = frame->stack_args + 1;
 	MonoObject *o;
 	MonoArray *ao;
 	MonoClass *ac;
@@ -595,7 +607,7 @@ ves_array_set (MonoInvocation *frame)
 static void 
 ves_array_get (MonoInvocation *frame)
 {
-	stackval *sp = frame->stack_args;
+	stackval *sp = frame->stack_args + 1;
 	MonoObject *o;
 	MonoArray *ao;
 	MonoClass *ac;
@@ -639,7 +651,7 @@ ves_array_get (MonoInvocation *frame)
 static void
 ves_array_element_address (MonoInvocation *frame)
 {
-	stackval *sp = frame->stack_args;
+	stackval *sp = frame->stack_args + 1;
 	MonoObject *o;
 	MonoArray *ao;
 	MonoClass *ac;
@@ -677,35 +689,42 @@ ves_array_element_address (MonoInvocation *frame)
 	frame->retval->data.p = ea;
 }
 
-static void
-interp_walk_stack (MonoStackWalk func, gboolean do_il_offset, gpointer user_data)
+void
+interp_walk_stack_with_ctx (MonoInternalStackWalk func, MonoContext *ctx, MonoUnwindOptions options, void *user_data)
 {
-	ThreadContext *context = mono_native_tls_get_value (thread_context_id);
-	MonoInvocation *frame;
-	int il_offset;
-	MonoMethodHeader *hd;
 	MonoError error;
+	ThreadContext *context = mono_native_tls_get_value (thread_context_id);
 
-	if (!context) return;
-		
-	frame = context->current_frame;
+	MonoInvocation *frame = context->current_frame;
 
 	while (frame) {
-		gboolean managed = FALSE;
-		MonoMethod *method = frame->runtime_method->method;
-		if (!method || (method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) || (method->iflags & (METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL | METHOD_IMPL_ATTRIBUTE_RUNTIME)))
-			il_offset = -1;
-		else {
-			hd = mono_method_get_header_checked (method, &error);
+		MonoStackFrameInfo fi;
+		memset (&fi, 0, sizeof (MonoStackFrameInfo));
+
+		/* TODO: hack to make some asserts happy. */
+		fi.ji = (MonoJitInfo *) frame->runtime_method;
+
+		if (frame->runtime_method)
+			fi.method = fi.actual_method = frame->runtime_method->method;
+
+		if (!fi.method || (fi.method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) || (fi.method->iflags & (METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL | METHOD_IMPL_ATTRIBUTE_RUNTIME))) {
+			fi.il_offset = -1;
+			fi.type = FRAME_TYPE_MANAGED_TO_NATIVE;
+		} else {
+			MonoMethodHeader *hd = mono_method_get_header_checked (fi.method, &error);
 			mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-			il_offset = frame->ip - (const unsigned short *)hd->code;
-			if (!method->wrapper_type)
-				managed = TRUE;
+			fi.type = FRAME_TYPE_MANAGED;
+			fi.il_offset = frame->ip - (const unsigned short *) hd->code;
+			if (!fi.method->wrapper_type)
+				fi.managed = TRUE;
 		}
-		if (func (method, -1, il_offset, managed, user_data))
+
+		if (func (&fi, ctx, user_data))
 			return;
 		frame = frame->parent;
 	}
+
+	g_assert (0);
 }
 
 static MonoPIFunc mono_interp_enter_icall_trampoline = NULL;
@@ -714,8 +733,9 @@ struct _MethodArguments {
 	size_t ilen;
 	gpointer *iargs;
 	size_t flen;
-	gpointer *fargs;
+	double *fargs;
 	gpointer *retval;
+	size_t is_float_ret;
 };
 
 typedef struct _MethodArguments MethodArguments;
@@ -749,7 +769,12 @@ static MethodArguments* build_args_from_sig (MonoMethodSignature *sig, MonoInvoc
 		case MONO_TYPE_STRING:
 		case MONO_TYPE_I8:
 		case MONO_TYPE_VALUETYPE:
+		case MONO_TYPE_GENERICINST:
 			margs->ilen++;
+			break;
+		case MONO_TYPE_R4:
+		case MONO_TYPE_R8:
+			margs->flen++;
 			break;
 		default:
 			g_error ("build_args_from_sig: not implemented yet (1): 0x%x\n", ptype);
@@ -759,14 +784,18 @@ static MethodArguments* build_args_from_sig (MonoMethodSignature *sig, MonoInvoc
 	if (margs->ilen > 0)
 		margs->iargs = g_malloc0 (sizeof (gpointer) * margs->ilen);
 
-	if (margs->ilen > 6)
-		g_error ("build_args_from_sig: TODO, more than 6 iregs: %d\n", margs->ilen);
-
 	if (margs->flen > 0)
-		g_error ("build_args_from_sig: TODO, allocate floats: %d\n", margs->flen);
+		margs->fargs = g_malloc0 (sizeof (double) * margs->flen);
+
+	if (margs->ilen > 8)
+		g_error ("build_args_from_sig: TODO, allocate gregs: %d\n", margs->ilen);
+
+	if (margs->flen > 3)
+		g_error ("build_args_from_sig: TODO, allocate fregs: %d\n", margs->flen);
 
 
 	size_t int_i = 0;
+	size_t int_f = 0;
 
 	if (sig->hasthis) {
 		margs->iargs [0] = frame->stack_args->data.p;
@@ -793,21 +822,54 @@ static MethodArguments* build_args_from_sig (MonoMethodSignature *sig, MonoInvoc
 		case MONO_TYPE_STRING:
 		case MONO_TYPE_I8:
 		case MONO_TYPE_VALUETYPE:
+		case MONO_TYPE_GENERICINST:
 			margs->iargs [int_i] = frame->stack_args [i].data.p;
 #if DEBUG_INTERP
 			g_print ("build_args_from_sig: margs->iargs[%d]: %p (frame @ %d)\n", int_i, margs->iargs[int_i], i);
 #endif
 			int_i++;
 			break;
+		case MONO_TYPE_R4:
+		case MONO_TYPE_R8:
+			margs->fargs [int_f] = frame->stack_args [i].data.f;
+			int_f++;
+			break;
 		default:
 			g_error ("build_args_from_sig: not implemented yet (2): 0x%x\n", ptype);
 		}
 	}
 
-	if (sig->ret->type != MONO_TYPE_VOID) {
-		margs->retval = &(frame->retval->data.p);
-	} else {
-		margs->retval = NULL;
+	switch (sig->ret->type) {
+		case MONO_TYPE_BOOLEAN:
+		case MONO_TYPE_CHAR:
+		case MONO_TYPE_I1:
+		case MONO_TYPE_U1:
+		case MONO_TYPE_I2:
+		case MONO_TYPE_U2:
+		case MONO_TYPE_I4:
+		case MONO_TYPE_U4:
+		case MONO_TYPE_I:
+		case MONO_TYPE_U:
+		case MONO_TYPE_PTR:
+		case MONO_TYPE_SZARRAY:
+		case MONO_TYPE_CLASS:
+		case MONO_TYPE_OBJECT:
+		case MONO_TYPE_STRING:
+		case MONO_TYPE_I8:
+		case MONO_TYPE_VALUETYPE:
+		case MONO_TYPE_GENERICINST:
+			margs->retval = &(frame->retval->data.p);
+			break;
+		case MONO_TYPE_R4:
+		case MONO_TYPE_R8:
+			margs->retval = &(frame->retval->data.p);
+			margs->is_float_ret = 1;
+			break;
+		case MONO_TYPE_VOID:
+			margs->retval = NULL;
+			break;
+		default:
+			g_error ("build_args_from_sig: ret type not implemented yet: 0x%x\n", sig->ret->type);
 	}
 
 	return margs;
@@ -871,45 +933,12 @@ ves_pinvoke_method (MonoInvocation *frame, MonoMethodSignature *sig, MonoFuncV a
 	g_free (margs);
 }
 
-static void
-interp_delegate_ctor (MonoDomain *domain, MonoObject *this, MonoObject *target, RuntimeMethod *runtime_method)
+void
+mono_interp_init_delegate (MonoDelegate *del)
 {
-	MonoDelegate *delegate = (MonoDelegate *)this;
-	MonoError error;
-
-	delegate->method_info = mono_method_get_object_checked (domain, runtime_method->method, NULL, &error);
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-	delegate->target = target;
-
-	if (target && mono_object_is_transparent_proxy (target)) {
-		MonoMethod *method = mono_marshal_get_remoting_invoke (runtime_method->method);
-		delegate->method_ptr = mono_interp_get_runtime_method (domain, method, &error);
-		mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-	} else {
-		delegate->method_ptr = runtime_method;
-	}
-}
-
-MonoDelegate*
-mono_interp_ftnptr_to_delegate (MonoClass *klass, gpointer ftn)
-{
-	MonoDelegate *d;
-	MonoJitInfo *ji;
-	MonoDomain *domain = mono_domain_get ();
-	MonoError error;
-
-	d = (MonoDelegate*)mono_object_new_checked (domain, klass, &error);
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-
-	ji = mono_jit_info_table_find (domain, ftn);
-	if (ji == NULL)
-		mono_raise_exception (mono_get_exception_argument ("", "Function pointer was not created by a Delegate."));
-
-	/* FIXME: discard the wrapper and call the original method */
-	interp_delegate_ctor (domain, (MonoObject*)d, NULL, mono_interp_get_runtime_method (domain, ji->d.method, &error));
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-
-	return d;
+	g_assert (!del->method);
+	del->method = ((RuntimeMethod *) del->method_ptr)->method;
+	g_assert (del->method);
 }
 
 /*
@@ -927,15 +956,6 @@ ves_runtime_method (MonoInvocation *frame, ThreadContext *context)
 	MonoError error;
 
 	mono_class_init (method->klass);
-
-	isinst_obj = mono_object_isinst_checked (obj, mono_defaults.multicastdelegate_class, &error);
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-	if (obj && isinst_obj) {
-		if (*name == '.' && (strcmp (name, ".ctor") == 0)) {
-			interp_delegate_ctor (context->domain, obj, frame->stack_args [1].data.p, frame->stack_args[2].data.p);
-			return;
-		}
-	}
 
 	isinst_obj = mono_object_isinst_checked (obj, mono_defaults.array_class, &error);
 	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
@@ -1778,10 +1798,14 @@ ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context)
 			++sp;
 			ip += 3;
 			MINT_IN_BREAK;
-		MINT_IN_CASE(MINT_POP)
-			++ip;
-			--sp;
+		MINT_IN_CASE(MINT_POP) {
+			guint16 u16 = (* (guint16 *)(ip + 1)) + 1;
+			if (u16 > 1)
+				memmove (sp - u16, sp - 1, (u16 - 1) * sizeof (stackval));
+			sp--;
+			ip += 2;
 			MINT_IN_BREAK;
+		}
 		MINT_IN_CASE(MINT_JMP) {
 			RuntimeMethod *new_method = rtm->data_items [* (guint16 *)(ip + 1)];
 			if (!new_method->transformed) {
@@ -1829,6 +1853,15 @@ ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context)
 			} else if (child_frame.runtime_method->method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) {
 				child_frame.runtime_method = mono_interp_get_runtime_method (context->domain, mono_marshal_get_native_wrapper (child_frame.runtime_method->method, FALSE, FALSE), &error);
 				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
+			}
+
+			if (csignature->hasthis) {
+				MonoObject *this_arg = sp->data.p;
+
+				if (this_arg->vtable->klass->valuetype) {
+					gpointer *unboxed = mono_object_unbox (this_arg);
+					sp [0].data.p = unboxed;
+				}
 			}
 
 			ves_exec_method_with_context (&child_frame, context);
@@ -1910,7 +1943,7 @@ ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context)
 			child_frame.stack_args = sp;
 
 			/* `this' can be NULL for string:.ctor */
-			if (child_frame.runtime_method->hasthis && !child_frame.runtime_method->valuetype && sp->data.p && mono_object_is_transparent_proxy (sp->data.p)) {
+			if (child_frame.runtime_method->hasthis && !child_frame.runtime_method->method->klass->valuetype && sp->data.p && mono_object_is_transparent_proxy (sp->data.p)) {
 				child_frame.runtime_method = mono_interp_get_runtime_method (context->domain, mono_marshal_get_remoting_invoke (child_frame.runtime_method->method), &error);
 				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
 			}
@@ -1945,7 +1978,7 @@ ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context)
 				--sp;
 			child_frame.stack_args = sp;
 
-			if (child_frame.runtime_method->hasthis && !child_frame.runtime_method->valuetype && mono_object_is_transparent_proxy (sp->data.p)) {
+			if (child_frame.runtime_method->hasthis && !child_frame.runtime_method->method->klass->valuetype && mono_object_is_transparent_proxy (sp->data.p)) {
 				child_frame.runtime_method = mono_interp_get_runtime_method (context->domain, mono_marshal_get_remoting_invoke (child_frame.runtime_method->method), &error);
 				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
 			}
@@ -1984,10 +2017,11 @@ ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context)
 				THROW_EX (mono_get_exception_null_reference(), ip - 2);
 			child_frame.runtime_method = get_virtual_method (context->domain, child_frame.runtime_method, this_arg);
 
-			if (this_arg->vtable->klass->valuetype && child_frame.runtime_method->valuetype) {
+			MonoClass *this_class = this_arg->vtable->klass;
+			if (this_class->valuetype && child_frame.runtime_method->method->klass->valuetype) {
 				/* unbox */
 				gpointer *unboxed = mono_object_unbox (this_arg);
-				stackval_from_data (&this_arg->vtable->klass->byval_arg, sp, (char *) unboxed, FALSE);
+				sp [0].data.p = unboxed;
 			}
 
 			ves_exec_method_with_context (&child_frame, context);
@@ -2031,9 +2065,10 @@ ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context)
 				THROW_EX (mono_get_exception_null_reference(), ip - 2);
 			child_frame.runtime_method = get_virtual_method (context->domain, child_frame.runtime_method, this_arg);
 
-			if (this_arg->vtable->klass->valuetype && child_frame.runtime_method->valuetype) {
+			MonoClass *this_class = this_arg->vtable->klass;
+			if (this_class->valuetype && child_frame.runtime_method->method->klass->valuetype) {
 				gpointer *unboxed = mono_object_unbox (this_arg);
-				stackval_from_data (&this_arg->vtable->klass->byval_arg, sp, (char *) unboxed, FALSE);
+				sp [0].data.p = unboxed;
 			}
 
 			ves_exec_method_with_context (&child_frame, context);
@@ -4326,24 +4361,6 @@ interp_ves_icall_get_trace (MonoException *exc, gint32 skip, MonoBoolean need_fi
 	}
 
 	return res;
-}
-
-static MonoObject *
-ves_icall_System_Delegate_CreateDelegate_internal (MonoReflectionType *type, MonoObject *target, MonoReflectionMethod *info)
-{
-	MonoClass *delegate_class = mono_class_from_mono_type (type->type);
-	MonoObject *delegate;
-	MonoError error;
-
-	g_assert (delegate_class->parent == mono_defaults.multicastdelegate_class);
-
-	delegate = mono_object_new_checked (mono_object_domain (type), delegate_class, &error);
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-
-	interp_delegate_ctor (mono_object_domain (type), delegate, target, mono_interp_get_runtime_method (mono_get_root_domain (), info->method, &error));
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-
-	return delegate;
 }
 
 void

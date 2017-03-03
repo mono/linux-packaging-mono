@@ -270,7 +270,7 @@ namespace Mono.Cecil.Cil {
 			var pdb_heap = pdb_metadata.pdb_heap;
 
 			pdb_heap.WriteBytes (module.Mvid.ToByteArray ());
-			pdb_heap.WriteUInt32 (module_metadata.time_stamp);
+			pdb_heap.WriteUInt32 (module_metadata.timestamp);
 
 			pdb_heap.WriteUInt32 (module_metadata.entry_point.ToUInt32 ());
 
@@ -297,10 +297,7 @@ namespace Mono.Cecil.Cil {
 
 		void WriteTableHeap ()
 		{
-			if (module_metadata.string_heap != pdb_metadata.string_heap) {
-				pdb_metadata.table_heap.string_offsets = pdb_metadata.string_heap.WriteStrings ();
-			}
-
+			pdb_metadata.table_heap.string_offsets = pdb_metadata.string_heap.WriteStrings ();
 			pdb_metadata.table_heap.WriteTableHeap ();
 		}
 	}

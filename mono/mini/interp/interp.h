@@ -14,4 +14,9 @@ mono_interp_create_method_pointer (MonoMethod *method, MonoError *error);
 MonoObject*
 mono_interp_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **exc, MonoError *error);
 
+void
+mono_interp_init_delegate (MonoDelegate *del);
+
+void
+interp_walk_stack_with_ctx (MonoInternalStackWalk func, MonoContext *ctx, MonoUnwindOptions options, void *user_data);
 #endif /* __MONO_MINI_INTERPRETER_H__ */
