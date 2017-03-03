@@ -12,6 +12,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.Serialization;
 using System.Threading;
 

@@ -91,7 +91,7 @@
 #endif
 
 #ifdef ENABLE_INTERPRETER
-#include "interpreter/interp.h"
+#include "interp/interp.h"
 #endif
 
 static guint32 default_opt = 0;
@@ -3048,6 +3048,10 @@ mini_init_delegate (MonoDelegate *del)
 {
 	if (mono_llvm_only)
 		del->extra_arg = mini_get_delegate_arg (del->method, del->method_ptr);
+#ifdef ENABLE_INTERPRETER
+	if (mono_use_interpreter)
+		mono_interp_init_delegate (del);
+#endif
 }
 
 char*
