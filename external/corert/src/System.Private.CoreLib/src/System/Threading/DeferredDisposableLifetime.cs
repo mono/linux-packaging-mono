@@ -3,6 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
+#if MONO
+using System.Diagnostics.Private;
+#endif
 
 namespace System.Threading
 {
@@ -45,6 +48,14 @@ namespace System.Threading
         // _count is positive until Dispose is called, after which it's (-1 - refcount).
         //
         private int _count;
+
+#if MONO
+        static DeferredDisposableLifetime()
+        {
+            if (!Environment.IsRunningOnWindows)
+                throw new PlatformNotSupportedException();
+        }
+#endif
 
         public bool AddRef(T obj)
         {

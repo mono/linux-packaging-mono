@@ -15,7 +15,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+#if MONO
 using System.Diagnostics.Private;
+#endif
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;

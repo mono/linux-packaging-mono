@@ -4,6 +4,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+#if MONO
+using System.Diagnostics.Private;
+#endif
 using System.Runtime.InteropServices;
 
 namespace System.Threading
@@ -24,6 +27,14 @@ namespace System.Threading
         private NativeOverlapped _overlapped; // must be first, so we can cast to and from NativeOverlapped.
         private IntPtr _nextFree; // if this instance if free, points to the next free instance.
         private int _dataIndex; // Index in _dataArray of this instance's OverlappedData.
+
+#if MONO
+        static Win32ThreadPoolNativeOverlapped()
+        {
+            if (!Environment.IsRunningOnWindows)
+                throw new PlatformNotSupportedException();
+        }
+#endif
 
         internal OverlappedData Data
         { 
