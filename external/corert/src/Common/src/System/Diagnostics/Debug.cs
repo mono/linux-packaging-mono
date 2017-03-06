@@ -4,7 +4,11 @@
 
 #define DEBUG // Do not remove this, it is needed to retain calls to these conditional methods in release builds
 
+#if MONO
+namespace System.Diagnostics.Private
+#else
 namespace System.Diagnostics
+#endif
 {
     /// <summary>
     /// Provides a set of properties and methods for debugging code.

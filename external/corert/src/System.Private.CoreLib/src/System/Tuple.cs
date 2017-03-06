@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 using System.Collections;
 using System.Collections.Generic;
+#if MONO
 using System.Diagnostics.Private;
+#endif
 using System.Runtime.CompilerServices;
 using System.Text;
 

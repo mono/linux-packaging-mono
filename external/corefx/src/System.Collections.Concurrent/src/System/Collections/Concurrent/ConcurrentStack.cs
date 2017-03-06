@@ -12,7 +12,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+#if MONO
 using System.Diagnostics.Private;
+#endif
 using System.Runtime.Serialization;
 using System.Threading;
 

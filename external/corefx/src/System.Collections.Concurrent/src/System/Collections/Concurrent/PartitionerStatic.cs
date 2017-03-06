@@ -11,7 +11,9 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 using System.Collections.Generic;
+#if MONO
 using System.Diagnostics.Private;
+#endif
 using System.Threading;
 
 namespace System.Collections.Concurrent

@@ -20,7 +20,11 @@ internal static partial class Interop
         internal static extern int HeapFree(IntPtr hHeap, UInt32 dwFlags, IntPtr lpMem);
     }
 
+#if MONO
+    private static IntPtr Windows_MemAlloc(UIntPtr sizeInBytes)
+#else
     internal static IntPtr MemAlloc(UIntPtr sizeInBytes)
+#endif
     {
         IntPtr allocatedMemory = Interop.mincore.HeapAlloc(Interop.mincore.GetProcessHeap(), 0, sizeInBytes);
         if (allocatedMemory == IntPtr.Zero)
@@ -30,7 +34,11 @@ internal static partial class Interop
         return allocatedMemory;
     }
 
+#if MONO
+    private static void Windows_MemFree(IntPtr allocatedMemory)
+#else
     internal static void MemFree(IntPtr allocatedMemory)
+#endif
     {
         Interop.mincore.HeapFree(Interop.mincore.GetProcessHeap(), 0, allocatedMemory);
     }

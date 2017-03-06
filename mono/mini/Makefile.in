@@ -3463,7 +3463,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.1.221/3f3be88\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.1.230/b37a263\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
