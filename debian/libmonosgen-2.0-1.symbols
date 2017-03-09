@@ -268,7 +268,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_domain_try_type_resolve@Base 4.1.0.1738
  mono_domain_try_unload@Base 4.1.0.1738
  mono_domain_unload@Base 4.1.0.1738
- mono_emit_native_call@Base 4.1.0.1738
  mono_environment_exitcode_get@Base 4.1.0.1738
  mono_environment_exitcode_set@Base 4.1.0.1738
  mono_error_cleanup@Base 4.1.0.1738
@@ -477,7 +476,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_init@Base 4.1.0.1738
  mono_init_from_assembly@Base 4.1.0.1738
  mono_init_version@Base 4.1.0.1738
- mono_inst_name@Base 4.1.0.1738
  mono_install_assembly_load_hook@Base 4.1.0.1738
  mono_install_assembly_postload_refonly_search_hook@Base 4.1.0.1738
  mono_install_assembly_postload_search_hook@Base 4.1.0.1738
@@ -774,7 +772,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_register_config_for_assembly@Base 4.1.0.1738
  mono_register_machine_config@Base 4.1.0.1738
  mono_register_symfile_for_assembly@Base 4.1.0.1738
- mono_replace_ins@Base 4.1.0.1738
  mono_runtime_class_init@Base 4.1.0.1738
  mono_runtime_cleanup@Base 4.1.0.1738
  mono_runtime_delegate_invoke@Base 4.1.0.1738
