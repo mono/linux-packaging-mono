@@ -36,18 +36,7 @@ namespace System.Collections.Tests
         {
             IComparer<T> comparer = GetIComparer();
             SortedSet<T> set = new SortedSet<T>(comparer);
-            if (comparer == null)
-                Assert.Equal(Comparer<T>.Default, set.Comparer);
-            else
-                Assert.Equal(comparer, set.Comparer);
-        }
-
-        [Fact]
-        public void SortedSet_Generic_Constructor_IComparer_Null()
-        {
-            IComparer<T> comparer = GetIComparer();
-            SortedSet<T> set = new SortedSet<T>((IComparer<T>)null);
-            Assert.Equal(Comparer<T>.Default, set.Comparer);
+            Assert.Equal(comparer ?? Comparer<T>.Default, set.Comparer);
         }
 
         [Theory]
@@ -72,6 +61,15 @@ namespace System.Collections.Tests
         {
             IEnumerable<T> enumerable = CreateEnumerable(enumerableType, null, enumerableLength, 0, 0);
             SortedSet<T> set = new SortedSet<T>(enumerable, GetIComparer());
+            Assert.True(set.SetEquals(enumerable));
+        }
+
+        [Theory]
+        [MemberData(nameof(EnumerableTestData))]
+        public void SortedSet_Generic_Constructor_IEnumerable_IComparer_NullComparer(EnumerableType enumerableType, int setLength, int enumerableLength, int numberOfMatchingElements, int numberOfDuplicateElements)
+        {
+            IEnumerable<T> enumerable = CreateEnumerable(enumerableType, null, enumerableLength, 0, 0);
+            SortedSet<T> set = new SortedSet<T>(enumerable, comparer: null);
             Assert.True(set.SetEquals(enumerable));
         }
 
@@ -123,9 +121,7 @@ namespace System.Collections.Tests
         {
             if (setLength >= 3)
             {
-                IComparer<T> comparer = GetIComparer();
-                if (comparer == null)
-                    comparer = Comparer<T>.Default;
+                IComparer<T> comparer = GetIComparer() ?? Comparer<T>.Default;
                 SortedSet<T> set = (SortedSet<T>)GenericISetFactory(setLength);
                 T firstElement = set.ElementAt(1);
                 T lastElement = set.ElementAt(setLength - 2);
@@ -147,9 +143,7 @@ namespace System.Collections.Tests
         {
             if (setLength >= 2)
             {
-                IComparer<T> comparer = GetIComparer();
-                if (comparer == null)
-                    comparer = Comparer<T>.Default;
+                IComparer<T> comparer = GetIComparer() ?? Comparer<T>.Default;
                 SortedSet<T> set = (SortedSet<T>)GenericISetFactory(setLength);
                 T firstElement = set.ElementAt(0);
                 T lastElement = set.ElementAt(setLength - 1);
@@ -165,9 +159,7 @@ namespace System.Collections.Tests
             if (setLength >= 3)
             {
                 SortedSet<T> set = (SortedSet<T>)GenericISetFactory(setLength);
-                IComparer<T> comparer = GetIComparer();
-                if (comparer == null)
-                    comparer = Comparer<T>.Default;
+                IComparer<T> comparer = GetIComparer() ?? Comparer<T>.Default;
                 T firstElement = set.ElementAt(0);
                 T middleElement = set.ElementAt(setLength / 2);
                 T lastElement = set.ElementAt(setLength - 1);
@@ -177,6 +169,34 @@ namespace System.Collections.Tests
                     Assert.Throws<ArgumentOutOfRangeException>(() => view.GetViewBetween(middleElement, lastElement));
                 }
             }
+        }
+
+        [Theory]
+        [MemberData(nameof(ValidCollectionSizes))]
+        public void SortedSet_Generic_GetViewBetween_Empty_MinMax(int setLength)
+        {
+            if (setLength < 4) return;
+
+            SortedSet<T> set = (SortedSet<T>)GenericISetFactory(setLength);
+            Assert.Equal(setLength, set.Count);
+
+            T firstElement = set.ElementAt(0);
+            T secondElement = set.ElementAt(1);
+            T nextToLastElement = set.ElementAt(setLength - 2);
+            T lastElement = set.ElementAt(setLength - 1);
+
+            T[] items = set.ToArray();
+            for (int i = 1; i < setLength - 1; i++)
+            {
+                set.Remove(items[i]);
+            }
+            Assert.Equal(2, set.Count);
+
+            SortedSet<T> view = set.GetViewBetween(secondElement, nextToLastElement);
+            Assert.Equal(0, view.Count);
+
+            Assert.Equal(default(T), view.Min);
+            Assert.Equal(default(T), view.Max);
         }
 
         #endregion

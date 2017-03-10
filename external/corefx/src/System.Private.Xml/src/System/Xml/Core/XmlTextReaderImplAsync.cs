@@ -1048,9 +1048,7 @@ namespace System.Xml
             if (_ps.chars == null)
             {
                 int bufferSize;
-#if !ASYNC
-                bufferSize = XmlReader.DefaultBufferSize;
-#else
+
                 if (_laterInitParam != null && _laterInitParam.useAsync)
                 {
                     bufferSize = XmlReader.AsyncBufferSize;
@@ -1059,7 +1057,7 @@ namespace System.Xml
                 {
                     bufferSize = XmlReader.DefaultBufferSize;
                 }
-#endif
+
                 _ps.chars = new char[bufferSize + 1];
             }
 
@@ -5397,7 +5395,7 @@ namespace System.Xml
                     throw;
                 }
                 string innerMessage;
-#if SILVERLIGHT // This is to remove the second "An error occured" from "An error has occurred while opening external entity 'bla.ent': An error occurred."
+#if SILVERLIGHT // This is to remove the second "An error occurred" from "An error has occurred while opening external entity 'bla.ent': An error occurred."
                 innerMessage = string.Empty;
 #else 
                 innerMessage = e.Message;

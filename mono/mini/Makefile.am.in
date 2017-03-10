@@ -538,20 +538,6 @@ endif
 
 regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 
-iregtests = \
-	basic.exe \
-	basic-float.exe \
-	basic-long.exe \
-	basic-calls.exe \
-	objects.exe \
-	arrays.exe \
-	basic-math.exe \
-	exceptions.exe \
-	devirtualization.exe \
-	generics.exe \
-	basic-simd.exe \
-	basic-vectors.exe
-
 if X86
 arch_sources = $(x86_sources)
 arch_built=cpu-x86.h
@@ -761,8 +747,8 @@ rcheck-nunit: mono $(regtests)
 rcheck: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
-richeck: mono $(iregtests)
-	$(INTERP_RUNTIME) --regression $(iregtests)
+richeck: mono $(regtests)
+	$(INTERP_RUNTIME) --regression $(regtests)
 
 if ARM
 check-seq-points:
@@ -913,7 +899,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.1.253/ed12a1d\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.1.314/f2ba124\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

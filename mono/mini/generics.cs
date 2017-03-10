@@ -570,7 +570,6 @@ class Tests
 		}
 	}
 
-	[Category ("!INTERPRETER")]
 	public static int test_0_fullaot_linq () {
 		var allWords = new XElement [] { new XElement { Value = "one" } };
 		var filteredWords = allWords.Where(kw => kw.Value.StartsWith("T"));
@@ -952,7 +951,6 @@ class Tests
 		}
 	}
 
-	[Category ("!INTERPRETER")]
 	[Category ("GSHAREDVT")]
 	static int test_0_synchronized_gshared () {
 		var c = new SyncClass<string> ();
@@ -989,7 +987,6 @@ class Tests
 	}
 
 	// #2155
-	[Category ("!INTERPRETER")]
 	[Category ("GSHAREDVT")]
 	public static int test_0_fullaot_sflda_cctor () {
 		List<Doc> documents = new List<Doc>();
@@ -1015,7 +1012,6 @@ class Tests
     static List<A> sources = new List<A>();
 
 	// #6112
-	[Category ("!INTERPRETER")]
     public static int test_0_fullaot_imt () {
         sources.Add(null);
         sources.Add(null);
@@ -1037,7 +1033,6 @@ class Tests
 	class BClass : AClass {
 	}
 
-	[Category ("!INTERPRETER")]
 	public static int test_0_fullaot_variant_iface () {
 		var arr = new BClass [10];
 		var enumerable = (IEnumerable<AClass>)arr;
@@ -1069,7 +1064,6 @@ class Tests
 		}
 	}
 
-	[Category ("!INTERPRETER")]
 	public static int test_1_regress_constrained_iface_call_7571 () {
         var r = new Record [10];
         Foo2<Record>.Extract (r);
@@ -1080,7 +1074,6 @@ class Tests
 		Val = 1
 	}
 
-	[Category ("!INTERPRETER")]
 	public static int test_0_regress_constrained_iface_call_enum () {
 		var r = new ConstrainedEnum [10];
 		return Foo3<ConstrainedEnum>.CompareTo (r);
@@ -1140,7 +1133,6 @@ class Tests
 	}
 #endif
 
-	[Category ("!INTERPRETER")]
 	public static int test_0_delegate_callvirt_fullaot () {
 		Func<string> f = delegate () { return "A"; };
         var f2 = (Func<Func<string>, string>)Delegate.CreateDelegate (typeof
@@ -1223,7 +1215,6 @@ class Tests
 		return t.GetHashCode ();
 	}
 
-	[Category ("!INTERPRETER")]
 	public static int test_0_constrained_partial_sharing () {
 		string s;
 

@@ -1178,20 +1178,6 @@ regtests_UNIVERSAL = basic.exe basic-float.exe basic-long.exe \
 	basic-simd.exe basic-vectors.exe $(am__append_5)
 regtests_DISABLED = $(am__append_6)
 regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
-iregtests = \
-	basic.exe \
-	basic-float.exe \
-	basic-long.exe \
-	basic-calls.exe \
-	objects.exe \
-	arrays.exe \
-	basic-math.exe \
-	exceptions.exe \
-	devirtualization.exe \
-	generics.exe \
-	basic-simd.exe \
-	basic-vectors.exe
-
 @AMD64_TRUE@arch_sources = $(amd64_sources)
 @ARM64_TRUE@arch_sources = $(arm64_sources)
 @ARM_TRUE@arch_sources = $(arm_sources)
@@ -3383,8 +3369,8 @@ rcheck-nunit: mono $(regtests)
 rcheck: mono $(regtests)
 	$(MINI_RUNTIME) --regression $(regtests)
 
-richeck: mono $(iregtests)
-	$(INTERP_RUNTIME) --regression $(iregtests)
+richeck: mono $(regtests)
+	$(INTERP_RUNTIME) --regression $(regtests)
 
 @ARM_TRUE@check-seq-points:
 @ARM_FALSE@check-seq-points: mono $(regtests)
@@ -3469,7 +3455,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.1.253/ed12a1d\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.1.314/f2ba124\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
