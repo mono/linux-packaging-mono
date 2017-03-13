@@ -60,7 +60,7 @@ by-hand in the control file, eg. "mono-runtime | cli-runtime".
 Before mondis is run, MONO_GAC_PREFIX and MONO_PATH are set to the specified directory (or
 directories -- separate with colons). This is useful for multi-binary packages where a library is
 built in one package and another package contains binaries linked against said library. Relative
-paths will be made absolute for the benefit of monodis.
+paths will be made absolute for the benefit of ikdasm.
 
 Note that the directory given should be the complete or relative path to a directory that contains
 the library. See example below.
@@ -191,15 +191,15 @@ if ($dh{L_PARAMS}) {
 if (defined($dh{INTERNAL_MONO_FLAG}) ||
     (defined($ARGV[0]) && $ARGV[0] eq "internal-mono")) {
     $clr = "mono";
-    $cli_parser = "$pwd/debian/tmp/usr/bin/monodis";
+    $cli_parser = "$pwd/debian/tmp/usr/bin/ikdasm";
     $cli_parser_paths = "LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib MONO_PATH=$mono_path:$pwd/debian/tmp/usr/lib/mono/4.5 MONO_GAC_PREFIX=$mono_gac_prefix ";
     $cli_version = `LD_LIBRARY_PATH=$pwd/debian/tmp/usr/lib $pwd/debian/tmp/usr/bin/mono --version 2>&1`;
-    verbose_print("Will use built Mono (debian/tmp/usr/bin/monodis) for CIL parsing.");
-} elsif (-x "/usr/bin/monodis") {
+    verbose_print("Will use built Mono (debian/tmp/usr/bin/ikdasm) for CIL parsing.");
+} elsif (-x "/usr/bin/ikdasm") {
     $clr = "mono";
-    $cli_parser = "/usr/bin/monodis";
+    $cli_parser = "/usr/bin/ikdasm";
     $cli_parser_paths = "MONO_PATH=$mono_path MONO_GAC_PREFIX=$mono_gac_prefix ";
-    verbose_print("Will use Mono (/usr/bin/monodis) for CIL parsing.");
+    verbose_print("Will use Mono (/usr/bin/ikdasm) for CIL parsing.");
 } elsif (-x "/usr/bin/ildasm") {
     $clr = "pnet";
     $cli_parser = "/usr/share/cli-common/ildasm-monodis";
