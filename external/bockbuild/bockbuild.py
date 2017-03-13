@@ -322,7 +322,6 @@ class Bockbuild:
         fullpath = None
         for i in self.resources:
             candidate_fullpath = os.path.join(i, source + '.py')
-            trace (candidate_fullpath)
             if os.path.exists(candidate_fullpath):
                 if fullpath is not None:
                     error ('Package "%s" resolved in multiple locations (search paths: %s' % (source, self.resources))
@@ -333,6 +332,7 @@ class Bockbuild:
 
         Package.last_instance = None
 
+        trace(fullpath)
         execfile(fullpath, globals())
 
         if Package.last_instance is None:

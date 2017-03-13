@@ -70,7 +70,7 @@ class DarwinProfile (UnixProfile):
         if xcode_version < StrictVersion(min_version):
             error('Xcode version required %s, installed %s' % (min_version, xcode_version))
 
-        self.env.set('xcode_version', xcode_version)
+        self.env.set('xcode_version', str(xcode_version))
         return xcode_version
 
     def attach (self, bockbuild):
