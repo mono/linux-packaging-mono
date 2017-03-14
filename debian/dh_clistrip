@@ -19,7 +19,7 @@ B<dh_clistrip> [S<I<debhelper options>>] [B<-X>I<item>] [--dbg-package=package]
 dh_clistrip is a debhelper program that removes debug symbols from
 CLI libraries and applications.
 
-dh_clistrip deletes all *.exe.mdb and *.dll.mdb files.
+dh_clistrip deletes all *.pdb, *.exe.mdb and *.dll.mdb files.
 
 =head1 OPTIONS
 
@@ -68,7 +68,7 @@ foreach my $package (@{$dh{DOPACKAGES}}) {
 		foreach my $exclude (@{$dh{EXCLUDE}}) {  
 			return if /$exclude/;
 		}
-		return unless -f && /\.(exe|dll)\.mdb$/;
+		return unless -f && /\.(((exe|dll)\.mdb)|pdb)$/;
         	
 		my $file = $_;
 		my $dir = $File::Find::dir;
