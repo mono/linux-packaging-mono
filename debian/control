@@ -171,6 +171,7 @@ Depends: ${misc:Depends},
          mono-jay (= ${binary:Version}),
          mono-devel (= ${source:Version}),
          mono-mcs (= ${source:Version}),
+         mono-roslyn (= ${source:Version}),
          mono-csharp-shell (= ${source:Version}),
          mono-4.0-gac (= ${source:Version}),
          mono-4.0-service (= ${source:Version}),
@@ -2591,6 +2592,57 @@ Description: Mono C# 2.0 / 3.0 / 4.0 / 5.0  compiler for CLI 2.0 / 4.0 / 4.5
  runtime, which can produce and execute CIL (Common Intermediate Language)
  bytecode (aka assemblies), and a class library.
 
+Package: mono-roslyn
+Architecture: all
+Depends: ${misc:Depends},
+         ${cli:Depends},
+         libmono-corlib4.5-cil (>= ${mono:upversion}),
+         libmono-corlib4.5-cil (<< ${mono:next-upversion})
+Recommends: pkg-config
+Description: Microsoft C# compiler
+ This is the Microsoft C# (C-Sharp) compiler,
+ a platform-independent compiler which produces
+ CIL (Common Intermediate Language) binary executables.
+ .
+ This compiler targets the CLI 2.0, 4.0 or 4.5 runtime version.
+ .
+ The csc compiler supports different C# versions as follows.
+ With C# 2.0 it supports:
+  - generics
+  - iterators (yield)
+  - nullable value types
+  - partial types
+  - anonymous methods
+  - static classes
+  - coalesce operator: ??
+ .
+ With C# 3.0 it supports:
+  - Language Integrated Query (LINQ)
+  - object initializers
+  - collection initializers
+  - anonymous types
+  - local variable type inference
+  - implicitly-typed arrays
+  - lambda expressions
+  - automatic properties
+  - extension methods
+  - partial methods
+ .
+ With C# 4.0 it supports:
+  - dynamic binding (duck typing)
+  - named and optional arguments
+  - covariant and contravariant generic type parameters
+ .
+ With C# 5.0 (which is the default) it supports:
+  - asynchronous methods
+  - caller info attributes (as of Mono 3.0 currently not supported!)
+ .
+ Mono is a platform for running and developing applications based on the
+ ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
+ Mono provides a complete CLR (Common Language Runtime) including compiler and
+ runtime, which can produce and execute CIL (Common Intermediate Language)
+ bytecode (aka assemblies), and a class library.
+
 Package: mono-dmcs
 Architecture: all
 Depends: ${misc:Depends},
@@ -2993,6 +3045,7 @@ Recommends: mono-csharp-shell
 Depends: ${misc:Depends},
          ${cli:Depends},
          mono-mcs (= ${source:Version}),
+         mono-roslyn (= ${source:Version}),
          mono-gac (= ${source:Version}),
          mono-xbuild (= ${source:Version}),
          libmono-cil-dev (= ${source:Version}),
