@@ -1,5 +1,6 @@
 debian/tmp/usr/bin/xbuild
 debian/tmp/usr/lib/mono/4.5/xbuild.exe*
+debian/tmp/usr/lib/mono/4.5/xbuild.pdb
 debian/tmp/usr/lib/mono/4.5/xbuild.rsp
 debian/tmp/usr/lib/mono/4.5/Microsoft.*.targets
 debian/tmp/usr/lib/mono/4.5/Microsoft.*.tasks

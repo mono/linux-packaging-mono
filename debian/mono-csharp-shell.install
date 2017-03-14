@@ -1,2 +1,3 @@
 /usr/bin/csharp
 /usr/lib/mono/4.5/csharp.exe*
+/usr/lib/mono/4.5/csharp.pdb
