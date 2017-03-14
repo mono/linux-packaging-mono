@@ -2604,39 +2604,6 @@ Description: Microsoft C# compiler
  a platform-independent compiler which produces
  CIL (Common Intermediate Language) binary executables.
  .
- This compiler targets the CLI 2.0, 4.0 or 4.5 runtime version.
- .
- The csc compiler supports different C# versions as follows.
- With C# 2.0 it supports:
-  - generics
-  - iterators (yield)
-  - nullable value types
-  - partial types
-  - anonymous methods
-  - static classes
-  - coalesce operator: ??
- .
- With C# 3.0 it supports:
-  - Language Integrated Query (LINQ)
-  - object initializers
-  - collection initializers
-  - anonymous types
-  - local variable type inference
-  - implicitly-typed arrays
-  - lambda expressions
-  - automatic properties
-  - extension methods
-  - partial methods
- .
- With C# 4.0 it supports:
-  - dynamic binding (duck typing)
-  - named and optional arguments
-  - covariant and contravariant generic type parameters
- .
- With C# 5.0 (which is the default) it supports:
-  - asynchronous methods
-  - caller info attributes (as of Mono 3.0 currently not supported!)
- .
  Mono is a platform for running and developing applications based on the
  ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
  Mono provides a complete CLR (Common Language Runtime) including compiler and
