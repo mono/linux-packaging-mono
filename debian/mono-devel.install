@@ -16,7 +16,6 @@ debian/tmp/usr/bin/installvst
 debian/tmp/usr/bin/lc
 debian/tmp/usr/bin/macpack
 debian/tmp/usr/bin/makecert
-debian/tmp/usr/bin/mdb2ppdb
 debian/tmp/usr/bin/mdbrebase
 debian/tmp/usr/bin/mkbundle
 debian/tmp/usr/bin/mono-api-info
@@ -94,8 +93,6 @@ debian/tmp/usr/lib/mono/4.5/makecert.exe*
 debian/tmp/usr/lib/mono/4.5/makecert.pdb
 debian/tmp/usr/lib/mono/4.5/mconfig.exe*
 debian/tmp/usr/lib/mono/4.5/mconfig.pdb
-debian/tmp/usr/lib/mono/4.5/mdb2ppdb.exe*
-debian/tmp/usr/lib/mono/4.5/mdb2ppdb.pdb
 debian/tmp/usr/lib/mono/4.5/mdbrebase.exe*
 debian/tmp/usr/lib/mono/4.5/mdbrebase.pdb
 debian/tmp/usr/lib/mono/4.5/mkbundle.exe*
