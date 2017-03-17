@@ -36,7 +36,7 @@
 
 /* trim excessive headers */
 #include <mono/metadata/image.h>
-#include <mono/metadata/assembly.h>
+#include <mono/metadata/assembly-internals.h>
 #include <mono/metadata/cil-coff.h>
 #include <mono/metadata/mono-endian.h>
 #include <mono/metadata/tabledefs.h>
@@ -253,26 +253,23 @@ ves_real_abort (int line, MonoMethod *mh,
 		THROW_EX (mono_get_exception_execution_engine (NULL), ip); \
 	} while (0);
 
-static mono_mutex_t runtime_method_lookup_section;
-
 RuntimeMethod*
 mono_interp_get_runtime_method (MonoDomain *domain, MonoMethod *method, MonoError *error)
 {
 	RuntimeMethod *rtm;
 	error_init (error);
 
-	mono_os_mutex_lock (&runtime_method_lookup_section);
+	mono_domain_jit_code_hash_lock (domain);
 	if ((rtm = mono_internal_hash_table_lookup (&domain->jit_code_hash, method))) {
-		mono_os_mutex_unlock (&runtime_method_lookup_section);
+		mono_domain_jit_code_hash_unlock (domain);
 		return rtm;
 	}
-	rtm = mono_mempool_alloc (domain->mp, sizeof (RuntimeMethod));
-	memset (rtm, 0, sizeof (*rtm));
+	rtm = mono_domain_alloc0 (domain, sizeof (RuntimeMethod));
 	rtm->method = method;
 	rtm->param_count = mono_method_signature (method)->param_count;
 	rtm->hasthis = mono_method_signature (method)->hasthis;
 	mono_internal_hash_table_insert (&domain->jit_code_hash, method, rtm);
-	mono_os_mutex_unlock (&runtime_method_lookup_section);
+	mono_domain_jit_code_hash_unlock (domain);
 
 	return rtm;
 }
@@ -328,6 +325,11 @@ get_virtual_method (MonoDomain *domain, RuntimeMethod *runtime_method, MonoObjec
 		virtual_method = mono_class_inflate_generic_method_checked (virtual_method, &context, &error);
 		mono_error_cleanup (&error); /* FIXME: don't swallow the error */
 	}
+
+	if (virtual_method->iflags & METHOD_IMPL_ATTRIBUTE_SYNCHRONIZED) {
+		virtual_method = mono_marshal_get_synchronized_wrapper (virtual_method);
+	}
+
 	RuntimeMethod *virtual_runtime_method = mono_interp_get_runtime_method (domain, virtual_method, &error);
 	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
 	return virtual_runtime_method;
@@ -1228,6 +1230,8 @@ mono_interp_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoOb
 	jmp_buf env;
 
 	error_init (error);
+	if (exc)
+		*exc = NULL;
 
 	frame.ex = NULL;
 
@@ -1331,6 +1335,7 @@ handle_enum:
 		case MONO_TYPE_ARRAY:
 		case MONO_TYPE_SZARRAY:
 		case MONO_TYPE_OBJECT:
+		case MONO_TYPE_GENERICINST:
 			args [a_index].data.p = params [i];
 			break;
 		default:
@@ -1463,27 +1468,35 @@ static mono_mutex_t create_method_pointer_mutex;
 
 static GHashTable *method_pointer_hash = NULL;
 
-static MonoMethod *method_pointers [2] = {0};
+#define TRAMPS_USED 8
 
-static MonoObject *
-mp_tramp_0 (MonoObject *this_obj, void **params, MonoObject **exc, void *compiled_method) {
-	MonoError error;
-	void *params_real[] = {this_obj, &params, &exc, &compiled_method};
-	MonoObject *ret = mono_interp_runtime_invoke (method_pointers [0], NULL, params_real, NULL, &error);
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-	return ret;
-}
+static MonoMethod *method_pointers [TRAMPS_USED] = {0};
 
-static MonoObject *
-mp_tramp_1 (MonoObject *this_obj, void **params, MonoObject **exc, void *compiled_method) {
-	MonoError error;
-	void *params_real[] = {this_obj, &params, &exc, &compiled_method};
-	MonoObject *ret = mono_interp_runtime_invoke (method_pointers [1], NULL, params_real, NULL, &error);
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-	return ret;
-}
+#define GEN_METHOD_PTR_TRAMP(num) \
+		static MonoObject * mp_tramp_ ## num (MonoObject *this_obj, void **params, MonoObject **exc, void *compiled_method) { \
+			MonoError error; \
+			void *params_real[] = {this_obj, &params, &exc, &compiled_method}; \
+			MonoObject *ret = mono_interp_runtime_invoke (method_pointers [num], NULL, params_real, NULL, &error); \
+			mono_error_cleanup (&error); \
+			return ret; \
+		}
 
-gpointer *mp_tramps[] = {(gpointer) mp_tramp_0, (gpointer) mp_tramp_1};
+
+GEN_METHOD_PTR_TRAMP (0);
+GEN_METHOD_PTR_TRAMP (1);
+GEN_METHOD_PTR_TRAMP (2);
+GEN_METHOD_PTR_TRAMP (3);
+GEN_METHOD_PTR_TRAMP (4);
+GEN_METHOD_PTR_TRAMP (5);
+GEN_METHOD_PTR_TRAMP (6);
+GEN_METHOD_PTR_TRAMP (7);
+
+#undef GEN_METHOD_PTR_TRAMP
+
+gpointer *mp_tramps[TRAMPS_USED] = {
+	(gpointer) mp_tramp_0, (gpointer) mp_tramp_1, (gpointer) mp_tramp_2, (gpointer) mp_tramp_3,
+	(gpointer) mp_tramp_4, (gpointer) mp_tramp_5, (gpointer) mp_tramp_6, (gpointer) mp_tramp_7
+};
 
 static int tramps_used = 0;
 
@@ -1519,7 +1532,7 @@ mono_interp_create_method_pointer (MonoMethod *method, MonoError *error)
 	}		
 	else {
 		g_assert (method->wrapper_type == MONO_WRAPPER_RUNTIME_INVOKE);
-		g_assert (tramps_used < 2);
+		g_assert (tramps_used < TRAMPS_USED);
 
 		/* FIXME: needs locking */
 		method_pointers [tramps_used] = method;
@@ -3780,13 +3793,6 @@ array_constructed:
 			MINT_IN_BREAK;
 		}
 
-		MINT_IN_CASE(MINT_LDTHISA)
-			g_error ("should not happen");
-			// sp->data.p = &frame->obj;
-			++ip;
-			++sp; 
-			MINT_IN_BREAK;
-
 #define LDARG(datamem, argtype) \
 	sp->data.datamem = * (argtype *)(frame->args + * (guint16 *)(ip + 1)); \
 	ip += 2; \
@@ -4377,7 +4383,6 @@ mono_interp_init ()
 {
 	mono_native_tls_alloc (&thread_context_id, NULL);
     mono_native_tls_set_value (thread_context_id, NULL);
-	mono_os_mutex_init_recursive (&runtime_method_lookup_section);
 	mono_os_mutex_init_recursive (&create_method_pointer_mutex);
 
 	mono_interp_transform_init ();
@@ -4398,16 +4403,6 @@ interp_regression_step (MonoImage *image, int verbose, int *total_run, int *tota
 	g_print ("Test run: image=%s\n", mono_image_get_filename (image));
 	cfailed = failed = run = 0;
 	transform_time = elapsed = 0.0;
-
-#if 0
-	/* fixme: ugly hack - delete all previously compiled methods */
-	if (domain_jit_info (domain)) {
-		g_hash_table_destroy (domain_jit_info (domain)->jit_trampoline_hash);
-		domain_jit_info (domain)->jit_trampoline_hash = g_hash_table_new (mono_aligned_addr_hash, NULL);
-		mono_internal_hash_table_destroy (&(domain->jit_code_hash));
-		mono_jit_code_hash_init (&(domain->jit_code_hash));
-	}
-#endif
 
 	g_timer_start (timer);
 	for (i = 0; i < mono_image_get_table_rows (image, MONO_TABLE_METHOD); ++i) {
@@ -4540,7 +4535,7 @@ mono_interp_regression_list (int verbose, int count, char *images [])
 	
 	total_run = total = 0;
 	for (i = 0; i < count; ++i) {
-		MonoAssembly *ass = mono_assembly_open (images [i], NULL);
+		MonoAssembly *ass = mono_assembly_open_predicate (images [i], FALSE, FALSE, NULL, NULL, NULL);
 		if (!ass) {
 			g_warning ("failed to load assembly: %s", images [i]);
 			continue;

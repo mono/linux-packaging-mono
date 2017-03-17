@@ -897,6 +897,7 @@ extra_runtime_ldflags
 reloc_libdir
 libmono_ldflags
 libmono_cflags
+MONO_CORLIB_VERSION
 LN_S
 API_VER
 MAINT
@@ -1046,7 +1047,7 @@ enable_llvm_runtime
 with_llvm
 enable_vtune
 with_vtune
-with_interpreter
+enable_interpreter
 with_sgen
 with_sgen_default_concurrent
 with_x
@@ -1746,6 +1747,7 @@ Optional Features:
   --enable-llvm-version-check Check that the LLVM matches the version expected by mono
   --enable-llvm-runtime	Enable runtime support for llvmonly code
   --enable-vtune	Enable the VTUNE back-end
+  --enable-interpreter       Enable Interpreter
   --enable-icall-symbol-map Generate tables which map icall functions to their C symbols
   --enable-icall-export Export icall functions
   --disable-icall-tables Disable the runtime lookup of icalls
@@ -1791,7 +1793,6 @@ Optional Packages:
   --with-cross-offsets=<offsets file path>    Explicit AOT cross offsets file
   --with-llvm=<llvm prefix>    Enable the LLVM back-end
   --with-vtune=<vtune prefix>	Enable jit vtune profiling
-  --with-interpreter=yes|no       Interpreter, default=no
   --with-sgen=yes,no             Extra Generational GC, default=yes
   --with-sgen-default-concurrent=yes,no             Use Concurrent GC, default=no
   --with-x                use the X Window System
@@ -3985,6 +3986,28 @@ else
   AM_DEFAULT_V=$AM_DEFAULT_VERBOSITY
 fi
 AM_BACKSLASH='\'
+
+
+MONO_VERSION_MAJOR=`echo $VERSION | cut -d . -f 1`
+MONO_VERSION_MINOR=`echo $VERSION | cut -d . -f 2`
+MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
+
+# This is the version number of the corlib-runtime interface. When
+# making changes to this interface (by changing the layout
+# of classes the runtime knows about, changing icall signature or
+# semantics etc), increment this variable.
+#
+# This can be reset to 0 when Mono's version number is bumped
+# since it's part of the corlib version (the prefix '1' in the full
+# version number is to ensure the number isn't treated as octal in C)
+MONO_CORLIB_COUNTER=0
+MONO_CORLIB_VERSION=`printf "1%02d%02d%02d%03d" $MONO_VERSION_MAJOR $MONO_VERSION_MINOR $MONO_VERSION_BUILD $MONO_CORLIB_COUNTER`
+
+
+cat >>confdefs.h <<_ACEOF
+#define MONO_CORLIB_VERSION $MONO_CORLIB_VERSION
+_ACEOF
+
 
 
 case $host_os in
@@ -27043,23 +27066,21 @@ $as_echo "#define HAVE_DEPRECATED 1" >>confdefs.h
 
 fi
 
-
-# Check whether --with-interpreter was given.
-if test "${with_interpreter+set}" = set; then :
-  withval=$with_interpreter; buildinterpreter=$with_interpreter
+# Check whether --enable-interpreter was given.
+if test "${enable_interpreter+set}" = set; then :
+  enableval=$enable_interpreter; enable_interpreter=$enableval
 else
-  buildinterpreter=no
+  enable_interpreter=no
 fi
 
-if test "x$buildinterpreter" = "xyes"; then
+
+if test "x$enable_interpreter" = "xyes"; then
 
 $as_echo "#define ENABLE_INTERPRETER 1" >>confdefs.h
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: Enable interpreter in the runtime." >&5
-$as_echo "$as_me: Enable interpreter in the runtime." >&6;}
 fi
 
- if test x$buildinterpreter != xno; then
+ if test x$enable_interpreter = xyes; then
   ENABLE_INTERPRETER_TRUE=
   ENABLE_INTERPRETER_FALSE='#'
 else
@@ -28349,7 +28370,7 @@ ac_config_commands="$ac_config_commands quiet-libtool"
 ac_config_commands="$ac_config_commands nolock-libtool"
 
 
-ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/btls/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile tools/pedump/Makefile runtime/Makefile msvc/Makefile po/Makefile"
+ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/btls/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/assemblyresolve/Makefile mono/tests/gc-descriptors/Makefile mono/tests/testing_gac/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile tools/pedump/Makefile runtime/Makefile msvc/Makefile po/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -29779,6 +29800,7 @@ do
     "mono/tests/tests-config") CONFIG_FILES="$CONFIG_FILES mono/tests/tests-config" ;;
     "mono/tests/assemblyresolve/Makefile") CONFIG_FILES="$CONFIG_FILES mono/tests/assemblyresolve/Makefile" ;;
     "mono/tests/gc-descriptors/Makefile") CONFIG_FILES="$CONFIG_FILES mono/tests/gc-descriptors/Makefile" ;;
+    "mono/tests/testing_gac/Makefile") CONFIG_FILES="$CONFIG_FILES mono/tests/testing_gac/Makefile" ;;
     "mono/unit-tests/Makefile") CONFIG_FILES="$CONFIG_FILES mono/unit-tests/Makefile" ;;
     "mono/benchmark/Makefile") CONFIG_FILES="$CONFIG_FILES mono/benchmark/Makefile" ;;
     "mono/mini/Makefile") CONFIG_FILES="$CONFIG_FILES mono/mini/Makefile" ;;
@@ -31808,6 +31830,7 @@ fi
     }')
 
     echo "MONO_VERSION = $myver" >> $mcs_topdir/build/config.make
+    echo "MONO_CORLIB_VERSION = $MONO_CORLIB_VERSION" >> $mcs_topdir/build/config.make
 
     if test x$host_darwin = xyes; then
       echo "PLATFORM = darwin" >> $mcs_topdir/build/config.make
@@ -31886,7 +31909,7 @@ echo "
 	BigArrays:     $enable_big_arrays
 	DTrace:        $enable_dtrace
 	LLVM Back End: $enable_llvm (dynamically loaded: $enable_loadedllvm)
-	Interpreter:   $buildinterpreter
+	Interpreter:   $enable_interpreter
 
    Libraries:
 	.NET 4.x:        $with_profile4_x

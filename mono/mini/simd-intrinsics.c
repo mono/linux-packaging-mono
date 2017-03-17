@@ -1028,13 +1028,15 @@ type_to_pmul_op (MonoType *t)
 	case MONO_TYPE_U4:
 	case MONO_TYPE_I4:
 		return OP_PMULD;
-	case MONO_TYPE_U8:
-	case MONO_TYPE_I8:
-		return OP_PMULQ;
 	case MONO_TYPE_R4:
 		return OP_MULPS;
 	case MONO_TYPE_R8:
 		return OP_MULPD;
+	case MONO_TYPE_U8:
+		/* PMULQ multiplies two 32 bit numbers into a 64 bit one */
+		return -1;
+	case MONO_TYPE_I8:
+		return -1;
 	default:
 		break;
 	}
@@ -1959,6 +1961,7 @@ emit_vector_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignatu
 {
 	const SimdIntrinsic *intrins;
 	MonoMethodSignature *sig = mono_method_signature (cmethod);
+	MonoType *type = &cmethod->klass->byval_arg;
 
 	/*
 	 * Vector2/3/4 are handled the same way, since the underlying SIMD type is the same (4 * r4).
@@ -1976,16 +1979,26 @@ emit_vector_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignatu
 	}
 
 	switch (intrins->name) {
-	case SN_ctor:
+	case SN_ctor: {
+		gboolean match = TRUE;
+		for (int i = 0; i < fsig->param_count; ++i)
+			if (fsig->params [i]->type != MONO_TYPE_R4)
+				match = FALSE;
+		if (!match)
+			break;
 		return simd_intrinsic_emit_ctor (intrins, cfg, cmethod, args);
-		break;
+	}
 	case SN_Equals:
+		if (!(fsig->param_count == 1 && fsig->ret->type == MONO_TYPE_BOOLEAN && fsig->params [0] == type))
+			break;
 		return simd_intrinsic_emit_equality (intrins, cfg, cmethod, args);
-		break;
 	case SN_SquareRoot:
+		if (!(fsig->param_count == 1 && fsig->ret == type && fsig->params [0] == type))
+			break;
 		return simd_intrinsic_emit_unary (intrins, cfg, cmethod, args);
-		break;
 	case SN_Dot:
+		if (!(fsig->param_count == 2 && fsig->ret->type == MONO_TYPE_R4 && fsig->params [0] == type && fsig->params [1] == type))
+			break;
 		if (COMPILE_LLVM (cfg)) {
 			MonoInst *ins;
 
@@ -1998,6 +2011,9 @@ emit_vector_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignatu
 		// abs(x) = max(x, sub(0,x))
 		MonoInst *sub;
 		MonoInst *zero;
+
+		if (!(fsig->param_count == 1 && fsig->ret == type && fsig->params [0] == type))
+			break;
 
 		MONO_INST_NEW (cfg, zero, OP_XZERO);
 		zero->dreg = alloc_xreg (cfg);
@@ -2013,11 +2029,18 @@ emit_vector_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignatu
 	case SN_op_Division:
 	case SN_op_Multiply:
 	case SN_op_Subtraction:
+		if (!(fsig->param_count == 2 && fsig->ret == type && (fsig->params [0] == type || fsig->params [0]->type == MONO_TYPE_R4) && (fsig->params [1] == type || fsig->params [1]->type == MONO_TYPE_R4)))
+			break;
 		return simd_intrinsic_emit_binary (intrins, cfg, cmethod, args);
 	default:
 		break;
 	}
 
+	if (cfg->verbose_level > 1) {
+		char *name = mono_method_full_name (cmethod, TRUE);
+		printf ("  SIMD method %s not handled.\n", name);
+		g_free (name);
+	}
 	return NULL;
 }
 
@@ -2045,7 +2068,7 @@ static MonoInst*
 emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature *fsig, MonoInst **args)
 {
 	const SimdIntrinsic *intrins;
-	MonoType *etype;
+	MonoType *type, *etype;
 	MonoInst *ins;
 	int size, len, index;
 
@@ -2055,6 +2078,7 @@ emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 		return NULL;
 	}
 
+	type = &cmethod->klass->byval_arg;
 	etype = mono_class_get_context (cmethod->klass)->class_inst->type_argv [0];
 	size = mono_class_value_size (mono_class_from_mono_type (etype), NULL);
 	g_assert (size);
@@ -2071,10 +2095,14 @@ emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 
 	switch (intrins->name) {
 	case SN_get_Count:
+		if (!(fsig->param_count == 0 && fsig->ret->type == MONO_TYPE_I4))
+			break;
 		EMIT_NEW_ICONST (cfg, ins, len);
 		return ins;
 	case SN_get_AllOnes:
 	case SN_get_Zero:
+		if (!(fsig->param_count == 0 && mono_metadata_type_equal (fsig->ret, type)))
+			break;
 		return simd_intrinsic_emit_const (intrins, cfg, cmethod, args);
 	case SN_get_Item:
 		g_assert (fsig->param_count == 1);
@@ -2122,9 +2150,9 @@ emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 	case SN_op_Explicit:
 		return simd_intrinsic_emit_cast (intrins, cfg, cmethod, args);
 	case SN_Equals:
-		if (fsig->param_count == 1)
+		if (fsig->param_count == 1 && fsig->ret->type == MONO_TYPE_BOOLEAN && mono_metadata_type_equal (fsig->params [0], type))
 			return simd_intrinsic_emit_equality_op (cfg, cmethod, args, type_to_comp_op (etype), SIMD_COMP_EQ);
-		if (fsig->param_count == 2)
+		if (fsig->param_count == 2 && fsig->ret->type == MONO_TYPE_BOOLEAN && mono_metadata_type_equal (fsig->params [0], type) && mono_metadata_type_equal (fsig->params [1], type))
 			return simd_intrinsic_emit_binary_op (cfg, type_to_comp_op (etype), 0, cmethod->klass, fsig->params [0], fsig->params [1], args [0], args [1]);
 		break;
 
@@ -2150,15 +2178,15 @@ emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 		switch (intrins->name) {
 		case SN_GreaterThan:
 			return simd_intrinsic_emit_binary_op (cfg, gt_op, 0, cmethod->klass, fsig->params [0], fsig->params [1], args [0], args [1]);
-		case SN_LessThanOrEqual:
+		case SN_LessThan:
 			return simd_intrinsic_emit_binary_op (cfg, gt_op, 0, cmethod->klass, fsig->params [0], fsig->params [1], args [1], args [0]);
+		case SN_LessThanOrEqual:
+			cmp1 = simd_intrinsic_emit_binary_op (cfg, eq_op, 0, cmethod->klass, fsig->params [0], fsig->params [1], args [1], args [0]);
+			cmp2 = simd_intrinsic_emit_binary_op (cfg, gt_op, 0, cmethod->klass, fsig->params [0], fsig->params [1], args [1], args [0]);
+			return simd_intrinsic_emit_binary_op (cfg, OP_POR, 0, cmethod->klass, fsig->params [0], fsig->params [1], cmp1, cmp2);
 		case SN_GreaterThanOrEqual:
 			cmp1 = simd_intrinsic_emit_binary_op (cfg, eq_op, 0, cmethod->klass, fsig->params [0], fsig->params [1], args [0], args [1]);
 			cmp2 = simd_intrinsic_emit_binary_op (cfg, gt_op, 0, cmethod->klass, fsig->params [0], fsig->params [1], args [0], args [1]);
-			return simd_intrinsic_emit_binary_op (cfg, OP_POR, 0, cmethod->klass, fsig->params [0], fsig->params [1], cmp1, cmp2);
-		case SN_LessThan:
-			cmp1 = simd_intrinsic_emit_binary_op (cfg, eq_op, 0, cmethod->klass, fsig->params [0], fsig->params [1], args [1], args [0]);
-			cmp2 = simd_intrinsic_emit_binary_op (cfg, gt_op, 0, cmethod->klass, fsig->params [0], fsig->params [1], args [1], args [0]);
 			return simd_intrinsic_emit_binary_op (cfg, OP_POR, 0, cmethod->klass, fsig->params [0], fsig->params [1], cmp1, cmp2);
 		default:
 			g_assert_not_reached ();
@@ -2187,26 +2215,29 @@ emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 			break;
 		}
 		break;
-	case SN_op_Addition: {
-		int op = type_to_padd_op (etype);
-		if (op != -1)
-			return simd_intrinsic_emit_binary_op (cfg, op, 0, cmethod->klass, fsig->params [0], fsig->params [0], args [0], args [1]);
-		break;
-	}
-	case SN_op_Subtraction: {
-		int op = type_to_psub_op (etype);
-		if (op != -1)
-			return simd_intrinsic_emit_binary_op (cfg, op, 0, cmethod->klass, fsig->params [0], fsig->params [0], args [0], args [1]);
-		break;
-	}
-	case SN_op_Multiply: {
-		int op = type_to_pmul_op (etype);
-		if (op != -1)
-			return simd_intrinsic_emit_binary_op (cfg, op, 0, cmethod->klass, fsig->params [0], fsig->params [0], args [0], args [1]);
-		break;
-	}
-	case SN_op_Division: {
-		int op = type_to_pdiv_op (etype);
+	case SN_op_Addition:
+	case SN_op_Subtraction:
+	case SN_op_Multiply:
+ 	case SN_op_Division: {
+		if (!(fsig->param_count == 2 && mono_metadata_type_equal (fsig->ret, fsig->params [0]) && mono_metadata_type_equal (fsig->params [0], fsig->params [1])))
+			break;
+		int op = 0;
+		switch (intrins->name) {
+		case SN_op_Addition:
+			op = type_to_padd_op (etype);
+			break;
+		case SN_op_Subtraction:
+			op = type_to_psub_op (etype);
+			break;
+		case SN_op_Multiply:
+			op = type_to_pmul_op (etype);
+			break;
+		case SN_op_Division:
+			op = type_to_pdiv_op (etype);
+			break;
+		default:
+			g_assert_not_reached ();
+		}
 		if (op != -1)
 			return simd_intrinsic_emit_binary_op (cfg, op, 0, cmethod->klass, fsig->params [0], fsig->params [0], args [0], args [1]);
 		break;
@@ -2241,6 +2272,12 @@ emit_vector_t_intrinsics (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSigna
 	}
 	default:
 		break;
+	}
+
+	if (cfg->verbose_level > 1) {
+		char *name = mono_method_full_name (cmethod, TRUE);
+		printf ("  SIMD method %s not handled.\n", name);
+		g_free (name);
 	}
 
 	return NULL;

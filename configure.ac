@@ -29,6 +29,24 @@ AC_PROG_LN_S
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+MONO_VERSION_MAJOR=`echo $VERSION | cut -d . -f 1`
+MONO_VERSION_MINOR=`echo $VERSION | cut -d . -f 2`
+MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
+
+# This is the version number of the corlib-runtime interface. When
+# making changes to this interface (by changing the layout
+# of classes the runtime knows about, changing icall signature or
+# semantics etc), increment this variable.
+#
+# This can be reset to 0 when Mono's version number is bumped
+# since it's part of the corlib version (the prefix '1' in the full
+# version number is to ensure the number isn't treated as octal in C)
+MONO_CORLIB_COUNTER=0
+MONO_CORLIB_VERSION=`printf "1%02d%02d%02d%03d" $MONO_VERSION_MAJOR $MONO_VERSION_MINOR $MONO_VERSION_BUILD $MONO_CORLIB_COUNTER`
+
+AC_DEFINE_UNQUOTED(MONO_CORLIB_VERSION,$MONO_CORLIB_VERSION,[Version of the corlib-runtime interface])
+AC_SUBST(MONO_CORLIB_VERSION)
+
 case $host_os in
 *cygwin* )
 		 echo "Run configure using ./configure --host=i686-pc-mingw32"
@@ -3609,13 +3627,13 @@ if test "x$have_deprecated" = "xyes"; then
    AC_DEFINE(HAVE_DEPRECATED, 1, [Support for the deprecated attribute])
 fi
 
-AC_ARG_WITH(interpreter, [  --with-interpreter=yes|no       Interpreter, default=no],[buildinterpreter=$with_interpreter],[buildinterpreter=no])
-if test "x$buildinterpreter" = "xyes"; then
-    AC_DEFINE(ENABLE_INTERPRETER, 1, [Enable interpreter in the runtime.])
-    AC_MSG_NOTICE([Enable interpreter in the runtime.])
+AC_ARG_ENABLE(interpreter, [  --enable-interpreter       Enable Interpreter], enable_interpreter=$enableval, enable_interpreter=no)
+
+if test "x$enable_interpreter" = "xyes"; then
+	AC_DEFINE(ENABLE_INTERPRETER, 1, [Enable Interpreter])
 fi
 
-AM_CONDITIONAL([ENABLE_INTERPRETER], [test x$buildinterpreter != xno])
+AM_CONDITIONAL(ENABLE_INTERPRETER, [test x$enable_interpreter = xyes])
 
 
 dnl 
@@ -4425,6 +4443,7 @@ mono/tests/Makefile
 mono/tests/tests-config
 mono/tests/assemblyresolve/Makefile
 mono/tests/gc-descriptors/Makefile
+mono/tests/testing_gac/Makefile
 mono/unit-tests/Makefile
 mono/benchmark/Makefile
 mono/mini/Makefile
@@ -4535,6 +4554,7 @@ fi
     }')]
 
     echo "MONO_VERSION = $myver" >> $mcs_topdir/build/config.make
+    echo "MONO_CORLIB_VERSION = $MONO_CORLIB_VERSION" >> $mcs_topdir/build/config.make
 
     if test x$host_darwin = xyes; then
       echo "PLATFORM = darwin" >> $mcs_topdir/build/config.make
@@ -4613,7 +4633,7 @@ echo "
 	BigArrays:     $enable_big_arrays
 	DTrace:        $enable_dtrace
 	LLVM Back End: $enable_llvm (dynamically loaded: $enable_loadedllvm)
-	Interpreter:   $buildinterpreter
+	Interpreter:   $enable_interpreter
 
    Libraries:
 	.NET 4.x:        $with_profile4_x

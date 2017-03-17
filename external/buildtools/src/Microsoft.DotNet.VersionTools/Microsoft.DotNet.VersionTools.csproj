@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8D524FA5-A8C5-4EBD-BA8B-2A4FED03EE58}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Microsoft.DotNet.VersionTools</RootNamespace>
+    <AssemblyName>Microsoft.DotNet.VersionTools</AssemblyName>
+    <CLSCompliant>false</CLSCompliant>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <NuGetTargetMoniker>.NETStandard,Version=v1.5</NuGetTargetMoniker>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Automation\DependencyUpdateResults.cs" />
+    <Compile Include="Automation\GitHubApi\HttpFailureResponseException.cs" />
+    <Compile Include="Automation\LocalVersionsRepoUpdater.cs" />
+    <Compile Include="Automation\GitHubVersionsRepoUpdater.cs" />
+    <Compile Include="Dependencies\DependencyBuildInfo.cs" />
+    <Compile Include="Dependencies\DependencyUpdateTask.cs" />
+    <Compile Include="Automation\GitHubApi\GitHubClient.cs" />
+    <Compile Include="Automation\DependencyUpdateUtils.cs" />
+    <Compile Include="Automation\GitHubBranch.cs" />
+    <Compile Include="Automation\GitHubProject.cs" />
+    <Compile Include="Automation\PullRequestCreator.cs" />
+    <Compile Include="Automation\GitHubApi\GitHubApiModel.cs" />
+    <Compile Include="Dependencies\ToolVersionsUpdater.cs" />
+    <Compile Include="Dependencies\FilePackageUpdater.cs" />
+    <Compile Include="Dependencies\FileRegexPackageUpdater.cs" />
+    <Compile Include="Dependencies\FileRegexReleaseUpdater.cs" />
+    <Compile Include="Automation\IUpdateBranchNamingStrategy.cs" />
+    <Compile Include="Automation\SingleBranchNamingStrategy.cs" />
+    <Compile Include="Dependencies\Submodule\LatestCommitSubmoduleUpdater.cs" />
+    <Compile Include="Dependencies\Submodule\IndicatorPackageSubmoduleUpdater.cs" />
+    <Compile Include="Dependencies\Submodule\SubmoduleUpdater.cs" />
+    <Compile Include="Util\ArgumentEscaper.cs" />
+    <Compile Include="Util\Command.cs" />
+    <Compile Include="Util\CommandResult.cs" />
+    <Compile Include="Util\FileUtils.cs" />
+    <Compile Include="Automation\GitHubAuth.cs" />
+    <Compile Include="Automation\NupkgInfo.cs" />
+    <Compile Include="Dependencies\FileRegexUpdater.cs" />
+    <Compile Include="Dependencies\IDependencyUpdater.cs" />
+    <Compile Include="BuildInfo.cs" />
+    <Compile Include="Dependencies\ProjectJsonUpdater.cs" />
+    <Compile Include="Automation\VersionsRepoUpdater.cs" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
