@@ -10,6 +10,7 @@
     <CLSCompliant>false</CLSCompliant>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <ProjectGuid>{F01FAA6C-4EF1-4283-B9B5-4C1416FA7F50}</ProjectGuid>
+    <NuGetTargetMoniker>.NETStandard,Version=v1.5</NuGetTargetMoniker>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
@@ -19,22 +20,29 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SendJobsToHelix.cs" />
+    <Compile Include="ValidateWorkItems.cs" />
+    <Compile Include="AzureConnectionStringBuildTask.cs" />
     <Compile Include="AzureHelper.cs" />
     <Compile Include="CreateAzureContainer.cs" />
     <Compile Include="DownloadFromAzure.cs" />
+    <Compile Include="FilterForUpload.cs" />
     <Compile Include="GetPerfTestAssemblies.cs" />
     <Compile Include="ListAzureContainers.cs" />
-    <Compile Include="SendToEventHub.cs" />
     <Compile Include="SendToHelix.cs" />
     <Compile Include="UploadClient.cs" />
     <Compile Include="UploadToAzure.cs" />
     <Compile Include="WriteBuildStatsJson.cs" />
+    <Compile Include="RemoveItemMetadata.cs" />
     <Compile Include="WriteItemsToJson.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="RunnerScripts\**\*.*" />
     <None Include="PackageFiles\**\*.*" />
     <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="RunnerScripts\scriptrunner\scriptrunner.py" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
   <Target Name="AfterBuild">

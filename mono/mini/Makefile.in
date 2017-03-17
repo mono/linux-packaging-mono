@@ -719,6 +719,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
@@ -1247,7 +1248,7 @@ libmini_static_la_LDFLAGS = -static
 libmini_static_la_LIBADD = $(MONO_DTRACE_OBJECT)
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
 libmonoinclude_HEADERS = jit.h
-CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649
+CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649,0618
 @NACL_CODEGEN_FALSE@GENMDESC_OPTS = 
 @NACL_CODEGEN_TRUE@GENMDESC_OPTS = --nacl
 @CROSS_COMPILING_FALSE@@NACL_CODEGEN_FALSE@GENMDESC_PRG = ./genmdesc $(GENMDESC_OPTS)
@@ -3475,7 +3476,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 4.9.1.339/6757632\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 4.9.1.429/1312784\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

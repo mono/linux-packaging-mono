@@ -1070,15 +1070,9 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 			break;
 		case CEE_LDARGA_S: {
 			/* NOTE: n includes this */
-			int n = ((guint8 *)td.ip)[1];
-			if (n == 0 && signature->hasthis) {
-				g_error ("LDTHISA: NOPE");
-				ADD_CODE(&td, MINT_LDTHISA);
-			}
-			else {
-				ADD_CODE(&td, MINT_LDARGA);
-				ADD_CODE(&td, td.rtm->arg_offsets [n]);
-			}
+			int n = ((guint8 *) td.ip) [1];
+			ADD_CODE (&td, MINT_LDARGA);
+			ADD_CODE (&td, td.rtm->arg_offsets [n]);
 			PUSH_SIMPLE_TYPE(&td, STACK_TYPE_MP);
 			td.ip += 2;
 			break;
@@ -2717,9 +2711,15 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 				klass = (MonoClass *) mono_method_get_wrapper_data (method, token + 1);
 				if (klass == mono_defaults.typehandle_class)
 					handle = &((MonoClass *) handle)->byval_arg;
+
+				if (generic_context) {
+					handle = mono_class_inflate_generic_type_checked (handle, generic_context, &error);
+					mono_error_cleanup (&error); /* FIXME: don't swallow the error */
+				}
 			} else {
 				handle = mono_ldtoken (image, token, &klass, generic_context);
 			}
+			mono_class_init (klass);
 			mt = mint_type (&klass->byval_arg);
 			g_assert (mt == MINT_TYPE_VT);
 			size = mono_class_value_size (klass, NULL);
@@ -3033,14 +3033,8 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 				break;
 			case CEE_LDARGA: {
 				int n = read16 (td.ip + 1);
-				if (n == 0 && signature->hasthis) {
-					g_error ("LDTHISA: NOPE");
-					ADD_CODE(&td, MINT_LDTHISA);
-				}
-				else {
-					ADD_CODE(&td, MINT_LDARGA);
-					ADD_CODE(&td, td.rtm->arg_offsets [n]); /* FIX for large offsets */
-				}
+				ADD_CODE (&td, MINT_LDARGA);
+				ADD_CODE (&td, td.rtm->arg_offsets [n]); /* FIX for large offsets */
 				PUSH_SIMPLE_TYPE(&td, STACK_TYPE_MP);
 				td.ip += 3;
 				break;
@@ -3191,9 +3185,9 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 	}
 	g_assert (td.max_stack_height <= (header->max_stack + 1));
 
-	rtm->clauses = mono_mempool_alloc (domain->mp, header->num_clauses * sizeof(MonoExceptionClause));
+	rtm->clauses = mono_domain_alloc0 (domain, header->num_clauses * sizeof (MonoExceptionClause));
 	memcpy (rtm->clauses, header->clauses, header->num_clauses * sizeof(MonoExceptionClause));
-	rtm->code = mono_mempool_alloc (domain->mp, (td.new_ip - td.new_code) * sizeof(gushort));
+	rtm->code = mono_domain_alloc0 (domain, (td.new_ip - td.new_code) * sizeof (gushort));
 	memcpy (rtm->code, td.new_code, (td.new_ip - td.new_code) * sizeof(gushort));
 	g_free (td.new_code);
 	rtm->new_body_start = rtm->code + body_start_offset;
@@ -3209,7 +3203,7 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 	}
 	rtm->vt_stack_size = td.max_vt_sp;
 	rtm->alloca_size = rtm->locals_size + rtm->args_size + rtm->vt_stack_size + rtm->stack_size;
-	rtm->data_items = mono_mempool_alloc (domain->mp, td.n_data_items * sizeof (td.data_items [0]));
+	rtm->data_items = mono_domain_alloc0 (domain, td.n_data_items * sizeof (td.data_items [0]));
 	memcpy (rtm->data_items, td.data_items, td.n_data_items * sizeof (td.data_items [0]));
 	g_free (td.in_offsets);
 	g_free (td.forward_refs);

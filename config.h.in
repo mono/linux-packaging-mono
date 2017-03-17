@@ -142,7 +142,7 @@
 /* Icall symbol map enabled */
 #undef ENABLE_ICALL_SYMBOL_MAP
 
-/* Enable interpreter in the runtime. */
+/* Enable Interpreter */
 #undef ENABLE_INTERPRETER
 
 /* Enable the LLVM back end */
@@ -1060,6 +1060,9 @@
 
 /* Enable the allocation and indexing of arrays greater than Int32.MaxValue */
 #undef MONO_BIG_ARRAYS
+
+/* Version of the corlib-runtime interface */
+#undef MONO_CORLIB_VERSION
 
 /* The runtime is compiled for cross-compiling mode */
 #undef MONO_CROSS_COMPILE

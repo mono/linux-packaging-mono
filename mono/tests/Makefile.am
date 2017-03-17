@@ -1,4 +1,4 @@
-SUBDIRS = assemblyresolve gc-descriptors
+SUBDIRS = assemblyresolve gc-descriptors . testing_gac
 
 if FULL_AOT_TESTS
 FEATUREFUL_RUNTIME_TEST =  
@@ -7,7 +7,7 @@ FEATUREFUL_RUNTIME_TEST = test-appdomain-unload
 endif
 
 check-local: assemblyresolve/test/asm.dll testjit test-generic-sharing test-type-load test-multi-netmodule test-cattr-type-load test-reflection-load-with-context test_platform	\
-		 test-console-output test-messages test-env-options test-unhandled-exception-2 $(FEATUREFUL_RUNTIME_TEST) test-process-stress test-pedump rm-empty-logs
+		 test-console-output test-env-options test-unhandled-exception-2 $(FEATUREFUL_RUNTIME_TEST) test-process-stress test-pedump rm-empty-logs runtest-gac-loading
 check-full: test-sgen check-local
 check-parallel: compile-tests check-full
 
@@ -19,12 +19,10 @@ test-wrench: check-parallel
 
 aotcheck: testaot gshared-aot
 
-TEST_PROG = ../interpreter/mint
-
 JITTEST_PROG = $(if $(VALGRIND), valgrind $(VALGRIND_ARGS),) $(if $(SGEN),$(top_builddir)/mono/mini/mono-sgen,$(top_builddir)/mono/mini/mono)
 
-TEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(TEST_PROG)
 JITTEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode=execute $(JITTEST_PROG)
+
 
 RUNTIME_ARGS=--config tests-config --optimize=all --debug
 
@@ -483,7 +481,8 @@ BASE_TEST_CS_SRC=		\
 	thread6.cs	\
 	appdomain-threadpool-unload.cs	\
 	process-unref-race.cs	\
-	bug-46661.cs
+	bug-46661.cs	\
+	w32message.cs
 
 TEST_CS_SRC_DIST=	\
 	$(BASE_TEST_CS_SRC)	\
@@ -582,6 +581,11 @@ TEST_IL_SRC=			\
 if AMD64
 # #651684
 PLATFORM_DISABLED_TESTS = finally_guard.exe
+
+if HOST_WIN32
+PLATFORM_DISABLED_TESTS += w32message.exe
+endif
+
 endif
 
 if IA64
@@ -594,7 +598,7 @@ if X86
 
 if HOST_WIN32
 PLATFORM_DISABLED_TESTS=async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
-	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe
+	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe
 endif
 
 endif
@@ -644,6 +648,8 @@ PLATFORM_DISABLED_TESTS= abort-stress-1.exe \
                          thread6.exe \
                          threadpool-exceptions5.exe \
                          threadpool-exceptions6.exe
+
+PLATFORM_DISABLED_TESTS+= w32message.exe
 
 # Tests that rely on AppDomain.Unload
 PLATFORM_DISABLED_TESTS+= appdomain-async-invoke.exe \
@@ -889,14 +895,17 @@ LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
 # bug-Xamarin-5278.exe got broken by 5d26590e79da139a284459299aee95c25f4cd835
 # bug-45841-fpstack-exceptions.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47053
 # appdomain-thread-abort.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47054
-DISABLED_TESTS=			\
+KNOWN_FAILING_TESTS = \
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
 	bug-459094.exe \
 	delegate-invoke.exe \
 	bug-Xamarin-5278.exe \
 	bug-45841-fpstack-exceptions.exe \
-	appdomain-thread-abort.exe \
+	appdomain-thread-abort.exe
+
+DISABLED_TESTS = \
+	$(KNOWN_FAILING_TESTS) \
 	$(PLATFORM_DISABLED_TESTS) \
 	$(EXTRA_DISABLED_TESTS) \
 	$(COOP_DISABLED_TESTS) \
@@ -905,6 +914,166 @@ DISABLED_TESTS=			\
 	$(if $(CI),$(CI_DISABLED_TESTS)) \
 	$(if $(CI_PR),$CI_PR_DISABLED_TESTS) \
 	$(if $(LLVM),$(LLVM_DISABLED_TESTS))
+
+INTERP_DISABLED_TESTS = \
+	$(CI_PR_DISABLED_TESTS) \
+	$(CI_DISABLED_TESTS) \
+	$(KNOWN_FAILING_TESTS) \
+	abort-cctor.exe \
+	appdomain-async-invoke.exe \
+	appdomain-exit.exe \
+	appdomain-unload-callback.exe \
+	appdomain-unload-doesnot-raise-pending-events.exe \
+	appdomain-unload.exe \
+	appdomain.exe \
+	appdomain1.exe \
+	appdomain2.exe \
+	array_load_exception.exe \
+	assembly_append_ordering.exe \
+	assemblyresolve_event4.exe \
+	async-exc-compilation.exe \
+	async-with-cb-throws.exe \
+	async_read.exe \
+	bug-10127.exe \
+	bug-18026.exe \
+	bug-27147.exe \
+	bug-2907.exe \
+	bug-323114.exe \
+	bug-327438.2.exe \
+	bug-335131.2.exe \
+	bug-349190.2.exe \
+	bug-415577.exe \
+	bug-461867.exe \
+	bug-461941.exe \
+	bug-46661.exe \
+	bug-47295.exe \
+	bug-48015.exe \
+	bug-508538.exe \
+	bug-544446.exe \
+	bug-685908.exe \
+	bug-70561.exe \
+	bug-78549.exe \
+	bug-80307.exe \
+	bug-80392.2.exe \
+	bug-81673.exe \
+	bug-81691.exe \
+	bug-82022.exe \
+	bug445361.exe \
+	bug469742.2.exe \
+	call_missing_class.exe \
+	call_missing_method.exe \
+	calliGenericTest.exe \
+	cattr-field.exe \
+	classinit3.exe \
+	cominterop.exe \
+	constant-division.exe \
+	context-static.exe \
+	cross-domain.exe \
+	delegate-async-exit.exe \
+	delegate-delegate-exit.exe \
+	delegate-exit.exe \
+	delegate-with-null-target.exe \
+	delegate.exe \
+	delegate1.exe \
+	delegate3.exe \
+	delegate5.exe \
+	delegate7.exe \
+	delegate8.exe \
+	delegate9.exe \
+	dynamic-method-access.2.exe \
+	dynamic-method-finalize.2.exe \
+	dynamic-method-resurrection.exe \
+	dynamic-method-stack-traces.exe \
+	enum.exe \
+	even-odd.exe \
+	exception18.exe \
+	field-access.exe \
+	finally_block_ending_in_dead_bb.exe \
+	gc-altstack.exe \
+	gchandles.exe \
+	generic-marshalbyref.2.exe \
+	generic-mkrefany.2.exe \
+	generic-refanyval.2.exe \
+	generic-stack-traces2.2.exe \
+	generic-type-load-exception.2.exe \
+	generic-unloading.2.exe \
+	generics-invoke-byref.2.exe \
+	generics-sharing.2.exe \
+	handleref.exe \
+	invalid-token.exe \
+	invalid_generic_instantiation.exe \
+	invoke-string-ctors.exe \
+	invoke.exe \
+	ldfld_missing_class.exe \
+	ldfld_missing_field.exe \
+	ldftn-access.exe \
+	loader.exe \
+	marshal-valuetypes.exe \
+	marshal.exe \
+	marshal2.exe \
+	marshal8.exe \
+	marshal9.exe \
+	marshalbool.exe \
+	main-returns-background-change.exe \
+	method-access.exe \
+	modules.exe \
+	monitor-abort.exe \
+	monitor-wait-abort.exe \
+	monitor.exe \
+	namedmutex-destroy-race.exe \
+	nullable_boxing.2.exe \
+	pinvoke-2.2.exe \
+	pinvoke-utf8.exe \
+	pinvoke.exe \
+	pinvoke11.exe \
+	pinvoke17.exe \
+	pinvoke2.exe \
+	pinvoke3.exe \
+	pinvoke_ppcc.exe \
+	pinvoke_ppcd.exe \
+	pinvoke_ppcf.exe \
+	pinvoke_ppci.exe \
+	pinvoke_ppcs.exe \
+	priority.exe \
+	process-unref-race.exe \
+	reference-loader.exe \
+	reload-at-bb-end.exe \
+	remoting1.exe \
+	remoting2.exe \
+	remoting3.exe \
+	remoting4.exe \
+	remoting5.exe \
+	runtime-invoke.exe \
+	runtime-invoke.gen.exe \
+	safehandle.2.exe \
+	shared-generic-synchronized.2.exe \
+	sleep.exe \
+	stackframes-async.2.exe \
+	static-constructor.exe \
+	test-inline-call-stack.exe \
+	test-tls.exe \
+	test-type-ctor.exe \
+	thread-exit.exe \
+	thread6.exe \
+	threadpool-exceptions1.exe \
+	threadpool-exceptions2.exe \
+	threadpool-exceptions3.exe \
+	threadpool-exceptions4.exe \
+	threadpool-exceptions5.exe \
+	threadpool-exceptions6.exe \
+	threadpool-exceptions7.exe \
+	threadpool.exe \
+	threadpool1.exe \
+	thunks.exe \
+	transparentproxy.exe \
+	typeload-unaligned.exe \
+	unload-appdomain-on-shutdown.exe \
+	vararg.exe \
+	vararg.exe \
+	vararg2.exe \
+	vt-sync-method.exe \
+	winx64structs.exe \
+	xdomain-threads.exe
 
 # pre-requisite test sources: files that are not test themselves
 # but that need to be compiled
@@ -1027,22 +1196,6 @@ test-eglib-remap:
 	@if which nm > /dev/null; then if nm $(top_builddir)/mono/mini/mono | grep -v $(OK_G_SYMBOLS) | grep 't g_'; then exit 1; else exit 0; fi; fi
 endif
 
-#
-# Tests that the internals in mono/io-layer/messages.c are ok by triggering the 
-# code that checks that the table is properly sorted
-#
-if NACL_CODEGEN
-test-messages:
-else
-if HOST_WIN32
-test-messages:
-else
-test-messages: w32message.exe
-	> test_messages.zero
-	$(with_mono_path) $(JITTEST_PROG_RUN) w32message.exe > w32message.allout 2>&1 && cmp test_messages.zero w32message.allout
-endif
-endif
-
 test-env-options:
 	MONO_ENV_OPTIONS="--version" $(RUNTIME) array-init.exe | grep -q Architecture:
 
@@ -1050,7 +1203,7 @@ test-sgen : sgen-tests
 
 # Precompile the test assemblies in parallel
 compile-tests:
-	$(MAKE) -j4 $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS)
+	$(MAKE) -j4 $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS) compile-gac-loading
 if FULL_AOT_TESTS
 	$(MAKE) $(PREREQSI_IL_AOT) $(PREREQSI_CS_AOT) $(AOT_EXTRA_LIBS)
 endif
@@ -1068,42 +1221,6 @@ assemblyresolve/test/asm.dll:
 
 TestDriver.dll:
 	$(MCS) -target:library -out:$@ $(srcdir)/../mini/TestDriver.cs $(srcdir)/../mini/TestHelpers.cs
-
-test_cs: $(TEST_PROG) $(TESTSI_CS) libtest.la
-	@failed=0; \
-	passed=0; \
-	if [ "x$$V" = "x1" ]; then dump_action="dump-output"; else dump_action="no-dump"; fi; \
-	for i in $(TESTSI_CS); do	\
-		if $(srcdir)/test-driver '$(with_mono_path) $(TEST_PROG_RUN)' $$i "$(DISABLED_TESTS)" "$${dump_action}" $(RUNTIME_ARGS); \
-		then \
-			passed=`expr $${passed} + 1`; \
-		else \
-			if [ $$? = 2 ]; then break; fi; \
-			failed=`expr $${failed} + 1`; \
-		fi \
-	done; \
-	echo; echo ".cs: $${passed} test(s) passed. $${failed} test(s) did not pass."; echo
-
-test_il: $(TEST_PROG) $(TESTSI_IL) libtest.la
-	@failed=0; \
-	passed=0; \
-	if [ "x$$V" = "x1" ]; then dump_action="dump-output"; else dump_action="no-dump"; fi; \
-	for i in $(TESTSI_IL); do	\
-		if $(srcdir)/test-driver '$(with_mono_path) $(TEST_PROG_RUN)' $$i "$(DISABLED_TESTS)" "$${dump_action}" $(RUNTIME_ARGS); \
-		then \
-			passed=`expr $${passed} + 1`; \
-		else \
-			if [ $$? = 2 ]; then break; fi; \
-			failed=`expr $${failed} + 1`; \
-		fi \
-	done; \
-	echo; echo ".il: $${passed} test(s) passed. $${failed} test(s) did not pass."; echo
-
-testb: $(TEST_PROG) $(TESTBS)
-	if [ "x$$V" = "x1" ]; then dump_action="dump-output"; else dump_action="no-dump"; fi; \
-	for i in $(TESTBS); do	\
-		$(srcdir)/test-driver '$(with_mono_path) $(TEST_PROG_RUN)' $$i "$(DISABLED_TESTS)" "$${dump_action}" $(RUNTIME_ARGS);	\
-	done
 
 runtest: $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS)
 	@failed=0; \
@@ -1153,8 +1270,8 @@ testaot:
 testtrace:
 	@$(MAKE) RUNTIME_ARGS="$${RUNTIME_ARGS} --trace" runtest
 
-testinterp:
-	@$(MAKE) JITTEST_PROG_RUN="$(TEST_PROG_RUN)" runtest
+testinterp: test-runner.exe $(TESTSI_CS) $(TESTSI_IL) $(TESTBS) libtest.la $(PREREQSI_IL) $(PREREQSI_CS)
+	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) $(TEST_RUNNER_ARGS) -j a --runtime-args "--interpreter" --testsuite-name "runtime-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTSI_CS) $(TESTBS) $(TESTSI_IL)
 
 testjitspeed: $(JITTEST_PROG) $(TESTBS)
 	for i in $(TESTBS); do	\
@@ -1606,9 +1723,15 @@ EXTRA_DIST += bug-17537-helper.cs
 bug-17537-helper.exe: bug-17537-helper.cs
 	$(MCS) -out:$@ $(srcdir)/bug-17537-helper.cs
 	chmod -x $@
+if FULL_AOT_TESTS
+	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+endif
+if HYBRID_AOT_TESTS
+	$(RUNTIME) $(AOT_BUILD_FLAGS) $@
+endif
 
 bug-17537.exe: bug-17537.cs bug-17537-helper.exe
-	$(MCS) -r:System.dll -out:$@ $(srcdir)/bug-17537.cs
+	$(MCS) -r:$(CLASS)/System.dll -out:$@ $(srcdir)/bug-17537.cs
 
 EXTRA_DIST += coreclr-security.cs
 
@@ -1660,7 +1783,7 @@ generic-delegate2.2.exe : generic-delegate2.2.cs generic-delegate2-lib.2.dll
 	$(MCS) -r:generic-delegate2-lib.2.dll -out:$@ $(srcdir)/generic-delegate2.2.cs
 
 bug-3903.exe: bug-3903.cs
-	$(MCS_NO_LIB)  $(srcdir)/bug-3903.cs -r:$(srcdir)/../../external/binary-reference-assemblies/v2.0/System.Core.dll -out:$@
+	$(MCS_NO_LIB)  $(srcdir)/bug-3903.cs -nostdlib -r:$(srcdir)/../../external/binary-reference-assemblies/v2.0/mscorlib.dll -r:$(srcdir)/../../external/binary-reference-assemblies/v2.0/System.Core.dll -out:$@
 
 gshared: test-generic-sharing
 
@@ -1846,6 +1969,14 @@ test-console-output: console-output.exe
 
 test-pedump: test-runner.exe
 	$(with_mono_path) $(mono_build_root)/tools/pedump/pedump --verify error test-runner.exe
+
+.PHONY: test-gac-loading
+
+runtest-gac-loading: test-runner.exe
+	$(MAKE) -C testing_gac runtest
+
+compile-gac-loading:
+	$(MAKE) -C testing_gac compile-tests
 
 PROCESS_STRESS_TESTS=	\
 		process-stress-1.exe	\

@@ -8,6 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.DotNet.Build.Tasks.Packaging.Tests</RootNamespace>
     <AssemblyName>Microsoft.DotNet.Build.Tasks.Packaging.Tests</AssemblyName>
+    <NuGetRuntimeIdentifier>win7-x64</NuGetRuntimeIdentifier>
     <CLSCompliant>false</CLSCompliant>
     <CopyNuGetImplementations>true</CopyNuGetImplementations>
     <TaskProject Condition="'$(TaskProject)' == ''">..\src\Microsoft.DotNet.Build.Tasks.Packaging.csproj</TaskProject>
@@ -15,9 +16,9 @@
   <ItemGroup>
     <Compile Include="CreateTrimDependencyGroupsTests.cs" />
     <Compile Include="ApplyBaseLineTests.cs" />
-    <Compile Include="EnsureOOBFrameworkTests.cs" />
+    <Compile Include="HarvestPackageTests.cs" />
+    <Compile Include="NugetPropertyStringProviderTests.cs" />
     <Compile Include="NuGetAssetResolverTests.cs" />
-    <Compile Include="GenerationsTests.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="TestBuildEngine.cs" />
   </ItemGroup>
@@ -27,8 +28,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packageIndex.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="project.json" />
-    <None Include="$(PackagesDir)Microsoft.NETCore.Platforms\1.0.0\runtime.json">
+    <None Include="$(PackagesDir)Microsoft.NETCore.Platforms\1.0.1\runtime.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -39,9 +43,9 @@
        This is required because the publishtest.targets used by buildtools isn't handling 
        paths with subdirectories (it assumes all assets are copied to test output folder).
        https://github.com/dotnet/buildtools/issues/343 -->
-  <Target Name="CopyFrameworkLists" AfterTargets="CopyTestToTestDirectory" Inputs="%(TestTargetFramework.Folder)" Outputs="none">
+  <Target Name="CopyFrameworkLists" AfterTargets="CopyTestToTestDirectory" Inputs="%(TestTargetFramework.Folder)$(TestTFM)" Outputs="none">
     <PropertyGroup>
-      <_testDirectory>$(TestPath)%(TestTargetFramework.Folder)</_testDirectory>
+      <_testDirectory>$(TestPath)</_testDirectory>
     </PropertyGroup>
     <ItemGroup>
       <_frameworkList Include="..\src\FrameworkLists\**\*.xml">
