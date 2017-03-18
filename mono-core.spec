@@ -1153,7 +1153,6 @@ Mono development tools.
 %{_mandir}/man1/lc.1%ext_man
 %{_mandir}/man1/macpack.1%ext_man
 %{_mandir}/man1/makecert.1%ext_man
-%{_mandir}/man1/mdb2ppdb.1%ext_man
 %{_mandir}/man1/mkbundle.1%ext_man
 %{_mandir}/man1/mono-api-info.1%ext_man
 %{_mandir}/man1/mono-cil-strip.1%ext_man
@@ -1215,8 +1214,6 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/macpack.pdb
 %{_prefix}/lib/mono/4.5/makecert.exe*
 %{_prefix}/lib/mono/4.5/makecert.pdb
-%{_prefix}/lib/mono/4.5/mdb2ppdb.exe*
-%{_prefix}/lib/mono/4.5/mdb2ppdb.pdb
 %{_prefix}/lib/mono/4.5/mdbrebase.exe*
 %{_prefix}/lib/mono/4.5/mdbrebase.pdb
 %{_prefix}/lib/mono/4.5/mkbundle.exe*
