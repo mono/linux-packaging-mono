@@ -184,6 +184,7 @@ rm -rf %{buildroot}%{_datadir}/libgc-mono
 # remove stuff that we don't package
 rm -f %{buildroot}%{_bindir}/cilc
 rm -f %{buildroot}%{_mandir}/man1/cilc.1*
+rm -f %{buildroot}%{_mandir}/man1/mdb2ppdb.1*
 rm -f %{buildroot}%{_prefix}/lib/mono/*/browsercaps-updater.*
 rm -f %{buildroot}%{_prefix}/lib/mono/*/culevel.*
 
