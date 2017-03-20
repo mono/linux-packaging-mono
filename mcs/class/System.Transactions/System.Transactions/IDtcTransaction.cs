@@ -19,11 +19,11 @@ namespace System.Transactions
 	[InterfaceType (ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IDtcTransaction
 	{
-		void Abort (IntPtr reason, int retaining, int async);
+		void Abort (IntPtr manager, int whatever, int whatever2);
 
-		void Commit (int retaining, int commitType, int reserved);
+		void Commit (int whatever, int whatever2, int whatever3);
 
-		void GetTransactionInfo (IntPtr transactionInformation);
+		void GetTransactionInfo (IntPtr whatever);
 	}
 }
 

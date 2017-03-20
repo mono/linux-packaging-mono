@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer001.indexer001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer001.indexer001;
+
     public class Test
     {
         private class MyClass
@@ -54,6 +56,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer002.indexer002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer002.indexer002;
+
     public class Test
     {
         private class MyClass
@@ -100,6 +104,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer003.indexer003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer003.indexer003;
+
     public class Test
     {
         public class C
@@ -157,6 +163,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer004.indexer004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer004.indexer004;
+
     public class Test
     {
         private class MyClass
@@ -203,6 +211,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer008.indexer008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer008.indexer008;
+
     public class Test
     {
         public class MyClass
@@ -250,6 +260,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer009.indexer009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer009.indexer009;
+
     public class Test
     {
         public class MyClass
@@ -297,6 +309,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer010.indexer010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.returnType.indexers.indexer010.indexer010;
+
     public class Test
     {
         private class MyClass

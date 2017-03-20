@@ -13,7 +13,7 @@ using DataContractDictionary = System.Collections.Generic.Dictionary<System.Xml.
 
 namespace System.Runtime.Serialization.Json
 {
-#if uapaot
+#if NET_NATIVE
     public class XmlObjectSerializerWriteContextComplexJson : XmlObjectSerializerWriteContextComplex
 #else
     internal class XmlObjectSerializerWriteContextComplexJson : XmlObjectSerializerWriteContextComplex
@@ -195,7 +195,7 @@ namespace System.Runtime.Serialization.Json
         {
             DataContract dataContract;
             bool verifyKnownType = false;
-            bool isDeclaredTypeInterface = declaredType.IsInterface;
+            bool isDeclaredTypeInterface = declaredType.GetTypeInfo().IsInterface;
 
             if (isDeclaredTypeInterface && CollectionDataContract.IsCollectionInterface(declaredType))
             {
@@ -260,7 +260,7 @@ namespace System.Runtime.Serialization.Json
         {
             bool verifyKnownType = false;
             Type declaredType = rootTypeDataContract.UnderlyingType;
-            bool isDeclaredTypeInterface = declaredType.IsInterface;
+            bool isDeclaredTypeInterface = declaredType.GetTypeInfo().IsInterface;
 
             if (!(isDeclaredTypeInterface && CollectionDataContract.IsCollectionInterface(declaredType))
                 && !declaredType.IsArray)//Array covariance is not supported in XSD. If declared type is array do not write xsi:type. Instead write xsi:type for each item
@@ -391,7 +391,7 @@ namespace System.Runtime.Serialization.Json
         internal static DataContract GetRevisedItemContract(DataContract oldItemContract)
         {
             if ((oldItemContract != null) &&
-                oldItemContract.UnderlyingType.IsGenericType &&
+                oldItemContract.UnderlyingType.GetTypeInfo().IsGenericType &&
                 (oldItemContract.UnderlyingType.GetGenericTypeDefinition() == Globals.TypeOfKeyValue))
             {
                 return DataContract.GetDataContract(oldItemContract.UnderlyingType);

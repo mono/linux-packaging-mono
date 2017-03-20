@@ -15,6 +15,7 @@ using System.DirectoryServices;
 
 namespace System.DirectoryServices.AccountManagement
 {
+    [DirectoryServicesPermission(System.Security.Permissions.SecurityAction.Assert, Unrestricted = true)]
     internal partial class SAMStoreCtx : StoreCtx
     {
         private DirectoryEntry _ctxBase;

@@ -14,7 +14,7 @@ namespace System.IO.Pipes.Tests
     public class NamedPipeTest_RunAsClient : RemoteExecutorTestBase
     {
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Uses P/Invokes
+        [PlatformSpecific(TestPlatforms.Windows)]
         public async Task RunAsClient_Windows()
         {
             string pipeName = Path.GetRandomFileName();
@@ -44,7 +44,7 @@ namespace System.IO.Pipes.Tests
         }
 
         [ConditionalFact(nameof(IsSuperUser))]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Uses P/Invokes
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [ActiveIssue(0)]
         public void RunAsClient_Unix()
         {

@@ -827,12 +827,12 @@ namespace System.Web.UI.WebControls
 			return null;
 		}
 
-		protected override void LoadViewState (object state)
+		protected override void LoadViewState (object savedState)
 		{
-			if (state == null)
+			if (savedState == null)
 				return;
 				
-			object [] states = (object []) state;
+			object [] states = (object []) savedState;
 			base.LoadViewState (states[0]);
 			
 			if (states[1] != null)
@@ -921,9 +921,9 @@ namespace System.Web.UI.WebControls
 		}
 		
 		string callbackResult;
-		protected virtual void RaiseCallbackEvent (string eventArgument)
+		protected virtual void RaiseCallbackEvent (string eventArgs)
 		{
-			string[] args = eventArgument.Split ('|');
+			string[] args = eventArgs.Split ('|');
 			RequiresDataBinding = true;
 			EnsureDataBound ();
 			

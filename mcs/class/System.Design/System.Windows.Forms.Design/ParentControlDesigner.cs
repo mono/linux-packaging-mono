@@ -210,23 +210,23 @@ namespace System.Windows.Forms.Design
 			return false;
 		}
 
-		public virtual bool CanParent (ControlDesigner controlDesigner)
+		public virtual bool CanParent (ControlDesigner designer)
 		{
-			return CanParent (controlDesigner.Control);
+			return CanParent (designer.Control);
 		}
 
-		protected override void OnDragDrop (DragEventArgs de)
+		protected override void OnDragDrop (DragEventArgs e)
 		{
 			IUISelectionService selectionServ = this.GetService (typeof (IUISelectionService)) as IUISelectionService;
 			if (selectionServ != null) {
 				// once this is fired the parent control (parentcontroldesigner) will start getting dragover events.
 				//
-				Point location = this.SnapPointToGrid (this.Control.PointToClient (new Point (de.X, de.Y)));
+				Point location = this.SnapPointToGrid (this.Control.PointToClient (new Point (e.X, e.Y)));
 				selectionServ.DragDrop (false, this.Control, location.X, location.Y);
 			}
 		}
 
-		protected override void OnDragEnter (DragEventArgs de)
+		protected override void OnDragEnter (DragEventArgs e)
 		{
 			this.Control.Refresh ();
 		}
@@ -236,16 +236,16 @@ namespace System.Windows.Forms.Design
 			this.Control.Refresh ();
 		}
 
-		protected override void OnDragOver (DragEventArgs de)
+		protected override void OnDragOver (DragEventArgs e)
 		{
 			IUISelectionService selectionServ = this.GetService (typeof (IUISelectionService)) as IUISelectionService;
 			if (selectionServ != null) {
 				// once ControlDesigner.MouseDragBegin is called this will start getting dragover events.
 				//
-				Point location = this.SnapPointToGrid (this.Control.PointToClient (new Point (de.X, de.Y)));
+				Point location = this.SnapPointToGrid (this.Control.PointToClient (new Point (e.X, e.Y)));
 				selectionServ.DragOver (this.Control, location.X, location.Y);
 			}
-			de.Effect = DragDropEffects.Move;
+			e.Effect = DragDropEffects.Move;
 		}
 #endregion
 

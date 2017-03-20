@@ -12,7 +12,7 @@ namespace Test.Cryptography
     {
         // Prefer ephemeral when available
         protected X509KeyStorageFlags KeyStorageFlags =
-#if netcoreapp
+#if netcoreapp11
             X509KeyStorageFlags.EphemeralKeySet;
 #else
             X509KeyStorageFlags.DefaultKeySet;
@@ -144,7 +144,7 @@ namespace Test.Cryptography
 
         internal override CertLoader CloneAsEphemeralLoader()
         {
-#if netcoreapp
+#if netcoreapp11
             return new CertLoaderFromRawData(CerData, PfxData, Password)
             {
                 KeyStorageFlags = X509KeyStorageFlags.EphemeralKeySet,

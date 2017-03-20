@@ -111,6 +111,7 @@ namespace System.Net.Tests
             Assert.True(request.AllowReadStreamBuffering);
         }
 
+        [ActiveIssue(12637)]
         [Theory, MemberData(nameof(EchoServers))]
         public async Task ContentLength_Get_ExpectSameAsGetResponseStream(Uri remoteServer)
         {
@@ -242,7 +243,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public void BeginGetRequestStream_CreatePostRequestThenCallTwice_ThrowsInvalidOperationException(Uri remoteServer)
         {
             _savedHttpWebRequest = HttpWebRequest.CreateHttp(remoteServer);
@@ -256,7 +256,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public void BeginGetRequestStream_CreateRequestThenBeginGetResponsePrior_ThrowsInvalidOperationException(Uri remoteServer)
         {
             _savedHttpWebRequest = HttpWebRequest.CreateHttp(remoteServer);
@@ -269,7 +268,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public void BeginGetResponse_CreateRequestThenCallTwice_ThrowsInvalidOperationException(Uri remoteServer)
         {
             _savedHttpWebRequest = HttpWebRequest.CreateHttp(remoteServer);
@@ -282,7 +280,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public void BeginGetResponse_CreatePostRequestThenAbort_ThrowsWebException(Uri remoteServer)
         {
             HttpWebRequest request = WebRequest.CreateHttp(remoteServer);
@@ -293,7 +290,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public async Task GetRequestStreamAsync_WriteAndDisposeRequestStreamThenOpenRequestStream_ThrowsArgumentException(Uri remoteServer)
         {
             HttpWebRequest request = WebRequest.CreateHttp(remoteServer);
@@ -310,7 +306,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public async Task GetRequestStreamAsync_SetPOSTThenGet_ExpectNotNull(Uri remoteServer)
         {
             HttpWebRequest request = WebRequest.CreateHttp(remoteServer);
@@ -320,7 +315,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public async Task GetResponseAsync_GetResponseStream_ExpectNotNull(Uri remoteServer)
         {
             HttpWebRequest request = WebRequest.CreateHttp(remoteServer);
@@ -363,9 +357,7 @@ namespace System.Net.Tests
             Assert.True(strContent.Contains(RequestBody));
         }
 
-        [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotFedoraOrRedHatOrCentos))] // #16201
-        [MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
+        [Theory, MemberData(nameof(EchoServers))]
         public async Task GetResponseAsync_UseDefaultCredentials_ExpectSuccess(Uri remoteServer)
         {
             HttpWebRequest request = WebRequest.CreateHttp(remoteServer);
@@ -389,6 +381,7 @@ namespace System.Net.Tests
             new object[] { System.Net.Test.Common.Configuration.Http.StatusCodeUri(true, 404) },
         };
 
+        [ActiveIssue(12236, TestPlatforms.Linux)]
         [Theory, MemberData(nameof(StatusCodeServers))]
         public async Task GetResponseAsync_ResourceNotFound_ThrowsWebException(Uri remoteServer)
         {
@@ -400,7 +393,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public async Task HaveResponse_GetResponseAsync_ExpectTrue(Uri remoteServer)
         {
             HttpWebRequest request = WebRequest.CreateHttp(remoteServer);
@@ -408,9 +400,7 @@ namespace System.Net.Tests
             Assert.True(request.HaveResponse);
         }
 
-        [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotFedoraOrRedHatOrCentos))] // #16201
-        [MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
+        [Theory, MemberData(nameof(EchoServers))]
         public async Task Headers_GetResponseHeaders_ContainsExpectedValue(Uri remoteServer)
         {
             HttpWebRequest request = WebRequest.CreateHttp(remoteServer);
@@ -466,7 +456,6 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #16928")] //Test hang forever in desktop.
         public async Task SimpleScenario_UseGETVerb_Success(Uri remoteServer)
         {
             HttpWebRequest request = HttpWebRequest.CreateHttp(remoteServer);

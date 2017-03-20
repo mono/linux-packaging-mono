@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.Win32.SafeHandles;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Xunit;
 
@@ -388,30 +387,22 @@ namespace System.IO.MemoryMappedFiles.Tests
         public void AllowFinalization()
         {
             // Explicitly do not dispose, to allow finalization to happen, just to try to verify
-            // that nothing fails/throws when it does.
-            WeakReference<MemoryMappedFile> mmfWeak;
-            WeakReference<MemoryMappedViewStream> mmvsWeak;
-            CreateWeakMmfAndMmvs(out mmfWeak, out mmvsWeak);
+            // that nothing fails when it does.
+            MemoryMappedFile mmf = MemoryMappedFile.CreateNew(null, 4096);
+            MemoryMappedViewStream s = mmf.CreateViewStream();
+
+            var mmfWeak = new WeakReference<MemoryMappedFile>(mmf);
+            var sWeak = new WeakReference<MemoryMappedViewStream>(s);
+
+            mmf = null;
+            s = null;
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            MemoryMappedFile mmf;
             Assert.False(mmfWeak.TryGetTarget(out mmf));
-
-            MemoryMappedViewStream s;
-            Assert.False(mmvsWeak.TryGetTarget(out s));
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void CreateWeakMmfAndMmvs(out WeakReference<MemoryMappedFile> mmfWeak, out WeakReference<MemoryMappedViewStream> mmvsWeak)
-        {
-            MemoryMappedFile mmf = MemoryMappedFile.CreateNew(null, 4096);
-            MemoryMappedViewStream s = mmf.CreateViewStream();
-
-            mmfWeak = new WeakReference<MemoryMappedFile>(mmf);
-            mmvsWeak = new WeakReference<MemoryMappedViewStream>(s);
+            Assert.False(sWeak.TryGetTarget(out s));
         }
 
     }

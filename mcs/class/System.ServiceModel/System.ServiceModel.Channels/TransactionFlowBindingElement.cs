@@ -45,9 +45,9 @@ namespace System.ServiceModel.Channels
 		{
 		}
 
-		public TransactionFlowBindingElement (TransactionProtocol transactionProtocol)
+		public TransactionFlowBindingElement (TransactionProtocol protocol)
 		{
-			this.protocol = transactionProtocol;
+			this.protocol = protocol;
 		}
 
 		public TransactionProtocol TransactionProtocol {

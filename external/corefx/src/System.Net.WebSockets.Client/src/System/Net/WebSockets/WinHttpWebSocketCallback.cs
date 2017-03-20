@@ -98,7 +98,7 @@ namespace System.Net.WebSockets
 
                 case Interop.WinHttp.WINHTTP_CALLBACK_STATUS_SECURE_FAILURE:
                     Debug.Assert(
-                        statusInformationLength == sizeof(uint),
+                        statusInformationLength == Marshal.SizeOf<uint>(),
                         "RequestCallback: statusInformationLength must be sizeof(uint).");
 
                     // statusInformation contains a flag: WINHTTP_CALLBACK_STATUS_FLAG_*
@@ -237,7 +237,7 @@ namespace System.Net.WebSockets
 
                 case Interop.WinHttp.WINHTTP_CALLBACK_STATUS_SECURE_FAILURE:
                     Debug.Assert(
-                        statusInformationLength == sizeof(uint),
+                        statusInformationLength == Marshal.SizeOf<uint>(),
                         "WebSocketCallback: statusInformationLength must be sizeof(uint).");
 
                     // statusInformation contains a flag: WINHTTP_CALLBACK_STATUS_FLAG_*

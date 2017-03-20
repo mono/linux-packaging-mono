@@ -427,8 +427,7 @@ typedef struct  {
 typedef struct  {
 	const char runtime_version [12];
 	const char framework_version [4];
-	const char *public_key_token;
-	const AssemblyVersionSet version_sets [5];
+	const AssemblyVersionSet version_sets [4];
 } MonoRuntimeInfo;
 
 #define mono_domain_assemblies_lock(domain) mono_locks_os_acquire(&(domain)->assemblies_lock, DomainAssembliesLock)

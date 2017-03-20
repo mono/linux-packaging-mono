@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit02.explicit02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit02.explicit02;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -49,6 +51,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit02a.explicit02a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit02a.explicit02a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -94,6 +98,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit02b.explicit02b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit02b.explicit02b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -137,6 +143,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit02c.explicit02c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit02c.explicit02c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -182,6 +190,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit03.explicit03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit03.explicit03;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -236,6 +246,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit03c.explicit03c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit03c.explicit03c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -292,6 +304,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit04.explicit04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit04.explicit04;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -346,6 +360,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit04c.explicit04c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit04c.explicit04c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -402,6 +418,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit05.explicit05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit05.explicit05;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -456,6 +474,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit05a.explicit05a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit05a.explicit05a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -501,6 +521,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit05b.explicit05b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit05b.explicit05b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -544,6 +566,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit05c.explicit05c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.explicit05c.explicit05c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -600,6 +624,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01.inherit01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01.inherit01;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -646,6 +672,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01a.inherit01a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01a.inherit01a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -694,6 +722,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01b.inherit01b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01b.inherit01b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -738,6 +768,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01c.inherit01c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01c.inherit01c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -786,6 +818,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01d.inherit01d
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit01d.inherit01d;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -839,6 +873,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit02.inherit02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit02.inherit02;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -896,6 +932,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit02c.inherit02c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit02c.inherit02c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -955,6 +993,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit03.inherit03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit03.inherit03;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1012,6 +1052,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit03a.inherit03a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit03a.inherit03a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1060,6 +1102,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit03c.inherit03c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit03c.inherit03c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1119,6 +1163,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit03d.inherit03d
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit03d.inherit03d;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1172,6 +1218,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit04.inherit04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit04.inherit04;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1218,6 +1266,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit04c.inherit04c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit04c.inherit04c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1266,6 +1316,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit04d.inherit04d
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit04d.inherit04d;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1319,6 +1371,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit05.inherit05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit05.inherit05;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1365,6 +1419,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit05b.inherit05b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit05b.inherit05b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1409,6 +1465,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit05c.inherit05c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit05c.inherit05c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1457,6 +1515,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit05d.inherit05d
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit05d.inherit05d;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1510,6 +1570,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit06.inherit06
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit06.inherit06;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1556,6 +1618,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit06a.inherit06a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit06a.inherit06a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1604,6 +1668,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit06c.inherit06c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit06c.inherit06c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1652,6 +1718,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit06d.inherit06d
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit06d.inherit06d;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1708,6 +1776,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07.inherit07
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07.inherit07;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1754,6 +1824,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07a.inherit07a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07a.inherit07a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1802,6 +1874,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07b.inherit07b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07b.inherit07b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1848,6 +1922,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07c.inherit07c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07c.inherit07c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1896,6 +1972,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07d.inherit07d
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit07d.inherit07d;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1952,6 +2030,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08.inherit08
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08.inherit08;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -1998,6 +2078,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08a.inherit08a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08a.inherit08a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2046,6 +2128,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08b.inherit08b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08b.inherit08b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2092,6 +2176,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08c.inherit08c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08c.inherit08c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2140,6 +2226,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08d.inherit08d
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit08d.inherit08d;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2193,6 +2281,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit09.inherit09
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit09.inherit09;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2250,6 +2340,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit09c.inherit09c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit09c.inherit09c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2309,6 +2401,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit11.inherit11
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit11.inherit11;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2355,6 +2449,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit11a.inherit11a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit11a.inherit11a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2403,6 +2499,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit11b.inherit11b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit11b.inherit11b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2449,6 +2547,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit11c.inherit11c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit11c.inherit11c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2497,6 +2597,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit13.inherit13
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit13.inherit13;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2543,6 +2645,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit13a.inherit13a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit13a.inherit13a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2591,6 +2695,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit13b.inherit13b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit13b.inherit13b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2637,6 +2743,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit13c.inherit13c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit13c.inherit13c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2685,6 +2793,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit14.inherit14
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit14.inherit14;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type - New disambiguation reasoning</Description>
@@ -2731,6 +2841,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit14a.inherit14a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit14a.inherit14a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type - New disambiguation reasoning</Description>
@@ -2779,6 +2891,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit14b.inherit14b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit14b.inherit14b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type - New disambiguation reasoning</Description>
@@ -2825,6 +2939,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit14c.inherit14c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit14c.inherit14c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type - New disambiguation reasoning</Description>
@@ -2873,6 +2989,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit15.inherit15
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit15.inherit15;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2919,6 +3037,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit15a.inherit15a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit15a.inherit15a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -2967,6 +3087,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit15b.inherit15b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit15b.inherit15b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3013,6 +3135,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit15c.inherit15c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit15c.inherit15c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3061,6 +3185,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit16.inherit16
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit16.inherit16;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3107,6 +3233,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit16a.inherit16a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit16a.inherit16a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3155,6 +3283,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit16b.inherit16b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit16b.inherit16b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3201,6 +3331,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit16c.inherit16c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit16c.inherit16c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3249,6 +3381,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit19.inherit19
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit19.inherit19;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3295,6 +3429,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit19a.inherit19a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit19a.inherit19a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3343,6 +3479,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit19b.inherit19b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit19b.inherit19b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3389,6 +3527,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit19c.inherit19c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit19c.inherit19c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3437,6 +3577,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit21.inherit21
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit21.inherit21;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3483,6 +3625,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit21a.inherit21a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit21a.inherit21a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3531,6 +3675,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit21b.inherit21b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit21b.inherit21b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3577,6 +3723,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit21c.inherit21c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.inherit21c.inherit21c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3625,6 +3773,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi01.multi01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi01.multi01;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3671,6 +3821,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi01a.multi01a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi01a.multi01a;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3719,6 +3871,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi01b.multi01b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi01b.multi01b;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3765,6 +3919,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi01c.multi01c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi01c.multi01c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3813,6 +3969,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi02.multi02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi02.multi02;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3870,6 +4028,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi02c.multi02c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi02c.multi02c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3929,6 +4089,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi03.multi03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi03.multi03;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -3986,6 +4148,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi03c.multi03c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.multi03c.multi03c;
+
     // <Area>Use of Named parameters</Area>
     // <Title>Use of Named Parameters</Title>
     // <Description>Parameters names are based off the most derived type</Description>
@@ -4045,6 +4209,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.integeregererface01.integeregererface01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.inheritance.integeregererface01.integeregererface01;
+
     //<Area>N&O</Area>
     //<Title></Title>
     //<Description>The implement in class do not have default value while the declare in interface has default value</Description>

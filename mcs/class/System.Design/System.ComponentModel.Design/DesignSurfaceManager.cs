@@ -73,9 +73,9 @@ namespace System.ComponentModel.Design
 		{
 		}
 
-		public DesignSurfaceManager (IServiceProvider parentProvider)
+		public DesignSurfaceManager (IServiceProvider serviceProvider)
 		{
-			_parentProvider = parentProvider;
+			_parentProvider = serviceProvider;
 			this.ServiceContainer.AddService (typeof (IDesignerEventService), new DesignerEventService ());
 		}
 
@@ -224,10 +224,10 @@ namespace System.ComponentModel.Design
 				
 		}
 		
-		public object GetService (Type serviceType)
+		public object GetService (Type service)
 		{
 			if (_serviceContainer != null)
-				return _serviceContainer.GetService (serviceType);
+				return _serviceContainer.GetService (service);
 
 			return null;
 		}

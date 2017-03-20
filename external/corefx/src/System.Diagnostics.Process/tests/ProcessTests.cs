@@ -55,7 +55,7 @@ namespace System.Diagnostics.Tests
         }
 
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotWindowsNanoServer))]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Expected behavior varies on Windows and Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void TestBasePriorityOnWindows()
         {
             ProcessPriorityClass originalPriority = _process.PriorityClass;
@@ -80,7 +80,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact] 
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Expected behavior varies on Windows and Unix
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [OuterLoop]
         [Trait(XunitConstants.Category, XunitConstants.RequiresElevation)]
         public void TestBasePriorityOnUnix()
@@ -149,7 +149,7 @@ namespace System.Diagnostics.Tests
             }
         }
 
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Tests UseShellExecute with ProcessStartInfo
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [Fact]
         public void TestUseShellExecute_Unix_Succeeds()
         {
@@ -163,21 +163,13 @@ namespace System.Diagnostics.Tests
         [Fact]
         public void TestExitTime()
         {
-            // ExitTime resolution on some platforms is less accurate than our DateTime.UtcNow resolution, so
-            // we subtract ms from the begin time to account for it.
-            DateTime timeBeforeProcessStart = DateTime.UtcNow.AddMilliseconds(-25);
+            DateTime timeBeforeProcessStart = DateTime.UtcNow;
             Process p = CreateProcessLong();
             p.Start();
             Assert.Throws<InvalidOperationException>(() => p.ExitTime);
             p.Kill();
             Assert.True(p.WaitForExit(WaitInMS));
-
-            Assert.True(p.ExitTime.ToUniversalTime() >= timeBeforeProcessStart,
-                $@"TestExitTime is incorrect. " +
-                $@"TimeBeforeStart {timeBeforeProcessStart} Ticks={timeBeforeProcessStart.Ticks}, " +
-                $@"ExitTime={p.ExitTime}, Ticks={p.ExitTime.Ticks}, " +
-                $@"ExitTimeUniversal {p.ExitTime.ToUniversalTime()} Ticks={p.ExitTime.ToUniversalTime().Ticks}, " +
-                $@"NowUniversal {DateTime.Now.ToUniversalTime()} Ticks={DateTime.Now.Ticks}");
+            Assert.True(p.ExitTime.ToUniversalTime() >= timeBeforeProcessStart, "TestExitTime is incorrect.");
         }
 
         [Fact]
@@ -461,7 +453,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact] 
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Expected behavior varies on Windows and Unix
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [OuterLoop]
         [Trait(XunitConstants.Category, XunitConstants.RequiresElevation)]
         public void TestPriorityClassUnix()
@@ -481,7 +473,7 @@ namespace System.Diagnostics.Tests
             }
         }
 
-        [Fact, PlatformSpecific(TestPlatforms.Windows)]  // Expected behavior varies on Windows and Unix
+        [Fact, PlatformSpecific(TestPlatforms.Windows)]
         public void TestPriorityClassWindows()
         {
             ProcessPriorityClass priorityClass = _process.PriorityClass;
@@ -556,7 +548,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Uses P/Invokes to get process Id
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void TestRootGetProcessById()
         {
             Process p = Process.GetProcessById(1);
@@ -619,7 +611,7 @@ namespace System.Diagnostics.Tests
             return true;
         }
 
-        [PlatformSpecific(TestPlatforms.Windows)]  // Behavior differs on Windows and Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         [ConditionalTheory(nameof(ProcessPeformanceCounterEnabled))]
         [MemberData(nameof(GetTestProcess))]
         public void TestProcessOnRemoteMachineWindows(Process currentProcess, Process remoteProcess)
@@ -632,7 +624,7 @@ namespace System.Diagnostics.Tests
             Assert.Throws<NotSupportedException>(() => remoteProcess.MainModule);
         }
 
-        [Fact, PlatformSpecific(TestPlatforms.AnyUnix)]  // Behavior differs on Windows and Unix
+        [Fact, PlatformSpecific(TestPlatforms.AnyUnix)]
         public void TestProcessOnRemoteMachineUnix()
         {
             Process currentProcess = Process.GetCurrentProcess();
@@ -747,7 +739,7 @@ namespace System.Diagnostics.Tests
             Assert.NotEqual(0, e.NativeErrorCode);
         }
 
-        [PlatformSpecific(TestPlatforms.Windows)]  // Needs permissions on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         // NativeErrorCode not 193 on Windows Nano for ERROR_BAD_EXE_FORMAT, issue #10290
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotWindowsNanoServer))]
         public void TestStartOnWindowsWithBadFileFormat()
@@ -759,7 +751,7 @@ namespace System.Diagnostics.Tests
             Assert.NotEqual(0, e.NativeErrorCode);
         }
 
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Uses P/Invokes to set permissions
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [Fact]
         public void TestStartOnUnixWithBadPermissions()
         {
@@ -771,7 +763,7 @@ namespace System.Diagnostics.Tests
             Assert.NotEqual(0, e.NativeErrorCode);
         }
 
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Uses P/Invokes to set permissions
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [Fact]
         public void TestStartOnUnixWithBadFormat()
         {

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace System.Runtime.Serialization
 {
-#if uapaot
+#if NET_NATIVE
     public class XmlObjectSerializerReadContextComplex : XmlObjectSerializerReadContext
 #else
     internal class XmlObjectSerializerReadContextComplex : XmlObjectSerializerReadContext

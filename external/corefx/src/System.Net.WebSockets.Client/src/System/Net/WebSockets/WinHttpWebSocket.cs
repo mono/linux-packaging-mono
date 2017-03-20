@@ -230,7 +230,7 @@ namespace System.Net.WebSockets
                 sessionHandle,
                 Interop.WinHttp.WINHTTP_OPTION_ASSURED_NON_BLOCKING_CALLBACKS,
                 ref optionAssuredNonBlockingTrue,
-                (uint)sizeof(uint)))
+                (uint)Marshal.SizeOf<uint>()))
             {
                 WinHttpException.ThrowExceptionUsingLastError();
             }
@@ -676,7 +676,7 @@ namespace System.Net.WebSockets
             else
             {
                 bufferLength = buffer.Length;
-                fixed (char* pBuffer = &buffer[0])
+                fixed (char* pBuffer = buffer)
                 {
                     if (QueryHeaders(headerName, pBuffer, ref bufferLength))
                     {

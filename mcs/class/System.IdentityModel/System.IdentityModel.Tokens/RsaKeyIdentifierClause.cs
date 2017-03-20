@@ -78,12 +78,12 @@ namespace System.IdentityModel.Tokens
 			throw new NotImplementedException ();
 		}
 
-		public override bool Matches (SecurityKeyIdentifierClause keyIdentifierClause)
+		public override bool Matches (SecurityKeyIdentifierClause clause)
 		{
-			if (keyIdentifierClause == null)
-				throw new ArgumentNullException ("keyIdentifierClause");
+			if (clause == null)
+				throw new ArgumentNullException ("clause");
 			RsaKeyIdentifierClause rkic =
-				keyIdentifierClause as RsaKeyIdentifierClause;
+				clause as RsaKeyIdentifierClause;
 			return rkic != null && Matches (rkic.Rsa);
 		}
 

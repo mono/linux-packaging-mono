@@ -83,7 +83,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
 
             // Substitute on the CType.
-            if (atsCheck.GetTypeArgsAll().Count > 0)
+            if (atsCheck.GetTypeArgsAll().size > 0)
             {
                 CType = SymbolLoader.GetTypeManager().SubstType(CType, atsCheck);
             }
@@ -112,9 +112,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
 
             TypeArray typeArgs = type.AsAggregateType().GetTypeArgsAll();
-            for (int i = 0; i < typeArgs.Count; i++)
+            for (int i = 0; i < typeArgs.size; i++)
             {
-                if (!CheckTypeAccess(typeArgs[i], symWhere))
+                if (!CheckTypeAccess(typeArgs.Item(i), symWhere))
                     return false;
             }
 

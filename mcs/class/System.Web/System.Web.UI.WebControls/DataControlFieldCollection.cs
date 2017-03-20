@@ -94,8 +94,8 @@ namespace System.Web.UI.WebControls
 		}
 		
 		[Browsable (false)]
-		public DataControlField this [int index] {
-			get { return (DataControlField) ((IList)this) [index]; }
+		public DataControlField this [int i] {
+			get { return (DataControlField) ((IList)this) [i]; }
 		}
 
 		protected override void OnInsertComplete (int index, object value)

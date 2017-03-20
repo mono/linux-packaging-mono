@@ -127,7 +127,7 @@ namespace System.Security.Cryptography.Algorithms.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Operation is not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void Digest()
         {
             bool rightClass = false;

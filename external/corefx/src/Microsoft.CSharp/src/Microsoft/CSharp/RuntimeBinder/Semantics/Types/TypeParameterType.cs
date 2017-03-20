@@ -26,9 +26,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             //   U then S depends on U.
 
             TypeArray pConstraints = GetBounds();
-            for (int iConstraint = 0; iConstraint < pConstraints.Count; ++iConstraint)
+            for (int iConstraint = 0; iConstraint < pConstraints.size; ++iConstraint)
             {
-                CType pConstraint = pConstraints[iConstraint];
+                CType pConstraint = pConstraints.Item(iConstraint);
                 if (pConstraint == pType)
                 {
                     return true;

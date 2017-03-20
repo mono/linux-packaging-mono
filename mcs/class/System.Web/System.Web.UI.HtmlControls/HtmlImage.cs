@@ -185,9 +185,9 @@ namespace System.Web.UI.HtmlControls
 			}
 		}
 
-		protected override void RenderAttributes (HtmlTextWriter writer)
+		protected override void RenderAttributes (HtmlTextWriter w)
 		{
-			PreProcessRelativeReference (writer, "src");
+			PreProcessRelativeReference (w, "src");
 
 			/* MS does not seem to render the src attribute if it
 			 * is empty. Firefox, at least, will fetch the current
@@ -197,13 +197,13 @@ namespace System.Web.UI.HtmlControls
 			if (src == null || src.Length == 0)
 				Attributes.Remove ("src");
 
-			base.RenderAttributes (writer);
+			base.RenderAttributes (w);
 
 			/* MS closes the HTML element at the end of
 			 * the attributes too, according to the nunit
 			 * tests
 			 */
-			writer.Write (" /");
+			w.Write (" /");
 		}
 	}
 }

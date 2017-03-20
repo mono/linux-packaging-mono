@@ -26,24 +26,24 @@ namespace System.Diagnostics
         private bool _initializing = false;
         private volatile string _switchValueString = String.Empty;
         private string _defaultValue;
-        private object _initializedLock;
+        private object _intializedLock;
 
         private static List<WeakReference> s_switches = new List<WeakReference>();
         private static int s_LastCollectionCount;
         private StringDictionary _attributes;
 
-        private object InitializedLock
+        private object IntializedLock
         {
             [SuppressMessage("Microsoft.Concurrency", "CA8001", Justification = "Reviewed for thread-safety")]
             get
             {
-                if (_initializedLock == null)
+                if (_intializedLock == null)
                 {
                     Object o = new Object();
-                    Interlocked.CompareExchange<Object>(ref _initializedLock, o, null);
+                    Interlocked.CompareExchange<Object>(ref _intializedLock, o, null);
                 }
 
-                return _initializedLock;
+                return _intializedLock;
             }
         }
 
@@ -154,7 +154,7 @@ namespace System.Diagnostics
             set
             {
                 bool didUpdate = false;
-                lock (InitializedLock)
+                lock (IntializedLock)
                 {
                     _initialized = true;
                     if (_switchSetting != value)
@@ -197,7 +197,7 @@ namespace System.Diagnostics
         {
             if (!_initialized)
             {
-                lock (InitializedLock)
+                lock (IntializedLock)
                 {
                     if (_initialized || _initializing)
                     {
@@ -251,7 +251,7 @@ namespace System.Diagnostics
 
         internal void Refresh()
         {
-            lock (InitializedLock)
+            lock (IntializedLock)
             {
                 _initialized = false;
                 Initialize();

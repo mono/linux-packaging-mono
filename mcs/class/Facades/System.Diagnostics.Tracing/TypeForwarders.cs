@@ -25,7 +25,6 @@
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventChannel))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventCommand))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventCommandEventArgs))]
-[assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventCounter))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventDataAttribute))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventFieldAttribute))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventFieldFormat))]
@@ -45,3 +44,7 @@
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventTask))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventWrittenEventArgs))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.NonEventAttribute))]
+
+#if NETSTANDARD
+[assembly: System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.Tracing.EventCounter))]
+#endif

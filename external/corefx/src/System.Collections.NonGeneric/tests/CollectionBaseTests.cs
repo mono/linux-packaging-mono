@@ -242,10 +242,8 @@ namespace System.Collections.Tests
         {
             MyCollection collBase = CreateCollection(100);
             var fooArr = new Foo[100];
-            // Index < 0
-            AssertExtensions.Throws<ArgumentOutOfRangeException>("destinationIndex", "dstIndex", () => collBase.CopyTo(fooArr, -1));
-            // Index + fooArray.Length > collBase.Count
-            AssertExtensions.Throws<ArgumentException>("destinationArray", string.Empty, () => collBase.CopyTo(fooArr, 50));
+            Assert.Throws<ArgumentOutOfRangeException>("dstIndex", () => collBase.CopyTo(fooArr, -1)); // Index < 0
+            Assert.Throws<ArgumentException>(string.Empty, () => collBase.CopyTo(fooArr, 50)); // Index + fooArray.Length > collBase.Count
         }
 
         [Fact]

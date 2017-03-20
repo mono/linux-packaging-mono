@@ -14,17 +14,29 @@ namespace System.Diagnostics
 {
     internal sealed class PerformanceCounterLib
     {
-        private static string s_computerName;
+        private static volatile string s_computerName;
 
         private PerformanceMonitor _performanceMonitor;
         private string _machineName;
         private string _perfLcid;
 
-        private static Dictionary<String, PerformanceCounterLib> s_libraryTable;
+        private static volatile Dictionary<String, PerformanceCounterLib> s_libraryTable;
         private Dictionary<int, string> _nameTable;
         private readonly object _nameTableLock = new Object();
 
         private static Object s_internalSyncObject;
+        private static Object InternalSyncObject
+        {
+            get
+            {
+                if (s_internalSyncObject == null)
+                {
+                    Object o = new Object();
+                    Interlocked.CompareExchange(ref s_internalSyncObject, o, null);
+                }
+                return s_internalSyncObject;
+            }
+        }
 
         internal PerformanceCounterLib(string machineName, string lcid)
         {
@@ -33,7 +45,24 @@ namespace System.Diagnostics
         }
 
         /// <internalonly/>
-        internal static string ComputerName => LazyInitializer.EnsureInitialized(ref s_computerName, ref s_internalSyncObject, () => Interop.Kernel32.GetComputerName());
+        internal static string ComputerName
+        {
+            get
+            {
+                if (s_computerName == null)
+                {
+                    lock (InternalSyncObject)
+                    {
+                        if (s_computerName == null)
+                        {
+                            s_computerName = Interop.Kernel32.GetComputerName();
+                        }
+                    }
+                }
+
+                return s_computerName;
+            }
+        }
 
         internal Dictionary<int, string> NameTable
         {
@@ -66,7 +95,14 @@ namespace System.Diagnostics
             else
                 machineName = machineName.ToLowerInvariant();
 
-            LazyInitializer.EnsureInitialized(ref s_libraryTable, ref s_internalSyncObject, () => new Dictionary<string, PerformanceCounterLib>());
+            if (PerformanceCounterLib.s_libraryTable == null)
+            {
+                lock (InternalSyncObject)
+                {
+                    if (PerformanceCounterLib.s_libraryTable == null)
+                        PerformanceCounterLib.s_libraryTable = new Dictionary<string, PerformanceCounterLib>();
+                }
+            }
 
             string libraryKey = machineName + ":" + lcidString;
             PerformanceCounterLib library;
@@ -82,7 +118,7 @@ namespace System.Diagnostics
         {
             if (_performanceMonitor == null)
             {
-                lock (LazyInitializer.EnsureInitialized(ref s_internalSyncObject))
+                lock (InternalSyncObject)
                 {
                     if (_performanceMonitor == null)
                         _performanceMonitor = new PerformanceMonitor(_machineName);

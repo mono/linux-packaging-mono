@@ -49,7 +49,7 @@ namespace System.Xml.Xsl
         private static readonly XmlReaderSettings s_readerSettings = null;
 
         // Version for GeneratedCodeAttribute
-        private readonly string Version = typeof(XslCompiledTransform).Assembly.GetName().Version.ToString();
+        private const string Version = ThisAssembly.Version;
 
         static XslCompiledTransform()
         {

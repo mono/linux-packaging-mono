@@ -38,6 +38,7 @@ using NUnit.Framework;
 namespace MonoTests.System.Drawing.Imaging {
 
 	[TestFixture]
+	[SecurityPermission (SecurityAction.Deny, UnmanagedCode = true)]
 	public class TiffCodecTest {
 
 		[TestFixtureSetUp]

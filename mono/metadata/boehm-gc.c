@@ -259,6 +259,9 @@ mono_gc_base_init (void)
 	GC_set_on_collection_event (on_gc_notification);
 	GC_on_heap_resize = on_gc_heap_resize;
 
+	MONO_GC_REGISTER_ROOT_FIXED (gc_handles [HANDLE_NORMAL].entries, MONO_ROOT_SOURCE_GC_HANDLE, "gc handles table");
+	MONO_GC_REGISTER_ROOT_FIXED (gc_handles [HANDLE_PINNED].entries, MONO_ROOT_SOURCE_GC_HANDLE, "gc handles table");
+
 	gc_initialized = TRUE;
 }
 
@@ -535,12 +538,6 @@ mono_gc_register_root (char *start, size_t size, void *descr, MonoGCRootSource s
 	return TRUE;
 }
 
-int
-mono_gc_register_root_wbarrier (char *start, size_t size, MonoGCDescriptor descr, MonoGCRootSource source, const char *msg)
-{
-	return mono_gc_register_root (start, size, descr, source, msg);
-}
-
 void
 mono_gc_deregister_root (char* addr)
 {
@@ -618,12 +615,6 @@ mono_gc_make_descr_from_bitmap (gsize *bitmap, int numbits)
 }
 
 void*
-mono_gc_make_vector_descr (void)
-{
-	return NULL;
-}
-
-void*
 mono_gc_make_root_descr_all_refs (int numbits)
 {
 	return NULL;
@@ -632,13 +623,25 @@ mono_gc_make_root_descr_all_refs (int numbits)
 void*
 mono_gc_alloc_fixed (size_t size, void *descr, MonoGCRootSource source, const char *msg)
 {
-	return GC_MALLOC_UNCOLLECTABLE (size);
+	/* To help track down typed allocation bugs */
+	/*
+	static int count;
+	count ++;
+	if (count == atoi (g_getenv ("COUNT2")))
+		printf ("HIT!\n");
+	if (count > atoi (g_getenv ("COUNT2")))
+		return GC_MALLOC (size);
+	*/
+
+	if (descr)
+		return GC_MALLOC_EXPLICITLY_TYPED (size, (GC_descr)descr);
+	else
+		return GC_MALLOC (size);
 }
 
 void
 mono_gc_free_fixed (void* addr)
 {
-	GC_FREE (addr);
 }
 
 void *

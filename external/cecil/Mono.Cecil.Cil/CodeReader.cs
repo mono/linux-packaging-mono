@@ -318,7 +318,9 @@ namespace Mono.Cecil.Cil {
 				switch (instruction.opcode.OperandType) {
 				case OperandType.ShortInlineBrTarget:
 				case OperandType.InlineBrTarget:
-					instruction.operand = GetInstruction ((int) instruction.operand);
+					var targetInstruction = GetInstruction ((int) instruction.operand);
+					if (targetInstruction != null)
+						instruction.operand = targetInstruction;
 					break;
 				case OperandType.InlineSwitch:
 					var offsets = (int []) instruction.operand;

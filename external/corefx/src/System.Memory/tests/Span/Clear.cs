@@ -192,7 +192,6 @@ namespace System.SpanTests
             Assert.Equal<TestValueTypeWithReference>(expected, actual);
         }
 
-        [ActiveIssue(16492)]
         [OuterLoop]
         [Fact]
         public unsafe static void ClearLongerThanUintMaxValueBytes()
@@ -239,7 +238,6 @@ namespace System.SpanTests
             }
         }
 
-        [ActiveIssue(16492)]
         [OuterLoop]
         [Fact]
         public unsafe static void ClearNativeLongerThanUintMaxValueBytes()

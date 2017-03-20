@@ -56,9 +56,9 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             private static int NumberOfErrorTypes(TypeArray pTypeArgs)
             {
                 int nCount = 0;
-                for (int i = 0; i < pTypeArgs.Count; i++)
+                for (int i = 0; i < pTypeArgs.Size; i++)
                 {
-                    if (pTypeArgs[i].IsErrorType())
+                    if (pTypeArgs.Item(i).IsErrorType())
                     {
                         nCount++;
                     }
@@ -73,18 +73,18 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
                 if (leftErrors == rightErrors)
                 {
-                    int max = pTypeArgs1.Count > pTypeArgs2.Count ? pTypeArgs2.Count : pTypeArgs1.Count;
+                    int max = pTypeArgs1.Size > pTypeArgs2.Size ? pTypeArgs2.Size : pTypeArgs1.Size;
 
                     // If we don't have a winner yet, go through each element's type args.
                     for (int i = 0; i < max; i++)
                     {
-                        if (pTypeArgs1[i].IsAggregateType())
+                        if (pTypeArgs1.Item(i).IsAggregateType())
                         {
-                            leftErrors += NumberOfErrorTypes(pTypeArgs1[i].AsAggregateType().GetTypeArgsAll());
+                            leftErrors += NumberOfErrorTypes(pTypeArgs1.Item(i).AsAggregateType().GetTypeArgsAll());
                         }
-                        if (pTypeArgs2[i].IsAggregateType())
+                        if (pTypeArgs2.Item(i).IsAggregateType())
                         {
-                            rightErrors += NumberOfErrorTypes(pTypeArgs2[i].AsAggregateType().GetTypeArgsAll());
+                            rightErrors += NumberOfErrorTypes(pTypeArgs2.Item(i).AsAggregateType().GetTypeArgsAll());
                         }
                     }
                 }

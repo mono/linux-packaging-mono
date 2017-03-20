@@ -13,18 +13,21 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
     {
         private Log _log;
         private TestBuildEngine _engine;
-        private ITaskItem[] _packageIndexes;
 
         public ApplyBaseLineTests(ITestOutputHelper output)
         {
             _log = new Log(output);
             _engine = new TestBuildEngine(_log);
-            _packageIndexes = new[] { new TaskItem("packageIndex.json") };
         }
 
         [Fact]
         public void ApplyBaseLineLiftToBaseLine()
         {
+            ITaskItem[] baseLine = new[]
+            {
+                CreateItem("System.Runtime", "4.0.21")
+            };
+
             ITaskItem[] dependencies = new[]
             {
                 CreateItem("System.Runtime", "4.0.0")
@@ -33,8 +36,7 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
             ApplyBaseLine task = new ApplyBaseLine()
             {
                 BuildEngine = _engine,
-                Apply = true,
-                PackageIndexes = _packageIndexes,
+                BaseLinePackages = baseLine,
                 OriginalDependencies = dependencies
             };
 
@@ -50,6 +52,10 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
         [Fact]
         public void DontApplyBaseLineIfGreater()
         {
+            ITaskItem[] baseLine = new[]
+            {
+                CreateItem("System.Runtime", "4.0.21")
+            };
 
             ITaskItem[] dependencies = new[]
             {
@@ -59,8 +65,7 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
             ApplyBaseLine task = new ApplyBaseLine()
             {
                 BuildEngine = _engine,
-                Apply = true,
-                PackageIndexes = _packageIndexes,
+                BaseLinePackages = baseLine,
                 OriginalDependencies = dependencies
             };
 
@@ -76,6 +81,11 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
         [Fact]
         public void ApplyBaselineToUnversionedDependency()
         {
+            ITaskItem[] baseLine = new[]
+            {
+                CreateItem("System.Runtime", "4.0.21")
+            };
+
             ITaskItem[] dependencies = new[]
             {
                 CreateItem("System.Runtime", null)
@@ -84,8 +94,7 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
             ApplyBaseLine task = new ApplyBaseLine()
             {
                 BuildEngine = _engine,
-                Apply = true,
-                PackageIndexes = _packageIndexes,
+                BaseLinePackages = baseLine,
                 OriginalDependencies = dependencies
             };
 
@@ -101,6 +110,10 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
         [Fact]
         public void ApplyBaselineToUntrackedDependency()
         {
+            ITaskItem[] baseLine = new[]
+            {
+                CreateItem("System.Runtime", "4.0.21")
+            };
 
             ITaskItem[] dependencies = new[]
             {
@@ -110,8 +123,7 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
             ApplyBaseLine task = new ApplyBaseLine()
             {
                 BuildEngine = _engine,
-                Apply = true,
-                PackageIndexes = _packageIndexes,
+                BaseLinePackages = baseLine,
                 OriginalDependencies = dependencies
             };
 

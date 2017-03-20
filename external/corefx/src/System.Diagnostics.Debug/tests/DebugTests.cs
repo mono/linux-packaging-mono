@@ -16,6 +16,7 @@ namespace System.Diagnostics.Tests
             RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "\r\n" : "\n";
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public void Asserts()
         {
             VerifyLogged(() => { Debug.Assert(true); }, "");
@@ -30,6 +31,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public void Fail()
         {
             VerifyAssert(() => { Debug.Fail("something bad happened"); }, "something bad happened");
@@ -37,6 +39,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public void Write()
         {
             VerifyLogged(() => { Debug.Write(5); }, "5");
@@ -53,6 +56,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public void Print()
         {
             VerifyLogged(() => { Debug.Print("logged"); }, "logged");
@@ -60,6 +64,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public void WriteLine()
         {
             VerifyLogged(() => { Debug.WriteLine(5); }, "5" + s_newline);
@@ -74,6 +79,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public void WriteIf()
         {
             VerifyLogged(() => { Debug.WriteIf(true, 5); }, "5");
@@ -90,6 +96,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public void WriteLineIf()
         {
             VerifyLogged(() => { Debug.WriteLineIf(true, 5); }, "5" + s_newline);
@@ -109,6 +116,7 @@ namespace System.Diagnostics.Tests
         [InlineData(2)]
         [InlineData(4)]
         [InlineData(3)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public void Indentation(int indentSize)
         {
             Debug.IndentLevel = 0;

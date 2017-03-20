@@ -26,8 +26,8 @@ namespace System.ComponentModel
         // class load anyway.
         private static readonly WeakHashtable s_providerTable = new WeakHashtable();     // mapping of type or object hash to a provider list
         private static readonly Hashtable s_providerTypeTable = new Hashtable();         // A direct mapping from type to provider.
-        private static readonly Hashtable s_defaultProviders = new Hashtable(); // A table of type -> default provider to track DefaultTypeDescriptionProviderAttributes.
-        private static WeakHashtable s_associationTable;
+        private static volatile Hashtable s_defaultProviders = new Hashtable(); // A table of type -> default provider to track DefaultTypeDescriptionProviderAttributes.
+        private static volatile WeakHashtable s_associationTable;
         private static int s_metadataVersion;                          // a version stamp for our metadata.  Used by property descriptors to know when to rebuild attributes.
 
         // This is an index that we use to create a unique name for a property in the
@@ -90,8 +90,6 @@ namespace System.ComponentModel
         ///     This value increments each time someone refreshes or changes metadata.
         /// </summary>
         internal static int MetadataVersion => s_metadataVersion;
-
-        private static WeakHashtable AssociationTable => LazyInitializer.EnsureInitialized(ref s_associationTable, () => new WeakHashtable());
 
         /// <summary>
         ///    Occurs when Refreshed is raised for a component.
@@ -311,6 +309,17 @@ namespace System.ComponentModel
         /// </summary>
         private static void CheckDefaultProvider(Type type)
         {
+            if (s_defaultProviders == null)
+            {
+                lock (s_internalSyncObject)
+                {
+                    if (s_defaultProviders == null)
+                    {
+                        s_defaultProviders = new Hashtable();
+                    }
+                }
+            }
+
             if (s_defaultProviders.ContainsKey(type))
             {
                 return;
@@ -337,13 +346,13 @@ namespace System.ComponentModel
             // more than one of these, but walk anyway.  Walk in 
             // reverse order so that the most derived takes precidence.
             //
-            object[] attrs = type.GetCustomAttributes(typeof(TypeDescriptionProviderAttribute), false).ToArray();
+            object[] attrs = type.GetTypeInfo().GetCustomAttributes(typeof(TypeDescriptionProviderAttribute), false).ToArray();
             bool providerAdded = false;
             for (int idx = attrs.Length - 1; idx >= 0; idx--)
             {
                 TypeDescriptionProviderAttribute pa = (TypeDescriptionProviderAttribute)attrs[idx];
                 Type providerType = Type.GetType(pa.TypeName);
-                if (providerType != null && typeof(TypeDescriptionProvider).IsAssignableFrom(providerType))
+                if (providerType != null && typeof(TypeDescriptionProvider).GetTypeInfo().IsAssignableFrom(providerType))
                 {
                     TypeDescriptionProvider prov = (TypeDescriptionProvider)Activator.CreateInstance(providerType);
                     AddProvider(prov, type);
@@ -354,7 +363,7 @@ namespace System.ComponentModel
             // If we did not add a provider, check the base class.  
             if (!providerAdded)
             {
-                Type baseType = type.BaseType;
+                Type baseType = type.GetTypeInfo().BaseType;
                 if (baseType != null && baseType != type)
                 {
                     CheckDefaultProvider(baseType);
@@ -388,18 +397,28 @@ namespace System.ComponentModel
                 throw new ArgumentException(SR.TypeDescriptorSameAssociation);
             }
 
-            WeakHashtable associationTable = AssociationTable;
-            IList associations = (IList)associationTable[primary];
+            if (s_associationTable == null)
+            {
+                lock (s_internalSyncObject)
+                {
+                    if (s_associationTable == null)
+                    {
+                        s_associationTable = new WeakHashtable();
+                    }
+                }
+            }
+
+            IList associations = (IList)s_associationTable[primary];
 
             if (associations == null)
             {
-                lock (associationTable)
+                lock (s_associationTable)
                 {
-                    associations = (IList)associationTable[primary];
+                    associations = (IList)s_associationTable[primary];
                     if (associations == null)
                     {
                         associations = new ArrayList(4);
-                        associationTable.SetWeak(primary, associations);
+                        s_associationTable.SetWeak(primary, associations);
                     }
                 }
             }
@@ -581,11 +600,11 @@ namespace System.ComponentModel
 
             object associatedObject = primary;
 
-            if (!type.IsInstanceOfType(primary))
+            if (!type.GetTypeInfo().IsInstanceOfType(primary))
             {
                 // Check our association table for a match.
                 //
-                Hashtable assocTable = AssociationTable;
+                Hashtable assocTable = s_associationTable;
                 IList associations = (IList) assocTable?[primary];
                 if (associations != null)
                 {
@@ -602,7 +621,7 @@ namespace System.ComponentModel
                             {
                                 associations.RemoveAt(idx);
                             }
-                            else if (type.IsInstanceOfType(secondary))
+                            else if (type.GetTypeInfo().IsInstanceOfType(secondary))
                             {
                                 associatedObject = secondary;
                             }
@@ -633,7 +652,7 @@ namespace System.ComponentModel
                                 // an object that this PropertyDescriptor can't munch on, but it's
                                 // clearer to use that object instance instead of it's designer.
                                 //
-                                if (designer != null && type.IsInstanceOfType(designer))
+                                if (designer != null && type.GetTypeInfo().IsInstanceOfType(designer))
                                 {
                                     associatedObject = designer;
                                 }
@@ -1205,7 +1224,8 @@ namespace System.ComponentModel
 
         private static Type GetNodeForBaseType(Type searchType)
         {
-            if (searchType.IsInterface)
+            var typeInfo = searchType.GetTypeInfo();
+            if (typeInfo.IsInterface)
             {
                 return InterfaceType;
             }
@@ -1213,7 +1233,7 @@ namespace System.ComponentModel
             {
                 return null;
             }
-            return searchType.BaseType;
+            return typeInfo.BaseType;
         }
 
         /// <summary>
@@ -1673,7 +1693,7 @@ namespace System.ComponentModel
 
                         Type keyType = key as Type ?? key.GetType();
 
-                        target.Provider = new DelegatingTypeDescriptionProvider(keyType.BaseType);
+                        target.Provider = new DelegatingTypeDescriptionProvider(keyType.GetTypeInfo().BaseType);
                     }
                     else
                     {
@@ -2163,7 +2183,7 @@ namespace System.ComponentModel
                     {
                         DictionaryEntry de = e.Entry;
                         Type nodeType = de.Key as Type;
-                        if (nodeType != null && type.IsAssignableFrom(nodeType) || nodeType == typeof(object))
+                        if (nodeType != null && type.GetTypeInfo().IsAssignableFrom(nodeType) || nodeType == typeof(object))
                         {
                             TypeDescriptionNode node = (TypeDescriptionNode)de.Value;
                             while (node != null && !(node.Provider is ReflectTypeDescriptionProvider))
@@ -2249,7 +2269,7 @@ namespace System.ComponentModel
                 {
                     DictionaryEntry de = e.Entry;
                     Type nodeType = de.Key as Type;
-                    if (nodeType != null && type.IsAssignableFrom(nodeType) || nodeType == typeof(object))
+                    if (nodeType != null && type.GetTypeInfo().IsAssignableFrom(nodeType) || nodeType == typeof(object))
                     {
                         TypeDescriptionNode node = (TypeDescriptionNode)de.Value;
                         while (node != null && !(node.Provider is ReflectTypeDescriptionProvider))
@@ -2312,7 +2332,7 @@ namespace System.ComponentModel
                 {
                     DictionaryEntry de = e.Entry;
                     Type nodeType = de.Key as Type;
-                    if (nodeType != null && nodeType.Module.Equals(module) || nodeType == typeof(object))
+                    if (nodeType != null && nodeType.GetTypeInfo().Module.Equals(module) || nodeType == typeof(object))
                     {
                         TypeDescriptionNode node = (TypeDescriptionNode)de.Value;
                         while (node != null && !(node.Provider is ReflectTypeDescriptionProvider))
@@ -2463,7 +2483,7 @@ namespace System.ComponentModel
                 throw new ArgumentNullException(nameof(secondary));
             }
 
-            Hashtable assocTable = AssociationTable;
+            Hashtable assocTable = s_associationTable;
             IList associations = (IList) assocTable?[primary];
             if (associations != null)
             {
@@ -2496,7 +2516,7 @@ namespace System.ComponentModel
                 throw new ArgumentNullException(nameof(primary));
             }
 
-            Hashtable assocTable = AssociationTable;
+            Hashtable assocTable = s_associationTable;
             assocTable?.Remove(primary);
         }
 
@@ -3252,7 +3272,7 @@ namespace System.ComponentModel
                     throw new ArgumentNullException(nameof(objectType));
                 }
 
-                if (instance != null && !objectType.IsInstanceOfType(instance))
+                if (instance != null && !objectType.GetTypeInfo().IsInstanceOfType(instance))
                 {
                     throw new ArgumentException(nameof(instance));
                 }

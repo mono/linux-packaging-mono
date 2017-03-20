@@ -167,14 +167,14 @@ namespace System.Web.UI {
 			return (bool) attr_render [null];
 		}
 
-		protected override bool OnStyleAttributeRender (string name, string value, HtmlTextWriterStyle key)
+		protected override bool OnStyleAttributeRender (string styleAttrName, string value, HtmlTextWriterStyle key)
 		{
 			return key == HtmlTextWriterStyle.Display;
 		}
 
-		protected override bool OnTagRender (string name, HtmlTextWriterTag key)
+		protected override bool OnTagRender (string name, HtmlTextWriterTag tag)
 		{
-			return key != HtmlTextWriterTag.Span;
+			return tag != HtmlTextWriterTag.Span;
 		}
 	}
 }

@@ -61,47 +61,47 @@ namespace System.DirectoryServices {
 			set { List[index] = value; }
 		}
 
-		public int Add (DirectoryServicesPermissionEntry value)
+		public int Add (DirectoryServicesPermissionEntry entry)
 		{
-			return List.Add (value);
+			return List.Add (entry);
 		}
 
-		public void AddRange (DirectoryServicesPermissionEntry[] value)
+		public void AddRange (DirectoryServicesPermissionEntry[] entries)
 		{
-			foreach (DirectoryServicesPermissionEntry entry in value)
+			foreach (DirectoryServicesPermissionEntry entry in entries)
 				Add (entry);
 		}
 
-		public void AddRange (DirectoryServicesPermissionEntryCollection value)
+		public void AddRange (DirectoryServicesPermissionEntryCollection entries)
 		{
-			foreach (DirectoryServicesPermissionEntry entry in value)
+			foreach (DirectoryServicesPermissionEntry entry in entries)
 				Add (entry);
 		}
 
-		public void CopyTo (DirectoryServicesPermissionEntry[] array, int index)
+		public void CopyTo (DirectoryServicesPermissionEntry[] copy_to, int index)
 		{
 			foreach (DirectoryServicesPermissionEntry entry in List)
-				array[index++] = entry;
+				copy_to[index++] = entry;
 		}
 
-		public bool Contains (DirectoryServicesPermissionEntry value)
+		public bool Contains (DirectoryServicesPermissionEntry entry)
 		{
-			return List.Contains (value);
+			return List.Contains (entry);
 		}
 
-		public int IndexOf (DirectoryServicesPermissionEntry value)
+		public int IndexOf (DirectoryServicesPermissionEntry entry)
 		{
-			return List.IndexOf (value);
+			return List.IndexOf (entry);
 		}
 
-		public void Insert (int index, DirectoryServicesPermissionEntry value)
+		public void Insert (int pos, DirectoryServicesPermissionEntry entry)
 		{
-			List.Insert (index, value);
+			List.Insert (pos, entry);
 		}
 
-		public void Remove (DirectoryServicesPermissionEntry value)
+		public void Remove (DirectoryServicesPermissionEntry entry)
 		{
-			List.Remove (value);
+			List.Remove (entry);
 		}
 
 		protected override void OnClear ()

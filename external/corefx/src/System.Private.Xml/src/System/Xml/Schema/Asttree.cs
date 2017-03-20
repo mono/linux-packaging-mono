@@ -260,7 +260,7 @@ namespace System.Xml.Schema
 
             bool result = false;
 
-            // no stack element for single attribute, so dealing with it separately
+            // no stack element for single attribute, so dealing with it seperately
             if (_subtree.TopNode.Input == null)
             {
                 return (_subtree.IsDss || (depth == 1));

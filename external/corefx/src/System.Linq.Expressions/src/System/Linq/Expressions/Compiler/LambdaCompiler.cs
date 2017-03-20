@@ -3,27 +3,22 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Dynamic.Utils;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
 namespace System.Linq.Expressions.Compiler
 {
-    internal interface ILocalCache
-    {
-        LocalBuilder GetLocal(Type type);
-
-        void FreeLocal(LocalBuilder local);
-    }
-
     /// <summary>
     /// LambdaCompiler is responsible for compiling individual lambda (LambdaExpression). The complete tree may
     /// contain multiple lambdas, the Compiler class is responsible for compiling the whole tree, individual
     /// lambdas are then compiled by the LambdaCompiler.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
-    internal sealed partial class LambdaCompiler : ILocalCache
+    internal sealed partial class LambdaCompiler
     {
         private delegate void WriteBack(LambdaCompiler compiler);
 
@@ -57,7 +52,7 @@ namespace System.Linq.Expressions.Compiler
         private readonly BoundConstants _boundConstants;
 
         // Free list of locals, so we reuse them rather than creating new ones
-        private readonly KeyedStack<Type, LocalBuilder> _freeLocals = new KeyedStack<Type, LocalBuilder>();
+        private readonly KeyedQueue<Type, LocalBuilder> _freeLocals = new KeyedQueue<Type, LocalBuilder>();
 
         /// <summary>
         /// Creates a lambda compiler that will compile to a dynamic method
@@ -113,7 +108,7 @@ namespace System.Linq.Expressions.Compiler
 
             _tree = tree;
             _lambda = lambda;
-            _typeBuilder = (TypeBuilder)method.DeclaringType;
+            _typeBuilder = (TypeBuilder)method.DeclaringType.GetTypeInfo();
             _method = method;
             _hasClosureArgument = hasClosureArgument;
 
@@ -222,12 +217,26 @@ namespace System.Linq.Expressions.Compiler
             return VariableBinder.Bind(lambda);
         }
 
-        public LocalBuilder GetLocal(Type type) => _freeLocals.TryPop(type) ?? _ilg.DeclareLocal(type);
-
-        public void FreeLocal(LocalBuilder local)
+        internal LocalBuilder GetLocal(Type type)
         {
-            Debug.Assert(local != null);
-            _freeLocals.Push(local.LocalType, local);
+            Debug.Assert(type != null);
+
+            LocalBuilder local;
+            if (_freeLocals.TryDequeue(type, out local))
+            {
+                Debug.Assert(type == local.LocalType);
+                return local;
+            }
+
+            return _ilg.DeclareLocal(type);
+        }
+
+        internal void FreeLocal(LocalBuilder local)
+        {
+            if (local != null)
+            {
+                _freeLocals.Enqueue(local.LocalType, local);
+            }
         }
 
         internal LocalBuilder GetNamedLocal(Type type, ParameterExpression variable)

@@ -70,7 +70,7 @@ namespace Mono.Cecil.PE {
 			ushort sections = ReadUInt16 ();
 
 			// TimeDateStamp		4
-			image.Timestamp = ReadUInt32 ();
+			image.TimeStamp = ReadUInt32 ();
 			// PointerToSymbolTable	4
 			// NumberOfSymbols		4
 			// OptionalHeaderSize	2
@@ -91,7 +91,19 @@ namespace Mono.Cecil.PE {
 
 		TargetArchitecture ReadArchitecture ()
 		{
-			return (TargetArchitecture) ReadUInt16 ();
+			var machine = ReadUInt16 ();
+			switch (machine) {
+			case 0x014c:
+				return TargetArchitecture.I386;
+			case 0x8664:
+				return TargetArchitecture.AMD64;
+			case 0x0200:
+				return TargetArchitecture.IA64;
+			case 0x01c4:
+				return TargetArchitecture.ARMv7;
+			}
+
+			throw new NotSupportedException ();
 		}
 
 		static ModuleKind GetModuleKind (ushort characteristics, ushort subsystem)

@@ -5,10 +5,10 @@
 namespace System.DirectoryServices.Protocols
 {
     using System;
+    using System.Xml;
     using System.Collections;
     using System.ComponentModel;
     using System.Diagnostics;
-    using System.Globalization;
     using System.Text;
     using System.Runtime.InteropServices;
     using System.Security.Principal;
@@ -64,10 +64,13 @@ namespace System.DirectoryServices.Protocols
 
         public SortKey()
         {
+            Utility.CheckOSVersion();
         }
 
         public SortKey(string attributeName, string matchingRule, bool reverseOrder)
         {
+            Utility.CheckOSVersion();
+
             AttributeName = attributeName;
             _rule = matchingRule;
             _order = reverseOrder;
@@ -127,6 +130,8 @@ namespace System.DirectoryServices.Protocols
 
         public DirectoryControl(string type, byte[] value, bool isCritical, bool serverSide)
         {
+            Utility.CheckOSVersion();
+
             _directoryControlType = type;
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -139,6 +144,88 @@ namespace System.DirectoryServices.Protocols
             }
             _directoryControlCriticality = isCritical;
             _directoryControlServerSide = serverSide;
+        }
+
+        internal DirectoryControl(XmlElement el)
+        {
+            XmlNamespaceManager ns = NamespaceUtils.GetDsmlNamespaceManager();
+
+            //
+            // Populate the control's criticality
+            //
+            XmlAttribute attrCriticality = (XmlAttribute)el.SelectSingleNode("@dsml:criticality", ns);
+
+            if (attrCriticality == null)
+            {
+                // try it without the namespace qualifier, in case the sender omitted it
+                attrCriticality = (XmlAttribute)el.SelectSingleNode("@criticality", ns);
+            }
+
+            if (attrCriticality == null)
+            {
+                // DSML v2 defaults criticality to false if not present in the XML
+                _directoryControlCriticality = false;
+            }
+            else
+            {
+                string s = attrCriticality.Value;
+
+                if ((s == "true") ||
+                    (s == "1"))
+                {
+                    _directoryControlCriticality = true;
+                }
+                else if ((s == "false") ||
+                    (s == "0"))
+                {
+                    _directoryControlCriticality = false;
+                }
+                else
+                {
+                    Debug.WriteLine("Processing response, the control has wrong value of crticality specified");
+                    throw new DsmlInvalidDocumentException(Res.GetString(Res.BadControl));
+                }
+            }
+
+            //
+            // Populate the control's name (Type)
+            //
+            XmlAttribute attrType = (XmlAttribute)el.SelectSingleNode("@dsml:type", ns);
+
+            if (attrType == null)
+            {
+                // try it without the namespace qualifier, in case the sender omitted it
+                attrType = (XmlAttribute)el.SelectSingleNode("@type", ns);
+            }
+
+            if (attrType == null)
+            {
+                // DSML v2 requires the control to specify a type
+                Debug.WriteLine("Processing response, the control does not have oid defined");
+                throw new DsmlInvalidDocumentException(Res.GetString(Res.BadControl));
+            }
+            else
+            {
+                _directoryControlType = attrType.Value;
+            }
+
+            //
+            // Populate the control's value
+            //
+            XmlElement elemValue = (XmlElement)el.SelectSingleNode("dsml:controlValue", ns);
+
+            if (elemValue != null)
+            {
+                try
+                {
+                    this.directoryControlValue = System.Convert.FromBase64String(elemValue.InnerText);
+                }
+                catch (FormatException)
+                {
+                    Debug.WriteLine("Processing response, converting control value failed");
+                    throw new DsmlInvalidDocumentException(Res.GetString(Res.BadControl));
+                }
+            }
         }
 
         public virtual byte[] GetValue()
@@ -186,6 +273,44 @@ namespace System.DirectoryServices.Protocols
             }
         }
 
+        // Returns an XmlElement representing this control,
+        // in DSML v2 format.
+        internal XmlElement ToXmlNode(XmlDocument doc)
+        {
+            // create the <control> element
+            XmlElement elem = doc.CreateElement("control", DsmlConstants.DsmlUri);
+
+            // attach the "type" and "criticality" attributes to the <control> element
+            XmlAttribute attrType = doc.CreateAttribute("type", null);
+            attrType.InnerText = Type;
+            elem.Attributes.Append(attrType);
+
+            XmlAttribute attrCrit = doc.CreateAttribute("criticality", null);
+            attrCrit.InnerText = IsCritical ? "true" : "false";
+            elem.Attributes.Append(attrCrit);
+
+            byte[] controlValue = GetValue();
+            if (controlValue.Length != 0)
+            {
+                // create the <controlValue> element
+                XmlElement elemValue = doc.CreateElement("controlValue", DsmlConstants.DsmlUri);
+
+                // append the "xsi:type=xsd:base64Binary" attribute to <controlValue>
+                XmlAttribute attrXsiType = doc.CreateAttribute("xsi:type", DsmlConstants.XsiUri);
+                attrXsiType.InnerText = "xsd:base64Binary";
+                elemValue.Attributes.Append(attrXsiType);
+
+                // add in the base-64 encoded value itself
+                string base64value = System.Convert.ToBase64String(controlValue);
+                elemValue.InnerText = base64value;
+
+                // attach the <controlValue> element to the <control> element
+                elem.AppendChild(elemValue);
+            }
+
+            return elem;
+        }
+
         internal static void TransformControls(DirectoryControl[] controls)
         {
             for (int i = 0; i < controls.Length; i++)
@@ -211,7 +336,10 @@ namespace System.DirectoryServices.Protocols
                 {
                     // asq control
                     object[] o = null;
-                    o = BerConverter.Decode("{e}", value);
+                    if (Utility.IsWin2kOS)
+                        o = BerConverter.Decode("{i}", value);
+                    else
+                        o = BerConverter.Decode("{e}", value);
                     Debug.Assert((o != null) && (o.Length == 1));
 
                     int result = (int)o[0];
@@ -239,7 +367,11 @@ namespace System.DirectoryServices.Protocols
                     bool decodeSucceeded;
                     //sort control
 
-                    o = BerConverter.TryDecode("{ea}", value, out decodeSucceeded);
+                    if (Utility.IsWin2kOS)
+                        // win2k berencoding does not understand enumeration
+                        o = BerConverter.TryDecode("{ia}", value, out decodeSucceeded);
+                    else
+                        o = BerConverter.TryDecode("{ea}", value, out decodeSucceeded);
 
                     // decode might fail as AD for example never returns attribute name, we don't want to unnecessarily throw and catch exception
                     if (decodeSucceeded)
@@ -251,7 +383,11 @@ namespace System.DirectoryServices.Protocols
                     else
                     {
                         // decoding might fail as attribute is optional
-                        o = BerConverter.Decode("{e}", value);
+                        if (Utility.IsWin2kOS)
+                            // win2k berencoding does not understand enumeration
+                            o = BerConverter.Decode("{i}", value);
+                        else
+                            o = BerConverter.Decode("{e}", value);
                         Debug.Assert(o != null && o.Length == 1);
 
                         result = (int)o[0];
@@ -269,7 +405,11 @@ namespace System.DirectoryServices.Protocols
                     object[] o = null;
                     bool decodeSucceeded = false;
 
-                    o = BerConverter.TryDecode("{iieO}", value, out decodeSucceeded);
+                    if (Utility.IsWin2kOS)
+                        // win2k berencoding does not understand enumeration
+                        o = BerConverter.TryDecode("{iiiO}", value, out decodeSucceeded);
+                    else
+                        o = BerConverter.TryDecode("{iieO}", value, out decodeSucceeded);
 
                     if (decodeSucceeded)
                     {
@@ -281,7 +421,11 @@ namespace System.DirectoryServices.Protocols
                     }
                     else
                     {
-                        o = BerConverter.Decode("{iie}", value);
+                        if (Utility.IsWin2kOS)
+                            // win2k berencoding does not understand enumeration
+                            o = BerConverter.Decode("{iii}", value);
+                        else
+                            o = BerConverter.Decode("{iie}", value);
                         Debug.Assert(o != null && o.Length == 3);
                         position = (int)o[0];
                         count = (int)o[1];
@@ -642,7 +786,7 @@ namespace System.DirectoryServices.Protocols
             set
             {
                 if (value < 0)
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.ValidValue), "value");
+                    throw new ArgumentException(Res.GetString(Res.ValidValue), "value");
 
                 _count = value;
             }
@@ -729,7 +873,7 @@ namespace System.DirectoryServices.Protocols
             set
             {
                 if (value < 0)
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.ValidValue), "value");
+                    throw new ArgumentException(Res.GetString(Res.ValidValue), "value");
 
                 _size = value;
             }
@@ -810,7 +954,7 @@ namespace System.DirectoryServices.Protocols
             for (int i = 0; i < sortKeys.Length; i++)
             {
                 if (sortKeys[i] == null)
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.NullValueArray), "sortKeys");
+                    throw new ArgumentException(Res.GetString(Res.NullValueArray), "sortKeys");
             }
 
             _keys = new SortKey[sortKeys.Length];
@@ -856,7 +1000,7 @@ namespace System.DirectoryServices.Protocols
                 for (int i = 0; i < value.Length; i++)
                 {
                     if (value[i] == null)
-                        throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.NullValueArray), "value");
+                        throw new ArgumentException(Res.GetString(Res.NullValueArray), "value");
                 }
 
                 _keys = new SortKey[value.Length];
@@ -883,10 +1027,10 @@ namespace System.DirectoryServices.Protocols
                 {
                     sortPtr = Marshal.AllocHGlobal(structSize);
                     Marshal.StructureToPtr(_keys[i], sortPtr, false);
-                    tempPtr = (IntPtr)((long)memHandle + IntPtr.Size * i);
+                    tempPtr = (IntPtr)((long)memHandle + Marshal.SizeOf(typeof(IntPtr)) * i);
                     Marshal.WriteIntPtr(tempPtr, sortPtr);
                 }
-                tempPtr = (IntPtr)((long)memHandle + IntPtr.Size * i);
+                tempPtr = (IntPtr)((long)memHandle + Marshal.SizeOf(typeof(IntPtr)) * i);
                 Marshal.WriteIntPtr(tempPtr, (IntPtr)0);
 
                 bool critical = IsCritical;
@@ -924,7 +1068,7 @@ namespace System.DirectoryServices.Protocols
                     //release the memory from the heap
                     for (int i = 0; i < keyCount; i++)
                     {
-                        IntPtr tempPtr = Marshal.ReadIntPtr(memHandle, IntPtr.Size * i);
+                        IntPtr tempPtr = Marshal.ReadIntPtr(memHandle, Marshal.SizeOf(typeof(IntPtr)) * i);
                         if (tempPtr != (IntPtr)0)
                         {
                             // free the marshalled name
@@ -932,7 +1076,7 @@ namespace System.DirectoryServices.Protocols
                             if (ptr != (IntPtr)0)
                                 Marshal.FreeHGlobal(ptr);
                             // free the marshalled rule
-                            ptr = Marshal.ReadIntPtr(tempPtr, IntPtr.Size);
+                            ptr = Marshal.ReadIntPtr(tempPtr, Marshal.SizeOf(typeof(IntPtr)));
                             if (ptr != (IntPtr)0)
                                 Marshal.FreeHGlobal(ptr);
 
@@ -1021,7 +1165,7 @@ namespace System.DirectoryServices.Protocols
             set
             {
                 if (value < 0)
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.ValidValue), "value");
+                    throw new ArgumentException(Res.GetString(Res.ValidValue), "value");
 
                 _before = value;
             }
@@ -1036,7 +1180,7 @@ namespace System.DirectoryServices.Protocols
             set
             {
                 if (value < 0)
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.ValidValue), "value");
+                    throw new ArgumentException(Res.GetString(Res.ValidValue), "value");
 
                 _after = value;
             }
@@ -1051,7 +1195,7 @@ namespace System.DirectoryServices.Protocols
             set
             {
                 if (value < 0)
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.ValidValue), "value");
+                    throw new ArgumentException(Res.GetString(Res.ValidValue), "value");
 
                 _offset = value;
             }
@@ -1066,7 +1210,7 @@ namespace System.DirectoryServices.Protocols
             set
             {
                 if (value < 0)
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.ValidValue), "value");
+                    throw new ArgumentException(Res.GetString(Res.ValidValue), "value");
 
                 _estimateCount = value;
             }
@@ -1269,6 +1413,7 @@ namespace System.DirectoryServices.Protocols
     {
         public DirectoryControlCollection()
         {
+            Utility.CheckOSVersion();
         }
 
         public DirectoryControl this[int index]
@@ -1303,7 +1448,7 @@ namespace System.DirectoryServices.Protocols
             {
                 if (c == null)
                 {
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.ContainNullControl), "controls");
+                    throw new ArgumentException(Res.GetString(Res.ContainNullControl), "controls");
                 }
             }
 
@@ -1356,7 +1501,7 @@ namespace System.DirectoryServices.Protocols
             if (value == null) throw new ArgumentNullException("value");
 
             if (!(value is DirectoryControl))
-                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.InvalidValueType, "DirectoryControl"), "value");
+                throw new ArgumentException(Res.GetString(Res.InvalidValueType, "DirectoryControl"), "value");
         }
     }
 }

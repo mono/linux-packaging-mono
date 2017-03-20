@@ -67,9 +67,28 @@ namespace System.Runtime.Serialization
             // nop
         }
 
-        public static object GetUninitializedObject(Type type) => RuntimeHelpers.GetUninitializedObject(type);
+#if !netcoreapp11
+        private static readonly Func<Type, object> s_getUninitializedObjectDelegate = (Func<Type, object>)
+            typeof(string).Assembly
+            .GetType("System.Runtime.Serialization.FormatterServices")
+            .GetMethod("GetUninitializedObject", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static)
+            .CreateDelegate(typeof(Func<Type, object>));
+#endif // netcoreapp11
 
-        public static object GetSafeUninitializedObject(Type type) => RuntimeHelpers.GetUninitializedObject(type);
+        public static object GetUninitializedObject(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+#if netcoreapp11
+            return RuntimeHelpers.GetUninitializedObject(type);
+#else
+            return s_getUninitializedObjectDelegate(type);
+#endif // netcoreapp11
+        }
+
+        public static object GetSafeUninitializedObject(Type type) => GetUninitializedObject(type);
 
         internal static void SerializationSetValue(MemberInfo fi, object target, object value)
         {

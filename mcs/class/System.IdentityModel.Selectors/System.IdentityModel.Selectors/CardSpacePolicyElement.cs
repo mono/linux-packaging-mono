@@ -36,15 +36,15 @@ namespace System.IdentityModel.Selectors
 		public CardSpacePolicyElement (
 			XmlElement target, XmlElement issuer,
 			Collection<XmlElement> parameters,
-			Uri privacyNoticeLink,
-			int privacyNoticeVersion,
+			Uri policyNoticeLink,
+			int policyNoticeVersion,
 			bool isManagedIssuer)
 		{
 			this.target = target;
 			this.issuer = issuer;
 			this.parameters = parameters ?? new Collection<XmlElement> ();
-			this.policy_link = privacyNoticeLink;
-			policy_ver = privacyNoticeVersion;
+			this.policy_link = policyNoticeLink;
+			policy_ver = policyNoticeVersion;
 			is_managed = isManagedIssuer;
 		}
 

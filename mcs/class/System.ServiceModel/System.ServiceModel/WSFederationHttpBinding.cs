@@ -61,7 +61,7 @@ namespace System.ServiceModel
 		}
 
 		[MonoTODO]
-		public WSFederationHttpBinding (string configName)
+		public WSFederationHttpBinding (string configurationName)
 		{
 			throw new NotImplementedException ();
 		}

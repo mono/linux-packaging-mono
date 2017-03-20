@@ -3448,7 +3448,7 @@ namespace Mono.CSharp
 			}
 		}
 
-		public static CSharp.Operator.OpType ConvertBinaryToUserOperator (Operator op)
+		static CSharp.Operator.OpType ConvertBinaryToUserOperator (Operator op)
 		{
 			switch (op) {
 			case Operator.Addition:
@@ -12174,23 +12174,21 @@ namespace Mono.CSharp
 				args);
 		}
 
-		protected override Expression DoResolve (ResolveContext rc)
+		protected override Expression DoResolve (ResolveContext ec)
 		{
-			Expression e = base.DoResolve (rc);
+			Expression e = base.DoResolve (ec);
 			if (type == null)
 				return null;
 
 			if (type.IsDelegate) {
-				rc.Report.Error (1958, Initializers.Location,
+				ec.Report.Error (1958, Initializers.Location,
 					"Object and collection initializers cannot be used to instantiate a delegate");
 			}
 
-			Expression previous = rc.CurrentInitializerVariable;
-			rc.CurrentInitializerVariable = new InitializerTargetExpression (this);
-			using (rc.With (ResolveContext.Options.DontSetConditionalAccessReceiver, false)) {
-				initializers.Resolve (rc);
-			}
-			rc.CurrentInitializerVariable = previous;
+			Expression previous = ec.CurrentInitializerVariable;
+			ec.CurrentInitializerVariable = new InitializerTargetExpression (this);
+			initializers.Resolve (ec);
+			ec.CurrentInitializerVariable = previous;
 
 			dynamic = e as DynamicExpressionStatement;
 			if (dynamic != null)

@@ -46,11 +46,11 @@ namespace System.IdentityModel.Selectors
 		}
 
 		[MonoTODO]
-		public KerberosSecurityTokenProvider (string servicePrincipalName, TokenImpersonationLevel tokenImpersonationLevel, NetworkCredential networkCredential)
+		public KerberosSecurityTokenProvider (string servicePrincipalName, TokenImpersonationLevel tokenImpersonationLevel, NetworkCredential credential)
 		{
 			name = servicePrincipalName;
 			impersonation_level = tokenImpersonationLevel;
-			this.credential = networkCredential;
+			this.credential = credential;
 		}
 
 		string name;

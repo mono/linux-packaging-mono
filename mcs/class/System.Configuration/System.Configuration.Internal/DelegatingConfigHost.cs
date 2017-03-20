@@ -56,9 +56,9 @@ namespace System.Configuration.Internal
 			return host.CreateDeprecatedConfigContext (configPath);
 		}
 		
-		public virtual string DecryptSection (string encryptedXml, ProtectedConfigurationProvider protectionProvider, ProtectedConfigurationSection protectedConfigSection)
+		public virtual string DecryptSection (string encryptedXml, ProtectedConfigurationProvider protectionProvider, ProtectedConfigurationSection protectedSection)
 		{
-			return host.DecryptSection (encryptedXml, protectionProvider, protectedConfigSection);
+			return host.DecryptSection (encryptedXml, protectionProvider, protectedSection);
 		}
 		
 		public virtual void DeleteStream (string streamName)
@@ -66,14 +66,14 @@ namespace System.Configuration.Internal
 			host.DeleteStream (streamName);
 		}
 		
-		public virtual string EncryptSection (string clearTextXml, ProtectedConfigurationProvider protectionProvider, ProtectedConfigurationSection protectedConfigSection)
+		public virtual string EncryptSection (string encryptedXml, ProtectedConfigurationProvider protectionProvider, ProtectedConfigurationSection protectedSection)
 		{
-			return host.EncryptSection (clearTextXml, protectionProvider, protectedConfigSection);
+			return host.EncryptSection (encryptedXml, protectionProvider, protectedSection);
 		}
 		
-		public virtual string GetConfigPathFromLocationSubPath (string configPath, string locationSubPath)
+		public virtual string GetConfigPathFromLocationSubPath (string configPath, string locatinSubPath)
 		{
-			return host.GetConfigPathFromLocationSubPath (configPath, locationSubPath);
+			return host.GetConfigPathFromLocationSubPath (configPath, locatinSubPath);
 		}
 		
 		public virtual Type GetConfigType (string typeName, bool throwOnError)
@@ -111,14 +111,14 @@ namespace System.Configuration.Internal
 			return host.Impersonate ();
 		}
 		
-		public virtual void Init (IInternalConfigRoot configRoot, params object[] hostInitParams)
+		public virtual void Init (IInternalConfigRoot root, params object[] hostInitParams)
 		{
-			host.Init (configRoot, hostInitParams);
+			host.Init (root, hostInitParams);
 		}
 		
-		public virtual void InitForConfiguration (ref string locationSubPath, out string configPath, out string locationConfigPath, IInternalConfigRoot configRoot, params object[] hostInitConfigurationParams)
+		public virtual void InitForConfiguration (ref string locationSubPath, out string configPath, out string locationConfigPath, IInternalConfigRoot root, params object[] hostInitConfigurationParams)
 		{
-			host.InitForConfiguration (ref locationSubPath, out configPath, out locationConfigPath, configRoot, hostInitConfigurationParams);
+			host.InitForConfiguration (ref locationSubPath, out configPath, out locationConfigPath, root, hostInitConfigurationParams);
 		}
 		
 		public virtual bool IsAboveApplication (string configPath)

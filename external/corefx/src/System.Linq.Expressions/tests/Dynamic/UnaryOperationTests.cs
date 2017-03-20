@@ -132,24 +132,16 @@ namespace System.Dynamic.Tests
         public void DecrementPrefixInt32(int x)
         {
             dynamic d = x;
-
-            unchecked
-            {
-                Assert.Equal(x - 1, --d);
-                Assert.Equal(x - 1, d);
-            }
+            Assert.Equal(x - 1, --d);
+            Assert.Equal(x - 1, d);
         }
 
         [Theory, MemberData(nameof(Int32Args))]
         public void DecrementPostfixInt32(int x)
         {
             dynamic d = x;
-
-            unchecked
-            {
-                Assert.Equal(x, d--);
-                Assert.Equal(x - 1, d);
-            }
+            Assert.Equal(x, d--);
+            Assert.Equal(x - 1, d);
         }
 
         [Theory, MemberData(nameof(Int32Args))]
@@ -192,24 +184,16 @@ namespace System.Dynamic.Tests
         public void IncrementPrefixInt32(int x)
         {
             dynamic d = x;
-
-            unchecked
-            {
-                Assert.Equal(x + 1, ++d);
-                Assert.Equal(x + 1, d);
-            }
+            Assert.Equal(x + 1, ++d);
+            Assert.Equal(x + 1, d);
         }
 
         [Theory, MemberData(nameof(Int32Args))]
         public void IncrementPostfixInt32(int x)
         {
             dynamic d = x;
-
-            unchecked
-            {
-                Assert.Equal(x, d++);
-                Assert.Equal(x + 1, d);
-            }
+            Assert.Equal(x, d++);
+            Assert.Equal(x + 1, d);
         }
 
         [Theory, MemberData(nameof(Int32Args))]
@@ -252,7 +236,7 @@ namespace System.Dynamic.Tests
         public void NegateInt32(int x)
         {
             dynamic d = x;
-            Assert.Equal(unchecked(-x), unchecked(-d));
+            Assert.Equal(-x, -d);
         }
 
         [Theory, MemberData(nameof(Int32Args))]

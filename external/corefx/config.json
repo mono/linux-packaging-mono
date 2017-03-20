@@ -24,12 +24,6 @@
       "values": ["x64", "x86", "arm", "arm64"],
       "defaultValue": "x64"
     },
-    "BuildAllConfigurations": {
-      "description": "Builds projects for all BuildConfigurations rather than determining best configuration for TargetGroup/OSGroup.",
-      "valueType": "property",
-      "values": ["True", "False"],
-      "defaultValue": false
-    },
     "RuntimeOS": {
       "description": "The RuntimeOS used for building and restoring native OS dependent assets (i.e. RID specific binaries)",
       "valueType": "property",
@@ -48,11 +42,17 @@
       "values": ["True", "False"],
       "defaultValue": true
     },
+    "RestoreDuringBuild": {
+      "description": "Enables/Disables the restoration of packages.",
+      "valueType": "property",
+      "values": ["True", "False"],
+      "defaultValue": true
+    },
     "BuildPackages": {
       "description": "Enables/Disables building packages.",
       "valueType": "property",
       "values": ["True", "False"],
-      "defaultValue": false
+      "defaultValue": true
     },
     "BuildPackageLibraryReferences": {
       "description": "Enables/Disables building libraries referenced by packages.",
@@ -198,6 +198,12 @@
       "values": [],
       "defaultValue": ""
     },
+    "RestoreForTestsAgainstPackagesOnly": {
+      "description": "MsBuild target that restores the packages.",
+      "valueType": "property",
+      "values": ["true", "false"],
+      "defaultValue": "true"
+    },
     "GenerateVersionHeader": {
       "description": "MsBuild target that generates the version header.",
       "valueType": "target",
@@ -236,7 +242,6 @@
           "description": "Builds the NuGet packages.",
           "settings": {
             "Project": "src/packages.builds",
-            "BuildPackages": "true",
             "MsBuildLogging":"/flp:v=normal;LogFile=build-packages.log"
           }
         },
@@ -251,14 +256,9 @@
           "settings": { }
         },
         "tests": {
-          "description": "Builds src and then builds and runs the tests for the given configuration.",
+          "description": "Builds the tests that are in the repository, doesn't restore packages.",
           "settings": {
-            "BuildTests": true
-          }
-        },
-        "testsOnly": {
-          "description": "Builds and runs the tests for the given configuration.",
-          "settings": {
+            "RestoreDuringBuild": "false",
             "Project": "src/tests.builds",
             "MsBuildLogging":"/flp:v=normal;LogFile=build-tests.log"
           }
@@ -273,12 +273,6 @@
           "description": "Sets optimization level to release for managed build configuration. (/p:ConfigurationGroup=Release)",
           "settings": {
             "ConfigurationGroup": "Release"
-          }
-        },
-        "allConfigurations": {
-          "description": "Builds all configurations instead of only those specified by framework/os.",
-          "settings": {
-            "BuildAllConfigurations":"true"
           }
         },
         "framework": {
@@ -328,7 +322,6 @@
       "defaultValues": {
         "toolName": "msbuild",
         "settings": {
-          "BuildPackages": "default",
           "ConfigurationGroup": "default",
           "MsBuildLogging":"default",
           "MsBuildWarning":"default",
@@ -348,12 +341,6 @@
           "description": "Sets optimization level to release for native build configuration.",
           "settings": {
             "CmakeBuildType": "Release"
-          }
-        },
-        "allConfigurations": {
-          "description": "Builds all configurations instead of only those specified by framework/os.",
-          "settings": {
-            "BuildAllConfigurations":"true"
           }
         },
         "framework": {
@@ -391,11 +378,7 @@
           "settings": {
             "StripSymbolsAdditionalArg": "stripSymbols"
           }
-        },
-        "tests": {
-          "description": "No-op for build-native, included just to enable easy combination with build-managed",
-          "settings": { }
-        },
+        }
       },
       "defaultValues": {
         "toolName": "terminal",
@@ -488,6 +471,7 @@
         "p": {
           "description": "Restores all NuGet packages for repository.",
           "settings": {
+            "RestoreDuringBuild":  true,
             "Sync": "default"
           }
         },
@@ -500,6 +484,7 @@
         "t": {
           "description": "Deprecated, use sync /p instead.",
           "settings": {
+            "RestoreDuringBuild":  true,
             "Sync": "default"
           }
         },
@@ -559,7 +544,7 @@
     "msbuild": {
       "osSpecific": {
         "windows": {
-          "defaultParameters": "/nologo /verbosity:minimal /clp:Summary /maxcpucount /nodeReuse:false /l:BinClashLogger,Tools\\net46\\Microsoft.DotNet.Build.Tasks.dll;LogFile=binclash.log",
+          "defaultParameters": "/nologo /verbosity:minimal /clp:Summary /maxcpucount /nodeReuse:false /l:BinClashLogger,Tools\\net45\\Microsoft.DotNet.Build.Tasks.dll;LogFile=binclash.log",
           "path": "Tools/msbuild.cmd"
         },
         "unix": {

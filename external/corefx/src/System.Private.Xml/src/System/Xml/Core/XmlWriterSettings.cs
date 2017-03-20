@@ -163,7 +163,7 @@ namespace System.Xml
             {
                 CheckReadOnly(nameof(NewLineHandling));
 
-                if (unchecked((uint)value) > (uint)NewLineHandling.None)
+                if ((uint)value > (uint)NewLineHandling.None)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }
@@ -264,7 +264,7 @@ namespace System.Xml
             {
                 CheckReadOnly(nameof(ConformanceLevel));
 
-                if (unchecked((uint)value) > (uint)ConformanceLevel.Document)
+                if ((uint)value > (uint)ConformanceLevel.Document)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }
@@ -296,7 +296,7 @@ namespace System.Xml
             set
             {
                 CheckReadOnly(nameof(NamespaceHandling));
-                if (unchecked((uint)value) > (uint)(NamespaceHandling.OmitDuplicates))
+                if ((uint)value > (uint)(NamespaceHandling.OmitDuplicates))
                 {
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }

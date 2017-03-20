@@ -346,7 +346,7 @@ namespace System.Linq.Expressions.Interpreter
                 return;
             }
 
-            if (type == null || type.IsValueType)
+            if (type == null || type.GetTypeInfo().IsValueType)
             {
                 if (value is bool)
                 {
@@ -612,7 +612,7 @@ namespace System.Linq.Expressions.Interpreter
             {
                 Emit(new InitializeLocalInstruction.ImmutableValue(index, value));
             }
-            else if (type.IsValueType)
+            else if (type.GetTypeInfo().IsValueType)
             {
                 Emit(new InitializeLocalInstruction.MutableValue(index, type));
             }
@@ -687,17 +687,38 @@ namespace System.Linq.Expressions.Interpreter
 
         public void EmitAdd(Type type, bool @checked)
         {
-            Emit(@checked ? AddOvfInstruction.Create(type) : AddInstruction.Create(type));
+            if (@checked)
+            {
+                Emit(AddOvfInstruction.Create(type));
+            }
+            else
+            {
+                Emit(AddInstruction.Create(type));
+            }
         }
 
         public void EmitSub(Type type, bool @checked)
         {
-            Emit(@checked ? SubOvfInstruction.Create(type) : SubInstruction.Create(type));
+            if (@checked)
+            {
+                Emit(SubOvfInstruction.Create(type));
+            }
+            else
+            {
+                Emit(SubInstruction.Create(type));
+            }
         }
 
         public void EmitMul(Type type, bool @checked)
         {
-            Emit(@checked ? MulOvfInstruction.Create(type) : MulInstruction.Create(type));
+            if (@checked)
+            {
+                Emit(MulOvfInstruction.Create(type));
+            }
+            else
+            {
+                Emit(MulInstruction.Create(type));
+            }
         }
 
         public void EmitDiv(Type type)
@@ -783,11 +804,6 @@ namespace System.Linq.Expressions.Interpreter
             Emit(new NumericConvertInstruction.Unchecked(from, to, isLiftedToNull));
         }
 
-        public void EmitConvertToUnderlying(TypeCode to, bool isLiftedToNull)
-        {
-            Emit(new NumericConvertInstruction.ToUnderlying(to, isLiftedToNull));
-        }
-
         public void EmitCast(Type toType)
         {
             Emit(CastInstruction.Create(toType));
@@ -852,6 +868,11 @@ namespace System.Linq.Expressions.Interpreter
             Emit(TypeEqualsInstruction.Instance);
         }
 
+        public void EmitNullableTypeEquals()
+        {
+            Emit(NullableTypeEqualsInstruction.Instance);
+        }
+
         public void EmitArrayLength()
         {
             Emit(ArrayLengthInstruction.Instance);
@@ -865,6 +886,11 @@ namespace System.Linq.Expressions.Interpreter
         public void EmitNegateChecked(Type type)
         {
             Emit(NegateCheckedInstruction.Create(type));
+        }
+
+        public void EmitOnesComplement(Type type)
+        {
+            Emit(OnesComplementInstruction.Create(type));
         }
 
         public void EmitIncrement(Type type)

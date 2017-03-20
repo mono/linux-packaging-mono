@@ -494,9 +494,9 @@ namespace System.Windows.Forms.Design
 		// component - The IComponent to ensure has a context menu service.
 		// XXX: Not sure exactly what this should do...
 		//
-		protected virtual void EnsureMenuEditorService (IComponent c)
+		protected virtual void EnsureMenuEditorService (IComponent component)
 		{
-			if (this.menuEditorService == null && c is ContextMenu)
+			if (this.menuEditorService == null && component is ContextMenu)
 				menuEditorService = (IMenuEditorService) GetService (typeof (IMenuEditorService));
 		}
 #endregion

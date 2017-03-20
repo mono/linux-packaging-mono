@@ -334,19 +334,19 @@ namespace System.ServiceModel.Channels
 
 		// 1)
 		public static Message CreateMessage (MessageVersion version,
-			FaultCode faultCode, string reason, string action)
+			FaultCode code, string reason, string action)
 		{
-			MessageFault fault = MessageFault.CreateFault (faultCode, reason);
+			MessageFault fault = MessageFault.CreateFault (code, reason);
 			return CreateMessage (version, fault, action);
 		}
 
 		// 2)
 		public static Message CreateMessage (MessageVersion version,
-			FaultCode faultCode, string reason, object detail,
+			FaultCode code, string reason, object detail,
 			string action)
 		{
 			MessageFault fault = MessageFault.CreateFault (
-				faultCode, new FaultReason (reason), detail);
+				code, new FaultReason (reason), detail);
 			return CreateMessage (version, fault, action);
 		}
 

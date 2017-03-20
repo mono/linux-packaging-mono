@@ -44,7 +44,7 @@ namespace System.ServiceModel.Dispatcher
 			return true; 
 		}
 
-		public override bool Match (MessageBuffer messageBuffer)
+		public override bool Match (MessageBuffer buffer)
 		{
 			// as documented
 			return true; 

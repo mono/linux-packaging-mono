@@ -17,11 +17,13 @@ namespace System.Net.Tests
 
         private HttpListenerFactory _factory;
         private HttpListener _listener;
+        private string _url;
 
         public AuthenticationTests()
         {
             _factory = new HttpListenerFactory();
             _listener = _factory.GetListener();
+            _url = _factory.ListeningUrl;
         }
 
         public void Dispose() => _factory.Dispose();
@@ -73,7 +75,7 @@ namespace System.Net.Tests
                     Basic,
                     Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", TestUser, TestPassword))));
 
-                var clientTask = client.GetStringAsync(_factory.ListeningUrl);
+                var clientTask = client.GetStringAsync(_url);
                 HttpListenerContext listenerContext = await serverContextTask;
 
                 Assert.Null(listenerContext.User);
@@ -89,7 +91,7 @@ namespace System.Net.Tests
                     Basic,
                     Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", TestUser, TestPassword))));
 
-                var clientTask = client.GetStringAsync(_factory.ListeningUrl);
+                var clientTask = client.GetStringAsync(_url);
                 HttpListenerContext listenerContext = await serverContextTask;
 
                 Assert.Equal(TestUser, listenerContext.User.Identity.Name);

@@ -655,7 +655,7 @@ namespace System.Security.Cryptography.EcDsa.Tests
 
                 foreach (byte b in obj)
                 {
-                    h = unchecked((h << 5) + h) ^ b.GetHashCode();
+                    h = ((h << 5) + h) ^ b.GetHashCode();
                 }
 
                 return h;

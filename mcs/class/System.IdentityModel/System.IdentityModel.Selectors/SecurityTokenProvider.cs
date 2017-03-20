@@ -77,16 +77,16 @@ namespace System.IdentityModel.Selectors
 			EndCancelTokenCore (result);
 		}
 
-		public SecurityToken RenewToken (TimeSpan timeout, SecurityToken tokenToBeRenewed)
+		public SecurityToken RenewToken (TimeSpan timeout, SecurityToken token)
 		{
-			return RenewTokenCore (timeout, tokenToBeRenewed);
+			return RenewTokenCore (timeout, token);
 		}
 
 		public IAsyncResult BeginRenewToken (
-			TimeSpan timeout, SecurityToken tokenToBeRenewed,
+			TimeSpan timeout, SecurityToken token,
 			AsyncCallback callback, object state)
 		{
-			return BeginRenewTokenCore (timeout, tokenToBeRenewed, callback, state);
+			return BeginRenewTokenCore (timeout, token, callback, state);
 		}
 
 		public SecurityToken EndRenewToken (IAsyncResult result)
@@ -101,7 +101,7 @@ namespace System.IdentityModel.Selectors
 			throw new NotSupportedException (String.Format ("Token cancellation on this security token provider '{0}' is not supported.", this));
 		}
 
-		protected virtual SecurityToken RenewTokenCore (TimeSpan timeout, SecurityToken tokenToBeRenewed)
+		protected virtual SecurityToken RenewTokenCore (TimeSpan timeout, SecurityToken token)
 		{
 			throw new NotSupportedException (String.Format ("Token renewal on this security token provider '{0}' is not supported.", this));
 		}
@@ -124,7 +124,7 @@ namespace System.IdentityModel.Selectors
 
 		protected virtual IAsyncResult BeginRenewTokenCore (
 			TimeSpan timeout,
-			SecurityToken tokenToBeRenewed,
+			SecurityToken token,
 			AsyncCallback callback, object state)
 		{
 			throw new NotSupportedException (String.Format ("Token renewal on this security token provider '{0}' is not supported.", this));

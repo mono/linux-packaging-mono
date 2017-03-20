@@ -9,7 +9,6 @@ using System.Threading;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Microsoft.DotNet.Build.CloudTestTasks
 {
@@ -20,13 +19,6 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
         /// </summary>
         [Required]
         public string JsonFileName { get; set; }
-
-        /// <summary>
-        /// Previously this Task tried to be clever and only write an array for > 1 object.
-        /// Sometimes we want to have arrays of 1..N objects for ease of deserialization;
-        /// this property allows for that while leaving the default behavior alone.
-        /// </summary>
-        public bool ForceJsonArray { get; set; } = false;
 
         /// <summary>
         /// An item group to be converted into JSON format.  For each item, all custom
@@ -43,11 +35,9 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
             if (Items.Length == 0)
                 throw new ArgumentException("The provided items contained zero entries.");
 
-            if (!Directory.Exists(Path.GetDirectoryName(Path.GetFullPath(JsonFileName))))
-            {
+            if (!Directory.Exists(Path.GetDirectoryName(JsonFileName)))
                 Directory.CreateDirectory(Path.GetDirectoryName(JsonFileName));
-            }
-
+ 
             JsonSerializer jsonSerializer = new JsonSerializer();
             using (FileStream fs = File.Create(JsonFileName))
             using (StreamWriter streamWriter = new StreamWriter(fs))
@@ -56,7 +46,7 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
                 {
                     jsonWriter.Formatting = Formatting.Indented;
 
-                    if (Items.Length > 1 || ForceJsonArray)
+                    if (Items.Length > 1)
                         jsonWriter.WriteStartArray();
 
                     foreach (ITaskItem item in Items)
@@ -66,7 +56,7 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
                         foreach (var key in customMd.Keys)
                         {
                             var mdString = key.ToString();
-                            var mdValue = customMd[key].ToString().Trim();
+                            var mdValue = customMd[key].ToString();
 
                             jsonWriter.WritePropertyName(mdString);
 
@@ -85,32 +75,14 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
                             }
                             else
                             {
-                                if (mdValue.StartsWith("{") && mdValue.EndsWith("}"))
-                                {
-                                    // If it's a JObject, parse it and use that to write...
-                                    try
-                                    {
-                                        JObject jsonEntry = JObject.Parse(mdValue);
-                                        jsonEntry.WriteTo(jsonWriter);
-                                    }
-                                    // Leave it in... it's probably bad by here but writing it aids debugging.
-                                    catch
-                                    {
-                                        jsonWriter.WriteValue(mdValue);
-                                    }
-                                }
-                                // Plain value
-                                else
-                                {
-                                    jsonWriter.WriteValue(mdValue);
-                                }
+                                jsonWriter.WriteValue(mdValue);
                             }
                         }
 
                         jsonWriter.WriteEndObject();
                     }
 
-                    if (Items.Length > 1 || ForceJsonArray)
+                    if (Items.Length > 1)
                         jsonWriter.WriteEndArray();
 
                     Log.LogMessage(MessageImportance.High, "Writing {0}.", JsonFileName);

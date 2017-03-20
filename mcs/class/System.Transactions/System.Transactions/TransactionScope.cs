@@ -39,39 +39,39 @@ namespace System.Transactions
 		{
 		}
 
-		public TransactionScope(TransactionScopeAsyncFlowOption asyncFlowOption)
+		public TransactionScope(TransactionScopeAsyncFlowOption asyncFlow)
 			: this(TransactionScopeOption.Required,
-				TransactionManager.DefaultTimeout, asyncFlowOption)
+				TransactionManager.DefaultTimeout, asyncFlow)
 		{
 		}
 
-		public TransactionScope (Transaction transactionToUse)
-			: this (transactionToUse, TransactionManager.DefaultTimeout)
+		public TransactionScope (Transaction transaction)
+			: this (transaction, TransactionManager.DefaultTimeout)
 		{
 		}
 
-		public TransactionScope (Transaction transactionToUse,
-			TimeSpan scopeTimeout)
-			: this (transactionToUse, scopeTimeout, DTCOption.None)
+		public TransactionScope (Transaction transaction,
+			TimeSpan timeout)
+			: this (transaction, timeout, DTCOption.None)
 		{
 		}
 
 		[MonoTODO ("EnterpriseServicesInteropOption not supported.")]
-		public TransactionScope (Transaction transactionToUse,
-			TimeSpan scopeTimeout, DTCOption interopOption)
+		public TransactionScope (Transaction transaction,
+			TimeSpan timeout, DTCOption opt)
 		{
 			Initialize (TransactionScopeOption.Required,
-				transactionToUse, defaultOptions, interopOption, scopeTimeout, TransactionScopeAsyncFlowOption.Suppress);
+				transaction, defaultOptions, opt, timeout, TransactionScopeAsyncFlowOption.Suppress);
 		}
 
-		public TransactionScope (TransactionScopeOption scopeOption)
-			: this (scopeOption, TransactionManager.DefaultTimeout)
+		public TransactionScope (TransactionScopeOption option)
+			: this (option, TransactionManager.DefaultTimeout)
 		{
 		}
 
-		public TransactionScope (TransactionScopeOption scopeOption,
-			TimeSpan scopeTimeout)
-			: this (scopeOption, scopeTimeout, TransactionScopeAsyncFlowOption.Suppress)
+		public TransactionScope (TransactionScopeOption option,
+ 			TimeSpan timeout)
+ 			: this (option, timeout, TransactionScopeAsyncFlowOption.Suppress)
 		{
 		}
 
@@ -80,25 +80,25 @@ namespace System.Transactions
 		{
 		}
 
-		public TransactionScope (TransactionScopeOption scopeOption,
-			TimeSpan scopeTimeout, TransactionScopeAsyncFlowOption asyncFlow)
+    	public TransactionScope (TransactionScopeOption option,
+			TimeSpan timeout, TransactionScopeAsyncFlowOption asyncFlow)
 		{
-			Initialize (scopeOption, null, defaultOptions,
-				DTCOption.None, scopeTimeout, asyncFlow);
+			Initialize (option, null, defaultOptions,
+				DTCOption.None, timeout, asyncFlow);
 		}
 
 		public TransactionScope (TransactionScopeOption scopeOption,
-			TransactionOptions transactionOptions)
-			: this (scopeOption, transactionOptions, DTCOption.None)
+			TransactionOptions options)
+			: this (scopeOption, options, DTCOption.None)
 		{
 		}
 
 		[MonoTODO ("EnterpriseServicesInteropOption not supported")]
 		public TransactionScope (TransactionScopeOption scopeOption,
-			TransactionOptions transactionOptions,
-			DTCOption interopOption)
+			TransactionOptions options,
+			DTCOption opt)
 		{
-			Initialize (scopeOption, null, transactionOptions, interopOption,
+			Initialize (scopeOption, null, options, opt,
 				TransactionManager.DefaultTimeout, TransactionScopeAsyncFlowOption.Suppress);
 		}
 
@@ -124,17 +124,17 @@ namespace System.Transactions
 
 		void Initialize (TransactionScopeOption scopeOption,
 			Transaction tx, TransactionOptions options,
-			DTCOption interop, TimeSpan scopeTimeout, TransactionScopeAsyncFlowOption asyncFlow)
+			DTCOption interop, TimeSpan timeout, TransactionScopeAsyncFlowOption asyncFlow)
 		{
 			completed = false;
 			isRoot = false;
 			nested = 0;
 			asyncFlowEnabled = asyncFlow == TransactionScopeAsyncFlowOption.Enabled;
 
-			if (scopeTimeout < TimeSpan.Zero)
-				throw new ArgumentOutOfRangeException ("scopeTimeout");
+			if (timeout < TimeSpan.Zero)
+				throw new ArgumentOutOfRangeException ("timeout");
 
-			this.timeout = scopeTimeout;
+			this.timeout = timeout;
 
 			oldTransaction = Transaction.CurrentInternal;
 

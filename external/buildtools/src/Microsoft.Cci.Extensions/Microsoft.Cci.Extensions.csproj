@@ -14,7 +14,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ProjectGuid>{2179F9B5-1DBA-4563-9402-A94DE75EA9FA}</ProjectGuid>
     <DefineConstants>$(DefineConstants);COREFX</DefineConstants>
-    <NuGetTargetMoniker>.NETStandard,Version=v1.3</NuGetTargetMoniker>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " />
@@ -31,25 +30,18 @@
     <Compile Include="Extensions\ApiKind.cs" />
     <Compile Include="Extensions\ApiKindExtensions.cs" />
     <Compile Include="Extensions\AssemblyIdentityHelpers.cs" />
-    <Compile Include="Extensions\FakeCustomAttribute.cs" />
     <Compile Include="Filters\AttributeMarkedFilter.cs" />
     <Compile Include="Filters\AttributesFilter.cs" />
     <Compile Include="Filters\BaselineDifferenceFilter.cs" />
-    <Compile Include="Filters\CciFilterExtensions.AndFilter.cs" />
-    <Compile Include="Filters\CciFilterExtensions.cs" />
-    <Compile Include="Filters\CciFilterExtensions.NegatedFilter.cs" />
-    <Compile Include="Filters\CciFilterExtensions.OrFilter.cs" />
     <Compile Include="Filters\CommonTypesMappingDifferenceFilter.cs" />
     <Compile Include="Filters\DifferenceFilter.cs" />
     <Compile Include="Filters\DocIdExcludeListFilter.cs" />
     <Compile Include="Filters\DocIdIncludeListFilter.cs" />
     <Compile Include="Filters\ExcludeAttributesFilter.cs" />
-    <Compile Include="Filters\ExcludeOverridesFilter.cs" />
     <Compile Include="Filters\IDifferenceFilter.cs" />
     <Compile Include="Filters\IncludeAllFilter.cs" />
-    <Compile Include="Filters\NotImplementedFilter.cs" />
     <Compile Include="Filters\IntersectionFilter.cs" />
-    <Compile Include="Filters\PublicAndProtectedFilter.cs" />
+    <Compile Include="Filters\MonoStubFilter.cs" />
     <Compile Include="Filters\TypesOnlyMappingDifferenceFilter.cs" />
     <Compile Include="Internal\DisposeAction.cs" />
     <Compile Include="Extensions\DocIdExtensions.cs" />

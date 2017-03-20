@@ -79,9 +79,7 @@ namespace System.Text
         [System.Security.SecurityCritical]  // auto-generated
         protected override unsafe void LoadManagedCodePage()
         {
-            Debug.Assert(m_codePageHeader?.Length > 0);
-
-            fixed (byte* pBytes = &m_codePageHeader[0])
+            fixed (byte* pBytes = m_codePageHeader)
             {
                 CodePageHeader* pCodePage = (CodePageHeader*)pBytes;
 

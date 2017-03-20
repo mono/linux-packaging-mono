@@ -67,21 +67,16 @@ namespace System.Xml
             {
                 return string.Empty;
             }
-
-            int hashCode;
-            unchecked
+            int hashCode = len + _hashCodeRandomizer;
+            // use key.Length to eliminate the range check
+            for (int i = 0; i < key.Length; i++)
             {
-                hashCode = len + _hashCodeRandomizer;
-                // use key.Length to eliminate the range check
-                for (int i = 0; i < key.Length; i++)
-                {
-                    hashCode += (hashCode << 7) ^ key[i];
-                }
-                // mix it a bit more
-                hashCode -= hashCode >> 17;
-                hashCode -= hashCode >> 11;
-                hashCode -= hashCode >> 5;
+                hashCode += (hashCode << 7) ^ key[i];
             }
+            // mix it a bit more
+            hashCode -= hashCode >> 17;
+            hashCode -= hashCode >> 11;
+            hashCode -= hashCode >> 5;
 
             for (Entry e = _entries[hashCode & _mask]; e != null; e = e.next)
             {
@@ -104,21 +99,17 @@ namespace System.Xml
                 return string.Empty;
             }
 
-            int hashCode;
-            unchecked
+            int hashCode = len + _hashCodeRandomizer;
+            hashCode += (hashCode << 7) ^ key[start];   // this will throw IndexOutOfRangeException in case the start index is invalid
+            int end = start + len;
+            for (int i = start + 1; i < end; i++)
             {
-                hashCode = len + _hashCodeRandomizer;
-                hashCode += (hashCode << 7) ^ key[start];   // this will throw IndexOutOfRangeException in case the start index is invalid
-                int end = start + len;
-                for (int i = start + 1; i < end; i++)
-                {
-                    hashCode += (hashCode << 7) ^ key[i];
-                }
-                // mix it a bit more
-                hashCode -= hashCode >> 17;
-                hashCode -= hashCode >> 11;
-                hashCode -= hashCode >> 5;
+                hashCode += (hashCode << 7) ^ key[i];
             }
+            // mix it a bit more
+            hashCode -= hashCode >> 17;
+            hashCode -= hashCode >> 11;
+            hashCode -= hashCode >> 5;
 
             for (Entry e = _entries[hashCode & _mask]; e != null; e = e.next)
             {
@@ -144,21 +135,17 @@ namespace System.Xml
                 return string.Empty;
             }
 
-            int hashCode;
-            unchecked
+            int len = value.Length + _hashCodeRandomizer;
+            int hashCode = len;
+            // use value.Length to eliminate the range check
+            for (int i = 0; i < value.Length; i++)
             {
-                int len = value.Length + _hashCodeRandomizer;
-                hashCode = len;
-                // use value.Length to eliminate the range check
-                for (int i = 0; i < value.Length; i++)
-                {
-                    hashCode += (hashCode << 7) ^ value[i];
-                }
-                // mix it a bit more
-                hashCode -= hashCode >> 17;
-                hashCode -= hashCode >> 11;
-                hashCode -= hashCode >> 5;
+                hashCode += (hashCode << 7) ^ value[i];
             }
+            // mix it a bit more
+            hashCode -= hashCode >> 17;
+            hashCode -= hashCode >> 11;
+            hashCode -= hashCode >> 5;
 
             for (Entry e = _entries[hashCode & _mask]; e != null; e = e.next)
             {
@@ -181,21 +168,17 @@ namespace System.Xml
                 return string.Empty;
             }
 
-            int hashCode;
-            unchecked
+            int hashCode = len + _hashCodeRandomizer;
+            hashCode += (hashCode << 7) ^ key[start];   // this will throw IndexOutOfRangeException in case the start index is invalid
+            int end = start + len;
+            for (int i = start + 1; i < end; i++)
             {
-                hashCode = len + _hashCodeRandomizer;
-                hashCode += (hashCode << 7) ^ key[start];   // this will throw IndexOutOfRangeException in case the start index is invalid
-                int end = start + len;
-                for (int i = start + 1; i < end; i++)
-                {
-                    hashCode += (hashCode << 7) ^ key[i];
-                }
-                // mix it a bit more
-                hashCode -= hashCode >> 17;
-                hashCode -= hashCode >> 11;
-                hashCode -= hashCode >> 5;
+                hashCode += (hashCode << 7) ^ key[i];
             }
+            // mix it a bit more
+            hashCode -= hashCode >> 17;
+            hashCode -= hashCode >> 11;
+            hashCode -= hashCode >> 5;
 
             for (Entry e = _entries[hashCode & _mask]; e != null; e = e.next)
             {

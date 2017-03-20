@@ -74,16 +74,16 @@ namespace System.Web.UI.Design.WebControls {
 		}
 
 		protected IEnumerable GetDesignTimeDataSource (
-			int minimumRows,
-			out bool dummyDataSource)
+			int minimum_rows,
+			out bool dummy_data_source)
 		{
 			throw new NotImplementedException ();
 		}
 
 		protected IEnumerable GetDesignTimeDataSource (
-			IEnumerable selectedDataSource,
-			int minimumRows,
-			out bool dummyDataSource)
+			IEnumerable selected_data_source,
+			int minimum_rows,
+			out bool dummy_data_source)
 		{
 			throw new NotImplementedException ();
 		}
@@ -98,7 +98,7 @@ namespace System.Web.UI.Design.WebControls {
 			throw new NotImplementedException ();
 		}
 
-		public override IEnumerable GetTemplateContainerDataSource (string templateName)
+		public override IEnumerable GetTemplateContainerDataSource (string template_name)
 		{
 			throw new NotImplementedException ();
 		}
@@ -108,7 +108,7 @@ namespace System.Web.UI.Design.WebControls {
 			throw new NotImplementedException ();
 		}
 
-		protected internal void InvokePropertyBuilder (int initialPage)
+		protected internal void InvokePropertyBuilder (int initial_page)
 		{
 			throw new NotImplementedException ();
 		}

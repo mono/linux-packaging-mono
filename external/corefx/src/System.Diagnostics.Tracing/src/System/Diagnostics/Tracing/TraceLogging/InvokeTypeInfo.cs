@@ -80,14 +80,14 @@ namespace System.Diagnostics.Tracing
             if (this.properties != null)
             {
                 var membersNames = new List<string>();
-                var membersValues = new List<object>();
+                var memebersValues = new List<object>();
                 for (int i = 0; i < this.properties.Length; i++)
                 {
                     var propertyValue = properties[i].propertyInfo.GetValue(value);
                     membersNames.Add(properties[i].name);
-                    membersValues.Add(properties[i].typeInfo.GetData(propertyValue));
+                    memebersValues.Add(properties[i].typeInfo.GetData(propertyValue));
                 }
-                return new EventPayload(membersNames, membersValues);
+                return new EventPayload(membersNames, memebersValues);
             }
 
             return null;

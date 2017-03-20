@@ -37,8 +37,8 @@ namespace System.ServiceModel.Security.Tokens
 		{
 		}
 
-		protected KerberosSecurityTokenParameters (KerberosSecurityTokenParameters other)
-			: base (other)
+		protected KerberosSecurityTokenParameters (KerberosSecurityTokenParameters source)
+			: base (source)
 		{
 		}
 

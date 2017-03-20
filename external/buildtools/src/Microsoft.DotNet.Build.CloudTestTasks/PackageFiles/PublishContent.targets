@@ -1,7 +1,7 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <UsingTask TaskName="CreateAzureContainer" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.CloudTestTasks.dll"/>
-  <UsingTask TaskName="UploadToAzure" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.CloudTestTasks.dll"/>
+  <UsingTask TaskName="CreateAzureContainer" AssemblyFile="$(ToolsDir)net45/Microsoft.DotNet.Build.CloudTestTasks.dll"/>
+  <UsingTask TaskName="UploadToAzure" AssemblyFile="$(ToolsDir)net45/Microsoft.DotNet.Build.CloudTestTasks.dll"/>
 
   <PropertyGroup>
     <OverwriteOnPublish Condition="'$(OverwriteOnPublish)' == ''">false</OverwriteOnPublish>
@@ -12,12 +12,6 @@
     <Error Condition="'$(PublishPattern)' == ''" Text="Please specify a value for PublishPattern using standard msbuild 'include' syntax." />
     <ItemGroup>
       <ForPublishing Include="$(PublishPattern)" />
-    </ItemGroup>
-    <!-- add relative blob path metadata -->
-    <ItemGroup>
-      <ForPublishing>
-        <RelativeBlobPath>$([System.String]::Copy('%(RecursiveDir)%(Filename)%(Extension)').Replace('\' ,'/'))</RelativeBlobPath> 
-      </ForPublishing>
     </ItemGroup>
     <Error Condition="'@(ForPublishing)' == ''" Text="No items were found matching pattern '$(PublishPattern)'." />
   </Target>
@@ -32,6 +26,12 @@
       AccountKey="$(CloudDropAccessToken)"
       AccountName="$(CloudDropAccountName)"
       ContainerName="$(ContainerName)" />
+    <!-- add relative blob path metadata -->
+    <ItemGroup>
+      <ForPublishing>
+        <RelativeBlobPath>%(RecursiveDir)%(Filename)%(Extension)</RelativeBlobPath>
+      </ForPublishing>
+    </ItemGroup>
     <!-- now upload the items -->
     <UploadToAzure
       AccountKey="$(CloudDropAccessToken)"

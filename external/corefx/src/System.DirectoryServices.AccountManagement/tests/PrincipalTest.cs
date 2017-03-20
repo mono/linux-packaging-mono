@@ -4,7 +4,7 @@
 
 using System;
 using System.DirectoryServices.AccountManagement;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AccountManagementUnitTests
 {
@@ -12,12 +12,31 @@ namespace AccountManagementUnitTests
     ///This is a test class for PrincipalTest and is intended
     ///to contain all PrincipalTest Unit Tests
     ///</summary>
-    abstract public class PrincipalTest : IDisposable
+    [TestClass()]
+    abstract public class PrincipalTest
     {
+        private TestContext _testContextInstance;
         protected PrincipalContext domainContext;
+
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public TestContext TestContext
+        {
+            get
+            {
+                return _testContextInstance;
+            }
+            set
+            {
+                _testContextInstance = value;
+            }
+        }
 
         #region Additional test attributes
 
+        [TestInitialize()]
         public void PrincipalTestInitialize()
         {
             RefreshContext();
@@ -42,21 +61,34 @@ namespace AccountManagementUnitTests
             domainContext = new PrincipalContext(ContextType.Domain, domain, container, username, password);
         }
 
-        public void Dispose()
+        //Use ClassCleanup to run code after all tests in a class have run
+        [TestCleanup()]
+        public void PrincipalTestCleanup()
         {
             if (domainContext != null)
             {
                 domainContext.Dispose();
-                domainContext = null;
             }
         }
 
-        #endregion
+        //Use TestInitialize to run code before running each test
+        //[TestInitialize()]
+        //public void MyTestInitialize()
+        //{
+        //}
+        //
+        //Use TestCleanup to run code after each test has run
+        //[TestCleanup()]
+        //public void MyTestCleanup()
+        //{
+        //}
+        //
+        #endregion      
 
         /// <summary>
         ///  testing user creation
         ///  right now we just test that if trying to add an existing user it causes it to be deleted
-        [Fact]
+        [TestMethod()]
         public void AddExistingPrincipal()
         {
             // use new GUID for the user name so we be sure this user does not exist yet
@@ -66,7 +98,7 @@ namespace AccountManagementUnitTests
                 principal.Save();
             }
 
-            Assert.NotNull(Principal.FindByIdentity(domainContext, name));
+            Assert.IsNotNull(Principal.FindByIdentity(domainContext, name), "Could not create principal");
 
             // this previously caused the user to be deleted. it is still expected to throw an exception, but not delete the user
             bool exceptionThrown = false;
@@ -83,26 +115,26 @@ namespace AccountManagementUnitTests
             }
 
             // validate that we correctly throw an exception when trying to add an existing principal
-            Assert.True(exceptionThrown);
+            Assert.IsTrue(exceptionThrown);
 
             // validate that we did not delete incorrectly delete the first principal
             using (Principal principal2 = Principal.FindByIdentity(domainContext, name))
             {
-                Assert.NotNull(principal2);
+                Assert.IsNotNull(principal2, "Existing principal was deleted");
 
                 // explicitly delete the user and check it was really deleted
                 principal2.Delete();
             }
 
             // ensure we cleaned up the test principal
-            Assert.Null(Principal.FindByIdentity(domainContext, name));
+            Assert.IsNull(Principal.FindByIdentity(domainContext, name), "Cleanup failed - principal still exists");
         }
 
 
         /// <summary>
         /// 
         /// </summary>
-        [Fact]
+        [TestMethod()]
         public void TestExtendedPrincipal()
         {
             // to improve this, we might want to generate random sequences
@@ -126,7 +158,7 @@ namespace AccountManagementUnitTests
                 principal.Delete();
             }
 
-            //CollectionAssert.AreEqual(writtenArray, readArray);
+            CollectionAssert.AreEqual(writtenArray, readArray);
         }
 
         private void RefreshDomainContext()

@@ -84,7 +84,6 @@ namespace Mono.Simd
 		Replace Shuffle with less bug prone methods
 */
 
-	[Obsolete ("Use the types in the System.Numerics.Vectors namespace")]
 	[StructLayout(LayoutKind.Explicit, Pack = 0, Size = 16)]
 	public struct Vector4f
 	{

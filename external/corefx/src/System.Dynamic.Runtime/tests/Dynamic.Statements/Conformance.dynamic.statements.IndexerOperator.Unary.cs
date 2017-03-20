@@ -6,6 +6,9 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.verify.verify
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.verify.verify;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease001.decrease001;
+
     public class Verify
     {
         public static int Check(dynamic actual, dynamic expected)
@@ -27,12 +30,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease001.decrease001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.verify.verify;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease001.decrease001;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>prefix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -76,12 +82,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease001e.decrease001e
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease001e.decrease001e;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>prefix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -143,12 +151,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease002.decrease002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease002.decrease002;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>prefix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -192,12 +202,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease002e.decrease002e
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.decrease002e.decrease002e;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>postfix decrement</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -259,12 +271,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.increase001.increase001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.verify.verify;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.increase001.increase001;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>prefix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -308,12 +323,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.increase001e.increase001e
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.increase001e.increase001e;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>postfix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -375,12 +392,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.increase002.increase002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.verify.verify;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.increase002.increase002;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>prefix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -424,12 +444,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.increase002e.increase002e
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.increase002e.increase002e;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>postfix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -491,12 +513,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.minus001.minus001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.verify.verify;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.minus001.minus001;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>minus</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -540,12 +565,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.minus001e.minus001e
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.minus001e.minus001e;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>minus</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -607,12 +634,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.not001.not001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.verify.verify;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.not001.not001;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>prefix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -656,12 +686,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.not001e.not001e
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.not001e.not001e;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>prefix increment</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -723,12 +755,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.plus001.plus001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.verify.verify;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.plus001.plus001;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>minus</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -772,12 +807,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOpera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.plus001e.plus001e
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.IndexerOperator.Unary.plus001e.plus001e;
     // <Area>operator on dynamic indexer</Area>
     // <Title> unary operator  </Title>
     // <Description>minus</Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {

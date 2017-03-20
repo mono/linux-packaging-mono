@@ -48,9 +48,9 @@ namespace System.Security.Cryptography.Xml {
 		{
 		}
 
-		public KeyInfoEncryptedKey (EncryptedKey encryptedKey)
+		public KeyInfoEncryptedKey (EncryptedKey ek)
 		{
-			EncryptedKey = encryptedKey;
+			EncryptedKey = ek;
 		}
 
 		#endregion // Constructors

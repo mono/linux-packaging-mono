@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Globalization;
@@ -98,7 +97,7 @@ namespace System.Net
             throw new NotSupportedException(SR.net_noseek);
         }
 
-        public override int Read(byte[] buffer, int offset, int size)
+        public override int Read([In, Out] byte[] buffer, int offset, int size)
         {
             throw new InvalidOperationException(SR.net_writeonlystream);
         }
@@ -367,7 +366,7 @@ namespace System.Net
                 if (NetEventSource.IsEnabled) NetEventSource.Error(this, "Rethrowing exception:" + exception);
                 _closed = true;
                 _httpContext.Abort();
-                ExceptionDispatchInfo.Capture(exception).Throw();
+                throw exception;
             }
 
             if (NetEventSource.IsEnabled) NetEventSource.Exit(this);
@@ -428,7 +427,7 @@ namespace System.Net
                         {
                             flags |= Interop.HttpApi.HTTP_FLAGS.HTTP_SEND_RESPONSE_FLAG_DISCONNECT;
                         }
-                        fixed (void* pBuffer = &s_chunkTerminator[0])
+                        fixed (void* pBuffer = s_chunkTerminator)
                         {
                             Interop.HttpApi.HTTP_DATA_CHUNK* pDataChunk = null;
                             if (_httpContext.Response.BoundaryType == BoundaryType.Chunked)

@@ -140,7 +140,7 @@ namespace System.Linq.Expressions
         {
             ContractUtils.RequiresNotNull(method, nameof(method));
             ContractUtils.Requires(method.IsStatic, nameof(method));
-            var type = method.DeclaringType as System.Reflection.Emit.TypeBuilder;
+            var type = method.DeclaringType.GetTypeInfo() as System.Reflection.Emit.TypeBuilder;
             if (type == null) throw Error.MethodBuilderDoesNotHaveTypeBuilder();
 
             Compiler.LambdaCompiler.Compile(this, method);
@@ -872,8 +872,6 @@ namespace System.Linq.Expressions
             {
                 throw Error.LambdaTypeMustBeDerivedFromSystemDelegate(paramName);
             }
-
-            TypeUtils.ValidateType(delegateType, nameof(delegateType));
 
             MethodInfo mi;
             CacheDict<Type, MethodInfo> ldc = s_lambdaDelegateCache;

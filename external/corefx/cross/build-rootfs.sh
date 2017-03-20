@@ -2,22 +2,15 @@
 
 usage()
 {
-    echo "Usage: $0 [BuildArch] [LinuxCodeName] [--skipunmount]"
-    echo "BuildArch can be: arm(default), armel, arm64, x86"
-    echo "LinuxCodeName - optional, Code name for Linux, can be: trusty(default), vivid, wily, xenial. If BuildArch is armel, LinuxCodeName is jessie(default) or tizen."
-    echo "lldbx.y - optional, LLDB version, can be: lldb3.6(default), lldb3.8, no-lldb"
-    echo "--skipunmount - optional, will skip the unmount of rootfs folder."
+    echo "Usage: $0 [BuildArch] [LinuxCodeName] [--SkipUnmount]"
+    echo "BuildArch can be: arm, armel, arm64, x86"
+    echo "LinuxCodeName - optional, Code name for Ubuntu, can be: trusty(default), vivid, wily, xenial. If BuildArch is armel, jessie(default) or tizen."
+    echo "[--SkipUnmount] - do not unmount rootfs folders."
     exit 1
 }
 
-__LinuxCodeName=trusty
 __CrossDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 __InitialDir=$PWD
-__BuildArch=arm
-__UbuntuArch=armhf
-__UbuntuRepo="http://ports.ubuntu.com/"
-__LLDB_Package="lldb-3.6-dev"
-__SkipUnmount=0
 
 # base development support
 __UbuntuPackages="build-essential"
@@ -27,15 +20,26 @@ __UbuntuPackages+=" symlinks"
 
 # CoreCLR and CoreFX dependencies
 __UbuntuPackages+=" gettext"
-__UbuntuPackages+=" libunwind8-dev"
-__UbuntuPackages+=" liblttng-ust-dev"
-__UbuntuPackages+=" libicu-dev"
-
-# CoreFX dependencies
 __UbuntuPackages+=" libcurl4-openssl-dev"
+__UbuntuPackages+=" libicu-dev"
 __UbuntuPackages+=" libkrb5-dev"
+__UbuntuPackages+=" liblttng-ust-dev"
 __UbuntuPackages+=" libssl-dev"
+__UbuntuPackages+=" libunwind8-dev"
 __UbuntuPackages+=" zlib1g-dev"
+
+if [ -z "$LLVM_ARM_HOME" ]; then
+    __LLDB_Package="lldb-3.6-dev"
+fi
+ 
+
+
+__BuildArch=arm
+__UbuntuArch=armhf
+__LinuxCodeName=trusty
+__UbuntuRepo="http://ports.ubuntu.com/"
+__MachineTriple=arm-linux-gnueabihf
+__SkipUnmount=0
 
 __UnprocessedBuildArgs=
 for i in "$@" ; do
@@ -45,33 +49,30 @@ for i in "$@" ; do
             usage
             exit 1
             ;;
+        --skipunmount)
+            __SkipUnmount=1
+            ;;
         arm)
             __BuildArch=arm
             __UbuntuArch=armhf
+            __MachineTriple=arm-linux-gnueabihf
             ;;
         arm64)
             __BuildArch=arm64
             __UbuntuArch=arm64
+            __MachineTriple=aarch64-linux-gnu
+            ;;
+        x86)
+            __BuildArch=x86
+            __UbuntuArch=i386
+            __UbuntuRepo="http://archive.ubuntu.com/ubuntu"
             ;;
         armel)
             __BuildArch=armel
             __UbuntuArch=armel
             __UbuntuRepo="http://ftp.debian.org/debian/"
+            __MachineTriple=arm-linux-gnueabi
             __LinuxCodeName=jessie
-            ;;
-        x86)
-            __BuildArch=x86
-            __UbuntuArch=i386
-            __UbuntuRepo="http://archive.ubuntu.com/ubuntu/"
-            ;;
-        lldb3.6)
-            __LLDB_Package="lldb-3.6-dev"
-            ;;
-        lldb3.8)
-            __LLDB_Package="lldb-3.8-dev"
-            ;;
-        no-lldb)
-            unset __LLDB_Package
             ;;
         vivid)
             if [ "$__LinuxCodeName" != "jessie" ]; then
@@ -94,7 +95,7 @@ for i in "$@" ; do
             ;;
         tizen)
             if [ "$__BuildArch" != "armel" ]; then
-                echo "Tizen is available only for armel."
+                echo "Tizen is available only for armel"
                 usage;
                 exit 1;
             fi
@@ -102,19 +103,20 @@ for i in "$@" ; do
             __UbuntuRepo=
             __Tizen=tizen
             ;;
-        --skipunmount)
-            __SkipUnmount=1
-            ;;
         *)
             __UnprocessedBuildArgs="$__UnprocessedBuildArgs $i"
             ;;
     esac
 done
 
-if [ "$__BuildArch" == "armel" ]; then
-    __LLDB_Package="lldb-3.5-dev"
+if [[ "$__BuildArch" == "arm" ]]; then
+    __UbuntuPackages+=" ${__LLDB_Package:-}"
 fi
-__UbuntuPackages+=" ${__LLDB_Package:-}"
+
+if [ "$__BuildArch" == "armel" ]; then  
+    __LLDB_Package="lldb-3.5-dev"
+    __UbuntuPackages+=" ${__LLDB_Package:-}"
+fi 
 
 __RootfsDir="$__CrossDir/rootfs/$__BuildArch"
 
@@ -122,12 +124,11 @@ if [[ -n "$ROOTFS_DIR" ]]; then
     __RootfsDir=$ROOTFS_DIR
 fi
 
-if [ -d "$__RootfsDir" ]; then
-    if [ $__SkipUnmount == 0 ]; then
-        umount $__RootfsDir/*
-    fi
-    rm -rf $__RootfsDir
+if [ $__SkipUnmount == 0 ]; then
+    umount $__RootfsDir/*
 fi
+
+rm -rf $__RootfsDir
 
 if [[ -n $__LinuxCodeName ]]; then
     qemu-debootstrap --arch $__UbuntuArch $__LinuxCodeName $__RootfsDir $__UbuntuRepo
@@ -141,11 +142,6 @@ if [[ -n $__LinuxCodeName ]]; then
         umount $__RootfsDir/*
     fi
 
-    if [[ "$__BuildArch" == "arm" && "$__LinuxCodeName" == "trusty" ]]; then
-        pushd $__RootfsDir
-        patch -p1 < $__CrossDir/$__BuildArch/trusty.patch
-        popd
-    fi
 elif [ "$__Tizen" == "tizen" ]; then
     ROOTFS_DIR=$__RootfsDir $__CrossDir/$__BuildArch/tizen-build-rootfs.sh
 else

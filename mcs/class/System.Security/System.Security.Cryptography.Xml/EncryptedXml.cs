@@ -138,19 +138,19 @@ namespace System.Security.Cryptography.Xml {
 			keyNameMapping.Clear ();
 		}
 
-		public byte[] DecryptData (EncryptedData encryptedData, SymmetricAlgorithm symmetricAlgorithm)
+		public byte[] DecryptData (EncryptedData encryptedData, SymmetricAlgorithm symAlg)
 		{
 			if (encryptedData == null)
 				throw new ArgumentNullException ("encryptedData");
-			if (symmetricAlgorithm == null)
-				throw new ArgumentNullException ("symmetricAlgorithm");
+			if (symAlg == null)
+				throw new ArgumentNullException ("symAlg");
 
-			PaddingMode bak = symmetricAlgorithm.Padding;
+			PaddingMode bak = symAlg.Padding;
 			try {
-				symmetricAlgorithm.Padding = Padding;
-				return Transform (encryptedData.CipherData.CipherValue, symmetricAlgorithm.CreateDecryptor (), symmetricAlgorithm.BlockSize / 8, true);
+				symAlg.Padding = Padding;
+				return Transform (encryptedData.CipherData.CipherValue, symAlg.CreateDecryptor (), symAlg.BlockSize / 8, true);
 			} finally {
-				symmetricAlgorithm.Padding = bak;
+				symAlg.Padding = bak;
 			}
 		}
 
@@ -186,25 +186,25 @@ namespace System.Security.Cryptography.Xml {
 			return DecryptKey (encryptedKey.CipherData.CipherValue, (SymmetricAlgorithm) keyAlg);
 		}
 
-		public static byte[] DecryptKey (byte[] keyData, SymmetricAlgorithm symmetricAlgorithm)
+		public static byte[] DecryptKey (byte[] keyData, SymmetricAlgorithm symAlg)
 		{
 			if (keyData == null)
 				throw new ArgumentNullException ("keyData");
-			if (symmetricAlgorithm == null)
-				throw new ArgumentNullException ("symmetricAlgorithm");
+			if (symAlg == null)
+				throw new ArgumentNullException ("symAlg");
 
-			if (symmetricAlgorithm is TripleDES)
-				return SymmetricKeyWrap.TripleDESKeyWrapDecrypt (symmetricAlgorithm.Key, keyData);
-			if (symmetricAlgorithm is Rijndael)
-				return SymmetricKeyWrap.AESKeyWrapDecrypt (symmetricAlgorithm.Key, keyData);
+			if (symAlg is TripleDES)
+				return SymmetricKeyWrap.TripleDESKeyWrapDecrypt (symAlg.Key, keyData);
+			if (symAlg is Rijndael)
+				return SymmetricKeyWrap.AESKeyWrapDecrypt (symAlg.Key, keyData);
 			throw new CryptographicException ("The specified cryptographic transform is not supported.");
 		}
 
 		[MonoTODO ("Test this.")]
-		public static byte[] DecryptKey (byte[] keyData, RSA rsa, bool useOAEP)
+		public static byte[] DecryptKey (byte[] keyData, RSA rsa, bool fOAEP)
 		{
 			AsymmetricKeyExchangeDeformatter deformatter = null;
-			if (useOAEP) 
+			if (fOAEP) 
 				deformatter = new RSAOAEPKeyExchangeDeformatter (rsa);
 			else
 				deformatter = new RSAPKCS1KeyExchangeDeformatter (rsa);
@@ -254,19 +254,19 @@ namespace System.Security.Cryptography.Xml {
 			throw new NotImplementedException ();
 		}
 
-		public byte[] EncryptData (byte[] plaintext, SymmetricAlgorithm symmetricAlgorithm)
+		public byte[] EncryptData (byte[] plainText, SymmetricAlgorithm symAlg)
 		{
-			if (plaintext == null)
-				throw new ArgumentNullException ("plaintext");
-			if (symmetricAlgorithm == null)
-				throw new ArgumentNullException ("symmetricAlgorithm");
+			if (plainText == null)
+				throw new ArgumentNullException ("plainText");
+			if (symAlg == null)
+				throw new ArgumentNullException ("symAlg");
 
-			PaddingMode bak = symmetricAlgorithm.Padding;
+			PaddingMode bak = symAlg.Padding;
 			try {
-				symmetricAlgorithm.Padding = Padding;
-				return EncryptDataCore (plaintext, symmetricAlgorithm);
+				symAlg.Padding = Padding;
+				return EncryptDataCore (plainText, symAlg);
 			} finally {
-				symmetricAlgorithm.Padding = bak;
+				symAlg.Padding = bak;
 			}
 		}
 
@@ -289,37 +289,37 @@ namespace System.Security.Cryptography.Xml {
 			return output;
 		}
 
-		public byte[] EncryptData (XmlElement inputElement, SymmetricAlgorithm symmetricAlgorithm, bool content)
+		public byte[] EncryptData (XmlElement inputElement, SymmetricAlgorithm symAlg, bool content)
 		{
 			if (inputElement == null)
 				throw new ArgumentNullException ("inputElement");
 
 			if (content)
-				return EncryptData (Encoding.GetBytes (inputElement.InnerXml), symmetricAlgorithm);
+				return EncryptData (Encoding.GetBytes (inputElement.InnerXml), symAlg);
 			else
-				return EncryptData (Encoding.GetBytes (inputElement.OuterXml), symmetricAlgorithm);
+				return EncryptData (Encoding.GetBytes (inputElement.OuterXml), symAlg);
 		}
 
-		public static byte[] EncryptKey (byte[] keyData, SymmetricAlgorithm symmetricAlgorithm)
+		public static byte[] EncryptKey (byte[] keyData, SymmetricAlgorithm symAlg)
 		{
 			if (keyData == null)
 				throw new ArgumentNullException ("keyData");
-			if (symmetricAlgorithm == null)
-				throw new ArgumentNullException ("symmetricAlgorithm");
+			if (symAlg == null)
+				throw new ArgumentNullException ("symAlg");
 
-			if (symmetricAlgorithm is TripleDES)
-				return SymmetricKeyWrap.TripleDESKeyWrapEncrypt (symmetricAlgorithm.Key, keyData);
-			if (symmetricAlgorithm is Rijndael)
-				return SymmetricKeyWrap.AESKeyWrapEncrypt (symmetricAlgorithm.Key, keyData);
+			if (symAlg is TripleDES)
+				return SymmetricKeyWrap.TripleDESKeyWrapEncrypt (symAlg.Key, keyData);
+			if (symAlg is Rijndael)
+				return SymmetricKeyWrap.AESKeyWrapEncrypt (symAlg.Key, keyData);
 
 			throw new CryptographicException ("The specified cryptographic transform is not supported.");
 		}
 
 		[MonoTODO ("Test this.")]
-		public static byte[] EncryptKey (byte[] keyData, RSA rsa, bool useOAEP)
+		public static byte[] EncryptKey (byte[] keyData, RSA rsa, bool fOAEP)
 		{
 			AsymmetricKeyExchangeFormatter formatter = null;
-			if (useOAEP) 
+			if (fOAEP) 
 				formatter = new RSAOAEPKeyExchangeFormatter (rsa);
 			else
 				formatter = new RSAPKCS1KeyExchangeFormatter (rsa);
@@ -402,25 +402,25 @@ namespace System.Security.Cryptography.Xml {
 			throw new ArgumentException ("keyAlg");
 		}
 
-		public virtual byte[] GetDecryptionIV (EncryptedData encryptedData, string symmetricAlgorithmUri)
+		public virtual byte[] GetDecryptionIV (EncryptedData encryptedData, string symAlgUri)
 		{
 			if (encryptedData == null)
 				throw new ArgumentNullException ("encryptedData");
 
-			SymmetricAlgorithm symAlg = GetAlgorithm (symmetricAlgorithmUri);
+			SymmetricAlgorithm symAlg = GetAlgorithm (symAlgUri);
 			byte[] iv = new Byte [symAlg.BlockSize / 8];
 			Buffer.BlockCopy (encryptedData.CipherData.CipherValue, 0, iv, 0, iv.Length);
 			return iv;
 		}
 
-		public virtual SymmetricAlgorithm GetDecryptionKey (EncryptedData encryptedData, string symmetricAlgorithmUri)
+		public virtual SymmetricAlgorithm GetDecryptionKey (EncryptedData encryptedData, string symAlgUri)
 		{
 			if (encryptedData == null)
 				throw new ArgumentNullException ("encryptedData");
-			if (symmetricAlgorithmUri == null)
+			if (symAlgUri == null)
 				return null;
 
-			SymmetricAlgorithm symAlg = GetAlgorithm (symmetricAlgorithmUri);
+			SymmetricAlgorithm symAlg = GetAlgorithm (symAlgUri);
 			symAlg.IV = GetDecryptionIV (encryptedData, encryptedData.EncryptionMethod.KeyAlgorithm);
 			KeyInfo keyInfo = encryptedData.KeyInfo;
 			foreach (KeyInfoClause clause in keyInfo) {

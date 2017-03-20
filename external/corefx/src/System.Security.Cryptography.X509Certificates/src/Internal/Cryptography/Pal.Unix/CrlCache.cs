@@ -130,8 +130,9 @@ namespace Internal.Cryptography.Pal
                             }
                         }
                     }
-                    catch (UnauthorizedAccessException) { }
-                    catch (IOException) { }
+                    catch (IOException)
+                    {
+                    }
                 }
             }
         }

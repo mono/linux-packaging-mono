@@ -79,7 +79,10 @@ namespace System.Linq
                 TResult[] array = new TResult[_count];
                 if (_current != null)
                 {
-                    Array.Fill(array, _current);
+                    for (int i = 0; i != array.Length; ++i)
+                    {
+                        array[i] = _current;
+                    }
                 }
 
                 return array;

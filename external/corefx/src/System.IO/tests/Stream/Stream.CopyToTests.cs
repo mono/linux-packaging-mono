@@ -42,7 +42,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        public async Task AsyncIfCanSeekIsFalseLengthAndPositionShouldNotBeCalled()
+        public async void AsyncIfCanSeekIsFalseLengthAndPositionShouldNotBeCalled()
         {
             var baseStream = new DelegateStream(
                 canReadFunc: () => true,
@@ -82,7 +82,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        public async Task AsyncIfCanSeekIsTrueLengthAndPositionShouldOnlyBeCalledOnce()
+        public async void AsyncIfCanSeekIsTrueLengthAndPositionShouldOnlyBeCalledOnce()
         {
             var baseStream = new DelegateStream(
                 canReadFunc: () => true,
@@ -136,7 +136,7 @@ namespace System.IO.Tests
 
         [Theory]
         [MemberData(nameof(LengthIsLessThanOrEqualToPosition))]
-        public async Task AsyncIfLengthIsLessThanOrEqualToPositionCopyToShouldStillBeCalledWithAPositiveBufferSize(long length, long position)
+        public async void AsyncIfLengthIsLessThanOrEqualToPositionCopyToShouldStillBeCalledWithAPositiveBufferSize(long length, long position)
         {
             var baseStream = new DelegateStream(
                 canReadFunc: () => true,
@@ -191,7 +191,7 @@ namespace System.IO.Tests
 
         [Theory]
         [MemberData(nameof(LengthMinusPositionPositiveOverflows))]
-        public async Task AsyncIfLengthMinusPositionPositiveOverflowsBufferSizeShouldStillBePositive(long length, long position)
+        public async void AsyncIfLengthMinusPositionPositiveOverflowsBufferSizeShouldStillBePositive(long length, long position)
         {
             var baseStream = new DelegateStream(
                 canReadFunc: () => true,
@@ -270,7 +270,7 @@ namespace System.IO.Tests
 
         [Theory]
         [MemberData(nameof(LengthIsGreaterThanPositionAndDoesNotOverflow))]
-        public async Task AsyncIfLengthIsGreaterThanPositionAndDoesNotOverflowEverythingShouldGoNormally(long length, long position)
+        public async void AsyncIfLengthIsGreaterThanPositionAndDoesNotOverflowEverythingShouldGoNormally(long length, long position)
         {
             const int ReadLimit = 7;
 

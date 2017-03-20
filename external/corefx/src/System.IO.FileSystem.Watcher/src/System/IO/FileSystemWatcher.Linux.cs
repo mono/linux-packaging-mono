@@ -742,7 +742,6 @@ namespace System.IO
             private bool TryReadEvent(out NotifyEvent notifyEvent)
             {
                 Debug.Assert(_buffer != null);
-                Debug.Assert(_buffer.Length > 0);
                 Debug.Assert(_bufferAvailable >= 0 && _bufferAvailable <= _buffer.Length);
                 Debug.Assert(_bufferPos >= 0 && _bufferPos <= _bufferAvailable);
 
@@ -755,7 +754,7 @@ namespace System.IO
                     {
                         try
                         {
-                            fixed (byte* buf = &_buffer[0])
+                            fixed (byte* buf = this._buffer)
                             {
                                 _bufferAvailable = Interop.CheckIo(Interop.Sys.Read(_inotifyHandle, buf, this._buffer.Length), 
                                     isDirectory: true);

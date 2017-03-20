@@ -58,12 +58,13 @@ namespace MonoTests.System.Drawing {
 		}
 
 		[Test]
+		[ExpectedException (typeof (NullReferenceException))]
 		public void RegionData_Null ()
 		{
 			RegionData data = new Region ().GetRegionData ();
 			data.Data = null;
 			Assert.IsNull (data.Data, "Data");
-			Assert.Throws<NullReferenceException> (() => new Region (data));
+			Region region = new Region (data);
 		}
 
 		[Test]

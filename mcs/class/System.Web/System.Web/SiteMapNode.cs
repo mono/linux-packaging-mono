@@ -81,9 +81,9 @@ namespace System.Web {
 			return new SiteMapHierarchicalDataSourceView (this);
 		}
 		
-		public virtual bool IsAccessibleToUser (System.Web.HttpContext context)
+		public virtual bool IsAccessibleToUser (System.Web.HttpContext ctx)
 		{
-			return provider.IsAccessibleToUser (context, this);
+			return provider.IsAccessibleToUser (ctx, this);
 		}
 		
 		public override string ToString()
@@ -297,9 +297,9 @@ namespace System.Web {
 			return node;
 		}
 				
-		public override bool Equals (object obj)
+		public override bool Equals (object ob)
 		{
-			SiteMapNode node = obj as SiteMapNode;
+			SiteMapNode node = ob as SiteMapNode;
 			if (node == null) return false;
 			
 			if (node.key != key ||

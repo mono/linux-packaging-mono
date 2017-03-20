@@ -1301,7 +1301,7 @@ namespace Mono.CSharp {
 						// Special case hoisted return value (happens in try/finally scenario)
 						//
 						if (ec.TryFinallyUnwind != null) {
-							exit_label = TryFinally.EmitRedirectedReturn (ec, async_body, unwind_protect);
+							exit_label = TryFinally.EmitRedirectedReturn (ec, async_body);
 						}
 
 						var async_return = (IAssignMethod)storey.HoistedReturnValue;
@@ -1311,7 +1311,7 @@ namespace Mono.CSharp {
 						expr.Emit (ec);
 
 						if (ec.TryFinallyUnwind != null)
-							exit_label = TryFinally.EmitRedirectedReturn (ec, async_body, unwind_protect);
+							exit_label = TryFinally.EmitRedirectedReturn (ec, async_body);
 					}
 
 					ec.Emit (OpCodes.Leave, exit_label);
@@ -1460,7 +1460,7 @@ namespace Mono.CSharp {
 
 			if (ec.TryFinallyUnwind != null && IsLeavingFinally (label.Block)) {
 				var async_body = (AsyncInitializer) ec.CurrentAnonymousMethod;
-				l = TryFinally.EmitRedirectedJump (ec, async_body, l, label.Block, unwind_protect);
+				l = TryFinally.EmitRedirectedJump (ec, async_body, l, label.Block);
 			}
 
 			ec.Emit (unwind_protect ? OpCodes.Leave : OpCodes.Br, l);
@@ -1867,7 +1867,7 @@ namespace Mono.CSharp {
 
 			if (ec.TryFinallyUnwind != null) {
 				var async_body = (AsyncInitializer) ec.CurrentAnonymousMethod;
-				l = TryFinally.EmitRedirectedJump (ec, async_body, l, enclosing_loop.Statement as Block, unwind_protect);
+				l = TryFinally.EmitRedirectedJump (ec, async_body, l, enclosing_loop.Statement as Block);
 			}
 
 			ec.Emit (unwind_protect ? OpCodes.Leave : OpCodes.Br, l);
@@ -1915,7 +1915,7 @@ namespace Mono.CSharp {
 
 			if (ec.TryFinallyUnwind != null) {
 				var async_body = (AsyncInitializer) ec.CurrentAnonymousMethod;
-				l = TryFinally.EmitRedirectedJump (ec, async_body, l, enclosing_loop.Statement as Block, unwind_protect);
+				l = TryFinally.EmitRedirectedJump (ec, async_body, l, enclosing_loop.Statement as Block);
 			}
 
 			ec.Emit (unwind_protect ? OpCodes.Leave : OpCodes.Br, l);
@@ -6997,7 +6997,7 @@ namespace Mono.CSharp {
 	{
 		ExplicitBlock fini;
 		List<DefiniteAssignmentBitSet> try_exit_dat;
-		List<Tuple<Label, bool>> redirected_jumps;
+		List<Label> redirected_jumps;
 		Label? start_fin_label;
 
 		public TryFinally (Statement stmt, ExplicitBlock fini, Location loc)
@@ -7123,7 +7123,7 @@ namespace Mono.CSharp {
 			return false;
 		}
 
-		public static Label EmitRedirectedJump (EmitContext ec, AsyncInitializer initializer, Label label, Block labelBlock, bool unwindProtect)
+		public static Label EmitRedirectedJump (EmitContext ec, AsyncInitializer initializer, Label label, Block labelBlock)
 		{
 			int idx;
 			if (labelBlock != null) {
@@ -7143,7 +7143,7 @@ namespace Mono.CSharp {
 				if (labelBlock != null && !fin.IsParentBlock (labelBlock))
 					break;
 
-				fin.EmitRedirectedExit (ec, label, initializer, set_return_state, unwindProtect);
+				fin.EmitRedirectedExit (ec, label, initializer, set_return_state);
 				set_return_state = false;
 
 				if (fin.start_fin_label == null) {
@@ -7156,26 +7156,26 @@ namespace Mono.CSharp {
 			return label;
 		}
 
-		public static Label EmitRedirectedReturn (EmitContext ec, AsyncInitializer initializer, bool unwindProtect)
+		public static Label EmitRedirectedReturn (EmitContext ec, AsyncInitializer initializer)
 		{
-			return EmitRedirectedJump (ec, initializer, initializer.BodyEnd, null, unwindProtect);
+			return EmitRedirectedJump (ec, initializer, initializer.BodyEnd, null);
 		}
 
-		void EmitRedirectedExit (EmitContext ec, Label label, AsyncInitializer initializer, bool setReturnState, bool unwindProtect)
+		void EmitRedirectedExit (EmitContext ec, Label label, AsyncInitializer initializer, bool setReturnState)
 		{
 			if (redirected_jumps == null) {
-				redirected_jumps = new List<Tuple<Label, bool>> ();
+				redirected_jumps = new List<Label> ();
 
 				// Add fallthrough label
-				redirected_jumps.Add (Tuple.Create (ec.DefineLabel (), false));
+				redirected_jumps.Add (ec.DefineLabel ());
 
 				if (setReturnState)
 					initializer.HoistedReturnState = ec.GetTemporaryField (ec.Module.Compiler.BuiltinTypes.Int, true);
 			}
 
-			int index = redirected_jumps.FindIndex (l => l.Item1 == label);
+			int index = redirected_jumps.IndexOf (label);
 			if (index < 0) {
-				redirected_jumps.Add (Tuple.Create (label, unwindProtect));
+				redirected_jumps.Add (label);
 				index = redirected_jumps.Count - 1;
 			}
 
@@ -7199,34 +7199,10 @@ namespace Mono.CSharp {
 
 			var initializer = (AsyncInitializer)ec.CurrentAnonymousMethod;
 			initializer.HoistedReturnState.EmitLoad (ec);
-
-			var jumps_table = new Label [redirected_jumps.Count];
-			List<Tuple<Label, Label>> leave_redirect = null;
-			for (int i = 0; i < jumps_table.Length; ++i) {
-				var val = redirected_jumps [i];
-
-				if (val.Item2) {
-					if (leave_redirect == null)
-						leave_redirect = new List<Tuple<Label, Label>> ();
-					var label = ec.DefineLabel ();
-					leave_redirect.Add (Tuple.Create (label, val.Item1));
-					jumps_table [i] = label;
-				} else {
-					jumps_table [i] = val.Item1;
-				}
-			}
-
-			ec.Emit (OpCodes.Switch, jumps_table);
-
-			if (leave_redirect != null) {
-				foreach (var entry in leave_redirect) {
-					ec.MarkLabel (entry.Item1);
-					ec.Emit (OpCodes.Leave, entry.Item2);
-				}
-			}
+			ec.Emit (OpCodes.Switch, redirected_jumps.ToArray ());
 
 			// Mark fallthrough label
-			ec.MarkLabel (jumps_table [0]);
+			ec.MarkLabel (redirected_jumps [0]);
 		}
 
 		protected override bool DoFlowAnalysis (FlowAnalysisContext fc)

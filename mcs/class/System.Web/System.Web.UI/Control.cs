@@ -1950,7 +1950,7 @@ namespace System.Web.UI
 			Page.SetFocus (this);
 		}
 
-		protected internal virtual void LoadControlState (object savedState)
+		protected internal virtual void LoadControlState (object state)
 		{
 		}
 

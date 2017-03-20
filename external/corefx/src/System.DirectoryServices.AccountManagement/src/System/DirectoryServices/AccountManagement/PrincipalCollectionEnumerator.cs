@@ -10,6 +10,7 @@ using System.Globalization;
 
 namespace System.DirectoryServices.AccountManagement
 {
+    [DirectoryServicesPermission(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted = true)]
     internal class PrincipalCollectionEnumerator : IEnumerator<Principal>, IEnumerator
     {
         //
@@ -18,6 +19,9 @@ namespace System.DirectoryServices.AccountManagement
 
         public Principal Current
         {
+            // <SecurityKernel Critical="True" Ring="0">
+            // <SatisfiesLinkDemand Name="CheckDisposed():Void" />
+            // </SecurityKernel>
             [System.Security.SecuritySafeCritical]
             get
             {
@@ -47,6 +51,10 @@ namespace System.DirectoryServices.AccountManagement
 
         object IEnumerator.Current
         {
+            // <SecurityKernel Critical="True" Ring="0">
+            // <SatisfiesLinkDemand Name="get_Current():Principal" />
+            // <ReferencesCritical Name="Method: get_Current():Principal" Ring="1" />
+            // </SecurityKernel>
             [System.Security.SecurityCritical]
             get
             {
@@ -58,6 +66,13 @@ namespace System.DirectoryServices.AccountManagement
         // Public methods
         //
 
+        // <SecurityKernel Critical="True" Ring="0">
+        // <SatisfiesLinkDemand Name="CheckDisposed():Void" />
+        // <SatisfiesLinkDemand Name="CheckChanged():Void" />
+        // <SatisfiesLinkDemand Name="PrincipalCollection.get_Cleared():System.Boolean" />
+        // <SatisfiesLinkDemand Name="PrincipalCollection.get_ClearCompleted():System.Boolean" />
+        // <ReferencesCritical Name="Method: CheckChanged():Void" Ring="1" />
+        // </SecurityKernel>
         [System.Security.SecuritySafeCritical]
         public bool MoveNext()
         {
@@ -207,12 +222,21 @@ namespace System.DirectoryServices.AccountManagement
             return false;
         }
 
+        // <SecurityKernel Critical="True" Ring="0">
+        // <SatisfiesLinkDemand Name="MoveNext():Boolean" />
+        // <ReferencesCritical Name="Method: MoveNext():Boolean" Ring="1" />
+        // </SecurityKernel>
         [System.Security.SecurityCritical]
         bool IEnumerator.MoveNext()
         {
             return MoveNext();
         }
 
+        // <SecurityKernel Critical="True" Ring="0">
+        // <SatisfiesLinkDemand Name="CheckDisposed():Void" />
+        // <SatisfiesLinkDemand Name="CheckChanged():Void" />
+        // <ReferencesCritical Name="Method: CheckChanged():Void" Ring="1" />
+        // </SecurityKernel>
         [System.Security.SecurityCritical]
         public void Reset()
         {
@@ -227,6 +251,10 @@ namespace System.DirectoryServices.AccountManagement
             _currentMode = CurrentEnumeratorMode.None;
         }
 
+        // <SecurityKernel Critical="True" Ring="0">
+        // <SatisfiesLinkDemand Name="Reset():Void" />
+        // <ReferencesCritical Name="Method: Reset():Void" Ring="1" />
+        // </SecurityKernel>
         [System.Security.SecurityCritical]
         void IEnumerator.Reset()
         {
@@ -314,6 +342,9 @@ namespace System.DirectoryServices.AccountManagement
 
         private PrincipalCollection _memberCollection = null;
 
+        // <SecurityKernel Critical="True" Ring="0">
+        // <SatisfiesLinkDemand Name="PrincipalCollection.get_LastChange():System.DateTime" />
+        // </SecurityKernel>
         [System.Security.SecurityCritical]
         private void CheckChanged()
         {

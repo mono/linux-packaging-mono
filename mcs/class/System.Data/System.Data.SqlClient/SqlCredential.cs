@@ -49,13 +49,13 @@ namespace System.Data.SqlClient {
 
 		#region Constructors
 
-		public SqlCredential (string userId, SecureString password)
+		public SqlCredential (string user, SecureString password)
 		{
-			if (userId == null)
-				throw new ArgumentNullException("userId");
+			if (user == null)
+				throw new ArgumentNullException("UserID");
 			if (password == null)
-				throw new ArgumentNullException("password");
-			this.uid = userId;
+				throw new ArgumentNullException("Password");
+			this.uid = user;
 			this.pwd = password;
 		}
 

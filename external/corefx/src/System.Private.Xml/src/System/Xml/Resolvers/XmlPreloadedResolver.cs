@@ -65,7 +65,7 @@ namespace System.Xml.Resolvers
 
             internal override Stream AsStream()
             {
-                Assembly asm = GetType().Assembly;
+                Assembly asm = GetType().GetTypeInfo().Assembly;
                 return asm.GetManifestResourceStream(_resourceName);
             }
         }

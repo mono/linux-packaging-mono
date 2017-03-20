@@ -367,7 +367,7 @@ namespace System.Linq.Expressions.Tests
                     {
                         yield return Expression.Convert(c, t);
 
-                        if (t.IsValueType)
+                        if (t.GetTypeInfo().IsValueType)
                         {
                             Type n = typeof(Nullable<>).MakeGenericType(t);
                             yield return Expression.Convert(c, n);

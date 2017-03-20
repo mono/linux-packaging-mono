@@ -4,9 +4,6 @@
 
 using System;
 using System.Diagnostics;
-#if MONO
-using System.Diagnostics.Private;
-#endif
 using System.Runtime.InteropServices;
 
 namespace System.IO
@@ -16,14 +13,6 @@ namespace System.IO
     /// </summary>
     internal static class Win32Marshal
     {
-#if MONO
-        static Win32Marshal()
-        {
-            if (!Environment.IsRunningOnWindows)
-                throw new PlatformNotSupportedException();
-        }
-#endif
-
         /// <summary>
         ///     Converts, resetting it, the last Win32 error into a corresponding <see cref="Exception"/> object.
         /// </summary>

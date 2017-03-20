@@ -15,25 +15,22 @@ namespace Microsoft.CSharp.RuntimeBinder
 {
     internal static class BinderHelper
     {
-        private static MethodInfo s_DoubleIsNaN;
-        private static MethodInfo s_SingleIsNaN;
-
         internal static DynamicMetaObject Bind(
                 DynamicMetaObjectBinder action,
                 RuntimeBinder binder,
-                DynamicMetaObject[] args,
+                IEnumerable<DynamicMetaObject> args,
                 IEnumerable<CSharpArgumentInfo> arginfos,
                 DynamicMetaObject onBindingError)
         {
-            Expression[] parameters = new Expression[args.Length];
+            List<Expression> parameters = new List<Expression>();
             BindingRestrictions restrictions = BindingRestrictions.Empty;
             ICSharpInvokeOrInvokeMemberBinder callPayload = action as ICSharpInvokeOrInvokeMemberBinder;
             ParameterExpression tempForIncrement = null;
-            IEnumerator<CSharpArgumentInfo> arginfosEnum = (arginfos ?? Array.Empty<CSharpArgumentInfo>()).GetEnumerator();
+            IEnumerator<CSharpArgumentInfo> arginfosEnum = arginfos == null ? null : arginfos.GetEnumerator();
 
-            for (int index = 0; index < args.Length; ++index)
+            int index = 0;
+            foreach (DynamicMetaObject o in args)
             {
-                DynamicMetaObject o = args[index];
                 // Our contract with the DLR is such that we will not enter a bind unless we have
                 // values for the meta-objects involved.
 
@@ -42,8 +39,9 @@ namespace Microsoft.CSharp.RuntimeBinder
                     Debug.Assert(false, "The runtime binder is being asked to bind a metaobject without a value");
                     throw Error.InternalCompilerError();
                 }
-
-                CSharpArgumentInfo info = arginfosEnum.MoveNext() ? arginfosEnum.Current : null;
+                CSharpArgumentInfo info = null;
+                if (arginfosEnum != null && arginfosEnum.MoveNext())
+                    info = arginfosEnum.Current;
 
                 if (index == 0 && IsIncrementOrDecrementActionOnLocal(action))
                 {
@@ -52,13 +50,12 @@ namespace Microsoft.CSharp.RuntimeBinder
                     // We need to do this because for value types, the object will come 
                     // in boxed, and we'd need to unbox it to get the original type in order
                     // to increment. The only way to do that is to create a new temporary.
-                    object value = o.Value;
-                    tempForIncrement = Expression.Variable(value != null ? value.GetType() : typeof(object), "t0");
-                    parameters[0] = tempForIncrement;
+                    tempForIncrement = Expression.Variable(o.Value != null ? o.Value.GetType() : typeof(object), "t0");
+                    parameters.Add(tempForIncrement);
                 }
                 else
                 {
-                    parameters[index] = o.Expression;
+                    parameters.Add(o.Expression);
                 }
 
                 BindingRestrictions r = DeduceArgumentRestriction(index, callPayload, o, info);
@@ -69,17 +66,11 @@ namespace Microsoft.CSharp.RuntimeBinder
                 // the constant.
                 if (info != null && info.LiteralConstant)
                 {
-                    if (o.Value is double && double.IsNaN((double)o.Value))
+                    if ((o.Value is float && float.IsNaN((float)o.Value))
+                      || o.Value is double && double.IsNaN((double)o.Value))
                     {
-                        MethodInfo isNaN = s_DoubleIsNaN ?? (s_DoubleIsNaN = typeof(double).GetMethod("IsNaN"));
-                        Expression e = Expression.Call(null, isNaN, o.Expression);
-                        restrictions = restrictions.Merge(BindingRestrictions.GetExpressionRestriction(e));
-                    }
-                    else if (o.Value is float && float.IsNaN((float)o.Value))
-                    {
-                        MethodInfo isNaN = s_SingleIsNaN ?? (s_SingleIsNaN = typeof(float).GetMethod("IsNaN"));
-                        Expression e = Expression.Call(null, isNaN, o.Expression);
-                        restrictions = restrictions.Merge(BindingRestrictions.GetExpressionRestriction(e));
+                        // We cannot create an equality restriction for NaN, because equality is implemented
+                        // in such a way that NaN != NaN and the rule we make would be unsatisfiable.
                     }
                     else
                     {
@@ -88,13 +79,15 @@ namespace Microsoft.CSharp.RuntimeBinder
                         restrictions = restrictions.Merge(r);
                     }
                 }
+
+                ++index;
             }
 
             // Get the bound expression.
             try
             {
                 DynamicMetaObject deferredBinding;
-                Expression expression = binder.Bind(action, parameters, args, out deferredBinding);
+                Expression expression = binder.Bind(action, parameters, args.ToArray(), out deferredBinding);
 
                 if (deferredBinding != null)
                 {
@@ -113,13 +106,21 @@ namespace Microsoft.CSharp.RuntimeBinder
                     // o = temp;
                     // return o;
 
-                    DynamicMetaObject arg0 = args[0];
+                    DynamicMetaObject arg0 = Enumerable.First(args);
 
-                    expression = Expression.Block(
-                        new[] {tempForIncrement},
-                        Expression.Assign(tempForIncrement, Expression.Convert(arg0.Expression, arg0.Value.GetType())),
-                        expression,
-                        Expression.Assign(arg0.Expression, Expression.Convert(tempForIncrement, arg0.Expression.Type)));
+                    Expression assignTemp = Expression.Assign(
+                        tempForIncrement,
+                        Expression.Convert(arg0.Expression, arg0.Value.GetType()));
+                    Expression assignResult = Expression.Assign(
+                        arg0.Expression,
+                        Expression.Convert(tempForIncrement, arg0.Expression.Type));
+                    List<Expression> expressions = new List<Expression>();
+
+                    expressions.Add(assignTemp);
+                    expressions.Add(expression);
+                    expressions.Add(assignResult);
+
+                    expression = Expression.Block(new ParameterExpression[] { tempForIncrement }, expressions);
                 }
 
                 expression = ConvertResult(expression, action);
@@ -139,7 +140,7 @@ namespace Microsoft.CSharp.RuntimeBinder
                             typeof(RuntimeBinderException).GetConstructor(new Type[] { typeof(string) }),
                             Expression.Constant(e.Message)
                         ),
-                        GetTypeForErrorMetaObject(action, args.Length == 0 ? null : args[0])
+                        GetTypeForErrorMetaObject(action, args.FirstOrDefault())
                     ),
                     restrictions
                 );
@@ -162,7 +163,6 @@ namespace Microsoft.CSharp.RuntimeBinder
             return obj != null && Marshal.IsComObject(obj);
         }
 
-#if ENABLECOMBINDER
         /////////////////////////////////////////////////////////////////////////////////
 
         // Try to determine if this object represents a WindowsRuntime object - i.e. it either
@@ -170,27 +170,28 @@ namespace Microsoft.CSharp.RuntimeBinder
         // The logic here matches the CLR's logic of finding a WinRT object.
         internal static bool IsWindowsRuntimeObject(DynamicMetaObject obj)
         {
-            Type curType = obj?.RuntimeType;
-            while (curType != null)
+            if (obj != null && obj.RuntimeType != null)
             {
-                TypeAttributes attributes = curType.Attributes;
-                if ((attributes & TypeAttributes.WindowsRuntime) == TypeAttributes.WindowsRuntime)
+                Type curType = obj.RuntimeType;
+                while (curType != null)
                 {
-                    // Found a WinRT COM object
-                    return true;
+                    if ((curType.GetTypeInfo().Attributes & TypeAttributes.WindowsRuntime) == TypeAttributes.WindowsRuntime)
+                    {
+                        // Found a WinRT COM object
+                        return true;
+                    }
+                    if ((curType.GetTypeInfo().Attributes & TypeAttributes.Import) == TypeAttributes.Import)
+                    {
+                        // Found a class that is actually imported from COM but not WinRT
+                        // this is definitely a non-WinRT COM object
+                        return false;
+                    }
+                    curType = curType.GetTypeInfo().BaseType;
                 }
-                if ((attributes & TypeAttributes.Import) == TypeAttributes.Import)
-                {
-                    // Found a class that is actually imported from COM but not WinRT
-                    // this is definitely a non-WinRT COM object
-                    return false;
-                }
-                curType = curType.BaseType;
             }
-
             return false;
         }
-#endif
+
         /////////////////////////////////////////////////////////////////////////////////
 
         private static bool IsTransparentProxy(object obj)
@@ -293,7 +294,7 @@ namespace Microsoft.CSharp.RuntimeBinder
                 }
             }
 
-            if (binding.Type.IsValueType && !action.ReturnType.IsValueType)
+            if (binding.Type.GetTypeInfo().IsValueType && !action.ReturnType.GetTypeInfo().IsValueType)
             {
                 Debug.Assert(action.ReturnType == typeof(object));
                 return Expression.Convert(binding, action.ReturnType);
@@ -311,12 +312,13 @@ namespace Microsoft.CSharp.RuntimeBinder
             var invokeConstructor = action as CSharpInvokeConstructorBinder;
             if (invokeConstructor != null)
             {
-                Type result = arg0.Value as Type;
-                if (result == null)
+                if (arg0 == null || !(arg0.Value is Type))
                 {
                     Debug.Assert(false);
                     return typeof(object);
                 }
+
+                Type result = arg0.Value as Type;
 
                 return result;
             }
@@ -336,31 +338,32 @@ namespace Microsoft.CSharp.RuntimeBinder
 
         /////////////////////////////////////////////////////////////////////////////////
 
-        internal static T[] Cons<T>(T sourceHead, T[] sourceTail)
+        internal static IEnumerable<T> Cons<T>(T sourceHead, IEnumerable<T> sourceTail)
         {
-            if (sourceTail?.Length != 0)
-            {
-                T[] array = new T[sourceTail.Length + 1];
-                array[0] = sourceHead;
-                sourceTail.CopyTo(array, 1);
-                return array;
-            }
+            yield return sourceHead;
 
-            return new[] { sourceHead };
+            if (sourceTail != null)
+            {
+                foreach (T x in sourceTail)
+                {
+                    yield return x;
+                }
+            }
         }
 
-        internal static T[] Cons<T>(T sourceHead, T[] sourceMiddle, T sourceLast)
+        internal static IEnumerable<T> Cons<T>(T sourceHead, IEnumerable<T> sourceMiddle, T sourceLast)
         {
-            if (sourceMiddle?.Length != 0)
+            yield return sourceHead;
+
+            if (sourceMiddle != null)
             {
-                T[] array = new T[sourceMiddle.Length + 2];
-                array[0] = sourceHead;
-                array[array.Length - 1] = sourceLast;
-                sourceMiddle.CopyTo(array, 1);
-                return array;
+                foreach (T x in sourceMiddle)
+                {
+                    yield return x;
+                }
             }
 
-            return new[] {sourceHead, sourceLast};
+            yield return sourceLast;
         }
 
         /////////////////////////////////////////////////////////////////////////////////

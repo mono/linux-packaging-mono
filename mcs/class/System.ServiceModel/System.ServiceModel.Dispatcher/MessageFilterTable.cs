@@ -46,9 +46,9 @@ namespace System.ServiceModel.Dispatcher
 		public MessageFilterTable ()
 			: this (0) {} // 0 is the default
 
-		public MessageFilterTable (int defaultPriority)
+		public MessageFilterTable (int default_priority)
 		{
-			this.default_priority = defaultPriority;
+			this.default_priority = default_priority;
 			table = new Dictionary<MessageFilter, TFilterData> ();
 			priority_list = new Dictionary<MessageFilter, int> ();
 		}
@@ -85,9 +85,9 @@ namespace System.ServiceModel.Dispatcher
 			return table.ContainsKey (filter);
 		}
 
-		public void CopyTo (KeyValuePair<MessageFilter, TFilterData> [] array, int arrayIndex)
+		public void CopyTo (KeyValuePair<MessageFilter, TFilterData> [] array, int index)
 		{
-			((ICollection) table).CopyTo (array, arrayIndex);
+			((ICollection) table).CopyTo (array, index);
 		}
 
 		protected virtual IMessageFilterTable<TFilterData> CreateFilterTable (MessageFilter filter)
@@ -105,11 +105,11 @@ namespace System.ServiceModel.Dispatcher
 			return priority_list [filter];
 		}
 
-		public bool GetMatchingFilter (Message message, out MessageFilter filter)
+		public bool GetMatchingFilter (Message message, out MessageFilter result)
 		{
 			if (message == null)
 				throw new ArgumentNullException ("message is null");
-			filter = null;
+			result = null;
 
 			int count = 0;
 			foreach (MessageFilter f in table.Keys) {
@@ -121,14 +121,14 @@ namespace System.ServiceModel.Dispatcher
 					    "More than one filter matches.");
 
 				count++;
-				filter = f;
+				result = f;
 			}
 			return count == 1;
 		}
 
-		public bool GetMatchingFilter (MessageBuffer buffer, out MessageFilter filter)
+		public bool GetMatchingFilter (MessageBuffer buffer, out MessageFilter result)
 		{
-			return GetMatchingFilter (buffer.CreateMessage (), out filter);
+			return GetMatchingFilter (buffer.CreateMessage (), out result);
 		}
 
 		[MonoTODO ("Consider priority")]		

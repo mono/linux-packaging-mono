@@ -287,13 +287,13 @@ namespace System.Web.UI.WebControls
 			return o.ToString ();
 		}
 
-		public static PropertyDescriptor GetValidationProperty (object component)
+		public static PropertyDescriptor GetValidationProperty (object o)
 		{
 			PropertyDescriptorCollection props;
 			System.ComponentModel.AttributeCollection col;
 
-			props = TypeDescriptor.GetProperties (component);
-			col = TypeDescriptor.GetAttributes (component);
+			props = TypeDescriptor.GetProperties (o);
+			col = TypeDescriptor.GetAttributes (o);
 
 			foreach (Attribute at in col) {
 				ValidationPropertyAttribute vpa = at as ValidationPropertyAttribute;

@@ -82,7 +82,7 @@ namespace System.ComponentModel
             {
                 throw new ArgumentException(SR.Format(SR.ErrorInvalidEventType, name));
             }
-            Debug.Assert(type.IsSubclassOf(typeof(Delegate)), $"Not a valid ReflectEvent: {componentClass.FullName}. {name} {type.FullName}");
+            Debug.Assert(type.GetTypeInfo().IsSubclassOf(typeof(Delegate)), $"Not a valid ReflectEvent: {componentClass.FullName}. {name} {type.FullName}");
             _componentClass = componentClass;
             _type = type;
         }
@@ -261,7 +261,7 @@ namespace System.ComponentModel
             while (currentReflectType != typeof(object))
             {
                 depth++;
-                currentReflectType = currentReflectType.BaseType;
+                currentReflectType = currentReflectType.GetTypeInfo().BaseType;
             }
 
             if (depth > 0)
@@ -286,7 +286,7 @@ namespace System.ComponentModel
 
                     // Ready for the next loop iteration.
                     //
-                    currentReflectType = currentReflectType.BaseType;
+                    currentReflectType = currentReflectType.GetTypeInfo().BaseType;
                 }
 
                 // Now trawl the attribute stack so that we add attributes
@@ -322,7 +322,7 @@ namespace System.ComponentModel
 
                 if (_addMethod == null || _removeMethod == null)
                 {
-                    Type start = _componentClass.BaseType;
+                    Type start = _componentClass.GetTypeInfo().BaseType;
                     while (start != null && start != typeof(object))
                     {
                         BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -386,7 +386,7 @@ namespace System.ComponentModel
             while (currentReflectType != null && currentReflectType != typeof(object))
             {
                 depth++;
-                currentReflectType = currentReflectType.BaseType;
+                currentReflectType = currentReflectType.GetTypeInfo().BaseType;
             }
 
             if (depth > 0)
@@ -411,7 +411,7 @@ namespace System.ComponentModel
 
                     // Ready for the next loop iteration.
                     //
-                    currentReflectType = currentReflectType.BaseType;
+                    currentReflectType = currentReflectType.GetTypeInfo().BaseType;
                 }
 
                 // Now trawl the attribute stack so that we add attributes

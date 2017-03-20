@@ -125,7 +125,7 @@ namespace System.Globalization.Tests
 
         [Theory]
         [MemberData(nameof(ToLower_TestData_net46))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.Uap)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.NetcoreUwp)]
         public void ToLower_net46(string name, string str, string expected)
         {
             TestToLower(name, str, expected);

@@ -38,6 +38,7 @@ using NUnit.Framework;
 namespace MonoTests.System.Drawing{
 
 	[TestFixture]	
+	[SecurityPermission (SecurityAction.Deny, UnmanagedCode = true)]
 	public class StringFormatTest {
 
 		private void CheckDefaults (StringFormat sf)
@@ -65,17 +66,19 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void Default_Dispose ()
 		{
 			StringFormat sf = new StringFormat ();
 			sf.Dispose ();
-			Assert.Throws<ArgumentException> (() => sf.ToString ());
+			sf.ToString ();
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
 		public void ctor_StringFormat_Null ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new StringFormat (null));
+			new StringFormat (null);
 		}
 
 		[Test]
@@ -117,11 +120,12 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void GenericDefault_Local_Dispose ()
 		{
 			StringFormat sf = StringFormat.GenericDefault;
 			sf.Dispose (); // can't be cached
-			Assert.Throws<ArgumentException> (() => CheckDefaults (sf));
+			CheckDefaults (sf);
 		}
 
 		private void CheckTypographic (StringFormat sf)
@@ -151,11 +155,12 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void GenericTypographic_Local_Dispose ()
 		{
 			StringFormat sf = StringFormat.GenericTypographic;
 			sf.Dispose (); // can't be cached
-			Assert.Throws<ArgumentException> (() => CheckTypographic (sf));
+			CheckTypographic (sf);
 		}
 
 		[Test]
@@ -170,10 +175,11 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (InvalidEnumArgumentException))]
 		public void Alignment_Invalid ()
 		{
 			using (StringFormat sf = new StringFormat ()) {
-				Assert.Throws<InvalidEnumArgumentException> (() => sf.Alignment = (StringAlignment) Int32.MinValue);
+				sf.Alignment = (StringAlignment) Int32.MinValue;
 			}
 		}
 
@@ -189,10 +195,11 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (InvalidEnumArgumentException))]
 		public void HotkeyPrefix_Invalid ()
 		{
 			using (StringFormat sf = new StringFormat ()) {
-				Assert.Throws<InvalidEnumArgumentException> (() => sf.HotkeyPrefix = (HotkeyPrefix) Int32.MinValue);
+				sf.HotkeyPrefix = (HotkeyPrefix) Int32.MinValue;
 			}
 		}
 
@@ -208,10 +215,11 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (InvalidEnumArgumentException))]
 		public void LineAlignment_Invalid ()
 		{
 			using (StringFormat sf = new StringFormat ()) {
-				Assert.Throws<InvalidEnumArgumentException> (() => sf.LineAlignment = (StringAlignment) Int32.MinValue);
+				sf.LineAlignment = (StringAlignment) Int32.MinValue;
 			}
 		}
 
@@ -227,10 +235,11 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (InvalidEnumArgumentException))]
 		public void Trimming_Invalid ()
 		{
 			using (StringFormat sf = new StringFormat ()) {
-				Assert.Throws<InvalidEnumArgumentException> (() => sf.Trimming = (StringTrimming) Int32.MinValue);
+				sf.Trimming = (StringTrimming) Int32.MinValue;
 			}
 		}
 
@@ -302,10 +311,11 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (NullReferenceException))]
 		public void SetTabStops_Null ()
 		{
 			using (StringFormat sf = new StringFormat ()) {
-				Assert.Throws<NullReferenceException> (() => sf.SetTabStops (Single.NaN, null));
+				sf.SetTabStops (Single.NaN, null);
 			}
 		}
 
@@ -320,10 +330,11 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (NullReferenceException))]
 		public void SetMeasurableCharacterRanges_Null ()
 		{
 			using (StringFormat sf = new StringFormat ()) {
-				Assert.Throws<NullReferenceException> (() => sf.SetMeasurableCharacterRanges (null));
+				sf.SetMeasurableCharacterRanges (null);
 			}
 		}
 
@@ -346,11 +357,12 @@ namespace MonoTests.System.Drawing{
 		}
 
 		[Test]
+		[ExpectedException (typeof (OverflowException))]
 		public void SetMeasurableCharacterRanges_TooBig ()
 		{
 			using (StringFormat sf = new StringFormat ()) {
 				CharacterRange[] range = new CharacterRange[33];
-				Assert.Throws<OverflowException> (() => sf.SetMeasurableCharacterRanges (range));
+				sf.SetMeasurableCharacterRanges (range);
 			}
 		}
 	}

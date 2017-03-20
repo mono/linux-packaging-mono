@@ -45,18 +45,48 @@ namespace System
         }
 
         /// <summary>
-        /// Determine if a type is eligible for storage in unmanaged memory.
-        /// Portable equivalent of RuntimeHelpers.IsReferenceOrContainsReferences&lt;T&gt;()
+        /// Determine if a type is eligible for storage in unmanaged memory. TODO: To be replaced by a ContainsReference() api.
         /// </summary>
-        public static bool IsReferenceOrContainsReferences<T>() => PerTypeValues<T>.IsReferenceOrContainsReferences;
+        public static bool IsReferenceFree<T>() => PerTypeValues<T>.IsReferenceFree;
 
-        private static bool IsReferenceOrContainsReferencesCore(Type type)
+        private static bool IsReferenceFreeCore<T>()
+        {
+            // Under the JIT, these become constant-folded.
+            if (typeof(T) == typeof(byte))
+                return true;
+            if (typeof(T) == typeof(sbyte))
+                return true;
+            if (typeof(T) == typeof(bool))
+                return true;
+            if (typeof(T) == typeof(char))
+                return true;
+            if (typeof(T) == typeof(short))
+                return true;
+            if (typeof(T) == typeof(ushort))
+                return true;
+            if (typeof(T) == typeof(int))
+                return true;
+            if (typeof(T) == typeof(uint))
+                return true;
+            if (typeof(T) == typeof(long))
+                return true;
+            if (typeof(T) == typeof(ulong))
+                return true;
+            if (typeof(T) == typeof(IntPtr))
+                return true;
+            if (typeof(T) == typeof(UIntPtr))
+                return true;
+
+            return IsReferenceFreeCoreSlow(typeof(T));
+        }
+
+        private static bool IsReferenceFreeCoreSlow(Type type)
         {
             if (type.GetTypeInfo().IsPrimitive) // This is hopefully the common case. All types that return true for this are value types w/out embedded references.
-                return false;
+                return true;
 
             if (!type.GetTypeInfo().IsValueType)
-                return true;
+                return false;
 
             // If type is a Nullable<> of something, unwrap it first.
             Type underlyingNullable = Nullable.GetUnderlyingType(type);
@@ -64,25 +94,28 @@ namespace System
                 type = underlyingNullable;
 
             if (type.GetTypeInfo().IsEnum)
-                return false;
+                return true;
 
             foreach (FieldInfo field in type.GetTypeInfo().DeclaredFields)
             {
                 if (field.IsStatic)
                     continue;
-                if (IsReferenceOrContainsReferencesCore(field.FieldType))
-                    return true;
+                if (!IsReferenceFreeCoreSlow(field.FieldType))
+                    return false;
             }
-            return false;
+            return true;
         }
 
         public static class PerTypeValues<T>
         {
             //
             // Latch to ensure that excruciatingly expensive validation check for constructing a Span around a raw pointer is done
-            // only once per type.
+            // only once per type (unless of course, the validation fails.)
             //
-            public static readonly bool IsReferenceOrContainsReferences = IsReferenceOrContainsReferencesCore(typeof(T));
+            // false == not yet computed or found to be not reference free.
+            // true == confirmed reference free
+            //
+            public static readonly bool IsReferenceFree = IsReferenceFreeCore<T>();
 
             public static readonly T[] EmptyArray = new T[0];
 

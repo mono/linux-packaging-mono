@@ -1488,7 +1488,7 @@ namespace System.Numerics.Tests
             Char result = 'C';
             while (result == 'C')
             {
-                result = unchecked((Char)random.Next());
+                result = (Char)random.Next();
                 for (int i = 0; i < digits.Length; i++)
                 {
                     if (result < 'A')

@@ -37,10 +37,10 @@
 
 using System.IO;
 using System.Drawing.Imaging;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using System.Security.Permissions;
 
 namespace System.Drawing
 {
@@ -133,11 +133,7 @@ namespace System.Drawing
 			if (resource == null)
 				throw new ArgumentException ("resource");
 
-			// For compatibility with the .NET Framework
-			if (type == null)
-				throw new NullReferenceException();
-
-			Stream s = type.GetTypeInfo ().Assembly.GetManifestResourceStream (type, resource);
+			Stream s = type.Assembly.GetManifestResourceStream (type, resource);
 			if (s == null) {
 				string msg = Locale.GetText ("Resource '{0}' was not found.", resource);
 				throw new FileNotFoundException (msg);
@@ -232,12 +228,14 @@ namespace System.Drawing
 		}
 
 		[EditorBrowsable (EditorBrowsableState.Advanced)]
+		[SecurityPermission (SecurityAction.LinkDemand, UnmanagedCode = true)]
 		public IntPtr GetHbitmap ()
 		{
 			return GetHbitmap(Color.Gray);
 		}
 
 		[EditorBrowsable (EditorBrowsableState.Advanced)]
+		[SecurityPermission (SecurityAction.LinkDemand, UnmanagedCode = true)]
 		public IntPtr GetHbitmap (Color background)
 		{
 			IntPtr HandleBmp;
@@ -249,6 +247,7 @@ namespace System.Drawing
 		}
 
 		[EditorBrowsable (EditorBrowsableState.Advanced)]
+		[SecurityPermission (SecurityAction.LinkDemand, UnmanagedCode = true)]
 		public IntPtr GetHicon ()
 		{
 			IntPtr HandleIcon;

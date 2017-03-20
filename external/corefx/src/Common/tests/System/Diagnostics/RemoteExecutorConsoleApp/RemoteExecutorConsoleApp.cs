@@ -13,7 +13,7 @@ namespace RemoteExecutorConsoleApp
     /// </summary>
     internal static class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             // The program expects to be passed the target assembly name to load, the type
             // from that assembly to find, and the method from that assembly to invoke.
@@ -21,9 +21,8 @@ namespace RemoteExecutorConsoleApp
             if (args.Length < 3)
             {
                 Console.Error.WriteLine("Usage: {0} assemblyName typeName methodName", typeof(Program).GetTypeInfo().Assembly.GetName().Name);
-                Environment.Exit(-1);
+                return -1;
             }
-
             string assemblyName = args[0];
             string typeName = args[1];
             string methodName = args[2];
@@ -37,10 +36,8 @@ namespace RemoteExecutorConsoleApp
             Type t = null;
             MethodInfo mi = null;
             object instance = null;
-            int exitCode;
             try
             {
-                // Create the test class if necessary
                 a = Assembly.Load(new AssemblyName(assemblyName));
                 t = a.GetType(typeName);
                 mi = t.GetTypeInfo().GetDeclaredMethod(methodName);
@@ -48,11 +45,9 @@ namespace RemoteExecutorConsoleApp
                 {
                     instance = Activator.CreateInstance(t);
                 }
-
-                // Invoke the test
                 object result = mi.Invoke(instance, additionalArgs);
-                exitCode = result is Task<int> task ?
-                    task.GetAwaiter().GetResult() :
+                return result is Task<int> ?
+                    ((Task<int>)result).GetAwaiter().GetResult() :
                     (int)result;
             }
             catch (Exception exc)
@@ -66,13 +61,12 @@ namespace RemoteExecutorConsoleApp
             }
             finally
             {
-                (instance as IDisposable)?.Dispose();
+                IDisposable d = instance as IDisposable;
+                if (d != null)
+                {
+                    d.Dispose();
+                }
             }
-
-            // Use Exit rather than simply returning the exit code so that we forcibly shut down
-            // the process even if there are foreground threads created by the operation that would
-            // end up keeping the process alive potentially indefinitely.
-            Environment.Exit(exitCode);
         }
 
         private static MethodInfo GetMethod(this Type type, string methodName)

@@ -80,12 +80,12 @@ namespace System.Net.Mail {
 
 		#region Methods
 
-		public override void GetObjectData (SerializationInfo serializationInfo, StreamingContext streamingContext)
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
 		{
-			if (serializationInfo == null)
-				throw new ArgumentNullException ("serializationInfo");
-			base.GetObjectData (serializationInfo, streamingContext);
-			serializationInfo.AddValue ("innerExceptions", innerExceptions);
+			if (info == null)
+				throw new ArgumentNullException ("info");
+			base.GetObjectData (info, context);
+			info.AddValue ("innerExceptions", innerExceptions);
 		}
 
 		void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)

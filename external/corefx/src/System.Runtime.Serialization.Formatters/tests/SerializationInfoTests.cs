@@ -82,6 +82,7 @@ namespace System.Runtime.Serialization.Formatters.Tests
             Assert.Throws<SerializationException>(() => si.AddValue("bool", true));
         }
 
+        [ActiveIssue("https://github.com/dotnet/coreclr/pull/6423")]
         [Fact]
         public void NegativeValueNotFound()
         {

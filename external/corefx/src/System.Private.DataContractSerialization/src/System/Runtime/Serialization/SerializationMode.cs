@@ -7,7 +7,7 @@ namespace System.Runtime.Serialization
     internal enum SerializationMode
     {
         SharedContract,
-#if uapaot
+#if NET_NATIVE
         SharedType
 #endif
     }

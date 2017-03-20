@@ -5,7 +5,6 @@
 using System.Globalization;
 using System.Net.Internals;
 using System.Net.Sockets;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -417,7 +416,7 @@ namespace System.Net
             Exception exception = castedResult.Result as Exception;
             if (exception != null)
             {
-                ExceptionDispatchInfo.Capture(exception).Throw();
+                throw exception;
             }
 
             return (IPHostEntry)castedResult.Result;

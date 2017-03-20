@@ -63,14 +63,14 @@ namespace System.Web.UI.Design.WebControls {
 			throw new NotImplementedException ();
 		}
 
-		protected IEnumerable GetDesignTimeDataSource (int minimumRows)
+		protected IEnumerable GetDesignTimeDataSource (int minimum_rows)
 		{
 			throw new NotImplementedException ();
 		}
 
 		protected IEnumerable GetDesignTimeDataSource (
-			IEnumerable selectedDataSource,
-			int minimumRows)
+			IEnumerable selected_data_source,
+			int minimum_rows)
 		{
 			throw new NotImplementedException ();
 		}
@@ -105,7 +105,7 @@ namespace System.Web.UI.Design.WebControls {
 			throw new NotImplementedException ();
 		}
 
-		public override void OnComponentChanged (object source, ComponentChangedEventArgs ce)
+		public override void OnComponentChanged (object sender, ComponentChangedEventArgs e)
 		{
 			throw new NotImplementedException ();
 		}

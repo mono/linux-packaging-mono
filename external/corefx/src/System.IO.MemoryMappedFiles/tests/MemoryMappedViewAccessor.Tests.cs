@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.Win32.SafeHandles;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Xunit;
 
@@ -454,31 +453,24 @@ namespace System.IO.MemoryMappedFiles.Tests
         public void AllowFinalization()
         {
             // Explicitly do not dispose, to allow finalization to happen, just to try to verify
-            // that nothing fails/throws when it does.
+            // that nothing fails when it does.
 
-            WeakReference<MemoryMappedFile> mmfWeak;
-            WeakReference<MemoryMappedViewAccessor> mmvaWeak;
-            CreateWeakMmfAndMmva(out mmfWeak, out mmvaWeak);
+            MemoryMappedFile mmf = MemoryMappedFile.CreateNew(null, 4096);
+            MemoryMappedViewAccessor acc = mmf.CreateViewAccessor();
+
+            var mmfWeak = new WeakReference<MemoryMappedFile>(mmf);
+            var accWeak = new WeakReference<MemoryMappedViewAccessor>(acc);
+
+            mmf = null;
+            acc = null;
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            MemoryMappedFile mmf;
             Assert.False(mmfWeak.TryGetTarget(out mmf));
-
-            MemoryMappedViewAccessor mmva;
-            Assert.False(mmvaWeak.TryGetTarget(out mmva));
+            Assert.False(accWeak.TryGetTarget(out acc));
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void CreateWeakMmfAndMmva(out WeakReference<MemoryMappedFile> mmfWeak, out WeakReference<MemoryMappedViewAccessor> mmvaWeak)
-        {
-            MemoryMappedFile mmf = MemoryMappedFile.CreateNew(null, 4096);
-            MemoryMappedViewAccessor acc = mmf.CreateViewAccessor();
-
-            mmfWeak = new WeakReference<MemoryMappedFile>(mmf);
-            mmvaWeak = new WeakReference<MemoryMappedViewAccessor>(acc);
-        }
     }
 }

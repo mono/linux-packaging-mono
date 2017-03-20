@@ -47,14 +47,14 @@ namespace System.Web.UI.WebControls {
 		{
 		}
 		
-		protected override void AddAttributesToRender (HtmlTextWriter writer)
+		protected override void AddAttributesToRender (HtmlTextWriter w)
 		{
-			base.AddAttributesToRender (writer);
+			base.AddAttributesToRender (w);
 			
 			string image = BackImageUrl;
 			if (image != "") {
 				image = ResolveClientUrl (image);
-				writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, image);
+				w.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, image);
 			}
 
 			if (!String.IsNullOrEmpty (DefaultButton) && Page != null) {
@@ -64,32 +64,32 @@ namespace System.Web.UI.WebControls {
 
 				Page.ClientScript.RegisterWebFormClientScript ();
 
-				writer.AddAttribute ("onkeypress",
+				w.AddAttribute ("onkeypress",
 						"javascript:return " + Page.WebFormScriptReference + ".WebForm_FireDefaultButton(event, '" + button.ClientID + "')");
 			}
 
 			if (Direction != ContentDirection.NotSet) {
-				writer.AddAttribute (HtmlTextWriterAttribute.Dir, Direction == ContentDirection.RightToLeft ? "rtl" : "ltr", false);
+				w.AddAttribute (HtmlTextWriterAttribute.Dir, Direction == ContentDirection.RightToLeft ? "rtl" : "ltr", false);
 			}
 
 			switch (ScrollBars) {
 			case ScrollBars.Auto:
-				writer.AddStyleAttribute (HtmlTextWriterStyle.Overflow, "auto");
+				w.AddStyleAttribute (HtmlTextWriterStyle.Overflow, "auto");
 				break;
 			case ScrollBars.Both:
-				writer.AddStyleAttribute (HtmlTextWriterStyle.Overflow, "scroll");
+				w.AddStyleAttribute (HtmlTextWriterStyle.Overflow, "scroll");
 				break;
 			case ScrollBars.Horizontal:
-				writer.AddStyleAttribute (HtmlTextWriterStyle.OverflowX, "scroll");
+				w.AddStyleAttribute (HtmlTextWriterStyle.OverflowX, "scroll");
 				break;
 			case ScrollBars.Vertical:
-				writer.AddStyleAttribute (HtmlTextWriterStyle.OverflowY, "scroll");
+				w.AddStyleAttribute (HtmlTextWriterStyle.OverflowY, "scroll");
 				break;
 			}
 
 
 			if (!Wrap) {
-				writer.AddStyleAttribute (HtmlTextWriterStyle.WhiteSpace, "nowrap");
+				w.AddStyleAttribute (HtmlTextWriterStyle.WhiteSpace, "nowrap");
 			}
 
 			string align = "";
@@ -102,7 +102,7 @@ namespace System.Web.UI.WebControls {
 			}
 
 			if (align != "")
-				writer.AddStyleAttribute (HtmlTextWriterStyle.TextAlign, align);
+				w.AddStyleAttribute (HtmlTextWriterStyle.TextAlign, align);
 		}
 		PanelStyle PanelStyle {
 			get { return (ControlStyle as PanelStyle); }

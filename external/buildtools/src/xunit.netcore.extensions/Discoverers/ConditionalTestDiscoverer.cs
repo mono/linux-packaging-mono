@@ -76,16 +76,9 @@ namespace Xunit.NetCore.Extensions
 
                 // In the case of multiple conditions, collect the results of all
                 // of them to produce a summary skip reason.
-                try
+                if (!(bool)conditionMethodInfo.Invoke(null, null))
                 {
-                    if (!(bool)conditionMethodInfo.Invoke(null, null))
-                    {
-                        falseConditions.Add(conditionMemberName);
-                    }
-                }
-                catch (Exception exc)
-                {
-                    falseConditions.Add($"{conditionMemberName} ({exc.GetType().Name})");
+                    falseConditions.Add(conditionMemberName);
                 }
             }
 

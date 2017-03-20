@@ -101,20 +101,6 @@ namespace Microsoft.DotNet.Build.Tasks
                     AddProperties(whenPropertiesElement, value, includeAdditionalProperites, parsedValuePrefix);
                 }
 
-                if (property.Insignificant)
-                {
-                    // for insignificant properties, don't overwrite with default if already set, but derive values from it.
-                    foreach (var value in ConfigurationFactory.GetValues(property))
-                    {
-                        var propertiesCondition = $"'$({property.Name})' == '{value.Value}'";
-                        var whenPropertiesElement = project.CreateWhenElement(propertiesCondition);
-                        choosePropertiesElement.AppendChild(whenPropertiesElement);
-
-                        // only write additionalProperties since actual property is already set,.
-                        AddProperties(whenPropertiesElement, value, includeAdditionalProperites, parsedValuePrefix, includePropertyValue:false);
-                    }
-                }
-
                 var otherwisePropertiesElement = project.CreateOtherwiseElement();
                 choosePropertiesElement.AppendChild(otherwisePropertiesElement);
 
@@ -267,15 +253,12 @@ namespace Microsoft.DotNet.Build.Tasks
             }
         }
 
-        private void AddProperties(ProjectElementContainer parent, PropertyValue value, bool includeAddtionalProperties, string parsedValuePrefix = null, bool includePropertyValue = true)
+        private void AddProperties(ProjectElementContainer parent, PropertyValue value, bool includeAddtionalProperties, string parsedValuePrefix = null)
         {
             var propertyGroup = parent.ContainingProject.CreatePropertyGroupElement();
             parent.AppendChild(propertyGroup);
 
-            if (includePropertyValue)
-            {
-                propertyGroup.AddProperty(value.Property.Name, value.Value);
-            }
+            propertyGroup.AddProperty(value.Property.Name, value.Value);
 
             if (!String.IsNullOrEmpty(parsedValuePrefix))
             {
@@ -288,11 +271,6 @@ namespace Microsoft.DotNet.Build.Tasks
                 {
                     propertyGroup.AddProperty(additionalProperty.Key, additionalProperty.Value);
                 }
-            }
-
-            if (propertyGroup.Children.Count == 0)
-            {
-                parent.RemoveChild(propertyGroup);
             }
         }
 

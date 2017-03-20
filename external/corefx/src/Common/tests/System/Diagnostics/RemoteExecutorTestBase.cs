@@ -21,12 +21,9 @@ namespace System.Diagnostics
         protected static string HostRunner => Process.GetCurrentProcess().MainModule.FileName;
 
         /// <summary>A timeout (milliseconds) after which a wait on a remote operation should be considered a failure.</summary>
-        public const int FailWaitTimeoutMilliseconds = 60 * 1000;
+        public const int FailWaitTimeoutMilliseconds = 30 * 1000;
         /// <summary>The exit code returned when the test process exits successfully.</summary>
         internal const int SuccessExitCode = 42;
-
-        /// <summary>Determines if we're running on the .NET Framework (rather than .NET Core).</summary>
-        internal static bool IsFullFramework => RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>Invokes the method from this assembly in another process using the specified arguments.</summary>
         /// <param name="method">The method to invoke.</param>
@@ -136,17 +133,9 @@ namespace System.Diagnostics
             // If we need the host (if it exists), use it, otherwise target the console app directly.
             string testConsoleAppArgs = "\"" + a.FullName + "\" " + t.FullName + " " + method.Name + " " + string.Join(" ", args);
             
-            if (IsFullFramework)
-            {
-                psi.FileName = TestConsoleApp;
-                psi.Arguments = testConsoleAppArgs;
-            }
-            else
-            {
-                psi.FileName = HostRunner;
-                psi.Arguments = TestConsoleApp + " " + testConsoleAppArgs;
-            }
-         
+            psi.FileName = HostRunner;
+            psi.Arguments = TestConsoleApp + " " + testConsoleAppArgs;
+            
             // Return the handle to the process, which may or not be started
             return new RemoteInvokeHandle(options.Start ?
                 Process.Start(psi) :
@@ -173,13 +162,9 @@ namespace System.Diagnostics
                     // needing to do this in every derived test and keep each test much simpler.
                     try
                     {
-                        Assert.True(Process.WaitForExit(Options.TimeOut),
-                            $"Timed out after {Options.TimeOut}ms waiting for remote process {Process.Id}");
-
+                        Assert.True(Process.WaitForExit(Options.TimeOut));
                         if (Options.CheckExitCode)
-                        {
                             Assert.Equal(SuccessExitCode, Process.ExitCode);
-                        }
                     }
                     finally
                     {

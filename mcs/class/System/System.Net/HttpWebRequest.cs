@@ -1031,9 +1031,9 @@ namespace System.Net
 			return result.Response;
 		}
 		
-		public Stream EndGetRequestStream (IAsyncResult asyncResult, out TransportContext context)
+		public Stream EndGetRequestStream (IAsyncResult asyncResult, out TransportContext transportContext)
 		{
-			context = null;
+			transportContext = null;
 			return EndGetRequestStream (asyncResult);
 		}
 

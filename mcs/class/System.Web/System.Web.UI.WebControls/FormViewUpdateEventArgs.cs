@@ -40,9 +40,9 @@ namespace System.Web.UI.WebControls
 		IOrderedDictionary oldValues;
 		IOrderedDictionary newValues;
 		
-		public FormViewUpdateEventArgs (object commandArgument)
+		public FormViewUpdateEventArgs (object argument)
 		{
-			this.argument = commandArgument;
+			this.argument = argument;
 		}
 		
 		internal FormViewUpdateEventArgs (object argument, IOrderedDictionary keys, IOrderedDictionary oldValues, IOrderedDictionary newValues)

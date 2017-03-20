@@ -39,9 +39,9 @@ namespace System.Web.UI.WebControls
 		IOrderedDictionary newValues;
 		IOrderedDictionary oldValues;
 		
-		public DetailsViewUpdateEventArgs (object commandArgument)
+		public DetailsViewUpdateEventArgs (object argument)
 		{
-			this.argument = commandArgument;
+			this.argument = argument;
 		}
 		
 		internal DetailsViewUpdateEventArgs (object argument, IOrderedDictionary keys, IOrderedDictionary oldValues, IOrderedDictionary newValues)

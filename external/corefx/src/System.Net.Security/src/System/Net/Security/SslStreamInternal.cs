@@ -4,7 +4,6 @@
 
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -202,14 +201,14 @@ namespace System.Net.Security
             // No "artificial" timeouts implemented so far, InnerStream controls timeout.
             lazyResult.InternalWaitForCompletion();
 
-            if (lazyResult.Result is Exception e)
+            if (lazyResult.Result is Exception)
             {
-                if (e is IOException)
+                if (lazyResult.Result is IOException)
                 {
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw (Exception)lazyResult.Result;
                 }
 
-                throw new IOException(SR.net_io_write, e);
+                throw new IOException(SR.net_io_write, (Exception)lazyResult.Result);
             }
         }
 

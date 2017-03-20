@@ -22,7 +22,7 @@ namespace System.Linq
                 return appendable.Append(element);
             }
 
-            return new AppendPrepend1Iterator<TSource>(source, element, appending: true);
+            return new AppendPrepend1Iterator<TSource>(source, element, true);
         }
 
         public static IEnumerable<TSource> Prepend<TSource>(this IEnumerable<TSource> source, TSource element)
@@ -38,7 +38,7 @@ namespace System.Linq
                 return appendable.Prepend(element);
             }
 
-            return new AppendPrepend1Iterator<TSource>(source, element, appending: false);
+            return new AppendPrepend1Iterator<TSource>(source, element, false);
         }
 
         /// <summary>
@@ -154,11 +154,11 @@ namespace System.Linq
             {
                 if (_appending)
                 {
-                    return new AppendPrependN<TSource>(_source, null, new SingleLinkedNode<TSource>(_item).Add(item), prependCount: 0, appendCount: 2);
+                    return new AppendPrependN<TSource>(_source, null, new SingleLinkedNode<TSource>(_item, item));
                 }
                 else
                 {
-                    return new AppendPrependN<TSource>(_source, new SingleLinkedNode<TSource>(_item), new SingleLinkedNode<TSource>(item), prependCount: 1, appendCount: 1);
+                    return new AppendPrependN<TSource>(_source, new SingleLinkedNode<TSource>(_item), new SingleLinkedNode<TSource>(item));
                 }
             }
 
@@ -166,11 +166,11 @@ namespace System.Linq
             {
                 if (_appending)
                 {
-                    return new AppendPrependN<TSource>(_source, new SingleLinkedNode<TSource>(item), new SingleLinkedNode<TSource>(_item), prependCount: 1, appendCount: 1);
+                    return new AppendPrependN<TSource>(_source, new SingleLinkedNode<TSource>(item), new SingleLinkedNode<TSource>(_item));
                 }
                 else
                 {
-                    return new AppendPrependN<TSource>(_source, new SingleLinkedNode<TSource>(_item).Add(item), null, prependCount: 2, appendCount: 0);
+                    return new AppendPrependN<TSource>(_source, new SingleLinkedNode<TSource>(_item, item), null);
                 }
             }
 
@@ -257,6 +257,94 @@ namespace System.Linq
         }
 
         /// <summary>
+        /// An immutable node in a singly-linked list of items.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the node's item.</typeparam>
+        private sealed class SingleLinkedNode<TSource>
+        {
+            /// <summary>
+            /// Constructs a node linked to the tail node.
+            /// </summary>
+            /// <param name="first">The first item, to be placed in the tail node.</param>
+            /// <param name="second">The second item, to be placed in this node.</param> 
+            public SingleLinkedNode(TSource first, TSource second)
+            {
+                Linked = new SingleLinkedNode<TSource>(first);
+                Item = second;
+                Count = 2;
+            }
+
+            /// <summary>
+            /// Constructs a tail node.
+            /// </summary>
+            /// <param name="item">The item to place in the tail node.</param>
+            public SingleLinkedNode(TSource item)
+            {
+                Item = item;
+                Count = 1;
+            }
+
+            /// <summary>
+            /// Constructs a node linked to the specified node.
+            /// </summary>
+            /// <param name="linked">The linked node.</param>
+            /// <param name="item">The item to place in this node.</param>
+            private SingleLinkedNode(SingleLinkedNode<TSource> linked, TSource item)
+            {
+                Debug.Assert(linked != null);
+                Linked = linked;
+                Item = item;
+                Count = linked.Count + 1;
+            }
+
+            /// <summary>
+            /// The item held by this node.
+            /// </summary>
+            public TSource Item { get; }
+
+            /// <summary>
+            /// The next node in the singly-linked list.
+            /// </summary>
+            public SingleLinkedNode<TSource> Linked { get; }
+
+            /// <summary>
+            /// The number of items stored in this and subsequent nodes.
+            /// </summary>
+            public int Count { get; }
+
+            /// <summary>
+            /// Creates a new node that holds the specified item and is linked to this node.
+            /// </summary>
+            /// <param name="item">The item to place in the new node.</param>
+            public SingleLinkedNode<TSource> Add(TSource item) => new SingleLinkedNode<TSource>(this, item);
+
+            /// <summary>
+            /// Gets an <see cref="IEnumerator{TSource}"/> that enumerates the items of this node's singly-linked list in reverse.
+            /// </summary>
+            public IEnumerator<TSource> GetEnumerator()
+            {
+                return ((IEnumerable<TSource>)ToArray()).GetEnumerator();
+            }
+
+            /// <summary>
+            /// Returns an <see cref="T:TSource[]"/> that contains the items of this node's singly-linked list in reverse.
+            /// </summary>
+            public TSource[] ToArray()
+            {
+                TSource[] array = new TSource[Count];
+                int index = Count;
+                for (SingleLinkedNode<TSource> node = this; node != null; node = node.Linked)
+                {
+                    --index;
+                    array[index] = node.Item;
+                }
+
+                Debug.Assert(index == 0);
+                return array;
+            }
+        }
+
+        /// <summary>
         /// Represents the insertion of multiple items before or after an <see cref="IEnumerable{TSource}"/>.
         /// </summary>
         /// <typeparam name="TSource">The type of the source enumerable.</typeparam>
@@ -264,26 +352,17 @@ namespace System.Linq
         {
             private readonly SingleLinkedNode<TSource> _prepended;
             private readonly SingleLinkedNode<TSource> _appended;
-            private readonly int _prependCount;
-            private readonly int _appendCount;
             private SingleLinkedNode<TSource> _node;
 
-            public AppendPrependN(IEnumerable<TSource> source, SingleLinkedNode<TSource> prepended, SingleLinkedNode<TSource> appended, int prependCount, int appendCount)
+            public AppendPrependN(IEnumerable<TSource> source, SingleLinkedNode<TSource> prepended, SingleLinkedNode<TSource> appended)
                 : base(source)
             {
                 Debug.Assert(prepended != null || appended != null);
-                Debug.Assert(prependCount > 0 || appendCount > 0);
-                Debug.Assert(prependCount + appendCount >= 2);
-                Debug.Assert((prepended?.GetCount() ?? 0) == prependCount);
-                Debug.Assert((appended?.GetCount() ?? 0) == appendCount);
-
                 _prepended = prepended;
                 _appended = appended;
-                _prependCount = prependCount;
-                _appendCount = appendCount;
             }
 
-            public override Iterator<TSource> Clone() => new AppendPrependN<TSource>(_source, _prepended, _appended, _prependCount, _appendCount);
+            public override Iterator<TSource> Clone() => new AppendPrependN<TSource>(_source, _prepended, _appended);
 
             public override bool MoveNext()
             {
@@ -315,7 +394,7 @@ namespace System.Linq
                             return false;
                         }
 
-                        _enumerator = _appended.GetEnumerator(_appendCount);
+                        _enumerator = _appended.GetEnumerator();
                         _state = 4;
                         goto case 4;
                     case 4:
@@ -328,14 +407,12 @@ namespace System.Linq
 
             public override AppendPrependIterator<TSource> Append(TSource item)
             {
-                var appended = _appended != null ? _appended.Add(item) : new SingleLinkedNode<TSource>(item);
-                return new AppendPrependN<TSource>(_source, _prepended, appended, _prependCount, _appendCount + 1);
+                return new AppendPrependN<TSource>(_source, _prepended, _appended != null ? _appended.Add(item) : new SingleLinkedNode<TSource>(item));
             }
 
             public override AppendPrependIterator<TSource> Prepend(TSource item)
             {
-                var prepended = _prepended != null ? _prepended.Add(item) : new SingleLinkedNode<TSource>(item);
-                return new AppendPrependN<TSource>(_source, prepended, _appended, _prependCount + 1, _appendCount);
+                return new AppendPrependN<TSource>(_source, _prepended != null ? _prepended.Add(item) : new SingleLinkedNode<TSource>(item), _appended);
             }
 
             private TSource[] LazyToArray()
@@ -346,14 +423,14 @@ namespace System.Linq
 
                 if (_prepended != null)
                 {
-                    builder.Reserve(_prependCount);
+                    builder.Reserve(_prepended.Count);
                 }
 
                 builder.AddRange(_source);
 
                 if (_appended != null)
                 {
-                    builder.Reserve(_appendCount);
+                    builder.Reserve(_appended.Count);
                 }
 
                 TSource[] array = builder.ToArray();
@@ -425,7 +502,7 @@ namespace System.Linq
                 list.AddRange(_source);
                 if (_appended != null)
                 {
-                    IEnumerator<TSource> e = _appended.GetEnumerator(_appendCount);
+                    IEnumerator<TSource> e = _appended.GetEnumerator();
                     while (e.MoveNext())
                     {
                         list.Add(e.Current);
@@ -441,10 +518,10 @@ namespace System.Linq
                 if (listProv != null)
                 {
                     int count = listProv.GetCount(onlyIfCheap);
-                    return count == -1 ? -1 : count + _appendCount + _prependCount;
+                    return count == -1 ? -1 : count + (_appended == null ? 0 : _appended.Count) + (_prepended == null ? 0 : _prepended.Count);
                 }
 
-                return !onlyIfCheap || _source is ICollection<TSource> ? _source.Count() + _appendCount + _prependCount : -1;
+                return !onlyIfCheap || _source is ICollection<TSource> ? _source.Count() + (_appended == null ? 0 : _appended.Count) + (_prepended == null ? 0 : _prepended.Count) : -1;
             }
         }
     }

@@ -13,18 +13,6 @@ namespace Microsoft.DotNet.Build.Tasks
         [Required]
         public string DepsJsonPath { get; set; }
 
-        public struct FileNameAssemblyPair
-        {
-            public AssemblyName AssemblyName;
-            public string FileName;
-
-            public FileNameAssemblyPair(AssemblyName assemblyName, string fileName)
-            {
-                AssemblyName = assemblyName;
-                FileName = fileName;
-            } 
-        }
-
         public string RuntimeDirectory { get; set; }
 
         public ITaskItem[] DepsExceptions { get; set; }
@@ -39,13 +27,13 @@ namespace Microsoft.DotNet.Build.Tasks
             }
             List<string> filesInDir = Directory.EnumerateFiles(Path.GetDirectoryName(RuntimeDirectory)).ToList();
 
-            List<FileNameAssemblyPair> assemblyNames = new List<FileNameAssemblyPair>();
+            List<AssemblyName> assemblyNames = new List<AssemblyName>();
             foreach (string file in filesInDir)
             {
                 AssemblyName result;
                 if (TryGetManagedAssemblyName(file, out result))
                 {
-                    assemblyNames.Add(new FileNameAssemblyPair(result, Path.GetFileNameWithoutExtension(file)));
+                    assemblyNames.Add(result);
                 }
             }
 
@@ -85,8 +73,8 @@ namespace Microsoft.DotNet.Build.Tasks
             {
                 JObject runtimes = new JObject();
                 JObject runtimeLocation = new JObject();
-                string key = $"{assembly.FileName}/{assembly.AssemblyName.Version.Major}.{assembly.AssemblyName.Version.Minor}.{assembly.AssemblyName.Version.Build}";
-                runtimeLocation.Add(assembly.FileName + ".dll", new JObject());
+                string key = $"{assembly.Name}/{assembly.Version.Major}.{assembly.Version.Minor}.{assembly.Version.Build}";
+                runtimeLocation.Add(assembly.Name + ".dll", new JObject());
                 runtimes.Add("runtime", runtimeLocation);
                 try
                 {
@@ -108,23 +96,6 @@ namespace Microsoft.DotNet.Build.Tasks
             }
             targetsSection.Add(runtimeTarget, targetValue);
             newDepsJson.Add("libraries", libraryValue);
-
-            // Delete mscorlib.dll references comming from CoreCLR package. They do not exist anymore.
-            var mscorlibProperties = new List<JProperty>();
-            foreach (var item in newDepsJson.Descendants())
-            {
-                var property = item as JProperty;
-                if (property == null)
-                    continue;
-
-                var name = property.Name;
-                if (name.EndsWith("/lib/netstandard1.0/mscorlib.dll") || name.EndsWith("/native/mscorlib.ni.dll"))
-                    mscorlibProperties.Add(property);
-            }
-            foreach (var item in mscorlibProperties)
-            {
-                item.Remove();
-            }
 
             if (!string.IsNullOrEmpty(OutputPath))
             {

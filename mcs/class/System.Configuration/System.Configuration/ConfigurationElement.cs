@@ -155,7 +155,7 @@ namespace System.Configuration
 		}
 
 		[MonoTODO]
-		protected virtual void ListErrors (IList errorList)
+		protected virtual void ListErrors (IList list)
 		{
 			throw new NotImplementedException ();
 		}
@@ -215,24 +215,24 @@ namespace System.Configuration
 			return defaultCollection;
 		}
 
-		protected internal object this [ConfigurationProperty prop] {
-			get { return this [prop.Name]; }
-			set { this [prop.Name] = value; }
+		protected internal object this [ConfigurationProperty property] {
+			get { return this [property.Name]; }
+			set { this [property.Name] = value; }
 		}
 
-		protected internal object this [string propertyName] {
+		protected internal object this [string property_name] {
 			get {
-				PropertyInformation pi = ElementInformation.Properties [propertyName];
+				PropertyInformation pi = ElementInformation.Properties [property_name];
 				if (pi == null)
-					throw new InvalidOperationException ("Property '" + propertyName + "' not found in configuration element");
+					throw new InvalidOperationException ("Property '" + property_name + "' not found in configuration element");
 
 				return pi.Value;
 			}
 
 			set {
-				PropertyInformation pi = ElementInformation.Properties [propertyName];
+				PropertyInformation pi = ElementInformation.Properties [property_name];
 				if (pi == null)
-					throw new InvalidOperationException ("Property '" + propertyName + "' not found in configuration element");
+					throw new InvalidOperationException ("Property '" + property_name + "' not found in configuration element");
 
 				SetPropertyValue (pi.Property, value, false);
 
@@ -415,7 +415,7 @@ namespace System.Configuration
 			return false;
 		}
 
-		protected virtual bool OnDeserializeUnrecognizedElement (string elementName, XmlReader reader)
+		protected virtual bool OnDeserializeUnrecognizedElement (string element, XmlReader reader)
 		{
 			return false;
 		}
@@ -545,16 +545,16 @@ namespace System.Configuration
 		}
 
 		protected internal virtual void Unmerge (
-				ConfigurationElement sourceElement, ConfigurationElement parentElement,
-				ConfigurationSaveMode saveMode)
+				ConfigurationElement source, ConfigurationElement parent,
+				ConfigurationSaveMode updateMode)
 		{
-			if (parentElement != null && sourceElement.GetType() != parentElement.GetType())
+			if (parent != null && source.GetType() != parent.GetType())
 				throw new ConfigurationErrorsException ("Can't unmerge two elements of different type");
 
-			bool isMinimalOrModified = saveMode == ConfigurationSaveMode.Minimal ||
-				saveMode == ConfigurationSaveMode.Modified;
+			bool isMinimalOrModified = updateMode == ConfigurationSaveMode.Minimal ||
+				updateMode == ConfigurationSaveMode.Modified;
 
-			foreach (PropertyInformation prop in sourceElement.ElementInformation.Properties)
+			foreach (PropertyInformation prop in source.ElementInformation.Properties)
 			{
 				if (prop.ValueOrigin == PropertyValueOrigin.Default)
 					continue;
@@ -562,7 +562,7 @@ namespace System.Configuration
 				PropertyInformation unmergedProp = ElementInformation.Properties [prop.Name];
 				
 				object sourceValue = prop.Value;
-				if (parentElement == null || !parentElement.HasValue (prop.Name)) {
+				if (parent == null || !parent.HasValue (prop.Name)) {
 					unmergedProp.Value = sourceValue;
 					continue;
 				}
@@ -570,26 +570,26 @@ namespace System.Configuration
 				if (sourceValue == null)
 					continue;
 
-				object parentValue = parentElement [prop.Name];
+				object parentValue = parent [prop.Name];
 				if (!prop.IsElement) {
 					if (!object.Equals (sourceValue, parentValue) || 
-					    (saveMode == ConfigurationSaveMode.Full) ||
-					    (saveMode == ConfigurationSaveMode.Modified && prop.ValueOrigin == PropertyValueOrigin.SetHere))
+					    (updateMode == ConfigurationSaveMode.Full) ||
+					    (updateMode == ConfigurationSaveMode.Modified && prop.ValueOrigin == PropertyValueOrigin.SetHere))
 						unmergedProp.Value = sourceValue;
 					continue;
 				}
 
-				var sourceElementValue = (ConfigurationElement) sourceValue;
-				if (isMinimalOrModified && !sourceElementValue.IsModified ())
+				var sourceElement = (ConfigurationElement) sourceValue;
+				if (isMinimalOrModified && !sourceElement.IsModified ())
 					continue;
 				if (parentValue == null) {
 					unmergedProp.Value = sourceValue;
 					continue;
 				}
 
-				var parentElementValue = (ConfigurationElement) parentValue;
+				var parentElement = (ConfigurationElement) parentValue;
 				ConfigurationElement copy = (ConfigurationElement) unmergedProp.Value;
-				copy.Unmerge (sourceElementValue, parentElementValue, saveMode);
+				copy.Unmerge (sourceElement, parentElement, updateMode);
 			}
 		}
 		

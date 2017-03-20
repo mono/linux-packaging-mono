@@ -100,7 +100,8 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
         public override int GetHashCode()
         {
-            return (Sym?.GetHashCode() ?? 0) + (Ats?.GetHashCode() ?? 0);
+            return (Sym != null ? Sym.GetHashCode() : 0) +
+                (Ats != null ? Ats.GetHashCode() : 0);
         }
 
         // The SymWithType is considered NULL iff the Symbol is NULL.

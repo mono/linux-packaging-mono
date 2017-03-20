@@ -65,14 +65,14 @@ namespace System.Web {
 			return (IHttpModule)BaseGet (index);
 		}
 
-		public IHttpModule Get (string name)
+		public IHttpModule Get (string key)
 		{
-			return (IHttpModule)BaseGet (name);
+			return (IHttpModule)BaseGet (key);
 		}
 
-		public IHttpModule this [string name] {
+		public IHttpModule this [string key] {
 			get {
-				return Get (name);
+				return Get (key);
 			}
 		}
 

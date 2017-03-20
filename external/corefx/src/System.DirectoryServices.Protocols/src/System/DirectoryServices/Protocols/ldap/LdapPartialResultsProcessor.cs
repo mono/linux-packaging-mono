@@ -5,7 +5,6 @@
 namespace System.DirectoryServices.Protocols
 {
     using System;
-    using System.Globalization;
     using System.Threading;
     using System.Collections;
     using System.Diagnostics;
@@ -44,7 +43,7 @@ namespace System.DirectoryServices.Protocols
             lock (this)
             {
                 if (!_resultList.Contains(asyncResult))
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.InvalidAsyncResult));
+                    throw new ArgumentException(Res.GetString(Res.InvalidAsyncResult));
 
                 // remove this async operation from the list
                 _resultList.Remove(asyncResult);
@@ -222,7 +221,7 @@ namespace System.DirectoryServices.Protocols
                         asyncResult.resultStatus = ResultsStatus.CompleteResult;
                 }
                 else
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.InvalidAsyncResult));
+                    throw new ArgumentException(Res.GetString(Res.InvalidAsyncResult));
             }
         }
 
@@ -231,7 +230,7 @@ namespace System.DirectoryServices.Protocols
             lock (this)
             {
                 if (!_resultList.Contains(asyncResult))
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.InvalidAsyncResult));
+                    throw new ArgumentException(Res.GetString(Res.InvalidAsyncResult));
 
                 if (asyncResult.exception != null)
                 {
@@ -272,7 +271,7 @@ namespace System.DirectoryServices.Protocols
             lock (this)
             {
                 if (!_resultList.Contains(asyncResult))
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.InvalidAsyncResult));
+                    throw new ArgumentException(Res.GetString(Res.InvalidAsyncResult));
 
                 Debug.Assert(asyncResult.resultStatus == ResultsStatus.Done);
 

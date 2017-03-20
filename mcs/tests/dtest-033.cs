@@ -40,7 +40,6 @@ public class Test
 		a[4] ^= b;
 		
 		dynamic d = 1;
-/*
 		b = byte.MaxValue;
 		try {
 			checked {
@@ -51,7 +50,7 @@ public class Test
 		}
 			
 		b += d;
-*/
+		
 		try {
 			checked {
 				a.Byte += 100;

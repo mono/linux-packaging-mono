@@ -45,9 +45,9 @@ namespace System.ServiceModel
 		{
 		}
 
-		public WebHttpBinding (WebHttpSecurityMode securityMode)
+		public WebHttpBinding (WebHttpSecurityMode mode)
 		{
-			Initialize (securityMode);
+			Initialize (mode);
 		}
 
 		public WebHttpBinding (string configurationName)

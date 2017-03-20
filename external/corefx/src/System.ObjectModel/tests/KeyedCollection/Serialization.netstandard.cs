@@ -17,6 +17,7 @@ namespace System.Collections.ObjectModel.Tests
             yield return new object[] { new TestCollection() { "hello", "world" } };
         }
 
+        [ActiveIssue("https://github.com/dotnet/coreclr/pull/7966")]
         [Theory]
         [MemberData(nameof(SerializeDeserialize_Roundtrips_MemberData))]
         public void SerializeDeserialize_Roundtrips(TestCollection c)

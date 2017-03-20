@@ -128,7 +128,7 @@ namespace System.Runtime.Serialization.Json
 
             int keyTypeNullableDepth = 0;
             Type keyTypeOriginal = keyType;
-            while (keyType.IsGenericType && keyType.GetGenericTypeDefinition() == Globals.TypeOfNullable)
+            while (keyType.GetTypeInfo().IsGenericType && keyType.GetGenericTypeDefinition() == Globals.TypeOfNullable)
             {
                 keyTypeNullableDepth++;
                 keyType = keyType.GetGenericArguments()[0];
@@ -143,7 +143,7 @@ namespace System.Runtime.Serialization.Json
             {
                 keyParseMode = KeyParseMode.AsString;
             }
-            else if (keyType.IsEnum)
+            else if (keyType.GetTypeInfo().IsEnum)
             {
                 keyParseMode = KeyParseMode.UsingParseEnum;
             }

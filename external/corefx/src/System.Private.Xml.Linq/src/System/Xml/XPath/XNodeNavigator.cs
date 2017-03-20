@@ -878,12 +878,12 @@ namespace System.Xml.XPath
                 XText t = r as XText;
                 if (t != null && t.GetParent() != null)
                 {
-                    do
+                    foreach (XNode node in t.GetParent().Nodes())
                     {
-                        t = t.NextNode as XText;
+                        t = node as XText;
                         if (t == null) break;
                         yield return (T)(object)t;
-                    } while (t != t.GetParent().LastNode);
+                    }
                 }
             }
         }

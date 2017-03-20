@@ -28,7 +28,9 @@ namespace System.Net.WebSockets
         internal const int MinSendBufferSize = 16;
         internal const int MinReceiveBufferSize = 256;
         internal const int MaxBufferSize = 64 * 1024;
-        private static readonly int s_PropertyBufferSize = 3 * sizeof(uint) + IntPtr.Size;
+        private static readonly int s_SizeOfUInt = Marshal.SizeOf(typeof(uint));
+        private static readonly int s_SizeOfBool = Marshal.SizeOf(typeof(bool));
+        private static readonly int s_PropertyBufferSize = 2 * s_SizeOfUInt + s_SizeOfBool + IntPtr.Size;
 
         private readonly int _receiveBufferSize;
 
@@ -123,9 +125,9 @@ namespace System.Net.WebSockets
             IntPtr internalBufferPtr = _gcHandle.AddrOfPinnedObject();
             int offset = _propertyBuffer.Offset;
             Marshal.WriteInt32(internalBufferPtr, offset, _receiveBufferSize);
-            offset += sizeof(uint);
+            offset += s_SizeOfUInt;
             Marshal.WriteInt32(internalBufferPtr, offset, _sendBufferSize);
-            offset += sizeof(uint);
+            offset += s_SizeOfUInt;
             Marshal.WriteIntPtr(internalBufferPtr, offset, internalBufferPtr + _internalBuffer.Offset);
             offset += IntPtr.Size;
             Marshal.WriteInt32(internalBufferPtr, offset, useZeroMaskingKey ? (int)1 : (int)0);
@@ -139,18 +141,18 @@ namespace System.Net.WebSockets
             properties[0] = new Interop.WebSocket.Property()
             {
                 Type = WebSocketProtocolComponent.PropertyType.ReceiveBufferSize,
-                PropertySize = (uint)sizeof(uint),
+                PropertySize = (uint)s_SizeOfUInt,
                 PropertyData = IntPtr.Add(internalBufferPtr, offset)
             };
-            offset += sizeof(uint);
+            offset += s_SizeOfUInt;
 
             properties[1] = new Interop.WebSocket.Property()
             {
                 Type = WebSocketProtocolComponent.PropertyType.SendBufferSize,
-                PropertySize = (uint)sizeof(uint),
+                PropertySize = (uint)s_SizeOfUInt,
                 PropertyData = IntPtr.Add(internalBufferPtr, offset)
             };
-            offset += sizeof(uint);
+            offset += s_SizeOfUInt;
 
             properties[2] = new Interop.WebSocket.Property()
             {
@@ -165,7 +167,7 @@ namespace System.Net.WebSockets
                 properties[3] = new Interop.WebSocket.Property()
                 {
                     Type = WebSocketProtocolComponent.PropertyType.DisableMasking,
-                    PropertySize = (uint)sizeof(uint),
+                    PropertySize = (uint)s_SizeOfBool,
                     PropertyData = IntPtr.Add(internalBufferPtr, offset)
                 };
             }

@@ -49,7 +49,7 @@ namespace MonoTests.Microsoft.CSharp
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
+		[ExpectedException (typeof (NullReferenceException))]
 		public void TestCreateEscapedIdentifierNullArg ()
 		{
 			gen.CreateEscapedIdentifier (null);

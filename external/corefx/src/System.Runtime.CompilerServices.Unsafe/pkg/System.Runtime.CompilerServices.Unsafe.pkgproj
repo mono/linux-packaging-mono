@@ -3,10 +3,9 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <ItemGroup>
     <PackageIndex Include="$(ProjectDir)\pkg\baseline\packageBaseline.1.1.json" />
-    <ProjectReference Include="..\ref\System.Runtime.CompilerServices.Unsafe.csproj">
+    <ProjectReference Include="..\src\System.Runtime.CompilerServices.Unsafe.ilproj">
       <SupportedFramework>net45;netcore45;wp8;wpa81;netcoreapp1.0;$(AllXamarinFrameworks)</SupportedFramework>
     </ProjectReference>
-    <ProjectReference Include="..\src\System.Runtime.CompilerServices.Unsafe.ilproj" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

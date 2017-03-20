@@ -73,7 +73,6 @@
 #include "seq-points.h"
 #include "llvm-runtime.h"
 #include "mini-llvm.h"
-#include "interp/interp.h"
 
 #ifdef ENABLE_LLVM
 #include "mini-llvm-cpp.h"
@@ -221,13 +220,7 @@ mono_exceptions_init (void)
 #ifdef MONO_ARCH_HAVE_EXCEPTIONS_INIT
 	mono_arch_exceptions_init ();
 #endif
-#ifdef ENABLE_INTERPRETER
-	if (mono_use_interpreter)
-		cbs.mono_walk_stack_with_ctx = interp_walk_stack_with_ctx;
-	else
-#endif
-		cbs.mono_walk_stack_with_ctx = mono_runtime_walk_stack_with_ctx;
-
+	cbs.mono_walk_stack_with_ctx = mono_runtime_walk_stack_with_ctx;
 	cbs.mono_walk_stack_with_state = mono_walk_stack_with_state;
 
 	if (mono_llvm_only)
@@ -1382,7 +1375,7 @@ wrap_non_exception_throws (MonoMethod *m)
 static MonoArray*
 build_native_trace (MonoError *error)
 {
-	error_init (error);
+	mono_error_init (error);
 /* This puppy only makes sense on mobile, IOW, ARM. */
 #if defined (HAVE_BACKTRACE_SYMBOLS) && defined (TARGET_ARM)
 	MonoArray *res;
@@ -1596,9 +1589,18 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 					ex_obj = obj;
 
 				if (ei->flags == MONO_EXCEPTION_CLAUSE_FILTER) {
+					gboolean is_user_frame = method->wrapper_type == MONO_WRAPPER_NONE || method->wrapper_type == MONO_WRAPPER_DYNAMIC_METHOD;
 #ifndef DISABLE_PERFCOUNTERS
 					mono_perfcounters->exceptions_filters++;
 #endif
+					/*
+					Here's the thing, if this is a filter clause done by a wrapper like runtime invoke, we don't want to
+					trim the stackframe since if it returns FALSE we lose information.
+
+					FIXME Not 100% sure if it's a good idea even with user clauses.
+					*/
+					if (is_user_frame)
+						setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
 
 #ifndef MONO_CROSS_COMPILE
 #ifdef MONO_CONTEXT_SET_LLVM_EXC_REG
@@ -1635,7 +1637,8 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 					filter_idx ++;
 
 					if (filtered) {
-						setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
+						if (!is_user_frame)
+							setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
 						g_slist_free (dynamic_methods);
 						/* mono_debugger_agent_handle_exception () needs this */
 						mini_set_abort_threshold (ctx);
@@ -1645,7 +1648,7 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 				}
 
 				MonoError isinst_error;
-				error_init (&isinst_error);
+				mono_error_init (&isinst_error);
 				if (ei->flags == MONO_EXCEPTION_CLAUSE_NONE && mono_object_isinst_checked (ex_obj, catch_class, &error)) {
 					setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
 					g_slist_free (dynamic_methods);
@@ -1953,7 +1956,7 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 					filter_idx ++;
 				}
 
-				error_init (&error);
+				mono_error_init (&error);
 				if ((ei->flags == MONO_EXCEPTION_CLAUSE_NONE && 
 				     mono_object_isinst_checked (ex_obj, catch_class, &error)) || filtered) {
 					/*
@@ -2479,7 +2482,7 @@ mono_handle_native_crash (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_T
 	if (handling_sigsegv && is_sigsegv)
 		return;
 
-	if (mini_get_debug_options ()->suspend_on_native_crash) {
+	if (mini_get_debug_options ()->suspend_on_sigsegv && is_sigsegv) {
 		mono_runtime_printf_err ("Received %s, suspending...", signal);
 #ifdef HOST_WIN32
 		while (1)

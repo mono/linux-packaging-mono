@@ -68,6 +68,7 @@ namespace Mono.Btls
 
 		protected override MonoBtlsX509 OnGetBySubject (MonoBtlsX509Name name)
 		{
+			Console.WriteLine ("COLLECTION LOOKUP: {0:x} - {1}", name.GetHash (), name.GetString ());
 			Initialize ();
 
 			var hash = name.GetHash ();

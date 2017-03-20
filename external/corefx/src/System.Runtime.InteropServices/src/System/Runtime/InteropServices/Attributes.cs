@@ -48,19 +48,6 @@ namespace System.Runtime.InteropServices
     {
     }
 
-    [AttributeUsage(AttributeTargets.Interface, Inherited = false)]
-    public sealed class ComEventInterfaceAttribute : Attribute
-    {
-        public ComEventInterfaceAttribute(Type SourceInterface, Type EventProvider)
-        {
-            this.SourceInterface = SourceInterface;
-            this.EventProvider = EventProvider;
-        }
-
-        public Type SourceInterface { get; }
-        public Type EventProvider { get; }
-    }
-
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public sealed class ComRegisterFunctionAttribute : Attribute
     {
@@ -93,6 +80,16 @@ namespace System.Runtime.InteropServices
         CompatibleImpl = 2,
         InternalImpl = 1,
         SystemDefinedImpl = 0,
+    }
+
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    public sealed class LCIDConversionAttribute : Attribute
+    {
+        public LCIDConversionAttribute(int lcid)
+        {
+            Value = lcid;
+        }
+        public int Value { get; }
     }
 
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]

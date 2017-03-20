@@ -39,9 +39,9 @@ namespace System.Web.UI.WebControls
 		IOrderedDictionary keys;
 		IOrderedDictionary values;
 		
-		public DetailsViewDeleteEventArgs (int rowIndex)
+		public DetailsViewDeleteEventArgs (int index)
 		{
-			this.rowIndex = rowIndex;
+			this.rowIndex = index;
 		}
 		
 		internal DetailsViewDeleteEventArgs (int index, IOrderedDictionary keys, IOrderedDictionary values)

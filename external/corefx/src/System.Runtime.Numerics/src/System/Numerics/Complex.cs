@@ -223,25 +223,17 @@ namespace System.Numerics
 
         public static Complex Sin(Complex value)
         {
-            // We need both sinh and cosh of imaginary part. To avoid multiple calls to Math.Exp with the same value,
-            // we compute them both here from a single call to Math.Exp.
-            double p = Math.Exp(value._imaginary);
-            double q = 1.0 / p;
-            double sinh = (p - q) * 0.5;
-            double cosh = (p + q) * 0.5;
-            return new Complex(Math.Sin(value._real) * cosh, Math.Cos(value._real) * sinh);
-            // There is a known limitation with this algorithm: inputs that cause sinh and cosh to overflow, but for
-            // which sin or cos are small enough that sin * cosh or cos * sinh are still representable, nonetheless
-            // produce overflow. For example, Sin((0.01, 711.0)) should produce (~3.0E306, PositiveInfinity), but
-            // instead produces (PositiveInfinity, PositiveInfinity). 
+            double a = value._real;
+            double b = value._imaginary;
+            return new Complex(Math.Sin(a) * Math.Cosh(b), Math.Cos(a) * Math.Sinh(b));
         }
 
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Sinh", Justification = "Sinh is the name of a mathematical function.")]
         public static Complex Sinh(Complex value)
         {
-            // Use sinh(z) = -i sin(iz) to compute via sin(z).
-            Complex sin = Sin(new Complex(-value._imaginary, value._real));
-            return new Complex(sin._imaginary, -sin._real);
+            double a = value._real;
+            double b = value._imaginary;
+            return new Complex(Math.Sinh(a) * Math.Cos(b), Math.Cosh(a) * Math.Sin(b));
         }
 
         public static Complex Asin(Complex value)
@@ -253,19 +245,19 @@ namespace System.Numerics
             return (-ImaginaryOne) * Log(ImaginaryOne * value + Sqrt(One - value * value));
         }
 
-        public static Complex Cos(Complex value) {
-            double p = Math.Exp(value._imaginary);
-            double q = 1.0 / p;
-            double sinh = (p - q) * 0.5;
-            double cosh = (p + q) * 0.5;
-            return new Complex(Math.Cos(value._real) * cosh, -Math.Sin(value._real) * sinh);
+        public static Complex Cos(Complex value)
+        {
+            double a = value._real;
+            double b = value._imaginary;
+            return new Complex(Math.Cos(a) * Math.Cosh(b), -(Math.Sin(a) * Math.Sinh(b)));
         }
 
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Cosh", Justification = "Cosh is the name of a mathematical function.")]
         public static Complex Cosh(Complex value)
         {
-            // Use cosh(z) = cos(iz) to compute via cos(z).
-            return Cos(new Complex(-value._imaginary, value._real));
+            double a = value._real;
+            double b = value._imaginary;
+            return new Complex(Math.Cosh(a) * Math.Cos(b), Math.Sinh(a) * Math.Sin(b));
         }
 
         public static Complex Acos(Complex value)
@@ -279,39 +271,13 @@ namespace System.Numerics
 
         public static Complex Tan(Complex value)
         {
-            // tan z = sin z / cos z, but to avoid unnecessary repeated trig computations, use
-            //   tan z = (sin(2x) + i sinh(2y)) / (cos(2x) + cosh(2y))
-            // (see Abramowitz & Stegun 4.3.57 or derive by hand), and compute trig functions here.
-
-            // This approach does not work for |y| > ~355, because sinh(2y) and cosh(2y) overflow,
-            // even though their ratio does not. In that case, divide through by cosh to get:
-            //   tan z = (sin(2x) / cosh(2y) + i \tanh(2y)) / (1 + cos(2x) / cosh(2y))
-            // which correctly computes the (tiny) real part and the (normal-sized) imaginary part.
-            
-            double x2 = 2.0 * value._real;
-            double y2 = 2.0 * value._imaginary;
-            double p = Math.Exp(y2);
-            double q = 1.0 / p;
-            double cosh = (p + q) * 0.5;
-            if (Math.Abs(value._imaginary) <= 4.0)
-            {
-                double sinh = (p - q) * 0.5;
-                double D = Math.Cos(x2) + cosh;
-                return new Complex(Math.Sin(x2) / D, sinh / D);
-            }
-            else
-            {
-                double D = 1.0 + Math.Cos(x2) / cosh;
-                return new Complex(Math.Sin(x2) / cosh / D, Math.Tanh(y2) / D);
-            }
+            return (Sin(value) / Cos(value));
         }
 
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Tanh", Justification = "Tanh is the name of a mathematical function.")]
         public static Complex Tanh(Complex value)
         {
-            // Use tanh(z) = -i tan(iz) to compute via tan(z).
-            Complex tan = Tan(new Complex(-value._imaginary, value._real));
-            return new Complex(tan._imaginary, -tan._real);
+            return (Sinh(value) / Cosh(value));
         }
 
         public static Complex Atan(Complex value)

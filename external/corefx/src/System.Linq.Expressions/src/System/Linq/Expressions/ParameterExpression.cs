@@ -27,7 +27,7 @@ namespace System.Linq.Expressions
             }
             else
             {
-                if (!type.IsEnum)
+                if (!type.GetTypeInfo().IsEnum)
                 {
                     switch (type.GetTypeCode())
                     {

@@ -2,33 +2,33 @@
 #ifndef _MONO_METADATA_THREADPOOL_WORKER_H
 #define _MONO_METADATA_THREADPOOL_WORKER_H
 
-#include <glib.h>
+typedef struct MonoThreadPoolWorker MonoThreadPoolWorker;
 
 typedef void (*MonoThreadPoolWorkerCallback)(gpointer);
 
 void
-mono_threadpool_worker_init (void);
+mono_threadpool_worker_init (MonoThreadPoolWorker **worker);
 
 void
-mono_threadpool_worker_cleanup (void);
+mono_threadpool_worker_cleanup (MonoThreadPoolWorker *worker);
 
 void
-mono_threadpool_worker_enqueue (MonoThreadPoolWorkerCallback callback, gpointer data);
+mono_threadpool_worker_enqueue (MonoThreadPoolWorker *worker, MonoThreadPoolWorkerCallback callback, gpointer data);
 
 gboolean
-mono_threadpool_worker_notify_completed (void);
+mono_threadpool_worker_notify_completed (MonoThreadPoolWorker *worker);
 
 gint32
-mono_threadpool_worker_get_min (void);
+mono_threadpool_worker_get_min (MonoThreadPoolWorker *worker);
 gboolean
-mono_threadpool_worker_set_min (gint32 value);
+mono_threadpool_worker_set_min (MonoThreadPoolWorker *worker, gint32 value);
 
 gint32
-mono_threadpool_worker_get_max (void);
+mono_threadpool_worker_get_max (MonoThreadPoolWorker *worker);
 gboolean
-mono_threadpool_worker_set_max (gint32 value);
+mono_threadpool_worker_set_max (MonoThreadPoolWorker *worker, gint32 value);
 
 void
-mono_threadpool_worker_set_suspended (gboolean suspended);
+mono_threadpool_worker_set_suspended (MonoThreadPoolWorker *worker, gboolean suspended);
 
 #endif /* _MONO_METADATA_THREADPOOL_WORKER_H */

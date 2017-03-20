@@ -407,7 +407,7 @@ namespace OLEDB.Test.ModuleCore
 
         public virtual string Name
         {
-            //Prefix for test case names
+            //Prefix for testcase names
             get { return _name; }
             set { _name = value; }
         }

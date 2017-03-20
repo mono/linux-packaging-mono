@@ -160,22 +160,22 @@ namespace System.Drawing.Imaging {
 			SetColorKey (colorLow, colorHigh, ColorAdjustType.Default);
 		}
 
-		public void SetColorMatrix (ColorMatrix newColorMatrix)
+		public void SetColorMatrix (ColorMatrix colorMatrix)
 		{
-			SetColorMatrix (newColorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Default);
+			SetColorMatrix (colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Default);
 		}
 
-		public void SetColorMatrix (ColorMatrix newColorMatrix, ColorMatrixFlag flags)
+		public void SetColorMatrix (ColorMatrix colorMatrix, ColorMatrixFlag colorMatrixFlag)
 		{
-			SetColorMatrix (newColorMatrix, flags, ColorAdjustType.Default);
+			SetColorMatrix (colorMatrix, colorMatrixFlag, ColorAdjustType.Default);
 		}
 
-		public void SetColorMatrix (ColorMatrix newColorMatrix, ColorMatrixFlag mode, ColorAdjustType type)
+		public void SetColorMatrix (ColorMatrix colorMatrix, ColorMatrixFlag colorMatrixFlag, ColorAdjustType colorAdjustType)
 		{
-			IntPtr cm = ColorMatrix.Alloc (newColorMatrix);
+			IntPtr cm = ColorMatrix.Alloc (colorMatrix);
 			try {
 				Status status = GDIPlus.GdipSetImageAttributesColorMatrix (nativeImageAttr, 
-					type, true, cm, IntPtr.Zero, mode);
+					colorAdjustType, true, cm, IntPtr.Zero, colorMatrixFlag);
 				GDIPlus.CheckStatus (status);
 			}
 			finally {
@@ -294,9 +294,9 @@ namespace System.Drawing.Imaging {
 			SetGamma (gamma, ColorAdjustType.Default);
 		}
 
-		public void SetGamma (float gamma, ColorAdjustType type)
+		public void SetGamma (float gamma, ColorAdjustType coloradjust)
 		{
-			Status status = GDIPlus.GdipSetImageAttributesGamma (nativeImageAttr, type, true, gamma);
+			Status status = GDIPlus.GdipSetImageAttributesGamma (nativeImageAttr, coloradjust, true, gamma);
 			GDIPlus.CheckStatus (status);						
 		}	
 		

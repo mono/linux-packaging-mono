@@ -8,7 +8,6 @@ using System.IO;
 using System.Net.Cache;
 using System.Net.Sockets;
 using System.Security;
-using System.Runtime.ExceptionServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -1232,7 +1231,7 @@ namespace System.Net
         {
             if (_exception != null)
             {
-                ExceptionDispatchInfo.Capture(_exception).Throw();
+                throw _exception;
             }
         }
 

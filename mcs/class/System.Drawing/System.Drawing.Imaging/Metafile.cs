@@ -220,10 +220,10 @@ namespace System.Drawing.Imaging {
 		}
 
 		public Metafile (IntPtr referenceHdc, Rectangle frameRect, MetafileFrameUnit frameUnit, EmfType type,
-			string desc)
+			string description)
 		{
 			Status status = GDIPlus.GdipRecordMetafileI (referenceHdc, type, ref frameRect, frameUnit,
-				desc, out nativeObject);
+				description, out nativeObject);
 			GDIPlus.CheckStatus (status);
 		}
 
@@ -261,8 +261,8 @@ namespace System.Drawing.Imaging {
 		}
 		
 		public Metafile (string fileName, IntPtr referenceHdc, RectangleF frameRect, MetafileFrameUnit frameUnit, 
-			string desc) : this (fileName, referenceHdc, frameRect, frameUnit, EmfType.EmfPlusDual,
-			desc) 
+			string description) : this (fileName, referenceHdc, frameRect, frameUnit, EmfType.EmfPlusDual,
+			description) 
 		{
 		}
 		
@@ -405,11 +405,11 @@ namespace System.Drawing.Imaging {
 		}
 
 		[MonoLimitation ("Metafiles aren't only partially supported by libgdiplus.")]
-		public static MetafileHeader GetMetafileHeader (IntPtr hmetafile, WmfPlaceableFileHeader wmfHeader)
+		public static MetafileHeader GetMetafileHeader (IntPtr henhmetafile, WmfPlaceableFileHeader wmfHeader)
 		{
 			IntPtr header = Marshal.AllocHGlobal (Marshal.SizeOf (typeof (MetafileHeader)));
 			try {
-				Status status = GDIPlus.GdipGetMetafileHeaderFromEmf (hmetafile, header);
+				Status status = GDIPlus.GdipGetMetafileHeaderFromEmf (henhmetafile, header);
 				GDIPlus.CheckStatus (status);
 				return new MetafileHeader (header);
 			}

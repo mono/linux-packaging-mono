@@ -3,19 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace System.Diagnostics
 {
-    internal class DebuggerAttributeInfo
-    {
-        public object Instance { get; set; }
-        public IEnumerable<PropertyInfo> Properties { get; set; }
-    }
-
     internal static class DebuggerAttributes
     {
         internal static object GetFieldValue(object obj, string fieldName)
@@ -23,56 +15,28 @@ namespace System.Diagnostics
             return GetField(obj, fieldName).GetValue(obj);
         }
 
-        internal static DebuggerAttributeInfo ValidateDebuggerTypeProxyProperties(object obj)
+        internal static void ValidateDebuggerTypeProxyProperties(object obj)
         {
-            return ValidateDebuggerTypeProxyProperties(obj.GetType(), obj);
+            ValidateDebuggerTypeProxyProperties(obj.GetType(), obj);
         }
 
-        internal static DebuggerAttributeInfo ValidateDebuggerTypeProxyProperties(Type type, object obj)
+        internal static void ValidateDebuggerTypeProxyProperties(Type type, object obj)
         {
-            return ValidateDebuggerTypeProxyProperties(type, type.GenericTypeArguments, obj);
+            ValidateDebuggerTypeProxyProperties(type, type.GenericTypeArguments, obj);
         }
 
-        internal static DebuggerAttributeInfo ValidateDebuggerTypeProxyProperties(Type type, Type[] genericTypeArguments, object obj)
+        internal static void ValidateDebuggerTypeProxyProperties(Type type, Type[] genericTypeArguments, object obj)
         {
             Type proxyType = GetProxyType(type, genericTypeArguments);
 
             // Create an instance of the proxy type, and make sure we can access all of the instance properties 
             // on the type without exception
             object proxyInstance = Activator.CreateInstance(proxyType, obj);
-            IEnumerable<PropertyInfo> properties = GetDebuggerVisibleProperties(proxyType);
-            return new DebuggerAttributeInfo
+            foreach (var pi in proxyInstance.GetType().GetTypeInfo().DeclaredProperties)
             {
-                Instance = proxyInstance,
-                Properties = properties
-            };
+                pi.GetValue(proxyInstance, null);
+            }
         }
-
-        public static DebuggerBrowsableState? GetDebuggerBrowsableState(MemberInfo info)
-        {
-            CustomAttributeData debuggerBrowsableAttribute = info.CustomAttributes
-                .SingleOrDefault(a => a.AttributeType == typeof(DebuggerBrowsableAttribute));
-            // Enums in attribute constructors are boxed as ints, so cast to int? first.
-            return (DebuggerBrowsableState?)(int?)debuggerBrowsableAttribute?.ConstructorArguments.Single().Value;
-        }
-
-        public static IEnumerable<FieldInfo> GetDebuggerVisibleFields(Type debuggerAttributeType)
-        {
-            // The debugger doesn't evaluate non-public members of type proxies.
-            IEnumerable<FieldInfo> visibleFields = debuggerAttributeType.GetFields()
-                .Where(fi => fi.IsPublic && GetDebuggerBrowsableState(fi) != DebuggerBrowsableState.Never);
-            return visibleFields;
-        }
-
-        public static IEnumerable<PropertyInfo> GetDebuggerVisibleProperties(Type debuggerAttributeType)
-        {
-            // The debugger doesn't evaluate non-public members of type proxies. GetGetMethod returns null if the getter is non-public.
-            IEnumerable<PropertyInfo> visibleProperties = debuggerAttributeType.GetProperties()
-                .Where(pi => pi.GetGetMethod() != null && GetDebuggerBrowsableState(pi) != DebuggerBrowsableState.Never);
-            return visibleProperties;
-        }
-
-        public static object GetProxyObject(object obj) => Activator.CreateInstance(GetProxyType(obj), obj);
 
         public static Type GetProxyType(object obj) => GetProxyType(obj.GetType());
 
@@ -87,7 +51,8 @@ namespace System.Diagnostics
                 .ToArray();
             if (attrs.Length != 1)
             {
-                throw new InvalidOperationException($"Expected one DebuggerTypeProxyAttribute on {type}.");
+                throw new InvalidOperationException(
+                    string.Format("Expected one DebuggerTypeProxyAttribute on {0}.", type));
             }
             CustomAttributeData cad = attrs[0];
 
@@ -102,112 +67,65 @@ namespace System.Diagnostics
             return proxyType;
         }
 
-        internal static string ValidateDebuggerDisplayReferences(object obj)
+        internal static void ValidateDebuggerDisplayReferences(object obj)
         {
             // Get the DebuggerDisplayAttribute for obj
-            var objType = obj.GetType();
             var attrs =
-                objType.GetTypeInfo().CustomAttributes
+                obj.GetType().GetTypeInfo().CustomAttributes
                 .Where(a => a.AttributeType == typeof(DebuggerDisplayAttribute))
                 .ToArray();
             if (attrs.Length != 1)
             {
-                throw new InvalidOperationException($"Expected one DebuggerDisplayAttribute on {objType}.");
+                throw new InvalidOperationException(
+                    string.Format("Expected one DebuggerDisplayAttribute on {0}.", obj));
             }
-            var cad = attrs[0];
+            var cad = (CustomAttributeData)attrs[0];
 
             // Get the text of the DebuggerDisplayAttribute
             string attrText = (string)cad.ConstructorArguments[0].Value;
 
-            var segments = attrText.Split(new[] { '{', '}' });
-
-            if (segments.Length % 2 == 0)
+            // Parse the text for all expressions
+            var references = new List<string>();
+            int pos = 0;
+            while (true)
             {
-                throw new InvalidOperationException($"The DebuggerDisplayAttribute for {objType} lacks a closing brace.");
+                int openBrace = attrText.IndexOf('{', pos);
+                if (openBrace < pos) break;
+                int closeBrace = attrText.IndexOf('}', openBrace);
+                if (closeBrace < openBrace) break;
+
+                string reference = attrText.Substring(openBrace + 1, closeBrace - openBrace - 1).Replace(",nq", "");
+                pos = closeBrace + 1;
+
+                references.Add(reference);
+            }
+            if (references.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    string.Format("The DebuggerDisplayAttribute for {0} doesn't reference any expressions.", obj));
             }
 
-            if (segments.Length == 1)
+            // Make sure that each referenced expression is a simple field or property name, and that we can
+            // invoke the property's get accessor or read from the field.
+            foreach (var reference in references)
             {
-                throw new InvalidOperationException($"The DebuggerDisplayAttribute for {objType} doesn't reference any expressions.");
-            }
-
-            var sb = new StringBuilder();
-            
-            for (int i = 0; i < segments.Length; i += 2)
-            {
-                string literal = segments[i];
-                sb.Append(literal);
-
-                if (i + 1 < segments.Length)
+                PropertyInfo pi = GetProperty(obj, reference);
+                if (pi != null)
                 {
-                    string reference = segments[i + 1];
-                    bool noQuotes = reference.EndsWith(",nq");
-
-                    reference = reference.Replace(",nq", string.Empty);
-
-                    // Evaluate the reference.
-                    object member;
-                    if (!TryEvaluateReference(obj, reference, out member))
-                    {
-                        throw new InvalidOperationException($"The DebuggerDisplayAttribute for {objType} contains the expression \"{reference}\".");
-                    }
-
-                    string memberString = GetDebuggerMemberString(member, noQuotes);
-                    
-                    sb.Append(memberString);
+                    object ignored = pi.GetValue(obj, null);
+                    continue;
                 }
-            }
 
-            return sb.ToString();
-        }
-
-        private static string GetDebuggerMemberString(object member, bool noQuotes)
-        {
-            string memberString = "null";
-            if (member != null)
-            {
-                memberString = member.ToString();
-                if (member is string)
+                FieldInfo fi = GetField(obj, reference);
+                if (fi != null)
                 {
-                    if (!noQuotes)
-                    {
-                        memberString = '"' + memberString + '"';
-                    }
+                    object ignored = fi.GetValue(obj);
+                    continue;
                 }
-                else if (!IsPrimitiveType(member))
-                {
-                    memberString = '{' + memberString + '}';
-                }
+
+                throw new InvalidOperationException(
+                    string.Format("The DebuggerDisplayAttribute for {0} contains the expression \"{1}\".", obj, reference));
             }
-
-            return memberString;
-        }
-
-        private static bool IsPrimitiveType(object obj) =>
-            obj is byte || obj is sbyte ||
-            obj is short || obj is ushort ||
-            obj is int || obj is uint ||
-            obj is long || obj is ulong ||
-            obj is float || obj is double;
-
-        private static bool TryEvaluateReference(object obj, string reference, out object member)
-        {
-            PropertyInfo pi = GetProperty(obj, reference);
-            if (pi != null)
-            {
-                member = pi.GetValue(obj);
-                return true;
-            }
-
-            FieldInfo fi = GetField(obj, reference);
-            if (fi != null)
-            {
-                member = fi.GetValue(obj);
-                return true;
-            }
-
-            member = null;
-            return false;
         }
 
         private static FieldInfo GetField(object obj, string fieldName)

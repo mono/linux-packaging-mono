@@ -13,19 +13,33 @@ namespace System.Net.Http.WinHttpHandlerUnitTests
 {
     internal class FakeSafeWinHttpHandle : Interop.WinHttp.SafeWinHttpHandle
     {
+        private static int s_HandlesOpen = 0;
+
         private Interop.WinHttp.WINHTTP_STATUS_CALLBACK _callback = null;
         private IntPtr _context = IntPtr.Zero;
-
+        
         public FakeSafeWinHttpHandle(bool markAsValid)
         {
             if (markAsValid)
             {
                 SetHandle(Marshal.AllocHGlobal(1));
-                Debug.WriteLine("FakeSafeWinHttpHandle.cctor, handle=#{0}", handle.GetHashCode());
+                Interlocked.Increment(ref s_HandlesOpen);
+                Debug.WriteLine(
+                    "FakeSafeWinHttpHandle.cctor, handle=#{0}, s_HandlesOpen={1}",
+                    handle.GetHashCode(),
+                    s_HandlesOpen);
             }
             else
             {
                 SetHandleAsInvalid();
+            }
+        }
+
+        public static int HandlesOpen
+        {
+            get
+            {
+                return s_HandlesOpen;
             }
         }
 
@@ -35,7 +49,7 @@ namespace System.Net.Http.WinHttpHandlerUnitTests
             {
                 return _callback;
             }
-
+            
             set
             {
                 _callback = value;
@@ -48,7 +62,7 @@ namespace System.Net.Http.WinHttpHandlerUnitTests
             {
                 return _context;
             }
-
+            
             set
             {
                 _context = value;
@@ -61,7 +75,7 @@ namespace System.Net.Http.WinHttpHandlerUnitTests
             {
                 return true;
             }
-
+            
             // Sleep for delay time specified.  Abort if handle becomes closed.
             var sw = new Stopwatch();
             sw.Start();
@@ -72,15 +86,15 @@ namespace System.Net.Http.WinHttpHandlerUnitTests
                     sw.Stop();
                     return false;
                 }
-
+                
                 Thread.Sleep(1);
             }
 
             sw.Stop();
-
+            
             return true;
         }
-
+        
         public void InvokeCallback(uint internetStatus, Interop.WinHttp.WINHTTP_ASYNC_RESULT asyncResult)
         {
             GCHandle pinnedAsyncResult = GCHandle.Alloc(asyncResult, GCHandleType.Pinned);
@@ -99,7 +113,12 @@ namespace System.Net.Http.WinHttpHandlerUnitTests
 
         protected override bool ReleaseHandle()
         {
-            Debug.WriteLine("FakeSafeWinHttpHandle.ReleaseHandle, handle=#{0}", handle.GetHashCode());
+            Interlocked.Decrement(ref s_HandlesOpen);
+            Debug.WriteLine(
+                "FakeSafeWinHttpHandle.ReleaseHandle, handle=#{0}, s_HandlesOpen={1}",
+                handle.GetHashCode(),
+                s_HandlesOpen);
+            
             return base.ReleaseHandle();
         }
     }

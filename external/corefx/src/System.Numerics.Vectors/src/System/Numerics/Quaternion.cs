@@ -788,7 +788,7 @@ namespace System.Numerics
         /// <returns>The hash code.</returns>
         public override int GetHashCode()
         {
-            return unchecked(X.GetHashCode() + Y.GetHashCode() + Z.GetHashCode() + W.GetHashCode());
+            return X.GetHashCode() + Y.GetHashCode() + Z.GetHashCode() + W.GetHashCode();
         }
     }
 }

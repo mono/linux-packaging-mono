@@ -48,8 +48,8 @@ namespace System.Security.Cryptography.Xml {
 			ReferenceType = XmlEncryption.ElementNames.DataReference;
 		}
 	
-		public DataReference (string uri, TransformChain transformChain)
-			: base (uri, transformChain)
+		public DataReference (string uri, TransformChain tc)
+			: base (uri, tc)
 		{
 			ReferenceType = XmlEncryption.ElementNames.DataReference;
 		}

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Security;
-using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Authentication.ExtendedProtection;
@@ -491,7 +490,7 @@ namespace System.Net
                     }
                     catch (HttpListenerException)
                     {
-                        // If an error occurred while adding prefixes, free all resources allocated by previous steps.
+                        // If an error occured while adding prefixes, free all resources allocated by previous steps.
                         DetachRequestQueueFromUrlGroup();
                         throw;
                     }
@@ -950,7 +949,7 @@ namespace System.Net
                 if (httpContext == null)
                 {
                     Debug.Assert(castedAsyncResult.Result is Exception, "EndGetContext|The result is neither a HttpListenerContext nor an Exception.");
-                    ExceptionDispatchInfo.Capture(castedAsyncResult.Result as Exception).Throw();
+                    throw castedAsyncResult.Result as Exception;
                 }
             }
             catch (Exception exception)
@@ -1902,7 +1901,7 @@ namespace System.Net
                 httpResponse.ReasonLength = (ushort)byteReason.Length;
 
                 byte[] byteContentLength = Encoding.Default.GetBytes("0");
-                fixed (byte* pContentLength = &byteContentLength[0])
+                fixed (byte* pContentLength = byteContentLength)
                 {
                     (&httpResponse.Headers.KnownHeaders)[(int)HttpResponseHeader.ContentLength].pRawValue = (sbyte*)pContentLength;
                     (&httpResponse.Headers.KnownHeaders)[(int)HttpResponseHeader.ContentLength].RawValueLength = (ushort)byteContentLength.Length;
@@ -2007,7 +2006,7 @@ namespace System.Net
             // is >128 we will get ERROR_MORE_DATA and call again
             int size = s_requestChannelBindStatusSize + 128;
 
-            Debug.Assert(size > 0);
+            Debug.Assert(size >= 0);
 
             byte[] blob = null;
             Interop.HttpApi.SafeLocalFreeChannelBinding token = null;
@@ -2018,7 +2017,7 @@ namespace System.Net
             do
             {
                 blob = new byte[size];
-                fixed (byte* blobPtr = &blob[0])
+                fixed (byte* blobPtr = blob)
                 {
                     // Http.sys team: ServiceName will always be null if 
                     // HTTP_RECEIVE_SECURE_CHANNEL_TOKEN flag is set.

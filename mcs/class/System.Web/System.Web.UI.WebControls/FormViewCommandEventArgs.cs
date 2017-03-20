@@ -34,9 +34,9 @@ namespace System.Web.UI.WebControls
 	{
 		object source;
 		
-		public FormViewCommandEventArgs (object commandSource, CommandEventArgs originalArgs) : base (originalArgs)
+		public FormViewCommandEventArgs (object source, CommandEventArgs arguments) : base (arguments)
 		{
-			this.source = commandSource;
+			this.source = source;
 		}
 		
 		public object CommandSource {

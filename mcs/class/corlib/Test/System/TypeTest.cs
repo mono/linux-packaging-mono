@@ -3068,14 +3068,6 @@ namespace MonoTests.System
 			object o = Array.CreateInstance (typeof (global::System.TypedReference), 1);
 		}
 
-		[Test]
-		public void MakeArrayTypeLargeRank ()
-		{
-			Assert.Throws<TypeLoadException> (delegate () {
-					typeof (int).MakeArrayType (33);
-				});
-		}
-
 		[ComVisible (true)]
 		public class ComFoo<T> {
 		}

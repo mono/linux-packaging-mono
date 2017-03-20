@@ -41,14 +41,14 @@ public sealed class CompiledTemplateBuilder : ITemplate
 {
 	BuildTemplateMethod templateMethod;
 
-	public CompiledTemplateBuilder (BuildTemplateMethod buildTemplateMethod)
+	public CompiledTemplateBuilder (BuildTemplateMethod templateMethod)
 	{
-		this.templateMethod = buildTemplateMethod;
+		this.templateMethod = templateMethod;
 	}
 
-	public void InstantiateIn (Control container)
+	public void InstantiateIn (Control ctrl)
 	{
-		templateMethod (container);
+		templateMethod (ctrl);
 	}
 }
 }

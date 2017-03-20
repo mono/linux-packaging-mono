@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration001.declaration001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration001.declaration001;
+
     public class Test
     {
         [Fact]
@@ -27,6 +29,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration002.declaration002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration002.declaration002;
+
     public class Test
     {
         [Fact]
@@ -51,6 +55,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration004.declaration004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration004.declaration004;
+
     public class Test
     {
         [Fact]
@@ -76,6 +82,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration005.declaration005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration005.declaration005;
+
     public class Test
     {
         [Fact]
@@ -101,6 +109,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration006.declaration006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration006.declaration006;
+
     public class Test
     {
         [Fact]
@@ -125,6 +135,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration007.declaration007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration007.declaration007;
+
     public class Test
     {
         [Fact]
@@ -149,6 +161,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration008.declaration008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration008.declaration008;
+
     public class Test
     {
         [Fact]
@@ -173,6 +187,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration009.declaration009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration009.declaration009;
+
     public class Test
     {
         public enum MyEnum
@@ -204,6 +220,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration010.declaration010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration010.declaration010;
+
     public class Test
     {
         public struct MyStruct
@@ -238,6 +256,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration011.declaration011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration011.declaration011;
+
     public class Test
     {
         public struct MyStruct
@@ -272,6 +292,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration012.declaration012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration012.declaration012;
+
     public class Test
     {
         public struct MyClass
@@ -306,6 +328,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration013.declaration013
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.declaration013.declaration013;
+
     public class Test
     {
         [Fact]
@@ -329,6 +353,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.errordeclaration001.errordeclaration001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.simple.errordeclaration001.errordeclaration001;
+
     public class Test
     {
         [Fact]

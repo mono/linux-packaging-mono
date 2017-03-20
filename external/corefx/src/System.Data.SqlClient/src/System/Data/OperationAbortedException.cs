@@ -7,11 +7,12 @@
 //------------------------------------------------------------------------------
 
 using System.Runtime.Serialization;
+using Res = System.SR;
 
 namespace System.Data
 {
     [Serializable]
-    public sealed class OperationAbortedException : SystemException
+    public sealed class OperationAbortedException : Exception
     {
         private OperationAbortedException(string message, Exception innerException) : base(message, innerException)
         {
@@ -27,11 +28,11 @@ namespace System.Data
             OperationAbortedException e;
             if (inner == null)
             {
-                e = new OperationAbortedException(SR.GetString(SR.ADP_OperationAborted), null);
+                e = new OperationAbortedException(Res.GetString(Res.ADP_OperationAborted), null);
             }
             else
             {
-                e = new OperationAbortedException(SR.GetString(SR.ADP_OperationAbortedExceptionMessage), inner);
+                e = new OperationAbortedException(Res.GetString(Res.ADP_OperationAbortedExceptionMessage), inner);
             }
             return e;
         }

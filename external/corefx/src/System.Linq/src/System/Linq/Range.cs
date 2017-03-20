@@ -37,7 +37,7 @@ namespace System.Linq
             {
                 Debug.Assert(count > 0);
                 _start = start;
-                _end = unchecked(start + count);
+                _end = start + count;
             }
 
             public override Iterator<int> Clone()
@@ -55,7 +55,7 @@ namespace System.Linq
                         _state = 2;
                         return true;
                     case 2:
-                        if (unchecked(++_current) == _end)
+                        if (++_current == _end)
                         {
                             break;
                         }
@@ -103,7 +103,7 @@ namespace System.Linq
 
             public int GetCount(bool onlyIfCheap)
             {
-                return unchecked(_end - _start);
+                return _end - _start;
             }
 
             public IPartition<int> Skip(int count)
@@ -129,7 +129,7 @@ namespace System.Linq
 
             public int TryGetElementAt(int index, out bool found)
             {
-                if (unchecked((uint)index < (uint)(_end - _start)))
+                if ((uint)index < (uint)(_end - _start))
                 {
                     found = true;
                     return _start + index;

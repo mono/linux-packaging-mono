@@ -183,12 +183,11 @@ namespace System.Security.Principal
 
         private static int LookupAuthenticationPackage(SafeLsaHandle lsaHandle, string packageName)
         {
-            Debug.Assert(!string.IsNullOrEmpty(packageName));
             unsafe
             {
                 int packageId;
                 byte[] asciiPackageName = Encoding.ASCII.GetBytes(packageName);
-                fixed (byte* pAsciiPackageName = &asciiPackageName[0])
+                fixed (byte* pAsciiPackageName = asciiPackageName)
                 {
                     LSA_STRING lsaPackageName = new LSA_STRING((IntPtr)pAsciiPackageName, checked((ushort)(asciiPackageName.Length)));
                     int ntStatus = Interop.SspiCli.LsaLookupAuthenticationPackage(lsaHandle, ref lsaPackageName, out packageId);
@@ -221,7 +220,7 @@ namespace System.Security.Principal
             Contract.EndContractBlock();
 
             // Find out if the specified token is a valid.
-            uint dwLength = (uint)sizeof(uint);
+            uint dwLength = (uint)Marshal.SizeOf<uint>();
             bool result = Interop.Advapi32.GetTokenInformation(userToken, (uint)TokenInformationClass.TokenType,
                                                           SafeLocalAllocHandle.InvalidHandle, 0, out dwLength);
             if (Marshal.GetLastWin32Error() == Interop.Errors.ERROR_INVALID_HANDLE)
@@ -825,7 +824,7 @@ namespace System.Security.Principal
         private static SafeLocalAllocHandle GetTokenInformation(SafeAccessTokenHandle tokenHandle, TokenInformationClass tokenInformationClass)
         {
             SafeLocalAllocHandle safeLocalAllocHandle = SafeLocalAllocHandle.InvalidHandle;
-            uint dwLength = (uint)sizeof(uint);
+            uint dwLength = (uint)Marshal.SizeOf<uint>();
             bool result = Interop.Advapi32.GetTokenInformation(tokenHandle,
                                                           (uint)tokenInformationClass,
                                                           safeLocalAllocHandle,

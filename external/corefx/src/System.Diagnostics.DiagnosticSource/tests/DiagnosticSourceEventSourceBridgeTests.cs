@@ -2,8 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using Xunit;
+using System.Threading.Tasks;
 using System.Diagnostics.Tracing;
 using System.Text;
 
@@ -14,7 +16,6 @@ using System.Text;
 
 namespace System.Diagnostics.Tests
 {
-    //Complex types are not supported on EventSource for .NET 4.5
     public class DiagnosticSourceEventSourceBridgeTests
     {
         /// <summary>
@@ -440,7 +441,7 @@ namespace System.Diagnostics.Tests
         }
 
         /// <summary>
-        /// Tests the feature to send the messages as EventSource Activities.  
+        /// Tests the feature to send the messsages as EventSource Activities.  
         /// </summary>
         [Fact]
         public void TestActivities()
@@ -592,7 +593,7 @@ namespace System.Diagnostics.Tests
                 Assert.Equal("Microsoft.EntityFrameworkCore.AfterExecuteCommand", eventSourceListener.LastEvent.EventName);
                 eventSourceListener.ResetEventCountAndLastEvent();
 
-                // Stop the ASP.NET request.  
+                // Stop the ASP.NET reqeust.  
                 aspNetCoreSource.Write("Microsoft.AspNetCore.Hosting.EndRequest", 
                     new
                     {
@@ -656,7 +657,7 @@ namespace System.Diagnostics.Tests
         // Here just for debugging.  Lets you see the last 3 events that were sent.  
         public DiagnosticSourceEvent SecondLast;
         public DiagnosticSourceEvent ThirdLast;
-#endif
+#endif 
 
         /// <summary>
         /// Sets the EventCount to 0 and LastEvent to null
@@ -665,7 +666,7 @@ namespace System.Diagnostics.Tests
         {
             EventCount = 0;
             LastEvent = null;
-#if DEBUG 
+#if DEBUG
             SecondLast = null;
             ThirdLast = null;
 #endif
@@ -676,7 +677,7 @@ namespace System.Diagnostics.Tests
         /// </summary>
         public Predicate<DiagnosticSourceEvent> Filter;
 
-#region private 
+        #region private 
         private void UpdateLastEvent(DiagnosticSourceEvent anEvent)
         {
             if (Filter != null && !Filter(anEvent))
@@ -690,7 +691,7 @@ namespace System.Diagnostics.Tests
             EventCount++;
             LastEvent = anEvent;
         }
-#endregion
+        #endregion
     }
 
     /// <summary>

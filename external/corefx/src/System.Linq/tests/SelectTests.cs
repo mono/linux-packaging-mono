@@ -139,7 +139,8 @@ namespace System.Linq.Tests
             Assert.Equal(expected, source.Select((e, i) => i == 5 ? e.name : null));
         }
 
-        [Fact(Skip = "Valid test but too intensive to enable even in OuterLoop")]
+        [Fact]
+        [ActiveIssue("Valid test but too intensive to enable even in OuterLoop")]
         public void Overflow()
         {
             var selected = new FastInfiniteEnumerator<int>().Select((e, i) => e);
@@ -239,7 +240,7 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        public void SelectSelect_SourceIsAnArray_ExecutionIsDeferred()
+        public void SelectSelect_SourceIsAnArray_ExecutionIsDefered()
         {
             bool funcCalled = false;
             Func<int>[] source = new Func<int>[] { () => { funcCalled = true; return 1; } };
@@ -249,7 +250,7 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        public void SelectSelect_SourceIsAList_ExecutionIsDeferred()
+        public void SelectSelect_SourceIsAList_ExecutionIsDefered()
         {
             bool funcCalled = false;
             List<Func<int>> source = new List<Func<int>>() { () => { funcCalled = true; return 1; } };
@@ -279,7 +280,7 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        public void SelectSelect_SourceIsIEnumerable_ExecutionIsDeferred()
+        public void SelectSelect_SourceIsIEnumerable_ExecutionIsDefered()
         {
             bool funcCalled = false;
             IEnumerable<Func<int>> source = Enumerable.Repeat((Func<int>)(() => { funcCalled = true; return 1; }), 1);

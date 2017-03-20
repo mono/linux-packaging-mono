@@ -71,7 +71,7 @@ namespace System.IdentityModel.Claims
 		}
 
 		public abstract IEnumerable<Claim> FindClaims (
-			string claimType, string right);
+			string resourceType, string right);
 
 		public abstract IEnumerator<Claim> GetEnumerator ();
 

@@ -29,6 +29,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void TestModulesContainsDotnet()
         {
             ProcessModuleCollection modules = Process.GetCurrentProcess().Modules;

@@ -306,12 +306,6 @@ wait_callback (gint fd, gint events, gpointer user_data)
 	}
 }
 
-static void
-selector_thread_interrupt (gpointer unused)
-{
-	selector_thread_wakeup ();
-}
-
 static gsize WINAPI
 selector_thread (gpointer data)
 {
@@ -325,15 +319,11 @@ selector_thread (gpointer data)
 		return 0;
 	}
 
-	states = mono_g_hash_table_new_type (g_direct_hash, NULL, MONO_HASH_VALUE_GC, MONO_ROOT_SOURCE_THREAD_POOL, "i/o thread pool states table");
+	states = mono_g_hash_table_new_type (g_direct_hash, g_direct_equal, MONO_HASH_VALUE_GC, MONO_ROOT_SOURCE_THREAD_POOL, "i/o thread pool states table");
 
-	while (!mono_runtime_is_shutting_down ()) {
+	for (;;) {
 		gint i, j;
 		gint res;
-		gboolean interrupted = FALSE;
-
-		if (mono_thread_interruption_checkpoint ())
-			continue;
 
 		mono_coop_mutex_lock (&threadpool_io->updates_lock);
 
@@ -432,15 +422,10 @@ selector_thread (gpointer data)
 
 		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_THREADPOOL, "io threadpool: wai");
 
-		mono_thread_info_install_interrupt (selector_thread_interrupt, NULL, &interrupted);
-		if (interrupted)
-			continue;
-
 		res = threadpool_io->backend.event_wait (wait_callback, states);
-		if (res == -1)
-			break;
 
-		mono_thread_info_uninstall_interrupt (&interrupted);
+		if (res == -1 || mono_runtime_is_shutting_down ())
+			break;
 	}
 
 	mono_g_hash_table_destroy (states);
@@ -556,14 +541,20 @@ initialize (void)
 		g_error ("initialize: backend->init () failed");
 
 	MonoError error;
-	if (!mono_thread_create_internal (mono_get_root_domain (), selector_thread, NULL, MONO_THREAD_CREATE_FLAGS_THREADPOOL | MONO_THREAD_CREATE_FLAGS_SMALL_STACK, &error))
+	if (!mono_thread_create_internal (mono_get_root_domain (), selector_thread, NULL, TRUE, SMALL_STACK, &error))
 		g_error ("initialize: mono_thread_create_internal () failed due to %s", mono_error_get_message (&error));
 }
 
 static void
 cleanup (void)
 {
-	// FIXME destroy everything
+	/* we make the assumption along the code that we are
+	 * cleaning up only if the runtime is shutting down */
+	g_assert (mono_runtime_is_shutting_down ());
+
+	selector_thread_wakeup ();
+	while (io_selector_running)
+		mono_thread_info_usleep (1000);
 }
 
 void

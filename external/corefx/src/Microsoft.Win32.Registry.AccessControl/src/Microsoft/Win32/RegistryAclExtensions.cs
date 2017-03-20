@@ -2,25 +2,39 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Security;
 using System.Security.AccessControl;
 
 namespace Microsoft.Win32
 {
     public static class RegistryAclExtensions
     {
-        public static RegistrySecurity GetAccessControl(RegistryKey key)
+        public static RegistrySecurity GetAccessControl(this RegistryKey key)
         {
-            return key.GetAccessControl();
+            return GetAccessControl(key, AccessControlSections.Access | AccessControlSections.Owner | AccessControlSections.Group);
         }
 
-        public static RegistrySecurity GetAccessControl(RegistryKey key, AccessControlSections includeSections)
+        [SecuritySafeCritical]
+        public static RegistrySecurity GetAccessControl(this RegistryKey key, AccessControlSections includeSections)
         {
-            return key.GetAccessControl(includeSections);
+            if (key.Handle == null)
+            {
+                throw new ObjectDisposedException(key.Name, SR.ObjectDisposed_RegKeyClosed);
+            }
+
+            return new RegistrySecurity(key.Handle, key.Name, includeSections);
         }
 
-        public static void SetAccessControl(RegistryKey key, RegistrySecurity registrySecurity)
+        [SecuritySafeCritical]
+        public static void SetAccessControl(this RegistryKey key, RegistrySecurity registrySecurity)
         {
-            key.SetAccessControl(registrySecurity);
+            if (registrySecurity == null)
+            {
+                throw new ArgumentNullException(nameof(registrySecurity));
+            }
+
+            registrySecurity.Persist(key.Handle, key.Name);
         }
     }
 }

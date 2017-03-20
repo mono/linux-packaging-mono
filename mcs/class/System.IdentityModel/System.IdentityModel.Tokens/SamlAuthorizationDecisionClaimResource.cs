@@ -39,10 +39,10 @@ namespace System.IdentityModel.Tokens
 	public class SamlAuthorizationDecisionClaimResource
 	{
 		public SamlAuthorizationDecisionClaimResource (
-			string resource, SamlAccessDecision accessDecision, string actionNamespace, string actionName)
+			string resource, SamlAccessDecision decision, string actionName, string actionNamespace)
 		{
 			this.resource = resource;
-			this.decision = accessDecision;
+			this.decision = decision;
 			this.name = actionName;
 			this.ns = actionNamespace;
 		}

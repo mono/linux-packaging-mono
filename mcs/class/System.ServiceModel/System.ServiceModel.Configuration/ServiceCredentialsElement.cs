@@ -132,57 +132,57 @@ namespace System.ServiceModel.Configuration
 			return sb;
 		}
 
-		protected internal void ApplyConfiguration (ServiceCredentials behavior)
+		protected internal void ApplyConfiguration (ServiceCredentials sb)
 		{
 			// IssuedToken
 			foreach (AllowedAudienceUriElement ae in IssuedTokenAuthentication.AllowedAudienceUris)
-				behavior.IssuedTokenAuthentication.AllowedAudienceUris.Add (ae.AllowedAudienceUri);
-			behavior.IssuedTokenAuthentication.AllowUntrustedRsaIssuers = IssuedTokenAuthentication.AllowUntrustedRsaIssuers;
-			behavior.IssuedTokenAuthentication.AudienceUriMode = IssuedTokenAuthentication.AudienceUriMode;
+				sb.IssuedTokenAuthentication.AllowedAudienceUris.Add (ae.AllowedAudienceUri);
+			sb.IssuedTokenAuthentication.AllowUntrustedRsaIssuers = IssuedTokenAuthentication.AllowUntrustedRsaIssuers;
+			sb.IssuedTokenAuthentication.AudienceUriMode = IssuedTokenAuthentication.AudienceUriMode;
 
 			if (!String.IsNullOrEmpty (IssuedTokenAuthentication.CustomCertificateValidatorType))
-			behavior.IssuedTokenAuthentication.CustomCertificateValidator = (X509CertificateValidator) CreateInstance (IssuedTokenAuthentication.CustomCertificateValidatorType);
-			behavior.IssuedTokenAuthentication.CertificateValidationMode = IssuedTokenAuthentication.CertificateValidationMode;
-			behavior.IssuedTokenAuthentication.RevocationMode = IssuedTokenAuthentication.RevocationMode;
-			behavior.IssuedTokenAuthentication.TrustedStoreLocation = IssuedTokenAuthentication.TrustedStoreLocation;
+			sb.IssuedTokenAuthentication.CustomCertificateValidator = (X509CertificateValidator) CreateInstance (IssuedTokenAuthentication.CustomCertificateValidatorType);
+			sb.IssuedTokenAuthentication.CertificateValidationMode = IssuedTokenAuthentication.CertificateValidationMode;
+			sb.IssuedTokenAuthentication.RevocationMode = IssuedTokenAuthentication.RevocationMode;
+			sb.IssuedTokenAuthentication.TrustedStoreLocation = IssuedTokenAuthentication.TrustedStoreLocation;
 			foreach (X509CertificateTrustedIssuerElement ce in IssuedTokenAuthentication.KnownCertificates)
-				behavior.IssuedTokenAuthentication.KnownCertificates.Add (GetCertificate (ce.StoreLocation, ce.StoreName, ce.X509FindType, ce.FindValue));
+				sb.IssuedTokenAuthentication.KnownCertificates.Add (GetCertificate (ce.StoreLocation, ce.StoreName, ce.X509FindType, ce.FindValue));
 
-			behavior.IssuedTokenAuthentication.SamlSerializer = (SamlSerializer) CreateInstance (IssuedTokenAuthentication.SamlSerializerType);
+			sb.IssuedTokenAuthentication.SamlSerializer = (SamlSerializer) CreateInstance (IssuedTokenAuthentication.SamlSerializerType);
 
 
 			// Peer
 			if (!String.IsNullOrEmpty (Peer.Certificate.FindValue))
-				behavior.Peer.SetCertificate (Peer.Certificate.StoreLocation, Peer.Certificate.StoreName, Peer.Certificate.X509FindType, Peer.Certificate.FindValue);
+				sb.Peer.SetCertificate (Peer.Certificate.StoreLocation, Peer.Certificate.StoreName, Peer.Certificate.X509FindType, Peer.Certificate.FindValue);
 			// sb.Peer.MeshPassword = /* cannot fill it here */
-			behavior.Peer.MessageSenderAuthentication.CustomCertificateValidator = (X509CertificateValidator) CreateInstance (Peer.MessageSenderAuthentication.CustomCertificateValidatorType);
-			behavior.Peer.MessageSenderAuthentication.CertificateValidationMode = Peer.MessageSenderAuthentication.CertificateValidationMode;
-			behavior.Peer.MessageSenderAuthentication.RevocationMode = Peer.MessageSenderAuthentication.RevocationMode;
-			behavior.Peer.MessageSenderAuthentication.TrustedStoreLocation = Peer.MessageSenderAuthentication.TrustedStoreLocation;
-			behavior.Peer.PeerAuthentication.CustomCertificateValidator = (X509CertificateValidator) CreateInstance (Peer.PeerAuthentication.CustomCertificateValidatorType);
-			behavior.Peer.PeerAuthentication.CertificateValidationMode = Peer.PeerAuthentication.CertificateValidationMode;
-			behavior.Peer.PeerAuthentication.RevocationMode = Peer.PeerAuthentication.RevocationMode;
-			behavior.Peer.PeerAuthentication.TrustedStoreLocation = Peer.PeerAuthentication.TrustedStoreLocation;
+			sb.Peer.MessageSenderAuthentication.CustomCertificateValidator = (X509CertificateValidator) CreateInstance (Peer.MessageSenderAuthentication.CustomCertificateValidatorType);
+			sb.Peer.MessageSenderAuthentication.CertificateValidationMode = Peer.MessageSenderAuthentication.CertificateValidationMode;
+			sb.Peer.MessageSenderAuthentication.RevocationMode = Peer.MessageSenderAuthentication.RevocationMode;
+			sb.Peer.MessageSenderAuthentication.TrustedStoreLocation = Peer.MessageSenderAuthentication.TrustedStoreLocation;
+			sb.Peer.PeerAuthentication.CustomCertificateValidator = (X509CertificateValidator) CreateInstance (Peer.PeerAuthentication.CustomCertificateValidatorType);
+			sb.Peer.PeerAuthentication.CertificateValidationMode = Peer.PeerAuthentication.CertificateValidationMode;
+			sb.Peer.PeerAuthentication.RevocationMode = Peer.PeerAuthentication.RevocationMode;
+			sb.Peer.PeerAuthentication.TrustedStoreLocation = Peer.PeerAuthentication.TrustedStoreLocation;
 
 			// WSSC
-			behavior.SecureConversationAuthentication.SecurityStateEncoder = (SecurityStateEncoder) CreateInstance (SecureConversationAuthentication.SecurityStateEncoderType);
+			sb.SecureConversationAuthentication.SecurityStateEncoder = (SecurityStateEncoder) CreateInstance (SecureConversationAuthentication.SecurityStateEncoderType);
 
 			// X509
 			if (!String.IsNullOrEmpty (ServiceCertificate.FindValue))
-				behavior.ServiceCertificate.SetCertificate (ServiceCertificate.StoreLocation, ServiceCertificate.StoreName, ServiceCertificate.X509FindType, ServiceCertificate.FindValue);
+				sb.ServiceCertificate.SetCertificate (ServiceCertificate.StoreLocation, ServiceCertificate.StoreName, ServiceCertificate.X509FindType, ServiceCertificate.FindValue);
 
 			// UserNamePassword
-			behavior.UserNameAuthentication.CachedLogonTokenLifetime = UserNameAuthentication.CachedLogonTokenLifetime;
-			behavior.UserNameAuthentication.CacheLogonTokens = UserNameAuthentication.CacheLogonTokens;
-			behavior.UserNameAuthentication.CustomUserNamePasswordValidator = (UserNamePasswordValidator) CreateInstance (UserNameAuthentication.CustomUserNamePasswordValidatorType);
-			behavior.UserNameAuthentication.IncludeWindowsGroups = UserNameAuthentication.IncludeWindowsGroups;
-			behavior.UserNameAuthentication.MaxCachedLogonTokens = UserNameAuthentication.MaxCachedLogonTokens;
-			behavior.UserNameAuthentication.MembershipProvider = (MembershipProvider) CreateInstance (UserNameAuthentication.MembershipProviderName);
-			behavior.UserNameAuthentication.UserNamePasswordValidationMode = UserNameAuthentication.UserNamePasswordValidationMode;
+			sb.UserNameAuthentication.CachedLogonTokenLifetime = UserNameAuthentication.CachedLogonTokenLifetime;
+			sb.UserNameAuthentication.CacheLogonTokens = UserNameAuthentication.CacheLogonTokens;
+			sb.UserNameAuthentication.CustomUserNamePasswordValidator = (UserNamePasswordValidator) CreateInstance (UserNameAuthentication.CustomUserNamePasswordValidatorType);
+			sb.UserNameAuthentication.IncludeWindowsGroups = UserNameAuthentication.IncludeWindowsGroups;
+			sb.UserNameAuthentication.MaxCachedLogonTokens = UserNameAuthentication.MaxCachedLogonTokens;
+			sb.UserNameAuthentication.MembershipProvider = (MembershipProvider) CreateInstance (UserNameAuthentication.MembershipProviderName);
+			sb.UserNameAuthentication.UserNamePasswordValidationMode = UserNameAuthentication.UserNamePasswordValidationMode;
 
 			// Windows
-			behavior.WindowsAuthentication.AllowAnonymousLogons = WindowsAuthentication.AllowAnonymousLogons;
-			behavior.WindowsAuthentication.IncludeWindowsGroups = WindowsAuthentication.IncludeWindowsGroups;
+			sb.WindowsAuthentication.AllowAnonymousLogons = WindowsAuthentication.AllowAnonymousLogons;
+			sb.WindowsAuthentication.IncludeWindowsGroups = WindowsAuthentication.IncludeWindowsGroups;
 		}
 
 		X509Certificate2 GetCertificate (StoreLocation storeLocation, StoreName storeName, X509FindType findType, object findValue)

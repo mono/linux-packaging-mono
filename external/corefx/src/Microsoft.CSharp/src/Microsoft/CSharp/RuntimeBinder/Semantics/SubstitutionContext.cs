@@ -45,7 +45,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
         private SubstContext(AggregateType type, TypeArray typeArgsMeth, SubstTypeFlags grfst)
         {
-            Init(type?.GetTypeArgsAll(), typeArgsMeth, grfst);
+            Init(type != null ? type.GetTypeArgsAll() : null, typeArgsMeth, grfst);
         }
 
         public SubstContext(CType[] prgtypeCls, int ctypeCls, CType[] prgtypeMeth, int ctypeMeth)
@@ -72,9 +72,11 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         {
             if (typeArgsCls != null)
             {
+#if DEBUG
                 typeArgsCls.AssertValid();
-                ctypeCls = typeArgsCls.Count;
-                prgtypeCls = typeArgsCls.Items;
+#endif
+                ctypeCls = typeArgsCls.size;
+                prgtypeCls = typeArgsCls.ToArray();
             }
             else
             {
@@ -84,9 +86,12 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
             if (typeArgsMeth != null)
             {
+#if DEBUG
                 typeArgsMeth.AssertValid();
-                ctypeMeth = typeArgsMeth.Count;
-                prgtypeMeth = typeArgsMeth.Items;
+#endif
+
+                ctypeMeth = typeArgsMeth.size;
+                prgtypeMeth = typeArgsMeth.ToArray();
             }
             else
             {

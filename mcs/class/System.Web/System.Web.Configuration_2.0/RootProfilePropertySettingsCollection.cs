@@ -51,9 +51,9 @@ namespace System.Web.Configuration
 			groupSettings = new ProfileGroupSettingsCollection ();
 		}		
 		
-		public override bool Equals (object rootProfilePropertySettingsCollection)
+		public override bool Equals (object obj)
 		{
-			RootProfilePropertySettingsCollection col = rootProfilePropertySettingsCollection as RootProfilePropertySettingsCollection;
+			RootProfilePropertySettingsCollection col = obj as RootProfilePropertySettingsCollection;
 			if (col == null)
 				return false;
 

@@ -153,7 +153,7 @@ namespace System.Xml.Tests
 
             // for function TestTextReadValue25
             {
-                this.AddChild(new CVariation(TestTextReadValue25) { Attribute = new Variation("ReadValue with whitespace") });
+                this.AddChild(new CVariation(TestTextReadValue25) { Attribute = new Variation("ReadValue with whitespaces") });
             }
 
 
@@ -183,7 +183,7 @@ namespace System.Xml.Tests
 
             // for function TestReadValueOnBig
             {
-                this.AddChild(new CVariation(TestReadValueOnBig) { Attribute = new Variation("Testing a use case pattern with large file") });
+                this.AddChild(new CVariation(TestReadValueOnBig) { Attribute = new Variation("Testing a usecase pattern with large file") });
             }
 
 

@@ -142,7 +142,7 @@
 /* Icall symbol map enabled */
 #undef ENABLE_ICALL_SYMBOL_MAP
 
-/* Enable Interpreter */
+/* Enable interpreter in the runtime. */
 #undef ENABLE_INTERPRETER
 
 /* Enable the LLVM back end */
@@ -823,9 +823,6 @@
 
 /* Define to 1 if you have the <sys/epoll.h> header file. */
 #undef HAVE_SYS_EPOLL_H
-
-/* Define to 1 if you have the <sys/errno.h> header file. */
-#undef HAVE_SYS_ERRNO_H
 
 /* Define to 1 if you have the <sys/event.h> header file. */
 #undef HAVE_SYS_EVENT_H

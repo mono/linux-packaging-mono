@@ -42,6 +42,7 @@ using NUnit.Framework;
 namespace MonoTests.System.Drawing
 {
 	[TestFixture]
+	[SecurityPermission (SecurityAction.Deny, UnmanagedCode = true)]
 	public class SizeConverterTest
 	{
 		Size sz;
@@ -224,7 +225,7 @@ namespace MonoTests.System.Drawing
 			try {
 				// culture == null
 				szconv.ConvertTo (null, null, sz, typeof (string));
-			} catch (NullReferenceException) {
+			} catch (NullReferenceException e) {
 				Assert.Fail ("CT#8: must not throw NullReferenceException");
 			}
 		}
@@ -255,12 +256,13 @@ namespace MonoTests.System.Drawing
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void TestCreateInstance_CaseSensitive ()
 		{
 			Hashtable ht = new Hashtable ();
 			ht.Add ("width", 20);
 			ht.Add ("Height", 30);
-			Assert.Throws<ArgumentException> (() => szconv.CreateInstance (null, ht));
+			szconv.CreateInstance (null, ht);
 		}
 
 		[Test]
@@ -308,9 +310,10 @@ namespace MonoTests.System.Drawing
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void ConvertFromInvariantString_string_exc_1 ()
 		{
-			Assert.Throws<ArgumentException> (() => szconv.ConvertFromInvariantString ("1, 2, 3"));
+			szconv.ConvertFromInvariantString ("1, 2, 3");
 		}
 
 		[Test]
@@ -343,11 +346,12 @@ namespace MonoTests.System.Drawing
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void ConvertFromString_string_exc_1 ()
 		{
 			CultureInfo culture = CultureInfo.CurrentCulture;
-			Assert.Throws<ArgumentException> (() => szconv.ConvertFromString (string.Format(culture,
-				"1{0} 2{0} 3{0} 4{0} 5", culture.TextInfo.ListSeparator)));
+			szconv.ConvertFromString (string.Format(culture,
+				"1{0} 2{0} 3{0} 4{0} 5", culture.TextInfo.ListSeparator));
 		}
 
 		[Test]

@@ -49,10 +49,10 @@ namespace System.Security.Cryptography.Xml {
 			URI = strUri;
 		}
 
-		public KeyInfoRetrievalMethod (string strUri, string typeName)
+		public KeyInfoRetrievalMethod (string strUri, string strType)
 			: this (strUri)
 		{
-			Type = typeName;
+			Type = strType;
 		}
 
 		[ComVisible (false)]

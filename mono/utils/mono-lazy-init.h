@@ -52,7 +52,7 @@ enum {
 	MONO_LAZY_INIT_STATUS_CLEANED,
 };
 
-static inline gboolean
+static inline void
 mono_lazy_initialize (mono_lazy_init_t *lazy_init, void (*initialize) (void))
 {
 	gint32 status;
@@ -62,7 +62,7 @@ mono_lazy_initialize (mono_lazy_init_t *lazy_init, void (*initialize) (void))
 	status = *lazy_init;
 
 	if (status >= MONO_LAZY_INIT_STATUS_INITIALIZED)
-		return status == MONO_LAZY_INIT_STATUS_INITIALIZED;
+		return;
 	if (status == MONO_LAZY_INIT_STATUS_INITIALIZING
 	     || InterlockedCompareExchange (lazy_init, MONO_LAZY_INIT_STATUS_INITIALIZING, MONO_LAZY_INIT_STATUS_NOT_INITIALIZED)
 	         != MONO_LAZY_INIT_STATUS_NOT_INITIALIZED
@@ -70,13 +70,12 @@ mono_lazy_initialize (mono_lazy_init_t *lazy_init, void (*initialize) (void))
 		while (*lazy_init == MONO_LAZY_INIT_STATUS_INITIALIZING)
 			mono_thread_info_yield ();
 		g_assert (InterlockedRead (lazy_init) >= MONO_LAZY_INIT_STATUS_INITIALIZED);
-		return status == MONO_LAZY_INIT_STATUS_INITIALIZED;
+		return;
 	}
 
 	initialize ();
 
 	mono_atomic_store_release (lazy_init, MONO_LAZY_INIT_STATUS_INITIALIZED);
-	return TRUE;
 }
 
 static inline void

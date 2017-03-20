@@ -194,7 +194,6 @@ namespace System.Net.Http
         public HttpClientHandler()
         {
             _winHttpHandler = new WinHttpHandler();
-            _diagnosticsPipeline = new DiagnosticsHandler(_winHttpHandler);
 
             // Adjust defaults to match current .NET Desktop HttpClientHandler (based on HWR stack).
             AllowAutoRedirect = true;
@@ -266,10 +265,6 @@ namespace System.Net.Http
                 }
             }
 
-            if (DiagnosticsHandler.IsEnabled())
-            {
-                return _diagnosticsPipeline.SendAsync(request, cancellationToken);
-            }
             return _winHttpHandler.SendAsync(request, cancellationToken);
         }
 
@@ -278,7 +273,6 @@ namespace System.Net.Http
         #region Private
 
         private WinHttpHandler _winHttpHandler;
-        private readonly DiagnosticsHandler _diagnosticsPipeline;
         private bool _useProxy;
         private volatile bool _disposed;
         #endregion Private

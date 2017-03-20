@@ -113,7 +113,7 @@ namespace Microsoft.Test.Data.SqlClient
                 instanceName = null;
             }
 
-            // trim redundant whitespace
+            // trim redundant whitespaces
             dataSource = dataSource.Trim();
             hostName = dataSource;
         }

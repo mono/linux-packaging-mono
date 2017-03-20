@@ -48,9 +48,9 @@ namespace System.Web.Configuration
 		{
 		}
 			
-		public void Add (HttpModuleAction httpModule)
+		public void Add (HttpModuleAction httpModuleAction)
 		{
-			BaseAdd (httpModule);
+			BaseAdd (httpModuleAction);
 		}
 
 		public void Clear ()

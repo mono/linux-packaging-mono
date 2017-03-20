@@ -16,10 +16,11 @@ namespace System.Net.Security.Tests
 
     public class SslStreamNetworkStreamTest
     {
+        [OuterLoop] // TODO: Issue #11345
         [Fact]
-        public async Task SslStream_SendReceiveOverNetworkStream_Ok()
+        public async void SslStream_SendReceiveOverNetworkStream_Ok()
         {
-            TcpListener listener = new TcpListener(IPAddress.Loopback, 0);
+            TcpListener listener = new TcpListener(IPAddress.Any, 0);
 
             using (X509Certificate2 serverCertificate = Configuration.Certificates.GetServerCertificate())
             using (TcpClient client = new TcpClient())
@@ -60,20 +61,19 @@ namespace System.Net.Security.Tests
 
                     await Task.WhenAll(clientAuthenticationTask, serverAuthenticationTask);
 
+                    byte[] readBuffer = new byte[256];
+                    Task<int> readTask = clientStream.ReadAsync(readBuffer, 0, readBuffer.Length);
+
                     byte[] writeBuffer = new byte[256];
                     Task writeTask = clientStream.WriteAsync(writeBuffer, 0, writeBuffer.Length);
 
-                    byte[] readBuffer = new byte[256];
-                    Task<int> readTask = serverStream.ReadAsync(readBuffer, 0, readBuffer.Length);
-
-                    bool result = Task.WaitAll(new[] { writeTask, readTask }, 
+                    bool result = Task.WaitAll(
+                        new Task[1] { writeTask }, 
                         TestConfiguration.PassingTestTimeoutMilliseconds);
 
                     Assert.True(result, "WriteAsync timed-out.");
                 }
             }
-
-            listener.Stop();
         }
 
         private static bool ValidateServerCertificate(

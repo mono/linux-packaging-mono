@@ -34,7 +34,7 @@ namespace System.Linq.Expressions.Tests
 
             public override Expression Reduce()
             {
-                if (Disposable.Type.IsValueType)
+                if (Disposable.Type.GetTypeInfo().IsValueType)
                 {
                     return TryFinally(
                         Body,
@@ -149,7 +149,7 @@ namespace System.Linq.Expressions.Tests
         [Fact]
         public void IsAbstract()
         {
-            Assert.True(typeof(ExpressionVisitor).IsAbstract);
+            Assert.True(typeof(ExpressionVisitor).GetTypeInfo().IsAbstract);
         }
 
         [Fact]

@@ -101,7 +101,7 @@ namespace System.ComponentModel
                 throw new ArgumentNullException(nameof(destinationType));
             }
 
-            if (destinationType == UnderlyingType && value != null && NullableType.IsInstanceOfType(value))
+            if (destinationType == UnderlyingType && value != null && NullableType.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()))
             {
                 return value;
             }

@@ -75,58 +75,58 @@ namespace System.ServiceModel
 		{
 		}
 
-		protected ClientBase (InstanceContext callbackInstance)
-			: this (callbackInstance, "*")
+		protected ClientBase (InstanceContext instance)
+			: this (instance, "*")
 		{
 		}
 
-		protected ClientBase (InstanceContext callbackInstance, string endpointConfigurationName)
+		protected ClientBase (InstanceContext instance, string endpointConfigurationName)
 		{
-			if (callbackInstance == null)
+			if (instance == null)
 				throw new ArgumentNullException ("instanceContext");
 			if (endpointConfigurationName == null)
 				throw new ArgumentNullException ("endpointConfigurationName");
 
-			Initialize (callbackInstance, endpointConfigurationName, null);
+			Initialize (instance, endpointConfigurationName, null);
 		}
 
-		protected ClientBase (InstanceContext callbackInstance,
+		protected ClientBase (InstanceContext instance,
 			string endpointConfigurationName, EndpointAddress remoteAddress)
 		{
-			if (callbackInstance == null)
+			if (instance == null)
 				throw new ArgumentNullException ("instanceContext");
 			if (endpointConfigurationName == null)
 				throw new ArgumentNullException ("endpointConfigurationName");
 			if (remoteAddress == null)
 				throw new ArgumentNullException ("remoteAddress");
 
-			Initialize (callbackInstance, endpointConfigurationName, remoteAddress);
+			Initialize (instance, endpointConfigurationName, remoteAddress);
 		}
 
-		protected ClientBase (InstanceContext callbackInstance,
+		protected ClientBase (InstanceContext instance,
 			string endpointConfigurationName, string remoteAddress)
 		{
-			if (callbackInstance == null)
+			if (instance == null)
 				throw new ArgumentNullException ("instanceContext");
 			if (remoteAddress == null)
 				throw new ArgumentNullException ("endpointAddress");
 			if (endpointConfigurationName == null)
 				throw new ArgumentNullException ("endpointConfigurationName");
 
-			Initialize (callbackInstance, endpointConfigurationName, new EndpointAddress (remoteAddress));
+			Initialize (instance, endpointConfigurationName, new EndpointAddress (remoteAddress));
 		}
 
-		protected ClientBase (InstanceContext callbackInstance,
+		protected ClientBase (InstanceContext instance,
 			Binding binding, EndpointAddress remoteAddress)
 		{
-			if (callbackInstance == null)
+			if (instance == null)
 				throw new ArgumentNullException ("instanceContext");
 			if (binding == null)
 				throw new ArgumentNullException ("binding");
 			if (remoteAddress == null)
 				throw new ArgumentNullException ("remoteAddress");
 
-			Initialize (callbackInstance, binding, remoteAddress);
+			Initialize (instance, binding, remoteAddress);
 		}
 
 		protected ClientBase (ServiceEndpoint endpoint)
@@ -134,8 +134,8 @@ namespace System.ServiceModel
 		{
 		}
 
-		protected ClientBase (InstanceContext callbackInstance, ServiceEndpoint endpoint)
-			: this (callbackInstance, new ChannelFactory<TChannel> (endpoint))
+		protected ClientBase (InstanceContext instance, ServiceEndpoint endpoint)
+			: this (instance, new ChannelFactory<TChannel> (endpoint))
 		{
 		}
 

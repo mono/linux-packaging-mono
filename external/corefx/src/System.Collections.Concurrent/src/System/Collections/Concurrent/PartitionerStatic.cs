@@ -11,7 +11,7 @@
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 using System.Collections.Generic;
-using System.Diagnostics.Private;
+using System.Diagnostics;
 using System.Threading;
 
 namespace System.Collections.Concurrent
@@ -218,7 +218,7 @@ namespace System.Collections.Concurrent
             long from, to;
             bool shouldQuit = false;
 
-            for (long i = fromInclusive; (i < toExclusive) && !shouldQuit; i = unchecked(i + rangeSize))
+            for (long i = fromInclusive; (i < toExclusive) && !shouldQuit; i += rangeSize)
             {
                 from = i;
                 try { checked { to = i + rangeSize; } }
@@ -275,7 +275,7 @@ namespace System.Collections.Concurrent
             int from, to;
             bool shouldQuit = false;
 
-            for (int i = fromInclusive; (i < toExclusive) && !shouldQuit; i = unchecked(i + rangeSize))
+            for (int i = fromInclusive; (i < toExclusive) && !shouldQuit; i += rangeSize)
             {
                 from = i;
                 try { checked { to = i + rangeSize; } }

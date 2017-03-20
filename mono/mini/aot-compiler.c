@@ -4330,9 +4330,7 @@ add_wrappers (MonoAotCompile *acfg)
 					named += slen;
 				}
 
-				wrapper = mono_marshal_get_managed_wrapper (method, klass, 0, &error);
-				mono_error_assert_ok (&error);
-
+				wrapper = mono_marshal_get_managed_wrapper (method, klass, 0);
 				add_method (acfg, wrapper);
 				if (export_name)
 					g_hash_table_insert (acfg->export_names, wrapper, export_name);
@@ -7597,11 +7595,8 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 		return;
 	}
 	if (cfg->exception_type != MONO_EXCEPTION_NONE) {
-		if (acfg->aot_opts.print_skipped_methods) {
+		if (acfg->aot_opts.print_skipped_methods)
 			printf ("Skip (JIT failure): %s\n", mono_method_get_full_name (method));
-			if (cfg->exception_message)
-				printf ("Caused by: %s\n", cfg->exception_message);
-		}
 		/* Let the exception happen at runtime */
 		return;
 	}
@@ -7895,13 +7890,14 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 static mono_thread_start_return_t WINAPI
 compile_thread_main (gpointer user_data)
 {
-	MonoAotCompile *acfg = ((MonoAotCompile **)user_data) [0];
-	GPtrArray *methods = ((GPtrArray **)user_data) [1];
+	MonoDomain *domain = ((MonoDomain **)user_data) [0];
+	MonoAotCompile *acfg = ((MonoAotCompile **)user_data) [1];
+	GPtrArray *methods = ((GPtrArray **)user_data) [2];
 	int i;
 
 	MonoError error;
-	MonoInternalThread *internal = mono_thread_internal_current ();
-	mono_thread_set_name_internal (internal, mono_string_new (mono_domain_get (), "AOT compiler"), TRUE, FALSE, &error);
+	MonoThread *thread = mono_thread_attach (domain);
+	mono_thread_set_name_internal (thread->internal_thread, mono_string_new (mono_get_root_domain (), "AOT compiler"), TRUE, FALSE, &error);
 	mono_error_assert_ok (&error);
 
 	for (i = 0; i < methods->len; ++i)
@@ -8203,7 +8199,7 @@ execute_system (const char * command)
 {
 	int status = 0;
 
-#if defined(HOST_WIN32) && defined(HAVE_SYSTEM)
+#if HOST_WIN32
 	// We need an extra set of quotes around the whole command to properly handle commands 
 	// with spaces since internally the command is called through "cmd /c.
 	char * quoted_command = g_strdup_printf ("\"%s\"", command);
@@ -9871,9 +9867,6 @@ compile_methods (MonoAotCompile *acfg)
 			methods [i] = (MonoMethod *)g_ptr_array_index (acfg->methods, i);
 		i = 0;
 		while (i < methods_len) {
-			MonoError error;
-			MonoInternalThread *thread;
-
 			frag = g_ptr_array_new ();
 			for (j = 0; j < len; ++j) {
 				if (i < methods_len) {
@@ -9883,13 +9876,11 @@ compile_methods (MonoAotCompile *acfg)
 			}
 
 			user_data = g_new0 (gpointer, 3);
-			user_data [0] = acfg;
-			user_data [1] = frag;
+			user_data [0] = mono_domain_get ();
+			user_data [1] = acfg;
+			user_data [2] = frag;
 			
-			thread = mono_thread_create_internal (mono_domain_get (), compile_thread_main, (gpointer) user_data, MONO_THREAD_CREATE_FLAGS_NONE, &error);
-			mono_error_assert_ok (&error);
-
-			thread_handle = mono_threads_open_thread_handle (thread->handle);
+			thread_handle = mono_threads_create_thread (compile_thread_main, (gpointer) user_data, NULL, NULL);
 			g_ptr_array_add (threads, thread_handle);
 		}
 		g_free (methods);

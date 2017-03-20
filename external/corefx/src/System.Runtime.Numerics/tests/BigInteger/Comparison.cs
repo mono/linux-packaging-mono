@@ -367,7 +367,7 @@ namespace System.Numerics.Tests
         }
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.Uap)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.NetcoreUwp)]
         public static void IComparable_Invalid_net46()
         {
             IComparable_Invalid(null);

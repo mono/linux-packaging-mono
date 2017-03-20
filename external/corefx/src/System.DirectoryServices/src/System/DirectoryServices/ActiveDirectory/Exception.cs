@@ -506,7 +506,7 @@ namespace System.DirectoryServices.ActiveDirectory
                     }
 
                     i++;
-                    tempPtr = Marshal.ReadIntPtr(errorInfo, i * IntPtr.Size);
+                    tempPtr = Marshal.ReadIntPtr(errorInfo, i * Marshal.SizeOf(typeof(IntPtr)));
                 }
                 // no error information, so we should not throw exception.
                 if (errorList.Count == 0)
@@ -533,7 +533,7 @@ namespace System.DirectoryServices.ActiveDirectory
             IntPtr addr = (IntPtr)0;
             for (int i = 0; i < count; i++)
             {
-                addr = Marshal.ReadIntPtr(collision.Entries, i * IntPtr.Size);
+                addr = Marshal.ReadIntPtr(collision.Entries, i * Marshal.SizeOf(typeof(IntPtr)));
                 LSA_FOREST_TRUST_COLLISION_RECORD record = new LSA_FOREST_TRUST_COLLISION_RECORD();
                 Marshal.PtrToStructure(addr, record);
 

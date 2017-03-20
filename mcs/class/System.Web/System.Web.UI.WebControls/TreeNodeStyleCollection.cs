@@ -57,9 +57,9 @@ namespace System.Web.UI.WebControls
 			return ((IList)this).Contains (style);
 		}
 		
-		public void CopyTo (TreeNodeStyle[] styleArray, int index)
+		public void CopyTo (TreeNodeStyle[] array, int index)
 		{
-			((IList)this).CopyTo (styleArray, index);
+			((IList)this).CopyTo (array, index);
 		}
 		
 		protected override object CreateKnownType (int index)

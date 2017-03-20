@@ -74,9 +74,9 @@ namespace System.DirectoryServices
 			return InnerList.Contains (value);
 		}
 
-		public void CopyTo (object[] values, int index)
+		public void CopyTo (object[] array, int index)
 		{
-			InnerList.CopyTo (values, index);
+			InnerList.CopyTo (array, index);
 		}
 
 		public int IndexOf (object value)

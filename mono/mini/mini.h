@@ -1138,6 +1138,7 @@ typedef struct {
 typedef struct {
 	gpointer          end_of_stack;
 	guint32           stack_size;
+	/* !defined(HAVE_KW_THREAD) || !defined(MONO_ARCH_ENABLE_MONO_LMF_VAR) */
 	MonoLMF          *lmf;
 	MonoLMF          *first_lmf;
 	gpointer         restore_stack_prot;
@@ -1276,8 +1277,6 @@ typedef enum {
 	 * which implements the method.
 	 */
 	MONO_RGCTX_INFO_VIRT_METHOD_BOX_TYPE,
-	/* Resolve to 2 (TRUE) or 1 (FALSE) */
-	MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS
 } MonoRgctxInfoType;
 
 typedef struct _MonoRuntimeGenericContextInfoTemplate {
@@ -1710,6 +1709,7 @@ typedef struct {
 	 * Whenever to use the mono_lmf TLS variable instead of indirection through the
 	 * mono_lmf_addr TLS variable.
 	 */
+	guint            lmf_ir_mono_lmf : 1;
 	guint            gen_write_barriers : 1;
 	guint            init_ref_vars : 1;
 	guint            extend_live_ranges : 1;
@@ -2085,6 +2085,12 @@ typedef struct {
 	int type;
 } StackSlot;
 
+#if HAVE_ARRAY_ELEM_INIT
+extern const guint8 mono_burg_arity [];
+#else
+extern guint8 mono_burg_arity [];
+#endif
+
 extern const char MONO_ARCH_CPU_SPEC [];
 #define MONO_ARCH_CPU_SPEC_IDX_COMBINE(a) a ## _idx
 #define MONO_ARCH_CPU_SPEC_IDX(a) MONO_ARCH_CPU_SPEC_IDX_COMBINE(a)
@@ -2126,7 +2132,7 @@ typedef struct {
 	gboolean better_cast_details;
 	gboolean mdb_optimizations;
 	gboolean no_gdb_backtrace;
-	gboolean suspend_on_native_crash;
+	gboolean suspend_on_sigsegv;
 	gboolean suspend_on_exception;
 	gboolean suspend_on_unhandled;
 	gboolean dyn_runtime_invoke;
@@ -2398,7 +2404,7 @@ void      mono_print_code                   (MonoCompile *cfg, const char *msg);
 MONO_API void      mono_print_method_from_ip         (void *ip);
 MONO_API char     *mono_pmip                         (void *ip);
 gboolean  mono_debug_count                  (void);
-MONO_LLVM_INTERNAL const char* mono_inst_name                  (int op);
+MONO_API const char* mono_inst_name                  (int op);
 int       mono_op_to_op_imm                 (int opcode);
 int       mono_op_imm_to_op                 (int opcode);
 int       mono_load_membase_to_load_mem     (int opcode);
@@ -2449,7 +2455,6 @@ MonoInst* mono_emit_jit_icall (MonoCompile *cfg, gconstpointer func, MonoInst **
 MonoInst* mono_emit_jit_icall_by_info (MonoCompile *cfg, int il_offset, MonoJitICallInfo *info, MonoInst **args);
 MonoInst* mono_emit_method_call (MonoCompile *cfg, MonoMethod *method, MonoInst **args, MonoInst *this_ins);
 void      mono_create_helper_signatures (void);
-MonoInst* mono_emit_native_call (MonoCompile *cfg, gconstpointer func, MonoMethodSignature *sig, MonoInst **args);
 
 gboolean  mini_class_is_system_array (MonoClass *klass);
 MonoMethodSignature *mono_get_element_address_signature (int arity);
@@ -2544,7 +2549,7 @@ void      mono_draw_graph                   (MonoCompile *cfg, MonoGraphOptions 
 void      mono_add_ins_to_end               (MonoBasicBlock *bb, MonoInst *inst);
 gpointer  mono_create_ftnptr                (MonoDomain *domain, gpointer addr);
 
-void      mono_replace_ins                  (MonoCompile *cfg, MonoBasicBlock *bb, MonoInst *ins, MonoInst **prev, MonoBasicBlock *first_bb, MonoBasicBlock *last_bb);
+MONO_API void      mono_replace_ins                  (MonoCompile *cfg, MonoBasicBlock *bb, MonoInst *ins, MonoInst **prev, MonoBasicBlock *first_bb, MonoBasicBlock *last_bb);
 
 int               mono_find_method_opcode      (MonoMethod *method);
 MonoJitICallInfo *mono_register_jit_icall      (gconstpointer func, const char *name, MonoMethodSignature *sig, gboolean is_save);
@@ -2630,7 +2635,6 @@ void              mono_emit_unwind_op (MonoCompile *cfg, int when,
 									   int val);
 MonoTrampInfo*    mono_tramp_info_create (const char *name, guint8 *code, guint32 code_size, MonoJumpInfo *ji, GSList *unwind_ops);
 void              mono_tramp_info_free (MonoTrampInfo *info);
-void              mono_aot_tramp_info_register (MonoTrampInfo *info, MonoDomain *domain);
 void              mono_tramp_info_register (MonoTrampInfo *info, MonoDomain *domain);
 int               mini_exception_id_by_name (const char *name);
 gboolean          mini_type_is_hfa (MonoType *t, int *out_nfields, int *out_esize) MONO_LLVM_INTERNAL;
@@ -2816,7 +2820,12 @@ void    mono_arch_notify_pending_exc            (MonoThreadInfo *info);
 guint8* mono_arch_get_call_target               (guint8 *code);
 guint32 mono_arch_get_plt_info_offset           (guint8 *plt_entry, mgreg_t *regs, guint8 *code);
 GSList *mono_arch_get_trampolines               (gboolean aot);
-gpointer mono_arch_get_enter_icall_trampoline   (MonoTrampInfo **info);
+#ifdef ENABLE_INTERPRETER
+gpointer mono_arch_get_enter_icall_trampoline (MonoTrampInfo **info);
+void mono_interp_init (void);
+gpointer interp_create_method_pointer (MonoMethod *method, MonoError *error);
+MonoObject* interp_mono_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **exc, MonoError *error);
+#endif
 
 /* Handle block guard */
 gpointer mono_arch_install_handler_block_guard (MonoJitInfo *ji, MonoJitExceptionInfo *clause, MonoContext *ctx, gpointer new_value);

@@ -6,7 +6,7 @@ def project = GithubProject
 def branch = GithubBranchName
 
 // Define build string
-def buildString = '''call "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\Tools\\VsDevCmd.bat" && build.cmd'''
+def buildString = '''call "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\Tools\\VsDevCmd.bat" && build.cmd /p:SkipTests=true'''
 
 // Generate the builds for debug and release
 
@@ -26,5 +26,3 @@ def buildString = '''call "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0
         Utilities.addGithubPushTrigger(newJob)
     }
 }
-
-Utilities.addCROSSCheck(this, project, branch)

@@ -66,7 +66,6 @@
 #include <mono/utils/mono-threads-coop.h>
 #include <mono/utils/checked-build.h>
 #include <mono/metadata/w32handle.h>
-#include <mono/metadata/threadpool.h>
 
 #include "mini.h"
 #include "seq-points.h"
@@ -88,10 +87,6 @@
 #include "mini-llvm-cpp.h"
 #include "llvm-jit.h"
 #endif
-#endif
-
-#ifdef ENABLE_INTERPRETER
-#include "interp/interp.h"
 #endif
 
 static guint32 default_opt = 0;
@@ -474,8 +469,8 @@ register_trampoline_jit_info (MonoDomain *domain, MonoTrampInfo *info)
  * INFO can be NULL.
  * Frees INFO.
  */
-static void
-mono_tramp_info_register_internal (MonoTrampInfo *info, MonoDomain *domain, gboolean aot)
+void
+mono_tramp_info_register (MonoTrampInfo *info, MonoDomain *domain)
 {
 	MonoTrampInfo *copy;
 
@@ -505,11 +500,6 @@ mono_tramp_info_register_internal (MonoTrampInfo *info, MonoDomain *domain, gboo
 	mono_save_trampoline_xdebug_info (info);
 	mono_lldb_save_trampoline_info (info);
 
-#ifdef MONO_ARCH_HAVE_UNWIND_TABLE
-	if (!aot)
-		mono_arch_unwindinfo_install_tramp_unwind_info (info->unwind_ops, info->code, info->code_size);
-#endif
-
 	/* Only register trampolines that have unwind infos */
 	if (mono_get_root_domain () && copy->uw_info)
 		register_trampoline_jit_info (domain, copy);
@@ -518,18 +508,6 @@ mono_tramp_info_register_internal (MonoTrampInfo *info, MonoDomain *domain, gboo
 		mono_emit_jit_tramp (info->code, info->code_size, info->name);
 
 	mono_tramp_info_free (info);
-}
-
-void
-mono_tramp_info_register (MonoTrampInfo *info, MonoDomain *domain)
-{
-	mono_tramp_info_register_internal (info, domain, FALSE);
-}
-
-void
-mono_aot_tramp_info_register (MonoTrampInfo *info, MonoDomain *domain)
-{
-	mono_tramp_info_register_internal (info, domain, TRUE);
 }
 
 static void
@@ -732,6 +710,9 @@ register_dyn_icall (gpointer func, const char *name, const char *sigstr, gboolea
 MonoLMF *
 mono_get_lmf (void)
 {
+#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR) && defined(HAVE_GET_TLS_ADDR)
+	return (MonoLMF *)mono_tls_get_lmf ();
+#else
 	MonoJitTlsData *jit_tls;
 
 	if ((jit_tls = mono_tls_get_jit_tls ()))
@@ -742,6 +723,7 @@ mono_get_lmf (void)
 	 * (the thread object allocation can trigger a collection).
 	 */
 	return NULL;
+#endif
 }
 
 MonoLMF **
@@ -753,7 +735,11 @@ mono_get_lmf_addr (void)
 void
 mono_set_lmf (MonoLMF *lmf)
 {
+#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR) && defined(HAVE_GET_TLS_ADDR)
+	mono_tls_set_lmf (lmf);
+#else
 	(*mono_get_lmf_addr ()) = lmf;
+#endif
 }
 
 MonoJitTlsData*
@@ -885,9 +871,23 @@ setup_jit_tls_data (gpointer stack_start, gpointer abort_func)
 
 	jit_tls->first_lmf = lmf;
 
+	/*
+	 * We can have 2 configurations for accessing lmf.
+	 * We can use only the tls_lmf_addr variable, which will store the address of
+	 * jit_tls->lmf, or, if we have MONO_ARCH_ENABLE_MONO_LMF_VAR enabled, we can
+	 * use both tls_lmf_addr and tls_lmf variables (in this case we need to have
+	 * means of getting the address of a tls variable; this can be done always
+	 * when using __thread or, on osx, even when using pthread)
+	 */
+#if defined(MONO_ARCH_ENABLE_MONO_LMF_VAR) && defined(HAVE_GET_TLS_ADDR)
+	/* jit_tls->lmf is unused */
+	mono_tls_set_lmf (lmf);
+	mono_set_lmf_addr (mono_tls_get_tls_addr (TLS_KEY_LMF));
+#else
 	mono_set_lmf_addr (&jit_tls->lmf);
 
 	jit_tls->lmf = lmf;
+#endif
 
 #ifdef MONO_ARCH_HAVE_TLS_INIT
 	mono_arch_tls_init ();
@@ -1284,7 +1284,7 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 	unsigned char *ip = patch_info->ip.i + code;
 	gconstpointer target = NULL;
 
-	error_init (error);
+	mono_error_init (error);
 
 	switch (patch_info->type) {
 	case MONO_PATCH_INFO_BB:
@@ -1765,11 +1765,11 @@ mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, MonoError *er
 	MonoJitICallInfo *callinfo = NULL;
 	WrapperInfo *winfo = NULL;
 
-	error_init (error);
+	mono_error_init (error);
 
 #ifdef ENABLE_INTERPRETER
 	if (mono_use_interpreter)
-		return mono_interp_create_method_pointer (method, error);
+		return interp_create_method_pointer (method, error);
 #endif
 
 	if (mono_llvm_only)
@@ -2273,7 +2273,7 @@ mono_llvmonly_runtime_invoke (MonoMethod *method, RuntimeInvokeInfo *info, void 
 	gpointer *param_refs;
 	int i, pindex;
 
-	error_init (error);
+	mono_error_init (error);
 
 	g_assert (info->gsharedvt_invoke);
 
@@ -2359,10 +2359,10 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 
 #ifdef ENABLE_INTERPRETER
 	if (mono_use_interpreter)
-		return mono_interp_runtime_invoke (method, obj, params, exc, error);
+		return interp_mono_runtime_invoke (method, obj, params, exc, error);
 #endif
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (obj == NULL && !(method->flags & METHOD_ATTRIBUTE_STATIC) && !method->string_ctor && (method->wrapper_type == 0)) {
 		g_warning ("Ignoring invocation of an instance method on a NULL instance.\n");
@@ -2903,7 +2903,7 @@ mono_jit_create_remoting_trampoline (MonoDomain *domain, MonoMethod *method, Mon
 	MonoMethod *nm;
 	guint8 *addr = NULL;
 
-	error_init (error);
+	mono_error_init (error);
 
 	if ((method->flags & METHOD_ATTRIBUTE_VIRTUAL) && mono_method_signature (method)->generic_param_count) {
 		return mono_create_specific_trampoline (method, MONO_TRAMPOLINE_GENERIC_VIRTUAL_REMOTING,
@@ -3043,10 +3043,6 @@ mini_init_delegate (MonoDelegate *del)
 {
 	if (mono_llvm_only)
 		del->extra_arg = mini_get_delegate_arg (del->method, del->method_ptr);
-#ifdef ENABLE_INTERPRETER
-	if (mono_use_interpreter)
-		mono_interp_init_delegate (del);
-#endif
 }
 
 char*
@@ -3142,8 +3138,8 @@ mini_parse_debug_option (const char *option)
 		debug_options.break_on_unverified = TRUE;
 	else if (!strcmp (option, "no-gdb-backtrace"))
 		debug_options.no_gdb_backtrace = TRUE;
-	else if (!strcmp (option, "suspend-on-native-crash") || !strcmp (option, "suspend-on-sigsegv"))
-		debug_options.suspend_on_native_crash = TRUE;
+	else if (!strcmp (option, "suspend-on-sigsegv"))
+		debug_options.suspend_on_sigsegv = TRUE;
 	else if (!strcmp (option, "suspend-on-exception"))
 		debug_options.suspend_on_exception = TRUE;
 	else if (!strcmp (option, "suspend-on-unhandled"))
@@ -3208,7 +3204,7 @@ mini_parse_debug_options (void)
 
 		if (!mini_parse_debug_option (arg)) {
 			fprintf (stderr, "Invalid option for the MONO_DEBUG env variable: %s\n", arg);
-			fprintf (stderr, "Available options: 'handle-sigint', 'keep-delegates', 'reverse-pinvoke-exceptions', 'collect-pagefault-stats', 'break-on-unverified', 'no-gdb-backtrace', 'suspend-on-native-crash', 'suspend-on-sigsegv', 'suspend-on-exception', 'suspend-on-unhandled', 'dont-free-domains', 'dyn-runtime-invoke', 'gdb', 'explicit-null-checks', 'gen-seq-points', 'no-compact-seq-points', 'single-imm-size', 'init-stacks', 'casts', 'soft-breakpoints', 'check-pinvoke-callconv', 'use-fallback-tls', 'debug-domain-unload', 'partial-sharing', 'align-small-structs', 'native-debugger-break'\n");
+			fprintf (stderr, "Available options: 'handle-sigint', 'keep-delegates', 'reverse-pinvoke-exceptions', 'collect-pagefault-stats', 'break-on-unverified', 'no-gdb-backtrace', 'suspend-on-sigsegv', 'suspend-on-exception', 'suspend-on-unhandled', 'dont-free-domains', 'dyn-runtime-invoke', 'gdb', 'explicit-null-checks', 'gen-seq-points', 'no-compact-seq-points', 'single-imm-size', 'init-stacks', 'casts', 'soft-breakpoints', 'check-pinvoke-callconv', 'use-fallback-tls', 'debug-domain-unload', 'partial-sharing', 'align-small-structs', 'native-debugger-break'\n");
 			exit (1);
 		}
 	}
@@ -3821,7 +3817,7 @@ register_icalls (void)
 		register_icall (mono_threads_state_poll, "mono_threads_state_poll", "void", FALSE);
 
 #ifndef MONO_ARCH_NO_EMULATE_LONG_MUL_OPTS
-	register_opcode_emulation (OP_LMUL, "__emul_lmul", "long long long", mono_llmult, "mono_llmult", FALSE);
+	register_opcode_emulation (OP_LMUL, "__emul_lmul", "long long long", mono_llmult, "mono_llmult", TRUE);
 	register_opcode_emulation (OP_LDIV, "__emul_ldiv", "long long long", mono_lldiv, "mono_lldiv", FALSE);
 	register_opcode_emulation (OP_LDIV_UN, "__emul_ldiv_un", "long long long", mono_lldiv_un, "mono_lldiv_un", FALSE);
 	register_opcode_emulation (OP_LREM, "__emul_lrem", "long long long", mono_llrem, "mono_llrem", FALSE);
@@ -4024,11 +4020,13 @@ register_icalls (void)
 	register_icall_no_wrapper (mono_tls_get_thread, "mono_tls_get_thread", "ptr");
 	register_icall_no_wrapper (mono_tls_get_jit_tls, "mono_tls_get_jit_tls", "ptr");
 	register_icall_no_wrapper (mono_tls_get_domain, "mono_tls_get_domain", "ptr");  
+	register_icall_no_wrapper (mono_tls_get_lmf, "mono_tls_get_lmf", "ptr");
 	register_icall_no_wrapper (mono_tls_get_sgen_thread_info, "mono_tls_get_sgen_thread_info", "ptr");
 	register_icall_no_wrapper (mono_tls_get_lmf_addr, "mono_tls_get_lmf_addr", "ptr");
 	register_icall_no_wrapper (mono_tls_set_thread, "mono_tls_set_thread", "void ptr");
 	register_icall_no_wrapper (mono_tls_set_jit_tls, "mono_tls_set_jit_tls", "void ptr");
 	register_icall_no_wrapper (mono_tls_set_domain, "mono_tls_set_domain", "void ptr");
+	register_icall_no_wrapper (mono_tls_set_lmf, "mono_tls_set_lmf", "void ptr");
 	register_icall_no_wrapper (mono_tls_set_sgen_thread_info, "mono_tls_set_sgen_thread_info", "void ptr");
 	register_icall_no_wrapper (mono_tls_set_lmf_addr, "mono_tls_set_lmf_addr", "void ptr");
 }
@@ -4107,8 +4105,6 @@ mini_cleanup (MonoDomain *domain)
 #ifndef MONO_CROSS_COMPILE
 	mono_runtime_cleanup (domain);
 #endif
-
-	mono_threadpool_cleanup ();
 
 	mono_profiler_shutdown ();
 

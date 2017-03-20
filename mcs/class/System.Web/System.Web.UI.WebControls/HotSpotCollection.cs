@@ -45,8 +45,8 @@ namespace System.Web.UI.WebControls
 			typeof (RectangleHotSpot)
 		};
 						    
-		public HotSpot this [int index] {
-			get { return (HotSpot) ((IList)this)[index]; }
+		public HotSpot this [int idx] {
+			get { return (HotSpot) ((IList)this)[idx]; }
 		}
 
 		public int Add (HotSpot spot)
@@ -54,9 +54,9 @@ namespace System.Web.UI.WebControls
 			return ((IList)this).Add (spot);
 		}
 		
-		protected override object CreateKnownType (int index)
+		protected override object CreateKnownType (int idx)
 		{
-			switch (index) {
+			switch (idx) {
 				case 0:
 					return new CircleHotSpot ();
 				case 1:
@@ -73,9 +73,9 @@ namespace System.Web.UI.WebControls
 			return _knownTypes;
 		}
 		
-		public void Insert (int index, HotSpot spot)
+		public void Insert (int idx, HotSpot spot)
 		{
-			((IList)this).Insert (index, spot);
+			((IList)this).Insert (idx, spot);
 		}
 		
 		protected override void OnValidate (object o)
@@ -91,9 +91,9 @@ namespace System.Web.UI.WebControls
 			((IList)this).Remove (spot);
 		}
 
-		public void RemoveAt (int index)
+		public void RemoveAt (int idx)
 		{
-			((IList)this).RemoveAt (index);
+			((IList)this).RemoveAt (idx);
 		}
 
 		protected override void SetDirtyObject (object o)

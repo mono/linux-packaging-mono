@@ -10,6 +10,7 @@ namespace System.DirectoryServices.Protocols
     {
         protected DirectoryIdentifier()
         {
+            Utility.CheckOSVersion();
         }
     }
 }

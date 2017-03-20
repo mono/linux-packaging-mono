@@ -32,65 +32,34 @@ if /i [%1] == [amd64]       ( set __BuildArch=x64&&set __VCBuildArch=x86_amd64&&
 if /i [%1] == [arm64]       ( set __BuildArch=arm64&&set __VCBuildArch=arm64&&shift&goto Arg_Loop)
 
 if /i [%1] == [toolsetDir]  ( set "__ToolsetDir=%2"&&shift&&shift&goto Arg_Loop)
-if /i [%1] == [--TargetGroup]  ( set "__TargetGroup=%2"&&shift&&shift&goto Arg_Loop)
+if /i [%1] == [targetGroup]  ( set "__TargetGroup=%2"&&shift&&shift&goto Arg_Loop)
 
 shift
 goto :Arg_Loop
 
 :ToolsVersion
-:: Default to highest Visual Studio version available
-::
-:: For VS2015 (and prior), only a single instance is allowed to be installed on a box
-:: and VS140COMNTOOLS is set as a global environment variable by the installer. This
-:: allows users to locate where the instance of VS2015 is installed.
-::
-:: For VS2017, multiple instances can be installed on the same box SxS and VS150COMNTOOLS
-:: is no longer set as a global environment variable and is instead only set if the user
-:: has launched the VS2017 Developer Command Prompt.
-::
-:: Following this logic, we will default to the VS2017 toolset if VS150COMNTOOLS tools is
-:: set, as this indicates the user is running from the VS2017 Developer Command Prompt and
-:: is already configured to use that toolset. Otherwise, we will fallback to using the VS2015
-:: toolset if it is installed. Finally, we will fail the script if no supported VS instance
-:: can be found.
+:: Determine the tools version to pass to cmake/msbuild
 if not defined VisualStudioVersion (
-    if defined VS150COMNTOOLS (
-        call "%VS150COMNTOOLS%\VsDevCmd.bat"
-        goto :VS2017
-    ) else if defined VS140COMNTOOLS (
-        call "%VS140COMNTOOLS%\VsDevCmd.bat"
+    if defined VS140COMNTOOLS (
         goto :VS2015
-    )
+    ) 
     goto :MissingVersion
-)
-
-if "%VisualStudioVersion%"=="15.0" (
-    goto :VS2017
-) else if "%VisualStudioVersion%"=="14.0" (
+) 
+if "%VisualStudioVersion%"=="14.0" (
     goto :VS2015
-)
+) 
 
 :MissingVersion
-:: Can't find VS 2015 or 2017
-echo Error: Visual Studio 2015 or 2017 required  
-echo        Please see https://github.com/dotnet/corefx/tree/master/Documentation for build instructions.
+:: Can't find VS 2013+
+echo Error: Visual Studio 2015 required  
+echo        Please see https://github.com/dotnet/corefx/blob/master/Documentation/project-docs/developer-guide.md for build instructions.
 exit /b 1
-
-:VS2017
-:: Setup vars for VS2017
-set __VSVersion=vs2017
-set __PlatformToolset=v141
-if NOT "%__BuildArch%" == "arm64" (
-    :: Set the environment for the native build
-    call "%VS150COMNTOOLS%\..\..\VC\Auxiliary\Build\vcvarsall.bat" %__VCBuildArch%
-)
-goto :SetupDirs
 
 :VS2015
 :: Setup vars for VS2015
 set __VSVersion=vs2015
 set __PlatformToolset=v140
-if NOT "%__BuildArch%" == "arm64" (
+if NOT "%__BuildArch%" == "arm64" ( 
     :: Set the environment for the native build
     call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" %__VCBuildArch%
 )
@@ -110,7 +79,6 @@ if %__IntermediatesDir% == "" (
 set "__CMakeBinDir=%__CMakeBinDir:\=/%"
 set "__IntermediatesDir=%__IntermediatesDir:\=/%"
 set "__RuntimePath=%__binDir%\runtime\%__TargetGroup%-Windows_NT-%CMAKE_BUILD_TYPE%-%__BuildArch%\"
-set "__TestSharedFrameworkPath=%__binDir%\testhost\%__TargetGroup%-Windows_NT-%CMAKE_BUILD_TYPE%-%__BuildArch%\shared\Microsoft.NETCore.App\9.9.9\"
 
 :: Check that the intermediate directory exists so we can place our cmake build tree there
 if exist "%__IntermediatesDir%" rd /s /q "%__IntermediatesDir%"
@@ -122,15 +90,15 @@ This is due to a bug in the Visual Studio installer. It does not install DIA SDK
 at VS install location of previous version. Workaround is to copy DIA SDK folder from VS install location ^
 of previous version to "%VSINSTALLDIR%" and then resume build.
 :: DIA SDK not included in Express editions
-echo Visual Studio Express does not include the DIA SDK. ^
-You need Visual Studio 2015 or 2017 (Community is free).
+echo Visual Studio 2013 Express does not include the DIA SDK. ^
+You need Visual Studio 2013+ (Community is free).
 echo See: https://github.com/dotnet/coreclr/blob/master/Documentation/project-docs/developer-guide.md#prerequisites
 exit /b 1
 
 :GenVSSolution
 :: Regenerate the VS solution
 
-if /i "%__BuildArch%" == "arm64" (
+if /i "%__BuildArch%" == "arm64" ( 
     REM arm64 builds currently use private toolset which has not been released yet
     REM TODO, remove once the toolset is open.
     call :PrivateToolSet
@@ -160,7 +128,6 @@ IF ERRORLEVEL 1 (
 
 :: Copy to vertical runtime directory
 xcopy /yqs "%__binDir%\Windows_NT.%__BuildArch%.%CMAKE_BUILD_TYPE%\native\*" "%__RuntimePath%"
-xcopy /yqs "%__binDir%\Windows_NT.%__BuildArch%.%CMAKE_BUILD_TYPE%\native\*" "%__TestSharedFrameworkPath%"
 
 echo Done building Native components
 

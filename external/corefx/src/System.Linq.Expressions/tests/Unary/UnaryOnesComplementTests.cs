@@ -93,13 +93,6 @@ namespace System.Linq.Expressions.Tests
         }
 
         [Fact]
-        public static void CheckUnaryArithmeticOnesComplementBooleanTest()
-        {
-            Expression operand = Expression.Variable(typeof(bool));
-            Assert.Throws<InvalidOperationException>(() => Expression.OnesComplement(operand));
-        }
-
-        [Fact]
         public static void ToStringTest()
         {
             UnaryExpression e = Expression.OnesComplement(Expression.Parameter(typeof(int), "x"));
@@ -127,7 +120,7 @@ namespace System.Linq.Expressions.Tests
                     Expression.OnesComplement(Expression.Constant(value, typeof(ushort))),
                     Enumerable.Empty<ParameterExpression>());
             Func<ushort> f = e.Compile(useInterpreter);
-            Assert.Equal(unchecked((ushort)(~value)), f());
+            Assert.Equal((ushort)(~value), f());
         }
 
         private static void VerifyArithmeticOnesComplementInt(int value, bool useInterpreter)
@@ -177,7 +170,7 @@ namespace System.Linq.Expressions.Tests
                     Expression.OnesComplement(Expression.Constant(value, typeof(byte))),
                     Enumerable.Empty<ParameterExpression>());
             Func<byte> f = e.Compile(useInterpreter);
-            Assert.Equal(unchecked((byte)(~value)), f());
+            Assert.Equal((byte)(~value), f());
         }
 
         private static void VerifyArithmeticOnesComplementSByte(sbyte value, bool useInterpreter)

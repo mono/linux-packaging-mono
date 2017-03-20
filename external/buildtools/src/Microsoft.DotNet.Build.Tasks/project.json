@@ -1,26 +1,38 @@
-﻿{
+{
   "dependencies": {
-    "Microsoft.Build.Framework": "0.1.0-preview-00022",
-    "Microsoft.Build.Tasks.Core": "0.1.0-preview-00022",
-    "Microsoft.Build.Utilities.Core": "0.1.0-preview-00022",
-    "Microsoft.DotNet.PlatformAbstractions": "1.2.0-beta-001090",
-    "NETStandard.Library": "1.6.0",
-    "Newtonsoft.Json": "9.0.1",
-    "NuGet.Commands": "4.0.0-rc-2129",
-    "NuGet.Packaging": "4.0.0-rc-2129",
-    "NuGet.ProjectModel": "4.0.0-rc-2129",
-    "NuGet.RuntimeModel": "4.0.0-rc-2129",
-    "NuGet.Versioning": "4.0.0-rc-2129",
-    "System.Diagnostics.TraceSource": "4.0.0",
-    "System.Dynamic.Runtime": "4.0.11",
-    "System.Linq.Parallel": "4.0.1",
-    "System.Net.Http": "4.1.0",
-    "System.Reflection.Metadata": "1.3.0",
-    "System.Xml.XPath.XmlDocument": "4.0.0"
+    "Microsoft.Build": "0.1.0-preview-00005",
+    "Microsoft.Build.Framework": "0.1.0-preview-00005",
+    "Microsoft.Build.Tasks.Core": "0.1.0-preview-00005",
+    "Microsoft.Build.Utilities.Core": "0.1.0-preview-00005",
+    "Microsoft.CSharp": "4.0.1-rc2-23923",
+    "Microsoft.NETCore.Platforms": "1.0.1-rc2-23923",
+    "Microsoft.Win32.Registry": {
+      "version": "4.0.0-rc2-23923",
+      "exclude": "Compile"
+    },
+    "Newtonsoft.Json": "7.0.1",
+    "NuGet.Versioning": "3.4.0-rtm-0764",
+    "NuProj": "0.10.4-beta-gf7fc34e7d8",
+    "System.Dynamic.Runtime": "4.0.11-rc2-23923",
+    "System.IO.Compression": "4.1.0-rc2-23923",
+    "System.IO.Compression.ZipFile": "4.0.1-rc2-23923",
+    "System.IO.FileSystem.Watcher": "4.0.0-rc2-23923",
+    "System.IO.FileSystem": "4.0.1-rc2-23923",
+    "System.Linq": "4.0.1-rc2-23923",
+    "System.Reflection": "4.1.0-rc2-23923",
+    "System.Reflection.Metadata": "1.1.0",
+    "System.Xml.ReaderWriter": "4.0.11-rc2-23923",
+    "System.Xml.XDocument": "4.0.11-rc2-23923",
+    "System.Xml.XPath.XmlDocument": "4.0.0",
+    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0-rc2-23923"
   },
   "frameworks": {
-    "netstandard1.5": {
-      "imports": "dnxcore50"
-    }
+    "dnxcore50": {}
+  },
+  "runtimes": {
+    "win7-x64": {},
+    "win7-x86": {},
+    "ubuntu.14.04-x64": {},
+    "osx.10.10-x64": {}
   }
 }

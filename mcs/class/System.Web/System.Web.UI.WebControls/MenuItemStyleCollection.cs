@@ -53,9 +53,9 @@ namespace System.Web.UI.WebControls
 			return ((IList)this).Contains (style);
 		}
 		
-		public void CopyTo (MenuItemStyle[] styleArray, int index)
+		public void CopyTo (MenuItemStyle[] array, int index)
 		{
-			((IList)this).CopyTo (styleArray, index);
+			((IList)this).CopyTo (array, index);
 		}
 		
 		protected override object CreateKnownType (int index)

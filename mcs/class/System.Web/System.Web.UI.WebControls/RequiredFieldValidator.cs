@@ -36,14 +36,14 @@ namespace System.Web.UI.WebControls {
 	// attributes
 	[ToolboxData ("<{0}:RequiredFieldValidator runat=\"server\" ErrorMessage=\"RequiredFieldValidator\"></{0}:RequiredFieldValidator>")]
 	public class RequiredFieldValidator : BaseValidator {
-		protected override void AddAttributesToRender (HtmlTextWriter writer)
+		protected override void AddAttributesToRender (HtmlTextWriter w)
 		{
 			if (RenderUplevel) {
 				RegisterExpandoAttribute (ClientID, "evaluationfunction", "RequiredFieldValidatorEvaluateIsValid");
 				RegisterExpandoAttribute (ClientID, "initialvalue", InitialValue, true);
 			}
 
-			base.AddAttributesToRender (writer);
+			base.AddAttributesToRender (w);
 		}
 		
 		protected override bool EvaluateIsValid ()

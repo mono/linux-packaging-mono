@@ -296,14 +296,14 @@ namespace Microsoft.Build.BuildEngine
 			return build_records.GetOrAdd (key, _ => new BuildRecord (this));
 		}
 
-		public void BuildStartedHandler (object sender, BuildStartedEventArgs e)
+		public void BuildStartedHandler (object sender, BuildStartedEventArgs args)
 		{
-			GetBuildRecord (sender).BuildStartedHandler (sender, e);
+			GetBuildRecord (sender).BuildStartedHandler (sender, args);
 		}
 		
-		public void BuildFinishedHandler (object sender, BuildFinishedEventArgs e)
+		public void BuildFinishedHandler (object sender, BuildFinishedEventArgs args)
 		{
-			GetBuildRecord (sender).BuildFinishedHandler (e);
+			GetBuildRecord (sender).BuildFinishedHandler (args);
 			((IDictionary) build_records).Remove (sender);
 		}
 		
@@ -315,47 +315,47 @@ namespace Microsoft.Build.BuildEngine
 		{
 			GetBuildRecord (sender).PopEvent (args);
 		}
-		public void ProjectStartedHandler (object sender, ProjectStartedEventArgs e)
+		public void ProjectStartedHandler (object sender, ProjectStartedEventArgs args)
 		{
-			GetBuildRecord (sender).ProjectStartedHandler (e);
+			GetBuildRecord (sender).ProjectStartedHandler (args);
 		}
-		public void ProjectFinishedHandler (object sender, ProjectFinishedEventArgs e)
+		public void ProjectFinishedHandler (object sender, ProjectFinishedEventArgs args)
 		{
-			GetBuildRecord (sender).ProjectFinishedHandler (e);
+			GetBuildRecord (sender).ProjectFinishedHandler (args);
 		}		
-		public void TargetStartedHandler (object sender, TargetStartedEventArgs e)
+		public void TargetStartedHandler (object sender, TargetStartedEventArgs args)
 		{
-			GetBuildRecord (sender).TargetStartedHandler (e);
+			GetBuildRecord (sender).TargetStartedHandler (args);
 		}
-		public void TargetFinishedHandler (object sender, TargetFinishedEventArgs e)
+		public void TargetFinishedHandler (object sender, TargetFinishedEventArgs args)
 		{
-			GetBuildRecord (sender).TargetFinishedHandler (e);
+			GetBuildRecord (sender).TargetFinishedHandler (args);
 		}
-		public void TaskStartedHandler (object sender, TaskStartedEventArgs e)
+		public void TaskStartedHandler (object sender, TaskStartedEventArgs args)
 		{
-			GetBuildRecord (sender).TaskStartedHandler (e);
+			GetBuildRecord (sender).TaskStartedHandler (args);
 		}
-		public void TaskFinishedHandler (object sender, TaskFinishedEventArgs e)
+		public void TaskFinishedHandler (object sender, TaskFinishedEventArgs args)
 		{
-			GetBuildRecord (sender).TaskFinishedHandler (e);
+			GetBuildRecord (sender).TaskFinishedHandler (args);
 		}
-		public void MessageHandler (object sender, BuildMessageEventArgs e)
+		public void MessageHandler (object sender, BuildMessageEventArgs args)
 		{
-			GetBuildRecord (sender).MessageHandler (e);
+			GetBuildRecord (sender).MessageHandler (args);
 		}
-		public void WarningHandler (object sender, BuildWarningEventArgs e)
+		public void WarningHandler (object sender, BuildWarningEventArgs args)
 		{
-			GetBuildRecord (sender).WarningHandler (e);
+			GetBuildRecord (sender).WarningHandler (args);
 		}
-		public void ErrorHandler (object sender, BuildErrorEventArgs e)
+		public void ErrorHandler (object sender, BuildErrorEventArgs args)
 		{
-			GetBuildRecord (sender).ErrorHandler (e);
+			GetBuildRecord (sender).ErrorHandler (args);
 		}
 		
 		[MonoTODO]
-		public void CustomEventHandler (object sender, CustomBuildEventArgs e)
+		public void CustomEventHandler (object sender, CustomBuildEventArgs args)
 		{
-			build_records [sender].CustomHandler (e);
+			build_records [sender].CustomHandler (args);
 		}
 
 		void SetColor (ConsoleColor color)

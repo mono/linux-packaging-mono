@@ -24,7 +24,7 @@ namespace System.IO.Tests
         [Theory]
         [InlineData(".")]
         [InlineData("............")]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Windows-invalid extensions should be removed
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsInvalidExtensionsAreRemoved(string extension)
         {
             string testFile = GetTestFilePath();
@@ -35,7 +35,7 @@ namespace System.IO.Tests
         [Theory]
         [InlineData(".s", ".")]
         [InlineData(".s", ".s....")]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Trailing dots in extension are removed
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsCurtailTrailingDots(string extension, string trailing)
         {
             string testFile = GetTestFilePath();
@@ -47,7 +47,7 @@ namespace System.IO.Tests
         [Theory]
         [InlineData(".s", ".")]
         [InlineData(".s.s....", ".ls")]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Last dot is extension
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixLastDotIsExtension(string extension, string trailing)
         {
             string testFile = GetTestFilePath();

@@ -2,10 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Collections;
 using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.as01.as01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.as01.as01;
+
     // <Area>variance</Area>
     // <Title> As keyword in variance </Title>
     // <Description> Having a covariant delegate and assigning it to a bigger type through the as keyword</Description>
@@ -104,6 +108,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.as01.as
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment01.assignment01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment01.assignment01;
+
     // <Area>variance</Area>
     // <Title> assignment with variance </Title>
     // <Description> assigning to a property type with an interface</Description>
@@ -179,6 +185,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment02.assignment02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment02.assignment02;
+
     // <Area>variance</Area>
     // <Title> assignment with variance </Title>
     // <Description> assigning to a property type with an interface</Description>
@@ -253,6 +261,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment03.assignment03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment03.assignment03;
+
     // <Area>variance</Area>
     // <Title> Assignment to a property</Title>
     // <Description> basic contravariance on delegates assigning to a property </Description>
@@ -324,6 +334,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment04.assignment04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment04.assignment04;
+
     // <Area>variance</Area>
     // <Title> Assignment to an event </Title>
     // <Description> Having a covariant delegate and assigning it to an event</Description>
@@ -368,6 +380,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment05.assignment05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment05.assignment05;
+
     // <Area>variance</Area>
     // <Title> assignment of Contravariance to events</Title>
     // <Description> basic contravariance on delegates </Description>
@@ -411,6 +425,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment06.assignment06
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment06.assignment06;
+
     // <Area>variance</Area>
     // <Title> assignment of covariant types to an array</Title>
     // <Description> assignment of covariant types to an array </Description>
@@ -477,6 +493,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment07.assignment07
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment07.assignment07;
+
     // <Area>variance</Area>
     // <Title> assignment Contravariant delegates</Title>
     // <Description> contravariance on delegates assigned to arrays</Description>
@@ -540,6 +558,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment08.assignment08
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment08.assignment08;
+
     // <Area>variance</Area>
     // <Title> Basic covariance on delegate types passed to a function </Title>
     // <Description> Having a covariant delegate and passing it to a function</Description>
@@ -606,6 +626,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment09.assignment09
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment09.assignment09;
+
     // <Area>variance</Area>
     // <Title> contravariance on interfaces and passing to a method</Title>
     // <Description> calling methods with public interface contravariance </Description>
@@ -673,12 +695,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment10.assignment10
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment10.assignment10;
     // <Area>variance</Area>
     // <Title> contravariance on interfaces and passing to a method</Title>
     // <Description> calling methods with public interface contravariance </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects status=success> </Expects>
     // <Code>
+    using System;
+    using System.Collections.Generic;
 
     public class B
     {
@@ -717,12 +742,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment11.assignment11
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignment11.assignment11;
     // <Area>variance</Area>
     // <Title> contravariance on interfaces and passing to a method</Title>
     // <Description> calling methods with public interface contravariance </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects status=success> </Expects>
     // <Code>
+    using System;
+    using System.Collections.Generic;
 
     public class B
     {
@@ -761,6 +789,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.assignm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload01.overload01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload01.overload01;
+
     // <Area>variance</Area>
     // <Title> Operator overloading in variance </Title>
     // <Description> Having a covariant delegate and assigning it to a same level type with variance and implicit operator overloading</Description>
@@ -878,6 +908,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overloa
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload02.overload02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload02.overload02;
+
     // <Area>variance</Area>
     // <Title> overload resolution</Title>
     // <Description> overload resolution in contravariant interfaces</Description>
@@ -957,6 +989,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overloa
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload03.overload03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload03.overload03;
+
     // <Area>variance</Area>
     // <Title> Operator overloading in variance </Title>
     // <Description> Having a contravariant delegate and assigning it to a bigger type with variance and explicit operator overloading</Description>
@@ -1037,6 +1071,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overloa
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload04.overload04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload04.overload04;
+
     // <Area>variance</Area>
     // <Title> Operator overloading in variance </Title>
     // <Description> Having a contravariant delegate and assigning it to a similar type with variance and implicit operator overloading</Description>
@@ -1113,6 +1149,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overloa
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload05.overload05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overload05.overload05;
+
     // <Area>variance</Area>
     // <Title> Operator overloading in variance </Title>
     // <Description> Having a contravariant public interface and assigning it to a similar type with variance and implicit operator overloading</Description>
@@ -1215,6 +1253,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.overloa
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution01.resolution01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution01.resolution01;
+
     // <Area>variance</Area>
     // <Title> overload resolution</Title>
     // <Description> overload resolution </Description>
@@ -1280,6 +1320,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolut
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution02.resolution02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution02.resolution02;
+
     // <Area>variance</Area>
     // <Title> overload resolution</Title>
     // <Description> overload resolution in contravariant interfaces</Description>
@@ -1355,6 +1397,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolut
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution03.resolution03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution03.resolution03;
+
     // <Area>variance</Area>
     // <Title> overload resolution</Title>
     // <Description> overload resolution in contravariant interfaces</Description>
@@ -1422,6 +1466,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolut
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution04.resolution04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution04.resolution04;
+
     // <Area>variance</Area>
     // <Title> overload resolution</Title>
     // <Description> overload resolution </Description>
@@ -1488,6 +1534,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolut
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution05.resolution05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.assign.resolution05.resolution05;
+
     // <Area>variance</Area>
     // <Title> overload resolution</Title>
     // <Description> overload resolution </Description>

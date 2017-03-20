@@ -112,9 +112,9 @@ namespace System.Web.UI {
 		}
 
 
-		public virtual void AddAttribute (string name, string value, bool fEndode)
+		public virtual void AddAttribute (string name, string value, bool fEncode)
 		{
-			if (fEndode)
+			if (fEncode)
 				value = HttpUtility.HtmlAttributeEncode (value);
 
 			AddAttribute (name, value, GetAttributeKey (name));
@@ -562,10 +562,10 @@ namespace System.Web.UI {
 			b.Write (format, arg0, arg1);
 		}
 
-		public override void Write (string format, params object [] arg)
+		public override void Write (string format, params object [] args)
 		{
 			OutputTabs ();
-			b.Write (format, arg);
+			b.Write (format, args);
 		}
 
 		public override void Write (string s)
@@ -680,10 +680,10 @@ namespace System.Web.UI {
 			newline = true;
 		}
 
-		public override void WriteLine (string format, params object [] arg)
+		public override void WriteLine (string format, params object [] args)
 		{
 			OutputTabs ();
-			b.WriteLine (format, arg);
+			b.WriteLine (format, args);
 			newline = true;
 		}
 

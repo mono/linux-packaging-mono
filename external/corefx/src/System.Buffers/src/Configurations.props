@@ -3,11 +3,7 @@
   <PropertyGroup>
     <BuildConfigurations>
       netstandard1.1;
-      netstandard;
-      netcoreapp-Windows_NT;
-      netcoreapp-Unix;
-      uap-Windows_NT;
-      uapaot-Windows_NT;
+      netcoreapp;
     </BuildConfigurations>
   </PropertyGroup>
 </Project>

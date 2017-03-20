@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadResolution.indexer.getter.Oneclass.Twoparam.accessibility005.accessibility005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadResolution.indexer.getter.Oneclass.Twoparam.accessibility005.accessibility005;
+
     public class Test
     {
         private class Base
@@ -42,6 +44,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadRes
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadResolution.indexer.getter.Oneclass.Twoparam.accessibility006.accessibility006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadResolution.indexer.getter.Oneclass.Twoparam.accessibility006.accessibility006;
+
     public class Test
     {
         protected class Base
@@ -78,6 +82,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadRes
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadResolution.indexer.getter.Oneclass.Twoparam.accessibility007.accessibility007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadResolution.indexer.getter.Oneclass.Twoparam.accessibility007.accessibility007;
+
     public class Test
     {
         internal class Base
@@ -114,6 +120,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadRes
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadResolution.indexer.getter.Oneclass.Twoparam.accessibility011.accessibility011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.overloadResolution.indexer.getter.Oneclass.Twoparam.accessibility011.accessibility011;
+
     public class Test
     {
         public class Higher

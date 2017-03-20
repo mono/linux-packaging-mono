@@ -36,6 +36,7 @@ using NUnit.Framework;
 namespace MonoTests.System.Drawing {
 
 	[TestFixture]
+	[SecurityPermission (SecurityAction.Deny, UnmanagedCode = true)]
 	public class FontFamilyTest {
 
 		private Bitmap bitmap;
@@ -58,16 +59,18 @@ namespace MonoTests.System.Drawing {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void FontFamily_String_Null ()
 		{
-			Assert.Throws<ArgumentException> (() => new FontFamily (null));
+			new FontFamily (null);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		[Category ("NotWorking")] // libgdiplus/fontconfig always return something
 		public void FontFamily_String_Empty ()
 		{
-			Assert.Throws<ArgumentException> (() => new FontFamily (String.Empty));
+			new FontFamily (String.Empty);
 		}
 
 		private void CheckMono (FontFamily ff)
@@ -107,9 +110,10 @@ namespace MonoTests.System.Drawing {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void FontFamily_String_PrivateFontCollection ()
 		{
-			Assert.Throws<ArgumentException> (() => new FontFamily (name, new PrivateFontCollection ()));
+			new FontFamily (name, new PrivateFontCollection ());
 		}
 
 		[Test]
@@ -175,9 +179,10 @@ namespace MonoTests.System.Drawing {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
 		public void GetFamilies_Null ()
 		{
-			Assert.Throws<ArgumentNullException> (() => FontFamily.GetFamilies (null));
+			FontFamily.GetFamilies (null);
 		}
 
 		[Test]
@@ -196,11 +201,12 @@ namespace MonoTests.System.Drawing {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void Dispose_UseAfter ()
 		{
 			FontFamily ff = FontFamily.GenericMonospace;
 			ff.Dispose ();
-			Assert.Throws<ArgumentException> (() => { var x = ff.Name; });
+			Assert.AreEqual (name, ff.Name, "Name");
 		}
 	}
 }

@@ -35,9 +35,9 @@ namespace System.Configuration
 	{
 		SpecialSetting setting;
 
-		public SpecialSettingAttribute (SpecialSetting specialSetting)
+		public SpecialSettingAttribute (SpecialSetting setting)
 		{
-			this.setting = specialSetting;
+			this.setting = setting;
 		}
 
 		public SpecialSetting SpecialSetting {

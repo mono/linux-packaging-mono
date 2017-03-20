@@ -1136,12 +1136,12 @@ namespace System.Web.UI.WebControls
 			return null;
 		}
 
-		protected override void LoadViewState (object state)
+		protected override void LoadViewState (object savedState)
 		{
-			if (state == null)
+			if (savedState == null)
 				return;
 
-			object [] states = (object []) state;
+			object [] states = (object []) savedState;
 			base.LoadViewState (states[0]);
 			
 			if (states[1] != null)
@@ -1178,10 +1178,10 @@ namespace System.Web.UI.WebControls
 			base.OnInit (e);
 		}
 		
-		protected internal override void LoadControlState (object savedState)
+		protected internal override void LoadControlState (object ob)
 		{
-			if (savedState == null) return;
-			object[] state = (object[]) savedState;
+			if (ob == null) return;
+			object[] state = (object[]) ob;
 			base.LoadControlState (state[0]);
 			selectedItemPath = state[1] as string;
 		}
@@ -1274,12 +1274,12 @@ namespace System.Web.UI.WebControls
 			base.DataBind ();
 		}
 		
-		protected override bool OnBubbleEvent (object source, EventArgs e)
+		protected override bool OnBubbleEvent (object source, EventArgs args)
 		{
-			if (!(e is CommandEventArgs))
+			if (!(args is CommandEventArgs))
 				return false;
 
-			MenuEventArgs menuArgs = e as MenuEventArgs;
+			MenuEventArgs menuArgs = args as MenuEventArgs;
 			if (menuArgs != null && string.Equals (menuArgs.CommandName, MenuItemClickCommandName))
 				OnMenuItemClick (menuArgs);
 			return true;

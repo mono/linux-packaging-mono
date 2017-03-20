@@ -94,19 +94,19 @@ namespace System.ServiceModel.Configuration
 			return (ConfigurationElement) Activator.CreateInstance (typeof (ConfigurationElementType), new object [0]);
 		}
 
-		public void CopyTo (ConfigurationElementType [] array, int start)
+		public void CopyTo (ConfigurationElementType [] array, int index)
 		{
-			base.CopyTo (array, start);
+			base.CopyTo (array, index);
 		}
 
-		public int IndexOf (ConfigurationElementType element)
+		public int IndexOf (ConfigurationElementType item)
 		{
-			return BaseIndexOf (element);
+			return BaseIndexOf (item);
 		}
 
-		public void Remove (ConfigurationElementType element)
+		public void Remove (ConfigurationElementType item)
 		{
-			BaseRemove (GetElementKey (element));
+			BaseRemove (GetElementKey (item));
 		}
 
 		public void RemoveAt (int index)
@@ -114,9 +114,9 @@ namespace System.ServiceModel.Configuration
 			BaseRemoveAt (index);
 		}
 
-		public void RemoveAt (object key)
+		public void RemoveAt (object index)
 		{
-			BaseRemove (key);
+			BaseRemove (index);
 		}
 	}
 }

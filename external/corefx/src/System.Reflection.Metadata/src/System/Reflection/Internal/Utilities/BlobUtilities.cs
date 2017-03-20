@@ -47,12 +47,19 @@ namespace System.Reflection
 
         public static void WriteDouble(this byte[] buffer, int start, double value)
         {
-            WriteUInt64(buffer, start, *(ulong*)&value);
+            fixed (byte* ptr = &buffer[start])
+            {
+                *(long*)ptr = *(long*)&value;
+            }
         }
 
         public static void WriteSingle(this byte[] buffer, int start, float value)
         {
-            WriteUInt32(buffer, start, *(uint*)&value);
+
+            fixed (byte* ptr = &buffer[start])
+            {
+                *(int*)ptr = *(int*)&value;
+            }
         }
 
         public static void WriteByte(this byte[] buffer, int start, byte value)
@@ -65,11 +72,7 @@ namespace System.Reflection
         {
             fixed (byte* ptr = &buffer[start])
             {
-                unchecked
-                {
-                    ptr[0] = (byte)value;
-                    ptr[1] = (byte)(value >> 8);
-                }
+                *(ushort*)ptr = value;
             }
         }
 
@@ -103,20 +106,16 @@ namespace System.Reflection
         {
             fixed (byte* ptr = &buffer[start])
             {
-                unchecked
-                {
-                    ptr[0] = (byte)value;
-                    ptr[1] = (byte)(value >> 8);
-                    ptr[2] = (byte)(value >> 16);
-                    ptr[3] = (byte)(value >> 24);
-                }
+                *(uint*)ptr = value;
             }
         }
 
         public static void WriteUInt64(this byte[] buffer, int start, ulong value)
         {
-            WriteUInt32(buffer, start, unchecked((uint)value));
-            WriteUInt32(buffer, start + 4, unchecked((uint)(value >> 32)));
+            fixed (byte* ptr = &buffer[start])
+            {
+                *(ulong*)ptr = value;
+            }
         }
 
         public const int SizeOfSerializedDecimal = sizeof(byte) + 3 * sizeof(uint);
@@ -128,45 +127,28 @@ namespace System.Reflection
             uint low, mid, high;
             value.GetBits(out isNegative, out scale, out low, out mid, out high);
 
-            WriteByte(buffer, start, (byte)(scale | (isNegative ? 0x80 : 0x00)));
-            WriteUInt32(buffer, start + 1, low);
-            WriteUInt32(buffer, start + 5, mid);
-            WriteUInt32(buffer, start + 9, high);
+            fixed (byte* ptr = &buffer[start])
+            {
+                *ptr = (byte)(scale | (isNegative ? 0x80 : 0x00));
+                *(uint*)(ptr + 1) = low;
+                *(uint*)(ptr + 5) = mid;
+                *(uint*)(ptr + 9) = high;
+            }
         }
 
         public const int SizeOfGuid = 16;
 
         public static void WriteGuid(this byte[] buffer, int start, Guid value)
         {
-            fixed (byte* dst = &buffer[start])
+            fixed (byte* ptr = &buffer[start])
             {
-                byte* src = (byte*)&value;
+                int* dst = (int*)ptr;
+                int* src = (int*)&value;
 
-                uint a = *(uint*)(src + 0);
-                unchecked
-                {
-                    dst[0] = (byte)a;
-                    dst[1] = (byte)(a >> 8);
-                    dst[2] = (byte)(a >> 16);
-                    dst[3] = (byte)(a >> 24);
-
-                    ushort b = *(ushort*)(src + 4);
-                    dst[4] = (byte)b;
-                    dst[5] = (byte)(b >> 8);
-
-                    ushort c = *(ushort*)(src + 6);
-                    dst[6] = (byte)c;
-                    dst[7] = (byte)(c >> 8);
-                }
-                
-                dst[8] = src[8];
-                dst[9] = src[9];
-                dst[10] = src[10];
-                dst[11] = src[11];
-                dst[12] = src[12];
-                dst[13] = src[13];
-                dst[14] = src[14];
-                dst[15] = src[15];
+                dst[0] = src[0];
+                dst[1] = src[1];
+                dst[2] = src[2];
+                dst[3] = src[3];
             }
         }
 

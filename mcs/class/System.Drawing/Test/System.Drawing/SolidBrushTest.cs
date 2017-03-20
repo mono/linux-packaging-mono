@@ -58,11 +58,12 @@ namespace MonoTests.System.Drawing {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void Dispose_Clone ()
 		{
 			SolidBrush sb = new SolidBrush (Color.Transparent);
 			sb.Dispose ();
-			Assert.Throws<ArgumentException> (() => sb.Clone ());
+			sb.Clone ();
 		}
 
 		[Test]

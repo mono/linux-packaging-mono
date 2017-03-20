@@ -9,6 +9,7 @@ namespace System.Net.Mail.Tests
     public class NTAuthenticationStubTests
     {
         [Fact]
+        [ActiveIssue(12535)]
         public void TestReflectedTypes()
         {
             Assert.NotNull(NTAuthentication.s_type);

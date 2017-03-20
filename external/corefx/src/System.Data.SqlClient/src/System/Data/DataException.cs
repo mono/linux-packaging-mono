@@ -6,6 +6,8 @@
 
 //------------------------------------------------------------------------------
 
+using Res = System.SR;
+
 
 namespace System.Data
 {
@@ -42,7 +44,7 @@ namespace System.Data
         }
         public static Exception InvalidOffsetLength()
         {
-            return _Argument(SR.GetString(SR.Data_InvalidOffsetLength));
+            return _Argument(Res.GetString(Res.Data_InvalidOffsetLength));
         }
     }// ExceptionBuilder
 }

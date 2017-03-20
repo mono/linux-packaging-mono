@@ -193,8 +193,8 @@ namespace System.IO.Compression
 			}
 		}
 
-		public override IAsyncResult BeginRead (byte [] array, int offset, int count,
-							AsyncCallback asyncCallback, object asyncState)
+		public override IAsyncResult BeginRead (byte [] buffer, int offset, int count,
+							AsyncCallback cback, object state)
 		{
 			if (disposed)
 				throw new ObjectDisposedException (GetType ().FullName);
@@ -202,8 +202,8 @@ namespace System.IO.Compression
 			if (!CanRead)
 				throw new NotSupportedException ("This stream does not support reading");
 
-			if (array == null)
-				throw new ArgumentNullException ("array");
+			if (buffer == null)
+				throw new ArgumentNullException ("buffer");
 
 			if (count < 0)
 				throw new ArgumentOutOfRangeException ("count", "Must be >= 0");
@@ -211,15 +211,15 @@ namespace System.IO.Compression
 			if (offset < 0)
 				throw new ArgumentOutOfRangeException ("offset", "Must be >= 0");
 
-			if (count + offset > array.Length)
+			if (count + offset > buffer.Length)
 				throw new ArgumentException ("Buffer too small. count/offset wrong.");
 
 			ReadMethod r = new ReadMethod (ReadInternal);
-			return r.BeginInvoke (array, offset, count, asyncCallback, asyncState);
+			return r.BeginInvoke (buffer, offset, count, cback, state);
 		}
 
-		public override IAsyncResult BeginWrite (byte [] array, int offset, int count,
-							AsyncCallback asyncCallback, object asyncState)
+		public override IAsyncResult BeginWrite (byte [] buffer, int offset, int count,
+							AsyncCallback cback, object state)
 		{
 			if (disposed)
 				throw new ObjectDisposedException (GetType ().FullName);
@@ -227,8 +227,8 @@ namespace System.IO.Compression
 			if (!CanWrite)
 				throw new InvalidOperationException ("This stream does not support writing");
 
-			if (array == null)
-				throw new ArgumentNullException ("array");
+			if (buffer == null)
+				throw new ArgumentNullException ("buffer");
 
 			if (count < 0)
 				throw new ArgumentOutOfRangeException ("count", "Must be >= 0");
@@ -236,43 +236,43 @@ namespace System.IO.Compression
 			if (offset < 0)
 				throw new ArgumentOutOfRangeException ("offset", "Must be >= 0");
 
-			if (count + offset > array.Length)
+			if (count + offset > buffer.Length)
 				throw new ArgumentException ("Buffer too small. count/offset wrong.");
 
 			WriteMethod w = new WriteMethod (WriteInternal);
-			return w.BeginInvoke (array, offset, count, asyncCallback, asyncState);			
+			return w.BeginInvoke (buffer, offset, count, cback, state);			
 		}
 
-		public override int EndRead(IAsyncResult asyncResult)
+		public override int EndRead(IAsyncResult async_result)
 		{
-			if (asyncResult == null)
-				throw new ArgumentNullException ("asyncResult");
+			if (async_result == null)
+				throw new ArgumentNullException ("async_result");
 
-			AsyncResult ares = asyncResult as AsyncResult;
+			AsyncResult ares = async_result as AsyncResult;
 			if (ares == null)
-				throw new ArgumentException ("Invalid IAsyncResult", "asyncResult");
+				throw new ArgumentException ("Invalid IAsyncResult", "async_result");
 
 			ReadMethod r = ares.AsyncDelegate as ReadMethod;
 			if (r == null)
-				throw new ArgumentException ("Invalid IAsyncResult", "asyncResult");
+				throw new ArgumentException ("Invalid IAsyncResult", "async_result");
 
-			return r.EndInvoke (asyncResult);
+			return r.EndInvoke (async_result);
 		}
 
-		public override void EndWrite (IAsyncResult asyncResult)
+		public override void EndWrite (IAsyncResult async_result)
 		{
-			if (asyncResult == null)
-				throw new ArgumentNullException ("asyncResult");
+			if (async_result == null)
+				throw new ArgumentNullException ("async_result");
 
-			AsyncResult ares = asyncResult as AsyncResult;
+			AsyncResult ares = async_result as AsyncResult;
 			if (ares == null)
-				throw new ArgumentException ("Invalid IAsyncResult", "asyncResult");
+				throw new ArgumentException ("Invalid IAsyncResult", "async_result");
 
 			WriteMethod w = ares.AsyncDelegate as WriteMethod;
 			if (w == null)
-				throw new ArgumentException ("Invalid IAsyncResult", "asyncResult");
+				throw new ArgumentException ("Invalid IAsyncResult", "async_result");
 
-			w.EndInvoke (asyncResult);
+			w.EndInvoke (async_result);
 			return;
 		}
 

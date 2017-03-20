@@ -6,7 +6,7 @@
 // assembly.  So these type definitions allow the code to continue to use the same data transport structure
 // that it has for quite a while.
 
-#if uap
+#if NETNATIVE
 using System;
 
 namespace Internal.Cryptography.Pal
@@ -68,4 +68,4 @@ namespace Internal.Cryptography.Pal
     }
 }
 
-#endif // #if uap
+#endif // #if NETNATIVE

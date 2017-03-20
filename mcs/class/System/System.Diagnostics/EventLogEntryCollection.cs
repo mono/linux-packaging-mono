@@ -60,10 +60,10 @@ namespace System.Diagnostics {
 			get { return this; }
 		}
 
-		public void CopyTo (EventLogEntry[] entries, int index)
+		public void CopyTo (EventLogEntry[] eventLogEntries, int index)
 		{
-			EventLogEntry[] evLogEntries = _impl.GetEntries ();
-			Array.Copy (evLogEntries, 0, entries, index, evLogEntries.Length);
+			EventLogEntry[] entries = _impl.GetEntries ();
+			Array.Copy (entries, 0, eventLogEntries, index, entries.Length);
 		}
 
 		public IEnumerator GetEnumerator ()

@@ -108,9 +108,14 @@ namespace System.IO.Tests
             Assert.False(Directory.Exists(linkPath), "linkPath should no longer exist");
         }
 
+        #endregion
+
+        #region PlatformSpecific
+
         [ConditionalFact(nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        public void ExtendedDirectoryWithSubdirectories()
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
+        public void WindowsExtendedDirectoryWithSubdirectories()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(IOInputs.ExtendedPrefix + GetTestFilePath());
             testDir.CreateSubdirectory(GetTestFileName());
@@ -119,20 +124,17 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(LongPathsAreNotBlocked), nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        public void LongPathExtendedDirectory()
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
+        public void WindowsLongPathExtendedDirectory()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(IOServices.GetPath(IOInputs.ExtendedPrefix + TestDirectory, characterCount: 500).FullPath);
             Delete(testDir.FullName);
             Assert.False(testDir.Exists);
         }
 
-        #endregion
-
-        #region PlatformSpecific
-
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Deleting readonly directory throws IOException
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsDeleteReadOnlyDirectory()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(GetTestFilePath());
@@ -143,8 +145,8 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Deleting extended readonly directory throws IOException
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsDeleteExtendedReadOnlyDirectory()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(IOInputs.ExtendedPrefix + GetTestFilePath());
@@ -155,7 +157,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Deleting readOnly directory succeeds
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixDeleteReadOnlyDirectory()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(GetTestFilePath());
@@ -165,7 +167,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Deleting hidden directory succeeds
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsShouldBeAbleToDeleteHiddenDirectory()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(GetTestFilePath());
@@ -175,8 +177,8 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Deleting extended hidden directory succeeds
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsShouldBeAbleToDeleteExtendedHiddenDirectory()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(IOInputs.ExtendedPrefix + GetTestFilePath());
@@ -186,7 +188,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Deleting hidden directory succeeds
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixShouldBeAbleToDeleteHiddenDirectory()
         {
             string testDir = "." + GetTestFileName();
@@ -234,7 +236,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Recursive delete throws IOException if directory contains in-use file
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void RecursiveDelete_ShouldThrowIOExceptionIfContainedFileInUse()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(GetTestFilePath());

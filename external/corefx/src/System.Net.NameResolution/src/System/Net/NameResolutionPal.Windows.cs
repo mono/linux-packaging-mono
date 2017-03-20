@@ -184,7 +184,7 @@ namespace System.Net
             IntPtr nativePointer =
                 Interop.Winsock.gethostbyaddr(
                     ref addressAsInt,
-                    sizeof(int),
+                    Marshal.SizeOf<int>(),
                     ProtocolFamily.InterNetwork);
             
             if (nativePointer != IntPtr.Zero)

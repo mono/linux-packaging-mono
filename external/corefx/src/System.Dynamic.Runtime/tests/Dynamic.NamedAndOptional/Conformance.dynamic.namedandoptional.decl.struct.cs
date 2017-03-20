@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct01.strct01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct01.strct01;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters</Description>
@@ -42,6 +44,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct01a.strct01a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct01a.strct01a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters</Description>
@@ -79,6 +83,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct03.strct03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct03.strct03;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters</Description>
@@ -115,6 +121,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct03a.strct03a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct03a.strct03a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters</Description>
@@ -152,6 +160,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct05.strct05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct05.strct05;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. multiple optional parameters</Description>
@@ -188,6 +198,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct05a.strct05a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct05a.strct05a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. multiple optional parameters</Description>
@@ -225,6 +237,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct06a.strct06a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct06a.strct06a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. Expressions used</Description>
@@ -261,6 +275,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct07a.strct07a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct07a.strct07a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. Max int</Description>
@@ -297,6 +313,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct09a.strct09a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct09a.strct09a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. cast of an int to long</Description>
@@ -333,6 +351,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct12.strct12
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct12.strct12;
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. cast of an int to long</Description>
@@ -373,6 +392,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct12a.strct12a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct12a.strct12a;
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. cast of an int to long</Description>
@@ -413,6 +433,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct13.strct13
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct13.strct13;
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. cast of an int to long</Description>
@@ -456,6 +477,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct13a.strct13a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct13a.strct13a;
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description>Simple Declaration of a method with optional parameters. cast of an int to long</Description>
@@ -499,6 +521,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct14a.strct14a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct14a.strct14a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description> Declaration of OPs with constant values</Description>
@@ -536,6 +560,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct18a.strct18a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct18a.strct18a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description> Declaration of OPs with constant values</Description>
@@ -573,6 +599,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct19a.strct19a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct19a.strct19a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description> Declaration of OPs with constant values</Description>
@@ -610,6 +638,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.s
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct20a.strct20a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.strct.strct20a.strct20a;
+
     // <Area>Declaration of Methods with Optional Parameters</Area>
     // <Title>Declaration of Optional Params</Title>
     // <Description> Declaration of OPs with constant values</Description>

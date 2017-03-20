@@ -29,6 +29,8 @@ namespace System.Linq.Tests
                      nameof(Enumerable.ToList),
                      "Fold",
                      "LeftJoin",
+                     nameof(Enumerable.Append),
+                     nameof(Enumerable.Prepend),
                      "ToHashSet"
                  }
                 );

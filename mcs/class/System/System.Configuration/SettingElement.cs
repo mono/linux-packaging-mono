@@ -93,9 +93,9 @@ namespace System.Configuration
 			get { return properties; }
 		}
 
-		public override bool Equals (object settings)
+		public override bool Equals (object o)
 		{
-			SettingElement e = settings as SettingElement;
+			SettingElement e = o as SettingElement;
 			if (e == null)
 				return false;
 

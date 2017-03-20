@@ -837,7 +837,7 @@ namespace System.Linq.Expressions.Tests
             else
             {
                 divideByZero = false;
-                expected = unchecked((short)(a / b));
+                expected = (short)(a / b);
             }
 
             ParameterExpression p0 = Expression.Parameter(typeof(short), "p0");

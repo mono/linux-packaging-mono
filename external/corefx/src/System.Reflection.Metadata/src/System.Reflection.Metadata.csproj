@@ -3,7 +3,8 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup>
     <ProjectGuid>{F3E433C8-352F-4944-BF7F-765CE435370D}</ProjectGuid>
-    <DocumentationFile>$(OutputPath)$(MSBuildProjectName).xml</DocumentationFile>
+    <AssemblyName>System.Reflection.Metadata</AssemblyName>
+    <DocumentationFile>$(OutputPath)System.Reflection.Metadata.xml</DocumentationFile>
     <RootNamespace>System.Reflection.Metadata</RootNamespace>
     <FileAlignment>512</FileAlignment>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -14,12 +15,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-Release|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netstandard-Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netstandard-Release|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netstandard1.1-Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netstandard1.1-Release|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Windows_NT-Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Windows_NT-Release|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Release|AnyCPU'" />
   <ItemGroup>
     <Compile Include="System\Reflection\Internal\Utilities\ExceptionUtilities.cs" />
     <Compile Include="System\Reflection\Internal\Utilities\PathUtilities.cs" />
@@ -74,7 +73,6 @@
     <Compile Include="System\Reflection\PortableExecutable\ManagedTextSection.cs" />
     <Compile Include="System\Reflection\PortableExecutable\PEBuilder.cs" />
     <Compile Include="System\Reflection\PortableExecutable\DebugDirectory\DebugDirectoryBuilder.cs" />
-    <Compile Include="System\Reflection\PortableExecutable\DebugDirectory\DebugDirectoryBuilder.EmbeddedPortablePdb.cs" />
     <Compile Include="System\Reflection\PortableExecutable\PEDirectoriesBuilder.cs" />
     <Compile Include="System\Reflection\PortableExecutable\PEHeaderBuilder.cs" />
     <Compile Include="System\Reflection\PortableExecutable\ResourceSectionBuilder.cs" />
@@ -234,7 +232,6 @@
     <Compile Include="System\Reflection\PortableExecutable\PEHeaders.cs" />
     <Compile Include="System\Reflection\PortableExecutable\PEMemoryBlock.cs" />
     <Compile Include="System\Reflection\PortableExecutable\PEReader.cs" />
-    <Compile Include="System\Reflection\PortableExecutable\PEReader.EmbeddedPortablePdb.cs" />
     <Compile Include="System\Reflection\PortableExecutable\PEStreamOptions.cs" />
     <Compile Include="System\Reflection\PortableExecutable\SectionHeader.cs" />
     <Compile Include="System\Reflection\Throw.cs" />

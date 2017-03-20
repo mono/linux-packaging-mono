@@ -1,4 +1,3 @@
-../corefx/SR.cs
 System.Security.Cryptography/CryptographicAttributeObjectCollectionTest.cs
 System.Security.Cryptography/CryptographicAttributeObjectEnumeratorTest.cs
 System.Security.Cryptography/CryptographicAttributeTest.cs

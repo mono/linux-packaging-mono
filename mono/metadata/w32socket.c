@@ -47,7 +47,7 @@
 
 #include <mono/metadata/object.h>
 #include <mono/metadata/exception.h>
-#include <mono/metadata/assembly-internals.h>
+#include <mono/metadata/assembly.h>
 #include <mono/metadata/appdomain.h>
 #include <mono/metadata/w32file.h>
 #include <mono/metadata/threads.h>
@@ -641,7 +641,7 @@ get_socket_assembly (void)
 
 		socket_assembly = mono_image_loaded ("System");
 		if (!socket_assembly) {
-			MonoAssembly *sa = mono_assembly_open_predicate ("System.dll", FALSE, FALSE, NULL, NULL, NULL);
+			MonoAssembly *sa = mono_assembly_open ("System.dll", NULL);
 		
 			if (!sa) {
 				g_assert_not_reached ();
@@ -825,7 +825,7 @@ create_object_from_sockaddr (struct sockaddr *saddr, int sa_size, gint32 *werror
 	MonoArray *data;
 	MonoAddressFamily family;
 
-	error_init (error);
+	mono_error_init (error);
 
 	/* Build a System.Net.SocketAddress object instance */
 	if (!domain->sockaddr_class)
@@ -1058,7 +1058,7 @@ create_sockaddr_from_object (MonoObject *saddr_obj, socklen_t *sa_size, gint32 *
 	gint32 family;
 	int len;
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (!domain->sockaddr_class)
 		domain->sockaddr_class = mono_class_load_from_name (get_socket_assembly (), "System.Net", "SocketAddress");
@@ -1270,7 +1270,7 @@ ves_icall_System_Net_Sockets_Socket_Poll_internal (gsize sock, gint mode,
 		}
 
 		if (ret == -1 && errno == EINTR) {
-			if (mono_thread_test_state (thread, ThreadState_AbortRequested)) {
+			if (mono_thread_test_state (thread, (MonoThreadState)(ThreadState_AbortRequested | ThreadState_StopRequested))) {
 				g_free (pfds);
 				return FALSE;
 			}
@@ -1777,7 +1777,7 @@ ves_icall_System_Net_Sockets_Socket_Select_internal (MonoArray **sockets, gint32
 		}
 
 		if (ret == -1 && errno == EINTR) {
-			if (mono_thread_test_state (thread, ThreadState_AbortRequested)) {
+			if (mono_thread_test_state (thread, (MonoThreadState)(ThreadState_AbortRequested | ThreadState_StopRequested))) {
 				g_free (pfds);
 				*sockets = NULL;
 				return;
@@ -1973,7 +1973,7 @@ ves_icall_System_Net_Sockets_Socket_GetSocketOption_obj_internal (gsize sock, gi
 		if (mono_posix_image == NULL) {
 			mono_posix_image = mono_image_loaded ("Mono.Posix");
 			if (!mono_posix_image) {
-				MonoAssembly *sa = mono_assembly_open_predicate ("Mono.Posix.dll", FALSE, FALSE, NULL, NULL, NULL);
+				MonoAssembly *sa = mono_assembly_open ("Mono.Posix.dll", NULL);
 				if (!sa) {
 					*werror = WSAENOPROTOOPT;
 					return;
@@ -2406,7 +2406,7 @@ addrinfo_to_IPHostEntry (MonoAddressInfo *info, MonoString **h_name, MonoArray *
 	int addr_index;
 	MonoDomain *domain = mono_domain_get ();
 
-	error_init (error);
+	mono_error_init (error);
 	addr_index = 0;
 	*h_aliases = mono_array_new_checked (domain, mono_get_string_class (), 0, error);
 	return_val_if_nok (error, FALSE);
@@ -2682,7 +2682,11 @@ ves_icall_System_Net_Sockets_Socket_SendFile_internal (gsize sock, MonoString *f
 		return FALSE;
 	}
 
+	MONO_ENTER_GC_SAFE;
+
 	mono_w32file_close (file);
+
+	MONO_EXIT_GC_SAFE;
 
 	if (*werror)
 		return FALSE;

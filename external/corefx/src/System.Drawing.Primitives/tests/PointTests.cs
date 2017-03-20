@@ -35,7 +35,7 @@ namespace System.Drawing.PrimitivesTests
         public void SingleIntConstructorTest(int x)
         {
             Point p1 = new Point(x);
-            Point p2 = new Point(unchecked((short)(x & 0xFFFF)), unchecked((short)((x >> 16) & 0xFFFF)));
+            Point p2 = new Point((short)(x & 0xFFFF), (short)((x >> 16) & 0xFFFF));
 
             Assert.Equal(p1, p2);
         }
@@ -98,14 +98,11 @@ namespace System.Drawing.PrimitivesTests
         [InlineData(0, 0)]
         public void ArithmeticTest(int x, int y)
         {
-            Point addExpected, subExpected, p = new Point(x, y);
+            Point p = new Point(x, y);
             Size s = new Size(y, x);
 
-            unchecked
-            {
-                addExpected = new Point(x + y, y + x);
-                subExpected = new Point(x - y, y - x);
-            }
+            Point addExpected = new Point(x + y, y + x);
+            Point subExpected = new Point(x - y, y - x);
 
             Assert.Equal(addExpected, p + s);
             Assert.Equal(subExpected, p - s);
@@ -121,14 +118,9 @@ namespace System.Drawing.PrimitivesTests
         public void PointFMathematicalTest(float x, float y)
         {
             PointF pf = new PointF(x, y);
-            Point pCeiling, pTruncate, pRound;
-
-            unchecked
-            {
-                pCeiling = new Point((int)Math.Ceiling(x), (int)Math.Ceiling(y));
-                pTruncate = new Point((int)x, (int)y);
-                pRound = new Point((int)Math.Round(x), (int)Math.Round(y));
-            }
+            Point pCeiling = new Point((int)Math.Ceiling(x), (int)Math.Ceiling(y));
+            Point pTruncate = new Point((int)x, (int)y);
+            Point pRound = new Point((int)Math.Round(x), (int)Math.Round(y));
 
             Assert.Equal(pCeiling, Point.Ceiling(pf));
             Assert.Equal(pRound, Point.Round(pf));
@@ -147,7 +139,7 @@ namespace System.Drawing.PrimitivesTests
 
             p1.Offset(p2);
 
-            Assert.Equal(unchecked(p2.X + p2.Y), p1.X);
+            Assert.Equal(p2.X + p2.Y, p1.X);
             Assert.Equal(p1.X, p1.Y);
 
             p2.Offset(x, y);

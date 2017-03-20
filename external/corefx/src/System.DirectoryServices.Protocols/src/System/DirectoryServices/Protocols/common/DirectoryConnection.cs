@@ -5,8 +5,6 @@
 namespace System.DirectoryServices.Protocols
 {
     using System;
-    using System.DirectoryServices;
-    using System.Globalization;
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
     using System.Security.Permissions;
@@ -23,6 +21,8 @@ namespace System.DirectoryServices.Protocols
 
         protected DirectoryConnection()
         {
+            Utility.CheckOSVersion();
+
             certificatesCollection = new X509CertificateCollection();
         }
 
@@ -52,7 +52,7 @@ namespace System.DirectoryServices.Protocols
             {
                 if (value < TimeSpan.Zero)
                 {
-                    throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, SR.NoNegativeTime), "value");
+                    throw new ArgumentException(Res.GetString(Res.NoNegativeTime), "value");
                 }
 
                 connectionTimeOut = value;
@@ -61,12 +61,20 @@ namespace System.DirectoryServices.Protocols
 
         public virtual NetworkCredential Credential
         {
+            [
+                DirectoryServicesPermission(SecurityAction.LinkDemand, Unrestricted = true),
+                EnvironmentPermission(SecurityAction.Assert, Unrestricted = true),
+                SecurityPermission(SecurityAction.Assert, Flags = SecurityPermissionFlag.UnmanagedCode)
+            ]
             set
             {
                 directoryCredential = (value != null) ? new NetworkCredential(value.UserName, value.Password, value.Domain) : null;
             }
         }
 
+        [
+            DirectoryServicesPermission(SecurityAction.LinkDemand, Unrestricted = true)
+        ]
         public abstract DirectoryResponse SendRequest(DirectoryRequest request);
 
         internal NetworkCredential GetCredential()

@@ -70,10 +70,10 @@ namespace System.ServiceModel.Dispatcher {
 			return false;
 		}
 
-		public override bool Match (MessageBuffer messageBuffer)
+		public override bool Match (MessageBuffer buffer)
 		{
 			bool retval;
-			Message m = messageBuffer.CreateMessage ();
+			Message m = buffer.CreateMessage ();
 			retval = Match (m);
 			m.Close ();
 			

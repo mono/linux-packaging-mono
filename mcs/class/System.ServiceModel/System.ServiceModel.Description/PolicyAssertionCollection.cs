@@ -41,45 +41,45 @@ namespace System.ServiceModel.Description
 		{
 		}
 
-		public PolicyAssertionCollection (IEnumerable<XmlElement> elements)
-			: base (new List<XmlElement> (elements))
+		public PolicyAssertionCollection (IEnumerable<XmlElement> list)
+			: base (new List<XmlElement> (list))
 		{
 		}
 
 		[MonoTODO]
-		public bool Contains (string localName, string namespaceUri)
+		public bool Contains (string name, string ns)
 		{
 			foreach (XmlElement el in this)
-				if (el.LocalName == localName && el.NamespaceURI == namespaceUri)
+				if (el.LocalName == name && el.NamespaceURI == ns)
 					return true;
 			return false;
 		}
 
 		[MonoTODO]
-		public XmlElement Find (string localName, string namespaceUri)
+		public XmlElement Find (string name, string ns)
 		{
 			foreach (XmlElement el in this)
-				if (el.LocalName == localName && el.NamespaceURI == namespaceUri)
+				if (el.LocalName == name && el.NamespaceURI == ns)
 					return el;
 			return null;
 		}
 
 		[MonoTODO]
-		public Collection<XmlElement> FindAll (string localName, string namespaceUri)
+		public Collection<XmlElement> FindAll (string name, string ns)
 		{
 			Collection<XmlElement> ret =
 				new Collection<XmlElement> ();
 			foreach (XmlElement el in this)
-				if (el.LocalName == localName && el.NamespaceURI == namespaceUri)
+				if (el.LocalName == name && el.NamespaceURI == ns)
 					ret.Add (el);
 			return ret;
 		}
 
 		[MonoTODO]
-		public XmlElement Remove (string localName, string namespaceUri)
+		public XmlElement Remove (string name, string ns)
 		{
 			foreach (XmlElement el in this)
-				if (el.LocalName == localName && el.NamespaceURI == namespaceUri) {
+				if (el.LocalName == name && el.NamespaceURI == ns) {
 					Remove (el);
 					return el;
 				}
@@ -87,9 +87,9 @@ namespace System.ServiceModel.Description
 		}
 
 		[MonoTODO]
-		public Collection<XmlElement> RemoveAll (string localName, string namespaceUri)
+		public Collection<XmlElement> RemoveAll (string name, string ns)
 		{
-			Collection<XmlElement> list = FindAll (localName, namespaceUri);
+			Collection<XmlElement> list = FindAll (name, ns);
 			foreach (XmlElement el in list)
 				Remove (el);
 			return list;

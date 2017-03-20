@@ -32,18 +32,18 @@ namespace System.Transactions
 			set { timeout = value; }
 		}
 
-		public static bool operator == (TransactionOptions  x,
-			TransactionOptions y)
+		public static bool operator == (TransactionOptions  o1,
+			TransactionOptions o2)
 		{
-			return x.level == y.level &&
-				x.timeout == y.timeout;
+			return o1.level == o2.level &&
+				o1.timeout == o2.timeout;
 		}
 
-		public static bool operator != (TransactionOptions x,
-			TransactionOptions y)
+		public static bool operator != (TransactionOptions o1,
+			TransactionOptions o2)
 		{
-			return x.level != y.level ||
-				x.timeout != y.timeout;
+			return o1.level != o2.level ||
+				o1.timeout != o2.timeout;
 		}
 
 		public override bool Equals (object obj)

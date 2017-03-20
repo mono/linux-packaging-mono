@@ -77,7 +77,7 @@ namespace Internal.Cryptography
             int ret;
             int errorCode;
 
-            fixed (byte* outputStart = &output[0])
+            fixed (byte* outputStart = output)
             {
                 byte* outputCurrent = outputStart + outputBytes;
                 int bytesWritten;

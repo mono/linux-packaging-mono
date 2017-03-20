@@ -882,12 +882,12 @@ namespace System.Web.UI.WebControls
 			return arg;
 		}
 		
-		protected virtual FormViewRow CreateRow (int itemIndex, DataControlRowType rowType, DataControlRowState rowState)
+		protected virtual FormViewRow CreateRow (int rowIndex, DataControlRowType rowType, DataControlRowState rowState)
 		{
 			if (rowType == DataControlRowType.Pager)
-				return new FormViewPagerRow (itemIndex, rowType, rowState);
+				return new FormViewPagerRow (rowIndex, rowType, rowState);
 			else
-				return new FormViewRow (itemIndex, rowType, rowState);
+				return new FormViewRow (rowIndex, rowType, rowState);
 		}
 		
 		void RequireBinding ()
@@ -922,25 +922,25 @@ namespace System.Web.UI.WebControls
 			return style;
 		}
 		
-		protected override int CreateChildControls (IEnumerable dataSource, bool dataBinding)
+		protected override int CreateChildControls (IEnumerable data, bool dataBinding)
 		{
-			PagedDataSource pagedDataSource = new PagedDataSource ();
-			pagedDataSource.DataSource = CurrentMode != FormViewMode.Insert ? dataSource : null;
-			pagedDataSource.AllowPaging = AllowPaging;
-			pagedDataSource.PageSize = 1;
-			pagedDataSource.CurrentPageIndex = PageIndex;
+			PagedDataSource dataSource = new PagedDataSource ();
+			dataSource.DataSource = CurrentMode != FormViewMode.Insert ? data : null;
+			dataSource.AllowPaging = AllowPaging;
+			dataSource.PageSize = 1;
+			dataSource.CurrentPageIndex = PageIndex;
 
 			if (dataBinding && CurrentMode != FormViewMode.Insert) {
 				DataSourceView view = GetData ();
 				if (view != null && view.CanPage) {
-					pagedDataSource.AllowServerPaging = true;
+					dataSource.AllowServerPaging = true;
 					if (SelectArguments.RetrieveTotalRowCount)
-						pagedDataSource.VirtualCount = SelectArguments.TotalRowCount;
+						dataSource.VirtualCount = SelectArguments.TotalRowCount;
 				}
 			}
 
 			PagerSettings pagerSettings = PagerSettings;
-			bool showPager = AllowPaging && pagerSettings.Visible && (pagedDataSource.PageCount > 1);
+			bool showPager = AllowPaging && pagerSettings.Visible && (dataSource.PageCount > 1);
 			
 			Controls.Clear ();
 			table = CreateTable ();
@@ -953,20 +953,20 @@ namespace System.Web.UI.WebControls
 			// Gets the current data item
 
 			if (AllowPaging) {
-				PageCount = pagedDataSource.DataSourceCount;
+				PageCount = dataSource.DataSourceCount;
 				if (PageIndex >= PageCount && PageCount > 0)
-					pageIndex = pagedDataSource.CurrentPageIndex = PageCount - 1;
+					pageIndex = dataSource.CurrentPageIndex = PageCount - 1;
 				
-				if (pagedDataSource.DataSource != null) {
-					IEnumerator e = pagedDataSource.GetEnumerator ();
+				if (dataSource.DataSource != null) {
+					IEnumerator e = dataSource.GetEnumerator ();
 					if (e.MoveNext ())
 						dataItem = e.Current;
 				}
 			} else {
 				int page = 0;
 				object lastItem = null;
-				if (pagedDataSource.DataSource != null) {
-					IEnumerator e = pagedDataSource.GetEnumerator ();
+				if (dataSource.DataSource != null) {
+					IEnumerator e = dataSource.GetEnumerator ();
 					for (; e.MoveNext (); page++) {
 						lastItem = e.Current;
 						if (page == PageIndex)
@@ -991,7 +991,7 @@ namespace System.Web.UI.WebControls
 
 			if (showPager && pagerSettings.Position == PagerPosition.Top || pagerSettings.Position == PagerPosition.TopAndBottom) {
 				topPagerRow = CreateRow (-1, DataControlRowType.Pager, DataControlRowState.Normal);
-				InitializePager (topPagerRow, pagedDataSource);
+				InitializePager (topPagerRow, dataSource);
 				table.Rows.Add (topPagerRow);
 			}
 
@@ -1024,7 +1024,7 @@ namespace System.Web.UI.WebControls
 			
 			if (showPager && pagerSettings.Position == PagerPosition.Bottom || pagerSettings.Position == PagerPosition.TopAndBottom) {
 				bottomPagerRow = CreateRow (0, DataControlRowType.Pager, DataControlRowState.Normal);
-				InitializePager (bottomPagerRow, pagedDataSource);
+				InitializePager (bottomPagerRow, dataSource);
 				table.Rows.Add (bottomPagerRow);
 			}
 
@@ -1046,7 +1046,7 @@ namespace System.Web.UI.WebControls
 			return rstate;
 		}
 		
-		protected virtual void InitializePager (FormViewRow row, PagedDataSource pagedDataSource)
+		protected virtual void InitializePager (FormViewRow row, PagedDataSource dataSource)
 		{
 			TableCell cell = new TableCell ();
 			cell.ColumnSpan = 2;
@@ -1054,7 +1054,7 @@ namespace System.Web.UI.WebControls
 			if (pagerTemplate != null)
 				pagerTemplate.InstantiateIn (cell);
 			else
-				cell.Controls.Add (PagerSettings.CreatePagerControl (pagedDataSource.CurrentPageIndex, pagedDataSource.PageCount));
+				cell.Controls.Add (PagerSettings.CreatePagerControl (dataSource.CurrentPageIndex, dataSource.PageCount));
 			
 			row.Cells.Add (cell);
 		}
@@ -1497,10 +1497,10 @@ namespace System.Web.UI.WebControls
 			RequireBinding ();
 		}
 
-		protected internal override void LoadControlState (object savedState)
+		protected internal override void LoadControlState (object ob)
 		{
-			if (savedState == null) return;
-			object[] state = (object[]) savedState;
+			if (ob == null) return;
+			object[] state = (object[]) ob;
 			base.LoadControlState (state[0]);
 			pageIndex = (int) state[1];
 			pageCount = (int) state[2];

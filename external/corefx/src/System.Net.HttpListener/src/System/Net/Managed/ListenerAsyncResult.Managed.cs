@@ -30,7 +30,6 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System.Runtime.ExceptionServices;
 using System.Threading;
 
 namespace System.Net
@@ -148,14 +147,9 @@ namespace System.Net
         internal HttpListenerContext GetContext()
         {
             if (_forward != null)
-            {
                 return _forward.GetContext();
-            }
-
             if (_exception != null)
-            {
-                ExceptionDispatchInfo.Capture(_exception).Throw();
-            }
+                throw _exception;
 
             return _context;
         }

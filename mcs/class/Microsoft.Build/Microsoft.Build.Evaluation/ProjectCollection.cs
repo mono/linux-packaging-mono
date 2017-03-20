@@ -49,15 +49,15 @@ namespace Microsoft.Build.Evaluation
 {
 	public class ProjectCollection : IDisposable
 	{
-		public delegate void ProjectAddedEventHandler (object sender, ProjectAddedToProjectCollectionEventArgs e);
+		public delegate void ProjectAddedEventHandler (object target, ProjectAddedToProjectCollectionEventArgs args);
 		
 		public class ProjectAddedToProjectCollectionEventArgs : EventArgs
 		{
-			public ProjectAddedToProjectCollectionEventArgs (ProjectRootElement element)
+			public ProjectAddedToProjectCollectionEventArgs (ProjectRootElement project)
 			{
-				if (element == null)
+				if (project == null)
 					throw new ArgumentNullException ("project");
-				ProjectRootElement = element;
+				ProjectRootElement = project;
 			}
 			
 			public ProjectRootElement ProjectRootElement { get; private set; }
@@ -98,8 +98,8 @@ namespace Microsoft.Build.Evaluation
 		{
 		}
 
-		public ProjectCollection (ToolsetDefinitionLocations toolsetLocations)
-        	: this (null, null, toolsetLocations)
+		public ProjectCollection (ToolsetDefinitionLocations toolsetDefinitionLocations)
+        	: this (null, null, toolsetDefinitionLocations)
 		{
 		}
 

@@ -41,6 +41,7 @@ using NUnit.Framework;
 namespace MonoTests.System.Drawing
 {
 	[TestFixture]	
+	[SecurityPermission (SecurityAction.Deny, UnmanagedCode = true)]
 	public class PointConverterTest
 	{
 		Point pt;
@@ -221,7 +222,7 @@ namespace MonoTests.System.Drawing
 			try {
 				// culture == null
 				ptconv.ConvertTo (null, null, pt, typeof (string));
-			} catch (NullReferenceException) {
+			} catch (NullReferenceException e) {
 				Assert.Fail ("CT#8: must not throw NullReferenceException");
 			}
 		}
@@ -252,12 +253,13 @@ namespace MonoTests.System.Drawing
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void TestCreateInstance_CaseSensitive ()
 		{
 			Hashtable ht = new Hashtable ();
 			ht.Add ("x", 2);
 			ht.Add ("Y", 3);
-			Assert.Throws<ArgumentException> (() => ptconv.CreateInstance (null, ht));
+			ptconv.CreateInstance (null, ht);
 		}
 
 		[Test]
@@ -303,9 +305,10 @@ namespace MonoTests.System.Drawing
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void ConvertFromInvariantString_string_exc_1 ()
 		{
-			Assert.Throws<ArgumentException> (() => ptconv.ConvertFromInvariantString ("1"));
+			ptconv.ConvertFromInvariantString ("1");
 		}
 
 		[Test]
@@ -338,9 +341,10 @@ namespace MonoTests.System.Drawing
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void ConvertFromString_string_exc_1 ()
 		{
-			Assert.Throws<ArgumentException> (() => ptconv.ConvertFromString ("1"));
+			ptconv.ConvertFromString ("1");
 		}
 
 		[Test]

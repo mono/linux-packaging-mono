@@ -9,7 +9,6 @@ using System.IO;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Runtime.ExceptionServices;
 using System.Security.Authentication;
 using System.Security.Authentication.ExtendedProtection;
 using System.Security.Cryptography.X509Certificates;
@@ -222,7 +221,7 @@ namespace System.Net.Mail
                 if ((e.StatusCode != SmtpStatusCode.CommandUnrecognized)
                     && (e.StatusCode != SmtpStatusCode.CommandNotImplemented))
                 {
-                    throw;
+                    throw e;
                 }
 
                 HelloCommand.Send(this, _client.clientDomain);
@@ -454,9 +453,9 @@ namespace System.Net.Mail
             {
                 ConnectAndHandshakeAsyncResult thisPtr = (ConnectAndHandshakeAsyncResult)result;
                 object connectResult = thisPtr.InternalWaitForCompletion();
-                if (connectResult is Exception e)
+                if (connectResult is Exception)
                 {
-                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw (Exception)connectResult;
                 }
             }
 
@@ -642,7 +641,7 @@ namespace System.Net.Mail
                             if ((e.StatusCode != SmtpStatusCode.CommandUnrecognized)
                                 && (e.StatusCode != SmtpStatusCode.CommandNotImplemented))
                             {
-                                throw;
+                                throw e;
                             }
 
                             if (!thisPtr.SendHello())

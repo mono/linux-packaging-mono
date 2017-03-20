@@ -4,14 +4,10 @@ include ../../build/rules.make
 
 LIBRARY = System.Numerics.dll
 LIB_REFS = System
-LIB_MCS_FLAGS = /unsafe
+LIB_MCS_FLAGS = /unsafe -nowarn:414 -nowarn:436
 TEST_MCS_FLAGS = $(LIB_MCS_FLAGS)
-XTEST_LIB_REFS = System Facades/System.Threading.Tasks System.Runtime.InteropServices.RuntimeInformation System.Core System.Numerics.Vectors Microsoft.CSharp
-XTEST_LIB_FLAGS = -unsafe
 
-RESX_RESOURCE_STRING = \
-	../../../external/corefx/src/System.Runtime.Numerics/src/Resources/Strings.resx \
-	../../../external/corefx/src/System.Numerics.Vectors/src/Resources/Strings.resx
+TXT_RESOURCE_STRINGS = ../referencesource/System.Numerics/System.Numerics.txt
 
 EXTRA_DISTFILES =
 

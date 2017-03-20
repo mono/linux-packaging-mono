@@ -20,7 +20,7 @@ namespace System.Linq.Parallel.Tests
         {
             // The operation will overflow for long-running sizes, but that's okay:
             // The helper is overflowing too!
-            Assert.Equal(Functions.SumRange(0, count), UnorderedSources.Default(count).Aggregate((x, y) => unchecked(x + y)));
+            Assert.Equal(Functions.SumRange(0, count), UnorderedSources.Default(count).Aggregate((x, y) => x + y));
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace System.Linq.Parallel.Tests
         [InlineData(16)]
         public static void Aggregate_Sum_Seed(int count)
         {
-            Assert.Equal(Functions.SumRange(0, count), UnorderedSources.Default(count).Aggregate(0, (x, y) => unchecked(x + y)));
+            Assert.Equal(Functions.SumRange(0, count), UnorderedSources.Default(count).Aggregate(0, (x, y) => x + y));
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace System.Linq.Parallel.Tests
         {
             // The operation will overflow for long-running sizes, but that's okay:
             // The helper is overflowing too!
-            Assert.Equal(Functions.ProductRange(1, count), ParallelEnumerable.Range(1, count).Aggregate(1L, (x, y) => unchecked(x * y)));
+            Assert.Equal(Functions.ProductRange(1, count), ParallelEnumerable.Range(1, count).Aggregate(1L, (x, y) => x * y));
         }
 
         [Fact]
@@ -91,8 +91,7 @@ namespace System.Linq.Parallel.Tests
         [InlineData(16)]
         public static void Aggregate_Sum_Result(int count)
         {
-            Assert.Equal(Functions.SumRange(0, count) + ResultFuncModifier,
-                         UnorderedSources.Default(count).Aggregate(0, (x, y) => unchecked(x + y), result => result + ResultFuncModifier));
+            Assert.Equal(Functions.SumRange(0, count) + ResultFuncModifier, UnorderedSources.Default(count).Aggregate(0, (x, y) => x + y, result => result + ResultFuncModifier));
         }
 
         [Fact]
@@ -109,8 +108,7 @@ namespace System.Linq.Parallel.Tests
         [InlineData(16)]
         public static void Aggregate_Product_Result(int count)
         {
-            Assert.Equal(Functions.ProductRange(1, count) + ResultFuncModifier,
-                         ParallelEnumerable.Range(1, count).Aggregate(1L, (x, y) => unchecked(x * y), result => result + ResultFuncModifier));
+            Assert.Equal(Functions.ProductRange(1, count) + ResultFuncModifier, ParallelEnumerable.Range(1, count).Aggregate(1L, (x, y) => x * y, result => result + ResultFuncModifier));
         }
 
         [Fact]
@@ -148,7 +146,7 @@ namespace System.Linq.Parallel.Tests
             int actual = query.Aggregate(
                 0,
                 (accumulator, x) => accumulator + x,
-                (left, right) => unchecked(left + right),
+                (left, right) => left + right,
                 result => result + ResultFuncModifier);
             Assert.Equal(Functions.SumRange(0, count) + ResultFuncModifier, actual);
         }
@@ -170,7 +168,7 @@ namespace System.Linq.Parallel.Tests
             ParallelQuery<int> query = ParallelEnumerable.Range(1, count);
             long actual = query.Aggregate(
                 1L,
-                (accumulator, x) => unchecked(accumulator * x),
+                (accumulator, x) => accumulator * x,
                 (left, right) => left * right,
                 result => result + ResultFuncModifier);
             Assert.Equal(Functions.ProductRange(1, count) + ResultFuncModifier, actual);
@@ -217,7 +215,7 @@ namespace System.Linq.Parallel.Tests
             int actual = query.Aggregate(
                 () => 0,
                 (accumulator, x) => accumulator + x,
-                (left, right) => unchecked(left + right),
+                (left, right) => left + right,
                 result => result + ResultFuncModifier);
             Assert.Equal(Functions.SumRange(0, count) + ResultFuncModifier, actual);
         }
@@ -239,7 +237,7 @@ namespace System.Linq.Parallel.Tests
             ParallelQuery<int> query = ParallelEnumerable.Range(1, count);
             long actual = query.Aggregate(
                 () => 1L,
-                (accumulator, x) => unchecked(accumulator * x),
+                (accumulator, x) => accumulator * x,
                 (left, right) => left * right,
                 result => result + ResultFuncModifier);
             Assert.Equal(Functions.ProductRange(1, count) + ResultFuncModifier, actual);

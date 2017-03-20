@@ -372,17 +372,17 @@ namespace System.Xml.Schema
                         else
                         {
                             XmlReader reader = null;
-                            if (returnType.IsSubclassOf(typeof(Stream)))
+                            if (returnType.GetTypeInfo().IsSubclassOf(typeof(Stream)))
                             {
                                 _readerSettings.CloseInput = true;
                                 _readerSettings.XmlResolver = _xmlResolver;
                                 reader = XmlReader.Create((Stream)obj, _readerSettings, ruri.ToString());
                             }
-                            else if (returnType.IsSubclassOf(typeof(XmlReader)))
+                            else if (returnType.GetTypeInfo().IsSubclassOf(typeof(XmlReader)))
                             {
                                 reader = (XmlReader)obj;
                             }
-                            else if (returnType.IsSubclassOf(typeof(TextReader)))
+                            else if (returnType.GetTypeInfo().IsSubclassOf(typeof(TextReader)))
                             {
                                 _readerSettings.CloseInput = true;
                                 _readerSettings.XmlResolver = _xmlResolver;

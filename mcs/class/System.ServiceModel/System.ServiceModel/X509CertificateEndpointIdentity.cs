@@ -40,12 +40,12 @@ namespace System.ServiceModel
 		X509Certificate2 primary;
 		X509Certificate2Collection supporting, all;
 
-		public X509CertificateEndpointIdentity (X509Certificate2 certificate)
+		public X509CertificateEndpointIdentity (X509Certificate2 cert)
 		{
-			if (certificate == null)
-				throw new ArgumentNullException ("certificate");
-			primary = certificate;
-			Initialize (Claim.CreateThumbprintClaim (certificate.GetCertHash ()));
+			if (cert == null)
+				throw new ArgumentNullException ("cert");
+			primary = cert;
+			Initialize (Claim.CreateThumbprintClaim (cert.GetCertHash ()));
 		}
 
 		public X509CertificateEndpointIdentity (

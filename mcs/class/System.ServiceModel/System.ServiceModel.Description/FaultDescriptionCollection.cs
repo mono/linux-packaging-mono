@@ -40,20 +40,20 @@ namespace System.ServiceModel.Description
 		{
 		}
 
-		public FaultDescription Find (string action)
+		public FaultDescription Find (string name)
 		{
 			foreach (FaultDescription d in this)
-				if (d.Name == action)
+				if (d.Name == name)
 					return d;
 			return null;
 		}
 
-		public Collection<FaultDescription> FindAll (string action)
+		public Collection<FaultDescription> FindAll (string name)
 		{
 			Collection<FaultDescription> ret =
 				new Collection<FaultDescription> ();
 			foreach (FaultDescription d in this)
-				if (d.Name == action)
+				if (d.Name == name)
 					ret.Add (d);
 			return ret;
 		}

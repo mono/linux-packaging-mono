@@ -47,9 +47,9 @@ namespace System.ServiceModel.Channels {
 			return CreateNavigator (XmlSpace.Default);
 		}
 
-		public XPathNavigator CreateNavigator (int nodeQuota)
+		public XPathNavigator CreateNavigator (int node_quota)
 		{
-			return CreateNavigator (nodeQuota, XmlSpace.Default);
+			return CreateNavigator (node_quota, XmlSpace.Default);
 		}
 
 		[MonoTODO ("supply proper quota")]
@@ -60,10 +60,10 @@ namespace System.ServiceModel.Channels {
 		}
 
 		[MonoTODO ("Handle node_quota and xmlspace")]
-		public XPathNavigator CreateNavigator (int nodeQuota, XmlSpace space)
+		public XPathNavigator CreateNavigator (int node_quota, XmlSpace space)
 		{
 			if (nav_cache == null) {
-				DTMXPathDocumentWriter2 pw = new DTMXPathDocumentWriter2 (new NameTable (), nodeQuota);
+				DTMXPathDocumentWriter2 pw = new DTMXPathDocumentWriter2 (new NameTable (), node_quota);
 				XmlDictionaryWriter w = XmlDictionaryWriter.CreateDictionaryWriter (pw);
 				CreateMessage ().WriteMessage (w);
 				nav_cache = pw.CreateDocument ().CreateNavigator ();

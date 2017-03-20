@@ -280,6 +280,7 @@ namespace System.Net.Primitives.Functional.Tests
             Assert.False(ip4.GetHashCode().Equals(ip6.GetHashCode()));
         }
 
+#if NetStandard17
 #pragma warning disable 618
          [Fact]
          public static void Address_Property_Failure()
@@ -298,5 +299,6 @@ namespace System.Net.Primitives.Functional.Tests
              Assert.Equal("10.0.168.192" , ip1.ToString());
          }
 #pragma warning restore 618
+#endif //NetStandard17
     }
 }

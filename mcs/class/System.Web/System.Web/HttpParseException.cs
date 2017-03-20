@@ -81,9 +81,9 @@ namespace System.Web
 		}
 
 		[SecurityPermission (SecurityAction.Demand, SerializationFormatter = true)]
-		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		public override void GetObjectData (SerializationInfo info, StreamingContext ctx)
 		{
-			base.GetObjectData (info, context);
+			base.GetObjectData (info, ctx);
 			info.AddValue ("_virtualPath", virtualPath);
 			info.AddValue ("_parserErrors", errors);
 			info.AddValue ("_line", line);

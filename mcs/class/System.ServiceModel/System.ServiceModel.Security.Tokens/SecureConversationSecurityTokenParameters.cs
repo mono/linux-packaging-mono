@@ -111,11 +111,11 @@ namespace System.ServiceModel.Security.Tokens
 		}
 #endif
 
-		protected SecureConversationSecurityTokenParameters (SecureConversationSecurityTokenParameters other)
-			: base (other)
+		protected SecureConversationSecurityTokenParameters (SecureConversationSecurityTokenParameters source)
+			: base (source)
 		{
-			this.element = (SecurityBindingElement) other.element.Clone ();
-			this.cancellable = other.cancellable;
+			this.element = (SecurityBindingElement) source.element.Clone ();
+			this.cancellable = source.cancellable;
 #if !MOBILE && !XAMMAC_4_5
 			this.requirements = new ChannelProtectionRequirements (default_channel_protection_requirements);
 #endif

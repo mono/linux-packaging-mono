@@ -8,7 +8,6 @@ using System.Text;
 using System.Collections;
 using System.Globalization;
 using System.Net.Mail;
-using System.Runtime.ExceptionServices;
 
 namespace System.Net.Mime
 {
@@ -162,7 +161,7 @@ namespace System.Net.Mime
             MimePartContext context = (MimePartContext)result.AsyncState;
             if (context._completed)
             {
-                ExceptionDispatchInfo.Capture(e).Throw();
+                throw e;
             }
 
             try

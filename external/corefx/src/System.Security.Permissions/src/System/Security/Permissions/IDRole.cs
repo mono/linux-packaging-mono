@@ -48,12 +48,9 @@ namespace System.Security.Permissions
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return ((Authenticated ? 0 : 101) +
+            return ((Authenticated ? 0 : 101) +
                         (ID == null ? 0 : ID.GetHashCode()) +
                         (Role == null ? 0 : Role.GetHashCode()));
-            }
         }
     }
 }

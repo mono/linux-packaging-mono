@@ -257,7 +257,7 @@ load_image (MonoAotModule *amodule, int index, MonoError *error)
 
 	g_assert (index < amodule->image_table_len);
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (amodule->image_table [index])
 		return amodule->image_table [index];
@@ -374,7 +374,7 @@ decode_generic_inst (MonoAotModule *module, guint8 *buf, guint8 **endbuf, MonoEr
 	MonoGenericInst *inst;
 	guint8 *p = buf;
 
-	error_init (error);
+	mono_error_init (error);
 	type_argc = decode_value (p, &p);
 	type_argv = g_new0 (MonoType*, type_argc);
 
@@ -401,7 +401,7 @@ decode_generic_context (MonoAotModule *module, MonoGenericContext *ctx, guint8 *
 	guint8 *p = buf;
 	guint8 *p2;
 	int argc;
-	error_init (error);
+	mono_error_init (error);
 
 	p2 = p;
 	argc = decode_value (p, &p);
@@ -433,7 +433,7 @@ decode_klass_ref (MonoAotModule *module, guint8 *buf, guint8 **endbuf, MonoError
 	guint8 *p = buf;
 	int reftype;
 
-	error_init (error);
+	mono_error_init (error);
 	reftype = decode_value (p, &p);
 	if (reftype == 0) {
 		*endbuf = p;
@@ -621,7 +621,7 @@ decode_type (MonoAotModule *module, guint8 *buf, guint8 **endbuf, MonoError *err
 	MonoType *t;
 
 	t = (MonoType *)g_malloc0 (sizeof (MonoType));
-	error_init (error);
+	mono_error_init (error);
 
 	while (TRUE) {
 		if (*p == MONO_TYPE_PINNED) {
@@ -852,7 +852,7 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 	guint8 *p = buf;
 
 	memset (ref, 0, sizeof (MethodRef));
-	error_init (error);
+	mono_error_init (error);
 
 	value = decode_value (p, &p);
 	image_index = value >> 24;
@@ -1214,9 +1214,7 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 			klass = decode_klass_ref (module, p, &p, error);
 			if (!klass)
 				return FALSE;
-			ref->method = mono_marshal_get_managed_wrapper (m, klass, 0, error);
-			if (!mono_error_ok (error))
-				return FALSE;
+			ref->method = mono_marshal_get_managed_wrapper (m, klass, 0);
 			break;
 		}
 		default:
@@ -1340,7 +1338,7 @@ decode_resolve_method_ref_with_target (MonoAotModule *module, MonoMethod *target
 {
 	MethodRef ref;
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (!decode_method_ref_with_target (module, &ref, target, buf, endbuf, error))
 		return NULL;
@@ -2262,7 +2260,7 @@ load_aot_module (MonoAssembly *assembly, gpointer user_data)
 	/*
 	 * Register the plt region as a single trampoline so we can unwind from this code
 	 */
-	mono_aot_tramp_info_register (
+	mono_tramp_info_register (
 		mono_tramp_info_create (
 			NULL,
 			amodule->plt,
@@ -2432,7 +2430,7 @@ mono_aot_get_method_from_vt_slot (MonoDomain *domain, MonoVTable *vtable, int sl
 	gpointer addr;
 	MonoError inner_error;
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (MONO_CLASS_IS_INTERFACE (klass) || klass->rank || !amodule)
 		return NULL;
@@ -3851,7 +3849,7 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 	guint8 *code = NULL, *info;
 	gboolean res;
 
-	error_init (error);
+	mono_error_init (error);
 
 	init_amodule_got (amodule);
 
@@ -4144,7 +4142,7 @@ init_method (MonoAotModule *amodule, guint32 method_index, MonoMethod *method, M
 	MonoJitInfo *jinfo = NULL;
 	guint8 *code, *info;
 
-	error_init (error);
+	mono_error_init (error);
 
 	code = (guint8 *)amodule->methods [method_index];
 	info = &amodule->blob [mono_aot_get_offset (amodule->method_info_offsets, method_index)];
@@ -4355,7 +4353,7 @@ mono_aot_get_method_checked (MonoDomain *domain, MonoMethod *method, MonoError *
 	gboolean cache_result = FALSE;
 	MonoError inner_error;
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (domain != mono_get_root_domain ())
 		/* Non shared AOT code can't be used in other appdomains */
@@ -4621,7 +4619,7 @@ mono_aot_get_method_from_token (MonoDomain *domain, MonoImage *image, guint32 to
 	int method_index;
 	gpointer res;
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (!aot_module)
 		return NULL;
@@ -4740,7 +4738,7 @@ mono_aot_plt_resolve (gpointer aot_module, guint32 plt_info_offset, guint8 *code
 	MonoMemPool *mp;
 	gboolean using_gsharedvt = FALSE;
 
-	error_init (error);
+	mono_error_init (error);
 
 	//printf ("DYN: %p %d\n", aot_module, plt_info_offset);
 
@@ -5143,7 +5141,7 @@ mono_aot_get_trampoline (const char *name)
 	gpointer code;
 
 	code =  mono_aot_get_trampoline_full (name, &out_tinfo);
-	mono_aot_tramp_info_register (out_tinfo, NULL);
+	mono_tramp_info_register (out_tinfo, NULL);
 
 	return code;
 }
@@ -5297,7 +5295,7 @@ get_new_trampoline_from_page (int tramp_type)
 		/* Register the generic part at the beggining of the trampoline page */
 		gen_info = mono_tramp_info_create (NULL, (guint8*)taddr, amodule->info.tramp_page_code_offsets [tramp_type], NULL, NULL);
 		read_page_trampoline_uwinfo (gen_info, tramp_type, TRUE);
-		mono_aot_tramp_info_register (gen_info, NULL);
+		mono_tramp_info_register (gen_info, NULL);
 		/*
 		 * FIXME
 		 * Registering each specific trampoline produces a lot of
@@ -5308,7 +5306,7 @@ get_new_trampoline_from_page (int tramp_type)
 			/* Register the rest of the page as a single trampoline */
 			sp_info = mono_tramp_info_create (NULL, code, page->trampolines_end - code, NULL, NULL);
 			read_page_trampoline_uwinfo (sp_info, tramp_type, FALSE);
-			mono_aot_tramp_info_register (sp_info, NULL);
+			mono_tramp_info_register (sp_info, NULL);
 		}
 		return code;
 	}
@@ -5577,7 +5575,7 @@ mono_aot_get_unbox_trampoline (MonoMethod *method)
 	}
 
 	tinfo->code_size = *(guint32*)symbol_addr;
-	mono_aot_tramp_info_register (tinfo, NULL);
+	mono_tramp_info_register (tinfo, NULL);
 
 	/* The caller expects an ftnptr */
 	return mono_create_ftnptr (mono_domain_get (), code);
@@ -5839,7 +5837,7 @@ gpointer
 mono_aot_get_method_checked (MonoDomain *domain,
 							 MonoMethod *method, MonoError *error)
 {
-	error_init (error);
+	mono_error_init (error);
 	return NULL;
 }
 
@@ -5870,7 +5868,7 @@ mono_aot_find_jit_info (MonoDomain *domain, MonoImage *image, gpointer addr)
 gpointer
 mono_aot_get_method_from_token (MonoDomain *domain, MonoImage *image, guint32 token, MonoError *error)
 {
-	error_init (error);
+	mono_error_init (error);
 	return NULL;
 }
 
@@ -5894,7 +5892,7 @@ mono_aot_patch_plt_entry (guint8 *code, guint8 *plt_entry, gpointer *got, mgreg_
 gpointer
 mono_aot_get_method_from_vt_slot (MonoDomain *domain, MonoVTable *vtable, int slot, MonoError *error)
 {
-	error_init (error);
+	mono_error_init (error);
 
 	return NULL;
 }

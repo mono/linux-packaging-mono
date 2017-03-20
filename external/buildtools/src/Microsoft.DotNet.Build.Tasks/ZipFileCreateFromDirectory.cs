@@ -31,11 +31,6 @@ namespace Microsoft.DotNet.Build.Tasks
         public bool OverwriteDestination { get; set; }
 
         /// <summary>
-        /// If zipping an entire folder without exclusion patterns, whether to include the folder in the archive.
-        /// </summary>
-        public bool IncludeBaseDirectory { get; set; }
-
-        /// <summary>
         /// An item group of regular expressions for content to exclude from the archive.
         /// </summary>
         public ITaskItem[] ExcludePatterns { get; set; }
@@ -63,7 +58,7 @@ namespace Microsoft.DotNet.Build.Tasks
 
                 if (ExcludePatterns == null)
                 {
-                    ZipFile.CreateFromDirectory(SourceDirectory, DestinationArchive, CompressionLevel.Optimal, IncludeBaseDirectory);
+                    ZipFile.CreateFromDirectory(SourceDirectory, DestinationArchive);
                 }
                 else
                 {
@@ -107,8 +102,8 @@ namespace Microsoft.DotNet.Build.Tasks
             catch (Exception e)
             {
                 // We have 2 log calls because we want a nice error message but we also want to capture the callstack in the log.
-                Log.LogError("An exception has occurred while trying to compress '{0}' into '{1}'.", SourceDirectory, DestinationArchive);
-                Log.LogErrorFromException(e, /*show stack=*/ true, /*show detail=*/ true, DestinationArchive);
+                Log.LogError("An exception has occured while trying to compress '{0}' into '{1}'.", SourceDirectory, DestinationArchive);
+                Log.LogMessage(MessageImportance.Low, e.ToString());
                 return false;
             }
 

@@ -109,7 +109,7 @@ namespace System.Xml
         //
         private readonly bool _useAsync;
 
-        #region Later Init Fields
+        #region Later Init Fileds
 
         //later init means in the construction stage, do not open filestream and do not read any data from Stream/TextReader
         //the purpose is to make the Create of XmlReader do not block on IO.
@@ -318,7 +318,14 @@ namespace System.Xml
             _nameTable = nt;
             nt.Add(string.Empty);
 
-            _xmlResolver = null;
+            if (!System.Xml.XmlReaderSettings.EnableLegacyXmlSettings())
+            {
+                _xmlResolver = null;
+            }
+            else
+            {
+                _xmlResolver = new XmlUrlResolver();
+            }
 
             _xml = nt.Add("xml");
             _xmlNs = nt.Add("xmlns");
@@ -821,7 +828,11 @@ namespace System.Xml
                 settings.DtdProcessing = _dtdProcessing;
                 settings.MaxCharactersInDocument = _maxCharactersInDocument;
                 settings.MaxCharactersFromEntities = _maxCharactersFromEntities;
-                settings.XmlResolver = _xmlResolver;
+
+                if (!System.Xml.XmlReaderSettings.EnableLegacyXmlSettings())
+                {
+                    settings.XmlResolver = _xmlResolver;
+                }
                 settings.ReadOnly = true;
                 return settings;
             }
@@ -4079,7 +4090,7 @@ namespace System.Xml
                 {
                     goto ReadData;
                 }
-                // something else -> root level whitespace
+                // something else -> root level whitespaces
                 else
                 {
                     if (_fragmentType == XmlNodeType.Document)
@@ -4438,7 +4449,7 @@ namespace System.Xml
             }
 
             char ch = chars[pos];
-            // whitespace after element name -> there are probably some attributes
+            // white space after element name -> there are probably some attributes
             bool isWs;
             unsafe
             {
@@ -4641,7 +4652,7 @@ namespace System.Xml
                     }
                 }
 
-                // eat whitespace
+                // eat whitespaces
                 if (chars[pos] != '>')
                 {
                     char tmpCh;
@@ -4738,7 +4749,7 @@ namespace System.Xml
 
             for (;;)
             {
-                // eat whitespace
+                // eat whitespaces
                 int lineNoDelta = 0;
                 char tmpch0;
                 unsafe
@@ -5469,9 +5480,9 @@ namespace System.Xml
             }
         }
 
-        // Parses text or whitespace node.
+        // Parses text or white space node.
         // Returns true if a node has been parsed and its data set to curNode. 
-        // Returns false when a whitespace has been parsed and ignored (according to current whitespace handling) or when parsing mode is not Full.
+        // Returns false when a white space has been parsed and ignored (according to current whitespace handling) or when parsing mode is not Full.
         // Also returns false if there is no text to be parsed.
         private bool ParseText()
         {

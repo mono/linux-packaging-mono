@@ -34,8 +34,8 @@ namespace System.ServiceModel {
 	public class AddressAlreadyInUseException : CommunicationException
 	{
 		public AddressAlreadyInUseException () : base () {}
-		public AddressAlreadyInUseException (string message) : base (message) {}
-		public AddressAlreadyInUseException (string message, Exception innerException) : base (message, innerException) {}
+		public AddressAlreadyInUseException (string msg) : base (msg) {}
+		public AddressAlreadyInUseException (string msg, Exception inner) : base (msg, inner) {}
 		protected AddressAlreadyInUseException (SerializationInfo info, StreamingContext context) :
 			base (info, context) {}
 

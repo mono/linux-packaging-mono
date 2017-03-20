@@ -241,7 +241,7 @@ namespace System.Net.Primitives.Functional.Tests
         }
         
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.Uap)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.NetcoreUwp)]
         public static void Value_PassNullToCtor_GetReturnsEmptyString_net46()
         {
             var cookie = new Cookie("SomeName", null);

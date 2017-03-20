@@ -64,16 +64,11 @@ build-tests
 build -debug -buildArch=x64
 ```
 
-- Building the src and then building and running the tests
-```
-build -tests
-```
-
 - Building for different target frameworks
 ```
-build -framework=netcoreapp
-build -framework=netfx
-build -framework=uap
+build -framework netcoreapp
+build -framework netfx
+build -framework uap
 ```
 
 ###Build Native
@@ -128,7 +123,7 @@ build-tests -skiptests
 
 - The following builds and runs all tests for netcoreapp in release configuration.
 ```
-build-tests -release -framework=netcoreapp
+build-tests -release -framework netcoreapp
 ```
 
 - The following example shows the argument `--`. Everything that is after it is not going to be processed and it is going to be passed as it is.
@@ -310,32 +305,3 @@ msbuild /t:BuildAndTest /p:TargetGroup=uap
 In this case, your test will get executed within the context of a wrapper UWP application, targeting the Managed uap as opposed to the .NET Native version.
 
 The CoreFX build and test suite is a work in progress, as are the [building and testing instructions](../README.md). The .NET Core team and the community are improving Linux and OS X support on a daily basis and are adding more tests for all platforms. See [CoreFX Issues](https://github.com/dotnet/corefx/issues) to find out about specific work items or report issues.
-
-## Testing with private CoreCLR bits
-
-Generally the CoreFx build system gets the CoreCLR from a nuget package which gets pulled down and correctly copied to the various output directories by building '\external\runtime\runtime.depproj' which gets built as part of `build.cmd/sh`. For folks that want to do builds and test runs in corefx with a local private build of coreclr you can follow these steps:
-
-
-1. Build CoreCLR and note your output directory. Ex: `\coreclr\bin\Product\Windows_NT.x64.Release\` Note this will vary based on your OS/Architecture/Flavor and it is generally a good idea to use Release builds for CoreCLR when running CoreFx tests and the OS and Architecture should match what you are building in CoreFx.
-2. Build CoreFx either passing in the `CoreCLROverridePath` property or setting it as an environment variable:
-```
-build.cmd -- /p:CoreCLROverridePath=d:\git\coreclr\bin\Product\Windows_NT.x64.Release\
-```
-
-When we copy the files to override the CoreCLR we do a hard-link copy, so in general if you rebuild CoreCLR the new binaries should be reflected in CoreFx for subsequent builds of individual projects in corefx. However if you want to force refresh or if you want to just update the CoreCLR after you already ran `build.cmd` from CoreFx you can run the following command:
-
-```
-msbuild /p:CoreCLROverridePath=d:\git\coreclr\bin\Product\Windows_NT.x64.Release\ ./external/runtime/runtime.depproj
-```
-
-By convention the project will look for PDBs in a directory under `$(CoreCLROverridePath)/PDB` and if found will also copy them. If not found no PDBs will be copied. If you want to explicitly set the PDB path then you can pass `CoreCLRPDBOverridePath` property to that PDB directory.
-
-Also to aide with code coverage runs if the `Coverage` property is set to true we will skip copying any *.ni.* files to the output.
-
-Once you have updated your CoreCLR you can run tests however you usually do (via build-tests.cmd, individual test project, in VS, etc) and it should be using your copy of CoreCLR. If you want to verify that your bits are being used have a look in `\corefx\bin\testhost\netcoreapp-Windows_NT-Debug-x64\shared\Microsoft.NETCore.App\9.9.9` which is the shared framework directory used by corefx tests.
-
-If you prefer, you can use a Debug build of System.Private.CoreLib, but if you do you must also use a Debug build of the native portions of the runtime, e.g. coreclr.dll. Tests with a Debug runtime will execute much more slowly than with Release runtime bits.
-
-To collect code coverage that includes types in System.Private.CoreLib.dll, you'll need to follow the above steps, then
-
-`msbuild /p:CoreCLROverridePath=d:\git\coreclr\bin\Product\Windows_NT.x64.Release\ /t:rebuildandtest /p:Coverage=true /p:CodeCoverageAssemblies="System.Private.CoreLib"`

@@ -41,26 +41,26 @@ namespace System.Transactions
 			this.options = options;
 		}
 
-		public IAsyncResult BeginCommit (AsyncCallback asyncCallback,
-			object asyncState)
+		public IAsyncResult BeginCommit (AsyncCallback callback,
+			object user_defined_state)
 		{
-			this.callback = asyncCallback;
-			this.user_defined_state = asyncState;
+			this.callback = callback;
+			this.user_defined_state = user_defined_state;
 
 			AsyncCallback cb = null;
-			if (asyncCallback != null)
+			if (callback != null)
 				cb = new AsyncCallback (CommitCallback);
 
 			asyncResult = BeginCommitInternal (cb);
 			return this;
 		}
 		
-		public void EndCommit (IAsyncResult asyncResult)
+		public void EndCommit (IAsyncResult ar)
 		{
-			if (asyncResult != this)
+			if (ar != this)
 				throw new ArgumentException ("The IAsyncResult parameter must be the same parameter as returned by BeginCommit.", "asyncResult");
 
-			EndCommitInternal (this.asyncResult);
+			EndCommitInternal (asyncResult);
 		}
 
 		private void CommitCallback (IAsyncResult ar)

@@ -35,11 +35,20 @@ namespace MonoTests.System.Configuration.Util
 
     public static class TestUtil
     {
+
         public static void RunWithTempFile(Action<string> action)
         {
-            using (var temp = new TempDirectory())
+            var filename = Path.GetTempFileName();
+
+            try
             {
-                action(temp.GenerateRandomFilePath());
+                File.Delete(filename);
+                action(filename);
+            }
+            finally
+            {
+                if (File.Exists(filename))
+                    File.Delete(filename);
             }
         }
 
@@ -48,9 +57,21 @@ namespace MonoTests.System.Configuration.Util
 
         public static void RunWithTempFiles(MyAction<string, string> action)
         {
-            using (var temp = new TempDirectory())
+            var file1 = Path.GetTempFileName();
+            var file2 = Path.GetTempFileName();
+
+            try
             {
-                action(temp.GenerateRandomFilePath(), temp.GenerateRandomFilePath());
+                File.Delete(file1);
+                File.Delete(file2);
+                action(file1, file2);
+            }
+            finally
+            {
+                if (File.Exists(file1))
+                    File.Delete(file1);
+                if (File.Exists(file2))
+                    File.Delete(file2);
             }
         }
 

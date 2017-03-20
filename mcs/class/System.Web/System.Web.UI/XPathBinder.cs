@@ -42,22 +42,22 @@ namespace System.Web.UI
 		{
 		}
 
-		public static object Eval (object container, string xPath)
+		public static object Eval (object container, string xpath)
 		{
-			return Eval (container, xPath, (IXmlNamespaceResolver)null);
+			return Eval (container, xpath, (IXmlNamespaceResolver)null);
 		}
 
-		public static object Eval (object container, string xPath, IXmlNamespaceResolver resolver) 
+		public static object Eval (object container, string xpath, IXmlNamespaceResolver resolver) 
 		{
-			if (xPath == null || xPath.Length == 0)
-				throw new ArgumentNullException ("xPath");
+			if (xpath == null || xpath.Length == 0)
+				throw new ArgumentNullException ("xpath");
 
 			IXPathNavigable factory = container as IXPathNavigable;
 
 			if (factory == null)
 				throw new ArgumentException ("container");
 
-			object result = factory.CreateNavigator ().Evaluate (xPath, resolver);
+			object result = factory.CreateNavigator ().Evaluate (xpath, resolver);
 
 			XPathNodeIterator itr = result as XPathNodeIterator;
 			if (itr != null) {
@@ -70,14 +70,14 @@ namespace System.Web.UI
 			return result;
 		}
 
-		public static string Eval (object container, string xPath, string format)
+		public static string Eval (object container, string xpath, string format)
 		{
-			return Eval (container, xPath, format, null);
+			return Eval (container, xpath, format, null);
 		}
 
-		public static string Eval (object container, string xPath, string format, IXmlNamespaceResolver resolver)
+		public static string Eval (object container, string xpath, string format, IXmlNamespaceResolver resolver)
 		{
-			object result = Eval (container, xPath, resolver);
+			object result = Eval (container, xpath, resolver);
 			
 			if (result == null)
 				return String.Empty;
@@ -87,22 +87,22 @@ namespace System.Web.UI
 			return String.Format (format, result);
 		}
 
-		public static IEnumerable Select (object container, string xPath)
+		public static IEnumerable Select (object container, string xpath)
 		{
-			return Select (container, xPath, null);
+			return Select (container, xpath, null);
 		}
 
-		public static IEnumerable Select (object container, string xPath, IXmlNamespaceResolver resolver)
+		public static IEnumerable Select (object container, string xpath, IXmlNamespaceResolver resolver)
 		{
-			if (xPath == null || xPath.Length == 0)
-				throw new ArgumentNullException ("xPath");
+			if (xpath == null || xpath.Length == 0)
+				throw new ArgumentNullException ("xpath");
 			
 			IXPathNavigable factory = container as IXPathNavigable;
 			
 			if (factory == null)
 				throw new ArgumentException ("container");
 			
-			XPathNodeIterator itr = factory.CreateNavigator ().Select (xPath, resolver);
+			XPathNodeIterator itr = factory.CreateNavigator ().Select (xpath, resolver);
 			ArrayList ret = new ArrayList ();
 			
 			while (itr.MoveNext ()) {

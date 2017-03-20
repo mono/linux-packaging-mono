@@ -161,7 +161,7 @@ namespace System.Linq.Tests
                     ParameterInfo pb = pbs[i];
                     Type ta = Strip(pa.ParameterType);
                     Type tb = Strip(pb.ParameterType);
-                    if (ta.IsGenericType && tb.IsGenericType)
+                    if (ta.GetTypeInfo().IsGenericType && tb.GetTypeInfo().IsGenericType)
                     {
                         if (ta.GetGenericTypeDefinition() != tb.GetGenericTypeDefinition())
                         {
@@ -183,10 +183,10 @@ namespace System.Linq.Tests
 
             private Type Strip(Type t)
             {
-                if (t.IsGenericType)
+                if (t.GetTypeInfo().IsGenericType)
                 {
                     Type g = t;
-                    if (!g.IsGenericTypeDefinition)
+                    if (!g.GetTypeInfo().IsGenericTypeDefinition)
                     {
                         g = t.GetGenericTypeDefinition();
                     }

@@ -691,17 +691,17 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
             bool isExtensionMethod = false;
             // If the method we have bound to is an extension method and we are using it as an extension and not as a static method
-            if (methInvoke.Params.Count < @params.Count && mwiWrap.Meth().IsExtension())
+            if (methInvoke.Params.Size < @params.Size && mwiWrap.Meth().IsExtension())
             {
                 isExtensionMethod = true;
                 TypeArray extParams = GetTypes().SubstTypeArray(mwiWrap.Meth().Params, mwiWrap.GetType());
                 // The this parameter must be a reference type. 
-                if (extParams[0].IsTypeParameterType() ? !@params[0].IsRefType() : !extParams[0].IsRefType())
+                if (extParams.Item(0).IsTypeParameterType() ? !@params.Item(0).IsRefType() : !extParams.Item(0).IsRefType())
                 {
                     // We should issue a better message here. 
                     // We were only disallowing value types, hence the error message specific to value types.
                     // Now we are issuing the same error message for not-known to be reference types, not just value types.
-                    ErrorContext.Error(ErrorCode.ERR_ValueTypeExtDelegate, mwiWrap, extParams[0].IsTypeParameterType() ? @params[0] : extParams[0]);
+                    ErrorContext.Error(ErrorCode.ERR_ValueTypeExtDelegate, mwiWrap, extParams.Item(0).IsTypeParameterType() ? @params.Item(0) : extParams.Item(0));
                 }
             }
 
@@ -729,10 +729,10 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             TypeArray paramsReal = GetTypes().SubstTypeArray(mwiWrap.Meth().Params, mwiWrap.Ats, mwiWrap.TypeArgs);
             if (paramsReal != @params)
             {
-                for (int i = 0; i < paramsReal.Count; i++)
+                for (int i = 0; i < paramsReal.Size; i++)
                 {
-                    CType param = @params[i];
-                    CType paramReal = paramsReal[i];
+                    CType param = @params.Item(i);
+                    CType paramReal = paramsReal.Item(i);
 
                     if (param != paramReal && !CConversions.FImpRefConv(GetSymbolLoader(), param, paramReal))
                     {
@@ -754,7 +754,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
             obj = isExtensionMethod ? grp.GetOptionalObject() : obj;
             Debug.Assert(mwiWrap.Meth().getKind() == SYMKIND.SK_MethodSymbol);
-            if (mwiWrap.TypeArgs.Count > 0)
+            if (mwiWrap.TypeArgs.Size > 0)
             {
                 // Check method type variable constraints.
                 TypeBind.CheckMethConstraints(GetSemanticChecker(), GetErrorContext(), mwiWrap);
@@ -798,10 +798,10 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         private bool BindGrpConversionCore(out MethPropWithInst pmpwi, BindingFlag bindFlags, EXPRMEMGRP grp, ref TypeArray args, AggregateType atsDelegate, bool fReportErrors, out MethPropWithInst pmpwiAmbig)
         {
             bool retval = false;
-            int carg = args.Count;
+            int carg = args.Size;
 
             ArgInfos argParam = new ArgInfos();
-            argParam.carg = args.Count;
+            argParam.carg = args.Size;
             argParam.types = args;
             argParam.fHasExprs = false;
             GroupToArgsBinder binder = new GroupToArgsBinder(this, bindFlags, grp, argParam, null, false, atsDelegate);
@@ -819,8 +819,11 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
          */
         private bool canConvertInstanceParamForExtension(EXPR exprSrc, CType typeDest)
         {
-            CType typeSrc = exprSrc?.type;
-            return typeSrc != null && canConvertInstanceParamForExtension(typeSrc, typeDest);
+            if (exprSrc == null || exprSrc.type == null)
+            {
+                return false;
+            }
+            return canConvertInstanceParamForExtension(exprSrc.type, typeDest);
         }
 
         private bool canConvertInstanceParamForExtension(CType typeSrc, CType typeDest)
@@ -1032,7 +1035,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
                     for (MethodSymbol convCur = aggCur.GetFirstUDConversion(); convCur != null; convCur = convCur.ConvNext())
                     {
-                        if (convCur.Params.Count != 1)
+                        if (convCur.Params.Size != 1)
                         {
                             // If we have a user-defined conversion that 
                             // does not specify the correct number of parameters, we may
@@ -1048,7 +1051,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                             continue;
 
                         // Get the substituted src and dst types.
-                        typeFrom = GetTypes().SubstType(convCur.Params[0], atsCur);
+                        typeFrom = GetTypes().SubstType(convCur.Params.Item(0), atsCur);
                         typeTo = GetTypes().SubstType(convCur.RetType, atsCur);
 
                         bool fNeedImplicit = fImplicitOnly;
@@ -1208,7 +1211,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 UdConvInfo uci = prguci[iuci];
 
                 // Get the substituted src and dst types.
-                typeFrom = GetTypes().SubstType(uci.mwt.Meth().Params[0], uci.mwt.GetType());
+                typeFrom = GetTypes().SubstType(uci.mwt.Meth().Params.Item(0), uci.mwt.GetType());
                 typeTo = GetTypes().SubstType(uci.mwt.Meth().RetType, uci.mwt.GetType());
 
                 int ctypeLift = 0;
@@ -1310,7 +1313,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
             Debug.Assert(ctypeLiftBest <= 2);
 
-            typeFrom = GetTypes().SubstType(mwiBest.Meth().Params[0], mwiBest.GetType());
+            typeFrom = GetTypes().SubstType(mwiBest.Meth().Params.Item(0), mwiBest.GetType());
             typeTo = GetTypes().SubstType(mwiBest.Meth().RetType, mwiBest.GetType());
 
             EXPR exprDst;
@@ -1521,21 +1524,21 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                     {
                         valueInt = (Int64)valueFlt;
                     }
-                    valueInt = unchecked((sbyte)(valueInt & 0xFF));
+                    valueInt = (sbyte)(valueInt & 0xFF);
                     break;
                 case FUNDTYPE.FT_I2:
                     if (!srcIntegral)
                     {
                         valueInt = (Int64)valueFlt;
                     }
-                    valueInt = unchecked((short)(valueInt & 0xFFFF));
+                    valueInt = (short)(valueInt & 0xFFFF);
                     break;
                 case FUNDTYPE.FT_I4:
                     if (!srcIntegral)
                     {
                         valueInt = (Int64)valueFlt;
                     }
-                    valueInt = unchecked((int)(valueInt & 0xFFFFFFFF));
+                    valueInt = (int)(valueInt & 0xFFFFFFFF);
                     break;
                 case FUNDTYPE.FT_I8:
                     if (!srcIntegral)
@@ -1568,6 +1571,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                     if (!srcIntegral)
                     {
                         valueInt = (long)(ulong)valueFlt;
+                        // code below stolen from jit...
                         const double two63 = 2147483648.0 * 4294967296.0;
                         if (valueFlt < two63)
                         {

@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Data;
 using System.Data.SqlTypes;
-using System.Globalization;
 
 namespace Microsoft.SqlServer.Server
 {
@@ -133,7 +132,7 @@ namespace Microsoft.SqlServer.Server
                         DefaultNVarChar_NoCollation.MaxLength,
                         DefaultNVarChar_NoCollation.Precision,
                         DefaultNVarChar_NoCollation.Scale,
-                        CultureInfo.CurrentCulture.LCID,
+                        Locale.GetCurrentCultureLcid(),
                         SqlCompareOptions.IgnoreCase | SqlCompareOptions.IgnoreKanaType | SqlCompareOptions.IgnoreWidth
                         );
             }

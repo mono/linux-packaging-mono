@@ -35,8 +35,8 @@ namespace System.ServiceModel.Dispatcher
 	public class NavigatorInvalidBodyAccessException : InvalidBodyAccessException
 	{
 		public NavigatorInvalidBodyAccessException () : base ("Not allowed to navigate to body.") {}
-		public NavigatorInvalidBodyAccessException (string message) : base (message) {}
-		public NavigatorInvalidBodyAccessException (string message, Exception innerException) : base (message, innerException) {}
+		public NavigatorInvalidBodyAccessException (string msg) : base (msg) {}
+		public NavigatorInvalidBodyAccessException (string msg, Exception inner) : base (msg, inner) {}
 		protected NavigatorInvalidBodyAccessException (SerializationInfo info, StreamingContext context)
 			: base (info, context) {}
 	}

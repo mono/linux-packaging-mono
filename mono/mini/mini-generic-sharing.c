@@ -532,7 +532,6 @@ inflate_info (MonoRuntimeGenericContextInfoTemplate *oti, MonoGenericContext *co
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE:
 	case MONO_RGCTX_INFO_VALUE_SIZE:
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
-	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO:
 	case MONO_RGCTX_INFO_LOCAL_OFFSET:
@@ -871,7 +870,7 @@ class_get_rgctx_template_oti (MonoClass *klass, int type_argc, guint32 slot, gbo
 static gpointer
 class_type_info (MonoDomain *domain, MonoClass *klass, MonoRgctxInfoType info_type, MonoError *error)
 {
-	error_init (error);
+	mono_error_init (error);
 
 	switch (info_type) {
 	case MONO_RGCTX_INFO_STATIC_DATA: {
@@ -914,13 +913,6 @@ class_type_info (MonoDomain *domain, MonoClass *klass, MonoRgctxInfoType info_ty
 			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_NULLABLE);
 		else
 			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_VTYPE);
-	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
-		mono_class_init (klass);
-		/* Can't return 0 */
-		if (MONO_TYPE_IS_REFERENCE (&klass->byval_arg) || klass->has_references)
-			return GUINT_TO_POINTER (2);
-		else
-			return GUINT_TO_POINTER (1);
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO: {
 		static MonoMethod *memcpy_method [17];
@@ -1546,7 +1538,7 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 	gpointer data;
 	gboolean temporary;
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (!oti->data)
 		return NULL;
@@ -1574,7 +1566,6 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE:
 	case MONO_RGCTX_INFO_VALUE_SIZE:
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
-	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO:
 	case MONO_RGCTX_INFO_NULLABLE_CLASS_BOX:
@@ -2016,7 +2007,6 @@ mono_rgctx_info_type_to_str (MonoRgctxInfoType type)
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE: return "ARRAY_ELEMENT_SIZE";
 	case MONO_RGCTX_INFO_VALUE_SIZE: return "VALUE_SIZE";
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE: return "CLASS_BOX_TYPE";
-	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS: return "CLASS_IS_REF_OR_CONTAINS_REFS";
 	case MONO_RGCTX_INFO_FIELD_OFFSET: return "FIELD_OFFSET";
 	case MONO_RGCTX_INFO_METHOD_GSHAREDVT_OUT_TRAMPOLINE: return "METHOD_GSHAREDVT_OUT_TRAMPOLINE";
 	case MONO_RGCTX_INFO_METHOD_GSHAREDVT_OUT_TRAMPOLINE_VIRT: return "METHOD_GSHAREDVT_OUT_TRAMPOLINE_VIRT";
@@ -2105,7 +2095,6 @@ info_equal (gpointer data1, gpointer data2, MonoRgctxInfoType info_type)
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE:
 	case MONO_RGCTX_INFO_VALUE_SIZE:
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
-	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO:
 	case MONO_RGCTX_INFO_NULLABLE_CLASS_BOX:
@@ -2159,7 +2148,6 @@ mini_rgctx_info_type_to_patch_info_type (MonoRgctxInfoType info_type)
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE:
 	case MONO_RGCTX_INFO_VALUE_SIZE:
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
-	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO:
 	case MONO_RGCTX_INFO_NULLABLE_CLASS_BOX:
@@ -2332,7 +2320,7 @@ fill_runtime_generic_context (MonoVTable *class_vtable, MonoRuntimeGenericContex
 	int rgctx_index;
 	gboolean do_free;
 
-	error_init (error);
+	mono_error_init (error);
 
 	g_assert (rgctx);
 
@@ -2420,7 +2408,7 @@ mono_class_fill_runtime_generic_context (MonoVTable *class_vtable, guint32 slot,
 	MonoRuntimeGenericContext *rgctx;
 	gpointer info;
 
-	error_init (error);
+	mono_error_init (error);
 
 	mono_domain_lock (domain);
 

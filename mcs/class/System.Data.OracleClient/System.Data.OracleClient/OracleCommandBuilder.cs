@@ -1,4 +1,4 @@
-//
+﻿//
 // System.Data.OracleClient.OracleCommandBuilder.cs
 //
 // based on the SqlCommandBuilder in mcs/class/System.Data/System.Data.SqlClient
@@ -490,8 +490,8 @@ namespace System.Data.OracleClient {
 		}
 
                 [MonoTODO]
-                protected override void ApplyParameterInfo (DbParameter parameter,
-						   	    DataRow datarow,
+                protected override void ApplyParameterInfo (DbParameter dbParameter,
+						   	    DataRow row,
 						   	    StatementType statementType,
 						   	    bool whereClause)
                 {
@@ -499,7 +499,7 @@ namespace System.Data.OracleClient {
                 }
 
                 [MonoTODO]
-                protected override string GetParameterName (int parameterOrdinal)
+                protected override string GetParameterName (int position)
                 {
                         throw new NotImplementedException ();
                 }
@@ -511,7 +511,7 @@ namespace System.Data.OracleClient {
                 }
 
                 [MonoTODO]
-                protected override string GetParameterPlaceholder (int parameterOrdinal)
+                protected override string GetParameterPlaceholder (int position)
                 {
                         throw new NotImplementedException ();
                 }

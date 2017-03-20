@@ -123,7 +123,7 @@ namespace Internal.Cryptography
                 return string.Empty; // Desktop compat: return empty if property value is 0-length.
             unsafe
             {
-                fixed (byte* pValue = &value[0])
+                fixed (byte* pValue = value)
                 {
                     string valueAsString = Marshal.PtrToStringUni((IntPtr)pValue);
                     return valueAsString;

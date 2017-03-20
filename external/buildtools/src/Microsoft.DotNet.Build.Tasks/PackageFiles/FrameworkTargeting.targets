@@ -38,7 +38,6 @@
     <ImplicitlyExpandTargetFramework>false</ImplicitlyExpandTargetFramework>
     <!-- Disable RAR complaining about us referencing higher .NET Portable libraries as we aren't a traditional portable library -->
     <ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
-    <NuGetTargetMoniker Condition="'$(NuGetTargetMoniker)' == ''">.NETCoreApp,Version=v1.0</NuGetTargetMoniker>
   </PropertyGroup>
 
   <!-- Need to add references to the mscorlib design-time facade for some old-style portable dependencies like xunit -->
@@ -60,9 +59,6 @@
 
   <Import Project="depProj.targets"
           Condition="'$(MSBuildProjectExtension)' == '.depproj'" />
-
-  <Import Project="IL.targets"
-           Condition="'$(MSBuildProjectExtension)' == '.ilproj' AND '$(SkipImportILTargets)'!='true'" />
 
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets"
           Condition="'$(TargetFrameworkIdentifier)' == '.NETPortable' and '$(MSBuildProjectExtension)' == '.csproj'" />
@@ -102,33 +98,9 @@
     </PropertyGroup>
   </Target>
 
-  <!--
-    Cross Platform MSBuild has some logic to replace \ with / when invoking commands to fix up path differences between Windows and
-    *NIX. The define command line argument syntax for VB requires that we both surround some items with quotes and escape the quotes with
-    backslashes. However, due to the above MSBuild logic, this causes an invalid command line to be generated when running on *NIX.
-
-    Microsoft/msbuild#422 tracks an actual fix in MSBuild, but for now we work around the issue by using a custom task that
-    transforms the set of defines we are going to use into a response file we can pass along to the Vbc task along with an
-    empty set of defines.
-  -->
-  <UsingTask TaskName="WriteVisualBasicDefineResponseFile"  AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll" />
-
-  <Target Name="ConvertDefinesToResonseFile" BeforeTargets="CoreCompile" Condition="'$(MSBuildProjectExtension)' == '.vbproj'">
-    <WriteVisualBasicDefineResponseFile DefineConstants="$(FinalDefineConstants)"
-                                        File="$(IntermediateOutputPath)/defines.rsp" />
-    <PropertyGroup>
-      <CompilerResponseFile>$(IntermediateOutputPath)/defines.rsp;$(CompilerResponseFile)</CompilerResponseFile>
-      <FinalDefineConstants></FinalDefineConstants>
-    </PropertyGroup>
-  </Target>
-
   <Target Name="ConvertCommonMetadataToAdditionalProperties" BeforeTargets="AssignProjectConfiguration">
     <!-- list each append as a seperate item to force re-evaluation of AdditionalProperties metadata -->
     <ItemGroup>
-      <ProjectReference>
-        <UndefineProperties Condition="'$(ConfigurationGroup)' != ''">%(ProjectReference.UndefineProperties);Configuration</UndefineProperties>
-      </ProjectReference>
-
       <!-- Set some basic configuration properties and pass them along to ProjectReference's -->
       <ProjectReference>
         <OSGroup Condition="'%(ProjectReference.OSGroup)'=='' and '$(OSGroup)'!='' and '$(OSGroup)'!='AnyOS'">$(OSGroup)</OSGroup>
@@ -143,9 +115,6 @@
       </ProjectReference>
       <ProjectReference>
         <AdditionalProperties Condition="'%(ProjectReference.OSGroup)'!=''">OSGroup=%(ProjectReference.OSGroup);%(ProjectReference.AdditionalProperties)</AdditionalProperties>
-      </ProjectReference>
-      <ProjectReference>
-        <AdditionalProperties Condition="'$(ConfigurationGroup)' != ''">ConfigurationGroup=$(ConfigurationGroup);%(ProjectReference.AdditionalProperties)</AdditionalProperties>
       </ProjectReference>
 
       <!-- Packaging property shortcuts -->

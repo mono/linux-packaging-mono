@@ -9,12 +9,12 @@ namespace System.Numerics
 {
     internal static partial class BigIntegerCalculator
     {
-        // If we need to reduce by a certain modulus again and again, it's much
-        // more efficient to do this with multiplication operations. This is
-        // possible, if we do some pre-computations first...
-
-        // see https://en.wikipedia.org/wiki/Barrett_reduction
-
+        /// <summary>
+        /// If we need to reduce by a certain modulus again and again, it's much
+        /// more efficient to do this with multiplication operations. This is
+        /// possible, if we do some pre-computations first...
+        /// see https://en.wikipedia.org/wiki/Barrett_reduction
+        /// </summary>
         internal struct FastReducer
         {
             private readonly uint[] _modulus;

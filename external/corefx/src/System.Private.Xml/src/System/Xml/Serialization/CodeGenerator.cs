@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 
-#if !uapaot
+#if !NET_NATIVE
 namespace System.Xml.Serialization
 {
     using System;
@@ -64,7 +64,7 @@ namespace System.Xml.Serialization
         internal static void AssertHasInterface(Type type, Type iType)
         {
 #if DEBUG
-            Debug.Assert(iType.IsInterface);
+            Debug.Assert(iType.GetTypeInfo().IsInterface);
             foreach (Type iFace in type.GetInterfaces())
             {
                 if (iFace == iType)
@@ -411,7 +411,7 @@ namespace System.Xml.Serialization
         internal void Call(MethodInfo methodInfo)
         {
             Debug.Assert(methodInfo != null);
-            if (methodInfo.IsVirtual && !methodInfo.DeclaringType.IsValueType)
+            if (methodInfo.IsVirtual && !methodInfo.DeclaringType.GetTypeInfo().IsValueType)
                 _ilGen.Emit(OpCodes.Callvirt, methodInfo);
             else
                 _ilGen.Emit(OpCodes.Call, methodInfo);
@@ -480,12 +480,12 @@ namespace System.Xml.Serialization
 
         private static bool IsStruct(Type objType)
         {
-            return objType.IsValueType && !objType.IsPrimitive;
+            return objType.GetTypeInfo().IsValueType && !objType.GetTypeInfo().IsPrimitive;
         }
 
         internal Type LoadMember(object obj, MemberInfo memberInfo)
         {
-            if (GetVariableType(obj).IsValueType)
+            if (GetVariableType(obj).GetTypeInfo().IsValueType)
                 LoadAddress(obj);
             else
                 Load(obj);
@@ -496,7 +496,7 @@ namespace System.Xml.Serialization
         {
             // we only invoke this when the propertyInfo does not have a GET or SET method on it
 
-            Type currentType = propertyInfo.DeclaringType.BaseType;
+            Type currentType = propertyInfo.DeclaringType.GetTypeInfo().BaseType;
             PropertyInfo currentProperty;
             string propertyName = propertyInfo.Name;
             MethodInfo result = null;
@@ -524,7 +524,7 @@ namespace System.Xml.Serialization
                 }
 
                 // keep looking at the base type like compiler does
-                currentType = currentType.BaseType;
+                currentType = currentType.GetTypeInfo().BaseType;
             }
 
             return result;
@@ -777,7 +777,7 @@ namespace System.Xml.Serialization
                 Ldtoken((Type)o);
                 Call(typeof(Type).GetMethod("GetTypeFromHandle", BindingFlags.Static | BindingFlags.Public, new Type[] { typeof(RuntimeTypeHandle) }));
             }
-            else if (valueType.IsEnum)
+            else if (valueType.GetTypeInfo().IsEnum)
             {
                 Ldc(Convert.ChangeType(o, Enum.GetUnderlyingType(valueType), null));
             }
@@ -844,7 +844,7 @@ namespace System.Xml.Serialization
                     case TypeCode.DBNull:
                     default:
                         Debug.Assert(false, "UnknownConstantType");
-                        throw new NotSupportedException(SR.Format(SR.UnknownConstantType, valueType.AssemblyQualifiedName));
+                        throw new NotSupportedException(SR.Format(SR.UnknownConstantType, valueType.GetTypeInfo().AssemblyQualifiedName));
                 }
             }
         }
@@ -926,7 +926,7 @@ namespace System.Xml.Serialization
 
         internal void LdlocAddress(LocalBuilder localBuilder)
         {
-            if (localBuilder.LocalType.IsValueType)
+            if (localBuilder.LocalType.GetTypeInfo().IsValueType)
                 Ldloca(localBuilder);
             else
                 Ldloc(localBuilder);
@@ -975,7 +975,7 @@ namespace System.Xml.Serialization
 
         internal void LdargAddress(ArgBuilder argBuilder)
         {
-            if (argBuilder.ArgType.IsValueType)
+            if (argBuilder.ArgType.GetTypeInfo().IsValueType)
                 Ldarga(argBuilder);
             else
                 Ldarg(argBuilder);
@@ -1064,7 +1064,7 @@ namespace System.Xml.Serialization
 
         internal void Ldelem(Type arrayElementType)
         {
-            if (arrayElementType.IsEnum)
+            if (arrayElementType.GetTypeInfo().IsEnum)
             {
                 Ldelem(Enum.GetUnderlyingType(arrayElementType));
             }
@@ -1073,7 +1073,7 @@ namespace System.Xml.Serialization
                 OpCode opCode = GetLdelemOpCode(arrayElementType.GetTypeCode());
                 Debug.Assert(!opCode.Equals(OpCodes.Nop));
                 if (opCode.Equals(OpCodes.Nop))
-                    throw new InvalidOperationException(SR.Format(SR.ArrayTypeIsNotSupported, arrayElementType.AssemblyQualifiedName));
+                    throw new InvalidOperationException(SR.Format(SR.ArrayTypeIsNotSupported, arrayElementType.GetTypeInfo().AssemblyQualifiedName));
                 _ilGen.Emit(opCode);
             }
         }
@@ -1112,13 +1112,13 @@ namespace System.Xml.Serialization
 
         internal void Stelem(Type arrayElementType)
         {
-            if (arrayElementType.IsEnum)
+            if (arrayElementType.GetTypeInfo().IsEnum)
                 Stelem(Enum.GetUnderlyingType(arrayElementType));
             else
             {
                 OpCode opCode = GetStelemOpCode(arrayElementType.GetTypeCode());
                 if (opCode.Equals(OpCodes.Nop))
-                    throw new InvalidOperationException(SR.Format(SR.ArrayTypeIsNotSupported, arrayElementType.AssemblyQualifiedName));
+                    throw new InvalidOperationException(SR.Format(SR.ArrayTypeIsNotSupported, arrayElementType.GetTypeInfo().AssemblyQualifiedName));
                 _ilGen.Emit(opCode);
             }
         }
@@ -1226,9 +1226,9 @@ namespace System.Xml.Serialization
         {
             if (target == source)
                 return;
-            if (target.IsValueType)
+            if (target.GetTypeInfo().IsValueType)
             {
-                if (source.IsValueType)
+                if (source.GetTypeInfo().IsValueType)
                 {
                     OpCode opCode = GetConvOpCode(target.GetTypeCode());
                     if (opCode.Equals(OpCodes.Nop))
@@ -1253,7 +1253,7 @@ namespace System.Xml.Serialization
             }
             else if (target.IsAssignableFrom(source))
             {
-                if (source.IsValueType)
+                if (source.GetTypeInfo().IsValueType)
                 {
                     if (isAddress)
                         Ldobj(source);
@@ -1264,7 +1264,7 @@ namespace System.Xml.Serialization
             {
                 Castclass(target);
             }
-            else if (target.IsInterface || source.IsInterface)
+            else if (target.GetTypeInfo().IsInterface || source.GetTypeInfo().IsInterface)
             {
                 Castclass(target);
             }

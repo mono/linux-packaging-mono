@@ -25,8 +25,6 @@ EXTRA_DISTFILES = \
 	Test/System.Security.Cryptography.Pkcs/detached.data \
 	Test/System.Security.Cryptography.Pkcs/detached.p7
 
-RESX_RESOURCE_STRING = ../../../external/corefx/src/System.Security.Cryptography.Xml/src/Resources/Strings.resx
-
 include ../../build/library.make
 
 $(build_lib): $(secxml_libdir)/System.dll $(MONO_SECURITY_DLL)

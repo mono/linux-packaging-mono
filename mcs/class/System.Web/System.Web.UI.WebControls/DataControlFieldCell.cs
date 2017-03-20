@@ -36,13 +36,13 @@ namespace System.Web.UI.WebControls
 	{
 		DataControlField containerField;
 		
-		public DataControlFieldCell (DataControlField containingField) : this (HtmlTextWriterTag.Td, containingField)
+		public DataControlFieldCell (DataControlField containerField) : this (HtmlTextWriterTag.Td, containerField)
 		{		
 		}
 		
-		protected DataControlFieldCell (HtmlTextWriterTag tagKey, DataControlField containingField) : base (tagKey)
+		protected DataControlFieldCell (HtmlTextWriterTag tagKey, DataControlField containerField) : base (tagKey)
 		{
-			this.containerField = containingField;
+			this.containerField = containerField;
 		}
 
 		public DataControlField ContainingField {

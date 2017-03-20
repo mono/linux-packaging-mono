@@ -40,13 +40,13 @@ namespace System.ComponentModel.Design.Serialization
 		CodeExpression _expression;
 		object _value;
 
-		public RootContext (CodeExpression expression, object value)
+		public RootContext (CodeExpression expresion, object value)
 		{
-			if (expression == null)
+			if (expresion == null)
 				throw new ArgumentNullException ("expression");
 			if (value == null)
 				throw new ArgumentNullException ("value");
-			_expression = expression;
+			_expression = expresion;
 			_value = value;
 		}
 

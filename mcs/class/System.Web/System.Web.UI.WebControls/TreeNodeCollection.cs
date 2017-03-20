@@ -65,8 +65,8 @@ namespace System.Web.UI.WebControls
 				node.Tree = tree;
 		}
 		
-		public TreeNode this [int index] {
-			get { return (TreeNode) items [index]; }
+		public TreeNode this [int i] {
+			get { return (TreeNode) items [i]; }
 		}
 		
 		public void Add (TreeNode child)
@@ -127,9 +127,9 @@ namespace System.Web.UI.WebControls
 			}
 		}
 		
-		public bool Contains (TreeNode c)
+		public bool Contains (TreeNode child)
 		{
-			return items.Contains (c);
+			return items.Contains (child);
 		}
 		
 		public void CopyTo (TreeNode[] nodeArray, int index)
@@ -142,18 +142,18 @@ namespace System.Web.UI.WebControls
 			return items.GetEnumerator ();
 		}
 		
-		public int IndexOf (TreeNode value)
+		public int IndexOf (TreeNode node)
 		{
-			return items.IndexOf (value);
+			return items.IndexOf (node);
 		}
 		
-		public void Remove (TreeNode value)
+		public void Remove (TreeNode node)
 		{
-			int i = IndexOf (value);
+			int i = IndexOf (node);
 			if (i == -1) return;
 			items.RemoveAt (i);
 			if (tree != null)
-				value.Tree = null;
+				node.Tree = null;
 			if (marked) {
 				SetDirty ();
 			}

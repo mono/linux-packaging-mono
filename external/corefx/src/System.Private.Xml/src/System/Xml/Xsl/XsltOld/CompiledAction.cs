@@ -69,7 +69,7 @@ namespace System.Xml.Xsl.XsltOld
 
         public void CheckEmpty(Compiler compiler)
         {
-            // Really EMPTY means no content at all, but the sake of compatibility with MSXML we allow whitespace
+            // Really EMPTY means no content at all, but the sake of compatibility with MSXML we allow whitespaces
             string elementName = compiler.Input.Name;
             if (compiler.Recurse())
             {

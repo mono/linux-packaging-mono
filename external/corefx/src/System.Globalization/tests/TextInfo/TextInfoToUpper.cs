@@ -133,7 +133,7 @@ namespace System.Globalization.Tests
 
         [Theory]
         [MemberData(nameof(ToUpper_TestData_net46))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.Uap)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.NetcoreUwp)]
         public void ToUpper_net46(string name, string str, string expected)
         {
             TestToUpper(name, str, expected);

@@ -7,6 +7,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked001.checked001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked001.checked001;
+
     // <Title>Tests checked block</Title>
     // <Description>
     // </Description>
@@ -55,6 +57,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked002.checked002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked002.checked002;
+
     // <Title>Tests checked block</Title>
     // <Description>
     // </Description>
@@ -117,6 +121,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked003.checked003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked003.checked003;
+
     public class Test
     {
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotWindowsSubsystemForLinux))] // https://github.com/Microsoft/BashOnWindows/issues/513
@@ -159,6 +165,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked004.checked004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked004.checked004;
+
     public class Test
     {
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotWindowsSubsystemForLinux))] // https://github.com/Microsoft/BashOnWindows/issues/513
@@ -201,6 +209,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked005.checked005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked005.checked005;
+
     public class Test
     {
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotWindowsSubsystemForLinux))] // https://github.com/Microsoft/BashOnWindows/issues/513
@@ -478,6 +488,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked006.checked006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked006.checked006;
+
     public class Test
     {
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotWindowsSubsystemForLinux))] // https://github.com/Microsoft/BashOnWindows/issues/513
@@ -754,6 +766,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked008.checked008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.checked008.checked008;
     // <Title>Tests checked block</Title>
     // <Description> Compiler not passing checked flag in complex operators
     // </Description>
@@ -763,6 +776,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
     //<Expects Status=warning>\(18,20\).*CS0414</Expects>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -872,6 +886,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.do001.do001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.do001.do001;
+
     // <Title>Tests do statements</Title>
     // <Description>
     // </Description>
@@ -916,6 +932,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.do002.do002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.do002.do002;
+
     // <Title>Tests do statements</Title>
     // <Description>
     // </Description>
@@ -964,6 +982,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.do003.do003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.do003.do003;
+
     // <Title>Tests do statements</Title>
     // <Description>
     // </Description>
@@ -1007,6 +1027,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if001.if001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if001.if001;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1045,6 +1067,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if002.if002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if002.if002;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // Remove the comments when the exception is known
@@ -1084,6 +1108,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if003.if003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if003.if003;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1126,6 +1152,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if004.if004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if004.if004;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1164,6 +1192,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if005.if005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if005.if005;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1212,6 +1242,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if006.if006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if006.if006;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1255,6 +1287,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if007.if007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if007.if007;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1298,6 +1332,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if008.if008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if008.if008;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1347,6 +1383,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if009.if009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if009.if009;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1396,6 +1434,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if010.if010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.if010.if010;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1438,6 +1478,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.switch001.switch001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.switch001.switch001;
+
     public class Test
     {
         [Fact]
@@ -1465,6 +1507,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.switch002.switch002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.switch002.switch002;
+
     public class Test
     {
         [Fact]
@@ -1492,6 +1536,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary001.ternary001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary001.ternary001;
+
     // <Title>Tests ternary operator statements</Title>
     // <Description>
     // </Description>
@@ -1528,6 +1574,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary002.ternary002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary002.ternary002;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1568,6 +1616,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary003.ternary003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary003.ternary003;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1614,6 +1664,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary004.ternary004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary004.ternary004;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1655,6 +1707,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary005.ternary005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.ternary005.ternary005;
+
     // <Title>Tests if statements</Title>
     // <Description>
     // </Description>
@@ -1692,6 +1746,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.unchecked001.unchecked001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.unchecked001.unchecked001;
+
     // <Title>Tests checked block</Title>
     // <Description>
     // </Description>
@@ -1740,6 +1796,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.unchecked002.unchecked002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.unchecked002.unchecked002;
+
     // <Title>Tests checked block</Title>
     // <Description>
     // </Description>
@@ -1788,6 +1846,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.unchecked003.unchecked003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.unchecked003.unchecked003;
+
     public class Test
     {
         [Fact]
@@ -1813,6 +1873,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.unsfe001.unsfe001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.unsfe001.unsfe001;
+
     // <Title>If def</Title>
     // <Description>
     // </Description>
@@ -1855,6 +1917,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.while001.while001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.while001.while001;
+
     // <Title>Tests do statements</Title>
     // <Description>
     // </Description>
@@ -1899,6 +1963,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.while002.while002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.while002.while002;
+
     // <Title>Tests do statements</Title>
     // <Description>
     // </Description>
@@ -1947,6 +2013,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.while003.while003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.while003.while003;
+
     // <Title>Tests do statements</Title>
     // <Description>
     // </Description>
@@ -1990,6 +2058,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.yield001.yield001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.yield001.yield001;
     // <Title>Tests checked block</Title>
     // <Description>
     // </Description>
@@ -2034,6 +2103,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.yield002.yield002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.yield002.yield002;
     // <Title>Tests checked block</Title>
     // <Description>
     // </Description>
@@ -2078,6 +2148,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.yield003.yield003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.yield003.yield003;
     // <Title>Tests checked block</Title>
     // <Description>
     // </Description>
@@ -2122,6 +2193,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.yield004.yield004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.statements.yield004.yield004;
     // <Title>Tests checked block</Title>
     // <Description>
     // </Description>

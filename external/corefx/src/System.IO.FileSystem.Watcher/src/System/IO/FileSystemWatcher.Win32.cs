@@ -246,9 +246,6 @@ namespace System.IO
 
         private void ParseEventBufferAndNotifyForEach(byte[] buffer)
         {
-            Debug.Assert(buffer != null);
-            Debug.Assert(buffer.Length > 0);
-
             // Parse each event from the buffer and notify appropriate delegates
 
             /******
@@ -276,7 +273,7 @@ namespace System.IO
             {
                 unsafe
                 {
-                    fixed (byte* buffPtr = &buffer[0])
+                    fixed (byte* buffPtr = buffer)
                     {
                         // Get next offset:
                         nextOffset = *((int*)(buffPtr + offset));
@@ -373,7 +370,6 @@ namespace System.IO
             internal AsyncReadState(int session, byte[] buffer, SafeFileHandle handle, ThreadPoolBoundHandle binding)
             {
                 Debug.Assert(buffer != null);
-                Debug.Assert(buffer.Length > 0);
                 Debug.Assert(handle != null);
                 Debug.Assert(binding != null);
 

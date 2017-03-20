@@ -1,38 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Condition="'$(_PackagingCommonTargetsImported)' != 'true'" Project="Packaging.common.targets"/>
-
-  <Target Name="UpdatePkgProjProjectReferences" BeforeTargets="AssignProjectConfiguration">
-    <!-- Update PkgProj references to call the GetPackageAssets target -->
-    <ItemGroup>
-      <ProjectReference Condition="'%(Extension)'=='.pkgproj'">
-        <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-        <Targets>GetPackageAssets</Targets>
-        <OutputItemType>PkgProjAsset</OutputItemType>
-        <UndefineProperties>%(ProjectReference.UndefineProperties);OSGroup;TargetGroup</UndefineProperties>
-      </ProjectReference>
-    </ItemGroup>
-  </Target>
-  
   <PropertyGroup>
-    <!-- Resolve from pkgProjs before nuget packages -->
-    <ResolveNugetPackagesDependsOn>$(ResolveNugetPackagesDependsOn);ResolvePkgProjReferences</ResolveNugetPackagesDependsOn>
-    <ResolvePkgProjReferencesDependsOn>$(ResolvePkgProjReferencesDependsOn);ResolveProjectReferences</ResolvePkgProjReferencesDependsOn>
+    <PackagingTaskDir Condition="'$(PackagingTaskDir)' == ''">$(MSBuildThisFileDirectory)</PackagingTaskDir>
+    <GenerationDefinitionFile Condition="'$(GenerationDefinitionFile)' == ''">$(MSBuildThisFileDirectory)Generations.json</GenerationDefinitionFile>
   </PropertyGroup>
 
-  <!-- Resolves applicable files from all files in PkgProjs. Similar to ResolveNuGetPackageAssets, except operates on a file list
-       without requiring actual nupkgs, project.json, or restore -->
-  <Target Name="ResolvePkgProjReferences" Condition="'@(PkgProjAsset)' != ''" DependsOnTargets="$(ResolvePkgProjReferencesDependsOn)">
-    <GetApplicableAssetsFromPackages PackageAssets="@(PkgProjAsset)" 
-                                     TargetMonikers="$(NuGetTargetMoniker)"
-                                     RuntimeTargetMonikers="$(TestNuGetTargetMoniker)"
-                                     TargetRuntime="$(TestNugetRuntimeId)"
-                                     RuntimeFile="$(RuntimeIdGraphDefinitionFile)">
-      <Output TaskParameter="CompileAssets" ItemName="Reference" />
-      <Output TaskParameter="RuntimeAssets" ItemName="ReferenceCopyLocalPaths" />
-    </GetApplicableAssetsFromPackages>
-  </Target>
-  
+  <UsingTask TaskName="ValidatePackageTargetFramework" AssemblyFile="$(PackagingTaskDir)Microsoft.DotNet.Build.Tasks.Packaging.dll"/>
+
   <!-- Returns the set of files to be included in the nuget package
        with appropriate metadata.-->
   <Target Name="GetFilesToPackage"
@@ -99,49 +73,54 @@
       <XmlDocFile Remove="@(XmlDocFile)" Condition="!Exists('%(XmlDocFile.Identity)')"/>
     </ItemGroup>
 
-    <PropertyGroup>
-      <!-- Desktop libraries that contain types in classic assemblies need to be included in ref
+    <!-- Desktop libraries that contain types in classic assemblies need to be included in ref
          so that the types unify with the classic assemblies from the targeting pack. -->
-      <PackageDesktopAsRef Condition="'$(PackageDesktopAsRef)' == ''">$(IsPartialFacadeAssembly)</PackageDesktopAsRef>
-      <PackageDesktopAsRef Condition="'$(PackageAsRefAndLib)' != ''">$(PackageAsRefAndLib)</PackageDesktopAsRef>
-      
-      <!-- Desktop libraries should also be packaged without a RID to work in packages.config projects -->
-      <PackageDesktopAsLib Condition="'$(PackageDesktopAsLib)' == ''">true</PackageDesktopAsLib>
+    <PropertyGroup>
+      <PackageAsRefAndLib Condition="'$(PackageAsRefAndLib)' == '' AND '$(IsPartialFacadeAssembly)' == 'true' AND $(PackageTargetFramework.StartsWith('net4', StringComparison.OrdinalIgnoreCase))">true</PackageAsRefAndLib>
 
       <!-- A reference asset is any file contributed from a project that is contributing a reference,
            not just the file in the ref folder. -->
-      <IsReferenceAsset Condition="'$(IsReferenceAsset)' == ''">$(IsReferenceAssembly)</IsReferenceAsset>
-      <IsReferenceAsset Condition="'$(IsReferenceAsset)' == ''">false</IsReferenceAsset>
+      <IsReferenceAsset>false</IsReferenceAsset>
+      <IsReferenceAsset Condition="'$(IsReferenceAssembly)' == 'true' OR '$(PackageAsRefAndLib)' == 'true'">true</IsReferenceAsset>
     </PropertyGroup>
-    
-    <!-- *** determine destination path for assets *** 
-         Order of precedence
-           @(PackageDestination) - used verbatim, must set identity to path and TargetFramework to target moniker.
 
-           $(PackageTargetFramework) & @(PackageTargetFramework) - combined to specify target monikers and optionally target runtime.  Path is calculated.
-           $(NuGetTargetMoniker) - specifies target moniker if nothing else is specified.  Path is calculated.
-    -->
-    <GetPackageDestination Condition="'@(PackageDestination)' == ''"
-                           PackageTargetFrameworks="$(PackageTargetFramework);@(PackageTargetFramework)"
-                           PackageTargetRuntime="$(PackageTargetRuntime)"
-                           NuGetTargetMoniker="$(NuGetTargetMoniker)"
-                           IsReferenceAssembly="$(IsReferenceAssembly)"
-                           PackageDesktopAsRef="$(PackageDesktopAsRef)"
-                           PackageDesktopAsLib="$(PackageDesktopAsLib)"
-                           SuppressPackageTargetFrameworkCompatibility="@(SuppressPackageTargetFrameworkCompatibility)">
-      <Output TaskParameter="PackageDestinations" ItemName="PackageDestination" />
-      <Output TaskParameter="IsReferenceAsset" PropertyName="IsReferenceAsset" />
-    </GetPackageDestination>
+    <Error Condition="'$(IsReferenceAsset)' == 'true' AND '$(PackageTargetRuntime)' != ''"
+           Text="Reference assemblies should not specify the PackageTargetRuntime property since runtimes cannot effect compile time assets."/>
+
+    <!-- PackageTargetRuntime Defaults -->
+    <PropertyGroup Condition="'$(UsePackageTargetRuntimeDefaults)' == 'true' AND '$(PackageTargetRuntime)' == ''">
+      <PackageTargetRuntime Condition=" '$(TargetsWindows)' == 'true'">win7</PackageTargetRuntime>
+      <PackageTargetRuntime Condition="'$(TargetsUnix)' == 'true'">unix</PackageTargetRuntime>
+    </PropertyGroup>
+
+    <!-- *** determine destination path for assets *** -->
+    <PropertyGroup>
+      <_packageTargetRefLib>lib</_packageTargetRefLib>
+      <_packageTargetRefLib Condition="'$(IsReferenceAssembly)' == 'true'">ref</_packageTargetRefLib>
+
+      <!-- no path or runtime, but framework: lib/{txm}-->
+      <PackageTargetPath Condition="'$(PackageTargetPath)' == '' AND '$(PackageTargetRuntime)' == '' AND '$(PackageTargetFramework)' != ''">$(_packageTargetRefLib)/$(PackageTargetFramework)</PackageTargetPath>
+
+      <!-- no path but runtime and framework: runtimes/{rid}/lib/{txm}-->
+      <PackageTargetPath Condition="'$(PackageTargetPath)' == '' AND '$(PackageTargetFramework)' != '' AND '$(PackageTargetRuntime)' != ''">runtimes/$(PackageTargetRuntime)/lib/$(PackageTargetFramework)</PackageTargetPath>
+    </PropertyGroup>
+
+    <!-- specifying $(PackageTargetPath) overrides defaults and project specific items -->
+    <ItemGroup Condition="'$(PackageTargetPath)' != ''">
+      <!-- remove anything specified by the project-->
+      <PackageDestination Remove="@(PackageDestination)" />
+
+      <!-- only use $(PackageTargetPath) -->
+      <PackageDestination Include="$(PackageTargetPath)">
+        <TargetFramework Condition="'$(PackageTargetFramework)' != ''">$(PackageTargetFramework)</TargetFramework>
+      </PackageDestination>
+      <PackageDestination Condition="'$(PackageAsRefAndLib)' == 'true'" Include="ref/$(PackageTargetFramework)">
+        <TargetFramework>$(PackageTargetFramework)</TargetFramework>
+      </PackageDestination>
+    </ItemGroup>
 
     <!-- fail if not specified by the project  -->
-    <Error Condition="'@(PackageDestination)' == ''" Text="Error could not determine packaging destination.  Please set either PackageTargetFramework property, PackageTargetFramework item, NuGetTargetMoniker property or PackageDestination item." />
-
-    <!-- Be explicit about path seperators for the target path for source files. When building packages on *nix, the use of the DOS seperator
-         was causing us to include source files in our packages in a folder called src\src, instead of them being stripped. -->
-    <PropertyGroup>
-      <SourceFileTargetPathPrefix Condition="'$(OSEnvironment)' == 'Windows_NT'">src\</SourceFileTargetPathPrefix>
-      <SourceFileTargetPathPrefix Condition="'$(OSEnvironment)' != 'Windows_NT'">src/</SourceFileTargetPathPrefix>
-    </PropertyGroup>
+    <Error Condition="'@(PackageDestination)' == ''" Text="Error could not determine packaging destination.  Please set either PackageTargetFramework property or PackageDestination item." />
 
     <!-- *** include assets *** -->
     <ItemGroup>
@@ -178,9 +157,29 @@
       <!-- Include source files for symbol packages. -->
       <FilesToPackage Include="@(Compile->'%(FullPath)')">
         <TargetPath>src</TargetPath>
-        <TargetPath Condition="$([System.String]::new('%(FullPath)').StartsWith('$(ProjectRoot)'))">$(SourceFileTargetPathPrefix)$([System.String]::new('%(FullPath)').Substring('$(ProjectRootLength)'))</TargetPath>
+        <TargetPath Condition="$([System.String]::new('%(FullPath)').StartsWith('$(ProjectRoot)'))">src\$([System.String]::new('%(FullPath)').Substring('$(ProjectRootLength)'))</TargetPath>
         <IsSourceCodeFile>true</IsSourceCodeFile>
       </FilesToPackage>
     </ItemGroup>
   </Target>
+
+  <Target Name="ValidatePackageTargetFramework"
+          Inputs="$(MSBuildAllProjects);@(CustomAdditionalCompileInputs);@(ReferencePath)"
+          Outputs="@(IntermediateAssembly)"
+          Condition="'$(PackageTargetFramework)' != '' AND '$(SkipValidatePackageTargetFramework)' != 'true'"
+          AfterTargets="ResolveReferences">
+    <ItemGroup Condition="'@(ValidateIgnoreReference)' == ''">
+      <ValidateIgnoreReference Include="mscorlib;System.Private.Uri;Windows" />
+    </ItemGroup>
+
+    <ValidatePackageTargetFramework AssemblyName="$(AssemblyName)"
+                                    AssemblyVersion="$(AssemblyVersion)"
+                                    GenerationDefinitionsFile="$(GenerationDefinitionFile)"
+                                    PackageTargetFramework="$(PackageTargetFramework)"
+                                    DirectReferences="@(ReferencePath)"
+                                    CandidateReferences="@(ReferencePath);@(IndirectReference)"
+                                    IgnoredReferences="@(ValidateIgnoreReference)"
+                                    UseNetPlatform="$(UseNetPlatform)"/>
+  </Target>
+
 </Project>

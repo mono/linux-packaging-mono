@@ -47,19 +47,21 @@ namespace MonoTests.System.Drawing{
 			Assert.IsTrue (f.GetStandardValuesSupported (), "standard values supported");
 			Assert.IsFalse (f.GetStandardValuesExclusive (), "standard values exclusive");
 		}
-
+		
+		[ExpectedException (typeof (NotSupportedException))]
 		[Test]
 		public void ExTestConvertFrom ()
 		{
 			FontConverter.FontNameConverter f = new FontConverter.FontNameConverter ();
-			Assert.Throws<NotSupportedException> (() => f.ConvertFrom (null));
+			f.ConvertFrom (null);
 		}
 
+		[ExpectedException (typeof (NotSupportedException))]
 		[Test]
 		public void ExTestConvertFrom2 ()
 		{
 			FontConverter.FontNameConverter f = new FontConverter.FontNameConverter ();
-			Assert.Throws<NotSupportedException> (() => f.ConvertFrom (1));
+			f.ConvertFrom (1);
 		}
 	}
 }

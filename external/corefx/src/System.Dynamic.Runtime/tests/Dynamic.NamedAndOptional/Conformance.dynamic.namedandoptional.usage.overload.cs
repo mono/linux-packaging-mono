@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload01.overload01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload01.overload01;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -45,6 +47,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload01a.overload01a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload01a.overload01a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -84,6 +88,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload01b.overload01b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload01b.overload01b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -123,6 +129,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload02.overload02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload02.overload02;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -173,6 +181,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload02b.overload02b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload02b.overload02b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -224,6 +234,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload03.overload03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload03.overload03;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Should be ambiguous</Description>
@@ -279,6 +291,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload03b.overload03b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload03b.overload03b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Should be ambiguous</Description>
@@ -334,6 +348,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload04.overload04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload04.overload04;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -378,6 +394,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload04a.overload04a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload04a.overload04a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -422,6 +440,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload04b.overload04b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload04b.overload04b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -466,6 +486,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload05.overload05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload05.overload05;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Ambiguous on the second param</Description>
@@ -516,6 +538,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload05b.overload05b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload05b.overload05b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Ambiguous on the second param</Description>
@@ -566,6 +590,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload06.overload06
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload06.overload06;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named params</Description>
@@ -605,6 +631,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload06a.overload06a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload06a.overload06a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named params</Description>
@@ -644,6 +672,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload06b.overload06b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload06b.overload06b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named params</Description>
@@ -683,6 +713,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload06c.overload06c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload06c.overload06c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named params</Description>
@@ -723,6 +755,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload07.overload07
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload07.overload07;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named</Description>
@@ -767,6 +801,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload07a.overload07a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload07a.overload07a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named</Description>
@@ -811,6 +847,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload07b.overload07b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload07b.overload07b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named</Description>
@@ -855,6 +893,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload07c.overload07c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload07c.overload07c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named</Description>
@@ -901,6 +941,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload09.overload09
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload09.overload09;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named. This is here mostly as a regression test</Description>
@@ -936,6 +978,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload09a.overload09a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload09a.overload09a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named. This is here mostly as a regression test</Description>
@@ -971,6 +1015,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload09b.overload09b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload09b.overload09b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named. This is here mostly as a regression test</Description>
@@ -1006,6 +1052,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload09c.overload09c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload09c.overload09c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named. This is here mostly as a regression test</Description>
@@ -1042,6 +1090,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload10.overload10
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload10.overload10;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named. This is here mostly as a regression test</Description>
@@ -1081,6 +1131,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload10a.overload10a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload10a.overload10a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named. This is here mostly as a regression test</Description>
@@ -1120,6 +1172,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload10b.overload10b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload10b.overload10b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named. This is here mostly as a regression test</Description>
@@ -1159,6 +1213,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload10c.overload10c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload10c.overload10c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution with named. This is here mostly as a regression test</Description>
@@ -1199,6 +1255,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload11.overload11
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload11.overload11;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1238,6 +1296,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload11a.overload11a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload11a.overload11a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1277,6 +1337,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload11b.overload11b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload11b.overload11b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1316,6 +1378,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload12.overload12
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload12.overload12;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1355,6 +1419,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload12a.overload12a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload12a.overload12a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1394,6 +1460,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload12b.overload12b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload12b.overload12b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1434,6 +1502,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload13.overload13
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload13.overload13;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1473,6 +1543,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload13a.overload13a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload13a.overload13a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1513,6 +1585,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload13b.overload13b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload13b.overload13b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1552,6 +1626,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload13c.overload13c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload13c.overload13c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1592,6 +1668,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload14.overload14
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload14.overload14;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1631,6 +1709,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload14a.overload14a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload14a.overload14a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1670,6 +1750,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload14b.overload14b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload14b.overload14b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1709,6 +1791,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload14c.overload14c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload14c.overload14c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1749,6 +1833,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload15.overload15
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload15.overload15;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1788,6 +1874,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload15a.overload15a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload15a.overload15a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1832,6 +1920,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload15b.overload15b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload15b.overload15b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1871,6 +1961,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload15c.overload15c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload15c.overload15c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1912,6 +2004,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload16.overload16
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload16.overload16;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1951,6 +2045,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload16a.overload16a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload16a.overload16a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -1990,6 +2086,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload16b.overload16b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload16b.overload16b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2029,6 +2127,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload16c.overload16c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload16c.overload16c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2069,6 +2169,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload17.overload17
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload17.overload17;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2108,6 +2210,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload17a.overload17a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload17a.overload17a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2147,6 +2251,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload17b.overload17b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload17b.overload17b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2186,6 +2292,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload17c.overload17c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload17c.overload17c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2227,6 +2335,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload18.overload18
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload18.overload18;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2269,6 +2379,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload18a.overload18a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload18a.overload18a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2311,6 +2423,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload18b.overload18b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload18b.overload18b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2353,6 +2467,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload18c.overload18c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload18c.overload18c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2397,6 +2513,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload19.overload19
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload19.overload19;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -2439,6 +2557,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload19a.overload19a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload19a.overload19a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -2481,6 +2601,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload19b.overload19b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload19b.overload19b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -2523,6 +2645,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload19c.overload19c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload19c.overload19c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -2567,6 +2691,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload20.overload20
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload20.overload20;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2609,6 +2735,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload20a.overload20a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload20a.overload20a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2651,6 +2779,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload20b.overload20b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload20b.overload20b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2693,6 +2823,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload21.overload21
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload21.overload21;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2732,6 +2864,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload21b.overload21b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload21b.overload21b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution</Description>
@@ -2772,6 +2906,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload22.overload22
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload22.overload22;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -2811,6 +2947,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload22a.overload22a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload22a.overload22a;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -2850,6 +2988,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload22b.overload22b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload22b.overload22b;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -2889,6 +3029,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload22c.overload22c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload22c.overload22c;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -2930,11 +3072,16 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload23.overload23
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload23.overload23;
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
     // <Expects status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
 
     public class C
     {
@@ -2980,6 +3127,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload24.overload24
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload24.overload24;
+
     // <Area> of Methods with Optional Parameters and named arguments</Area>
     // <Title>Overload resolution of named params and optionals</Title>
     // <Description>Basic Overload resolution - based on overload resolution rules</Description>
@@ -3020,6 +3169,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload25.overload25
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.overload.overload25.overload25;
     // <Area>N&O</Area>
     // <Title>overload resolution</Title>
     // <Description>
@@ -3028,6 +3178,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.usage.
     // <Related Bugs></Related Bugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class A
     {

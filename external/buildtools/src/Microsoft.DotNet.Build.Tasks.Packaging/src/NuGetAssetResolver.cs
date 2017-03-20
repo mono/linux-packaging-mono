@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Microsoft.DotNet.Build.Tasks.Packaging
 {
@@ -116,37 +115,6 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
             }
         }
 
-        public static void ExamineAssets(ILog logger, string assetType, string package, string target, IEnumerable<string> items, out bool hasRealAsset, out bool hasPlaceHolder)
-        {
-            hasPlaceHolder = false;
-            hasRealAsset = false;
-            StringBuilder assetLog = new StringBuilder($"{assetType} assets for {package} on {target}: ");
-            if (items != null && items.Any())
-            {
-                foreach (var runtimeItem in items)
-                {
-                    assetLog.AppendLine();
-                    assetLog.Append($"  {runtimeItem}");
-
-                    if (!hasRealAsset && NuGetAssetResolver.IsPlaceholder(runtimeItem))
-                    {
-                        hasPlaceHolder = true;
-                    }
-                    else
-                    {
-                        hasRealAsset = true;
-                        hasPlaceHolder = false;
-                    }
-                }
-            }
-            else
-            {
-                assetLog.AppendLine();
-                assetLog.Append("  <none>");
-            }
-            logger.LogMessage(LogImportance.Low, assetLog.ToString());
-        }
-
         public static bool IsPlaceholder(string path)
         {
             return Path.GetFileName(path) == PlaceHolderFile;
@@ -217,24 +185,6 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
                 Enumerable.Empty<string>();
         }
 
-        public IEnumerable<string> ResolveCompileAssets(NuGetFramework framework)
-        {
-            var allCompileItems = GetCompileItems(framework);
-            foreach (var packageId in allCompileItems.Keys)
-            {
-                var packageAssets = allCompileItems[packageId];
-                if (packageAssets == null)
-                {
-                    continue;
-                }
-
-                foreach (var packageAsset in packageAssets.Items)
-                {
-                    yield return AsPackageSpecificTargetPath(packageId, packageAsset.Path);
-                }
-            }
-        }
-
         public IReadOnlyDictionary<string, ContentItemGroup> GetRuntimeItems(NuGetFramework framework, string runtimeIdentifier)
         {
             var managedCriteria = _conventions.Criteria.ForFrameworkAndRuntime(framework, runtimeIdentifier);
@@ -248,24 +198,6 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
                 resolvedAssets.Add(package,
                     _packages[package].FindBestItemGroup(managedCriteria,
                         _conventions.Patterns.RuntimeAssemblies));
-            }
-
-            return resolvedAssets;
-        }
-
-        public IReadOnlyDictionary<string, ContentItemGroup> GetNativeItems(NuGetFramework framework, string runtimeIdentifier)
-        {
-            var managedCriteria = _conventions.Criteria.ForFrameworkAndRuntime(framework, runtimeIdentifier);
-
-            NuGetAssetResolver.FixCriteria(managedCriteria);
-
-            Dictionary<string, ContentItemGroup> resolvedAssets = new Dictionary<string, ContentItemGroup>();
-
-            foreach (var package in _packages.Keys)
-            {
-                resolvedAssets.Add(package,
-                    _packages[package].FindBestItemGroup(managedCriteria,
-                        _conventions.Patterns.NativeLibraries));
             }
 
             return resolvedAssets;
@@ -290,23 +222,6 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
             foreach (var packageId in allRuntimeItems.Keys)
             {
                 var packageAssets = allRuntimeItems[packageId];
-                if (packageAssets == null)
-                {
-                    continue;
-                }
-
-                foreach (var packageAsset in packageAssets.Items)
-                {
-                    yield return AsPackageSpecificTargetPath(packageId, packageAsset.Path);
-                }
-            }
-        }
-        public IEnumerable<string> ResolveNativeAssets(NuGetFramework framework, string runtimeId)
-        {
-            var allNativeItems = GetNativeItems(framework, runtimeId);
-            foreach (var packageId in allNativeItems.Keys)
-            {
-                var packageAssets = allNativeItems[packageId];
                 if (packageAssets == null)
                 {
                     continue;

@@ -21,7 +21,7 @@
 #include <unistd.h>
 #endif
 
-#include <mono/metadata/assembly-internals.h>
+#include <mono/metadata/assembly.h>
 #include <mono/metadata/loader.h>
 #include <mono/metadata/tabledefs.h>
 #include <mono/metadata/class.h>
@@ -56,7 +56,7 @@
 #include "mini.h"
 #include "jit.h"
 #include "aot-compiler.h"
-#include "interp/interp.h"
+#include "interpreter/interp.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -536,7 +536,7 @@ mini_regression_list (int verbose, int count, char *images [])
 	
 	total_run =  total = 0;
 	for (i = 0; i < count; ++i) {
-		ass = mono_assembly_open_predicate (images [i], FALSE, FALSE, NULL, NULL, NULL);
+		ass = mono_assembly_open (images [i], NULL);
 		if (!ass) {
 			g_warning ("failed to load assembly: %s", images [i]);
 			continue;
@@ -1122,7 +1122,7 @@ load_agent (MonoDomain *domain, char *desc)
 		args = NULL;
 	}
 
-	agent_assembly = mono_assembly_open_predicate (agent, FALSE, FALSE, NULL, NULL, &open_status);
+	agent_assembly = mono_assembly_open (agent, &open_status);
 	if (!agent_assembly) {
 		fprintf (stderr, "Cannot open agent assembly '%s': %s.\n", agent, mono_image_strerror (open_status));
 		g_free (agent);
@@ -1198,6 +1198,7 @@ mini_usage_jitdeveloper (void)
 		 "    --single-method=OPTS   Runs regressions with only one method optimized with OPTS at any time\n"
 		 "    --statfile FILE        Sets the stat file to FILE\n"
 		 "    --stats                Print statistics about the JIT operations\n"
+		 "    --wapi=hps|semdel|seminfo IO-layer maintenance\n"
 		 "    --inject-async-exc METHOD OFFSET Inject an asynchronous exception at METHOD\n"
 		 "    --verify-all           Run the verifier on all assemblies and methods\n"
 		 "    --full-aot             Avoid JITting any code\n"
@@ -2066,7 +2067,7 @@ mono_main (int argc, char* argv[])
 	case DO_REGRESSION:
 #ifdef ENABLE_INTERPRETER
 		if (mono_use_interpreter) {
-			if (mono_interp_regression_list (2, argc -i, argv + i)) {
+			if (interp_regression_list (2, argc -i, argv + i)) {
 				g_print ("Regression ERRORS!\n");
 				// mini_cleanup (domain);
 				return 1;
@@ -2107,6 +2108,10 @@ mono_main (int argc, char* argv[])
 		aname = argv [i];
 		break;
 	default:
+#ifdef ENABLE_INTERPRETER
+		if (mono_use_interpreter)
+			g_error ("not yet");
+#endif
 		if (argc - i < 1) {
 			mini_usage ();
 			mini_cleanup (domain);
@@ -2121,7 +2126,7 @@ mono_main (int argc, char* argv[])
 		jit_info_table_test (domain);
 #endif
 
-	assembly = mono_assembly_open_predicate (aname, FALSE, FALSE, NULL, NULL, &open_status);
+	assembly = mono_assembly_open (aname, &open_status);
 	if (!assembly) {
 		fprintf (stderr, "Cannot open assembly '%s': %s.\n", aname, mono_image_strerror (open_status));
 		mini_cleanup (domain);

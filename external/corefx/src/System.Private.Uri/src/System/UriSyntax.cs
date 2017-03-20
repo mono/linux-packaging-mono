@@ -87,7 +87,6 @@ namespace System
         internal static UriParser WssUri;
         internal static UriParser FtpUri;
         internal static UriParser FileUri;
-        internal static UriParser UnixFileUri;
         internal static UriParser GopherUri;
         internal static UriParser NntpUri;
         internal static UriParser NewsUri;
@@ -126,7 +125,6 @@ namespace System
             s_table[FtpUri.SchemeName] = FtpUri;                    //FTP
 
             FileUri = new BuiltInUriParser("file", NoDefaultPort, s_fileSyntaxFlags);
-            UnixFileUri = new BuiltInUriParser("file", NoDefaultPort, s_unixFileSyntaxFlags);
             s_table[FileUri.SchemeName] = FileUri;                   //FILE
 
             GopherUri = new BuiltInUriParser("gopher", 70, GopherSyntaxFlags);
@@ -472,8 +470,6 @@ namespace System
                                         UriSyntaxFlags.AllowIdn |
                                         UriSyntaxFlags.AllowIriParsing;
 
-        private static readonly UriSyntaxFlags s_unixFileSyntaxFlags =
-                                        s_fileSyntaxFlags & ~UriSyntaxFlags.ConvertPathSlashes;
 
         private const UriSyntaxFlags VsmacrosSyntaxFlags =
                                         UriSyntaxFlags.MustHaveAuthority |

@@ -55,30 +55,30 @@ namespace System.Web.UI {
 			OnDataSourceViewChanged (EventArgs.Empty);
 		}
 
-		public virtual void Delete (IDictionary keys, IDictionary oldValues,
-						DataSourceViewOperationCallback callback)
+		public virtual void Delete (IDictionary keys, IDictionary values,
+						DataSourceViewOperationCallback callBack)
 		{
-			if (callback == null)
+			if (callBack == null)
 				throw new ArgumentNullException ("callBack");
 
 			int rowAffected;
 			try {
-				rowAffected = ExecuteDelete (keys, oldValues);
+				rowAffected = ExecuteDelete (keys, values);
 			}
 			catch (Exception e) {
-				if (!callback (0, e))
+				if (!callBack (0, e))
 					throw;
 				return;
 			}
-			callback (rowAffected, null);
+			callBack (rowAffected, null);
 		}
 
-		protected virtual int ExecuteDelete(IDictionary keys, IDictionary oldValues)
+		protected virtual int ExecuteDelete(IDictionary keys, IDictionary values)
 		{
 			throw new NotSupportedException ();
 		}
 
-		protected virtual int ExecuteInsert (IDictionary values)
+		protected virtual int ExecuteInsert (IDictionary keys)
 		{
 			throw new NotSupportedException();
 		}
@@ -93,29 +93,29 @@ namespace System.Web.UI {
 		}
 
 		public virtual void Insert (IDictionary values, 
-					DataSourceViewOperationCallback callback)
+					DataSourceViewOperationCallback callBack)
 		{
-			if (callback == null)
-				throw new ArgumentNullException("callback");
+			if (callBack == null)
+				throw new ArgumentNullException("callBack");
 
 			int rowAffected;
 			try {
 				rowAffected = ExecuteInsert (values);
 			} catch (Exception e) {
-				if (!callback (0, e))
+				if (!callBack (0, e))
 					throw;
 				return;
 			}
 
-			callback (rowAffected, null);
+			callBack (rowAffected, null);
 		}
 
-		protected virtual void OnDataSourceViewChanged (EventArgs e)
+		protected virtual void OnDataSourceViewChanged (EventArgs eventArgs)
 		{
 			if (eventsList != null) {
 				EventHandler evtHandler = eventsList [EventDataSourceViewChanged] as EventHandler;
 				if (evtHandler != null)
-					evtHandler(this, e);
+					evtHandler(this, eventArgs);
 			}
 		}
 		
@@ -137,34 +137,34 @@ namespace System.Web.UI {
 			return;
 		}
 
-		public virtual void Select (DataSourceSelectArguments arguments,
-						DataSourceViewSelectCallback callback)
+		public virtual void Select (DataSourceSelectArguments selectArgs,
+						DataSourceViewSelectCallback callBack)
 		{
-			if (callback == null)
+			if (callBack == null)
 				throw new ArgumentNullException("callBack");
 
-			arguments.RaiseUnsupportedCapabilitiesError (this);
+			selectArgs.RaiseUnsupportedCapabilitiesError (this);
 			
-			IEnumerable selectList = ExecuteSelect (arguments);
-			callback (selectList);
+			IEnumerable selectList = ExecuteSelect (selectArgs);
+			callBack (selectList);
 		}
 
 		public virtual void Update(IDictionary keys, IDictionary values,
-			IDictionary oldValues, DataSourceViewOperationCallback callback)
+			IDictionary oldValues, DataSourceViewOperationCallback callBack)
 		{
-			if (callback == null)
-				throw new ArgumentNullException ("callback");
+			if (callBack == null)
+				throw new ArgumentNullException ("callBack");
 
 			int rowAffected;
 			try {
 				rowAffected = ExecuteUpdate (keys, values, oldValues);
 			} catch (Exception e) {
-				if (!callback (0, e))
+				if (!callBack (0, e))
 					throw;
 				return;
 			}
 
-			callback (rowAffected, null);
+			callBack (rowAffected, null);
 		} 
 		
 		public virtual bool CanDelete { get { return false; } }

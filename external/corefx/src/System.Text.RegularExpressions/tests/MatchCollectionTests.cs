@@ -105,21 +105,21 @@ namespace System.Text.RegularExpressions.Tests
             ICollection collection = regex.Matches("dotnet");
 
             // Array is null
-            AssertExtensions.Throws<ArgumentNullException>("destinationArray", "dest", () => collection.CopyTo(null, 0));
+            Assert.Throws<ArgumentNullException>("dest", () => collection.CopyTo(null, 0));
 
             // Array is multidimensional
             Assert.Throws<ArgumentException>(null, () => collection.CopyTo(new object[10, 10], 0));
 
             // Array has a non-zero lower bound
             Array o = Array.CreateInstance(typeof(object), new int[] { 10 }, new int[] { 10 });
-            AssertExtensions.Throws<ArgumentOutOfRangeException>("destinationIndex", "dstIndex", () => collection.CopyTo(o, 0));
+            Assert.Throws<ArgumentOutOfRangeException>("dstIndex", () => collection.CopyTo(o, 0));
 
             // Index < 0
-            AssertExtensions.Throws<ArgumentOutOfRangeException>("destinationIndex", "dstIndex", () => collection.CopyTo(new object[collection.Count], -1));
+            Assert.Throws<ArgumentOutOfRangeException>("dstIndex", () => collection.CopyTo(new object[collection.Count], -1));
 
             // Invalid index + length
-            AssertExtensions.Throws<ArgumentException>("destinationArray", string.Empty, () => collection.CopyTo(new object[collection.Count], 1));
-            AssertExtensions.Throws<ArgumentException>("destinationArray", string.Empty, () => collection.CopyTo(new object[collection.Count + 1], 2));
+            Assert.Throws<ArgumentException>("", () => collection.CopyTo(new object[collection.Count], 1));
+            Assert.Throws<ArgumentException>("", () => collection.CopyTo(new object[collection.Count + 1], 2));
         }
 
         private static MatchCollection CreateCollection() => new Regex("t").Matches("dotnet");

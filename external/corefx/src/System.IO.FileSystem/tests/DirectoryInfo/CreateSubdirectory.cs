@@ -144,8 +144,8 @@ namespace System.IO.Tests
         #region PlatformSpecific
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Control whitespace in path throws ArgumentException
-        public void WindowsControlWhiteSpace()
+        [PlatformSpecific(TestPlatforms.Windows)]
+        public void WindowsControWhiteSpace()
         {
             // CreateSubdirectory will throw when passed a path with control whitespace e.g. "\t"
             var components = IOInputs.GetControlWhiteSpace();
@@ -157,7 +157,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Simple whitespace is trimmed in path
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsSimpleWhiteSpace()
         {
             // CreateSubdirectory trims all simple whitespace, returning us the parent directory
@@ -175,7 +175,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Whitespace as path allowed
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixWhiteSpaceAsPath_Allowed()
         {
             var paths = IOInputs.GetWhiteSpace();
@@ -187,7 +187,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Trailing whitespace in path treated as significant
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixNonSignificantTrailingWhiteSpace()
         {
             // Unix treats trailing/prename whitespace as significant and a part of the name.
@@ -205,8 +205,8 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Extended windows path
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void ExtendedPathSubdirectory()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(IOInputs.ExtendedPrefix + GetTestFilePath());

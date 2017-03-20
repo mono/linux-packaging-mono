@@ -696,13 +696,13 @@ namespace System.IO.Ports
 			return encoding.GetString (seen.ToArray ());
 		}
 
-		public void Write (string text)
+		public void Write (string str)
 		{
 			CheckOpen ();
-			if (text == null)
-				throw new ArgumentNullException ("text");
+			if (str == null)
+				throw new ArgumentNullException ("str");
 			
-			byte [] buffer = encoding.GetBytes (text);
+			byte [] buffer = encoding.GetBytes (str);
 			Write (buffer, 0, buffer.Length);
 		}
 
@@ -739,9 +739,9 @@ namespace System.IO.Ports
 			stream.Write (bytes, 0, bytes.Length);
 		}
 
-		public void WriteLine (string text)
+		public void WriteLine (string str)
 		{
-			Write (text + new_line);
+			Write (str + new_line);
 		}
 
 		void CheckOpen ()

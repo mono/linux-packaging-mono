@@ -206,6 +206,7 @@ typedef enum {
         MONO_IMAGE_IMAGE_INVALID
 } MonoImageOpenStatus;
 
+               <a href="#api:mono_load_image">mono_load_image</a>                   
 MonoImage*     <a href="#api:mono_image_open">mono_image_open</a>                   (const char *fname, 
                                                   MonoImageOpenStatus *status);
                <a href="#api:mono_image_open_full">mono_image_open_full</a>              
@@ -266,6 +267,21 @@ void           <a href="#api:mono_images_cleanup">mono_images_cleanup</a>       
 	the actual code being executed. 
 
 <h3>Opening and closing MonoImages</h3>
+
+<a name="api:mono_load_image"></a>
+<div class="mapi">
+    <div class="mapi-entry "><code>mono_load_image</code></div>
+    <div class="mapi-height-container">
+        <div class="mapi-ptr-container"></div>
+        <div class="mapi-description">
+            <div class="mapi-ptr"></div>
+
+            <div class="mapi-declaration mapi-section">Syntax</div>
+            <div class="mapi-prototype">mono_load_image</div>
+            <p />
+        </div><!--mapi-description -->
+    </div><!--height container -->
+</div> <!-- class=mapi  -->
 
 <a name="api:mono_image_open"></a>
 <div class="mapi">

@@ -70,7 +70,7 @@ namespace System.Threading.Tests
             }
             else if (mutexWh != null)
             {
-                Assert.Throws<ApplicationException>(() => mutexWh.ReleaseMutex());
+                Assert.Throws<Exception>(() => mutexWh.ReleaseMutex());
             }
             else
             {
@@ -180,7 +180,7 @@ namespace System.Threading.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Unix doesn't support SignalAndWait
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public static void SignalAndWait_PlatformNotSupported()
         {
             var toSignal = new ManualResetEvent(false);

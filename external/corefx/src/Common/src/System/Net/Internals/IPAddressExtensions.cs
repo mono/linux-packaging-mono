@@ -6,16 +6,14 @@ using System.Diagnostics;
 
 namespace System.Net.Sockets
 {
-    internal static class IPAddressExtensions
+    public static class IPAddressExtensions
     {
         public static IPAddress Snapshot(this IPAddress original)
         {
             switch (original.AddressFamily)
             {
                 case AddressFamily.InterNetwork:
-#pragma warning disable CS0618 // IPAddress.Address is obsoleted, but it's the most efficient way to get the Int32 IPv4 address
-                    return new IPAddress(original.Address);
-#pragma warning restore CS0618
+                    return new IPAddress(original.GetAddressBytes());
 
                 case AddressFamily.InterNetworkV6:
                     return new IPAddress(original.GetAddressBytes(), (uint)original.ScopeId);

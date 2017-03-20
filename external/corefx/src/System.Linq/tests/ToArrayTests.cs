@@ -127,7 +127,8 @@ namespace System.Linq.Tests
             Assert.Equal(1, source.CopyToTouched);
         }
 
-        [Fact(Skip = "Valid test but too intensive to enable even in OuterLoop")]
+        [Fact]
+        [ActiveIssue("Valid test but too intensive to enable even in OuterLoop")]
         public void ToArray_FailOnExtremelyLargeCollection()
         {
             var largeSeq = new FastInfiniteEnumerator<byte>();

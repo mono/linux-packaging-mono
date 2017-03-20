@@ -41,8 +41,8 @@ namespace System.ServiceModel.Dispatcher
 		{
 		}
 
-		public XPathMessageContext (NameTable table)
-			: base (table)
+		public XPathMessageContext (NameTable nameTable)
+			: base (nameTable)
 		{
 			AddNamespace ("s11", Constants.Soap11);
 			AddNamespace ("s12", Constants.Soap12);
@@ -52,9 +52,9 @@ namespace System.ServiceModel.Dispatcher
 			get { return false; } // as documented.
 		}
 
-		public override int CompareDocument (string baseUri, string nextBaseUri)
+		public override int CompareDocument (string uri1, string uri2)
 		{
-			return String.CompareOrdinal (baseUri, nextBaseUri);
+			return String.CompareOrdinal (uri1, uri2);
 		}
 
 		public override bool PreserveWhitespace (XPathNavigator node)

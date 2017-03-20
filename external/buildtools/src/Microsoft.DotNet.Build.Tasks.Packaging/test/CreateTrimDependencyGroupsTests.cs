@@ -16,21 +16,11 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
     {
         private Log _log;
         private TestBuildEngine _engine;
-        private ITaskItem[] packageIndexes;
-
-        private const string FrameworkListsPath = "FrameworkLists";
 
         public CreateTrimDependencyGroupsTests(ITestOutputHelper output)
         {
             _log = new Log(output);
             _engine = new TestBuildEngine(_log);
-
-
-            var packageIndexPath = $"packageIndex.{Guid.NewGuid()}.json";
-            PackageIndex index = new PackageIndex();
-            index.MergeFrameworkLists(FrameworkListsPath);
-            index.Save(packageIndexPath);
-            packageIndexes = new[] { new TaskItem(packageIndexPath) };
         }
 
         [Fact]
@@ -71,7 +61,6 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
                 CreateDependencyItem(@"_._", null, "win8"),
                 CreateDependencyItem(@"_._", null, "wp8"),
                 CreateDependencyItem(@"_._", null, "wpa81"),
-                CreateDependencyItem(@"_._", null, "portable45-net45+win8+wp8+wpa81"),
                 CreateDependencyItem(@"_._", null, "xamarinios10"),
                 CreateDependencyItem(@"_._", null, "xamarinmac20"),
                 CreateDependencyItem(@"_._", null, "xamarintvos10"),
@@ -85,13 +74,14 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
                 CreateDependencyItem(@"System.Globalization", "4.0.0", "netstandard1.0"),
                 CreateDependencyItem(@"System.Threading", "4.0.0", "netstandard1.0")
             };
+            string frameworkListsPath = "FrameworkLists";
 
             CreateTrimDependencyGroups task = new CreateTrimDependencyGroups()
             {
                 BuildEngine = _engine,
                 Files = files,
                 Dependencies = dependencies,
-                PackageIndexes = packageIndexes
+                FrameworkListsPath = frameworkListsPath
             };
 
             _log.Reset();
@@ -124,13 +114,14 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
                 CreateDependencyItem(@"System.Globalization", "4.0.0", "netstandard1.0"),
                 CreateDependencyItem(@"System.Threading", "4.0.0", "netstandard1.0")
             };
+            string frameworkListsPath = "FrameworkLists";
 
             CreateTrimDependencyGroups task = new CreateTrimDependencyGroups()
             {
                 BuildEngine = _engine,
                 Files = files,
                 Dependencies = dependencies,
-                PackageIndexes = packageIndexes
+                FrameworkListsPath = frameworkListsPath
             };
 
             _log.Reset();
@@ -138,10 +129,18 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
             Assert.Equal(0, _log.ErrorsLogged);
             Assert.Equal(0, _log.WarningsLogged);
 
-            // Assert that we're adding dependency groups that cover all inbox TFMs
-            Assert.Equal(2, task.TrimmedDependencies.Length);
-            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("portable45-net45+win8+wp8+wpa81")).Count());
-            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("xamarinmac20")).Count());
+            // Assert that we're adding dependency groups for all 7 inbox tfm's we support
+            Assert.Equal(10, task.TrimmedDependencies.Length);
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("win8")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("monoandroid1")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("monotouch1")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("net45")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("wp8")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("wpa81")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("xamarinios1")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("xamarintvos1")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("xamarinwatchos1")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Contains("xamarinmac2")).Count());
             // Assert these are empty dependencygroups.
             Assert.All(task.TrimmedDependencies, f => f.ToString().Equals("_._"));
         }
@@ -195,13 +194,14 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
                 CreateDependencyItem(@"System.Collections.Immutable", "4.0.20", "netstandard1.3"),
                 CreateDependencyItem(@"System.Runtime", "4.0.20", ".NETCore50")
             };
+            string frameworkListsPath = "FrameworkLists";
 
             CreateTrimDependencyGroups task = new CreateTrimDependencyGroups()
             {
                 BuildEngine = _engine,
                 Files = files,
                 Dependencies = dependencies,
-                PackageIndexes = packageIndexes
+                FrameworkListsPath = frameworkListsPath
             };
 
             _log.Reset();
@@ -211,9 +211,9 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
 
             // System.Collections.Immutable is not inbox and we've specified different versions for netstandard1.0 and netstandard1.3, so
             // we're expecting those dependencies to both be present for the net45 and net46 target frameworks.
-            Assert.Equal(3, task.TrimmedDependencies.Length);
-            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("portable45-net45+win8+wp8+wpa81") && f.ItemSpec.Equals("System.Collections.Immutable", StringComparison.OrdinalIgnoreCase)).Count());
-            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("portable46-net451+win81+wpa81") && f.ItemSpec.Equals("System.Collections.Immutable", StringComparison.OrdinalIgnoreCase)).Count());
+            Assert.Equal(2, task.TrimmedDependencies.Length);
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("net45") && f.ItemSpec.Equals("System.Collections.Immutable", StringComparison.OrdinalIgnoreCase)).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("net451") && f.ItemSpec.Equals("System.Collections.Immutable", StringComparison.OrdinalIgnoreCase)).Count());
         }
 
         [Fact]
@@ -221,7 +221,7 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
         {
             ITaskItem[] files = new[]
             {
-                CreateFileItem(@"E:\ProjectK\binaries\x86ret\NETCore\Libraries\System.Threading.AccessControl.dll", "lib/netcoreapp1.0", "netcoreapp1.0"),
+                CreateFileItem(@"E:\ProjectK\binaries\x86ret\NETCore\Libraries\dnxcore\System.Threading.AccessControl.dll", "lib/DNXCore50", "dnxcore50"),
                 CreateFileItem(@"E:\ProjectK\binaries\x86ret\NETCore\Libraries\net\System.Threading.AccessControl.dll", "lib/net46", "net46"),
                 CreateFileItem(@"E:\ProjectK\binaries\x86ret\Contracts\System.Threading.AccessControl\4.0.0.0\System.Threading.AccessControl.dll", "ref/netstandard1.3", "netstandard1.3"),
                 CreateFileItem(@"E:\ProjectK\src\Redist\x86\retail\bin\i386\HelpDocs\intellisense\NETCore5\1033\System.Threading.AccessControl.xml", "ref/netstandard1.3", "netstandard1.3"),
@@ -238,20 +238,21 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
             };
             ITaskItem[] dependencies = new[]
             {
-                CreateDependencyItem(@"System.Runtime", "4.0.20", "netcoreapp1.0"),
-                CreateDependencyItem(@"System.Resources.ResourceManager", "4.0.0", "netcoreapp1.0"),
-                CreateDependencyItem(@"System.Security.AccessControl", "4.0.0-rc2-23516", "netcoreapp1.0"),
-                CreateDependencyItem(@"System.Security.Principal.Windows", "4.0.0-rc2-23516", "netcoreapp1.0"),
-                CreateDependencyItem(@"System.Runtime.Handles", "4.0.0", "netcoreapp1.0"),
-                CreateDependencyItem(@"System.Threading", "4.0.10", "netcoreapp1.0")
+                CreateDependencyItem(@"System.Runtime", "4.0.20", "dnxcore50"),
+                CreateDependencyItem(@"System.Resources.ResourceManager", "4.0.0", "dnxcore50"),
+                CreateDependencyItem(@"System.Security.AccessControl", "4.0.0-rc2-23516", "dnxcore50"),
+                CreateDependencyItem(@"System.Security.Principal.Windows", "4.0.0-rc2-23516", "dnxcore50"),
+                CreateDependencyItem(@"System.Runtime.Handles", "4.0.0", "dnxcore50"),
+                CreateDependencyItem(@"System.Threading", "4.0.10", "dnxcore50")
             };
+            string frameworkListsPath = "FrameworkLists";
 
             CreateTrimDependencyGroups task = new CreateTrimDependencyGroups()
             {
                 BuildEngine = _engine,
                 Files = files,
                 Dependencies = dependencies,
-                PackageIndexes = packageIndexes
+                FrameworkListsPath = frameworkListsPath
             };
 
             _log.Reset();
@@ -291,13 +292,14 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
                 CreateDependencyItem(@"System.Collections.Immutable", "1.1.37", "netstandard1.1"),
                 CreateDependencyItem(@"System.Collections.Immutable", "1.1.37", "portable-net45+win80")
             };
+            string frameworkListsPath = "FrameworkLists";
 
             CreateTrimDependencyGroups task = new CreateTrimDependencyGroups()
             {
                 BuildEngine = _engine,
                 Files = files,
                 Dependencies = dependencies,
-                PackageIndexes = packageIndexes
+                FrameworkListsPath = frameworkListsPath
             };
 
             _log.Reset();
@@ -307,13 +309,13 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging.Tests
             IEnumerable<string> tmp = task.TrimmedDependencies.Select(f => f.GetMetadata("TargetFramework"));
 
             // Assert that we're creating new dependency groups
-            Assert.Equal(2, task.TrimmedDependencies.Length);
+            Assert.Equal(9, task.TrimmedDependencies.Length);
 
             // System.Collections.Immutable is not inbox
-            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("xamarinmac20")).Count());
+            Assert.Equal(1, task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("monoandroid10")).Count());
 
-            // The only added dependency in portable45-net45+win8+wpa81 is System.Collections.Immutable
-            Assert.Equal("System.Collections.Immutable", task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("portable45-net45+win8+wpa81")).Single().ItemSpec);
+            // The only added dependency in wpa81 is System.Collections.Immutable
+            Assert.Equal("System.Collections.Immutable", task.TrimmedDependencies.Where(f => f.GetMetadata("TargetFramework").Equals("wpa81")).First().ItemSpec);
         }
 
         public static ITaskItem CreateFileItem(string sourcePath, string targetPath, string targetFramework)

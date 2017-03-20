@@ -25,7 +25,7 @@ namespace XDocumentTests.SDMSample
             element.Add(null);
             Assert.Empty(element.Nodes());
 
-            // Add node, attribute, string, some other value, and an IEnumerable.
+            // Add node, attrbute, string, some other value, and an IEnumerable.
             XComment comment = new XComment("this is a comment");
             XComment comment2 = new XComment("this is a comment 2");
             XComment comment3 = new XComment("this is a comment 3");
@@ -103,7 +103,7 @@ namespace XDocumentTests.SDMSample
             element.AddFirst(null);
             Assert.Empty(element.Nodes());
 
-            // Add a sentinel value.
+            // Add a sentinal value.
             XText text = new XText("abcd");
             element.AddFirst(text);
 

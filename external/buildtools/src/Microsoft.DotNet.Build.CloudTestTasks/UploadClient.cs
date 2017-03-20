@@ -2,16 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Text;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
+using Microsoft.Build.Utilities;
 using Task = System.Threading.Tasks.Task;
 
 namespace Microsoft.DotNet.Build.CloudTestTasks
@@ -30,15 +32,9 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
         public string EncodeBlockIds(int numberOfBlocks, int lengthOfId)
         {
             string numberOfBlocksString = numberOfBlocks.ToString("D" + lengthOfId);
-            if (Encoding.UTF8.GetByteCount(numberOfBlocksString) <= 64)
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(numberOfBlocksString);
-                return Convert.ToBase64String(bytes);
-            }
-            else
-            {
-                throw new Exception("Task failed - Could not encode block id.");
-            }
+
+            byte[] bytes = Encoding.UTF8.GetBytes(numberOfBlocksString);
+            return Convert.ToBase64String(bytes);
         }
 
         public async Task UploadBlockBlobAsync(
@@ -73,23 +69,24 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
 
                     if (nextBytesToRead != read)
                     {
-                        throw new Exception(string.Format(
-                            "Number of bytes read ({0}) from file {1} isn't equal to the number of bytes expected ({2}) .",
-                            read, fileName, nextBytesToRead));
+                        log.LogError(
+                            "Number of bytes read ({0}) from file {1} isn't equal to the number of bytes expected ({1}) .",
+                            read,
+                            fileName,
+                            nextBytesToRead);
                     }
 
                     string blockId = EncodeBlockIds(countForId, numberOfBlocks.ToString().Length);
 
                     blockIds.Add(blockId);
-                    string blockUploadUrl = blobUploadUrl + "?comp=block&blockid=" + WebUtility.UrlEncode(blockId);
+                    string blockUploadUrl = blobUploadUrl + "?comp=block&blockid=" + blockId;
 
+                    DateTime dt = DateTime.UtcNow;
                     using (HttpClient client = new HttpClient())
                     {
                         client.DefaultRequestHeaders.Clear();
-                        Func<HttpRequestMessage> createRequest = () =>
+                        using (HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Put, blockUploadUrl))
                         {
-                            DateTime dt = DateTime.UtcNow;
-                            var req = new HttpRequestMessage(HttpMethod.Put, blockUploadUrl);
                             req.Headers.Add(
                                 AzureHelper.DateHeaderString,
                                 dt.ToString("R", CultureInfo.InvariantCulture));
@@ -107,27 +104,26 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
                                     nextBytesToRead.ToString(),
                                     string.Empty));
 
-                            Stream postStream = new MemoryStream();
-                            postStream.Write(fileBytes, 0, nextBytesToRead);
-                            postStream.Seek(0, SeekOrigin.Begin);
-                            req.Content = new StreamContent(postStream);
-                            return req;
-                        };
+                            log.LogMessage("Sending request to upload part {0} of file {1}", countForId, fileName);
 
-                        log.LogMessage(MessageImportance.Low, "Sending request to upload part {0} of file {1}", countForId, fileName);
-
-                        using (HttpResponseMessage response = await AzureHelper.RequestWithRetry(log, client, createRequest))
-                        {
-                            log.LogMessage(
-                                MessageImportance.Low,
-                                "Received response to upload part {0} of file {1}: Status Code:{2} Status Desc: {3}",
-                                countForId,
-                                fileName,
-                                response.StatusCode,
-                                await response.Content.ReadAsStringAsync());
+                            using (Stream postStream = new MemoryStream())
+                            {
+                                postStream.Write(fileBytes, 0, nextBytesToRead);
+                                postStream.Seek(0, SeekOrigin.Begin);
+                                StreamContent contentStream = new StreamContent(postStream);
+                                req.Content = contentStream;
+                                using (HttpResponseMessage response = await client.SendAsync(req, ct))
+                                {
+                                    this.log.LogMessage(
+                                        "Received response to upload part {0} of file {1}: Status Code:{2} Status Desc: {3}",
+                                        countForId,
+                                        fileName,
+                                        response.StatusCode,
+                                        await response.Content.ReadAsStringAsync());
+                                }
+                            }
                         }
                     }
-
                     offset += read;
                     bytesLeft -= nextBytesToRead;
                     countForId += 1;
@@ -135,22 +131,22 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
             }
 
             string blockListUploadUrl = blobUploadUrl + "?comp=blocklist";
-
+            DateTime dt1 = DateTime.UtcNow;
             using (HttpClient client = new HttpClient())
             {
-                Func<HttpRequestMessage> createRequest = () =>
+                using (HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Put, blockListUploadUrl))
                 {
-                    DateTime dt1 = DateTime.UtcNow;
-                    var req = new HttpRequestMessage(HttpMethod.Put, blockListUploadUrl);
                     req.Headers.Add(AzureHelper.DateHeaderString, dt1.ToString("R", CultureInfo.InvariantCulture));
                     req.Headers.Add(AzureHelper.VersionHeaderString, AzureHelper.StorageApiVersion);
 
-                    var body = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?><BlockList>");
+                    string body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><BlockList>";
                     foreach (object item in blockIds)
-                        body.AppendFormat("<Latest>{0}</Latest>", item);
+                    {
+                        body += "<Latest>" + item + "</Latest>";
+                    }
 
-                    body.Append("</BlockList>");
-                    byte[] bodyData = Encoding.UTF8.GetBytes(body.ToString());
+                    body += "</BlockList>";
+                    byte[] bodyData = Encoding.UTF8.GetBytes(body);
                     req.Headers.Add(
                         AzureHelper.AuthorizationHeaderString,
                         AzureHelper.AuthorizationHeader(
@@ -163,21 +159,22 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
                             string.Empty,
                             bodyData.Length.ToString(),
                             ""));
-                    Stream postStream = new MemoryStream();
-                    postStream.Write(bodyData, 0, bodyData.Length);
-                    postStream.Seek(0, SeekOrigin.Begin);
-                    req.Content = new StreamContent(postStream);
-                    return req;
-                };
+                    using (Stream postStream = new MemoryStream())
+                    {
+                        postStream.Write(bodyData, 0, bodyData.Length);
+                        postStream.Seek(0, SeekOrigin.Begin);
+                        StreamContent contentStream = new StreamContent(postStream);
+                        req.Content = contentStream;
 
-                using (HttpResponseMessage response = await AzureHelper.RequestWithRetry(log, client, createRequest))
-                {
-                    log.LogMessage(
-                        MessageImportance.Low,
-                        "Received response to combine block list for file {0}: Status Code:{1} Status Desc: {2}",
-                        fileName,
-                        response.StatusCode,
-                        await response.Content.ReadAsStringAsync());
+                        using (HttpResponseMessage response = await client.SendAsync(req, ct))
+                        {
+                            this.log.LogMessage(
+                                "Received response to combine block list for file {0}: Status Code:{1} Status Desc: {2}",
+                                fileName,
+                                response.StatusCode,
+                                await response.Content.ReadAsStringAsync());
+                        }
+                    }
                 }
             }
         }

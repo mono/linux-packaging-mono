@@ -57,9 +57,9 @@ namespace System.ServiceModel.Description
 			get { return msg; }
 		}
 
-		public override bool Equals (object obj)
+		public override bool Equals (object other)
 		{
-			MetadataConversionError e = obj as MetadataConversionError;
+			MetadataConversionError e = other as MetadataConversionError;
 			return e != null &&
 				e.warning == warning &&
 				e.msg == msg;

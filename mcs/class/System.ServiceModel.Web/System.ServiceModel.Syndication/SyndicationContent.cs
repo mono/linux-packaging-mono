@@ -75,9 +75,9 @@ namespace System.ServiceModel.Syndication
 			return new XmlSyndicationContent (null, xmlSerializerObject, serializer);
 		}
 
-		public static XmlSyndicationContent CreateXmlContent (XmlReader xmlReader)
+		public static XmlSyndicationContent CreateXmlContent (XmlReader reader)
 		{
-			return new XmlSyndicationContent (xmlReader);
+			return new XmlSyndicationContent (reader);
 		}
 
 		#endregion

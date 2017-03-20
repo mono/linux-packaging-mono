@@ -46,10 +46,10 @@ namespace System.IdentityModel.Policy
 		public abstract ReadOnlyCollection<ClaimSet> ClaimSets { get; }
 
 		public abstract void AddClaimSet (
-			IAuthorizationPolicy policy,
+			IAuthorizationPolicy authorizationPolicy,
 			ClaimSet claimSet);
 
-		public abstract void RecordExpirationTime (DateTime expirationTime);
+		public abstract void RecordExpirationTime (DateTime time);
 	}
 
 	// default implementation

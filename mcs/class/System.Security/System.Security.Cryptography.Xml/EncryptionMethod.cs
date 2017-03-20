@@ -48,9 +48,9 @@ namespace System.Security.Cryptography.Xml {
 			KeyAlgorithm = null;
 		}
 
-		public EncryptionMethod (string algorithm)
+		public EncryptionMethod (string strAlgorithm)
 		{
-			KeyAlgorithm = algorithm;
+			KeyAlgorithm = strAlgorithm;
 		}
 
 		#endregion // Constructors

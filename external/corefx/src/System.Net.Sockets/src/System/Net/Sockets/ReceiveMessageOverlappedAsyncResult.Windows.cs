@@ -2,8 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Diagnostics;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Threading;
+using Microsoft.Win32;
+using System.Collections.Generic;
 
 namespace System.Net.Sockets
 {
@@ -14,6 +19,11 @@ namespace System.Net.Sockets
         private byte[] _wsaBufferArray;
         private byte[] _controlBuffer;
         internal byte[] _messageBuffer;
+
+        private static readonly int s_controlDataSize = Marshal.SizeOf<Interop.Winsock.ControlData>();
+        private static readonly int s_controlDataIPv6Size = Marshal.SizeOf<Interop.Winsock.ControlDataIPv6>();
+        private static readonly int s_wsaBufferSize = Marshal.SizeOf<WSABuffer>();
+        private static readonly int s_wsaMsgSize = Marshal.SizeOf<Interop.Winsock.WSAMsg>();
 
         private IntPtr GetSocketAddressSizePtr()
         {
@@ -31,10 +41,10 @@ namespace System.Net.Sockets
         // These calls are outside the runtime and are unmanaged code, so we need
         // to prepare specific structures and ints that lie in unmanaged memory
         // since the overlapped calls may complete asynchronously.
-        internal unsafe void SetUnmanagedStructures(byte[] buffer, int offset, int size, Internals.SocketAddress socketAddress, SocketFlags socketFlags)
+        internal void SetUnmanagedStructures(byte[] buffer, int offset, int size, Internals.SocketAddress socketAddress, SocketFlags socketFlags)
         {
-            _messageBuffer = new byte[sizeof(Interop.Winsock.WSAMsg)];
-            _wsaBufferArray = new byte[sizeof(WSABuffer)];
+            _messageBuffer = new byte[s_wsaMsgSize];
+            _wsaBufferArray = new byte[s_wsaBufferSize];
 
             bool ipv4, ipv6;
             Socket.GetIPProtocolInformation(((Socket)AsyncObject).AddressFamily, socketAddress, out ipv4, out ipv6);
@@ -42,11 +52,11 @@ namespace System.Net.Sockets
             // Prepare control buffer.
             if (ipv4)
             {
-                _controlBuffer = new byte[sizeof(Interop.Winsock.ControlData)];
+                _controlBuffer = new byte[s_controlDataSize];
             }
             else if (ipv6)
             {
-                _controlBuffer = new byte[sizeof(Interop.Winsock.ControlDataIPv6)];
+                _controlBuffer = new byte[s_controlDataIPv6Size];
             }
 
             // Pin buffers.
@@ -91,12 +101,12 @@ namespace System.Net.Sockets
 
         private unsafe void InitIPPacketInformation()
         {
-            if (_controlBuffer.Length == sizeof(Interop.Winsock.ControlData))
+            if (_controlBuffer.Length == s_controlDataSize)
             {
                 // IPv4
                 _ipPacketInformation = SocketPal.GetIPPacketInformation((Interop.Winsock.ControlData*)_message->controlBuffer.Pointer);
             }
-            else if (_controlBuffer.Length == sizeof(Interop.Winsock.ControlDataIPv6))
+            else if (_controlBuffer.Length == s_controlDataIPv6Size)
             {
                 // IPv6
                 _ipPacketInformation = SocketPal.GetIPPacketInformation((Interop.Winsock.ControlDataIPv6*)_message->controlBuffer.Pointer);
@@ -127,12 +137,7 @@ namespace System.Net.Sockets
 
         private void LogBuffer(int size)
         {
-            // This should only be called if tracing is enabled. However, there is the potential for a race
-            // condition where tracing is disabled between a calling check and here, in which case the assert
-            // may fire erroneously.
-            Debug.Assert(NetEventSource.IsEnabled);
-
-            NetEventSource.DumpBuffer(this, _wsaBuffer->Pointer, Math.Min(_wsaBuffer->Length, size));
+            if (NetEventSource.IsEnabled) NetEventSource.DumpBuffer(this, _wsaBuffer->Pointer, Math.Min(_wsaBuffer->Length, size));
         }
     }
 }

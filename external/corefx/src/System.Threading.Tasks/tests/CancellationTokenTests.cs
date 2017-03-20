@@ -817,12 +817,6 @@ namespace System.Threading.Tasks.Tests
             }
         }
 
-        [System.Runtime.CompilerServices.MethodImplAttribute(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-        static void FinalizeHelper(DisposeTracker disposeTracker)
-        {
-            new DerivedCTS(disposeTracker);
-        }
-
         // Several tests for deriving custom user types from CancellationTokenSource
         [Fact]
         public static void DerivedCancellationTokenSource()
@@ -879,7 +873,9 @@ namespace System.Threading.Tasks.Tests
             {
                 var disposeTracker = new DisposeTracker();
 
-                FinalizeHelper(disposeTracker);
+                // Since the object is not assigned into a variable, it can be GC'd before the current method terminates.
+                // (This is only an issue in the Debug build)
+                new DerivedCTS(disposeTracker);
 
                 // Wait until the DerivedCTS object is finalized
                 SpinWait.SpinUntil(() =>

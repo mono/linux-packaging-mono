@@ -8,10 +8,11 @@
          that check the invoked process name against known casing which fail under code coverage.
          This is probably because the code coverage target invocation does not canonicalize the
          process name. -->
-    <ToolHost>dotnet</ToolHost>
+    <ToolHost Condition="'$(OS)' == 'Windows_NT'">CoreRun.exe</ToolHost>
+    <ToolHost Condition="'$(OS)' != 'Windows_NT'">corerun</ToolHost>
 
     <ToolRuntimePath Condition="'$(ToolRuntimePath)' == ''">$(ProjectDir)Tools/</ToolRuntimePath>
-    <ToolHostCmd Condition="'$(ToolHostCmd)'==''">"$(ToolRuntimePath)dotnetcli/$(ToolHost)"</ToolHostCmd>
+    <ToolHostCmd>"$(ToolRuntimePath)$(ToolHost)"</ToolHostCmd>
     <!-- If COMPLUS_InstallRoot is set clear it before calling the ToolHost otherwise some root activations like PDB COM activation will fail -->
     <ToolHostCmd Condition="'$(COMPLUS_InstallRoot)' != ''">(set COMPLUS_InstallRoot=) &amp; $(ToolHostCmd)</ToolHostCmd>
   </PropertyGroup>

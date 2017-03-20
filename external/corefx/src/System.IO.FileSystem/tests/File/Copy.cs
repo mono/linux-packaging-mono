@@ -169,7 +169,7 @@ namespace System.IO.Tests
         #region PlatformSpecific
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Whitespace path throws ArgumentException
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsWhitespacePath()
         {
             string testFile = GetTestFilePath();
@@ -182,7 +182,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Whitespace path allowed
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixWhitespacePath()
         {
             string testFile = GetTestFilePath();

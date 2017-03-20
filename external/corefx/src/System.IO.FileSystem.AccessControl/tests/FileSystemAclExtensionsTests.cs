@@ -16,38 +16,9 @@ namespace System.IO
         }
 
         [Fact]
-        public void GetAccessControl_DirectoryInfo_ReturnsValidObject()
-        {
-            using (var directory = new TempDirectory())
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(directory.Path);
-
-                DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
-
-                Assert.NotNull(directorySecurity);
-                Assert.Equal(typeof(FileSystemRights), directorySecurity.AccessRightType);
-            }
-        }
-
-        [Fact]
         public void GetAccessControl_DirectoryInfo_AccessControlSections_InvalidArguments()
         {
             Assert.Throws<NullReferenceException>(() => FileSystemAclExtensions.GetAccessControl((DirectoryInfo)null, new AccessControlSections()));
-        }
-
-        [Fact]
-        public void GetAccessControl_DirectoryInfo_AccessControlSections_ReturnsValidObject()
-        {
-            using (var directory = new TempDirectory())
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(directory.Path);
-                AccessControlSections accessControlSections = new AccessControlSections();
-
-                DirectorySecurity directorySecurity = directoryInfo.GetAccessControl(accessControlSections);
-
-                Assert.NotNull(directorySecurity);
-                Assert.Equal(typeof(FileSystemRights), directorySecurity.AccessRightType);
-            }
         }
 
         [Fact]
@@ -57,40 +28,9 @@ namespace System.IO
         }
 
         [Fact]
-        public void GetAccessControl_FileInfo_ReturnsValidObject()
-        {
-            using (var directory = new TempDirectory())
-            using (var file = new TempFile(Path.Combine(directory.Path, "file.txt")))
-            {
-                FileInfo fileInfo = new FileInfo(file.Path);
-
-                FileSecurity fileSecurity = fileInfo.GetAccessControl();
-
-                Assert.NotNull(fileSecurity);
-                Assert.Equal(typeof(FileSystemRights), fileSecurity.AccessRightType);
-            }
-        }
-
-        [Fact]
         public void GetAccessControl_FileInfo_AccessControlSections_InvalidArguments()
         {
             Assert.Throws<NullReferenceException>(() => FileSystemAclExtensions.GetAccessControl((FileInfo)null, new AccessControlSections()));
-        }
-
-        [Fact]
-        public void GetAccessControl_FileInfo_AccessControlSections_ReturnsValidObject()
-        {
-            using (var directory = new TempDirectory())
-            using (var file = new TempFile(Path.Combine(directory.Path, "file.txt")))
-            {
-                FileInfo fileInfo = new FileInfo(file.Path);
-                AccessControlSections accessControlSections = new AccessControlSections();
-
-                FileSecurity fileSecurity = fileInfo.GetAccessControl(accessControlSections);
-
-                Assert.NotNull(fileSecurity);
-                Assert.Equal(typeof(FileSystemRights), fileSecurity.AccessRightType);
-            }
         }
 
         [Fact]
@@ -102,47 +42,15 @@ namespace System.IO
         [Fact]
         public void SetAccessControl_DirectoryInfo_DirectorySecurity_InvalidArguments()
         {
-            using (var directory = new TempDirectory())
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(directory.Path);
-                Assert.Throws<ArgumentNullException>("directorySecurity", () => directoryInfo.SetAccessControl((DirectorySecurity) null));
-            }
-        }
-
-        [Fact]
-        public void SetAccessControl_DirectoryInfo_DirectorySecurity_Success()
-        {
-            using (var directory = new TempDirectory())
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(directory.Path);
-                DirectorySecurity directorySecurity = new DirectorySecurity();
-
-                directoryInfo.SetAccessControl(directorySecurity);
-            }
+            DirectoryInfo directoryInfo = new DirectoryInfo("\\");
+            Assert.Throws<ArgumentNullException>("directorySecurity", () => FileSystemAclExtensions.SetAccessControl(directoryInfo, (DirectorySecurity)null));
         }
 
         [Fact]
         public void SetAccessControl_FileInfo_FileSecurity_InvalidArguments()
         {
-            using (var directory = new TempDirectory())
-            using (var file = new TempFile(Path.Combine(directory.Path, "file.txt")))
-            {
-                FileInfo fileInfo = new FileInfo(file.Path);
-                Assert.Throws<ArgumentNullException>("fileSecurity", () => fileInfo.SetAccessControl((FileSecurity) null));
-            }
-        }
-
-        [Fact]
-        public void SetAccessControl_FileInfo_FileSecurity_Success()
-        {
-            using (var directory = new TempDirectory())
-            using (var file = new TempFile(Path.Combine(directory.Path, "file.txt")))
-            {
-                FileInfo fileInfo = new FileInfo(file.Path);
-                FileSecurity fileSecurity = new FileSecurity();
-
-                fileInfo.SetAccessControl(fileSecurity);
-            }
+            FileInfo fileInfo = new FileInfo("\\");
+            Assert.Throws<ArgumentNullException>("fileSecurity", () => FileSystemAclExtensions.SetAccessControl(fileInfo, (FileSecurity)null));
         }
 
         [Fact]

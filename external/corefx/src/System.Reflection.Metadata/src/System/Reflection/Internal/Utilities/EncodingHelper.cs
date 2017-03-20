@@ -92,7 +92,7 @@ namespace System.Reflection.Internal
             Marshal.Copy((IntPtr)bytes, buffer, prefix.Length, byteCount);
 
             string result;
-            fixed (byte* prefixedBytes = &buffer[0])
+            fixed (byte* prefixedBytes = buffer)
             {
                 result = utf8Decoder.GetString(prefixedBytes, prefixedByteCount);
             }

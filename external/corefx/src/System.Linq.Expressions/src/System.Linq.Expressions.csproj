@@ -9,29 +9,28 @@
     <ProjectGuid>{AEF718E9-D4FC-418F-A7AE-ED6B2C7B3787}</ProjectGuid>
     <AssemblyName>System.Linq.Expressions</AssemblyName>
     <RootNamespace>System.Linq.Expressions</RootNamespace>
-    <IsInterpreting Condition="'$(TargetGroup)' == 'uap'">true</IsInterpreting>
-
-    <!-- Temporarily disable IsInterpreting build as it's broken and needs investigation 
-         https://github.com/dotnet/corefx/issues/16910
-    -->
-    <IsInterpreting>false</IsInterpreting>
-
+    <IsInterpreting Condition="'$(TargetGroup)' == 'netcore50'">true</IsInterpreting>
     <DefineConstants Condition=" '$(IsInterpreting)' != 'true' ">$(DefineConstants);FEATURE_COMPILE</DefineConstants>
     <DefineConstants Condition=" '$(FeatureInterpret)' == 'true' ">$(DefineConstants);FEATURE_INTERPRET</DefineConstants>
+    <IsPartialFacadeAssembly Condition="'$(TargetGroup)' == 'net461'">true</IsPartialFacadeAssembly>
+    <ResourcesSourceOutputDirectory Condition="'$(TargetGroup)' == 'net461'">None</ResourcesSourceOutputDirectory>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the configurations -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-Release|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Windows_NT-Debug|AnyCPU'" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Windows_NT-Release|AnyCPU'" />
-  <PropertyGroup Condition="'$(TargetGroup)' == 'uapaot'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='net461-Windows_NT-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='net461-Windows_NT-Release|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netcoreapp-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netcoreapp-Release|AnyCPU'" />
+  <!-- netcore50 project.json fork is shared for both netcore50 and netcore50aot. This redirects netcore50aot. -->
+  <PropertyGroup Condition="'$(TargetGroup)' == 'netcore50aot'">
+    <ProjectJson>netcore50/project.json</ProjectJson>
+    <ProjectLockJson>netcore50/project.lock.json</ProjectLockJson>
     <DefineConstants>$(DefineConstants);FEATURE_DYNAMIC_DELEGATE</DefineConstants>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetGroup)' == 'uapaot'"> 
+  <ItemGroup Condition="'$(TargetGroup)' == 'netcore50aot'">
     <EmbeddedResource Include="Resources\$(AssemblyName).rd.xml" />
-    <ReferenceFromRuntime Include="System.Private.CoreLib.DynamicDelegate" />
+    <TargetingPackReference Include="System.Private.CoreLib.DynamicDelegate" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetGroup)' != 'net461'">
     <Compile Include="$(CommonPath)\System\Collections\Generic\ArrayBuilder.cs">
       <Link>Common\System\Collections\Generic\ArrayBuilder.cs</Link>
     </Compile>
@@ -146,7 +145,7 @@
     <Reference Include="System.Runtime.Extensions" />
     <Reference Include="System.Threading" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetGroup)'=='netcoreapp' or '$(TargetGroup)'=='uap'">
+  <ItemGroup Condition="'$(TargetGroup)'=='netcoreapp'">
     <Compile Include="System\Linq\Expressions\DynamicExpressionVisitor.cs" />
     <Compile Include="System\Linq\Expressions\DynamicExpression.cs" />
     <Compile Include="System\Linq\Expressions\Expression.netstandard.cs" />
@@ -196,7 +195,7 @@
     <Compile Include="System\Dynamic\UnaryOperationBinder.cs" />
     <Compile Include="System\Dynamic\IInvokeOnGetBinder.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(IsInterpreting)' != 'true'">
+  <ItemGroup Condition=" '$(IsInterpreting)' != 'true' And '$(TargetGroup)' != 'net461'">
     <Compile Include="$(CommonPath)\System\Collections\Generic\ReferenceEqualityComparer.cs">
       <Link>Common\System\Collections\Generic\ReferenceEqualityComparer.cs</Link>
     </Compile>
@@ -213,7 +212,7 @@
     <Compile Include="System\Linq\Expressions\Compiler\CompilerScope.Storage.cs" />
     <Compile Include="System\Linq\Expressions\Compiler\HoistedLocals.cs" />
     <Compile Include="System\Linq\Expressions\Compiler\ILGen.cs" />
-    <Compile Include="System\Linq\Expressions\Compiler\KeyedStack.cs" />
+    <Compile Include="System\Linq\Expressions\Compiler\KeyedQueue.cs" />
     <Compile Include="System\Linq\Expressions\Compiler\LabelInfo.cs" />
     <Compile Include="System\Linq\Expressions\Compiler\LambdaCompiler.Address.cs" />
     <Compile Include="System\Linq\Expressions\Compiler\LambdaCompiler.Binary.cs" />
@@ -236,7 +235,7 @@
     <Compile Include="System\Runtime\CompilerServices\RuntimeOps.ExpressionQuoter.cs" />
     <Compile Include="System\Runtime\CompilerServices\RuntimeOps.RuntimeVariableList.cs" />
   </ItemGroup>
-  <ItemGroup Condition="'$(IsInterpreting)' == 'true' Or '$(FeatureInterpret)' == 'true'">
+  <ItemGroup Condition=" ('$(IsInterpreting)' == 'true' Or '$(FeatureInterpret)' == 'true') And '$(TargetGroup)' != 'net461' ">
     <Compile Include="$(CommonPath)\System\Dynamic\Utils\DelegateHelpers.cs">
       <Link>Common\System\Dynamic\Utils\DelegateHelpers.cs</Link>
     </Compile>
@@ -279,6 +278,7 @@
     <Compile Include="System\Linq\Expressions\Interpreter\NumericConvertInstruction.cs" />
     <Compile Include="System\Linq\Expressions\Interpreter\NullCheckInstruction.cs" />
     <Compile Include="System\Linq\Expressions\Interpreter\OrInstruction.cs" />
+    <Compile Include="System\Linq\Expressions\Interpreter\OnesComplementInstruction.cs" />
     <Compile Include="System\Linq\Expressions\Interpreter\RightShiftInstruction.cs" />
     <Compile Include="System\Linq\Expressions\Interpreter\RuntimeVariables.cs" />
     <Compile Include="System\Linq\Expressions\Interpreter\StackOperations.cs" />
@@ -286,6 +286,10 @@
     <Compile Include="System\Linq\Expressions\Interpreter\TypeOperations.cs" />
     <Compile Include="System\Linq\Expressions\Interpreter\Utilities.cs" />
     <Compile Include="System\Linq\Expressions\Compiler\DelegateHelpers.Generated.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetGroup)' == 'net461'">
+    <TargetingPackReference Include="mscorlib" />
+    <TargetingPackReference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
