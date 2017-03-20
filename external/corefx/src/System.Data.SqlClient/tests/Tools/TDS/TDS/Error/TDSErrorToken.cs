@@ -42,7 +42,7 @@ namespace Microsoft.SqlServer.TDS.Error
         public string ProcedureName { get; set; }
 
         /// <summary>
-        /// Line number at which an error occurred
+        /// Line number at which an error occured
         /// </summary>
         public uint Line { get; set; }
 

@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum001.enum001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum001.enum001;
+
     // <Area>Enum -- binary operator -- user-defined conversion</Area>
     // <Title>Enum operators with user-defined implicit conversion</Title>
     // <Description>
@@ -80,6 +82,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum001b.enum001b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum001b.enum001b;
+
     // <Area>Enum -- binary operator -- user-defined conversion</Area>
     // <Title>Enum operators with user-defined implicit conversion</Title>
     // <Description>
@@ -224,6 +228,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum002.enum002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum002.enum002;
+
     // <Area>Enum -- binary operator</Area>
     // <Title>Enum binary operators with one operand is null constant</Title>
     // <Description>
@@ -266,6 +272,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum003.enum003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum003.enum003;
     // <Area>Enum -- binary operators -- user-defined conversion</Area>
     // <Title>Overload resolution choose enum binary operator only while one operand is enum type</Title>
     // <Description>
@@ -275,6 +282,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
     // <Expects Status=success></Expects>
     //
     // <Code>
+    using System;
 
     public enum E
     {
@@ -340,6 +348,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004.enum004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004.enum004;
     // <Area>Enum -- binary operators -- user-defined conversion</Area>
     // <Title>Enum binary operators with one operand is user-defined implicit conversion to enum type</Title>
     // <Description>
@@ -350,6 +359,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
     // <Expects Status=success></Expects>
     //
     // <Code>
+    using System;
 
     public enum E
     {
@@ -458,6 +468,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004b.enum004b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004b.enum004b;
     // <Area>Enum -- binary operators -- user-defined conversion</Area>
     // <Title>Enum binary operators with one operand is user-defined implicit conversion to enum type</Title>
     // <Description>
@@ -468,6 +479,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
     // <Expects Status=success></Expects>
     //
     // <Code>
+    using System;
 
     public enum E
     {
@@ -599,6 +611,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004c.enum004c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004c.enum004c;
     // <Area>Enum -- binary operators -- user-defined conversion</Area>
     // <Title>Enum binary operators with one operand is user-defined implicit conversion to enum type</Title>
     // <Description>
@@ -609,6 +622,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
     // <Expects Status=success></Expects>
     //
     // <Code>
+    using System;
 
     public enum E
     {
@@ -717,6 +731,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004d.enum004d
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004d.enum004d;
     // <Area>Enum -- binary operators -- user-defined conversion</Area>
     // <Title>Enum binary operators with one operand is user-defined implicit conversion to enum type</Title>
     // <Description>
@@ -727,6 +742,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
     // <Expects Status=success></Expects>
     //
     // <Code>
+    using System;
 
     public enum E
     {
@@ -859,6 +875,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004e.enum004e
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004e.enum004e;
     // <Area>Enum -- binary operators -- user-defined conversion</Area>
     // <Title>Enum binary operators with one operand is user-defined implicit conversion to enum type</Title>
     // <Description>
@@ -869,6 +886,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
     // <Expects Status=success></Expects>
     //
     // <Code>
+    using System;
 
     public enum E
     {
@@ -977,6 +995,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004f.enum004f
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum004f.enum004f;
     // <Area>Enum -- binary operators -- user-defined conversion</Area>
     // <Title>Enum binary operators with one operand is user-defined implicit conversion to enum type</Title>
     // <Description>
@@ -987,6 +1006,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
     // <Expects Status=success></Expects>
     //
     // <Code>
+    using System;
 
     public enum E
     {
@@ -1119,6 +1139,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enumhelper.enumhelper
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enumhelper.enumhelper;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum005.enum005;
     // <Area>Enum -- binary operator</Area>
     // <Title>Predefined enum binary operators</Title>
     // <Description>
@@ -1216,6 +1238,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum005.enum005
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enumhelper.enumhelper;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum005.enum005;
     // <Area>Enum -- binary operator</Area>
     // <Title>Predefined enum binary operators</Title>
     // <Description>
@@ -1374,6 +1397,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum005b.enum005b
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enumhelper.enumhelper;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum005b.enum005b;
     // <Area>Enum -- binary operator</Area>
     // <Title>Predefined enum binary operators</Title>
     // <Description>
@@ -1593,6 +1617,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum005c.enum005c
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enumhelper.enumhelper;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.enum005c.enum005c;
     // <Area>Enum -- binary operator</Area>
     // <Title>Predefined enum binary operators</Title>
     // <Description>
@@ -1722,6 +1747,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.bug811970.bug811970
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.basic.bug811970.bug811970;
     // <Area>dynamic</Area>
     // <Title>conversion</Title>
     // <Description>
@@ -1730,6 +1756,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
     // <Related Bugs></Related Bugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class A
     {

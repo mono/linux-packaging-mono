@@ -7,9 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Security;
 using System.Security.AccessControl;
-using System.Security.Permissions;
 using System.Text;
 
 namespace Microsoft.Win32
@@ -20,7 +18,7 @@ namespace Microsoft.Win32
 #else
     internal
 #endif
-    sealed partial class RegistryKey : MarshalByRefObject, IDisposable
+    sealed partial class RegistryKey : IDisposable
     {
         private static readonly IntPtr HKEY_CLASSES_ROOT = new IntPtr(unchecked((int)0x80000000));
         private static readonly IntPtr HKEY_CURRENT_USER = new IntPtr(unchecked((int)0x80000001));
@@ -51,28 +49,7 @@ namespace Microsoft.Win32
         private volatile string _keyName;
         private volatile bool _remoteKey;
         private volatile StateFlags _state;
-        private volatile RegistryKeyPermissionCheck _checkMode;
         private volatile RegistryView _regView = RegistryView.Default;
-
-        /**
-         * RegistryInternalCheck values.  Useful only for CheckPermission
-         */
-        private enum RegistryInternalCheck
-        {
-            CheckSubKeyWritePermission = 0,
-            CheckSubKeyReadPermission = 1,
-            CheckSubKeyCreatePermission = 2,
-            CheckSubTreeReadPermission = 3,
-            CheckSubTreeWritePermission = 4,
-            CheckSubTreeReadWritePermission = 5,
-            CheckValueWritePermission = 6,
-            CheckValueCreatePermission = 7,
-            CheckValueReadPermission = 8,
-            CheckKeyReadPermission = 9,
-            CheckSubTreePermission = 10,
-            CheckOpenSubKeyWithWritablePermission = 11,
-            CheckOpenSubKeyPermission = 12
-        };
 
         /// <summary>
         /// Creates a RegistryKey. This key is bound to hkey, if writable is <b>false</b> then no write operations will be allowed.
@@ -118,11 +95,6 @@ namespace Microsoft.Win32
             FlushCore();
         }
 
-        public void Close()
-        {
-            Dispose();
-        }
-
         public void Dispose()
         {
             if (_hkey != null)
@@ -155,64 +127,38 @@ namespace Microsoft.Win32
         [SuppressMessage("Microsoft.Concurrency", "CA8001", Justification = "Reviewed for thread safety")]
         public RegistryKey CreateSubKey(string subkey)
         {
-            return CreateSubKey(subkey, _checkMode);
+            return CreateSubKey(subkey, IsWritable());
         }
 
         public RegistryKey CreateSubKey(string subkey, bool writable)
         {
-            return CreateSubKeyInternal(subkey, writable ? RegistryKeyPermissionCheck.ReadWriteSubTree : RegistryKeyPermissionCheck.ReadSubTree, null, RegistryOptions.None);
+            return CreateSubKeyInternal(subkey, writable, RegistryOptions.None);
         }
 
         public RegistryKey CreateSubKey(string subkey, bool writable, RegistryOptions options)
         {
-            return CreateSubKeyInternal(subkey, writable ? RegistryKeyPermissionCheck.ReadWriteSubTree : RegistryKeyPermissionCheck.ReadSubTree, null, options);
+            return CreateSubKeyInternal(subkey, writable, options);
         }
 
-        public RegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck)
-        {
-            return CreateSubKeyInternal(subkey, permissionCheck, null, RegistryOptions.None);
-        }
-
-        public RegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions registryOptions)
-        {
-            return CreateSubKeyInternal(subkey, permissionCheck, null, registryOptions);
-        }
-
-        public RegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistryOptions registryOptions, RegistrySecurity registrySecurity)
-        {
-            return CreateSubKeyInternal(subkey, permissionCheck, registrySecurity, registryOptions);
-        }
-
-        public RegistryKey CreateSubKey(string subkey, RegistryKeyPermissionCheck permissionCheck, RegistrySecurity registrySecurity)
-        {
-            return CreateSubKeyInternal(subkey, permissionCheck, registrySecurity, RegistryOptions.None);
-        }
-
-        private RegistryKey CreateSubKeyInternal(string subkey, RegistryKeyPermissionCheck permissionCheck, object registrySecurityObj, RegistryOptions registryOptions)
+        private RegistryKey CreateSubKeyInternal(string subkey, bool writable, RegistryOptions registryOptions)
         {
             ValidateKeyOptions(registryOptions);
             ValidateKeyName(subkey);
-            ValidateKeyMode(permissionCheck);
             EnsureWriteable();
             subkey = FixupName(subkey); // Fixup multiple slashes to a single slash
 
             // only keys opened under read mode is not writable
             if (!_remoteKey)
             {
-                RegistryKey key = InternalOpenSubKeyWithoutSecurityChecks(subkey, (permissionCheck != RegistryKeyPermissionCheck.ReadSubTree));
+                RegistryKey key = InternalOpenSubKey(subkey, writable);
                 if (key != null)
                 { 
                     // Key already exits
-                    CheckPermission(RegistryInternalCheck.CheckSubKeyWritePermission, subkey, false, RegistryKeyPermissionCheck.Default);
-                    CheckPermission(RegistryInternalCheck.CheckSubTreePermission, subkey, false, permissionCheck);
-                    key._checkMode = permissionCheck;
                     return key;
                 }
             }
 
-            CheckPermission(RegistryInternalCheck.CheckSubKeyCreatePermission, subkey, false, RegistryKeyPermissionCheck.Default);
-
-            return CreateSubKeyInternalCore(subkey, permissionCheck, registrySecurityObj, registryOptions);
+            return CreateSubKeyInternalCore(subkey, writable, registryOptions);
         }
 
         /// <summary>
@@ -231,12 +177,11 @@ namespace Microsoft.Win32
             ValidateKeyName(subkey);
             EnsureWriteable();
             subkey = FixupName(subkey); // Fixup multiple slashes to a single slash
-            CheckPermission(RegistryInternalCheck.CheckSubKeyWritePermission, subkey, false, RegistryKeyPermissionCheck.Default);
 
             // Open the key we are deleting and check for children. Be sure to
             // explicitly call close to avoid keeping an extra HKEY open.
             //
-            RegistryKey key = InternalOpenSubKeyWithoutSecurityChecks(subkey, false);
+            RegistryKey key = InternalOpenSubKey(subkey, false);
             if (key != null)
             {
                 using (key)
@@ -279,9 +224,8 @@ namespace Microsoft.Win32
             EnsureWriteable();
 
             subkey = FixupName(subkey); // Fixup multiple slashes to a single slash
-            CheckPermission(RegistryInternalCheck.CheckSubTreeWritePermission, subkey, false, RegistryKeyPermissionCheck.Default);
 
-            RegistryKey key = InternalOpenSubKeyWithoutSecurityChecks(subkey, true);
+            RegistryKey key = InternalOpenSubKey(subkey, true);
             if (key != null)
             {
                 using (key)
@@ -311,7 +255,7 @@ namespace Microsoft.Win32
         /// </summary>
         private void DeleteSubKeyTreeInternal(string subkey)
         {
-            RegistryKey key = InternalOpenSubKeyWithoutSecurityChecks(subkey, true);
+            RegistryKey key = InternalOpenSubKey(subkey, true);
             if (key != null)
             {
                 using (key)
@@ -344,14 +288,12 @@ namespace Microsoft.Win32
         public void DeleteValue(string name, bool throwOnMissingValue)
         {
             EnsureWriteable();
-            CheckPermission(RegistryInternalCheck.CheckValueWritePermission, name, false, RegistryKeyPermissionCheck.Default);
             DeleteValueCore(name, throwOnMissingValue);
         }
 
         public static RegistryKey OpenBaseKey(RegistryHive hKey, RegistryView view)
         {
             ValidateKeyView(view);
-            CheckUnmanagedCodePermission();
             return OpenBaseKeyCore(hKey, view);
         }
 
@@ -371,9 +313,35 @@ namespace Microsoft.Win32
                 throw new ArgumentNullException(nameof(machineName));
             }
             ValidateKeyView(view);
-            CheckUnmanagedCodePermission();
 
             return OpenRemoteBaseKeyCore(hKey, machineName, view);
+        }
+
+        /// <summary>
+        /// Retrieves a subkey. If readonly is <b>true</b>, then the subkey is opened with
+        /// read-only access.
+        /// </summary>
+        /// <returns>the Subkey requested, or <b>null</b> if the operation failed.</returns>
+        public RegistryKey OpenSubKey(string name, bool writable) =>
+            OpenSubKey(name, GetRegistryKeyRights(writable));
+
+        public RegistryKey OpenSubKey(string name, RegistryRights rights)
+        {
+            ValidateKeyName(name);
+            EnsureNotDisposed();
+            name = FixupName(name); // Fixup multiple slashes to a single slash
+            return InternalOpenSubKeyCore(name, rights, throwOnPermissionFailure: true);
+        }
+
+        /// <summary>
+        /// This required no security checks. This is to get around the Deleting SubKeys which only require
+        /// write permission. They call OpenSubKey which required read. Now instead call this function w/o security checks
+        /// </summary>
+        private RegistryKey InternalOpenSubKey(string name, bool writable)
+        {
+            ValidateKeyName(name);
+            EnsureNotDisposed();
+            return InternalOpenSubKeyCore(name, GetRegistryKeyRights(writable), throwOnPermissionFailure: false);
         }
 
         /// <summary>Returns a subkey with read only permissions.</summary>
@@ -382,88 +350,6 @@ namespace Microsoft.Win32
         public RegistryKey OpenSubKey(string name)
         {
             return OpenSubKey(name, false);
-        }
-
-        /// <summary>
-        /// Retrieves a subkey. If readonly is <b>true</b>, then the subkey is opened with
-        /// read-only access.
-        /// </summary>
-        /// <param name="name">Name or the path of subkey to open.</param>
-        /// <param name="writable">Set to <b>true</b> if you only need readonly access.</param>
-        /// <returns>the Subkey requested, or <b>null</b> if the operation failed.</returns>
-        public RegistryKey OpenSubKey(string name, bool writable)
-        {
-            ValidateKeyName(name);
-            EnsureNotDisposed();
-            name = FixupName(name);
-
-            CheckPermission(RegistryInternalCheck.CheckOpenSubKeyWithWritablePermission, name, writable, RegistryKeyPermissionCheck.Default);
-            return InternalOpenSubKeyCore(name, writable, true);
-        }
-
-        public RegistryKey OpenSubKey(string name, RegistryKeyPermissionCheck permissionCheck)
-        {
-            ValidateKeyMode(permissionCheck);
-
-            return InternalOpenSubKey(name, permissionCheck, GetRegistryKeyAccess(permissionCheck));
-        }
-
-        public RegistryKey OpenSubKey(string name, RegistryRights rights)
-        {
-            return InternalOpenSubKey(name, this._checkMode, (int)rights);
-        }
-
-        public RegistryKey OpenSubKey(string name, RegistryKeyPermissionCheck permissionCheck, RegistryRights rights)
-        {
-            return InternalOpenSubKey(name, permissionCheck, (int)rights);
-        }
-
-        private RegistryKey InternalOpenSubKey(string name, RegistryKeyPermissionCheck permissionCheck, int rights)
-        {
-            ValidateKeyName(name);
-            ValidateKeyMode(permissionCheck);
-
-            ValidateKeyRights(rights);
-
-            EnsureNotDisposed();
-            name = FixupName(name); // Fixup multiple slashes to a single slash
-
-            CheckPermission(RegistryInternalCheck.CheckOpenSubKeyPermission, name, false, permissionCheck);
-            CheckPermission(RegistryInternalCheck.CheckSubTreePermission, name, false, permissionCheck);
-
-            return InternalOpenSubKeyCore(name, permissionCheck, rights, true);
-        }
-
-        internal RegistryKey InternalOpenSubKeyWithoutSecurityChecks(string name, bool writable)
-        {
-            ValidateKeyName(name);
-            EnsureNotDisposed();
-
-            return InternalOpenSubKeyWithoutSecurityChecksCore(name, writable);
-        }
-
-        public RegistrySecurity GetAccessControl()
-        {
-            return GetAccessControl(AccessControlSections.Access | AccessControlSections.Owner | AccessControlSections.Group);
-        }
-
-        [SecuritySafeCritical]
-        public RegistrySecurity GetAccessControl(AccessControlSections includeSections)
-        {
-            EnsureNotDisposed();
-            return new RegistrySecurity(Handle, Name, includeSections);
-        }
-
-        [SecuritySafeCritical]
-        public void SetAccessControl(RegistrySecurity registrySecurity)
-        {
-            EnsureWriteable();
-            if (registrySecurity == null)
-            {
-                throw new ArgumentNullException(nameof(registrySecurity));
-            }
-
-            registrySecurity.Persist(Handle, Name);
         }
 
         /// <summary>Retrieves the count of subkeys.</summary>
@@ -514,13 +400,11 @@ namespace Microsoft.Win32
         /// <returns>All subkey names.</returns>
         public string[] GetSubKeyNames()
         {
-            CheckPermission(RegistryInternalCheck.CheckKeyReadPermission, null, false, RegistryKeyPermissionCheck.Default);
             return InternalGetSubKeyNames();
         }
 
         private string[] InternalGetSubKeyNames()
         {
-            EnsureNotDisposed();
             int subkeys = InternalSubKeyCount();
             return subkeys > 0 ?
                 InternalGetSubKeyNamesCore(subkeys) :
@@ -533,25 +417,16 @@ namespace Microsoft.Win32
         {
             get
             {
-                CheckPermission(RegistryInternalCheck.CheckKeyReadPermission, null, false, RegistryKeyPermissionCheck.Default);
-                return InternalValueCount();
+                EnsureNotDisposed();
+                return InternalValueCountCore();
             }
-        }
-
-        private int InternalValueCount()
-        {
-            EnsureNotDisposed();
-            return InternalValueCountCore();
         }
 
         /// <summary>Retrieves an array of strings containing all the value names.</summary>
         /// <returns>All value names.</returns>
         public string[] GetValueNames()
         {
-            CheckPermission(RegistryInternalCheck.CheckKeyReadPermission, null, false, RegistryKeyPermissionCheck.Default);
-            EnsureNotDisposed();
-
-            int values = InternalValueCount();
+            int values = ValueCount;
             return values > 0 ?
                 GetValueNamesCore(values) :
                 Array.Empty<string>();
@@ -566,7 +441,6 @@ namespace Microsoft.Win32
         /// <returns>The data associated with the value.</returns>
         public object GetValue(string name)
         {
-            CheckPermission(RegistryInternalCheck.CheckValueReadPermission, name, false, RegistryKeyPermissionCheck.Default);
             return InternalGetValue(name, null, false, true);
         }
 
@@ -584,7 +458,6 @@ namespace Microsoft.Win32
         /// <returns>The data associated with the value.</returns>
         public object GetValue(string name, object defaultValue)
         {
-            CheckPermission(RegistryInternalCheck.CheckValueReadPermission, name, false, RegistryKeyPermissionCheck.Default);
             return InternalGetValue(name, defaultValue, false, true);
         }
 
@@ -595,7 +468,6 @@ namespace Microsoft.Win32
                 throw new ArgumentException(SR.Format(SR.Arg_EnumIllegalVal, (int)options), nameof(options));
             }
             bool doNotExpand = (options == RegistryValueOptions.DoNotExpandEnvironmentNames);
-            CheckPermission(RegistryInternalCheck.CheckValueReadPermission, name, false, RegistryKeyPermissionCheck.Default);
             return InternalGetValue(name, defaultValue, doNotExpand, checkSecurity: true);
         }
 
@@ -612,7 +484,6 @@ namespace Microsoft.Win32
 
         public RegistryValueKind GetValueKind(string name)
         {
-            CheckPermission(RegistryInternalCheck.CheckValueReadPermission, name, false, RegistryKeyPermissionCheck.Default);
             EnsureNotDisposed();
             return GetValueKindCore(name);
         }
@@ -652,17 +523,6 @@ namespace Microsoft.Win32
             }
 
             EnsureWriteable();
-
-            if (!_remoteKey && ContainsRegistryValueCore(name))
-            {
-                // Existing key 
-                CheckPermission(RegistryInternalCheck.CheckValueWritePermission, name, false, RegistryKeyPermissionCheck.Default);
-            }
-            else
-            {
-                // Creating a new value
-                CheckPermission(RegistryInternalCheck.CheckValueCreatePermission, name, false, RegistryKeyPermissionCheck.Default);
-            }
 
             if (valueKind == RegistryValueKind.Unknown)
             {
@@ -774,362 +634,6 @@ namespace Microsoft.Win32
             }
         }
 
-        //
-        // Read/Write/Create SubKey Permission
-        //
-        private void GetSubKeyReadPermission(string subkeyName, out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Read;
-            path = _keyName + "\\" + subkeyName + "\\.";
-        }
-
-        private void GetSubKeyWritePermission(string subkeyName, out RegistryPermissionAccess access, out string path)
-        {
-            // If we want to open a subkey of a read-only key as writeable, we need to do the check.
-            access = RegistryPermissionAccess.Write;
-            path = _keyName + "\\" + subkeyName + "\\.";
-        }
-
-        private void GetSubKeyCreatePermission(string subkeyName, out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Create;
-            path = _keyName + "\\" + subkeyName + "\\.";
-        }
-
-        //
-        // Read/Write/ReadWrite SubTree Permission
-        //
-        private void GetSubTreeReadPermission(string subkeyName, out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Read;
-            path = _keyName + "\\" + subkeyName + "\\";
-        }
-
-        private void GetSubTreeWritePermission(string subkeyName, out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Write;
-            path = _keyName + "\\" + subkeyName + "\\";
-        }
-
-        private void GetSubTreeReadWritePermission(string subkeyName, out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Write | RegistryPermissionAccess.Read;
-            path = _keyName + "\\" + subkeyName;
-        }
-
-        //
-        // Read/Write/Create Value Permission
-        //
-        private void GetValueReadPermission(string valueName, out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Read;
-            path = _keyName + "\\" + valueName;
-        }
-
-        private void GetValueWritePermission(string valueName, out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Write;
-            path = _keyName + "\\" + valueName;
-        }
-
-        private void GetValueCreatePermission(string valueName, out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Create;
-            path = _keyName + "\\" + valueName;
-        }
-
-        // Read Key Permission
-        private void GetKeyReadPermission(out RegistryPermissionAccess access, out string path)
-        {
-            access = RegistryPermissionAccess.Read;
-            path = _keyName + "\\.";
-        }
-
-        private void CheckPermission(RegistryInternalCheck check, string item, bool subKeyWritable, RegistryKeyPermissionCheck subKeyCheck)
-        {
-            bool demand = false;
-            RegistryPermissionAccess access = RegistryPermissionAccess.NoAccess;
-            string path = null;
-
-            switch (check)
-            {
-                //
-                // Read/Write/Create SubKey Permission
-                //
-                case RegistryInternalCheck.CheckSubKeyReadPermission:
-                    if (_remoteKey)
-                    {
-                        CheckUnmanagedCodePermission();
-                    }
-                    else
-                    {
-                        Debug.Assert(_checkMode == RegistryKeyPermissionCheck.Default, "Should be called from a key opened under default mode only!");
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                        demand = true;
-                        GetSubKeyReadPermission(item, out access, out path);
-                    }
-                    break;
-                case RegistryInternalCheck.CheckSubKeyWritePermission:
-                    if (_remoteKey)
-                    {
-                        CheckUnmanagedCodePermission();
-                    }
-                    else
-                    {
-                        Debug.Assert(_checkMode != RegistryKeyPermissionCheck.ReadSubTree, "We shouldn't allow creating sub key under read-only key!");
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                        if (_checkMode == RegistryKeyPermissionCheck.Default)
-                        {
-                            demand = true;
-                            GetSubKeyWritePermission(item, out access, out path);
-                        }
-                    }
-                    break;
-                case RegistryInternalCheck.CheckSubKeyCreatePermission:
-                    if (_remoteKey)
-                    {
-                        CheckUnmanagedCodePermission();
-                    }
-                    else
-                    {
-                        Debug.Assert(_checkMode != RegistryKeyPermissionCheck.ReadSubTree, "We shouldn't allow creating sub key under read-only key!");
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                        if (_checkMode == RegistryKeyPermissionCheck.Default)
-                        {
-                            demand = true;
-                            GetSubKeyCreatePermission(item, out access, out path);
-                        }
-                    }
-                    break;
-                //
-                // Read/Write/ReadWrite SubTree Permission
-                //
-                case RegistryInternalCheck.CheckSubTreeReadPermission:
-                    if (_remoteKey)
-                    {
-                        CheckUnmanagedCodePermission();
-                    }
-                    else
-                    {
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                        if (_checkMode == RegistryKeyPermissionCheck.Default)
-                        {
-                            demand = true;
-                            GetSubTreeReadPermission(item, out access, out path);
-                        }
-                    }
-                    break;
-                case RegistryInternalCheck.CheckSubTreeWritePermission:
-                    if (_remoteKey)
-                    {
-                        CheckUnmanagedCodePermission();
-                    }
-                    else
-                    {
-                        Debug.Assert(_checkMode != RegistryKeyPermissionCheck.ReadSubTree, "We shouldn't allow writing value to read-only key!");
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                        if (_checkMode == RegistryKeyPermissionCheck.Default)
-                        {
-                            demand = true;
-                            GetSubTreeWritePermission(item, out access, out path);
-                        }
-                    }
-                    break;
-                case RegistryInternalCheck.CheckSubTreeReadWritePermission:
-                    if (_remoteKey)
-                    {
-                        CheckUnmanagedCodePermission();
-                    }
-                    else
-                    {
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                        // If we want to open a subkey of a read-only key as writeable, we need to do the check.
-                        demand = true;
-                        GetSubTreeReadWritePermission(item, out access, out path);
-                    }
-                    break;
-                //
-                // Read/Write/Create Value Permission
-                //
-                case RegistryInternalCheck.CheckValueReadPermission:
-                    ///*** no remoteKey check ***///
-                    Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                    Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                    if (_checkMode == RegistryKeyPermissionCheck.Default)
-                    {
-                        // only need to check for default mode (dynamice check)
-                        demand = true;
-                        GetValueReadPermission(item, out access, out path);
-                    }
-                    break;
-                case RegistryInternalCheck.CheckValueWritePermission:
-                    if (_remoteKey)
-                    {
-                        CheckUnmanagedCodePermission();
-                    }
-                    else
-                    {
-                        Debug.Assert(_checkMode != RegistryKeyPermissionCheck.ReadSubTree, "We shouldn't allow writing value to read-only key!");
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                        // skip the security check if the key is opened under write mode            
-                        if (_checkMode == RegistryKeyPermissionCheck.Default)
-                        {
-                            demand = true;
-                            GetValueWritePermission(item, out access, out path);
-                        }
-                    }
-                    break;
-                case RegistryInternalCheck.CheckValueCreatePermission:
-                    if (_remoteKey)
-                    {
-                        CheckUnmanagedCodePermission();
-                    }
-                    else
-                    {
-                        Debug.Assert(_checkMode != RegistryKeyPermissionCheck.ReadSubTree, "We shouldn't allow creating value under read-only key!");
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                        // skip the security check if the key is opened under write mode
-                        if (_checkMode == RegistryKeyPermissionCheck.Default)
-                        {
-                            demand = true;
-                            GetValueCreatePermission(item, out access, out path);
-                        }
-                    }
-                    break;
-                //
-                // CheckKeyReadPermission
-                //
-                case RegistryInternalCheck.CheckKeyReadPermission:
-                    ///*** no remoteKey check ***///
-                    if (_checkMode == RegistryKeyPermissionCheck.Default)
-                    {
-                        Debug.Assert(item == null, "CheckKeyReadPermission should never have a non-null item parameter!");
-                        Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                        Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-
-                        // only need to check for default mode (dynamice check)   
-                        demand = true;
-                        GetKeyReadPermission(out access, out path);
-                    }
-                    break;
-                //
-                // CheckSubTreePermission
-                //
-                case RegistryInternalCheck.CheckSubTreePermission:
-                    Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                    if (subKeyCheck == RegistryKeyPermissionCheck.ReadSubTree)
-                    {
-                        if (_checkMode == RegistryKeyPermissionCheck.Default)
-                        {
-                            if (_remoteKey)
-                            {
-                                CheckUnmanagedCodePermission();
-                            }
-                            else
-                            {
-                                demand = true;
-                                GetSubTreeReadPermission(item, out access, out path);
-                            }
-                        }
-                    }
-                    else if (subKeyCheck == RegistryKeyPermissionCheck.ReadWriteSubTree)
-                    {
-                        if (_checkMode != RegistryKeyPermissionCheck.ReadWriteSubTree)
-                        {
-                            if (_remoteKey)
-                            {
-                                CheckUnmanagedCodePermission();
-                            }
-                            else
-                            {
-                                demand = true;
-                                GetSubTreeReadWritePermission(item, out access, out path);
-                            }
-                        }
-                    }
-                    break;
-
-                //
-                // CheckOpenSubKeyWithWritablePermission uses the 'subKeyWritable' parameter
-                //
-                case RegistryInternalCheck.CheckOpenSubKeyWithWritablePermission:
-                    Debug.Assert(subKeyCheck == RegistryKeyPermissionCheck.Default, "subKeyCheck should be Default (unused)");
-                    // If the parent key is not opened under default mode, we have access already.
-                    // If the parent key is opened under default mode, we need to check for permission.                        
-                    if (_checkMode == RegistryKeyPermissionCheck.Default)
-                    {
-                        if (_remoteKey)
-                        {
-                            CheckUnmanagedCodePermission();
-                        }
-                        else
-                        {
-                            demand = true;
-                            GetSubKeyReadPermission(item, out access, out path);
-                        }
-                        break;
-                    }
-                    if (subKeyWritable && (_checkMode == RegistryKeyPermissionCheck.ReadSubTree))
-                    {
-                        if (_remoteKey)
-                        {
-                            CheckUnmanagedCodePermission();
-                        }
-                        else
-                        {
-                            demand = true;
-                            GetSubTreeReadWritePermission(item, out access, out path);
-                        }
-                        break;
-                    }
-                    break;
-
-                //
-                // CheckOpenSubKeyPermission uses the 'subKeyCheck' parameter
-                //
-                case RegistryInternalCheck.CheckOpenSubKeyPermission:
-                    Debug.Assert(subKeyWritable == false, "subKeyWritable should be false (unused)");
-                    if (subKeyCheck == RegistryKeyPermissionCheck.Default)
-                    {
-                        if (_checkMode == RegistryKeyPermissionCheck.Default)
-                        {
-                            if (_remoteKey)
-                            {
-                                CheckUnmanagedCodePermission();
-                            }
-                            else
-                            {
-                                demand = true;
-                                GetSubKeyReadPermission(item, out access, out path);
-                            }
-                        }
-                    }
-                    break;
-
-                default:
-                    Debug.Fail("CheckPermission default switch case should never be hit!");
-                    break;
-            }
-
-            if (demand)
-            {
-                new RegistryPermission(access, path).Demand();
-            }
-        }
-
-        private static void CheckUnmanagedCodePermission()
-        {
-            new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
-        }
-
         private void EnsureNotDisposed()
         {
             if (_hkey == null)
@@ -1144,23 +648,6 @@ namespace Microsoft.Win32
             if (!IsWritable())
             {
                 ThrowHelper.ThrowUnauthorizedAccessException(SR.UnauthorizedAccess_RegistryNoWrite);
-            }
-        }
-
-        private RegistryKeyPermissionCheck GetSubKeyPermissionCheck(bool subkeyWritable)
-        {
-            if (_checkMode == RegistryKeyPermissionCheck.Default)
-            {
-                return _checkMode;
-            }
-
-            if (subkeyWritable)
-            {
-                return RegistryKeyPermissionCheck.ReadWriteSubTree;
-            }
-            else
-            {
-                return RegistryKeyPermissionCheck.ReadSubTree;
             }
         }
 
@@ -1189,14 +676,6 @@ namespace Microsoft.Win32
             }
         }
 
-        private static void ValidateKeyMode(RegistryKeyPermissionCheck mode)
-        {
-            if (mode < RegistryKeyPermissionCheck.Default || mode > RegistryKeyPermissionCheck.ReadWriteSubTree)
-            {
-                ThrowHelper.ThrowArgumentException(SR.Argument_InvalidRegistryKeyPermissionCheck, nameof(mode));
-            }
-        }
-
         private static void ValidateKeyOptions(RegistryOptions options)
         {
             if (options < RegistryOptions.None || options > RegistryOptions.Volatile)
@@ -1213,14 +692,11 @@ namespace Microsoft.Win32
             }
         }
 
-        private static void ValidateKeyRights(int rights)
+        private static RegistryRights GetRegistryKeyRights(bool isWritable)
         {
-            if (0 != (rights & ~((int)RegistryRights.FullControl)))
-            {
-                // We need to throw SecurityException here for compatiblity reason,
-                // although UnauthorizedAccessException will make more sense.
-                ThrowHelper.ThrowSecurityException(SR.Security_RegistryPermission);
-            }
+            return isWritable ?
+                RegistryRights.ReadKey | RegistryRights.WriteKey :
+                RegistryRights.ReadKey;
         }
 
         /// <summary>Retrieves the current state of the dirty property.</summary>

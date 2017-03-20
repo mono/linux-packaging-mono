@@ -6,12 +6,14 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested001.nested001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested001.nested001;
     // <Title>Generic constraints for nested types</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Base<T>
     {
@@ -50,12 +52,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested002.nested002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested002.nested002;
     // <Title>Generic constraints for nested types</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Base<T>
     {
@@ -94,12 +98,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested003.nested003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested003.nested003;
     // <Title>Generic constraints for nested types</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Base<T>
     {
@@ -138,12 +144,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested004.nested004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested004.nested004;
     // <Title>Generic constraints for nested types</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Base<T>
     {
@@ -182,12 +190,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested005.nested005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested005.nested005;
     // <Title>Generic constraints for nested types</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Base<T>
     {
@@ -226,12 +236,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested006.nested006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested006.nested006;
     // <Title>Generic constraints for nested types</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Base<T>
     {
@@ -270,12 +282,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested007.nested007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nested007.nested007;
     // <Title>Generic constraints for nested types</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Foo
     {
@@ -319,6 +333,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass001.nestedclass001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass001.nestedclass001;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -328,6 +343,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     // <Code>
     //<Expects Status=warning>\(16,22\).*CS0693</Expects>
     //<Expects Status=warning>\(19,20\).*CS0649</Expects>
+    using System;
 
     public class A<T>
     {
@@ -361,6 +377,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass002.nestedclass002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass002.nestedclass002;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -372,6 +389,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(23,25\).*CS0693</Expects>
     //<Expects Status=warning>\(21,20\).*CS0649</Expects>
     //<Expects Status=warning>\(25,24\).*CS0649</Expects>
+    using System;
 
     public class A1<T, U>
     {
@@ -413,6 +431,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass003.nestedclass003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass003.nestedclass003;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -423,6 +442,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(22,25\).*CS0693</Expects>
     //<Expects Status=warning>\(20,20\).*CS0649</Expects>
     //<Expects Status=warning>\(24,24\).*CS0649</Expects>
+    using System;
 
     public class A1<T, U>
     {
@@ -464,6 +484,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass004.nestedclass004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass004.nestedclass004;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -476,6 +497,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(22,20\).*CS0649</Expects>
     //<Expects Status=warning>\(26,24\).*CS0649</Expects>
     //<Expects Status=warning>\(30,28\).*CS0649</Expects>
+    using System;
 
     public class A1<T>
     {
@@ -525,6 +547,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass005.nestedclass005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass005.nestedclass005;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -542,6 +565,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(49,20\).*CS0649</Expects>
     //<Expects Status=warning>\(53,24\).*CS0649</Expects>
     //<Expects Status=warning>\(57,28\).*CS0649</Expects>
+    using System;
 
     public class A1<T>
     {
@@ -619,6 +643,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass006.nestedclass006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass006.nestedclass006;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -627,6 +652,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(15,22\).*CS0693</Expects>
+    using System;
 
     public class A<T>
     {
@@ -659,6 +685,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass007.nestedclass007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedclass007.nestedclass007;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -671,6 +698,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(24,25\).*CS0693</Expects>
     //<Expects Status=warning>\(22,20\).*CS0649</Expects>
     //<Expects Status=warning>\(26,24\).*CS0649</Expects>
+    using System;
 
     public class A1<T, U>
     {
@@ -712,6 +740,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct001.nestedstrct001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct001.nestedstrct001;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -721,6 +750,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     // <Code>
     //<Expects Status=warning>\(16,23\).*CS0693</Expects>
     //<Expects Status=warning>\(19,20\).*CS0649</Expects>
+    using System;
 
     public struct A<T>
     {
@@ -754,6 +784,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct002.nestedstrct002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct002.nestedstrct002;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -765,6 +796,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(23,26\).*CS0693</Expects>
     //<Expects Status=warning>\(21,20\).*CS0649</Expects>
     //<Expects Status=warning>\(25,24\).*CS0649</Expects>
+    using System;
 
     public struct A1<T, U>
     {
@@ -806,6 +838,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct003.nestedstrct003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct003.nestedstrct003;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -816,6 +849,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(22,26\).*CS0693</Expects>
     //<Expects Status=warning>\(20,20\).*CS0649</Expects>
     //<Expects Status=warning>\(24,24\).*CS0649</Expects>
+    using System;
 
     public struct A1<T, U>
     {
@@ -857,6 +891,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct004.nestedstrct004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct004.nestedstrct004;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -869,6 +904,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(22,20\).*CS0649</Expects>
     //<Expects Status=warning>\(26,24\).*CS0649</Expects>
     //<Expects Status=warning>\(30,28\).*CS0649</Expects>
+    using System;
 
     public struct A1<T>
     {
@@ -918,6 +954,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct005.nestedstrct005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct005.nestedstrct005;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -935,6 +972,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(49,20\).*CS0649</Expects>
     //<Expects Status=warning>\(53,24\).*CS0649</Expects>
     //<Expects Status=warning>\(57,28\).*CS0649</Expects>
+    using System;
 
     public struct A1<T>
     {
@@ -1012,6 +1050,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct006.nestedstrct006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct006.nestedstrct006;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -1020,6 +1059,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(15,22\).*CS0693</Expects>
+    using System;
 
     public struct A<T>
     {
@@ -1052,6 +1092,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct007.nestedstrct007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.nested.nestedstrct007.nestedstrct007;
     // <Title>Generic nested types</Title>
     // <Description>
     //      Generic nested types with same type parameter names
@@ -1064,6 +1105,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.generics.ne
     //<Expects Status=warning>\(24,26\).*CS0693</Expects>
     //<Expects Status=warning>\(22,20\).*CS0649</Expects>
     //<Expects Status=warning>\(26,24\).*CS0649</Expects>
+    using System;
 
     public struct A1<T, U>
     {

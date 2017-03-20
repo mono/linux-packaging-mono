@@ -14,11 +14,11 @@ namespace Microsoft.DotNet.Build.Tasks
         [Required]
         public ITaskItem[] ProjectJsons { get; set; }
 
-        public static JObject ReadJsonFile(string projectJsonPath)
+        private static JObject ReadProject(string projectJsonPath)
         {
-            using (TextReader reader = File.OpenText(projectJsonPath))
+            using (TextReader projectFileReader = File.OpenText(projectJsonPath))
             {
-                var projectJsonReader = new JsonTextReader(reader);
+                var projectJsonReader = new JsonTextReader(projectFileReader);
 
                 var serializer = new JsonSerializer();
                 return serializer.Deserialize<JObject>(projectJsonReader);
@@ -54,7 +54,7 @@ namespace Microsoft.DotNet.Build.Tasks
         {
             foreach (var projectJsonPath in ProjectJsons.Select(item => item.ItemSpec))
             {
-                JObject projectRoot = ReadJsonFile(projectJsonPath);
+                JObject projectRoot = ReadProject(projectJsonPath);
 
                 bool changedAnyPackage = FindAllDependencyProperties(projectRoot)
                     .Select(package => VisitPackage(package, projectJsonPath))

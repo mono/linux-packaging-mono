@@ -8,7 +8,7 @@
 // Licensed under the MIT/X11 license.
 //
 
-#if !PCL
+#if !PCL && !NET_CORE
 
 using System;
 using System.Collections.Generic;
@@ -35,9 +35,7 @@ namespace Mono.Cecil {
 		}
 	}
 
-#if !NET_CORE
 	[Serializable]
-#endif
 	public sealed class AssemblyResolutionException : FileNotFoundException {
 
 		readonly AssemblyNameReference reference;
@@ -52,17 +50,14 @@ namespace Mono.Cecil {
 			this.reference = reference;
 		}
 
-#if !NET_CORE
 		AssemblyResolutionException (
 			System.Runtime.Serialization.SerializationInfo info,
 			System.Runtime.Serialization.StreamingContext context)
 			: base (info, context)
 		{
 		}
-#endif
 	}
 
-#if !NET_CORE
 	public abstract class BaseAssemblyResolver : IAssemblyResolver {
 
 		static readonly bool on_mono = Type.GetType ("Mono.Runtime") != null;
@@ -346,7 +341,6 @@ namespace Mono.Cecil {
 		{
 		}
 	}
-#endif
 }
 
 #endif

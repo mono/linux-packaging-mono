@@ -10,7 +10,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace System.Linq.Parallel
@@ -213,7 +212,6 @@ namespace System.Linq.Parallel
         // Returns an enumerable that represents the query executing sequentially.
         //
 
-        [ExcludeFromCodeCoverage]
         internal override IEnumerable<TIntermediate> AsSequentialQuery(CancellationToken token)
         {
             Debug.Fail("This method should never be called. Associative aggregation can always be parallelized.");

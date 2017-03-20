@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.integeregereractionDynamicObject.integeregereraction001.integeregereraction001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.integeregereractionDynamicObject.integeregereraction001.integeregereraction001;
+
     public class Test
     {
         public class Base
@@ -51,6 +53,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.inte
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.integeregereractionDynamicObject.integeregereraction002.integeregereraction002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.integeregereractionDynamicObject.integeregereraction002.integeregereraction002;
+
     public class Test
     {
         public class Base
@@ -96,6 +100,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.inte
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.integeregereractionDynamicObject.integeregereraction003.integeregereraction003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.integeregereractionDynamicObject.integeregereraction003.integeregereraction003;
+
     public class Test
     {
         public interface I
@@ -143,6 +149,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.inte
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.integeregereractionDynamicObject.integeregereraction006.integeregereraction006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.integeregereractionDynamicObject.integeregereraction006.integeregereraction006;
+
     public class Test
     {
         public interface I

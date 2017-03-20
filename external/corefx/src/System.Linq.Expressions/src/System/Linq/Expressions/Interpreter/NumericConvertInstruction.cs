@@ -32,7 +32,8 @@ namespace System.Linq.Expressions.Interpreter
                 {
                     // We cannot have null in a non-lifted numeric context. Throw the exception
                     // about not Nullable object requiring a value.
-                    return (int)(int?)obj;
+                    converted = (int)(int?)obj;
+                    throw ContractUtils.Unreachable;
                 }
             }
             else
@@ -224,7 +225,6 @@ namespace System.Linq.Expressions.Interpreter
                         case TypeCode.Single: return (float)obj;
                         case TypeCode.Double: return (double)obj;
                         case TypeCode.Decimal: return (decimal)obj;
-                        case TypeCode.Boolean: return obj != 0;
                         default: throw ContractUtils.Unreachable;
                     }
                 }
@@ -294,37 +294,6 @@ namespace System.Linq.Expressions.Interpreter
                         case TypeCode.Single: return (float)obj;
                         case TypeCode.Double: return (double)obj;
                         case TypeCode.Decimal: return (decimal)obj;
-                        default: throw ContractUtils.Unreachable;
-                    }
-                }
-            }
-        }
-
-        internal sealed class ToUnderlying : NumericConvertInstruction
-        {
-            public override string InstructionName => "ConvertToUnderlying";
-
-            public ToUnderlying(TypeCode to, bool isLiftedToNull)
-                : base(to, to, isLiftedToNull)
-            {
-            }
-
-            protected override object Convert(object obj)
-            {
-                unchecked
-                {
-                    switch (_to)
-                    {
-                        case TypeCode.Boolean: return (bool)obj;
-                        case TypeCode.Byte: return (byte)obj;
-                        case TypeCode.SByte: return (sbyte)obj;
-                        case TypeCode.Int16: return (short)obj;
-                        case TypeCode.Char: return (char)obj;
-                        case TypeCode.Int32: return (int)obj;
-                        case TypeCode.Int64: return (long)obj;
-                        case TypeCode.UInt16: return (ushort)obj;
-                        case TypeCode.UInt32: return (uint)obj;
-                        case TypeCode.UInt64: return (ulong)obj;
                         default: throw ContractUtils.Unreachable;
                     }
                 }

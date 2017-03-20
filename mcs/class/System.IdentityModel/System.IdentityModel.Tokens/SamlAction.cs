@@ -87,7 +87,7 @@ namespace System.IdentityModel.Tokens
 
 		public virtual void ReadXml (XmlDictionaryReader reader,
 			SamlSerializer samlSerializer,
-			SecurityTokenSerializer keyInfoSerializer,
+			SecurityTokenSerializer keyInfoTokenSerializer,
 			SecurityTokenResolver outOfBandTokenResolver)
 		{
 			if (reader == null)
@@ -104,7 +104,7 @@ namespace System.IdentityModel.Tokens
 
 		public virtual void WriteXml (XmlDictionaryWriter writer,
 			SamlSerializer samlSerializer,
-			SecurityTokenSerializer keyInfoSerializer)
+			SecurityTokenSerializer keyInfoTokenSerializer)
 		{
 			if (writer == null)
 				throw new ArgumentNullException ("writer");

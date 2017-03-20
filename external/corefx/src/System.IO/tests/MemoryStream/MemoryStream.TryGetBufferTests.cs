@@ -410,7 +410,7 @@ namespace System.IO.Tests
         {
             for (int i = 0; i < buffer.Length; i++)
             {
-                buffer[i] = unchecked((byte)i);
+                buffer[i] = (byte)i;
             }
 
             return buffer;

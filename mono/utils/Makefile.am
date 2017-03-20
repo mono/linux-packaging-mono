@@ -134,7 +134,6 @@ monoutils_sources = \
 	mono-threads-netbsd.c	\
 	mono-threads-openbsd.c	\
 	mono-threads-android.c	\
-	mono-threads-haiku.c	\
 	mono-threads.h	\
 	mono-threads-debug.h	\
 	mono-threads-api.h	\

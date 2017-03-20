@@ -247,7 +247,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
 
         internal long ReadInt64() => _dataReader.ReadInt64();
 
-        internal sbyte ReadSByte() => unchecked((sbyte)ReadByte());
+        internal sbyte ReadSByte() => (sbyte)ReadByte();
 
         internal string ReadString() => _dataReader.ReadString();
 

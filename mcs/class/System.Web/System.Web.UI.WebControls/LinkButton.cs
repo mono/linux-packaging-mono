@@ -49,13 +49,13 @@ namespace System.Web.UI.WebControls
 		{
 		}
 	
-		protected override void AddAttributesToRender (HtmlTextWriter writer)
+		protected override void AddAttributesToRender (HtmlTextWriter w)
 		{
 			Page page = Page;
 			if (page != null)
 				page.VerifyRenderingInServerForm (this);
 
-			base.AddAttributesToRender (writer);
+			base.AddAttributesToRender (w);
 			bool enabled = IsEnabled;
 			string onclick = OnClientClick;
 			onclick = ClientScriptManager.EnsureEndsWithSemicolon (onclick);
@@ -65,15 +65,15 @@ namespace System.Web.UI.WebControls
 			}
 
 			if (onclick.Length > 0)
-				writer.AddAttribute (HtmlTextWriterAttribute.Onclick, onclick);
+				w.AddAttribute (HtmlTextWriterAttribute.Onclick, onclick);
 			
 			if (enabled && page != null) {
 				PostBackOptions options = GetPostBackOptions ();
 				string href = page.ClientScript.GetPostBackEventReference (options, true);
-				writer.AddAttribute (HtmlTextWriterAttribute.Href, href);
+				w.AddAttribute (HtmlTextWriterAttribute.Href, href);
 			}
 			
-			AddDisplayStyleAttribute (writer);
+			AddDisplayStyleAttribute (w);
 		}
 
 		protected virtual void RaisePostBackEvent (string eventArgument)

@@ -251,9 +251,9 @@ namespace System.Configuration {
 			get { return RootSectionGroup.Sections; }
 		}
 		
-		public ConfigurationSection GetSection (string sectionName)
+		public ConfigurationSection GetSection (string path)
 		{
-			string[] parts = sectionName.Split ('/');
+			string[] parts = path.Split ('/');
 			if (parts.Length == 1)
 				return Sections [parts[0]];
 
@@ -267,9 +267,9 @@ namespace System.Configuration {
 				return null;
 		}
 		
-		public ConfigurationSectionGroup GetSectionGroup (string sectionGroupName)
+		public ConfigurationSectionGroup GetSectionGroup (string path)
 		{
-			string[] parts = sectionGroupName.Split ('/');
+			string[] parts = path.Split ('/');
 			ConfigurationSectionGroup group = SectionGroups [parts[0]];
 			for (int n=1; group != null && n<parts.Length; n++)
 				group = group.SectionGroups [parts [n]];
@@ -388,14 +388,14 @@ namespace System.Configuration {
 			Save (ConfigurationSaveMode.Modified, false);
 		}
 		
-		public void Save (ConfigurationSaveMode saveMode)
+		public void Save (ConfigurationSaveMode mode)
 		{
-			Save (saveMode, false);
+			Save (mode, false);
 		}
 		
-		public void Save (ConfigurationSaveMode saveMode, bool forceSaveAll)
+		public void Save (ConfigurationSaveMode mode, bool forceUpdateAll)
 		{
-			if (!forceSaveAll && (saveMode != ConfigurationSaveMode.Full) && !HasValues (saveMode)) {
+			if (!forceUpdateAll && (mode != ConfigurationSaveMode.Full) && !HasValues (mode)) {
 				ResetModified ();
 				return;
 			}
@@ -410,7 +410,7 @@ namespace System.Configuration {
 				if (saveStart != null)
 					saveStart (this, new ConfigurationSaveEventArgs (streamName, true, null, ctx));
 				
-				Save (stream, saveMode, forceSaveAll);
+				Save (stream, mode, forceUpdateAll);
 				system.Host.WriteCompleted (streamName, true, ctx);
 			} catch (Exception ex) {
 				saveEx = ex;
@@ -428,15 +428,15 @@ namespace System.Configuration {
 			SaveAs (filename, ConfigurationSaveMode.Modified, false);
 		}
 		
-		public void SaveAs (string filename, ConfigurationSaveMode saveMode)
+		public void SaveAs (string filename, ConfigurationSaveMode mode)
 		{
-			SaveAs (filename, saveMode, false);
+			SaveAs (filename, mode, false);
 		}
 
 		[MonoInternalNote ("Detect if file has changed")]
-		public void SaveAs (string filename, ConfigurationSaveMode saveMode, bool forceSaveAll)
+		public void SaveAs (string filename, ConfigurationSaveMode mode, bool forceUpdateAll)
 		{
-			if (!forceSaveAll && (saveMode != ConfigurationSaveMode.Full) && !HasValues (saveMode)) {
+			if (!forceUpdateAll && (mode != ConfigurationSaveMode.Full) && !HasValues (mode)) {
 				ResetModified ();
 				return;
 			}
@@ -444,7 +444,7 @@ namespace System.Configuration {
 			string dir = Path.GetDirectoryName (Path.GetFullPath (filename));
 			if (!Directory.Exists (dir))
 				Directory.CreateDirectory (dir);
-			Save (new FileStream (filename, FileMode.OpenOrCreate, FileAccess.Write), saveMode, forceSaveAll);
+			Save (new FileStream (filename, FileMode.OpenOrCreate, FileAccess.Write), mode, forceUpdateAll);
 		}
 
 		void Save (Stream stream, ConfigurationSaveMode mode, bool forceUpdateAll)

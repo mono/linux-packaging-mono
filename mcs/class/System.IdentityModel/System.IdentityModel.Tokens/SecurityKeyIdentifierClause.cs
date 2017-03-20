@@ -39,12 +39,12 @@ namespace System.IdentityModel.Tokens
 			this.clause_type = clauseType;
 		}
 
-		protected SecurityKeyIdentifierClause (string clauseType, byte [] nonce, int length)
+		protected SecurityKeyIdentifierClause (string clauseType, byte [] derivationNonce, int derivationLength)
 		{
 			this.clause_type = clauseType;
-			if (nonce != null)
-				this.nonce = (byte []) nonce.Clone ();
-			this.deriv_length = length;
+			if (derivationNonce != null)
+				this.nonce = (byte []) derivationNonce.Clone ();
+			this.deriv_length = derivationLength;
 		}
 
 		string clause_type;
@@ -76,7 +76,7 @@ namespace System.IdentityModel.Tokens
 		}
 
 		[MonoTODO]
-		public virtual bool Matches (SecurityKeyIdentifierClause keyIdentifierClause)
+		public virtual bool Matches (SecurityKeyIdentifierClause clause)
 		{
 			throw new NotImplementedException ();
 		}

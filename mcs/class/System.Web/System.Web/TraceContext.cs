@@ -58,9 +58,9 @@ namespace System.Web
 			remove { events.AddHandler (traceFinishedEvent, value); }
 		}
 
-		public TraceContext (HttpContext context)
+		public TraceContext (HttpContext Context)
 		{
-			_Context = context;
+			_Context = Context;
 		}
 
 		internal bool HaveTrace {
@@ -104,34 +104,34 @@ namespace System.Web
 			}
 		}
 
-		public void Warn(string message)
+		public void Warn(string msg)
 		{
-			Write (String.Empty, message, null, true);
+			Write (String.Empty, msg, null, true);
 		}
 
-		public void Warn(string category, string message)
+		public void Warn(string category, string msg)
 		{
-			Write (category, message, null, true);
+			Write (category, msg, null, true);
 		}
 
-		public void Warn (string category, string message, Exception errorInfo)
+		public void Warn (string category, string msg, Exception error)
 		{
-			Write (category, message, errorInfo, true);
+			Write (category, msg, error, true);
 		}
 
-		public void Write (string message)
+		public void Write (string msg)
 		{
-			Write (String.Empty, message, null, false);
+			Write (String.Empty, msg, null, false);
 		}
 
-		public void Write (string category, string message)
+		public void Write (string category, string msg)
 		{
-			Write (category, message, null, false);
+			Write (category, msg, null, false);
 		}
 
-		public void Write (string category, string message, Exception errorInfo)
+		public void Write (string category, string msg, Exception error)
 		{
-			Write (category, message, errorInfo, false);
+			Write (category, msg, error, false);
 		}
 
 		void Write (string category, string msg, Exception error, bool Warning)

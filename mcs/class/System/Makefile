@@ -14,10 +14,6 @@ RESOURCE_FILES = \
 	resources/Question.wav
 endif
 
-RESX_RESOURCE_STRING = \
-	../../../external/corefx/src/System.Collections.Concurrent/src/Resources/Strings.resx \
-	../../../external/corefx/src/System.Collections/src/Resources/Strings.resx
-
 TEST_RESOURCES = \
 	Test/System/test-uri-props.txt \
 	Test/System/test-uri-props-manual.txt \
@@ -35,7 +31,6 @@ LIB_MCS_FLAGS += -d:INSIDE_SYSTEM
 endif
 
 ifndef MOBILE_PROFILE
-LIB_MCS_FLAGS += -d:CODEDOM
 TEST_LIB_REFS = System.Drawing $(MONO_SECURITY) System.Data System.Xml System.Core System.Configuration
 else
 LIB_MCS_FLAGS += -nowarn:618

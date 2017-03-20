@@ -1586,7 +1586,7 @@ namespace System.Data.Tests
 
             using (FileStream stream = new FileStream(_tempFile, FileMode.Open))
             {
-                //ReadXml won't read anything as TableNames dont match
+                //ReadXml wont read anything as TableNames dont match
                 mode = table.ReadXml(stream);
             }
 
@@ -1617,7 +1617,7 @@ namespace System.Data.Tests
 
             using (FileStream stream = new FileStream(_tempFile, FileMode.Open))
             {
-                //ReadXml won't read anything as TableNames dont match
+                //ReadXml wont read anything as TableNames dont match
                 mode = table.ReadXml(stream);
             }
 

@@ -129,7 +129,7 @@ namespace System.Linq.Expressions.Interpreter
                 }
                 else
                 {
-                    frame.Push(unchecked((ushort)(~(ushort)value)));
+                    frame.Push((ushort)(~(ushort)value));
                 }
                 return 1;
             }
@@ -146,7 +146,7 @@ namespace System.Linq.Expressions.Interpreter
                 }
                 else
                 {
-                    frame.Push(unchecked((byte)(~(byte)value)));
+                    frame.Push((byte)(~(byte)value));
                 }
                 return 1;
             }

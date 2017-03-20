@@ -50,9 +50,9 @@ namespace System.Web.UI.WebControls
 						    
 		EventHandler _parametersChanged;
 
-		public int Add (Parameter parameter)
+		public int Add (Parameter param)
 		{
-			return ((IList)this).Add (parameter);
+			return ((IList)this).Add (param);
 		}
 
 		public int Add (string name, string value)
@@ -70,9 +70,9 @@ namespace System.Web.UI.WebControls
 			return ((IList)this).Add (new Parameter (name, dbType, value));
 		}
 		
-		protected override object CreateKnownType (int index)
+		protected override object CreateKnownType (int idx)
 		{
-			switch (index) {
+			switch (idx) {
 			case 0:
 				return new ControlParameter ();
 			case 1:
@@ -114,9 +114,9 @@ namespace System.Web.UI.WebControls
 				param.UpdateValue (context, control);
 		}
 		
-		public void Insert (int index, Parameter parameter)
+		public void Insert (int idx, Parameter param)
 		{
-			((IList)this).Insert (index, parameter);
+			((IList)this).Insert (idx, param);
 		}
 
 		protected override void OnClearComplete ()
@@ -125,15 +125,15 @@ namespace System.Web.UI.WebControls
 			OnParametersChanged (EventArgs.Empty);
 		}
 
-		protected override void OnInsert (int index, object value)
+		protected override void OnInsert (int idx, object value)
 		{
-			base.OnInsert (index, value);
+			base.OnInsert (idx, value);
 			((Parameter)value).SetOwnerCollection (this);
 		}
 
-		protected override void OnInsertComplete (int index, object value)
+		protected override void OnInsertComplete (int idx, object value)
 		{
-			base.OnInsertComplete (index, value);
+			base.OnInsertComplete (idx, value);
 			OnParametersChanged (EventArgs.Empty);
 		}
 
@@ -151,14 +151,14 @@ namespace System.Web.UI.WebControls
 				throw new ArgumentException ("o is not a Parameter");
 		}
 
-		public void Remove (Parameter parameter)
+		public void Remove (Parameter param)
 		{
-			((IList)this).Remove (parameter);
+			((IList)this).Remove (param);
 		}
 
-		public void RemoveAt (int index)
+		public void RemoveAt (int idx)
 		{
-			((IList)this).RemoveAt (index);
+			((IList)this).RemoveAt (idx);
 		}
 
 		protected override void SetDirtyObject (object o)
@@ -181,12 +181,12 @@ namespace System.Web.UI.WebControls
 			return -1;
 		}
 
-		public Parameter this[int index] {
+		public Parameter this[int idx] {
 			get {
-				return (Parameter) ((IList)this)[index];
+				return (Parameter) ((IList)this)[idx];
 			}
 			set {
-				((IList)this)[index] = value;
+				((IList)this)[idx] = value;
 			}
 		}
 
@@ -212,19 +212,19 @@ namespace System.Web.UI.WebControls
 			remove { _parametersChanged -= value; }
 		}
 
-		public bool Contains (Parameter parameter)
+		public bool Contains (Parameter param)
 		{
-			return ((IList)this).Contains (parameter);
+			return ((IList)this).Contains (param);
 		}
 
-		public void CopyTo (Parameter[] parameterArray, int index)
+		public void CopyTo (Parameter[] paramArray, int index)
 		{
-			((IList)this).CopyTo (parameterArray, index);
+			((IList)this).CopyTo (paramArray, index);
 		}
 
-		public int IndexOf (Parameter parameter)
+		public int IndexOf (Parameter param)
 		{
-			return ((IList)this).IndexOf (parameter);
+			return ((IList)this).IndexOf (param);
 		}
 
 		protected override void OnRemoveComplete (int index, object value)

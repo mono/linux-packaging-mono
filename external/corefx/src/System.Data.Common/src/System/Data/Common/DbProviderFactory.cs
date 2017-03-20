@@ -4,7 +4,7 @@
 
 namespace System.Data.Common
 {
-    public abstract partial class DbProviderFactory
+    public abstract class DbProviderFactory
     {
         protected DbProviderFactory() { }
 

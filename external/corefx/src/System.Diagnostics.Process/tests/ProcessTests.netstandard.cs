@@ -13,7 +13,7 @@ namespace System.Diagnostics.Tests
     public partial class ProcessTests : ProcessTestBase
     {
         [Fact]
-        [PlatformSpecific(TestPlatforms.Linux | TestPlatforms.Windows)]  // Expected process HandleCounts differs on OSX
+        [PlatformSpecific(TestPlatforms.Linux | TestPlatforms.Windows)]
         public void TestHandleCount()
         {
             using (Process p = Process.GetCurrentProcess())
@@ -23,7 +23,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.OSX)]  // Expected process HandleCounts differs on OSX
+        [PlatformSpecific(TestPlatforms.OSX)]
         public void TestHandleCount_OSX()
         {
             using (Process p = Process.GetCurrentProcess())
@@ -33,7 +33,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Linux | TestPlatforms.Windows)]  // Expected process HandleCounts differs on OSX
+        [PlatformSpecific(TestPlatforms.Linux | TestPlatforms.Windows)]
         public void HandleCountChanges()
         {
             RemoteInvoke(() =>
@@ -56,7 +56,7 @@ namespace System.Diagnostics.Tests
             }).Dispose();
         }
 
-        [PlatformSpecific(TestPlatforms.Windows)]  // Needs to get the process Id from OS
+        [PlatformSpecific(TestPlatforms.Windows)]
         [Fact]
         public void TestRespondingWindows()
         {
@@ -66,7 +66,7 @@ namespace System.Diagnostics.Tests
             }
         }
 
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Needs to get the process Id from OS
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [Fact]
         private void TestWindowApisUnix()
         {
@@ -162,7 +162,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Starting process with authentication not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void Process_StartInvalidNamesTest()
         {
             Assert.Throws<InvalidOperationException>(() => Process.Start(null, "userName", new SecureString(), "thisDomain"));
@@ -171,7 +171,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Starting process with authentication not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void Process_StartWithInvalidUserNamePassword()
         {
             SecureString password = AsSecureString("Value");
@@ -180,7 +180,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Starting process with authentication not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void Process_StartTest()
         {
             string currentProcessName = GetCurrentProcessName();
@@ -199,7 +199,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Starting process with authentication not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void Process_StartWithArgumentsTest()
         {
             string currentProcessName = GetCurrentProcessName();
@@ -220,7 +220,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Starting process with authentication not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void Process_StartWithDuplicatePassword()
         {
             ProcessStartInfo psi = new ProcessStartInfo();

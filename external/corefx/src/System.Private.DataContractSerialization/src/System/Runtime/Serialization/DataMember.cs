@@ -13,7 +13,7 @@ using System.Security;
 
 namespace System.Runtime.Serialization
 {
-#if uapaot
+#if NET_NATIVE
     public class DataMember
 #else
     internal class DataMember

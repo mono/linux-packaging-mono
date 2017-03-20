@@ -9,12 +9,17 @@ using System.Diagnostics;
 
 namespace System.DirectoryServices.AccountManagement
 {
+    [DirectoryServicesPermission(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted = true)]
     public class PrincipalSearchResult<T> : IEnumerable<T>, IEnumerable, IDisposable
     {
         //
         // Public methods
         //
 
+        // <SecurityKernel Critical="True" Ring="0">
+        // <SatisfiesLinkDemand Name="PrincipalSearchResult`1<T>.CheckDisposed():System.Void" />
+        // <SatisfiesLinkDemand Name="FindResultEnumerator`1<T>..ctor(System.DirectoryServices.AccountManagement.ResultSet)" />
+        // </SecurityKernel>
         [System.Security.SecurityCritical]
         public IEnumerator<T> GetEnumerator()
         {
@@ -25,6 +30,9 @@ namespace System.DirectoryServices.AccountManagement
             return new FindResultEnumerator<T>(_resultSet);
         }
 
+        // <SecurityKernel Critical="True" Ring="0">
+        // <SatisfiesLinkDemand Name="PrincipalSearchResult`1<T>.GetEnumerator():System.Collections.Generic.IEnumerator`1<T>" />
+        // </SecurityKernel>
         [System.Security.SecurityCritical]
         IEnumerator IEnumerable.GetEnumerator()
         {

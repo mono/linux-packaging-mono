@@ -65,8 +65,8 @@ namespace System.Web.UI.WebControls
 				item.Menu = menu;
 		}
 		
-		public MenuItem this [int index] {
-			get { return (MenuItem) items [index]; }
+		public MenuItem this [int i] {
+			get { return (MenuItem) items [i]; }
 		}
 		
 		public void Add (MenuItem child)
@@ -114,19 +114,19 @@ namespace System.Web.UI.WebControls
 			}
 		}
 		
-		public bool Contains (MenuItem c)
+		public bool Contains (MenuItem child)
 		{
-			return items.Contains (c);
+			return items.Contains (child);
 		}
 		
-		public void CopyTo (Array array, int index)
+		public void CopyTo (Array itemArray, int index)
 		{
-			items.CopyTo (array, index);
+			items.CopyTo (itemArray, index);
 		}
 		
-		public void CopyTo (MenuItem[] array, int index)
+		public void CopyTo (MenuItem[] itemArray, int index)
 		{
-			items.CopyTo (array, index);
+			items.CopyTo (itemArray, index);
 		}
 		
 		public IEnumerator GetEnumerator ()
@@ -134,18 +134,18 @@ namespace System.Web.UI.WebControls
 			return items.GetEnumerator ();
 		}
 		
-		public int IndexOf (MenuItem value)
+		public int IndexOf (MenuItem item)
 		{
-			return items.IndexOf (value);
+			return items.IndexOf (item);
 		}
 		
-		public void Remove (MenuItem value)
+		public void Remove (MenuItem item)
 		{
-			int i = IndexOf (value);
+			int i = IndexOf (item);
 			if (i == -1) return;
 			items.RemoveAt (i);
 			if (menu != null)
-				value.Menu = null;
+				item.Menu = null;
 			if (marked) {
 				SetDirty ();
 			}

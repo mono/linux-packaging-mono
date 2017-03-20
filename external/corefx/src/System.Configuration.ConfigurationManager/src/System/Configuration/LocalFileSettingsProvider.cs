@@ -474,11 +474,11 @@ namespace System.Configuration
 
             if (isUser && isApp)
             {
-                throw new ConfigurationErrorsException(string.Format(SR.BothScopeAttributes, setting.Name));
+                throw new ConfigurationErrorsException(SR.BothScopeAttributes);
             }
             else if (!(isUser || isApp))
             {
-                throw new ConfigurationErrorsException(string.Format(SR.NoScopeAttributes, setting.Name));
+                throw new ConfigurationErrorsException(SR.NoScopeAttributes);
             }
 
             return isUser;

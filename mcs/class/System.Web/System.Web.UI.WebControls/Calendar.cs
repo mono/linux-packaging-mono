@@ -542,24 +542,24 @@ namespace System.Web.UI.WebControls
 			RaisePostBackEvent (eventArgument);
 		}
 
-		protected virtual void RaisePostBackEvent (string eventArgument)
+		protected virtual void RaisePostBackEvent (string arg)
 		{
-			ValidateEvent (UniqueID, eventArgument);
-			if (eventArgument.Length < 1)
+			ValidateEvent (UniqueID, arg);
+			if (arg.Length < 1)
 				return;
 
-			if (eventArgument[0] == 'V') { // Goes to Next or Previous month
+			if (arg[0] == 'V') { // Goes to Next or Previous month
 				DateTime prev = VisibleDate;
-				int days = Int32.Parse (eventArgument.Substring (1));
+				int days = Int32.Parse (arg.Substring (1));
 				DateTime dt = GetGlobalCalendar().AddDays (dateZenith, days);
 				VisibleDate = dt;
 				OnVisibleMonthChanged (VisibleDate, prev);
 				return;
 			}
 
-			if (eventArgument[0] == 'R') { // Selects a range of dates
+			if (arg[0] == 'R') { // Selects a range of dates
 				string num, date, days;
-				num = eventArgument.Substring (1);
+				num = arg.Substring (1);
 				days = num.Substring (num.Length - 2, 2);
 				date = num.Substring (0, num.Length - 2);
 				DateTime d = GetGlobalCalendar().AddDays (dateZenith, Int32.Parse (date));
@@ -569,7 +569,7 @@ namespace System.Web.UI.WebControls
 			}
 
 			// Selects a single day
-			int daysFromZenith = Int32.Parse (eventArgument);
+			int daysFromZenith = Int32.Parse (arg);
 			DateTime day = GetGlobalCalendar().AddDays (dateZenith, daysFromZenith);
 			SelectedDates.SelectRange (day, day);
 			OnSelectionChanged ();

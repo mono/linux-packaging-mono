@@ -125,28 +125,28 @@ namespace System.IdentityModel.Selectors
 			}
 		}
 
-		public TValue GetProperty<TValue> (string propertyName)
+		public TValue GetProperty<TValue> (string property)
 		{
 			TValue ret;
-			if (TryGetProperty<TValue> (propertyName, out ret))
+			if (TryGetProperty<TValue> (property, out ret))
 				return ret;
-			throw new ArgumentException (String.Format ("Property '{0}' was not found.", propertyName));
+			throw new ArgumentException (String.Format ("Property '{0}' was not found.", property));
 		}
 
-		public bool TryGetProperty<TValue> (string propertyName, out TValue result)
+		public bool TryGetProperty<TValue> (string property, out TValue value)
 		{
 			object tmp;
-			result = default (TValue);
+			value = default (TValue);
 
-			if (!Properties.TryGetValue (propertyName, out tmp))
+			if (!Properties.TryGetValue (property, out tmp))
 				return false;
 			if (tmp == null && !typeof (TValue).IsValueType)
-				result = default (TValue);
+				value = default (TValue);
 			else if (tmp is TValue)
-				result = (TValue) tmp;
+				value = (TValue) tmp;
 			else
-				throw new ArgumentException (String.Format ("The value of property '{0}' is of type '{1}', while '{2}' is expected.", propertyName, tmp.GetType (), typeof (TValue)));
-			return result != null;
+				throw new ArgumentException (String.Format ("The value of property '{0}' is of type '{1}', while '{2}' is expected.", property, tmp.GetType (), typeof (TValue)));
+			return value != null;
 		}
 	}
 }

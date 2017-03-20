@@ -179,7 +179,7 @@ namespace System.Xml
                 }
                 pChar++;
 
-                // ignore whitespace
+                // ignore white space
                 if (xmlCharType.IsWhiteSpace(ch))
                 {
                     continue;

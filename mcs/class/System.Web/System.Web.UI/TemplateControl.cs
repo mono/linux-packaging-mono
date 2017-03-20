@@ -226,22 +226,22 @@ namespace System.Web.UI
 			return LoadControl (type, null);
 		}
 
-		public Control LoadControl (Type t, object[] parameters) 
+		public Control LoadControl (Type type, object[] parameters) 
 		{
 			object [] attrs = null;
 
-			if (t != null)
-				t.GetCustomAttributes (typeof (PartialCachingAttribute), true);
+			if (type != null)
+				type.GetCustomAttributes (typeof (PartialCachingAttribute), true);
 			if (attrs != null && attrs.Length == 1) {
 				PartialCachingAttribute attr = (PartialCachingAttribute) attrs [0];
-				PartialCachingControl ctrl = new PartialCachingControl (t, parameters);
+				PartialCachingControl ctrl = new PartialCachingControl (type, parameters);
 				ctrl.VaryByParams = attr.VaryByParams;
 				ctrl.VaryByControls = attr.VaryByControls;
 				ctrl.VaryByCustom = attr.VaryByCustom;
 				return ctrl;
 			}
 
-			object control = Activator.CreateInstance (t, parameters);
+			object control = Activator.CreateInstance (type, parameters);
 			if (control is UserControl)
 				((UserControl) control).InitializeAsUserControl (Page);
 
@@ -495,34 +495,34 @@ namespace System.Web.UI
 			return DataBinder.Eval (Page.GetDataItem(), expression, format);
 		}
 	
-		protected internal object XPath (string xPathExpression)
+		protected internal object XPath (string xpathexpression)
 		{
-			return XPathBinder.Eval (Page.GetDataItem(), xPathExpression);
+			return XPathBinder.Eval (Page.GetDataItem(), xpathexpression);
 		}
 	
-		protected internal object XPath (string xPathExpression, IXmlNamespaceResolver resolver)
+		protected internal object XPath (string xpathexpression, IXmlNamespaceResolver resolver)
 		{
-			return XPathBinder.Eval (Page.GetDataItem (), xPathExpression, null, resolver);
+			return XPathBinder.Eval (Page.GetDataItem (), xpathexpression, null, resolver);
 		}
 
-		protected internal string XPath (string xPathExpression, string format)
+		protected internal string XPath (string xpathexpression, string format)
 		{
-			return XPathBinder.Eval (Page.GetDataItem(), xPathExpression, format);
+			return XPathBinder.Eval (Page.GetDataItem(), xpathexpression, format);
 		}
 	
-		protected internal string XPath (string xPathExpression, string format, IXmlNamespaceResolver resolver)
+		protected internal string XPath (string xpathexpression, string format, IXmlNamespaceResolver resolver)
 		{
-			return XPathBinder.Eval (Page.GetDataItem (), xPathExpression, format, resolver);
+			return XPathBinder.Eval (Page.GetDataItem (), xpathexpression, format, resolver);
 		}
 
-		protected internal IEnumerable XPathSelect (string xPathExpression)
+		protected internal IEnumerable XPathSelect (string xpathexpression)
 		{
-			return XPathBinder.Select (Page.GetDataItem(), xPathExpression);
+			return XPathBinder.Select (Page.GetDataItem(), xpathexpression);
 		}
 
-		protected internal IEnumerable XPathSelect (string xPathExpression, IXmlNamespaceResolver resolver)
+		protected internal IEnumerable XPathSelect (string xpathexpression, IXmlNamespaceResolver resolver)
 		{
-			return XPathBinder.Select (Page.GetDataItem (), xPathExpression, resolver);
+			return XPathBinder.Select (Page.GetDataItem (), xpathexpression, resolver);
 		}
 
 		// IFilterResolutionService

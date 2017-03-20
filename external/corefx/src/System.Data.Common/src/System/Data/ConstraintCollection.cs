@@ -600,7 +600,7 @@ namespace System.Data
                     if (constraint == (Constraint)List[i])
                         return i;
                 }
-                // didn't find the constraint
+                // didnt find the constraint
             }
             return -1;
         }

@@ -13,7 +13,7 @@ internal partial class Interop
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct KeyEventRecord
     {
-        internal BOOL keyDown;
+        internal bool keyDown;
         internal short repeatCount;
         internal short virtualKeyCode;
         internal short virtualScanCode;

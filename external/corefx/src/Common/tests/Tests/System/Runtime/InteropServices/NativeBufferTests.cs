@@ -50,7 +50,7 @@ namespace Tests.System.Runtime.InteropServices
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Uses P/Invokes to get the current directory for current process
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void NullSafePointerInTest()
         {
             using (var buffer = new NativeBuffer(0))

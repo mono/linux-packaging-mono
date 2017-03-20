@@ -1,5 +1,3 @@
-Assembly/AssemblyInfo.cs
-aot.cs
 ../../mcs/anonymous.cs
 ../../mcs/argument.cs
 ../../mcs/assign.cs
@@ -57,3 +55,4 @@ aot.cs
 ../../build/common/Consts.cs
 ../../tools/monop/outline.cs
 ../../mcs/cs-parser.cs
+Assembly/AssemblyInfo.cs

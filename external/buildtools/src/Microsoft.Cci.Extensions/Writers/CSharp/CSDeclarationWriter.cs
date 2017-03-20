@@ -204,7 +204,7 @@ namespace Microsoft.Cci.Writers.CSharp
             _writer.Write(literal);
         }
 
-        private void WriteTypeName(ITypeReference type, bool noSpace = false, bool isDynamic = false, bool useTypeKeywords = true)
+        private void WriteTypeName(ITypeReference type, bool noSpace = false, bool isDynamic = false)
         {
             if (isDynamic)
             {
@@ -212,10 +212,7 @@ namespace Microsoft.Cci.Writers.CSharp
                 return;
             }
 
-            NameFormattingOptions namingOptions = NameFormattingOptions.TypeParameters;
-
-            if (useTypeKeywords)
-                namingOptions |= NameFormattingOptions.UseTypeKeywords;
+            NameFormattingOptions namingOptions = NameFormattingOptions.TypeParameters | NameFormattingOptions.UseTypeKeywords;
 
             if (_forCompilationIncludeGlobalprefix)
                 namingOptions |= NameFormattingOptions.UseGlobalPrefix;

@@ -96,7 +96,7 @@ namespace Microsoft.DotNet.Build.Tasks
                 case "logfile":
                     _logFile = value;
                     break;
-                case "exceptiononerror":
+                case "excptiononerror":
                     _exceptionOnError = Boolean.Parse(value);
                     break;
                 case "outputtostderr":

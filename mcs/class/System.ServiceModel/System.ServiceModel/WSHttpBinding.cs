@@ -1,4 +1,4 @@
-//
+﻿//
 // WSHttpBinding.cs
 //
 // Author:
@@ -45,20 +45,20 @@ namespace System.ServiceModel
 		{
 		}
 
-		public WSHttpBinding (SecurityMode securityMode)
-			: this (securityMode, false)
+		public WSHttpBinding (SecurityMode mode)
+			: this (mode, false)
 		{
 		}
 
-		public WSHttpBinding (SecurityMode securityMode,
+		public WSHttpBinding (SecurityMode mode,
 			bool reliableSessionEnabled)
 			: base (reliableSessionEnabled)
 		{
-			security = new WSHttpSecurity (securityMode);
+			security = new WSHttpSecurity (mode);
 		}
 
 		[MonoTODO]
-		public WSHttpBinding (string configName)
+		public WSHttpBinding (string configurationName)
 		{
 			throw new NotImplementedException ();
 		}

@@ -64,7 +64,7 @@ namespace System.Xml.Xsl.Xslt
      *              if ($pe > -1)          then $pe else
      *              -1
      *
-     *      (: In the general case check all other node types occurred in patterns :)
+     *      (: In the general case check all other node types ocurred in patterns :)
      *      (: case attribute()...              :)
      *      (: case text()...                   :)
      *      (: case document-node()...          :)

@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke001.invoke001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke001.invoke001;
+
     public class Test
     {
         private static bool s_status = false;
@@ -39,6 +41,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke002.invoke002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke002.invoke002;
+
     public class Test
     {
         private static bool s_status = false;
@@ -80,6 +84,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke003.invoke003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke003.invoke003;
+
     public class Test
     {
         private static bool s_status = false;
@@ -130,6 +136,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke004.invoke004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke004.invoke004;
+
     public class Test
     {
         private static bool s_status = false;
@@ -171,6 +179,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke005.invoke005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke005.invoke005;
+
     public class Test
     {
         public delegate void myDel(int x);
@@ -217,6 +227,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke006.invoke006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke006.invoke006;
+
     public class Test
     {
         private static bool s_status = false;
@@ -251,6 +263,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke007.invoke007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke007.invoke007;
+
     public class Test
     {
         // static bool Status = false;
@@ -303,6 +317,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke008.invoke008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke008.invoke008;
+
     public class Test
     {
         private static bool s_status = false;
@@ -342,6 +358,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke009.invoke009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke009.invoke009;
+
     public class Test
     {
         private static bool s_status = false;
@@ -383,6 +401,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke010.invoke010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke010.invoke010;
+
     public class Test
     {
         private static bool s_status = false;
@@ -421,6 +441,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke011.invoke011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke011.invoke011;
     // <Title> Invoking dynamic </Title>
     // <Description>
     // </Description>
@@ -466,12 +487,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke012.invoke012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.invoke012.invoke012;
     // <Title> Invoking dynamic </Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class A
     {
@@ -513,6 +536,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.neginvoke001.neginvoke001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.neginvoke001.neginvoke001;
+
     public class Test
     {
         private static bool s_status = false;
@@ -557,6 +582,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynami
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.neginvoke002.neginvoke002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.statements.invokeDynamic.neginvoke002.neginvoke002;
+
     public class Test
     {
         private static bool s_status = false;

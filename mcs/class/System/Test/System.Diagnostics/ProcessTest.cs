@@ -729,13 +729,6 @@ namespace MonoTests.System.Diagnostics
 			bytesRead = stm.EndRead (ar);
 		}
 
-		static bool RunningOnUnix {
-			get {
-				int p = (int)Environment.OSVersion.Platform;
-				return ((p == 128) || (p == 4) || (p == 6));
-			}
-		}
-
 		public int bytesRead = -1;
 
 		[Test]
@@ -1123,16 +1116,6 @@ namespace MonoTests.System.Diagnostics
 		}
 
 		[Test]
-		[ExpectedException(typeof(InvalidOperationException))]
-		public void HigherPrivilegeProcessName ()
-		{
-			if (!RunningOnUnix)
-				Assert.Ignore ("accessing pid 1, only available on unix");
-
-			string v = Process.GetProcessById (1).ProcessName;
-		}
-
-		[Test]
 		public void NonChildProcessWaitForExit ()
 		{
 			if (!RunningOnUnix)
@@ -1181,6 +1164,13 @@ namespace MonoTests.System.Diagnostics
 				int pid = process.Id;
 				Assert.AreEqual (ppid, pid, "#1");
 				AssertHelper.Greater (pid, 0, "#2");
+			}
+		}
+
+		static bool RunningOnUnix {
+			get {
+				int p = (int)Environment.OSVersion.Platform;
+				return ((p == 128) || (p == 4) || (p == 6));
 			}
 		}
 

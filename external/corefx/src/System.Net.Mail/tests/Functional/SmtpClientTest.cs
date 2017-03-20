@@ -297,7 +297,7 @@ namespace System.Net.Mail.Tests
         }
 
         [Fact]
-        public async Task TestMailDeliveryAsync()
+        public async void TestMailDeliveryAsync()
         {
             SmtpServer server = new SmtpServer();
             SmtpClient client = new SmtpClient("localhost", server.EndPoint.Port);
@@ -322,7 +322,7 @@ namespace System.Net.Mail.Tests
         }
 
         [Fact]
-        public async Task TestCredentialsCopyInAsyncContext()
+        public async void TestCredentialsCopyInAsyncContext()
         {
             SmtpServer server = new SmtpServer();
             SmtpClient client = new SmtpClient("localhost", server.EndPoint.Port);

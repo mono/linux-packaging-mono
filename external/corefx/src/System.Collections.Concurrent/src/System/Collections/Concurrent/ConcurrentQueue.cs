@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Private;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -474,7 +473,7 @@ namespace System.Collections.Concurrent
             long count = GetCount(head, headHead, tail, tailTail);
             if (index > array.Length - count)
             {
-                throw new ArgumentException(SR.Collection_CopyTo_TooManyElems);
+                throw new ArgumentException(); // TODO: finish this
             }
 
             // Copy the items to the target array
@@ -960,8 +959,7 @@ namespace System.Collections.Concurrent
 
                     // We can dequeue from this slot if it's been filled by an enqueuer, which
                     // would have left the sequence number at pos+1.
-                    int diff = sequenceNumber - (currentHead + 1);
-                    if (diff == 0)
+                    if (sequenceNumber == currentHead + 1)
                     {
                         // We may be racing with other dequeuers.  Try to reserve the slot by incrementing
                         // the head.  Once we've done that, no one else will be able to read from this slot,
@@ -987,7 +985,7 @@ namespace System.Collections.Concurrent
                             return true;
                         }
                     }
-                    else if (diff < 0)
+                    else if (sequenceNumber < currentHead + 1)
                     {
                         // The sequence number was less than what we needed, which means this slot doesn't
                         // yet contain a value we can dequeue, i.e. the segment is empty.  Technically it's
@@ -1040,13 +1038,12 @@ namespace System.Collections.Concurrent
 
                     // We can peek from this slot if it's been filled by an enqueuer, which
                     // would have left the sequence number at pos+1.
-                    int diff = sequenceNumber - (currentHead + 1);
-                    if (diff == 0)
+                    if (sequenceNumber == currentHead + 1)
                     {
                         result = resultUsed ? _slots[slotsIndex].Item : default(T);
                         return true;
                     }
-                    else if (diff < 0)
+                    else if (sequenceNumber < currentHead + 1)
                     {
                         // The sequence number was less than what we needed, which means this slot doesn't
                         // yet contain a value we can peek, i.e. the segment is empty.  Technically it's
@@ -1093,8 +1090,7 @@ namespace System.Collections.Concurrent
 
                     // The slot is empty and ready for us to enqueue into it if its sequence
                     // number matches the slot.
-                    int diff = sequenceNumber - currentTail;
-                    if (diff == 0)
+                    if (sequenceNumber == currentTail)
                     {
                         // We may be racing with other enqueuers.  Try to reserve the slot by incrementing
                         // the tail.  Once we've done that, no one else will be able to write to this slot,
@@ -1113,7 +1109,7 @@ namespace System.Collections.Concurrent
                             return true;
                         }
                     }
-                    else if (diff < 0)
+                    else if (sequenceNumber < currentTail)
                     {
                         // The sequence number was less than what we needed, which means this slot still
                         // contains a value, i.e. the segment is full.  Technically it's possible that multiple

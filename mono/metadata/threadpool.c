@@ -53,7 +53,7 @@ typedef struct {
 	/* Number of currently executing jobs */
 	gint32 threadpool_jobs;
 	/* Signalled when threadpool_jobs + outstanding_request is 0 */
-	/* Protected by threadpool.domains_lock */
+	/* Protected by threadpool->domains_lock */
 	MonoCoopCond cleanup_cond;
 } ThreadPoolDomain;
 
@@ -71,78 +71,146 @@ typedef struct {
 	GPtrArray *domains; // ThreadPoolDomain* []
 	MonoCoopMutex domains_lock;
 
+	GPtrArray *threads; // MonoInternalThread* []
+	MonoCoopMutex threads_lock;
+	MonoCoopCond threads_exit_cond;
+
 	ThreadPoolCounter counters;
 
 	gint32 limit_io_min;
 	gint32 limit_io_max;
+
+	MonoThreadPoolWorker *worker;
 } ThreadPool;
 
 static mono_lazy_init_t status = MONO_LAZY_INIT_STATUS_NOT_INITIALIZED;
 
-static ThreadPool threadpool;
+static ThreadPool* threadpool;
 
-#define COUNTER_ATOMIC(var,block) \
+#define COUNTER_ATOMIC(threadpool,var,block) \
 	do { \
 		ThreadPoolCounter __old; \
 		do { \
-			(var) = __old = COUNTER_READ (); \
+			g_assert (threadpool); \
+			(var) = __old = COUNTER_READ (threadpool); \
 			{ block; } \
 			if (!(counter._.starting >= 0)) \
 				g_error ("%s: counter._.starting = %d, but should be >= 0", __func__, counter._.starting); \
 			if (!(counter._.working >= 0)) \
 				g_error ("%s: counter._.working = %d, but should be >= 0", __func__, counter._.working); \
-		} while (InterlockedCompareExchange (&threadpool.counters.as_gint32, (var).as_gint32, __old.as_gint32) != __old.as_gint32); \
+		} while (InterlockedCompareExchange (&threadpool->counters.as_gint32, (var).as_gint32, __old.as_gint32) != __old.as_gint32); \
 	} while (0)
 
 static inline ThreadPoolCounter
-COUNTER_READ (void)
+COUNTER_READ (ThreadPool *threadpool)
 {
 	ThreadPoolCounter counter;
-	counter.as_gint32 = InterlockedRead (&threadpool.counters.as_gint32);
+	counter.as_gint32 = InterlockedRead (&threadpool->counters.as_gint32);
 	return counter;
 }
 
 static inline void
 domains_lock (void)
 {
-	mono_coop_mutex_lock (&threadpool.domains_lock);
+	mono_coop_mutex_lock (&threadpool->domains_lock);
 }
 
 static inline void
 domains_unlock (void)
 {
-	mono_coop_mutex_unlock (&threadpool.domains_lock);
+	mono_coop_mutex_unlock (&threadpool->domains_lock);
 }
 
 static void
 destroy (gpointer unused)
 {
-	g_ptr_array_free (threadpool.domains, TRUE);
-	mono_coop_mutex_destroy (&threadpool.domains_lock);
+	g_ptr_array_free (threadpool->domains, TRUE);
+	mono_coop_mutex_destroy (&threadpool->domains_lock);
+
+	g_ptr_array_free (threadpool->threads, TRUE);
+	mono_coop_mutex_destroy (&threadpool->threads_lock);
+	mono_coop_cond_destroy (&threadpool->threads_exit_cond);
+
+	/* We cannot free the threadpool, because there is a race
+	 * on shutdown where a managed thread may request a new
+	 * threadpool thread, but we already destroyed the
+	 * threadpool. So to avoid a use-after-free, we simply do
+	 * not free the threadpool, as we won't be able to access
+	 * the threadpool anyway because the ref count will be 0 */
+	// g_free (threadpool);
 }
 
 static void
 initialize (void)
 {
+	g_assert (!threadpool);
+	threadpool = g_new0 (ThreadPool, 1);
+	g_assert (threadpool);
+
 	g_assert (sizeof (ThreadPoolCounter) == sizeof (gint32));
 
-	mono_refcount_init (&threadpool, destroy);
+	mono_refcount_init (threadpool, destroy);
 
-	threadpool.domains = g_ptr_array_new ();
-	mono_coop_mutex_init (&threadpool.domains_lock);
+	threadpool->domains = g_ptr_array_new ();
+	mono_coop_mutex_init (&threadpool->domains_lock);
 
-	threadpool.limit_io_min = mono_cpu_count ();
-	threadpool.limit_io_max = CLAMP (threadpool.limit_io_min * 100, MIN (threadpool.limit_io_min, 200), MAX (threadpool.limit_io_min, 200));
+	threadpool->threads = g_ptr_array_new ();
+	mono_coop_mutex_init (&threadpool->threads_lock);
+	mono_coop_cond_init (&threadpool->threads_exit_cond);
 
-	mono_threadpool_worker_init ();
+	threadpool->limit_io_min = mono_cpu_count ();
+	threadpool->limit_io_max = CLAMP (threadpool->limit_io_min * 100, MIN (threadpool->limit_io_min, 200), MAX (threadpool->limit_io_min, 200));
+
+	mono_threadpool_worker_init (&threadpool->worker);
 }
 
 static void
 cleanup (void)
 {
-	mono_threadpool_worker_cleanup ();
+	guint i;
+	MonoInternalThread *current;
 
-	mono_refcount_dec (&threadpool);
+	/* we make the assumption along the code that we are
+	 * cleaning up only if the runtime is shutting down */
+	g_assert (mono_runtime_is_shutting_down ());
+
+	current = mono_thread_internal_current ();
+
+	mono_coop_mutex_lock (&threadpool->threads_lock);
+
+	/* stop all threadpool->threads */
+	for (i = 0; i < threadpool->threads->len; ++i) {
+		MonoInternalThread *thread = (MonoInternalThread*) g_ptr_array_index (threadpool->threads, i);
+		if (thread != current)
+			mono_thread_internal_abort (thread);
+	}
+
+	mono_coop_mutex_unlock (&threadpool->threads_lock);
+
+#if 0
+	/* give a chance to the other threads to exit */
+	mono_thread_info_yield ();
+
+	mono_coop_mutex_lock (&threadpool->threads_lock);
+
+	for (;;) {
+		if (threadpool->threads->len == 0)
+			break;
+
+		if (threadpool->threads->len == 1 && g_ptr_array_index (threadpool->threads, 0) == current) {
+			/* We are waiting on ourselves */
+			break;
+		}
+
+		mono_coop_cond_wait (&threadpool->threads_exit_cond, &threadpool->threads_lock);
+	}
+
+	mono_coop_mutex_unlock (&threadpool->threads_lock);
+#endif
+
+	mono_threadpool_worker_cleanup (threadpool->worker);
+
+	mono_refcount_dec (threadpool);
 }
 
 gboolean
@@ -154,7 +222,7 @@ mono_threadpool_enqueue_work_item (MonoDomain *domain, MonoObject *work_item, Mo
 	MonoBoolean f;
 	gpointer args [2];
 
-	error_init (error);
+	mono_error_init (error);
 	g_assert (work_item);
 
 	if (!threadpool_class)
@@ -188,19 +256,22 @@ mono_threadpool_enqueue_work_item (MonoDomain *domain, MonoObject *work_item, Mo
 	return TRUE;
 }
 
-/* LOCKING: domains_lock must be held. */
-static ThreadPoolDomain *
-tpdomain_create (MonoDomain *domain)
+/* LOCKING: domains_lock must be held */
+static void
+tpdomain_add (ThreadPoolDomain *tpdomain)
 {
-	ThreadPoolDomain *tpdomain;
+	guint i, len;
 
-	tpdomain = g_new0 (ThreadPoolDomain, 1);
-	tpdomain->domain = domain;
-	mono_coop_cond_init (&tpdomain->cleanup_cond);
+	g_assert (tpdomain);
 
-	g_ptr_array_add (threadpool.domains, tpdomain);
+	len = threadpool->domains->len;
+	for (i = 0; i < len; ++i) {
+		if (g_ptr_array_index (threadpool->domains, i) == tpdomain)
+			break;
+	}
 
-	return tpdomain;
+	if (i == len)
+		g_ptr_array_add (threadpool->domains, tpdomain);
 }
 
 /* LOCKING: domains_lock must be held. */
@@ -208,26 +279,36 @@ static gboolean
 tpdomain_remove (ThreadPoolDomain *tpdomain)
 {
 	g_assert (tpdomain);
-	return g_ptr_array_remove (threadpool.domains, tpdomain);
+	return g_ptr_array_remove (threadpool->domains, tpdomain);
 }
 
 /* LOCKING: domains_lock must be held */
 static ThreadPoolDomain *
-tpdomain_get (MonoDomain *domain)
+tpdomain_get (MonoDomain *domain, gboolean create)
 {
-	gint i;
+	guint i;
+	ThreadPoolDomain *tpdomain;
 
 	g_assert (domain);
 
-	for (i = 0; i < threadpool.domains->len; ++i) {
+	for (i = 0; i < threadpool->domains->len; ++i) {
 		ThreadPoolDomain *tpdomain;
 
-		tpdomain = (ThreadPoolDomain *)g_ptr_array_index (threadpool.domains, i);
+		tpdomain = (ThreadPoolDomain *)g_ptr_array_index (threadpool->domains, i);
 		if (tpdomain->domain == domain)
 			return tpdomain;
 	}
 
-	return NULL;
+	if (!create)
+		return NULL;
+
+	tpdomain = g_new0 (ThreadPoolDomain, 1);
+	tpdomain->domain = domain;
+	mono_coop_cond_init (&tpdomain->cleanup_cond);
+
+	tpdomain_add (tpdomain);
+
+	return tpdomain;
 }
 
 static void
@@ -241,21 +322,22 @@ static ThreadPoolDomain *
 tpdomain_get_next (ThreadPoolDomain *current)
 {
 	ThreadPoolDomain *tpdomain = NULL;
-	gint len;
+	guint len;
 
-	len = threadpool.domains->len;
+	len = threadpool->domains->len;
 	if (len > 0) {
-		gint i, current_idx = -1;
+		guint i, current_idx = -1;
 		if (current) {
 			for (i = 0; i < len; ++i) {
-				if (current == g_ptr_array_index (threadpool.domains, i)) {
+				if (current == g_ptr_array_index (threadpool->domains, i)) {
 					current_idx = i;
 					break;
 				}
 			}
+			g_assert (current_idx != (guint)-1);
 		}
 		for (i = current_idx + 1; i < len + current_idx + 1; ++i) {
-			ThreadPoolDomain *tmp = (ThreadPoolDomain *)g_ptr_array_index (threadpool.domains, i % len);
+			ThreadPoolDomain *tmp = (ThreadPoolDomain *)g_ptr_array_index (threadpool->domains, i % len);
 			if (tmp->outstanding_request > 0) {
 				tpdomain = tmp;
 				break;
@@ -270,7 +352,7 @@ static MonoObject*
 try_invoke_perform_wait_callback (MonoObject** exc, MonoError *error)
 {
 	HANDLE_FUNCTION_ENTER ();
-	error_init (error);
+	mono_error_init (error);
 	MonoObject *res = mono_runtime_try_invoke (mono_defaults.threadpool_perform_wait_callback_method, NULL, NULL, exc, error);
 	HANDLE_FUNCTION_RETURN_VAL (res);
 }
@@ -283,12 +365,9 @@ worker_callback (gpointer unused)
 	ThreadPoolCounter counter;
 	MonoInternalThread *thread;
 
-	if (!mono_refcount_tryinc (&threadpool))
-		return;
-
 	thread = mono_thread_internal_current ();
 
-	COUNTER_ATOMIC (counter, {
+	COUNTER_ATOMIC (threadpool, counter, {
 		if (!(counter._.working < 32767 /* G_MAXINT16 */))
 			g_error ("%s: counter._.working = %d, but should be < 32767", __func__, counter._.working);
 
@@ -297,13 +376,17 @@ worker_callback (gpointer unused)
 	});
 
 	if (mono_runtime_is_shutting_down ()) {
-		COUNTER_ATOMIC (counter, {
+		COUNTER_ATOMIC (threadpool, counter, {
 			counter._.working --;
 		});
 
-		mono_refcount_dec (&threadpool);
+		mono_refcount_dec (threadpool);
 		return;
 	}
+
+	mono_coop_mutex_lock (&threadpool->threads_lock);
+	g_ptr_array_add (threadpool->threads, thread);
+	mono_coop_mutex_unlock (&threadpool->threads_lock);
 
 	/*
 	 * This is needed so there is always an lmf frame in the runtime invoke call below,
@@ -318,12 +401,9 @@ worker_callback (gpointer unused)
 	while (!mono_runtime_is_shutting_down ()) {
 		gboolean retire = FALSE;
 
-		if (thread->state & (ThreadState_AbortRequested | ThreadState_SuspendRequested)) {
+		if ((thread->state & (ThreadState_AbortRequested | ThreadState_SuspendRequested)) != 0) {
 			domains_unlock ();
-			if (mono_thread_interruption_checkpoint ()) {
-				domains_lock ();
-				continue;
-			}
+			mono_thread_interruption_checkpoint ();
 			domains_lock ();
 		}
 
@@ -391,11 +471,19 @@ worker_callback (gpointer unused)
 
 	domains_unlock ();
 
-	COUNTER_ATOMIC (counter, {
+	mono_coop_mutex_lock (&threadpool->threads_lock);
+
+	g_ptr_array_remove_fast (threadpool->threads, thread);
+
+	mono_coop_cond_signal (&threadpool->threads_exit_cond);
+
+	mono_coop_mutex_unlock (&threadpool->threads_lock);
+
+	COUNTER_ATOMIC (threadpool, counter, {
 		counter._.working --;
 	});
 
-	mono_refcount_dec (&threadpool);
+	mono_refcount_dec (threadpool);
 }
 
 void
@@ -420,7 +508,9 @@ mono_threadpool_begin_invoke (MonoDomain *domain, MonoObject *target, MonoMethod
 	if (!async_call_klass)
 		async_call_klass = mono_class_load_from_name (mono_defaults.corlib, "System", "MonoAsyncCall");
 
-	error_init (error);
+	mono_lazy_initialize (&status, initialize);
+
+	mono_error_init (error);
 
 	message = mono_method_call_message_new (method, params, mono_get_delegate_invoke (method->klass), (params != NULL) ? (&async_callback) : NULL, (params != NULL) ? (&state) : NULL, error);
 	return_val_if_nok (error, NULL);
@@ -451,7 +541,7 @@ mono_threadpool_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, MonoObj
 {
 	MonoAsyncCall *ac;
 
-	error_init (error);
+	mono_error_init (error);
 	g_assert (exc);
 	g_assert (out_args);
 
@@ -536,14 +626,14 @@ mono_threadpool_remove_domain_jobs (MonoDomain *domain, int timeout)
 	if (!mono_lazy_is_initialized (&status))
 		return TRUE;
 
-	mono_refcount_inc (&threadpool);
+	mono_refcount_inc (threadpool);
 
 	domains_lock ();
 
-	tpdomain = tpdomain_get (domain);
+	tpdomain = tpdomain_get (domain, FALSE);
 	if (!tpdomain) {
 		domains_unlock ();
-		mono_refcount_dec (&threadpool);
+		mono_refcount_dec (threadpool);
 		return TRUE;
 	}
 
@@ -551,7 +641,7 @@ mono_threadpool_remove_domain_jobs (MonoDomain *domain, int timeout)
 
 	while (tpdomain->outstanding_request + tpdomain->threadpool_jobs > 0) {
 		if (timeout == -1) {
-			mono_coop_cond_wait (&tpdomain->cleanup_cond, &threadpool.domains_lock);
+			mono_coop_cond_wait (&tpdomain->cleanup_cond, &threadpool->domains_lock);
 		} else {
 			gint64 now;
 			gint res;
@@ -562,7 +652,7 @@ mono_threadpool_remove_domain_jobs (MonoDomain *domain, int timeout)
 				break;
 			}
 
-			res = mono_coop_cond_timedwait (&tpdomain->cleanup_cond, &threadpool.domains_lock, end - now);
+			res = mono_coop_cond_timedwait (&tpdomain->cleanup_cond, &threadpool->domains_lock, end - now);
 			if (res != 0) {
 				ret = FALSE;
 				break;
@@ -578,7 +668,7 @@ mono_threadpool_remove_domain_jobs (MonoDomain *domain, int timeout)
 	mono_coop_cond_destroy (&tpdomain->cleanup_cond);
 	tpdomain_free (tpdomain);
 
-	mono_refcount_dec (&threadpool);
+	mono_refcount_dec (threadpool);
 
 	return ret;
 }
@@ -586,15 +676,15 @@ mono_threadpool_remove_domain_jobs (MonoDomain *domain, int timeout)
 void
 mono_threadpool_suspend (void)
 {
-	if (mono_lazy_is_initialized (&status))
-		mono_threadpool_worker_set_suspended (TRUE);
+	if (threadpool)
+		mono_threadpool_worker_set_suspended (threadpool->worker, TRUE);
 }
 
 void
 mono_threadpool_resume (void)
 {
-	if (mono_lazy_is_initialized (&status))
-		mono_threadpool_worker_set_suspended (FALSE);
+	if (threadpool)
+		mono_threadpool_worker_set_suspended (threadpool->worker, FALSE);
 }
 
 void
@@ -605,18 +695,12 @@ ves_icall_System_Threading_ThreadPool_GetAvailableThreadsNative (gint32 *worker_
 	if (!worker_threads || !completion_port_threads)
 		return;
 
-	if (!mono_lazy_initialize (&status, initialize) || !mono_refcount_tryinc (&threadpool)) {
-		*worker_threads = 0;
-		*completion_port_threads = 0;
-		return;
-	}
+	mono_lazy_initialize (&status, initialize);
 
-	counter = COUNTER_READ ();
+	counter = COUNTER_READ (threadpool);
 
-	*worker_threads = MAX (0, mono_threadpool_worker_get_max () - counter._.working);
-	*completion_port_threads = threadpool.limit_io_max;
-
-	mono_refcount_dec (&threadpool);
+	*worker_threads = MAX (0, mono_threadpool_worker_get_max (threadpool->worker) - counter._.working);
+	*completion_port_threads = threadpool->limit_io_max;
 }
 
 void
@@ -625,16 +709,10 @@ ves_icall_System_Threading_ThreadPool_GetMinThreadsNative (gint32 *worker_thread
 	if (!worker_threads || !completion_port_threads)
 		return;
 
-	if (!mono_lazy_initialize (&status, initialize) || !mono_refcount_tryinc (&threadpool)) {
-		*worker_threads = 0;
-		*completion_port_threads = 0;
-		return;
-	}
+	mono_lazy_initialize (&status, initialize);
 
-	*worker_threads = mono_threadpool_worker_get_min ();
-	*completion_port_threads = threadpool.limit_io_min;
-
-	mono_refcount_dec (&threadpool);
+	*worker_threads = mono_threadpool_worker_get_min (threadpool->worker);
+	*completion_port_threads = threadpool->limit_io_min;
 }
 
 void
@@ -643,35 +721,25 @@ ves_icall_System_Threading_ThreadPool_GetMaxThreadsNative (gint32 *worker_thread
 	if (!worker_threads || !completion_port_threads)
 		return;
 
-	if (!mono_lazy_initialize (&status, initialize) || !mono_refcount_tryinc (&threadpool)) {
-		*worker_threads = 0;
-		*completion_port_threads = 0;
-		return;
-	}
+	mono_lazy_initialize (&status, initialize);
 
-	*worker_threads = mono_threadpool_worker_get_max ();
-	*completion_port_threads = threadpool.limit_io_max;
-
-	mono_refcount_dec (&threadpool);
+	*worker_threads = mono_threadpool_worker_get_max (threadpool->worker);
+	*completion_port_threads = threadpool->limit_io_max;
 }
 
 MonoBoolean
 ves_icall_System_Threading_ThreadPool_SetMinThreadsNative (gint32 worker_threads, gint32 completion_port_threads)
 {
-	if (completion_port_threads <= 0 || completion_port_threads > threadpool.limit_io_max)
+	mono_lazy_initialize (&status, initialize);
+
+	if (completion_port_threads <= 0 || completion_port_threads > threadpool->limit_io_max)
 		return FALSE;
 
-	if (!mono_lazy_initialize (&status, initialize) || !mono_refcount_tryinc (&threadpool))
+	if (!mono_threadpool_worker_set_min (threadpool->worker, worker_threads))
 		return FALSE;
 
-	if (!mono_threadpool_worker_set_min (worker_threads)) {
-		mono_refcount_dec (&threadpool);
-		return FALSE;
-	}
+	threadpool->limit_io_min = completion_port_threads;
 
-	threadpool.limit_io_min = completion_port_threads;
-
-	mono_refcount_dec (&threadpool);
 	return TRUE;
 }
 
@@ -680,20 +748,16 @@ ves_icall_System_Threading_ThreadPool_SetMaxThreadsNative (gint32 worker_threads
 {
 	gint cpu_count = mono_cpu_count ();
 
-	if (completion_port_threads < threadpool.limit_io_min || completion_port_threads < cpu_count)
+	mono_lazy_initialize (&status, initialize);
+
+	if (completion_port_threads < threadpool->limit_io_min || completion_port_threads < cpu_count)
 		return FALSE;
 
-	if (!mono_lazy_initialize (&status, initialize) || !mono_refcount_tryinc (&threadpool))
+	if (!mono_threadpool_worker_set_max (threadpool->worker, worker_threads))
 		return FALSE;
 
-	if (!mono_threadpool_worker_set_max (worker_threads)) {
-		mono_refcount_dec (&threadpool);
-		return FALSE;
-	}
+	threadpool->limit_io_max = completion_port_threads;
 
-	threadpool.limit_io_max = completion_port_threads;
-
-	mono_refcount_dec (&threadpool);
 	return TRUE;
 }
 
@@ -714,13 +778,13 @@ ves_icall_System_Threading_ThreadPool_NotifyWorkItemComplete (void)
 	if (mono_domain_is_unloading (mono_domain_get ()) || mono_runtime_is_shutting_down ())
 		return FALSE;
 
-	return mono_threadpool_worker_notify_completed ();
+	return mono_threadpool_worker_notify_completed (threadpool->worker);
 }
 
 void
 ves_icall_System_Threading_ThreadPool_NotifyWorkItemProgressNative (void)
 {
-	mono_threadpool_worker_notify_completed ();
+	mono_threadpool_worker_notify_completed (threadpool->worker);
 }
 
 void
@@ -743,25 +807,21 @@ ves_icall_System_Threading_ThreadPool_RequestWorkerThread (void)
 	if (mono_domain_is_unloading (domain))
 		return FALSE;
 
-	if (!mono_lazy_initialize (&status, initialize) || !mono_refcount_tryinc (&threadpool)) {
+	if (!mono_refcount_tryinc (threadpool)) {
 		/* threadpool has been destroyed, we are shutting down */
 		return FALSE;
 	}
 
 	domains_lock ();
 
-	tpdomain = tpdomain_get (domain);
-	if (!tpdomain) {
-		/* synchronize with mono_threadpool_remove_domain_jobs */
-		if (mono_domain_is_unloading (domain)) {
-			domains_unlock ();
-			mono_refcount_dec (&threadpool);
-			return FALSE;
-		}
-
-		tpdomain = tpdomain_create (domain);
+	/* synchronize with mono_threadpool_remove_domain_jobs */
+	if (mono_domain_is_unloading (domain)) {
+		domains_unlock ();
+		mono_refcount_dec (threadpool);
+		return FALSE;
 	}
 
+	tpdomain = tpdomain_get (domain, TRUE);
 	g_assert (tpdomain);
 
 	tpdomain->outstanding_request ++;
@@ -769,18 +829,17 @@ ves_icall_System_Threading_ThreadPool_RequestWorkerThread (void)
 
 	domains_unlock ();
 
-	COUNTER_ATOMIC (counter, {
+	COUNTER_ATOMIC (threadpool, counter, {
 		if (counter._.starting == 16) {
-			mono_refcount_dec (&threadpool);
+			mono_refcount_dec (threadpool);
 			return TRUE;
 		}
 
 		counter._.starting ++;
 	});
 
-	mono_threadpool_worker_enqueue (worker_callback, NULL);
+	mono_threadpool_worker_enqueue (threadpool->worker, worker_callback, NULL);
 
-	mono_refcount_dec (&threadpool);
 	return TRUE;
 }
 

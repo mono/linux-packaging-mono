@@ -4,7 +4,6 @@
   <PropertyGroup>
     <AssemblyName>System.Security.Cryptography.Xml</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ProjectGuid>{0544EAE3-0CF2-4EA6-93BE-A9FF8B52724A}</ProjectGuid>
   </PropertyGroup>
   <!-- Help VS understand available configurations -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netcoreapp-Debug|AnyCPU'" />
@@ -34,7 +33,6 @@
     <Compile Include="System\Security\Cryptography\Xml\DataReference.cs" />
     <Compile Include="System\Security\Cryptography\Xml\DocPosition.cs" />
     <Compile Include="System\Security\Cryptography\Xml\DSAKeyValue.cs" />
-    <Compile Include="System\Security\Cryptography\Xml\DSASignatureDescription.cs" />
     <Compile Include="System\Security\Cryptography\Xml\EncryptedData.cs" />
     <Compile Include="System\Security\Cryptography\Xml\EncryptedKey.cs" />
     <Compile Include="System\Security\Cryptography\Xml\EncryptedReference.cs" />
@@ -82,8 +80,6 @@
     <Compile Include="System\Security\Cryptography\Xml\XmlDsigXPathTransform.cs" />
     <Compile Include="System\Security\Cryptography\Xml\XmlDsigXsltTransform.cs" />
     <Compile Include="System\Security\Cryptography\Xml\XmlLicenseTransform.cs" />
-    <Compile Include="System\Security\Cryptography\Xml\CryptoHelpers.cs" />
-    <Compile Include="System\Security\Cryptography\Xml\RSAPKCS1SHA1SignatureDescription.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Collections" />

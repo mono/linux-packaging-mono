@@ -24,7 +24,7 @@ namespace Microsoft.Win32.RegistryTests
             RemoveKeyIfExists(TestRegistryKeyName);
 
             // Then create the key.
-            TestRegistryKey = Registry.CurrentUser.CreateSubKey(TestRegistryKeyName, true);
+            TestRegistryKey = Registry.CurrentUser.CreateSubKey(TestRegistryKeyName);
             Assert.NotNull(TestRegistryKey);
         }
 

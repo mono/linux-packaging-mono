@@ -21,13 +21,13 @@ namespace System.Numerics
             uint[] bits = new uint[left.Length + 1];
 
             long digit = (long)left[0] + right;
-            bits[0] = unchecked((uint)digit);
+            bits[0] = (uint)digit;
             long carry = digit >> 32;
 
             for (int i = 1; i < left.Length; i++)
             {
                 digit = left[i] + carry;
-                bits[i] = unchecked((uint)digit);
+                bits[i] = (uint)digit;
                 carry = digit >> 32;
             }
             bits[left.Length] = (uint)carry;
@@ -47,7 +47,7 @@ namespace System.Numerics
 
             uint[] bits = new uint[left.Length + 1];
 
-            fixed (uint* l = left, r = right, b = &bits[0])
+            fixed (uint* l = left, r = right, b = bits)
             {
                 Add(l, left.Length,
                     r, right.Length,
@@ -78,13 +78,13 @@ namespace System.Numerics
             for (; i < rightLength; i++)
             {
                 long digit = (left[i] + carry) + right[i];
-                bits[i] = unchecked((uint)digit);
+                bits[i] = (uint)digit;
                 carry = digit >> 32;
             }
             for (; i < leftLength; i++)
             {
                 long digit = left[i] + carry;
-                bits[i] = unchecked((uint)digit);
+                bits[i] = (uint)digit;
                 carry = digit >> 32;
             }
             bits[i] = (uint)carry;
@@ -108,7 +108,7 @@ namespace System.Numerics
             for (; i < rightLength; i++)
             {
                 long digit = (left[i] + carry) + right[i];
-                left[i] = unchecked((uint)digit);
+                left[i] = (uint)digit;
                 carry = digit >> 32;
             }
             for (; carry != 0 && i < leftLength; i++)
@@ -134,13 +134,13 @@ namespace System.Numerics
             uint[] bits = new uint[left.Length];
 
             long digit = (long)left[0] - right;
-            bits[0] = unchecked((uint)digit);
+            bits[0] = (uint)digit;
             long carry = digit >> 32;
 
             for (int i = 1; i < left.Length; i++)
             {
                 digit = left[i] + carry;
-                bits[i] = unchecked((uint)digit);
+                bits[i] = (uint)digit;
                 carry = digit >> 32;
             }
 
@@ -192,7 +192,7 @@ namespace System.Numerics
             for (; i < rightLength; i++)
             {
                 long digit = (left[i] + carry) - right[i];
-                bits[i] = unchecked((uint)digit);
+                bits[i] = (uint)digit;
                 carry = digit >> 32;
             }
             for (; i < leftLength; i++)
@@ -224,7 +224,7 @@ namespace System.Numerics
             for (; i < rightLength; i++)
             {
                 long digit = (left[i] + carry) - right[i];
-                left[i] = unchecked((uint)digit);
+                left[i] = (uint)digit;
                 carry = digit >> 32;
             }
             for (; carry != 0 && i < leftLength; i++)

@@ -2,12 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-//
-// This file defines many COM dual interfaces which are legacy and,
-// cannot be changed.  Tolerate possible obsoletion.
-//
-#pragma warning disable CS0618 // Type or member is obsolete
-
 namespace System.DirectoryServices.AccountManagement
 {
     using System.Runtime.InteropServices;
@@ -45,6 +39,9 @@ namespace System.DirectoryServices.AccountManagement
 
         [DllImport(ExternDll.Activeds, ExactSpelling = true, EntryPoint = "ADsOpenObject", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
         private static extern int IntADsOpenObject(string path, string userName, string password, int flags, [In, Out] ref Guid iid, [Out, MarshalAs(UnmanagedType.Interface)] out object ppObject);
+        // <SecurityKernel Critical="True" Ring="0">
+        // <CallsSuppressUnmanagedCode Name="IntADsOpenObject(String, String, String, Int32, Guid&, Object&):Int32" />
+        // </SecurityKernel>
         [System.Security.SecurityCritical]
         public static int ADsOpenObject(string path, string userName, string password, int flags, [In, Out] ref Guid iid, [Out, MarshalAs(UnmanagedType.Interface)] out object ppObject)
         {
@@ -445,9 +442,15 @@ namespace System.DirectoryServices.AccountManagement
           PBYTE* Buffer
         ); */
 
-        [DllImport("dsrole.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "DsRoleGetPrimaryDomainInformation", CharSet = CharSet.Unicode)]
+        [DllImport("Netapi32.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "DsRoleGetPrimaryDomainInformation", CharSet = CharSet.Unicode)]
         public static extern int DsRoleGetPrimaryDomainInformation(
             [MarshalAs(UnmanagedType.LPTStr)] string lpServer,
+            [In] DSROLE_PRIMARY_DOMAIN_INFO_LEVEL InfoLevel,
+            out IntPtr Buffer);
+
+        [DllImport("Netapi32.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "DsRoleGetPrimaryDomainInformation", CharSet = CharSet.Unicode)]
+        public static extern int DsRoleGetPrimaryDomainInformation(
+            [In] IntPtr lpServer,
             [In] DSROLE_PRIMARY_DOMAIN_INFO_LEVEL InfoLevel,
             out IntPtr Buffer);
 
@@ -481,7 +484,7 @@ namespace System.DirectoryServices.AccountManagement
           PVOID Buffer
         );
         */
-        [DllImport("dsrole.dll")]
+        [DllImport("Netapi32.dll")]
         public static extern int DsRoleFreeMemory(
             [In] IntPtr buffer);
 
@@ -493,7 +496,7 @@ namespace System.DirectoryServices.AccountManagement
             ULONG Flags, 
             PDOMAIN_CONTROLLER_INFO* DomainControllerInfo
         );*/
-        [DllImport("logoncli.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "DsGetDcNameW", CharSet = CharSet.Unicode)]
+        [DllImport("Netapi32.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "DsGetDcNameW", CharSet = CharSet.Unicode)]
         public static extern int DsGetDcName(
             [In] string computerName,
             [In] string domainName,
@@ -519,10 +522,10 @@ namespace System.DirectoryServices.AccountManagement
             public int wki100_ver_minor = 0;
         };
 
-        [DllImport("wkscli.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "NetWkstaGetInfo", CharSet = CharSet.Unicode)]
+        [DllImport("netapi32.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "NetWkstaGetInfo", CharSet = CharSet.Unicode)]
         public static extern int NetWkstaGetInfo(string server, int level, ref IntPtr buffer);
 
-        [DllImport("netutils.dll")]
+        [DllImport("Netapi32.dll")]
         public static extern int NetApiBufferFree(
             [In] IntPtr buffer);
 

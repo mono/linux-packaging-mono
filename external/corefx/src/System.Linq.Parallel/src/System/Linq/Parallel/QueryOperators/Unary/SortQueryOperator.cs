@@ -102,7 +102,7 @@ namespace System.Linq.Parallel
         internal override QueryResults<TInputOutput> Open(QuerySettings settings, bool preferStriping)
         {
             QueryResults<TInputOutput> childQueryResults = Child.Open(settings, false);
-            return new SortQueryOperatorResults<TInputOutput, TSortKey>(childQueryResults, this, settings);
+            return new SortQueryOperatorResults<TInputOutput, TSortKey>(childQueryResults, this, settings, preferStriping);
         }
 
 
@@ -147,14 +147,16 @@ namespace System.Linq.Parallel
         protected QueryResults<TInputOutput> _childQueryResults; // Results of the child query
         private SortQueryOperator<TInputOutput, TSortKey> _op; // Operator that generated these results
         private QuerySettings _settings; // Settings collected from the query
+        private bool _preferStriping; // If the results are indexable, should we use striping when partitioning them
 
         internal SortQueryOperatorResults(
             QueryResults<TInputOutput> childQueryResults, SortQueryOperator<TInputOutput, TSortKey> op,
-            QuerySettings settings)
+            QuerySettings settings, bool preferStriping)
         {
             _childQueryResults = childQueryResults;
             _op = op;
             _settings = settings;
+            _preferStriping = preferStriping;
         }
 
         internal override bool IsIndexible

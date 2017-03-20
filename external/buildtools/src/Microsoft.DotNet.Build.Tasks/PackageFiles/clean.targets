@@ -2,10 +2,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <UserLocalFolder Condition="'$(OsEnvironment)'=='Windows_NT'">$(LocalAppData)/</UserLocalFolder>
-    <UserLocalFolder Condition="'$(OsEnvironment)'!='Windows_NT'">$(HOME)/.local/share/</UserLocalFolder>
-    <UserProfileFolder Condition="'$(OsEnvironment)'=='Windows_NT'">$(UserProfile)</UserProfileFolder>
-    <UserProfileFolder Condition="'$(OsEnvironment)'!='Windows_NT'">$(HOME)</UserProfileFolder>
+    <UserLocalFolder Condition="'$(OsEnvironment)'!='Unix'">$(LocalAppData)/</UserLocalFolder>
+    <UserLocalFolder Condition="'$(OsEnvironment)'=='Unix'">$(HOME)/.local/share/</UserLocalFolder>
   </PropertyGroup>
 
   <Target Name="CleanPackages">
@@ -14,7 +12,6 @@
 
   <Target Name="CleanPackagesCache">
     <RemoveDir Directories="$(UserLocalFolder)NuGet/Cache/;$(UserLocalFolder)NuGet/v3-cache/;$(UserLocalFolder)dnu/cache/" />
-    <RemoveDir Directories="$(UserProfileFolder)/.nuget/packages" />
   </Target>
 
 </Project>

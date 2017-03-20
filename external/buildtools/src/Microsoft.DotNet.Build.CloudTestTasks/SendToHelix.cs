@@ -5,7 +5,6 @@
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Build.Framework;
 using Newtonsoft.Json;
@@ -51,81 +50,55 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
             string joinCharacter = ApiEndpoint.Contains("?") ? "&" : "?";
             string apiUrl = ApiEndpoint + joinCharacter + "access_token=" + Uri.EscapeDataString(AccessToken);
 
-            Log.LogMessage(MessageImportance.Normal, "Posting job to {0}", ApiEndpoint);
+            Log.LogMessage(MessageImportance.Low, "Posting job to {0}", ApiEndpoint);
             Log.LogMessage(MessageImportance.Low, "Event json is ", EventDataPath);
 
             using (HttpClient client = new HttpClient())
             {
-                const int MaxAttempts = 15;
-                // add a bit of randomness to the retry delay
-                var rng = new Random();
-                int retryCount = MaxAttempts;
-
+                int retryCount = 15;
                 while (true)
                 {
-                    HttpResponseMessage response = new HttpResponseMessage();
-
-                    try
+                    HttpResponseMessage response;
+                                        
+                    using (Stream stream = File.OpenRead(EventDataPath))
                     {
-                        using (Stream stream = File.OpenRead(EventDataPath))
-                        {
-                            HttpContent contentStream = new StreamContent(stream);
-                            contentStream.Headers.Add("Content-Type", "application/json");
-                            response = await client.PostAsync(apiUrl, contentStream);
-                        }
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            JObject responseObject = new JObject();
-                            using (Stream stream = await response.Content.ReadAsStreamAsync())
-                            using (StreamReader streamReader = new StreamReader(stream))
-                            {
-                                string jsonResponse = streamReader.ReadToEnd();
-                                try
-                                {
-                                    using (JsonReader jsonReader = new JsonTextReader(new StringReader(jsonResponse)))
-                                    {
-                                        responseObject = JObject.Load(jsonReader);
-                                    }
-                                }
-                                catch
-                                {
-                                    Log.LogWarning($"Hit exception attempting to parse JSON response.  Raw response string: {Environment.NewLine} {jsonResponse}");
-                                }
-                            }
-
-                            JobId = (string)responseObject["Name"];
-                            if (String.IsNullOrEmpty(JobId))
-                            {
-                                Log.LogError("Publish to '{0}' did not return a job ID", ApiEndpoint);
-                                return false;
-                            }
-
-                            Log.LogMessage(MessageImportance.High, "Started Helix job: CorrelationId = {0}", JobId);
-                            return true;
-                        }
-                        else
-                        {
-                            string responseContent = await response.Content.ReadAsStringAsync();
-                            Log.LogWarning($"Helix Api Response: StatusCode {response.StatusCode} {responseContent}");
-                        }
-                    }
-                    // still allow other types of exceptions to tear down the task for now
-                    catch (HttpRequestException toLog)
-                    {
-                        Log.LogWarning("Exception thrown attempting to submit job to Helix:");
-                        Log.LogWarningFromException(toLog, true);
+                        HttpContent contentStream = new StreamContent(stream);
+                        contentStream.Headers.Add("Content-Type", "application/json");
+                        response = await client.PostAsync(apiUrl, contentStream);
                     }
 
-                    if (retryCount-- <= 0)
+                    if (response.IsSuccessStatusCode)
                     {
-                        Log.LogError($"Unable to publish to '{ApiEndpoint}' after {MaxAttempts} retries. Received status code: {response.StatusCode} {response.ReasonPhrase}");
+                        JObject responseObject;
+                        using (Stream stream = await response.Content.ReadAsStreamAsync())
+                        using (StreamReader streamReader = new StreamReader(stream))
+                        using (JsonReader jsonReader = new JsonTextReader(streamReader))
+                        {
+                            responseObject = JObject.Load(jsonReader);
+                        }
+
+                        JobId = (string)responseObject["Name"];
+                        if (String.IsNullOrEmpty(JobId))
+                        {
+                            Log.LogError("Publish to '{0}' did not return a job ID", ApiEndpoint);
+                            return false;
+                        }
+
+                        Log.LogMessage(MessageImportance.High, "Started Helix job: CorrelationId = {0}", JobId);
+                        return true;
+                    }
+
+                    if (retryCount -- <= 0)
+                    {
+                        Log.LogError(
+                            "Unable to publish to '{0}' after 15 retries. Received status code: {1} {2}",
+                            ApiEndpoint,
+                            response.StatusCode,
+                            response.ReasonPhrase);
                         return false;
                     }
 
                     Log.LogWarning("Failed to publish to '{0}', {1} retries remaining", ApiEndpoint, retryCount);
-                    int delay = (MaxAttempts - retryCount) * rng.Next(1, 7);
-                    await System.Threading.Tasks.Task.Delay(delay * 1000);
                 }
             }
         }

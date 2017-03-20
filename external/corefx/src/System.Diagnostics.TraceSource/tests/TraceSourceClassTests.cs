@@ -64,17 +64,11 @@ namespace System.Diagnostics.TraceSourceTests
             trace.TraceEvent(TraceEventType.Critical, 0);
         }
 
-        [System.Runtime.CompilerServices.MethodImplAttribute(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-        static WeakReference PruneMakeRef()
-        {
-            return new WeakReference(new TraceSource("TestTraceSource"));
-        }
-
         [Fact]
         public void PruneTest()
         {
             var strongTrace = new TraceSource("TestTraceSource");
-            var traceRef = PruneMakeRef();
+            var traceRef = new WeakReference(new TraceSource("TestTraceSource"));
             Assert.True(traceRef.IsAlive);
             GC.Collect(2);
             Trace.Refresh();

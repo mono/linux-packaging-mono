@@ -413,7 +413,7 @@ namespace Internal.Cryptography.Pal
                 sb.AppendLine("[Private Key]");
             }
 
-#if uap
+#if NETNATIVE
             // Similar to the Unix implementation, in UWP merely acknowledge that there -is- a private key.
 #else
             CspKeyContainerInfo cspKeyContainerInfo = null;
@@ -477,7 +477,7 @@ namespace Internal.Cryptography.Pal
             }
             catch (CryptographicException) { }
             catch (NotSupportedException) { }
-#endif // #if uap / #else
+#endif // #if NETNATIVE / #else
         }
 
         public void Dispose()

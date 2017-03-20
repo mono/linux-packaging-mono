@@ -83,15 +83,15 @@ namespace System.Web.UI.WebControls
 		#endregion	// IDataItemContainer Properties
 
 		#region Public Instance Methods
-		protected override bool OnBubbleEvent(object source, EventArgs e)
+		protected override bool OnBubbleEvent(object source, EventArgs args)
 		{
 			// Nikhil Kothari, pg 312-313:
-			if (e is CommandEventArgs) {
-				RaiseBubbleEvent(this, new DataGridCommandEventArgs(this, source, (CommandEventArgs)e));
+			if (args is CommandEventArgs) {
+				RaiseBubbleEvent(this, new DataGridCommandEventArgs(this, source, (CommandEventArgs)args));
 				return true;
 			}
 
-			return base.OnBubbleEvent (source, e);
+			return base.OnBubbleEvent (source, args);
 		}
 
 		protected internal virtual void SetItemType(ListItemType itemType)

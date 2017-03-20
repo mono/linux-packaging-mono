@@ -182,7 +182,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Windows-only Invalid chars in path
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsInvalidCharsPath()
         {
             Assert.All(WindowsInvalidUnixValid, invalid =>
@@ -190,7 +190,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Unix-only valid chars in file path
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixValidCharsFilePath()
         {
             if (TestFiles)
@@ -206,7 +206,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Windows-only invalid chars in directory path
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixValidCharsDirectoryPath()
         {
             if (TestDirectories)
@@ -268,7 +268,7 @@ namespace System.IO.Tests
                 Assert.NotEmpty(Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*", SearchOption.TopDirectoryOnly));
 
                 return SuccessExitCode;
-            }, $"\"{testDir}\"").Dispose();
+            }, testDir).Dispose();
         }
     }
 }

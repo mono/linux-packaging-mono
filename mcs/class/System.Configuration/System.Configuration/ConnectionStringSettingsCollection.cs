@@ -41,13 +41,13 @@ namespace System.Configuration
                 {
                 }
 
-                public new ConnectionStringSettings this [string name]
+                public new ConnectionStringSettings this [string Name]
                 {
                         get {
                                 foreach (ConfigurationElement c in this) {
                                         if (!(c is ConnectionStringSettings))
                                                 continue;
-                                        if (string.Compare(((ConnectionStringSettings) c).Name, name, true, 
+                                        if (string.Compare(((ConnectionStringSettings) c).Name, Name, true, 
                                                 System.Globalization.CultureInfo.InvariantCulture) == 0)
                                                 return c as ConnectionStringSettings;
 

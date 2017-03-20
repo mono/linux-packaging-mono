@@ -369,7 +369,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.OSX | TestPlatforms.Windows)]  // Casing matters on Linux
+        [PlatformSpecific(TestPlatforms.OSX | TestPlatforms.Windows)]
         public void FileSystemWatcher_OnCreatedWithMismatchedCasingGivesExpectedFullPath()
         {
             using (var dir = new TempDirectory(GetTestFilePath()))
@@ -551,7 +551,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Linux)]  // Reads MaxUsersWatches from Linux OS files
+        [PlatformSpecific(TestPlatforms.Linux)]
         [OuterLoop("This test has high system resource demands and may cause failures in other concurrent tests")]
         public void FileSystemWatcher_CreateManyConcurrentWatches()
         {

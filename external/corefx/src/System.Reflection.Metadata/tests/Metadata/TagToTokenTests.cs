@@ -4,10 +4,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Internal;
 using System.Reflection.Metadata.Ecma335;
 using Xunit;
-
-using BitArithmetic = System.Reflection.Internal.BitArithmetic;
 
 namespace System.Reflection.Metadata.Tests
 {

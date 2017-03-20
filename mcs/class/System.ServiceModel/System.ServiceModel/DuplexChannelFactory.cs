@@ -93,47 +93,47 @@ namespace System.ServiceModel
 			callback_instance_type = callbackInstanceType;
 		}
 
-		public DuplexChannelFactory (object callbackObject)
-			: this (new InstanceContext (callbackObject))
+		public DuplexChannelFactory (object callbackInstance)
+			: this (new InstanceContext (callbackInstance))
 		{
 		}
 
-		public DuplexChannelFactory (object callbackObject,
+		public DuplexChannelFactory (object callbackInstance,
 			string endpointConfigurationName)
-			: this (new InstanceContext (callbackObject), endpointConfigurationName)
+			: this (new InstanceContext (callbackInstance), endpointConfigurationName)
 		{
 		}
 
-		public DuplexChannelFactory (object callbackObject,
+		public DuplexChannelFactory (object callbackInstance,
 			string endpointConfigurationName,
 			EndpointAddress remoteAddress)
-			: this (new InstanceContext (callbackObject), endpointConfigurationName, remoteAddress)
+			: this (new InstanceContext (callbackInstance), endpointConfigurationName, remoteAddress)
 		{
 		}
 
-		public DuplexChannelFactory (object callbackObject,
+		public DuplexChannelFactory (object callbackInstance,
 			ServiceEndpoint endpoint)
-			: this (new InstanceContext (callbackObject), endpoint)
+			: this (new InstanceContext (callbackInstance), endpoint)
 		{
 		}
 
-		public DuplexChannelFactory (object callbackObject,
+		public DuplexChannelFactory (object callbackInstance,
 			Binding binding)
-			: this (new InstanceContext (callbackObject), binding)
+			: this (new InstanceContext (callbackInstance), binding)
 		{
 		}
 
-		public DuplexChannelFactory (object callbackObject,
+		public DuplexChannelFactory (object callbackInstance,
 			Binding binding,
 			string remoteAddress)
-			: this (callbackObject, binding, new EndpointAddress (remoteAddress))
+			: this (callbackInstance, binding, new EndpointAddress (remoteAddress))
 		{
 		}
 
-		public DuplexChannelFactory (object callbackObject,
+		public DuplexChannelFactory (object callbackInstance,
 			Binding binding,
 			EndpointAddress remoteAddress)
-			: this (new InstanceContext (callbackObject), binding, remoteAddress)
+			: this (new InstanceContext (callbackInstance), binding, remoteAddress)
 		{
 		}
 

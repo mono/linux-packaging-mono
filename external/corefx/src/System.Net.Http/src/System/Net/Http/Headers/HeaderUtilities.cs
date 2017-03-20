@@ -298,7 +298,7 @@ namespace System.Net.Http.Headers
         {
             try
             {
-#if uap
+#if NETNative
                 new MailAddress(value);
 #else
                 MailAddressParser.ParseAddress(value);

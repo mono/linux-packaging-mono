@@ -36,19 +36,19 @@ namespace System.Web.Management
                 object event_source;
                 int event_code, event_detail_code;
 
-                protected WebBaseEvent (string message, object eventSource, int eventCode)
+                protected WebBaseEvent (string message, object event_source, int event_code)
                 {
                         this.message = message;
-                        this.event_source = eventSource;
-                        this.event_code = eventCode;
+                        this.event_source = event_source;
+                        this.event_code = event_code;
                 }
 
-                protected WebBaseEvent (string message, object eventSource, int eventCode, int eventDetailCode)
+                protected WebBaseEvent (string message, object event_source, int event_code, int event_detail_code)
                 {
                         this.message = message;
-                        this.event_source = eventSource;
-                        this.event_code = eventCode;
-                        this.event_detail_code = eventDetailCode;
+                        this.event_source = event_source;
+                        this.event_code = event_code;
+                        this.event_detail_code = event_detail_code;
                 }
                 
                 public static WebApplicationInformation ApplicationInformation {
@@ -116,7 +116,7 @@ namespace System.Web.Management
                         throw new NotImplementedException ();
                 }
 
-                public static void Raise (WebBaseEvent eventRaised)
+                public static void Raise (WebBaseEvent event_raised)
                 {
                         throw new NotImplementedException ();
                 }
@@ -126,7 +126,7 @@ namespace System.Web.Management
                         throw new NotImplementedException ();
                 }
 
-                public virtual string ToString (bool includeAppInfo, bool includeCustomEventDetails)
+                public virtual string ToString (bool include_app_info, bool include_custom_event_details)
                 {
                         throw new NotImplementedException ();
                 }

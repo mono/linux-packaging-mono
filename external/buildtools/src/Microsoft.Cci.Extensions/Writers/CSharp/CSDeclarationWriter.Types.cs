@@ -53,7 +53,7 @@ namespace Microsoft.Cci.Writers.CSharp
                 WriteTypeName(invoke.Type);
                 WriteIdentifier(namedType.Name);
                 if (type.IsGeneric) WriteGenericParameters(type.GenericParameters);
-                WriteParameters(invoke.Parameters, invoke.ContainingType);
+                WriteParameters(invoke.Parameters);
                 if (type.IsGeneric) WriteGenericContraints(type.GenericParameters);
                 WriteSymbol(";");
             }
@@ -83,7 +83,7 @@ namespace Microsoft.Cci.Writers.CSharp
             if (baseType != null)
                 baseTypes.Add(baseType);
 
-            baseTypes.AddRange(type.Interfaces.Where(IncludeBaseType).OrderBy((t) => GetTypeName(t), StringComparer.OrdinalIgnoreCase));
+            baseTypes.AddRange(type.Interfaces.Where(IncludeBaseType).OrderBy((t) => GetTypeName(t)));
 
             if (baseTypes.Count == 0)
                 return;

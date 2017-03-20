@@ -35,6 +35,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Text;
 
 namespace System.Drawing
@@ -55,7 +56,7 @@ namespace System.Drawing
 							    IntPtr data,
 							    PlayRecordCallback callbackData);
 		
-		public delegate bool DrawImageAbort (IntPtr callbackdata);
+		public delegate bool DrawImageAbort (IntPtr callbackData);
 
 		internal Graphics (IntPtr nativeGraphics)
 		{
@@ -1691,6 +1692,7 @@ namespace System.Drawing
 		}
 
 		[EditorBrowsable (EditorBrowsableState.Advanced)]
+		[SecurityPermission (SecurityAction.LinkDemand, UnmanagedCode = true)]
 		public static Graphics FromHdcInternal (IntPtr hdc)
 		{
 			GDIPlus.Display = hdc;
@@ -1742,6 +1744,7 @@ namespace System.Drawing
 		}
 		
 		[EditorBrowsable (EditorBrowsableState.Advanced)]
+		[SecurityPermission (SecurityAction.LinkDemand, UnmanagedCode = true)]
 		public static Graphics FromHwndInternal (IntPtr hwnd)
 		{
 			return FromHwnd (hwnd);
@@ -2012,11 +2015,13 @@ namespace System.Drawing
 		}
 
 		[EditorBrowsable (EditorBrowsableState.Advanced)]
+		[SecurityPermission (SecurityAction.Demand, UnmanagedCode = true)]
 		public void ReleaseHdc (IntPtr hdc)
 		{
 			ReleaseHdcInternal (hdc);
 		}
 
+		[SecurityPermission (SecurityAction.LinkDemand, UnmanagedCode = true)]
 		public void ReleaseHdc ()
 		{
 			ReleaseHdcInternal (deviceContextHdc);
@@ -2024,6 +2029,7 @@ namespace System.Drawing
 
 		[MonoLimitation ("Can only be used when hdc was provided by Graphics.GetHdc() method")]
 		[EditorBrowsable (EditorBrowsableState.Never)]
+		[SecurityPermission (SecurityAction.LinkDemand, UnmanagedCode = true)]
 		public void ReleaseHdcInternal (IntPtr hdc)
 		{
 			Status status = Status.InvalidParameter;

@@ -91,9 +91,9 @@ namespace System.Web.UI {
             		OnChanged (new EventArgs ());
         	}
 
-        	public bool Contains (string propName)
+        	public bool Contains (string propertyName)
         	{
-            		return list.Contains (propName);
+            		return list.Contains (propertyName);
         	}
 
 		public void CopyTo (Array array, int index)
@@ -101,17 +101,17 @@ namespace System.Web.UI {
 			list.CopyTo (array, index);
 		}
 
-        	public void CopyTo (ExpressionBinding [] array, int index)
+        	public void CopyTo (ExpressionBinding [] bindings, int index)
         	{
             		if (index < 0)
                 		throw new ArgumentNullException ("Index cannot be negative");
-            		if (index >= array.Length)
+            		if (index >= bindings.Length)
                 		throw new ArgumentException ("Index cannot be greater than or equal to length of array passed");            
-            		if (list.Count > (array.Length - index + 1))
+            		if (list.Count > (bindings.Length - index + 1))
                 		throw new ArgumentException ("Number of elements in source is greater than available space from index to end of destination");
             
             		foreach (string key in list.Keys)
-                		array [index++] = (ExpressionBinding) list [key];
+                		bindings [index++] = (ExpressionBinding) list [key];
         	}
 
 		public IEnumerator GetEnumerator ()

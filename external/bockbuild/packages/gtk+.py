@@ -188,11 +188,7 @@ class GtkPackage (GnomeGitPackage):
 
                 'patches/gtk/emit-container-add.patch',
                 'patches/gtk/create-accessibility-object.patch',
-                'patches/gtk/make-gtkpaned-emit-signals.patch',
-
-                # https://bugzilla.xamarin.com/show_bug.cgi?id=51382
-                # https://bugzilla.xamarin.com/show_bug.cgi?id=51375
-                'patches/gtk/recompute-viewport-allocation-for-overlay-scrollbars.patch'
+                'patches/gtk/make-gtkpaned-emit-signals.patch'
             ])
 
     def prep(self):

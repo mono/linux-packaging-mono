@@ -38,7 +38,7 @@ namespace System.Configuration
 Protection API, and is unimplemented in Mono.  For portability's sake,
 it is suggested that you use the RsaProtectedConfigurationProvider.";
 		[MonoNotSupported (NotSupportedReason)]
-		public override XmlNode Decrypt (XmlNode encryptedNode)
+		public override XmlNode Decrypt (XmlNode encrypted_node)
 		{
 			throw new NotSupportedException (NotSupportedReason);
 		}

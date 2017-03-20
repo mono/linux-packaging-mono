@@ -68,9 +68,6 @@ get_current_linux_name() {
 }
 
 if [ -z "$__DOTNET_PKG" ]; then
-    if [ "$(uname -m | grep "i[3456]86")" = "i686" ]; then
-        echo "Warning: build not supported on 32 bit Unix"
-    fi
 OSName=$(uname -s)
     case $OSName in
         Darwin)
@@ -163,6 +160,9 @@ if [ ! -e $__INIT_TOOLS_DONE_MARKER ]; then
             exit 1
         fi
     fi
+
+    echo Copying supplemental overrides from Tools-Override.
+    cp $__scriptpath/Tools-Override/* $__scriptpath/Tools
 
     Tools-Override/crossgen.sh $__scriptpath/Tools
 

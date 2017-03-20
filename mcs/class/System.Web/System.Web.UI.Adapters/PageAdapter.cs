@@ -89,23 +89,23 @@ namespace System.Web.UI.Adapters
 				radioButtons.Add(radioButton);
 		}
 
-		public virtual void RenderBeginHyperlink (HtmlTextWriter writer,
+		public virtual void RenderBeginHyperlink (HtmlTextWriter w,
 							  string targetUrl,
 							  bool encodeUrl,
-							  string softkeyLabel)
+							  string softKeyLabel)
 		{
-			InternalRenderBeginHyperlink (writer, targetUrl, encodeUrl, softkeyLabel, null);
+			InternalRenderBeginHyperlink (w, targetUrl, encodeUrl, softKeyLabel, null);
 		}
 
-		public virtual void RenderBeginHyperlink (HtmlTextWriter writer,
+		public virtual void RenderBeginHyperlink (HtmlTextWriter w,
 							  string targetUrl,
 							  bool encodeUrl,
-							  string softkeyLabel,
+							  string softKeyLabel,
 							  string accessKey)
 		{
 			if (accessKey != null && accessKey.Length > 1)
 				throw new ArgumentOutOfRangeException("accessKey");
-			InternalRenderBeginHyperlink (writer, targetUrl, encodeUrl, softkeyLabel, accessKey);
+			InternalRenderBeginHyperlink (w, targetUrl, encodeUrl, softKeyLabel, accessKey);
 		}
 		
 		void InternalRenderBeginHyperlink (HtmlTextWriter w,
@@ -121,35 +121,35 @@ namespace System.Web.UI.Adapters
 		}
 		
 		
-		public virtual void RenderEndHyperlink (HtmlTextWriter writer)
+		public virtual void RenderEndHyperlink (HtmlTextWriter w)
 		{
-			writer.RenderEndTag();
+			w.RenderEndTag();
 		}
 
-		public virtual void RenderPostBackEvent (HtmlTextWriter writer,
+		public virtual void RenderPostBackEvent (HtmlTextWriter w,
 							 string target,
 							 string argument,
-							 string softkeyLabel,
+							 string softKeyLabel,
 							 string text)
 		{
-			RenderPostBackEvent (writer, target, argument, softkeyLabel, text, Page.Request.FilePath, null, true);
+			RenderPostBackEvent (w, target, argument, softKeyLabel, text, Page.Request.FilePath, null, true);
 		}
 
-		public virtual void RenderPostBackEvent (HtmlTextWriter writer,
+		public virtual void RenderPostBackEvent (HtmlTextWriter w,
 							 string target,
 							 string argument,
-							 string softkeyLabel,
+							 string softKeyLabel,
 							 string text,
 							 string postUrl,
 							 string accessKey)
 		{
-			RenderPostBackEvent (writer, target, argument, softkeyLabel, text, postUrl, accessKey, true);
+			RenderPostBackEvent (w, target, argument, softKeyLabel, text, postUrl, accessKey, true);
 		}
 
-		protected void RenderPostBackEvent (HtmlTextWriter writer,
+		protected void RenderPostBackEvent (HtmlTextWriter w,
 						    string target,
 						    string argument,
-						    string softkeyLabel,
+						    string softKeyLabel,
 						    string text,
 						    string postUrl,
 						    string accessKey,
@@ -157,9 +157,9 @@ namespace System.Web.UI.Adapters
 		{
 			string url = String.Format ("{0}?__VIEWSTATE={1}&__EVENTTARGET={2}&__EVENTARGUMENT={3}&__PREVIOUSPAGE={4}",
 				postUrl, HttpUtility.UrlEncode (Page.GetSavedViewState ()), target, argument, Page.Request.FilePath);
-			RenderBeginHyperlink (writer, url, encode, softkeyLabel, accessKey);
-			writer.Write(text);
-			RenderEndHyperlink(writer);
+			RenderBeginHyperlink (w, url, encode, softKeyLabel, accessKey);
+			w.Write(text);
+			RenderEndHyperlink(w);
 		}
 
 		public virtual string TransformText (string text) 
@@ -167,9 +167,9 @@ namespace System.Web.UI.Adapters
 			return text;
 		}
 		
-		protected internal virtual string GetPostBackFormReference (string formId)
+		protected internal virtual string GetPostBackFormReference (string formID)
 		{
-			return String.Format("document.forms['{0}']", formId);
+			return String.Format("document.forms['{0}']", formID);
 		}
 		
 		ListDictionary radio_button_group;

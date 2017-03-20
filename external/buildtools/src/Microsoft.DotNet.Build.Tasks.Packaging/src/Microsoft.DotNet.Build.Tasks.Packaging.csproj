@@ -11,8 +11,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <CLSCompliant>false</CLSCompliant>
-    <CopyNugetImplementations>true</CopyNugetImplementations>
-    <NuGetTargetMoniker>.NETStandard,Version=v1.5</NuGetTargetMoniker>
   </PropertyGroup>
   <!-- Default configurations to help VS understand the options -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -20,28 +18,15 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ApplyMetaPackages.cs" />
-    <Compile Include="GetLayoutFiles.cs" />
-    <Compile Include="FilterUnknownPackages.cs" />
-    <Compile Include="GetPackageDestination.cs" />
-    <Compile Include="GetApplicableAssetsFromPackageReports.cs" />
-    <Compile Include="GetLastStablePackage.cs" />
-    <Compile Include="GetPackageFromModule.cs" />
-    <Compile Include="GeneratePackageReport.cs" />
-    <Compile Include="UpdatePackageIndex.cs" />
-    <Compile Include="HarvestPackage.cs" />
-    <Compile Include="GetApplicableAssetsFromPackages.cs" />
     <Compile Include="GetMinimumNETStandard.cs" />
-    <Compile Include="NugetPropertyStringProvider.cs" />
-    <Compile Include="GetRuntimeJsonValues.cs" />
-    <Compile Include="GetRuntimeTargets.cs" />
-    <Compile Include="PackageIndex.cs" />
     <Compile Include="SplitDependenciesBySupport.cs" />
     <Compile Include="GenerateNetStandardSupportTable.cs" />
-    <Compile Include="PromoteDependencies.cs" />
+    <Compile Include="PromoteReferenceDependencies.cs" />
     <Compile Include="CreateTrimDependencyGroups.cs" />
     <Compile Include="ApplyBaseLine.cs" />
+    <Compile Include="EnsureOOBFramework.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Framework.cs" />
     <Compile Include="FrameworkUtilities.cs" />
     <Compile Include="GenerateNuSpec.cs" />
     <Compile Include="GenerateRuntimeDependencies.cs" />
@@ -61,21 +46,26 @@
     <Compile Include="PackagingTask.cs" />
     <Compile Include="SplitReferences.cs" />
     <Compile Include="ValidatePackage.cs" />
-    <Compile Include="PackageReport.cs" />
-    <Compile Include="VerifyClosure.cs" />
+    <Compile Include="ValidatePackageTargetFramework.cs" />
     <Compile Include="VersionUtility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)PackageFiles\Packaging.targets">
+    <None Include="PackageFiles\native.library.packages.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)PackageFiles\Packaging.common.targets">
+    <None Include="PackageFiles\Generations.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)PackageFiles\PackageLibs.targets">
+    <None Include="PackageFiles\Packaging.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)PackageFiles\_._">
+    <None Include="PackageFiles\PackageLibs.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="PackageFiles\baseline.packages.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="PackageFiles\_._">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="project.json" />
@@ -83,8 +73,10 @@
       <Link>FrameworkLists\%(RecursiveDir)%(FileName)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="$(PackagesDir)Microsoft.NETCore.Platforms\$(MicrosoftNETCorePlatformsVersion)\runtime.json">
-      <Link>PackageFiles\runtime.json</Link>
+    <None Include="PackageFiles\stable.packages.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="$(PackagesDir)Microsoft.NETCore.Platforms\1.0.1-rc2-23923\runtime.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -95,19 +87,7 @@
     <Folder Include="FrameworkLists\.NETFramework,Version=v4.5\" />
     <Folder Include="FrameworkLists\.NETFramework,Version=v4.6.1\" />
     <Folder Include="FrameworkLists\.NETFramework,Version=v4.6.2\" />
-    <Folder Include="FrameworkLists\.NETFramework,Version=v4.6.3\" />
     <Folder Include="FrameworkLists\.NETFramework,Version=v4.6\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.5,Profile=Profile111\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.5,Profile=Profile259\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.5,Profile=Profile49\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.5,Profile=Profile78\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.5,Profile=Profile7\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.6,Profile=Profile151\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.6,Profile=Profile157\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.6,Profile=Profile31\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.6,Profile=Profile32\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.6,Profile=Profile44\" />
-    <Folder Include="FrameworkLists\.NETPortable,Version=v4.6,Profile=Profile84\" />
     <Folder Include="FrameworkLists\MonoAndroid,Version=v1.0\" />
     <Folder Include="FrameworkLists\MonoTouch,Version=v1.0\" />
     <Folder Include="FrameworkLists\WindowsPhone,Version=v8.0\" />

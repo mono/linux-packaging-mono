@@ -114,7 +114,7 @@ namespace System.Net.Sockets.Tests
 
         [OuterLoop] // TODO: Issue #11345
         [Theory]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Unix platforms do not support TcpListener.AllowNatTraversal
+        [PlatformSpecific(TestPlatforms.Windows)]
         [InlineData(true, IPProtectionLevel.Unrestricted)]
         [InlineData(false, IPProtectionLevel.EdgeRestricted)]
         public void AllowNatTraversal_Windows(bool allow, IPProtectionLevel resultLevel)
@@ -126,7 +126,7 @@ namespace System.Net.Sockets.Tests
 
         [OuterLoop] // TODO: Issue #11345
         [Theory]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Unix platforms do not support TcpListener.AllowNatTraversal
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [InlineData(true)]
         [InlineData(false)]
         public void AllowNatTraversal_AnyUnix(bool allow)
@@ -134,5 +134,22 @@ namespace System.Net.Sockets.Tests
             var l = new TcpListener(IPAddress.Any, 0);
             Assert.Throws<PlatformNotSupportedException>(() => l.AllowNatTraversal(allow));
         }
+
+
+        #region GC Finalizer test
+        // This test assumes sequential execution of tests and that it is going to be executed after other tests
+        // that used Sockets.
+        [OuterLoop] // TODO: Issue #11345
+        [Fact]
+        public void TestFinalizers()
+        {
+            // Making several passes through the FReachable list.
+            for (int i = 0; i < 3; i++)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+        }
+        #endregion 
     }
 }

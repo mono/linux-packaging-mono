@@ -101,12 +101,6 @@ namespace System.Collections.Tests
             Assert.False(collection.IsSynchronized);
         }
 
-        [Fact]
-        public static void Ctor_NullBoolArray_ThrowsArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>("values", () => new BitArray((bool[])null));
-        }
-
         public static IEnumerable<object[]> Ctor_BitArray_TestData()
         {
             yield return new object[] { "bool[](empty)", new BitArray(new bool[0]) };
@@ -152,12 +146,6 @@ namespace System.Collections.Tests
             Assert.False(collection.IsSynchronized);
         }
 
-        [Fact]
-        public static void Ctor_NullBitArray_ThrowsArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>("bits", () => new BitArray((BitArray)null));
-        }
-
         public static IEnumerable<object[]> Ctor_IntArray_TestData()
         {
             yield return new object[] { new int[0], new bool[0] };
@@ -186,21 +174,27 @@ namespace System.Collections.Tests
         }
 
         [Fact]
-        public static void Ctor_NullIntArray_ThrowsArgumentNullException()
+        public static void Ctor_BitArray_Null_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>("values", () => new BitArray((int[])null));
+            Assert.Throws<ArgumentNullException>("bits", () => new BitArray((BitArray)null));
         }
 
         [Fact]
-        public static void Ctor_LargeIntArrayOverflowingBitArray_ThrowsArgumentException()
+        public static void Ctor_BoolArray_Null_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentException>("values", () => new BitArray(new int[int.MaxValue / BitsPerInt32 + 1 ]));
+            Assert.Throws<ArgumentNullException>("values", () => new BitArray((bool[])null));
+        }
+
+        [Fact]
+        public static void Ctor_IntArray_Null_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>("values", () => new BitArray((int[])null));
         }
 
         public static IEnumerable<object[]> Ctor_ByteArray_TestData()
         {
             yield return new object[] { new byte[0], new bool[0] };
-            foreach (int size in new[] { 1, 2, 3, BitsPerInt32 / BitsPerByte, 2 * BitsPerInt32 / BitsPerByte })
+            foreach (int size in new[] { 1, 2, BitsPerInt32 / BitsPerByte, 2 * BitsPerInt32 / BitsPerByte })
             {
                 yield return new object[] { Enumerable.Repeat((byte)0xff, size).ToArray(), Enumerable.Repeat(true, size * BitsPerByte).ToArray() };
                 yield return new object[] { Enumerable.Repeat((byte)0x00, size).ToArray(), Enumerable.Repeat(false, size * BitsPerByte).ToArray() };
@@ -225,17 +219,12 @@ namespace System.Collections.Tests
         }
 
         [Fact]
-        public static void Ctor_NullByteArray_ThrowsArgumentNullException()
+        public static void Ctor_ByteArray_Null_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>("bytes", () => new BitArray((byte[])null));
         }
 
-        [Fact]
-        public static void Ctor_LargeByteArrayOverflowingBitArray_ThrowsArgumentException()
-        {
-            Assert.Throws<ArgumentException>("bytes", () => new BitArray(new byte[int.MaxValue / BitsPerByte + 1 ]));
-        }
-
+#if netstandard17
         [Fact]
         public static void Ctor_Simple_Method_Tests()
         {
@@ -255,7 +244,8 @@ namespace System.Collections.Tests
             BitArray bitArray = new BitArray(int.MaxValue - 30);
             BitArray clone = (BitArray)bitArray.Clone();
 
-            Assert.Equal(bitArray.Length, clone.Length);  
+            Assert.Equal(bitArray.Length, clone.Length);            
         }
+#endif //netstandard17
     }
 }

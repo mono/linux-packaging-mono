@@ -139,10 +139,12 @@ namespace System.Linq.Expressions {
             return LambdaCompiler.Compile(this, debugInfoGenerator);
         }
 
+#if NETSTANDARD
         public Delegate Compile(bool preferInterpretation) {
             // TODO: add logic for preferInterpretation
             return Compile();
         }
+#endif
 
         /// <summary>
         /// Compiles the lambda into a method definition.
@@ -205,10 +207,12 @@ namespace System.Linq.Expressions {
             return (TDelegate)(object)LambdaCompiler.Compile(this, debugInfoGenerator);
         }
 
+#if NETSTANDARD
         public new TDelegate Compile(bool preferInterpretation) {
             // TODO: add logic for preferInterpretation
             return Compile();
         }
+#endif
 
         /// <summary>
         /// Creates a new expression that is like this one, but using the

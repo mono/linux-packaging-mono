@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Project Include="$(MSBuildThisFileDirectory)*\ref\*.*proj" />
+    <Project Include="$(MSBuildThisFileDirectory)*\ref\*.*proj">
+      <AdditionalMetadata>ConfigurationGroup=$(ConfigurationGroup)</AdditionalMetadata>
+    </Project>
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.traversal.targets))\dir.traversal.targets" />
 </Project>

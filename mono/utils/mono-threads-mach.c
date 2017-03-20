@@ -54,6 +54,13 @@ mono_threads_suspend_begin_async_resume (MonoThreadInfo *info)
 void
 mono_threads_suspend_abort_syscall (MonoThreadInfo *info)
 {
+	g_assert_not_reached ();
+}
+
+gboolean
+mono_threads_suspend_needs_abort_syscall (void)
+{
+	return FALSE;
 }
 
 #else /* defined(HOST_WATCHOS) || defined(HOST_TVOS) */
@@ -184,6 +191,12 @@ mono_threads_suspend_abort_syscall (MonoThreadInfo *info)
 	} while (ret == KERN_ABORTED);
 
 	g_assert (ret == KERN_SUCCESS);
+}
+
+gboolean
+mono_threads_suspend_needs_abort_syscall (void)
+{
+	return TRUE;
 }
 
 #endif /* defined(HOST_WATCHOS) || defined(HOST_TVOS) */

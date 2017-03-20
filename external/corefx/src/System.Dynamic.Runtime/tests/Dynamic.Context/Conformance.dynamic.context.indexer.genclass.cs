@@ -2,12 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
 using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass001.genclass001;
     using System;
+    using System.Reflection;
 
     public class MyClass
     {
@@ -394,23 +396,33 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass001.genclass001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass001.genclass001;
     // <Title> Tests generic class indexer used in + operator.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
         [Fact]
-        public static void PlusOperator()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass001.genclass001
-            dynamic dy = new MemberClass<int>();
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
+            MemberClass<int> mc = new MemberClass<int>();
+            dynamic dy = mc;
             string p1 = null;
             int result = dy[string.Empty] + dy[p1] + 1;
-            Assert.Equal(1, result);
+            if (result == 1)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -420,6 +432,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass002.genclass002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass002.genclass002;
     // <Title> Tests generic class indexer used in implicit operator.</Title>
     // <Description>
     // </Description>
@@ -428,29 +442,38 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
     // <Code>
     //<Expects Status=warning>\(15,20\).*CS0649</Expects>
     //<Expects Status=warning>\(29,20\).*CS0649</Expects>
+    using System;
 
     public class Test
     {
-        public class ClassWithImplicitOperator
+        public class InnerTest1
         {
-            public static implicit operator EmptyClass(ClassWithImplicitOperator t1)
+            public int field;
+            public static implicit operator InnerTest2(InnerTest1 t1)
             {
-                dynamic dy = new MemberClass<ClassWithImplicitOperator>();
-                ClassWithImplicitOperator p2 = t1;
+                MemberClass<InnerTest1> mc = new MemberClass<InnerTest1>();
+                dynamic dy = mc;
+                InnerTest1 p2 = t1;
                 return dy[dy, p2];
             }
         }
 
-        public class EmptyClass { }
+        public class InnerTest2
+        {
+            public int field;
+        }
 
         [Fact]
-        public static void ImplicitOperator()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass002.genclass002
-            ClassWithImplicitOperator target = new ClassWithImplicitOperator();
-            EmptyClass result = target; //implicit
-            Assert.Null(result);
-            Assert.Equal(1, MemberClass<ClassWithImplicitOperator>.Status);
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
+            InnerTest1 t1 = new InnerTest1();
+            InnerTest2 result1 = t1; //implicit
+            return (result1 == null && MemberClass<InnerTest1>.Status == 1) ? 0 : 1;
         }
     }
     //</Code>
@@ -460,40 +483,51 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass003.genclass003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass003.genclass003;
     // <Title> Tests generic class indexer used in implicit operator.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
-        public class ClassWithExplicitOperator
+        public class InnerTest1
         {
             public byte field;
-            public static explicit operator ClassWithExplicitOperator(byte t1)
+            public static explicit operator InnerTest1(byte t1)
             {
-                dynamic dy = new MemberClass<int>();
+                MemberClass<int> mc = new MemberClass<int>();
+                dynamic dy = mc;
                 dynamic[] p1 = null;
                 ulong[] p2 = null;
                 dynamic p3 = null;
                 dy[p1, p2, p3] = (byte)10;
-                return new ClassWithExplicitOperator
+                return new InnerTest1()
                 {
                     field = dy[p1, p2, p3]
-                };
+                }
+
+                ;
             }
         }
 
         [Fact]
-        public static void ExplicitOperator()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass003.genclass003
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
             byte b = 1;
-            ClassWithExplicitOperator result = (ClassWithExplicitOperator)b;
-            Assert.Equal(3, result.field);
-            Assert.Equal(1, MemberClass<int>.Status);
+            InnerTest1 result = (InnerTest1)b;
+            if (result.field == 3 && MemberClass<int>.Status == 1)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -503,12 +537,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass005.genclass005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass005.genclass005;
     // <Title> Tests generic class indexer used in using block and using expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.IO;
 
     public class Test
@@ -516,9 +553,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
         [Fact]
         public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass005.genclass005
-            dynamic dy = new MemberClass<string>();
-            dynamic dy2 = new MemberClass<bool>();
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
+            var mc = new MemberClass<string>();
+            dynamic dy = mc;
+            var mc2 = new MemberClass<bool>();
+            dynamic dy2 = mc2;
             string result = null;
             using (MemoryStream sm = new MemoryStream())
             {
@@ -534,9 +577,9 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
                 }
             }
 
-            Assert.Equal("Test", result);
-            Assert.Equal(1, MemberClass<string>.Status);
-            Assert.Equal(1, MemberClass<bool>.Status);
+            if (result == "Test" && MemberClass<string>.Status == 1 && MemberClass<bool>.Status == 1)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -546,38 +589,47 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass006.genclass006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass006.genclass006;
     // <Title> Tests generic class indexer used in the for-condition.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
         [Fact]
-        public static void ForStatement_MultipleParameters()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass006.genclass006
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
             MemberClassMultipleParams<int, string, Test> mc = new MemberClassMultipleParams<int, string, Test>();
             dynamic dy = mc;
             string u = null;
             Test v = null;
-            int index1 = 10;
+            int index = 10;
             for (int i = 10; i > dy[v, u]; i--)
             {
-                index1--;
+                index--;
             }
 
-            Assert.Equal(0, index1);
-            Assert.Equal(1, MemberClassMultipleParams<int, string, Test>.Status);
+            //
+            int ret = M();
+            if (index == 0 && MemberClassMultipleParams<int, string, Test>.Status == 1)
+                return ret;
+            return 1;
         }
 
-        [Fact]
-        public void ForStatement_ClassConstraints()
+        private static int M()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass006.genclass006
-            dynamic dy = new MemberClassWithClassConstraint<Test>();
+            MemberClassWithClassConstraint<Test> mc = new MemberClassWithClassConstraint<Test>();
+            dynamic dy = mc;
             int index = 0;
             for (int i = 0; i < 10; i = i + dy[i])
             {
@@ -585,8 +637,9 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
                 index++;
             }
 
-            Assert.Equal(10, index);
-            Assert.Equal(3, MemberClassWithClassConstraint<Test>.Status);
+            if (index == 10 && MemberClassWithClassConstraint<Test>.Status == 3)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -596,20 +649,28 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass008.genclass008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass008.genclass008;
     // <Title> Tests generic class indexer used in the while/do expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
         [Fact]
-        public static void DoWhileExpression()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass008.genclass008
-            dynamic dy = new MemberClass<int>();
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
+            MemberClass<int> mc = new MemberClass<int>();
+            dynamic dy = mc;
             string p1 = null;
             float p2 = 1.23f;
             short[] p3 = null;
@@ -621,9 +682,9 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
                     break;
             }
             while (dy[p1, p2, p3] ?? true);
-
-            Assert.Equal(10, index);
-            Assert.Equal(1, MemberClass<int>.Status);
+            if (index == 10 && MemberClass<int>.Status == 1)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -633,19 +694,27 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass009.genclass009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass009.genclass009;
     // <Title> Tests generic class indexer used in switch expression.</Title>
     // <Description> Won't fix: no dynamic in switch expression </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
         [Fact]
-        public static void SwitchExpression()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass009.genclass009
-            dynamic dy = new MemberClass<int>();
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
+            MemberClass<int> mc = new MemberClass<int>();
+            dynamic dy = mc;
             bool isChecked = false;
             switch ((int)dy["Test"])
             {
@@ -656,8 +725,9 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
                     break;
             }
 
-            Assert.True(isChecked);
-            Assert.Equal(1, MemberClass<int>.Status);
+            if (isChecked && MemberClass<int>.Status == 1)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -667,29 +737,42 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass010.genclass010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass010.genclass010;
     // <Title> Tests generic class indexer used in switch section statement list.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
         [Fact]
-        public static void SwitchSectionStatementList()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass010.genclass010
-            dynamic dy = new MemberClass<int>();
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
+            MemberClass<int> mc = new MemberClass<int>();
+            dynamic dy = mc;
             string a = "Test";
             MyClass p1 = new MyClass()
             {
                 Field = 10
-            };
+            }
 
+            ;
             char? p2 = null;
-            MyEnum[] p3 = new MyEnum[] { MyEnum.Second };
+            MyEnum[] p3 = new MyEnum[]
+            {
+            MyEnum.Second
+            }
 
+            ;
             dynamic result = null;
             switch (a)
             {
@@ -701,7 +784,9 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
                     break;
             }
 
-            Assert.Equal(10, ((MyClass)result).Field);
+            if (((MyClass)result).Field == 10)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -711,32 +796,41 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass011.genclass011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass011.genclass011;
     // <Title> Tests generic class indexer used in switch default section statement list.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
         [Fact]
-        public static void SwitchDefaultSectionStatementList()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass011.genclass011
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
             MemberClass<int> mc = new MemberClass<int>();
             dynamic dy = mc;
             string a = "Test1";
             MyClass p1 = new MyClass()
             {
                 Field = 10
-            };
+            }
 
+            ;
             MyStruct? p2 = new MyStruct()
             {
                 Number = 11
-            };
+            }
 
+            ;
             MyEnum[] p3 = new MyEnum[10];
             dynamic[] result = null;
             switch (a)
@@ -749,11 +843,11 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
                     break;
             }
 
-            Assert.Equal(2, result.Length);
-            Assert.Equal(10, ((MyClass)result[0]).Field);
-            Assert.Equal(11, ((MyStruct)result[1]).Number);
-
-            Assert.Equal(2, MemberClass<int>.Status);
+            if (result.Length != 2 && MemberClass<int>.Status != 2)
+                return 1;
+            if (((MyClass)result[0]).Field == 10 && ((MyStruct)result[1]).Number == 11)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -763,6 +857,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass014.genclass014
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass014.genclass014;
     // <Title> Tests generic class indexer used in try/catch/finally.</Title>
     // <Description>
     // try/catch/finally that uses an anonymous method and refer two dynamic parameters.
@@ -775,34 +871,39 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
     public class Test
     {
         [Fact]
-        public static void TryCatchFinally()
+        public static void DynamicCSharpRunTest()
+        {
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
         {
             dynamic dy = new MemberClass<int>();
             dynamic result = -1;
-            bool threwException = true;
             try
             {
                 Func<string, dynamic> func = delegate (string x)
                 {
                     throw new TimeoutException(dy[x].ToString());
-                };
+                }
 
-            
+                ;
                 result = func("Test");
-                threwException = false;
+                return 1;
             }
             catch (TimeoutException e)
             {
-                Assert.Equal("0", e.Message);
+                if (e.Message != "0")
+                    return 1;
             }
             finally
             {
                 result = dy[new int?[3]];
             }
 
-            Assert.True(threwException);
-            Assert.Equal(new int?[] { null, null, null }, result);
-            Assert.Equal(1, MemberClass<int>.Status);
+            if (result.Length == 3 && result[0] == null && result[1] == null && result[2] == null && MemberClass<int>.Status == 1)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -812,6 +913,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass015.genclass015
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass015.genclass015;
     // <Title> Tests generic class indexer used in iterator that calls to a lambda expression.</Title>
     // <Description>
     // </Description>
@@ -826,8 +929,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
         private static dynamic s_dy = new MemberClass<string>();
         private static int s_num = 0;
 
-        [Fact]
-        [ActiveIssue(16747)]
+        [Fact(Skip = "870811")]
         public static void DynamicCSharpRunTest()
         {
             Assert.Equal(0, MainMethod());
@@ -861,12 +963,16 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass016.genclass016
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass016.genclass016;
     // <Title> Tests generic class indexer used in object initializer inside a collection initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
 
     public class Test
@@ -874,9 +980,13 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
         private string _field = string.Empty;
 
         [Fact]
-        public static void ObjectInitializerInsideCollectionInitializer()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass016.genclass016
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
             dynamic dy = new MemberClassWithClassConstraint<string>();
             decimal dec = 123M;
             List<Test> list = new List<Test>()
@@ -887,9 +997,10 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
                 }
             };
 
-            Assert.Equal(1, list.Count);
-            Assert.Null(list[0]._field);
-            Assert.Equal(1, MemberClassWithClassConstraint<string>.Status);
+            if (list.Count == 1 && list[0]._field == null && MemberClassWithClassConstraint<string>.Status == 1)
+                return 0;
+            else
+                return 1;
         }
     }
     //</Code>
@@ -899,6 +1010,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass017.genclass017
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass017.genclass017;
     // <Title> Tests generic class indexer used in anonymous type.</Title>
     // <Description>
     // anonymous type inside a query expression that introduces dynamic variables.
@@ -906,7 +1019,9 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Linq;
+    using System.Collections;
     using System.Collections.Generic;
 
     public class Test
@@ -918,34 +1033,49 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
         }
 
         [Fact]
-        public static void AnonymousTypeInsideQueryExpression()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass017.genclass017
+            Assert.Equal(0, MainMethod());
+        }
 
-            List<string> list = new List<string>() { "0", "4", null, "6", "4", "4", null };
+        public static int MainMethod()
+        {
+            List<string> list = new List<string>()
+            {
+            "0", "4", null, "6", "4", "4", null
+            }
 
+            ;
+            // string s = "test";
             dynamic dy = new MemberClassWithAnotherTypeConstraint<string, string>();
             dynamic dy2 = new MemberClassWithNewConstraint<Test>();
             Test t = new Test()
             {
                 _field = 1
-            };
+            }
 
+            ;
             var result = list.Where(p => p == dy[dy2]).Select(p => new
             {
                 A = dy2[t],
                 B = dy[dy2]
-            }).ToList();
-
-            Assert.Equal(2, result.Count);
-            Assert.Equal(3, MemberClassWithAnotherTypeConstraint<string, string>.Status);
-            Assert.Equal(1, MemberClassWithNewConstraint<Test>.Status);
-
-            foreach (var m in result)
-            {
-                Assert.Equal(10, ((Test)m.A)._field);
-                Assert.Null(m.B);
             }
+
+            ).ToList();
+            if (result.Count == 2 && MemberClassWithAnotherTypeConstraint<string, string>.Status == 3 && MemberClassWithNewConstraint<Test>.Status == 1)
+            {
+                foreach (var m in result)
+                {
+                    if (((Test)m.A)._field != 10 || m.B != null)
+                    {
+                        return 1;
+                    }
+                }
+
+                return 0;
+            }
+
+            return 1;
         }
     }
     //</Code>
@@ -955,32 +1085,41 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass018.genclass018
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass018.genclass018;
     // <Title> Tests generic class indexer used in static generic method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
         [Fact]
-        public static void StaticGenericMethodBody()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass018.genclass018
-            StaticGenericMethod<Test>();
+            Assert.Equal(0, MainMethod());
         }
 
-        private static void StaticGenericMethod<T>()
+        public static int MainMethod()
         {
-            dynamic dy = new MemberClassWithNewConstraint<MyClass>();
+            return TestMethod<Test>();
+        }
+
+        private static int TestMethod<T>()
+        {
+            MemberClassWithNewConstraint<MyClass> mc = new MemberClassWithNewConstraint<MyClass>();
+            dynamic dy = mc;
             MyClass p1 = null;
             dy[p1] = dy;
-            Assert.Equal(2, MemberClassWithNewConstraint<MyClass>.Status);
-
+            if (MemberClassWithNewConstraint<MyClass>.Status != 2)
+                return 1;
             dynamic p2 = dy[p1];
-            Assert.IsType<MyClass>(p2);
-            Assert.Equal(1, MemberClassWithNewConstraint<MyClass>.Status);
+            if (p2.GetType() == typeof(MyClass) && MemberClassWithNewConstraint<MyClass>.Status == 1)
+                return 0;
+            return 1;
         }
     }
     //</Code>
@@ -990,6 +1129,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass020.genclass020
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass020.genclass020;
     // <Title> Tests generic class indexer used in static method body.</Title>
     // <Description>
     // Negative
@@ -997,6 +1138,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : C
     {
@@ -1007,21 +1149,29 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
         }
 
         [Fact]
-        public static void StaticMethodBody()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass020.genclass020
-            dynamic dy = new MemberClassWithUDClassConstraint<Test>();
+            Assert.Equal(0, MainMethod());
+        }
+
+        public static int MainMethod()
+        {
+            MemberClassWithUDClassConstraint<Test> mc = new MemberClassWithUDClassConstraint<Test>();
+            dynamic dy = mc;
             Test t = null;
             dy[t] = new C();
-            Assert.Equal(2, MemberClassWithUDClassConstraint<Test>.Status);
-
+            if (MemberClassWithUDClassConstraint<Test>.Status != 2)
+                return 1;
             t = new Test()
             {
                 _field = 10
-            };
+            }
+
+            ;
             Test result = (Test)dy[t];
-            Assert.Equal(11, result._field);
-            Assert.Equal(1, MemberClassWithUDClassConstraint<Test>.Status);
+            if (result._field != 11 || MemberClassWithUDClassConstraint<Test>.Status != 1)
+                return 1;
+            return 0;
         }
     }
     //</Code>
@@ -1031,6 +1181,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass021.genclass021
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass021.genclass021;
     // <Title> Tests generic class indexer used in static method body.</Title>
     // <Description>
     // Negative
@@ -1038,20 +1190,27 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
         [Fact]
-        public static void StaticMethodBody()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass021.genclass021
-            dynamic dy = new MemberClassWithStructConstraint<char>();
-            dy[int.MinValue] = new Test();
-            Assert.Equal(2, MemberClassWithStructConstraint<char>.Status);
+            Assert.Equal(0, MainMethod());
+        }
 
+        public static int MainMethod()
+        {
+            MemberClassWithStructConstraint<char> mc = new MemberClassWithStructConstraint<char>();
+            dynamic dy = mc;
+            dy[int.MinValue] = new Test();
+            if (MemberClassWithStructConstraint<char>.Status != 2)
+                return 1;
             dynamic result = dy[int.MaxValue];
-            Assert.Equal(int.MaxValue, result);
-            Assert.Equal(1, MemberClassWithStructConstraint<char>.Status);
+            if (result != int.MaxValue || MemberClassWithStructConstraint<char>.Status != 1)
+                return 1;
+            return 0;
         }
     }
     //</Code>
@@ -1061,6 +1220,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass022.genclass022
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclassregindexer.genclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass022.genclass022;
     // <Title> Tests generic class indexer used in static method body.</Title>
     // <Description>
     // Negative
@@ -1068,6 +1229,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : I
     {
@@ -1076,16 +1238,22 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclas
         }
 
         [Fact]
-        public static void StaticMethodBody()
+        public static void DynamicCSharpRunTest()
         {
-            // ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.genclass.genclass022.genclass022
-            dynamic dy = new MemberClassWithInterfaceConstraint<InnerTest>();
-            dy[int.MinValue, new InnerTest()] = new Test();
-            Assert.Equal(2, MemberClassWithInterfaceConstraint<InnerTest>.Status);
+            Assert.Equal(0, MainMethod());
+        }
 
+        public static int MainMethod()
+        {
+            MemberClassWithInterfaceConstraint<InnerTest> mc = new MemberClassWithInterfaceConstraint<InnerTest>();
+            dynamic dy = mc;
+            dy[int.MinValue, new InnerTest()] = new Test();
+            if (MemberClassWithInterfaceConstraint<InnerTest>.Status != 2)
+                return 1;
             dynamic result = dy[int.MaxValue, null];
-            Assert.Null(result);
-            Assert.Equal(1, MemberClassWithInterfaceConstraint<InnerTest>.Status);
+            if (result != null || MemberClassWithInterfaceConstraint<InnerTest>.Status != 1)
+                return 1;
+            return 0;
         }
     }
     //</Code>

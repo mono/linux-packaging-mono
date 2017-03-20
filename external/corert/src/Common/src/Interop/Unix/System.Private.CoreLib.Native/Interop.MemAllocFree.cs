@@ -17,11 +17,7 @@ internal static partial class Interop
         internal static extern void MemFree(IntPtr ptr);
     }
 
-#if MONO
-    private static IntPtr Unix_MemAlloc(UIntPtr sizeInBytes)
-#else
     internal static IntPtr MemAlloc(UIntPtr sizeInBytes)
-#endif
     {
         IntPtr allocatedMemory = Interop.Sys.MemAlloc(sizeInBytes);
         if (allocatedMemory == IntPtr.Zero)
@@ -31,11 +27,7 @@ internal static partial class Interop
         return allocatedMemory;
     }
 
-#if MONO
-    private static void Unix_MemFree(IntPtr allocatedMemory)
-#else
     internal static void MemFree(IntPtr allocatedMemory)
-#endif
     {
         Interop.Sys.MemFree(allocatedMemory);
     }

@@ -46,7 +46,7 @@ namespace System.IO.Tests
         [Theory]
         [InlineData(FileAttributes.ReadOnly)]
         [InlineData(FileAttributes.Normal)]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Valid Unix file attribute
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixAttributeSetting(FileAttributes attr)
         {
             var path = GetTestFilePath();
@@ -64,7 +64,7 @@ namespace System.IO.Tests
         [InlineData(FileAttributes.Normal)]
         [InlineData(FileAttributes.Temporary)]
         [InlineData(FileAttributes.ReadOnly | FileAttributes.Hidden)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Valid Windows file attribute
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsAttributeSetting(FileAttributes attr)
         {
             var path = GetTestFilePath();
@@ -80,7 +80,7 @@ namespace System.IO.Tests
         [InlineData(FileAttributes.ReparsePoint)]
         [InlineData(FileAttributes.Compressed)]
         [InlineData(FileAttributes.Encrypted)]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Invalid Unix file attributes
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixInvalidAttributes(FileAttributes attr)
         {
             var path = GetTestFilePath();
@@ -95,7 +95,7 @@ namespace System.IO.Tests
         [InlineData(FileAttributes.SparseFile)]
         [InlineData(FileAttributes.ReparsePoint)]
         [InlineData(FileAttributes.Compressed)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Invalid Windows file attributes 
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsInvalidAttributes(FileAttributes attr)
         {
             var path = GetTestFilePath();

@@ -77,7 +77,7 @@ namespace System.ComponentModel.Tests
         private const int E_FAIL = unchecked((int)0x80004005);
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Uses P/Invokes to check whether the exception resource length >256 chars
+        [PlatformSpecific(TestPlatforms.Windows)]
         public static void InstantiateExceptionWithLongErrorString()
         {
             // This test checks that Win32Exception supports error strings greater than 256 characters.

@@ -50,7 +50,7 @@ namespace System.Linq.Parallel
             {
                 int partitionSize = (i < biggerPartitionCount) ? stride + 1 : stride;
                 partitions[i] = new RangeEnumerator(
-                    unchecked(_from + doneCount),
+                    _from + doneCount,
                     partitionSize,
                     doneCount);
                 doneCount += partitionSize;

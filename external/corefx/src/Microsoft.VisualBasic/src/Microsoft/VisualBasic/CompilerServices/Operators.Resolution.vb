@@ -65,7 +65,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
                     If IsOrInheritsFrom(type2, commonAncestor) Then
                         Exit While
                     End If
-                    commonAncestor = commonAncestor.BaseType
+                    commonAncestor = commonAncestor.GetTypeInfo().BaseType
                 End While
 
                 Dim container As Container = New Container(type2)

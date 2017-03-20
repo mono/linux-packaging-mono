@@ -41,6 +41,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             Assert.ThrowsAny<CryptographicException>(() => c.FriendlyName = "Hi");
             Assert.ThrowsAny<CryptographicException>(() => ignored = c.SubjectName);
             Assert.ThrowsAny<CryptographicException>(() => ignored = c.IssuerName);
+#if netstandard17
             Assert.ThrowsAny<CryptographicException>(() => c.GetCertHashString());
             Assert.ThrowsAny<CryptographicException>(() => c.GetEffectiveDateString());
             Assert.ThrowsAny<CryptographicException>(() => c.GetExpirationDateString());
@@ -52,6 +53,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             Assert.ThrowsAny<CryptographicException>(() => c.GetIssuerName());
             Assert.ThrowsAny<CryptographicException>(() => c.GetName());
 #pragma warning restore 0618
+#endif
         }
 
         [Fact]
@@ -75,10 +77,12 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             using (X509Certificate2 c = new X509Certificate2(TestData.MsCertificate))
             {
                 assert(c);
+#if netstandard17
                 using (X509Certificate2 c2 = new X509Certificate2(c))
                 {
                     assert(c2);
                 }
+#endif
             }
         }
 
@@ -103,13 +107,16 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             using (X509Certificate2 c = new X509Certificate2(TestData.MsCertificatePemBytes))
             {
                 assert(c);
+#if netstandard17
                 using (X509Certificate2 c2 = new X509Certificate2(c))
                 {
                     assert(c2);
                 }
+#endif
             }
         }
 
+#if netstandard17
         [Fact]
         public static void TestSerializeDeserialize_DER()
         {
@@ -283,9 +290,10 @@ namespace System.Security.Cryptography.X509Certificates.Tests
                 Assert.ThrowsAny<CryptographicException>(() => c.GetRSAPrivateKey());
             }
         }
+#endif
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // StoreSavedAsSerializedCerData not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public static void TestConstructor_SerializedCert_Windows()
         {
             const string ExpectedThumbPrint = "71CB4E2B02738AD44F8B382C93BD17BA665F9914";
@@ -300,15 +308,17 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             using (X509Certificate2 c = new X509Certificate2(TestData.StoreSavedAsSerializedCerData))
             {
                 assert(c);
+#if netstandard17
                 using (X509Certificate2 c2 = new X509Certificate2(c))
                 {
                     assert(c2);
                 }
+#endif
             }
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // StoreSavedAsSerializedCerData not supported on Unix
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public static void TestByteArrayConstructor_SerializedCert_Unix()
         {
             Assert.ThrowsAny<CryptographicException>(() => new X509Certificate2(TestData.StoreSavedAsSerializedCerData));
@@ -328,6 +338,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             using (new X509Certificate2(TestData.MsCertificate, (string)null)) { }
             using (new X509Certificate2(TestData.MsCertificate, (string)null, X509KeyStorageFlags.DefaultKeySet)) { }
 
+#if netstandard17
             Assert.Throws<ArgumentNullException>(() => X509Certificate.CreateFromCertFile(null));
             Assert.Throws<ArgumentNullException>(() => X509Certificate.CreateFromSignedFile(null));
             Assert.Throws<ArgumentNullException>("cert", () => new X509Certificate2((X509Certificate2)null));
@@ -336,6 +347,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             // A null SecureString password does not throw
             using (new X509Certificate2(TestData.MsCertificate, (SecureString)null)) { }
             using (new X509Certificate2(TestData.MsCertificate, (SecureString)null, X509KeyStorageFlags.DefaultKeySet)) { }
+#endif
 
             // For compat reasons, the (byte[]) constructor (and only that constructor) treats a null or 0-length array as the same
             // as calling the default constructor.
@@ -402,7 +414,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             // binary is always used by default, meaning it doesn't know EphemeralKeySet doesn't exist.
         }
 
-#if netcoreapp
+#if netcoreapp11
         [Fact]
         public static void InvalidStorageFlags_PersistedEphemeral()
         {

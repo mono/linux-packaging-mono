@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Xunit;
 
 namespace System.Threading.Tasks.Dataflow.Tests
@@ -122,23 +121,17 @@ namespace System.Threading.Tasks.Dataflow.Tests
             // Make sure that the Completion task returned by a NullTarget
             // is not cached across all NullTargets.  Since it'll never complete,
             // that would be a potentially huge memory leak.
-            var wro = CreateWeakReferenceToObjectReferencedByNullTargetContinuation();
+
+            var state = new object();
+            var wro = new WeakReference<object>(state);
+            DataflowBlock.NullTarget<int>().Completion.ContinueWith(delegate { }, state);
+            state = null;
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
 
-            object state;
             Assert.False(wro.TryGetTarget(out state));
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static WeakReference<object> CreateWeakReferenceToObjectReferencedByNullTargetContinuation()
-        {
-            var state = new object();
-            var wro = new WeakReference<object>(state);
-            DataflowBlock.NullTarget<int>().Completion.ContinueWith(delegate { }, state);
-            return wro;
         }
 
         [Fact]

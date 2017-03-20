@@ -153,9 +153,9 @@ namespace System.ServiceModel.Description
 			beforeImportCalled = true;
 		}
 
-		public SMBinding ImportBinding (WSBinding wsdlBinding)
+		public SMBinding ImportBinding (WSBinding binding)
 		{
-			return ImportBinding (wsdlBinding, true).Binding;
+			return ImportBinding (binding, true).Binding;
 		}
 
 		ServiceEndpoint ImportBinding (WSBinding binding, bool throwOnError)
@@ -546,20 +546,20 @@ namespace System.ServiceModel.Description
 			}
 		}
 
-		public ServiceEndpointCollection ImportEndpoints (WSBinding wsdlBinding)
+		public ServiceEndpointCollection ImportEndpoints (WSBinding binding)
 		{
 			var coll = new ServiceEndpointCollection ();
-			ImportEndpoints (coll, wsdlBinding);
+			ImportEndpoints (coll, binding);
 			return coll;
 		}
 
-		public ServiceEndpointCollection ImportEndpoints (PortType wsdlPortType)
+		public ServiceEndpointCollection ImportEndpoints (PortType portType)
 		{
 			var coll = new ServiceEndpointCollection ();
 
 			foreach (WSServiceDescription wsd in wsdl_documents) {
 				foreach (WS.Binding binding in wsd.Bindings) {
-					if (!binding.Type.Name.Equals (wsdlPortType.Name))
+					if (!binding.Type.Name.Equals (portType.Name))
 						continue;
 
 					ImportEndpoints (coll, binding);
@@ -569,11 +569,11 @@ namespace System.ServiceModel.Description
 			return coll;
 		}
 
-		public ServiceEndpointCollection ImportEndpoints (Service wsdlService)
+		public ServiceEndpointCollection ImportEndpoints (Service service)
 		{
 			var coll = new ServiceEndpointCollection ();
 			
-			foreach (Port port in wsdlService.Ports) {
+			foreach (Port port in service.Ports) {
 				var sep = ImportEndpoint (port, false);
 				if (sep != null)
 					coll.Add (sep);

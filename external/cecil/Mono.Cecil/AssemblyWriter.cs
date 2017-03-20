@@ -104,9 +104,7 @@ namespace Mono.Cecil {
 			}
 #endif
 
-			var timestamp = parameters.Timestamp ?? module.timestamp;
-
-			var metadata = new MetadataBuilder (module, fq_name, timestamp, symbol_writer_provider, symbol_writer);
+			var metadata = new MetadataBuilder (module, fq_name, symbol_writer_provider, symbol_writer);
 
 			BuildMetadata (module, metadata);
 
@@ -798,7 +796,7 @@ namespace Mono.Cecil {
 		readonly internal ISymbolWriter symbol_writer;
 		readonly internal TextMap text_map;
 		readonly internal string fq_name;
-		readonly internal uint timestamp;
+		readonly internal uint time_stamp;
 
 		readonly Dictionary<TypeRefRow, MetadataToken> type_ref_map;
 		readonly Dictionary<uint, MetadataToken> type_spec_map;
@@ -861,12 +859,14 @@ namespace Mono.Cecil {
 		readonly Dictionary<ImportScopeRow, MetadataToken> import_scope_map;
 		readonly Dictionary<string, MetadataToken> document_map;
 
-		public MetadataBuilder (ModuleDefinition module, string fq_name, uint timestamp, ISymbolWriterProvider symbol_writer_provider, ISymbolWriter symbol_writer)
+		readonly internal bool write_symbols;
+
+		public MetadataBuilder (ModuleDefinition module, string fq_name, ISymbolWriterProvider symbol_writer_provider, ISymbolWriter symbol_writer)
 		{
 			this.module = module;
 			this.text_map = CreateTextMap ();
 			this.fq_name = fq_name;
-			this.timestamp = timestamp;
+			this.time_stamp = module.timestamp;
 			this.symbol_writer_provider = symbol_writer_provider;
 
 			if (symbol_writer == null && module.HasImage && module.Image.HasDebugTables ()) {
@@ -874,6 +874,7 @@ namespace Mono.Cecil {
 			}
 
 			this.symbol_writer = symbol_writer;
+			this.write_symbols = symbol_writer != null;
 
 			var pdb_writer = symbol_writer as PortablePdbWriter;
 			if (pdb_writer != null) {

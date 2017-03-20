@@ -53,11 +53,11 @@ namespace System.Web.UI.WebControls.WebParts
 			get { return id;}
 		}
 
-		public WebPartVerb (string id, string clientClickHandler) {
+		public WebPartVerb (string id, string clientHandler) {
 			this.id = id;
-			this.clientClickHandler = clientClickHandler;
+			this.clientClickHandler = clientHandler;
 			stateBag = new StateBag ();
-			stateBag.Add ("clientClickHandler", clientClickHandler);
+			stateBag.Add ("clientClickHandler", clientHandler);
 		}
 
 

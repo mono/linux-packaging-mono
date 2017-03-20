@@ -223,7 +223,6 @@ Namespace Microsoft.VisualBasic.CompilerServices
                 Case TypeCode.Char : Return GetType(Char)
                 Case TypeCode.String : Return GetType(String)
                 Case TypeCode.Object : Return GetType(Object)
-                Case TypeCode.DBNull : Return GetType(DBNull)
 
                 Case TypeCode.Empty
                     'fall through
@@ -242,11 +241,11 @@ Namespace Microsoft.VisualBasic.CompilerServices
         End Function
 
         Friend Shared Function IsValueType(ByVal type As System.Type) As Boolean
-            Return type.IsValueType
+            Return type.GetTypeInfo.IsValueType
         End Function
 
         Friend Shared Function IsEnum(ByVal type As System.Type) As Boolean
-            Return type.IsEnum
+            Return type.GetTypeInfo.IsEnum
         End Function
 
         Friend Shared Function IsArrayType(ByVal type As System.Type) As Boolean
@@ -359,7 +358,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
 
 
         Friend Shared Function IsClass(ByVal type As System.Type) As Boolean
-            Return type.IsClass OrElse IsRootEnumType(type)
+            Return type.GetTypeInfo.IsClass OrElse IsRootEnumType(type)
         End Function
 
         Friend Shared Function IsClassOrValueType(ByVal type As System.Type) As Boolean
@@ -367,7 +366,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
         End Function
 
         Friend Shared Function IsInterface(ByVal type As System.Type) As Boolean
-            Return type.IsInterface
+            Return type.GetTypeInfo.IsInterface
         End Function
 
         Friend Shared Function IsClassOrInterface(ByVal type As System.Type) As Boolean
@@ -384,14 +383,14 @@ Namespace Microsoft.VisualBasic.CompilerServices
 
 #If LATEBINDING Then
         Friend Shared Function IsCollectionInterface(ByVal type As System.Type) As Boolean
-            If type.IsInterface AndAlso
-               ((type.IsGenericType AndAlso
-                   (type.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IList(Of )) OrElse
-                    type.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.ICollection(Of )) OrElse
-                    type.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IEnumerable(Of )) OrElse
-                    type.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IReadOnlyList(Of )) OrElse
-                    type.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IReadOnlyCollection(Of )) OrElse
-                    type.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IDictionary(Of ,)) OrElse
+            If type.GetTypeInfo.IsInterface AndAlso
+               ((type.GetTypeInfo.IsGenericType AndAlso
+                   (type.GetTypeInfo.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IList(Of )) OrElse
+                    type.GetTypeInfo.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.ICollection(Of )) OrElse
+                    type.GetTypeInfo.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IEnumerable(Of )) OrElse
+                    type.GetTypeInfo.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IReadOnlyList(Of )) OrElse
+                    type.GetTypeInfo.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IReadOnlyCollection(Of )) OrElse
+                    type.GetTypeInfo.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IDictionary(Of ,)) OrElse
                     type.GetGenericTypeDefinition() Is GetType(System.Collections.Generic.IReadOnlyDictionary(Of ,)))) OrElse
                 type Is GetType(System.Collections.IList) OrElse
                 type Is GetType(System.Collections.ICollection) OrElse
@@ -448,12 +447,12 @@ Namespace Microsoft.VisualBasic.CompilerServices
 
             If derived.IsGenericParameter() Then
                 If IsClass(base) AndAlso
-                   (CBool(derived.GenericParameterAttributes() And GenericParameterAttributes.NotNullableValueTypeConstraint)) AndAlso
+                   (CBool(derived.GetTypeInfo.GenericParameterAttributes() And GenericParameterAttributes.NotNullableValueTypeConstraint)) AndAlso
                    IsOrInheritsFrom(GetType(System.ValueType), base) Then
                     Return True
                 End If
 
-                For Each typeConstraint As Type In derived.GetGenericParameterConstraints
+                For Each typeConstraint As Type In derived.GetTypeInfo.GetGenericParameterConstraints
                     If IsOrInheritsFrom(typeConstraint, base) Then
                         Return True
                     End If
@@ -476,11 +475,11 @@ Namespace Microsoft.VisualBasic.CompilerServices
         End Function
 
         Friend Shared Function IsGeneric(ByVal type As Type) As Boolean
-            Return type.IsGenericType
+            Return type.GetTypeInfo.IsGenericType
         End Function
 
         Friend Shared Function IsInstantiatedGeneric(ByVal type As Type) As Boolean
-            Return type.IsGenericType AndAlso (Not type.IsGenericTypeDefinition)
+            Return type.GetTypeInfo.IsGenericType AndAlso (Not type.GetTypeInfo.IsGenericTypeDefinition)
         End Function
 
         Friend Shared Function IsGeneric(ByVal method As MethodBase) As Boolean
@@ -532,7 +531,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
             Debug.Assert(IsGenericParameter(genericParameter), "expected type parameter")
 
             'Type parameters with no class constraint have System.Object as their base type.
-            Dim classConstraint As Type = genericParameter.BaseType
+            Dim classConstraint As Type = genericParameter.GetTypeInfo.BaseType
             If IsRootObjectType(classConstraint) Then Return Nothing
             Return classConstraint
         End Function
@@ -544,8 +543,8 @@ Namespace Microsoft.VisualBasic.CompilerServices
             Debug.Assert(genericMethodDef IsNot Nothing AndAlso IsRawGeneric(genericMethodDef), "Uninstantiated generic expected!!!")
 
             If IsGenericParameter(possibleGenericParameter) AndAlso
-               possibleGenericParameter.DeclaringMethod IsNot Nothing AndAlso
-               AreGenericMethodDefsEqual(possibleGenericParameter.DeclaringMethod, genericMethodDef) Then
+               possibleGenericParameter.GetTypeInfo.DeclaringMethod IsNot Nothing AndAlso
+               AreGenericMethodDefsEqual(possibleGenericParameter.GetTypeInfo.DeclaringMethod, genericMethodDef) Then
                 Return possibleGenericParameter.GenericParameterPosition
             End If
             Return -1
@@ -562,9 +561,9 @@ Namespace Microsoft.VisualBasic.CompilerServices
             If IsGenericParameter(referringType) Then
                 'Is T a generic parameter of Method?
 
-                Debug.Assert(referringType.DeclaringMethod.IsGenericMethodDefinition, "Unexpected generic method instantiation!!!")
+                Debug.Assert(referringType.GetTypeInfo.DeclaringMethod.IsGenericMethodDefinition, "Unexpected generic method instantiation!!!")
 
-                If AreGenericMethodDefsEqual(referringType.DeclaringMethod, method) Then
+                If AreGenericMethodDefsEqual(referringType.GetTypeInfo.DeclaringMethod, method) Then
                     Return True
                 End If
 
@@ -739,7 +738,7 @@ Namespace Microsoft.VisualBasic.CompilerServices
             ' in the runtime library. Read the reflection documentation and test with
             ' nested types before changing this code.
 
-            Return Not declaringType.IsPublic AndAlso declaringType.Assembly Is Utils.VBRuntimeAssembly
+            Return Not declaringType.GetTypeInfo.IsPublic AndAlso declaringType.GetTypeInfo.Assembly Is Utils.VBRuntimeAssembly
 
         End Function
 
@@ -806,15 +805,15 @@ Namespace Microsoft.VisualBasic.CompilerServices
                 Get
                     Dim curType As Type = _type
                     While curType IsNot Nothing
-                        If (curType.Attributes And TypeAttributes.WindowsRuntime) = TypeAttributes.WindowsRuntime Then
+                        If (curType.GetTypeInfo.Attributes And TypeAttributes.WindowsRuntime) = TypeAttributes.WindowsRuntime Then
                             ' Found a WinRT COM object
                             Return True
-                        ElseIf (curType.Attributes And TypeAttributes.Import) = TypeAttributes.Import Then
+                        ElseIf (curType.GetTypeInfo.Attributes And TypeAttributes.Import) = TypeAttributes.Import Then
                             ' Found a class that is actually imported from COM but not WinRT
                             ' this is definitely a non-WinRT COM object
                             Return False
                         End If
-                        curType = curType.BaseType
+                        curType = curType.GetTypeInfo.BaseType
                     End While
                     Return False
 
@@ -1010,13 +1009,13 @@ Namespace Microsoft.VisualBasic.CompilerServices
                 'Find the default member name.
                 Dim current As Type = searchType
                 Do
-                    Dim attributes As Object() = Enumerable.ToArray(current.GetCustomAttributes(GetType(DefaultMemberAttribute), False))
+                    Dim attributes As Object() = Enumerable.ToArray(current.GetTypeInfo.GetCustomAttributes(GetType(DefaultMemberAttribute), False))
 
                     If attributes IsNot Nothing AndAlso attributes.Length > 0 Then
                         potentialDefaultMemberName = DirectCast(attributes(0), DefaultMemberAttribute).MemberName
                         Exit Do
                     End If
-                    current = current.BaseType
+                    current = current.GetTypeInfo.BaseType
 
                 Loop While current IsNot Nothing AndAlso Not IsRootObjectType(current)
 

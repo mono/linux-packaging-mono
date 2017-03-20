@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst01a.cnst01a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst01a.cnst01a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -40,6 +42,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst01b.cnst01b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst01b.cnst01b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -75,6 +79,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst02a.cnst02a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst02a.cnst02a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -109,6 +115,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst02b.cnst02b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst02b.cnst02b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -144,6 +152,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst03a.cnst03a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst03a.cnst03a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -180,6 +190,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst03b.cnst03b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst03b.cnst03b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -217,6 +229,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst04a.cnst04a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst04a.cnst04a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -253,6 +267,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst04b.cnst04b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst04b.cnst04b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -290,6 +306,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst05a.cnst05a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst05a.cnst05a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -326,6 +344,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst05b.cnst05b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst05b.cnst05b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -363,6 +383,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst06a.cnst06a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst06a.cnst06a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -399,6 +421,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst06b.cnst06b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst06b.cnst06b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -436,6 +460,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst07a.cnst07a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst07a.cnst07a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -470,6 +496,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst07b.cnst07b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst07b.cnst07b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -507,6 +535,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst08a.cnst08a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst08a.cnst08a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -541,6 +571,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst08b.cnst08b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst08b.cnst08b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -575,6 +607,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst08c.cnst08c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst08c.cnst08c;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -610,6 +644,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst09a.cnst09a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst09a.cnst09a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -644,6 +680,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst09b.cnst09b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst09b.cnst09b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -679,6 +717,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst10a.cnst10a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst10a.cnst10a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -713,6 +753,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst10b.cnst10b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst10b.cnst10b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -748,6 +790,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst11a.cnst11a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst11a.cnst11a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -784,6 +828,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst11b.cnst11b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst11b.cnst11b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description>Testing different const expressions</Description>
@@ -821,6 +867,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst12.cnst12
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst12.cnst12;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>The default value is null</Title>
     // <Description></Description>
@@ -1058,6 +1106,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst12b.cnst12b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.cnst12b.cnst12b;
     // <Area>Different types of allowed Optionals</Area>
     // <Title>The default value is null</Title>
     // <Description>The type of optional parameter is pointer type</Description>
@@ -1168,6 +1217,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable01.nullable01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable01.nullable01;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1202,6 +1253,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable01a.nullable01a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable01a.nullable01a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1237,6 +1290,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable02.nullable02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable02.nullable02;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1271,6 +1326,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable02a.nullable02a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable02a.nullable02a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1306,6 +1363,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable03.nullable03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable03.nullable03;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1340,6 +1399,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable03a.nullable03a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable03a.nullable03a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1375,6 +1436,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable04.nullable04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable04.nullable04;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1409,6 +1472,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable04a.nullable04a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable04a.nullable04a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1444,6 +1509,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable05.nullable05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable05.nullable05;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1478,6 +1545,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable05a.nullable05a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable05a.nullable05a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1513,6 +1582,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable06.nullable06
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable06.nullable06;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1547,6 +1618,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable06a.nullable06a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable06a.nullable06a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1582,6 +1655,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable07.nullable07
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable07.nullable07;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1616,6 +1691,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable07a.nullable07a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable07a.nullable07a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1651,6 +1728,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable09.nullable09
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable09.nullable09;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1689,6 +1768,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable09a.nullable09a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable09a.nullable09a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1728,6 +1809,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable10.nullable10
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable10.nullable10;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1772,6 +1855,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable10a.nullable10a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.nullable10a.nullable10a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1817,6 +1902,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type01.type01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type01.type01;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1851,6 +1938,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type01a.type01a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type01a.type01a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1886,6 +1975,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type01b.type01b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type01b.type01b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1921,6 +2012,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type02.type02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type02.type02;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1955,6 +2048,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type02a.type02a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type02a.type02a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -1990,6 +2085,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type02b.type02b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type02b.type02b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2025,6 +2122,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type03.type03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type03.type03;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2059,6 +2158,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type03a.type03a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type03a.type03a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2094,6 +2195,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type03b.type03b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type03b.type03b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2129,6 +2232,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type04.type04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type04.type04;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2163,6 +2268,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type04a.type04a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type04a.type04a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2198,6 +2305,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type04b.type04b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type04b.type04b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2233,6 +2342,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type05.type05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type05.type05;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2267,6 +2378,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type05a.type05a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type05a.type05a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2302,6 +2415,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type05b.type05b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type05b.type05b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2337,6 +2452,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type06.type06
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type06.type06;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2371,6 +2488,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type06a.type06a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type06a.type06a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2406,6 +2525,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type06b.type06b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type06b.type06b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2441,6 +2562,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type07.type07
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type07.type07;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2478,6 +2601,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type07a.type07a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type07a.type07a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2516,6 +2641,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type07b.type07b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type07b.type07b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2554,6 +2681,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type08.type08
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type08.type08;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2595,6 +2724,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type08a.type08a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type08a.type08a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2637,6 +2768,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type08b.type08b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type08b.type08b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2679,6 +2812,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type09.type09
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type09.type09;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2720,6 +2855,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type09a.type09a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type09a.type09a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2762,6 +2899,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type09b.type09b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type09b.type09b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2804,6 +2943,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type10.type10
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type10.type10;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2845,6 +2986,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type10a.type10a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type10a.type10a;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>
@@ -2887,6 +3030,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.t
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type10b.type10b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.types.type10b.type10b;
+
     // <Area>Different types of allowed Optionals</Area>
     // <Title>Testing different types that are allowed as default parameters</Title>
     // <Description></Description>

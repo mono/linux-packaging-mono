@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -115,7 +114,7 @@ namespace System.Net
             throw new NotSupportedException(SR.net_noseek);
         }
 
-        public override int Read(byte[] buffer, int offset, int size)
+        public override int Read([In, Out] byte[] buffer, int offset, int size)
         {
             if (NetEventSource.IsEnabled)
             {
@@ -358,7 +357,7 @@ namespace System.Net
                     NetEventSource.Info(this, "Rethrowing exception:" + exception);
                     NetEventSource.Error(this, exception.ToString());
                 }
-                ExceptionDispatchInfo.Capture(exception).Throw();
+                throw exception;
             }
 
             uint dataRead = (uint)returnValue;

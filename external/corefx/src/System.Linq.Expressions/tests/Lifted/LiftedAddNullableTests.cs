@@ -186,12 +186,12 @@ namespace System.Linq.Expressions.Tests
 
         public static byte AddNullableByte(byte a, byte b)
         {
-            return unchecked((byte)(a + b));
+            return (byte)(a + b);
         }
 
         public static char AddNullableChar(char a, char b)
         {
-            return unchecked((char)(a + b));
+            return (char)(a + b);
         }
 
         public static decimal AddNullableDecimal(decimal a, decimal b)
@@ -211,37 +211,37 @@ namespace System.Linq.Expressions.Tests
 
         public static int AddNullableInt(int a, int b)
         {
-            return unchecked((int)(a + b));
+            return (int)(a + b);
         }
 
         public static long AddNullableLong(long a, long b)
         {
-            return unchecked((long)(a + b));
+            return (long)(a + b);
         }
 
         public static sbyte AddNullableSByte(sbyte a, sbyte b)
         {
-            return unchecked((sbyte)(a + b));
+            return (sbyte)(a + b);
         }
 
         public static short AddNullableShort(short a, short b)
         {
-            return unchecked((short)(a + b));
+            return (short)(a + b);
         }
 
         public static uint AddNullableUInt(uint a, uint b)
         {
-            return unchecked((uint)(a + b));
+            return (uint)(a + b);
         }
 
         public static ulong AddNullableULong(ulong a, ulong b)
         {
-            return unchecked((ulong)(a + b));
+            return (ulong)(a + b);
         }
 
         public static ushort AddNullableUShort(ushort a, ushort b)
         {
-            return unchecked((ushort)(a + b));
+            return (ushort)(a + b);
         }
 
         #endregion
@@ -258,7 +258,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableByte")));
             Func<byte?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked((byte?)(a + b)), f());
+            Assert.Equal((byte?)(a + b), f());
         }
 
         private static void VerifyAddNullableChar(char? a, char? b, bool useInterpreter)
@@ -271,7 +271,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableChar")));
             Func<char?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked((char?)(a + b)), f());
+            Assert.Equal((char?)(a + b), f());
         }
 
         private static void VerifyAddNullableDecimal(decimal? a, decimal? b, bool useInterpreter)
@@ -334,7 +334,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableInt")));
             Func<int?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked(a + b), f());
+            Assert.Equal(a + b, f());
         }
 
         private static void VerifyAddNullableLong(long? a, long? b, bool useInterpreter)
@@ -347,7 +347,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableLong")));
             Func<long?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked(a + b), f());
+            Assert.Equal(a + b, f());
         }
 
         private static void VerifyAddNullableSByte(sbyte? a, sbyte? b, bool useInterpreter)
@@ -360,7 +360,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableSByte")));
             Func<sbyte?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked((sbyte?)(a + b)), f());
+            Assert.Equal((sbyte?)(a + b), f());
         }
 
         private static void VerifyAddNullableShort(short? a, short? b, bool useInterpreter)
@@ -373,7 +373,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableShort")));
             Func<short?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked((short?)(a + b)), f());
+            Assert.Equal((short?)(a + b), f());
         }
 
         private static void VerifyAddNullableUInt(uint? a, uint? b, bool useInterpreter)
@@ -386,7 +386,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableUInt")));
             Func<uint?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked(a + b), f());
+            Assert.Equal(a + b, f());
         }
 
         private static void VerifyAddNullableULong(ulong? a, ulong? b, bool useInterpreter)
@@ -399,7 +399,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableULong")));
             Func<ulong?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked(a + b), f());
+            Assert.Equal(a + b, f());
         }
 
         private static void VerifyAddNullableUShort(ushort? a, ushort? b, bool useInterpreter)
@@ -412,7 +412,7 @@ namespace System.Linq.Expressions.Tests
                         typeof(LiftedAddNullableTests).GetTypeInfo().GetDeclaredMethod("AddNullableUShort")));
             Func<ushort?> f = e.Compile(useInterpreter);
 
-            Assert.Equal(unchecked((ushort?)(a + b)), f());
+            Assert.Equal((ushort?)(a + b), f());
         }
 
         private static void VerifyAddNullableNumber(Number? a, Number? b, bool useInterpreter)

@@ -38,12 +38,12 @@ namespace System.Web.SessionState {
 		HttpStaticObjectsCollection staticObjects;
 		int timeout;
 
-		public SessionStateStoreData (ISessionStateItemCollection sessionItems,
-						HttpStaticObjectsCollection staticObjects,
+		public SessionStateStoreData (ISessionStateItemCollection items,
+						HttpStaticObjectsCollection objects,
 						int timeout)
 		{
-			this.sessionItems = sessionItems;
-			this.staticObjects = staticObjects;
+			sessionItems = items;
+			staticObjects = objects;
 			this.timeout = timeout;
 		}
 

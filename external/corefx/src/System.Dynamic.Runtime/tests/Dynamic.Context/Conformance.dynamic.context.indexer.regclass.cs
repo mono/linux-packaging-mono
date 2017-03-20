@@ -2,12 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
 using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass001.regclass001;
     using System;
+    using System.Reflection;
 
     public class MyClass
     {
@@ -997,12 +999,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass001.regclass001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass001.regclass001;
     // <Title> Tests regular class indexer used in regular method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1044,12 +1049,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass002.regclass002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass002.regclass002;
     // <Title> Tests regular class indexer used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1106,12 +1114,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass003.regclass003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass003.regclass003;
     // <Title> Tests regular class indexer used in generic method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1165,12 +1176,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass004.regclass004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass004.regclass004;
     // <Title> Tests regular class indexer used in extension method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : MemberClass
     {
@@ -1220,12 +1234,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass007.regclass007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass007.regclass007;
     // <Title> Tests regular class indexer used in variable initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1252,12 +1269,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass008.regclass008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass008.regclass008;
     // <Title> Tests regular class indexer used in arguments to method invocation.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1320,12 +1340,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass009.regclass009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass009.regclass009;
     // <Title> Tests regular class indexer used in implicitly-typed variable initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1362,12 +1385,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass010.regclass010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass010.regclass010;
     // <Title> Tests regular class indexer used in array initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1404,12 +1430,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass011.regclass011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass011.regclass011;
     // <Title> Tests regular class indexer used in implicitly-typed array initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1445,12 +1474,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass012.regclass012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass012.regclass012;
     // <Title> Tests regular class indexer used in member initializer of object initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1502,12 +1534,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass013.regclass013
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass013.regclass013;
     // <Title> Tests regular class indexer used in member initializer of anonymous type.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1549,12 +1584,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass014.regclass014
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass014.regclass014;
     // <Title> Tests regular class indexer used in static variable.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class StaticTestClass
     {
@@ -1599,12 +1637,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass015.regclass015
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass015.regclass015;
     // <Title> Tests regular class indexer used in property get.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1648,12 +1689,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass016.regclass016
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass016.regclass016;
     // <Title> Tests regular class indexer used in property set.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1692,13 +1736,17 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass018.regclass018
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass018.regclass018;
     // <Title> Tests regular class indexer used in iterator.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections;
+    using System.Collections.Generic;
 
     public class Test
     {
@@ -1749,12 +1797,16 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass019.regclass019
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass019.regclass019;
     // <Title> Tests regular class indexer used in collection initializer list.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
 
     public class Test
@@ -1790,12 +1842,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass020.regclass020
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass020.regclass020;
     // <Title> Tests regular class indexer used in ctor.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1856,12 +1911,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass021.regclass021
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass021.regclass021;
     // <Title> Tests regular class indexer used in checked and unchecked.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1889,12 +1947,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass022.regclass022
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass022.regclass022;
     // <Title> Tests regular class indexer used in null coalescing operator.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1934,12 +1995,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass023.regclass023
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass023.regclass023;
     // <Title> Tests regular class indexer used in query expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Linq;
     using System.Collections.Generic;
 
@@ -1994,12 +2058,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass024.regclass024
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass024.regclass024;
     // <Title> Tests regular class indexer used in short-circuit boolean expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2058,12 +2125,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass025.regclass025
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass025.regclass025;
     // <Title> Tests regular class indexer used in ternary operator expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2095,12 +2165,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass027.regclass027
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass027.regclass027;
     // <Title> Tests regular class indexer used in try/catch/finally.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2162,12 +2235,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass028.regclass028
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass028.regclass028;
     // <Title> Tests regular class indexer used in static ctor.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2203,6 +2279,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass029.regclass029
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass029.regclass029;
     // <Title> Tests regular class indexer used in dtor.</Title>
     // <Description>
     // On IA64 the GC.WaitForPendingFinalizers() does not actually work... 
@@ -2287,12 +2365,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass030.regclass030
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass030.regclass030;
     // <Title> Tests regular class indexer used in variable named dynamic.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2320,12 +2401,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass032.regclass032
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass032.regclass032;
     // <Title> Tests regular class indexer used in this-argument of extension method.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2365,6 +2449,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass034.regclass034
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass034.regclass034;
     // <Title> Tests regular class indexer used in anonymous method.</Title>
     // <Description>
     // </Description>
@@ -2407,12 +2493,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass035.regclass035
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass035.regclass035;
     // <Title> Tests regular class indexer used in static method.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2445,6 +2534,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass037.regclass037
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass037.regclass037;
     // <Title> Tests regular class indexer used in lambda expression.</Title>
     // <Description>
     // </Description>
@@ -2452,6 +2543,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq;
 
     public class Test
     {
@@ -2489,6 +2581,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass038.regclass038
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass038.regclass038;
     // <Title> Tests regular class indexer used in lambda expression.</Title>
     // <Description>
     // </Description>
@@ -2524,12 +2618,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass039.regclass039
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass039.regclass039;
     // <Title> Tests regular class indexer used in field initializer outside of ctor.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2556,12 +2653,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass040.regclass040
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass040.regclass040;
     // <Title> Tests regular class indexer used in volatile field initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2589,12 +2689,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass041.regclass041
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass041.regclass041;
     // <Title> Tests regular class indexer used in foreach body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2632,12 +2735,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass042.regclass042
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass042.regclass042;
     // <Title> Tests regular class indexer used in for loop initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : MemberClass
     {
@@ -2670,12 +2776,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass043.regclass043
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass043.regclass043;
     // <Title> Tests regular class indexer used in lock expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2708,6 +2817,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass044.regclass044
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass044.regclass044;
     // <Title> Tests regular class indexer used in lock expression body.</Title>
     // <Description>
     // </Description>
@@ -2715,6 +2826,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
     //<Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(21,14\).*CS0219</Expects>
+    using System;
 
     public class Test
     {
@@ -2757,12 +2869,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass045.regclass045
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass045.regclass045;
     // <Title> Tests regular class indexer used in generic method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2798,12 +2913,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass046.regclass046
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass046.regclass046;
     // <Title> Tests regular class indexer used in foreach loop body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2845,12 +2963,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass047.regclass047
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclassregindexer.regclassregindexer;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass047.regclass047;
     // <Title> Tests regular class indexer used in while loop body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2889,12 +3010,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclas
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass048.regclass048
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.indexer.regclass.regclass048.regclass048;
     // <Title> Tests IndexerNameAttribute applied to indexer. </Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Runtime.CompilerServices;
 
     public class MyString

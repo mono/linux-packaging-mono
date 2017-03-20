@@ -158,19 +158,19 @@ namespace System.DirectoryServices
 		}
 
 		[MonoTODO]
-		public void AddRange (SchemaNameCollection value)
+		public void AddRange (SchemaNameCollection coll)
 		{
 			throw new NotImplementedException();
 		}
 
 		[MonoTODO]
-		public void AddRange (string[] value)
+		public void AddRange (string[] coll)
 		{
 			throw new NotImplementedException();
 		}
 
 		[MonoTODO]
-		public bool Contains (string value)
+		public bool Contains (string s)
 		{
 			throw new NotImplementedException();
 		}
@@ -182,25 +182,25 @@ namespace System.DirectoryServices
 		}
 
 		[MonoTODO]
-		public void CopyTo (string[] stringArray, int index)
+		public void CopyTo (string[] copy_to, int pos)
 		{
 			throw new NotImplementedException();
 		}
 
 		[MonoTODO]
-		public int IndexOf (string value)
+		public int IndexOf (string s)
 		{
 			throw new NotImplementedException();
 		}
 
 		[MonoTODO]
-		public void Insert (int index, string value)
+		public void Insert (int pos, string s)
 		{
 			throw new NotImplementedException();
 		}
 
 		[MonoTODO]
-		public void Remove (string value)
+		public void Remove (string s)
 		{
 			throw new NotImplementedException();
 		}

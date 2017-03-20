@@ -175,13 +175,13 @@ namespace System.Configuration
 			return raw_xml;
 		}
 
-		public void ProtectSection (string protectionProvider)
+		public void ProtectSection (string provider)
 		{
-			protection_provider = ProtectedConfiguration.GetProvider (protectionProvider, true);
+			protection_provider = ProtectedConfiguration.GetProvider (provider, true);
 		}
 
 		[MonoTODO]
-		public void ForceDeclaration (bool force)
+		public void ForceDeclaration (bool require)
 		{
 		}
 
@@ -201,9 +201,9 @@ namespace System.Configuration
 			protection_provider = null;
 		}
 
-		public void SetRawXml (string rawXml)
+		public void SetRawXml (string xml)
 		{
-			raw_xml = rawXml;
+			raw_xml = xml;
 		}
 
 		[MonoTODO]

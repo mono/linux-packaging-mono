@@ -52,7 +52,7 @@ namespace System.Security.Cryptography.Encryption.Tests.Asymmetric
             }
         }
 
-#if netcoreapp
+#if netcoreapp11
         [Fact]
         public static void ClearCallsDispose()
         {

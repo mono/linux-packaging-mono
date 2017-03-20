@@ -73,50 +73,50 @@ namespace System.ServiceModel.Description
 		}
 
 		public static TypedMessageConverter Create (
-			Type messageContract, string action)
+			Type type, string action)
 		{
-			return Create (messageContract, action, TempUri);
+			return Create (type, action, TempUri);
 		}
 
 		public static TypedMessageConverter Create (
-			Type messageContract, string action,
+			Type type, string action,
 			string defaultNamespace)
 		{
-			return Create (messageContract, action, defaultNamespace, (DataContractFormatAttribute)null);
+			return Create (type, action, defaultNamespace, (DataContractFormatAttribute)null);
 		}
 
 		public static TypedMessageConverter Create (
-			Type messageContract, string action,
+			Type type, string action,
 			DataContractFormatAttribute formatterAttribute)
 		{
-			return Create (messageContract, action, TempUri, formatterAttribute);
+			return Create (type, action, TempUri, formatterAttribute);
 		}
 
 		public static TypedMessageConverter Create (
-			Type messageContract,
+			Type type,
 			string action, string defaultNamespace,
 			DataContractFormatAttribute formatterAttribute)
 		{
 			return new DefaultTypedMessageConverter (
 				new DataContractMessagesFormatter (
-					MessageContractToMessagesDescription (messageContract, defaultNamespace, action),
+					MessageContractToMessagesDescription (type, defaultNamespace, action),
 					formatterAttribute));
 		}
 
 		public static TypedMessageConverter Create (
-			Type messageContract, string action,
+			Type type, string action,
 			XmlSerializerFormatAttribute formatterAttribute)
 		{
-			return Create (messageContract, action, TempUri, formatterAttribute);
+			return Create (type, action, TempUri, formatterAttribute);
 		}
 
 		public static TypedMessageConverter Create (
-			Type messageContract, string action, string defaultNamespace,
+			Type type, string action, string defaultNamespace,
 			XmlSerializerFormatAttribute formatterAttribute)
 		{
 			return new DefaultTypedMessageConverter (
 				new XmlMessagesFormatter (
-					MessageContractToMessagesDescription (messageContract, defaultNamespace, action),
+					MessageContractToMessagesDescription (type, defaultNamespace, action),
 					formatterAttribute));
 		}
 

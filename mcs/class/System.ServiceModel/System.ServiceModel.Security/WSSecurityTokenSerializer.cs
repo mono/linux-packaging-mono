@@ -239,7 +239,7 @@ namespace System.ServiceModel.Security
 
 		[MonoTODO]
 		public virtual SecurityKeyIdentifierClause CreateKeyIdentifierClauseFromTokenXml (
-			XmlElement element, SecurityTokenReferenceStyle tokenReferenceStyle)
+			XmlElement tokenXml, SecurityTokenReferenceStyle referenceStyle)
 		{
 			throw new NotImplementedException ();
 		}

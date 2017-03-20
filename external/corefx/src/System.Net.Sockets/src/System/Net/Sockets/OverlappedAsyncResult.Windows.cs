@@ -2,9 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Threading;
+using Microsoft.Win32;
+using System.Collections.Generic;
 
 namespace System.Net.Sockets
 {
@@ -38,11 +42,11 @@ namespace System.Net.Sockets
         // These calls are outside the runtime and are unmanaged code, so we need
         // to prepare specific structures and ints that lie in unmanaged memory
         // since the overlapped calls may complete asynchronously.
-        internal void SetUnmanagedStructures(byte[] buffer, int offset, int size, Internals.SocketAddress socketAddress)
+        internal void SetUnmanagedStructures(byte[] buffer, int offset, int size, Internals.SocketAddress socketAddress, bool pinSocketAddress)
         {
             // Fill in Buffer Array structure that will be used for our send/recv Buffer
             _socketAddress = socketAddress;
-            if (_socketAddress != null)
+            if (pinSocketAddress && _socketAddress != null)
             {
                 object[] objectsToPin = null;
                 objectsToPin = new object[2];
@@ -110,10 +114,10 @@ namespace System.Net.Sockets
 
         private void LogBuffer(int size)
         {
-            // This should only be called if tracing is enabled. However, there is the potential for a race
-            // condition where tracing is disabled between a calling check and here, in which case the assert
-            // may fire erroneously.
-            Debug.Assert(NetEventSource.IsEnabled);
+            if (!NetEventSource.IsEnabled)
+            {
+                return;
+            }
 
             if (size > -1)
             {
@@ -121,7 +125,7 @@ namespace System.Net.Sockets
                 {
                     foreach (WSABuffer wsaBuffer in _wsaBuffers)
                     {
-                        NetEventSource.DumpBuffer(this, wsaBuffer.Pointer, Math.Min(wsaBuffer.Length, size));
+                        if (NetEventSource.IsEnabled) NetEventSource.DumpBuffer(this, wsaBuffer.Pointer, Math.Min(wsaBuffer.Length, size));
                         if ((size -= wsaBuffer.Length) <= 0)
                         {
                             break;
@@ -130,7 +134,7 @@ namespace System.Net.Sockets
                 }
                 else
                 {
-                    NetEventSource.DumpBuffer(this, _singleBuffer.Pointer, Math.Min(_singleBuffer.Length, size));
+                    if (NetEventSource.IsEnabled) NetEventSource.DumpBuffer(this, _singleBuffer.Pointer, Math.Min(_singleBuffer.Length, size));
                 }
             }
         }

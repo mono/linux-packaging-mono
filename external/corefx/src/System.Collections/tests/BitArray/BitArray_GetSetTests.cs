@@ -157,24 +157,6 @@ namespace System.Collections.Tests
             }
         }
 
-        [Fact]
-        public static void GetEnumerator_CloneEnumerator_ReturnsUniqueEnumerator()
-        {
-            BitArray bitArray = new BitArray(1);
-            IEnumerator enumerator = bitArray.GetEnumerator();
-            ICloneable cloneableEnumerator = enumerator as ICloneable;
-            Assert.NotNull(cloneableEnumerator);
-
-            IEnumerator clonedEnumerator = (IEnumerator)cloneableEnumerator.Clone();
-            Assert.NotSame(enumerator, clonedEnumerator);
-
-            Assert.True(clonedEnumerator.MoveNext());
-            Assert.False(clonedEnumerator.MoveNext());
-
-            Assert.True(enumerator.MoveNext());
-            Assert.False(enumerator.MoveNext());
-        }
-
         public static IEnumerable<object[]> Length_Set_Data()
         {
             int[] sizes = { 1, BitsPerByte, BitsPerByte + 1, BitsPerInt32, BitsPerInt32 + 1 };
@@ -338,14 +320,7 @@ namespace System.Collections.Tests
             ICollection bitArray = new BitArray(bits);
             T[] array = (T[])Array.CreateInstance(typeof(T), arraySize);
             Assert.Throws<ArgumentOutOfRangeException>("index", () => bitArray.CopyTo(array, -1));
-            if (def is int)
-            {
-                AssertExtensions.Throws<ArgumentException>("destinationArray", string.Empty, () => bitArray.CopyTo(array, index));
-            }
-            else
-            {
-                Assert.Throws<ArgumentException>(null, () => bitArray.CopyTo(array, index));
-            }
+            Assert.Throws<ArgumentException>(def is int ? string.Empty : null, () => bitArray.CopyTo(array, index));
         }
 
         [Fact]

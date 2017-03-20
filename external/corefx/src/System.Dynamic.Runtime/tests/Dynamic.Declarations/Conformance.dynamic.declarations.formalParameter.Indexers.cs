@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalParameter.Indexers.indexer001.indexer001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalParameter.Indexers.indexer001.indexer001;
+
     public class Test
     {
         private class MyClass
@@ -53,6 +55,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalPara
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalParameter.Indexers.indexer002.indexer002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalParameter.Indexers.indexer002.indexer002;
+
     public class Test
     {
         private class MyClass
@@ -101,6 +105,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalPara
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalParameter.Indexers.indexer003.indexer003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalParameter.Indexers.indexer003.indexer003;
+
     public class Test
     {
         private class C
@@ -158,6 +164,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalPara
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalParameter.Indexers.indexer004.indexer004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.formalParameter.Indexers.indexer004.indexer004;
+
     public class Test
     {
         private class MyClass

@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype01.gettype01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype01.gettype01;
+
     // <Area>variance</Area>
     // <Title> Expression based tests</Title>
     // <Description> getType tests</Description>
@@ -60,6 +62,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype01
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype02.gettype02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype02.gettype02;
+
     // <Area>variance</Area>
     // <Title> Expression based tests</Title>
     // <Description> getType tests</Description>
@@ -112,6 +116,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype02
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype03.gettype03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype03.gettype03;
+
     // <Area>variance</Area>
     // <Title> Expression based tests</Title>
     // <Description> getType tests</Description>
@@ -159,6 +165,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype03
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype04.gettype04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype04.gettype04;
+
     // <Area>variance</Area>
     // <Title> Expression based tests</Title>
     // <Description> getType tests</Description>
@@ -207,6 +215,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.gettype04
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is01.is01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is01.is01;
+
     // <Area>variance</Area>
     // <Title> expressions - Is Keyword</Title>
     // <Description> using the is keyword on a covariant public interface </Description>
@@ -261,6 +271,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is01.is01
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is02.is02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is02.is02;
+
     // <Area>variance</Area>
     // <Title> expressions - Is Keyword</Title>
     // <Description> using the is keyword on a covariant public interface </Description>
@@ -315,6 +327,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is02.is02
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is03.is03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is03.is03;
+
     // <Area>variance</Area>
     // <Title> expressions - is keyword</Title>
     // <Description> is keyword with contravariant delegates</Description>
@@ -362,6 +376,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is03.is03
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is04.is04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is04.is04;
+
     // <Area>variance</Area>
     // <Title> expressions - is keyword</Title>
     // <Description> is keyword with contravariant delegates</Description>
@@ -408,6 +424,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is04.is04
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is05.is05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is05.is05;
+
     // <Area>variance</Area>
     // <Title> expressions - Is Keyword</Title>
     // <Description> using the is keyword on a covariant public interface </Description>
@@ -460,6 +478,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is05.is05
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is06.is06
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is06.is06;
+
     // <Area>variance</Area>
     // <Title> expressions - Is Keyword</Title>
     // <Description> using the is keyword on a covariant public interface </Description>
@@ -512,6 +532,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is06.is06
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is07.is07
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is07.is07;
+
     // <Area>variance</Area>
     // <Title> expressions - is keyword</Title>
     // <Description> is keyword with contravariant delegates</Description>
@@ -557,6 +579,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is07.is07
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is08.is08
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is08.is08;
+
     // <Area>variance</Area>
     // <Title> expressions - is keyword</Title>
     // <Description> is keyword with contravariant delegates</Description>
@@ -602,6 +626,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is08.is08
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is09.is09
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is09.is09;
+
     // <Area>variance</Area>
     // <Title> expressions - Is Keyword</Title>
     // <Description> using the is keyword on a invariant public interface </Description>
@@ -653,6 +679,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is09.is09
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is10.is10
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is10.is10;
+
     // <Area>variance</Area>
     // <Title> expressions - Is Keyword</Title>
     // <Description> using the is keyword on a invariant public interface </Description>
@@ -704,6 +732,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is10.is10
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is11.is11
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is11.is11;
+
     // <Area>variance</Area>
     // <Title> expressions - is keyword</Title>
     // <Description> is keyword with contravariant delegates</Description>
@@ -747,6 +777,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is11.is11
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is12.is12
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.expr.is12.is12;
+
     // <Area>variance</Area>
     // <Title> expressions - is keyword</Title>
     // <Description> is keyword with invariant delegates</Description>

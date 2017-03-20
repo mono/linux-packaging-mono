@@ -109,7 +109,7 @@ namespace System.IO
                 {
                     lastBufLen *= 2;
                     byte[] heapBuf = new byte[lastBufLen];
-                    fixed (byte* buf = &heapBuf[0])
+                    fixed (byte* buf = heapBuf)
                     {
                         if (TryGetHomeDirectoryFromPasswd(buf, heapBuf.Length, out userHomeDirectory))
                             return userHomeDirectory;

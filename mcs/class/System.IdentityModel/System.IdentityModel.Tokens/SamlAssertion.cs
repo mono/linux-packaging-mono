@@ -53,16 +53,16 @@ namespace System.IdentityModel.Tokens
 		}
 
 		public SamlAssertion (string assertionId, string issuer,
-			DateTime issueInstant, SamlConditions samlConditions,
-			SamlAdvice samlAdvice, IEnumerable<SamlStatement> samlStatements)
+			DateTime issueInstant, SamlConditions conditions,
+			SamlAdvice advice, IEnumerable<SamlStatement> statements)
 		{
 			if (IsInvalidAssertionId (assertionId))
 				throw new ArgumentException (String.Format ("The assertionId '{0}' must be a valid XML NCName.", assertionId));
 
 			if (issuer == null || issuer.Length == 0)
 				throw new ArgumentException ("issuer");
-			if (samlStatements == null)
-				throw new ArgumentNullException ("samlStatements");
+			if (statements == null)
+				throw new ArgumentNullException ("statements");
 
 			major = 1;
 			minor = 1;
@@ -70,9 +70,9 @@ namespace System.IdentityModel.Tokens
 			assertion_id = assertionId;
 			this.issuer = issuer;
 			issue_instant = issueInstant;
-			this.conditions = samlConditions;
-			this.advice = samlAdvice;
-			foreach (SamlStatement s in samlStatements) {
+			this.conditions = conditions;
+			this.advice = advice;
+			foreach (SamlStatement s in statements) {
 				if (s == null)
 					throw new ArgumentException ("statements contain null item.");
 				this.statements.Add (s);
@@ -180,7 +180,7 @@ namespace System.IdentityModel.Tokens
 		[MonoTODO]
 		public virtual void ReadXml (XmlDictionaryReader reader,
 			SamlSerializer samlSerializer,
-			SecurityTokenSerializer keyInfoSerializer,
+			SecurityTokenSerializer keyInfoTokenSerializer,
 			SecurityTokenResolver outOfBandTokenResolver)
 		{
 			throw new NotImplementedException ();
@@ -188,7 +188,7 @@ namespace System.IdentityModel.Tokens
 
 		public virtual void WriteXml (XmlDictionaryWriter writer,
 			SamlSerializer samlSerializer,
-			SecurityTokenSerializer keyInfoSerializer)
+			SecurityTokenSerializer keyInfoTokenSerializer)
 		{
 			if (writer == null)
 				throw new ArgumentNullException ("writer");
@@ -211,11 +211,11 @@ namespace System.IdentityModel.Tokens
 
 			try {
 				if (Conditions != null)
-					Conditions.WriteXml (writer, samlSerializer, keyInfoSerializer);
+					Conditions.WriteXml (writer, samlSerializer, keyInfoTokenSerializer);
 				if (Advice != null)
-					Advice.WriteXml (writer, samlSerializer, keyInfoSerializer);
+					Advice.WriteXml (writer, samlSerializer, keyInfoTokenSerializer);
 				foreach (SamlStatement statement in Statements)
-					statement.WriteXml (writer, samlSerializer, keyInfoSerializer);
+					statement.WriteXml (writer, samlSerializer, keyInfoTokenSerializer);
 			} catch (NotImplementedException) {
 				throw;
 			} catch (Exception ex) { // bad catch, eh?
@@ -226,7 +226,7 @@ namespace System.IdentityModel.Tokens
 
 		[MonoTODO]
 		protected void ReadSignature (XmlDictionaryReader reader,
-			SecurityTokenSerializer keyInfoSerializer,
+			SecurityTokenSerializer keyInfoTokenSerializer,
 			SecurityTokenResolver outOfBandTokenResolver,
 			SamlSerializer samlSerializer)
 		{

@@ -13,7 +13,7 @@ using System.IO;
 using System.Security;
 using System.Diagnostics;
 
-#if !uapaot
+#if !NET_NATIVE
 namespace System.Runtime.Serialization
 {
     internal class CodeGenerator
@@ -60,7 +60,7 @@ namespace System.Runtime.Serialization
             }
         }
 
-#if !uapaot
+#if !NET_NATIVE
         private static MethodInfo s_objectToString;
         private static MethodInfo ObjectToString
         {
@@ -106,7 +106,7 @@ namespace System.Runtime.Serialization
             {
                 if (s_serializationModule == null)
                 {
-                    s_serializationModule = typeof(CodeGenerator).Module;   // could to be replaced by different dll that has SkipVerification set to false
+                    s_serializationModule = typeof(CodeGenerator).GetTypeInfo().Module;   // could to be replaced by different dll that has SkipVerification set to false
                 }
                 return s_serializationModule;
             }
@@ -124,7 +124,7 @@ namespace System.Runtime.Serialization
         private enum CodeGenTrace { None, Save, Tron };
         private CodeGenTrace _codeGenTrace;
 
-#if !uapaot
+#if !NET_NATIVE
         private LocalBuilder _stringFormatArray;
 #endif
 
@@ -373,7 +373,7 @@ namespace System.Runtime.Serialization
         {
             Type type = GetVariableType(value);
             TypeCode typeCode = type.GetTypeCode();
-            if ((typeCode == TypeCode.Object && type.IsValueType) ||
+            if ((typeCode == TypeCode.Object && type.GetTypeInfo().IsValueType) ||
                 typeCode == TypeCode.DateTime || typeCode == TypeCode.Decimal)
             {
                 LoadDefaultValue(type);
@@ -548,7 +548,7 @@ namespace System.Runtime.Serialization
 
         internal void Call(MethodInfo methodInfo)
         {
-            if (methodInfo.IsVirtual && !methodInfo.DeclaringType.IsValueType)
+            if (methodInfo.IsVirtual && !methodInfo.DeclaringType.GetTypeInfo().IsValueType)
             {
                 if (_codeGenTrace != CodeGenTrace.None)
                     EmitSourceInstruction("Callvirt " + methodInfo.ToString() + " on type " + methodInfo.DeclaringType.ToString());
@@ -637,7 +637,7 @@ namespace System.Runtime.Serialization
 
         private static bool IsStruct(Type objType)
         {
-            return objType.IsValueType && !objType.IsPrimitive;
+            return objType.GetTypeInfo().IsValueType && !objType.GetTypeInfo().IsPrimitive;
         }
 
         internal Type LoadMember(MemberInfo memberInfo)
@@ -722,7 +722,7 @@ namespace System.Runtime.Serialization
 
         internal void LoadDefaultValue(Type type)
         {
-            if (type.IsValueType)
+            if (type.GetTypeInfo().IsValueType)
             {
                 switch (type.GetTypeCode())
                 {
@@ -931,7 +931,7 @@ namespace System.Runtime.Serialization
                 Ldtoken((Type)o);
                 Call(GetTypeFromHandle);
             }
-            else if (valueType.IsEnum)
+            else if (valueType.GetTypeInfo().IsEnum)
             {
                 if (_codeGenTrace != CodeGenTrace.None)
                     EmitSourceComment("Ldc " + o.GetType() + "." + o);
@@ -1072,7 +1072,7 @@ namespace System.Runtime.Serialization
 
         internal void LdlocAddress(LocalBuilder localBuilder)
         {
-            if (localBuilder.LocalType.IsValueType)
+            if (localBuilder.LocalType.GetTypeInfo().IsValueType)
                 Ldloca(localBuilder);
             else
                 Ldloc(localBuilder);
@@ -1105,7 +1105,7 @@ namespace System.Runtime.Serialization
 
         internal void LdargAddress(ArgBuilder argBuilder)
         {
-            if (argBuilder.ArgType.IsValueType)
+            if (argBuilder.ArgType.GetTypeInfo().IsValueType)
                 Ldarga(argBuilder);
             else
                 Ldarg(argBuilder);
@@ -1222,7 +1222,7 @@ namespace System.Runtime.Serialization
 
         internal void Ldelem(Type arrayElementType)
         {
-            if (arrayElementType.IsEnum)
+            if (arrayElementType.GetTypeInfo().IsEnum)
             {
                 Ldelem(Enum.GetUnderlyingType(arrayElementType));
             }
@@ -1286,7 +1286,7 @@ namespace System.Runtime.Serialization
 
         internal void Stelem(Type arrayElementType)
         {
-            if (arrayElementType.IsEnum)
+            if (arrayElementType.GetTypeInfo().IsEnum)
                 Stelem(Enum.GetUnderlyingType(arrayElementType));
             else
             {
@@ -1462,9 +1462,9 @@ namespace System.Runtime.Serialization
         {
             if (target == source)
                 return;
-            if (target.IsValueType)
+            if (target.GetTypeInfo().IsValueType)
             {
-                if (source.IsValueType)
+                if (source.GetTypeInfo().IsValueType)
                 {
                     OpCode opCode = GetConvOpCode(target.GetTypeCode());
                     if (opCode.Equals(OpCodes.Nop))
@@ -1487,7 +1487,7 @@ namespace System.Runtime.Serialization
             }
             else if (target.IsAssignableFrom(source))
             {
-                if (source.IsValueType)
+                if (source.GetTypeInfo().IsValueType)
                 {
                     if (isAddress)
                         Ldobj(source);
@@ -1498,7 +1498,7 @@ namespace System.Runtime.Serialization
             {
                 Castclass(target);
             }
-            else if (target.IsInterface || source.IsInterface)
+            else if (target.GetTypeInfo().IsInterface || source.GetTypeInfo().IsInterface)
             {
                 Castclass(target);
             }
@@ -1620,7 +1620,7 @@ namespace System.Runtime.Serialization
             If(Cmp.NotEqualTo);
         }
 
-#if !uapaot
+#if !NET_NATIVE
         internal void BeginWhileCondition()
         {
             Label startWhile = DefineLabel();
@@ -1660,7 +1660,7 @@ namespace System.Runtime.Serialization
         {
             if (type != Globals.TypeOfString)
             {
-                if (type.IsValueType)
+                if (type.GetTypeInfo().IsValueType)
                 {
                     Box(type);
                 }

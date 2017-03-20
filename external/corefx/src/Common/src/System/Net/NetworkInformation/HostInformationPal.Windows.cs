@@ -68,7 +68,17 @@ namespace System.Net.NetworkInformation
 
         private static void EnsureFixedInfo()
         {
-            LazyInitializer.EnsureInitialized(ref s_fixedInfo, ref s_fixedInfoInitialized, ref s_syncObject, () => GetFixedInfo());
+            if (!Volatile.Read(ref s_fixedInfoInitialized))
+            {
+                lock (s_syncObject)
+                {
+                    if (!s_fixedInfoInitialized)
+                    {
+                        s_fixedInfo = GetFixedInfo();
+                        Volatile.Write(ref s_fixedInfoInitialized, true);
+                    }
+                }
+            }
         }
     }
 }

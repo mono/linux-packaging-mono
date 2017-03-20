@@ -105,14 +105,14 @@ namespace System.Xaml.Schema
 
 		static readonly char [] comma_or_parens = new char [] {',', '(', ')'};
 
-		public static bool TryParseList (string typeNameList, IXamlNamespaceResolver namespaceResolver, out IList<XamlTypeName> result)
+		public static bool TryParseList (string typeNameList, IXamlNamespaceResolver namespaceResolver, out IList<XamlTypeName> list)
 		{
 			if (typeNameList == null)
 				throw new ArgumentNullException ("typeNameList");
 			if (namespaceResolver == null)
 				throw new ArgumentNullException ("namespaceResolver");
 
-			result = null;
+			list = null;
 			int idx = 0;
 			int parens = 0;
 			XamlTypeName tn;
@@ -153,7 +153,7 @@ namespace System.Xaml.Schema
 				ret.Add (tn);
 			}
 
-			result = ret;
+			list = ret;
 			return true;
 		}
 

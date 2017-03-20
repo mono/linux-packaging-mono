@@ -119,9 +119,9 @@ namespace System.Web.Security
 			return GetPassword (null);
 		}
 		
-		public virtual string GetPassword (string passwordAnswer)
+		public virtual string GetPassword (string answer)
 		{
-			return Provider.GetPassword (UserName, passwordAnswer);
+			return Provider.GetPassword (UserName, answer);
 		}
 		
 		public virtual string ResetPassword ()
@@ -129,9 +129,9 @@ namespace System.Web.Security
 			return ResetPassword (null);
 		}
 		
-		public virtual string ResetPassword (string passwordAnswer)
+		public virtual string ResetPassword (string answer)
 		{
-			string newPass = Provider.ResetPassword (UserName, passwordAnswer);
+			string newPass = Provider.ResetPassword (UserName, answer);
 
 			UpdateUser ();
 			

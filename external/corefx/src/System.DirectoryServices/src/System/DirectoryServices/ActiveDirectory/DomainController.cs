@@ -1222,7 +1222,7 @@ namespace System.DirectoryServices.ActiveDirectory
             if (_disposed)
             {
                 // cannot bind to the domain controller as the object has been
-                // disposed (finalizer has been suppressed)
+                // disposed (finalizer has been supressed)
                 throw new ObjectDisposedException(GetType().Name);
             }
 

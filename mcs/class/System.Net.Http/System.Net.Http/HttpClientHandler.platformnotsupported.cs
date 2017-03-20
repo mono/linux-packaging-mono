@@ -131,6 +131,7 @@ namespace System.Net.Http
 			throw new PlatformNotSupportedException (EXCEPTION_MESSAGE);
 		}
 
+#if NETSTANDARD
 		public bool CheckCertificateRevocationList {
 			get { throw new PlatformNotSupportedException (EXCEPTION_MESSAGE); }
 			set { throw new PlatformNotSupportedException (EXCEPTION_MESSAGE); }
@@ -169,5 +170,6 @@ namespace System.Net.Http
 			get { throw new PlatformNotSupportedException (EXCEPTION_MESSAGE); }
 			set { throw new PlatformNotSupportedException (EXCEPTION_MESSAGE); }
 		}
+#endif
 	}
 }

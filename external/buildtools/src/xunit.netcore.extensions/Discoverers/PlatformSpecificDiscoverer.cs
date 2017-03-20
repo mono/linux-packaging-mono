@@ -22,16 +22,16 @@ namespace Xunit.NetCore.Extensions
         /// <returns>The trait values.</returns>
         public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
         {
-            TestPlatforms platforms = (TestPlatforms)traitAttribute.GetConstructorArguments().First();
-            if (!platforms.HasFlag(TestPlatforms.Windows))
+            PlatformID platform = (PlatformID)traitAttribute.GetConstructorArguments().First();
+            if (!platform.HasFlag(PlatformID.Windows))
                 yield return new KeyValuePair<string, string>(XunitConstants.Category, XunitConstants.NonWindowsTest);
-            if (!platforms.HasFlag(TestPlatforms.Linux))
+            if (!platform.HasFlag(PlatformID.Linux))
                 yield return new KeyValuePair<string, string>(XunitConstants.Category, XunitConstants.NonLinuxTest);
-            if (!platforms.HasFlag(TestPlatforms.OSX))
+            if (!platform.HasFlag(PlatformID.OSX))
                 yield return new KeyValuePair<string, string>(XunitConstants.Category, XunitConstants.NonOSXTest);
-            if (!platforms.HasFlag(TestPlatforms.FreeBSD))
+            if (!platform.HasFlag(PlatformID.FreeBSD))
                 yield return new KeyValuePair<string, string>(XunitConstants.Category, XunitConstants.NonFreeBSDTest);
-            if (!platforms.HasFlag(TestPlatforms.NetBSD))
+            if (!platform.HasFlag(PlatformID.NetBSD))
                 yield return new KeyValuePair<string, string>(XunitConstants.Category, XunitConstants.NonNetBSDTest);
         }
     }

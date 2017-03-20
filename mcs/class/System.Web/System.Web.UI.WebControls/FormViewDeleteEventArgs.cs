@@ -39,9 +39,9 @@ namespace System.Web.UI.WebControls
 		IOrderedDictionary keys;
 		IOrderedDictionary values;
 		
-		public FormViewDeleteEventArgs (int rowIndex)
+		public FormViewDeleteEventArgs (int index)
 		{
-			this.rowIndex = rowIndex;
+			this.rowIndex = index;
 		}
 		
 		internal FormViewDeleteEventArgs (int index, IOrderedDictionary keys, IOrderedDictionary values) 

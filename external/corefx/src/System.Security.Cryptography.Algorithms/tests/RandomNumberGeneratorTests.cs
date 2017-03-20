@@ -134,6 +134,7 @@ namespace System.Security.Cryptography.RNG.Tests
             }
         }
 
+#if netstandard17
         [Fact]
         public static void GetNonZeroBytes()
         {
@@ -190,6 +191,7 @@ namespace System.Security.Cryptography.RNG.Tests
                 rng.GetBytes(rand, 0, 0);
             }
         }
+#endif
 
         private static void DifferentSequential(int arraySize)
         {
@@ -236,6 +238,7 @@ namespace System.Security.Cryptography.RNG.Tests
             Assert.NotEqual(first, second);
         }
 
+#if netstandard17
         [Fact]
         public static void GetBytes_InvalidArgs()
         {
@@ -272,5 +275,6 @@ namespace System.Security.Cryptography.RNG.Tests
                 // Empty; don't throw NotImplementedException
             }
         }
+#endif
     }
 }

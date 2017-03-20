@@ -18,6 +18,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             }
         }
 
+#if netstandard17
         [Fact]
         public static void Constructor_DefaultStoreName()
         {
@@ -41,7 +42,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             }
         }
 
-        [PlatformSpecific(TestPlatforms.Windows)]  // Not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         [Fact]
         public static void Constructor_StoreHandle()
         {
@@ -67,7 +68,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             }
         }
 
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // API not supported on Unix
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         [Fact]
         public static void Constructor_StoreHandle_Unix()
         {
@@ -80,7 +81,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
             Assert.Throws<PlatformNotSupportedException>(() => new X509Chain(IntPtr.Zero));
         }
 
-        [PlatformSpecific(TestPlatforms.Windows)]  // Not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         [Fact]
         public static void TestDispose()
         {
@@ -93,6 +94,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
 
             Assert.Throws<CryptographicException>(() => store.StoreHandle);
         }
+#endif
 
         [Fact]
         public static void ReadMyCertificates()
@@ -113,7 +115,7 @@ namespace System.Security.Cryptography.X509Certificates.Tests
         }
 
         [Fact]
-        public static void OpenNotExistent()
+        public static void OpenNotExistant()
         {
             using (X509Store store = new X509Store(Guid.NewGuid().ToString("N"), StoreLocation.CurrentUser))
             {
@@ -214,8 +216,10 @@ namespace System.Security.Cryptography.X509Certificates.Tests
         [Fact]
         public static void TestAddAndRemove() {}
 
+#if netstandard17
         [Fact]
         public static void TestAddRangeAndRemoveRange() {}
+#endif
         */
 
         [Fact]

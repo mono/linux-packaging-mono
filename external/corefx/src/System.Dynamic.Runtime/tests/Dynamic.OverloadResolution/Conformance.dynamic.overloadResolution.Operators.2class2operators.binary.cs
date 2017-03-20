@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload001.overload001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload001.overload001;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // </Description>
@@ -55,6 +57,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload002.overload002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload002.overload002;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // </Description>
@@ -102,6 +106,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload003.overload003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload003.overload003;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // Call methods with different accessibility level and selecting the right one.:)
@@ -150,6 +156,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload004.overload004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload004.overload004;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // Call methods with different accessibility level and selecting the right one.:)
@@ -198,6 +206,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload005.overload005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload005.overload005;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // Call methods with different accessibility level and selecting the right one.:)
@@ -256,6 +266,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload006.overload006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload006.overload006;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // Call methods with different accessibility level and selecting the right one.:)
@@ -304,6 +316,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload007.overload007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload007.overload007;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // Call methods with different accessibility level and selecting the right one.:)
@@ -362,6 +376,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload008.overload008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload008.overload008;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // Select the best method to call.
@@ -415,6 +431,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Oper
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload009.overload009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.overloadResolution.Operators.Twoclass2operates.binary.overload009.overload009;
+
     // <Title> Tests overload resolution for 2 class and 2 methods</Title>
     // <Description>
     // Select the best method to call.

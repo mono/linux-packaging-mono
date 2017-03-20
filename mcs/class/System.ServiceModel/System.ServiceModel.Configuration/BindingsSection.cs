@@ -165,12 +165,12 @@ namespace System.ServiceModel.Configuration
 			return sm.Bindings;
 		}
 
-		public new BindingCollectionElement this [string binding] {
+		public new BindingCollectionElement this [string name] {
 			get {
-				object element = base [binding];
+				object element = base [name];
 				if (element is BindingCollectionElement)
 					return (BindingCollectionElement) element;
-				throw new NotImplementedException (String.Format ("Could not find {0}", binding));
+				throw new NotImplementedException (String.Format ("Could not find {0}", name));
 			}
 		}
 

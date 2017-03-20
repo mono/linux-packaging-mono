@@ -109,7 +109,7 @@ namespace Mono.Cecil.Cil {
 			switch (opcode.OperandType) {
 			case OperandType.ShortInlineBrTarget:
 			case OperandType.InlineBrTarget:
-				AppendLabel (instruction, (Instruction) operand);
+				AppendLabel (instruction, operand);
 				break;
 			case OperandType.InlineSwitch:
 				var labels = (Instruction []) operand;
@@ -133,10 +133,15 @@ namespace Mono.Cecil.Cil {
 			return instruction.ToString ();
 		}
 
-		static void AppendLabel (StringBuilder builder, Instruction instruction)
+		static void AppendLabel (StringBuilder builder, object o)
 		{
 			builder.Append ("IL_");
-			builder.Append (instruction.offset.ToString ("x4"));
+			if (o is Instruction)
+				builder.Append ((o as Instruction).offset.ToString ("x4"));
+			else if (o is int) {
+				builder.Append (((int)o).ToString ("x4"));
+				builder.Append (" (invalid)");
+			}
 		}
 
 		public static Instruction Create (OpCode opcode)

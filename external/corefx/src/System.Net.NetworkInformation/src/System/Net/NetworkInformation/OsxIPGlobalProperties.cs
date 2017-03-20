@@ -41,7 +41,7 @@ namespace System.Net.NetworkInformation
                 else
                 {
                     byte[] remoteBytes = new byte[nativeInfo.RemoteEndPoint.NumAddressBytes];
-                    fixed (byte* remoteBytesPtr = &remoteBytes[0])
+                    fixed (byte* remoteBytesPtr = remoteBytes)
                     {
                         Buffer.MemoryCopy(nativeInfo.RemoteEndPoint.AddressBytes, remoteBytesPtr, remoteBytes.Length, remoteBytes.Length);
                     }
@@ -84,7 +84,7 @@ namespace System.Net.NetworkInformation
                 else
                 {
                     byte[] bytes = new byte[endPointInfo.NumAddressBytes];
-                    fixed (byte* bytesPtr = &bytes[0])
+                    fixed (byte* bytesPtr = bytes)
                     {
                         Buffer.MemoryCopy(endPointInfo.AddressBytes, bytesPtr, bytes.Length, bytes.Length);
                     }

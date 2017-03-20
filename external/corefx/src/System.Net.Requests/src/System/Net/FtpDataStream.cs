@@ -4,7 +4,6 @@
 
 using System.IO;
 using System.Net.Sockets;
-using System.Runtime.ExceptionServices;
 
 namespace System.Net
 {
@@ -256,10 +255,8 @@ namespace System.Net
             {
                 object result = ((LazyAsyncResult)ar).InternalWaitForCompletion();
 
-                if (result is Exception e)
-                {
-                    ExceptionDispatchInfo.Capture(e).Throw();
-                }
+                if (result is Exception)
+                    throw (Exception)result;
 
                 return (int)result;
             }

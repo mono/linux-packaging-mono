@@ -94,38 +94,20 @@ See the LICENSE file in the project root for more information.
 
   <!-- Required by Common.Targets but not used for depproj -->
   <Target Name="CreateManifestResourceNames" />
-
-  <PropertyGroup>
-    <!-- don't use TargetingPackReference, we do our own filtering -->
-    <SkipFilterTargetingPackResolvedNugetPackages>true</SkipFilterTargetingPackResolvedNugetPackages>
-  </PropertyGroup>
   
-  <!-- Support filtering to a subset of packages or files -->
-  <Target Name="FilterNugetPackages" 
-          AfterTargets="ResolveNuGetPackages"
-          Condition="'@(PackageToInclude)' != '' OR '@(PackageToExclude)' != '' OR '@(FileToInclude)' != '' OR '@(FileToExclude)' != ''">
+  <!-- Support filtering to a subset of packages -->
+  <Target Name="FilterNugetPackages" AfterTargets="ResolveNuGetPackages">
     <ItemGroup>
-      <_nuGetDeploy Include="@($(NuGetDeploySourceItem))"/>
-      <_nuGetDeployByFileName Include="@(_nuGetDeploy->'%(FileName)')">
+      <_referenceCopyLocalByPackageId Include="@(ReferenceCopyLocalPaths->'%(NuGetPackageId)')">
         <OriginalItemSpec>%(Identity)</OriginalItemSpec>
-      </_nuGetDeployByFileName>
+      </_referenceCopyLocalByPackageId>
 
-      <_nuGetDeployByFileNameToRemove Include="@(_nuGetDeployByFileName)" Exclude="@(FileToInclude)" Condition="'@(FileToInclude)' != ''" />
-      <_filteredNuGetDeployByFileName Include="@(_nuGetDeployByFileName)" Exclude="@(_nuGetDeployByFileNameToRemove);@(FileToExclude)" />
-      
-      <_nuGetDeployByPackageId Include="@(_filteredNuGetDeployByFileName->'%(NuGetPackageId)')" />
+      <_referenceCopyLocalByPackageIdToRemove Include="@(_referenceCopyLocalByPackageId)" Exclude="@(PackageToInclude)" Condition="'@(PackageToInclude)' != ''" />
+      <_filteredReferenceCopyLocalByPackageId Include="@(_referenceCopyLocalByPackageId)" Exclude="@(_referenceCopyLocalByPackageIdToRemove);@(PackageToExclude)" />
 
-      <_nuGetDeployByPackageIdToRemove Include="@(_nuGetDeployByPackageId)" Exclude="@(PackageToInclude)" Condition="'@(PackageToInclude)' != ''" />
-      <_filteredNuGetDeployByPackageId Include="@(_nuGetDeployByPackageId)" Exclude="@(_nuGetDeployByPackageIdToRemove);@(PackageToExclude)" />
-
-      <ReferenceCopyLocalPaths Condition="'$(NuGetDeploySourceItem)' == 'ReferenceCopyLocalPaths'" Remove="@(ReferenceCopyLocalPaths)" />
-      <Reference Condition="'$(NuGetDeploySourceItem)' == 'Reference'" Remove="@(Reference)" />
-      <Analyzer Condition="'$(NuGetDeploySourceItem)' == 'Analyzer'" Remove="@(Analyzer)" />
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)"/>
+      <ReferenceCopyLocalPaths Include="@(_filteredReferenceCopyLocalByPackageId->'%(OriginalItemSpec)')" />
     </ItemGroup>
-    
-    <CreateItem Include="@(_filteredNuGetDeployByPackageId->'%(OriginalItemSpec)')">
-      <Output TaskParameter="Include" ItemName="$(NuGetDeploySourceItem)" />
-    </CreateItem>
   </Target>
 
 </Project>

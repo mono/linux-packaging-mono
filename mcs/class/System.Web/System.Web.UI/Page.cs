@@ -1600,17 +1600,17 @@ public partial class Page : TemplateControl, IHttpHandler
 	}
 
 	[EditorBrowsable (EditorBrowsableState.Advanced)]
-	protected virtual void SavePageStateToPersistenceMedium (object state)
+	protected virtual void SavePageStateToPersistenceMedium (object viewState)
 	{
 		PageStatePersister persister = this.PageStatePersister;
 		if (persister == null)
 			return;
-		Pair pair = state as Pair;
+		Pair pair = viewState as Pair;
 		if (pair != null) {
 			persister.ViewState = pair.First;
 			persister.ControlState = pair.Second;
 		} else
-			persister.ViewState = state;
+			persister.ViewState = viewState;
 		persister.Save ();
 	}
 
@@ -2531,9 +2531,9 @@ public partial class Page : TemplateControl, IHttpHandler
 
 	[MonoDocumentationNote ("Not implemented.  Only used by .net aspx parser")]
 	[EditorBrowsable (EditorBrowsableState.Never)]
-	protected object GetWrappedFileDependencies (string [] virtualFileDependencies)
+	protected object GetWrappedFileDependencies (string [] list)
 	{
-		return virtualFileDependencies;
+		return list;
 	}
 
 	[MonoDocumentationNote ("Does nothing.  Used by .net aspx parser")]

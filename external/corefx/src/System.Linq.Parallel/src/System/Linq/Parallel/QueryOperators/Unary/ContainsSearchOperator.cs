@@ -10,7 +10,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace System.Linq.Parallel
@@ -110,7 +109,6 @@ namespace System.Linq.Parallel
         // Returns an enumerable that represents the query executing sequentially.
         //
 
-        [ExcludeFromCodeCoverage]
         internal override IEnumerable<bool> AsSequentialQuery(CancellationToken token)
         {
             Debug.Fail("This method should never be called as it is an ending operator with LimitsParallelism=false.");

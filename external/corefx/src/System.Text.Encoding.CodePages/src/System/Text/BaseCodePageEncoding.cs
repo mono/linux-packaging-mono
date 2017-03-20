@@ -211,13 +211,13 @@ namespace System.Text
                 s_codePagesEncodingDataStream.Seek(CODEPAGE_DATA_FILE_HEADER_SIZE, SeekOrigin.Begin);
 
                 int codePagesCount;
-                fixed (byte* pBytes = &s_codePagesDataHeader[0])
+                fixed (byte* pBytes = s_codePagesDataHeader)
                 {
                     CodePageDataFileHeader* pDataHeader = (CodePageDataFileHeader*)pBytes;
                     codePagesCount = pDataHeader->CodePageCount;
                 }
 
-                fixed (byte* pBytes = &codePageIndex[0])
+                fixed (byte* pBytes = codePageIndex)
                 {
                     CodePageIndex* pCodePageIndex = (CodePageIndex*)pBytes;
                     for (int i = 0; i < codePagesCount; i++)
@@ -268,13 +268,13 @@ namespace System.Text
                 s_codePagesEncodingDataStream.Seek(CODEPAGE_DATA_FILE_HEADER_SIZE, SeekOrigin.Begin);
 
                 int codePagesCount;
-                fixed (byte* pBytes = &s_codePagesDataHeader[0])
+                fixed (byte* pBytes = s_codePagesDataHeader)
                 {
                     CodePageDataFileHeader* pDataHeader = (CodePageDataFileHeader*)pBytes;
                     codePagesCount = pDataHeader->CodePageCount;
                 }
 
-                fixed (byte* pBytes = &codePageIndex[0])
+                fixed (byte* pBytes = codePageIndex)
                 {
                     CodePageIndex* pCodePageIndex = (CodePageIndex*)pBytes;
                     for (int i = 0; i < codePagesCount; i++)

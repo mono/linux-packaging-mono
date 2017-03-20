@@ -40,36 +40,40 @@ namespace MonoTests.System.Drawing.Imaging {
 	public class ColorMatrixTest {
 
 		[Test]
+		[ExpectedException (typeof (NullReferenceException))]
 		public void Constructor_Null ()
 		{
-			Assert.Throws<NullReferenceException> (() => new ColorMatrix (null));
+			new ColorMatrix (null);
 		}
 
 		[Test]
+		[ExpectedException (typeof (IndexOutOfRangeException))]
 		public void Constructor_TooSmallArraySize ()
 		{
-			Assert.Throws<IndexOutOfRangeException> (() => new ColorMatrix (new float[][] { }));
+			new ColorMatrix (new float[][] { });
 		}
 
 		[Test]
+		[ExpectedException (typeof (IndexOutOfRangeException))]
 		public void Constructor_TooWideArraySize ()
 		{
-			Assert.Throws<IndexOutOfRangeException> (() => new ColorMatrix (new float[][] {
+			new ColorMatrix (new float[][] {
 				new float[] { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f }
-			}));
+			});
 		}
 
 		[Test]
+		[ExpectedException (typeof (IndexOutOfRangeException))]
 		public void Constructor_TooTallArraySize ()
 		{
-			Assert.Throws<IndexOutOfRangeException> (() => new ColorMatrix (new float[][] {
+			new ColorMatrix (new float[][] {
 				new float[] { 0.0f },
 				new float[] { 1.0f },
 				new float[] { 2.0f },
 				new float[] { 3.0f },
 				new float[] { 4.0f },
 				new float[] { 5.0f }
-			}));
+			});
 		}
 
 		[Test]
@@ -112,6 +116,7 @@ namespace MonoTests.System.Drawing.Imaging {
 		}
 
 		[Test]
+		[ExpectedException (typeof (IndexOutOfRangeException))]
 		public void TooBigItems ()
 		{
 			ColorMatrix cm = new ColorMatrix (new float[][] {
@@ -122,7 +127,7 @@ namespace MonoTests.System.Drawing.Imaging {
 				new float[] { 4.0f, 4.1f, 4.2f, 4.3f, 4.4f, 4.5f },
 				new float[] { 5.0f, 5.1f, 5.2f, 5.3f, 5.4f, 5.5f }
 			});
-			Assert.Throws<IndexOutOfRangeException> (() => { var x = cm[5, 5]; });
+			Assert.AreEqual (5.5f, cm[5,5], "out");
 		}
 
 		[Test]
@@ -164,10 +169,10 @@ namespace MonoTests.System.Drawing.Imaging {
 		{
 			ColorMatrix cm = new ColorMatrix (new float[][] {
 				new float[] {0.393f, 0.349f, 0.272f, 0, 0},
-				new float[] {0.769f, 0.686f, 0.534f, 0, 0},
-				new float[] {0.189f, 0.168f, 0.131f, 0, 0},
-				new float[] {     0,      0,      0, 1, 0},
-				new float[] {     0,      0,      0, 0, 1}
+			        new float[] {0.769f, 0.686f, 0.534f, 0, 0},
+			        new float[] {0.189f, 0.168f, 0.131f, 0, 0},
+			        new float[] {     0,      0,      0, 1, 0},
+			        new float[] {     0,      0,      0, 0, 1}
 			});
 
 			Assert.AreEqual (0.393f, cm.Matrix00, "00");

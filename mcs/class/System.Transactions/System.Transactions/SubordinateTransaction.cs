@@ -14,7 +14,7 @@ namespace System.Transactions
 	[Serializable]
 	public sealed class SubordinateTransaction : Transaction
 	{
-		public SubordinateTransaction (IsolationLevel isoLevel,
+		public SubordinateTransaction (IsolationLevel level,
 			ISimpleTransactionSuperior superior)
 		{
 			throw new NotImplementedException ();

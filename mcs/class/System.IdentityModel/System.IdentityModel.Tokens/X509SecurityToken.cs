@@ -111,27 +111,27 @@ namespace System.IdentityModel.Tokens
 
 		[MonoTODO]
 		public override bool MatchesKeyIdentifierClause (
-			SecurityKeyIdentifierClause keyIdentifierClause)
+			SecurityKeyIdentifierClause skiClause)
 		{
 			LocalIdKeyIdentifierClause l =
-				keyIdentifierClause as LocalIdKeyIdentifierClause;
+				skiClause as LocalIdKeyIdentifierClause;
 			if (l != null)
 				return l.LocalId == Id;
 
 			X509ThumbprintKeyIdentifierClause t =
-				keyIdentifierClause as X509ThumbprintKeyIdentifierClause;
+				skiClause as X509ThumbprintKeyIdentifierClause;
 			if (t != null)
 				return t.Matches (cert);
 			X509IssuerSerialKeyIdentifierClause i =
-				keyIdentifierClause as X509IssuerSerialKeyIdentifierClause;
+				skiClause as X509IssuerSerialKeyIdentifierClause;
 			if (i != null)
 				return i.Matches (cert);
 			X509SubjectKeyIdentifierClause s =
-				keyIdentifierClause as X509SubjectKeyIdentifierClause;
+				skiClause as X509SubjectKeyIdentifierClause;
 			if (s != null)
 				return s.Matches (cert);
 			X509RawDataKeyIdentifierClause r =
-				keyIdentifierClause as X509RawDataKeyIdentifierClause;
+				skiClause as X509RawDataKeyIdentifierClause;
 			if (r != null)
 				return r.Matches (cert);
 

@@ -31,7 +31,7 @@ namespace System.Runtime.InteropServices
 
         [Theory]
         [MemberData(nameof(StringData))]
-        [PlatformSpecific(TestPlatforms.Windows)]  // SecureStringToBSTR not supported on Unix
+        [PlatformSpecific(TestPlatforms.Windows)]
         public static void SecureStringToBSTR(string data)
         {
             using (SecureString str = ToSecureString(data))
@@ -270,8 +270,8 @@ namespace System.Runtime.InteropServices
             }
         }
 
-#if netcoreapp
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public static void GenerateGuidForType()
         {
             Assert.Equal(typeof(int).GUID, Marshal.GenerateGuidForType(typeof(int)));
@@ -284,6 +284,7 @@ namespace System.Runtime.InteropServices
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public static void GenerateProgIdForType()
         {
              Assert.Throws<ArgumentNullException>(() => Marshal.GenerateProgIdForType(null));
@@ -291,6 +292,7 @@ namespace System.Runtime.InteropServices
         }        
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public static void GetComObjectData()
         {
              Assert.Throws<PlatformNotSupportedException>(() => Marshal.GetComObjectData(null, null));        
@@ -306,12 +308,14 @@ namespace System.Runtime.InteropServices
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public static void GetIDispatchForObject()
         {
             Assert.Throws<PlatformNotSupportedException>(() => Marshal.GetIDispatchForObject(null));   
         }
                 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public static void GetTypedObjectForIUnknown()
         {
             if(PlatformDetection.IsWindows)
@@ -323,13 +327,6 @@ namespace System.Runtime.InteropServices
                 Assert.Throws<PlatformNotSupportedException>(() => Marshal.GetTypedObjectForIUnknown(IntPtr.Zero, typeof(int)));
             }
         }
-
-        [Fact]
-        public static void SetComObjectData()
-        {
-             Assert.Throws<PlatformNotSupportedException>(() => Marshal.SetComObjectData(null, null, null));        
-        }
-#endif // netcoreapp
 
         [Fact]
         public static void Prelink()
@@ -363,6 +360,13 @@ namespace System.Runtime.InteropServices
             Assert.Equal(s.Substring(0, len), s2);
 
             Marshal.FreeCoTaskMem(ptr);  
+        }
+
+        [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
+        public static void SetComObjectData()
+        {
+             Assert.Throws<PlatformNotSupportedException>(() => Marshal.SetComObjectData(null, null, null));        
         }
 
         [Fact]
@@ -418,6 +422,7 @@ namespace System.Runtime.InteropServices
         }
         
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public static void BindToMoniker()
         {
             String monikerName = null;
@@ -435,6 +440,7 @@ namespace System.Runtime.InteropServices
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Net46)]
         public static void ChangeWrapperHandleStrength() 
         {
             if(PlatformDetection.IsWindows)

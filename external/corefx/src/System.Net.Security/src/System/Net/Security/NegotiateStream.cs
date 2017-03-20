@@ -5,7 +5,6 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.ExceptionServices;
 using System.Security.Authentication.ExtendedProtection;
 using System.Security.Principal;
 
@@ -621,14 +620,14 @@ namespace System.Net.Security
                 // No "artificial" timeouts implemented so far, InnerStream controls timeout.
                 bufferResult.InternalWaitForCompletion();
 
-                if (bufferResult.Result is Exception e)
+                if (bufferResult.Result is Exception)
                 {
-                    if (e is IOException)
+                    if (bufferResult.Result is IOException)
                     {
-                        ExceptionDispatchInfo.Capture(e).Throw();
+                        throw (Exception)bufferResult.Result;
                     }
 
-                    throw new IOException(SR.net_io_read, e);
+                    throw new IOException(SR.net_io_read, (Exception)bufferResult.Result);
                 }
 
                 return bufferResult.Int32Result;
@@ -694,14 +693,14 @@ namespace System.Net.Security
                 // No "artificial" timeouts implemented so far, InnerStream controls timeout.
                 bufferResult.InternalWaitForCompletion();
 
-                if (bufferResult.Result is Exception e)
+                if (bufferResult.Result is Exception)
                 {
-                    if (e is IOException)
+                    if (bufferResult.Result is IOException)
                     {
-                        ExceptionDispatchInfo.Capture(e).Throw();
+                        throw (Exception)bufferResult.Result;
                     }
 
-                    throw new IOException(SR.net_io_write, e);
+                    throw new IOException(SR.net_io_write, (Exception)bufferResult.Result);
                 }
 #if DEBUG
             }

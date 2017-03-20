@@ -40,9 +40,9 @@ namespace System.Web
 		{
 		}
 
-		public ParserErrorCollection (ParserError[] value)
+		public ParserErrorCollection (ParserError[] errors)
 		{
-			InnerList.AddRange (value);
+			InnerList.AddRange (errors);
 		}
 		
 		public ParserError this [int index]
@@ -51,44 +51,44 @@ namespace System.Web
 			set { InnerList[index] = value; }
 		}
 		
-		public int Add (ParserError value)
+		public int Add (ParserError error)
 		{
-			return List.Add (value);
+			return List.Add (error);
 		}
 		
-		public void AddRange (ParserErrorCollection value)
+		public void AddRange (ParserErrorCollection collection)
 		{
-			InnerList.AddRange (value);
+			InnerList.AddRange (collection);
 		}
 		
-		public void AddRange (ParserError[] value)
+		public void AddRange (ParserError[] errors)
 		{
-			InnerList.AddRange (value);
+			InnerList.AddRange (errors);
 		}
 		
-		public bool Contains (ParserError value)
+		public bool Contains (ParserError error)
 		{
-			return InnerList.Contains (value);
+			return InnerList.Contains (error);
 		}
 		
-		public void CopyTo (ParserError[] array, int index)
+		public void CopyTo (ParserError[] errors, int index)
 		{
-			List.CopyTo (array, index);
+			List.CopyTo (errors, index);
 		}
 		
-		public int IndexOf (ParserError value)
+		public int IndexOf (ParserError error)
 		{
-			return InnerList.IndexOf (value);
+			return InnerList.IndexOf (error);
 		}
 		
-		public void Insert (int index, ParserError value)
+		public void Insert (int index, ParserError error)
 		{
-			InnerList.Insert (index, value);
+			InnerList.Insert (index, error);
 		}
 		
-		public void Remove (ParserError value)
+		public void Remove (ParserError error)
 		{
-			InnerList.Remove (value);
+			InnerList.Remove (error);
 		}
 	}
 }

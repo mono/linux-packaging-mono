@@ -4,8 +4,7 @@
 
 #ifdef USE_HAIKU_BACKEND
 
-/* KernelKit.h doesn't include the right headers? */
-#include <os/kernel/image.h>
+#include <KernelKit.h>
 
 gchar*
 mono_w32process_get_name (pid_t pid)

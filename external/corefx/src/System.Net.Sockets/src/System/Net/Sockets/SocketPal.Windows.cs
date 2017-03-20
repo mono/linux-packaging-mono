@@ -3,17 +3,26 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.Win32.SafeHandles;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace System.Net.Sockets
 {
     internal static class SocketPal
     {
         public const bool SupportsMultipleConnectAttempts = true;
+
+        private static readonly int s_protocolInformationSize = Marshal.SizeOf<Interop.Winsock.WSAPROTOCOL_INFO>();
+
+        public static int ProtocolInformationSize { get { return s_protocolInformationSize; } }
 
         private static void MicrosecondsToTimeValue(long microseconds, ref Interop.Winsock.TimeValue socketTime)
         {
@@ -140,7 +149,7 @@ namespace System.Net.Sockets
                 }
 
                 // This may throw ObjectDisposedException.
-                SocketError errorCode = Interop.Winsock.WSASend(
+                SocketError errorCode = Interop.Winsock.WSASend_Blocking(
                     handle.DangerousGetHandle(),
                     WSABuffers,
                     count,
@@ -180,7 +189,7 @@ namespace System.Net.Sockets
             }
             else
             {
-                fixed (byte* pinnedBuffer = &buffer[0])
+                fixed (byte* pinnedBuffer = buffer)
                 {
                     bytesSent = Interop.Winsock.send(
                         handle.DangerousGetHandle(),
@@ -225,7 +234,7 @@ namespace System.Net.Sockets
             }
             else
             {
-                fixed (byte* pinnedBuffer = &buffer[0])
+                fixed (byte* pinnedBuffer = buffer)
                 {
                     bytesSent = Interop.Winsock.sendto(
                         handle.DangerousGetHandle(),
@@ -266,7 +275,7 @@ namespace System.Net.Sockets
                 }
 
                 // This can throw ObjectDisposedException.
-                SocketError errorCode = Interop.Winsock.WSARecv(
+                SocketError errorCode = Interop.Winsock.WSARecv_Blocking(
                     handle.DangerousGetHandle(),
                     WSABuffers,
                     count,
@@ -431,7 +440,7 @@ namespace System.Net.Sockets
             }
             else
             {
-                fixed (byte* pinnedBuffer = &buffer[0])
+                fixed (byte* pinnedBuffer = buffer)
                 {
                     bytesReceived = Interop.Winsock.recvfrom(handle.DangerousGetHandle(), pinnedBuffer + offset, size, socketFlags, socketAddress, ref addressLength);
                 }
@@ -818,7 +827,7 @@ namespace System.Net.Sockets
         public static unsafe SocketError SendAsync(SafeCloseSocket handle, byte[] buffer, int offset, int count, SocketFlags socketFlags, OverlappedAsyncResult asyncResult)
         {
             // Set up unmanaged structures for overlapped WSASend.
-            asyncResult.SetUnmanagedStructures(buffer, offset, count, null);
+            asyncResult.SetUnmanagedStructures(buffer, offset, count, null, false /*don't pin null remoteEP*/);
             try
             {
                 // This can throw ObjectDisposedException.
@@ -925,7 +934,7 @@ namespace System.Net.Sockets
         public static unsafe SocketError SendToAsync(SafeCloseSocket handle, byte[] buffer, int offset, int count, SocketFlags socketFlags, Internals.SocketAddress socketAddress, OverlappedAsyncResult asyncResult)
         {
             // Set up asyncResult for overlapped WSASendTo.
-            asyncResult.SetUnmanagedStructures(buffer, offset, count, socketAddress);
+            asyncResult.SetUnmanagedStructures(buffer, offset, count, socketAddress, false /* don't pin RemoteEP*/);
             try
             {
                 int bytesTransferred;
@@ -952,7 +961,7 @@ namespace System.Net.Sockets
         public static unsafe SocketError ReceiveAsync(SafeCloseSocket handle, byte[] buffer, int offset, int count, SocketFlags socketFlags, OverlappedAsyncResult asyncResult)
         {
             // Set up asyncResult for overlapped WSARecv.
-            asyncResult.SetUnmanagedStructures(buffer, offset, count, null);
+            asyncResult.SetUnmanagedStructures(buffer, offset, count, null, false /* don't pin null RemoteEP*/);
             try
             {
                 // This can throw ObjectDisposedException.
@@ -1004,7 +1013,7 @@ namespace System.Net.Sockets
         public static unsafe SocketError ReceiveFromAsync(SafeCloseSocket handle, byte[] buffer, int offset, int count, SocketFlags socketFlags, Internals.SocketAddress socketAddress, OverlappedAsyncResult asyncResult)
         {
             // Set up asyncResult for overlapped WSARecvFrom.
-            asyncResult.SetUnmanagedStructures(buffer, offset, count, socketAddress);
+            asyncResult.SetUnmanagedStructures(buffer, offset, count, socketAddress, true);
             try
             {
                 int bytesTransferred;

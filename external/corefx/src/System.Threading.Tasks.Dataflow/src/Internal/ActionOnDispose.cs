@@ -7,7 +7,7 @@
 // ActionOnDispose.cs
 //
 //
-// Implementation of IDisposable that runs a delegate on Dispose.
+// Implemention of IDisposable that runs a delegate on Dispose.
 //
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 

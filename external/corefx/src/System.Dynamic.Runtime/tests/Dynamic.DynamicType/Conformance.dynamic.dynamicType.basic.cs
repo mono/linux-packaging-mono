@@ -6,12 +6,14 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod001.anonmethod001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod001.anonmethod001;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Bar
     {
@@ -49,12 +51,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod002.anonmethod002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod002.anonmethod002;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Bar
     {
@@ -92,12 +96,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod003.anonmethod003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod003.anonmethod003;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Bar
     {
@@ -135,12 +141,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod004.anonmethod004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod004.anonmethod004;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using Microsoft.CSharp.RuntimeBinder;
 
     public class Bar
@@ -189,12 +197,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod004b.anonmethod004b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod004b.anonmethod004b;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Bar
     {
@@ -232,12 +242,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod005.anonmethod005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod005.anonmethod005;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Bar
     {
@@ -278,12 +290,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod006.anonmethod006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod006.anonmethod006;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using Microsoft.CSharp.RuntimeBinder;
 
     public class Bar
@@ -346,12 +360,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod006b.anonmethod006b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod006b.anonmethod006b;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Bar
     {
@@ -405,12 +421,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod008.anonmethod008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonmethod008.anonmethod008;
     // <Title>Anonymous methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Bar
     {
@@ -465,6 +483,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.anonm
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.argument001.argument001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.argument001.argument001;
+
     // <Title>Argument to method invocation</Title>
     // <Description>
     // </Description>
@@ -508,6 +528,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.argum
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.argument002.argument002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.argument002.argument002;
+
     // <Title>Argument to method invocation</Title>
     // <Description>
     // </Description>
@@ -551,12 +573,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.argum
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array001.array001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array001.array001;
     // <Title>Special Array methods</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Test
     {
@@ -615,6 +639,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array002.array002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array002.array002;
+
     // <Title>Special Array methods</Title>
     // <Description>
     // </Description>
@@ -653,6 +679,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array003.array003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array003.array003;
+
     // <Title>Indexing in arrays using uints/ulongs</Title>
     // <Description>
     // </Description>
@@ -697,6 +725,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array004.array004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array004.array004;
+
     // <Title>Indexing in arrays using uints/ulongs</Title>
     // <Description>
     // </Description>
@@ -742,12 +772,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array005.array005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array005.array005;
     // <Title>Array indexers</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Program
     {
@@ -837,12 +869,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array006.array006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array006.array006;
     // <Title>Array indexers</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Program
     {
@@ -920,6 +954,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array007.array007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array007.array007;
     // <Title>Array indexers</Title>
     // <Description>
     // </Description>
@@ -968,12 +1003,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array008.array008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array008.array008;
     // <Title>Array indexers</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Program
     {
@@ -1039,6 +1076,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array010.array010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array010.array010;
     // <Title>Array - dynamic index</Title>
     // <Description> LINQ query mixed with dynamic returns incorrect result
     //      compiler seems to reuse the for-loop local iterator variable and its value in nest foreach loop if it's dynamic
@@ -1046,6 +1084,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Linq;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -1162,6 +1202,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit001.arrayinit001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit001.arrayinit001;
+
     public class Test
     {
         [Fact]
@@ -1194,6 +1236,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit002.arrayinit002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit002.arrayinit002;
+
     public class Test
     {
         [Fact]
@@ -1227,6 +1271,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit003.arrayinit003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit003.arrayinit003;
+
     public class Test
     {
         [Fact]
@@ -1256,6 +1302,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit004.arrayinit004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit004.arrayinit004;
+
     public class Test
     {
         [Fact]
@@ -1285,6 +1333,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit005.arrayinit005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit005.arrayinit005;
+
     public class Test
     {
         [Fact]
@@ -1314,6 +1364,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit006.arrayinit006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit006.arrayinit006;
+
     public class Test
     {
         [Fact]
@@ -1346,12 +1398,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit007.arrayinit007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.arrayinit007.arrayinit007;
     // <Title>Array initializers</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class MainClass
     {
@@ -1383,6 +1437,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.array
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing001.boxing001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing001.boxing001;
+
     public class Test
     {
         [Fact]
@@ -1513,6 +1569,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxin
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing002.boxing002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing002.boxing002;
+
     public class Test
     {
         [Fact]
@@ -1645,6 +1703,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxin
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing003.boxing003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing003.boxing003;
+
     public class Test
     {
         [Fact]
@@ -1755,6 +1815,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxin
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing004.boxing004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing004.boxing004;
+
     public class Test
     {
         [Fact]
@@ -1870,6 +1932,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxin
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing005.boxing005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing005.boxing005;
+
     // <Title>Boxing and unboxing</Title>
     // <Description>
     // Boxing to an object and unboxing from a dynamic
@@ -1910,6 +1974,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxin
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing006.boxing006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxing006.boxing006;
+
     // <Title>Boxing and unboxing</Title>
     // <Description>
     // Boxing to an object and unboxing from a dynamic
@@ -1951,6 +2017,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.boxin
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.cast002.cast002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.cast002.cast002;
+
     public class Test
     {
         [Fact]
@@ -1973,6 +2041,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.cast0
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit001.collectioninit001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit001.collectioninit001;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
@@ -2017,6 +2086,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit002.collectioninit002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit002.collectioninit002;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
@@ -2053,6 +2123,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit003.collectioninit003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit003.collectioninit003;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
@@ -2092,6 +2163,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit004.collectioninit004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit004.collectioninit004;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
@@ -2126,6 +2198,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit005.collectioninit005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit005.collectioninit005;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
@@ -2160,6 +2233,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit006.collectioninit006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit006.collectioninit006;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
@@ -2197,6 +2271,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit007.collectioninit007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit007.collectioninit007;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
@@ -2234,12 +2309,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit008.collectioninit008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit008.collectioninit008;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections.Generic;
     using System.Text;
 
@@ -2281,6 +2358,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit009.collectioninit009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.collectioninit009.collectioninit009;
     // <Title>Collection initializers</Title>
     // <Description>
     // </Description>
@@ -2350,6 +2428,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.colle
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate001.dlgate001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate001.dlgate001;
+
     public class Test
     {
         public delegate void Foo(object o);
@@ -2377,6 +2457,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgat
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate002.dlgate002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate002.dlgate002;
+
     public class Test
     {
         public delegate void Foo(dynamic o);
@@ -2404,6 +2486,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgat
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate003.dlgate003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate003.dlgate003;
+
     // <Title>Delegates</Title>
     // <Description>
     // </Description>
@@ -2445,6 +2529,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgat
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate004.dlgate004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate004.dlgate004;
+
     // <Title>Delegates</Title>
     // <Description>
     // </Description>
@@ -2486,6 +2572,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgat
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate005.dlgate005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate005.dlgate005;
+
     // <Title>Delegates</Title>
     // <Description>
     // </Description>
@@ -2533,6 +2621,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgat
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate007.dlgate007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate007.dlgate007;
+
     // <Title>Delegates</Title>
     // <Description>
     // </Description>
@@ -2580,6 +2670,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgat
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate008lib.dlgate008lib
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgate008lib.dlgate008lib;
+
     public class Test
     {
         public void M1(ref int p1)
@@ -2609,6 +2701,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.dlgat
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt001.evnt001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt001.evnt001;
     // <Title>Delegates</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
@@ -2722,6 +2815,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt0
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt002.evnt002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt002.evnt002;
     // <Title>Delegates</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
@@ -2865,6 +2959,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt0
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt003.evnt003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt003.evnt003;
     // <Title>Delegates</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
@@ -2909,6 +3004,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt0
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt004.evnt004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt004.evnt004;
     // <Title>Delegates</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
@@ -2953,6 +3049,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt0
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt006.evnt006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt006.evnt006;
     // <Title>Delegates</Title>
     // <Description>Extended scenarios - event should not resolved as property </Description>
     // <RelatedBugs></RelatedBugs>
@@ -3140,12 +3237,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt0
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt008.evnt008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt008.evnt008;
     // <Title>Event</Title>
     // <Description>Add null to an event</Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(13,23\).*CS0067</Expects>
+    using System;
 
     public class X
     {
@@ -3171,6 +3270,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.evnt0
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.explicit001.explicit001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.explicit001.explicit001;
+
     public class Test
     {
         [Fact]
@@ -3217,6 +3318,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.expli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.explicit002.explicit002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.explicit002.explicit002;
+
     public class Test
     {
         [Fact]
@@ -3243,6 +3346,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.expli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.explicit003.explicit003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.explicit003.explicit003;
+
     // <Title>Boxing and unboxing</Title>
     // <Description>
     // Boxing to an object and unboxing from a dynamic
@@ -3295,6 +3400,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.expli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.explicit004.explicit004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.explicit004.explicit004;
+
     public class Test
     {
         [Fact]
@@ -3318,6 +3425,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.expli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicit001.implicit001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicit001.implicit001;
+
     public class Test
     {
         [Fact]
@@ -3348,6 +3457,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.impli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicitarayinit001.implicitarayinit001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicitarayinit001.implicitarayinit001;
+
     public class Test
     {
         [Fact]
@@ -3376,6 +3487,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.impli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicitarayinit002.implicitarayinit002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicitarayinit002.implicitarayinit002;
+
     public class Test
     {
         [Fact]
@@ -3405,6 +3518,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.impli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicitarayinit003.implicitarayinit003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicitarayinit003.implicitarayinit003;
+
     public class Test
     {
         [Fact]
@@ -3433,6 +3548,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.impli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicitarayinit004.implicitarayinit004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.implicitarayinit004.implicitarayinit004;
+
     public class Test
     {
         [Fact]
@@ -3469,6 +3586,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.impli
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize002.initialize002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize002.initialize002;
+
     public class Test
     {
         [Fact]
@@ -3541,6 +3660,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initi
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize003.initialize003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize003.initialize003;
+
     public class Test
     {
         private static object s_foo = ((dynamic)new MyClass()
@@ -3587,6 +3708,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initi
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize004.initialize004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize004.initialize004;
+
     public class Test
     {
         private static object s_foo = ((dynamic)new MyClass()
@@ -3632,6 +3755,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initi
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize005.initialize005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize005.initialize005;
+
     public class Test
     {
         private static object s_foo = ((MyClass)((dynamic)new MyClass()
@@ -3677,6 +3802,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initi
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize006.initialize006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize006.initialize006;
+
     public class Test
     {
         private static dynamic s_foo = (new MyClass()
@@ -3722,6 +3849,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initi
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize007.initialize007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initialize007.initialize007;
+
     public class Test
     {
         [Fact]
@@ -3743,6 +3872,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.initi
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda002.lambda002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda002.lambda002;
     // <Title>Lambda expressions</Title>
     // <Description>match build-in delegates
     // </Description>
@@ -3783,12 +3913,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda003.lambda003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda003.lambda003;
     // <Title>Lambda expressions</Title>
     // <Description>lambda as method parameter
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Linq.Expressions;
 
     public class Test
     {
@@ -3843,6 +3976,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda004b.lambda004b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda004b.lambda004b;
     // <Title>Lambda expressions</Title>
     // <Description>Overload
     // </Description>
@@ -3915,12 +4049,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda005.lambda005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda005.lambda005;
     // <Title>Lambda expressions</Title>
     // <Description>unsafe
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Linq.Expressions;
     //unsafe delegate byte D(byte* p1, dynamic p2);
     //[TestClass]public unsafe class Test
     //{
@@ -3944,6 +4081,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda006.lambda006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda006.lambda006;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4014,12 +4152,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda007.lambda007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda007.lambda007;
     // <Title>Lambda expressions</Title>
     // <Description>with anonymous method
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Linq.Expressions;
 
     public delegate dynamic D(object p1, char p2);
     public class Test
@@ -4069,6 +4210,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda008.lambda008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda008.lambda008;
     // <Title>Lambda expressions</Title>
     // <Description>context
     // </Description>
@@ -4136,6 +4278,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda009.lambda009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda009.lambda009;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4143,6 +4286,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class Test
     {
@@ -4168,6 +4312,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda010.lambda010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda010.lambda010;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4210,6 +4355,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda011.lambda011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda011.lambda011;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4252,6 +4398,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda012.lambda012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda012.lambda012;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4259,6 +4406,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class myClass
     {
@@ -4293,6 +4441,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda013.lambda013
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda013.lambda013;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4300,6 +4449,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class myClass
     {
@@ -4331,6 +4481,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda014.lambda014
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda014.lambda014;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4338,6 +4489,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class myClass
     {
@@ -4371,6 +4523,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda015.lambda015
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda015.lambda015;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4378,6 +4531,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class Test
     {
@@ -4404,6 +4558,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda016.lambda016
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda016.lambda016;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4411,6 +4566,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class Test
     {
@@ -4436,6 +4592,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda017.lambda017
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda017.lambda017;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4443,6 +4600,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class Test
     {
@@ -4483,6 +4641,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda018.lambda018
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda018.lambda018;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4490,6 +4649,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class Test
     {
@@ -4537,6 +4697,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda019.lambda019
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda019.lambda019;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4544,6 +4705,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class Test
     {
@@ -4594,6 +4756,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda020.lambda020
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambda020.lambda020;
     // <Title>Lambda expressions</Title>
     // <Description>
     // </Description>
@@ -4601,6 +4764,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
     //<Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq.Expressions;
 
     public class Test
     {
@@ -4651,6 +4815,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.lambd
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofanontype001.memberinitofanontype001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofanontype001.memberinitofanontype001;
+
     public class Test
     {
         [Fact]
@@ -4706,6 +4872,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.membe
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofanontype002.memberinitofanontype002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofanontype002.memberinitofanontype002;
+
     public class Test
     {
         [Fact]
@@ -4761,6 +4929,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.membe
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofobjinit001.memberinitofobjinit001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofobjinit001.memberinitofobjinit001;
+
     // <Title>Member initializer of object initializer</Title>
     // <Description>
     // </Description>
@@ -4857,6 +5027,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.membe
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofobjinit002.memberinitofobjinit002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofobjinit002.memberinitofobjinit002;
+
     // <Title>Member initializer of object initializer</Title>
     // <Description>
     // </Description>
@@ -4953,6 +5125,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.membe
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofobjinit003.memberinitofobjinit003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofobjinit003.memberinitofobjinit003;
+
     // <Title>Member initializer of object initializer</Title>
     // <Description>
     // </Description>
@@ -5049,6 +5223,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.membe
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofobjinit004.memberinitofobjinit004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.memberinitofobjinit004.memberinitofobjinit004;
+
     // <Title>Member initializer of object initializer</Title>
     // <Description>
     // </Description>
@@ -5144,6 +5320,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.membe
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.negboxing002.negboxing002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.negboxing002.negboxing002;
+
     public class Test
     {
         [Fact]
@@ -5258,6 +5436,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.negbo
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullcoalesce001.nullcoalesce001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullcoalesce001.nullcoalesce001;
+
     // <Title>Null coalescing</Title>
     // <Description>
     // </Description>
@@ -5294,6 +5474,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.unsfe001.unsfe001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.unsfe001.unsfe001;
     // <Title>stackalloc and dynamic</Title>
     // <Description>
     // </Description>
@@ -5357,6 +5538,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.unsfe
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query003.query003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query003.query003;
     // <Title>Query expression</Title>
     // <Description>
     // </Description>
@@ -5399,6 +5581,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query004.query004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query004.query004;
     // <Title>Query expression</Title>
     // <Description>
     // </Description>
@@ -5449,6 +5632,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query005.query005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query005.query005;
     // <Title>Query expression</Title>
     // <Description>
     // </Description>
@@ -5500,6 +5684,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.query
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.throw003.throw003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.throw003.throw003;
+
     // <Title>Throw</Title>
     // <Description>
     // </Description>
@@ -5546,6 +5732,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.throw
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate001.operate001;
     // <Title> Dynamic and static interaction utility class </Title>
     // <Description>
     // </Description>
@@ -5582,12 +5770,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.commo
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate001.operate001
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate001.operate001;
     // <Title> Operator -.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -5708,12 +5898,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate002.operate002
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate002.operate002;
     // <Title> Operator +.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -5834,12 +6026,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate003.operate003
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate003.operate003;
     // <Title> Operator ~.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -5943,12 +6137,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate004.operate004
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate004.operate004;
     // <Title> Operator !.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -6032,12 +6228,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate005.operate005
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate005.operate005;
     // <Title> Operator ++.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -6241,12 +6439,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate005a.operate005a
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate005a.operate005a;
     // <Title> Operator ++.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -6450,12 +6650,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate006.operate006
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate006.operate006;
     // <Title> Operator --.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -6661,12 +6863,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate006a.operate006a
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate006a.operate006a;
     // <Title> Operator --.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -6871,12 +7075,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate007.operate007
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate007.operate007;
     // <Title>Bool logical Operator &, | , ^</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -7062,12 +7268,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate007a.operate007a
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate007a.operate007a;
     // <Title>Bool logical Operator &=, |= , ^=, Compound assignment</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -7320,6 +7528,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate007b.operate007b
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate007b.operate007b;
     // <Title>Bool logical Operator &=, |= , ^=, Compound assignment</Title>
     // <Description>
     // dynamic op literals -
@@ -7327,6 +7536,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -7513,12 +7723,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate008.operate008
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate008.operate008;
     // <Title>Conditional logical operators ||, &&</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -7646,6 +7858,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate008a.operate008a
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate008a.operate008a;
     // <Title>Conditional logical operators ||, &&</Title>
     // <Description>
     // dynamic op literals
@@ -7653,6 +7866,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -7915,12 +8129,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate009.operate009
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate009.operate009;
     // <Title>Null coalescing ??</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -8041,6 +8257,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate009a.operate009a
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate009a.operate009a;
     // <Title>Null coalescing ??</Title>
     // <Description>
     // dynamic op literals
@@ -8048,6 +8265,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -8216,6 +8434,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate010.operate010
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate010.operate010;
     // <Title>Conditional operator ? :</Title>
     // <Description>
     // </Description>
@@ -8533,6 +8752,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate010a.operate010a
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate010a.operate010a;
     // <Title>Conditional operator ? :</Title>
     // <Description>
     // dynamic op literals
@@ -8852,6 +9072,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate011.operate011
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate011.operate011;
     // <Title>Equality operator</Title>
     // <Description>
     // </Description>
@@ -9090,12 +9311,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate011b.operate011b
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate011b.operate011b;
     // <Title>Equality operator when one operand is literal null</Title>
     // <Description> 
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using Microsoft.CSharp.RuntimeBinder;
 
     #region "Type definition"
@@ -9541,12 +9764,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate012.operate012
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate012.operate012;
     // <Title>Relational operator</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -9678,6 +9903,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate012a.operate012a
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate012a.operate012a;
     // <Title>Relational operator</Title>
     // <Description>
     // dynamic op literals
@@ -9686,6 +9912,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
     //<Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(69,33\).*CS0464</Expects>
+    using System;
 
     public class Test
     {
@@ -9825,6 +10052,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate012b.operate012b
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate012b.operate012b;
     // <Title>Relational operator</Title>
     // <Description>
     // dynamic op literals
@@ -9833,6 +10061,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
     //<Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(94,43\).*CS0464</Expects>
+    using System;
 
     public class Test
     {
@@ -10005,12 +10234,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate013.operate013
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate013.operate013;
     // <Title>Arithmetic operator</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -10225,12 +10456,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate013a.operate013a
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate013a.operate013a;
     // <Title>Arithmetic operator, Compound assignment</Title>
     // <Description>dynamic does NOT keep nullable info either non-nullable Type or null object
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -10428,7 +10661,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
                     var b21 = a1;
                     var b22 = a2;
                     dynamic d2 = a2;
-                    if (unchecked(b11 <<= d2) != unchecked(b21 <<= b22))
+                    if ((b11 <<= d2) != (b21 <<= b22))
                     {
                         System.Console.WriteLine("Failed -- byte <<= byte");
                         return false;
@@ -10475,6 +10708,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate013b.operate013b
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate013b.operate013b;
     // <Title>Arithmetic operator</Title>
     // <Description>
     // dynamic op literals
@@ -10483,6 +10717,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
     //<Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(113,33\).*CS0458</Expects>
+    using System;
 
     public class Test
     {
@@ -10683,12 +10918,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate014.operate014
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate014.operate014;
     // <Title>Short circuiting operators</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -10831,6 +11068,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate014b.operate014b
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate014b.operate014b;
     // <Title>User defined short circuiting operators</Title>
     // <Description>
     // Unlike in the static world, we can't know the type we care about (the runtime type) for the right operand,
@@ -10840,6 +11078,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using Microsoft.CSharp.RuntimeBinder;
 
     public class MyOpClass
@@ -11286,11 +11525,13 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate015.operate015
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate015.operate015;
     // <Title> Operator -.is, as</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections.Generic;
 
     public class A
@@ -11323,11 +11564,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate016.operate016
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate016.operate016;
     // <Title> Operator -.is, as</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections.Generic;
 
     public class A
     {
@@ -11354,6 +11598,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate017.operate017
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate017.operate017;
     // <Title>Unary operators with operand null</Title>
     // <Description>
     // The related 
@@ -11456,6 +11701,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate018.operate018
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate018.operate018;
     // <Title>Binary operators with both operands are null</Title>
     // <Description>
     // </Description>
@@ -11589,6 +11835,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate019.operate019
 {
     using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate019.operate019;
     // <Title>Other operators with both operand null</Title>
     // <Description>Conditional logical, conditional, compound</Description>
     // <RelatedBugs></RelatedBugs>
@@ -11725,11 +11972,13 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate020.operate020
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate020.operate020;
     // <Title>Regression test</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -11777,6 +12026,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate021.operate021
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate021.operate021;
+
     // <Title>Regression test</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
@@ -11825,12 +12076,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate022.operate022
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.operate022.operate022;
     // <Title>Regression test</Title>
     // <Description></Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(19,41\).*CS0168</Expects>
+    using System;
 
     public class A
     {
@@ -11880,11 +12133,13 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.opera
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.literal001.literal001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.literal001.literal001;
     // <Title>Dynamic method call with literal parameter</Title>
     // <Description> </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -11925,6 +12180,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.liter
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullable001.nullable001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullable001.nullable001;
+
     // <Title>Nullable and dynamic</Title>
     // <Description>
     // </Description>
@@ -11964,6 +12221,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nulla
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullable002.nullable002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullable002.nullable002;
+
     // <Title>Nullable and dynamic</Title>
     // <Description>
     // </Description>
@@ -12003,6 +12262,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nulla
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullable003.nullable003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nullable003.nullable003;
+
     // <Title>Nullable and dynamic</Title>
     // <Description>
     // </Description>
@@ -12042,12 +12303,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.nulla
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.field001.field001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.field001.field001;
     // <Title>Dynamic static fields</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -12081,12 +12344,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.field
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.field002.field002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.field002.field002;
     // <Title>Dynamic static fields</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class P
     {
@@ -12127,6 +12392,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.field
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.date001.date001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.date001.date001;
     // <Title>dynamic expression on DateTime.Add...</Title>
     // <Description>
     // </Description>
@@ -12160,6 +12426,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.date0
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.gettype01.gettype01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.gettype01.gettype01;
     // <Title>GetType should not hide object.GetType</Title>
     // <Description>
     // </Description>
@@ -12194,6 +12461,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.getty
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.gettype02.gettype02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.basic.gettype02.gettype02;
     // <Title>GetType should not hide object.GetType</Title>
     // <Description>
     // </Description>

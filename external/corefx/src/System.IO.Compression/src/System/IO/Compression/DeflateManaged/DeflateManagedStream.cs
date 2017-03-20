@@ -584,11 +584,5 @@ namespace System.IO.Compression
                 Interlocked.Decrement(ref _asyncOperations);
             }
         }
-
-        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback asyncCallback, object asyncState) =>
-            TaskToApm.Begin(WriteAsync(buffer, offset, count, CancellationToken.None), asyncCallback, asyncState);
-
-        public override void EndWrite(IAsyncResult asyncResult) =>
-            TaskToApm.End(asyncResult);
     }
 }

@@ -96,9 +96,10 @@ namespace MonoTests.System.Drawing.Drawing2D
 		}
 
 		[Test]
+		[ExpectedException (typeof (OverflowException))]
 		public void ColorBlend_Negative ()
 		{
-			Assert.Throws<OverflowException> (() => new ColorBlend (-1));
+			ColorBlend cb = new ColorBlend (-1);
 		}
 
 		[Test]

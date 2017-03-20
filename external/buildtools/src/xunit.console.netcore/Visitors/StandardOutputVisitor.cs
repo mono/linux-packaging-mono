@@ -64,9 +64,8 @@ namespace Xunit.ConsoleClient
             lock (consoleLock)
             {
                 // TODO: Thread-safe way to figure out the default foreground color
-                
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine("   {0} [FAIL]", XmlEscape(testFailed.Test.DisplayName));
+                Console.Error.WriteLine("   {0} [FAIL]", Escape(testFailed.Test.DisplayName));
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.Error.WriteLine("      {0}", ExceptionUtility.CombineMessages(testFailed).Replace(Environment.NewLine, Environment.NewLine + "      "));
 
@@ -87,9 +86,9 @@ namespace Xunit.ConsoleClient
             {
                 // TODO: Thread-safe way to figure out the default foreground color
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Error.WriteLine("   {0} [SKIP]", XmlEscape(testSkipped.Test.DisplayName));
+                Console.Error.WriteLine("   {0} [SKIP]", Escape(testSkipped.Test.DisplayName));
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Error.WriteLine("      {0}", XmlEscape(testSkipped.Reason));
+                Console.Error.WriteLine("      {0}", Escape(testSkipped.Reason));
             }
 
             return base.Visit(testSkipped);
@@ -101,7 +100,7 @@ namespace Xunit.ConsoleClient
             {
                 lock (consoleLock)
                 {
-                    Console.WriteLine("   {0} [STARTING]", XmlEscape(testStarting.Test.DisplayName));
+                    Console.WriteLine("   {0} [STARTING]", Escape(testStarting.Test.DisplayName));
                 }
             }
             return base.Visit(testStarting);
@@ -113,7 +112,7 @@ namespace Xunit.ConsoleClient
             {
                 lock (consoleLock)
                 {
-                    Console.WriteLine("   {0} [FINISHED] Time: {1}s", XmlEscape(testFinished.Test.DisplayName), testFinished.ExecutionTime);
+                    Console.WriteLine("   {0} [FINISHED] Time: {1}s", Escape(testFinished.Test.DisplayName), testFinished.ExecutionTime);
                 }
             }
             return base.Visit(testFinished);
@@ -173,9 +172,9 @@ namespace Xunit.ConsoleClient
             lock (consoleLock)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.Error.WriteLine("   [{0}] {1}", failureName, XmlEscape(failureInfo.ExceptionTypes[0]));
+                Console.Error.WriteLine("   [{0}] {1}", failureName, Escape(failureInfo.ExceptionTypes[0]));
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Error.WriteLine("      {0}", XmlEscape(ExceptionUtility.CombineMessages(failureInfo)));
+                Console.Error.WriteLine("      {0}", Escape(ExceptionUtility.CombineMessages(failureInfo)));
 
                 WriteStackTrace(ExceptionUtility.CombineStackTraces(failureInfo));
             }

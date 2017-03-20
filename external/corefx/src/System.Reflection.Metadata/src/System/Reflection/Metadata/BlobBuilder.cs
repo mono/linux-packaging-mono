@@ -5,10 +5,10 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection.Internal;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace System.Reflection.Metadata
 {
@@ -58,6 +58,12 @@ namespace System.Reflection.Metadata
             if (capacity < 0)
             {
                 Throw.ArgumentOutOfRange(nameof(capacity));
+            }
+
+            // the writer assumes little-endian architecture:
+            if (!BitConverter.IsLittleEndian)
+            {
+                Throw.LitteEndianArchitectureRequired();
             }
 
             _nextOrPrevious = this;
@@ -768,7 +774,7 @@ namespace System.Reflection.Metadata
                 return;
             }
 
-            fixed (byte* ptr = &buffer[0])
+            fixed (byte* ptr = buffer)
             {
                 WriteBytesUnchecked(ptr + start, byteCount);
             }
@@ -948,20 +954,9 @@ namespace System.Reflection.Metadata
                 return;
             }
 
-            if (BitConverter.IsLittleEndian)
+            fixed (char* ptr = value)
             {
-                fixed (char* ptr = &value[0])
-                {
-                    WriteBytesUnchecked((byte*)ptr, value.Length * sizeof(char));
-                }
-            }
-            else
-            {
-                byte[] bytes = Encoding.Unicode.GetBytes(value);
-                fixed (byte* ptr = &bytes[0])
-                {
-                    WriteBytesUnchecked((byte*)ptr, bytes.Length);
-                }
+                WriteBytesUnchecked((byte*)ptr, value.Length * sizeof(char));
             }
         }
 
@@ -982,20 +977,9 @@ namespace System.Reflection.Metadata
                 Throw.InvalidOperationBuilderAlreadyLinked();
             }
 
-            if (BitConverter.IsLittleEndian)
+            fixed (char* ptr = value)
             {
-                fixed (char* ptr = value)
-                {
-                    WriteBytesUnchecked((byte*)ptr, value.Length * sizeof(char));
-                }
-            }
-            else
-            {
-                byte[] bytes = Encoding.Unicode.GetBytes(value);
-                fixed (byte* ptr = bytes)
-                {
-                    WriteBytesUnchecked((byte*)ptr, bytes.Length);
-                }
+                WriteBytesUnchecked((byte*)ptr, value.Length * sizeof(char));
             }
         }
 

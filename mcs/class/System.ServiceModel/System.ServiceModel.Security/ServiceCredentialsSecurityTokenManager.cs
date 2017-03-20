@@ -1,4 +1,4 @@
-//
+﻿//
 // ServiceCredentialsSecurityTokenManager.cs
 //
 // Author:
@@ -44,9 +44,9 @@ namespace System.ServiceModel.Security
 		ServiceCredentials credentials;
 
 		public ServiceCredentialsSecurityTokenManager (
-			ServiceCredentials parent)
+			ServiceCredentials credentials)
 		{
-			this.credentials = parent;
+			this.credentials = credentials;
 		}
 
 		public ServiceCredentials ServiceCredentials {
@@ -55,35 +55,35 @@ namespace System.ServiceModel.Security
 
 		[MonoTODO]
 		public virtual EndpointIdentity GetIdentityOfSelf (
-			SecurityTokenRequirement tokenRequirement)
+			SecurityTokenRequirement requirement)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public override SecurityTokenAuthenticator CreateSecurityTokenAuthenticator (
-			SecurityTokenRequirement tokenRequirement,
+			SecurityTokenRequirement requirement,
 			out SecurityTokenResolver outOfBandTokenResolver)
 		{
 			outOfBandTokenResolver = null;
-			if (tokenRequirement.TokenType == SecurityTokenTypes.UserName)
-				return CreateUserNameAuthenticator (tokenRequirement);
-			if (tokenRequirement.TokenType == SecurityTokenTypes.X509Certificate)
-				return CreateX509Authenticator (tokenRequirement);
-			if (tokenRequirement.TokenType == SecurityTokenTypes.Rsa)
+			if (requirement.TokenType == SecurityTokenTypes.UserName)
+				return CreateUserNameAuthenticator (requirement);
+			if (requirement.TokenType == SecurityTokenTypes.X509Certificate)
+				return CreateX509Authenticator (requirement);
+			if (requirement.TokenType == SecurityTokenTypes.Rsa)
 				return new RsaSecurityTokenAuthenticator ();
-			if (tokenRequirement.TokenType == ServiceModelSecurityTokenTypes.SecureConversation) {
+			if (requirement.TokenType == ServiceModelSecurityTokenTypes.SecureConversation) {
 				SecurityBindingElement binding;
-				if (!tokenRequirement.TryGetProperty<SecurityBindingElement> (ReqType.SecurityBindingElementProperty, out binding))
+				if (!requirement.TryGetProperty<SecurityBindingElement> (ReqType.SecurityBindingElementProperty, out binding))
 					throw new ArgumentException ("SecurityBindingElement is required in the security token requirement");
 				SecureConversationSecurityTokenParameters issuedParams;
-				if (!tokenRequirement.TryGetProperty<SecureConversationSecurityTokenParameters> (ReqType.IssuedSecurityTokenParametersProperty, out issuedParams))
+				if (!requirement.TryGetProperty<SecureConversationSecurityTokenParameters> (ReqType.IssuedSecurityTokenParametersProperty, out issuedParams))
 					throw new ArgumentException ("IssuedSecurityTokenParameters are required in the security token requirement");
 				BindingContext issuerBC;
-				if (!tokenRequirement.TryGetProperty<BindingContext> (ReqType.IssuerBindingContextProperty, out issuerBC))
+				if (!requirement.TryGetProperty<BindingContext> (ReqType.IssuerBindingContextProperty, out issuerBC))
 					throw new ArgumentException ("IssuerBindingContext is required in the security token requirement");
 				SecurityTokenVersion secVer;
-				if (!tokenRequirement.TryGetProperty<SecurityTokenVersion> (ReqType.MessageSecurityVersionProperty, out secVer))
+				if (!requirement.TryGetProperty<SecurityTokenVersion> (ReqType.MessageSecurityVersionProperty, out secVer))
 					throw new ArgumentException ("MessageSecurityVersion property (of type SecurityTokenVersion) is required in the security token requirement");
 
 				// FIXME: get parameters from somewhere
@@ -92,16 +92,16 @@ namespace System.ServiceModel.Security
 				outOfBandTokenResolver = resolver;
 				SecurityContextSecurityTokenAuthenticator sc =
 					new SecurityContextSecurityTokenAuthenticator ();
-				return new SecureConversationSecurityTokenAuthenticator (tokenRequirement, sc, resolver);
+				return new SecureConversationSecurityTokenAuthenticator (requirement, sc, resolver);
 			}
-			if (tokenRequirement.TokenType == ServiceModelSecurityTokenTypes.AnonymousSslnego)
-				return CreateSslTokenAuthenticator (tokenRequirement);
-			if (tokenRequirement.TokenType == ServiceModelSecurityTokenTypes.MutualSslnego)
-				return CreateSslTokenAuthenticator (tokenRequirement);
-			if (tokenRequirement.TokenType == ServiceModelSecurityTokenTypes.Spnego)
-				return CreateSpnegoTokenAuthenticator (tokenRequirement);
+			if (requirement.TokenType == ServiceModelSecurityTokenTypes.AnonymousSslnego)
+				return CreateSslTokenAuthenticator (requirement);
+			if (requirement.TokenType == ServiceModelSecurityTokenTypes.MutualSslnego)
+				return CreateSslTokenAuthenticator (requirement);
+			if (requirement.TokenType == ServiceModelSecurityTokenTypes.Spnego)
+				return CreateSpnegoTokenAuthenticator (requirement);
 			else
-				throw new NotImplementedException ("Not implemented token type: " + tokenRequirement.TokenType);
+				throw new NotImplementedException ("Not implemented token type: " + requirement.TokenType);
 		}
 
 		SpnegoSecurityTokenAuthenticator CreateSpnegoTokenAuthenticator (SecurityTokenRequirement requirement)

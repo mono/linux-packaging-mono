@@ -21,7 +21,7 @@ namespace System.Net.NetworkInformation.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // Not all APIs are supported on Linux and OSX
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void BasicTest_GetIPv4InterfaceStatistics_Success()
         {
             // This API is not actually IPv4 specific.
@@ -46,7 +46,7 @@ namespace System.Net.NetworkInformation.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Linux)]  // Some APIs are not supported on Linux
+        [PlatformSpecific(TestPlatforms.Linux)]
         public void BasicTest_GetIPv4InterfaceStatistics_Success_Linux()
         {
             // This API is not actually IPv4 specific.
@@ -71,7 +71,7 @@ namespace System.Net.NetworkInformation.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.OSX)]  // Some APIs are not supported on OSX
+        [PlatformSpecific(TestPlatforms.OSX)]
         public void BasicTest_GetIPv4InterfaceStatistics_Success_OSX()
         {
             // This API is not actually IPv4 specific.

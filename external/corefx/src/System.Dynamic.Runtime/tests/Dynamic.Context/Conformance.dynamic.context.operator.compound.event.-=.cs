@@ -6,6 +6,7 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dlgate001.dlgate001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dlgate001.dlgate001;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -14,6 +15,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -72,6 +74,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dlgate002.dlgate002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dlgate002.dlgate002;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -80,6 +83,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -138,6 +142,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dlgate003.dlgate003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dlgate003.dlgate003;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -146,6 +151,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -211,6 +217,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dlgate004.dlgate004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dlgate004.dlgate004;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -219,6 +226,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -279,6 +287,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic001.dynamic001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic001.dynamic001;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -287,6 +296,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -335,6 +345,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic002.dynamic002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic002.dynamic002;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -343,6 +354,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -391,6 +403,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic003.dynamic003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic003.dynamic003;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -399,6 +412,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -452,6 +466,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic004.dynamic004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic004.dynamic004;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -460,6 +475,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -513,6 +529,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic005.dynamic005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic005.dynamic005;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -521,6 +538,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -575,6 +593,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic006.dynamic006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic006.dynamic006;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -583,6 +602,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -637,6 +657,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic007.dynamic007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic007.dynamic007;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -645,6 +666,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -699,6 +721,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic008.dynamic008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.dynamic008.dynamic008;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -707,6 +730,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -760,6 +784,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.fieldproperty001.fieldproperty001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.fieldproperty001.fieldproperty001;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -768,6 +793,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -848,6 +874,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.fieldproperty002.fieldproperty002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.fieldproperty002.fieldproperty002;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -856,6 +883,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -936,6 +964,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.fieldproperty003.fieldproperty003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.fieldproperty003.fieldproperty003;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -944,6 +973,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -1025,6 +1055,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.fieldproperty004.fieldproperty004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.fieldproperty004.fieldproperty004;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -1033,6 +1064,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -1114,6 +1146,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.null001.null001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.null001.null001;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -1122,6 +1155,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -1167,6 +1201,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.null002.null002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.null002.null002;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -1175,6 +1210,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -1219,6 +1255,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return001.return001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return001.return001;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -1227,6 +1264,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -1288,6 +1326,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return002.return002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return002.return002;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -1296,6 +1335,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -1357,6 +1397,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return003.return003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return003.return003;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -1365,6 +1406,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -1426,6 +1468,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return004.return004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return004.return004;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -1434,6 +1477,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C
@@ -1495,6 +1539,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return005.return005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.evnt.minuseql.return005.return005;
     // <Area> Dynamic -- compound operator</Area>
     // <Title> compound operator +=/-= on event </Title>
     // <Description>
@@ -1503,6 +1548,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int Dele(int i);
     public class C

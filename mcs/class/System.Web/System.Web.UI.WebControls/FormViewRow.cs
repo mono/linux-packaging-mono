@@ -46,9 +46,9 @@ namespace System.Web.UI.WebControls
 			get;
 			set;
 		}
-		public FormViewRow (int itemIndex, DataControlRowType rowType, DataControlRowState rowState)
+		public FormViewRow (int rowIndex, DataControlRowType rowType, DataControlRowState rowState)
 		{
-			this.rowIndex = itemIndex;
+			this.rowIndex = rowIndex;
 			this.rowType = rowType;
 			this.rowState = rowState;
 		}

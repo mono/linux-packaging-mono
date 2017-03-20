@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -13,39 +14,48 @@ using System.Linq;
 using System.Net.Http;
 
 using Microsoft.Build.Framework;
+
+using Task = Microsoft.Build.Utilities.Task;
 using ThreadingTask = System.Threading.Tasks.Task;
 
 namespace Microsoft.DotNet.Build.CloudTestTasks
 {
 
-    public class UploadToAzure : AzureConnectionStringBuildTask, ICancelableTask
+    public class UploadToAzure : Task, ICancelableTask
     {
         private static readonly CancellationTokenSource TokenSource = new CancellationTokenSource();
         private static readonly CancellationToken CancellationToken = TokenSource.Token;
 
         /// <summary>
-        /// The name of the container to access.  The specified name must be in the correct format, see the
-        /// following page for more info.  https://msdn.microsoft.com/en-us/library/azure/dd135715.aspx
+        ///     The Azure account key used when creating the connection string.
+        /// </summary>
+        [Required]
+        public string AccountKey { get; set; }
+
+        /// <summary>
+        ///     The Azure account name used when creating the connection string.
+        /// </summary>
+        [Required]
+        public string AccountName { get; set; }
+
+        /// <summary>
+        ///     The name of the container to access.  The specified name must be in the correct format, see the
+        ///     following page for more info.  https://msdn.microsoft.com/en-us/library/azure/dd135715.aspx
         /// </summary>
         [Required]
         public string ContainerName { get; set; }
 
         /// <summary>
-        /// An item group of files to upload.  Each item must have metadata RelativeBlobPath
-        /// that specifies the path relative to ContainerName where the item will be uploaded.
+        ///     An item group of files to upload.  Each item must have metadata RelativeBlobPath
+        ///     that specifies the path relative to ContainerName where the item will be uploaded.
         /// </summary>
         [Required]
         public ITaskItem[] Items { get; set; }
 
         /// <summary>
-        /// Indicates if the destination blob should be overwritten if it already exists.  The default if false.
+        ///     Indicates if the destination blob should be overwritten if it already exists.  The default if false.
         /// </summary>
         public bool Overwrite { get; set; } = false;
-
-        /// <summary>
-        /// Specifies the maximum number of clients to concurrently upload blobs to azure
-        /// </summary>
-        public int MaxClients { get; set; } = 8;
 
         public void Cancel()
         {
@@ -59,13 +69,6 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
 
         public async Task<bool> ExecuteAsync(CancellationToken ct)
         {
-            ParseConnectionString();
-            // If the connection string AND AccountKey & AccountName are provided, error out.
-            if (Log.HasLoggedErrors)
-            {
-                return false;
-            }
-
             Log.LogMessage(
                 MessageImportance.High, 
                 "Begin uploading blobs to Azure account {0} in container {1}.", 
@@ -74,8 +77,7 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
 
             if (Items.Length == 0)
             {
-                Log.LogError("No items were provided for upload.");
-                return false;
+                throw new ArgumentException("No items were provided for upload.");
             }
 
             // first check what blobs are present
@@ -84,60 +86,50 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
                 AccountName, 
                 ContainerName);
 
-            HashSet<string> blobsPresent = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            DateTime dt = DateTime.UtcNow;
+            HashSet<string> blobsPresent = new HashSet<string>();
 
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
+                using (HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, checkListUrl))
                 {
-                    Func<HttpRequestMessage> createRequest = () =>
+                    req.Headers.Add(AzureHelper.DateHeaderString, dt.ToString("R", CultureInfo.InvariantCulture));
+                    req.Headers.Add(AzureHelper.VersionHeaderString, AzureHelper.StorageApiVersion);
+                    req.Headers.Add(AzureHelper.AuthorizationHeaderString, AzureHelper.AuthorizationHeader(
+                        AccountName,
+                        AccountKey,
+                        "GET",
+                        dt,
+                        req));
+                    
+                    Log.LogMessage(MessageImportance.Normal, "Sending request to check whether Container blobs exist");
+                    XmlDocument doc;
+                    using (HttpResponseMessage response = await client.SendAsync(req, ct))
                     {
-                        DateTime dt = DateTime.UtcNow;
-                        var req = new HttpRequestMessage(HttpMethod.Get, checkListUrl);
-                        req.Headers.Add(AzureHelper.DateHeaderString, dt.ToString("R", CultureInfo.InvariantCulture));
-                        req.Headers.Add(AzureHelper.VersionHeaderString, AzureHelper.StorageApiVersion);
-                        req.Headers.Add(AzureHelper.AuthorizationHeaderString, AzureHelper.AuthorizationHeader(
-                            AccountName,
-                            AccountKey,
-                            "GET",
-                            dt,
-                            req));
-                        return req;
-                    };
-
-                    Log.LogMessage(MessageImportance.Low, "Sending request to check whether Container blobs exist");
-                    using (HttpResponseMessage response = await AzureHelper.RequestWithRetry(Log, client, createRequest))
-                    {
-                        var doc = new XmlDocument();
+                        doc = new XmlDocument();
                         doc.LoadXml(await response.Content.ReadAsStringAsync());
-
-                        XmlNodeList nodes = doc.DocumentElement.GetElementsByTagName("Blob");
-
-                        foreach (XmlNode node in nodes)
-                        {
-                            blobsPresent.Add(node["Name"].InnerText);
-                        }
-
-                        Log.LogMessage(MessageImportance.Low, "Received response to check whether Container blobs exist");
                     }
-                }
 
-                using (var clientThrottle = new SemaphoreSlim(this.MaxClients, this.MaxClients))
-                {
-                    await ThreadingTask.WhenAll(Items.Select(item => UploadAsync(ct, item, blobsPresent, clientThrottle)));
-                }
+                    XmlNodeList nodes = doc.DocumentElement.GetElementsByTagName("Blob");
 
-                Log.LogMessage(MessageImportance.High, "Upload to Azure is complete, a total of {0} items were uploaded.", Items.Length);
+                    foreach (XmlNode node in nodes)
+                    {
+                        blobsPresent.Add(node["Name"].InnerText);
+                    }
+
+                    Log.LogMessage(MessageImportance.Normal, "Received response to check whether Container blobs exist");
+                }
             }
-            catch (Exception e)
-            {
-                Log.LogErrorFromException(e, true);
-            }
-            return !Log.HasLoggedErrors;
+            await ThreadingTask.WhenAll(Items.Select(item => UploadAsync(ct, item, blobsPresent)));
+
+           Log.LogMessage(MessageImportance.High, "Upload to Azure is complete, a total of {0} items were uploaded.", Items.Length);
+
+            return true;
         }
 
-        private async ThreadingTask UploadAsync(CancellationToken ct, ITaskItem item, HashSet<string> blobsPresent, SemaphoreSlim clientThrottle)
+        private async ThreadingTask UploadAsync(CancellationToken ct, ITaskItem item, HashSet<string> blobsPresent)
         {
+            bool result = true;
             if (ct.IsCancellationRequested)
             {
                 Log.LogError("Task UploadToAzure cancelled");
@@ -146,17 +138,24 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
 
             string relativeBlobPath = item.GetMetadata("RelativeBlobPath");
             if (string.IsNullOrEmpty(relativeBlobPath))
-                throw new Exception(string.Format("Metadata 'RelativeBlobPath' is missing for item '{0}'.", item.ItemSpec));
+            {
+                Log.LogError(string.Format("Metadata 'RelativeBlobPath' is missing for item '{0}'.", item.ItemSpec));
+                result = false;
+            }
 
             if (!File.Exists(item.ItemSpec))
-                throw new Exception(string.Format("The file '{0}' does not exist.", item.ItemSpec));
+            {
+                Log.LogError(string.Format("The file '{0}' does not exist.", item.ItemSpec));
+                result = false;
+            }
 
             if (!Overwrite && blobsPresent.Contains(relativeBlobPath))
-                throw new Exception(string.Format("The blob '{0}' already exists.", relativeBlobPath));
+            {
+                Log.LogError(string.Format("The blob '{0}' already exists.", relativeBlobPath));
+                result = false;
+            }
 
-            await clientThrottle.WaitAsync();
-
-            try
+            if (result)
             {
                 Log.LogMessage("Uploading {0} to {1}.", item.ItemSpec, ContainerName);
                 UploadClient uploadClient = new UploadClient(Log);
@@ -168,10 +167,6 @@ namespace Microsoft.DotNet.Build.CloudTestTasks
                         ContainerName,
                         item.ItemSpec,
                         relativeBlobPath);
-            }
-            finally
-            {
-                clientThrottle.Release();
             }
         }
     }

@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.at_dynamic001.at_dynamic001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.at_dynamic001.at_dynamic001;
+
     // <Area> Implicitly Typed Local variables </Area>
     // <Title> Referring to @dynamic will always refer to the type and will give no warning </Title>
     // <Description>
@@ -41,6 +43,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamicfieldorlocal002.dynamicfieldorlocal002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamicfieldorlocal002.dynamicfieldorlocal002;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Can use var as the name of a local variable or field </Title>
     // <Description>
@@ -99,6 +103,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared001.dynamictypedeclared001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared001.dynamictypedeclared001;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Referring to a type named var in a method body should not give a warning</Title>
     // <Description>
@@ -142,6 +148,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared002.dynamictypedeclared002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared002.dynamictypedeclared002;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Returning a type named var from a function member should give no warnings</Title>
     // <Description>
@@ -235,6 +243,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared003.dynamictypedeclared003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared003.dynamictypedeclared003;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Function members containing formal parameters of type var should not give a warning</Title>
     // <Description>
@@ -310,6 +320,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared004.dynamictypedeclared004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared004.dynamictypedeclared004;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type as type constraint gives no warnings</Title>
     // <Description>
@@ -348,6 +360,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared005.dynamictypedeclared005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared005.dynamictypedeclared005;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type in a nullable type declaration gives no warnings </Title>
     // <Description>
@@ -383,6 +397,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared006.dynamictypedeclared006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared006.dynamictypedeclared006;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type in an array type gives no errors </Title>
     // <Description>
@@ -458,6 +474,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared007.dynamictypedeclared007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared007.dynamictypedeclared007;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type in a generic type declaration gives no warnings </Title>
     // <Description>
@@ -521,6 +539,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared008.dynamictypedeclared008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared008.dynamictypedeclared008;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type in typeof expression gives no warnings</Title>
     // <Description>
@@ -556,6 +576,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared009.dynamictypedeclared009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared009.dynamictypedeclared009;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type as operand in 'as' or 'is' operator gives no warnings</Title>
     // <Description>
@@ -598,6 +620,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared010.dynamictypedeclared010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared010.dynamictypedeclared010;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type in cast expression gives no warnings</Title>
     // <Description>
@@ -635,6 +659,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared011.dynamictypedeclared011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared011.dynamictypedeclared011;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var as a type argument gives no warnings </Title>
     // <Description>
@@ -685,6 +711,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared012.dynamictypedeclared012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared012.dynamictypedeclared012;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var as a type parameter gives no warnings</Title>
     // <Description>
@@ -769,6 +797,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared013.dynamictypedeclared013
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared013.dynamictypedeclared013;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> When a type named var is defined, using var as a type parameter gives no warnings</Title>
     // <Description>
@@ -824,6 +854,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared014.dynamictypedeclared014
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared014.dynamictypedeclared014;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type in a delegate type gives no warnings</Title>
     // <Description>
@@ -865,6 +897,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared015.dynamictypedeclared015
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared015.dynamictypedeclared015;
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type as the referent type in a pointer gives no warnings </Title>
     // <Description>
@@ -897,6 +930,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared016.dynamictypedeclared016
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared016.dynamictypedeclared016;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Declaring a const var gives no warning</Title>
     // <Description>
@@ -934,6 +969,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared017.dynamictypedeclared017
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared017.dynamictypedeclared017;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type as the operand of the default operator </Title>
     // <Description>
@@ -969,6 +1006,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared018.dynamictypedeclared018
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared018.dynamictypedeclared018;
+
     // <Area> Implicitly Typed Local Variables </Area>
     // <Title> Using var type as the type of an event </Title>
     // <Description>
@@ -1012,6 +1051,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared019.dynamictypedeclared019
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared019.dynamictypedeclared019;
+
     public class Test
     {
         public class dynamic
@@ -1041,6 +1082,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared021.dynamictypedeclared021
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared021.dynamictypedeclared021;
+
     // <Title> Interaction between object and dynamic</Title>
     // <Description>
     // </Description>
@@ -1085,6 +1128,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared023.dynamictypedeclared023
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamictypedeclared023.dynamictypedeclared023;
+
     public class Test
     {
         public class dynamic
@@ -1114,6 +1159,16 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.errorverifier.errorverifier
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.errorverifier.errorverifier;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.variablenameddynamic001.variablenameddynamic001;
+    using System;
+    using System.Collections;
+    using System.IO;
+    using System.Globalization;
+    using System.Reflection;
+    using System.Resources;
+    using Microsoft.CSharp.RuntimeBinder;
+
     public enum ErrorElementId
     {
         None,
@@ -1298,6 +1353,9 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.variablenameddynamic001.variablenameddynamic001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.errorverifier.errorverifier;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.variablenameddynamic001.variablenameddynamic001;
+
     // <Title> Interaction between object and dynamic</Title>
     // <Description>
     // </Description>
@@ -1335,6 +1393,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardsc
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamicnsdeclared.dynamicnsdeclared
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.backwardscompatible.dynamicnsdeclared.dynamicnsdeclared;
+
     // <Title>declare dynamic namespace</Title>
     // <Description>regression test
     // </Description>

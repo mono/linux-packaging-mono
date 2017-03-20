@@ -492,9 +492,9 @@ namespace System.ServiceModel
 				throw new InvalidOperationException ("The ServiceHost must have at least one application endpoint (that does not include metadata exchange endpoint) defined by either configuration, behaviors or call to AddServiceEndpoint methods.");
 		}
 
-		protected void LoadConfigurationSection (ServiceElement serviceSection)
+		protected void LoadConfigurationSection (ServiceElement element)
 		{
-			ApplyServiceElement (serviceSection);
+			ApplyServiceElement (element);
 		}
 
 		protected override sealed void OnAbort ()

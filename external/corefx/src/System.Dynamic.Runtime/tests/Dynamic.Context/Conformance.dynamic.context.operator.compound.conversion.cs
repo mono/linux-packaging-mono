@@ -6,12 +6,14 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion001.conversion001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion001.conversion001;
     // <Title> Compound operator in conversion.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Base1
     {
@@ -87,12 +89,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion002.conversion002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion002.conversion002;
     // <Title> Compound operator in conversion.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Base1
     {
@@ -202,12 +206,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion003.conversion003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion003.conversion003;
     // <Title> Compound operator in conversion.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -282,12 +288,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion005.conversion005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion005.conversion005;
     // <Title> Compound operator in conversion.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Base1
     {
@@ -410,12 +418,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion006.conversion006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion006.conversion006;
     // <Title> Compound operator in conversion(negative).</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Base1
     {
@@ -460,6 +470,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion007.conversion007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compound.conversion.conversion007.conversion007;
     // <Title> Compound operator in conversion.</Title>
     // <Description>
     // Compound operators (d += 10) is Expanding to (d = d + 10), it turns out this does match
@@ -469,6 +480,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.operate.compoun
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class TestClass
     {

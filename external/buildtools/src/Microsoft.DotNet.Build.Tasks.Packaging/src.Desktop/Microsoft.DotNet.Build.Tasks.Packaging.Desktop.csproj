@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <NuGetRuntimeIdentifier>win7-x64</NuGetRuntimeIdentifier>
+    <NuGetRuntimeIdentifier>win</NuGetRuntimeIdentifier>
     <!-- VS's msbuild nuget targets first used RuntimeIndentifier (sic) -->
     <RuntimeIndentifier>$(NuGetRuntimeIdentifier)</RuntimeIndentifier>
     <ImportedProjectRelativePath>..\src\</ImportedProjectRelativePath>
@@ -12,7 +12,6 @@
   <Import Project="$(ImportedProjectRelativePath)Microsoft.DotNet.Build.Tasks.Packaging.csproj" />
   <PropertyGroup>
     <ProjectGuid>{440527ED-C69A-4EC6-8E63-AB1624BD7D8B}</ProjectGuid>
-    <NuGetTargetMoniker>.NETFramework,Version=v4.5</NuGetTargetMoniker>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />

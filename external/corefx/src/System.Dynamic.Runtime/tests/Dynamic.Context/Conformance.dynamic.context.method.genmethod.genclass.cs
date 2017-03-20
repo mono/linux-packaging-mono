@@ -2,11 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
 using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass001.genclass001;
+    using System;
+    using System.Collections.Generic;
+
     public class C
     {
     }
@@ -270,12 +274,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass001.genclass001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass001.genclass001;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -308,12 +315,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass002.genclass002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass002.genclass002;
     // <Title> Tests generic class generic method used inside #if, #else block.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -359,12 +369,15 @@ return (Test)mc.Method_ReturnsUConstraint<Test>(new Test());
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass003.genclass003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass003.genclass003;
     // <Title> Tests generic class generic method used in implicitly-typed variable initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -390,12 +403,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass006.genclass006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass006.genclass006;
     // <Title> Tests generic class generic method used in implicit or explicit operator.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -421,12 +437,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass007.genclass007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass007.genclass007;
     // <Title> Tests generic class generic method used in implicit operator.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -480,12 +499,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass008.genclass008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass008.genclass008;
     // <Title> Tests generic class generic method used in foreach expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -527,12 +549,16 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass009.genclass009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass009.genclass009;
     // <Title> Tests generic class generic method used in the foreach loop body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
 
     public class Test
@@ -573,12 +599,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass010.genclass010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass010.genclass010;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -604,12 +633,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass011.genclass011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass011.genclass011;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : I
     {
@@ -635,12 +667,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass012.genclass012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass012.genclass012;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -669,12 +704,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass013.genclass013
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass013.genclass013;
     // <Title> Tests generic class generic method used in while/do expression</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -716,12 +754,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass014.genclass014
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass014.genclass014;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -748,12 +789,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass015.genclass015
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass015.genclass015;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -781,12 +825,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass016.genclass016
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass016.genclass016;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -834,12 +881,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass017.genclass017
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass017.genclass017;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -885,12 +935,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass018.genclass018
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass018.genclass018;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -927,12 +980,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass019.genclass019
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass019.genclass019;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -961,12 +1017,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass020.genclass020
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass020.genclass020;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1012,12 +1071,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass021.genclass021
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass021.genclass021;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1062,6 +1124,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass023.genclass023
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass023.genclass023;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Negative: dynamic type would not satisfy the constraints.
@@ -1069,6 +1133,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1103,12 +1168,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass024.genclass024
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass024.genclass024;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : I
     {
@@ -1154,6 +1222,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass025.genclass025
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass025.genclass025;
     // <Title> Tests generic class generic method used in anonymous method.</Title>
     // <Description>
     // </Description>
@@ -1192,6 +1262,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass026.genclass026
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass026.genclass026;
     // <Title> Tests generic class generic method used in lambda expression.</Title>
     // <Description>
     // </Description>
@@ -1225,12 +1297,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass027.genclass027
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass027.genclass027;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1259,12 +1334,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass028.genclass028
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass028.genclass028;
     // <Title> Tests generic class generic method used in volatile field initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1298,12 +1376,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass030.genclass030
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass030.genclass030;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1332,12 +1413,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass031.genclass031
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass031.genclass031;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1367,12 +1451,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass032.genclass032
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass032.genclass032;
     // <Title> Tests generic class generic method used in the default section statement list.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1410,12 +1497,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass033.genclass033
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass033.genclass033;
     // <Title> Tests generic class generic method used in the switch section statement list.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1457,12 +1547,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass034.genclass034
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass034.genclass034;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1493,12 +1586,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass035.genclass035
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass035.genclass035;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1545,12 +1641,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass036.genclass036
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass036.genclass036;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1581,12 +1680,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass037.genclass037
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass037.genclass037;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1621,6 +1723,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass038.genclass038
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass038.genclass038;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Negative:dynamic type would not satisfy the constraints
@@ -1628,6 +1732,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : C
     {
@@ -1661,12 +1766,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass041.genclass041
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass041.genclass041;
     // <Title> Tests generic class generic method used in explicit operator.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1720,6 +1828,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass003a.genclass003a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass003a.genclass003a;
     // <Title> Tests generic class generic method used in implicitly-typed variable initializer.</Title>
     // <Description>
     // Type inference.
@@ -1727,6 +1837,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1759,6 +1870,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass007a.genclass007a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass007a.genclass007a;
     // <Title> Tests generic class generic method used in implicit operator.</Title>
     // <Description>
     // Type inference.
@@ -1766,6 +1879,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1819,6 +1933,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass008a.genclass008a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass008a.genclass008a;
     // <Title> Tests generic class generic method used in foreach expression.</Title>
     // <Description>
     // Type inference.
@@ -1826,6 +1942,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
 
     public class Test
@@ -1866,6 +1984,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass010a.genclass010a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass010a.genclass010a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference.
@@ -1873,6 +1993,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1898,6 +2019,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass011a.genclass011a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass011a.genclass011a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference.
@@ -1905,6 +2028,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : I
     {
@@ -1932,6 +2056,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass011b.genclass011b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass011b.genclass011b;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference.
@@ -1939,6 +2065,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : I
     {
@@ -1965,6 +2092,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass012a.genclass012a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass012a.genclass012a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference
@@ -1972,6 +2101,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2002,6 +2132,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass016a.genclass016a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass016a.genclass016a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference
@@ -2010,6 +2142,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     //<Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(13,9\).*CS0414</Expects>
+    using System;
 
     public class Test
     {
@@ -2043,6 +2176,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass019a.genclass019a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass019a.genclass019a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference
@@ -2050,6 +2185,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2078,6 +2214,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass023a.genclass023a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass023a.genclass023a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Negative: dynamic type would not satisfy the constraints. Type inference
@@ -2085,6 +2223,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2118,6 +2257,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass027a.genclass027a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass027a.genclass027a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>Type inference
     //           out/ref need exact match
@@ -2125,6 +2266,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2153,6 +2295,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass029a.genclass029a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass029a.genclass029a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference
@@ -2160,6 +2304,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2187,6 +2332,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass035a.genclass035a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass035a.genclass035a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference
@@ -2194,6 +2341,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2240,6 +2388,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass037a.genclass037a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass037a.genclass037a;
     // <Title> Tests generic class generic method used in static method body.</Title>
     // <Description>
     // Type inference
@@ -2247,6 +2397,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -2281,6 +2432,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass041a.genclass041a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclassgenmeth.genclassgenmeth;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmethod.genclass.genclass041a.genclass041a;
     // <Title> Tests generic class generic method used in explicit operator.</Title>
     // <Description>
     // Type inference
@@ -2288,6 +2441,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.method.genmetho
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {

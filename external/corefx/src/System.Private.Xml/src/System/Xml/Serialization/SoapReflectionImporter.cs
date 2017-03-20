@@ -182,7 +182,7 @@ namespace System.Xml.Serialization
         {
             SoapAttributes attrs = _attributeOverrides[type];
             if (attrs != null) return attrs;
-            return new SoapAttributes(type);
+            return new SoapAttributes(type.GetTypeInfo());
         }
 
         private SoapAttributes GetAttributes(MemberInfo memberInfo)
@@ -365,7 +365,7 @@ namespace System.Xml.Serialization
                     if (InitializeStructMembers(item.Mapping, item.Model, limiter))
                     {
                         //
-                        // if InitializeStructMembers returns true, then there were *no* changes to the DeferredWorkItems
+                        // if InitializeStructMembers returns true, then there were *no* chages to the DeferredWorkItems
                         //
 #if DEBUG
                         // use exception in the place of Debug.Assert to avoid throwing asserts from a server process such as aspnet_ewp.exe
@@ -390,9 +390,9 @@ namespace System.Xml.Serialization
                 return true;
             if (model.TypeDesc.BaseTypeDesc != null)
             {
-                StructMapping baseMapping = ImportStructLikeMapping((StructModel)_modelScope.GetTypeModel(model.Type.BaseType, false), limiter);
+                StructMapping baseMapping = ImportStructLikeMapping((StructModel)_modelScope.GetTypeModel(model.Type.GetTypeInfo().BaseType, false), limiter);
 
-                // check to see if the import of the baseMapping was deferred
+                // check to see if the import of the baseMapping was deffered
                 int baseIndex = limiter.DeferredWorkItems.IndexOf(mapping.BaseMapping);
                 if (baseIndex < 0)
                 {
@@ -400,7 +400,7 @@ namespace System.Xml.Serialization
                 }
                 else
                 {
-                    // the import of the baseMapping was deferred, make sure that the derived mappings is deferred as well
+                    // the import of the baseMapping was deffered, make sure that the derived mappings is deffered as well
                     if (!limiter.DeferredWorkItems.Contains(mapping))
                     {
                         limiter.DeferredWorkItems.Add(new ImportStructWorkItem(model, mapping));
@@ -443,7 +443,7 @@ namespace System.Xml.Serialization
             }
             mapping.Members = (MemberMapping[])members.ToArray(typeof(MemberMapping));
             if (mapping.BaseMapping == null) mapping.BaseMapping = GetRootMapping();
-            IncludeTypes(model.Type, limiter);
+            IncludeTypes(model.Type.GetTypeInfo(), limiter);
 
             return true;
         }
@@ -482,7 +482,7 @@ namespace System.Xml.Serialization
             }
             _typeScope.AddTypeMapping(mapping);
             _types.Add(mapping.TypeName, mapping.Namespace, mapping);
-            IncludeTypes(model.Type);
+            IncludeTypes(model.Type.GetTypeInfo());
             return mapping;
         }
 
@@ -602,7 +602,7 @@ namespace System.Xml.Serialization
                 mapping.TypeDesc = model.TypeDesc;
                 mapping.TypeName = typeName;
                 mapping.Namespace = typeNs;
-                mapping.IsFlags = model.Type.IsDefined(typeof(FlagsAttribute), false);
+                mapping.IsFlags = model.Type.GetTypeInfo().IsDefined(typeof(FlagsAttribute), false);
                 _typeScope.AddTypeMapping(mapping);
                 _types.Add(typeName, typeNs, mapping);
                 ArrayList constants = new ArrayList();
@@ -801,7 +801,7 @@ namespace System.Xml.Serialization
             if (a.SoapType != null && a.SoapType.TypeName.Length > 0)
                 typeName = a.SoapType.TypeName;
 
-            if (type.IsGenericType && typeName.IndexOf('{') >= 0)
+            if (type.GetTypeInfo().IsGenericType && typeName.IndexOf('{') >= 0)
             {
                 Type genType = type.GetGenericTypeDefinition();
                 Type[] names = genType.GetGenericArguments();

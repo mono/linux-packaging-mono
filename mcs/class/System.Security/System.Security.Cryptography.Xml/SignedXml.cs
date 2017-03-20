@@ -624,36 +624,34 @@ namespace System.Security.Cryptography.Xml {
 
 		public void ComputeSignature () 
 		{
-			DigestReferences ();
+			if (key != null) {
+				if (m_signature.SignedInfo.SignatureMethod == null)
+					// required before hashing
+					m_signature.SignedInfo.SignatureMethod = key.SignatureAlgorithm;
+				else if (m_signature.SignedInfo.SignatureMethod != key.SignatureAlgorithm)
+					throw new CryptographicException ("Specified SignatureAlgorithm is not supported by the signing key.");
+				DigestReferences ();
 
-			if (key == null)
-				throw new CryptographicException (SR.Cryptography_Xml_LoadKeyFailed);
+				AsymmetricSignatureFormatter signer = null;
+				// in need for a CryptoConfig factory
+				if (key is DSA)
+					signer = new DSASignatureFormatter (key);
+				else if (key is RSA) 
+					signer = new RSAPKCS1SignatureFormatter (key);
 
-			// Check the signature algorithm associated with the key so that we can accordingly set the signature method
-			if (SignedInfo.SignatureMethod == null) {
-				if (key is DSA) {
-					SignedInfo.SignatureMethod = XmlDsigDSAUrl;
-				} else if (key is RSA) {
-					// Default to RSA-SHA1
-					SignedInfo.SignatureMethod = XmlDsigRSASHA1Url;
-				} else {
-					throw new CryptographicException (SR.Cryptography_Xml_CreatedKeyFailed);
+				if (signer != null) {
+					SignatureDescription sd = (SignatureDescription) CryptoConfig.CreateFromName (m_signature.SignedInfo.SignatureMethod);
+
+					HashAlgorithm hash = GetHash (sd.DigestAlgorithm, false);
+					// get the hash of the C14N SignedInfo element
+					byte[] digest = hash.ComputeHash (SignedInfoTransformed ());
+
+					signer.SetHashAlgorithm ("SHA1");
+					m_signature.SignatureValue = signer.CreateSignature (digest);
 				}
 			}
-
-			// See if there is a signature description class defined in the Config file
-			SignatureDescription signatureDescription = CryptoConfig.CreateFromName (SignedInfo.SignatureMethod) as SignatureDescription;
-			if (signatureDescription == null)
-				throw new CryptographicException (SR.Cryptography_Xml_SignatureDescriptionNotCreated);
-
-			HashAlgorithm hashAlg = signatureDescription.CreateDigest ();
-			if (hashAlg == null)
-				throw new CryptographicException (SR.Cryptography_Xml_CreateHashAlgorithmFailed);
-
-			byte[] hashvalue = hashAlg.ComputeHash (SignedInfoTransformed ());
-			AsymmetricSignatureFormatter asymmetricSignatureFormatter = signatureDescription.CreateFormatter (key);
-
-			m_signature.SignatureValue = asymmetricSignatureFormatter.CreateSignature (hashAlg);
+			else
+				throw new CryptographicException ("signing key is not specified");
 		}
 
 		public void ComputeSignature (KeyedHashAlgorithm macAlg) 

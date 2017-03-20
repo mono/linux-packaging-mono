@@ -394,7 +394,7 @@ namespace System.Net.Primitives.Functional.Tests
         }
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.Uap)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Netcoreapp | TargetFrameworkMonikers.NetcoreUwp)]
         public static void AddRemove_UriAuthenticationTypeDefaultCredentials_Success_net46()
         {
             NetworkCredential nc = CredentialCache.DefaultNetworkCredentials as NetworkCredential;

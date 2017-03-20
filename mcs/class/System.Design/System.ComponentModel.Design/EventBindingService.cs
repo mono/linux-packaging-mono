@@ -50,8 +50,8 @@ namespace System.ComponentModel.Design
 		protected abstract bool ShowCode (IComponent component, EventDescriptor e, string methodName);
 		protected abstract bool ShowCode (int lineNumber);
 		protected abstract bool ShowCode ();
-		protected abstract string CreateUniqueMethodName (IComponent component, EventDescriptor e);
-		protected abstract ICollection GetCompatibleMethods (EventDescriptor e);
+		protected abstract string CreateUniqueMethodName (IComponent component, EventDescriptor eventDescriptor);
+		protected abstract ICollection GetCompatibleMethods (EventDescriptor eventDescriptor);
 
 		protected virtual void FreeMethod (IComponent component, EventDescriptor e, string methodName)
 		{
@@ -67,10 +67,10 @@ namespace System.ComponentModel.Design
 		}
  
 
-		protected object GetService (Type serviceType)
+		protected object GetService (Type service)
 		{
 			if (_provider != null)
-				return _provider.GetService (serviceType);
+				return _provider.GetService (service);
 			return null;
 		}
 

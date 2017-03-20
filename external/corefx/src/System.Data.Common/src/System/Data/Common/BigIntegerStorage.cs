@@ -58,7 +58,7 @@ namespace System.Data.Common
             return valueNo1.CompareTo((BigInteger)value);
         }
 
-        // supported implicit casts
+        // supported implict casts
         internal static BigInteger ConvertToBigInteger(object value, IFormatProvider formatProvider)
         {
             if (value.GetType() == typeof(BigInteger)) { return (BigInteger)value; }

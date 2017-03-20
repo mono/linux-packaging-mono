@@ -40,14 +40,14 @@ namespace System.ServiceModel.Channels
 		{
 			headers = new List<MessageHeaderInfo> ();
 		}
-		public void Add (MessageHeaderInfo headerInfo)
+		public void Add (MessageHeaderInfo header)
 		{
-			headers.Add (headerInfo);
+			headers.Add (header);
 		}
 
-		public bool Contains (MessageHeaderInfo headerInfo)
+		public bool Contains (MessageHeaderInfo header)
 		{
-			return headers.Contains (headerInfo);
+			return headers.Contains (header);
 		}
 
 		public IEnumerator<MessageHeaderInfo> GetEnumerator ()
@@ -55,9 +55,9 @@ namespace System.ServiceModel.Channels
 			return headers.GetEnumerator ();
 		}
 
-		public void Remove (MessageHeaderInfo headerInfo)
+		public void Remove (MessageHeaderInfo header)
 		{
-			headers.Remove (headerInfo);
+			headers.Remove (header);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator ()

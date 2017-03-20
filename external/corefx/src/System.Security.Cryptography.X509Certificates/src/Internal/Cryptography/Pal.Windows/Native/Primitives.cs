@@ -293,15 +293,11 @@ namespace Internal.Cryptography.Pal.Native
         public static FILETIME FromDateTime(DateTime dt)
         {
             long fileTime = dt.ToFileTime();
-
-            unchecked
+            return new FILETIME()
             {
-                return new FILETIME()
-                {
-                    ftTimeLow = (uint)fileTime,
-                    ftTimeHigh = (uint)(fileTime >> 32),
-                };
-            }
+                ftTimeLow = (uint)fileTime,
+                ftTimeHigh = (uint)(fileTime >> 32),
+            };
         }
     }
 

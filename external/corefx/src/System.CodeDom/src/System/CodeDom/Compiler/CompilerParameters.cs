@@ -7,7 +7,7 @@ using System.Collections.Specialized;
 namespace System.CodeDom.Compiler
 {
     [Serializable]
-    public partial class CompilerParameters
+    public class CompilerParameters
     {
         private readonly StringCollection _assemblyNames = new StringCollection();
         private readonly StringCollection _embeddedResources = new StringCollection();

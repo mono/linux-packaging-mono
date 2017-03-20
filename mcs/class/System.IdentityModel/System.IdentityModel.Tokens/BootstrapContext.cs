@@ -1,4 +1,4 @@
-//
+﻿//
 // BootstrapContext.cs
 //
 // Author:
@@ -60,14 +60,14 @@ namespace System.IdentityModel.Tokens {
 		}
 
 		/// <summary>Initializes a new instance of the <see cref="BootstrapContext"/> class by using the specified security token and token handler.</summary>
-		public BootstrapContext (SecurityToken token, SecurityTokenHandler tokenHandler)
+		public BootstrapContext (SecurityToken token, SecurityTokenHandler handler)
 		{
 			if (token == null)
 				throw new ArgumentNullException ("token");
-			if (tokenHandler == null)
-				throw new ArgumentNullException ("tokenHandler");
+			if (handler == null)
+				throw new ArgumentNullException ("handler");
 			SecurityToken = token;
-			SecurityTokenHandler = tokenHandler;
+			SecurityTokenHandler = handler;
 		}
 
 		/// <summary>Initializes a new instance of the <see cref="BootstrapContext"/> class from a stream.</summary>

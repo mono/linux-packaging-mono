@@ -127,6 +127,8 @@ namespace System.Net.Http
         private static string s_curlVersionDescription;
         private static string s_curlSslVersionDescription;
 
+        private static readonly DiagnosticListener s_diagnosticListener = new DiagnosticListener(HttpHandlerLoggingStrings.DiagnosticListenerName);
+
         private readonly MultiAgent _agent;
         private volatile bool _anyOperationStarted;
         private volatile bool _disposed;
@@ -458,6 +460,8 @@ namespace System.Net.Http
                 return Task.FromCanceled<HttpResponseMessage>(cancellationToken);
             }
 
+            Guid loggingRequestId = s_diagnosticListener.LogHttpRequest(request);
+
             // Create the easy request.  This associates the easy request with this handler and configures
             // it based on the settings configured for the handler.
             var easy = new EasyRequest(this, request, cancellationToken);
@@ -470,6 +474,8 @@ namespace System.Net.Http
             {
                 easy.CleanupAndFailRequest(exc);
             }
+
+            s_diagnosticListener.LogHttpResponse(easy.Task, loggingRequestId);
 
             return easy.Task;
         }

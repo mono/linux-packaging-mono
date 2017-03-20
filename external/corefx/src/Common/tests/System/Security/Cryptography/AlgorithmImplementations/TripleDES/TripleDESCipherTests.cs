@@ -90,6 +90,7 @@ namespace System.Security.Cryptography.Encryption.TripleDes.Tests
             }
         }
 
+#if netstandard17
         [Fact]
         public static void TripleDESRoundTrip192BitsISO10126ECB()
         {
@@ -160,6 +161,8 @@ namespace System.Security.Cryptography.Encryption.TripleDes.Tests
                 Assert.NotEqual<byte>(plainText, decrypted);
             }
         }
+
+#endif
 
         [Fact]
         public static void TripleDESRoundTrip192BitsZerosCBC()

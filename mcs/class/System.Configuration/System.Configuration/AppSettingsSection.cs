@@ -95,10 +95,10 @@ namespace System.Configuration {
 
 		[MonoTODO]
 		protected internal override string SerializeSection (
-			ConfigurationElement parentElement, string name, ConfigurationSaveMode saveMode)
+			ConfigurationElement parent, string name, ConfigurationSaveMode mode)
 		{
 			if (File == "") {
-				return base.SerializeSection (parentElement, name, saveMode);
+				return base.SerializeSection (parent, name, mode);
 			}
 			else {
 				throw new NotImplementedException ();

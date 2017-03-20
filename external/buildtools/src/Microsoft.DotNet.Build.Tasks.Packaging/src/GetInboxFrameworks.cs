@@ -6,14 +6,13 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace Microsoft.DotNet.Build.Tasks.Packaging
 {
     public class GetInboxFrameworks : PackagingTask
     {
         [Required]
-        public ITaskItem[] PackageIndexes
+        public string FrameworkListsPath
         {
             get;
             set;
@@ -41,9 +40,9 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
 
         public override bool Execute()
         {
-            if (PackageIndexes == null && PackageIndexes.Length == 0)
+            if (null == FrameworkListsPath)
             {
-                Log.LogError("PackageIndexes argument must be specified");
+                Log.LogError("FrameworkListsPath argument must be specified");
                 return false;
             }
 
@@ -53,11 +52,16 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
                 return false;
             }
 
-            Log.LogMessage(LogImportance.Low, "Determining inbox frameworks for {0}, {1}", AssemblyName, AssemblyVersion);
-            
-            var index = PackageIndex.Load(PackageIndexes.Select(pi => pi.GetMetadata("FullPath")));
+            if (!Directory.Exists(FrameworkListsPath))
+            {
+                Log.LogError("FrameworkListsPath '{0}' does not exist", FrameworkListsPath);
+                return false;
+            }
 
-            InboxFrameworks = index.GetInboxFrameworks(AssemblyName, AssemblyVersion).Select(fx => fx.GetShortFolderName()).ToArray();
+            Log.LogMessage(LogImportance.Low, "Determining inbox frameworks for {0}, {1}", AssemblyName, AssemblyVersion);
+
+
+            InboxFrameworks = Frameworks.GetInboxFrameworksList(FrameworkListsPath, AssemblyName, AssemblyVersion, Log);
 
             return !Log.HasLoggedErrors;
         }

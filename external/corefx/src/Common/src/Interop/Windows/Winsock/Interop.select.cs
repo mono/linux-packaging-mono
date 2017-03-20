@@ -4,6 +4,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Net.Sockets;
 
 internal static partial class Interop
 {

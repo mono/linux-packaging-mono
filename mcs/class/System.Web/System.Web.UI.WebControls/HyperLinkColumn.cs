@@ -113,22 +113,22 @@ namespace System.Web.UI.WebControls {
 			set { ViewState ["Text"] = value; }
 		}
 
-		protected virtual string FormatDataNavigateUrlValue (object dataUrlValue)
+		protected virtual string FormatDataNavigateUrlValue (object value)
 		{
 			string format = DataNavigateUrlFormatString;
 			if (format == "")
 				format = null;
 
-			return DataBinder.FormatResult (dataUrlValue, format);
+			return DataBinder.FormatResult (value, format);
 		}
 
-		protected virtual string FormatDataTextValue (object dataTextValue)
+		protected virtual string FormatDataTextValue (object value)
 		{
 			string format = DataTextFormatString;
 			if (format == "")
 				format = null;
 
-			return DataBinder.FormatResult (dataTextValue, format);
+			return DataBinder.FormatResult (value, format);
 		}
 
 		public override void Initialize ()
@@ -155,11 +155,11 @@ namespace System.Web.UI.WebControls {
 			ctrl.Target = Target;
 		}
 
-		public override void InitializeCell (TableCell cell, int columnIndex, ListItemType itemType)
+		public override void InitializeCell (TableCell cell, int column_index, ListItemType item_type)
 		{
-			base.InitializeCell (cell, columnIndex, itemType);
+			base.InitializeCell (cell, column_index, item_type);
 
-			switch (itemType)
+			switch (item_type)
 			{
 			case ListItemType.Separator: 
 			case ListItemType.Pager:

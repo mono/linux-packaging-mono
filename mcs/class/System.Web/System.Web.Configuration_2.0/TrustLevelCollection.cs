@@ -99,8 +99,8 @@ namespace System.Web.Configuration {
 			get { return "trustLevel"; }
 		}
 
-		public new TrustLevel this [string key] {
-			get { return (TrustLevel) BaseGet (key); }
+		public new TrustLevel this [string name] {
+			get { return (TrustLevel) BaseGet (name); }
 		}
 
 		public TrustLevel this [int index] {

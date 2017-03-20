@@ -75,10 +75,6 @@ namespace Mono.Security.Interface
 			get; set;
 		}
 
-		internal string[] CertificateSearchPaths {
-			get; set;
-		}
-
 		/*
 		 * If you set this here, then it will override 'ServicePointManager.SecurityProtocol'.
 		 */
@@ -165,13 +161,7 @@ namespace Mono.Security.Interface
 			UserSettings = other.UserSettings;
 			EnabledProtocols = other.EnabledProtocols;
 			EnabledCiphers = other.EnabledCiphers;
-			if (other.TrustAnchors != null)
-				TrustAnchors = new X509CertificateCollection (other.TrustAnchors);
-			if (other.CertificateSearchPaths != null) {
-				CertificateSearchPaths = new string [other.CertificateSearchPaths.Length];
-				other.CertificateSearchPaths.CopyTo (CertificateSearchPaths, 0);
-			}
-
+			TrustAnchors = other.TrustAnchors;
 			cloned = true;
 		}
 

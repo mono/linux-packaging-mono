@@ -38,9 +38,9 @@ namespace System.Web.UI.WebControls
 		object argument;
 		IOrderedDictionary values;
 		
-		public DetailsViewInsertEventArgs (object commandArgument)
+		public DetailsViewInsertEventArgs (object argument)
 		{
-			this.argument = commandArgument;
+			this.argument = argument;
 		}
 		
 		internal DetailsViewInsertEventArgs (object argument, IOrderedDictionary values)

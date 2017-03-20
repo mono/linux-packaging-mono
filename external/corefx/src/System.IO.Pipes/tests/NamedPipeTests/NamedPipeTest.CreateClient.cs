@@ -67,7 +67,7 @@ namespace System.IO.Pipes.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // Not supported pipe path throws PNSE on Unix
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public static void NotSupportedPipePath_Throws_PlatformNotSupportedException()
         {
             string hostName;

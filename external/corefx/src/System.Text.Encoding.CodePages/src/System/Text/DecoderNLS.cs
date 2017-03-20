@@ -149,7 +149,7 @@ namespace System.Text
                 bytes = new byte[1];
 
             // Just call pointer version
-            fixed (byte* pBytes = &bytes[0])
+            fixed (byte* pBytes = bytes)
                 return GetCharCount(pBytes + index, count, flush);
         }
 
@@ -206,8 +206,8 @@ namespace System.Text
                 chars = new char[1];
 
             // Just call pointer version
-            fixed (byte* pBytes = &bytes[0])
-                fixed (char* pChars = &chars[0])
+            fixed (byte* pBytes = bytes)
+                fixed (char* pChars = chars)
                     // Remember that charCount is # to decode, not size of array
                     return GetChars(pBytes + byteIndex, byteCount,
                                     pChars + charIndex, charCount, flush);
@@ -265,9 +265,9 @@ namespace System.Text
                 chars = new char[1];
 
             // Just call the pointer version (public overrides can't do this)
-            fixed (byte* pBytes = &bytes[0])
+            fixed (byte* pBytes = bytes)
             {
-                fixed (char* pChars = &chars[0])
+                fixed (char* pChars = chars)
                 {
                     Convert(pBytes + byteIndex, byteCount, pChars + charIndex, charCount, flush,
                         out bytesUsed, out charsUsed, out completed);

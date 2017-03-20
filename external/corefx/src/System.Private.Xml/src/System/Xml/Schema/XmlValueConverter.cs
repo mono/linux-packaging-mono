@@ -545,7 +545,7 @@ namespace System.Xml.Schema
                 if (derivedType == baseType)
                     return true;
 
-                derivedType = derivedType.BaseType;
+                derivedType = derivedType.GetTypeInfo().BaseType;
             }
             return false;
         }

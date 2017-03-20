@@ -31,10 +31,6 @@
 #if defined(__APPLE__) && __APPLE__
 #include <sys/socketvar.h>
 #endif
-#if !HAVE_GETDOMAINNAME && HAVE_UNAME
-#include <sys/utsname.h>
-#include <stdio.h>
-#endif
 #include <unistd.h>
 #include <vector>
 #include <pwd.h>
@@ -919,7 +915,6 @@ extern "C" int32_t SystemNative_GetDomainName(uint8_t* name, int32_t nameLength)
     assert(name != nullptr);
     assert(nameLength > 0);
 
-#if HAVE_GETDOMAINNAME
 #if HAVE_GETDOMAINNAME_SIZET
     size_t namelen = UnsignedCast(nameLength);
 #else
@@ -927,33 +922,6 @@ extern "C" int32_t SystemNative_GetDomainName(uint8_t* name, int32_t nameLength)
 #endif
 
     return getdomainname(reinterpret_cast<char*>(name), namelen);
-#elif HAVE_UNAME
-    // On Android, there's no getdomainname but we can use uname to fetch the domain name
-    // of the current device
-    size_t namelen = UnsignedCast(nameLength);
-    utsname  uts;
-
-    // If uname returns an error, bail out.
-    if (uname(&uts) == -1)
-    {
-        return -1;
-    }
-
-    // If we don't have enough space to copy the name, bail out.
-    if (strlen(uts.domainname) >= namelen)
-    {
-        errno = EINVAL;
-        return -1;
-    }
-
-    // Copy the domain name
-    SafeStringCopy(reinterpret_cast<char*>(name), nameLength, uts.domainname);
-    return 0;
-#else
-    // GetDomainName is not supported on this platform.
-    errno = ENOTSUP;
-    return -1;
-#endif
 }
 
 extern "C" int32_t SystemNative_GetHostName(uint8_t* name, int32_t nameLength)
@@ -1525,14 +1493,8 @@ extern "C" Error SystemNative_SetIPv6MulticastOption(intptr_t socket, int32_t mu
 
     ipv6_mreq opt;
     memset(&opt, 0, sizeof(ipv6_mreq));
-
-    opt.ipv6mr_interface =
-#if IPV6MR_INTERFACE_UNSIGNED
-        static_cast<unsigned int>(option->InterfaceIndex);
-#else
-        option->InterfaceIndex;
-#endif
-
+    opt.ipv6mr_interface = static_cast<unsigned int>(option->InterfaceIndex);
+    
     ConvertByteArrayToIn6Addr(opt.ipv6mr_multiaddr, &option->Address.Address[0], NUM_BYTES_IN_IPV6_ADDRESS);
 
     int err = setsockopt(fd, IPPROTO_IP, optionName, &opt, sizeof(opt));
@@ -1790,15 +1752,7 @@ extern "C" Error SystemNative_Bind(intptr_t socket, uint8_t* socketAddress, int3
 
     int fd = ToFileDescriptor(socket);
 
-    int err = bind(
-        fd,
-        reinterpret_cast<sockaddr*>(socketAddress),
-#if BIND_ADDRLEN_UNSIGNED
-        static_cast<socklen_t>(socketAddressLen));
-#else
-        socketAddressLen);
-#endif
-
+    int err = bind(fd, reinterpret_cast<sockaddr*>(socketAddress), static_cast<socklen_t>(socketAddressLen));
     return err == 0 ? PAL_SUCCESS : SystemNative_ConvertErrorPlatformToPal(errno);
 }
 

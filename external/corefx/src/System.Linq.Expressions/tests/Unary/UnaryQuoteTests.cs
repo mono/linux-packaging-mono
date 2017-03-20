@@ -104,8 +104,7 @@ namespace System.Linq.Expressions.Tests
         [Theory, ClassData(typeof(CompilationTypes))]
         public void Quote_Lambda_Closure2(bool useInterpreter)
         {
-            // Using an unchecked addition to ensure that an Add expression is used (and not AddChecked)
-            Expression<Func<int, Func<int, LambdaExpression>>> f = x => y => GetQuote<Func<int>>(() => unchecked(x + y));
+            Expression<Func<int, Func<int, LambdaExpression>>> f = x => y => GetQuote<Func<int>>(() => x + y);
 
             var quote = f.Compile(useInterpreter)(1)(2);
 

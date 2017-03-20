@@ -9,11 +9,11 @@ namespace System.Runtime.InteropServices
 {
     public static partial class RuntimeInformation
     {
-#if uap
+#if netcore50aot
         private const string FrameworkName = ".NET Native";
-#elif netfx || win8
+#elif net45 || win8
         private const string FrameworkName = ".NET Framework";
-#else // uap || wpa81 || other
+#else // netcore50 || wpa81 || other
         private const string FrameworkName = ".NET Core";
 #endif
 

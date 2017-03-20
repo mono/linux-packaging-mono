@@ -134,11 +134,9 @@ namespace System.IO.Compression
 
         private unsafe ZErrorCode ReadDeflateOutput(byte[] outputBuffer, ZFlushCode flushCode, out int bytesRead)
         {
-            Debug.Assert(outputBuffer?.Length > 0);
-        
             lock (SyncLock)
             {
-                fixed (byte* bufPtr = &outputBuffer[0])
+                fixed (byte* bufPtr = outputBuffer)
                 {
                     _zlibStream.NextOut = (IntPtr)bufPtr;
                     _zlibStream.AvailOut = (uint)outputBuffer.Length;

@@ -25,27 +25,27 @@ namespace System.Transactions
 
 		[MonoTODO]
 		public static byte [] GetExportCookie (Transaction transaction,
-			byte [] whereabouts)
+			byte [] exportCookie)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public static Transaction GetTransactionFromDtcTransaction (
-			IDtcTransaction transactionNative)
+			IDtcTransaction dtc)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public static Transaction GetTransactionFromExportCookie (
-			byte [] cookie)
+			byte [] exportCookie)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
-		public static Transaction GetTransactionFromTransmitterPropagationToken (byte [] propagationToken)
+		public static Transaction GetTransactionFromTransmitterPropagationToken (byte [] token)
 		{
 			throw new NotImplementedException ();
 		}

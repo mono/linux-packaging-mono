@@ -2,11 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
 using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass001.regclass001;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Linq.Expressions;
+    using System.Reflection;
+
     public class MyClass
     {
         public int Field = 0;
@@ -562,12 +569,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass001.regclass001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass001.regclass001;
     // <Title> Tests regular class regular property used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -615,12 +625,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass002.regclass002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass002.regclass002;
     // <Title> Tests regular class regular property used in arguments of method invocation.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -661,12 +674,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass003.regclass003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass003.regclass003;
     // <Title> Tests regular class regular property used in property-set body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -711,12 +727,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass004.regclass004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass004.regclass004;
     // <Title> Tests regular class regular property used in short-circuit boolean expression and ternary operator expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -748,12 +767,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass005.regclass005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass005.regclass005;
     // <Title> Tests regular class regular property used in property set.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -796,12 +818,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass006.regclass006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass006.regclass006;
     // <Title> Tests regular class regular property used in property get body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -836,6 +861,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass007.regclass007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass007.regclass007;
     // <Title> Tests regular class regular property used in static method body.</Title>
     // <Description>
     // Derived class call protected parent property.
@@ -843,6 +870,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : MemberClass
     {
@@ -870,12 +898,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass008.regclass008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass008.regclass008;
     // <Title> Tests regular class regular property used in indexer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections.Generic;
 
     public class Test
@@ -943,12 +974,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass010.regclass010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass010.regclass010;
     // <Title> Tests regular class regular property used in try/catch/finally.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -992,6 +1026,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass011.regclass011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass011.regclass011;
     // <Title> Tests regular class regular property used in anonymous method.</Title>
     // <Description>
     // </Description>
@@ -1033,12 +1069,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass012.regclass012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass012.regclass012;
     // <Title> Tests regular class regular property used in lambda expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Linq;
 
     public class Test
@@ -1091,12 +1130,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass013.regclass013
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass013.regclass013;
     // <Title> Tests regular class regular property used in the foreach loop body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1141,12 +1183,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass014.regclass014
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass014.regclass014;
     // <Title> Tests regular class regular property used in do/while expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1179,12 +1224,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass017.regclass017
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass017.regclass017;
     // <Title> Tests regular class regular property used in using expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.IO;
 
     public class Test
@@ -1216,6 +1264,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass018.regclass018
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass018.regclass018;
     // <Title> Tests regular class regular property used in try/catch/finally.</Title>
     // <Description>
     // try/catch/finally that uses an anonymous method and refer two dynamic parameters.
@@ -1284,6 +1334,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass019.regclass019
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass019.regclass019;
     // <Title> Tests regular class regular property used in foreach.</Title>
     // <Description>
     // foreach inside a using statement that uses the dynamic introduced by the using statement.
@@ -1291,6 +1343,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.IO;
 
     public class Test
@@ -1342,6 +1395,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass020.regclass020
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass020.regclass020;
     // <Title> Tests regular class regular property used in iterator that calls to a lambda expression.</Title>
     // <Description>
     // foreach inside a using statement that uses the dynamic introduced by the using statement.
@@ -1406,12 +1461,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass021.regclass021
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass021.regclass021;
     // <Title> Tests regular class regular property used in object initializer inside a collection initializer.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections.Generic;
 
     public class Test
@@ -1457,6 +1515,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass022.regclass022
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass022.regclass022;
     // <Title> Tests regular class regular property used in static method body.</Title>
     // <Description>
     // set only  property access.
@@ -1464,6 +1524,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections.Generic;
 
     public class Test
     {
@@ -1496,6 +1558,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass023.regclass023
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass023.regclass023;
     // <Title> Tests regular class regular property used in static method body.</Title>
     // <Description>
     // Negative: set only  property access
@@ -1503,6 +1567,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections.Generic;
 
     public class Test
     {
@@ -1535,6 +1601,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass024.regclass024
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass024.regclass024;
     // <Title> Tests regular class regular property used in throws.</Title>
     // <Description>
     // </Description>
@@ -1576,6 +1644,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass025.regclass025
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass025.regclass025;
     // <Title> Tests regular class regular property used in field initializer.</Title>
     // <Description>
     // Negative
@@ -1583,6 +1653,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1617,12 +1688,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass026.regclass026
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass026.regclass026;
     // <Title> Tests regular class regular property used in set only property body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1660,12 +1734,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass027.regclass027
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass027.regclass027;
     // <Title> Tests regular class regular property used in read only property body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1704,12 +1781,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass028.regclass028
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass028.regclass028;
     // <Title> Tests regular class regular property used in static read only property body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1747,6 +1827,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass029.regclass029
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass029.regclass029;
     // <Title> Tests regular class regular property used in static method body.</Title>
     // <Description>
     // get only  property access.
@@ -1754,6 +1836,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1786,12 +1869,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass030.regclass030
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass030.regclass030;
     // <Title> Tests regular class regular property used in method call argument.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1843,12 +1929,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass031.regclass031
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass031.regclass031;
     // <Title> Tests regular class regular property used in static method body.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1883,12 +1972,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass032.regclass032
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass032.regclass032;
     // <Title> Tests regular class regular property used in lock expression.</Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test : MemberClass
     {
@@ -1925,6 +2017,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass034.regclass034
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass034.regclass034;
     // <Title> Tests regular class regular property used in foreach loop.</Title>
     // <Description>
     // Negative
@@ -1932,6 +2026,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -1976,6 +2071,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass035.regclass035
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclassregprop.regclassregprop;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regproperty.regclass.regclass035.regclass035;
     // <Title> Tests regular class regular property used in method body.</Title>
     // <Description>
     // Negative
@@ -1983,6 +2080,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.context.property.regpro
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {

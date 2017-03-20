@@ -26,6 +26,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#if NETSTANDARD
+
 namespace System.Diagnostics.Tracing
 {
 	public class EventCounter
@@ -39,3 +41,5 @@ namespace System.Diagnostics.Tracing
 		}
 	}
 }
+
+#endif

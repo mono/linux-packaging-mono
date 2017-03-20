@@ -47,11 +47,6 @@ Mono_Posix_Syscall_settimeofday (
 	struct Mono_Posix_Timeval *tv,
 	struct Mono_Posix_Timezone *tz)
 {
-#if defined(__HAIKU__)
-	/* FIXME: Haiku doesn't support this either, consider
-           using set_real_time_clock instead? */
-	return -1;
-#else
 	struct timeval _tv   = {0};
 	struct timeval *ptv  = NULL;
 	struct timezone _tz  = {0};
@@ -72,7 +67,6 @@ Mono_Posix_Syscall_settimeofday (
 	r = settimeofday (ptv, ptz);
 
 	return r;
-#endif
 }
 
 static inline struct timeval*

@@ -69,9 +69,9 @@ namespace System.Web.Configuration
 			this.MappedTagType = mappedTagTypeName;
 		}
 
-		public override bool Equals (object o)
+		public override bool Equals (object map)
 		{
-			TagMapInfo info = o as TagMapInfo;
+			TagMapInfo info = map as TagMapInfo;
 			if (info == null)
 				return false;
 

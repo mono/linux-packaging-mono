@@ -1,13 +1,13 @@
 {
   "dependencies": {
-    "Newtonsoft.Json": "9.0.1",
-    "NuGet.Versioning": "4.0.0-rc-2129",
-    "System.Reflection.Metadata": "1.4.1"
+    "Newtonsoft.Json": "7.0.1",
+    "NuGet.Versioning": "3.4.0-beta-488",
+    "System.Reflection.Metadata": "1.1.0"
   },
   "frameworks": {
-    "net45": {}
+    "net45": { }
   },
   "runtimes": {
-    "win7-x64": {}
+    "win": {}
   }
 }

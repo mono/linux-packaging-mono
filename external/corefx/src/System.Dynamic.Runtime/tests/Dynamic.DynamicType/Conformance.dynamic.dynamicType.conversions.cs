@@ -2,11 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
 using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target001.target001;
     // <Title> Dynamic and static interaction utility class </Title>
     // <Description>
     // </Description>
@@ -44,6 +45,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target001.target001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target001.target001;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is predefined value type </Title>
     // <Description>
@@ -52,6 +55,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class TargetIsPredefinedValueType
     {
@@ -201,6 +205,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target002.target002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target002.target002;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is predefined value type </Title>
     // <Description>
@@ -209,6 +215,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class TargetIsPredefinedValueType
     {
@@ -427,6 +434,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target003.target003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target003.target003;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is predefined value type </Title>
     // <Description>
@@ -622,6 +631,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target004.target004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target004.target004;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is user-defined value type </Title>
     // <Description>
@@ -630,6 +641,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public enum E
     {
@@ -822,6 +834,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target005.target005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target005.target005;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is predefined reference type </Title>
     // <Description>
@@ -1020,6 +1034,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target006.target006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target006.target006;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is array type </Title>
     // <Description>
@@ -1027,6 +1043,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class TargetIsArray
     {
@@ -1091,6 +1108,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target007.target007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target007.target007;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is delegate </Title>
     // <Description>
@@ -1098,6 +1117,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int D();
     public delegate T GD<T>();
@@ -1184,6 +1204,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target008.target008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target008.target008;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is user-defined class </Title>
     // <Description>
@@ -1191,6 +1213,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class B
     {
@@ -1300,6 +1323,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target010.target010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target010.target010;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The target type is type parameter </Title>
     // <Description>
@@ -1307,6 +1332,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections.Generic;
 
     public class B
     {
@@ -1404,6 +1431,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target012.target012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.target012.target012;
     // <Title>Guid as dynamic</Title>
     // <Description>
     // </Description>
@@ -1451,6 +1479,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.conversion001.conversion001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.conversion001.conversion001;
+
     public class Test
     {
         [Fact]
@@ -1501,6 +1531,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.conversion002.conversion002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.conversion002.conversion002;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> Implicit conversion from runtime type of dynamic object </Title>
     // <Description>
@@ -1537,7 +1569,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
     public class ConversionInRuntimeType
     {
-        private static bool NoPredefinedImplicitConversionButExistExplicitConversion()
+        private static bool NoPredefinedImplicitConversionButExistExplictConversion()
         {
             int failcount = 0;
             ulong origin = 100;
@@ -1560,7 +1592,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
             return failcount == 0;
         }
 
-        private static bool NoUserdefinedImplicitConversionButExistExplicitConversion()
+        private static bool NoUserdefinedImplicitConversionButExistExplictConversion()
         {
             int failcount = 0;
             C origin = new C(22);
@@ -1592,8 +1624,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
         public static int MainMethod()
         {
             int result = 0;
-            result += Verify.Eval(NoPredefinedImplicitConversionButExistExplicitConversion);
-            result += Verify.Eval(NoUserdefinedImplicitConversionButExistExplicitConversion);
+            result += Verify.Eval(NoPredefinedImplicitConversionButExistExplictConversion);
+            result += Verify.Eval(NoUserdefinedImplicitConversionButExistExplictConversion);
             return result;
         }
     }
@@ -1604,6 +1636,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.conversion003.conversion003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.conversion003.conversion003;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title>  Implicit conversion from runtime type of dynamic object  </Title>
     // <Description>
@@ -1726,6 +1760,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.conversion005.conversion005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.conversion005.conversion005;
+
     public class Test
     {
         [Fact]
@@ -1748,6 +1784,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context001.context001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context001.context001;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in assignment operators </Title>
     // <Description>
@@ -1755,6 +1793,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public delegate int D(int i);
     public class C
@@ -1972,6 +2011,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context002.context002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context002.context002;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in boolean expression </Title>
     // <Description>
@@ -1979,6 +2020,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Linq;
 
     public class ConversionInBooleanExpression
@@ -2113,6 +2155,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context002a.context002a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context002a.context002a;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in boolean expression </Title>
     // <Description>
@@ -2120,6 +2164,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Linq;
 
     public class ConversionInBooleanExpression
@@ -2395,6 +2440,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context002b.context002b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context002b.context002b;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in boolean expression </Title>
     // <Description>
@@ -2402,6 +2449,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Linq;
 
     public class ConversionInBooleanExpression
@@ -2668,6 +2716,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context002c.context002c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context002c.context002c;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in boolean expression </Title>
     // <Description>
@@ -2675,6 +2725,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Linq;
 
     public class ConversionInBooleanExpression
     {
@@ -2904,6 +2956,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context003.context003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context003.context003;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in return statement </Title>
     // <Description>
@@ -2911,6 +2965,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class ConversionInReturn
     {
@@ -3024,6 +3079,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context004.context004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context004.context004;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in yield return statement </Title>
     // <Description>
@@ -3031,6 +3088,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections;
     using System.Collections.Generic;
 
@@ -3202,6 +3260,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context005.context005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context005.context005;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in evaluating the type of null coalescing operator </Title>
     // <Description>
@@ -3212,6 +3272,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class ConversionInNullCoalescing
     {
@@ -3297,6 +3358,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context006.context006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context006.context006;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in evaluating the type of conditional operator </Title>
     // <Description>
@@ -3307,6 +3370,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class ConversionInConditionalOperator
     {
@@ -3431,6 +3495,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context007.context007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context007.context007;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in array creation expressions </Title>
     // <Description>
@@ -3438,6 +3504,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class ConversionInArrayCreation
     {
@@ -3499,6 +3566,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context008b.context008b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context008b.context008b;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in using statement </Title>
     // <Description>
@@ -3566,6 +3635,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context010.context010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context010.context010;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in boolean expression </Title>
     // <Description>
@@ -3574,6 +3645,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class C1
     {
@@ -3652,6 +3724,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context011.context011
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context011.context011;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The conversion occurs in using statement </Title>
     // <Description>
@@ -3723,6 +3797,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context012.context012
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.common.common;
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.context012.context012;
     // <Area> Dynamic -- implicit conversion</Area>
     // <Title> The dynamic value is null when converting </Title>
     // <Description>
@@ -3853,12 +3929,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj001.dynamicobj001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj001.dynamicobj001;
     // <Area> Dynamic -- identity conversion</Area>
     // <Title> The conversion between dynamic and object as parameter type (generic)</Title>
     // <Description> List<object> is not implicitly convertible to IEnumerable<dynamic> and vice-versa - error CS0266 </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections.Generic;
 
     public class Test
@@ -3889,12 +3967,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj002.dynamicobj002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj002.dynamicobj002;
     // <Area> Dynamic -- identity conversion</Area>
     // <Title> The conversion between dynamic and object as parameter type (generic)</Title>
     // <Description> List<object> is not implicitly convertible to IEnumerable<dynamic> and vice-versa - error CS0266 </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections.Generic;
 
     public class Test
@@ -3936,12 +4016,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj003.dynamicobj003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj003.dynamicobj003;
     // <Area> Dynamic -- identity conversion</Area>
     // <Title> The conversion between dynamic and object as parameter type (generic)</Title>
     // <Description> List<object> is not implicitly convertible to IEnumerable<dynamic> and vice-versa - error CS0266 </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections.Generic;
 
     public class TestClass
@@ -4038,12 +4120,15 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj004.dynamicobj004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj004.dynamicobj004;
     // <Area> Dynamic -- identity conversion</Area>
     // <Title> The conversion between dynamic and object as parameter type (generic)</Title>
     // <Description> List<object> is not implicitly convertible to IEnumerable<dynamic> and vice-versa - error CS0266 </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
 
     public class Test
@@ -4076,6 +4161,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj005.dynamicobj005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj005.dynamicobj005;
     // <Area> Dynamic -- identity conversion</Area>
     // <Title> The conversion between dynamic and object as parameter type (generic)</Title>
     // <Description> List<object> is not implicitly convertible to IEnumerable<dynamic> and vice-versa - error CS0266 </Description>
@@ -4278,6 +4364,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj006.dynamicobj006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj006.dynamicobj006;
+
     //<Area>Conversion</Area>
     //<Title>Regression</Title>
     //<Description>regression test</Description>
@@ -4317,6 +4405,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj007.dynamicobj007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dynamicobj007.dynamicobj007;
     //<Area>Conversion</Area>
     //<Title>Regression</Title>
     //<Description></Description>
@@ -4356,6 +4445,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dlgate003.dlgate003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dlgate003.dlgate003;
+
     // <Title>Delegate conversions</Title>
     // <Description>
     // Tests to figure out if the right conversion from method groups to delegates are applied
@@ -4454,6 +4545,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dlgate004.dlgate004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.dlgate004.dlgate004;
+
     // <Title>Delegate conversions</Title>
     // <Description>
     // Tests to figure out if the right conversion from method groups to delegates are applied
@@ -4502,6 +4595,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.arrayinit001.arrayinit001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.arrayinit001.arrayinit001;
     // <Title>Array initializer conversion</Title>
     // <Description>
     // Tests to figure out if the type of the arrays is the expected one
@@ -4509,6 +4603,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class Test
     {
@@ -4557,6 +4652,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.ternary001.ternary001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.ternary001.ternary001;
     // <Title>Ternary operator</Title>
     // <Description>
     // // </Description>
@@ -4564,6 +4660,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(30,32\).*CS0429</Expects>
+    using System;
 
     public class CC
     {
@@ -4610,6 +4707,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.using001.using001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.using001.using001;
     // <Title> Conversion </Title>
     // <Description> These scenarios are still using normal conversion
     //    Let dynamic object to do the conversion to IDisposable is covered in IDO test cases
@@ -4785,6 +4883,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.array001.array001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.array001.array001;
     // <Title>Array and interfaces conversions</Title>
     // <Description>
     //
@@ -4792,6 +4891,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
     using System.Collections.Generic;
 
     public class Program
@@ -4829,6 +4929,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.array002.array002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.array002.array002;
     // <Title>Array and interfaces conversions</Title>
     // <Description>
     //
@@ -4836,6 +4937,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
 
     public class Program
@@ -4890,6 +4993,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.array003.array003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.array003.array003;
     // <Title>Array and interfaces conversions</Title>
     // <Description>
     // use dynamic array as the source for a query expression
@@ -4897,6 +5001,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     public class Test
@@ -4934,6 +5040,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.bug819947ulngenum.bug819947ulngenum
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.bug819947ulngenum.bug819947ulngenum;
     // <Title> Interaction between object and dynamic</Title>
     // <Description>
     //      [binder] NullReferenceException thrown at runtime when doing enum comparison of a dynamic variable with ulong as the underlying enum type
@@ -5102,12 +5209,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.numeric001.numeric001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.numeric001.numeric001;
     // <Title>Numeric Conversions</Title>
     // <Description> </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq;
     using System.Linq.Expressions;
 
     public class Program
@@ -5144,12 +5253,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.numeric002.numeric002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.numeric002.numeric002;
     // <Title>Numeric Conversions</Title>
     // <Description> </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq;
     using System.Linq.Expressions;
 
     public class Program
@@ -5162,20 +5273,13 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
         public static int MainMethod(string[] args)
         {
-            ulong i, j;
             double x = ulong.MaxValue;
-            dynamic d;
-
-            unchecked
-            {
-                d = x;
-                i = (ulong)x;
-                j = (ulong)d;
-            }
-
-            Expression<Func<object, ulong>> lambda = foo => unchecked((ulong)(double)foo);
+            dynamic d = x;
+            ulong i = (ulong)x;
+            ulong j = (ulong)d;
+            Expression<Func<object, ulong>> lambda = foo => (ulong)(double)foo;
             ulong res = lambda.Compile()(x);
-            Func<object, ulong> lambda2 = foo => unchecked((ulong)(double)foo);
+            Func<object, ulong> lambda2 = foo => (ulong)(double)foo;
             ulong res2 = lambda2(x);
             if (i != j)
                 return 1;
@@ -5193,12 +5297,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.numeric003.numeric003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.numeric003.numeric003;
     // <Title>Numeric Conversions</Title>
     // <Description> </Description>
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
     using System;
+    using System.Linq;
     using System.Linq.Expressions;
 
     public class Program
@@ -5235,6 +5341,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst001.cnst001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst001.cnst001;
     // <Title> Conversion -- Implicit constant expression conversions </Title>
     // <Description>
     //    A constant expression of type int can be converted to type sbyte, byte, short, ushort, uint or ulong
@@ -5242,6 +5349,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class MyClass
     {
@@ -5377,6 +5485,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst001b.cnst001b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst001b.cnst001b;
     // <Title> Conversion -- Implicit constant expression conversions </Title>
     // <Description>
     //    A constant expression of type int can be converted to type sbyte, byte, short, ushort, uint or ulong
@@ -5385,6 +5494,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class MyClass
     {
@@ -5597,6 +5707,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst002.cnst002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst002.cnst002;
     // <Title> Conversion -- Implicit constant expression conversions </Title>
     // <Description>
     //    A constant expression of type long can be converted to ulong
@@ -5605,6 +5716,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(66,33\).*CS0078</Expects>
+    using System;
 
     public class MyClass
     {
@@ -5730,6 +5842,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst002b.cnst002b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst002b.cnst002b;
     // <Title> Conversion -- Implicit constant expression conversions </Title>
     // <Description>
     //    A constant expression of type long can be converted to ulong. the value of constant expression is negative
@@ -5738,6 +5851,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <Expects Status=success></Expects>
     // <Code>
     //<Expects Status=warning>\(70,38\).*CS0078</Expects>
+    using System;
 
     public class MyClass
     {
@@ -5993,6 +6107,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst003.cnst003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions.cnst003.cnst003;
     // <Title> Conversion -- Implicit constant expression conversions </Title>
     // <Description>
     //    No constant expression conversions for char, string, bool, float, double, decimal, byte, sbyte, short, ushort, uint, ulong
@@ -6000,6 +6115,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.dynamicType.conversions
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class MyClass
     {

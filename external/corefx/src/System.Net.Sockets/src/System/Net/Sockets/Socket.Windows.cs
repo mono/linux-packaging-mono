@@ -5,7 +5,6 @@
 using Microsoft.Win32.SafeHandles;
 using System.Collections;
 using System.IO;
-using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -14,8 +13,6 @@ namespace System.Net.Sockets
     public partial class Socket
     {
         private DynamicWinsockMethods _dynamicWinsockMethods;
-
-        internal void ReplaceHandleIfNecessaryAfterFailedConnect() { /* nop on Windows */ }
 
         private void EnsureDynamicWinsockMethods()
         {
@@ -225,7 +222,10 @@ namespace System.Net.Sockets
 
             if (errorCode != SocketError.Success)
             {
-                UpdateStatusAfterSocketErrorAndThrowException(errorCode);
+                SocketException socketException = new SocketException((int)errorCode);
+                UpdateStatusAfterSocketError(socketException);
+                if (NetEventSource.IsEnabled) NetEventSource.Error(this, socketException);
+                throw socketException;
             }
 
             // If the user passed the Disconnect and/or ReuseSocket flags, then TransmitFile disconnected the socket.
@@ -283,7 +283,10 @@ namespace System.Net.Sockets
 
             if ((SocketError)castedAsyncResult.ErrorCode != SocketError.Success)
             {
-                UpdateStatusAfterSocketErrorAndThrowException((SocketError)castedAsyncResult.ErrorCode);
+                SocketException socketException = new SocketException(castedAsyncResult.ErrorCode);
+                UpdateStatusAfterSocketError(socketException);
+                if (NetEventSource.IsEnabled) NetEventSource.Error(this, socketException);
+                throw socketException;
             }
 
         }

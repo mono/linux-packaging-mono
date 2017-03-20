@@ -229,15 +229,15 @@ namespace System.Web
 			last_modified_from_file_dependencies = true;
 		}
 
-		public void SetMaxAge (TimeSpan delta)
+		public void SetMaxAge (TimeSpan date)
 		{
-			if (delta < TimeSpan.Zero)
-				throw new ArgumentOutOfRangeException ("delta");
+			if (date < TimeSpan.Zero)
+				throw new ArgumentOutOfRangeException ("date");
 
-			if (HaveMaxAge && MaxAge < delta)
+			if (HaveMaxAge && MaxAge < date)
 				return;
 
-			MaxAge = delta;
+			MaxAge = date;
 			HaveMaxAge = true;
 		}
 

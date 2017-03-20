@@ -41,7 +41,7 @@ namespace System.Web.SessionState {
 		void Initialize ();
 		bool InitializeRequest (HttpContext context, bool suppressAutoDetectRedirect, out bool supportSessionIDReissue);
 		void RemoveSessionID (HttpContext context);
-		void SaveSessionID (HttpContext context, string id, out bool redirected, out bool cookieAdded);
+		void SaveSessionID (HttpContext context, string sessionID, out bool isRedirected, out bool isCookieAdded);
 		bool Validate (string id);
 	}
 }

@@ -38,6 +38,7 @@ using NUnit.Framework;
 namespace MonoTests.System.Drawing.Text {
 
 	[TestFixture]
+	[SecurityPermission (SecurityAction.Deny, UnmanagedCode = true)]
 	public class PrivateFontCollectionTest {
 
 		[Test]
@@ -48,36 +49,40 @@ namespace MonoTests.System.Drawing.Text {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
 		public void AddFontFile_Null ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new PrivateFontCollection ().AddFontFile (null));
+			new PrivateFontCollection ().AddFontFile (null);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void AddFontFile_Empty ()
 		{
 			// badly formetted filename
-			Assert.Throws<ArgumentException> (() => new PrivateFontCollection ().AddFontFile (String.Empty));
+			new PrivateFontCollection ().AddFontFile (String.Empty);
 		}
 
 		[Test]
+		[ExpectedException (typeof (FileNotFoundException))]
 		[Category ("NotWorking")] // it seems fontconfig doesn't validate on add...
 		public void AddFontFile_NotAFontFile ()
 		{
 			string file = Path.GetTempFileName ();
 			Assert.IsTrue (File.Exists (file), "Exists");
 			// even if the file exists....
-			Assert.Throws<FileNotFoundException> (() => new PrivateFontCollection ().AddFontFile (file));
+			new PrivateFontCollection ().AddFontFile (file);
 		}
 
 		// tests for AddMemoryFont are available in the CAS unit tests
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void Dispose_Family ()
 		{
 			PrivateFontCollection pfc = new PrivateFontCollection ();
 			pfc.Dispose ();
-			Assert.Throws<ArgumentException> (() => { var x = pfc.Families; });
+			Assert.IsNotNull (pfc.Families);
 			// no it's not a ObjectDisposedException
 		}
 	}

@@ -111,23 +111,23 @@ namespace System.ServiceModel.Description
 		{
 		}
 
-		public ServiceContractGenerator (CodeCompileUnit targetCompileUnit)
-			: this (targetCompileUnit, null)
+		public ServiceContractGenerator (CodeCompileUnit ccu)
+			: this (ccu, null)
 		{
 		}
 
-		public ServiceContractGenerator (ConfigurationType targetConfig)
-			: this (null, targetConfig)
+		public ServiceContractGenerator (ConfigurationType config)
+			: this (null, config)
 		{
 		}
 
-		public ServiceContractGenerator (CodeCompileUnit targetCompileUnit, ConfigurationType targetConfig)
+		public ServiceContractGenerator (CodeCompileUnit ccu, ConfigurationType config)
 		{
-			if (targetCompileUnit == null)
+			if (ccu == null)
 				this.ccu = new CodeCompileUnit ();
 			else
-				this.ccu = targetCompileUnit;
-			this.config = targetConfig;
+				this.ccu = ccu;
+			this.config = config;
 			Options |= ServiceContractGenerationOptions.ChannelInterface | 
 				ServiceContractGenerationOptions.ClientClass;
 		}

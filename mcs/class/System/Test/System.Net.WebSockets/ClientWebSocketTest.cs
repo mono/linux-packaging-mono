@@ -159,11 +159,7 @@ namespace MonoTests.System.Net.WebSockets
 		[Category ("MobileNotWorking")] // Fails when ran as part of the entire BCL test suite. Works when only this fixture is ran
 		public void CloseAsyncTest ()
 		{
-			if (!socket.ConnectAsync (new Uri (EchoServerUrl), CancellationToken.None).Wait (5000)) {
-				Assert.Inconclusive (socket.State.ToString ());
-				return;
-			}
-
+			Assert.IsTrue (socket.ConnectAsync (new Uri (EchoServerUrl), CancellationToken.None).Wait (5000));
 			Assert.AreEqual (WebSocketState.Open, socket.State);
 
 			Assert.IsTrue (socket.CloseAsync (WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).Wait (5000));

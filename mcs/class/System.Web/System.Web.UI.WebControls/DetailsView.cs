@@ -1109,24 +1109,24 @@ namespace System.Web.UI.WebControls
 			return style;
 		}
 		
-		protected override int CreateChildControls (IEnumerable dataSource, bool dataBinding)
+		protected override int CreateChildControls (IEnumerable data, bool dataBinding)
 		{
-			PagedDataSource pagedDataSource = new PagedDataSource ();
-			pagedDataSource.DataSource = CurrentMode != DetailsViewMode.Insert ? dataSource : null;
-			pagedDataSource.AllowPaging = AllowPaging;
-			pagedDataSource.PageSize = 1;
-			pagedDataSource.CurrentPageIndex = PageIndex;
+			PagedDataSource dataSource = new PagedDataSource ();
+			dataSource.DataSource = CurrentMode != DetailsViewMode.Insert ? data : null;
+			dataSource.AllowPaging = AllowPaging;
+			dataSource.PageSize = 1;
+			dataSource.CurrentPageIndex = PageIndex;
 
 			if (dataBinding && CurrentMode != DetailsViewMode.Insert) {
 				DataSourceView view = GetData ();
 				if (view != null && view.CanPage) {
-					pagedDataSource.AllowServerPaging = true;
+					dataSource.AllowServerPaging = true;
 					if (SelectArguments.RetrieveTotalRowCount)
-						pagedDataSource.VirtualCount = SelectArguments.TotalRowCount;
+						dataSource.VirtualCount = SelectArguments.TotalRowCount;
 				}
 			}
 
-			bool showPager = AllowPaging && (pagedDataSource.PageCount > 1);
+			bool showPager = AllowPaging && (dataSource.PageCount > 1);
 
 			Controls.Clear ();
 			table = CreateTable ();
@@ -1140,19 +1140,19 @@ namespace System.Web.UI.WebControls
 			// Gets the current data item
 
 			if (AllowPaging) {
-				PageCount = pagedDataSource.DataSourceCount;
+				PageCount = dataSource.DataSourceCount;
 				if (PageIndex >= PageCount && PageCount > 0)
-					pageIndex = pagedDataSource.CurrentPageIndex = PageCount - 1;
-				if (pagedDataSource.DataSource != null) {
-					IEnumerator e = pagedDataSource.GetEnumerator ();
+					pageIndex = dataSource.CurrentPageIndex = PageCount - 1;
+				if (dataSource.DataSource != null) {
+					IEnumerator e = dataSource.GetEnumerator ();
 					if (e.MoveNext ())
 						dataItem = e.Current;
 				}
 			} else {
 				int page = 0;
 				object lastItem = null;
-				if (pagedDataSource.DataSource != null) {
-					IEnumerator e = pagedDataSource.GetEnumerator ();
+				if (dataSource.DataSource != null) {
+					IEnumerator e = dataSource.GetEnumerator ();
 					for (; e.MoveNext (); page++) {
 						lastItem = e.Current;
 						if (page == PageIndex)
@@ -1202,7 +1202,7 @@ namespace System.Web.UI.WebControls
 				if (showPager && PagerSettings.Position == PagerPosition.Top ||
 						PagerSettings.Position == PagerPosition.TopAndBottom) {
 					topPagerRow = CreateRow (-1, DataControlRowType.Pager, DataControlRowState.Normal);
-					InitializePager (topPagerRow, pagedDataSource);
+					InitializePager (topPagerRow, dataSource);
 					table.Rows.Add (topPagerRow);
 				}
 
@@ -1229,7 +1229,7 @@ namespace System.Web.UI.WebControls
 				if (showPager && PagerSettings.Position == PagerPosition.Bottom ||
 						PagerSettings.Position == PagerPosition.TopAndBottom) {
 					bottomPagerRow = CreateRow (-1, DataControlRowType.Pager, DataControlRowState.Normal);
-					InitializePager (bottomPagerRow, pagedDataSource);
+					InitializePager (bottomPagerRow, dataSource);
 					table.Rows.Add (bottomPagerRow);
 				}
 			}
@@ -1268,7 +1268,7 @@ namespace System.Web.UI.WebControls
 			return rstate;
 		}
 		
-		protected virtual void InitializePager (DetailsViewRow row, PagedDataSource pagedDataSource)
+		protected virtual void InitializePager (DetailsViewRow row, PagedDataSource dataSource)
 		{
 			TableCell cell = new TableCell ();
 			cell.ColumnSpan = 2;
@@ -1276,7 +1276,7 @@ namespace System.Web.UI.WebControls
 			if (pagerTemplate != null)
 				pagerTemplate.InstantiateIn (cell);
 			else
-				cell.Controls.Add (PagerSettings.CreatePagerControl (pagedDataSource.CurrentPageIndex, pagedDataSource.PageCount));
+				cell.Controls.Add (PagerSettings.CreatePagerControl (dataSource.CurrentPageIndex, dataSource.PageCount));
 			
 			row.Cells.Add (cell);
 		}
@@ -1349,7 +1349,7 @@ namespace System.Web.UI.WebControls
 			return dic;
 		}
 		
-		protected virtual void ExtractRowValues (IOrderedDictionary fieldValues, bool includeReadOnlyFields, bool includeKeys)
+		protected virtual void ExtractRowValues (IOrderedDictionary fieldValues, bool includeReadOnlyFields, bool includePrimaryKey)
 		{
 			foreach (DetailsViewRow row in Rows) {
 				if (row.Cells.Count < 1)
@@ -1358,7 +1358,7 @@ namespace System.Web.UI.WebControls
 				if (c != null)
 					c.ContainingField.ExtractValuesFromCell (fieldValues, c, row.RowState, includeReadOnlyFields);
 			}
-			if (!includeKeys && DataKeyNames != null)
+			if (!includePrimaryKey && DataKeyNames != null)
 				foreach (string key in DataKeyNames)
 					fieldValues.Remove (key);
 		}
@@ -1595,9 +1595,9 @@ namespace System.Web.UI.WebControls
 			}
 		}
 		public
-		void SetPageIndex (int index)
+		void SetPageIndex (int newIndex)
 		{
-			DetailsViewPageEventArgs args = new DetailsViewPageEventArgs (index);
+			DetailsViewPageEventArgs args = new DetailsViewPageEventArgs (newIndex);
 			OnPageIndexChanging (args);
 
 			if (args.Cancel || !IsBoundUsingDataSourceID)
@@ -1764,11 +1764,11 @@ namespace System.Web.UI.WebControls
 			RequireBinding ();
 		}
 
-		protected internal override void LoadControlState (object savedState)
+		protected internal override void LoadControlState (object ob)
 		{
-			if (savedState == null)
+			if (ob == null)
 				return;
-			object[] state = (object[]) savedState;
+			object[] state = (object[]) ob;
 			base.LoadControlState (state[0]);
 			pageIndex = (int) state[1];
 			pageCount = (int) state[2];
@@ -1900,14 +1900,14 @@ namespace System.Web.UI.WebControls
 				ControlStyle.LoadViewState (states [12]);
 		}
 		
-		void ICallbackEventHandler.RaiseCallbackEvent (string eventArgument)
+		void ICallbackEventHandler.RaiseCallbackEvent (string eventArgs)
 		{
-			RaiseCallbackEvent (eventArgument);
+			RaiseCallbackEvent (eventArgs);
 		}
 		
-		protected virtual void RaiseCallbackEvent (string eventArgument)
+		protected virtual void RaiseCallbackEvent (string eventArgs)
 		{
-			string[] clientData = eventArgument.Split ('|');
+			string[] clientData = eventArgs.Split ('|');
 			PageIndex = int.Parse (clientData[0]);
 			
 			RaisePostBackEvent (clientData[1]);

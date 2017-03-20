@@ -77,8 +77,8 @@ namespace System.Linq.Expressions.Compiler
                 EmitExpression(node.Operand);
                 LocalBuilder loc = GetLocal(node.Operand.Type);
                 _ilg.Emit(OpCodes.Stloc, loc);
-                _ilg.EmitPrimitive(0);
-                _ilg.EmitConvertToType(typeof(int), node.Operand.Type, isChecked: false, locals: this);
+                _ilg.EmitInt(0);
+                _ilg.EmitConvertToType(typeof(int), node.Operand.Type, isChecked: false);
                 _ilg.Emit(OpCodes.Ldloc, loc);
                 FreeLocal(loc);
                 EmitBinaryOperator(ExpressionType.SubtractChecked, node.Operand.Type, node.Operand.Type, node.Type, liftedToNull: false);
@@ -201,17 +201,14 @@ namespace System.Linq.Expressions.Compiler
                         {
                             _ilg.Emit(OpCodes.Ldc_I4_0);
                             _ilg.Emit(OpCodes.Ceq);
-                            return;
                         }
-
-                        goto case ExpressionType.OnesComplement;
+                        else
+                        {
+                            _ilg.Emit(OpCodes.Not);
+                        }
+                        break;
                     case ExpressionType.OnesComplement:
                         _ilg.Emit(OpCodes.Not);
-                        if (!operandType.IsUnsigned())
-                        {
-                            // Guaranteed to fit within result type: no conversion
-                            return;
-                        }
                         break;
                     case ExpressionType.IsFalse:
                         _ilg.Emit(OpCodes.Ldc_I4_0);
@@ -224,16 +221,14 @@ namespace System.Linq.Expressions.Compiler
                         // Not an arithmetic operation -> no conversion
                         return;
                     case ExpressionType.UnaryPlus:
-                        // Guaranteed to fit within result type: no conversion
-                        return;
+                        _ilg.Emit(OpCodes.Nop);
+                        break;
                     case ExpressionType.Negate:
                     case ExpressionType.NegateChecked:
                         _ilg.Emit(OpCodes.Neg);
-                        // Guaranteed to fit within result type: no conversion
-                        // (integer NegateChecked was rewritten to 0 - operand and doesn't hit here).
-                        return;
+                        break;
                     case ExpressionType.TypeAs:
-                        if (operandType.IsValueType)
+                        if (operandType.GetTypeInfo().IsValueType)
                         {
                             _ilg.Emit(OpCodes.Box, operandType);
                         }
@@ -272,8 +267,7 @@ namespace System.Linq.Expressions.Compiler
                     break;
                 case TypeCode.Int64:
                 case TypeCode.UInt64:
-                    _ilg.Emit(OpCodes.Ldc_I4_1);
-                    _ilg.Emit(OpCodes.Conv_I8);
+                    _ilg.Emit(OpCodes.Ldc_I8, (long)1);
                     break;
                 case TypeCode.Single:
                     _ilg.Emit(OpCodes.Ldc_R4, 1.0f);
@@ -291,7 +285,7 @@ namespace System.Linq.Expressions.Compiler
         private void EmitUnboxUnaryExpression(Expression expr)
         {
             var node = (UnaryExpression)expr;
-            Debug.Assert(node.Type.IsValueType);
+            Debug.Assert(node.Type.GetTypeInfo().IsValueType);
 
             // Unbox_Any leaves the value on the stack
             EmitExpression(node.Operand);
@@ -323,7 +317,7 @@ namespace System.Linq.Expressions.Compiler
                 // an expression tree and then compiling it.  We can live with this
                 // discrepancy however.
 
-                if (node.IsLifted && (!node.Type.IsValueType || !node.Operand.Type.IsValueType))
+                if (node.IsLifted && (!node.Type.GetTypeInfo().IsValueType || !node.Operand.Type.GetTypeInfo().IsValueType))
                 {
                     ParameterInfo[] pis = node.Method.GetParametersCached();
                     Debug.Assert(pis != null && pis.Length == 1);
@@ -362,7 +356,7 @@ namespace System.Linq.Expressions.Compiler
                 {
                     // A conversion is emitted after emitting the operand, no tail call is emitted
                     EmitExpression(node.Operand);
-                    _ilg.EmitConvertToType(node.Operand.Type, node.Type, node.NodeType == ExpressionType.ConvertChecked, this);
+                    _ilg.EmitConvertToType(node.Operand.Type, node.Type, node.NodeType == ExpressionType.ConvertChecked);
                 }
             }
         }
@@ -377,7 +371,7 @@ namespace System.Linq.Expressions.Compiler
 
                 Type resultType = mc.Type.GetNullableType();
                 EmitLift(node.NodeType, resultType, mc, new ParameterExpression[] { v }, new Expression[] { node.Operand });
-                _ilg.EmitConvertToType(resultType, node.Type, isChecked: false, locals: this);
+                _ilg.EmitConvertToType(resultType, node.Type, isChecked: false);
             }
             else
             {

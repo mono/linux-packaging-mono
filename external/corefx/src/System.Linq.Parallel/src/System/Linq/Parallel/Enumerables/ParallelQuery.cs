@@ -13,7 +13,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Parallel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace System.Linq
 {
@@ -47,7 +46,6 @@ namespace System.Linq
         // is thrown.
         //
 
-        [ExcludeFromCodeCoverage]
         internal virtual ParallelQuery<TCastTo> Cast<TCastTo>()
         {
             Debug.Fail("The derived class must override this method.");
@@ -60,7 +58,6 @@ namespace System.Linq
         // the results.
         //
 
-        [ExcludeFromCodeCoverage]
         internal virtual ParallelQuery<TCastTo> OfType<TCastTo>()
         {
             Debug.Fail("The derived class must override this method.");
@@ -73,7 +70,6 @@ namespace System.Linq
         // IEnumerable<T>.
         //
 
-        [ExcludeFromCodeCoverage]
         internal virtual IEnumerator GetEnumeratorUntyped()
         {
             Debug.Fail("The derived class must override this method.");

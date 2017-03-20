@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Security;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -110,7 +111,7 @@ namespace System.Net.Sockets
                 return (T)(object)_transmitPackets;
             }
 
-            Debug.Fail("Invalid type passed to DynamicWinsockMethods.GetDelegate");
+            System.Diagnostics.Debug.Assert(false, "Invalid type passed to DynamicWinsockMethods.GetDelegate");
             return null;
         }
 

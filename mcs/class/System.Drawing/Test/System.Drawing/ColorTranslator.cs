@@ -84,21 +84,24 @@ namespace MonoTests.System.Drawing {
 		}
 
 		[Test]
+		[ExpectedException (typeof (Exception))]
 		public void FromHtml_PoundNegative ()
 		{
-			Assert.Throws<Exception> (() => ColorTranslator.FromHtml ("#-1"));
+			ColorTranslator.FromHtml ("#-1");
 		}
 
 		[Test]
+		[ExpectedException (typeof (Exception))]
 		public void FromHtml_PoundTooLarge ()
 		{
-			Assert.Throws<Exception> (() => ColorTranslator.FromHtml ("#100000000"));
+			ColorTranslator.FromHtml ("#100000000");
 		}
 
 		[Test]
+		[ExpectedException (typeof (Exception))]
 		public void FromHtml_Unknown ()
 		{
-			Assert.Throws<Exception> (() => ColorTranslator.FromHtml ("unknown-color-test"));
+			ColorTranslator.FromHtml ("unknown-color-test");
 		}
 
 		[Test]

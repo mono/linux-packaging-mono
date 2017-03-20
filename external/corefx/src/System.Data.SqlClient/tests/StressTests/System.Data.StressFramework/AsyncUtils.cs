@@ -22,6 +22,21 @@ namespace Stress.Data
 
     public static class AsyncUtils
     {
+        // Singleton object of a task that is already completed
+        private static Task s_completedTask;
+        private static Task CompletedTask
+        {
+            get
+            {
+                // No need to lock, it is fine to just have the last thread win
+                if (s_completedTask == null)
+                {
+                    s_completedTask = Task.FromResult<object>(null);
+                }
+                return s_completedTask;
+            }
+        }
+
         public static Task<TResult> SyncOrAsyncMethod<TResult>(Func<TResult> syncFunc, Func<Task<TResult>> asyncFunc, SyncAsyncMode mode)
         {
             switch (mode)
@@ -49,7 +64,7 @@ namespace Stress.Data
             {
                 case SyncAsyncMode.Sync:
                     syncFunc();
-                    return Task.CompletedTask;
+                    return CompletedTask;
 
                 case SyncAsyncMode.SyncOverAsync:
                     Task t = asyncFunc();

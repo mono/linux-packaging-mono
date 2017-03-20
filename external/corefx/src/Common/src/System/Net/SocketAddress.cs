@@ -107,9 +107,15 @@ namespace System.Net.Internals
             }
             else
             {
-#pragma warning disable CS0618 // using Obsolete Address API because it's the more efficient option in this case
+#if SYSTEM_NET_PRIMITIVES_DLL
+#pragma warning disable 618
                 uint address = unchecked((uint)ipAddress.Address);
-#pragma warning restore CS0618
+#pragma warning restore 618
+#else
+                byte[] ipAddressBytes = ipAddress.GetAddressBytes();
+                Debug.Assert(ipAddressBytes.Length == 4);
+                uint address = ipAddressBytes.NetworkBytesToNetworkUInt32(0);
+#endif
 
                 Debug.Assert(ipAddress.AddressFamily == AddressFamily.InterNetwork);
                 SocketAddressPal.SetIPv4Address(Buffer, address);

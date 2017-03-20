@@ -12,7 +12,7 @@ namespace System.Runtime.Serialization
     using System.Xml;
     using DataContractDictionary = System.Collections.Generic.Dictionary<System.Xml.XmlQualifiedName, DataContract>;
 
-#if USE_REFEMIT || uapaot
+#if USE_REFEMIT || NET_NATIVE
     public class XmlObjectSerializerContext
 #else
     internal class XmlObjectSerializerContext
@@ -248,7 +248,7 @@ namespace System.Runtime.Serialization
             DataContract dataContract = PrimitiveDataContract.GetPrimitiveDataContract(typeName.Name, typeName.Namespace);
             if (dataContract == null)
             {
-#if uapaot
+#if NET_NATIVE
                 if (typeName.Name == Globals.SafeSerializationManagerName && typeName.Namespace == Globals.SafeSerializationManagerNamespace && Globals.TypeOfSafeSerializationManager != null)
                 {
                     return GetDataContract(Globals.TypeOfSafeSerializationManager);
@@ -279,7 +279,7 @@ namespace System.Runtime.Serialization
             if (dataContract == null)
             {
                 if (memberTypeContract != null
-                    && !memberTypeContract.UnderlyingType.IsInterface
+                    && !memberTypeContract.UnderlyingType.GetTypeInfo().IsInterface
                     && memberTypeContract.StableName == qname)
                 {
                     dataContract = memberTypeContract;

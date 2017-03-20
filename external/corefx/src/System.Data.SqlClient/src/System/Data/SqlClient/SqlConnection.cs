@@ -37,7 +37,7 @@ namespace System.Data.SqlClient
         private Guid _originalConnectionId = Guid.Empty;
         private CancellationTokenSource _reconnectionCancellationSource;
         internal SessionData _recoverySessionData;
-        internal bool _suppressStateChangeForReconnection;
+        internal bool _supressStateChangeForReconnection;
         private int _reconnectCount;
 
         // diagnostics listener
@@ -341,7 +341,7 @@ namespace System.Data.SqlClient
 
         protected override void OnStateChange(StateChangeEventArgs stateChange)
         {
-            if (!_suppressStateChangeForReconnection)
+            if (!_supressStateChangeForReconnection)
             {
                 base.OnStateChange(stateChange);
             }
@@ -666,7 +666,7 @@ namespace System.Data.SqlClient
             finally
             {
                 _recoverySessionData = null;
-                _suppressStateChangeForReconnection = false;
+                _supressStateChangeForReconnection = false;
             }
             Debug.Assert(false, "Should not reach this point");
         }
@@ -724,7 +724,7 @@ namespace System.Data.SqlClient
                                             }
                                             try
                                             {
-                                                _suppressStateChangeForReconnection = true;
+                                                _supressStateChangeForReconnection = true;
                                                 tdsConn.DoomThisConnection();
                                             }
                                             catch (SqlException)
@@ -1005,10 +1005,8 @@ namespace System.Data.SqlClient
                 GC.ReRegisterForFinalize(this);
             }
 
-            // The _statistics can change with StatisticsEnabled. Copying to a local variable before checking for a null value.
-            SqlStatistics statistics = _statistics;
             if (StatisticsEnabled ||
-                ( s_diagnosticListener.IsEnabled(SqlClientDiagnosticListenerExtensions.SqlAfterExecuteCommand) && statistics != null))
+                s_diagnosticListener.IsEnabled(SqlClientDiagnosticListenerExtensions.SqlAfterExecuteCommand))
             {
                 ADP.TimerCurrent(out _statistics._openTimestamp);
                 tdsInnerConnection.Parser.Statistics = _statistics;

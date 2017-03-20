@@ -4,7 +4,6 @@
 
 namespace System.DirectoryServices.Protocols
 {
-    using System.Globalization;
     using System.Runtime.Serialization;
     using System.Security.Permissions;
 
@@ -17,14 +16,17 @@ namespace System.DirectoryServices.Protocols
 
         public DirectoryException(string message, Exception inner) : base(message, inner)
         {
+            Utility.CheckOSVersion();
         }
 
         public DirectoryException(string message) : base(message)
         {
+            Utility.CheckOSVersion();
         }
 
         public DirectoryException() : base()
         {
+            Utility.CheckOSVersion();
         }
     }
 
@@ -42,7 +44,7 @@ namespace System.DirectoryServices.Protocols
 
         public DirectoryOperationException(string message, Exception inner) : base(message, inner) { }
 
-        public DirectoryOperationException(DirectoryResponse response) : base(String.Format(CultureInfo.CurrentCulture, SR.DefaultOperationsError))
+        public DirectoryOperationException(DirectoryResponse response) : base(Res.GetString(Res.DefaultOperationsError))
         {
             this.response = response;
         }
@@ -79,7 +81,7 @@ namespace System.DirectoryServices.Protocols
         {
         }
 
-        public BerConversionException() : base(String.Format(CultureInfo.CurrentCulture, SR.BerConversionError))
+        public BerConversionException() : base(Res.GetString(Res.BerConversionError))
         {
         }
 

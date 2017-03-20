@@ -33,10 +33,10 @@ namespace System.Web.UI.WebControls {
 		string value;
 		bool is_valid;
 		
-		public ServerValidateEventArgs (string value, bool isValid)
+		public ServerValidateEventArgs (string value, bool is_valid)
 		{
 			this.value = value;
-			this.is_valid = isValid;
+			this.is_valid = is_valid;
 		}
 
 		public string Value {

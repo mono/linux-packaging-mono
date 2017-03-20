@@ -55,9 +55,6 @@ namespace Internal.Cryptography.Pal
             if (typeof(T) == typeof(ECDsa))
                 return (T)(object)certificate.Pal.GetECDsaPrivateKey();
 
-            if (typeof(T) == typeof(DSA))
-                return (T)(object)certificate.Pal.GetDSAPrivateKey();
-
             Debug.Fail("Expected GetExpectedOidValue() to have thrown before we got here.");
             throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);
         }
@@ -68,8 +65,6 @@ namespace Internal.Cryptography.Pal
                 return Oids.RsaRsa;
             if (typeof(T) == typeof(ECDsa))
                 return Oids.Ecc;
-            if (typeof(T) == typeof(DSA))
-                return Oids.DsaDsa;
             throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);
         }
     }

@@ -44,7 +44,10 @@ namespace Microsoft.CSharp.RuntimeBinder.Errors
 
         public void SubmitError(CParameterizedError error)
         {
-            _errorSink?.SubmitError(error);
+            if (_errorSink != null)
+            {
+                _errorSink.SubmitError(error);
+            }
         }
 
         private void MakeErrorLocArgs(out CParameterizedError error, ErrorCode id, ErrArg[] prgarg)

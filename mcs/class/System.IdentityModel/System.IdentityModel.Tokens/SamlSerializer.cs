@@ -43,56 +43,56 @@ namespace System.IdentityModel.Tokens
 
 		[MonoTODO]
 		public virtual SamlAdvice LoadAdvice (XmlDictionaryReader reader,
-			SecurityTokenSerializer keyInfoSerializer,
-			SecurityTokenResolver outOfBandTokenResolver)
+			SecurityTokenSerializer tokenSerializer,
+			SecurityTokenResolver tokenResolver)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public virtual SamlAssertion LoadAssertion (XmlDictionaryReader reader,
-			SecurityTokenSerializer keyInfoSerializer,
-			SecurityTokenResolver outOfBandTokenResolver)
+			SecurityTokenSerializer tokenSerializer,
+			SecurityTokenResolver tokenResolver)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public virtual SamlAttribute LoadAttribute (XmlDictionaryReader reader,
-			SecurityTokenSerializer keyInfoSerializer,
-			SecurityTokenResolver outOfBandTokenResolver)
+			SecurityTokenSerializer tokenSerializer,
+			SecurityTokenResolver tokenResolver)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public virtual SamlCondition LoadCondition (XmlDictionaryReader reader,
-			SecurityTokenSerializer keyInfoSerializer,
-			SecurityTokenResolver outOfBandTokenResolver)
+			SecurityTokenSerializer tokenSerializer,
+			SecurityTokenResolver tokenResolver)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public virtual SamlConditions LoadConditions (XmlDictionaryReader reader,
-			SecurityTokenSerializer keyInfoSerializer,
-			SecurityTokenResolver outOfBandTokenResolver)
+			SecurityTokenSerializer tokenSerializer,
+			SecurityTokenResolver tokenResolver)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public virtual SamlStatement LoadStatement (XmlDictionaryReader reader,
-			SecurityTokenSerializer keyInfoSerializer,
-			SecurityTokenResolver outOfBandTokenResolver)
+			SecurityTokenSerializer tokenSerializer,
+			SecurityTokenResolver tokenResolver)
 		{
 			throw new NotImplementedException ();
 		}
 
 		[MonoTODO]
 		public virtual SamlSecurityToken ReadToken (XmlReader reader,
-			SecurityTokenSerializer keyInfoSerializer,
-			SecurityTokenResolver outOfBandTokenResolver)
+			SecurityTokenSerializer tokenSerializer,
+			SecurityTokenResolver tokenResolver)
 		{
 			throw new NotImplementedException ();
 		}

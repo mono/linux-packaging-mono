@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace System.Net.Sockets
@@ -132,6 +134,11 @@ namespace System.Net.Sockets
 
             if (NetEventSource.IsEnabled) NetEventSource.Enter(this);
 
+            if (_serverSocket == null)
+            {
+                throw new InvalidOperationException(SR.net_InvalidSocketHandle);
+            }
+
             // Already listening.
             if (_active)
             {
@@ -160,7 +167,12 @@ namespace System.Net.Sockets
         {
             if (NetEventSource.IsEnabled) NetEventSource.Enter(this);
 
-            _serverSocket.Dispose();
+            if (_serverSocket != null)
+            {
+                _serverSocket.Dispose();
+                _serverSocket = null;
+            }
+
             _active = false;
             _serverSocket = new Socket(_serverSocketEP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 

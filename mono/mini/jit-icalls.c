@@ -1332,7 +1332,7 @@ constrained_gsharedvt_call_setup (gpointer mp, MonoMethod *cmethod, MonoClass *k
 	MonoMethod *m;
 	int vt_slot, iface_offset;
 
-	error_init (error);
+	mono_error_init (error);
 
 	if (mono_class_is_interface (klass)) {
 		MonoObject *this_obj;
@@ -1504,7 +1504,7 @@ resolve_iface_call (MonoObject *this_obj, int imt_slot, MonoMethod *imt_method, 
 	gpointer addr, compiled_method, aot_addr;
 	gboolean need_rgctx_tramp = FALSE, need_unbox_tramp = FALSE;
 
-	error_init (error);
+	mono_error_init (error);
 	if (!this_obj)
 		/* The caller will handle it */
 		return NULL;
@@ -1588,7 +1588,7 @@ resolve_vcall (MonoVTable *vt, int slot, MonoMethod *imt_method, gpointer *out_a
 	gpointer addr, compiled_method;
 	gboolean need_unbox_tramp = FALSE;
 
-	error_init (error);
+	mono_error_init (error);
 	/* Same as in common_call_trampoline () */
 
 	/* Avoid loading metadata or creating a generic vtable if possible */
@@ -1909,14 +1909,14 @@ mono_interruption_checkpoint_from_trampoline (void)
 }
 
 void
-mono_throw_method_access (MonoMethod *caller, MonoMethod *callee)
+mono_throw_method_access (MonoMethod *callee, MonoMethod *caller)
 {
-	char *caller_name = mono_method_full_name (caller, 1);
 	char *callee_name = mono_method_full_name (callee, 1);
+	char *caller_name = mono_method_full_name (caller, 1);
 	MonoError error;
 
-	error_init (&error);
-	mono_error_set_generic_error (&error, "System", "MethodAccessException", "Method `%s' is inaccessible from method `%s'", callee_name, caller_name);
+	mono_error_init (&error);
+	mono_error_set_generic_error (&error, "System", "MethodAccessException", "Method `%s' is inaccessible from method `%s'\n", callee_name, caller_name);
 	mono_error_set_pending_exception (&error);
 	g_free (callee_name);
 	g_free (caller_name);

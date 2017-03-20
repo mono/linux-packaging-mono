@@ -51,8 +51,8 @@ namespace System.Dynamic.Tests
         public void ConvertExplicit(long x)
         {
             dynamic d = x;
-            int xi = unchecked((int)d);
-            Assert.Equal(unchecked((int)x), xi);
+            int xi = (int)d;
+            Assert.Equal((int)x, xi);
         }
 
         [Theory, MemberData(nameof(Int64Arges))]

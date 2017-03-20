@@ -3,6 +3,14 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Threading;
 
 namespace System.Net.Sockets
@@ -19,8 +27,7 @@ namespace System.Net.Sockets
         internal int _offset;
 
         // BufferList property variables.
-        private IList<ArraySegment<byte>> _bufferList;
-        private List<ArraySegment<byte>> _bufferListInternal;
+        internal IList<ArraySegment<byte>> _bufferList;
 
         // BytesTransferred property variables.
         private int _bytesTransferred;
@@ -130,38 +137,11 @@ namespace System.Net.Sockets
                 StartConfiguring();
                 try
                 {
-                    if (value != null)
+                    if (value != null && _buffer != null)
                     {
-                        if (_buffer != null)
-                        {
-                            // Can't have both set
-                            throw new ArgumentException(SR.Format(SR.net_ambiguousbuffers, "Buffer"));
-                        }
-
-                        // Copy the user-provided list into our internal buffer list,
-                        // so that we are not affected by subsequent changes to the list.
-                        // We reuse the existing list so that we can avoid reallocation when possible.
-                        if (_bufferListInternal == null)
-                        {
-                            _bufferListInternal = new List<ArraySegment<byte>>(value.Count);
-                        }
-                        else
-                        {
-                            _bufferListInternal.Clear();
-                        }
-
-                        for (int i = 0; i < value.Count; i++)
-                        {
-                            _bufferListInternal.Add(value[i]);
-                        }
+                        throw new ArgumentException(SR.Format(SR.net_ambiguousbuffers, "Buffer"));
                     }
-                    else
-                    {
-                        _bufferListInternal?.Clear();
-                    }
-                    
                     _bufferList = value;
-
                     SetupMultipleBuffers();
                 }
                 finally
@@ -277,11 +257,6 @@ namespace System.Net.Sockets
         public void SetBuffer(int offset, int count)
         {
             SetBufferInternal(_buffer, offset, count);
-        }
-
-        internal bool HasMultipleBuffers
-        {
-            get { return _bufferList != null; }
         }
 
         private void SetBufferInternal(byte[] buffer, int offset, int count)
@@ -610,13 +585,30 @@ namespace System.Net.Sockets
             }
         }
 
+        internal void FinishOperationSync(SocketError socketError, int bytesTransferred, SocketFlags flags)
+        {
+            Debug.Assert(socketError != SocketError.IOPending);
+
+            if (socketError == SocketError.Success)
+            {
+                FinishOperationSyncSuccess(bytesTransferred, flags);
+            }
+            else
+            {
+                FinishOperationSyncFailure(socketError, bytesTransferred, flags);
+            }
+        }
+
         internal void FinishOperationSyncFailure(SocketError socketError, int bytesTransferred, SocketFlags flags)
         {
             SetResults(socketError, bytesTransferred, flags);
 
             // This will be null if we're doing a static ConnectAsync to a DnsEndPoint with AddressFamily.Unspecified;
             // the attempt socket will be closed anyways, so not updating the state is OK.
-            _currentSocket?.UpdateStatusAfterSocketError(socketError);
+            if (_currentSocket != null)
+            {
+                _currentSocket.UpdateStatusAfterSocketError(socketError);
+            }
 
             Complete();
         }
@@ -625,7 +617,10 @@ namespace System.Net.Sockets
         {
             SetResults(exception, bytesTransferred, flags);
 
-            _currentSocket?.UpdateStatusAfterSocketError(_socketError);
+            if (_currentSocket != null)
+            {
+                _currentSocket.UpdateStatusAfterSocketError(_socketError);
+            }
 
             Complete();
         }
@@ -636,7 +631,10 @@ namespace System.Net.Sockets
 
             // This will be null if we're doing a static ConnectAsync to a DnsEndPoint with AddressFamily.Unspecified;
             // the attempt socket will be closed anyways, so not updating the state is OK.
-            _currentSocket?.UpdateStatusAfterSocketError(socketError);
+            if (_currentSocket != null)
+            {
+                _currentSocket.UpdateStatusAfterSocketError(socketError);
+            }
 
             Complete();
             if (_context == null)
@@ -653,7 +651,10 @@ namespace System.Net.Sockets
         {
             SetResults(exception, bytesTransferred, flags);
 
-            _currentSocket?.UpdateStatusAfterSocketError(_socketError);
+            if (_currentSocket != null)
+            {
+                _currentSocket.UpdateStatusAfterSocketError(_socketError);
+            }
 
             Complete();
             if (_context == null)

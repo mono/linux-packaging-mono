@@ -6,6 +6,7 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default01.default01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default01.default01;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -46,6 +47,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default02.default02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default02.default02;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -86,6 +88,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default02a.default02a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default02a.default02a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -126,6 +129,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default02b.default02b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default02b.default02b;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -166,6 +170,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default02c.default02c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default02c.default02c;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -206,6 +211,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default04.default04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default04.default04;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -245,6 +251,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default05.default05
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default05.default05;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -284,6 +291,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default06.default06
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default06.default06;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -323,6 +331,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default06a.default06a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default06a.default06a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -363,6 +372,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default06b.default06b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default06b.default06b;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -403,6 +413,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default06c.default06c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default06c.default06c;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -442,6 +453,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default07.default07
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default07.default07;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -482,6 +494,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default09.default09
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default09.default09;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -523,6 +536,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default09a.default09a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default09a.default09a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -563,6 +577,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default09b.default09b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default09b.default09b;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -605,6 +620,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default10.default10
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default10.default10;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -646,6 +662,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default10a.default10a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default10a.default10a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -686,6 +703,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default10b.default10b
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default10b.default10b;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -727,6 +745,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default10c.default10c
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.defaultParameter.default10c.default10c;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>

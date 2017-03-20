@@ -409,7 +409,7 @@ namespace System.DirectoryServices.ActiveDirectory
                     else
                         // this is the case that we need to specifically go to a particular server. This is the way to tell netlogon to do that.
                         data = Marshal.StringToHGlobalUni(targetName + "\\" + preferredTargetServer);
-                    ptr = Marshal.AllocHGlobal(IntPtr.Size);
+                    ptr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(IntPtr)));
                     Marshal.WriteIntPtr(ptr, data);
 
                     if (!forceSecureChannelReset)

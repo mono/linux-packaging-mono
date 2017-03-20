@@ -65,14 +65,14 @@ namespace System.Web {
 			return (HttpPostedFile)BaseGet (index);
 		}
 
-		public HttpPostedFile Get (string name)
+		public HttpPostedFile Get (string key)
 		{
-			return (HttpPostedFile)BaseGet (name);
+			return (HttpPostedFile)BaseGet (key);
 		}
 
-		public HttpPostedFile this [string name] {
+		public HttpPostedFile this [string key] {
 			get {
-				return Get (name);
+				return Get (key);
 			}
 		}
 

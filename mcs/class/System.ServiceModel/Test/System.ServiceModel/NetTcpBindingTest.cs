@@ -189,7 +189,6 @@ namespace MonoTests.System.ServiceModel
 		}
 
 		[Test]
-		[Category ("NotWorking")] // Fails randomly
 		public void StreamedConnection ()
 		{
 			var host = new ServiceHost (typeof (Foo));

@@ -111,16 +111,16 @@ namespace System.Net.Mail {
 			return av;
 		}
 
-		public static AlternateView CreateAlternateViewFromString (string content, Encoding contentEncoding, string mediaType)
+		public static AlternateView CreateAlternateViewFromString (string content, Encoding encoding, string mediaType)
 		{
 			if (content == null)
 				throw new ArgumentNullException ("content");
-			if (contentEncoding == null)
-				contentEncoding = Encoding.UTF8;
-			MemoryStream ms = new MemoryStream (contentEncoding.GetBytes (content));
+			if (encoding == null)
+				encoding = Encoding.UTF8;
+			MemoryStream ms = new MemoryStream (encoding.GetBytes (content));
 			ContentType ct = new ContentType ();
 			ct.MediaType = mediaType;
-			ct.CharSet = contentEncoding.HeaderName;
+			ct.CharSet = encoding.HeaderName;
 			AlternateView av = new AlternateView (ms, ct);
 			av.TransferEncoding = TransferEncoding.QuotedPrintable;
 			return av;

@@ -325,29 +325,33 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void InterpolationColors_Colors_InvalidBlend ()
 		{
 			// default Blend doesn't allow getting this property
-			Assert.Throws<ArgumentException> (() => { var x = default_brush.InterpolationColors.Colors; });
+			Assert.IsNotNull (default_brush.InterpolationColors.Colors);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void InterpolationColors_Positions_InvalidBlend ()
 		{
 			// default Blend doesn't allow getting this property
-			Assert.Throws<ArgumentException> (() => { var x = default_brush.InterpolationColors.Positions; });
+			Assert.IsNotNull (default_brush.InterpolationColors.Positions);
 		}
 
 		[Test]
+		[ExpectedException (typeof (IndexOutOfRangeException))]
 		public void LinearColors_Empty ()
 		{
-			Assert.Throws<IndexOutOfRangeException> (() => default_brush.LinearColors = new Color[0]);
+			default_brush.LinearColors = new Color[0];
 		}
 
 		[Test]
+		[ExpectedException (typeof (IndexOutOfRangeException))]
 		public void LinearColors_One ()
 		{
-			Assert.Throws<IndexOutOfRangeException> (() => default_brush.LinearColors = new Color[1]);
+			default_brush.LinearColors = new Color[1];
 		}
 
 		[Test]
@@ -396,9 +400,10 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
 		public void Transform_Null ()
 		{
-			Assert.Throws<ArgumentNullException> (() => default_brush.Transform = null);
+			default_brush.Transform = null;
 		}
 
 		[Test]
@@ -410,9 +415,10 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void Transform_NonInvertible ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.Transform = new Matrix (123, 24, 82, 16, 47, 30));
+			default_brush.Transform = new Matrix (123, 24, 82, 16, 47, 30);
 		}
 
 		[Test]
@@ -430,15 +436,17 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void WrapMode_Clamp ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.WrapMode = WrapMode.Clamp);
+			default_brush.WrapMode = WrapMode.Clamp;
 		}
 
 		[Test]
+		[ExpectedException (typeof (InvalidEnumArgumentException))]
 		public void WrapMode_Invalid ()
 		{
-			Assert.Throws<InvalidEnumArgumentException> (() => default_brush.WrapMode = (WrapMode) Int32.MinValue);
+			default_brush.WrapMode = (WrapMode) Int32.MinValue;
 		}
 
 
@@ -458,15 +466,17 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
 		public void MultiplyTransform1_Null ()
 		{
-			Assert.Throws<ArgumentNullException> (() => default_brush.MultiplyTransform (null));
+			default_brush.MultiplyTransform (null);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
 		public void MultiplyTransform2_Null ()
 		{
-			Assert.Throws<ArgumentNullException> (() => default_brush.MultiplyTransform (null, MatrixOrder.Append));
+			default_brush.MultiplyTransform (null, MatrixOrder.Append);
 		}
 
 		[Test]
@@ -476,10 +486,11 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void MultiplyTransform_NonInvertible ()
 		{
 			Matrix noninvertible = new Matrix (123, 24, 82, 16, 47, 30);
-			Assert.Throws<ArgumentException> (() => default_brush.MultiplyTransform (noninvertible));
+			default_brush.MultiplyTransform (noninvertible);
 		}
 
 		[Test]
@@ -539,10 +550,11 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void RotateTransform_InvalidOrder ()
 		{
 			LinearGradientBrush lgb = new LinearGradientBrush (pt1, pt2, c1, c2);
-			Assert.Throws<ArgumentException> (() => lgb.RotateTransform (720, (MatrixOrder) Int32.MinValue));
+			lgb.RotateTransform (720, (MatrixOrder) Int32.MinValue);
 		}
 
 		[Test]
@@ -591,10 +603,11 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void ScaleTransform_InvalidOrder ()
 		{
 			LinearGradientBrush lgb = new LinearGradientBrush (pt1, pt2, c1, c2);
-			Assert.Throws<ArgumentException> (() => lgb.ScaleTransform (1, 1, (MatrixOrder) Int32.MinValue));
+			lgb.ScaleTransform (1, 1, (MatrixOrder) Int32.MinValue);
 		}
 
 		[Test]
@@ -630,27 +643,31 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void SetBlendTriangularShape_FocusTooSmall ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.SetBlendTriangularShape (-1));
+			default_brush.SetBlendTriangularShape (-1);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void SetBlendTriangularShape_FocusTooBig ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.SetBlendTriangularShape (1.01f));
+			default_brush.SetBlendTriangularShape (1.01f);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void SetBlendTriangularShape_ScaleTooSmall ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.SetBlendTriangularShape (1, -1));
+			default_brush.SetBlendTriangularShape (1, -1);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void SetBlendTriangularShape_ScaleTooBig ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.SetBlendTriangularShape (1, 1.01f));
+			default_brush.SetBlendTriangularShape (1, 1.01f);
 		}
 
 		[Test]
@@ -686,27 +703,31 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void SetSigmaBellShape_FocusTooSmall ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.SetSigmaBellShape (-1));
+			default_brush.SetSigmaBellShape (-1);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void SetSigmaBellShape_FocusTooBig ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.SetSigmaBellShape (1.01f));
+			default_brush.SetSigmaBellShape (1.01f);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void SetSigmaBellShape_ScaleTooSmall ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.SetSigmaBellShape (1, -1));
+			default_brush.SetSigmaBellShape (1, -1);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void SetSigmaBellShape_ScaleTooBig ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.SetSigmaBellShape (1, 1.01f));
+			default_brush.SetSigmaBellShape (1, 1.01f);
 		}
 
 		[Test]
@@ -734,10 +755,11 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void TranslateTransform_InvalidOrder ()
 		{
 			LinearGradientBrush lgb = new LinearGradientBrush (pt1, pt2, c1, c2);
-			Assert.Throws<ArgumentException> (() => lgb.TranslateTransform (1, 1, (MatrixOrder) Int32.MinValue));
+			lgb.TranslateTransform (1, 1, (MatrixOrder) Int32.MinValue);
 		}
 
 		[Test]
@@ -853,37 +875,42 @@ namespace MonoTests.System.Drawing.Drawing2D {
 		}
 
 		[Test]
+		[ExpectedException (typeof (NullReferenceException))]
 		public void LinearColors_Null ()
 		{
-			Assert.Throws<NullReferenceException> (() => default_brush.LinearColors = null);
+			default_brush.LinearColors = null;
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void InterpolationColors_Null ()
 		{
-			Assert.Throws<ArgumentException> (() => default_brush.InterpolationColors = null);
+			default_brush.InterpolationColors = null;
 		}
 
 		[Test]
+		[ExpectedException (typeof (NullReferenceException))]
 		public void Blend_Null ()
 		{
-			Assert.Throws<NullReferenceException> (() => default_brush.Blend = null);
+			default_brush.Blend = null;
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void ZeroWidthRectangle ()
 		{
 			Rectangle r = new Rectangle (10, 10, 0, 10);
 			Assert.AreEqual (0, r.Width, "Width");
-			Assert.Throws<ArgumentException> (() => new LinearGradientBrush (r, Color.Red, Color.Blue, LinearGradientMode.Vertical));
+			new LinearGradientBrush (r, Color.Red, Color.Blue, LinearGradientMode.Vertical);
 		}
 
 		[Test]
+		[ExpectedException (typeof (ArgumentException))]
 		public void ZeroHeightRectangleF ()
 		{
 			RectangleF r = new RectangleF (10.0f, 10.0f, 10.0f, 0.0f);
 			Assert.AreEqual (0.0f, r.Height, "Height");
-			Assert.Throws<ArgumentException> (() => new LinearGradientBrush (r, Color.Red, Color.Blue, LinearGradientMode.Vertical));
+			new LinearGradientBrush (r, Color.Red, Color.Blue, LinearGradientMode.Vertical);
 		}
 	}
 }

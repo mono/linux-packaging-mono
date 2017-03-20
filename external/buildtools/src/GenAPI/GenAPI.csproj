@@ -10,8 +10,6 @@
     <AssemblyName>GenAPI</AssemblyName>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <DefineConstants>$(DefineConstants);COREFX</DefineConstants>
-    <NuGetRuntimeIdentifier>win7-x64</NuGetRuntimeIdentifier>
-    <NuGetTargetMoniker>.NETCoreApp,Version=v1.0</NuGetTargetMoniker>
   </PropertyGroup>
 
   <!-- Default configurations to help VS understand the configurations -->

@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Cci.Comparers;
@@ -43,7 +42,7 @@ namespace Microsoft.Cci.Traversers
         public virtual void Visit(IEnumerable<AssemblyMapping> assemblies)
         {
             assemblies = assemblies.Where(this.DiffFilter.Include);
-            assemblies = assemblies.OrderBy(GetAssemblyKey, StringComparer.OrdinalIgnoreCase);
+            assemblies = assemblies.OrderBy(GetAssemblyKey);
 
             foreach (var assembly in assemblies)
                 Visit(assembly);
@@ -62,7 +61,7 @@ namespace Microsoft.Cci.Traversers
         public virtual void Visit(IEnumerable<NamespaceMapping> namespaces)
         {
             namespaces = namespaces.Where(this.DiffFilter.Include);
-            namespaces = namespaces.OrderBy(GetNamespaceKey, StringComparer.OrdinalIgnoreCase);
+            namespaces = namespaces.OrderBy(GetNamespaceKey);
 
             foreach (var ns in namespaces)
                 Visit(ns);
@@ -100,7 +99,7 @@ namespace Microsoft.Cci.Traversers
         public virtual void Visit(IEnumerable<MemberMapping> members)
         {
             members = members.Where(this.DiffFilter.Include);
-            members = members.OrderBy(GetMemberKey, StringComparer.OrdinalIgnoreCase);
+            members = members.OrderBy(GetMemberKey);
 
             foreach (var member in members)
                 Visit(member);

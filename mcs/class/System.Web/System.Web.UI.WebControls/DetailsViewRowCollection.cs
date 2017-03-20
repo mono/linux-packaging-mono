@@ -42,8 +42,8 @@ namespace System.Web.UI.WebControls
 			this.rows = rows;
 		}
 		
-		public DetailsViewRow this [int index] {
-			get { return (DetailsViewRow) rows [index]; }
+		public DetailsViewRow this [int i] {
+			get { return (DetailsViewRow) rows [i]; }
 		}
 		
 		public void CopyTo (DetailsViewRow[] array, int index)

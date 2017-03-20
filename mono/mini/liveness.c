@@ -231,7 +231,8 @@ analyze_liveness_bb (MonoCompile *cfg, MonoBasicBlock *bb)
 
 #ifdef DEBUG_LIVENESS
 		if (cfg->verbose_level > 1) {
-			mono_print_ins_index (1, ins);
+			printf ("\t");
+			mono_print_ins (ins);
 		}
 #endif
 

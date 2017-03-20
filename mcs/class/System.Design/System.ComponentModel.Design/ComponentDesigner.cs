@@ -408,10 +408,10 @@ namespace System.ComponentModel.Design
 
 		// Helper method - not an ISerivceProvider
 		//
-		protected virtual object GetService (Type serviceType)
+		protected virtual object GetService (Type service)
 		{
 			if (_component != null && _component.Site != null)
-				return _component.Site.GetService (serviceType);
+				return _component.Site.GetService (service);
 
 			return null;
 		}

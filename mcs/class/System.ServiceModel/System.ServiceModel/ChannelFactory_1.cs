@@ -125,14 +125,14 @@ namespace System.ServiceModel
 			return ch;
 		}
 
-		public static TChannel CreateChannel (Binding binding, EndpointAddress endpointAddress)
+		public static TChannel CreateChannel (Binding binding, EndpointAddress address)
 		{
-			return CreateChannelCore (new ChannelFactory<TChannel> (binding, endpointAddress), f => f.CreateChannel ());
+			return CreateChannelCore (new ChannelFactory<TChannel> (binding, address), f => f.CreateChannel ());
 		}
 
-		public static TChannel CreateChannel (Binding binding, EndpointAddress endpointAddress, Uri via)
+		public static TChannel CreateChannel (Binding binding, EndpointAddress address, Uri via)
 		{
-			return CreateChannelCore (new ChannelFactory<TChannel> (binding), f => f.CreateChannel (endpointAddress, via));
+			return CreateChannelCore (new ChannelFactory<TChannel> (binding), f => f.CreateChannel (address, via));
 		}
 
 		public virtual TChannel CreateChannel (EndpointAddress address, Uri via)

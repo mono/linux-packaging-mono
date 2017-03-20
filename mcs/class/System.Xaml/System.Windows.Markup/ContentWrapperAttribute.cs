@@ -41,9 +41,9 @@ namespace System.Windows.Markup
 		}
 #endif
 
-		public override bool Equals (object obj)
+		public override bool Equals (object other)
 		{
-			var cwa = obj as ContentWrapperAttribute;
+			var cwa = other as ContentWrapperAttribute;
 			if (cwa == null)
 				return false;
 			return ContentWrapper != null ? ContentWrapper == cwa.ContentWrapper : cwa.ContentWrapper == null;

@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 
 namespace System.Reflection.Metadata.Ecma335
 {
@@ -18,7 +19,7 @@ namespace System.Reflection.Metadata.Ecma335
         private const string DefaultMetadataVersionString = "v4.0.30319";
 
         // internal for testing
-        internal static readonly ImmutableArray<int> EmptyRowCounts = ImmutableArray.Create(new int[MetadataTokens.TableCount]);
+        internal static readonly ImmutableArray<int> EmptyRowCounts = ImmutableArray.CreateRange(Enumerable.Repeat(0, MetadataTokens.TableCount));
 
         private readonly MetadataBuilder _tablesAndHeaps;
         private readonly SerializedMetadata _serializedMetadata;

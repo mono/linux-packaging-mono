@@ -50,7 +50,8 @@ namespace System.Net.Sockets.Performance.Tests
             {
                 milliseconds = RunClient(
                     clientType,
-                    new IPEndPoint(address, port),
+                    "localhost",
+                    port,
                     iterations,
                     bufferSize,
                     socketInstances);
@@ -78,7 +79,8 @@ namespace System.Net.Sockets.Performance.Tests
 
         public long RunClient(
             SocketImplementationType testType,
-            EndPoint endpoint,
+            string server,
+            int port,
             int iterations,
             int bufferSize,
             int socketInstances)
@@ -120,7 +122,8 @@ namespace System.Net.Sockets.Performance.Tests
                     var test = SocketTestClient.SocketTestClientFactory(
                         _log,
                         testType,
-                        endpoint,
+                        server,
+                        port,
                         iterations,
                         message,
                         timeProgramStart);

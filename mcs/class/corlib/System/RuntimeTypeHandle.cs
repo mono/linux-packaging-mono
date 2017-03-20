@@ -188,9 +188,6 @@ namespace System
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		internal extern static bool IsPrimitive (RuntimeType type);
 
-		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		internal extern static bool HasReferences (RuntimeType type);
-
 		internal static bool IsComObject (RuntimeType type, bool isGenericCOM)
 		{
 			return isGenericCOM ? false : IsComObject (type);

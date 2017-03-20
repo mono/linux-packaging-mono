@@ -14,20 +14,21 @@ namespace System.Linq
             bool? definitionIsInterface = null;
             while (type != null && type != typeof(object))
             {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == definition)
+                TypeInfo typeInfo = type.GetTypeInfo();
+                if (typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == definition)
                     return type;
                 if (!definitionIsInterface.HasValue)
-                    definitionIsInterface = definition.IsInterface;
+                    definitionIsInterface = definition.GetTypeInfo().IsInterface;
                 if (definitionIsInterface.GetValueOrDefault())
                 {
-                    foreach (Type itype in type.GetInterfaces())
+                    foreach (Type itype in typeInfo.ImplementedInterfaces)
                     {
                         Type found = FindGenericType(definition, itype);
                         if (found != null)
                             return found;
                     }
                 }
-                type = type.BaseType;
+                type = type.GetTypeInfo().BaseType;
             }
             return null;
         }

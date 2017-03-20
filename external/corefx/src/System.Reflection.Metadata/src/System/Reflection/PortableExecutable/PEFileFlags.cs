@@ -43,8 +43,7 @@ namespace System.Reflection.PortableExecutable
         EfiBootServiceDriver = 11,  // EFI driver with boot services.
         EfiRuntimeDriver = 12,      // EFI driver with run-time services.
         EfiRom = 13,                // EFI ROM image.
-        Xbox = 14,                  // XBox system.
-        WindowsBootApplication = 16 // Boot application.
+        Xbox = 14,
     }
 
     [Flags]

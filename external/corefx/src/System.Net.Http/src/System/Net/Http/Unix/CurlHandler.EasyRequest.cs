@@ -249,12 +249,7 @@ namespace System.Net.Http
                 }
 
                 EventSourceTrace("Url: {0}", requestUri);
-                string idnHost = requestUri.IdnHost;
-                string url = requestUri.Host == idnHost ? 
-                                requestUri.AbsoluteUri : 
-                                new UriBuilder(requestUri) { Host = idnHost }.Uri.AbsoluteUri;
-
-                SetCurlOption(CURLoption.CURLOPT_URL, url);
+                SetCurlOption(CURLoption.CURLOPT_URL, requestUri.AbsoluteUri);
                 SetCurlOption(CURLoption.CURLOPT_PROTOCOLS, (long)(CurlProtocols.CURLPROTO_HTTP | CurlProtocols.CURLPROTO_HTTPS));
             }
 

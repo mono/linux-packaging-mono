@@ -105,7 +105,7 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        public void WhereWhere_Array_ExecutionIsDeferred()
+        public void WhereWhere_Array_ExecutionIsDefered()
         {
             bool funcCalled = false;
             Func<bool>[] source = new Func<bool>[] { () => { funcCalled = true; return true; } };
@@ -118,7 +118,7 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        public void WhereWhere_List_ExecutionIsDeferred()
+        public void WhereWhere_List_ExecutionIsDefered()
         {
             bool funcCalled = false;
             List<Func<bool>> source = new List<Func<bool>>() { () => { funcCalled = true; return true; } };
@@ -157,7 +157,7 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        public void WhereWhere_IEnumerable_ExecutionIsDeferred()
+        public void WhereWhere_IEnumerable_ExecutionIsDefered()
         {
             bool funcCalled = false;
             IEnumerable<Func<bool>> source = Enumerable.Repeat((Func<bool>)(() => { funcCalled = true; return true; }), 1);
@@ -997,7 +997,8 @@ namespace System.Linq.Tests
             Assert.Equal(source.Skip(source.Length - 1), source.Where((e, i) => i == source.Length - 1));
         }
 
-        [Fact(Skip = "Valid test but too intensive to enable even in OuterLoop")]
+        [Fact]
+        [ActiveIssue("Valid test but too intensive to enable even in OuterLoop")]
         public void IndexOverflows()
         {
             var infiniteWhere = new FastInfiniteEnumerator<int>().Where((e, i) => true);
@@ -1106,7 +1107,7 @@ namespace System.Linq.Tests
 
         private static IEnumerable<int> GenerateRandomSequnce(uint seed, int count)
         {
-            var random = new Random(unchecked((int)seed));
+            var random = new Random((int)seed);
 
             for (int i = 0; i < count; i++)
             {

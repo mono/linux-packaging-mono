@@ -42,7 +42,7 @@ namespace System.Web.UI.Design.WebControls {
 			throw new NotImplementedException ();
 		}
 
-		protected override object CreateInstance (Type itemType)
+		protected override object CreateInstance (Type item_type)
 		{
 			throw new NotImplementedException ();
 		}

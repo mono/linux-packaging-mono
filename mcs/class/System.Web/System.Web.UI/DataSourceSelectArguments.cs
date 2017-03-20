@@ -57,22 +57,22 @@ namespace System.Web.UI
 			this.sortExpression = sortExpression;
 		}
 
-		public DataSourceSelectArguments (int startRowIndex, int maximumRows)
+		public DataSourceSelectArguments (int startingRowIndex, int maxRows)
 		{
-			this.startingRowIndex = startRowIndex;
-			this.maxRows = maximumRows;
+			this.startingRowIndex = startingRowIndex;
+			this.maxRows = maxRows;
 		}
 
-		public DataSourceSelectArguments (string sortExpression, int startRowIndex, int maximumRows)
+		public DataSourceSelectArguments (string sortExpression, int startingRowIndex, int maxRows)
 		{
 			this.sortExpression = sortExpression; 
-			this.startingRowIndex = startRowIndex;
-			this.maxRows = maximumRows;
+			this.startingRowIndex = startingRowIndex;
+			this.maxRows = maxRows;
 		}
 
-		public void AddSupportedCapabilities (DataSourceCapabilities capabilities)
+		public void AddSupportedCapabilities (DataSourceCapabilities srcCapabilities)
 		{
-			this.dsc = this.dsc | capabilities;
+			this.dsc = this.dsc | srcCapabilities;
 		}
 
 		// MSDN: The DataSourceSelectArguments class overrides the Object.Equals method to test 

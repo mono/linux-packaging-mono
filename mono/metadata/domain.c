@@ -31,11 +31,11 @@
 #include <mono/metadata/object-internals.h>
 #include <mono/metadata/domain-internals.h>
 #include <mono/metadata/class-internals.h>
-#include <mono/metadata/debug-internals.h>
-#include <mono/metadata/assembly-internals.h>
+#include <mono/metadata/assembly.h>
 #include <mono/metadata/exception.h>
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/appdomain.h>
+#include <mono/metadata/mono-debug-debugger.h>
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/runtime.h>
@@ -93,17 +93,13 @@ typedef struct {
 
 static const MonoRuntimeInfo *current_runtime = NULL;
 
-#define NOT_AVAIL {0xffffU,0xffffU,0xffffU,0xffffU}
-
 /* This is the list of runtime versions supported by this JIT.
  */
 static const MonoRuntimeInfo supported_runtimes[] = {
-	{"v4.0.30319","4.5",               NULL, { {4,0,0,0}, {10,0,0,0}, {4,0,0,0}, {4,0,0,0}, {4,0,0,0} } },
-	{"mobile",    "2.1", "7cec85d7bea7798e", { {2,0,5,0}, {10,0,0,0}, {2,0,5,0}, {2,0,5,0}, {4,0,0,0} } },
-	{"moonlight", "2.1",               NULL, { {2,0,5,0}, { 9,0,0,0}, {3,5,0,0}, {3,0,0,0}, NOT_AVAIL } },
+	{"v4.0.30319","4.5", { {4,0,0,0}, {10,0,0,0}, {4,0,0,0}, {4,0,0,0} } },
+	{"mobile",    "2.1", { {2,0,5,0}, {10,0,0,0}, {2,0,5,0}, {2,0,5,0} } },
+	{"moonlight", "2.1", { {2,0,5,0}, { 9,0,0,0}, {3,5,0,0}, {3,0,0,0} } },
 };
-
-#undef NOT_AVAIL
 
 
 /* The stable runtime version */
@@ -386,7 +382,13 @@ mono_domain_create (void)
 	mono_appdomains_unlock ();
 
 #ifdef HAVE_BOEHM_GC
-	domain = (MonoDomain *)mono_gc_alloc_fixed (sizeof (MonoDomain), MONO_GC_DESCRIPTOR_NULL, MONO_ROOT_SOURCE_DOMAIN, "domain object");
+	/*
+	 * Boehm doesn't like roots inside GC allocated objects, and alloc_fixed returns
+	 * a GC_MALLOC-ed object, contrary to the api docs. This causes random crashes when
+	 * running the corlib test suite.
+	 * To solve this, we pass a NULL descriptor, and don't register roots.
+	 */
+	domain = (MonoDomain *)mono_gc_alloc_fixed (sizeof (MonoDomain), NULL, MONO_ROOT_SOURCE_DOMAIN, "domain object");
 #else
 	domain = (MonoDomain *)mono_gc_alloc_fixed (sizeof (MonoDomain), domain_gc_desc, MONO_ROOT_SOURCE_DOMAIN, "domain object");
 	mono_gc_register_root ((char*)&(domain->MONO_DOMAIN_FIRST_GC_TRACKED), G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_LAST_GC_TRACKED) - G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_FIRST_GC_TRACKED), MONO_GC_DESCRIPTOR_NULL, MONO_ROOT_SOURCE_DOMAIN, "misc domain fields");
@@ -498,8 +500,6 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_counters_register ("Max code space allocated in a domain", MONO_COUNTER_INT|MONO_COUNTER_JIT, &max_domain_code_alloc);
 	mono_counters_register ("Total code space allocated", MONO_COUNTER_INT|MONO_COUNTER_JIT, &total_domain_code_alloc);
 
-	mono_counters_register ("Max HashTable Chain Length", MONO_COUNTER_INT|MONO_COUNTER_METADATA, &mono_g_hash_table_max_chain_length);
-
 	mono_gc_base_init ();
 	mono_thread_info_attach (&dummy);
 
@@ -512,6 +512,9 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_loader_init ();
 	mono_reflection_init ();
 	mono_runtime_init_tls ();
+
+	/* FIXME: When should we release this memory? */
+	MONO_GC_REGISTER_ROOT_FIXED (appdomains_list, MONO_ROOT_SOURCE_DOMAIN, "domains list");
 
 	domain = mono_domain_create ();
 	mono_root_domain = domain;
@@ -992,10 +995,10 @@ mono_domain_assembly_open (MonoDomain *domain, const char *name)
 		current = mono_domain_get ();
 
 		mono_domain_set (domain, FALSE);
-		ass = mono_assembly_open_predicate (name, FALSE, FALSE, NULL, NULL, NULL);
+		ass = mono_assembly_open (name, NULL);
 		mono_domain_set (current, FALSE);
 	} else {
-		ass = mono_assembly_open_predicate (name, FALSE, FALSE, NULL, NULL, NULL);
+		ass = mono_assembly_open (name, NULL);
 	}
 
 	return ass;

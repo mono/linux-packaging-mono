@@ -6,6 +6,8 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.anonmethod001.anonmethod001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.anonmethod001.anonmethod001;
+
     public class Test
     {
         public delegate int Del(object x);
@@ -47,6 +49,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.anonmethod002.anonmethod002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.anonmethod002.anonmethod002;
+
     public class Test
     {
         public delegate int Del(dynamic x);
@@ -88,6 +92,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for001.for001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for001.for001;
+
     public class Test
     {
         [Fact]
@@ -117,6 +123,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for002.for002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for002.for002;
+
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -178,6 +186,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for003.for003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for003.for003;
+
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -245,6 +255,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for004.for004
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for004.for004;
+
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -317,6 +329,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for005.for005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for005.for005;
+
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -383,6 +397,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for006.for006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.for006.for006;
+
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // We only implement the op_true and op_false operators, but not a conversion from myFor to bool
@@ -452,6 +468,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach001.freach001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach001.freach001;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -494,6 +511,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach002.freach002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach002.freach002;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -535,6 +553,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach003.freach003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach003.freach003;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -576,6 +595,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach005.freach005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach005.freach005;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -623,12 +643,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach006.freach006
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach006.freach006;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
     using System.Collections;
 
     public class Foo : IEnumerable, IEnumerator
@@ -698,12 +720,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach007.freach007
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach007.freach007;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
     using System.Collections;
 
     public class Foo
@@ -781,6 +805,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach008.freach008
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach008.freach008;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -831,6 +856,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach009.freach009
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach009.freach009;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -889,6 +915,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach010.freach010
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.freach010.freach010;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -957,6 +984,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.lock001.lock001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.lock001.lock001;
+
     public class Test
     {
         [Fact]
@@ -986,6 +1015,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.lock002.lock002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.lock002.lock002;
+
     public class Test
     {
         [Fact]
@@ -1016,12 +1047,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.negfreach001.negfreach001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.negfreach001.negfreach001;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
     // <RelatedBugs></RelatedBugs>
     //<Expects Status=success></Expects>
     // <Code>
+    using System.Collections.Generic;
 
     public class Test
     {
@@ -1064,6 +1097,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.negusing001.negusing001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.negusing001.negusing001;
+
     public class Test
     {
         private class MyClass
@@ -1102,6 +1137,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.query001.query001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.query001.query001;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -1146,6 +1182,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.query002.query002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.query002.query002;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -1190,6 +1227,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.trycatch002.trycatch002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.trycatch002.trycatch002;
+
     public class Test
     {
         [Fact]
@@ -1221,6 +1260,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.using001.using001
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.using001.using001;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -1271,6 +1311,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.using002.using002
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.using002.using002;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>
@@ -1321,6 +1362,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.using003.using003
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.using003.using003;
     // <Title> Simple dynamic declarations </Title>
     // <Description> Was compiler time checking - CS1674
     //      runtime check to give dynamic object (e.g. IDO) an Opportunity to cast
@@ -1328,6 +1370,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
     // <RelatedBugs></RelatedBugs>
     // <Expects Status=success></Expects>
     // <Code>
+    using System;
 
     public class MyClass
     {
@@ -1373,6 +1416,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVaria
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.using005.using005
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.declarations.localVariable.blockVariable.using005.using005;
     // <Title> Simple dynamic declarations </Title>
     // <Description>
     // </Description>

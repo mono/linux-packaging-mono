@@ -40,8 +40,8 @@ namespace System.ServiceModel.Security.Tokens
 			RequireDerivedKeys = false;
 		}
 
-		protected UserNameSecurityTokenParameters (UserNameSecurityTokenParameters other)
-			: base (other)
+		protected UserNameSecurityTokenParameters (UserNameSecurityTokenParameters source)
+			: base (source)
 		{
 		}
 

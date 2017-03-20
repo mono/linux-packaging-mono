@@ -62,7 +62,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.OSX)] // OSX throws PNSE from StartTime
+        [PlatformSpecific(TestPlatforms.OSX)]
         public void TestStartTimeProperty_OSX()
         {
             using (Process p = Process.GetCurrentProcess())

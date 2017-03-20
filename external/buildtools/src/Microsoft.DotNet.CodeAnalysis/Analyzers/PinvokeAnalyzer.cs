@@ -139,9 +139,6 @@ namespace Microsoft.DotNet.CodeAnalysis.Analyzers
             DllImportData data = methodSymbol.GetDllImportData();
             if (data == null) return;
 
-            // Ignore QCall
-            if (data.ModuleName.Equals("QCall", StringComparison.OrdinalIgnoreCase)) return;
-
             bool isPresent = false;
             string altMsg = string.Empty;
 

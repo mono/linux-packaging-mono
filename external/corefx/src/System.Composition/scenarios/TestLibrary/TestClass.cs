@@ -10,6 +10,7 @@ using System.Composition;
 namespace TestLibrary
 {
     [Export]
+    [CLSCompliant(false)]
     public class ClassWithDependecy
     {
         public TestDependency _dep;
@@ -21,6 +22,7 @@ namespace TestLibrary
     }
 
     [Export]
+    [CLSCompliant(false)]
     public class ClassWithDependecyAndSameBaseType
     {
         public IDependency _dep;

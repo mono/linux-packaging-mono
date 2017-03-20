@@ -313,9 +313,9 @@ namespace System.Reflection.Metadata.Ecma335
         private void ResolveParentChildRelationships(Dictionary<string, NamespaceDataBuilder> namespaces, out List<NamespaceDataBuilder> virtualNamespaces)
         {
             virtualNamespaces = null;
-            foreach (var namespaceData in namespaces)
+            foreach (var namespaceData in namespaces.Values)
             {
-                LinkChildToParentNamespace(namespaces, namespaceData.Value, ref virtualNamespaces);
+                LinkChildToParentNamespace(namespaces, namespaceData, ref virtualNamespaces);
             }
         }
 
@@ -397,15 +397,14 @@ namespace System.Reflection.Metadata.Ecma335
                 }
 
                 Debug.Assert(_namespaceTable != null);
-                var namespaceNameSet = new Dictionary<string, string>();
+                var namespaceNameSet = new HashSet<string>();
                 var namespaceListBuilder = ImmutableArray.CreateBuilder<NamespaceDefinitionHandle>();
 
                 foreach (var group in _namespaceTable)
                 {
                     var data = group.Value;
-                    if (!namespaceNameSet.ContainsKey(data.FullName))
+                    if (namespaceNameSet.Add(data.FullName))
                     {
-                        namespaceNameSet.Add(data.FullName, null);
                         namespaceListBuilder.Add(group.Key);
                     }
                 }

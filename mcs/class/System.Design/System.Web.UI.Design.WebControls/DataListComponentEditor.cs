@@ -38,8 +38,8 @@ namespace System.Web.UI.Design.WebControls {
 		{
 		}
 
-		public DataListComponentEditor (int initialPage)
-			: base (initialPage)
+		public DataListComponentEditor (int initial_page)
+			: base (initial_page)
 		{
 		}
 

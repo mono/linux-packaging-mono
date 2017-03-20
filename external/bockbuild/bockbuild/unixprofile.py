@@ -1,6 +1,5 @@
 from profile import Profile
 from bockbuild.environment import Environment
-from bockbuild.util.util import *
 
 class UnixProfile (Profile):
 
@@ -14,9 +13,7 @@ class UnixProfile (Profile):
 
         self.gcc_flags = ['-I%s/include' % self.staged_prefix]
         self.ld_flags = ['-L%s/lib' % self.staged_prefix]
-        self.configure_flags = []
 
-        self.env.set('bockbuild version', git_shortid(bockbuild, bockbuild.root))
         self.env.set('BUILD_PREFIX', '%{prefix}')
 
         self.env.set('PATH', ':',

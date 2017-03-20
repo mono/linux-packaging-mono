@@ -54,9 +54,9 @@ namespace System.Web.UI.WebControls.WebParts
 			InnerList.AddRange (connectionInterfaces);
 		}
 
-		public bool Contains (Type value)
+		public bool Contains (Type t)
 		{
-			return InnerList.Contains (value);
+			return InnerList.Contains (t);
 		}
 
 		public void CopyTo (Type[] array, 
@@ -65,9 +65,9 @@ namespace System.Web.UI.WebControls.WebParts
 			InnerList.CopyTo (array, index);
 		}
 
-		public int IndexOf (Type value)
+		public int IndexOf (Type t)
 		{
-			return InnerList.IndexOf (value);
+			return InnerList.IndexOf (t);
 		}
 
 		public Type this [ int index ] {

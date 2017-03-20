@@ -915,7 +915,7 @@ namespace System.Runtime.Serialization
             }
         }
 
-#if !uapaot
+#if !NET_NATIVE
         private static MethodInfo s_getTypeHandleMethod;
         internal static MethodInfo GetTypeHandleMethod
         {

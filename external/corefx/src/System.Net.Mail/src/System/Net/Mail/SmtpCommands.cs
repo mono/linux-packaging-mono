@@ -7,7 +7,6 @@ using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Net.Mime;
-using System.Runtime.ExceptionServices;
 using System.Text;
 
 namespace System.Net.Mail
@@ -47,10 +46,8 @@ namespace System.Net.Mail
         internal static object EndSend(IAsyncResult result, out string response)
         {
             object commandResult = MultiAsyncResult.End(result);
-            if (commandResult is Exception e)
-            {
-                ExceptionDispatchInfo.Capture(e).Throw();
-            }
+            if (commandResult is Exception)
+                throw (Exception)commandResult;
 
             LineInfo info = (LineInfo)commandResult;
             response = info.Line;
@@ -138,10 +135,8 @@ namespace System.Net.Mail
         internal static LineInfo[] EndSend(IAsyncResult result)
         {
             object commandResult = MultiAsyncResult.End(result);
-            if (commandResult is Exception e)
-            {
-                ExceptionDispatchInfo.Capture(e).Throw();
-            }
+            if (commandResult is Exception)
+                throw (Exception)commandResult;
             return (LineInfo[])commandResult;
         }
 

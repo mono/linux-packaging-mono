@@ -6,6 +6,7 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt01.opt01
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt01.opt01;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -47,6 +48,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt01a.opt01a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt01a.opt01a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -87,6 +89,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt02.opt02
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt02.opt02;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -127,6 +130,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt02a.opt02a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt02a.opt02a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -167,6 +171,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt03.opt03
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt03.opt03;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -207,6 +212,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt03a.opt03a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt03a.opt03a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -246,6 +252,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt04.opt04
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt04.opt04;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -287,6 +294,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt04a.opt04a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt04a.opt04a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -328,6 +336,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt07.opt07
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt07.opt07;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -368,6 +377,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt07a.opt07a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt07a.opt07a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -408,6 +418,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt08.opt08
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt08.opt08;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -448,6 +459,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt08a.opt08a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt08a.opt08a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
@@ -488,12 +500,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt09.opt09
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt09.opt09;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
     // <Expects status=success></Expects>
     // <Code>
     using System.Runtime.InteropServices;
+    using System;
 
     public class Parent
     {
@@ -528,12 +542,14 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.a
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt09a.opt09a
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.namedandoptional.decl.attributes.optionalParameter.opt09a.opt09a;
     // <Area>Use of Optional Parameters</Area>
     // <Title>Optional Parameters declared with Attributes</Title>
     // <Description>Optional Parameters declared with Attributes</Description>
     // <Expects status=success></Expects>
     // <Code>
     using System.Runtime.InteropServices;
+    using System;
 
     public class Parent
     {

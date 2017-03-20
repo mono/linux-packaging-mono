@@ -49,10 +49,10 @@ namespace System.ServiceModel.Channels
 		}
 
 		public MtomMessageEncodingBindingElement (
-			MessageVersion messageVersion, Encoding writeEncoding)
+			MessageVersion version, Encoding encoding)
 		{
-			this.version = messageVersion;
-			this.encoding = writeEncoding;
+			this.version = version;
+			this.encoding = encoding;
 		}
 
 		public int MaxBufferSize {

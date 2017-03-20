@@ -127,8 +127,8 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // trailing slash
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void ValidExtendedPathWithTrailingSlash()
         {
             DirectoryInfo testDir = Directory.CreateDirectory(GetTestFilePath());
@@ -223,15 +223,15 @@ namespace System.IO.Tests
         // This is updated to be correct, need to update CoreCLR path code so this will pass on all platforms
         [ActiveIssue(15098)]
         [Theory, MemberData(nameof(PathsWithInvalidColons))]
-        [PlatformSpecific(TestPlatforms.Windows)]  // invalid colons throws ArgumentException
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void PathWithInvalidColons_ThrowsArgumentException(string invalidPath)
         {
             Assert.Throws<ArgumentException>(() => Create(invalidPath));
         }
 
         [ConditionalFact(nameof(AreAllLongPathsAvailable))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // long directory path succeeds
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void DirectoryLongerThanMaxPath_Succeeds()
         {
             var paths = IOInputs.GetPathsLongerThanMaxPath(GetTestFilePath());
@@ -244,7 +244,7 @@ namespace System.IO.Tests
 
         [Fact]
         [ActiveIssue(11687)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // long directory path throws PathTooLongException
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void DirectoryLongerThanMaxLongPath_ThrowsPathTooLongException()
         {
             var paths = IOInputs.GetPathsLongerThanMaxLongPath(GetTestFilePath());
@@ -255,8 +255,8 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(LongPathsAreNotBlocked), nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // long directory path with extended syntax throws PathTooLongException
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void DirectoryLongerThanMaxLongPathWithExtendedSyntax_ThrowsPathTooLongException()
         {
             var paths = IOInputs.GetPathsLongerThanMaxLongPath(GetTestFilePath(), useExtendedSyntax: true);
@@ -267,8 +267,8 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(LongPathsAreNotBlocked), nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // long directory path with extended syntax succeeds
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void ExtendedDirectoryLongerThanLegacyMaxPath_Succeeds()
         {
             var paths = IOInputs.GetPathsLongerThanMaxPath(GetTestFilePath(), useExtendedSyntax: true);
@@ -279,8 +279,8 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(AreAllLongPathsAvailable))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // long directory path succeeds
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void DirectoryLongerThanMaxDirectoryAsPath_Succeeds()
         {
             var paths = IOInputs.GetPathsLongerThanMaxDirectory(GetTestFilePath());
@@ -292,7 +292,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)] // long directory path allowed
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixPathLongerThan256_Allowed()
         {
             DirectoryInfo testDir = Create(GetTestFilePath());
@@ -303,7 +303,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // deeply nested directories allowed
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixPathWithDeeplyNestedDirectories()
         {
             DirectoryInfo parent = Create(GetTestFilePath());
@@ -315,7 +315,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // whitespace as path throws ArgumentException on Windows
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsWhiteSpaceAsPath_ThrowsArgumentException()
         {
             var paths = IOInputs.GetWhiteSpace();
@@ -326,7 +326,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // whitespace as path allowed
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixWhiteSpaceAsPath_Allowed()
         {
             var paths = IOInputs.GetWhiteSpace();
@@ -338,7 +338,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // trailing whitespace in path is removed on Windows
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsTrailingWhiteSpace()
         {
             // Windows will remove all non-significant whitespace in a path
@@ -356,8 +356,8 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
-        [PlatformSpecific(TestPlatforms.Windows)]  // extended syntax with whitespace
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void WindowsExtendedSyntaxWhiteSpace()
         {
             var paths = IOInputs.GetSimpleWhiteSpace();
@@ -373,7 +373,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // trailing whitespace in path treated as significant on Unix
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void UnixNonSignificantTrailingWhiteSpace()
         {
             // Unix treats trailing/prename whitespace as significant and a part of the name.
@@ -413,7 +413,7 @@ namespace System.IO.Tests
         }
 
         [ConditionalFact(nameof(UsingNewNormalization))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap | TargetFrameworkMonikers.UapAot)]
+        [SkipOnTargetFramework(Tfm.BelowNet462 | Tfm.Core50, "long path support added in 4.6.2")]
         [PlatformSpecific(TestPlatforms.Windows)] // device name prefixes
         public void PathWithReservedDeviceNameAsExtendedPath()
         {
@@ -455,7 +455,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)]  // drive letters
+        [PlatformSpecific(TestPlatforms.Windows)]
         public void DriveLetter_Windows()
         {
             // On Windows, DirectoryInfo will replace "<DriveLetter>:" with "."
@@ -466,7 +466,7 @@ namespace System.IO.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]  // drive letters casing
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
         public void DriveLetter_Unix()
         {
             // On Unix, there's no special casing for drive letters.  These may or may not be valid names, depending

@@ -3,71 +3,40 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Linq;
 
 namespace System.Reflection.Internal
 {
-    /// <summary>
-    /// Replacements for System.Linq to avoid an unnecessary dependency. 
-    /// Parameter and return types strengthened to actual internal usage as an optimization.
-    /// </summary>
     internal static class EnumerableExtensions
     {
-        public static T FirstOrDefault<T>(this ImmutableArray<T> collection, Func<T, bool> predicate)
+        private class ComparisonComparer<T> : Comparer<T>
         {
-            foreach (var item in collection)
+            private readonly Comparison<T> _compare;
+
+            public ComparisonComparer(Comparison<T> compare)
             {
-                if (predicate(item))
-                {
-                    return item;
-                }
+                _compare = compare;
             }
 
-            return default(T);
-        }
-
-        // used only in debugger display so we needn't get fancy with optimizations.
-        public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
-        {
-            foreach (var item in source)
+            public override int Compare(T x, T y)
             {
-                yield return selector(item);
+                return _compare(x, y);
             }
         }
 
-        public static T Last<T>(this ImmutableArray<T>.Builder source)
+        private static class Functions<T>
         {
-            return source[source.Count - 1];
+            public static readonly Func<T, T> Identity = t => t;
         }
 
-        public static IEnumerable<T> OrderBy<T>(this List<T> source, Comparison<T> comparison)
+        public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source, IComparer<T> comparer)
         {
-            // Produce an iterator that represents a stable sort of source.
-            // Implement by creating an int array that represents the initial ordering of elements in
-            // the source list, then sort those integers with a sort function that sorts by the values
-            // in source, but for cases where the values are equivalent, sort by initial index in
-            // the source array
-            int[] map = new int[source.Count];
-            for (int i = 0; i < map.Length; i++)
-                map[i] = i;
+            return source.OrderBy(Functions<T>.Identity, comparer);
+        }
 
-            Array.Sort(map, (int left, int right) => 
-            {
-                if (left == right)
-                    return 0;
-
-                int result = comparison(source[left], source[right]);
-                if (result == 0)
-                {
-                    return left - right;
-                }
-                return result;
-            });
-
-            foreach (int index in map)
-            {
-                yield return source[index];
-            }
+        public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source, Comparison<T> compare)
+        {
+            return source.OrderBy(new ComparisonComparer<T>(compare));
         }
     }
 }

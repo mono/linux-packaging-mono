@@ -216,7 +216,7 @@ namespace System.Web.UI.HtmlControls
 			base.OnPreRender(e);
 		}
 
-		protected override void RenderAttributes (HtmlTextWriter writer)
+		protected override void RenderAttributes (HtmlTextWriter w)
 		{
 			/* Need to always render: method, action and id
 			 */
@@ -268,12 +268,12 @@ namespace System.Web.UI.HtmlControls
 					if (RenderingCompatibilityLessThan40)
 						// LAMESPEC: MSDN says the 'name' attribute is rendered only in
 						// Legacy mode, this is not true.
-						writer.WriteAttribute ("name", Name);
+						w.WriteAttribute ("name", Name);
 			}
 			
-			writer.WriteAttribute ("method", Method);
+			w.WriteAttribute ("method", Method);
 			if (String.IsNullOrEmpty (customAction))
-				writer.WriteAttribute ("action", action, true);
+				w.WriteAttribute ("action", action, true);
 
 			/*
 			 * This is a hack that guarantees the ID is set properly for HtmlControl to
@@ -292,7 +292,7 @@ namespace System.Web.UI.HtmlControls
 			string submit = page != null ? page.GetSubmitStatements () : null;
 			if (!String.IsNullOrEmpty (submit)) {
 				Attributes.Remove ("onsubmit");
-				writer.WriteAttribute ("onsubmit", submit);
+				w.WriteAttribute ("onsubmit", submit);
 			}
 			
 			/* enctype and target should not be written if
@@ -300,11 +300,11 @@ namespace System.Web.UI.HtmlControls
 			 */
 			string enctype = Enctype;
 			if (!String.IsNullOrEmpty (enctype))
-				writer.WriteAttribute ("enctype", enctype);
+				w.WriteAttribute ("enctype", enctype);
 
 			string target = Target;
 			if (!String.IsNullOrEmpty (target))
-				writer.WriteAttribute ("target", target);
+				w.WriteAttribute ("target", target);
 
 			string defaultbutton = DefaultButton;
 			if (!String.IsNullOrEmpty (defaultbutton)) {
@@ -315,7 +315,7 @@ namespace System.Web.UI.HtmlControls
 											   ID));
 
 				if (page != null && DetermineRenderUplevel ()) {
-					writer.WriteAttribute (
+					w.WriteAttribute (
 						"onkeypress",
 						"javascript:return " + page.WebFormScriptReference + ".WebForm_FireDefaultButton(event, '" + c.ClientID + "')");
 				}
@@ -328,10 +328,10 @@ namespace System.Web.UI.HtmlControls
 			Attributes.Remove ("enctype");
 			Attributes.Remove ("target");
 
-			base.RenderAttributes (writer);
+			base.RenderAttributes (w);
 		}
 
-		protected internal override void RenderChildren (HtmlTextWriter writer)
+		protected internal override void RenderChildren (HtmlTextWriter w)
 		{
 			Page page = Page;
 			
@@ -340,22 +340,22 @@ namespace System.Web.UI.HtmlControls
 				page.RegisterForm (this);
 			}
 			if (page != null)
-				page.OnFormRender (writer, ClientID);
-			base.RenderChildren (writer);
+				page.OnFormRender (w, ClientID);
+			base.RenderChildren (w);
 			if (page != null)
-				page.OnFormPostRender (writer, ClientID);
+				page.OnFormPostRender (w, ClientID);
 		}
 
 		/* According to corcompare */
 		[MonoTODO ("why override?")]
-		public override void RenderControl (HtmlTextWriter writer)
+		public override void RenderControl (HtmlTextWriter w)
 		{
-			base.RenderControl (writer);
+			base.RenderControl (w);
 		}
 
-		protected internal override void Render (HtmlTextWriter output)
+		protected internal override void Render (HtmlTextWriter w)
 		{
-			base.Render (output);
+			base.Render (w);
 		}
 	}
 }

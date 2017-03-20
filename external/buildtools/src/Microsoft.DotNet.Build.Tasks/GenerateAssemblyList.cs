@@ -18,9 +18,10 @@ namespace Microsoft.DotNet.Build.Tasks
         public override bool Execute()
         {
             HashSet<string> processedFileNames = new HashSet<string>();
-            AssemblyList corerun = new AssemblyList("Microsoft.NETCore.Runtime", "Microsoft.NETCore.TestHost", "Microsoft.NETCore.Windows.ApiSets",  "Microsoft.NETCore.Jit");
+            AssemblyList corerun = new AssemblyList("Microsoft.NETCore.Runtime", "Microsoft.NETCore.TestHost", "Microsoft.NETCore.Windows.ApiSets");
             AssemblyList xunit = new AssemblyList("xunit");
             List<string> unmatched = new List<string>();
+            bool foundDuplicates = false;
             Stream inputListLocationStream = File.OpenRead(InputListLocation);
             Stream outputListLocationStream = new FileStream(OutputListLocation, FileMode.Create, FileAccess.Write, FileShare.None);
 
@@ -30,6 +31,12 @@ namespace Microsoft.DotNet.Build.Tasks
                 while ((line = listReader.ReadLine()) != null)
                 {
                     var fileName = Path.GetFileName(line);
+                    if (!processedFileNames.Add(fileName))
+                    {
+                        Log.LogError("Duplicate assembly found: {0}", fileName);
+                        foundDuplicates = true;
+                        continue;
+                    }
 
                     if (corerun.TryAdd(line))
                     {
@@ -43,6 +50,11 @@ namespace Microsoft.DotNet.Build.Tasks
 
                     unmatched.Add(line);
                 }
+            }
+
+            if (foundDuplicates)
+            {
+                return false;
             }
 
             Dictionary<string, List<string>> headers = new Dictionary<string, List<string>>

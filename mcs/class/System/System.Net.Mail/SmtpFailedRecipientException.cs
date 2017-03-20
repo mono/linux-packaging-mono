@@ -52,12 +52,12 @@ namespace System.Net.Mail {
 		{
 		}
 
-		protected SmtpFailedRecipientException (SerializationInfo info, StreamingContext context)
-			: base (info, context)
+		protected SmtpFailedRecipientException (SerializationInfo serializationInfo, StreamingContext streamingContext)
+			: base (serializationInfo, streamingContext)
 		{
-			if (info == null)
-				throw new ArgumentNullException ("info");
-			failedRecipient = info.GetString ("failedRecipient");
+			if (serializationInfo == null)
+				throw new ArgumentNullException ("serializationInfo");
+			failedRecipient = serializationInfo.GetString ("failedRecipient");
 		}
 
 		public SmtpFailedRecipientException (SmtpStatusCode statusCode, string failedRecipient) : base (statusCode)

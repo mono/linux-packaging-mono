@@ -619,11 +619,8 @@ namespace System.Text.RegularExpressions
                         chMaxT = (char)lc._data;
                         break;
                     case LowercaseAdd:
-                        unchecked
-                        {
-                            chMinT += (char)lc._data;
-                            chMaxT += (char)lc._data;
-                        }
+                        chMinT += (char)lc._data;
+                        chMaxT += (char)lc._data;
                         break;
                     case LowercaseBor:
                         chMinT |= (char)1;
@@ -860,7 +857,7 @@ namespace System.Text.RegularExpressions
             int end = i + myCategoryLength;
             while (i < end)
             {
-                int curcat = unchecked((short)set[i]);
+                int curcat = (short)set[i];
 
                 if (curcat == 0)
                 {
@@ -921,7 +918,7 @@ namespace System.Text.RegularExpressions
         {
             i++;
 
-            int curcat = unchecked((short)category[i]);
+            int curcat = (short)category[i];
             if (curcat > 0)
             {
                 // positive case - the character must be in ANY of the categories in the group
@@ -956,7 +953,7 @@ namespace System.Text.RegularExpressions
                             answer = false;
                     }
                     i++;
-                    curcat = unchecked((short)category[i]);
+                    curcat = (short)category[i];
                 }
                 return answer;
             }
@@ -972,7 +969,7 @@ namespace System.Text.RegularExpressions
             for (int i = 0; i < category.Length; i++)
             {
                 short ch = (short)category[i];
-                sb.Append(unchecked((char)-ch));
+                sb.Append((char)-ch);
             }
             return StringBuilderCache.GetStringAndRelease(sb);
         }

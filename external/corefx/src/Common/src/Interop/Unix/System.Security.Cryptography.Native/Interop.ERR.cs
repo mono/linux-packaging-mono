@@ -30,7 +30,7 @@ internal static partial class Interop
         private static unsafe string ErrErrorStringN(ulong error)
         {
             var buffer = new byte[1024];
-            fixed (byte* buf = &buffer[0])
+            fixed (byte* buf = buffer)
             {
                 ErrErrorStringN(error, buf, buffer.Length);
                 return Marshal.PtrToStringAnsi((IntPtr)buf);

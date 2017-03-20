@@ -6,6 +6,7 @@ using Xunit;
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecontravar2.dlgatecontravar2
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecontravar2.dlgatecontravar2;
     // <Area>variance</Area>
     // <Title> Basic Error Contravariance on delegates</Title>
     // <Description> basic errorcontravariance on delegates - Incorrect type mismatch</Description>
@@ -15,6 +16,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
     //<Expects Status=warning>\(42,37\).*CS0168</Expects>
     //<Expects Status=warning>\(53,26\).*CS0168</Expects>
     using System;
+    using System.Runtime.InteropServices;
 
     public class Animal
     {
@@ -92,6 +94,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateconvar.dlgateconvar
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateconvar.dlgateconvar;
+
     // <Area>variance</Area>
     // <Title> Basic Contravariance on delegates</Title>
     // <Description> basic contravariance on delegates </Description>
@@ -148,6 +152,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecov.dlgatecov
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecov.dlgatecov;
+
     // <Area>variance</Area>
     // <Title> Basic covariance on delegate types </Title>
     // <Description> Having a covariant delegate and assigning it to a bigger type</Description>
@@ -207,6 +213,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecovar2.dlgatecovar2
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecovar2.dlgatecovar2;
+
     // <Area>variance</Area>
     // <Title> Error- Basic covariance on delegate types </Title>
     // <Description> Having a covariant delegate and assigning it to a bigger type, incorrect types</Description>
@@ -295,6 +303,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecontravar2.integeregererfacecontravar2
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecontravar2.integeregererfacecontravar2;
+
     // <Area>variance</Area>
     // <Title> Basic error contravariance on interfaces</Title>
     // <Description> basic error contravariance on interfaces - wrong type assignments </Description>
@@ -380,6 +390,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integere
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfaceconvar.integeregererfaceconvar
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfaceconvar.integeregererfaceconvar;
+
     // <Area>variance</Area>
     // <Title> Basic contravariance on interfaces</Title>
     // <Description> basic contravariance on interfaces </Description>
@@ -435,6 +447,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integere
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecovar2.integeregererfacecovar2
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecovar2.integeregererfacecovar2;
+
     // <Area>variance</Area>
     // <Title> Basic error covariance on interfaces</Title>
     // <Description> basic error coavariance on interfaces - type mismatch</Description>
@@ -520,6 +534,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integere
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecovar.integeregererfacecovar
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecovar.integeregererfacecovar;
+
     // <Area>variance</Area>
     // <Title> Basic covariance on interfaces</Title>
     // <Description> basic coavariance on interfaces </Description>
@@ -576,6 +592,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integere
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecontravar4.dlgatecontravar4
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecontravar4.dlgatecontravar4;
     // <Area>variance</Area>
     // <Title> Basic Error Contravariance on delegates</Title>
     // <Description> basic errorcontravariance on delegates - Incorrect type mismatch</Description>
@@ -585,6 +602,7 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
     //<Expects Status=warning>\(40,37\).*CS0168</Expects>
     //<Expects Status=warning>\(51,37\).*CS0168</Expects>
     using System;
+    using System.Runtime.InteropServices;
 
     public class C
     {
@@ -654,6 +672,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateconvar3.dlgateconvar3
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateconvar3.dlgateconvar3;
+
     // <Area>variance</Area>
     // <Title> Basic Contravariance on delegates</Title>
     // <Description> basic contravariance on delegates </Description>
@@ -702,6 +722,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecov3.dlgatecov3
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecov3.dlgatecov3;
+
     // <Area>variance</Area>
     // <Title> Basic covariance on delegate types </Title>
     // <Description> Having a covariant delegate and assigning it to a bigger type</Description>
@@ -753,6 +775,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecovar4.dlgatecovar4
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgatecovar4.dlgatecovar4;
+
     // <Area>variance</Area>
     // <Title> Error- Basic covariance on delegate types </Title>
     // <Description> Having a covariant delegate and assigning it to a bigger type, incorrect types</Description>
@@ -833,6 +857,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.dlgateco
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecontravar4.integeregererfacecontravar4
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecontravar4.integeregererfacecontravar4;
+
     // <Area>variance</Area>
     // <Title> Basic error contravariance on interfaces</Title>
     // <Description> basic error contravariance on interfaces - wrong type assignments </Description>
@@ -909,6 +935,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integere
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfaceconvar3.integeregererfaceconvar3
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfaceconvar3.integeregererfaceconvar3;
+
     // <Area>variance</Area>
     // <Title> Basic contravariance on interfaces</Title>
     // <Description> basic contravariance on interfaces </Description>
@@ -956,6 +984,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integere
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecovar4.integeregererfacecovar4
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecovar4.integeregererfacecovar4;
+
     // <Area>variance</Area>
     // <Title> Basic error covariance on interfaces</Title>
     // <Description> basic error coavariance on interfaces - type mismatch</Description>
@@ -1033,6 +1063,8 @@ namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integere
 
 namespace ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecovar3.integeregererfacecovar3
 {
+    using ManagedTests.DynamicCSharp.Conformance.dynamic.Variance.basic.integeregererfacecovar3.integeregererfacecovar3;
+
     // <Area>variance</Area>
     // <Title> Basic covariance on interfaces</Title>
     // <Description> basic coavariance on interfaces </Description>

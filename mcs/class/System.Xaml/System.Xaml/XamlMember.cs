@@ -236,9 +236,9 @@ namespace System.Xaml
 			get { return LookupValueSerializer (); }
 		}
 
-		public static bool operator == (XamlMember xamlMember1, XamlMember xamlMember2)
+		public static bool operator == (XamlMember left, XamlMember right)
 		{
-			return IsNull (xamlMember1) ? IsNull (xamlMember2) : xamlMember1.Equals (xamlMember2);
+			return IsNull (left) ? IsNull (right) : left.Equals (right);
 		}
 
 		static bool IsNull (XamlMember a)
@@ -246,14 +246,14 @@ namespace System.Xaml
 			return Object.ReferenceEquals (a, null);
 		}
 
-		public static bool operator != (XamlMember xamlMember1, XamlMember xamlMember2)
+		public static bool operator != (XamlMember left, XamlMember right)
 		{
-			return !(xamlMember1 == xamlMember2);
+			return !(left == right);
 		}
 		
-		public override bool Equals (object obj)
+		public override bool Equals (object other)
 		{
-			var x = obj as XamlMember;
+			var x = other as XamlMember;
 			return Equals (x);
 		}
 		

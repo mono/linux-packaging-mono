@@ -35,17 +35,17 @@ namespace System.ServiceModel.Description
 	public interface IServiceBehavior
 	{
 		void AddBindingParameters (
-			ServiceDescription serviceDescription,
+			ServiceDescription description,
 			ServiceHostBase serviceHostBase,
 			Collection<ServiceEndpoint> endpoints,
-			BindingParameterCollection bindingParameters);
+			BindingParameterCollection parameters);
 
 		void ApplyDispatchBehavior (
-			ServiceDescription serviceDescription,
+			ServiceDescription description,
 			ServiceHostBase serviceHostBase);
 
 		void Validate (
-			ServiceDescription serviceDescription,
+			ServiceDescription description,
 			ServiceHostBase serviceHostBase);
 	}
 }

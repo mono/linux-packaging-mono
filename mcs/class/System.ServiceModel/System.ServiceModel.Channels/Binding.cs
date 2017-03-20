@@ -176,7 +176,7 @@ namespace System.ServiceModel.Channels
 
 		public virtual IChannelListener<TChannel>
 			BuildChannelListener<TChannel> (
-			Uri listenUriBaseAddress,
+			Uri listenUri,
 			params object [] parameters)
 			where TChannel : class, IChannel
 		{
@@ -184,16 +184,16 @@ namespace System.ServiceModel.Channels
 				new BindingParameterCollection ();
 			foreach (object o in parameters)
 				pl.Add (o);
-			return BuildChannelListener<TChannel> (listenUriBaseAddress, pl);
+			return BuildChannelListener<TChannel> (listenUri, pl);
 		}
 
 		public virtual IChannelListener<TChannel>
 			BuildChannelListener<TChannel> (
-			Uri listenUriBaseAddress,
+			Uri listenUri,
 			BindingParameterCollection parameters)
 			where TChannel : class, IChannel
 		{
-			return BuildChannelListener<TChannel> (listenUriBaseAddress,
+			return BuildChannelListener<TChannel> (listenUri,
 				String.Empty, parameters);
 		}
 

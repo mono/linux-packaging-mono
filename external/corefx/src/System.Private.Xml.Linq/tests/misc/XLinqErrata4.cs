@@ -13,7 +13,7 @@ namespace System.Xml.Linq.Tests
 {
     public class XmlErrata4
     {
-        // Invalid characters in names
+        // Invalid charcters in names
         [InlineData("InValid", "NameSurrogateLowChar", "XName")] // XName with InValid Name Surrogate Low Characters
         [InlineData("InValid", "NameSurrogateLowChar", "XAttribute")] // XAttribute with InValid Name Surrogate Low Characters
         [InlineData("InValid", "NameSurrogateLowChar", "XElement")] // XElement with InValid Name Surrogate Low Characters
@@ -260,7 +260,7 @@ namespace System.Xml.Linq.Tests
         }
 
         /// <summary>
-        /// returns a name using the character provided in the appropriate position
+        /// returns a name using the character provided in the appropriate postion
         /// </summary>
         /// <param name="charType">type from CharType class</param>
         /// <param name="c">character to be used in the name</param>

@@ -29,7 +29,7 @@ namespace System.Linq.Expressions.Interpreter
                 }
                 else
                 {
-                    frame.Push(unchecked((sbyte)((sbyte)value << (int)shift)));
+                    frame.Push((sbyte)((sbyte)value << (int)shift));
                 }
                 return 1;
             }
@@ -47,7 +47,7 @@ namespace System.Linq.Expressions.Interpreter
                 }
                 else
                 {
-                    frame.Push(unchecked((short)((short)value << (int)shift)));
+                    frame.Push((short)((short)value << (int)shift));
                 }
                 return 1;
             }
@@ -101,7 +101,7 @@ namespace System.Linq.Expressions.Interpreter
                 }
                 else
                 {
-                    frame.Push(unchecked((byte)((byte)value << (int)shift)));
+                    frame.Push((byte)((byte)value << (int)shift));
                 }
                 return 1;
             }
@@ -119,7 +119,7 @@ namespace System.Linq.Expressions.Interpreter
                 }
                 else
                 {
-                    frame.Push(unchecked((ushort)((ushort)value << (int)shift)));
+                    frame.Push((ushort)((ushort)value << (int)shift));
                 }
                 return 1;
             }

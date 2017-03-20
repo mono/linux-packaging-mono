@@ -34,54 +34,27 @@ namespace Xunit.ConsoleClient
                 if (args.Length == 0 || args[0] == "-?")
                 {
                     PrintUsage();
-                    return 2;
+                    return 1;
                 }
 
 #if !NETCORE
                 AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 #endif
-                try
+                Console.CancelKeyPress += (sender, e) =>
                 {
-                    Console.CancelKeyPress += (sender, e) =>
+                    if (!cancel)
                     {
-                        if (!cancel)
-                        {
-                            Console.WriteLine("Canceling... (Press Ctrl+C again to terminate)");
-                            cancel = true;
-                            e.Cancel = true;
-                        }
-                    };
-                }
-                catch (PlatformNotSupportedException)
-                {
-                    Debug.WriteLine("Ignoring PlatformNotSupportedException from Console PAL");
-                }
+                        Console.WriteLine("Canceling... (Press Ctrl+C again to terminate)");
+                        cancel = true;
+                        e.Cancel = true;
+                    }
+                };
 
                 var defaultDirectory = Directory.GetCurrentDirectory();
                 if (!defaultDirectory.EndsWith(new String(new[] { Path.DirectorySeparatorChar })))
-                {
                     defaultDirectory += Path.DirectorySeparatorChar;
-                }
 
                 var commandLine = CommandLine.Parse(args);
-
-                if (commandLine.RedirectOutput)
-                {
-                    // Workaround for NetCore50 (UWP) implementations:
-                    // When running against a version that will be no-op'ing the  
-                    // standard output stream, we will just redirect console output to a well known file name.
-                    //
-                    // This allows the most recent run's output to be logged.  Could allow customization if it's interesting later.
-                    StreamWriter textFileOutput = new StreamWriter(new FileStream("Xunit.Console.Output.txt", FileMode.Create))
-                    {
-                        AutoFlush = true
-                    };
-                    Console.SetOut(textFileOutput);
-                    // Repeat output for consistency.
-                    Console.WriteLine("xUnit.net console test runner ({0}-bit .NET {1})", IntPtr.Size * 8, netVersion);
-                    Console.WriteLine("Copyright (C) 2014 Outercurve Foundation.");
-                    Console.WriteLine();
-                }
 
                 var failCount = RunProject(defaultDirectory, commandLine.Project, commandLine.TeamCity, commandLine.AppVeyor, commandLine.ShowProgress,
                                            commandLine.ParallelizeAssemblies, commandLine.ParallelizeTestCollections,
@@ -95,17 +68,17 @@ namespace Xunit.ConsoleClient
                     Console.WriteLine();
                 }
 
-                return failCount > 0 ? 1 : 0;
+                return failCount;
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine("error: {0}", ex.Message);
-                return 3;
+                return 1;
             }
             catch (BadImageFormatException ex)
             {
                 Console.WriteLine("{0}", ex.Message);
-                return 4;
+                return 1;
             }
             finally
             {
@@ -165,8 +138,6 @@ namespace Xunit.ConsoleClient
             Console.WriteLine("  -class \"name\"          : run all methods in a given test class (should be fully");
             Console.WriteLine("                         : specified; i.e., 'MyNamespace.MyClass')");
             Console.WriteLine("                         : if specified more than once, acts as an OR operation");
-            Console.WriteLine("  -redirectoutput        : Redirect calls to Console APIs to file output,");
-            Console.WriteLine("                         : for platforms where console output is a noop.");
 
             TransformFactory.AvailableTransforms.ForEach(
                 transform => Console.WriteLine("  {0} : {1}",
@@ -183,7 +154,7 @@ namespace Xunit.ConsoleClient
             var consoleLock = new object();
 
             if (!parallelizeAssemblies.HasValue)
-                parallelizeAssemblies = project.All(assembly => assembly.Configuration.ParallelizeAssembly ?? false);
+                parallelizeAssemblies = project.All(assembly => assembly.Configuration.ParallelizeAssembly ?? false); 
 
             if (needsXml)
                 assembliesElement = new XElement("assemblies");
@@ -321,9 +292,7 @@ namespace Xunit.ConsoleClient
                     discoveryVisitor.Finished.WaitOne();
 
                     lock (consoleLock)
-                    {
                         Console.WriteLine("Discovered:  {0}", Path.GetFileNameWithoutExtension(assembly.AssemblyFilename));
-                    }
 
                     var resultsVisitor = CreateVisitor(consoleLock, defaultDirectory, assemblyElement, teamCity, appVeyor, showProgress);
                     var filteredTestCases = discoveryVisitor.TestCases.Where(filters.Filter).ToList();

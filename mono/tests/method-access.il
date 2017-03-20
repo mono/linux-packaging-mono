@@ -49,10 +49,7 @@
 			call void Test::call_sfoo ()
 			br fail
 		} catch [mscorlib]System.MethodAccessException {
-		  	call instance string [mscorlib]System.MethodAccessException::get_Message ()
-			ldstr "Method `MethFail:sfoo ()' is inaccessible from method `Test:call_sfoo ()'"
-			call instance bool [mscorlib]System.String::Equals (string)
-			brfalse fail
+			pop
 			br continue
 		} catch [mscorlib]System.Exception {
 			pop

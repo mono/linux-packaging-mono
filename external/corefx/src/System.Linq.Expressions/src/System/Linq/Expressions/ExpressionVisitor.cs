@@ -690,7 +690,7 @@ namespace System.Linq.Expressions
         // different operation, e.g. adding two doubles vs adding two ints.
         private static void ValidateChildType(Type before, Type after, string methodName)
         {
-            if (before.IsValueType)
+            if (before.GetTypeInfo().IsValueType)
             {
                 if (TypeUtils.AreEquivalent(before, after))
                 {
@@ -698,7 +698,7 @@ namespace System.Linq.Expressions
                     return;
                 }
             }
-            else if (!after.IsValueType)
+            else if (!after.GetTypeInfo().IsValueType)
             {
                 // both are reference types
                 return;

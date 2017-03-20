@@ -166,9 +166,8 @@ namespace Mono.Cecil.Cil {
 				return;
 
 			var operand = instruction.operand;
-			if (operand == null && !(operand_type == OperandType.InlineBrTarget || operand_type == OperandType.ShortInlineBrTarget)) {
+			if (operand == null)
 				throw new ArgumentException ();
-			}
 
 			switch (operand_type) {
 			case OperandType.InlineSwitch: {
@@ -180,15 +179,11 @@ namespace Mono.Cecil.Cil {
 				break;
 			}
 			case OperandType.ShortInlineBrTarget: {
-				var target = (Instruction) operand;
-				var offset = target != null ? GetTargetOffset (target) : body.code_size;
-				WriteSByte ((sbyte) (offset - (instruction.Offset + opcode.Size + 1)));
+				WriteSByte ((sbyte) (GetTargetOffset (operand) - (instruction.Offset + opcode.Size + 1)));
 				break;
 			}
 			case OperandType.InlineBrTarget: {
-				var target = (Instruction) operand;
-				var offset = target != null ? GetTargetOffset (target) : body.code_size;
-				WriteInt32 (offset - (instruction.Offset + opcode.Size + 4));
+				WriteInt32 (GetTargetOffset (operand) - (instruction.Offset + opcode.Size + 4));
 				break;
 			}
 			case OperandType.ShortInlineVar:
@@ -241,8 +236,12 @@ namespace Mono.Cecil.Cil {
 			}
 		}
 
-		int GetTargetOffset (Instruction instruction)
+		int GetTargetOffset (object o)
 		{
+			if (o is int)
+				return (int) o;
+
+			Instruction instruction = o as Instruction;
 			if (instruction == null) {
 				var last = body.instructions [body.instructions.size - 1];
 				return last.offset + last.GetSize ();

@@ -27,7 +27,7 @@ namespace System.Linq
             Type enumType = TypeHelper.FindGenericType(typeof(IEnumerable<>), source.GetType());
             if (enumType == null)
                 throw Error.ArgumentNotIEnumerableGeneric(nameof(source));
-            return EnumerableQuery.Create(enumType.GenericTypeArguments[0], source);
+            return EnumerableQuery.Create(enumType.GetTypeInfo().GenericTypeArguments[0], source);
         }
 
         public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, Expression<Func<TSource, bool>> predicate)
@@ -1631,30 +1631,6 @@ namespace System.Linq
                     null,
                     CachedReflectionInfo.TakeLast_TSource_2(typeof(TSource)),
                     source.Expression, Expression.Constant(count)
-                    ));
-        }
-
-        public static IQueryable<TSource> Append<TSource>(this IQueryable<TSource> source, TSource element)
-        {
-            if (source == null)
-                throw Error.ArgumentNull(nameof(source));
-            return source.Provider.CreateQuery<TSource>(
-                Expression.Call(
-                    null,
-                    CachedReflectionInfo.Append_TSource_2(typeof(TSource)),
-                    source.Expression, Expression.Constant(element)
-                    ));
-        }
-
-        public static IQueryable<TSource> Prepend<TSource>(this IQueryable<TSource> source, TSource element)
-        {
-            if (source == null)
-                throw Error.ArgumentNull(nameof(source));
-            return source.Provider.CreateQuery<TSource>(
-                Expression.Call(
-                    null,
-                    CachedReflectionInfo.Prepend_TSource_2(typeof(TSource)),
-                    source.Expression, Expression.Constant(element)
                     ));
         }
     }

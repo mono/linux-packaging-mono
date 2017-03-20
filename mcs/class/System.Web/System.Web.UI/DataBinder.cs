@@ -167,9 +167,9 @@ namespace System.Web.UI {
 			return prop.GetValue (container, args);
 		}
 
-		public static string GetIndexedPropertyValue (object container, string propName, string format)
+		public static string GetIndexedPropertyValue (object container, string expr, string format)
 		{
-			object result = GetIndexedPropertyValue (container, propName);
+			object result = GetIndexedPropertyValue (container, expr);
 			return FormatResult (result, format);
 		}
 

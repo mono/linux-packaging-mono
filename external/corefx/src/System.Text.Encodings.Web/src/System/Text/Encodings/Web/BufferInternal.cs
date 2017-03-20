@@ -108,7 +108,7 @@ namespace System {
                     break;
             }
 
-            if ((unchecked((int)dest) & 3) != 0)
+            if (((int)dest & 3) != 0)
             {
                 if (((int)dest & 1) != 0)
                 {
