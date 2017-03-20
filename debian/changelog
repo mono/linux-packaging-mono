@@ -1,3 +1,17 @@
+mono (4.9.3.43-0nightly1) nightly; urgency=medium
+
+  * "New release - mono-4.9.3.43.tar.bz2"
+  * [8dafaf4] Revert "Refreshed symbols"
+    This reverts commit 7e12e32e13deb79d1f573b953960f77a699ab5e0.
+  * [923fe76] Use ikdasm, not monodis, for assembly parsing
+  * [7be7493] Don't rely on system Mono to use ikdasm.
+    Since ikdasm is managed (monodis was unmanaged), we need to manually 
+    invoke the .exe with our self-built mono, otherwise it tries to use 
+    /usr/bin/mono which probably doesn't exist yet.
+  * [24030b9] Fix problems using ikdasm instead of monodis
+
+ -- Jo Shields <directhex@apebox.org>  Mon, 20 Mar 2017 12:04:52 +0000
+
 mono (4.9.4.12-0nightly1) nightly; urgency=medium
 
   * "New release - mono-4.9.4.12.tar.bz2"
