@@ -78,6 +78,11 @@ namespace Mono.Linker {
 			writer.WriteEndAttribute ();
 		}
 
+		public ICollection<AssemblyDefinition> GetAssemblies ()
+		{
+			return assembly_actions.Keys;
+		}
+
 		public AssemblyAction GetAction (AssemblyDefinition assembly)
 		{
 			AssemblyAction action;
@@ -139,7 +144,32 @@ namespace Mono.Linker {
 
 		public void SetPreserve (TypeDefinition type, TypePreserve preserve)
 		{
-			preserved_types [type] = preserve;
+			TypePreserve existing;
+			if (preserved_types.TryGetValue (type, out existing))
+				preserved_types [type] = ChoosePreserveActionWhichPreservesTheMost (existing, preserve);
+			else
+				preserved_types.Add (type, preserve);
+		}
+
+		public static TypePreserve ChoosePreserveActionWhichPreservesTheMost (TypePreserve leftPreserveAction, TypePreserve rightPreserveAction)
+		{
+			if (leftPreserveAction == rightPreserveAction)
+				return leftPreserveAction;
+
+			if (leftPreserveAction == TypePreserve.All || rightPreserveAction == TypePreserve.All)
+				return TypePreserve.All;
+
+			if (leftPreserveAction == TypePreserve.Nothing)
+				return rightPreserveAction;
+
+			if (rightPreserveAction == TypePreserve.Nothing)
+				return leftPreserveAction;
+
+			if ((leftPreserveAction == TypePreserve.Methods && rightPreserveAction == TypePreserve.Fields) ||
+				(leftPreserveAction == TypePreserve.Fields && rightPreserveAction == TypePreserve.Methods))
+				return TypePreserve.All;
+
+			return rightPreserveAction;
 		}
 
 		public TypePreserve GetPreserve (TypeDefinition type)
@@ -316,9 +346,6 @@ namespace Mono.Linker {
 			writer.WriteEndElement ();
 			writer.WriteEndDocument ();
 			writer.Flush ();
-			writer.Close ();
-			zipStream.Close ();
-
 			writer.Dispose ();
 			zipStream.Dispose ();
 			writer = null;

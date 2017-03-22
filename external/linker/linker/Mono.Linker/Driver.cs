@@ -38,7 +38,11 @@ namespace Mono.Linker {
 
 	public class Driver {
 
+#if NET_CORE
+		static readonly string _linker = "IL Linker";
+#else
 		static readonly string _linker = "Mono CIL Linker";
+#endif
 
 		public static int Main (string [] args)
 		{
@@ -124,14 +128,21 @@ namespace Mono.Linker {
 				case 's':
 					custom_steps.Add (GetParam ());
 					break;
+				case 't':
+					context.KeepTypeForwarderOnlyAssemblies = true;
+					break;
 				case 'x':
 					foreach (string file in GetFiles (GetParam ()))
 						p.PrependStep (new ResolveFromXmlStep (new XPathDocument (file)));
 					resolver = true;
 					break;
+				case 'r':
 				case 'a':
+					var rootVisibility = (token[1] == 'r')
+							? ResolveFromAssemblyStep.RootVisibility.PublicAndFamily
+							: ResolveFromAssemblyStep.RootVisibility.Any;
 					foreach (string file in GetFiles (GetParam ()))
-						p.PrependStep (new ResolveFromAssemblyStep (file));
+						p.PrependStep (new ResolveFromAssemblyStep (file, rootVisibility));
 					resolver = true;
 					break;
 				case 'i':
@@ -169,7 +180,7 @@ namespace Mono.Linker {
 			p.Process (context);
 		}
 
-		static void AddCustomStep (Pipeline pipeline, string arg)
+		protected static void AddCustomStep (Pipeline pipeline, string arg)
 		{
 			int pos = arg.IndexOf (":");
 			if (pos == -1) {
@@ -230,7 +241,7 @@ namespace Mono.Linker {
 			return (string []) lines.ToArray (typeof (string));
 		}
 
-		static I18nAssemblies ParseI18n (string str)
+		protected static I18nAssemblies ParseI18n (string str)
 		{
 			I18nAssemblies assemblies = I18nAssemblies.None;
 			string [] parts = str.Split (',');
@@ -266,7 +277,11 @@ namespace Mono.Linker {
 			Console.WriteLine (_linker);
 			if (msg != null)
 				Console.WriteLine ("Error: " + msg);
+#if NET_CORE
+			Console.WriteLine ("illink [options] -x|-a|-i file");
+#else
 			Console.WriteLine ("monolinker [options] -x|-a|-i file");
+#endif
 
 			Console.WriteLine ("   --about     About the {0}", _linker);
 			Console.WriteLine ("   --version   Print the version number of the {0}", _linker);
@@ -274,6 +289,7 @@ namespace Mono.Linker {
 			Console.WriteLine ("   -c          Action on the core assemblies, skip, copy or link, default to skip");
 			Console.WriteLine ("   -p          Action per assembly");
 			Console.WriteLine ("   -s          Add a new step to the pipeline.");
+			Console.WriteLine ("   -t          Keep assemblies in which only type forwarders are referenced.");
 			Console.WriteLine ("   -d          Add a directory where the linker will look for assemblies");
 			Console.WriteLine ("   -b          Generate debug symbols for each linked module (true or false)");
 			Console.WriteLine ("   -g          Generate a new unique guid for each linked module (true or false)");
@@ -282,6 +298,7 @@ namespace Mono.Linker {
 			Console.WriteLine ("                 default is all");
 			Console.WriteLine ("   -x          Link from an XML descriptor");
 			Console.WriteLine ("   -a          Link from a list of assemblies");
+			Console.WriteLine ("   -r          Link from a list of assemblies using roots visible outside of the assembly");
 			Console.WriteLine ("   -i          Link from an mono-api-info descriptor");
 			Console.WriteLine ("");
 

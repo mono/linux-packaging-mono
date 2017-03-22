@@ -20,7 +20,7 @@ using Mono.Cecil.Cil;
 
 namespace Mono.Cecil.Pdb {
 
-	public class PdbReader : ISymbolReader {
+	public class NativePdbReader : ISymbolReader {
 
 		int age;
 		Guid guid;
@@ -29,9 +29,14 @@ namespace Mono.Cecil.Pdb {
 		readonly Dictionary<string, Document> documents = new Dictionary<string, Document> ();
 		readonly Dictionary<uint, PdbFunction> functions = new Dictionary<uint, PdbFunction> ();
 
-		internal PdbReader (Disposable<Stream> file)
+		internal NativePdbReader (Disposable<Stream> file)
 		{
 			this.pdb_file = file;
+		}
+
+		public ISymbolWriterProvider GetWriterProvider ()
+		{
+			return new NativePdbWriterProvider ();
 		}
 
 		/*
@@ -41,25 +46,36 @@ namespace Mono.Cecil.Pdb {
 		string FileName;
 		 */
 
-		public bool ProcessDebugHeader (ImageDebugDirectory directory, byte [] header)
+		public bool ProcessDebugHeader (ImageDebugHeader header)
 		{
-			if (directory.Type != 2) //IMAGE_DEBUG_TYPE_CODEVIEW
+			if (!header.HasEntries)
+				return false;
+
+			var entry = header.GetCodeViewEntry ();
+			if (entry == null)
+				return false;
+
+			var directory = entry.Directory;
+
+			if (directory.Type != ImageDebugType.CodeView)
 				return false;
 			if (directory.MajorVersion != 0 || directory.MinorVersion != 0)
 				return false;
 
-			if (header.Length < 24)
+			var data = entry.Data;
+
+			if (data.Length < 24)
 				return false;
 
-			var magic = ReadInt32 (header, 0);
+			var magic = ReadInt32 (data, 0);
 			if (magic != 0x53445352)
 				return false;
 
 			var guid_bytes = new byte [16];
-			Buffer.BlockCopy (header, 4, guid_bytes, 0, 16);
+			Buffer.BlockCopy (data, 4, guid_bytes, 0, 16);
 
 			this.guid = new Guid (guid_bytes);
-			this.age = ReadInt32 (header, 20);
+			this.age = ReadInt32 (data, 20);
 
 			return PopulateFunctions ();
 		}
@@ -104,10 +120,16 @@ namespace Mono.Cecil.Pdb {
 
 			ReadSequencePoints (function, symbol);
 
-			if (function.scopes.Length > 1)
-				throw new NotSupportedException ();
-			else if (function.scopes.Length == 1)
+			if (!function.scopes.IsNullOrEmpty())
 				symbol.scope = ReadScopeAndLocals (function.scopes [0], symbol);
+
+			if (function.scopes.Length > 1) {
+				for (int i = 1; i < function.scopes.Length; i++) {
+					var s = ReadScopeAndLocals (function.scopes [i], symbol);
+					if (!AddScope (symbol.scope.Scopes, s))
+						symbol.scope.Scopes.Add (s);
+				}
+			}
 
 			return symbol;
 		}
@@ -133,6 +155,9 @@ namespace Mono.Cecil.Pdb {
 				parent.variables = new Collection<VariableDebugInformation> (scope.slots.Length);
 
 				foreach (PdbSlot slot in scope.slots) {
+					if (slot.flags == 1) // parameter names
+						continue;
+
 					var index = (int) slot.slot;
 					var variable = new VariableDebugInformation (index, slot.name);
 					if (slot.flags == 4)
@@ -155,6 +180,21 @@ namespace Mono.Cecil.Pdb {
 			parent.scopes = ReadScopeAndLocals (scope.scopes, info);
 
 			return parent;
+		}
+
+		static bool AddScope (Collection<ScopeDebugInformation> scopes, ScopeDebugInformation scope)
+		{
+			foreach (var sub_scope in scopes) {
+				if (sub_scope.HasScopes && AddScope (sub_scope.Scopes, scope))
+					return true;
+
+				if (scope.Start.Offset >= sub_scope.Start.Offset && scope.End.Offset <= sub_scope.End.Offset) {
+					sub_scope.Scopes.Add (scope);
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		void ReadSequencePoints (PdbFunction function, MethodDebugInformation info)

@@ -122,6 +122,9 @@ namespace Mono.Cecil {
 				if (this.ReturnType.ContainsGenericParameter || base.ContainsGenericParameter)
 					return true;
 
+				if (!HasParameters)
+					return false;
+
 				var parameters = this.Parameters;
 
 				for (int i = 0; i < parameters.Count; i++)
@@ -141,8 +144,7 @@ namespace Mono.Cecil {
 		public MethodReference (string name, TypeReference returnType)
 			: base (name)
 		{
-			if (returnType == null)
-				throw new ArgumentNullException ("returnType");
+			Mixin.CheckType (returnType, Mixin.Argument.returnType);
 
 			this.return_type = new MethodReturnType (this);
 			this.return_type.ReturnType = returnType;
@@ -152,8 +154,7 @@ namespace Mono.Cecil {
 		public MethodReference (string name, TypeReference returnType, TypeReference declaringType)
 			: this (name, returnType)
 		{
-			if (declaringType == null)
-				throw new ArgumentNullException ("declaringType");
+			Mixin.CheckType (declaringType, Mixin.Argument.declaringType);
 
 			this.DeclaringType = declaringType;
 		}

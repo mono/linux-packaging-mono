@@ -535,9 +535,9 @@ load_metadata_ptrs (MonoImage *image, MonoCLIImageInfo *iinfo)
 	}
 
 	i = ((MonoImageLoader*)image->loader)->load_tables (image);
-	g_assert (image->heap_guid.data);
 
 	if (!image->metadata_only) {
+		g_assert (image->heap_guid.data);
 		g_assert (image->heap_guid.size >= 16);
 
 		image->guid = mono_guid_to_string ((guint8*)image->heap_guid.data);
@@ -1195,7 +1195,6 @@ static const IgnoredAssemblyVersion ignored_assembly_versions [] = {
 gboolean
 mono_assembly_is_problematic_version (const char *name, guint16 major, guint16 minor, guint16 build, guint16 revision)
 {
-	return FALSE;
 	for (int i = 0; i < G_N_ELEMENTS (ignored_assembly_versions); ++i) {
 		if (ignored_assembly_versions [i].major != major ||
 			ignored_assembly_versions [i].minor != minor ||
