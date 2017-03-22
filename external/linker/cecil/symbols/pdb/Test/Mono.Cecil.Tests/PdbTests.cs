@@ -26,7 +26,7 @@ namespace Mono.Cecil.Tests {
 	.line 7,7:8,18 'c:\sources\cecil\symbols\Mono.Cecil.Pdb\Test\Resources\assemblies\test.cs'
 	IL_0001: ldc.i4.0
 	IL_0002: stloc.0
-	.line 16707566,16707566:0,0 'c:\sources\cecil\symbols\Mono.Cecil.Pdb\Test\Resources\assemblies\test.cs'
+	.line hidden 'c:\sources\cecil\symbols\Mono.Cecil.Pdb\Test\Resources\assemblies\test.cs'
 	IL_0003: br.s IL_0012
 	.line 8,8:4,21 'c:\sources\cecil\symbols\Mono.Cecil.Pdb\Test\Resources\assemblies\test.cs'
 	IL_0005: ldarg.0
@@ -46,7 +46,7 @@ namespace Mono.Cecil.Tests {
 	IL_0015: conv.i4
 	IL_0016: clt
 	IL_0018: stloc.2
-	.line 16707566,16707566:0,0 'c:\sources\cecil\symbols\Mono.Cecil.Pdb\Test\Resources\assemblies\test.cs'
+	.line hidden 'c:\sources\cecil\symbols\Mono.Cecil.Pdb\Test\Resources\assemblies\test.cs'
 	IL_0019: ldloc.2
 	IL_001a: brtrue.s IL_0005
 	.line 10,10:3,12 'c:\sources\cecil\symbols\Mono.Cecil.Pdb\Test\Resources\assemblies\test.cs'
@@ -145,6 +145,13 @@ namespace Mono.Cecil.Tests {
 				Assert.AreEqual (DocumentLanguage.FSharp, document.Language);
 				Assert.AreEqual (DocumentLanguageVendor.Microsoft, document.LanguageVendor);
 			}, readOnly: Platform.OnMono, symbolReaderProvider: typeof(PdbReaderProvider), symbolWriterProvider: typeof(PdbWriterProvider));
+		}
+
+		[Test]
+		public void EmptyEnumerable ()
+		{
+			TestModule ("empty-iterator.dll", module => {
+			}, readOnly: Platform.OnMono, symbolReaderProvider: typeof (PdbReaderProvider), symbolWriterProvider: typeof (PdbWriterProvider));
 		}
 
 		[Test]

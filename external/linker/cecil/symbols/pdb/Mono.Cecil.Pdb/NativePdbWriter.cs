@@ -19,23 +19,30 @@ using Mono.Collections.Generic;
 
 namespace Mono.Cecil.Pdb {
 
-	public class PdbWriter : Cil.ISymbolWriter {
+	public class NativePdbWriter : Cil.ISymbolWriter {
 
 		readonly ModuleDefinition module;
 		readonly SymWriter writer;
 		readonly Dictionary<string, SymDocumentWriter> documents;
 
-		internal PdbWriter (ModuleDefinition module, SymWriter writer)
+		internal NativePdbWriter (ModuleDefinition module, SymWriter writer)
 		{
 			this.module = module;
 			this.writer = writer;
 			this.documents = new Dictionary<string, SymDocumentWriter> ();
 		}
 
-		public bool GetDebugHeader (out ImageDebugDirectory directory, out byte [] header)
+		public ISymbolReaderProvider GetReaderProvider ()
 		{
-			header = writer.GetDebugInfo (out directory);
-			return true;
+			return new NativePdbReaderProvider ();
+		}
+
+		public ImageDebugHeader GetDebugHeader ()
+		{
+			ImageDebugDirectory directory;
+			var data = writer.GetDebugInfo (out directory);
+			directory.TimeDateStamp = (int) module.timestamp;
+			return new ImageDebugHeader (new ImageDebugHeaderEntry (directory, data));
 		}
 
 		public void Write (MethodDebugInformation info)
@@ -45,7 +52,8 @@ namespace Mono.Cecil.Pdb {
 
 			writer.OpenMethod (sym_token);
 
-			DefineSequencePoints (info.sequence_points);
+			if (!info.sequence_points.IsNullOrEmpty ())
+				DefineSequencePoints (info.sequence_points);
 
 			if (info.scope != null)
 				DefineScope (info.scope, info);

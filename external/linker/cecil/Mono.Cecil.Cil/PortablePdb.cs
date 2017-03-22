@@ -12,6 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+#if !PCL
+using System.IO.Compression;
+#endif
+
 using Mono.Cecil.Metadata;
 using Mono.Cecil.PE;
 
@@ -61,20 +65,31 @@ namespace Mono.Cecil.Cil {
 			this.debug_reader = new MetadataReader (image, module, this.reader);
 		}
 
-		public bool ProcessDebugHeader (ImageDebugDirectory directory, byte [] header)
+		public ISymbolWriterProvider GetWriterProvider ()
+		{
+			return new PortablePdbWriterProvider ();
+		}
+
+		public bool ProcessDebugHeader (ImageDebugHeader header)
 		{
 			if (image == module.Image)
 				return true;
 
-			if (header.Length < 24)
+			var entry = header.GetCodeViewEntry ();
+			if (entry == null)
 				return false;
 
-			var magic = ReadInt32 (header, 0);
+			var data = entry.Data;
+
+			if (data.Length < 24)
+				return false;
+
+			var magic = ReadInt32 (data, 0);
 			if (magic != 0x53445352)
 				return false;
 
 			var buffer = new byte [16];
-			Buffer.BlockCopy (header, 4, buffer, 0, 16);
+			Buffer.BlockCopy (data, 4, buffer, 0, 16);
 
 			var module_guid = new Guid (buffer);
 
@@ -132,6 +147,78 @@ namespace Mono.Cecil.Cil {
 		}
 	}
 
+	public sealed class EmbeddedPortablePdbReaderProvider : ISymbolReaderProvider {
+
+#if !PCL
+		public ISymbolReader GetSymbolReader (ModuleDefinition module, string fileName)
+		{
+			Mixin.CheckModule (module);
+			Mixin.CheckFileName (fileName);
+
+			var header = module.GetDebugHeader ();
+			var entry = header.GetEmbeddedPortablePdbEntry ();
+			if (entry == null)
+				throw new InvalidOperationException ();
+
+			return new EmbeddedPortablePdbReader (
+				(PortablePdbReader) new PortablePdbReaderProvider ().GetSymbolReader (module, GetPortablePdbStream (entry)));
+		}
+
+		static Stream GetPortablePdbStream (ImageDebugHeaderEntry entry)
+		{
+			var compressed_stream = new MemoryStream (entry.Data);
+			var reader = new BinaryStreamReader (compressed_stream);
+			reader.ReadInt32 (); // signature
+			var length = reader.ReadInt32 ();
+			var decompressed_stream = new MemoryStream (length);
+
+			using (var deflate_stream = new DeflateStream (compressed_stream, CompressionMode.Decompress, leaveOpen: true))
+				deflate_stream.CopyTo (decompressed_stream);
+
+			return decompressed_stream;
+		}
+#endif
+
+		public ISymbolReader GetSymbolReader (ModuleDefinition module, Stream symbolStream)
+		{
+			throw new NotSupportedException ();
+		}
+	}
+
+	public sealed class EmbeddedPortablePdbReader : ISymbolReader
+	{
+		private readonly PortablePdbReader reader;
+
+		internal EmbeddedPortablePdbReader (PortablePdbReader reader)
+		{
+			if (reader == null)
+				throw new ArgumentNullException ();
+
+			this.reader = reader;
+		}
+
+		public ISymbolWriterProvider GetWriterProvider ()
+		{
+			return new EmbeddedPortablePdbWriterProvider ();
+		}
+
+		public bool ProcessDebugHeader (ImageDebugHeader header)
+		{
+			return reader.ProcessDebugHeader (header);
+		}
+
+		public MethodDebugInformation Read (MethodDefinition method)
+		{
+			return reader.Read (method);
+		}
+
+		public void Dispose ()
+		{
+			reader.Dispose ();
+		}
+	}
+
+
 #if !READ_ONLY
 
 	public sealed class PortablePdbWriterProvider : ISymbolWriterProvider
@@ -164,7 +251,11 @@ namespace Mono.Cecil.Cil {
 		}
 	}
 
-	sealed class PortablePdbWriter : ISymbolWriter {
+	interface IMetadataSymbolWriter : ISymbolWriter {
+		void SetMetadata (MetadataBuilder metadata);
+	}
+
+	public sealed class PortablePdbWriter : ISymbolWriter, IMetadataSymbolWriter {
 
 		readonly MetadataBuilder pdb_metadata;
 		readonly ModuleDefinition module;
@@ -174,19 +265,19 @@ namespace Mono.Cecil.Cil {
 
 		bool IsEmbedded { get { return writer == null; } }
 
-		public PortablePdbWriter (MetadataBuilder pdb_metadata, ModuleDefinition module)
+		internal PortablePdbWriter (MetadataBuilder pdb_metadata, ModuleDefinition module)
 		{
 			this.pdb_metadata = pdb_metadata;
 			this.module = module;
 		}
 
-		public PortablePdbWriter (MetadataBuilder pdb_metadata, ModuleDefinition module, ImageWriter writer)
+		internal PortablePdbWriter (MetadataBuilder pdb_metadata, ModuleDefinition module, ImageWriter writer)
 			: this (pdb_metadata, module)
 		{
 			this.writer = writer;
 		}
 
-		public void SetModuleMetadata (MetadataBuilder metadata)
+		void IMetadataSymbolWriter.SetMetadata (MetadataBuilder metadata)
 		{
 			this.module_metadata = metadata;
 
@@ -194,18 +285,21 @@ namespace Mono.Cecil.Cil {
 				this.pdb_metadata.metadata_builder = metadata;
 		}
 
-		public bool GetDebugHeader (out ImageDebugDirectory directory, out byte [] header)
+		public ISymbolReaderProvider GetReaderProvider ()
 		{
-			if (IsEmbedded) {
-				directory = new ImageDebugDirectory ();
-				header = Empty<byte>.Array;
-				return false;
-			}
+			return new PortablePdbReaderProvider ();
+		}
 
-			directory = new ImageDebugDirectory () {
+		public ImageDebugHeader GetDebugHeader ()
+		{
+			if (IsEmbedded)
+				return new ImageDebugHeader ();
+
+			var directory = new ImageDebugDirectory () {
 				MajorVersion = 256,
-				MinorVersion = 20577,
-				Type = 2,
+				MinorVersion = 20557,
+				Type = ImageDebugType.CodeView,
+				TimeDateStamp = (int) module.timestamp,
 			};
 
 			var buffer = new ByteBuffer ();
@@ -219,10 +313,11 @@ namespace Mono.Cecil.Cil {
 			buffer.WriteBytes (System.Text.Encoding.UTF8.GetBytes (writer.BaseStream.GetFileName ()));
 			buffer.WriteByte (0);
 
-			header = new byte [buffer.length];
-			Buffer.BlockCopy (buffer.buffer, 0, header, 0, buffer.length);
-			directory.SizeOfData = header.Length;
-			return true;
+			var data = new byte [buffer.length];
+			Buffer.BlockCopy (buffer.buffer, 0, data, 0, buffer.length);
+			directory.SizeOfData = data.Length;
+
+			return new ImageDebugHeader (new ImageDebugHeaderEntry (directory, data));
 		}
 
 		public void Write (MethodDebugInformation info)
@@ -248,13 +343,20 @@ namespace Mono.Cecil.Cil {
 			if (IsEmbedded)
 				return;
 
+			WritePdbFile ();
+		}
+
+		void WritePdbFile ()
+		{
 			WritePdbHeap ();
+
 			WriteTableHeap ();
 
 			writer.BuildMetadataTextMap ();
 			writer.WriteMetadataHeader ();
 			writer.WriteMetadata ();
 
+			writer.Flush ();
 			writer.stream.Dispose ();
 		}
 
@@ -263,7 +365,7 @@ namespace Mono.Cecil.Cil {
 			var pdb_heap = pdb_metadata.pdb_heap;
 
 			pdb_heap.WriteBytes (module.Mvid.ToByteArray ());
-			pdb_heap.WriteUInt32 (module_metadata.time_stamp);
+			pdb_heap.WriteUInt32 (module_metadata.timestamp);
 
 			pdb_heap.WriteUInt32 (module_metadata.entry_point.ToUInt32 ());
 
@@ -290,9 +392,94 @@ namespace Mono.Cecil.Cil {
 
 		void WriteTableHeap ()
 		{
+			pdb_metadata.table_heap.string_offsets = pdb_metadata.string_heap.WriteStrings ();
 			pdb_metadata.table_heap.WriteTableHeap ();
 		}
 	}
+
+	public sealed class EmbeddedPortablePdbWriterProvider : ISymbolWriterProvider {
+
+#if !PCL
+		public ISymbolWriter GetSymbolWriter (ModuleDefinition module, string fileName)
+		{
+			Mixin.CheckModule (module);
+			Mixin.CheckFileName (fileName);
+
+			var stream = new MemoryStream ();
+			var pdb_writer = (PortablePdbWriter) new PortablePdbWriterProvider ().GetSymbolWriter (module, stream);
+			return new EmbeddedPortablePdbWriter (stream, pdb_writer);
+		}
+#endif
+
+		public ISymbolWriter GetSymbolWriter (ModuleDefinition module, Stream symbolStream)
+		{
+			throw new NotSupportedException ();
+		}
+	}
+
+#if !PCL
+	public sealed class EmbeddedPortablePdbWriter : ISymbolWriter, IMetadataSymbolWriter {
+
+		readonly Stream stream;
+		readonly PortablePdbWriter writer;
+
+		internal EmbeddedPortablePdbWriter (Stream stream, PortablePdbWriter writer)
+		{
+			this.stream = stream;
+			this.writer = writer;
+		}
+
+		public ISymbolReaderProvider GetReaderProvider ()
+		{
+			return new EmbeddedPortablePdbReaderProvider ();
+		}
+
+		public ImageDebugHeader GetDebugHeader ()
+		{
+			writer.Dispose ();
+
+			var directory = new ImageDebugDirectory {
+				Type = ImageDebugType.EmbeddedPortablePdb,
+			};
+
+			var data = new MemoryStream ();
+
+			var w = new BinaryStreamWriter (data);
+			w.WriteByte (0x4d);
+			w.WriteByte (0x50);
+			w.WriteByte (0x44);
+			w.WriteByte (0x42);
+
+			w.WriteInt32 ((int) stream.Length);
+
+			stream.Position = 0;
+
+			using (var compress_stream = new DeflateStream (data, CompressionMode.Compress, leaveOpen: true))
+				stream.CopyTo (compress_stream);
+
+			directory.SizeOfData = (int) data.Length;
+
+			return new ImageDebugHeader (new [] {
+				writer.GetDebugHeader ().Entries [0],
+				new ImageDebugHeaderEntry (directory, data.ToArray ())
+			});
+		}
+
+		public void Write (MethodDebugInformation info)
+		{
+			writer.Write (info);
+		}
+
+		public void Dispose ()
+		{
+		}
+
+		void IMetadataSymbolWriter.SetMetadata (MetadataBuilder metadata)
+		{
+			((IMetadataSymbolWriter) writer).SetMetadata (metadata);
+		}
+	}
+#endif
 
 #endif
 

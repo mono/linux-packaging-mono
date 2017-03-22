@@ -26,6 +26,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.Collections;
 
 using Mono.Cecil;
@@ -48,8 +49,13 @@ namespace Mono.Linker.Steps {
 
 			_references.Add (assembly.Name, assembly);
 
-			foreach (AssemblyNameReference reference in assembly.MainModule.AssemblyReferences)
-				ProcessReferences (Context.Resolve (reference));
+			foreach (AssemblyDefinition referenceDefinition in Context.ResolveReferences (assembly)) {
+				try {
+					ProcessReferences (referenceDefinition);
+				} catch (Exception ex) {
+					throw new LoadException (string.Format ("Error while processing references of '{0}'", assembly.FullName), ex);
+				}
+			}
 		}
 	}
 }

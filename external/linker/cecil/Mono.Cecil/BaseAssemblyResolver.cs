@@ -8,7 +8,7 @@
 // Licensed under the MIT/X11 license.
 //
 
-#if !PCL && !NET_CORE
+#if !PCL
 
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,9 @@ namespace Mono.Cecil {
 		}
 	}
 
+#if !NET_CORE
 	[Serializable]
+#endif
 	public sealed class AssemblyResolutionException : FileNotFoundException {
 
 		readonly AssemblyNameReference reference;
@@ -50,14 +52,17 @@ namespace Mono.Cecil {
 			this.reference = reference;
 		}
 
+#if !NET_CORE
 		AssemblyResolutionException (
 			System.Runtime.Serialization.SerializationInfo info,
 			System.Runtime.Serialization.StreamingContext context)
 			: base (info, context)
 		{
 		}
+#endif
 	}
 
+#if !NET_CORE
 	public abstract class BaseAssemblyResolver : IAssemblyResolver {
 
 		static readonly bool on_mono = Type.GetType ("Mono.Runtime") != null;
@@ -83,19 +88,6 @@ namespace Mono.Cecil {
 			return directories;
 		}
 
-		public virtual AssemblyDefinition Resolve (string fullName)
-		{
-			return Resolve (fullName, new ReaderParameters ());
-		}
-
-		public virtual AssemblyDefinition Resolve (string fullName, ReaderParameters parameters)
-		{
-			if (fullName == null)
-				throw new ArgumentNullException ("fullName");
-
-			return Resolve (AssemblyNameReference.Parse (fullName), parameters);
-		}
-
 		public event AssemblyResolveEventHandler ResolveFailure;
 
 		protected BaseAssemblyResolver ()
@@ -118,10 +110,8 @@ namespace Mono.Cecil {
 
 		public virtual AssemblyDefinition Resolve (AssemblyNameReference name, ReaderParameters parameters)
 		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-			if (parameters == null)
-				parameters = new ReaderParameters ();
+			Mixin.CheckName (name);
+			Mixin.CheckParameters (parameters);
 
 			var assembly = SearchDirectory (name, directories, parameters);
 			if (assembly != null)
@@ -171,8 +161,13 @@ namespace Mono.Cecil {
 			foreach (var directory in directories) {
 				foreach (var extension in extensions) {
 					string file = Path.Combine (directory, name.Name + extension);
-					if (File.Exists (file))
+					if (!File.Exists (file))
+						continue;
+					try {
 						return GetAssembly (file, parameters);
+					} catch (System.BadImageFormatException) {
+						continue;
+					}
 				}
 			}
 
@@ -351,6 +346,7 @@ namespace Mono.Cecil {
 		{
 		}
 	}
+#endif
 }
 
 #endif
