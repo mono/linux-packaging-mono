@@ -329,20 +329,11 @@ mono_method_desc_new (const char *name, gboolean include_namespace)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> the method name.</td></td></tr><tr><td><i>include_namespace</i><td> whether the name includes a namespace or not.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a parsed representation of the method description.
+            <table class="mapi-parameters"><tbody><tr><td><i>name</i></td><td> the method name.</td></tr><tr><td><i>include_namespace</i></td><td> whether the name includes a namespace or not.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a parsed representation of the method description.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Creates a method description for <i>name</i>, which conforms to the following
-	 specification:
-	<p />
-	 [namespace.]classname:methodname[(args...)]
-	<p />
-	 in all the loaded assemblies.
-	<p />
-	 Both classname and methodname can contain '*' which matches anything.
-	<p /></div>
+             <div> 	<p /> 	 Creates a method description for <i>name</i>, which conforms to the following 	 specification: 	<p /> 	 <code>[namespace.]classname:methodname[(args...)]</code> 	<p /> 	 in all the loaded assemblies. 	<p /> 	 Both classname and methodname can contain <code>*</code> which matches anything. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -362,9 +353,8 @@ mono_method_desc_free (MonoMethodDesc *desc)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>desc</i><td> method description to be released</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Releases the MonoMethodDesc object <i>desc</i>.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>desc</i></td><td> method description to be released</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Releases the <code>MonoMethodDesc</code> object <i>desc</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -378,7 +368,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_desc_from_method</div>
+            <div class="mapi-prototype">MonoMethodDesc*
+mono_method_desc_from_method (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -393,7 +386,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_desc_full_match</div>
+            <div class="mapi-prototype">gboolean
+mono_method_desc_full_match (MonoMethodDesc *desc, MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -408,8 +404,17 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_desc_match</div>
+            <div class="mapi-prototype">gboolean
+mono_method_desc_match (MonoMethodDesc *desc, MonoMethod *method)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>desc</i></td><td> <code>MonoMethoDescription</code></td></tr><tr><td><i>method</i></td><td> <code>MonoMethod</code> to test</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if the method matches the description, <code>FALSE</code> otherwise.
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Determines whether the specified <i>method</i> matches the provided <i>desc</i> description. 	<p /> 	 namespace and class are supposed to match already if this function is used.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -423,7 +428,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_desc_search_in_class</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_method_desc_search_in_class (MonoMethodDesc *desc, MonoClass *klass)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -438,7 +446,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_desc_search_in_image</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_method_desc_search_in_image (MonoMethodDesc *desc, MonoImage *image)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -457,7 +468,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_full_name</div>
+            <div class="mapi-prototype">char*
+mono_method_full_name (MonoMethod *method, gboolean signature)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -472,7 +486,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_class</div>
+            <div class="mapi-prototype">MonoClass*
+mono_method_get_class (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -487,7 +504,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_flags</div>
+            <div class="mapi-prototype">guint32
+mono_method_get_flags (MonoMethod *method, guint32 *iflags)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -502,7 +522,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_last_managed</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_method_get_last_managed (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -517,7 +540,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_marshal_info</div>
+            <div class="mapi-prototype">void
+mono_method_get_marshal_info (MonoMethod *method, MonoMarshalSpec **mspecs)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -532,7 +558,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_name</div>
+            <div class="mapi-prototype">const char*
+mono_method_get_name (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -547,8 +576,15 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_object</div>
+            <div class="mapi-prototype">MonoReflectionMethod*
+mono_method_get_object (MonoDomain *domain, MonoMethod *method, MonoClass *refclass)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> an app domain</td></tr><tr><td><i>method</i></td><td> a method</td></tr><tr><td><i>refclass</i></td><td> the reflected type (can be <code>NULL</code>)</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A <code>System.Reflection.MonoMethod</code> object representing the method <i>method</i>.
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -562,7 +598,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_param_names</div>
+            <div class="mapi-prototype">void
+mono_method_get_param_names (MonoMethod *method, const char **names)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -577,7 +616,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_param_token</div>
+            <div class="mapi-prototype">guint32
+mono_method_get_param_token (MonoMethod *method, int index)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -592,8 +634,13 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_signature</div>
+            <div class="mapi-prototype">MonoMethodSignature*
+mono_method_get_signature (MonoMethod *method, MonoImage *image, guint32 token)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 <i>token</i> is the method_ref/def/spec token used in a call IL instruction. 	 \deprecated use the <code>_checked</code> variant 	 Notes: runtime code MUST not use this function</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -607,8 +654,13 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_index</div>
+            <div class="mapi-prototype">guint32
+mono_method_get_index (MonoMethod *method)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 Find the method index in the metadata <code>MethodDef</code> table.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -622,8 +674,13 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_signature_full</div>
+            <div class="mapi-prototype">MonoMethodSignature*
+mono_method_get_signature_full (MonoMethod *method, MonoImage *image, guint32 token, MonoGenericContext *context)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 <i>token</i> is the method ref/def/spec token used in a <code>call</code> IL instruction. 	 \deprecated use the <code>_checked</code> variant 	 Notes: runtime code MUST not use this function</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -637,7 +694,10 @@ mono_method_desc_free (MonoMethodDesc *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_token</div>
+            <div class="mapi-prototype">guint32
+mono_method_get_token (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -658,53 +718,8 @@ mono_method_get_unmanaged_thunk (MonoMethod *method)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>method</i><td> method to generate a thunk for.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Returns an unmanaged-&gt;managed thunk that can be used to call
-	 a managed method directly from C.
-	<p />
-	 The thunk's C signature closely matches the managed signature:
-	<p />
-	 C#: public bool Equals (object obj);
-	 C:  typedef MonoBoolean (*Equals)(MonoObject*,
-	             MonoObject*, MonoException**);
-	<p />
-	 The 1st (&quot;this&quot;) parameter must not be used with static methods:
-	<p />
-	 C#: public static bool ReferenceEquals (object a, object b);
-	 C:  typedef MonoBoolean (*ReferenceEquals)(MonoObject*, MonoObject*,
-	             MonoException**);
-	<p />
-	 The last argument must be a non-null pointer of a MonoException* pointer.
-	 It has &quot;out&quot; semantics. After invoking the thunk, *ex will be <code>NULL</code> if no
-	 exception has been thrown in managed code. Otherwise it will point
-	 to the MonoException* caught by the thunk. In this case, the result of
-	 the thunk is undefined:
-	<p />
-	 MonoMethod *method = ... // MonoMethod* of System.Object.Equals
-	 MonoException *ex = <code>NULL</code>;
-	 Equals func = mono_method_get_unmanaged_thunk (method);
-	 MonoBoolean res = func (thisObj, objToCompare, &amp;ex);
-	 if (ex) {
-	    // handle exception
-	 }
-	<p />
-	 The calling convention of the thunk matches the platform's default
-	 convention. This means that under Windows, C declarations must
-	 contain the __stdcall attribute:
-	<p />
-	 C:  typedef MonoBoolean (__stdcall *Equals)(MonoObject*,
-	             MonoObject*, MonoException**);
-	<p />
-	 LIMITATIONS
-	<p />
-	 Value type arguments and return values are treated as they were objects:
-	<p />
-	 C#: public static Rectangle Intersect (Rectangle a, Rectangle b);
-	 C:  typedef MonoObject* (*Intersect)(MonoObject*, MonoObject*, MonoException**);
-	<p />
-	 Arguments must be properly boxed upon trunk's invocation, while return
-	 values must be unboxed.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> method to generate a thunk for.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Returns an <code>unmanaged-&gt;managed</code> thunk that can be used to call 	 a managed method directly from C. 	<p /> 	 The thunk's C signature closely matches the managed signature: 	<p /> 	 C#: <code>public bool Equals (object obj);</code> 	<p /> 	 C:  <code>typedef MonoBoolean (*Equals)(MonoObject*, MonoObject*, MonoException**);</code> 	<p /> 	 The 1st (<code>this</code>) parameter must not be used with static methods: 	<p /> 	 C#: <code>public static bool ReferenceEquals (object a, object b);</code> 	<p /> 	 C:  <code>typedef MonoBoolean (*ReferenceEquals)(MonoObject*, MonoObject*, MonoException**);</code> 	<p /> 	 The last argument must be a non-null <code>MonoException*</code> pointer. 	 It has &quot;out&quot; semantics. After invoking the thunk, <code>*ex</code> will be <code>NULL</code> if no 	 exception has been thrown in managed code. Otherwise it will point 	 to the <code>MonoException*</code> caught by the thunk. In this case, the result of 	 the thunk is undefined: 	<p /> 	 <pre> 	 MonoMethod *method = ... // MonoMethod* of System.Object.Equals 	<p /> 	 MonoException *ex = <code>NULL</code>; 	<p /> 	 Equals func = mono_method_get_unmanaged_thunk (method); 	<p /> 	 MonoBoolean res = func (thisObj, objToCompare, &amp;ex); 	<p /> 	 if (ex) { 	<p /> 	    // handle exception 	<p /> 	 } 	 </pre> 	<p /> 	 The calling convention of the thunk matches the platform's default 	 convention. This means that under Windows, C declarations must 	 contain the <code>__stdcall</code> attribute: 	<p /> 	 C: <code>typedef MonoBoolean (__stdcall *Equals)(MonoObject*, MonoObject*, MonoException**);</code> 	<p /> 	 LIMITATIONS 	<p /> 	 Value type arguments and return values are treated as they were objects: 	<p /> 	 C#: <code>public static Rectangle Intersect (Rectangle a, Rectangle b);</code> 	 C:  <code>typedef MonoObject* (*Intersect)(MonoObject*, MonoObject*, MonoException**);</code> 	<p /> 	 Arguments must be properly boxed upon trunk's invocation, while return 	 values must be unboxed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -718,7 +733,10 @@ mono_method_get_unmanaged_thunk (MonoMethod *method)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_has_marshal_info</div>
+            <div class="mapi-prototype">gboolean
+mono_method_has_marshal_info (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -733,8 +751,13 @@ mono_method_get_unmanaged_thunk (MonoMethod *method)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_verify</div>
+            <div class="mapi-prototype">GSList*
+mono_method_verify (MonoMethod *method, int level)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 Verify types for opcodes.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -758,34 +781,8 @@ mono_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>method</i><td> method to invoke</td></td></tr><tr><td><i>obJ</i><td> object instance</td></td></tr><tr><td><i>params</i><td> arguments to the method</td></td></tr><tr><td><i>exc</i><td> exception information.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Invokes the method represented by <i>method</i> on the object <i>obj</i>.
-	<p />
-	 obj is the 'this' pointer, it should be <code>NULL</code> for static
-	 methods, a MonoObject* for object instances and a pointer to
-	 the value type for value types.
-	<p />
-	 The params array contains the arguments to the method with the
-	 same convention: MonoObject* pointers for object instances and
-	 pointers to the value type otherwise. 
-	<p />
-	 From unmanaged code you'll usually use the
-	 mono_runtime_invoke() variant.
-	<p />
-	 Note that this function doesn't handle virtual methods for
-	 you, it will exec the exact method you pass: we still need to
-	 expose a function to lookup the derived class implementation
-	 of a virtual method (there are examples of this in the code,
-	 though).
-	<p />
-	 You can pass <code>NULL</code> as the exc argument if you don't want to
-	 catch exceptions, otherwise, *exc will be set to the exception
-	 thrown, if any.  if an exception is thrown, you can't use the
-	 MonoObject* result from the function.
-	<p />
-	 If the method returns a value type, it is boxed in an object
-	 reference.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> method to invoke</td></tr><tr><td><i>obj</i></td><td> object instance</td></tr><tr><td><i>params</i></td><td> arguments to the method</td></tr><tr><td><i>exc</i></td><td> exception information.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Invokes the method represented by <i>method</i> on the object <i>obj</i>. 	 <i>obj</i> is the <code>this</code> pointer, it should be <code>NULL</code> for static 	 methods, a <code>MonoObject*</code> for object instances and a pointer to 	 the value type for value types. 	<p /> 	 The params array contains the arguments to the method with the 	 same convention: <code>MonoObject*</code> pointers for object instances and 	 pointers to the value type otherwise.  	<p /> 	 From unmanaged code you'll usually use the 	 <code>mono_runtime_invoke</code> variant. 	<p /> 	 Note that this function doesn't handle virtual methods for 	 you, it will exec the exact method you pass: we still need to 	 expose a function to lookup the derived class implementation 	 of a virtual method (there are examples of this in the code, 	 though). 	<p /> 	 You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to 	 catch exceptions, otherwise, <code>*exc</code> will be set to the exception 	 thrown, if any.  if an exception is thrown, you can't use the 	 <code>MonoObject*</code> result from the function. 	<p /> 	 If the method returns a value type, it is boxed in an object 	 reference.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -828,37 +825,8 @@ mono_runtime_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>method</i><td> method to invoke</td></td></tr><tr><td><i>obJ</i><td> object instance</td></td></tr><tr><td><i>params</i><td> arguments to the method</td></td></tr><tr><td><i>exc</i><td> exception information.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Invokes the method represented by <i>method</i> on the object <i>obj</i>.
-	<p />
-	 obj is the 'this' pointer, it should be <code>NULL</code> for static
-	 methods, a MonoObject* for object instances and a pointer to
-	 the value type for value types.
-	<p />
-	 The params array contains the arguments to the method with the
-	 same convention: MonoObject* pointers for object instances and
-	 pointers to the value type otherwise. The _invoke_array
-	 variant takes a C# object[] as the params argument (MonoArray
-	 *params): in this case the value types are boxed inside the
-	 respective reference representation.
-	<p />
-	 From unmanaged code you'll usually use the
-	 mono_runtime_invoke_checked() variant.
-	<p />
-	 Note that this function doesn't handle virtual methods for
-	 you, it will exec the exact method you pass: we still need to
-	 expose a function to lookup the derived class implementation
-	 of a virtual method (there are examples of this in the code,
-	 though).
-	<p />
-	 You can pass <code>NULL</code> as the exc argument if you don't want to
-	 catch exceptions, otherwise, *exc will be set to the exception
-	 thrown, if any.  if an exception is thrown, you can't use the
-	 MonoObject* result from the function.
-	<p />
-	 If the method returns a value type, it is boxed in an object
-	 reference.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> method to invoke</td></tr><tr><td><i>obj</i></td><td> object instance</td></tr><tr><td><i>params</i></td><td> arguments to the method</td></tr><tr><td><i>exc</i></td><td> exception information.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Invokes the method represented by <i>method</i> on the object <i>obj</i>. 	<p /> 	 <i>obj</i> is the <code>this</code> pointer, it should be <code>NULL</code> for static 	 methods, a <code>MonoObject*</code> for object instances and a pointer to 	 the value type for value types. 	<p /> 	 The <i>params</i> array contains the arguments to the method with the 	 same convention: <code>MonoObject*</code> pointers for object instances and 	 pointers to the value type otherwise. The <code>_invoke_array</code> 	 variant takes a C# <code>object[]</code> as the params argument (<code>MonoArray*)</code>: 	 in this case the value types are boxed inside the 	 respective reference representation. 	<p /> 	 From unmanaged code you'll usually use the 	 mono_runtime_invoke_checked() variant. 	<p /> 	 Note that this function doesn't handle virtual methods for 	 you, it will exec the exact method you pass: we still need to 	 expose a function to lookup the derived class implementation 	 of a virtual method (there are examples of this in the code, 	 though). 	<p /> 	 You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to 	 catch exceptions, otherwise, <code>*exc</code> will be set to the exception 	 thrown, if any.  if an exception is thrown, you can't use the 	 <code>MonoObject*</code> result from the function. 	<p /> 	 If the method returns a value type, it is boxed in an object 	 reference.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -878,14 +846,8 @@ mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>delegate</i><td> pointer to a delegate object.</td></td></tr><tr><td><i>params</i><td> parameters for the delegate.</td></td></tr><tr><td><i>exc</i><td> Pointer to the exception result.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Invokes the delegate method <i>delegate</i> with the parameters provided.
-	<p />
-	 You can pass <code>NULL</code> as the exc argument if you don't want to
-	 catch exceptions, otherwise, *exc will be set to the exception
-	 thrown, if any.  if an exception is thrown, you can't use the
-	 MonoObject* result from the function.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>delegate</i></td><td> pointer to a delegate object.</td></tr><tr><td><i>params</i></td><td> parameters for the delegate.</td></tr><tr><td><i>exc</i></td><td> Pointer to the exception result.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Invokes the delegate method <i>delegate</i> with the parameters provided. 	<p /> 	 You can pass <code>NULL</code> as the <i>exc</i> argument if you don't want to 	 catch exceptions, otherwise, <code>*exc</code> will be set to the exception 	 thrown, if any.  if an exception is thrown, you can't use the 	 <code>MonoObject*</code> result from the function.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -900,8 +862,15 @@ mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_body_get_object</div>
+            <div class="mapi-prototype">MonoReflectionMethodBody*
+mono_method_body_get_object (MonoDomain *domain, MonoMethod *method)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> an app domain</td></tr><tr><td><i>method</i></td><td> a method</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A <code>System.Reflection.MethodBody</code> object representing the method <i>method</i>.
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -924,9 +893,9 @@ mono_method_signature (MonoMethod *m)
 
 </div>
             <p />
-             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Return the signature of the method M. On failure, returns <code>NULL</code>.</div>
+             <div class="mapi-section">Return value</div>
+             <div>	 the signature of the method <i>m</i>. On failure, returns <code>NULL</code>.
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -946,12 +915,10 @@ mono_signature_explicit_this (MonoMethodSignature *sig)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>sig</i><td> the method signature inspected</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  #<code>TRUE</code> if this the method signature <i>sig</i> has an explicit
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> the method signature inspected</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if this the method signature <i>sig</i> has an explicit
 
-	 instance argument. #<code>FALSE</code> otherwise.</div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+	 instance argument. <code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -971,11 +938,9 @@ mono_signature_get_call_conv (MonoMethodSignature *sig)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>sig</i><td> the method signature inspected</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the call convention of the method signature <i>sig</i>.
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> the method signature inspected</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the call convention of the method signature <i>sig</i>.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -989,7 +954,10 @@ mono_signature_get_call_conv (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_signature_get_desc</div>
+            <div class="mapi-prototype">char*
+mono_signature_get_desc (MonoMethodSignature *sig, gboolean include_namespace)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1010,11 +978,9 @@ mono_signature_get_param_count (MonoMethodSignature *sig)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>sig</i><td> the method signature inspected</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the number of parameters in the method signature <i>sig</i>.
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> the method signature inspected</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the number of parameters in the method signature <i>sig</i>.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1034,17 +1000,12 @@ mono_signature_get_params (MonoMethodSignature *sig, gpointer *iter)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>sig</i><td> the method signature inspected</td></td></tr><tr><td><i>iter</i><td> pointer to an iterator</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the next parameter type of the method signature <i>sig</i>,
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> the method signature inspected</td></tr><tr><td><i>iter</i></td><td> pointer to an iterator</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the next parameter type of the method signature <i>sig</i>,
 
-	 #<code>NULL</code> when finished.</div>
+	 <code>NULL</code> when finished.</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Iterates over the parameters for the method signature <i>sig</i>.
-	 A void* pointer must be initualized to #<code>NULL</code> to start the iteration
-	 and it's address is passed to this function repeteadly until it returns
-	 #<code>NULL</code>.
-	<p /></div>
+             <div> 	 Iterates over the parameters for the method signature <i>sig</i>. 	 A <code>void*</code> pointer must be initialized to <code>NULL</code> to start the iteration 	 and its address is passed to this function repeteadly until it returns 	 <code>NULL</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1064,11 +1025,9 @@ mono_signature_get_return_type (MonoMethodSignature *sig)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>sig</i><td> the method signature inspected</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the return type of the method signature <i>sig</i>
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> the method signature inspected</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the return type of the method signature <i>sig</i>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1082,7 +1041,10 @@ mono_signature_get_return_type (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_signature_hash</div>
+            <div class="mapi-prototype">guint
+mono_signature_hash (MonoMethodSignature *sig)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1103,12 +1065,10 @@ mono_signature_is_instance (MonoMethodSignature *sig)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>sig</i><td> the method signature inspected</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  #<code>TRUE</code> if this the method signature <i>sig</i> has an implicit
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> the method signature inspected</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if this the method signature <i>sig</i> has an implicit
 
-	 first instance argument. #<code>FALSE</code> otherwise.</div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+	 first instance argument. <code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1128,12 +1088,10 @@ mono_signature_param_is_out (MonoMethodSignature *sig, int param_num)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>sig</i><td> the method signature inspected</td></td></tr><tr><td><i>param_num</i><td> the 0-based index of the inspected parameter</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  #<code>TRUE</code> if the parameter is an out parameter, #<code>FALSE</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> the method signature inspected</td></tr><tr><td><i>param_num</i></td><td> the 0-based index of the inspected parameter</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if the parameter is an out parameter, <code>FALSE</code>
 
 	 otherwise.</div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1153,12 +1111,10 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>sig</i><td> the method signature inspected</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the number of the first vararg parameter in the
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> the method signature inspected</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the number of the first vararg parameter in the
 
-	 method signature <i>sig</i>. -1 if this is not a vararg signature.</div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+	 method signature \param sig. <code>-1</code> if this is not a vararg signature.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1172,7 +1128,10 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_param_get_objects</div>
+            <div class="mapi-prototype">MonoArray*
+mono_param_get_objects (MonoDomain *domain, MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1187,7 +1146,11 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_get_method_full</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_get_method_full (MonoImage *image, guint32 token, MonoClass *klass,
+		      MonoGenericContext *context)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1202,7 +1165,10 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_get_method</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_get_method (MonoImage *image, guint32 token, MonoClass *klass)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1221,7 +1187,10 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_get_header</div>
+            <div class="mapi-prototype">MonoMethodHeader*
+mono_method_get_header (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1236,8 +1205,18 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_header_get_clauses</div>
+            <div class="mapi-prototype">int
+mono_method_header_get_clauses (MonoMethodHeader *header, MonoMethod *method, gpointer *iter, MonoExceptionClause *clause)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>header</i></td><td> a <code>MonoMethodHeader</code> pointer</td></tr><tr><td><i>method</i></td><td> <code>MonoMethod</code> the header belongs to</td></tr><tr><td><i>iter</i></td><td> pointer to a iterator</td></tr><tr><td><i>clause</i></td><td> pointer to a <code>MonoExceptionClause</code> structure which will be filled with the info</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if clause was filled with info, <code>FALSE</code> if there are no more exception
+
+	 clauses.</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Get the info about the exception clauses in the method. Set <code>*iter</code> to <code>NULL</code> to 	 initiate the iteration, then call the method repeatedly until it returns <code>FALSE</code>. 	 At each iteration, the structure pointed to by clause if filled with the 	 exception clause information. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1251,8 +1230,17 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_header_get_code</div>
+            <div class="mapi-prototype">const unsigned char*
+mono_method_header_get_code (MonoMethodHeader *header, guint32* code_size, guint32* max_stack)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>header</i></td><td> a <code>MonoMethodHeader</code> pointer</td></tr><tr><td><i>code_size</i></td><td> memory location for returning the code size</td></tr><tr><td><i>max_stack</i></td><td> memory location for returning the max stack</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 pointer to the IL code represented by the method header.
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Method header accessor to retreive info about the IL code properties: 	 a pointer to the IL code itself, the size of the code and the max number 	 of stack slots used by the code. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1266,10 +1254,16 @@ mono_signature_vararg_start (MonoMethodSignature *sig)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_method_header_get_locals</div>
+            <div class="mapi-prototype">MonoType*
+mono_method_header_get_locals (MonoMethodHeader *header, guint32* num_locals, gboolean *init_locals)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>header</i></td><td> a <code>MonoMethodHeader</code> pointer</td></tr><tr><td><i>num_locals</i></td><td> memory location for returning the number of local variables</td></tr><tr><td><i>init_locals</i></td><td> memory location for returning the init_locals flag</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 pointer to an array of types of the local variables
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Method header accessor to retreive info about the local variables: 	 an array of local types, the number of locals and whether the locals 	 are supposed to be initialized to 0 on method entry 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

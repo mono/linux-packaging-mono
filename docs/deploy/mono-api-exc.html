@@ -226,9 +226,8 @@ mono_raise_exception (MonoException *ex)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>ex</i><td> exception object</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Signal the runtime that the exception <i>ex</i> has been raised in unmanaged code.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>ex</i></td><td> exception object</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Signal the runtime that the exception <i>ex</i> has been raised in unmanaged code.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -248,15 +247,8 @@ mono_unhandled_exception (MonoObject *exc)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>exc</i><td> exception thrown</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This is a VM internal routine.
-	<p />
-	 We call this function when we detect an unhandled exception
-	 in the default domain.
-	<p />
-	 It invokes the * UnhandledException event in AppDomain or prints
-	 a warning to the console </div>
+            <table class="mapi-parameters"><tbody><tr><td><i>exc</i></td><td> exception thrown</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 This is a VM internal routine. 	<p /> 	 We call this function when we detect an unhandled exception 	 in the default domain. 	<p /> 	 It invokes the <code>UnhandledException</code> event in <code>AppDomain</code> or prints 	 a warning to the console </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -276,9 +268,8 @@ mono_print_unhandled_exception (MonoObject *exc)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>exc</i><td> The exception</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Prints the unhandled exception.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>exc</i></td><td> The exception</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Prints the unhandled exception.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -303,14 +294,11 @@ mono_exception_from_name_domain (MonoDomain *domain, MonoImage *image,
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>domain</i><td> Domain where the return object will be created.</td></td></tr><tr><td><i>image</i><td> the Mono image where to look for the class</td></td></tr><tr><td><i>name_space</i><td> the namespace for the class</td></td></tr><tr><td><i>name</i><td> class name</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the initialized exception instance.
+            <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> Domain where the return object will be created.</td></tr><tr><td><i>image</i></td><td> the Mono image where to look for the class</td></tr><tr><td><i>name_space</i></td><td> the namespace for the class</td></tr><tr><td><i>name</i></td><td> class name</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Creates an exception object of the given namespace/name class on
-	 the given domain.
-	<p /></div>
+             <div> 	<p /> 	 Creates an exception object of the given namespace/name class on 	 the given domain. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -331,14 +319,11 @@ mono_exception_from_name (MonoImage *image, const char *name_space,
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>image</i><td> the Mono image where to look for the class</td></td></tr><tr><td><i>name_space</i><td> the namespace for the class</td></td></tr><tr><td><i>name</i><td> class name</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the initialized exception instance.
+            <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> the Mono image where to look for the class</td></tr><tr><td><i>name_space</i></td><td> the namespace for the class</td></tr><tr><td><i>name</i></td><td> class name</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Creates an exception of the given namespace/name class in the
-	 current domain.
-	<p /></div>
+             <div> 	<p /> 	 Creates an exception of the given namespace/name class in the 	 current domain. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -359,13 +344,11 @@ mono_exception_from_name_msg (MonoImage *image, const char *name_space,
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>image</i><td> the Mono image where to look for the class</td></td></tr><tr><td><i>name_space</i><td> the namespace for the class</td></td></tr><tr><td><i>name</i><td> class name</td></td></tr><tr><td><i>msg</i><td> the message to embed inside the exception</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the initialized exception instance.
+            <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> the Mono image where to look for the class</td></tr><tr><td><i>name_space</i></td><td> the namespace for the class</td></tr><tr><td><i>name</i></td><td> class name</td></tr><tr><td><i>msg</i></td><td> the message to embed inside the exception</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Creates an exception and initializes its message field.
-	<p /></div>
+             <div> 	<p /> 	 Creates an exception and initializes its message field. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -386,14 +369,11 @@ mono_exception_from_name_two_strings (MonoImage *image, const char *name_space,
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>image</i><td> the Mono image where to look for the class</td></td></tr><tr><td><i>name_space</i><td> the namespace for the class</td></td></tr><tr><td><i>name</i><td> class name</td></td></tr><tr><td><i>a1</i><td> first string argument to pass</td></td></tr><tr><td><i>a2</i><td> second string argument to pass</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the initialized exception instance.
+            <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> the Mono image where to look for the class</td></tr><tr><td><i>name_space</i></td><td> the namespace for the class</td></tr><tr><td><i>name</i></td><td> class name</td></tr><tr><td><i>a1</i></td><td> first string argument to pass</td></tr><tr><td><i>a2</i></td><td> second string argument to pass</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the initialized exception instance.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Creates an exception from a constructor that takes two string
-	 arguments.
-	<p /></div>
+             <div> 	<p /> 	 Creates an exception from a constructor that takes two string 	 arguments. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -421,10 +401,8 @@ mono_get_exception_appdomain_unloaded (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.AppDomainUnloadedException</code>
+             <div>	 a new instance of the <code>System.AppDomainUnloadedException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -444,11 +422,9 @@ mono_get_exception_argument (const char *arg, const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>arg</i><td> the name of the invalid argument.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.ArgumentException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>arg</i></td><td> the name of the invalid argument.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.ArgumentException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -468,11 +444,9 @@ mono_get_exception_argument_null (const char *arg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>arg</i><td> the name of the argument that is null</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.ArgumentNullException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>arg</i></td><td> the name of the argument that is null</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.ArgumentNullException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -492,11 +466,9 @@ mono_get_exception_argument_out_of_range (const char *arg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>arg</i><td> the name of the out of range argument.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.ArgumentOutOfRangeException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>arg</i></td><td> the name of the out of range argument.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.ArgumentOutOfRangeException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -516,10 +488,8 @@ mono_get_exception_arithmetic ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.ArithmeticException</code>
+             <div>	 a new instance of the <code>System.ArithmeticException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -539,10 +509,8 @@ mono_get_exception_array_type_mismatch ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.ArrayTypeMismatchException</code>
+             <div>	 a new instance of the <code>System.ArrayTypeMismatchException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -562,11 +530,9 @@ mono_get_exception_bad_image_format (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> an informative message for the user.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.BadImageFormatException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> an informative message for the user.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.BadImageFormatException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -586,11 +552,9 @@ mono_get_exception_cannot_unload_appdomain (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>inner</i><td> the inner exception.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.CannotUnloadAppDomainException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>inner</i></td><td> the inner exception.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.CannotUnloadAppDomainException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -610,12 +574,10 @@ mono_get_exception_class (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  The <code>MonoClass*</code> for the `` type.
+             <div>	 The <code>MonoClass*</code> for the <code>type</code>.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use this function to get the <code>MonoClass*</code> that the runtime is using for <code>System.Exception</code>.
-	<p /></div>
+             <div> 	 Use this function to get the <code>MonoClass*</code> that the runtime is using for <code>System.Exception</code> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -635,10 +597,8 @@ mono_get_exception_divide_by_zero ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.DivideByZeroException</code>
+             <div>	 a new instance of the <code>System.DivideByZeroException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -658,11 +618,9 @@ mono_get_exception_execution_engine (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> the message to pass to the user</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.ExecutionEngineException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> the message to pass to the user</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.ExecutionEngineException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -682,11 +640,9 @@ mono_get_exception_file_not_found2 (const char *msg, MonoString *fname)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> an informative message for the user.</td></td></tr><tr><td><i>fname</i><td> the name of the file not found.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.IO.FileNotFoundException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> an informative message for the user.</td></tr><tr><td><i>fname</i></td><td> the name of the file not found.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.IO.FileNotFoundException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -706,11 +662,9 @@ mono_get_exception_file_not_found (MonoString *fname)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>fname</i><td> the name of the file not found.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.IO.FileNotFoundException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>fname</i></td><td> the name of the file not found.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.IO.FileNotFoundException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -730,10 +684,8 @@ mono_get_exception_index_out_of_range ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.IndexOutOfRangeException</code>
+             <div>	 a new instance of the <code>System.IndexOutOfRangeException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -753,10 +705,8 @@ mono_get_exception_invalid_cast ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.InvalidCastException</code>
+             <div>	 a new instance of the <code>System.InvalidCastException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -776,11 +726,9 @@ mono_get_exception_io (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> the message to present to the user</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.IO.IOException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> the message to present to the user</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.IO.IOException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -800,11 +748,9 @@ mono_get_exception_missing_method (const char *class_name, const char *member_na
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>class_name</i><td> the class where the lookup was performed.</td></td></tr><tr><td><i>member_name</i><td> the name of the missing method.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.MissingMethodException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>class_name</i></td><td> the class where the lookup was performed.</td></tr><tr><td><i>member_name</i></td><td> the name of the missing method.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.MissingMethodException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -824,11 +770,9 @@ mono_get_exception_not_implemented (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> the message to pass to the user</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.NotImplementedException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> the message to pass to the user</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.NotImplementedException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -848,10 +792,8 @@ mono_get_exception_null_reference ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.NullReferenceException</code>
+             <div>	 a new instance of the <code>System.NullReferenceException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -871,10 +813,8 @@ mono_get_exception_overflow ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.OverflowException</code>
+             <div>	 a new instance of the <code>System.OverflowException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -894,10 +834,8 @@ mono_get_exception_security ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.Security.SecurityException</code>
+             <div>	 a new instance of the <code>System.Security.SecurityException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -917,11 +855,9 @@ mono_get_exception_serialization (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> the message to pass to the user</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.Runtime.Serialization.SerializationException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> the message to pass to the user</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.Runtime.Serialization.SerializationException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -941,10 +877,8 @@ mono_get_exception_stack_overflow (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.StackOverflowException</code>
+             <div>	 a new instance of the <code>System.StackOverflowException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -964,11 +898,9 @@ mono_get_exception_synchronization_lock (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>inner</i><td> the inner exception.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.SynchronizationLockException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>inner</i></td><td> the inner exception.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.SynchronizationLockException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -988,10 +920,8 @@ mono_get_exception_thread_abort ()
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.Threading.ThreadAbortException</code>
+             <div>	 a new instance of the <code>System.Threading.ThreadAbortException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1011,11 +941,9 @@ mono_get_exception_thread_state (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> the message to present to the user</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.Threading.ThreadStateException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> the message to present to the user</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.Threading.ThreadStateException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1035,11 +963,9 @@ mono_get_exception_type_initialization (const gchar *type_name, MonoException *i
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type_name</i><td> the name of the type that failed to initialize.</td></td></tr><tr><td><i>inner</i><td> the inner exception.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.TypeInitializationException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>type_name</i></td><td> the name of the type that failed to initialize.</td></tr><tr><td><i>inner</i></td><td> the inner exception.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.TypeInitializationException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1059,11 +985,9 @@ mono_get_exception_type_load (MonoString *class_name, char *assembly_name)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>class_name</i><td> the name of the class that could not be loaded</td></td></tr><tr><td><i>assembly_name</i><td> the assembly where the class was looked up.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.TypeLoadException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>class_name</i></td><td> the name of the class that could not be loaded</td></tr><tr><td><i>assembly_name</i></td><td> the assembly where the class was looked up.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.TypeLoadException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1083,11 +1007,9 @@ mono_get_exception_invalid_operation (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> the message to pass to the user</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.InvalidOperationException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> the message to pass to the user</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.InvalidOperationException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1107,11 +1029,9 @@ mono_get_exception_missing_field (const char *class_name, const char *member_nam
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>class_name</i><td> the class where the lookup was performed</td></td></tr><tr><td><i>member_name</i><td> the name of the missing method.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.MissingFieldException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>class_name</i></td><td> the class where the lookup was performed</td></tr><tr><td><i>member_name</i></td><td> the name of the missing method.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.MissingFieldException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1131,11 +1051,9 @@ mono_get_exception_not_supported (const char *msg)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> the message to pass to the user</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.NotSupportedException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> the message to pass to the user</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.NotSupportedException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1155,11 +1073,9 @@ mono_get_exception_reflection_type_load (MonoArray *types_raw, MonoArray *except
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>types</i><td> an array of types that were defined in the moduled loaded.</td></td></tr><tr><td><i>exceptions</i><td> an array of exceptions that were thrown during the type loading.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.Reflection.ReflectionTypeLoadException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>types</i></td><td> an array of types that were defined in the moduled loaded.</td></tr><tr><td><i>exceptions</i></td><td> an array of exceptions that were thrown during the type loading.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.Reflection.ReflectionTypeLoadException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1180,9 +1096,7 @@ mono_exception_from_token_two_strings (MonoImage *image, guint32 token,
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	   Same as mono_exception_from_name_two_strings, but lookup the exception class using
-	 IMAGE and TOKEN.</div>
+             <div> 	<p /> 	   Same as mono_exception_from_name_two_strings, but lookup the exception class using 	 IMAGE and TOKEN.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1202,11 +1116,9 @@ mono_get_exception_bad_image_format2 (const char *msg, MonoString *fname)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>msg</i><td> an informative message for the user.</td></td></tr><tr><td><i>fname</i><td> The full name of the file with the invalid image.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.BadImageFormatException</code>
+            <table class="mapi-parameters"><tbody><tr><td><i>msg</i></td><td> an informative message for the user.</td></tr><tr><td><i>fname</i></td><td> The full name of the file with the invalid image.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a new instance of the <code>System.BadImageFormatException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1226,10 +1138,8 @@ mono_get_exception_field_access (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.FieldAccessException</code>
+             <div>	 a new instance of the <code>System.FieldAccessException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1249,10 +1159,8 @@ mono_get_exception_method_access (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.MethodAccessException</code>
+             <div>	 a new instance of the <code>System.MethodAccessException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1272,10 +1180,8 @@ mono_get_exception_out_of_memory (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new instance of the <code>System.OutOfMemoryException</code>
+             <div>	 a new instance of the <code>System.OutOfMemoryException</code>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1289,10 +1195,10 @@ mono_get_exception_out_of_memory (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_get_exception_runtime_wrapped</div>
+            <div class="mapi-prototype">MonoException*
+mono_get_exception_runtime_wrapped (MonoObject *wrapped_exception)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

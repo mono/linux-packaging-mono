@@ -202,34 +202,6 @@ typedef struct {
 	gunichar2 chars [0];
 } MonoString;
 
-MonoString*    <a href="#api:mono_string_new">mono_string_new</a>             (MonoDomain *domain, 
-                                            const char *text);
-MonoString*    <a href="#api:mono_string_new_len">mono_string_new_len</a>         (MonoDomain *domain, 
-                                            const char *text, 
-                                            guint length);
-MonoString*    <a href="#api:mono_string_new_size">mono_string_new_size</a>        (MonoDomain *domain, 
-                                            gint32 len);
-MonoString*    <a href="#api:mono_string_new_utf16">mono_string_new_utf16</a>       (MonoDomain *domain, 
-                                            const guint16 *text, 
-                                            gint32 len);
-MonoString*    <a href="#api:mono_string_new_utf32">mono_string_new_utf32</a>       (MonoDomain *domain, 
-                                            const mono_unichar4 *text, 
-                                            gint32 len);
-MonoString*    <a href="#api:mono_string_from_utf16">mono_string_from_utf16</a>      (gunichar2 *data);
-MonoString*    <a href="#api:mono_string_from_utf32">mono_string_from_utf32</a>      (mono_unichar4 *data);
-mono_unichar2* <a href="#api:mono_string_to_utf16">mono_string_to_utf16</a>        (MonoString *s);
-char*          <a href="#api:mono_string_to_utf8">mono_string_to_utf8</a>         (MonoString *s);
-char*          <a href="#api:mono_string_to_utf8_checked">mono_string_to_utf8_checked</a> (MonoString *s, 
-                                            MonoError *error);
-mono_unichar4* <a href="#api:mono_string_to_utf32">mono_string_to_utf32</a>        (MonoString *s);
-gboolean       <a href="#api:mono_string_equal">mono_string_equal</a>           (MonoString *s1, 
-                                            MonoString *s2);
-guint          <a href="#api:mono_string_hash">mono_string_hash</a>            (MonoString *s);
-MonoString*    <a href="#api:mono_string_intern">mono_string_intern</a>          (MonoString *str);
-MonoString*    <a href="#api:mono_string_is_interned">mono_string_is_interned</a>     (MonoString *o);
-MonoString*    <a href="#api:mono_string_new_wrapper">mono_string_new_wrapper</a>     (const char *text);
-gunichar2*     <a href="#api:mono_string_chars">mono_string_chars</a>           (MonoString *s);
-int            <a href="#api:mono_string_length">mono_string_length</a>          (MonoString *s);
 
 	</div>
 
@@ -265,15 +237,11 @@ mono_string_new (MonoDomain *domain, const char *text)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>text</i><td> a pointer to an utf8 string</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  A newly created string object which contains <i>text</i>.
-
-	<p />
-	 This function asserts if it cannot allocate a new string.
-	<p />
-	 <i>deprecated</i> Use mono_string_new_checked in new code.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>text</i></td><td> a pointer to a UTF-8 string</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A newly created string object which contains <i>text</i>.
+</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+             <div> 	 This function asserts if it cannot allocate a new string.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -293,11 +261,9 @@ mono_string_new_len (MonoDomain *domain, const char *text, guint length)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>text</i><td> a pointer to an utf8 string</td></td></tr><tr><td><i>length</i><td> number of bytes in <i>text</i> to consider</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  A newly created string object which contains <i>text</i>.
+            <table class="mapi-parameters"><tbody><tr><td><i>text</i></td><td> a pointer to an utf8 string</td></tr><tr><td><i>length</i></td><td> number of bytes in <i>text</i> to consider</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A newly created string object which contains <i>text</i>.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -317,11 +283,9 @@ mono_string_new_size (MonoDomain *domain, gint32 len)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>text</i><td> a pointer to an utf16 string</td></td></tr><tr><td><i>len</i><td> the length of the string</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  A newly created string object of <i>len</i>
+            <table class="mapi-parameters"><tbody><tr><td><i>text</i></td><td> a pointer to a UTF-16 string</td></tr><tr><td><i>len</i></td><td> the length of the string</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A newly created string object of <i>len</i>
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -341,11 +305,9 @@ mono_string_new_utf16 (MonoDomain *domain, const guint16 *text, gint32 len)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>text</i><td> a pointer to an utf16 string</td></td></tr><tr><td><i>len</i><td> the length of the string</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  A newly created string object which contains <i>text</i>.
+            <table class="mapi-parameters"><tbody><tr><td><i>text</i></td><td> a pointer to an utf16 string</td></tr><tr><td><i>len</i></td><td> the length of the string</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A newly created string object which contains <i>text</i>.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -365,11 +327,9 @@ mono_string_new_utf32 (MonoDomain *domain, const mono_unichar4 *text, gint32 len
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>text</i><td> a pointer to an utf32 string</td></td></tr><tr><td><i>len</i><td> the length of the string</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  A newly created string object which contains <i>text</i>.
+            <table class="mapi-parameters"><tbody><tr><td><i>text</i></td><td> a pointer to a UTF-32 string</td></tr><tr><td><i>len</i></td><td> the length of the string</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A newly created string object which contains <i>text</i>.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -389,13 +349,11 @@ mono_string_from_utf16 (gunichar2 *data)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>data</i><td> the UTF16 string (LPWSTR) to convert</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a MonoString.
+            <table class="mapi-parameters"><tbody><tr><td><i>data</i></td><td> the UTF-16 string (LPWSTR) to convert</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a <code>MonoString</code>.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Converts a <code>NULL</code> terminated UTF16 string (LPWSTR) to a MonoString.
-	<p /></div>
+             <div> 	 Converts a <code>NULL</code>-terminated UTF-16 string (LPWSTR) to a <code>MonoString</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -415,13 +373,11 @@ mono_string_from_utf32 (mono_unichar4 *data)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>data</i><td> the UTF32 string (LPWSTR) to convert</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a MonoString.
+            <table class="mapi-parameters"><tbody><tr><td><i>data</i></td><td> the UTF-32 string (LPWSTR) to convert</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a <code>MonoString</code>.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Converts a UTF32 (UCS-4)to a MonoString.
-	<p /></div>
+             <div> 	 Converts a UTF-32 (UCS-4) string to a <code>MonoString</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -444,19 +400,19 @@ mono_string_to_utf16 (MonoString *s)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>s</i><td> a MonoString</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Return an null-terminated array of the utf-16 chars
-	 contained in <i>s</i>. The result must be freed with g_free().
+            <table class="mapi-parameters"><tbody><tr><td><i>s</i></td><td> a <code>MonoString</code></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a null-terminated array of the UTF-16 chars
+
+	 contained in <i>s</i>. The result must be freed with <code>g_free()</code>.
 	 This is a temporary helper until our string implementation
-	 is reworked to always include the null terminating char.</div>
+	 is reworked to always include the null-terminating char.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
 
 <a name="api:mono_string_to_utf8"></a>
 <div class="mapi">
-    <div class="mapi-entry "><code>mono_string_to_utf8</code></div>
+    <div class="mapi-entry mapi-strike"><code>mono_string_to_utf8</code></div><br /><div class='mapi-deprecated'><b>Deprecated:</b>  Use <code>mono_string_to_utf8_checked</code> to avoid having an exception arbitrarily raised.</div>
     <div class="mapi-height-container">
         <div class="mapi-ptr-container"></div>
         <div class="mapi-description">
@@ -469,12 +425,10 @@ mono_string_to_utf8 (MonoString *s)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>s</i><td> a System.String</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Returns the UTF8 representation for <i>s</i>.
-	 The resulting buffer needs to be freed with mono_free().
-	<p />
-	 <i>deprecated</i> Use mono_string_to_utf8_checked to avoid having an exception arbritraly raised.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>s</i></td><td> a <code>System.String</code></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the UTF-8 representation for <i>s</i>.
+
+	 The resulting buffer needs to be freed with <code>mono_free()</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -494,11 +448,8 @@ mono_string_to_utf8_checked (MonoString *s, MonoError *error)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>s</i><td> a System.String</td></td></tr><tr><td><i>error</i><td> a MonoError.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Converts a MonoString to its UTF8 representation. May fail; check 
-	 <i>error</i> to determine whether the conversion was successful.
-	 The resulting buffer should be freed with mono_free().</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>s</i></td><td> a <code>System.String</code></td></tr><tr><td><i>error</i></td><td> a <code>MonoError</code>.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Converts a <code>MonoString</code> to its UTF-8 representation. May fail; check  	 <i>error</i> to determine whether the conversion was successful. 	 The resulting buffer should be freed with <code>mono_free()</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -518,10 +469,10 @@ mono_string_to_utf32 (MonoString *s)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>s</i><td> a MonoString</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Return an null-terminated array of the UTF-32 (UCS-4) chars
-	 contained in <i>s</i>. The result must be freed with g_free().</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>s</i></td><td> a <code>MonoString</code></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a null-terminated array of the UTF-32 (UCS-4) chars
+
+	 contained in <i>s</i>. The result must be freed with <code>g_free()</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -544,11 +495,11 @@ mono_string_equal (MonoString *s1, MonoString *s2)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>s1</i><td> First string to compare</td></td></tr><tr><td><i>s2</i><td> Second string to compare</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Compares two <code>MonoString*</code> instances ordinally for equality.
-	<p />
-	 Returns <code>FALSE</code> if the strings differ.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>s1</i></td><td> First string to compare</td></tr><tr><td><i>s2</i></td><td> Second string to compare</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>FALSE</code> if the strings differ.
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Compares two <code>MonoString*</code> instances ordinally for equality. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -568,10 +519,11 @@ mono_string_hash (MonoString *s)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>s</i><td> the string to hash</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Compute the hash for a <code>MonoString*</code>
-	 Returns the hash for the string.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>s</i></td><td> the string to hash</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the hash for the string.
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Compute the hash for a <code>MonoString*</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -591,12 +543,11 @@ mono_string_intern (MonoString *str)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>o</i><td> String to intern</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  The interned string.
+            <table class="mapi-parameters"><tbody><tr><td><i>o</i></td><td> String to intern</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 The interned string.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Interns the string passed.  </div>
+             <div> 	 Interns the string passed.  </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -616,9 +567,9 @@ mono_string_is_interned (MonoString *o)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>o</i><td> String to probe</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Returns whether the string has been interned.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>o</i></td><td> String to probe</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 Whether the string has been interned.
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -638,9 +589,8 @@ mono_string_new_wrapper (const char *text)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>text</i><td> pointer to utf8 characters.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Helper function to create a string object from <i>text</i> in the current domain.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>text</i></td><td> pointer to UTF-8 characters.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Helper function to create a string object from <i>text</i> in the current domain.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -660,11 +610,8 @@ mono_string_chars (MonoString *s)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>s</i><td> a MonoString</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Returns a pointer to the UCS16 characters stored in the MonoString</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>s</i></td><td> a <code>MonoString</code></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a pointer to the UTF-16 characters stored in the <code>MonoString</code>
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

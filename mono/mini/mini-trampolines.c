@@ -1,4 +1,5 @@
-/*
+/**
+ * \file
  * (C) 2003 Ximian, Inc.
  * (C) 2003-2011 Novell, Inc.
  * Copyright 2011 Xamarin, Inc (http://www.xamarin.com)
@@ -67,8 +68,8 @@ rgctx_tramp_info_hash (gconstpointer data)
 
 /**
  * mono_create_static_rgctx_trampoline:
- * @m: the mono method to create a trampoline for
- * @addr: the address to jump to (where the compiled code for M lives)
+ * \param m the mono method to create a trampoline for
+ * \param addr the address to jump to (where the compiled code for M lives)
  *
  * Creates a static rgctx trampoline for M which branches to ADDR which should
  * point to the compiled code of M.
@@ -82,7 +83,7 @@ rgctx_tramp_info_hash (gconstpointer data)
  *
  * On PPC addr should be an ftnptr and the return value is an ftnptr too.
  *
- * Returns the generated static rgctx trampoline.
+ * \returns the generated static rgctx trampoline.
  */
 gpointer
 mono_create_static_rgctx_trampoline (MonoMethod *m, gpointer addr)
@@ -1292,7 +1293,7 @@ mono_handler_block_guard_trampoline (mgreg_t *regs, guint8 *code, gpointer *tram
 	if (!resume_ip) /*this should not happen, but we should avoid crashing */
 		exc = mono_get_exception_execution_engine ("Invalid internal state, resuming abort after handler block but no resume ip found");
 	else
-		exc = mono_thread_resume_interruption ();
+		exc = mono_thread_resume_interruption (TRUE);
 
 	if (exc) {
 		mono_handle_exception (&ctx, (MonoObject *)exc);
