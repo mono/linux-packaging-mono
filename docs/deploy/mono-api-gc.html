@@ -211,15 +211,8 @@ mono_gc_collect (int generation)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>generation</i><td> GC generation identifier</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Perform a garbage collection for the given generation, higher numbers
-	 mean usually older objects. Collecting a high-numbered generation
-	 implies collecting also the lower-numbered generations.
-	 The maximum value for <i>generation</i> can be retrieved with a call to
-	 mono_gc_max_generation(), so this function is usually called as:
-	<p />
-	 	mono_gc_collect (mono_gc_max_generation ());</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>generation</i></td><td> GC generation identifier</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Perform a garbage collection for the given generation, higher numbers 	 mean usually older objects. Collecting a high-numbered generation 	 implies collecting also the lower-numbered generations. 	 The maximum value for <i>generation</i> can be retrieved with a call to 	 <code>mono_gc_max_generation</code>, so this function is usually called as: 	<p /> 	 <code>mono_gc_collect (mono_gc_max_generation ());</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -239,14 +232,11 @@ mono_gc_collection_count (int generation)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>generation</i><td> a GC generation number</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the number of garbage collections
+            <table class="mapi-parameters"><tbody><tr><td><i>generation</i></td><td> a GC generation number</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the number of garbage collections
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Get how many times a garbage collection has been performed
-	 for the given <i>generation</i> number.
-	<p /></div>
+             <div> 	<p /> 	 Get how many times a garbage collection has been performed 	 for the given <i>generation</i> number. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -266,14 +256,10 @@ mono_gc_max_generation (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  the maximum generation number.
+             <div>	 the maximum generation number.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Get the maximum generation number used by the current garbage
-	 collector. The value will be 0 for the Boehm collector, 1 or more
-	 for the generational collectors.
-	<p /></div>
+             <div> 	<p /> 	 Get the maximum generation number used by the current garbage 	 collector. The value will be 0 for the Boehm collector, 1 or more 	 for the generational collectors. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -293,14 +279,11 @@ mono_gc_get_generation  (MonoObject *object)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>object</i><td> a managed object</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a garbage collector generation number
+            <table class="mapi-parameters"><tbody><tr><td><i>object</i></td><td> a managed object</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a garbage collector generation number
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Get the garbage collector's generation that <i>object</i> belongs to.
-	 Use this has a hint only.
-	<p /></div>
+             <div> 	<p /> 	 Get the garbage collector's generation that <i>object</i> belongs to. 	 Use this has a hint only. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -320,12 +303,10 @@ mono_gc_get_heap_size (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  the size of the heap in bytes
+             <div>	 the size of the heap in bytes
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Get the amount of memory used by the garbage collector.
-	<p /></div>
+             <div> 	<p /> 	 Get the amount of memory used by the garbage collector. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -345,12 +326,10 @@ mono_gc_get_used_size (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  the amount of memory used in bytes
+             <div>	 the amount of memory used in bytes
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Get the approximate amount of memory used by managed objects.
-	<p /></div>
+             <div> 	<p /> 	 Get the approximate amount of memory used by managed objects. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -370,22 +349,11 @@ mono_gc_walk_heap (int flags, MonoGCReferences callback, void *data)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>flags</i><td> flags for future use</td></td></tr><tr><td><i>callback</i><td> a function pointer called for each object in the heap</td></td></tr><tr><td><i>data</i><td> a user data pointer that is passed to callback</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a non-zero value if the GC doesn't support heap walking
+            <table class="mapi-parameters"><tbody><tr><td><i>flags</i></td><td> flags for future use</td></tr><tr><td><i>callback</i></td><td> a function pointer called for each object in the heap</td></tr><tr><td><i>data</i></td><td> a user data pointer that is passed to callback</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a non-zero value if the GC doesn't support heap walking
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This function can be used to iterate over all the live objects in the heap:
-	 for each object, <i>callback</i> is invoked, providing info about the object's
-	 location in memory, its class, its size and the objects it references.
-	 For each referenced object it's offset from the object address is
-	 reported in the offsets array.
-	 The object references may be buffered, so the callback may be invoked
-	 multiple times for the same object: in all but the first call, the size
-	 argument will be zero.
-	 Note that this function can be only called in the <code>MONO_GC_EVENT_PRE_START_WORLD</code>
-	 profiler event handler.
-	<p /></div>
+             <div> 	 This function can be used to iterate over all the live objects in the heap; 	 for each object, <i>callback</i> is invoked, providing info about the object's 	 location in memory, its class, its size and the objects it references. 	 For each referenced object its offset from the object address is 	 reported in the offsets array. 	 The object references may be buffered, so the callback may be invoked 	 multiple times for the same object: in all but the first call, the size 	 argument will be zero. 	 Note that this function can be only called in the <code>MONO_GC_EVENT_PRE_START_WORLD</code> 	 profiler event handler.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -407,16 +375,12 @@ mono_gc_reference_queue_add (MonoReferenceQueue *queue, MonoObject *obj, void *u
 
 </div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>queue</i></td><td> the queue to add the reference to.</td></tr><tr><td><i>obj</i></td><td> the object to be watched for collection</td></tr><tr><td><i>user_data</i></td><td> parameter to be passed to the queue callback</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>FALSE</code> if the queue is scheduled to be freed.
+</div>
              <div class="mapi-section">Description</div>
-             <div>	 <i>queue</i> the queue to add the reference to. 
-	 <i>obj</i> the object to be watched for collection
-	 <i>user_data</i> parameter to be passed to the queue callback
-	<p />
-	 Queue an object to be watched for collection, when the <i>obj</i> is
-	 collected, the callback that was registered for the <i>queue</i> will
-	 be invoked with <i>user_data</i> as argument.
-	<p />
-	 <i>returns</i> false if the queue is scheduled to be freed.</div>
+             <div> 	<p /> 	 Queue an object to be watched for collection, when the <i>obj</i> is 	 collected, the callback that was registered for the <i>queue</i> will 	 be invoked with <i>user_data</i> as argument. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -435,14 +399,9 @@ mono_gc_reference_queue_free (MonoReferenceQueue *queue)
 
 </div>
             <p />
-             <div class="mapi-section">Description</div>
-             <div>	 <i>queue</i> the queue that should be freed. 
-	<p />
-	 This operation signals that <i>queue</i> should be freed. This operation is deferred
-	 as it happens on the finalizer thread.
-	<p />
-	 After this call, no further objects can be queued. It's the responsibility of the
-	 caller to make sure that no further attempt to access queue will be made.</div>
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>queue</i></td><td> the queue that should be freed.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 This operation signals that <i>queue</i> should be freed. This operation is deferred 	 as it happens on the finalizer thread. 	<p /> 	 After this call, no further objects can be queued. It's the responsibility of the 	 caller to make sure that no further attempt to access queue will be made.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -461,21 +420,12 @@ mono_gc_reference_queue_new (mono_reference_queue_callback callback)
 
 </div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>callback</i></td><td> callback used when processing collected entries.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the new queue.
+</div>
              <div class="mapi-section">Description</div>
-             <div>	 <i>callback</i> callback used when processing collected entries. 
-	<p />
-	 Create a new reference queue used to process collected objects.
-	 A reference queue let you add a pair of (managed object, user data)
-	 using the mono_gc_reference_queue_add method.
-	<p />
-	 Once the managed object is collected <i>callback</i> will be called
-	 in the finalizer thread with 'user data' as argument.
-	<p />
-	 The callback is called from the finalizer thread without any locks held.
-	 When a AppDomain is unloaded, all callbacks for objects belonging to it
-	 will be invoked.
-	<p />
-	 <i>returns</i> the new queue.</div>
+             <div> 	<p /> 	 Create a new reference queue used to process collected objects. 	 A reference queue let you add a pair of (managed object, user data) 	 using the <code>mono_gc_reference_queue_add</code> method. 	<p /> 	 Once the managed object is collected <i>callback</i> will be called 	 in the finalizer thread with 'user data' as argument. 	<p /> 	 The callback is called from the finalizer thread without any locks held. 	 When an AppDomain is unloaded, all callbacks for objects belonging to it 	 will be invoked. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -573,7 +523,10 @@ typedef struct {
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_register_bridge_callbacks</div>
+            <div class="mapi-prototype">void
+mono_gc_register_bridge_callbacks (MonoGCBridgeCallbacks *callbacks)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -588,7 +541,10 @@ typedef struct {
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wait_for_bridge_processing</div>
+            <div class="mapi-prototype">void
+mono_gc_wait_for_bridge_processing (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -606,7 +562,10 @@ typedef struct {
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_arrayref_copy</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_arrayref_copy (gpointer dest_ptr, gpointer src_ptr, int count)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -621,7 +580,10 @@ typedef struct {
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_generic_nostore</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_generic_nostore (gpointer ptr)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -636,7 +598,10 @@ typedef struct {
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_generic_store</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_generic_store (gpointer ptr, GCObject* value)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -651,8 +616,13 @@ typedef struct {
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_generic_store_atomic</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_generic_store_atomic (gpointer ptr, GCObject *value)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 Same as <code>mono_gc_wbarrier_generic_store</code> but performs the store 	 as an atomic operation with release semantics.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -672,8 +642,7 @@ mono_gc_wbarrier_object_copy (MonoObject* obj, MonoObject *src)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Write barrier to call when obj is the result of a clone or copy of an object.</div>
+             <div> 	<p /> 	 Write barrier to call when <i>obj</i> is the result of a clone or copy of an object.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -687,7 +656,10 @@ mono_gc_wbarrier_object_copy (MonoObject* obj, MonoObject *src)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_set_arrayref</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_set_arrayref (MonoArray *arr, gpointer slot_ptr, MonoObject* value)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -702,10 +674,10 @@ mono_gc_wbarrier_object_copy (MonoObject* obj, MonoObject *src)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_wbarrier_set_field</div>
+            <div class="mapi-prototype">void
+mono_gc_wbarrier_set_field (MonoObject *obj, gpointer field_ptr, MonoObject* value)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

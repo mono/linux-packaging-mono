@@ -200,7 +200,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_sha1_init</div>
+            <div class="mapi-prototype">void
+mono_sha1_init (MonoSHA1Context* context)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -215,7 +218,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_sha1_update</div>
+            <div class="mapi-prototype">void
+mono_sha1_update (MonoSHA1Context* context, const guchar* data, guint32 len)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -230,8 +236,14 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_sha1_get_digest_from_file</div>
+            <div class="mapi-prototype">void
+mono_sha1_get_digest_from_file (const gchar *filename, guchar digest [20])
+	
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>filename</i></td><td> file name</td></tr><tr><td><i>digest</i></td><td> 20-byte buffer receiving the hash code.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Get the SHA-1 hash of a file. The result is put in  	 the 20-byte buffer <i>digest</i>. 	<p /> 	 If an IO error happens the value in <i>digest</i> is not updated.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -245,7 +257,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_sha1_get_digest</div>
+            <div class="mapi-prototype">void
+mono_sha1_get_digest (const guchar *buffer, gint buffer_size, guchar digest [20])
+	
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -260,7 +275,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_sha1_final</div>
+            <div class="mapi-prototype">void
+mono_sha1_final (MonoSHA1Context* context, unsigned char digest[20])
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -278,7 +296,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_md5_init</div>
+            <div class="mapi-prototype">void
+mono_md5_init (MonoMD5Context *ctx)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -293,7 +314,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_md5_update</div>
+            <div class="mapi-prototype">void
+mono_md5_update (MonoMD5Context *ctx, const guchar *buf, guint32 len)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -308,8 +332,14 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_md5_get_digest_from_file</div>
+            <div class="mapi-prototype">void
+mono_md5_get_digest_from_file (const gchar *filename, guchar digest[16])
+	
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>filename</i></td><td> file name</td></tr><tr><td><i>digest</i></td><td> 16-byte buffer receiving the hash code.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Get the MD5 hash of a file. The result is put in  	 the 16-byte buffer <i>digest</i>. 	<p /> 	 If an IO error happens the value in <i>digest</i> is not updated.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -323,8 +353,14 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_md5_get_digest</div>
+            <div class="mapi-prototype">void
+mono_md5_get_digest (const guchar *buffer, gint buffer_size, guchar digest[16])
+	
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>buffer</i></td><td> byte buffer</td></tr><tr><td><i>buffer_size</i></td><td> buffer size (in bytes)</td></tr><tr><td><i>digest</i></td><td> 16-byte buffer receiving the hash code.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Get the MD5 hash of a buffer. The result is put in  	 the 16-byte buffer <i>digest</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -338,7 +374,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_md5_final</div>
+            <div class="mapi-prototype">void
+mono_md5_final (MonoMD5Context *ctx, guchar digest[16])
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -354,8 +393,13 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_digest_get_public_token</div>
+            <div class="mapi-prototype">void 
+mono_digest_get_public_token (guchar* token, const guchar *pubkey, guint32 len)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Get the public token from public key data. 	 <i>token</i> must point to at least 8 bytes of storage.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -380,7 +424,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_destroy</div>
+            <div class="mapi-prototype">void
+mono_g_hash_table_destroy (MonoGHashTable *hash)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -395,7 +442,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_foreach</div>
+            <div class="mapi-prototype">void
+mono_g_hash_table_foreach (MonoGHashTable *hash, GHFunc func, gpointer user_data)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -410,7 +460,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_foreach_remove</div>
+            <div class="mapi-prototype">guint
+mono_g_hash_table_foreach_remove (MonoGHashTable *hash, GHRFunc func, gpointer user_data)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -425,7 +478,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_insert</div>
+            <div class="mapi-prototype">void
+mono_g_hash_table_insert (MonoGHashTable *h, gpointer k, gpointer v)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -440,7 +496,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_lookup</div>
+            <div class="mapi-prototype">gpointer
+mono_g_hash_table_lookup (MonoGHashTable *hash, gconstpointer key)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -455,7 +514,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_lookup_extended</div>
+            <div class="mapi-prototype">gboolean
+mono_g_hash_table_lookup_extended (MonoGHashTable *hash, gconstpointer key, gpointer *orig_key, gpointer *value)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -470,7 +532,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_remove</div>
+            <div class="mapi-prototype">gboolean
+mono_g_hash_table_remove (MonoGHashTable *hash, gconstpointer key)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -485,7 +550,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_replace</div>
+            <div class="mapi-prototype">void
+mono_g_hash_table_replace(MonoGHashTable *h, gpointer k, gpointer v)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -500,7 +568,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_g_hash_table_size</div>
+            <div class="mapi-prototype">guint
+mono_g_hash_table_size (MonoGHashTable *hash)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -542,10 +613,10 @@ mono_mempool_new (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  a new memory pool.
+             <div>	 a new memory pool.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+             <div> 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -565,9 +636,8 @@ mono_mempool_destroy (MonoMemPool *pool)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>pool</i><td> the memory pool to destroy</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Free all memory associated with this pool.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>pool</i></td><td> the memory pool to destroy</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Free all memory associated with this pool.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -587,13 +657,11 @@ mono_mempool_alloc (MonoMemPool *pool, guint size)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>pool</i><td> the memory pool to use</td></td></tr><tr><td><i>size</i><td> size of the memory block</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the address of a newly allocated memory block.
+            <table class="mapi-parameters"><tbody><tr><td><i>pool</i></td><td> the memory pool to use</td></tr><tr><td><i>size</i></td><td> size of the memory block</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the address of a newly allocated memory block.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Allocates a new block of memory in <i>pool</i>.
-	<p /></div>
+             <div> 	<p /> 	 Allocates a new block of memory in <i>pool</i> . 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -613,8 +681,7 @@ mono_mempool_alloc0 (MonoMemPool *pool, guint size)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 same as mono_mempool_alloc, but fills memory with zero.</div>
+             <div> 	<p /> 	 same as <code>mono_mempool_alloc</code>, but fills memory with zero.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -634,9 +701,8 @@ mono_mempool_invalidate (MonoMemPool *pool)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>pool</i><td> the memory pool to invalidate</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Fill the memory associated with this pool to 0x2a (42). Useful for debugging.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>pool</i></td><td> the memory pool to invalidate</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Fill the memory associated with this pool to 0x2a (42). Useful for debugging.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -656,12 +722,8 @@ mono_mempool_stats (MonoMemPool *pool)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>pool</i><td> the momory pool we need stats for</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Print a few stats about the mempool:
-	 - Total memory allocated (malloced) by mem pool
-	 - Number of chunks/blocks memory is allocated in
-	 - How much memory is available to dispense before a new malloc must occur?</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>pool</i></td><td> the memory pool we need stats for</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Print a few stats about the mempool: 	 - Total memory allocated (malloced) by mem pool 	 - Number of chunks/blocks memory is allocated in 	 - How much memory is available to dispense before a new malloc must occur?</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -682,8 +744,7 @@ mono_mempool_contains_addr (MonoMemPool *pool,
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	  Determines whenever ADDR is inside the memory used by the mempool.</div>
+             <div> 	<p /> 	 Determines whether <i>addr</i> is inside the memory used by the mempool.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
  
@@ -703,8 +764,16 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_alloc_size</div>
+            <div class="mapi-prototype">guint32
+mono_bitset_alloc_size (guint32 max_size, guint32 flags)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>max_size</i></td><td> The number of bits you want to hold</td></tr><tr><td><i>flags</i></td><td> unused</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the number of bytes required to hold the bitset.
+
+	 Useful to allocate it on the stack or with mempool.
+	 Use with <code>mono_bitset_mem_new</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -718,8 +787,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_clear</div>
+            <div class="mapi-prototype">void
+mono_bitset_clear (MonoBitSet *set, guint32 pos)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr><tr><td><i>pos</i></td><td> unset bit at this pos</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Unset bit at <i>pos</i>, counting from 0.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -733,8 +807,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_clear_all</div>
+            <div class="mapi-prototype">void
+mono_bitset_clear_all (MonoBitSet *set)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Unset all bits.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -748,8 +827,16 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_clone</div>
+            <div class="mapi-prototype">MonoBitSet*
+mono_bitset_clone (const MonoBitSet *set, guint32 new_size)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr to clone</td></tr><tr><td><i>new_size</i></td><td> number of bits the cloned bitset can hold</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a cloned bitset of size <i>new_size</i>. <code>MONO_BITSET_DONT_FREE</code>
+
+	 unset in cloned bitset. If <i>new_size</i> is 0, the cloned object is just
+	 as big.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -763,8 +850,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_copyto</div>
+            <div class="mapi-prototype">void
+mono_bitset_copyto (const MonoBitSet *src, MonoBitSet *dest)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>src</i></td><td> bitset ptr to copy from</td></tr><tr><td><i>dest</i></td><td> bitset ptr to copy to</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Copy one bitset to another.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -778,8 +870,14 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_count</div>
+            <div class="mapi-prototype">guint32
+mono_bitset_count (const MonoBitSet *set)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 number of bits that are set.
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -793,8 +891,15 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_equal</div>
+            <div class="mapi-prototype">gboolean
+mono_bitset_equal (const MonoBitSet *src, const MonoBitSet *src1)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>src</i></td><td> bitset ptr</td></tr><tr><td><i>src1</i></td><td> bitset ptr</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if their size are the same and the same bits are set in
+
+	 both bitsets.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -808,8 +913,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_find_first</div>
+            <div class="mapi-prototype">int
+mono_bitset_find_first (const MonoBitSet *set, gint pos)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr><tr><td><i>pos</i></td><td> pos to search after (not including)</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 position of first set bit after <i>pos</i>. If <i>pos</i> <code>-1</code> if no bit set is found.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -823,8 +933,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_find_last</div>
+            <div class="mapi-prototype">int
+mono_bitset_find_last (const MonoBitSet *set, gint pos)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr><tr><td><i>pos</i></td><td> pos to search before (not including)</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 position of last set bit before <i>pos</i>. If <i>pos</i> <code>-1</code> if no set bit is found.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -838,8 +953,14 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_find_start</div>
+            <div class="mapi-prototype">int
+mono_bitset_find_start   (const MonoBitSet *set)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Equivalent to <code>mono_bitset_find_first (set, -1)</code> but faster.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -853,8 +974,14 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_foreach</div>
+            <div class="mapi-prototype">void
+mono_bitset_foreach (MonoBitSet *set, MonoBitSetFunc func, gpointer data)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr><tr><td><i>func</i></td><td> Function to call for every set bit</td></tr><tr><td><i>data</i></td><td> pass this as second arg to func</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Calls <i>func</i> for every bit set in bitset. Argument 1 is the number of 	 the bit set, argument 2 is data</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -883,8 +1010,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_intersection</div>
+            <div class="mapi-prototype">void
+mono_bitset_intersection (MonoBitSet *dest, const MonoBitSet *src)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>dest</i></td><td> bitset ptr to hold intersection</td></tr><tr><td><i>src</i></td><td> bitset ptr to copy</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Make intersection of one bitset and another.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -898,8 +1030,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_invert</div>
+            <div class="mapi-prototype">void
+mono_bitset_invert (MonoBitSet *set)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Flip all bits.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -913,8 +1050,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_mem_new</div>
+            <div class="mapi-prototype">MonoBitSet*
+mono_bitset_mem_new (gpointer mem, guint32 max_size, guint32 flags)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>mem</i></td><td> The location the bitset is stored</td></tr><tr><td><i>max_size</i></td><td> The number of bits you want to hold</td></tr><tr><td><i>flags</i></td><td> bitfield of flags</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Return <i>mem</i>, which is now a initialized bitset of size <i>max_size</i>. It is 	 not freed even if called with <code>mono_bitset_free</code>. <i>mem</i> must be at least 	 as big as <code>mono_bitset_alloc_size</code> returns for the same <i>max_size</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -928,8 +1070,15 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_new</div>
+            <div class="mapi-prototype">MonoBitSet*
+mono_bitset_new (guint32 max_size, guint32 flags)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>max_size</i></td><td> The numer of bits you want to hold</td></tr><tr><td><i>flags</i></td><td> bitfield of flags</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a bitset of size <i>max_size</i>. It must be freed using
+
+	 <code>mono_bitset_free</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -943,8 +1092,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_set</div>
+            <div class="mapi-prototype">void
+mono_bitset_set (MonoBitSet *set, guint32 pos)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr><tr><td><i>pos</i></td><td> set bit at this pos</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Set bit at <i>pos</i>, counting from 0.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -958,8 +1112,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_set_all</div>
+            <div class="mapi-prototype">void
+mono_bitset_set_all (MonoBitSet *set)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Set all bits.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -973,8 +1132,14 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_size</div>
+            <div class="mapi-prototype">guint32
+mono_bitset_size (const MonoBitSet *set)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the number of bits this bitset can hold.
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -988,8 +1153,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_sub</div>
+            <div class="mapi-prototype">void
+mono_bitset_sub (MonoBitSet *dest, const MonoBitSet *src)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>dest</i></td><td> bitset ptr to hold bitset - src</td></tr><tr><td><i>src</i></td><td> bitset ptr to copy</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Unset all bits in <i>dest</i> that are set in <i>src</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1003,8 +1173,16 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_test</div>
+            <div class="mapi-prototype">int
+mono_bitset_test (const MonoBitSet *set, guint32 pos)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr><tr><td><i>pos</i></td><td> test bit at this pos</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a nonzero value if set, 0 otherwise.
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	 Test bit at <i>pos</i>, counting from 0.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1018,8 +1196,15 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_test_bulk</div>
+            <div class="mapi-prototype">gsize
+mono_bitset_test_bulk (const MonoBitSet *set, guint32 pos)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr><tr><td><i>pos</i></td><td> test bit at this pos</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 32/64 bits from the bitset, starting from <i>pos</i>, which must be 
+
+	 divisible with 32/64.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1033,8 +1218,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_union</div>
+            <div class="mapi-prototype">void
+mono_bitset_union (MonoBitSet *dest, const MonoBitSet *src)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>dest</i></td><td> bitset ptr to hold union</td></tr><tr><td><i>src</i></td><td> bitset ptr to copy</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Make union of one bitset and another.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1048,8 +1238,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_find_first_unset</div>
+            <div class="mapi-prototype">int
+mono_bitset_find_first_unset (const MonoBitSet *set, gint pos)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>set</i></td><td> bitset ptr</td></tr><tr><td><i>pos</i></td><td> pos to search after (not including)</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 position of first unset bit after <i>pos</i>. If <i>pos</i> <code>-1</code> if no bit set is found.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1063,8 +1258,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_bitset_intersection_2</div>
+            <div class="mapi-prototype">void
+mono_bitset_intersection_2 (MonoBitSet *dest, const MonoBitSet *src1, const MonoBitSet *src2)
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>dest</i></td><td> bitset ptr to hold intersection</td></tr><tr><td><i>src1</i></td><td> first bitset</td></tr><tr><td><i>src2</i></td><td> second bitset</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Make intersection of two bitsets</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -1081,7 +1281,10 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_signbit_double</div>
+            <div class="mapi-prototype">int
+mono_signbit_double (double x)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1096,7 +1299,10 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_signbit_float</div>
+            <div class="mapi-prototype">int
+mono_signbit_float (float x)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1120,8 +1326,13 @@ mono_mempool_contains_addr (MonoMemPool *pool,
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_create_ftnptr</div>
+            <div class="mapi-prototype">gpointer
+mono_create_ftnptr (MonoDomain *domain, gpointer addr)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Given a function address, create a function descriptor for it. 	 This is only needed on some platforms.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -1155,13 +1366,8 @@ mono_profiler_load (const char *desc)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>desc</i><td> arguments to configure the profiler</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Invoke this method to initialize the profiler.   This will drive the
-	 loading of the internal (&quot;default&quot;) or any external profilers.
-	<p />
-	 This routine is invoked by Mono's driver, but must be called manually
-	 if you embed Mono into your application.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>desc</i></td><td> arguments to configure the profiler</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Invoke this method to initialize the profiler.   This will drive the 	 loading of the internal (&quot;default&quot;) or any external profilers. 	<p /> 	 This routine is invoked by Mono's driver, but must be called manually 	 if you embed Mono into your application.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1175,7 +1381,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_allocation</div>
+            <div class="mapi-prototype">void 
+mono_profiler_allocation (MonoObject *obj)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1190,7 +1399,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_stat_hit</div>
+            <div class="mapi-prototype">void
+mono_profiler_stat_hit (guchar *ip, void *context)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1205,7 +1417,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_thread_start</div>
+            <div class="mapi-prototype">void
+mono_profiler_thread_start (gsize tid)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1220,7 +1435,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_thread_end</div>
+            <div class="mapi-prototype">void 
+mono_profiler_thread_end (gsize tid)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1235,7 +1453,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_appdomain_event</div>
+            <div class="mapi-prototype">void 
+mono_profiler_appdomain_event  (MonoDomain *domain, int code)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1250,7 +1471,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_appdomain_loaded</div>
+            <div class="mapi-prototype">void 
+mono_profiler_appdomain_loaded (MonoDomain *domain, int result)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1265,7 +1489,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_assembly_event</div>
+            <div class="mapi-prototype">void 
+mono_profiler_assembly_event  (MonoAssembly *assembly, int code)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1280,7 +1507,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_assembly_loaded</div>
+            <div class="mapi-prototype">void 
+mono_profiler_assembly_loaded (MonoAssembly *assembly, int result)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1295,7 +1525,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_class_event</div>
+            <div class="mapi-prototype">void 
+mono_profiler_class_event  (MonoClass *klass, int code)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1310,7 +1543,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_class_loaded</div>
+            <div class="mapi-prototype">void 
+mono_profiler_class_loaded (MonoClass *klass, int result)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1325,7 +1561,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_code_transition</div>
+            <div class="mapi-prototype">void 
+mono_profiler_code_transition (MonoMethod *method, int result)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1340,7 +1579,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_method_end_jit</div>
+            <div class="mapi-prototype">void 
+mono_profiler_method_end_jit (MonoMethod *method, MonoJitInfo* jinfo, int result)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1355,7 +1597,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_method_enter</div>
+            <div class="mapi-prototype">void
+mono_profiler_method_enter (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1370,7 +1615,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_method_jit</div>
+            <div class="mapi-prototype">void 
+mono_profiler_method_jit (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1385,7 +1633,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_method_leave</div>
+            <div class="mapi-prototype">void
+mono_profiler_method_leave (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1400,7 +1651,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_module_event</div>
+            <div class="mapi-prototype">void 
+mono_profiler_module_event  (MonoImage *module, int code)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1415,7 +1669,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_module_loaded</div>
+            <div class="mapi-prototype">void 
+mono_profiler_module_loaded (MonoImage *module, int result)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1430,7 +1687,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_shutdown</div>
+            <div class="mapi-prototype">void 
+mono_profiler_shutdown (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1445,8 +1705,13 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_startup</div>
+            <div class="mapi-prototype">void
+mono_profiler_startup (const char *desc)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 the entry point</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1460,7 +1725,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_gc_event</div>
+            <div class="mapi-prototype">void
+mono_profiler_gc_event (MonoGCEvent event, int generation)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1475,40 +1743,10 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_gc_heap_resize</div>
+            <div class="mapi-prototype">void
+mono_profiler_gc_heap_resize (gint64 new_size)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_profiler_gc_event"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_profiler_gc_event</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_gc_event</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_profiler_gc_heap_resize"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_profiler_gc_heap_resize</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_gc_heap_resize</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-   </div>
-</div></body>
-</html>

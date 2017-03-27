@@ -11,7 +11,9 @@
 using System;
 using System.IO;
 
+using Mono.Cecil.Cil;
 using Mono.Cecil.Metadata;
+using Mono.Collections.Generic;
 
 using RVA = System.UInt32;
 
@@ -84,6 +86,7 @@ namespace Mono.Cecil.PE {
 			ReadSections (sections);
 			ReadCLIHeader ();
 			ReadMetadata ();
+			ReadDebugHeader ();
 
 			image.Kind = GetModuleKind (characteristics, subsystem);
 			image.Characteristics = (ModuleCharacteristics) dll_characteristics;
@@ -314,6 +317,47 @@ namespace Mono.Cecil.PE {
 				ReadPdbHeap ();
 		}
 
+		void ReadDebugHeader ()
+		{
+			if (image.Debug.IsZero) {
+				image.DebugHeader = new ImageDebugHeader (Empty<ImageDebugHeaderEntry>.Array);
+				return;
+			}
+
+			MoveTo (image.Debug);
+
+			var entries = new ImageDebugHeaderEntry [(int) image.Debug.Size / ImageDebugDirectory.Size];
+
+			for (int i = 0; i < entries.Length; i++) {
+				var directory = new ImageDebugDirectory {
+					Characteristics = ReadInt32 (),
+					TimeDateStamp = ReadInt32 (),
+					MajorVersion = ReadInt16 (),
+					MinorVersion = ReadInt16 (),
+					Type = (ImageDebugType) ReadInt32 (),
+					SizeOfData = ReadInt32 (),
+					AddressOfRawData = ReadInt32 (),
+					PointerToRawData = ReadInt32 (),
+				};
+
+				if (directory.AddressOfRawData == 0) {
+					entries [i] = new ImageDebugHeaderEntry (directory, Empty<byte>.Array);
+					continue;
+				}
+
+				var position = Position;
+				try {
+					MoveTo ((uint) directory.PointerToRawData);
+					var data = ReadBytes (directory.SizeOfData);
+					entries [i] = new ImageDebugHeaderEntry (directory, data);
+				} finally {
+					Position = position;
+				}
+			}
+
+			image.DebugHeader = new ImageDebugHeader (entries);
+		}
+
 		void ReadMetadataStream (Section section)
 		{
 			// Offset		4
@@ -419,7 +463,7 @@ namespace Mono.Cecil.PE {
 			uint offset = (uint) BaseStream.Position - table_heap_offset - image.MetadataSection.PointerToRawData; // header
 
 			int stridx_size = image.StringHeap.IndexSize;
-			int guididx_size = image.GuidHeap.IndexSize;
+			int guididx_size = image.GuidHeap != null ? image.GuidHeap.IndexSize : 2;
 			int blobidx_size = image.BlobHeap != null ? image.BlobHeap.IndexSize : 2;
 
 			var heap = image.TableHeap;

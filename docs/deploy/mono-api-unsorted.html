@@ -204,12 +204,10 @@ mono_bounded_array_class_get (MonoClass *eclass, guint32 rank, gboolean bounded)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>element_class</i><td> element class </td></td></tr><tr><td><i>rank</i><td> the dimension of the array class</td></td></tr><tr><td><i>bounded</i><td> whenever the array has non-zero bounds</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  A class object describing the array with element type <i>element_type</i> and 
+            <table class="mapi-parameters"><tbody><tr><td><i>element_class</i></td><td> element class </td></tr><tr><td><i>rank</i></td><td> the dimension of the array class</td></tr><tr><td><i>bounded</i></td><td> whenever the array has non-zero bounds</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A class object describing the array with element type <i>element_type</i> and 
 
-	 dimension <i>rank</i>. </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+	 dimension <i>rank</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -229,13 +227,11 @@ mono_check_corlib_version (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  <code>NULL</code> if the runtime will work with the corlib, or a g_malloc
+             <div>	 <code>NULL</code> if the runtime will work with the corlib, or a <code>g_malloc</code>
 
 	 allocated string with the error otherwise.</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Checks that the corlib that is loaded matches the version of this runtime.
-	<p /></div>
+             <div> 	 Checks that the corlib that is loaded matches the version of this runtime.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -249,16 +245,14 @@ mono_check_corlib_version (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer
-mono_compile_method_checked (MonoMethod *method, MonoError *error)
+            <div class="mapi-prototype">gpointer 
+mono_compile_method (MonoMethod *method)
 
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>method</i><td> The method to compile.</td></td></tr><tr><td><i>error</i><td> set on error.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This JIT-compiles the method, and returns the pointer to the native code
-	 produced.  On failure returns <code>NULL</code> and sets <i>error</i>.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> The method to compile.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 This JIT-compiles the method, and returns the pointer to the native code 	 produced.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -272,7 +266,10 @@ mono_compile_method_checked (MonoMethod *method, MonoError *error)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_config_for_assembly</div>
+            <div class="mapi-prototype">void 
+mono_config_for_assembly (MonoImage *assembly)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -293,28 +290,8 @@ mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, cons
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>assembly</i><td> if <code>NULL</code>, this is a global mapping, otherwise the remapping of the dynamic library will only apply to the specified assembly</td></td></tr><tr><td><i>dll</i><td> The name of the external library, as it would be found in the DllImport declaration.  If prefixed with 'i:' the matching of the library name is done without case sensitivity</td></td></tr><tr><td><i>func</i><td> if not null, the mapping will only applied to the named function (the value of EntryPoint)</td></td></tr><tr><td><i>tdll</i><td> The name of the library to map the specified <i>dll</i> if it matches.</td></td></tr><tr><td><i>tfunc</i><td> The name of the function that replaces the invocation.  If <code>NULL</code>, it is replaced with a copy of <i>func</i>.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 LOCKING: Acquires the loader lock.
-	<p />
-	 This function is used to programatically add DllImport remapping in either
-	 a specific assembly, or as a global remapping.   This is done by remapping
-	 references in a DllImport attribute from the <i>dll</i> library name into the <i>tdll</i>
-	 name.    If the <i>dll</i> name contains the prefix &quot;i:&quot;, the comparison of the 
-	 library name is done without case sensitivity.
-	<p />
-	 If you pass <i>func</i>, this is the name of the EntryPoint in a DllImport if specified
-	 or the name of the function as determined by DllImport.    If you pass <i>func</i>, you
-	 must also pass <i>tfunc</i> which is the name of the target function to invoke on a match.
-	<p />
-	 Example:
-	 mono_dllmap_insert (<code>NULL</code>, &quot;i:libdemo.dll&quot;, <code>NULL</code>, relocated_demo_path, <code>NULL</code>);
-	<p />
-	 The above will remap DllImport statments for &quot;libdemo.dll&quot; and &quot;LIBDEMO.DLL&quot; to
-	 the contents of relocated_demo_path for all assemblies in the Mono process.
-	<p />
-	 NOTE: This can be called before the runtime is initialized, for example from
-	 mono_config_parse ().</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>assembly</i></td><td> if <code>NULL</code>, this is a global mapping, otherwise the remapping of the dynamic library will only apply to the specified assembly</td></tr><tr><td><i>dll</i></td><td> The name of the external library, as it would be found in the <code>DllImport</code> declaration.  If prefixed with <code>i:</code> the matching of the library name is done without case sensitivity</td></tr><tr><td><i>func</i></td><td> if not null, the mapping will only applied to the named function (the value of <code>EntryPoint</code>)</td></tr><tr><td><i>tdll</i></td><td> The name of the library to map the specified <i>dll</i> if it matches.</td></tr><tr><td><i>tfunc</i></td><td> The name of the function that replaces the invocation.  If <code>NULL</code>, it is replaced with a copy of <i>func</i>.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 LOCKING: Acquires the loader lock. 	<p /> 	 This function is used to programatically add <code>DllImport</code> remapping in either 	 a specific assembly, or as a global remapping.   This is done by remapping 	 references in a <code>DllImport</code> attribute from the <i>dll</i> library name into the <i>tdll</i> 	 name. If the <i>dll</i> name contains the prefix <code>i:</code>, the comparison of the  	 library name is done without case sensitivity. 	<p /> 	 If you pass <i>func</i>, this is the name of the <code>EntryPoint</code> in a <code>DllImport</code> if specified 	 or the name of the function as determined by <code>DllImport</code>. If you pass <i>func</i>, you 	 must also pass <i>tfunc</i> which is the name of the target function to invoke on a match. 	<p /> 	 Example: 	<p /> 	 <code>mono_dllmap_insert (<code>NULL</code>, &quot;i:libdemo.dll&quot;, <code>NULL</code>, relocated_demo_path, <code>NULL</code>);</code> 	<p /> 	 The above will remap <code>DllImport</code> statements for <code>libdemo.dll</code> and <code>LIBDEMO.DLL</code> to 	 the contents of <code>relocated_demo_path</code> for all assemblies in the Mono process. 	<p /> 	 NOTE: This can be called before the runtime is initialized, for example from 	 <code>mono_config_parse</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -328,7 +305,10 @@ mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, cons
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_free_method</div>
+            <div class="mapi-prototype">void
+mono_free_method  (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -343,7 +323,10 @@ mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, cons
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_free_verify_list</div>
+            <div class="mapi-prototype">void
+mono_free_verify_list (GSList *list)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -358,7 +341,10 @@ mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, cons
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_get_config_dir</div>
+            <div class="mapi-prototype">const char* 
+mono_get_config_dir (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -379,12 +365,10 @@ mono_get_corlib (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  The MonoImage for mscorlib.dll
+             <div>	 The <code>MonoImage</code> for mscorlib.dll
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use this function to get the <code>MonoImage*</code> for the mscorlib.dll assembly
-	<p /></div>
+             <div> 	 Use this function to get the <code>MonoImage*</code> for the <code>mscorlib.dll</code> assembly</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -404,11 +388,9 @@ mono_get_delegate_invoke (MonoClass *klass)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>klass</i><td> The delegate class</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the MonoMethod for the &quot;Invoke&quot; method in the delegate klass or <code>NULL</code> if <i>klass</i> is a broken delegate type
+            <table class="mapi-parameters"><tbody><tr><td><i>klass</i></td><td> The delegate class</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the <code>MonoMethod</code> for the <code>Invoke</code> method in the delegate class or <code>NULL</code> if <i>klass</i> is a broken delegate type
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -422,7 +404,11 @@ mono_get_delegate_invoke (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_get_method_full</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_get_method_full (MonoImage *image, guint32 token, MonoClass *klass,
+		      MonoGenericContext *context)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -437,7 +423,10 @@ mono_get_delegate_invoke (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_get_method</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_get_method (MonoImage *image, guint32 token, MonoClass *klass)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -458,15 +447,10 @@ mono_get_root_domain (void)
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  the root appdomain, to obtain the current domain, use mono_domain_get ()
+             <div>	 the root appdomain, to obtain the current domain, use mono_domain_get ()
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 The root AppDomain is the initial domain created by the runtime when it is
-	 initialized.  Programs execute on this AppDomain, but can create new ones
-	 later.   Currently there is no unmanaged API to create new AppDomains, this
-	 must be done from managed code.
-	<p /></div>
+             <div> 	<p /> 	 The root AppDomain is the initial domain created by the runtime when it is 	 initialized.  Programs execute on this AppDomain, but can create new ones 	 later.   Currently there is no unmanaged API to create new AppDomains, this 	 must be done from managed code. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -480,7 +464,10 @@ mono_get_root_domain (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_lookup_internal_call</div>
+            <div class="mapi-prototype">gpointer
+mono_lookup_internal_call (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -495,7 +482,10 @@ mono_get_root_domain (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_lookup_pinvoke_call</div>
+            <div class="mapi-prototype">gpointer
+mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char **exc_arg)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -510,7 +500,10 @@ mono_get_root_domain (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_parse_default_optimizations</div>
+            <div class="mapi-prototype">int
+mono_parse_default_optimizations (const char* p)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -525,7 +518,10 @@ mono_get_root_domain (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_ptr_class_get</div>
+            <div class="mapi-prototype">MonoClass*
+mono_ptr_class_get (MonoType *type)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -540,7 +536,10 @@ mono_get_root_domain (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_register_bundled_assemblies</div>
+            <div class="mapi-prototype">void
+mono_register_bundled_assemblies (const MonoBundledAssembly **assemblies)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -555,8 +554,14 @@ mono_get_root_domain (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_runtime_class_init</div>
+            <div class="mapi-prototype">void
+mono_runtime_class_init (MonoVTable *vtable)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>vtable</i></td><td> vtable that needs to be initialized</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 This routine calls the class constructor for <i>vtable</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -576,12 +581,8 @@ mono_runtime_cleanup (MonoDomain *domain)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>domain</i><td> unused.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Internal routine.
-	<p />
-	 This must not be called while there are still running threads executing
-	 managed code.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> unused.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Internal routine. 	<p /> 	 This must not be called while there are still running threads executing 	 managed code.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -596,17 +597,13 @@ mono_runtime_cleanup (MonoDomain *domain)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoArray*
-mono_runtime_get_main_args_checked (MonoError *error)
+mono_runtime_get_main_args (void)
 
 </div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>error</i><td> set on error</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a MonoArray with the arguments passed to the main
-
-	 program. On failure returns <code>NULL</code> and sets <i>error</i>.</div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+             <div class="mapi-section">Return value</div>
+             <div>	 A <code>MonoArray</code> with the arguments passed to the main program
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -626,15 +623,8 @@ mono_runtime_init (MonoDomain *domain, MonoThreadStartCB start_cb, MonoThreadAtt
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>domain</i><td> domain returned by mono_init ()</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Initialize the core AppDomain: this function will run also some
-	 IL initialization code, so it needs the execution engine to be fully 
-	 operational.
-	<p />
-	 AppDomain.SetupInformation is set up in mono_runtime_exec_main, where
-	 we know the entry_assembly.
-	<p /></div>
+            <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> domain returned by <code>mono_init</code></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Initialize the core AppDomain: this function will run also some 	 IL initialization code, so it needs the execution engine to be fully  	 operational. 	<p /> 	 <code>AppDomain.SetupInformation</code> is set up in <code>mono_runtime_exec_main</code>, where 	 we know the <code>entry_assembly</code>. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -653,13 +643,10 @@ mono_runtime_is_shutting_down (void)
 
 </div>
             <p />
-             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Returns whether the runtime has been flagged for shutdown.
-	<p />
-	 This is consumed by the P:System.Environment.HasShutdownStarted
-	 property.
-	<p /></div>
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>P</i></td><td>System.Environment.HasShutdownStarted property.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 whether the runtime has been flagged for shutdown.
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -679,10 +666,8 @@ mono_runtime_object_init (MonoObject *this_obj)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>this_obj</i><td> the object to initialize</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This function calls the zero-argument constructor (which must
-	 exist) for the given object.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>this_obj</i></td><td> the object to initialize</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 This function calls the zero-argument constructor (which must 	 exist) for the given object.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -696,7 +681,10 @@ mono_runtime_object_init (MonoObject *this_obj)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_runtime_quit</div>
+            <div class="mapi-prototype">void
+mono_runtime_quit ()
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -718,13 +706,8 @@ mono_runtime_run_main (MonoMethod *method, int argc, char* argv[],
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>method</i><td> the method to start the application with (usually Main)</td></td></tr><tr><td><i>argc</i><td> number of arguments from the command line</td></td></tr><tr><td><i>argv</i><td> array of strings from the command line</td></td></tr><tr><td><i>exc</i><td> excetption results</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Execute a standard Main() method (argc/argv contains the
-	 executable name). This method also sets the command line argument value
-	 needed by System.Environment.
-	<p />
-	<p /></div>
+            <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> the method to start the application with (usually <code>Main</code>)</td></tr><tr><td><i>argc</i></td><td> number of arguments from the command line</td></tr><tr><td><i>argv</i></td><td> array of strings from the command line</td></tr><tr><td><i>exc</i></td><td> excetption results</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Execute a standard <code>Main</code> method (<i>argc</i> / <i>argv</i> contains the 	 executable name). This method also sets the command line argument value 	 needed by <code>System.Environment</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -738,10 +721,10 @@ mono_runtime_run_main (MonoMethod *method, int argc, char* argv[],
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_table_info_get_rows</div>
+            <div class="mapi-prototype">int
+mono_table_info_get_rows (const MonoTableInfo *table)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

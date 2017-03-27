@@ -199,7 +199,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_attach</div>
+            <div class="mapi-prototype">MonoThread*
+mono_thread_attach (MonoDomain *domain)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -214,7 +217,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_create</div>
+            <div class="mapi-prototype">void
+mono_thread_create (MonoDomain *domain, gpointer func, gpointer arg)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -229,7 +235,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_current</div>
+            <div class="mapi-prototype">MonoThread*
+mono_thread_current (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -244,7 +253,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_detach</div>
+            <div class="mapi-prototype">void
+mono_thread_detach (MonoThread *thread)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -259,7 +271,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_exit</div>
+            <div class="mapi-prototype">void
+mono_thread_exit (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -274,8 +289,15 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_get_managed_id</div>
+            <div class="mapi-prototype">int32_t
+mono_thread_get_managed_id (MonoThread *thread)
+
+</div>
             <p />
+             <div class="mapi-section">Return value</div>
+             <div>	 the <code>Thread.ManagedThreadId</code> value of <i>thread</i>.
+
+	 Returns <code>-1</code> if <i>thread</i> is <code>NULL</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -289,8 +311,16 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_get_name_utf8</div>
+            <div class="mapi-prototype">char*
+mono_thread_get_name_utf8 (MonoThread *thread)
+
+</div>
             <p />
+             <div class="mapi-section">Return value</div>
+             <div>	 the name of the thread in UTF-8.
+
+	 Return <code>NULL</code> if the thread has no name.
+	 The returned memory is owned by the caller.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -304,8 +334,17 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_is_foreign</div>
+            <div class="mapi-prototype">mono_bool
+mono_thread_is_foreign (MonoThread *thread)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>thread</i></td><td> the thread to query</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if <i>thread</i> was not created by the runtime.
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 This function allows one to determine if a thread was created by the mono runtime and has 	 a well defined lifecycle or it's a foreign one, created by the native environment. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -319,7 +358,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_manage</div>
+            <div class="mapi-prototype">void
+mono_thread_manage (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -334,7 +376,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_new_init</div>
+            <div class="mapi-prototype">void
+mono_thread_new_init (intptr_t tid, gpointer stack_start, gpointer func)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -349,7 +394,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_threads_get_default_stacksize</div>
+            <div class="mapi-prototype">guint32
+mono_threads_get_default_stacksize (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -364,7 +412,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_threads_set_default_stacksize</div>
+            <div class="mapi-prototype">void
+mono_threads_set_default_stacksize (guint32 stacksize)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -379,7 +430,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_set_manage_callback</div>
+            <div class="mapi-prototype">void
+mono_thread_set_manage_callback (MonoThread *thread, MonoThreadManageCallback func)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -394,7 +448,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_stop</div>
+            <div class="mapi-prototype">void
+mono_thread_stop (MonoThread *thread)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -410,7 +467,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_get_main</div>
+            <div class="mapi-prototype">MonoThread*
+mono_thread_get_main (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -431,12 +491,8 @@ mono_thread_set_main (MonoThread *thread)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>thread</i><td> thread to set as the main thread</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This function can be used to instruct the runtime to treat <i>thread</i>
-	 as the main thread, ie, the thread that would normally execute the Main()
-	 method. This basically means that at the end of <i>thread</i>, the runtime will
-	 wait for the existing foreground threads to quit and other such details.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>thread</i></td><td> thread to set as the main thread</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 This function can be used to instruct the runtime to treat <i>thread</i> 	 as the main thread, ie, the thread that would normally execute the <code>Main</code> 	 method. This basically means that at the end of <i>thread</i>, the runtime will 	 wait for the existing foreground threads to quit and other such details.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -453,7 +509,10 @@ mono_thread_set_main (MonoThread *thread)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_monitor_enter</div>
+            <div class="mapi-prototype">gboolean
+mono_monitor_enter (MonoObject *obj)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -468,7 +527,10 @@ mono_thread_set_main (MonoThread *thread)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_monitor_enter_v4</div>
+            <div class="mapi-prototype">void
+mono_monitor_enter_v4 (MonoObject *obj, char *lock_taken)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -483,7 +545,10 @@ mono_thread_set_main (MonoThread *thread)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_monitor_exit</div>
+            <div class="mapi-prototype">void
+mono_monitor_exit (MonoObject *obj)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -498,7 +563,10 @@ mono_thread_set_main (MonoThread *thread)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_monitor_try_enter</div>
+            <div class="mapi-prototype">gboolean
+mono_monitor_try_enter (MonoObject *obj, guint32 ms)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -516,7 +584,10 @@ mono_thread_set_main (MonoThread *thread)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_cleanup</div>
+            <div class="mapi-prototype">void
+mono_thread_cleanup (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -531,10 +602,12 @@ mono_thread_set_main (MonoThread *thread)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_thread_detach_if_exiting</div>
+            <div class="mapi-prototype">mono_bool
+mono_thread_detach_if_exiting (void)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Detach the current thread from the runtime if it is exiting, i.e. it is running pthread dtors. 	 This should be used at the end of embedding code which calls into managed code, and which 	 can be called from pthread dtors, like <code>dealloc:</code> implementations in Objective-C.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

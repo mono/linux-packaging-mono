@@ -196,28 +196,6 @@
 #include &lt;metadata/class.h&gt;
 
 typedef struct _MonoType MonoType;
-                     <a href="#api:mono_type_get_object">mono_type_get_object</a>     
-                     <a href="#api:mono_type_create_from_typespec">mono_type_create_from_typespec</a>
-                     <a href="#api:mono_type_full_name">mono_type_full_name</a>      
-MonoArrayType*       <a href="#api:mono_type_get_array_type">mono_type_get_array_type</a> (MonoType *type);
-MonoClass*           <a href="#api:mono_type_get_class">mono_type_get_class</a>      (MonoType *type);
-                     <a href="#api:mono_type_get_modifiers">mono_type_get_modifiers</a>  
-char*                <a href="#api:mono_type_get_name">mono_type_get_name</a>       (MonoType *type);
-MonoType*            <a href="#api:mono_type_get_ptr_type">mono_type_get_ptr_type</a>   (MonoType *type);
-MonoMethodSignature* <a href="#api:mono_type_get_signature">mono_type_get_signature</a>  (MonoType *type);
-int                  <a href="#api:mono_type_get_type">mono_type_get_type</a>       (MonoType *type);
-                     <a href="#api:mono_type_get_underlying_type">mono_type_get_underlying_type</a>
-gboolean             <a href="#api:mono_type_is_byref">mono_type_is_byref</a>       (MonoType *type);
-mono_bool            <a href="#api:mono_type_is_pointer">mono_type_is_pointer</a>     (MonoType *type);
-mono_bool            <a href="#api:mono_type_is_reference">mono_type_is_reference</a>   (MonoType *type);
-mono_bool            <a href="#api:mono_type_is_struct">mono_type_is_struct</a>      (MonoType *type);
-mono_bool            <a href="#api:mono_type_is_void">mono_type_is_void</a>        (MonoType *type);
-                     <a href="#api:mono_type_size">mono_type_size</a>           
-                     <a href="#api:mono_type_stack_size">mono_type_stack_size</a>     
-guint32              <a href="#api:mono_type_to_unmanaged">mono_type_to_unmanaged</a>   (MonoType *type, 
-                                               MonoMarshalSpec *mspec, 
-                                               gboolean as_field;
-                     <a href="#api:mono_type_generic_inst_is_valuetype">mono_type_generic_inst_is_valuetype</a>
 
 	
 	</div>
@@ -234,23 +212,36 @@ guint32              <a href="#api:mono_type_to_unmanaged">mono_type_to_unmanage
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_type_get_object</div>
+            <div class="mapi-prototype">MonoReflectionType*
+mono_type_get_object (MonoDomain *domain, MonoType *type)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> an app domain</td></tr><tr><td><i>type</i></td><td> a type</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 A <code>System.MonoType</code> object representing the type <i>type</i>.
+</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
 
 <a name="api:mono_type_create_from_typespec"></a>
 <div class="mapi">
-    <div class="mapi-entry "><code>mono_type_create_from_typespec</code></div>
+    <div class="mapi-entry mapi-strike"><code>mono_type_create_from_typespec</code></div><br /><div class='mapi-deprecated'><b>Deprecated:</b>  use <code>mono_type_create_from_typespec_checked</code> that has proper error handling</div>
     <div class="mapi-height-container">
         <div class="mapi-ptr-container"></div>
         <div class="mapi-description">
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_type_create_from_typespec</div>
+            <div class="mapi-prototype">MonoType*
+mono_type_create_from_typespec (MonoImage *image, guint32 type_spec)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> context where the image is created</td></tr><tr><td><i>type_spec</i></td><td>  typespec token</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Creates a <code>MonoType</code> representing the <code>TypeSpec</code> indexed by the <i>type_spec</i> 	 token.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -264,7 +255,10 @@ guint32              <a href="#api:mono_type_to_unmanaged">mono_type_to_unmanage
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_type_full_name</div>
+            <div class="mapi-prototype">char*
+mono_type_full_name (MonoType *type)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -285,15 +279,13 @@ mono_type_get_array_type (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a MonoArrayType struct describing the array type that <i>type</i>
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a <code>MonoArrayType</code> struct describing the array type that <i>type</i>
 
 	 represents. The info includes details such as rank, array element type
 	 and the sizes and bounds of multidimensional arrays.</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 It is only valid to call this function if <i>type</i> is a MONO_TYPE_ARRAY.
-	<p /></div>
+             <div> 	 It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_ARRAY</code> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -313,15 +305,11 @@ mono_type_get_class (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the MonoClass pointer that describes the class that <i>type</i> represents.
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the <code>MonoClass</code> pointer that describes the class that <i>type</i> represents.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 It is only valid to call this function if <i>type</i> is a MONO_TYPE_CLASS or a
-	 MONO_TYPE_VALUETYPE. For more general functionality, use mono_class_from_mono_type (),
-	 instead
-	<p /></div>
+             <div> 	 It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_CLASS</code> or a 	 <code>MONO_TYPE_VALUETYPE</code> . For more general functionality, use <code>mono_class_from_mono_type</code>, 	 instead.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -335,7 +323,10 @@ mono_type_get_class (MonoType *type)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_type_get_modifiers</div>
+            <div class="mapi-prototype">MonoClass*
+mono_type_get_modifiers (MonoType *type, gboolean *is_required, gpointer *iter)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -356,11 +347,9 @@ mono_type_get_name (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> a type</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  The string representation for type as it would be represented in IL code.
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> a type</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 The string representation for type as it would be represented in IL code.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -379,16 +368,12 @@ mono_type_get_ptr_type (MonoType *type)
 
 </div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the MonoType pointer that describes the type that <i>type</i>
+             <div class="mapi-section">Return value</div>
+             <div>	 the <code>MonoType</code> pointer that describes the type that <i>type</i>
 
 	 represents a pointer to.</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 It is only valid to call this function if <i>type</i> is a MONO_TYPE_PTR.
-	 instead
-	<p /></div>
+             <div> 	 \pararm type the <code>MonoType</code> operated on 	 It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_PTR</code> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -408,14 +393,12 @@ mono_type_get_signature (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the MonoMethodSignature pointer that describes the signature
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the <code>MonoMethodSignature</code> pointer that describes the signature
 
 	 of the function pointer <i>type</i> represents.</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 It is only valid to call this function if <i>type</i> is a MONO_TYPE_FNPTR.
-	<p /></div>
+             <div> 	 It is only valid to call this function if <i>type</i> is a <code>MONO_TYPE_FNPTR</code> .</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -435,12 +418,10 @@ mono_type_get_type (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the IL type value for <i>type</i>. This is one of the MonoTypeEnum
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the IL type value for <i>type</i>. This is one of the <code>MonoTypeEnum</code>
 
-	 enum members like MONO_TYPE_I4 or MONO_TYPE_STRING.</div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+	 enum members like <code>MONO_TYPE_I4</code> or <code>MONO_TYPE_STRING</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -454,8 +435,16 @@ mono_type_get_type (MonoType *type)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_type_get_underlying_type</div>
+            <div class="mapi-prototype">MonoType*
+mono_type_get_underlying_type (MonoType *type)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> a type</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 The <code>MonoType</code> for the underlying integer type if <i>type</i>
+
+	 is an enum and byref is false, otherwise the type itself.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -475,12 +464,10 @@ mono_type_is_byref (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  #<code>TRUE</code> if <i>type</i> represents a type passed by reference,
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if <i>type</i> represents a type passed by reference,
 
-	 #<code>FALSE</code> otherwise.</div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+	 <code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -500,11 +487,9 @@ mono_type_is_pointer (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  #<code>TRUE</code> is <i>type</i> is a managed or unmanaged pointer type. #<code>FALSE</code> otherwise.
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if <i>type</i> is a managed or unmanaged pointer type. <code>FALSE</code> otherwise.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -524,11 +509,9 @@ mono_type_is_reference (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  #<code>TRUE</code> is <i>type</i> represents an object reference . #<code>FALSE</code> otherwise.
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if <i>type</i> represents an object reference. <code>FALSE</code> otherwise.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -548,12 +531,10 @@ mono_type_is_struct (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  #<code>TRUE</code> is <i>type</i> is a struct, that is a ValueType but not en enum
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if <i>type</i> is a struct, that is a <code>ValueType</code> but not an enum
 
-	 or a basic type like System.Int32. #<code>FALSE</code> otherwise.</div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+	 or a basic type like <code>System.Int32</code> . <code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -573,11 +554,9 @@ mono_type_is_void (MonoType *type)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>type</i><td> the MonoType operated on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  #<code>TRUE</code> is <i>type</i> is System.Void. #<code>FALSE</code> otherwise.
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the <code>MonoType</code> operated on</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>TRUE</code> if <i>type</i> is <code>System.Void</code> . <code>FALSE</code> otherwise.
 </div>
-             <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -591,8 +570,16 @@ mono_type_is_void (MonoType *type)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_type_size</div>
+            <div class="mapi-prototype">int
+mono_type_size (MonoType *t, int *align)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>t</i></td><td> the type to return the size of</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 The number of bytes required to hold an instance of this
+
+	 type in memory</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -606,8 +593,16 @@ mono_type_is_void (MonoType *type)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_type_stack_size</div>
+            <div class="mapi-prototype">int
+mono_type_stack_size (MonoType *t, int *align)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>t</i></td><td> the type to return the size it uses on the stack</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 The number of bytes required to hold an instance of this
+
+	 type on the runtime stack</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -628,17 +623,10 @@ mono_type_to_unmanaged (MonoType *type, MonoMarshalSpec *mspec, gboolean as_fiel
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  A MonoMarshalNative enumeration value (MONO_NATIVE_) value
+             <div>	 A <code>MonoMarshalNative</code> enumeration value (<code>MONO_NATIVE_</code>) value
 
-	 describing the underlying native reprensetation of the type.
-	<p />
-	 In addition the value pointed by
-	 &quot;conv&quot; will contain the kind of marshalling required for this
-	 particular type one of the MONO_MARSHAL_CONV_ enumeration values.</div>
+	 describing the underlying native reprensetation of the type.</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> </div>
+             <div> 	 The value pointed to by <i>conv</i> will contain the kind of marshalling required for this 	 particular type one of the <code>MONO_MARSHAL_CONV_</code> enumeration values.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>
