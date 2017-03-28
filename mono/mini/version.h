@@ -1,1 +1,1 @@
-#define FULL_VERSION "Stable 4.8.0.520/8f6d0f6"
+#define FULL_VERSION "Stable 4.8.0.524/9d74414"
