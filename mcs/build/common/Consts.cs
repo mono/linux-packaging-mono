@@ -38,7 +38,7 @@ static class Consts
 	public const string MonoCompany = "Mono development team";
 	public const string MonoProduct = "Mono Common Language Infrastructure";
 	public const string MonoCopyright = "(c) Various Mono authors";
-	public const int MonoCorlibVersion = 1050100000;
+	public const int MonoCorlibVersion = 1050100001;
 
 #if MOBILE
 	// Versions of .NET Framework for Silverlight 4.0

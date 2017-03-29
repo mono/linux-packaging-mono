@@ -13,12 +13,7 @@ namespace System.Threading
     //
     // Implementation of ThreadPoolBoundHandle that sits on top of the Win32 ThreadPool
     //
-#if MONO
-    internal sealed class ThreadPoolBoundHandle
-#else
-    public sealed class ThreadPoolBoundHandle
-#endif
-        : IDisposable, IDeferredDisposable
+    public sealed class ThreadPoolBoundHandle : IDisposable, IDeferredDisposable
     {
         private readonly SafeHandle _handle;
         private readonly SafeThreadPoolIOHandle _threadPoolHandle;

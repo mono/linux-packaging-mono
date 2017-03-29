@@ -732,14 +732,6 @@ ves_icall_System_Array_ClearInternal (MonoArray *arr, int idx, int length)
 	mono_gc_bzero_atomic (mono_array_addr_with_size_fast (arr, sz, idx), length * sz);
 }
 
-ICALL_EXPORT MonoArray*
-ves_icall_System_Array_Clone (MonoArray *arr)
-{
-	MonoError error;
-	MonoArray *result = mono_array_clone_checked (arr, &error);
-	mono_error_set_pending_exception (&error);
-	return result;
-}
 
 ICALL_EXPORT gboolean
 ves_icall_System_Array_FastCopy (MonoArray *source, int source_idx, MonoArray* dest, int dest_idx, int length)
@@ -6404,6 +6396,8 @@ ICALL_EXPORT MonoReflectionType *
 ves_icall_Remoting_RealProxy_InternalGetProxyType (MonoTransparentProxy *tp)
 {
 	MonoError error;
+	g_assert (tp != NULL && mono_object_class (tp) == mono_defaults.transparent_proxy_class);
+	g_assert (tp->remote_class != NULL && tp->remote_class->proxy_class != NULL);
 	MonoReflectionType *ret = mono_type_get_object_checked (mono_object_domain (tp), &tp->remote_class->proxy_class->byval_arg, &error);
 	mono_error_set_pending_exception (&error);
 

@@ -4,6 +4,9 @@
 
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+#if MONO
+using System.Diagnostics.Private;
+#endif
 
 namespace System.Collections.Generic
 {
