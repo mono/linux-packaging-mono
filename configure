@@ -4209,11 +4209,6 @@ $as_echo "#define TARGET_ANDROID 1" >>confdefs.h
 		CFLAGS="$CFLAGS -DPAGE_SIZE=4096 -DS_IWRITE=S_IWUSR"
 		CXXFLAGS="$CXXFLAGS -DPAGE_SIZE=4096 -DS_IWRITE=S_IWUSR"
 
-		# The configure check can't detect this
-
-$as_echo "#define HAVE_LARGE_FILE_SUPPORT 1" >>confdefs.h
-
-
 		# to bypass the underscore linker check, can't work when cross-compiling
 		mono_cv_uscore=yes
 		mono_cv_clang=no
@@ -24355,6 +24350,28 @@ do :
 if test "x$ac_cv_func_accept4" = xyes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_ACCEPT4 1
+_ACEOF
+
+fi
+done
+
+	for ac_func in localtime_r
+do :
+  ac_fn_c_check_func "$LINENO" "localtime_r" "ac_cv_func_localtime_r"
+if test "x$ac_cv_func_localtime_r" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LOCALTIME_R 1
+_ACEOF
+
+fi
+done
+
+	for ac_func in mkdtemp
+do :
+  ac_fn_c_check_func "$LINENO" "mkdtemp" "ac_cv_func_mkdtemp"
+if test "x$ac_cv_func_mkdtemp" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_MKDTEMP 1
 _ACEOF
 
 fi

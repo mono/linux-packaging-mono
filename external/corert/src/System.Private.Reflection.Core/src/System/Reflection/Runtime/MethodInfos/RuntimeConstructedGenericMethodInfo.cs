@@ -76,6 +76,14 @@ namespace System.Reflection.Runtime.MethodInfos
             return _genericMethodDefinition;
         }
 
+        public sealed override bool IsConstructedGenericMethod
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public sealed override bool IsGenericMethod
         {
             get
@@ -89,6 +97,14 @@ namespace System.Reflection.Runtime.MethodInfos
             get
             {
                 return false;
+            }
+        }
+
+        public sealed override int MetadataToken
+        {
+            get
+            {
+                return _genericMethodDefinition.MetadataToken;
             }
         }
 
@@ -124,6 +140,14 @@ namespace System.Reflection.Runtime.MethodInfos
         public sealed override String ToString()
         {
             return _genericMethodDefinition.ComputeToString(this);
+        }
+
+        public sealed override RuntimeMethodHandle MethodHandle
+        {
+            get
+            {
+                return _genericMethodDefinition.GetRuntimeMethodHandle(GetGenericArguments());
+            }
         }
 
         protected sealed override MethodInvoker UncachedMethodInvoker

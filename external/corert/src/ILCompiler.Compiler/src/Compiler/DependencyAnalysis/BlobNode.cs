@@ -31,13 +31,13 @@ namespace ILCompiler.DependencyAnalysis
             sb.Append(_name);
         }
         public int Offset => 0;
-        public override bool IsShareable => false;
+        public override bool IsShareable => true;
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
             return new ObjectData(_data, Array.Empty<Relocation>(), _alignment, new ISymbolNode[] { this });
         }
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
     }
 }

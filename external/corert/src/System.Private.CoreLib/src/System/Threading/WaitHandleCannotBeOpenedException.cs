@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace System.Threading
 {
     [Serializable]
-    public class WaitHandleCannotBeOpenedException : Exception
+    public class WaitHandleCannotBeOpenedException : ApplicationException
     {
         public WaitHandleCannotBeOpenedException() : base(SR.Threading_WaitHandleCannotBeOpenedException)
         {
@@ -24,6 +24,6 @@ namespace System.Threading
             HResult = __HResults.COR_E_WAITHANDLECANNOTBEOPENED;
         }
 
-        protected WaitHandleCannotBeOpenedException(SerializationInfo info, StreamingContext context) : base (info, context) { }
+        protected WaitHandleCannotBeOpenedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

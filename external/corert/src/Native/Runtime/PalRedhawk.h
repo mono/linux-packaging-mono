@@ -498,9 +498,10 @@ typedef enum _EXCEPTION_DISPOSITION {
     ExceptionCollidedUnwind
 } EXCEPTION_DISPOSITION;
 
-#define STATUS_ACCESS_VIOLATION          ((UInt32   )0xC0000005L)    
-#define STATUS_STACK_OVERFLOW            ((UInt32   )0xC00000FDL)    
-#define STATUS_REDHAWK_NULL_REFERENCE    ((UInt32   )0x00000000L)    
+#define STATUS_ACCESS_VIOLATION                     ((UInt32   )0xC0000005L)
+#define STATUS_STACK_OVERFLOW                       ((UInt32   )0xC00000FDL)
+#define STATUS_REDHAWK_NULL_REFERENCE               ((UInt32   )0x00000000L)
+#define STATUS_REDHAWK_WRITE_BARRIER_NULL_REFERENCE ((UInt32   )0x00000042L)
 
 #ifdef PLATFORM_UNIX
 #define NULL_AREA_SIZE                   (4*1024)
@@ -837,6 +838,8 @@ REDHAWK_PALIMPORT void REDHAWK_PALAPI PalAttachThread(void* thread);
 REDHAWK_PALIMPORT bool REDHAWK_PALAPI PalDetachThread(void* thread);
 
 REDHAWK_PALIMPORT UInt64 PalGetCurrentThreadIdForLogging();
+
+REDHAWK_PALIMPORT void PalPrintFatalError(const char* message);
 
 #ifdef PLATFORM_UNIX
 REDHAWK_PALIMPORT Int32 __cdecl _stricmp(const char *string1, const char *string2);

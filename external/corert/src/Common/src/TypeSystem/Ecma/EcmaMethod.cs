@@ -14,7 +14,7 @@ using Internal.TypeSystem;
 
 namespace Internal.TypeSystem.Ecma
 {
-    public sealed class EcmaMethod : MethodDesc, EcmaModule.IEntityHandleObject
+    public sealed partial class EcmaMethod : MethodDesc, EcmaModule.IEntityHandleObject
     {
         private static class MethodFlags
         {
@@ -315,6 +315,19 @@ namespace Internal.TypeSystem.Ecma
             }
         }
 
+        public override bool IsDefaultConstructor
+        {
+            get
+            {
+                MethodAttributes attributes = Attributes;
+                return attributes.IsRuntimeSpecialName() 
+                    && attributes.IsPublic()
+                    && Signature.Length == 0
+                    && Name == ".ctor"
+                    && !_type.IsAbstract;
+            }
+        }
+
         public MethodAttributes Attributes
         {
             get
@@ -449,7 +462,9 @@ namespace Internal.TypeSystem.Ecma
                 MetadataReader metadataReader = MetadataReader;
                 BlobReader marshalAsReader = metadataReader.GetBlobReader(parameter.GetMarshallingDescriptor());
                 EcmaSignatureParser parser = new EcmaSignatureParser(Module, marshalAsReader);
-                return parser.ParseMarshalAsDescriptor();
+                MarshalAsDescriptor marshalAs = parser.ParseMarshalAsDescriptor(isParameter:true);
+                Debug.Assert(marshalAs != null);
+                return marshalAs;
             }
             return null;
         }

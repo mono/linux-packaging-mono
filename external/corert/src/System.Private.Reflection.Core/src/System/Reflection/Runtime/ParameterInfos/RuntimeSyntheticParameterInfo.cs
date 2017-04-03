@@ -57,6 +57,10 @@ namespace System.Reflection.Runtime.ParameterInfos
             }
         }
 
+        public sealed override Type[] GetOptionalCustomModifiers() => Array.Empty<Type>();
+
+        public sealed override Type[] GetRequiredCustomModifiers() => Array.Empty<Type>();
+
         public sealed override String Name
         {
             get
@@ -70,6 +74,14 @@ namespace System.Reflection.Runtime.ParameterInfos
             get
             {
                 return _parameterType;
+            }
+        }
+
+        public sealed override int MetadataToken
+        {
+            get
+            {
+                return 0x08000000; // nil ParamDef token
             }
         }
 

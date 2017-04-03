@@ -21,8 +21,6 @@
 #cmakedefine01 HAVE_POSIX_ADVISE
 #cmakedefine01 PRIORITY_REQUIRES_INT_WHO
 #cmakedefine01 KEVENT_REQUIRES_INT_PARAMS
-#cmakedefine01 HAVE_IN6_U
-#cmakedefine01 HAVE_U6_ADDR
 #cmakedefine01 HAVE_IOCTL
 #cmakedefine01 HAVE_TIOCGWINSZ
 #cmakedefine01 HAVE_SCHED_GETAFFINITY
@@ -32,6 +30,7 @@
 #cmakedefine01 HAVE_PRIVATE_FDS_BITS
 #cmakedefine01 HAVE_STATFS
 #cmakedefine01 HAVE_EPOLL
+#cmakedefine01 HAVE_ACCEPT_4
 #cmakedefine01 HAVE_KQUEUE
 #cmakedefine01 HAVE_SENDFILE_4
 #cmakedefine01 HAVE_SENDFILE_6

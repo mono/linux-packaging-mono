@@ -6518,7 +6518,7 @@ ves_icall_System_Environment_GetIs64BitOperatingSystem (void)
 ICALL_EXPORT MonoStringHandle
 ves_icall_System_Environment_GetEnvironmentVariable_native (const gchar *utf8_name, MonoError *error)
 {
-	const gchar *value;
+	gchar *value;
 
 	if (utf8_name == NULL)
 		return NULL_HANDLE_STRING;
@@ -6528,7 +6528,9 @@ ves_icall_System_Environment_GetEnvironmentVariable_native (const gchar *utf8_na
 	if (value == 0)
 		return NULL_HANDLE_STRING;
 	
-	return mono_string_new_handle (mono_domain_get (), value, error);
+	MonoStringHandle res = mono_string_new_handle (mono_domain_get (), value, error);
+	g_free (value);
+	return res;
 }
 
 /*
@@ -6556,7 +6558,7 @@ char **environ;
 #endif
 
 ICALL_EXPORT MonoArray *
-ves_icall_System_Environment_GetCoomandLineArgs (void)
+ves_icall_System_Environment_GetCommandLineArgs (void)
 {
 	MonoError error;
 	MonoArray *result = mono_runtime_get_main_args_checked (&error);

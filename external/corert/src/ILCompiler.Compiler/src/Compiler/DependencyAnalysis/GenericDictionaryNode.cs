@@ -16,22 +16,24 @@ namespace ILCompiler.DependencyAnalysis
     /// at runtime to look up runtime artifacts that depend on the concrete
     /// context the generic type or method was instantiated with.
     /// </summary>
-    internal abstract class GenericDictionaryNode : ObjectNode, ISymbolNode
+    public abstract class GenericDictionaryNode : ObjectNode, ISymbolNode
     {
         protected const string MangledNamePrefix = "__GenericDict_";
 
         protected abstract TypeSystemContext Context { get; }
 
-        protected abstract Instantiation TypeInstantiation { get; }
+        public abstract Instantiation TypeInstantiation { get; }
 
-        protected abstract Instantiation MethodInstantiation { get; }
+        public abstract Instantiation MethodInstantiation { get; }
 
-        protected abstract DictionaryLayoutNode GetDictionaryLayout(NodeFactory factory);
+        public abstract DictionaryLayoutNode GetDictionaryLayout(NodeFactory factory);
 
         public sealed override ObjectNodeSection Section =>
             Context.Target.IsWindows ? ObjectNodeSection.ReadOnlyDataSection : ObjectNodeSection.DataSection;
         
         public sealed override bool StaticDependenciesAreComputed => true;
+
+        public sealed override bool IsShareable => true;
 
         protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
         {
@@ -46,9 +48,9 @@ namespace ILCompiler.DependencyAnalysis
 
         public sealed override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
-            ObjectDataBuilder builder = new ObjectDataBuilder(factory);
-            builder.DefinedSymbols.Add(this);
-            builder.RequirePointerAlignment();
+            ObjectDataBuilder builder = new ObjectDataBuilder(factory, relocsOnly);
+            builder.AddSymbol(this);
+            builder.RequireInitialPointerAlignment();
 
             // Node representing the generic dictionary doesn't have any dependencies for
             // dependency analysis purposes. The dependencies are tracked as dependencies of the
@@ -65,27 +67,12 @@ namespace ILCompiler.DependencyAnalysis
         protected virtual void EmitDataInternal(ref ObjectDataBuilder builder, NodeFactory factory)
         {
             DictionaryLayoutNode layout = GetDictionaryLayout(factory);
-
-            Instantiation typeInst = this.TypeInstantiation;
-            Instantiation methodInst = this.MethodInstantiation;
-
-            foreach (GenericLookupResult lookupResult in layout.Entries)
-            {
-#if DEBUG
-                int offsetBefore = builder.CountBytes;
-#endif
-
-                lookupResult.EmitDictionaryEntry(ref builder, factory, typeInst, methodInst);
-
-#if DEBUG
-                Debug.Assert(builder.CountBytes - offsetBefore == factory.Target.PointerSize);
-#endif
-            }
+            layout.EmitDictionaryData(ref builder, factory, this);            
         }
 
-        protected sealed override string GetName()
+        protected sealed override string GetName(NodeFactory factory)
         {
-            return this.GetMangledName();
+            return this.GetMangledName(factory.NameMangler);
         }
     }
 
@@ -95,16 +82,16 @@ namespace ILCompiler.DependencyAnalysis
 
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            sb.Append(MangledNamePrefix).Append(NodeFactory.NameMangler.GetMangledTypeName(_owningType));
+            sb.Append(MangledNamePrefix).Append(nameMangler.GetMangledTypeName(_owningType));
         }
         public override int Offset => 0;
-        public override bool IsShareable => false;
-
-        protected override Instantiation TypeInstantiation => _owningType.Instantiation;
-        protected override Instantiation MethodInstantiation => new Instantiation();
+        public override Instantiation TypeInstantiation => _owningType.Instantiation;
+        public override Instantiation MethodInstantiation => new Instantiation();
         protected override TypeSystemContext Context => _owningType.Context;
 
-        protected override DictionaryLayoutNode GetDictionaryLayout(NodeFactory factory)
+        public TypeDesc OwningType => _owningType;
+
+        public override DictionaryLayoutNode GetDictionaryLayout(NodeFactory factory)
         {
             return factory.GenericDictionaryLayout(_owningType.ConvertToCanonForm(CanonicalFormKind.Specific));
         }
@@ -145,22 +132,32 @@ namespace ILCompiler.DependencyAnalysis
         }
     }
 
-    internal sealed class MethodGenericDictionaryNode : GenericDictionaryNode
+    public sealed class MethodGenericDictionaryNode : GenericDictionaryNode
     {
         private MethodDesc _owningMethod;
 
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            sb.Append(MangledNamePrefix).Append(NodeFactory.NameMangler.GetMangledMethodName(_owningMethod));
+            sb.Append(MangledNamePrefix).Append(nameMangler.GetMangledMethodName(_owningMethod));
         }
         public override int Offset => _owningMethod.Context.Target.PointerSize;
-        public override bool IsShareable => false;
-
-        protected override Instantiation TypeInstantiation => _owningMethod.OwningType.Instantiation;
-        protected override Instantiation MethodInstantiation => _owningMethod.Instantiation;
+        public override Instantiation TypeInstantiation => _owningMethod.OwningType.Instantiation;
+        public override Instantiation MethodInstantiation => _owningMethod.Instantiation;
         protected override TypeSystemContext Context => _owningMethod.Context;
+                
+        public MethodDesc OwningMethod => _owningMethod;
 
-        protected override DictionaryLayoutNode GetDictionaryLayout(NodeFactory factory)
+        public static string GetMangledName(NameMangler nameMangler, MethodDesc owningMethod)
+        {
+            return MangledNamePrefix + nameMangler.GetMangledMethodName(owningMethod);
+        }
+
+        protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
+        {
+            return GenericMethodsHashtableNode.GetGenericMethodsHashtableDependenciesForMethod(factory, _owningMethod);
+        }
+
+        public override DictionaryLayoutNode GetDictionaryLayout(NodeFactory factory)
         {
             return factory.GenericDictionaryLayout(_owningMethod.GetCanonMethodTarget(CanonicalFormKind.Specific));
         }
@@ -170,9 +167,9 @@ namespace ILCompiler.DependencyAnalysis
             // Method generic dictionaries get prefixed by the hash code of the owning method
             // to allow quick lookups of additional details by the type loader.
 
+            builder.EmitInt(_owningMethod.GetHashCode());
             if (builder.TargetPointerSize == 8)
                 builder.EmitInt(0);
-            builder.EmitInt(_owningMethod.GetHashCode());
 
             Debug.Assert(builder.CountBytes == Offset);
 

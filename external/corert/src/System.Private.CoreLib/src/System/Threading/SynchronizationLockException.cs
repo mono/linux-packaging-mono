@@ -17,7 +17,7 @@ using System.Runtime.Serialization;
 namespace System.Threading
 {
     [Serializable]
-    public class SynchronizationLockException : Exception
+    public class SynchronizationLockException : SystemException
     {
         public SynchronizationLockException()
             : base(SR.Arg_SynchronizationLockException)
@@ -37,6 +37,6 @@ namespace System.Threading
             HResult = __HResults.COR_E_SYNCHRONIZATIONLOCK;
         }
 
-        protected SynchronizationLockException(SerializationInfo info, StreamingContext context) : base (info, context) { }
+        protected SynchronizationLockException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 5.1.0\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-03-29 08:53+0000\n"
+"POT-Creation-Date: 2017-04-03 08:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2581,25 +2581,25 @@ msgstr ""
 msgid "Unsafe code may not appear in iterators"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:287
+#: mcs/mcs/ikvm.cs:292
 msgid "SDK path could not be resolved"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:512
+#: mcs/mcs/ikvm.cs:517
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:521
+#: mcs/mcs/ikvm.cs:526
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
 "removing one of the references"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:640
+#: mcs/mcs/ikvm.cs:645
 #, csharp-format
 msgid "Error opening icon file `{0}'. {1}"
 msgstr ""
