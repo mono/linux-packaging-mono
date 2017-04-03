@@ -60,8 +60,8 @@ namespace System.Globalization
         // The interesting part is that since haw-US doesn't have its own sort, it has to point at another
         // locale, which is what SCOMPAREINFO does.
 
-        private readonly String _name;  // The name used to construct this CompareInfo
-        private readonly String _sortName; // The name that defines our behavior
+        private String _name;  // The name used to construct this CompareInfo
+        private String _sortName; // The name that defines our behavior
 
         private SortVersion _sortVersion;
 
@@ -659,7 +659,7 @@ namespace System.Globalization
             if ((options & ValidIndexMaskOffFlags) != 0 && (options != CompareOptions.Ordinal))
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
 
-            return IndexOfCore(source, new string(value, 1), startIndex, count, options);
+            return IndexOfCore(source, new string(value, 1), startIndex, count, options, null);
         }
 
 
@@ -706,7 +706,7 @@ namespace System.Globalization
             if ((options & ValidIndexMaskOffFlags) != 0 && (options != CompareOptions.Ordinal))
                 throw new ArgumentException(SR.Argument_InvalidFlag, nameof(options));
 
-            return IndexOfCore(source, value, startIndex, count, options);
+            return IndexOfCore(source, value, startIndex, count, options, null);
         }
 
         ////////////////////////////////////////////////////////////////////////

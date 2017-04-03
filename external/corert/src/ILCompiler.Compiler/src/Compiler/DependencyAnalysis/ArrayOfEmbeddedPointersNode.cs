@@ -79,7 +79,7 @@ namespace ILCompiler.DependencyAnalysis
                 _parentNode = futureParent;
             }
 
-            protected override string GetName() => $"Embedded pointer to {Target.GetMangledName()}";
+            protected override string GetName(NodeFactory factory) => $"Embedded pointer to {Target.GetMangledName(factory.NameMangler)}";
 
             protected override void OnMarked(NodeFactory factory)
             {
@@ -110,7 +110,7 @@ namespace ILCompiler.DependencyAnalysis
 
             public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
             {
-                sb.Append(_parentNode._startSymbolMangledName).Append("_").Append(_id.ToStringInvariant());
+                sb.Append(nameMangler.CompilationUnitPrefix).Append(_parentNode._startSymbolMangledName).Append("_").Append(_id.ToStringInvariant());
             }
         }
         

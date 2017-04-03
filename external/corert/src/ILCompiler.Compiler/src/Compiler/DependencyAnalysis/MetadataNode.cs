@@ -34,7 +34,7 @@ namespace ILCompiler.DependencyAnalysis
 
         public override bool StaticDependenciesAreComputed => true;
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
@@ -42,7 +42,7 @@ namespace ILCompiler.DependencyAnalysis
             if (relocsOnly)
                 return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolNode[] { this });
 
-            byte[] blob = factory.MetadataManager.GetMetadataBlob();
+            byte[] blob = factory.MetadataManager.GetMetadataBlob(factory);
             _endSymbol.SetSymbolOffset(blob.Length);
 
             return new ObjectData(

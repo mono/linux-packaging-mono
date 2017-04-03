@@ -240,6 +240,22 @@ namespace System
             }
         }
 
+        internal bool IsAbstract
+        {
+            get
+            {
+                return _value->IsAbstract;
+            }
+        }
+
+        internal bool IsByRefLike
+        {
+            get
+            {
+                return _value->IsByRefLike;
+            }
+        }
+
         internal bool IsNullable
         {
             get

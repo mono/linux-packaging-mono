@@ -20,17 +20,19 @@ See the LICENSE file in the project root for more information.
     <CppCompilerAndLinker Condition="'$(CppCompilerAndLinker)' == ''">clang-3.9</CppCompilerAndLinker>
     <CppCompiler>$(CppCompilerAndLinker)</CppCompiler>
     <CppLinker>$(CppCompilerAndLinker)</CppLinker>
+    <CppLibCreator>ar</CppLibCreator>
   </PropertyGroup>
 
   <ItemGroup>
     <CppCompilerAndLinkerArg Include="-I $(IlcPath)/inc" />
-    <CppCompilerAndLinkerArg Condition="'$(Configuration)' == 'Debug'" Include="-O0" />
+    <CppCompilerAndLinkerArg Condition="'$(Configuration)' == 'Debug'" Include="-g -O0" />
     <CppCompilerAndLinkerArg Condition="'$(Configuration)' != 'Debug'" Include="-O2" />
     <CppCompilerAndLinkerArg Include="-c -Wno-invalid-offsetof" />
     <CppCompilerAndLinkerArg Include="$(AdditionalCppCompilerFlags)" />
   </ItemGroup>
 
   <ItemGroup>
+    <NativeLibrary Condition="'$(IlcMultiModule)' == 'true' and $(NativeCodeGen) == ''" Include="$(SharedLibrary)" />
     <NativeLibrary Condition="$(NativeCodeGen) == ''" Include="$(IlcPath)/sdk/libbootstrapper.a" />
     <NativeLibrary Condition="$(NativeCodeGen) == ''" Include="$(IlcPath)/sdk/libRuntime.a" />
     <NativeLibrary Condition="$(NativeCodeGen) == 'cpp'" Include="$(IlcPath)/sdk/libbootstrappercpp.a" />
@@ -40,6 +42,7 @@ See the LICENSE file in the project root for more information.
   <ItemGroup>
     <AdditionalNativeLibrary Include="$(IlcPath)/sdk/libSystem.Private.CoreLib.Native.a" />
     <AdditionalNativeLibrary Include="$(IlcPath)/framework/System.Native.a" />
+    <AdditionalNativeLibrary Include="$(IlcPath)/framework/libSystem.Globalization.Native.a" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,5 +54,6 @@ See the LICENSE file in the project root for more information.
     <LinkerArg Include="-ldl" />
     <LinkerArg Include="-lm" />
     <LinkerArg Include="-lrt" Condition="'$(TargetOS)' != 'OSX'" />
+    <LinkerArg Include="-licucore" Condition="'$(TargetOS)' == 'OSX'" />
   </ItemGroup>
 </Project>

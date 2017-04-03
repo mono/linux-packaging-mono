@@ -1261,16 +1261,22 @@ mono_get_got_var (MonoCompile *cfg)
 	return cfg->got_var;
 }
 
-static MonoInst *
-mono_get_vtable_var (MonoCompile *cfg)
+static void
+mono_create_rgctx_var (MonoCompile *cfg)
 {
-	g_assert (cfg->gshared);
-
 	if (!cfg->rgctx_var) {
 		cfg->rgctx_var = mono_compile_create_var (cfg, &mono_defaults.int_class->byval_arg, OP_LOCAL);
 		/* force the var to be stack allocated */
 		cfg->rgctx_var->flags |= MONO_INST_VOLATILE;
 	}
+}
+
+static MonoInst *
+mono_get_vtable_var (MonoCompile *cfg)
+{
+	g_assert (cfg->gshared);
+
+	mono_create_rgctx_var (cfg);
 
 	return cfg->rgctx_var;
 }
@@ -3002,10 +3008,17 @@ emit_write_barrier (MonoCompile *cfg, MonoInst *ptr, MonoInst *value)
 		wbarrier->sreg1 = ptr->dreg;
 		wbarrier->sreg2 = value->dreg;
 		MONO_ADD_INS (cfg->cbb, wbarrier);
-	} else if (card_table && !cfg->compile_aot && !mono_gc_card_table_nursery_check ()) {
+	} else if (card_table) {
 		int offset_reg = alloc_preg (cfg);
 		int card_reg;
 		MonoInst *ins;
+
+		/*
+		 * We emit a fast light weight write barrier. This always marks cards as in the concurrent
+		 * collector case, so, for the serial collector, it might slightly slow down nursery
+		 * collections. We also expect that the host system and the target system have the same card
+		 * table configuration, which is the case if they have the same pointer size.
+		 */
 
 		MONO_EMIT_NEW_BIALU_IMM (cfg, OP_SHR_UN_IMM, offset_reg, ptr->dreg, card_table_shift_bits);
 		if (card_table_mask)
@@ -4579,9 +4592,11 @@ mono_method_check_inlining (MonoCompile *cfg, MonoMethod *method)
 	/* also consider num_locals? */
 	/* Do the size check early to avoid creating vtables */
 	if (!inline_limit_inited) {
-		if (g_getenv ("MONO_INLINELIMIT"))
-			inline_limit = atoi (g_getenv ("MONO_INLINELIMIT"));
-		else
+		char *inlinelimit;
+		if ((inlinelimit = g_getenv ("MONO_INLINELIMIT"))) {
+			inline_limit = atoi (inlinelimit);
+			g_free (inlinelimit);
+		} else
 			inline_limit = INLINE_LENGTH_LIMIT;
 		inline_limit_inited = TRUE;
 	}
@@ -12338,6 +12353,21 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				MONO_INST_NEW (cfg, ins, OP_GET_LAST_ERROR);
 				ins->dreg = alloc_dreg (cfg, STACK_I4);
 				ins->type = STACK_I4;
+				MONO_ADD_INS (cfg->cbb, ins);
+
+				ip += 2;
+				*sp++ = ins;
+				break;
+			case CEE_MONO_GET_RGCTX_ARG:
+				CHECK_OPSIZE (2);
+				CHECK_STACK_OVF (1);
+
+				mono_create_rgctx_var (cfg);
+
+				MONO_INST_NEW (cfg, ins, OP_MOVE);
+				ins->dreg = alloc_dreg (cfg, STACK_PTR);
+				ins->sreg1 = cfg->rgctx_var->dreg;
+				ins->type = STACK_PTR;
 				MONO_ADD_INS (cfg->cbb, ins);
 
 				ip += 2;

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace System.Net.Sockets
 {
@@ -165,7 +166,7 @@ namespace System.Net.Sockets
                 for (int i = 0; i < maxBuffers; i++, startOffset = 0)
                 {
                     ArraySegment<byte> buffer = buffers[startIndex + i];
-                    Debug.Assert(buffer.Offset + startOffset < buffer.Array.Length, $"Unexpected values: Offset={buffer.Offset}, startOffset={startOffset}, Length={buffer.Array.Length}");
+                    RangeValidationHelpers.ValidateSegment(buffer);
 
                     handles[i] = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
                     iovecs[i].Base = &((byte*)handles[i].AddrOfPinnedObject())[buffer.Offset + startOffset];
@@ -275,6 +276,8 @@ namespace System.Net.Sockets
                 for (int i = 0; i < maxBuffers; i++)
                 {
                     ArraySegment<byte> buffer = buffers[i];
+                    RangeValidationHelpers.ValidateSegment(buffer);
+
                     handles[i] = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
                     iovecs[i].Base = &((byte*)handles[i].AddrOfPinnedObject())[buffer.Offset];
 
@@ -285,6 +288,12 @@ namespace System.Net.Sockets
                         iovecs[i].Count = (UIntPtr)(space - (toReceive - available));
                         toReceive = available;
                         iovCount = i + 1;
+                        for (int j = i + 1; j < maxBuffers; j++)
+                        {
+                            // We're not going to use these extra buffers, but validate their args
+                            // to alert the dev to a mistake and to be consistent with Windows.
+                            RangeValidationHelpers.ValidateSegment(buffers[j]);
+                        }
                         break;
                     }
 
@@ -390,6 +399,8 @@ namespace System.Net.Sockets
                 for (int i = 0; i < buffersCount; i++)
                 {
                     ArraySegment<byte> buffer = buffers[i];
+                    RangeValidationHelpers.ValidateSegment(buffer);
+
                     handles[i] = GCHandle.Alloc(buffer.Array, GCHandleType.Pinned);
                     iovecs[i].Base = &((byte*)handles[i].AddrOfPinnedObject())[buffer.Offset];
                     iovecs[i].Count = (UIntPtr)buffer.Count;
@@ -488,6 +499,12 @@ namespace System.Net.Sockets
         {
             Debug.Assert(socketAddress != null, "Expected non-null socketAddress");
             Debug.Assert(socketAddressLen > 0, $"Unexpected socketAddressLen: {socketAddressLen}");
+
+            if (socket.IsDisconnected)
+            {
+                errorCode = SocketError.IsConnected;
+                return true;
+            }
 
             Interop.Error err;
             fixed (byte* rawSocketAddress = socketAddress)
@@ -1454,15 +1471,89 @@ namespace System.Net.Sockets
             return socketError;
         }
 
-        public static SocketError SendFileAsync(SafeCloseSocket handle, FileStream fileStream, Action<long, SocketError> callback)
+        public static SocketError SendFileAsync(SafeCloseSocket handle, FileStream fileStream, Action<long, SocketError> callback) =>
+            SendFileAsync(handle, fileStream, 0, (int)fileStream.Length, callback);
+
+        private static SocketError SendFileAsync(SafeCloseSocket handle, FileStream fileStream, int offset, int count, Action<long, SocketError> callback)
         {
             long bytesSent;
-            SocketError socketError = handle.AsyncContext.SendFileAsync(fileStream.SafeFileHandle, 0, (int)fileStream.Length, out bytesSent, callback);
+            SocketError socketError = handle.AsyncContext.SendFileAsync(fileStream.SafeFileHandle, offset, count, out bytesSent, callback);
             if (socketError == SocketError.Success)
             {
                 callback(bytesSent, SocketError.Success);
             }
             return socketError;
+        }
+
+        public static async void SendPacketsAsync(
+            Socket socket, TransmitFileOptions options, SendPacketsElement[] elements, FileStream[] files, Action<long, SocketError> callback)
+        {
+            SocketError error = SocketError.Success;
+            long bytesTransferred = 0;
+            try
+            {
+                Debug.Assert(elements.Length == files.Length);
+                for (int i = 0; i < elements.Length; i++)
+                {
+                    SendPacketsElement e = elements[i];
+                    if (e != null)
+                    {
+                        if (e.FilePath == null)
+                        {
+                            bytesTransferred += await socket.SendAsync(new ArraySegment<byte>(e.Buffer, e.Offset, e.Count), SocketFlags.None).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            FileStream fs = files[i];
+                            if (e.Offset > fs.Length - e.Count)
+                            {
+                                throw new ArgumentOutOfRangeException();
+                            }
+
+                            var tcs = new TaskCompletionSource<SocketError>();
+                            error = SendFileAsync(socket.SafeHandle, fs, e.Offset, e.Count > 0 ? e.Count : checked((int)(fs.Length - e.Offset)), (transferred, se) =>
+                            {
+                                bytesTransferred += transferred;
+                                tcs.TrySetResult(se);
+                            });
+                            if (error == SocketError.IOPending)
+                            {
+                                error = await tcs.Task.ConfigureAwait(false);
+                            }
+                            if (error != SocketError.Success)
+                            {
+                                throw new SocketException((int)error);
+                            }
+                        }
+                    }
+                }
+
+                if ((options & (TransmitFileOptions.Disconnect | TransmitFileOptions.ReuseSocket)) != 0)
+                {
+                    await Task.Factory.FromAsync(
+                        (reuse, c, s) => ((Socket)s).BeginDisconnect(reuse, c, s),
+                        iar => ((Socket)iar.AsyncState).EndDisconnect(iar),
+                        (options & TransmitFileOptions.ReuseSocket) != 0,
+                        socket).ConfigureAwait(false);
+                }
+            }
+            catch (Exception exc)
+            {
+                foreach (FileStream fs in files)
+                {
+                    fs?.Dispose();
+                }
+
+                error =
+                    exc is SocketException se ? se.SocketErrorCode :
+                    exc is ArgumentException ? SocketError.InvalidArgument :
+                    exc is OperationCanceledException ? SocketError.OperationAborted :
+                    SocketError.SocketError;
+            }
+            finally
+            {
+                callback(bytesTransferred, error);
+            }
         }
 
         public static SocketError SendToAsync(SafeCloseSocket handle, byte[] buffer, int offset, int count, SocketFlags socketFlags, Internals.SocketAddress socketAddress, OverlappedAsyncResult asyncResult)
@@ -1556,12 +1647,19 @@ namespace System.Net.Sockets
 
         internal static SocketError DisconnectAsync(Socket socket, SafeCloseSocket handle, bool reuseSocket, DisconnectOverlappedAsyncResult asyncResult)
         {
-            throw new PlatformNotSupportedException(SR.net_sockets_disconnect_notsupported);
+            SocketError socketError = Disconnect(socket, handle, reuseSocket);
+            asyncResult.PostCompletion(socketError);
+            return socketError;
         }
 
         internal static SocketError Disconnect(Socket socket, SafeCloseSocket handle, bool reuseSocket)
         {
-            throw new PlatformNotSupportedException(SR.net_sockets_disconnect_notsupported);
+            handle.SetToDisconnected();
+
+            socket.Shutdown(SocketShutdown.Both);
+            return reuseSocket ?
+                socket.ReplaceHandle() :
+                SocketError.Success;
         }
     }
 }

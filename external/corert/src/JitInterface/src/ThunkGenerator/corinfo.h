@@ -231,12 +231,12 @@ TODO: Talk about initializing strutures before use
 #if COR_JIT_EE_VERSION > 460
 
 // Update this one
-SELECTANY const GUID JITEEVersionIdentifier = { /* 4bd06266-8ef7-4172-bec6-d3149fde7859 */
-    0x4bd06266,
-    0x8ef7,
-    0x4172,
-    {0xbe, 0xc6, 0xd3, 0x14, 0x9f, 0xde, 0x78, 0x59}
-};
+SELECTANY const GUID JITEEVersionIdentifier = { /* 3d43decb-a611-4413-a0af-a24278a00e2d */
+    0x3d43decb,
+    0xa611,
+    0x4413,
+    {0xa0, 0xaf, 0xa2, 0x42, 0x78, 0xa0, 0x0e, 0x2d}
+  };
 
 #else
 
@@ -691,6 +691,8 @@ enum CorInfoHelpFunc
 
     CORINFO_HELP_JIT_REVERSE_PINVOKE_ENTER, // Transition to cooperative mode in reverse P/Invoke prolog, frame is the first argument
     CORINFO_HELP_JIT_REVERSE_PINVOKE_EXIT,  // Transition to preemptive mode in reverse P/Invoke epilog, frame is the first argument
+
+    CORINFO_HELP_GVMLOOKUP_FOR_SLOT,        // Resolve a generic virtual method target from this pointer and runtime method handle 
 #endif
 
     CORINFO_HELP_COUNT,
@@ -988,6 +990,8 @@ enum CorInfoIntrinsics
     CORINFO_INTRINSIC_MemoryBarrier,
     CORINFO_INTRINSIC_GetCurrentManagedThread,
     CORINFO_INTRINSIC_GetManagedThreadId,
+    CORINFO_INTRINSIC_ByReference_Ctor,
+    CORINFO_INTRINSIC_ByReference_Value,
 
     CORINFO_INTRINSIC_Count,
     CORINFO_INTRINSIC_Illegal = -1,         // Not a true intrinsic,
@@ -1715,6 +1719,9 @@ enum CORINFO_FIELD_ACCESSOR
 
     CORINFO_FIELD_INTRINSIC_ZERO,           // intrinsic zero (IntPtr.Zero, UIntPtr.Zero)
     CORINFO_FIELD_INTRINSIC_EMPTY_STRING,   // intrinsic emptry string (String.Empty)
+#if COR_JIT_EE_VERSION > 460
+    CORINFO_FIELD_INTRINSIC_ISLITTLEENDIAN, // intrinsic BitConverter.IsLittleEndian
+#endif
 };
 
 // Set of flags returned in CORINFO_FIELD_INFO::fieldFlags
@@ -2108,6 +2115,20 @@ public:
             unsigned*                   offsetOfIndirection,    /* OUT */
             unsigned*                   offsetAfterIndirection  /* OUT */
             ) = 0;
+
+#if COR_JIT_EE_VERSION > 460
+    // Find the virtual method in implementingClass that overrides virtualMethod,
+    // or the method in implementingClass that implements the interface method
+    // represented by virtualMethod.
+    //
+    // Return null if devirtualization is not possible. Owner type is optional
+    // and provides additional context for shared interface devirtualization.
+    virtual CORINFO_METHOD_HANDLE resolveVirtualMethod(
+            CORINFO_METHOD_HANDLE       virtualMethod,          /* IN */
+            CORINFO_CLASS_HANDLE        implementingClass,      /* IN */
+            CORINFO_CONTEXT_HANDLE      ownerType = NULL        /* IN */
+            ) = 0;
+#endif
 
     // If a method's attributes have (getMethodAttribs) CORINFO_FLG_INTRINSIC set,
     // getIntrinsicID() returns the intrinsic ID.

@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.IO;
 using System.Diagnostics;
 
 using Internal.Text;
@@ -34,9 +33,9 @@ namespace ILCompiler.DependencyAnalysis
         public ISymbolNode EndSymbol => _endSymbol;
         public int Offset => 0;
         public override bool IsShareable => false;
-        public override ObjectNodeSection Section => ObjectNodeSection.DataSection;
+        public override ObjectNodeSection Section => _externalReferences.Section;
         public override bool StaticDependenciesAreComputed => true;
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
@@ -99,10 +98,7 @@ namespace ILCompiler.DependencyAnalysis
                 hashtable.Append(hashCode, nativeSection.Place(entry));
             }
 
-            MemoryStream stream = new MemoryStream();
-            nativeWriter.Save(stream);
-
-            byte[] streamBytes = stream.ToArray();
+            byte[] streamBytes = nativeWriter.Save();
 
             _endSymbol.SetSymbolOffset(streamBytes.Length);
 

@@ -22,11 +22,20 @@ namespace ILCompiler.DependencyAnalysis
         public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
             sb.Append("__TypeThreadStaticIndex_")
-              .Append(NodeFactory.NameMangler.GetMangledTypeName(_type));
+              .Append(nameMangler.GetMangledTypeName(_type));
         }
         public int Offset => 0;
-        protected override string GetName() => this.GetMangledName();
-        public override ObjectNodeSection Section => ObjectNodeSection.ReadOnlyDataSection;
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
+        public override ObjectNodeSection Section
+        {
+            get
+            {
+                if (_type.Context.Target.IsWindows)
+                    return ObjectNodeSection.ReadOnlyDataSection;
+                else
+                    return ObjectNodeSection.DataSection;
+            }
+        }
         public override bool IsShareable => true;
         public override bool StaticDependenciesAreComputed => true;
 
@@ -40,10 +49,10 @@ namespace ILCompiler.DependencyAnalysis
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
-            ObjectDataBuilder objData = new ObjectDataBuilder(factory);
+            ObjectDataBuilder objData = new ObjectDataBuilder(factory, relocsOnly);
 
-            objData.Alignment = objData.TargetPointerSize;
-            objData.DefinedSymbols.Add(this);
+            objData.RequireInitialPointerAlignment();
+            objData.AddSymbol(this);
 
             int typeTlsIndex = 0;
             if (!relocsOnly)

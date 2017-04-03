@@ -506,7 +506,8 @@ test_sources = 			\
 	basic-vectors.cs \
 	aot-tests.cs \
 	gc-test.cs \
-	gshared.cs
+	gshared.cs \
+	mixed.cs
 
 if NACL_CODEGEN
 test_sources += nacl.cs
@@ -751,6 +752,9 @@ rcheck: mono $(regtests)
 richeck: mono $(regtests)
 	$(INTERP_RUNTIME) --regression $(regtests)
 
+mixedcheck: mono mixed.exe
+	$(MINI_RUNTIME) --interp=jit=JitClass mixed.exe
+
 if ARM
 check-seq-points:
 else
@@ -900,7 +904,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 5.1.0.89/d189c74\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 5.1.0.129/0568203\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

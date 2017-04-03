@@ -29,7 +29,7 @@ namespace ILCompiler.DependencyAnalysis
             _target = target;
         }
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectNodeSection Section
         {
@@ -61,9 +61,9 @@ namespace ILCompiler.DependencyAnalysis
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly)
         {
-            ObjectDataBuilder dataBuilder = new ObjectDataBuilder(factory);
-            dataBuilder.Alignment = 16;
-            dataBuilder.DefinedSymbols.Add(this);
+            ObjectDataBuilder dataBuilder = new ObjectDataBuilder(factory, relocsOnly);
+            dataBuilder.RequireInitialPointerAlignment();
+            dataBuilder.AddSymbol(this);
 
             // +2 for SyncBlock and EETypePtr field
             int totalSize = (_gcMap.Size + 2) * _target.PointerSize;

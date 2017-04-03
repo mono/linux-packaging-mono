@@ -29,24 +29,25 @@ namespace ILCompiler.DependencyAnalysis
             switch (factory.Target.Architecture)
             {
                 case TargetArchitecture.X64:
-                    X64.X64Emitter x64Emitter = new X64.X64Emitter(factory);
+                    X64.X64Emitter x64Emitter = new X64.X64Emitter(factory, relocsOnly);
                     EmitCode(factory, ref x64Emitter, relocsOnly);
-                    x64Emitter.Builder.Alignment = factory.Target.MinimumFunctionAlignment;
-                    x64Emitter.Builder.DefinedSymbols.Add(this);
+                    x64Emitter.Builder.RequireInitialAlignment(factory.Target.MinimumFunctionAlignment);
+                    x64Emitter.Builder.AddSymbol(this);
                     return x64Emitter.Builder.ToObjectData();
 
                 case TargetArchitecture.X86:
-                    X86.X86Emitter x86Emitter = new X86.X86Emitter(factory);
+                    X86.X86Emitter x86Emitter = new X86.X86Emitter(factory, relocsOnly);
                     EmitCode(factory, ref x86Emitter, relocsOnly);
-                    x86Emitter.Builder.Alignment = factory.Target.MinimumFunctionAlignment;
-                    x86Emitter.Builder.DefinedSymbols.Add(this);
+                    x86Emitter.Builder.RequireInitialAlignment(factory.Target.MinimumFunctionAlignment);
+                    x86Emitter.Builder.AddSymbol(this);
                     return x86Emitter.Builder.ToObjectData();
 
                 case TargetArchitecture.ARM:
-                    ARM.ARMEmitter armEmitter = new ARM.ARMEmitter(factory);
+                case TargetArchitecture.ARMEL:
+                    ARM.ARMEmitter armEmitter = new ARM.ARMEmitter(factory, relocsOnly);
                     EmitCode(factory, ref armEmitter, relocsOnly);
-                    armEmitter.Builder.Alignment = factory.Target.MinimumFunctionAlignment;
-                    armEmitter.Builder.DefinedSymbols.Add(this);
+                    armEmitter.Builder.RequireInitialAlignment(factory.Target.MinimumFunctionAlignment);
+                    armEmitter.Builder.AddSymbol(this);
                     return armEmitter.Builder.ToObjectData();
 
                 default:

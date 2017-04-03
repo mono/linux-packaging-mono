@@ -233,9 +233,6 @@ case "$host" in
 		CFLAGS="$CFLAGS -DPAGE_SIZE=4096 -DS_IWRITE=S_IWUSR"
 		CXXFLAGS="$CXXFLAGS -DPAGE_SIZE=4096 -DS_IWRITE=S_IWUSR"
 
-		# The configure check can't detect this
-		AC_DEFINE(HAVE_LARGE_FILE_SUPPORT, 1, [Have large file support])
-
 		# to bypass the underscore linker check, can't work when cross-compiling
 		mono_cv_uscore=yes
 		mono_cv_clang=no
@@ -2410,6 +2407,8 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(system)
 	AC_CHECK_FUNCS(fork execv execve)
 	AC_CHECK_FUNCS(accept4)
+	AC_CHECK_FUNCS(localtime_r)
+	AC_CHECK_FUNCS(mkdtemp)
 	AC_CHECK_SIZEOF(size_t)
 	AC_CHECK_TYPES([blksize_t], [AC_DEFINE(HAVE_BLKSIZE_T)], , 
 		[#include <sys/types.h>

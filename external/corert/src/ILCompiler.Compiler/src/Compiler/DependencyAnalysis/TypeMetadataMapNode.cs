@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.IO;
 
 using Internal.NativeFormat;
 using Internal.Text;
@@ -33,11 +32,11 @@ namespace ILCompiler.DependencyAnalysis
         public int Offset => 0;
         public override bool IsShareable => false;
 
-        public override ObjectNodeSection Section => ObjectNodeSection.DataSection;
+        public override ObjectNodeSection Section => _externalReferences.Section;
 
         public override bool StaticDependenciesAreComputed => true;
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
@@ -51,7 +50,7 @@ namespace ILCompiler.DependencyAnalysis
             Section hashTableSection = writer.NewSection();
             hashTableSection.Place(typeMapHashTable);
 
-            foreach (var mappingEntry in factory.MetadataManager.GetTypeDefinitionMapping())
+            foreach (var mappingEntry in factory.MetadataManager.GetTypeDefinitionMapping(factory))
             {
                 if (!factory.CompilationModuleGroup.ContainsType(mappingEntry.Entity))
                     continue;
@@ -73,9 +72,7 @@ namespace ILCompiler.DependencyAnalysis
                 typeMapHashTable.Append((uint)hashCode, hashTableSection.Place(vertex));
             }
 
-            MemoryStream ms = new MemoryStream();
-            writer.Save(ms);
-            byte[] hashTableBytes = ms.ToArray();
+            byte[] hashTableBytes = writer.Save();
 
             _endSymbol.SetSymbolOffset(hashTableBytes.Length);
 

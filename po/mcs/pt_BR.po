@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-03-29 08:53+0000\n"
+"POT-Creation-Date: 2017-04-03 08:57+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -3060,25 +3060,25 @@ msgstr "Iteradores não podem ter parâmetros inseguros ou tipos yield"
 msgid "Unsafe code may not appear in iterators"
 msgstr "Código inseguro não pode aparecer em iteradores"
 
-#: mcs/mcs/ikvm.cs:287
+#: mcs/mcs/ikvm.cs:292
 msgid "SDK path could not be resolved"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:512
+#: mcs/mcs/ikvm.cs:517
 #, csharp-format
 msgid ""
 "An assembly with the same name `{0}' has already been imported. Consider "
 "removing one of the references or sign the assembly"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:521
+#: mcs/mcs/ikvm.cs:526
 #, csharp-format
 msgid ""
 "An assembly `{0}' with the same identity has already been imported. Consider "
 "removing one of the references"
 msgstr ""
 
-#: mcs/mcs/ikvm.cs:640
+#: mcs/mcs/ikvm.cs:645
 #, fuzzy, csharp-format
 msgid "Error opening icon file `{0}'. {1}"
 msgstr "Erro ao gerar arquivo de documentação XML \"{0}\" (\"{1}\")"

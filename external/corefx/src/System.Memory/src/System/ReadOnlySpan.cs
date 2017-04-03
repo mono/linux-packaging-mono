@@ -29,8 +29,6 @@ namespace System
         {
             if (array == null)
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
-            if (default(T) == null && array.GetType() != typeof(T[]))
-                ThrowHelper.ThrowArrayTypeMismatchException_ArrayTypeMustBeExactMatch(typeof(T));
 
             _length = array.Length;
             _pinnable = Unsafe.As<Pinnable<T>>(array);
@@ -54,8 +52,6 @@ namespace System
         {
             if (array == null)
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
-            if (default(T) == null && array.GetType() != typeof(T[]))
-                ThrowHelper.ThrowArrayTypeMismatchException_ArrayTypeMustBeExactMatch(typeof(T));
 
             int arrayLength = array.Length;
             if ((uint)start > (uint)arrayLength)
@@ -84,8 +80,6 @@ namespace System
         {
             if (array == null)
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
-            if (default(T) == null && array.GetType() != typeof(T[]))
-                ThrowHelper.ThrowArrayTypeMismatchException_ArrayTypeMustBeExactMatch(typeof(T));
             if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
@@ -220,37 +214,19 @@ namespace System
         /// <param name="destination">The span to copy items into.</param>
         public bool TryCopyTo(Span<T> destination)
         {
-            if ((uint)_length > (uint)destination.Length)
+            int length = _length;
+            int destLength = destination.Length;
+
+            if ((uint)length == 0)
+                return true;
+
+            if ((uint)length > (uint)destLength)
                 return false;
 
-            // TODO: This is a tide-over implementation as we plan to add a overlap-safe cpblk-based api to Unsafe. (https://github.com/dotnet/corefx/issues/13427)
-            unsafe
-            {
-                ref T src = ref DangerousGetPinnableReference();
-                ref T dst = ref destination.DangerousGetPinnableReference();
-                IntPtr srcMinusDst = Unsafe.ByteOffset<T>(ref dst, ref src);
-                int length = _length;
-
-                bool srcGreaterThanDst = (sizeof(IntPtr) == sizeof(int)) ? srcMinusDst.ToInt32() >= 0 : srcMinusDst.ToInt64() >= 0;
-                if (srcGreaterThanDst)
-                {
-                    // Source address greater than or equal to destination address. Can do normal copy.
-                    for (int i = 0; i < length; i++)
-                    {
-                        Unsafe.Add<T>(ref dst, i) = Unsafe.Add<T>(ref src, i);
-                    }
-                }
-                else
-                {
-                    // Source address less than destination address. Must do backward copy.
-                    int i = length;
-                    while (i-- != 0)
-                    {
-                        Unsafe.Add<T>(ref dst, i) = Unsafe.Add<T>(ref src, i);
-                    }
-                }
-                return true;
-            }
+            ref T src = ref DangerousGetPinnableReference();
+            ref T dst = ref destination.DangerousGetPinnableReference();
+            SpanHelpers.CopyTo<T>(ref dst, destLength, ref src, length);
+            return true;
         }
 
         /// <summary>
