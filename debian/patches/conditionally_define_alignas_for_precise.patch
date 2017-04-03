@@ -31,3 +31,20 @@ index a04424a..e67ce89 100644
  			;;
  		  darwin*)
  			AOT_SUPPORTED="yes"
+diff --git a/external/boringssl/CMakeLists.txt b/external/boringssl/CMakeLists.txt
+index 4e63c89..8875b10 100644
+--- a/external/boringssl/CMakeLists.txt
++++ b/external/boringssl/CMakeLists.txt
+@@ -32,7 +32,11 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+   if(ANDROID)
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x ${C_CXX_FLAGS}")
+   elseif(CMAKE_COMPILER_IS_GNUCXX)
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${C_CXX_FLAGS}")
++    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.6.99")
++      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${C_CXX_FLAGS}")
++    else()
++      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x ${C_CXX_FLAGS}")
++    endif()
+   else()
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ ${C_CXX_FLAGS}")
+   endif()
