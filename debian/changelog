@@ -1,3 +1,13 @@
+mono (4.8.0.524-0xamarin9) alpha; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [ec359ae] Fix BoringSSL for use on old GCC
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 03 Apr 2017 15:07:02 +0000
+
 mono (4.8.0.524-0xamarin8) alpha; urgency=medium
 
   * Packaging bugfix:
