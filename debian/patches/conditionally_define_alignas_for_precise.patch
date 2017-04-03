@@ -48,3 +48,17 @@ index 4e63c89..8875b10 100644
    else()
      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ ${C_CXX_FLAGS}")
    endif()
+diff --git a/external/boringssl/CMakeLists.txt b/external/boringssl/CMakeLists.txt
+index 4e63c89..296d010 100644
+--- a/external/boringssl/CMakeLists.txt
++++ b/external/boringssl/CMakeLists.txt
+@@ -198,7 +198,9 @@ add_subdirectory(ssl)
+ if(ENABLE_TESTS)
+ add_subdirectory(ssl/test)
+ endif()
++if(ENABLE_TOOL)
+ add_subdirectory(tool)
++endif()
+ if(ENABLE_DECREPIT)
+ add_subdirectory(decrepit)
+ endif()
