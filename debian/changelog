@@ -1,3 +1,13 @@
+mono (4.8.0.524-0xamarin10) alpha; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [83ca3a7] Don't build `tool` BTLS subdirectory, it breaks on GCC4.6
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 03 Apr 2017 16:14:04 +0000
+
 mono (4.8.0.524-0xamarin9) alpha; urgency=medium
 
   [ Xamarin Public Jenkins (auto-signing) ]
