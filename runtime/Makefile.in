@@ -90,6 +90,14 @@ target_triplet = @target@
 @INSTALL_WINAOT_TRUE@am__append_9 = winaot
 @INSTALL_XAMMAC_TRUE@am__append_10 = xammac xammac_net_4_5
 @INSTALL_ORBIS_TRUE@am__append_11 = orbis
+
+# Mono.WebBrowser.dll fails to verify on Windows
+@HOST_WIN32_TRUE@am__append_12 = Mono.WebBrowser.dll
+
+#  ILASM.exe has features which a testing_aot_full runtime will not support.
+#  It is invoked with an external mono when used in the runtime.
+#  We skip it here because otherwise it will fail to verify.
+@FULL_AOT_TESTS_TRUE@am__append_13 = ilasm.exe
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -366,12 +374,9 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
 @CROSS_COMPILING_TRUE@@HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
-@FULL_AOT_TESTS_FALSE@FULL_AOT_TESTS_FILTER = echo
 
-#  ILASM.exe has features which a testing_aot_full runtime will not support.
-#  It is invoked with an external mono when used in the runtime.
-#  We skip it here because otherwise it will fail to verify.
-@FULL_AOT_TESTS_TRUE@FULL_AOT_TESTS_FILTER = grep -v ilasm
+# assemblies which are excluded from testing in mcs-compileall below
+VERIFY_TESTS_FILTER = $(am__append_12) $(am__append_13)
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
@@ -593,19 +598,18 @@ mcs-do-run-test-profiles: test-support-files
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
 # Skip binary_reference_assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
-	export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' | $(FULL_AOT_TESTS_FILTER)` ; \
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
 	  if [ "binary_reference_assemblies" = "$$profile" ]; then \
           continue; \
-      fi; \
-	  if [ "xbuild_12" = "$$profile" ]; then \
+	  elif [ "xbuild_12" = "$$profile" ]; then \
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_x$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  elif [ "xbuild_14" = "$$profile" ]; then \
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_x$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  else \
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  fi; \
+	  export verifiable_files=`ls "$(mcs_topdir)/class/lib/$$profile/" | grep -E '\.(dll|exe)$$' $(foreach asm,$(VERIFY_TESTS_FILTER), | grep -v $(asm))` ; \
 	  export MONO_PATH; \
 	  for stub in $$verifiable_files; do \
 	  i=$(mcs_topdir)/class/lib/$$profile/$$stub ; \

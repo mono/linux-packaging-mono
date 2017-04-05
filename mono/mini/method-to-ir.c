@@ -3295,6 +3295,16 @@ emit_get_rgctx (MonoCompile *cfg, MonoMethod *method, int context_used)
 		EMIT_NEW_TEMPLOAD (cfg, mrgctx_var, mrgctx_loc->inst_c0);
 
 		return mrgctx_var;
+	} else if (MONO_CLASS_IS_INTERFACE (cfg->method->klass)) {
+		MonoInst *mrgctx_loc, *mrgctx_var;
+
+		/* Default interface methods need an mrgctx since the vtabke at runtime points at an implementing class */
+		mrgctx_loc = mono_get_vtable_var (cfg);
+		EMIT_NEW_TEMPLOAD (cfg, mrgctx_var, mrgctx_loc->inst_c0);
+
+		g_assert (mono_method_needs_static_rgctx_invoke (cfg->method, TRUE));
+
+		return mrgctx_var;
 	} else if (method->flags & METHOD_ATTRIBUTE_STATIC || method->klass->valuetype) {
 		MonoInst *vtable_loc, *vtable_var;
 
@@ -4730,7 +4740,11 @@ mini_emit_ldelema_1_ins (MonoCompile *cfg, MonoClass *klass, MonoInst *arr, Mono
 #if SIZEOF_REGISTER == 8
 	/* The array reg is 64 bits but the index reg is only 32 */
 	if (COMPILE_LLVM (cfg)) {
-		/* Not needed */
+		/*
+		 * abcrem can't handle the OP_SEXT_I4, so add this after abcrem,
+		 * during OP_BOUNDS_CHECK decomposition, and in the implementation
+		 * of OP_X86_LEA for llvm.
+		 */
 		index2_reg = index_reg;
 	} else {
 		index2_reg = alloc_preg (cfg);
