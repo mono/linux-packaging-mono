@@ -318,6 +318,9 @@
   <data name="Arg_MustBeSingle" xml:space="preserve">
     <value>Object must be of type Single.</value>
   </data>
+  <data name="Arg_MustBeStatic" xml:space="preserve">
+    <value>Method must be a static method.</value>
+  </data>
   <data name="Arg_MustBeString" xml:space="preserve">
     <value>Object must be of type String.</value>
   </data>
@@ -455,6 +458,9 @@
   </data>
   <data name="Arg_WrongType" xml:space="preserve">
     <value>The value '{0}' is not of type '{1}' and cannot be used in this generic collection.</value>
+  </data>
+  <data name="Argument_AbsolutePathRequired" xml:space="preserve">
+    <value>Absolute path information is required.</value>
   </data>
   <data name="Argument_AddingDuplicate" xml:space="preserve">
     <value>An item with the same key has already been added. Key: {0}</value>
@@ -1236,6 +1242,9 @@
   <data name="NotSupported_ByRefLike" xml:space="preserve">
     <value>Cannot create boxed ByRef-like values.</value>
   </data>
+  <data name="NotSupported_Type" xml:space="preserve">
+    <value>Type is not supported.</value>
+  </data>
   <data name="NotSupported_WaitAllSTAThread" xml:space="preserve">
     <value>WaitAll for multiple handles on a STA thread is not supported.</value>
   </data>
@@ -1656,6 +1665,9 @@
   </data>
   <data name="InvalidOperation_SendNotSupportedOnWindowsRTSynchronizationContext" xml:space="preserve">
     <value>Send is not supported in the Windows Runtime SynchronizationContext</value>
+  </data>
+  <data name="InvalidOperation_SetData_OnlyOnce" xml:space="preserve">
+    <value>SetData can only be used to set the value of a given name once.</value>
   </data>
   <data name="SemaphoreSlim_Disposed" xml:space="preserve">
     <value>The semaphore has been disposed.</value>
@@ -2304,5 +2316,32 @@
   </data>   
   <data name="PlatformNotSupported_StrongNameSigning" xml:space="preserve">
     <value>Strong-name signing is not supported on this platform.</value>
+  </data>
+  <data name="Serialization_MissingDateTimeData" xml:space="preserve">
+    <value>Invalid serialized DateTime data. Unable to find 'ticks' or 'dateData'.</value>
+  </data>
+  <data name="Serialization_DateTimeTicksOutOfRange" xml:space="preserve">
+    <value>Invalid serialized DateTime data. Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks.</value>
+  </data>
+  <data name="Arg_InvalidANSIString" xml:space="preserve">
+    <value>The ANSI string passed in could not be converted from the default ANSI code page to Unicode.</value>
+  </data>
+  <data name="Arg_ExpectedNulTermination" xml:space="preserve">
+    <value>The value passed was not NUL terminated.</value>
+  </data>
+  <data name="PlatformNotSupported_ArgIterator" xml:space="preserve">
+    <value>ArgIterator is not supported on this platform.</value>
+  </data>
+  <data name="Arg_TypeUnloadedException" xml:space="preserve">
+    <value>Type had been unloaded.</value>
+  </data>
+  <data name="Overflow_Currency" xml:space="preserve">
+    <value>Value was either too large or too small for a Currency.</value>
+  </data>
+  <data name="PlatformNotSupported_SecureBinarySerialization" xml:space="preserve">
+    <value>Secure binary serialization is not supported on this platform.</value>
+  </data>
+  <data name="Serialization_InvalidPtrValue" xml:space="preserve">
+    <value>An IntPtr or UIntPtr with an eight byte value cannot be deserialized on a machine with a four byte word size.</value>
   </data>
 </root>

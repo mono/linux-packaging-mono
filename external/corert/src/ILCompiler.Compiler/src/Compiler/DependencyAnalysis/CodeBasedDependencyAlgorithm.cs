@@ -18,6 +18,7 @@ namespace ILCompiler.DependencyAnalysis
     {
         public static void AddDependenciesDueToMethodCodePresence(ref DependencyList dependencies, NodeFactory factory, MethodDesc method)
         {
+            // TODO: https://github.com/dotnet/corert/issues/3224
             // Reflection invoke stub handling is here because in the current reflection model we reflection-enable
             // all methods that are compiled. Ideally the list of reflection enabled methods should be known before
             // we even start the compilation process (with the invocation stubs being compilation roots like any other).
@@ -48,6 +49,8 @@ namespace ILCompiler.DependencyAnalysis
 
                 if (method.OwningType.IsValueType && !method.Signature.IsStatic && !skipUnboxingStubDependency)
                     dependencies.Add(new DependencyListEntry(factory.MethodEntrypoint(method, unboxingStub: true), "Reflection unboxing stub"));
+
+                dependencies.AddRange(ReflectionVirtualInvokeMapNode.GetVirtualInvokeMapDependencies(factory, method));
             }
 
             if (method.HasInstantiation)

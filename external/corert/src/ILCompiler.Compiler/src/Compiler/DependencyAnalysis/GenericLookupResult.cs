@@ -38,7 +38,15 @@ namespace ILCompiler.DependencyAnalysis
 
         public virtual void EmitDictionaryEntry(ref ObjectDataBuilder builder, NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
         {
-            builder.EmitPointerReloc(GetTarget(factory, typeInstantiation, methodInstantiation, dictionary));
+            ISymbolNode target = GetTarget(factory, typeInstantiation, methodInstantiation, dictionary);
+            if (LookupResultReferenceType(factory) == GenericLookupResultReferenceType.ConditionalIndirect)
+            {
+                builder.EmitPointerRelocOrIndirectionReference(target);
+            }
+            else
+            {
+                builder.EmitPointerReloc(target);
+            }
         }
 
         public virtual GenericLookupResultReferenceType LookupResultReferenceType(NodeFactory factory)
@@ -72,18 +80,7 @@ namespace ILCompiler.DependencyAnalysis
         {
             // We are getting a constructed type symbol because this might be something passed to newobj.
             TypeDesc instantiatedType = _type.InstantiateSignature(typeInstantiation, methodInstantiation);
-            IEETypeNode typeNode = factory.ConstructedTypeSymbol(instantiatedType);
-
-            if (typeNode.RepresentsIndirectionCell)
-            {
-                // Imported eetype needs another indirection. Setting the lowest bit to indicate that.
-                Debug.Assert(LookupResultReferenceType(factory) == GenericLookupResultReferenceType.ConditionalIndirect);
-                return factory.Indirection(typeNode, 1);
-            }
-            else
-            {
-                return typeNode;
-            }
+            return factory.ConstructedTypeSymbol(instantiatedType);
         }
 
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
@@ -135,18 +132,7 @@ namespace ILCompiler.DependencyAnalysis
                 instantiatedType = instantiatedType.Instantiation[0];
 
             // We are getting a constructed type symbol because this might be something passed to newobj.
-            IEETypeNode typeNode = factory.ConstructedTypeSymbol(instantiatedType);
-
-            if (typeNode.RepresentsIndirectionCell)
-            {
-                // Imported eetype needs another indirection. Setting the lowest bit to indicate that.
-                Debug.Assert(LookupResultReferenceType(factory) == GenericLookupResultReferenceType.ConditionalIndirect);
-                return factory.Indirection(typeNode, 1);
-            }
-            else
-            {
-                return typeNode;
-            }
+            return factory.ConstructedTypeSymbol(instantiatedType);
         }
 
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
@@ -257,8 +243,14 @@ namespace ILCompiler.DependencyAnalysis
 
         public override IEnumerable<DependencyNodeCore<NodeFactory>> NonRelocDependenciesFromUsage(NodeFactory factory)
         {
+            MethodDesc canonMethod = _method.GetCanonMethodTarget(CanonicalFormKind.Universal);
+
+            // If we're producing a full vtable for the type, we don't need to report virtual method use.
+            if (factory.CompilationModuleGroup.ShouldProduceFullVTable(canonMethod.OwningType))
+                return Array.Empty<DependencyNodeCore<NodeFactory>>();
+
             return new DependencyNodeCore<NodeFactory>[] {
-                factory.VirtualMethodUse(_method.GetCanonMethodTarget(CanonicalFormKind.Universal))
+                factory.VirtualMethodUse(canonMethod)
             };
         }
     }
@@ -345,17 +337,7 @@ namespace ILCompiler.DependencyAnalysis
         public override ISymbolNode GetTarget(NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
         {
             MethodDesc instantiatedMethod = _method.InstantiateSignature(typeInstantiation, methodInstantiation);
-            ISymbolNode methodDictionaryNode = factory.MethodGenericDictionary(instantiatedMethod);
-            if (methodDictionaryNode.RepresentsIndirectionCell)
-            {
-                // Imported method dictionary needs another indirection. Setting the lowest bit to indicate that.
-                Debug.Assert(LookupResultReferenceType(factory) == GenericLookupResultReferenceType.ConditionalIndirect);
-                return factory.Indirection(methodDictionaryNode, 1);
-            }
-            else
-            {
-                return methodDictionaryNode;
-            }
+            return factory.MethodGenericDictionary(instantiatedMethod);
         }
 
         public override GenericLookupResultReferenceType LookupResultReferenceType(NodeFactory factory)
@@ -645,14 +627,7 @@ namespace ILCompiler.DependencyAnalysis
 
         public override NativeLayoutVertexNode TemplateDictionaryNode(NodeFactory factory)
         {
-            if (factory.Target.Abi == TargetAbi.CoreRT)
-            {
-                return factory.NativeLayout.NotSupportedDictionarySlot;
-            }
-            else
-            {
-                return factory.NativeLayout.GcStaticDictionarySlot(_type);
-            }
+            return factory.NativeLayout.GcStaticDictionarySlot(_type);
         }
 
         public override GenericLookupResultReferenceType LookupResultReferenceType(NodeFactory factory)
@@ -937,6 +912,73 @@ namespace ILCompiler.DependencyAnalysis
         public override NativeLayoutVertexNode TemplateDictionaryNode(NodeFactory factory)
         {
             return factory.NativeLayout.TypeSizeDictionarySlot(_type);
+        }
+    }
+
+    internal sealed class ConstrainedMethodUseLookupResult : GenericLookupResult
+    {
+        MethodDesc _constrainedMethod;
+        TypeDesc _constraintType;
+        bool _directCall;
+
+        public ConstrainedMethodUseLookupResult(MethodDesc constrainedMethod, TypeDesc constraintType, bool directCall)
+        {
+            _constrainedMethod = constrainedMethod;
+            _constraintType = constraintType;
+            _directCall = directCall;
+
+            Debug.Assert(_constraintType.IsRuntimeDeterminedSubtype || _constrainedMethod.IsRuntimeDeterminedExactMethod, "Concrete type in a generic dictionary?");
+            Debug.Assert(!_constrainedMethod.HasInstantiation || !_directCall, "Direct call to constrained generic method isn't supported");
+        }
+
+        public override ISymbolNode GetTarget(NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
+        {
+            MethodDesc instantiatedConstrainedMethod = _constrainedMethod.InstantiateSignature(typeInstantiation, methodInstantiation);
+            TypeDesc instantiatedConstraintType = _constraintType.InstantiateSignature(typeInstantiation, methodInstantiation);
+
+            MethodDesc implMethod = instantiatedConstraintType.GetClosestDefType().ResolveInterfaceMethodToVirtualMethodOnType(instantiatedConstrainedMethod);
+
+            // AOT use of this generic lookup is restricted to finding methods on valuetypes (runtime usage of this slot in universal generics is more flexible)
+            Debug.Assert(instantiatedConstraintType.IsValueType);
+            Debug.Assert(implMethod.OwningType == instantiatedConstraintType);
+
+            if (implMethod.HasInstantiation && implMethod.GetCanonMethodTarget(CanonicalFormKind.Specific) != implMethod)
+            {
+                return factory.FatFunctionPointer(implMethod);
+            }
+            else
+            {
+                return factory.MethodEntrypoint(implMethod);
+            }
+        }
+
+        public override void EmitDictionaryEntry(ref ObjectDataBuilder builder, NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
+        {
+            ISymbolNode target = GetTarget(factory, typeInstantiation, methodInstantiation, dictionary);
+            if (target is IFatFunctionPointerNode)
+            {
+                builder.EmitPointerReloc(target, FatFunctionPointerConstants.Offset);
+            }
+            else
+            {
+                builder.EmitPointerReloc(target);
+            }
+        }
+
+        public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
+        {
+            sb.Append("ConstrainedMethodUseLookupResult_");
+            sb.Append(nameMangler.GetMangledTypeName(_constraintType));
+            sb.Append(nameMangler.GetMangledMethodName(_constrainedMethod));
+            if (_directCall)
+                sb.Append("Direct");
+        }
+
+        public override string ToString() => $"ConstrainedMethodUseLookupResult: {_constraintType} {_constrainedMethod} {_directCall}";
+
+        public override NativeLayoutVertexNode TemplateDictionaryNode(NodeFactory factory)
+        {
+            return factory.NativeLayout.ConstrainedMethodUse(_constrainedMethod, _constraintType, _directCall);
         }
     }
 }
