@@ -1046,7 +1046,7 @@
 /* Enable lazy gc thread creation by the embedding host. */
 #undef LAZY_GC_THREAD_CREATION
 
-/* Full version of LLVM libraties */
+/* Full version of LLVM libraries */
 #undef LLVM_VERSION
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
