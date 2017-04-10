@@ -63,6 +63,9 @@ ifeq ($(DEB_HOST_ARCH), amd64)
 	BTLS_ARCH = true
 endif
 
+ifeq ($(DEB_HOST_ARCH), ppc64el)
+	CONF_FLAGS += --with-csc=mcs
+endif
 
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
