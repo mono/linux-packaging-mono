@@ -116,10 +116,10 @@ Provides:	mono(Mono.Configuration.Crypto) = 4.0.0.0
 %define _use_internal_dependency_generator 0
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
 %define __find_provides env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/redhat/find-provides && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-provides; } | sort | uniq'
-%define __find_requires env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/redhat/find-requires && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-requires; } | sort | uniq | grep ^...'
+%define __find_requires env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/redhat/find-requires && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-requires; } | grep -v "Mono.Configuration.Crypto" | sort | uniq | grep ^...'
 %else
 %define __find_provides env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/find-provides && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-provides; } | sort | uniq'
-%define __find_requires env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/find-requires && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-requires; } | sort | uniq | grep ^...'
+%define __find_requires env sh -c 'filelist=($(cat)) && { printf "%s\\n" "${filelist[@]}" | /usr/lib/rpm/find-requires && printf "%s\\n" "${filelist[@]}" | prefix=%{buildroot}%{_prefix} %{buildroot}%{_bindir}/mono-find-requires; } | grep -v "Mono.Configuration.Crypto" | sort | uniq | grep ^...'
 %endif
 
 %description
@@ -170,7 +170,7 @@ make
 %make_install
 
 # Remove hardcoded lib directory from the config
-sed -i 's,\$mono_libdir/,,g' %{buildroot}%{_sysconfdir}/mono/config
+sed -i s,%{_prefix}/lib/,,g %{buildroot}%{_sysconfdir}/mono/config
 
 # remove .la files (they are generally bad news)
 rm -f %{buildroot}%{_libdir}/*.la
@@ -190,8 +190,9 @@ rm -rf %{buildroot}%{_datadir}/libgc-mono
 # remove stuff that we don't package
 rm -f %{buildroot}%{_bindir}/cilc
 rm -f %{buildroot}%{_mandir}/man1/cilc.1*
-rm -f %{buildroot}%{_prefix}/lib/mono/*/browsercaps-updater.exe*
-rm -f %{buildroot}%{_prefix}/lib/mono/*/culevel.exe*
+rm -f %{buildroot}%{_mandir}/man1/mdb2ppdb.1*
+rm -f %{buildroot}%{_prefix}/lib/mono/*/browsercaps-updater.*
+rm -f %{buildroot}%{_prefix}/lib/mono/*/culevel.*
 
 # brp-compress doesn't search _mandir
 # so we cheat it
@@ -244,6 +245,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/certmgr
 %{_bindir}/chktrust
 %{_bindir}/crlupdate
+%{_bindir}/csc
 %{_bindir}/csharp
 %{_bindir}/dmcs
 %{_bindir}/gacutil
@@ -280,22 +282,37 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.IO.Compression.FileSystem.dll
 %{_prefix}/lib/mono/4.5/System.IO.Compression.dll
 %{_prefix}/lib/mono/4.5/al.exe*
+%{_prefix}/lib/mono/4.5/al.pdb
 %{_prefix}/lib/mono/4.5/cert-sync.exe*
+%{_prefix}/lib/mono/4.5/cert-sync.pdb
 %{_prefix}/lib/mono/4.5/certmgr.exe*
+%{_prefix}/lib/mono/4.5/certmgr.pdb
 %{_prefix}/lib/mono/4.5/chktrust.exe*
+%{_prefix}/lib/mono/4.5/chktrust.pdb
 %{_prefix}/lib/mono/4.5/crlupdate.exe*
+%{_prefix}/lib/mono/4.5/crlupdate.pdb
+%{_prefix}/lib/mono/4.5/csc.*
 %{_prefix}/lib/mono/4.5/csharp.exe*
+%{_prefix}/lib/mono/4.5/csharp.pdb
 %{_prefix}/lib/mono/4.5/gacutil.exe*
+%{_prefix}/lib/mono/4.5/gacutil.pdb
 %{_prefix}/lib/mono/4.5/ikdasm.exe*
+%{_prefix}/lib/mono/4.5/ikdasm.pdb
 %{_prefix}/lib/mono/4.5/mcs.exe*
+%{_prefix}/lib/mono/4.5/mcs.pdb
 %{_prefix}/lib/mono/4.5/mozroots.exe*
+%{_prefix}/lib/mono/4.5/mozroots.pdb
 %{_prefix}/lib/mono/4.5/setreg.exe*
+%{_prefix}/lib/mono/4.5/setreg.pdb
 %{_prefix}/lib/mono/4.5/sn.exe*
+%{_prefix}/lib/mono/4.5/sn.pdb
 %{_prefix}/lib/mono/4.5/Commons.Xml.Relaxng.dll
 %{_prefix}/lib/mono/4.5/CustomMarshalers.dll
 %{_prefix}/lib/mono/4.5/I18N.West.dll
 %{_prefix}/lib/mono/4.5/I18N.dll
 %{_prefix}/lib/mono/4.5/ICSharpCode.SharpZipLib.dll
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.dll*
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
 %{_prefix}/lib/mono/4.5/Mono.Btls.Interface.dll
@@ -309,6 +326,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/Mono.Simd.dll
 %{_prefix}/lib/mono/4.5/Mono.Tasklets.dll
 %{_prefix}/lib/mono/4.5/System.Configuration.dll
+%{_prefix}/lib/mono/4.5/System.Collections.Immutable.dll*
 %{_prefix}/lib/mono/4.5/System.Core.dll
 %{_prefix}/lib/mono/4.5/System.Drawing.dll
 %{_prefix}/lib/mono/4.5/System.Deployment.dll
@@ -322,6 +340,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Numerics.dll
 %{_prefix}/lib/mono/4.5/System.Numerics.Vectors.dll
 %{_prefix}/lib/mono/4.5/System.Reflection.Context.dll
+%{_prefix}/lib/mono/4.5/System.Reflection.Metadata.dll*
 %{_prefix}/lib/mono/4.5/System.Runtime.InteropServices.RuntimeInformation.dll
 %{_prefix}/lib/mono/4.5/System.Security.dll
 %{_prefix}/lib/mono/4.5/System.Threading.Tasks.Dataflow.dll
@@ -337,6 +356,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.dll
 %{_prefix}/lib/mono/4.5/cscompmgd.dll
 %{_prefix}/lib/mono/4.5/mscorlib.dll*
+%{_prefix}/lib/mono/4.5/mscorlib.pdb
 %{_prefix}/lib/mono/4.5/Facades/System*
 %{_prefix}/lib/mono/4.5/Facades/Microsoft*
 %{_prefix}/lib/mono/gac/Commons.Xml.Relaxng
@@ -635,7 +655,9 @@ Database connectivity for Mono.
 %{_prefix}/lib/mono/4.5/System.Transactions.dll
 %{_prefix}/lib/mono/4.5/WebMatrix.Data.dll
 %{_prefix}/lib/mono/4.5/sqlmetal.exe*
+%{_prefix}/lib/mono/4.5/sqlmetal.pdb
 %{_prefix}/lib/mono/4.5/sqlsharp.exe*
+%{_prefix}/lib/mono/4.5/sqlsharp.pdb
 %{_prefix}/lib/mono/gac/Mono.Data.Tds
 %{_prefix}/lib/mono/gac/Novell.Directory.Ldap
 %{_prefix}/lib/mono/gac/System.Data
@@ -748,10 +770,13 @@ Extra packages.
 %{_bindir}/mono-service2
 %{_mandir}/man1/mono-service.1%ext_man
 %{_prefix}/lib/mono/4.5/installutil.exe*
+%{_prefix}/lib/mono/4.5/installutil.pdb
 %{_prefix}/lib/mono/4.5/mono-service.exe*
+%{_prefix}/lib/mono/4.5/mono-service.pdb
 %{_prefix}/lib/mono/4.5/Mono.Messaging.RabbitMQ.dll
 %{_prefix}/lib/mono/4.5/Mono.Messaging.dll
 %{_prefix}/lib/mono/4.5/RabbitMQ.Client.Apigen.exe*
+%{_prefix}/lib/mono/4.5/RabbitMQ.Client.Apigen.pdb
 %{_prefix}/lib/mono/4.5/RabbitMQ.Client.dll
 %{_prefix}/lib/mono/4.5/System.Configuration.Install.dll
 %{_prefix}/lib/mono/4.5/System.Management.dll
@@ -824,6 +849,7 @@ Mono implementation of WCF, Windows Communication Foundation
 %{_prefix}/lib/mono/4.5/System.ServiceModel.dll
 %{_prefix}/lib/mono/4.5/SMDiagnostics.dll
 %{_prefix}/lib/mono/4.5/svcutil.exe*
+%{_prefix}/lib/mono/4.5/svcutil.pdb
 %{_prefix}/lib/mono/gac/System.Data.Services
 %{_prefix}/lib/mono/gac/System.IdentityModel
 %{_prefix}/lib/mono/gac/System.IdentityModel.Selectors
@@ -933,10 +959,15 @@ Mono implementation of ASP.NET, Remoting and Web Services.
 %{_prefix}/lib/mono/4.5/System.Web.WebPages.dll
 %{_prefix}/lib/mono/4.5/System.Web.dll
 %{_prefix}/lib/mono/4.5/disco.exe*
+%{_prefix}/lib/mono/4.5/disco.pdb
 %{_prefix}/lib/mono/4.5/mconfig.exe*
+%{_prefix}/lib/mono/4.5/mconfig.pdb
 %{_prefix}/lib/mono/4.5/soapsuds.exe*
+%{_prefix}/lib/mono/4.5/soapsuds.pdb
 %{_prefix}/lib/mono/4.5/wsdl.exe*
+%{_prefix}/lib/mono/4.5/wsdl.pdb
 %{_prefix}/lib/mono/4.5/xsd.exe*
+%{_prefix}/lib/mono/4.5/xsd.pdb
 %{_prefix}/lib/mono/4.5/Microsoft.Web.Infrastructure.dll
 %{_prefix}/lib/mono/gac/Microsoft.Web.Infrastructure
 %{_prefix}/lib/mono/gac/Mono.Http
@@ -1034,6 +1065,7 @@ brings xUnit to all .NET languages.
 %{_bindir}/nunit-console4
 %{_prefix}/lib/mono/4.5/nunit-console-runner.dll
 %{_prefix}/lib/mono/4.5/nunit-console.exe*
+%{_prefix}/lib/mono/4.5/nunit-console.pdb
 %{_prefix}/lib/mono/4.5/nunit.core.dll
 %{_prefix}/lib/mono/4.5/nunit.core.extensions.dll
 %{_prefix}/lib/mono/4.5/nunit.core.interfaces.dll
@@ -1167,7 +1199,6 @@ Mono development tools.
 %{_mandir}/man1/mprof-report.1%ext_man
 %{_mandir}/man1/pdb2mdb.1%ext_man
 %{_mandir}/man1/permview.1%ext_man
-%{_mandir}/man1/prj2make.1%ext_man
 %{_mandir}/man1/resgen.1%ext_man
 %{_mandir}/man1/secutil.1%ext_man
 %{_mandir}/man1/sgen.1%ext_man
@@ -1175,6 +1206,11 @@ Mono development tools.
 %{_mandir}/man1/xbuild.1%ext_man
 %{_prefix}/lib/mono-source-libs
 %{_prefix}/lib/mono/4.0
+%{_prefix}/lib/mono/4.6.2-api
+%{_prefix}/lib/mono/4.6.1-api
+%{_prefix}/lib/mono/4.6-api
+%{_prefix}/lib/mono/4.5.2-api
+%{_prefix}/lib/mono/4.5.1-api
 %{_prefix}/lib/mono/4.5-api
 %{_prefix}/lib/mono/4.0-api
 %{_prefix}/lib/mono/3.5-api
@@ -1188,37 +1224,68 @@ Mono development tools.
 %{_prefix}/lib/mono/4.5/Mono.CodeContracts.dll
 %{_prefix}/lib/mono/4.5/PEAPI.dll
 %{_prefix}/lib/mono/4.5/caspol.exe*
+%{_prefix}/lib/mono/4.5/caspol.pdb
 %{_prefix}/lib/mono/4.5/cccheck.exe*
+%{_prefix}/lib/mono/4.5/cccheck.pdb
 %{_prefix}/lib/mono/4.5/ccrewrite.exe*
+%{_prefix}/lib/mono/4.5/ccrewrite.pdb
 %{_prefix}/lib/mono/4.5/cert2spc.exe*
+%{_prefix}/lib/mono/4.5/cert2spc.pdb
 %{_prefix}/lib/mono/4.5/dtd2rng.exe*
+%{_prefix}/lib/mono/4.5/dtd2rng.pdb
 %{_prefix}/lib/mono/4.5/dtd2xsd.exe*
+%{_prefix}/lib/mono/4.5/dtd2xsd.pdb
 %{_prefix}/lib/mono/4.5/genxs.exe*
+%{_prefix}/lib/mono/4.5/genxs.pdb
 %{_prefix}/lib/mono/4.5/httpcfg.exe*
+%{_prefix}/lib/mono/4.5/httpcfg.pdb
 %{_prefix}/lib/mono/4.5/ictool.exe*
+%{_prefix}/lib/mono/4.5/ictool.pdb
 %{_prefix}/lib/mono/4.5/ilasm.exe*
+%{_prefix}/lib/mono/4.5/ilasm.pdb
 %{_prefix}/lib/mono/4.5/installvst.exe*
+%{_prefix}/lib/mono/4.5/installvst.pdb
 %{_prefix}/lib/mono/4.5/lc.exe*
+%{_prefix}/lib/mono/4.5/lc.pdb
 %{_prefix}/lib/mono/4.5/linkeranalyzer.exe*
+%{_prefix}/lib/mono/4.5/linkeranalyzer.pdb
 %{_prefix}/lib/mono/4.5/macpack.exe*
+%{_prefix}/lib/mono/4.5/macpack.pdb
 %{_prefix}/lib/mono/4.5/makecert.exe*
+%{_prefix}/lib/mono/4.5/makecert.pdb
 %{_prefix}/lib/mono/4.5/mdbrebase.exe*
+%{_prefix}/lib/mono/4.5/mdbrebase.pdb
 %{_prefix}/lib/mono/4.5/mkbundle.exe*
+%{_prefix}/lib/mono/4.5/mkbundle.pdb
 %{_prefix}/lib/mono/4.5/mono-api-info.exe*
+%{_prefix}/lib/mono/4.5/mono-api-info.pdb
 %{_prefix}/lib/mono/4.5/mono-api-html.exe*
+%{_prefix}/lib/mono/4.5/mono-api-html.pdb
 %{_prefix}/lib/mono/4.5/mono-cil-strip.exe*
+%{_prefix}/lib/mono/4.5/mono-cil-strip.pdb
 %{_prefix}/lib/mono/4.5/mono-shlib-cop.exe*
+%{_prefix}/lib/mono/4.5/mono-shlib-cop.pdb
 %{_prefix}/lib/mono/4.5/mono-xmltool.exe*
+%{_prefix}/lib/mono/4.5/mono-xmltool.pdb
 %{_prefix}/lib/mono/4.5/monolinker.*
 %{_prefix}/lib/mono/4.5/monop.exe*
+%{_prefix}/lib/mono/4.5/monop.pdb
 %{_prefix}/lib/mono/4.5/pdb2mdb.exe*
+%{_prefix}/lib/mono/4.5/pdb2mdb.pdb
 %{_prefix}/lib/mono/4.5/permview.exe*
+%{_prefix}/lib/mono/4.5/permview.pdb
 %{_prefix}/lib/mono/4.5/resgen.exe*
+%{_prefix}/lib/mono/4.5/resgen.pdb
 %{_prefix}/lib/mono/4.5/secutil.exe*
+%{_prefix}/lib/mono/4.5/secutil.pdb
 %{_prefix}/lib/mono/4.5/sgen.exe*
+%{_prefix}/lib/mono/4.5/sgen.pdb
 %{_prefix}/lib/mono/4.5/signcode.exe*
+%{_prefix}/lib/mono/4.5/signcode.pdb
 %{_prefix}/lib/mono/4.5/*symbolicate.exe*
+%{_prefix}/lib/mono/4.5/*symbolicate.pdb
 %{_prefix}/lib/mono/4.5/xbuild.exe*
+%{_prefix}/lib/mono/4.5/xbuild.pdb
 %{_prefix}/lib/mono/4.5/xbuild.rsp
 %{_prefix}/lib/mono/4.5/MSBuild/
 %{_prefix}/lib/mono/4.5/Microsoft.Build.xsd
@@ -1329,7 +1396,9 @@ Monodoc-core contains documentation tools for C#.
 %{_mandir}/man1/monodocs2html.1%ext_man
 %{_mandir}/man5/mdoc.5%ext_man
 %{_prefix}/lib/mono/4.5/mdoc.exe*
+%{_prefix}/lib/mono/4.5/mdoc.pdb
 %{_prefix}/lib/mono/4.5/mod.exe*
+%{_prefix}/lib/mono/4.5/mod.pdb
 %{_prefix}/lib/mono/gac/monodoc
 %{_prefix}/lib/mono/monodoc
 %{_prefix}/lib/monodoc
