@@ -1,3 +1,16 @@
+mono (5.0.0.42-0xamarin3) alpha; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [2d9585e] Don't try to include master-only API dirs [60692a3] Merge
+    branch 'master' of github.com:mono/linux-packaging-mono [416d4d8]
+    Try to pull in PCLs and msbuild at install time, make ca-certs
+    mandatory
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 10 Apr 2017 15:12:07 +0000
+
 mono (5.0.0.42-0xamarin2) alpha; urgency=medium
 
   * Packaging bugfix:
