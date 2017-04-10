@@ -90,7 +90,7 @@ namespace Mono.Linker.Steps {
 			context.SafeReadSymbols (assembly);
 		}
 
-		public static void ProcessLibrary (LinkContext context, AssemblyDefinition assembly, RootVisibility rootVisibility)
+		public static void ProcessLibrary (LinkContext context, AssemblyDefinition assembly, RootVisibility rootVisibility = RootVisibility.Any)
 		{
 			var action = rootVisibility == RootVisibility.Any ? AssemblyAction.Copy : AssemblyAction.Link;
 			SetAction (context, assembly, action);
@@ -138,8 +138,12 @@ namespace Mono.Linker.Steps {
 					markType = true;
 					break;
 
+				case RootVisibility.PublicAndFamilyAndAssembly:
+					markType = !type.IsNestedPrivate;
+					break;
+
 				case RootVisibility.PublicAndFamily:
-					markType = type.IsPublic || type.IsNestedFamily || type.IsNestedFamilyOrAssembly;
+					markType = type.IsPublic || type.IsNestedPublic || type.IsNestedFamily || type.IsNestedFamilyOrAssembly;
 					break;
 			}
 

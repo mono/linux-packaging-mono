@@ -310,11 +310,11 @@ namespace Mono.Cecil.PE {
 			for (int i = 0; i < streams; i++)
 				ReadMetadataStream (section);
 
-			if (image.TableHeap != null)
-				ReadTableHeap ();
-
 			if (image.PdbHeap != null)
 				ReadPdbHeap ();
+
+			if (image.TableHeap != null)
+				ReadTableHeap ();
 		}
 
 		void ReadDebugHeader ()
@@ -426,6 +426,15 @@ namespace Mono.Cecil.PE {
 			// Sorted			8
 			heap.Sorted = ReadInt64 ();
 
+			if (image.PdbHeap != null) {
+				for (int i = 0; i < Mixin.TableCount; i++) {
+					if (!image.PdbHeap.HasTable ((Table) i))
+						continue;
+
+					heap.Tables [i].Length = image.PdbHeap.TypeSystemTableRows [i];
+				}
+			}
+
 			for (int i = 0; i < Mixin.TableCount; i++) {
 				if (!heap.HasTable ((Table) i))
 					continue;
@@ -463,7 +472,7 @@ namespace Mono.Cecil.PE {
 			uint offset = (uint) BaseStream.Position - table_heap_offset - image.MetadataSection.PointerToRawData; // header
 
 			int stridx_size = image.StringHeap.IndexSize;
-			int guididx_size = image.GuidHeap.IndexSize;
+			int guididx_size = image.GuidHeap != null ? image.GuidHeap.IndexSize : 2;
 			int blobidx_size = image.BlobHeap != null ? image.BlobHeap.IndexSize : 2;
 
 			var heap = image.TableHeap;
