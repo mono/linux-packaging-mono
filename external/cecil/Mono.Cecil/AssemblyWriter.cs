@@ -93,7 +93,7 @@ namespace Mono.Cecil {
 			var symbol_writer_provider = parameters.SymbolWriterProvider;
 #if !PCL && !NET_CORE
 			if (symbol_writer_provider == null && parameters.WriteSymbols)
-				symbol_writer_provider = SymbolProvider.GetPlatformWriterProvider ();
+				symbol_writer_provider = new DefaultSymbolWriterProvider ();
 #endif
 			var symbol_writer = GetSymbolWriter (module, fq_name, symbol_writer_provider, parameters);
 
@@ -110,6 +110,7 @@ namespace Mono.Cecil {
 
 			var writer = ImageWriter.CreateWriter (module, metadata, stream);
 
+			stream.value.SetLength (0);
 			writer.WriteImage ();
 
 			if (metadata.symbol_writer != null)
@@ -157,7 +158,7 @@ namespace Mono.Cecil {
 		public abstract int Length { get; }
 
 		public bool IsLarge {
-			get { return Length > 65535; }
+			get { return Length > ushort.MaxValue; }
 		}
 
 		public abstract void Write (TableHeapBuffer buffer);
@@ -866,7 +867,7 @@ namespace Mono.Cecil {
 			this.module = module;
 			this.text_map = CreateTextMap ();
 			this.fq_name = fq_name;
-			this.time_stamp = (uint) DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1)).TotalSeconds;
+			this.time_stamp = module.timestamp;
 			this.symbol_writer_provider = symbol_writer_provider;
 
 			if (symbol_writer == null && module.HasImage && module.Image.HasDebugTables ()) {
@@ -1007,6 +1008,8 @@ namespace Mono.Cecil {
 		{
 			BuildModule ();
 
+			table_heap.string_offsets = string_heap.WriteStrings ();
+			table_heap.ComputeTableInformations ();
 			table_heap.WriteTableHeap ();
 		}
 
@@ -1265,7 +1268,7 @@ namespace Mono.Cecil {
 				return;
 
 			AttachTokens ();
-			AddTypeDefs ();
+			AddTypes ();
 			AddGenericParameters ();
 		}
 
@@ -1274,33 +1277,33 @@ namespace Mono.Cecil {
 			var types = module.Types;
 
 			for (int i = 0; i < types.Count; i++)
-				AttachTypeDefToken (types [i]);
+				AttachTypeToken (types [i]);
 		}
 
-		void AttachTypeDefToken (TypeDefinition type)
+		void AttachTypeToken (TypeDefinition type)
 		{
 			type.token = new MetadataToken (TokenType.TypeDef, type_rid++);
 			type.fields_range.Start = field_rid;
 			type.methods_range.Start = method_rid;
 
 			if (type.HasFields)
-				AttachFieldsDefToken (type);
+				AttachFieldsToken (type);
 
 			if (type.HasMethods)
-				AttachMethodsDefToken (type);
+				AttachMethodsToken (type);
 
 			if (type.HasNestedTypes)
-				AttachNestedTypesDefToken (type);
+				AttachNestedTypesToken (type);
 		}
 
-		void AttachNestedTypesDefToken (TypeDefinition type)
+		void AttachNestedTypesToken (TypeDefinition type)
 		{
 			var nested_types = type.NestedTypes;
 			for (int i = 0; i < nested_types.Count; i++)
-				AttachTypeDefToken (nested_types [i]);
+				AttachTypeToken (nested_types [i]);
 		}
 
-		void AttachFieldsDefToken (TypeDefinition type)
+		void AttachFieldsToken (TypeDefinition type)
 		{
 			var fields = type.Fields;
 			type.fields_range.Length = (uint) fields.Count;
@@ -1308,7 +1311,7 @@ namespace Mono.Cecil {
 				fields [i].token = new MetadataToken (TokenType.Field, field_rid++);
 		}
 
-		void AttachMethodsDefToken (TypeDefinition type)
+		void AttachMethodsToken (TypeDefinition type)
 		{
 			var methods = type.Methods;
 			type.methods_range.Length = (uint) methods.Count;
@@ -1413,7 +1416,7 @@ namespace Mono.Cecil {
 			return token;
 		}
 
-		void AddTypeDefs ()
+		void AddTypes ()
 		{
 			var types = module.Types;
 
@@ -2140,6 +2143,7 @@ namespace Mono.Cecil {
 			case ElementType.SzArray:
 			case ElementType.Class:
 			case ElementType.Object:
+			case ElementType.None:
 			case ElementType.Var:
 			case ElementType.MVar:
 				signature.WriteInt32 (0);
@@ -3216,7 +3220,7 @@ namespace Mono.Cecil {
 
 #endif
 
-			static partial class Mixin {
+	static partial class Mixin {
 
 		public static bool TryGetUniqueDocument (this MethodDebugInformation info, out Document document)
 		{

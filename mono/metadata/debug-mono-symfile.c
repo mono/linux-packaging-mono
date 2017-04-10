@@ -1,6 +1,8 @@
 /*
  * debug-mono-symfile.c: 
  *
+ *   Support for reading debug info from .mdb files.
+ *
  * Author:
  *	Mono Project (http://www.mono-project.com)
  *
@@ -32,6 +34,8 @@
 #include <mono/metadata/class-internals.h>
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/bsearch.h>
+
+#ifndef DISABLE_MDB
 
 #include <fcntl.h>
 #ifdef HAVE_UNISTD_H
@@ -212,7 +216,6 @@ mono_debug_symfile_is_loaded (MonoSymbolFile *symfile)
 {
 	return symfile && symfile->offset_table;
 }
-
 
 static int
 read_leb128 (const uint8_t *ptr, const uint8_t **rptr)
@@ -431,7 +434,7 @@ add_line (StatementMachine *stm, GPtrArray *il_offset_array, GPtrArray *line_num
  *   mono_debug_symfile_lookup_location
  */
 void
-mono_debug_symfile_free_location   (MonoDebugSourceLocation  *location)
+mono_debug_symfile_free_location (MonoDebugSourceLocation  *location)
 {
 	g_free (location->source_file);
 	g_free (location);
@@ -649,11 +652,6 @@ mono_debug_symfile_get_seq_points (MonoDebugMethodInfo *minfo, char **source_fil
 			if (source_files)
 				(*source_files) [i] = (*source_file_list)->len - 1;
 		}
-		if ((*source_file_list)->len == 0 && stm.file) {
-			MonoDebugSourceInfo *info = get_source_info (symfile, stm.file);
-
-			g_ptr_array_add (*source_file_list, info);
-		}
 	}				
 
 	if (n_seq_points) {
@@ -835,3 +833,54 @@ mono_debug_symfile_lookup_locals (MonoDebugMethodInfo *minfo)
 
 	return res;
 }
+
+#else /* DISABLE_MDB */
+
+MonoSymbolFile *
+mono_debug_open_mono_symbols (MonoDebugHandle *handle, const uint8_t *raw_contents,
+			      int size, gboolean in_the_debugger)
+{
+	return NULL;
+}
+
+void
+mono_debug_close_mono_symbol_file (MonoSymbolFile *symfile)
+{
+}
+
+mono_bool
+mono_debug_symfile_is_loaded (MonoSymbolFile *symfile)
+{
+	return FALSE;
+}
+
+MonoDebugMethodInfo *
+mono_debug_symfile_lookup_method (MonoDebugHandle *handle, MonoMethod *method)
+{
+	return NULL;
+}
+
+void
+mono_debug_symfile_get_seq_points (MonoDebugMethodInfo *minfo, char **source_file, GPtrArray **source_file_list, int **source_files, MonoSymSeqPoint **seq_points, int *n_seq_points)
+{
+	g_assert_not_reached ();
+}
+
+MonoDebugSourceLocation *
+mono_debug_symfile_lookup_location (MonoDebugMethodInfo *minfo, uint32_t offset)
+{
+	return NULL;
+}
+
+MonoDebugLocalsInfo*
+mono_debug_symfile_lookup_locals (MonoDebugMethodInfo *minfo)
+{
+	return NULL;
+}
+
+void
+mono_debug_symfile_free_location (MonoDebugSourceLocation  *location)
+{
+}
+
+#endif

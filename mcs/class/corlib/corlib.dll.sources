@@ -2,6 +2,7 @@ Assembly/AssemblyInfo.cs
 ../../build/common/Consts.cs
 ../../build/common/Locale.cs
 ../../build/common/AssemblyRef.cs
+../../build/common/SR.cs
 Microsoft.Win32/IRegistryApi.cs
 Microsoft.Win32/RegistryKey.cs
 Microsoft.Win32/RegistryKeyPermissionCheck.cs
@@ -246,8 +247,6 @@ System.Reflection/MethodBody.cs
 System.Reflection/Module.cs
 System.Reflection/ModuleResolveEventHandler.cs
 System.Reflection/MonoAssembly.cs
-System.Reflection/MonoGenericClass.cs
-System.Reflection/MonoGenericMethod.cs
 System.Reflection/MonoEvent.cs
 System.Reflection/MonoField.cs
 System.Reflection/MonoMethod.cs
@@ -264,7 +263,6 @@ System.Reflection.Emit/AssemblyBuilderAccess.cs
 System.Reflection.Emit/ConstructorBuilder.cs
 System.Reflection.Emit/ConstructorOnTypeBuilderInst.cs
 System.Reflection.Emit/CustomAttributeBuilder.cs
-System.Reflection.Emit/CustomAttributeBuilder.pns.cs
 System.Reflection.Emit/DerivedTypes.cs
 System.Reflection.Emit/DynamicILInfo.cs
 System.Reflection.Emit/DynamicMethod.cs
@@ -278,7 +276,6 @@ System.Reflection.Emit/FieldToken.cs
 System.Reflection.Emit/FlowControl.cs
 System.Reflection.Emit/GenericTypeParameterBuilder.cs
 System.Reflection.Emit/ILGenerator.cs
-System.Reflection.Emit/ILGenerator.pns.cs
 System.Reflection.Emit/Label.cs
 System.Reflection.Emit/LocalBuilder.cs
 System.Reflection.Emit/MethodBuilder.cs
@@ -294,18 +291,17 @@ System.Reflection.Emit/OpCodeType.cs
 System.Reflection.Emit/OperandType.cs
 System.Reflection.Emit/PackingSize.cs
 System.Reflection.Emit/ParameterBuilder.cs
-System.Reflection.Emit/ParameterBuilder.pns.cs
 System.Reflection.Emit/ParameterToken.cs
 System.Reflection.Emit/PEFileKinds.cs
 System.Reflection.Emit/PropertyBuilder.cs
 System.Reflection.Emit/PropertyOnTypeBuilderInst.cs
 System.Reflection.Emit/PropertyToken.cs
 System.Reflection.Emit/SignatureHelper.cs
-System.Reflection.Emit/SignatureHelper.pns.cs
 System.Reflection.Emit/SignatureToken.cs
 System.Reflection.Emit/StackBehaviour.cs
 System.Reflection.Emit/StringToken.cs
 System.Reflection.Emit/TypeBuilder.cs
+System.Reflection.Emit/TypeBuilderInstantiation.cs
 System.Reflection.Emit/TypeToken.cs
 System.Reflection.Emit/UnmanagedMarshal.cs
 System.Reflection.Emit/AssemblyBuilder.pns.cs
@@ -428,18 +424,10 @@ System.Runtime.InteropServices/VARFLAGS.cs
 System.Runtime.InteropServices/CustomQueryInterfaceMode.cs
 System.Runtime.InteropServices/ComEventsHelper.cs
 
-System.Runtime.InteropServices.WindowsRuntime/DefaultInterfaceAttribute.cs
 System.Runtime.InteropServices.WindowsRuntime/DesignerNamespaceResolveEventArgs.cs
-System.Runtime.InteropServices.WindowsRuntime/EventRegistrationToken.cs
-System.Runtime.InteropServices.WindowsRuntime/EventRegistrationTokenTable.cs
-System.Runtime.InteropServices.WindowsRuntime/IActivationFactory.cs
-System.Runtime.InteropServices.WindowsRuntime/InterfaceImplementedInVersionAttribute.cs
 System.Runtime.InteropServices.WindowsRuntime/NamespaceResolveEventArgs.cs
-System.Runtime.InteropServices.WindowsRuntime/ReadOnlyArrayAttribute.cs
-System.Runtime.InteropServices.WindowsRuntime/ReturnValueNameAttribute.cs
-System.Runtime.InteropServices.WindowsRuntime/WindowsRuntimeMarshal.cs
+System.Runtime.InteropServices.WindowsRuntime/UnsafeNativeMethods.cs
 System.Runtime.InteropServices.WindowsRuntime/WindowsRuntimeMetadata.cs
-System.Runtime.InteropServices.WindowsRuntime/WriteOnlyArrayAttribute.cs
 System.Runtime.Remoting/ActivatedClientTypeEntry.cs
 System.Runtime.Remoting/ActivatedServiceTypeEntry.cs
 System.Runtime.Remoting/CustomErrorsModes.cs
@@ -717,7 +705,6 @@ System.Security.Cryptography/CspKeyContainerInfo.cs
 System.Security.Cryptography/DESCryptoServiceProvider.cs
 System.Security.Cryptography/DSACryptoServiceProvider.cs
 System.Security.Cryptography/ICspAsymmetricAlgorithm.cs
-System.Security.Cryptography/IncrementalHash.cs
 System.Security.Cryptography/KeyNumber.cs
 System.Security.Cryptography/MD5CryptoServiceProvider.cs
 System.Security.Cryptography/RC2CryptoServiceProvider.cs
@@ -905,12 +892,14 @@ ReferenceSources/MethodBase.cs
 ReferenceSources/NativeMethods.cs
 ReferenceSources/RuntimeHandles.cs
 ReferenceSources/CompareInfo.cs
-ReferenceSources/TypeBuilderInstantiation.cs
 ReferenceSources/Buffer.cs
 ReferenceSources/TextInfo.cs
 ReferenceSources/win32native.cs
 ReferenceSources/SecurityContext.cs
 ReferenceSources/PathInternal.cs
+ReferenceSources/BinaryCompatibility.cs
+ReferenceSources/String.cs
+ReferenceSources/Type.cs
 
 ../referencesource/mscorlib/system/__filters.cs
 ../referencesource/mscorlib/system/__hresults.cs
@@ -1047,7 +1036,6 @@ ReferenceSources/PathInternal.cs
 ../referencesource/mscorlib/system/throwhelper.cs
 ../referencesource/mscorlib/system/timezoneinfo.cs
 ../referencesource/mscorlib/system/timezonenotfoundexception.cs
-../referencesource/mscorlib/system/tuple.cs
 ../referencesource/mscorlib/system/type.cs
 ../referencesource/mscorlib/system/typeaccessexception.cs
 ../referencesource/mscorlib/system/typeinitializationexception.cs
@@ -1195,6 +1183,7 @@ ReferenceSources/PathInternal.cs
 ../referencesource/mscorlib/system/io/binaryreader.cs
 ../referencesource/mscorlib/system/io/binarywriter.cs
 ../referencesource/mscorlib/system/io/bufferedstream.cs
+../referencesource/mscorlib/system/io/directory.cs
 ../referencesource/mscorlib/system/io/directorynotfoundexception.cs
 ../referencesource/mscorlib/system/io/drivenotfoundexception.cs
 ../referencesource/mscorlib/system/io/endofstreamexception.cs
@@ -1203,6 +1192,7 @@ ReferenceSources/PathInternal.cs
 ../referencesource/mscorlib/system/io/fileloadexception.cs
 ../referencesource/mscorlib/system/io/filenotfoundexception.cs
 ../referencesource/mscorlib/system/io/filesysteminfo.cs
+../referencesource/mscorlib/system/io/filesystemenumerable.cs
 ../referencesource/mscorlib/system/io/memorystream.cs
 ../referencesource/mscorlib/system/io/pathtoolongexception.cs
 ../referencesource/mscorlib/system/io/pinnedbuffermemorystream.cs
@@ -1349,6 +1339,13 @@ ReferenceSources/PathInternal.cs
 ../referencesource/mscorlib/system/runtime/interopservices/ComTypes/itypelib2.cs
 
 ../referencesource/mscorlib/system/runtime/interopservices/expando/iexpando.cs
+
+../referencesource/mscorlib/system/runtime/interopservices/windowsruntime/attributes.cs
+../referencesource/mscorlib/system/runtime/interopservices/windowsruntime/eventregistrationtoken.cs
+../referencesource/mscorlib/system/runtime/interopservices/windowsruntime/eventregistrationtokentable.cs
+../referencesource/mscorlib/system/runtime/interopservices/windowsruntime/iactivationfactory.cs
+../referencesource/mscorlib/system/runtime/interopservices/windowsruntime/irestrictederrorinfo.cs
+../referencesource/mscorlib/system/runtime/interopservices/windowsruntime/windowsruntimemarshal.cs
 
 ../referencesource/mscorlib//system/runtime/reliability/criticalfinalizerobject.cs
 ../referencesource/mscorlib//system/runtime/reliability/prepreparemethodattribute.cs
@@ -1575,7 +1572,6 @@ ReferenceSources/PathInternal.cs
 ../referencesource/mscorlib/system/runtime/serialization/formatters/soapfault.cs
 ../referencesource/mscorlib/system/runtime/serialization/formatters/soapmessage.cs
 
-../referencesource/mscorlib/system/runtime/versioning/binarycompatibility.cs
 ../referencesource/mscorlib/system/runtime/versioning/componentguaranteesattribute.cs
 ../referencesource/mscorlib/system/runtime/versioning/multitargetinghelpers.cs
 ../referencesource/mscorlib/system/runtime/versioning/NonVersionableAttribute.cs
@@ -1643,9 +1639,26 @@ ReferenceSources/PathInternal.cs
 ../referencesource/mscorlib/system/threading/Tasks/TaskToApm.cs
 
 ../referencesource/mscorlib/microsoft/win32/safehandles/safefilehandle.cs
+../referencesource/mscorlib/microsoft/win32/safehandles/safefindhandle.cs
 ../referencesource/mscorlib/microsoft/win32/safehandles/saferegistryhandle.cs
 ../referencesource/mscorlib/microsoft/win32/safehandles/safewaithandle.cs
 ../referencesource/mscorlib/microsoft/win32/safehandles/win32safehandles.cs
 
-ReferenceSources/String.cs
-ReferenceSources/Type.cs
+corert/Debug.cs
+corert/SR.cs
+
+../../../external/corert/src/Common/src/System/Numerics/Hashing/HashHelpers.cs
+
+../../../external/corert/src/System.Private.CoreLib/src/System/Collections/LowLevelComparer.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/Collections/ObjectEqualityComparer.cs
+
+../../../external/corert/src/System.Private.CoreLib/src/System/Tuple.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/TupleExtensions.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/ValueTuple.cs
+
+../../../external/corert/src/System.Private.CoreLib/src/System/Runtime/CompilerServices/ITuple.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/Runtime/CompilerServices/TupleElementNamesAttribute.cs
+
+System.Security.Cryptography.X509Certificates/X509CertificateImplApple.cs
+System.Security.Cryptography.X509Certificates/X509Helper.Apple.cs
+CoreFoundation/CFHelpers.cs

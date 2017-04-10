@@ -99,7 +99,7 @@ namespace Mono.Cecil {
 
 #if !PCL
 			if (symbol_reader_provider == null && parameters.ReadSymbols)
-				symbol_reader_provider = SymbolProvider.GetPlatformReaderProvider ();
+				symbol_reader_provider = new DefaultSymbolReaderProvider ();
 #endif
 
 			if (symbol_reader_provider != null) {
@@ -115,7 +115,8 @@ namespace Mono.Cecil {
 				var reader = symbol_reader_provider.GetSymbolReader (module, parameters.SymbolStream);
 #endif
 
-				module.ReadSymbols (reader);
+				if (reader != null)
+					module.ReadSymbols (reader);
 			}
 
 			if (module.Image.HasDebugTables ())
@@ -417,7 +418,7 @@ namespace Mono.Cecil {
 			for (int i = 0; i < methods.Count; i++) {
 				var method = methods [i];
 
-				if (method.HasBody && method.debug_info == null)
+				if (method.HasBody && method.token.RID != 0 && method.debug_info == null)
 					method.debug_info = symbol_reader.Read (method);
 			}
 		}
@@ -2859,10 +2860,15 @@ namespace Mono.Cecil {
 			InitializeDocuments ();
 
 			if (!MoveTo (Table.MethodDebugInformation, method.MetadataToken.RID))
-				return new Collection<SequencePoint> ();
+				return new Collection<SequencePoint> (0);
 
-			var document = metadata.GetDocument (ReadTableIndex (Table.Document));
-			var reader = ReadSignature (ReadBlobIndex ());
+			var document_index = ReadTableIndex (Table.Document);
+			var signature = ReadBlobIndex ();
+			if (signature == 0)
+				return new Collection<SequencePoint> (0);
+
+			var document = metadata.GetDocument (document_index);
+			var reader = ReadSignature (signature);
 
 			return reader.ReadSequencePoints (document);
 		}
@@ -2991,13 +2997,13 @@ namespace Mono.Cecil {
 					value = Encoding.Unicode.GetString (bytes, 0, bytes.Length);
 				} else
 					value = null;
-			} else if (type.etype == ElementType.Object) {
-				value = null;
 			} else if (type.IsTypeOf ("System", "Decimal")) {
 				var b = signature.ReadByte ();
 				value = new decimal (signature.ReadInt32 (), signature.ReadInt32 (), signature.ReadInt32 (), (b & 0x80) != 0, (byte) (b & 0x7f));
 			} else if (type.IsTypeOf ("System", "DateTime")) {
 				value = new DateTime (signature.ReadInt64());
+			} else if (type.etype == ElementType.Object || type.etype == ElementType.None || type.etype == ElementType.Class) {
+				value = null;
 			} else
 				value = signature.ReadConstantSignature (type.etype);
 
@@ -3054,7 +3060,6 @@ namespace Mono.Cecil {
 		{
 			byte [] blob;
 			int index, count;
-
 
 			GetBlobView (signature, out blob, out index, out count);
 			if (count == 0)

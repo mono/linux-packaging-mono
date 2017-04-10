@@ -228,122 +228,123 @@ typedef struct {
 	double vector [MONO_ZERO_LEN_ARRAY];
 } MonoArray;
 
-MonoObject*             <a href="#api:mono_object_new">mono_object_new</a>                  (MonoDomain *domain, 
-                                                          MonoClass *klass);
-MonoObject*             <a href="#api:mono_object_new_alloc_specific">mono_object_new_alloc_specific</a>   (MonoVTable *vtable);
-MonoObject*             <a href="#api:mono_object_new_fast">mono_object_new_fast</a>             (MonoVTable *vtable);
-MonoObject*             <a href="#api:mono_object_new_from_token">mono_object_new_from_token</a>        (MonoDomain *domain, 
-                                                          MonoImage *image, 
-                                                          guint32 token);
-MonoObject*             <a href="#api:mono_object_new_specific">mono_object_new_specific</a>         (MonoVTable *vtable);
-MonoObject*             <a href="#api:mono_object_clone">mono_object_clone</a>                (MonoObject *obj);
-MonoClass*              <a href="#api:mono_object_get_class">mono_object_get_class</a>            (MonoObject *obj);
-MonoDomain*             <a href="#api:mono_object_get_domain">mono_object_get_domain</a>           (MonoObject *obj);
-MonoMethod*             <a href="#api:mono_object_get_virtual_method">mono_object_get_virtual_method</a>   (MonoObject *obj, 
-                                                          MonoMethod *method);
-                        <a href="#api:mono_object_isinst_mbyref">mono_object_isinst_mbyref</a>        
-MonoObject*             <a href="#api:mono_object_isinst">mono_object_isinst</a>               (MonoObject *obj, 
-                                                          MonoClass *klass);
-gpointer                <a href="#api:mono_object_unbox">mono_object_unbox</a>                (MonoObject *obj);
-MonoObject*             <a href="#api:mono_object_castclass_mbyref">mono_object_castclass_mbyref</a>     (MonoObject *obj, 
-                                                          MonoClass *klass);
-guint                   <a href="#api:mono_object_get_size">mono_object_get_size</a>             (MonoObject* o);
-                        <a href="#api:mono_object_hash">mono_object_hash</a>                 
-MonoString*             <a href="#api:mono_object_to_string">mono_object_to_string</a>            (MonoObject *obj, 
-                                                          MonoObject **exc);
-MonoObject*             <a href="#api:mono_value_box">mono_value_box</a>                   (MonoDomain *domain, 
-                                                          MonoClass *klass, 
-                                                          gpointer value);
-void                    <a href="#api:mono_value_copy">mono_value_copy</a>                  (gpointer dest, 
-                                                          gpointer src, 
-                                                          MonoClass *klass);
-void                    <a href="#api:mono_value_copy_array">mono_value_copy_array</a>            (MonoArray *dest, 
-                                                          int dest_idx, 
-                                                          gpointer src, 
-                                                          int count);
-MonoArray*              <a href="#api:mono_array_new">mono_array_new</a>                   (MonoDomain *domain, 
-                                                          MonoClass *eclass, 
-                                                          uintptr_t n);
-MonoArray*              <a href="#api:mono_array_new_full">mono_array_new_full</a>              (MonoDomain *domain, 
-                                                          MonoClass *array_class, 
-                                                          uintptr_t *lengths, 
-                                                          intptr_t *lower_bounds);
-MonoArray*              <a href="#api:mono_array_new_specific">mono_array_new_specific</a>          (MonoVTable *vtable, 
-                                                          uintptr_t n);
-MonoClass*              <a href="#api:mono_array_class_get">mono_array_class_get</a>             (MonoClass *eclass, 
-                                                          guint32 rank);
-MonoArray*              <a href="#api:mono_array_clone">mono_array_clone</a>                 (MonoArray *array);
-                        <a href="#api:mono_array_get">mono_array_get</a>                   
-uintptr_t               <a href="#api:mono_array_length">mono_array_length</a>                (MonoArray *array);
-                        <a href="#api:mono_array_set">mono_array_set</a>                   
-                        <a href="#api:mono_array_setref">mono_array_setref</a>                
-                        <a href="#api:mono_array_addr">mono_array_addr</a>                  
-char*                   <a href="#api:mono_array_addr_with_size">mono_array_addr_with_size</a>        (MonoArray *array, 
-                                                          int size, 
-                                                          uintptr_t idx);
-gint32                  <a href="#api:mono_array_element_size">mono_array_element_size</a>          (MonoClass *ac);
-                        <a href="#api:mono_field_from_token">mono_field_from_token</a>            
-                        <a href="#api:mono_field_get_flags">mono_field_get_flags</a>             
-const char*             <a href="#api:mono_field_get_name">mono_field_get_name</a>              (MonoClassField *field);
-MonoClass*              <a href="#api:mono_field_get_parent">mono_field_get_parent</a>            (MonoClassField *field);
-MonoType*               <a href="#api:mono_field_get_type">mono_field_get_type</a>              (MonoClassField *field);
-void                    <a href="#api:mono_field_get_value">mono_field_get_value</a>             (MonoObject *obj, 
-                                                          MonoClassField *field, 
-                                                          void *value);
-MonoObject*             <a href="#api:mono_field_get_value_object">mono_field_get_value_object</a>      (MonoDomain *domain, 
-                                                          MonoClassField *field, 
-                                                          MonoObject *obj);
-void                    <a href="#api:mono_field_set_value">mono_field_set_value</a>             (MonoObject *obj, 
-                                                          MonoClassField *field, 
-                                                          void *value);
-void                    <a href="#api:mono_field_static_get_value">mono_field_static_get_value</a>      (MonoVTable *vt, 
-                                                          MonoClassField *field, 
-                                                          void *value);
-void                    <a href="#api:mono_field_static_set_value">mono_field_static_set_value</a>      (MonoVTable *vt, 
-                                                          MonoClassField *field, 
-                                                          void *value);
-                        <a href="#api:mono_field_get_object">mono_field_get_object</a>            
-MonoReflectionProperty* <a href="#api:mono_property_get_object">mono_property_get_object_checked</a> (MonoDomain *domain, 
-                                                          MonoClass *klass, 
-                                                          MonoProperty *property, 
-                                                          MonoError *error);
-guint32                 <a href="#api:mono_property_get_flags">mono_property_get_flags</a>          (MonoProperty *prop);
-MonoMethod*             <a href="#api:mono_property_get_get_method">mono_property_get_get_method</a>     (MonoProperty *prop);
-                        <a href="#api:mono_property_get_name">mono_property_get_name</a>           
-MonoClass*              <a href="#api:mono_property_get_parent">mono_property_get_parent</a>         (MonoProperty *prop);
-MonoMethod*             <a href="#api:mono_property_get_set_method">mono_property_get_set_method</a>     (MonoProperty *prop);
-MonoObject*             <a href="#api:mono_property_get_value">mono_property_get_value</a>          (MonoProperty *prop, 
-                                                          void *obj, 
-                                                          void **params, 
-                                                          MonoObject **exc);
-void                    <a href="#api:mono_property_set_value">mono_property_set_value</a>          (MonoProperty *prop, 
-                                                          void *obj, 
-                                                          void **params, 
-                                                          MonoObject **exc);
-                        <a href="#api:mono_event_get_object">mono_event_get_object</a>            
-MonoMethod*             <a href="#api:mono_event_get_add_method">mono_event_get_add_method</a>        (MonoEvent *event);
-guint32                 <a href="#api:mono_event_get_flags">mono_event_get_flags</a>             (MonoEvent *event);
-const char*             <a href="#api:mono_event_get_name">mono_event_get_name</a>              (MonoEvent *event);
-MonoClass*              <a href="#api:mono_event_get_parent">mono_event_get_parent</a>            (MonoEvent *event);
-MonoMethod*             <a href="#api:mono_event_get_raise_method">mono_event_get_raise_method</a>      (MonoEvent *event);
-MonoMethod*             <a href="#api:mono_event_get_remove_method">mono_event_get_remove_method</a>     (MonoEvent *event);
-gpointer                <a href="#api:mono_load_remote_field">mono_load_remote_field</a>           (MonoObject *this_obj, 
-                                                          MonoClass *klass, 
-                                                          MonoClassField *field, 
-                                                          gpointer *res);
-MonoObject*             <a href="#api:mono_load_remote_field_new">mono_load_remote_field_new</a>       (MonoObject *this_obj, 
-                                                          MonoClass *klass, 
-                                                          MonoClassField *field);
-void                    <a href="#api:mono_store_remote_field">mono_store_remote_field</a>          (MonoObject *this_obj, 
-                                                          MonoClass *klass, 
-                                                          MonoClassField *field, 
-                                                          gpointer val);
-void                    <a href="#api:mono_store_remote_field_new">mono_store_remote_field_new</a>      (MonoObject *this_obj, 
-                                                          MonoClass *klass, 
-                                                          MonoClassField *field, 
-                                                          MonoObject *arg);
-MonoMethod*             <a href="#api:mono_get_delegate_begin_invoke">mono_get_delegate_begin_invoke</a>   (MonoClass *klass);
-MonoMethod*             <a href="#api:mono_get_delegate_end_invoke">mono_get_delegate_end_invoke</a>     (MonoClass *klass);
+MonoObject*             <a href="#api:mono_object_new">mono_object_new</a>                       (MonoDomain *domain, 
+                                                               MonoClass *klass);
+MonoObject*             <a href="#api:mono_object_new_alloc_specific">mono_object_new_alloc_specific</a>        (MonoVTable *vtable);
+MonoObject*             <a href="#api:mono_object_new_fast">mono_object_new_fast</a>                  (MonoVTable *vtable);
+MonoObject*             <a href="#api:mono_object_new_from_token">mono_object_new_from_token</a>             (MonoDomain *domain, 
+                                                               MonoImage *image, 
+                                                               guint32 token);
+MonoObject*             <a href="#api:mono_object_new_specific">mono_object_new_specific</a>              (MonoVTable *vtable);
+MonoObject*             <a href="#api:mono_object_clone">mono_object_clone</a>                     (MonoObject *obj);
+MonoClass*              <a href="#api:mono_object_get_class">mono_object_get_class</a>                 (MonoObject *obj);
+MonoDomain*             <a href="#api:mono_object_get_domain">mono_object_get_domain</a>                (MonoObject *obj);
+MonoMethod*             <a href="#api:mono_object_get_virtual_method">mono_object_handle_get_virtual_method</a> (MonoObjectHandle obj, 
+                                                               MonoMethod *method, 
+                                                               MonoError *error);
+                        <a href="#api:mono_object_isinst_mbyref">mono_object_isinst_mbyref</a>             
+MonoObject*             <a href="#api:mono_object_isinst">mono_object_isinst</a>                    (MonoObject *obj_raw, 
+                                                               MonoClass *klass);
+gpointer                <a href="#api:mono_object_unbox">mono_object_unbox</a>                     (MonoObject *obj);
+MonoObject*             <a href="#api:mono_object_castclass_mbyref">mono_object_castclass_mbyref</a>          (MonoObject *obj_raw, 
+                                                               MonoClass *klass);
+guint                   <a href="#api:mono_object_get_size">mono_object_get_size</a>                  (MonoObject* o);
+                        <a href="#api:mono_object_hash">mono_object_hash</a>                      
+MonoString*             <a href="#api:mono_object_to_string">mono_object_to_string</a>                 (MonoObject *obj, 
+                                                               MonoObject **exc);
+MonoObject*             <a href="#api:mono_value_box">mono_value_box</a>                        (MonoDomain *domain, 
+                                                               MonoClass *klass, 
+                                                               gpointer value);
+void                    <a href="#api:mono_value_copy">mono_value_copy</a>                       (gpointer dest, 
+                                                               gpointer src, 
+                                                               MonoClass *klass);
+void                    <a href="#api:mono_value_copy_array">mono_value_copy_array</a>                 (MonoArray *dest, 
+                                                               int dest_idx, 
+                                                               gpointer src, 
+                                                               int count);
+MonoArray*              <a href="#api:mono_array_new">mono_array_new</a>                        (MonoDomain *domain, 
+                                                               MonoClass *eclass, 
+                                                               uintptr_t n);
+MonoArray*              <a href="#api:mono_array_new_full">mono_array_new_full</a>                   (MonoDomain *domain, 
+                                                               MonoClass *array_class, 
+                                                               uintptr_t *lengths, 
+                                                               intptr_t *lower_bounds);
+MonoArray*              <a href="#api:mono_array_new_specific">mono_array_new_specific</a>               (MonoVTable *vtable, 
+                                                               uintptr_t n);
+MonoClass*              <a href="#api:mono_array_class_get">mono_array_class_get</a>                  (MonoClass *eclass, 
+                                                               guint32 rank);
+MonoArray*              <a href="#api:mono_array_clone">mono_array_clone</a>                      (MonoArray *array);
+                        <a href="#api:mono_array_get">mono_array_get</a>                        
+uintptr_t               <a href="#api:mono_array_length">mono_array_length</a>                     (MonoArray *array);
+                        <a href="#api:mono_array_set">mono_array_set</a>                        
+                        <a href="#api:mono_array_setref">mono_array_setref</a>                     
+                        <a href="#api:mono_array_addr">mono_array_addr</a>                       
+char*                   <a href="#api:mono_array_addr_with_size">mono_array_addr_with_size</a>             (MonoArray *array, 
+                                                               int size, 
+                                                               uintptr_t idx);
+gint32                  <a href="#api:mono_array_element_size">mono_array_element_size</a>               (MonoClass *ac);
+                        <a href="#api:mono_field_from_token">mono_field_from_token</a>                 
+                        <a href="#api:mono_field_get_flags">mono_field_get_flags</a>                  
+const char*             <a href="#api:mono_field_get_name">mono_field_get_name</a>                   (MonoClassField *field);
+MonoClass*              <a href="#api:mono_field_get_parent">mono_field_get_parent</a>                 (MonoClassField *field);
+MonoType*               <a href="#api:mono_field_get_type">mono_field_get_type</a>                   (MonoClassField *field);
+void                    <a href="#api:mono_field_get_value">mono_field_get_value</a>                  (MonoObject *obj, 
+                                                               MonoClassField *field, 
+                                                               void *value);
+MonoObject*             <a href="#api:mono_field_get_value_object">mono_field_get_value_object</a>           (MonoDomain *domain, 
+                                                               MonoClassField *field, 
+                                                               MonoObject *obj);
+void                    <a href="#api:mono_field_set_value">mono_field_set_value</a>                  (MonoObject *obj, 
+                                                               MonoClassField *field, 
+                                                               void *value);
+void                    <a href="#api:mono_field_static_get_value">mono_field_static_get_value</a>           (MonoVTable *vt, 
+                                                               MonoClassField *field, 
+                                                               void *value);
+void                    <a href="#api:mono_field_static_set_value">mono_field_static_set_value</a>           (MonoVTable *vt, 
+                                                               MonoClassField *field, 
+                                                               void *value);
+                        <a href="#api:mono_field_get_object">mono_field_get_object</a>                 
+MonoReflectionProperty* <a href="#api:mono_property_get_object">mono_property_get_object_checked</a>      (MonoDomain *domain, 
+                                                               MonoClass *klass, 
+                                                               MonoProperty *property, 
+                                                               MonoError *error);
+guint32                 <a href="#api:mono_property_get_flags">mono_property_get_flags</a>               (MonoProperty *prop);
+MonoMethod*             <a href="#api:mono_property_get_get_method">mono_property_get_get_method</a>          (MonoProperty *prop);
+                        <a href="#api:mono_property_get_name">mono_property_get_name</a>                
+MonoClass*              <a href="#api:mono_property_get_parent">mono_property_get_parent</a>              (MonoProperty *prop);
+MonoMethod*             <a href="#api:mono_property_get_set_method">mono_property_get_set_method</a>          (MonoProperty *prop);
+MonoObject*             <a href="#api:mono_property_get_value">mono_property_get_value</a>               (MonoProperty *prop, 
+                                                               void *obj, 
+                                                               void **params, 
+                                                               MonoObject **exc);
+void                    <a href="#api:mono_property_set_value">mono_property_set_value</a>               (MonoProperty *prop, 
+                                                               void *obj, 
+                                                               void **params, 
+                                                               MonoObject **exc);
+                        <a href="#api:mono_event_get_object">mono_event_get_object</a>                 
+MonoMethod*             <a href="#api:mono_event_get_add_method">mono_event_get_add_method</a>             (MonoEvent *event);
+guint32                 <a href="#api:mono_event_get_flags">mono_event_get_flags</a>                  (MonoEvent *event);
+const char*             <a href="#api:mono_event_get_name">mono_event_get_name</a>                   (MonoEvent *event);
+MonoClass*              <a href="#api:mono_event_get_parent">mono_event_get_parent</a>                 (MonoEvent *event);
+MonoMethod*             <a href="#api:mono_event_get_raise_method">mono_event_get_raise_method</a>           (MonoEvent *event);
+MonoMethod*             <a href="#api:mono_event_get_remove_method">mono_event_get_remove_method</a>          (MonoEvent *event);
+gpointer                <a href="#api:mono_load_remote_field">mono_load_remote_field</a>                (MonoObject *this_obj, 
+                                                               MonoClass *klass, 
+                                                               MonoClassField *field, 
+                                                               gpointer *res);
+MonoObject*             <a href="#api:mono_load_remote_field_new">mono_load_remote_field_new</a>            (MonoObject *this_obj, 
+                                                               MonoClass *klass, 
+                                                               MonoClassField *field);
+void                    <a href="#api:mono_store_remote_field">mono_store_remote_field</a>               (MonoObject *this_obj, 
+                                                               MonoClass *klass, 
+                                                               MonoClassField *field, 
+                                                               gpointer val);
+void                    <a href="#api:mono_store_remote_field_new">mono_store_remote_field_new</a>           (MonoObject *this_obj, 
+                                                               MonoClass *klass, 
+                                                               MonoClassField *field, 
+                                                               MonoObject *arg);
+MonoMethod*             <a href="#api:mono_get_delegate_begin_invoke">mono_get_delegate_begin_invoke</a>        (MonoClass *klass);
+MonoMethod*             <a href="#api:mono_get_delegate_end_invoke">mono_get_delegate_end_invoke</a>          (MonoClass *klass);
 
 </div>
 
@@ -609,7 +610,7 @@ mono_object_get_domain (MonoObject *obj)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoMethod*
-mono_object_get_virtual_method (MonoObject *obj, MonoMethod *method)
+mono_object_handle_get_virtual_method (MonoObjectHandle obj, MonoMethod *method, MonoError *error)
 
 </div>
             <p />
@@ -647,7 +648,7 @@ mono_object_get_virtual_method (MonoObject *obj, MonoMethod *method)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoObject*
-mono_object_isinst (MonoObject *obj, MonoClass *klass)
+mono_object_isinst (MonoObject *obj_raw, MonoClass *klass)
 
 </div>
             <p />
@@ -698,7 +699,7 @@ mono_object_unbox (MonoObject *obj)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoObject*
-mono_object_castclass_mbyref (MonoObject *obj, MonoClass *klass)
+mono_object_castclass_mbyref (MonoObject *obj_raw, MonoClass *klass)
 
 </div>
             <p />

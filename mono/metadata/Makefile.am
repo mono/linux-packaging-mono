@@ -1,6 +1,23 @@
 if HOST_WIN32
 win32_sources = \
-	console-win32.c
+	console-win32.c \
+	console-win32-internals.h \
+	cominterop-win32-internals.h \
+	w32file-win32.c \
+	w32file-win32-internals.h \
+	icall-windows.c \
+	icall-windows-internals.h \
+	marshal-windows.c \
+	marshal-windows-internals.h \
+	mono-security-windows.c \
+	mono-security-windows-internals.h \
+	w32mutex-win32.c \
+	w32semaphore-win32.c \
+	w32event-win32.c \
+	w32process-win32.c \
+	w32process-win32-internals.h \
+	w32socket-win32.c \
+	w32error-win32.c
 
 platform_sources = $(win32_sources)
 
@@ -23,23 +40,27 @@ else
 assembliesdir = $(exec_prefix)/lib
 confdir = $(sysconfdir)
 unix_sources = \
-	console-unix.c
+	console-unix.c \
+	w32mutex-unix.c \
+	w32semaphore-unix.c \
+	w32event-unix.c \
+	w32process-unix.c \
+	w32process-unix-internals.h \
+	w32process-unix-osx.c \
+	w32process-unix-bsd.c \
+	w32process-unix-haiku.c \
+	w32process-unix-default.c \
+	w32socket-unix.c \
+	w32file-unix.c \
+	w32file-unix-glob.c \
+	w32file-unix-glob.h \
+	w32error-unix.c
 
 platform_sources = $(unix_sources)
 endif
 
 if PLATFORM_ANDROID
 platform_sources += ../../support/libm/complex.c
-endif
-
-if !DYNAMIC_BTLS
-if BTLS
-btls_file_list := $(shell cat ../btls/build-shared/mono-btls-shared-lo.txt)
-btls_static_file_list := $(shell cat ../btls/build-static/mono-btls-static-lo.txt)
-btls_libs = $(btls_file_list)
-btls_static_libs = $(btls_static_file_list)
-btls_cflags = -I$(top_srcdir)/external/boringssl/include -I$(top_srcdir)/mono/btls
-endif
 endif
 
 #
@@ -74,7 +95,7 @@ else
 noinst_LTLIBRARIES = libmonoruntime-config.la $(boehm_libraries) $(sgen_libraries)
 endif
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS) $(btls_cflags)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
 
 #
 # Make sure any prefix changes are updated in the binaries too.
@@ -104,17 +125,22 @@ null_gc_sources = \
 
 common_sources = \
 	$(platform_sources)	\
+	appdomain-icalls.h	\
 	assembly.c		\
+	assembly-internals.h	\
 	attach.h		\
 	attach.c		\
 	cil-coff.h		\
 	class.c			\
 	class-internals.h	\
+	class-inlines.h		\
+	class-accessors.c	\
 	cominterop.c		\
 	cominterop.h		\
 	console-io.h		\
 	coree.c 		\
 	coree.h 		\
+	coree-internals.h \
 	culture-info.h  	\
 	culture-info-tables.h	\
 	debug-helpers.c		\
@@ -130,12 +156,14 @@ common_sources = \
 	exception.c		\
 	exception.h		\
 	exception-internals.h	\
-	file-io.c		\
-	file-io.h		\
+	w32file.c		\
+	w32file.h		\
+	w32file-internals.h \
 	filewatcher.c		\
 	filewatcher.h		\
 	gc-internals.h		\
 	icall.c			\
+	icall-internals.h \
 	icall-def.h		\
 	image.c			\
 	image-internals.h	\
@@ -147,6 +175,7 @@ common_sources = \
 	lock-tracer.h		\
 	marshal.c		\
 	marshal.h		\
+	marshal-internals.h \
 	mempool.c		\
 	mempool.h		\
 	mempool-internals.h	\
@@ -180,10 +209,14 @@ common_sources = \
 	number-ms.h		\
 	object-internals.h	\
 	opcodes.c		\
-	socket-io.c		\
-	socket-io.h		\
-	process.c		\
-	process.h		\
+	property-bag.h	\
+	property-bag.c	\
+	w32socket.c		\
+	w32socket.h		\
+	w32socket-internals.h		\
+	w32process.c		\
+	w32process.h		\
+	w32process-internals.h		\
 	profiler.c		\
 	profiler-private.h	\
 	rand.h			\
@@ -204,10 +237,12 @@ common_sources = \
 	tabledefs.h 		\
 	threads.c		\
 	threads-types.h		\
-	threadpool-ms.c	\
-	threadpool-ms.h	\
-	threadpool-ms-io.c	\
-	threadpool-ms-io.h	\
+	threadpool.c	\
+	threadpool.h	\
+	threadpool-worker-default.c	\
+	threadpool-worker.h	\
+	threadpool-io.c	\
+	threadpool-io.h	\
 	verify.c		\
 	verify-internals.h	\
 	wrapper-types.h	\
@@ -227,8 +262,15 @@ common_sources = \
 	seq-points-data.h	\
 	seq-points-data.c	\
 	handle.c	\
-	handle.h
-
+	handle.h	\
+	w32mutex.h	\
+	w32semaphore.h	\
+	w32event.h	\
+	w32handle-namespace.h	\
+	w32handle-namespace.c	\
+	w32handle.h	\
+	w32handle.c	\
+	w32error.h
 
 # These source files have compile time dependencies on GC code
 gc_dependent_sources = \
@@ -251,10 +293,6 @@ boehm_sources = \
 	boehm-gc.c
 
 sgen_sources = \
-	sgen-os-posix.c		\
-	sgen-os-mach.c		\
-	sgen-os-win32.c		\
-	sgen-os-coop.c		\
 	sgen-bridge.c		\
 	sgen-bridge.h		\
 	sgen-bridge-internals.h	\
@@ -269,21 +307,21 @@ sgen_sources = \
 
 libmonoruntime_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(null_gc_sources) $(boehm_sources)
 libmonoruntime_la_CFLAGS = $(BOEHM_DEFINES)
-libmonoruntime_la_LIBADD = libmonoruntime-config.la $(btls_libs)
+libmonoruntime_la_LIBADD = libmonoruntime-config.la
 
 libmonoruntimesgen_la_SOURCES = $(common_sources) $(gc_dependent_sources) $(sgen_sources)
 libmonoruntimesgen_la_CFLAGS = $(SGEN_DEFINES)
-libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la $(btls_libs)
+libmonoruntimesgen_la_LIBADD = libmonoruntime-config.la
 
 libmonoruntime_static_la_SOURCES = $(libmonoruntime_la_SOURCES)
 libmonoruntime_static_la_LDFLAGS = -static
 libmonoruntime_static_la_CFLAGS = $(BOEHM_DEFINES)
-libmonoruntime_static_la_LIBADD = $(bundle_obj) libmonoruntime-config.la $(btls_static_libs)
+libmonoruntime_static_la_LIBADD = $(bundle_obj) libmonoruntime-config.la
 
 libmonoruntimesgen_static_la_SOURCES = $(libmonoruntimesgen_la_SOURCES)
 libmonoruntimesgen_static_la_LDFLAGS = -static
 libmonoruntimesgen_static_la_CFLAGS = $(SGEN_DEFINES)
-libmonoruntimesgen_static_la_LIBADD = libmonoruntime-config.la $(btls_static_libs)
+libmonoruntimesgen_static_la_LIBADD = libmonoruntime-config.la
 
 libmonoruntimeincludedir = $(includedir)/mono-$(API_VER)/mono/metadata
 
@@ -314,4 +352,4 @@ libmonoruntimeinclude_HEADERS = \
 	verify.h		
 
 EXTRA_DIST = $(win32_sources) $(unix_sources) $(null_sources) runtime.h \
-		threadpool-ms-io-poll.c threadpool-ms-io-epoll.c threadpool-ms-io-kqueue.c sgen-dynarray.h
+		threadpool-io-poll.c threadpool-io-epoll.c threadpool-io-kqueue.c sgen-dynarray.h

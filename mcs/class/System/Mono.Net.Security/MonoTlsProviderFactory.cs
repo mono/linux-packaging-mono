@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#if !ONLY_APPLETLS // ONLY_APPLETLS uses MonoTlsProviderFactory.Apple.cs instead 
+
 #if SECURITY_DEP
 #if MONO_SECURITY_ALIAS
 extern alias MonoSecurity;
@@ -111,12 +113,12 @@ namespace Mono.Net.Security
 
 		[MethodImpl (MethodImplOptions.InternalCall)]
 		internal extern static bool IsBtlsSupported ();
-#endif
 
 		static object locker = new object ();
 		static bool initialized;
-		static IMonoTlsProvider defaultProvider;
 
+		static IMonoTlsProvider defaultProvider;
+#endif
 		#endregion
 
 #if SECURITY_DEP
@@ -153,28 +155,29 @@ namespace Mono.Net.Security
 			}
 		}
 
-		const string LegacyProviderTypeName = "Mono.Net.Security.LegacyTlsProvider";
-		const string BtlsProviderTypeName = "Mono.Btls.MonoBtlsProvider";
-			
 		static void InitializeProviderRegistration ()
 		{
 			lock (locker) {
 				if (providerRegistration != null)
 					return;
 				providerRegistration = new Dictionary<string,string> ();
-				providerRegistration.Add ("legacy", LegacyProviderTypeName);
-				
-				bool btls_supported = IsBtlsSupported ();
-				if (btls_supported)
-					providerRegistration.Add ("btls", BtlsProviderTypeName);
+				providerRegistration.Add ("legacy", "Mono.Net.Security.LegacyTlsProvider");
+			
+				if (Platform.IsMacOS)
+					providerRegistration.Add ("default", "Mono.AppleTls.AppleTlsProvider");
+				else
+					providerRegistration.Add ("default", "Mono.Net.Security.LegacyTlsProvider");
 
-				providerRegistration.Add ("default", btls_supported  && !Platform.IsMacOS ? BtlsProviderTypeName : LegacyProviderTypeName);
-					
+				if (IsBtlsSupported ())
+					providerRegistration.Add ("btls", "Mono.Btls.MonoBtlsProvider");
+			
+				providerRegistration.Add ("apple", "Mono.AppleTls.AppleTlsProvider");
+				
 				X509Helper2.Initialize ();
 			}
 		}
 
-#if MOBILE_STATIC || !MOBILE
+#if !MONODROID && !MONOTOUCH && !XAMMAC
 		static MSI.MonoTlsProvider TryDynamicLoad ()
 		{
 			var variable = Environment.GetEnvironmentVariable ("MONO_TLS_PROVIDER");
@@ -268,4 +271,4 @@ namespace Mono.Net.Security
 
 	}
 }
-
+#endif

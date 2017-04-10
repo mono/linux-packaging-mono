@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <ProjectGuid>{089444FE-8FF5-4D8F-A51B-32D026425F6B}</ProjectGuid>
+  </PropertyGroup>
+  <!-- Default configurations to help VS understand the configurations -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard1.5-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard1.5-Release|AnyCPU'" />
+  <ItemGroup>
+    <Compile Include="AssemblyExtensionTests.cs" />
+    <Compile Include="ConstructorInfo\ConstructorInfoInvokeArrayTests.cs" />
+    <Compile Include="ConstructorInfo\ConstructorInfoTests.cs" />
+    <Compile Include="MethodInfoTests.cs" />
+    <Compile Include="TypeTests.cs" />
+    <Compile Include="PropertyInfoTests.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="EventInfoTests.cs" />
+    <Compile Include="FieldInfoTests.cs" />
+    <Compile Include="MemberInfoTests.cs" />
+    <Compile Include="MethodBaseTests.cs" />
+    <Compile Include="ModuleTests.cs" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>

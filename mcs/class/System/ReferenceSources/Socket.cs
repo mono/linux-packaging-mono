@@ -37,10 +37,10 @@ namespace System.Net.Sockets
 		// this version does not throw.
 		internal void InternalShutdown (SocketShutdown how)
 		{
-			if (!is_connected || is_disposed)
+			if (!is_connected || CleanedUp)
 				return;
 			int error;
-			Shutdown_internal (safe_handle, how, out error);
+			Shutdown_internal (m_Handle, how, out error);
 		}
 
 		internal IAsyncResult UnsafeBeginConnect (EndPoint remoteEP, AsyncCallback callback, object state)
@@ -86,7 +86,7 @@ namespace System.Net.Sockets
 
 		internal void SetSocketOption (SocketOptionLevel optionLevel, SocketOptionName optionName, int optionValue, bool silent)
 		{
-			if (is_disposed && is_closed) {
+			if (CleanedUp && is_closed) {
 				if (silent)
 					return;
 				throw new ObjectDisposedException (GetType ().ToString ());
@@ -94,56 +94,11 @@ namespace System.Net.Sockets
 
 			int error;
 
-			SetSocketOption_internal (safe_handle, optionLevel, optionName, null,
+			SetSocketOption_internal (m_Handle, optionLevel, optionName, null,
 				null, optionValue, out error);
 
 			if (!silent && error != 0)
 				throw new SocketException (error);
 		}
-
-        internal bool CanTryAddressFamily (AddressFamily family)
-        {
-			return (family == address_family) || (family == AddressFamily.InterNetwork && IsDualMode);
-        }
-
-        public static bool ConnectAsync(SocketType socketType, ProtocolType protocolType, SocketAsyncEventArgs e) {
-
-            bool retval;
-
-            // Throw if multiple buffers specified.
-            if (e.m_BufferList != null) {
-                throw new ArgumentException(SR.GetString(SR.net_multibuffernotsupported), "BufferList");
-            }
-
-            // Throw if RemoteEndPoint is null.
-            if (e.RemoteEndPoint == null) {
-                throw new ArgumentNullException("remoteEP");
-            }
-
-            EndPoint endPointSnapshot = e.RemoteEndPoint;
-            DnsEndPoint dnsEP = endPointSnapshot as DnsEndPoint;
-
-            if (dnsEP != null) {
-                Socket attemptSocket = null;
-                MultipleConnectAsync multipleConnectAsync = null;
-                if (dnsEP.AddressFamily == AddressFamily.Unspecified) {
-                    multipleConnectAsync = new MultipleSocketMultipleConnectAsync(socketType, protocolType);
-                } else {
-                    attemptSocket = new Socket(dnsEP.AddressFamily, socketType, protocolType);
-                    multipleConnectAsync = new SingleSocketMultipleConnectAsync(attemptSocket, false);
-                }
-
-                e.StartOperationCommon(attemptSocket);
-                e.StartOperationWrapperConnect(multipleConnectAsync);
-
-                retval = multipleConnectAsync.StartConnectAsync(e, dnsEP);
-            } else {
-                Socket attemptSocket = new Socket(endPointSnapshot.AddressFamily, socketType, protocolType);
-                retval = attemptSocket.ConnectAsync(e);
-            }
-
-            return retval;
-        }
-
 	}
 }

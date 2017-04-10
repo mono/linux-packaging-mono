@@ -34,54 +34,30 @@
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/exception.h>
 #include <mono/metadata/metadata-internals.h>
-#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/appdomain.h>
 #include <mono/metadata/mono-debug-debugger.h>
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/metadata/runtime.h>
+#include <mono/metadata/w32mutex.h>
+#include <mono/metadata/w32semaphore.h>
+#include <mono/metadata/w32event.h>
+#include <mono/metadata/w32process.h>
+#include <mono/metadata/w32file.h>
 #include <metadata/threads.h>
 #include <metadata/profiler-private.h>
 #include <mono/metadata/coree.h>
 
 //#define DEBUG_DOMAIN_UNLOAD 1
 
-/* we need to use both the Tls* functions and __thread because
- * some archs may generate faster jit code with one meachanism
- * or the other (we used to do it because tls slots were GC-tracked,
- * but we can't depend on this).
- */
-static MonoNativeTlsKey appdomain_thread_id;
-
-#ifdef MONO_HAVE_FAST_TLS
-
-MONO_FAST_TLS_DECLARE(tls_appdomain);
-
-#define GET_APPDOMAIN() ((MonoDomain*)MONO_FAST_TLS_GET(tls_appdomain))
-
+#define GET_APPDOMAIN() ((MonoDomain*)mono_tls_get_domain ())
 #define SET_APPDOMAIN(x) do { \
 	MonoThreadInfo *info; \
-	MONO_FAST_TLS_SET (tls_appdomain,x); \
-	mono_native_tls_set_value (appdomain_thread_id, x); \
-	mono_gc_set_current_thread_appdomain (x); \
+	mono_tls_set_domain (x); \
 	info = mono_thread_info_current (); \
 	if (info) \
 		mono_thread_info_tls_set (info, TLS_KEY_DOMAIN, (x));	\
 } while (FALSE)
-
-#else /* !MONO_HAVE_FAST_TLS */
-
-#define GET_APPDOMAIN() ((MonoDomain *)mono_native_tls_get_value (appdomain_thread_id))
-#define SET_APPDOMAIN(x) do {						\
-		MonoThreadInfo *info;								\
-		mono_native_tls_set_value (appdomain_thread_id, x);	\
-		mono_gc_set_current_thread_appdomain (x);		\
-		info = mono_thread_info_current ();				\
-		if (info)												 \
-			mono_thread_info_tls_set (info, TLS_KEY_DOMAIN, (x));	\
-	} while (FALSE)
-
-#endif
 
 #define GET_APPCONTEXT() (mono_thread_internal_current ()->current_appcontext)
 #define SET_APPCONTEXT(x) MONO_OBJECT_SETREF (mono_thread_internal_current (), current_appcontext, (x))
@@ -142,26 +118,6 @@ get_runtimes_from_exe (const char *exe_file, MonoImage **exe_image, const MonoRu
 static const MonoRuntimeInfo*
 get_runtime_by_version (const char *version);
 
-MonoNativeTlsKey
-mono_domain_get_tls_key (void)
-{
-	return appdomain_thread_id;
-}
-
-gint32
-mono_domain_get_tls_offset (void)
-{
-	int offset = -1;
-
-#ifdef HOST_WIN32
-	if (appdomain_thread_id)
-		offset = appdomain_thread_id;
-#else
-	MONO_THREAD_VAR_OFFSET (tls_appdomain, offset);
-#endif
-	return offset;
-}
-
 #define ALIGN_TO(val,align) ((((guint64)val) + ((align) - 1)) & ~((align) - 1))
 #define ALIGN_PTR_TO(ptr,align) (gpointer)((((gssize)(ptr)) + (align - 1)) & (~(align - 1)))
 
@@ -179,7 +135,7 @@ lock_free_mempool_free (LockFreeMempool *mp)
 	chunk = mp->chunks;
 	while (chunk) {
 		next = (LockFreeMempoolChunk *)chunk->prev;
-		mono_vfree (chunk, mono_pagesize ());
+		mono_vfree (chunk, mono_pagesize (), MONO_MEM_ACCOUNT_DOMAIN);
 		chunk = next;
 	}
 	g_free (mp);
@@ -197,7 +153,7 @@ lock_free_mempool_chunk_new (LockFreeMempool *mp, int len)
 	size = mono_pagesize ();
 	while (size - sizeof (LockFreeMempoolChunk) < len)
 		size += mono_pagesize ();
-	chunk = (LockFreeMempoolChunk *)mono_valloc (0, size, MONO_MMAP_READ|MONO_MMAP_WRITE);
+	chunk = (LockFreeMempoolChunk *)mono_valloc (0, size, MONO_MMAP_READ|MONO_MMAP_WRITE, MONO_MEM_ACCOUNT_DOMAIN);
 	g_assert (chunk);
 	chunk->mem = (guint8 *)ALIGN_PTR_TO ((char*)chunk + sizeof (LockFreeMempoolChunk), 16);
 	chunk->size = ((char*)chunk + size) - (char*)chunk->mem;
@@ -509,7 +465,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	static MonoDomain *domain = NULL;
 	MonoAssembly *ass = NULL;
 	MonoImageOpenStatus status = MONO_IMAGE_OK;
-	const MonoRuntimeInfo* runtimes [G_N_ELEMENTS (supported_runtimes) + 1];
+	const MonoRuntimeInfo* runtimes [G_N_ELEMENTS (supported_runtimes) + 1] = { NULL };
 	int n, dummy;
 
 #ifdef DEBUG_DOMAIN_UNLOAD
@@ -519,15 +475,21 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	if (domain)
 		g_assert_not_reached ();
 
-#ifdef HOST_WIN32
+#if defined(HOST_WIN32) && G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT)
 	/* Avoid system error message boxes. */
 	SetErrorMode (SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
 #endif
 
 #ifndef HOST_WIN32
 	mono_w32handle_init ();
-	wapi_init ();
+	mono_w32handle_namespace_init ();
 #endif
+
+	mono_w32mutex_init ();
+	mono_w32semaphore_init ();
+	mono_w32event_init ();
+	mono_w32process_init ();
+	mono_w32file_init ();
 
 #ifndef DISABLE_PERFCOUNTERS
 	mono_perfcounters_init ();
@@ -540,9 +502,6 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 
 	mono_gc_base_init ();
 	mono_thread_info_attach (&dummy);
-
-	MONO_FAST_TLS_INIT (tls_appdomain);
-	mono_native_tls_alloc (&appdomain_thread_id, NULL);
 
 	mono_coop_mutex_init_recursive (&appdomains_mutex);
 
@@ -889,12 +848,10 @@ mono_cleanup (void)
 	mono_images_cleanup ();
 	mono_metadata_cleanup ();
 
-	mono_native_tls_free (appdomain_thread_id);
 	mono_coop_mutex_destroy (&appdomains_mutex);
 
-#ifndef HOST_WIN32
-	wapi_cleanup ();
-#endif
+	mono_w32process_cleanup ();
+	mono_w32file_cleanup ();
 }
 
 void

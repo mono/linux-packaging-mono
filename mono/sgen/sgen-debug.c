@@ -324,7 +324,7 @@ static void
 setup_valid_nursery_objects (void)
 {
 	if (!valid_nursery_objects)
-		valid_nursery_objects = (GCObject **)sgen_alloc_os_memory (DEFAULT_NURSERY_SIZE, (SgenAllocFlags)(SGEN_ALLOC_INTERNAL | SGEN_ALLOC_ACTIVATE), "debugging data");
+		valid_nursery_objects = (GCObject **)sgen_alloc_os_memory (DEFAULT_NURSERY_SIZE, (SgenAllocFlags)(SGEN_ALLOC_INTERNAL | SGEN_ALLOC_ACTIVATE), "debugging data", MONO_MEM_ACCOUNT_SGEN_DEBUGGING);
 	valid_nursery_object_count = 0;
 	sgen_scan_area_with_callback (nursery_section->data, nursery_section->end_data, setup_mono_sgen_scan_area_with_callback, NULL, FALSE, FALSE);
 }
@@ -983,7 +983,8 @@ check_reference_for_xdomain (GCObject **ptr, GCObject *obj, MonoDomain *domain)
 	for (klass = obj->vtable->klass; klass; klass = klass->parent) {
 		int i;
 
-		for (i = 0; i < klass->field.count; ++i) {
+		int fcount = mono_class_get_field_count (klass);
+		for (i = 0; i < fcount; ++i) {
 			if (klass->fields[i].offset == offset) {
 				field = &klass->fields[i];
 				break;

@@ -17,28 +17,30 @@ namespace MonoTests.System.Net.WebSockets
 	public class ClientWebSocketTest
 	{
 		const string EchoServerUrl = "ws://corefx-net.cloudapp.net/WebSocket/EchoWebSocket.ashx";
-		int port;
-		int Port {
-			get {
-				if (port == 0)
-					port = NetworkHelpers.FindFreePort ();
-				return port;
-			}
+
+		ClientWebSocket socket;
+		MethodInfo headerSetMethod;
+		int Port;
+
+		[SetUp]
+		public void Setup ()
+		{
+			socket = new ClientWebSocket ();
+			Port = NetworkHelpers.FindFreePort ();
 		}
+
 		HttpListener _listener;
 		HttpListener listener {
 			get {
 				if (_listener != null)
 					return _listener;
+
 				var tmp = new HttpListener ();
 				tmp.Prefixes.Add ("http://localhost:" + Port + "/");
 				tmp.Start ();
 				return _listener = tmp;
 			}
 		}
-		ClientWebSocket _socket;
-		ClientWebSocket socket { get { return _socket ?? (_socket = new ClientWebSocket ()); } }
-		MethodInfo headerSetMethod;
 
 		[TearDown]
 		public void Teardown ()
@@ -47,11 +49,10 @@ namespace MonoTests.System.Net.WebSockets
 				_listener.Stop ();
 				_listener = null;
 			}
-			if (_socket != null) {
-				if (_socket.State == WebSocketState.Open)
-					_socket.CloseAsync (WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).Wait (2000);
-				_socket.Dispose ();
-				_socket = null;
+			if (socket != null) {
+				if (socket.State == WebSocketState.Open)
+					socket.CloseAsync (WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).Wait (2000);
+				socket.Dispose ();
 			}
 		}
 
@@ -166,11 +167,8 @@ namespace MonoTests.System.Net.WebSockets
 		}
 
 		[Test]
-#if FEATURE_NO_BSD_SOCKETS
-		[ExpectedException (typeof (PlatformNotSupportedException))]
-#else
 		[ExpectedException (typeof (InvalidOperationException))]
-#endif
+		[Category ("MobileNotWorking")] // Fails when ran as part of the entire BCL test suite. Works when only this fixture is ran
 		public void SendAsyncArgTest_NotConnected ()
 		{
 			socket.SendAsync (new ArraySegment<byte> (new byte[0]), WebSocketMessageType.Text, true, CancellationToken.None);
@@ -184,11 +182,9 @@ namespace MonoTests.System.Net.WebSockets
 			socket.SendAsync (new ArraySegment<byte> (), WebSocketMessageType.Text, true, CancellationToken.None);
 		}
 
-#if FEATURE_NO_BSD_SOCKETS
-		[ExpectedException (typeof (PlatformNotSupportedException))]
-#else
+		[Test]
 		[ExpectedException (typeof (InvalidOperationException))]
-#endif
+		[Category ("MobileNotWorking")] // Fails when ran as part of the entire BCL test suite. Works when only this fixture is ran
 		public void ReceiveAsyncArgTest_NotConnected ()
 		{
 			socket.ReceiveAsync (new ArraySegment<byte> (new byte[0]), CancellationToken.None);

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <ProjectGuid>{9574CEEC-5554-411B-B44C-6CA9EC1CEB08}</ProjectGuid>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <!-- Default configurations to help VS understand the configurations -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard1.3-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard1.3-Release|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netstandard-Release|AnyCPU'" />
+  <ItemGroup>
+    <Compile Include="ASCIIEncoding\ASCIIEncodingEncode.cs" />
+    <Compile Include="ASCIIEncoding\ASCIIEncodingDecode.cs" />
+    <Compile Include="ASCIIEncoding\ASCIIEncodingGetDecoder.cs" />
+    <Compile Include="ASCIIEncoding\ASCIIEncodingGetEncoder.cs" />
+    <Compile Include="ASCIIEncoding\ASCIIEncodingGetMaxByteCount.cs" />
+    <Compile Include="ASCIIEncoding\ASCIIEncodingGetMaxCharCount.cs" />
+    <Compile Include="ASCIIEncoding\ASCIIEncodingTests.cs" />
+    <Compile Include="Decoder\DecoderConvert2.cs" />
+    <Compile Include="Decoder\DecoderCtor.cs" />
+    <Compile Include="Decoder\DecoderGetCharCount2.cs" />
+    <Compile Include="Decoder\DecoderGetCharCount3.cs" />
+    <Compile Include="Decoder\DecoderGetChars2.cs" />
+    <Compile Include="Decoder\DecoderGetChars3.cs" />
+    <Compile Include="Decoder\DecoderReset.cs" />
+    <Compile Include="DecoderFallbackException\DecoderFallbackExceptionTests.cs" />
+    <Compile Include="EncoderFallbackException\EncoderFallbackExceptionTests.cs" />
+    <Compile Include="Encoder\EncoderConvert2.cs" />
+    <Compile Include="Encoder\EncoderCtor.cs" />
+    <Compile Include="Encoder\EncoderGetByteCount2.cs" />
+    <Compile Include="Encoder\EncoderGetBytes2.cs" />
+    <Compile Include="Encoding\EncodingCtorTests.cs" />
+    <Compile Include="Encoding\EncodingGetEncodingTests.cs" />
+    <Compile Include="Encoding\EncodingConvertTests.cs" />
+    <Compile Include="Fallback\DecoderReplacementFallbackTests.cs" />
+    <Compile Include="Fallback\EncoderReplacementFallbackTests.cs" />
+    <Compile Include="Fallback\EncoderExceptionFallbackTests.cs" />
+    <Compile Include="Fallback\DecoderExceptionFallbackTests.cs" />
+    <Compile Include="NegativeEncodingTests.cs" />
+    <Compile Include="EncodingTestHelpers.cs" />
+    <Compile Include="Latin1Encoding\Latin1EncodingEncode.cs" />
+    <Compile Include="Latin1Encoding\Latin1EncodingDecode.cs" />
+    <Compile Include="Latin1Encoding\Latin1EncodingGetMaxByteCount.cs" />
+    <Compile Include="Latin1Encoding\Latin1EncodingGetMaxCharCount.cs" />
+    <Compile Include="Latin1Encoding\Latin1EncodingTests.cs" />
+    <Compile Include="UnicodeEncoding\UnicodeEncodingEncode.cs" />
+    <Compile Include="UnicodeEncoding\UnicodeEncodingDecode.cs" />
+    <Compile Include="UnicodeEncoding\UnicodeEncodingGetDecoder.cs" />
+    <Compile Include="UnicodeEncoding\UnicodeEncodingGetEncoder.cs" />
+    <Compile Include="UnicodeEncoding\UnicodeEncodingGetMaxByteCount.cs" />
+    <Compile Include="UnicodeEncoding\UnicodeEncodingGetMaxCharCount.cs" />
+    <Compile Include="UnicodeEncoding\UnicodeEncodingTests.cs" />
+    <Compile Include="UTF32Encoding\UTF32EncodingDecode.cs" />
+    <Compile Include="UTF32Encoding\UTF32EncodingGetMaxByteCount.cs" />
+    <Compile Include="UTF32Encoding\UTF32EncodingGetMaxCharCount.cs" />
+    <Compile Include="UTF32Encoding\UTF32EncodingTests.cs" />
+    <Compile Include="UTF32Encoding\UTF32EncodingEncode.cs" />
+    <Compile Include="UTF7Encoding\UTF7EncodingEncode.cs" />
+    <Compile Include="UTF7Encoding\UTF7EncodingDecode.cs" />
+    <Compile Include="UTF7Encoding\UTF7EncodingGetDecoder.cs" />
+    <Compile Include="UTF7Encoding\UTF7EncodingGetEncoder.cs" />
+    <Compile Include="UTF7Encoding\UTF7EncodingGetMaxByteCount.cs" />
+    <Compile Include="UTF7Encoding\UTF7EncodingGetMaxCharCount.cs" />
+    <Compile Include="UTF7Encoding\UTF7EncodingTests.cs" />
+    <Compile Include="UTF8Encoding\UTF8EncodingEncode.cs" />
+    <Compile Include="UTF8Encoding\UTF8EncodingDecode.cs" />
+    <Compile Include="UTF8Encoding\UTF8EncodingGetDecoder.cs" />
+    <Compile Include="UTF8Encoding\UTF8EncodingGetEncoder.cs" />
+    <Compile Include="UTF8Encoding\UTF8EncodingGetMaxByteCount.cs" />
+    <Compile Include="UTF8Encoding\UTF8EncodingGetMaxCharCount.cs" />
+    <Compile Include="UTF8Encoding\UTF8EncodingTests.cs" />
+    <Compile Include="$(CommonTestPath)\System\RandomDataGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetGroup)' == 'netstandard'">
+    <Compile Include="Encoding\Encoding.netstandard.cs" />
+    <Compile Include="UnicodeEncoding\UnicodeEncoding.netstandard.cs" />
+    <Compile Include="Decoder\Decoder.netstandard.cs" />
+    <Compile Include="Encoder\Encoder.netstandard.cs" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+</Project>

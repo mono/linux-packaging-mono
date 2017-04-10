@@ -6,7 +6,8 @@ LIBRARY = System.Data.dll
 
 LIB_REFS = System System.Xml System.Core System.Numerics
 LIB_MCS_FLAGS = \
-	-nowarn:169,219,414,649 \
+	-nowarn:219,414,649 \
+	-d:COREFX	\
 	-d:PLATFORM_UNIX \
 	-d:USEOFFSET \
 	-d:MONO_PARTIAL_DATA_IMPORT \
@@ -37,6 +38,8 @@ TXT_RESOURCE_STRINGS = ../referencesource/System.Data/system.data.txt
 TEST_LIB_REFS = System.Core Mono.Data.Sqlite
 TEST_MCS_FLAGS = $(LIB_MCS_FLAGS) -nowarn:618,169,612,219,168
 
+TEST_NUNITLITE_APP_CONFIG_GLOBAL=Test/test-config-file
+
 TEST_MONO_PATH = .
 
 EXTRA_DISTFILES = \
@@ -45,10 +48,10 @@ EXTRA_DISTFILES = \
 	$(wildcard Test/System.Xml/*.xml)		\
 	$(wildcard Test/System.Xml/*.xsd)		\
 	$(wildcard Test/System.Data/schemas/*.xsd)		\
-	app_test_net_4_x.config			\
+	Test/test-config-file			\
 	Test/System.Data/binserialize/*.bin	\
 	SqliteTest.db	\
-	referencesource.sources
+	corefx.common.sources
 
 gen_OdbcConnection.cs: ../referencesource/System.Data/System/Data/ProviderBase/DbConnectionHelper.cs
 	sed -e "s/NAMESPACE/System.Data.Odbc/g" $< |\
@@ -91,8 +94,3 @@ gen_SqlParameterCollection.cs: ../referencesource/System.Data/System/Data/Provid
 	sed -e s/PARAMETEROBJECTNAME/SqlParameter/g >$@
 
 include ../../build/library.make
-
-$(test_lib): $(test_lib).config
-
-$(test_lib).config: app_test_$(PROFILE).config
-	cp $< $@

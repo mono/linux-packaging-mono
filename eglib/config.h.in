@@ -6,6 +6,9 @@
 /* Overridable allocator support enabled */
 #undef ENABLE_OVERRIDABLE_ALLOCATORS
 
+/* Use classic Windows API support */
+#undef HAVE_CLASSIC_WINAPI_SUPPORT
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -95,6 +98,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Don't use UWP Windows API support */
+#undef HAVE_UWP_WINAPI_SUPPORT
 
 /* Define to 1 if you have the `vasprintf' function. */
 #undef HAVE_VASPRINTF

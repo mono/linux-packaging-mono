@@ -194,7 +194,7 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 	fname = mono_metadata_string_heap (image, cols [MONO_MEMBERREF_NAME]);
 
 	if (!mono_verifier_verify_memberref_field_signature (image, cols [MONO_MEMBERREF_SIGNATURE], NULL)) {
-		mono_error_set_bad_image (error, image, "Bad field '%s' signature 0x%08x", class_index, token);
+		mono_error_set_bad_image (error, image, "Bad field '%u' signature 0x%08x", class_index, token);
 		return NULL;
 	}
 
@@ -209,7 +209,7 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 		klass = mono_class_get_and_inflate_typespec_checked (image, MONO_TOKEN_TYPE_SPEC | nindex, context, error);
 		break;
 	default:
-		mono_error_set_bad_image (error, image, "Bad field field '%s' signature 0x%08x", class_index, token);
+		mono_error_set_bad_image (error, image, "Bad field field '%u' signature 0x%08x", class_index, token);
 	}
 
 	if (!klass)
@@ -319,7 +319,7 @@ mono_field_from_token_checked (MonoImage *image, guint32 token, MonoClass **retk
 		}
 	}
 
-	if (field && field->parent && !field->parent->generic_class && !field->parent->generic_container) {
+	if (field && field->parent && !mono_class_is_ginst (field->parent) && !mono_class_is_gtd (field->parent)) {
 		mono_image_lock (image);
 		mono_conc_hashtable_insert (image->field_cache, GUINT_TO_POINTER (token), field);
 		mono_image_unlock (image);
@@ -362,15 +362,17 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 	/* Search directly in the metadata to avoid calling setup_methods () */
 	mono_error_init (error);
 
-	/* FIXME: !from_class->generic_class condition causes test failures. */
-	if (klass->type_token && !image_is_dynamic (klass->image) && !klass->methods && !klass->rank && klass == from_class && !from_class->generic_class) {
-		for (i = 0; i < klass->method.count; ++i) {
+	/* FIXME: !mono_class_is_ginst (from_class) condition causes test failures. */
+	if (klass->type_token && !image_is_dynamic (klass->image) && !klass->methods && !klass->rank && klass == from_class && !mono_class_is_ginst (from_class)) {
+		int first_idx = mono_class_get_first_method_idx (klass);
+		int mcount = mono_class_get_method_count (klass);
+		for (i = 0; i < mcount; ++i) {
 			guint32 cols [MONO_METHOD_SIZE];
 			MonoMethod *method;
 			const char *m_name;
 			MonoMethodSignature *other_sig;
 
-			mono_metadata_decode_table_row (klass->image, MONO_TABLE_METHOD, klass->method.first + i, cols, MONO_METHOD_SIZE);
+			mono_metadata_decode_table_row (klass->image, MONO_TABLE_METHOD, first_idx + i, cols, MONO_METHOD_SIZE);
 
 			m_name = mono_metadata_string_heap (klass->image, cols [MONO_METHOD_NAME]);
 
@@ -379,7 +381,7 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 				  (name && !strcmp (m_name, name))))
 				continue;
 
-			method = mono_get_method_checked (klass->image, MONO_TOKEN_METHOD_DEF | (klass->method.first + i + 1), klass, NULL, error);
+			method = mono_get_method_checked (klass->image, MONO_TOKEN_METHOD_DEF | (first_idx + i + 1), klass, NULL, error);
 			if (!mono_error_ok (error)) //bail out if we hit a loader error
 				return NULL;
 			if (method) {
@@ -403,7 +405,8 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 
 		return NULL;
 	}
-	for (i = 0; i < klass->method.count; ++i) {
+	int mcount = mono_class_get_method_count (klass);
+	for (i = 0; i < mcount; ++i) {
 		MonoMethod *m = klass->methods [i];
 		MonoMethodSignature *msig;
 
@@ -431,7 +434,7 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
 		}
 	}
 
-	if (i < klass->method.count)
+	if (i < mcount)
 		return mono_class_get_method_by_index (from_class, i);
 	return NULL;
 }
@@ -668,7 +671,7 @@ mono_method_get_signature_checked (MonoMethod *method, MonoImage *image, guint32
 		return mono_method_signature_checked (method, error);
 	}
 
-	if (method->klass->generic_class)
+	if (mono_class_is_ginst (method->klass))
 		return mono_method_signature_checked (method, error);
 
 	if (image_is_dynamic (image)) {
@@ -751,7 +754,8 @@ mono_method_search_in_array_class (MonoClass *klass, const char *name, MonoMetho
 
 	mono_class_setup_methods (klass);
 	g_assert (!mono_class_has_failure (klass)); /*FIXME this should not fail, right?*/
-	for (i = 0; i < klass->method.count; ++i) {
+	int mcount = mono_class_get_method_count (klass);
+	for (i = 0; i < mcount; ++i) {
 		MonoMethod *method = klass->methods [i];
 		if (strcmp (method->name, name) == 0 && sig->param_count == method->signature->param_count)
 			return method;
@@ -854,7 +858,7 @@ method_from_memberref (MonoImage *image, guint32 idx, MonoGenericContext *typesp
 		type = &klass->byval_arg;
 
 		if (type->type != MONO_TYPE_ARRAY && type->type != MONO_TYPE_SZARRAY) {
-			MonoClass *in_class = klass->generic_class ? klass->generic_class->container_class : klass;
+			MonoClass *in_class = mono_class_is_ginst (klass) ? mono_class_get_generic_class (klass)->container_class : klass;
 			method = find_method (in_class, NULL, mname, sig, klass, error);
 			break;
 		}
@@ -941,12 +945,12 @@ method_from_methodspec (MonoImage *image, MonoGenericContext *context, guint32 i
 
 	klass = method->klass;
 
-	if (klass->generic_class) {
+	if (mono_class_is_ginst (klass)) {
 		g_assert (method->is_inflated);
 		method = ((MonoMethodInflated *) method)->declaring;
 	}
 
-	new_context.class_inst = klass->generic_class ? klass->generic_class->context.class_inst : NULL;
+	new_context.class_inst = mono_class_is_ginst (klass) ? mono_class_get_generic_class (klass)->context.class_inst : NULL;
 	new_context.method_inst = inst;
 
 	method = mono_class_inflate_generic_method_full_checked (method, klass, &new_context, error);
@@ -1162,6 +1166,7 @@ mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char
 	int i,j;
 	MonoDl *module = NULL;
 	gboolean cached = FALSE;
+	gpointer addr = NULL;
 
 	g_assert (method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL);
 
@@ -1470,7 +1475,7 @@ mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char
 				"Searching for '%s'.", import);
 
 	if (piinfo->piflags & PINVOKE_ATTRIBUTE_NO_MANGLE) {
-		error_msg = mono_dl_symbol (module, import, &piinfo->addr); 
+		error_msg = mono_dl_symbol (module, import, &addr); 
 	} else {
 		char *mangled_name = NULL, *mangled_name2 = NULL;
 		int mangle_charset;
@@ -1492,7 +1497,7 @@ mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char
 #endif
 				for (mangle_param_count = 0; mangle_param_count <= (need_param_count ? 256 : 0); mangle_param_count += 4) {
 
-					if (piinfo->addr)
+					if (addr)
 						continue;
 
 					mangled_name = (char*)import;
@@ -1543,9 +1548,9 @@ mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char
 					mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_DLLIMPORT,
 								"Probing '%s'.", mangled_name2);
 
-					error_msg = mono_dl_symbol (module, mangled_name2, &piinfo->addr);
+					error_msg = mono_dl_symbol (module, mangled_name2, &addr);
 
-					if (piinfo->addr)
+					if (addr)
 						mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_DLLIMPORT,
 									"Found as '%s'.", mangled_name2);
 					else
@@ -1564,7 +1569,7 @@ mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char
 		}
 	}
 
-	if (!piinfo->addr) {
+	if (!addr) {
 		g_free (error_msg);
 		if (exc_class) {
 			*exc_class = "EntryPointNotFoundException";
@@ -1572,7 +1577,8 @@ mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char
 		}
 		return NULL;
 	}
-	return piinfo->addr;
+	piinfo->addr = addr;
+	return addr;
 }
 
 /*
@@ -1659,7 +1665,7 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 		sig = mono_metadata_blob_heap (image, cols [4]);
 	/* size = */ mono_metadata_decode_blob_size (sig, &sig);
 
-	container = klass->generic_container;
+	container = mono_class_try_get_generic_container (klass);
 
 	/* 
 	 * load_generic_params does a binary search so only call it if the method 
@@ -2141,8 +2147,6 @@ mono_method_get_wrapper_data (MonoMethod *method, guint32 id)
 	g_assert (method != NULL);
 	g_assert (method->wrapper_type != MONO_WRAPPER_NONE);
 
-	if (method->is_inflated)
-		method = ((MonoMethodInflated *) method)->declaring;
 	data = (void **)((MonoMethodWrapper *)method)->method_data;
 	g_assert (data != NULL);
 	g_assert (id <= GPOINTER_TO_UINT (*data));
@@ -2376,10 +2380,10 @@ mono_method_signature_checked (MonoMethod *m, MonoError *error)
 
 	sig = mono_metadata_blob_heap (img, sig_offset = mono_metadata_decode_row_col (&img->tables [MONO_TABLE_METHOD], idx - 1, MONO_METHOD_SIGNATURE));
 
-	g_assert (!m->klass->generic_class);
+	g_assert (!mono_class_is_ginst (m->klass));
 	container = mono_method_get_generic_container (m);
 	if (!container)
-		container = m->klass->generic_container;
+		container = mono_class_try_get_generic_container (m->klass);
 
 	/* Generic signatures depend on the container so they cannot be cached */
 	/* icall/pinvoke signatures cannot be cached cause we modify them below */
@@ -2432,9 +2436,16 @@ mono_method_signature_checked (MonoMethod *m, MonoError *error)
 		mono_error_set_method_load (error, m->klass, m->name, "generic_params table claims method has generic parameters, but signature says it doesn't for method 0x%08x from image %s", idx, img->name);
 		return NULL;
 	}
-	if (m->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL)
+	if (m->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) {
 		signature->pinvoke = 1;
-	else if (m->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) {
+#ifdef TARGET_WIN32
+		/*
+		 * On Windows the default pinvoke calling convention is STDCALL but
+		 * we need CDECL since this is actually an icall.
+		 */
+		signature->call_convention = MONO_CALL_C;
+#endif
+	} else if (m->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) {
 		MonoCallConvention conv = (MonoCallConvention)0;
 		MonoMethodPInvoke *piinfo = (MonoMethodPInvoke *)m;
 		signature->pinvoke = 1;
@@ -2581,7 +2592,7 @@ mono_method_get_header_checked (MonoMethod *method, MonoError *error)
 	 */
 	container = mono_method_get_generic_container (method);
 	if (!container)
-		container = method->klass->generic_container;
+		container = mono_class_try_get_generic_container (method->klass);
 	return mono_metadata_parse_mh_full (img, container, (const char *)loc, error);
 }
 
@@ -2622,12 +2633,14 @@ mono_method_get_index (MonoMethod *method)
 	mono_class_setup_methods (klass);
 	if (mono_class_has_failure (klass))
 		return 0;
-	for (i = 0; i < klass->method.count; ++i) {
+	int first_idx = mono_class_get_first_method_idx (klass);
+	int mcount = mono_class_get_method_count (klass);
+	for (i = 0; i < mcount; ++i) {
 		if (method == klass->methods [i]) {
 			if (klass->image->uncompressed_metadata)
-				return mono_metadata_translate_token_index (klass->image, MONO_TABLE_METHOD, klass->method.first + i + 1);
+				return mono_metadata_translate_token_index (klass->image, MONO_TABLE_METHOD, first_idx + i + 1);
 			else
-				return klass->method.first + i + 1;
+				return first_idx + i + 1;
 		}
 	}
 	return 0;

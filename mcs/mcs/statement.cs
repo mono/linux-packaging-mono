@@ -2290,6 +2290,9 @@ namespace Mono.CSharp {
 
 		public override void Emit (EmitContext ec)
 		{
+			if (!Variable.IsUsed)
+				ec.Report.Warning (219, 3, loc, "The constant `{0}' is never used", Variable.Name);
+			
 			// Nothing to emit, not even sequence point
 		}
 
@@ -2448,6 +2451,12 @@ namespace Mono.CSharp {
 			}
 		}
 
+		public bool IsUsed {
+			get {
+				return (flags & Flags.Used) != 0;
+			}
+		}
+
 		public bool IsFixed {
 			get {
 				return (flags & Flags.FixedVariable) != 0;
@@ -2537,8 +2546,10 @@ namespace Mono.CSharp {
 
 		public Expression CreateReferenceExpression (ResolveContext rc, Location loc)
 		{
-			if (IsConstant && const_value != null)
+			if (IsConstant && const_value != null) {
+				SetIsUsed ();
 				return Constant.CreateConstantFromValue (Type, const_value.GetValue (), loc);
+			}
 
 			return new LocalVariableReference (this, loc);
 		}

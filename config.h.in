@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -27,9 +30,6 @@
 /* Disable System.Decimal support */
 #undef DISABLE_DECIMAL
 
-/* Disables building in the full table of WAPI messages */
-#undef DISABLE_FULL_MESSAGES
-
 /* Disable generics support */
 #undef DISABLE_GENERICS
 
@@ -50,6 +50,9 @@
 
 /* Disable support debug logging */
 #undef DISABLE_LOGGING
+
+/* Disable support for .mdb symbol files. */
+#undef DISABLE_MDB
 
 /* Disable String normalization support. */
 #undef DISABLE_NORMALIZATION
@@ -139,6 +142,9 @@
 /* Icall symbol map enabled */
 #undef ENABLE_ICALL_SYMBOL_MAP
 
+/* Enable interpreter in the runtime. */
+#undef ENABLE_INTERPRETER
+
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM
 
@@ -147,6 +153,9 @@
 
 /* Have GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY */
 #undef GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY
+
+/* GLIBC has CPU_COUNT macro in sched.h */
+#undef GLIBC_HAS_CPU_COUNT
 
 /* Define to 1 if you have the `accept4' function. */
 #undef HAVE_ACCEPT4
@@ -192,6 +201,9 @@
 
 /* Define to 1 if you have the <checklist.h> header file. */
 #undef HAVE_CHECKLIST_H
+
+/* Use classic Windows API support */
+#undef HAVE_CLASSIC_WINAPI_SUPPORT
 
 /* Define to 1 if you have the `clock_nanosleep' function. */
 #undef HAVE_CLOCK_NANOSLEEP
@@ -259,9 +271,6 @@
 
 /* dlopen-based dynamic loader available */
 #undef HAVE_DL_LOADER
-
-/* BTLS in a shared libraty */
-#undef HAVE_DYNAMIC_BTLS
 
 /* Define to 1 if you have the <elf.h> header file. */
 #undef HAVE_ELF_H
@@ -959,6 +968,9 @@
 /* Define to 1 if you have the <utime.h> header file. */
 #undef HAVE_UTIME_H
 
+/* Don't use UWP Windows API support */
+#undef HAVE_UWP_WINAPI_SUPPORT
+
 /* Support for the visibility ("hidden") attribute */
 #undef HAVE_VISIBILITY_HIDDEN
 
@@ -1032,11 +1044,22 @@
    */
 #undef LT_OBJDIR
 
+/* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
+   */
+#undef MAJOR_IN_MKDEV
+
+/* Define to 1 if `major', `minor', and `makedev' are declared in
+   <sysmacros.h>. */
+#undef MAJOR_IN_SYSMACROS
+
 /* The architecture this is running on */
 #undef MONO_ARCHITECTURE
 
 /* Enable the allocation and indexing of arrays greater than Int32.MaxValue */
 #undef MONO_BIG_ARRAYS
+
+/* Version of the corlib-runtime interface */
+#undef MONO_CORLIB_VERSION
 
 /* The runtime is compiled for cross-compiling mode */
 #undef MONO_CROSS_COMPILE
@@ -1190,6 +1213,18 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
 
 /* 64 bit mode with 4 byte longs and pointers */
 #undef __mono_ilp32__

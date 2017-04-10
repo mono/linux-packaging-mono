@@ -222,19 +222,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean CloseHandle(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">CloseHandle</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The handle to release</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Closes and invalidates <i>handle</i>, releasing any resources it
-	 consumes.  When the last handle to a temporary or non-persistent
-	 object is closed, that object can be deleted.  Closing the same
-	 handle twice is an error.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -263,21 +252,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean CopyFile (const gunichar2 *name, const gunichar2 *dest_name,
-		   gboolean fail_if_exists)
-
-</div>
+            <div class="mapi-prototype">CopyFile</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> a pointer to a <code>NULL</code>-terminated unicode string, that names</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 the file to be copied. 
-	 <i>dest_name</i>: a pointer to a <code>NULL</code>-terminated unicode string, that is the
-	 new name for the file.
-	 <i>fail_if_exists</i>: if <code>TRUE</code> and dest_name exists, the copy will fail.
-	<p />
-	 Copies file <i>name</i> to <i>dest_name</i>
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -291,19 +267,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean CreateDirectory (const gunichar2 *name,
-			  WapiSecurityAttributes *security)
-
-</div>
+            <div class="mapi-prototype">CreateDirectory</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> a pointer to a <code>NULL</code>-terminated unicode string, that names</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 the directory to be created. 
-	 <i>security</i>: ignored for now
-	<p />
-	 Creates directory <i>name</i>
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -317,29 +282,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer CreateEvent(WapiSecurityAttributes *security G_GNUC_UNUSED,
-		     gboolean manual, gboolean initial,
-		     const gunichar2 *name G_GNUC_UNUSED)
-
-</div>
+            <div class="mapi-prototype">CreateEvent</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>security</i><td> Ignored for now.</td></td></tr><tr><td><i>manual</i><td> Specifies whether the new event handle has manual or auto</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 reset behaviour. 
-	 <i>initial</i>: Specifies whether the new event handle is initially
-	 signalled or not.
-	 <i>name</i>:Pointer to a string specifying the name of this name, or
-	 %<code>NULL</code>.  Currently ignored.
-	<p />
-	 Creates a new event handle.
-	<p />
-	 An event handle is signalled with SetEvent().  If the new handle is
-	 a manual reset event handle, it remains signalled until it is reset
-	 with ResetEvent().  An auto reset event remains signalled until a
-	 single thread has waited for it, at which time the event handle is
-	 automatically reset to unsignalled.
-	<p />
-	 Return value: A new handle, or %<code>NULL</code> on error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -353,36 +297,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer CreateFile(const gunichar2 *name, guint32 fileaccess,
-		    guint32 sharemode, WapiSecurityAttributes *security,
-		    guint32 createmode, guint32 attrs,
-		    gpointer template_ G_GNUC_UNUSED)
-
-</div>
+            <div class="mapi-prototype">CreateFile</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> a pointer to a <code>NULL</code>-terminated unicode string, that names</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 the file or other object to create. 
-	 <i>fileaccess</i>: specifies the file access mode
-	 <i>sharemode</i>: whether the file should be shared.  This parameter is
-	 currently ignored.
-	 <i>security</i>: Ignored for now.
-	 <i>createmode</i>: specifies whether to create a new file, whether to
-	 overwrite an existing file, whether to truncate the file, etc.
-	 <i>attrs</i>: specifies file attributes and flags.  On win32 attributes
-	 are characteristics of the file, not the handle, and are ignored
-	 when an existing file is opened.  Flags give the library hints on
-	 how to process a file to optimise performance.
-	 <i>template</i>: the handle of an open %GENERIC_READ file that specifies
-	 attributes to apply to a newly created file, ignoring <i>attrs</i>.
-	 Normally this parameter is <code>NULL</code>.  This parameter is ignored when an
-	 existing file is opened.
-	<p />
-	 Creates a new file handle.  This only applies to normal files:
-	 pipes are handled by CreatePipe(), and console handles are created
-	 with GetStdHandle().
-	<p />
-	 Return value: the new handle, or %INVALID_HANDLE_VALUE on error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -396,26 +312,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer CreateMutex(WapiSecurityAttributes *security G_GNUC_UNUSED, gboolean owned, const gunichar2 *name)
-
-</div>
+            <div class="mapi-prototype">CreateMutex</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>security</i><td> Ignored for now.</td></td></tr><tr><td><i>owned</i><td> If %<code>TRUE</code>, the mutex is created with the calling thread</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 already owning the mutex. 
-	 <i>name</i>:Pointer to a string specifying the name of this mutex, or
-	 %<code>NULL</code>.
-	<p />
-	 Creates a new mutex handle.  A mutex is signalled when no thread
-	 owns it.  A thread acquires ownership of the mutex by waiting for
-	 it with WaitForSingleObject() or WaitForMultipleObjects().  A
-	 thread relinquishes ownership with ReleaseMutex().
-	<p />
-	 A thread that owns a mutex can specify the same mutex in repeated
-	 wait function calls without blocking.  The thread must call
-	 ReleaseMutex() an equal number of times to release the mutex.
-	<p />
-	 Return value: A new handle, or %<code>NULL</code> on error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -474,25 +372,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer CreateSemaphore(WapiSecurityAttributes *security G_GNUC_UNUSED, gint32 initial, gint32 max, const gunichar2 *name)
-
-</div>
+            <div class="mapi-prototype">CreateSemaphore</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>security</i><td> Ignored for now.</td></td></tr><tr><td><i>initial</i><td> The initial count for the semaphore.  The value must be</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 greater than or equal to zero, and less than or equal to <i>max</i>. 
-	 <i>max</i>: The maximum count for this semaphore.  The value must be
-	 greater than zero.
-	 <i>name</i>: Pointer to a string specifying the name of this semaphore,
-	 or %<code>NULL</code>.  Currently ignored.
-	<p />
-	 Creates a new semaphore handle.  A semaphore is signalled when its
-	 count is greater than zero, and unsignalled otherwise.  The count
-	 is decreased by one whenever a wait function releases a thread that
-	 was waiting for the semaphore.  The count is increased by calling
-	 ReleaseSemaphore().
-	<p />
-	 Return value: a new handle, or <code>NULL</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -536,17 +417,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean DeleteFile(const gunichar2 *name)
-
-</div>
+            <div class="mapi-prototype">DeleteFile</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> a pointer to a <code>NULL</code>-terminated unicode string, that names</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 the file to be deleted. 
-	<p />
-	 Deletes file <i>name</i>.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -650,20 +522,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean FileTimeToSystemTime(const WapiFileTime *file_time,
-			      WapiSystemTime *system_time)
-
-</div>
+            <div class="mapi-prototype">FileTimeToSystemTime</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>file_time</i><td> Points to a %WapiFileTime structure that contains the</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 number of ticks to convert. 
-	 <i>system_time</i>: Points to a %WapiSystemTime structure to receive the
-	 broken-out time.
-	<p />
-	 Converts a tick count into broken-out time values.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -677,16 +537,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean FindClose (gpointer handle)
-
-</div>
+            <div class="mapi-prototype">FindClose</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>wapi_handle</i><td> the find handle to close.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Closes find handle <i>wapi_handle</i>
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -730,18 +582,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean FlushFileBuffers(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">FlushFileBuffers</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> Handle to open file.  The handle must have</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 %GENERIC_WRITE access. 
-	<p />
-	 Flushes buffers of the file and causes all unwritten data to
-	 be written.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -770,16 +612,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">extern guint32 GetCurrentDirectory (guint32 length, gunichar2 *buffer)
-
-</div>
+            <div class="mapi-prototype">GetCurrentDirectory</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>length</i><td> size of the buffer</td></td></tr><tr><td><i>buffer</i><td> pointer to buffer that recieves path</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Retrieves the current directory for the current process.
-	<p />
-	 Return value: number of characters in buffer on success, zero on failure</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -913,16 +747,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean GetFileAttributesEx (const gunichar2 *name, WapiGetFileExInfoLevels level, gpointer info)
-
-</div>
+            <div class="mapi-prototype">GetFileAttributesEx</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> a pointer to a <code>NULL</code>-terminated unicode filename.</td></td></tr><tr><td><i>level</i><td> must be GetFileExInfoStandard</td></td></tr><tr><td><i>info</i><td> pointer to a WapiFileAttributesData structure</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Gets attributes, size and filetimes for <i>name</i>;
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> on failure</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -936,16 +762,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 GetFileAttributes (const gunichar2 *name)
-
-</div>
+            <div class="mapi-prototype">GetFileAttributes</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> a pointer to a <code>NULL</code>-terminated unicode filename.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Gets the attributes for <i>name</i>;
-	<p />
-	 Return value: %INVALID_FILE_ATTRIBUTES on failure</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -959,24 +777,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 GetFileSize(gpointer handle, guint32 *highsize)
-
-</div>
+            <div class="mapi-prototype">GetFileSize</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The file handle to query.  The handle must have</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 %GENERIC_READ or %GENERIC_WRITE access. 
-	 <i>highsize</i>: If non-%<code>NULL</code>, the high 32 bits of the file size are
-	 stored here.
-	<p />
-	 Retrieves the size of the file <i>handle</i>.
-	<p />
-	 If the library is compiled without large file support, <i>highsize</i>
-	 has its value set to zero on a successful return.
-	<p />
-	 Return value: On success, the low 32 bits of the file size.  If
-	 <i>highsize</i> is non-%<code>NULL</code> then the high 32 bits of the file size are
-	 stored here.  On failure %INVALID_FILE_SIZE is returned.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -990,34 +792,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean GetFileTime(gpointer handle, WapiFileTime *create_time,
-		     WapiFileTime *last_access, WapiFileTime *last_write)
-
-</div>
+            <div class="mapi-prototype">GetFileTime</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The file handle to query.  The handle must have</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 %GENERIC_READ access. 
-	 <i>create_time</i>: Points to a %WapiFileTime structure to receive the
-	 number of ticks since the epoch that file was created.  May be
-	 %<code>NULL</code>.
-	 <i>last_access</i>: Points to a %WapiFileTime structure to receive the
-	 number of ticks since the epoch when file was last accessed.  May be
-	 %<code>NULL</code>.
-	 <i>last_write</i>: Points to a %WapiFileTime structure to receive the
-	 number of ticks since the epoch when file was last written to.  May
-	 be %<code>NULL</code>.
-	<p />
-	 Finds the number of ticks since the epoch that the file referenced
-	 by <i>handle</i> was created, last accessed and last modified.  A tick is
-	 a 100 nanosecond interval.  The epoch is Midnight, January 1 1601
-	 GMT.
-	<p />
-	 Create time isn't recorded on POSIX file systems or reported by
-	 stat(2), so that time is guessed by returning the oldest of the
-	 other times.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1031,19 +807,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">WapiFileType GetFileType(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">GetFileType</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The file handle to test.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Finds the type of file <i>handle</i>.
-	<p />
-	 Return value: %FILE_TYPE_UNKNOWN - the type of the file <i>handle</i> is
-	 unknown.  %FILE_TYPE_DISK - <i>handle</i> is a disk file.
-	 %FILE_TYPE_CHAR - <i>handle</i> is a character device, such as a console.
-	 %FILE_TYPE_PIPE - <i>handle</i> is a named or anonymous pipe.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1087,16 +852,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 GetLastError(void)
-
-</div>
+            <div class="mapi-prototype">GetLastError</div>
             <p />
-             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Retrieves the last error that occurred in the calling thread.
-	<p />
-	 Return value: The error code for the last error that happened on
-	 the calling thread.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1230,20 +987,8 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">
-static mono_mutex_t stdhandle_mutex;
-
-gpointer GetStdHandle(WapiStdHandle stdhandle)
-
-</div>
+            <div class="mapi-prototype">GetStdHandle</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>stdhandle</i><td> specifies the file descriptor</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Returns a handle for stdin, stdout, or stderr.  Always returns the
-	 same handle for the same <i>stdhandle</i>.
-	<p />
-	 Return value: the handle, or %INVALID_HANDLE_VALUE on error</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1407,21 +1152,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean MoveFile (const gunichar2 *name, const gunichar2 *dest_name)
-
-</div>
+            <div class="mapi-prototype">MoveFile</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> a pointer to a <code>NULL</code>-terminated unicode string, that names</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 the file to be moved. 
-	 <i>dest_name</i>: a pointer to a <code>NULL</code>-terminated unicode string, that is the
-	 new name for the file.
-	<p />
-	 Renames file <i>name</i> to <i>dest_name</i>.
-	 MoveFile sets ERROR_ALREADY_EXISTS if the destination exists, except
-	 when it is the same file as the source.  In that case it silently succeeds.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1510,23 +1242,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean PulseEvent(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">PulseEvent</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The event handle.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Sets the event handle <i>handle</i> to the signalled state, and then
-	 resets it to unsignalled after informing any waiting threads.
-	<p />
-	 If <i>handle</i> is a manual reset event, all waiting threads that can be
-	 released immediately are released.  <i>handle</i> is then reset.  If
-	 <i>handle</i> is an auto reset event, one waiting thread is released even
-	 if multiple threads are waiting.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.  (Currently only
-	 ever returns %<code>TRUE</code>).</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1585,36 +1302,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean ReadFile(gpointer handle, gpointer buffer, guint32 numbytes,
-		  guint32 *bytesread, WapiOverlapped *overlapped)
-
-</div>
+            <div class="mapi-prototype">ReadFile</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The file handle to read from.  The handle must have</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 %GENERIC_READ access. 
-	 <i>buffer</i>: The buffer to store read data in
-	 <i>numbytes</i>: The maximum number of bytes to read
-	 <i>bytesread</i>: The actual number of bytes read is stored here.  This
-	 value can be zero if the handle is positioned at the end of the
-	 file.
-	 <i>overlapped</i>: points to a required %WapiOverlapped structure if
-	 <i>handle</i> has the %FILE_FLAG_OVERLAPPED option set, should be <code>NULL</code>
-	 otherwise.
-	<p />
-	 If <i>handle</i> does not have the %FILE_FLAG_OVERLAPPED option set, this
-	 function reads up to <i>numbytes</i> bytes from the file from the current
-	 file position, and stores them in <i>buffer</i>.  If there are not enough
-	 bytes left in the file, just the amount available will be read.
-	 The actual number of bytes read is stored in <i>bytesread</i>.
-	<p />
-	 If <i>handle</i> has the %FILE_FLAG_OVERLAPPED option set, the current
-	 file position is ignored and the read position is taken from data
-	 in the <i>overlapped</i> structure.
-	<p />
-	 Return value: %<code>TRUE</code> if the read succeeds (even if no bytes were
-	 read due to an attempt to read past the end of the file), %<code>FALSE</code> on
-	 error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1628,17 +1317,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean ReleaseMutex(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">ReleaseMutex</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The mutex handle.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Releases ownership if the mutex handle <i>handle</i>.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.  This function
-	 fails if the calling thread does not own the mutex <i>handle</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1652,19 +1332,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean ReleaseSemaphore(gpointer handle, gint32 count, gint32 *prevcount)
-
-</div>
+            <div class="mapi-prototype">ReleaseSemaphore</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The semaphore handle to release.</td></td></tr><tr><td><i>count</i><td> The amount by which the semaphore's count should be</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 increased. 
-	 <i>prevcount</i>: Pointer to a location to store the previous count of
-	 the semaphore, or %<code>NULL</code>.
-	<p />
-	 Increases the count of semaphore <i>handle</i> by <i>count</i>.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1678,17 +1347,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean RemoveDirectory (const gunichar2 *name)
-
-</div>
+            <div class="mapi-prototype">RemoveDirectory</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> a pointer to a <code>NULL</code>-terminated unicode string, that names</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 the directory to be removed. 
-	<p />
-	 Removes directory <i>name</i>
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1717,17 +1377,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean ResetEvent(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">ResetEvent</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The event handle.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Resets the event handle <i>handle</i> to the unsignalled state.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.  (Currently only
-	 ever returns %<code>TRUE</code>).</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1786,16 +1437,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">extern gboolean SetCurrentDirectory (const gunichar2 *path)
-
-</div>
+            <div class="mapi-prototype">SetCurrentDirectory</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>path</i><td> path to new directory</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Changes the directory path for the current process.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> on failure.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1809,18 +1452,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean SetEndOfFile(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">SetEndOfFile</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The file handle to set.  The handle must have</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 %GENERIC_WRITE access. 
-	<p />
-	 Moves the end-of-file position to the current position of the file
-	 pointer.  This function is used to truncate or extend a file.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1834,22 +1467,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean SetEvent(gpointer handle)
-
-</div>
+            <div class="mapi-prototype">SetEvent</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The event handle</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Sets the event handle <i>handle</i> to the signalled state.
-	<p />
-	 If <i>handle</i> is a manual reset event, it remains signalled until it
-	 is reset with ResetEvent().  An auto reset event remains signalled
-	 until a single thread has waited for it, at which time <i>handle</i> is
-	 automatically reset to unsignalled.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.  (Currently only
-	 ever returns %<code>TRUE</code>).</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1863,16 +1482,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">extern gboolean SetFileAttributes (const gunichar2 *name, guint32 attrs)
-
-</div>
+            <div class="mapi-prototype">SetFileAttributes</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>name</i><td> name of file</td></td></tr><tr><td><i>attrs</i><td> attributes to set</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Changes the attributes on a named file.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> on failure.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1886,38 +1497,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 SetFilePointer(gpointer handle, gint32 movedistance,
-		       gint32 *highmovedistance, WapiSeekMethod method)
-
-</div>
+            <div class="mapi-prototype">SetFilePointer</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The file handle to set.  The handle must have</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 %GENERIC_READ or %GENERIC_WRITE access. 
-	 <i>movedistance</i>: Low 32 bits of a signed value that specifies the
-	 number of bytes to move the file pointer.
-	 <i>highmovedistance</i>: Pointer to the high 32 bits of a signed value
-	 that specifies the number of bytes to move the file pointer, or
-	 %<code>NULL</code>.
-	 <i>method</i>: The starting point for the file pointer move.
-	<p />
-	 Sets the file pointer of an open file.
-	<p />
-	 The distance to move the file pointer is calculated from
-	 <i>movedistance</i> and <i>highmovedistance</i>: If <i>highmovedistance</i> is %<code>NULL</code>,
-	 <i>movedistance</i> is the 32-bit signed value; otherwise, <i>movedistance</i>
-	 is the low 32 bits and <i>highmovedistance</i> a pointer to the high 32
-	 bits of a 64 bit signed value.  A positive distance moves the file
-	 pointer forward from the position specified by <i>method</i>; a negative
-	 distance moves the file pointer backward.
-	<p />
-	 If the library is compiled without large file support,
-	 <i>highmovedistance</i> is ignored and its value is set to zero on a
-	 successful return.
-	<p />
-	 Return value: On success, the low 32 bits of the new file pointer.
-	 If <i>highmovedistance</i> is not %<code>NULL</code>, the high 32 bits of the new file
-	 pointer are stored there.  On failure, %INVALID_SET_FILE_POINTER.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1931,33 +1512,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean SetFileTime(gpointer handle, const WapiFileTime *create_time,
-		     const WapiFileTime *last_access,
-		     const WapiFileTime *last_write)
-
-</div>
+            <div class="mapi-prototype">SetFileTime</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The file handle to set.  The handle must have</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 %GENERIC_WRITE access. 
-	 <i>create_time</i>: Points to a %WapiFileTime structure that contains the
-	 number of ticks since the epoch that the file was created.  May be
-	 %<code>NULL</code>.
-	 <i>last_access</i>: Points to a %WapiFileTime structure that contains the
-	 number of ticks since the epoch when the file was last accessed.
-	 May be %<code>NULL</code>.
-	 <i>last_write</i>: Points to a %WapiFileTime structure that contains the
-	 number of ticks since the epoch when the file was last written to.
-	 May be %<code>NULL</code>.
-	<p />
-	 Sets the number of ticks since the epoch that the file referenced
-	 by <i>handle</i> was created, last accessed or last modified.  A tick is
-	 a 100 nanosecond interval.  The epoch is Midnight, January 1 1601
-	 GMT.
-	<p />
-	 Create time isn't recorded on POSIX file systems, and is ignored.
-	<p />
-	 Return value: %<code>TRUE</code> on success, %<code>FALSE</code> otherwise.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1971,14 +1527,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void SetLastError(guint32 code)
-
-</div>
+            <div class="mapi-prototype">SetLastError</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>code</i><td> The error code.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Sets the error code in the calling thread.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -2037,41 +1587,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 SignalObjectAndWait(gpointer signal_handle, gpointer wait,
-			    guint32 timeout, gboolean alertable)
-
-</div>
+            <div class="mapi-prototype">SignalObjectAndWait</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>signal_handle</i><td> An object to signal</td></td></tr><tr><td><i>wait</i><td> An object to wait for</td></td></tr><tr><td><i>timeout</i><td> The maximum time in milliseconds to wait for</td></td></tr><tr><td><i>alertable</i><td> Specifies whether the function returnes when the system</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 queues an I/O completion routine or an APC for the calling thread. 
-	<p />
-	 Atomically signals <i>signal</i> and waits for <i>wait</i> to become signalled,
-	 or <i>timeout</i> ms elapses.  If <i>timeout</i> is zero, the object's state is
-	 tested and the function returns immediately.  If <i>timeout</i> is
-	 %INFINITE, the function waits forever.
-	<p />
-	 <i>signal</i> can be a semaphore, mutex or event object.
-	<p />
-	 If <i>alertable</i> is %<code>TRUE</code> and the system queues an I/O completion
-	 routine or an APC for the calling thread, the function returns and
-	 the thread calls the completion routine or APC function.  If
-	 %<code>FALSE</code>, the function does not return, and the thread does not call
-	 the completion routine or APC function.  A completion routine is
-	 queued when the ReadFileEx() or WriteFileEx() function in which it
-	 was specified has completed.  The calling thread is the thread that
-	 initiated the read or write operation.  An APC is queued when
-	 QueueUserAPC() is called.  Currently completion routines and APC
-	 functions are not supported.
-	<p />
-	 Return value: %WAIT_ABANDONED - <i>wait</i> is a mutex that was not
-	 released by the owning thread when it exited.  Ownershop of the
-	 mutex object is granted to the calling thread and the mutex is set
-	 to nonsignalled.  %WAIT_IO_COMPLETION - the wait was ended by one
-	 or more user-mode asynchronous procedure calls queued to the
-	 thread.  %WAIT_OBJECT_0 - The state of <i>wait</i> is signalled.
-	 %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and <i>wait</i>'s state is
-	 still not signalled.  %WAIT_FAILED - an error occurred.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -2295,40 +1812,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 WaitForMultipleObjectsEx(guint32 numobjects, gpointer *handles,
-				 gboolean waitall, guint32 timeout,
-				 gboolean alertable)
-
-</div>
+            <div class="mapi-prototype">WaitForMultipleObjectsEx</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>numobjects</i><td> The number of objects in <i>handles</i>. The maximum allowed</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 is %MAXIMUM_WAIT_OBJECTS. 
-	 <i>handles</i>: An array of object handles.  Duplicates are not allowed.
-	 <i>waitall</i>: If %<code>TRUE</code>, this function waits until all of the handles
-	 are signalled.  If %<code>FALSE</code>, this function returns when any object is
-	 signalled.
-	 <i>timeout</i>: The maximum time in milliseconds to wait for.
-	 <i>alertable</i>: if <code>TRUE</code>, the wait can be interrupted by an APC call
-	<p />
-	 This function returns when either one or more of <i>handles</i> is
-	 signalled, or <i>timeout</i> ms elapses.  If <i>timeout</i> is zero, the state
-	 of each item of <i>handles</i> is tested and the function returns
-	 immediately.  If <i>timeout</i> is %INFINITE, the function waits forever.
-	<p />
-	 Return value: %WAIT_OBJECT_0 to %WAIT_OBJECT_0 + <i>numobjects</i> - 1 -
-	 if <i>waitall</i> is %<code>TRUE</code>, indicates that all objects are signalled.  If
-	 <i>waitall</i> is %<code>FALSE</code>, the return value minus %WAIT_OBJECT_0 indicates
-	 the first index into <i>handles</i> of the objects that are signalled.
-	 %WAIT_ABANDONED_0 to %WAIT_ABANDONED_0 + <i>numobjects</i> - 1 - if
-	 <i>waitall</i> is %<code>TRUE</code>, indicates that all objects are signalled, and at
-	 least one object is an abandoned mutex object (See
-	 WaitForSingleObject() for a description of abandoned mutexes.)  If
-	 <i>waitall</i> is %<code>FALSE</code>, the return value minus %WAIT_ABANDONED_0
-	 indicates the first index into <i>handles</i> of an abandoned mutex.
-	 %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and no objects in
-	 <i>handles</i> are signalled.  %WAIT_FAILED - an error occurred.
-	 %WAIT_IO_COMPLETION - the wait was ended by an APC.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -2357,25 +1842,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">guint32 WaitForSingleObjectEx(gpointer handle, guint32 timeout, gboolean alertable)
-
-</div>
+            <div class="mapi-prototype">WaitForSingleObjectEx</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> an object to wait for</td></td></tr><tr><td><i>timeout</i><td> the maximum time in milliseconds to wait for</td></td></tr><tr><td><i>alertable</i><td> if <code>TRUE</code>, the wait can be interrupted by an APC call</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This function returns when either <i>handle</i> is signalled, or <i>timeout</i>
-	 ms elapses.  If <i>timeout</i> is zero, the object's state is tested and
-	 the function returns immediately.  If <i>timeout</i> is %INFINITE, the
-	 function waits forever.
-	<p />
-	 Return value: %WAIT_ABANDONED - <i>handle</i> is a mutex that was not
-	 released by the owning thread when it exited.  Ownership of the
-	 mutex object is granted to the calling thread and the mutex is set
-	 to nonsignalled.  %WAIT_OBJECT_0 - The state of <i>handle</i> is
-	 signalled.  %WAIT_TIMEOUT - The <i>timeout</i> interval elapsed and
-	 <i>handle</i>'s state is still not signalled.  %WAIT_FAILED - an error
-	 occurred. %WAIT_IO_COMPLETION - the wait was ended by an APC.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -2404,34 +1872,8 @@ gpointer GetStdHandle(WapiStdHandle stdhandle)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean WriteFile(gpointer handle, gconstpointer buffer, guint32 numbytes,
-		   guint32 *byteswritten, WapiOverlapped *overlapped)
-
-</div>
+            <div class="mapi-prototype">WriteFile</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>handle</i><td> The file handle to write to.  The handle must have</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	 %GENERIC_WRITE access. 
-	 <i>buffer</i>: The buffer to read data from.
-	 <i>numbytes</i>: The maximum number of bytes to write.
-	 <i>byteswritten</i>: The actual number of bytes written is stored here.
-	 If the handle is positioned at the file end, the length of the file
-	 is extended.  This parameter may be %<code>NULL</code>.
-	 <i>overlapped</i>: points to a required %WapiOverlapped structure if
-	 <i>handle</i> has the %FILE_FLAG_OVERLAPPED option set, should be <code>NULL</code>
-	 otherwise.
-	<p />
-	 If <i>handle</i> does not have the %FILE_FLAG_OVERLAPPED option set, this
-	 function writes up to <i>numbytes</i> bytes from <i>buffer</i> to the file at
-	 the current file position.  If <i>handle</i> is positioned at the end of
-	 the file, the file is extended.  The actual number of bytes written
-	 is stored in <i>byteswritten</i>.
-	<p />
-	 If <i>handle</i> has the %FILE_FLAG_OVERLAPPED option set, the current
-	 file position is ignored and the write position is taken from data
-	 in the <i>overlapped</i> structure.
-	<p />
-	 Return value: %<code>TRUE</code> if the write succeeds, %<code>FALSE</code> on error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

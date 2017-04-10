@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="dir.props" />
+
+  <!-- required to build the projects in their specified order -->
+  <PropertyGroup>
+    <SerializeProjects>true</SerializeProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <BuildPackages Condition="'$(BuildPackages)'==''">true</BuildPackages>
+  </PropertyGroup>
+
+  <Import Project="$(ToolsDir)VersionTools.targets" Condition="Exists('$(ToolsDir)VersionTools.targets')" />
+
+  <ItemGroup>
+    <Project Include="external\dir.proj" />
+    <Project Include="src\dirs.proj" />
+    <!-- signing must happen before packaging -->
+    <Project Include="src\sign.builds" />
+    <Project Include="src\packages.builds" Condition="'$(BuildPackages)'=='true'" />
+  </ItemGroup>
+
+  <Import Project="dir.targets" />
+
+  <Import Project="dir.traversal.targets" />
+
+  <Import Project="$(ToolsDir)clean.targets" />
+
+  <PropertyGroup>
+    <TraversalBuildDependsOn>
+      BuildCoreFxTools;
+      CreateOrUpdateCurrentVersionFile;
+      $(TraversalBuildDependsOn);
+    </TraversalBuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="BuildCoreFxTools">
+    <ItemGroup>
+      <BuildToolsProject Include="src\Tools\CoreFx.Tools\CoreFx.Tools.csproj" />
+      <BuildToolsProject Include="src\Tools\CoreFx.Tools\CoreFx.Tools.csproj">
+        <TargetGroup>net46</TargetGroup>
+      </BuildToolsProject>
+      <BuildToolsProject Include="src\Tools\GenerateProps\GenerateProps.proj" />
+    </ItemGroup>
+    <MSBuild Projects="@(BuildToolsProject)"
+             ContinueOnError="ErrorAndContinue"
+             Condition="'%(Identity)' != ''"
+             Properties="Configuration=%(BuildToolsProject.TargetGroup);TargetGroup=%(BuildToolsProject.TargetGroup)" />
+  </Target>
+
+  <Target Name="Sync" DependsOnTargets="BuildCoreFxTools">
+    <ItemGroup>
+      <ExternalProject Include="external\dir.proj" />
+    </ItemGroup>
+
+    <MSBuild Projects="@(ExternalProject)"
+             ContinueOnError="ErrorAndContinue" />
+  </Target>
+
+  <UsingTask TaskName="UpdateVSConfigurations" AssemblyFile="$(CoreFxToolsTaskDir)CoreFx.Tools.dll"/>
+  <Target Name="UpdateVSConfigurations" DependsOnTargets="BuildCoreFxTools">
+    <Message Importance="High" Text="Updating configurations for projects ..." />
+    <ItemGroup>
+      <_projectsToUpdate Include="$(MSBuildThisFileDirectory)src/**/*.*proj" Exclude="@(ProjectExclusions)" />
+    </ItemGroup>
+    <UpdateVSConfigurations ProjectsToValidate="@(_projectsToUpdate)" />
+    <Message Importance="High" Text="Updating configurations for projects ... Done." />
+  </Target>
+
+  <!-- Override CleanAllProjects from dir.traversal.targets and just remove the full BinDir -->
+  <Target Name="CleanAllProjects">
+    <RemoveDir Directories="$(BinDir)" />
+    <!-- Temporarily outside BinDir -->
+    <RemoveDir Directories="$(PackageInstallPath)" />
+  </Target>
+
+  <!-- Hook that can be used to insert custom build tasks to the build process such as setup and/or cleanup tasks -->
+  <Import Project="build.override.targets" Condition="Exists('build.override.targets')" />
+
+</Project>

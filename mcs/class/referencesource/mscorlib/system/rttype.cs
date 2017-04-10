@@ -4619,15 +4619,14 @@ namespace System
                     #region Non-TransparentProxy case
                     if (name == null)
                         throw new ArgumentNullException("name");
-
+#if MONO
+                    throw new NotImplementedException ();
+#else
                     bool[] isByRef = modifiers == null ? null : modifiers[0].IsByRefArray;
                     
                     // pass LCID_ENGLISH_US if no explicit culture is specified to match the behavior of VB
                     int lcid = (culture == null ? 0x0409 : culture.LCID);
 
-#if MONO
-                    throw new NotImplementedException ();
-#else
                     return InvokeDispMethod(name, bindingFlags, target, providedArgs, isByRef, lcid, namedParams);
 #endif
                     #endregion
@@ -4660,7 +4659,9 @@ namespace System
             if (binder == null)
                 binder = DefaultBinder;
 
+#if !MONO
             bool bDefaultBinder = (binder == DefaultBinder);
+#endif
             #endregion
             
             #region Delegate to Activator.CreateInstance
@@ -5328,7 +5329,7 @@ namespace System
                             throw new MissingMethodException(Environment.GetResourceString("MissingConstructor_Name", FullName));
                         }
 
-#if FEATURE_MONO_CAS
+#if MONO_FEATURE_CAS
                         // If we're creating a delegate, we're about to call a
                         // constructor taking an integer to represent a target
                         // method. Since this is very difficult (and expensive)
@@ -5359,7 +5360,7 @@ namespace System
                             new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
 #endif // FEATURE_CORECLR
                         }
-#endif // FEATURE_MONO_CAS
+#endif // MONO_FEATURE_CAS
                         if (invokeMethod.GetParametersNoCopy().Length == 0)
                         {
                             if (args.Length != 0)

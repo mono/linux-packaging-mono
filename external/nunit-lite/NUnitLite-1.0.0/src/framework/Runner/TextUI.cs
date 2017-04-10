@@ -89,12 +89,9 @@ namespace NUnitLite.Runner
             this.finallyDelegate = new FinallyDelegate();
             this.runner = new NUnitLiteTestAssemblyRunner(new NUnitLiteTestAssemblyBuilder(), this.finallyDelegate);
             this.listener = listener;
-
-
-	    AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(this.TopLevelHandler);
         }
 
-	public void TopLevelHandler(object sender, UnhandledExceptionEventArgs e)
+	void TopLevelHandler(object sender, UnhandledExceptionEventArgs e)
 	{
 		// Make sure that the test harness knows this exception was thrown
 		if (this.finallyDelegate != null)
@@ -207,6 +204,9 @@ namespace NUnitLite.Runner
                                 filter = new AndFilter(filter, excludeFilter);
                         }
 
+#if MONO
+                        filter = Xamarin.BabysitterSupport.AddBabysitterFilter(filter);
+#endif
                         RunTests(filter);
                     }
                 }
@@ -302,6 +302,9 @@ namespace NUnitLite.Runner
         {
             DateTime startTime = DateTime.Now;
 
+            var crashHandler = new UnhandledExceptionEventHandler(TopLevelHandler);
+            AppDomain.CurrentDomain.UnhandledException += crashHandler;
+
             ITestResult result = runner.Run(this, filter);
             new ResultReporter(result, writer).ReportResults();
             string resultFile = commandLineOptions.ResultFile;
@@ -322,6 +325,8 @@ namespace NUnitLite.Runner
                 Console.WriteLine();
                 Console.WriteLine("Results saved as {0}.", resultFile);
             }
+
+            AppDomain.CurrentDomain.UnhandledException -= crashHandler;
         }
 
         private void ExploreTests()
@@ -360,8 +365,18 @@ namespace NUnitLite.Runner
         /// <param name="test">The test</param>
         public void TestStarted(ITest test)
         {
+#if MONO
+            if (!test.IsSuite)
+                Xamarin.BabysitterSupport.RecordEnterTest(test.FullName);
+
+            if (commandLineOptions.LabelTestsInOutput)
+                writer.WriteLine("***** {0}", test.FullName);
+            else
+                writer.Write(".");
+#else
             if (commandLineOptions.LabelTestsInOutput)
                 writer.WriteLine("***** {0}", test.Name);
+#endif
         }
 
         /// <summary>
@@ -370,6 +385,17 @@ namespace NUnitLite.Runner
         /// <param name="result">The result of the test</param>
         public void TestFinished(ITestResult result)
         {
+#if MONO
+            if (!result.Test.IsSuite) {
+                Xamarin.BabysitterSupport.RecordLeaveTest (result.Test.FullName);
+                if (result.ResultState.Status == TestStatus.Failed)
+                {
+                    Xamarin.BabysitterSupport.RecordFailedTest (result.Test.FullName);
+                    if (!commandLineOptions.LabelTestsInOutput)
+                        writer.Write("F");
+                }
+            }
+#endif
         }
 
         /// <summary>

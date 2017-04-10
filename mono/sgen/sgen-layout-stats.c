@@ -9,6 +9,7 @@
 
 #include "sgen/sgen-gc.h"
 #include "sgen/sgen-layout-stats.h"
+#include <mono/utils/mono-compiler.h>
 
 #ifdef SGEN_OBJECT_LAYOUT_STATISTICS
 
@@ -58,6 +59,8 @@ sgen_object_layout_dump (FILE *out)
 	fprintf (out, "ref-array %lu\n", count_ref_array);
 	fprintf (out, "vtype-array %lu\n", count_vtype_array);
 }
+#else
 
-#endif
+MONO_EMPTY_SOURCE_FILE (sgen_layout_stats);
+#endif /* SGEN_OBJECT_LAYOUT_STATISTICS */
 #endif

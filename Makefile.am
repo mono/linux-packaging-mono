@@ -42,12 +42,11 @@ dist-hook:
 	test -d $(distdir)/mcs || mkdir $(distdir)/mcs
 	d=`cd $(distdir)/mcs && pwd`; cd $(mcs_topdir) && $(MAKE) distdir=$$d dist-recursive
 	rm -rf `find $(top_distdir)/external -path '*\.git'`
-	rm -f `find $(top_distdir)/external -path '*\.exe'`
-	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*'`
-	cp mcs/class/lib/basic/System.Configuration.dll mcs/class/lib/monolite/
-	cp mcs/class/lib/basic/System.Security.dll mcs/class/lib/monolite/
-# Disable this for now because it is very slow and causes wrench to timeout:
-#	test ! -d $(GIT_DIR) || ./scripts/commits-to-changelog.py --root=$(distdir) last-commit-with-compulsory-changelog-entry
+	rm -f `find $(top_distdir)/external -path '*\.exe' -not -path '*/roslyn-binaries/*'`
+	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*' -not -path '*/roslyn-binaries/*'`
+
+mac-sdk-package:
+	external/bockbuild/bb MacSDK --package
 
 pkgconfigdir = $(libdir)/pkgconfig
 noinst_DATA = mono-uninstalled.pc
@@ -55,17 +54,13 @@ DISTCLEANFILES= mono-uninstalled.pc
 
 # building with monolite
 mcslib = $(mcs_topdir)/class/lib
-monolite = $(mcslib)/monolite
-mono_corlib_version = $(shell sed -n "s/\#define MONO_CORLIB_VERSION //p" $(srcdir)/mono/metadata/appdomain.c)
-monolite_url = http://download.mono-project.com/monolite/monolite-$(mono_corlib_version)-latest.tar.gz
+monolite_url = https://download.mono-project.com/monolite/monolite-$(MONO_CORLIB_VERSION)-latest.tar.gz
 .PHONY: get-monolite-latest 
 get-monolite-latest:
-	-rm -fr $(mcslib)/monolite-*
-	-mkdir -p $(mcslib)
-	test ! -d $(monolite) || test ! -d $(monolite).old || rm -fr $(monolite).old
-	test ! -d $(monolite) || mv -f $(monolite) $(monolite).old
-	cd $(mcslib) && { (wget -O- $(monolite_url) || curl $(monolite_url)) | gzip -d | tar xf - ; }
-	cd $(mcslib) && mv -f monolite-* monolite
+	-rm -fr $(mcslib)/monolite/$(MONO_CORLIB_VERSION)
+	-mkdir -p $(mcslib)/monolite
+	cd $(mcslib) && { (wget -O- $(monolite_url) || curl -L $(monolite_url)) | gzip -d | tar xf - ; }
+	cd $(mcslib) && mv -f monolite-* monolite/$(MONO_CORLIB_VERSION)
 
 if BITCODE
 BITCODE_CHECK=yes

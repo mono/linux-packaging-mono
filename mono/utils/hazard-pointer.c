@@ -23,7 +23,6 @@
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/mono-threads.h>
 #include <mono/utils/mono-counters.h>
-#include <mono/io-layer/io-layer.h>
 #endif
 
 typedef struct {
@@ -52,7 +51,7 @@ static volatile gint32 overflow_busy [HAZARD_TABLE_OVERFLOW];
 
 /* The table where we keep pointers to blocks to be freed but that
    have to wait because they're guarded by a hazard pointer. */
-static MonoLockFreeArrayQueue delayed_free_queue = MONO_LOCK_FREE_ARRAY_QUEUE_INIT (sizeof (DelayedFreeItem));
+static MonoLockFreeArrayQueue delayed_free_queue = MONO_LOCK_FREE_ARRAY_QUEUE_INIT (sizeof (DelayedFreeItem), MONO_MEM_ACCOUNT_HAZARD_POINTERS);
 
 /* The table for small ID assignment */
 static mono_mutex_t small_id_mutex;
@@ -112,7 +111,7 @@ mono_thread_small_id_alloc (void)
 		if (hazard_table == NULL) {
 			hazard_table = (MonoThreadHazardPointers *volatile) mono_valloc (NULL,
 				sizeof (MonoThreadHazardPointers) * HAZARD_TABLE_MAX_SIZE,
-				MONO_MMAP_NONE);
+				MONO_MMAP_NONE, MONO_MEM_ACCOUNT_HAZARD_POINTERS);
 		}
 
 		g_assert (hazard_table != NULL);

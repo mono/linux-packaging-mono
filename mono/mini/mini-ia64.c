@@ -597,6 +597,12 @@ mono_arch_cleanup (void)
 {
 }
 
+gboolean
+mono_arch_have_fast_tls (void)
+{
+	return FALSE;
+}
+
 /*
  * This function returns the optimizations supported on this cpu.
  */
@@ -2923,11 +2929,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 
 			break;
 		}
-		case OP_TLS_GET:
-			ia64_adds_imm (code, ins->dreg, ins->inst_offset, IA64_TP);
-			ia64_ld8 (code, ins->dreg, ins->dreg);
-			break;
-
 			/* Synchronization */
 		case OP_MEMORY_BARRIER:
 			ia64_mf (code);
@@ -4532,8 +4533,8 @@ mono_arch_free_jit_tls_data (MonoJitTlsData *tls)
  * LOCKING: called with the domain lock held
  */
 gpointer
-mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckItem **imt_entries, int count,
-	gpointer fail_tramp)
+mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckItem **imt_entries, int count,
+								gpointer fail_tramp)
 {
 	int i;
 	int size = 0;
@@ -4613,7 +4614,7 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckI
 
 	size = code.buf - buf;
 	if (fail_tramp) {
-		start = mono_method_alloc_generic_virtual_thunk (domain, size + 16);
+		start = mono_method_alloc_generic_virtual_trampoline (domain, size + 16);
 		start = (gpointer)ALIGN_TO (start, 16);
 	} else {
 		start = mono_domain_code_reserve (domain, size);

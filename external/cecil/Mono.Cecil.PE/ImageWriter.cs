@@ -108,7 +108,7 @@ namespace Mono.Cecil.PE {
 
 		public static ImageWriter CreateDebugWriter (ModuleDefinition module, MetadataBuilder metadata, Disposable<Stream> stream)
 		{
-			var writer = new ImageWriter (module, "PDB V1.0", metadata, stream, metadataOnly: true);
+			var writer = new ImageWriter (module, "PDB v1.0", metadata, stream, metadataOnly: true);
 			var length = metadata.text_map.GetLength ();
 			writer.text = new Section { SizeOfRawData = length, VirtualSize = length };
 			return writer;
@@ -526,7 +526,7 @@ namespace Mono.Cecil.PE {
 				1	// #~
 				+ 1	// #Strings
 				+ (metadata.user_string_heap.IsEmpty ? 0 : 1)	// #US
-				+ 1	// GUID
+				+ (metadata.guid_heap.IsEmpty ? 0 : 1)	// GUID
 				+ (metadata.blob_heap.IsEmpty ? 0 : 1)
 				+ (metadata.pdb_heap == null ? 0 : 1));	// #Blob
 		}

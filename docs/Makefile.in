@@ -177,6 +177,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -209,7 +210,6 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -241,6 +241,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
@@ -644,6 +645,7 @@ dist-hook:
 
 clean-local:
 	-rm -Rf html
+	-rm -Rf doxygen-output
 	-rm -f deploy/* convert.exe* AgilityPack.dll*
 	-rm -f $(ASSEMBLED_DOCS)
 
@@ -677,6 +679,11 @@ convert.exe: convert.cs AgilityPack.dll
 
 AgilityPack.dll: 
 	$(TOOL_MAKE) AgilityPack.dll
+
+doxygen:
+	doxygen doxyfile
+
+.PHONY: doxygen
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

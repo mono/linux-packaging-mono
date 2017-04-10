@@ -147,6 +147,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -179,7 +180,6 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -211,6 +211,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
@@ -331,9 +332,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
-with_mono_path = MONO_PATH=$(CLASS)
 RUNTIME = $(top_builddir)/runtime/mono-wrapper --debug
-MCS = $(with_mono_path) $(RUNTIME) $(mcs_topdir)/class/lib/build/mcs.exe -debug:full -target:library
+TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(RUNTIME)
+MCS = $(TOOLS_RUNTIME) $(CSC) -noconfig -nologo -debug:portable -target:library
 EXTRA_DIST = asm.cs Test.cs TestBase.cs
 all: all-am
 
@@ -524,8 +525,8 @@ uninstall-am:
 	tags-am uninstall uninstall-am
 
 
-@INSTALL_MOBILE_STATIC_TRUE@prereq: aot
-@INSTALL_MOBILE_STATIC_FALSE@prereq: test/asm.dll
+@FULL_AOT_TESTS_TRUE@prereq: test/asm.dll$(PLATFORM_AOT_SUFFIX)
+@FULL_AOT_TESTS_FALSE@prereq: test/asm.dll
 
 test/.dirstamp deps/.dirstamp:
 	-mkdir $(@D)
@@ -544,13 +545,12 @@ deps/TestBase.dll: TestBase.cs
 	$(MCS) -out:deps/TestBase.dll $(srcdir)/TestBase.cs
 
 clean:
-	rm -f deps/*.dll test/*.dll
+	rm -rf deps/ test/
 
-.PHONY: aot
-aot: test/asm.dll
-	MONO_PATH="deps:$(CLASS)" $(RUNTIME) $(AOT_BUILD_FLAGS) deps/test.dll
-	MONO_PATH="deps:$(CLASS)" $(RUNTIME) $(AOT_BUILD_FLAGS) deps/TestBase.dll
-	MONO_PATH="deps:$(CLASS)" $(RUNTIME) $(AOT_BUILD_FLAGS) test/asm.dll
+@FULL_AOT_TESTS_TRUE@test/asm.dll$(PLATFORM_AOT_SUFFIX): test/asm.dll
+@FULL_AOT_TESTS_TRUE@	MONO_PATH="deps:$(CLASS)" $(RUNTIME) $(AOT_BUILD_FLAGS) deps/test.dll
+@FULL_AOT_TESTS_TRUE@	MONO_PATH="deps:$(CLASS)" $(RUNTIME) $(AOT_BUILD_FLAGS) deps/TestBase.dll
+@FULL_AOT_TESTS_TRUE@	MONO_PATH="deps:$(CLASS)" $(RUNTIME) $(AOT_BUILD_FLAGS) test/asm.dll
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

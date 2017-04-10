@@ -216,8 +216,7 @@ void           <a href="#api:mono_image_close">mono_image_close</a>             
 void           <a href="#api:mono_image_addref">mono_image_addref</a>                 (MonoImage *image);
                <a href="#api:mono_image_load_file_for_image">mono_image_load_file_for_image</a>    
                <a href="#api:mono_image_open_from_data_with_name">mono_image_open_from_data_with_name</a>
-MonoImage*     <a href="#api:mono_image_load_module">mono_image_load_module</a>            (MonoImage *image, 
-                                                  int idx);
+               <a href="#api:mono_image_load_module">mono_image_load_module</a>            
                <a href="#api:mono_image_get_guid">mono_image_get_guid</a>               
 MonoAssembly*  <a href="#api:mono_image_get_assembly">mono_image_get_assembly</a>           (MonoImage *image);
 guint32        <a href="#api:mono_image_get_entry_point">mono_image_get_entry_point</a>        (MonoImage *image);
@@ -440,15 +439,8 @@ mono_image_addref (MonoImage *image)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">MonoImage*
-mono_image_load_module (MonoImage *image, int idx)
-
-</div>
+            <div class="mapi-prototype">mono_image_load_module</div>
             <p />
-             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	   Load the module with the one-based index IDX from IMAGE and return it. Return <code>NULL</code> if
-	 it cannot be loaded.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 

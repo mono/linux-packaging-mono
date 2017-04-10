@@ -111,7 +111,7 @@ sgen_memgov_calculate_minor_collection_allowance (void)
 
 	/* FIXME: Why is this here? */
 	if (major_collector.free_swept_blocks)
-		major_collector.free_swept_blocks (allowance);
+		major_collector.free_swept_blocks (major_collector.get_num_major_sections () * SGEN_DEFAULT_ALLOWANCE_HEAP_SIZE_RATIO);
 
 	major_collection_trigger_size = new_heap_size + allowance;
 
@@ -295,7 +295,7 @@ sgen_output_log_entry (SgenLogEntry *entry, gint64 stw_time, int generation)
 
 	switch (entry->type) {
 		case SGEN_LOG_NURSERY:
-			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MINOR%s: (%s) time %.2fms, %s promoted %dK major size: %dK in use: %dK los size: %dK in use: %dK",
+			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MINOR%s: (%s) time %.2fms, %s promoted %zdK major size: %zdK in use: %zdK los size: %zdK in use: %zdK",
 				entry->is_overflow ? "_OVERFLOW" : "",
 				entry->reason ? entry->reason : "",
 				entry->time / 10000.0f,
@@ -307,7 +307,7 @@ sgen_output_log_entry (SgenLogEntry *entry, gint64 stw_time, int generation)
 				entry->los_size_in_use / 1024);
 			break;
 		case SGEN_LOG_MAJOR_SERIAL:
-			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR%s: (%s) time %.2fms, %s los size: %dK in use: %dK",
+			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR%s: (%s) time %.2fms, %s los size: %zdK in use: %zdK",
 				entry->is_overflow ? "_OVERFLOW" : "",
 				entry->reason ? entry->reason : "",
 				(int)entry->time / 10000.0f,
@@ -319,7 +319,7 @@ sgen_output_log_entry (SgenLogEntry *entry, gint64 stw_time, int generation)
 			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR_CONCURRENT_START: (%s)", entry->reason ? entry->reason : "");
 			break;
 		case SGEN_LOG_MAJOR_CONC_FINISH:
-			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR_CONCURRENT_FINISH: (%s) time %.2fms, %s los size: %dK in use: %dK",
+			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR_CONCURRENT_FINISH: (%s) time %.2fms, %s los size: %zdK in use: %zdK",
 				entry->reason ? entry->reason : "",
 				entry->time / 10000.0f,
 				full_timing_buff,
@@ -327,7 +327,7 @@ sgen_output_log_entry (SgenLogEntry *entry, gint64 stw_time, int generation)
 				entry->los_size_in_use / 1024);
 			break;
 		case SGEN_LOG_MAJOR_SWEEP_FINISH:
-			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR_SWEEP: major size: %dK in use: %dK",
+			mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_GC, "GC_MAJOR_SWEEP: major size: %zdK in use: %zdK",
 				entry->major_size / 1024,
 				entry->major_size_in_use / 1024);
 			break;
@@ -384,13 +384,13 @@ sgen_assert_memory_alloc (void *ptr, size_t requested_size, const char *assert_d
  * This must not require any lock.
  */
 void*
-sgen_alloc_os_memory (size_t size, SgenAllocFlags flags, const char *assert_description)
+sgen_alloc_os_memory (size_t size, SgenAllocFlags flags, const char *assert_description, MonoMemAccountType type)
 {
 	void *ptr;
 
 	g_assert (!(flags & ~(SGEN_ALLOC_HEAP | SGEN_ALLOC_ACTIVATE)));
 
-	ptr = mono_valloc (0, size, prot_flags_for_activate (flags & SGEN_ALLOC_ACTIVATE));
+	ptr = mono_valloc (0, size, prot_flags_for_activate (flags & SGEN_ALLOC_ACTIVATE), type);
 	sgen_assert_memory_alloc (ptr, size, assert_description);
 	if (ptr) {
 		SGEN_ATOMIC_ADD_P (total_alloc, size);
@@ -400,14 +400,15 @@ sgen_alloc_os_memory (size_t size, SgenAllocFlags flags, const char *assert_desc
 }
 
 /* size must be a power of 2 */
+// FIXME: remove assert_description
 void*
-sgen_alloc_os_memory_aligned (size_t size, mword alignment, SgenAllocFlags flags, const char *assert_description)
+sgen_alloc_os_memory_aligned (size_t size, mword alignment, SgenAllocFlags flags, const char *assert_description, MonoMemAccountType type)
 {
 	void *ptr;
 
 	g_assert (!(flags & ~(SGEN_ALLOC_HEAP | SGEN_ALLOC_ACTIVATE)));
 
-	ptr = mono_valloc_aligned (size, alignment, prot_flags_for_activate (flags & SGEN_ALLOC_ACTIVATE));
+	ptr = mono_valloc_aligned (size, alignment, prot_flags_for_activate (flags & SGEN_ALLOC_ACTIVATE), type);
 	sgen_assert_memory_alloc (ptr, size, assert_description);
 	if (ptr) {
 		SGEN_ATOMIC_ADD_P (total_alloc, size);
@@ -420,11 +421,11 @@ sgen_alloc_os_memory_aligned (size_t size, mword alignment, SgenAllocFlags flags
  * Free the memory returned by sgen_alloc_os_memory (), returning it to the OS.
  */
 void
-sgen_free_os_memory (void *addr, size_t size, SgenAllocFlags flags)
+sgen_free_os_memory (void *addr, size_t size, SgenAllocFlags flags, MonoMemAccountType type)
 {
 	g_assert (!(flags & ~SGEN_ALLOC_HEAP));
 
-	mono_vfree (addr, size);
+	mono_vfree (addr, size, type);
 	SGEN_ATOMIC_ADD_P (total_alloc, -(gssize)size);
 	total_alloc_max = MAX (total_alloc_max, total_alloc);
 }
@@ -476,8 +477,8 @@ sgen_memgov_init (size_t max_heap, size_t soft_limit, gboolean debug_allowance, 
 	debug_print_allowance = debug_allowance;
 	major_collection_trigger_size = MIN_MINOR_COLLECTION_ALLOWANCE;
 
-	mono_counters_register ("Memgov alloc", MONO_COUNTER_GC | MONO_COUNTER_WORD | MONO_COUNTER_BYTES | MONO_COUNTER_VARIABLE, &total_alloc);
-	mono_counters_register ("Memgov max alloc", MONO_COUNTER_GC | MONO_COUNTER_WORD | MONO_COUNTER_BYTES | MONO_COUNTER_MONOTONIC, &total_alloc_max);
+	mono_counters_register ("Memgov alloc", MONO_COUNTER_GC | MONO_COUNTER_WORD | MONO_COUNTER_BYTES | MONO_COUNTER_VARIABLE, (void*)&total_alloc);
+	mono_counters_register ("Memgov max alloc", MONO_COUNTER_GC | MONO_COUNTER_WORD | MONO_COUNTER_BYTES | MONO_COUNTER_MONOTONIC, (void*)&total_alloc_max);
 
 	mono_coop_mutex_init (&log_entries_mutex);
 
