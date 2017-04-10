@@ -118,7 +118,6 @@ am__DEPENDENCIES_1 =
 @SUPPORT_SGEN_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
 @SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/mono/sgen/libmonosgen-static.la
 am__DEPENDENCIES_3 = $(metadata_lib) $(am__DEPENDENCIES_2) \
-	$(top_builddir)/mono/io-layer/libwapi.la \
 	$(top_builddir)/mono/utils/libmonoutils.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 monodis_DEPENDENCIES = libmonodis.a $(am__DEPENDENCIES_3) \
@@ -248,6 +247,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -280,7 +280,6 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -312,6 +311,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
@@ -439,7 +439,6 @@ AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
 runtime_lib = \
 	$(metadata_lib) \
 	$(gc_lib)	\
-	$(top_builddir)/mono/io-layer/libwapi.la	\
 	$(top_builddir)/mono/utils/libmonoutils.la \
 	$(GLIB_LIBS) $(LIBICONV)
 

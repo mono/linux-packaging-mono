@@ -72,9 +72,25 @@ const MonoObjectHandle mono_null_value_handle = NULL;
 
 #define THIS_IS_AN_OK_NUMBER_OF_HANDLES 100
 
+static MonoObject**
+chunk_element_objslot (HandleChunk *chunk, int idx)
+{
+	return &chunk->objects[idx].o;
+}
+
+#ifdef MONO_HANDLE_TRACK_OWNER
+#define SET_OWNER(chunk,idx) do { (chunk)->objects[(idx)].owner = owner; } while (0)
+#else
+#define SET_OWNER(chunk,idx) do { } while (0)
+#endif
+
 /* Actual handles implementation */
 MonoRawHandle
+#ifndef MONO_HANDLE_TRACK_OWNER
 mono_handle_new (MonoObject *object)
+#else
+mono_handle_new (MonoObject *object, const char *owner)
+#endif
 {
 	MonoThreadInfo *info = mono_thread_info_current ();
 	HandleStack *handles = (HandleStack *)info->handle_stack;
@@ -83,6 +99,7 @@ mono_handle_new (MonoObject *object)
 retry:
 	if (G_LIKELY (top->size < OBJECTS_PER_HANDLES_CHUNK)) {
 		int idx = top->size;
+		MonoObject** objslot = chunk_element_objslot (top, idx);
 		/* can be interrupted anywhere here, so:
 		 * 1. make sure the new slot is null
 		 * 2. make the new slot scannable (increment size)
@@ -91,13 +108,13 @@ retry:
 		 * (have to do 1 then 3 so that if we're interrupted
 		 * between 1 and 2, the object is still live)
 		 */
-		top->objects [idx] = NULL;
+		*objslot = NULL;
 		mono_memory_write_barrier ();
 		top->size++;
 		mono_memory_write_barrier ();
-		MonoObject **h = &top->objects [idx];
-		*h = object;
-		return h;
+		*objslot = object;
+		SET_OWNER (top,idx);
+		return objslot;
 	}
 	if (G_LIKELY (top->next)) {
 		top->next->size = 0;
@@ -164,8 +181,9 @@ mono_handle_stack_scan (HandleStack *stack, GcScanFunc func, gpointer gc_data)
 	while (cur) {
 		int i;
 		for (i = 0; i < cur->size; ++i) {
-			if (cur->objects [i] != NULL)
-				func ((gpointer*)&cur->objects [i], gc_data);
+			MonoObject **obj_slot = chunk_element_objslot (cur, i);
+			if (*obj_slot != NULL)
+				func ((gpointer*)obj_slot, gc_data);
 		}
 		if (cur == last)
 			break;
@@ -198,7 +216,13 @@ mono_stack_mark_record_size (MonoThreadInfo *info, HandleStackMark *stackmark, c
 MonoRawHandle
 mono_stack_mark_pop_value (MonoThreadInfo *info, HandleStackMark *stackmark, MonoRawHandle value)
 {
-	g_error ("impl me");
+	MonoObject *obj = value ? *((MonoObject**)value) : NULL;
+	mono_stack_mark_pop (info, stackmark);
+#ifndef MONO_HANDLE_TRACK_OWNER
+	return mono_handle_new (obj);
+#else
+	return mono_handle_new (obj, "<mono_stack_mark_pop_value>");
+#endif
 }
 
 /* Temporary place for some of the handle enabled wrapper functions*/
@@ -215,6 +239,12 @@ mono_array_new_handle (MonoDomain *domain, MonoClass *eclass, uintptr_t n, MonoE
 	return MONO_HANDLE_NEW (MonoArray, mono_array_new_checked (domain, eclass, n, error));
 }
 
+MonoArrayHandle
+mono_array_new_full_handle (MonoDomain *domain, MonoClass *array_class, uintptr_t *lengths, intptr_t *lower_bounds, MonoError *error)
+{
+	return MONO_HANDLE_NEW (MonoArray, mono_array_new_full_checked (domain, array_class, lengths, lower_bounds, error));
+}
+
 #ifdef ENABLE_CHECKED_BUILD
 /* Checked build helpers */
 void
@@ -223,3 +253,44 @@ mono_handle_verify (MonoRawHandle raw_handle)
 	
 }
 #endif
+
+uintptr_t
+mono_array_handle_length (MonoArrayHandle arr)
+{
+	MONO_REQ_GC_UNSAFE_MODE;
+
+	return MONO_HANDLE_RAW (arr)->max_length;
+}
+
+uint32_t
+mono_gchandle_from_handle (MonoObjectHandle handle, mono_bool pinned)
+{
+	return mono_gchandle_new (MONO_HANDLE_RAW(handle), pinned);
+}
+
+MonoObjectHandle
+mono_gchandle_get_target_handle (uint32_t gchandle)
+{
+	return MONO_HANDLE_NEW (MonoObject, mono_gchandle_get_target (gchandle));
+}
+
+gpointer
+mono_array_handle_pin_with_size (MonoArrayHandle handle, int size, uintptr_t idx, uint32_t *gchandle)
+{
+	g_assert (gchandle != NULL);
+	*gchandle = mono_gchandle_from_handle (MONO_HANDLE_CAST(MonoObject,handle), TRUE);
+	MonoArray *raw = MONO_HANDLE_RAW (handle);
+	return mono_array_addr_with_size (raw, size, idx);
+}
+
+void
+mono_array_handle_memcpy_refs (MonoArrayHandle dest, uintptr_t dest_idx, MonoArrayHandle src, uintptr_t src_idx, uintptr_t len)
+{
+	mono_array_memcpy_refs (MONO_HANDLE_RAW (dest), dest_idx, MONO_HANDLE_RAW (src), src_idx, len);
+}
+
+gboolean
+mono_handle_stack_is_empty (HandleStack *stack)
+{
+	return (stack->top == stack->bottom && stack->top->size == 0);
+}

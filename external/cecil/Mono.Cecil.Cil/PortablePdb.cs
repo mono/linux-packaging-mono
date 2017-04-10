@@ -248,7 +248,13 @@ namespace Mono.Cecil.Cil {
 			if (IsEmbedded)
 				return;
 
+			WritePdbFile ();
+		}
+
+		void WritePdbFile ()
+		{
 			WritePdbHeap ();
+
 			WriteTableHeap ();
 
 			writer.BuildMetadataTextMap ();
@@ -291,6 +297,8 @@ namespace Mono.Cecil.Cil {
 
 		void WriteTableHeap ()
 		{
+			pdb_metadata.table_heap.string_offsets = pdb_metadata.string_heap.WriteStrings ();
+			pdb_metadata.table_heap.ComputeTableInformations ();
 			pdb_metadata.table_heap.WriteTableHeap ();
 		}
 	}

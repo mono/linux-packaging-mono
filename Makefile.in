@@ -232,6 +232,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -264,7 +265,6 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -296,6 +296,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
@@ -438,17 +439,13 @@ EXTRA_DIST = \
 	mcs/class/referencesource
 
 DISTCHECK_CONFIGURE_FLAGS = EXTERNAL_MCS=false EXTERNAL_RUNTIME=false
-# Disable this for now because it is very slow and causes wrench to timeout:
-#	test ! -d $(GIT_DIR) || ./scripts/commits-to-changelog.py --root=$(distdir) last-commit-with-compulsory-changelog-entry
 pkgconfigdir = $(libdir)/pkgconfig
 noinst_DATA = mono-uninstalled.pc
 DISTCLEANFILES = mono-uninstalled.pc
 
 # building with monolite
 mcslib = $(mcs_topdir)/class/lib
-monolite = $(mcslib)/monolite
-mono_corlib_version = $(shell sed -n "s/\#define MONO_CORLIB_VERSION //p" $(srcdir)/mono/metadata/appdomain.c)
-monolite_url = http://download.mono-project.com/monolite/monolite-$(mono_corlib_version)-latest.tar.gz
+monolite_url = https://download.mono-project.com/monolite/monolite-$(MONO_CORLIB_VERSION)-latest.tar.gz
 @BITCODE_TRUE@BITCODE_CHECK = yes
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -949,18 +946,17 @@ dist-hook:
 	test -d $(distdir)/mcs || mkdir $(distdir)/mcs
 	d=`cd $(distdir)/mcs && pwd`; cd $(mcs_topdir) && $(MAKE) distdir=$$d dist-recursive
 	rm -rf `find $(top_distdir)/external -path '*\.git'`
-	rm -f `find $(top_distdir)/external -path '*\.exe'`
-	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*'`
-	cp mcs/class/lib/basic/System.Configuration.dll mcs/class/lib/monolite/
-	cp mcs/class/lib/basic/System.Security.dll mcs/class/lib/monolite/
+	rm -f `find $(top_distdir)/external -path '*\.exe' -not -path '*/roslyn-binaries/*'`
+	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*' -not -path '*/roslyn-binaries/*'`
+
+mac-sdk-package:
+	external/bockbuild/bb MacSDK --package
 .PHONY: get-monolite-latest 
 get-monolite-latest:
-	-rm -fr $(mcslib)/monolite-*
-	-mkdir -p $(mcslib)
-	test ! -d $(monolite) || test ! -d $(monolite).old || rm -fr $(monolite).old
-	test ! -d $(monolite) || mv -f $(monolite) $(monolite).old
-	cd $(mcslib) && { (wget -O- $(monolite_url) || curl $(monolite_url)) | gzip -d | tar xf - ; }
-	cd $(mcslib) && mv -f monolite-* monolite
+	-rm -fr $(mcslib)/monolite/$(MONO_CORLIB_VERSION)
+	-mkdir -p $(mcslib)/monolite
+	cd $(mcslib) && { (wget -O- $(monolite_url) || curl -L $(monolite_url)) | gzip -d | tar xf - ; }
+	cd $(mcslib) && mv -f monolite-* monolite/$(MONO_CORLIB_VERSION)
 
 .PHONY: check-ci
 check-ci:

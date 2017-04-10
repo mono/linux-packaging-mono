@@ -56,7 +56,7 @@ static const CultureInfoEntry* culture_info_entry_from_lcid (int lcid);
 static const RegionInfoEntry* region_info_entry_from_lcid (int lcid);
 
 /* Lazy class loading functions */
-static GENERATE_GET_CLASS_WITH_CACHE (culture_info, System.Globalization, CultureInfo)
+static GENERATE_GET_CLASS_WITH_CACHE (culture_info, "System.Globalization", "CultureInfo")
 
 static int
 culture_lcid_locator (const void *a, const void *b)
@@ -133,7 +133,7 @@ create_names_array_idx (const guint16 *names, int ml, MonoError *error)
 	return_val_if_nok (error, NULL);
 
 	for(i = 0; i < ml; i++)
-		mono_array_setref (ret, i, mono_string_new (domain, idx2string (names [i])));
+		mono_array_setref (ret, i, mono_string_new (domain, dtidx2string (names [i])));
 
 	return ret;
 }
@@ -162,7 +162,7 @@ create_names_array_idx_dynamic (const guint16 *names, int ml, MonoError *error)
 	return_val_if_nok (error, NULL);
 
 	for(i = 0; i < len; i++)
-		mono_array_setref (ret, i, mono_string_new (domain, idx2string (names [i])));
+		mono_array_setref (ret, i, mono_string_new (domain, pattern2string (names [i])));
 
 	return ret;
 }
@@ -207,7 +207,7 @@ ves_icall_System_Globalization_CalendarData_fill_calendar_data (MonoCalendarData
 	return_val_and_set_pending_if_nok (&error, FALSE);
 	MONO_OBJECT_SETREF (this_obj, LongDatePatterns, long_date_patterns);
 
-	MONO_OBJECT_SETREF (this_obj, MonthDayPattern, mono_string_new (domain, idx2string (dfe->month_day_pattern)));
+	MONO_OBJECT_SETREF (this_obj, MonthDayPattern, mono_string_new (domain, pattern2string (dfe->month_day_pattern)));
 
 	MonoArray *day_names = create_names_array_idx (dfe->day_names, NUM_DAYS, &error);
 	return_val_and_set_pending_if_nok (&error, FALSE);
@@ -478,22 +478,27 @@ get_darwin_locale (void)
 static char *
 get_posix_locale (void)
 {
-	const char *locale;
+	char *locale;
 
 	locale = g_getenv ("LC_ALL");
 	if (locale == NULL) {
 		locale = g_getenv ("LANG");
-		if (locale == NULL)
-			locale = setlocale (LC_ALL, NULL);
+		if (locale == NULL) {
+			char *static_locale = setlocale (LC_ALL, NULL);
+			if (static_locale)
+				locale = g_strdup (static_locale);
+		}
 	}
 	if (locale == NULL)
 		return NULL;
 
 	/* Skip English-only locale 'C' */
-	if (strcmp (locale, "C") == 0)
+	if (strcmp (locale, "C") == 0) {
+		g_free (locale);
 		return NULL;
+	}
 
-	return g_strdup (locale);
+	return locale;
 }
 
 

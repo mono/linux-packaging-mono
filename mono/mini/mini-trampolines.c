@@ -199,8 +199,8 @@ mini_resolve_imt_method (MonoVTable *vt, gpointer *vtable_slot, MonoMethod *imt_
 		/* imt_method->slot might not be set */
 		impl = mono_class_get_vtable_entry (vt->klass, interface_offset + mono_method_get_declaring_generic_method (imt_method)->slot);
 
-		if (impl->klass->generic_class)
-			context.class_inst = impl->klass->generic_class->context.class_inst;
+		if (mono_class_is_ginst (impl->klass))
+			context.class_inst = mono_class_get_generic_class (impl->klass)->context.class_inst;
 		context.method_inst = ((MonoMethodInflated*)imt_method)->context.method_inst;
 		impl = mono_class_inflate_generic_method_checked (impl, &context, error);
 		mono_error_assert_ok (error);
@@ -562,7 +562,7 @@ common_call_trampoline (mgreg_t *regs, guint8 *code, MonoMethod *m, MonoVTable *
 			vtable_slot = mini_resolve_imt_method (vt, vtable_slot, imt_method, &impl_method, &addr, &need_rgctx_tramp, &variant_iface, error);
 			return_val_if_nok (error, NULL);
 
-			/* This is the vcall slot which gets called through the IMT thunk */
+			/* This is the vcall slot which gets called through the IMT trampoline */
 			vtable_slot_to_patch = vtable_slot;
 
 			if (addr) {
@@ -592,10 +592,10 @@ common_call_trampoline (mgreg_t *regs, guint8 *code, MonoMethod *m, MonoVTable *
 		else
 			declaring = m;
 
-		if (m->klass->generic_class)
-			context.class_inst = m->klass->generic_class->context.class_inst;
+		if (mono_class_is_ginst (m->klass))
+			context.class_inst = mono_class_get_generic_class (m->klass)->context.class_inst;
 		else
-			g_assert (!m->klass->generic_container);
+			g_assert (!mono_class_is_gtd (m->klass));
 
 		generic_virtual = mono_arch_find_imt_method (regs, code);
 		g_assert (generic_virtual);
@@ -663,10 +663,10 @@ common_call_trampoline (mgreg_t *regs, guint8 *code, MonoMethod *m, MonoVTable *
 			else
 				declaring = m;
 
-			if (klass->generic_class)
-				context.class_inst = klass->generic_class->context.class_inst;
-			else if (klass->generic_container)
-				context.class_inst = klass->generic_container->context.class_inst;
+			if (mono_class_is_ginst (klass))
+				context.class_inst = mono_class_get_generic_class (klass)->context.class_inst;
+			else if (mono_class_is_gtd (klass))
+				context.class_inst = mono_class_get_generic_container (klass)->context.class_inst;
 			context.method_inst = method_inst;
 
 			actual_method = mono_class_inflate_generic_method_checked (declaring, &context, error);
@@ -851,7 +851,7 @@ mono_vcall_trampoline (mgreg_t *regs, guint8 *code, int slot, guint8 *tramp)
 	gpointer *vtable_slot;
 	MonoMethod *m;
 	MonoError error;
-	gpointer addr, res;
+	gpointer addr, res = NULL;
 
 	trampoline_calls ++;
 
@@ -936,10 +936,10 @@ mono_generic_virtual_remoting_trampoline (mgreg_t *regs, guint8 *code, MonoMetho
 	else
 		declaring = m;
 
-	if (m->klass->generic_class)
-		context.class_inst = m->klass->generic_class->context.class_inst;
+	if (mono_class_is_ginst (m->klass))
+		context.class_inst = mono_class_get_generic_class (m->klass)->context.class_inst;
 	else
-		g_assert (!m->klass->generic_container);
+		g_assert (!mono_class_is_gtd (m->klass));
 
 	imt_method = mono_arch_find_imt_method (regs, code);
 	if (imt_method->is_inflated)
@@ -1121,7 +1121,7 @@ mono_delegate_trampoline (mgreg_t *regs, guint8 *code, gpointer *arg, guint8* tr
 		 * delegate->method).
 		 */
 #ifndef DISABLE_REMOTING
-		if (delegate->target && delegate->target->vtable->klass == mono_defaults.transparent_proxy_class) {
+		if (delegate->target && mono_object_is_transparent_proxy (delegate->target)) {
 			is_remote = TRUE;
 #ifndef DISABLE_COM
 			if (((MonoTransparentProxy *)delegate->target)->remote_class->proxy_class != mono_class_get_com_object_class () &&
@@ -1189,7 +1189,7 @@ mono_delegate_trampoline (mgreg_t *regs, guint8 *code, gpointer *arg, guint8* tr
 			 * If the call doesn't return a valuetype, then the vcall uses the same calling
 			 * convention as a normal call.
 			 */
-			if (((method->klass->flags & TYPE_ATTRIBUTE_SEALED) || !(method->flags & METHOD_ATTRIBUTE_VIRTUAL)) && !MONO_TYPE_ISSTRUCT (sig->ret)) {
+			if ((mono_class_is_sealed (method->klass) || !(method->flags & METHOD_ATTRIBUTE_VIRTUAL)) && !MONO_TYPE_ISSTRUCT (sig->ret)) {
 				callvirt = FALSE;
 				enable_caching = FALSE;
 			}
@@ -1198,7 +1198,7 @@ mono_delegate_trampoline (mgreg_t *regs, guint8 *code, gpointer *arg, guint8* tr
 		if (delegate->target && 
 			method->flags & METHOD_ATTRIBUTE_VIRTUAL && 
 			method->flags & METHOD_ATTRIBUTE_ABSTRACT &&
-			method->klass->flags & TYPE_ATTRIBUTE_ABSTRACT) {
+			mono_class_is_abstract (method->klass)) {
 			method = mono_object_get_virtual_method (delegate->target, method);
 			enable_caching = FALSE;
 		}
@@ -1276,7 +1276,7 @@ mono_handler_block_guard_trampoline (mgreg_t *regs, guint8 *code, gpointer *tram
 
 	MonoContext ctx;
 	MonoException *exc;
-	MonoJitTlsData *jit_tls = (MonoJitTlsData *)mono_native_tls_get_value (mono_jit_tls_id);
+	MonoJitTlsData *jit_tls = (MonoJitTlsData *)mono_tls_get_jit_tls ();
 	gpointer resume_ip = jit_tls->handler_block_return_address;
 
 	memcpy (&ctx, &jit_tls->handler_block_context, sizeof (MonoContext));
@@ -1288,7 +1288,7 @@ mono_handler_block_guard_trampoline (mgreg_t *regs, guint8 *code, gpointer *tram
 	if (!resume_ip) /*this should not happen, but we should avoid crashing */
 		exc = mono_get_exception_execution_engine ("Invalid internal state, resuming abort after handler block but no resume ip found");
 	else
-		exc = mono_thread_resume_interruption ();
+		exc = mono_thread_resume_interruption (TRUE);
 
 	if (exc) {
 		mono_handle_exception (&ctx, (MonoObject *)exc);

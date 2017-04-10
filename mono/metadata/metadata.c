@@ -109,7 +109,10 @@ enum {
 	MONO_MT_HS_IDX,
 
 	/* ResolutionScope coded index: Module, ModuleRef, AssemblytRef, TypeRef */
-	MONO_MT_RS_IDX
+	MONO_MT_RS_IDX,
+
+	/* CustomDebugInformation parent encoded index */
+	MONO_MT_HASCUSTDEBUG_IDX
 };
 
 const static unsigned char TableSchemas [] = {
@@ -397,7 +400,28 @@ const static unsigned char TableSchemas [] = {
 	MONO_MT_STRING_IDX,  /* Name */
 	MONO_MT_END,
 
-#define NULL_SCHEMA_OFFSET LOCALVARIABLE_SCHEMA_OFFSET + 4
+#define LOCALCONSTANT_SCHEMA_OFFSET LOCALVARIABLE_SCHEMA_OFFSET + 4
+	MONO_MT_STRING_IDX,  /* Name (String heap index) */
+	MONO_MT_BLOB_IDX,    /* Signature (Blob heap index, LocalConstantSig blob) */
+	MONO_MT_END,
+
+#define IMPORTSCOPE_SCHEMA_OFFSET LOCALCONSTANT_SCHEMA_OFFSET + 3
+	MONO_MT_TABLE_IDX, /* Parent (ImportScope row id or nil) */
+	MONO_MT_BLOB_IDX,  /* Imports (Blob index, encoding: Imports blob) */
+	MONO_MT_END,
+
+#define ASYNCMETHOD_SCHEMA_OFFSET IMPORTSCOPE_SCHEMA_OFFSET + 3
+	MONO_MT_TABLE_IDX, /* MoveNextMethod (MethodDef row id) */
+	MONO_MT_TABLE_IDX, /* KickoffMethod (MethodDef row id) */
+	MONO_MT_END,
+
+#define CUSTOMDEBUGINFORMATION_SCHEMA_OFFSET ASYNCMETHOD_SCHEMA_OFFSET + 3
+	MONO_MT_HASCUSTDEBUG_IDX, /* Parent (HasCustomDebugInformation coded index) */
+	MONO_MT_GUID_IDX,  /* Kind (Guid heap index) */
+	MONO_MT_BLOB_IDX,  /* Value (Blob heap index) */
+	MONO_MT_END,
+
+#define NULL_SCHEMA_OFFSET CUSTOMDEBUGINFORMATION_SCHEMA_OFFSET + 4
 	MONO_MT_END
 };
 
@@ -455,7 +479,11 @@ table_description [] = {
 	DOCUMENT_SCHEMA_OFFSET, /* 0x30 */
 	METHODBODY_SCHEMA_OFFSET,
 	LOCALSCOPE_SCHEMA_OFFSET,
-	LOCALVARIABLE_SCHEMA_OFFSET
+	LOCALVARIABLE_SCHEMA_OFFSET,
+	LOCALCONSTANT_SCHEMA_OFFSET,
+	IMPORTSCOPE_SCHEMA_OFFSET,
+	ASYNCMETHOD_SCHEMA_OFFSET,
+	CUSTOMDEBUGINFORMATION_SCHEMA_OFFSET
 };
 
 #ifdef HAVE_ARRAY_ELEM_INIT
@@ -523,7 +551,24 @@ inverse of this mapping.
 
  */
 #define rtsize(meta,s,b) (((s) < (1 << (b)) ? 2 : 4))
-#define idx_size(meta,tableidx) ((meta)->tables [(tableidx)].rows < 65536 ? 2 : 4)
+
+static inline int
+idx_size (MonoImage *meta, int tableidx)
+{
+	if (meta->referenced_tables && (meta->referenced_tables & ((guint64)1 << tableidx)))
+		return meta->referenced_table_rows [tableidx] < 65536 ? 2 : 4;
+	else
+		return meta->tables [tableidx].rows < 65536 ? 2 : 4;
+}
+
+static inline int
+get_nrows (MonoImage *meta, int tableidx)
+{
+	if (meta->referenced_tables && (meta->referenced_tables & ((guint64)1 << tableidx)))
+		return meta->referenced_table_rows [tableidx];
+	else
+		return meta->tables [tableidx].rows;
+}
 
 /* Reference: Partition II - 23.2.6 */
 /*
@@ -643,7 +688,7 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 				break;
 			case MONO_TABLE_GENERICPARAM:
 				g_assert (i == 2);
-				n = MAX (meta->tables [MONO_TABLE_METHOD].rows, meta->tables [MONO_TABLE_TYPEDEF].rows);
+				n = MAX (get_nrows (meta, MONO_TABLE_METHOD), get_nrows (meta, MONO_TABLE_TYPEDEF));
 				/*This is a coded token for 2 tables, so takes 1 bit */
 				field_size = rtsize (meta, n, 16 - MONO_TYPEORMETHOD_BITS);
 				break;
@@ -673,8 +718,13 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 				break;
 			case MONO_TABLE_METHODBODY:
 				g_assert (i == 0);
-				field_size = idx_size (meta, MONO_TABLE_DOCUMENT);
-				break;
+				field_size = idx_size (meta, MONO_TABLE_DOCUMENT); break;
+			case MONO_TABLE_IMPORTSCOPE:
+				g_assert(i == 0);
+				field_size = idx_size (meta, MONO_TABLE_IMPORTSCOPE); break;
+			case MONO_TABLE_STATEMACHINEMETHOD:
+				g_assert(i == 0 || i == 1);
+				field_size = idx_size(meta, MONO_TABLE_METHOD); break;
 			default:
 				g_error ("Can't handle MONO_MT_TABLE_IDX for table %d element %d", tableindex, i);
 			}
@@ -684,9 +734,9 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * HasConstant: ParamDef, FieldDef, Property
 			 */
 		case MONO_MT_CONST_IDX:
-			n = MAX (meta->tables [MONO_TABLE_PARAM].rows,
-				 meta->tables [MONO_TABLE_FIELD].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_PROPERTY].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_PARAM),
+				 get_nrows (meta, MONO_TABLE_FIELD));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_PROPERTY));
 
 			/* 2 bits to encode tag */
 			field_size = rtsize (meta, n, 16-2);
@@ -708,28 +758,69 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 				break;
 			}*/
 			
-			n = MAX (meta->tables [MONO_TABLE_METHOD].rows,
-				 meta->tables [MONO_TABLE_FIELD].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_TYPEREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_TYPEDEF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_PARAM].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_INTERFACEIMPL].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_MEMBERREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_MODULE].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_DECLSECURITY].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_PROPERTY].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_EVENT].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_STANDALONESIG].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_MODULEREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_TYPESPEC].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_ASSEMBLY].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_ASSEMBLYREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_FILE].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_EXPORTEDTYPE].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_MANIFESTRESOURCE].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_METHOD),
+				 get_nrows (meta, MONO_TABLE_FIELD));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_TYPEREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_TYPEDEF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_PARAM));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_INTERFACEIMPL));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_MEMBERREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_MODULE));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_DECLSECURITY));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_PROPERTY));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_EVENT));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_STANDALONESIG));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_MODULEREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_TYPESPEC));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_ASSEMBLY));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_ASSEMBLYREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_FILE));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_EXPORTEDTYPE));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_MANIFESTRESOURCE));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_GENERICPARAM));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_GENERICPARAMCONSTRAINT));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_METHODSPEC));
 
 			/* 5 bits to encode */
 			field_size = rtsize (meta, n, 16-5);
+			break;
+
+			/*
+			* HasCustomAttribute: points to any table but
+			* itself.
+			*/
+
+		case MONO_MT_HASCUSTDEBUG_IDX:
+			n = MAX(get_nrows (meta, MONO_TABLE_METHOD),
+					get_nrows (meta, MONO_TABLE_FIELD));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_TYPEREF));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_TYPEDEF));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_PARAM));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_INTERFACEIMPL));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_MEMBERREF));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_MODULE));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_DECLSECURITY));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_PROPERTY));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_EVENT));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_STANDALONESIG));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_MODULEREF));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_TYPESPEC));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_ASSEMBLY));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_ASSEMBLYREF));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_FILE));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_EXPORTEDTYPE));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_MANIFESTRESOURCE));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_GENERICPARAM));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_GENERICPARAMCONSTRAINT));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_METHODSPEC));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_DOCUMENT));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_LOCALSCOPE));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_LOCALVARIABLE));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_LOCALCONSTANT));
+			n = MAX(n, get_nrows (meta, MONO_TABLE_IMPORTSCOPE));
+
+			/* 5 bits to encode */
+			field_size = rtsize(meta, n, 16 - 5);
 			break;
 
 			/*
@@ -744,10 +835,10 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 				break;
 			}*/
 			
-			n = MAX (meta->tables [MONO_TABLE_TYPEREF].rows,
-				 meta->tables [MONO_TABLE_TYPEDEF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_METHOD].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_MEMBERREF].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_TYPEREF),
+				 get_nrows (meta, MONO_TABLE_TYPEDEF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_METHOD));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_MEMBERREF));
 
 			/* 3 bits to encode */
 			field_size = rtsize (meta, n, 16-3);
@@ -757,9 +848,9 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * HasDeclSecurity: Typedef, MethodDef, Assembly
 			 */
 		case MONO_MT_HASDEC_IDX:
-			n = MAX (meta->tables [MONO_TABLE_TYPEDEF].rows,
-				 meta->tables [MONO_TABLE_METHOD].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_ASSEMBLY].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_TYPEDEF),
+				 get_nrows (meta, MONO_TABLE_METHOD));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_ASSEMBLY));
 
 			/* 2 bits to encode */
 			field_size = rtsize (meta, n, 16-2);
@@ -769,9 +860,9 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * Implementation: File, AssemblyRef, ExportedType
 			 */
 		case MONO_MT_IMPL_IDX:
-			n = MAX (meta->tables [MONO_TABLE_FILE].rows,
-				 meta->tables [MONO_TABLE_ASSEMBLYREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_EXPORTEDTYPE].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_FILE),
+				 get_nrows (meta, MONO_TABLE_ASSEMBLYREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_EXPORTEDTYPE));
 
 			/* 2 bits to encode tag */
 			field_size = rtsize (meta, n, 16-2);
@@ -781,8 +872,8 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * HasFieldMarshall: FieldDef, ParamDef
 			 */
 		case MONO_MT_HFM_IDX:
-			n = MAX (meta->tables [MONO_TABLE_FIELD].rows,
-				 meta->tables [MONO_TABLE_PARAM].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_FIELD),
+				 get_nrows (meta, MONO_TABLE_PARAM));
 
 			/* 1 bit used to encode tag */
 			field_size = rtsize (meta, n, 16-1);
@@ -792,8 +883,8 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * MemberForwarded: FieldDef, MethodDef
 			 */
 		case MONO_MT_MF_IDX:
-			n = MAX (meta->tables [MONO_TABLE_FIELD].rows,
-				 meta->tables [MONO_TABLE_METHOD].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_FIELD),
+				 get_nrows (meta, MONO_TABLE_METHOD));
 
 			/* 1 bit used to encode tag */
 			field_size = rtsize (meta, n, 16-1);
@@ -805,9 +896,9 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * It is TypeDef, _TypeRef_, TypeSpec, instead.
 			 */
 		case MONO_MT_TDOR_IDX:
-			n = MAX (meta->tables [MONO_TABLE_TYPEDEF].rows,
-				 meta->tables [MONO_TABLE_TYPEREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_TYPESPEC].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_TYPEDEF),
+				 get_nrows (meta, MONO_TABLE_TYPEREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_TYPESPEC));
 
 			/* 2 bits to encode */
 			field_size = rtsize (meta, n, 16-2);
@@ -817,11 +908,11 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * MemberRefParent: TypeDef, TypeRef, MethodDef, ModuleRef, TypeSpec, MemberRef
 			 */
 		case MONO_MT_MRP_IDX:
-			n = MAX (meta->tables [MONO_TABLE_TYPEDEF].rows,
-				 meta->tables [MONO_TABLE_TYPEREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_METHOD].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_MODULEREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_TYPESPEC].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_TYPEDEF),
+				 get_nrows (meta, MONO_TABLE_TYPEREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_METHOD));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_MODULEREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_TYPESPEC));
 
 			/* 3 bits to encode */
 			field_size = rtsize (meta, n, 16 - 3);
@@ -831,8 +922,8 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * MethodDefOrRef: MethodDef, MemberRef
 			 */
 		case MONO_MT_MDOR_IDX:
-			n = MAX (meta->tables [MONO_TABLE_METHOD].rows,
-				 meta->tables [MONO_TABLE_MEMBERREF].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_METHOD),
+				 get_nrows (meta, MONO_TABLE_MEMBERREF));
 
 			/* 1 bit used to encode tag */
 			field_size = rtsize (meta, n, 16-1);
@@ -842,8 +933,8 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * HasSemantics: Property, Event
 			 */
 		case MONO_MT_HS_IDX:
-			n = MAX (meta->tables [MONO_TABLE_PROPERTY].rows,
-				 meta->tables [MONO_TABLE_EVENT].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_PROPERTY),
+				 get_nrows (meta, MONO_TABLE_EVENT));
 
 			/* 1 bit used to encode tag */
 			field_size = rtsize (meta, n, 16-1);
@@ -853,10 +944,10 @@ mono_metadata_compute_size (MonoImage *meta, int tableindex, guint32 *result_bit
 			 * ResolutionScope: Module, ModuleRef, AssemblyRef, TypeRef
 			 */
 		case MONO_MT_RS_IDX:
-			n = MAX (meta->tables [MONO_TABLE_MODULE].rows,
-				 meta->tables [MONO_TABLE_MODULEREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_ASSEMBLYREF].rows);
-			n = MAX (n, meta->tables [MONO_TABLE_TYPEREF].rows);
+			n = MAX (get_nrows (meta, MONO_TABLE_MODULE),
+				 get_nrows (meta, MONO_TABLE_MODULEREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_ASSEMBLYREF));
+			n = MAX (n, get_nrows (meta, MONO_TABLE_TYPEREF));
 
 			/* 2 bits used to encode tag (ECMA spec claims 3) */
 			field_size = rtsize (meta, n, 16 - 2);
@@ -1125,7 +1216,7 @@ mono_metadata_decode_blob_size (const char *xptr, const char **rptr)
  * @rptr: the new position of the pointer
  *
  * This routine decompresses 32-bit values as specified in the "Blob and
- * Signature" section (22.2)
+ * Signature" section (23.2)
  *
  * Returns: the decoded value
  */
@@ -2789,6 +2880,9 @@ free_inflated_method (MonoMethodInflated *imethod)
 	if (method->signature)
 		mono_metadata_free_inflated_signature (method->signature);
 
+	if (method->wrapper_type)
+		g_free (((MonoMethodWrapper*)method)->method_data);
+
 	g_free (method);
 }
 
@@ -2888,8 +2982,6 @@ mono_metadata_get_generic_inst (int type_argc, MonoType **type_argv)
 	gboolean is_open;
 	int i;
 	int size = MONO_SIZEOF_GENERIC_INST + type_argc * sizeof (MonoType *);
-	CollectData data;
-	MonoImageSet *set;
 
 	for (i = 0; i < type_argc; ++i)
 		if (mono_class_is_open_constructed_type (type_argv [i]))
@@ -2902,9 +2994,34 @@ mono_metadata_get_generic_inst (int type_argc, MonoType **type_argv)
 	ginst->type_argc = type_argc;
 	memcpy (ginst->type_argv, type_argv, type_argc * sizeof (MonoType *));
 
+	return mono_metadata_get_canonical_generic_inst (ginst);
+}
+
+
+/**
+ * mono_metadata_get_canonical_generic_inst:
+ * @candidate: an arbitrary generic instantiation
+ *
+ * Returns the canonical generic instantiation that represents the given
+ * candidate by identifying the image set for the candidate instantiation and
+ * finding the instance in the image set or adding a copy of the given instance
+ * to the image set.
+ *
+ * The returned MonoGenericInst has its own copy of the list of types.  The list
+ * passed in the argument can be freed, modified or disposed of.
+ *
+ */
+MonoGenericInst *
+mono_metadata_get_canonical_generic_inst (MonoGenericInst *candidate)
+{
+	CollectData data;
+	int type_argc = candidate->type_argc;
+	gboolean is_open = candidate->is_open;
+	MonoImageSet *set;
+
 	collect_data_init (&data);
 
-	collect_ginst_images (ginst, &data);
+	collect_ginst_images (candidate, &data);
 
 	set = get_image_set (data.images, data.nimages);
 
@@ -2912,8 +3029,9 @@ mono_metadata_get_generic_inst (int type_argc, MonoType **type_argv)
 
 	mono_image_set_lock (set);
 
-	ginst = (MonoGenericInst *)g_hash_table_lookup (set->ginst_cache, ginst);
+	MonoGenericInst *ginst = (MonoGenericInst *)g_hash_table_lookup (set->ginst_cache, candidate);
 	if (!ginst) {
+		int size = MONO_SIZEOF_GENERIC_INST + type_argc * sizeof (MonoType *);
 		ginst = (MonoGenericInst *)mono_image_set_alloc0 (set, size);
 #ifndef MONO_SMALL_CONFIG
 		ginst->id = ++next_generic_inst_id;
@@ -2921,8 +3039,8 @@ mono_metadata_get_generic_inst (int type_argc, MonoType **type_argv)
 		ginst->is_open = is_open;
 		ginst->type_argc = type_argc;
 
-		for (i = 0; i < type_argc; ++i)
-			ginst->type_argv [i] = mono_metadata_type_dup (NULL, type_argv [i]);
+		for (int i = 0; i < type_argc; ++i)
+			ginst->type_argv [i] = mono_metadata_type_dup (NULL, candidate->type_argv [i]);
 
 		g_hash_table_insert (set->ginst_cache, ginst, ginst);
 	}
@@ -2934,7 +3052,7 @@ mono_metadata_get_generic_inst (int type_argc, MonoType **type_argv)
 static gboolean
 mono_metadata_is_type_builder_generic_type_definition (MonoClass *container_class, MonoGenericInst *inst, gboolean is_dynamic)
 {
-	MonoGenericContainer *container = container_class->generic_container; 
+	MonoGenericContainer *container = mono_class_get_generic_container (container_class); 
 
 	if (!is_dynamic || container_class->wastypebuilder || container->type_argc != inst->type_argc)
 		return FALSE;
@@ -2993,7 +3111,7 @@ mono_metadata_lookup_generic_class (MonoClass *container_class, MonoGenericInst 
 	gclass->context.class_inst = inst;
 	gclass->context.method_inst = NULL;
 	gclass->owner = set;
-	if (inst == container_class->generic_container->context.class_inst && !is_tb_open)
+	if (inst == mono_class_get_generic_container (container_class)->context.class_inst && !is_tb_open)
 		gclass->cached_class = container_class;
 
 	g_hash_table_insert (set->gclass_cache, gclass, gclass);
@@ -3088,7 +3206,7 @@ do_mono_metadata_parse_generic_class (MonoType *type, MonoImage *m, MonoGenericC
 		return FALSE;
 
 	gklass = mono_class_from_mono_type (gtype);
-	if (!gklass->generic_container) {
+	if (!mono_class_is_gtd (gklass)) {
 		mono_error_set_bad_image (error, m, "Generic instance with non-generic definition");
 		return FALSE;
 	}
@@ -4803,7 +4921,7 @@ static gboolean
 _mono_metadata_generic_class_container_equal (const MonoGenericClass *g1, MonoClass *c2, gboolean signature_only)
 {
 	MonoGenericInst *i1 = g1->context.class_inst;
-	MonoGenericInst *i2 = c2->generic_container->context.class_inst;
+	MonoGenericInst *i2 = mono_class_get_generic_container (c2)->context.class_inst;
 
 	if (!mono_metadata_class_equal (g1->container_class, c2, signature_only))
 		return FALSE;
@@ -4958,12 +5076,12 @@ mono_metadata_class_equal (MonoClass *c1, MonoClass *c2, gboolean signature_only
 {
 	if (c1 == c2)
 		return TRUE;
-	if (c1->generic_class && c2->generic_class)
-		return _mono_metadata_generic_class_equal (c1->generic_class, c2->generic_class, signature_only);
-	if (c1->generic_class && c2->generic_container)
-		return _mono_metadata_generic_class_container_equal (c1->generic_class, c2, signature_only);
-	if (c1->generic_container && c2->generic_class)
-		return _mono_metadata_generic_class_container_equal (c2->generic_class, c1, signature_only);
+	if (mono_class_is_ginst (c1) && mono_class_is_ginst (c2))
+		return _mono_metadata_generic_class_equal (mono_class_get_generic_class (c1), mono_class_get_generic_class (c2), signature_only);
+	if (mono_class_is_ginst (c1) && mono_class_is_gtd (c2))
+		return _mono_metadata_generic_class_container_equal (mono_class_get_generic_class (c1), c2, signature_only);
+	if (mono_class_is_gtd (c1) && mono_class_is_ginst (c2))
+		return _mono_metadata_generic_class_container_equal (mono_class_get_generic_class (c2), c1, signature_only);
 	if ((c1->byval_arg.type == MONO_TYPE_VAR) && (c2->byval_arg.type == MONO_TYPE_VAR))
 		return mono_metadata_generic_param_equal_internal (
 			c1->byval_arg.data.generic_param, c2->byval_arg.data.generic_param, signature_only);
@@ -5811,6 +5929,9 @@ handle_enum:
 			case MONO_NATIVE_TBSTR:
 				*conv = MONO_MARSHAL_CONV_STR_TBSTR;
 				return MONO_NATIVE_TBSTR;
+			case MONO_NATIVE_UTF8STR:
+				*conv = MONO_MARSHAL_CONV_STR_UTF8STR;
+				return MONO_NATIVE_UTF8STR;
 			case MONO_NATIVE_BYVALTSTR:
 				if (unicode)
 					*conv = MONO_MARSHAL_CONV_STR_BYVALWSTR;
@@ -6606,10 +6727,10 @@ mono_metadata_get_corresponding_field_from_generic_type_definition (MonoClassFie
 	MonoClass *gtd;
 	int offset;
 
-	if (!field->parent->generic_class)
+	if (!mono_class_is_ginst (field->parent))
 		return field;
 
-	gtd = field->parent->generic_class->container_class;
+	gtd = mono_class_get_generic_class (field->parent)->container_class;
 	offset = field - field->parent->fields;
 	return gtd->fields + offset;
 }
@@ -6624,12 +6745,12 @@ mono_metadata_get_corresponding_event_from_generic_type_definition (MonoEvent *e
 	MonoClass *gtd;
 	int offset;
 
-	if (!event->parent->generic_class)
+	if (!mono_class_is_ginst (event->parent))
 		return event;
 
-	gtd = event->parent->generic_class->container_class;
-	offset = event - event->parent->ext->events;
-	return gtd->ext->events + offset;
+	gtd = mono_class_get_generic_class (event->parent)->container_class;
+	offset = event - mono_class_get_event_info (event->parent)->events;
+	return mono_class_get_event_info (gtd)->events + offset;
 }
 
 /*
@@ -6639,15 +6760,17 @@ mono_metadata_get_corresponding_event_from_generic_type_definition (MonoEvent *e
 MonoProperty*
 mono_metadata_get_corresponding_property_from_generic_type_definition (MonoProperty *property)
 {
+	MonoClassPropertyInfo *info;
 	MonoClass *gtd;
 	int offset;
 
-	if (!property->parent->generic_class)
+	if (!mono_class_is_ginst (property->parent))
 		return property;
 
-	gtd = property->parent->generic_class->container_class;
-	offset = property - property->parent->ext->properties;
-	return gtd->ext->properties + offset;
+	info = mono_class_get_property_info (property->parent);
+	gtd = mono_class_get_generic_class (property->parent)->container_class;
+	offset = property - info->properties;
+	return mono_class_get_property_info (gtd)->properties + offset;
 }
 
 MonoWrapperCaches*

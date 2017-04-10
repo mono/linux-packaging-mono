@@ -67,8 +67,6 @@ enum {
 static mono_mutex_t mini_arch_mutex;
 
 int mono_exc_esp_offset = 0;
-static int tls_mode = TLS_MODE_DETECT;
-static int lmf_pthread_key = -1;
 
 /*
  * The code generated for sequence points reads from this location, which is
@@ -78,66 +76,6 @@ static gpointer ss_trigger_page;
 
 /* Enabled breakpoints read from this trigger page */
 static gpointer bp_trigger_page;
-
-static int
-offsets_from_pthread_key (guint32 key, int *offset2)
-{
-	int idx1 = key / 32;
-	int idx2 = key % 32;
-	*offset2 = idx2 * sizeof (gpointer);
-	return 284 + idx1 * sizeof (gpointer);
-}
-
-#define emit_linuxthreads_tls(code,dreg,key) do {\
-		int off1, off2;	\
-		off1 = offsets_from_pthread_key ((key), &off2);	\
-		ppc_ldptr ((code), (dreg), off1, ppc_r2);	\
-		ppc_ldptr ((code), (dreg), off2, (dreg));	\
-	} while (0);
-
-#define emit_darwing5_tls(code,dreg,key) do {\
-		int off1 = 0x48 + key * sizeof (gpointer);	\
-		ppc_mfspr ((code), (dreg), 104);	\
-		ppc_ldptr ((code), (dreg), off1, (dreg));	\
-	} while (0);
-
-/* FIXME: ensure the sc call preserves all but r3 */
-#define emit_darwing4_tls(code,dreg,key) do {\
-		int off1 = 0x48 + key * sizeof (gpointer);	\
-		if ((dreg) != ppc_r3) ppc_mr ((code), ppc_r12, ppc_r3);	\
-		ppc_li ((code), ppc_r0, 0x7FF2);	\
-		ppc_sc ((code));	\
-		ppc_lwz ((code), (dreg), off1, ppc_r3);	\
-		if ((dreg) != ppc_r3) ppc_mr ((code), ppc_r3, ppc_r12);	\
-	} while (0);
-
-#ifdef PPC_THREAD_PTR_REG
-#define emit_nptl_tls(code,dreg,key) do { \
-		int off1 = key; \
-		int off2 = key >> 15; \
-		if ((off2 == 0) || (off2 == -1)) { \
-			ppc_ldptr ((code), (dreg), off1, PPC_THREAD_PTR_REG);	\
-		} else { \
-			int off3 = (off2 + 1) > 1; \
-			ppc_addis ((code), ppc_r12, PPC_THREAD_PTR_REG, off3); \
-			ppc_ldptr ((code), (dreg), off1, ppc_r12);	\
-		} \
-	} while (0);
-#else
-#define emit_nptl_tls(code,dreg,key) do {	\
-		g_assert_not_reached ();	\
-	} while (0)
-#endif
-
-#define emit_tls_access(code,dreg,key) do {	\
-		switch (tls_mode) {	\
-		case TLS_MODE_LTHREADS: emit_linuxthreads_tls(code,dreg,key); break;	\
-		case TLS_MODE_NPTL: emit_nptl_tls(code,dreg,key); break;	\
-		case TLS_MODE_DARWIN_G5: emit_darwing5_tls(code,dreg,key); break;	\
-		case TLS_MODE_DARWIN_G4: emit_darwing4_tls(code,dreg,key); break;	\
-		default: g_assert_not_reached ();	\
-		}	\
-	} while (0)
 
 #define MONO_EMIT_NEW_LOAD_R8(cfg,dr,addr) do { \
 		MonoInst *inst;							   \
@@ -627,8 +565,8 @@ mono_arch_init (void)
 
 	mono_os_mutex_init_recursive (&mini_arch_mutex);
 
-	ss_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ|MONO_MMAP_32BIT);
-	bp_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ|MONO_MMAP_32BIT);
+	ss_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ|MONO_MMAP_32BIT, MONO_MEM_ACCOUNT_OTHER);
+	bp_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ|MONO_MMAP_32BIT, MONO_MEM_ACCOUNT_OTHER);
 	mono_mprotect (bp_trigger_page, mono_pagesize (), 0);
 
 	mono_aot_register_jit_icall ("mono_ppc_throw_exception", mono_ppc_throw_exception);
@@ -644,6 +582,12 @@ void
 mono_arch_cleanup (void)
 {
 	mono_os_mutex_destroy (&mini_arch_mutex);
+}
+
+gboolean
+mono_arch_have_fast_tls (void)
+{
+	return FALSE;
 }
 
 /*
@@ -3301,9 +3245,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 				ppc_nop (code);
 			break;
 		}
-		case OP_TLS_GET:
-			emit_tls_access (code, ins->dreg, ins->inst_offset);
-			break;
 		case OP_BIGMUL:
 			ppc_mullw (code, ppc_r0, ins->sreg1, ins->sreg2);
 			ppc_mulhw (code, ppc_r3, ins->sreg1, ins->sreg2);
@@ -5312,24 +5253,18 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 	}
 
 	if (method->save_lmf) {
-		if (lmf_pthread_key != -1) {
-			emit_tls_access (code, ppc_r3, lmf_pthread_key);
-			if (tls_mode != TLS_MODE_NPTL && G_STRUCT_OFFSET (MonoJitTlsData, lmf))
-				ppc_addi (code, ppc_r3, ppc_r3, G_STRUCT_OFFSET (MonoJitTlsData, lmf));
+		if (cfg->compile_aot) {
+			/* Compute the got address which is needed by the PLT entry */
+			code = mono_arch_emit_load_got_addr (cfg->native_code, code, cfg, NULL);
+		}
+		mono_add_patch_info (cfg, code - cfg->native_code, MONO_PATCH_INFO_INTERNAL_METHOD, 
+			     (gpointer)"mono_tls_get_lmf_addr");
+		if ((FORCE_INDIR_CALL || cfg->method->dynamic) && !cfg->compile_aot) {
+			ppc_load_func (code, PPC_CALL_REG, 0);
+			ppc_mtlr (code, PPC_CALL_REG);
+			ppc_blrl (code);
 		} else {
-			if (cfg->compile_aot) {
-				/* Compute the got address which is needed by the PLT entry */
-				code = mono_arch_emit_load_got_addr (cfg->native_code, code, cfg, NULL);
-			}
-			mono_add_patch_info (cfg, code - cfg->native_code, MONO_PATCH_INFO_INTERNAL_METHOD, 
-				     (gpointer)"mono_get_lmf_addr");
-			if ((FORCE_INDIR_CALL || cfg->method->dynamic) && !cfg->compile_aot) {
-				ppc_load_func (code, PPC_CALL_REG, 0);
-				ppc_mtlr (code, PPC_CALL_REG);
-				ppc_blrl (code);
-			} else {
-				ppc_bl (code, 0);
-			}
+			ppc_bl (code, 0);
 		}
 		/* we build the MonoLMF structure on the stack - see mini-ppc.h */
 		/* lmf_offset is the offset from the previous stack pointer,
@@ -5669,143 +5604,9 @@ try_offset_access (void *value, guint32 idx)
 }
 #endif
 
-static void
-setup_tls_access (void)
-{
-#if defined(__linux__) && defined(_CS_GNU_LIBPTHREAD_VERSION)
-	size_t conf_size = 0;
-	char confbuf[128];
-#else
-	/* FIXME for darwin */
-	guint32 *ins, *code;
-	guint32 cmplwi_1023, li_0x48, blr_ins;
-#endif
-
-#ifdef TARGET_PS3
-	tls_mode = TLS_MODE_FAILED;
-#endif
-
-	if (tls_mode == TLS_MODE_FAILED)
-		return;
-	if (g_getenv ("MONO_NO_TLS")) {
-		tls_mode = TLS_MODE_FAILED;
-		return;
-	}
-
- 	if (tls_mode == TLS_MODE_DETECT) {
-#if defined(__APPLE__) && defined(__mono_ppc__) && !defined(__mono_ppc64__)
-		tls_mode = TLS_MODE_DARWIN_G4;
-#elif defined(__linux__) && defined(_CS_GNU_LIBPTHREAD_VERSION)
-		conf_size = confstr ( _CS_GNU_LIBPTHREAD_VERSION, confbuf, sizeof(confbuf));
-		if ((conf_size > 4) && (strncmp (confbuf, "NPTL", 4) == 0))
-			tls_mode = TLS_MODE_NPTL;
-#elif !defined(TARGET_PS3)
-		ins = (guint32*)pthread_getspecific;
-		/* uncond branch to the real method */
-		if ((*ins >> 26) == 18) {
-			gint32 val;
-			val = (*ins & ~3) << 6;
-			val >>= 6;
-			if (*ins & 2) {
-				/* absolute */
-				ins = (guint32*)(long)val;
-			} else {
-				ins = (guint32*) ((char*)ins + val);
-			}
-		}
-		code = &cmplwi_1023;
-		ppc_cmpli (code, 0, 0, ppc_r3, 1023);
-		code = &li_0x48;
-		ppc_li (code, ppc_r4, 0x48);
-		code = &blr_ins;
-		ppc_blr (code);
-		if (*ins == cmplwi_1023) {
-			int found_lwz_284 = 0;
-			guint32 ptk;
-			for (ptk = 0; ptk < 20; ++ptk) {
-				++ins;
-				if (!*ins || *ins == blr_ins)
-					break;
-				if ((guint16)*ins == 284 && (*ins >> 26) == 32) {
-					found_lwz_284 = 1;
-					break;
-				}
-			}
-			if (!found_lwz_284) {
-				tls_mode = TLS_MODE_FAILED;
-				return;
-			}
-			tls_mode = TLS_MODE_LTHREADS;
-		} else if (*ins == li_0x48) {
-			++ins;
-			/* uncond branch to the real method */
-			if ((*ins >> 26) == 18) {
-				gint32 val;
-				val = (*ins & ~3) << 6;
-				val >>= 6;
-				if (*ins & 2) {
-					/* absolute */
-					ins = (guint32*)(long)val;
-				} else {
-					ins = (guint32*) ((char*)ins + val);
-				}
-				code = (guint32*)&val;
-				ppc_li (code, ppc_r0, 0x7FF2);
-				if (ins [1] == val) {
-					/* Darwin on G4, implement */
-					tls_mode = TLS_MODE_FAILED;
-					return;
-				} else {
-					code = (guint32*)&val;
-					ppc_mfspr (code, ppc_r3, 104);
-					if (ins [1] != val) {
-						tls_mode = TLS_MODE_FAILED;
-						return;
-					}
-					tls_mode = TLS_MODE_DARWIN_G5;
-				}
-			} else {
-				tls_mode = TLS_MODE_FAILED;
-				return;
-			}
-		} else {
-			tls_mode = TLS_MODE_FAILED;
-			return;
-		}
-#endif
-	}
-#ifndef TARGET_PS3
-	if (tls_mode == TLS_MODE_DETECT)
-		tls_mode = TLS_MODE_FAILED;
-	if (tls_mode == TLS_MODE_FAILED)
-		return;
-	if ((lmf_pthread_key == -1) && (tls_mode == TLS_MODE_NPTL)) {
-		lmf_pthread_key = mono_get_lmf_addr_tls_offset();
-	}
-
-#if 0
-	/* if not TLS_MODE_NPTL or local dynamic (as indicated by
-	   mono_get_lmf_addr_tls_offset returning -1) then use keyed access. */
-	if (lmf_pthread_key == -1) {
-		guint32 ptk = mono_jit_tls_id;
-		if (ptk < 1024) {
-			/*g_print ("MonoLMF at: %d\n", ptk);*/
-			/*if (!try_offset_access (mono_get_lmf_addr (), ptk)) {
-				init_tls_failed = 1;
-				return;
-			}*/
-			lmf_pthread_key = ptk;
-		}
-	}
-#endif
-
-#endif
-}
-
 void
 mono_arch_finish_init (void)
 {
-	setup_tls_access ();
 }
 
 void
@@ -5824,8 +5625,8 @@ mono_arch_free_jit_tls_data (MonoJitTlsData *tls)
  * LOCKING: called with the domain lock held
  */
 gpointer
-mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckItem **imt_entries, int count,
-	gpointer fail_tramp)
+mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckItem **imt_entries, int count,
+								gpointer fail_tramp)
 {
 	int i;
 	int size = 0;
@@ -5862,7 +5663,7 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckI
 	/* the initial load of the vtable address */
 	size += PPC_LOAD_SEQUENCE_LENGTH + LOADSTORE_SIZE;
 	if (fail_tramp) {
-		code = mono_method_alloc_generic_virtual_thunk (domain, size);
+		code = mono_method_alloc_generic_virtual_trampoline (domain, size);
 	} else {
 		code = mono_domain_code_reserve (domain, size);
 	}
@@ -5955,7 +5756,7 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckI
 	}
 
 	if (!fail_tramp)
-		mono_stats.imt_thunks_size += code - start;
+		mono_stats.imt_trampolines_size += code - start;
 	g_assert (code - start <= size);
 	mono_arch_flush_icache (start, size);
 
@@ -6009,9 +5810,7 @@ mono_arch_context_get_int_reg (MonoContext *ctx, int reg)
 	if (reg == ppc_r1)
 		return (mgreg_t)MONO_CONTEXT_GET_SP (ctx);
 
-	g_assert (reg >= ppc_r13);
-
-	return ctx->regs [reg - ppc_r13];
+	return ctx->regs [reg];
 }
 
 guint32

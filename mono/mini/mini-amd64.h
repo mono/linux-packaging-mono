@@ -191,11 +191,11 @@ typedef struct MonoCompileArch {
 
 static AMD64_Reg_No param_regs [] = { AMD64_RCX, AMD64_RDX, AMD64_R8, AMD64_R9 };
 
-static AMD64_Reg_No float_param_regs [] = { AMD64_XMM0, AMD64_XMM1, AMD64_XMM2, AMD64_XMM3 };
+static AMD64_XMM_Reg_No float_param_regs [] = { AMD64_XMM0, AMD64_XMM1, AMD64_XMM2, AMD64_XMM3 };
 
 static AMD64_Reg_No return_regs [] = { AMD64_RAX };
 
-static AMD64_Reg_No float_return_regs [] = { AMD64_XMM0 };
+static AMD64_XMM_Reg_No float_return_regs [] = { AMD64_XMM0 };
 
 #define PARAM_REGS G_N_ELEMENTS(param_regs)
 #define FLOAT_PARAM_REGS G_N_ELEMENTS(float_param_regs)
@@ -370,10 +370,11 @@ typedef struct {
 #define MONO_ARCH_EMULATE_FREM 1
 #define MONO_ARCH_HAVE_IS_INT_OVERFLOW 1
 
+#ifndef HOST_WIN32
 #define MONO_ARCH_ENABLE_MONO_LMF_VAR 1
+#endif
 #define MONO_ARCH_HAVE_INVALIDATE_METHOD 1
 #define MONO_ARCH_HAVE_FULL_AOT_TRAMPOLINES 1
-#define MONO_ARCH_HAVE_TLS_GET (mono_amd64_have_tls_get ())
 #define MONO_ARCH_IMT_REG AMD64_R10
 #define MONO_ARCH_IMT_SCRATCH_REG AMD64_R11
 #define MONO_ARCH_VTABLE_REG MONO_AMD64_ARG_REG1
@@ -386,7 +387,7 @@ typedef struct {
 #define MONO_ARCH_EXC_REG AMD64_RAX
 #define MONO_ARCH_HAVE_CMOV_OPS 1
 #define MONO_ARCH_HAVE_EXCEPTIONS_INIT 1
-#define MONO_ARCH_HAVE_GENERALIZED_IMT_THUNK 1
+#define MONO_ARCH_HAVE_GENERALIZED_IMT_TRAMPOLINE 1
 #define MONO_ARCH_HAVE_LIVERANGE_OPS 1
 #define MONO_ARCH_HAVE_SIGCTX_TO_MONOCTX 1
 #define MONO_ARCH_HAVE_GET_TRAMPOLINES 1
@@ -419,10 +420,6 @@ typedef struct {
 
 #if defined(TARGET_OSX) || defined(__linux__)
 #define MONO_ARCH_HAVE_UNWIND_BACKTRACE 1
-#endif
-
-#if defined(TARGET_OSX) || defined(__linux__) || defined(TARGET_WIN32)
-#define MONO_ARCH_HAVE_TLS_GET_REG 1
 #endif
 
 #define MONO_ARCH_GSHAREDVT_SUPPORTED 1
@@ -470,12 +467,6 @@ mono_amd64_start_gsharedvt_call (GSharedVtCallInfo *info, gpointer *caller, gpoi
 guint64
 mono_amd64_get_original_ip (void);
 
-guint8*
-mono_amd64_emit_tls_get (guint8* code, int dreg, int tls_offset);
-
-gboolean
-mono_amd64_have_tls_get (void);
-
 GSList*
 mono_amd64_get_exception_trampolines (gboolean aot);
 
@@ -494,6 +485,10 @@ guint mono_arch_unwindinfo_get_size (gpointer monoui);
 void mono_arch_unwindinfo_install_unwind_info (gpointer* monoui, gpointer code, guint code_size);
 
 #define MONO_ARCH_HAVE_UNWIND_TABLE 1
+
+void mono_arch_code_chunk_new (void *chunk, int size);
+void mono_arch_code_chunk_destroy (void *chunk);
+#define MONO_ARCH_HAVE_CODE_CHUNK_TRACKING 1
 #endif
 
 CallInfo* mono_arch_get_call_info (MonoMemPool *mp, MonoMethodSignature *sig);

@@ -112,7 +112,7 @@ namespace MonoTests.System.Reflection.Emit
 				Thread.GetDomain ().DefineDynamicAssembly (
 					assemblyName, AssemblyBuilderAccess.RunAndSave, Path.GetTempPath ());
 
-			module = assembly.DefineDynamicModule ("module1");
+			module = assembly.DefineDynamicModule (ASSEMBLY_NAME, ASSEMBLY_NAME + ".dll");
 		}
 
 		static int typeIndexer = 0;
@@ -1825,6 +1825,23 @@ namespace MonoTests.System.Reflection.Emit
 			}
 
 			// TODO:
+		}
+
+		[Test]
+		public void NestedTypeSave () {
+			var tb = module.DefineType (genTypeName ());
+
+			var tbuilder = tb.DefineNestedType ("Test.CodeGen", TypeAttributes.Public | TypeAttributes.Class);
+			var entryp = tbuilder.DefineMethod("Main", MethodAttributes.Public | MethodAttributes.Static, typeof (void), null);
+			var ilg = entryp.GetILGenerator (128);
+			ilg.Emit (OpCodes.Ldtoken, tb);
+			ilg.Emit (OpCodes.Pop);
+			ilg.Emit (OpCodes.Ret);
+
+			tbuilder.CreateType ();
+			tb.CreateType ();
+
+			assembly.Save (ASSEMBLY_NAME + ".dll");
 		}
 
 		[Test]
@@ -9094,6 +9111,8 @@ namespace MonoTests.System.Reflection.Emit
 
 
 		[Test]
+		// Casts don't work with unfinished types
+		[Category ("NotWorking")]
 		[Category ("NotDotNet")]
 		public void IsAssignableFrom_NotCreated_Array ()
 		{
@@ -9724,6 +9743,33 @@ namespace MonoTests.System.Reflection.Emit
 		public void FieldWithInitializedDataWorksWithCompilerRuntimeHelpers ()
 		{
 			TypeBuilder tb = module.DefineType ("Type1", TypeAttributes.Public);
+			FieldBuilder fb = tb.DefineInitializedData ("Foo", new byte [] {1,2,3,4}, FieldAttributes.Static|FieldAttributes.Public);
+			tb.CreateType ();
+
+			assembly = Thread.GetDomain ().DefineDynamicAssembly (new AssemblyName (ASSEMBLY_NAME+"2"), AssemblyBuilderAccess.RunAndSave, Path.GetTempPath ());
+			module = assembly.DefineDynamicModule ("Instance.exe");
+
+			TypeBuilder tb2 = module.DefineType ("Type2", TypeAttributes.Public);
+			MethodBuilder mb = tb2.DefineMethod ("Test", MethodAttributes.Public | MethodAttributes.Static, typeof (object), new Type [0]);
+			ILGenerator il = mb.GetILGenerator ();
+
+			il.Emit (OpCodes.Ldc_I4_1);
+			il.Emit (OpCodes.Newarr, typeof (int));
+			il.Emit (OpCodes.Dup);
+			il.Emit (OpCodes.Ldtoken, fb);
+			il.Emit (OpCodes.Call, typeof (RuntimeHelpers).GetMethod ("InitializeArray"));
+			il.Emit (OpCodes.Ret);
+
+			Type t = tb2.CreateType ();
+			int[] res = (int[])t.GetMethod ("Test").Invoke (null, new object[0]);
+			//Console.WriteLine (res[0]);
+		}
+
+		[Test]
+		public void FieldWithInitializedDataWorksWithCompilerRuntimeHelpers2 ()
+		{
+			TypeBuilder tb = module.DefineType ("Type1", TypeAttributes.Public);
+			var garg = tb.DefineGenericParameters ("T") [0];
 			FieldBuilder fb = tb.DefineInitializedData ("Foo", new byte [] {1,2,3,4}, FieldAttributes.Static|FieldAttributes.Public);
 			tb.CreateType ();
 
@@ -11143,6 +11189,77 @@ namespace MonoTests.System.Reflection.Emit
 		}
 
 		interface IFoo {
+		}
+
+		[Test]
+		public void GenericFieldInCreatedType () {
+			/*
+			 * Regression test for #47867.
+			 * We construct the following, but only call CreateType on R.
+			 *
+			 * public class S<T> {
+			 *   public T t;
+			 * }
+			 * public class R {
+			 *   public static S<R> sr;
+			 * }
+			 */
+			var aname = new AssemblyName ("example1");
+			var ab = AppDomain.CurrentDomain.DefineDynamicAssembly (aname, AssemblyBuilderAccess.Run);
+			var mb = ab.DefineDynamicModule (aname.Name);
+			var tbS = mb.DefineType ("S", TypeAttributes.Public);
+			tbS.DefineGenericParameters (new String [] { "T" });
+			var tbR = mb.DefineType ("R", TypeAttributes.Public);
+			tbR.DefineField ("sr", tbS.MakeGenericType(new Type[] { tbR }), FieldAttributes.Public | FieldAttributes.Static);
+
+			Type r = tbR.CreateType ();
+
+			Assert.IsNotNull  (r);
+		}
+
+		[Test]
+		public void GenericFieldInCreatedTypeIncompleteTypeTLE () {
+			/*
+			 * Regression test for #47867.
+			 * We construct the following, but only call CreateType on R.
+			 * Then we try to use R.sr which is expected throw a
+			 * TLE because S hasn't been created yet.
+			 *
+			 * public class S<T> {
+			 *   public T t;
+			 * }
+			 * public class R {
+			 *   public static S<R> sr;
+			 * }
+			 */
+			var aname = new AssemblyName ("example1");
+			var ab = AppDomain.CurrentDomain.DefineDynamicAssembly (aname, AssemblyBuilderAccess.Run);
+			var mb = ab.DefineDynamicModule (aname.Name);
+			var tbS = mb.DefineType ("S", TypeAttributes.Public);
+			tbS.DefineGenericParameters (new String [] { "T" });
+			var tbR = mb.DefineType ("R", TypeAttributes.Public);
+			tbR.DefineField ("sr", tbS.MakeGenericType(new Type[] { tbR }), FieldAttributes.Public | FieldAttributes.Static);
+
+			Type r = tbR.CreateType ();
+
+			Assert.IsNotNull  (r);
+
+			// N.B.  tbS has not had CreateType called yet, so expect this to fail.
+			Assert.Throws<TypeLoadException> (delegate { var ft = r.GetField("sr").FieldType; });
+		}
+		
+		[Test]
+		public void GetGenericTypeDefinitionAfterCreateReturnsBuilder () {
+			var aname = new AssemblyName ("genericDefnAfterCreate");
+			var ab = AppDomain.CurrentDomain.DefineDynamicAssembly (aname, AssemblyBuilderAccess.Run);
+			var mb = ab.DefineDynamicModule (aname.Name);
+			var buildX = mb.DefineType ("X", TypeAttributes.Public);
+			buildX.DefineGenericParameters ("T", "U");
+			var x = buildX.CreateType ();
+			var inst = x.MakeGenericType (typeof (string), typeof (int));
+			var defX = inst.GetGenericTypeDefinition ();
+
+			Assert.AreSame (buildX, defX);
 		}
 	}
 }

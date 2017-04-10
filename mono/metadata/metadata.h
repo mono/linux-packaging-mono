@@ -15,9 +15,9 @@ MONO_BEGIN_DECLS
 #define MONO_TYPE_IS_POINTER(t) mono_type_is_pointer (t)
 #define MONO_TYPE_IS_REFERENCE(t) mono_type_is_reference (t)
 
-#define MONO_CLASS_IS_INTERFACE(c) ((c->flags & TYPE_ATTRIBUTE_INTERFACE) || (c->byval_arg.type == MONO_TYPE_VAR) || (c->byval_arg.type == MONO_TYPE_MVAR))
+#define MONO_CLASS_IS_INTERFACE(c) ((mono_class_get_flags (c) & TYPE_ATTRIBUTE_INTERFACE) || (c->byval_arg.type == MONO_TYPE_VAR) || (c->byval_arg.type == MONO_TYPE_MVAR))
 
-#define MONO_CLASS_IS_IMPORT(c) ((c->flags & TYPE_ATTRIBUTE_IMPORT))
+#define MONO_CLASS_IS_IMPORT(c) ((mono_class_get_flags (c) & TYPE_ATTRIBUTE_IMPORT))
 
 typedef struct _MonoClass MonoClass;
 typedef struct _MonoDomain MonoDomain;
@@ -76,6 +76,9 @@ typedef enum {
 	MONO_NATIVE_LPSTRUCT = 0x2b,
 	MONO_NATIVE_CUSTOM = 0x2c,
 	MONO_NATIVE_ERROR = 0x2d,
+	// TODO: MONO_NATIVE_IINSPECTABLE = 0x2e
+	// TODO: MONO_NATIVE_HSTRING = 0x2f
+	MONO_NATIVE_UTF8STR = 0x30,
 	MONO_NATIVE_MAX = 0x50 /* no info */
 } MonoMarshalNative;
 
@@ -162,7 +165,12 @@ typedef enum {
 	MONO_MARSHAL_FREE_ARRAY,
 	MONO_MARSHAL_CONV_BSTR_STR,
 	MONO_MARSHAL_CONV_SAFEHANDLE,
-	MONO_MARSHAL_CONV_HANDLEREF
+	MONO_MARSHAL_CONV_HANDLEREF,
+	MONO_MARSHAL_CONV_STR_UTF8STR,
+	MONO_MARSHAL_CONV_SB_UTF8STR,
+	MONO_MARSHAL_CONV_UTF8STR_STR,
+	MONO_MARSHAL_CONV_UTF8STR_SB,
+	MONO_MARSHAL_CONV_FIXED_BUFFER
 } MonoMarshalConv;
 
 #define MONO_MARSHAL_CONV_INVALID ((MonoMarshalConv)-1)

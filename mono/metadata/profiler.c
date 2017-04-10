@@ -22,7 +22,6 @@
 #include "mono/metadata/domain-internals.h"
 #include "mono/metadata/gc-internals.h"
 #include "mono/metadata/mono-config-dirs.h"
-#include "mono/io-layer/io-layer.h"
 #include "mono/utils/mono-dl.h"
 #include <mono/utils/mono-logger-internals.h>
 #include <string.h>
@@ -1148,7 +1147,7 @@ mono_profiler_coverage_get (MonoProfiler *prof, MonoMethod *method, MonoProfileC
 			if (debug_minfo) {
 				MonoDebugSourceLocation *location;
 
-				location = mono_debug_symfile_lookup_location (debug_minfo, offset);
+				location = mono_debug_method_lookup_location (debug_minfo, offset);
 				if (location) {
 					entry.line = location->row;
 					entry.col = location->column;

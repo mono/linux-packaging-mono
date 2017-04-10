@@ -606,13 +606,12 @@ mono_class_get_flags (MonoClass *klass)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>klass</i><td> the MonoClass to act on</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  The flags from the TypeDef table.
+             <div>	  The type flags
 </div>
              <div class="mapi-section">Description</div>
              <div>	<p /> 
-	 The type flags from the TypeDef table from the metadata.
-	 see the TYPE_ATTRIBUTE_* definitions on tabledefs.h for the
-	 different values.
+	 Return the TypeAttributes flags of <i>klass</i>.
+	 See the TYPE_ATTRIBUTE_* definitions on tabledefs.h for the different values.
 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -966,12 +965,17 @@ mono_class_init (MonoClass *klass)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>class</i><td> the class to initialize</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>klass</i><td> the class to initialize</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
              <div>	<p /> 
 	   Compute the instance_size, class_size and other infos that cannot be 
 	 computed at mono_class_get() time. Also compute vtable_size if possible. 
 	 Returns <code>TRUE</code> on success or <code>FALSE</code> if there was a problem in loading
-	 the type (incorrect assemblies, missing assemblies, methods, etc). 
+	 the type (incorrect assemblies, missing assemblies, methods, etc).
+	 Initializes the following fields in <i>klass</i>:
+	 - all the fields initialized by mono_class_init_sizes ()
+	 - has_cctor
+	 - ghcimpl
+	 - inited
 	<p />
 	 LOCKING: Acquires the loader lock.</div>
         </div><!--mapi-description -->
@@ -1156,7 +1160,7 @@ mono_class_min_align (MonoClass *klass)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>klass</i><td> a class </td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  minimm alignment requirements 
+             <div>	  minimum alignment requirements
 </div>
              <div class="mapi-section">Description</div>
              <div>	<p /> 
@@ -1287,7 +1291,7 @@ mono_class_num_properties (MonoClass *klass)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">gint32
-mono_class_value_size      (MonoClass *klass, guint32 *align)
+mono_class_value_size (MonoClass *klass, guint32 *align)
 
 </div>
             <p />

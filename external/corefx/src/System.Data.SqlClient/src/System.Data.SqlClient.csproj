@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <PropertyGroup>
+    <ProjectGuid>{D4550556-4745-457F-BA8F-3EBF3836D6B4}</ProjectGuid>
+    <AssemblyName>System.Data.SqlClient</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsPartialFacadeAssembly Condition="'$(TargetGroup)' == 'net463'">true</IsPartialFacadeAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetsWindows)' != 'true' ">
+    <DefineConstants>$(DefineConstants);MANAGED_SNI</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netcoreapp-Unix-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netcoreapp-Unix-Release|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netcoreapp-Windows_NT-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='netcoreapp-Windows_NT-Release|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='net463-Windows_NT-Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='net463-Windows_NT-Release|AnyCPU'" />
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+    <Compile Include="System.Data.SqlClient.TypeForwards.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\ITypedGetters.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\ITypedGettersV3.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\ITypedSetters.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\ITypedSettersV3.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\ExtendedClrTypeCode.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\MemoryRecordBuffer.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\MetadataUtilsSmi.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiEventSink.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiEventSink_Default.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiGettersStream.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiMetaData.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiMetaDataProperty.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiRecordBuffer.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiSettersStream.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiTypedGetterSetter.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiXetterAccessMap.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SmiXetterTypeCode.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SqlDataRecord.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\SqlRecordBuffer.cs" />
+    <Compile Include="Microsoft\SqlServer\Server\ValueUtilsSmi.cs" />
+    <Compile Include="System\Data\DataException.cs" />
+    <Compile Include="System\Data\OperationAbortedException.cs" />
+    <Compile Include="System\Data\SqlClient\SqlDbColumn.cs" />
+    <Compile Include="System\Data\Common\ActivityCorrelator.cs" />
+    <Compile Include="System\Data\Common\AdapterUtil.cs" />
+    <Compile Include="System\Data\Common\DbConnectionOptions.cs" />
+    <Compile Include="System\Data\Common\DbConnectionPoolKey.cs" />
+    <Compile Include="System\Data\Common\DbConnectionStringCommon.cs" />
+    <Compile Include="$(CommonPath)\System\Data\Common\FieldNameLookup.cs">
+      <Link>System\Data\Common\FieldNameLookup.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Data\Common\BasicFieldNameLookup.cs">
+      <Link>System\Data\Common\BasicFieldNameLookup.cs</Link>
+    </Compile>
+    <Compile Include="System\Data\Common\MultipartIdentifier.cs" />
+    <Compile Include="System\Data\Common\NameValuePair.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionClosed.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionFactory.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionInternal.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionPool.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionPoolGroup.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionPoolGroupProviderInfo.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionPoolIdentity.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionPoolOptions.cs" />
+    <Compile Include="System\Data\ProviderBase\DbConnectionPoolProviderInfo.cs" />
+    <Compile Include="System\Data\ProviderBase\DbReferenceCollection.cs" />
+    <Compile Include="System\Data\ProviderBase\TimeoutTimer.cs" />
+    <Compile Include="System\Data\Sql\SqlMetaData.cs" />
+    <Compile Include="System\Data\SqlClient\ApplicationIntent.cs" />
+    <Compile Include="System\Data\SqlClient\LocalDBAPI.cs" />
+    <Compile Include="System\Data\SqlClient\ParameterPeekAheadValue.cs" />
+    <Compile Include="System\Data\SqlClient\RowsCopiedEventArgs.cs" />
+    <Compile Include="System\Data\SqlClient\RowsCopiedEventHandler.cs" />
+    <Compile Include="System\Data\SqlClient\SortOrder.cs" />
+    <Compile Include="System\Data\SqlClient\SqlBuffer.cs" />
+    <Compile Include="System\Data\SqlClient\SqlBulkCopy.cs" />
+    <Compile Include="System\Data\SqlClient\SqlBulkCopyColumnMapping.cs" />
+    <Compile Include="System\Data\SqlClient\SqlBulkCopyColumnMappingCollection.cs" />
+    <Compile Include="System\Data\SqlClient\SqlBulkCopyOptions.cs" />
+    <Compile Include="System\Data\SqlClient\SqlCachedBuffer.cs" />
+    <Compile Include="System\Data\SqlClient\SqlClientDiagnosticListenerExtensions.cs" />
+    <Compile Include="System\Data\SqlClient\SqlClientFactory.cs" />
+    <Compile Include="System\Data\SqlClient\SqlCommand.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnection.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnectionFactory.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnectionHelper.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnectionPoolGroupProviderInfo.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnectionPoolKey.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnectionPoolProviderInfo.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnectionString.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnectionStringBuilder.cs" />
+    <Compile Include="System\Data\SqlClient\SqlConnectionTimeoutErrorInternal.cs" />
+    <Compile Include="System\Data\SqlClient\SqlDataReader.cs" />
+    <Compile Include="System\Data\SqlClient\SqlEnums.cs" />
+    <Compile Include="System\Data\SqlClient\SqlError.cs" />
+    <Compile Include="System\Data\SqlClient\SqlErrorCollection.cs" />
+    <Compile Include="System\Data\SqlClient\SqlException.cs" />
+    <Compile Include="System\Data\SqlClient\SqlInfoMessageEvent.cs" />
+    <Compile Include="System\Data\SqlClient\SqlInfoMessageEventHandler.cs" />
+    <Compile Include="System\Data\SqlClient\SqlInternalConnection.cs" />
+    <Compile Include="System\Data\SqlClient\SqlInternalConnectionTds.cs" />
+    <Compile Include="System\Data\SqlClient\sqlinternaltransaction.cs" />
+    <Compile Include="System\Data\SqlClient\SqlParameter.cs" />
+    <Compile Include="System\Data\SqlClient\SqlParameterCollection.cs" />
+    <Compile Include="System\Data\SqlClient\SqlParameterCollectionHelper.cs" />
+    <Compile Include="System\Data\SqlClient\SqlParameterHelper.cs" />
+    <Compile Include="System\Data\SqlClient\SqlReferenceCollection.cs" />
+    <Compile Include="System\Data\SqlClient\SqlSequentialStream.cs" />
+    <Compile Include="System\Data\SqlClient\SqlSequentialTextReader.cs" />
+    <Compile Include="System\Data\SqlClient\SqlStatistics.cs" />
+    <Compile Include="System\Data\SqlClient\SqlStream.cs" />
+    <Compile Include="System\Data\SqlClient\SqlTransaction.cs" />
+    <Compile Include="System\Data\SqlClient\SqlUtil.cs" />
+    <Compile Include="System\Data\SqlClient\TdsEnums.cs" />
+    <Compile Include="System\Data\SqlClient\TdsParameterSetter.cs" />
+    <Compile Include="System\Data\SqlClient\TdsParser.cs" />
+    <Compile Include="System\Data\SqlClient\TdsParserHelperClasses.cs" />
+    <Compile Include="System\Data\SqlClient\TdsParserSessionPool.cs" />
+    <Compile Include="System\Data\SqlClient\TdsParserStateObject.cs" />
+    <Compile Include="System\Data\SqlClient\TdsParserStaticMethods.cs" />
+    <Compile Include="System\Data\SqlClient\TdsRecordBufferSetter.cs" />
+    <Compile Include="System\Data\SqlClient\TdsValueSetter.cs" />
+    <Compile Include="System\Data\SqlTypes\SqlTypeWorkarounds.cs" />
+    <Compile Include="System\Data\SqlTypes\SQLResource.cs" />
+    <Compile Include="$(CommonPath)\System\NotImplemented.cs" />
+    <Compile Include="$(CommonPath)\System\Data\Locale\Locale.cs">
+      <Link>System\Data\Locale\Locale.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetsWindows)' == 'true' And '$(IsPartialFacadeAssembly)' != 'true' ">
+    <Compile Include="$(CommonPath)\System\Data\Locale\LocaleMapper.Windows.cs">
+      <Link>System\Data\Locale\LocaleMapper.Windows.cs</Link>
+    </Compile>
+    <Compile Include="System\Data\ProviderBase\DbConnectionPoolIdentity.Windows.cs" />
+    <Compile Include="Interop\SNINativeMethodWrapper.Windows.cs" />
+    <Compile Include="System\Data\SqlClient\TdsParserSafeHandles.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetsWindows)' != 'true' And '$(IsPartialFacadeAssembly)' != 'true' ">
+    <Compile Include="$(CommonPath)\System\Data\Locale\LocaleMapper.Unix.cs">
+      <Link>System\Data\Locale\LocaleMapper.Unix.cs</Link>
+    </Compile>
+    <Compile Include="System\Data\ProviderBase\DbConnectionPoolIdentity.Unix.cs" />
+    <Compile Include="Interop\SNINativeMethodWrapper.Unix.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNIError.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNIHandle.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNILoadHandle.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNIMarsConnection.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNIMarsHandle.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNIMarsManager.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNIMarsQueuedPacket.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNINpHandle.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNIPacket.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNIProxy.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNITcpHandle.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SslOverTdsStream.cs" />
+    <Compile Include="System\Data\SqlClient\SNI\SNICommon.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' == 'true'">
+    <TargetingPackReference Include="mscorlib" />
+    <TargetingPackReference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Win32.Primitives" />
+    <Reference Include="System.Collections" />
+    <Reference Include="System.Collections.Concurrent" />
+    <Reference Include="System.ComponentModel.Primitives" />
+    <Reference Include="System.Data.Common" />
+    <Reference Include="System.Diagnostics.Debug" />
+    <Reference Include="System.Diagnostics.DiagnosticSource" />
+    <Reference Include="System.Diagnostics.Tools" />
+    <Reference Include="System.Linq" />
+    <Reference Include="System.Resources.ResourceManager" />
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.Extensions" />
+    <Reference Include="System.Runtime.InteropServices" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
+    <Reference Include="System.Security.Claims" />
+    <Reference Include="System.Security.Principal" />
+    <Reference Include="System.Security.Principal.Windows" />
+    <Reference Include="System.Text.Encoding.CodePages" />
+    <Reference Include="System.Text.Encoding.Extensions" />
+    <Reference Include="System.Text.RegularExpressions" />
+    <Reference Include="System.Threading" />
+    <Reference Include="System.Threading.Tasks" />
+    <Reference Include="System.Threading.Thread" />
+    <Reference Include="System.Threading.ThreadPool" />
+    <Reference Include="System.Threading.Timer" />
+    <Reference Include="System.Xml.ReaderWriter" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetsUnix)' == 'true'">
+    <Reference Include="System.IO.Pipes" />
+    <Reference Include="System.Security.Principal" />
+    <Reference Include="System.Security.Cryptography.X509Certificates" />
+    <Reference Include="System.Net.Sockets" />
+    <Reference Include="System.Net.Security" />
+    <Reference Include="System.Net.Primitives" />
+    <Reference Include="System.Net.NameResolution" />
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+  <Import Project=".\GenerateThisAssemblyCs.targets" Condition="'$(IsPartialFacadeAssembly)' != 'true'" />
+</Project>

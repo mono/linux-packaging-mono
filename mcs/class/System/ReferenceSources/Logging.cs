@@ -1,12 +1,9 @@
 using System.Diagnostics;
 
 namespace System.Net {
-	class Logging {
-		internal static bool On {
-			get {
-				return false;
-			}
-		}
+	static class Logging
+	{
+		internal static readonly bool On = false;
 
 		internal static TraceSource Web {
 			get {
@@ -15,6 +12,12 @@ namespace System.Net {
 		}
 
 		internal static TraceSource HttpListener {
+			get {
+				return null;
+			}
+		}
+
+		internal static TraceSource Sockets {
 			get {
 				return null;
 			}
@@ -29,6 +32,10 @@ namespace System.Net {
 		}
 
 		[Conditional ("TRACE")]
+		internal static void Enter(TraceSource traceSource, string msg, string parameters) {
+		}
+
+		[Conditional ("TRACE")]
 		internal static void Exception(TraceSource traceSource, object obj, string method, Exception e) {
 		}
 
@@ -38,6 +45,10 @@ namespace System.Net {
 
 		[Conditional ("TRACE")]
 		internal static void Exit(TraceSource traceSource, string msg) {
+		}
+
+		[Conditional ("TRACE")]
+		internal static void Exit(TraceSource traceSource, string msg, string parameters) {
 		}
 
 		[Conditional ("TRACE")]

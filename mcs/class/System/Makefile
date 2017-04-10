@@ -19,20 +19,34 @@ TEST_RESOURCES = \
 	Test/System/test-uri-props-manual.txt \
 	Test/System/test-uri-relative-props.txt
 
+LIB_MCS_FLAGS = -d:CONFIGURATION_2_0 $(REFERENCE_SOURCES_FLAGS) -unsafe $(RESOURCE_FILES:%=-resource:%) -nowarn:436
+
 ifndef NO_MONO_SECURITY
 MONO_SECURITY=Mono.Security
 MONO_SECURITY_REF=MonoSecurity=Mono.Security
 MONO_SECURITY_DLL=$(the_libdir_base)Mono.Security.dll
+EXTERN_ALIAS_FLAGS = -d:MONO_SECURITY_ALIAS
+else
+LIB_MCS_FLAGS += -d:INSIDE_SYSTEM
 endif
 
 ifndef MOBILE_PROFILE
-TEST_LIB_REFS = System.Drawing $(MONO_SECURITY) System.Data System.Xml System.Core System.Configuration
+LIB_MCS_FLAGS += -d:CODEDOM
+TEST_LIB_REFS = $(MONO_SECURITY) System.Data System.Xml System.Core System.Configuration
+
+ifndef NO_SYSTEM_DRAWING_DEPENDENCY
+TEST_LIB_REFS += System.Drawing
+endif
+
 else
+LIB_MCS_FLAGS += -nowarn:618
 TEST_LIB_REFS = $(MONO_SECURITY) System.Data System.Xml System.Core
 endif
 
 TEST_MCS_FLAGS = -nowarn:618,672,219,67,169,612 \
 	$(foreach f, $(TEST_RESOURCES), -resource:$(f),$(notdir $(f)))
+
+TEST_NUNITLITE_APP_CONFIG_GLOBAL=Test/test-config-file
 
 REFERENCE_SOURCES_FLAGS = -d:FEATURE_PAL,SYSTEM_NAMESPACE,MONO,PLATFORM_UNIX
 ifndef NO_PROCESS_START
@@ -40,16 +54,18 @@ REFERENCE_SOURCES_FLAGS += -d:MONO_FEATURE_PROCESS_START
 TEST_MCS_FLAGS += -d:MONO_FEATURE_PROCESS_START
 endif
 
-LIB_MCS_FLAGS = -nowarn:618 -d:CONFIGURATION_2_0 $(REFERENCE_SOURCES_FLAGS) -unsafe $(RESOURCE_FILES:%=-resource:%)
+ifdef MONO_FEATURE_APPLETLS
+LIB_MCS_FLAGS += -d:MONO_FEATURE_APPLETLS
+endif
+
+ifdef ONLY_APPLETLS
+LIB_MCS_FLAGS += -d:ONLY_APPLETLS
+endif
 
 ifndef PROFILE_DISABLE_BTLS
 ifdef HAVE_BTLS
 
 LIB_MCS_FLAGS += -d:MONO_FEATURE_BTLS
-
-ifdef HAVE_DYNAMIC_BTLS
-LIB_MCS_FLAGS += -d:MONO_FEATURE_DYNAMIC_BTLS
-endif
 
 endif
 endif
@@ -70,15 +86,6 @@ TEST_MCS_FLAGS += -d:MONO_FEATURE_MULTIPLE_APPDOMAINS
 endif
 
 TXT_RESOURCE_STRINGS = ../referencesource/System/System.txt
-
-#
-# MOBILE_PROFILE needs SECURITY_DEP
-#
-ifdef MOBILE_PROFILE
-LIB_MCS_FLAGS += -d:INSIDE_SYSTEM -d:SECURITY_DEP
-else
-EXTERN_ALIAS_FLAGS = -d:MONO_SECURITY_ALIAS
-endif
 
 #
 # Flags used to build the secxml version of System.
@@ -104,8 +111,8 @@ endif
 endif
 
 EXTRA_DISTFILES = \
+	common.sources					\
 	Test/test-config-file				\
-	Test/test-config-file-net-2.0			\
 	Test/System.Security.Cryptography.X509Certificates/pkits/Makefile	\
 	Test/System.Security.Cryptography.X509Certificates/pkits/README		\
 	Test/System.Security.Cryptography.X509Certificates/pkits/x509build.cs	\
@@ -161,10 +168,7 @@ $(the_libdir_base)System.Configuration.dll:
 
 $(build_lib): $(CYCLIC_DEP_FILES)
 
-$(test_lib): $(test_lib).config $(TEST_RESOURCES)
-
-$(test_lib).config: Test/test-config-file
-	cp $< $@
+$(test_lib): $(TEST_RESOURCES)
 
 CLEAN_FILES = $(test_lib).config $(bare_libdir)/System.dll $(secxml_libdir)/System.dll $(bare_libdir)/System.dll.mdb $(secxml_libdir)/System.dll.mdb
 

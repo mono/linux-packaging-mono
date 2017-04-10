@@ -55,6 +55,21 @@
 #include <zlib.h>
 #endif
 
+#ifdef HAVE_SCHED_GETAFFINITY
+#  ifndef GLIBC_HAS_CPU_COUNT
+static int
+CPU_COUNT(cpu_set_t *set)
+{
+	int i, count = 0;
+
+	for (int i = 0; i < CPU_SETSIZE; i++)
+		if (CPU_ISSET(i, set))
+			count++;
+	return count;
+}
+#  endif
+#endif
+
 #define BUFFER_SIZE (4096 * 16)
 
 /* Worst-case size in bytes of a 64-bit value encoded with LEB128. */
@@ -765,13 +780,13 @@ pstrdup (const char *s)
 static void *
 alloc_buffer (int size)
 {
-	return mono_valloc (NULL, size, MONO_MMAP_READ | MONO_MMAP_WRITE | MONO_MMAP_ANON | MONO_MMAP_PRIVATE);
+	return mono_valloc (NULL, size, MONO_MMAP_READ | MONO_MMAP_WRITE | MONO_MMAP_ANON | MONO_MMAP_PRIVATE, MONO_MEM_ACCOUNT_PROFILER);
 }
 
 static void
 free_buffer (void *buf, int size)
 {
-	mono_vfree (buf, size);
+	mono_vfree (buf, size, MONO_MEM_ACCOUNT_PROFILER);
 }
 
 static LogBuffer*
@@ -4596,7 +4611,7 @@ create_profiler (const char *args, const char *filename, GPtrArray *filters)
 
 	// FIXME: We should free this stuff too.
 	mono_lock_free_allocator_init_size_class (&prof->sample_size_class, SAMPLE_SLOT_SIZE (num_frames), SAMPLE_BLOCK_SIZE);
-	mono_lock_free_allocator_init_allocator (&prof->sample_allocator, &prof->sample_size_class);
+	mono_lock_free_allocator_init_allocator (&prof->sample_allocator, &prof->sample_size_class, MONO_MEM_ACCOUNT_PROFILER);
 
 	mono_lock_free_queue_init (&prof->sample_reuse_queue);
 
@@ -4604,7 +4619,7 @@ create_profiler (const char *args, const char *filename, GPtrArray *filters)
 
 	// FIXME: We should free this stuff too.
 	mono_lock_free_allocator_init_size_class (&prof->writer_entry_size_class, sizeof (WriterQueueEntry), WRITER_ENTRY_BLOCK_SIZE);
-	mono_lock_free_allocator_init_allocator (&prof->writer_entry_allocator, &prof->writer_entry_size_class);
+	mono_lock_free_allocator_init_allocator (&prof->writer_entry_allocator, &prof->writer_entry_size_class, MONO_MEM_ACCOUNT_PROFILER);
 
 	mono_lock_free_queue_init (&prof->writer_queue);
 	mono_os_sem_init (&prof->writer_queue_sem, 0);
@@ -4917,7 +4932,7 @@ mono_profiler_startup (const char *desc)
 		if ((opt = match_option (p, "coverage", NULL)) != p) {
 			do_coverage = 1;
 			events |= MONO_PROFILE_ENTER_LEAVE;
-			debug_coverage = (g_getenv ("MONO_PROFILER_DEBUG_COVERAGE") != NULL);
+			debug_coverage = g_hasenv ("MONO_PROFILER_DEBUG_COVERAGE");
 			continue;
 		}
 		if ((opt = match_option (p, "onlycoverage", NULL)) != p) {

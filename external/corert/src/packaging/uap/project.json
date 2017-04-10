@@ -1,0 +1,13 @@
+{
+  "frameworks": {
+    "uap10.1": {
+      "dependencies": {
+        "System.Diagnostics.Tracing": "4.4.0-beta-24913-02"
+      }
+    }
+  },
+
+  "runtimes": {
+    "win10-aot": {},
+  }
+}

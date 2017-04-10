@@ -124,8 +124,8 @@ mono_security_core_clr_is_platform_image (MonoImage *image)
 #ifndef DISABLE_SECURITY
 
 /* Class lazy loading functions */
-static GENERATE_GET_CLASS_WITH_CACHE (security_critical, System.Security, SecurityCriticalAttribute)
-static GENERATE_GET_CLASS_WITH_CACHE (security_safe_critical, System.Security, SecuritySafeCriticalAttribute)
+static GENERATE_GET_CLASS_WITH_CACHE (security_critical, "System.Security", "SecurityCriticalAttribute")
+static GENERATE_GET_CLASS_WITH_CACHE (security_safe_critical, "System.Security", "SecuritySafeCriticalAttribute")
 
 static MonoClass*
 security_critical_attribute (void)
@@ -160,13 +160,13 @@ set_type_load_exception_type (const char *format, MonoClass *klass)
 {
 	char *type_name = mono_type_get_full_name (klass);
 	char *parent_name = mono_type_get_full_name (klass->parent);
-	char *message = g_strdup_printf (format, type_name, parent_name);
+	char *message = mono_image_strdup_printf (klass->image, format, type_name, parent_name);
 
 	g_free (parent_name);
 	g_free (type_name);
 	
-	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, message);
-	mono_class_set_failure (klass, MONO_EXCEPTION_TYPE_LOAD, message);
+	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, "%s", message);
+	mono_class_set_type_load_failure (klass, "%s", message);
 	// note: do not free string given to mono_class_set_failure
 }
 
@@ -183,13 +183,13 @@ set_type_load_exception_methods (const char *format, MonoMethod *override, MonoM
 {
 	char *method_name = get_method_full_name (override);
 	char *base_name = get_method_full_name (base);
-	char *message = g_strdup_printf (format, method_name, base_name);
+	char *message = mono_image_strdup_printf (override->klass->image, format, method_name, base_name);
 
 	g_free (base_name);
 	g_free (method_name);
 
-	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, message);
-	mono_class_set_failure (override->klass, MONO_EXCEPTION_TYPE_LOAD, message);
+	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, "%s", message);
+	mono_class_set_type_load_failure (override->klass, "%s", message);
 	// note: do not free string given to mono_class_set_failure
 }
 
@@ -206,7 +206,8 @@ get_default_ctor (MonoClass *klass)
 	if (!klass->methods)
 		return NULL;
 
-	for (i = 0; i < klass->method.count; ++i) {
+	int mcount = mono_class_get_method_count (klass);
+	for (i = 0; i < mcount; ++i) {
 		MonoMethodSignature *sig;
 		MonoMethod *method = klass->methods [i];
 
@@ -561,7 +562,7 @@ get_argument_exception (const char *format, MonoMethod *caller, MonoMethod *call
 	g_free (callee_name);
 	g_free (caller_name);
 
-	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, message);
+	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, "%s", message);
 	ex = mono_get_exception_argument ("method", message);
 	g_free (message);
 
@@ -586,7 +587,7 @@ get_field_access_exception (const char *format, MonoMethod *caller, MonoClassFie
 	g_free (field_name);
 	g_free (caller_name);
 
-	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, message);
+	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, "%s", message);
 	ex = mono_get_exception_field_access_msg (message);
 	g_free (message);
 
@@ -611,7 +612,7 @@ get_method_access_exception (const char *format, MonoMethod *caller, MonoMethod 
 	g_free (callee_name);
 	g_free (caller_name);
 
-	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, message);
+	mono_trace (G_LOG_LEVEL_WARNING, MONO_TRACE_SECURITY, "%s", message);
 	ex = mono_get_exception_method_access_msg (message);
 	g_free (message);
 

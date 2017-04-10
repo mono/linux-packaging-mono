@@ -15,7 +15,6 @@
 #include "mono-mmap.h"
 #include "mono-counters.h"
 #include "dlmalloc.h"
-#include <mono/io-layer/io-layer.h>
 #include <mono/metadata/profiler-private.h>
 #ifdef HAVE_VALGRIND_MEMCHECK_H
 #include <valgrind/memcheck.h>
@@ -28,6 +27,7 @@ static uintptr_t code_memory_used = 0;
 static size_t dynamic_code_alloc_count;
 static size_t dynamic_code_bytes_count;
 static size_t dynamic_code_frees_count;
+static MonoCodeManagerCallbacks code_manager_callbacks;
 
 /*
  * AMD64 processors maintain icache coherency only for pages which are 
@@ -115,9 +115,9 @@ codechunk_valloc (void *preferred, guint32 size)
 		freelist = g_slist_delete_link (freelist, freelist);
 		g_hash_table_insert (valloc_freelists, GUINT_TO_POINTER (size), freelist);
 	} else {
-		ptr = mono_valloc (preferred, size, MONO_PROT_RWX | ARCH_MAP_FLAGS);
+		ptr = mono_valloc (preferred, size, MONO_PROT_RWX | ARCH_MAP_FLAGS, MONO_MEM_ACCOUNT_CODE);
 		if (!ptr && preferred)
-			ptr = mono_valloc (NULL, size, MONO_PROT_RWX | ARCH_MAP_FLAGS);
+			ptr = mono_valloc (NULL, size, MONO_PROT_RWX | ARCH_MAP_FLAGS, MONO_MEM_ACCOUNT_CODE);
 	}
 	mono_os_mutex_unlock (&valloc_mutex);
 	return ptr;
@@ -134,7 +134,7 @@ codechunk_vfree (void *ptr, guint32 size)
 		freelist = g_slist_prepend (freelist, ptr);
 		g_hash_table_insert (valloc_freelists, GUINT_TO_POINTER (size), freelist);
 	} else {
-		mono_vfree (ptr, size);
+		mono_vfree (ptr, size, MONO_MEM_ACCOUNT_CODE);
 	}
 	mono_os_mutex_unlock (&valloc_mutex);
 }		
@@ -153,7 +153,7 @@ codechunk_cleanup (void)
 		GSList *l;
 
 		for (l = freelist; l; l = l->next) {
-			mono_vfree (l->data, GPOINTER_TO_UINT (key));
+			mono_vfree (l->data, GPOINTER_TO_UINT (key), MONO_MEM_ACCOUNT_CODE);
 		}
 		g_slist_free (freelist);
 	}
@@ -172,6 +172,12 @@ void
 mono_code_manager_cleanup (void)
 {
 	codechunk_cleanup ();
+}
+
+void
+mono_code_manager_install_callbacks (MonoCodeManagerCallbacks* callbacks)
+{
+	code_manager_callbacks = *callbacks;
 }
 
 /**
@@ -226,6 +232,8 @@ free_chunklist (CodeChunk *chunk)
 	for (; chunk; ) {
 		dead = chunk;
 		mono_profiler_code_chunk_destroy ((gpointer) dead->data);
+		if (code_manager_callbacks.chunk_destroy)
+			code_manager_callbacks.chunk_destroy ((gpointer)dead->data);
 		chunk = chunk->next;
 		if (dead->flags == CODE_FLAG_MMAP) {
 			codechunk_vfree (dead->data, dead->size);
@@ -329,7 +337,7 @@ new_codechunk (CodeChunk *last, int dynamic, int size)
 {
 	int minsize, flags = CODE_FLAG_MMAP;
 	int chunk_size, bsize = 0;
-	int pagesize;
+	int pagesize, valloc_granule;
 	CodeChunk *chunk;
 	void *ptr;
 
@@ -338,12 +346,13 @@ new_codechunk (CodeChunk *last, int dynamic, int size)
 #endif
 
 	pagesize = mono_pagesize ();
+	valloc_granule = mono_valloc_granule ();
 
 	if (dynamic) {
 		chunk_size = size;
 		flags = CODE_FLAG_MALLOC;
 	} else {
-		minsize = pagesize * MIN_PAGES;
+		minsize = MAX (pagesize * MIN_PAGES, valloc_granule);
 		if (size < minsize)
 			chunk_size = minsize;
 		else {
@@ -353,8 +362,8 @@ new_codechunk (CodeChunk *last, int dynamic, int size)
 			size += MIN_ALIGN - 1;
 			size &= ~(MIN_ALIGN - 1);
 			chunk_size = size;
-			chunk_size += pagesize - 1;
-			chunk_size &= ~ (pagesize - 1);
+			chunk_size += valloc_granule - 1;
+			chunk_size &= ~ (valloc_granule - 1);
 		}
 	}
 #ifdef BIND_ROOM
@@ -370,8 +379,8 @@ new_codechunk (CodeChunk *last, int dynamic, int size)
 	if (chunk_size - size < bsize) {
 		chunk_size = size + bsize;
 		if (!dynamic) {
-			chunk_size += pagesize - 1;
-			chunk_size &= ~ (pagesize - 1);
+			chunk_size += valloc_granule - 1;
+			chunk_size &= ~ (valloc_granule - 1);
 		}
 	}
 #endif
@@ -403,7 +412,7 @@ new_codechunk (CodeChunk *last, int dynamic, int size)
 		if (flags == CODE_FLAG_MALLOC)
 			dlfree (ptr);
 		else
-			mono_vfree (ptr, chunk_size);
+			mono_vfree (ptr, chunk_size, MONO_MEM_ACCOUNT_CODE);
 		return NULL;
 	}
 	chunk->next = NULL;
@@ -412,6 +421,8 @@ new_codechunk (CodeChunk *last, int dynamic, int size)
 	chunk->flags = flags;
 	chunk->pos = bsize;
 	chunk->bsize = bsize;
+	if (code_manager_callbacks.chunk_new)
+		code_manager_callbacks.chunk_new ((gpointer)chunk->data, chunk->size);
 	mono_profiler_code_chunk_new((gpointer) chunk->data, chunk->size);
 
 	code_memory_used += chunk_size;

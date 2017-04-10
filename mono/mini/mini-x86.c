@@ -1180,7 +1180,7 @@ mono_arch_create_vars (MonoCompile *cfg)
 	if (cfg->method->save_lmf) {
 		cfg->create_lmf_var = TRUE;
 		cfg->lmf_ir = TRUE;
-#ifndef HOST_WIN32
+#if !defined(HOST_WIN32) && !defined(TARGET_ANDROID)
 		cfg->lmf_ir_mono_lmf = TRUE;
 #endif
 	}
@@ -2239,22 +2239,22 @@ emit_move_return_value (MonoCompile *cfg, MonoInst *ins, guint8 *code)
 	return code;
 }
 
-#ifdef __APPLE__
+#ifdef TARGET_MACH
 static int tls_gs_offset;
 #endif
 
 gboolean
-mono_x86_have_tls_get (void)
+mono_arch_have_fast_tls (void)
 {
 #ifdef TARGET_MACH
-	static gboolean have_tls_get = FALSE;
+	static gboolean have_fast_tls = FALSE;
 	static gboolean inited = FALSE;
-
-	if (inited)
-		return have_tls_get;
-
-#ifdef MONO_HAVE_FAST_TLS
 	guint32 *ins;
+
+	if (mini_get_debug_options ()->use_fallback_tls)
+		return FALSE;
+	if (inited)
+		return have_fast_tls;
 
 	ins = (guint32*)pthread_getspecific;
 	/*
@@ -2263,56 +2263,29 @@ mono_x86_have_tls_get (void)
 	 * mov    0x4(%esp),%eax
 	 * mov    %gs:[offset](,%eax,4),%eax
 	 */
-	have_tls_get = ins [0] == 0x0424448b && ins [1] == 0x85048b65;
+	have_fast_tls = ins [0] == 0x0424448b && ins [1] == 0x85048b65;
 	tls_gs_offset = ins [2];
-#endif
-
 	inited = TRUE;
 
-	return have_tls_get;
+	return have_fast_tls;
 #elif defined(TARGET_ANDROID)
 	return FALSE;
 #else
+	if (mini_get_debug_options ()->use_fallback_tls)
+		return FALSE;
 	return TRUE;
 #endif
 }
 
 static guint8*
-mono_x86_emit_tls_set (guint8* code, int sreg, int tls_offset)
-{
-#if defined(__APPLE__)
-	x86_prefix (code, X86_GS_PREFIX);
-	x86_mov_mem_reg (code, tls_gs_offset + (tls_offset * 4), sreg, 4);
-#elif defined(TARGET_WIN32)
-	g_assert_not_reached ();
-#else
-	x86_prefix (code, X86_GS_PREFIX);
-	x86_mov_mem_reg (code, tls_offset, sreg, 4);
-#endif
-	return code;
-}
-
-/*
- * mono_x86_emit_tls_get:
- * @code: buffer to store code to
- * @dreg: hard register where to place the result
- * @tls_offset: offset info
- *
- * mono_x86_emit_tls_get emits in @code the native code that puts in
- * the dreg register the item in the thread local storage identified
- * by tls_offset.
- *
- * Returns: a pointer to the end of the stored code
- */
-guint8*
 mono_x86_emit_tls_get (guint8* code, int dreg, int tls_offset)
 {
-#if defined(__APPLE__)
+#if defined(TARGET_MACH)
 	x86_prefix (code, X86_GS_PREFIX);
 	x86_mov_reg_mem (code, dreg, tls_gs_offset + (tls_offset * 4), 4);
 #elif defined(TARGET_WIN32)
-	/* 
-	 * See the Under the Hood article in the May 1996 issue of Microsoft Systems 
+	/*
+	 * See the Under the Hood article in the May 1996 issue of Microsoft Systems
 	 * Journal and/or a disassembly of the TlsGet () function.
 	 */
 	x86_prefix (code, X86_FS_PREFIX);
@@ -2345,54 +2318,18 @@ mono_x86_emit_tls_get (guint8* code, int dreg, int tls_offset)
 }
 
 static guint8*
-emit_tls_get_reg (guint8* code, int dreg, int offset_reg)
+mono_x86_emit_tls_set (guint8* code, int sreg, int tls_offset)
 {
-	/* offset_reg contains a value translated by mono_arch_translate_tls_offset () */
-#if defined(__APPLE__) || defined(__linux__)
-	if (dreg != offset_reg)
-		x86_mov_reg_reg (code, dreg, offset_reg, sizeof (mgreg_t));
+#if defined(TARGET_MACH)
 	x86_prefix (code, X86_GS_PREFIX);
-	x86_mov_reg_membase (code, dreg, dreg, 0, sizeof (mgreg_t));
-#else
+	x86_mov_mem_reg (code, tls_gs_offset + (tls_offset * 4), sreg, 4);
+#elif defined(TARGET_WIN32)
 	g_assert_not_reached ();
+#else
+	x86_prefix (code, X86_GS_PREFIX);
+	x86_mov_mem_reg (code, tls_offset, sreg, 4);
 #endif
 	return code;
-}
-
-guint8*
-mono_x86_emit_tls_get_reg (guint8* code, int dreg, int offset_reg)
-{
-	return emit_tls_get_reg (code, dreg, offset_reg);
-}
-
-static guint8*
-emit_tls_set_reg (guint8* code, int sreg, int offset_reg)
-{
-	/* offset_reg contains a value translated by mono_arch_translate_tls_offset () */
-#ifdef HOST_WIN32
-	g_assert_not_reached ();
-#elif defined(__APPLE__) || defined(__linux__)
-	x86_prefix (code, X86_GS_PREFIX);
-	x86_mov_membase_reg (code, offset_reg, 0, sreg, sizeof (mgreg_t));
-#else
-	g_assert_not_reached ();
-#endif
-	return code;
-}
- 
- /*
- * mono_arch_translate_tls_offset:
- *
- *   Translate the TLS offset OFFSET computed by MONO_THREAD_VAR_OFFSET () into a format usable by OP_TLS_GET_REG/OP_TLS_SET_REG.
- */
-int
-mono_arch_translate_tls_offset (int offset)
-{
-#ifdef __APPLE__
-	return tls_gs_offset + (offset * 4);
-#else
-	return offset;
-#endif
 }
 
 /*
@@ -4152,16 +4089,8 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			code = mono_x86_emit_tls_get (code, ins->dreg, ins->inst_offset);
 			break;
 		}
-		case OP_TLS_GET_REG: {
-			code = emit_tls_get_reg (code, ins->dreg, ins->sreg1);
-			break;
-		}
 		case OP_TLS_SET: {
 			code = mono_x86_emit_tls_set (code, ins->sreg1, ins->inst_offset);
-			break;
-		}
-		case OP_TLS_SET_REG: {
-			code = emit_tls_set_reg (code, ins->sreg1, ins->sreg2);
 			break;
 		}
 		case OP_MEMORY_BARRIER: {
@@ -4873,6 +4802,9 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_XZERO:
 			x86_sse_alu_pd_reg_reg (code, X86_SSE_PXOR, ins->dreg, ins->dreg);
 			break;
+		case OP_XONES:
+			x86_sse_alu_pd_reg_reg (code, X86_SSE_PCMPEQB, ins->dreg, ins->dreg);
+			break;
 
 		case OP_FCONV_TO_R8_X:
 			x86_fst_membase (code, ins->backend.spill_var->inst_basereg, ins->backend.spill_var->inst_offset, TRUE, TRUE);
@@ -5326,25 +5258,10 @@ mono_arch_emit_epilog (MonoCompile *cfg)
 	if (method->save_lmf) {
 		gint32 lmf_offset = cfg->lmf_var->inst_offset;
 		guint8 *patch;
-		gboolean supported = FALSE;
-
-		if (cfg->compile_aot) {
-#if defined(MONO_HAVE_FAST_TLS)
-			supported = TRUE;
-#endif
-		} else if (mono_get_jit_tls_offset () != -1) {
-			supported = TRUE;
-		}
 
 		/* check if we need to restore protection of the stack after a stack overflow */
-		if (supported) {
-			if (cfg->compile_aot) {
-				code = emit_load_aotconst (NULL, code, cfg, NULL, X86_ECX, MONO_PATCH_INFO_TLS_OFFSET, GINT_TO_POINTER (TLS_KEY_JIT_TLS));
-
-				code = emit_tls_get_reg (code, X86_ECX, X86_ECX);
-			} else {
-				code = mono_x86_emit_tls_get (code, X86_ECX, mono_get_jit_tls_offset ());
-			}
+		if (!cfg->compile_aot && mono_arch_have_fast_tls () && mono_tls_get_tls_offset (TLS_KEY_JIT_TLS) != -1) {
+			code = mono_x86_emit_tls_get (code, X86_ECX, mono_tls_get_tls_offset (TLS_KEY_JIT_TLS));
 
 			/* we load the value in a separate instruction: this mechanism may be
 			 * used later as a safer way to do thread interruption
@@ -5352,12 +5269,10 @@ mono_arch_emit_epilog (MonoCompile *cfg)
 			x86_mov_reg_membase (code, X86_ECX, X86_ECX, MONO_STRUCT_OFFSET (MonoJitTlsData, restore_stack_prot), 4);
 			x86_alu_reg_imm (code, X86_CMP, X86_ECX, 0);
 			patch = code;
-		        x86_branch8 (code, X86_CC_Z, 0, FALSE);
+			x86_branch8 (code, X86_CC_Z, 0, FALSE);
 			/* note that the call trampoline will preserve eax/edx */
 			x86_call_reg (code, X86_ECX);
 			x86_patch (patch, code);
-		} else {
-			/* FIXME: maybe save the jit tls in the prolog */
 		}
 
 		/* restore caller saved regs */
@@ -5574,13 +5489,16 @@ mono_arch_is_inst_imm (gint64 imm)
 void
 mono_arch_finish_init (void)
 {
-	if (!g_getenv ("MONO_NO_TLS")) {
+	char *mono_no_tls = g_getenv ("MONO_NO_TLS");
+	if (!mono_no_tls) {
 #ifndef TARGET_WIN32
 #if MONO_XEN_OPT
 		optimize_for_xen = access ("/proc/xen", F_OK) == 0;
 #endif
 #endif
-	}		
+	} else {
+		g_free (mono_no_tls);
+	}
 }
 
 void
@@ -5614,7 +5532,7 @@ imt_branch_distance (MonoIMTCheckItem **imt_entries, int start, int target)
  * LOCKING: called with the domain lock held
  */
 gpointer
-mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckItem **imt_entries, int count,
+mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckItem **imt_entries, int count,
 	gpointer fail_tramp)
 {
 	int i;
@@ -5646,7 +5564,7 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckI
 		size += item->chunk_size;
 	}
 	if (fail_tramp)
-		code = mono_method_alloc_generic_virtual_thunk (domain, size);
+		code = mono_method_alloc_generic_virtual_trampoline (domain, size);
 	else
 		code = mono_domain_code_reserve (domain, size);
 	start = code;
@@ -5716,7 +5634,7 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckI
 	}
 
 	if (!fail_tramp)
-		mono_stats.imt_thunks_size += code - start;
+		mono_stats.imt_trampolines_size += code - start;
 	g_assert (code - start <= size);
 
 #if DEBUG_IMT
@@ -5731,7 +5649,7 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, MonoIMTCheckI
 		if (vtable)
 			buff = g_strdup_printf ("imt_%s_%s_entries_%d", vtable->klass->name_space, vtable->klass->name, count);
 		else
-			buff = g_strdup_printf ("imt_thunk_entries_%d", count);
+			buff = g_strdup_printf ("imt_trampoline_entries_%d", count);
 		mono_emit_jit_tramp (start, code - start, buff);
 		g_free (buff);
 	}

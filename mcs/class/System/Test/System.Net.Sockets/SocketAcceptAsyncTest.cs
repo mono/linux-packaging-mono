@@ -63,7 +63,7 @@ namespace MonoTests.System.Net.Sockets
 			clientSocket.NoDelay = true;
 
 			Assert.IsTrue(mainEvent.WaitOne(1500));
-			Assert.AreEqual(serverSocket, acceptedSocket);
+			Assert.AreEqual(serverSocket, acceptedSocket, "x");
 			mainEvent.Reset();
 
 			if (acceptedSocket != null)

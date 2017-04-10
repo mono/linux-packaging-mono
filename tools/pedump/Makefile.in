@@ -106,7 +106,6 @@ am__DEPENDENCIES_1 =
 pedump_DEPENDENCIES =  \
 	$(top_builddir)/mono/metadata/libmonoruntimesgen-static.la \
 	$(top_builddir)/mono/sgen/libmonosgen-static.la \
-	$(top_builddir)/mono/io-layer/libwapi.la \
 	$(top_builddir)/mono/utils/libmonoutils.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -204,6 +203,7 @@ CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
 CMAKE = @CMAKE@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
+CSC = @CSC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -236,7 +236,6 @@ HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-INSTALL_MOBILE_STATIC = @INSTALL_MOBILE_STATIC@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
@@ -268,6 +267,7 @@ MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
+MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
 MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
@@ -394,7 +394,6 @@ pedump_SOURCES = \
 pedump_LDADD = \
 	$(top_builddir)/mono/metadata/libmonoruntimesgen-static.la \
 	$(top_builddir)/mono/sgen/libmonosgen-static.la \
-	$(top_builddir)/mono/io-layer/libwapi.la	\
 	$(top_builddir)/mono/utils/libmonoutils.la \
 	$(LLVM_LIBS)			\
 	$(LLVM_LDFLAGS)			\

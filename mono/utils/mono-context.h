@@ -139,7 +139,8 @@ typedef struct {
 		 }																\
 	} while (0)
 #else
-#define MONO_CONTEXT_GET_CURRENT(ctx) \
+
+#define MONO_CONTEXT_GET_CURRENT_GREGS(ctx) \
 	__asm__ __volatile__(   \
 	"movl $0x0, %c[eax](%0)\n" \
 	"mov %%ebx, %c[ebx](%0)\n" \
@@ -162,6 +163,40 @@ typedef struct {
 		[esi] MONO_CONTEXT_OFFSET (esi, 0, mgreg_t), \
 		[edi] MONO_CONTEXT_OFFSET (edi, 0, mgreg_t) \
 	: "memory")
+
+#ifdef UCONTEXT_REG_XMM
+#define MONO_CONTEXT_GET_CURRENT_FREGS(ctx) \
+	do { \
+		__asm__ __volatile__ ( \
+			"movups %%xmm0, %c[xmm0](%0)\n"	\
+			"movups %%xmm1, %c[xmm1](%0)\n"	\
+			"movups %%xmm2, %c[xmm2](%0)\n"	\
+			"movups %%xmm3, %c[xmm3](%0)\n"	\
+			"movups %%xmm4, %c[xmm4](%0)\n"	\
+			"movups %%xmm5, %c[xmm5](%0)\n"	\
+			"movups %%xmm6, %c[xmm6](%0)\n"	\
+			"movups %%xmm7, %c[xmm7](%0)\n"	\
+			: \
+			: "a" (&(ctx)),	\
+				[xmm0] MONO_CONTEXT_OFFSET (fregs, X86_XMM0, MonoContextSimdReg), \
+				[xmm1] MONO_CONTEXT_OFFSET (fregs, X86_XMM1, MonoContextSimdReg), \
+				[xmm2] MONO_CONTEXT_OFFSET (fregs, X86_XMM2, MonoContextSimdReg), \
+				[xmm3] MONO_CONTEXT_OFFSET (fregs, X86_XMM3, MonoContextSimdReg), \
+				[xmm4] MONO_CONTEXT_OFFSET (fregs, X86_XMM4, MonoContextSimdReg), \
+				[xmm5] MONO_CONTEXT_OFFSET (fregs, X86_XMM5, MonoContextSimdReg), \
+				[xmm6] MONO_CONTEXT_OFFSET (fregs, X86_XMM6, MonoContextSimdReg), \
+				[xmm7] MONO_CONTEXT_OFFSET (fregs, X86_XMM7, MonoContextSimdReg)); \
+	} while (0)
+#else
+#define MONO_CONTEXT_GET_CURRENT_FREGS(ctx)
+#endif
+
+#define MONO_CONTEXT_GET_CURRENT(ctx) \
+    do {	\
+		MONO_CONTEXT_GET_CURRENT_GREGS(ctx);	\
+		MONO_CONTEXT_GET_CURRENT_FREGS(ctx);	\
+	} while (0)
+
 #endif
 
 #define MONO_ARCH_HAS_MONO_CONTEXT 1
@@ -434,12 +469,28 @@ typedef struct {
 		"stp x24, x25, [x16], #16\n"	\
 		"stp x26, x27, [x16], #16\n"	\
 		"stp x28, x29, [x16], #16\n"	\
-		"stp x30, xzr, [x16]\n"	\
+		"stp x30, xzr, [x16], #8\n"	\
 		"mov x30, sp\n"				\
-		"str x30, [x16, #8]\n"		\
+		"str x30, [x16], #8\n"		\
+		"stp d0, d1, [x16], #16\n"	\
+		"stp d2, d3, [x16], #16\n"	\
+		"stp d4, d5, [x16], #16\n"	\
+		"stp d6, d7, [x16], #16\n"	\
+		"stp d8, d9, [x16], #16\n"	\
+		"stp d10, d11, [x16], #16\n"	\
+		"stp d12, d13, [x16], #16\n"	\
+		"stp d14, d15, [x16], #16\n"	\
+		"stp d16, d17, [x16], #16\n"	\
+		"stp d18, d19, [x16], #16\n"	\
+		"stp d20, d21, [x16], #16\n"	\
+		"stp d22, d23, [x16], #16\n"	\
+		"stp d24, d25, [x16], #16\n"	\
+		"stp d26, d27, [x16], #16\n"	\
+		"stp d28, d29, [x16], #16\n"	\
+		"stp d30, d31, [x16], #16\n"	\
 		:							\
 		: "r" (&ctx.regs)			\
-		: "x30", "memory"			\
+		: "x16", "x30", "memory"		\
 	);								\
 	__asm__ __volatile__( \
 		"adr %0, L0%=\n" \
@@ -477,7 +528,7 @@ typedef struct {
 #define MONO_CONTEXT_SET_SP(ctx,sp) do { (ctx)->sc_sp = (gulong)sp; } while (0);
 
 #define MONO_CONTEXT_GET_IP(ctx) ((gpointer)((ctx)->sc_ir))
-#define MONO_CONTEXT_GET_BP(ctx) ((gpointer)((ctx)->regs [ppc_r31-13]))
+#define MONO_CONTEXT_GET_BP(ctx) ((gpointer)((ctx)->regs [ppc_r31]))
 #define MONO_CONTEXT_GET_SP(ctx) ((gpointer)((ctx)->sc_sp))
 
 #define MONO_CONTEXT_GET_CURRENT(ctx)	\
@@ -568,45 +619,45 @@ typedef struct {
 #define MONO_CONTEXT_SET_SP(ctx,sp) do { (ctx)->sc_sp = (mgreg_t)sp; } while (0);
 
 #define MONO_CONTEXT_GET_IP(ctx) ((gpointer)((ctx)->sc_ir))
-#define MONO_CONTEXT_GET_BP(ctx) ((gpointer)((ctx)->regs [ppc_r31-13]))
+#define MONO_CONTEXT_GET_BP(ctx) ((gpointer)((ctx)->regs [ppc_r31]))
 #define MONO_CONTEXT_GET_SP(ctx) ((gpointer)((ctx)->sc_sp))
 
 #define MONO_CONTEXT_GET_CURRENT(ctx)	\
 	__asm__ __volatile__(	\
-		"std 0, 0(%0)\n"	\
-		"std 1, 4(%0)\n"	\
-		"std 0, 4*0+8(%0)\n"	\
-		"std 1, 4*1+8(%0)\n"	\
-		"std 2, 4*2+8(%0)\n"	\
-		"std 3, 4*3+8(%0)\n"	\
-		"std 4, 4*4+8(%0)\n"	\
-		"std 5, 4*5+8(%0)\n"	\
-		"std 6, 4*6+8(%0)\n"	\
-		"std 7, 4*7+8(%0)\n"	\
-		"std 8, 4*8+8(%0)\n"	\
-		"std 9, 4*9+8(%0)\n"	\
-		"std 10, 4*10+8(%0)\n"	\
-		"std 11, 4*11+8(%0)\n"	\
-		"std 12, 4*12+8(%0)\n"	\
-		"std 13, 4*13+8(%0)\n"	\
-		"std 14, 4*14+8(%0)\n"	\
-		"std 15, 4*15+8(%0)\n"	\
-		"std 16, 4*16+8(%0)\n"	\
-		"std 17, 4*17+8(%0)\n"	\
-		"std 18, 4*18+8(%0)\n"	\
-		"std 19, 4*19+8(%0)\n"	\
-		"std 20, 4*20+8(%0)\n"	\
-		"std 21, 4*21+8(%0)\n"	\
-		"std 22, 4*22+8(%0)\n"	\
-		"std 23, 4*23+8(%0)\n"	\
-		"std 24, 4*24+8(%0)\n"	\
-		"std 25, 4*25+8(%0)\n"	\
-		"std 26, 4*26+8(%0)\n"	\
-		"std 27, 4*27+8(%0)\n"	\
-		"std 28, 4*28+8(%0)\n"	\
-		"std 29, 4*29+8(%0)\n"	\
-		"std 30, 4*30+8(%0)\n"	\
-		"std 31, 4*31+8(%0)\n"	\
+		"stw 0, 0(%0)\n"	\
+		"stw 1, 4(%0)\n"	\
+		"stw 0, 4*0+8(%0)\n"	\
+		"stw 1, 4*1+8(%0)\n"	\
+		"stw 2, 4*2+8(%0)\n"	\
+		"stw 3, 4*3+8(%0)\n"	\
+		"stw 4, 4*4+8(%0)\n"	\
+		"stw 5, 4*5+8(%0)\n"	\
+		"stw 6, 4*6+8(%0)\n"	\
+		"stw 7, 4*7+8(%0)\n"	\
+		"stw 8, 4*8+8(%0)\n"	\
+		"stw 9, 4*9+8(%0)\n"	\
+		"stw 10, 4*10+8(%0)\n"	\
+		"stw 11, 4*11+8(%0)\n"	\
+		"stw 12, 4*12+8(%0)\n"	\
+		"stw 13, 4*13+8(%0)\n"	\
+		"stw 14, 4*14+8(%0)\n"	\
+		"stw 15, 4*15+8(%0)\n"	\
+		"stw 16, 4*16+8(%0)\n"	\
+		"stw 17, 4*17+8(%0)\n"	\
+		"stw 18, 4*18+8(%0)\n"	\
+		"stw 19, 4*19+8(%0)\n"	\
+		"stw 20, 4*20+8(%0)\n"	\
+		"stw 21, 4*21+8(%0)\n"	\
+		"stw 22, 4*22+8(%0)\n"	\
+		"stw 23, 4*23+8(%0)\n"	\
+		"stw 24, 4*24+8(%0)\n"	\
+		"stw 25, 4*25+8(%0)\n"	\
+		"stw 26, 4*26+8(%0)\n"	\
+		"stw 27, 4*27+8(%0)\n"	\
+		"stw 28, 4*28+8(%0)\n"	\
+		"stw 29, 4*29+8(%0)\n"	\
+		"stw 30, 4*30+8(%0)\n"	\
+		"stw 31, 4*31+8(%0)\n"	\
 		"stfd 0, 8*0+4*32+8(%0)\n"	\
 		"stfd 1, 8*1+4*32+8(%0)\n"	\
 		"stfd 2, 8*2+4*32+8(%0)\n"	\
@@ -640,7 +691,7 @@ typedef struct {
 		"stfd 30, 8*30+4*32+8(%0)\n"	\
 		"stfd 31, 8*31+4*32+8(%0)\n"	\
 		: : "r" (&(ctx))	\
-		: "memory"			\
+		: "memory", "r0"	\
 	)
 
 #endif
@@ -795,6 +846,8 @@ mono_ia64_context_get_fp (MonoContext *ctx)
 }
 
 #elif ((defined(__mips__) && !defined(MONO_CROSS_COMPILE)) || (defined(TARGET_MIPS))) && SIZEOF_REGISTER == 4 /* defined(__ia64__) */
+
+#define MONO_ARCH_HAS_MONO_CONTEXT 1
 
 #include <mono/arch/mips/mips-codegen.h>
 

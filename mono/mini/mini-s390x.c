@@ -237,7 +237,7 @@ if (ins->inst_target_bb->native_offset) { 					\
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 /*
- * imt thunking size values
+ * imt trampoline size values
  */
 #define CMP_SIZE 	24
 #define LOADCON_SIZE	20
@@ -352,7 +352,7 @@ typedef struct {
 typedef struct {
 	gint64	gr[5];		/* R2-R6			    */
 	gdouble fp[3];		/* F0-F2			    */
-} __attribute__ ((packed)) RegParm;
+} __attribute__ ((__packed__)) RegParm;
 
 typedef struct {
 	RR_Format  basr;
@@ -360,7 +360,7 @@ typedef struct {
 	void	   *pTrigger;
 	RXY_Format lg;
 	RXY_Format trigger;
-} __attribute__ ((packed)) breakpoint_t;
+} __attribute__ ((__packed__)) breakpoint_t;
 
 /*========================= End of Typedefs ========================*/
 
@@ -390,14 +390,6 @@ static __inline__ void emit_unwind_regs(MonoCompile *, guint8 *, int, int, long)
 int mono_exc_esp_offset = 0;
 
 __thread int indent_level = 0;
-
-static gint appdomain_tls_offset = -1,
-	    lmf_tls_offset = -1,
-	    lmf_addr_tls_offset = -1;
-
-pthread_key_t lmf_addr_key;
-
-gboolean lmf_addr_key_inited = FALSE; 
 
 /*
  * The code generated for sequence points reads from this location, 
@@ -1292,6 +1284,7 @@ handle_enum:
 
 	ip = ((gint64) __builtin_extract_return_addr (__builtin_return_address (0)));
 	printf (" ip: %p\n", (gpointer) ip);
+	va_end (ap);
 }
 
 /*========================= End of Function ========================*/
@@ -1328,8 +1321,8 @@ mono_arch_init (void)
 	mono_set_partial_sharing_supported (FALSE);
 	mono_os_mutex_init_recursive (&mini_arch_mutex);
 
-	ss_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ);
-	bp_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ);
+	ss_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ, MONO_MEM_ACCOUNT_OTHER);
+	bp_trigger_page = mono_valloc (NULL, mono_pagesize (), MONO_MMAP_READ, MONO_MEM_ACCOUNT_OTHER);
 	mono_mprotect (bp_trigger_page, mono_pagesize (), 0);
 	
 	code = (guint8 *) &breakpointCode;
@@ -1354,10 +1347,28 @@ void
 mono_arch_cleanup (void)
 {
 	if (ss_trigger_page)
-		mono_vfree (ss_trigger_page, mono_pagesize ());
+		mono_vfree (ss_trigger_page, mono_pagesize (), MONO_MEM_ACCOUNT_OTHER);
 	if (bp_trigger_page)
-		mono_vfree (bp_trigger_page, mono_pagesize ());
+		mono_vfree (bp_trigger_page, mono_pagesize (), MONO_MEM_ACCOUNT_OTHER);
 	mono_os_mutex_destroy (&mini_arch_mutex);
+}
+
+/*========================= End of Function ========================*/
+
+/*------------------------------------------------------------------*/
+/*                                                                  */
+/* Name		- mono_arch_have_fast_tls                           */
+/*                                                                  */
+/* Function	- Returns whether we use fast inlined thread local  */
+/*                storage managed access, instead of falling back   */
+/*                to native code.                                   */
+/*		                               			    */
+/*------------------------------------------------------------------*/
+
+gboolean
+mono_arch_have_fast_tls (void)
+{
+	return TRUE;
 }
 
 /*========================= End of Function ========================*/
@@ -3907,7 +3918,7 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		case OP_S390_SETF4RET:
 			s390_ledbr (code, ins->dreg, ins->sreg1);
 			break;
-		case OP_TLS_GET: {
+                case OP_TLS_GET: {
 			if (s390_is_imm16 (ins->inst_offset)) {
 				s390_lghi (code, s390_r13, ins->inst_offset);
 			} else if (s390_is_imm32 (ins->inst_offset)) {
@@ -3919,7 +3930,21 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			s390_sllg(code, s390_r1, s390_r1, 0, 32);
 			s390_ear (code, s390_r1, 1);
 			s390_lg  (code, ins->dreg, s390_r13, s390_r1, 0);
-		}
+			}
+			break;
+                case OP_TLS_SET: {
+			if (s390_is_imm16 (ins->inst_offset)) {
+				s390_lghi (code, s390_r13, ins->inst_offset);
+			} else if (s390_is_imm32 (ins->inst_offset)) {
+				s390_lgfi (code, s390_r13, ins->inst_offset);
+			} else {
+				S390_SET  (code, s390_r13, ins->inst_offset);
+			}
+			s390_ear (code, s390_r1, 0);
+			s390_sllg(code, s390_r1, s390_r1, 0, 32);
+			s390_ear (code, s390_r1, 1);
+			s390_stg (code, ins->sreg1, s390_r13, s390_r1, 0);
+			}
 			break;
 		case OP_JMP: {
 			if (cfg->method->save_lmf)
@@ -5808,20 +5833,10 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 		/*---------------------------------------------------------------*/
 		/* On return from this call r2 have the address of the &lmf	 */
 		/*---------------------------------------------------------------*/
-		if (lmf_addr_tls_offset == -1) {
-			mono_add_patch_info (cfg, code - cfg->native_code, 
-					     MONO_PATCH_INFO_INTERNAL_METHOD, 
-					     (gpointer)"mono_get_lmf_addr");
-			S390_CALL_TEMPLATE(code, s390_r1);
-		} else {
-			/*-------------------------------------------------------*/
-			/* Get LMF by getting value from thread level storage    */
-			/*-------------------------------------------------------*/
-			s390_ear (code, s390_r1, 0);
-			s390_sllg(code, s390_r1, s390_r1, 0, 32);
-			s390_ear (code, s390_r1, 1);
-			s390_lg  (code, s390_r2, 0, s390_r1, lmf_addr_tls_offset);
-		}
+		mono_add_patch_info (cfg, code - cfg->native_code, 
+				MONO_PATCH_INFO_INTERNAL_METHOD, 
+				(gpointer)"mono_tls_get_lmf_addr");
+		S390_CALL_TEMPLATE(code, s390_r1);
 
 		/*---------------------------------------------------------------*/	
 		/* Set lmf.lmf_addr = jit_tls->lmf				 */	
@@ -6158,9 +6173,6 @@ mono_arch_emit_exceptions (MonoCompile *cfg)
 void
 mono_arch_finish_init (void)
 {
-	appdomain_tls_offset = mono_domain_get_tls_offset();
-	lmf_tls_offset = mono_get_lmf_tls_offset();
-	lmf_addr_tls_offset = mono_get_lmf_addr_tls_offset();
 }
 
 /*========================= End of Function ========================*/
@@ -6286,8 +6298,14 @@ mono_arch_print_tree (MonoInst *tree, int arity)
 			break;
 		case OP_TLS_GET:
 			printf ("[0x%lx(0x%lx,%s)]", tree->inst_offset,
-			        tree->inst_imm,
-				mono_arch_regname (tree->sreg1));
+			tree->inst_imm,
+			mono_arch_regname (tree->sreg1));
+			done = 1;
+			break;
+		case OP_TLS_SET:
+			printf ("[0x%lx(0x%lx,%s)]", tree->inst_offset,
+			tree->inst_imm,
+			mono_arch_regname (tree->sreg1));
 			done = 1;
 			break;
 		case OP_S390_BKCHAIN:
@@ -6662,16 +6680,16 @@ mono_arch_get_delegate_virtual_invoke_impl (MonoMethodSignature *sig, MonoMethod
 
 /*------------------------------------------------------------------*/
 /*                                                                  */
-/* Name		- mono_arch_build_imt_thunk.                        */
+/* Name		- mono_arch_build_imt_trampoline.                       */
 /*                                                                  */
 /* Function	- 						    */
 /*		                               			    */
 /*------------------------------------------------------------------*/
 
 gpointer
-mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain, 
-			   MonoIMTCheckItem **imt_entries, int count,
-			   gpointer fail_tramp)
+mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, 
+								MonoIMTCheckItem **imt_entries, int count,
+								gpointer fail_tramp)
 {
 	int i;
 	int size = 0;
@@ -6710,7 +6728,7 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain,
 	}
 
 	if (fail_tramp)
-		code = mono_method_alloc_generic_virtual_thunk (domain, size);
+		code = mono_method_alloc_generic_virtual_trampoline (domain, size);
 	else
 		code = mono_domain_code_reserve (domain, size);
 
@@ -6793,11 +6811,11 @@ mono_arch_build_imt_thunk (MonoVTable *vtable, MonoDomain *domain,
 	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_IMT_TRAMPOLINE, NULL);
 
 	if (!fail_tramp) 
-		mono_stats.imt_thunks_size += (code - start);
+		mono_stats.imt_trampolines_size += (code - start);
 
 	g_assert (code - start <= size);
 
-	snprintf(trampName, sizeof(trampName), "%d_imt_thunk_trampoline", domain->domain_id);
+	snprintf(trampName, sizeof(trampName), "%d_imt_trampoline", domain->domain_id);
 	mono_tramp_info_register (mono_tramp_info_create (trampName, start, code - start, NULL, NULL), domain);
 
 	return (start);

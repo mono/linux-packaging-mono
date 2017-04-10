@@ -24,11 +24,10 @@
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/mono-mlist.h>
 #include <mono/metadata/threads-types.h>
-#include <mono/metadata/threadpool-ms.h>
+#include <mono/metadata/threadpool.h>
 #include <mono/sgen/sgen-conf.h>
 #include <mono/sgen/sgen-gc.h>
 #include <mono/utils/mono-logger-internals.h>
-#include <mono/metadata/gc-internals.h>
 #include <mono/metadata/marshal.h> /* for mono_delegate_free_ftnptr () */
 #include <mono/metadata/attach.h>
 #include <mono/metadata/console-io.h>
@@ -42,6 +41,7 @@
 #include <mono/utils/atomic.h>
 #include <mono/utils/mono-coop-semaphore.h>
 #include <mono/utils/hazard-pointer.h>
+#include <mono/utils/w32api.h>
 
 #ifndef HOST_WIN32
 #include <pthread.h>
@@ -91,13 +91,13 @@ static void mono_reference_queue_cleanup (void);
 static void reference_queue_clear_for_domain (MonoDomain *domain);
 
 
-static guint32
-guarded_wait (HANDLE handle, guint32 timeout, gboolean alertable)
+static MonoThreadInfoWaitRet
+guarded_wait (MonoThreadHandle *thread_handle, guint32 timeout, gboolean alertable)
 {
-	guint32 result;
+	MonoThreadInfoWaitRet result;
 
 	MONO_ENTER_GC_SAFE;
-	result = WaitForSingleObjectEx (handle, timeout, alertable);
+	result = mono_thread_info_wait_one_handle (thread_handle, timeout, alertable);
 	MONO_EXIT_GC_SAFE;
 
 	return result;
@@ -494,14 +494,14 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
 	mono_gc_finalize_notify ();
 
 	if (timeout == -1)
-		timeout = INFINITE;
-	if (timeout != INFINITE)
+		timeout = MONO_INFINITE_WAIT;
+	if (timeout != MONO_INFINITE_WAIT)
 		start = mono_msec_ticks ();
 
 	ret = TRUE;
 
 	for (;;) {
-		if (timeout == INFINITE) {
+		if (timeout == MONO_INFINITE_WAIT) {
 			res = mono_coop_sem_wait (&req->done, MONO_SEM_FLAGS_ALERTABLE);
 		} else {
 			gint64 elapsed = mono_msec_ticks () - start;
@@ -556,7 +556,7 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
 	}
 
 	if (domain == mono_get_root_domain ()) {
-		mono_threadpool_ms_cleanup ();
+		mono_threadpool_cleanup ();
 		mono_gc_finalize_threadpool_threads ();
 	}
 
@@ -642,7 +642,9 @@ ves_icall_System_GC_WaitForPendingFinalizers (void)
 	ResetEvent (pending_done_event);
 	mono_gc_finalize_notify ();
 	/* g_print ("Waiting for pending finalizers....\n"); */
-	guarded_wait (pending_done_event, INFINITE, TRUE);
+	MONO_ENTER_GC_SAFE;
+	WaitForSingleObjectEx (pending_done_event, INFINITE, TRUE);
+	MONO_EXIT_GC_SAFE;
 	/* g_print ("Done pending....\n"); */
 #else
 	gboolean alerted = FALSE;
@@ -650,7 +652,7 @@ ves_icall_System_GC_WaitForPendingFinalizers (void)
 	pending_done = FALSE;
 	mono_gc_finalize_notify ();
 	while (!pending_done) {
-		coop_cond_timedwait_alertable (&pending_done_cond, &pending_done_mutex, INFINITE, &alerted);
+		coop_cond_timedwait_alertable (&pending_done_cond, &pending_done_mutex, MONO_INFINITE_WAIT, &alerted);
 		if (alerted)
 			break;
 	}
@@ -730,7 +732,7 @@ ves_icall_System_GCHandle_GetAddrOfPinnedObject (guint32 handle)
 		} else {
 			/* the C# code will check and throw the exception */
 			/* FIXME: missing !klass->blittable test, see bug #61134 */
-			if ((klass->flags & TYPE_ATTRIBUTE_LAYOUT_MASK) == TYPE_ATTRIBUTE_AUTO_LAYOUT)
+			if (mono_class_is_auto_layout (klass))
 				return (gpointer)-1;
 			return (char*)obj + sizeof (MonoObject);
 		}
@@ -880,13 +882,13 @@ finalize_domain_objects (void)
 	}
 }
 
-static guint32
+static gsize WINAPI
 finalizer_thread (gpointer unused)
 {
 	MonoError error;
 	gboolean wait = TRUE;
 
-	mono_thread_set_name_internal (mono_thread_internal_current (), mono_string_new (mono_get_root_domain (), "Finalizer"), FALSE, &error);
+	mono_thread_set_name_internal (mono_thread_internal_current (), mono_string_new (mono_get_root_domain (), "Finalizer"), FALSE, FALSE, &error);
 	mono_error_assert_ok (&error);
 
 	/* Register a hazard free queue pump callback */
@@ -1014,59 +1016,60 @@ mono_gc_cleanup (void)
 	if (!gc_disabled) {
 		finished = TRUE;
 		if (mono_thread_internal_current () != gc_thread) {
-			gint64 start_ticks = mono_msec_ticks ();
-			gint64 end_ticks = start_ticks + 2000;
+			int ret;
+			gint64 start;
+			const gint64 timeout = 40 * 1000;
 
 			mono_gc_finalize_notify ();
-			/* Finishing the finalizer thread, so wait a little bit... */
-			/* MS seems to wait for about 2 seconds */
-			while (!finalizer_thread_exited) {
-				gint64 current_ticks = mono_msec_ticks ();
-				guint32 timeout;
 
-				if (current_ticks >= end_ticks)
+			start = mono_msec_ticks ();
+
+			/* Finishing the finalizer thread, so wait a little bit... */
+			/* MS seems to wait for about 2 seconds per finalizer thread */
+			/* and 40 seconds for all finalizers to finish */
+			for (;;) {
+				gint64 elapsed;
+
+				if (finalizer_thread_exited) {
+					/* Wait for the thread to actually exit. We don't want the wait
+					 * to be alertable, because we assert on the result to be SUCCESS_0 */
+					ret = guarded_wait (gc_thread->handle, MONO_INFINITE_WAIT, FALSE);
+					g_assert (ret == MONO_THREAD_INFO_WAIT_RET_SUCCESS_0);
+
+					mono_thread_join (GUINT_TO_POINTER (gc_thread->tid));
 					break;
-				else
-					timeout = end_ticks - current_ticks;
+				}
+
+				elapsed = mono_msec_ticks () - start;
+				if (elapsed >= timeout) {
+					/* timeout */
+
+					/* Set a flag which the finalizer thread can check */
+					suspend_finalizers = TRUE;
+					mono_gc_suspend_finalizers ();
+
+					/* Try to abort the thread, in the hope that it is running managed code */
+					mono_thread_internal_abort (gc_thread);
+
+					/* Wait for it to stop */
+					ret = guarded_wait (gc_thread->handle, 100, FALSE);
+					if (ret == MONO_THREAD_INFO_WAIT_RET_TIMEOUT) {
+						/* The finalizer thread refused to exit, suspend it forever. */
+						mono_thread_internal_suspend_for_shutdown (gc_thread);
+						break;
+					}
+
+					g_assert (ret == MONO_THREAD_INFO_WAIT_RET_SUCCESS_0);
+
+					mono_thread_join (GUINT_TO_POINTER (gc_thread->tid));
+					break;
+				}
+
 				mono_finalizer_lock ();
 				if (!finalizer_thread_exited)
-					mono_coop_cond_timedwait (&exited_cond, &finalizer_mutex, timeout);
+					mono_coop_cond_timedwait (&exited_cond, &finalizer_mutex, timeout - elapsed);
 				mono_finalizer_unlock ();
 			}
-
-			if (!finalizer_thread_exited) {
-				int ret;
-
-				/* Set a flag which the finalizer thread can check */
-				suspend_finalizers = TRUE;
-				mono_gc_suspend_finalizers ();
-
-				/* Try to abort the thread, in the hope that it is running managed code */
-				mono_thread_internal_abort (gc_thread);
-
-				/* Wait for it to stop */
-				ret = guarded_wait (gc_thread->handle, 100, TRUE);
-
-				if (ret == WAIT_TIMEOUT) {
-					/*
-					 * The finalizer thread refused to exit. Make it stop.
-					 */
-					mono_thread_internal_stop (gc_thread);
-					ret = guarded_wait (gc_thread->handle, 100, TRUE);
-					g_assert (ret != WAIT_TIMEOUT);
-					/* The thread can't set this flag */
-					finalizer_thread_exited = TRUE;
-				}
-			}
-
-			int ret;
-
-			/* Wait for the thread to actually exit */
-			ret = guarded_wait (gc_thread->handle, INFINITE, TRUE);
-			g_assert (ret == WAIT_OBJECT_0);
-
-			mono_thread_join (GUINT_TO_POINTER (gc_thread->tid));
-			g_assert (finalizer_thread_exited);
 		}
 		gc_thread = NULL;
 		mono_gc_base_cleanup ();

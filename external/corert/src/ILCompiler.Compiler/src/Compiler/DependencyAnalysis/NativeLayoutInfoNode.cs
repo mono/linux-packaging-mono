@@ -1,0 +1,95 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
+using System.IO;
+using System.Diagnostics;
+using System.Collections.Generic;
+
+using Internal.Text;
+using Internal.TypeSystem;
+using Internal.NativeFormat;
+
+namespace ILCompiler.DependencyAnalysis
+{
+    /// <summary>
+    /// Native layout info blob.
+    /// </summary>
+    internal sealed class NativeLayoutInfoNode : ObjectNode, ISymbolNode
+    {
+        private ObjectAndOffsetSymbolNode _endSymbol;
+        private ExternalReferencesTableNode _externalReferences;
+
+        private NativeWriter _writer;
+        private byte[] _writerSavedBytes;
+
+        private Section _signaturesSection;
+        private Section _ldTokenInfoSection;
+
+        private List<NativeLayoutVertexNode> _vertexNodesToWrite;
+
+        public NativeLayoutInfoNode(ExternalReferencesTableNode externalReferences)
+        {
+            _endSymbol = new ObjectAndOffsetSymbolNode(this, 0, "__nativelayoutinfo_End", true);
+            _externalReferences = externalReferences;
+
+            _writer = new NativeWriter();
+            _signaturesSection = _writer.NewSection();
+            _ldTokenInfoSection = _writer.NewSection();
+
+            _vertexNodesToWrite = new List<NativeLayoutVertexNode>();
+        }
+
+        public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
+        {
+            sb.Append(nameMangler.CompilationUnitPrefix).Append("__nativelayoutinfo");
+        }
+        public ISymbolNode EndSymbol => _endSymbol;
+        public int Offset => 0;
+        public override bool IsShareable => false;
+        public override ObjectNodeSection Section => ObjectNodeSection.DataSection;
+        public override bool StaticDependenciesAreComputed => true;
+        protected override string GetName() => this.GetMangledName();
+
+        public Section LdTokenInfoSection => _ldTokenInfoSection;
+        public Section SignaturesSection => _signaturesSection;
+        public ExternalReferencesTableNode ExternalReferences => _externalReferences;
+        public NativeWriter Writer => _writer;
+
+        public void AddVertexNodeToNativeLayout(NativeLayoutVertexNode vertexNode)
+        {
+            _vertexNodesToWrite.Add(vertexNode);
+        }
+
+        public void SaveNativeLayoutInfoWriter(NodeFactory factory)
+        {
+            if (_writerSavedBytes != null)
+                return;
+
+            foreach (var vertexNode in _vertexNodesToWrite)
+                vertexNode.WriteVertex(factory);
+
+            MemoryStream writerStream = new MemoryStream();
+            _writer.Save(writerStream);
+            _writerSavedBytes = writerStream.ToArray();
+
+            // Zero out the native writer and vertex list so that we AV if someone tries to insert after we're done.
+            _writer = null;
+            _vertexNodesToWrite = null;
+        }
+
+        public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
+        {
+            // Dependencies of the NativeLayoutInfo node are tracked by the callers that emit data into the native layout writer
+            if (relocsOnly)
+                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolNode[] { this });
+
+            SaveNativeLayoutInfoWriter(factory);
+
+            _endSymbol.SetSymbolOffset(_writerSavedBytes.Length);
+
+            return new ObjectData(_writerSavedBytes, Array.Empty<Relocation>(), 1, new ISymbolNode[] { this, _endSymbol });
+        }
+    }
+}

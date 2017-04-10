@@ -16,7 +16,6 @@
 #include <mono/metadata/object-internals.h>
 #include <mono/metadata/threads-types.h>
 #include <mono/sgen/gc-internal-agnostic.h>
-#include <mono/utils/gc_wrapper.h>
 
 #define mono_domain_finalizers_lock(domain) mono_os_mutex_lock (&(domain)->finalizable_objects_hash_lock);
 #define mono_domain_finalizers_unlock(domain) mono_os_mutex_unlock (&(domain)->finalizable_objects_hash_lock);
@@ -297,8 +296,6 @@ gboolean mono_gc_card_table_nursery_check (void);
 
 void* mono_gc_get_nursery (int *shift_bits, size_t *size);
 
-void mono_gc_set_current_thread_appdomain (MonoDomain *domain);
-
 void mono_gc_set_skip_thread (gboolean skip);
 
 #ifndef HOST_WIN32
@@ -361,6 +358,8 @@ BOOL APIENTRY mono_gc_dllmain (HMODULE module_handle, DWORD reason, LPVOID reser
 guint mono_gc_get_vtable_bits (MonoClass *klass);
 
 void mono_gc_register_altstack (gpointer stack, gint32 stack_size, gpointer altstack, gint32 altstack_size);
+
+gboolean mono_gc_is_critical_method (MonoMethod *method);
 
 /* If set, print debugging messages around finalizers. */
 extern gboolean log_finalizers;

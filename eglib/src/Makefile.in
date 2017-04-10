@@ -107,13 +107,14 @@ am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	unicode-data.h gdate-unix.c gdir-unix.c gfile-unix.c \
 	gmisc-unix.c gmodule-unix.c gtimer-unix.c eglib-config.hw \
 	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
-	gmodule-win32.c gtimer-win32.c
+	gmodule-win32.c gtimer-win32.c gunicode-win32.c
 am__objects_1 = libeglib_la-gdate-unix.lo libeglib_la-gdir-unix.lo \
 	libeglib_la-gfile-unix.lo libeglib_la-gmisc-unix.lo \
 	libeglib_la-gmodule-unix.lo libeglib_la-gtimer-unix.lo
 am__objects_2 = libeglib_la-gdate-win32.lo libeglib_la-gdir-win32.lo \
 	libeglib_la-gfile-win32.lo libeglib_la-gmisc-win32.lo \
-	libeglib_la-gmodule-win32.lo libeglib_la-gtimer-win32.lo
+	libeglib_la-gmodule-win32.lo libeglib_la-gtimer-win32.lo \
+	libeglib_la-gunicode-win32.lo
 @HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
 @HOST_WIN32_TRUE@am__objects_3 = $(am__objects_2)
 am_libeglib_la_OBJECTS = libeglib_la-garray.lo \
@@ -345,7 +346,7 @@ AM_CFLAGS = $(WERROR_CFLAGS)
 win_files = \
 	eglib-config.hw \
 	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
-	gmodule-win32.c gtimer-win32.c
+	gmodule-win32.c gtimer-win32.c gunicode-win32.c
 
 unix_files = \
 	gdate-unix.c  gdir-unix.c  gfile-unix.c  gmisc-unix.c	\
@@ -480,6 +481,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gstring.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gtimer-unix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gtimer-win32.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gunicode-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gunicode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libeglib_la-gutf8.Plo@am__quote@
 
@@ -748,6 +750,13 @@ libeglib_la-gtimer-win32.lo: gtimer-win32.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gtimer-win32.c' object='libeglib_la-gtimer-win32.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -c -o libeglib_la-gtimer-win32.lo `test -f 'gtimer-win32.c' || echo '$(srcdir)/'`gtimer-win32.c
+
+libeglib_la-gunicode-win32.lo: gunicode-win32.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -MT libeglib_la-gunicode-win32.lo -MD -MP -MF $(DEPDIR)/libeglib_la-gunicode-win32.Tpo -c -o libeglib_la-gunicode-win32.lo `test -f 'gunicode-win32.c' || echo '$(srcdir)/'`gunicode-win32.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libeglib_la-gunicode-win32.Tpo $(DEPDIR)/libeglib_la-gunicode-win32.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='gunicode-win32.c' object='libeglib_la-gunicode-win32.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libeglib_la_CFLAGS) $(CFLAGS) -c -o libeglib_la-gunicode-win32.lo `test -f 'gunicode-win32.c' || echo '$(srcdir)/'`gunicode-win32.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
