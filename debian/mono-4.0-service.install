@@ -1,3 +1,4 @@
 /usr/bin/mono-service
 /usr/lib/mono/4.5/mono-service.exe*
+/usr/lib/mono/4.5/mono-service.pdb
 /usr/lib/mono/gac/mono-service/4.0.0.0__*/

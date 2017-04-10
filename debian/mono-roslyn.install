@@ -1,0 +1,7 @@
+/usr/bin/csc
+/usr/lib/mono/4.5/csc.exe*
+/usr/lib/mono/4.5/csc.rsp
+/usr/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
+/usr/lib/mono/4.5/Microsoft.CodeAnalysis.dll*
+/usr/lib/mono/4.5/System.Reflection.Metadata.dll*
+/usr/lib/mono/4.5/System.Collections.Immutable.dll*
