@@ -3008,7 +3008,9 @@ Breaks:   libmono-facades-system-collections-cil (<< 3.2.3+dfsg-5~),
           libmono-xbuild-tasks2.0-cil (<< 4.0.1~),
           libmono-microsoft-build2.0-cil (<< 4.0.1~),
           libmono-xbuild-tasks2.0-cil (<< 4.0.1~)
-Recommends: mono-csharp-shell
+Recommends: mono-csharp-shell,
+            referenceassemblies-pcl,
+            msbuild
 Depends: ${misc:Depends},
          ${cli:Depends},
          mono-mcs (= ${source:Version}),
@@ -3018,6 +3020,7 @@ Depends: ${misc:Depends},
          libmono-cil-dev (= ${source:Version}),
          libmono-2.0-dev (>= ${source:Version}),
          libmono-2.0-dev (<< ${source:Version}.1~),
+         ca-certificates-mono (= ${source:Version}),
          pkg-config
 Description: Mono development tools
  Mono is a platform for running and developing applications based on the
