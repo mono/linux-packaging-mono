@@ -1,9 +1,3 @@
 #include "libmonoboehm-2.0-1.symbols"
  GC_allocate_lock@Base 4.1.0.1738
- mono_fallback_get_tls_key@Base 4.3.0.662          
- mono_fallback_set_tls_key@Base 4.3.0.662          
- mono_fast_get_tls_key@Base 4.3.0.662
- mono_fast_get_tls_key_end@Base 4.3.0.723
- mono_fast_set_tls_key@Base 4.3.0.662
- mono_fast_set_tls_key_end@Base 4.3.0.723
 

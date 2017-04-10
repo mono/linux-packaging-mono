@@ -21,7 +21,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_get_assemblyref@Base 4.1.0.1738
  mono_assembly_get_image@Base 4.1.0.1738
  mono_assembly_get_main@Base 4.1.0.1738
- mono_assembly_get_name@Base 4.2.0.179
+ mono_assembly_get_name@Base 4.3.0.624
  mono_assembly_get_object@Base 4.1.0.1738
  mono_assembly_getrootdir@Base 4.1.0.1738
  mono_assembly_invoke_load_hook@Base 4.1.0.1738
@@ -31,6 +31,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_assembly_load_from_full@Base 4.1.0.1738
  mono_assembly_load_full@Base 4.1.0.1738
  mono_assembly_load_module@Base 4.1.0.1738
+ mono_assembly_load_module_checked@Base 4.9.0.401
  mono_assembly_load_reference@Base 4.1.0.1738
  mono_assembly_load_references@Base 4.1.0.1738
  mono_assembly_load_with_partial_name@Base 4.1.0.1738
@@ -86,7 +87,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_class_from_typeref_checked@Base 4.1.0.1738
  mono_class_get@Base 4.1.0.1738
  mono_class_get_byref_type@Base 4.1.0.1738
- mono_class_get_context@Base 4.8.0.472
+ mono_class_get_context@Base 4.9.0.1707
  mono_class_get_element_class@Base 4.1.0.1738
  mono_class_get_event_token@Base 4.1.0.1738
  mono_class_get_events@Base 4.1.0.1738
@@ -121,7 +122,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_class_is_assignable_from@Base 4.1.0.1738
  mono_class_is_delegate@Base 4.1.0.1738
  mono_class_is_enum@Base 4.1.0.1738
- mono_class_is_ginst@Base 4.8.0.472
  mono_class_is_subclass_of@Base 4.1.0.1738
  mono_class_is_valid_enum@Base 4.1.0.1738
  mono_class_is_valuetype@Base 4.1.0.1738
@@ -138,6 +138,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_code_manager_commit@Base 4.1.0.1738
  mono_code_manager_destroy@Base 4.1.0.1738
  mono_code_manager_init@Base 4.1.0.1738
+ mono_code_manager_install_callbacks@Base 4.9.0.1707
  mono_code_manager_invalidate@Base 4.1.0.1738
  mono_code_manager_new@Base 4.1.0.1738
  mono_code_manager_new_dynamic@Base 4.1.0.1738
@@ -154,10 +155,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_conc_hashtable_new_full@Base 4.1.0.1738
  mono_conc_hashtable_remove@Base 4.1.0.1738
  mono_config_cleanup@Base 4.1.0.1738
- mono_config_get_cpu@Base 4.6.0.243
- mono_config_get_os@Base 4.6.0.243
- mono_config_get_wordsize@Base 4.6.0.243
  mono_config_for_assembly@Base 4.1.0.1738
+ mono_config_get_cpu@Base 4.7.0.488
+ mono_config_get_os@Base 4.7.0.488
+ mono_config_get_wordsize@Base 4.7.0.488
  mono_config_is_server_mode@Base 4.1.0.1738
  mono_config_parse@Base 4.1.0.1738
  mono_config_parse_memory@Base 4.1.0.1738
@@ -165,8 +166,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_config_string_for_assembly_file@Base 4.1.0.1738
  mono_context_get@Base 4.1.0.1738
  mono_context_get_desc@Base 4.1.0.1738
- mono_context_get_domain_id@Base 4.2.0.179
- mono_context_get_id@Base 4.2.0.179
+ mono_context_get_domain_id@Base 4.3.0.624
+ mono_context_get_id@Base 4.3.0.624
  mono_context_init@Base 4.1.0.1738
  mono_context_set@Base 4.1.0.1738
  mono_counter_get_name@Base 4.1.0.1738
@@ -256,7 +257,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_domain_from_appdomain@Base 4.1.0.1738
  mono_domain_get@Base 4.1.0.1738
  mono_domain_get_by_id@Base 4.1.0.1738
- mono_domain_get_friendly_name@Base 4.2.0.179
+ mono_domain_get_friendly_name@Base 4.3.0.624
  mono_domain_get_id@Base 4.1.0.1738
  mono_domain_has_type_resolve@Base 4.1.0.1738
  mono_domain_is_unloading@Base 4.1.0.1738
@@ -267,7 +268,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_domain_try_type_resolve@Base 4.1.0.1738
  mono_domain_try_unload@Base 4.1.0.1738
  mono_domain_unload@Base 4.1.0.1738
- mono_emit_native_call@Base 4.1.0.1738
  mono_environment_exitcode_get@Base 4.1.0.1738
  mono_environment_exitcode_set@Base 4.1.0.1738
  mono_error_cleanup@Base 4.1.0.1738
@@ -332,14 +332,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_g_hash_table_size@Base 4.1.0.1738
  mono_gc_collect@Base 4.1.0.1738
  mono_gc_collection_count@Base 4.1.0.1738
- mono_gc_finalize_notify@Base 4.6.0.243
+ mono_gc_finalize_notify@Base 4.7.0.488
  mono_gc_get_generation@Base 4.1.0.1738
  mono_gc_get_heap_size@Base 4.1.0.1738
  mono_gc_get_used_size@Base 4.1.0.1738
  mono_gc_invoke_finalizers@Base 4.1.0.1738
  mono_gc_max_generation@Base 4.1.0.1738
- mono_gc_pending_finalizers@Base 4.6.0.243
- mono_hazard_pointer_get@Base 4.6.0.243
+ mono_gc_pending_finalizers@Base 4.7.0.488
  mono_gc_reference_queue_add@Base 4.1.0.1738
  mono_gc_reference_queue_free@Base 4.1.0.1738
  mono_gc_reference_queue_new@Base 4.1.0.1738
@@ -436,6 +435,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_get_void_class@Base 4.1.0.1738
  mono_guid_to_string@Base 4.1.0.1738
  mono_guid_to_string_minimal@Base 4.5.2.618
+ mono_hazard_pointer_get@Base 4.7.0.488
  mono_image_add_to_name_cache@Base 4.1.0.1738
  mono_image_addref@Base 4.1.0.1738
  mono_image_close@Base 4.1.0.1738
@@ -476,7 +476,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_init@Base 4.1.0.1738
  mono_init_from_assembly@Base 4.1.0.1738
  mono_init_version@Base 4.1.0.1738
- mono_inst_name@Base 4.1.0.1738
  mono_install_assembly_load_hook@Base 4.1.0.1738
  mono_install_assembly_postload_refonly_search_hook@Base 4.1.0.1738
  mono_install_assembly_postload_search_hook@Base 4.1.0.1738
@@ -500,16 +499,16 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_jit_parse_options@Base 4.1.0.1738
  mono_jit_set_aot_mode@Base 4.1.0.1738
  mono_jit_set_aot_only@Base 4.1.0.1738
- mono_jit_set_domain@Base 4.1.0.1738
+ mono_jit_set_domain@Base 4.5.2.48
  mono_jit_set_trace_options@Base 4.1.0.1738
  mono_jit_thread_attach@Base 4.1.0.1738
  mono_ldstr@Base 4.1.0.1738
  mono_ldtoken@Base 4.1.0.1738
- mono_lls_find@Base 4.6.0.243-0xamarin1
- mono_lls_get_hazardous_pointer_with_mask@Base 4.6.0.243
- mono_lls_init@Base 4.6.0.243
- mono_lls_insert@Base 4.6.0.243
- mono_lls_remove@Base 4.6.0.243
+ mono_lls_find@Base 4.7.0.488
+ mono_lls_get_hazardous_pointer_with_mask@Base 4.7.0.488
+ mono_lls_init@Base 4.7.0.488
+ mono_lls_insert@Base 4.7.0.488
+ mono_lls_remove@Base 4.7.0.488
  mono_load_remote_field@Base 4.1.0.1738
  mono_load_remote_field_new@Base 4.1.0.1738
  mono_lock_free_alloc@Base 4.5.2.48-0nightly2
@@ -533,6 +532,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_md5_get_digest_from_file@Base 4.1.0.1738
  mono_md5_init@Base 4.1.0.1738
  mono_md5_update@Base 4.1.0.1738
+ mono_mem_account_register_counters@Base 4.9.0.401
+ mono_mem_account_type_name@Base 4.9.0.401
  mono_mempool_alloc0@Base 4.1.0.1738
  mono_mempool_alloc@Base 4.1.0.1738
  mono_mempool_contains_addr@Base 4.1.0.1738
@@ -619,7 +620,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_method_desc_search_in_image@Base 4.1.0.1738
  mono_method_full_name@Base 4.1.0.1738
  mono_method_get_class@Base 4.1.0.1738
- mono_method_get_context@Base 4.8.0.472
+ mono_method_get_context@Base 4.9.0.1707
  mono_method_get_flags@Base 4.1.0.1738
  mono_method_get_generic_container@Base 4.1.0.1738
  mono_method_get_header@Base 4.1.0.1738
@@ -642,7 +643,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_method_header_get_num_clauses@Base 4.1.0.1738
  mono_method_print_code@Base 4.1.0.1738
  mono_method_signature@Base 4.1.0.1738
- mono_method_signature_checked@Base 4.8.0.472
+ mono_method_signature_checked@Base 4.9.0.1707
  mono_method_verify@Base 4.1.0.1738
  mono_mlist_alloc@Base 4.1.0.1738
  mono_mlist_append@Base 4.1.0.1738
@@ -661,11 +662,11 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_monitor_exit@Base 4.1.0.1738
  mono_monitor_try_enter@Base 4.1.0.1738
  mono_mprotect@Base 4.1.0.1738
- mono_native_getrootdir@Base 4.8.0.382
- mono_native_thread_create@Base 4.8.0.344
- mono_native_thread_id_equals@Base 4.8.0.344
+ mono_native_getrootdir@Base 4.9.0.543
+ mono_native_thread_create@Base 4.9.0.401
+ mono_native_thread_id_equals@Base 4.9.0.401
  mono_native_thread_id_get@Base 4.5.2.48
- mono_native_thread_join@Base 4.8.0.344
+ mono_native_thread_join@Base 4.9.0.401
  mono_native_thread_set_name@Base 4.5.2.48
  mono_object_castclass_mbyref@Base 4.1.0.1738
  mono_object_clone@Base 4.1.0.1738
@@ -687,12 +688,12 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_object_unbox@Base 4.1.0.1738
  mono_opcode_name@Base 4.1.0.1738
  mono_opcode_value@Base 4.1.0.1738
- mono_opcodes@Base 4.8.0.344
+ mono_opcodes@Base 4.5.2.363-0nightly1
  mono_pagesize@Base 4.1.0.1738
  mono_param_get_objects@Base 4.1.0.1738
  mono_parse_default_optimizations@Base 4.1.0.1738
  mono_parse_env_options@Base 4.3.2.71
- mono_parse_options_from@Base 4.4.0.182
+ mono_parse_options_from@Base 4.5.2.48
  mono_path_canonicalize@Base 4.1.0.1738
  mono_path_resolve_symlinks@Base 4.1.0.1738
  mono_pe_file_open@Base 4.1.0.1738
@@ -710,18 +711,18 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_install@Base 4.1.0.1738
  mono_profiler_install_allocation@Base 4.1.0.1738
  mono_profiler_install_appdomain@Base 4.1.0.1738
- mono_profiler_install_appdomain_name@Base 4.2.0.179
+ mono_profiler_install_appdomain_name@Base 4.3.0.624
  mono_profiler_install_assembly@Base 4.1.0.1738
  mono_profiler_install_class@Base 4.1.0.1738
  mono_profiler_install_code_buffer_new@Base 4.1.0.1738
  mono_profiler_install_code_chunk_destroy@Base 4.1.0.1738
  mono_profiler_install_code_chunk_new@Base 4.1.0.1738
- mono_profiler_install_context@Base 4.2.0.179
+ mono_profiler_install_context@Base 4.3.0.624
  mono_profiler_install_coverage_filter@Base 4.1.0.1738
  mono_profiler_install_enter_leave@Base 4.1.0.1738
  mono_profiler_install_exception@Base 4.1.0.1738
  mono_profiler_install_gc@Base 4.1.0.1738
- mono_profiler_install_gc_finalize@Base 4.6.0.243
+ mono_profiler_install_gc_finalize@Base 4.7.0.488
  mono_profiler_install_gc_moves@Base 4.1.0.1738
  mono_profiler_install_gc_roots@Base 4.1.0.1738
  mono_profiler_install_iomap@Base 4.1.0.1738
@@ -771,7 +772,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_register_config_for_assembly@Base 4.1.0.1738
  mono_register_machine_config@Base 4.1.0.1738
  mono_register_symfile_for_assembly@Base 4.1.0.1738
- mono_replace_ins@Base 4.1.0.1738
  mono_runtime_class_init@Base 4.1.0.1738
  mono_runtime_cleanup@Base 4.1.0.1738
  mono_runtime_delegate_invoke@Base 4.1.0.1738
@@ -795,7 +795,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_security_core_clr_set_options@Base 4.1.0.1738
  mono_security_enable_core_clr@Base 4.1.0.1738
  mono_security_set_core_clr_platform_callback@Base 4.1.0.1738
- mono_set_allocator_vtable@Base 4.8.0.344
+ mono_set_allocator_vtable@Base 4.5.2.618
  mono_set_assemblies_path@Base 4.1.0.1738
  mono_set_break_policy@Base 4.1.0.1738
  mono_set_config_dir@Base 4.1.0.1738
@@ -816,7 +816,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_shared_area_remove@Base 4.1.0.1738
  mono_shared_area_unload@Base 4.1.0.1738
  mono_signature_explicit_this@Base 4.1.0.1738
- mono_signature_full_name@Base 4.8.0.472
+ mono_signature_full_name@Base 4.9.0.1707
  mono_signature_get_call_conv@Base 4.1.0.1738
  mono_signature_get_desc@Base 4.1.0.1738
  mono_signature_get_param_count@Base 4.1.0.1738
@@ -834,6 +834,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_store_remote_field@Base 4.1.0.1738
  mono_store_remote_field_new@Base 4.1.0.1738
  mono_string_chars@Base 4.1.0.1738
+ mono_string_empty@Base 4.9.0.1456
+ mono_string_empty_wrapper@Base 4.9.0.1456
  mono_string_equal@Base 4.1.0.1738
  mono_string_from_bstr@Base 4.1.0.1738
  mono_string_from_utf16@Base 4.1.0.1738
@@ -865,11 +867,11 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_get_managed_id@Base 4.3.3.735
  mono_thread_get_name_utf8@Base 4.3.3.735
  mono_thread_get_undeniable_exception@Base 4.1.0.1738
- mono_thread_hazardous_queue_free@Base 4.6.0.243
+ mono_thread_hazardous_queue_free@Base 4.7.0.488
  mono_thread_hazardous_try_free@Base 4.5.2.48
- mono_thread_hazardous_try_free_all@Base 4.6.0.243
+ mono_thread_hazardous_try_free_all@Base 4.7.0.488
  mono_thread_info_detach@Base 4.5.2.48
- mono_thread_info_yield@Base 4.6.0.243
+ mono_thread_info_yield@Base 4.7.0.488
  mono_thread_init@Base 4.1.0.1738
  mono_thread_is_foreign@Base 4.1.0.1738
  mono_thread_manage@Base 4.1.0.1738
@@ -883,13 +885,13 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_threads_attach_tools_thread@Base 4.1.0.1738
  mono_threads_detach_coop@Base 4.5.2.48
  mono_threads_enter_gc_safe_region@Base 4.3.3.735
- mono_threads_enter_gc_safe_region_unbalanced@Base 4.6.0.125
+ mono_threads_enter_gc_safe_region_unbalanced@Base 4.5.2.195
  mono_threads_enter_gc_unsafe_region@Base 4.3.0.1080
- mono_threads_enter_gc_unsafe_region_unbalanced@Base 4.6.0.125
+ mono_threads_enter_gc_unsafe_region_unbalanced@Base 4.5.2.195
  mono_threads_exit_gc_safe_region@Base 4.3.3.735
- mono_threads_exit_gc_safe_region_unbalanced@Base 4.6.0.125
+ mono_threads_exit_gc_safe_region_unbalanced@Base 4.5.2.195
  mono_threads_exit_gc_unsafe_region@Base 4.3.0.1080
- mono_threads_exit_gc_unsafe_region_unbalanced@Base 4.6.0.125
+ mono_threads_exit_gc_unsafe_region_unbalanced@Base 4.5.2.195
  mono_threads_get_default_stacksize@Base 4.1.0.1738
  mono_threads_request_thread_dump@Base 4.1.0.1738
  mono_threads_set_default_stacksize@Base 4.1.0.1738
@@ -913,7 +915,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_type_get_underlying_type@Base 4.1.0.1738
  mono_type_is_byref@Base 4.1.0.1738
  mono_type_is_pointer@Base 4.1.0.1738
- mono_type_is_primitive@Base 4.8.0.472
+ mono_type_is_primitive@Base 4.9.0.1707
  mono_type_is_reference@Base 4.1.0.1738
  mono_type_is_struct@Base 4.1.0.1738
  mono_type_is_valid_enum_basetype@Base 4.1.0.1738
@@ -925,12 +927,14 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_unicode_from_external@Base 4.1.0.1738
  mono_unicode_to_external@Base 4.1.0.1738
  mono_upgrade_remote_class_wrapper@Base 4.1.0.1738
+ mono_use_interpreter@Base 4.9.0.1707
  mono_use_llvm@Base 4.1.0.1738
  mono_utf8_from_external@Base 4.1.0.1738
  mono_utf8_validate_and_len@Base 4.1.0.1738
  mono_utf8_validate_and_len_with_bounds@Base 4.1.0.1738
  mono_valloc@Base 4.1.0.1738
  mono_valloc_aligned@Base 4.1.0.1738
+ mono_valloc_granule@Base 4.9.0.833
  mono_value_box@Base 4.1.0.1738
  mono_value_copy@Base 4.1.0.1738
  mono_value_copy_array@Base 4.1.0.1738
