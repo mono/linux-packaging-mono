@@ -82,19 +82,28 @@ Requires:       libgdiplus0
 Recommends:     libgdiplus0
 %endif
 Provides:       mono(Commons.Xml.Relaxng) = 1.0.5000.0
+Provides:       mono(Commons.Xml.Relaxng) = 2.0.0.0
 Provides:       mono(CustomMarshalers) = 1.0.5000.0
+Provides:       mono(CustomMarshalers) = 2.0.0.0
 Provides:       mono(I18N) = 1.0.5000.0
+Provides:       mono(I18N) = 2.0.0.0
 Provides:       mono(I18N.West) = 1.0.5000.0
+Provides:       mono(I18N.West) = 2.0.0.0
 Provides:       mono(ICSharpCode.SharpZipLib) = 0.6.0.0
+Provides:       mono(ICSharpCode.SharpZipLib) = 2.6.0.0
 Provides:       mono(ICSharpCode.SharpZipLib) = 0.84.0.0
+Provides:       mono(ICSharpCode.SharpZipLib) = 2.84.0.0
 Provides:       mono(Mono.Cairo) = 1.0.5000.0
 Provides:       mono(Mono.Cairo) = 2.0.0.0
 Provides:       mono(Mono.CompilerServices.SymbolWriter) = 1.0.5000.0
+Provides:       mono(Mono.CompilerServices.SymbolWriter) = 2.0.0.0
 Provides:       mono(Mono.Posix) = 1.0.5000.0
+Provides:       mono(Mono.Posix) = 2.0.0.0
 Provides:       mono(Mono.Security) = 1.0.5000.0
 Provides:       mono(Mono.Security) = 2.0.0.0
 Provides:       mono(System) = 1.0.5000.0
 Provides:       mono(System) = 2.0.0.0
+Provides:       mono(System.Configuration) = 1.0.5000.0
 Provides:       mono(System.Configuration) = 2.0.0.0
 Provides:       mono(System.Security) = 1.0.5000.0
 Provides:       mono(System.Security) = 2.0.0.0
@@ -103,6 +112,7 @@ Provides:       mono(System.Xml) = 2.0.0.0
 Provides:       mono(mscorlib) = 1.0.5000.0
 Provides:       mono(mscorlib) = 2.0.0.0
 Provides:       mono(mscorlib) = 4.0.0.0
+Provides:	mono(Mono.Configuration.Crypto) = 4.0.0.0
 
 %define _use_internal_dependency_generator 0
 %if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
@@ -154,8 +164,8 @@ export PATH=/opt/novell/llvm-mono/bin:$PATH
   --disable-system-aot \
 %endif
   --with-ikvm=yes \
-  --with-moonlight=no
-
+  --with-moonlight=no \
+  --enable-dynamic-btls
 make
 
 %install
@@ -175,8 +185,6 @@ rm -f %{buildroot}%{_libdir}/libMonoSupportW.*
 rm -f %{buildroot}%{_libdir}/libMonoPosixHelper.a
 rm -f %{buildroot}%{_libdir}/libikvm-native.a
 rm -f %{buildroot}%{_libdir}/libmono-llvm.a
-rm -f %{buildroot}%{_libdir}/libmonoboehm-2.0.a
-rm -f %{buildroot}%{_libdir}/libmonosgen-2.0.a
 
 # remove libgc cruft
 rm -rf %{buildroot}%{_datadir}/libgc-mono
@@ -575,9 +583,13 @@ License:        LGPL-2.1
 Group:          Development/Languages/Mono
 Requires:       mono-core = %{version}
 Provides:       mono(I18N.CJK) = 1.0.5000.0
+Provides:       mono(I18N.CJK) = 2.0.0.0
 Provides:       mono(I18N.MidEast) = 1.0.5000.0
+Provides:       mono(I18N.MidEast) = 2.0.0.0
 Provides:       mono(I18N.Other) = 1.0.5000.0
+Provides:       mono(I18N.Other) = 2.0.0.0
 Provides:       mono(I18N.Rare) = 1.0.5000.0
+Provides:       mono(I18N.Rare) = 2.0.0.0
 
 %description -n mono-locale-extras
 The Mono Project is an open development initiative that is working to
@@ -608,11 +620,15 @@ Provides:       mono-directory = %{version}
 Provides:       mono-ms-enterprise = %{version}
 Provides:       mono-novell-directory = %{version}
 Provides:       mono(Mono.Data.Tds) = 1.0.5000.0
+Provides:       mono(Mono.Data.Tds) = 2.0.0.0
 Provides:       mono(Novell.Directory.Ldap) = 1.0.5000.0
+Provides:       mono(Novell.Directory.Ldap) = 2.0.0.0
 Provides:       mono(System.Data) = 1.0.5000.0
 Provides:       mono(System.Data) = 2.0.0.0
 Provides:       mono(System.DirectoryServices) = 1.0.5000.0
+Provides:       mono(System.DirectoryServices) = 2.0.0.0
 Provides:       mono(System.EnterpriseServices) = 1.0.5000.0
+Provides:       mono(System.EnterpriseServices) = 2.0.0.0
 
 %description -n mono-data
 The Mono Project is an open development initiative that is working to
@@ -664,10 +680,13 @@ Group:          Development/Languages/Mono
 Requires:       mono-core = %{version}
 Provides:       mono-window-forms = %{version}
 Provides:       mono(Accessibility) = 1.0.5000.0
+Provides:       mono(Accessibility) = 2.0.0.0
 Provides:       mono(System.Design) = 1.0.5000.0
+Provides:       mono(System.Design) = 2.0.0.0
 Provides:       mono(System.Drawing) = 1.0.5000.0
 Provides:       mono(System.Drawing) = 2.0.0.0
 Provides:       mono(System.Drawing.Design) = 1.0.5000.0
+Provides:       mono(System.Drawing.Design) = 2.0.0.0
 Provides:       mono(System.Windows.Forms) = 1.0.5000.0
 Provides:       mono(System.Windows.Forms) = 2.0.0.0
 
@@ -722,13 +741,21 @@ Group:          Development/Languages/Mono
 Requires:       mono-core = %{version}
 Provides:       mono-ms-extras = %{version}
 Provides:       mono(Mono.Messaging) = 1.0.5000.0
+Provides:       mono(Mono.Messaging) = 2.0.0.0
 Provides:       mono(Mono.Messaging.RabbitMQ) = 1.0.5000.0
+Provides:       mono(Mono.Messaging.RabbitMQ) = 2.0.0.0
 Provides:       mono(RabbitMQ.Client) = 1.0.5000.0
+Provides:       mono(RabbitMQ.Client) = 2.0.0.0
 Provides:       mono(System.Configuration.Install) = 1.0.5000.0
+Provides:       mono(System.Configuration.Install) = 2.0.0.0
 Provides:       mono(System.Management) = 1.0.5000.0
+Provides:       mono(System.Management) = 2.0.0.0
 Provides:       mono(System.Messaging) = 1.0.5000.0
+Provides:       mono(System.Messaging) = 2.0.0.0
 Provides:       mono(System.ServiceProcess) = 1.0.5000.0
+Provides:       mono(System.ServiceProcess) = 2.0.0.0
 Provides:       mono(mono-service) = 1.0.5000.0
+Provides:       mono(mono-service) = 2.0.0.0
 
 %description -n mono-extras
 The Mono Project is an open development initiative that is working to
@@ -777,6 +804,7 @@ Group:          Development/Languages/Mono
 Requires:       mono-core = %{version}
 Requires:       mono-data = %{version}
 Provides:       mono(Mono.Data.Sqlite) = 1.0.5000.0
+Provides:       mono(Mono.Data.Sqlite) = 2.0.0.0
 
 %description -n mono-data-sqlite
 The Mono Project is an open development initiative that is working to
@@ -867,12 +895,16 @@ Provides:       mono-remoting = %{version}
 Provides:       mono-web-forms = %{version}
 Provides:       mono-web-services = %{version}
 Provides:       mono(Mono.Http) = 1.0.5000.0
+Provides:       mono(Mono.Http) = 2.0.0.0
 Provides:       mono(System.Runtime.Remoting) = 1.0.5000.0
 Provides:       mono(System.Runtime.Remoting) = 2.0.0.0
 Provides:       mono(System.Runtime.Serialization.Formatters.Soap) = 1.0.5000.0
+Provides:       mono(System.Runtime.Serialization.Formatters.Soap) = 2.0.0.0
 Provides:       mono(System.Web) = 1.0.5000.0
+Provides:       mono(System.Web) = 2.0.0.0
 Provides:       mono(System.Web.Razor) = 2.0.0.0
 Provides:       mono(System.Web.Services) = 1.0.5000.0
+Provides:       mono(System.Web.Services) = 2.0.0.0
 Provides:       mono(System.Web.WebPages.Deployment) = 2.1.0.0
 Provides:       mono(System.Web.WebPages.Razor) = 2.0.0.0
 
@@ -996,6 +1028,7 @@ Group:          Development/Languages/Mono
 Requires:       mono-core = %{version}
 Requires:       mono-data = %{version}
 Provides:       mono(System.Data.OracleClient) = 1.0.5000.0
+Provides:       mono(System.Data.OracleClient) = 2.0.0.0
 
 %description -n mono-data-oracle
 The Mono Project is an open development initiative that is working to
@@ -1070,7 +1103,9 @@ Provides:       mono-xbuild = %{version}
 Provides:       mono-biarchcompat = %{version}
 %endif
 Provides:       mono(PEAPI) = 1.0.5000.0
+Provides:       mono(PEAPI) = 2.0.0.0
 Provides:       mono(resgen) = 1.0.5000.0
+Provides:       mono(resgen) = 2.0.0.0
 
 %description -n mono-devel
 The Mono Project is an open development initiative that is working to
@@ -1278,6 +1313,8 @@ Mono development tools.
 %{_prefix}/lib/mono/xbuild-frameworks
 %{_prefix}/lib64/mono/lldb
 %{_libdir}/libmono-2.0.a
+%{_libdir}/libmonosgen-2.0.a
+%{_libdir}/libmonoboehm-2.0.a
 
 
 %package -n mono-reactive
