@@ -1022,8 +1022,9 @@ namespace Mono.Cecil {
 
 				if (!symbol_reader.ProcessDebugHeader (directory, header))
 					throw new InvalidOperationException ();
-			} finally {
+			} catch {
 				symbol_reader = null;
+				throw;
 			}
 		}
 
