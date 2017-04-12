@@ -304,7 +304,7 @@ namespace Internal.Runtime.TypeLoader
                 {
                     ArrayType typeAsArrayType = (ArrayType)type;
 
-                    if (typeAsArrayType.IsSzArray)
+                    if (typeAsArrayType.IsSzArray && !typeAsArrayType.ElementType.IsPointer)
                     {
                         typeAsArrayType.ComputeTemplate(state);
                         Debug.Assert(state.TemplateType != null && state.TemplateType is ArrayType && !state.TemplateType.RuntimeTypeHandle.IsNull());
@@ -313,7 +313,7 @@ namespace Internal.Runtime.TypeLoader
                     }
                     else
                     {
-                        Debug.Assert(typeAsArrayType.IsMdArray);
+                        Debug.Assert(typeAsArrayType.IsMdArray || typeAsArrayType.ElementType.IsPointer);
                     }
 
                     // Assert that non-valuetypes are considered to have pointer size
@@ -1342,7 +1342,7 @@ namespace Internal.Runtime.TypeLoader
 
                     FinishInterfaces(type, state);
 
-                    if (typeAsSzArrayType.IsSzArray)
+                    if (typeAsSzArrayType.IsSzArray && !typeAsSzArrayType.ElementType.IsPointer)
                     {
                         FinishTypeDictionary(type, state);
 
@@ -1503,7 +1503,7 @@ namespace Internal.Runtime.TypeLoader
             for (int i = 0; i < _typesThatNeedTypeHandles.Count; i++)
             {
                 ParameterizedType typeAsParameterizedType = _typesThatNeedTypeHandles[i] as ParameterizedType;
-                if (typeAsParameterizedType == null || typeAsParameterizedType is ByRefType)
+                if (typeAsParameterizedType == null)
                     continue;
 
                 if (typeAsParameterizedType.IsSzArray)
@@ -1554,7 +1554,7 @@ namespace Internal.Runtime.TypeLoader
             for (int i = 0; i < _typesThatNeedTypeHandles.Count; i++)
             {
                 ParameterizedType typeAsParameterizedType = _typesThatNeedTypeHandles[i] as ParameterizedType;
-                if (typeAsParameterizedType == null || typeAsParameterizedType is ByRefType)
+                if (typeAsParameterizedType == null)
                     continue;
 
                 Debug.Assert(!typeAsParameterizedType.RuntimeTypeHandle.IsNull());
