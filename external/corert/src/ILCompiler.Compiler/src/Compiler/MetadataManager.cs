@@ -46,6 +46,7 @@ namespace ILCompiler
         private List<TypeGVMEntriesNode> _typeGVMEntries = new List<TypeGVMEntriesNode>();
 
         internal NativeLayoutInfoNode NativeLayoutInfo { get; private set; }
+        internal DynamicInvokeTemplateDataNode DynamicInvokeTemplateData { get; private set; }
 
         public MetadataManager(CompilationModuleGroup compilationModuleGroup, CompilerTypeSystemContext typeSystemContext)
         {
@@ -87,6 +88,9 @@ namespace ILCompiler
             var cctorContextMapNode = new ClassConstructorContextMap(commonFixupsTableNode);
             header.Add(BlobIdToReadyToRunSection(ReflectionMapBlob.CCtorContextMap), cctorContextMapNode, cctorContextMapNode, cctorContextMapNode.EndSymbol);
 
+            DynamicInvokeTemplateData = new DynamicInvokeTemplateDataNode(commonFixupsTableNode);
+            header.Add(BlobIdToReadyToRunSection(ReflectionMapBlob.DynamicInvokeTemplateData), DynamicInvokeTemplateData, DynamicInvokeTemplateData, DynamicInvokeTemplateData.EndSymbol);
+            
             var invokeMapNode = new ReflectionInvokeMapNode(commonFixupsTableNode);
             header.Add(BlobIdToReadyToRunSection(ReflectionMapBlob.InvokeMap), invokeMapNode, invokeMapNode, invokeMapNode.EndSymbol);
 
@@ -284,6 +288,18 @@ namespace ILCompiler
         /// Given that a method is invokable, does there exist a reflection invoke stub?
         /// </summary>
         public abstract bool HasReflectionInvokeStubForInvokableMethod(MethodDesc method);
+
+        /// <summary>
+        /// Given that a method is invokable, if it is inserted into the reflection invoke table
+        /// will it use a method token to be referenced, or not?
+        /// </summary>
+        public abstract bool WillUseMetadataTokenToReferenceMethod(MethodDesc method);
+
+        /// <summary>
+        /// Given that a method is invokable, if it is inserted into the reflection invoke table
+        /// will it use a field token to be referenced, or not?
+        /// </summary>
+        public abstract bool WillUseMetadataTokenToReferenceField(FieldDesc field);
 
         /// <summary>
         /// Gets a stub that can be used to reflection-invoke a method with a given signature.

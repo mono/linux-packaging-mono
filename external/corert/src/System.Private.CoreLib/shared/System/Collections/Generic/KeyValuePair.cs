@@ -2,7 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if !MONO
 using System.ComponentModel;
+#endif
 using System.Text;
 
 namespace System.Collections.Generic
@@ -72,7 +74,9 @@ namespace System.Collections.Generic
             return KeyValuePair.PairToString(Key, Value);
         }
 
+#if !MONO
         [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
         public void Deconstruct(out TKey key, out TValue value)
         {
             key = Key;
