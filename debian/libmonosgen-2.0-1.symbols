@@ -149,6 +149,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_compile_method@Base 4.1.0.1738
  mono_conc_hashtable_destroy@Base 4.1.0.1738
  mono_conc_hashtable_foreach@Base 4.1.0.1738
+ mono_conc_hashtable_foreach_steal@Base 5.3.0.149
  mono_conc_hashtable_insert@Base 4.1.0.1738
  mono_conc_hashtable_lookup@Base 4.1.0.1738
  mono_conc_hashtable_new@Base 4.1.0.1738
