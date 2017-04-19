@@ -387,5 +387,42 @@ namespace Microsoft.NuGet.Build.Tasks.Tests
 
             AssertHelpers.AssertConsistentTargetPaths(result.CopyLocalItems);
         }
+
+        [Fact]
+        public static void MultipleProjectFileDependencyGroups()
+        {
+            var resultFor45 = NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
+                Json.Json.MultipleProjectFileDependencyGroups,
+                targetMoniker: ".NETFramework,Version=v4.5",
+                runtimeIdentifier: "win",
+                allowFallbackOnTargetSelection: true);
+
+            var packageNames = resultFor45.ReferencedPackages.Select(t => t.ItemSpec);
+
+            Assert.Equal("Newtonsoft.Json", packageNames.Single());
+
+            var resultFor46 = NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
+                Json.Json.MultipleProjectFileDependencyGroups,
+                targetMoniker: ".NETFramework,Version=v4.6",
+                runtimeIdentifier: "win",
+                allowFallbackOnTargetSelection: true);
+
+            AssertHelpers.AssertCountOf(1, resultFor46.ReferencedPackages);
+
+            packageNames = resultFor46.ReferencedPackages.Select(t => t.ItemSpec);
+
+            Assert.Contains("FluentAssertions", packageNames);
+        }
+
+        [Fact]
+        public static void ProjectsNotIncludedInReferences()
+        {
+            var result = NuGetTestHelpers.ResolvePackagesWithJsonFileContents(
+                Json.Json.ProjectDependency,
+                targetMoniker: ".NETFramework,Version=v4.5.2",
+                runtimeIdentifier: "win");
+
+            Assert.DoesNotContain("ClassLibrary1", result.ReferencedPackages.Select(t => t.ItemSpec));
+        }
     }
 }

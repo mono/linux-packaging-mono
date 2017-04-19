@@ -1787,7 +1787,7 @@ Optional Packages:
   --with-winaot=yes,no                If you want to build the Windows friendly AOT assemblies (defaults to no)
   --with-orbis=yes,no                  If you want to build the Orbis assemblies (defaults to no)
   --with-runtime_preset=net_4_x,all,aot,hybridaot,fullaot,bitcode   Which default profile to build (defaults to net_4_x)
-  --with-gc=included,none  Controls the Boehm GC config, default=included
+  --with-libgc=included,none  Controls the Boehm GC config, default=included
   --with-large-heap=yes,no       Enable support for GC heaps larger than 3GB (defaults to no)
   --with-ikvm-native=yes,no      build the IKVM JNI interface library (defaults to yes)
   --with-cross-offsets=<offsets file path>    Explicit AOT cross offsets file
@@ -20915,7 +20915,7 @@ $as_echo "#define HAVE_NULL_GC 1" >>confdefs.h
 			gc_msg="none"
 			;;
 		*)
-			as_fn_error $? "Invalid argument to --with-gc." "$LINENO" 5
+			as_fn_error $? "Invalid argument to --with-libgc." "$LINENO" 5
 			;;
 	esac
 
