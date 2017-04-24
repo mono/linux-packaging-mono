@@ -142,7 +142,10 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	call_missing_class.exe \
 @FULL_AOT_TESTS_TRUE@	ldfld_missing_field.exe \
 @FULL_AOT_TESTS_TRUE@	ldfld_missing_class.exe \
-@FULL_AOT_TESTS_TRUE@	vt-sync-method.exe context-static.exe \
+@FULL_AOT_TESTS_TRUE@	vt-sync-method.exe \
+@FULL_AOT_TESTS_TRUE@	resolve_method_bug.2.exe \
+@FULL_AOT_TESTS_TRUE@	resolve_field_bug.2.exe \
+@FULL_AOT_TESTS_TRUE@	resolve_type_bug.2.exe context-static.exe \
 @FULL_AOT_TESTS_TRUE@	bug-415577.exe generic-marshalbyref.2.exe \
 @FULL_AOT_TESTS_TRUE@	unhandled-exception-7.exe marshal.exe \
 @FULL_AOT_TESTS_TRUE@	marshal2.exe marshal6.exe marshal7.exe \
