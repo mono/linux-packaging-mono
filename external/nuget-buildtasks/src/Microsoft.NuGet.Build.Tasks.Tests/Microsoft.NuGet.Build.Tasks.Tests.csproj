@@ -78,14 +78,15 @@
     <None Include="Json\analyzers.json" />
     <None Include="Json\FluentAssertions.lock.json" />
     <None Include="Json\FluentAssertionsAndWin10.lock.json" />
+    <None Include="Json\MultipleProjectFileDependencyGroups.json" />
     <None Include="Json\nativeWinMD.json" />
     <None Include="Json\LockFileWithWithSpecifiedPackageFolders.json" />
     <None Include="Json\Win10.Edm.json" />
     <None Include="Json\Win10.json" />
     <None Include="Json\Win10.xunit.json" />
     <None Include="project.json" />
+    <None Include="Json\ProjectDependency.assets.json" />
     <None Include="ProjectReferences\LockFileMissingMSBuildProjectThatProvidesAssets.json" />
-    <None Include="ProjectReferences\LockFileWithXProjReference.json" />
     <None Include="ProjectReferences\LockFileWithCSProjReference.json" />
   </ItemGroup>
   <ItemGroup>
