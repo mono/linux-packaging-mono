@@ -216,7 +216,11 @@ namespace Mono.Cecil.Cil {
 			// PDB Age
 			buffer.WriteUInt32 (1);
 			// PDB Path
-			buffer.WriteBytes (System.Text.Encoding.UTF8.GetBytes (writer.BaseStream.GetFileName ()));
+			var filename = writer.BaseStream.GetFileName ();
+			if (!string.IsNullOrEmpty (filename))
+				filename = Path.GetFileName (filename);
+
+			buffer.WriteBytes (System.Text.Encoding.UTF8.GetBytes (filename));
 			buffer.WriteByte (0);
 
 			header = new byte [buffer.length];

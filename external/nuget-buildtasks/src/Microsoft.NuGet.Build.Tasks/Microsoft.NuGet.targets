@@ -12,10 +12,59 @@ Copyright (c) .NET Foundation. All rights reserved.
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask TaskName="Microsoft.NuGet.Build.Tasks.ResolveNuGetPackageAssets" AssemblyFile="Microsoft.NuGet.Build.Tasks.dll" />
 
-  <PropertyGroup Condition="'$(ProjectLockFile)' == ''">
-    <_ProjectSpecificProjectJsonFile>$(MSBuildProjectName).project.json</_ProjectSpecificProjectJsonFile>
-    <ProjectLockFile Condition="Exists('$(_ProjectSpecificProjectJsonFile)')">$(MSBuildProjectName).project.lock.json</ProjectLockFile>
-    <ProjectLockFile Condition="!Exists('$(_ProjectSpecificProjectJsonFile)')">project.lock.json</ProjectLockFile>
+  <!--
+  Identify the project asset/lock file in following order:
+  1. If ProjectAssetsFile exists, then simply use it since it means project uses PackageReference
+  2. If ProjectLockFile already defined, then use it instead of constructing our own
+  3. Construct our own project lock file for that first check for <ProjectName>.project.json file
+  4. And lastly check for project.json file existence, and use project.lock.json file
+
+  If none of these conditions satisfy then these NuGet build targets will not be executed.
+  -->
+  <Choose>
+    <When Condition="'$(ProjectAssetsFile)' != ''">
+      <!-- The ProjectAssetsFile has been specified which means it uses PackageReference, so use that. -->
+      <PropertyGroup>
+        <ProjectLockFile>$(ProjectAssetsFile)</ProjectLockFile>
+      </PropertyGroup>
+    </When>
+
+    <When Condition="'$(RestoreProjectStyle)' == 'PackageReference'">
+      <!-- The RestoreProjectStyle property has been specified to PackageReference, so use that. -->
+      <PropertyGroup>
+        <ProjectLockFile>$(BaseIntermediateOutputPath)project.assets.json</ProjectLockFile>
+      </PropertyGroup>
+    </When>
+
+    <When Condition="'$(ProjectLockFile)' != ''">
+      <!-- The ProjectLockFile has been specified; don't compute it. -->
+    </When>
+
+    <When Condition="Exists('$(MSBuildProjectName).project.json')">
+      <!-- There's a MyProj.project.json file, so use MyProj.project.lock.json. -->
+      <PropertyGroup>
+        <ProjectLockFile>$(MSBuildProjectName).project.lock.json</ProjectLockFile>
+      </PropertyGroup>
+    </When>
+
+    <When Condition="Exists('project.json')">
+      <!-- There's a project.json file, so use project.lock.json. -->
+      <PropertyGroup>
+        <ProjectLockFile>project.lock.json</ProjectLockFile>
+      </PropertyGroup>
+    </When>
+
+    <Otherwise>
+      <!-- No assets or lock file provided at all, so fallback to project.assets.json file.-->
+      <PropertyGroup>
+        <ProjectLockFile>$(BaseIntermediateOutputPath)project.assets.json</ProjectLockFile>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <!-- Add to MSBuildAllProjects in order to better support incremental builds. -->
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -28,7 +77,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <NuGetTargetMoniker Condition="'$(NuGetTargetMoniker)' == '' AND '$(UseTargetPlatformAsNuGetTargetMoniker)' == 'true'">$(TargetPlatformIdentifier),Version=v$([System.Version]::Parse('$(TargetPlatformMinVersion)').ToString(3))</NuGetTargetMoniker>
     <NuGetTargetMoniker Condition="'$(NuGetTargetMoniker)' == '' AND '$(UseTargetPlatformAsNuGetTargetMoniker)' != 'true'">$(TargetFrameworkMoniker)</NuGetTargetMoniker>
 
-    <CopyNuGetImplementations Condition="'$(CopyNuGetImplementations)' == '' and (('$(OutputType)' != 'library' and ('$(OutputType)' != 'winmdobj' or '$(AppxPackage)' == 'true')) or '$(TargetFrameworkIdentifier)' == '.NETFramework')">true</CopyNuGetImplementations>
+    <CopyNuGetImplementations Condition="'$(CopyNuGetImplementations)' == '' and (('$(OutputType)' != 'library' and '$(OutputType)' != 'winmdobj') or ('$(AppxPackage)' == 'true') or '$(TargetFrameworkIdentifier)' == '.NETFramework')">true</CopyNuGetImplementations>
     <IncludeFrameworkReferencesFromNuGet Condition="'$(IncludeFrameworkReferencesFromNuGet)' == ''">true</IncludeFrameworkReferencesFromNuGet>
 
     <_NuGetRuntimeIdentifierPlatformTargetSuffix Condition="'$(PlatformTarget)' != '' and '$(PlatformTarget)' != 'AnyCPU'">-$(PlatformTarget.ToLower())</_NuGetRuntimeIdentifierPlatformTargetSuffix>
@@ -39,6 +88,11 @@ Copyright (c) .NET Foundation. All rights reserved.
   <PropertyGroup Condition="'$(NuGetRuntimeIdentifier)' == '' and '$(CopyNuGetImplementations)' == 'true'">
     <NuGetRuntimeIdentifier>$(_NuGetRuntimeIdentifierWithoutAot)</NuGetRuntimeIdentifier>
     <NuGetRuntimeIdentifier Condition="'$(UseDotNetNativeToolchain)' == 'true'">$(_NuGetRuntimeIdentifierWithoutAot)-aot</NuGetRuntimeIdentifier>
+  </PropertyGroup>
+
+  <!-- If RuntimeIdentifiers weren't already specified for non-UAP projects, then generate it -->
+  <PropertyGroup Condition="'$(BaseNuGetRuntimeIdentifier)' == 'win' and '$(NuGetRuntimeIdentifier)' != '' and '$(RuntimeIdentifiers)' == '' and '$(RuntimeIdentifier)' == ''">
+    <RuntimeIdentifiers>win;win-x86;win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -117,25 +171,9 @@ Copyright (c) .NET Foundation. All rights reserved.
     <ResolveNuGetPackageAssetsDependsOn Condition="'$(ImplicitlyExpandTargetFramework)' == 'true'">$(ResolveNuGetPackageAssetsDependsOn);ImplicitlyExpandTargetFramework</ResolveNuGetPackageAssetsDependsOn>
   </PropertyGroup>
 
-  <Target Name="ResolveNuGetPackageAssets" DependsOnTargets="$(ResolveNuGetPackageAssetsDependsOn)" Condition="'$(ResolveNuGetPackages)' == 'true' and exists('$(ProjectLockFile)')">
-    <!-- We need to figure out the output path of any dependent xproj projects -->
-    <MSBuild
-      Projects="@(_MSBuildProjectReferenceExistent)"
-      Targets="GetTargetDir"
-      BuildInParallel="$(BuildInParallel)"
-      Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform)"
-      RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)"
-      Condition="'%(_MSBuildProjectReferenceExistent.Extension)' == '.xproj'">
-
-      <Output TaskParameter="TargetOutputs" ItemName="_XProjTargetDirs" />
-    </MSBuild>
-
-    <!-- The items in _XProjTargetDirs have the target directories as the main itemspecs and the originating project as metadata; reverse them -->
-    <ItemGroup>
-      <ProjectReferenceCreatingPackage Include="%(_XProjTargetDirs.OriginalItemSpec)">
-        <OutputBasePath>%(_XProjTargetDirs.Identity)</OutputBasePath>
-      </ProjectReferenceCreatingPackage>
-    </ItemGroup>
+  <Target Name="ResolveNuGetPackageAssets"
+          DependsOnTargets="$(ResolveNuGetPackageAssetsDependsOn)"
+          Condition="'$(ResolveNuGetPackages)' == 'true' and exists('$(ProjectLockFile)')">
 
     <ResolveNuGetPackageAssets AllowFallbackOnTargetSelection="$(DesignTimeBuild)"
                                ContinueOnError="$(ContinueOnError)"
@@ -144,7 +182,6 @@ Copyright (c) .NET Foundation. All rights reserved.
                                RuntimeIdentifier="$(NuGetRuntimeIdentifier)"
                                ProjectLanguage="$(Language)"
                                ProjectLockFile="$(ProjectLockFile)"
-                               ProjectReferencesCreatingPackages="@(ProjectReferenceCreatingPackage)"
                                ContentPreprocessorValues="@(NuGetPreprocessorValue)"
                                ContentPreprocessorOutputDirectory="$(IntermediateOutputPath)\NuGet"
                                TargetMonikers="$(NuGetTargetMoniker);$(_NuGetTargetFallbackMoniker)">
@@ -188,7 +225,10 @@ Copyright (c) .NET Foundation. All rights reserved.
     </CreateItem>
   </Target>
 
-  <Target Name="RuntimeImplementationProjectOutputGroup" Returns="@(RuntimeImplementationProjectOutputGroupOutput)" Condition="'$(ResolveNuGetPackages)' == 'true' and exists('$(ProjectLockFile)')">
+  <Target Name="RuntimeImplementationProjectOutputGroup"
+          Returns="@(RuntimeImplementationProjectOutputGroupOutput)"
+          Condition="'$(ResolveNuGetPackages)' == 'true' and exists('$(ProjectLockFile)')">
+
     <!-- This output group must contain the implementation assemblies for the host (i.e. design time) environment, not the
          target environment. Thus, we explicitly pass the RuntimeIdentifier that doesn't have the -aot suffix -->
     <ResolveNuGetPackageAssets AllowFallbackOnTargetSelection="$(DesignTimeBuild)"
@@ -224,6 +264,7 @@ Copyright (c) .NET Foundation. All rights reserved.
     <PropertyGroup>
       <_PackagingOutputsIncludesFramework Condition="'%(PackagingOutputs.FileName)%(PackagingOutputs.Extension)' == 'System.Runtime.dll'">true</_PackagingOutputsIncludesFramework>
       <_AppContainsManagedCodeForInjection Condition="'%(PackagingOutputs.Identity)' == '$(_TargetPlatformSdkDir)UnionMetadata\Windows.winmd'">true</_AppContainsManagedCodeForInjection>
+      <_AppContainsManagedCodeForInjection Condition="'%(PackagingOutputs.Identity)' == '$(WindowsSDK_UnionMetadataPath)\Windows.winmd'">true</_AppContainsManagedCodeForInjection>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -231,11 +272,15 @@ Copyright (c) .NET Foundation. All rights reserved.
     </PropertyGroup>
   </Target>
 
-  <Target Name="InjectNetCoreFrameworkBlockIfLockFileExists" AfterTargets="ComputeNetCoreFrameworkInjectionParameters" Condition="'$(_NetCoreFrameworkInjectionNeeded)' == 'true' and '$(ResolveNuGetPackages)' == 'true' and Exists('$(ProjectLockFile)')">
+  <Target Name="InjectNetCoreFrameworkBlockIfLockFileExists"
+          AfterTargets="ComputeNetCoreFrameworkInjectionParameters"
+          Condition="'$(_NetCoreFrameworkInjectionNeeded)' == 'true' and '$(ResolveNuGetPackages)' == 'true' and exists('$(ProjectLockFile)')">
     <Error Text="One of your dependencies requires the .NET Framework, but the .NET Framework could not be found in the NuGet packages installed in this project.  Please install the appropriate .NET Framework packages required by your dependency." />
   </Target>
 
-  <Target Name="InjectNetCoreFramework" AfterTargets="ComputeNetCoreFrameworkInjectionParameters" Condition="'$(_NetCoreFrameworkInjectionNeeded)' == 'true' and ('$(ResolveNuGetPackages)' != 'true' or !Exists('$(ProjectLockFile)'))">
+  <Target Name="InjectNetCoreFramework"
+          AfterTargets="ComputeNetCoreFrameworkInjectionParameters"
+          Condition="'$(_NetCoreFrameworkInjectionNeeded)' == 'true' and ('$(ResolveNuGetPackages)' != 'true' or !Exists('$(ProjectLockFile)'))">
     <GetReferenceAssemblyPaths TargetFrameworkMoniker="$(NuGetTargetFrameworkMonikerToInject)" Condition="'$(FrameworkInjectionLockFile)' == ''">
       <Output TaskParameter="ReferenceAssemblyPaths" ItemName="_NuGetInjectionSourceDirectories" />
     </GetReferenceAssemblyPaths>
