@@ -138,13 +138,14 @@ namespace System.Net.Http
         private DecompressionMethods _automaticDecompression = HttpHandlerDefaults.DefaultAutomaticDecompression;
         private bool _preAuthenticate = HttpHandlerDefaults.DefaultPreAuthenticate;
         private CredentialCache _credentialCache = null; // protected by LockObject
+        private bool _useDefaultCredentials = HttpHandlerDefaults.DefaultUseDefaultCredentials;
         private CookieContainer _cookieContainer = new CookieContainer();
         private bool _useCookie = HttpHandlerDefaults.DefaultUseCookies;
         private TimeSpan _connectTimeout = Timeout.InfiniteTimeSpan;
         private bool _automaticRedirection = HttpHandlerDefaults.DefaultAutomaticRedirection;
         private int _maxAutomaticRedirections = HttpHandlerDefaults.DefaultMaxAutomaticRedirections;
         private int _maxConnectionsPerServer = HttpHandlerDefaults.DefaultMaxConnectionsPerServer;
-        private int _maxResponseHeadersLength = HttpHandlerDefaults.DefaultMaxResponseHeaderLength;
+        private int _maxResponseHeadersLength = HttpHandlerDefaults.DefaultMaxResponseHeadersLength;
         private ClientCertificateOption _clientCertificateOption = HttpHandlerDefaults.DefaultClientCertificateOption;
         private X509Certificate2Collection _clientCertificates;
         private Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool> _serverCertificateValidationCallback;
@@ -405,8 +406,12 @@ namespace System.Net.Http
 
         internal bool UseDefaultCredentials
         {
-            get { return false; }
-            set { }
+            get { return _useDefaultCredentials; }
+            set
+            {
+                CheckDisposedOrStarted();
+                _useDefaultCredentials = value;
+            }
         }
 
         public IDictionary<string, object> Properties
@@ -476,10 +481,10 @@ namespace System.Net.Http
 
             // Create the easy request.  This associates the easy request with this handler and configures
             // it based on the settings configured for the handler.
-            var easy = new EasyRequest(this, request, cancellationToken);
+            var easy = new EasyRequest(this, _agent, request, cancellationToken);
             try
             {
-                EventSourceTrace("{0}", request, easy: easy, agent: _agent);
+                EventSourceTrace("{0}", request, easy: easy);
                 _agent.Queue(new MultiAgent.IncomingRequest { Easy = easy, Type = MultiAgent.IncomingRequestType.New });
             }
             catch (Exception exc)
@@ -731,9 +736,9 @@ namespace System.Net.Http
                 agent = easy._associatedMultiAgent;
             }
 
-            if (NetEventSource.IsEnabled) NetEventSource.Log.HandlerMessage(
+            NetEventSource.Log.HandlerMessage(
                 (agent?.RunningWorkerId).GetValueOrDefault(),
-                easy != null ? easy.Task.Id : 0,
+                easy?.Task.Id ?? 0,
                 memberName,
                 message);
         }

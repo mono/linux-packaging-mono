@@ -39,12 +39,13 @@
     <Compile Include="System\Net\IPAddress.cs" />
     <Compile Include="System\Net\IPAddressParser.cs" />
     <Compile Include="System\Net\IPEndPoint.cs" />
+    <Compile Include="System\Net\IPv4AddressHelper.cs" />
+    <Compile Include="System\Net\IPv6AddressHelper.cs" />
     <Compile Include="System\Net\IWebProxy.cs" />
     <Compile Include="System\Net\NetEventSource.Primitives.cs" />
     <Compile Include="System\Net\NetworkCredential.cs" />
     <Compile Include="System\Net\TransportContext.cs" />
     <Compile Include="System\Net\SocketException.cs" />
-    <Compile Include="System\Net\SocketException.netstandard.cs" />
     <Compile Include="System\Net\SecureProtocols\NegotiateEnumTypes.cs" />
     <Compile Include="System\Net\SecureProtocols\SslEnumTypes.cs" />
     <Compile Include="System\Net\Security\SslPolicyErrors.cs" />
@@ -103,7 +104,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsWindows)' == 'true'">
-    <Compile Include="System\Net\IPAddressPal.Windows.cs" />
     <Compile Include="System\Net\SocketException.Windows.cs" />
     <Compile Include="$(CommonPath)\System\Net\SocketAddressPal.Windows.cs">
       <Link>Common\System\Net\SocketAddressPal.Windows.cs</Link>
@@ -122,18 +122,6 @@
     </Compile>
     <Compile Include="$(CommonPath)\Interop\Windows\NtDll\Interop.NtStatus.cs">
       <Link>Common\Interop\Windows\NtDll\Interop.NtStatus.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\NtDll\Interop.RtlIpv4AddressToStringEx.cs">
-      <Link>Common\Interop\Windows\NtDll\Interop.RtlIpv4AddressToStringEx.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\NtDll\Interop.RtlIpv4StringToAddressEx.cs">
-      <Link>Common\Interop\Windows\NtDll\Interop.RtlIpv4StringToAddressEx.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\NtDll\Interop.RtlIpv6AddressToStringEx.cs">
-      <Link>Common\Interop\Windows\NtDll\Interop.RtlIpv6AddressToStringEx.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\NtDll\Interop.RtlIpv6StringToAddressEx.cs">
-      <Link>Common\Interop\Windows\NtDll\Interop.RtlIpv6StringToAddressEx.cs</Link>
     </Compile>
   </ItemGroup>
   <!-- Windows : Win32 only -->
@@ -164,7 +152,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
-    <Compile Include="System\Net\IPAddressPal.Unix.cs" />
     <Compile Include="System\Net\SocketException.Unix.cs" />
     <Compile Include="$(CommonPath)\System\Net\SocketAddressPal.Unix.cs">
       <Link>Common\System\Net\SocketAddressPal.Unix.cs</Link>

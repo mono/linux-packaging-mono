@@ -3,10 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics;
-using System.Net.Http;
+using System.IO;
 using System.Net.Sockets;
-using System.Net.Test.Common;
-using System.Threading.Tasks;
 
 using Xunit;
 using Xunit.Abstractions;
@@ -29,12 +27,23 @@ namespace System.Net.Tests
             Assert.False(request.HaveResponse);
             Assert.NotNull(HttpWebRequest.DefaultCachePolicy);
             Assert.Null(request.CookieContainer);
-            Assert.Equal(0, HttpWebRequest.DefaultMaximumErrorResponseLength); // NetFX behavior difference (64 on NetFX).
-            Assert.Equal(65536, HttpWebRequest.DefaultMaximumResponseHeadersLength); // NetFX behavior difference (64 on NetFX).
+            Assert.Equal(64, HttpWebRequest.DefaultMaximumResponseHeadersLength);
             Assert.Null(request.CookieContainer);
             Assert.True(request.AllowWriteStreamBuffering);
             Assert.NotNull(request.ClientCertificates);
-            Assert.Throws<NotImplementedException>(() => request.ConnectionGroupName); //NetFX behavior difference.
+            Assert.True(request.KeepAlive);
+
+            // TODO: Issue #17842
+            if (!PlatformDetection.IsFullFramework)
+            {
+                Assert.Equal(0, HttpWebRequest.DefaultMaximumErrorResponseLength);
+                Assert.Throws<NotImplementedException>(() => request.ConnectionGroupName);
+            }
+            else
+            {
+                Assert.Equal(64, HttpWebRequest.DefaultMaximumErrorResponseLength);
+                Assert.Null(request.ConnectionGroupName);
+            }
         }
 
         [OuterLoop]
@@ -73,12 +82,13 @@ namespace System.Net.Tests
             Assert.Equal(request.CookieContainer.GetCookies(remoteServer).Count, 2);
         }
 
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #17842")] // Difference in behavior
         [OuterLoop]
         [Theory, MemberData(nameof(EchoServers))]
         public void HttpWebRequest_ServicePoint_Throws(Uri remoteServer)
         {
             HttpWebRequest request = WebRequest.CreateHttp(remoteServer);
-            Assert.Throws<PlatformNotSupportedException>(() => request.ServicePoint); // NetFX Behavior difference.
+            Assert.Throws<PlatformNotSupportedException>(() => request.ServicePoint);
         }
 
         [OuterLoop]
@@ -91,7 +101,7 @@ namespace System.Net.Tests
         }
 
         [Theory, MemberData(nameof(EchoServers))]
-        public void HttpWebRequest_EndGetRequestStreamContext_Null(Uri remoteServer)
+        public void HttpWebRequest_EndGetRequestStreamContext_ExpectedValue(Uri remoteServer)
         {
             System.Net.TransportContext context;
             HttpWebRequest httpWebRequest = HttpWebRequest.CreateHttp(remoteServer);
@@ -99,7 +109,14 @@ namespace System.Net.Tests
 
             using (httpWebRequest.EndGetRequestStream(httpWebRequest.BeginGetRequestStream(null, null), out context))
             {
-                Assert.Equal(null, context); // NetFX behavior difference.
+                if (PlatformDetection.IsFullFramework)
+                {
+                    Assert.NotNull(context);
+                }
+                else
+                {
+                    Assert.Null(context);
+                }
             }
         }
 
@@ -116,6 +133,7 @@ namespace System.Net.Tests
             Assert.Equal(Cache.RequestCacheLevel.BypassCache, HttpWebRequest.DefaultCachePolicy.Level);
         }
 
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #17842")] //Test hangs in desktop.
         [OuterLoop]
         [Theory, MemberData(nameof(EchoServers))]
         public void HttpWebRequest_ProxySetAfterGetResponse_Fails(Uri remoteServer)
@@ -201,6 +219,37 @@ namespace System.Net.Tests
             using (var response = (HttpWebResponse)request.GetResponse())
             {
                 Assert.True(request.PreAuthenticate);
+            }
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void HttpWebRequest_KeepAlive_CorrectConnectionHeaderSent(bool? keepAlive)
+        {
+            HttpWebRequest request = WebRequest.CreateHttp(Configuration.Http.RemoteEchoServer);
+
+            if (keepAlive.HasValue)
+            {
+                request.KeepAlive = keepAlive.Value;
+            }
+
+            using (var response = (HttpWebResponse)request.GetResponse())
+            using (var body = new StreamReader(response.GetResponseStream()))
+            {
+                string content = body.ReadToEnd();
+                if (!keepAlive.HasValue || keepAlive.Value)
+                {
+                    // Validate that the request doesn't contain Connection: "close", but we can't validate
+                    // that it does contain Connection: "keep-alive", as that's optional as of HTTP 1.1.
+                    Assert.DoesNotContain("\"Connection\": \"close\"", content, StringComparison.OrdinalIgnoreCase);
+                }
+                else
+                {
+                    Assert.Contains("\"Connection\": \"close\"", content, StringComparison.OrdinalIgnoreCase);
+                    Assert.DoesNotContain("\"Keep-Alive\"", content, StringComparison.OrdinalIgnoreCase);
+                }
             }
         }
     }

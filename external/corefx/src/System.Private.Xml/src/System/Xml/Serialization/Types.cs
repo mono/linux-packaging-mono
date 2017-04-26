@@ -2,7 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if XMLSERIALIZERGENERATOR
+namespace Microsoft.XmlSerializer.Generator
+#else
 namespace System.Xml.Serialization
+#endif
 {
     using System;
     using System.IO;
@@ -106,10 +110,6 @@ namespace System.Xml.Serialization
             _dataType = dataType;
             _formatterName = formatterName;
         }
-
-        internal TypeDesc(string name, string fullName, XmlSchemaType dataType, TypeKind kind, TypeDesc baseTypeDesc, TypeFlags flags)
-            : this(name, fullName, dataType, kind, baseTypeDesc, flags, null)
-        { }
 
         internal TypeDesc(string name, string fullName, TypeKind kind, TypeDesc baseTypeDesc, TypeFlags flags)
             : this(name, fullName, (XmlSchemaType)null, kind, baseTypeDesc, flags, null)
@@ -398,11 +398,6 @@ namespace System.Xml.Serialization
             }
         }
 
-        internal string ArrayLengthName
-        {
-            get { return _kind == TypeKind.Array ? "Length" : "Count"; }
-        }
-
         internal TypeDesc ArrayElementTypeDesc
         {
             get { return _arrayElementTypeDesc; }
@@ -588,12 +583,12 @@ namespace System.Xml.Serialization
                         return true;
                     else if (type == typeof(Guid))
                         return true;
-                    else if (type == typeof (TimeSpan))
+                    else if (type == typeof(TimeSpan))
                         return true;
                     else if (type == typeof(XmlNode[]))
                         return true;
                     break;
-             }
+            }
             return false;
         }
 
@@ -699,11 +694,6 @@ namespace System.Xml.Serialization
             return GetTypeDesc(type, null, true, true);
         }
 
-        internal TypeDesc GetTypeDesc(Type type, MemberInfo source)
-        {
-            return GetTypeDesc(type, source, true, true);
-        }
-
         internal TypeDesc GetTypeDesc(Type type, MemberInfo source, bool directReference)
         {
             return GetTypeDesc(type, source, directReference, true);
@@ -745,6 +735,7 @@ namespace System.Xml.Serialization
             return typeDesc;
         }
 
+#if XMLSERIALIZERGENERATOR
         internal TypeMapping GetTypeMappingFromTypeDesc(TypeDesc typeDesc)
         {
             foreach (TypeMapping typeMapping in TypeMappings)
@@ -766,6 +757,7 @@ namespace System.Xml.Serialization
             }
             return null;
         }
+#endif
 
         private TypeDesc ImportTypeDesc(Type type, MemberInfo memberInfo, bool directReference)
         {
@@ -1390,6 +1382,7 @@ namespace System.Xml.Serialization
             name = type.Substring(nsLen + 1, nameLen - nsLen - 1);
             dims = type.Substring(nameLen);
 
+#if !XMLSERIALIZERGENERATOR
             // parent is not null only in the case when we used XmlSchema.Read(), 
             // in which case we need to fixup the wsdl:arayType attribute value
             while (parent != null)
@@ -1405,6 +1398,8 @@ namespace System.Xml.Serialization
                 }
                 parent = parent.Parent;
             }
+
+#endif
             return new XmlQualifiedName(name, ns);
         }
 

@@ -5,11 +5,10 @@
 #pragma warning disable CS0067 // events are declared but not used
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-#if !uapaot
 using System.Runtime.Loader;
-#endif
 using System.IO;
 using System.Security.Principal;
 
@@ -25,7 +24,6 @@ namespace System
 
         public static AppDomain CurrentDomain => s_domain;
 
-#if !uapaot
         public string BaseDirectory => AppContext.BaseDirectory;
 
         public string RelativeSearchPath => null;
@@ -35,7 +33,6 @@ namespace System
             add { AppContext.UnhandledException += value; }
             remove { AppContext.UnhandledException -= value; }
         }
-#endif
 
         public string DynamicDirectory => null;
 
@@ -59,7 +56,6 @@ namespace System
 
         public event EventHandler DomainUnload;
 
-#if !uapaot
         public event EventHandler<FirstChanceExceptionEventArgs> FirstChanceException
         {
             add { AppContext.FirstChanceException += value; }
@@ -71,7 +67,6 @@ namespace System
             add { AppContext.ProcessExit += value; }
             remove { AppContext.ProcessExit -= value; }
         }
-#endif
 
         public string ApplyPolicy(string assemblyName)
         {
@@ -90,7 +85,7 @@ namespace System
         public static AppDomain CreateDomain(string friendlyName)
         {
             if (friendlyName == null) throw new ArgumentNullException(nameof(friendlyName));
-            throw new PlatformNotSupportedException();
+            throw new PlatformNotSupportedException(SR.PlatformNotSupported_AppDomains);
         }
 
         public int ExecuteAssembly(string assemblyFile) => ExecuteAssembly(assemblyFile, null);
@@ -108,8 +103,7 @@ namespace System
 
         public int ExecuteAssembly(string assemblyFile, string[] args, byte[] hashValue, Configuration.Assemblies.AssemblyHashAlgorithm hashAlgorithm)
         {
-            // This api is only meaningful for very specific partial trust/CAS hence not supporting
-            throw new PlatformNotSupportedException();
+            throw new PlatformNotSupportedException(SR.PlatformNotSupported_CAS); // This api is only meaningful for very specific partial trust/CAS scenarios
         }
 
         private int ExecuteAssembly(Assembly assembly, string[] args)
@@ -136,7 +130,7 @@ namespace System
                 
                 // We are catching the TIE here and throws the inner exception only,
                 // this is needed to have a consistent exception story with desktop clr
-                ExceptionDispatchInfo.Capture(targetInvocationException.InnerException).Throw();
+                ExceptionDispatchInfo.Throw(targetInvocationException.InnerException);
             }
 
             return result != null ? (int)result : 0;
@@ -151,7 +145,6 @@ namespace System
         public int ExecuteAssemblyByName(string assemblyName, params string[] args) =>
             ExecuteAssembly(Assembly.Load(assemblyName), args);
 
-#if !uapaot
         public object GetData(string name) => AppContext.GetData(name);
 
         public void SetData(string name, object data) => AppContext.SetData(name, data);
@@ -161,7 +154,6 @@ namespace System
             bool result;
             return AppContext.TryGetSwitch(value, out result) ? result : default(bool?);
         }
-#endif
 
         public bool IsDefaultAppDomain() => true;
 
@@ -198,7 +190,7 @@ namespace System
                 {
                     throw new ArgumentException(SR.Arg_MustBeTrue);
                 }
-                throw new PlatformNotSupportedException();
+                throw new PlatformNotSupportedException(SR.PlatformNotSupported_AppDomain_ResMon);
             }
         }
 
@@ -210,7 +202,7 @@ namespace System
 
         public TimeSpan MonitoringTotalProcessorTime { get { throw CreateResMonNotAvailException(); } }
 
-        private static Exception CreateResMonNotAvailException() => new InvalidOperationException(SR.AppDomain_ResMonNotAvail);
+        private static Exception CreateResMonNotAvailException() => new InvalidOperationException(SR.PlatformNotSupported_AppDomain_ResMon);
 
         [ObsoleteAttribute("AppDomain.GetCurrentThreadId has been deprecated because it does not provide a stable Id when managed threads are running on fibers (aka lightweight threads). To get a stable identifier for a managed thread, use the ManagedThreadId property on Thread.  http://go.microsoft.com/fwlink/?linkid=14202", false)]
         public static int GetCurrentThreadId() => Environment.CurrentManagedThreadId;
@@ -235,7 +227,6 @@ namespace System
         [ObsoleteAttribute("AppDomain.SetShadowCopyPath has been deprecated. Please investigate the use of AppDomainSetup.ShadowCopyDirectories instead. http://go.microsoft.com/fwlink/?linkid=14202")]
         public void SetShadowCopyPath(string path) { }
 
-#if !uapaot
         public Assembly[] GetAssemblies() => AssemblyLoadContext.GetLoadedAssemblies();
 
         public event AssemblyLoadEventHandler AssemblyLoad
@@ -263,7 +254,6 @@ namespace System
             add { AssemblyLoadContext.ResourceResolve += value; }
             remove { AssemblyLoadContext.ResourceResolve -= value; }
         }
-#endif
 
         public void SetPrincipalPolicy(PrincipalPolicy policy) { }
 

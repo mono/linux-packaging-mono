@@ -655,8 +655,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	generic-virtual.2.cs generic-interface-methods.2.cs \
 	generic-array-type.2.cs generic-method-patching.2.cs \
 	generic-static-methods.2.cs generic-null-call.2.cs \
-	generic-special.2.cs generic-exceptions.2.cs \
-	generic-virtual2.2.cs generic-valuetype-interface.2.cs \
+	generic-special.2.cs generic-special2.2.cs \
+	generic-exceptions.2.cs generic-virtual2.2.cs \
+	generic-valuetype-interface.2.cs \
 	generic-getgenericarguments.2.cs generic-synchronized.2.cs \
 	generic-delegate-ctor.2.cs generic-array-iface-set.2.cs \
 	generic-typedef.2.cs bug-431413.2.cs bug-459285.2.cs \
@@ -812,6 +813,7 @@ TESTS_GSHARED_SRC = \
 	generic-tailcall2.2.cs			\
 	generic-array-exc.2.cs	\
 	generic-special.2.cs			\
+	generic-special2.2.cs	\
 	generic-exceptions.2.cs	\
 	generic-delegate2.2.cs		\
 	generic-virtual2.2.cs	\
