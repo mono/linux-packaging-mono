@@ -78,7 +78,7 @@ namespace System.Collections.ObjectModel.Tests
         [Fact]
         public static void IEnumerableConstructorTest_Negative()
         {
-            Assert.Throws<ArgumentNullException>("collection", () => new ObservableCollection<string>((IEnumerable<string>)null));
+            AssertExtensions.Throws<ArgumentNullException>("collection", () => new ObservableCollection<string>((IEnumerable<string>)null));
         }
 
         /// <summary>
@@ -131,6 +131,37 @@ namespace System.Collections.ObjectModel.Tests
             public ObservableCollectionSubclass(IEnumerable<T> collection) : base(collection) { }
 
             public List<T> InnerList => (List<T>)base.Items;
+        }
+
+        /// <summary>
+        /// Tests that ArgumentNullException is thrown when given a null IEnumerable.
+        /// </summary>
+        [Fact]
+        public static void ListConstructorTest_Negative()
+        {
+            AssertExtensions.Throws<ArgumentNullException>("list", () => new ObservableCollection<string>((List<string>)null));
+        }
+
+        [Fact]
+        public static void ListConstructorTest()
+        {
+            List<string> collection = new List<string> { "one", "two", "three" };
+            var actual = new ObservableCollection<string>(collection);
+            Assert.Equal(collection, actual);
+        }
+
+        [Fact]
+        public static void ListConstructorTest_MakesCopy()
+        {
+            List<string> collection = new List<string> { "one", "two", "three" };
+            var oc = new ObservableCollectionSubclass<string>(collection);
+            Assert.NotNull(oc.InnerList);
+            Assert.NotSame(collection, oc.InnerList);
+        }
+
+        private partial class ObservableCollectionSubclass<T> : ObservableCollection<T>
+        {
+            public ObservableCollectionSubclass(List<T> list) : base(list) { }
         }
     }
 }

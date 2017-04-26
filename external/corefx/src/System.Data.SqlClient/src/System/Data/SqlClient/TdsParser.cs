@@ -34,15 +34,6 @@ namespace System.Data.SqlClient
     // and surfacing objects to the user.
     internal sealed partial class TdsParser
     {
-        static TdsParser()
-        {
-            // For CoreCLR, we need to register the ANSI Code Page encoding provider before attempting to get an Encoding from a CodePage
-            // For a default installation of SqlServer the encoding exchanged during Login is 1252. This encoding is not loaded by default
-            // See Remarks at https://msdn.microsoft.com/en-us/library/system.text.encodingprovider(v=vs.110).aspx 
-            // SqlClient needs to register the encoding providers to make sure that even basic scenarios work with Sql Server.
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        }
-
         // Default state object for parser
         internal TdsParserStateObject _physicalStateObj = null; // Default stateObj and connection for Dbnetlib and non-MARS SNI.
 
@@ -474,8 +465,6 @@ namespace System.Data.SqlClient
             else
             {
                 session = _physicalStateObj;
-                // But for CoreCLR we are now relying on the owner to ensure that cancellation owner comes from one source
-                session.Owner = owner;
             }
             Debug.Assert(session._outputPacketNumber == 1, "The packet number is expected to be 1");
             return session;
@@ -678,9 +667,9 @@ namespace System.Data.SqlClient
 
             if (!_physicalStateObj.TryProcessHeader()) { throw SQL.SynchronousCallMayNotPend(); }
 
-            if (_physicalStateObj._inBytesPacket > TdsEnums.MAX_PACKET_SIZE || _physicalStateObj._inBytesPacket < 0)
+            if (_physicalStateObj._inBytesPacket > TdsEnums.MAX_PACKET_SIZE || _physicalStateObj._inBytesPacket <= 0)
             {
-                throw SQL.InvalidPacketSize();
+                throw SQL.ParsingError();
             }
             byte[] payload = new byte[_physicalStateObj._inBytesPacket];
 
@@ -5328,7 +5317,10 @@ namespace System.Data.SqlClient
             int i;
 
             if (null == bits)
+            {
                 bits = new int[4];
+                stateObj._decimalBits = bits;
+            }
             else
             {
                 for (i = 0; i < bits.Length; i++)

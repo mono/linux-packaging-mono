@@ -4,7 +4,7 @@
 
 namespace System
 {
-    internal static class HResults
+    internal static partial class HResults
     {
         internal const int OdbcException = unchecked((int)0x80131937);
     }

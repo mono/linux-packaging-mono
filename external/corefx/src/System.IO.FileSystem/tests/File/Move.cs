@@ -121,6 +121,34 @@ namespace System.IO.Tests
         }
 
         [Fact]
+        public void MoveToSameName()
+        {
+            string testDir = GetTestFilePath();
+            Directory.CreateDirectory(testDir);
+
+            FileInfo testFileSource = new FileInfo(Path.Combine(testDir, GetTestFileName()));
+            testFileSource.Create().Dispose();
+
+            Move(testFileSource.FullName, testFileSource.FullName);
+            Assert.True(File.Exists(testFileSource.FullName));
+        }
+
+        [Fact]
+        public void MoveToSameNameDifferentCasing()
+        {
+            string testDir = GetTestFilePath();
+            Directory.CreateDirectory(testDir);
+
+            FileInfo testFileSource = new FileInfo(Path.Combine(testDir, Path.GetRandomFileName().ToLowerInvariant()));
+            testFileSource.Create().Dispose();
+
+            FileInfo testFileDest = new FileInfo(Path.Combine(testFileSource.DirectoryName, testFileSource.Name.ToUpperInvariant()));
+
+            Move(testFileSource.FullName, testFileDest.FullName);
+            Assert.True(File.Exists(testFileDest.FullName));
+        }
+
+        [Fact]
         public void MultipleMoves()
         {
             FileInfo testFileSource = new FileInfo(GetTestFilePath());
@@ -199,6 +227,7 @@ namespace System.IO.Tests
 
         [Theory MemberData(nameof(PathsWithInvalidColons))]
         [PlatformSpecific(TestPlatforms.Windows)]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Versions of netfx older than 4.6.2 throw an ArgumentException instead of NotSupportedException. Until all of our machines run netfx against the actual latest version, these will fail.")]
         public void WindowsPathWithIllegalColons(string invalidPath)
         {
             FileInfo testFile = new FileInfo(GetTestFilePath());

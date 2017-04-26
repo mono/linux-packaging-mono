@@ -186,7 +186,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
                     Name pErrorTypeName = _pFixedResults[iParam].AsErrorType().nameText;
                     if (pErrorTypeName != null &&
-                        pErrorTypeName != GetGlobalSymbols().GetNameManager().GetPredefName(PredefinedName.PN_MISSING))
+                        pErrorTypeName != NameManager.GetPredefinedName(PredefinedName.PN_MISSING))
                     {
                         continue;
                     }
@@ -360,7 +360,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 // SPEC ISSUE: We should put language in the spec saying that we skip 
                 // SPEC ISSUE: inference on any argument that was created via the 
                 // SPEC ISSUE: optional parameter mechanism.
-                EXPR pExpr = _pMethodArguments.prgexpr[iArg];
+                Expr pExpr = _pMethodArguments.prgexpr[iArg];
 
                 if (pExpr.IsOptionalArgument)
                 {
@@ -378,9 +378,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 // types that are not visible on more public types. (for ex.,
                 // private sealed classes that implement IEnumerable, as in iterators).
 
-                CType pSource = pExpr.RuntimeObjectActualType != null
-                    ? pExpr.RuntimeObjectActualType
-                    : _pMethodArguments.types[iArg];
+                CType pSource = pExpr.RuntimeObjectActualType ?? _pMethodArguments.types[iArg];
 
                 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 // END RUNTIME BINDER ONLY CHANGE
@@ -566,7 +564,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 {
                     pDest = pDest.AsParameterModifierType().GetParameterType();
                 }
-                EXPR pExpr = _pMethodArguments.prgexpr[iArg];
+                Expr pExpr = _pMethodArguments.prgexpr[iArg];
                 if (HasUnfixedParamInOutputType(pExpr, pDest) &&
                     !HasUnfixedParamInInputType(pExpr, pDest))
                 {
@@ -662,7 +660,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         //
         // Input types
         //
-        private bool DoesInputTypeContain(EXPR pSource, CType pDest,
+        private bool DoesInputTypeContain(Expr pSource, CType pDest,
             TypeParameterType pParam)
         {
             // SPEC: If E is a method group or an anonymous function and T is a delegate
@@ -670,28 +668,28 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             // SPEC: input types of E with CType T.
 
             pDest = pDest.GetDelegateTypeOfPossibleExpression();
-            if (!pDest.isDelegateType())
+            if (pDest.isDelegateType())
             {
-                return false; // No input types.
+                switch (pSource.Kind)
+                {
+                    case ExpressionKind.MemberGroup:
+                    case ExpressionKind.BoundLambda:
+                        TypeArray pDelegateParameters = pDest.AsAggregateType().GetDelegateParameters(GetSymbolLoader());
+                        if (pDelegateParameters != null)
+                        {
+                            return TypeManager.ParametersContainTyVar(pDelegateParameters, pParam);
+                        }
+
+                        break;
+                }
             }
 
-            if (!pSource.isUNBOUNDLAMBDA() && !pSource.isMEMGRP())
-            {
-                return false; // No input types.
-            }
-
-            TypeArray pDelegateParameters =
-                pDest.AsAggregateType().GetDelegateParameters(GetSymbolLoader());
-            if (pDelegateParameters == null)
-            {
-                return false;
-            }
-            return TypeManager.ParametersContainTyVar(pDelegateParameters, pParam);
+            return false;
         }
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        private bool HasUnfixedParamInInputType(EXPR pSource, CType pDest)
+        private bool HasUnfixedParamInInputType(Expr pSource, CType pDest)
         {
             for (int iParam = 0; iParam < _pMethodTypeParameters.Count; iParam++)
             {
@@ -711,35 +709,35 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         //
         // Output types
         //
-        private bool DoesOutputTypeContain(EXPR pSource, CType pDest,
-            TypeParameterType pParam)
+        private bool DoesOutputTypeContain(Expr pSource, CType pDest, TypeParameterType pParam)
         {
             // SPEC: If E is a method group or an anonymous function and T is a delegate
             // SPEC: CType or expression tree CType then the return CType of T is an output CType
             // SPEC: of E with CType T.
 
             pDest = pDest.GetDelegateTypeOfPossibleExpression();
-            if (!pDest.isDelegateType())
+            if (pDest.isDelegateType())
             {
-                return false;
+                switch (pSource.Kind)
+                {
+                    case ExpressionKind.MemberGroup:
+                    case ExpressionKind.BoundLambda:
+                        CType pDelegateReturn = pDest.AsAggregateType().GetDelegateReturnType(GetSymbolLoader());
+                        if (pDelegateReturn != null)
+                        {
+                            return TypeManager.TypeContainsType(pDelegateReturn, pParam);
+                        }
+
+                        break;
+                }
             }
 
-            if (!pSource.isUNBOUNDLAMBDA() && !pSource.isMEMGRP())
-            {
-                return false;
-            }
-
-            CType pDelegateReturn = pDest.AsAggregateType().GetDelegateReturnType(GetSymbolLoader());
-            if (pDelegateReturn == null)
-            {
-                return false;
-            }
-            return TypeManager.TypeContainsType(pDelegateReturn, pParam);
+            return false;
         }
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        private bool HasUnfixedParamInOutputType(EXPR pSource, CType pDest)
+        private bool HasUnfixedParamInOutputType(Expr pSource, CType pDest)
         {
             for (int iParam = 0; iParam < _pMethodTypeParameters.Count; iParam++)
             {
@@ -786,7 +784,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                     pDest = pDest.AsParameterModifierType().GetParameterType();
                 }
 
-                EXPR pExpr = _pMethodArguments.prgexpr[iArg];
+                Expr pExpr = _pMethodArguments.prgexpr[iArg];
 
                 if (DoesInputTypeContain(pExpr, pDest,
                         _pMethodTypeParameters.ItemAsTypeParameterType(jParam)) &&
@@ -1029,7 +1027,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        private void OutputTypeInference(EXPR pExpr, CType pSource, CType pDest)
+        private void OutputTypeInference(Expr pExpr, CType pSource, CType pDest)
         {
             // SPEC: An output CType inference is made from an expression E to a CType T
             // SPEC: in the following way:
@@ -1058,7 +1056,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
         ////////////////////////////////////////////////////////////////////////////////
 
-        private bool MethodGroupReturnTypeInference(EXPR pSource, CType pType)
+        private bool MethodGroupReturnTypeInference(Expr pSource, CType pType)
         {
             // SPEC:  Otherwise, if E is a method group and T is a delegate CType or
             // SPEC:   expression tree CType with parameter types T1...Tk and return
@@ -1066,7 +1064,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             // SPEC:   yields a single method with return CType U then a lower-bound
             // SPEC:   inference is made from U to Tb.
 
-            if (!pSource.isMEMGRP())
+            if (!(pSource is ExprMemberGroup memGrp))
             {
                 return false;
             }
@@ -1096,7 +1094,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
             ArgInfos argInfo = new ArgInfos() { carg = pDelegateParameters.Count, types = pDelegateParameters, fHasExprs = false, prgexpr = null };
 
-            var argsBinder = new ExpressionBinder.GroupToArgsBinder(_binder, 0/* flags */, pSource.asMEMGRP(), argInfo, null, false, pDelegateType);
+            var argsBinder = new ExpressionBinder.GroupToArgsBinder(_binder, 0/* flags */, memGrp, argInfo, null, false, pDelegateType);
 
             bool success = argsBinder.Bind(false);
             if (!success)
@@ -1187,7 +1185,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             }
             ArrayType pArraySource = pSource.AsArrayType();
             ArrayType pArrayDest = pDest.AsArrayType();
-            if (pArraySource.rank != pArrayDest.rank)
+            if (pArraySource.rank != pArrayDest.rank || pArraySource.IsSZArray != pArrayDest.IsSZArray)
             {
                 return false;
             }
@@ -1381,7 +1379,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             if (pDest.IsArrayType())
             {
                 ArrayType pArrayDest = pDest.AsArrayType();
-                if (pArrayDest.rank != pArraySource.rank)
+                if (pArrayDest.rank != pArraySource.rank || pArrayDest.IsSZArray != pArraySource.IsSZArray)
                 {
                     return false;
                 }
@@ -1393,7 +1391,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 pDest.isPredefType(PredefinedType.PT_G_IREADONLYCOLLECTION) ||
                 pDest.isPredefType(PredefinedType.PT_G_IREADONLYLIST))
             {
-                if (pArraySource.rank != 1)
+                if (!pArraySource.IsSZArray)
                 {
                     return false;
                 }
@@ -1729,7 +1727,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             if (pSource.IsArrayType())
             {
                 ArrayType pArraySource = pSource.AsArrayType();
-                if (pArrayDest.rank != pArraySource.rank)
+                if (pArrayDest.rank != pArraySource.rank || pArrayDest.IsSZArray != pArraySource.IsSZArray)
                 {
                     return false;
                 }
@@ -1741,7 +1739,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 pSource.isPredefType(PredefinedType.PT_G_IREADONLYLIST) ||
                 pSource.isPredefType(PredefinedType.PT_G_IREADONLYCOLLECTION))
             {
-                if (pArrayDest.rank != 1)
+                if (!pArrayDest.IsSZArray)
                 {
                     return false;
                 }
@@ -1976,17 +1974,16 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
                 foreach (CType pCurrent in _pLowerBounds[iParam])
                 {
-                    if (!typeSet.Contains(pCurrent))
+                    if (typeSet.Add(pCurrent))
                     {
-                        typeSet.Add(pCurrent);
                         initialCandidates.Add(pCurrent);
                     }
                 }
+
                 foreach (CType pCurrent in _pUpperBounds[iParam])
                 {
-                    if (!typeSet.Contains(pCurrent))
+                    if (typeSet.Add(pCurrent))
                     {
-                        typeSet.Add(pCurrent);
                         initialCandidates.Add(pCurrent);
                     }
                 }

@@ -2,7 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if XMLSERIALIZERGENERATOR
+namespace Microsoft.XmlSerializer.Generator
+#else
 namespace System.Xml.Serialization
+#endif
 {
     using System.Reflection;
     using System;
@@ -15,6 +19,7 @@ namespace System.Xml.Serialization
     using System.Linq;
     using System.Collections.Generic;
     using System.Xml.Extensions;
+    using System.Xml;
 
     ///<internalonly/>
     /// <devdoc>
@@ -31,7 +36,9 @@ namespace System.Xml.Serialization
         private NameTable _xsdAttributes;   // xmlattributetname + xmlns -> AttributeAccessor
         private Hashtable _specials;   // type -> SpecialMapping
         private Hashtable _anonymous = new Hashtable();   // type -> AnonymousMapping
+#if !XMLSERIALIZERGENERATOR
         private NameTable _serializables;  // type name --> new SerializableMapping
+#endif
         private StructMapping _root;
         private string _defaultNs;
         private ModelScope _modelScope;
@@ -94,7 +101,8 @@ namespace System.Xml.Serialization
         private void IncludeTypes(ICustomAttributeProvider provider, RecursionLimiter limiter)
         {
             object[] attrs = provider.GetCustomAttributes(typeof(XmlIncludeAttribute), false);
-            for (int i = 0; i < attrs.Length; i++) {
+            for (int i = 0; i < attrs.Length; i++)
+            {
                 Type type = ((XmlIncludeAttribute)attrs[i]).Type;
                 IncludeType(type, limiter);
             }
@@ -509,6 +517,7 @@ namespace System.Xml.Serialization
                     XmlQualifiedName qname = serializableMapping.XsiType;
                     if (qname != null && !qname.IsEmpty)
                     {
+#if !XMLSERIALIZERGENERATOR
                         if (_serializables == null)
                             _serializables = new NameTable();
                         SerializableMapping existingMapping = (SerializableMapping)_serializables[qname];
@@ -532,6 +541,8 @@ namespace System.Xml.Serialization
                                 SetBase(serializableMapping, xsdType.DerivedFrom);
                             _serializables[qname] = serializableMapping;
                         }
+
+#endif
                         serializableMapping.TypeName = qname.Name;
                         serializableMapping.Namespace = qname.Namespace;
                     }
@@ -559,13 +570,7 @@ namespace System.Xml.Serialization
             return mapping;
         }
 
-        internal static void ValidationCallbackWithErrorCode(object sender, ValidationEventArgs args)
-        {
-            // CONSIDER: need the real type name
-            if (args.Severity == XmlSeverityType.Error)
-                throw new InvalidOperationException(SR.Format(SR.XmlSerializableSchemaError, typeof(IXmlSerializable).Name, args.Message));
-        }
-
+#if !XMLSERIALIZERGENERATOR
         internal void SetBase(SerializableMapping mapping, XmlQualifiedName baseQname)
         {
             if (baseQname.IsEmpty) return;
@@ -594,6 +599,7 @@ namespace System.Xml.Serialization
             }
             mapping.SetBaseMapping((SerializableMapping)_serializables[baseQname]);
         }
+#endif
 
         private static string GetContextName(ImportContext context)
         {
@@ -757,11 +763,11 @@ namespace System.Xml.Serialization
                         // if InitializeStructMembers returns true, then there were *no* changes to the DeferredWorkItems
                         //
 #if DEBUG
-                    // use exception in the place of Debug.Assert to avoid throwing asserts from a server process such as aspnet_ewp.exe
-                    if (index != limiter.DeferredWorkItems.Count - 1)
-                        throw new InvalidOperationException(SR.Format(SR.XmlInternalErrorDetails, "DeferredWorkItems.Count have changed"));
-                    if (item != limiter.DeferredWorkItems[index])
-                        throw new InvalidOperationException(SR.Format(SR.XmlInternalErrorDetails, "DeferredWorkItems.Top have changed"));
+                        // use exception in the place of Debug.Assert to avoid throwing asserts from a server process such as aspnet_ewp.exe
+                        if (index != limiter.DeferredWorkItems.Count - 1)
+                            throw new InvalidOperationException(SR.Format(SR.XmlInternalErrorDetails, "DeferredWorkItems.Count have changed"));
+                        if (item != limiter.DeferredWorkItems[index])
+                            throw new InvalidOperationException(SR.Format(SR.XmlInternalErrorDetails, "DeferredWorkItems.Top have changed"));
 #endif
                         // Remove the last work item
                         limiter.DeferredWorkItems.RemoveAt(index);
@@ -2328,7 +2334,11 @@ namespace System.Xml.Serialization
         internal RecursionLimiter()
         {
             _depth = 0;
+#if XMLSERIALIZERGENERATOR
+            _maxDepth = int.MaxValue;
+#else
             _maxDepth = DiagnosticsSwitches.NonRecursiveTypeLoading.Enabled ? 1 : int.MaxValue;
+#endif
         }
 
         internal bool IsExceededLimit { get { return _depth > _maxDepth; } }

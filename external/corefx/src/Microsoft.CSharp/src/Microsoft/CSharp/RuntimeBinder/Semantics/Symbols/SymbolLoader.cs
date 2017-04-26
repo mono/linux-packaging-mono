@@ -43,7 +43,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         public MethodSymbol LookupInvokeMeth(AggregateSymbol pAggDel)
         {
             Debug.Assert(pAggDel.AggKind() == AggKindEnum.Delegate);
-            for (Symbol pSym = LookupAggMember(GetNameManager().GetPredefName(PredefinedName.PN_INVOKE), pAggDel, symbmask_t.MASK_ALL);
+            for (Symbol pSym = LookupAggMember(NameManager.GetPredefinedName(PredefinedName.PN_INVOKE), pAggDel, symbmask_t.MASK_ALL);
                  pSym != null;
                  pSym = LookupNextSym(pSym, pAggDel, symbmask_t.MASK_ALL))
             {
@@ -276,7 +276,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             // * S and T differ only in element type. In other words, S and T have the same number of dimensions.
             // * Both SE and TE are reference types.
             // * An implicit reference conversion exists from SE to TE.
-            return (pSource.rank == pDest.rank) &&
+            return (pSource.rank == pDest.rank) && pSource.IsSZArray == pDest.IsSZArray &&
                 HasImplicitReferenceConversion(pSource.GetElementType(), pDest.GetElementType());
         }
 
@@ -301,7 +301,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         {
             Debug.Assert(pSource != null);
             Debug.Assert(pDest != null);
-            if (pSource.rank != 1)
+            if (!pSource.IsSZArray)
             {
                 return false;
             }
