@@ -357,6 +357,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Xml.dll
 %{_prefix}/lib/mono/4.5/System.dll
 %{_prefix}/lib/mono/4.5/cscompmgd.dll
+%{_prefix}/lib/mono/4.5/netstandard.dll*
 %{_prefix}/lib/mono/4.5/mscorlib.dll*
 %{_prefix}/lib/mono/4.5/mscorlib.pdb
 %{_prefix}/lib/mono/4.5/Facades/System*
