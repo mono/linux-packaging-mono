@@ -248,7 +248,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_dl_fallback_register@Base 4.1.0.1738
  mono_dl_fallback_unregister@Base 4.1.0.1738
  mono_dllmap_insert@Base 4.1.0.1738
- mono_domain_add_class_static_data@Base 4.1.0.1738
  mono_domain_assembly_open@Base 4.1.0.1738
  mono_domain_create@Base 4.1.0.1738
  mono_domain_create_appdomain@Base 4.1.0.1738
