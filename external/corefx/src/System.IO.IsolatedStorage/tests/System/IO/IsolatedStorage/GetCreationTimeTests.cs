@@ -6,6 +6,7 @@ using Xunit;
 
 namespace System.IO.IsolatedStorage
 {
+    [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "#18940")]
     public class GetCreationTimeTests : IsoStorageTest
     {
         [Fact]
@@ -18,12 +19,12 @@ namespace System.IO.IsolatedStorage
         }
 
         [Fact]
-        public void GetCreationTime_ThrowsIsolatedStorageException()
+        public void GetCreationTime_Removed_ThrowsInvalidOperationException()
         {
             using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForAssembly())
             {
                 isf.Remove();
-                Assert.Throws<IsolatedStorageException>(() => isf.GetCreationTime("foo"));
+                Assert.Throws<InvalidOperationException>(() => isf.GetCreationTime("foo"));
             }
         }
 
@@ -39,7 +40,7 @@ namespace System.IO.IsolatedStorage
         }
 
         [Fact]
-        public void GetCreationTime_ThrowsInvalidOperationException()
+        public void GetCreationTime_Closed_ThrowsInvalidOperationException()
         {
             using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForAssembly())
             {
