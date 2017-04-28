@@ -90,6 +90,7 @@ namespace System.Reflection.Tests
 
         [Theory]
         [MemberData(nameof(GetCallingAssembly_TestData))]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "GetCallingAssembly() is not supported on UapAot")]
         public static void GetCallingAssembly(Assembly assembly1, Assembly assembly2, bool expected)
         {
             Assert.Equal(expected, assembly1.Equals(assembly2));
@@ -331,7 +332,7 @@ namespace System.Reflection.Tests
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.UapAot, "The full .NET Framework has a bug and throws a NullReferenceException")]
         public static void LoadFile_NullPath_Netcore_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>("path", () => Assembly.LoadFile(null));
+            AssertExtensions.Throws<ArgumentNullException>("path", () => Assembly.LoadFile(null));
         }
 
         [Fact]
@@ -376,8 +377,8 @@ namespace System.Reflection.Tests
         public static void Test_LoadModule_Netfx()
         {
             Assembly assembly = typeof(AssemblyTests).Assembly;
-            Assert.Throws<ArgumentNullException>(null, () => assembly.LoadModule("abc", null));
-            Assert.Throws<ArgumentNullException>(null, () => assembly.LoadModule("abc", null, null));
+            AssertExtensions.Throws<ArgumentNullException>(null, () => assembly.LoadModule("abc", null));
+            AssertExtensions.Throws<ArgumentNullException>(null, () => assembly.LoadModule("abc", null, null));
         }
 
 #pragma warning disable 618
@@ -423,16 +424,16 @@ namespace System.Reflection.Tests
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Assembly.LoadFrom() not supported on UapAot")]
         public void LoadFrom_NullAssemblyFile_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>("assemblyFile", () => Assembly.LoadFrom(null));
-            Assert.Throws<ArgumentNullException>("assemblyFile", () => Assembly.UnsafeLoadFrom(null));
+            AssertExtensions.Throws<ArgumentNullException>("assemblyFile", () => Assembly.LoadFrom(null));
+            AssertExtensions.Throws<ArgumentNullException>("assemblyFile", () => Assembly.UnsafeLoadFrom(null));
         }
 
         [Fact]
         [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Assembly.LoadFrom() not supported on UapAot")]
         public void LoadFrom_EmptyAssemblyFile_ThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(null, (() => Assembly.LoadFrom("")));
-            Assert.Throws<ArgumentException>(null, (() => Assembly.UnsafeLoadFrom("")));
+            AssertExtensions.Throws<ArgumentException>(null, (() => Assembly.LoadFrom("")));
+            AssertExtensions.Throws<ArgumentException>(null, (() => Assembly.UnsafeLoadFrom("")));
         }
 
         [Fact]
@@ -480,6 +481,7 @@ namespace System.Reflection.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "Assembly.CodeBase not supported on UapAot")]
         public static void Load_AssemblyNameWithCodeBase()
         {
             AssemblyName an = typeof(AssemblyTests).Assembly.GetName();

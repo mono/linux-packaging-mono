@@ -86,4 +86,129 @@ namespace SerializationTestTypes
             return knownTypeResolver.TryResolveType(actualDataContractType, declaredType, null, out typeName, out typeNamespace);
         }
     }
+
+    [Serializable]
+    public class POCOTypeResolver : DataContractResolver
+    {
+        public override bool TryResolveType(Type dcType, Type declaredType, DataContractResolver KTResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+        {
+            string resolvedTypeName = string.Empty;
+            string resolvedNamespace = string.Empty;
+            resolvedNamespace = "http://www.default.com";
+            switch (dcType.Name)
+            {
+                case "POCOObjectContainer":
+                    {
+                        resolvedTypeName = "POCO";
+                    }
+                    break;
+                case "Person":
+                    {
+                        throw new InvalidOperationException("Member with attribute 'IgnoreDataMember' should be ignored during ser");
+                    }
+                default:
+                    {
+                        return KTResolver.TryResolveType(dcType, declaredType, null, out typeName, out typeNamespace);
+                    }
+            }
+            //for types resolved by the DCR
+            XmlDictionary dic = new XmlDictionary();
+            typeName = dic.Add(resolvedTypeName);
+            typeNamespace = dic.Add(resolvedNamespace);
+            return true;
+        }
+
+        public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver KTResolver)
+        {
+            if (typeNamespace.Equals("http://www.default.com"))
+            {
+                if (typeName.Equals("POCO"))
+                {
+                    return typeof(POCOObjectContainer);
+                }
+            }
+            if (typeName.Equals("Person"))
+            {
+                throw new InvalidOperationException("Member with attribute 'IgnoreDataMember' should be ignored during deser");
+            }
+            Type result = KTResolver.ResolveName(typeName, typeNamespace, declaredType, null);
+            return result;
+        }
+    }
+
+    public class WireFormatVerificationResolver : DataContractResolver
+    {
+        private Type _type;
+
+        public override bool TryResolveType(Type dcType, Type declaredType, DataContractResolver KTResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+        {
+            if (!KTResolver.TryResolveType(dcType, declaredType, null, out typeName, out typeNamespace))
+            {
+                _type = dcType;
+                typeName = new XmlDictionary().Add(dcType.FullName + "***");
+                typeNamespace = new XmlDictionary().Add(dcType.Assembly.FullName + "***");
+            }
+            return true;
+        }
+        public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver KTResolver)
+        {
+            Type t = null;
+            if (typeName.Contains("***"))
+            {
+                t = _type;
+            }
+            else
+            {
+                t = KTResolver.ResolveName(typeName, typeNamespace, declaredType, null);
+                if (t == null)
+                {
+                    t = Type.GetType(typeName + "," + typeNamespace);
+                }
+            }
+            return t;
+        }
+    }
+        
+    public class UserTypeToPrimitiveTypeResolver : DataContractResolver
+    {
+        public override bool TryResolveType(Type dcType, Type declaredType, DataContractResolver KTResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+        {
+            string resolvedTypeName = string.Empty;
+            string resolvedNamespace = "http://www.default.com";
+            switch (dcType.Name)
+            {
+                case "UnknownEmployee":
+                    resolvedTypeName = "int";                                          
+                    resolvedNamespace = "http://www.w3.org/2001/XMLSchema";
+                    break;
+                case "UserTypeContainer":                    
+                    resolvedTypeName = "UserType";                    
+                    break;
+                default:                    
+                    return KTResolver.TryResolveType(dcType, declaredType, null, out typeName, out typeNamespace);
+            }
+            
+            XmlDictionary dic = new XmlDictionary();
+            typeName = dic.Add(resolvedTypeName);
+            typeNamespace = dic.Add(resolvedNamespace);
+            return true;
+        }
+        
+        public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver KTResolver)
+        {
+            if (typeNamespace.Equals("http://www.default.com"))
+            {
+                if (typeName.Equals("UserType"))
+                {
+                    return typeof(UserTypeContainer);
+                }
+            }
+            if (typeNamespace.Equals("http://www.w3.org/2001/XMLSchema") && typeName.Equals("int"))
+            {
+                return typeof(UnknownEmployee);
+            }
+
+            return KTResolver.ResolveName(typeName, typeNamespace, declaredType, null);
+        }
+    }
 }
