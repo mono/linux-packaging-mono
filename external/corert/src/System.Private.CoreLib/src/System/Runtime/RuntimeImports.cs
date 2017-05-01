@@ -8,6 +8,12 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using Internal.Runtime;
 
+#if BIT64
+using nuint = System.UInt64;
+#else
+using nuint = System.UInt32;
+#endif
+
 namespace System.Runtime
 {
     // CONTRACT with Runtime
@@ -166,6 +172,10 @@ namespace System.Runtime
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetGCSegmentSize")]
         internal static extern ulong RhGetGCSegmentSize();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        [RuntimeImport(RuntimeLibrary, "RhCompareObjectContentsAndPadding")]
+        internal extern static bool RhCompareObjectContentsAndPadding(object obj1, object obj2);
 
         //
         // calls for GCHandle.
@@ -369,12 +379,8 @@ namespace System.Runtime
         internal static extern IntPtr RhResolveDispatch(object pObject, EETypePtr pInterfaceType, ushort slot);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [RuntimeImport(RuntimeLibrary, "RhGetNonGcStaticFieldData")]
-        internal static extern unsafe IntPtr RhGetNonGcStaticFieldData(EETypePtr pEEType);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [RuntimeImport(RuntimeLibrary, "RhGetGcStaticFieldData")]
-        internal static extern unsafe IntPtr RhGetGcStaticFieldData(EETypePtr pEEType);
+        [RuntimeImport(RuntimeLibrary, "RhpResolveInterfaceMethod")]
+        internal static extern IntPtr RhpResolveInterfaceMethod(object pObject, IntPtr pCell);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhCreateThunksHeap")]
@@ -544,15 +550,15 @@ namespace System.Runtime
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhSetThreadStaticStorageForModule")]
         internal static unsafe extern bool RhSetThreadStaticStorageForModule(Array storage, Int32 moduleIndex);
+#endif
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [RuntimeImport(RuntimeLibrary, "RhpGetCurrentThunkContext")]
+        [RuntimeImport("*", "RhGetCurrentThunkContext")]
         internal static extern IntPtr GetCurrentInteropThunkContext();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        [RuntimeImport(RuntimeLibrary, "RhpGetCommonStubAddress")]
+        [RuntimeImport("*", "RhGetCommonStubAddress")]
         internal static extern IntPtr GetInteropCommonStubAddress();
-#endif
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhGetCodeTarget")]
@@ -628,7 +634,7 @@ namespace System.Runtime
         // heap memory
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhBulkMoveWithWriteBarrier")]
-        internal static extern unsafe void RhBulkMoveWithWriteBarrier(byte* dmem, byte* smem, int size);
+        internal static extern unsafe void RhBulkMoveWithWriteBarrier(ref byte dmem, ref byte smem, nuint size);
 
         // The GC conservative reporting descriptor is a special structure of data that the GC
         // parses to determine whether there are specific regions of memory that it should not
@@ -836,13 +842,21 @@ namespace System.Runtime
         internal static extern unsafe void _ecvt_s(byte* buffer, int sizeInBytes, double value, int count, int* dec, int* sign);
 #endif
 
-#if BIT64
         [DllImport(RuntimeImports.RuntimeLibrary, ExactSpelling = true)]
-        internal static extern unsafe void memmove(byte* dmem, byte* smem, ulong size);
-#else
+        internal static extern unsafe void memmove(byte* dmem, byte* smem, nuint size);
+
         [DllImport(RuntimeImports.RuntimeLibrary, ExactSpelling = true)]
-        internal static extern unsafe void memmove(byte* dmem, byte* smem, uint size);
-#endif
+        internal static extern unsafe void memset(byte* mem, int value, nuint size);
+
+        // Non-inlinable wrapper around the PInvoke that avoids poluting the fast path with P/Invoke prolog/epilog.
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal unsafe static void RhZeroMemory(ref byte b, nuint byteLength)
+        {
+            fixed (byte* bytePointer = &b)
+            {
+                memset(bytePointer, 0, byteLength);
+            }
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [RuntimeImport(RuntimeLibrary, "RhpArrayCopy")]

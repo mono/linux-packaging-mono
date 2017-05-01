@@ -14,7 +14,7 @@ namespace ILCompiler.DependencyAnalysis
     /// Represents the offset of the thread static region of a given type from the TLS section start. 
     /// The node is used for cross-module thread statics reference
     /// </summary>
-    public class ThreadStaticsOffsetNode : EmbeddedObjectNode, ISymbolNode
+    public class ThreadStaticsOffsetNode : EmbeddedObjectNode, IExportableSymbolNode
     {
         private MetadataType _type;
 
@@ -50,13 +50,16 @@ namespace ILCompiler.DependencyAnalysis
             return result;
         }
 
-        int ISymbolNode.Offset
+        public bool IsExported(NodeFactory factory)
         {
-            get
-            {
-                return Offset;
-            }
+            return factory.CompilationModuleGroup.ExportsType(Type);
         }
+
+        public MetadataType Type => _type;
+
+        int ISymbolNode.Offset => 0;
+
+        int ISymbolDefinitionNode.Offset => OffsetFromBeginningOfArray;
 
         public override bool StaticDependenciesAreComputed
         {

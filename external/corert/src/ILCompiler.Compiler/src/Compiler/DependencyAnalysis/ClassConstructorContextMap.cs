@@ -12,7 +12,7 @@ using Debug = System.Diagnostics.Debug;
 
 namespace ILCompiler.DependencyAnalysis
 {
-    class ClassConstructorContextMap : ObjectNode, ISymbolNode
+    class ClassConstructorContextMap : ObjectNode, ISymbolDefinitionNode
     {
         private ObjectAndOffsetSymbolNode _endSymbol;
         private ExternalReferencesTableNode _externalReferences;
@@ -23,7 +23,7 @@ namespace ILCompiler.DependencyAnalysis
             _externalReferences = externalReferences;
         }
 
-        public ISymbolNode EndSymbol => _endSymbol;
+        public ISymbolDefinitionNode EndSymbol => _endSymbol;
 
         public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
@@ -42,7 +42,7 @@ namespace ILCompiler.DependencyAnalysis
         {
             // This node does not trigger generation of other nodes.
             if (relocsOnly)
-                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolNode[] { this });
+                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this });
 
             var writer = new NativeWriter();
             var typeMapHashTable = new VertexHashtable();
@@ -64,13 +64,9 @@ namespace ILCompiler.DependencyAnalysis
                 // Hash table is hashed by the hashcode of the owning type.
                 // Each entry has: the EEType of the type, followed by the non-GC static base.
                 // The non-GC static base is prefixed by the class constructor context.
-
-                // Unfortunately we need to adjust for the cctor context just so that we can subtract it again at runtime...
-                int delta = NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.TypeSystemContext.Target, type);
-
                 Vertex vertex = writer.GetTuple(
                     writer.GetUnsignedConstant(_externalReferences.GetIndex(factory.NecessaryTypeSymbol(type))),
-                    writer.GetUnsignedConstant(_externalReferences.GetIndex(node, delta))
+                    writer.GetUnsignedConstant(_externalReferences.GetIndex(node))
                     );
 
                 int hashCode = type.GetHashCode();
@@ -81,7 +77,7 @@ namespace ILCompiler.DependencyAnalysis
 
             _endSymbol.SetSymbolOffset(hashTableBytes.Length);
 
-            return new ObjectData(hashTableBytes, Array.Empty<Relocation>(), 1, new ISymbolNode[] { this, _endSymbol });
+            return new ObjectData(hashTableBytes, Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this, _endSymbol });
         }
     }
 }

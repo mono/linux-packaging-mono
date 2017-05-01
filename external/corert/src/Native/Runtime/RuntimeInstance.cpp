@@ -844,64 +844,56 @@ COOP_PINVOKE_HELPER(PTR_UInt8, RhGetThreadLocalStorageForDynamicType, (UInt32 uO
     return pCurrentThread->AllocateThreadLocalStorageForDynamicType(uOffset, tlsStorageSize, numTlsCells);
 }
 
-COOP_PINVOKE_HELPER(void *, RhGetNonGcStaticFieldData, (EEType * pEEType))
-{
-    // We shouldn't be attempting to get the gc/non-gc statics data for non-dynamic types...
-    // For non-dynamic types, that info should have been hashed in a table and stored in its corresponding blob in the image.
-    ASSERT(pEEType->IsDynamicType());
-
-    if (pEEType->HasDynamicNonGcStatics())
-    {
-        return pEEType->get_DynamicNonGcStaticsPointer();
-    }
-
-    return NULL;
-}
-
-COOP_PINVOKE_HELPER(void *, RhGetGcStaticFieldData, (EEType * pEEType))
-{
-    // We shouldn't be attempting to get the gc/non-gc statics data for non-dynamic types...
-    // For non-dynamic types, that info should have been hashed in a table and stored in its corresponding blob in the image.
-    // The reason we don't want to do the lookup for non-dynamic types is that LookupGenericInstance will do the lookup in 
-    // a hashtable that *only* has the GIDs with variance. If we were to store all GIDs in that hashtable, we'd be violating
-    // pay-for-play principles
-    ASSERT(pEEType->IsDynamicType());
-
-    if (pEEType->HasDynamicGcStatics())
-    {
-        return pEEType->get_DynamicGcStaticsPointer();
-    }
-
-    return NULL;
-}
-
 #ifndef FEATURE_RX_THUNKS
 
 COOP_PINVOKE_HELPER(void*, RhpGetThunksBase, ());
 COOP_PINVOKE_HELPER(int, RhpGetNumThunkBlocksPerMapping, ());
+COOP_PINVOKE_HELPER(int, RhpGetNumThunksPerBlock, ());
+COOP_PINVOKE_HELPER(int, RhpGetThunkSize, ());
+COOP_PINVOKE_HELPER(int, RhpGetThunkBlockSize, ());
+
 EXTERN_C REDHAWK_API void* __cdecl RhAllocateThunksMapping()
 {
     static void* pThunksTemplateAddress = NULL;
+
+    void *pThunkMap = NULL;
+
+    int thunkBlocksPerMapping = RhpGetNumThunkBlocksPerMapping();
+    int thunkBlockSize = RhpGetThunkBlockSize();
+    int templateSize = thunkBlocksPerMapping * thunkBlockSize;
 
     if (pThunksTemplateAddress == NULL)
     {
         // First, we use the thunks directly from the thunks template sections in the module until all
         // thunks in that template are used up.
         pThunksTemplateAddress = RhpGetThunksBase();
-        return pThunksTemplateAddress;
+        pThunkMap = pThunksTemplateAddress;
+    }
+    else
+    {
+        // We've already used the thunks template in the module for some previous thunks, and we 
+        // cannot reuse it here. Now we need to create a new mapping of the thunks section in order to have 
+        // more thunks
+
+        UInt8* pModuleBase = (UInt8*)PalGetModuleHandleFromPointer(pThunksTemplateAddress);
+        int templateRva = (int)((UInt8*)RhpGetThunksBase() - pModuleBase);
+
+        if (!PalAllocateThunksFromTemplate((HANDLE)pModuleBase, templateRva, templateSize, &pThunkMap))
+            return NULL;
     }
 
-    // We've already used the thunks template in the module for some previous thunks, and we 
-    // cannot reuse it here. Now we need to create a new mapping of the thunks section in order to have 
-    // more thunks
+    if (!PalMarkThunksAsValidCallTargets(
+        pThunkMap,
+        RhpGetThunkSize(),
+        RhpGetNumThunksPerBlock(),
+        thunkBlockSize,
+        thunkBlocksPerMapping))
+    {
+        if (pThunkMap != pThunksTemplateAddress)
+            PalFreeThunksFromTemplate(pThunkMap);
 
-    UInt8* pModuleBase = (UInt8*)PalGetModuleHandleFromPointer(pThunksTemplateAddress);
-    int templateRva = (int)((UInt8*)RhpGetThunksBase() - pModuleBase);
-    int templateSize = RhpGetNumThunkBlocksPerMapping() * OS_PAGE_SIZE * 2;
-
-    void* pThunkMap = NULL;
-    if (PalAllocateThunksFromTemplate((HANDLE)pModuleBase, templateRva, templateSize, &pThunkMap) == FALSE)
         return NULL;
+    }
 
     return pThunkMap;
 }
