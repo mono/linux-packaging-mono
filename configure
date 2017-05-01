@@ -1729,7 +1729,7 @@ Optional Features:
   --enable-system-aot  Enable the Ahead-Of-Time compilation of system assemblies during the build (on by default on some platforms)
   --enable-minimal=LIST      drop support for LIST subsystems.
      LIST is a comma-separated list from: aot, profiler, decimal, pinvoke, debug, appdomains, verifier,
-     reflection_emit, reflection_emit_save, large_code, logging, com, ssa, generics, attach, jit, simd, soft_debug, perfcounters, normalization, assembly_remapping, shared_perfcounters, remoting,
+     reflection_emit, reflection_emit_save, large_code, logging, com, ssa, generics, attach, jit, simd, soft_debug, perfcounters, normalization, desktop_loader, shared_perfcounters, remoting,
 	 security, lldb, mdb, sgen_remset, sgen_marksweep_par, sgen_marksweep_fixed, sgen_marksweep_fixed_par, sgen_copying.
   --disable-executables disable the build of the runtime executables
   --enable-extension-module=LIST enable the core-extensions from LIST
@@ -20633,12 +20633,13 @@ $as_echo "#define DISABLE_NORMALIZATION 1" >>confdefs.h
 $as_echo "$as_me: Disabled String normalization support." >&6;}
 fi
 
-if test "x$mono_feature_disable_assembly_remapping" = "xyes"; then
+#TODO: remove assembly_remapping feature name once everyone is using desktop_loader
+if test "x$mono_feature_disable_assembly_remapping" = "xyes" || "x$mono_feature_disable_desktop_loader" = "xyes"; then
 
-$as_echo "#define DISABLE_ASSEMBLY_REMAPPING 1" >>confdefs.h
+$as_echo "#define DISABLE_DESKTOP_LOADER 1" >>confdefs.h
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: Disabled Assembly remapping." >&5
-$as_echo "$as_me: Disabled Assembly remapping." >&6;}
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: Disabled desktop assembly loader semantics." >&5
+$as_echo "$as_me: Disabled desktop assembly loader semantics." >&6;}
 fi
 
 if test "x$mono_feature_disable_shared_perfcounters" = "xyes"; then

@@ -68,6 +68,9 @@
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\AssemblyGetExecutingAssemblyMethodThunk.cs">
       <Link>IL\Stubs\AssemblyGetExecutingAssemblyMethodThunk.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\AssemblyGetExecutingAssemblyMethodThunk.Sorting.cs">
+      <Link>IL\Stubs\AssemblyGetExecutingAssemblyMethodThunk.Sorting.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\DynamicInvokeMethodThunk.Sorting.cs">
       <Link>IL\Stubs\DynamicInvokeMethodThunk.Sorting.cs</Link>
     </Compile>
@@ -86,8 +89,14 @@
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\EETypePtrOfIntrinsic.cs">
       <Link>IL\Stubs\EETypePtrOfIntrinsic.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\MethodBaseGetCurrentMethodThunk.Sorting.cs">
+      <Link>IL\Stubs\MethodBaseGetCurrentMethodThunk.Sorting.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\TypeGetTypeMethodThunk.cs">
       <Link>IL\Stubs\TypeGetTypeMethodThunk.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\TypeGetTypeMethodThunk.Sorting.cs">
+      <Link>IL\Stubs\TypeGetTypeMethodThunk.Sorting.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\TypeSystemThrowingILEmitter.cs">
       <Link>IL\Stubs\TypeSystemThrowingILEmitter.cs</Link>
@@ -102,6 +111,8 @@
     <Compile Include="Compiler\CompilerTypeSystemContext.Sorting.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ImportedGenericDictionaryNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\DynamicInvokeTemplateDataNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\ReflectableMethodNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\ShadowConcreteUnboxingThunkNode.cs" />
     <Compile Include="Compiler\EmptyMetadataManager.cs" />
     <Compile Include="Compiler\ILStreamReader.cs" />
     <Compile Include="Compiler\INonEmittableType.cs" />
@@ -159,11 +170,12 @@
     <Compile Include="Compiler\DependencyAnalysis\GenericDictionaryNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\GenericLookupResult.cs" />
     <Compile Include="Compiler\DependencyAnalysis\IEETypeNode.cs" />
-    <Compile Include="Compiler\DependencyAnalysis\IFatFunctionPointerNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\IMethodCodeNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\INodeWithRuntimeDeterminedDependencies.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ImportedEETypeSymbolNode.cs" />
-    <Compile Include="Compiler\DependencyAnalysis\NonExternMethodSymbolNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\ImportedStaticsNode.cs" />    
+	<Compile Include="Compiler\DependencyAnalysis\ImportedThreadStaticsNode.cs" />    
+	<Compile Include="Compiler\DependencyAnalysis\NonExternMethodSymbolNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\PInvokeMethodFixupNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\PInvokeModuleFixupNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ResourceDataNode.cs" />
@@ -203,6 +215,7 @@
     <Compile Include="Compiler\DependencyAnalysis\StaticsInfoHashtableNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\INodeWithCodeInfo.cs" />
     <Compile Include="Compiler\DependencyAnalysis\INodeWithDebugInfo.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\IExportableSymbolNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ISymbolNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\NodeFactory.cs" />
     <Compile Include="Compiler\DependencyAnalysis\NodeFactory.GenericLookups.cs" />
@@ -274,6 +287,7 @@
     <Compile Include="CppCodeGen\NodeDataSection.cs" />
     <Compile Include="IL\Stubs\PInvokeILProvider.cs" />
     <Compile Include="IL\Stubs\StartupCode\StartupCodeMainMethod.cs" />
+    <Compile Include="IL\Stubs\StartupCode\StartupCodeMainMethod.Sorting.cs" />
     <Compile Include="Logger.cs" />
   </ItemGroup>
   <ItemGroup>

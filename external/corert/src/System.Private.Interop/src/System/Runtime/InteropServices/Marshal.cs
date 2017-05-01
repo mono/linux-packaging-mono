@@ -56,23 +56,7 @@ namespace System.Runtime.InteropServices
         //====================================================================
         // The max DBCS character size for the system.
         //====================================================================
-        public static readonly int SystemMaxDBCSCharSize = GetSystemMaxDBCSCharSize();
-
-        //====================================================================
-        // Helper method to retrieve the system's maximum DBCS character size.
-        //====================================================================
-        private static unsafe int GetSystemMaxDBCSCharSize()
-        {
-            ExternalInterop.CPINFO cpInfo;
-            if (ExternalInterop.GetCPInfo(ExternalInterop.Constants.CP_ACP, &cpInfo) != 0)
-            {
-                return cpInfo.MaxCharSize;
-            }
-            else
-            {
-                return 2;
-            }
-        }
+        public static readonly int SystemMaxDBCSCharSize = PInvokeMarshal.GetSystemMaxDBCSCharSize();
 
         public static unsafe String PtrToStringAnsi(IntPtr ptr)
         {
@@ -653,7 +637,7 @@ namespace System.Runtime.InteropServices
             {
                 throw GetExceptionForHR(errorCode, errorInfo);
             }
-        }  
+        }
 
         //====================================================================
         // Memory allocation and deallocation.
@@ -672,7 +656,7 @@ namespace System.Runtime.InteropServices
             fixed (char* pch = source)
             {
                 int convertedBytes =
-                    ExternalInterop.ConvertWideCharToMultiByte(pch, source.Length, pbNativeBuffer, cbNativeBuffer);
+                    PInvokeMarshal.ConvertWideCharToMultiByte(pch, source.Length, (byte*)pbNativeBuffer, cbNativeBuffer);
                 ((byte*)pbNativeBuffer)[convertedBytes] = 0;
             }
         }
@@ -689,7 +673,7 @@ namespace System.Runtime.InteropServices
                 return String.Empty;
             }
             // MB_PRECOMPOSED is the default.
-            int charsRequired = ExternalInterop.GetCharCount(sourceBuffer, cbSourceBuffer);
+            int charsRequired = PInvokeMarshal.GetCharCount((byte*)sourceBuffer, cbSourceBuffer);
 
             if (charsRequired == 0)
             {
@@ -699,9 +683,9 @@ namespace System.Runtime.InteropServices
             char[] wideChars = new char[charsRequired + 1];
             fixed (char* pWideChars = &wideChars[0])
             {
-                int converted = ExternalInterop.ConvertMultiByteToWideChar(sourceBuffer,
+                int converted = PInvokeMarshal.ConvertMultiByteToWideChar((byte*)sourceBuffer,
                                                                     cbSourceBuffer,
-                                                                    new IntPtr(pWideChars),
+                                                                    pWideChars,
                                                                     wideChars.Length);
                 if (converted == 0)
                 {
@@ -772,7 +756,7 @@ namespace System.Runtime.InteropServices
                 if (nb < s.Length)
                     throw new ArgumentOutOfRangeException(nameof(s));
 
-                IntPtr hglobal = ExternalInterop.MemAlloc(new IntPtr(nb));
+                IntPtr hglobal = PInvokeMarshal.MemAlloc(new IntPtr(nb));
                 ConvertToAnsi(s, hglobal, nb);
                 return hglobal;
             }
@@ -792,7 +776,7 @@ namespace System.Runtime.InteropServices
                 if (nb < s.Length)
                     throw new ArgumentOutOfRangeException(nameof(s));
 
-                IntPtr hglobal = ExternalInterop.MemAlloc(new UIntPtr((uint)nb));
+                IntPtr hglobal = PInvokeMarshal.MemAlloc(new IntPtr(nb));
                 fixed (char* firstChar = s)
                 {
                     InteropExtensions.Memcpy(hglobal, new IntPtr(firstChar), nb);
@@ -858,7 +842,7 @@ namespace System.Runtime.InteropServices
                 if (nb < s.Length)
                     throw new ArgumentOutOfRangeException(nameof(s));
 
-                IntPtr hglobal = new IntPtr( ExternalInterop.CoTaskMemAlloc(new IntPtr(nb)));
+                IntPtr hglobal = PInvokeMarshal.CoTaskMemAlloc(new UIntPtr((uint)nb));
 
                 if (hglobal == IntPtr.Zero)
                 {
@@ -889,7 +873,7 @@ namespace System.Runtime.InteropServices
                 if (nb < s.Length)
                     throw new ArgumentOutOfRangeException(nameof(s));
 
-                IntPtr hglobal = new IntPtr(ExternalInterop.CoTaskMemAlloc(new IntPtr(nb)));
+                IntPtr hglobal = PInvokeMarshal.CoTaskMemAlloc(new UIntPtr((uint)nb));
 
                 if (hglobal == IntPtr.Zero)
                 {
@@ -1023,7 +1007,7 @@ namespace System.Runtime.InteropServices
 
             fixed (char* pch = s)
             {
-                IntPtr bstr = new IntPtr( ExternalInterop.SysAllocStringLen(pch, (uint)s.Length));
+                IntPtr bstr = new IntPtr(ExternalInterop.SysAllocStringLen(pch, (uint)s.Length));
                 if (bstr == IntPtr.Zero)
                     throw new OutOfMemoryException();
 
@@ -1074,7 +1058,7 @@ namespace System.Runtime.InteropServices
             if (d == null)
                 throw new ArgumentNullException(nameof(d));
 
-            return McgMarshal.GetStubForPInvokeDelegate(d);
+            return PInvokeMarshal.GetStubForPInvokeDelegate(d);
         }
 
         public static IntPtr GetFunctionPointerForDelegate<TDelegate>(TDelegate d)

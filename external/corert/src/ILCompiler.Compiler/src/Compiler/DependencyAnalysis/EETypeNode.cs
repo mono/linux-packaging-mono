@@ -56,7 +56,7 @@ namespace ILCompiler.DependencyAnalysis
     ///                 |
     /// [Pointer Size]  | Pointer to the generic argument and variance info (optional)
     /// </summary>
-    public partial class EETypeNode : ObjectNode, ISymbolNode, IEETypeNode
+    public partial class EETypeNode : ObjectNode, IExportableSymbolNode, IEETypeNode, ISymbolDefinitionNode
     {
         protected TypeDesc _type;
         internal EETypeOptionalFieldsBuilder _optionalFieldsBuilder = new EETypeOptionalFieldsBuilder();
@@ -89,6 +89,13 @@ namespace ILCompiler.DependencyAnalysis
 
             return false;
         }
+
+        public override ObjectNode NodeForLinkage(NodeFactory factory)
+        {
+            return (ObjectNode)factory.NecessaryTypeSymbol(_type);
+        }
+
+        public virtual bool IsExported(NodeFactory factory) => factory.CompilationModuleGroup.ExportsType(Type);
 
         public TypeDesc Type => _type;
 
@@ -134,7 +141,9 @@ namespace ILCompiler.DependencyAnalysis
             sb.Append("__EEType_").Append(nameMangler.GetMangledTypeName(_type));
         }
 
-        public int Offset => GCDescSize;
+        int ISymbolNode.Offset => 0;
+        int ISymbolDefinitionNode.Offset => GCDescSize;
+
         public override bool IsShareable => IsTypeNodeShareable(_type);
 
         public static bool IsTypeNodeShareable(TypeDesc type)
@@ -181,15 +190,9 @@ namespace ILCompiler.DependencyAnalysis
                     ISymbolNode nonGCStatic = factory.TypeNonGCStaticsSymbol(metadataType);
                     if (_type.HasInstantiation)
                     {
-                        // The entry in the StaticsInfoHashtable points at the begining of the static fields data, so we need to add
-                        // the cctor context offset to the indirection cell.
-
-                        int cctorOffset = 0;
-                        if (factory.TypeSystemContext.HasLazyStaticConstructor(metadataType))
-                            cctorOffset += NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.TypeSystemContext.Target, metadataType);
-
-                        nonGCStatic = factory.Indirection(nonGCStatic, cctorOffset);
-
+                        // The entry in the StaticsInfoHashtable points at the beginning of the static fields data, rather than the cctor 
+                        // context offset.
+                        nonGCStatic = factory.Indirection(nonGCStatic);
                         dependencies.Add(nonGCStatic, "Non-GC statics indirection for StaticsInfoHashtable");
                     }
                     else
@@ -234,7 +237,7 @@ namespace ILCompiler.DependencyAnalysis
             if (EmitVirtualSlotsAndInterfaces)
             {
                 // Emit VTable
-                Debug.Assert(objData.CountBytes - Offset == GetVTableOffset(objData.TargetPointerSize));
+                Debug.Assert(objData.CountBytes - ((ISymbolDefinitionNode)this).Offset == GetVTableOffset(objData.TargetPointerSize));
                 SlotCounter virtualSlotCounter = SlotCounter.BeginCounting(ref /* readonly */ objData);
                 OutputVirtualSlots(factory, ref objData, _type, _type, relocsOnly);
 
@@ -293,7 +296,7 @@ namespace ILCompiler.DependencyAnalysis
             }
             else if (_type.IsString)
             {
-                objData.EmitShort(2);
+                objData.EmitShort(StringComponentSize.Value);
             }
             else
             {

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
   <PropertyGroup>
@@ -17,6 +17,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|arm'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|arm'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|armel'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|armel'" />
   <PropertyGroup>
     <ExcludeMscorlibFacade>true</ExcludeMscorlibFacade>
     <ExcludeAssemblyInfoPartialFile>true</ExcludeAssemblyInfoPartialFile>
@@ -33,30 +35,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants Condition="'$(FeatureCominterop)' == 'true'">FEATURE_COMINTEROP;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(IsProjectNLibrary)' != 'true'">
-    <DefineConstants>CORERT;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetsWindows)'=='true'">
-    <DefineConstants>PLATFORM_WINDOWS;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetsUnix)'=='true'">
-    <DefineConstants>PLATFORM_UNIX;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetsOSX)'=='true'">
-    <DefineConstants>PLATFORM_OSX;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x64'">
-    <DefineConstants>AMD64;BIT64;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'x86'">
-    <DefineConstants>X86;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'arm'">
-    <DefineConstants>ARM;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Platform)' == 'arm64'">
-    <DefineConstants>ARM64;BIT64;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\src\Internal\Runtime\RuntimeConstants.cs">
@@ -194,6 +172,7 @@
     <Compile Include="System\Resources\UnmanagedMemoryStreamWrapper.cs" />
     <Compile Include="System\Resources\StreamExtensions.cs" Condition="'$(IsProjectNLibrary)' != 'true'" />
     <Compile Include="System\Runtime\InteropServices\CriticalHandle.cs" />
+    <Compile Include="System\Text\CodePageDataItem.cs" />
     <Compile Include="System\__Canon.cs" />
     <Compile Include="System\AccessViolationException.cs" />
     <Compile Include="System\Activator.cs" />
@@ -226,7 +205,6 @@
     <Compile Include="System\Collections\ObjectEqualityComparer.cs" />
     <Compile Include="System\Collections\ObjectModel\Collection.cs" />
     <Compile Include="System\Collections\ObjectModel\ReadOnlyCollection.cs" />
-    <Compile Include="System\ComponentModel\DefaultValueAttribute.cs" />
     <Compile Include="System\CurrentSystemTimeZone.Cache.cs" />
     <Compile Include="System\Decimal.DecCalc.cs" />
     <Compile Include="System\DefaultBinder.CanConvert.cs" />
@@ -243,6 +221,8 @@
     <Compile Include="System\Globalization\FormatProvider.TimeSpanParse.cs" />
     <Compile Include="System\InvokeUtils.cs" />
     <Compile Include="System\IO\BinaryReader.cs" />
+    <Compile Include="System\IO\BinaryWriter.cs" />
+    <Compile Include="System\IO\EncodingCache.cs" />
     <Compile Include="System\IO\FileLoadException.CoreRT.cs" />
     <Compile Include="System\IO\IOException.cs" />
     <Compile Include="System\IO\MemoryStream.cs" />
@@ -334,25 +314,16 @@
     <Compile Include="System\Runtime\InteropServices\GCHandleType.cs" />
     <Compile Include="System\Runtime\InteropServices\InteropExtensions.cs" />
     <Compile Include="System\Runtime\InteropServices\MarshalAsAttribute.cs" />
+    <Compile Include="System\Runtime\InteropServices\MarshalDirectiveException.cs" />
     <Compile Include="System\Runtime\InteropServices\NativeCallableAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\PInvokeMarshal.cs" />
     <Compile Include="System\Runtime\InteropServices\SafeBuffer.cs" />
     <Compile Include="System\Runtime\InteropServices\SafeHandle.cs" />
     <Compile Include="System\Runtime\InteropServices\WindowsRuntime\EventRegistrationToken.cs" />
     <Compile Include="System\Runtime\Loader\AssemblyLoadContext.cs" />
-    <Compile Include="System\Runtime\Versioning\NonVersionableAttribute.cs" />
     <Compile Include="System\SerializableAttribute.cs" />
     <Compile Include="System\NonSerializedAttribute.cs" />
-    <Compile Include="System\Runtime\Serialization\OnSerializedAttribute.cs" />
-    <Compile Include="System\Runtime\Serialization\OnSerializingAttribute.cs" />
-    <Compile Include="System\Runtime\Serialization\OptionalFieldAttribute.cs" />
-    <Compile Include="System\Runtime\Serialization\SerializationException.cs" />
     <Compile Include="System\Runtime\Serialization\SerializationInfo.cs" />
-    <Compile Include="System\Runtime\Serialization\SerializationInfoEnumerator.cs" />
-    <Compile Include="System\Runtime\Serialization\StreamingContext.cs" />
-    <Compile Include="System\Runtime\Serialization\IDeserializationCallback.cs" />
-    <Compile Include="System\Runtime\Serialization\OnDeserializedAttribute.cs" />
-    <Compile Include="System\Runtime\Serialization\OnDeserializingAttribute.cs" />
     <Compile Include="System\SByte.cs" />
     <Compile Include="System\Single.cs" />
     <Compile Include="System\String.cs" />
@@ -390,45 +361,32 @@
     <Compile Include="System\Text\EncodingData.cs" />
     <Compile Include="System\Text\EncodingTable.cs" />
     <Compile Include="System\Text\Latin1Encoding.cs" />
-    <Compile Include="System\Text\StringBuilder.CoreRT.cs"/>
+    <Compile Include="System\Text\StringBuilder.CoreRT.cs" />
     <Compile Include="System\Text\StringBuilderCache.cs" />
     <Compile Include="System\Text\UTF7Encoding.cs" />
-    <Compile Include="System\Threading\AbandonedMutexException.cs" />
-    <Compile Include="System\Threading\ApartmentState.cs" />
-    <Compile Include="System\Threading\AsyncLocal.cs" />
-    <Compile Include="System\Threading\AutoResetEvent.cs" />
     <Compile Include="System\Threading\CancellationToken.cs" />
     <Compile Include="System\Threading\CancellationTokenRegistration.cs" />
     <Compile Include="System\Threading\CancellationTokenSource.cs" />
     <Compile Include="System\Threading\ManagedThreadId.cs" />
     <Compile Include="System\Threading\Lock.cs" />
     <Compile Include="System\Threading\Condition.cs" />
-    <Compile Include="System\Threading\EventResetMode.cs" />
     <Compile Include="System\Threading\EventWaitHandle.cs" />
-    <Compile Include="System\Threading\ExecutionContext.cs" />
     <Compile Include="System\Threading\FirstLevelSpinWaiter.cs" />
     <Compile Include="System\Threading\Interlocked.cs" />
     <Compile Include="System\Threading\LazyInitializer.cs" />
-    <Compile Include="System\Threading\LazyThreadSafetyMode.cs" />
     <Compile Include="System\Threading\LockHolder.cs" />
-    <Compile Include="System\Threading\LockRecursionException.cs" />
-    <Compile Include="System\Threading\ManualResetEvent.cs" />
     <Compile Include="System\Threading\ManualResetEventSlim.cs" />
     <Compile Include="System\Threading\Monitor.cs" />
     <Compile Include="System\Threading\Mutex.cs" />
     <Compile Include="System\Threading\ObjectHeader.cs" Condition="'$(UseSyncTable)' == 'true'" />
-    <Compile Include="System\Threading\ParameterizedThreadStart.cs" />
     <Compile Include="System\Threading\ReaderWriterLockSlim.cs" />
     <Compile Include="System\Threading\Semaphore.cs" />
-    <Compile Include="System\Threading\SemaphoreFullException.cs" />
     <Compile Include="System\Threading\SemaphoreSlim.cs" />
-    <Compile Include="System\Threading\SendOrPostCallback.cs" />
     <Compile Include="System\Threading\SpinLock.cs" />
     <Compile Include="System\Threading\SpinWait.cs" />
     <Compile Include="System\Threading\SynchronizationContext.cs" />
     <Compile Include="System\Threading\SynchronizationContext.WinRT.cs" Condition="'$(EnableWinRT)' == 'true'" />
     <Compile Include="System\Threading\SynchronizationContext.Dummy.cs" Condition="'$(EnableWinRT)' != 'true'" />
-    <Compile Include="System\Threading\SynchronizationLockException.cs" />
     <Compile Include="System\Threading\SyncTable.cs" Condition="'$(UseSyncTable)' == 'true'" />
     <Compile Include="System\Threading\Tasks\ConcurrentExclusiveSchedulerPair.cs" />
     <Compile Include="System\Threading\Tasks\DebuggerSupport.cs" />
@@ -447,17 +405,11 @@
     <Compile Include="System\Threading\ThreadInterruptedException.cs" />
     <Compile Include="System\Threading\ThreadLocal.cs" />
     <Compile Include="System\Threading\ThreadPool.cs" />
-    <Compile Include="System\Threading\ThreadPriority.cs" />
-    <Compile Include="System\Threading\ThreadStart.cs" />
-    <Compile Include="System\Threading\ThreadStartException.cs" />
-    <Compile Include="System\Threading\ThreadState.cs" />
-    <Compile Include="System\Threading\ThreadStateException.cs" />
-    <Compile Include="System\Threading\TimeoutHelper.cs" />
     <Compile Include="System\Threading\Timer.cs" />
     <Compile Include="System\Threading\Volatile.cs" />
     <Compile Include="System\Threading\WaitHandle.cs" />
     <Compile Include="System\Threading\WaitHandleArray.cs" />
-    <Compile Include="System\Threading\WaitHandleCannotBeOpenedException.cs" />
+    <Compile Include="System\ThrowHelper.cs" />
     <Compile Include="System\TimeSpan.cs" />
     <Compile Include="System\TimeZoneInfo.cs" />
     <Compile Include="System\Tuple.cs" />
@@ -792,6 +744,9 @@
     <Compile Include="..\..\Common\src\System\Runtime\InteropServices\McgIntrinsicsAttribute.cs">
       <Link>System\Runtime\InteropServices\McgIntrinsicsAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\src\System\Runtime\InteropServices\McgGeneratedNativeCallCodeAttribute.cs">
+      <Link>System\Runtime\InteropServices\McgGeneratedNativeCallCodeAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\src\System\Runtime\InteropServices\McgPInvokeData.cs">
       <Link>System\Runtime\InteropServices\McgPInvokeData.cs</Link>
     </Compile>
@@ -824,6 +779,7 @@
   <PropertyGroup Condition="'$(InPlaceRuntime)' == 'true'">
     <DefineConstants>INPLACE_RUNTIME;$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(Platform)' == 'arm'">FEATURE_64BIT_ALIGNMENT;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(Platform)' == 'armel'">FEATURE_64BIT_ALIGNMENT;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <ItemGroup Condition="'$(InPlaceRuntime)' == 'true'">
     <Compile Include="..\..\Runtime.Base\src\System\Diagnostics\Eval.cs">

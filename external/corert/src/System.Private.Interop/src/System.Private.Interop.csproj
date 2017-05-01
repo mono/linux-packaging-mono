@@ -10,9 +10,6 @@
     <!-- Disable warning about CLSCompliant attributes on members not being needed. -->
     <NoWarn>$(NoWarn);3021</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(IsProjectNLibrary)' != 'true'">
-    <DefineConstants>CORERT;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
   <!-- Default configurations to help VS understand the options -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
@@ -22,9 +19,6 @@
     </ProjectReference>
     <ReferencePath Include="$(AotPackageReferencePath)\System.Runtime.dll" />
     <ReferencePath Include="$(AotPackageReferencePath)\System.Runtime.Extensions.dll" />
-    <ReferencePath Include="$(AotPackageReferencePath)\System.Reflection.dll" />
-    <ReferencePath Include="$(AotPackageReferencePath)\System.Diagnostics.Debug.dll" Condition="'$(IsProjectNLibrary)' == 'true'" />
-    <ReferencePath Include="$(AotPackageReferencePath)\System.Threading.Tasks.dll" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsProjectNLibrary)' != 'true'">
     <ProjectReference Include="..\..\System.Private.CoreLib\src\System.Private.CoreLib.csproj" />
@@ -71,7 +65,6 @@
     <Compile Include="Shared\McgData.cs" />
     <Compile Include="Shared\McgGeneratedAssemblyAttribute.cs" />
     <Compile Include="Shared\McgGeneratedMarshallingCodeAttribute.cs" />
-    <Compile Include="Shared\McgGeneratedNativeCallCodeAttribute.cs" />
     <Compile Include="Shared\McgHelpers.cs" />
     <Compile Include="Shared\McgInternalTypeAttribute.cs" />
     <Compile Include="Shared\McgIntrinsics.cs" />
@@ -129,7 +122,6 @@
     <Compile Include="System\Runtime\InteropServices\Marshal.cs" />
     <Compile Include="System\Runtime\InteropServices\MarshalAdapter.cs" />
     <Compile Include="System\Runtime\InteropServices\MarshalImpl.cs" />
-    <Compile Include="System\Runtime\InteropServices\MarshalDirectiveException.cs" />
     <Compile Include="System\Runtime\InteropServices\MissingInteropDataException.cs" />
     <Compile Include="System\Runtime\InteropServices\OptionalAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\PreserveSigAttribute.cs" />
@@ -148,9 +140,10 @@
     <Compile Include="System\Runtime\InteropServices\WindowsRuntime\EventRegistrationToken.cs" />
     <Compile Include="Internal\Runtime\CompilerHelpers\LibraryInitializer.cs" />
     <Compile Include="Interop\Interop.Memory.cs" />
+    <Compile Condition="'$(IsProjectNLibrary)' == 'true'" Include="Internal\Runtime\CompilerHelpers\Callbacks.ProjectN.cs"/>
+    <Compile Condition="'$(IsProjectNLibrary)' != 'true'" Include="Internal\Runtime\CompilerHelpers\Callbacks.CoreRT.cs"/>
   </ItemGroup>
   <ItemGroup  Condition="'$(IsProjectNLibrary)' != 'true'">
-    <Compile Include="Internal\Runtime\CompilerHelpers\InteropCallbackManager.cs"/>
     <Compile Include="..\..\Common\src\Internal\Runtime\MetadataBlob.cs">
       <Link>MetadataBlob.cs</Link>
     </Compile>
@@ -224,7 +217,6 @@
     <Compile Include="Interop\Interop.COM.Windows.cs" />
     <Compile Include="Interop\Interop.Common.Windows.cs" />
     <Compile Include="System\__HResults.cs" />
-    <Compile Include="System\DllNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsProjectNLibrary)' == 'true'">
     <Compile Include="System\Reflection\DispatchProxy.cs" />

@@ -57,6 +57,7 @@
 #include <mono/metadata/marshal.h>
 #include <mono/metadata/environment.h>
 #include <mono/metadata/mono-debug.h>
+#include <mono/utils/atomic.h>
 
 #include "interp.h"
 #include "interp-internals.h"
@@ -106,7 +107,7 @@ void ves_exec_method (MonoInvocation *frame);
 static char* dump_stack (stackval *stack, stackval *sp);
 static char* dump_frame (MonoInvocation *inv);
 static MonoArray *get_trace_ips (MonoDomain *domain, MonoInvocation *top);
-static void ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context);
+static void ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context, unsigned short *start_with_ip, MonoException *filter_exception);
 
 typedef void (*ICallMethod) (MonoInvocation *frame);
 
@@ -529,9 +530,16 @@ stackval_to_data (MonoType *type, stackval *val, char *data, gboolean pinvoke)
 		} else
 			mono_value_copy (data, val->data.vt, type->data.klass);
 		return;
-	case MONO_TYPE_GENERICINST:
+	case MONO_TYPE_GENERICINST: {
+		MonoClass *container_class = type->data.generic_class->container_class;
+
+		if (container_class->valuetype && !container_class->enumtype) {
+			mono_value_copy (data, val->data.vt, mono_class_from_mono_type (type));
+			return;
+		}
 		stackval_to_data (&type->data.generic_class->container_class->byval_arg, val, data, pinvoke);
 		return;
+	}
 	default:
 		g_warning ("got type %x", type->type);
 		g_assert_not_reached ();
@@ -699,6 +707,9 @@ interp_walk_stack_with_ctx (MonoInternalStackWalk func, MonoContext *ctx, MonoUn
 {
 	MonoError error;
 	ThreadContext *context = mono_native_tls_get_value (thread_context_id);
+
+	if (!context)
+		return;
 
 	MonoInvocation *frame = context->current_frame;
 
@@ -1416,7 +1427,7 @@ handle_enum:
 	if (exc)
 		frame.invoke_trap = 1;
 	context->managed_code = 1;
-	ves_exec_method_with_context (&frame, context);
+	ves_exec_method_with_context (&frame, context, NULL, NULL);
 	context->managed_code = 0;
 	if (context == &context_struct)
 		mono_native_tls_set_value (thread_context_id, NULL);
@@ -1572,7 +1583,7 @@ interp_entry (InterpEntryData *data)
 		break;
 	}
 
-	ves_exec_method_with_context (&frame, context);
+	ves_exec_method_with_context (&frame, context, NULL, NULL);
 	context->managed_code = 0;
 	if (context == &context_struct)
 		mono_native_tls_set_value (thread_context_id, NULL);
@@ -1903,8 +1914,9 @@ mono_interp_create_method_pointer (MonoMethod *method, MonoError *error)
 	MonoMethod *wrapper;
 	RuntimeMethod *rmethod;
 
-	if (method->wrapper_type && method->wrapper_type != MONO_WRAPPER_RUNTIME_INVOKE)
-		return NULL;
+	/* HACK: method_ptr of delegate should point to a runtime method*/
+	if (method->wrapper_type && method->wrapper_type == MONO_WRAPPER_DYNAMIC_METHOD)
+		return mono_interp_get_runtime_method (mono_domain_get (), method, error);
 
 	rmethod = mono_interp_get_runtime_method (mono_domain_get (), method, error);
 	if (rmethod->jit_entry)
@@ -2001,11 +2013,8 @@ static int opcode_counts[512];
 #define MINT_IN_DEFAULT default:
 #endif
 
-static void
-ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context);
-
 static void 
-ves_exec_method_with_context_with_ip (MonoInvocation *frame, ThreadContext *context, unsigned short *start_with_ip, MonoException *filter_exception)
+ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context, unsigned short *start_with_ip, MonoException *filter_exception)
 {
 	MonoInvocation child_frame;
 	GSList *finally_ips = NULL;
@@ -2257,7 +2266,7 @@ ves_exec_method_with_context_with_ip (MonoInvocation *frame, ThreadContext *cont
 				}
 			}
 
-			ves_exec_method_with_context (&child_frame, context);
+			ves_exec_method_with_context (&child_frame, context, NULL, NULL);
 
 			context->current_frame = frame;
 
@@ -2341,7 +2350,7 @@ ves_exec_method_with_context_with_ip (MonoInvocation *frame, ThreadContext *cont
 				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
 			}
 
-			ves_exec_method_with_context (&child_frame, context);
+			ves_exec_method_with_context (&child_frame, context, NULL, NULL);
 
 			context->current_frame = frame;
 
@@ -2381,7 +2390,7 @@ ves_exec_method_with_context_with_ip (MonoInvocation *frame, ThreadContext *cont
 				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
 			}
 
-			ves_exec_method_with_context (&child_frame, context);
+			ves_exec_method_with_context (&child_frame, context, NULL, NULL);
 
 			context->current_frame = frame;
 
@@ -2631,7 +2640,7 @@ ves_exec_method_with_context_with_ip (MonoInvocation *frame, ThreadContext *cont
 				sp [0].data.p = unboxed;
 			}
 
-			ves_exec_method_with_context (&child_frame, context);
+			ves_exec_method_with_context (&child_frame, context, NULL, NULL);
 
 			context->current_frame = frame;
 
@@ -2678,7 +2687,7 @@ ves_exec_method_with_context_with_ip (MonoInvocation *frame, ThreadContext *cont
 				sp [0].data.p = unboxed;
 			}
 
-			ves_exec_method_with_context (&child_frame, context);
+			ves_exec_method_with_context (&child_frame, context, NULL, NULL);
 
 			context->current_frame = frame;
 
@@ -3090,6 +3099,11 @@ ves_exec_method_with_context_with_ip (MonoInvocation *frame, ThreadContext *cont
 			sp -= 2;
 			* (double *) sp->data.p = sp[1].data.f;
 			MINT_IN_BREAK;
+		MINT_IN_CASE(MINT_MONO_ATOMIC_STORE_I4)
+			++ip;
+			sp -= 2;
+			InterlockedWrite ((gint32 *) sp->data.p, sp [1].data.i);
+			MINT_IN_BREAK;
 #define BINOP(datamem, op) \
 	--sp; \
 	sp [-1].data.datamem = sp [-1].data.datamem op sp [0].data.datamem; \
@@ -3463,7 +3477,7 @@ ves_exec_method_with_context_with_ip (MonoInvocation *frame, ThreadContext *cont
 
 			g_assert (csig->call_convention == MONO_CALL_DEFAULT);
 
-			ves_exec_method_with_context (&child_frame, context);
+			ves_exec_method_with_context (&child_frame, context, NULL, NULL);
 
 			context->current_frame = frame;
 
@@ -3989,6 +4003,7 @@ array_constructed:
 		MINT_IN_CASE(MINT_STELEM_I1) /* fall through */ 
 		MINT_IN_CASE(MINT_STELEM_U1) /* fall through */
 		MINT_IN_CASE(MINT_STELEM_I2) /* fall through */
+		MINT_IN_CASE(MINT_STELEM_U2) /* fall through */
 		MINT_IN_CASE(MINT_STELEM_I4) /* fall through */
 		MINT_IN_CASE(MINT_STELEM_I8) /* fall through */
 		MINT_IN_CASE(MINT_STELEM_R4) /* fall through */
@@ -4019,6 +4034,9 @@ array_constructed:
 				break;
 			case MINT_STELEM_I2:
 				mono_array_set ((MonoArray *)o, gint16, aindex, sp [2].data.i);
+				break;
+			case MINT_STELEM_U2:
+				mono_array_set ((MonoArray *)o, guint16, aindex, sp [2].data.i);
 				break;
 			case MINT_STELEM_I4:
 				mono_array_set ((MonoArray *)o, gint32, aindex, sp [2].data.i);
@@ -4289,6 +4307,13 @@ array_constructed:
 		MINT_IN_CASE(MINT_ICALL_PPP_V)
 		MINT_IN_CASE(MINT_ICALL_PPI_V)
 			sp = do_icall (context, *ip, sp, rtm->data_items [*(guint16 *)(ip + 1)]);
+			if (*mono_thread_interruption_request_flag ()) {
+				MonoException *exc = mono_thread_interruption_checkpoint ();
+				if (exc) {
+					frame->ex = exc;
+					context->search_for_handler = 1;
+				}
+			}
 			if (frame->ex != NULL)
 				goto handle_exception;
 			ip += 2;
@@ -4318,6 +4343,28 @@ array_constructed:
 			if (sp > frame->stack)
 				g_warning ("retobj: more values on stack: %d", sp-frame->stack);
 			goto exit_frame;
+		MINT_IN_CASE(MINT_MONO_TLS) {
+			MonoTlsKey key = *(gint32 *)(ip + 1);
+			sp->data.p = ((gpointer (*)()) mono_tls_get_tls_getter (key, FALSE)) ();
+			sp++;
+			ip += 3;
+			MINT_IN_BREAK;
+		}
+		MINT_IN_CASE(MINT_MONO_JIT_ATTACH) {
+			++ip;
+
+			context->original_domain = NULL;
+			MonoDomain *tls_domain = (MonoDomain *) ((gpointer (*)()) mono_tls_get_tls_getter (TLS_KEY_DOMAIN, FALSE)) ();
+			gpointer tls_jit = ((gpointer (*)()) mono_tls_get_tls_getter (TLS_KEY_DOMAIN, FALSE)) ();
+
+			if (tls_domain != context->domain || !tls_jit)
+				context->original_domain = mono_jit_thread_attach (context->domain);
+			MINT_IN_BREAK;
+		}
+		MINT_IN_CASE(MINT_MONO_JIT_DETACH)
+			++ip;
+			mono_jit_set_domain (context->original_domain);
+			MINT_IN_BREAK;
 
 #define RELOP(datamem, op) \
 	--sp; \
@@ -4572,7 +4619,7 @@ array_constructed:
 			sp [-1].data.p = alloca (len);
 			MonoMethodHeader *header = mono_method_get_header_checked (frame->runtime_method->method, &error);
 			mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-			if (header->init_locals)
+			if (header && header->init_locals)
 				memset (sp [-1].data.p, 0, len);
 			++ip;
 			MINT_IN_BREAK;
@@ -4692,7 +4739,7 @@ array_constructed:
 					stackval retval;
 					memcpy (&dup_frame, inv, sizeof (MonoInvocation));
 					dup_frame.retval = &retval;
-					ves_exec_method_with_context_with_ip (&dup_frame, context, inv->runtime_method->code + clause->data.filter_offset, frame->ex);
+					ves_exec_method_with_context (&dup_frame, context, inv->runtime_method->code + clause->data.filter_offset, frame->ex);
 					if (dup_frame.retval->data.i) {
 #if DEBUG_INTERP
 						if (tracing)
@@ -4840,12 +4887,6 @@ exit_frame:
 	DEBUG_LEAVE ();
 }
 
-static void
-ves_exec_method_with_context (MonoInvocation *frame, ThreadContext *context)
-{
-	ves_exec_method_with_context_with_ip (frame, context, NULL, NULL);
-}
-
 void
 ves_exec_method (MonoInvocation *frame)
 {
@@ -4876,7 +4917,7 @@ ves_exec_method (MonoInvocation *frame)
 	frame->runtime_method = mono_interp_get_runtime_method (context->domain, frame->method, &error);
 	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
 	context->managed_code = 1;
-	ves_exec_method_with_context (frame, context);
+	ves_exec_method_with_context (frame, context, NULL, NULL);
 	context->managed_code = 0;
 	if (frame->ex) {
 		if (context != &context_struct && context->current_env) {

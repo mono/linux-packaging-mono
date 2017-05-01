@@ -12,8 +12,6 @@ using Internal.TypeSystem;
 
 using ILCompiler.DependencyAnalysisFramework;
 
-using FatFunctionPointerConstants = Internal.Runtime.FatFunctionPointerConstants;
-
 namespace ILCompiler.DependencyAnalysis
 {
     public enum GenericLookupResultReferenceType
@@ -32,9 +30,11 @@ namespace ILCompiler.DependencyAnalysis
     /// </summary>
     public abstract class GenericLookupResult
     {
+        protected abstract int ClassCode { get; }
         public abstract ISymbolNode GetTarget(NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary);
         public abstract void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb);
         public abstract override string ToString();
+        protected abstract int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer);
 
         public virtual void EmitDictionaryEntry(ref ObjectDataBuilder builder, NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
         {
@@ -61,6 +61,43 @@ namespace ILCompiler.DependencyAnalysis
         {
             return Array.Empty<DependencyNodeCore<NodeFactory>>();
         }
+
+        public class Comparer
+        {
+            private TypeSystemComparer _comparer;
+
+            public Comparer(TypeSystemComparer comparer)
+            {
+                _comparer = comparer;
+            }
+
+            public int Compare(GenericLookupResult x, GenericLookupResult y)
+            {
+                if (x == y)
+                {
+                    return 0;
+                }
+
+                int codeX = x.ClassCode;
+                int codeY = y.ClassCode;
+                if (codeX == codeY)
+                {
+                    Debug.Assert(x.GetType() == y.GetType());
+
+                    int result = x.CompareToImpl(y, _comparer);
+
+                    // We did a reference equality check above so an "Equal" result is not expected
+                    Debug.Assert(result != 0);
+
+                    return result;
+                }
+                else
+                {
+                    Debug.Assert(x.GetType() != y.GetType());
+                    return codeX > codeY ? -1 : 1;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -69,6 +106,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class TypeHandleGenericLookupResult : GenericLookupResult
     {
         private TypeDesc _type;
+
+        protected override int ClassCode => 1623839081;
 
         public TypeHandleGenericLookupResult(TypeDesc type)
         {
@@ -107,15 +146,22 @@ namespace ILCompiler.DependencyAnalysis
                 return GenericLookupResultReferenceType.Direct;
             }
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((TypeHandleGenericLookupResult)other)._type);
+        }
     }
 
 
     /// <summary>
-    /// Generic lookup result that points to an EEType where if the type is Nullable<X> the EEType is X
+    /// Generic lookup result that points to an EEType where if the type is Nullable&lt;X&gt; the EEType is X
     /// </summary>
     internal sealed class UnwrapNullableTypeHandleGenericLookupResult : GenericLookupResult
     {
         private TypeDesc _type;
+
+        protected override int ClassCode => 53521918;
 
         public UnwrapNullableTypeHandleGenericLookupResult(TypeDesc type)
         {
@@ -159,6 +205,11 @@ namespace ILCompiler.DependencyAnalysis
                 return GenericLookupResultReferenceType.Direct;
             }
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((UnwrapNullableTypeHandleGenericLookupResult)other)._type);
+        }
     }
 
     /// <summary>
@@ -167,6 +218,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class FieldOffsetGenericLookupResult : GenericLookupResult
     {
         private FieldDesc _field;
+
+        protected override int ClassCode => -1670293557;
 
         public FieldOffsetGenericLookupResult(FieldDesc field)
         {
@@ -200,6 +253,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return factory.NativeLayout.FieldOffsetDictionarySlot(_field);
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_field, ((FieldOffsetGenericLookupResult)other)._field);
+        }
     }
 
     /// <summary>
@@ -208,6 +266,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class VTableOffsetGenericLookupResult : GenericLookupResult
     {
         private MethodDesc _method;
+
+        protected override int ClassCode => 386794182;
 
         public VTableOffsetGenericLookupResult(MethodDesc method)
         {
@@ -253,6 +313,11 @@ namespace ILCompiler.DependencyAnalysis
                 factory.VirtualMethodUse(canonMethod)
             };
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_method, ((VTableOffsetGenericLookupResult)other)._method);
+        }
     }
 
     /// <summary>
@@ -261,6 +326,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class MethodHandleGenericLookupResult : GenericLookupResult
     {
         private MethodDesc _method;
+
+        protected override int ClassCode => 394272689;
 
         public MethodHandleGenericLookupResult(MethodDesc method)
         {
@@ -286,6 +353,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return factory.NativeLayout.MethodLdTokenDictionarySlot(_method);
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_method, ((MethodHandleGenericLookupResult)other)._method);
+        }
     }
 
     /// <summary>
@@ -294,6 +366,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class FieldHandleGenericLookupResult : GenericLookupResult
     {
         private FieldDesc _field;
+
+        protected override int ClassCode => -196995964;
 
         public FieldHandleGenericLookupResult(FieldDesc field)
         {
@@ -319,6 +393,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return factory.NativeLayout.FieldLdTokenDictionarySlot(_field);
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_field, ((FieldHandleGenericLookupResult)other)._field);
+        }
     }
 
     /// <summary>
@@ -327,6 +406,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class MethodDictionaryGenericLookupResult : GenericLookupResult
     {
         private MethodDesc _method;
+
+        protected override int ClassCode => -467418176;
 
         public MethodDictionaryGenericLookupResult(MethodDesc method)
         {
@@ -364,6 +445,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return factory.NativeLayout.MethodDictionaryDictionarySlot(_method);
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_method, ((MethodDictionaryGenericLookupResult)other)._method);
+        }
     }
 
     /// <summary>
@@ -372,27 +458,30 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class MethodEntryGenericLookupResult : GenericLookupResult
     {
         private MethodDesc _method;
+        private bool _isUnboxingThunk;
 
-        public MethodEntryGenericLookupResult(MethodDesc method)
+        protected override int ClassCode => 1572293098;
+
+        public MethodEntryGenericLookupResult(MethodDesc method, bool isUnboxingThunk)
         {
             Debug.Assert(method.IsRuntimeDeterminedExactMethod);
             _method = method;
+            _isUnboxingThunk = isUnboxingThunk;
         }
 
         public override ISymbolNode GetTarget(NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
         {
             MethodDesc instantiatedMethod = _method.InstantiateSignature(typeInstantiation, methodInstantiation);
-            return factory.FatFunctionPointer(instantiatedMethod);
-        }
-
-        public override void EmitDictionaryEntry(ref ObjectDataBuilder builder, NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
-        {
-            builder.EmitPointerReloc(GetTarget(factory, typeInstantiation, methodInstantiation, dictionary), FatFunctionPointerConstants.Offset);
+            return factory.FatFunctionPointer(instantiatedMethod, _isUnboxingThunk);
         }
 
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            sb.Append("MethodEntry_");
+            if (!_isUnboxingThunk)
+                sb.Append("MethodEntry_");
+            else
+                sb.Append("UnboxMethodEntry_");
+
             sb.Append(nameMangler.GetMangledMethodName(_method));
         }
 
@@ -403,6 +492,16 @@ namespace ILCompiler.DependencyAnalysis
             return factory.NativeLayout.MethodEntrypointDictionarySlot
                         (_method, unboxing: true, functionPointerTarget: factory.MethodEntrypoint(_method.GetCanonMethodTarget(CanonicalFormKind.Specific)));
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            var otherEntry = (MethodEntryGenericLookupResult)other;
+            int result = (_isUnboxingThunk ? 1 : 0) - (otherEntry._isUnboxingThunk ? 1 : 0);
+            if (result != 0)
+                return result;
+
+            return comparer.Compare(_method, otherEntry._method);
+        }
     }
 
     /// <summary>
@@ -411,6 +510,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class VirtualDispatchGenericLookupResult : GenericLookupResult
     {
         private MethodDesc _method;
+
+        protected override int ClassCode => 643566930;
 
         public VirtualDispatchGenericLookupResult(MethodDesc method)
         {
@@ -456,6 +557,11 @@ namespace ILCompiler.DependencyAnalysis
                 return factory.NativeLayout.InterfaceCellDictionarySlot(_method);
             }
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_method, ((VirtualDispatchGenericLookupResult)other)._method);
+        }
     }
 
     /// <summary>
@@ -464,6 +570,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class VirtualResolveGenericLookupResult : GenericLookupResult
     {
         private MethodDesc _method;
+
+        protected override int ClassCode => -12619218;
 
         public VirtualResolveGenericLookupResult(MethodDesc method)
         {
@@ -481,10 +589,7 @@ namespace ILCompiler.DependencyAnalysis
             if (factory.Target.Abi == TargetAbi.CoreRT)
             {
                 MethodDesc instantiatedMethod = _method.InstantiateSignature(typeInstantiation, methodInstantiation);
-
-                // https://github.com/dotnet/corert/issues/2342 - we put a pointer to the virtual call helper into the dictionary
-                // but this should be something that will let us compute the target of the dipatch (e.g. interface dispatch cell).
-                return factory.ReadyToRunHelper(ReadyToRunHelperId.VirtualCall, instantiatedMethod);
+                return factory.InterfaceDispatchCell(instantiatedMethod);
             }
             else
             {
@@ -505,12 +610,19 @@ namespace ILCompiler.DependencyAnalysis
         {
             if (factory.Target.Abi == TargetAbi.CoreRT)
             {
+                // We should be able to get rid of this custom ABI handling
+                // once https://github.com/dotnet/corert/issues/3248 is fixed.
                 return factory.NativeLayout.NotSupportedDictionarySlot;
             }
             else
             {
                 return factory.NativeLayout.InterfaceCellDictionarySlot(_method);
             }
+        }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_method, ((VirtualResolveGenericLookupResult)other)._method);
         }
     }
 
@@ -520,6 +632,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class TypeNonGCStaticBaseGenericLookupResult : GenericLookupResult
     {
         private MetadataType _type;
+
+        protected override int ClassCode => -328863267;
 
         public TypeNonGCStaticBaseGenericLookupResult(TypeDesc type)
         {
@@ -531,17 +645,7 @@ namespace ILCompiler.DependencyAnalysis
         public override ISymbolNode GetTarget(NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
         {
             var instantiatedType = (MetadataType)_type.InstantiateSignature(typeInstantiation, methodInstantiation);
-            ISymbolNode target = factory.TypeNonGCStaticsSymbol(instantiatedType);
-
-            // The dictionary entry always points to the beginning of the data.
-            if (factory.TypeSystemContext.HasLazyStaticConstructor(instantiatedType))
-            {
-                return factory.Indirection(target, NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, instantiatedType));
-            }
-            else
-            {
-                return factory.Indirection(target);
-            }
+            return factory.Indirection(factory.TypeNonGCStaticsSymbol(instantiatedType));
         }
 
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
@@ -561,6 +665,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return GenericLookupResultReferenceType.Indirect;
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((TypeNonGCStaticBaseGenericLookupResult)other)._type);
+        }
     }
 
     /// <summary>
@@ -569,6 +678,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class TypeThreadStaticBaseIndexGenericLookupResult : GenericLookupResult
     {
         private MetadataType _type;
+
+        protected override int ClassCode => -177446371;
 
         public TypeThreadStaticBaseIndexGenericLookupResult(TypeDesc type)
         {
@@ -595,6 +706,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return factory.NativeLayout.NotSupportedDictionarySlot;
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((TypeThreadStaticBaseIndexGenericLookupResult)other)._type);
+        }
     }
 
     /// <summary>
@@ -603,6 +719,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class TypeGCStaticBaseGenericLookupResult : GenericLookupResult
     {
         private MetadataType _type;
+
+        protected override int ClassCode => 429225829;
 
         public TypeGCStaticBaseGenericLookupResult(TypeDesc type)
         {
@@ -634,6 +752,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return GenericLookupResultReferenceType.Indirect;
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((TypeGCStaticBaseGenericLookupResult)other)._type);
+        }
     }
 
     /// <summary>
@@ -642,6 +765,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class ObjectAllocatorGenericLookupResult : GenericLookupResult
     {
         private TypeDesc _type;
+
+        protected override int ClassCode => -1671431655;
 
         public ObjectAllocatorGenericLookupResult(TypeDesc type)
         {
@@ -672,6 +797,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return GenericLookupResultReferenceType.Indirect;
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((ObjectAllocatorGenericLookupResult)other)._type);
+        }
     }
 
     /// <summary>
@@ -680,6 +810,8 @@ namespace ILCompiler.DependencyAnalysis
     internal sealed class ArrayAllocatorGenericLookupResult : GenericLookupResult
     {
         private TypeDesc _type;
+
+        protected override int ClassCode => -927905284;
 
         public ArrayAllocatorGenericLookupResult(TypeDesc type)
         {
@@ -711,11 +843,18 @@ namespace ILCompiler.DependencyAnalysis
         {
             return GenericLookupResultReferenceType.Indirect;
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((ArrayAllocatorGenericLookupResult)other)._type);
+        }
     }
 
     internal sealed class ThreadStaticIndexLookupResult : GenericLookupResult
     {
         private TypeDesc _type;
+
+        protected override int ClassCode => -25938157;
 
         public ThreadStaticIndexLookupResult(TypeDesc type)
         {
@@ -748,11 +887,18 @@ namespace ILCompiler.DependencyAnalysis
         {
             return GenericLookupResultReferenceType.Indirect;
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((ThreadStaticIndexLookupResult)other)._type);
+        }
     }
 
     internal sealed class ThreadStaticOffsetLookupResult : GenericLookupResult
     {
         private TypeDesc _type;
+
+        protected override int ClassCode => -1678275787;
 
         public ThreadStaticOffsetLookupResult(TypeDesc type)
         {
@@ -766,7 +912,7 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(utcNodeFactory != null);
             TypeDesc instantiatedType = _type.InstantiateSignature(typeInstantiation, methodInstantiation);
             Debug.Assert(instantiatedType is MetadataType);
-            return factory.Indirection(utcNodeFactory.TypeThreadStaticsOffsetSymbol(instantiatedType as MetadataType));
+            return factory.Indirection(utcNodeFactory.TypeThreadStaticsOffsetSymbol((MetadataType)instantiatedType));
         }
 
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
@@ -786,11 +932,18 @@ namespace ILCompiler.DependencyAnalysis
         {
             return GenericLookupResultReferenceType.Indirect;
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((ThreadStaticOffsetLookupResult)other)._type);
+        }
     }
 
     internal sealed class DefaultConstructorLookupResult : GenericLookupResult
     {
         private TypeDesc _type;
+
+        protected override int ClassCode => -1391112482;
 
         public DefaultConstructorLookupResult(TypeDesc type)
         {
@@ -831,11 +984,18 @@ namespace ILCompiler.DependencyAnalysis
         {
             return factory.NativeLayout.DefaultConstructorDictionarySlot(_type);
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((DefaultConstructorLookupResult)other)._type);
+        }
     }
 
     internal sealed class CallingConventionConverterLookupResult : GenericLookupResult
     {
         private CallingConventionConverterKey _callingConventionConverter;
+
+        protected override int ClassCode => -581806472;
 
         public CallingConventionConverterLookupResult(CallingConventionConverterKey callingConventionConverter)
         {
@@ -858,7 +1018,7 @@ namespace ILCompiler.DependencyAnalysis
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
             sb.Append("CallingConventionConverterLookupResult_");
-            sb.Append(_callingConventionConverter.GetName(nameMangler));
+            sb.Append(_callingConventionConverter.GetName());
         }
 
         public override string ToString() => "CallingConventionConverterLookupResult";
@@ -867,11 +1027,23 @@ namespace ILCompiler.DependencyAnalysis
         {
             return factory.NativeLayout.CallingConventionConverter(_callingConventionConverter);
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            var otherEntry = (CallingConventionConverterLookupResult)other;
+            int result = (int)(_callingConventionConverter.ConverterKind - otherEntry._callingConventionConverter.ConverterKind);
+            if (result != 0)
+                return result;
+
+            return comparer.Compare(_callingConventionConverter.Signature, otherEntry._callingConventionConverter.Signature);
+        }
     }
 
     internal sealed class TypeSizeLookupResult : GenericLookupResult
     {
         private TypeDesc _type;
+
+        protected override int ClassCode => -367755250;
 
         public TypeSizeLookupResult(TypeDesc type)
         {
@@ -913,6 +1085,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             return factory.NativeLayout.TypeSizeDictionarySlot(_type);
         }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            return comparer.Compare(_type, ((TypeSizeLookupResult)other)._type);
+        }
     }
 
     internal sealed class ConstrainedMethodUseLookupResult : GenericLookupResult
@@ -920,6 +1097,8 @@ namespace ILCompiler.DependencyAnalysis
         MethodDesc _constrainedMethod;
         TypeDesc _constraintType;
         bool _directCall;
+
+        protected override int ClassCode => -1525377658;
 
         public ConstrainedMethodUseLookupResult(MethodDesc constrainedMethod, TypeDesc constraintType, bool directCall)
         {
@@ -952,19 +1131,6 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
-        public override void EmitDictionaryEntry(ref ObjectDataBuilder builder, NodeFactory factory, Instantiation typeInstantiation, Instantiation methodInstantiation, GenericDictionaryNode dictionary)
-        {
-            ISymbolNode target = GetTarget(factory, typeInstantiation, methodInstantiation, dictionary);
-            if (target is IFatFunctionPointerNode)
-            {
-                builder.EmitPointerReloc(target, FatFunctionPointerConstants.Offset);
-            }
-            else
-            {
-                builder.EmitPointerReloc(target);
-            }
-        }
-
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
             sb.Append("ConstrainedMethodUseLookupResult_");
@@ -979,6 +1145,20 @@ namespace ILCompiler.DependencyAnalysis
         public override NativeLayoutVertexNode TemplateDictionaryNode(NodeFactory factory)
         {
             return factory.NativeLayout.ConstrainedMethodUse(_constrainedMethod, _constraintType, _directCall);
+        }
+
+        protected override int CompareToImpl(GenericLookupResult other, TypeSystemComparer comparer)
+        {
+            var otherResult = (ConstrainedMethodUseLookupResult)other;
+            int result = (_directCall ? 1 : 0) - (otherResult._directCall ? 1 : 0);
+            if (result != 0)
+                return result;
+
+            result = comparer.Compare(_constraintType, otherResult._constraintType);
+            if (result != 0)
+                return result;
+
+            return comparer.Compare(_constrainedMethod, otherResult._constrainedMethod);
         }
     }
 }

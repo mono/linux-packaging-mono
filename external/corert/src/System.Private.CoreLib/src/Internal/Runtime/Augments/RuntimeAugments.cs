@@ -542,18 +542,6 @@ namespace Internal.Runtime.Augments
             return cell;
         }
 
-        public static IntPtr GetNonGcStaticFieldData(RuntimeTypeHandle typeHandle)
-        {
-            EETypePtr eeType = CreateEETypePtr(typeHandle);
-            return RuntimeImports.RhGetNonGcStaticFieldData(eeType);
-        }
-
-        public static IntPtr GetGcStaticFieldData(RuntimeTypeHandle typeHandle)
-        {
-            EETypePtr eeType = CreateEETypePtr(typeHandle);
-            return RuntimeImports.RhGetGcStaticFieldData(eeType);
-        }
-
         public static int GetValueTypeSize(RuntimeTypeHandle typeHandle)
         {
             return (int)typeHandle.ToEETypePtr().ValueTypeSize;
@@ -863,7 +851,7 @@ namespace Internal.Runtime.Augments
         // correct write barrier such that the GC is not incorrectly impacted.
         public static unsafe void BulkMoveWithWriteBarrier(IntPtr dmem, IntPtr smem, int size)
         {
-            RuntimeImports.RhBulkMoveWithWriteBarrier((byte*)dmem.ToPointer(), (byte*)smem.ToPointer(), size);
+            RuntimeImports.RhBulkMoveWithWriteBarrier(ref *(byte*)dmem.ToPointer(), ref *(byte*)smem.ToPointer(), (uint)size);
         }
 
         public static IntPtr GetUniversalTransitionThunk()

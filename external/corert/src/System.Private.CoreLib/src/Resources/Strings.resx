@@ -195,6 +195,9 @@
   <data name="Arg_EntryPointNotFoundException" xml:space="preserve">
     <value>Entry point was not found.</value>
   </data>
+  <data name="Arg_EntryPointNotFoundExceptionParameterized" xml:space="preserve">
+    <value>Unable to find an entry point named '{0}' in DLL '{1}'.</value>
+  </data>
   <data name="Arg_EnumIllegalVal" xml:space="preserve">
     <value>Illegal enum value: {0}.</value>
   </data>
@@ -2385,5 +2388,47 @@
   </data>
   <data name="EventSource_NoManifest" xml:space="preserve">
     <value>A manifest could not be generated for this EventSource because it contains one or more ill-formed event methods.</value>
+  </data>
+  <data name="Argument_StreamNotWritable" xml:space="preserve">
+    <value>Stream was not writable.</value>
+  </data>
+  <data name="Arg_SurrogatesNotAllowedAsSingleChar" xml:space="preserve">
+    <value>Unicode surrogate characters must be written out as pairs together in the same call, not individually. Consider passing in a character array instead.</value>
+  </data>
+  <data name="CustomAttributeFormat_InvalidFieldFail" xml:space="preserve">
+    <value>'{0}' field specified was not found.</value>
+  </data>
+  <data name="CustomAttributeFormat_InvalidPropertyFail" xml:space="preserve">
+    <value>'{0}' property specified was not found.</value>
+  </data>
+  <data name="NotSupported_CannotCallEqualsOnSpan" xml:space="preserve">
+    <value>Equals() on Span and ReadOnlySpan is not supported. Use operator== instead.</value>
+  </data>
+  <data name="NotSupported_CannotCallGetHashCodeOnSpan" xml:space="preserve">
+    <value>GetHashCode() on Span and ReadOnlySpan is not supported.</value>
+  </data>
+  <data name="Argument_DestinationTooShort" xml:space="preserve">
+    <value>Destination is too short.</value>
+  </data>
+  <data name="Argument_InvalidTypeWithPointersNotSupported" xml:space="preserve">
+    <value>Cannot use type '{0}'. Only value types without pointers or references are supported.</value>
+  </data>
+  <data name="ArrayTypeMismatch_ConstrainedCopy" xml:space="preserve">
+    <value>Array.ConstrainedCopy will only work on array types that are provably compatible, without any form of boxing, unboxing, widening, or casting of each array element.  Change the array types (i.e., copy a Derived[] to a Base[]), or use a mitigation strategy in the CER for Array.Copy's less powerful reliability contract, such as cloning the array or throwing away the potentially corrupt destination array.</value>
+  </data>
+  <data name="Arg_DllNotFoundException" xml:space="preserve">
+    <value>Dll was not found.</value>
+  </data>
+  <data name="Arg_DllNotFoundExceptionParameterized" xml:space="preserve">
+    <value>Unable to load DLL '{0}': The specified module could not be found.</value>
+  </data>
+  <data name="WrongSizeArrayInNStruct" xml:space="preserve">
+    <value>Type could not be marshaled because the length of an embedded array instance does not match the declared length in the layout.</value>
+  </data>  
+  <data name="Arg_InteropMarshalUnmappableChar" xml:space="preserve">
+    <value>Cannot marshal: Encountered unmappable character.</value>
+  </data>
+  <data name="Arg_MarshalDirectiveException" xml:space="preserve">
+    <value>Marshaling directives are invalid.</value>
   </data>
 </root>

@@ -290,7 +290,7 @@ namespace ILCompiler.DependencyAnalysis
         private NativeLayoutTypeSignatureVertexNode _returnTypeSig;
         private NativeLayoutTypeSignatureVertexNode[] _parametersSig;
 
-        protected override string GetName(NodeFactory factory) => "NativeLayoutMethodSignatureVertexNode " + _signature.GetMangledName(factory.NameMangler);
+        protected override string GetName(NodeFactory factory) => "NativeLayoutMethodSignatureVertexNode " + _signature.GetName();
 
         public NativeLayoutMethodSignatureVertexNode(NodeFactory factory, Internal.TypeSystem.MethodSignature signature)
         {
@@ -885,6 +885,8 @@ namespace ILCompiler.DependencyAnalysis
 
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory context)
         {
+            yield return new DependencyListEntry(context.ConstructedTypeSymbol(_type.ConvertToCanonForm(CanonicalFormKind.Specific)), "Template EEType");
+
             foreach (TypeDesc iface in _type.RuntimeInterfaces)
             {
                 yield return new DependencyListEntry(context.NativeLayout.TypeSignatureVertex(iface), "template interface list");
@@ -1731,7 +1733,7 @@ namespace ILCompiler.DependencyAnalysis
 
         protected sealed override string GetName(NodeFactory factory) => 
             "NativeLayoutCallingConventionConverterGenericDictionarySlotNode" + _converterKind.ToString() +
-             _signature.GetMangledName(factory.NameMangler);
+             _signature.GetName();
 
         protected sealed override FixupSignatureKind SignatureKind => FixupSignatureKind.MethodLdToken;
 

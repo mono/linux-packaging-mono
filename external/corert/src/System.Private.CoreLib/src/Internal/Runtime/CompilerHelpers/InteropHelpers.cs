@@ -6,10 +6,7 @@ using System;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-
 using Interlocked = System.Threading.Interlocked;
-using Internal.Runtime.Augments;
-using System.Runtime;
 
 namespace Internal.Runtime.CompilerHelpers
 {
@@ -18,70 +15,27 @@ namespace Internal.Runtime.CompilerHelpers
     /// </summary>
     internal static class InteropHelpers
     {
-        internal static unsafe byte* StringToAnsi(String str)
+        internal static unsafe byte* StringToAnsiString(String str, bool bestFit, bool throwOnUnmappableChar)
         {
-            if (str == null)
-                return null;
-
-            // CORERT-TODO: Use same encoding as the rest of the interop
-            var encoding = Encoding.UTF8;
-
-            fixed (char* pStr = str)
-            {
-                int stringLength = str.Length;
-                int bufferLength = encoding.GetByteCount(pStr, stringLength);
-                byte *buffer = (byte*)PInvokeMarshal.CoTaskMemAlloc((UIntPtr)(void*)(bufferLength+1)).ToPointer();
-                encoding.GetBytes(pStr, stringLength, buffer, bufferLength);
-                *(buffer + bufferLength) = 0;
-                return buffer;
-            }
-        }
-        internal static unsafe void  StringToAnsiFixedArray(String str, byte *buffer, int length)
-        {
-            if (buffer == null)
-                return;
-
-            Debug.Assert(str.Length >= length);
-
-            var encoding = Encoding.UTF8;
-            fixed (char* pStr = str)
-            {
-                int bufferLength = encoding.GetByteCount(pStr, length);
-                encoding.GetBytes(pStr, length, buffer, bufferLength);
-                *(buffer + bufferLength) = 0;
-            }
+            return PInvokeMarshal.StringToAnsiString(str, bestFit, throwOnUnmappableChar);
         }
 
         public static unsafe string AnsiStringToString(byte* buffer)
         {
-            if (buffer == null)
-                return String.Empty;
-
-            int length = strlen(buffer);
-
-            return AnsiStringToStringFixedArray(buffer, length);
-            
+            return PInvokeMarshal.AnsiStringToString(buffer);
         }
 
-        public static unsafe string AnsiStringToStringFixedArray(byte* buffer, int length)
+
+        internal static unsafe void StringToByValAnsiString(string str, byte* pNative, int charCount, bool bestFit, bool throwOnUnmappableChar)
         {
-            if (buffer == null)
-                return String.Empty;
+            // In CoreRT charCount = Min(SizeConst, str.Length). So we don't need to truncate again.
+            PInvokeMarshal.StringToByValAnsiString(str, pNative, charCount, bestFit, throwOnUnmappableChar, truncate: false);
+        }
 
-            string result = String.Empty;
 
-            if (length > 0)
-            {
-                result = new String(' ', length);
-
-                fixed (char* pTemp = result)
-                {
-                    int charCount = Encoding.UTF8.GetCharCount(buffer, length);
-                    // TODO: support ansi semantics in windows
-                    Encoding.UTF8.GetChars(buffer, charCount, pTemp, length);
-                }
-            }
-            return result;
+        public static unsafe string ByValAnsiStringToString(byte* buffer, int length)
+        {
+            return PInvokeMarshal.ByValAnsiStringToString(buffer, length);
         }
 
         internal static unsafe void StringToUnicodeFixedArray(String str, UInt16* buffer, int length)
@@ -126,7 +80,7 @@ namespace Internal.Runtime.CompilerHelpers
 
             int stringLength = str.Length;
 
-            char* buffer = (char*)PInvokeMarshal.CoTaskMemAlloc((UIntPtr)(sizeof(char) * (stringLength+1))).ToPointer();
+            char* buffer = (char*)PInvokeMarshal.CoTaskMemAlloc((UIntPtr)(sizeof(char) * (stringLength + 1))).ToPointer();
 
             fixed (char* pStr = str)
             {
@@ -142,10 +96,56 @@ namespace Internal.Runtime.CompilerHelpers
             return new String(buffer);
         }
 
-        internal static char[] GetEmptyStringBuilderBuffer(StringBuilder sb)
+        public static unsafe byte* AllocMemoryForAnsiStringBuilder(StringBuilder sb)
         {
-            // CORERT-TODO: Reuse buffer from string builder where possible?
-            return new char[sb.Capacity + 1];
+            if (sb == null)
+            {
+                return null;
+            }
+            return (byte *)CoTaskMemAllocAndZeroMemory(new IntPtr(checked((sb.Capacity + 2) * PInvokeMarshal.GetSystemMaxDBCSCharSize())));
+        }
+
+        public static unsafe char* AllocMemoryForUnicodeStringBuilder(StringBuilder sb)
+        {
+            if (sb == null)
+            {
+                return null;
+            }
+            return (char *)CoTaskMemAllocAndZeroMemory(new IntPtr(checked((sb.Capacity + 2) * 2)));
+        }
+
+
+        public static unsafe void AnsiStringToStringBuilder(byte* newBuffer, System.Text.StringBuilder stringBuilder)
+        {
+            if (stringBuilder == null)
+                return;
+
+            PInvokeMarshal.AnsiStringToStringBuilder(newBuffer, stringBuilder);
+        }
+
+        public static unsafe void UnicodeStringToStringBuilder(ushort* newBuffer, System.Text.StringBuilder stringBuilder)
+        {
+            if (stringBuilder == null)
+                return;
+
+            PInvokeMarshal.UnicodeStringToStringBuilder(newBuffer, stringBuilder);
+        }
+
+        public static unsafe void StringBuilderToAnsiString(System.Text.StringBuilder stringBuilder, byte* pNative,
+            bool bestFit, bool throwOnUnmappableChar)
+        {
+            if (pNative == null)
+                return;
+
+            PInvokeMarshal.StringBuilderToAnsiString(stringBuilder, pNative, bestFit, throwOnUnmappableChar);
+        }
+
+        public static unsafe void StringBuilderToUnicodeString(System.Text.StringBuilder stringBuilder, ushort* destination)
+        {
+            if (destination == null)
+                return;
+
+            PInvokeMarshal.StringBuilderToUnicodeString(stringBuilder, destination);
         }
 
         internal static unsafe IntPtr ResolvePInvoke(MethodFixupCell* pCell)
@@ -223,11 +223,15 @@ namespace Internal.Runtime.CompilerHelpers
 #endif
         }
 
-        internal static unsafe void FixupModuleCell(ModuleFixupCell* pCell)
+        private static unsafe string GetModuleName(ModuleFixupCell* pCell)
         {
             byte* pModuleName = (byte*)pCell->ModuleName;
-            string moduleName = Encoding.UTF8.GetString(pModuleName, strlen(pModuleName));
+            return Encoding.UTF8.GetString(pModuleName, strlen(pModuleName));
+        }
 
+        internal static unsafe void FixupModuleCell(ModuleFixupCell* pCell)
+        {
+            string moduleName = GetModuleName(pCell);
             IntPtr hModule = TryResolveModule(moduleName);
             if (hModule != IntPtr.Zero)
             {
@@ -240,8 +244,7 @@ namespace Internal.Runtime.CompilerHelpers
             }
             else
             {
-                // TODO: should be DllNotFoundException, but layering...
-                throw new TypeLoadException(moduleName);
+                throw new DllNotFoundException(SR.Format(SR.Arg_DllNotFoundExceptionParameterized, moduleName));
             }
         }
 
@@ -256,8 +259,8 @@ namespace Internal.Runtime.CompilerHelpers
 #endif
             if (pCell->Target == IntPtr.Zero)
             {
-                // TODO: Shoud be EntryPointNotFoundException, but layering...
-                throw new TypeLoadException(Encoding.UTF8.GetString(methodName, strlen(methodName)));
+                string entryPointName = Encoding.UTF8.GetString(methodName, strlen(methodName));
+                throw new EntryPointNotFoundException(SR.Format(SR.Arg_EntryPointNotFoundExceptionParameterized, entryPointName, GetModuleName(pCell->Module)));
             }
         }
 
@@ -284,31 +287,28 @@ namespace Internal.Runtime.CompilerHelpers
         {
             PInvokeMarshal.CoTaskMemFree((IntPtr)p);
         }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal unsafe struct ThunkContextData
+        /// <summary>
+        /// Returns the stub to the pinvoke marshalling stub
+        /// </summary>
+        public static IntPtr GetStubForPInvokeDelegate(Delegate del)
         {
-            public GCHandle Handle;        //  A weak GCHandle to the delegate
-            public IntPtr FunctionPtr;     // Function pointer for open static delegates
-        };
+            return PInvokeMarshal.GetStubForPInvokeDelegate(del);
+        }
 
-        internal static IntPtr GetCurrentCalleeOpenStaticDelegateFunctionPointer()
+        /// <summary>
+        /// Retrieve the corresponding P/invoke instance from the stub
+        /// </summary>
+        public static Delegate GetPInvokeDelegateForStub(IntPtr pStub, RuntimeTypeHandle delegateType)
         {
-            IntPtr pContext = RuntimeImports.GetCurrentInteropThunkContext();
-            Debug.Assert(pContext != null);
+            return PInvokeMarshal.GetPInvokeDelegateForStub(pStub, delegateType);
+        }
 
-            IntPtr fnPtr;
-            unsafe
-            {
-                // Pull out function pointer for open static delegate
-                fnPtr = (*((ThunkContextData*)pContext)).FunctionPtr;
-                
-                // free the memory here
-                CoTaskMemFree((void*)pContext);
-            }
-
-            Debug.Assert(fnPtr != null);
-            return fnPtr;
+        /// <summary>
+        /// Retrieves the function pointer for the current open static delegate that is being called
+        /// </summary>
+        public static IntPtr GetCurrentCalleeOpenStaticDelegateFunctionPointer()
+        {
+            return PInvokeMarshal.GetCurrentCalleeOpenStaticDelegateFunctionPointer();
         }
 
         /// <summary>
@@ -316,99 +316,7 @@ namespace Internal.Runtime.CompilerHelpers
         /// </summary>
         public static T GetCurrentCalleeDelegate<T>() where T : class // constraint can't be System.Delegate
         {
-            //
-            // RH keeps track of the current thunk that is being called through a secret argument / thread
-            // statics. No matter how that's implemented, we get the current thunk which we can use for
-            // look up later
-            //
-            IntPtr pContext = RuntimeImports.GetCurrentInteropThunkContext();
-
-            Debug.Assert(pContext != null);
-
-            GCHandle handle;
-            unsafe
-            {
-                // Pull out Handle from context
-                handle = (*((ThunkContextData*)pContext)).Handle;
-
-            }
-
-            T target = InteropExtensions.UncheckedCast<T>(handle.Target);
-
-            //
-            // The delegate might already been garbage collected
-            // User should use GC.KeepAlive or whatever ways necessary to keep the delegate alive
-            // until they are done with the native function pointer
-            //
-            if (target == null)
-            {
-                Environment.FailFast(SR.Delegate_GarbageCollected);
-            }
-            return target;
-
-        }
-    
-    internal static IntPtr GetStubForPInvokeDelegate(Delegate del)
-        {
-            if (del == null)
-                return IntPtr.Zero;
-
-            return AllocateThunk(del);
-        }
-
-        private static object s_thunkPoolHeap;
-
-
-        private static IntPtr AllocateThunk(Delegate del)
-        {
-            //TODO: cache del->thunk here
-
-            if (s_thunkPoolHeap == null)
-            {
-                s_thunkPoolHeap = RuntimeAugments.CreateThunksHeap(RuntimeImports.GetInteropCommonStubAddress());
-                Debug.Assert(s_thunkPoolHeap != null);
-            }
-
-            IntPtr pThunk = RuntimeAugments.AllocateThunk(s_thunkPoolHeap);
-            Debug.Assert(pThunk != IntPtr.Zero);
-
-            if (pThunk == IntPtr.Zero)
-            {
-                // We've either run out of memory, or failed to allocate a new thunk due to some other bug. Now we should fail fast
-                Environment.FailFast("Insufficient number of thunks.");
-                return IntPtr.Zero;
-            }
-            else
-            {
-
-                McgPInvokeDelegateData pinvokeDelegateData;
-                if (!RuntimeAugments.InteropCallbacks.TryGetMarshallerDataForDelegate(del.GetTypeHandle(), out pinvokeDelegateData))
-                {
-                    Environment.FailFast("Couldn't find marshalling stubs for delegate.");
-                }
-                IntPtr pContext;
-                unsafe
-                {
-                    //
-                    // Allocate unmanaged memory for GCHandle of delegate and function pointer of open static delegate
-                    // We will store this pointer on the context slot of thunk data
-                    //
-                    pContext = (IntPtr)CoTaskMemAllocAndZeroMemory((System.IntPtr)(2 * (IntPtr.Size)));
-                    ThunkContextData* thunkData = (ThunkContextData*)pContext;
-
-                    (*thunkData).Handle = GCHandle.Alloc(del, GCHandleType.Weak);
-                    (*thunkData).FunctionPtr = del.GetRawFunctionPointerForOpenStaticDelegate();
-                }
-
-                //
-                //  For open static delegates set target to ReverseOpenStaticDelegateStub which calls the static function pointer directly
-                //
-                IntPtr pTarget = del.GetRawFunctionPointerForOpenStaticDelegate() == IntPtr.Zero ? pinvokeDelegateData.ReverseStub : pinvokeDelegateData.ReverseOpenStaticDelegateStub;
-
-                RuntimeAugments.SetThunkData(s_thunkPoolHeap, pThunk, pContext, pTarget);
-
-                return pThunk;
-            }
+            return PInvokeMarshal.GetCurrentCalleeDelegate<T>();
         }
 
         [StructLayout(LayoutKind.Sequential)]

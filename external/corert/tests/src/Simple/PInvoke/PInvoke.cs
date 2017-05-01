@@ -67,8 +67,23 @@ namespace PInvokeTests
         private static extern bool VerifySizeParamIndex(
                 [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)] out byte[] arrByte, out byte arrSize);
 
+        [DllImport("*", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, EntryPoint = "VerifyUnicodeStringBuilder")]
+        private static extern int VerifyUnicodeStringBuilder(StringBuilder sb);
+
+        [DllImport("*", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, EntryPoint = "VerifyUnicodeStringBuilder")]
+        private static extern int VerifyUnicodeStringBuilderIn([In]StringBuilder sb);
+
         [DllImport("*", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode)]
-        private static extern int VerifyStringBuilder(StringBuilder sb);
+        private static extern int VerifyUnicodeStringBuilderOut([Out]StringBuilder sb);
+
+        [DllImport("*", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, EntryPoint = "VerifyAnsiStringBuilder")]
+        private static extern int VerifyAnsiStringBuilder(StringBuilder sb);
+
+        [DllImport("*", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, EntryPoint = "VerifyAnsiStringBuilder")]
+        private static extern int VerifyAnsiStringBuilderIn([In]StringBuilder sb);
+
+        [DllImport("*", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        private static extern int VerifyAnsiStringBuilderOut([Out]StringBuilder sb);
 
         [DllImport("*", CallingConvention = CallingConvention.StdCall)]
         public static extern bool SafeHandleTest(SafeMemoryHandle sh1, Int64 sh1Value);
@@ -88,12 +103,21 @@ namespace PInvokeTests
         [DllImport("*", CallingConvention = CallingConvention.StdCall)]
         static extern bool ReversePInvoke_String(Delegate_String del);
 
+        [DllImport("*", CallingConvention = CallingConvention.StdCall)]
+        static extern Delegate_String GetDelegate();
+
+        [DllImport("*", CallingConvention = CallingConvention.StdCall)]
+        static extern bool Callback(ref Delegate_String d);
+
         delegate void Delegate_Unused();
         [DllImport("*", CallingConvention = CallingConvention.StdCall)]
         static extern unsafe int* ReversePInvoke_Unused(Delegate_Unused del);
 
         [DllImport("*", CallingConvention = CallingConvention.StdCall, EntryPoint = "StructTest")]
         static extern bool StructTest_Auto(AutoStruct ss);
+
+        [DllImport("*", CallingConvention = CallingConvention.StdCall)]
+        static extern bool StructTest_Sequential2(NesterOfSequentialStruct.SequentialStruct ss);
 
         [DllImport("*", CallingConvention = CallingConvention.StdCall)]
         static extern bool StructTest(SequentialStruct ss);
@@ -270,10 +294,39 @@ namespace PInvokeTests
         private static void TestStringBuilder()
         {
             Console.WriteLine("Testing marshalling string builder");
-            StringBuilder sb = new StringBuilder(16);
-            VerifyStringBuilder(sb);
-            bool result = (sb.ToString() == "Hello World");
-            ThrowIfNotEquals(true, result, "Unicode String builder marshalling failed.");
+            StringBuilder sb = new StringBuilder("Hello World");
+            ThrowIfNotEquals(1, VerifyUnicodeStringBuilder(sb), "Unicode StringBuilder marshalling failed");
+            ThrowIfNotEquals("HELLO WORLD", sb.ToString(), "Unicode StringBuilder marshalling failed.");
+
+            StringBuilder sb1 = null;
+            // for null stringbuilder it should return -1
+            ThrowIfNotEquals(-1, VerifyUnicodeStringBuilder(sb1), "Null unicode StringBuilder marshalling failed");
+
+            StringBuilder sb2 = new StringBuilder("Hello World");
+            ThrowIfNotEquals(1, VerifyUnicodeStringBuilderIn(sb2), "In unicode StringBuilder marshalling failed");
+            // Only [In] should change stringbuilder value
+            ThrowIfNotEquals("Hello World", sb2.ToString(), "In unicode StringBuilder marshalling failed");
+
+            StringBuilder sb3 = new StringBuilder();
+            ThrowIfNotEquals(1, VerifyUnicodeStringBuilderOut(sb3), "Out Unicode string marshalling failed");
+            ThrowIfNotEquals("Hello World", sb3.ToString(), "Out Unicode StringBuilder marshalling failed");
+
+            StringBuilder sb4 = new StringBuilder("Hello World");
+            ThrowIfNotEquals(1, VerifyAnsiStringBuilder(sb4), "Ansi StringBuilder marshalling failed");
+            ThrowIfNotEquals("HELLO WORLD", sb4.ToString(), "Ansi StringBuilder marshalling failed.");
+
+            StringBuilder sb5 = null;
+            // for null stringbuilder it should return -1
+            ThrowIfNotEquals(-1, VerifyAnsiStringBuilder(sb5), "Null Ansi StringBuilder marshalling failed");
+
+            StringBuilder sb6 = new StringBuilder("Hello World");
+            ThrowIfNotEquals(1, VerifyAnsiStringBuilderIn(sb6), "In unicode StringBuilder marshalling failed");
+            // Only [In] should change stringbuilder value
+            ThrowIfNotEquals("Hello World", sb6.ToString(), "In unicode StringBuilder marshalling failed");
+
+            StringBuilder sb7 = new StringBuilder();
+            ThrowIfNotEquals(1, VerifyAnsiStringBuilderOut(sb7), "Out Ansi string marshalling failed");
+            ThrowIfNotEquals("Hello World!", sb7.ToString(), "Out Ansi StringBuilder marshalling failed");
         }
 
 
@@ -363,6 +416,13 @@ namespace PInvokeTests
             Delegate_Int closed = new Delegate_Int((new ClosedDelegateCLass()).Sum);
             ThrowIfNotEquals(true, ReversePInvoke_Int(closed), "Closed Delegate marshalling failed.");
 
+            Delegate_String ret = GetDelegate();
+            ThrowIfNotEquals(true, ret("Hello World!"), "Delegate as P/Invoke return failed");
+
+            Delegate_String d = new Delegate_String(new ClosedDelegateCLass().GetString);
+            ThrowIfNotEquals(true, Callback(ref d), "Delegate IN marshalling failed");
+            ThrowIfNotEquals(true, d("Hello World!"), "Delegate OUT marshalling failed");
+
             Delegate_String ds = new Delegate_String((new ClosedDelegateCLass()).GetString);
             ThrowIfNotEquals(true, ReversePInvoke_String(ds), "Delegate marshalling failed.");
         }
@@ -389,6 +449,18 @@ namespace PInvokeTests
             public float f2;
             [MarshalAs(UnmanagedType.LPStr)]
             public String f3;
+        }
+
+        // A second struct with the same name but nested. Regression test against native types being mangled into
+        // the compiler-generated type and losing fully qualified type name information.
+        class NesterOfSequentialStruct
+        {
+            [StructLayout(LayoutKind.Sequential)]
+            public struct SequentialStruct
+            {
+                public float f1;
+                public int f2;
+            }
         }
 
         [StructLayout(LayoutKind.Explicit)]
@@ -430,6 +502,12 @@ namespace PInvokeTests
             SequentialStruct ss2 = new SequentialStruct();
             StructTest_ByOut(out ss2);
             ThrowIfNotEquals(true, ss2.f0 == 1 && ss2.f1 == 1.0 &&  ss2.f2 == 1.0 && ss2.f3.Equals("0123456"), "Struct marshalling scenario3 failed.");
+
+            NesterOfSequentialStruct.SequentialStruct ss3 = new NesterOfSequentialStruct.SequentialStruct();
+            ss3.f1 = 10.0f;
+            ss3.f2 = 123;
+
+            ThrowIfNotEquals(true, StructTest_Sequential2(ss3), "Struct marshalling scenario1 failed.");
 
             ExplicitStruct es = new ExplicitStruct();
             es.f1 = 100;

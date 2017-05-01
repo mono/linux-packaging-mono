@@ -352,6 +352,15 @@ namespace Internal.Runtime
             }
         }
 
+        internal bool IsString
+        {
+            get
+            {
+                // String is currently the only non-array type with a non-zero component size.
+                return ComponentSize == StringComponentSize.Value && !IsArray && !IsGenericTypeDefinition;
+            }
+        }
+
         internal bool IsArray
         {
             get
@@ -1092,7 +1101,7 @@ namespace Internal.Runtime
                 UInt32 cbOffset = GetFieldOffset(EETypeField.ETF_DynamicGcStatics);
                 fixed (EEType* pThis = &this)
                 {
-                    return *(IntPtr*)((byte*)pThis + cbOffset);
+                    return (IntPtr)((byte*)pThis + cbOffset);
                 }
             }
 #if TYPE_LOADER_IMPLEMENTATION
@@ -1116,7 +1125,7 @@ namespace Internal.Runtime
                 UInt32 cbOffset = GetFieldOffset(EETypeField.ETF_DynamicNonGcStatics);
                 fixed (EEType* pThis = &this)
                 {
-                    return *(IntPtr*)((byte*)pThis + cbOffset);
+                    return (IntPtr)((byte*)pThis + cbOffset);
                 }
             }
 #if TYPE_LOADER_IMPLEMENTATION

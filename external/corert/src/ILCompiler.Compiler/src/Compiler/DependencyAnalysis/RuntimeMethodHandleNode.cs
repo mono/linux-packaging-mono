@@ -10,7 +10,7 @@ using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
 {
-    class RuntimeMethodHandleNode : ObjectNode, ISymbolNode
+    public class RuntimeMethodHandleNode : ObjectNode, ISymbolDefinitionNode
     {
         private MethodDesc _targetMethod;
 
