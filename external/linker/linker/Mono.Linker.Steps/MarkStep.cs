@@ -30,6 +30,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -122,13 +123,28 @@ namespace Mono.Linker.Steps {
 					continue;
 
 				foreach (var exported in assembly.MainModule.ExportedTypes) {
-					if (!exported.IsForwarder)
+					bool isForwarder = exported.IsForwarder;
+					var declaringType = exported.DeclaringType;
+					while (!isForwarder && (declaringType != null)) {
+						isForwarder = declaringType.IsForwarder;
+						declaringType = declaringType.DeclaringType;
+					}
+
+					if (!isForwarder)
 						continue;
-					var type = exported.Resolve ();
+					TypeDefinition type = null;
+					try {
+						type = exported.Resolve ();
+					}
+					catch (AssemblyResolutionException) {
+						continue;
+					}
 					if (!Annotations.IsMarked (type))
 						continue;
 					Annotations.Mark (exported);
-					Annotations.Mark (assembly.MainModule);
+					if (_context.KeepTypeForwarderOnlyAssemblies) {
+						Annotations.Mark (assembly.MainModule);
+					}
 				}
 			}
 		}
@@ -138,8 +154,13 @@ namespace Mono.Linker.Steps {
 			while (!QueueIsEmpty ()) {
 				MethodDefinition method = (MethodDefinition) _methods.Dequeue ();
 				Annotations.Push (method);
-				ProcessMethod (method);
-				Annotations.Pop ();
+				try {
+					ProcessMethod (method);
+				} catch (Exception e) {
+					throw new MarkException (string.Format ("Error processing method: '{0}' in assembly: '{1}'", method.FullName, method.Module.Name), e);
+				} finally {
+					Annotations.Pop ();
+				}
 			}
 		}
 
@@ -211,20 +232,24 @@ namespace Mono.Linker.Steps {
 		protected virtual void MarkCustomAttribute (CustomAttribute ca)
 		{
 			Annotations.Push (ca);
-			MarkMethod (ca.Constructor);
+			try {
+				MarkMethod (ca.Constructor);
 
-			MarkCustomAttributeArguments (ca);
+				MarkCustomAttributeArguments (ca);
 
-			TypeReference constructor_type = ca.Constructor.DeclaringType;
-			TypeDefinition type = constructor_type.Resolve ();
-			if (type == null) {
+				TypeReference constructor_type = ca.Constructor.DeclaringType;
+				TypeDefinition type = constructor_type.Resolve ();
+
+				if (type == null) {
+					HandleUnresolvedType (constructor_type);
+					return;
+				}
+
+				MarkCustomAttributeProperties (ca, type);
+				MarkCustomAttributeFields (ca, type);
+			} finally {
 				Annotations.Pop ();
-				throw new ResolutionException (constructor_type);
 			}
-
-			MarkCustomAttributeProperties (ca, type);
-			MarkCustomAttributeFields (ca, type);
-			Annotations.Pop ();
 		}
 
 		protected void MarkSecurityDeclarations (ISecurityDeclarationProvider provider)
@@ -341,6 +366,19 @@ namespace Mono.Linker.Steps {
 			return null;
 		}
 
+		MethodDefinition GetMethodWithNoParameters (TypeDefinition type, string methodname)
+		{
+			while (type != null) {
+				MethodDefinition method = type.Methods.FirstOrDefault (m => m.Name == methodname && !m.HasParameters);
+				if (method != null)
+					return method;
+
+				type = type.BaseType != null ? ResolveTypeDefinition (type.BaseType) : null;
+			}
+
+			return null;
+		}
+
 		void MarkCustomAttributeArguments (CustomAttribute ca)
 		{
 			if (!ca.HasConstructorArguments)
@@ -388,7 +426,7 @@ namespace Mono.Linker.Steps {
 			// e.g. System.String[] -> System.String
 			var ts = (type as TypeSpecification);
 			if (ts != null) {
-				MarkWithResolvedScope (ts.GetElementType ());
+				MarkWithResolvedScope (ts.ElementType);
 				return;
 			}
 
@@ -504,8 +542,10 @@ namespace Mono.Linker.Steps {
 
 			TypeDefinition type = ResolveTypeDefinition (reference);
 
-			if (type == null)
-				throw new ResolutionException (reference);
+			if (type == null) {
+				HandleUnresolvedType (reference);
+				return null;
+			}
 
 			if (CheckProcessed (type))
 				return null;
@@ -524,6 +564,10 @@ namespace Mono.Linker.Steps {
 
 			if (IsSerializable (type))
 				MarkSerializable (type);
+
+			if (IsEventSource (type)) {
+				MarkEventSource (type);
+			}
 
 			MarkTypeSpecialCustomAttributes (type);
 
@@ -570,6 +614,15 @@ namespace Mono.Linker.Steps {
 				case "System.Xml.Serialization.XmlSchemaProviderAttribute":
 					MarkXmlSchemaProvider (type, attribute);
 					break;
+				case "System.Diagnostics.DebuggerDisplayAttribute":
+					MarkTypeWithDebuggerDisplayAttribute (type, attribute);
+					break;
+				case "System.Diagnostics.DebuggerTypeProxyAttribute":
+					MarkTypeWithDebuggerTypeProxyAttribute (type, attribute);
+					break;
+				case "System.Diagnostics.Tracing.EventDataAttribute":
+					MarkTypeWithEventDataAttribute (type, attribute);
+					break;
 				}
 			}
 		}
@@ -588,6 +641,11 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
+		void MarkTypeWithEventDataAttribute (TypeDefinition type, CustomAttribute attribute)
+		{
+			MarkMethodsIf (type.Methods, IsPublicInstancePropertyMethod);
+		}
+
 		void MarkXmlSchemaProvider (TypeDefinition type, CustomAttribute attribute)
 		{
 			string method_name;
@@ -595,6 +653,73 @@ namespace Mono.Linker.Steps {
 				return;
 
 			MarkNamedMethod (type, method_name);
+		}
+
+		void MarkTypeWithDebuggerDisplayAttribute (TypeDefinition type, CustomAttribute attribute)
+		{
+			if (_context.KeepMembersForDebuggerAttributes) {
+
+				string displayString = (string) attribute.ConstructorArguments[0].Value;
+
+				Regex regex = new Regex ("{[^{}]+}", RegexOptions.Compiled);
+
+				foreach (Match match in regex.Matches (displayString)) {
+					// Remove '{' and '}'
+					string realMatch = match.Value.Substring (1, match.Value.Length - 2);
+
+					// Remove ",nq" suffix if present
+					// (it asks the expression evaluator to remove the quotes when displaying the final value)
+					if (Regex.IsMatch(realMatch, @".+,\s*nq")) {
+						realMatch = realMatch.Substring (0, realMatch.LastIndexOf (','));
+					}
+
+					if (realMatch.EndsWith ("()")) {
+						string methodName = realMatch.Substring (0, realMatch.Length - 2);
+						MethodDefinition method = GetMethodWithNoParameters (type, methodName);
+						if (method != null) {
+							MarkMethod (method);
+							continue;
+						}
+					} else {
+						FieldDefinition field = GetField (type, realMatch);
+						if (field != null) {
+							MarkField (field);
+							continue;
+						}
+
+						PropertyDefinition property = GetProperty (type, realMatch);
+						if (property != null) {
+							if (property.GetMethod != null) {
+								MarkMethod (property.GetMethod);
+							}
+							if (property.SetMethod != null) {
+								MarkMethod (property.SetMethod);
+							}
+							continue;
+						}
+					}
+
+					while (type != null) {
+						MarkMethods (type);
+						MarkFields (type, includeStatic: true);
+						type = type.BaseType != null ? ResolveTypeDefinition (type.BaseType) : null;
+					}
+					return;
+				}
+			}
+		}
+
+		void MarkTypeWithDebuggerTypeProxyAttribute (TypeDefinition type, CustomAttribute attribute)
+		{
+			if (_context.KeepMembersForDebuggerAttributes) {
+				TypeReference proxyTypeReference = (TypeReference) attribute.ConstructorArguments [0].Value;
+
+				MarkType (proxyTypeReference);
+
+				TypeDefinition proxyType = ResolveTypeDefinition (proxyTypeReference);
+				MarkMethods (proxyType);
+				MarkFields (proxyType, includeStatic: true);
+			}
 		}
 
 		static bool TryGetStringArgument (CustomAttribute attribute, out string argument)
@@ -784,6 +909,33 @@ namespace Mono.Linker.Steps {
 			return td.BaseType != null && td.BaseType.FullName == "System.MulticastDelegate";
 		}
 
+		bool IsEventSource (TypeDefinition td)
+		{
+			TypeReference type = td;
+			do {
+				if (type.FullName == "System.Diagnostics.Tracing.EventSource") {
+					return true;
+				}
+
+				TypeDefinition typeDef = type.Resolve ();
+				if (typeDef == null) {
+					HandleUnresolvedType (type);
+					return false;
+				}
+				type = typeDef.BaseType;
+			} while (type != null);
+			return false;
+		}
+
+		void MarkEventSource (TypeDefinition td)
+		{
+			foreach (var nestedType in td.NestedTypes) {
+				if (nestedType.Name == "Keywords" || nestedType.Name == "Tasks" || nestedType.Name == "Opcodes") {
+					MarkStaticFields (nestedType);
+				}
+			}
+		}
+
 		protected TypeDefinition ResolveTypeDefinition (TypeReference type)
 		{
 			TypeDefinition td = type as TypeDefinition;
@@ -915,6 +1067,17 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
+		protected void MarkStaticFields(TypeDefinition type)
+		{
+			if (!type.HasFields)
+				return;
+
+			foreach (FieldDefinition field in type.Fields) {
+				if (field.IsStatic)
+					MarkField (field);
+			}
+		}
+
 		protected virtual void MarkMethods (TypeDefinition type)
 		{
 			if (type.HasMethods)
@@ -943,17 +1106,19 @@ namespace Mono.Linker.Steps {
 
 			MethodDefinition method = ResolveMethodDefinition (reference);
 
-			if (method == null) {
+			try {
+				if (method == null) {
+					HandleUnresolvedMethod (reference);
+					return null;
+				}
+
+				if (Annotations.GetAction (method) == MethodAction.Nothing)
+					Annotations.SetAction (method, MethodAction.Parse);
+
+				EnqueueMethod (method);
+			} finally {
 				Annotations.Pop ();
-				throw new ResolutionException (reference);
 			}
-
-			if (Annotations.GetAction (method) == MethodAction.Nothing)
-				Annotations.SetAction (method, MethodAction.Parse);
-
-			EnqueueMethod (method);
-
-			Annotations.Pop ();
 			Annotations.AddDependency (method);
 
 			return method;
@@ -1029,6 +1194,10 @@ namespace Mono.Linker.Steps {
 			MarkCustomAttributes (method.MethodReturnType);
 			MarkMarshalSpec (method.MethodReturnType);
 
+			if (method.IsPInvokeImpl || method.IsInternalCall) {
+				ProcessInteropMethod (method);
+			}
+
 			if (ShouldParseMethodBody (method))
 				MarkMethodBody (method.Body);
 
@@ -1060,6 +1229,34 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
+		void ProcessInteropMethod(MethodDefinition method)
+		{
+			TypeDefinition returnTypeDefinition = ResolveTypeDefinition (method.ReturnType);
+			const bool includeStaticFields = false;
+			if (returnTypeDefinition != null) {
+				MarkDefaultConstructor (returnTypeDefinition);
+				MarkFields (returnTypeDefinition, includeStaticFields);
+			}
+
+			if (method.HasThis) {
+				MarkFields (method.DeclaringType, includeStaticFields);
+			}
+
+			foreach (ParameterDefinition pd in method.Parameters) {
+				TypeReference paramTypeReference = pd.ParameterType;
+				if (paramTypeReference is TypeSpecification) {
+					paramTypeReference = (paramTypeReference as TypeSpecification).ElementType;
+				}
+				TypeDefinition paramTypeDefinition = ResolveTypeDefinition (paramTypeReference);
+				if (paramTypeDefinition != null) {
+					MarkFields (paramTypeDefinition, includeStaticFields);
+					if (pd.ParameterType.IsByReference) {
+						MarkDefaultConstructor (paramTypeDefinition);
+					}
+				}
+			}
+		}
+
 		bool ShouldParseMethodBody (MethodDefinition method)
 		{
 			if (!method.HasBody)
@@ -1074,6 +1271,11 @@ namespace Mono.Linker.Steps {
 		{
 			return (md.SemanticsAttributes & MethodSemanticsAttributes.Getter) != 0 ||
 				(md.SemanticsAttributes & MethodSemanticsAttributes.Setter) != 0;
+		}
+
+		static internal bool IsPublicInstancePropertyMethod (MethodDefinition md)
+		{
+			return md.IsPublic && !md.IsStatic && IsPropertyMethod (md);
 		}
 
 		static bool IsEventMethod (MethodDefinition md)
@@ -1161,6 +1363,16 @@ namespace Mono.Linker.Steps {
 			default:
 				break;
 			}
+		}
+
+		protected virtual void HandleUnresolvedType (TypeReference reference)
+		{
+			throw new ResolutionException (reference);
+		}
+
+		protected virtual void HandleUnresolvedMethod (MethodReference reference)
+		{
+			throw new ResolutionException (reference);
 		}
 	}
 }

@@ -9,6 +9,14 @@ namespace Microsoft.Win32.SafeHandles
 {
     internal class SafeThreadPoolIOHandle : SafeHandle
     {
+#if MONO
+        static SafeThreadPoolIOHandle()
+        {
+            if (!Environment.IsRunningOnWindows)
+                throw new PlatformNotSupportedException();
+        }
+#endif
+
         private SafeThreadPoolIOHandle() 
             : base(IntPtr.Zero, true)
         {

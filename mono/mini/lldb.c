@@ -1,5 +1,6 @@
-/*
- * lldb.c: Mono support for LLDB.
+/**
+ * \file
+ * Mono support for LLDB.
  *
  * Author:
  *   Zoltan Varga (vargaz@gmail.com)
@@ -12,9 +13,7 @@
 #include "lldb.h"
 #include "seq-points.h"
 
-#include <mono/metadata/mono-debug.h>
-#include <mono/metadata/mono-debug-debugger.h>
-#include <mono/metadata/debug-mono-symfile.h>
+#include <mono/metadata/debug-internals.h>
 #include <mono/utils/mono-counters.h>
 
 #if !defined(DISABLE_JIT) && !defined(DISABLE_LLDB)

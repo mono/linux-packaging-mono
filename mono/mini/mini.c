@@ -1,5 +1,6 @@
-/*
- * mini.c: The new Mono code generator.
+/**
+ * \file
+ * The new Mono code generator.
  *
  * Authors:
  *   Paolo Molaro (lupus@ximian.com)
@@ -144,12 +145,6 @@ mono_emit_unwind_op (MonoCompile *cfg, int when, int tag, int reg, int val)
 		}
 	}
 }
-
-#define MONO_INIT_VARINFO(vi,id) do { \
-	(vi)->range.first_use.pos.bid = 0xffff; \
-	(vi)->reg = -1; \
-        (vi)->idx = (id); \
-} while (0)
 
 /**
  * mono_unlink_bblock:
@@ -680,8 +675,10 @@ mono_compile_create_var_for_vreg (MonoCompile *cfg, MonoType *type, int opcode, 
 	
 	cfg->varinfo [num] = inst;
 
-	MONO_INIT_VARINFO (&cfg->vars [num], num);
-	MONO_VARINFO (cfg, num)->vreg = vreg;
+	cfg->vars [num].idx = num;
+	cfg->vars [num].vreg = vreg;
+	cfg->vars [num].range.first_use.pos.bid = 0xffff;
+	cfg->vars [num].reg = -1;
 
 	if (vreg != -1)
 		set_vreg_to_inst (cfg, vreg, inst);
@@ -2277,7 +2274,7 @@ mono_codegen (MonoCompile *cfg)
 	/* fixme: align to MONO_ARCH_CODE_ALIGNMENT */
 
 #ifdef MONO_ARCH_HAVE_UNWIND_TABLE
-	unwindlen = mono_arch_unwindinfo_get_size (cfg->arch.unwindinfo);
+	unwindlen = mono_arch_unwindinfo_init_method_unwind_info (cfg);
 #endif
 
 	if (cfg->method->dynamic) {
@@ -2398,7 +2395,7 @@ mono_codegen (MonoCompile *cfg)
 	mono_debug_close_method (cfg);
 
 #ifdef MONO_ARCH_HAVE_UNWIND_TABLE
-	mono_arch_unwindinfo_install_unwind_info (&cfg->arch.unwindinfo, cfg->native_code, cfg->code_len);
+	mono_arch_unwindinfo_install_method_unwind_info (&cfg->arch.unwindinfo, cfg->native_code, cfg->code_len);
 #endif
 }
 
@@ -3240,7 +3237,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 
 	if (cfg->gen_seq_points)
 		cfg->seq_points = g_ptr_array_new ();
-	mono_error_init (&cfg->error);
+	error_init (&cfg->error);
 
 	if (cfg->compile_aot && !try_generic_shared && (method->is_generic || mono_class_is_gtd (method->klass) || method_is_gshared)) {
 		cfg->exception_type = MONO_EXCEPTION_GENERIC_SHARING_FAILED;
@@ -3282,7 +3279,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	}
 	cfg->method_to_register = method_to_register;
 
-	mono_error_init (&err);
+	error_init (&err);
 	sig = mono_method_signature_checked (cfg->method, &err);	
 	if (!sig) {
 		cfg->exception_type = MONO_EXCEPTION_TYPE_LOAD;
@@ -4070,7 +4067,7 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 	GTimer *jit_timer;
 	MonoMethod *prof_method, *shared;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if ((method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) ||
 	    (method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL)) {
@@ -4371,7 +4368,7 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
  * mini_get_underlying_type:
  *
  *   Return the type the JIT will use during compilation.
- * Handles: byref, enums, native types, generic sharing.
+ * Handles: byref, enums, native types, bool/char, ref types, generic sharing.
  * For gsharedvt types, it will return the original VAR/MVAR.
  */
 MonoType*

@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+extern alias System_Private_CoreLib;
+
 using System;
 using System.IO;
 using System.Reflection;
@@ -48,14 +50,9 @@ namespace Internal.Reflection.Execution
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-#if ENABLE_WINRT
-            Stream resultFromFile = ReadFileFromAppDirectory(name);
-            if (resultFromFile != null)
-                return resultFromFile;
-#endif // ENABLE_WINRT
 
-            // If that didn't work, this was an embedded resource. The toolchain should have embedded the
-            // resource in an assembly. Go retrieve it now.
+            // This was most likely an embedded resource which the toolchain should have embedded 
+            // into an assembly.
             LowLevelList<ResourceInfo> resourceInfos = GetExtractedResources(assembly);
             for (int i = 0; i < resourceInfos.Count; i++)
             {
@@ -65,6 +62,14 @@ namespace Internal.Reflection.Execution
                     return ReadResourceFromBlob(resourceInfo);
                 }
             }
+
+            // Fall back to checking in the app directory in case it was a linked resource
+#if ENABLE_WINRT
+            Stream resultFromFile = ReadFileFromAppDirectory(name);
+            if (resultFromFile != null)
+                return resultFromFile;
+#endif // ENABLE_WINRT
+
             return null;
         }
 
@@ -73,7 +78,7 @@ namespace Internal.Reflection.Execution
             byte* pBlob;
             uint cbBlob;
 
-            if (!RuntimeAugments.FindBlob(resourceInfo.ModuleHandle, (int)ReflectionMapBlob.BlobIdResourceData, (IntPtr)(&pBlob), (IntPtr)(&cbBlob)))
+            if (!resourceInfo.Module.TryFindBlob((int)ReflectionMapBlob.BlobIdResourceData, out pBlob, out cbBlob))
             {
                 throw new BadImageFormatException();
             }
@@ -112,7 +117,7 @@ namespace Internal.Reflection.Execution
 
                     LowLevelDictionary<String, LowLevelList<ResourceInfo>> dict = new LowLevelDictionary<String, LowLevelList<ResourceInfo>>();
 
-                    foreach (IntPtr module in ModuleList.Enumerate())
+                    foreach (NativeFormatModuleInfo module in ModuleList.EnumerateModules())
                     {
                         NativeReader reader;
                         if (!TryGetNativeReaderForBlob(module, ReflectionMapBlob.BlobIdResourceIndex, out reader))
@@ -161,8 +166,8 @@ namespace Internal.Reflection.Execution
 #endif // ENABLE_WINRT
 
             String pathToRunningExe = RuntimeAugments.TryGetFullPathToMainApplication();
-            String directoryContainingRunningExe = Path.GetDirectoryName(pathToRunningExe);
-            String fullName = Path.Combine(directoryContainingRunningExe, name);
+            String directoryContainingRunningExe = System_Private_CoreLib::System.IO.Path.GetDirectoryName(pathToRunningExe);
+            String fullName = System_Private_CoreLib::System.IO.Path.Combine(directoryContainingRunningExe, name);
             return (Stream)RuntimeAugments.OpenFileIfExists(fullName);
         }
 
@@ -177,18 +182,18 @@ namespace Internal.Reflection.Execution
 
         private struct ResourceInfo
         {
-            public ResourceInfo(String name, int index, int length, IntPtr moduleHandle)
+            public ResourceInfo(String name, int index, int length, NativeFormatModuleInfo module)
             {
                 Name = name;
                 Index = index;
                 Length = length;
-                ModuleHandle = moduleHandle;
+                Module = module;
             }
 
             public String Name { get; }
             public int Index { get; }
             public int Length { get; }
-            public IntPtr ModuleHandle { get; }
+            public NativeFormatModuleInfo Module { get; }
         }
     }
 }

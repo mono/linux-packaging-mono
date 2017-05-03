@@ -276,7 +276,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_new</div>
+            <div class="mapi-prototype">MonoMethodBuilder*
+mono_mb_new (MonoClass *klass, const char *name, MonoWrapperType type)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -326,7 +329,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_add_to_local</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_add_to_local (MonoMethodBuilder *mb, guint16 local, gint32 incr)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -341,7 +347,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_branch</div>
+            <div class="mapi-prototype">guint32
+mono_mb_emit_branch (MonoMethodBuilder *mb, guint8 op)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -356,7 +365,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_byte</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_byte (MonoMethodBuilder *mb, guint8 op)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -371,7 +383,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_exception</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_exception (MonoMethodBuilder *mb, const char *exc_name, const char *msg)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -386,7 +401,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_i2</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_i2 (MonoMethodBuilder *mb, gint16 data)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -401,7 +419,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_i4</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_i4 (MonoMethodBuilder *mb, gint32 data)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -416,7 +437,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_icon</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_icon (MonoMethodBuilder *mb, gint32 value)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -431,7 +455,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_ldarg_addr</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_ldarg_addr (MonoMethodBuilder *mb, guint argnum)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -446,7 +473,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_ldarg</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_ldarg (MonoMethodBuilder *mb, guint argnum)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -461,7 +491,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_ldflda</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_ldflda (MonoMethodBuilder *mb, gint32 offset)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -476,7 +509,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_ldloc_addr</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_ldloc_addr (MonoMethodBuilder *mb, guint locnum)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -491,7 +527,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_ldloc</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_ldloc (MonoMethodBuilder *mb, guint num)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -506,7 +545,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_ldstr</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_ldstr (MonoMethodBuilder *mb, char *str)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -521,7 +563,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_managed_call</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_managed_call (MonoMethodBuilder *mb, MonoMethod *method, MonoMethodSignature *opt_sig)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -536,7 +581,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_native_call</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_native_call (MonoMethodBuilder *mb, MonoMethodSignature *sig, gpointer func)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -551,7 +599,10 @@ MonoMethod *adder ()
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_emit_stloc</div>
+            <div class="mapi-prototype">void
+mono_mb_emit_stloc (MonoMethodBuilder *mb, guint num)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -574,12 +625,10 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
 </div>
             <p />
              <div class="mapi-section">Return value</div>
-             <div>	  the newly created method.
-
-	<p /></div>
+             <div>	 the newly created method.
+</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Create a MonoMethod from this method builder.</div>
+             <div> 	 Create a <code>MonoMethod</code> from this method builder.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -593,7 +642,10 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_add_data</div>
+            <div class="mapi-prototype">guint32
+mono_mb_add_data (MonoMethodBuilder *mb, gpointer data)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -608,7 +660,10 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_add_local</div>
+            <div class="mapi-prototype">int
+mono_mb_add_local (MonoMethodBuilder *mb, MonoType *type)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -623,7 +678,10 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_free</div>
+            <div class="mapi-prototype">void
+mono_mb_free (MonoMethodBuilder *mb)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -640,7 +698,10 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_patch_addr</div>
+            <div class="mapi-prototype">void
+mono_mb_patch_addr (MonoMethodBuilder *mb, int pos, int value)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -655,7 +716,10 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_mb_patch_addr_s</div>
+            <div class="mapi-prototype">void
+mono_mb_patch_addr_s (MonoMethodBuilder *mb, int pos, gint8 value)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -672,8 +736,17 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_metadata_signature_alloc</div>
+            <div class="mapi-prototype">MonoMethodSignature*
+mono_metadata_signature_alloc (MonoImage *m, guint32 nparams)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>image</i></td><td> metadata context</td></tr><tr><td><i>nparams</i></td><td> number of parameters in the signature</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the new <code>MonoMethodSignature</code> structure.
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Allocate a <code>MonoMethodSignature</code> structure with the specified number of params. 	 The return type and the params types need to be filled later. 	 This is a Mono runtime internal function. 	<p /> 	 LOCKING: Assumes the loader lock is held. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -687,10 +760,16 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_metadata_signature_dup</div>
+            <div class="mapi-prototype">MonoMethodSignature*
+mono_metadata_signature_dup (MonoMethodSignature *sig)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>sig</i></td><td> method signature</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the new <code>MonoMethodSignature</code> structure.
+</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Duplicate an existing <code>MonoMethodSignature</code> so it can be modified. 	 This is a Mono runtime internal function. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

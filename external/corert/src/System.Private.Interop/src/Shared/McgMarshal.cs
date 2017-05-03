@@ -81,10 +81,8 @@ namespace System.Runtime.InteropServices
         {
 #if RHTESTCL
             return false;
-#elif CORECLR
-            return type.GetTypeInfo().IsSubclassOf(typeof(__ComObject));
 #else
-            return InteropExtensions.AreTypesAssignable(type.TypeHandle, typeof(__ComObject).TypeHandle);
+            return type.GetTypeInfo().IsSubclassOf(typeof(__ComObject));
 #endif
         }
 
@@ -145,7 +143,7 @@ namespace System.Runtime.InteropServices
         /// </summary>
         public static IntPtr GetHandle(CriticalHandle criticalHandle)
         {
-            return criticalHandle.handle;
+            return InteropExtensions.GetCriticalHandle(criticalHandle);
         }
 
         /// <summary>
@@ -154,7 +152,7 @@ namespace System.Runtime.InteropServices
         /// </summary>
         public static void SetHandle(CriticalHandle criticalHandle, IntPtr handle)
         {
-            criticalHandle.handle = handle;
+            InteropExtensions.SetCriticalHandle(criticalHandle, handle);
         }
 #endif
     }
@@ -249,7 +247,7 @@ namespace System.Runtime.InteropServices
             if (lenUnicode > 0)
             {
                 char[] buffer = new char[lenUnicode];
-                fixed (char* pTemp = buffer)
+                fixed (char* pTemp = &buffer[0])
                 {
                     ExternalInterop.ConvertMultiByteToWideChar(new System.IntPtr(newBuffer),
                                                                lenAnsi,
@@ -446,12 +444,9 @@ namespace System.Runtime.InteropServices
         /// <param name="nativeValue">Single ANSI byte value.</param>
         public static unsafe char AnsiCharToWideChar(byte nativeValue)
         {
-            char[] buffer = new char[1];
-            fixed (char* pTemp = buffer)
-            {
-                ExternalInterop.ConvertMultiByteToWideChar(new System.IntPtr(&nativeValue), 1, new System.IntPtr(pTemp), 1);
-                return buffer[0];
-            }
+            char ch;
+            ExternalInterop.ConvertMultiByteToWideChar(new System.IntPtr(&nativeValue), 1, new System.IntPtr(&ch), 1);
+            return ch;
         }
 
         /// <summary>
@@ -645,7 +640,7 @@ namespace System.Runtime.InteropServices
         public static unsafe HSTRING StringToHString(string sourceString)
         {
             if (sourceString == null)
-                throw new ArgumentNullException("sourceString", SR.Null_HString);
+                throw new ArgumentNullException(nameof(sourceString), SR.Null_HString);
 
             return StringToHStringInternal(sourceString);
         }
@@ -1364,7 +1359,7 @@ namespace System.Runtime.InteropServices
         
         #region "PInvoke Delegate"
 
-#if !CORECLR
+#if !CORECLR && !CORERT
         private static class AsmCode
         {
             private const MethodImplOptions InternalCall = (MethodImplOptions)0x1000;
@@ -1692,7 +1687,7 @@ namespace System.Runtime.InteropServices
         /// </summary>
         public static IntPtr GetCurrentCalleeOpenStaticDelegateFunctionPointer()
         {
-#if RHTESTCL || CORECLR
+#if RHTESTCL || CORECLR || CORERT
             throw new NotSupportedException();
 #else
             //
@@ -1720,7 +1715,7 @@ namespace System.Runtime.InteropServices
         /// </summary>
         public static T GetCurrentCalleeDelegate<T>() where T : class // constraint can't be System.Delegate
         {
-#if RHTESTCL || CORECLR
+#if RHTESTCL || CORECLR || CORERT
             throw new NotSupportedException();
 #else
             //
@@ -1793,6 +1788,18 @@ namespace System.Runtime.InteropServices
                     if (ret != null)
                         return ret;
                 }
+#if ENABLE_WINRT
+                else if(McgModuleManager.UseDynamicInterop)
+                {
+                    BoxingInterfaceKind boxingInterfaceKind;
+                    RuntimeTypeHandle genericTypeArgument;
+                    if (DynamicInteropBoxingHelpers.TryGetBoxingArgumentTypeHandleFromString(className, out boxingInterfaceKind, out genericTypeArgument))
+                    {
+                        Debug.Assert(target is __ComObject);
+                        return DynamicInteropBoxingHelpers.Unboxing(boxingInterfaceKind, genericTypeArgument, target);
+                    }
+                }
+#endif
             }
             return null;
         }

@@ -65,6 +65,8 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
 
         public bool DevelopmentDependency { get; set; }
 
+        public bool Serviceable { get; set; }
+
         public string Tags { get; set; }
 
         public ITaskItem[] Dependencies { get; set; }
@@ -181,6 +183,7 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
             manifestMetadata.UpdateMember(x => x.Tags, Tags);
             manifestMetadata.UpdateMember(x => x.Title, Title);
             manifestMetadata.UpdateMember(x => x.Version, Version != null ? new NuGetVersion(Version) : null);
+            manifestMetadata.Serviceable |= Serviceable;
 
             manifest.AddRangeToMember(x => x.Files, GetManifestFiles());
 
@@ -190,20 +193,41 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
         private List<ManifestFile> GetManifestFiles()
         {
             return (from f in Files.NullAsEmpty()
+                    where !f.GetMetadata(Metadata.FileTarget).StartsWith("$none$", StringComparison.OrdinalIgnoreCase)
                     select new ManifestFile()
                     {
                         Source = f.GetMetadata(Metadata.FileSource),
-                        Target = f.GetMetadata(Metadata.FileTarget),
+                        // Pattern matching in PathResolver requires that we standardize to OS specific directory separator characters
+                        Target = f.GetMetadata(Metadata.FileTarget).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar),
                         Exclude = f.GetMetadata(Metadata.FileExclude)
                     }).OrderBy(f => f.Target, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
+
+        static FrameworkAssemblyReferenceComparer frameworkAssemblyReferenceComparer = new FrameworkAssemblyReferenceComparer();
         private List<FrameworkAssemblyReference> GetFrameworkAssemblies()
         {
             return (from fr in FrameworkReferences.NullAsEmpty()
                     orderby fr.ItemSpec, StringComparer.Ordinal
                     select new FrameworkAssemblyReference(fr.ItemSpec, new[] { fr.GetTargetFramework() })
-                    ).ToList();
+                    ).Distinct(frameworkAssemblyReferenceComparer).ToList();
+        }
+
+        private class FrameworkAssemblyReferenceComparer : EqualityComparer<FrameworkAssemblyReference>
+        {
+            public override bool Equals(FrameworkAssemblyReference x, FrameworkAssemblyReference y)
+            {
+                return Object.Equals(x, y) ||
+                    (   x != null && y != null &&
+                        x.AssemblyName.Equals(y.AssemblyName) &&
+                        x.SupportedFrameworks.SequenceEqual(y.SupportedFrameworks, NuGetFramework.Comparer)
+                    );
+            }
+
+            public override int GetHashCode(FrameworkAssemblyReference obj)
+            {
+                return obj.AssemblyName.GetHashCode();
+            }
         }
 
         private List<PackageDependencyGroup> GetDependencySets()
@@ -336,7 +360,7 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
 
             if (update)
             {
-                target = new VersionRange(minVersion, includeMinVersion, target.MaxVersion, target.IsMaxInclusive, target.IncludePrerelease, target.Float, target.OriginalString);
+                target = new VersionRange(minVersion, includeMinVersion, target.MaxVersion, target.IsMaxInclusive, target.Float, target.OriginalString);
             }
         }
 
@@ -373,7 +397,7 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
 
             if (update)
             {
-                target = new VersionRange(target.MinVersion, target.IsMinInclusive, maxVersion, includeMaxVersion, target.IncludePrerelease, target.Float, target.OriginalString);
+                target = new VersionRange(target.MinVersion, target.IsMinInclusive, maxVersion, includeMaxVersion, target.Float, target.OriginalString);
             }
         }
 

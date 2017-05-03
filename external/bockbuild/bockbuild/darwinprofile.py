@@ -5,6 +5,7 @@ from util.util import *
 from unixprofile import UnixProfile
 from profile import Profile
 import stat
+from distutils.version import LooseVersion, StrictVersion
 
 # staging helper functions
 
@@ -56,20 +57,39 @@ class DarwinProfile (UnixProfile):
         'gtk-doc'
     ]
 
+    def use_Xcode(self, min_version='5.1.1', xcodebuild_version_prefix='Xcode '):
+        xcrun_cc_str = backtick('xcrun cc --version')[0]
+        cc_str = backtick('cc --version')[0]
+        if xcrun_cc_str != cc_str:
+            error('Multiple "cc" compiler versions found. (XCode-selected: "%s";"cc" at $PATH: "%s"' % (
+            xcrun_cc_str, cc_str))
+        xcodebuild_str = backtick('xcodebuild -version')[0]  # output: "Xcode X.X.X"
+        if not xcodebuild_str.startswith(xcodebuild_version_prefix):
+            error('Unexpected output from "xcodebuild" (first line: "%s"' % (xcodebuild_str))
+        xcode_version = StrictVersion(xcodebuild_str[len(xcodebuild_version_prefix):])
+        if xcode_version < StrictVersion(min_version):
+            error('Xcode version required %s, installed %s' % (min_version, xcode_version))
+
+        self.env.set('xcode_version', str(xcode_version))
+        return xcode_version
+
     def attach (self, bockbuild):
         UnixProfile.attach (self, bockbuild)
         bockbuild.toolchain = list (DarwinProfile.default_toolchain)
         self.name = 'darwin'
 
-        xcode_version = backtick('xcodebuild -version')[0]
-        self.env.set('xcode_version', xcode_version)
-        osx_sdk = backtick('xcrun --show-sdk-path')[0]
-        self.env.set('osx_sdk', osx_sdk)
+        xcode_version = self.use_Xcode ()
 
+        osx_sdk = backtick('xcrun --show-sdk-path')[0]
         if not os.path.exists(osx_sdk):
             error('Mac OS X SDK not found under %s' % osx_sdk)
 
-        info('%s, %s' % (xcode_version, os.path.basename(osx_sdk)))
+        info('Using Xcode %s, SDK %s' % (xcode_version, os.path.basename(osx_sdk)))
+
+        if xcode_version >= '8.0':
+            # based on https://github.com/Homebrew/brew/pull/970. This applies to XCode 8, OS X 10.11 and the 10.12 SDK. The following symbols will be unresolved
+            # when running binaries on a system of lower version than 10.12.
+            map(lambda t : self.configure_flags.append ('ac_cv_func_%s=no' % t), 'basename_r clock_getres clock_gettime clock_settime dirname_r getentropy mkostemp mkostemps'.split(' '))
 
         self.gcc_flags.extend([
             '-D_XOPEN_SOURCE',
@@ -126,6 +146,8 @@ class DarwinProfile (UnixProfile):
 
         package.local_configure_flags.extend(
             ['--cache-file=%s' % configure_cache])
+
+        package.local_configure_flags.extend(self.configure_flags)
 
         if package.name in self.debug_info:
             package.local_gcc_flags.extend(['-g'])

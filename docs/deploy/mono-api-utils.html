@@ -203,7 +203,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_disasm_code</div>
+            <div class="mapi-prototype">char*
+mono_disasm_code (MonoDisHelper *dh, MonoMethod *method, const guchar *ip, const guchar* end)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -218,7 +221,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_disasm_code_one</div>
+            <div class="mapi-prototype">char*
+mono_disasm_code_one (MonoDisHelper *dh, MonoMethod *method, const guchar *ip, const guchar **endp)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -236,7 +242,10 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_stack_walk_no_il</div>
+            <div class="mapi-prototype">void
+mono_stack_walk_no_il (MonoStackWalk func, gpointer user_data)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -251,13 +260,15 @@
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_stack_walk_async_safe</div>
+            <div class="mapi-prototype">void
+mono_stack_walk_async_safe (MonoStackWalkAsyncSafe func, void *initial_sig_context, void *user_data)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 Async safe version callable from signal handlers.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
 <h3>Others</h3>
 
-   </div>
-</div></body>
-</html>

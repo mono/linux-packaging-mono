@@ -1,4 +1,5 @@
-/* 
+/**
+ * \file
  * Copyright 2016 Microsoft
  * Licensed under the MIT license. See LICENSE file in the project root for full license information.
  */
@@ -109,7 +110,7 @@ typedef MonoObjectHandle (*ReflectionCacheConstructFunc_handle) (MonoDomain*, Mo
 static inline MonoObjectHandle
 check_or_construct_handle (MonoDomain *domain, MonoClass *klass, gpointer item, gpointer user_data, MonoError *error, ReflectionCacheConstructFunc_handle construct)
 {
-	mono_error_init (error);
+	error_init (error);
 	MonoObjectHandle obj = check_object_handle (domain, klass, item);
 	if (!MONO_HANDLE_IS_NULL (obj))
 		return obj;

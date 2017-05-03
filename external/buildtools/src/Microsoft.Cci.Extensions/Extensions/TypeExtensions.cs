@@ -258,6 +258,15 @@ namespace Microsoft.Cci.Extensions
             throw new NotImplementedException("Called .Name on a currently unsupported type definition!");
         }
 
+        public static string FullName(this ICustomAttribute attribute)
+        {
+            FakeCustomAttribute fca = attribute as FakeCustomAttribute;
+            if (fca != null)
+                return fca.FullTypeName;
+
+            return attribute.Type.FullName();
+        }
+
         public static string FullName(this IReference reference)
         {
             Contract.Requires(reference != null);
@@ -583,15 +592,15 @@ namespace Microsoft.Cci.Extensions
         public static IEnumerable<T> OrderByIdentity<T>(this IEnumerable<T> assemblies)
             where T : IAssemblyReference
         {
-            return assemblies.OrderBy(a => a.Name.Value)
-                             .ThenBy(a => a.GetPublicKeyToken())
+            return assemblies.OrderBy(a => a.Name.Value, StringComparer.OrdinalIgnoreCase)
+                             .ThenBy(a => a.GetPublicKeyToken(), StringComparer.OrdinalIgnoreCase)
                              .ThenBy(a => a.Version);
         }
 
         public static IEnumerable<AssemblyIdentity> OrderByIdentity(this IEnumerable<AssemblyIdentity> assemblies)
         {
-            return assemblies.OrderBy(a => a.Name.Value)
-                             .ThenBy(a => a.GetPublicKeyToken())
+            return assemblies.OrderBy(a => a.Name.Value, StringComparer.OrdinalIgnoreCase)
+                             .ThenBy(a => a.GetPublicKeyToken(), StringComparer.OrdinalIgnoreCase)
                              .ThenBy(a => a.Version);
         }
 
@@ -620,6 +629,85 @@ namespace Microsoft.Cci.Extensions
             }
 
             return true;
+        }
+
+        public static bool IsObsoleteWithUsageTreatedAsCompilationError(this ICustomAttribute attribute)
+        {
+            if (attribute.Type.FullName() != typeof(ObsoleteAttribute).FullName)
+            {
+                return false;
+            }
+
+            if (attribute.Arguments == null || attribute.Arguments.Count() != 2)
+            {
+                return false;
+            }
+
+            IMetadataConstant messageArgument = attribute.Arguments.ElementAt(0) as IMetadataConstant;
+            IMetadataConstant errorArgument = attribute.Arguments.ElementAt(1) as IMetadataConstant;
+
+            if (messageArgument == null || errorArgument == null)
+            {
+                return false;
+            }
+
+            if (!(messageArgument.Value is string && errorArgument.Value is bool))
+            {
+                return false;
+            }
+
+            return (bool)errorArgument.Value;
+        }
+
+        public static ApiKind GetApiKind(this ITypeDefinition type)
+        {
+            return type.IsInterface
+                ? ApiKind.Interface
+                : type.IsDelegate
+                    ? ApiKind.Delegate
+                    : type.IsEnum
+                        ? ApiKind.Enum
+                        : type.IsStruct
+                            ? ApiKind.Struct
+                            : ApiKind.Class;
+        }
+
+        public static ApiKind GetApiKind(this ITypeDefinitionMember member)
+        {
+            if (member.ContainingTypeDefinition.IsDelegate)
+                return ApiKind.DelegateMember;
+
+            var field = member as IFieldDefinition;
+            if (field != null)
+            {
+                if (member.ContainingTypeDefinition.IsEnum && field.IsSpecialName)
+                    return ApiKind.EnumField;
+
+                return ApiKind.Field;
+            }
+
+            if (member is IPropertyDefinition)
+                return ApiKind.Property;
+
+            if (member is IEventDefinition)
+                return ApiKind.Event;
+
+            var method = (IMethodDefinition)member;
+            if (method.IsConstructor || method.IsStaticConstructor)
+                return ApiKind.Constructor;
+
+            var accessorType = method.GetAccessorType();
+            switch (accessorType)
+            {
+                case AccessorType.PropertyGetter:
+                case AccessorType.PropertySetter:
+                    return ApiKind.PropertyAccessor;
+                case AccessorType.EventAdder:
+                case AccessorType.EventRemover:
+                    return ApiKind.EventAccessor;
+                default:
+                    return ApiKind.Method;
+            }
         }
     }
 }

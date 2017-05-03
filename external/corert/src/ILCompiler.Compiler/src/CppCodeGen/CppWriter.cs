@@ -514,7 +514,7 @@ namespace ILCompiler.CppCodeGen
                         sb.AppendLine();
                         sb.Append("struct {");
                         sb.Indent();
-                        int offset = classLayoutMetadata.Offsets[instanceFieldIndex].Offset;
+                        int offset = classLayoutMetadata.Offsets[instanceFieldIndex].Offset.AsInt;
                         if (offset > 0)
                         {
                             sb.AppendLine();
@@ -741,7 +741,7 @@ namespace ILCompiler.CppCodeGen
             }
             else
             {
-                string mangledName = ((ISymbolNode)node).GetMangledName();
+                string mangledName = ((ISymbolNode)node).GetMangledName(factory.NameMangler);
 
                 // Rename generic composition and optional fields nodes to avoid name clash with types
                 bool shouldReplaceNamespaceQualifier = node is GenericCompositionNode || node is EETypeOptionalFieldsNode;
@@ -820,7 +820,7 @@ namespace ILCompiler.CppCodeGen
             // Node is either an non-emitted type or a generic composition - both are ignored for CPP codegen
             else if ((reloc.Target is TypeManagerIndirectionNode || reloc.Target is InterfaceDispatchMapNode || reloc.Target is EETypeOptionalFieldsNode || reloc.Target is GenericCompositionNode) && !(reloc.Target as ObjectNode).ShouldSkipEmittingObjectNode(factory))
             {
-                string mangledTargetName = reloc.Target.GetMangledName();
+                string mangledTargetName = reloc.Target.GetMangledName(factory.NameMangler);
                 bool shouldReplaceNamespaceQualifier = reloc.Target is GenericCompositionNode || reloc.Target is EETypeOptionalFieldsNode;
                 relocCode.Append(shouldReplaceNamespaceQualifier ? mangledTargetName.Replace("::", "_") : mangledTargetName);
                 relocCode.Append("()");
@@ -950,7 +950,7 @@ namespace ILCompiler.CppCodeGen
                 else if (node is InterfaceDispatchMapNode)
                 {
                     dispatchPointers.Append("(void *)");
-                    dispatchPointers.Append(((ISymbolNode)node).GetMangledName());
+                    dispatchPointers.Append(((ISymbolNode)node).GetMangledName(factory.NameMangler));
                     dispatchPointers.Append("(),");
                     dispatchPointers.AppendLine();
                     dispatchMapCount++;
@@ -1145,6 +1145,8 @@ namespace ILCompiler.CppCodeGen
         private String GetCodeForReadyToRunHeader(ReadyToRunHeaderNode headerNode, NodeFactory factory)
         {
             CppGenerationBuffer rtrHeader = new CppGenerationBuffer();
+            int pointerSize = _compilation.TypeSystemContext.Target.PointerSize;
+
             rtrHeader.Append(GetCodeForObjectNode(headerNode, factory));
             rtrHeader.AppendLine();
             rtrHeader.Append("void* RtRHeaderWrapper() {");
@@ -1152,22 +1154,34 @@ namespace ILCompiler.CppCodeGen
             rtrHeader.AppendLine();
             rtrHeader.Append("static struct {");
             rtrHeader.AppendLine();
-            rtrHeader.Append("unsigned char leftPadding[8];");
+            if (pointerSize == 8)
+                rtrHeader.Append("unsigned char leftPadding[8];");
+            else
+                rtrHeader.Append("unsigned char leftPadding[4];");
             rtrHeader.AppendLine();
             rtrHeader.Append("void* rtrHeader;");
             rtrHeader.AppendLine();
-            rtrHeader.Append("unsigned char rightPadding[8];");
+            if (pointerSize == 8)
+                rtrHeader.Append("unsigned char rightPadding[8];");
+            else
+                rtrHeader.Append("unsigned char rightPadding[4];");
             rtrHeader.AppendLine();
             rtrHeader.Append("} rtrHeaderWrapper = {");
             rtrHeader.Indent();
             rtrHeader.AppendLine();
-            rtrHeader.Append("{ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 },");
+            if (pointerSize == 8)
+                rtrHeader.Append("{ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 },");
+            else
+                rtrHeader.Append("{ 0x00,0x00,0x00,0x00 },");
             rtrHeader.AppendLine();
             rtrHeader.Append("(void*)");
-            rtrHeader.Append(headerNode.GetMangledName());
+            rtrHeader.Append(headerNode.GetMangledName(factory.NameMangler));
             rtrHeader.Append("(),");
             rtrHeader.AppendLine();
-            rtrHeader.Append("{ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 }");
+            if (pointerSize == 8)
+                rtrHeader.Append("{ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 }");
+            else
+                rtrHeader.Append("{ 0x00,0x00,0x00,0x00 },");
             rtrHeader.AppendLine();
             rtrHeader.Append("};");
             rtrHeader.Exdent();

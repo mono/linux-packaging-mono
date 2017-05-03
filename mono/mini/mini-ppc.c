@@ -1,5 +1,6 @@
-/*
- * mini-ppc.c: PowerPC backend for the Mono code generator
+/**
+ * \file
+ * PowerPC backend for the Mono code generator
  *
  * Authors:
  *   Paolo Molaro (lupus@ximian.com)
@@ -4689,7 +4690,7 @@ mono_arch_patch_code (MonoCompile *cfg, MonoMethod *method, MonoDomain *domain, 
 	MonoJumpInfo *patch_info;
 	gboolean compile_aot = !run_cctors;
 
-	mono_error_init (error);
+	error_init (error);
 
 	for (patch_info = ji; patch_info; patch_info = patch_info->next) {
 		unsigned char *ip = patch_info->ip.i + code;

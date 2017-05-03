@@ -1,5 +1,6 @@
-/*
- * coree.c: mscoree.dll functions
+/**
+ * \file
+ * mscoree.dll functions
  *
  * Author:
  *   Kornel Pal <http://www.kornelpal.hu/>
@@ -19,7 +20,7 @@
 #include "cil-coff.h"
 #include "metadata-internals.h"
 #include "image.h"
-#include "assembly.h"
+#include "assembly-internals.h"
 #include "domain-internals.h"
 #include "appdomain.h"
 #include "object.h"
@@ -119,7 +120,7 @@ BOOL STDMETHODCALLTYPE _CorDllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpRes
 		 * probably be delayed until the first call to an exported function.
 		 */
 		if (image->tables [MONO_TABLE_ASSEMBLY].rows && ((MonoCLIImageInfo*) image->image_info)->cli_cli_header.ch_vtable_fixups.rva)
-			assembly = mono_assembly_open (file_name, NULL);
+			assembly = mono_assembly_open_predicate (file_name, FALSE, FALSE, NULL, NULL, NULL);
 
 		g_free (file_name);
 		break;
@@ -170,7 +171,7 @@ __int32 STDMETHODCALLTYPE _CorExeMain(void)
 		ExitProcess (1);
 	}
 
-	assembly = mono_assembly_open (file_name, NULL);
+	assembly = mono_assembly_open_predicate (file_name, FALSE, FALSE, NULL, NULL, NULL);
 	mono_close_exe_image ();
 	if (!assembly) {
 		g_free (file_name);

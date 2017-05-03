@@ -18,14 +18,9 @@ basic_SUBDIRS := \
 	System.ComponentModel.Composition.4.5 \
 	System.Numerics \
 	System.Xml.Linq \
-	System.Runtime.InteropServices.RuntimeInformation \
 	Mono.Cecil \
 	$(MCS_MODE_dirs) \
 	../tools/cil-stringreplacer
-
-# resgen is corlib specific so we need to wait until corlib is build
-# and build it just a step before first dll needs it
-resgen_dir = ../tools/resgen
 
 build_SUBDIRS :=  \
 	corlib \
@@ -37,8 +32,8 @@ build_SUBDIRS :=  \
 	System.ComponentModel.Composition.4.5 \
 	System.Numerics \
 	System.Xml.Linq \
-	System.Runtime.InteropServices.RuntimeInformation \
 	System.IO.Compression \
+	System.Drawing			\
 	Mono.Cecil \
 	$(MCS_MODE_dirs) \
 	Mono.CompilerServices.SymbolWriter	\
@@ -86,9 +81,6 @@ mobile_common_dirs := \
 	System.Xml.Serialization \
 	Mono.CSharp	\
 	Microsoft.CSharp \
-	System.Runtime.InteropServices.RuntimeInformation	\
-	System.Reflection.DispatchProxy	\
-	System.Xml.XPath.XmlDocument \
 	System.Reflection.Context	\
 	System.Net.Http.WinHttpHandler
 
@@ -111,10 +103,13 @@ monodroid_dirs := \
 	$(mobile_common_dirs)	\
 	Mono.CompilerServices.SymbolWriter	\
 	Mono.Btls.Interface	\
+	Mono.Posix	\
 	$(pcl_facade_dirs)
 
 monotouch_dirs := \
-	$(testing_aot_full_dirs)
+	$(mobile_common_dirs)	\
+	Mono.Simd			\
+	$(pcl_facade_dirs)
 
 monotouch_watch_dirs := $(filter-out Mono.Security Mono.Data.Tds,$(monotouch_dirs))
 monotouch_tv_dirs   := $(monotouch_dirs)
@@ -130,7 +125,10 @@ monotouch_runtime_dirs := \
 monotouch_watch_runtime_dirs := $(filter-out Mono.Security Mono.Data.Tds,$(monotouch_runtime_dirs))
 monotouch_tv_runtime_dirs := $(monotouch_runtime_dirs)
 
-winaot_dirs := $(monotouch_dirs) System.Drawing
+winaot_dirs := \
+	$(mobile_common_dirs)	\
+	System.Drawing			\
+	$(pcl_facade_dirs)
 
 xammac_4_5_dirs := \
 	corlib	\
@@ -176,7 +174,6 @@ xammac_4_5_dirs := \
 	System.Data.Linq		\
 	System.Net.Http \
 	System.Net.Http.WebRequest \
-	System.Runtime.InteropServices.RuntimeInformation \
 	System.Reflection.Context	\
 	System.Net.Http.WinHttpHandler	\
 	$(pcl_facade_dirs)
@@ -191,10 +188,9 @@ net_4_x_dirs := \
 	System.Core			\
 	System.Security			\
 	System.Configuration	\
-	$(resgen_dir)			\
+	System.Drawing			\
 	System.IO.Compression 		\
 	System.IO.Compression.FileSystem \
-	System.Drawing			\
 	System.Transactions		\
 	System.EnterpriseServices	\
 	Mono.Data.Tds			\
@@ -263,8 +259,7 @@ net_4_x_dirs := \
 	System.Net.Http.Formatting \
 	System.Web.Http \
 	System.Web.Http.SelfHost \
-	System.Web.Http.WebHost \
-	System.Runtime.InteropServices.RuntimeInformation
+	System.Web.Http.WebHost
 
 # These are the subdirs which depends on libs in net_4_x_dirs
 # or have proper dependencies between each other
@@ -334,6 +329,11 @@ xbuild_4_0_dirs := \
 	$(xbuild_2_0_dirs)	\
 	Microsoft.Build
 
+orbis_dirs := \
+	$(filter-out Microsoft.CSharp Mono.CSharp Mono.Data.Sqlite,$(mobile_common_dirs))	\
+	System.Drawing		\
+	$(pcl_facade_dirs)
+
 monodroid_SUBDIRS := $(monodroid_dirs)
 monotouch_SUBDIRS := $(monotouch_dirs)
 monotouch_watch_SUBDIRS := $(monotouch_watch_dirs)
@@ -351,7 +351,7 @@ net_4_x_PARALLEL_SUBDIRS := $(net_4_x_parallel_dirs)
 xbuild_12_SUBDIRS := $(xbuild_4_0_dirs)
 xbuild_14_SUBDIRS := $(xbuild_4_0_dirs) Microsoft.NuGet.Build.Tasks
 winaot_SUBDIRS := $(winaot_dirs)
-orbis_SUBDIRS := $(monotouch_dirs)
+orbis_SUBDIRS := $(orbis_dirs)
 
 include ../build/rules.make
 
@@ -394,7 +394,7 @@ monolite_dir := monolite/$(MONO_CORLIB_VERSION)
 
 # Files needed to bootstrap C# compiler
 build_files = mscorlib.dll System.dll System.Xml.dll Mono.Security.dll System.Core.dll System.Security.dll System.Configuration.dll \
-	System.Numerics.dll System.Xml.Linq.dll System.Runtime.InteropServices.RuntimeInformation.dll \
+	System.Numerics.dll System.Xml.Linq.dll \
 	Facades/System.Collections.Concurrent.dll Facades/System.Linq.dll Facades/System.Runtime.dll Facades/System.Collections.dll	\
 	Facades/System.Reflection.Extensions.dll Facades/System.Text.Encoding.Extensions.dll Facades/System.Diagnostics.Debug.dll \
 	Facades/System.Reflection.Primitives.dll Facades/System.Text.Encoding.dll Facades/System.Diagnostics.Tools.dll Facades/System.Reflection.dll \

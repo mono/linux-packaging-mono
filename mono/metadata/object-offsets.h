@@ -1,4 +1,6 @@
-/*
+
+/**
+\file
 This is a parameterized header. It's supposed/ok to be included multiple times.
 
 Input defines: (those to be defined by the includer file)
@@ -12,6 +14,12 @@ DECL_ALIGN2(name,alignment)
 Optional:
 USE_CROSS_COMPILE_OFFSETS - if defined, force the cross compiler offsets to be used, otherwise
 	they will only be used if MONO_CROSS_COMPILE is defined
+DISABLE_METADATA_OFFSETS - Disable the definition of offsets for structures defined in metadata/.
+DISABLE_JIT_OFFSETS - Disable the definition of offsets for structures defined in mini/.
+
+The last two are needed because metadata shouldn't include JIT offsets since the structures
+are not defined, while the JIT shouldn't include metadata offsets, since some of them
+are GC specific, and the JIT needs to remain GC agnostic.
 
 Output defines:
 
@@ -51,12 +59,12 @@ DECL_SIZE(float)
 DECL_SIZE(double)
 DECL_SIZE(gpointer)
 
+// Offsets for structures defined in metadata/
 #ifndef DISABLE_METADATA_OFFSETS
-//object offsets
 DECL_OFFSET(MonoObject, vtable)
 DECL_OFFSET(MonoObject, synchronisation)
 
-DECL_OFFSET(MonoObjectHandlePayload, __obj)
+DECL_OFFSET(MonoObjectHandlePayload, __raw)
 
 DECL_OFFSET(MonoClass, interface_bitmap)
 DECL_OFFSET(MonoClass, byval_arg)
@@ -141,6 +149,7 @@ DECL_OFFSET(SgenThreadInfo, tlab_temp_end)
 
 #endif //DISABLE METADATA OFFSETS
 
+// Offsets for structures defined in mini/
 #ifndef DISABLE_JIT_OFFSETS
 DECL_OFFSET(MonoLMF, previous_lmf)
 

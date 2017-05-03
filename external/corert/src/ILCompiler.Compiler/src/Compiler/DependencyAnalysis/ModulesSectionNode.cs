@@ -32,7 +32,7 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override bool StaticDependenciesAreComputed => true;
 
@@ -45,9 +45,9 @@ namespace ILCompiler.DependencyAnalysis
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
-            ObjectDataBuilder objData = new ObjectDataBuilder(factory);
-            objData.RequirePointerAlignment();
-            objData.DefinedSymbols.Add(this);
+            ObjectDataBuilder objData = new ObjectDataBuilder(factory, relocsOnly);
+            objData.RequireInitialPointerAlignment();
+            objData.AddSymbol(this);
             objData.EmitPointerReloc(factory.ReadyToRunHeader);
 
             return objData.ToObjectData();

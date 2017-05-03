@@ -3,6 +3,9 @@
   <PropertyGroup>
     <BuildConfigurations>
       netstandard;
+      netstandard1.0;
+      netfx;
+      net46;
     </BuildConfigurations>
   </PropertyGroup>
 </Project>

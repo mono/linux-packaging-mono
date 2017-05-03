@@ -8,12 +8,13 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <IntermediateOutputPath>$(MSBuildProjectDirectory)\obj\$(Configuration)\native\</IntermediateOutputPath>
+    <IntermediateOutputPath>$(MSBuildProjectDirectory)\obj\$(Configuration)\$(Platform)\native\</IntermediateOutputPath>
     <OutputName>PInvokeNative</OutputName>
     <NativeObjectExt Condition="'$(OS)' == 'Windows_NT'">.obj</NativeObjectExt>
     <NativeObjectExt Condition="'$(OS)' != 'Windows_NT'">.o</NativeObjectExt>
     <PInvokeNativeObject>$(IntermediateOutputPath)$(OutputName)$(NativeObjectExt)</PInvokeNativeObject>
     <DefineConstants>$(DefineConstants);$(OS)</DefineConstants>
+    <DefineConstants Condition="$(NativeCodeGen) == 'cpp'">$(DefineConstants);CODEGEN_CPP</DefineConstants>
     <UseDebugCrt Condition="'$(Configuration)' == 'Debug'">true</UseDebugCrt>
   </PropertyGroup>
 

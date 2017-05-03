@@ -1,3 +1,7 @@
+/**
+ * \file
+ */
+
 #ifndef _MONO_METADATA_THREADPOOL_H_
 #define _MONO_METADATA_THREADPOOL_H_
 
@@ -6,8 +10,6 @@
 
 #include <mono/metadata/exception.h>
 #include <mono/metadata/object-internals.h>
-
-#define SMALL_STACK (sizeof (gpointer) * 32 * 1024)
 
 typedef struct _MonoNativeOverlapped MonoNativeOverlapped;
 

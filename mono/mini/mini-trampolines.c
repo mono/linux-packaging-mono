@@ -1,4 +1,5 @@
-/*
+/**
+ * \file
  * (C) 2003 Ximian, Inc.
  * (C) 2003-2011 Novell, Inc.
  * Copyright 2011 Xamarin, Inc (http://www.xamarin.com)
@@ -19,6 +20,10 @@
 
 #include "mini.h"
 #include "lldb.h"
+
+#ifdef ENABLE_INTERPRETER
+#include "interp/interp.h"
+#endif
 
 /*
  * Address of the trampoline code.  This is used by the debugger to check
@@ -63,8 +68,8 @@ rgctx_tramp_info_hash (gconstpointer data)
 
 /**
  * mono_create_static_rgctx_trampoline:
- * @m: the mono method to create a trampoline for
- * @addr: the address to jump to (where the compiled code for M lives)
+ * \param m the mono method to create a trampoline for
+ * \param addr the address to jump to (where the compiled code for M lives)
  *
  * Creates a static rgctx trampoline for M which branches to ADDR which should
  * point to the compiled code of M.
@@ -78,7 +83,7 @@ rgctx_tramp_info_hash (gconstpointer data)
  *
  * On PPC addr should be an ftnptr and the return value is an ftnptr too.
  *
- * Returns the generated static rgctx trampoline.
+ * \returns the generated static rgctx trampoline.
  */
 gpointer
 mono_create_static_rgctx_trampoline (MonoMethod *m, gpointer addr)
@@ -115,7 +120,7 @@ mono_create_static_rgctx_trampoline (MonoMethod *m, gpointer addr)
 	if (mono_aot_only)
 		res = mono_aot_get_static_rgctx_trampoline (ctx, addr);
 	else
-		res = mono_arch_get_static_rgctx_trampoline (m, (MonoMethodRuntimeGenericContext *)ctx, addr);
+		res = mono_arch_get_static_rgctx_trampoline (ctx, addr);
 
 	mono_domain_lock (domain);
 	/* Duplicates inserted while we didn't hold the lock are OK */
@@ -167,7 +172,7 @@ mini_resolve_imt_method (MonoVTable *vt, gpointer *vtable_slot, MonoMethod *imt_
 
 	g_assert (imt_slot < MONO_IMT_SIZE);
 
-	mono_error_init (error);
+	error_init (error);
 	/* This has to be variance aware since imt_method can be from an interface that vt->klass doesn't directly implement */
 	interface_offset = mono_class_interface_offset_with_variance (vt->klass, imt_method->klass, &variance_used);
 	if (interface_offset < 0)
@@ -523,7 +528,7 @@ common_call_trampoline (mgreg_t *regs, guint8 *code, MonoMethod *m, MonoVTable *
 	gpointer *orig_vtable_slot, *vtable_slot_to_patch = NULL;
 	MonoJitInfo *ji = NULL;
 
-	mono_error_init (error);
+	error_init (error);
 
 	virtual_ = vt && (gpointer)vtable_slot > (gpointer)vt;
 	imt_call = vt && (gpointer)vtable_slot < (gpointer)vt;
@@ -1133,7 +1138,7 @@ mono_delegate_trampoline (mgreg_t *regs, guint8 *code, gpointer *arg, guint8* tr
 		if (!is_remote) {
 			sig = tramp_info->sig;
 			if (!(sig && method == tramp_info->method)) {
-				mono_error_init (&err);
+				error_init (&err);
 				sig = mono_method_signature_checked (method, &err);
 				if (!sig) {
 					mono_error_set_pending_exception (&err);
@@ -1167,7 +1172,7 @@ mono_delegate_trampoline (mgreg_t *regs, guint8 *code, gpointer *arg, guint8* tr
 	if (method) {
 		sig = tramp_info->sig;
 		if (!(sig && method == tramp_info->method)) {
-			mono_error_init (&err);
+			error_init (&err);
 			sig = mono_method_signature_checked (method, &err);
 			if (!sig) {
 				mono_error_set_pending_exception (&err);
@@ -1457,7 +1462,16 @@ mono_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gboolean ad
 	gpointer code;
 	guint32 code_size = 0;
 
-	mono_error_init (error);
+	error_init (error);
+
+#ifdef ENABLE_INTERPRETER
+	if (mono_use_interpreter) {
+		gpointer ret = mono_interp_create_trampoline (domain, method, error);
+		if (!mono_error_ok (error))
+			return NULL;
+		return ret;
+	}
+#endif
 
 	code = mono_jit_find_compiled_method_with_jit_info (domain, method, &ji);
 	/*
@@ -1515,7 +1529,7 @@ mono_create_jit_trampoline (MonoDomain *domain, MonoMethod *method, MonoError *e
 {
 	gpointer tramp;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (mono_aot_only) {
 		if (mono_llvm_only && method->iflags & METHOD_IMPL_ATTRIBUTE_SYNCHRONIZED)
@@ -1609,7 +1623,7 @@ mono_create_delegate_trampoline_info (MonoDomain *domain, MonoClass *klass, Mono
 	tramp_info->impl_nothis = mono_arch_get_delegate_invoke_impl (mono_method_signature (invoke), FALSE);
 	tramp_info->method = method;
 	if (method) {
-		mono_error_init (&error);
+		error_init (&error);
 		tramp_info->sig = mono_method_signature_checked (method, &error);
 		tramp_info->need_rgctx_tramp = mono_method_needs_static_rgctx_invoke (method, FALSE);
 	}
@@ -1636,7 +1650,7 @@ no_delegate_trampoline (void)
 gpointer
 mono_create_delegate_trampoline (MonoDomain *domain, MonoClass *klass)
 {
-	if (mono_llvm_only)
+	if (mono_llvm_only || mono_use_interpreter)
 		return no_delegate_trampoline;
 
 	return mono_create_delegate_trampoline_info (domain, klass, NULL)->invoke_impl;

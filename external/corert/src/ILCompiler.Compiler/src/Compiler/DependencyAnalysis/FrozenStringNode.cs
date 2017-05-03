@@ -22,7 +22,7 @@ namespace ILCompiler.DependencyAnalysis
 
         public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            sb.Append(nameMangler.CompilationUnitPrefix).Append("__Str_").Append(NodeFactory.NameMangler.GetMangledStringName(_data));
+            sb.Append(nameMangler.CompilationUnitPrefix).Append("__Str_").Append(nameMangler.GetMangledStringName(_data));
         }
 
         public override bool StaticDependenciesAreComputed => true;
@@ -36,24 +36,31 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
-        public override void EncodeData(ref ObjectDataBuilder dataBuilder, NodeFactory factory, bool relocsOnly)
+        private static IEETypeNode GetEETypeNode(NodeFactory factory)
         {
-            dataBuilder.EmitZeroPointer(); // Sync block
-
             DefType systemStringType = factory.TypeSystemContext.GetWellKnownType(WellKnownType.String);
 
             //
             // The GC requires a direct reference to frozen objects' EETypes. If System.String will be compiled into a separate
             // binary, it must be cloned into this one.
             //
-            if (factory.CompilationModuleGroup.ShouldReferenceThroughImportTable(systemStringType))
+            IEETypeNode stringSymbol = factory.ConstructedTypeSymbol(systemStringType);
+
+            if (stringSymbol.RepresentsIndirectionCell)
             {
-                dataBuilder.EmitPointerReloc(factory.ConstructedClonedTypeSymbol(systemStringType));
+                return factory.ConstructedClonedTypeSymbol(systemStringType);
             }
             else
             {
-                dataBuilder.EmitPointerReloc(factory.ConstructedTypeSymbol(systemStringType));
+                return stringSymbol;
             }
+        }
+
+        public override void EncodeData(ref ObjectDataBuilder dataBuilder, NodeFactory factory, bool relocsOnly)
+        {
+            dataBuilder.EmitZeroPointer(); // Sync block
+
+            dataBuilder.EmitPointerReloc(GetEETypeNode(factory));
 
             dataBuilder.EmitInt(_data.Length);
 
@@ -67,11 +74,14 @@ namespace ILCompiler.DependencyAnalysis
 
         }
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
-        public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory context)
+        public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
         {
-            return null;
+            return new DependencyListEntry[]
+            {
+                new DependencyListEntry(GetEETypeNode(factory), "Frozen string literal EEType"),
+            };
         }
 
         protected override void OnMarked(NodeFactory factory)

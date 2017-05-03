@@ -1,3 +1,7 @@
+/**
+ * \file
+ */
+
 #ifndef __MONO_OBJECT_INTERNALS_H__
 #define __MONO_OBJECT_INTERNALS_H__
 
@@ -362,14 +366,14 @@ struct _MonoInternalThread {
 	volatile int lock_thread_id; /* to be used as the pre-shifted thread id in thin locks. Used for appdomain_ref push/pop */
 	MonoThreadHandle *handle;
 	gpointer native_handle;
-	MonoArray  *cached_culture_info;
+	gpointer unused3;
 	gunichar2  *name;
 	guint32	    name_len;
 	guint32	    state;
 	MonoException *abort_exc;
 	int abort_state_handle;
 	guint64 tid;	/* This is accessed as a gsize in the code (so it can hold a 64bit pointer on systems that need it), but needs to reserve 64 bits of space on all machines as it corresponds to a field in managed code */
-	gpointer stack_ptr;
+	gsize debugger_thread; // FIXME switch to bool as soon as CI testing with corlib version bump works
 	gpointer *static_data;
 	void *thread_info; /*This is MonoThreadInfo*, but to simplify dependencies, let's make it a void* here. */
 	MonoAppContext *current_appcontext;
@@ -388,7 +392,7 @@ struct _MonoInternalThread {
 	gint32 managed_id;
 	guint32 small_id;
 	MonoThreadManageCallback manage_callback;
-	gpointer interrupt_on_stop;
+	gpointer unused4;
 	gsize    flags;
 	gpointer thread_pinning_ref;
 	gsize __abort_protected_block_count;
@@ -1182,17 +1186,10 @@ typedef struct {
 	MonoArray *global_fields;
 	gboolean is_main;
 	MonoArray *resources;
-	GHashTable *unparented_classes;
 } MonoReflectionModuleBuilder;
 
 /* Safely acess System.Reflection.Emit.ModuleBuidler from native code */
 TYPED_HANDLE_DECL (MonoReflectionModuleBuilder);
-
-typedef enum {
-	MonoTypeBuilderNew = 0,
-	MonoTypeBuilderEntered = 1,
-	MonoTypeBuilderFinished = 2
-} MonoTypeBuilderState;
 
 typedef struct {
 	MonoReflectionType type;
@@ -1219,7 +1216,6 @@ typedef struct {
 	MonoArray *generic_params;
 	MonoArray *permissions;
 	MonoReflectionType *created;
-	gint32 state;
 } MonoReflectionTypeBuilder;
 
 /* Safely access System.Reflection.Emit.TypeBuilder from native code */

@@ -1,5 +1,6 @@
-/*
- * jit-icalls.c: internal calls used by the JIT
+/**
+ * \file
+ * internal calls used by the JIT
  *
  * Author:
  *   Dietmar Maurer (dietmar@ximian.com)
@@ -887,11 +888,16 @@ mono_class_static_field_address (MonoDomain *domain, MonoClassField *field)
 
 	//printf ("SFLDA1 %p\n", (char*)vtable->data + field->offset);
 
-	if (domain->special_static_fields && (addr = g_hash_table_lookup (domain->special_static_fields, field)))
+	if (field->offset == -1) {
+		/* Special static */
+		g_assert (domain->special_static_fields);
+		mono_domain_lock (domain);
+		addr = g_hash_table_lookup (domain->special_static_fields, field);
+		mono_domain_unlock (domain);
 		addr = mono_get_special_static_data (GPOINTER_TO_UINT (addr));
-	else
+	} else {
 		addr = (char*)mono_vtable_get_static_field_data (vtable) + field->offset;
-	
+	}
 	return addr;
 }
 
@@ -1332,7 +1338,7 @@ constrained_gsharedvt_call_setup (gpointer mp, MonoMethod *cmethod, MonoClass *k
 	MonoMethod *m;
 	int vt_slot, iface_offset;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (mono_class_is_interface (klass)) {
 		MonoObject *this_obj;
@@ -1504,7 +1510,7 @@ resolve_iface_call (MonoObject *this_obj, int imt_slot, MonoMethod *imt_method, 
 	gpointer addr, compiled_method, aot_addr;
 	gboolean need_rgctx_tramp = FALSE, need_unbox_tramp = FALSE;
 
-	mono_error_init (error);
+	error_init (error);
 	if (!this_obj)
 		/* The caller will handle it */
 		return NULL;
@@ -1588,7 +1594,7 @@ resolve_vcall (MonoVTable *vt, int slot, MonoMethod *imt_method, gpointer *out_a
 	gpointer addr, compiled_method;
 	gboolean need_unbox_tramp = FALSE;
 
-	mono_error_init (error);
+	error_init (error);
 	/* Same as in common_call_trampoline () */
 
 	/* Avoid loading metadata or creating a generic vtable if possible */
@@ -1909,14 +1915,14 @@ mono_interruption_checkpoint_from_trampoline (void)
 }
 
 void
-mono_throw_method_access (MonoMethod *callee, MonoMethod *caller)
+mono_throw_method_access (MonoMethod *caller, MonoMethod *callee)
 {
-	char *callee_name = mono_method_full_name (callee, 1);
 	char *caller_name = mono_method_full_name (caller, 1);
+	char *callee_name = mono_method_full_name (callee, 1);
 	MonoError error;
 
-	mono_error_init (&error);
-	mono_error_set_generic_error (&error, "System", "MethodAccessException", "Method `%s' is inaccessible from method `%s'\n", callee_name, caller_name);
+	error_init (&error);
+	mono_error_set_generic_error (&error, "System", "MethodAccessException", "Method `%s' is inaccessible from method `%s'", callee_name, caller_name);
 	mono_error_set_pending_exception (&error);
 	g_free (callee_name);
 	g_free (caller_name);

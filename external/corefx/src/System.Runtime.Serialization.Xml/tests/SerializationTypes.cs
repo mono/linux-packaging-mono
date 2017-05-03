@@ -1885,12 +1885,14 @@ namespace SerializationTypes
         public ICollection<int> Member1;
     }
 
+#if uapaot
     public class TypeWithTypeProperty
     {
         public int Id { get; set; }
         public Type Type { get; set; }
         public string Name { get; set; }
     }
+#endif
 
     [DataContract(Namespace = "SerializationTypes.GenericTypeWithPrivateSetter")]
     public class GenericTypeWithPrivateSetter<T>
@@ -3041,69 +3043,6 @@ public class NonSerializablePersonForStressSurrogate
     public int Age { get; set; }
 }
 
-public class MyPersonSurrogateProvider : ISerializationSurrogateProvider
-{
-    public Type GetSurrogateType(Type type)
-    {
-        if (type == typeof(NonSerializablePerson))
-        {
-            return typeof(NonSerializablePersonSurrogate);
-        }
-        else if (type == typeof(NonSerializablePersonForStress))
-        {
-            return typeof(NonSerializablePersonForStressSurrogate);
-        }
-        else
-        {
-            return type;
-        }
-    }
-
-    public object GetDeserializedObject(object obj, Type targetType)
-    {
-        if (obj is NonSerializablePersonSurrogate)
-        {
-            NonSerializablePersonSurrogate person = (NonSerializablePersonSurrogate)obj;
-            return new NonSerializablePerson(person.Name, person.Age);
-        }
-        else if (obj is NonSerializablePersonForStressSurrogate)
-        {
-            NonSerializablePersonForStressSurrogate person = (NonSerializablePersonForStressSurrogate)obj;
-            return new NonSerializablePersonForStress(person.Name, person.Age);
-        }
-
-        return obj;
-    }
-
-    public object GetObjectToSerialize(object obj, Type targetType)
-    {
-        if (obj is NonSerializablePerson)
-        {
-            NonSerializablePerson nsp = (NonSerializablePerson)obj;
-            NonSerializablePersonSurrogate serializablePerson = new NonSerializablePersonSurrogate
-            {
-                Name = nsp.Name,
-                Age = nsp.Age,
-            };
-
-            return serializablePerson;
-        }
-        else if (obj is NonSerializablePersonForStress)
-        {
-            NonSerializablePersonForStress nsp = (NonSerializablePersonForStress)obj;
-            NonSerializablePersonForStressSurrogate serializablePerson = new NonSerializablePersonForStressSurrogate
-            {
-                Name = nsp.Name,
-                Age = nsp.Age,
-            };
-
-            return serializablePerson;
-        }
-
-        return obj;
-    }
-}
-
 [DataContract]
 class MyFileStream : IDisposable
 {
@@ -3167,63 +3106,6 @@ class MyFileStreamReference
     internal MyFileStream ToMyFileStream()
     {
         return new MyFileStream(fileStreamName);
-    }
-}
-
-internal class MyFileStreamSurrogateProvider : ISerializationSurrogateProvider
-{
-    static MyFileStreamSurrogateProvider()
-    {
-        Singleton = new MyFileStreamSurrogateProvider();
-    }
-
-    internal static MyFileStreamSurrogateProvider Singleton { get; private set; }
-
-    public Type GetSurrogateType(Type type)
-    {
-        if (type == typeof (MyFileStream))
-        {
-            return typeof (MyFileStreamReference);
-        }
-
-        return type;
-    }
-
-    public object GetObjectToSerialize(object obj, Type targetType)
-    {
-        if (obj == null)
-        {
-            return null;
-        }
-        MyFileStream myFileStream = obj as MyFileStream;
-        if (null != myFileStream)
-        {
-            if (targetType != typeof (MyFileStreamReference))
-            {
-                throw new ArgumentException("Target type for serialization must be MyFileStream");
-            }
-            return MyFileStreamReference.Create(myFileStream);
-        }
-
-        return obj;
-    }
-
-    public object GetDeserializedObject(object obj, Type targetType)
-    {
-        if (obj == null)
-        {
-            return null;
-        }
-        MyFileStreamReference myFileStreamRef = obj as MyFileStreamReference;
-        if (null != myFileStreamRef)
-        {
-            if (targetType != typeof (MyFileStream))
-            {
-                throw new ArgumentException("Target type for deserialization must be MyFileStream");
-            }
-            return myFileStreamRef.ToMyFileStream();
-        }
-        return obj;
     }
 }
 
@@ -4168,4 +4050,134 @@ public class SoapEncodedTestType3
 {
     [SoapElement(IsNullable = true)]
     public string StringValue;
+}
+
+public class SoapEncodedTestType5
+{
+    public string Name;
+
+    [SoapElement(DataType = "nonNegativeInteger", ElementName = "PosInt")]
+    public string PostitiveInt;
+
+    public DateTime Today;
+}
+
+public class MyCircularLink
+{
+    public MyCircularLink Link;
+    public int IntValue;
+
+    public MyCircularLink() { }
+    public MyCircularLink(bool init)
+    {
+        Link = new MyCircularLink() { IntValue = 1 };
+        Link.Link = new MyCircularLink() { IntValue = 2 };
+        Link.Link.Link = this;
+    }
+}
+public class MyGroup
+{
+    public string GroupName;
+    public MyItem[] MyItems;
+}
+
+public class MyGroup2
+{
+    public string GroupName;
+    public List<MyItem> MyItems;
+}
+
+public class MyGroup3
+{
+    public string GroupName;
+    public Dictionary<int, MyItem> MyItems;
+}
+
+public class MyItem
+{
+    public string ItemName;
+}
+
+public class MyOrder
+{
+    public int ID;
+    public string Name;
+}
+
+public class MySpecialOrder : MyOrder
+{
+    public int SecondaryID;
+}
+
+public class MySpecialOrder2 : MyOrder
+{
+    public int SecondaryID;
+}
+
+[System.Runtime.Serialization.DataContractAttribute(Namespace = "http://tempuri.org/")]
+public partial class GetDataRequestBody
+{
+    [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
+    public int value;
+
+    public GetDataRequestBody()
+    {
+    }
+
+    public GetDataRequestBody(int value)
+    {
+        this.value = value;
+    }
+}
+
+[System.Runtime.Serialization.DataContractAttribute(Namespace = "http://tempuri.org/")]
+public partial class GetDataUsingDataContractRequestBody
+{
+    [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
+    public CompositeTypeForXmlMembersMapping composite;
+
+    public GetDataUsingDataContractRequestBody()
+    {
+    }
+
+    public GetDataUsingDataContractRequestBody(CompositeTypeForXmlMembersMapping composite)
+    {
+        this.composite = composite;
+    }
+}
+
+[System.Runtime.Serialization.DataContractAttribute(Name = "CompositeType", Namespace = "http://tempuri.org/")]
+[System.SerializableAttribute()]
+public partial class CompositeTypeForXmlMembersMapping
+{
+    private bool BoolValueField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private string StringValueField;
+
+    [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
+    public bool BoolValue
+    {
+        get
+        {
+            return BoolValueField;
+        }
+        set
+        {
+            BoolValueField = value;
+        }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
+    public string StringValue
+    {
+        get
+        {
+            return StringValueField;
+        }
+        set
+        {
+            StringValueField = value;
+        }
+    }
 }
