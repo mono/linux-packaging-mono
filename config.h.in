@@ -142,7 +142,7 @@
 /* Icall symbol map enabled */
 #undef ENABLE_ICALL_SYMBOL_MAP
 
-/* Enable interpreter in the runtime. */
+/* Enable Interpreter */
 #undef ENABLE_INTERPRETER
 
 /* Enable the LLVM back end */
@@ -488,6 +488,9 @@
 /* Define to 1 if you have the <linux/serial.h> header file. */
 #undef HAVE_LINUX_SERIAL_H
 
+/* Define to 1 if you have the `localtime_r' function. */
+#undef HAVE_LOCALTIME_R
+
 /* Define to 1 if you have the `lockf' function. */
 #undef HAVE_LOCKF
 
@@ -502,6 +505,9 @@
 
 /* Have mincore */
 #undef HAVE_MINCORE
+
+/* Define to 1 if you have the `mkdtemp' function. */
+#undef HAVE_MKDTEMP
 
 /* Define to 1 if you have the `mknodat' function. */
 #undef HAVE_MKNODAT
@@ -824,6 +830,9 @@
 /* Define to 1 if you have the <sys/epoll.h> header file. */
 #undef HAVE_SYS_EPOLL_H
 
+/* Define to 1 if you have the <sys/errno.h> header file. */
+#undef HAVE_SYS_ERRNO_H
+
 /* Define to 1 if you have the <sys/event.h> header file. */
 #undef HAVE_SYS_EVENT_H
 
@@ -1037,7 +1046,7 @@
 /* Enable lazy gc thread creation by the embedding host. */
 #undef LAZY_GC_THREAD_CREATION
 
-/* Full version of LLVM libraties */
+/* Full version of LLVM libraries */
 #undef LLVM_VERSION
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.

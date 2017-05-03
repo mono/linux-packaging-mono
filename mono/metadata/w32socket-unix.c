@@ -1,5 +1,6 @@
-/*
- * w32socket-unix.c: Unix specific socket code.
+/**
+ * \file
+ * Unix specific socket code.
  *
  * Copyright 2016 Microsoft
  * Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -1134,6 +1135,7 @@ mono_w32socket_close (SOCKET sock)
 gint
 mono_w32socket_set_blocking (SOCKET socket, gboolean blocking)
 {
+#ifdef O_NONBLOCK
 	gint ret;
 	gpointer handle;
 
@@ -1143,14 +1145,12 @@ mono_w32socket_set_blocking (SOCKET socket, gboolean blocking)
 		return SOCKET_ERROR;
 	}
 
-#ifdef O_NONBLOCK
 	/* This works better than ioctl(...FIONBIO...)
 	 * on Linux (it causes connect to return
 	 * EINPROGRESS, but the ioctl doesn't seem to) */
 	ret = fcntl (socket, F_GETFL, 0);
 	if (ret != -1)
 		ret = fcntl (socket, F_SETFL, blocking ? (ret & (~O_NONBLOCK)) : (ret | (O_NONBLOCK)));
-#endif /* O_NONBLOCK */
 
 	if (ret == -1) {
 		gint errnum = errno;
@@ -1160,6 +1160,10 @@ mono_w32socket_set_blocking (SOCKET socket, gboolean blocking)
 	}
 
 	return 0;
+#else
+	mono_w32socket_set_last_error (ERROR_NOT_SUPPORTED);
+	return SOCKET_ERROR;
+#endif /* O_NONBLOCK */
 }
 
 gint

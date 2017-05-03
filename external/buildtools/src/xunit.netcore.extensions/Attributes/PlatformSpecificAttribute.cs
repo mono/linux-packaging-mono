@@ -14,6 +14,6 @@ namespace Xunit
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
     public class PlatformSpecificAttribute : Attribute, ITraitAttribute
     {
-        public PlatformSpecificAttribute(PlatformID platform) { }
+        public PlatformSpecificAttribute(TestPlatforms platforms) { }
     }
 }

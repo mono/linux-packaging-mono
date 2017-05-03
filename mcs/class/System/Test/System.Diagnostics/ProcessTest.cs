@@ -1116,7 +1116,6 @@ namespace MonoTests.System.Diagnostics
 #endif // MONO_FEATURE_PROCESS_START
 
 		[Test]
-		[NUnit.Framework.Category ("MobileNotWorking")]
 		public void GetProcessesByName()
 		{
 			// This should return Process[0] or a Process[] with all the "foo" programs running
@@ -1124,7 +1123,17 @@ namespace MonoTests.System.Diagnostics
 		}
 
 		[Test]
-		[NUnit.Framework.Category ("MobileNotWorking")]
+		[NUnit.Framework.Category ("NotWorking")] //Getting the name of init works fine on Android and Linux, but fails on OSX, SELinux and iOS
+		public void HigherPrivilegeProcessName ()
+		{
+			if (!RunningOnUnix)
+				Assert.Ignore ("accessing pid 1, only available on unix");
+
+			string v = Process.GetProcessById (1).ProcessName;
+		}
+
+		[Test]
+		[NUnit.Framework.Category ("AndroidNotWorking")] //SELinux makes probing the parent process impossible
 		public void NonChildProcessWaitForExit ()
 		{
 			if (!RunningOnUnix)
@@ -1148,7 +1157,7 @@ namespace MonoTests.System.Diagnostics
 		}
 
 		[Test]
-		[NUnit.Framework.Category ("MobileNotWorking")]
+		[NUnit.Framework.Category ("AndroidNotWorking")] //SELinux makes probing the parent process impossible
 		public void NonChildProcessName ()
 		{
 			if (!RunningOnUnix)
@@ -1163,7 +1172,7 @@ namespace MonoTests.System.Diagnostics
 		}
 
 		[Test]
-		[NUnit.Framework.Category ("MobileNotWorking")]
+		[NUnit.Framework.Category ("AndroidNotWorking")] //SELinux makes probing the parent process impossible
 		public void NonChildProcessId ()
 		{
 			if (!RunningOnUnix)

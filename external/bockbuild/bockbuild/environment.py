@@ -37,7 +37,7 @@ class Environment:
         expand_macros(self, self._profile)
 
     def write_source_script(self, filename):
-
+        trace (filename)
         envscript = '#!/bin/sh\n'
 
         for k in self.get_names():
@@ -45,6 +45,7 @@ class Environment:
 
         with open(filename, 'w') as f:
             f.write(envscript)
+            trace(envscript)
 
         os.chmod(filename, 0o755)
 

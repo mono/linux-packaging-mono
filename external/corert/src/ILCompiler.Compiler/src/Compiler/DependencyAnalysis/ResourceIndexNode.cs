@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+
 using Internal.NativeFormat;
 using Internal.Text;
-using System;
-using System.IO;
 
 namespace ILCompiler.DependencyAnalysis
 {
@@ -39,7 +39,7 @@ namespace ILCompiler.DependencyAnalysis
             sb.Append(nameMangler.CompilationUnitPrefix).Append("__embedded_resourceindex");
         }
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
@@ -90,9 +90,7 @@ namespace ILCompiler.DependencyAnalysis
                 indexHashtable.Append((uint)hashCode, indexHashtableSection.Place(indexVertex));
             }
 
-            MemoryStream stream = new MemoryStream();
-            nativeWriter.Save(stream);
-            byte[] blob = stream.ToArray();
+            byte[] blob = nativeWriter.Save();
             _endSymbol.SetSymbolOffset(blob.Length);
             return blob;
         }

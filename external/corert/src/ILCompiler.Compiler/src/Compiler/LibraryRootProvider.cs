@@ -25,11 +25,6 @@ namespace ILCompiler
             {
                 try
                 {
-                    // Skip delegates (since their Invoke methods have no IL)
-                    // Note that this check can fail with TypeSystemException as well.
-                    if (type.IsDelegate)
-                        continue;
-
                     rootProvider.AddCompilationRoot(type, "Library module type");
                 }
                 catch (TypeSystemException)
@@ -44,16 +39,19 @@ namespace ILCompiler
 
                 // If this is not a generic definition, root all methods
                 if (!type.HasInstantiation)
+                {
                     RootMethods(type, "Library module method", rootProvider);
+                    rootProvider.RootStaticBasesForType(type, "Library module type statics");
+                }
             }
         }
 
         private void RootMethods(TypeDesc type, string reason, IRootingServiceProvider rootProvider)
         {
-            foreach (MethodDesc method in type.GetMethods())
+            foreach (MethodDesc method in type.GetAllMethods())
             {
                 // Skip methods with no IL and uninstantiated generic methods
-                if (method.IsIntrinsic || method.IsAbstract || method.HasInstantiation)
+                if (method.IsAbstract || method.HasInstantiation)
                     continue;
 
                 if (method.IsInternalCall)

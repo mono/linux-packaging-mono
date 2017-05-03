@@ -196,22 +196,6 @@
 <div class="mapi-header">
 typedef struct _MonoJitInfo MonoJitInfo;
 
-MonoJitInfo*         <a href="#api:mono_jit_info_table_find">mono_jit_info_table_find</a>         (MonoDomain *domain, 
-                                                       char *addr);
-int                  <a href="#api:mono_jit_info_get_code_size">mono_jit_info_get_code_size</a>      (MonoJitInfo* ji);
-gpointer             <a href="#api:mono_jit_info_get_code_start">mono_jit_info_get_code_start</a>     (MonoJitInfo* ji);
-MonoMethod*          <a href="#api:mono_jit_info_get_method">mono_jit_info_get_method</a>         (MonoJitInfo* ji);
-G_GNUC_UNUSED char * <a href="#api:mono_pmip">mono_pmip</a>                        (void *ip);
-void                 <a href="#api:mono_print_method_from_ip">mono_print_method_from_ip</a>        (void *ip);
-                     <a href="#api:mono_print_thread_dump">mono_print_thread_dump</a>           
-void                 <a href="#api:mono_threads_request_thread_dump">mono_threads_request_thread_dump</a> (void);
-void                 <a href="#api:mono_assemblies_init">mono_assemblies_init</a>             (void);
-void                 <a href="#api:mono_assemblies_cleanup">mono_assemblies_cleanup</a>          (void);
-                     <a href="#api:mono_environment_exitcode_get">mono_environment_exitcode_get</a>    
-                     <a href="#api:mono_environment_exitcode_set">mono_environment_exitcode_set</a>    
-                     <a href="#api:mono_install_runtime_cleanup">mono_install_runtime_cleanup</a>     
-void                 <a href="#api:mono_runtime_set_shutting_down">mono_runtime_set_shutting_down</a>   (void);
-                     <a href="#api:mono_security_set_core_clr_platform_callback">mono_security_set_core_clr_platform_callback</a>
 
 </div>
 
@@ -236,19 +220,12 @@ mono_jit_info_table_find (MonoDomain *domain, char *addr)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>domain</i><td> Domain that you want to look up</td></td></tr><tr><td><i>addr</i><td> Points to an address with JITed code.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  <code>NULL</code> if the address does not belong to JITed code (it might be native
+            <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> Domain that you want to look up</td></tr><tr><td><i>addr</i></td><td> Points to an address with JITed code.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 <code>NULL</code> if the address does not belong to JITed code (it might be native
 
-	 code or a trampoline) or a valid pointer to a <code>MonoJitInfo*</code>.</div>
+	 code or a trampoline) or a valid pointer to a <code>MonoJitInfo*</code> .</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use this function to obtain a <code>MonoJitInfo*</code> object that can be used to get
-	 some statistics.   You should provide both the <i>domain</i> on which you will be
-	 performing the probe, and an address.   Since application domains can share code
-	 the same address can be in use by multiple domains at once.
-	<p />
-	 This does not return any results for trampolines.
-	<p /></div>
+             <div> 	<p /> 	 Use this function to obtain a <code>MonoJitInfo*</code> object that can be used to get 	 some statistics. You should provide both the <i>domain</i> on which you will be 	 performing the probe, and an address. Since application domains can share code 	 the same address can be in use by multiple domains at once. 	<p /> 	 This does not return any results for trampolines. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -268,15 +245,11 @@ mono_jit_info_get_code_size (MonoJitInfo* ji)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>ji</i><td> the JIT information handle</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  Starting address with the native code.
+            <table class="mapi-parameters"><tbody><tr><td><i>ji</i></td><td> the JIT information handle</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 Starting address with the native code.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use this function to get the code size for the method described by
-	 the <i>ji</i> object.   You can use this plus the <code>mono_jit_info_get_code_start</code>
-	 to determine the start and end of the native code.
-	<p /></div>
+             <div> 	<p /> 	 Use this function to get the code size for the method described by 	 the <i>ji</i> object. You can use this plus the <code>mono_jit_info_get_code_start</code> 	 to determine the start and end of the native code. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -296,15 +269,11 @@ mono_jit_info_get_code_start (MonoJitInfo* ji)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>ji</i><td> the JIT information handle</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  Starting address with the native code.
+            <table class="mapi-parameters"><tbody><tr><td><i>ji</i></td><td> the JIT information handle</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 Starting address with the native code.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use this function to get the starting address for the method described by
-	 the <i>ji</i> object.  You can use this plus the <code>mono_jit_info_get_code_size</code>
-	 to determine the start and end of the native code.
-	<p /></div>
+             <div> 	<p /> 	 Use this function to get the starting address for the method described by 	 the <i>ji</i> object.  You can use this plus the <code>mono_jit_info_get_code_size</code> 	 to determine the start and end of the native code. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -324,15 +293,12 @@ mono_jit_info_get_method (MonoJitInfo* ji)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>ji</i><td> the JIT information handle</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  The MonoMethod that represents the code tracked
+            <table class="mapi-parameters"><tbody><tr><td><i>ji</i></td><td> the JIT information handle</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 The <code>MonoMethod</code> that represents the code tracked
 
 	 by <i>ji</i>.</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use this function to get the `MonoMethod *` that backs
-	 the <i>ji</i> object.
-	<p /></div>
+             <div> 	<p /> 	 Use this function to get the <code>MonoMethod*</code> that backs 	 the <i>ji</i> object. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -358,17 +324,11 @@ mono_pmip (void *ip)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>ip</i><td> an instruction pointer address</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  the name of the method at address <i>ip</i>.
+            <table class="mapi-parameters"><tbody><tr><td><i>ip</i></td><td> an instruction pointer address</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 the name of the method at address <i>ip</i>.
 </div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This method is used from a debugger to get the name of the
-	 method at address <i>ip</i>.   This routine is typically invoked from
-	 a debugger like this:
-	<p />
-	 (gdb) print mono_pmip ($pc)
-	<p /></div>
+             <div> 	<p /> 	 This method is used from a debugger to get the name of the 	 method at address <i>ip</i>.   This routine is typically invoked from 	 a debugger like this: 	<p /> 	 (gdb) print mono_pmip ($pc) 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -382,24 +342,14 @@ mono_pmip (void *ip)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">#ifdef __GNUC__
-/* Prevent the linker from optimizing this away in embedding setups to help debugging */
- __attribute__ ((__used__))
-#endif
-void
+            <div class="mapi-prototype">MONO_ATTR_USED void
 mono_print_method_from_ip (void *ip)
 
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>ip</i><td> an instruction pointer address</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This method is used from a debugger to get the name of the
-	 method at address <i>ip</i>.
-	<p />
-	 This prints the name of the method at address <i>ip</i> in the standard
-	 output.  Unlike mono_pmip which returns a string, this routine
-	 prints the value on the standard output.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>ip</i></td><td> an instruction pointer address</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 This method is used from a debugger to get the name of the 	 method at address <i>ip</i>. 	<p /> 	 This prints the name of the method at address <i>ip</i> in the standard 	 output.  Unlike <code>mono_pmip</code> which returns a string, this routine 	 prints the value on the standard output.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -413,8 +363,13 @@ mono_print_method_from_ip (void *ip)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_print_thread_dump</div>
+            <div class="mapi-prototype">void
+mono_print_thread_dump (void *sigctx)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Print information about the current thread to stdout. 	 <i>sigctx</i> can be <code>NULL</code>, allowing this to be called from gdb.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -434,8 +389,7 @@ mono_threads_request_thread_dump (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	   Ask all threads except the current to print their stacktrace to stdout.</div>
+             <div> 	<p /> 	   Ask all threads except the current to print their stacktrace to stdout.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -458,8 +412,7 @@ mono_assemblies_init (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	  Initialize global variables used by this module.</div>
+             <div> 	<p /> 	  Initialize global variables used by this module.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -479,8 +432,7 @@ mono_assemblies_cleanup (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Free all resources used by this module.</div>
+             <div> 	<p /> 	 Free all resources used by this module.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -494,7 +446,10 @@ mono_assemblies_cleanup (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_environment_exitcode_get</div>
+            <div class="mapi-prototype">gint32
+mono_environment_exitcode_get (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -509,7 +464,10 @@ mono_assemblies_cleanup (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_environment_exitcode_set</div>
+            <div class="mapi-prototype">void
+mono_environment_exitcode_set (gint32 value)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -524,7 +482,10 @@ mono_assemblies_cleanup (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_install_runtime_cleanup</div>
+            <div class="mapi-prototype">void
+mono_install_runtime_cleanup (MonoDomainFunc func)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -532,7 +493,7 @@ mono_assemblies_cleanup (void)
 
 <a name="api:mono_runtime_set_shutting_down"></a>
 <div class="mapi">
-    <div class="mapi-entry "><code>mono_runtime_set_shutting_down</code></div>
+    <div class="mapi-entry mapi-strike"><code>mono_runtime_set_shutting_down</code></div><br /><div class='mapi-deprecated'><b>Deprecated:</b>  This function can break the shutdown sequence.</div>
     <div class="mapi-height-container">
         <div class="mapi-ptr-container"></div>
         <div class="mapi-description">
@@ -545,13 +506,6 @@ mono_runtime_set_shutting_down (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Invoked by System.Environment.Exit to flag that the runtime
-	 is shutting down.
-	<p />
-	 Deprecated. This function can break the shutdown sequence.</div>
+             <div> 	<p /> 	 Invoked by <code>System.Environment.Exit</code> to flag that the runtime 	 is shutting down.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

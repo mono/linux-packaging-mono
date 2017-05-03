@@ -243,11 +243,8 @@ mono_counters_dump (int section_mask, FILE *outfile)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>section_mask</i><td> The sections to dump counters for</td></td></tr><tr><td><i>outfile</i><td> a FILE to dump the results to</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Displays the counts of all the enabled counters registered. 
-	 To filter by variance, you can OR one or more variance with the specific section you want.
-	 Use MONO_COUNTER_SECTION_MASK to dump all categories of a specific variance.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>section_mask</i></td><td> The sections to dump counters for</td></tr><tr><td><i>outfile</i></td><td> a FILE to dump the results to</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Displays the counts of all the enabled counters registered.  	 To filter by variance, you can OR one or more variance with the specific section you want. 	 Use <code>MONO_COUNTER_SECTION_MASK</code> to dump all categories of a specific variance.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -267,11 +264,7 @@ mono_counters_enable (int section_mask)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>section_mask</i><td> a mask listing the sections that will be displayed</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This is used to track which counters will be displayed.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>sectionmask</i></td><td> a mask listing the sections that will be displayed</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 This is used to track which counters will be displayed.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

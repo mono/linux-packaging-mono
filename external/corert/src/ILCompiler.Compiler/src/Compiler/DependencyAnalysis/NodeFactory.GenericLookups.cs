@@ -27,6 +27,21 @@ namespace ILCompiler.DependencyAnalysis
                     return new TypeHandleGenericLookupResult(type);
                 });
 
+                _unwrapNullableSymbols = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new UnwrapNullableTypeHandleGenericLookupResult(type);
+                });
+
+                _methodHandles = new NodeCache<MethodDesc, GenericLookupResult>(method =>
+                {
+                    return new MethodHandleGenericLookupResult(method);
+                });
+
+                _fieldHandles = new NodeCache<FieldDesc, GenericLookupResult>(field =>
+                {
+                    return new FieldHandleGenericLookupResult(field);
+                });
+
                 _methodDictionaries = new NodeCache<MethodDesc, GenericLookupResult>(method =>
                 {
                     return new MethodDictionaryGenericLookupResult(method);
@@ -61,6 +76,51 @@ namespace ILCompiler.DependencyAnalysis
                 {
                     return new TypeNonGCStaticBaseGenericLookupResult(type);
                 });
+
+                _objectAllocators = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new ObjectAllocatorGenericLookupResult(type);
+                });
+
+                _arrayAllocators = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new ArrayAllocatorGenericLookupResult(type);
+                });
+
+                _tlsIndices = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new ThreadStaticIndexLookupResult(type);
+                });
+
+                _tlsOffsets = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new ThreadStaticOffsetLookupResult(type);
+                });
+
+                _defaultCtors = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new DefaultConstructorLookupResult(type);
+                });
+
+                _fieldOffsets = new NodeCache<FieldDesc, GenericLookupResult>(field =>
+                {
+                    return new FieldOffsetGenericLookupResult(field);
+                });
+
+                _vtableOffsets = new NodeCache<MethodDesc, GenericLookupResult>(method =>
+                {
+                    return new VTableOffsetGenericLookupResult(method);
+                });
+
+                _callingConventionConverters = new NodeCache<CallingConventionConverterKey, GenericLookupResult>(key =>
+                {
+                    return new CallingConventionConverterLookupResult(key);
+                });
+
+                _typeSizes = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new TypeSizeLookupResult(type);
+                });
             }
 
             private NodeCache<TypeDesc, GenericLookupResult> _typeSymbols;
@@ -68,6 +128,38 @@ namespace ILCompiler.DependencyAnalysis
             public GenericLookupResult Type(TypeDesc type)
             {
                 return _typeSymbols.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _unwrapNullableSymbols;
+
+            public GenericLookupResult UnwrapNullableType(TypeDesc type)
+            {
+                // An actual unwrap nullable lookup is only required if the type is exactly a runtime 
+                // determined type associated with System.__UniversalCanon itself
+                if (type.IsRuntimeDeterminedType && ((RuntimeDeterminedType)type).CanonicalType.IsCanonicalDefinitionType(CanonicalFormKind.Universal))
+                    return _unwrapNullableSymbols.GetOrAdd(type);
+                else
+                {
+                    // Perform the unwrap or not eagerly, and use a normal Type GenericLookupResult
+                    if (type.IsNullable)
+                        return Type(type.Instantiation[0]);
+                    else
+                        return Type(type);
+                }
+            }
+
+            private NodeCache<MethodDesc, GenericLookupResult> _methodHandles;
+
+            public GenericLookupResult MethodHandle(MethodDesc method)
+            {
+                return _methodHandles.GetOrAdd(method);
+            }
+
+            private NodeCache<FieldDesc, GenericLookupResult> _fieldHandles;
+
+            public GenericLookupResult FieldHandle(FieldDesc field)
+            {
+                return _fieldHandles.GetOrAdd(field);
             }
 
             private NodeCache<TypeDesc, GenericLookupResult> _typeThreadStaticBaseIndexSymbols;
@@ -117,6 +209,69 @@ namespace ILCompiler.DependencyAnalysis
             public GenericLookupResult MethodEntry(MethodDesc method)
             {
                 return _methodEntrypoints.GetOrAdd(method);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _objectAllocators;
+
+            public GenericLookupResult ObjectAlloctor(TypeDesc type)
+            {
+                return _objectAllocators.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _arrayAllocators;
+
+            public GenericLookupResult ArrayAlloctor(TypeDesc type)
+            {
+                return _arrayAllocators.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _tlsIndices;
+
+            public GenericLookupResult TlsIndexLookupResult(TypeDesc type)
+            {
+                return _tlsIndices.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _tlsOffsets;
+
+            public GenericLookupResult TlsOffsetLookupResult(TypeDesc type)
+            {
+                return _tlsOffsets.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _defaultCtors;
+
+            public GenericLookupResult DefaultCtorLookupResult(TypeDesc type)
+            {
+                return _defaultCtors.GetOrAdd(type);
+            }
+
+            private NodeCache<FieldDesc, GenericLookupResult> _fieldOffsets;
+
+            public GenericLookupResult FieldOffsetLookupResult(FieldDesc field)
+            {
+                return _fieldOffsets.GetOrAdd(field);
+            }
+
+            private NodeCache<MethodDesc, GenericLookupResult> _vtableOffsets;
+
+            public GenericLookupResult VTableOffsetLookupResult(MethodDesc method)
+            {
+                return _vtableOffsets.GetOrAdd(method);
+            }
+
+            private NodeCache<CallingConventionConverterKey, GenericLookupResult> _callingConventionConverters;
+
+            public GenericLookupResult CallingConventionConverterLookupResult(CallingConventionConverterKey key)
+            {
+                return _callingConventionConverters.GetOrAdd(key);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _typeSizes;
+
+            public GenericLookupResult TypeSize(TypeDesc type)
+            {
+                return _typeSizes.GetOrAdd(type);
             }
         }
 

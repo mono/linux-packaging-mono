@@ -4,11 +4,14 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+#if MONO
+using System.Diagnostics.Private;
+#endif
 using System.Runtime.InteropServices;
 
 namespace System.Threading
 {
-
+    [Internal.Runtime.CompilerServices.RelocatedTypeAttribute("System.Threading.Overlapped")]
     [StructLayout(LayoutKind.Sequential)]
     internal partial struct Win32ThreadPoolNativeOverlapped
     {
@@ -25,8 +28,16 @@ namespace System.Threading
         private IntPtr _nextFree; // if this instance if free, points to the next free instance.
         private int _dataIndex; // Index in _dataArray of this instance's OverlappedData.
 
+#if MONO
+        static Win32ThreadPoolNativeOverlapped()
+        {
+            if (!Environment.IsRunningOnWindows)
+                throw new PlatformNotSupportedException();
+        }
+#endif
+
         internal OverlappedData Data
-        { 
+        {
             get { return s_dataArray[_dataIndex]; }
         }
 

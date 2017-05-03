@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -15,7 +15,6 @@ using System.Threading;
 
 using Internal.Metadata.NativeFormat;
 using Internal.TypeSystem;
-using Internal.TypeSystem.NativeFormat;
 
 namespace Internal.Runtime.TypeLoader
 {
@@ -75,6 +74,11 @@ namespace Internal.Runtime.TypeLoader
         public static unsafe void SetRelatedParameterType(this RuntimeTypeHandle rtth, RuntimeTypeHandle relatedTypeHandle)
         {
             rtth.ToEETypePtr()->RelatedParameterType = relatedTypeHandle.ToEETypePtr();
+        }
+
+        public static unsafe void SetParameterizedTypeShape(this RuntimeTypeHandle rtth, uint value)
+        {
+            rtth.ToEETypePtr()->ParameterizedTypeShape = value;
         }
 
         public static unsafe void SetBaseType(this RuntimeTypeHandle rtth, RuntimeTypeHandle baseTypeHandle)
@@ -166,6 +170,11 @@ namespace Internal.Runtime.TypeLoader
                 ushort flags;
                 ushort runtimeInterfacesLength = 0;
                 bool isGenericEETypeDef = false;
+                bool isAbstractClass;
+                bool isByRefLike;
+#if EETYPE_TYPE_MANAGER
+                IntPtr typeManager = IntPtr.Zero;
+#endif
 
                 if (state.RuntimeInterfaces != null)
                 {
@@ -185,6 +194,11 @@ namespace Internal.Runtime.TypeLoader
                     flags = pTemplateEEType->Flags;
                     isArray = pTemplateEEType->IsArray;
                     isGeneric = pTemplateEEType->IsGeneric;
+                    isAbstractClass = pTemplateEEType->IsAbstract && !pTemplateEEType->IsInterface;
+                    isByRefLike = pTemplateEEType->IsByRefLike;
+#if EETYPE_TYPE_MANAGER
+                    typeManager = pTemplateEEType->PointerToTypeManager;
+#endif
                     Debug.Assert(pTemplateEEType->NumInterfaces == runtimeInterfacesLength);
                 }
                 else if (state.TypeBeingBuilt.IsGenericDefinition)
@@ -201,6 +215,8 @@ namespace Internal.Runtime.TypeLoader
                     isNullable = false;
                     isGeneric = false;
                     isGenericEETypeDef = true;
+                    isAbstractClass = false;
+                    isByRefLike = false;
                     componentSize = checked((ushort)state.TypeBeingBuilt.Instantiation.Length);
                     baseSize = 0;
                 }
@@ -212,6 +228,12 @@ namespace Internal.Runtime.TypeLoader
                     flags = EETypeBuilderHelpers.ComputeFlags(state.TypeBeingBuilt);
                     isArray = false;
                     isGeneric = state.TypeBeingBuilt.HasInstantiation;
+
+                    isAbstractClass = (state.TypeBeingBuilt is MetadataType)
+                        && ((MetadataType)state.TypeBeingBuilt).IsAbstract
+                        && !state.TypeBeingBuilt.IsInterface;
+
+                    isByRefLike = (state.TypeBeingBuilt is DefType) && ((DefType)state.TypeBeingBuilt).IsByRefLike;
 
                     if (state.TypeBeingBuilt.HasVariance)
                     {
@@ -306,6 +328,16 @@ namespace Internal.Runtime.TypeLoader
                     else
                         rareFlags &= ~(uint)EETypeRareFlags.HasCctorFlag;
 
+                    if (isAbstractClass)
+                        rareFlags |= (uint)EETypeRareFlags.IsAbstractClassFlag;
+                    else
+                        rareFlags &= ~(uint)EETypeRareFlags.IsAbstractClassFlag;
+
+                    if (isByRefLike)
+                        rareFlags |= (uint)EETypeRareFlags.IsByRefLikeFlag;
+                    else
+                        rareFlags &= ~(uint)EETypeRareFlags.IsByRefLikeFlag;
+
                     rareFlags |= (uint)EETypeRareFlags.HasDynamicModuleFlag;
 
                     optionalFields.SetFieldValue(EETypeOptionalFieldTag.RareFlags, rareFlags);
@@ -375,6 +407,9 @@ namespace Internal.Runtime.TypeLoader
                     pEEType->NumVtableSlots = numVtableSlots;
                     pEEType->NumInterfaces = runtimeInterfacesLength;
                     pEEType->HashCode = hashCodeOfNewType;
+#if EETYPE_TYPE_MANAGER
+                    pEEType->PointerToTypeManager = typeManager;
+#endif
 
                     // Write the GCDesc
                     bool isSzArray = isArray ? state.ArrayRank < 1 : false;
@@ -404,7 +439,7 @@ namespace Internal.Runtime.TypeLoader
                     optionalFields.WriteToEEType(pEEType, cbOptionalFieldsSize);
 
 #if CORERT
-                    pEEType->PointerToTypeManager = PermanentAllocatedMemoryBlobs.GetPointerToIntPtr(moduleInfo.Handle);
+                    pEEType->PointerToTypeManager = PermanentAllocatedMemoryBlobs.GetPointerToIntPtr(moduleInfo.Handle.GetIntPtrUNSAFE());
 #endif
                     pEEType->DynamicModule = dynamicModulePtr;
 
@@ -956,6 +991,24 @@ namespace Internal.Runtime.TypeLoader
             return state.HalfBakedRuntimeTypeHandle;
         }
 
+        public static RuntimeTypeHandle CreateByRefEEType(UInt32 hashCodeOfNewType, RuntimeTypeHandle pointeeTypeHandle, TypeDesc byRefType)
+        {
+            TypeBuilderState state = new TypeBuilderState(byRefType);
+
+            // ByRef and pointer types look similar enough that we can use void* as a template.
+            // Ideally this should be typeof(void&) but C# doesn't support that syntax. We adjust for this below.
+            CreateEETypeWorker(typeof(void*).TypeHandle.ToEETypePtr(), hashCodeOfNewType, 0, false, state);
+            Debug.Assert(!state.HalfBakedRuntimeTypeHandle.IsNull());
+
+            state.HalfBakedRuntimeTypeHandle.ToEETypePtr()->RelatedParameterType = pointeeTypeHandle.ToEETypePtr();
+
+            // We used a pointer as a template. We need to make this a byref.
+            Debug.Assert(state.HalfBakedRuntimeTypeHandle.ToEETypePtr()->ParameterizedTypeShape == ParameterizedTypeShapeConstants.Pointer);
+            state.HalfBakedRuntimeTypeHandle.ToEETypePtr()->ParameterizedTypeShape = ParameterizedTypeShapeConstants.ByRef;
+
+            return state.HalfBakedRuntimeTypeHandle;
+        }
+
         public static RuntimeTypeHandle CreateEEType(TypeDesc type, TypeBuilderState state)
         {
             Debug.Assert(type != null && state != null);
@@ -963,7 +1016,7 @@ namespace Internal.Runtime.TypeLoader
             EEType* pTemplateEEType = null;
             bool requireVtableSlotMapping = false;
 
-            if (type is PointerType)
+            if (type is PointerType || type is ByRefType)
             {
                 Debug.Assert(0 == state.NonGcDataSize);
                 Debug.Assert(false == state.HasStaticConstructor);
@@ -972,7 +1025,10 @@ namespace Internal.Runtime.TypeLoader
                 Debug.Assert(0 == state.NumSealedVTableEntries);
                 Debug.Assert(IntPtr.Zero == state.GcStaticDesc);
                 Debug.Assert(IntPtr.Zero == state.ThreadStaticDesc);
+
+                // Pointers and ByRefs only differ by the ParameterizedTypeShape value.
                 RuntimeTypeHandle templateTypeHandle = typeof(void*).TypeHandle;
+
                 pTemplateEEType = templateTypeHandle.ToEETypePtr();
             }
             else if ((type is MetadataType) && (state.TemplateType == null || !state.TemplateType.RetrieveRuntimeTypeHandleIfPossible()))

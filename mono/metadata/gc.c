@@ -1,5 +1,6 @@
-/*
- * metadata/gc.c: GC icalls.
+/**
+ * \file
+ * GC icalls.
  *
  * Author: Paolo Molaro <lupus@ximian.com>
  *
@@ -68,7 +69,6 @@ static MonoCoopMutex finalizer_mutex;
 static MonoCoopMutex reference_queue_mutex;
 
 static GSList *domains_to_finalize;
-static MonoMList *threads_to_finalize;
 
 static gboolean finalizer_thread_exited;
 /* Uses finalizer_mutex */
@@ -157,18 +157,6 @@ coop_cond_timedwait_alertable (MonoCoopCond *cond, MonoCoopMutex *mutex, guint32
 	return res;
 }
 
-static gboolean
-add_thread_to_finalize (MonoInternalThread *thread, MonoError *error)
-{
-	mono_error_init (error);
-	mono_finalizer_lock ();
-	if (!threads_to_finalize)
-		MONO_GC_REGISTER_ROOT_SINGLE (threads_to_finalize, MONO_ROOT_SOURCE_FINALIZER_QUEUE, "finalizable threads list");
-	threads_to_finalize = mono_mlist_append_checked (threads_to_finalize, (MonoObject*)thread, error);
-	mono_finalizer_unlock ();
-	return is_ok (error);
-}
-
 /* 
  * actually, we might want to queue the finalize requests in a separate thread,
  * but we need to be careful about the execution domain of the thread...
@@ -241,15 +229,6 @@ mono_gc_run_finalize (void *obj, void *data)
 		if (mono_gc_is_finalizer_internal_thread (t))
 			/* Avoid finalizing ourselves */
 			return;
-
-		if (t->threadpool_thread && finalizing_root_domain) {
-			/* Don't finalize threadpool threads when
-			   shutting down - they're finalized when the
-			   threadpool shuts down. */
-			if (!add_thread_to_finalize (t, &error))
-				goto unhandled_error;
-			return;
-		}
 	}
 
 	if (o->vtable->klass->image == mono_defaults.corlib && !strcmp (o->vtable->klass->name, "DynamicMethod") && finalizing_root_domain) {
@@ -344,22 +323,6 @@ unhandled_error:
 	mono_domain_set_internal (caller_domain);
 }
 
-void
-mono_gc_finalize_threadpool_threads (void)
-{
-	while (threads_to_finalize) {
-		MonoInternalThread *thread = (MonoInternalThread*) mono_mlist_get_data (threads_to_finalize);
-
-		/* Force finalization of the thread. */
-		thread->threadpool_thread = FALSE;
-		mono_object_register_finalizer ((MonoObject*)thread);
-
-		mono_gc_run_finalize (thread, NULL);
-
-		threads_to_finalize = mono_mlist_next (threads_to_finalize);
-	}
-}
-
 gpointer
 mono_gc_out_of_memory (size_t size)
 {
@@ -421,9 +384,9 @@ object_register_finalizer (MonoObject *obj, void (*callback)(void *, void*))
 
 /**
  * mono_object_register_finalizer:
- * @obj: object to register
+ * \param obj object to register
  *
- * Records that object @obj has a finalizer, this will call the
+ * Records that object \p obj has a finalizer, this will call the
  * Finalize method when the garbage collector disposes the object.
  * 
  */
@@ -436,15 +399,14 @@ mono_object_register_finalizer (MonoObject *obj)
 
 /**
  * mono_domain_finalize:
- * @domain: the domain to finalize
- * @timeout: msects to wait for the finalization to complete, -1 to wait indefinitely
+ * \param domain the domain to finalize
+ * \param timeout msecs to wait for the finalization to complete, \c -1 to wait indefinitely
  *
- *  Request finalization of all finalizable objects inside @domain. Wait
- * @timeout msecs for the finalization to complete.
+ * Request finalization of all finalizable objects inside \p domain. Wait
+ * \p timeout msecs for the finalization to complete.
  *
- * Returns: TRUE if succeeded, FALSE if there was a timeout
+ * \returns TRUE if succeeded, FALSE if there was a timeout
  */
-
 gboolean
 mono_domain_finalize (MonoDomain *domain, guint32 timeout) 
 {
@@ -516,7 +478,7 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
 		if (res == MONO_SEM_TIMEDWAIT_RET_SUCCESS) {
 			break;
 		} else if (res == MONO_SEM_TIMEDWAIT_RET_ALERTED) {
-			if ((thread->state & (ThreadState_StopRequested | ThreadState_SuspendRequested)) != 0) {
+			if ((thread->state & (ThreadState_AbortRequested | ThreadState_SuspendRequested)) != 0) {
 				ret = FALSE;
 				break;
 			}
@@ -553,11 +515,6 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
 		}
 
 		goto done;
-	}
-
-	if (domain == mono_get_root_domain ()) {
-		mono_threadpool_cleanup ();
-		mono_gc_finalize_threadpool_threads ();
 	}
 
 done:
@@ -964,7 +921,7 @@ void
 mono_gc_init_finalizer_thread (void)
 {
 	MonoError error;
-	gc_thread = mono_thread_create_internal (mono_domain_get (), finalizer_thread, NULL, FALSE, 0, &error);
+	gc_thread = mono_thread_create_internal (mono_domain_get (), finalizer_thread, NULL, MONO_THREAD_CREATE_FLAGS_NONE, &error);
 	mono_error_assert_ok (&error);
 }
 
@@ -1089,13 +1046,13 @@ mono_gc_is_finalizer_internal_thread (MonoInternalThread *thread)
 
 /**
  * mono_gc_is_finalizer_thread:
- * @thread: the thread to test.
+ * \param thread the thread to test.
  *
  * In Mono objects are finalized asynchronously on a separate thread.
- * This routine tests whether the @thread argument represents the
+ * This routine tests whether the \p thread argument represents the
  * finalization thread.
  * 
- * Returns: TRUE if @thread is the finalization thread.
+ * \returns TRUE if \p thread is the finalization thread.
  */
 gboolean
 mono_gc_is_finalizer_thread (MonoThread *thread)
@@ -1216,20 +1173,20 @@ reference_queue_clear_for_domain (MonoDomain *domain)
 }
 /**
  * mono_gc_reference_queue_new:
- * @callback callback used when processing collected entries.
+ * \param callback callback used when processing collected entries.
  *
  * Create a new reference queue used to process collected objects.
  * A reference queue let you add a pair of (managed object, user data)
- * using the mono_gc_reference_queue_add method.
+ * using the \c mono_gc_reference_queue_add method.
  *
- * Once the managed object is collected @callback will be called
+ * Once the managed object is collected \p callback will be called
  * in the finalizer thread with 'user data' as argument.
  *
  * The callback is called from the finalizer thread without any locks held.
- * When a AppDomain is unloaded, all callbacks for objects belonging to it
+ * When an AppDomain is unloaded, all callbacks for objects belonging to it
  * will be invoked.
  *
- * @returns the new queue.
+ * \returns the new queue.
  */
 MonoReferenceQueue*
 mono_gc_reference_queue_new (mono_reference_queue_callback callback)
@@ -1247,15 +1204,15 @@ mono_gc_reference_queue_new (mono_reference_queue_callback callback)
 
 /**
  * mono_gc_reference_queue_add:
- * @queue the queue to add the reference to.
- * @obj the object to be watched for collection
- * @user_data parameter to be passed to the queue callback
+ * \param queue the queue to add the reference to.
+ * \param obj the object to be watched for collection
+ * \param user_data parameter to be passed to the queue callback
  *
- * Queue an object to be watched for collection, when the @obj is
- * collected, the callback that was registered for the @queue will
- * be invoked with @user_data as argument.
+ * Queue an object to be watched for collection, when the \p obj is
+ * collected, the callback that was registered for the \p queue will
+ * be invoked with \p user_data as argument.
  *
- * @returns false if the queue is scheduled to be freed.
+ * \returns FALSE if the queue is scheduled to be freed.
  */
 gboolean
 mono_gc_reference_queue_add (MonoReferenceQueue *queue, MonoObject *obj, void *user_data)
@@ -1279,9 +1236,9 @@ mono_gc_reference_queue_add (MonoReferenceQueue *queue, MonoObject *obj, void *u
 
 /**
  * mono_gc_reference_queue_free:
- * @queue the queue that should be freed.
+ * \param queue the queue that should be freed.
  *
- * This operation signals that @queue should be freed. This operation is deferred
+ * This operation signals that \p queue should be freed. This operation is deferred
  * as it happens on the finalizer thread.
  *
  * After this call, no further objects can be queued. It's the responsibility of the

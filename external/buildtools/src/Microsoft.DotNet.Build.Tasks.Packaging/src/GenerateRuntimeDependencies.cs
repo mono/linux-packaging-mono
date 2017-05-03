@@ -4,10 +4,10 @@
 
 using Microsoft.Build.Framework;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using NuGet.RuntimeModel;
+using NuGet.Versioning;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -44,12 +44,6 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
             set;
         }
 
-        public bool EnsureBase
-        {
-            get;
-            set;
-        }
-
 
         public override bool Execute()
         {
@@ -71,8 +65,6 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
                 return false;
             }
 
-            RuntimeFileFormatter formatter = new RuntimeFileFormatter();
-            RuntimeFile runtimeFile = null;
             string sourceRuntimeFilePath = null;
             if (RuntimeJsonTemplate != null)
             {
@@ -80,16 +72,6 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
             }
             string destRuntimeFilePath = RuntimeJson.GetMetadata("FullPath");
 
-            // read in existing JSON, if it was provided so that we preserve any 
-            // hand authored #imports or dependencies
-            if (!String.IsNullOrEmpty(sourceRuntimeFilePath))
-            {
-                runtimeFile = formatter.ReadRuntimeFile(sourceRuntimeFilePath);
-            }
-            else
-            {
-                runtimeFile = new RuntimeFile();
-            }
 
             Dictionary<string, string> packageAliases = new Dictionary<string, string>();
             foreach (var dependency in Dependencies)
@@ -105,116 +87,53 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
                 packageAliases[alias] = dependency.ItemSpec;
             }
 
-            foreach (var dependency in Dependencies)
+            var runtimeGroups = Dependencies.GroupBy(d => d.GetMetadata("TargetRuntime"));
+
+            List<RuntimeDescription> runtimes = new List<RuntimeDescription>();
+            foreach (var runtimeGroup in runtimeGroups)
             {
-                string targetRuntimeId = dependency.GetMetadata("TargetRuntime");
-                string targetPackageId = dependency.GetMetadata("TargetPackage");
-                string targetPackageAlias = dependency.GetMetadata("TargetPackageAlias");
-                string dependencyId = dependency.ItemSpec;
-                string dependencyVersion = dependency.GetMetadata("version");
+                string targetRuntimeId = runtimeGroup.Key;
 
                 if (String.IsNullOrEmpty(targetRuntimeId))
                 {
-                    Log.LogMessage(LogImportance.Low, "Skipping dependency {0} since it doesn't have a TargetRuntime.", dependency.ItemSpec);
+                    Log.LogMessage(LogImportance.Low, "Skipping dependencies {0} since they don't have a TargetRuntime.", String.Join(", ", runtimeGroup.Select(d => d.ItemSpec)));
                     continue;
                 }
 
-                if (!String.IsNullOrEmpty(targetPackageAlias) && !packageAliases.TryGetValue(targetPackageAlias, out targetPackageId))
+                if (runtimeGroup.Any(d => d.ItemSpec == c_emptyDependency))
                 {
-                    Log.LogWarning("Dependency {0} specified TargetPackageAlias {1} but no package was found defining this alias.", dependency.ItemSpec, targetPackageAlias);
-                }
-                else
-                {
-                    Log.LogMessage(LogImportance.Low, "Using {0} for TargetPackageAlias {1}", targetPackageId, targetPackageAlias);
+                    runtimes.Add(new RuntimeDescription(targetRuntimeId));
+                    continue;
                 }
 
-                RuntimeSpec targetRuntime = null;
-                if (!runtimeFile.Runtimes.TryGetValue(targetRuntimeId, out targetRuntime))
+                List<RuntimeDependencySet> runtimeDependencySets = new List<RuntimeDependencySet>();
+                var targetPackageGroups = runtimeGroup.GroupBy(d => GetTargetPackageId(d, packageAliases));
+                foreach (var targetPackageGroup in targetPackageGroups)
                 {
-                    targetRuntime = new RuntimeSpec() { Name = targetRuntimeId };
-                    runtimeFile.Runtimes.Add(targetRuntimeId, targetRuntime);
-                }
+                    string targetPackageId = targetPackageGroup.Key;
 
-                if (String.IsNullOrEmpty(targetPackageId))
-                {
-                    Log.LogMessage(LogImportance.Low, "Dependency {0} has no parent so will assume {1}.", dependency.ItemSpec, PackageId);
-                    targetPackageId = PackageId;
-                }
-
-                DependencySpec targetPackage = null;
-                if (!targetRuntime.Dependencies.TryGetValue(targetPackageId, out targetPackage))
-                {
-                    targetPackage = new DependencySpec() { Name = targetPackageId };
-                    targetRuntime.Dependencies.Add(targetPackageId, targetPackage);
-                }
-
-                if (dependencyId == c_emptyDependency)
-                {
-                    targetPackage.Implementations.Clear();
-                }
-                else
-                {
-                    if (String.IsNullOrEmpty(dependencyVersion))
+                    List<RuntimePackageDependency> runtimePackageDependencies = new List<RuntimePackageDependency>();
+                    var dependencyGroups = targetPackageGroup.GroupBy(d => d.ItemSpec);
+                    foreach (var dependencyGroup in dependencyGroups)
                     {
-                        Log.LogWarning("Dependency {0} has no version", dependency.ItemSpec);
+                        string dependencyId = dependencyGroup.Key;
+                        var dependencyVersions = dependencyGroup.Select(d => GetDependencyVersion(d));
+                        var maxDependencyVersion = dependencyVersions.Max();
+                        runtimePackageDependencies.Add(new RuntimePackageDependency(dependencyId, new VersionRange(maxDependencyVersion)));
                     }
-
-                    ImplementationSpec existing;
-
-                    if (targetPackage.Implementations.TryGetValue(dependencyId, out existing))
-                    {
-                        string newVersion = CompareSemanticVersion(dependencyVersion, existing.Version) > 0 ? dependencyVersion : existing.Version;
-                        Log.LogMessage(LogImportance.Low, "Dependency {0} has been added more than once, {1}, {2}, using {3}", dependencyId, existing.Version, dependencyVersion, newVersion);
-                        dependencyVersion = newVersion;
-                    }
-
-                    targetPackage.Implementations[dependencyId] = new ImplementationSpec() { Name = dependencyId, Version = dependencyVersion };
+                    runtimeDependencySets.Add(new RuntimeDependencySet(targetPackageId, runtimePackageDependencies));
                 }
+                runtimes.Add(new RuntimeDescription(targetRuntimeId, runtimeDependencySets));
             }
 
-            if (EnsureBase)
+            RuntimeGraph runtimeGraph = new RuntimeGraph(runtimes);
+
+            // read in existing JSON, if it was provided so that we preserve any 
+            // hand authored #imports or dependencies
+            if (!String.IsNullOrEmpty(sourceRuntimeFilePath))
             {
-                // RID base is used to lift the library packages up to a baseline version
-                // we don't want to obscure these associations or else we may bring in
-                // old reference packages prior to an implementation package split
-                // and thus, clashing implementations.
-
-                // EG: Version 1 of System.Banana had a single implementation that was
-                //     windows specific.
-                //     Version 2 split the implementation to Windows and Unix
-                //     If Version 1 was referenced we'd get both the V1 windows implementation
-                //     and the V2 unix implementation when resolving for Unix
-
-                // To avoid this problem we always ensure that we have the matching
-                // reference package in the runtime graph.
-
-                RuntimeSpec baseRuntime = null;
-                if (runtimeFile.Runtimes.TryGetValue("base", out baseRuntime))
-                {
-                    // look at all sections other than base
-                    foreach (var runtime in runtimeFile.Runtimes.Values.Where(rt => rt != baseRuntime))
-                    {
-                        // examine each dependency and copy the content from base, if it exists
-                        foreach (var dependency in runtime.Dependencies)
-                        {
-                            string packageName = dependency.Key;
-                            DependencySpec packageDependencies = dependency.Value;
-
-                            // are there any entries for this package in base?
-                            DependencySpec baseDependencies = null;
-                            if (!baseRuntime.Dependencies.TryGetValue(dependency.Key, out baseDependencies))
-                            {
-                                continue;
-                            }
-
-                            // copy all entries from base to this runtime
-                            foreach (var baseImplementation in baseDependencies.Implementations)
-                            {
-                                packageDependencies.Implementations.Add(baseImplementation.Key, baseImplementation.Value);
-                            }
-                        }
-                    }
-                }
+                RuntimeGraph existingGraph  = JsonRuntimeFormat.ReadRuntimeGraph(sourceRuntimeFilePath);
+                runtimeGraph = RuntimeGraph.Merge(existingGraph, runtimeGraph);
             }
 
             string destRuntimeFileDir = Path.GetDirectoryName(destRuntimeFilePath);
@@ -223,336 +142,124 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
                 Directory.CreateDirectory(destRuntimeFileDir);
             }
 
-            formatter.WriteRuntimeFile(destRuntimeFilePath, runtimeFile);
+            SaveRuntimeGraph(destRuntimeFilePath, runtimeGraph);
 
             return true;
         }
 
-        private static char[] s_splitChars = new[] { '-' };
-        private static int CompareSemanticVersion(string lhs, string rhs)
+        private string GetTargetPackageId(ITaskItem dependency, IDictionary<string, string> packageAliases)
         {
-            // LHS < RHS : result < 0 
-            // LHS = RHS : result = 0
-            // LHS > RHS : result > 0
+            string targetPackageId = dependency.GetMetadata("TargetPackage");
+            string targetPackageAlias = dependency.GetMetadata("TargetPackageAlias");
 
-            if (lhs == rhs)
+            if (!String.IsNullOrEmpty(targetPackageAlias) && !packageAliases.TryGetValue(targetPackageAlias, out targetPackageId))
             {
-                return 0;
+                Log.LogWarning("Dependency {0} specified TargetPackageAlias {1} but no package was found defining this alias.", dependency.ItemSpec, targetPackageAlias);
+            }
+            else
+            {
+                Log.LogMessage(LogImportance.Low, "Using {0} for TargetPackageAlias {1}", targetPackageId, targetPackageAlias);
             }
 
-            if (lhs == null)
+            if (String.IsNullOrEmpty(targetPackageId))
             {
-                // LHS < RHS
-                // null is less than any version
-                return -1;
+                Log.LogMessage(LogImportance.Low, "Dependency {0} has no parent so will assume {1}.", dependency.ItemSpec, PackageId);
+                targetPackageId = PackageId;
             }
 
-            if (rhs == null)
-            {
-                // LHS > RHS
-                // any version is greater than null
-                return 1;
-            }
-
-            string[] lhsSplit = lhs.Split(s_splitChars, 2);
-            string[] rhsSplit = rhs.Split(s_splitChars, 2);
-
-            Version lhsVersion = new Version(lhsSplit[0]);
-            Version rhsVersion = new Version(rhsSplit[0]);
-
-            if (lhsVersion > rhsVersion)
-            {
-                // LHS > RHS
-                return 1;
-            }
-
-            if (lhsVersion < rhsVersion)
-            {
-                // LHS < RHS
-                return -1;
-            }
-
-            // equal versions
-            string lhsPrerelease = null;
-            if (lhsSplit.Length > 1)
-                lhsPrerelease = lhsSplit[1];
-
-            string rhsPrerelease = null;
-            if (rhsSplit.Length > 1)
-                rhsPrerelease = rhsSplit[1];
-
-            Debug.Assert(lhsPrerelease != rhsPrerelease, "fast path should have caught this");
-
-            if (lhsPrerelease == null)
-            {
-                // LHS (stable) > RHS (prerelease)
-                // stable is greater than prerelease
-                return 1;
-            }
-
-            if (rhsPrerelease == null)
-            {
-                // LHS (prerelease) < RHS (stable)
-                // prerelease is less than stable
-                return -1;
-            }
-
-            return String.Compare(lhsPrerelease, rhsPrerelease, StringComparison.OrdinalIgnoreCase);
-        }
-    }
-
-
-    #region Runtime model
-    // copied from https://github.com/aspnet/dnx.git 
-    //       > dnx/src/Microsoft.Framework.PackageManager/Restore/RuntimeModel/RuntimeFile.cs
-    //       > dnx/src/Microsoft.Framework.PackageManager/Restore/RuntimeModel/RuntimeFormatter.cs
-    // Ported to use C# 5.0
-    // currently not built as a PCL so we have to copy the source.
-
-    public class RuntimeFile
-    {
-        public RuntimeFile()
-        {
-            Runtimes = new Dictionary<string, RuntimeSpec>();
-            Supports = new Dictionary<string, SupportSpec>();
+            return targetPackageId;
         }
 
-        public Dictionary<string, RuntimeSpec> Runtimes { get; set; }
-        public Dictionary<string, SupportSpec> Supports { get; set; }
-    }
-
-    public class RuntimeSpec
-    {
-        public RuntimeSpec()
+        private NuGetVersion GetDependencyVersion(ITaskItem dependency)
         {
-            Import = new List<string>();
-            Dependencies = new Dictionary<string, DependencySpec>();
-        }
+            NuGetVersion dependencyVersion;
+            string dependencyVersionString = dependency.GetMetadata("version");
 
-        public string Name { get; set; }
-        public List<string> Import { get; set; }
-        public Dictionary<string, DependencySpec> Dependencies { get; set; }
-    }
-
-    public class SupportSpec
-    {
-        public SupportSpec()
-        {
-            FrameworkRuntimeTuples = new Dictionary<string, string[]>();
-        }
-
-        public string Name { get; set; }
-        public Dictionary<string, string[]> FrameworkRuntimeTuples { get; set; }
-    }
-
-    public class DependencySpec
-    {
-        public DependencySpec()
-        {
-            Implementations = new Dictionary<string, ImplementationSpec>();
-        }
-
-        public string Name { get; set; }
-        public Dictionary<string, ImplementationSpec> Implementations { get; set; }
-    }
-
-    public class ImplementationSpec
-    {
-        public string Name { get; set; }
-        public string Version { get; set; }
-    }
-
-    public class RuntimeFileFormatter
-    {
-        public RuntimeFile ReadRuntimeFile(string filePath)
-        {
-            using (var fileStream = File.OpenRead(filePath))
+            if (String.IsNullOrEmpty(dependencyVersionString))
             {
-                using (var streamReader = new StreamReader(fileStream))
+                Log.LogWarning("Dependency {0} has no version", dependency.ItemSpec);
+                dependencyVersion = new NuGetVersion(0, 0, 0);
+            }
+            else if (!NuGetVersion.TryParse(dependencyVersionString, out dependencyVersion))
+            {
+                Log.LogError("Dependency {0} has invalid version {1}", dependency.ItemSpec, dependencyVersionString);
+                dependencyVersion = new NuGetVersion(0, 0, 0);
+            }
+
+            return dependencyVersion;
+        }
+
+        public static void SaveRuntimeGraph(string filePath, RuntimeGraph runtimeGraph)
+        {
+            var jsonObjectWriter = new JsonObjectWriter();
+            var runtimeJsonWriter = new RuntimeJsonWriter(jsonObjectWriter);
+
+            JsonRuntimeFormat.WriteRuntimeGraph(runtimeJsonWriter, runtimeGraph);
+
+            using (var file = File.CreateText(filePath))
+            using (var jsonWriter = new JsonTextWriter(file))
+            {
+                jsonWriter.StringEscapeHandling = StringEscapeHandling.EscapeNonAscii;
+                jsonWriter.Formatting = Formatting.Indented;
+                jsonObjectWriter.WriteTo(jsonWriter);
+            }
+
+
+        }
+
+        /// <summary>
+        /// works around a bug in NuGet that writes an empty import array,
+        /// also another bug that writes open ranges rather than single versions.
+        /// </summary>
+        private class RuntimeJsonWriter : IObjectWriter
+        {
+            private IObjectWriter innerWriter;
+
+            public RuntimeJsonWriter(IObjectWriter writer)
+            {
+                innerWriter = writer;
+            }
+
+            public void WriteNameArray(string name, IEnumerable<string> values)
+            {
+                // if we are writing an empty import array, skip it.
+                if (name == "#import" && !values.Any())
                 {
-                    return ReadRuntimeFile(streamReader);
+                    return;
                 }
-            }
-        }
 
-        public RuntimeFile ReadRuntimeFile(TextReader textReader)
-        {
-            using (var jsonReader = new JsonTextReader(textReader))
-            {
-                return ReadRuntimeFile(JToken.Load(jsonReader));
+                innerWriter.WriteNameArray(name, values);
             }
-        }
 
-        public void WriteRuntimeFile(string filePath, RuntimeFile runtimeFile)
-        {
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            public void WriteNameValue(string name, string value)
             {
-                using (var textWriter = new StreamWriter(fileStream))
+                // if we are writing a version range with no upper bound, only write the lower bound
+                if (value.Length > 4 &&
+                    value[0] == '[' &&
+                    value.EndsWith(", )"))
                 {
-                    using (var jsonWriter = new JsonTextWriter(textWriter))
-                    {
-                        jsonWriter.Formatting = Formatting.Indented;
-                        var json = new JObject();
-                        WriteRuntimeFile(json, runtimeFile);
-                        json.WriteTo(jsonWriter);
-                    }
-                }
-            }
-        }
-
-        public RuntimeFile ReadRuntimeFile(JToken json)
-        {
-            var file = new RuntimeFile();
-            foreach (var runtimeSpec in EachProperty(json["runtimes"]).Select(ReadRuntimeSpec))
-            {
-                file.Runtimes.Add(runtimeSpec.Name, runtimeSpec);
-            }
-            foreach (var supportSpec in EachProperty(json["supports"]).Select(ReadSupportSpec))
-            {
-                file.Supports.Add(supportSpec.Name, supportSpec);
-            }
-            return file;
-        }
-
-        private void WriteRuntimeFile(JObject json, RuntimeFile runtimeFile)
-        {
-            var runtimes = new JObject();
-            json["runtimes"] = runtimes;
-            foreach (var x in runtimeFile.Runtimes.Values)
-            {
-                WriteRuntimeSpec(runtimes, x);
-            }
-
-            if (runtimeFile.Supports.Count > 0)
-            {
-                var supports = new JObject();
-                json["supports"] = supports;
-                foreach(var s in runtimeFile.Supports.Values)
-                {
-                    WriteSupportSpec(supports, s);
-                }
-            }
-        }
-
-        private void WriteSupportSpec(JObject json, SupportSpec data)
-        {
-            var value = new JObject();
-            json[data.Name] = value;
-            
-            if (data.FrameworkRuntimeTuples.Count > 0)
-            {
-                foreach(var fr in data.FrameworkRuntimeTuples)
-                {
-                    value[fr.Key] = new JArray(fr.Value);
-                }
-            }
-        }
-
-        private void WriteRuntimeSpec(JObject json, RuntimeSpec data)
-        {
-            var value = new JObject();
-            json[data.Name] = value;
-            if (data.Import.Count > 0)
-            {
-                value["#import"] = new JArray(data.Import.Select(x => new JValue(x)));
-            }
-            foreach (var x in data.Dependencies.Values)
-            {
-                WriteDependencySpec(value, x);
-            }
-        }
-
-        private void WriteDependencySpec(JObject json, DependencySpec data)
-        {
-            var value = new JObject();
-            json[data.Name] = value;
-            foreach (var x in data.Implementations.Values)
-            {
-                WriteImplementationSpec(value, x);
-            }
-        }
-
-        private void WriteImplementationSpec(JObject json, ImplementationSpec data)
-        {
-            json[data.Name] = new JValue(data.Version);
-        }
-        private SupportSpec ReadSupportSpec(KeyValuePair<string, JToken> json)
-        {
-            var support = new SupportSpec();
-            support.Name = json.Key;
-            foreach(var property in EachProperty(json.Value))
-            {
-                support.FrameworkRuntimeTuples.Add(property.Key,
-                    EachArray(property.Value).Select(j => j.ToString()).ToArray());
-            }
-            return support;
-        }
-
-        private RuntimeSpec ReadRuntimeSpec(KeyValuePair<string, JToken> json)
-        {
-            var runtime = new RuntimeSpec();
-            runtime.Name = json.Key;
-            foreach (var property in EachProperty(json.Value))
-            {
-                if (property.Key == "#import")
-                {
-                    var imports = property.Value as JArray;
-                    foreach (var import in imports)
-                    {
-                        runtime.Import.Add(import.Value<string>());
-                    }
+                    innerWriter.WriteNameValue(name, value.Substring(1, value.Length - 4));
                 }
                 else
                 {
-                    var dependency = ReadDependencySpec(property);
-                    runtime.Dependencies.Add(dependency.Name, dependency);
+                    innerWriter.WriteNameValue(name, value);
                 }
             }
-            return runtime;
-        }
 
-        public DependencySpec ReadDependencySpec(KeyValuePair<string, JToken> json)
-        {
-            var dependency = new DependencySpec();
-            dependency.Name = json.Key;
-            foreach (var implementation in EachProperty(json.Value).Select(ReadImplementationSpec))
+            public void WriteNameValue(string name, int value)
             {
-                dependency.Implementations.Add(implementation.Name, implementation);
+                innerWriter.WriteNameValue(name, value);
             }
-            return dependency;
-        }
 
-        public ImplementationSpec ReadImplementationSpec(KeyValuePair<string, JToken> json)
-        {
-            var implementation = new ImplementationSpec();
-            implementation.Name = json.Key;
-            foreach (var property in EachProperty(json.Value, "version"))
+            public void WriteObjectEnd()
             {
-                if (property.Key == "version")
-                {
-                    implementation.Version = property.Value.ToString();
-                }
+                innerWriter.WriteObjectEnd();
             }
-            return implementation;
-        }
 
-        private IEnumerable<KeyValuePair<string, JToken>> EachProperty(JToken json)
-        {
-            return (json as IEnumerable<KeyValuePair<string, JToken>>)
-                ?? Enumerable.Empty<KeyValuePair<string, JToken>>();
-        }
-
-        private IEnumerable<KeyValuePair<string, JToken>> EachProperty(JToken json, string defaultPropertyName)
-        {
-            return (json as IEnumerable<KeyValuePair<string, JToken>>)
-                ?? new[] { new KeyValuePair<string, JToken>(defaultPropertyName, json) };
-        }
-
-        private IEnumerable<JToken> EachArray(JToken json)
-        {
-            return (IEnumerable<JToken>)(json as JArray)
-                ?? new[] { json };
+            public void WriteObjectStart(string name)
+            {
+                innerWriter.WriteObjectStart(name);
+            }
         }
     }
-    #endregion
 }

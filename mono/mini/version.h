@@ -1,1 +1,1 @@
-#define FULL_VERSION "Stable 5.0.0.78/ba317ed"
+#define FULL_VERSION "explicit/c38e4d9"

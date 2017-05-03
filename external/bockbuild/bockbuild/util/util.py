@@ -27,6 +27,10 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+class exit_codes:
+    NOTSET = -1
+    SUCCESS = 0
+    FAILURE = 1
 
 class config:
     trace = False
@@ -38,7 +42,8 @@ class config:
     verbose = False
     protected_git_repos = [] # we do not allow modifying behavior on our profile repo or bockbuild repo.
     absolute_root = None # there is no file resolution beneath this path. Displayed paths are shortened by omitting this segment.
-
+    state_root = None
+    exit_code = exit_codes.NOTSET
 
 class CommandException (Exception):  # shell command failure
 
@@ -116,8 +121,8 @@ def loginit(message):
         Logger.monkeywrench = True
     elif sys.stdout.isatty():
         Logger.print_color = True
-        logprint('** %s **' % message, bcolors.BOLD)
-        print
+    logprint('** %s **' % message, bcolors.BOLD)
+    print
 
 
 def colorprint(message, color):
@@ -183,6 +188,10 @@ def warn(message):
         message = '%s %s' % ('(bockbuild warning)', message)
     logprint(message, bcolors.FAIL, header=get_caller())
 
+def finish (exit_code):
+    if exit_code > config.exit_code:
+        config.exit_code = exit_code
+    sys.exit(config.exit_code)
 
 def error(message, more_output=False):
     config.trace = False
@@ -190,12 +199,7 @@ def error(message, more_output=False):
         message = '%s %s' % ('(bockbuild error)', message)
     logprint(message, bcolors.FAIL, header=get_caller(), summary=True)
     if not more_output:
-        sys.exit(255)
-
-def finish():
-    logprint('\n** %s **\n' % 'Goodbye!', bcolors.BOLD)
-    sys.exit(0)
-
+        finish(exit_codes.FAILURE)
 
 def trace(message, skip=0):
     if config.trace == False:
@@ -325,6 +329,15 @@ def which(program):
 
     return None
 
+def parse_rootdir(result, cwd):
+    # http://stackoverflow.com/a/18339166
+    if os.path.basename(result) == '.git': # normal repo
+        return os.path.dirname(result)
+    elif result == '.':
+        return cwd
+    else:
+        return result
+
 
 def find_git(self, echo=False):
     git_bin = which('git')
@@ -332,14 +345,45 @@ def find_git(self, echo=False):
         error('git not found in PATH')
 
     @retry
-    def git_func(self, args, cwd, hazard = False):
+    def git_operation(self, args, cwd, hazard = False, allow_fail = False, singleline_output = False, options = None, allow_nonrootdir = False):
+        try:
+            cwd = os.path.realpath(cwd)
+            (exit, out, err) = run(git_bin, ['rev-parse', '--show-toplevel'], cwd)
+            if len(out) > 0:
+                root = out
+            else:
+                (exit, out, err) = run(git_bin, ['rev-parse', '--git-dir'], cwd)
+                root = parse_rootdir(out, cwd)
+        except:
+            raise
+        if root != cwd and not allow_nonrootdir:
+            error ('Git operations allowed only on the root directory of the repo (root: %s cwd: %s)' % (root, cwd))
         if hazard:
             root = git_rootdir (self, cwd)
             assert_modifiable_repo (root)
-        (exit, out, err) = run(git_bin, args.split(' '), cwd)
-        return out.split('\n')
+        try:
+            fullargs = args.split(' ')
+            if options:
+                if not isinstance(options, list):
+                    error ('options argument must be a list')
+                fullargs = fullargs + options
+            (exit, out, err) = run(git_bin, fullargs, cwd)
+        except CommandException:
+            if allow_fail:
+                return None
+            else:
+                raise
 
-    self.git = git_func.__get__(self, self.__class__)
+        lines = out.split('\n')
+        if singleline_output:
+            if len(lines) > 1:
+                error ('Single line output expected from git. Received the following:\n%s' % out)
+            else:
+                return lines[0]
+
+        return lines
+
+    self.git = git_operation.__get__(self, self.__class__)
     self.git_bin = git_bin
 
 
@@ -360,14 +404,7 @@ def git_get_revision(self, cwd):
 
 
 def git_get_branch(self, cwd):
-    revision = git_get_revision(self, cwd)
-    try:
-        output = self.git('symbolic-ref -q --short HEAD', cwd)
-    except:
-        return None  # detached HEAD
-    else:
-        return output[0]
-
+    return self.git('symbolic-ref -q --short HEAD', cwd, allow_fail = True, singleline_output = True)
 
 def git_is_dirty(self, cwd):
     return 'dirty' in git_shortid (self, cwd)
@@ -383,17 +420,24 @@ def git_shortid(self, cwd):
     if branch is None:
         return short_rev
     else:
-        return '%s-%s' % (branch, short_rev)
+        return '%s@%s' % (branch, short_rev)
+
+def git_rootdir(self, cwd):
+    # http://stackoverflow.com/a/18339166
+    result = self.git('rev-parse --show-toplevel', cwd, allow_nonrootdir=True, singleline_output=True)
+    if len(result) > 0:
+        return result
+    else:
+        result = self.git('rev-parse --git-dir', cwd, allow_nonrootdir=True, singleline_output=True)
+        return parse_rootdir(result)
 
 def git_isrootdir(self, cwd):
     try:
-        root = self.git('rev-parse --show-toplevel', cwd)[0]
-        return root == cwd
+        return git_rootdir (self, cwd) == cwd
     except:
-        return False
+        error('git_isrootdir')
 
-def git_rootdir(self, cwd):
-    return self.git('rev-parse --show-toplevel', cwd)[0]
+
 
 def git_get_commit_msg(self, cwd):
     return self.git('show -s --format=%B HEAD', cwd)[0]
@@ -637,9 +681,9 @@ def run(cmd, args, cwd, env=None):
 
     if not exit_code == 0:
         raise CommandException('"%s" failed, error code %s\nstderr:\n%s' % (
-            cmd, exit_code, stderr), cwd=cwd)
+            cmd + str(args), exit_code, stderr), cwd=cwd)
 
-    return (exit_code, stdout, stderr)
+    return (exit_code, stdout[:-1], stderr)
 
 
 def run_shell(cmd, print_cmd=False, cwd=None):

@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-
+using System.Linq;
 using NUnit.Framework;
 
 using Mono.Cecil.Cil;
@@ -28,7 +28,7 @@ namespace Mono.Cecil.Tests {
 	IL_0003: stloc.1
 	IL_0004: ldc.i4.0
 	IL_0005: stloc.2
-	.line 16707566,0:16707566,0 'C:\sources\PdbTarget\Program.cs'
+	.line hidden 'C:\sources\PdbTarget\Program.cs'
 	IL_0006: br.s IL_0017
 	.line 22,22:13,20 'C:\sources\PdbTarget\Program.cs'
 	IL_0008: ldloc.1
@@ -39,7 +39,7 @@ namespace Mono.Cecil.Tests {
 	IL_000c: ldloc.3
 	IL_000d: call System.Void System.Console::WriteLine(System.String)
 	IL_0012: nop
-	.line 16707566,0:16707566,0 'C:\sources\PdbTarget\Program.cs'
+	.line hidden 'C:\sources\PdbTarget\Program.cs'
 	IL_0013: ldloc.2
 	IL_0014: ldc.i4.1
 	IL_0015: add
@@ -315,14 +315,13 @@ namespace Mono.Cecil.Tests {
 				var move_next = state_machine.GetMethod ("MoveNext");
 
 				Assert.IsTrue (move_next.HasCustomDebugInformations);
-				Assert.AreEqual (2, move_next.CustomDebugInformations.Count);
 
-				var state_machine_scope = move_next.CustomDebugInformations [0] as StateMachineScopeDebugInformation;
+				var state_machine_scope = move_next.CustomDebugInformations.OfType<StateMachineScopeDebugInformation> ().FirstOrDefault ();
 				Assert.IsNotNull (state_machine_scope);
 				Assert.AreEqual (0, state_machine_scope.Start.Offset);
 				Assert.IsTrue (state_machine_scope.End.IsEndOfMethod);
 
-				var async_body = move_next.CustomDebugInformations [1] as AsyncMethodBodyDebugInformation;
+				var async_body = move_next.CustomDebugInformations.OfType<AsyncMethodBodyDebugInformation> ().FirstOrDefault ();
 				Assert.IsNotNull (async_body);
 				Assert.AreEqual (-1, async_body.CatchHandler.Offset);
 
@@ -338,10 +337,30 @@ namespace Mono.Cecil.Tests {
 			});
 		}
 
+		[Test]
+		public void EmbeddedCompressedPortablePdb ()
+		{
+			TestModule("EmbeddedCompressedPdbTarget.exe", module => {
+				Assert.IsTrue (module.HasDebugHeader);
+
+				var header = module.GetDebugHeader ();
+
+				Assert.IsNotNull (header);
+				Assert.AreEqual (2, header.Entries.Length);
+
+				var cv = header.Entries [0];
+				Assert.AreEqual (ImageDebugType.CodeView, cv.Directory.Type);
+
+				var eppdb = header.Entries [1];
+				Assert.AreEqual (ImageDebugType.EmbeddedPortablePdb, eppdb.Directory.Type);
+			}, symbolReaderProvider: typeof (EmbeddedPortablePdbReaderProvider), symbolWriterProvider: typeof (EmbeddedPortablePdbWriterProvider));
+		}
+
 		void TestPortablePdbModule (Action<ModuleDefinition> test)
 		{
 			TestModule ("PdbTarget.exe", test, symbolReaderProvider: typeof (PortablePdbReaderProvider), symbolWriterProvider: typeof (PortablePdbWriterProvider));
 			TestModule ("EmbeddedPdbTarget.exe", test, verify: !Platform.OnMono);
+			TestModule("EmbeddedCompressedPdbTarget.exe", test, symbolReaderProvider: typeof(EmbeddedPortablePdbReaderProvider), symbolWriterProvider: typeof(EmbeddedPortablePdbWriterProvider));
 		}
 
 		[Test]

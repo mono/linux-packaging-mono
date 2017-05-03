@@ -192,12 +192,6 @@
 <h3>Synopsys</h3>
 
 	<div class="mapi-header">
-guint32   <a href="#api:mono_gchandle_new">mono_gchandle_new</a>         (GCObject *obj, 
-                                     gboolean pinned);
-guint32   <a href="#api:mono_gchandle_new_weakref">mono_gchandle_new_weakref</a> (GCObject *obj, 
-                                     gboolean track_resurrection);
-GCObject* <a href="#api:mono_gchandle_get_target">mono_gchandle_get_target</a>  (guint32 gchandle);
-void      <a href="#api:mono_gchandle_free">mono_gchandle_free</a>        (guint32 gchandle);
 
 	</div>
 	
@@ -297,21 +291,11 @@ mono_gchandle_new (GCObject *obj, gboolean pinned)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>obj</i><td> managed object to get a handle for</td></td></tr><tr><td><i>pinned</i><td> whether the object should be pinned</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a handle that can be used to access the object from
-
-	 unmanaged code.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> managed object to get a handle for</td></tr><tr><td><i>pinned</i></td><td> whether the object should be pinned</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a handle that can be used to access the object from unmanaged code.
+</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This returns a handle that wraps the object, this is used to keep a
-	 reference to a managed object from the unmanaged world and preventing the
-	 object from being disposed.
-	<p />
-	 If <i>pinned</i> is false the address of the object can not be obtained, if it is
-	 true the address of the object can be obtained.  This will also pin the
-	 object so it will not be possible by a moving garbage collector to move the
-	 object. 
-	<p /></div>
+             <div> 	 This returns a handle that wraps the object, this is used to keep a 	 reference to a managed object from the unmanaged world and preventing the 	 object from being disposed. 	<p /> 	 If <i>pinned</i> is false the address of the object can not be obtained, if it is 	 true the address of the object can be obtained.  This will also pin the 	 object so it will not be possible by a moving garbage collector to move the 	 object.  	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -331,25 +315,12 @@ mono_gchandle_new_weakref (GCObject *obj, gboolean track_resurrection)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>obj</i><td> managed object to get a handle for</td></td></tr><tr><td><i>track_resurrection</i><td> Determines how long to track the object, if this is set to <code>TRUE</code>, the object is tracked after finalization, if <code>FALSE</code>, the object is only tracked up until the point of finalization.</td></td></tr></tbody></table>             <div class="mapi-section">Return value</div>
-             <div>	  a handle that can be used to access the object from
+            <table class="mapi-parameters"><tbody><tr><td><i>obj</i></td><td> managed object to get a handle for</td></tr><tr><td><i>track_resurrection</i></td><td> Determines how long to track the object, if this is set to <code>TRUE</code>, the object is tracked after finalization, if <code>FALSE</code>, the object is only tracked up until the point of finalization.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a handle that can be used to access the object from
 
 	 unmanaged code.</div>
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This returns a weak handle that wraps the object, this is used to
-	 keep a reference to a managed object from the unmanaged world.
-	 Unlike the mono_gchandle_new the object can be reclaimed by the
-	 garbage collector.  In this case the value of the GCHandle will be
-	 set to zero.
-	<p />
-	 If <i>track_resurrection</i> is <code>TRUE</code> the object will be tracked through
-	 finalization and if the object is resurrected during the execution
-	 of the finalizer, then the returned weakref will continue to hold
-	 a reference to the object.   If <i>track_resurrection</i> is <code>FALSE</code>, then
-	 the weak reference's target will become <code>NULL</code> as soon as the object
-	 is passed on to the finalizer.
-	<p /></div>
+             <div> 	<p /> 	 This returns a weak handle that wraps the object, this is used to 	 keep a reference to a managed object from the unmanaged world. 	 Unlike the <code>mono_gchandle_new</code> the object can be reclaimed by the 	 garbage collector.  In this case the value of the GCHandle will be 	 set to zero. 	<p /> 	 If <i>track_resurrection</i> is <code>TRUE</code> the object will be tracked through 	 finalization and if the object is resurrected during the execution 	 of the finalizer, then the returned weakref will continue to hold 	 a reference to the object.   If <i>track_resurrection</i> is <code>FALSE</code>, then 	 the weak reference's target will become <code>NULL</code> as soon as the object 	 is passed on to the finalizer. 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -369,15 +340,11 @@ mono_gchandle_get_target (guint32 gchandle)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>gchandle</i><td> a GCHandle's handle.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 The handle was previously created by calling <code>mono_gchandle_new</code> or
-	 <code>mono_gchandle_new_weakref</code>. 
-	<p />
-	 Returns a pointer to the <code>MonoObject*</code> represented by the handle or
+            <table class="mapi-parameters"><tbody><tr><td><i>gchandle</i></td><td> a GCHandle's handle.</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div>	 a pointer to the <code>MonoObject*</code> represented by the handle or
+
 	 <code>NULL</code> for a collected object if using a weakref handle.</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 The handle was previously created by calling <code>mono_gchandle_new</code> or 	 <code>mono_gchandle_new_weakref</code>.  	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

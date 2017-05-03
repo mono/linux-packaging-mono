@@ -134,7 +134,7 @@ csproj-local: csproj-library csproj-test
 intermediate_clean=$(subst /,-,$(intermediate))
 csproj-library:
 	config_file=`basename $(LIBRARY) .dll`-$(intermediate_clean)$(PROFILE).input; \
-	case "$(thisdir)" in *"Facades"*) config_file=Facades_$$config_file;; esac; \
+	case "$(thisdir)" in *"Facades"*) config_file=Facades_$$config_file;; *"legacy"*) config_file=legacy_$$config_file;; esac; \
 	echo $(thisdir):$$config_file >> $(topdir)/../msvc/scripts/order; \
 	(echo $(is_boot); \
 	echo $(USE_MCS_FLAGS) $(LIBRARY_FLAGS) $(LIB_MCS_FLAGS); \
@@ -266,7 +266,7 @@ endif
 # make dist will collect files in .sources files from all profiles
 dist-local: dist-default
 	subs=' ' ; \
-	for f in `$(topdir)/tools/removecomments.sh $(filter-out $(wildcard *_test.dll.sources) $(wildcard *exclude.sources),$(wildcard *.sources))` $(TEST_FILES) ; do \
+	for f in `$(topdir)/tools/removecomments.sh $(filter-out $(wildcard *_test.dll.sources) $(wildcard *_xtest.dll.sources) $(wildcard *exclude.sources),$(wildcard *.sources))` $(TEST_FILES) ; do \
 	  case $$f in \
 	  ../*) : ;; \
 	  *.g.cs) : ;; \
@@ -377,3 +377,12 @@ $(the_libdir)/.doc-stamp: $(the_lib)
 # Need to be here so it comes after the definition of DEP_DIRS/DEP_LIBS
 gen-deps:
 	@echo "$(DEPS_TARGET_DIR): $(DEP_DIRS) $(DEP_LIBS)" >> $(DEPS_FILE)
+
+# Should be $(BUILD_TOOLS_PROFILE) but still missing System.Windows.Forms
+resx2sr=$(topdir)/class/lib/net_4_x/resx2sr.exe
+
+update-corefx-sr: $(resx2sr) $(RESX_RESOURCE_STRING)
+	MONO_PATH="$(topdir)/class/lib/$(BUILD_TOOLS_PROFILE)$(PLATFORM_PATH_SEPARATOR)$$MONO_PATH" $(RUNTIME) $(RUNTIME_FLAGS) $(resx2sr) $(RESX_RESOURCE_STRING) >corefx/SR.cs
+
+$(resx2sr):
+	$(MAKE) -C $(topdir)/tools/resx2sr

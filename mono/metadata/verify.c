@@ -1,5 +1,5 @@
-/*
- * verify.c: 
+/**
+ * \file
  *
  * Author:
  *	Mono Project (http://www.mono-project.com)
@@ -644,9 +644,9 @@ is_valid_generic_instantiation (MonoGenericContainer *gc, MonoGenericContext *co
 /**
  * mono_generic_param_is_constraint_compatible:
  *
- * Returns: TRUE if @candidate is constraint compatible with @target.
+ * \returns TRUE if \p candidate is constraint compatible with \p target.
  * 
- * This means that @candidate constraints are a super set of @target constaints
+ * This means that \p candidate constraints are a super set of \p target constaints
  */
 static gboolean
 mono_generic_param_is_constraint_compatible (VerifyContext *ctx, MonoGenericParam *target, MonoGenericParam *candidate, MonoClass *candidate_param_class, MonoGenericContext *context)
@@ -1170,6 +1170,10 @@ stack_slot_full_name (ILStackDesc *value)
 }
 
 //////////////////////////////////////////////////////////////////
+
+/**
+ * mono_free_verify_list:
+ */
 void
 mono_free_verify_list (GSList *list)
 {
@@ -4813,6 +4817,10 @@ mono_opcode_is_prefix (int op)
 /*
  * FIXME: need to distinguish between valid and verifiable.
  * Need to keep track of types on the stack.
+ */
+
+/**
+ * mono_method_verify:
  * Verify types for opcodes.
  */
 GSList*
@@ -5945,7 +5953,7 @@ mono_method_verify (MonoMethod *method, int level)
 	for (i = 0; i < ctx.code_size && i < ip_offset; ++i) {
 		if (ctx.code [i].flags & IL_CODE_FLAG_WAS_TARGET) {
 			if (!(ctx.code [i].flags & IL_CODE_FLAG_SEEN))
-				ADD_VERIFY_ERROR (&ctx, g_strdup_printf ("Branch or exception block target middle of intruction at 0x%04x", i));
+				ADD_VERIFY_ERROR (&ctx, g_strdup_printf ("Branch or exception block target middle of instruction at 0x%04x", i));
 
 			if (ctx.code [i].flags & IL_CODE_DELEGATE_SEQUENCE)
 				CODE_NOT_VERIFIABLE (&ctx, g_strdup_printf ("Branch to delegate code sequence at 0x%04x", i));
@@ -6015,10 +6023,8 @@ mono_verify_corlib ()
 
 /**
  * mono_verifier_is_enabled_for_method:
- * @method: the method to probe
- *
- * Returns TRUE if @method needs to be verified.
- * 
+ * \param method the method to probe
+ * \returns TRUE if \p method needs to be verified.
  */
 gboolean
 mono_verifier_is_enabled_for_method (MonoMethod *method)
@@ -6028,10 +6034,8 @@ mono_verifier_is_enabled_for_method (MonoMethod *method)
 
 /**
  * mono_verifier_is_enabled_for_class:
- * @klass: The `MonoClass` to probe
- *
- * Returns TRUE if @klass need to be verified.
- * 
+ * \param klass The \c MonoClass to probe
+ * \returns TRUE if \p klass need to be verified.
  */
 gboolean
 mono_verifier_is_enabled_for_class (MonoClass *klass)

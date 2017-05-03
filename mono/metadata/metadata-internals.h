@@ -1,3 +1,6 @@
+/**
+ * \file
+ */
 
 #ifndef __MONO_METADATA_INTERNALS_H__
 #define __MONO_METADATA_INTERNALS_H__
@@ -936,6 +939,9 @@ mono_loader_register_module (const char *name, MonoDl *module);
 
 gboolean
 mono_assembly_is_problematic_version (const char *name, guint16 major, guint16 minor, guint16 build, guint16 revision);
+
+void
+mono_ginst_get_desc (GString *str, MonoGenericInst *ginst);
 
 #endif /* __MONO_METADATA_INTERNALS_H__ */
 

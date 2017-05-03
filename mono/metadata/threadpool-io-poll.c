@@ -1,3 +1,6 @@
+/**
+ * \file
+ */
 
 #include "utils/mono-poll.h"
 
@@ -163,7 +166,6 @@ poll_event_wait (void (*callback) (gint fd, gint events, gpointer user_data), gp
 		{
 		case EINTR:
 		{
-			mono_thread_internal_check_for_interruption_critical (mono_thread_internal_current ());
 			ready = 0;
 			break;
 		}

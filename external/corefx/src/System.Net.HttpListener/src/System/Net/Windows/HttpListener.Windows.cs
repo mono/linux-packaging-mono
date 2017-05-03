@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Security;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Authentication.ExtendedProtection;
@@ -116,24 +117,8 @@ namespace System.Net
             }
         }
 
-        private Dictionary<ulong, DisconnectAsyncResult> DisconnectResults
-        {
-            get
-            {
-                if (_disconnectResults == null)
-                {
-                    lock (_internalLock)
-                    {
-                        if (_disconnectResults == null)
-                        {
-                            _disconnectResults = new Dictionary<ulong, DisconnectAsyncResult>();
-                        }
-                    }
-                }
-                return _disconnectResults;
-            }
-        }
-
+        private Dictionary<ulong, DisconnectAsyncResult> DisconnectResults =>
+            LazyInitializer.EnsureInitialized(ref _disconnectResults, () => new Dictionary<ulong, DisconnectAsyncResult>());
 
         private void SetUrlGroupProperty(Interop.HttpApi.HTTP_SERVER_PROPERTY property, IntPtr info, uint infosize)
         {
@@ -490,7 +475,7 @@ namespace System.Net
                     }
                     catch (HttpListenerException)
                     {
-                        // If an error occured while adding prefixes, free all resources allocated by previous steps.
+                        // If an error occurred while adding prefixes, free all resources allocated by previous steps.
                         DetachRequestQueueFromUrlGroup();
                         throw;
                     }
@@ -949,7 +934,7 @@ namespace System.Net
                 if (httpContext == null)
                 {
                     Debug.Assert(castedAsyncResult.Result is Exception, "EndGetContext|The result is neither a HttpListenerContext nor an Exception.");
-                    throw castedAsyncResult.Result as Exception;
+                    ExceptionDispatchInfo.Capture(castedAsyncResult.Result as Exception).Throw();
                 }
             }
             catch (Exception exception)
@@ -1901,7 +1886,7 @@ namespace System.Net
                 httpResponse.ReasonLength = (ushort)byteReason.Length;
 
                 byte[] byteContentLength = Encoding.Default.GetBytes("0");
-                fixed (byte* pContentLength = byteContentLength)
+                fixed (byte* pContentLength = &byteContentLength[0])
                 {
                     (&httpResponse.Headers.KnownHeaders)[(int)HttpResponseHeader.ContentLength].pRawValue = (sbyte*)pContentLength;
                     (&httpResponse.Headers.KnownHeaders)[(int)HttpResponseHeader.ContentLength].RawValueLength = (ushort)byteContentLength.Length;
@@ -2006,7 +1991,7 @@ namespace System.Net
             // is >128 we will get ERROR_MORE_DATA and call again
             int size = s_requestChannelBindStatusSize + 128;
 
-            Debug.Assert(size >= 0);
+            Debug.Assert(size > 0);
 
             byte[] blob = null;
             Interop.HttpApi.SafeLocalFreeChannelBinding token = null;
@@ -2017,7 +2002,7 @@ namespace System.Net
             do
             {
                 blob = new byte[size];
-                fixed (byte* blobPtr = blob)
+                fixed (byte* blobPtr = &blob[0])
                 {
                     // Http.sys team: ServiceName will always be null if 
                     // HTTP_RECEIVE_SECURE_CHANNEL_TOKEN flag is set.

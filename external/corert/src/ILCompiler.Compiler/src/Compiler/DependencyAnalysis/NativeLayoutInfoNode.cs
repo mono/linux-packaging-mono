@@ -3,12 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.IO;
-using System.Diagnostics;
 using System.Collections.Generic;
 
 using Internal.Text;
-using Internal.TypeSystem;
 using Internal.NativeFormat;
 
 namespace ILCompiler.DependencyAnalysis
@@ -20,23 +17,27 @@ namespace ILCompiler.DependencyAnalysis
     {
         private ObjectAndOffsetSymbolNode _endSymbol;
         private ExternalReferencesTableNode _externalReferences;
+        private ExternalReferencesTableNode _staticsReferences;
 
         private NativeWriter _writer;
         private byte[] _writerSavedBytes;
 
         private Section _signaturesSection;
         private Section _ldTokenInfoSection;
+        private Section _templatesSection;
 
         private List<NativeLayoutVertexNode> _vertexNodesToWrite;
 
-        public NativeLayoutInfoNode(ExternalReferencesTableNode externalReferences)
+        public NativeLayoutInfoNode(ExternalReferencesTableNode externalReferences, ExternalReferencesTableNode staticsReferences)
         {
             _endSymbol = new ObjectAndOffsetSymbolNode(this, 0, "__nativelayoutinfo_End", true);
             _externalReferences = externalReferences;
+            _staticsReferences = staticsReferences;
 
             _writer = new NativeWriter();
             _signaturesSection = _writer.NewSection();
             _ldTokenInfoSection = _writer.NewSection();
+            _templatesSection = _writer.NewSection();
 
             _vertexNodesToWrite = new List<NativeLayoutVertexNode>();
         }
@@ -48,13 +49,15 @@ namespace ILCompiler.DependencyAnalysis
         public ISymbolNode EndSymbol => _endSymbol;
         public int Offset => 0;
         public override bool IsShareable => false;
-        public override ObjectNodeSection Section => ObjectNodeSection.DataSection;
+        public override ObjectNodeSection Section => _externalReferences.Section;
         public override bool StaticDependenciesAreComputed => true;
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public Section LdTokenInfoSection => _ldTokenInfoSection;
         public Section SignaturesSection => _signaturesSection;
+        public Section TemplatesSection => _templatesSection;
         public ExternalReferencesTableNode ExternalReferences => _externalReferences;
+        public ExternalReferencesTableNode StaticsReferences => _staticsReferences;
         public NativeWriter Writer => _writer;
 
         public void AddVertexNodeToNativeLayout(NativeLayoutVertexNode vertexNode)
@@ -70,9 +73,7 @@ namespace ILCompiler.DependencyAnalysis
             foreach (var vertexNode in _vertexNodesToWrite)
                 vertexNode.WriteVertex(factory);
 
-            MemoryStream writerStream = new MemoryStream();
-            _writer.Save(writerStream);
-            _writerSavedBytes = writerStream.ToArray();
+            _writerSavedBytes = _writer.Save();
 
             // Zero out the native writer and vertex list so that we AV if someone tries to insert after we're done.
             _writer = null;

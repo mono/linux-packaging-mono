@@ -13,6 +13,7 @@ class MdilModule;
 class EEType;
 class OptionalFields;
 class TypeManager;
+struct TypeManagerHandle;
 class DynamicModule;
 struct EETypeRef;
 enum GenericVarianceType : UInt8;
@@ -224,8 +225,8 @@ private:
     UInt16              m_usNumVtableSlots;
     UInt16              m_usNumInterfaces;
     UInt32              m_uHashCode;
-#if defined(CORERT)
-    TypeManager**     m_ppTypeManager;
+#if defined(EETYPE_TYPE_MANAGER)
+    TypeManagerHandle*  m_ppTypeManager;
 #endif
 
     TgtPTR_Void         m_VTable[];  // make this explicit so the binder gets the right alignment
@@ -330,6 +331,9 @@ public:
         // This EEType was constructed from a module where the open type is defined in
         // a dynamically loaded type
         HasDynamicModuleFlag    = 0x00002000,
+
+        // This EEType is for an abstract (but non-interface) type
+        IsAbstractClassFlag     = 0x00004000,        
     };
 
     // These masks and paddings have been chosen so that the ValueTypePadding field can always fit in a byte of data.
@@ -470,9 +474,21 @@ public:
 
     DynamicModule* get_DynamicModule();
 
-#if defined(CORERT)
-    TypeManager* GetTypeManager()
-         { return *m_ppTypeManager; }
+#if defined(EETYPE_TYPE_MANAGER)
+    TypeManagerHandle* GetTypeManagerPtr()
+         { return m_ppTypeManager; }
+#endif
+
+#if defined(EETYPE_TYPE_MANAGER)
+    //
+    // PROJX-TODO
+    // Needed while we exist in a world where some things are built using CoreRT and some built using 
+    // the traditional .NET Native tool chain.
+    //
+    bool HasTypeManager()
+    {
+        return m_ppTypeManager != nullptr;
+    }
 #endif
 
 #ifndef BINDER

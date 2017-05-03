@@ -318,9 +318,7 @@ namespace Mono.Cecil.Cil {
 				switch (instruction.opcode.OperandType) {
 				case OperandType.ShortInlineBrTarget:
 				case OperandType.InlineBrTarget:
-					var targetInstruction = GetInstruction ((int) instruction.operand);
-					if (targetInstruction != null)
-						instruction.operand = targetInstruction;
+					instruction.operand = GetInstruction ((int) instruction.operand);
 					break;
 				case OperandType.InlineSwitch:
 					var offsets = (int []) instruction.operand;
@@ -436,13 +434,6 @@ namespace Mono.Cecil.Cil {
 				Advance (4);
 				break;
 			}
-		}
-
-		void Align (int align)
-		{
-			align--;
-			var position = Position;
-			Advance (((position + align) & ~align) - position);
 		}
 
 		public MetadataToken ReadToken ()

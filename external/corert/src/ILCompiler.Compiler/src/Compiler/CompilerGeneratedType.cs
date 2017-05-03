@@ -75,7 +75,6 @@ namespace ILCompiler
         protected override TypeFlags ComputeTypeFlags(TypeFlags mask)
         {
             return TypeFlags.Class |
-                TypeFlags.ContainsGenericVariablesComputed |
                 TypeFlags.HasGenericVarianceComputed |
                 TypeFlags.HasStaticConstructorComputed;
         }
@@ -167,6 +166,14 @@ namespace ILCompiler
             get
             {
                 return true;
+            }
+        }
+
+        public override bool IsAbstract
+        {
+            get
+            {
+                return false;
             }
         }
 

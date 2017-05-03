@@ -28,8 +28,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -43,6 +43,8 @@ namespace Mono.Linker {
 		string _outputDirectory;
 		Hashtable _parameters;
 		bool _linkSymbols;
+		bool _keepTypeForwarderOnlyAssemblies;
+		bool _keepMembersForDebuggerAttributes;
 
 		AssemblyResolver _resolver;
 
@@ -75,12 +77,28 @@ namespace Mono.Linker {
 			set { _linkSymbols = value; }
 		}
 
+		public bool KeepTypeForwarderOnlyAssemblies
+		{
+			get { return _keepTypeForwarderOnlyAssemblies; }
+			set { _keepTypeForwarderOnlyAssemblies = value; }
+		}
+
+		public bool KeepMembersForDebuggerAttributes
+		{
+			get { return _keepMembersForDebuggerAttributes; }
+			set { _keepMembersForDebuggerAttributes = value; }
+		}
+
 		public IDictionary Actions {
 			get { return _actions; }
 		}
 
 		public AssemblyResolver Resolver {
 			get { return _resolver; }
+		}
+
+		public ReaderParameters ReaderParameters {
+			get { return _readerParameters; }
 		}
 
 		public ISymbolReaderProvider SymbolReaderProvider {
@@ -101,15 +119,21 @@ namespace Mono.Linker {
 		}
 
 		public LinkContext (Pipeline pipeline, AssemblyResolver resolver)
+			: this(pipeline, resolver, new ReaderParameters
+			{
+				AssemblyResolver = resolver
+			})
+		{
+		}
+
+		public LinkContext (Pipeline pipeline, AssemblyResolver resolver, ReaderParameters readerParameters)
 		{
 			_pipeline = pipeline;
 			_resolver = resolver;
 			_actions = new Hashtable ();
 			_parameters = new Hashtable ();
 			_annotations = new AnnotationStore ();
-			_readerParameters = new ReaderParameters {
-				AssemblyResolver = _resolver,
-			};
+			_readerParameters = readerParameters;
 		}
 
 		public TypeDefinition GetType (string fullName)
@@ -161,12 +185,12 @@ namespace Mono.Linker {
 			}
 		}
 
-		bool SeenFirstTime (AssemblyDefinition assembly)
+		protected bool SeenFirstTime (AssemblyDefinition assembly)
 		{
 			return !_annotations.HasAction (assembly);
 		}
 
-		public void SafeReadSymbols (AssemblyDefinition assembly)
+		public virtual void SafeReadSymbols (AssemblyDefinition assembly)
 		{
 			if (!_linkSymbols)
 				return;
@@ -187,6 +211,19 @@ namespace Mono.Linker {
 			} catch {}
 		}
 
+		public virtual ICollection<AssemblyDefinition> ResolveReferences (AssemblyDefinition assembly)
+		{
+			List<AssemblyDefinition> references = new List<AssemblyDefinition> ();
+			foreach (AssemblyNameReference reference in assembly.MainModule.AssemblyReferences) {
+				try {
+					references.Add (Resolve (reference));
+				}
+				catch (AssemblyResolutionException) {
+				}
+			}
+			return references;
+		}
+
 		static AssemblyNameReference GetReference (IMetadataScope scope)
 		{
 			AssemblyNameReference reference;
@@ -199,7 +236,7 @@ namespace Mono.Linker {
 			return reference;
 		}
 
-		void SetAction (AssemblyDefinition assembly)
+		protected void SetAction (AssemblyDefinition assembly)
 		{
 			AssemblyAction action = AssemblyAction.Link;
 

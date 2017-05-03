@@ -8,7 +8,7 @@
 // Licensed under the MIT/X11 license.
 //
 
-#if !PCL && !NET_CORE
+#if !NET_CORE
 
 using System;
 using System.Collections.Generic;
@@ -26,8 +26,7 @@ namespace Mono.Cecil {
 
 		public override AssemblyDefinition Resolve (AssemblyNameReference name)
 		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
+			Mixin.CheckName (name);
 
 			AssemblyDefinition assembly;
 			if (cache.TryGetValue (name.FullName, out assembly))
