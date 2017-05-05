@@ -8,6 +8,7 @@ all:
 	$(MAKE) -C v4.6
 	$(MAKE) -C v4.6.1
 	$(MAKE) -C v4.6.2
+	$(MAKE) -C v4.7
 
 clean:
 	$(MAKE) -C v2.0 clean
@@ -19,5 +20,6 @@ clean:
 	$(MAKE) -C v4.6 clean
 	$(MAKE) -C v4.6.1 clean
 	$(MAKE) -C v4.6.2 clean
+	$(MAKE) -C v4.7 clean
 
 .PHONY: all clean

@@ -20411,22 +20411,22 @@ DEFAULT_PROFILE=$default_profile
 
 if test x$USE_NLS = xprofile_default; then
 
-if test x$host_darwin = xyes; then
-# We make the default value for USE_NLS
-# "no" on OSX because it isn't available on most
-# default OSX installs. The most common configurations will
-# all disable it, so this saves us typing.
-  USE_NLS=no
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking NLS used" >&5
+$as_echo_n "checking NLS used... " >&6; }
 
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_NLS" >&5
+	# We make the default value for USE_NLS
+	# "no" on OSX because it isn't available on most
+	# default OSX installs. The most common configurations will
+	# all disable it, so this saves us typing.
+	if test x$host_darwin = xyes; then
+		USE_NLS=no;
+	else
+		USE_NLS=yes;
+	fi
+
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_NLS" >&5
 $as_echo "$USE_NLS" >&6; }
-else
-  USE_NLS=yes
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $USE_NLS" >&5
-$as_echo "$USE_NLS" >&6; }
-fi
-
 fi
 
 # Check whether --enable-minimal was given.
@@ -20634,7 +20634,7 @@ $as_echo "$as_me: Disabled String normalization support." >&6;}
 fi
 
 #TODO: remove assembly_remapping feature name once everyone is using desktop_loader
-if test "x$mono_feature_disable_assembly_remapping" = "xyes" || "x$mono_feature_disable_desktop_loader" = "xyes"; then
+if test "x$mono_feature_disable_assembly_remapping" = "xyes" || test "x$mono_feature_disable_desktop_loader" = "xyes"; then
 
 $as_echo "#define DISABLE_DESKTOP_LOADER 1" >>confdefs.h
 
