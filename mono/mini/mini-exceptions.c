@@ -58,6 +58,7 @@
 #include <mono/metadata/object-internals.h>
 #include <mono/metadata/reflection-internals.h>
 #include <mono/metadata/gc-internals.h>
+#include <mono/metadata/debug-internals.h>
 #include <mono/metadata/mono-debug.h>
 #include <mono/metadata/profiler.h>
 #include <mono/metadata/mono-endian.h>
@@ -567,7 +568,7 @@ mono_find_jit_info_ext (MonoDomain *domain, MonoJitTlsData *jit_tls,
 	if (!err)
 		return FALSE;
 
-	if (*lmf && ((*lmf) != jit_tls->first_lmf) && ((gpointer)MONO_CONTEXT_GET_SP (new_ctx) >= (gpointer)(*lmf))) {
+	if (frame->type != FRAME_TYPE_INTERP_TO_MANAGED && *lmf && ((*lmf) != jit_tls->first_lmf) && ((gpointer)MONO_CONTEXT_GET_SP (new_ctx) >= (gpointer)(*lmf))) {
 		/*
 		 * Remove any unused lmf.
 		 * Mask out the lower bits which might be used to hold additional information.
@@ -628,6 +629,49 @@ mono_find_jit_info_ext (MonoDomain *domain, MonoJitTlsData *jit_tls,
 	}
 
 	return TRUE;
+}
+
+typedef struct {
+	gboolean in_interp;
+	MonoInterpStackIter interp_iter;
+} Unwinder;
+
+static void
+unwinder_init (Unwinder *unwinder)
+{
+	memset (unwinder, 0, sizeof (Unwinder));
+}
+
+#if defined(GNUC) && defined(TARGET_ARM64)
+/* gcc 4.9.2 seems to miscompile this on arm64 */
+static __attribute__((optimize("O0"))) gboolean
+#else
+static gboolean
+#endif
+unwinder_unwind_frame (Unwinder *unwinder,
+					   MonoDomain *domain, MonoJitTlsData *jit_tls,
+					   MonoJitInfo *prev_ji, MonoContext *ctx,
+					   MonoContext *new_ctx, char **trace, MonoLMF **lmf,
+					   mgreg_t **save_locations,
+					   StackFrameInfo *frame)
+{
+	if (unwinder->in_interp) {
+		unwinder->in_interp = mono_interp_frame_iter_next (&unwinder->interp_iter, frame);
+		if (!unwinder->in_interp) {
+			return unwinder_unwind_frame (unwinder, domain, jit_tls, prev_ji, ctx, new_ctx, trace, lmf, save_locations, frame);
+		}
+		return TRUE;
+	} else {
+		gboolean res = mono_find_jit_info_ext (domain, jit_tls, prev_ji, ctx, new_ctx, trace, lmf,
+											   save_locations, frame);
+		if (!res)
+			return FALSE;
+		if (frame->type == FRAME_TYPE_INTERP_TO_MANAGED) {
+			unwinder->in_interp = TRUE;
+			mono_interp_frame_iter_init (&unwinder->interp_iter, frame->interp_exit_data);
+		}
+		return TRUE;
+	}
 }
 
 /*
@@ -854,8 +898,13 @@ ves_icall_get_trace (MonoException *exc, gint32 skip, MonoBoolean need_file_info
 
 			sf->method = NULL;
 			s = mono_method_get_name_full (method, TRUE, FALSE, MONO_TYPE_NAME_FORMAT_REFLECTION);
-			MONO_OBJECT_SETREF (sf, internal_method_name, mono_string_new (domain, s));
+			MonoString *name = mono_string_new_checked (domain, s, &error);
 			g_free (s);
+			if (!is_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return NULL;
+			}
+			MONO_OBJECT_SETREF (sf, internal_method_name, name);
 		}
 		else {
 			MonoReflectionMethod *rm = mono_method_get_object_checked (domain, method, NULL, &error);
@@ -888,7 +937,12 @@ ves_icall_get_trace (MonoException *exc, gint32 skip, MonoBoolean need_file_info
 
 		if (need_file_info) {
 			if (location && location->source_file) {
-				MONO_OBJECT_SETREF (sf, filename, mono_string_new (domain, location->source_file));
+				MonoString *filename = mono_string_new_checked (domain, location->source_file, &error);
+				if (!is_ok (&error)) {
+					mono_error_set_pending_exception (&error);
+					return NULL;
+				}
+				MONO_OBJECT_SETREF (sf, filename, filename);
 				sf->line = location->row;
 				sf->column = location->column;
 			} else {
@@ -1119,6 +1173,8 @@ ves_icall_get_frame_info (gint32 skip, MonoBoolean need_file_info,
 	MonoMethod *jmethod = NULL, *actual_method;
 	StackFrameInfo frame;
 	gboolean res;
+	Unwinder unwinder;
+	int il_offset = -1;
 
 	MONO_ARCH_CONTEXT_DEF;
 
@@ -1160,29 +1216,43 @@ ves_icall_get_frame_info (gint32 skip, MonoBoolean need_file_info,
 		MONO_INIT_CONTEXT_FROM_FUNC (&ctx, ves_icall_get_frame_info);
 #endif
 
+		unwinder_init (&unwinder);
+
 		new_ctx = ctx;
 		do {
 			ctx = new_ctx;
-			res = mono_find_jit_info_ext (domain, jit_tls, NULL, &ctx, &new_ctx, NULL, &lmf, NULL, &frame);
+			res = unwinder_unwind_frame (&unwinder, domain, jit_tls, NULL, &ctx, &new_ctx, NULL, &lmf, NULL, &frame);
 			if (!res)
 				return FALSE;
-
-			if (frame.type == FRAME_TYPE_MANAGED_TO_NATIVE ||
-				frame.type == FRAME_TYPE_DEBUGGER_INVOKE ||
-				frame.type == FRAME_TYPE_TRAMPOLINE)
+			switch (frame.type) {
+			case FRAME_TYPE_MANAGED_TO_NATIVE:
+			case FRAME_TYPE_DEBUGGER_INVOKE:
+			case FRAME_TYPE_TRAMPOLINE:
+			case FRAME_TYPE_INTERP_TO_MANAGED:
 				continue;
+			case FRAME_TYPE_INTERP:
+				skip--;
+				break;
+			default:
+				ji = frame.ji;
+				*native_offset = frame.native_offset;
 
-			ji = frame.ji;
-			*native_offset = frame.native_offset;
-
-			/* The skip count passed by the caller depends on us not filtering out MANAGED_TO_NATIVE */
-			jmethod = jinfo_get_method (ji);
-			if (jmethod->wrapper_type != MONO_WRAPPER_NONE && jmethod->wrapper_type != MONO_WRAPPER_DYNAMIC_METHOD && jmethod->wrapper_type != MONO_WRAPPER_MANAGED_TO_NATIVE)
-				continue;
-			skip--;
+				/* The skip count passed by the caller depends on us not filtering out MANAGED_TO_NATIVE */
+				jmethod = jinfo_get_method (ji);
+				if (jmethod->wrapper_type != MONO_WRAPPER_NONE && jmethod->wrapper_type != MONO_WRAPPER_DYNAMIC_METHOD && jmethod->wrapper_type != MONO_WRAPPER_MANAGED_TO_NATIVE)
+					continue;
+				skip--;
+				break;
+			}
 		} while (skip >= 0);
 
-		actual_method = get_method_from_stack_frame (ji, get_generic_info_from_stack_frame (ji, &ctx));
+		if (frame.type == FRAME_TYPE_INTERP) {
+			jmethod = frame.method;
+			actual_method = frame.actual_method;
+			*native_offset = frame.native_offset;
+		} else {
+			actual_method = get_method_from_stack_frame (ji, get_generic_info_from_stack_frame (ji, &ctx));
+		}
 	}
 
 	MonoReflectionMethod *rm = mono_method_get_object_checked (domain, actual_method, NULL, &error);
@@ -1192,7 +1262,11 @@ ves_icall_get_frame_info (gint32 skip, MonoBoolean need_file_info,
 	}
 	mono_gc_wbarrier_generic_store (method, (MonoObject*) rm);
 
-	location = mono_debug_lookup_source_location (jmethod, *native_offset, domain);
+	if (il_offset != -1) {
+		location = mono_debug_lookup_source_location_by_il (jmethod, il_offset, domain);
+	} else {
+		location = mono_debug_lookup_source_location (jmethod, *native_offset, domain);
+	}
 	if (location)
 		*iloffset = location->il_offset;
 	else
@@ -1200,7 +1274,12 @@ ves_icall_get_frame_info (gint32 skip, MonoBoolean need_file_info,
 
 	if (need_file_info) {
 		if (location) {
-			mono_gc_wbarrier_generic_store (file, (MonoObject*) mono_string_new (domain, location->source_file));
+			MonoString *filename = mono_string_new_checked (domain, location->source_file, &error);
+			if (!is_ok (&error)) {
+				mono_error_set_pending_exception (&error);
+				return FALSE;
+			}
+			mono_gc_wbarrier_generic_store (file, (MonoObject*)filename);
 			*line = location->row;
 			*column = location->column;
 		} else {
@@ -1469,6 +1548,8 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 	gint32 filter_idx;
 	int i;
 	MonoObject *ex_obj;
+	Unwinder unwinder;
+	gboolean in_interp;
 
 	g_assert (ctx != NULL);
 
@@ -1508,6 +1589,8 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 	filter_idx = 0;
 	initial_ctx = *ctx;
 
+	unwinder_init (&unwinder);
+
 	while (1) {
 		MonoContext new_ctx;
 		guint32 free_stack;
@@ -1519,23 +1602,36 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 		if (out_prev_ji)
 			*out_prev_ji = ji;
 
-		unwind_res = mono_find_jit_info_ext (domain, jit_tls, NULL, ctx, &new_ctx, NULL, &lmf, NULL, &frame);
-		if (unwind_res) {
-			if (frame.type == FRAME_TYPE_DEBUGGER_INVOKE ||
-					frame.type == FRAME_TYPE_MANAGED_TO_NATIVE ||
-					frame.type == FRAME_TYPE_TRAMPOLINE) {
-				*ctx = new_ctx;
-				continue;
-			}
-			g_assert (frame.type == FRAME_TYPE_MANAGED);
-			ji = frame.ji;
-		}
-
+		unwind_res = unwinder_unwind_frame (&unwinder, domain, jit_tls, NULL, ctx, &new_ctx, NULL, &lmf, NULL, &frame);
 		if (!unwind_res) {
 			setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
 			g_slist_free (dynamic_methods);
 			return FALSE;
 		}
+
+		switch (frame.type) {
+		case FRAME_TYPE_DEBUGGER_INVOKE:
+		case FRAME_TYPE_MANAGED_TO_NATIVE:
+		case FRAME_TYPE_TRAMPOLINE:
+		case FRAME_TYPE_INTERP_TO_MANAGED:
+			*ctx = new_ctx;
+			continue;
+		case FRAME_TYPE_INTERP:
+		case FRAME_TYPE_MANAGED:
+			break;
+		default:
+			g_assert_not_reached ();
+			break;
+		}
+
+		in_interp = frame.type == FRAME_TYPE_INTERP;
+		ji = frame.ji;
+
+		gpointer ip;
+		if (in_interp)
+			ip = (guint16*)ji->code_start + frame.native_offset;
+		else
+			ip = MONO_CONTEXT_GET_IP (ctx);
 
 		frame_count ++;
 		method = jinfo_get_method (ji);
@@ -1578,7 +1674,7 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 			if (free_stack <= (64 * 1024))
 				continue;
 
-			if (is_address_protected (ji, ei, MONO_CONTEXT_GET_IP (ctx))) {
+			if (is_address_protected (ji, ei, ip)) {
 				/* catch block */
 				MonoClass *catch_class = get_exception_catch_class (ei, ji, ctx);
 
@@ -1650,7 +1746,8 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 						*out_ji = ji;
 
 					/* mono_debugger_agent_handle_exception () needs this */
-					MONO_CONTEXT_SET_IP (ctx, ei->handler_start);
+					if (!in_interp)
+						MONO_CONTEXT_SET_IP (ctx, ei->handler_start);
 					return TRUE;
 				}
 				mono_error_cleanup (&isinst_error);
@@ -1687,11 +1784,15 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 	int i;
 	MonoObject *ex_obj;
 	MonoObject *non_exception = NULL;
+	Unwinder unwinder;
+	gboolean in_interp;
 
 	g_assert (ctx != NULL);
 	if (!obj) {
 		MonoException *ex = mono_get_exception_null_reference ();
-		MONO_OBJECT_SETREF (ex, message, mono_string_new (domain, "Object reference not set to an instance of an object"));
+		MonoString *msg = mono_string_new_checked (domain, "Object reference not set to an instance of an object", &error);
+		mono_error_assert_ok (&error);
+		MONO_OBJECT_SETREF (ex, message, msg);
 		obj = (MonoObject *)ex;
 	} 
 
@@ -1736,18 +1837,26 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 			char *from_name = mono_type_get_full_name (jit_tls->class_cast_from);
 			char *to_name = mono_type_get_full_name (jit_tls->class_cast_to);
 			char *msg = g_strdup_printf ("Unable to cast object of type '%s' to type '%s'.", from_name, to_name);
-			mono_ex->message = mono_string_new (domain, msg);
+			mono_ex->message = mono_string_new_checked (domain, msg, &error);
 			g_free (from_name);
 			g_free (to_name);
+			if (!is_ok (&error)) {
+				mono_runtime_printf_err ("Error creating class cast exception message '%s'\n", msg);
+				mono_error_assert_ok (&error);
+			}
 			g_free (msg);
 		}
 		if (!strcmp (mono_ex->object.vtable->klass->name, "ArrayTypeMismatchException")) {
 			char *from_name = mono_type_get_full_name (jit_tls->class_cast_from);
 			char *to_name = mono_type_get_full_name (jit_tls->class_cast_to);
 			char *msg = g_strdup_printf ("Source array of type '%s' cannot be cast to destination array type '%s'.", from_name, to_name);
-			mono_ex->message = mono_string_new (domain, msg);
+			mono_ex->message = mono_string_new_checked (domain, msg, &error);
 			g_free (from_name);
 			g_free (to_name);
+			if (!is_ok (&error)) {
+				mono_runtime_printf_err ("Error creating array type mismatch exception message '%s'\n", msg);
+				mono_error_assert_ok (&error);
+			}
 			g_free (msg);
 		}
 	}
@@ -1849,11 +1958,15 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 	filter_idx = 0;
 	initial_ctx = *ctx;
 
+	unwinder_init (&unwinder);
+
 	while (1) {
 		MonoContext new_ctx;
 		guint32 free_stack;
 		int clause_index_start = 0;
 		gboolean unwind_res = TRUE;
+		StackFrameInfo frame;
+		gpointer ip;
 		
 		if (resume) {
 			resume = FALSE;
@@ -1863,28 +1976,38 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 			lmf = jit_tls->resume_state.lmf;
 			first_filter_idx = jit_tls->resume_state.first_filter_idx;
 			filter_idx = jit_tls->resume_state.filter_idx;
+			in_interp = FALSE;
 		} else {
-			StackFrameInfo frame;
+			unwind_res = unwinder_unwind_frame (&unwinder, domain, jit_tls, NULL, ctx, &new_ctx, NULL, &lmf, NULL, &frame);
+			if (!unwind_res) {
+				*(mono_get_lmf_addr ()) = lmf;
 
-			unwind_res = mono_find_jit_info_ext (domain, jit_tls, NULL, ctx, &new_ctx, NULL, &lmf, NULL, &frame);
-			if (unwind_res) {
-				if (frame.type == FRAME_TYPE_DEBUGGER_INVOKE ||
-						frame.type == FRAME_TYPE_MANAGED_TO_NATIVE ||
-						frame.type == FRAME_TYPE_TRAMPOLINE) {
-					*ctx = new_ctx;
-					continue;
-				}
-				g_assert (frame.type == FRAME_TYPE_MANAGED);
-				ji = frame.ji;
+				jit_tls->abort_func (obj);
+				g_assert_not_reached ();
 			}
+			switch (frame.type) {
+			case FRAME_TYPE_DEBUGGER_INVOKE:
+			case FRAME_TYPE_MANAGED_TO_NATIVE:
+			case FRAME_TYPE_TRAMPOLINE:
+				*ctx = new_ctx;
+				continue;
+			case FRAME_TYPE_INTERP_TO_MANAGED:
+				continue;
+			case FRAME_TYPE_INTERP:
+			case FRAME_TYPE_MANAGED:
+				break;
+			default:
+				g_assert_not_reached ();
+				break;
+			}
+			in_interp = frame.type == FRAME_TYPE_INTERP;
+			ji = frame.ji;
 		}
 
-		if (!unwind_res) {
-			*(mono_get_lmf_addr ()) = lmf;
-
-			jit_tls->abort_func (obj);
-			g_assert_not_reached ();
-		}
+		if (in_interp)
+			ip = (guint16*)ji->code_start + frame.native_offset;
+		else
+			ip = MONO_CONTEXT_GET_IP (ctx);
 
 		method = jinfo_get_method (ji);
 		frame_count ++;
@@ -1910,7 +2033,7 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 			if (free_stack <= (64 * 1024))
 				continue;
 
-			if (is_address_protected (ji, ei, MONO_CONTEXT_GET_IP (ctx))) {
+			if (is_address_protected (ji, ei, ip)) {
 				/* catch block */
 				MonoClass *catch_class = get_exception_catch_class (ei, ji, ctx);
 
@@ -1993,7 +2116,27 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 					mono_profiler_exception_clause_handler (method, ei->flags, i);
 					jit_tls->orig_ex_ctx_set = FALSE;
 					mini_set_abort_threshold (ctx);
-					MONO_CONTEXT_SET_IP (ctx, ei->handler_start);
+
+					if (in_interp) {
+						/*
+						 * ctx->pc points into the interpreter, after the call which transitioned to
+						 * JITted code. Store the unwind state into the
+						 * interpeter state, then resume, the interpreter will unwind itself until
+						 * it reaches the target frame and will continue execution from there.
+						 * The resuming is kinda hackish, from the native code standpoint, it looks
+						 * like the call which transitioned to JITted code has succeeded, but the
+						 * return value register etc. is not set, so we have to be careful.
+						 */
+						mono_interp_set_resume_state (mono_ex, &frame, ei->handler_start);
+						/* Undo the IP adjustment done by mono_arch_unwind_frame () */
+#ifdef TARGET_AMD64
+						ctx->gregs [AMD64_RIP] ++;
+#else
+						NOT_IMPLEMENTED;
+#endif
+					} else {
+						MONO_CONTEXT_SET_IP (ctx, ei->handler_start);
+					}
 					mono_set_lmf (lmf);
 #ifndef DISABLE_PERFCOUNTERS
 					mono_perfcounters->exceptions_depth += frame_count;
@@ -2045,7 +2188,10 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 						return 0;
 					} else {
 						mini_set_abort_threshold (ctx);
-						call_filter (ctx, ei->handler_start);
+						if (in_interp)
+							mono_interp_run_finally (&frame, i, ei->handler_start);
+						else
+							call_filter (ctx, ei->handler_start);
 					}
 				}
 			}
@@ -3249,5 +3395,33 @@ void
 mono_debug_personality (void)
 {
 	g_assert_not_reached ();
+}
+#endif
+
+#ifndef ENABLE_INTERPRETER
+/* Stubs of interpreter functions */
+void
+mono_interp_set_resume_state (MonoException *ex, StackFrameInfo *frame, gpointer handler_ip)
+{
+	g_assert_not_reached ();
+}
+
+void
+mono_interp_run_finally (StackFrameInfo *frame, int clause_index, gpointer handler_ip)
+{
+	g_assert_not_reached ();
+}
+
+void
+mono_interp_frame_iter_init (MonoInterpStackIter *iter, gpointer interp_exit_data)
+{
+	g_assert_not_reached ();
+}
+
+gboolean
+mono_interp_frame_iter_next (MonoInterpStackIter *iter, StackFrameInfo *frame)
+{
+	g_assert_not_reached ();
+	return FALSE;
 }
 #endif
