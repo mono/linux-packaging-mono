@@ -1316,7 +1316,7 @@ Mono development tools.
 %{_prefix}/lib/mono/gac/PEAPI
 %{_prefix}/lib/mono/xbuild
 %{_prefix}/lib/mono/xbuild-frameworks
-%{_prefix}/lib64/mono/lldb
+%{_libdir}/mono/lldb
 %{_libdir}/libmono-2.0.a
 %{_libdir}/libmonosgen-2.0.a
 %{_libdir}/libmonoboehm-2.0.a
