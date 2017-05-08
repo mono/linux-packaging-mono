@@ -1,0 +1,19 @@
+diff --git a/external/linker b/external/linker
+--- a/external/linker
++++ b/external/linker
+@@ -1 +1 @@
+-Subproject commit e4d9784ac37b9ebf4757175c92bc7a3ec9fd867a
++Subproject commit e4d9784ac37b9ebf4757175c92bc7a3ec9fd867a-dirty
+diff --git a/scripts/mono-find-provides.in b/scripts/mono-find-provides.in
+index 5b2e206..5d6f34c 100644
+--- a/scripts/mono-find-provides.in
++++ b/scripts/mono-find-provides.in
+@@ -16,7 +16,7 @@ monolist=($(printf "%s\n" "${filelist[@]}" | egrep "\\.(exe|dll)\$"))
+ 
+ # Only include files with /gac/ in path
+ #  (Allows packages to contain private assemblies that don't conflict with other packages)
+-monolist=($(printf "%s\n" "${monolist[@]}" | egrep "/gac/"))
++monolist=($(printf "%s\n" "${monolist[@]}" | egrep "/(gac|Facades|4\\.5)/"))
+ # Disabled... see ChangeLog
+ 
+ # Set the prefix, unless it is overriden (used when building mono rpms)
