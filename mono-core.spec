@@ -266,7 +266,9 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/setreg
 %{_bindir}/sn
 %{_libdir}/libMonoPosixHelper.so*
+%if 0%{?rhel} >= 7
 %{_libdir}/libmono-btls-shared.so*
+%endif
 %{_libdir}/libikvm-native.so
 %{_mandir}/man1/cert-sync.1%ext_man
 %{_mandir}/man1/certmgr.1%ext_man
@@ -317,7 +319,9 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
+%if 0%{?rhel} >= 7
 %{_prefix}/lib/mono/4.5/Mono.Btls.Interface.dll
+%endif
 %{_prefix}/lib/mono/4.5/Mono.CSharp.dll
 %{_prefix}/lib/mono/4.5/Mono.Cairo.dll
 %{_prefix}/lib/mono/4.5/Mono.CompilerServices.SymbolWriter.dll
@@ -368,7 +372,9 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/ICSharpCode.SharpZipLib
 %{_prefix}/lib/mono/gac/Microsoft.CSharp
 %{_prefix}/lib/mono/gac/Microsoft.VisualC
+%if 0%{?rhel} >= 7
 %{_prefix}/lib/mono/gac/Mono.Btls.Interface
+%endif
 %{_prefix}/lib/mono/gac/Mono.CSharp
 %{_prefix}/lib/mono/gac/Mono.Cairo
 %{_prefix}/lib/mono/gac/Mono.Cecil
