@@ -1,9 +1,3 @@
-diff --git a/external/linker b/external/linker
---- a/external/linker
-+++ b/external/linker
-@@ -1 +1 @@
--Subproject commit e4d9784ac37b9ebf4757175c92bc7a3ec9fd867a
-+Subproject commit e4d9784ac37b9ebf4757175c92bc7a3ec9fd867a-dirty
 diff --git a/scripts/mono-find-provides.in b/scripts/mono-find-provides.in
 index 5b2e206..5d6f34c 100644
 --- a/scripts/mono-find-provides.in
