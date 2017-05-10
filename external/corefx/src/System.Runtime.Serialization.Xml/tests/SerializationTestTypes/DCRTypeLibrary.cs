@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace SerializationTestTypes
@@ -73,7 +75,7 @@ namespace SerializationTestTypes
     }
 
 
-    [DataContract(Namespace = "http://Microsoft.ServiceModel.Samples")]
+    [DataContract(Namespace = "NonExistNamespace")]
     public class Employee
     {
         [DataMember]
@@ -132,5 +134,64 @@ namespace SerializationTestTypes
         public Beta beta = new Beta();
         [DataMember]
         public Charlie charlie2 = new Charlie();
+    }
+
+    [DataContract]
+    public class DCRVariations
+    {
+        [DataMember]
+        public object unknownType1;
+
+        [DataMember]
+        public object unknownType2;
+    }
+
+    [DataContract]
+    public class CustomClass
+    {
+        [DataMember()]
+        private object[] knownTypes;
+
+        [DataMember()]
+        private object[] dataContractResolverTypes;
+
+        [DataMember()]
+        public virtual object[] KnownTypes
+        {
+            get { return knownTypes; }
+            set { knownTypes = value; }
+        }
+
+        [DataMember()]
+        public virtual object[] DataContractResolverTypes
+        {
+            get { return dataContractResolverTypes; }
+            set { dataContractResolverTypes = value; }
+        }
+    }
+
+    [DataContract]
+    public class DefaultCollections
+    {
+        [DataMember]
+        private ArrayList _arrayList = new ArrayList() { new Person() };
+        [DataMember]
+        private Dictionary<int, object> _dictionary = new Dictionary<int, object>() { { 001, new CharClass() } };
+        [DataMember]
+        private Hashtable _hashtable = new Hashtable() { { "one", new Version1() } };
+        [DataMember]
+        private object[] _singleDimArray = new object[] { new Employee() };
+    }
+
+    [DataContract(Name = "Car", Namespace = "TestingVersionTolerance")]
+    public class Version1
+    {
+        [DataMember]
+        public object make;
+
+        public Version1()
+        {
+            make = "Chevrolet";
+        }
     }
 }

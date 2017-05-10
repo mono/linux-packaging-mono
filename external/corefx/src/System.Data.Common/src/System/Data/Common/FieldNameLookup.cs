@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace System.Data.ProviderBase
 {
-    internal sealed class FieldNameLookup
+    internal sealed partial class FieldNameLookup
     {
         // hashtable stores the index into the _fieldNames, match via case-sensitive
         private Hashtable _fieldNameLookup;
@@ -22,30 +22,6 @@ namespace System.Data.ProviderBase
         // otherwise it is specified by the server? for the correct compare info
         private CompareInfo _compareInfo;
         private int _defaultLocaleID;
-
-        public FieldNameLookup(string[] fieldNames, int defaultLocaleID)
-        {
-            if (null == fieldNames)
-            {
-                throw ADP.ArgumentNull(nameof(fieldNames));
-            }
-            _fieldNames = fieldNames;
-            _defaultLocaleID = defaultLocaleID;
-        }
-
-        public FieldNameLookup(System.Collections.ObjectModel.ReadOnlyCollection<string> columnNames, int defaultLocaleID)
-        {
-            int length = columnNames.Count;
-            string[] fieldNames = new string[length];
-            for (int i = 0; i < length; ++i)
-            {
-                fieldNames[i] = columnNames[i];
-                Debug.Assert(null != fieldNames[i]);
-            }
-            _fieldNames = fieldNames;
-            _defaultLocaleID = defaultLocaleID;
-            GenerateLookup();
-        }
 
         public FieldNameLookup(IDataRecord reader, int defaultLocaleID)
         {
@@ -72,17 +48,6 @@ namespace System.Data.ProviderBase
                 throw ADP.IndexOutOfRange(fieldName);
             }
             return index;
-        }
-
-        public int IndexOfName(string fieldName)
-        {
-            if (null == _fieldNameLookup)
-            {
-                GenerateLookup();
-            }
-            // via case sensitive search, first match with lowest ordinal matches
-            object value = _fieldNameLookup[fieldName];
-            return ((null != value) ? (int)value : -1);
         }
 
         public int IndexOf(string fieldName)

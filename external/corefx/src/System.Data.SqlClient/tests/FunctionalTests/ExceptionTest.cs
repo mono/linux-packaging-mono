@@ -76,6 +76,7 @@ namespace System.Data.SqlClient.Tests
             }
         }
 
+        [ActiveIssue(19057)]
         [Theory]
         [InlineData(@"np:\\.\pipe\sqlbad\query")]
         [InlineData(@"np:\\.\pipe\MSSQL$NonExistentInstance\sql\query")]
@@ -97,6 +98,7 @@ namespace System.Data.SqlClient.Tests
             }
         }
 
+        [ActiveIssue(19057)]
         [Fact]
         public void NamedPipeInvalidConnStringTest()
         {
@@ -151,7 +153,12 @@ namespace System.Data.SqlClient.Tests
         private TException VerifyConnectionFailure<TException>(Action connectAction, string expectedExceptionMessage, Func<TException, bool> exVerifier) where TException : Exception
         {
             TException ex = Assert.Throws<TException>(connectAction);
-            Assert.Contains(expectedExceptionMessage, ex.Message);
+
+            // Some exception messages are different between Framework and Core
+            if(!PlatformDetection.IsFullFramework)
+            {
+                Assert.Contains(expectedExceptionMessage, ex.Message);
+            }
             Assert.True(exVerifier(ex), "FAILED Exception verifier failed on the exception.");
 
             return ex;
