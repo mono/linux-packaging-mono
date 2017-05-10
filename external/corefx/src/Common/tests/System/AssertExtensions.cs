@@ -5,6 +5,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Xunit;
+using Xunit.Sdk;
 
 namespace System
 {
@@ -22,6 +23,12 @@ namespace System
             where T : ArgumentException
         {
             T exception = Assert.Throws<T>(action);
+
+            if (netFxParamName == null && IsFullFramework)
+            {
+                // Param name varies between NETFX versions -- skip checking it
+                return;
+            }
 
             string expectedParamName =
                 IsFullFramework ?
@@ -57,14 +64,7 @@ namespace System
             where TNetCoreExceptionType : ArgumentException 
             where TNetFxExceptionType : ArgumentException
         {
-            if (IsFullFramework)
-            {
-                Throws<TNetFxExceptionType>(paramName, action);
-            }
-            else
-            {
-                Throws<TNetCoreExceptionType>(paramName, action);
-            }
+            Throws<TNetCoreExceptionType, TNetFxExceptionType>(paramName, paramName, action);
         }
 
         public static void Throws<TNetCoreExceptionType, TNetFxExceptionType>(string netCoreParamName, string netFxParamName, Action action)
@@ -79,6 +79,30 @@ namespace System
             {
                 Throws<TNetCoreExceptionType>(netCoreParamName, action);
             }
+        }
+
+        public static void ThrowsAny(Type firstExceptionType, Type secondExceptionType, Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception e)
+            {
+                if (e.GetType().Equals(firstExceptionType) || e.GetType().Equals(secondExceptionType))
+                {
+                    return;
+                }
+                throw new XunitException($"Expected: ({firstExceptionType}) or ({secondExceptionType}) -> Actual: ({e.GetType()})");
+            }
+            throw new XunitException("AssertExtensions.ThrowsAny<firstExceptionType, secondExceptionType> didn't throw any exception");
+        }
+
+        public static void ThrowsAny<TFirstExceptionType, TSecondExceptionType>(Action action)
+            where TFirstExceptionType : Exception
+            where TSecondExceptionType : Exception
+        {
+           ThrowsAny(typeof(TFirstExceptionType), typeof(TSecondExceptionType), action);
         }
     }
 }

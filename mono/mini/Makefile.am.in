@@ -485,7 +485,8 @@ common_sources = \
 	llvm-runtime.h	\
 	type-checking.c \
 	lldb.h			\
-	lldb.c
+	lldb.c	\
+	memory-access.c
 
 test_sources = 			\
 	basic-calls.cs 		\
@@ -904,7 +905,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 5.3.0.301/1419708\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 5.3.0.323/2517184\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

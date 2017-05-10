@@ -171,8 +171,8 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	dwarfwriter.c mini-gc.h mini-gc.c debugger-agent.h \
 	debugger-agent.c xdebug.c mini-llvm.h mini-llvm-cpp.h \
 	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
-	llvm-runtime.h type-checking.c lldb.h lldb.c mini-llvm.c \
-	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	llvm-runtime.h type-checking.c lldb.h lldb.c memory-access.c \
+	mini-llvm.c mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
 	llvm-runtime.cpp interp/hacks.h interp/interp.h \
 	interp/interp-internals.h interp/interp.c interp/mintops.h \
 	interp/mintops.def interp/mintops.c interp/transform.c \
@@ -221,7 +221,8 @@ am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-alias-analysis.lo \
 	libmini_static_la-mini-cross-helpers.lo \
 	libmini_static_la-arch-stubs.lo \
-	libmini_static_la-type-checking.lo libmini_static_la-lldb.lo
+	libmini_static_la-type-checking.lo libmini_static_la-lldb.lo \
+	libmini_static_la-memory-access.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_2 = libmini_static_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_static_la-mini-llvm-loaded.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
@@ -320,26 +321,27 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-gc.h mini-gc.c debugger-agent.h debugger-agent.c xdebug.c \
 	mini-llvm.h mini-llvm-cpp.h llvm-jit.h alias-analysis.c \
 	mini-cross-helpers.c arch-stubs.c llvm-runtime.h \
-	type-checking.c lldb.h lldb.c mini-llvm.c mini-llvm-loaded.c \
-	mini-llvm-cpp.cpp llvm-jit.cpp llvm-runtime.cpp interp/hacks.h \
-	interp/interp.h interp/interp-internals.h interp/interp.c \
-	interp/mintops.h interp/mintops.def interp/mintops.c \
-	interp/transform.c mini-amd64.c mini-amd64.h \
-	exceptions-amd64.c tramp-amd64.c mini-amd64-gsharedvt.c \
-	mini-amd64-gsharedvt.h tramp-amd64-gsharedvt.c mini-arm64.c \
-	mini-arm64.h exceptions-arm64.c tramp-arm64.c \
-	mini-arm64-gsharedvt.c mini-arm64-gsharedvt.h \
-	tramp-arm64-gsharedvt.c mini-arm.c mini-arm.h exceptions-arm.c \
-	tramp-arm.c mini-arm-gsharedvt.c tramp-arm-gsharedvt.c \
-	mini-ia64.c mini-ia64.h exceptions-ia64.c tramp-ia64.c \
-	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
-	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
-	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
-	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
-	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
-	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-windows.c mini-windows.h mini-windows-dllmain.c \
-	mini-windows-dlldac.c mini-darwin.c mini-posix.c
+	type-checking.c lldb.h lldb.c memory-access.c mini-llvm.c \
+	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
+	llvm-runtime.cpp interp/hacks.h interp/interp.h \
+	interp/interp-internals.h interp/interp.c interp/mintops.h \
+	interp/mintops.def interp/mintops.c interp/transform.c \
+	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
+	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
+	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
+	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
+	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
+	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
+	tramp-arm-gsharedvt.c mini-ia64.c mini-ia64.h \
+	exceptions-ia64.c tramp-ia64.c mini-mips.c mini-mips.h \
+	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
+	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
+	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
+	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
+	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
+	tramp-x86-gsharedvt.c mini-windows.c mini-windows.h \
+	mini-windows-dllmain.c mini-windows-dlldac.c mini-darwin.c \
+	mini-posix.c
 am__objects_20 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -359,7 +361,7 @@ am__objects_20 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-debugger-agent.lo libmini_la-xdebug.lo \
 	libmini_la-alias-analysis.lo libmini_la-mini-cross-helpers.lo \
 	libmini_la-arch-stubs.lo libmini_la-type-checking.lo \
-	libmini_la-lldb.lo
+	libmini_la-lldb.lo libmini_la-memory-access.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@am__objects_21 =  \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	libmini_la-mini-llvm-loaded.lo \
@@ -1170,7 +1172,8 @@ common_sources = \
 	llvm-runtime.h	\
 	type-checking.c \
 	lldb.h			\
-	lldb.c
+	lldb.c	\
+	memory-access.c
 
 test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
 	arrays.cs basic-float.cs basic-math.cs basic.cs exceptions.cs \
@@ -1549,6 +1552,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-liveness.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-lldb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-local-propagation.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-memory-access.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-method-to-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-amd64-gsharedvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_la-mini-amd64.Plo@am__quote@
@@ -1631,6 +1635,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-liveness.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-lldb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-local-propagation.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-memory-access.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-method-to-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-amd64-gsharedvt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmini_static_la-mini-amd64.Plo@am__quote@
@@ -2001,6 +2006,13 @@ libmini_static_la-lldb.lo: lldb.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lldb.c' object='libmini_static_la-lldb.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
+
+libmini_static_la-memory-access.lo: memory-access.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-memory-access.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-memory-access.Tpo -c -o libmini_static_la-memory-access.lo `test -f 'memory-access.c' || echo '$(srcdir)/'`memory-access.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-memory-access.Tpo $(DEPDIR)/libmini_static_la-memory-access.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='memory-access.c' object='libmini_static_la-memory-access.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-memory-access.lo `test -f 'memory-access.c' || echo '$(srcdir)/'`memory-access.c
 
 libmini_static_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-llvm.Tpo -c -o libmini_static_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
@@ -2596,6 +2608,13 @@ libmini_la-lldb.lo: lldb.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lldb.c' object='libmini_la-lldb.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-lldb.lo `test -f 'lldb.c' || echo '$(srcdir)/'`lldb.c
+
+libmini_la-memory-access.lo: memory-access.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-memory-access.lo -MD -MP -MF $(DEPDIR)/libmini_la-memory-access.Tpo -c -o libmini_la-memory-access.lo `test -f 'memory-access.c' || echo '$(srcdir)/'`memory-access.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-memory-access.Tpo $(DEPDIR)/libmini_la-memory-access.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='memory-access.c' object='libmini_la-memory-access.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-memory-access.lo `test -f 'memory-access.c' || echo '$(srcdir)/'`memory-access.c
 
 libmini_la-mini-llvm.lo: mini-llvm.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-llvm.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-llvm.Tpo -c -o libmini_la-mini-llvm.lo `test -f 'mini-llvm.c' || echo '$(srcdir)/'`mini-llvm.c
@@ -3479,7 +3498,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 5.3.0.301/1419708\"" > version.h
+	echo "#define FULL_VERSION \"Nightly 5.3.0.323/2517184\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

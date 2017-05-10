@@ -211,4 +211,130 @@ namespace SerializationTestTypes
             return KTResolver.ResolveName(typeName, typeNamespace, declaredType, null);
         }
     }
+
+    [Serializable]
+    public class SimpleResolver_Ser : DataContractResolver
+    {
+        private static readonly string s_defaultNs = "http://schemas.datacontract.org/2004/07/";
+        public override bool TryResolveType(Type dcType, Type declaredType, DataContractResolver KTResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+        {
+            string resolvedNamespace = string.Empty;
+            resolvedNamespace = s_defaultNs;
+            XmlDictionary dictionary = new XmlDictionary();
+            typeName = dictionary.Add(dcType.FullName);
+            typeNamespace = dictionary.Add(resolvedNamespace);
+            return true;
+        }
+
+        public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver KTResolver)
+        {
+            throw new NotImplementedException("Deserialization is supposed to be handled by the SimpleResolver_DeSer resolver.");
+        }
+    }
+
+    [Serializable]
+    public class SimpleResolver_DeSer : DataContractResolver
+    {
+        private static readonly string s_defaultNs = "http://schemas.datacontract.org/2004/07/";
+        public override bool TryResolveType(Type dcType, Type declaredType, DataContractResolver KTResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+        {
+            throw new NotImplementedException("Serialization is supposed to be handled by the SimpleResolver_Ser resolver.");
+        }
+
+        public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver KTResolver)
+        {
+            if (typeNamespace.Equals(s_defaultNs))
+            {
+                if (typeName.Equals(typeof(DCRVariations).FullName))
+                {
+                    return typeof(DCRVariations);
+                }
+                if (typeName.Equals(typeof(Person).FullName))
+                {
+                    return typeof(Person);
+                }
+                if (typeName.Equals(typeof(SimpleDC).FullName))
+                {
+                    return typeof(SimpleDC);
+                }           
+            }
+
+            return KTResolver.ResolveName(typeName, typeNamespace, declaredType, null);
+        }
+    }
+
+    public class VerySimpleResolver : DataContractResolver
+    {
+        public override bool TryResolveType(Type dcType, Type declaredType, DataContractResolver KTResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+        {
+            if (!KTResolver.TryResolveType(dcType, declaredType, null, out typeName, out typeNamespace))
+            {
+                typeName = new XmlDictionary().Add(dcType.FullName);
+                typeNamespace = new XmlDictionary().Add(dcType.Assembly.FullName);
+            }
+
+            return true;
+        }
+
+        public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver KTResolver)
+        {
+            Type t = KTResolver.ResolveName(typeName, typeNamespace, declaredType, null);
+            if (t == null)
+            {
+                try
+                {
+                    t = Type.GetType(typeName + "," + typeNamespace);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+            return t;
+        }
+    }
+
+    public class ResolverDefaultCollections : DataContractResolver
+    {
+        private readonly static string s_defaultNs = "http://www.default.com";
+        public override bool TryResolveType(Type dcType, Type declaredType, DataContractResolver KTResolver, out XmlDictionaryString typeName, out XmlDictionaryString typeNamespace)
+        {
+            string resolvedNamespace = string.Empty;
+            resolvedNamespace = s_defaultNs;
+            XmlDictionary dictionary = new XmlDictionary();
+            typeName = dictionary.Add(dcType.FullName);            
+            typeNamespace = dictionary.Add(resolvedNamespace);
+            return true;
+        }
+
+        public override Type ResolveName(string typeName, string typeNamespace, Type declaredType, DataContractResolver KTResolver)
+        {
+            if (typeNamespace.Equals(s_defaultNs))
+            {
+                if (typeName.Equals(typeof(Person).FullName))
+                {
+                    return typeof(Person);
+                }
+                if (typeName.Equals(typeof(CharClass).FullName))
+                {
+                    return typeof(CharClass);
+                }
+                if (typeName.Equals("System.String"))
+                {
+                    return typeof(string);
+                }
+                if (typeName.Equals(typeof(Version1).FullName))
+                {
+                    return typeof(Version1);
+                }
+                if (typeName.Equals(typeof(Employee).FullName))
+                {
+                    return typeof(Employee);
+                }
+            }
+
+            return KTResolver.ResolveName(typeName, typeNamespace, declaredType, null);
+        }
+    }
 }

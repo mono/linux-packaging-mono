@@ -13,7 +13,8 @@ using Xunit.NetCore.Extensions;
 
 namespace System.Tests
 {
-    [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "dotnet/corefx #18718")]
+    // No appdomain in UWP or CoreRT
+    [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot | TargetFrameworkMonikers.NetFramework, "dotnet/corefx #18718")]
     public class AppDomainTests : RemoteExecutorTestBase
     {
         public AppDomainTests()
@@ -413,13 +414,20 @@ namespace System.Tests
             int ctr = 0;
             foreach (var a in assemblies2)
             {
-                if (a.Location == typeof(AppDomain).Assembly.Location)
-                    ctr++;
+                // Dynamic assemblies do not support Location property.
+                if (!a.IsDynamic)
+                {
+                    if (a.Location == typeof(AppDomain).Assembly.Location)
+                        ctr++;
+                }
             }
             foreach (var a in assemblies)
             {
-                if (a.Location == typeof(AppDomain).Assembly.Location)
-                    ctr--;
+                if (!a.IsDynamic)
+                {
+                    if (a.Location == typeof(AppDomain).Assembly.Location)
+                        ctr--;
+                }
             }
             Assert.True(ctr > 0, "Assembly.LoadFile should cause file to be loaded again");
         }
