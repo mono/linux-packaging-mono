@@ -595,6 +595,20 @@ extern const gint8 ins_sreg_counts [];
 
 #define mono_bb_first_ins(bb) (bb)->code
 
+/*
+ * Iterate through all used registers in the instruction.
+ * Relies on the existing order of the MONO_INST enum: MONO_INST_{DREG,SREG1,SREG2,SREG3,LEN}
+ * INS is the instruction, IDX is the register index, REG is the pointer to a register.
+ */
+#define MONO_INS_FOR_EACH_REG(ins, idx, reg) for ((idx) = INS_INFO ((ins)->opcode)[MONO_INST_DEST] != ' ' ? MONO_INST_DEST : \
+							  (mono_inst_get_num_src_registers (ins) ? MONO_INST_SRC1 : MONO_INST_LEN); \
+						  (reg) = (idx) == MONO_INST_DEST ? &(ins)->dreg : \
+							  ((idx) == MONO_INST_SRC1 ? &(ins)->sreg1 : \
+							   ((idx) == MONO_INST_SRC2 ? &(ins)->sreg2 : \
+							    ((idx) == MONO_INST_SRC3 ? &(ins)->sreg3 : NULL))), \
+							  idx < MONO_INST_LEN; \
+						  (idx) = (idx) > mono_inst_get_num_src_registers (ins) + (INS_INFO ((ins)->opcode)[MONO_INST_DEST] != ' ') ? MONO_INST_LEN : (idx) + 1)
+
 struct MonoSpillInfo {
 	int offset;
 };
@@ -2641,6 +2655,8 @@ void              mini_emit_write_barrier (MonoCompile *cfg, MonoInst *ptr, Mono
 gboolean          mini_emit_wb_aware_memcpy (MonoCompile *cfg, MonoClass *klass, MonoInst *iargs[4], int size, int align);
 MonoInst*         mini_emit_memory_load (MonoCompile *cfg, MonoType *type, MonoInst *src, int offset, int ins_flag);
 void              mini_emit_memory_store (MonoCompile *cfg, MonoType *type, MonoInst *dest, MonoInst *value, int ins_flag);
+void              mini_emit_memory_copy_bytes (MonoCompile *cfg, MonoInst *dest, MonoInst *src, MonoInst *size, int ins_flag);
+void              mini_emit_memory_init_bytes (MonoCompile *cfg, MonoInst *dest, MonoInst *value, MonoInst *size, int ins_flag);
 
 MonoMethod*       mini_get_memcpy_method (void);
 MonoMethod*       mini_get_memset_method (void);

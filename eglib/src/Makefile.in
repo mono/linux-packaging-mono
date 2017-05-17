@@ -107,7 +107,8 @@ am__libeglib_la_SOURCES_DIST = eglib-remap.h sort.frag.h glib.h \
 	unicode-data.h gdate-unix.c gdir-unix.c gfile-unix.c \
 	gmisc-unix.c gmodule-unix.c gtimer-unix.c eglib-config.hw \
 	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
-	gmodule-win32.c gtimer-win32.c gunicode-win32.c
+	gmodule-win32.c gmodule-win32-internals.h gtimer-win32.c \
+	gunicode-win32.c
 am__objects_1 = libeglib_la-gdate-unix.lo libeglib_la-gdir-unix.lo \
 	libeglib_la-gfile-unix.lo libeglib_la-gmisc-unix.lo \
 	libeglib_la-gmodule-unix.lo libeglib_la-gtimer-unix.lo
@@ -346,7 +347,7 @@ AM_CFLAGS = $(WERROR_CFLAGS)
 win_files = \
 	eglib-config.hw \
 	gdate-win32.c gdir-win32.c gfile-win32.c gmisc-win32.c \
-	gmodule-win32.c gtimer-win32.c gunicode-win32.c
+	gmodule-win32.c gmodule-win32-internals.h gtimer-win32.c gunicode-win32.c
 
 unix_files = \
 	gdate-unix.c  gdir-unix.c  gfile-unix.c  gmisc-unix.c	\

@@ -6157,7 +6157,6 @@ namespace System.Collections.Concurrent
         public int TryPopRange(T[] items, int startIndex, int count) { throw null; }
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum EnumerablePartitionerOptions
     {
         NoBuffering = 1,
@@ -21663,7 +21662,6 @@ namespace System.Security.Cryptography.X509Certificates
         Unknown = 0,
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum X509KeyStorageFlags
     {
         DefaultKeySet = 0,
@@ -23258,7 +23256,41 @@ namespace System.Security.Principal
         ServiceSid = 12,
         TerminalServerSid = 19,
         ThisOrganizationSid = 54,
+        WinAccountReadonlyControllersSid = 75,
+        WinApplicationPackageAuthoritySid = 83,
+        WinBuiltinAnyPackageSid = 84,
+        WinBuiltinCertSvcDComAccessGroup = 78,
+        WinBuiltinCryptoOperatorsSid = 64,
+        WinBuiltinDCOMUsersSid = 61,
+        WinBuiltinEventLogReadersGroup = 76,
+        WinBuiltinIUsersSid = 62,
         WinBuiltinTerminalServerLicenseServersSid = 60,
+        WinCacheablePrincipalsGroupSid = 72,
+        WinCapabilityDocumentsLibrarySid = 91,
+        WinCapabilityEnterpriseAuthenticationSid = 93,
+        WinCapabilityInternetClientServerSid = 86,
+        WinCapabilityInternetClientSid = 85,
+        WinCapabilityMusicLibrarySid = 90,
+        WinCapabilityPicturesLibrarySid = 88,
+        WinCapabilityPrivateNetworkClientServerSid = 87,
+        WinCapabilityRemovableStorageSid = 94,
+        WinCapabilitySharedUserCertificatesSid = 92,
+        WinCapabilityVideosLibrarySid = 89,
+        WinConsoleLogonSid = 81,
+        WinCreatorOwnerRightsSid = 71,
+        WinEnterpriseReadonlyControllersSid = 74,
+        WinHighLabelSid = 68,
+        WinIUserSid = 63,
+        WinLocalLogonSid = 80,
+        WinLowLabelSid = 66,
+        WinMediumLabelSid = 67,
+        WinMediumPlusLabelSid = 79,
+        WinNewEnterpriseReadonlyControllersSid = 77,
+        WinNonCacheablePrincipalsGroupSid = 73,
+        WinSystemLabelSid = 69,
+        WinThisOrganizationCertificateSid = 82,
+        WinUntrustedLabelSid = 65,
+        WinWriteRestrictedCodeSid = 70,
         WorldSid = 1,
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]

@@ -239,7 +239,11 @@ namespace System.Net.Tests
 
         public static IEnumerable<object[]> InvalidPrefix_TestData()
         {
-            yield return new object[] { "http://microsoft.com/" };
+            // [ActiveIssue(19593, TestPlatforms.OSX)]
+            if (!PlatformDetection.IsOSX)
+            {
+                yield return new object[] { $"http://{Guid.NewGuid().ToString("N")}/" };
+            }
             yield return new object[] { "http://[]/" };
             yield return new object[] { "http://[::1%2]/" };
             yield return new object[] { "http://[::]/" };
@@ -252,7 +256,7 @@ namespace System.Net.Tests
             yield return new object[] { "http://\\/" };
         }
 
-        [ActiveIssue(19526)]
+        [ActiveIssue(19619)]
         [Theory]
         [MemberData(nameof(InvalidPrefix_TestData))]
         public void Add_InvalidPrefixNotStarted_ThrowsHttpListenerExceptionOnStart(string uriPrefix)
@@ -265,6 +269,7 @@ namespace System.Net.Tests
             Assert.Throws<HttpListenerException>(() => listener.Start());
         }
 
+        [ActiveIssue(19619)]
         [Theory]
         [MemberData(nameof(InvalidPrefix_TestData))]
         public void Add_InvalidPrefixAlreadyStarted_ThrowsHttpListenerExceptionOnAdd(string uriPrefix)
@@ -272,12 +277,13 @@ namespace System.Net.Tests
             using (var factory = new HttpListenerFactory())
             {
                 HttpListener listener = factory.GetListener();
-                    Assert.Single(listener.Prefixes);
+                Assert.Single(listener.Prefixes);
 
                 Assert.Throws<HttpListenerException>(() => listener.Prefixes.Add(uriPrefix));
             }
         }
 
+        [ActiveIssue(19619)]
         [Theory]
         [ActiveIssue(18128, TestPlatforms.AnyUnix)] // Fails by design on Windows but is allowed by the managed implementation
         [InlineData("http://192./")]
@@ -373,7 +379,7 @@ namespace System.Net.Tests
         }
 
         [Fact]
-        public async Task Remove_PrefixExistsStarted_ReturnsTrue()
+        public void Remove_PrefixExistsStarted_ReturnsTrue()
         {
             using (var factory = new HttpListenerFactory())
             {
@@ -384,11 +390,8 @@ namespace System.Net.Tests
                 Assert.False(listener.Prefixes.Contains(uriPrefix));
                 Assert.Equal(0, listener.Prefixes.Count);
 
-                // Trying to connect to the HttpListener should now fail.
-                using (var client = new HttpClient())
-                {
-                    await Assert.ThrowsAsync<HttpRequestException>(() => client.GetStringAsync(factory.ListeningUrl));
-                }
+                // Even though the listener has no prefixes, it should still be listening.
+                Assert.True(listener.IsListening);
             }
         }
 

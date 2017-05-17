@@ -366,12 +366,6 @@ s390x_sources = \
 	exceptions-s390x.c	\
 	tramp-s390x.c
 
-ia64_sources = \
-	mini-ia64.c		\
-	mini-ia64.h		\
-	exceptions-ia64.c	\
-	tramp-ia64.c
-
 darwin_sources = \
 	mini-darwin.c
 
@@ -604,12 +598,6 @@ arch_built=cpu-s390x.h
 arch_define=__s390__
 endif
 
-if IA64
-arch_sources = $(ia64_sources)
-arch_built = cpu-ia64.h
-arch_define=__ia64__
-endif
-
 if HOST_WIN32
 os_sources = $(windows_sources)
 monobin_platform_ldflags=
@@ -721,9 +709,6 @@ cpu-sparc.h: cpu-sparc.md genmdesc$(EXEEXT)
 
 cpu-s390x.h: cpu-s390x.md genmdesc$(EXEEXT)
 	$(GENMDESC_PRG) cpu-s390x.h s390x_cpu_desc $(srcdir)/cpu-s390x.md
-
-cpu-ia64.h: cpu-ia64.md genmdesc$(EXEEXT)
-	$(GENMDESC_PRG) cpu-ia64.h ia64_desc $(srcdir)/cpu-ia64.md
 
 cpu-mips.h: cpu-mips.md genmdesc$(EXEEXT)
 	$(GENMDESC_PRG) cpu-mips.h mips_desc $(srcdir)/cpu-mips.md
@@ -896,7 +881,6 @@ EXTRA_DIST = TestDriver.cs \
 	$(mips_sources) cpu-mips.md 		\
 	$(sparc_sources) cpu-sparc.md 		\
 	$(s390x_sources) cpu-s390x.md 		\
-	$(ia64_sources) cpu-ia64.md 		\
 	$(windows_sources)			\
 	$(darwin_sources) Info.plist		\
 	$(posix_sources)					\
@@ -905,7 +889,20 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"Nightly 5.3.0.323/2517184\"" > version.h
+	if test -d $(top_srcdir)/.git; then \
+		(cd $(top_srcdir); \
+			LANG=C; export LANG; \
+			if test -z "$$ghprbPullId"; then \
+				branch=`git branch | grep '^\*' | sed 's/(detached from .*/explicit/' | cut -d ' ' -f 2`; \
+			else \
+				branch="pull-request-$$ghprbPullId"; \
+			fi; \
+			version=`git log --no-color --first-parent -n1 --pretty=format:%h`; \
+			echo "#define FULL_VERSION \"$$branch/$$version\""; \
+		); \
+	else \
+		echo "#define FULL_VERSION \"tarball\""; \
+	fi > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

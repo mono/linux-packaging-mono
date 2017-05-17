@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-[assembly:System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
+[assembly:System.Reflection.AssemblyVersionAttribute("4.1.0.0")]
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Xamarin, Inc.")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright (c) 2015 Xamarin Inc. (http://www.xamarin.com)")]
@@ -17,9 +17,13 @@
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.Registry))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.RegistryHive))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.RegistryKey))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.RegistryKeyPermissionCheck))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.RegistryOptions))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.RegistryValueKind))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.RegistryValueOptions))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.RegistryView))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(Microsoft.Win32.SafeHandles.SafeRegistryHandle))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.AccessControl.RegistryAccessRule))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.AccessControl.RegistryAuditRule))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.AccessControl.RegistryRights))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Security.AccessControl.RegistrySecurity))]

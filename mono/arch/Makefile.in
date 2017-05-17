@@ -390,7 +390,7 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-DIST_SUBDIRS = x86 ppc sparc arm arm64 s390x amd64 ia64 mips
+DIST_SUBDIRS = x86 ppc sparc arm arm64 s390x amd64 mips
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
 
 # arm needs to build some stuff even in JIT mode

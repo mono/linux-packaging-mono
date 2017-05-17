@@ -312,6 +312,8 @@ typedef struct {
 	int nregs;
 	/* Only if storage == ArgOnStack */
 	int arg_size; // Bytes, will always be rounded up/aligned to 8 byte boundary
+	// Size in bytes for small arguments
+	int byte_arg_size;
 	guint8 pass_empty_struct : 1; // Set in scenarios when empty structs needs to be represented as argument.
 } ArgInfo;
 
@@ -556,7 +558,7 @@ typedef struct _UNWIND_INFO {
  *	OPTIONAL ULONG ExceptionData[]; */
 } UNWIND_INFO, *PUNWIND_INFO;
 
-inline guint
+static inline guint
 mono_arch_unwindinfo_get_size (guchar code_count)
 {
 	// Returned size will be used as the allocated size for unwind data trailing the memory used by compiled method.

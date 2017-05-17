@@ -1681,7 +1681,6 @@ namespace System.Data
         int IndexOf(string sourceTableName);
         void RemoveAt(string sourceTableName);
     }
-    [System.SerializableAttribute]
     public enum KeyRestrictionBehavior
     {
         AllowOnly = 0,
@@ -1693,7 +1692,6 @@ namespace System.Data
         PreserveChanges = 2,
         Upsert = 3,
     }
-    [System.SerializableAttribute]
     public enum MappingType
     {
         Attribute = 2,
@@ -3879,7 +3877,6 @@ namespace System.Data.Sql
 }
 namespace System.Data.SqlClient
 {
-    [System.SerializableAttribute]
     public enum ApplicationIntent
     {
         ReadOnly = 1,
@@ -3933,6 +3930,22 @@ namespace System.Data.SqlClient
         public System.Threading.Tasks.Task WriteToServerAsync(System.Data.Common.DbDataReader reader) { throw null; }
         [System.MonoTODOAttribute]
         public System.Threading.Tasks.Task WriteToServerAsync(System.Data.Common.DbDataReader reader, System.Threading.CancellationToken cancellationToken) { throw null; }
+        [System.MonoTODOAttribute]
+        public System.Threading.Tasks.Task WriteToServerAsync(System.Data.DataRow[] rows) { throw null; }
+        [System.MonoTODOAttribute]
+        public System.Threading.Tasks.Task WriteToServerAsync(System.Data.DataRow[] rows, System.Threading.CancellationToken cancellationToken) { throw null; }
+        [System.MonoTODOAttribute]
+        public System.Threading.Tasks.Task WriteToServerAsync(System.Data.DataTable table) { throw null; }
+        [System.MonoTODOAttribute]
+        public System.Threading.Tasks.Task WriteToServerAsync(System.Data.DataTable table, System.Data.DataRowState rowState) { throw null; }
+        [System.MonoTODOAttribute]
+        public System.Threading.Tasks.Task WriteToServerAsync(System.Data.DataTable table, System.Data.DataRowState rowState, System.Threading.CancellationToken cancellationToken) { throw null; }
+        [System.MonoTODOAttribute]
+        public System.Threading.Tasks.Task WriteToServerAsync(System.Data.DataTable table, System.Threading.CancellationToken cancellationToken) { throw null; }
+        [System.MonoTODOAttribute]
+        public System.Threading.Tasks.Task WriteToServerAsync(System.Data.IDataReader reader) { throw null; }
+        [System.MonoTODOAttribute]
+        public System.Threading.Tasks.Task WriteToServerAsync(System.Data.IDataReader reader, System.Threading.CancellationToken cancellationToken) { throw null; }
     }
     public sealed partial class SqlBulkCopyColumnMapping
     {
@@ -5003,7 +5016,6 @@ namespace System.Data.SqlTypes
         public void Write(long offset, char[] buffer, int offsetInBuffer, int count) { }
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum SqlCompareOptions
     {
         BinarySort = 32768,
