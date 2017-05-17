@@ -467,9 +467,6 @@
 /* Define to 1 if you have the <libproc.h> header file. */
 #undef HAVE_LIBPROC_H
 
-/* Define to 1 if you have the `unwind' library (-lunwind). */
-#undef HAVE_LIBUNWIND
-
 /* Define to 1 if you have the <link.h> header file. */
 #undef HAVE_LINK_H
 
@@ -1014,9 +1011,6 @@
 #undef HOST_ARM64
 
 /* ... */
-#undef HOST_IA64
-
-/* ... */
 #undef HOST_MIPS
 
 /* ... */
@@ -1153,9 +1147,6 @@
 
 /* byte order of target */
 #undef TARGET_BYTE_ORDER
-
-/* ... */
-#undef TARGET_IA64
 
 /* The JIT/AOT targets iOS */
 #undef TARGET_IOS

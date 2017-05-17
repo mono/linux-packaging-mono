@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-[assembly:System.Reflection.AssemblyVersionAttribute("4.1.0.0")]
+[assembly:System.Reflection.AssemblyVersionAttribute("4.2.0.0")]
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Xamarin, Inc.")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright (c) 2015 Xamarin Inc. (http://www.xamarin.com)")]
@@ -114,6 +114,7 @@ namespace System.ServiceProcess
     public partial class TimeoutException : System.Exception
     {
         public TimeoutException() { }
+        protected TimeoutException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public TimeoutException(string message) { }
         public TimeoutException(string message, System.Exception innerException) { }
     }

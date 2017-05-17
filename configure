@@ -673,8 +673,6 @@ POWERPC_FALSE
 POWERPC_TRUE
 MIPS_FALSE
 MIPS_TRUE
-IA64_FALSE
-IA64_TRUE
 AMD64_FALSE
 AMD64_TRUE
 X86_FALSE
@@ -26417,61 +26415,6 @@ $as_echo "#define __mono_ilp32__ 1" >>confdefs.h
 				;;
 		esac
 		;;
-	ia64-*-*)
-		TARGET=IA64
-		arch_target=ia64
-		ACCESS_UNALIGNED="no"
-		LIBC="libc.so.6.1"
-		INTL="libc.so.6.1"
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for _U_dyn_register in -lunwind" >&5
-$as_echo_n "checking for _U_dyn_register in -lunwind... " >&6; }
-if ${ac_cv_lib_unwind__U_dyn_register+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lunwind  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char _U_dyn_register ();
-int
-main ()
-{
-return _U_dyn_register ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_unwind__U_dyn_register=yes
-else
-  ac_cv_lib_unwind__U_dyn_register=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_unwind__U_dyn_register" >&5
-$as_echo "$ac_cv_lib_unwind__U_dyn_register" >&6; }
-if test "x$ac_cv_lib_unwind__U_dyn_register" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBUNWIND 1
-_ACEOF
-
-  LIBS="-lunwind $LIBS"
-
-else
-  as_fn_error $? "library libunwind not found" "$LINENO" 5
-fi
-
-		libmono_ldflags="-lunwind"
-		;;
 	sparc*-*-*)
 		if test "x$ac_cv_sizeof_void_p" = "x8"; then
 		   TARGET=SPARC64
@@ -26536,6 +26479,13 @@ fi
 		ACCESS_UNALIGNED="no"
 		AOT_SUPPORTED="yes"
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
+		BTLS_SUPPORTED=yes
+		BTLS_PLATFORM=arm
+		case "$target" in
+		arm*-linux*-gnueabi)
+			BTLS_PLATFORM=armsoft
+			;;
+		esac
 		;;
 	arm*-netbsd*-eabi*)
 		TARGET=ARM;
@@ -26556,6 +26506,8 @@ fi
 		arch_target=arm64
 		boehm_supported=false
 		AOT_SUPPORTED="yes"
+		BTLS_SUPPORTED=yes
+		BTLS_PLATFORM=aarch64
 		;;
 	s390x-*-linux*)
 		TARGET=S390X;
@@ -26831,11 +26783,6 @@ MIPS)
 $as_echo "#define TARGET_MIPS 1" >>confdefs.h
 
 	;;
-IA64)
-
-$as_echo "#define TARGET_IA64 1" >>confdefs.h
-
-	;;
 SPARC)
 
 $as_echo "#define TARGET_SPARC 1" >>confdefs.h
@@ -26890,11 +26837,6 @@ $as_echo "#define HOST_S390X 1" >>confdefs.h
 MIPS)
 
 $as_echo "#define HOST_MIPS 1" >>confdefs.h
-
-	;;
-IA64)
-
-$as_echo "#define HOST_IA64 1" >>confdefs.h
 
 	;;
 SPARC)
@@ -28067,6 +28009,16 @@ fi
 	x86_64)
 		btls_arch=x86_64
 		;;
+	arm)
+		btls_arch=arm
+		;;
+	armsoft)
+		btls_arch=arm
+		btls_cflags="-DOPENSSL_NO_ASM=1"
+		;;
+	aarch64)
+		btls_arch=aarch64
+		;;
 	android-armv5)
 		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"armeabi\" -DANDROID_NATIVE_API_LEVEL=12"
 		;;
@@ -28190,14 +28142,6 @@ fi
 else
   AMD64_TRUE='#'
   AMD64_FALSE=
-fi
-
- if test x$TARGET = xIA64; then
-  IA64_TRUE=
-  IA64_FALSE='#'
-else
-  IA64_TRUE='#'
-  IA64_FALSE=
 fi
 
  if test x$TARGET = xMIPS; then
@@ -28388,7 +28332,7 @@ ac_config_commands="$ac_config_commands quiet-libtool"
 ac_config_commands="$ac_config_commands nolock-libtool"
 
 
-ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/btls/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/ia64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/gc-descriptors/Makefile mono/tests/testing_gac/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile tools/pedump/Makefile runtime/Makefile msvc/Makefile po/Makefile"
+ac_config_files="$ac_config_files Makefile mono-uninstalled.pc acceptance-tests/Makefile llvm/Makefile scripts/mono-find-provides scripts/mono-find-requires mono/Makefile mono/btls/Makefile mono/utils/Makefile mono/metadata/Makefile mono/dis/Makefile mono/cil/Makefile mono/arch/Makefile mono/arch/x86/Makefile mono/arch/amd64/Makefile mono/arch/ppc/Makefile mono/arch/sparc/Makefile mono/arch/s390x/Makefile mono/arch/arm/Makefile mono/arch/arm64/Makefile mono/arch/mips/Makefile mono/sgen/Makefile mono/tests/Makefile mono/tests/tests-config mono/tests/gc-descriptors/Makefile mono/tests/testing_gac/Makefile mono/unit-tests/Makefile mono/benchmark/Makefile mono/mini/Makefile mono/profiler/Makefile m4/Makefile ikvm-native/Makefile scripts/Makefile man/Makefile docs/Makefile data/Makefile data/net_2_0/Makefile data/net_4_0/Makefile data/net_4_5/Makefile data/net_2_0/Browsers/Makefile data/net_4_0/Browsers/Makefile data/net_4_5/Browsers/Makefile data/mint.pc data/mono-2.pc data/monosgen-2.pc data/mono.pc data/mono-cairo.pc data/mono-nunit.pc data/mono-options.pc data/mono-lineeditor.pc data/monodoc.pc data/dotnet.pc data/dotnet35.pc data/wcf.pc data/cecil.pc data/system.web.extensions_1.0.pc data/system.web.extensions.design_1.0.pc data/system.web.mvc.pc data/system.web.mvc2.pc data/system.web.mvc3.pc data/aspnetwebstack.pc data/reactive.pc samples/Makefile support/Makefile data/config tools/Makefile tools/locale-builder/Makefile tools/sgen/Makefile tools/monograph/Makefile tools/pedump/Makefile runtime/Makefile msvc/Makefile po/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -28734,10 +28678,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${AMD64_TRUE}" && test -z "${AMD64_FALSE}"; then
   as_fn_error $? "conditional \"AMD64\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${IA64_TRUE}" && test -z "${IA64_FALSE}"; then
-  as_fn_error $? "conditional \"IA64\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${MIPS_TRUE}" && test -z "${MIPS_FALSE}"; then
@@ -29811,7 +29751,6 @@ do
     "mono/arch/s390x/Makefile") CONFIG_FILES="$CONFIG_FILES mono/arch/s390x/Makefile" ;;
     "mono/arch/arm/Makefile") CONFIG_FILES="$CONFIG_FILES mono/arch/arm/Makefile" ;;
     "mono/arch/arm64/Makefile") CONFIG_FILES="$CONFIG_FILES mono/arch/arm64/Makefile" ;;
-    "mono/arch/ia64/Makefile") CONFIG_FILES="$CONFIG_FILES mono/arch/ia64/Makefile" ;;
     "mono/arch/mips/Makefile") CONFIG_FILES="$CONFIG_FILES mono/arch/mips/Makefile" ;;
     "mono/sgen/Makefile") CONFIG_FILES="$CONFIG_FILES mono/sgen/Makefile" ;;
     "mono/tests/Makefile") CONFIG_FILES="$CONFIG_FILES mono/tests/Makefile" ;;
@@ -31850,7 +31789,19 @@ fi
     echo "MONO_CORLIB_VERSION = $MONO_CORLIB_VERSION" >> $mcs_topdir/build/config.make
 
     if test x$host_darwin = xyes; then
-      echo "PLATFORM = darwin" >> $mcs_topdir/build/config.make
+      echo "BUILD_PLATFORM = darwin" >> $mcs_topdir/build/config.make
+    elif test x$host_win32 = xyes; then
+      echo "BUILD_PLATFORM = win32" >> $mcs_topdir/build/config.make
+    else
+      echo "BUILD_PLATFORM = linux" >> $mcs_topdir/build/config.make
+    fi
+
+    if test x$host_darwin = xyes; then
+      echo "HOST_PLATFORM ?= darwin" >> $mcs_topdir/build/config.make
+    elif test x$host_win32 = xyes; then
+      echo "HOST_PLATFORM ?= win32" >> $mcs_topdir/build/config.make
+    else
+      echo "HOST_PLATFORM ?= linux" >> $mcs_topdir/build/config.make
     fi
 
     if test "x$PLATFORM_AOT_SUFFIX" != "x"; then

@@ -3162,15 +3162,6 @@ case "$host" in
 				;;
 		esac
 		;;
-	ia64-*-*)
-		TARGET=IA64
-		arch_target=ia64
-		ACCESS_UNALIGNED="no"
-		LIBC="libc.so.6.1"
-		INTL="libc.so.6.1"
-		AC_CHECK_LIB(unwind, _U_dyn_register, [], [AC_MSG_ERROR(library libunwind not found)])
-		libmono_ldflags="-lunwind"
-		;;
 	sparc*-*-*)
 		if test "x$ac_cv_sizeof_void_p" = "x8"; then
 		   TARGET=SPARC64
@@ -3235,6 +3226,13 @@ case "$host" in
 		ACCESS_UNALIGNED="no"
 		AOT_SUPPORTED="yes"
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
+		BTLS_SUPPORTED=yes
+		BTLS_PLATFORM=arm
+		case "$target" in
+		arm*-linux*-gnueabi)
+			BTLS_PLATFORM=armsoft
+			;;
+		esac
 		;;
 	arm*-netbsd*-eabi*)
 		TARGET=ARM;
@@ -3255,6 +3253,8 @@ case "$host" in
 		arch_target=arm64
 		boehm_supported=false
 		AOT_SUPPORTED="yes"
+		BTLS_SUPPORTED=yes
+		BTLS_PLATFORM=aarch64
 		;;
 	s390x-*-linux*)
 		TARGET=S390X;
@@ -3468,9 +3468,6 @@ S390X)
 MIPS)
 	AC_DEFINE(TARGET_MIPS, 1, [...])
 	;;
-IA64)
-	AC_DEFINE(TARGET_IA64, 1, [...])
-	;;
 SPARC)
 	AC_DEFINE(TARGET_SPARC, 1, [...])
 	;;
@@ -3504,9 +3501,6 @@ S390X)
 	;;
 MIPS)
 	AC_DEFINE(HOST_MIPS, 1, [...])
-	;;
-IA64)
-	AC_DEFINE(HOST_IA64, 1, [...])
 	;;
 SPARC)
 	AC_DEFINE(HOST_SPARC, 1, [...])
@@ -4125,6 +4119,16 @@ if test "x$enable_btls" = "xyes"; then
 	x86_64)
 		btls_arch=x86_64
 		;;
+	arm)
+		btls_arch=arm
+		;;
+	armsoft)
+		btls_arch=arm
+		btls_cflags="-DOPENSSL_NO_ASM=1"
+		;;
+	aarch64)
+		btls_arch=aarch64
+		;;
 	android-armv5)
 		BTLS_CMAKE_ARGS="-DANDROID_ABI=\"armeabi\" -DANDROID_NATIVE_API_LEVEL=12"
 		;;
@@ -4192,7 +4196,6 @@ AM_CONDITIONAL(SPARC, test x$TARGET = xSPARC)
 AM_CONDITIONAL(SPARC64, test x$TARGET = xSPARC64)
 AM_CONDITIONAL(X86, test x$TARGET = xX86)
 AM_CONDITIONAL(AMD64, test x$TARGET = xAMD64)
-AM_CONDITIONAL(IA64, test x$TARGET = xIA64)
 AM_CONDITIONAL(MIPS, test x$TARGET = xMIPS)
 AM_CONDITIONAL(POWERPC, test x$TARGET = xPOWERPC)
 AM_CONDITIONAL(POWERPC64, test x$TARGET = xPOWERPC64)
@@ -4435,7 +4438,6 @@ mono/arch/sparc/Makefile
 mono/arch/s390x/Makefile
 mono/arch/arm/Makefile
 mono/arch/arm64/Makefile
-mono/arch/ia64/Makefile
 mono/arch/mips/Makefile
 mono/sgen/Makefile
 mono/tests/Makefile
@@ -4555,7 +4557,19 @@ fi
     echo "MONO_CORLIB_VERSION = $MONO_CORLIB_VERSION" >> $mcs_topdir/build/config.make
 
     if test x$host_darwin = xyes; then
-      echo "PLATFORM = darwin" >> $mcs_topdir/build/config.make
+      echo "BUILD_PLATFORM = darwin" >> $mcs_topdir/build/config.make
+    elif test x$host_win32 = xyes; then
+      echo "BUILD_PLATFORM = win32" >> $mcs_topdir/build/config.make
+    else
+      echo "BUILD_PLATFORM = linux" >> $mcs_topdir/build/config.make
+    fi
+
+    if test x$host_darwin = xyes; then
+      echo "HOST_PLATFORM ?= darwin" >> $mcs_topdir/build/config.make
+    elif test x$host_win32 = xyes; then
+      echo "HOST_PLATFORM ?= win32" >> $mcs_topdir/build/config.make
+    else
+      echo "HOST_PLATFORM ?= linux" >> $mcs_topdir/build/config.make
     fi
 
     if test "x$PLATFORM_AOT_SUFFIX" != "x"; then

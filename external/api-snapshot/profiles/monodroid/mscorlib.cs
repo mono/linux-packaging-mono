@@ -63,7 +63,12 @@ namespace Microsoft.Win32
         public int SubKeyCount { get { throw null; } }
         public int ValueCount { get { throw null; } }
         public Microsoft.Win32.RegistryView View { get { throw null; } }
+        public void Close() { }
         public Microsoft.Win32.RegistryKey CreateSubKey(string subkey) { throw null; }
+        public Microsoft.Win32.RegistryKey CreateSubKey(string subkey, Microsoft.Win32.RegistryKeyPermissionCheck permissionCheck) { throw null; }
+        public Microsoft.Win32.RegistryKey CreateSubKey(string subkey, Microsoft.Win32.RegistryKeyPermissionCheck permissionCheck, Microsoft.Win32.RegistryOptions registryOptions) { throw null; }
+        public Microsoft.Win32.RegistryKey CreateSubKey(string subkey, Microsoft.Win32.RegistryKeyPermissionCheck permissionCheck, Microsoft.Win32.RegistryOptions registryOptions, System.Security.AccessControl.RegistrySecurity registrySecurity) { throw null; }
+        public Microsoft.Win32.RegistryKey CreateSubKey(string subkey, Microsoft.Win32.RegistryKeyPermissionCheck permissionCheck, System.Security.AccessControl.RegistrySecurity registrySecurity) { throw null; }
         public Microsoft.Win32.RegistryKey CreateSubKey(string subkey, bool writable) { throw null; }
         public Microsoft.Win32.RegistryKey CreateSubKey(string subkey, bool writable, Microsoft.Win32.RegistryOptions options) { throw null; }
         public void DeleteSubKey(string subkey) { }
@@ -76,6 +81,8 @@ namespace Microsoft.Win32
         public void Flush() { }
         public static Microsoft.Win32.RegistryKey FromHandle(Microsoft.Win32.SafeHandles.SafeRegistryHandle handle) { throw null; }
         public static Microsoft.Win32.RegistryKey FromHandle(Microsoft.Win32.SafeHandles.SafeRegistryHandle handle, Microsoft.Win32.RegistryView view) { throw null; }
+        public System.Security.AccessControl.RegistrySecurity GetAccessControl() { throw null; }
+        public System.Security.AccessControl.RegistrySecurity GetAccessControl(System.Security.AccessControl.AccessControlSections includeSections) { throw null; }
         public string[] GetSubKeyNames() { throw null; }
         public object GetValue(string name) { throw null; }
         public object GetValue(string name, object defaultValue) { throw null; }
@@ -83,11 +90,22 @@ namespace Microsoft.Win32
         public Microsoft.Win32.RegistryValueKind GetValueKind(string name) { throw null; }
         public string[] GetValueNames() { throw null; }
         public static Microsoft.Win32.RegistryKey OpenBaseKey(Microsoft.Win32.RegistryHive hKey, Microsoft.Win32.RegistryView view) { throw null; }
+        public static Microsoft.Win32.RegistryKey OpenRemoteBaseKey(Microsoft.Win32.RegistryHive hKey, string machineName) { throw null; }
+        public static Microsoft.Win32.RegistryKey OpenRemoteBaseKey(Microsoft.Win32.RegistryHive hKey, string machineName, Microsoft.Win32.RegistryView view) { throw null; }
         public Microsoft.Win32.RegistryKey OpenSubKey(string name) { throw null; }
+        public Microsoft.Win32.RegistryKey OpenSubKey(string name, Microsoft.Win32.RegistryKeyPermissionCheck permissionCheck) { throw null; }
+        public Microsoft.Win32.RegistryKey OpenSubKey(string name, Microsoft.Win32.RegistryKeyPermissionCheck permissionCheck, System.Security.AccessControl.RegistryRights rights) { throw null; }
         public Microsoft.Win32.RegistryKey OpenSubKey(string name, bool writable) { throw null; }
         public Microsoft.Win32.RegistryKey OpenSubKey(string name, System.Security.AccessControl.RegistryRights rights) { throw null; }
+        public void SetAccessControl(System.Security.AccessControl.RegistrySecurity registrySecurity) { }
         public void SetValue(string name, object value) { }
         public void SetValue(string name, object value, Microsoft.Win32.RegistryValueKind valueKind) { }
+    }
+    public enum RegistryKeyPermissionCheck
+    {
+        Default = 0,
+        ReadSubTree = 1,
+        ReadWriteSubTree = 2,
     }
     [System.FlagsAttribute]
     [System.SerializableAttribute]
@@ -6096,7 +6114,6 @@ namespace System.Collections.Concurrent
         public int TryPopRange(T[] items, int startIndex, int count) { throw null; }
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum EnumerablePartitionerOptions
     {
         NoBuffering = 1,
@@ -21533,7 +21550,6 @@ namespace System.Security.Cryptography.X509Certificates
         Unknown = 0,
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum X509KeyStorageFlags
     {
         DefaultKeySet = 0,
@@ -23133,7 +23149,41 @@ namespace System.Security.Principal
         ServiceSid = 12,
         TerminalServerSid = 19,
         ThisOrganizationSid = 54,
+        WinAccountReadonlyControllersSid = 75,
+        WinApplicationPackageAuthoritySid = 83,
+        WinBuiltinAnyPackageSid = 84,
+        WinBuiltinCertSvcDComAccessGroup = 78,
+        WinBuiltinCryptoOperatorsSid = 64,
+        WinBuiltinDCOMUsersSid = 61,
+        WinBuiltinEventLogReadersGroup = 76,
+        WinBuiltinIUsersSid = 62,
         WinBuiltinTerminalServerLicenseServersSid = 60,
+        WinCacheablePrincipalsGroupSid = 72,
+        WinCapabilityDocumentsLibrarySid = 91,
+        WinCapabilityEnterpriseAuthenticationSid = 93,
+        WinCapabilityInternetClientServerSid = 86,
+        WinCapabilityInternetClientSid = 85,
+        WinCapabilityMusicLibrarySid = 90,
+        WinCapabilityPicturesLibrarySid = 88,
+        WinCapabilityPrivateNetworkClientServerSid = 87,
+        WinCapabilityRemovableStorageSid = 94,
+        WinCapabilitySharedUserCertificatesSid = 92,
+        WinCapabilityVideosLibrarySid = 89,
+        WinConsoleLogonSid = 81,
+        WinCreatorOwnerRightsSid = 71,
+        WinEnterpriseReadonlyControllersSid = 74,
+        WinHighLabelSid = 68,
+        WinIUserSid = 63,
+        WinLocalLogonSid = 80,
+        WinLowLabelSid = 66,
+        WinMediumLabelSid = 67,
+        WinMediumPlusLabelSid = 79,
+        WinNewEnterpriseReadonlyControllersSid = 77,
+        WinNonCacheablePrincipalsGroupSid = 73,
+        WinSystemLabelSid = 69,
+        WinThisOrganizationCertificateSid = 82,
+        WinUntrustedLabelSid = 65,
+        WinWriteRestrictedCodeSid = 70,
         WorldSid = 1,
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]

@@ -598,7 +598,6 @@ namespace System.CodeDom
         public System.CodeDom.CodeBinaryOperatorType Operator { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public System.CodeDom.CodeExpression Right { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
-    [System.SerializableAttribute]
     public enum CodeBinaryOperatorType
     {
         Add = 0,
@@ -1078,7 +1077,6 @@ namespace System.CodeDom
         public System.CodeDom.CodeRegionMode RegionMode { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public string RegionText { get { throw null; } set { } }
     }
-    [System.SerializableAttribute]
     public enum CodeRegionMode
     {
         End = 2,
@@ -1326,7 +1324,6 @@ namespace System.CodeDom
         public System.CodeDom.CodeTypeReference Type { get { throw null; } set { } }
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum CodeTypeReferenceOptions
     {
         GenericTypeParameter = 2,
@@ -1353,14 +1350,12 @@ namespace System.CodeDom
         public CodeVariableReferenceExpression(string variableName) { }
         public string VariableName { get { throw null; } set { } }
     }
-    [System.SerializableAttribute]
     public enum FieldDirection
     {
         In = 0,
         Out = 1,
         Ref = 2,
     }
-    [System.SerializableAttribute]
     public enum MemberAttributes
     {
         Abstract = 1,
@@ -1686,7 +1681,6 @@ namespace System.CodeDom.Compiler
         public string Version { get { throw null; } }
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum GeneratorSupport
     {
         ArraysOfArrays = 1,
@@ -1787,7 +1781,6 @@ namespace System.CodeDom.Compiler
         public void WriteLineNoTabs(string s) { }
     }
     [System.FlagsAttribute]
-    [System.SerializableAttribute]
     public enum LanguageOptions
     {
         CaseInsensitive = 1,

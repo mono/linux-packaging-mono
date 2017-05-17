@@ -862,8 +862,8 @@ namespace System.ServiceModel
         public InstanceContext(object implementation) { }
         protected internal override System.TimeSpan DefaultCloseTimeout { get { throw null; } }
         protected internal override System.TimeSpan DefaultOpenTimeout { get { throw null; } }
+        public System.ServiceModel.IExtensionCollection<System.ServiceModel.InstanceContext> Extensions { get { throw null; } }
         public System.Threading.SynchronizationContext SynchronizationContext { get { throw null; } set { } }
-        System.ServiceModel.IExtensionCollection<System.ServiceModel.InstanceContext> System.ServiceModel.IExtensibleObject<System.ServiceModel.InstanceContext>.Extensions { get { throw null; } }
         public object GetServiceInstance(System.ServiceModel.Channels.Message message) { throw null; }
         protected override void OnAbort() { }
         protected override System.IAsyncResult OnBeginClose(System.TimeSpan timeout, System.AsyncCallback callback, object state) { throw null; }
@@ -2848,6 +2848,14 @@ namespace System.ServiceModel.Security
         protected SecurityAccessDeniedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
         public SecurityAccessDeniedException(string message) { }
         public SecurityAccessDeniedException(string message, System.Exception innerException) { }
+    }
+    [System.SerializableAttribute]
+    public partial class SecurityNegotiationException : System.ServiceModel.CommunicationException
+    {
+        public SecurityNegotiationException() { }
+        protected SecurityNegotiationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+        public SecurityNegotiationException(string message) { }
+        public SecurityNegotiationException(string message, System.Exception innerException) { }
     }
     public abstract partial class SecurityPolicyVersion
     {
