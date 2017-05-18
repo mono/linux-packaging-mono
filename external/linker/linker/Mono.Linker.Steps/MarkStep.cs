@@ -1,4 +1,4 @@
-//
+﻿//
 // MarkStep.cs
 //
 // Author:
@@ -28,20 +28,24 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Collections.Generic;
 
 namespace Mono.Linker.Steps {
 
 	public class MarkStep : IStep {
 
 		protected LinkContext _context;
-		protected Queue _methods;
-		protected ArrayList _virtual_methods;
+		protected Queue<MethodDefinition> _methods;
+		protected List<MethodDefinition> _virtual_methods;
+		protected Dictionary<TypeDefinition, CustomAttribute> _assemblyDebuggerDisplayAttributes;
+		protected Dictionary<TypeDefinition, CustomAttribute> _assemblyDebuggerTypeProxyAttributes;
+		protected Queue<CustomAttribute> _topLevelAttributes;
 
 		public AnnotationStore Annotations {
 			get { return _context.Annotations; }
@@ -49,8 +53,12 @@ namespace Mono.Linker.Steps {
 
 		public MarkStep ()
 		{
-			_methods = new Queue ();
-			_virtual_methods = new ArrayList ();
+			_methods = new Queue<MethodDefinition> ();
+			_virtual_methods = new List<MethodDefinition> ();
+			_topLevelAttributes = new Queue<CustomAttribute> ();
+
+			_assemblyDebuggerDisplayAttributes = new Dictionary<TypeDefinition, CustomAttribute> ();
+			_assemblyDebuggerTypeProxyAttributes = new Dictionary<TypeDefinition, CustomAttribute> ();
 		}
 
 		public virtual void Process (LinkContext context)
@@ -100,7 +108,7 @@ namespace Mono.Linker.Steps {
 					MarkField (field);
 		}
 
-		void InitializeMethods (ICollection methods)
+		void InitializeMethods (Collection<MethodDefinition> methods)
 		{
 			foreach (MethodDefinition method in methods)
 				if (Annotations.IsMarked (method))
@@ -112,10 +120,13 @@ namespace Mono.Linker.Steps {
 			if (QueueIsEmpty ())
 				throw new InvalidOperationException ("No entry methods");
 
-			while (!QueueIsEmpty ()) {
-				ProcessQueue ();
-				ProcessVirtualMethods ();
-			}
+			ProcessEntireQueue ();
+
+			// After all types have been processed then we can process the lazily marked attributes
+			ProcessLazyAttributes ();
+
+			// We need to process the queue again in case marking the attributes enqueued more work
+			ProcessEntireQueue ();
 
 			// deal with [TypeForwardedTo] pseudo-attributes
 			foreach (AssemblyDefinition assembly in _context.GetAssemblies ()) {
@@ -149,15 +160,24 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
+		void ProcessEntireQueue ()
+		{
+			while (!QueueIsEmpty ()) {
+				ProcessQueue ();
+				ProcessVirtualMethods ();
+				DoAdditionalProcessing ();
+			}
+		}
+
 		void ProcessQueue ()
 		{
 			while (!QueueIsEmpty ()) {
-				MethodDefinition method = (MethodDefinition) _methods.Dequeue ();
+				MethodDefinition method = _methods.Dequeue ();
 				Annotations.Push (method);
 				try {
 					ProcessMethod (method);
 				} catch (Exception e) {
-					throw new MarkException (string.Format ("Error processing method: '{0}' in assembly: '{1}'", method.FullName, method.Module.Name), e);
+					throw new MarkException (string.Format ("Error processing method: '{0}' in assembly: '{1}'", method.FullName, method.Module.Name), e, method);
 				} finally {
 					Annotations.Pop ();
 				}
@@ -185,7 +205,7 @@ namespace Mono.Linker.Steps {
 
 		void ProcessVirtualMethod (MethodDefinition method)
 		{
-			IList overrides = Annotations.GetOverrides (method);
+			var overrides = Annotations.GetOverrides (method);
 			if (overrides == null)
 				return;
 
@@ -227,6 +247,15 @@ namespace Mono.Linker.Steps {
 
 			foreach (CustomAttribute ca in provider.CustomAttributes)
 				MarkCustomAttribute (ca);
+		}
+
+		void LazyMarkCustomAttributes (ICustomAttributeProvider provider)
+		{
+			if (!provider.HasCustomAttributes)
+				return;
+
+			foreach (CustomAttribute ca in provider.CustomAttributes)
+				_topLevelAttributes.Enqueue (ca);
 		}
 
 		protected virtual void MarkCustomAttribute (CustomAttribute ca)
@@ -452,11 +481,12 @@ namespace Mono.Linker.Steps {
 
 			ProcessModule (assembly);
 
-			MarkCustomAttributes (assembly);
+			MarkAssemblyCustomAttributes (assembly);
+
 			MarkSecurityDeclarations (assembly);
 
 			foreach (ModuleDefinition module in assembly.Modules)
-				MarkCustomAttributes (module);
+				LazyMarkCustomAttributes (module);
 		}
 
 		void ProcessModule (AssemblyDefinition assembly)
@@ -470,6 +500,20 @@ namespace Mono.Linker.Steps {
 					MarkType (type);
 					break;
 				}
+			}
+		}
+
+		void ProcessLazyAttributes ()
+		{
+			while (_topLevelAttributes.Count != 0) {
+				var customAttribute = _topLevelAttributes.Dequeue ();
+
+				// If an attribute's module has not been marked after processing all types in all assemblies and the attribute itself has not been marked,
+				// then surely nothing is using this attribute and there is no need to mark it
+				if (!Annotations.IsMarked (customAttribute.AttributeType.Resolve ().Module) && !Annotations.IsMarked (customAttribute.AttributeType))
+					continue;
+
+				MarkCustomAttribute (customAttribute);
 			}
 		}
 
@@ -524,7 +568,7 @@ namespace Mono.Linker.Steps {
 		protected virtual void MarkSerializable (TypeDefinition type)
 		{
 			MarkDefaultConstructor (type);
-			MarkMethodsIf (type.Methods, IsSpecialSerializationConstructorPredicate);
+			MarkMethodsIf (type.Methods, IsSpecialSerializationConstructor);
 		}
 
 		protected virtual TypeDefinition MarkType (TypeReference reference)
@@ -534,11 +578,14 @@ namespace Mono.Linker.Steps {
 
 			reference = GetOriginalType (reference);
 
+			if (reference is FunctionPointerType)
+				return null;
+
 			if (reference is GenericParameter)
 				return null;
 
 //			if (IgnoreScope (reference.Scope))
-//				return;
+//				return null;
 
 			TypeDefinition type = ResolveTypeDefinition (reference);
 
@@ -584,7 +631,7 @@ namespace Mono.Linker.Steps {
 
 			if (type.HasMethods) {
 				MarkMethodsIf (type.Methods, IsVirtualAndHasPreservedParent);
-				MarkMethodsIf (type.Methods, IsStaticConstructorPredicate);
+				MarkMethodsIf (type.Methods, IsStaticConstructor);
 				MarkMethodsIf (type.Methods, HasSerializationAttribute);
 			}
 
@@ -599,13 +646,74 @@ namespace Mono.Linker.Steps {
 			return type;
 		}
 
+		// Allow subclassers to mark additional things in the main processing loop
+		protected virtual void DoAdditionalProcessing ()
+		{
+		}
+
 		// Allow subclassers to mark additional things when marking a method
 		protected virtual void DoAdditionalTypeProcessing (TypeDefinition method)
 		{
 		}
 
+		void MarkAssemblyCustomAttributes (AssemblyDefinition assembly)
+		{
+			if (!assembly.HasCustomAttributes)
+				return;
+
+			foreach (CustomAttribute attribute in assembly.CustomAttributes) {
+				string attributeFullName = attribute.Constructor.DeclaringType.FullName;
+				switch (attributeFullName) {
+				case "System.Diagnostics.DebuggerDisplayAttribute":
+					StoreDebuggerTypeTarget (assembly, attribute, _assemblyDebuggerDisplayAttributes);
+					break;
+				case "System.Diagnostics.DebuggerTypeProxyAttribute":
+					StoreDebuggerTypeTarget (assembly, attribute, _assemblyDebuggerTypeProxyAttributes);
+					break;
+				default:
+					_topLevelAttributes.Enqueue (attribute);
+					break;
+				}
+			}
+		}
+
+		void StoreDebuggerTypeTarget (AssemblyDefinition assembly, CustomAttribute attribute, Dictionary<TypeDefinition, CustomAttribute> dictionary)
+		{
+			if (_context.KeepMembersForDebuggerAttributes) {
+				TypeReference targetTypeReference = null;
+				TypeDefinition targetTypeDefinition = null;
+				foreach (var property in attribute.Properties) {
+					if (property.Name == "Target") {
+						targetTypeReference = (TypeReference) property.Argument.Value;
+						break;
+					}
+
+					if (property.Name == "TargetTypeName") {
+						targetTypeReference = assembly.MainModule.GetType ((string) property.Argument.Value);
+						break;
+					}
+				}
+
+				if (targetTypeReference != null) {
+					targetTypeDefinition = ResolveTypeDefinition (targetTypeReference);
+					if (targetTypeDefinition != null) {
+						dictionary[targetTypeDefinition] = attribute;
+					}
+				}
+			}
+		}
+
 		void MarkTypeSpecialCustomAttributes (TypeDefinition type)
 		{
+			CustomAttribute debuggerAttribute;
+			if (_assemblyDebuggerDisplayAttributes.TryGetValue (type, out debuggerAttribute)) {
+				MarkTypeWithDebuggerDisplayAttribute (type, debuggerAttribute);
+			}
+
+			if (_assemblyDebuggerTypeProxyAttributes.TryGetValue (type, out debuggerAttribute)) {
+				MarkTypeWithDebuggerTypeProxyAttribute (type, debuggerAttribute);
+			}
+
 			if (!type.HasCustomAttributes)
 				return;
 
@@ -621,7 +729,7 @@ namespace Mono.Linker.Steps {
 					MarkTypeWithDebuggerTypeProxyAttribute (type, attribute);
 					break;
 				case "System.Diagnostics.Tracing.EventDataAttribute":
-					MarkTypeWithEventDataAttribute (type, attribute);
+					MarkTypeWithEventDataAttribute (type);
 					break;
 				}
 			}
@@ -641,7 +749,7 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
-		void MarkTypeWithEventDataAttribute (TypeDefinition type, CustomAttribute attribute)
+		void MarkTypeWithEventDataAttribute (TypeDefinition type)
 		{
 			MarkMethodsIf (type.Methods, IsPublicInstancePropertyMethod);
 		}
@@ -712,13 +820,26 @@ namespace Mono.Linker.Steps {
 		void MarkTypeWithDebuggerTypeProxyAttribute (TypeDefinition type, CustomAttribute attribute)
 		{
 			if (_context.KeepMembersForDebuggerAttributes) {
-				TypeReference proxyTypeReference = (TypeReference) attribute.ConstructorArguments [0].Value;
+				object constructorArgument = attribute.ConstructorArguments[0].Value;
+				TypeReference proxyTypeReference = constructorArgument as TypeReference;
+				if (proxyTypeReference == null) {
+					string proxyTypeReferenceString = constructorArgument as string;
+					if (proxyTypeReferenceString != null) {
+						proxyTypeReference = type.Module.GetType (proxyTypeReferenceString, runtimeName: true);
+					}
+				}
+
+				if (proxyTypeReference == null) {
+					return;
+				}
 
 				MarkType (proxyTypeReference);
 
 				TypeDefinition proxyType = ResolveTypeDefinition (proxyTypeReference);
-				MarkMethods (proxyType);
-				MarkFields (proxyType, includeStatic: true);
+				if (proxyType != null) {
+					MarkMethods (proxyType);
+					MarkFields (proxyType, includeStatic: true);
+				}
 			}
 		}
 
@@ -826,11 +947,9 @@ namespace Mono.Linker.Steps {
 			return false;
 		}
 
-		static MethodPredicate IsSpecialSerializationConstructorPredicate = new MethodPredicate (IsSpecialSerializationConstructor);
-
 		static bool IsSpecialSerializationConstructor (MethodDefinition method)
 		{
-			if (!IsConstructor (method))
+			if (!IsInstanceConstructor (method))
 				return false;
 
 			var parameters = method.Parameters;
@@ -841,9 +960,7 @@ namespace Mono.Linker.Steps {
 				parameters [1].ParameterType.Name == "StreamingContext";
 		}
 
-		delegate bool MethodPredicate (MethodDefinition method);
-
-		void MarkMethodsIf (ICollection methods, MethodPredicate predicate)
+		protected void MarkMethodsIf (Collection<MethodDefinition> methods, Func<MethodDefinition, bool> predicate)
 		{
 			foreach (MethodDefinition method in methods)
 				if (predicate (method)) {
@@ -853,14 +970,12 @@ namespace Mono.Linker.Steps {
 				}
 		}
 
-		static MethodPredicate IsDefaultConstructorPredicate = new MethodPredicate (IsDefaultConstructor);
-
 		static bool IsDefaultConstructor (MethodDefinition method)
 		{
-			return IsConstructor (method) && !method.HasParameters;
+			return IsInstanceConstructor (method) && !method.HasParameters;
 		}
 
-		static bool IsConstructor (MethodDefinition method)
+		protected static bool IsInstanceConstructor (MethodDefinition method)
 		{
 			return method.IsConstructor && !method.IsStatic;
 		}
@@ -870,10 +985,8 @@ namespace Mono.Linker.Steps {
 			if ((type == null) || !type.HasMethods)
 				return;
 
-			MarkMethodsIf (type.Methods, IsDefaultConstructorPredicate);
+			MarkMethodsIf (type.Methods, IsDefaultConstructor);
 		}
-
-		static MethodPredicate IsStaticConstructorPredicate = new MethodPredicate (IsStaticConstructor);
 
 		static bool IsStaticConstructor (MethodDefinition method)
 		{
@@ -956,10 +1069,29 @@ namespace Mono.Linker.Steps {
 				if (mod != null)
 					MarkModifierType (mod);
 
-				type = ((TypeSpecification) type).ElementType;
+				var fnptr = type as FunctionPointerType;
+				if (fnptr != null) {
+					MarkParameters (fnptr);
+					MarkType (fnptr.ReturnType);
+					break; // FunctionPointerType is the original type
+				}
+				else {
+					type = ((TypeSpecification) type).ElementType;
+				}
 			}
 
 			return type;
+		}
+
+		void MarkParameters (FunctionPointerType fnptr)
+		{
+			if (!fnptr.HasParameters)
+				return;
+
+			for (int i = 0; i < fnptr.Parameters.Count; i++)
+			{
+				MarkType (fnptr.Parameters[i].ParameterType);
+			}
 		}
 
 		void MarkModifierType (IModifierType mod)
@@ -1029,7 +1161,7 @@ namespace Mono.Linker.Steps {
 				MarkMethods (type);
 				break;
 			case TypePreserve.Fields:
-				MarkFields (type, true);
+				MarkFields (type, true, true);
 				break;
 			case TypePreserve.Methods:
 				MarkMethods (type);
@@ -1055,7 +1187,7 @@ namespace Mono.Linker.Steps {
 			MarkMethodCollection (list);
 		}
 
-		protected void MarkFields (TypeDefinition type, bool includeStatic)
+		protected void MarkFields (TypeDefinition type, bool includeStatic, bool markBackingFieldsOnlyIfPropertyMarked = false)
 		{
 			if (!type.HasFields)
 				return;
@@ -1063,8 +1195,33 @@ namespace Mono.Linker.Steps {
 			foreach (FieldDefinition field in type.Fields) {
 				if (!includeStatic && field.IsStatic)
 					continue;
+
+				if (markBackingFieldsOnlyIfPropertyMarked && field.Name.EndsWith (">k__BackingField")) {
+					// We can't reliably construct the expected property name from the backing field name for all compilers
+					// because csc shortens the name of the backing field in some cases
+					// For example:
+					// Field Name = <IFoo<int>.Bar>k__BackingField
+					// Property Name = IFoo<System.Int32>.Bar
+                    //
+					// instead we will search the properties and find the one that makes use of the current backing field
+					var propertyDefinition = SearchPropertiesForMatchingFieldDefinition (field);
+					if (propertyDefinition != null && !Annotations.IsMarked (propertyDefinition))
+						continue;
+				}
 				MarkField (field);
 			}
+		}
+
+		static PropertyDefinition SearchPropertiesForMatchingFieldDefinition (FieldDefinition field)
+		{
+			foreach (var property in field.DeclaringType.Properties) {
+				foreach (var ins in property.GetMethod.Body.Instructions) {
+					if (ins.Operand != null && ins.Operand == field)
+						return property;
+				}
+			}
+
+			return null;
 		}
 
 		protected void MarkStaticFields(TypeDefinition type)
@@ -1084,7 +1241,7 @@ namespace Mono.Linker.Steps {
 				MarkMethodCollection (type.Methods);
 		}
 
-		void MarkMethodCollection (IEnumerable methods)
+		void MarkMethodCollection (IList<MethodDefinition> methods)
 		{
 			foreach (MethodDefinition method in methods)
 				MarkMethod (method);
@@ -1216,7 +1373,7 @@ namespace Mono.Linker.Steps {
 
 		void MarkBaseMethods (MethodDefinition method)
 		{
-			IList base_methods = Annotations.GetBaseMethods (method);
+			var base_methods = Annotations.GetBaseMethods (method);
 			if (base_methods == null)
 				return;
 
@@ -1233,12 +1390,12 @@ namespace Mono.Linker.Steps {
 		{
 			TypeDefinition returnTypeDefinition = ResolveTypeDefinition (method.ReturnType);
 			const bool includeStaticFields = false;
-			if (returnTypeDefinition != null) {
+			if (returnTypeDefinition != null && !returnTypeDefinition.IsImport) {
 				MarkDefaultConstructor (returnTypeDefinition);
 				MarkFields (returnTypeDefinition, includeStaticFields);
 			}
 
-			if (method.HasThis) {
+			if (method.HasThis && !method.DeclaringType.IsImport) {
 				MarkFields (method.DeclaringType, includeStaticFields);
 			}
 
@@ -1248,7 +1405,7 @@ namespace Mono.Linker.Steps {
 					paramTypeReference = (paramTypeReference as TypeSpecification).ElementType;
 				}
 				TypeDefinition paramTypeDefinition = ResolveTypeDefinition (paramTypeReference);
-				if (paramTypeDefinition != null) {
+				if (paramTypeDefinition != null && !paramTypeDefinition.IsImport) {
 					MarkFields (paramTypeDefinition, includeStaticFields);
 					if (pd.ParameterType.IsByReference) {
 						MarkDefaultConstructor (paramTypeDefinition);
@@ -1262,9 +1419,15 @@ namespace Mono.Linker.Steps {
 			if (!method.HasBody)
 				return false;
 
-			AssemblyDefinition assembly = ResolveAssembly (method.DeclaringType.Scope);
-			return (Annotations.GetAction (method) == MethodAction.ForceParse ||
-				(Annotations.GetAction (assembly) == AssemblyAction.Link && Annotations.GetAction (method) == MethodAction.Parse));
+			switch (Annotations.GetAction (method)) {
+			case MethodAction.ForceParse:
+				return true;
+			case MethodAction.Parse:
+				AssemblyDefinition assembly = ResolveAssembly (method.DeclaringType.Scope);
+				return Annotations.GetAction (assembly) == AssemblyAction.Link;
+			default:
+				return false;
+			}
 		}
 
 		static internal bool IsPropertyMethod (MethodDefinition md)
@@ -1287,7 +1450,7 @@ namespace Mono.Linker.Steps {
 
 		static internal PropertyDefinition GetProperty (MethodDefinition md)
 		{
-			TypeDefinition declaringType = (TypeDefinition) md.DeclaringType;
+			TypeDefinition declaringType = md.DeclaringType;
 			foreach (PropertyDefinition prop in declaringType.Properties)
 				if (prop.GetMethod == md || prop.SetMethod == md)
 					return prop;
@@ -1297,7 +1460,7 @@ namespace Mono.Linker.Steps {
 
 		static EventDefinition GetEvent (MethodDefinition md)
 		{
-			TypeDefinition declaringType = (TypeDefinition) md.DeclaringType;
+			TypeDefinition declaringType = md.DeclaringType;
 			foreach (EventDefinition evt in declaringType.Events)
 				if (evt.AddMethod == md || evt.InvokeMethod == md || evt.RemoveMethod == md)
 					return evt;

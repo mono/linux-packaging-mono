@@ -2267,6 +2267,9 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 			case STACK_TYPE_I4:
 #if SIZEOF_VOID_P == 8
 				ADD_CODE(&td, MINT_CONV_I8_U4);
+#elif SIZEOF_VOID_P == 4
+				if (*td.ip == CEE_CONV_OVF_I_UN)
+					ADD_CODE(&td, MINT_CONV_OVF_I4_U4);
 #endif
 				break;
 			default:
@@ -3520,7 +3523,7 @@ mono_interp_transform_method (RuntimeMethod *runtime_method, ThreadContext *cont
 		header = mono_method_get_header (nm);
 		mono_os_mutex_unlock(&calc_section);
 	} else if (method->klass == mono_defaults.array_class) {
-		if (!strcmp (method->name, "UnsafeMov")) {
+		if (!strcmp (method->name, "UnsafeMov") || !strcmp (method->name, "UnsafeLoad")) {
 			mono_os_mutex_lock (&calc_section);
 			if (!runtime_method->transformed) {
 				runtime_method->code = g_malloc (sizeof (short));
@@ -3532,9 +3535,7 @@ mono_interp_transform_method (RuntimeMethod *runtime_method, ThreadContext *cont
 			mono_os_mutex_unlock(&calc_section);
 			mono_profiler_method_end_jit (method, NULL, MONO_PROFILE_OK);
 			return NULL;
-		} else if (!strcmp (method->name, "UnsafeStore)")) {
-			g_error ("TODO");
-		} else if (!strcmp (method->name, "UnsafeLoad)")) {
+		} else if (!strcmp (method->name, "UnsafeStore")) {
 			g_error ("TODO");
 		}
 	}
