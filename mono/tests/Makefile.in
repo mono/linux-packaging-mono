@@ -943,6 +943,10 @@ TESTS_GSHARED_SRC = \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
 @S390X_TRUE@	sgen-bridge-xref.exe $(am__append_8)
+@ARM64_TRUE@INTERP_DISABLED_TESTS_PLATFORM = finalizer-exception.exe main-returns-abort-resetabort.exe block_guard_restore_aligment_on_exit.exe
+@ARM_TRUE@INTERP_DISABLED_TESTS_PLATFORM = finalizer-exception.exe main-returns-abort-resetabort.exe block_guard_restore_aligment_on_exit.exe \
+@ARM_TRUE@	delegate-exit.exe delegate-exit.exe delegate-delegate-exit.exe delegate-async-exit.exe delegate3.exe delegate1.exe
+
 @ENABLE_COOP_FALSE@COOP_DISABLED_TESTS = 
 @ENABLE_COOP_TRUE@COOP_DISABLED_TESTS = thunks.exe
 PROFILE_DISABLED_TESTS = $(am__append_9) $(am__append_10)
@@ -1003,6 +1007,7 @@ INTERP_DISABLED_TESTS = \
 	$(CI_PR_DISABLED_TESTS) \
 	$(CI_DISABLED_TESTS) \
 	$(KNOWN_FAILING_TESTS) \
+	$(INTERP_DISABLED_TESTS_PLATFORM) \
 	abort-cctor.exe \
 	appdomain-async-invoke.exe \
 	appdomain-exit.exe \
@@ -1049,6 +1054,7 @@ INTERP_DISABLED_TESTS = \
 	exception18.exe \
 	field-access.exe \
 	finally_block_ending_in_dead_bb.exe \
+	generic-array-exc.2.exe \
 	generic-marshalbyref.2.exe \
 	generic-mkrefany.2.exe \
 	generic-refanyval.2.exe \
