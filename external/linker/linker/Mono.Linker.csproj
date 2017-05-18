@@ -12,6 +12,7 @@
   <PropertyGroup>
     <NetCoreBuild Condition=" $(Configuration.StartsWith('netcore')) Or '$(NuGetRestoreTargets)' != '' ">true</NetCoreBuild>
     <NetCoreBuild Condition=" '$(NetCoreBuild)' == '' ">false</NetCoreBuild>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <Import Project="NetCore.props" Condition=" $(NetCoreBuild) " />
   <PropertyGroup>
@@ -25,7 +26,7 @@
     <RootNamespace>Mono.Linker</RootNamespace>
     <AssemblyName Condition=" ! $(NetCoreBuild) ">monolinker</AssemblyName>
     <AssemblyName Condition=" $(NetCoreBuild) ">illink</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -52,7 +53,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup Condition=" ! $(Configuration.StartsWith('netcore')) ">
+  <ItemGroup Condition=" ! $(NetCoreBuild) ">
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
@@ -84,35 +85,15 @@
     <Compile Include="Mono.Linker\LoadException.cs" />
     <Compile Include="Mono.Linker\MarkException.cs" />
     <Compile Include="Mono.Linker\MethodAction.cs" />
+    <Compile Include="Mono.Linker\MethodReferenceExtensions.cs" />
     <Compile Include="Mono.Linker\Pipeline.cs" />
     <Compile Include="Mono.Linker\TypePreserve.cs" />
+    <Compile Include="Mono.Linker\TypeReferenceExtensions.cs" />
     <Compile Include="Mono.Linker\XApiReader.cs" />
     <Compile Include="Mono.Linker.Steps\TypeMapStep.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(DoNotEmbedDescriptors)' == '' AND ! $(NetCoreBuild) ">
-    <EmbeddedResource Include="Descriptors\mscorlib.xml">
-      <LogicalName>mscorlib.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Descriptors\System.Web.xml">
-      <LogicalName>System.web.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Descriptors\System.xml">
-      <LogicalName>System.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Descriptors\Mono.Posix.xml">
-      <LogicalName>Mono.Posix.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Descriptors\System.Drawing.xml">
-      <LogicalName>System.Drawing.xml</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Descriptors\System.Core.xml">
-      <LogicalName>System.Core.xml</LogicalName>
-    </EmbeddedResource>
-  </ItemGroup>
-
-
   <ItemGroup>
-    <None Include="Makefile" />
+    <None Include="app.config" />
     <None Include="README" />
   </ItemGroup>
   <ItemGroup>
@@ -122,8 +103,6 @@
       <Project>{D68133BD-1E63-496E-9EDE-4FBDBF77B486}</Project>
       <Name>Mono.Cecil</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup Condition=" $(NetCoreBuild) ">
     <ProjectReference Include="..\cecil\symbols\pdb\Mono.Cecil.Pdb.csproj">
       <SetConfiguration Condition=" '$(Configuration)' == 'netcore_Debug' ">Configuration=netstandard_Debug</SetConfiguration>
       <SetConfiguration Condition=" '$(Configuration)' == 'netcore_Release' ">Configuration=netstandard_Release</SetConfiguration>
