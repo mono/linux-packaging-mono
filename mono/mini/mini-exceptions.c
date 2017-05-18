@@ -81,6 +81,10 @@
 #include "mini-llvm-cpp.h"
 #endif
 
+#ifdef TARGET_ARM
+#include "mini-arm.h"
+#endif
+
 #ifndef MONO_ARCH_CONTEXT_DEF
 #define MONO_ARCH_CONTEXT_DEF
 #endif
@@ -2129,8 +2133,14 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 						 */
 						mono_interp_set_resume_state (mono_ex, &frame, ei->handler_start);
 						/* Undo the IP adjustment done by mono_arch_unwind_frame () */
-#ifdef TARGET_AMD64
+#if defined(TARGET_AMD64)
 						ctx->gregs [AMD64_RIP] ++;
+#elif defined(TARGET_ARM)
+						ctx->pc ++;
+						if (mono_arm_thumb_supported ())
+							ctx->pc |= 1;
+#elif defined(TARGET_ARM64)
+						ctx->pc ++;
 #else
 						NOT_IMPLEMENTED;
 #endif
