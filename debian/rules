@@ -76,6 +76,10 @@ ifeq ($(DEB_HOST_ARCH), ppc64el)
 	CONF_FLAGS += --with-csc=mcs
 endif
 
+ifneq (,$(wildcard /usr/bin/gcc-4.7))
+	GCC := CC=/usr/bin/gcc-4.7 CXX=/usr/bin/g++-4.7
+endif
+
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
