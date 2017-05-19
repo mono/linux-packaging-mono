@@ -164,8 +164,7 @@ export PATH=/opt/novell/llvm-mono/bin:$PATH
   --disable-system-aot \
 %endif
   --with-ikvm=yes \
-  --with-moonlight=no \
-  --enable-dynamic-btls
+  --with-moonlight=no
 make
 
 %install
