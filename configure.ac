@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.3.0.428],
+AC_INIT(mono, [5.3.0.436],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -3228,6 +3228,7 @@ case "$host" in
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
 		BTLS_SUPPORTED=yes
 		BTLS_PLATFORM=arm
+		AC_CHECK_HEADER(stdalign.h,[],[BTLS_SUPPORTED=no])
 		case "$target" in
 		arm*-linux*-gnueabi)
 			BTLS_PLATFORM=armsoft
@@ -3255,6 +3256,7 @@ case "$host" in
 		AOT_SUPPORTED="yes"
 		BTLS_SUPPORTED=yes
 		BTLS_PLATFORM=aarch64
+		AC_CHECK_HEADER(stdalign.h,[],[BTLS_SUPPORTED=no])
 		;;
 	s390x-*-linux*)
 		TARGET=S390X;
