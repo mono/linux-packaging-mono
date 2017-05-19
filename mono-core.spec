@@ -131,7 +131,7 @@ cross-platform .NET applications. The project will implement various
 technologies that have been submitted to the ECMA for standardization.
 
 %prep
-%setup -q
+%setup -q -n mono-%{version}
 %patch0 -p1
 
 %build
