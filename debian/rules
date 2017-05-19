@@ -68,7 +68,7 @@ ifeq ($(DEB_HOST_ARCH), amd64)
 endif
 
 ifeq (,$(wildcard /usr/bin/gcc-4.7))
-	CC := /usr/bin/gcc-4.7
+	CC := CC=/usr/bin/gcc-4.7
 endif
 
 DPKG_EXPORT_BUILDFLAGS = 1
