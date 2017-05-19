@@ -210,7 +210,7 @@ def trace(message, skip=0):
     if config.filter is not None and config.filter not in caller:
         return
 
-    logprint(message, bcolors.FAIL, summary=True, header=caller, trace=True)
+    logprint(message, bcolors.FAIL, summary=False, header=caller, trace=True)
 
 
 def test(func):
