@@ -15,6 +15,7 @@ check-local:
 	$(MAKE) test-appdomain-unload || ok=false; \
 	$(MAKE) test-process-stress || ok=false; \
 	$(MAKE) test-pedump || ok=false; \
+	$(MAKE) test-internalsvisibleto || ok=false; \
 	$(MAKE) rm-empty-logs || ok=false; \
 	$(MAKE) runtest-gac-loading || ok=false; \
 	$$ok
@@ -1207,27 +1208,29 @@ test-platform:	test-iomap-regression
 endif
 endif
 
-if X86
-if HOST_WIN32
-else
-test-platform: test-eglib-remap
-endif
-endif
-
 # Target to precompile the test executables
 tests: compile-tests
 
 #
 # Test that no symbols are missed in eglib-remap.h
 #
-OK_G_SYMBOLS='g_list\|g_slist\|g_concat_dir_and_file\|g_Ctoc'
 if NACL_CODEGEN
-test-eglib-remap:
 else
+if PLATFORM_LINUX
+test-platform: test-eglib-remap
+else
+if PLATFORM_DARWIN
+test-platform: test-eglib-remap
+endif
+endif
+endif
+# The following regexp describes all symbols that start with "g_" but are not part of eglibc.
+# The optional underscore prepending symbol names may or may not appear depending on the
+# system and the state of the leading-underscore compiler flag.
+OK_G_SYMBOLS='\<_?g_(s?list_(pre|ap)pend_(image|mempool)|concat_dir_and_file|Ctoc)\>'
 test-eglib-remap:
 	@echo "Testing eglib remap..."
-	@if which nm > /dev/null; then if nm $(top_builddir)/mono/mini/mono | grep -v $(OK_G_SYMBOLS) | grep 't g_'; then exit 1; else exit 0; fi; fi
-endif
+	@if which nm > /dev/null; then if nm $(top_builddir)/mono/mini/mono | grep -Ev $(OK_G_SYMBOLS) | grep -E 't _?g_'; then exit 1; else exit 0; fi; fi
 
 test-env-options:
 	MONO_ENV_OPTIONS="--version" $(RUNTIME) array-init.exe | grep -q Architecture:
@@ -2026,7 +2029,7 @@ test-console-output: console-output.exe
 test-pedump: test-runner.exe
 	$(with_mono_path) $(mono_build_root)/tools/pedump/pedump --verify error test-runner.exe
 
-.PHONY: test-gac-loading
+.PHONY: test-gac-loading test-eglib-remap
 
 runtest-gac-loading: test-runner.exe
 	$(MAKE) -C testing_gac runtest
@@ -2077,5 +2080,21 @@ libtest_la_LDFLAGS = -rpath `pwd`
 endif
 libtest_la_SOURCES = libtest.c
 libtest_la_LIBADD = $(GLIB_LIBS) $(LIBICONV)
+
+test-internalsvisibleto: internalsvisibleto-runtimetest.exe internalsvisibleto-compilertest.exe internalsvisibleto-library.dll
+	$(Q) $(RUNTIME) internalsvisibleto-runtimetest.exe 1>internalsvisibleto-runtimetest.exe.stdout 2>internalsvisibleto-runtimetest.exe.stderr
+	$(Q) $(RUNTIME) internalsvisibleto-compilertest.exe 1>internalsvisibleto-compilertest.exe.stdout 2>internalsvisibleto-compilertest.exe.stderr
+
+internalsvisibleto-runtimetest.exe: internalsvisibleto-runtimetest.cs internalsvisibleto-library.cs
+	$(Q) $(MCS) -out:internalsvisibleto-correctcase.dll -target:library -d:CORRECT_CASE -d:PERMISSIVE internalsvisibleto-library.cs	
+	$(Q) $(MCS) -out:internalsvisibleto-wrongcase.dll -target:library -d:WRONG_CASE -d:PERMISSIVE internalsvisibleto-library.cs
+	$(Q) $(MCS) -out:internalsvisibleto-runtimetest.exe -warn:0 -r:internalsvisibleto-correctcase.dll -r:internalsvisibleto-wrongcase.dll internalsvisibleto-runtimetest.cs
+	$(Q) $(MCS) -out:internalsvisibleto-correctcase.dll -target:library -d:CORRECT_CASE internalsvisibleto-library.cs	
+	$(Q) $(MCS) -out:internalsvisibleto-wrongcase.dll -target:library -d:WRONG_CASE internalsvisibleto-library.cs
+
+internalsvisibleto-compilertest.exe: internalsvisibleto-compilertest.cs internalsvisibleto-library.cs
+	$(Q) $(MCS) -out:internalsvisibleto-correctcase-2.dll -target:library -d:CORRECT_CASE internalsvisibleto-library.cs	
+	$(Q) $(MCS) -out:internalsvisibleto-wrongcase-2.dll -target:library -d:WRONG_CASE internalsvisibleto-library.cs
+	$(Q) $(MCS) -out:internalsvisibleto-compilertest.exe -warn:0 -r:internalsvisibleto-correctcase-2.dll -r:internalsvisibleto-wrongcase-2.dll internalsvisibleto-compilertest.cs
 
 CLEANFILES = $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH) $(TESTS_STRESS) $(TESTSAOT_CS) $(TESTSAOT_IL) $(TESTSAOT_BENCH) $(TESTSAOT_STRESS) *.dll *.stdout *.aotlog *.exe stest.dat
