@@ -2726,6 +2726,8 @@ namespace Mono.CSharp
         public Mono.CSharp.Expression ResolveLValue(Mono.CSharp.ResolveContext ec, Mono.CSharp.Expression right_side) { throw null; }
         public static void UnsafeError(Mono.CSharp.Report Report, Mono.CSharp.Location loc) { }
         public static void UnsafeError(Mono.CSharp.ResolveContext ec, Mono.CSharp.Location loc) { }
+        public static void UnsafeInsideIteratorError(Mono.CSharp.Report report, Mono.CSharp.Location loc) { }
+        public static void UnsafeInsideIteratorError(Mono.CSharp.ResolveContext rc, Mono.CSharp.Location loc) { }
         public static void Warning_UnreachableExpression(Mono.CSharp.ResolveContext rc, Mono.CSharp.Location loc) { }
         [System.FlagsAttribute]
         public enum MemberLookupRestrictions
