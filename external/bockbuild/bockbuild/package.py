@@ -302,13 +302,18 @@ class Package:
                 pass
 
             def create_workspace(dir):
-                self.extract_archive(cache_dest, scratch, validate_only=False)
-                expected_path = os.path.join(scratch, self.source_dir_name)
-                if not os.path.exists(expected_path):
-                    error('Archive %s was extracted but not found at workspace path %s' % (
-                        cache_dest, expected_path))
-                if expected_path != dir:
-                    shutil.move(expected_path, dir)
+                filetype = get_filetype(cache_dest).lower()
+                if filetype.startswith(('gzip', 'xz', 'zip', 'bzip2')):
+                    self.extract_archive(cache_dest, scratch, validate_only=False)
+                    expected_path = os.path.join(scratch, self.source_dir_name)
+                    if not os.path.exists(expected_path):
+                        error('Archive %s was extracted but not found at workspace path %s' % (
+                            cache_dest, expected_path))
+                    if expected_path != dir:
+                        shutil.move(expected_path, dir)
+                else: # create the directory and just place the downloaded file inside
+                    ensure_dir(scratch_workspace)
+                    shutil.copy(cache_dest, scratch_workspace)
 
             def update_workspace():
                 pass
