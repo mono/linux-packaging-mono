@@ -1,1 +1,1 @@
-#define FULL_VERSION "Stable 5.0.0.100/9667aa6"
+#define FULL_VERSION "2017-02/5077205"
