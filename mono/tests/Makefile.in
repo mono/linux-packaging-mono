@@ -144,7 +144,8 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	vt-sync-method.exe \
 @FULL_AOT_TESTS_TRUE@	resolve_method_bug.2.exe \
 @FULL_AOT_TESTS_TRUE@	resolve_field_bug.2.exe \
-@FULL_AOT_TESTS_TRUE@	resolve_type_bug.2.exe context-static.exe \
+@FULL_AOT_TESTS_TRUE@	resolve_type_bug.2.exe bug-81691.exe \
+@FULL_AOT_TESTS_TRUE@	bug-327438.2.exe context-static.exe \
 @FULL_AOT_TESTS_TRUE@	bug-415577.exe generic-marshalbyref.2.exe \
 @FULL_AOT_TESTS_TRUE@	unhandled-exception-7.exe marshal.exe \
 @FULL_AOT_TESTS_TRUE@	marshal2.exe marshal6.exe marshal7.exe \
@@ -192,7 +193,9 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	generic-type-builder.2.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload-2.exe \
-@FULL_AOT_TESTS_TRUE@	appdomain-loader.exe
+@FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
+@FULL_AOT_TESTS_TRUE@	assemblyresolve_event3.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe
 @HYBRID_AOT_TESTS_TRUE@am__append_10 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe

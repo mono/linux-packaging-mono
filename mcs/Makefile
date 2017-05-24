@@ -95,8 +95,7 @@ DISTFILES = \
 	mkinstalldirs		\
 	MonoIcon.png		\
 	README			\
-	ScalableMonoIcon.svg	\
-	winexe.in
+	ScalableMonoIcon.svg
 
 dist-local: dist-default
 
@@ -137,28 +136,6 @@ distcheck: dist-tarball
 	cmp before.list distdist.list || exit 1 ; \
 	rm -f before.list after.list distdist.list ; \
 	rm -rf $(package) InstallTest
-
-monocharge:
-	chargedir=monocharge-`date -u +%Y%m%d` ; \
-	mkdir "$$chargedir" ; \
-	DESTDIR=`cd "$$chargedir" && pwd` ; \
-	$(MAKE) install DESTDIR="$$DESTDIR" || exit 1 ; \
-	tar cvjf "$$chargedir".tar.bz2 "$$chargedir" ; \
-	rm -rf "$$chargedir"
-
-# A bare-bones monocharge.
-
-monocharge-lite:
-	chargedir=monocharge-lite-`date -u +%Y%m%d` ; \
-	mkdir "$$chargedir" ; \
-	DESTDIR=`cd "$$chargedir" && pwd` ; \
-	$(MAKE) -C mcs install DESTDIR="$$DESTDIR" || exit 1; \
-	$(MAKE) -C class/corlib install DESTDIR="$$DESTDIR" || exit 1; \
-	$(MAKE) -C class/System install DESTDIR="$$DESTDIR" || exit 1; \
-	$(MAKE) -C class/System.XML install DESTDIR="$$DESTDIR" || exit 1; \
-	$(MAKE) -C class/Mono.CSharp.Debugger install DESTDIR="$$DESTDIR" || exit 1; \
-	tar cvjf "$$chargedir".tar.bz2 "$$chargedir" ; \
-	rm -rf "$$chargedir"
 
 # Targets for creating API diffs of the framework
 
