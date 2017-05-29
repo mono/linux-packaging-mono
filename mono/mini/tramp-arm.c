@@ -847,26 +847,31 @@ mono_arch_get_enter_icall_trampoline (MonoTrampInfo **info)
 	guint8 *start = NULL, *code, *label_gexits [gregs_num], *label_fexits [fregs_num], *label_leave_tramp [3], *label_is_float_ret;
 	MonoJumpInfo *ji = NULL;
 	GSList *unwind_ops = NULL;
-	int buf_len, i, framesize = 0, off_methodargs, off_targetaddr;
+	int buf_len, i, framesize, off_methodargs, off_targetaddr;
 	const int fp_reg = ARMREG_R7;
 
 	buf_len = 512 + 1024;
 	start = code = (guint8 *) mono_global_codeman_reserve (buf_len);
 
-	off_methodargs = framesize;
+	framesize = 5 * sizeof (mgreg_t); /* lr, r4, r8, r6 and plus one */
+
+	off_methodargs = -framesize;
 	framesize += sizeof (mgreg_t);
 
-	off_targetaddr = framesize;
+	off_targetaddr = -framesize;
 	framesize += sizeof (mgreg_t);
 
-	framesize = ALIGN_TO (framesize, MONO_ARCH_FRAME_ALIGNMENT);
+	framesize = ALIGN_TO (framesize + 4 * sizeof (mgreg_t), MONO_ARCH_FRAME_ALIGNMENT);
 
 	/* allocate space on stack for argument passing */
 	const int stack_space = ALIGN_TO (((gregs_num - ARMREG_R3) * sizeof (mgreg_t)), MONO_ARCH_FRAME_ALIGNMENT);
 
-	/* use r4, r5 and r6 as scratch registers */
-	ARM_PUSH (code, (1 << fp_reg) | (1 << ARMREG_LR) | (1 << ARMREG_R4) | (1 << ARMREG_R5) | (1 << ARMREG_R6));
+	/* iOS ABI */
+	ARM_PUSH (code, (1 << fp_reg) | (1 << ARMREG_LR));
 	ARM_MOV_REG_REG (code, fp_reg, ARMREG_SP);
+
+	/* use r4, r8 and r6 as scratch registers */
+	ARM_PUSH (code, (1 << ARMREG_R4) | (1 << ARMREG_R8) | (1 << ARMREG_R6));
 	ARM_SUB_REG_IMM8 (code, ARMREG_SP, ARMREG_SP, stack_space + framesize);
 
 	/* save InterpMethodArguments* onto stack */
@@ -878,32 +883,32 @@ mono_arch_get_enter_icall_trampoline (MonoTrampInfo **info)
 	/* load pointer to InterpMethodArguments* into r4 */
 	ARM_MOV_REG_REG (code, ARMREG_R4, ARMREG_R1);
 
-	/* move flen into r5 */
-	ARM_LDR_IMM (code, ARMREG_R5, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, flen));
+	/* move flen into r8 */
+	ARM_LDR_IMM (code, ARMREG_R8, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, flen));
 	/* load pointer to fargs into r6 */
 	ARM_LDR_IMM (code, ARMREG_R6, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, fargs));
 
 	for (i = 0; i < fregs_num; ++i) {
-		ARM_CMP_REG_IMM (code, ARMREG_R5, 0, 0);
+		ARM_CMP_REG_IMM (code, ARMREG_R8, 0, 0);
 		label_fexits [i] = code;
 		ARM_B_COND (code, ARMCOND_EQ, 0);
 
 		g_assert (i <= ARM_VFP_D7); /* otherwise, need to pass args on stack */
 		ARM_FLDD (code, i, ARMREG_R6, i * sizeof (double));
-		ARM_SUB_REG_IMM8 (code, ARMREG_R5, ARMREG_R5, 1);
+		ARM_SUB_REG_IMM8 (code, ARMREG_R8, ARMREG_R8, 1);
 	}
 
 	for (i = 0; i < fregs_num; i++)
 		arm_patch (label_fexits [i], code);
 
-	/* move ilen into r5 */
-	ARM_LDR_IMM (code, ARMREG_R5, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, ilen));
+	/* move ilen into r8 */
+	ARM_LDR_IMM (code, ARMREG_R8, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, ilen));
 	/* load pointer to iargs into r6 */
 	ARM_LDR_IMM (code, ARMREG_R6, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, iargs));
 
 	int stack_offset = 0;
 	for (i = 0; i < gregs_num; i++) {
-		ARM_CMP_REG_IMM (code, ARMREG_R5, 0, 0);
+		ARM_CMP_REG_IMM (code, ARMREG_R8, 0, 0);
 		label_gexits [i] = code;
 		ARM_B_COND (code, ARMCOND_EQ, 0);
 
@@ -914,7 +919,7 @@ mono_arch_get_enter_icall_trampoline (MonoTrampInfo **info)
 			ARM_STR_IMM (code, ARMREG_R4, ARMREG_SP, stack_offset);
 			stack_offset += sizeof (mgreg_t);
 		}
-		ARM_SUB_REG_IMM8 (code, ARMREG_R5, ARMREG_R5, 1);
+		ARM_SUB_REG_IMM8 (code, ARMREG_R8, ARMREG_R8, 1);
 	}
 
 	for (i = 0; i < gregs_num; i++)
@@ -930,24 +935,24 @@ mono_arch_get_enter_icall_trampoline (MonoTrampInfo **info)
 	ARM_LDR_IMM (code, ARMREG_R4, fp_reg, off_methodargs);
 
 	/* load is_float_ret */
-	ARM_LDR_IMM (code, ARMREG_R5, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, is_float_ret));
+	ARM_LDR_IMM (code, ARMREG_R8, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, is_float_ret));
 
 	/* check if a float return value is expected */
-	ARM_CMP_REG_IMM (code, ARMREG_R5, 0, 0);
+	ARM_CMP_REG_IMM (code, ARMREG_R8, 0, 0);
 	label_is_float_ret = code;
 	ARM_B_COND (code, ARMCOND_NE, 0);
 
 	/* greg return */
 	/* load retval */
-	ARM_LDR_IMM (code, ARMREG_R5, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, retval));
+	ARM_LDR_IMM (code, ARMREG_R8, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, retval));
 
-	ARM_CMP_REG_IMM (code, ARMREG_R5, 0, 0);
+	ARM_CMP_REG_IMM (code, ARMREG_R8, 0, 0);
 	label_leave_tramp [0] = code;
 	ARM_B_COND (code, ARMCOND_EQ, 0);
 
 	/* store greg result, always write back 64bit */
-	ARM_STR_IMM (code, ARMREG_R0, ARMREG_R5, 0);
-	ARM_STR_IMM (code, ARMREG_R1, ARMREG_R5, 4);
+	ARM_STR_IMM (code, ARMREG_R0, ARMREG_R8, 0);
+	ARM_STR_IMM (code, ARMREG_R1, ARMREG_R8, 4);
 
 	label_leave_tramp [1] = code;
 	ARM_B_COND (code, ARMCOND_AL, 0);
@@ -955,20 +960,22 @@ mono_arch_get_enter_icall_trampoline (MonoTrampInfo **info)
 	/* freg return */
 	arm_patch (label_is_float_ret, code);
 	/* load retval */
-	ARM_LDR_IMM (code, ARMREG_R5, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, retval));
+	ARM_LDR_IMM (code, ARMREG_R8, ARMREG_R4, MONO_STRUCT_OFFSET (InterpMethodArguments, retval));
 
-	ARM_CMP_REG_IMM (code, ARMREG_R5, 0, 0);
+	ARM_CMP_REG_IMM (code, ARMREG_R8, 0, 0);
 	label_leave_tramp [2] = code;
 	ARM_B_COND (code, ARMCOND_EQ, 0);
 
 	/* store freg result */
-	ARM_FSTD (code, ARM_VFP_F0, ARMREG_R5, 0);
+	ARM_FSTD (code, ARM_VFP_F0, ARMREG_R8, 0);
 
 	for (i = 0; i < 3; i++)
 		arm_patch (label_leave_tramp [i], code);
 
+	ARM_ADD_REG_IMM8 (code, ARMREG_SP, ARMREG_SP, stack_space + framesize);
+	ARM_POP (code, (1 << ARMREG_R4) | (1 << ARMREG_R8) | (1 << ARMREG_R6));
 	ARM_MOV_REG_REG (code, ARMREG_SP, fp_reg);
-	ARM_POP (code, (1 << fp_reg) | (1 << ARMREG_PC) | (1 << ARMREG_R4) | (1 << ARMREG_R5) | (1 << ARMREG_R6));
+	ARM_POP (code, (1 << fp_reg) | (1 << ARMREG_PC));
 
 	g_assert (code - start < buf_len);
 
