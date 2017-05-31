@@ -146,7 +146,7 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	method-builder.h method-builder.c mono-basic-block.c \
 	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.h \
-	mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
 	mono-route.c mono-route.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h number-ms.c \
@@ -169,9 +169,9 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	handle.c handle.h w32mutex.h w32semaphore.h w32event.h \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h appdomain.c domain.c gc-stats.c gc.c \
-	monitor.c mono-hash.c object.c dynamic-image.c sre.c \
-	sre-encode.c sre-save.c custom-attrs.c reflection.c null-gc.c \
-	boehm-gc.c
+	monitor.c mono-hash.c mono-conc-hash.c object.c \
+	dynamic-image.c sre.c sre-encode.c sre-save.c custom-attrs.c \
+	reflection.c null-gc.c boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_1 =  \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-w32mutex-unix.lo \
@@ -268,6 +268,7 @@ am__objects_6 = libmonoruntime_static_la-appdomain.lo \
 	libmonoruntime_static_la-gc.lo \
 	libmonoruntime_static_la-monitor.lo \
 	libmonoruntime_static_la-mono-hash.lo \
+	libmonoruntime_static_la-mono-conc-hash.lo \
 	libmonoruntime_static_la-object.lo \
 	libmonoruntime_static_la-dynamic-image.lo \
 	libmonoruntime_static_la-sre.lo \
@@ -320,7 +321,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	method-builder.h method-builder.c mono-basic-block.c \
 	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.h \
-	mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
 	mono-route.c mono-route.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h number-ms.c \
@@ -343,9 +344,9 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	handle.c handle.h w32mutex.h w32semaphore.h w32event.h \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h appdomain.c domain.c gc-stats.c gc.c \
-	monitor.c mono-hash.c object.c dynamic-image.c sre.c \
-	sre-encode.c sre-save.c custom-attrs.c reflection.c null-gc.c \
-	boehm-gc.c
+	monitor.c mono-hash.c mono-conc-hash.c object.c \
+	dynamic-image.c sre.c sre-encode.c sre-save.c custom-attrs.c \
+	reflection.c null-gc.c boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_10 = libmonoruntime_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32mutex-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32semaphore-unix.lo \
@@ -421,9 +422,11 @@ am__objects_14 = $(am__objects_13) libmonoruntime_la-assembly.lo \
 am__objects_15 = libmonoruntime_la-appdomain.lo \
 	libmonoruntime_la-domain.lo libmonoruntime_la-gc-stats.lo \
 	libmonoruntime_la-gc.lo libmonoruntime_la-monitor.lo \
-	libmonoruntime_la-mono-hash.lo libmonoruntime_la-object.lo \
-	libmonoruntime_la-dynamic-image.lo libmonoruntime_la-sre.lo \
-	libmonoruntime_la-sre-encode.lo libmonoruntime_la-sre-save.lo \
+	libmonoruntime_la-mono-hash.lo \
+	libmonoruntime_la-mono-conc-hash.lo \
+	libmonoruntime_la-object.lo libmonoruntime_la-dynamic-image.lo \
+	libmonoruntime_la-sre.lo libmonoruntime_la-sre-encode.lo \
+	libmonoruntime_la-sre-save.lo \
 	libmonoruntime_la-custom-attrs.lo \
 	libmonoruntime_la-reflection.lo
 am__objects_16 = libmonoruntime_la-null-gc.lo
@@ -471,7 +474,7 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	method-builder.h method-builder.c mono-basic-block.c \
 	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.h \
-	mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
 	mono-route.c mono-route.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h number-ms.c \
@@ -494,12 +497,12 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	handle.c handle.h w32mutex.h w32semaphore.h w32event.h \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h appdomain.c domain.c gc-stats.c gc.c \
-	monitor.c mono-hash.c object.c dynamic-image.c sre.c \
-	sre-encode.c sre-save.c custom-attrs.c reflection.c \
-	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
-	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
-	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
-	sgen-client-mono.h
+	monitor.c mono-hash.c mono-conc-hash.c object.c \
+	dynamic-image.c sre.c sre-encode.c sre-save.c custom-attrs.c \
+	reflection.c sgen-bridge.c sgen-bridge.h \
+	sgen-bridge-internals.h sgen-old-bridge.c sgen-new-bridge.c \
+	sgen-tarjan-bridge.c sgen-toggleref.c sgen-toggleref.h \
+	sgen-stw.c sgen-mono.c sgen-client-mono.h
 @HOST_WIN32_FALSE@am__objects_18 = libmonoruntimesgen_static_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_static_la-w32mutex-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_static_la-w32semaphore-unix.lo \
@@ -594,6 +597,7 @@ am__objects_23 = libmonoruntimesgen_static_la-appdomain.lo \
 	libmonoruntimesgen_static_la-gc.lo \
 	libmonoruntimesgen_static_la-monitor.lo \
 	libmonoruntimesgen_static_la-mono-hash.lo \
+	libmonoruntimesgen_static_la-mono-conc-hash.lo \
 	libmonoruntimesgen_static_la-object.lo \
 	libmonoruntimesgen_static_la-dynamic-image.lo \
 	libmonoruntimesgen_static_la-sre.lo \
@@ -651,7 +655,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	method-builder.h method-builder.c mono-basic-block.c \
 	mono-basic-block.h mono-config.c mono-debug.h mono-debug.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.h \
-	mono-mlist.c mono-mlist.h mono-perfcounters.c \
+	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
 	mono-route.c mono-route.h monitor.h nacl-stub.c \
 	normalization-tables.h number-formatter.h number-ms.c \
@@ -674,12 +678,12 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	handle.c handle.h w32mutex.h w32semaphore.h w32event.h \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h appdomain.c domain.c gc-stats.c gc.c \
-	monitor.c mono-hash.c object.c dynamic-image.c sre.c \
-	sre-encode.c sre-save.c custom-attrs.c reflection.c \
-	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
-	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
-	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
-	sgen-client-mono.h
+	monitor.c mono-hash.c mono-conc-hash.c object.c \
+	dynamic-image.c sre.c sre-encode.c sre-save.c custom-attrs.c \
+	reflection.c sgen-bridge.c sgen-bridge.h \
+	sgen-bridge-internals.h sgen-old-bridge.c sgen-new-bridge.c \
+	sgen-tarjan-bridge.c sgen-toggleref.c sgen-toggleref.h \
+	sgen-stw.c sgen-mono.c sgen-client-mono.h
 @HOST_WIN32_FALSE@am__objects_26 =  \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32mutex-unix.lo \
@@ -772,6 +776,7 @@ am__objects_31 = libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-gc-stats.lo libmonoruntimesgen_la-gc.lo \
 	libmonoruntimesgen_la-monitor.lo \
 	libmonoruntimesgen_la-mono-hash.lo \
+	libmonoruntimesgen_la-mono-conc-hash.lo \
 	libmonoruntimesgen_la-object.lo \
 	libmonoruntimesgen_la-dynamic-image.lo \
 	libmonoruntimesgen_la-sre.lo \
@@ -1257,6 +1262,7 @@ common_sources = \
 	mono-endian.c		\
 	mono-endian.h		\
 	mono-hash.h		\
+	mono-conc-hash.h		\
 	mono-mlist.c		\
 	mono-mlist.h		\
 	mono-perfcounters.c	\
@@ -1345,6 +1351,7 @@ gc_dependent_sources = \
 	gc.c		\
 	monitor.c	\
 	mono-hash.c	\
+	mono-conc-hash.c	\
 	object.c	\
 	dynamic-image.c	\
 	sre.c	\
@@ -1547,6 +1554,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-method-builder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-basic-block.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-conc-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-endian.Plo@am__quote@
@@ -1646,6 +1654,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-method-builder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-basic-block.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-conc-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-endian.Plo@am__quote@
@@ -1744,6 +1753,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-method-builder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-basic-block.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-conc-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-endian.Plo@am__quote@
@@ -1848,6 +1858,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-method-builder.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-monitor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-basic-block.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-conc-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-debug.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-endian.Plo@am__quote@
@@ -2580,6 +2591,13 @@ libmonoruntime_static_la-mono-hash.lo: mono-hash.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-mono-hash.lo `test -f 'mono-hash.c' || echo '$(srcdir)/'`mono-hash.c
 
+libmonoruntime_static_la-mono-conc-hash.lo: mono-conc-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-mono-conc-hash.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-mono-conc-hash.Tpo -c -o libmonoruntime_static_la-mono-conc-hash.lo `test -f 'mono-conc-hash.c' || echo '$(srcdir)/'`mono-conc-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-mono-conc-hash.Tpo $(DEPDIR)/libmonoruntime_static_la-mono-conc-hash.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-conc-hash.c' object='libmonoruntime_static_la-mono-conc-hash.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-mono-conc-hash.lo `test -f 'mono-conc-hash.c' || echo '$(srcdir)/'`mono-conc-hash.c
+
 libmonoruntime_static_la-object.lo: object.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-object.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-object.Tpo -c -o libmonoruntime_static_la-object.lo `test -f 'object.c' || echo '$(srcdir)/'`object.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-object.Tpo $(DEPDIR)/libmonoruntime_static_la-object.Plo
@@ -3280,6 +3298,13 @@ libmonoruntime_la-mono-hash.lo: mono-hash.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-mono-hash.lo `test -f 'mono-hash.c' || echo '$(srcdir)/'`mono-hash.c
 
+libmonoruntime_la-mono-conc-hash.lo: mono-conc-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-mono-conc-hash.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-mono-conc-hash.Tpo -c -o libmonoruntime_la-mono-conc-hash.lo `test -f 'mono-conc-hash.c' || echo '$(srcdir)/'`mono-conc-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-mono-conc-hash.Tpo $(DEPDIR)/libmonoruntime_la-mono-conc-hash.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-conc-hash.c' object='libmonoruntime_la-mono-conc-hash.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-mono-conc-hash.lo `test -f 'mono-conc-hash.c' || echo '$(srcdir)/'`mono-conc-hash.c
+
 libmonoruntime_la-object.lo: object.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-object.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-object.Tpo -c -o libmonoruntime_la-object.lo `test -f 'object.c' || echo '$(srcdir)/'`object.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-object.Tpo $(DEPDIR)/libmonoruntime_la-object.Plo
@@ -3979,6 +4004,13 @@ libmonoruntimesgen_static_la-mono-hash.lo: mono-hash.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-hash.c' object='libmonoruntimesgen_static_la-mono-hash.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-mono-hash.lo `test -f 'mono-hash.c' || echo '$(srcdir)/'`mono-hash.c
+
+libmonoruntimesgen_static_la-mono-conc-hash.lo: mono-conc-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-mono-conc-hash.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-mono-conc-hash.Tpo -c -o libmonoruntimesgen_static_la-mono-conc-hash.lo `test -f 'mono-conc-hash.c' || echo '$(srcdir)/'`mono-conc-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-mono-conc-hash.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-mono-conc-hash.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-conc-hash.c' object='libmonoruntimesgen_static_la-mono-conc-hash.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-mono-conc-hash.lo `test -f 'mono-conc-hash.c' || echo '$(srcdir)/'`mono-conc-hash.c
 
 libmonoruntimesgen_static_la-object.lo: object.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-object.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-object.Tpo -c -o libmonoruntimesgen_static_la-object.lo `test -f 'object.c' || echo '$(srcdir)/'`object.c
@@ -4714,6 +4746,13 @@ libmonoruntimesgen_la-mono-hash.lo: mono-hash.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-hash.c' object='libmonoruntimesgen_la-mono-hash.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-mono-hash.lo `test -f 'mono-hash.c' || echo '$(srcdir)/'`mono-hash.c
+
+libmonoruntimesgen_la-mono-conc-hash.lo: mono-conc-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-mono-conc-hash.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-mono-conc-hash.Tpo -c -o libmonoruntimesgen_la-mono-conc-hash.lo `test -f 'mono-conc-hash.c' || echo '$(srcdir)/'`mono-conc-hash.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-mono-conc-hash.Tpo $(DEPDIR)/libmonoruntimesgen_la-mono-conc-hash.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-conc-hash.c' object='libmonoruntimesgen_la-mono-conc-hash.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-mono-conc-hash.lo `test -f 'mono-conc-hash.c' || echo '$(srcdir)/'`mono-conc-hash.c
 
 libmonoruntimesgen_la-object.lo: object.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-object.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-object.Tpo -c -o libmonoruntimesgen_la-object.lo `test -f 'object.c' || echo '$(srcdir)/'`object.c

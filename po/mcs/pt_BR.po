@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-05-31 01:26+0000\n"
+"POT-Creation-Date: 2017-05-31 08:48+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -3648,22 +3648,22 @@ msgstr ""
 "Uma árvore de expressão não pode conter um operador crescente com null no "
 "lado esquerdo"
 
-#: mcs/mcs/parameter.cs:157
+#: mcs/mcs/parameter.cs:160
 msgid "The params parameter must be a single dimensional array"
 msgstr "O parâmetro params deve ser um array de uma dimensão"
 
-#: mcs/mcs/parameter.cs:319
+#: mcs/mcs/parameter.cs:327
 msgid "An out parameter cannot have the `In' attribute"
 msgstr "Um parâmetro externo não pode ter o atributo \"In\""
 
-#: mcs/mcs/parameter.cs:324
+#: mcs/mcs/parameter.cs:332
 msgid ""
 "Do not use `System.ParamArrayAttribute'. Use the `params' keyword instead"
 msgstr ""
 "Não use \"System.ParamArrayAttribute\". Ao invés disso, use a palavra chave "
 "\"params\""
 
-#: mcs/mcs/parameter.cs:331
+#: mcs/mcs/parameter.cs:339
 msgid ""
 "Cannot specify only `Out' attribute on a ref parameter. Use both `In' and "
 "`Out' attributes or neither"
@@ -3671,47 +3671,47 @@ msgstr ""
 "Não foi possível especificar somente o atributo \"Out\" em um parâmetro ref. "
 "Utilize ambos os atributos \"In\" e \"Out\" ou nenhum"
 
-#: mcs/mcs/parameter.cs:340
+#: mcs/mcs/parameter.cs:348
 #, fuzzy, csharp-format
 msgid "Cannot specify `{0}' attribute on optional parameter `{1}'"
 msgstr ""
 "Não foi possível especificar o atributo \"DefaultMember\" no tipo contendo "
 "um indexador"
 
-#: mcs/mcs/parameter.cs:349
+#: mcs/mcs/parameter.cs:357
 msgid ""
 "The CallerMemberName attribute can only be applied to parameters with "
 "default value"
 msgstr ""
 
-#: mcs/mcs/parameter.cs:354
+#: mcs/mcs/parameter.cs:362
 msgid ""
 "The CallerLineNumber attribute can only be applied to parameters with "
 "default value"
 msgstr ""
 
-#: mcs/mcs/parameter.cs:359
+#: mcs/mcs/parameter.cs:367
 msgid ""
 "The CallerFilePath attribute can only be applied to parameters with default "
 "value"
 msgstr ""
 
-#: mcs/mcs/parameter.cs:401
+#: mcs/mcs/parameter.cs:409
 #, csharp-format
 msgid "Method or delegate parameter cannot be of type `{0}'"
 msgstr "Método ou parâmetro delegate não pode ser do tipo \"{0}\""
 
-#: mcs/mcs/parameter.cs:411
+#: mcs/mcs/parameter.cs:419
 #, csharp-format
 msgid "`{0}': static types cannot be used as parameters"
 msgstr "\"{0}\": tipos estáticos não podem ser utilizados como parâmetros"
 
-#: mcs/mcs/parameter.cs:417
+#: mcs/mcs/parameter.cs:425
 #, fuzzy, csharp-format
 msgid "The extension method cannot be of type `{0}'"
 msgstr "O tipo do método de extenção não pode ser \"{0}\""
 
-#: mcs/mcs/parameter.cs:439
+#: mcs/mcs/parameter.cs:447
 #, fuzzy, csharp-format
 msgid ""
 "The CallerMemberName attribute cannot be applied because there is no "
@@ -3720,7 +3720,7 @@ msgstr ""
 "Tipo da expressão condicional não pôde ser determinada por que não há uma "
 "conversão implícita entre \"{0}\" e \"{1}\""
 
-#: mcs/mcs/parameter.cs:458
+#: mcs/mcs/parameter.cs:466
 #, fuzzy, csharp-format
 msgid ""
 "The CallerLineNumberAttribute attribute cannot be applied because there is "
@@ -3729,7 +3729,7 @@ msgstr ""
 "Tipo da expressão condicional não pôde ser determinada por que não há uma "
 "conversão implícita entre \"{0}\" e \"{1}\""
 
-#: mcs/mcs/parameter.cs:476
+#: mcs/mcs/parameter.cs:484
 #, fuzzy, csharp-format
 msgid ""
 "The CallerFilePath attribute cannot be applied because there is no standard "
@@ -3738,51 +3738,51 @@ msgstr ""
 "Tipo da expressão condicional não pôde ser determinada por que não há uma "
 "conversão implícita entre \"{0}\" e \"{1}\""
 
-#: mcs/mcs/parameter.cs:552
+#: mcs/mcs/parameter.cs:560
 #, fuzzy, csharp-format
 msgid ""
 "Argument of type `{0}' is not applicable for the DefaultParameterValue "
 "attribute"
 msgstr "Argumento do tipo \"{0}\" não é aplicável para o atributo DefaultValue"
 
-#: mcs/mcs/parameter.cs:556
+#: mcs/mcs/parameter.cs:564
 #, fuzzy, csharp-format
 msgid ""
 "The DefaultParameterValue attribute is not applicable on parameters of type "
 "`{0}'"
 msgstr "O atributo DefaultValue não é aplicável em parâmetros do tipo \"{0}\""
 
-#: mcs/mcs/parameter.cs:585
+#: mcs/mcs/parameter.cs:593
 msgid "The type of the default value should match the type of the parameter"
 msgstr "O tipo de valor padrão deve ter o mesmo tipo do parâmetro"
 
-#: mcs/mcs/parameter.cs:736
+#: mcs/mcs/parameter.cs:744
 msgid "An expression tree parameter cannot use `ref' or `out' modifier"
 msgstr ""
 "Um parâmetro de árvore de expressão não pode usar modificadores \"ref\" ou "
 "\"out\""
 
-#: mcs/mcs/parameter.cs:1280
+#: mcs/mcs/parameter.cs:1288
 #, csharp-format
 msgid "The parameter name `{0}' conflicts with a compiler generated name"
 msgstr ""
 "O nome do parâmetro \"{0}\" conflita com um nome gerado pelo compilador"
 
-#: mcs/mcs/parameter.cs:1441
+#: mcs/mcs/parameter.cs:1449
 #, fuzzy, csharp-format
 msgid ""
 "The expression being assigned to optional parameter `{0}' must be a constant "
 "or default value"
 msgstr "A expressão sendo atribuída a \"{0}\" deve ser constante"
 
-#: mcs/mcs/parameter.cs:1459
+#: mcs/mcs/parameter.cs:1467
 #, fuzzy, csharp-format
 msgid ""
 "The expression being assigned to nullable optional parameter `{0}' must be "
 "default value"
 msgstr "A expressão sendo atribuída a \"{0}\" deve ser constante"
 
-#: mcs/mcs/parameter.cs:1467
+#: mcs/mcs/parameter.cs:1475
 #, fuzzy, csharp-format
 msgid ""
 "Optional parameter `{0}' of type `{1}' can only be initialized with `null'"
@@ -3790,7 +3790,7 @@ msgstr ""
 "A constante \"{0}\" do tipo de referência \"{1}\" só pode ser inicializada "
 "com null"
 
-#: mcs/mcs/parameter.cs:1478
+#: mcs/mcs/parameter.cs:1486
 #, fuzzy, csharp-format
 msgid ""
 "Optional parameter expression of type `{0}' cannot be converted to parameter "
