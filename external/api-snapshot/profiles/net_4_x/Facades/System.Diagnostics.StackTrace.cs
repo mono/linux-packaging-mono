@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-[assembly:System.Reflection.AssemblyVersionAttribute("4.0.2.0")]
+[assembly:System.Reflection.AssemblyVersionAttribute("4.1.1.0")]
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Xamarin, Inc.")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright (c) 2015 Xamarin Inc. (http://www.xamarin.com)")]
@@ -16,6 +16,21 @@
 [assembly:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute(WrapNonExceptionThrows=true)]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.StackFrame))]
 [assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.StackTrace))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolBinder))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolBinder1))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolDocument))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolDocumentWriter))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolMethod))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolNamespace))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolReader))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolScope))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolVariable))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.ISymbolWriter))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.SymAddressKind))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.SymbolToken))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.SymDocumentType))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.SymLanguageType))]
+[assembly:System.Runtime.CompilerServices.TypeForwardedToAttribute(typeof(System.Diagnostics.SymbolStore.SymLanguageVendor))]
 namespace System
 {
     [System.AttributeUsageAttribute((System.AttributeTargets)(32767), AllowMultiple=true)]

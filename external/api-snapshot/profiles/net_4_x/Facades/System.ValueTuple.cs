@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-[assembly:System.Reflection.AssemblyVersionAttribute("4.0.1.0")]
+[assembly:System.Reflection.AssemblyVersionAttribute("4.0.3.0")]
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCompanyAttribute("Xamarin, Inc.")]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright (c) 2016 Xamarin Inc. (http://www.xamarin.com)")]

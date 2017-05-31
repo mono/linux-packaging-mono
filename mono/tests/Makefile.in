@@ -157,6 +157,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	appdomain-async-invoke.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-thread-abort.exe appdomain1.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain2.exe appdomain-exit.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-unload-asmload.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-unload-callback.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
 @FULL_AOT_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
@@ -1015,6 +1016,7 @@ INTERP_DISABLED_TESTS = \
 	appdomain-async-invoke.exe \
 	appdomain-exit.exe \
 	appdomain-serialize-exception.exe \
+	appdomain-unload-asmload.exe \
 	appdomain-unload-callback.exe \
 	appdomain-unload-doesnot-raise-pending-events.exe \
 	appdomain-unload.exe \

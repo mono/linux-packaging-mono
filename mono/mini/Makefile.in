@@ -173,24 +173,24 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	llvm-jit.h alias-analysis.c mini-cross-helpers.c arch-stubs.c \
 	llvm-runtime.h type-checking.c lldb.h lldb.c memory-access.c \
 	mini-llvm.c mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
-	llvm-runtime.cpp interp/hacks.h interp/interp.h \
-	interp/interp-internals.h interp/interp.c interp/mintops.h \
-	interp/mintops.def interp/mintops.c interp/transform.c \
-	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
-	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
-	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
-	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
-	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
-	tramp-arm-gsharedvt.c mini-mips.c mini-mips.h \
-	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
-	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
-	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
-	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
-	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
-	tramp-x86-gsharedvt.c mini-windows.c mini-windows.h \
-	mini-windows-dllmain.c mini-windows-dlldac.c mini-darwin.c \
-	mini-posix.c
+	llvm-runtime.cpp interp/interp-stubs.c interp/hacks.h \
+	interp/interp.h interp/interp-internals.h interp/interp.c \
+	interp/mintops.h interp/mintops.def interp/mintops.c \
+	interp/transform.c mini-amd64.c mini-amd64.h \
+	exceptions-amd64.c tramp-amd64.c mini-amd64-gsharedvt.c \
+	mini-amd64-gsharedvt.h tramp-amd64-gsharedvt.c mini-arm64.c \
+	mini-arm64.h exceptions-arm64.c tramp-arm64.c \
+	mini-arm64-gsharedvt.c mini-arm64-gsharedvt.h \
+	tramp-arm64-gsharedvt.c mini-arm.c mini-arm.h exceptions-arm.c \
+	tramp-arm.c mini-arm-gsharedvt.c tramp-arm-gsharedvt.c \
+	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
+	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
+	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
+	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
+	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
+	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
+	mini-windows.c mini-windows.h mini-windows-dllmain.c \
+	mini-windows-dlldac.c mini-darwin.c mini-posix.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -231,6 +231,7 @@ am__objects_1 = libmini_static_la-mini.lo \
 @ENABLE_LLVM_FALSE@@ENABLE_LLVM_RUNTIME_TRUE@	llvm-runtime.lo
 @ENABLE_LLVM_TRUE@am__objects_3 = llvm-runtime.lo
 am__dirstamp = $(am__leading_dot)dirstamp
+@ENABLE_INTERPRETER_FALSE@am__objects_4 = interp/libmini_static_la-interp-stubs.lo
 @ENABLE_INTERPRETER_TRUE@am__objects_4 =  \
 @ENABLE_INTERPRETER_TRUE@	interp/libmini_static_la-interp.lo \
 @ENABLE_INTERPRETER_TRUE@	interp/libmini_static_la-mintops.lo \
@@ -318,24 +319,24 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	mini-cross-helpers.c arch-stubs.c llvm-runtime.h \
 	type-checking.c lldb.h lldb.c memory-access.c mini-llvm.c \
 	mini-llvm-loaded.c mini-llvm-cpp.cpp llvm-jit.cpp \
-	llvm-runtime.cpp interp/hacks.h interp/interp.h \
-	interp/interp-internals.h interp/interp.c interp/mintops.h \
-	interp/mintops.def interp/mintops.c interp/transform.c \
-	mini-amd64.c mini-amd64.h exceptions-amd64.c tramp-amd64.c \
-	mini-amd64-gsharedvt.c mini-amd64-gsharedvt.h \
-	tramp-amd64-gsharedvt.c mini-arm64.c mini-arm64.h \
-	exceptions-arm64.c tramp-arm64.c mini-arm64-gsharedvt.c \
-	mini-arm64-gsharedvt.h tramp-arm64-gsharedvt.c mini-arm.c \
-	mini-arm.h exceptions-arm.c tramp-arm.c mini-arm-gsharedvt.c \
-	tramp-arm-gsharedvt.c mini-mips.c mini-mips.h \
-	exceptions-mips.c tramp-mips.c mini-ppc.c mini-ppc.h \
-	exceptions-ppc.c tramp-ppc.c mini-s390x.c mini-s390x.h \
-	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
-	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
-	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
-	tramp-x86-gsharedvt.c mini-windows.c mini-windows.h \
-	mini-windows-dllmain.c mini-windows-dlldac.c mini-darwin.c \
-	mini-posix.c
+	llvm-runtime.cpp interp/interp-stubs.c interp/hacks.h \
+	interp/interp.h interp/interp-internals.h interp/interp.c \
+	interp/mintops.h interp/mintops.def interp/mintops.c \
+	interp/transform.c mini-amd64.c mini-amd64.h \
+	exceptions-amd64.c tramp-amd64.c mini-amd64-gsharedvt.c \
+	mini-amd64-gsharedvt.h tramp-amd64-gsharedvt.c mini-arm64.c \
+	mini-arm64.h exceptions-arm64.c tramp-arm64.c \
+	mini-arm64-gsharedvt.c mini-arm64-gsharedvt.h \
+	tramp-arm64-gsharedvt.c mini-arm.c mini-arm.h exceptions-arm.c \
+	tramp-arm.c mini-arm-gsharedvt.c tramp-arm-gsharedvt.c \
+	mini-mips.c mini-mips.h exceptions-mips.c tramp-mips.c \
+	mini-ppc.c mini-ppc.h exceptions-ppc.c tramp-ppc.c \
+	mini-s390x.c mini-s390x.h support-s390x.h exceptions-s390x.c \
+	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
+	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
+	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
+	mini-windows.c mini-windows.h mini-windows-dllmain.c \
+	mini-windows-dlldac.c mini-darwin.c mini-posix.c
 am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -362,6 +363,8 @@ am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	mini-llvm-cpp.lo \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_FALSE@	llvm-jit.lo
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@am__objects_20 = libmini_la-mini-llvm-loaded.lo
+@ENABLE_INTERPRETER_FALSE@am__objects_21 =  \
+@ENABLE_INTERPRETER_FALSE@	interp/libmini_la-interp-stubs.lo
 @ENABLE_INTERPRETER_TRUE@am__objects_21 = interp/libmini_la-interp.lo \
 @ENABLE_INTERPRETER_TRUE@	interp/libmini_la-mintops.lo \
 @ENABLE_INTERPRETER_TRUE@	interp/libmini_la-transform.lo
@@ -1075,6 +1078,9 @@ posix_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@llvm_sources = \
 @ENABLE_LLVM_TRUE@@LOADED_LLVM_TRUE@	mini-llvm-loaded.c
 
+@ENABLE_INTERPRETER_FALSE@interp_sources = \
+@ENABLE_INTERPRETER_FALSE@	interp/interp-stubs.c
+
 @ENABLE_INTERPRETER_TRUE@interp_sources = \
 @ENABLE_INTERPRETER_TRUE@	interp/hacks.h		\
 @ENABLE_INTERPRETER_TRUE@	interp/interp.h	\
@@ -1378,6 +1384,8 @@ interp/$(am__dirstamp):
 interp/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) interp/$(DEPDIR)
 	@: > interp/$(DEPDIR)/$(am__dirstamp)
+interp/libmini_static_la-interp-stubs.lo: interp/$(am__dirstamp) \
+	interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmini_static_la-interp.lo: interp/$(am__dirstamp) \
 	interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmini_static_la-mintops.lo: interp/$(am__dirstamp) \
@@ -1387,6 +1395,8 @@ interp/libmini_static_la-transform.lo: interp/$(am__dirstamp) \
 
 libmini-static.la: $(libmini_static_la_OBJECTS) $(libmini_static_la_DEPENDENCIES) $(EXTRA_libmini_static_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(libmini_static_la_LINK) $(am_libmini_static_la_rpath) $(libmini_static_la_OBJECTS) $(libmini_static_la_LIBADD) $(LIBS)
+interp/libmini_la-interp-stubs.lo: interp/$(am__dirstamp) \
+	interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmini_la-interp.lo: interp/$(am__dirstamp) \
 	interp/$(DEPDIR)/$(am__dirstamp)
 interp/libmini_la-mintops.lo: interp/$(am__dirstamp) \
@@ -1673,9 +1683,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-main-sgen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono_boehm-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono_sgen-main-sgen.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmini_la-interp-stubs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmini_la-interp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmini_la-mintops.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmini_la-transform.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmini_static_la-interp-stubs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmini_static_la-interp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmini_static_la-mintops.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@interp/$(DEPDIR)/libmini_static_la-transform.Plo@am__quote@
@@ -2004,6 +2016,13 @@ libmini_static_la-mini-llvm-loaded.lo: mini-llvm-loaded.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-llvm-loaded.c' object='libmini_static_la-mini-llvm-loaded.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-llvm-loaded.lo `test -f 'mini-llvm-loaded.c' || echo '$(srcdir)/'`mini-llvm-loaded.c
+
+interp/libmini_static_la-interp-stubs.lo: interp/interp-stubs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT interp/libmini_static_la-interp-stubs.lo -MD -MP -MF interp/$(DEPDIR)/libmini_static_la-interp-stubs.Tpo -c -o interp/libmini_static_la-interp-stubs.lo `test -f 'interp/interp-stubs.c' || echo '$(srcdir)/'`interp/interp-stubs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmini_static_la-interp-stubs.Tpo interp/$(DEPDIR)/libmini_static_la-interp-stubs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/interp-stubs.c' object='interp/libmini_static_la-interp-stubs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o interp/libmini_static_la-interp-stubs.lo `test -f 'interp/interp-stubs.c' || echo '$(srcdir)/'`interp/interp-stubs.c
 
 interp/libmini_static_la-interp.lo: interp/interp.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT interp/libmini_static_la-interp.lo -MD -MP -MF interp/$(DEPDIR)/libmini_static_la-interp.Tpo -c -o interp/libmini_static_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
@@ -2585,6 +2604,13 @@ libmini_la-mini-llvm-loaded.lo: mini-llvm-loaded.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-llvm-loaded.c' object='libmini_la-mini-llvm-loaded.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-llvm-loaded.lo `test -f 'mini-llvm-loaded.c' || echo '$(srcdir)/'`mini-llvm-loaded.c
+
+interp/libmini_la-interp-stubs.lo: interp/interp-stubs.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT interp/libmini_la-interp-stubs.lo -MD -MP -MF interp/$(DEPDIR)/libmini_la-interp-stubs.Tpo -c -o interp/libmini_la-interp-stubs.lo `test -f 'interp/interp-stubs.c' || echo '$(srcdir)/'`interp/interp-stubs.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) interp/$(DEPDIR)/libmini_la-interp-stubs.Tpo interp/$(DEPDIR)/libmini_la-interp-stubs.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='interp/interp-stubs.c' object='interp/libmini_la-interp-stubs.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o interp/libmini_la-interp-stubs.lo `test -f 'interp/interp-stubs.c' || echo '$(srcdir)/'`interp/interp-stubs.c
 
 interp/libmini_la-interp.lo: interp/interp.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT interp/libmini_la-interp.lo -MD -MP -MF interp/$(DEPDIR)/libmini_la-interp.Tpo -c -o interp/libmini_la-interp.lo `test -f 'interp/interp.c' || echo '$(srcdir)/'`interp/interp.c
@@ -3436,7 +3462,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/89ceb24\"" > version.h
+	echo "#define FULL_VERSION \"master/828d2ad\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

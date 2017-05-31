@@ -198,8 +198,8 @@ class Bockbuild:
                 delete(package.log)
 
             package.source_dir_name = expand_macros(package.source_dir_name, package)
-            dest = os.path.join(self.build_root, package.source_dir_name)
-            package.fetch(dest)
+            workspace_path = os.path.join(self.build_root, package.source_dir_name)
+            package.fetch(workspace_path)
 
             if self.full_rebuild:
                 package.request_build('Full rebuild')
@@ -223,7 +223,7 @@ class Bockbuild:
                 package.deploy_requests.append (stage)
 
         for package in packages.values():
-            package.start_build(arch, stage, stage)
+            package.start_build(arch, dest, stage)
             # make artifact in scratch
             # delete artifact + buildstring
             with open(package.buildstring_file, 'w') as output:

@@ -49,8 +49,6 @@ class DarwinProfile (UnixProfile):
         'libtool',
         'xz',
         'tar',
-        'gtk-osx-docbook',
-        'gtk-doc',
 
         # needed to autogen gtk+
         'gtk-osx-docbook',

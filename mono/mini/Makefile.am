@@ -401,6 +401,9 @@ interp_sources =	\
 	interp/mintops.def	\
 	interp/mintops.c	\
 	interp/transform.c
+else
+interp_sources = \
+	interp/interp-stubs.c
 endif
 
 if ENABLE_LLVM
@@ -900,7 +903,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/89ceb24\"" > version.h
+	echo "#define FULL_VERSION \"master/828d2ad\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
