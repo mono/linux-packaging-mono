@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-05-29 08:47+0000\n"
+"POT-Creation-Date: 2017-05-31 01:26+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -3799,14 +3799,14 @@ msgstr ""
 "Tipo de instância do método de extensão \"{0}\" não pode ser convertido para "
 "\"{1}\""
 
-#: mcs/mcs/pending.cs:326
+#: mcs/mcs/pending.cs:325
 #, csharp-format
 msgid ""
 "Cannot implement interface `{0}' with the specified type parameters because "
 "it causes method `{1}' to differ on parameter modifiers only"
 msgstr ""
 
-#: mcs/mcs/pending.cs:707
+#: mcs/mcs/pending.cs:742
 #, csharp-format
 msgid ""
 "`{0}' does not implement interface member `{1}' and the best implementing "
@@ -3815,7 +3815,7 @@ msgstr ""
 "O \"{0}\" não implementa o membro da interface \"{1}\" e o melhor candidato "
 "a implementação \"{2}\" é estático"
 
-#: mcs/mcs/pending.cs:711
+#: mcs/mcs/pending.cs:746
 #, csharp-format
 msgid ""
 "`{0}' does not implement interface member `{1}' and the best implementing "
@@ -3824,7 +3824,7 @@ msgstr ""
 "O \"{0}\" não implementa o membro da interface \"{1}\" e o melhor candidato "
 "a implementação \"{2}\" não é público"
 
-#: mcs/mcs/pending.cs:715
+#: mcs/mcs/pending.cs:750
 #, csharp-format
 msgid ""
 "`{0}' does not implement interface member `{1}' and the best implementing "
@@ -3835,12 +3835,12 @@ msgstr ""
 "a implementação \"{2}\" devolve o tipo \"{3}\" o que não é o mesmo tipo de "
 "retorno \"{4}\" do membro da interface"
 
-#: mcs/mcs/pending.cs:720
+#: mcs/mcs/pending.cs:755
 #, csharp-format
 msgid "`{0}' does not implement interface member `{1}'"
 msgstr "\"{0}\" não implementa o membro da interface \"{1}\""
 
-#: mcs/mcs/pending.cs:725
+#: mcs/mcs/pending.cs:760
 #, csharp-format
 msgid "`{0}' does not implement inherited abstract member `{1}'"
 msgstr "\"{0}\" não implementa o membro abstrato herdado \"{1}\""
@@ -4272,7 +4272,7 @@ msgstr ""
 "Uma cláusula catch anterior já pega todas as exceções do this ou um tipo "
 "super \"{0}\""
 
-#: mcs/mcs/statement.cs:7627
+#: mcs/mcs/statement.cs:7631
 #, csharp-format
 msgid ""
 "`{0}': type used in a using statement must be implicitly convertible to "
@@ -4281,7 +4281,7 @@ msgstr ""
 "\"{0}\": tipo utilizado em uma declaração em uso deve ser implicitamente "
 "conversível para \"System.IDisposable\""
 
-#: mcs/mcs/statement.cs:8043
+#: mcs/mcs/statement.cs:8047
 #, csharp-format
 msgid ""
 "foreach statement requires that the return type `{0}' of `{1}' must have a "
@@ -4290,7 +4290,7 @@ msgstr ""
 "declaração do foreach requer que o tipo de retorno \"{0}\" de \"{1}\" deve "
 "ter um método apropriado público MoveNext e a propriedade pública Current"
 
-#: mcs/mcs/statement.cs:8087
+#: mcs/mcs/statement.cs:8091
 #, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it "
@@ -4301,7 +4301,7 @@ msgstr ""
 "estas contém múltiplas implementações de \"{1}\". Tente um casting para uma "
 "implementação específica"
 
-#: mcs/mcs/statement.cs:8109
+#: mcs/mcs/statement.cs:8113
 #, fuzzy, csharp-format
 msgid ""
 "foreach statement cannot operate on variables of type `{0}' because it does "
@@ -4310,11 +4310,11 @@ msgstr ""
 "declaração do foreach não pode operar em variáveis do tipo \"{0}\" pois "
 "estas não contém uma definição para \"GetEnumerator\" ou não estão acessíveis"
 
-#: mcs/mcs/statement.cs:8347
+#: mcs/mcs/statement.cs:8351
 msgid "Use of null is not valid in this context"
 msgstr "Uso do null é inválido neste contexto"
 
-#: mcs/mcs/statement.cs:8359
+#: mcs/mcs/statement.cs:8363
 #, csharp-format
 msgid "Foreach statement cannot operate on a `{0}'"
 msgstr "Declaração do foreach não pode operar em um \"{0}\""

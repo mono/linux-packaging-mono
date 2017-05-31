@@ -69,6 +69,7 @@ struct _MonoJitInfoTable
 {
 	MonoDomain	       *domain;
 	int			num_chunks;
+	int			num_valid;
 	MonoJitInfoTableChunk  *chunks [MONO_ZERO_LEN_ARRAY];
 };
 
@@ -241,6 +242,8 @@ struct _MonoJitInfo {
 	 * d.tramp_info contains additional data in this case.
 	 */
 	gboolean    is_trampoline:1;
+	/* Whenever this jit info refers to an interpreter method */
+	gboolean    is_interp:1;
 
 	/* FIXME: Embed this after the structure later*/
 	gpointer    gc_info; /* Currently only used by SGen */

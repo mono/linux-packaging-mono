@@ -4571,54 +4571,6 @@ mini_emit_ldelema_ins (MonoCompile *cfg, MonoMethod *cmethod, MonoInst **sp, uns
 	return addr;
 }
 
-static MonoBreakPolicy
-always_insert_breakpoint (MonoMethod *method)
-{
-	return MONO_BREAK_POLICY_ALWAYS;
-}
-
-static MonoBreakPolicyFunc break_policy_func = always_insert_breakpoint;
-
-/**
- * mono_set_break_policy:
- * \param policy_callback the new callback function
- *
- * Allow embedders to decide wherther to actually obey breakpoint instructions
- * (both break IL instructions and \c Debugger.Break method calls), for example
- * to not allow an app to be aborted by a perfectly valid IL opcode when executing
- * untrusted or semi-trusted code.
- *
- * \p policy_callback will be called every time a break point instruction needs to
- * be inserted with the method argument being the method that calls \c Debugger.Break
- * or has the IL \c break instruction. The callback should return \c MONO_BREAK_POLICY_NEVER
- * if it wants the breakpoint to not be effective in the given method.
- * \c MONO_BREAK_POLICY_ALWAYS is the default.
- */
-void
-mono_set_break_policy (MonoBreakPolicyFunc policy_callback)
-{
-	if (policy_callback)
-		break_policy_func = policy_callback;
-	else
-		break_policy_func = always_insert_breakpoint;
-}
-
-static gboolean
-should_insert_brekpoint (MonoMethod *method) {
-	switch (break_policy_func (method)) {
-	case MONO_BREAK_POLICY_ALWAYS:
-		return TRUE;
-	case MONO_BREAK_POLICY_NEVER:
-		return FALSE;
-	case MONO_BREAK_POLICY_ON_DBG:
-		g_warning ("mdb no longer supported");
-		return FALSE;
-	default:
-		g_warning ("Incorrect value returned from break policy callback");
-		return FALSE;
-	}
-}
-
 /* optimize the simple GetGenericValueImpl/SetGenericValueImpl generic icalls */
 static MonoInst*
 emit_array_generic_access (MonoCompile *cfg, MonoMethodSignature *fsig, MonoInst **args, int is_set)
@@ -4921,6 +4873,31 @@ mini_emit_inst_for_sharable_method (MonoCompile *cfg, MonoMethod *cmethod, MonoM
 
 	return NULL;
 }
+
+
+static gboolean
+mono_type_is_native_blittable (MonoType *t)
+{
+	if (MONO_TYPE_IS_REFERENCE (t))
+		return FALSE;
+
+	if (MONO_TYPE_IS_PRIMITIVE_SCALAR (t))
+		return TRUE;
+
+	MonoClass *klass = mono_class_from_mono_type (t);
+
+	//MonoClass::blitable depends on mono_class_setup_fields being done.
+	mono_class_setup_fields (klass);
+	if (!klass->blittable)
+		return FALSE;
+
+	// If the native marshal size is different we can't convert PtrToStructure to a type load
+	if (mono_class_native_size (klass, NULL) != mono_class_value_size (klass, NULL))
+		return FALSE;
+
+	return TRUE;
+}
+
 
 static MonoInst*
 mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSignature *fsig, MonoInst **args)
@@ -5738,7 +5715,7 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 			   (strcmp (cmethod->klass->name_space, "System.Diagnostics") == 0) &&
 			   (strcmp (cmethod->klass->name, "Debugger") == 0)) {
 		if (!strcmp (cmethod->name, "Break") && fsig->param_count == 0) {
-			if (should_insert_brekpoint (cfg->method)) {
+			if (mini_should_insert_breakpoint (cfg->method)) {
 				ins = mono_emit_jit_icall (cfg, mono_debugger_agent_user_break, NULL);
 			} else {
 				MONO_INST_NEW (cfg, ins, OP_NOP);
@@ -5836,6 +5813,20 @@ mini_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMethodSign
 			ins->inst_p0 = s;
 			MONO_ADD_INS (cfg->cbb, ins);
 			return ins;
+		}
+	} else if (cmethod->klass->image == mono_defaults.corlib &&
+			(strcmp (cmethod->klass->name_space, "System.Runtime.InteropServices") == 0) &&
+			(strcmp (cmethod->klass->name, "Marshal") == 0)) {
+		//Convert Marshal.PtrToStructure<T> of blittable T to direct loads
+		if (strcmp (cmethod->name, "PtrToStructure") == 0 &&
+				cmethod->is_inflated &&
+				fsig->param_count == 1 &&
+				!mini_method_check_context_used (cfg, cmethod)) {
+
+			MonoGenericContext *method_context = mono_method_get_context (cmethod);
+			MonoType *arg0 = method_context->method_inst->type_argv [0];
+			if (mono_type_is_native_blittable (arg0))
+				return mini_emit_memory_load (cfg, arg0, args [0], 0, 0);
 		}
 	}
 
@@ -7766,7 +7757,7 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 			MONO_ADD_INS (cfg->cbb, ins);
 			break;
 		case CEE_BREAK:
-			if (should_insert_brekpoint (cfg->method)) {
+			if (mini_should_insert_breakpoint (cfg->method)) {
 				ins = mono_emit_jit_icall (cfg, mono_debugger_agent_user_break, NULL);
 			} else {
 				MONO_INST_NEW (cfg, ins, OP_NOP);
@@ -14195,12 +14186,5 @@ NOTES
 - Instead of the to_end stuff in the old JIT, simply call the function handling
   the values on the stack before emitting the last instruction of the bb.
 */
-
-#else /* !DISABLE_JIT */
-
-void
-mono_set_break_policy (MonoBreakPolicyFunc policy_callback)
-{
-}
 
 #endif /* !DISABLE_JIT */
