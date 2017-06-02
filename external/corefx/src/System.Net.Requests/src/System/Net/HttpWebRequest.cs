@@ -23,6 +23,7 @@ namespace System.Net
     public class HttpWebRequest : WebRequest, ISerializable
     {
         private const int DefaultContinueTimeout = 350; // Current default value from .NET Desktop.
+        private const int DefaultReadWriteTimeout = 5 * 60 * 1000; // 5 minutes
 
         private WebHeaderCollection _webHeaderCollection = new WebHeaderCollection();
 
@@ -51,6 +52,8 @@ namespace System.Net
         private int _maximumResponseHeadersLen = _defaultMaxResponseHeadersLength;
         private ServicePoint _servicePoint;
         private int _timeout = WebRequest.DefaultTimeoutMilliseconds;
+        private int _readWriteTimeout = DefaultReadWriteTimeout;
+
         private HttpContinueDelegate _continueDelegate;
 
         // stores the user provided Host header as Uri. If the user specified a default port explicitly we'll lose
@@ -501,17 +504,7 @@ namespace System.Net
             }
         }
 
-        public override string ConnectionGroupName
-        {
-            get
-            {
-                throw NotImplemented.ByDesignWithMessage(SR.net_PropertyNotImplementedException);
-            }
-            set
-            {
-                throw NotImplemented.ByDesignWithMessage(SR.net_PropertyNotImplementedException);
-            }
-        }
+        public override string ConnectionGroupName { get; set; }
 
         public override bool PreAuthenticate
         {
@@ -796,16 +789,25 @@ namespace System.Net
             }
         }
 
-
         public int ReadWriteTimeout
         {
             get
             {
-                throw NotImplemented.ByDesignWithMessage(SR.net_PropertyNotImplementedException);
+                return _readWriteTimeout;
             }
             set
             {
-                throw NotImplemented.ByDesignWithMessage(SR.net_PropertyNotImplementedException);
+                if (RequestSubmitted)
+                {
+                    throw new InvalidOperationException(SR.net_reqsubmitted);
+                }
+
+                if (value <= 0 && value != System.Threading.Timeout.Infinite)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value), SR.net_io_timeout_use_gt_zero);
+                }
+
+                _readWriteTimeout = value;
             }
         }
 
@@ -1023,11 +1025,6 @@ namespace System.Net
         {
             CheckAbort();
 
-            if (RequestSubmitted)
-            {
-                throw new InvalidOperationException(SR.net_reqsubmitted);
-            }
-
             // Match Desktop behavior: prevent someone from getting a request stream
             // if the protocol verb/method doesn't support it. Note that this is not
             // entirely compliant RFC2616 for the aforementioned compatibility reasons.
@@ -1036,6 +1033,11 @@ namespace System.Net
                 string.Equals("CONNECT", _originVerb, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ProtocolViolationException(SR.net_nouploadonget);
+            }
+
+            if (RequestSubmitted)
+            {
+                throw new InvalidOperationException(SR.net_reqsubmitted);
             }
 
             _requestStream = new RequestStream();
@@ -1065,7 +1067,7 @@ namespace System.Net
             }
 
             _requestStreamCallback = callback;
-            _requestStreamOperation = GetRequestStreamTask().ToApm(callback, state);
+            _requestStreamOperation = InternalGetRequestStream().ToApm(callback, state);
 
             return _requestStreamOperation.Task;
         }
@@ -1095,30 +1097,6 @@ namespace System.Net
             }
 
             return stream;
-        }
-
-        private Task<Stream> GetRequestStreamTask()
-        {
-            CheckAbort();
-
-            if (RequestSubmitted)
-            {
-                throw new InvalidOperationException(SR.net_reqsubmitted);
-            }
-
-            // Match Desktop behavior: prevent someone from getting a request stream
-            // if the protocol verb/method doesn't support it. Note that this is not
-            // entirely compliant RFC2616 for the aforementioned compatibility reasons.
-            if (string.Equals(HttpMethod.Get.Method, _originVerb, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(HttpMethod.Head.Method, _originVerb, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals("CONNECT", _originVerb, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new ProtocolViolationException(SR.net_nouploadonget);
-            }
-
-            _requestStream = new RequestStream();
-
-            return Task.FromResult((Stream)_requestStream);
         }
 
         private async Task<WebResponse> SendRequest()

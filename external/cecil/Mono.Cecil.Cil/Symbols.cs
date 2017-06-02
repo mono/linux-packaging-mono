@@ -683,8 +683,9 @@ namespace Mono.Cecil.Cil {
 	}
 
 	public interface ISymbolReader : IDisposable {
-
+#if !READ_ONLY
 		ISymbolWriterProvider GetWriterProvider ();
+#endif
 		bool ProcessDebugHeader (ImageDebugHeader header);
 		MethodDebugInformation Read (MethodDefinition method);
 	}
@@ -930,6 +931,7 @@ namespace Mono.Cecil {
 		{
 			const uint ppdb_signature = 0x424a5342;
 
+			if (stream.Length < 4) return false;
 			var position = stream.Position;
 			try {
 				var reader = new BinaryReader (stream);

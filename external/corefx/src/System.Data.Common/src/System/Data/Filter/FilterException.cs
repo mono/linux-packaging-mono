@@ -14,6 +14,7 @@ namespace System.Data
         protected InvalidExpressionException(SerializationInfo info, StreamingContext context)
         : base(info, context)
         {
+            throw new PlatformNotSupportedException();
         }
 
         public InvalidExpressionException() : base() { }
@@ -28,7 +29,9 @@ namespace System.Data
         protected EvaluateException(SerializationInfo info, StreamingContext context)
         : base(info, context)
         {
+            throw new PlatformNotSupportedException();
         }
+
         public EvaluateException() : base() { }
         public EvaluateException(string s) : base(s) { }
 
@@ -41,6 +44,7 @@ namespace System.Data
         protected SyntaxErrorException(SerializationInfo info, StreamingContext context)
         : base(info, context)
         {
+            throw new PlatformNotSupportedException();
         }
 
         public SyntaxErrorException() : base() { }

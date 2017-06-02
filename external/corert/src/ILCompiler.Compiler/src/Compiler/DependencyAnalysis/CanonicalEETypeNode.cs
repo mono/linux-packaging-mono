@@ -26,6 +26,7 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(!type.IsCanonicalDefinitionType(CanonicalFormKind.Any));
             Debug.Assert(type.IsCanonicalSubtype(CanonicalFormKind.Any));
             Debug.Assert(type == type.ConvertToCanonForm(CanonicalFormKind.Specific));
+            Debug.Assert(!type.IsMdArray);
         }
 
         public override bool StaticDependenciesAreComputed => true;
@@ -49,6 +50,9 @@ namespace ILCompiler.DependencyAnalysis
                 dependencyList.Add(factory.InterfaceDispatchMap(_type), "Canonical interface dispatch map");
 
             dependencyList.Add(factory.VTable(_type), "VTable");
+
+            if (_type.IsCanonicalSubtype(CanonicalFormKind.Universal))
+                dependencyList.Add(factory.NativeLayout.TemplateTypeLayout(_type), "Universal generic types always have template layout");
 
             return dependencyList;
         }

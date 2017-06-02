@@ -38,7 +38,6 @@ using Internal.Runtime.Augments;
 
 namespace System.Globalization
 {
-    [Serializable]
     public partial class CultureInfo : IFormatProvider, ICloneable
     {
         //--------------------------------------------------------------------//
@@ -1276,6 +1275,14 @@ namespace System.Globalization
             {
                 throw new InvalidOperationException(SR.InvalidOperation_ReadOnly);
             }
+        }
+
+        // For resource lookup, we consider a culture the invariant culture by name equality. 
+        // We perform this check frequently during resource lookup, so adding a property for
+        // improved readability.
+        internal bool HasInvariantCultureName
+        {
+            get { return Name == CultureInfo.InvariantCulture.Name; }
         }
 
         // Helper function both both overloads of GetCachedReadOnlyCulture.  If lcid is 0, we use the name.

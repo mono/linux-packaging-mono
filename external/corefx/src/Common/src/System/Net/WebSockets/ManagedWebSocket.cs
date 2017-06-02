@@ -1207,7 +1207,7 @@ namespace System.Net.WebSockets
         {
             int maskShift = maskIndex * 8;
             int shiftedMask = (int)(((uint)mask >> maskShift) | ((uint)mask << (32 - maskShift)));
-#if MONO_FEATUR_SIMD
+#if MONO_FEATURE_SIMD
             // Try to use SIMD.  We can if the number of bytes we're trying to mask is at least as much
             // as the width of a vector and if the width is an even multiple of the mask.
             if (Vector.IsHardwareAccelerated &&

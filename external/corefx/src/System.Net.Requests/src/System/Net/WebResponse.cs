@@ -27,15 +27,17 @@ namespace System.Net
 
         protected WebResponse(SerializationInfo serializationInfo, StreamingContext streamingContext)
         {
+            throw new PlatformNotSupportedException();
         }
 
         void ISerializable.GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext)
         {
-            GetObjectData(serializationInfo, streamingContext);
+            throw new PlatformNotSupportedException();
         }
 
         protected virtual void GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext)
         {
+            throw new PlatformNotSupportedException();
         }
 
         public virtual void Close()

@@ -195,10 +195,12 @@ namespace System.IO.MemoryMappedFiles.Tests
             {
                 ValidateMemoryMappedFile(mmf, capacity);
             }
+
             using (MemoryMappedFile mmf = MemoryMappedFile.CreateNew(mapName, capacity, access))
             {
                 ValidateMemoryMappedFile(mmf, capacity, access);
             }
+
             using (MemoryMappedFile mmf = MemoryMappedFile.CreateNew(mapName, capacity, access, options, inheritability))
             {
                 ValidateMemoryMappedFile(mmf, capacity, access, inheritability);
