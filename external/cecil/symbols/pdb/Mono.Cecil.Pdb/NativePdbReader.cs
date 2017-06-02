@@ -35,11 +35,12 @@ namespace Mono.Cecil.Pdb {
 			this.pdb_file = file;
 		}
 
+#if !READ_ONLY
 		public ISymbolWriterProvider GetWriterProvider ()
 		{
 			return new NativePdbWriterProvider ();
 		}
-
+#endif
 		/*
 		uint Magic = 0x53445352;
 		Guid Signature;
@@ -211,6 +212,7 @@ namespace Mono.Cecil.Pdb {
 				} else {
 					import = GetImport (scope, info.Method.Module);
 					imports.Add (scope, import);
+					parent.import = import;
 				}
 			}
 

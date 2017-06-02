@@ -6202,6 +6202,13 @@ namespace System.Collections.Concurrent
 }
 namespace System.Collections.Generic
 {
+    public static partial class CollectionExtensions
+    {
+        public static TValue GetValueOrDefault<TKey, TValue>(this System.Collections.Generic.IReadOnlyDictionary<TKey, TValue> dictionary, TKey key) { throw null; }
+        public static TValue GetValueOrDefault<TKey, TValue>(this System.Collections.Generic.IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue) { throw null; }
+        public static bool Remove<TKey, TValue>(this System.Collections.Generic.IDictionary<TKey, TValue> dictionary, TKey key, out TValue value) { value = default(TValue); throw null; }
+        public static bool TryAdd<TKey, TValue>(this System.Collections.Generic.IDictionary<TKey, TValue> dictionary, TKey key, TValue value) { throw null; }
+    }
     [System.SerializableAttribute]
     public abstract partial class Comparer<T> : System.Collections.Generic.IComparer<T>, System.Collections.IComparer
     {
@@ -6248,8 +6255,6 @@ namespace System.Collections.Generic
         public bool ContainsValue(TValue value) { throw null; }
         public System.Collections.Generic.Dictionary<TKey, TValue>.Enumerator GetEnumerator() { throw null; }
         public virtual void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
-        public TValue GetValueOrDefault(TKey key) { throw null; }
-        public TValue GetValueOrDefault(TKey key, TValue defaultValue) { throw null; }
         public virtual void OnDeserialization(object sender) { }
         public bool Remove(TKey key) { throw null; }
         public bool Remove(TKey key, out TValue value) { value = default(TValue); throw null; }
@@ -13264,6 +13269,11 @@ namespace System.Runtime.CompilerServices
     public static partial class IsBoxed
     {
     }
+    [System.AttributeUsageAttribute((System.AttributeTargets)(8))]
+    public sealed partial class IsByRefLikeAttribute : System.Attribute
+    {
+        public IsByRefLikeAttribute() { }
+    }
     public static partial class IsByValue
     {
     }
@@ -13397,6 +13407,7 @@ namespace System.Runtime.CompilerServices
     }
     public static partial class RuntimeFeature
     {
+        public const string PortablePdb = "PortablePdb";
         public static bool IsSupported(string feature) { throw null; }
     }
     public static partial class RuntimeHelpers

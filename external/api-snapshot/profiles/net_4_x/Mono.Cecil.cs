@@ -6,7 +6,7 @@
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2015 Jb Evain")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("0.10.0.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0-beta5")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0-beta6")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono.Cecil")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Cecil")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
@@ -129,6 +129,7 @@ namespace Mono.Cecil
     public sealed partial class AssemblyResolutionException : System.IO.FileNotFoundException
     {
         public AssemblyResolutionException(Mono.Cecil.AssemblyNameReference reference) { }
+        public AssemblyResolutionException(Mono.Cecil.AssemblyNameReference reference, System.Exception innerException) { }
         public Mono.Cecil.AssemblyNameReference AssemblyReference { get { throw null; } }
     }
     public sealed partial class AssemblyResolveEventArgs : System.EventArgs

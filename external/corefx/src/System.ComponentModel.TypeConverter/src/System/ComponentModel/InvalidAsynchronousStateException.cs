@@ -39,6 +39,7 @@ namespace System.ComponentModel
 
         protected InvalidAsynchronousStateException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
+            throw new PlatformNotSupportedException();
         }
     }
 }

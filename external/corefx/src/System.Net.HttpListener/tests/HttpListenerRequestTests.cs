@@ -24,6 +24,11 @@ namespace System.Net.Tests
         {
             await GetRequest("POST", "", new string[] { acceptString }, (_, request) =>
             {
+                Assert.Equal(request.AcceptTypes, request.AcceptTypes);
+                if (expected != null)
+                {
+                    Assert.NotSame(request.AcceptTypes, request.AcceptTypes);
+                }
                 Assert.Equal(expected, request.AcceptTypes);
             });
         }
@@ -85,18 +90,80 @@ namespace System.Net.Tests
             await GetRequest("POST", "", new string[] { "Content-Length: 0", "Content-Type:application/json;charset=unicode" }, (_, request) =>
             {
                 Assert.Equal(Encoding.Default, request.ContentEncoding);
-            }, sendContent: false);
+            }, content: null);
         }
 
         [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
-        [InlineData("Content-Length: 0", 0)]
-        [InlineData("Transfer-Encoding: chunked", -1)]
-        public async Task ContentLength_GetProperty_ReturnsExpected(string contentLengthString, long expected)
+        [InlineData("POST", "Content-Length: 9223372036854775807", 9223372036854775807, true)] // long.MaxValue
+        [InlineData("POST", "Content-Length: 9223372036854775808", 0, false)] // long.MaxValue + 1
+        [InlineData("POST", "Content-Length: 18446744073709551615 ", 0, false)] // ulong.MaxValue
+        [InlineData("POST", "Content-Length: 0", 0, false)]
+        [InlineData("PUT", "Content-Length: 0", 0, false)]
+        [InlineData("PUT", "Content-Length: 1", 1, true)]
+        [InlineData("PUT", "Content-Length: 1\nContent-Length: 1", 1, true)]
+        [InlineData("POST", "Transfer-Encoding: chunked", -1, true)]
+        [InlineData("PUT", "Transfer-Encoding: chunked", -1, true)]
+        [InlineData("PUT", "Transfer-Encoding: chunked", -1, true)]
+        [InlineData("PUT", "Content-Length: 10\nTransfer-Encoding: chunked", -1, true)]
+        [InlineData("PUT", "Transfer-Encoding: chunked\nContent-Length: 10", -1, true)]
+        public async Task ContentLength_GetProperty_ReturnsExpected(string method, string contentLengthString, long expected, bool hasEntityBody)
         {
-            await GetRequest("POST", "", new string[] { contentLengthString }, (_, request) =>
+            await GetRequest(method, "", contentLengthString.Split('\n'), (_, request) =>
             {
                 Assert.Equal(expected, request.ContentLength64);
-            }, sendContent: false);
+                Assert.Equal(hasEntityBody, request.HasEntityBody);
+            }, content: "\r\n");
+        }
+
+        [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
+        [InlineData(100)]
+        [InlineData("-100")]
+        [InlineData("")]
+        [InlineData("abc")]
+        [InlineData("9223372036854775808")]
+        [ActiveIssue(20294, TargetFrameworkMonikers.Netcoreapp)]
+        public async Task ContentLength_ManuallySetInHeaders_ReturnsExpected(string newValue)
+        {
+            await GetRequest("POST", null, new string[] { "Content-Length: 1" }, (_, request) =>
+            {
+                Assert.Equal("1", request.Headers["Content-Length"]);
+
+                request.Headers.Set("Content-Length", newValue);
+                Assert.Equal(newValue, request.Headers["Content-Length"]);
+                Assert.Equal(1, request.ContentLength64);
+
+                Assert.True(request.HasEntityBody);
+            }, content: "\r\n");
+        }
+
+        [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
+        [ActiveIssue(20294, TargetFrameworkMonikers.Netcoreapp)]
+        public async Task ContentLength_ManuallyRemovedFromHeaders_DoesNotAffect()
+        {
+            await GetRequest("POST", null, new string[] { "Content-Length: 1" }, (_, request) =>
+            {
+                Assert.Equal("1", request.Headers["Content-Length"]);
+
+                request.Headers.Remove("Content-Length");
+                Assert.Equal(1, request.ContentLength64);
+
+                Assert.True(request.HasEntityBody);
+            }, content: "\r\n");
+        }
+
+        [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
+        public async Task ContentLength_SetInHeadersAfterAccessingProperty_DoesNothing()
+        {
+            await GetRequest("POST", null, new string[] { "Content-Length: 1" }, (_, request) =>
+            {
+                Assert.Equal("1", request.Headers["Content-Length"]);
+                Assert.Equal(1, request.ContentLength64);
+
+                request.Headers.Set("Content-Length", "1000");
+                Assert.Equal(1, request.ContentLength64);
+
+                Assert.True(request.HasEntityBody);
+            }, content: "\r\n");
         }
 
         [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
@@ -149,10 +216,16 @@ namespace System.Net.Tests
 
                 HttpListenerRequest request = context.Request;
                 Assert.Equal(client.RemoteEndPoint.ToString(), request.UserHostAddress);
+
                 Assert.Equal(client.RemoteEndPoint, request.LocalEndPoint);
+                Assert.Same(request.LocalEndPoint, request.LocalEndPoint);
+
                 Assert.Equal(client.LocalEndPoint, request.RemoteEndPoint);
+                Assert.Same(request.RemoteEndPoint, request.RemoteEndPoint);
 
                 Assert.Equal(factory.ListeningUrl, request.Url.ToString());
+                Assert.Same(request.Url, request.Url);
+
                 Assert.Equal($"/{factory.Path}/", request.RawUrl);
             }
         }
@@ -167,22 +240,11 @@ namespace System.Net.Tests
         }
         
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
-        [PlatformSpecific(TestPlatforms.Windows)]
         public async Task RequestTraceIdentifier_GetWindows_ReturnsExpected()
         {
             await GetRequest("POST", null, null, (_, request) =>
             {
                 Assert.NotEqual(Guid.Empty, request.RequestTraceIdentifier);
-            });
-        }
-
-        [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]
-        public async Task RequestTraceIdentifier_GetUnix_ReturnsExpected()
-        {
-            await GetRequest("POST", null, null, (_, request) =>
-            {
-                Assert.Equal(Guid.Empty, request.RequestTraceIdentifier);
             });
         }
 
@@ -219,30 +281,21 @@ namespace System.Net.Tests
         {
             await GetRequest("POST", "", new string[] { userLanguageString }, (_, request) =>
             {
+                Assert.Equal(request.UserLanguages, request.UserLanguages);
+                if (expected != null)
+                {
+                    Assert.NotSame(request.UserLanguages, request.UserLanguages);
+                }
                 Assert.Equal(expected, request.UserLanguages);
             });
         }
 
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
-        [PlatformSpecific(TestPlatforms.Windows)] // We get the ClientCertificate during connection on Unix.
         public async Task ClientCertificateError_GetNotInitialized_ThrowsInvalidOperationException()
         {
             await GetRequest("POST", null, null, (_, request) =>
             {
                 Assert.Throws<InvalidOperationException>(() => request.ClientCertificateError);
-            });
-        }
-
-        [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
-        [PlatformSpecific(TestPlatforms.Windows)] // We get the ClientCertificate during connection on Unix.
-        public async Task ClientCertificateError_GetWhileGettingCertificate_ThrowsInvalidOperationException()
-        {
-            await GetRequest("POST", null, null, (_, request) =>
-            {
-                request.BeginGetClientCertificate(null, null);
-                Assert.Throws<InvalidOperationException>(() => request.ClientCertificateError);
-                Assert.Throws<InvalidOperationException>(() => request.BeginGetClientCertificate(null, null));
-                Assert.Throws<InvalidOperationException>(() => request.GetClientCertificate());
             });
         }
 
@@ -257,7 +310,6 @@ namespace System.Net.Tests
         }
 
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
-        [ActiveIssue(18128, TestPlatforms.AnyUnix)] // Hangs forever.
         public async Task GetClientCertificateAsync_NoCertificate_ReturnsNull()
         {
             await GetRequest("POST", null, null, (_, request) =>
@@ -271,12 +323,11 @@ namespace System.Net.Tests
         {
             await GetRequest("POST", null, null, (_, request) =>
             {
-                Assert.Throws<ArgumentNullException>("asyncResult", () => request.EndGetClientCertificate(null));
+                AssertExtensions.Throws<ArgumentNullException>("asyncResult", () => request.EndGetClientCertificate(null));
             });
         }
 
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
-        [PlatformSpecific(TestPlatforms.Windows)] // We get the ClientCertificate during connection on Unix.
         public async Task EndGetClientCertificate_InvalidAsyncResult_ThrowsArgumentException()
         {
             await GetRequest("POST", null, null, (socket1, request1) =>
@@ -285,14 +336,13 @@ namespace System.Net.Tests
                 {
                     IAsyncResult beginGetClientCertificateResult1 = request1.BeginGetClientCertificate(null, null);
 
-                    Assert.Throws<ArgumentException>("asyncResult", () => request2.EndGetClientCertificate(new CustomAsyncResult()));
-                    Assert.Throws<ArgumentException>("asyncResult", () => request2.EndGetClientCertificate(beginGetClientCertificateResult1));
+                    AssertExtensions.Throws<ArgumentException>("asyncResult", () => request2.EndGetClientCertificate(new CustomAsyncResult()));
+                    AssertExtensions.Throws<ArgumentException>("asyncResult", () => request2.EndGetClientCertificate(beginGetClientCertificateResult1));
                 }).Wait();
             });
         }
 
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
-        [PlatformSpecific(TestPlatforms.Windows)] // We get the ClientCertificate during connection on Unix.
         public async Task EndGetClientCertificate_AlreadyCalled_ThrowsInvalidOperationException()
         {
             await GetRequest("POST", null, null, (_, request) =>
@@ -304,18 +354,7 @@ namespace System.Net.Tests
             });
         }
 
-        [Fact]
-        [PlatformSpecific(TestPlatforms.AnyUnix)]
-        public async Task TransportContext_GetUnix_ThrowsNotImplementedException()
-        {
-            await GetRequest("POST", null, null, (_, request) =>
-            {
-                Assert.Throws<NotImplementedException>(() => request.TransportContext.GetChannelBinding(ChannelBindingKind.Endpoint));
-            });
-        }
-
         [ConditionalFact(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
-        [PlatformSpecific(TestPlatforms.Windows)]
         public async Task TransportContext_GetChannelBinding_ReturnsExpected()
         {
             // This might not work on other devices:
@@ -329,8 +368,6 @@ namespace System.Net.Tests
 
         [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
         [InlineData(ChannelBindingKind.Unique)]
-        [InlineData(ChannelBindingKind.Unique)]
-        [PlatformSpecific(TestPlatforms.Windows)]
         public async Task TransportContext_GetChannelBindingInvalid_ThrowsNotSupportedException(ChannelBindingKind kind)
         {
             await GetRequest("POST", null, null, (_, request) =>
@@ -378,16 +415,21 @@ namespace System.Net.Tests
             };
 
             // Unicode queries are destroyed by HttpListener.
-            yield return new object[]
+            // [ActiveIssue(19967, TargetFrameworkMonikers.NetFramework)]
+            // 
+            if (!PlatformDetection.IsFullFramework)
             {
-                "?name1=+&name2=\u1234&\u0100=value&name3=\u00FF", new NameValueCollection
+                yield return new object[]
                 {
-                    { "name1", " " },
-                    { "name2", "á\u0088´" },
-                    { "Ä\u0080", "value" },
-                    { "name3", "Ã¿" }
-                }
-            };
+                    "?name1=+&name2=\u1234&\u0100=value&name3=\u00FF", new NameValueCollection
+                    {
+                        { "name1", " " },
+                        { "name2", "á\u0088´" },
+                        { "Ä\u0080", "value" },
+                        { "name3", "Ã¿" }
+                    }
+                };
+            }
 
             yield return new object[] { "", new NameValueCollection() };
             yield return new object[] { "?", new NameValueCollection() };
@@ -449,6 +491,55 @@ namespace System.Net.Tests
                 Assert.Equal(httpMethod, request.HttpMethod);
                 Assert.Equal(request.HttpMethod, request.HttpMethod);
             });
+        }
+
+        [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
+        [InlineData("1.1", new string[] { "Proxy-Connection: random" }, true)]
+        [InlineData("1.1", new string[] { "Proxy-Connection: close" }, false)]
+        [InlineData("1.1", new string[] { "proxy-connection: CLOSE" }, false)]
+        [InlineData("1.1", new string[] { "Proxy-Connection: keep-alive" }, true)]
+        [InlineData("1.1", new string[] { "Proxy-Connection: " }, true)]
+        [InlineData("1.1", new string[] { "Connection: random" }, true)]
+        [InlineData("1.1", new string[] { "Connection: close" }, false)]
+        [InlineData("1.1", new string[] { "connection: CLOSE" }, false)]
+        [InlineData("1.1", new string[] { "Connection: keep-alive" }, true)]
+        [InlineData("1.1", new string[] { "Connection: " }, true)]
+        [InlineData("1.1", new string[] { "Keep-Alive: true" }, true)]
+        [InlineData("1.1", new string[] { "Proxy-Connection: ", "Connection: close" }, false)]
+        [InlineData("1.1", new string[] { "Proxy-Connection: ", "Connection: close", "Keep-Alive: true" }, false)]
+        [InlineData("1.1", new string[] { "Connection: close", "Keep-Alive: true" }, false)]
+        [InlineData("1.1", new string[] { "UnknownHeader: random" }, true)]
+        [InlineData("1.0", new string[] { "Keep-Alive: true" }, true)]
+        [InlineData("1.0", new string[] { "Keep-Alive: " }, false)]
+        [InlineData("1.0", new string[] { "UnknownHeader: random" }, false)]
+        public async Task KeepAlive_GetProperty_ReturnsExpected(string httpVersion, string[] headers, bool expected)
+        {
+            await GetRequest("POST", "", headers, (_, request) =>
+            {
+                Assert.Equal(request.KeepAlive, request.KeepAlive);
+                Assert.Equal(expected, request.KeepAlive);
+            }, httpVersion: httpVersion);
+        }
+
+        [Theory]
+        [InlineData("1.0")]
+        [InlineData("1.1")]
+        [InlineData("1.2")]
+        [InlineData("1.3")]
+        [InlineData("1.4")]
+        [InlineData("1.5")]
+        [InlineData("1.6")]
+        [InlineData("1.7")]
+        [InlineData("1.8")]
+        [InlineData("1.9")]
+        public async Task ProtocolVersion_GetProperty_ReturnsExpected(string httpVersion)
+        {
+            var version = new Version(httpVersion);
+
+            await GetRequest("POST", "", new string[0], (_, request) =>
+            {
+                Assert.Equal(version, request.ProtocolVersion);
+            }, httpVersion: httpVersion);
         }
 
         public static IEnumerable<object[]> Cookies_TestData()
@@ -559,12 +650,32 @@ namespace System.Net.Tests
             });
         }
 
-        private async Task GetRequest(string requestType, string query, string[] headers, Action<Socket, HttpListenerRequest> requestAction, bool sendContent = true)
+        public static IEnumerable<object[]> Headers_TestData()
+        {
+            yield return new object[] { new string[] { "name:value" }, new WebHeaderCollection() { { "name", "value" } } };
+            yield return new object[] { new string[] { "name:val?ue" }, new WebHeaderCollection() { { "name", "val?ue" } } };
+        }
+
+        [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotOneCoreUAP))]
+        [MemberData(nameof(Headers_TestData))]
+        public async Task Headers_Get_ReturnsExpected(string[] headers, WebHeaderCollection expected)
+        {
+            await GetRequest("POST", null, headers, (_, request) =>
+            {
+                foreach (string name in expected)
+                {
+                    Assert.Equal(expected[name], request.Headers[name]);
+                    Assert.Same(request.Headers, request.Headers);
+                }
+            });
+        }
+
+        private async Task GetRequest(string requestType, string query, string[] headers, Action<Socket, HttpListenerRequest> requestAction, string content = "Text\r\n", string httpVersion = "1.1")
         {
             using (HttpListenerFactory factory = new HttpListenerFactory())
             using (Socket client = factory.GetConnectedSocket())
             {
-                client.Send(factory.GetContent(requestType, query, sendContent ? "Text" : "", headers, true));
+                client.Send(factory.GetContent(httpVersion, requestType, query, content, headers, true));
 
                 HttpListener listener = factory.GetListener();
                 HttpListenerContext context = await listener.GetContextAsync();

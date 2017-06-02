@@ -38,6 +38,9 @@ namespace System.IO
         }
 
         protected InternalBufferOverflowException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
+            : base(info, context)
+        {
+            throw new PlatformNotSupportedException();
+        }
     }
 }

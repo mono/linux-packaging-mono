@@ -110,12 +110,12 @@ namespace ILCompiler.DependencyAnalysis
                         DelegateCreationInfo createInfo = (DelegateCreationInfo)_target;
                         if (createInfo.NeedsVirtualMethodUseTracking)
                         {
-                            MethodDesc instantiatedTargetMethod = createInfo.TargetMethod.InstantiateSignature(typeInstantiation, methodInstantiation);
+                            MethodDesc instantiatedTargetMethod = createInfo.TargetMethod.GetNonRuntimeDeterminedMethodFromRuntimeDeterminedMethodViaSubstitution(typeInstantiation, methodInstantiation);
                             if (!factory.CompilationModuleGroup.ShouldProduceFullVTable(instantiatedTargetMethod.OwningType))
                             {
                                 result.Add(
                                     new DependencyListEntry(
-                                        factory.VirtualMethodUse(createInfo.TargetMethod.InstantiateSignature(typeInstantiation, methodInstantiation)),
+                                        factory.VirtualMethodUse(instantiatedTargetMethod),
                                         "Dictionary dependency"));
                             }
 
@@ -130,7 +130,7 @@ namespace ILCompiler.DependencyAnalysis
 
                 case ReadyToRunHelperId.ResolveVirtualFunction:
                     {
-                        MethodDesc instantiatedTarget = ((MethodDesc)_target).InstantiateSignature(typeInstantiation, methodInstantiation);
+                        MethodDesc instantiatedTarget = ((MethodDesc)_target).GetNonRuntimeDeterminedMethodFromRuntimeDeterminedMethodViaSubstitution(typeInstantiation, methodInstantiation);
                         if (!factory.CompilationModuleGroup.ShouldProduceFullVTable(instantiatedTarget.OwningType))
                         {
                             result.Add(
@@ -184,8 +184,7 @@ namespace ILCompiler.DependencyAnalysis
             }
             else
             {
-                DefType actualTemplateType = GenericTypesTemplateMap.GetActualTemplateTypeForType(factory, (TypeDesc)_dictionaryOwner);
-                dependencies.Add(factory.NativeLayout.TemplateTypeLayout(actualTemplateType), "Type loader template");
+                dependencies.Add(factory.NativeLayout.TemplateTypeLayout((TypeDesc)_dictionaryOwner), "Type loader template");
             }
 
             return dependencies;
@@ -205,8 +204,7 @@ namespace ILCompiler.DependencyAnalysis
             }
             else
             {
-                DefType actualTemplateType = GenericTypesTemplateMap.GetActualTemplateTypeForType(factory, (TypeDesc)_dictionaryOwner);
-                templateLayout = factory.NativeLayout.TemplateTypeLayout(actualTemplateType);
+                templateLayout = factory.NativeLayout.TemplateTypeLayout((TypeDesc)_dictionaryOwner);
                 conditionalDependencies.Add(new CombinedDependencyListEntry(_lookupSignature.TemplateDictionaryNode(factory),
                                                                 templateLayout,
                                                                 "Type loader template"));

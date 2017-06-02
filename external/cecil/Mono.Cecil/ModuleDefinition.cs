@@ -1126,7 +1126,7 @@ namespace Mono.Cecil {
 			Mixin.CheckStream (stream);
 			Mixin.CheckReadSeek (stream);
 
-			return ReadModule (Disposable.NotOwned (stream), "", parameters);
+			return ReadModule (Disposable.NotOwned (stream), stream.GetFileName (), parameters);
 		}
 
 		static ModuleDefinition ReadModule (Disposable<Stream> stream, string fileName, ReaderParameters parameters)
@@ -1149,7 +1149,7 @@ namespace Mono.Cecil {
 		{
 			Mixin.CheckParameters (parameters);
 			var file = GetFileStream (fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
-			ModuleWriter.WriteModuleTo (this, Disposable.Owned (file), parameters);
+			ModuleWriter.WriteModule (this, Disposable.Owned (file), parameters);
 		}
 
 		public void Write ()
@@ -1176,7 +1176,7 @@ namespace Mono.Cecil {
 			Mixin.CheckWriteSeek (stream);
 			Mixin.CheckParameters (parameters);
 
-			ModuleWriter.WriteModuleTo (this, Disposable.NotOwned (stream), parameters);
+			ModuleWriter.WriteModule (this, Disposable.NotOwned (stream), parameters);
 		}
 
 #endif
@@ -1246,8 +1246,6 @@ namespace Mono.Cecil {
 				throw new ArgumentException ();
 		}
 
-#if !READ_ONLY
-
 		public static void CheckType (object type)
 		{
 			if (type == null)
@@ -1271,8 +1269,6 @@ namespace Mono.Cecil {
 			if (method == null)
 				throw new ArgumentNullException (Argument.method.ToString ());
 		}
-
-#endif
 
 		public static void CheckParameters (object parameters)
 		{
