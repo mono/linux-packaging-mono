@@ -148,17 +148,17 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.h \
 	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-route.c mono-route.h monitor.h nacl-stub.c \
-	normalization-tables.h number-formatter.h number-ms.c \
-	number-ms.h object-internals.h opcodes.c property-bag.h \
-	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
-	w32process.c w32process.h w32process-internals.h profiler.c \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.h sysmath.c \
-	tabledefs.h threads.c threads-types.h threadpool.c \
-	threadpool.h threadpool-worker-default.c threadpool-worker.h \
+	mono-route.c mono-route.h monitor.h normalization-tables.h \
+	number-formatter.h number-ms.c number-ms.h object-internals.h \
+	opcodes.c property-bag.h property-bag.c w32socket.c \
+	w32socket.h w32socket-internals.h w32process.c w32process.h \
+	w32process-internals.h profiler.c profiler-private.h rand.h \
+	rand.c remoting.h remoting.c runtime.c mono-security.c \
+	security.h security-core-clr.c security-core-clr.h \
+	security-manager.c security-manager.h string-icalls.c \
+	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
+	threads-types.h threadpool.c threadpool.h \
+	threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
@@ -234,7 +234,6 @@ am__objects_5 = $(am__objects_4) libmonoruntime_static_la-assembly.lo \
 	libmonoruntime_static_la-mono-mlist.lo \
 	libmonoruntime_static_la-mono-perfcounters.lo \
 	libmonoruntime_static_la-mono-route.lo \
-	libmonoruntime_static_la-nacl-stub.lo \
 	libmonoruntime_static_la-number-ms.lo \
 	libmonoruntime_static_la-opcodes.lo \
 	libmonoruntime_static_la-property-bag.lo \
@@ -323,17 +322,17 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.h \
 	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-route.c mono-route.h monitor.h nacl-stub.c \
-	normalization-tables.h number-formatter.h number-ms.c \
-	number-ms.h object-internals.h opcodes.c property-bag.h \
-	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
-	w32process.c w32process.h w32process-internals.h profiler.c \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.h sysmath.c \
-	tabledefs.h threads.c threads-types.h threadpool.c \
-	threadpool.h threadpool-worker-default.c threadpool-worker.h \
+	mono-route.c mono-route.h monitor.h normalization-tables.h \
+	number-formatter.h number-ms.c number-ms.h object-internals.h \
+	opcodes.c property-bag.h property-bag.c w32socket.c \
+	w32socket.h w32socket-internals.h w32process.c w32process.h \
+	w32process-internals.h profiler.c profiler-private.h rand.h \
+	rand.c remoting.h remoting.c runtime.c mono-security.c \
+	security.h security-core-clr.c security-core-clr.h \
+	security-manager.c security-manager.h string-icalls.c \
+	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
+	threads-types.h threadpool.c threadpool.h \
+	threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
@@ -397,9 +396,8 @@ am__objects_14 = $(am__objects_13) libmonoruntime_la-assembly.lo \
 	libmonoruntime_la-mono-endian.lo \
 	libmonoruntime_la-mono-mlist.lo \
 	libmonoruntime_la-mono-perfcounters.lo \
-	libmonoruntime_la-mono-route.lo libmonoruntime_la-nacl-stub.lo \
-	libmonoruntime_la-number-ms.lo libmonoruntime_la-opcodes.lo \
-	libmonoruntime_la-property-bag.lo \
+	libmonoruntime_la-mono-route.lo libmonoruntime_la-number-ms.lo \
+	libmonoruntime_la-opcodes.lo libmonoruntime_la-property-bag.lo \
 	libmonoruntime_la-w32socket.lo libmonoruntime_la-w32process.lo \
 	libmonoruntime_la-profiler.lo libmonoruntime_la-rand.lo \
 	libmonoruntime_la-remoting.lo libmonoruntime_la-runtime.lo \
@@ -476,17 +474,17 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.h \
 	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-route.c mono-route.h monitor.h nacl-stub.c \
-	normalization-tables.h number-formatter.h number-ms.c \
-	number-ms.h object-internals.h opcodes.c property-bag.h \
-	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
-	w32process.c w32process.h w32process-internals.h profiler.c \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.h sysmath.c \
-	tabledefs.h threads.c threads-types.h threadpool.c \
-	threadpool.h threadpool-worker-default.c threadpool-worker.h \
+	mono-route.c mono-route.h monitor.h normalization-tables.h \
+	number-formatter.h number-ms.c number-ms.h object-internals.h \
+	opcodes.c property-bag.h property-bag.c w32socket.c \
+	w32socket.h w32socket-internals.h w32process.c w32process.h \
+	w32process-internals.h profiler.c profiler-private.h rand.h \
+	rand.c remoting.h remoting.c runtime.c mono-security.c \
+	security.h security-core-clr.c security-core-clr.h \
+	security-manager.c security-manager.h string-icalls.c \
+	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
+	threads-types.h threadpool.c threadpool.h \
+	threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
@@ -563,7 +561,6 @@ am__objects_22 = $(am__objects_21) \
 	libmonoruntimesgen_static_la-mono-mlist.lo \
 	libmonoruntimesgen_static_la-mono-perfcounters.lo \
 	libmonoruntimesgen_static_la-mono-route.lo \
-	libmonoruntimesgen_static_la-nacl-stub.lo \
 	libmonoruntimesgen_static_la-number-ms.lo \
 	libmonoruntimesgen_static_la-opcodes.lo \
 	libmonoruntimesgen_static_la-property-bag.lo \
@@ -657,17 +654,17 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	debug-internals.h mono-endian.c mono-endian.h mono-hash.h \
 	mono-conc-hash.h mono-mlist.c mono-mlist.h mono-perfcounters.c \
 	mono-perfcounters.h mono-perfcounters-def.h mono-ptr-array.h \
-	mono-route.c mono-route.h monitor.h nacl-stub.c \
-	normalization-tables.h number-formatter.h number-ms.c \
-	number-ms.h object-internals.h opcodes.c property-bag.h \
-	property-bag.c w32socket.c w32socket.h w32socket-internals.h \
-	w32process.c w32process.h w32process-internals.h profiler.c \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.h sysmath.c \
-	tabledefs.h threads.c threads-types.h threadpool.c \
-	threadpool.h threadpool-worker-default.c threadpool-worker.h \
+	mono-route.c mono-route.h monitor.h normalization-tables.h \
+	number-formatter.h number-ms.c number-ms.h object-internals.h \
+	opcodes.c property-bag.h property-bag.c w32socket.c \
+	w32socket.h w32socket-internals.h w32process.c w32process.h \
+	w32process-internals.h profiler.c profiler-private.h rand.h \
+	rand.c remoting.h remoting.c runtime.c mono-security.c \
+	security.h security-core-clr.c security-core-clr.h \
+	security-manager.c security-manager.h string-icalls.c \
+	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
+	threads-types.h threadpool.c threadpool.h \
+	threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
@@ -743,7 +740,6 @@ am__objects_30 = $(am__objects_29) libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-mono-mlist.lo \
 	libmonoruntimesgen_la-mono-perfcounters.lo \
 	libmonoruntimesgen_la-mono-route.lo \
-	libmonoruntimesgen_la-nacl-stub.lo \
 	libmonoruntimesgen_la-number-ms.lo \
 	libmonoruntimesgen_la-opcodes.lo \
 	libmonoruntimesgen_la-property-bag.lo \
@@ -990,7 +986,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
-MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -1088,7 +1083,6 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
-nacl_self_host = @nacl_self_host@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -1272,7 +1266,6 @@ common_sources = \
 	mono-route.c		\
 	mono-route.h		\
 	monitor.h		\
-	nacl-stub.c		\
 	normalization-tables.h	\
 	number-formatter.h	\
 	number-ms.c		\
@@ -1564,7 +1557,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-route.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-security-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-mono-security.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-nacl-stub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-null-gc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-number-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-object.Plo@am__quote@
@@ -1664,7 +1656,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-route.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-security-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-mono-security.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-nacl-stub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-null-gc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-number-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-object.Plo@am__quote@
@@ -1763,7 +1754,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-route.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-security-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-mono-security.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-nacl-stub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-number-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-opcodes.Plo@am__quote@
@@ -1868,7 +1858,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-route.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-security-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-mono-security.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-nacl-stub.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-number-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-opcodes.Plo@am__quote@
@@ -2352,13 +2341,6 @@ libmonoruntime_static_la-mono-route.lo: mono-route.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-route.c' object='libmonoruntime_static_la-mono-route.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
-
-libmonoruntime_static_la-nacl-stub.lo: nacl-stub.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-nacl-stub.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-nacl-stub.Tpo -c -o libmonoruntime_static_la-nacl-stub.lo `test -f 'nacl-stub.c' || echo '$(srcdir)/'`nacl-stub.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-nacl-stub.Tpo $(DEPDIR)/libmonoruntime_static_la-nacl-stub.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nacl-stub.c' object='libmonoruntime_static_la-nacl-stub.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-nacl-stub.lo `test -f 'nacl-stub.c' || echo '$(srcdir)/'`nacl-stub.c
 
 libmonoruntime_static_la-number-ms.lo: number-ms.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-number-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-number-ms.Tpo -c -o libmonoruntime_static_la-number-ms.lo `test -f 'number-ms.c' || echo '$(srcdir)/'`number-ms.c
@@ -3060,13 +3042,6 @@ libmonoruntime_la-mono-route.lo: mono-route.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
 
-libmonoruntime_la-nacl-stub.lo: nacl-stub.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-nacl-stub.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-nacl-stub.Tpo -c -o libmonoruntime_la-nacl-stub.lo `test -f 'nacl-stub.c' || echo '$(srcdir)/'`nacl-stub.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-nacl-stub.Tpo $(DEPDIR)/libmonoruntime_la-nacl-stub.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nacl-stub.c' object='libmonoruntime_la-nacl-stub.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-nacl-stub.lo `test -f 'nacl-stub.c' || echo '$(srcdir)/'`nacl-stub.c
-
 libmonoruntime_la-number-ms.lo: number-ms.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-number-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-number-ms.Tpo -c -o libmonoruntime_la-number-ms.lo `test -f 'number-ms.c' || echo '$(srcdir)/'`number-ms.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-number-ms.Tpo $(DEPDIR)/libmonoruntime_la-number-ms.Plo
@@ -3766,13 +3741,6 @@ libmonoruntimesgen_static_la-mono-route.lo: mono-route.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-route.c' object='libmonoruntimesgen_static_la-mono-route.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
-
-libmonoruntimesgen_static_la-nacl-stub.lo: nacl-stub.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-nacl-stub.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-nacl-stub.Tpo -c -o libmonoruntimesgen_static_la-nacl-stub.lo `test -f 'nacl-stub.c' || echo '$(srcdir)/'`nacl-stub.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-nacl-stub.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-nacl-stub.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nacl-stub.c' object='libmonoruntimesgen_static_la-nacl-stub.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-nacl-stub.lo `test -f 'nacl-stub.c' || echo '$(srcdir)/'`nacl-stub.c
 
 libmonoruntimesgen_static_la-number-ms.lo: number-ms.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-number-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-number-ms.Tpo -c -o libmonoruntimesgen_static_la-number-ms.lo `test -f 'number-ms.c' || echo '$(srcdir)/'`number-ms.c
@@ -4508,13 +4476,6 @@ libmonoruntimesgen_la-mono-route.lo: mono-route.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mono-route.c' object='libmonoruntimesgen_la-mono-route.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-mono-route.lo `test -f 'mono-route.c' || echo '$(srcdir)/'`mono-route.c
-
-libmonoruntimesgen_la-nacl-stub.lo: nacl-stub.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-nacl-stub.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-nacl-stub.Tpo -c -o libmonoruntimesgen_la-nacl-stub.lo `test -f 'nacl-stub.c' || echo '$(srcdir)/'`nacl-stub.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-nacl-stub.Tpo $(DEPDIR)/libmonoruntimesgen_la-nacl-stub.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='nacl-stub.c' object='libmonoruntimesgen_la-nacl-stub.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-nacl-stub.lo `test -f 'nacl-stub.c' || echo '$(srcdir)/'`nacl-stub.c
 
 libmonoruntimesgen_la-number-ms.lo: number-ms.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-number-ms.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-number-ms.Tpo -c -o libmonoruntimesgen_la-number-ms.lo `test -f 'number-ms.c' || echo '$(srcdir)/'`number-ms.c

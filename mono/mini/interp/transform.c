@@ -1327,7 +1327,7 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 	MonoMethodHeader *header = mono_method_get_header (method);
 	MonoMethodSignature *signature = mono_method_signature (method);
 	MonoImage *image = method->klass->image;
-	MonoDomain *domain = mono_domain_get ();
+	MonoDomain *domain = rtm->domain;
 	MonoClass *constrained_class = NULL;
 	MonoError error;
 	int offset, mt, i, i32;
@@ -2565,11 +2565,14 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 
 			MonoClass *field_klass = mono_class_from_mono_type (field->type);
 			mt = mint_type (&field_klass->byval_arg);
+#ifndef DISABLE_REMOTING
 			if (klass->marshalbyref) {
 				g_assert (!is_static);
 				ADD_CODE(&td, mt == MINT_TYPE_VT ? MINT_LDRMFLD_VT :  MINT_LDRMFLD);
 				ADD_CODE(&td, get_data_item_index (&td, field));
-			} else  {
+			} else
+#endif
+			{
 				if (is_static) {
 					ADD_CODE (&td, MINT_POP);
 					ADD_CODE (&td, 0);
@@ -2605,11 +2608,14 @@ generate (MonoMethod *method, RuntimeMethod *rtm, unsigned char *is_bb_start, Mo
 			mono_class_init (klass);
 			mt = mint_type(field->type);
 
+#ifndef DISABLE_REMOTING
 			if (klass->marshalbyref) {
 				g_assert (!is_static);
 				ADD_CODE(&td, mt == MINT_TYPE_VT ? MINT_STRMFLD_VT : MINT_STRMFLD);
 				ADD_CODE(&td, get_data_item_index (&td, field));
-			} else  {
+			} else
+#endif
+			{
 				if (is_static) {
 					ADD_CODE (&td, MINT_POP);
 					ADD_CODE (&td, 1);
@@ -3915,12 +3921,12 @@ mono_interp_transform_method (RuntimeMethod *runtime_method, ThreadContext *cont
 	const MonoOpcode *opcode;
 	MonoMethod *m;
 	MonoClass *class;
-	MonoDomain *domain = mono_domain_get ();
 	unsigned char *is_bb_start;
 	int in;
 	MonoVTable *method_class_vt;
 	int backwards;
 	MonoGenericContext *generic_context = NULL;
+	MonoDomain *domain = runtime_method->domain;
 
 	// g_printerr ("TRANSFORM(0x%016lx): begin %s::%s\n", mono_thread_current (), method->klass->name, method->name);
 	method_class_vt = mono_class_vtable (domain, runtime_method->method->klass);

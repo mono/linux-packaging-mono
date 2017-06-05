@@ -7346,9 +7346,9 @@ namespace System.Diagnostics.Tracing
         Verbose = 5,
         Warning = 3,
     }
-    public abstract partial class EventListener : System.IDisposable
+    public partial class EventListener : System.IDisposable
     {
-        protected EventListener() { }
+        public EventListener() { }
         public void DisableEvents(System.Diagnostics.Tracing.EventSource eventSource) { }
         public virtual void Dispose() { }
         public void EnableEvents(System.Diagnostics.Tracing.EventSource eventSource, System.Diagnostics.Tracing.EventLevel level) { }
@@ -7356,7 +7356,7 @@ namespace System.Diagnostics.Tracing
         public void EnableEvents(System.Diagnostics.Tracing.EventSource eventSource, System.Diagnostics.Tracing.EventLevel level, System.Diagnostics.Tracing.EventKeywords matchAnyKeyword, System.Collections.Generic.IDictionary<string, string> arguments) { }
         public static int EventSourceIndex(System.Diagnostics.Tracing.EventSource eventSource) { throw null; }
         protected internal virtual void OnEventSourceCreated(System.Diagnostics.Tracing.EventSource eventSource) { }
-        protected internal abstract void OnEventWritten(System.Diagnostics.Tracing.EventWrittenEventArgs eventData);
+        protected internal virtual void OnEventWritten(System.Diagnostics.Tracing.EventWrittenEventArgs eventData) { }
     }
     [System.FlagsAttribute]
     public enum EventManifestOptions
@@ -11052,12 +11052,13 @@ namespace System.Reflection
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public sealed partial class ReflectionTypeLoadException : System.SystemException
+    public sealed partial class ReflectionTypeLoadException : System.SystemException, System.Runtime.Serialization.ISerializable
     {
         public ReflectionTypeLoadException(System.Type[] classes, System.Exception[] exceptions) { }
         public ReflectionTypeLoadException(System.Type[] classes, System.Exception[] exceptions, string message) { }
         public System.Exception[] LoaderExceptions { get { throw null; } }
         public System.Type[] Types { get { throw null; } }
+        [System.Security.SecurityCriticalAttribute]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.FlagsAttribute]
@@ -12884,7 +12885,7 @@ namespace System.Runtime.InteropServices
         public BStrWrapper(string value) { }
         public string WrappedObject { get { throw null; } }
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.CALLCONV instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
     public enum CALLCONV
     {
@@ -13149,7 +13150,7 @@ namespace System.Runtime.InteropServices
         public DispIdAttribute(int dispId) { }
         public int Value { get { throw null; } }
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.DISPPARAMS instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]
     public partial struct DISPPARAMS
     {
@@ -13184,7 +13185,7 @@ namespace System.Runtime.InteropServices
         UseDllDirectoryForDependencies = 256,
         UserDirectories = 1024,
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.ELEMDESC instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]
     public partial struct ELEMDESC
     {
@@ -13210,6 +13211,22 @@ namespace System.Runtime.InteropServices
         public ErrorWrapper(int errorCode) { }
         public ErrorWrapper(object errorCode) { }
         public int ErrorCode { get { throw null; } }
+    }
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.EXCEPINFO instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]
+    public partial struct EXCEPINFO
+    {
+        [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]
+        public string bstrDescription;
+        [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]
+        public string bstrHelpFile;
+        [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]
+        public string bstrSource;
+        public int dwHelpContext;
+        public System.IntPtr pfnDeferredFillIn;
+        public System.IntPtr pvReserved;
+        public short wCode;
+        public short wReserved;
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
@@ -13251,7 +13268,7 @@ namespace System.Runtime.InteropServices
         public int dwHighDateTime;
         public int dwLowDateTime;
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.FUNCDESC instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct FUNCDESC
     {
@@ -13269,25 +13286,25 @@ namespace System.Runtime.InteropServices
         public short wFuncFlags;
     }
     [System.FlagsAttribute]
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.FUNCFLAGS instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
-    public enum FUNCFLAGS
+    public enum FUNCFLAGS : short
     {
-        FUNCFLAG_FBINDABLE = 4,
-        FUNCFLAG_FDEFAULTBIND = 32,
-        FUNCFLAG_FDEFAULTCOLLELEM = 256,
-        FUNCFLAG_FDISPLAYBIND = 16,
-        FUNCFLAG_FHIDDEN = 64,
-        FUNCFLAG_FIMMEDIATEBIND = 4096,
-        FUNCFLAG_FNONBROWSABLE = 1024,
-        FUNCFLAG_FREPLACEABLE = 2048,
-        FUNCFLAG_FREQUESTEDIT = 8,
-        FUNCFLAG_FRESTRICTED = 1,
-        FUNCFLAG_FSOURCE = 2,
-        FUNCFLAG_FUIDEFAULT = 512,
-        FUNCFLAG_FUSESGETLASTERROR = 128,
+        FUNCFLAG_FBINDABLE = (short)4,
+        FUNCFLAG_FDEFAULTBIND = (short)32,
+        FUNCFLAG_FDEFAULTCOLLELEM = (short)256,
+        FUNCFLAG_FDISPLAYBIND = (short)16,
+        FUNCFLAG_FHIDDEN = (short)64,
+        FUNCFLAG_FIMMEDIATEBIND = (short)4096,
+        FUNCFLAG_FNONBROWSABLE = (short)1024,
+        FUNCFLAG_FREPLACEABLE = (short)2048,
+        FUNCFLAG_FREQUESTEDIT = (short)8,
+        FUNCFLAG_FRESTRICTED = (short)1,
+        FUNCFLAG_FSOURCE = (short)2,
+        FUNCFLAG_FUIDEFAULT = (short)512,
+        FUNCFLAG_FUSESGETLASTERROR = (short)128,
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.FUNCKIND instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
     public enum FUNCKIND
     {
@@ -13387,7 +13404,7 @@ namespace System.Runtime.InteropServices
         InternalImpl = 1,
         SystemDefinedImpl = 0,
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.IDLDESC instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]
     public partial struct IDLDESC
     {
@@ -13395,18 +13412,18 @@ namespace System.Runtime.InteropServices
         public System.Runtime.InteropServices.IDLFLAG wIDLFlags;
     }
     [System.FlagsAttribute]
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.IDLFLAG instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
-    public enum IDLFLAG
+    public enum IDLFLAG : short
     {
-        IDLFLAG_FIN = 1,
-        IDLFLAG_FLCID = 4,
-        IDLFLAG_FOUT = 2,
-        IDLFLAG_FRETVAL = 8,
-        IDLFLAG_NONE = 0,
+        IDLFLAG_FIN = (short)1,
+        IDLFLAG_FLCID = (short)4,
+        IDLFLAG_FOUT = (short)2,
+        IDLFLAG_FRETVAL = (short)8,
+        IDLFLAG_NONE = (short)0,
     }
     [System.FlagsAttribute]
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.IMPLTYPEFLAGS instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
     public enum IMPLTYPEFLAGS
     {
@@ -13462,7 +13479,7 @@ namespace System.Runtime.InteropServices
         public InvalidOleVariantTypeException(string message) { }
         public InvalidOleVariantTypeException(string message, System.Exception inner) { }
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.INVOKEKIND instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
     public enum INVOKEKIND
     {
@@ -13762,7 +13779,7 @@ namespace System.Runtime.InteropServices
     {
         public OutAttribute() { }
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.PARAMDESC instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]
     public partial struct PARAMDESC
     {
@@ -13770,18 +13787,18 @@ namespace System.Runtime.InteropServices
         public System.Runtime.InteropServices.PARAMFLAG wParamFlags;
     }
     [System.FlagsAttribute]
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.PARAMFLAG instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
-    public enum PARAMFLAG
+    public enum PARAMFLAG : short
     {
-        PARAMFLAG_FHASCUSTDATA = 64,
-        PARAMFLAG_FHASDEFAULT = 32,
-        PARAMFLAG_FIN = 1,
-        PARAMFLAG_FLCID = 4,
-        PARAMFLAG_FOPT = 16,
-        PARAMFLAG_FOUT = 2,
-        PARAMFLAG_FRETVAL = 8,
-        PARAMFLAG_NONE = 0,
+        PARAMFLAG_FHASCUSTDATA = (short)64,
+        PARAMFLAG_FHASDEFAULT = (short)32,
+        PARAMFLAG_FIN = (short)1,
+        PARAMFLAG_FLCID = (short)4,
+        PARAMFLAG_FOPT = (short)16,
+        PARAMFLAG_FOUT = (short)2,
+        PARAMFLAG_FRETVAL = (short)8,
+        PARAMFLAG_NONE = (short)0,
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(64), Inherited=false)]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -13987,7 +14004,7 @@ namespace System.Runtime.InteropServices
         SYS_WIN16 = 0,
         SYS_WIN32 = 1,
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.TYPEATTR instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]
     public partial struct TYPEATTR
     {
@@ -14011,7 +14028,7 @@ namespace System.Runtime.InteropServices
         public short wMinorVerNum;
         public System.Runtime.InteropServices.TYPEFLAGS wTypeFlags;
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.TYPEDESC instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]
     public partial struct TYPEDESC
     {
@@ -14019,25 +14036,25 @@ namespace System.Runtime.InteropServices
         public short vt;
     }
     [System.FlagsAttribute]
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.TYPEFLAGS instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
-    public enum TYPEFLAGS
+    public enum TYPEFLAGS : short
     {
-        TYPEFLAG_FAGGREGATABLE = 1024,
-        TYPEFLAG_FAPPOBJECT = 1,
-        TYPEFLAG_FCANCREATE = 2,
-        TYPEFLAG_FCONTROL = 32,
-        TYPEFLAG_FDISPATCHABLE = 4096,
-        TYPEFLAG_FDUAL = 64,
-        TYPEFLAG_FHIDDEN = 16,
-        TYPEFLAG_FLICENSED = 4,
-        TYPEFLAG_FNONEXTENSIBLE = 128,
-        TYPEFLAG_FOLEAUTOMATION = 256,
-        TYPEFLAG_FPREDECLID = 8,
-        TYPEFLAG_FPROXY = 16384,
-        TYPEFLAG_FREPLACEABLE = 2048,
-        TYPEFLAG_FRESTRICTED = 512,
-        TYPEFLAG_FREVERSEBIND = 8192,
+        TYPEFLAG_FAGGREGATABLE = (short)1024,
+        TYPEFLAG_FAPPOBJECT = (short)1,
+        TYPEFLAG_FCANCREATE = (short)2,
+        TYPEFLAG_FCONTROL = (short)32,
+        TYPEFLAG_FDISPATCHABLE = (short)4096,
+        TYPEFLAG_FDUAL = (short)64,
+        TYPEFLAG_FHIDDEN = (short)16,
+        TYPEFLAG_FLICENSED = (short)4,
+        TYPEFLAG_FNONEXTENSIBLE = (short)128,
+        TYPEFLAG_FOLEAUTOMATION = (short)256,
+        TYPEFLAG_FPREDECLID = (short)8,
+        TYPEFLAG_FPROXY = (short)16384,
+        TYPEFLAG_FREPLACEABLE = (short)2048,
+        TYPEFLAG_FRESTRICTED = (short)512,
+        TYPEFLAG_FREVERSEBIND = (short)8192,
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(5144), AllowMultiple=false, Inherited=false)]
     [System.Runtime.InteropServices.ComVisibleAttribute(false)]
@@ -14048,7 +14065,7 @@ namespace System.Runtime.InteropServices
         public string Identifier { get { throw null; } }
         public string Scope { get { throw null; } }
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.TYPEKIND instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
     public enum TYPEKIND
     {
@@ -14235,7 +14252,7 @@ namespace System.Runtime.InteropServices
         VariantBool = 37,
         VBByRefStr = 34,
     }
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.VARDESC instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet=System.Runtime.InteropServices.CharSet.Unicode)]
     public partial struct VARDESC
     {
@@ -14304,23 +14321,23 @@ namespace System.Runtime.InteropServices
         VT_VOID = 24,
     }
     [System.FlagsAttribute]
-    [System.ObsoleteAttribute]
+    [System.ObsoleteAttribute("Use System.Runtime.InteropServices.ComTypes.VARFLAGS instead. http://go.microsoft.com/fwlink/?linkid=14202", false)]
     [System.SerializableAttribute]
-    public enum VARFLAGS
+    public enum VARFLAGS : short
     {
-        VARFLAG_FBINDABLE = 4,
-        VARFLAG_FDEFAULTBIND = 32,
-        VARFLAG_FDEFAULTCOLLELEM = 256,
-        VARFLAG_FDISPLAYBIND = 16,
-        VARFLAG_FHIDDEN = 64,
-        VARFLAG_FIMMEDIATEBIND = 4096,
-        VARFLAG_FNONBROWSABLE = 1024,
-        VARFLAG_FREADONLY = 1,
-        VARFLAG_FREPLACEABLE = 2048,
-        VARFLAG_FREQUESTEDIT = 8,
-        VARFLAG_FRESTRICTED = 128,
-        VARFLAG_FSOURCE = 2,
-        VARFLAG_FUIDEFAULT = 512,
+        VARFLAG_FBINDABLE = (short)4,
+        VARFLAG_FDEFAULTBIND = (short)32,
+        VARFLAG_FDEFAULTCOLLELEM = (short)256,
+        VARFLAG_FDISPLAYBIND = (short)16,
+        VARFLAG_FHIDDEN = (short)64,
+        VARFLAG_FIMMEDIATEBIND = (short)4096,
+        VARFLAG_FNONBROWSABLE = (short)1024,
+        VARFLAG_FREADONLY = (short)1,
+        VARFLAG_FREPLACEABLE = (short)2048,
+        VARFLAG_FREQUESTEDIT = (short)8,
+        VARFLAG_FRESTRICTED = (short)128,
+        VARFLAG_FSOURCE = (short)2,
+        VARFLAG_FUIDEFAULT = (short)512,
     }
     [System.SerializableAttribute]
     public sealed partial class VariantWrapper
@@ -18191,26 +18208,26 @@ namespace System.Security.AccessControl
         SystemAlarm = 3,
         SystemAudit = 2,
     }
-    public enum AceType
+    public enum AceType : byte
     {
-        AccessAllowed = 0,
-        AccessAllowedCallback = 9,
-        AccessAllowedCallbackObject = 11,
-        AccessAllowedCompound = 4,
-        AccessAllowedObject = 5,
-        AccessDenied = 1,
-        AccessDeniedCallback = 10,
-        AccessDeniedCallbackObject = 12,
-        AccessDeniedObject = 6,
-        MaxDefinedAceType = 16,
-        SystemAlarm = 3,
-        SystemAlarmCallback = 14,
-        SystemAlarmCallbackObject = 16,
-        SystemAlarmObject = 8,
-        SystemAudit = 2,
-        SystemAuditCallback = 13,
-        SystemAuditCallbackObject = 15,
-        SystemAuditObject = 7,
+        AccessAllowed = (byte)0,
+        AccessAllowedCallback = (byte)9,
+        AccessAllowedCallbackObject = (byte)11,
+        AccessAllowedCompound = (byte)4,
+        AccessAllowedObject = (byte)5,
+        AccessDenied = (byte)1,
+        AccessDeniedCallback = (byte)10,
+        AccessDeniedCallbackObject = (byte)12,
+        AccessDeniedObject = (byte)6,
+        MaxDefinedAceType = (byte)16,
+        SystemAlarm = (byte)3,
+        SystemAlarmCallback = (byte)14,
+        SystemAlarmCallbackObject = (byte)16,
+        SystemAlarmObject = (byte)8,
+        SystemAudit = (byte)2,
+        SystemAuditCallback = (byte)13,
+        SystemAuditCallbackObject = (byte)15,
+        SystemAuditObject = (byte)7,
     }
     [System.FlagsAttribute]
     public enum AuditFlags
@@ -21391,7 +21408,7 @@ namespace System.Security.Policy
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
-    public partial class PolicyException : System.SystemException, System.Runtime.InteropServices._Exception
+    public partial class PolicyException : System.SystemException
     {
         public PolicyException() { }
         protected PolicyException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
