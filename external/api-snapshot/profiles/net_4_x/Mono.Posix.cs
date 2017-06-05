@@ -523,6 +523,7 @@ namespace Mono.Unix
         public override bool Equals(object value) { throw null; }
         public override int GetByteCount(char[] chars, int index, int count) { throw null; }
         public override int GetByteCount(string s) { throw null; }
+        public unsafe override int GetBytes(char* chars, int charCount, byte* bytes, int byteCount) { throw null; }
         public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex) { throw null; }
         public override byte[] GetBytes(string s) { throw null; }
         public override int GetBytes(string s, int charIndex, int charCount, byte[] bytes, int byteIndex) { throw null; }

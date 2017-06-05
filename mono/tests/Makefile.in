@@ -87,20 +87,6 @@ target_triplet = @target@
 @X86_TRUE@am__append_6 = async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
 @AMD64_TRUE@@HOST_WIN32_TRUE@am__append_7 = w32message.exe
 
-# FIXME: There are problems with async callbacks and results on NaCl 32-bit
-
-# FIXME: These tests hang/fail for unknown reasons, deal with exiting
-@NACL_CODEGEN_TRUE@@X86_TRUE@am__append_8 = delegate1.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	delegate3.exe delegate5.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	delegate8.exe threadpool.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	threadpool1.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	threadpool-exceptions3.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	bug-323114.exe delegate-exit.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	bug-80392.2.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	main-returns-background-resetabort.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	main-returns-background.exe \
-@NACL_CODEGEN_TRUE@@X86_TRUE@	main-returns-background-change.exe
-
 # Tests which rely on TypeLoadExceptions
 # In full-aot mode, these cause the relevant methods to be not AOTed.
 
@@ -131,7 +117,7 @@ target_triplet = @target@
 # constraints-load.il: 
 # Failed to load method 0x6000007 from '..../mono/tests/constraints-load.exe' due to 
 # Could not resolve type with token 01000002 assembly:mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 type:System.BrokenIComparable`1 member:<none>.
-@FULL_AOT_TESTS_TRUE@am__append_9 = typeload-unaligned.exe \
+@FULL_AOT_TESTS_TRUE@am__append_8 = typeload-unaligned.exe \
 @FULL_AOT_TESTS_TRUE@	field-access.exe \
 @FULL_AOT_TESTS_TRUE@	invalid_generic_instantiation.exe \
 @FULL_AOT_TESTS_TRUE@	bug-481403.exe array_ldelema.exe \
@@ -197,11 +183,10 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event3.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-serialize-exception.exe
-@HYBRID_AOT_TESTS_TRUE@am__append_10 = \
+@HYBRID_AOT_TESTS_TRUE@am__append_9 = \
 @HYBRID_AOT_TESTS_TRUE@	bug-80307.exe \
 @HYBRID_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe
 
-@NACL_CODEGEN_FALSE@am__append_11 = threadpool-in-processexit.cs threadpool-in-processexit.exe.stdout.expected
 subdir = mono/tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/tests-config.in \
@@ -428,7 +413,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
-MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -526,7 +510,6 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
-nacl_self_host = @nacl_self_host@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -848,112 +831,39 @@ TESTS_GSHARED_SRC = \
 
 # #651684
 @AMD64_TRUE@PLATFORM_DISABLED_TESTS = finally_guard.exe \
-@AMD64_TRUE@	$(am__append_7) $(am__append_8)
-@ARM_TRUE@PLATFORM_DISABLED_TESTS = filter-stack.exe $(am__append_8)
-@HOST_WIN32_TRUE@@X86_TRUE@PLATFORM_DISABLED_TESTS =  \
-@HOST_WIN32_TRUE@@X86_TRUE@	async-exc-compilation.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	finally_guard.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	finally_block_ending_in_dead_bb.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	threadpool-exceptions5.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	process-unref-race.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	w32message.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-1.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-2.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-3.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-4.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-6.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-7.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-8.exe \
-@HOST_WIN32_TRUE@@X86_TRUE@	$(am__append_8)
+@AMD64_TRUE@	$(am__append_7)
+@ARM_TRUE@PLATFORM_DISABLED_TESTS = filter-stack.exe
+@HOST_WIN32_TRUE@@X86_TRUE@PLATFORM_DISABLED_TESTS = async-exc-compilation.exe finally_guard.exe finally_block_ending_in_dead_bb.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	bug-18026.exe monitor.exe threadpool-exceptions5.exe process-unref-race.exe w32message.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-1.exe unhandled-exception-2.exe unhandled-exception-3.exe unhandled-exception-4.exe \
+@HOST_WIN32_TRUE@@X86_TRUE@	unhandled-exception-5.exe unhandled-exception-6.exe unhandled-exception-7.exe unhandled-exception-8.exe
+
 
 # monitor.exe is racy
-@MIPS_TRUE@PLATFORM_DISABLED_TESTS = filter-stack.exe monitor.exe \
-@MIPS_TRUE@	$(am__append_8)
-
-# Tests that use Thread.Abort()
-
-# Tests that rely on AppDomain.Unload
-
-# pinvoke2 attaches a thread to the runtime, but
-# doesn't 'unattach' it and it hangs in GC on exit
-
-# Tests that currently hang waiting for non-main threads
-# to exit in NaCl, need to investigate.  Most are AppDomain
-# creation and Delegate tests.
-
-# Tests that fail trying to write files (appdomain create mostly)
-
-# FIXME: don't know why delegate2.exe fails, it shouldn't
-
-# These tests newly fail with the latest revision. pinvoke3 fails because
-# of a thread attach, the others have not been investigated.  TODO revisit.
-@NACL_CODEGEN_TRUE@PLATFORM_DISABLED_TESTS = abort-stress-1.exe \
-@NACL_CODEGEN_TRUE@	abort-stress-2.exe abort-stress-3.exe \
-@NACL_CODEGEN_TRUE@	appdomain-thread-abort.exe \
-@NACL_CODEGEN_TRUE@	async-exc-compilation.exe bug-561239.exe \
-@NACL_CODEGEN_TRUE@	bug-70561.exe finalizer-abort.exe \
-@NACL_CODEGEN_TRUE@	finally_guard.exe \
-@NACL_CODEGEN_TRUE@	finally_block_ending_in_dead_bb.exe \
-@NACL_CODEGEN_TRUE@	main-returns-abort-resetabort.exe \
-@NACL_CODEGEN_TRUE@	main-returns-background-abort-resetabort.exe \
-@NACL_CODEGEN_TRUE@	thread6.exe threadpool-exceptions5.exe \
-@NACL_CODEGEN_TRUE@	threadpool-exceptions6.exe w32message.exe \
-@NACL_CODEGEN_TRUE@	appdomain-async-invoke.exe \
-@NACL_CODEGEN_TRUE@	appdomain-exit.exe \
-@NACL_CODEGEN_TRUE@	appdomain-unload-callback.exe \
-@NACL_CODEGEN_TRUE@	appdomain-unload.exe domain-stress.exe \
-@NACL_CODEGEN_TRUE@	generic-unloading.2.exe monitor.exe \
-@NACL_CODEGEN_TRUE@	remoting4.exe threadpool-exceptions7.exe \
-@NACL_CODEGEN_TRUE@	xdomain-threads.exe pinvoke2.exe \
-@NACL_CODEGEN_TRUE@	appdomain1.exe delegate9.exe \
-@NACL_CODEGEN_TRUE@	marshal-valuetypes.exe cross-domain.exe \
-@NACL_CODEGEN_TRUE@	stackframes-async.2.exe \
-@NACL_CODEGEN_TRUE@	generic-marshalbyref.2.exe \
-@NACL_CODEGEN_TRUE@	generic-xdomain.2.exe bug-415577.exe \
-@NACL_CODEGEN_TRUE@	bug-335131.2.exe bug-349190.2.exe \
-@NACL_CODEGEN_TRUE@	bug-80307.exe bug-462592.exe delegate2.exe \
-@NACL_CODEGEN_TRUE@	pinvoke3.exe async_read.exe \
-@NACL_CODEGEN_TRUE@	async-with-cb-throws.exe \
-@NACL_CODEGEN_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
-@NACL_CODEGEN_TRUE@	gsharing-valuetype-layout.exe \
-@NACL_CODEGEN_TRUE@	$(am__append_8)
+@MIPS_TRUE@PLATFORM_DISABLED_TESTS = filter-stack.exe monitor.exe
 
 # FIXME: These tests hang/fail for unknown reasons
-@POWERPC64_TRUE@PLATFORM_DISABLED_TESTS = monitor.exe \
-@POWERPC64_TRUE@	threadpool-exceptions5.exe \
-@POWERPC64_TRUE@	appdomain-thread-abort.exe \
-@POWERPC64_TRUE@	appdomain-unload.exe pinvoke2.exe pinvoke3.exe \
-@POWERPC64_TRUE@	pinvoke11.exe threadpool-exceptions7.exe \
-@POWERPC64_TRUE@	winx64structs.exe bug-10127.exe \
-@POWERPC64_TRUE@	pinvoke_ppcc.exe pinvoke_ppcs.exe \
-@POWERPC64_TRUE@	pinvoke_ppci.exe pinvoke_ppcf.exe \
-@POWERPC64_TRUE@	pinvoke_ppcd.exe abort-cctor.exe \
-@POWERPC64_TRUE@	load-exceptions.exe sgen-domain-unload-2.exe \
-@POWERPC64_TRUE@	sgen-weakref-stress.exe \
-@POWERPC64_TRUE@	sgen-cementing-stress.exe \
-@POWERPC64_TRUE@	sgen-new-threads-dont-join-stw.exe \
-@POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe \
-@POWERPC64_TRUE@	sgen-new-threads-collect.exe sgen-bridge.exe \
-@POWERPC64_TRUE@	$(am__append_8)
+@POWERPC64_TRUE@PLATFORM_DISABLED_TESTS = monitor.exe threadpool-exceptions5.exe appdomain-thread-abort.exe appdomain-unload.exe \
+@POWERPC64_TRUE@	pinvoke2.exe pinvoke3.exe pinvoke11.exe threadpool-exceptions7.exe winx64structs.exe bug-10127.exe pinvoke_ppcc.exe \
+@POWERPC64_TRUE@	pinvoke_ppcs.exe pinvoke_ppci.exe pinvoke_ppcf.exe pinvoke_ppcd.exe abort-cctor.exe load-exceptions.exe \
+@POWERPC64_TRUE@	sgen-domain-unload-2.exe sgen-weakref-stress.exe sgen-cementing-stress.exe sgen-new-threads-dont-join-stw.exe \
+@POWERPC64_TRUE@	sgen-new-threads-dont-join-stw-2.exe sgen-new-threads-collect.exe sgen-bridge.exe
+
 
 # bug #71274
-@POWERPC_TRUE@PLATFORM_DISABLED_TESTS = finalizer-abort.exe \
-@POWERPC_TRUE@	finalizer-exception.exe finalizer-exit.exe \
-@POWERPC_TRUE@	$(am__append_8)
+@POWERPC_TRUE@PLATFORM_DISABLED_TESTS = finalizer-abort.exe finalizer-exception.exe finalizer-exit.exe
 #PLATFORM_DISABLED_TESTS=dynamic-method-resurrection.exe exception17.exe
 @S390X_TRUE@PLATFORM_DISABLED_TESTS = dynamic-method-resurrection.exe \
 @S390X_TRUE@	sgen-toggleref.exe sgen-bridge.exe \
 @S390X_TRUE@	sgen-bridge-major-fragmentation.exe \
-@S390X_TRUE@	sgen-bridge-xref.exe $(am__append_8)
+@S390X_TRUE@	sgen-bridge-xref.exe
 @ARM64_TRUE@INTERP_DISABLED_TESTS_PLATFORM = finalizer-exception.exe main-returns-abort-resetabort.exe block_guard_restore_aligment_on_exit.exe
 @ARM_TRUE@INTERP_DISABLED_TESTS_PLATFORM = finalizer-exception.exe main-returns-abort-resetabort.exe block_guard_restore_aligment_on_exit.exe \
 @ARM_TRUE@	delegate-exit.exe delegate-exit.exe delegate-delegate-exit.exe delegate-async-exit.exe delegate3.exe delegate1.exe
 
 @ENABLE_COOP_FALSE@COOP_DISABLED_TESTS = 
 @ENABLE_COOP_TRUE@COOP_DISABLED_TESTS = thunks.exe
-PROFILE_DISABLED_TESTS = $(am__append_9) $(am__append_10)
+PROFILE_DISABLED_TESTS = $(am__append_8) $(am__append_9)
 AOT_DISABLED_TESTS = \
 	constraints-load.exe
 
@@ -1176,8 +1086,9 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	generic-unboxing.2.il generic-boxing.2.il generic-unbox.2.cs \
 	generic-box.2.cs generic-delegate2.2.cs \
 	generic-delegate2-lib.2.il async-exceptions.cs modules.cs \
-	modules-m1.cs $(am__append_11) appdomain-loader.cs \
-	appdomain-tester.cs console-output.cs \
+	modules-m1.cs threadpool-in-processexit.cs \
+	threadpool-in-processexit.exe.stdout.expected \
+	appdomain-loader.cs appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
 	console-output.exe.stdout.expected test_lldb.py test-lldb.cs
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
@@ -1754,8 +1665,8 @@ tests: compile-tests
 #
 # Test that no symbols are missed in eglib-remap.h
 #
-@NACL_CODEGEN_FALSE@@PLATFORM_LINUX_TRUE@test-platform: test-eglib-remap
-@NACL_CODEGEN_FALSE@@PLATFORM_DARWIN_TRUE@@PLATFORM_LINUX_FALSE@test-platform: test-eglib-remap
+@PLATFORM_LINUX_TRUE@test-platform: test-eglib-remap
+@PLATFORM_DARWIN_TRUE@@PLATFORM_LINUX_FALSE@test-platform: test-eglib-remap
 test-eglib-remap:
 	@echo "Testing eglib remap..."
 	@if which nm > /dev/null; then if nm $(top_builddir)/mono/mini/mono | grep -Ev $(OK_G_SYMBOLS) | grep -E 't _?g_'; then exit 1; else exit 0; fi; fi
@@ -2294,9 +2205,8 @@ test-generic-sharing-normal: $(TESTS_GSHARED) $(TESTSAOT_GSHARED)
 test-generic-sharing-managed: test-runner.exe $(TESTS_GSHARED) $(TESTSAOT_GSHARED) 
 	$(Q) $(TOOLS_RUNTIME) $(TEST_RUNNER) -j a --testsuite-name "gshared" --disabled "$(DISABLED_TESTS)" --opt-sets "gshared gshared,shared gshared,-inline gshared,-inline,shared" $(TESTS_GSHARED)
 
-@NACL_CODEGEN_TRUE@test-generic-sharing:
-@NACL_CODEGEN_FALSE@test-generic-sharing:
-@NACL_CODEGEN_FALSE@	@if test x$(M) != x0; then $(MAKE) test-generic-sharing-managed; else $(MAKE) test-generic-sharing-normal; fi
+test-generic-sharing:
+	@if test x$(M) != x0; then $(MAKE) test-generic-sharing-managed; else $(MAKE) test-generic-sharing-normal; fi
 async-exceptions.exe : async-exceptions.cs
 	$(MCS) -out:async-exceptions.exe $(srcdir)/async-exceptions.cs
 test-async-exceptions : async-exceptions.exe
@@ -2313,13 +2223,11 @@ patch-libtool:
 	sed -e 's,build_libtool_libs=no,build_libtool_libs=yes,g' libtool > 2; mv 2 libtool
 	sed -e 's,LIBTOOL =,LIBTOOL2 =,g' Makefile > 2 && echo "LIBTOOL = bash ./libtool" > 1 && cat 1 2 > Makefile
 	touch libtest.c
-
-@NACL_CODEGEN_TRUE@test-process-exit:
-@NACL_CODEGEN_FALSE@test-process-exit:
-@NACL_CODEGEN_FALSE@	@$(MCS) $(srcdir)/threadpool-in-processexit.cs -out:threadpool-in-processexit.exe
-@NACL_CODEGEN_FALSE@	@echo "Testing threadpool-in-processexit.exe..."
-@NACL_CODEGEN_FALSE@	@$(RUNTIME) threadpool-in-processexit.exe > threadpool-in-processexit.exe.stdout
-@NACL_CODEGEN_FALSE@	@diff -w threadpool-in-processexit.exe.stdout $(srcdir)/threadpool-in-processexit.exe.stdout.expected
+test-process-exit:
+	@$(MCS) $(srcdir)/threadpool-in-processexit.cs -out:threadpool-in-processexit.exe
+	@echo "Testing threadpool-in-processexit.exe..."
+	@$(RUNTIME) threadpool-in-processexit.exe > threadpool-in-processexit.exe.stdout
+	@diff -w threadpool-in-processexit.exe.stdout $(srcdir)/threadpool-in-processexit.exe.stdout.expected
 
 test-unhandled-exception-2: $(TESTS_UNHANDLED_EXCEPTION_1) $(TESTS_UNHANDLED_EXCEPTION_255) $(TESTSAOT_UNHANDLED_EXCEPTION_1) $(TESTSAOT_UNHANDLED_EXCEPTION_255)
 	ok=; \

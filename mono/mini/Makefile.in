@@ -94,14 +94,12 @@ target_triplet = @target@
 @LOADED_LLVM_TRUE@am__append_1 = libmono-llvm.la
 @LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
 @BITCODE_TRUE@am__append_3 = -no-undefined
-@NACL_CODEGEN_TRUE@am__append_4 = nacl.cs
-@NACL_CODEGEN_TRUE@am__append_5 = nacl.exe
-@FULL_AOT_TESTS_TRUE@am__append_6 = 
+@FULL_AOT_TESTS_TRUE@am__append_4 = 
 
 # Skip aoting the tests that aren't compiled 
 # on the full aot profiles because they're skipped
 # on mobile profiles
-@FULL_AOT_TESTS_TRUE@am__append_7 = \
+@FULL_AOT_TESTS_TRUE@am__append_5 = \
 @FULL_AOT_TESTS_TRUE@	Mono.Posix.dll \
 @FULL_AOT_TESTS_TRUE@	System.Configuration.dll
 
@@ -717,7 +715,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
-MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -815,7 +812,6 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
-nacl_self_host = @nacl_self_host@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -1166,17 +1162,47 @@ common_sources = \
 	lldb.c	\
 	memory-access.c
 
-test_sources = basic-calls.cs basic-long.cs bench.cs objects.cs \
-	arrays.cs basic-float.cs basic-math.cs basic.cs exceptions.cs \
-	devirtualization.cs iltests.il test.cs generics.cs \
-	generics-variant-types.il basic-simd.cs basic-vectors.cs \
-	aot-tests.cs gc-test.cs gshared.cs unaligned.cs \
-	MemoryIntrinsics.il mixed.cs $(am__append_4)
-regtests_UNIVERSAL = basic.exe basic-float.exe basic-long.exe \
-	basic-calls.exe objects.exe arrays.exe basic-math.exe \
-	exceptions.exe iltests.exe devirtualization.exe generics.exe \
-	basic-simd.exe unaligned.exe basic-vectors.exe $(am__append_5)
-regtests_DISABLED = $(am__append_6)
+test_sources = \
+	basic-calls.cs 		\
+	basic-long.cs 		\
+	bench.cs 		\
+	objects.cs 		\
+	arrays.cs		\
+	basic-float.cs		\
+	basic-math.cs		\
+	basic.cs		\
+	exceptions.cs		\
+	devirtualization.cs	\
+	iltests.il		\
+	test.cs			\
+	generics.cs		\
+	generics-variant-types.il\
+	basic-simd.cs \
+	basic-vectors.cs \
+	aot-tests.cs \
+	gc-test.cs \
+	gshared.cs \
+	unaligned.cs	\
+	MemoryIntrinsics.il	\
+	mixed.cs
+
+regtests_UNIVERSAL = \
+	basic.exe \
+	basic-float.exe \
+	basic-long.exe \
+	basic-calls.exe \
+	objects.exe \
+	arrays.exe \
+	basic-math.exe \
+	exceptions.exe \
+	iltests.exe \
+	devirtualization.exe \
+	generics.exe \
+	basic-simd.exe \
+	unaligned.exe	\
+	basic-vectors.exe
+
+regtests_DISABLED = $(am__append_4)
 regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 @AMD64_TRUE@arch_sources = $(amd64_sources)
 @ARM64_TRUE@arch_sources = $(arm64_sources)
@@ -1241,10 +1267,8 @@ libmini_static_la_LIBADD = $(MONO_DTRACE_OBJECT)
 libmonoincludedir = $(includedir)/mono-$(API_VER)/mono/jit
 libmonoinclude_HEADERS = jit.h
 CSFLAGS = -unsafe -nowarn:0219,0169,0414,0649,0618
-@NACL_CODEGEN_FALSE@GENMDESC_OPTS = 
-@NACL_CODEGEN_TRUE@GENMDESC_OPTS = --nacl
-@CROSS_COMPILING_FALSE@@NACL_CODEGEN_FALSE@GENMDESC_PRG = ./genmdesc $(GENMDESC_OPTS)
-@CROSS_COMPILING_FALSE@@NACL_CODEGEN_TRUE@GENMDESC_PRG = perl $(srcdir)/genmdesc.pl $(arch_define) $(srcdir) $(GENMDESC_OPTS)
+GENMDESC_OPTS = 
+@CROSS_COMPILING_FALSE@GENMDESC_PRG = ./genmdesc $(GENMDESC_OPTS)
 
 # we don't always use the perl impl because it's an additional
 # build dependency for the poor windows users
@@ -1268,7 +1292,7 @@ FULLAOT_LIBS_UNIVERSAL = \
 	Mono.Posix.dll \
 	System.Configuration.dll
 
-FULLAOT_LIBS_DISABLED = $(am__append_7)
+FULLAOT_LIBS_DISABLED = $(am__append_5)
 FULLAOT_LIBS = $(filter-out $(FULLAOT_LIBS_DISABLED),$(FULLAOT_LIBS_UNIVERSAL))
 FULLAOT_TMP_DIR = $(top_builddir)/mono/mini/fullaot-tmp
 llvmonly_regtests = $(fullaot_regtests) gshared.exe
@@ -3462,7 +3486,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/a560146\"" > version.h
+	echo "#define FULL_VERSION \"master/ed9fb93\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

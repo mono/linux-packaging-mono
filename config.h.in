@@ -106,9 +106,6 @@
 /* Disable SIMD intrinsics related optimizations. */
 #undef DISABLE_SIMD
 
-/* Disable sockets support */
-#undef DISABLE_SOCKETS
-
 /* Disable Soft Debugger Agent. */
 #undef DISABLE_SOFT_DEBUG
 
@@ -523,9 +520,6 @@
 
 /* Have MSG_NOSIGNAL */
 #undef HAVE_MSG_NOSIGNAL
-
-/* Define to 1 if you have the <nacl/nacl_dyncode.h> header file. */
-#undef HAVE_NACL_NACL_DYNCODE_H
 
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H
@@ -1157,9 +1151,6 @@
 /* ... */
 #undef TARGET_MIPS
 
-/* ... */
-#undef TARGET_NACL
-
 /* The JIT/AOT targets OSX */
 #undef TARGET_OSX
 
@@ -1231,6 +1222,3 @@
 
 /* ... */
 #undef __mono_ppc64__
-
-/* ... */
-#undef __native_client_codegen__
