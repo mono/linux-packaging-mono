@@ -1182,7 +1182,6 @@ namespace MonoTests.System.Reflection.Emit
 		}
 
 		[Test]
-		[Category ("AndroidNotWorking")] // Fails with System.MethodAccessException : Method `t17:.ctor ()' is inaccessible from method `t18:.ctor ()'
 		public void DefineDefaultConstructor_Parent_DefaultCtorInaccessible ()
 		{
 			TypeBuilder tb;
@@ -1198,6 +1197,16 @@ namespace MonoTests.System.Reflection.Emit
 			try {
 				Activator.CreateInstance (emitted_type);
 				Assert.Fail ("#1");
+
+				/* MOBILE special case MethodAccessException on reflection invokes and don't wrap them. */
+#if MOBILE
+			} catch (MethodAccessException mae) {
+				Assert.IsNull (mae.InnerException, "#2");
+				Assert.IsNotNull (mae.Message, "#3");
+				Assert.IsTrue (mae.Message.IndexOf (parent_type.FullName) != -1, "#4:" + mae.Message);
+				Assert.IsTrue (mae.Message.IndexOf (".ctor") != -1, "#4:" + mae.Message);
+			}
+#else
 			} catch (TargetInvocationException ex) {
 				Assert.AreEqual (typeof (TargetInvocationException), ex.GetType (), "#2");
 				Assert.IsNotNull (ex.InnerException, "#3");
@@ -1211,6 +1220,7 @@ namespace MonoTests.System.Reflection.Emit
 				Assert.IsTrue (mae.Message.IndexOf (parent_type.FullName) != -1, "#9:" + mae.Message);
 				Assert.IsTrue (mae.Message.IndexOf (".ctor") != -1, "#10:" + mae.Message);
 			}
+#endif
 		}
 
 		[Test]
@@ -11177,41 +11187,6 @@ namespace MonoTests.System.Reflection.Emit
 			/* This will trigger the runtime to use the cached version, which is wrong as it's an open type. */
 			var ins4 = ins3.Bar ();
 			Assert.IsNotNull (ins4);
-		}
-
-		[Test]
-		public void CircularReferences () {
-			// A: C<D<A>>
-			var a_type = module.DefineType(
-				"A",
-				TypeAttributes.Class,
-				typeof(object));
-
-			var cba = a_type.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
-			cba.GetILGenerator ().Emit (OpCodes.Ret);
-
-			var c_type = module.DefineType(
-				"B",
-				TypeAttributes.Class,
-				typeof(object));
-			var cbb = c_type.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
-			cbb.GetILGenerator ().Emit (OpCodes.Ret);
-			c_type.DefineGenericParameters ("d_a_param");
-
-			var d_type = module.DefineType(
-				"D",
-				TypeAttributes.Class,
-				typeof(object));
-			var cbd = d_type.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
-			cbd.GetILGenerator ().Emit (OpCodes.Ret);
-			d_type.DefineGenericParameters ("a_param");
-
-
-			var d_instantiated = c_type.MakeGenericType (d_type.MakeGenericType (a_type));
-			a_type.SetParent (d_instantiated);
-			a_type.CreateType ();
-
-			Assert.IsNotNull (a_type);
 		}
 
 		// #22059

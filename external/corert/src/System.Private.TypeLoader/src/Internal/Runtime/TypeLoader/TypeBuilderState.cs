@@ -23,7 +23,7 @@ namespace Internal.Runtime.TypeLoader
     internal struct NativeLayoutInfo
     {
         public uint Offset;
-        public IntPtr Module;
+        public NativeFormatModuleInfo Module;
         public NativeReader Reader;
         public NativeLayoutInfoLoadContext LoadContext;
     }
@@ -151,18 +151,18 @@ namespace Internal.Runtime.TypeLoader
                     {
                         TypeBeingBuilt.Context.TemplateLookup.TryGetMetadataNativeLayout(TypeBeingBuilt, out _r2rnativeLayoutInfo.Module, out _r2rnativeLayoutInfo.Offset);
 
-                        if (_r2rnativeLayoutInfo.Module != IntPtr.Zero)
+                        if (_r2rnativeLayoutInfo.Module != null)
                             _readyToRunNativeLayout = true;
                     }
                     _nativeLayoutTokenComputed = true;
                 }
 
-                if (_nativeLayoutInfo.Module != IntPtr.Zero)
+                if (_nativeLayoutInfo.Module != null)
                 {
                     FinishInitNativeLayoutInfo(TypeBeingBuilt, ref _nativeLayoutInfo);
                 }
 
-                if (_r2rnativeLayoutInfo.Module != IntPtr.Zero)
+                if (_r2rnativeLayoutInfo.Module != null)
                 {
                     FinishInitNativeLayoutInfo(TypeBeingBuilt, ref _r2rnativeLayoutInfo);
                 }
@@ -181,7 +181,7 @@ namespace Internal.Runtime.TypeLoader
             var nativeLayoutInfoLoadContext = new NativeLayoutInfoLoadContext();
 
             nativeLayoutInfoLoadContext._typeSystemContext = type.Context;
-            nativeLayoutInfoLoadContext._moduleHandle = nativeLayoutInfo.Module;
+            nativeLayoutInfoLoadContext._module = nativeLayoutInfo.Module;
 
             if (type is DefType)
             {
@@ -198,7 +198,7 @@ namespace Internal.Runtime.TypeLoader
 
             nativeLayoutInfoLoadContext._methodArgumentHandles = new Instantiation(null);
 
-            nativeLayoutInfo.Reader = TypeLoaderEnvironment.Instance.GetNativeLayoutInfoReader(nativeLayoutInfo.Module);
+            nativeLayoutInfo.Reader = TypeLoaderEnvironment.Instance.GetNativeLayoutInfoReader(nativeLayoutInfo.Module.Handle);
             nativeLayoutInfo.LoadContext = nativeLayoutInfoLoadContext;
         }
 
@@ -463,7 +463,7 @@ namespace Internal.Runtime.TypeLoader
 
                 if (defType != null)
                 {
-                    return defType.NonGCStaticFieldSize - (HasStaticConstructor ? TypeBuilder.ClassConstructorOffset : 0);
+                    return defType.NonGCStaticFieldSize.AsInt - (HasStaticConstructor ? TypeBuilder.ClassConstructorOffset : 0);
                 }
                 else
                 {
@@ -479,7 +479,7 @@ namespace Internal.Runtime.TypeLoader
                 DefType defType = TypeBeingBuilt as DefType;
                 if (defType != null)
                 {
-                    return defType.GCStaticFieldSize;
+                    return defType.GCStaticFieldSize.AsInt;
                 }
                 else
                 {
@@ -495,7 +495,7 @@ namespace Internal.Runtime.TypeLoader
                 DefType defType = TypeBeingBuilt as DefType;
                 if (defType != null && !defType.IsGenericDefinition)
                 {
-                    return defType.ThreadStaticFieldSize;
+                    return defType.ThreadStaticFieldSize.AsInt;
                 }
                 else
                 {
@@ -568,7 +568,8 @@ namespace Internal.Runtime.TypeLoader
                     }
                     else if (TypeBeingBuilt.RetrieveRuntimeTypeHandleIfPossible() ||
                              TypeBeingBuilt.IsTemplateCanonical() ||
-                             (TypeBeingBuilt is PointerType))
+                             (TypeBeingBuilt is PointerType) ||
+                             (TypeBeingBuilt is ByRefType))
                     {
                         _instanceGCLayout = s_emptyLayout;
                     }
@@ -605,7 +606,7 @@ namespace Internal.Runtime.TypeLoader
                                     if (instanceGCLayout == null)
                                         instanceGCLayout = new LowLevelList<bool>();
 
-                                    fieldGcLayout.WriteToBitfield(instanceGCLayout, field.Offset);
+                                    fieldGcLayout.WriteToBitfield(instanceGCLayout, field.Offset.AsInt);
                                 }
                             }
 
@@ -725,7 +726,7 @@ namespace Internal.Runtime.TypeLoader
                         }
 
                         TypeBuilder.GCLayout fieldGcLayout = GetFieldGCLayout(field.FieldType);
-                        fieldGcLayout.WriteToBitfield(gcLayoutInfo, field.Offset);
+                        fieldGcLayout.WriteToBitfield(gcLayoutInfo, field.Offset.AsInt);
                     }
 
                     if (gcStaticLayout != null && gcStaticLayout.Count > 0)
@@ -882,7 +883,7 @@ namespace Internal.Runtime.TypeLoader
                 }
                 else
                 {
-                    return TypeBeingBuilt.BaseType.InstanceByteCountUnaligned;
+                    return TypeBeingBuilt.BaseType.InstanceByteCountUnaligned.AsInt;
                 }
             }
         }
@@ -900,19 +901,19 @@ namespace Internal.Runtime.TypeLoader
 
                     if (defType.IsValueType)
                     {
-                        return defType.InstanceFieldSize;
+                        return defType.InstanceFieldSize.AsInt;
                     }
                     else
                     {
                         if (defType.IsInterface)
                             return IntPtr.Size;
 
-                        return defType.InstanceByteCountUnaligned;
+                        return defType.InstanceByteCountUnaligned.AsInt;
                     }
                 }
                 else if (TypeBeingBuilt is ArrayType)
                 {
-                    int basicArraySize = TypeBeingBuilt.BaseType.InstanceByteCountUnaligned;
+                    int basicArraySize = TypeBeingBuilt.BaseType.InstanceByteCountUnaligned.AsInt;
                     if (TypeBeingBuilt.IsMdArray)
                     {
                         // MD Arrays are arranged like normal arrays, but they also have 2 int's per rank for the individual dimension loBounds and range.
@@ -934,7 +935,7 @@ namespace Internal.Runtime.TypeLoader
                 DefType defType = TypeBeingBuilt as DefType;
                 if (defType != null)
                 {
-                    return defType.InstanceByteCountUnaligned;
+                    return defType.InstanceByteCountUnaligned.AsInt;
                 }
                 else if (TypeBeingBuilt is ArrayType)
                 {
@@ -954,7 +955,7 @@ namespace Internal.Runtime.TypeLoader
             {
                 if (TypeBeingBuilt is DefType)
                 {
-                    return checked((ushort)((DefType)TypeBeingBuilt).InstanceFieldAlignment);
+                    return checked((ushort)((DefType)TypeBeingBuilt).InstanceFieldAlignment.AsInt);
                 }
                 else if (TypeBeingBuilt is ArrayType)
                 {
@@ -962,14 +963,14 @@ namespace Internal.Runtime.TypeLoader
 
                     if (arrayType.ElementType is DefType)
                     {
-                        return checked((ushort)((DefType)arrayType.ElementType).InstanceFieldAlignment);
+                        return checked((ushort)((DefType)arrayType.ElementType).InstanceFieldAlignment.AsInt);
                     }
                     else
                     {
                         return (ushort)arrayType.Context.Target.PointerSize;
                     }
                 }
-                else if (TypeBeingBuilt is PointerType)
+                else if (TypeBeingBuilt is PointerType || TypeBeingBuilt is ByRefType)
                 {
                     return (ushort)TypeBeingBuilt.Context.Target.PointerSize;
                 }
@@ -989,7 +990,7 @@ namespace Internal.Runtime.TypeLoader
                 {
                     if (arrayType.ElementType is DefType)
                     {
-                        return checked((ushort)((DefType)arrayType.ElementType).InstanceFieldSize);
+                        return checked((ushort)((DefType)arrayType.ElementType).InstanceFieldSize.AsInt);
                     }
                     else
                     {

@@ -45,9 +45,6 @@ dist-hook:
 	rm -f `find $(top_distdir)/external -path '*\.exe' -not -path '*/roslyn-binaries/*'`
 	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*' -not -path '*/roslyn-binaries/*'`
 
-mac-sdk-package:
-	external/bockbuild/bb MacSDK --package
-
 pkgconfigdir = $(libdir)/pkgconfig
 noinst_DATA = mono-uninstalled.pc
 DISTCLEANFILES= mono-uninstalled.pc

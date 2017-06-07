@@ -203,8 +203,43 @@ namespace Mono.Btls
 
 		internal static void SetupCertificateStore (MonoBtlsX509Store store, MonoTlsSettings settings, bool server)
 		{
-			AddTrustedRoots (store, settings, server);
+			if (settings?.CertificateSearchPaths == null)
+				AddTrustedRoots (store, settings, server);
+
+#if MONODROID
 			SetupCertificateStore (store);
+			return;
+#else
+			if (settings?.CertificateSearchPaths == null) {
+				SetupCertificateStore (store);
+				return;
+			}
+
+			foreach (var path in settings.CertificateSearchPaths) {
+				if (string.Equals (path, "@default", StringComparison.Ordinal)) {
+					AddTrustedRoots (store, settings, server);
+					AddUserStore (store);
+					AddMachineStore (store);
+				} else if (string.Equals (path, "@user", StringComparison.Ordinal))
+					AddUserStore (store);
+				else if (string.Equals (path, "@machine", StringComparison.Ordinal))
+					AddMachineStore (store);
+				else if (string.Equals (path, "@trusted", StringComparison.Ordinal))
+					AddTrustedRoots (store, settings, server);
+				else if (path.StartsWith ("@pem:", StringComparison.Ordinal)) {
+					var realPath = path.Substring (5);
+					if (Directory.Exists (realPath))
+						store.AddDirectoryLookup (realPath, MonoBtlsX509FileType.PEM);
+				} else if (path.StartsWith ("@der:", StringComparison.Ordinal)) {
+					var realPath = path.Substring (5);
+					if (Directory.Exists (realPath))
+						store.AddDirectoryLookup (realPath, MonoBtlsX509FileType.ASN1);
+				} else {
+					if (Directory.Exists (path))
+						store.AddDirectoryLookup (path, MonoBtlsX509FileType.PEM);
+				}
+			}
+#endif
 		}
 
 		internal static void SetupCertificateStore (MonoBtlsX509Store store)

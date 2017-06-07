@@ -3,6 +3,7 @@
 
   <UsingTask TaskName="PrereleaseResolveNuGetPackageAssets" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
   <UsingTask TaskName="ValidateProjectDependencyVersions" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
+  <UsingTask TaskName="IsRestoreRequired" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
 
   <PropertyGroup>
     <ProjectJson Condition="'$(ProjectJson)'=='' and Exists('$(MSBuildProjectDirectory)/project.json')">$(MSBuildProjectDirectory)/project.json</ProjectJson>
@@ -27,7 +28,11 @@
 
     <Error Condition="'$(DnuRestoreCommand)'=='' and Exists('$(ProjectJson)')" Text="RestorePackages target needs a predefined DnuRestoreCommand property set in order to restore $(ProjectJson)" />
 
-    <Exec Condition="Exists('$(ProjectJson)')" Command="$(DnuRestoreCommand) &quot;$(ProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
+    <IsRestoreRequired ProjectJsons="$(ProjectJson)" PackagesFolder="$(PackagesDir)">
+      <Output TaskParameter="RestoreRequired" PropertyName="RestoreRequired" />
+    </IsRestoreRequired>
+
+    <Exec Condition="Exists('$(ProjectJson)') AND '$(RestoreRequired)' == 'true'" Command="$(DnuRestoreCommand) &quot;$(ProjectJson)&quot;" StandardOutputImportance="Low" CustomErrorRegularExpression="^Unable to locate .*" />
   </Target>
 
   <ItemGroup Condition="'$(ResolvePackages)'=='true' or '$(PrereleaseResolveNuGetPackages)'=='true'">
@@ -70,10 +75,6 @@
   <Target Name="ResolveNuGetPackages"
           Condition="'$(PrereleaseResolveNuGetPackages)'=='true'"
           DependsOnTargets="$(ResolveNugetPackagesDependsOn)">
-    <PropertyGroup>
-      <!-- Temporary workaround -->
-      <NuGetTargetMoniker Condition="'$(NuGetTargetMoniker)' == '.NETPortable,Version=v4.5,Profile=Profile7'">DNXCore,Version=v5.0</NuGetTargetMoniker>
-    </PropertyGroup>
 
     <PrereleaseResolveNuGetPackageAssets Condition="Exists('$(ProjectLockJson)')"
                                AllowFallbackOnTargetSelection="true"
@@ -84,19 +85,31 @@
                                ProjectLockFile="$(ProjectLockJson)"
                                TargetMonikers="$(NuGetTargetMoniker)">
       <Output TaskParameter="ResolvedAnalyzers" ItemName="Analyzer" />
-      <Output TaskParameter="ResolvedReferences" ItemName="Reference" />
-      <Output TaskParameter="ResolvedCopyLocalItems" ItemName="ReferenceCopyLocalPaths" />
+      <Output TaskParameter="ResolvedReferences" ItemName="_ReferenceFromPackage" />
+      <Output TaskParameter="ResolvedCopyLocalItems" ItemName="_ReferenceCopyLocalPathsFromPackage" />
       <Output TaskParameter="ReferencedPackages" ItemName="ReferencedNuGetPackages" />
     </PrereleaseResolveNuGetPackageAssets>
 
-    <!-- We may have an indirect package reference that we want to replace with a project reference -->
+    <!-- We may have package references that we want to replace with project references -->
     <ItemGroup>
-      <!-- Intersect project-refs with package-refs -->
-      <_ReferenceFileNamesToRemove Include="@(Reference)" Condition="'@(_ResolvedProjectReferencePaths->'%(FileName)%(Extension)')' == '%(FileName)%(Extension)'" />
-      <_ReferenceCopyLocalPathsFileNamesToRemove Include="@(ReferenceCopyLocalPaths)" Condition="'@(_ResolvedProjectReferencePaths->'%(FileName)%(Extension)')' == '%(FileName)%(Extension)'" />
+      <!-- Intersect project-refs with package-refs.
+             Project refs may be in _ResolvedProjectReferencePaths or Reference items.
+             Copy local may be in _ResolvedProjectReferencePaths or ReferenceCopyLocalPaths.
+             Copy local items may also be in any item like Content but we currently don't strip those.-->
+      <_ReferenceFileNamesToRemove Include="@(_ReferenceFromPackage)" Condition="'@(_ResolvedProjectReferencePaths->'%(FileName)%(Extension)')' == '%(FileName)%(Extension)'" />
+      <_ReferenceFileNamesToRemove Include="@(_ReferenceFromPackage)" Condition="'@(Reference->'%(FileName)%(Extension)')' == '%(FileName)%(Extension)'" />
 
-      <Reference Remove="@(_ReferenceFileNamesToRemove)" />
-      <ReferenceCopyLocalPaths Remove="@(_ReferenceCopyLocalPathsFileNamesToRemove)"/>
+      <!-- If local copy is disabled remove all references, otherwise remove only project refrerences -->
+      <_ReferenceCopyLocalPathsFileNamesToRemove Include="@(_ReferenceCopyLocalPathsFromPackage)" Condition="'$(DisableReferenceCopyLocal)' == 'true' OR '@(_ResolvedProjectReferencePaths->'%(FileName)%(Extension)')' == '%(FileName)%(Extension)'" />
+      <_ReferenceCopyLocalPathsFileNamesToRemove Include="@(_ReferenceCopyLocalPathsFromPackage)" Condition="'$(DisableReferenceCopyLocal)' == 'true' OR '@(ReferenceCopyLocalPaths->'%(FileName)%(Extension)')' == '%(FileName)%(Extension)'" />
+
+      <!-- strip from the resolved package output -->
+      <_ReferenceFromPackage Remove="@(_ReferenceFileNamesToRemove)" />
+      <_ReferenceCopyLocalPathsFromPackage Remove="@(_ReferenceCopyLocalPathsFileNamesToRemove)" />
+
+      <!-- add the filtered resolved package output -->
+      <Reference Include="@(_ReferenceFromPackage)" />
+      <ReferenceCopyLocalPaths Include="@(_ReferenceCopyLocalPathsFromPackage)" />
     </ItemGroup>
 
     <Message Text="Excluding @(_ReferenceFileNamesToRemove);@(_ReferenceCopyLocalPathsFileNamesToRemove) from package references since the same file is provided by a project reference."
@@ -131,6 +144,14 @@
   <Target Name="FilterTargetingPackResolvedNugetPackages" AfterTargets="ResolveNuGetPackages" >
     <PropertyGroup>
       <_TargetingPackPrefix>Microsoft.TargetingPack</_TargetingPackPrefix>
+      <TargetingPackReferenceCoreAssembly Condition="'$(TargetingPackReferenceCoreAssembly)' == '' and '%(TargetingPackReference.Identity)' == 'System.Private.CoreLib'">System.Private.CoreLib</TargetingPackReferenceCoreAssembly>
+      <TargetingPackReferenceCoreAssembly Condition="'$(TargetingPackReferenceCoreAssembly)' == ''">mscorlib</TargetingPackReferenceCoreAssembly>
+
+      <!--
+        S.P.CoreLib is generally architecture specific so disable the msbuild warning about
+        referencing it from an MSIL project.
+        -->
+      <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch Condition="'$(TargetingPackReferenceCoreAssembly)' == 'System.Private.CoreLib'">None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     </PropertyGroup>
 
     <!--
@@ -138,7 +159,7 @@
       They only act as a filter so if they aren't present in the packages references it will not impact anything.
     -->
     <ItemGroup Condition="'$(ExcludeDefaultTargetingPackReferences)' != 'true'">
-      <TargetingPackReference Include="mscorlib" />
+      <TargetingPackReference Include="$(TargetingPackReferenceCoreAssembly)" Condition="'$(TargetingPackReferenceCoreAssembly)' != ''" />
       <TargetingPackReference Include="Windows" />
     </ItemGroup>
 

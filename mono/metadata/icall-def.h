@@ -1,4 +1,5 @@
-/*
+/**
+ * \file
  * This file contains the default set of the mono internal calls.
  * Each type that has internal call methods must be declared here
  * with the ICALL_TYPE macro as follows:
@@ -146,7 +147,6 @@ ICALL(ARGI_4, "Setup",                            mono_ArgIterator_Setup)
 
 ICALL_TYPE(ARRAY, "System.Array", ARRAY_1)
 ICALL(ARRAY_1, "ClearInternal",    ves_icall_System_Array_ClearInternal)
-ICALL(ARRAY_2, "Clone",            ves_icall_System_Array_Clone)
 ICALL(ARRAY_3, "CreateInstanceImpl",   ves_icall_System_Array_CreateInstanceImpl)
 ICALL(ARRAY_14, "CreateInstanceImpl64",   ves_icall_System_Array_CreateInstanceImpl64)
 ICALL(ARRAY_4, "FastCopy",         ves_icall_System_Array_FastCopy)
@@ -263,7 +263,7 @@ ICALL(ENUM_7, "get_value", ves_icall_System_Enum_get_value)
 
 ICALL_TYPE(ENV, "System.Environment", ENV_1)
 ICALL(ENV_1, "Exit", ves_icall_System_Environment_Exit)
-ICALL(ENV_2, "GetCommandLineArgs", ves_icall_System_Environment_GetCoomandLineArgs)
+ICALL(ENV_2, "GetCommandLineArgs", ves_icall_System_Environment_GetCommandLineArgs)
 ICALL(ENV_3, "GetEnvironmentVariableNames", ves_icall_System_Environment_GetEnvironmentVariableNames)
 ICALL(ENV_31, "GetIs64BitOperatingSystem", ves_icall_System_Environment_GetIs64BitOperatingSystem)
 ICALL(ENV_4, "GetLogicalDrivesInternal", ves_icall_System_Environment_GetLogicalDrives )
@@ -629,14 +629,14 @@ HANDLES(ICALL(MMETH_9, "get_name", ves_icall_MonoMethod_get_name))
 
 ICALL_TYPE(MMETHI, "System.Reflection.MonoMethodInfo", MMETHI_4)
 ICALL(MMETHI_4, "get_method_attributes", vell_icall_get_method_attributes)
-ICALL(MMETHI_1, "get_method_info", ves_icall_get_method_info)
+HANDLES(ICALL(MMETHI_1, "get_method_info", ves_icall_get_method_info))
 HANDLES(ICALL(MMETHI_2, "get_parameter_info", ves_icall_System_Reflection_MonoMethodInfo_get_parameter_info))
 HANDLES(ICALL(MMETHI_3, "get_retval_marshal", ves_icall_System_MonoMethodInfo_get_retval_marshal))
 
 ICALL_TYPE(MPROPI, "System.Reflection.MonoPropertyInfo", MPROPI_1)
 HANDLES(ICALL(MPROPI_1, "GetTypeModifiers", ves_icall_MonoPropertyInfo_GetTypeModifiers))
 ICALL(MPROPI_3, "get_default_value", property_info_get_default_value)
-ICALL(MPROPI_2, "get_property_info", ves_icall_MonoPropertyInfo_get_property_info)
+HANDLES(ICALL(MPROPI_2, "get_property_info", ves_icall_MonoPropertyInfo_get_property_info))
 
 ICALL_TYPE(PARAMI, "System.Reflection.ParameterInfo", PARAMI_1)
 HANDLES(ICALL(PARAMI_1, "GetMetadataToken", ves_icall_reflection_get_token))
@@ -808,6 +808,7 @@ HANDLES(ICALL(RTH_6, "GetGenericTypeDefinition_impl", ves_icall_RuntimeTypeHandl
 HANDLES(ICALL(RTH_7, "GetMetadataToken", ves_icall_reflection_get_token))
 HANDLES(ICALL(RTH_8, "GetModule", ves_icall_RuntimeTypeHandle_GetModule))
 HANDLES(ICALL(RTH_9, "HasInstantiation", ves_icall_RuntimeTypeHandle_HasInstantiation))
+HANDLES(ICALL(RTH_20, "HasReferences", ves_icall_RuntimeTypeHandle_HasReferences))
 HANDLES(ICALL(RTH_10, "IsArray", ves_icall_RuntimeTypeHandle_IsArray))
 HANDLES(ICALL(RTH_11, "IsByRef", ves_icall_RuntimeTypeHandle_IsByRef))
 HANDLES(ICALL(RTH_12, "IsComObject", ves_icall_RuntimeTypeHandle_IsComObject))

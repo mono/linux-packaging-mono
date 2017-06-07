@@ -1,5 +1,6 @@
-/*
- * mini-arm.c: ARM backend for the Mono code generator
+/**
+ * \file
+ * ARM backend for the Mono code generator
  *
  * Authors:
  *   Paolo Molaro (lupus@ximian.com)
@@ -322,7 +323,7 @@ mono_arm_patchable_bl (guint8 *code, int cond)
 	return code;
 }
 
-#if defined(__ARM_EABI__) && defined(__linux__) && !defined(PLATFORM_ANDROID) && !defined(__native_client__)
+#if defined(__ARM_EABI__) && defined(__linux__) && !defined(PLATFORM_ANDROID) && !defined(__native_client__) && !defined(MONO_CROSS_COMPILE)
 #define HAVE_AEABI_READ_TP 1
 #endif
 
@@ -336,7 +337,6 @@ mono_arch_have_fast_tls (void)
 #ifdef HAVE_AEABI_READ_TP
 	static gboolean have_fast_tls = FALSE;
         static gboolean inited = FALSE;
-	gpointer tp1, tp2;
 
 	if (mini_get_debug_options ()->use_fallback_tls)
 		return FALSE;
@@ -344,10 +344,14 @@ mono_arch_have_fast_tls (void)
 	if (inited)
 		return have_fast_tls;
 
-	tp1 = __aeabi_read_tp ();
-	asm volatile("mrc p15, 0, %0, c13, c0, 3" : "=r" (tp2));
+	if (v7_supported) {
+		gpointer tp1, tp2;
 
-	have_fast_tls = tp1 && tp1 == tp2;
+		tp1 = __aeabi_read_tp ();
+		asm volatile("mrc p15, 0, %0, c13, c0, 3" : "=r" (tp2));
+
+		have_fast_tls = tp1 && tp1 == tp2;
+	}
 	inited = TRUE;
 	return have_fast_tls;
 #else
@@ -358,6 +362,7 @@ mono_arch_have_fast_tls (void)
 static guint8*
 emit_tls_get (guint8 *code, int dreg, int tls_offset)
 {
+	g_assert (v7_supported);
 	ARM_MRC (code, 15, 0, dreg, 13, 0, 3);
 	ARM_LDR_IMM (code, dreg, dreg, tls_offset);
 	return code;
@@ -367,6 +372,7 @@ static guint8*
 emit_tls_set (guint8 *code, int sreg, int tls_offset)
 {
 	int tp_reg = (sreg != ARMREG_R0) ? ARMREG_R0 : ARMREG_R1;
+	g_assert (v7_supported);
 	ARM_MRC (code, 15, 0, tp_reg, 13, 0, 3);
 	ARM_STR_IMM (code, sreg, tp_reg, tls_offset);
 	return code;
@@ -943,10 +949,6 @@ is_regsize_var (MonoType *t)
 	case MONO_TYPE_FNPTR:
 		return TRUE;
 	case MONO_TYPE_OBJECT:
-	case MONO_TYPE_STRING:
-	case MONO_TYPE_CLASS:
-	case MONO_TYPE_SZARRAY:
-	case MONO_TYPE_ARRAY:
 		return TRUE;
 	case MONO_TYPE_GENERICINST:
 		if (!mono_type_generic_inst_is_valuetype (t))
@@ -1271,11 +1273,7 @@ get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 	case MONO_TYPE_U:
 	case MONO_TYPE_PTR:
 	case MONO_TYPE_FNPTR:
-	case MONO_TYPE_CLASS:
 	case MONO_TYPE_OBJECT:
-	case MONO_TYPE_SZARRAY:
-	case MONO_TYPE_ARRAY:
-	case MONO_TYPE_STRING:
 		cinfo->ret.storage = RegTypeGeneral;
 		cinfo->ret.reg = ARMREG_R0;
 		break;
@@ -1424,11 +1422,7 @@ get_call_info (MonoMemPool *mp, MonoMethodSignature *sig)
 		case MONO_TYPE_U:
 		case MONO_TYPE_PTR:
 		case MONO_TYPE_FNPTR:
-		case MONO_TYPE_CLASS:
 		case MONO_TYPE_OBJECT:
-		case MONO_TYPE_STRING:
-		case MONO_TYPE_SZARRAY:
-		case MONO_TYPE_ARRAY:
 			cinfo->args [n].size = sizeof (gpointer);
 			add_general (&gr, &stack_size, ainfo, TRUE);
 			break;
@@ -1649,8 +1643,7 @@ debug_omit_fp (void)
 
 /**
  * mono_arch_compute_omit_fp:
- *
- *   Determine whenever the frame pointer can be eliminated.
+ * Determine whether the frame pointer can be eliminated.
  */
 static void
 mono_arch_compute_omit_fp (MonoCompile *cfg)
@@ -2800,10 +2793,6 @@ mono_arch_start_dyn_call (MonoDynCallInfo *info, gpointer **args, guint8 *ret, g
 		}
 
 		switch (t->type) {
-		case MONO_TYPE_STRING:
-		case MONO_TYPE_CLASS:  
-		case MONO_TYPE_ARRAY:
-		case MONO_TYPE_SZARRAY:
 		case MONO_TYPE_OBJECT:
 		case MONO_TYPE_PTR:
 		case MONO_TYPE_I:
@@ -2905,10 +2894,6 @@ mono_arch_finish_dyn_call (MonoDynCallInfo *info, guint8 *buf)
 	case MONO_TYPE_VOID:
 		*(gpointer*)ret = NULL;
 		break;
-	case MONO_TYPE_STRING:
-	case MONO_TYPE_CLASS:  
-	case MONO_TYPE_ARRAY:
-	case MONO_TYPE_SZARRAY:
 	case MONO_TYPE_OBJECT:
 	case MONO_TYPE_I:
 	case MONO_TYPE_U:

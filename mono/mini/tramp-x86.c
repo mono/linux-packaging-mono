@@ -1,5 +1,6 @@
-/*
- * tramp-x86.c: JIT trampoline code for x86
+/**
+ * \file
+ * JIT trampoline code for x86
  *
  * Authors:
  *   Dietmar Maurer (dietmar@ximian.com)
@@ -15,8 +16,6 @@
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/marshal.h>
 #include <mono/metadata/tabledefs.h>
-#include <mono/metadata/mono-debug.h>
-#include <mono/metadata/mono-debug-debugger.h>
 #include <mono/metadata/profiler-private.h>
 #include <mono/metadata/gc-internals.h>
 #include <mono/arch/x86/x86-codegen.h>
@@ -63,7 +62,7 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
 }
 
 gpointer
-mono_arch_get_static_rgctx_trampoline (MonoMethod *m, MonoMethodRuntimeGenericContext *mrgctx, gpointer addr)
+mono_arch_get_static_rgctx_trampoline (gpointer arg, gpointer addr)
 {
 	guint8 *code, *start;
 	int buf_len;
@@ -77,7 +76,7 @@ mono_arch_get_static_rgctx_trampoline (MonoMethod *m, MonoMethodRuntimeGenericCo
 
 	unwind_ops = mono_arch_get_cie_program ();
 
-	x86_mov_reg_imm (code, MONO_ARCH_RGCTX_REG, mrgctx);
+	x86_mov_reg_imm (code, MONO_ARCH_RGCTX_REG, arg);
 	x86_jump_code (code, addr);
 	g_assert ((code - start) <= buf_len);
 

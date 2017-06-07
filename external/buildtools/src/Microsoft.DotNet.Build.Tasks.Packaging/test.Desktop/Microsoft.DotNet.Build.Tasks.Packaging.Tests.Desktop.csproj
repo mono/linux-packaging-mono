@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <NuGetRuntimeIdentifier>win</NuGetRuntimeIdentifier>
+    <NuGetRuntimeIdentifier>win7-x64</NuGetRuntimeIdentifier>
     <ImportedProjectRelativePath>..\test\</ImportedProjectRelativePath>
     <TaskProject>..\src.Desktop\Microsoft.DotNet.Build.Tasks.Packaging.Desktop.csproj</TaskProject>
   </PropertyGroup>
   <Import Project="$(ImportedProjectRelativePath)Microsoft.DotNet.Build.Tasks.Packaging.Tests.csproj" />
   <PropertyGroup>
     <ProjectGuid>{31DF5A4A-AA0D-443E-9BE5-08B27710B8AD}</ProjectGuid>
+    <NuGetTargetMoniker>.NETFramework,Version=v4.5</NuGetTargetMoniker>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />

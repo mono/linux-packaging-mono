@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Internal.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
@@ -17,6 +18,8 @@ namespace System.IO
     // from an unsigned byte array, or you can create an empty one.  Empty 
     // memory streams are resizable, while ones created with a byte array provide
     // a stream "view" of the data.
+    [RelocatedType("System.IO")]
+    [RelocatedType("System.Runtime.Extensions")]
     [Serializable]
     public class MemoryStream : Stream
     {
@@ -490,7 +493,7 @@ namespace System.IO
                 base.CopyTo(destination, bufferSize);
                 return;
             }
-            
+
             int originalPosition = _position;
 
             // Seek to the end of the MemoryStream.
@@ -508,7 +511,7 @@ namespace System.IO
         public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
         {
             // This implementation offers better performance compared to the base class version.
-            
+
             StreamHelpers.ValidateCopyToArgs(this, destination, bufferSize);
 
             // If we have been inherited into a subclass, the following implementation could be incorrect

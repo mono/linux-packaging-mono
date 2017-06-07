@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Runtime.CompilerServices;
+using System.Security;
 
 namespace System.Runtime.InteropServices
 {
@@ -36,6 +37,35 @@ namespace System.Runtime.InteropServices
             }
 
             return System.Text.Encoding.UTF8.GetString((byte*)ptr, len);
+        }
+
+        internal static unsafe IntPtr MemAlloc(IntPtr cb)
+        {
+            return Interop.MemAlloc((UIntPtr)(void*)cb);
+        }
+
+        public static void MemFree(IntPtr hglobal)
+        {
+            Interop.MemFree(hglobal);
+        }
+
+        internal static IntPtr CoTaskMemAlloc(UIntPtr bytes)
+        {
+            return Interop.MemAlloc(bytes);
+        }
+
+        internal static void CoTaskMemFree(IntPtr allocatedMemory)
+        {
+            Interop.MemFree(allocatedMemory);
+        }
+
+        public static IntPtr SecureStringToBSTR(SecureString s)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException(nameof(s));
+            }
+            throw new PlatformNotSupportedException();
         }
     }
 }

@@ -24,10 +24,10 @@ namespace ILCompiler.DependencyAnalysis
         GetThreadStaticBase,
         DelegateCtor,
         ResolveVirtualFunction,
-        ResolveGenericVirtualMethod,
 
         // The following helpers are used for generic lookups only
         TypeHandle,
+        MethodHandle,
         FieldHandle,
         MethodDictionary,
         MethodEntry
@@ -76,10 +76,18 @@ namespace ILCompiler.DependencyAnalysis
                         defType.ComputeStaticFieldLayout(StaticLayoutKind.StaticRegionSizesAndFields);
                     }
                     break;
+                case ReadyToRunHelperId.VirtualCall:
+                    {
+                        // Make sure we aren't trying to callvirt Object.Finalize
+                        MethodDesc method = (MethodDesc)target;
+                        if (method.IsFinalizer)
+                            throw new TypeSystemException.InvalidProgramException(ExceptionStringID.InvalidProgramCallVirtFinalize, method);
+                    }
+                    break;
             }
         }
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public ReadyToRunHelperId Id => _id;
         public Object Target =>  _target;
@@ -89,28 +97,28 @@ namespace ILCompiler.DependencyAnalysis
             switch (_id)
             {
                 case ReadyToRunHelperId.NewHelper:
-                    sb.Append("__NewHelper_").Append(NodeFactory.NameMangler.GetMangledTypeName((TypeDesc)_target));
+                    sb.Append("__NewHelper_").Append(nameMangler.GetMangledTypeName((TypeDesc)_target));
                     break;
                 case ReadyToRunHelperId.NewArr1:
-                    sb.Append("__NewArr1_").Append(NodeFactory.NameMangler.GetMangledTypeName((TypeDesc)_target));
+                    sb.Append("__NewArr1_").Append(nameMangler.GetMangledTypeName((TypeDesc)_target));
                     break;
                 case ReadyToRunHelperId.VirtualCall:
-                    sb.Append("__VirtualCall_").Append(NodeFactory.NameMangler.GetMangledMethodName((MethodDesc)_target));
+                    sb.Append("__VirtualCall_").Append(nameMangler.GetMangledMethodName((MethodDesc)_target));
                     break;
                 case ReadyToRunHelperId.IsInstanceOf:
-                    sb.Append("__IsInstanceOf_").Append(NodeFactory.NameMangler.GetMangledTypeName((TypeDesc)_target));
+                    sb.Append("__IsInstanceOf_").Append(nameMangler.GetMangledTypeName((TypeDesc)_target));
                     break;
                 case ReadyToRunHelperId.CastClass:
-                    sb.Append("__CastClass_").Append(NodeFactory.NameMangler.GetMangledTypeName((TypeDesc)_target));
+                    sb.Append("__CastClass_").Append(nameMangler.GetMangledTypeName((TypeDesc)_target));
                     break;
                 case ReadyToRunHelperId.GetNonGCStaticBase:
-                    sb.Append("__GetNonGCStaticBase_").Append(NodeFactory.NameMangler.GetMangledTypeName((TypeDesc)_target));
+                    sb.Append("__GetNonGCStaticBase_").Append(nameMangler.GetMangledTypeName((TypeDesc)_target));
                     break;
                 case ReadyToRunHelperId.GetGCStaticBase:
-                    sb.Append("__GetGCStaticBase_").Append(NodeFactory.NameMangler.GetMangledTypeName((TypeDesc)_target));
+                    sb.Append("__GetGCStaticBase_").Append(nameMangler.GetMangledTypeName((TypeDesc)_target));
                     break;
                 case ReadyToRunHelperId.GetThreadStaticBase:
-                    sb.Append("__GetThreadStaticBase_").Append(NodeFactory.NameMangler.GetMangledTypeName((TypeDesc)_target));
+                    sb.Append("__GetThreadStaticBase_").Append(nameMangler.GetMangledTypeName((TypeDesc)_target));
                     break;
                 case ReadyToRunHelperId.DelegateCtor:
                     {
@@ -128,11 +136,7 @@ namespace ILCompiler.DependencyAnalysis
                     break;
                 case ReadyToRunHelperId.ResolveVirtualFunction:
                     sb.Append("__ResolveVirtualFunction_");
-                    sb.Append(NodeFactory.NameMangler.GetMangledMethodName((MethodDesc)_target));
-                    break;
-                case ReadyToRunHelperId.ResolveGenericVirtualMethod:
-                    sb.Append("__ResolveGenericVirtualMethod_");
-                    sb.Append(NodeFactory.NameMangler.GetMangledMethodName((MethodDesc)_target));
+                    sb.Append(nameMangler.GetMangledMethodName((MethodDesc)_target));
                     break;
                 default:
                     throw new NotImplementedException();

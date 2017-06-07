@@ -1,5 +1,6 @@
-/*
- * sgen-marksweep.c: The Mark & Sweep major collector.
+/**
+ * \file
+ * The Mark & Sweep major collector.
  *
  * Author:
  * 	Mark Probst <mark.probst@gmail.com>
@@ -2809,6 +2810,7 @@ sgen_marksweep_init_internal (SgenMajorCollector *collector, gboolean is_concurr
 
 	collector->major_ops_serial.copy_or_mark_object = major_copy_or_mark_object_canonical;
 	collector->major_ops_serial.scan_object = major_scan_object_with_evacuation;
+	collector->major_ops_serial.scan_ptr_field = major_scan_ptr_field_with_evacuation;
 	collector->major_ops_serial.drain_gray_stack = drain_gray_stack;
 	if (is_concurrent) {
 		collector->major_ops_concurrent_start.copy_or_mark_object = major_copy_or_mark_object_concurrent_canonical;

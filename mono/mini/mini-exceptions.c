@@ -1,5 +1,6 @@
-/*
- * mini-exceptions.c: generic exception support
+/**
+ * \file
+ * generic exception support
  *
  * Authors:
  *   Dietmar Maurer (dietmar@ximian.com)
@@ -73,6 +74,7 @@
 #include "seq-points.h"
 #include "llvm-runtime.h"
 #include "mini-llvm.h"
+#include "interp/interp.h"
 
 #ifdef ENABLE_LLVM
 #include "mini-llvm-cpp.h"
@@ -220,7 +222,13 @@ mono_exceptions_init (void)
 #ifdef MONO_ARCH_HAVE_EXCEPTIONS_INIT
 	mono_arch_exceptions_init ();
 #endif
-	cbs.mono_walk_stack_with_ctx = mono_runtime_walk_stack_with_ctx;
+#ifdef ENABLE_INTERPRETER
+	if (mono_use_interpreter)
+		cbs.mono_walk_stack_with_ctx = interp_walk_stack_with_ctx;
+	else
+#endif
+		cbs.mono_walk_stack_with_ctx = mono_runtime_walk_stack_with_ctx;
+
 	cbs.mono_walk_stack_with_state = mono_walk_stack_with_state;
 
 	if (mono_llvm_only)
@@ -753,10 +761,9 @@ get_method_from_stack_frame (MonoJitInfo *ji, gpointer generic_info)
 
 /**
  * mono_exception_walk_native_trace:
- * @ex: The exception object whose frames should be walked
- * @func: callback to call for each stack frame
- * @user_data: data passed to the callback
- *
+ * \param ex The exception object whose frames should be walked
+ * \param func callback to call for each stack frame
+ * \param user_data data passed to the callback
  * This function walks the stacktrace of an exception. For
  * each frame the callback function is called with the relevant info.
  * The walk ends when no more stack frames are found or when the callback
@@ -909,10 +916,8 @@ mono_runtime_walk_stack_with_ctx (MonoJitStackWalk func, MonoContext *start_ctx,
 }
 /**
  * mono_walk_stack_with_ctx:
- *
- * Unwind the current thread starting at @start_ctx.
- * 
- * If @start_ctx is null, we capture the current context.
+ * Unwind the current thread starting at \p start_ctx.
+ * If \p start_ctx is null, we capture the current context.
  */
 void
 mono_walk_stack_with_ctx (MonoJitStackWalk func, MonoContext *start_ctx, MonoUnwindOptions unwind_options, void *user_data)
@@ -940,14 +945,13 @@ mono_walk_stack_with_ctx (MonoJitStackWalk func, MonoContext *start_ctx, MonoUnw
 
 /**
  * mono_walk_stack_with_state:
- *
- * Unwind a thread described by @state.
+ * Unwind a thread described by \p state.
  *
  * State must be valid (state->valid == TRUE).
  *
  * If you are using this function to unwind another thread, make sure it is suspended.
  * 
- * If @state is null, we capture the current context.
+ * If \p state is null, we capture the current context.
  */
 void
 mono_walk_stack_with_state (MonoJitStackWalk func, MonoThreadUnwindState *state, MonoUnwindOptions unwind_options, void *user_data)
@@ -985,16 +989,15 @@ mono_walk_stack (MonoJitStackWalk func, MonoUnwindOptions options, void *user_da
 
 /**
  * mono_walk_stack_full:
- * @func: callback to call for each stack frame
- * @domain: starting appdomain, can be NULL to use the current domain
- * @unwind_options: what extra information the unwinder should gather
- * @start_ctx: starting state of the stack walk, can be NULL.
- * @thread: the thread whose stack to walk, can be NULL to use the current thread
- * @lmf: the LMF of @thread, can be NULL to use the LMF of the current thread
- * @user_data: data passed to the callback
- *
+ * \param func callback to call for each stack frame
+ * \param domain starting appdomain, can be NULL to use the current domain
+ * \param unwind_options what extra information the unwinder should gather
+ * \param start_ctx starting state of the stack walk, can be NULL.
+ * \param thread the thread whose stack to walk, can be NULL to use the current thread
+ * \param lmf the LMF of \p thread, can be NULL to use the LMF of the current thread
+ * \param user_data data passed to the callback
  * This function walks the stack of a thread, starting from the state
- * represented by start_ctx. For each frame the callback
+ * represented by \p start_ctx. For each frame the callback
  * function is called with the relevant info. The walk ends when no more
  * managed stack frames are found or when the callback returns a TRUE value.
  */
@@ -1375,7 +1378,7 @@ wrap_non_exception_throws (MonoMethod *m)
 static MonoArray*
 build_native_trace (MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 /* This puppy only makes sense on mobile, IOW, ARM. */
 #if defined (HAVE_BACKTRACE_SYMBOLS) && defined (TARGET_ARM)
 	MonoArray *res;
@@ -1589,18 +1592,9 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 					ex_obj = obj;
 
 				if (ei->flags == MONO_EXCEPTION_CLAUSE_FILTER) {
-					gboolean is_user_frame = method->wrapper_type == MONO_WRAPPER_NONE || method->wrapper_type == MONO_WRAPPER_DYNAMIC_METHOD;
 #ifndef DISABLE_PERFCOUNTERS
 					mono_perfcounters->exceptions_filters++;
 #endif
-					/*
-					Here's the thing, if this is a filter clause done by a wrapper like runtime invoke, we don't want to
-					trim the stackframe since if it returns FALSE we lose information.
-
-					FIXME Not 100% sure if it's a good idea even with user clauses.
-					*/
-					if (is_user_frame)
-						setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
 
 #ifndef MONO_CROSS_COMPILE
 #ifdef MONO_CONTEXT_SET_LLVM_EXC_REG
@@ -1637,8 +1631,7 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 					filter_idx ++;
 
 					if (filtered) {
-						if (!is_user_frame)
-							setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
+						setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
 						g_slist_free (dynamic_methods);
 						/* mono_debugger_agent_handle_exception () needs this */
 						mini_set_abort_threshold (ctx);
@@ -1648,7 +1641,7 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 				}
 
 				MonoError isinst_error;
-				mono_error_init (&isinst_error);
+				error_init (&isinst_error);
 				if (ei->flags == MONO_EXCEPTION_CLAUSE_NONE && mono_object_isinst_checked (ex_obj, catch_class, &error)) {
 					setup_stack_trace (mono_ex, dynamic_methods, &trace_ips);
 					g_slist_free (dynamic_methods);
@@ -1672,9 +1665,9 @@ mono_handle_exception_internal_first_pass (MonoContext *ctx, MonoObject *obj, gi
 
 /**
  * mono_handle_exception_internal:
- * @ctx: saved processor state
- * @obj: the exception object
- * @resume: whenever to resume unwinding based on the state in MonoJitTlsData.
+ * \param ctx saved processor state
+ * \param obj the exception object
+ * \param resume whenever to resume unwinding based on the state in \c MonoJitTlsData.
  */
 static gboolean
 mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resume, MonoJitInfo **out_ji)
@@ -1956,7 +1949,7 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 					filter_idx ++;
 				}
 
-				mono_error_init (&error);
+				error_init (&error);
 				if ((ei->flags == MONO_EXCEPTION_CLAUSE_NONE && 
 				     mono_object_isinst_checked (ex_obj, catch_class, &error)) || filtered) {
 					/*
@@ -2070,13 +2063,11 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 
 /**
  * mono_debugger_run_finally:
- * @start_ctx: saved processor state
- *
- * This method is called by the Mono Debugger to call all `finally' clauses of the
- * current stack frame.  It's used when the user issues a `return' command to make
+ * \param start_ctx saved processor state
+ * This method is called by the Mono Debugger to call all \c finally clauses of the
+ * current stack frame.  It's used when the user issues a \c return command to make
  * the current stack frame return.  After returning from this method, the debugger
  * unwinds the stack one frame and gives control back to the user.
- *
  * NOTE: This method is only used when running inside the Mono Debugger.
  */
 void
@@ -2111,8 +2102,8 @@ mono_debugger_run_finally (MonoContext *start_ctx)
 
 /**
  * mono_handle_exception:
- * @ctx: saved processor state
- * @obj: the exception object
+ * \param ctx saved processor state
+ * \param obj the exception object
  */
 gboolean
 mono_handle_exception (MonoContext *ctx, MonoObject *obj)
@@ -2482,7 +2473,7 @@ mono_handle_native_crash (const char *signal, void *ctx, MONO_SIG_HANDLER_INFO_T
 	if (handling_sigsegv && is_sigsegv)
 		return;
 
-	if (mini_get_debug_options ()->suspend_on_sigsegv && is_sigsegv) {
+	if (mini_get_debug_options ()->suspend_on_native_crash) {
 		mono_runtime_printf_err ("Received %s, suspending...", signal);
 #ifdef HOST_WIN32
 		while (1)
@@ -2680,11 +2671,11 @@ mono_print_thread_dump_internal (void *sigctx, MonoContext *start_ctx)
 	mono_runtime_stdout_fflush ();
 }
 
-/*
+/**
  * mono_print_thread_dump:
  *
- *   Print information about the current thread to stdout.
- * SIGCTX can be NULL, allowing this to be called from gdb.
+ * Print information about the current thread to stdout.
+ * \p sigctx can be NULL, allowing this to be called from gdb.
  */
 void
 mono_print_thread_dump (void *sigctx)

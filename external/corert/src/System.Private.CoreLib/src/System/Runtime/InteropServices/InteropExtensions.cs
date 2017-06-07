@@ -459,12 +459,12 @@ namespace System.Runtime.InteropServices
 
         public static void SuppressReentrantWaits()
         {
-            System.Threading.LowLevelThread.SuppressReentrantWaits();
+            RuntimeThread.SuppressReentrantWaits();
         }
 
         public static void RestoreReentrantWaits()
         {
-            System.Threading.LowLevelThread.RestoreReentrantWaits();
+            RuntimeThread.RestoreReentrantWaits();
         }
 
         public static IntPtr MemAlloc(UIntPtr sizeInBytes)
@@ -475,6 +475,16 @@ namespace System.Runtime.InteropServices
         public static void MemFree(IntPtr allocatedMemory)
         {
             Interop.MemFree(allocatedMemory);
+        }
+
+        public static IntPtr GetCriticalHandle(CriticalHandle criticalHandle)
+        {
+            return criticalHandle.GetHandleInternal();
+        }
+
+        public static void SetCriticalHandle(CriticalHandle criticalHandle, IntPtr handle)
+        {
+            criticalHandle.SetHandleInternal(handle);
         }
     }
 }

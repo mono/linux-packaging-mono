@@ -1,5 +1,6 @@
-/*
- * null-gc.c: GC implementation using malloc: will leak everything, just for testing.
+/**
+ * \file
+ * GC implementation using malloc: will leak everything, just for testing.
  *
  * Copyright 2001-2003 Ximian, Inc (http://www.ximian.com)
  * Copyright 2004-2011 Novell, Inc (http://www.novell.com)
@@ -160,6 +161,12 @@ mono_gc_make_descr_for_array (int vector, gsize *elem_bitmap, int numbits, size_
 
 void*
 mono_gc_make_descr_from_bitmap (gsize *bitmap, int numbits)
+{
+	return NULL;
+}
+
+void*
+mono_gc_make_vector_descr (void)
 {
 	return NULL;
 }

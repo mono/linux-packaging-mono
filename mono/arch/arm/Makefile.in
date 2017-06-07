@@ -332,13 +332,11 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
-BUILT_SOURCES = arm_dpimacros.h arm_vfpmacros.h
-CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = arm-codegen.h dpiops.sh mov_macros.th dpi_macros.th cmp_macros.th \
-	vfpm_macros.th vfp_macros.th arm-vfp-codegen.h vfpops.sh
+	vfpm_macros.th vfp_macros.th arm-vfp-codegen.h vfpops.sh \
+	arm_dpimacros.h arm_vfpmacros.h
 
-all: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) all-am
+all: all-am
 
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -415,12 +413,10 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) check-am
+check: check-am
 all-am: Makefile
 installdirs:
-install: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) install-am
+install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -442,7 +438,6 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
-	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -451,7 +446,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libtool mostlyclean-am
@@ -518,7 +512,7 @@ ps-am:
 
 uninstall-am:
 
-.MAKE: all check install install-am install-strip
+.MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	cscopelist-am ctags-am distclean distclean-generic \
@@ -540,6 +534,8 @@ arm_dpimacros.h: dpiops.sh mov_macros.th dpi_macros.th cmp_macros.th
 arm_vfpmacros.h: vfpops.sh vfpm_macros.th vfp_macros.th
 	(cd $(srcdir); bash ./vfpops.sh) > $@t
 	mv $@t $@
+
+gen: arm_dpimacros.h arm_vfpmacros.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

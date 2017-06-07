@@ -3,8 +3,10 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Diagnostics;
 
 using Internal.Text;
+using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
 {
@@ -15,23 +17,43 @@ namespace ILCompiler.DependencyAnalysis
     /// </summary>
     class NativeLayoutSignatureNode : ObjectNode, ISymbolNode
     {
-        private static int s_counter = 0;
-
-        private int _id;
+        private TypeSystemEntity _identity;
+        private Utf8String _identityPrefix;
         private NativeLayoutSavedVertexNode _nativeSignature;
 
-        public NativeLayoutSignatureNode(NativeLayoutSavedVertexNode nativeSignature)
+        public NativeLayoutSignatureNode(NativeLayoutSavedVertexNode nativeSignature, TypeSystemEntity identity, Utf8String identityPrefix)
         {
             _nativeSignature = nativeSignature;
-            _id = s_counter++;
+            _identity = identity;
+            _identityPrefix = identityPrefix;
         }
 
         public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            sb.Append(nameMangler.CompilationUnitPrefix).Append("__NativeLayoutSignature_" + _id);
+            Utf8String identityString;
+            if (_identity is MethodDesc)
+            {
+                identityString = nameMangler.GetMangledMethodName((MethodDesc)_identity);
+            }
+            else if (_identity is TypeDesc)
+            {
+                identityString = nameMangler.GetMangledTypeName((TypeDesc)_identity);
+            }
+            else if (_identity is FieldDesc)
+            {
+                identityString = nameMangler.GetMangledFieldName((FieldDesc)_identity);
+            }
+            else
+            {
+                Debug.Assert(false);
+                identityString = new Utf8String("unknown");
+            }
+
+            sb.Append(nameMangler.CompilationUnitPrefix).Append(_identityPrefix).Append(identityString);
         }
+
         public int Offset => 0;
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
         public override ObjectNodeSection Section => ObjectNodeSection.ReadOnlyDataSection;
         public override bool IsShareable => false;
         public override bool StaticDependenciesAreComputed => true;
@@ -52,10 +74,10 @@ namespace ILCompiler.DependencyAnalysis
             // Ensure native layout is saved to get valid Vertex offsets
             factory.MetadataManager.NativeLayoutInfo.SaveNativeLayoutInfoWriter(factory);
 
-            ObjectDataBuilder objData = new ObjectDataBuilder(factory);
+            ObjectDataBuilder objData = new ObjectDataBuilder(factory, relocsOnly);
 
-            objData.Alignment = objData.TargetPointerSize;
-            objData.DefinedSymbols.Add(this);
+            objData.RequireInitialPointerAlignment();
+            objData.AddSymbol(this);
 
             objData.EmitPointerReloc(factory.TypeManagerIndirection);
             objData.EmitNaturalInt(_nativeSignature.SavedVertex.VertexOffset);

@@ -1,5 +1,6 @@
-/*
- * runtime.c: Runtime functions
+/**
+ * \file
+ * Runtime functions
  *
  * Authors:
  *  Jonathan Pryor 
@@ -27,11 +28,10 @@ static gboolean shutting_down = FALSE;
 
 /** 
  * mono_runtime_set_shutting_down:
+ * \deprecated This function can break the shutdown sequence.
  *
- * Invoked by System.Environment.Exit to flag that the runtime
+ * Invoked by \c System.Environment.Exit to flag that the runtime
  * is shutting down.
- *
- * Deprecated. This function can break the shutdown sequence.
  */
 void
 mono_runtime_set_shutting_down (void)
@@ -41,12 +41,8 @@ mono_runtime_set_shutting_down (void)
 
 /**
  * mono_runtime_is_shutting_down:
- *
- * Returns whether the runtime has been flagged for shutdown.
- *
- * This is consumed by the P:System.Environment.HasShutdownStarted
- * property.
- *
+ * This is consumed by the \c P:System.Environment.HasShutdownStarted property.
+ * \returns whether the runtime has been flagged for shutdown.
  */
 gboolean
 mono_runtime_is_shutting_down (void)
@@ -108,9 +104,6 @@ mono_runtime_try_shutdown (void)
 	/* No new threads will be created after this point */
 
 	mono_runtime_set_shutting_down ();
-
-	/* This will kill the tp threads which cannot be suspended */
-	mono_threadpool_cleanup ();
 
 	/*TODO move the follow to here:
 	mono_thread_suspend_all_other_threads (); OR  mono_thread_wait_all_other_threads

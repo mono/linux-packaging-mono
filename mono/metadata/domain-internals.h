@@ -1,4 +1,5 @@
-/*
+/**
+ * \file
  * Appdomain-related internal data structures and functions.
  * Copyright 2012 Xamarin Inc (http://www.xamarin.com)
  * Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -427,7 +428,7 @@ typedef struct  {
 typedef struct  {
 	const char runtime_version [12];
 	const char framework_version [4];
-	const AssemblyVersionSet version_sets [4];
+	const AssemblyVersionSet version_sets [5];
 } MonoRuntimeInfo;
 
 #define mono_domain_assemblies_lock(domain) mono_locks_os_acquire(&(domain)->assemblies_lock, DomainAssembliesLock)
@@ -556,6 +557,9 @@ mono_runtime_set_no_exec (gboolean val);
 
 gboolean
 mono_runtime_get_no_exec (void);
+
+void
+mono_domain_parse_assembly_bindings (MonoDomain *domain, int amajor, int aminor, gchar *domain_config_file_name);
 
 gboolean
 mono_assembly_name_parse (const char *name, MonoAssemblyName *aname);

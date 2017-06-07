@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" Condition="'$(IsProjectNLibrary)' != 'true'" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,9 +8,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ILCompiler.Compiler</RootNamespace>
     <AssemblyName>ILCompiler.Compiler</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <FileAlignment>512</FileAlignment>
-    <CLSCompliant>false</CLSCompliant>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ExcludeResourcesImport>true</ExcludeResourcesImport>
     <NuGetTargetMoniker>.NETStandard,Version=v1.3</NuGetTargetMoniker>
@@ -22,10 +19,10 @@
   <ItemGroup>
     <PackageDestination Include="Tools">
       <InProject>false</InProject>
-      <TargetFramework>.NetCoreApp,Version=1.2</TargetFramework>
+      <TargetFramework>.NetCoreApp,Version=2.0</TargetFramework>
     </PackageDestination>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(IsProjectNLibrary)' != 'true'">
     <ProjectReference Include="..\..\ILCompiler.DependencyAnalysisFramework\src\ILCompiler.DependencyAnalysisFramework.csproj">
       <Project>{dac23e9f-f826-4577-ae7a-0849ff83280c}</Project>
       <Name>ILCompiler.DependencyAnalysisFramework</Name>
@@ -59,14 +56,14 @@
     <Compile Include="..\..\Common\src\Internal\Runtime\RuntimeConstants.cs">
       <Link>Common\RuntimeConstants.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\src\Internal\Runtime\UniversalGenericParameterLayout.cs">
+      <Link>Common\UniversalGenericParameterLayout.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\src\Internal\Text\Utf8String.cs">
       <Link>Common\Utf8String.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\src\Internal\Text\Utf8StringBuilder.cs">
       <Link>Common\Utf8StringBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\IL\DelegateInfo.cs">
-      <Link>IL\DelegateInfo.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\DelegateMethodILEmitter.cs">
       <Link>IL\Stubs\DelegateMethodILEmitter.cs</Link>
@@ -76,9 +73,6 @@
     </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\EETypePtrOfIntrinsic.cs">
       <Link>IL\Stubs\EETypePtrOfIntrinsic.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\CreateInstanceIntrinsic.cs">
-      <Link>IL\Stubs\CreateInstanceIntrinsic.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\TypeGetTypeMethodThunk.cs">
       <Link>IL\Stubs\TypeGetTypeMethodThunk.cs</Link>
@@ -90,6 +84,10 @@
       <Link>JitInterface\JitConfigProvider.cs</Link>
     </Compile>
     <Compile Include="Compiler\CompilerGeneratedType.cs" />
+    <Compile Include="Compiler\CompilerTypeSystemContext.BoxedTypes.cs" />
+    <Compile Include="Compiler\EmptyMetadataManager.cs" />
+    <Compile Include="Compiler\ILStreamReader.cs" />
+    <Compile Include="Compiler\INonEmittableType.cs" />
     <Compile Include="Compiler\LibraryInitializers.cs" />
     <Compile Include="Compiler\ICompilationRootProvider.cs" />
     <Compile Include="Compiler\Compilation.cs" />
@@ -102,13 +100,27 @@
     <Compile Include="Compiler\DelegateCreationInfo.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ArrayOfEmbeddedDataNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ArrayMapNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\BlockReflectionTypeMapNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\CallingConventionConverterKey.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\CodeBasedDependencyAlgorithm.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\DelegateMarshallingStubMapNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\GenericVirtualMethodTableNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\ImportedMethodGenericDictionaryNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\InterfaceGenericVirtualMethodTableNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\IObjectDumper.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\TypeGVMEntriesNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\GVMDependenciesNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ReflectionFieldMapNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\NativeLayoutInfoNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\NativeLayoutVertexNode.cs" />
-    <Compile Include="Compiler\DependencyAnalysis\GenericsHashtableNode.cs" />
-    <Compile Include="Compiler\DependencyAnalysis\ExactMethodInstantiationsNode.cs" />
-    <Compile Include="Compiler\DependencyAnalysis\RuntimeMethodHandleNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\NativeLayoutSignatureNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\GenericTypesHashtableNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\GenericTypesTemplateMap.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\GenericMethodsHashtableNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\ExactMethodInstantiationsNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\GenericMethodsTemplateMap.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\RuntimeFieldHandleNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\RuntimeMethodHandleNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ReadyToRunGenericHelperNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ArrayOfFrozenObjectsNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ClassConstructorContextMap.cs" />
@@ -122,6 +134,7 @@
     <Compile Include="Compiler\DependencyAnalysis\FrozenStringNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\GenericCompositionNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\GenericDefinitionEETypeNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\HelperEntrypoint.cs" />
     <Compile Include="Compiler\DependencyAnalysis\IndirectionNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ReflectionInvokeMapNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\RuntimeDeterminedMethodNode.cs" />
@@ -129,9 +142,13 @@
     <Compile Include="Compiler\DependencyAnalysis\GenericDictionaryNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\GenericLookupResult.cs" />
     <Compile Include="Compiler\DependencyAnalysis\IEETypeNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\IFatFunctionPointerNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\IMethodCodeNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\INodeWithRuntimeDeterminedDependencies.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\ImportedEETypeSymbolNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\NonExternMethodSymbolNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\PInvokeMethodFixupNode.cs" />
-    <Compile Include="Compiler\DependencyAnalysis\PInvokeModuleFixupNode.cs" />    
+    <Compile Include="Compiler\DependencyAnalysis\PInvokeModuleFixupNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ResourceDataNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ResourceIndexNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\RyuJitNodeFactory.cs" />
@@ -159,9 +176,14 @@
     <Compile Include="Compiler\DependencyAnalysis\AssemblyStubNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\BlobNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\EETypeNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\CanonicalDefinitionEETypeNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\CanonicalEETypeNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\NecessaryCanonicalEETypeNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ExternSymbolNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\GCStaticEETypeNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\GCStaticsNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\GCStaticDescNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\StaticsInfoHashtableNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\INodeWithCodeInfo.cs" />
     <Compile Include="Compiler\DependencyAnalysis\INodeWithDebugInfo.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ISymbolNode.cs" />
@@ -178,9 +200,13 @@
     <Compile Include="Compiler\DependencyAnalysis\Target_X64\TargetRegisterMap.cs" />
     <Compile Include="Compiler\DependencyAnalysis\Target_X64\X64UnboxingStubNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\ThreadStaticsNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\ThreadStaticsIndexNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\ThreadStaticsOffsetNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\TypeThreadStaticIndexNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\TypeMetadataMapNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\UnboxingStubNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\UtcDictionaryLayoutNode.cs" />
+    <Compile Include="Compiler\DependencyAnalysis\UtcNodeFactory.cs" />
     <Compile Include="Compiler\DependencyAnalysis\VirtualMethodUseNode.cs" />
     <Compile Include="Compiler\DependencyAnalysis\Target_X64\Register.cs" />
     <Compile Include="Compiler\DependencyAnalysis\Target_X64\X64Emitter.cs" />
@@ -205,10 +231,14 @@
     <Compile Include="Compiler\LibraryRootProvider.cs" />
     <Compile Include="Compiler\MainMethodRootProvider.cs" />
     <Compile Include="Compiler\MemoryHelper.cs" />
-    <Compile Include="Compiler\MetadataGeneration.cs" />
+    <Compile Include="Compiler\CompilerGeneratedMetadataManager.cs" />
+    <Compile Include="Compiler\MetadataManager.cs" />
+	<Compile Include="Compiler\InteropStubManager.cs" />
     <Compile Include="Compiler\MethodExtensions.cs" />
     <Compile Include="Compiler\MultiFileCompilationModuleGroup.cs" />
     <Compile Include="Compiler\NameMangler.cs" />
+    <Compile Include="Compiler\ObjectDumper.cs" />
+    <Compile Include="Compiler\PrecomputedMetadataManager.cs" />
     <Compile Include="Compiler\ReadyToRun.cs" />
     <Compile Include="Compiler\RyuJitCompilation.cs" />
     <Compile Include="Compiler\RyuJitCompilationBuilder.cs" />
@@ -217,13 +247,14 @@
     <Compile Include="Compiler\SingleMethodRootProvider.cs" />
     <Compile Include="Compiler\TypeExtensions.cs" />
     <Compile Include="Compiler\CompilerTypeSystemContext.TypeInit.cs" />
+    <Compile Include="Compiler\UtcNameMangler.cs" />
+    <Compile Include="Compiler\CoreRTNameMangler.cs" />
     <Compile Include="Compiler\VirtualMethodCallHelper.cs" />
     <Compile Include="CppCodeGen\DependencyNodeIterator.cs" />
     <Compile Include="CppCodeGen\EvaluationStack.cs" />
     <Compile Include="CppCodeGen\CppGenerationBuffer.cs" />
     <Compile Include="CppCodeGen\CppWriter.cs" />
     <Compile Include="CppCodeGen\NodeDataSection.cs" />
-    <Compile Include="IL\PInvokeILEmitterConfiguration.cs" />
     <Compile Include="IL\Stubs\PInvokeILProvider.cs" />
     <Compile Include="IL\Stubs\StartupCode\StartupCodeMainMethod.cs" />
     <Compile Include="Logger.cs" />
@@ -243,6 +274,9 @@
     </Compile>
     <Compile Include="..\..\Common\src\Internal\Runtime\EETypeBuilderHelpers.cs">
       <Link>Common\EEType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\Internal\Runtime\InterfaceDispatchCellCachePointerFlags.cs">
+      <Link>Common\InterfaceDispatchCellCachePointerFlags.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\src\Internal\Runtime\ModuleHeaders.cs">
       <Link>Common\ModuleHeaders.cs</Link>
@@ -273,27 +307,18 @@
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\CalliIntrinsic.cs">
       <Link>IL\Stubs\CalliIntrinsic.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\DelegateThunks.cs">
-      <Link>IL\Stubs\DelegateThunks.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\ILEmitter.cs">
-      <Link>IL\Stubs\ILEmitter.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\PInvokeILEmitter.cs">
-      <Link>IL\Stubs\PInvokeILEmitter.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\Interop\IL\Marshaller.cs">
-      <Link>TypeSystem\Interop\IL\Marshaller.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\Interop\IL\MarshalHelpers.cs">
-      <Link>TypeSystem\Interop\IL\MarshalHelpers.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\src\TypeSystem\Interop\IL\PInvokeMethodData.cs">
-      <Link>TypeSystem\Interop\IL\PInvokeMethodData.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\src\TypeSystem\IL\Stubs\UnsafeIntrinsics.cs">
       <Link>IL\Stubs\UnsafeIntrinsics.cs</Link>
     </Compile>
+	<Compile Include="..\..\Common\src\TypeSystem\TypesDebugInfoWriter\PrimitiveTypeDescriptor.cs">
+      <Link>TypeSystem\TypesDebugInfoWriter\PrimitiveTypeDescriptor.cs</Link>
+    </Compile>
+	<Compile Include="..\..\Common\src\TypeSystem\TypesDebugInfoWriter\TypesDebugInfoWriter.cs">
+      <Link>TypeSystem\TypesDebugInfoWriter\TypesDebugInfoWriter.cs</Link>
+    </Compile>
+	<Compile Include="..\..\Common\src\TypeSystem\TypesDebugInfoWriter\UserDefinedTypeDescriptor.cs">
+      <Link>TypeSystem\TypesDebugInfoWriter\UserDefinedTypeDescriptor.cs</Link>
+    </Compile>	
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\JitInterface\src\CorInfoBase.cs">
@@ -311,9 +336,6 @@
     <Compile Include="..\..\JitInterface\src\CorInfoTypes.cs">
       <Link>JitInterface\CorInfoTypes.cs</Link>
     </Compile>
-    <Compile Include="..\..\JitInterface\src\TypesDebugInfo\PrimitiveTypeDescriptor.cs">
-      <Link>JitInterface\TypesDebugInfo\PrimitiveTypeDescriptor.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CppCodeGen\ILToCppImporter.cs" />
@@ -321,5 +343,5 @@
   <ItemGroup>
     <None Include="project.json" />
   </ItemGroup>
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" Condition="'$(IsProjectNLibrary)' != 'true'" />
 </Project>

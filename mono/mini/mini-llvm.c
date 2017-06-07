@@ -1,5 +1,6 @@
-/*
- * mini-llvm.c: llvm "Backend" for the mono JIT
+/**
+ * \file
+ * llvm "Backend" for the mono JIT
  *
  * Copyright 2009-2011 Novell Inc (http://www.novell.com)
  * Copyright 2011 Xamarin Inc (http://www.xamarin.com)
@@ -9,7 +10,7 @@
 #include "config.h"
 
 #include <mono/metadata/debug-helpers.h>
-#include <mono/metadata/debug-mono-symfile.h>
+#include <mono/metadata/debug-internals.h>
 #include <mono/metadata/mempool-internals.h>
 #include <mono/metadata/environment.h>
 #include <mono/metadata/object-internals.h>
@@ -483,13 +484,9 @@ type_to_llvm_type (EmitContext *ctx, MonoType *t)
 		return LLVMInt16Type ();
 	case MONO_TYPE_U4:
 		return LLVMInt32Type ();
-	case MONO_TYPE_BOOLEAN:
-		return LLVMInt8Type ();
 	case MONO_TYPE_I8:
 	case MONO_TYPE_U8:
 		return LLVMInt64Type ();
-	case MONO_TYPE_CHAR:
-		return LLVMInt16Type ();
 	case MONO_TYPE_R4:
 		return LLVMFloatType ();
 	case MONO_TYPE_R8:
@@ -498,10 +495,6 @@ type_to_llvm_type (EmitContext *ctx, MonoType *t)
 	case MONO_TYPE_U:
 		return IntPtrType ();
 	case MONO_TYPE_OBJECT:
-	case MONO_TYPE_CLASS:
-	case MONO_TYPE_ARRAY:
-	case MONO_TYPE_SZARRAY:
-	case MONO_TYPE_STRING:
 	case MONO_TYPE_PTR:
 		return ObjRefType ();
 	case MONO_TYPE_VAR:
@@ -4992,6 +4985,8 @@ process_bb (EmitContext *ctx, MonoBasicBlock *bb)
 		case OP_X86_LEA: {
 			LLVMValueRef v1, v2;
 
+			rhs = LLVMBuildSExt (builder, convert (ctx, rhs, LLVMInt32Type ()), LLVMInt64Type (), "");
+
 			v1 = LLVMBuildMul (builder, convert (ctx, rhs, IntPtrType ()), LLVMConstInt (IntPtrType (), (1 << ins->backend.shift_amount), FALSE), "");
 			v2 = LLVMBuildAdd (builder, convert (ctx, lhs, IntPtrType ()), v1, "");
 			values [ins->dreg] = LLVMBuildAdd (builder, v2, LLVMConstInt (IntPtrType (), ins->inst_imm, FALSE), dname);
@@ -9023,7 +9018,7 @@ emit_dbg_subprogram (EmitContext *ctx, MonoCompile *cfg, LLVMValueRef method, co
 	if (!minfo)
 		return NULL;
 
-	mono_debug_symfile_get_seq_points (minfo, &source_file, NULL, NULL, &sym_seq_points, &n_seq_points);
+	mono_debug_get_seq_points (minfo, &source_file, NULL, NULL, &sym_seq_points, &n_seq_points);
 	if (!source_file)
 		source_file = g_strdup ("<unknown>");
 	dir = g_path_get_dirname (source_file);

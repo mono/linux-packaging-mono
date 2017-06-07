@@ -1,5 +1,6 @@
-/*
- * object.c: Object creation for the Mono runtime
+/**
+ * \file
+ * Object creation for the Mono runtime
  *
  * Author:
  *   Miguel de Icaza (miguel@ximian.com)
@@ -36,7 +37,6 @@
 #include <mono/metadata/environment.h>
 #include "mono/metadata/profiler-private.h"
 #include "mono/metadata/security-manager.h"
-#include "mono/metadata/mono-debug-debugger.h"
 #include <mono/metadata/verify-internals.h>
 #include <mono/metadata/reflection-internals.h>
 #include <mono/metadata/w32event.h>
@@ -83,8 +83,7 @@ static mono_mutex_t ldstr_section;
 
 /**
  * mono_runtime_object_init:
- * @this_obj: the object to initialize
- *
+ * \param this_obj the object to initialize
  * This function calls the zero-argument constructor (which must
  * exist) for the given object.
  */
@@ -98,12 +97,11 @@ mono_runtime_object_init (MonoObject *this_obj)
 
 /**
  * mono_runtime_object_init_checked:
- * @this_obj: the object to initialize
- * @error: set on error.
- *
+ * \param this_obj the object to initialize
+ * \param error set on error.
  * This function calls the zero-argument constructor (which must
  * exist) for the given object and returns TRUE on success, or FALSE
- * on error and sets @error.
+ * on error and sets \p error.
  */
 gboolean
 mono_runtime_object_init_checked (MonoObject *this_obj, MonoError *error)
@@ -113,7 +111,7 @@ mono_runtime_object_init_checked (MonoObject *this_obj, MonoError *error)
 	MonoMethod *method = NULL;
 	MonoClass *klass = this_obj->vtable->klass;
 
-	mono_error_init (error);
+	error_init (error);
 	method = mono_class_get_method_from_name (klass, ".ctor", 0);
 	if (!method)
 		g_error ("Could not lookup zero argument constructor for class %s", mono_type_get_full_name (klass));
@@ -202,11 +200,10 @@ static MonoRuntimeCallbacks callbacks;
 
 /**
  * mono_thread_set_main:
- * @thread: thread to set as the main thread
- *
- * This function can be used to instruct the runtime to treat @thread
- * as the main thread, ie, the thread that would normally execute the Main()
- * method. This basically means that at the end of @thread, the runtime will
+ * \param thread thread to set as the main thread
+ * This function can be used to instruct the runtime to treat \p thread
+ * as the main thread, ie, the thread that would normally execute the \c Main
+ * method. This basically means that at the end of \p thread, the runtime will
  * wait for the existing foreground threads to quit and other such details.
  */
 void
@@ -224,6 +221,9 @@ mono_thread_set_main (MonoThread *thread)
 	main_thread = thread;
 }
 
+/**
+ * mono_thread_get_main:
+ */
 MonoThread*
 mono_thread_get_main (void)
 {
@@ -301,11 +301,10 @@ get_type_init_exception_for_vtable (MonoVTable *vtable)
 	return ex;
 }
 
-/*
+/**
  * mono_runtime_class_init:
- * @vtable: vtable that needs to be initialized
- *
- * This routine calls the class constructor for @vtable.
+ * \param vtable vtable that needs to be initialized
+ * This routine calls the class constructor for \p vtable.
  */
 void
 mono_runtime_class_init (MonoVTable *vtable)
@@ -337,11 +336,9 @@ unref_type_lock (TypeInitializationLock *lock)
 
 /**
  * mono_runtime_class_init_full:
- * @vtable that neeeds to be initialized
- * @error set on error
- *
- * returns TRUE if class constructor .cctor has been initialized successfully, or FALSE otherwise and sets @error.
- * 
+ * \param vtable that neeeds to be initialized
+ * \param error set on error
+ * \returns TRUE if class constructor \c .cctor has been initialized successfully, or FALSE otherwise and sets \p error.
  */
 gboolean
 mono_runtime_class_init_full (MonoVTable *vtable, MonoError *error)
@@ -358,7 +355,7 @@ mono_runtime_class_init_full (MonoVTable *vtable, MonoError *error)
 	MonoDomain *last_domain = NULL;
 	gboolean pending_tae = FALSE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (vtable->initialized)
 		return TRUE;
@@ -480,7 +477,7 @@ mono_runtime_class_init_full (MonoVTable *vtable, MonoError *error)
 		else
 			mono_error_cleanup (error);
 
-		mono_error_init (error);
+		error_init (error);
 
 		/* If the initialization failed, mark the class as unusable. */
 		/* Avoid infinite loops */
@@ -639,8 +636,7 @@ mono_set_always_build_imt_trampolines (gboolean value)
 
 /**
  * mono_compile_method:
- * @method: The method to compile.
- *
+ * \param method The method to compile.
  * This JIT-compiles the method, and returns the pointer to the native code
  * produced.
  */
@@ -654,12 +650,11 @@ mono_compile_method (MonoMethod *method)
 }
 
 /**
- * mono_compile_method:
- * @method: The method to compile.
- * @error: set on error.
- *
+ * mono_compile_method_checked:
+ * \param method The method to compile.
+ * \param error set on error.
  * This JIT-compiles the method, and returns the pointer to the native code
- * produced.  On failure returns NULL and sets @error.
+ * produced.  On failure returns NULL and sets \p error.
  */
 gpointer
 mono_compile_method_checked (MonoMethod *method, MonoError *error)
@@ -668,7 +663,7 @@ mono_compile_method_checked (MonoMethod *method, MonoError *error)
 
 	MONO_REQ_GC_NEUTRAL_MODE
 
-	mono_error_init (error);
+	error_init (error);
 
 	g_assert (callbacks.compile_method);
 	res = callbacks.compile_method (method, error);
@@ -682,7 +677,7 @@ mono_runtime_create_jump_trampoline (MonoDomain *domain, MonoMethod *method, gbo
 
 	MONO_REQ_GC_NEUTRAL_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	res = callbacks.create_jump_trampoline (domain, method, add_sync_wrapper, error);
 	return res;
 }
@@ -698,13 +693,11 @@ mono_runtime_create_delegate_trampoline (MonoClass *klass)
 
 /**
  * mono_runtime_free_method:
- * @domain; domain where the method is hosted
- * @method: method to release
- *
+ * \param domain domain where the method is hosted
+ * \param method method to release
  * This routine is invoked to free the resources associated with
  * a method that has been JIT compiled.  This is used to discard
  * methods that were used only temporarily (for example, used in marshalling)
- *
  */
 void
 mono_runtime_free_method (MonoDomain *domain, MonoMethod *method)
@@ -785,18 +778,11 @@ compute_class_bitmap (MonoClass *klass, gsize *bitmap, int size, int offset, int
 
 			type = mono_type_get_underlying_type (field->type);
 			switch (type->type) {
+			case MONO_TYPE_U:
 			case MONO_TYPE_I:
 			case MONO_TYPE_PTR:
 			case MONO_TYPE_FNPTR:
 				break;
-			/* only UIntPtr is allowed to be GC-tracked and only in mscorlib */
-			case MONO_TYPE_U:
-#ifdef HAVE_SGEN_GC
-				break;
-#else
-				if (klass->image != mono_defaults.corlib)
-					break;
-#endif
 			case MONO_TYPE_STRING:
 			case MONO_TYPE_SZARRAY:
 			case MONO_TYPE_CLASS:
@@ -1538,13 +1524,11 @@ build_imt (MonoClass *klass, MonoVTable *vt, MonoDomain *domain, gpointer* imt, 
 
 /**
  * mono_vtable_build_imt_slot:
- * @vtable: virtual object table struct
- * @imt_slot: slot in the IMT table
- *
- * Fill the given @imt_slot in the IMT table of @vtable with
+ * \param vtable virtual object table struct
+ * \param imt_slot slot in the IMT table
+ * Fill the given \p imt_slot in the IMT table of \p vtable with
  * a trampoline or a trampoline for the case of collisions.
  * This is part of the internal mono API.
- *
  * LOCKING: Take the domain lock.
  */
 void
@@ -1574,13 +1558,11 @@ mono_vtable_build_imt_slot (MonoVTable* vtable, int imt_slot)
 
 /**
  * mono_method_alloc_generic_virtual_trampoline:
- * @domain: a domain
- * @size: size in bytes
- *
- * Allocs size bytes to be used for the code of a generic virtual
+ * \param domain a domain
+ * \param size size in bytes
+ * Allocs \p size bytes to be used for the code of a generic virtual
  * trampoline.  It's either allocated from the domain's code manager or
  * reused from a previously invalidated piece.
- *
  * LOCKING: The domain lock must be held.
  */
 gpointer
@@ -1653,11 +1635,10 @@ get_generic_virtual_entries (MonoDomain *domain, gpointer *vtable_slot)
 }
 
 /**
- * mono_method_add_generic_virtual_invocation:
- * @domain: a domain
- * @vtable_slot: pointer to the vtable slot
- * @method: the inflated generic virtual method
- * @code: the method's code
+ * \param domain a domain
+ * \param vtable_slot pointer to the vtable slot
+ * \param method the inflated generic virtual method
+ * \param code the method's code
  *
  * Registers a call via unmanaged code to a generic virtual method
  * instantiation or variant interface method.  If the number of calls reaches a threshold
@@ -1756,12 +1737,11 @@ static MonoVTable *mono_class_create_runtime_vtable (MonoDomain *domain, MonoCla
 
 /**
  * mono_class_vtable:
- * @domain: the application domain
- * @class: the class to initialize
- *
+ * \param domain the application domain
+ * \param class the class to initialize
  * VTables are domain specific because we create domain specific code, and 
  * they contain the domain specific static class data.
- * On failure, NULL is returned, and class->exception_type is set.
+ * On failure, NULL is returned, and \c class->exception_type is set.
  */
 MonoVTable *
 mono_class_vtable (MonoDomain *domain, MonoClass *klass)
@@ -1774,10 +1754,9 @@ mono_class_vtable (MonoDomain *domain, MonoClass *klass)
 
 /**
  * mono_class_vtable_full:
- * @domain: the application domain
- * @class: the class to initialize
- * @error set on failure.
- *
+ * \param domain the application domain
+ * \param class the class to initialize
+ * \param error set on failure.
  * VTables are domain specific because we create domain specific code, and 
  * they contain the domain specific static class data.
  */
@@ -1788,7 +1767,7 @@ mono_class_vtable_full (MonoDomain *domain, MonoClass *klass, MonoError *error)
 
 	MonoClassRuntimeInfo *runtime_info;
 
-	mono_error_init (error);
+	error_init (error);
 
 	g_assert (klass);
 
@@ -1806,10 +1785,9 @@ mono_class_vtable_full (MonoDomain *domain, MonoClass *klass, MonoError *error)
 
 /**
  * mono_class_try_get_vtable:
- * @domain: the application domain
- * @class: the class to initialize
- *
- * This function tries to get the associated vtable from @class if
+ * \param domain the application domain
+ * \param class the class to initialize
+ * This function tries to get the associated vtable from \p class if
  * it was already created.
  */
 MonoVTable *
@@ -1866,7 +1844,7 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, MonoErro
 	gpointer iter;
 	gpointer *interface_offsets;
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_loader_lock (); /*FIXME mono_class_init acquires it*/
 	mono_domain_lock (domain);
@@ -2193,16 +2171,15 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, MonoErro
 #ifndef DISABLE_REMOTING
 /**
  * mono_class_proxy_vtable:
- * @domain: the application domain
- * @remove_class: the remote class
- * @error: set on error
- *
+ * \param domain the application domain
+ * \param remove_class the remote class
+ * \param error set on error
  * Creates a vtable for transparent proxies. It is basically
- * a copy of the real vtable of the class wrapped in @remote_class,
+ * a copy of the real vtable of the class wrapped in \p remote_class,
  * but all function pointers invoke the remoting functions, and
- * vtable->klass points to the transparent proxy class, and not to @class.
+ * \c vtable->klass points to the transparent proxy class, and not to \p class.
  *
- * On failure returns NULL and sets @error
+ * On failure returns NULL and sets \p error
  */
 static MonoVTable *
 mono_class_proxy_vtable (MonoDomain *domain, MonoRemoteClass *remote_class, MonoRemotingTarget target_type, MonoError *error)
@@ -2224,7 +2201,7 @@ mono_class_proxy_vtable (MonoDomain *domain, MonoRemoteClass *remote_class, Mono
 	int bcsize;
 #endif
 
-	mono_error_init (error);
+	error_init (error);
 
 	vt = mono_class_vtable (domain, klass);
 	g_assert (vt); /*FIXME property handle failure*/
@@ -2379,8 +2356,7 @@ failure:
 
 /**
  * mono_class_field_is_special_static:
- *
- *   Returns whether @field is a thread/context static field.
+ * \returns whether \p field is a thread/context static field.
  */
 gboolean
 mono_class_field_is_special_static (MonoClassField *field)
@@ -2400,10 +2376,9 @@ mono_class_field_is_special_static (MonoClassField *field)
 
 /**
  * mono_class_field_get_special_static_type:
- * @field: The MonoClassField describing the field.
- *
- * Returns: SPECIAL_STATIC_THREAD if the field is thread static, SPECIAL_STATIC_CONTEXT if it is context static,
- * SPECIAL_STATIC_NONE otherwise.
+ * \param field The \c MonoClassField describing the field.
+ * \returns \c SPECIAL_STATIC_THREAD if the field is thread static, \c SPECIAL_STATIC_CONTEXT if it is context static,
+ * \c SPECIAL_STATIC_NONE otherwise.
  */
 guint32
 mono_class_field_get_special_static_type (MonoClassField *field)
@@ -2421,8 +2396,7 @@ mono_class_field_get_special_static_type (MonoClassField *field)
 
 /**
  * mono_class_has_special_static_fields:
- * 
- *   Returns whenever @klass has any thread/context static fields.
+ * \returns whether \p klass has any thread/context static fields.
  */
 gboolean
 mono_class_has_special_static_fields (MonoClass *klass)
@@ -2516,13 +2490,11 @@ copy_remote_class_key (MonoDomain *domain, gpointer *key)
 
 /**
  * mono_remote_class:
- * @domain: the application domain
- * @class_name: name of the remote class
- * @error: set on error
- *
- * Creates and initializes a MonoRemoteClass object for a remote type. 
- *
- * On failure returns NULL and sets @error
+ * \param domain the application domain
+ * \param class_name name of the remote class
+ * \param error set on error
+ * Creates and initializes a \c MonoRemoteClass object for a remote type. 
+ * On failure returns NULL and sets \p error
  */
 MonoRemoteClass*
 mono_remote_class (MonoDomain *domain, MonoStringHandle class_name, MonoClass *proxy_class, MonoError *error)
@@ -2533,7 +2505,7 @@ mono_remote_class (MonoDomain *domain, MonoStringHandle class_name, MonoClass *p
 	gpointer* key, *mp_key;
 	char *name;
 	
-	mono_error_init (error);
+	error_init (error);
 
 	key = create_remote_class_key (NULL, proxy_class);
 	
@@ -2642,7 +2614,7 @@ mono_remote_class_vtable (MonoDomain *domain, MonoRemoteClass *remote_class, Mon
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_loader_lock (); /*FIXME mono_class_from_mono_type and mono_class_proxy_vtable take it*/
 	mono_domain_lock (domain);
@@ -2682,21 +2654,20 @@ mono_remote_class_vtable (MonoDomain *domain, MonoRemoteClass *remote_class, Mon
 
 /**
  * mono_upgrade_remote_class:
- * @domain: the application domain
- * @tproxy: the proxy whose remote class has to be upgraded.
- * @klass: class to which the remote class can be casted.
- * @error: set on error
- *
+ * \param domain the application domain
+ * \param tproxy the proxy whose remote class has to be upgraded.
+ * \param klass class to which the remote class can be casted.
+ * \param error set on error
  * Updates the vtable of the remote class by adding the necessary method slots
  * and interface offsets so it can be safely casted to klass. klass can be a
- * class or an interface.  On success returns TRUE, on failure returns FALSE and sets @error.
+ * class or an interface.  On success returns TRUE, on failure returns FALSE and sets \p error.
  */
 gboolean
 mono_upgrade_remote_class (MonoDomain *domain, MonoObjectHandle proxy_object, MonoClass *klass, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	MonoTransparentProxyHandle tproxy = MONO_HANDLE_CAST (MonoTransparentProxy, proxy_object);
 	MonoRemoteClass *remote_class = MONO_HANDLE_GETVAL (tproxy, remote_class);
@@ -2735,11 +2706,10 @@ leave:
 
 /**
  * mono_object_get_virtual_method:
- * @obj: object to operate on.
- * @method: method 
- *
- * Retrieves the MonoMethod that would be called on obj if obj is passed as
- * the instance of a callvirt of method.
+ * \param obj object to operate on.
+ * \param method method 
+ * Retrieves the \c MonoMethod that would be called on \p obj if \p obj is passed as
+ * the instance of a callvirt of \p method.
  */
 MonoMethod*
 mono_object_get_virtual_method (MonoObject *obj_raw, MonoMethod *method)
@@ -2754,17 +2724,16 @@ mono_object_get_virtual_method (MonoObject *obj_raw, MonoMethod *method)
 }
 
 /**
- * mono_object_get_virtual_method:
- * @obj: object to operate on.
- * @method: method 
- *
- * Retrieves the MonoMethod that would be called on obj if obj is passed as
- * the instance of a callvirt of method.
+ * mono_object_handle_get_virtual_method:
+ * \param obj object to operate on.
+ * \param method method 
+ * Retrieves the \c MonoMethod that would be called on \p obj if \p obj is passed as
+ * the instance of a callvirt of \p method.
  */
 MonoMethod*
 mono_object_handle_get_virtual_method (MonoObjectHandle obj, MonoMethod *method, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 
 	gboolean is_proxy = FALSE;
 	MonoClass *klass = mono_handle_class (obj);
@@ -2779,7 +2748,7 @@ mono_object_handle_get_virtual_method (MonoObjectHandle obj, MonoMethod *method,
 static MonoMethod*
 class_get_virtual_method (MonoClass *klass, MonoMethod *method, gboolean is_proxy, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 
 
 	if (!is_proxy && ((method->flags & METHOD_ATTRIBUTE_FINAL) || !(method->flags & METHOD_ATTRIBUTE_VIRTUAL)))
@@ -2852,7 +2821,7 @@ do_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **ex
 
 	g_assert (callbacks.runtime_invoke);
 
-	mono_error_init (error);
+	error_init (error);
 	
 	if (mono_profiler_get_events () & MONO_PROFILE_METHOD_EVENTS)
 		mono_profiler_method_start_invoke (method);
@@ -2870,23 +2839,21 @@ do_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **ex
 
 /**
  * mono_runtime_invoke:
- * @method: method to invoke
- * @obJ: object instance
- * @params: arguments to the method
- * @exc: exception information.
- *
- * Invokes the method represented by @method on the object @obj.
- *
- * obj is the 'this' pointer, it should be NULL for static
- * methods, a MonoObject* for object instances and a pointer to
+ * \param method method to invoke
+ * \param obj object instance
+ * \param params arguments to the method
+ * \param exc exception information.
+ * Invokes the method represented by \p method on the object \p obj.
+ * \p obj is the \c this pointer, it should be NULL for static
+ * methods, a \c MonoObject* for object instances and a pointer to
  * the value type for value types.
  *
  * The params array contains the arguments to the method with the
- * same convention: MonoObject* pointers for object instances and
+ * same convention: \c MonoObject* pointers for object instances and
  * pointers to the value type otherwise. 
  * 
  * From unmanaged code you'll usually use the
- * mono_runtime_invoke() variant.
+ * \c mono_runtime_invoke variant.
  *
  * Note that this function doesn't handle virtual methods for
  * you, it will exec the exact method you pass: we still need to
@@ -2894,10 +2861,10 @@ do_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **ex
  * of a virtual method (there are examples of this in the code,
  * though).
  * 
- * You can pass NULL as the exc argument if you don't want to
- * catch exceptions, otherwise, *exc will be set to the exception
+ * You can pass NULL as the \p exc argument if you don't want to
+ * catch exceptions, otherwise, \c *exc will be set to the exception
  * thrown, if any.  if an exception is thrown, you can't use the
- * MonoObject* result from the function.
+ * \c MonoObject* result from the function.
  * 
  * If the method returns a value type, it is boxed in an object
  * reference.
@@ -2922,20 +2889,19 @@ mono_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **
 
 /**
  * mono_runtime_try_invoke:
- * @method: method to invoke
- * @obJ: object instance
- * @params: arguments to the method
- * @exc: exception information.
- * @error: set on error
+ * \param method method to invoke
+ * \param obj object instance
+ * \param params arguments to the method
+ * \param exc exception information.
+ * \param error set on error
+ * Invokes the method represented by \p method on the object \p obj.
  *
- * Invokes the method represented by @method on the object @obj.
- *
- * obj is the 'this' pointer, it should be NULL for static
- * methods, a MonoObject* for object instances and a pointer to
+ * \p obj is the \c this pointer, it should be NULL for static
+ * methods, a \c MonoObject* for object instances and a pointer to
  * the value type for value types.
  *
  * The params array contains the arguments to the method with the
- * same convention: MonoObject* pointers for object instances and
+ * same convention: \c MonoObject* pointers for object instances and
  * pointers to the value type otherwise. 
  * 
  * From unmanaged code you'll usually use the
@@ -2947,12 +2913,12 @@ mono_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **
  * of a virtual method (there are examples of this in the code,
  * though).
  * 
- * For this function, you must not pass NULL as the exc argument if
+ * For this function, you must not pass NULL as the \p exc argument if
  * you don't want to catch exceptions, use
  * mono_runtime_invoke_checked().  If an exception is thrown, you
- * can't use the MonoObject* result from the function.
+ * can't use the \c MonoObject* result from the function.
  * 
- * If this method cannot be invoked, @error will be set and @exc and
+ * If this method cannot be invoked, \p error will be set and \p exc and
  * the return value must not be used.
  *
  * If the method returns a value type, it is boxed in an object
@@ -2973,19 +2939,18 @@ mono_runtime_try_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 
 /**
  * mono_runtime_invoke_checked:
- * @method: method to invoke
- * @obJ: object instance
- * @params: arguments to the method
- * @error: set on error
+ * \param method method to invoke
+ * \param obj object instance
+ * \param params arguments to the method
+ * \param error set on error
+ * Invokes the method represented by \p method on the object \p obj.
  *
- * Invokes the method represented by @method on the object @obj.
- *
- * obj is the 'this' pointer, it should be NULL for static
- * methods, a MonoObject* for object instances and a pointer to
+ * \p obj is the \c this pointer, it should be NULL for static
+ * methods, a \c MonoObject* for object instances and a pointer to
  * the value type for value types.
  *
- * The params array contains the arguments to the method with the
- * same convention: MonoObject* pointers for object instances and
+ * The \p params array contains the arguments to the method with the
+ * same convention: \c MonoObject* pointers for object instances and
  * pointers to the value type otherwise. 
  * 
  * From unmanaged code you'll usually use the
@@ -2997,12 +2962,12 @@ mono_runtime_try_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
  * of a virtual method (there are examples of this in the code,
  * though).
  * 
- * If an exception is thrown, you can't use the MonoObject* result
+ * If an exception is thrown, you can't use the \c MonoObject* result
  * from the function.
  * 
- * If this method cannot be invoked, @error will be set.  If the
+ * If this method cannot be invoked, \p error will be set.  If the
  * method throws an exception (and we're in coop mode) the exception
- * will be set in @error.
+ * will be set in \p error.
  *
  * If the method returns a value type, it is boxed in an object
  * reference.
@@ -3020,50 +2985,57 @@ mono_runtime_invoke_checked (MonoMethod *method, void *obj, void **params, MonoE
 
 /**
  * mono_method_get_unmanaged_thunk:
- * @method: method to generate a thunk for.
+ * \param method method to generate a thunk for.
  *
- * Returns an unmanaged->managed thunk that can be used to call
+ * Returns an \c unmanaged->managed thunk that can be used to call
  * a managed method directly from C.
  *
  * The thunk's C signature closely matches the managed signature:
  *
- * C#: public bool Equals (object obj);
- * C:  typedef MonoBoolean (*Equals)(MonoObject*,
- *             MonoObject*, MonoException**);
+ * C#: <code>public bool Equals (object obj);</code>
  *
- * The 1st ("this") parameter must not be used with static methods:
+ * C:  <code>typedef MonoBoolean (*Equals)(MonoObject*, MonoObject*, MonoException**);</code>
  *
- * C#: public static bool ReferenceEquals (object a, object b);
- * C:  typedef MonoBoolean (*ReferenceEquals)(MonoObject*, MonoObject*,
- *             MonoException**);
+ * The 1st (<code>this</code>) parameter must not be used with static methods:
  *
- * The last argument must be a non-null pointer of a MonoException* pointer.
- * It has "out" semantics. After invoking the thunk, *ex will be NULL if no
+ * C#: <code>public static bool ReferenceEquals (object a, object b);</code>
+ *
+ * C:  <code>typedef MonoBoolean (*ReferenceEquals)(MonoObject*, MonoObject*, MonoException**);</code>
+ *
+ * The last argument must be a non-null \c MonoException* pointer.
+ * It has "out" semantics. After invoking the thunk, \c *ex will be NULL if no
  * exception has been thrown in managed code. Otherwise it will point
- * to the MonoException* caught by the thunk. In this case, the result of
+ * to the \c MonoException* caught by the thunk. In this case, the result of
  * the thunk is undefined:
  *
+ * <pre>
  * MonoMethod *method = ... // MonoMethod* of System.Object.Equals
+ *
  * MonoException *ex = NULL;
+ *
  * Equals func = mono_method_get_unmanaged_thunk (method);
+ *
  * MonoBoolean res = func (thisObj, objToCompare, &ex);
+ *
  * if (ex) {
+ *
  *    // handle exception
+ *
  * }
+ * </pre>
  *
  * The calling convention of the thunk matches the platform's default
  * convention. This means that under Windows, C declarations must
- * contain the __stdcall attribute:
+ * contain the \c __stdcall attribute:
  *
- * C:  typedef MonoBoolean (__stdcall *Equals)(MonoObject*,
- *             MonoObject*, MonoException**);
+ * C: <code>typedef MonoBoolean (__stdcall *Equals)(MonoObject*, MonoObject*, MonoException**);</code>
  *
  * LIMITATIONS
  *
  * Value type arguments and return values are treated as they were objects:
  *
- * C#: public static Rectangle Intersect (Rectangle a, Rectangle b);
- * C:  typedef MonoObject* (*Intersect)(MonoObject*, MonoObject*, MonoException**);
+ * C#: <code>public static Rectangle Intersect (Rectangle a, Rectangle b);</code>
+ * C:  <code>typedef MonoObject* (*Intersect)(MonoObject*, MonoObject*, MonoException**);</code>
  *
  * Arguments must be properly boxed upon trunk's invocation, while return
  * values must be unboxed.
@@ -3185,15 +3157,15 @@ handle_enum:
 
 /**
  * mono_field_set_value:
- * @obj: Instance object
- * @field: MonoClassField describing the field to set
- * @value: The value to be set
+ * \param obj Instance object
+ * \param field \c MonoClassField describing the field to set
+ * \param value The value to be set
  *
- * Sets the value of the field described by @field in the object instance @obj
- * to the value passed in @value.   This method should only be used for instance
- * fields.   For static fields, use mono_field_static_set_value.
+ * Sets the value of the field described by \p field in the object instance \p obj
+ * to the value passed in \p value.   This method should only be used for instance
+ * fields.   For static fields, use \c mono_field_static_set_value.
  *
- * The value must be on the native format of the field type. 
+ * The value must be in the native format of the field type. 
  */
 void
 mono_field_set_value (MonoObject *obj, MonoClassField *field, void *value)
@@ -3210,13 +3182,11 @@ mono_field_set_value (MonoObject *obj, MonoClassField *field, void *value)
 
 /**
  * mono_field_static_set_value:
- * @field: MonoClassField describing the field to set
- * @value: The value to be set
- *
- * Sets the value of the static field described by @field
- * to the value passed in @value.
- *
- * The value must be on the native format of the field type. 
+ * \param field \c MonoClassField describing the field to set
+ * \param value The value to be set
+ * Sets the value of the static field described by \p field
+ * to the value passed in \p value.
+ * The value must be in the native format of the field type. 
  */
 void
 mono_field_static_set_value (MonoVTable *vt, MonoClassField *field, void *value)
@@ -3288,20 +3258,23 @@ mono_field_get_addr (MonoObject *obj, MonoVTable *vt, MonoClassField *field)
 
 /**
  * mono_field_get_value:
- * @obj: Object instance
- * @field: MonoClassField describing the field to fetch information from
- * @value: pointer to the location where the value will be stored
- *
- * Use this routine to get the value of the field @field in the object
+ * \param obj Object instance
+ * \param field \c MonoClassField describing the field to fetch information from
+ * \param value pointer to the location where the value will be stored
+ * Use this routine to get the value of the field \p field in the object
  * passed.
  *
  * The pointer provided by value must be of the field type, for reference
- * types this is a MonoObject*, for value types its the actual pointer to
+ * types this is a \c MonoObject*, for value types its the actual pointer to
  * the value type.
  *
  * For example:
- *     int i;
- *     mono_field_get_value (obj, int_field, &i);
+ *
+ * <pre>
+ * int i;
+ *
+ * mono_field_get_value (obj, int_field, &i);
+ * </pre>
  */
 void
 mono_field_get_value (MonoObject *obj, MonoClassField *field, void *value)
@@ -3320,13 +3293,11 @@ mono_field_get_value (MonoObject *obj, MonoClassField *field, void *value)
 
 /**
  * mono_field_get_value_object:
- * @domain: domain where the object will be created (if boxing)
- * @field: MonoClassField describing the field to fetch information from
- * @obj: The object instance for the field.
- *
- * Returns: a new MonoObject with the value from the given field.  If the
+ * \param domain domain where the object will be created (if boxing)
+ * \param field \c MonoClassField describing the field to fetch information from
+ * \param obj The object instance for the field.
+ * \returns a new \c MonoObject with the value from the given field.  If the
  * field represents a value type, the value is boxed.
- *
  */
 MonoObject *
 mono_field_get_value_object (MonoDomain *domain, MonoClassField *field, MonoObject *obj)
@@ -3339,21 +3310,19 @@ mono_field_get_value_object (MonoDomain *domain, MonoClassField *field, MonoObje
 
 /**
  * mono_field_get_value_object_checked:
- * @domain: domain where the object will be created (if boxing)
- * @field: MonoClassField describing the field to fetch information from
- * @obj: The object instance for the field.
- * @error: Set on error.
- *
- * Returns: a new MonoObject with the value from the given field.  If the
- * field represents a value type, the value is boxed.  On error returns NULL and sets @error.
- *
+ * \param domain domain where the object will be created (if boxing)
+ * \param field \c MonoClassField describing the field to fetch information from
+ * \param obj The object instance for the field.
+ * \param error Set on error.
+ * \returns a new \c MonoObject with the value from the given field.  If the
+ * field represents a value type, the value is boxed.  On error returns NULL and sets \p error.
  */
 MonoObject *
 mono_field_get_value_object_checked (MonoDomain *domain, MonoClassField *field, MonoObject *obj, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	MonoObject *o;
 	MonoClass *klass;
@@ -3498,7 +3467,7 @@ mono_get_constant_value_from_blob (MonoDomain* domain, MonoTypeEnum type, const 
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	int retval = 0;
 	const char *p = blob;
 	mono_metadata_decode_blob_size (p, &p);
@@ -3549,7 +3518,7 @@ get_default_field_value (MonoDomain* domain, MonoClassField *field, void *value,
 	MonoTypeEnum def_type;
 	const char* data;
 
-	mono_error_init (error);
+	error_init (error);
 	
 	data = mono_class_get_field_default_value (field, &def_type);
 	mono_get_constant_value_from_blob (domain, def_type, data, value, error);
@@ -3562,7 +3531,7 @@ mono_field_static_get_value_for_thread (MonoInternalThread *thread, MonoVTable *
 
 	void *src;
 
-	mono_error_init (error);
+	error_init (error);
 
 	g_return_if_fail (field->type->attrs & FIELD_ATTRIBUTE_STATIC);
 	
@@ -3583,19 +3552,22 @@ mono_field_static_get_value_for_thread (MonoInternalThread *thread, MonoVTable *
 
 /**
  * mono_field_static_get_value:
- * @vt: vtable to the object
- * @field: MonoClassField describing the field to fetch information from
- * @value: where the value is returned
- *
- * Use this routine to get the value of the static field @field value.
+ * \param vt vtable to the object
+ * \param field \c MonoClassField describing the field to fetch information from
+ * \param value where the value is returned
+ * Use this routine to get the value of the static field \p field value.
  *
  * The pointer provided by value must be of the field type, for reference
- * types this is a MonoObject*, for value types its the actual pointer to
+ * types this is a \c MonoObject*, for value types its the actual pointer to
  * the value type.
  *
  * For example:
+ *
+ * <pre>
  *     int i;
+ *
  *     mono_field_static_get_value (vt, int_field, &i);
+ * </pre>
  */
 void
 mono_field_static_get_value (MonoVTable *vt, MonoClassField *field, void *value)
@@ -3609,15 +3581,14 @@ mono_field_static_get_value (MonoVTable *vt, MonoClassField *field, void *value)
 
 /**
  * mono_field_static_get_value_checked:
- * @vt: vtable to the object
- * @field: MonoClassField describing the field to fetch information from
- * @value: where the value is returned
- * @error: set on error
- *
- * Use this routine to get the value of the static field @field value.
+ * \param vt vtable to the object
+ * \param field \c MonoClassField describing the field to fetch information from
+ * \param value where the value is returned
+ * \param error set on error
+ * Use this routine to get the value of the static field \p field value.
  *
  * The pointer provided by value must be of the field type, for reference
- * types this is a MonoObject*, for value types its the actual pointer to
+ * types this is a \c MonoObject*, for value types its the actual pointer to
  * the value type.
  *
  * For example:
@@ -3625,7 +3596,7 @@ mono_field_static_get_value (MonoVTable *vt, MonoClassField *field, void *value)
  *     mono_field_static_get_value_checked (vt, int_field, &i, error);
  *     if (!is_ok (error)) { ... }
  *
- * On failure sets @error.
+ * On failure sets \p error.
  */
 void
 mono_field_static_get_value_checked (MonoVTable *vt, MonoClassField *field, void *value, MonoError *error)
@@ -3637,18 +3608,17 @@ mono_field_static_get_value_checked (MonoVTable *vt, MonoClassField *field, void
 
 /**
  * mono_property_set_value:
- * @prop: MonoProperty to set
- * @obj: instance object on which to act
- * @params: parameters to pass to the propery
- * @exc: optional exception
- *
+ * \param prop MonoProperty to set
+ * \param obj instance object on which to act
+ * \param params parameters to pass to the propery
+ * \param exc optional exception
  * Invokes the property's set method with the given arguments on the
  * object instance obj (or NULL for static properties). 
  * 
  * You can pass NULL as the exc argument if you don't want to
- * catch exceptions, otherwise, *exc will be set to the exception
+ * catch exceptions, otherwise, \c *exc will be set to the exception
  * thrown, if any.  if an exception is thrown, you can't use the
- * MonoObject* result from the function.
+ * \c MonoObject* result from the function.
  */
 void
 mono_property_set_value (MonoProperty *prop, void *obj, void **params, MonoObject **exc)
@@ -3666,16 +3636,14 @@ mono_property_set_value (MonoProperty *prop, void *obj, void **params, MonoObjec
 
 /**
  * mono_property_set_value_checked:
- * @prop: MonoProperty to set
- * @obj: instance object on which to act
- * @params: parameters to pass to the propery
- * @error: set on error
- *
+ * \param prop \c MonoProperty to set
+ * \param obj instance object on which to act
+ * \param params parameters to pass to the propery
+ * \param error set on error
  * Invokes the property's set method with the given arguments on the
- * object instance obj (or NULL for static properties). 
- * 
- * Returns: TRUE on success.  On failure returns FALSE and sets @error.
- * If an exception is thrown, it will be caught and returned via @error.
+ * object instance \p obj (or NULL for static properties). 
+ * \returns TRUE on success.  On failure returns FALSE and sets \p error.
+ * If an exception is thrown, it will be caught and returned via \p error.
  */
 gboolean
 mono_property_set_value_checked (MonoProperty *prop, void *obj, void **params, MonoError *error)
@@ -3684,7 +3652,7 @@ mono_property_set_value_checked (MonoProperty *prop, void *obj, void **params, M
 
 	MonoObject *exc;
 
-	mono_error_init (error);
+	error_init (error);
 	do_runtime_invoke (prop->set, obj, params, &exc, error);
 	if (exc != NULL && is_ok (error))
 		mono_error_set_exception_instance (error, (MonoException*)exc);
@@ -3693,20 +3661,19 @@ mono_property_set_value_checked (MonoProperty *prop, void *obj, void **params, M
 
 /**
  * mono_property_get_value:
- * @prop: MonoProperty to fetch
- * @obj: instance object on which to act
- * @params: parameters to pass to the propery
- * @exc: optional exception
- *
- * Invokes the property's get method with the given arguments on the
- * object instance obj (or NULL for static properties). 
+ * \param prop \c MonoProperty to fetch
+ * \param obj instance object on which to act
+ * \param params parameters to pass to the propery
+ * \param exc optional exception
+ * Invokes the property's \c get method with the given arguments on the
+ * object instance \p obj (or NULL for static properties). 
  * 
- * You can pass NULL as the exc argument if you don't want to
- * catch exceptions, otherwise, *exc will be set to the exception
+ * You can pass NULL as the \p exc argument if you don't want to
+ * catch exceptions, otherwise, \c *exc will be set to the exception
  * thrown, if any.  if an exception is thrown, you can't use the
- * MonoObject* result from the function.
+ * \c MonoObject* result from the function.
  *
- * Returns: the value from invoking the get method on the property.
+ * \returns the value from invoking the \c get method on the property.
  */
 MonoObject*
 mono_property_get_value (MonoProperty *prop, void *obj, void **params, MonoObject **exc)
@@ -3726,19 +3693,18 @@ mono_property_get_value (MonoProperty *prop, void *obj, void **params, MonoObjec
 
 /**
  * mono_property_get_value_checked:
- * @prop: MonoProperty to fetch
- * @obj: instance object on which to act
- * @params: parameters to pass to the propery
- * @error: set on error
- *
- * Invokes the property's get method with the given arguments on the
+ * \param prop \c MonoProperty to fetch
+ * \param obj instance object on which to act
+ * \param params parameters to pass to the propery
+ * \param error set on error
+ * Invokes the property's \c get method with the given arguments on the
  * object instance obj (or NULL for static properties). 
  * 
  * If an exception is thrown, you can't use the
- * MonoObject* result from the function.  The exception will be propagated via @error.
+ * \c MonoObject* result from the function.  The exception will be propagated via \p error.
  *
- * Returns: the value from invoking the get method on the property. On
- * failure returns NULL and sets @error.
+ * \returns the value from invoking the get method on the property. On
+ * failure returns NULL and sets \p error.
  */
 MonoObject*
 mono_property_get_value_checked (MonoProperty *prop, void *obj, void **params, MonoError *error)
@@ -3795,19 +3761,19 @@ mono_nullable_init (guint8 *buf, MonoObject *value, MonoClass *klass)
 
 /**
  * mono_nullable_box:
- * @buf: The buffer representing the data to be boxed
- * @klass: the type to box it as.
- * @error: set on oerr
+ * \param buf The buffer representing the data to be boxed
+ * \param klass the type to box it as.
+ * \param error set on error
  *
- * Creates a boxed vtype or NULL from the Nullable structure pointed to by
- * @buf.  On failure returns NULL and sets @error
+ * Creates a boxed vtype or NULL from the \c Nullable structure pointed to by
+ * \p buf.  On failure returns NULL and sets \p error.
  */
 MonoObject*
 mono_nullable_box (guint8 *buf, MonoClass *klass, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoClass *param_class = klass->cast_class;
 
 	mono_class_setup_fields (klass);
@@ -3831,9 +3797,8 @@ mono_nullable_box (guint8 *buf, MonoClass *klass, MonoError *error)
 
 /**
  * mono_get_delegate_invoke:
- * @klass: The delegate class
- *
- * Returns: the MonoMethod for the "Invoke" method in the delegate klass or NULL if @klass is a broken delegate type
+ * \param klass The delegate class
+ * \returns the \c MonoMethod for the \c Invoke method in the delegate class or NULL if \p klass is a broken delegate type
  */
 MonoMethod *
 mono_get_delegate_invoke (MonoClass *klass)
@@ -3852,9 +3817,8 @@ mono_get_delegate_invoke (MonoClass *klass)
 
 /**
  * mono_get_delegate_begin_invoke:
- * @klass: The delegate class
- *
- * Returns: the MonoMethod for the "BeginInvoke" method in the delegate klass or NULL if @klass is a broken delegate type
+ * \param klass The delegate class
+ * \returns the \c MonoMethod for the \c BeginInvoke method in the delegate class or NULL if \p klass is a broken delegate type
  */
 MonoMethod *
 mono_get_delegate_begin_invoke (MonoClass *klass)
@@ -3873,9 +3837,8 @@ mono_get_delegate_begin_invoke (MonoClass *klass)
 
 /**
  * mono_get_delegate_end_invoke:
- * @klass: The delegate class
- *
- * Returns: the MonoMethod for the "EndInvoke" method in the delegate klass or NULL if @klass is a broken delegate type
+ * \param klass The delegate class
+ * \returns the \c MonoMethod for the \c EndInvoke method in the delegate class or NULL if \p klass is a broken delegate type
  */
 MonoMethod *
 mono_get_delegate_end_invoke (MonoClass *klass)
@@ -3894,16 +3857,16 @@ mono_get_delegate_end_invoke (MonoClass *klass)
 
 /**
  * mono_runtime_delegate_invoke:
- * @delegate: pointer to a delegate object.
- * @params: parameters for the delegate.
- * @exc: Pointer to the exception result.
+ * \param delegate pointer to a delegate object.
+ * \param params parameters for the delegate.
+ * \param exc Pointer to the exception result.
  *
- * Invokes the delegate method @delegate with the parameters provided.
+ * Invokes the delegate method \p delegate with the parameters provided.
  *
- * You can pass NULL as the exc argument if you don't want to
- * catch exceptions, otherwise, *exc will be set to the exception
+ * You can pass NULL as the \p exc argument if you don't want to
+ * catch exceptions, otherwise, \c *exc will be set to the exception
  * thrown, if any.  if an exception is thrown, you can't use the
- * MonoObject* result from the function.
+ * \c MonoObject* result from the function.
  */
 MonoObject*
 mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **exc)
@@ -3930,25 +3893,24 @@ mono_runtime_delegate_invoke (MonoObject *delegate, void **params, MonoObject **
 
 /**
  * mono_runtime_delegate_try_invoke:
- * @delegate: pointer to a delegate object.
- * @params: parameters for the delegate.
- * @exc: Pointer to the exception result.
- * @error: set on error
+ * \param delegate pointer to a delegate object.
+ * \param params parameters for the delegate.
+ * \param exc Pointer to the exception result.
+ * \param error set on error
+ * Invokes the delegate method \p delegate with the parameters provided.
  *
- * Invokes the delegate method @delegate with the parameters provided.
- *
- * You can pass NULL as the exc argument if you don't want to
- * catch exceptions, otherwise, *exc will be set to the exception
- * thrown, if any.  On failure to execute, @error will be set.
+ * You can pass NULL as the \p exc argument if you don't want to
+ * catch exceptions, otherwise, \c *exc will be set to the exception
+ * thrown, if any.  On failure to execute, \p error will be set.
  * if an exception is thrown, you can't use the
- * MonoObject* result from the function.
+ * \c MonoObject* result from the function.
  */
 MonoObject*
 mono_runtime_delegate_try_invoke (MonoObject *delegate, void **params, MonoObject **exc, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoMethod *im;
 	MonoClass *klass = delegate->vtable->klass;
 	MonoObject *o;
@@ -3968,19 +3930,17 @@ mono_runtime_delegate_try_invoke (MonoObject *delegate, void **params, MonoObjec
 
 /**
  * mono_runtime_delegate_invoke_checked:
- * @delegate: pointer to a delegate object.
- * @params: parameters for the delegate.
- * @error: set on error
- *
- * Invokes the delegate method @delegate with the parameters provided.
- *
- * On failure @error will be set and you can't use the MonoObject*
+ * \param delegate pointer to a delegate object.
+ * \param params parameters for the delegate.
+ * \param error set on error
+ * Invokes the delegate method \p delegate with the parameters provided.
+ * On failure \p error will be set and you can't use the \c MonoObject*
  * result from the function.
  */
 MonoObject*
 mono_runtime_delegate_invoke_checked (MonoObject *delegate, void **params, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	return mono_runtime_delegate_try_invoke (delegate, params, NULL, error);
 }
 
@@ -3989,8 +3949,7 @@ static int num_main_args = 0;
 
 /**
  * mono_runtime_get_main_args:
- *
- * Returns: a MonoArray with the arguments passed to the main program
+ * \returns A \c MonoArray with the arguments passed to the main program
  */
 MonoArray*
 mono_runtime_get_main_args (void)
@@ -4003,11 +3962,10 @@ mono_runtime_get_main_args (void)
 }
 
 /**
- * mono_runtime_get_main_args:
- * @error: set on error
- *
- * Returns: a MonoArray with the arguments passed to the main
- * program. On failure returns NULL and sets @error.
+ * mono_runtime_get_main_args_checked:
+ * \param error set on error
+ * \returns a \c MonoArray with the arguments passed to the main
+ * program. On failure returns NULL and sets \p error.
  */
 MonoArray*
 mono_runtime_get_main_args_checked (MonoError *error)
@@ -4016,7 +3974,7 @@ mono_runtime_get_main_args_checked (MonoError *error)
 	int i;
 	MonoDomain *domain = mono_domain_get ();
 
-	mono_error_init (error);
+	error_init (error);
 
 	res = (MonoArray*)mono_array_new_checked (domain, mono_defaults.string_class, num_main_args, error);
 	return_val_if_nok (error, NULL);
@@ -4043,11 +4001,10 @@ free_main_args (void)
 
 /**
  * mono_runtime_set_main_args:
- * @argc: number of arguments from the command line
- * @argv: array of strings from the command line
- *
+ * \param argc number of arguments from the command line
+ * \param argv array of strings from the command line
  * Set the command line arguments from an embedding application that doesn't otherwise call
- * mono_runtime_run_main ().
+ * \c mono_runtime_run_main.
  */
 int
 mono_runtime_set_main_args (int argc, char* argv[])
@@ -4179,16 +4136,13 @@ prepare_run_main (MonoMethod *method, int argc, char *argv[])
 
 /**
  * mono_runtime_run_main:
- * @method: the method to start the application with (usually Main)
- * @argc: number of arguments from the command line
- * @argv: array of strings from the command line
- * @exc: excetption results
- *
- * Execute a standard Main() method (argc/argv contains the
+ * \param method the method to start the application with (usually <code>Main</code>)
+ * \param argc number of arguments from the command line
+ * \param argv array of strings from the command line
+ * \param exc excetption results
+ * Execute a standard \c Main method (\p argc / \p argv contains the
  * executable name). This method also sets the command line argument value
- * needed by System.Environment.
- *
- * 
+ * needed by \c System.Environment.
  */
 int
 mono_runtime_run_main (MonoMethod *method, int argc, char* argv[],
@@ -4210,40 +4164,35 @@ mono_runtime_run_main (MonoMethod *method, int argc, char* argv[],
 
 /**
  * mono_runtime_run_main_checked:
- * @method: the method to start the application with (usually Main)
- * @argc: number of arguments from the command line
- * @argv: array of strings from the command line
- * @error: set on error
+ * \param method the method to start the application with (usually \c Main)
+ * \param argc number of arguments from the command line
+ * \param argv array of strings from the command line
+ * \param error set on error
  *
- * Execute a standard Main() method (argc/argv contains the
+ * Execute a standard \c Main method (\p argc / \p argv contains the
  * executable name). This method also sets the command line argument value
- * needed by System.Environment.  On failure sets @error.
- *
- * 
+ * needed by \c System.Environment.  On failure sets \p error.
  */
 int
 mono_runtime_run_main_checked (MonoMethod *method, int argc, char* argv[],
 			       MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	MonoArray *args = prepare_run_main (method, argc, argv);
 	return mono_runtime_exec_main_checked (method, args, error);
 }
 
 /**
  * mono_runtime_try_run_main:
- * @method: the method to start the application with (usually Main)
- * @argc: number of arguments from the command line
- * @argv: array of strings from the command line
- * @exc: set if Main throws an exception
- * @error: set if Main can't be executed
- *
- * Execute a standard Main() method (argc/argv contains the executable
+ * \param method the method to start the application with (usually \c Main)
+ * \param argc number of arguments from the command line
+ * \param argv array of strings from the command line
+ * \param exc set if \c Main throws an exception
+ * \param error set if \c Main can't be executed
+ * Execute a standard \c Main method (\p argc / \p argv contains the executable
  * name). This method also sets the command line argument value needed
- * by System.Environment.  On failure sets @error if Main can't be
- * executed or @exc if it threw and exception.
- *
- * 
+ * by \c System.Environment.  On failure sets \p error if Main can't be
+ * executed or \p exc if it threw an exception.
  */
 int
 mono_runtime_try_run_main (MonoMethod *method, int argc, char* argv[],
@@ -4339,7 +4288,7 @@ make_transparent_proxy (MonoObject *obj, MonoError *error)
 	MonoReflectionType *reflection_type;
 	MonoTransparentProxy *transparent_proxy;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (!get_proxy_method)
 		get_proxy_method = mono_class_get_method_from_name (mono_defaults.real_proxy_class, "GetTransparentProxy", 0);
@@ -4366,24 +4315,22 @@ make_transparent_proxy (MonoObject *obj, MonoError *error)
 
 /**
  * mono_object_xdomain_representation
- * @obj: an object
- * @target_domain: a domain
- * @error: set on error.
- *
- * Creates a representation of obj in the domain target_domain.  This
- * is either a copy of obj arrived through via serialization and
+ * \param obj an object
+ * \param target_domain a domain
+ * \param error set on error.
+ * Creates a representation of obj in the domain \p target_domain.  This
+ * is either a copy of \p obj arrived through via serialization and
  * deserialization or a proxy, depending on whether the object is
- * serializable or marshal by ref.  obj must not be in target_domain.
- *
- * If the object cannot be represented in target_domain, NULL is
- * returned and @error is set appropriately.
+ * serializable or marshal by ref.  \p obj must not be in \p target_domain.
+ * If the object cannot be represented in \p target_domain, NULL is
+ * returned and \p error is set appropriately.
  */
 MonoObject*
 mono_object_xdomain_representation (MonoObject *obj, MonoDomain *target_domain, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoObject *deserialized = NULL;
 
 #ifndef DISABLE_REMOTING
@@ -4418,7 +4365,7 @@ create_unhandled_exception_eventargs (MonoObject *exc, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoClass *klass;
 	gpointer args [2];
 	MonoMethod *method = NULL;
@@ -4507,10 +4454,8 @@ static MonoRuntimeUnhandledExceptionPolicy runtime_unhandled_exception_policy = 
 
 /**
  * mono_runtime_unhandled_exception_policy_set:
- * @policy: the new policy
- * 
+ * \param policy the new policy
  * This is a VM internal routine.
- *
  * Sets the runtime policy for handling unhandled exceptions.
  */
 void
@@ -4532,14 +4477,13 @@ mono_runtime_unhandled_exception_policy_get (void) {
 
 /**
  * mono_unhandled_exception:
- * @exc: exception thrown
- *
+ * \param exc exception thrown
  * This is a VM internal routine.
  *
  * We call this function when we detect an unhandled exception
  * in the default domain.
  *
- * It invokes the * UnhandledException event in AppDomain or prints
+ * It invokes the \c UnhandledException event in \c AppDomain or prints
  * a warning to the console 
  */
 void
@@ -4590,19 +4534,18 @@ mono_unhandled_exception (MonoObject *exc)
 
 /**
  * mono_runtime_exec_managed_code:
- * @domain: Application domain
- * @main_func: function to invoke from the execution thread
- * @main_args: parameter to the main_func
- *
+ * \param domain Application domain
+ * \param main_func function to invoke from the execution thread
+ * \param main_args parameter to the main_func
  * Launch a new thread to execute a function
  *
- * main_func is called back from the thread with main_args as the
- * parameter.  The callback function is expected to start Main()
+ * \p main_func is called back from the thread with main_args as the
+ * parameter.  The callback function is expected to start \c Main
  * eventually.  This function then waits for all managed threads to
  * finish.
- * It is not necesseray anymore to execute managed code in a subthread,
+ * It is not necessary anymore to execute managed code in a subthread,
  * so this function should not be used anymore by default: just
- * execute the code and then call mono_thread_manage ().
+ * execute the code and then call mono_thread_manage().
  */
 void
 mono_runtime_exec_managed_code (MonoDomain *domain,
@@ -4669,7 +4612,7 @@ do_exec_main_checked (MonoMethod *method, MonoArray *args, MonoError *error)
 	gpointer pa [1];
 	int rval;
 
-	mono_error_init (error);
+	error_init (error);
 	g_assert (args);
 
 	pa [0] = args;
@@ -4776,7 +4719,7 @@ mono_runtime_exec_main (MonoMethod *method, MonoArray *args, MonoObject **exc)
 int
 mono_runtime_exec_main_checked (MonoMethod *method, MonoArray *args, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	prepare_thread_to_exec_main (mono_object_domain (args), method);
 	return do_exec_main_checked (method, args, error);
 }
@@ -4813,7 +4756,7 @@ invoke_array_extract_argument (MonoArray *params, int i, MonoType *t, gboolean* 
 {
 	MonoType *t_orig = t;
 	gpointer result = NULL;
-	mono_error_init (error);
+	error_init (error);
 		again:
 			switch (t->type) {
 			case MONO_TYPE_U1:
@@ -4838,10 +4781,12 @@ invoke_array_extract_argument (MonoArray *params, int i, MonoType *t, gboolean* 
 						*has_byref_nullables = TRUE;
 				} else {
 					/* MS seems to create the objects if a null is passed in */
+					gboolean was_null = FALSE;
 					if (!mono_array_get (params, MonoObject*, i)) {
 						MonoObject *o = mono_object_new_checked (mono_domain_get (), mono_class_from_mono_type (t_orig), error);
 						return_val_if_nok (error, NULL);
 						mono_array_setref (params, i, o); 
+						was_null = TRUE;
 					}
 
 					if (t->byref) {
@@ -4859,6 +4804,8 @@ invoke_array_extract_argument (MonoArray *params, int i, MonoType *t, gboolean* 
 					}
 						
 					result = mono_object_unbox (mono_array_get (params, MonoObject*, i));
+					if (!t->byref && was_null)
+						mono_array_setref (params, i, NULL);
 				}
 				break;
 			case MONO_TYPE_STRING:
@@ -4898,22 +4845,21 @@ invoke_array_extract_argument (MonoArray *params, int i, MonoType *t, gboolean* 
 }
 /**
  * mono_runtime_invoke_array:
- * @method: method to invoke
- * @obJ: object instance
- * @params: arguments to the method
- * @exc: exception information.
+ * \param method method to invoke
+ * \param obj object instance
+ * \param params arguments to the method
+ * \param exc exception information.
+ * Invokes the method represented by \p method on the object \p obj.
  *
- * Invokes the method represented by @method on the object @obj.
- *
- * obj is the 'this' pointer, it should be NULL for static
- * methods, a MonoObject* for object instances and a pointer to
+ * \p obj is the \c this pointer, it should be NULL for static
+ * methods, a \c MonoObject* for object instances and a pointer to
  * the value type for value types.
  *
- * The params array contains the arguments to the method with the
- * same convention: MonoObject* pointers for object instances and
- * pointers to the value type otherwise. The _invoke_array
- * variant takes a C# object[] as the params argument (MonoArray
- * *params): in this case the value types are boxed inside the
+ * The \p params array contains the arguments to the method with the
+ * same convention: \c MonoObject* pointers for object instances and
+ * pointers to the value type otherwise. The \c _invoke_array
+ * variant takes a C# \c object[] as the params argument (\c MonoArray*):
+ * in this case the value types are boxed inside the
  * respective reference representation.
  * 
  * From unmanaged code you'll usually use the
@@ -4925,10 +4871,10 @@ invoke_array_extract_argument (MonoArray *params, int i, MonoType *t, gboolean* 
  * of a virtual method (there are examples of this in the code,
  * though).
  * 
- * You can pass NULL as the exc argument if you don't want to
- * catch exceptions, otherwise, *exc will be set to the exception
+ * You can pass NULL as the \p exc argument if you don't want to
+ * catch exceptions, otherwise, \c *exc will be set to the exception
  * thrown, if any.  if an exception is thrown, you can't use the
- * MonoObject* result from the function.
+ * \c MonoObject* result from the function.
  * 
  * If the method returns a value type, it is boxed in an object
  * reference.
@@ -4957,22 +4903,21 @@ mono_runtime_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
 
 /**
  * mono_runtime_invoke_array_checked:
- * @method: method to invoke
- * @obJ: object instance
- * @params: arguments to the method
- * @error: set on failure.
+ * \param method method to invoke
+ * \param obj object instance
+ * \param params arguments to the method
+ * \param error set on failure.
+ * Invokes the method represented by \p method on the object \p obj.
  *
- * Invokes the method represented by @method on the object @obj.
- *
- * obj is the 'this' pointer, it should be NULL for static
- * methods, a MonoObject* for object instances and a pointer to
+ * \p obj is the \c this pointer, it should be NULL for static
+ * methods, a \c MonoObject* for object instances and a pointer to
  * the value type for value types.
  *
- * The params array contains the arguments to the method with the
- * same convention: MonoObject* pointers for object instances and
- * pointers to the value type otherwise. The _invoke_array
- * variant takes a C# object[] as the params argument (MonoArray
- * *params): in this case the value types are boxed inside the
+ * The \p params array contains the arguments to the method with the
+ * same convention: \c MonoObject* pointers for object instances and
+ * pointers to the value type otherwise. The \c _invoke_array
+ * variant takes a C# \c object[] as the \p params argument (\c MonoArray*):
+ * in this case the value types are boxed inside the
  * respective reference representation.
  *
  * From unmanaged code you'll usually use the
@@ -4984,8 +4929,8 @@ mono_runtime_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
  * of a virtual method (there are examples of this in the code,
  * though).
  *
- * On failure or exception, @error will be set. In that case, you
- * can't use the MonoObject* result from the function.
+ * On failure or exception, \p error will be set. In that case, you
+ * can't use the \c MonoObject* result from the function.
  *
  * If the method returns a value type, it is boxed in an object
  * reference.
@@ -4994,29 +4939,28 @@ MonoObject*
 mono_runtime_invoke_array_checked (MonoMethod *method, void *obj, MonoArray *params,
 				   MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	return mono_runtime_try_invoke_array (method, obj, params, NULL, error);
 }
 
 /**
  * mono_runtime_try_invoke_array:
- * @method: method to invoke
- * @obJ: object instance
- * @params: arguments to the method
- * @exc: exception information.
- * @error: set on failure.
+ * \param method method to invoke
+ * \param obj object instance
+ * \param params arguments to the method
+ * \param exc exception information.
+ * \param error set on failure.
+ * Invokes the method represented by \p method on the object \p obj.
  *
- * Invokes the method represented by @method on the object @obj.
- *
- * obj is the 'this' pointer, it should be NULL for static
- * methods, a MonoObject* for object instances and a pointer to
+ * \p obj is the \c this pointer, it should be NULL for static
+ * methods, a \c MonoObject* for object instances and a pointer to
  * the value type for value types.
  *
- * The params array contains the arguments to the method with the
- * same convention: MonoObject* pointers for object instances and
- * pointers to the value type otherwise. The _invoke_array
- * variant takes a C# object[] as the params argument (MonoArray
- * *params): in this case the value types are boxed inside the
+ * The \p params array contains the arguments to the method with the
+ * same convention: \c MonoObject* pointers for object instances and
+ * pointers to the value type otherwise. The \c _invoke_array
+ * variant takes a C# \c object[] as the params argument (\c MonoArray*):
+ * in this case the value types are boxed inside the
  * respective reference representation.
  *
  * From unmanaged code you'll usually use the
@@ -5028,10 +4972,10 @@ mono_runtime_invoke_array_checked (MonoMethod *method, void *obj, MonoArray *par
  * of a virtual method (there are examples of this in the code,
  * though).
  *
- * You can pass NULL as the exc argument if you don't want to catch
- * exceptions, otherwise, *exc will be set to the exception thrown, if
- * any.  On other failures, @error will be set. If an exception is
- * thrown or there's an error, you can't use the MonoObject* result
+ * You can pass NULL as the \p exc argument if you don't want to catch
+ * exceptions, otherwise, \c *exc will be set to the exception thrown, if
+ * any.  On other failures, \p error will be set. If an exception is
+ * thrown or there's an error, you can't use the \c MonoObject* result
  * from the function.
  *
  * If the method returns a value type, it is boxed in an object
@@ -5043,7 +4987,7 @@ mono_runtime_try_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	MonoMethodSignature *sig = mono_method_signature (method);
 	gpointer *pa = NULL;
@@ -5165,10 +5109,9 @@ mono_runtime_try_invoke_array (MonoMethod *method, void *obj, MonoArray *params,
 
 /**
  * mono_object_new:
- * @klass: the class of the object that we want to create
- *
- * Returns: a newly created object whose definition is
- * looked up using @klass.   This will not invoke any constructors, 
+ * \param klass the class of the object that we want to create
+ * \returns a newly created object whose definition is
+ * looked up using \p klass.   This will not invoke any constructors, 
  * so the consumer of this routine has to invoke any constructors on
  * its own to initialize the object.
  * 
@@ -5202,15 +5145,14 @@ ves_icall_object_new (MonoDomain *domain, MonoClass *klass)
 
 /**
  * mono_object_new_checked:
- * @klass: the class of the object that we want to create
- * @error: set on error
- *
- * Returns: a newly created object whose definition is
- * looked up using @klass.   This will not invoke any constructors,
+ * \param klass the class of the object that we want to create
+ * \param error set on error
+ * \returns a newly created object whose definition is
+ * looked up using \p klass.   This will not invoke any constructors,
  * so the consumer of this routine has to invoke any constructors on
  * its own to initialize the object.
  *
- * It returns NULL on failure and sets @error.
+ * It returns NULL on failure and sets \p error.
  */
 MonoObject *
 mono_object_new_checked (MonoDomain *domain, MonoClass *klass, MonoError *error)
@@ -5239,7 +5181,7 @@ mono_object_new_pinned (MonoDomain *domain, MonoClass *klass, MonoError *error)
 
 	MonoVTable *vtable;
 
-	mono_error_init (error);
+	error_init (error);
 
 	vtable = mono_class_vtable (domain, klass);
 	g_assert (vtable); /* FIXME don't swallow the error */
@@ -5256,10 +5198,9 @@ mono_object_new_pinned (MonoDomain *domain, MonoClass *klass, MonoError *error)
 
 /**
  * mono_object_new_specific:
- * @vtable: the vtable of the object that we want to create
- *
- * Returns: A newly created object with class and domain specified
- * by @vtable
+ * \param vtable the vtable of the object that we want to create
+ * \returns A newly created object with class and domain specified
+ * by \p vtable
  */
 MonoObject *
 mono_object_new_specific (MonoVTable *vtable)
@@ -5278,7 +5219,7 @@ mono_object_new_specific_checked (MonoVTable *vtable, MonoError *error)
 
 	MonoObject *o;
 
-	mono_error_init (error);
+	error_init (error);
 
 	/* check for is_com_object for COM Interop */
 	if (mono_vtable_is_remote (vtable) || mono_class_is_com_object (vtable->klass))
@@ -5327,17 +5268,16 @@ ves_icall_object_new_specific (MonoVTable *vtable)
 
 /**
  * mono_object_new_alloc_specific:
- * @vtable: virtual table for the object.
- *
- * This function allocates a new `MonoObject` with the type derived
- * from the @vtable information.   If the class of this object has a 
+ * \param vtable virtual table for the object.
+ * This function allocates a new \c MonoObject with the type derived
+ * from the \p vtable information.   If the class of this object has a 
  * finalizer, then the object will be tracked for finalization.
  *
  * This method might raise an exception on errors.  Use the
- * `mono_object_new_fast_checked` method if you want to manually raise
+ * \c mono_object_new_fast_checked method if you want to manually raise
  * the exception.
  *
- * Returns: the allocated object.   
+ * \returns the allocated object.   
  */
 MonoObject *
 mono_object_new_alloc_specific (MonoVTable *vtable)
@@ -5351,19 +5291,18 @@ mono_object_new_alloc_specific (MonoVTable *vtable)
 
 /**
  * mono_object_new_alloc_specific_checked:
- * @vtable: virtual table for the object.
- * @error: holds the error return value.  
+ * \param vtable virtual table for the object.
+ * \param error holds the error return value.  
  *
- * This function allocates a new `MonoObject` with the type derived
- * from the @vtable information. If the class of this object has a 
+ * This function allocates a new \c MonoObject with the type derived
+ * from the \p vtable information. If the class of this object has a 
  * finalizer, then the object will be tracked for finalization.
  *
- * If there is not enough memory, the @error parameter will be set
+ * If there is not enough memory, the \p error parameter will be set
  * and will contain a user-visible message with the amount of bytes
  * that were requested.
  *
- * Returns: the allocated object, or NULL if there is not enough memory
- *
+ * \returns the allocated object, or NULL if there is not enough memory
  */
 MonoObject *
 mono_object_new_alloc_specific_checked (MonoVTable *vtable, MonoError *error)
@@ -5372,7 +5311,7 @@ mono_object_new_alloc_specific_checked (MonoVTable *vtable, MonoError *error)
 
 	MonoObject *o;
 
-	mono_error_init (error);
+	error_init (error);
 
 	o = (MonoObject *)mono_gc_alloc_obj (vtable, vtable->klass->instance_size);
 
@@ -5386,18 +5325,18 @@ mono_object_new_alloc_specific_checked (MonoVTable *vtable, MonoError *error)
 
 /**
  * mono_object_new_fast:
- * @vtable: virtual table for the object.
+ * \param vtable virtual table for the object.
  *
- * This function allocates a new `MonoObject` with the type derived
- * from the @vtable information.   The returned object is not tracked
+ * This function allocates a new \c MonoObject with the type derived
+ * from the \p vtable information.   The returned object is not tracked
  * for finalization.   If your object implements a finalizer, you should
- * use `mono_object_new_alloc_specific` instead.
+ * use \c mono_object_new_alloc_specific instead.
  *
  * This method might raise an exception on errors.  Use the
- * `mono_object_new_fast_checked` method if you want to manually raise
+ * \c mono_object_new_fast_checked method if you want to manually raise
  * the exception.
  *
- * Returns: the allocated object.   
+ * \returns the allocated object.   
  */
 MonoObject*
 mono_object_new_fast (MonoVTable *vtable)
@@ -5411,20 +5350,19 @@ mono_object_new_fast (MonoVTable *vtable)
 
 /**
  * mono_object_new_fast_checked:
- * @vtable: virtual table for the object.
- * @error: holds the error return value.
+ * \param vtable virtual table for the object.
+ * \param error holds the error return value.
  *
- * This function allocates a new `MonoObject` with the type derived
- * from the @vtable information. The returned object is not tracked
+ * This function allocates a new \c MonoObject with the type derived
+ * from the \p vtable information. The returned object is not tracked
  * for finalization.   If your object implements a finalizer, you should
- * use `mono_object_new_alloc_specific_checked` instead.
+ * use \c mono_object_new_alloc_specific_checked instead.
  *
- * If there is not enough memory, the @error parameter will be set
+ * If there is not enough memory, the \p error parameter will be set
  * and will contain a user-visible message with the amount of bytes
  * that were requested.
  *
- * Returns: the allocated object, or NULL if there is not enough memory
- *
+ * \returns the allocated object, or NULL if there is not enough memory
  */
 MonoObject*
 mono_object_new_fast_checked (MonoVTable *vtable, MonoError *error)
@@ -5433,7 +5371,7 @@ mono_object_new_fast_checked (MonoVTable *vtable, MonoError *error)
 
 	MonoObject *o;
 
-	mono_error_init (error);
+	error_init (error);
 
 	o = mono_gc_alloc_obj (vtable, vtable->klass->instance_size);
 
@@ -5460,7 +5398,7 @@ mono_object_new_mature (MonoVTable *vtable, MonoError *error)
 
 	MonoObject *o;
 
-	mono_error_init (error);
+	error_init (error);
 
 	o = mono_gc_alloc_mature (vtable, vtable->klass->instance_size);
 
@@ -5474,13 +5412,11 @@ mono_object_new_mature (MonoVTable *vtable, MonoError *error)
 
 /**
  * mono_class_get_allocation_ftn:
- * @vtable: vtable
- * @for_box: the object will be used for boxing
- * @pass_size_in_words: 
- *
- * Return the allocation function appropriate for the given class.
+ * \param vtable vtable
+ * \param for_box the object will be used for boxing
+ * \param pass_size_in_words Unused
+ * \returns the allocation function appropriate for the given class.
  */
-
 void*
 mono_class_get_allocation_ftn (MonoVTable *vtable, gboolean for_box, gboolean *pass_size_in_words)
 {
@@ -5514,11 +5450,10 @@ mono_class_get_allocation_ftn (MonoVTable *vtable, gboolean for_box, gboolean *p
 
 /**
  * mono_object_new_from_token:
- * @image: Context where the type_token is hosted
- * @token: a token of the type that we want to create
- *
- * Returns: A newly created object whose definition is
- * looked up using @token in the @image image
+ * \param image Context where the type_token is hosted
+ * \param token a token of the type that we want to create
+ * \returns A newly created object whose definition is
+ * looked up using \p token in the \p image image
  */
 MonoObject *
 mono_object_new_from_token  (MonoDomain *domain, MonoImage *image, guint32 token)
@@ -5542,9 +5477,8 @@ mono_object_new_from_token  (MonoDomain *domain, MonoImage *image, guint32 token
 
 /**
  * mono_object_clone:
- * @obj: the object to clone
- *
- * Returns: A newly created object who is a shallow copy of @obj
+ * \param obj the object to clone
+ * \returns A newly created object who is a shallow copy of \p obj
  */
 MonoObject *
 mono_object_clone (MonoObject *obj)
@@ -5564,7 +5498,7 @@ mono_object_clone_checked (MonoObject *obj, MonoError *error)
 	MonoObject *o;
 	int size;
 
-	mono_error_init (error);
+	error_init (error);
 
 	size = obj->vtable->klass->instance_size;
 
@@ -5588,9 +5522,8 @@ mono_object_clone_checked (MonoObject *obj, MonoError *error)
 
 /**
  * mono_array_full_copy:
- * @src: source array to copy
- * @dest: destination array
- *
+ * \param src source array to copy
+ * \param dest destination array
  * Copies the content of one array to another with exactly the same type and size.
  */
 void
@@ -5629,12 +5562,11 @@ array_full_copy_unchecked_size (MonoArray *src, MonoArray *dest, MonoClass *klas
 
 /**
  * mono_array_clone_in_domain:
- * @domain: the domain in which the array will be cloned into
- * @array: the array to clone
- * @error: set on error
- *
+ * \param domain the domain in which the array will be cloned into
+ * \param array the array to clone
+ * \param error set on error
  * This routine returns a copy of the array that is hosted on the
- * specified MonoDomain.  On failure returns NULL and sets @error.
+ * specified \c MonoDomain.  On failure returns NULL and sets \p error.
  */
 MonoArrayHandle
 mono_array_clone_in_domain (MonoDomain *domain, MonoArrayHandle array_handle, MonoError *error)
@@ -5645,7 +5577,7 @@ mono_array_clone_in_domain (MonoDomain *domain, MonoArrayHandle array_handle, Mo
 	uintptr_t size = 0;
 	MonoClass *klass = mono_handle_class (array_handle);
 
-	mono_error_init (error);
+	error_init (error);
 
 	/* Pin source array here - if bounds is non-NULL, it's a pointer into the object data */
 	uint32_t src_handle = mono_gchandle_from_handle (MONO_HANDLE_CAST (MonoObject, array_handle), TRUE);
@@ -5685,9 +5617,8 @@ leave:
 
 /**
  * mono_array_clone:
- * @array: the array to clone
- *
- * Returns: A newly created array who is a shallow copy of @array
+ * \param array the array to clone
+ * \returns A newly created array who is a shallow copy of \p array
  */
 MonoArray*
 mono_array_clone (MonoArray *array)
@@ -5702,11 +5633,10 @@ mono_array_clone (MonoArray *array)
 
 /**
  * mono_array_clone_checked:
- * @array: the array to clone
- * @error: set on error
- *
- * Returns: A newly created array who is a shallow copy of @array.  On
- * failure returns NULL and sets @error.
+ * \param array the array to clone
+ * \param error set on error
+ * \returns A newly created array who is a shallow copy of \p array.  On
+ * failure returns NULL and sets \p error.
  */
 MonoArray*
 mono_array_clone_checked (MonoArray *array_raw, MonoError *error)
@@ -5714,7 +5644,7 @@ mono_array_clone_checked (MonoArray *array_raw, MonoError *error)
 	MONO_REQ_GC_UNSAFE_MODE;
 	HANDLE_FUNCTION_ENTER ();
 	/* FIXME: callers of mono_array_clone_checked should use handles */
-	mono_error_init (error);
+	error_init (error);
 	MONO_HANDLE_DCL (MonoArray, array);
 	MonoArrayHandle result = mono_array_clone_in_domain (MONO_HANDLE_DOMAIN (array), array, error);
 	HANDLE_FUNCTION_RETURN_OBJ (result);
@@ -5761,12 +5691,11 @@ mono_array_calc_byte_len (MonoClass *klass, uintptr_t len, uintptr_t *res)
 
 /**
  * mono_array_new_full:
- * @domain: domain where the object is created
- * @array_class: array class
- * @lengths: lengths for each dimension in the array
- * @lower_bounds: lower bounds for each dimension in the array (may be NULL)
- *
- * This routine creates a new array objects with the given dimensions,
+ * \param domain domain where the object is created
+ * \param array_class array class
+ * \param lengths lengths for each dimension in the array
+ * \param lower_bounds lower bounds for each dimension in the array (may be NULL)
+ * This routine creates a new array object with the given dimensions,
  * lower bounds and type.
  */
 MonoArray*
@@ -5791,7 +5720,7 @@ mono_array_new_full_checked (MonoDomain *domain, MonoClass *array_class, uintptr
 	MonoVTable *vtable;
 	int i;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (!array_class->inited)
 		mono_class_init (array_class);
@@ -5874,11 +5803,10 @@ mono_array_new_full_checked (MonoDomain *domain, MonoClass *array_class, uintptr
 
 /**
  * mono_array_new:
- * @domain: domain where the object is created
- * @eclass: element class
- * @n: number of array elements
- *
- * This routine creates a new szarray with @n elements of type @eclass.
+ * \param domain domain where the object is created
+ * \param eclass element class
+ * \param n number of array elements
+ * This routine creates a new szarray with \p n elements of type \p eclass.
  */
 MonoArray *
 mono_array_new (MonoDomain *domain, MonoClass *eclass, uintptr_t n)
@@ -5893,20 +5821,19 @@ mono_array_new (MonoDomain *domain, MonoClass *eclass, uintptr_t n)
 
 /**
  * mono_array_new_checked:
- * @domain: domain where the object is created
- * @eclass: element class
- * @n: number of array elements
- * @error: set on error
- *
- * This routine creates a new szarray with @n elements of type @eclass.
- * On failure returns NULL and sets @error.
+ * \param domain domain where the object is created
+ * \param eclass element class
+ * \param n number of array elements
+ * \param error set on error
+ * This routine creates a new szarray with \p n elements of type \p eclass.
+ * On failure returns NULL and sets \p error.
  */
 MonoArray *
 mono_array_new_checked (MonoDomain *domain, MonoClass *eclass, uintptr_t n, MonoError *error)
 {
 	MonoClass *ac;
 
-	mono_error_init (error);
+	error_init (error);
 
 	ac = mono_array_class_get (eclass, 1);
 	g_assert (ac);
@@ -5929,10 +5856,9 @@ ves_icall_array_new (MonoDomain *domain, MonoClass *eclass, uintptr_t n)
 
 /**
  * mono_array_new_specific:
- * @vtable: a vtable in the appropriate domain for an initialized class
- * @n: number of array elements
- *
- * This routine is a fast alternative to mono_array_new() for code which
+ * \param vtable a vtable in the appropriate domain for an initialized class
+ * \param n number of array elements
+ * This routine is a fast alternative to \c mono_array_new for code which
  * can be sure about the domain it operates in.
  */
 MonoArray *
@@ -5953,7 +5879,7 @@ mono_array_new_specific_checked (MonoVTable *vtable, uintptr_t n, MonoError *err
 	MonoObject *o;
 	uintptr_t byte_len;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (G_UNLIKELY (n > MONO_ARRAY_MAX_INDEX)) {
 		mono_error_set_generic_error (error, "System", "OverflowException", "");
@@ -6011,10 +5937,9 @@ mono_string_empty (MonoDomain *domain)
 
 /**
  * mono_string_new_utf16:
- * @text: a pointer to an utf16 string
- * @len: the length of the string
- *
- * Returns: A newly created string object which contains @text.
+ * \param text a pointer to an utf16 string
+ * \param len the length of the string
+ * \returns A newly created string object which contains \p text.
  */
 MonoString *
 mono_string_new_utf16 (MonoDomain *domain, const guint16 *text, gint32 len)
@@ -6031,12 +5956,11 @@ mono_string_new_utf16 (MonoDomain *domain, const guint16 *text, gint32 len)
 
 /**
  * mono_string_new_utf16_checked:
- * @text: a pointer to an utf16 string
- * @len: the length of the string
- * @error: written on error.
- *
- * Returns: A newly created string object which contains @text.
- * On error, returns NULL and sets @error.
+ * \param text a pointer to an utf16 string
+ * \param len the length of the string
+ * \param error written on error.
+ * \returns A newly created string object which contains \p text.
+ * On error, returns NULL and sets \p error.
  */
 MonoString *
 mono_string_new_utf16_checked (MonoDomain *domain, const guint16 *text, gint32 len, MonoError *error)
@@ -6045,7 +5969,7 @@ mono_string_new_utf16_checked (MonoDomain *domain, const guint16 *text, gint32 l
 
 	MonoString *s;
 	
-	mono_error_init (error);
+	error_init (error);
 	
 	s = mono_string_new_size_checked (domain, len, error);
 	if (s != NULL)
@@ -6056,12 +5980,11 @@ mono_string_new_utf16_checked (MonoDomain *domain, const guint16 *text, gint32 l
 
 /**
  * mono_string_new_utf16_handle:
- * @text: a pointer to an utf16 string
- * @len: the length of the string
- * @error: written on error.
- *
- * Returns: A newly created string object which contains @text.
- * On error, returns NULL and sets @error.
+ * \param text a pointer to an utf16 string
+ * \param len the length of the string
+ * \param error written on error.
+ * \returns A newly created string object which contains \p text.
+ * On error, returns NULL and sets \p error.
  */
 MonoStringHandle
 mono_string_new_utf16_handle (MonoDomain *domain, const guint16 *text, gint32 len, MonoError *error)
@@ -6070,12 +5993,11 @@ mono_string_new_utf16_handle (MonoDomain *domain, const guint16 *text, gint32 le
 }
 
 /**
- * mono_string_new_utf32:
- * @text: a pointer to an utf32 string
- * @len: the length of the string
- * @error: set on failure.
- *
- * Returns: A newly created string object which contains @text. On failure returns NULL and sets @error.
+ * mono_string_new_utf32_checked:
+ * \param text a pointer to an utf32 string
+ * \param len the length of the string
+ * \param error set on failure.
+ * \returns A newly created string object which contains \p text. On failure returns NULL and sets \p error.
  */
 static MonoString *
 mono_string_new_utf32_checked (MonoDomain *domain, const mono_unichar4 *text, gint32 len, MonoError *error)
@@ -6088,7 +6010,7 @@ mono_string_new_utf32_checked (MonoDomain *domain, const mono_unichar4 *text, gi
 	GError *gerror = NULL;
 	glong items_written;
 	
-	mono_error_init (error);
+	error_init (error);
 	utf16_output = g_ucs4_to_utf16 (text, len, NULL, &items_written, &gerror);
 	
 	if (gerror)
@@ -6108,10 +6030,9 @@ mono_string_new_utf32_checked (MonoDomain *domain, const mono_unichar4 *text, gi
 
 /**
  * mono_string_new_utf32:
- * @text: a pointer to an utf32 string
- * @len: the length of the string
- *
- * Returns: A newly created string object which contains @text.
+ * \param text a pointer to a UTF-32 string
+ * \param len the length of the string
+ * \returns A newly created string object which contains \p text.
  */
 MonoString *
 mono_string_new_utf32 (MonoDomain *domain, const mono_unichar4 *text, gint32 len)
@@ -6124,10 +6045,9 @@ mono_string_new_utf32 (MonoDomain *domain, const mono_unichar4 *text, gint32 len
 
 /**
  * mono_string_new_size:
- * @text: a pointer to an utf16 string
- * @len: the length of the string
- *
- * Returns: A newly created string object of @len
+ * \param text a pointer to a UTF-16 string
+ * \param len the length of the string
+ * \returns A newly created string object of \p len
  */
 MonoString *
 mono_string_new_size (MonoDomain *domain, gint32 len)
@@ -6148,7 +6068,7 @@ mono_string_new_size_checked (MonoDomain *domain, gint32 len, MonoError *error)
 	MonoVTable *vtable;
 	size_t size;
 
-	mono_error_init (error);
+	error_init (error);
 
 	/* check for overflow */
 	if (len < 0 || len > ((SIZE_MAX - G_STRUCT_OFFSET (MonoString, chars) - 8) / 2)) {
@@ -6174,10 +6094,9 @@ mono_string_new_size_checked (MonoDomain *domain, gint32 len, MonoError *error)
 
 /**
  * mono_string_new_len:
- * @text: a pointer to an utf8 string
- * @length: number of bytes in @text to consider
- *
- * Returns: A newly created string object which contains @text.
+ * \param text a pointer to an utf8 string
+ * \param length number of bytes in \p text to consider
+ * \returns A newly created string object which contains \p text.
  */
 MonoString*
 mono_string_new_len (MonoDomain *domain, const char *text, guint length)
@@ -6192,19 +6111,18 @@ mono_string_new_len (MonoDomain *domain, const char *text, guint length)
 
 /**
  * mono_string_new_len_checked:
- * @text: a pointer to an utf8 string
- * @length: number of bytes in @text to consider
- * @error: set on error
- *
- * Returns: A newly created string object which contains @text. On
- * failure returns NULL and sets @error.
+ * \param text a pointer to an utf8 string
+ * \param length number of bytes in \p text to consider
+ * \param error set on error
+ * \returns A newly created string object which contains \p text. On
+ * failure returns NULL and sets \p error.
  */
 MonoString*
 mono_string_new_len_checked (MonoDomain *domain, const char *text, guint length, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	GError *eg_error = NULL;
 	MonoString *o = NULL;
@@ -6225,13 +6143,10 @@ mono_string_new_len_checked (MonoDomain *domain, const char *text, guint length,
 
 /**
  * mono_string_new:
- * @text: a pointer to an utf8 string
- *
- * Returns: A newly created string object which contains @text.
- *
+ * \param text a pointer to a UTF-8 string
+ * \deprecated Use \c mono_string_new_checked in new code.
  * This function asserts if it cannot allocate a new string.
- *
- * @deprecated Use mono_string_new_checked in new code.
+ * \returns A newly created string object which contains \p text.
  */
 MonoString*
 mono_string_new (MonoDomain *domain, const char *text)
@@ -6245,11 +6160,10 @@ mono_string_new (MonoDomain *domain, const char *text)
 
 /**
  * mono_string_new_checked:
- * @text: a pointer to an utf8 string
- * @merror: set on error
- *
- * Returns: A newly created string object which contains @text.
- * On error returns NULL and sets @merror.
+ * \param text a pointer to an utf8 string
+ * \param merror set on error
+ * \returns A newly created string object which contains \p text.
+ * On error returns NULL and sets \p merror.
  */
 MonoString*
 mono_string_new_checked (MonoDomain *domain, const char *text, MonoError *error)
@@ -6262,7 +6176,7 @@ mono_string_new_checked (MonoDomain *domain, const char *text, MonoError *error)
     glong items_written;
     int l;
 
-    mono_error_init (error);
+    error_init (error);
 
     l = strlen (text);
    
@@ -6305,9 +6219,8 @@ leave:
 
 /**
  * mono_string_new_wrapper:
- * @text: pointer to utf8 characters.
- *
- * Helper function to create a string object from @text in the current domain.
+ * \param text pointer to UTF-8 characters.
+ * Helper function to create a string object from \p text in the current domain.
  */
 MonoString*
 mono_string_new_wrapper (const char *text)
@@ -6324,10 +6237,9 @@ mono_string_new_wrapper (const char *text)
 
 /**
  * mono_value_box:
- * @class: the class of the value
- * @value: a pointer to the unboxed data
- *
- * Returns: A newly created object which contains @value.
+ * \param class the class of the value
+ * \param value a pointer to the unboxed data
+ * \returns A newly created object which contains \p value.
  */
 MonoObject *
 mono_value_box (MonoDomain *domain, MonoClass *klass, gpointer value)
@@ -6340,13 +6252,12 @@ mono_value_box (MonoDomain *domain, MonoClass *klass, gpointer value)
 
 /**
  * mono_value_box_checked:
- * @domain: the domain of the new object
- * @class: the class of the value
- * @value: a pointer to the unboxed data
- * @error: set on error
- *
- * Returns: A newly created object which contains @value. On failure
- * returns NULL and sets @error.
+ * \param domain the domain of the new object
+ * \param class the class of the value
+ * \param value a pointer to the unboxed data
+ * \param error set on error
+ * \returns A newly created object which contains \p value. On failure
+ * returns NULL and sets \p error.
  */
 MonoObject *
 mono_value_box_checked (MonoDomain *domain, MonoClass *klass, gpointer value, MonoError *error)
@@ -6356,7 +6267,7 @@ mono_value_box_checked (MonoDomain *domain, MonoClass *klass, gpointer value, Mo
 	int size;
 	MonoVTable *vtable;
 
-	mono_error_init (error);
+	error_init (error);
 
 	g_assert (klass->valuetype);
 	if (mono_class_is_nullable (klass))
@@ -6405,12 +6316,11 @@ mono_value_box_checked (MonoDomain *domain, MonoClass *klass, gpointer value, Mo
 
 /**
  * mono_value_copy:
- * @dest: destination pointer
- * @src: source pointer
- * @klass: a valuetype class
- *
- * Copy a valuetype from @src to @dest. This function must be used
- * when @klass contains references fields.
+ * \param dest destination pointer
+ * \param src source pointer
+ * \param klass a valuetype class
+ * Copy a valuetype from \p src to \p dest. This function must be used
+ * when \p klass contains reference fields.
  */
 void
 mono_value_copy (gpointer dest, gpointer src, MonoClass *klass)
@@ -6422,13 +6332,12 @@ mono_value_copy (gpointer dest, gpointer src, MonoClass *klass)
 
 /**
  * mono_value_copy_array:
- * @dest: destination array
- * @dest_idx: index in the @dest array
- * @src: source pointer
- * @count: number of items
- *
- * Copy @count valuetype items from @src to the array @dest at index @dest_idx. 
- * This function must be used when @klass contains references fields.
+ * \param dest destination array
+ * \param dest_idx index in the \p dest array
+ * \param src source pointer
+ * \param count number of items
+ * Copy \p count valuetype items from \p src to the array \p dest at index \p dest_idx. 
+ * This function must be used when \p klass contains references fields.
  * Overlap is handled.
  */
 void
@@ -6444,9 +6353,8 @@ mono_value_copy_array (MonoArray *dest, int dest_idx, gpointer src, int count)
 
 /**
  * mono_object_get_domain:
- * @obj: object to query
- * 
- * Returns: the MonoDomain where the object is hosted
+ * \param obj object to query
+ * \returns the \c MonoDomain where the object is hosted
  */
 MonoDomain*
 mono_object_get_domain (MonoObject *obj)
@@ -6458,11 +6366,9 @@ mono_object_get_domain (MonoObject *obj)
 
 /**
  * mono_object_get_class:
- * @obj: object to query
- *
- * Use this function to obtain the `MonoClass*` for a given `MonoObject`.
- *
- * Returns: the MonoClass of the object.
+ * \param obj object to query
+ * Use this function to obtain the \c MonoClass* for a given \c MonoObject.
+ * \returns the \c MonoClass of the object.
  */
 MonoClass*
 mono_object_get_class (MonoObject *obj)
@@ -6473,9 +6379,8 @@ mono_object_get_class (MonoObject *obj)
 }
 /**
  * mono_object_get_size:
- * @o: object to query
- * 
- * Returns: the size, in bytes, of @o
+ * \param o object to query
+ * \returns the size, in bytes, of \p o
  */
 guint
 mono_object_get_size (MonoObject* o)
@@ -6501,9 +6406,8 @@ mono_object_get_size (MonoObject* o)
 
 /**
  * mono_object_unbox:
- * @obj: object to unbox
- * 
- * Returns: a pointer to the start of the valuetype boxed in this
+ * \param obj object to unbox
+ * \returns a pointer to the start of the valuetype boxed in this
  * object.
  *
  * This method will assert if the object passed is not a valuetype.
@@ -6520,10 +6424,9 @@ mono_object_unbox (MonoObject *obj)
 
 /**
  * mono_object_isinst:
- * @obj: an object
- * @klass: a pointer to a class 
- *
- * Returns: @obj if @obj is derived from @klass or NULL otherwise.
+ * \param obj an object
+ * \param klass a pointer to a class 
+ * \returns \p obj if \p obj is derived from \p klass or NULL otherwise.
  */
 MonoObject *
 mono_object_isinst (MonoObject *obj_raw, MonoClass *klass)
@@ -6541,12 +6444,11 @@ mono_object_isinst (MonoObject *obj_raw, MonoClass *klass)
 
 /**
  * mono_object_isinst_checked:
- * @obj: an object
- * @klass: a pointer to a class 
- * @error: set on error
- *
- * Returns: @obj if @obj is derived from @klass or NULL if it isn't.
- * On failure returns NULL and sets @error.
+ * \param obj an object
+ * \param klass a pointer to a class 
+ * \param error set on error
+ * \returns \p obj if \p obj is derived from \p klass or NULL if it isn't.
+ * On failure returns NULL and sets \p error.
  */
 MonoObject *
 mono_object_isinst_checked (MonoObject *obj_raw, MonoClass *klass, MonoError *error)
@@ -6554,7 +6456,7 @@ mono_object_isinst_checked (MonoObject *obj_raw, MonoClass *klass, MonoError *er
 	MONO_REQ_GC_UNSAFE_MODE;
 
 	HANDLE_FUNCTION_ENTER ();
-	mono_error_init (error);
+	error_init (error);
 	MONO_HANDLE_DCL (MonoObject, obj);
 	MonoObjectHandle result = mono_object_handle_isinst (obj, klass, error);
 	HANDLE_FUNCTION_RETURN_OBJ (result);
@@ -6562,17 +6464,16 @@ mono_object_isinst_checked (MonoObject *obj_raw, MonoClass *klass, MonoError *er
 
 /**
  * mono_object_handle_isinst:
- * @obj: an object
- * @klass: a pointer to a class 
- * @error: set on error
- *
- * Returns: @obj if @obj is derived from @klass or NULL if it isn't.
- * On failure returns NULL and sets @error.
+ * \param obj an object
+ * \param klass a pointer to a class 
+ * \param error set on error
+ * \returns \p obj if \p obj is derived from \p klass or NULL if it isn't.
+ * On failure returns NULL and sets \p error.
  */
 MonoObjectHandle
 mono_object_handle_isinst (MonoObjectHandle obj, MonoClass *klass, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	
 	if (!klass->inited)
 		mono_class_init (klass);
@@ -6588,6 +6489,9 @@ mono_object_handle_isinst (MonoObjectHandle obj, MonoClass *klass, MonoError *er
 	return result;
 }
 
+/**
+ * mono_object_isinst_mbyref:
+ */
 MonoObject *
 mono_object_isinst_mbyref (MonoObject *obj_raw, MonoClass *klass)
 {
@@ -6604,7 +6508,7 @@ mono_object_isinst_mbyref (MonoObject *obj_raw, MonoClass *klass)
 MonoObjectHandle
 mono_object_handle_isinst_mbyref (MonoObjectHandle obj, MonoClass *klass, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 
 	MonoObjectHandle result = MONO_HANDLE_NEW (MonoObject, NULL);
 
@@ -6693,10 +6597,9 @@ leave:
 
 /**
  * mono_object_castclass_mbyref:
- * @obj: an object
- * @klass: a pointer to a class 
- *
- * Returns: @obj if @obj is derived from @klass, returns NULL otherwise.
+ * \param obj an object
+ * \param klass a pointer to a class 
+ * \returns \p obj if \p obj is derived from \p klass, returns NULL otherwise.
  */
 MonoObject *
 mono_object_castclass_mbyref (MonoObject *obj_raw, MonoClass *klass)
@@ -6736,7 +6639,7 @@ mono_string_get_pinned (MonoString *str, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	/* We only need to make a pinned version of a string if this is a moving GC */
 	if (!mono_gc_is_moving ())
@@ -6763,7 +6666,7 @@ mono_string_is_interned_lookup (MonoString *str, int insert, MonoError *error)
 	MonoString *s, *res;
 	MonoDomain *domain;
 	
-	mono_error_init (error);
+	error_init (error);
 
 	domain = ((MonoObject *)str)->vtable->domain;
 	ldstr_table = domain->ldstr_table;
@@ -6812,9 +6715,8 @@ mono_string_is_interned_lookup (MonoString *str, int insert, MonoError *error)
 
 /**
  * mono_string_is_interned:
- * @o: String to probe
- *
- * Returns whether the string has been interned.
+ * \param o String to probe
+ * \returns Whether the string has been interned.
  */
 MonoString*
 mono_string_is_interned (MonoString *o)
@@ -6828,10 +6730,9 @@ mono_string_is_interned (MonoString *o)
 
 /**
  * mono_string_intern:
- * @o: String to intern
- *
+ * \param o String to intern
  * Interns the string passed.  
- * Returns: The interned string.
+ * \returns The interned string.
  */
 MonoString*
 mono_string_intern (MonoString *str)
@@ -6844,30 +6745,28 @@ mono_string_intern (MonoString *str)
 
 /**
  * mono_string_intern_checked:
- * @o: String to intern
- * @error: set on error.
- *
+ * \param o String to intern
+ * \param error set on error.
  * Interns the string passed.
- * Returns: The interned string.  On failure returns NULL and sets @error
+ * \returns The interned string.  On failure returns NULL and sets \p error
  */
 MonoString*
 mono_string_intern_checked (MonoString *str, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	return mono_string_is_interned_lookup (str, TRUE, error);
 }
 
 /**
  * mono_ldstr:
- * @domain: the domain where the string will be used.
- * @image: a metadata context
- * @idx: index into the user string table.
- * 
- * Implementation for the ldstr opcode.
- * Returns: a loaded string from the @image/@idx combination.
+ * \param domain the domain where the string will be used.
+ * \param image a metadata context
+ * \param idx index into the user string table.
+ * Implementation for the \c ldstr opcode.
+ * \returns a loaded string from the \p image / \p idx combination.
  */
 MonoString*
 mono_ldstr (MonoDomain *domain, MonoImage *image, guint32 idx)
@@ -6880,20 +6779,19 @@ mono_ldstr (MonoDomain *domain, MonoImage *image, guint32 idx)
 
 /**
  * mono_ldstr_checked:
- * @domain: the domain where the string will be used.
- * @image: a metadata context
- * @idx: index into the user string table.
- * @error: set on error.
- * 
- * Implementation for the ldstr opcode.
- * Returns: a loaded string from the @image/@idx combination.
- * On failure returns NULL and sets @error.
+ * \param domain the domain where the string will be used.
+ * \param image a metadata context
+ * \param idx index into the user string table.
+ * \param error set on error.
+ * Implementation for the \c ldstr opcode.
+ * \returns A loaded string from the \p image / \p idx combination.
+ * On failure returns NULL and sets \p error.
  */
 MonoString*
 mono_ldstr_checked (MonoDomain *domain, MonoImage *image, guint32 idx, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
-	mono_error_init (error);
+	error_init (error);
 
 	if (image->dynamic) {
 		MonoString *str = (MonoString *)mono_lookup_dynamic_token (image, MONO_TOKEN_STRING | idx, NULL, error);
@@ -6908,19 +6806,18 @@ mono_ldstr_checked (MonoDomain *domain, MonoImage *image, guint32 idx, MonoError
 
 /**
  * mono_ldstr_metadata_sig
- * @domain: the domain for the string
- * @sig: the signature of a metadata string
- * @error: set on error
- *
- * Returns: a MonoString for a string stored in the metadata. On
- * failure returns NULL and sets @error.
+ * \param domain the domain for the string
+ * \param sig the signature of a metadata string
+ * \param error set on error
+ * \returns a \c MonoString for a string stored in the metadata. On
+ * failure returns NULL and sets \p error.
  */
 static MonoString*
 mono_ldstr_metadata_sig (MonoDomain *domain, const char* sig, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	const char *str = sig;
 	MonoString *o, *interned;
 	size_t len2;
@@ -6975,7 +6872,7 @@ mono_ldstr_utf8 (MonoImage *image, guint32 idx, MonoError *error)
 	char *as;
 	GError *gerror = NULL;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (!mono_verifier_verify_string_signature (image, idx, NULL))
 		return NULL; /*FIXME we should probably be raising an exception here*/
@@ -7004,12 +6901,10 @@ mono_ldstr_utf8 (MonoImage *image, guint32 idx, MonoError *error)
 
 /**
  * mono_string_to_utf8:
- * @s: a System.String
- *
- * Returns the UTF8 representation for @s.
- * The resulting buffer needs to be freed with mono_free().
- *
- * @deprecated Use mono_string_to_utf8_checked to avoid having an exception arbritraly raised.
+ * \param s a \c System.String
+ * \deprecated Use \c mono_string_to_utf8_checked to avoid having an exception arbitrarily raised.
+ * \returns the UTF-8 representation for \p s.
+ * The resulting buffer needs to be freed with \c mono_free().
  */
 char *
 mono_string_to_utf8 (MonoString *s)
@@ -7028,12 +6923,11 @@ mono_string_to_utf8 (MonoString *s)
 
 /**
  * mono_string_to_utf8_checked:
- * @s: a System.String
- * @error: a MonoError.
- * 
- * Converts a MonoString to its UTF8 representation. May fail; check 
- * @error to determine whether the conversion was successful.
- * The resulting buffer should be freed with mono_free().
+ * \param s a \c System.String
+ * \param error a \c MonoError.
+ * Converts a \c MonoString to its UTF-8 representation. May fail; check 
+ * \p error to determine whether the conversion was successful.
+ * The resulting buffer should be freed with \c mono_free().
  */
 char *
 mono_string_to_utf8_checked (MonoString *s, MonoError *error)
@@ -7044,7 +6938,7 @@ mono_string_to_utf8_checked (MonoString *s, MonoError *error)
 	char *as;
 	GError *gerror = NULL;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (s == NULL)
 		return NULL;
@@ -7078,12 +6972,10 @@ mono_string_handle_to_utf8 (MonoStringHandle s, MonoError *error)
 
 /**
  * mono_string_to_utf8_ignore:
- * @s: a MonoString
- *
- * Converts a MonoString to its UTF8 representation. Will ignore
+ * \param s a MonoString
+ * Converts a \c MonoString to its UTF-8 representation. Will ignore
  * invalid surrogate pairs.
- * The resulting buffer should be freed with mono_free().
- * 
+ * The resulting buffer should be freed with \c mono_free().
  */
 char *
 mono_string_to_utf8_ignore (MonoString *s)
@@ -7115,9 +7007,8 @@ mono_string_to_utf8_ignore (MonoString *s)
 
 /**
  * mono_string_to_utf8_image_ignore:
- * @s: a System.String
- *
- * Same as mono_string_to_utf8_ignore, but allocate the string from the image mempool.
+ * \param s a \c System.String
+ * Same as \c mono_string_to_utf8_ignore, but allocate the string from the image mempool.
  */
 char *
 mono_string_to_utf8_image_ignore (MonoImage *image, MonoString *s)
@@ -7129,9 +7020,8 @@ mono_string_to_utf8_image_ignore (MonoImage *image, MonoString *s)
 
 /**
  * mono_string_to_utf8_mp_ignore:
- * @s: a System.String
- *
- * Same as mono_string_to_utf8_ignore, but allocate the string from a mempool.
+ * \param s a \c System.String
+ * Same as \c mono_string_to_utf8_ignore, but allocate the string from a mempool.
  */
 char *
 mono_string_to_utf8_mp_ignore (MonoMemPool *mp, MonoString *s)
@@ -7144,12 +7034,11 @@ mono_string_to_utf8_mp_ignore (MonoMemPool *mp, MonoString *s)
 
 /**
  * mono_string_to_utf16:
- * @s: a MonoString
- *
- * Return an null-terminated array of the utf-16 chars
- * contained in @s. The result must be freed with g_free().
+ * \param s a \c MonoString
+ * \returns a null-terminated array of the UTF-16 chars
+ * contained in \p s. The result must be freed with \c g_free().
  * This is a temporary helper until our string implementation
- * is reworked to always include the null terminating char.
+ * is reworked to always include the null-terminating char.
  */
 mono_unichar2*
 mono_string_to_utf16 (MonoString *s)
@@ -7175,10 +7064,9 @@ mono_string_to_utf16 (MonoString *s)
 
 /**
  * mono_string_to_utf32:
- * @s: a MonoString
- *
- * Return an null-terminated array of the UTF-32 (UCS-4) chars
- * contained in @s. The result must be freed with g_free().
+ * \param s a \c MonoString
+ * \returns a null-terminated array of the UTF-32 (UCS-4) chars
+ * contained in \p s. The result must be freed with \c g_free().
  */
 mono_unichar4*
 mono_string_to_utf32 (MonoString *s)
@@ -7202,11 +7090,9 @@ mono_string_to_utf32 (MonoString *s)
 
 /**
  * mono_string_from_utf16:
- * @data: the UTF16 string (LPWSTR) to convert
- *
- * Converts a NULL terminated UTF16 string (LPWSTR) to a MonoString.
- *
- * Returns: a MonoString.
+ * \param data the UTF-16 string (LPWSTR) to convert
+ * Converts a NULL-terminated UTF-16 string (LPWSTR) to a \c MonoString.
+ * \returns a \c MonoString.
  */
 MonoString *
 mono_string_from_utf16 (gunichar2 *data)
@@ -7219,12 +7105,10 @@ mono_string_from_utf16 (gunichar2 *data)
 
 /**
  * mono_string_from_utf16_checked:
- * @data: the UTF16 string (LPWSTR) to convert
- * @error: set on error
- *
- * Converts a NULL terminated UTF16 string (LPWSTR) to a MonoString.
- *
- * Returns: a MonoString. On failure sets @error and returns NULL.
+ * \param data the UTF-16 string (LPWSTR) to convert
+ * \param error set on error
+ * Converts a NULL-terminated UTF-16 string (LPWSTR) to a \c MonoString.
+ * \returns a \c MonoString. On failure sets \p error and returns NULL.
  */
 MonoString *
 mono_string_from_utf16_checked (gunichar2 *data, MonoError *error)
@@ -7232,7 +7116,7 @@ mono_string_from_utf16_checked (gunichar2 *data, MonoError *error)
 
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoDomain *domain = mono_domain_get ();
 	int len = 0;
 
@@ -7246,11 +7130,9 @@ mono_string_from_utf16_checked (gunichar2 *data, MonoError *error)
 
 /**
  * mono_string_from_utf32:
- * @data: the UTF32 string (LPWSTR) to convert
- *
- * Converts a UTF32 (UCS-4)to a MonoString.
- *
- * Returns: a MonoString.
+ * \param data the UTF-32 string (LPWSTR) to convert
+ * Converts a UTF-32 (UCS-4) string to a \c MonoString.
+ * \returns a \c MonoString.
  */
 MonoString *
 mono_string_from_utf32 (mono_unichar4 *data)
@@ -7263,19 +7145,17 @@ mono_string_from_utf32 (mono_unichar4 *data)
 
 /**
  * mono_string_from_utf32_checked:
- * @data: the UTF32 string (LPWSTR) to convert
- * @error: set on error
- *
- * Converts a UTF32 (UCS-4)to a MonoString.
- *
- * Returns: a MonoString. On failure returns NULL and sets @error.
+ * \param data the UTF-32 string (LPWSTR) to convert
+ * \param error set on error
+ * Converts a UTF-32 (UCS-4) string to a \c MonoString.
+ * \returns a \c MonoString. On failure returns NULL and sets \p error.
  */
 MonoString *
 mono_string_from_utf32_checked (mono_unichar4 *data, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoString* result = NULL;
 	mono_unichar2 *utf16_output = NULL;
 	GError *gerror = NULL;
@@ -7332,9 +7212,8 @@ mono_string_to_utf8_internal (MonoMemPool *mp, MonoImage *image, MonoString *s, 
 
 /**
  * mono_string_to_utf8_image:
- * @s: a System.String
- *
- * Same as mono_string_to_utf8, but allocate the string from the image mempool.
+ * \param s a \c System.String
+ * Same as \c mono_string_to_utf8, but allocate the string from the image mempool.
  */
 char *
 mono_string_to_utf8_image (MonoImage *image, MonoStringHandle s, MonoError *error)
@@ -7346,9 +7225,8 @@ mono_string_to_utf8_image (MonoImage *image, MonoStringHandle s, MonoError *erro
 
 /**
  * mono_string_to_utf8_mp:
- * @s: a System.String
- *
- * Same as mono_string_to_utf8, but allocate the string from a mempool.
+ * \param s a \c System.String
+ * Same as \c mono_string_to_utf8, but allocate the string from a mempool.
  */
 char *
 mono_string_to_utf8_mp (MonoMemPool *mp, MonoString *s, MonoError *error)
@@ -7375,9 +7253,8 @@ mono_get_eh_callbacks (void)
 
 /**
  * mono_raise_exception:
- * @ex: exception object
- *
- * Signal the runtime that the exception @ex has been raised in unmanaged code.
+ * \param ex exception object
+ * Signal the runtime that the exception \p ex has been raised in unmanaged code.
  */
 void
 mono_raise_exception (MonoException *ex) 
@@ -7403,12 +7280,11 @@ mono_raise_exception_with_context (MonoException *ex, MonoContext *ctx)
 
 /**
  * mono_wait_handle_new:
- * @domain: Domain where the object will be created
- * @handle: Handle for the wait handle
- * @error: set on error.
- *
- * Returns: A new MonoWaitHandle created in the given domain for the
- * given handle.  On failure returns NULL and sets @rror.
+ * \param domain Domain where the object will be created
+ * \param handle Handle for the wait handle
+ * \param error set on error.
+ * \returns A new \c MonoWaitHandle created in the given domain for the
+ * given handle.  On failure returns NULL and sets \p error.
  */
 MonoWaitHandle *
 mono_wait_handle_new (MonoDomain *domain, HANDLE handle, MonoError *error)
@@ -7419,7 +7295,7 @@ mono_wait_handle_new (MonoDomain *domain, HANDLE handle, MonoError *error)
 	gpointer params [1];
 	static MonoMethod *handle_set;
 
-	mono_error_init (error);
+	error_init (error);
 	res = (MonoWaitHandle *)mono_object_new_checked (domain, mono_defaults.manualresetevent_class, error);
 	return_val_if_nok (error, NULL);
 
@@ -7458,7 +7334,7 @@ mono_runtime_capture_context (MonoDomain *domain, MonoError *error)
 
 	RuntimeInvokeFunction runtime_invoke;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (!domain->capture_context_runtime_invoke || !domain->capture_context_method) {
 		MonoMethod *method = mono_get_context_capture_method ();
@@ -7478,23 +7354,21 @@ mono_runtime_capture_context (MonoDomain *domain, MonoError *error)
 }
 /**
  * mono_async_result_new:
- * @domain:domain where the object will be created.
- * @handle: wait handle.
- * @state: state to pass to AsyncResult
- * @data: C closure data.
- * @error: set on error.
- *
- * Creates a new MonoAsyncResult (AsyncResult C# class) in the given domain.
- * If the handle is not null, the handle is initialized to a MonOWaitHandle.
- * On failure returns NULL and sets @error.
- *
+ * \param domain domain where the object will be created.
+ * \param handle wait handle.
+ * \param state state to pass to AsyncResult
+ * \param data C closure data.
+ * \param error set on error.
+ * Creates a new MonoAsyncResult (\c AsyncResult C# class) in the given domain.
+ * If the handle is not null, the handle is initialized to a \c MonoWaitHandle.
+ * On failure returns NULL and sets \p error.
  */
 MonoAsyncResult *
 mono_async_result_new (MonoDomain *domain, HANDLE handle, MonoObject *state, gpointer data, MonoObject *object_data, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoAsyncResult *res = (MonoAsyncResult *)mono_object_new_checked (domain, mono_defaults.asyncresult_class, error);
 	return_val_if_nok (error, NULL);
 	MonoObject *context = mono_runtime_capture_context (domain, error);
@@ -7564,7 +7438,7 @@ ves_icall_System_Runtime_Remoting_Messaging_AsyncResult_Invoke (MonoAsyncResult 
 		if (wait_event != NULL)
 			mono_w32event_set (wait_event);
 
-		mono_error_init (&error); //the else branch would leave it in an undefined state
+		error_init (&error); //the else branch would leave it in an undefined state
 		if (ac->cb_method)
 			mono_runtime_invoke_checked (ac->cb_method, ac->cb_target, (gpointer*) &ares, &error);
 
@@ -7593,7 +7467,7 @@ mono_message_init (MonoDomain *domain,
 		g_assert (init_message_method != NULL);
 	}
 
-	mono_error_init (error);
+	error_init (error);
 	/* FIXME set domain instead? */
 	g_assert (domain == mono_domain_get ());
 	
@@ -7609,17 +7483,15 @@ mono_message_init (MonoDomain *domain,
 #ifndef DISABLE_REMOTING
 /**
  * mono_remoting_invoke:
- * @real_proxy: pointer to a RealProxy object
- * @msg: The MonoMethodMessage to execute
- * @exc: used to store exceptions
- * @out_args: used to store output arguments
- *
- * This is used to call RealProxy::Invoke(). RealProxy::Invoke() returns an
- * IMessage interface and it is not trivial to extract results from there. So
- * we call an helper method PrivateInvoke instead of calling
- * RealProxy::Invoke() directly.
- *
- * Returns: the result object.
+ * \param real_proxy pointer to a \c RealProxy object
+ * \param msg The \c MonoMethodMessage to execute
+ * \param exc used to store exceptions
+ * \param out_args used to store output arguments
+ * This is used to call \c RealProxy::Invoke(). \c RealProxy::Invoke() returns an
+ * \c IMessage interface and it is not trivial to extract results from there. So
+ * we call an helper method \c PrivateInvoke instead of calling
+ * \c RealProxy::Invoke() directly.
+ * \returns the result object.
  */
 MonoObject *
 mono_remoting_invoke (MonoObject *real_proxy, MonoMethodMessage *msg, MonoObject **exc, MonoArray **out_args, MonoError *error)
@@ -7632,7 +7504,7 @@ mono_remoting_invoke (MonoObject *real_proxy, MonoMethodMessage *msg, MonoObject
 
 	g_assert (exc);
 
-	mono_error_init (error);
+	error_init (error);
 
 	/*static MonoObject *(*invoke) (gpointer, gpointer, MonoObject **, MonoArray **) = NULL;*/
 
@@ -7664,7 +7536,7 @@ mono_message_invoke (MonoObject *target, MonoMethodMessage *msg,
 	MONO_REQ_GC_UNSAFE_MODE;
 
 	static MonoClass *object_array_klass;
-	mono_error_init (error);
+	error_init (error);
 
 	MonoDomain *domain; 
 	MonoMethod *method;
@@ -7756,10 +7628,9 @@ prepare_to_string_method (MonoObject *obj, void **target)
 
 /**
  * mono_object_to_string:
- * @obj: The object
- * @exc: Any exception thrown by ToString (). May be NULL.
- *
- * Returns: the result of calling ToString () on an object.
+ * \param obj The object
+ * \param exc Any exception thrown by \c ToString. May be NULL.
+ * \returns the result of calling \c ToString on an object.
  */
 MonoString *
 mono_object_to_string (MonoObject *obj, MonoObject **exc)
@@ -7784,17 +7655,16 @@ mono_object_to_string (MonoObject *obj, MonoObject **exc)
 
 /**
  * mono_object_to_string_checked:
- * @obj: The object
- * @error: Set on error.
- *
- * Returns: the result of calling ToString () on an object. If the
- * method cannot be invoked or if it raises an exception, sets @error
+ * \param obj The object
+ * \param error Set on error.
+ * \returns the result of calling \c ToString() on an object. If the
+ * method cannot be invoked or if it raises an exception, sets \p error
  * and returns NULL.
  */
 MonoString *
 mono_object_to_string_checked (MonoObject *obj, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	void *target;
 	MonoMethod *method = prepare_to_string_method (obj, &target);
 	return (MonoString*) mono_runtime_invoke_checked (method, target, NULL, error);
@@ -7802,19 +7672,18 @@ mono_object_to_string_checked (MonoObject *obj, MonoError *error)
 
 /**
  * mono_object_try_to_string:
- * @obj: The object
- * @exc: Any exception thrown by ToString (). Must not be NULL.
- * @error: Set if method cannot be invoked.
- *
- * Returns: the result of calling ToString () on an object. If the
- * method cannot be invoked sets @error, if it raises an exception sets @exc,
+ * \param obj The object
+ * \param exc Any exception thrown by \c ToString(). Must not be NULL.
+ * \param error Set if method cannot be invoked.
+ * \returns the result of calling \c ToString() on an object. If the
+ * method cannot be invoked sets \p error, if it raises an exception sets \p exc,
  * and returns NULL.
  */
 MonoString *
 mono_object_try_to_string (MonoObject *obj, MonoObject **exc, MonoError *error)
 {
 	g_assert (exc);
-	mono_error_init (error);
+	error_init (error);
 	void *target;
 	MonoMethod *method = prepare_to_string_method (obj, &target);
 	return (MonoString*) mono_runtime_try_invoke (method, target, NULL, exc, error);
@@ -7833,8 +7702,7 @@ get_native_backtrace (MonoException *exc_raw)
 
 /**
  * mono_print_unhandled_exception:
- * @exc: The exception
- *
+ * \param exc The exception
  * Prints the unhandled exception.
  */
 void
@@ -7899,24 +7767,23 @@ mono_print_unhandled_exception (MonoObject *exc)
 
 /**
  * mono_delegate_ctor_with_method:
- * @this: pointer to an uninitialized delegate object
- * @target: target object
- * @addr: pointer to native code
- * @method: method
- * @error: set on error.
- *
+ * \param this pointer to an uninitialized delegate object
+ * \param target target object
+ * \param addr pointer to native code
+ * \param method method
+ * \param error set on error.
  * Initialize a delegate and sets a specific method, not the one
- * associated with addr.  This is useful when sharing generic code.
- * In that case addr will most probably not be associated with the
+ * associated with \p addr.  This is useful when sharing generic code.
+ * In that case \p addr will most probably not be associated with the
  * correct instantiation of the method.
- * On failure returns FALSE and sets @error.
+ * On failure returns FALSE and sets \p error.
  */
 gboolean
 mono_delegate_ctor_with_method (MonoObject *this_obj, MonoObject *target, gpointer addr, MonoMethod *method, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoDelegate *delegate = (MonoDelegate *)this_obj;
 
 	g_assert (this_obj);
@@ -7933,6 +7800,9 @@ mono_delegate_ctor_with_method (MonoObject *this_obj, MonoObject *target, gpoint
 	if (target && mono_object_is_transparent_proxy (target)) {
 		g_assert (method);
 		method = mono_marshal_get_remoting_invoke (method);
+#ifdef ENABLE_INTERPRETER
+		g_error ("need RuntimeMethod in method_ptr when using interpreter");
+#endif
 		delegate->method_ptr = mono_compile_method_checked (method, error);
 		return_val_if_nok (error, FALSE);
 		MONO_OBJECT_SETREF (delegate, target, target);
@@ -7951,20 +7821,19 @@ mono_delegate_ctor_with_method (MonoObject *this_obj, MonoObject *target, gpoint
 
 /**
  * mono_delegate_ctor:
- * @this: pointer to an uninitialized delegate object
- * @target: target object
- * @addr: pointer to native code
- * @error: set on error.
- *
+ * \param this pointer to an uninitialized delegate object
+ * \param target target object
+ * \param addr pointer to native code
+ * \param error set on error.
  * This is used to initialize a delegate.
- * On failure returns FALSE and sets @error.
+ * On failure returns FALSE and sets \p error.
  */
 gboolean
 mono_delegate_ctor (MonoObject *this_obj, MonoObject *target, gpointer addr, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 	MonoDomain *domain = mono_domain_get ();
 	MonoJitInfo *ji;
 	MonoMethod *method = NULL;
@@ -7985,15 +7854,14 @@ mono_delegate_ctor (MonoObject *this_obj, MonoObject *target, gpointer addr, Mon
 
 /**
  * mono_method_call_message_new:
- * @method: method to encapsulate
- * @params: parameters to the method
- * @invoke: optional, delegate invoke.
- * @cb: async callback delegate.
- * @state: state passed to the async callback.
- * @error: set on error.
- *
- * Translates arguments pointers into a MonoMethodMessage.
- * On failure returns NULL and sets @error.
+ * \param method method to encapsulate
+ * \param params parameters to the method
+ * \param invoke optional, delegate invoke.
+ * \param cb async callback delegate.
+ * \param state state passed to the async callback.
+ * \param error set on error.
+  * Translates arguments pointers into a \c MonoMethodMessage.
+ * On failure returns NULL and sets \p error.
  */
 MonoMethodMessage *
 mono_method_call_message_new (MonoMethod *method, gpointer *params, MonoMethod *invoke, 
@@ -8001,7 +7869,7 @@ mono_method_call_message_new (MonoMethod *method, gpointer *params, MonoMethod *
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	MonoDomain *domain = mono_domain_get ();
 	MonoMethodSignature *sig = mono_method_signature (method);
@@ -8065,7 +7933,7 @@ mono_method_return_message_restore (MonoMethod *method, gpointer *params, MonoAr
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	MonoMethodSignature *sig = mono_method_signature (method);
 	int i, j, type, size, out_len;
@@ -8116,17 +7984,15 @@ mono_method_return_message_restore (MonoMethod *method, gpointer *params, MonoAr
 
 /**
  * mono_load_remote_field:
- * @this: pointer to an object
- * @klass: klass of the object containing @field
- * @field: the field to load
- * @res: a storage to store the result
- *
+ * \param this pointer to an object
+ * \param klass klass of the object containing \p field
+ * \param field the field to load
+ * \param res a storage to store the result
  * This method is called by the runtime on attempts to load fields of
- * transparent proxy objects. @this points to such TP, @klass is the class of
- * the object containing @field. @res is a storage location which can be
+ * transparent proxy objects. \p this points to such TP, \p klass is the class of
+ * the object containing \p field. \p res is a storage location which can be
  * used to store the result.
- *
- * Returns: an address pointing to the value of field.
+ * \returns an address pointing to the value of field.
  */
 gpointer
 mono_load_remote_field (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, gpointer *res)
@@ -8139,18 +8005,16 @@ mono_load_remote_field (MonoObject *this_obj, MonoClass *klass, MonoClassField *
 
 /**
  * mono_load_remote_field_checked:
- * @this: pointer to an object
- * @klass: klass of the object containing @field
- * @field: the field to load
- * @res: a storage to store the result
- * @error: set on error
- *
+ * \param this pointer to an object
+ * \param klass klass of the object containing \p field
+ * \param field the field to load
+ * \param res a storage to store the result
+ * \param error set on error
  * This method is called by the runtime on attempts to load fields of
- * transparent proxy objects. @this points to such TP, @klass is the class of
- * the object containing @field. @res is a storage location which can be
+ * transparent proxy objects. \p this points to such TP, \p klass is the class of
+ * the object containing \p field. \p res is a storage location which can be
  * used to store the result.
- *
- * Returns: an address pointing to the value of field.  On failure returns NULL and sets @error.
+ * \returns an address pointing to the value of field.  On failure returns NULL and sets \p error.
  */
 gpointer
 mono_load_remote_field_checked (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, gpointer *res, MonoError *error)
@@ -8159,7 +8023,7 @@ mono_load_remote_field_checked (MonoObject *this_obj, MonoClass *klass, MonoClas
 
 	static MonoMethod *getter = NULL;
 
-	mono_error_init (error);
+	error_init (error);
 
 	MonoDomain *domain = mono_domain_get ();
 	MonoTransparentProxy *tp = (MonoTransparentProxy *) this_obj;
@@ -8222,10 +8086,9 @@ mono_load_remote_field_checked (MonoObject *this_obj, MonoClass *klass, MonoClas
 
 /**
  * mono_load_remote_field_new:
- * @this: 
- * @klass: 
- * @field:
- *
+ * \param this
+ * \param klass
+ * \param field
  * Missing documentation.
  */
 MonoObject *
@@ -8240,23 +8103,21 @@ mono_load_remote_field_new (MonoObject *this_obj, MonoClass *klass, MonoClassFie
 
 /**
  * mono_load_remote_field_new_checked:
- * @this: pointer to an object
- * @klass: klass of the object containing @field
- * @field: the field to load
- * @error: set on error.
- *
+ * \param this pointer to an object
+ * \param klass klass of the object containing \p field
+ * \param field the field to load
+ * \param error set on error.
  * This method is called by the runtime on attempts to load fields of
- * transparent proxy objects. @this points to such TP, @klass is the class of
- * the object containing @field.
- * 
- * Returns: a freshly allocated object containing the value of the field.  On failure returns NULL and sets @error.
+ * transparent proxy objects. \p this points to such TP, \p klass is the class of
+ * the object containing \p field.
+ * \returns a freshly allocated object containing the value of the field.  On failure returns NULL and sets \p error.
  */
 MonoObject *
 mono_load_remote_field_new_checked (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	static MonoMethod *tp_load = NULL;
 
@@ -8281,14 +8142,13 @@ mono_load_remote_field_new_checked (MonoObject *this_obj, MonoClass *klass, Mono
 
 /**
  * mono_store_remote_field:
- * @this_obj: pointer to an object
- * @klass: klass of the object containing @field
- * @field: the field to load
- * @val: the value/object to store
- *
+ * \param this_obj pointer to an object
+ * \param klass klass of the object containing \p field
+ * \param field the field to load
+ * \param val the value/object to store
  * This method is called by the runtime on attempts to store fields of
- * transparent proxy objects. @this_obj points to such TP, @klass is the class of
- * the object containing @field. @val is the new value to store in @field.
+ * transparent proxy objects. \p this_obj points to such TP, \p klass is the class of
+ * the object containing \p field. \p val is the new value to store in \p field.
  */
 void
 mono_store_remote_field (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, gpointer val)
@@ -8300,17 +8160,15 @@ mono_store_remote_field (MonoObject *this_obj, MonoClass *klass, MonoClassField 
 
 /**
  * mono_store_remote_field_checked:
- * @this_obj: pointer to an object
- * @klass: klass of the object containing @field
- * @field: the field to load
- * @val: the value/object to store
- * @error: set on error
- *
+ * \param this_obj pointer to an object
+ * \param klass klass of the object containing \p field
+ * \param field the field to load
+ * \param val the value/object to store
+ * \param error set on error
  * This method is called by the runtime on attempts to store fields of
- * transparent proxy objects. @this_obj points to such TP, @klass is the class of
- * the object containing @field. @val is the new value to store in @field.
- *
- * Returns: on success returns TRUE, on failure returns FALSE and sets @error.
+ * transparent proxy objects. \p this_obj points to such TP, \p klass is the class of
+ * the object containing \p field. \p val is the new value to store in \p field.
+ * \returns on success returns TRUE, on failure returns FALSE and sets \p error.
  */
 gboolean
 mono_store_remote_field_checked (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, gpointer val, MonoError *error)
@@ -8318,7 +8176,7 @@ mono_store_remote_field_checked (MonoObject *this_obj, MonoClass *klass, MonoCla
 	
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	MonoDomain *domain = mono_domain_get ();
 	MonoClass *field_class;
@@ -8340,11 +8198,10 @@ mono_store_remote_field_checked (MonoObject *this_obj, MonoClass *klass, MonoCla
 
 /**
  * mono_store_remote_field_new:
- * @this_obj:
- * @klass:
- * @field:
- * @arg:
- *
+ * \param this_obj
+ * \param klass
+ * \param field
+ * \param arg
  * Missing documentation
  */
 void
@@ -8357,12 +8214,11 @@ mono_store_remote_field_new (MonoObject *this_obj, MonoClass *klass, MonoClassFi
 
 /**
  * mono_store_remote_field_new_checked:
- * @this_obj:
- * @klass:
- * @field:
- * @arg:
- * @error:
- *
+ * \param this_obj
+ * \param klass
+ * \param field
+ * \param arg
+ * \param error
  * Missing documentation
  */
 gboolean
@@ -8372,7 +8228,7 @@ mono_store_remote_field_new_checked (MonoObject *this_obj, MonoClass *klass, Mon
 
 	static MonoMethod *tp_store = NULL;
 
-	mono_error_init (error);
+	error_init (error);
 
 	g_assert (mono_object_is_transparent_proxy (this_obj));
 
@@ -8394,10 +8250,10 @@ mono_store_remote_field_new_checked (MonoObject *this_obj, MonoClass *klass, Mon
 }
 #endif
 
-/*
+/**
  * mono_create_ftnptr:
  *
- *   Given a function address, create a function descriptor for it.
+ * Given a function address, create a function descriptor for it.
  * This is only needed on some platforms.
  */
 gpointer
@@ -8420,9 +8276,8 @@ mono_get_addr_from_ftnptr (gpointer descr)
 
 /**
  * mono_string_chars:
- * @s: a MonoString
- *
- * Returns a pointer to the UCS16 characters stored in the MonoString
+ * \param s a \c MonoString
+ * \returns a pointer to the UTF-16 characters stored in the \c MonoString
  */
 gunichar2 *
 mono_string_chars (MonoString *s)
@@ -8434,9 +8289,8 @@ mono_string_chars (MonoString *s)
 
 /**
  * mono_string_length:
- * @s: MonoString
- *
- * Returns the lenght in characters of the string
+ * \param s MonoString
+ * \returns the length in characters of the string
  */
 int
 mono_string_length (MonoString *s)
@@ -8448,9 +8302,8 @@ mono_string_length (MonoString *s)
 
 /**
  * mono_string_handle_length:
- * @s: MonoString
- *
- * Returns the lenght in characters of the string
+ * \param s \c MonoString
+ * \returns the length in characters of the string
  */
 int
 mono_string_handle_length (MonoStringHandle s)
@@ -8463,9 +8316,8 @@ mono_string_handle_length (MonoStringHandle s)
 
 /**
  * mono_array_length:
- * @array: a MonoArray*
- *
- * Returns the total number of elements in the array. This works for
+ * \param array a \c MonoArray*
+ * \returns the total number of elements in the array. This works for
  * both vectors and multidimensional arrays.
  */
 uintptr_t
@@ -8478,16 +8330,14 @@ mono_array_length (MonoArray *array)
 
 /**
  * mono_array_addr_with_size:
- * @array: a MonoArray*
- * @size: size of the array elements
- * @idx: index into the array
- *
- * Use this function to obtain the address for the @idx item on the
- * @array containing elements of size @size.
+ * \param array a \c MonoArray*
+ * \param size size of the array elements
+ * \param idx index into the array
+ * Use this function to obtain the address for the \p idx item on the
+ * \p array containing elements of size \p size.
  *
  * This method performs no bounds checking or type checking.
- *
- * Returns the address of the @idx element in the array.
+ * \returns the address of the \p idx element in the array.
  */
 char*
 mono_array_addr_with_size (MonoArray *array, int size, uintptr_t idx)
@@ -8505,7 +8355,7 @@ mono_glist_to_array (GList *list, MonoClass *eclass, MonoError *error)
 	MonoArray *res;
 	int len, i;
 
-	mono_error_init (error);
+	error_init (error);
 	if (!list)
 		return NULL;
 
@@ -8528,17 +8378,16 @@ mono_glist_to_array (GList *list, MonoClass *eclass, MonoError *error)
 
 /**
  * mono_array_set:
- * @array: array to alter
- * @element_type: A C type name, this macro will use the sizeof(type) to determine the element size
- * @index: index into the array
- * @value: value to set
- *
- * Value Type version: This sets the @index's element of the @array
- * with elements of size sizeof(type) to the provided @value.
+ * \param array array to alter
+ * \param element_type A C type name, this macro will use the sizeof(type) to determine the element size
+ * \param index index into the array
+ * \param value value to set
+ * Value Type version: This sets the \p index's element of the \p array
+ * with elements of size sizeof(type) to the provided \p value.
  *
  * This macro does not attempt to perform type checking or bounds checking.
  *
- * Use this to set value types in a `MonoArray`.
+ * Use this to set value types in a \c MonoArray.
  */
 void mono_array_set(MonoArray *array, Type element_type, uintptr_t index, Value value)
 {
@@ -8546,16 +8395,15 @@ void mono_array_set(MonoArray *array, Type element_type, uintptr_t index, Value 
 
 /**
  * mono_array_setref:
- * @array: array to alter
- * @index: index into the array
- * @value: value to set
- *
- * Reference Type version: This sets the @index's element of the
- * @array with elements of size sizeof(type) to the provided @value.
+ * \param array array to alter
+ * \param index index into the array
+ * \param value value to set
+ * Reference Type version. This sets the \p index's element of the
+ * \p array with elements of size sizeof(type) to the provided \p value.
  *
  * This macro does not attempt to perform type checking or bounds checking.
  *
- * Use this to reference types in a `MonoArray`.
+ * Use this to reference types in a \c MonoArray.
  */
 void mono_array_setref(MonoArray *array, uintptr_t index, MonoObject *object)
 {
@@ -8563,21 +8411,21 @@ void mono_array_setref(MonoArray *array, uintptr_t index, MonoObject *object)
 
 /**
  * mono_array_get:
- * @array: array on which to operate on
- * @element_type: C element type (example: MonoString *, int, MonoObject *)
- * @index: index into the array
+ * \param array array on which to operate on
+ * \param element_type C element type (example: \c MonoString*, \c int, \c MonoObject*)
+ * \param index index into the array
  *
- * Use this macro to retrieve the @index element of an @array and
+ * Use this macro to retrieve the \p index element of an \p array and
  * extract the value assuming that the elements of the array match
  * the provided type value.
  *
  * This method can be used with both arrays holding value types and
- * reference types.   For reference types, the @type parameter should
- * be a `MonoObject*` or any subclass of it, like `MonoString*`.
+ * reference types.   For reference types, the \p type parameter should
+ * be a \c MonoObject* or any subclass of it, like \c MonoString*.
  *
  * This macro does not attempt to perform type checking or bounds checking.
  *
- * Returns: The element at the @index position in the @array.
+ * \returns The element at the \p index position in the \p array.
  */
 Type mono_array_get (MonoArray *array, Type element_type, uintptr_t index)
 {

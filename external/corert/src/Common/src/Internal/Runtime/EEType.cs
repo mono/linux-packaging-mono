@@ -178,10 +178,9 @@ namespace Internal.Runtime
         private UInt16 _usNumInterfaces;
         private UInt32 _uHashCode;
 
-#if CORERT
+#if EETYPE_TYPE_MANAGER
         private IntPtr _ppTypeManager;
 #endif
-
         // vtable follows
 
         // These masks and paddings have been chosen so that the ValueTypePadding field can always fit in a byte of data.
@@ -500,6 +499,22 @@ namespace Internal.Runtime
             }
         }
 
+        internal bool IsAbstract
+        {
+            get
+            {
+                return IsInterface || (RareFlags & EETypeRareFlags.IsAbstractClassFlag) != 0;
+            }
+        }
+
+        internal bool IsByRefLike
+        {
+            get
+            {
+                return (RareFlags & EETypeRareFlags.IsByRefLikeFlag) != 0;
+            }
+        }
+
         internal bool IsDynamicType
         {
             get
@@ -543,6 +558,12 @@ namespace Internal.Runtime
             {
                 return _uBaseSize;
             }
+#if TYPE_LOADER_IMPLEMENTATION
+            set
+            {
+                _uBaseSize = value;
+            }
+#endif
         }
 
         internal bool IsRelatedTypeViaIAT
@@ -1093,18 +1114,24 @@ namespace Internal.Runtime
 #endif
         }
 
-#if CORERT
+#if EETYPE_TYPE_MANAGER
         internal IntPtr TypeManager
         {
             get
             {
-                // This is always a pointer to a pointer to a module manager
+                // This is always a pointer to a pointer to a type manager
                 return *(IntPtr*)_ppTypeManager;
             }
         }
 #if TYPE_LOADER_IMPLEMENTATION
         internal IntPtr PointerToTypeManager
         {
+            get
+            {
+                // This is always a pointer to a pointer to a type manager
+                return _ppTypeManager;
+            }
+
             set
             {
                 _ppTypeManager = value;

@@ -2,22 +2,32 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Internal.Runtime.Augments;
+using Microsoft.Win32.SafeHandles;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.IO;
-using Microsoft.Win32.SafeHandles;
 
 namespace System.Threading
 {
     //
     // Implementation of ThreadPoolBoundHandle that sits on top of the Win32 ThreadPool
     //
+    [Internal.Runtime.CompilerServices.RelocatedTypeAttribute("System.Threading.Overlapped")]
     public sealed class ThreadPoolBoundHandle : IDisposable, IDeferredDisposable
     {
         private readonly SafeHandle _handle;
         private readonly SafeThreadPoolIOHandle _threadPoolHandle;
         private DeferredDisposableLifetime<ThreadPoolBoundHandle> _lifetime;
+
+#if MONO
+        static ThreadPoolBoundHandle()
+        {
+            if (!Environment.IsRunningOnWindows)
+                throw new PlatformNotSupportedException();
+        }
+#endif
 
         private ThreadPoolBoundHandle(SafeHandle handle, SafeThreadPoolIOHandle threadPoolHandle)
         {
@@ -38,15 +48,15 @@ namespace System.Threading
             if (handle.IsClosed || handle.IsInvalid)
                 throw new ArgumentException(SR.Argument_InvalidHandle, nameof(handle));
 
-            IntPtr callback = AddrofIntrinsics.AddrOf<Action<IntPtr, IntPtr, IntPtr, uint, UIntPtr, IntPtr>>(OnNativeIOCompleted);
+            IntPtr callback = AddrofIntrinsics.AddrOf<Interop.NativeIoCompletionCallback>(OnNativeIOCompleted);
             SafeThreadPoolIOHandle threadPoolHandle = Interop.mincore.CreateThreadpoolIo(handle, callback, IntPtr.Zero, IntPtr.Zero);
             if (threadPoolHandle.IsInvalid)
             {
                 int errorCode = Marshal.GetLastWin32Error();
-                if (errorCode == Interop.mincore.Errors.ERROR_INVALID_HANDLE)         // Bad handle
+                if (errorCode == Interop.Errors.ERROR_INVALID_HANDLE)         // Bad handle
                     throw new ArgumentException(SR.Argument_InvalidHandle, nameof(handle));
 
-                if (errorCode == Interop.mincore.Errors.ERROR_INVALID_PARAMETER)     // Handle already bound or sync handle
+                if (errorCode == Interop.Errors.ERROR_INVALID_PARAMETER)     // Handle already bound or sync handle
                     throw new ArgumentException(SR.Argument_AlreadyBoundOrSyncHandle, nameof(handle));
 
                 throw Win32Marshal.GetExceptionForWin32Error(errorCode);
@@ -163,6 +173,7 @@ namespace System.Threading
         [NativeCallable(CallingConvention = CallingConvention.StdCall)]
         private static unsafe void OnNativeIOCompleted(IntPtr instance, IntPtr context, IntPtr overlappedPtr, uint ioResult, UIntPtr numberOfBytesTransferred, IntPtr ioPtr)
         {
+            RuntimeThread.InitializeThreadPoolThread();
             Win32ThreadPoolNativeOverlapped* overlapped = (Win32ThreadPoolNativeOverlapped*)overlappedPtr;
 
             ThreadPoolBoundHandle boundHandle = overlapped->Data._boundHandle;
@@ -192,6 +203,11 @@ namespace System.Threading
 
         ~ThreadPoolBoundHandle()
         {
+#if MONO
+            if (!Environment.IsRunningOnWindows)
+                throw new PlatformNotSupportedException();
+#endif
+
             //
             // During shutdown, don't automatically clean up, because this instance may still be
             // reachable/usable by other code.

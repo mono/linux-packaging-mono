@@ -13,7 +13,7 @@ namespace ILCompiler.DependencyAnalysis
     public sealed class RyuJitNodeFactory : NodeFactory
     {
         public RyuJitNodeFactory(CompilerTypeSystemContext context, CompilationModuleGroup compilationModuleGroup)
-            : base(context, compilationModuleGroup)
+            : base(context, compilationModuleGroup, new CompilerGeneratedMetadataManager(compilationModuleGroup, context), new CoreRTNameMangler(false))
         {
         }
 
@@ -21,8 +21,15 @@ namespace ILCompiler.DependencyAnalysis
         {
             if (method.IsInternalCall)
             {
-                // The only way to locate the entrypoint for an internal call is through the RuntimeImportAttribute.
-                if (method.HasCustomAttribute("System.Runtime", "RuntimeImportAttribute"))
+                if (TypeSystemContext.IsSpecialUnboxingThunkTargetMethod(method))
+                {
+                    return MethodEntrypoint(TypeSystemContext.GetRealSpecialUnboxingThunkTargetMethod(method));
+                }
+                else if (method.IsArrayAddressMethod())
+                {
+                    return MethodEntrypoint(((ArrayType)method.OwningType).GetArrayMethod(ArrayMethodKind.AddressWithHiddenArg));
+                }
+                else if (method.HasCustomAttribute("System.Runtime", "RuntimeImportAttribute"))
                 {
                     return new RuntimeImportMethodNode(method);
                 }
@@ -38,18 +45,40 @@ namespace ILCompiler.DependencyAnalysis
             }
             else
             {
-                return new ExternMethodSymbolNode(method);
+                return new ExternMethodSymbolNode(this, method);
             }
         }
 
         protected override IMethodNode CreateUnboxingStubNode(MethodDesc method)
         {
-            return new UnboxingStubNode(method);
+            Debug.Assert(!method.Signature.IsStatic);
+
+            if (method.IsCanonicalMethod(CanonicalFormKind.Specific) && !method.HasInstantiation)
+            {
+                // Unboxing stubs to canonical instance methods need a special unboxing stub that unboxes
+                // 'this' and also provides an instantiation argument (we do a calling convention conversion).
+                // We don't do this for generic instance methods though because they don't use the EEType
+                // for the generic context anyway.
+                return new UnboxingThunkMethodCodeNode(TypeSystemContext.GetSpecialUnboxingThunk(method, CompilationModuleGroup.GeneratedAssembly), method);
+            }
+            else
+            {
+                // Otherwise we just unbox 'this' and don't touch anything else.
+                return new UnboxingStubNode(method);
+            }
         }
 
-        protected override ISymbolNode CreateReadyToRunHelperNode(Tuple<ReadyToRunHelperId, object> helperCall)
+        protected override ISymbolNode CreateReadyToRunHelperNode(ReadyToRunHelperKey helperCall)
         {
-            return new ReadyToRunHelperNode(this, helperCall.Item1, helperCall.Item2);
+            return new ReadyToRunHelperNode(this, helperCall.HelperId, helperCall.Target);
+        }
+
+        protected override IMethodNode CreateShadowConcreteMethodNode(MethodKey methodKey)
+        {
+            return new ShadowConcreteMethodNode(methodKey.Method, 
+                MethodEntrypoint(
+                    methodKey.Method.GetCanonMethodTarget(CanonicalFormKind.Specific),
+                    methodKey.IsUnboxingStub));
         }
     }
 }

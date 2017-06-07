@@ -1,5 +1,6 @@
-/*
- * file-mmap-windows.c: MemoryMappedFile internal calls for Windows
+/**
+ * \file
+ * MemoryMappedFile internal calls for Windows
  *
  * Copyright 2016 Microsoft
  * Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -270,6 +271,8 @@ void *mono_mmap_open_file (MonoString *path, int mode, MonoString *mapName, gint
 	result = open_handle (hFile, mapName, mode, capacity, access, options, error);
 
 done:
+	if (hFile != INVALID_HANDLE_VALUE)
+		CloseHandle (hFile);
 	if (!result && delete_on_error)
 		DeleteFileW (w_path);
 	if (w_path)

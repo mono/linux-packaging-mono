@@ -63,7 +63,11 @@ namespace Microsoft.Cci.Writers.CSharp
             if (property.GetHiddenBaseProperty(_filter) != Dummy.Property)
                 WriteKeyword("new");
 
+            if (property.ReturnValueIsByRef)
+                WriteKeyword("ref");
+
             WriteTypeName(property.Type);
+
             if (isIndexer)
             {
                 int index = property.Name.Value.LastIndexOf(".");
@@ -75,7 +79,7 @@ namespace Microsoft.Cci.Writers.CSharp
                 var parameters = new List<IParameterDefinition>(accessor.Parameters);
                 if (accessor == setter) // If setter remove value parameter.
                     parameters.RemoveAt(parameters.Count - 1);
-                WriteParameters(parameters, true);
+                WriteParameters(parameters, property.ContainingType, true);
             }
             else
             {

@@ -58,7 +58,14 @@ namespace Mono.Cecil.Mdb {
 			this.documents = new Dictionary<string, Document> ();
 		}
 
-		public bool ProcessDebugHeader (ImageDebugDirectory directory, byte [] header)
+#if !READ_ONLY
+		public ISymbolWriterProvider GetWriterProvider ()
+		{
+			return new MdbWriterProvider ();
+		}
+#endif
+
+		public bool ProcessDebugHeader (ImageDebugHeader header)
 		{
 			return symbol_file.Guid == module.Mvid;
 		}

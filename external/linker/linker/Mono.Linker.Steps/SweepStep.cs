@@ -29,8 +29,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mono.Cecil;
 using Mono.Collections.Generic;
+using Mono.Cecil.Cil;
 
 namespace Mono.Linker.Steps {
 
@@ -38,19 +40,26 @@ namespace Mono.Linker.Steps {
 
 		AssemblyDefinition [] assemblies;
 		HashSet<AssemblyDefinition> resolvedTypeReferences;
+		readonly bool sweepSymbols;
+
+		public SweepStep (bool sweepSymbols = true)
+		{
+			this.sweepSymbols = sweepSymbols;
+		}
 
 		protected override void Process ()
 		{
-			assemblies = Context.GetAssemblies ();
+			assemblies = Context.Annotations.GetAssemblies ().ToArray ();
 			foreach (var assembly in assemblies) {
 				SweepAssembly (assembly);
-				if (Annotations.GetAction (assembly) == AssemblyAction.Copy) {
-					// Copy assemblies can still contain Type references with
-					// type forwarders from Delete assemblies
-					// thus try to resolve all the type references and see
-					// if some changed the scope. if yes change the action to Save
-					if (ResolveAllTypeReferences (assembly))
-						Annotations.SetAction (assembly, AssemblyAction.Save);
+				if ((Annotations.GetAction (assembly) == AssemblyAction.Copy) &&
+					!Context.KeepTypeForwarderOnlyAssemblies) {
+						// Copy assemblies can still contain Type references with
+						// type forwarders from Delete assemblies
+						// thus try to resolve all the type references and see
+						// if some changed the scope. if yes change the action to Save
+						if (ResolveAllTypeReferences (assembly))
+							Annotations.SetAction (assembly, AssemblyAction.Save);
 				}
 
 				AssemblyAction currentAction = Annotations.GetAction(assembly);
@@ -119,7 +128,13 @@ namespace Mono.Linker.Steps {
 			var references = assembly.MainModule.AssemblyReferences;
 			for (int i = 0; i < references.Count; i++) {
 				var reference = references [i];
-				var r = Context.Resolver.Resolve (reference);
+				AssemblyDefinition r = null;
+				try {
+					r = Context.Resolver.Resolve (reference);
+				}
+				catch (AssemblyResolutionException) {
+					continue;
+				}
 				if (!AreSameReference (r.Name, target.Name))
 					continue;
 
@@ -131,12 +146,16 @@ namespace Mono.Linker.Steps {
 					// Copy means even if "unlinked" we still want that assembly to be saved back 
 					// to disk (OutputStep) without the (removed) reference
 					Annotations.SetAction (assembly, AssemblyAction.Save);
-					ResolveAllTypeReferences (assembly);
+					if (!Context.KeepTypeForwarderOnlyAssemblies) {
+						ResolveAllTypeReferences (assembly);
+					}
 					break;
 
 				case AssemblyAction.Save:
 				case AssemblyAction.Link:
-					ResolveAllTypeReferences (assembly);
+					if (!Context.KeepTypeForwarderOnlyAssemblies) {
+						ResolveAllTypeReferences (assembly);
+					}
 					break;
 				}
 				return;
@@ -175,6 +194,7 @@ namespace Mono.Linker.Steps {
 					if ((td != null) && Annotations.IsMarked (td)) {
 						scope = assembly.MainModule.ImportReference (td).Scope;
 						hash.Add (td, scope);
+						et.Scope = scope;
 					}
 				}
 			}
@@ -190,19 +210,19 @@ namespace Mono.Linker.Steps {
 			return changes;
 		}
 
-		void SweepType (TypeDefinition type)
+		protected virtual void SweepType (TypeDefinition type)
 		{
 			if (type.HasFields)
 				SweepCollection (type.Fields);
 
 			if (type.HasMethods)
-				SweepCollection (type.Methods);
+				SweepMethods (type.Methods);
 
 			if (type.HasNestedTypes)
 				SweepNestedTypes (type);
 		}
 
-		void SweepNestedTypes (TypeDefinition type)
+		protected void SweepNestedTypes (TypeDefinition type)
 		{
 			for (int i = 0; i < type.NestedTypes.Count; i++) {
 				var nested = type.NestedTypes [i];
@@ -214,7 +234,59 @@ namespace Mono.Linker.Steps {
 			}
 		}
 
-		void SweepCollection (IList list)
+		void SweepMethods (Collection<MethodDefinition> methods)
+		{
+			SweepCollection (methods);
+			if (sweepSymbols)
+				SweepDebugInfo (methods);
+		}
+
+		void SweepDebugInfo (Collection<MethodDefinition> methods)
+		{
+			List<ScopeDebugInformation> sweptScopes = null;
+			foreach (var m in methods) {
+				if (m.DebugInformation == null)
+					continue;
+
+				var scope = m.DebugInformation.Scope;
+				if (scope == null)
+					continue;
+
+				if (sweptScopes == null) {
+					sweptScopes = new List<ScopeDebugInformation> ();
+				} else if (sweptScopes.Contains (scope)) {
+					continue;
+				}
+
+				sweptScopes.Add (scope);
+
+				if (scope.HasConstants) {
+					var constants = scope.Constants;
+					for (int i = 0; i < constants.Count; ++i) {
+						if (!Annotations.IsMarked (constants [i].ConstantType))
+							constants.RemoveAt (i--);
+					}
+				}
+
+				var import = scope.Import;
+				while (import != null) {
+					if (import.HasTargets) {
+						var targets = import.Targets;
+						for (int i = 0; i < targets.Count; ++i) {
+							var ttype = targets [i].Type;
+							if (ttype != null && !Annotations.IsMarked (ttype))
+								targets.RemoveAt (i--);
+
+							// TODO: Clear also AssemblyReference and Namespace when not marked
+						}
+					}
+
+					import = import.Parent;
+				}
+			}
+		}
+
+		protected void SweepCollection (IList list)
 		{
 			for (int i = 0; i < list.Count; i++)
 				if (!Annotations.IsMarked ((IMetadataTokenProvider) list [i]))

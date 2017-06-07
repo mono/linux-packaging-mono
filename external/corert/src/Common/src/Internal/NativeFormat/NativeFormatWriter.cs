@@ -433,6 +433,30 @@ namespace Internal.NativeFormat
             return Unify(sig);
         }
 
+        public Vertex GetFieldSignature(Vertex containingType, string name)
+        {
+            FieldSignature sig = new FieldSignature(containingType, name);
+            return Unify(sig);
+        }
+
+        public Vertex GetFixupSignature(FixupSignatureKind kind, Vertex signature)
+        {
+            FixupSignature sig = new FixupSignature(kind, signature);
+            return Unify(sig);
+        }
+
+        public Vertex GetStaticDataSignature(Vertex type, StaticDataKind staticDataKind)
+        {
+            StaticDataSignature sig = new StaticDataSignature(type, staticDataKind);
+            return Unify(sig);
+        }
+
+        public Vertex GetMethodSlotSignature(Vertex type, uint slot)
+        {
+            MethodSlotSignature sig = new MethodSlotSignature(type, slot);
+            return Unify(sig);
+        }
+
         public Vertex GetMethodSigSignature(uint callingConvention, uint genericArgCount, Vertex returnType, Vertex[] parameters)
         {
             MethodSigSignature sig = new MethodSigSignature(callingConvention, genericArgCount, returnType, parameters);
@@ -460,6 +484,12 @@ namespace Internal.NativeFormat
         public Vertex GetMDArrayTypeSignature(Vertex elementType, uint rank, uint[] bounds, uint[] lowerBounds)
         {
             MDArrayTypeSignature sig = new MDArrayTypeSignature(elementType, rank, bounds, lowerBounds);
+            return Unify(sig);
+        }
+
+        public Vertex GetCallingConventionConverterSignature(uint flags, Vertex signature)
+        {
+            CallingConventionConverterSignature sig = new CallingConventionConverterSignature(flags, GetRelativeOffsetSignature(signature));
             return Unify(sig);
         }
     }
@@ -547,6 +577,98 @@ namespace Internal.NativeFormat
                 Object.Equals(_item2, other._item2) &&
                 Object.Equals(_item3, other._item3);
         }
+    }
+
+    //
+    // Bag of <id, data> pairs. Good for extensible information (e.g. type info)
+    //
+    // Data can be either relative offset of another vertex, or arbitrary integer.
+    //
+#if NATIVEFORMAT_PUBLICWRITER
+    public
+#else
+    internal
+#endif
+    class VertexBag : Vertex
+    {
+        enum EntryType { Vertex, Unsigned, Signed }
+
+        struct Entry
+        {
+            internal BagElementKind _id;
+            internal EntryType _type;
+            internal object _value;
+
+            internal Entry(BagElementKind id, Vertex value)
+            {
+                _id = id;
+                _type = EntryType.Vertex;
+                _value = value;
+            }
+
+            internal Entry(BagElementKind id, uint value)
+            {
+                _id = id;
+                _type = EntryType.Unsigned;
+                _value = value;
+            }
+
+            internal Entry(BagElementKind id, int value)
+            {
+                _id = id;
+                _type = EntryType.Signed;
+                _value = value;
+            }
+        }
+
+        private List<Entry> _elements;
+
+        public VertexBag()
+        {
+            _elements = new List<Entry>();
+        }
+
+        public void Append(BagElementKind id, Vertex value)
+        {
+            _elements.Add(new Entry(id, value));
+        }
+
+        public void AppendUnsigned(BagElementKind id, uint value)
+        {
+            _elements.Add(new Entry(id, value));
+        }
+
+        public void AppendSigned(BagElementKind id, int value)
+        {
+            _elements.Add(new Entry(id, value));
+        }
+
+        internal override void Save(NativeWriter writer)
+        {
+            foreach (var elem in _elements)
+            {
+                writer.WriteUnsigned((uint)elem._id);
+
+                switch (elem._type)
+                {
+                    case EntryType.Vertex:
+                        writer.WriteRelativeOffset((Vertex)elem._value);
+                        break;
+
+                    case EntryType.Unsigned:
+                        writer.WriteUnsigned((uint)elem._value);
+                        break;
+
+                    case EntryType.Signed:
+                        writer.WriteSigned((int)elem._value);
+                        break;
+
+                }
+            }
+            writer.WriteUnsigned((uint)BagElementKind.End);
+        }
+
+        public int ElementsCount => _elements.Count;
     }
 
 #if NATIVEFORMAT_PUBLICWRITER
@@ -877,6 +999,183 @@ namespace Internal.NativeFormat
 #else
     internal
 #endif
+    class FieldSignature : Vertex
+    {
+        private Vertex _containingType;
+        private string _name;
+
+        public FieldSignature(Vertex containingType, string name)
+        {
+            _containingType = containingType;
+            _name = name;
+        }
+
+        internal override void Save(NativeWriter writer)
+        {
+            _containingType.Save(writer);
+            writer.WriteString(_name);
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 113 + 97 * _containingType.GetHashCode();
+            foreach (char c in _name)
+                hash += (hash << 5) + c * 19;
+
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as FieldSignature;
+            if (other == null)
+                return false;
+
+            if (!Object.Equals(other._containingType, _containingType))
+                return false;
+
+            if (!Object.Equals(other._name, _name))
+                return false;
+
+            return true;
+        }
+    }
+
+#if NATIVEFORMAT_PUBLICWRITER
+    public
+#else
+    internal
+#endif
+    class FixupSignature : Vertex
+    {
+        private FixupSignatureKind _kind;
+        private Vertex _signature;
+
+        public FixupSignature(FixupSignatureKind kind, Vertex signature)
+        {
+            _kind = kind;
+            _signature = signature;
+        }
+
+        internal override void Save(NativeWriter writer)
+        {
+            writer.WriteUnsigned((uint)_kind);
+            if (_signature != null)
+                _signature.Save(writer);
+        }
+
+        public override int GetHashCode()
+        {
+            return 53345 + 97 * (int)_kind + ((_signature != null) ? _signature.GetHashCode() : 0);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as FixupSignature;
+            if (other == null)
+                return false;
+
+            if (other._kind != _kind)
+                return false;
+
+            if (!Object.Equals(other._signature, _signature))
+                return false;
+
+            return true;
+        }
+    }
+
+#if NATIVEFORMAT_PUBLICWRITER
+    public
+#else
+    internal
+#endif
+    class StaticDataSignature : Vertex
+    {
+        private Vertex _type;
+        private StaticDataKind _staticDataKind;
+
+        public StaticDataSignature(Vertex type, StaticDataKind staticDataKind)
+        {
+            _type = type;
+            _staticDataKind = staticDataKind;
+        }
+
+        internal override void Save(NativeWriter writer)
+        {
+            _type.Save(writer);
+            writer.WriteUnsigned((uint)_staticDataKind);
+        }
+
+        public override int GetHashCode()
+        {
+            return 456789 + 101 * (int)_staticDataKind + _type.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as StaticDataSignature;
+            if (other == null)
+                return false;
+
+            if (!Object.Equals(other._type, _type))
+                return false;
+
+            if (other._staticDataKind != _staticDataKind)
+                return false;
+
+            return true;
+        }
+    }
+
+#if NATIVEFORMAT_PUBLICWRITER
+    public
+#else
+    internal
+#endif
+    class MethodSlotSignature : Vertex
+    {
+        private Vertex _type;
+        private uint _slot;
+
+        public MethodSlotSignature(Vertex type, uint slot)
+        {
+            _type = type;
+            _slot = slot;
+        }
+
+        internal override void Save(NativeWriter writer)
+        {
+            _type.Save(writer);
+            writer.WriteUnsigned(_slot);
+        }
+
+        public override int GetHashCode()
+        {
+            return 124121 + 47 * (int)_slot + _type.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as MethodSlotSignature;
+            if (other == null)
+                return false;
+
+            if (!Object.Equals(other._type, _type))
+                return false;
+
+            if (other._slot != _slot)
+                return false;
+
+            return true;
+        }
+    }
+
+#if NATIVEFORMAT_PUBLICWRITER
+    public
+#else
+    internal
+#endif
     class MethodSigSignature : Vertex
     {
         private uint _callingConvention;
@@ -1149,6 +1448,49 @@ namespace Internal.NativeFormat
                 if (_lowerBounds[i] != other._lowerBounds[i])
                     return false;
             }
+
+            return true;
+        }
+    }
+
+#if NATIVEFORMAT_PUBLICWRITER
+    public
+#else
+    internal
+#endif
+    class CallingConventionConverterSignature : Vertex
+    {
+        private uint _flags;
+        private Vertex _signature;
+
+        public CallingConventionConverterSignature(uint flags, Vertex signature)
+        {
+            _flags = flags;
+            _signature = signature;
+        }
+
+        internal override void Save(NativeWriter writer)
+        {
+            writer.WriteUnsigned(_flags);
+            _signature.Save(writer);
+        }
+
+        public override int GetHashCode()
+        {
+            return 509 * 197 + ((int)_flags) * 23 + 647 * _signature.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            CallingConventionConverterSignature other = obj as CallingConventionConverterSignature;
+            if (other == null)
+                return false;
+
+            if (_flags != other._flags)
+                return false;
+
+            if (!_signature.Equals(other._signature))
+                return false;
 
             return true;
         }

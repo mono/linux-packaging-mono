@@ -1,5 +1,6 @@
-/*
- * liveness.c: liveness analysis
+/**
+ * \file
+ * liveness analysis
  *
  * Author:
  *   Dietmar Maurer (dietmar@ximian.com)
@@ -231,8 +232,7 @@ analyze_liveness_bb (MonoCompile *cfg, MonoBasicBlock *bb)
 
 #ifdef DEBUG_LIVENESS
 		if (cfg->verbose_level > 1) {
-			printf ("\t");
-			mono_print_ins (ins);
+			mono_print_ins_index (1, ins);
 		}
 #endif
 

@@ -6,10 +6,19 @@ using System.Diagnostics;
 
 namespace System.Threading
 {
+    [Internal.Runtime.CompilerServices.RelocatedTypeAttribute("System.Threading.Overlapped")]
     public sealed class PreAllocatedOverlapped : IDisposable, IDeferredDisposable
     {
         internal unsafe readonly Win32ThreadPoolNativeOverlapped* _overlapped;
         private DeferredDisposableLifetime<PreAllocatedOverlapped> _lifetime;
+
+#if MONO
+        static PreAllocatedOverlapped()
+        {
+            if (!Environment.IsRunningOnWindows)
+                throw new PlatformNotSupportedException();
+        }
+#endif
 
         [CLSCompliant(false)]
         public unsafe PreAllocatedOverlapped(IOCompletionCallback callback, object state, object pinData)

@@ -30,6 +30,25 @@ namespace ILCompiler.DependencyAnalysis
             AddrMode loadEntry = new AddrMode(
                 context, null, dictionarySlot * factory.Target.PointerSize, 0, AddrModeSize.Int64);
             encoder.EmitMOV(result, ref loadEntry);
+
+            switch (lookup.LookupResultReferenceType(factory))
+            {
+                case GenericLookupResultReferenceType.Indirect:
+                    // Do another indirection
+                    loadEntry = new AddrMode(result, null, 0, 0, AddrModeSize.Int64);
+                    encoder.EmitMOV(result, ref loadEntry);
+                    break;
+
+                case GenericLookupResultReferenceType.ConditionalIndirect:
+                    // Test result, 0x1
+                    // JEQ L1
+                    // mov result, [result-1]
+                    // L1:
+                    throw new NotImplementedException();
+
+                default:
+                    break;                    
+            }
         }
 
         protected sealed override void EmitCode(NodeFactory factory, ref X64Emitter encoder, bool relocsOnly)
@@ -51,17 +70,16 @@ namespace ILCompiler.DependencyAnalysis
                         else
                         {
                             EmitDictionaryLookup(factory, ref encoder, encoder.TargetRegister.Arg0, encoder.TargetRegister.Arg0, _lookupSignature, relocsOnly);
+                            encoder.EmitMOV(encoder.TargetRegister.Result, encoder.TargetRegister.Arg0);
 
                             // We need to trigger the cctor before returning the base. It is stored at the beginning of the non-GC statics region.
                             int cctorContextSize = NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, target);
-
-                            AddrMode loadBase = new AddrMode(encoder.TargetRegister.Arg0, null, cctorContextSize, 0, AddrModeSize.Int64);
-                            encoder.EmitLEA(encoder.TargetRegister.Result, ref loadBase);
-
-                            AddrMode initialized = new AddrMode(encoder.TargetRegister.Arg0, null, factory.Target.PointerSize, 0, AddrModeSize.Int32);
+                            AddrMode initialized = new AddrMode(encoder.TargetRegister.Arg0, null, factory.Target.PointerSize - cctorContextSize, 0, AddrModeSize.Int32);
                             encoder.EmitCMP(ref initialized, 1);
                             encoder.EmitRETIfEqual();
 
+                            AddrMode loadCctor = new AddrMode(encoder.TargetRegister.Arg0, null, -cctorContextSize, 0, AddrModeSize.Int64);
+                            encoder.EmitLEA(encoder.TargetRegister.Arg0, ref loadCctor);
                             encoder.EmitMOV(encoder.TargetRegister.Arg1, encoder.TargetRegister.Result);
                             encoder.EmitJMP(factory.HelperEntrypoint(HelperEntrypoint.EnsureClassConstructorRunAndReturnNonGCStaticBase));
                         }
@@ -88,11 +106,14 @@ namespace ILCompiler.DependencyAnalysis
                             GenericLookupResult nonGcRegionLookup = factory.GenericLookup.TypeNonGCStaticBase(target);
                             EmitDictionaryLookup(factory, ref encoder, encoder.TargetRegister.Arg0, encoder.TargetRegister.Arg0, nonGcRegionLookup, relocsOnly);
 
-                            AddrMode initialized = new AddrMode(encoder.TargetRegister.Arg0, null, factory.Target.PointerSize, 0, AddrModeSize.Int32);
+                            int cctorContextSize = NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, target);
+                            AddrMode initialized = new AddrMode(encoder.TargetRegister.Arg0, null, factory.Target.PointerSize - cctorContextSize, 0, AddrModeSize.Int32);
                             encoder.EmitCMP(ref initialized, 1);
                             encoder.EmitRETIfEqual();
 
                             encoder.EmitMOV(encoder.TargetRegister.Arg1, encoder.TargetRegister.Result);
+                            AddrMode loadCctor = new AddrMode(encoder.TargetRegister.Arg0, null, -cctorContextSize, 0, AddrModeSize.Int64);
+                            encoder.EmitLEA(encoder.TargetRegister.Arg0, ref loadCctor);
 
                             encoder.EmitJMP(factory.HelperEntrypoint(HelperEntrypoint.EnsureClassConstructorRunAndReturnGCStaticBase));
                         }
@@ -113,6 +134,9 @@ namespace ILCompiler.DependencyAnalysis
                             // class constructor context lives.
                             GenericLookupResult nonGcRegionLookup = factory.GenericLookup.TypeNonGCStaticBase(target);
                             EmitDictionaryLookup(factory, ref encoder, encoder.TargetRegister.Arg0, encoder.TargetRegister.Arg2, nonGcRegionLookup, relocsOnly);
+                            int cctorContextSize = NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.Target, target);
+                            AddrMode loadCctor = new AddrMode(encoder.TargetRegister.Arg2, null, -cctorContextSize, 0, AddrModeSize.Int64);
+                            encoder.EmitLEA(encoder.TargetRegister.Arg2, ref loadCctor);
 
                             helperEntrypoint = factory.HelperEntrypoint(HelperEntrypoint.EnsureClassConstructorRunAndReturnThreadStaticBase);
                         }
@@ -137,6 +161,8 @@ namespace ILCompiler.DependencyAnalysis
 
                 // These are all simple: just get the thing from the dictionary and we're done
                 case ReadyToRunHelperId.TypeHandle:
+                case ReadyToRunHelperId.MethodHandle:
+                case ReadyToRunHelperId.FieldHandle:
                 case ReadyToRunHelperId.MethodDictionary:
                 case ReadyToRunHelperId.VirtualCall:
                 case ReadyToRunHelperId.ResolveVirtualFunction:

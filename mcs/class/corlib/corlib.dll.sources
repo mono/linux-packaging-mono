@@ -142,6 +142,7 @@ System/TimeZoneInfo.cs
 System/TimeZoneInfo.Android.cs
 System/TimeZoneInfo.MonoTouch.cs
 System/TimeZoneInfo.Serialization.cs
+System/TimeZoneInfo.WinRT.cs
 ../../build/common/MonoTODOAttribute.cs
 System/TypeIdentifier.cs
 System/TypeSpec.cs
@@ -604,7 +605,6 @@ System.Runtime.Remoting.Proxies/ProxyAttribute.cs
 System.Runtime.Remoting.Services/EnterpriseServicesHelper.cs
 System.Runtime.Remoting.Services/ITrackingHandler.cs
 System.Runtime.Remoting.Services/TrackingServices.cs
-System.Runtime.Loader/AssemblyLoadContext.cs
 System.Runtime.Versioning/CompatibilitySwitch.cs
 System.Security/CodeAccessPermission.cs
 System.Security/HostProtectionException.cs
@@ -719,9 +719,9 @@ System.Security.Cryptography.X509Certificates/X509Certificate.cs
 System.Security.Cryptography.X509Certificates/X509Certificate20.cs
 System.Security.Cryptography.X509Certificates/X509CertificateImpl.cs
 System.Security.Cryptography.X509Certificates/X509CertificateImplMono.cs
+../../../external/corefx/src/System.Security.Cryptography.X509Certificates/src/System/Security/Cryptography/X509Certificates/X509ContentType.cs
 System.Security.Cryptography.X509Certificates/X509Helper.cs
-System.Security.Cryptography.X509Certificates/X509ContentType.cs
-System.Security.Cryptography.X509Certificates/X509KeyStorageFlags.cs
+../../../external/corefx/src/System.Security.Cryptography.X509Certificates/src/System/Security/Cryptography/X509Certificates/X509KeyStorageFlags.cs
 System.Security.Permissions/CodeAccessSecurityAttribute.cs
 System.Security.Permissions/EnvironmentPermission.cs
 System.Security.Permissions/EnvironmentPermissionAccess.cs
@@ -1091,7 +1091,6 @@ ReferenceSources/AppContextDefaultValues.cs
 
 ../referencesource/mscorlib/system/collections/generic/comparer.cs
 ../referencesource/mscorlib/system/collections/generic/debugview.cs
-../referencesource/mscorlib/system/collections/generic/dictionary.cs
 ../referencesource/mscorlib/system/collections/generic/equalitycomparer.cs
 ../referencesource/mscorlib/system/collections/generic/icollection.cs
 ../referencesource/mscorlib/system/collections/generic/icomparer.cs
@@ -1106,14 +1105,6 @@ ReferenceSources/AppContextDefaultValues.cs
 ../referencesource/mscorlib/system/collections/generic/keynotfoundexception.cs
 ../referencesource/mscorlib/system/collections/generic/keyvaluepair.cs
 ../referencesource/mscorlib/system/collections/generic/list.cs
-
-../referencesource/mscorlib/system/collections/Concurrent/ConcurrentDictionary.cs
-../referencesource/mscorlib/system/collections/Concurrent/ConcurrentQueue.cs
-../referencesource/mscorlib/system/collections/Concurrent/ConcurrentStack.cs
-../referencesource/mscorlib/system/collections/Concurrent/IProducerConsumerCollection.cs
-../referencesource/mscorlib/system/collections/Concurrent/OrderablePartitioner.cs
-../referencesource/mscorlib/system/collections/Concurrent/Partitioner.cs
-../referencesource/mscorlib/system/collections/Concurrent/PartitionerStatic.cs
 
 ../referencesource/mscorlib/system/diagnostics/assert.cs
 ../referencesource/mscorlib/system/diagnostics/assertfilter.cs
@@ -1645,20 +1636,51 @@ ReferenceSources/AppContextDefaultValues.cs
 ../referencesource/mscorlib/microsoft/win32/safehandles/safewaithandle.cs
 ../referencesource/mscorlib/microsoft/win32/safehandles/win32safehandles.cs
 
+coreclr/SorterArray.cs
+
+corert/AddrofIntrinsics.cs
+corert/Array.Portable.cs
 corert/Debug.cs
-corert/SR.cs
+corert/RelocatedTypeAttribute.cs
+corert/RuntimeThread.cs
+corert/ThreadPoolBoundHandle.cs
+
+../../../external/corert/src/Common/src/Interop/Unix/Interop.Libraries.cs
 
 ../../../external/corert/src/Common/src/System/Numerics/Hashing/HashHelpers.cs
+
+../../../external/corert/src/Runtime.Base/src/System/Runtime/InteropServices/NativeCallableAttribute.cs
+
+../../../external/corert/src/System.Private.CoreLib/shared/System/TupleExtensions.cs
+
+../../../external/corert/src/System.Private.CoreLib/shared/System/Runtime/CompilerServices/ITuple.cs
+../../../external/corert/src/System.Private.CoreLib/shared/System/Runtime/CompilerServices/TupleElementNamesAttribute.cs
+
+../../../external/corert/src/System.Private.CoreLib/shared/System/Threading/DeferredDisposableLifetime.cs
+
+
+../../../external/corert/src/System.Private.CoreLib/src/System/Tuple.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/ValueTuple.cs
 
 ../../../external/corert/src/System.Private.CoreLib/src/System/Collections/LowLevelComparer.cs
 ../../../external/corert/src/System.Private.CoreLib/src/System/Collections/ObjectEqualityComparer.cs
 
-../../../external/corert/src/System.Private.CoreLib/src/System/Tuple.cs
-../../../external/corert/src/System.Private.CoreLib/src/System/TupleExtensions.cs
-../../../external/corert/src/System.Private.CoreLib/src/System/ValueTuple.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/Collections/Generic/ArraySortHelper.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/Collections/Generic/IDictionaryDebugView.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/Collections/Generic/Dictionary.cs
 
-../../../external/corert/src/System.Private.CoreLib/src/System/Runtime/CompilerServices/ITuple.cs
-../../../external/corert/src/System.Private.CoreLib/src/System/Runtime/CompilerServices/TupleElementNamesAttribute.cs
+../../../external/corert/src/System.Private.CoreLib/src/System/Diagnostics/Debug.cs
+
+corefx/SR.cs
+
+../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/CDSCollectionETWBCLProvider.cs
+../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentDictionary.cs
+../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentQueue.cs
+../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/ConcurrentStack.cs
+../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/IProducerConsumerCollection.cs
+../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/OrderablePartitioner.cs
+../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/Partitioner.cs
+../../../external/corefx/src/System.Collections.Concurrent/src/System/Collections/Concurrent/PartitionerStatic.cs
 
 System.Security.Cryptography.X509Certificates/X509CertificateImplApple.cs
 System.Security.Cryptography.X509Certificates/X509Helper.Apple.cs

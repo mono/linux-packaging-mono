@@ -251,13 +251,8 @@ mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>prof</i><td> a MonoProfiler structure pointer, or a pointer to a derived structure.</td></td></tr><tr><td><i>callback</i><td> the function to invoke at shutdown</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use mono_profiler_install to activate profiling in the Mono runtime.
-	 Typically developers of new profilers will create a new structure whose
-	 first field is a MonoProfiler and put any extra information that they need
-	 to access from the various profiling callbacks there.
-	<p /></div>
+            <table class="mapi-parameters"><tbody><tr><td><i>prof</i></td><td> a <code>MonoProfiler</code> structure pointer, or a pointer to a derived structure.</td></tr><tr><td><i>callback</i></td><td> the function to invoke at shutdown</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Use <code>mono_profiler_install</code> to activate profiling in the Mono runtime. 	 Typically developers of new profilers will create a new structure whose 	 first field is a <code>MonoProfiler</code> and put any extra information that they need 	 to access from the various profiling callbacks there.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -271,7 +266,10 @@ mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_allocation</div>
+            <div class="mapi-prototype">void 
+mono_profiler_install_allocation (MonoProfileAllocFunc callback)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -286,7 +284,12 @@ mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_appdomain</div>
+            <div class="mapi-prototype">void 
+mono_profiler_install_appdomain   (MonoProfileAppDomainFunc start_load, MonoProfileAppDomainResult end_load,
+                                   MonoProfileAppDomainFunc start_unload, MonoProfileAppDomainFunc end_unload)
+
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -301,7 +304,11 @@ mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_assembly</div>
+            <div class="mapi-prototype">void 
+mono_profiler_install_assembly    (MonoProfileAssemblyFunc start_load, MonoProfileAssemblyResult end_load,
+                                   MonoProfileAssemblyFunc start_unload, MonoProfileAssemblyFunc end_unload)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -316,7 +323,11 @@ mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_class</div>
+            <div class="mapi-prototype">void
+mono_profiler_install_class       (MonoProfileClassFunc start_load, MonoProfileClassResult end_load,
+                                   MonoProfileClassFunc start_unload, MonoProfileClassFunc end_unload)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -331,7 +342,10 @@ mono_profiler_install (MonoProfiler *prof, MonoProfileFunc callback)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_coverage_filter</div>
+            <div class="mapi-prototype">void 
+mono_profiler_install_coverage_filter (MonoProfileCoverageFilterFunc callback)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -352,11 +366,8 @@ mono_profiler_install_enter_leave (MonoProfileMethodFunc enter, MonoProfileMetho
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>enter</i><td> the routine to be called on each method entry</td></td></tr><tr><td><i>fleave</i><td> the routine to be called each time a method returns</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use this routine to install routines that will be called everytime
-	 a method enters and leaves.   The routines will receive as an argument
-	 the MonoMethod representing the method that is entering or leaving.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>enter</i></td><td> the routine to be called on each method entry</td></tr><tr><td><i>fleave</i></td><td> the routine to be called each time a method returns</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Use this routine to install routines that will be called everytime 	 a method enters and leaves.   The routines will receive as an argument 	 the <code>MonoMethod</code> representing the method that is entering or leaving.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -376,10 +387,8 @@ mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMetho
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>start</i><td> the routine to be called when the JIT process starts.</td></td></tr><tr><td><i>end</i><td> the routine to be called when the JIT process ends.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Use this routine to install routines that will be called when JIT 
-	 compilation of a method starts and completes.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>start</i></td><td> the routine to be called when the JIT process starts.</td></tr><tr><td><i>end</i></td><td> the routine to be called when the JIT process ends.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Use this routine to install routines that will be called when JIT  	 compilation of a method starts and completes.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -393,7 +402,11 @@ mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMetho
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_module</div>
+            <div class="mapi-prototype">void 
+mono_profiler_install_module      (MonoProfileModuleFunc start_load, MonoProfileModuleResult end_load,
+                                   MonoProfileModuleFunc start_unload, MonoProfileModuleFunc end_unload)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -408,7 +421,10 @@ mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMetho
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_thread</div>
+            <div class="mapi-prototype">void 
+mono_profiler_install_thread (MonoProfileThreadFunc start, MonoProfileThreadFunc end)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -423,7 +439,10 @@ mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMetho
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_transition</div>
+            <div class="mapi-prototype">void 
+mono_profiler_install_transition (MonoProfileMethodResult callback)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -438,7 +457,10 @@ mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMetho
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_gc</div>
+            <div class="mapi-prototype">void
+mono_profiler_install_gc (MonoProfileGCFunc callback, MonoProfileGCResizeFunc heap_resize_callback)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -453,7 +475,10 @@ mono_profiler_install_jit_compile (MonoProfileMethodFunc start, MonoProfileMetho
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_profiler_install_statistical</div>
+            <div class="mapi-prototype">void 
+mono_profiler_install_statistical (MonoProfileStatFunc callback)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -474,17 +499,8 @@ mono_profiler_set_events (MonoProfileFlags events)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>events</i><td> an ORed set of values made up of MONO_PROFILER_ flags</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 The events descriped in the <i>events</i> argument is a set of flags
-	 that represent which profiling events must be triggered.  For
-	 example if you have registered a set of methods for tracking
-	 JIT compilation start and end with mono_profiler_install_jit_compile,
-	 you will want to pass the MONO_PROFILE_JIT_COMPILATION flag to
-	 this routine.
-	<p />
-	 You can call mono_profile_set_events more than once and you can
-	 do this at runtime to modify which methods are invoked.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>events</i></td><td> an ORed set of values made up of <code>MONO_PROFILER_</code> flags</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 The events described in the <i>events</i> argument is a set of flags 	 that represent which profiling events must be triggered.  For 	 example if you have registered a set of methods for tracking 	 JIT compilation start and end with <code>mono_profiler_install_jit_compile</code>, 	 you will want to pass the <code>MONO_PROFILE_JIT_COMPILATION</code> flag to 	 this routine. 	<p /> 	 You can call <code>mono_profile_set_events</code> more than once and you can 	 do this at runtime to modify which methods are invoked.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -504,8 +520,7 @@ mono_profiler_get_events (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Returns a list of active events that will be intercepted. </div>
+             <div> 	<p /> 	 Returns a list of active events that will be intercepted. </div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -514,6 +529,3 @@ mono_profiler_get_events (void)
 	<p />To support profiling modules that need to do code coverage
 	analysis, the following routines is provided:
 	
-   </div>
-</div></body>
-</html>

@@ -28,12 +28,17 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Mono.Cecil;
 
 namespace Mono.Linker {
 
+#if NET_CORE
+	public class AssemblyResolver : DirectoryAssemblyResolver {
+#else
 	public class AssemblyResolver : BaseAssemblyResolver {
+#endif
 
 		IDictionary _assemblies;
 
@@ -42,7 +47,7 @@ namespace Mono.Linker {
 		}
 
 		public AssemblyResolver ()
-			: this (new Hashtable ())
+			: this (new Dictionary<string, AssemblyDefinition> (StringComparer.OrdinalIgnoreCase))
 		{
 		}
 
@@ -56,7 +61,7 @@ namespace Mono.Linker {
 			AssemblyDefinition asm = (AssemblyDefinition) _assemblies [name.Name];
 			if (asm == null) {
 				asm = base.Resolve (name, parameters);
-				_assemblies [name.Name] = asm;
+				_assemblies [asm.Name.Name] = asm;
 			}
 
 			return asm;

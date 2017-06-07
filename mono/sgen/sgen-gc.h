@@ -1,5 +1,6 @@
-/*
- * sgen-gc.c: Simple generational GC.
+/**
+ * \file
+ * Simple generational GC.
  *
  * Copyright 2001-2003 Ximian, Inc
  * Copyright 2003-2010 Novell, Inc.
@@ -116,7 +117,7 @@ extern guint64 stat_objects_copied_major;
 		g_error (__VA_ARGS__);	\
 } } while (0)
 
-#ifndef HOST_WIN32
+#ifdef HAVE_LOCALTIME_R
 # define LOG_TIMESTAMP  \
 	do {	\
 		time_t t;									\
@@ -831,6 +832,9 @@ void sgen_object_register_for_finalization (GCObject *obj, void *user_data);
 void sgen_finalize_if (SgenObjectPredicateFunc predicate, void *user_data);
 void sgen_remove_finalizers_if (SgenObjectPredicateFunc predicate, void *user_data, int generation);
 void sgen_set_suspend_finalizers (void);
+
+void sgen_wbroots_iterate_live_block_ranges (sgen_cardtable_block_callback cb);
+void sgen_wbroots_scan_card_table (ScanCopyContext ctx);
 
 void sgen_register_disappearing_link (GCObject *obj, void **link, gboolean track, gboolean in_gc);
 

@@ -1,3 +1,6 @@
+/**
+ * \file
+ */
 
 #include "w32process.h"
 #include "w32process-unix-internals.h"
@@ -5,6 +8,7 @@
 #ifdef USE_OSX_BACKEND
 
 #include <errno.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <sys/proc.h>
 #include <sys/sysctl.h>
@@ -54,10 +58,15 @@ mono_w32process_get_name (pid_t pid)
 	g_free (pi);
 #else
 	gchar buf[256];
+	gint res;
 
 	/* No proc name on OSX < 10.5 nor ppc nor iOS */
 	memset (buf, '\0', sizeof(buf));
-	proc_name (pid, buf, sizeof(buf));
+	res = proc_name (pid, buf, sizeof(buf));
+	if (res == 0) {
+		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_IO_LAYER, "%s: proc_name failed, error (%d) \"%s\"", __func__, errno, g_strerror (errno));
+		return NULL;
+	}
 
 	// Fixes proc_name triming values to 15 characters #32539
 	if (strlen (buf) >= MAXCOMLEN - 1) {
@@ -112,9 +121,13 @@ mono_w32process_get_modules (pid_t pid)
 {
 	GSList *ret = NULL;
 	MonoW32ProcessModule *mod;
-	guint32 count = _dyld_image_count ();
+	guint32 count;
 	int i = 0;
 
+	if (pid != getpid ())
+		return NULL;
+
+	count = _dyld_image_count ();
 	for (i = 0; i < count; i++) {
 #if SIZEOF_VOID_P == 8
 		const struct mach_header_64 *hdr;

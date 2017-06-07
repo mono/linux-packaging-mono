@@ -47,7 +47,7 @@ namespace ILCompiler.DependencyAnalysis
             sb.Append(nameMangler.CompilationUnitPrefix).Append("__embedded_resourcedata");
         }
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
@@ -77,7 +77,7 @@ namespace ILCompiler.DependencyAnalysis
             _totalLength = 0;
             _indexData = new List<ResourceIndexData>();
             // Build up index information
-            foreach (EcmaAssembly module in factory.MetadataManager.GetModulesWithMetadata().OfType<EcmaAssembly>())
+            foreach (EcmaAssembly module in factory.MetadataManager.GetCompilationModulesWithMetadata().OfType<EcmaAssembly>())
             {
                 PEMemoryBlock resourceDirectory = module.PEReader.GetSectionData(module.PEReader.PEHeaders.CorHeader.ResourcesDirectory.RelativeVirtualAddress);
 

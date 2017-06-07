@@ -21,11 +21,12 @@
 #include <mono/metadata/debug-helpers.h>
 #include <mono/metadata/tokentype.h>
 #include <mono/metadata/appdomain.h>
-#include <mono/metadata/assembly.h>
+#include <mono/metadata/assembly-internals.h>
 #include <mono/metadata/metadata-internals.h>
 #include <mono/metadata/class-internals.h>
 #include <mono/metadata/verify-internals.h>
 #include <mono/metadata/marshal.h>
+#include <mono/metadata/w32handle.h>
 #include "mono/utils/mono-digest.h"
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/mono-counters.h>
@@ -523,7 +524,7 @@ try_load_from (MonoAssembly **assembly, const gchar *path1, const gchar *path2,
 	*assembly = NULL;
 	fullpath = g_build_filename (path1, path2, path3, path4, NULL);
 	if (g_file_test (fullpath, G_FILE_TEST_IS_REGULAR))
-		*assembly = mono_assembly_open_full (fullpath, NULL, refonly);
+		*assembly = mono_assembly_open_predicate (fullpath, refonly, FALSE, NULL, NULL, NULL);
 
 	g_free (fullpath);
 	return (*assembly != NULL);
@@ -616,6 +617,11 @@ pedump_assembly_search_hook (MonoAssemblyName *aname, gpointer user_data)
        return NULL;
 }
 
+static void
+thread_state_init (MonoThreadUnwindState *ctx)
+{
+}
+
 #define VALID_ONLY_FLAG 0x08000000
 #define VERIFY_CODE_ONLY MONO_VERIFY_ALL + 1 
 #define VERIFY_METADATA_ONLY VERIFY_CODE_ONLY + 1
@@ -632,6 +638,7 @@ main (int argc, char *argv [])
 	const char *flag_desc [] = {"error", "warn", "cls", "all", "code", "fail-on-verifiable", "non-strict", "valid-only", "metadata", "partial-md", NULL};
 	guint flag_vals [] = {MONO_VERIFY_ERROR, MONO_VERIFY_WARNING, MONO_VERIFY_CLS, MONO_VERIFY_ALL, VERIFY_CODE_ONLY, MONO_VERIFY_FAIL_FAST, MONO_VERIFY_NON_STRICT, VALID_ONLY_FLAG, VERIFY_METADATA_ONLY, VERIFY_PARTIAL_METADATA, 0};
 	int i, verify_flags = MONO_VERIFY_REPORT_ALL_ERRORS, run_new_metadata_verifier = 0;
+	MonoThreadInfoRuntimeCallbacks ticallbacks;
 	
 	for (i = 1; i < argc; i++){
 		if (argv [i][0] != '-'){
@@ -659,11 +666,19 @@ main (int argc, char *argv [])
 #endif
 	mono_counters_init ();
 	mono_tls_init_runtime_keys ();
+	memset (&ticallbacks, 0, sizeof (ticallbacks));
+	ticallbacks.thread_state_init = thread_state_init;
+#ifndef HOST_WIN32
+	mono_w32handle_init ();
+#endif
+	mono_threads_runtime_init (&ticallbacks);
+
 	mono_metadata_init ();
 	mono_images_init ();
 	mono_assemblies_init ();
 	mono_loader_init ();
  
+
 	if (verify_pe) {
 		char *tok = strtok (flags, ",");
 
@@ -727,7 +742,7 @@ main (int argc, char *argv [])
 
 		mono_verifier_set_mode (verifier_mode);
 
-		assembly = mono_assembly_open (file, NULL);
+		assembly = mono_assembly_open_predicate (file, FALSE, FALSE, NULL, NULL, NULL);
 		/*fake an assembly for netmodules so the verifier works*/
 		if (!assembly && (image = mono_image_open (file, &status)) && image->tables [MONO_TABLE_ASSEMBLY].rows == 0) {
 			assembly = g_new0 (MonoAssembly, 1);

@@ -227,18 +227,8 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>in</i><td> pointers to the buffer.</td></td></tr><tr><td><i>bytes</i><td> number of bytes in the string.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Tries to turn a <code>NULL</code>-terminated string into UTF16.
-	<p />
-	 First, see if it's valid UTF8, in which case just turn it directly
-	 into UTF16.  Next, run through the colon-separated encodings in
-	 MONO_EXTERNAL_ENCODINGS and do an iconv conversion on each,
-	 returning the first successful conversion to UTF16.  If no
-	 conversion succeeds, return <code>NULL</code>.
-	<p />
-	 Callers must free the returned string if not <code>NULL</code>. bytes holds the number
-	 of bytes in the returned string, not including the terminator.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>in</i></td><td> pointers to the buffer.</td></tr><tr><td><i>bytes</i></td><td> number of bytes in the string.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Tries to turn a <code>NULL</code>-terminated string into UTF-16. 	<p /> 	 First, see if it's valid UTF-8, in which case just turn it directly 	 into UTF-16.  Next, run through the colon-separated encodings in 	 <code>MONO_EXTERNAL_ENCODINGS</code> and do an <code>iconv</code> conversion on each, 	 returning the first successful conversion to UTF-16.  If no 	 conversion succeeds, return <code>NULL</code>. 	<p /> 	 Callers must free the returned string if not <code>NULL</code>. <i>bytes</i> holds the number 	 of bytes in the returned string, not including the terminator.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -257,13 +247,8 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>uni</i><td> an UTF16 string to conver to an external representation.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Turns <code>NULL</code>-terminated UTF16 into either UTF8, or the first
-	 working item in MONO_EXTERNAL_ENCODINGS if set.  If no conversions
-	 work, then UTF8 is returned.
-	<p />
-	 Callers must free the returned string.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>uni</i></td><td> a UTF-16 string to convert to an external representation.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Turns <code>NULL</code>-terminated UTF-16 into either UTF-8, or the first 	 working item in <code>MONO_EXTERNAL_ENCODINGS</code> if set.  If no conversions 	 work, then UTF-8 is returned. 	 Callers must free the returned string.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -282,21 +267,8 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>in</i><td> pointer to the string buffer.</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 Tries to turn a <code>NULL</code>-terminated string into UTF8.
-	<p />
-	 First, see if it's valid UTF8, in which case there's nothing more
-	 to be done.  Next, run through the colon-separated encodings in
-	 MONO_EXTERNAL_ENCODINGS and do an iconv conversion on each,
-	 returning the first successful conversion to utf8.  If no
-	 conversion succeeds, return <code>NULL</code>.
-	<p />
-	 Callers must free the returned string if not <code>NULL</code>.
-	<p />
-	 This function is identical to mono_unicode_from_external, apart
-	 from returning utf8 not utf16; it's handy in a few places to work
-	 in utf8.</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>in</i></td><td> pointer to the string buffer.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Tries to turn a <code>NULL</code>-terminated string into UTF8. 	<p /> 	 First, see if it's valid UTF-8, in which case there's nothing more 	 to be done.  Next, run through the colon-separated encodings in 	 <code>MONO_EXTERNAL_ENCODINGS</code> and do an <code>iconv</code> conversion on each, 	 returning the first successful conversion to UTF-8.  If no 	 conversion succeeds, return <code>NULL</code>. 	<p /> 	 Callers must free the returned string if not <code>NULL</code>. 	<p /> 	 This function is identical to <code>mono_unicode_from_external</code>, apart 	 from returning UTF-8 not UTF-16; it's handy in a few places to work 	 in UTF-8.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -313,7 +285,10 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_alloc</div>
+            <div class="mapi-prototype">void*
+mono_marshal_alloc (gulong size, MonoError *error)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -328,8 +303,13 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_asany</div>
+            <div class="mapi-prototype">gpointer
+mono_marshal_asany (MonoObject *o, MonoMarshalNative string_encoding, int param_attrs)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 This is a JIT icall, it sets the pending exception and returns <code>NULL</code> on error.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -343,7 +323,10 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_free_array</div>
+            <div class="mapi-prototype">void
+mono_marshal_free_array (gpointer *ptr, int size) 
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -358,8 +341,13 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_free_asany</div>
+            <div class="mapi-prototype">void
+mono_marshal_free_asany (MonoObject *o, gpointer ptr, MonoMarshalNative string_encoding, int param_attrs)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 This is a JIT icall, it sets the pending exception</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -373,7 +361,10 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_free</div>
+            <div class="mapi-prototype">void
+mono_marshal_free (gpointer ptr)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -403,7 +394,10 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_delegate_begin_invoke</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_delegate_begin_invoke (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -418,7 +412,10 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_delegate_end_invoke</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_delegate_end_invoke (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -433,8 +430,13 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_delegate_invoke</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_delegate_invoke (MonoMethod *method, MonoDelegate *del)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 The returned method invokes all methods in a multicast delegate.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -448,8 +450,13 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_icall_wrapper</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_icall_wrapper (MonoMethodSignature *sig, const char *name, gconstpointer func, gboolean check_exceptions)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 Generates IL code for the icall wrapper. The generated method 	 calls the unmanaged code in <i>func</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -469,21 +476,6 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
     </div><!--height container -->
 </div> <!-- class=mapi  -->
 
-<a name="api:mono_marshal_get_ldfld_remote_wrapper"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_marshal_get_ldfld_remote_wrapper</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_ldfld_remote_wrapper</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
 <a name="api:mono_marshal_get_ldfld_wrapper"></a>
 <div class="mapi">
     <div class="mapi-entry "><code>mono_marshal_get_ldfld_wrapper</code></div>
@@ -493,8 +485,14 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_ldfld_wrapper</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_ldfld_wrapper (MonoType *type)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the type of the field</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 This method generates a function which can be use to load a field with type 	 <i>type</i> from an object. The generated function has the following signature: 	<p /> 	 <code><i>type</i> ldfld_wrapper (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, int offset)</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -508,8 +506,13 @@ mono_unicode_from_external (const gchar *in, gsize *bytes)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_managed_wrapper</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_managed_wrapper (MonoMethod *method, MonoClass *delegate_klass, uint32_t target_handle, MonoError *error)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 Generates IL code to call managed methods from unmanaged code  	 If <i>target_handle</i> is <code>0</code>, the wrapper info will be a <code>WrapperInfo</code> structure.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -529,10 +532,8 @@ mono_marshal_get_native_wrapper (MonoMethod *method, gboolean check_exceptions, 
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>method</i><td> The MonoMethod to wrap.</td></td></tr><tr><td><i>check_exceptions</i><td> Whenever to check for pending exceptions</td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 generates IL code for the pinvoke wrapper (the generated method
-	 calls the unmanaged code in piinfo-&gt;addr)</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>method</i></td><td> The <code>MonoMethod</code> to wrap.</td></tr><tr><td><i>check_exceptions</i></td><td> Whenever to check for pending exceptions</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Generates IL code for the pinvoke wrapper. The generated method 	 calls the unmanaged code in <code>piinfo-&gt;addr</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -546,7 +547,10 @@ mono_marshal_get_native_wrapper (MonoMethod *method, gboolean check_exceptions, 
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_proxy_cancast</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_proxy_cancast (MonoClass *klass)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -567,9 +571,8 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>klass</i><td></td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 generates IL code for PtrToStructure (IntPtr src, object structure)</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>klass</i></td><td> <code>MonoClass</code></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 Generates IL code for <code>PtrToStructure (IntPtr src, object structure)</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -583,7 +586,10 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_remoting_invoke_for_target</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_remoting_invoke_for_target (MonoMethod *method, MonoRemotingTarget target_type)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -598,7 +604,10 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_remoting_invoke</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_remoting_invoke (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -613,7 +622,10 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_remoting_invoke_with_check</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_remoting_invoke_with_check (MonoMethod *method)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -628,8 +640,14 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_runtime_invoke</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_runtime_invoke (MonoMethod *method, gboolean virtual_)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>function</i></td><td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 <code>MonoObject *runtime_invoke (MonoObject *this_obj, void **params, MonoObject **exc, void* method)</code> 	<p /> 	 We also catch exceptions if <i>exc</i> is not <code>NULL</code>. 	 If <i>virtual</i> is <code>TRUE</code>, then <i>method</i> is invoked virtually on <i>this</i>. This is useful since 	 it means that the compiled code for <i>method</i> does not have to be looked up  	 before calling the runtime invoke wrapper. In this case, the wrapper ignores 	 its <i>method</i> argument.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -643,22 +661,10 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_stelemref</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_stelemref (void)
 
-<a name="api:mono_marshal_get_stfld_remote_wrapper"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_marshal_get_stfld_remote_wrapper</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_stfld_remote_wrapper</div>
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -673,8 +679,14 @@ mono_marshal_get_ptr_to_struct (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_stfld_wrapper</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_stfld_wrapper (MonoType *type)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>type</i></td><td> the type of the field</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 This method generates a function which can be use to store a field with type 	 <i>type</i>. The generated function has the following signature: 	<p /> 	 <code>void stfld_wrapper (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, int offset, <i>type</i> val)</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -694,9 +706,8 @@ mono_marshal_get_struct_to_ptr (MonoClass *klass)
 </div>
             <p />
             <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>klass</i><td></td></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 generates IL code for StructureToPtr (object structure, IntPtr ptr, bool fDeleteOld)</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>klass</i></td><td> <code>MonoClass</code></td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	 Generates IL code for <code>StructureToPtr (object structure, IntPtr ptr, bool fDeleteOld)</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -710,8 +721,14 @@ mono_marshal_get_struct_to_ptr (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_synchronized_wrapper</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_synchronized_wrapper (MonoMethod *method)
+
+</div>
             <p />
+            <div class="mapi-section">Parameters</div>
+            <table class="mapi-parameters"><tbody><tr><td><i>wrapper</i></td><td> the generated method</td></tr></tbody></table>             <div class="mapi-section">Description</div>
+             <div> 	 calls <i>method</i> while locking <code>this</code> or the parent type.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -725,8 +742,13 @@ mono_marshal_get_struct_to_ptr (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_unbox_wrapper</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_unbox_wrapper (MonoMethod *method)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 The returned method calls <i>method</i> unboxing the <code>this</code> argument.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -740,8 +762,13 @@ mono_marshal_get_struct_to_ptr (MonoClass *klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_get_xappdomain_invoke</div>
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_get_xappdomain_invoke (MonoMethod *method)
+
+</div>
             <p />
+             <div class="mapi-section">Description</div>
+             <div> 	 Generates a fast remoting wrapper for cross app domain calls.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -761,12 +788,7 @@ mono_marshal_load_type_info (MonoClass* klass)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	  Initialize klass::marshal_info using information from metadata. This function can
-	 recursively call itself, and the caller is responsible to avoid that by calling 
-	 mono_marshal_is_loading_type_info () beforehand.
-	<p />
-	 LOCKING: Acquires the loader lock.</div>
+             <div> 	<p /> 	 Initialize <code>klass::marshal_info</code> using information from metadata. This function can 	 recursively call itself, and the caller is responsible to avoid that by calling  	 <code>mono_marshal_is_loading_type_info</code> beforehand. 	<p /> 	 LOCKING: Acquires the loader lock.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -780,22 +802,10 @@ mono_marshal_load_type_info (MonoClass* klass)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_method_from_wrapper</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
+            <div class="mapi-prototype">MonoMethod*
+mono_marshal_method_from_wrapper (MonoMethod *wrapper)
 
-<a name="api:mono_marshal_realloc"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_marshal_realloc</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_realloc</div>
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -816,9 +826,7 @@ mono_marshal_set_last_error (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 This function is invoked to set the last error value from a P/Invoke call
-	 which has SetLastError set.</div>
+             <div> 	<p /> 	 This function is invoked to set the last error value from a P/Invoke call 	 which has <code>SetLastError</code> set.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -832,128 +840,11 @@ mono_marshal_set_last_error (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_marshal_type_size</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
+            <div class="mapi-prototype">gint32
+mono_marshal_type_size (MonoType *type, MonoMarshalSpec *mspec, guint32 *align,
+			gboolean as_field, gboolean unicode)
 
-<h2>Metadata Loading Errors</h2>
-
-	<p />The routines in this section are used to cope with errors
-	during metadata loading.  Errors in metadata handling can
-	happen for many reason, and these include (this is not an
-	exhaustive list).
-
-	<ul>
-		<li>An assembly referenced is missing.
-		<li>Fields referenced are missing.
-		<li>Methods referenced are missing.
-	</li></li></li></ul>
-
-	<p />The <tt>mono_loader_set_*</tt> routines are invoked during
-	metadata loading to flag that an error has happened.  The
-	class loading errros are flagged in a per-thread basis.
-
-	<p />In various spots in the runtime the
-	<tt>mono_loader_get_last_error</tt> routine is called to check
-	if there was a problem, and then errors are propagated upwards
-	on the stack until we reach a point where an exception can be
-	raised and no runtime locks are held.
-
-	<p />The <tt>mono_loader_error_prepare_exception</tt> takes a
-	<tt>MonoLoaderError</tt> structure (the value returned from
-	<tt>mono_loader_get_last_error</tt>), turns that into an
-	exception and clears the error condition from the current
-	thread. 
-	
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_loader_set_error_field_load"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_loader_set_error_field_load</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_loader_set_error_field_load</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_loader_set_error_method_load"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_loader_set_error_method_load</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_loader_set_error_method_load</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_loader_set_error_type_load"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_loader_set_error_type_load</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_loader_set_error_type_load</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_loader_get_last_error"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_loader_get_last_error</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_loader_get_last_error</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_loader_clear_error"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_loader_clear_error</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_loader_clear_error</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_loader_error_prepare_exception"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_loader_error_prepare_exception</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_loader_error_prepare_exception</div>
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -981,8 +872,7 @@ mono_loader_lock (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div>	<p /> 
-	 See docs/thread-safety.txt for the locking strategy.</div>
+             <div> 	<p /> 	 See <code>docs/thread-safety.txt</code> for the locking strategy.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -996,7 +886,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_loader_unlock</div>
+            <div class="mapi-prototype">void
+mono_loader_unlock (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1008,66 +901,6 @@ mono_loader_lock (void)
 	
 </div> <!-- class=mapi  -->
 
-<a name="api:mono_gc_disable"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_gc_disable</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_disable</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_gc_enable"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_gc_enable</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_enable</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_gc_start_world"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_gc_start_world</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_start_world</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
-<a name="api:mono_gc_stop_world"></a>
-<div class="mapi">
-    <div class="mapi-entry "><code>mono_gc_stop_world</code></div>
-    <div class="mapi-height-container">
-        <div class="mapi-ptr-container"></div>
-        <div class="mapi-description">
-            <div class="mapi-ptr"></div>
-
-            <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_stop_world</div>
-            <p />
-        </div><!--mapi-description -->
-    </div><!--height container -->
-</div> <!-- class=mapi  -->
-
 <a name="api:mono_gc_alloc_fixed"></a>
 <div class="mapi">
     <div class="mapi-entry "><code>mono_gc_alloc_fixed</code></div>
@@ -1077,7 +910,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_alloc_fixed</div>
+            <div class="mapi-prototype">void*
+mono_gc_alloc_fixed (size_t size, MonoGCDescriptor descr, MonoGCRootSource source, const char *msg)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1092,7 +928,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_free_fixed</div>
+            <div class="mapi-prototype">void
+mono_gc_free_fixed (void* addr)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1107,7 +946,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_make_descr_from_bitmap</div>
+            <div class="mapi-prototype">SgenDescriptor
+mono_gc_make_descr_from_bitmap (gsize *bitmap, int numbits)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1124,7 +966,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_base_init</div>
+            <div class="mapi-prototype">void
+mono_gc_base_init (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1139,7 +984,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_invoke_finalizers</div>
+            <div class="mapi-prototype">int
+mono_gc_invoke_finalizers (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1154,7 +1002,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_is_gc_thread</div>
+            <div class="mapi-prototype">gboolean
+mono_gc_is_gc_thread (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1169,7 +1020,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_pending_finalizers</div>
+            <div class="mapi-prototype">MonoBoolean
+mono_gc_pending_finalizers (void)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1184,10 +1038,10 @@ mono_loader_lock (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">mono_gc_register_thread</div>
+            <div class="mapi-prototype">gboolean
+mono_gc_register_thread (void *baseptr)
+
+</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
-   </div>
-</div></body>
-</html>

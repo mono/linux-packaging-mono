@@ -5,6 +5,7 @@
 using global::System;
 using global::System.Threading;
 using global::System.Reflection;
+using System.Runtime.InteropServices;
 using global::System.Diagnostics;
 using global::System.Collections.Generic;
 
@@ -29,7 +30,7 @@ namespace Internal.Reflection.Execution.MethodInvokers
         }
 
         [DebuggerGuidedStepThroughAttribute]
-        public sealed override Object Invoke(Object thisObject, Object[] arguments)
+        public sealed override Object Invoke(Object thisObject, Object[] arguments, BinderBundle binderBundle)
         {
             MethodInvokerUtils.ValidateThis(thisObject, _declaringTypeHandle);
             object result = RuntimeAugments.CallDynamicInvokeMethod(
@@ -40,6 +41,7 @@ namespace Internal.Reflection.Execution.MethodInvokers
                 MethodInvokeInfo.DynamicInvokeGenericDictionary,
                 MethodInvokeInfo.MethodInfo,
                 arguments,
+                binderBundle,
                 invokeMethodHelperIsThisCall: false, 
                 methodToCallIsThisCall: true);
             System.Diagnostics.DebugAnnotations.PreviousCallContainsDebuggerStepInCode();
@@ -52,7 +54,7 @@ namespace Internal.Reflection.Execution.MethodInvokers
             {
                 return RuntimeAugments.CreateDelegate(
                     delegateType,
-                    new OpenMethodResolver(_declaringTypeHandle, MethodInvokeInfo.LdFtnResult, 0).ToIntPtr(),
+                    new OpenMethodResolver(_declaringTypeHandle, MethodInvokeInfo.LdFtnResult, default(GCHandle), 0).ToIntPtr(),
                     target,
                     isStatic: isStatic,
                     isOpen: isOpen);
@@ -63,6 +65,7 @@ namespace Internal.Reflection.Execution.MethodInvokers
             }
         }
 
+        public sealed override IntPtr LdFtnResult => MethodInvokeInfo.LdFtnResult;
 
         private RuntimeTypeHandle _declaringTypeHandle;
     }

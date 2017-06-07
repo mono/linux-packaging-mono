@@ -1,5 +1,6 @@
-/*
- * sgen-mono.c: SGen features specific to Mono.
+/**
+ * \file
+ * SGen features specific to Mono.
  *
  * Copyright (C) 2014 Xamarin Inc
  *
@@ -127,7 +128,7 @@ mono_gc_wbarrier_value_copy (gpointer dest, gpointer src, int count, MonoClass *
 /**
  * mono_gc_wbarrier_object_copy:
  *
- * Write barrier to call when obj is the result of a clone or copy of an object.
+ * Write barrier to call when \p obj is the result of a clone or copy of an object.
  */
 void
 mono_gc_wbarrier_object_copy (MonoObject* obj, MonoObject *src)
@@ -152,6 +153,9 @@ mono_gc_wbarrier_object_copy (MonoObject* obj, MonoObject *src)
 	sgen_get_remset ()->wbarrier_object_copy (obj, src);
 }
 
+/**
+ * mono_gc_wbarrier_set_arrayref:
+ */
 void
 mono_gc_wbarrier_set_arrayref (MonoArray *arr, gpointer slot_ptr, MonoObject* value)
 {
@@ -167,6 +171,9 @@ mono_gc_wbarrier_set_arrayref (MonoArray *arr, gpointer slot_ptr, MonoObject* va
 	sgen_get_remset ()->wbarrier_set_field ((GCObject*)arr, slot_ptr, value);
 }
 
+/**
+ * mono_gc_wbarrier_set_field:
+ */
 void
 mono_gc_wbarrier_set_field (MonoObject *obj, gpointer field_ptr, MonoObject* value)
 {
@@ -519,12 +526,18 @@ sgen_client_run_finalize (MonoObject *obj)
 	mono_gc_run_finalize (obj, NULL);
 }
 
+/**
+ * mono_gc_invoke_finalizers:
+ */
 int
 mono_gc_invoke_finalizers (void)
 {
 	return sgen_gc_invoke_finalizers ();
 }
 
+/**
+ * mono_gc_pending_finalizers:
+ */
 MonoBoolean
 mono_gc_pending_finalizers (void)
 {
@@ -556,12 +569,11 @@ object_in_domain_predicate (MonoObject *obj, void *user_data)
 
 /**
  * mono_gc_finalizers_for_domain:
- * @domain: the unloading appdomain
- * @out_array: output array
- * @out_size: size of output array
- *
- * Enqueue for finalization all objects that belong to the unloading appdomain @domain
- * @suspend is used for early termination of the enqueuing process.
+ * \param domain the unloading appdomain
+ * \param out_array output array
+ * \param out_size size of output array
+ * Enqueue for finalization all objects that belong to the unloading appdomain \p domain.
+ * \p suspend is used for early termination of the enqueuing process.
  */
 void
 mono_gc_finalize_domain (MonoDomain *domain)
@@ -875,6 +887,10 @@ mono_gc_clear_domain (MonoDomain * domain)
 
 	sgen_clear_nursery_fragments ();
 
+	FOREACH_THREAD (info) {
+		mono_handle_stack_free_domain ((HandleStack*)info->client_info.info.handle_stack, domain);
+	} FOREACH_THREAD_END
+
 	if (sgen_mono_xdomain_checks && domain != mono_get_root_domain ()) {
 		sgen_scan_for_registered_roots_in_domain (domain, ROOT_TYPE_NORMAL);
 		sgen_scan_for_registered_roots_in_domain (domain, ROOT_TYPE_WBARRIER);
@@ -978,6 +994,9 @@ mono_gc_alloc_mature (MonoVTable *vtable, size_t size)
 	return obj;
 }
 
+/**
+ * mono_gc_alloc_fixed:
+ */
 void*
 mono_gc_alloc_fixed (size_t size, MonoGCDescriptor descr, MonoGCRootSource source, const char *msg)
 {
@@ -992,6 +1011,9 @@ mono_gc_alloc_fixed (size_t size, MonoGCDescriptor descr, MonoGCRootSource sourc
 	return res;
 }
 
+/**
+ * mono_gc_free_fixed:
+ */
 void
 mono_gc_free_fixed (void* addr)
 {
@@ -1573,67 +1595,6 @@ sgen_has_managed_allocator (void)
 	return FALSE;
 }
 
-/*
- * Cardtable scanning
- */
-
-#define MWORD_MASK (sizeof (mword) - 1)
-
-static inline int
-find_card_offset (mword card)
-{
-/*XXX Use assembly as this generates some pretty bad code */
-#if defined(__i386__) && defined(__GNUC__)
-	return  (__builtin_ffs (card) - 1) / 8;
-#elif defined(__x86_64__) && defined(__GNUC__)
-	return (__builtin_ffsll (card) - 1) / 8;
-#elif defined(__s390x__)
-	return (__builtin_ffsll (GUINT64_TO_LE(card)) - 1) / 8;
-#else
-	int i;
-	guint8 *ptr = (guint8 *) &card;
-	for (i = 0; i < sizeof (mword); ++i) {
-		if (ptr[i])
-			return i;
-	}
-	return 0;
-#endif
-}
-
-static guint8*
-find_next_card (guint8 *card_data, guint8 *end)
-{
-	mword *cards, *cards_end;
-	mword card;
-
-	while ((((mword)card_data) & MWORD_MASK) && card_data < end) {
-		if (*card_data)
-			return card_data;
-		++card_data;
-	}
-
-	if (card_data == end)
-		return end;
-
-	cards = (mword*)card_data;
-	cards_end = (mword*)((mword)end & ~MWORD_MASK);
-	while (cards < cards_end) {
-		card = *cards;
-		if (card)
-			return (guint8*)cards + find_card_offset (card);
-		++cards;
-	}
-
-	card_data = (guint8*)cards_end;
-	while (card_data < end) {
-		if (*card_data)
-			return card_data;
-		++card_data;
-	}
-
-	return end;
-}
-
 #define ARRAY_OBJ_INDEX(ptr,array,elem_size) (((char*)(ptr) - ((char*)(array) + G_STRUCT_OFFSET (MonoArray, vector))) / (elem_size))
 
 gboolean
@@ -1690,8 +1651,8 @@ sgen_client_cardtable_scan_object (GCObject *obj, guint8 *cards, ScanCopyContext
 LOOP_HEAD:
 #endif
 
-		card_data = find_next_card (card_data, card_data_end);
-		for (; card_data < card_data_end; card_data = find_next_card (card_data + 1, card_data_end)) {
+		card_data = sgen_find_next_card (card_data, card_data_end);
+		for (; card_data < card_data_end; card_data = sgen_find_next_card (card_data + 1, card_data_end)) {
 			size_t index;
 			size_t idx = (card_data - card_base) + extra_idx;
 			char *start = (char*)(obj_start + idx * CARD_SIZE_IN_BYTES);
@@ -2007,6 +1968,15 @@ precisely_report_roots_from (GCRootReport *report, void** start_root, void** end
 		}
 		break;
 	}
+	case ROOT_DESC_VECTOR: {
+		void **p;
+
+		for (p = start_root; p < end_root; p++) {
+			if (*p)
+				add_profile_gc_root (report, *p, MONO_PROFILE_GC_ROOT_OTHER, 0);
+		}
+		break;
+	}
 	case ROOT_DESC_USER: {
 		MonoGCRootMarkFunc marker = (MonoGCRootMarkFunc)sgen_get_user_descriptor_func (desc);
 		root_report = report;
@@ -2183,22 +2153,20 @@ walk_references (GCObject *start, size_t size, void *data)
 
 /**
  * mono_gc_walk_heap:
- * @flags: flags for future use
- * @callback: a function pointer called for each object in the heap
- * @data: a user data pointer that is passed to callback
- *
- * This function can be used to iterate over all the live objects in the heap:
- * for each object, @callback is invoked, providing info about the object's
+ * \param flags flags for future use
+ * \param callback a function pointer called for each object in the heap
+ * \param data a user data pointer that is passed to callback
+ * This function can be used to iterate over all the live objects in the heap;
+ * for each object, \p callback is invoked, providing info about the object's
  * location in memory, its class, its size and the objects it references.
- * For each referenced object it's offset from the object address is
+ * For each referenced object its offset from the object address is
  * reported in the offsets array.
  * The object references may be buffered, so the callback may be invoked
  * multiple times for the same object: in all but the first call, the size
  * argument will be zero.
- * Note that this function can be only called in the #MONO_GC_EVENT_PRE_START_WORLD
+ * Note that this function can be only called in the \c MONO_GC_EVENT_PRE_START_WORLD
  * profiler event handler.
- *
- * Returns: a non-zero value if the GC doesn't support heap walking
+ * \returns a non-zero value if the GC doesn't support heap walking
  */
 int
 mono_gc_walk_heap (int flags, MonoGCReferences callback, void *data)
@@ -2343,12 +2311,18 @@ sgen_thread_detach (SgenThreadInfo *p)
 		mono_thread_detach_internal (mono_thread_internal_current ());
 }
 
+/**
+ * mono_gc_register_thread:
+ */
 gboolean
 mono_gc_register_thread (void *baseptr)
 {
 	return mono_thread_info_attach (baseptr) != NULL;
 }
 
+/**
+ * mono_gc_is_gc_thread:
+ */
 gboolean
 mono_gc_is_gc_thread (void)
 {
@@ -2382,6 +2356,22 @@ mono_gc_scan_object (void *obj, void *gc_data)
 	ctx->ops->copy_or_mark_object ((GCObject**)&obj, ctx->queue);
 	return obj;
 }
+
+typedef struct {
+	void **start_nursery;
+	void **end_nursery;
+} PinHandleStackInteriorPtrData;
+
+/* Called when we're scanning the handle stack imprecisely and we encounter a pointer into the
+   middle of an object.
+ */
+static void
+pin_handle_stack_interior_ptrs (void **ptr_slot, void *user_data)
+{
+	PinHandleStackInteriorPtrData *ud = (PinHandleStackInteriorPtrData *)user_data;
+	sgen_conservatively_pin_objects_from (ptr_slot, ptr_slot+1, ud->start_nursery, ud->end_nursery, PIN_TYPE_STACK);
+}
+
 
 /*
  * Mark from thread stacks and registers.
@@ -2472,8 +2462,21 @@ sgen_client_scan_thread_data (void *start_nursery, void *end_nursery, gboolean p
 				}
 			}
 		}
-		if (precise && info->client_info.info.handle_stack) {
-			mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, (GcScanFunc)ctx.ops->copy_or_mark_object, ctx.queue);
+		if (info->client_info.info.handle_stack) {
+			/*
+			  Make two passes over the handle stack.  On the imprecise pass, pin all
+			  objects where the handle points into the interior of the object. On the
+			  precise pass, copy or mark all the objects that have handles to the
+			  beginning of the object.
+			*/
+			if (precise)
+				mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, (GcScanFunc)ctx.ops->copy_or_mark_object, ctx.queue, precise);
+			else {
+				PinHandleStackInteriorPtrData ud = { .start_nursery = start_nursery,
+								     .end_nursery = end_nursery,
+				};
+				mono_handle_stack_scan ((HandleStack*)info->client_info.info.handle_stack, pin_handle_stack_interior_ptrs, &ud, precise);
+			}
 		}
 	} FOREACH_THREAD_END
 }
@@ -2684,10 +2687,9 @@ sgen_client_metadata_for_object (GCObject *obj)
 
 /**
  * mono_gchandle_is_in_domain:
- * @gchandle: a GCHandle's handle.
- * @domain: An application domain.
- *
- * Returns: TRUE if the object wrapped by the @gchandle belongs to the specific @domain.
+ * \param gchandle a GCHandle's handle.
+ * \param domain An application domain.
+ * \returns TRUE if the object wrapped by the \p gchandle belongs to the specific \p domain.
  */
 gboolean
 mono_gchandle_is_in_domain (guint32 gchandle, MonoDomain *domain)
@@ -2698,7 +2700,7 @@ mono_gchandle_is_in_domain (guint32 gchandle, MonoDomain *domain)
 
 /**
  * mono_gchandle_free_domain:
- * @unloading: domain that is unloading
+ * \param unloading domain that is unloading
  *
  * Function used internally to cleanup any GC handle for objects belonging
  * to the specified domain during appdomain unload.
@@ -2992,6 +2994,9 @@ sgen_client_describe_invalid_pointer (GCObject *ptr)
 
 static gboolean gc_inited;
 
+/**
+ * mono_gc_base_init:
+ */
 void
 mono_gc_base_init (void)
 {

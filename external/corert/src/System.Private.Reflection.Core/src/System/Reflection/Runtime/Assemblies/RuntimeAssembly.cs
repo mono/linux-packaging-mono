@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Reflection.Runtime.General;
 using System.Reflection.Runtime.Modules;
 using System.Reflection.Runtime.TypeInfos;
@@ -26,7 +27,8 @@ namespace System.Reflection.Runtime.Assemblies
     //
     // The runtime's implementation of an Assembly. 
     //
-    internal abstract partial class RuntimeAssembly : Assembly, IEquatable<RuntimeAssembly>
+    [Serializable]
+    internal abstract partial class RuntimeAssembly : Assembly, IEquatable<RuntimeAssembly>, ISerializable
     {
         public bool Equals(RuntimeAssembly other)
         {
@@ -49,6 +51,14 @@ namespace System.Reflection.Runtime.Assemblies
             }
         }
 
+        public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null)
+                throw new ArgumentNullException(nameof(info));
+
+            UnitySerializationHolder.GetUnitySerializationInfo(info, UnitySerializationHolder.AssemblyUnity, FullName, this);
+        }
+
         public sealed override Module ManifestModule
         {
             get
@@ -64,7 +74,6 @@ namespace System.Reflection.Runtime.Assemblies
                 yield return ManifestModule;
             }
         }
-
 
         public sealed override Type GetType(String name, bool throwOnError, bool ignoreCase)
         {
@@ -144,6 +153,7 @@ namespace System.Reflection.Runtime.Assemblies
         // Types that derive from RuntimeAssembly must implement the following public surface area members
         public abstract override IEnumerable<CustomAttributeData> CustomAttributes { get; }
         public abstract override IEnumerable<TypeInfo> DefinedTypes { get; }
+        public abstract override MethodInfo EntryPoint { get; }
         public abstract override IEnumerable<Type> ExportedTypes { get; }
         public abstract override ManifestResourceInfo GetManifestResourceInfo(String resourceName);
         public abstract override String[] GetManifestResourceNames();
@@ -151,6 +161,11 @@ namespace System.Reflection.Runtime.Assemblies
         public abstract override bool Equals(Object obj);
         public abstract override int GetHashCode();
 
+        /// <summary>
+        /// Ensures a module is loaded and that its module constructor is executed. If the module is fully
+        /// loaded and its constructor already ran, we do not run it again.
+        /// </summary>
+        internal abstract void RunModuleConstructor();
 
         /// <summary>
         /// Perform a lookup for a type based on a name. Overriders are expected to
@@ -199,6 +214,16 @@ namespace System.Reflection.Runtime.Assemblies
         }
 
         public sealed override Module LoadModule(string moduleName, byte[] rawModule, byte[] rawSymbolStore)
+        {
+            throw new PlatformNotSupportedException();
+        }
+
+        public sealed override FileStream GetFile(string name)
+        {
+            throw new PlatformNotSupportedException();
+        }
+
+        public sealed override FileStream[] GetFiles(bool getResourceModules)
         {
             throw new PlatformNotSupportedException();
         }
