@@ -1,1 +1,1 @@
-#define FULL_VERSION "master/ed9fb93"
+#define FULL_VERSION "master/0526617"
