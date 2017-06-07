@@ -1058,6 +1058,7 @@ namespace Mono.Security.Interface
         Mono.Security.Interface.MonoTlsConnectionInfo GetConnectionInfo();
         int Read(byte[] buffer, int offset, int count);
         void SetLength(long value);
+        System.Threading.Tasks.Task ShutdownAsync();
         void Write(byte[] buffer);
         void Write(byte[] buffer, int offset, int count);
     }

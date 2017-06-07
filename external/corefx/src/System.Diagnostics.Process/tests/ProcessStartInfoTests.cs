@@ -196,6 +196,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [ActiveIssue("https://github.com/dotnet/corefx/issues/19909", TargetFrameworkMonikers.UapAot)]
         public void TestEnvironmentOfChildProcess()
         {
             const string ItemSeparator = "CAFF9451396B4EEF8A5155A15BDC2080"; // random string that shouldn't be in any env vars; used instead of newline to separate env var strings
@@ -322,6 +323,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Theory, InlineData(true), InlineData(false)]
+        [ActiveIssue("https://github.com/dotnet/corefx/issues/19909", TargetFrameworkMonikers.UapAot)]
         public void TestCreateNoWindowProperty(bool value)
         {
             Process testProcess = CreateProcessLong();
@@ -342,6 +344,7 @@ namespace System.Diagnostics.Tests
         }
 
         [Fact]
+        [ActiveIssue("https://github.com/dotnet/corefx/issues/19909", TargetFrameworkMonikers.UapAot)]
         public void TestWorkingDirectoryProperty()
         {
             CreateDefaultProcess();
@@ -505,6 +508,13 @@ namespace System.Diagnostics.Tests
         public void Verbs_GetWithExeExtension_ReturnsExpected()
         {
             var psi = new ProcessStartInfo { FileName = $"{Process.GetCurrentProcess().ProcessName}.exe" };
+
+            if (PlatformDetection.IsNetNative)
+            {
+                // UapAot doesn't have RegistryKey apis available so ProcessStartInfo.Verbs returns Array<string>.Empty().
+                Assert.Equal(0, psi.Verbs.Length);
+                return;
+            }
 
             Assert.Contains("open", psi.Verbs, StringComparer.OrdinalIgnoreCase);
             if (PlatformDetection.IsNotWindowsNanoServer)
@@ -944,7 +954,7 @@ namespace System.Diagnostics.Tests
                 FileName = @"http://www.microsoft.com"
             };
 
-            Process.Start(info);
+            Process.Start(info); // Returns null after navigating browser
         }
 
         [ConditionalTheory(nameof(PlatformDetection) + "." + nameof(PlatformDetection.IsNotWindowsNanoServer))] // No Notepad on Nano
@@ -967,6 +977,8 @@ namespace System.Diagnostics.Tests
 
             using (var process = Process.Start(info))
             {
+                Assert.True(process != null, $"Could not start {info.FileName} {info.Arguments} UseShellExecute={info.UseShellExecute}");
+
                 try
                 {
                     process.WaitForInputIdle(); // Give the file a chance to load
@@ -977,7 +989,8 @@ namespace System.Diagnostics.Tests
                 }
                 finally
                 {
-                    process.Kill();
+                    if (process != null && !process.HasExited)
+                        process.Kill();
                 }
             }
         }
@@ -986,6 +999,7 @@ namespace System.Diagnostics.Tests
         [OuterLoop("Launches notepad")]
         [PlatformSpecific(TestPlatforms.Windows)]
         [SkipOnTargetFramework(TargetFrameworkMonikers.Uap, "https://github.com/dotnet/corefx/issues/20204")]
+        [ActiveIssue("https://github.com/dotnet/corefx/issues/20388")]
         public void StartInfo_TextFile_ShellExecute()
         {
             string tempFile = GetTestFilePath() + ".txt";
@@ -1000,6 +1014,8 @@ namespace System.Diagnostics.Tests
 
             using (var process = Process.Start(info))
             {
+                Assert.True(process != null, $"Could not start {info.FileName} UseShellExecute={info.UseShellExecute}");
+
                 try
                 {
                     process.WaitForInputIdle(); // Give the file a chance to load
@@ -1010,7 +1026,8 @@ namespace System.Diagnostics.Tests
                 }
                 finally
                 {
-                    process.Kill();
+                    if (process != null && !process.HasExited)
+                        process.Kill();
                 }
             }
         }
