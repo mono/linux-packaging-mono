@@ -1,5 +1,6 @@
-/*
- * remoting.c: Remoting support
+/**
+ * \file
+ * Remoting support
  * 
  * Copyright 2002-2003 Ximian, Inc (http://www.ximian.com)
  * Copyright 2004-2009 Novell, Inc (http://www.novell.com)
@@ -413,7 +414,7 @@ mono_remoting_wrapper (MonoMethod *method, gpointer *params)
 		goto fail;
 
 	if (exc) {
-		mono_error_init (&error);
+		error_init (&error);
 		mono_error_set_exception_instance (&error, (MonoException *)exc);
 		goto fail;
 	}
@@ -434,6 +435,9 @@ fail:
 } 
 
 
+/**
+ * mono_marshal_get_remoting_invoke:
+ */
 MonoMethod *
 mono_marshal_get_remoting_invoke (MonoMethod *method)
 {
@@ -657,8 +661,8 @@ mono_marshal_get_xappdomain_dispatch (MonoMethod *method, int *marshal_types, in
 	int i, j, param_index, copy_locals_base;
 	MonoClass *ret_class = NULL;
 	int loc_array=0, loc_return=0, loc_serialized_exc=0;
-	MonoExceptionClause *main_clause;
-	int pos, pos_leave;
+	MonoExceptionClause *clauses, *main_clause, *serialization_clause;
+	int pos, pos_leave, pos_leave_serialization;
 	gboolean copy_return;
 	WrapperInfo *info;
 
@@ -700,7 +704,8 @@ mono_marshal_get_xappdomain_dispatch (MonoMethod *method, int *marshal_types, in
 
 	/* try */
 
-	main_clause = (MonoExceptionClause *)mono_image_alloc0 (method->klass->image, sizeof (MonoExceptionClause));
+	clauses = (MonoExceptionClause *)mono_image_alloc0 (method->klass->image, 2 * sizeof (MonoExceptionClause));
+	main_clause = &clauses [0];
 	main_clause->try_offset = mono_mb_get_label (mb);
 
 	/* Clean the call context */
@@ -880,15 +885,48 @@ mono_marshal_get_xappdomain_dispatch (MonoMethod *method, int *marshal_types, in
 	
 	/* handler code */
 	main_clause->handler_offset = mono_mb_get_label (mb);
+
+	/*
+	 * We deserialize the exception in another try-catch so we can catch
+	 * serialization failure exceptions.
+	 */
+	serialization_clause = &clauses [1];
+	serialization_clause->try_offset = mono_mb_get_label (mb);
+
+	mono_mb_emit_managed_call (mb, method_rs_serialize_exc, NULL);
+	mono_mb_emit_stloc (mb, loc_serialized_exc);
+	mono_mb_emit_ldarg (mb, 2);
+	mono_mb_emit_ldloc (mb, loc_serialized_exc);
+	mono_mb_emit_byte (mb, CEE_STIND_REF);
+	pos_leave_serialization = mono_mb_emit_branch (mb, CEE_LEAVE);
+
+	/* Serialization exception catch */
+	serialization_clause->flags = MONO_EXCEPTION_CLAUSE_NONE;
+	serialization_clause->try_len = mono_mb_get_pos (mb) - serialization_clause->try_offset;
+	serialization_clause->data.catch_class = mono_defaults.object_class;
+
+	/* handler code */
+	serialization_clause->handler_offset = mono_mb_get_label (mb);
+
+	/*
+	 * If the serialization of the original exception failed we serialize the newly
+	 * thrown exception, which should always succeed, passing it over to the calling
+	 * domain.
+	 */
 	mono_mb_emit_managed_call (mb, method_rs_serialize_exc, NULL);
 	mono_mb_emit_stloc (mb, loc_serialized_exc);
 	mono_mb_emit_ldarg (mb, 2);
 	mono_mb_emit_ldloc (mb, loc_serialized_exc);
 	mono_mb_emit_byte (mb, CEE_STIND_REF);
 	mono_mb_emit_branch (mb, CEE_LEAVE);
-	main_clause->handler_len = mono_mb_get_pos (mb) - main_clause->handler_offset;
-	/* end catch */
 
+	/* end serialization exception catch */
+	serialization_clause->handler_len = mono_mb_get_pos (mb) - serialization_clause->handler_offset;
+	mono_mb_patch_branch (mb, pos_leave_serialization);
+
+	mono_mb_emit_branch (mb, CEE_LEAVE);
+	/* end main catch */
+	main_clause->handler_len = mono_mb_get_pos (mb) - main_clause->handler_offset;
 	mono_mb_patch_branch (mb, pos_leave);
 	
 	if (copy_return)
@@ -896,7 +934,7 @@ mono_marshal_get_xappdomain_dispatch (MonoMethod *method, int *marshal_types, in
 
 	mono_mb_emit_byte (mb, CEE_RET);
 
-	mono_mb_set_clauses (mb, 1, main_clause);
+	mono_mb_set_clauses (mb, 2, clauses);
 #endif
 
 	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_NONE);
@@ -907,7 +945,8 @@ mono_marshal_get_xappdomain_dispatch (MonoMethod *method, int *marshal_types, in
 	return res;
 }
 
-/* mono_marshal_get_xappdomain_invoke ()
+/**
+ * mono_marshal_get_xappdomain_invoke:
  * Generates a fast remoting wrapper for cross app domain calls.
  */
 MonoMethod *
@@ -1237,6 +1276,9 @@ mono_marshal_get_xappdomain_invoke (MonoMethod *method)
 	return res;
 }
 
+/**
+ * mono_marshal_get_remoting_invoke_for_target:
+ */
 MonoMethod *
 mono_marshal_get_remoting_invoke_for_target (MonoMethod *method, MonoRemotingTarget target_type)
 {
@@ -1269,6 +1311,9 @@ mono_marshal_load_remoting_wrapper (MonoRealProxy *rp, MonoMethod *method)
 	return compiled_ptr;
 }
 
+/**
+ * mono_marshal_get_remoting_invoke_with_check:
+ */
 MonoMethod *
 mono_marshal_get_remoting_invoke_with_check (MonoMethod *method)
 {
@@ -1330,13 +1375,14 @@ mono_marshal_get_remoting_invoke_with_check (MonoMethod *method)
 	return res;
 }
 
-/*
+/**
  * mono_marshal_get_ldfld_wrapper:
- * @type: the type of the field
+ * \param type the type of the field
  *
  * This method generates a function which can be use to load a field with type
- * @type from an object. The generated function has the following signature:
- * <@type> ldfld_wrapper (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, int offset)
+ * \p type from an object. The generated function has the following signature:
+ *
+ * <code><i>type</i> ldfld_wrapper (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, int offset)</code>
  */
 MonoMethod *
 mono_marshal_get_ldfld_wrapper (MonoType *type)
@@ -1624,13 +1670,14 @@ mono_marshal_get_ldflda_wrapper (MonoType *type)
 }
 
 
-/*
+/**
  * mono_marshal_get_stfld_wrapper:
- * @type: the type of the field
+ * \param type the type of the field
  *
  * This method generates a function which can be use to store a field with type
- * @type. The generated function has the following signature:
- * void stfld_wrapper (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, int offset, <@type> val)
+ * \p type. The generated function has the following signature:
+ *
+ * <code>void stfld_wrapper (MonoObject *this_obj, MonoClass *klass, MonoClassField *field, int offset, <i>type</i> val)</code>
  */
 MonoMethod *
 mono_marshal_get_stfld_wrapper (MonoType *type)
@@ -1770,6 +1817,9 @@ mono_marshal_get_stfld_wrapper (MonoType *type)
 	return res;
 }
 
+/**
+ * mono_marshal_get_proxy_cancast:
+ */
 MonoMethod *
 mono_marshal_get_proxy_cancast (MonoClass *klass)
 {
@@ -1917,7 +1967,7 @@ static gboolean
 xdomain_copy_array_element_inplace (MonoArrayHandle arr, int i, MonoError *error)
 {
 	HANDLE_FUNCTION_ENTER ();
-	mono_error_init (error);
+	error_init (error);
 	MonoObjectHandle item = MONO_HANDLE_NEW (MonoObject, NULL);
 	MONO_HANDLE_ARRAY_GETREF (item, arr, i);
 	
@@ -1931,16 +1981,15 @@ leave:
 
 /**
  * mono_marshal_xdomain_copy_value_handle:
- * @val: The value to copy.
- * @error: set on failure.
- *
- * Makes a copy of @val suitable for the current domain.
- * On failure returns NULL and sets @error.
+ * \param val The value to copy.
+ * \param error set on failure.
+ * Makes a copy of \p val suitable for the current domain.
+ * On failure returns NULL and sets \p error.
  */
 MonoObjectHandle
 mono_marshal_xdomain_copy_value_handle (MonoObjectHandle val, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	MonoObjectHandle result = MONO_HANDLE_NEW (MonoObject, NULL);
 	if (MONO_HANDLE_IS_NULL (val))
 		goto leave;

@@ -1,5 +1,6 @@
-/*
- * cominterop.c: COM Interop Support
+/**
+ * \file
+ * COM Interop Support
  * 
  *
  * (C) 2002 Ximian, Inc.  http://www.ximian.com
@@ -517,7 +518,7 @@ cominterop_get_interface_checked (MonoComObject* obj, MonoClass* ic, MonoError *
 	g_assert (ic);
 	g_assert (MONO_CLASS_IS_INTERFACE (ic));
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_cominterop_lock ();
 	if (obj->itf_hash)
@@ -932,9 +933,8 @@ cominterop_get_native_wrapper_adjusted (MonoMethod *method)
 
 /**
  * mono_cominterop_get_native_wrapper:
- * @method: managed method
- *
- * Returns: the generated method to call
+ * \param method managed method
+ * \returns the generated method to call
  */
 MonoMethod *
 mono_cominterop_get_native_wrapper (MonoMethod *method)
@@ -1047,9 +1047,8 @@ mono_cominterop_get_native_wrapper (MonoMethod *method)
 
 /**
  * mono_cominterop_get_invoke:
- * @method: managed method
- *
- * Returns: the generated method that calls the underlying __ComObject
+ * \param method managed method
+ * \returns the generated method that calls the underlying \c __ComObject
  * rather than the proxy object.
  */
 MonoMethod *
@@ -1091,7 +1090,7 @@ mono_cominterop_get_invoke (MonoMethod *method)
 	for (i = 1; i <= sig->param_count; i++)
 		mono_mb_emit_ldarg (mb, i);
 
-	if (method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) {
+	if ((method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) || mono_class_is_interface (method->klass)) {
 		MonoMethod * native_wrapper = mono_cominterop_get_native_wrapper(method);
 		mono_mb_emit_managed_call (mb, native_wrapper, NULL);
 	}
@@ -1524,7 +1523,7 @@ static gboolean cominterop_can_support_dispatch (MonoClass* klass)
 static void*
 cominterop_get_idispatch_for_object (MonoObject* object, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	if (!object)
 		return NULL;
 
@@ -1944,7 +1943,7 @@ cominterop_get_ccw_checked (MonoObject* object, MonoClass* itf, MonoError *error
 	GList *ccw_list, *ccw_list_item;
 	MonoCustomAttrInfo *cinfo = NULL;
 
-	mono_error_init (error);
+	error_init (error);
 	
 	if (!object)
 		return NULL;
@@ -2181,9 +2180,8 @@ mono_marshal_free_ccw_entry (gpointer key, gpointer value, gpointer user_data)
 
 /**
  * mono_marshal_free_ccw:
- * @object: the mono object
- *
- * Returns: whether the object had a CCW
+ * \param object the mono object
+ * \returns whether the object had a CCW
  */
 gboolean
 mono_marshal_free_ccw (MonoObject* object)
@@ -2448,7 +2446,7 @@ static const IID MONO_IID_IMarshal = {0x3, 0x0, 0x0, {0xC0, 0x0, 0x0, 0x0, 0x0, 
 static int
 cominterop_ccw_getfreethreadedmarshaler (MonoCCW* ccw, MonoObject* object, gpointer* ppv, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 #ifdef HOST_WIN32
 	if (!ccw->free_marshaler) {
 		int ret = 0;
@@ -2819,7 +2817,7 @@ mono_string_from_bstr_checked (gpointer bstr, MonoError *error)
 {
 	MonoString * res = NULL;
 	
-	mono_error_init (error);
+	error_init (error);
 
 	if (!bstr)
 		return NULL;
@@ -3588,7 +3586,7 @@ MonoString *
 mono_string_from_bstr_checked (gpointer bstr, MonoError *error)
 {
 	MonoString *res = NULL;
-	mono_error_init (error);
+	error_init (error);
 	if (!bstr)
 		return NULL;
 #ifdef HOST_WIN32

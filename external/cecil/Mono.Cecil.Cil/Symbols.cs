@@ -15,19 +15,77 @@ using System.Runtime.InteropServices;
 using SR = System.Reflection;
 
 using Mono.Collections.Generic;
+using Mono.Cecil.Cil;
 
 namespace Mono.Cecil.Cil {
 
 	[StructLayout (LayoutKind.Sequential)]
 	public struct ImageDebugDirectory {
+		public const int Size = 28;
+
 		public int Characteristics;
 		public int TimeDateStamp;
 		public short MajorVersion;
 		public short MinorVersion;
-		public int Type;
+		public ImageDebugType Type;
 		public int SizeOfData;
 		public int AddressOfRawData;
 		public int PointerToRawData;
+	}
+
+	public enum ImageDebugType {
+		CodeView = 2,
+		Deterministic = 16,
+		EmbeddedPortablePdb = 17,
+	}
+
+	public sealed class ImageDebugHeader {
+
+		readonly ImageDebugHeaderEntry [] entries;
+
+		public bool HasEntries {
+			get { return !entries.IsNullOrEmpty (); }
+		}
+
+		public ImageDebugHeaderEntry [] Entries {
+			get { return entries; }
+		}
+
+		public ImageDebugHeader (ImageDebugHeaderEntry [] entries)
+		{
+			this.entries = entries ?? Empty<ImageDebugHeaderEntry>.Array;
+		}
+
+		public ImageDebugHeader ()
+			: this (Empty<ImageDebugHeaderEntry>.Array)
+		{
+		}
+
+		public ImageDebugHeader (ImageDebugHeaderEntry entry)
+			: this (new [] { entry })
+		{
+		}
+	}
+
+	public sealed class ImageDebugHeaderEntry {
+
+		ImageDebugDirectory directory;
+		readonly byte [] data;
+
+		public ImageDebugDirectory Directory {
+			get { return directory; }
+			internal set { directory = value; }
+		}
+
+		public byte [] Data {
+			get { return data; }
+		}
+
+		public ImageDebugHeaderEntry (ImageDebugDirectory directory, byte [] data)
+		{
+			this.directory = directory;
+			this.data = data ?? Empty<byte>.Array;
+		}
 	}
 
 	public sealed class ScopeDebugInformation : DebugInformation {
@@ -364,7 +422,7 @@ namespace Mono.Cecil.Cil {
 		}
 	}
 
-	interface ICustomDebugInformationProvider : IMetadataTokenProvider {
+	public interface ICustomDebugInformationProvider : IMetadataTokenProvider {
 		bool HasCustomDebugInformations { get; }
 		Collection<CustomDebugInformation> CustomDebugInformations { get; }
 	}
@@ -381,8 +439,10 @@ namespace Mono.Cecil.Cil {
 
 		Guid identifier;
 
-		public Guid Identifier { get { return identifier; } }
-		
+		public Guid Identifier {
+			get { return identifier; }
+		}
+
 		public abstract CustomDebugInformationKind Kind { get; }
 
 		internal CustomDebugInformation (Guid identifier)
@@ -454,6 +514,12 @@ namespace Mono.Cecil.Cil {
 		{
 			this.catch_handler = new InstructionOffset (catchHandler);
 		}
+
+		public AsyncMethodBodyDebugInformation ()
+			: base (KindIdentifier)
+		{
+			this.catch_handler = new InstructionOffset (-1);
+		}
 	}
 
 	public sealed class StateMachineScopeDebugInformation : CustomDebugInformation {
@@ -488,7 +554,7 @@ namespace Mono.Cecil.Cil {
 			: base (KindIdentifier)
 		{
 			this.start = new InstructionOffset (start);
-			this.end = new InstructionOffset (end);
+			this.end = end != null ? new InstructionOffset (end) : new InstructionOffset ();
 		}
 	}
 
@@ -617,19 +683,18 @@ namespace Mono.Cecil.Cil {
 	}
 
 	public interface ISymbolReader : IDisposable {
-
-		bool ProcessDebugHeader (ImageDebugDirectory directory, byte [] header);
+#if !READ_ONLY
+		ISymbolWriterProvider GetWriterProvider ();
+#endif
+		bool ProcessDebugHeader (ImageDebugHeader header);
 		MethodDebugInformation Read (MethodDefinition method);
 	}
 
 	public interface ISymbolReaderProvider {
-#if !PCL
 		ISymbolReader GetSymbolReader (ModuleDefinition module, string fileName);
-#endif
 		ISymbolReader GetSymbolReader (ModuleDefinition module, Stream symbolStream);
 	}
 
-#if !PCL
 	public class DefaultSymbolReaderProvider : ISymbolReaderProvider {
 
 		readonly bool throw_if_no_symbol;
@@ -648,6 +713,13 @@ namespace Mono.Cecil.Cil {
 		{
 			if (module.Image.HasDebugTables ())
 				return null;
+
+			if (module.HasDebugHeader) {
+				var header = module.GetDebugHeader ();
+				var entry = header.GetEmbeddedPortablePdbEntry ();
+				if (entry != null)
+					return new EmbeddedPortablePdbReaderProvider ().GetSymbolReader (module, fileName);
+			}
 
 			var pdb_file_name = Mixin.GetPdbFileName (fileName);
 
@@ -671,12 +743,11 @@ namespace Mono.Cecil.Cil {
 			throw new NotSupportedException ();
 		}
 	}
-#endif
 
-#if !PCL
 	enum SymbolKind {
 		NativePdb,
 		PortablePdb,
+		EmbeddedPortablePdb,
 		Mdb,
 	}
 
@@ -689,7 +760,7 @@ namespace Mono.Cecil.Cil {
 
 			var suffix = GetSymbolNamespace (kind);
 
-			var cecil_name = typeof (SymbolProvider).GetAssembly ().GetName ();
+			var cecil_name = typeof (SymbolProvider).Assembly ().GetName ();
 
 			var name = new SR.AssemblyName {
 				Name = cecil_name.Name + "." + suffix,
@@ -728,11 +799,13 @@ namespace Mono.Cecil.Cil {
 		{
 			if (kind == SymbolKind.PortablePdb)
 				return new PortablePdbReaderProvider ();
+			if (kind == SymbolKind.EmbeddedPortablePdb)
+				return new EmbeddedPortablePdbReaderProvider ();
 
-			var providerName = GetSymbolTypeName (kind, "ReaderProvider");
-			var type = GetSymbolType (kind, providerName);
+			var provider_name = GetSymbolTypeName (kind, "ReaderProvider");
+			var type = GetSymbolType (kind, provider_name);
 			if (type == null)
-				throw new TypeLoadException ("Could not find symbol provider type " + providerName);
+				throw new TypeLoadException ("Could not find symbol provider type " + provider_name);
 
 			return (ISymbolReaderProvider) Activator.CreateInstance (type);
 		}
@@ -744,7 +817,7 @@ namespace Mono.Cecil.Cil {
 
 		static string GetSymbolNamespace (SymbolKind kind)
 		{
-			if (kind == SymbolKind.PortablePdb)
+			if (kind == SymbolKind.PortablePdb || kind == SymbolKind.EmbeddedPortablePdb)
 				return "Cil";
 			if (kind == SymbolKind.NativePdb)
 				return "Pdb";
@@ -753,54 +826,23 @@ namespace Mono.Cecil.Cil {
 
 			throw new ArgumentException ();
 		}
-
-#if !READ_ONLY
-
-		public static ISymbolWriterProvider GetWriterProvider (SymbolKind kind)
-		{
-			if (kind == SymbolKind.PortablePdb)
-				return new PortablePdbWriterProvider ();
-
-			var type = GetSymbolType (kind, GetSymbolTypeName (kind, "WriterProvider"));
-			if (type == null)
-				return null;
-
-			return (ISymbolWriterProvider) Activator.CreateInstance (type);
-		}
-
-		public static SymbolKind GetSymbolKind (Type type)
-		{
-			if (type.Name.Contains (SymbolKind.PortablePdb.ToString ()))
-				return SymbolKind.PortablePdb;
-			if (type.Name.Contains (SymbolKind.NativePdb.ToString ()))
-				return SymbolKind.NativePdb;
-			if (type.Name.Contains (SymbolKind.Mdb.ToString ()))
-				return SymbolKind.Mdb;
-
-			throw new ArgumentException ();
-		}
-
-#endif
 	}
-#endif
 
 #if !READ_ONLY
 
 	public interface ISymbolWriter : IDisposable {
 
-		bool GetDebugHeader (out ImageDebugDirectory directory, out byte [] header);
+		ISymbolReaderProvider GetReaderProvider ();
+		ImageDebugHeader GetDebugHeader ();
 		void Write (MethodDebugInformation info);
 	}
 
 	public interface ISymbolWriterProvider {
 
-#if !PCL
 		ISymbolWriter GetSymbolWriter (ModuleDefinition module, string fileName);
-#endif
 		ISymbolWriter GetSymbolWriter (ModuleDefinition module, Stream symbolStream);
 	}
 
-#if !PCL
 	public class DefaultSymbolWriterProvider : ISymbolWriterProvider {
 
 		public ISymbolWriter GetSymbolWriter (ModuleDefinition module, string fileName)
@@ -812,8 +854,7 @@ namespace Mono.Cecil.Cil {
 			if (module.Image != null && module.Image.HasDebugTables ())
 				return null;
 
-			var reader_kind = SymbolProvider.GetSymbolKind (reader.GetType ());
-			return SymbolProvider.GetWriterProvider (reader_kind).GetSymbolWriter (module, fileName);
+			return reader.GetWriterProvider ().GetSymbolWriter (module, fileName);
 		}
 
 		public ISymbolWriter GetSymbolWriter (ModuleDefinition module, Stream symbolStream)
@@ -821,16 +862,54 @@ namespace Mono.Cecil.Cil {
 			throw new NotSupportedException ();
 		}
 	}
-#endif
 
 #endif
 }
 
-#if !PCL
-
 namespace Mono.Cecil {
 
 	static partial class Mixin {
+
+		public static ImageDebugHeaderEntry GetCodeViewEntry (this ImageDebugHeader header)
+		{
+			return GetEntry (header, ImageDebugType.CodeView);
+		}
+
+		public static ImageDebugHeaderEntry GetDeterministicEntry (this ImageDebugHeader header)
+		{
+			return GetEntry (header, ImageDebugType.Deterministic);
+		}
+
+		public static ImageDebugHeader AddDeterministicEntry (this ImageDebugHeader header)
+		{
+			var entry = new ImageDebugHeaderEntry (new ImageDebugDirectory { Type = ImageDebugType.Deterministic }, Empty<byte>.Array);
+			if (header == null)
+				return new ImageDebugHeader (entry);
+
+			var entries = new ImageDebugHeaderEntry [header.Entries.Length + 1];
+			Array.Copy (header.Entries, entries, header.Entries.Length);
+			entries [entries.Length - 1] = entry;
+			return new ImageDebugHeader (entries);
+		}
+
+		public static ImageDebugHeaderEntry GetEmbeddedPortablePdbEntry (this ImageDebugHeader header)
+		{
+			return GetEntry (header, ImageDebugType.EmbeddedPortablePdb);
+		}
+
+		private static ImageDebugHeaderEntry GetEntry (this ImageDebugHeader header, ImageDebugType type)
+		{
+			if (!header.HasEntries)
+				return null;
+
+			for (var i = 0; i < header.Entries.Length; i++) {
+				var entry = header.Entries [i];
+				if (entry.Directory.Type == type)
+					return entry;
+			}
+
+			return null;
+		}
 
 		public static string GetPdbFileName (string assemblyFileName)
 		{
@@ -852,6 +931,7 @@ namespace Mono.Cecil {
 		{
 			const uint ppdb_signature = 0x424a5342;
 
+			if (stream.Length < 4) return false;
 			var position = stream.Position;
 			try {
 				var reader = new BinaryReader (stream);
@@ -860,8 +940,5 @@ namespace Mono.Cecil {
 				stream.Position = position;
 			}
 		}
-
 	}
 }
-
-#endif

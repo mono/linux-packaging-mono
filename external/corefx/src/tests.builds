@@ -2,20 +2,26 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" />
 
-  <Import Project="$(ToolsDir)ConstructSharedFx.targets" Condition="Exists('$(ToolsDir)ConstructSharedFx.targets')" />
-
   <PropertyGroup>
     <GenerateCodeCoverageReportForAll>true</GenerateCodeCoverageReportForAll>
+  </PropertyGroup>
+
+  <!-- For UAP we are using an APPX that is registered with a unique ID. Because of that we need to run tests sequentially -->
+  <PropertyGroup Condition="'$(BuildingUAPVertical)'=='true' and '$(SkipTests)' != 'true' " >
+    <SerializeProjects>true</SerializeProjects>
   </PropertyGroup>
 
   <Import Project="$(ToolsDir)CodeCoverage.targets" Condition="Exists('$(ToolsDir)CodeCoverage.targets')" />
   <Import Project="$(ToolsDir)PerfTesting.targets" Condition="Exists('$(ToolsDir)PerfTesting.targets') and '$(Performance)' == 'true'"/>
   <Import Project="$(ToolsDir)VersionTools.targets" Condition="Exists('$(ToolsDir)VersionTools.targets')" />
 
+  <PropertyGroup>
+    <_ProjectPattern Condition="'$(Performance)'!='true'">.Tests</_ProjectPattern>
+    <_ProjectPattern Condition="'$(Performance)'=='true'">.Performance.Tests</_ProjectPattern>
+  </PropertyGroup>
+  
   <ItemGroup>
-    <Project Include="$(MSBuildThisFileDirectory)*\tests\**\*.Tests.csproj" Exclude="@(TestProjectExclusions)">
-      <AdditionalMetadata>ConfigurationGroup=$(ConfigurationGroup)</AdditionalMetadata>
-    </Project>
+    <Project Include="$(MSBuildThisFileDirectory)*\tests\**\*$(_ProjectPattern).csproj" Exclude="@(TestProjectExclusions)" />
   </ItemGroup>
 
   <Import Project="$(ToolsDir)Build.Post.targets" Condition="Exists('$(ToolsDir)Build.Post.targets')" />

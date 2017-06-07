@@ -20,8 +20,8 @@ else
 install-local: install-extras
 endif
 
-PORTABLE_TARGETS_SRC=../../../external/buildtools/src/Portable/Targets
-PCL5_FX_SRC=../../../external/buildtools/src/Portable/Frameworks/v5.0
+PORTABLE_TARGETS_SRC:=data/Portable/Targets
+PCL5_FX_SRC:=data/Portable/Frameworks/v5.0
 
 NETFRAMEWORK_DIR=$(mono_libdir)/mono/xbuild-frameworks/.NETFramework
 PCL5_FX_DIR=$(mono_libdir)/mono/xbuild-frameworks/.NETPortable/v5.0
@@ -79,6 +79,8 @@ install-frameworks:
 	$(INSTALL_DATA) frameworks/net_4.6.1.xml $(DESTDIR)$(NETFRAMEWORK_DIR)/v4.6.1/RedistList/FrameworkList.xml
 	$(MKINSTALLDIRS) $(DESTDIR)$(NETFRAMEWORK_DIR)/v4.6.2/RedistList
 	$(INSTALL_DATA) frameworks/net_4.6.2.xml $(DESTDIR)$(NETFRAMEWORK_DIR)/v4.6.2/RedistList/FrameworkList.xml
+	$(MKINSTALLDIRS) $(DESTDIR)$(NETFRAMEWORK_DIR)/v4.7/RedistList
+	$(INSTALL_DATA) frameworks/net_4.7.xml $(DESTDIR)$(NETFRAMEWORK_DIR)/v4.7/RedistList/FrameworkList.xml
 
 install-pcl-targets:
 	$(MKINSTALLDIRS) $(DESTDIR)$(PORTABLE_TARGETS_DIR)
@@ -148,6 +150,24 @@ EXTRA_DISTFILES = \
 	data/Microsoft.VisualBasic.targets \
 	data/MSBuild/Microsoft.Build.CommonTypes.xsd \
 	data/MSBuild/Microsoft.Build.Core.xsd \
+	data/Portable/Targets/Microsoft.Portable.Core.props \
+	data/Portable/Targets/Microsoft.Portable.Core.targets \
+	data/Portable/Targets/v4.0/Microsoft.Portable.Common.targets \
+	data/Portable/Targets/v4.0/Microsoft.Portable.CSharp.targets \
+	data/Portable/Targets/v4.0/Microsoft.Portable.VisualBasic.targets \
+	data/Portable/Targets/v4.5/Microsoft.Portable.Common.targets \
+	data/Portable/Targets/v4.5/Microsoft.Portable.CSharp.targets \
+	data/Portable/Targets/v4.5/Microsoft.Portable.VisualBasic.targets \
+	data/Portable/Targets/v4.6/Microsoft.Portable.Common.targets \
+	data/Portable/Targets/v4.6/Microsoft.Portable.CSharp.targets \
+	data/Portable/Targets/v4.6/Microsoft.Portable.VisualBasic.targets \
+	data/Portable/Targets/v5.0/Microsoft.Portable.Common.targets \
+	data/Portable/Targets/v5.0/Microsoft.Portable.CSharp.targets \
+	data/Portable/Targets/v5.0/Microsoft.Portable.VisualBasic.targets \
+	"data/Portable/Frameworks/v5.0/.NET Framework 4.6.xml" \
+	"data/Portable/Frameworks/v5.0/ASP.NET Core 1.0.xml" \
+	"data/Portable/Frameworks/v5.0/FrameworkList.xml" \
+	"data/Portable/Frameworks/v5.0/Windows Universal 10.0.xml" \
 	frameworks/net_2.0.xml \
 	frameworks/net_3.0.xml \
 	frameworks/net_3.5.xml \
@@ -159,6 +179,7 @@ EXTRA_DISTFILES = \
 	frameworks/net_4.6.xml \
 	frameworks/net_4.6.1.xml \
 	frameworks/net_4.6.2.xml \
+	frameworks/net_4.7.xml \
 	targets/Microsoft.WebApplication.targets	\
 	$(NUGET_BUILDTASKS_REPO_DIR)/src/Microsoft.NuGet.Build.Tasks/ImportBeforeAfter/Microsoft.NuGet.ImportBefore.props	\
 	$(NUGET_BUILDTASKS_REPO_DIR)/src/Microsoft.NuGet.Build.Tasks/ImportBeforeAfter/Microsoft.NuGet.ImportAfter.targets	\

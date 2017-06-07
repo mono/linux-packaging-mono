@@ -1,3 +1,6 @@
+/**
+ * \file
+ */
 
 #if defined(HAVE_EPOLL)
 
@@ -93,7 +96,6 @@ epoll_event_wait (void (*callback) (gint fd, gint events, gpointer user_data), g
 	if (ready == -1) {
 		switch (errno) {
 		case EINTR:
-			mono_thread_internal_check_for_interruption_critical (mono_thread_internal_current ());
 			ready = 0;
 			break;
 		default:

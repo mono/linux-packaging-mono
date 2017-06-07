@@ -49,11 +49,6 @@ corefx/SR.missing.cs
 ../referencesource/System.Core/System/TimeZoneInfo.cs
 ../referencesource/System.Core/System/TimeZoneNotFoundException.cs
 
-../referencesource/System.Core/System/Collections/Generic/BitHelper.cs
-../referencesource/System.Core/System/Collections/Generic/HashSet.cs
-../referencesource/System.Core/System/Collections/Generic/HashSetDebugView.cs
-../referencesource/System.Core/System/Collections/Generic/HashSetEqualityComparer.cs
-
 ../referencesource/System.Core/System/IO/Enums.cs
 
 ../referencesource/System.Core/System/IO/MemoryMappedFiles/Enums.cs
@@ -93,6 +88,12 @@ System.Security.Cryptography/SHA256CryptoServiceProvider.cs
 System.Security.Cryptography/SHA384CryptoServiceProvider.cs
 System.Security.Cryptography/SHA512CryptoServiceProvider.cs
 
+../referencesource/System.Core/System/Security/Cryptography/X509Certificates/TrustStatus.cs
+
+../../../external/corefx/src/System.Collections/src/System/Collections/Generic/BitHelper.cs
+../../../external/corefx/src/System.Collections/src/System/Collections/Generic/HashSet.cs
+../../../external/corefx/src/System.Collections/src/System/Collections/Generic/HashSetEqualityComparer.cs
+../../../external/corefx/src/System.Collections/src/System/Collections/Generic/ICollectionDebugView.cs
 
 ../../../external/corefx/src/System.Linq/src/System/Linq/*.cs
 
@@ -123,7 +124,6 @@ System.Security.Cryptography/SHA512CryptoServiceProvider.cs
 ../../../external/corefx/src/System.Linq.Expressions/src/System/Runtime/CompilerServices/IRuntimeVariables.cs
 ../../../external/corefx/src/System.Linq.Expressions/src/System/Runtime/CompilerServices/ReadOnlyCollectionBuilder.cs
 ../../../external/corefx/src/System.Linq.Expressions/src/System/Runtime/CompilerServices/RuleCache.cs
-../../../external/corefx/src/System.Linq.Expressions/src/System/Runtime/CompilerServices/RuntimeOps.ExpressionQuoter.cs
 ../../../external/corefx/src/System.Linq.Expressions/src/System/Runtime/CompilerServices/RuntimeOps.RuntimeVariableList.cs
 ../../../external/corefx/src/System.Linq.Expressions/src/System/Runtime/CompilerServices/RuntimeOps.MergedRuntimeVariables.cs
 ../../../external/corefx/src/System.Linq.Expressions/src/System/Runtime/CompilerServices/RuntimeOps.RuntimeVariables.cs

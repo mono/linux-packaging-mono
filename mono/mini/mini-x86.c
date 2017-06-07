@@ -1,5 +1,6 @@
-/*
- * mini-x86.c: x86 backend for the Mono code generator
+/**
+ * \file
+ * x86 backend for the Mono code generator
  *
  * Authors:
  *   Paolo Molaro (lupus@ximian.com)
@@ -356,11 +357,7 @@ get_call_info_internal (CallInfo *cinfo, MonoMethodSignature *sig)
 		case MONO_TYPE_U:
 		case MONO_TYPE_PTR:
 		case MONO_TYPE_FNPTR:
-		case MONO_TYPE_CLASS:
 		case MONO_TYPE_OBJECT:
-		case MONO_TYPE_SZARRAY:
-		case MONO_TYPE_ARRAY:
-		case MONO_TYPE_STRING:
 			cinfo->ret.storage = ArgInIReg;
 			cinfo->ret.reg = X86_EAX;
 			break;
@@ -485,11 +482,7 @@ get_call_info_internal (CallInfo *cinfo, MonoMethodSignature *sig)
 		case MONO_TYPE_U:
 		case MONO_TYPE_PTR:
 		case MONO_TYPE_FNPTR:
-		case MONO_TYPE_CLASS:
 		case MONO_TYPE_OBJECT:
-		case MONO_TYPE_STRING:
-		case MONO_TYPE_SZARRAY:
-		case MONO_TYPE_ARRAY:
 			add_general (&gr, param_regs, &stack_size, ainfo);
 			break;
 		case MONO_TYPE_GENERICINST:
@@ -1073,8 +1066,11 @@ mono_arch_allocate_vars (MonoCompile *cfg)
 	 * have locals larger than 8 bytes we need to make sure that
 	 * they have the appropriate offset.
 	 */
-	if (MONO_ARCH_FRAME_ALIGNMENT > 8 && locals_stack_align > 8)
-		offset += MONO_ARCH_FRAME_ALIGNMENT - sizeof (gpointer) * 2;
+	if (MONO_ARCH_FRAME_ALIGNMENT > 8 && locals_stack_align > 8) {
+		int extra_size = MONO_ARCH_FRAME_ALIGNMENT - sizeof (gpointer) * 2;
+		offset += extra_size;
+		locals_stack_size += extra_size;
+	}
 	for (i = cfg->locals_start; i < cfg->num_varinfo; i++) {
 		if (offsets [i] != -1) {
 			MonoInst *inst = cfg->varinfo [i];
@@ -1180,9 +1176,6 @@ mono_arch_create_vars (MonoCompile *cfg)
 	if (cfg->method->save_lmf) {
 		cfg->create_lmf_var = TRUE;
 		cfg->lmf_ir = TRUE;
-#if !defined(HOST_WIN32) && !defined(TARGET_ANDROID)
-		cfg->lmf_ir_mono_lmf = TRUE;
-#endif
 	}
 
 	cfg->arch_eh_jit_info = 1;
@@ -2001,6 +1994,12 @@ mono_arch_peephole_pass_2 (MonoCompile *cfg, MonoBasicBlock *bb)
 	}
 }
 
+#define NEW_INS(cfg,ins,dest,op) do {	\
+		MONO_INST_NEW ((cfg), (dest), (op)); \
+		(dest)->cil_code = (ins)->cil_code;				 \
+		mono_bblock_insert_before_ins (bb, ins, (dest)); \
+	} while (0)
+
 /*
  * mono_arch_lowering_pass:
  *
@@ -2031,6 +2030,31 @@ mono_arch_lowering_pass (MonoCompile *cfg, MonoBasicBlock *bb)
 				break;
 			mono_decompose_op_imm (cfg, bb, ins);
 			break;
+#ifdef MONO_ARCH_SIMD_INTRINSICS
+		case OP_EXPAND_I1: {
+			MonoInst *temp;
+			int temp_reg1 = mono_alloc_ireg (cfg);
+			int temp_reg2 = mono_alloc_ireg (cfg);
+			int original_reg = ins->sreg1;
+
+			NEW_INS (cfg, ins, temp, OP_ICONV_TO_U1);
+			temp->sreg1 = original_reg;
+			temp->dreg = temp_reg1;
+
+			NEW_INS (cfg, ins, temp, OP_SHL_IMM);
+			temp->sreg1 = temp_reg1;
+			temp->dreg = temp_reg2;
+			temp->inst_imm = 8;
+
+			NEW_INS (cfg, ins, temp, OP_IOR);
+			temp->sreg1 = temp->dreg = temp_reg2;
+			temp->sreg2 = temp_reg1;
+
+			ins->opcode = OP_EXPAND_I2;
+			ins->sreg1 = temp_reg2;
+		}
+			break;
+#endif
 		default:
 			break;
 		}
@@ -4829,14 +4853,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			}			
 			break;
 
-		case OP_EXPAND_I1:
-			/*FIXME this causes a partial register stall, maybe it would not be that bad to use shift + mask + or*/
-			/*The +4 is to get a mov ?h, ?l over the same reg.*/
-			x86_mov_reg_reg (code, ins->dreg + 4, ins->dreg, 1);
-			x86_sse_alu_pd_reg_reg_imm (code, X86_SSE_PINSRW, ins->dreg, ins->sreg1, 0);
-			x86_sse_alu_pd_reg_reg_imm (code, X86_SSE_PINSRW, ins->dreg, ins->sreg1, 1);
-			x86_sse_shift_reg_imm (code, X86_SSE_PSHUFD, ins->dreg, ins->dreg, 0);
-			break;
 		case OP_EXPAND_I2:
 			x86_sse_alu_pd_reg_reg_imm (code, X86_SSE_PINSRW, ins->dreg, ins->sreg1, 0);
 			x86_sse_alu_pd_reg_reg_imm (code, X86_SSE_PINSRW, ins->dreg, ins->sreg1, 1);
@@ -5790,12 +5806,10 @@ mono_arch_get_patch_offset (guint8 *code)
 }
 
 /**
- * mono_breakpoint_clean_code:
+ * \return TRUE if no sw breakpoint was present.
  *
- * Copy @size bytes from @code - @offset to the buffer @buf. If the debugger inserted software
+ * Copy \p size bytes from \p code - \p offset to the buffer \p buf. If the debugger inserted software
  * breakpoints in the original code, they are removed in the copy.
- *
- * Returns TRUE if no sw breakpoint was present.
  */
 gboolean
 mono_breakpoint_clean_code (guint8 *method_start, guint8 *code, int offset, guint8 *buf, int size)

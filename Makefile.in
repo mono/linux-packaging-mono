@@ -948,9 +948,6 @@ dist-hook:
 	rm -rf `find $(top_distdir)/external -path '*\.git'`
 	rm -f `find $(top_distdir)/external -path '*\.exe' -not -path '*/roslyn-binaries/*'`
 	rm -f `find $(top_distdir)/external -path '*\.dll' -not -path '*/binary-reference-assemblies/*' -not -path '*/roslyn-binaries/*'`
-
-mac-sdk-package:
-	external/bockbuild/bb MacSDK --package
 .PHONY: get-monolite-latest 
 get-monolite-latest:
 	-rm -fr $(mcslib)/monolite/$(MONO_CORLIB_VERSION)

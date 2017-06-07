@@ -160,12 +160,12 @@ namespace Mono.Cecil.Cil {
 		void ReadScope (ScopeDebugInformation scope)
 		{
 			var start_instruction = GetInstruction (scope.Start.Offset);
-			if (start_instruction != null)
-				scope.Start = new InstructionOffset (start_instruction);
+			scope.Start = new InstructionOffset (start_instruction);
 
 			var end_instruction = GetInstruction (scope.End.Offset);
-			if (end_instruction != null)
-				scope.End = new InstructionOffset (end_instruction);
+			scope.End = end_instruction != null
+				? new InstructionOffset (end_instruction)
+				: new InstructionOffset ();
 
 			if (!scope.variables.IsNullOrEmpty ()) {
 				for (int i = 0; i < scope.variables.Count; i++) {
@@ -318,9 +318,7 @@ namespace Mono.Cecil.Cil {
 				switch (instruction.opcode.OperandType) {
 				case OperandType.ShortInlineBrTarget:
 				case OperandType.InlineBrTarget:
-					var targetInstruction = GetInstruction ((int) instruction.operand);
-					if (targetInstruction != null)
-						instruction.operand = targetInstruction;
+					instruction.operand = GetInstruction ((int) instruction.operand);
 					break;
 				case OperandType.InlineSwitch:
 					var offsets = (int []) instruction.operand;
@@ -436,13 +434,6 @@ namespace Mono.Cecil.Cil {
 				Advance (4);
 				break;
 			}
-		}
-
-		void Align (int align)
-		{
-			align--;
-			var position = Position;
-			Advance (((position + align) & ~align) - position);
 		}
 
 		public MetadataToken ReadToken ()

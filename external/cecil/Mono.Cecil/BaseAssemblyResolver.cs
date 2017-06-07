@@ -8,8 +8,6 @@
 // Licensed under the MIT/X11 license.
 //
 
-#if !PCL && !NET_CORE
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +33,9 @@ namespace Mono.Cecil {
 		}
 	}
 
+#if !NET_CORE
 	[Serializable]
+#endif
 	public sealed class AssemblyResolutionException : FileNotFoundException {
 
 		readonly AssemblyNameReference reference;
@@ -45,19 +45,27 @@ namespace Mono.Cecil {
 		}
 
 		public AssemblyResolutionException (AssemblyNameReference reference)
-			: base (string.Format ("Failed to resolve assembly: '{0}'", reference))
+			: this (reference, null)
+		{
+		}
+
+		public AssemblyResolutionException (AssemblyNameReference reference, Exception innerException)
+			: base (string.Format ("Failed to resolve assembly: '{0}'", reference), innerException)
 		{
 			this.reference = reference;
 		}
 
+#if !NET_CORE
 		AssemblyResolutionException (
 			System.Runtime.Serialization.SerializationInfo info,
 			System.Runtime.Serialization.StreamingContext context)
 			: base (info, context)
 		{
 		}
+#endif
 	}
 
+#if !NET_CORE
 	public abstract class BaseAssemblyResolver : IAssemblyResolver {
 
 		static readonly bool on_mono = Type.GetType ("Mono.Runtime") != null;
@@ -120,9 +128,12 @@ namespace Mono.Cecil {
 			}
 
 			var framework_dir = Path.GetDirectoryName (typeof (object).Module.FullyQualifiedName);
+			var framework_dirs = on_mono
+				? new [] { framework_dir, Path.Combine (framework_dir, "Facades") }
+				: new [] { framework_dir };
 
 			if (IsZero (name.Version)) {
-				assembly = SearchDirectory (name, new [] { framework_dir }, parameters);
+				assembly = SearchDirectory (name, framework_dirs, parameters);
 				if (assembly != null)
 					return assembly;
 			}
@@ -137,7 +148,7 @@ namespace Mono.Cecil {
 			if (assembly != null)
 				return assembly;
 
-			assembly = SearchDirectory (name, new [] { framework_dir }, parameters);
+			assembly = SearchDirectory (name, framework_dirs, parameters);
 			if (assembly != null)
 				return assembly;
 
@@ -341,6 +352,5 @@ namespace Mono.Cecil {
 		{
 		}
 	}
-}
-
 #endif
+}

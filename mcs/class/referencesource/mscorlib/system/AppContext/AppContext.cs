@@ -33,7 +33,6 @@ namespace System
             }
         }
 
-#if NETSTANDARD
         public static string TargetFrameworkName
         {
             get
@@ -46,10 +45,8 @@ namespace System
         {
             throw new NotImplementedException();
         }
-#endif
 
         #region Switch APIs
-
         static AppContext()
         {
             // populate the AppContext with the default set of values

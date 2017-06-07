@@ -3,6 +3,7 @@
 
   <!-- This is the target that copies the test assets to the test output -->
   <Import Project="$(MSBuildThisFileDirectory)publishtest.targets" />
+  <Import Project="$(ToolsDir)PerfTesting.targets" Condition="Exists('$(ToolsDir)PerfTesting.targets') and '$(Performance)' == 'true'"/>
   <UsingTask TaskName="GenerateTestExecutionScripts" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
   <UsingTask TaskName="GetTargetMachineInfo" AssemblyFile="$(BuildToolsTaskDir)Microsoft.DotNet.Build.Tasks.dll"/>
 
@@ -11,7 +12,6 @@
     <TestDisabled>false</TestDisabled>
     <TestDisabled Condition="'$(IsTestProject)'!='true' Or '$(SkipTests)'=='true' Or '$(RunTestsForProject)'=='false'">true</TestDisabled>
     <TestsSuccessfulSemaphore>tests.passed</TestsSuccessfulSemaphore>
-    <RunningOnNetFx Condition="'$(_bc_TargetGroup)' == 'netfx'">true</RunningOnNetFx>
   </PropertyGroup>
 
   <!-- In case that TestPath is not yet set, default it here -->
@@ -27,19 +27,19 @@
     <UnsupportedPlatformsItems Include="$(UnsupportedPlatforms)"/>
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(RunningOnNetFx)' != 'true'">
+  <PropertyGroup Condition="'$(BuildingNETFxVertical)' != 'true'">
     <XunitRuntimeConfig>$(ToolsDir)\xunit.console.netcore.runtimeconfig.json</XunitRuntimeConfig>
     <TestRuntimeEnvVar Condition="'$(OS)' == 'Windows_NT'">%RUNTIME_PATH%\</TestRuntimeEnvVar>
     <TestRuntimeEnvVar Condition="'$(OS)' != 'Windows_NT'">$RUNTIME_PATH/</TestRuntimeEnvVar>
-    <TestHostExecutablePath Condition="'$(OS)'=='Windows_NT' AND '$(TestHostExecutablePath)' == ''">$(TestRuntimeEnvVar)dotnet.exe</TestHostExecutablePath>
-    <TestHostExecutablePath Condition="'$(OS)'!='Windows_NT' AND '$(TestHostExecutablePath)' == ''">$(TestRuntimeEnvVar)dotnet</TestHostExecutablePath>
+    <TestHostExecutablePath Condition="'$(OS)'=='Windows_NT' AND '$(TestHostExecutablePath)' == '' AND '$(BuildingUAPAOTVertical)' != 'true'">$(TestRuntimeEnvVar)dotnet.exe</TestHostExecutablePath>
+    <TestHostExecutablePath Condition="'$(OS)'!='Windows_NT' AND '$(TestHostExecutablePath)' == '' AND '$(BuildingUAPAOTVertical)' != 'true'">$(TestRuntimeEnvVar)dotnet</TestHostExecutablePath>
 
     <XunitExecutable Condition="'$(XunitExecutable)' == ''">xunit.console.netcore.exe</XunitExecutable>
 
     <DebugEngines>{2E36F1D4-B23C-435D-AB41-18E608940038}</DebugEngines>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(RunningOnNetFx)' == 'true'">
+  <PropertyGroup Condition="'$(BuildingNETFxVertical)' == 'true'">
     <XunitExecutable Condition="'$(XunitExecutable)' == ''">xunit.console.exe</XunitExecutable>
   </PropertyGroup>
 
@@ -47,15 +47,14 @@
   <PropertyGroup>
     <XunitResultsFileName>testResults.xml</XunitResultsFileName>
 
-    <XunitOptions Condition="'$(RunningOnNetFx)' == 'true'">$(XunitOptions) -noshadow </XunitOptions>
+    <XunitOptions Condition="'$(BuildingNETFxVertical)' == 'true'">$(XunitOptions) -noshadow</XunitOptions>
+    <XunitOptions Condition="'$(BuildingNETFxVertical)' == 'true' and '$(XUnitNoAppdomain)' == 'true'">$(XunitOptions) -noappdomain </XunitOptions>
     <XunitOptions>$(XunitOptions) -xml $(XunitResultsFileName)</XunitOptions>
 
     <XunitOptions Condition="'$(Performance)'!='true'">$(XunitOptions) -notrait Benchmark=true</XunitOptions>
+    <XunitOptions Condition="'$(BuildingUAPAOTVertical)'=='true'">$(XunitOptions) -redirectoutput</XunitOptions>
 
-    <XunitOptions Condition="'$(UseDotNetNativeToolchain)'=='true'">$(XunitOptions) -redirectoutput</XunitOptions>
-
-    <!-- Temporary till we fix the whole filtering with  TargetGroup -->
-    <XunitOptions Condition="'$(RunningOnNetFx)' != 'true'">$(XunitOptions) -notrait category=nonnetcoreapp1.1tests</XunitOptions>
+    <XunitOptions>$(XunitOptions) -notrait category=non$(_bc_TargetGroup)tests</XunitOptions>
 
     <XunitOptions Condition="'$(XunitMaxThreads)'!=''">$(XunitOptions) -maxthreads $(XunitMaxThreads)</XunitOptions>
     <XunitTestAssembly Condition="'$(XunitTestAssembly)' == ''">$(TargetFileName)</XunitTestAssembly>
@@ -68,6 +67,11 @@
     <TestArguments Condition="'$(TestHostExecutablePath)'==''">$(XunitArguments)</TestArguments>
 
     <TestCommandLine Condition="'$(Performance)'!='true'">$(TestProgram) $(TestArguments) {XunitTraitOptions}</TestCommandLine>
+
+    <!-- set $(TestDebugger) to eg c:\debuggers\windbg.exe to run tests under a debugger -->
+    <TestCommandLine Condition="'$(TestDebugger)' != '' and !$(TestDebugger.Contains('devenv'))">$(TestDebugger) $(TestCommandLine)</TestCommandLine>
+    <TestCommandLine Condition="'$(TestDebugger)' != '' and  $(TestDebugger.Contains('devenv'))">$(TestDebugger) /debugexe $(TestCommandLine)</TestCommandLine>
+    
   </PropertyGroup>
 
   <!-- The Code Coverage targets will override TestHost and TestCommandLine if coverage is enabled -->
@@ -77,7 +81,7 @@
   <PropertyGroup Condition="'$(IsTestProject)'=='true'">
     <StartWorkingDirectory Condition="'$(StartWorkingDirectory)'==''">$(TestPath)</StartWorkingDirectory>
     <StartAction Condition="'$(StartAction)'==''">Program</StartAction>
-    <StartProgram Condition="'$(StartProgram)'==''">$(TestSharedFxDir)\dotnet.exe</StartProgram>
+    <StartProgram Condition="'$(StartProgram)'==''">$(TestSharedFxDir)dotnet.exe</StartProgram>
     <StartArguments Condition="'$(StartArguments)'==''">$(TestArguments) -wait -parallel none</StartArguments>
   </PropertyGroup>
 
@@ -89,14 +93,45 @@
       <RunTestsForProjectInputs Include="@(_DebugSymbolsIntermediatePath)" />
       <RunTestsForProjectInputs Include="@(AllItemsFullPathWithTargetPath)" />
     </ItemGroup>
-    <ItemGroup Condition="'$(RunningOnNetFx)' != 'true'">
+    <ItemGroup Condition="'$(BuildingNETFxVertical)' != 'true'">
       <SupplementalTestData Include="$(XunitRuntimeConfig)" />
       <SupplementalTestData Include="$(RuntimePath)xunit.console.netcore.exe" />
     </ItemGroup>
-    <ItemGroup Condition="'$(RunningOnNetFx)' == 'true'">
-      <SupplementalTestData Include="$(RuntimePath)xunit*.*" />
-      <SupplementalTestData Include="$(RuntimePath)*.xslt" />
+    <ItemGroup Condition="'$(BuildingNETFxVertical)' == 'true'">
+      <SupplementalTestData Include="$(RuntimePath)xunit.console.exe" />
+      <SupplementalTestData Include="$(RuntimePath)xunit.console.exe.config" />
+      <SupplementalTestData Include="$(RuntimePath)xunit.execution.desktop.dll" />
     </ItemGroup>
+  </Target>
+
+  <Target Name="AddDefaultTestReferences" BeforeTargets="SetupDefaultReferences">
+    <ItemGroup Condition="'$(IsTestProject)'=='true' and '$(IncludeDefaultReferences)' == 'true'">
+      <TargetingPackExclusions Include="System.Runtime.WindowsRuntime.UI.Xaml" /> <!-- Harmless, but causes PRI targets to run -->
+      <TargetingPackExclusions Include="@(ReferenceFromRuntime)"/>
+
+      <!-- Whitelisted runtime assemblies that are OK to reference. -->
+      <ReferenceFromRuntime Include="xunit.core" />
+      <ReferenceFromRuntime Include="Xunit.NetCore.Extensions" />
+      <ReferenceFromRuntime Include="xunit.assert" />
+      <ReferenceFromRuntime Include="xunit.abstractions" />
+      <ReferenceFromRuntime Include="xunit.performance.core" />
+      <ReferenceFromRuntime Include="xunit.performance.api" />
+
+      <!-- Reference everything in the targeting pack directory -->
+      <TargetingPackItems Include="%(TargetingPackDirs.Identity)/*.dll" />
+
+      <DefaultReference Include="%(TargetingPackItems.Filename)" Exclude="@(TargetingPackExclusions)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CopyRemoteExecutionConfigFile" 
+          BeforeTargets="GenerateTestExecutionScripts" 
+          Condition="'$(BuildingNETFxVertical)' == 'true' And Exists('$(TestPath)\RemoteExecutorConsoleApp.exe')">
+
+    <Copy SourceFiles="$(RuntimePath)\xunit.console.exe.config"
+          DestinationFiles="$(TestPath)\RemoteExecutorConsoleApp.exe.config" 
+          SkipUnchangedFiles="true"
+          />
   </Target>
 
   <!-- Generate the script to run the tests.  The script performs two high-level steps:
@@ -163,26 +198,63 @@
       Overwrite="true"
       Encoding="Ascii" />
 
+    <PropertyGroup Condition="'$(UseDotNetNativeToolchain)' == 'true'">
+      <ILCBuildType Condition="'$(ILCBuildType)' == ''">ret</ILCBuildType>
+    </PropertyGroup>
+    
     <!-- For .NET Native compilation, we first need to generate a native executable if possible. -->
     <ItemGroup Condition="'$(UseDotNetNativeToolchain)' == 'true' AND '$(Performance)'!='true'" >
+      <IlcInputFolderContents Include="$(ILCFXInputFolder)/*" />
+      <TestCommandLines Include="mklink /H %(IlcInputFolderContents.Filename)%(IlcInputFolderContents.Extension) %(IlcInputFolderContents.FullPath)" />
       <TestCommandLines Include="copy /y $(TestILCFolder)\default.rd.xml  %EXECUTION_DIR%" />
-      <TestCommandLines Include="$(TestILCFolder)\ilc.exe -usecustomframework -ExeName xunit.console.netcore.exe -in %EXECUTION_DIR% -out %EXECUTION_DIR%\native -usedefaultpinvoke -buildtype ret -v diag || exit /b %ERRORLEVEL%"/>
+      <TestCommandLines Include="call $(TestILCFolder)\ilc.exe -ExeName xunit.console.netcore.exe -in %EXECUTION_DIR% -out %EXECUTION_DIR%\native -usedefaultpinvoke -buildtype $(ILCBuildType) -v diag || exit /b %ERRORLEVEL%"/>
       <TestCommandLines Include="copy /y $(TestILCFolder)\CRT\vcruntime140_app.dll %EXECUTION_DIR%\native" />
       <TestCommandLines Include="echo > %EXECUTION_DIR%\native\$(XunitTestAssembly)"/>
       <TestCommandLines Include="cd native"/>
+      <PostExecutionTestCommandLines Include="type Xunit.Console.Output.txt" />
+      <PostExecutionTestCommandLines Include="copy /y testResults.xml %EXECUTION_DIR%\" />
     </ItemGroup>
 
+    <PropertyGroup Condition="'$(BuildingUAPVertical)' == 'true'">
+      <!-- The location where the logs will be written by the test runner -->
+      <UAP_Results_Path Condition="'$(UAP_Results_Path)'==''">%USERPROFILE%\Documents\TestResults\</UAP_Results_Path>
+
+      <_Runtime_Path>%RUNTIME_PATH%\UAPLayout\</_Runtime_Path>
+      <!-- Make sure the path only has one type of slashes -->
+      <_Runtime_Path>$(_Runtime_Path.Replace('/', '\'))</_Runtime_Path>
+
+      <!-- The test execution command is different for UAP. -->
+      <TestCommandLine>%RUNTIME_PATH%\Launcher\WindowsStoreAppLauncher.exe -test appxmanifest.xml $(XunitArguments) $(XunitTraitOptions)</TestCommandLine>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(BuildingUAPVertical)' == 'true'" >
+      <!-- Copy the runner files into the test directory -->
+      <RunnerFolderContents Include="$(NETCoreAppTestRootPath)\Runner\**\*" />
+
+      <TestCommandLines Include="mkdir Assets" />
+      <TestCommandLines Include="mkdir entrypoint" />
+      <TestCommandLines Include="mkdir Properties" />
+      <TestCommandLines Include="mkdir WinMetadata" />
+      <TestCommandLines Include="mklink /H %(RunnerFolderContents.RecursiveDir)%(RunnerFolderContents.Filename)%(RunnerFolderContents.Extension) %RUNTIME_PATH%\Runner\%(RunnerFolderContents.RecursiveDir)%(RunnerFolderContents.Filename)%(RunnerFolderContents.Extension)" />
+
+      <!-- Copy the runtime binaries over -->
+      <RuntimePathContents Include="$(RuntimePath)\**\*" />
+      <TestCommandLines Include="mklink /H %(RuntimePathContents.RecursiveDir)%(RuntimePathContents.Filename)%(RuntimePathContents.Extension) $(_Runtime_Path)%(RuntimePathContents.Filename)%(RuntimePathContents.Extension)" />
+
+      <!-- Copy the log files and the results files from the Documents folder to the test folder -->
+      <PostExecutionTestCommandLines Include="move $(UAP_Results_Path)$(XunitTestAssembly).xml .\$(XunitResultsFileName)" /> 
+      <PostExecutionTestCommandLines Include="move $(UAP_Results_Path)$(XunitTestAssembly).txt .\logs.txt" />
+      <PostExecutionTestCommandLines Include="type logs.txt" />
+    </ItemGroup>
+      
     <ItemGroup Condition="'$(Performance)'!='true'">
       <!-- On Windows, call prevents the test command from making execution end prematurely -->
       <TestCommandLines  Condition="'$(TargetOS)'=='Windows_NT'" Include="call $(TestCommandLine)"/>
       <TestCommandLines  Condition="'$(TargetOS)'!='Windows_NT'" Include="$(TestCommandLine)"/>
     </ItemGroup>
 
-    <!-- Currently all netcore50 implementations of System.Console actually write to a noop stream -->
-    <!-- Workaround is to have the exe detect this and use Console.SetOut to write to a text file. -->
-    <ItemGroup Condition="'$(UseDotNetNativeToolchain)' == 'true' AND '$(Performance)'!='true'" >
-      <TestCommandLines Include="type Xunit.Console.Output.txt" />
-      <TestCommandLines Include="copy /y testResults.xml %EXECUTION_DIR%\" />
+    <ItemGroup Condition ="'$(Performance)'=='true'">
+      <TestCommandLines Include="@(PerfTestCommandLines)" />
     </ItemGroup>
 
     <!-- Do not put anything between this Item Group and the GenerateTestExecutionScripts invocation -->
@@ -206,6 +278,11 @@
           >
 
     <MakeDir Condition="'$(CoverageEnabledForProject)'=='true'" Directories="$(CoverageReportDir)" />
+    <Error Text="TestILCFolder property is required for running uapaot tests. Please pass in the full path to the directory that contains ilc.exe to msbuild using /p:TestILCFolder=path_to_ilc_dir.exe" Condition="'$(BuildingUAPAOTVertical)' == 'true' AND '$(TestILCFolder)' == ''" />
+
+    <!-- For UAP, make sure the Runner and Launcher folder exist, otherwise the tests cannot run -->
+    <Error Text="We cannot run the tests for UAP because either the Runner or the Launcher could not be found. You need to specify the UAPToolsFolder property when calling build.cmd to fix this."
+          Condition="'$(BuildingUAPVertical)'=='true' and (!Exists('$(NETCoreAppTestRootPath)\Runner') or !Exists('$(NETCoreAppTestRootPath)\Launcher'))" />
 
     <Exec Command="$(TestPath)/$(RunnerScriptName) $(TestSharedFxDir)"
           CustomErrorRegularExpression="Failed: [^0]"
@@ -246,10 +323,8 @@
   </Target>
 
   <Target Name="CheckTestPlatforms">
-    <GetTargetMachineInfo Condition="'$(TargetOS)' == ''">
-      <Output TaskParameter="TargetOS" PropertyName="TargetOS" />
-    </GetTargetMachineInfo>
     <PropertyGroup>
+      <TargetOS Condition="'$(TargetOS)' == ''">$(DefaultOSGroup)</TargetOS>
       <TestDisabled Condition="'%(UnsupportedPlatformsItems.Identity)' == '$(TargetOS)' Or '$(ConfigurationErrorMsg)' != ''">true</TestDisabled>
     </PropertyGroup>
     <Message Text="CheckTestPlatforms found TargetOS of [$(TargetOS)]." Importance="Low" />

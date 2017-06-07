@@ -18,7 +18,7 @@ namespace ILCompiler.DependencyAnalysis
     /// with the class constructor context if the type has a class constructor that
     /// needs to be triggered before the type members can be accessed.
     /// </summary>
-    internal class NonGCStaticsNode : ObjectNode, ISymbolNode
+    public class NonGCStaticsNode : ObjectNode, ISymbolNode
     {
         private MetadataType _type;
 
@@ -28,14 +28,20 @@ namespace ILCompiler.DependencyAnalysis
             _type = type;
         }
 
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
         public override ObjectNodeSection Section => ObjectNodeSection.DataSection;
 
+        public static string GetMangledName(TypeDesc type, NameMangler nameMangler)
+        {
+            return "__NonGCStaticBase_" + nameMangler.GetMangledTypeName(type);
+        }
+ 
         public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            sb.Append("__NonGCStaticBase_").Append(NodeFactory.NameMangler.GetMangledTypeName(_type));
+            sb.Append("__NonGCStaticBase_").Append(nameMangler.GetMangledTypeName(_type)); 
         }
+
         public int Offset => 0;
         public override bool IsShareable => EETypeNode.IsTypeNodeShareable(_type);
 
@@ -50,7 +56,7 @@ namespace ILCompiler.DependencyAnalysis
 
         public static int GetClassConstructorContextStorageSize(TargetDetails target, MetadataType type)
         {
-            int alignmentRequired = Math.Max(type.NonGCStaticFieldAlignment, GetClassConstructorContextAlignment(target));
+            int alignmentRequired = Math.Max(type.NonGCStaticFieldAlignment.AsInt, GetClassConstructorContextAlignment(target));
             return AlignmentHelper.AlignUp(GetClassConstructorContextSize(type.Context.Target), alignmentRequired);
         }
 
@@ -77,15 +83,15 @@ namespace ILCompiler.DependencyAnalysis
 
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly)
         {
-            ObjectDataBuilder builder = new ObjectDataBuilder(factory);
+            ObjectDataBuilder builder = new ObjectDataBuilder(factory, relocsOnly);
 
             // If the type has a class constructor, its non-GC statics section is prefixed  
             // by System.Runtime.CompilerServices.StaticClassConstructionContext struct.
             if (factory.TypeSystemContext.HasLazyStaticConstructor(_type))
             {
-                int alignmentRequired = Math.Max(_type.NonGCStaticFieldAlignment, GetClassConstructorContextAlignment(_type.Context.Target));
+                int alignmentRequired = Math.Max(_type.NonGCStaticFieldAlignment.AsInt, GetClassConstructorContextAlignment(_type.Context.Target));
                 int classConstructorContextStorageSize = GetClassConstructorContextStorageSize(factory.Target, _type);
-                builder.RequireAlignment(alignmentRequired);
+                builder.RequireInitialAlignment(alignmentRequired);
                 
                 Debug.Assert(classConstructorContextStorageSize >= GetClassConstructorContextSize(_type.Context.Target));
 
@@ -103,11 +109,11 @@ namespace ILCompiler.DependencyAnalysis
             }
             else
             {
-                builder.RequireAlignment(_type.NonGCStaticFieldAlignment);
+                builder.RequireInitialAlignment(_type.NonGCStaticFieldAlignment.AsInt);
             }
 
-            builder.EmitZeros(_type.NonGCStaticFieldSize);
-            builder.DefinedSymbols.Add(this);
+            builder.EmitZeros(_type.NonGCStaticFieldSize.AsInt);
+            builder.AddSymbol(this);
 
             return builder.ToObjectData();
         }

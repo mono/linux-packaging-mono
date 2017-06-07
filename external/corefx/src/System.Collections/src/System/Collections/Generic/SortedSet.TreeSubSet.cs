@@ -124,7 +124,66 @@ namespace System.Collections.Generic
                 return comp >= 0;
             }
 
-            internal override bool InOrderTreeWalk(TreeWalkPredicate<T> action, bool reverse)
+            internal override T MinInternal
+            {
+                get
+                {
+                    Node current = _root;
+                    T result = default(T);
+
+                    while (current != null)
+                    {
+
+                        int comp = _lBoundActive ? Comparer.Compare(_min, current.Item) : -1;
+                        if (comp == 1)
+                        {
+                            current = current.Right;
+                        }
+                        else
+                        {
+                            result = current.Item;
+                            if (comp == 0)
+                            {
+                                break;
+                            }
+                            current = current.Left;
+                        }
+                    }
+
+                    return result;
+                }
+            }
+
+            internal override T MaxInternal
+            {
+                get
+                {
+                    Node current = _root;
+                    T result = default(T);
+
+                    while (current != null)
+                    {
+                        int comp = _uBoundActive ? Comparer.Compare(_max, current.Item) : 1;
+                        if (comp == -1)
+                        {
+                            current = current.Left;
+                        }
+                        else
+                        {
+                            result = current.Item;
+                            if (comp == 0)
+                            {
+                                break;
+                            }
+                            current = current.Right;
+                        }
+                    }
+
+                    return result;
+               }
+            }
+
+            internal override bool InOrderTreeWalk(TreeWalkPredicate<T> action)
             {
                 VersionCheck();
 
@@ -142,7 +201,7 @@ namespace System.Collections.Generic
                     if (IsWithinRange(current.Item))
                     {
                         stack.Push(current);
-                        current = (reverse ? current.Right : current.Left);
+                        current = current.Left;
                     }
                     else if (_lBoundActive && Comparer.Compare(_min, current.Item) > 0)
                     {
@@ -162,13 +221,13 @@ namespace System.Collections.Generic
                         return false;
                     }
 
-                    Node node = (reverse ? current.Left : current.Right);
+                    Node node = current.Right;
                     while (node != null)
                     {
                         if (IsWithinRange(node.Item))
                         {
                             stack.Push(node);
-                            node = (reverse ? node.Right : node.Left);
+                            node = node.Left;
                         }
                         else if (_lBoundActive && Comparer.Compare(_min, node.Item) > 0)
                         {

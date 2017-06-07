@@ -4,7 +4,7 @@
 
 namespace System
 {
-    public static partial class Environment
+    internal static partial class Environment
     {
         public static unsafe String GetEnvironmentVariable(String variable)
         {
@@ -43,7 +43,7 @@ namespace System
                 currentSize = requiredSize;
                 // need to retry since the environment variable might be changed 
                 newblob = new char[currentSize];
-                fixed (char* pText = variable, pBlob = newblob)
+                fixed (char* pText = variable, pBlob = &newblob[0])
                 {
                     requiredSize = Interop.mincore.GetEnvironmentVariable(pText, pBlob, currentSize);
                 }

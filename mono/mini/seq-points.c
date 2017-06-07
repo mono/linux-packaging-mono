@@ -1,5 +1,6 @@
-/*
- * seq-points.c: Sequence Points functions
+/**
+ * \file
+ * Sequence Points functions
  *
  * Authors:
  *   Marcos Henrich (marcos.henrich@xamarin.com)
@@ -222,6 +223,8 @@ mono_save_seq_point_info (MonoCompile *cfg)
 				g_slist_free (next [i]);
 		}
 	}
+
+	g_free (seq_points);
 
 	if (has_debug_data)
 		g_free (next);

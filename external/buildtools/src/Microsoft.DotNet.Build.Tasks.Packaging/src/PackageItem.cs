@@ -17,13 +17,21 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
         {
             OriginalItem = item;
             SourcePath = item.GetMetadata("FullPath");
-            string fx = item.GetMetadata("TargetFramework");
-            if (!String.IsNullOrWhiteSpace(fx))
+            SourceProject = GetMetadata("MSBuildSourceProjectFile");
+            string value = GetMetadata("TargetFramework");
+            if (!String.IsNullOrWhiteSpace(value))
             {
-                TargetFramework = NuGetFramework.Parse(fx);
+                TargetFramework = NuGetFramework.Parse(value);
             }
-            TargetPath = item.GetMetadata("TargetPath");
-            Package = item.GetMetadata("PackageId");
+            TargetPath = item.GetMetadata(nameof(TargetPath));
+            AdditionalProperties = GetMetadata(nameof(AdditionalProperties));
+            UndefineProperties = GetMetadata(nameof(UndefineProperties));
+            HarvestedFrom = GetMetadata(nameof(HarvestedFrom));
+            Package = GetMetadata("PackageId");
+            PackageVersion = GetMetadata("PackageVersion");
+            IsDll = Path.GetExtension(SourcePath).Equals(".dll", StringComparison.OrdinalIgnoreCase);
+            IsPlaceholder = NuGetAssetResolver.IsPlaceholder(SourcePath);
+            IsRef = TargetPath.StartsWith("ref/", StringComparison.OrdinalIgnoreCase);
 
             // determine if we need to append filename to TargetPath
             // see https://docs.nuget.org/create/nuspec-reference#specifying-files-to-include-in-the-package
@@ -66,13 +74,9 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
                         Version.TryParse(versionString, out _version);
                     }
 
-                    if (_version == null && File.Exists(SourcePath))
+                    if (_version == null && IsDll && File.Exists(SourcePath))
                     {
-                        using (PEReader peReader = new PEReader(new FileStream(SourcePath, FileMode.Open, FileAccess.Read, FileShare.Delete | FileShare.Read)))
-                        {
-                            MetadataReader reader = peReader.GetMetadataReader();
-                            _version = reader.GetAssemblyDefinition().Version;
-                        }
+                        _version = VersionUtility.GetAssemblyVersion(SourcePath);
                     }
                 }
 
@@ -80,11 +84,25 @@ namespace Microsoft.DotNet.Build.Tasks.Packaging
             }
         }
 
+        public bool IsDll { get; }
+        public bool IsPlaceholder { get; }
+        public bool IsRef { get; }
         public ITaskItem OriginalItem { get; }
         public string SourcePath { get; }
+        public string SourceProject { get; }
+        public string AdditionalProperties { get; }
+        public string UndefineProperties { get; }
+        public string HarvestedFrom { get; }
         public NuGetFramework TargetFramework { get; }
         public string TargetDirectory { get; }
         public string TargetPath { get; }
         public string Package { get; }
+        public string PackageVersion { get; }
+
+        private string GetMetadata(string name)
+        {
+            var value = OriginalItem.GetMetadata(name);
+            return (value?.Length > 0) ? value : null;
+        }
     }
 }

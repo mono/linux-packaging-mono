@@ -8,8 +8,8 @@
 
 #include <errno.h>
 
-// ENODATA is not defined on FreeBSD.
-#if defined(__FreeBSD__)
+// ENODATA is not defined in FreeBSD 10.3 but is defined in 11.0
+#if defined(__FreeBSD__) & !defined(ENODATA)
 #define ENODATA ENOATTR
 #endif
 
@@ -422,7 +422,7 @@ extern "C" const char* SystemNative_StrErrorR(int32_t platformErrno, char* buffe
     }
 
     // The only other valid error codes are 0 for success or EINVAL for
-    // an unkown error, but in the latter case a reasonable string (e.g
+    // an unknown error, but in the latter case a reasonable string (e.g
     // "Unknown error: 0x123") is returned.
     assert(error == 0 || error == EINVAL);
     return buffer;

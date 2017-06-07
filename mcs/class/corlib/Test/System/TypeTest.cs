@@ -3068,6 +3068,14 @@ namespace MonoTests.System
 			object o = Array.CreateInstance (typeof (global::System.TypedReference), 1);
 		}
 
+		[Test]
+		public void MakeArrayTypeLargeRank ()
+		{
+			Assert.Throws<TypeLoadException> (delegate () {
+					typeof (int).MakeArrayType (33);
+				});
+		}
+
 		[ComVisible (true)]
 		public class ComFoo<T> {
 		}
@@ -3261,6 +3269,38 @@ namespace MonoTests.System
 			MethodInfo m = typeof (Type).GetMethod ("GetType",  BindingFlags.Public | BindingFlags.Static, null, new Type [] { typeof (string) },  null);
 			object r = m.Invoke (null, BindingFlags.Default, null, new object [] { "NoNamespaceClass" }, CultureInfo.InvariantCulture);
 			Assert.AreSame (expectedType, r, "#2");
+		}
+
+		public class BConstrained<Y> where Y : BConstrained<Y> {
+		}
+
+		public class AConstrained<X> : BConstrained<AConstrained<X>> {
+		}
+
+		[Test] // Bug https://bugzilla.xamarin.com/show_bug.cgi?id=54485
+		public void MakeGenericType_GTD_Constraint ()
+		{
+			// This is pretty weird, but match .NET behavior (note
+			// that typeof(BConstrained<AConstrained<>>) is a
+			// compile-time error with roslyn, but it's apparently
+			// an ok thing to make with reflection.
+			var tb = typeof (BConstrained<>);
+			var ta = typeof (AConstrained<>);
+			var result = tb.MakeGenericType (ta);
+			Assert.IsNotNull (result, "#1");
+			// lock down the answer to match what .NET makes
+			Assert.IsTrue (result.IsGenericType, "#2");
+			Assert.AreEqual (tb, result.GetGenericTypeDefinition (), "#3");
+			var bargs = result.GetGenericArguments ();
+			Assert.AreEqual (1, bargs.Length, "#4");
+			var arg = bargs [0];
+			Assert.IsTrue (arg.IsGenericType, "#5");
+			// N.B. evidently AConstrained`1 and AConstrained`1<!0> are the same type
+			Assert.IsTrue (arg.IsGenericTypeDefinition, "#6");
+			Assert.AreEqual (ta, arg.GetGenericTypeDefinition (), "#7");
+			var aargs = arg.GetGenericArguments ();
+			Assert.AreEqual (1, aargs.Length, "#8");
+			Assert.AreEqual (ta.GetGenericArguments () [0], aargs [0], "#9");
 		}
 
 	[Test]
@@ -4297,7 +4337,7 @@ namespace MonoTests.System
 			var nm = new AssemblyName ("asm");
 			var ab = AssemblyBuilder.DefineDynamicAssembly (nm,
 									AssemblyBuilderAccess.Run);
-			var mb = ab.DefineDynamicModule("m", true);
+			var mb = ab.DefineDynamicModule("m", false);
 			var tb = mb.DefineType ("NameSpace,+*&[]\\.Type,+*&[]\\",
 						TypeAttributes.Class | TypeAttributes.Public);
 

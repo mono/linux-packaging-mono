@@ -1,5 +1,6 @@
-/*
- * mini-arm64.c: ARM64 backend for the Mono code generator
+/**
+ * \file
+ * ARM64 backend for the Mono code generator
  *
  * Copyright 2013 Xamarin, Inc (http://www.xamarin.com)
  * 
@@ -1229,7 +1230,6 @@ add_param (CallInfo *cinfo, ArgInfo *ainfo, MonoType *t)
 	case MONO_TYPE_I1:
 		add_general (cinfo, ainfo, 1, TRUE);
 		break;
-	case MONO_TYPE_BOOLEAN:
 	case MONO_TYPE_U1:
 		add_general (cinfo, ainfo, 1, FALSE);
 		break;
@@ -1237,7 +1237,6 @@ add_param (CallInfo *cinfo, ArgInfo *ainfo, MonoType *t)
 		add_general (cinfo, ainfo, 2, TRUE);
 		break;
 	case MONO_TYPE_U2:
-	case MONO_TYPE_CHAR:
 		add_general (cinfo, ainfo, 2, FALSE);
 		break;
 	case MONO_TYPE_I4:
@@ -1250,11 +1249,7 @@ add_param (CallInfo *cinfo, ArgInfo *ainfo, MonoType *t)
 	case MONO_TYPE_U:
 	case MONO_TYPE_PTR:
 	case MONO_TYPE_FNPTR:
-	case MONO_TYPE_CLASS:
 	case MONO_TYPE_OBJECT:
-	case MONO_TYPE_SZARRAY:
-	case MONO_TYPE_ARRAY:
-	case MONO_TYPE_STRING:
 	case MONO_TYPE_U8:
 	case MONO_TYPE_I8:
 		add_general (cinfo, ainfo, 8, FALSE);
@@ -1545,7 +1540,6 @@ mono_arch_start_dyn_call (MonoDynCallInfo *info, gpointer **args, guint8 *ret, g
 
 			/* Special case arguments smaller than 1 machine word */
 			switch (t->type) {
-			case MONO_TYPE_BOOLEAN:
 			case MONO_TYPE_U1:
 				*(guint8*)stack_arg = *(guint8*)arg;
 				break;
@@ -1553,7 +1547,6 @@ mono_arch_start_dyn_call (MonoDynCallInfo *info, gpointer **args, guint8 *ret, g
 				*(gint8*)stack_arg = *(gint8*)arg;
 				break;
 			case MONO_TYPE_U2:
-			case MONO_TYPE_CHAR:
 				*(guint16*)stack_arg = *(guint16*)arg;
 				break;
 			case MONO_TYPE_I2:
@@ -1574,10 +1567,6 @@ mono_arch_start_dyn_call (MonoDynCallInfo *info, gpointer **args, guint8 *ret, g
 		}
 
 		switch (t->type) {
-		case MONO_TYPE_STRING:
-		case MONO_TYPE_CLASS:
-		case MONO_TYPE_ARRAY:
-		case MONO_TYPE_SZARRAY:
 		case MONO_TYPE_OBJECT:
 		case MONO_TYPE_PTR:
 		case MONO_TYPE_I:
@@ -1586,7 +1575,6 @@ mono_arch_start_dyn_call (MonoDynCallInfo *info, gpointer **args, guint8 *ret, g
 		case MONO_TYPE_U8:
 			p->regs [slot] = (mgreg_t)*arg;
 			break;
-		case MONO_TYPE_BOOLEAN:
 		case MONO_TYPE_U1:
 			p->regs [slot] = *(guint8*)arg;
 			break;
@@ -1597,7 +1585,6 @@ mono_arch_start_dyn_call (MonoDynCallInfo *info, gpointer **args, guint8 *ret, g
 			p->regs [slot] = *(gint16*)arg;
 			break;
 		case MONO_TYPE_U2:
-		case MONO_TYPE_CHAR:
 			p->regs [slot] = *(guint16*)arg;
 			break;
 		case MONO_TYPE_I4:
@@ -1691,10 +1678,6 @@ mono_arch_finish_dyn_call (MonoDynCallInfo *info, guint8 *buf)
 	case MONO_TYPE_VOID:
 		*(gpointer*)ret = NULL;
 		break;
-	case MONO_TYPE_STRING:
-	case MONO_TYPE_CLASS:
-	case MONO_TYPE_ARRAY:
-	case MONO_TYPE_SZARRAY:
 	case MONO_TYPE_OBJECT:
 	case MONO_TYPE_I:
 	case MONO_TYPE_U:
@@ -1705,14 +1688,12 @@ mono_arch_finish_dyn_call (MonoDynCallInfo *info, guint8 *buf)
 		*(gint8*)ret = res;
 		break;
 	case MONO_TYPE_U1:
-	case MONO_TYPE_BOOLEAN:
 		*(guint8*)ret = res;
 		break;
 	case MONO_TYPE_I2:
 		*(gint16*)ret = res;
 		break;
 	case MONO_TYPE_U2:
-	case MONO_TYPE_CHAR:
 		*(guint16*)ret = res;
 		break;
 	case MONO_TYPE_I4:
@@ -1904,9 +1885,6 @@ mono_arch_create_vars (MonoCompile *cfg)
 	if (cfg->method->save_lmf) {
 		cfg->create_lmf_var = TRUE;
 		cfg->lmf_ir = TRUE;
-#ifdef HAVE_GET_TLS_ADDR
-		cfg->lmf_ir_mono_lmf = TRUE;
-#endif
 	}
 }
 

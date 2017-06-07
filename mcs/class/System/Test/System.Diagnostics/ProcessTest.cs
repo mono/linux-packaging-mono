@@ -1124,6 +1124,16 @@ namespace MonoTests.System.Diagnostics
 		}
 
 		[Test]
+		[NUnit.Framework.Category ("NotWorking")] //Getting the name of init works fine on Android and Linux, but fails on OSX, SELinux and iOS
+		public void HigherPrivilegeProcessName ()
+		{
+			if (!RunningOnUnix)
+				Assert.Ignore ("accessing pid 1, only available on unix");
+
+			string v = Process.GetProcessById (1).ProcessName;
+		}
+
+		[Test]
 		[NUnit.Framework.Category ("MobileNotWorking")]
 		public void NonChildProcessWaitForExit ()
 		{

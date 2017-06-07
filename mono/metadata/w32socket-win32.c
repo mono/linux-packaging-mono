@@ -1,5 +1,6 @@
-/*
- * w32socket-win32.c: Windows specific socket code.
+/**
+ * \file
+ * Windows specific socket code.
  *
  * Copyright 2016 Microsoft
  * Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -136,9 +137,7 @@ SOCKET mono_w32socket_accept (SOCKET s, struct sockaddr *addr, socklen_t *addrle
 {
 	MonoInternalThread *curthread = mono_thread_internal_current ();
 	SOCKET newsock = INVALID_SOCKET;
-	curthread->interrupt_on_stop = (gpointer)TRUE;
 	ALERTABLE_SOCKET_CALL (FD_ACCEPT_BIT, blocking, TRUE, newsock, accept, s, addr, addrlen);
-	curthread->interrupt_on_stop = (gpointer)FALSE;
 	return newsock;
 }
 
@@ -154,9 +153,7 @@ int mono_w32socket_recv (SOCKET s, char *buf, int len, int flags, gboolean block
 {
 	MonoInternalThread *curthread = mono_thread_internal_current ();
 	int ret = SOCKET_ERROR;
-	curthread->interrupt_on_stop = (gpointer)TRUE;
 	ALERTABLE_SOCKET_CALL (FD_READ_BIT, blocking, TRUE, ret, recv, s, buf, len, flags);
-	curthread->interrupt_on_stop = (gpointer)FALSE;
 	return ret;
 }
 
@@ -237,6 +234,7 @@ BOOL mono_w32socket_transmit_file (SOCKET hSocket, gpointer hFile, TRANSMIT_FILE
 }
 #endif /* #if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT | HAVE_UWP_WINAPI_SUPPORT) */
 
+#if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT | HAVE_UWP_WINAPI_SUPPORT)
 gint
 mono_w32socket_disconnect (SOCKET sock, gboolean reuse)
 {
@@ -278,6 +276,7 @@ mono_w32socket_disconnect (SOCKET sock, gboolean reuse)
 
 	return ERROR_NOT_SUPPORTED;
 }
+#endif /* #if G_HAVE_API_SUPPORT(HAVE_CLASSIC_WINAPI_SUPPORT | HAVE_UWP_WINAPI_SUPPORT) */
 
 gint
 mono_w32socket_set_blocking (SOCKET sock, gboolean blocking)

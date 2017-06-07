@@ -1,5 +1,6 @@
-/*
- * reflection.c: System.Type icalls and related reflection queries.
+/**
+ * \file
+ * System.Type icalls and related reflection queries.
  * 
  * Author:
  *   Paolo Molaro (lupus@ximian.com)
@@ -143,6 +144,9 @@ mono_class_free_ref_info (MonoClass *klass)
 }
 
 
+/**
+ * mono_custom_attrs_free:
+ */
 void
 mono_custom_attrs_free (MonoCustomAttrInfo *ainfo)
 {
@@ -165,7 +169,10 @@ reflected_equal (gconstpointer a, gconstpointer b)
 guint
 reflected_hash (gconstpointer a) {
 	const ReflectedEntry *ea = (const ReflectedEntry *)a;
-	return mono_aligned_addr_hash (ea->item);
+	/* Combine hashes for item and refclass. Identical to boost's hash_combine */
+	guint seed = mono_aligned_addr_hash (ea->item) + 0x9e3779b9;
+	seed ^= mono_aligned_addr_hash (ea->refclass) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	return seed;
 }
 
 
@@ -209,12 +216,11 @@ mono_reflection_cleanup_domain (MonoDomain *domain)
 }
 
 
-/*
+/**
  * mono_assembly_get_object:
- * @domain: an app domain
- * @assembly: an assembly
- *
- * Return an System.Reflection.Assembly object representing the MonoAssembly @assembly.
+ * \param domain an app domain
+ * \param assembly an assembly
+ * \returns a \c System.Reflection.Assembly object representing the \c MonoAssembly \p assembly.
  */
 MonoReflectionAssembly*
 mono_assembly_get_object (MonoDomain *domain, MonoAssembly *assembly)
@@ -229,7 +235,7 @@ mono_assembly_get_object (MonoDomain *domain, MonoAssembly *assembly)
 static MonoReflectionAssemblyHandle
 assembly_object_construct (MonoDomain *domain, MonoClass *unused_klass, MonoAssembly *assembly, gpointer user_data, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	MonoReflectionAssemblyHandle res = MONO_HANDLE_NEW (MonoReflectionAssembly, mono_object_new_checked (domain, mono_class_get_mono_assembly_class (), error));
 	return_val_if_nok (error, MONO_HANDLE_CAST (MonoReflectionAssembly, NULL_HANDLE));
 	MONO_HANDLE_SETVAL (res, assembly, MonoAssembly*, assembly);
@@ -246,10 +252,13 @@ assembly_object_construct (MonoDomain *domain, MonoClass *unused_klass, MonoAsse
 MonoReflectionAssemblyHandle
 mono_assembly_get_object_handle (MonoDomain *domain, MonoAssembly *assembly, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	return CHECK_OR_CONSTRUCT_HANDLE (MonoReflectionAssemblyHandle, assembly, NULL, assembly_object_construct, NULL);
 }
 
+/**
+ * mono_module_get_object:
+ */
 MonoReflectionModule*   
 mono_module_get_object   (MonoDomain *domain, MonoImage *image)
 {
@@ -265,7 +274,7 @@ module_object_construct (MonoDomain *domain, MonoClass *unused_klass, MonoImage 
 {
 	char* basename;
 	
-	mono_error_init (error);
+	error_init (error);
 	MonoReflectionModuleHandle res = MONO_HANDLE_NEW (MonoReflectionModule, mono_object_new_checked (domain, mono_class_get_mono_module_class (), error));
 	if (!is_ok (error))
 		goto fail;
@@ -312,10 +321,13 @@ fail:
 MonoReflectionModuleHandle
 mono_module_get_object_handle (MonoDomain *domain, MonoImage *image, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	return CHECK_OR_CONSTRUCT_HANDLE (MonoReflectionModuleHandle, image, NULL, module_object_construct, NULL);
 }
 
+/**
+ * mono_module_file_get_object:
+ */
 MonoReflectionModule*
 mono_module_file_get_object (MonoDomain *domain, MonoImage *image, int table_index)
 {
@@ -335,7 +347,7 @@ mono_module_file_get_object_handle (MonoDomain *domain, MonoImage *image, int ta
 	guint32 i, name_idx;
 	const char *val;
 	
-	mono_error_init (error);
+	error_init (error);
 
 	MonoReflectionModuleHandle res = MONO_HANDLE_NEW (MonoReflectionModule, mono_object_new_checked (domain, mono_class_get_mono_module_class (), error));
 	if (!is_ok (error))
@@ -421,12 +433,12 @@ mono_type_normalize (MonoType *type)
 
 	return type;
 }
-/*
+
+/**
  * mono_type_get_object:
- * @domain: an app domain
- * @type: a type
- *
- * Return an System.MonoType object representing the type @type.
+ * \param domain an app domain
+ * \param type a type
+ * \returns A \c System.MonoType object representing the type \p type.
  */
 MonoReflectionType*
 mono_type_get_object (MonoDomain *domain, MonoType *type)
@@ -445,7 +457,7 @@ mono_type_get_object_checked (MonoDomain *domain, MonoType *type, MonoError *err
 	MonoReflectionType *res;
 	MonoClass *klass;
 
-	mono_error_init (error);
+	error_init (error);
 
 	g_assert (type != NULL);
 	klass = mono_class_from_mono_type (type);
@@ -558,13 +570,12 @@ mono_type_get_object_handle (MonoDomain *domain, MonoType *type, MonoError *erro
 	return MONO_HANDLE_NEW (MonoReflectionType, mono_type_get_object_checked (domain, type, error));
 }
 
-/*
+/**
  * mono_method_get_object:
- * @domain: an app domain
- * @method: a method
- * @refclass: the reflected type (can be NULL)
- *
- * Return an System.Reflection.MonoMethod object representing the method @method.
+ * \param domain an app domain
+ * \param method a method
+ * \param refclass the reflected type (can be NULL)
+ * \returns A \c System.Reflection.MonoMethod object representing the method \p method.
  */
 MonoReflectionMethod*
 mono_method_get_object (MonoDomain *domain, MonoMethod *method, MonoClass *refclass)
@@ -579,7 +590,7 @@ mono_method_get_object (MonoDomain *domain, MonoMethod *method, MonoClass *refcl
 static MonoReflectionMethodHandle
 method_object_construct (MonoDomain *domain, MonoClass *refclass, MonoMethod *method, gpointer user_data, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	g_assert (refclass != NULL);
 	/*
 	 * We use the same C representation for methods and constructors, but the type 
@@ -587,7 +598,7 @@ method_object_construct (MonoDomain *domain, MonoClass *refclass, MonoMethod *me
 	 */
 	MonoClass *klass;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (*method->name == '.' && (strcmp (method->name, ".ctor") == 0 || strcmp (method->name, ".cctor") == 0)) {
 		klass = mono_class_get_mono_cmethod_class ();
@@ -625,7 +636,7 @@ fail:
 MonoReflectionMethodHandle
 mono_method_get_object_handle (MonoDomain *domain, MonoMethod *method, MonoClass *refclass, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	if (!refclass)
 		refclass = method->klass;
 
@@ -674,14 +685,13 @@ mono_method_clear_object (MonoDomain *domain, MonoMethod *method)
 	}
 }
 
-/*
+/**
  * mono_field_get_object:
- * @domain: an app domain
- * @klass: a type
- * @field: a field
- *
- * Return an System.Reflection.MonoField object representing the field @field
- * in class @klass.
+ * \param domain an app domain
+ * \param klass a type
+ * \param field a field
+ * \returns A \c System.Reflection.MonoField object representing the field \p field
+ * in class \p klass.
  */
 MonoReflectionField*
 mono_field_get_object (MonoDomain *domain, MonoClass *klass, MonoClassField *field)
@@ -696,7 +706,7 @@ mono_field_get_object (MonoDomain *domain, MonoClass *klass, MonoClassField *fie
 static MonoReflectionFieldHandle
 field_object_construct (MonoDomain *domain, MonoClass *klass, MonoClassField *field, gpointer user_data, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 
 	MonoReflectionFieldHandle res = MONO_HANDLE_NEW (MonoReflectionField, mono_object_new_checked (domain, mono_class_get_mono_field_class (), error));
 	if (!is_ok (error))
@@ -734,7 +744,7 @@ fail:
 MonoReflectionFieldHandle
 mono_field_get_object_handle (MonoDomain *domain, MonoClass *klass, MonoClassField *field, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	return CHECK_OR_CONSTRUCT_HANDLE (MonoReflectionFieldHandle, field, klass, field_object_construct, NULL);
 }
 
@@ -779,7 +789,7 @@ mono_property_get_object (MonoDomain *domain, MonoClass *klass, MonoProperty *pr
 static MonoReflectionPropertyHandle
 property_object_construct (MonoDomain *domain, MonoClass *klass, MonoProperty *property, gpointer user_data, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 
 	MonoReflectionPropertyHandle res = MONO_HANDLE_NEW (MonoReflectionProperty, mono_object_new_checked (domain, mono_class_get_mono_property_class (), error));
 	if (!is_ok (error))
@@ -793,13 +803,13 @@ fail:
 
 /**
  * mono_property_get_object_handle:
- * @domain: an app domain
- * @klass: a type
- * @property: a property
- * @error: set on error
+ * \param domain an app domain
+ * \param klass a type
+ * \param property a property
+ * \param error set on error
  *
- * Return an System.Reflection.MonoProperty object representing the property @property
- * in class @klass.  On error returns NULL and sets @error.
+ * \returns A \c System.Reflection.MonoProperty object representing the property \p property
+ * in class \p klass.  On error returns NULL and sets \p error.
  */
 MonoReflectionPropertyHandle
 mono_property_get_object_handle (MonoDomain *domain, MonoClass *klass, MonoProperty *property, MonoError *error)
@@ -809,13 +819,12 @@ mono_property_get_object_handle (MonoDomain *domain, MonoClass *klass, MonoPrope
 
 /**
  * mono_property_get_object:
- * @domain: an app domain
- * @klass: a type
- * @property: a property
- * @error: set on error
- *
- * Return an System.Reflection.MonoProperty object representing the property @property
- * in class @klass.  On error returns NULL and sets @error.
+ * \param domain an app domain
+ * \param klass a type
+ * \param property a property
+ * \param error set on error
+ * \returns a \c System.Reflection.MonoProperty object representing the property \p property
+ * in class \p klass.  On error returns NULL and sets \p error.
  */
 MonoReflectionProperty*
 mono_property_get_object_checked (MonoDomain *domain, MonoClass *klass, MonoProperty *property, MonoError *error)
@@ -825,14 +834,13 @@ mono_property_get_object_checked (MonoDomain *domain, MonoClass *klass, MonoProp
 	HANDLE_FUNCTION_RETURN_OBJ (res);
 }
 
-/*
+/**
  * mono_event_get_object:
- * @domain: an app domain
- * @klass: a type
- * @event: a event
- *
- * Return an System.Reflection.MonoEvent object representing the event @event
- * in class @klass.
+ * \param domain an app domain
+ * \param klass a type
+ * \param event a event
+ * \returns A \c System.Reflection.MonoEvent object representing the event \p event
+ * in class \p klass.
  */
 MonoReflectionEvent*
 mono_event_get_object (MonoDomain *domain, MonoClass *klass, MonoEvent *event)
@@ -848,7 +856,7 @@ static MonoReflectionEventHandle
 event_object_construct (MonoDomain *domain, MonoClass *klass, MonoEvent *event, gpointer user_data, MonoError *error)
 {
 
-	mono_error_init (error);
+	error_init (error);
 	MonoReflectionMonoEventHandle mono_event = MONO_HANDLE_NEW (MonoReflectionMonoEvent, mono_object_new_checked (domain, mono_class_get_mono_event_class (), error));
 	if (!is_ok (error))
 		return MONO_HANDLE_CAST (MonoReflectionEvent, NULL_HANDLE);
@@ -859,30 +867,29 @@ event_object_construct (MonoDomain *domain, MonoClass *klass, MonoEvent *event, 
 
 /**
  * mono_event_get_object_handle:
- * @domain: an app domain
- * @klass: a type
- * @event: a event
- * @error: set on error
- *
- * Return an System.Reflection.MonoEvent object representing the event @event
- * in class @klass. On failure sets @error and returns NULL
+ * \param domain an app domain
+ * \param klass a type
+ * \param event a event
+ * \param error set on error
+ * \returns a \c System.Reflection.MonoEvent object representing the event \p event
+ * in class \p klass. On failure sets \p error and returns NULL
  */
 MonoReflectionEventHandle
 mono_event_get_object_handle (MonoDomain *domain, MonoClass *klass, MonoEvent *event, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	return CHECK_OR_CONSTRUCT_HANDLE (MonoReflectionEventHandle, event, klass, event_object_construct, NULL);
 }
 
 
 /**
  * mono_get_reflection_missing_object:
- * @domain: Domain where the object lives
+ * \param domain Domain where the object lives
  *
- * Returns the System.Reflection.Missing.Value singleton object
- * (of type System.Reflection.Missing).
+ * \returns the \c System.Reflection.Missing.Value singleton object
+ * (of type \c System.Reflection.Missing).
  *
- * Used as the value for ParameterInfo.DefaultValue when Optional
+ * Used as the value for \c ParameterInfo.DefaultValue when Optional
  * is present
  */
 static MonoObjectHandle
@@ -909,7 +916,7 @@ get_dbnull_object (MonoDomain *domain, MonoError *error)
 {
 	static MonoClassField *dbnull_value_field = NULL;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (!dbnull_value_field) {
 		MonoClass *dbnull_klass;
@@ -925,7 +932,7 @@ get_dbnull_object (MonoDomain *domain, MonoError *error)
 static MonoObjectHandle
 get_dbnull (MonoDomain *domain, MonoObjectHandle dbnull, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	if (MONO_HANDLE_IS_NULL (dbnull))
 		MONO_HANDLE_ASSIGN (dbnull, get_dbnull_object (domain, error));
 	return dbnull;
@@ -943,7 +950,7 @@ static gboolean
 add_parameter_object_to_array (MonoDomain *domain, MonoMethod *method, MonoObjectHandle member, int idx, const char *name, MonoType *sig_param, guint32 blob_type_enum, const char *blob, MonoMarshalSpec *mspec, MonoObjectHandle missing, MonoObjectHandle dbnull, MonoArrayHandle dest,  MonoError *error)
 {
 	HANDLE_FUNCTION_ENTER ();
-	mono_error_init (error);
+	error_init (error);
 	MonoReflectionParameterHandle param = MONO_HANDLE_NEW (MonoReflectionParameter, mono_object_new_checked (domain, mono_class_get_mono_parameter_info_class (), error));
 	if (!is_ok (error))
 		goto leave;
@@ -1030,7 +1037,7 @@ param_objects_construct (MonoDomain *domain, MonoClass *refclass, MonoMethodSign
 	MonoMarshalSpec **mspecs = NULL;
 	int i;
 
-	mono_error_init (error);
+	error_init (error);
 	
 	MonoReflectionMethodHandle member = mono_method_get_object_handle (domain, method, refclass, error);
 	if (!is_ok (error))
@@ -1096,7 +1103,7 @@ leave:
 MonoArrayHandle
 mono_param_get_objects_internal (MonoDomain *domain, MonoMethod *method, MonoClass *refclass, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 
 	/* side-effect: sets method->signature non-NULL on success */
 	MonoMethodSignature *sig = mono_method_signature_checked (method, error);
@@ -1119,6 +1126,9 @@ fail:
 	return MONO_HANDLE_NEW (MonoArray, NULL_HANDLE);
 }
 
+/**
+ * mono_param_get_objects:
+ */
 MonoArray*
 mono_param_get_objects (MonoDomain *domain, MonoMethod *method)
 {
@@ -1133,7 +1143,7 @@ static gboolean
 add_local_var_info_to_array (MonoDomain *domain, MonoMethodHeader *header, int idx, MonoArrayHandle dest, MonoError *error)
 {
 	HANDLE_FUNCTION_ENTER ();
-	mono_error_init (error);
+	error_init (error);
 	MonoReflectionLocalVariableInfoHandle info = MONO_HANDLE_NEW (MonoReflectionLocalVariableInfo, mono_object_new_checked (domain, mono_class_get_local_variable_info_class (), error));
 	if (!is_ok (error))
 		goto leave;
@@ -1157,7 +1167,7 @@ static gboolean
 add_exception_handling_clause_to_array (MonoDomain *domain, MonoMethodHeader *header, int idx, MonoArrayHandle dest, MonoError *error)
 {
 	HANDLE_FUNCTION_ENTER ();
-	mono_error_init (error);
+	error_init (error);
 	MonoReflectionExceptionHandlingClauseHandle info = MONO_HANDLE_NEW (MonoReflectionExceptionHandlingClause, mono_object_new_checked (domain, mono_class_get_exception_handling_clause_class (), error));
 	if (!is_ok (error))
 		goto leave;
@@ -1183,12 +1193,11 @@ leave:
 	HANDLE_FUNCTION_RETURN_VAL (is_ok (error));
 }
 
-/*
+/**
  * mono_method_body_get_object:
- * @domain: an app domain
- * @method: a method
- *
- * Return an System.Reflection.MethodBody object representing the method @method.
+ * \param domain an app domain
+ * \param method a method
+ * \return A \c System.Reflection.MethodBody object representing the method \p method.
  */
 MonoReflectionMethodBody*
 mono_method_body_get_object (MonoDomain *domain, MonoMethod *method)
@@ -1210,7 +1219,7 @@ method_body_object_construct (MonoDomain *domain, MonoClass *unused_class, MonoM
 	unsigned char format, flags;
 	int i;
 
-	mono_error_init (error);
+	error_init (error);
 
 	/* for compatibility with .net */
 	if (method_is_dynamic (method)) {
@@ -1298,28 +1307,25 @@ fail:
 
 /**
  * mono_method_body_get_object_handle:
- * @domain: an app domain
- * @method: a method
- * @error: set on error
- *
- * Return an System.Reflection.MethodBody object representing the
- * method @method.  On failure, returns NULL and sets @error.
+ * \param domain an app domain
+ * \param method a method
+ * \param error set on error
+ * \returns a \c System.Reflection.MethodBody object representing the
+ * method \p method.  On failure, returns NULL and sets \p error.
  */
 MonoReflectionMethodBodyHandle
 mono_method_body_get_object_handle (MonoDomain *domain, MonoMethod *method, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	return CHECK_OR_CONSTRUCT_HANDLE (MonoReflectionMethodBodyHandle, method, NULL, method_body_object_construct, NULL);
 }
 
 
 /**
  * mono_get_dbnull_object:
- * @domain: Domain where the object lives
- *
- * Returns the System.DBNull.Value singleton object
- *
- * Used as the value for ParameterInfo.DefaultValue 
+ * \param domain Domain where the object lives
+ * Used as the value for \c ParameterInfo.DefaultValue
+ * \returns the \c System.DBNull.Value singleton object
  */
 MonoObject *
 mono_get_dbnull_object (MonoDomain *domain)
@@ -1406,7 +1412,7 @@ mono_get_object_from_blob (MonoDomain *domain, MonoType *type, const char *blob,
 	MonoObject *object;
 	MonoType *basetype = type;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (!blob)
 		return NULL;
@@ -1749,12 +1755,11 @@ _mono_reflection_parse_type (char *name, char **endptr, gboolean is_recursed,
 
 /**
  * mono_identifier_unescape_type_name_chars:
- * @identifier: the display name of a mono type
+ * \param identifier the display name of a mono type
  *
- * Returns:
- *  The name in internal form, that is without escaping backslashes.
+ * \returns The name in internal form, that is without escaping backslashes.
  *
- *  The string is modified in place!
+ * The string is modified in place!
  */
 char*
 mono_identifier_unescape_type_name_chars(char* identifier)
@@ -1799,9 +1804,7 @@ unescape_each_nested_name (void* data, void* user_data)
 /**
  * mono_identifier_unescape_info:
  *
- * @info: a parsed display form of an (optionally assembly qualified) full type name.
- *
- * Returns: nothing.
+ * \param info a parsed display form of an (optionally assembly qualified) full type name.
  *
  * Destructively updates the info by unescaping the identifiers that
  * comprise the type namespace, name, nested types (if any) and
@@ -1824,6 +1827,9 @@ mono_identifier_unescape_info (MonoTypeNameParse *info)
 		g_list_foreach(info->nested, &unescape_each_nested_name, NULL);
 }
 
+/**
+ * mono_reflection_parse_type:
+ */
 int
 mono_reflection_parse_type (char *name, MonoTypeNameParse *info)
 {
@@ -1841,7 +1847,7 @@ _mono_reflection_get_type_from_info (MonoTypeNameParse *info, MonoImage *image, 
 	MonoType *type;
 	MonoImage *rootimage = image;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (info->assembly.name) {
 		MonoAssembly *assembly = mono_assembly_loaded (&info->assembly);
@@ -1866,7 +1872,7 @@ _mono_reflection_get_type_from_info (MonoTypeNameParse *info, MonoImage *image, 
 	if (type == NULL && !info->assembly.name && image != mono_defaults.corlib) {
 		/* ignore the error and try again */
 		mono_error_cleanup (error);
-		mono_error_init (error);
+		error_init (error);
 		image = mono_defaults.corlib;
 		type = mono_reflection_get_type_with_rootimage (rootimage, image, info, ignorecase, &type_resolve, error);
 	}
@@ -1889,7 +1895,7 @@ mono_reflection_get_type_internal (MonoImage *rootimage, MonoImage* image, MonoT
 	gboolean bounded = FALSE;
 	MonoType* type = NULL;
 	
-	mono_error_init (error);
+	error_init (error);
 	if (!image)
 		image = mono_defaults.corlib;
 
@@ -2014,17 +2020,16 @@ leave:
 	HANDLE_FUNCTION_RETURN_VAL (type);
 }
 
-/*
+/**
  * mono_reflection_get_type:
- * @image: a metadata context
- * @info: type description structure
- * @ignorecase: flag for case-insensitive string compares
- * @type_resolve: whenever type resolve was already tried
+ * \param image a metadata context
+ * \param info type description structure
+ * \param ignorecase flag for case-insensitive string compares
+ * \param type_resolve whenever type resolve was already tried
  *
- * Build a MonoType from the type description in @info.
+ * Build a MonoType from the type description in \p info.
  * 
  */
-
 MonoType*
 mono_reflection_get_type (MonoImage* image, MonoTypeNameParse *info, gboolean ignorecase, gboolean *type_resolve) {
 	MonoError error;
@@ -2035,19 +2040,17 @@ mono_reflection_get_type (MonoImage* image, MonoTypeNameParse *info, gboolean ig
 
 /**
  * mono_reflection_get_type_checked:
- * @rootimage: the image of the currently active managed caller
- * @image: a metadata context
- * @info: type description structure
- * @ignorecase: flag for case-insensitive string compares
- * @type_resolve: whenever type resolve was already tried
- * @error: set on error.
- *
- * Build a MonoType from the type description in @info. On failure returns NULL and sets @error.
- *
+ * \param rootimage the image of the currently active managed caller
+ * \param image a metadata context
+ * \param info type description structure
+ * \param ignorecase flag for case-insensitive string compares
+ * \param type_resolve whenever type resolve was already tried
+ * \param error set on error.
+ * Build a \c MonoType from the type description in \p info. On failure returns NULL and sets \p error.
  */
 MonoType*
 mono_reflection_get_type_checked (MonoImage *rootimage, MonoImage* image, MonoTypeNameParse *info, gboolean ignorecase, gboolean *type_resolve, MonoError *error) {
-	mono_error_init (error);
+	error_init (error);
 	return mono_reflection_get_type_with_rootimage (rootimage, image, info, ignorecase, type_resolve, error);
 }
 
@@ -2056,7 +2059,7 @@ static MonoType*
 module_builder_array_get_type (MonoArrayHandle module_builders, int i, MonoImage *rootimage, MonoTypeNameParse *info, gboolean ignorecase, MonoError *error)
 {
 	HANDLE_FUNCTION_ENTER ();
-	mono_error_init (error);
+	error_init (error);
 	MonoType *type = NULL;
 	MonoReflectionModuleBuilderHandle mb = MONO_HANDLE_NEW (MonoReflectionModuleBuilder, NULL);
 	MONO_HANDLE_ARRAY_GETREF (mb, module_builders, i);
@@ -2069,7 +2072,7 @@ static MonoType*
 module_array_get_type (MonoArrayHandle modules, int i, MonoImage *rootimage, MonoTypeNameParse *info, gboolean ignorecase, MonoError *error)
 {
 	HANDLE_FUNCTION_ENTER ();
-	mono_error_init (error);
+	error_init (error);
 	MonoType *type = NULL;
 	MonoReflectionModuleHandle mod = MONO_HANDLE_NEW (MonoReflectionModule, NULL);
 	MONO_HANDLE_ARRAY_GETREF (mod, modules, i);
@@ -2085,7 +2088,7 @@ mono_reflection_get_type_internal_dynamic (MonoImage *rootimage, MonoAssembly *a
 	MonoType *type = NULL;
 	int i;
 
-	mono_error_init (error);
+	error_init (error);
 	g_assert (assembly_is_dynamic (assembly));
 	MonoReflectionAssemblyBuilderHandle abuilder = MONO_HANDLE_CAST (MonoReflectionAssemblyBuilder, mono_assembly_get_object_handle (((MonoDynamicAssembly*)assembly)->domain, assembly, error));
 	if (!is_ok (error))
@@ -2131,7 +2134,7 @@ mono_reflection_get_type_with_rootimage (MonoImage *rootimage, MonoImage* image,
 	GString *fullName;
 	GList *mod;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (image && image_is_dynamic (image))
 		type = mono_reflection_get_type_internal_dynamic (rootimage, image->assembly, info, ignorecase, error);
@@ -2180,6 +2183,9 @@ mono_reflection_get_type_with_rootimage (MonoImage *rootimage, MonoImage* image,
 	return type;
 }
 
+/**
+ * mono_reflection_free_type_info:
+ */
 void
 mono_reflection_free_type_info (MonoTypeNameParse *info)
 {
@@ -2201,13 +2207,13 @@ mono_reflection_free_type_info (MonoTypeNameParse *info)
 	}
 }
 
-/*
+/**
  * mono_reflection_type_from_name:
- * @name: type name.
- * @image: a metadata context (can be NULL).
+ * \param name type name.
+ * \param image a metadata context (can be NULL).
  *
- * Retrieves a MonoType from its @name. If the name is not fully qualified,
- * it defaults to get the type from @image or, if @image is NULL or loading
+ * Retrieves a \c MonoType from its \p name. If the name is not fully qualified,
+ * it defaults to get the type from \p image or, if \p image is NULL or loading
  * from it fails, uses corlib.
  * 
  */
@@ -2222,14 +2228,12 @@ mono_reflection_type_from_name (char *name, MonoImage *image)
 
 /**
  * mono_reflection_type_from_name_checked:
- * @name: type name.
- * @image: a metadata context (can be NULL).
- * @error: set on errror.
- *
- * Retrieves a MonoType from its @name. If the name is not fully qualified,
- * it defaults to get the type from @image or, if @image is NULL or loading
- * from it fails, uses corlib.  On failure returns NULL and sets @error.
- * 
+ * \param name type name.
+ * \param image a metadata context (can be NULL).
+ * \param error set on errror.
+ * Retrieves a MonoType from its \p name. If the name is not fully qualified,
+ * it defaults to get the type from \p image or, if \p image is NULL or loading
+ * from it fails, uses corlib.  On failure returns NULL and sets \p error.
  */
 MonoType*
 mono_reflection_type_from_name_checked (char *name, MonoImage *image, MonoError *error)
@@ -2238,7 +2242,7 @@ mono_reflection_type_from_name_checked (char *name, MonoImage *image, MonoError 
 	MonoTypeNameParse info;
 	char *tmp;
 
-	mono_error_init (error);
+	error_init (error);
 	/* Make a copy since parse_type modifies its argument */
 	tmp = g_strdup (name);
 	
@@ -2257,10 +2261,9 @@ mono_reflection_type_from_name_checked (char *name, MonoImage *image, MonoError 
 	return type;
 }
 
-/*
+/**
  * mono_reflection_get_token:
- *
- *   Return the metadata token of OBJ which should be an object
+ * \returns the metadata token of \p obj which should be an object
  * representing a metadata element.
  */
 guint32
@@ -2276,18 +2279,17 @@ mono_reflection_get_token (MonoObject *obj_raw)
 
 /**
  * mono_reflection_get_token_checked:
- * @obj: the object
- * @error: set on error
- *
- *   Return the metadata token of @obj which should be an object
- * representing a metadata element.  On failure sets @error.
+ * \param obj the object
+ * \param error set on error
+ * \returns the metadata token of \p obj which should be an object
+ * representing a metadata element.  On failure sets \p error.
  */
 guint32
 mono_reflection_get_token_checked (MonoObjectHandle obj, MonoError *error)
 {
 	guint32 token = 0;
 
-	mono_error_init (error);
+	error_init (error);
 
 	MonoClass *klass = mono_handle_class (obj);
 
@@ -2372,13 +2374,12 @@ mono_reflection_is_usertype (MonoReflectionTypeHandle ref)
 
 /**
  * mono_reflection_bind_generic_parameters:
- * @type: a managed type object (which should be some kind of generic (instance? definition?))
- * @type_args: the number of type arguments to bind
- * @types: array of type arguments
- * @error: set on error
- *
+ * \param type a managed type object (which should be some kind of generic (instance? definition?))
+ * \param type_args the number of type arguments to bind
+ * \param types array of type arguments
+ * \param error set on error
  * Given a managed type object for a generic type instance, binds each of its arguments to the specified types.
- * Returns the MonoType* for the resulting type instantiation.  On failure returns NULL and sets @error.
+ * \returns the \c MonoType* for the resulting type instantiation.  On failure returns NULL and sets \p error.
  */
 MonoType*
 mono_reflection_bind_generic_parameters (MonoReflectionTypeHandle reftype, int type_argc, MonoType **types, MonoError *error)
@@ -2386,7 +2387,7 @@ mono_reflection_bind_generic_parameters (MonoReflectionTypeHandle reftype, int t
 	gboolean is_dynamic = FALSE;
 	MonoClass *geninst;
 
-	mono_error_init (error);
+	error_init (error);
 	
 	mono_loader_lock ();
 
@@ -2452,7 +2453,7 @@ static MonoGenericInst*
 generic_inst_from_type_array_handle (MonoArrayHandle types, MonoError *error)
 {
 	HANDLE_FUNCTION_ENTER ();
-	mono_error_init (error);
+	error_init (error);
 	MonoGenericInst *ginst = NULL;
 	int count = mono_array_handle_length (types);
 	MonoType **type_argv = g_new0 (MonoType *, count);
@@ -2477,7 +2478,7 @@ reflection_bind_generic_method_parameters (MonoMethod *method, MonoArrayHandle t
 	MonoMethod *inflated;
 	MonoGenericContext tmp_context;
 
-	mono_error_init (error);
+	error_init (error);
 
 	klass = method->klass;
 
@@ -2510,7 +2511,7 @@ reflection_bind_generic_method_parameters (MonoMethod *method, MonoArrayHandle t
 MonoReflectionMethodHandle
 ves_icall_MonoMethod_MakeGenericMethod_impl (MonoReflectionMethodHandle rmethod, MonoArrayHandle types, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 	g_assert (0 != strcmp (mono_handle_class (rmethod)->name, "MethodBuilder"));
 
 	MonoMethod *method = MONO_HANDLE_GETVAL (rmethod, method);
@@ -2592,14 +2593,13 @@ mono_declsec_get_flags (MonoImage *image, guint32 token)
 	return result;
 }
 
-/*
+/**
+ * mono_declsec_flags_from_method:
+ * \param method The method for which we want the declarative security flags.
  * Get the security actions (in the form of flags) associated with the specified method.
- *
- * @method: The method for which we want the declarative security flags.
- * Return the declarative security flags for the method (only).
- *
- * Note: To keep MonoMethod size down we do not cache the declarative security flags
- *       (except for the stack modifiers which are kept in the MonoJitInfo structure)
+ * To keep \c MonoMethod size down we do not cache the declarative security flags
+ * (except for the stack modifiers which are kept in the MonoJitInfo structure)
+ * \returns the declarative security flags for the method (only).
  */
 guint32
 mono_declsec_flags_from_method (MonoMethod *method)
@@ -2614,14 +2614,13 @@ mono_declsec_flags_from_method (MonoMethod *method)
 	return 0;
 }
 
-/*
+/**
+ * mono_declsec_flags_from_class:
+ * \param klass The class for which we want the declarative security flags.
  * Get the security actions (in the form of flags) associated with the specified class.
- *
- * @klass: The class for which we want the declarative security flags.
- * Return the declarative security flags for the class.
- *
- * Note: We cache the flags inside the MonoClass structure as this will get 
- *       called very often (at least for each method).
+ * We cache the flags inside the \c MonoClass structure as this will get 
+ * called very often (at least for each method).
+ * \returns the declarative security flags for the class.
  */
 guint32
 mono_declsec_flags_from_class (MonoClass *klass)
@@ -2644,11 +2643,11 @@ mono_declsec_flags_from_class (MonoClass *klass)
 	return 0;
 }
 
-/*
+/**
+ * mono_declsec_flags_from_assembly:
+ * \param assembly The assembly for which we want the declarative security flags.
  * Get the security actions (in the form of flags) associated with the specified assembly.
- *
- * @assembly: The assembly for which we want the declarative security flags.
- * Return the declarative security flags for the assembly.
+ * \returns the declarative security flags for the assembly.
  */
 guint32
 mono_declsec_flags_from_assembly (MonoAssembly *assembly)
@@ -2734,10 +2733,11 @@ mono_declsec_get_method_demands_params (MonoMethod *method, MonoDeclSecurityActi
 	return fill_actions_from_index (method->klass->image, idx, demands, id_std, id_noncas, id_choice);
 }
 
-/*
+/**
+ * mono_declsec_get_demands:
  * Collect all actions (that requires to generate code in mini) assigned for
  * the specified method.
- * Note: Don't use the content of actions if the function return FALSE.
+ * Don't use the content of actions if the function return FALSE.
  */
 MonoBoolean
 mono_declsec_get_demands (MonoMethod *method, MonoDeclSecurityActions* demands)
@@ -2784,10 +2784,10 @@ mono_declsec_get_demands (MonoMethod *method, MonoDeclSecurityActions* demands)
 }
 
 
-/*
- * Collect all Link actions: LinkDemand, NonCasLinkDemand and LinkDemandChoice (2.0).
- *
- * Note: Don't use the content of actions if the function return FALSE.
+/**
+ * mono_declsec_get_linkdemands:
+ * Collect all Link actions: \c LinkDemand, \c NonCasLinkDemand and \c LinkDemandChoice (2.0).
+ * Don't use the content of actions if the function return FALSE.
  */
 MonoBoolean
 mono_declsec_get_linkdemands (MonoMethod *method, MonoDeclSecurityActions* klass, MonoDeclSecurityActions *cmethod)
@@ -2830,14 +2830,13 @@ mono_declsec_get_linkdemands (MonoMethod *method, MonoDeclSecurityActions* klass
 	return result;
 }
 
-/*
- * Collect all Inherit actions: InheritanceDemand, NonCasInheritanceDemand and InheritanceDemandChoice (2.0).
- *
- * @klass	The inherited class - this is the class that provides the security check (attributes)
- * @demans	
- * return TRUE if inheritance demands (any kind) are present, FALSE otherwise.
- * 
- * Note: Don't use the content of actions if the function return FALSE.
+/**
+ * mono_declsec_get_inheritdemands_class:
+ * \param klass	The inherited class - this is the class that provides the security check (attributes)
+ * \param demands
+ * Collect all Inherit actions - \c InheritanceDemand, \c NonCasInheritanceDemand and \c InheritanceDemandChoice (2.0).
+ * Don't use the content of actions if the function return FALSE.
+ * \returns TRUE if inheritance demands (any kind) are present, FALSE otherwise.
  */
 MonoBoolean
 mono_declsec_get_inheritdemands_class (MonoClass *klass, MonoDeclSecurityActions* demands)
@@ -2862,10 +2861,10 @@ mono_declsec_get_inheritdemands_class (MonoClass *klass, MonoDeclSecurityActions
 	return result;
 }
 
-/*
- * Collect all Inherit actions: InheritanceDemand, NonCasInheritanceDemand and InheritanceDemandChoice (2.0).
- *
- * Note: Don't use the content of actions if the function return FALSE.
+/**
+ * mono_declsec_get_inheritdemands_method:
+ * Collect all Inherit actions: \c InheritanceDemand, \c NonCasInheritanceDemand and \c InheritanceDemandChoice (2.0).
+ * Don't use the content of actions if the function return FALSE.
  */
 MonoBoolean
 mono_declsec_get_inheritdemands_method (MonoMethod *method, MonoDeclSecurityActions* demands)
@@ -2934,6 +2933,9 @@ mono_declsec_get_method_action (MonoMethod *method, guint32 action, MonoDeclSecu
 	return FALSE;
 }
 
+/**
+ * mono_declsec_get_class_action:
+ */
 MonoBoolean
 mono_declsec_get_class_action (MonoClass *klass, guint32 action, MonoDeclSecurityEntry *entry)
 {
@@ -2948,6 +2950,9 @@ mono_declsec_get_class_action (MonoClass *klass, guint32 action, MonoDeclSecurit
 	return FALSE;
 }
 
+/**
+ * mono_declsec_get_assembly_action:
+ */
 MonoBoolean
 mono_declsec_get_assembly_action (MonoAssembly *assembly, guint32 action, MonoDeclSecurityEntry *entry)
 {
@@ -2965,7 +2970,7 @@ mono_reflection_call_is_assignable_to (MonoClass *klass, MonoClass *oklass, Mono
 	void *params [1];
 	static MonoMethod *method = NULL;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (method == NULL) {
 		method = mono_class_get_method_from_name (mono_class_get_type_builder_class (), "IsAssignableTo", 1);
@@ -2994,9 +2999,8 @@ mono_reflection_call_is_assignable_to (MonoClass *klass, MonoClass *oklass, Mono
 
 /**
  * mono_reflection_type_get_type:
- * @reftype: the System.Type object
- *
- * Returns the MonoType* associated with the C# System.Type object @reftype.
+ * \param reftype the \c System.Type object
+ * \returns the \c MonoType* associated with the C# \c System.Type object \p reftype.
  */
 MonoType*
 mono_reflection_type_get_type (MonoReflectionType *reftype)
@@ -3011,9 +3015,8 @@ mono_reflection_type_get_type (MonoReflectionType *reftype)
 
 /**
  * mono_reflection_assembly_get_assembly:
- * @refassembly: the System.Reflection.Assembly object
- *
- * Returns the MonoAssembly* associated with the C# System.Reflection.Assembly object @refassembly.
+ * \param refassembly the \c System.Reflection.Assembly object
+ * \returns the \c MonoAssembly* associated with the C# \c System.Reflection.Assembly object \p refassembly.
  */
 MonoAssembly*
 mono_reflection_assembly_get_assembly (MonoReflectionAssembly *refassembly)
@@ -3025,9 +3028,8 @@ mono_reflection_assembly_get_assembly (MonoReflectionAssembly *refassembly)
 
 /**
  * mono_class_from_mono_type_handle:
- * @reftype: the System.Type handle
- *
- * Returns the MonoClass* corresponding to the given type.
+ * \param reftype the \c System.Type handle
+ * \returns the \c MonoClass* corresponding to the given type.
  */
 MonoClass*
 mono_class_from_mono_type_handle (MonoReflectionTypeHandle reftype)

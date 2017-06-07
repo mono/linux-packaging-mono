@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.0.1.1],
+AC_INIT(mono, [5.2.0.175],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -40,7 +40,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This can be reset to 0 when Mono's version number is bumped
 # since it's part of the corlib version (the prefix '1' in the full
 # version number is to ensure the number isn't treated as octal in C)
-MONO_CORLIB_COUNTER=0
+MONO_CORLIB_COUNTER=1
 MONO_CORLIB_VERSION=`printf "1%02d%02d%02d%03d" $MONO_VERSION_MAJOR $MONO_VERSION_MINOR $MONO_VERSION_BUILD $MONO_CORLIB_COUNTER`
 
 AC_DEFINE_UNQUOTED(MONO_CORLIB_VERSION,$MONO_CORLIB_VERSION,[Version of the corlib-runtime interface])
@@ -233,9 +233,6 @@ case "$host" in
 		CFLAGS="$CFLAGS -DPAGE_SIZE=4096 -DS_IWRITE=S_IWUSR"
 		CXXFLAGS="$CXXFLAGS -DPAGE_SIZE=4096 -DS_IWRITE=S_IWUSR"
 
-		# The configure check can't detect this
-		AC_DEFINE(HAVE_LARGE_FILE_SUPPORT, 1, [Have large file support])
-
 		# to bypass the underscore linker check, can't work when cross-compiling
 		mono_cv_uscore=yes
 		mono_cv_clang=no
@@ -351,9 +348,13 @@ case "$host" in
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT -D_THREAD_SAFE"
 		libmono_cflags="-D_REENTRANT -D_THREAD_SAFE"
 		libdl=
-		LIBS="$LIBS -lnetwork"
+		LIBS="$LIBS -lnetwork -ltextencoding"
 		need_link_unlink=yes
 		AC_DEFINE(PTHREAD_POINTER_ID)
+		dnl Haiku does not support static TLS with __thread
+		with_tls=pthread
+		dnl Boehm is too much work to backport Haiku support for
+		support_boehm=no
 		libgc_threads=pthreads
 		use_sigposix=yes
 		;;
@@ -875,9 +876,9 @@ elif test x$with_runtime_preset = xfullaot; then
    mono_feature_disable_reflection_emit='yes'
    mono_feature_disable_appdomains='yes'
 
-   AOT_BUILD_FLAGS="-O=gsharedvt --aot=full,$INVARIANT_AOT_OPTIONS"
+   AOT_BUILD_FLAGS="--runtime=mobile -O=gsharedvt --aot=full,$INVARIANT_AOT_OPTIONS"
 
-   AOT_RUN_FLAGS="--full-aot"
+   AOT_RUN_FLAGS="--runtime=mobile --full-aot"
 elif test x$with_runtime_preset = xbitcode; then
    DISABLE_MCS_DOCS_default=yes
    with_testing_aot_full_default=yes
@@ -892,19 +893,15 @@ elif test x$with_runtime_preset = xbitcode; then
    mono_feature_disable_reflection_emit='yes'
    mono_feature_disable_appdomains='yes'
 
-   AOT_BUILD_FLAGS="--aot=llvmonly,$INVARIANT_AOT_OPTIONS"
-   AOT_RUN_FLAGS="--llvmonly"
+   AOT_BUILD_FLAGS="--runtime=mobile --aot=llvmonly,$INVARIANT_AOT_OPTIONS"
+   AOT_RUN_FLAGS="--runtime=mobile --llvmonly"
 elif test x$with_runtime_preset = xhybridaot; then
    DISABLE_MCS_DOCS_default=yes
    with_testing_aot_hybrid_default=yes
    TEST_PROFILE=testing_aot_hybrid 
 
-   mono_feature_disable_com='yes'
-   mono_feature_disable_remoting='yes'
-   mono_feature_disable_appdomains='yes'
-
-   AOT_BUILD_FLAGS="--aot=hybrid,$INVARIANT_AOT_OPTIONS"
-   AOT_RUN_FLAGS="--hybrid-aot"
+   AOT_BUILD_FLAGS="--runtime=mobile --aot=hybrid,$INVARIANT_AOT_OPTIONS"
+   AOT_RUN_FLAGS="--runtime=mobile --hybrid-aot"
 elif test x$with_runtime_preset = xaot; then
    with_profile4_x_default=yes
 
@@ -923,8 +920,8 @@ elif test x$with_runtime_preset = xwinaot; then
    mono_feature_disable_reflection_emit='yes'
    mono_feature_disable_appdomains='yes'
 
-   AOT_BUILD_FLAGS="--aot=full,$INVARIANT_AOT_OPTIONS"
-   AOT_RUN_FLAGS="--full-aot"
+   AOT_BUILD_FLAGS="--runtime=mobile --aot=full,$INVARIANT_AOT_OPTIONS"
+   AOT_RUN_FLAGS="--runtime=mobile --full-aot"
 elif test x$with_runtime_preset = xorbis; then
    DISABLE_MCS_DOCS_default=yes
    with_orbis_default=yes
@@ -936,8 +933,8 @@ elif test x$with_runtime_preset = xorbis; then
    mono_feature_disable_reflection_emit='yes'
    mono_feature_disable_appdomains='yes'
 
-   AOT_BUILD_FLAGS="--aot=full,$INVARIANT_AOT_OPTIONS"
-   AOT_RUN_FLAGS="--full-aot"
+   AOT_BUILD_FLAGS="--runtime=mobile --aot=full,$INVARIANT_AOT_OPTIONS"
+   AOT_RUN_FLAGS="--runtime=mobile --full-aot"
 else
    with_profile4_x_default=yes
 fi
@@ -1034,25 +1031,25 @@ AC_SUBST(DEFAULT_PROFILE)
 
 if test x$USE_NLS = xprofile_default; then
 
-if test x$host_darwin = xyes; then
-# We make the default value for USE_NLS
-# "no" on OSX because it isn't available on most
-# default OSX installs. The most common configurations will
-# all disable it, so this saves us typing.
-  USE_NLS=no
-  AC_SUBST([USE_NLS])
-  AC_MSG_RESULT([$USE_NLS])
-else
-  USE_NLS=yes
-  AC_SUBST([USE_NLS])
-  AC_MSG_RESULT([$USE_NLS])
-fi
+	AC_MSG_CHECKING([NLS used])
 
+	# We make the default value for USE_NLS
+	# "no" on OSX because it isn't available on most
+	# default OSX installs. The most common configurations will
+	# all disable it, so this saves us typing.
+	if test x$host_darwin = xyes; then
+		USE_NLS=no;
+	else
+		USE_NLS=yes;
+	fi
+
+	AC_SUBST([USE_NLS])
+	AC_MSG_RESULT([$USE_NLS])
 fi
 
 AC_ARG_ENABLE(minimal, [  --enable-minimal=LIST      drop support for LIST subsystems.
      LIST is a comma-separated list from: aot, profiler, decimal, pinvoke, debug, appdomains, verifier, 
-     reflection_emit, reflection_emit_save, large_code, logging, com, ssa, generics, attach, jit, simd, soft_debug, perfcounters, normalization, assembly_remapping, shared_perfcounters, remoting,
+     reflection_emit, reflection_emit_save, large_code, logging, com, ssa, generics, attach, jit, simd, soft_debug, perfcounters, normalization, desktop_loader, shared_perfcounters, remoting,
 	 security, lldb, mdb, sgen_remset, sgen_marksweep_par, sgen_marksweep_fixed, sgen_marksweep_fixed_par, sgen_copying.],
 [
 	for feature in `echo "$enable_minimal" | sed -e "s/,/ /g"`; do
@@ -1173,9 +1170,10 @@ if test "x$mono_feature_disable_normalization" = "xyes"; then
 	AC_MSG_NOTICE([Disabled String normalization support.])
 fi
 
-if test "x$mono_feature_disable_assembly_remapping" = "xyes"; then
-	AC_DEFINE(DISABLE_ASSEMBLY_REMAPPING, 1, [Disable assembly remapping.])
-	AC_MSG_NOTICE([Disabled Assembly remapping.])
+#TODO: remove assembly_remapping feature name once everyone is using desktop_loader
+if test "x$mono_feature_disable_assembly_remapping" = "xyes" || test "x$mono_feature_disable_desktop_loader" = "xyes"; then
+	AC_DEFINE(DISABLE_DESKTOP_LOADER, 1, [Disable desktop assembly loader semantics.])
+	AC_MSG_NOTICE([Disabled desktop assembly loader semantics.])
 fi
 
 if test "x$mono_feature_disable_shared_perfcounters" = "xyes"; then
@@ -1449,8 +1447,6 @@ if test x$host_win32 = xno; then
 
 	AC_CHECK_FUNCS(getgrgid_r)
 	AC_CHECK_FUNCS(getgrnam_r)
-	AC_CHECK_FUNCS(getpwnam_r)
-	AC_CHECK_FUNCS(getpwuid_r)
 	AC_CHECK_FUNCS(getresuid)
 	AC_CHECK_FUNCS(setresuid)
 	AC_CHECK_FUNCS(kqueue)
@@ -1470,6 +1466,11 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(sched_getaffinity)
 	AC_CHECK_FUNCS(sched_setaffinity)
 	AC_CHECK_FUNCS(sched_getcpu)
+
+	if test x$platform_android != xyes; then
+		AC_CHECK_FUNCS(getpwnam_r)
+		AC_CHECK_FUNCS(getpwuid_r)
+	fi
 
 	dnl ****************************************************************
 	dnl *** Check for sched_setaffinity from glibc versions before   ***
@@ -1931,6 +1932,10 @@ if test x$host_win32 = xno; then
 # and libpthread does not exist
 #
 	case "${host}" in
+		*-*-*haiku*)
+			dnl Haiku has pthread in libroot (libc equiv)
+			AC_CHECK_LIB(pthread, main, LIBS="$LIBS")
+		;;
 		*-*-*freebsd*)
 			AC_CHECK_LIB(pthread, main, LIBS="$LIBS -pthread")
 		;;
@@ -2341,6 +2346,10 @@ if test x$host_win32 = xno; then
 	])
 			
 	dnl **********************************
+	dnl *** Checks for proclib         ***
+	dnl **********************************
+	AC_CHECK_HEADER(sys/errno.h, [AC_DEFINE(HAVE_SYS_ERRNO_H, 1, Define to 1 if you have the <sys/errno.h> header file.)])
+	dnl **********************************
 	dnl *** Checks for MonoPosixHelper ***
 	dnl **********************************
 	AC_CHECK_HEADERS(checklist.h)
@@ -2399,6 +2408,8 @@ if test x$host_win32 = xno; then
 	AC_CHECK_FUNCS(system)
 	AC_CHECK_FUNCS(fork execv execve)
 	AC_CHECK_FUNCS(accept4)
+	AC_CHECK_FUNCS(localtime_r)
+	AC_CHECK_FUNCS(mkdtemp)
 	AC_CHECK_SIZEOF(size_t)
 	AC_CHECK_TYPES([blksize_t], [AC_DEFINE(HAVE_BLKSIZE_T)], , 
 		[#include <sys/types.h>
@@ -3013,7 +3024,7 @@ if test "x$enable_llvm" = "xyes"; then
 	  LLVM_CXXFLAGS="$LLVM_CXXFLAGS -DLLVM_API_VERSION=$llvm_api_version"
    fi   
 
-   AC_DEFINE_UNQUOTED(LLVM_VERSION, "$llvm_version", [Full version of LLVM libraties])
+   AC_DEFINE_UNQUOTED(LLVM_VERSION, "$llvm_version", [Full version of LLVM libraries])
 
    AC_SUBST(LLVM_CFLAGS)
    AC_SUBST(LLVM_CXXFLAGS)
@@ -3331,7 +3342,6 @@ if test "x$host" != "x$target"; then
 		TARGET=ARM;
 		arch_target=arm;
 		AC_DEFINE(TARGET_ARM, 1, [...])
-		AC_DEFINE(TARGET_ANDROID, 1, [...])
 		ACCESS_UNALIGNED="no"
 		CPPFLAGS="$CPPFLAGS -D__ARM_EABI__"
 		# Can't use tls, since it depends on the runtime detection of tls offsets
@@ -3344,6 +3354,11 @@ if test "x$host" != "x$target"; then
 			CPPFLAGS="$CPPFLAGS"
 			;;
    		armv5-*-linux-androideabi*)
+			AC_DEFINE(TARGET_ANDROID, 1, [...])
+			CPPFLAGS="$CPPFLAGS"
+			;;
+   		*-linux-androideabi*)
+			AC_DEFINE(TARGET_ANDROID, 1, [...])
 			CPPFLAGS="$CPPFLAGS"
 			;;
 		esac
@@ -3363,23 +3378,33 @@ if test "x$host" != "x$target"; then
 		TARGET=X86;
 		arch_target=x86;
 		AC_DEFINE(TARGET_X86, 1, [...])
-		AC_DEFINE(TARGET_ANDROID, 1, [...])
 		CPPFLAGS="$CPPFLAGS"
 		# Can't use tls, since it depends on the runtime detection of tls offsets
 		# in mono-compiler.h		
 		with_tls=pthread
 		target_mach=no
+
+		case "$target" in
+		*-linux-android*)
+			AC_DEFINE(TARGET_ANDROID, 1, [...])
+			;;
+		esac
 		;;
    x86_64*-linux-*)
 		TARGET=AMD64;
 		arch_target=amd64;
 		AC_DEFINE(TARGET_AMD64, 1, [...])
-		AC_DEFINE(TARGET_ANDROID, 1, [...])
 		CPPFLAGS="$CPPFLAGS"
 		# Can't use tls, since it depends on the runtime detection of tls offsets
 		# in mono-compiler.h
 		with_tls=pthread
 		target_mach=no
+
+		case "$target" in
+		*-linux-android*)
+			AC_DEFINE(TARGET_ANDROID, 1, [...])
+			;;
+		esac
 		;;
    x86_64-ps4-freebsd)
 		TARGET=AMD64;
@@ -3398,12 +3423,16 @@ if test "x$host" != "x$target"; then
 		TARGET=ARM64;
 		arch_target=arm64;
 		AC_DEFINE(TARGET_ARM64, 1, [...])
-		AC_DEFINE(TARGET_ANDROID, 1, [...])
 		CPPFLAGS="$CPPFLAGS"
 		# Can't use tls, since it depends on the runtime detection of tls offsets
 		# in mono-compiler.h
 		with_tls=pthread
 		target_mach=no
+		case "$target" in
+		*-linux-android*)
+			AC_DEFINE(TARGET_ANDROID, 1, [...])
+			;;
+		esac
 		;;
 	aarch64-*)
 		TARGET=ARM64
@@ -3597,13 +3626,13 @@ if test "x$have_deprecated" = "xyes"; then
    AC_DEFINE(HAVE_DEPRECATED, 1, [Support for the deprecated attribute])
 fi
 
-AC_ARG_WITH(interpreter, [  --with-interpreter=yes|no       Interpreter, default=no],[buildinterpreter=$with_interpreter],[buildinterpreter=no])
-if test "x$buildinterpreter" = "xyes"; then
-    AC_DEFINE(ENABLE_INTERPRETER, 1, [Enable interpreter in the runtime.])
-    AC_MSG_NOTICE([Enable interpreter in the runtime.])
+AC_ARG_ENABLE(interpreter, [  --enable-interpreter       Enable Interpreter], enable_interpreter=$enableval, enable_interpreter=no)
+
+if test "x$enable_interpreter" = "xyes"; then
+	AC_DEFINE(ENABLE_INTERPRETER, 1, [Enable Interpreter])
 fi
 
-AM_CONDITIONAL([ENABLE_INTERPRETER], [test x$buildinterpreter != xno])
+AM_CONDITIONAL(ENABLE_INTERPRETER, [test x$enable_interpreter = xyes])
 
 
 dnl 
@@ -4123,6 +4152,8 @@ if test "x$enable_btls" = "xyes"; then
 		BTLS_CMAKE_ARGS="$BTLS_CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=$BTLS_ROOT/util/android-cmake/android.toolchain.cmake"
 		if test "x$with_btls_android_ndk" != "x"; then
 			BTLS_CMAKE_ARGS="$BTLS_CMAKE_ARGS -DANDROID_NDK=\"$with_btls_android_ndk\""
+		else
+			AC_MSG_ERROR([Need to pass the --with-btls-android-ndk argument when building with BTLS support on Android.])
 		fi
 	fi
 
@@ -4197,7 +4228,7 @@ AC_SUBST(mono_build_root)
 mono_runtime=mono/mini/mono
 AC_SUBST(mono_runtime)
 
-CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.2.0.0/tools/csc.exe
+CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.2.3.0/tools/csc.exe
 
 if test $csc_compiler = mcs; then
   CSC=$mcs_topdir/class/lib/build/mcs.exe
@@ -4411,6 +4442,7 @@ mono/tests/Makefile
 mono/tests/tests-config
 mono/tests/assemblyresolve/Makefile
 mono/tests/gc-descriptors/Makefile
+mono/tests/testing_gac/Makefile
 mono/unit-tests/Makefile
 mono/benchmark/Makefile
 mono/mini/Makefile
@@ -4600,7 +4632,7 @@ echo "
 	BigArrays:     $enable_big_arrays
 	DTrace:        $enable_dtrace
 	LLVM Back End: $enable_llvm (dynamically loaded: $enable_loadedllvm)
-	Interpreter:   $buildinterpreter
+	Interpreter:   $enable_interpreter
 
    Libraries:
 	.NET 4.x:        $with_profile4_x

@@ -1,5 +1,6 @@
-/*
- * loader.c: Image Loader 
+/**
+ * \file
+ * Image Loader
  *
  * Authors:
  *   Paolo Molaro (lupus@ximian.com)
@@ -185,7 +186,7 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 	const char *ptr;
 	guint32 idx = mono_metadata_token_index (token);
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_metadata_decode_row (&tables [MONO_TABLE_MEMBERREF], idx-1, cols, MONO_MEMBERREF_SIZE);
 	nindex = cols [MONO_MEMBERREF_CLASS] >> MONO_MEMBERREF_PARENT_BITS;
@@ -253,11 +254,11 @@ field_from_memberref (MonoImage *image, guint32 token, MonoClass **retklass,
 	return field;
 }
 
-/*
+/**
  * mono_field_from_token:
- * @deprecated use the _checked variant
+ * \deprecated use the \c _checked variant
  * Notes: runtime code MUST not use this function
-*/
+ */
 MonoClassField*
 mono_field_from_token (MonoImage *image, guint32 token, MonoClass **retklass, MonoGenericContext *context)
 {
@@ -274,7 +275,7 @@ mono_field_from_token_checked (MonoImage *image, guint32 token, MonoClass **retk
 	guint32 type;
 	MonoClassField *field;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (image_is_dynamic (image)) {
 		MonoClassField *result;
@@ -360,7 +361,7 @@ find_method_in_class (MonoClass *klass, const char *name, const char *qname, con
  	int i;
 
 	/* Search directly in the metadata to avoid calling setup_methods () */
-	mono_error_init (error);
+	error_init (error);
 
 	/* FIXME: !mono_class_is_ginst (from_class) condition causes test failures. */
 	if (klass->type_token && !image_is_dynamic (klass->image) && !klass->methods && !klass->rank && klass == from_class && !mono_class_is_ginst (from_class)) {
@@ -448,7 +449,7 @@ find_method (MonoClass *in_class, MonoClass *ic, const char* name, MonoMethodSig
 	MonoMethod *result = NULL;
 	MonoClass *initial_class = in_class;
 
-	mono_error_init (error);
+	error_init (error);
 	is_interface = MONO_CLASS_IS_INTERFACE (in_class);
 
 	if (ic) {
@@ -530,7 +531,7 @@ inflate_generic_signature_checked (MonoImage *image, MonoMethodSignature *sig, M
 	gboolean is_open;
 	int i;
 
-	mono_error_init (error);
+	error_init (error);
 	if (!context)
 		return sig;
 
@@ -570,10 +571,10 @@ fail:
 	return NULL;
 }
 
-/*
+/**
  * mono_inflate_generic_signature:
  *
- *   Inflate SIG with CONTEXT, and return a canonical copy. On error, set ERROR, and return NULL.
+ * Inflate \p sig with \p context, and return a canonical copy. On error, set \p error, and return NULL.
  */
 MonoMethodSignature*
 mono_inflate_generic_signature (MonoMethodSignature *sig, MonoGenericContext *context, MonoError *error)
@@ -608,7 +609,7 @@ inflate_generic_header (MonoMethodHeader *header, MonoGenericContext *context, M
 
 	res->is_transient = TRUE;
 
-	mono_error_init (error);
+	error_init (error);
 
 	for (int i = 0; i < header->num_locals; ++i) {
 		res->locals [i] = mono_class_inflate_generic_type_checked (header->locals [i], context, error);
@@ -631,9 +632,10 @@ fail:
 	return NULL;
 }
 
-/*
- * token is the method_ref/def/spec token used in a call IL instruction.
- * @deprecated use the _checked variant
+/**
+ * mono_method_get_signature_full:
+ * \p token is the method ref/def/spec token used in a \c call IL instruction.
+ * \deprecated use the \c _checked variant
  * Notes: runtime code MUST not use this function
  */
 MonoMethodSignature*
@@ -655,7 +657,7 @@ mono_method_get_signature_checked (MonoMethod *method, MonoImage *image, guint32
 	MonoMethodSignature *sig;
 	const char *ptr;
 
-	mono_error_init (error);
+	error_init (error);
 
 	/* !table is for wrappers: we should really assign their own token to them */
 	if (!table || table == MONO_TABLE_METHOD)
@@ -732,9 +734,10 @@ mono_method_get_signature_checked (MonoMethod *method, MonoImage *image, guint32
 	return sig;
 }
 
-/*
- * token is the method_ref/def/spec token used in a call IL instruction.
- * @deprecated use the _checked variant
+/**
+ * mono_method_get_signature:
+ * \p token is the method_ref/def/spec token used in a call IL instruction.
+ * \deprecated use the \c _checked variant
  * Notes: runtime code MUST not use this function
  */
 MonoMethodSignature*
@@ -776,7 +779,7 @@ method_from_memberref (MonoImage *image, guint32 idx, MonoGenericContext *typesp
 	MonoMethodSignature *sig;
 	const char *ptr;
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_metadata_decode_row (&tables [MONO_TABLE_MEMBERREF], idx-1, cols, 3);
 	nindex = cols [MONO_MEMBERREF_CLASS] >> MONO_MEMBERREF_PARENT_BITS;
@@ -905,7 +908,7 @@ method_from_methodspec (MonoImage *image, MonoGenericContext *context, guint32 i
 	guint32 cols [MONO_METHODSPEC_SIZE];
 	guint32 token, nindex, param_count;
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_metadata_decode_row (&tables [MONO_TABLE_METHODSPEC], idx - 1, cols, MONO_METHODSPEC_SIZE);
 	token = cols [MONO_METHODSPEC_METHOD];
@@ -1022,32 +1025,33 @@ mono_dllmap_lookup (MonoImage *assembly, const char *dll, const char* func, cons
 
 /**
  * mono_dllmap_insert:
- * @assembly: if NULL, this is a global mapping, otherwise the remapping of the dynamic library will only apply to the specified assembly
- * @dll: The name of the external library, as it would be found in the DllImport declaration.  If prefixed with 'i:' the matching of the library name is done without case sensitivity
- * @func: if not null, the mapping will only applied to the named function (the value of EntryPoint)
- * @tdll: The name of the library to map the specified @dll if it matches.
- * @tfunc: The name of the function that replaces the invocation.  If NULL, it is replaced with a copy of @func.
+ * \param assembly if NULL, this is a global mapping, otherwise the remapping of the dynamic library will only apply to the specified assembly
+ * \param dll The name of the external library, as it would be found in the \c DllImport declaration.  If prefixed with <code>i:</code> the matching of the library name is done without case sensitivity
+ * \param func if not null, the mapping will only applied to the named function (the value of <code>EntryPoint</code>)
+ * \param tdll The name of the library to map the specified \p dll if it matches.
+ * \param tfunc The name of the function that replaces the invocation.  If NULL, it is replaced with a copy of \p func.
  *
  * LOCKING: Acquires the loader lock.
  *
- * This function is used to programatically add DllImport remapping in either
+ * This function is used to programatically add \c DllImport remapping in either
  * a specific assembly, or as a global remapping.   This is done by remapping
- * references in a DllImport attribute from the @dll library name into the @tdll
- * name.    If the @dll name contains the prefix "i:", the comparison of the 
+ * references in a \c DllImport attribute from the \p dll library name into the \p tdll
+ * name. If the \p dll name contains the prefix <code>i:</code>, the comparison of the 
  * library name is done without case sensitivity.
  *
- * If you pass @func, this is the name of the EntryPoint in a DllImport if specified
- * or the name of the function as determined by DllImport.    If you pass @func, you
- * must also pass @tfunc which is the name of the target function to invoke on a match.
+ * If you pass \p func, this is the name of the \c EntryPoint in a \c DllImport if specified
+ * or the name of the function as determined by \c DllImport. If you pass \p func, you
+ * must also pass \p tfunc which is the name of the target function to invoke on a match.
  *
  * Example:
- * mono_dllmap_insert (NULL, "i:libdemo.dll", NULL, relocated_demo_path, NULL);
  *
- * The above will remap DllImport statments for "libdemo.dll" and "LIBDEMO.DLL" to
- * the contents of relocated_demo_path for all assemblies in the Mono process.
+ * <code>mono_dllmap_insert (NULL, "i:libdemo.dll", NULL, relocated_demo_path, NULL);</code>
+ *
+ * The above will remap \c DllImport statements for \c libdemo.dll and \c LIBDEMO.DLL to
+ * the contents of \c relocated_demo_path for all assemblies in the Mono process.
  *
  * NOTE: This can be called before the runtime is initialized, for example from
- * mono_config_parse ().
+ * \c mono_config_parse.
  */
 void
 mono_dllmap_insert (MonoImage *assembly, const char *dll, const char *func, const char *tdll, const char *tfunc)
@@ -1148,6 +1152,9 @@ is_absolute_path (const char *path)
 	return g_path_is_absolute (path);
 }
 
+/**
+ * mono_lookup_pinvoke_call:
+ */
 gpointer
 mono_lookup_pinvoke_call (MonoMethod *method, const char **exc_class, const char **exc_arg)
 {
@@ -1596,7 +1603,7 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 	const char *sig = NULL;
 	guint32 cols [MONO_TYPEDEF_SIZE];
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (image_is_dynamic (image)) {
 		MonoClass *handle_class;
@@ -1710,6 +1717,9 @@ mono_get_method_from_token (MonoImage *image, guint32 token, MonoClass *klass,
 	return result;
 }
 
+/**
+ * mono_get_method:
+ */
 MonoMethod *
 mono_get_method (MonoImage *image, guint32 token, MonoClass *klass)
 {
@@ -1719,6 +1729,9 @@ mono_get_method (MonoImage *image, guint32 token, MonoClass *klass)
 	return result;
 }
 
+/**
+ * mono_get_method_full:
+ */
 MonoMethod *
 mono_get_method_full (MonoImage *image, guint32 token, MonoClass *klass,
 		      MonoGenericContext *context)
@@ -1737,7 +1750,7 @@ mono_get_method_checked (MonoImage *image, guint32 token, MonoClass *klass, Mono
 
 	/* We do everything inside the lock to prevent creation races */
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_image_lock (image);
 
@@ -1793,7 +1806,7 @@ get_method_constrained (MonoImage *image, MonoMethod *method, MonoClass *constra
 	MonoGenericContext *method_context = NULL;
 	MonoMethodSignature *sig, *original_sig;
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_class_init (constrained_class);
 	original_sig = sig = mono_method_signature_checked (method, error);
@@ -1855,12 +1868,10 @@ mono_get_method_constrained_with_method (MonoImage *image, MonoMethod *method, M
 
 /**
  * mono_get_method_constrained:
- *
- * This is used when JITing the `constrained.' opcode.
- *
- * This returns two values: the contrained method, which has been inflated
- * as the function return value;   And the original CIL-stream method as
- * declared in cil_method.  The later is used for verification.
+ * This is used when JITing the <code>constrained.</code> opcode.
+ * \returns The contrained method, which has been inflated
+ * as the function return value; and the original CIL-stream method as
+ * declared in \p cil_method. The latter is used for verification.
  */
 MonoMethod *
 mono_get_method_constrained (MonoImage *image, guint32 token, MonoClass *constrained_class,
@@ -1875,7 +1886,7 @@ mono_get_method_constrained (MonoImage *image, guint32 token, MonoClass *constra
 MonoMethod *
 mono_get_method_constrained_checked (MonoImage *image, guint32 token, MonoClass *constrained_class, MonoGenericContext *context, MonoMethod **cil_method, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 
 	*cil_method = mono_get_method_from_token (image, token, NULL, context, NULL, error);
 	if (!*cil_method)
@@ -1884,6 +1895,9 @@ mono_get_method_constrained_checked (MonoImage *image, guint32 token, MonoClass 
 	return get_method_constrained (image, *cil_method, constrained_class, context, error);
 }
 
+/**
+ * mono_free_method:
+ */
 void
 mono_free_method  (MonoMethod *method)
 {
@@ -1925,6 +1939,9 @@ mono_free_method  (MonoMethod *method)
 	}
 }
 
+/**
+ * mono_method_get_param_names:
+ */
 void
 mono_method_get_param_names (MonoMethod *method, const char **names)
 {
@@ -2004,6 +2021,9 @@ mono_method_get_param_names (MonoMethod *method, const char **names)
 	}
 }
 
+/**
+ * mono_method_get_param_token:
+ */
 guint32
 mono_method_get_param_token (MonoMethod *method, int index)
 {
@@ -2031,6 +2051,9 @@ mono_method_get_param_token (MonoMethod *method, int index)
 	return 0;
 }
 
+/**
+ * mono_method_get_marshal_info:
+ */
 void
 mono_method_get_marshal_info (MonoMethod *method, MonoMarshalSpec **mspecs)
 {
@@ -2093,6 +2116,9 @@ mono_method_get_marshal_info (MonoMethod *method, MonoMarshalSpec **mspecs)
 	}
 }
 
+/**
+ * mono_method_has_marshal_info:
+ */
 gboolean
 mono_method_has_marshal_info (MonoMethod *method)
 {
@@ -2185,6 +2211,9 @@ mono_stack_walk (MonoStackWalk func, gpointer user_data)
 	mono_get_eh_callbacks ()->mono_walk_stack_with_ctx (stack_walk_adapter, NULL, MONO_UNWIND_LOOKUP_ALL, &ud);
 }
 
+/**
+ * mono_stack_walk_no_il:
+ */
 void
 mono_stack_walk_no_il (MonoStackWalk func, gpointer user_data)
 {
@@ -2224,10 +2253,9 @@ async_stack_walk_adapter (MonoStackFrameInfo *frame, MonoContext *ctx, gpointer 
 }
 
 
-/*
+/**
  * mono_stack_walk_async_safe:
- *
- *   Async safe version callable from signal handlers.
+ * Async safe version callable from signal handlers.
  */
 void
 mono_stack_walk_async_safe (MonoStackWalkAsyncSafe func, void *initial_sig_context, void *user_data)
@@ -2249,6 +2277,9 @@ last_managed (MonoMethod *m, gint no, gint ilo, gboolean managed, gpointer data)
 	return managed;
 }
 
+/**
+ * mono_method_get_last_managed:
+ */
 MonoMethod*
 mono_method_get_last_managed (void)
 {
@@ -2262,7 +2293,7 @@ static gboolean loader_lock_track_ownership = FALSE;
 /**
  * mono_loader_lock:
  *
- * See docs/thread-safety.txt for the locking strategy.
+ * See \c docs/thread-safety.txt for the locking strategy.
  */
 void
 mono_loader_lock (void)
@@ -2273,6 +2304,9 @@ mono_loader_lock (void)
 	}
 }
 
+/**
+ * mono_loader_unlock:
+ */
 void
 mono_loader_unlock (void)
 {
@@ -2330,7 +2364,7 @@ mono_loader_unlock_if_inited (void)
 }
 
 /**
- * mono_method_signature:
+ * mono_method_signature_checked:
  *
  * Return the signature of the method M. On failure, returns NULL, and ERR is set.
  */
@@ -2347,7 +2381,7 @@ mono_method_signature_checked (MonoMethod *m, MonoError *error)
 
 	/* We need memory barriers below because of the double-checked locking pattern */ 
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (m->signature)
 		return m->signature;
@@ -2489,8 +2523,7 @@ mono_method_signature_checked (MonoMethod *m, MonoError *error)
 
 /**
  * mono_method_signature:
- *
- * Return the signature of the method M. On failure, returns NULL.
+ * \returns the signature of the method \p m. On failure, returns NULL.
  */
 MonoMethodSignature*
 mono_method_signature (MonoMethod *m)
@@ -2509,18 +2542,27 @@ mono_method_signature (MonoMethod *m)
 	return sig;
 }
 
+/**
+ * mono_method_get_name:
+ */
 const char*
 mono_method_get_name (MonoMethod *method)
 {
 	return method->name;
 }
 
+/**
+ * mono_method_get_class:
+ */
 MonoClass*
 mono_method_get_class (MonoMethod *method)
 {
 	return method->klass;
 }
 
+/**
+ * mono_method_get_token:
+ */
 guint32
 mono_method_get_token (MonoMethod *method)
 {
@@ -2536,7 +2578,7 @@ mono_method_get_header_checked (MonoMethod *method, MonoError *error)
 	gpointer loc;
 	MonoGenericContainer *container;
 
-	mono_error_init (error);
+	error_init (error);
 	img = method->klass->image;
 
 	if ((method->flags & METHOD_ATTRIBUTE_ABSTRACT) || (method->iflags & METHOD_IMPL_ATTRIBUTE_RUNTIME) || (method->iflags & METHOD_IMPL_ATTRIBUTE_INTERNAL_CALL) || (method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL)) {
@@ -2596,6 +2638,9 @@ mono_method_get_header_checked (MonoMethod *method, MonoError *error)
 	return mono_metadata_parse_mh_full (img, container, (const char *)loc, error);
 }
 
+/**
+ * mono_method_get_header:
+ */
 MonoMethodHeader*
 mono_method_get_header (MonoMethod *method)
 {
@@ -2606,6 +2651,9 @@ mono_method_get_header (MonoMethod *method)
 }
 
 
+/**
+ * mono_method_get_flags:
+ */
 guint32
 mono_method_get_flags (MonoMethod *method, guint32 *iflags)
 {
@@ -2614,8 +2662,9 @@ mono_method_get_flags (MonoMethod *method, guint32 *iflags)
 	return method->flags;
 }
 
-/*
- * Find the method index in the metadata methodDef table.
+/**
+ * mono_method_get_index:
+ * Find the method index in the metadata \c MethodDef table.
  */
 guint32
 mono_method_get_index (MonoMethod *method)

@@ -78,6 +78,7 @@ namespace Mono.Linker.Steps {
 				if (File.Exists (target)) {
 					File.Delete (target);
 					File.Delete (target + ".mdb");
+					File.Delete (Path.ChangeExtension (target, "pdb"));
 					File.Delete (GetConfigFile (target));
 				}
 				break;
@@ -144,15 +145,18 @@ namespace Mono.Linker.Steps {
 			if (!symbols)
 				return;
 
-			source += ".mdb";
-			if (!File.Exists (source))
-				return;
-			File.Copy (source, target + ".mdb", true);
+			var mdb = source + ".mdb";
+			if (File.Exists (mdb))
+				File.Copy (mdb, target + ".mdb", true);
+
+			var pdb = Path.ChangeExtension (source, "pdb");
+			if (File.Exists (pdb))
+				File.Copy (pdb, Path.ChangeExtension (target, "pdb"), true);
 		}
 
 		static string GetAssemblyFileName (AssemblyDefinition assembly, string directory)
 		{
-			string file = assembly.Name.Name + (assembly.MainModule.Kind == ModuleKind.Dll ? ".dll" : ".exe");
+			string file = GetOriginalAssemblyFileInfo (assembly).Name;
 			return Path.Combine (directory, file);
 		}
 	}

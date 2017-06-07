@@ -16,6 +16,26 @@ namespace System
         // "protected-and-internal" rather than "internal" but C# has no keyword for the former.
         internal MulticastDelegate() { }
 
+        // V1 API: Create closed instance delegates. Method name matching is case sensitive.
+        protected MulticastDelegate(Object target, String method)
+        {
+            // This constructor cannot be used by application code. To create a delegate by specifying the name of a method, an
+            // overload of the public static CreateDelegate method is used. This will eventually end up calling into the internal
+            // implementation of Delegate.CreateDelegate, and does not invoke this constructor.
+            // The constructor is just for API compatibility with the public contract of the MulticastDelegate class.
+            throw new PlatformNotSupportedException();
+        }
+
+        // V1 API: Create open static delegates. Method name matching is case insensitive.
+        protected MulticastDelegate(Type target, String method)
+        {
+            // This constructor cannot be used by application code. To create a delegate by specifying the name of a method, an
+            // overload of the public static CreateDelegate method is used. This will eventually end up calling into the internal
+            // implementation of Delegate.CreateDelegate, and does not invoke this constructor.
+            // The constructor is just for API compatibility with the public contract of the MulticastDelegate class.
+            throw new PlatformNotSupportedException();
+        }
+
         private bool InvocationListEquals(MulticastDelegate d)
         {
             Delegate[] invocationList = m_helperObject as Delegate[];
@@ -116,9 +136,44 @@ namespace System
             return base.GetInvocationList();
         }
 
+        protected override sealed Delegate CombineImpl(Delegate follow)
+        {
+            return base.CombineImpl(follow);
+        }
+        protected override sealed Delegate RemoveImpl(Delegate value)
+        {
+            return base.RemoveImpl(value);
+        }
+
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            throw new NotImplementedException();
+            Delegate[] invocationList = m_helperObject as Delegate[];
+            if (invocationList == null)
+            {
+                if (Method == null)
+                    throw new SerializationException(SR.DelegateSer_InsufficientMetadata);
+
+                DelegateSerializationHolder.GetDelegateSerializationInfo(info, this.GetType(), Target, Method, 0);
+            }
+            else
+            {
+                int targetIndex = 0;
+                DelegateSerializationHolder.DelegateEntry previousEntry = null;
+                int invocationCount = (int)m_extraFunctionPointerOrData;
+                for (int i = invocationCount; --i >= 0;)
+                {
+                    MulticastDelegate d = (MulticastDelegate)invocationList[i];
+
+                    if (d.Method == null)
+                        throw new SerializationException(SR.DelegateSer_InsufficientMetadata);
+
+                    DelegateSerializationHolder.DelegateEntry de = DelegateSerializationHolder.GetDelegateSerializationInfo(info, d.GetType(), d.Target, d.Method, targetIndex++);
+                    if (previousEntry != null)
+                        previousEntry.NextEntry = de;
+
+                    previousEntry = de;
+                }
+            }
         }
     }
 }

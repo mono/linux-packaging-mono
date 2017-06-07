@@ -248,6 +248,11 @@ void RuntimeInstance::EnumAllStaticGCRefs(void * pfnCallback, void * pvCallbackD
     }
     END_FOREACH_MODULE
 
+    for (TypeManagerList::Iterator iter = m_TypeManagerList.Begin(); iter != m_TypeManagerList.End(); iter++)
+    {
+        iter->m_pTypeManager->EnumStaticGCRefs(pfnCallback, pvCallbackData);
+    }
+
     EnumStaticGCRefDescs(pfnCallback, pvCallbackData);
     EnumThreadStaticGCRefDescs(pfnCallback, pvCallbackData);
 }
@@ -406,6 +411,68 @@ extern "C" void __stdcall UnregisterCodeManager(ICodeManager * pCodeManager)
     return GetRuntimeInstance()->UnregisterCodeManager(pCodeManager);
 }
 #endif
+
+bool RuntimeInstance::RegisterTypeManager(TypeManager * pTypeManager)
+{
+    TypeManagerEntry * pEntry = new (nothrow) TypeManagerEntry();
+    if (NULL == pEntry)
+        return false;
+
+    pEntry->m_pTypeManager = pTypeManager;
+
+    {
+        ReaderWriterLock::WriteHolder write(&m_ModuleListLock);
+
+        m_TypeManagerList.PushHead(pEntry);
+    }
+
+    return true;
+}
+
+COOP_PINVOKE_HELPER(TypeManagerHandle, RhpCreateTypeManager, (HANDLE osModule, void* pModuleHeader))
+{
+    TypeManager * typeManager = TypeManager::Create(osModule, pModuleHeader);
+    GetRuntimeInstance()->RegisterTypeManager(typeManager);
+    return TypeManagerHandle::Create(typeManager);
+}
+
+COOP_PINVOKE_HELPER(HANDLE, RhGetOSModuleForMrt, ())
+{
+    return GetRuntimeInstance()->GetPalInstance();
+}
+
+COOP_PINVOKE_HELPER(void*, RhpRegisterOsModule, (HANDLE hOsModule))
+{
+    RuntimeInstance::OsModuleEntry * pEntry = new (nothrow) RuntimeInstance::OsModuleEntry();
+    if (NULL == pEntry)
+        return nullptr; // Return null on failure.
+
+    pEntry->m_osModule = hOsModule;
+
+    {
+        RuntimeInstance *pRuntimeInstance = GetRuntimeInstance();
+        ReaderWriterLock::WriteHolder write(&pRuntimeInstance->GetTypeManagerLock());
+
+        pRuntimeInstance->GetOsModuleList().PushHead(pEntry);
+    }
+
+    return hOsModule; // Return non-null on success
+}
+
+RuntimeInstance::TypeManagerList& RuntimeInstance::GetTypeManagerList() 
+{
+    return m_TypeManagerList;
+}
+
+RuntimeInstance::OsModuleList& RuntimeInstance::GetOsModuleList() 
+{
+    return m_OsModuleList;
+}
+
+ReaderWriterLock& RuntimeInstance::GetTypeManagerLock() 
+{
+    return m_ModuleListLock;
+}
 
 // static 
 RuntimeInstance * RuntimeInstance::Create(HANDLE hPalInstance)

@@ -12,11 +12,12 @@ namespace ILCompiler.DependencyAnalysis
 {
     class RuntimeMethodHandleNode : ObjectNode, ISymbolNode
     {
-        MethodDesc _targetMethod;
+        private MethodDesc _targetMethod;
 
-        public RuntimeMethodHandleNode(NodeFactory factory, MethodDesc targetMethod)
+        public RuntimeMethodHandleNode(MethodDesc targetMethod)
         {
             Debug.Assert(!targetMethod.IsSharedByGenericInstantiations);
+            Debug.Assert(!targetMethod.IsRuntimeDeterminedExactMethod);
             _targetMethod = targetMethod;
         }
 
@@ -24,23 +25,36 @@ namespace ILCompiler.DependencyAnalysis
         {
             sb.Append(nameMangler.CompilationUnitPrefix)
               .Append("__RuntimeMethodHandle_")
-              .Append(NodeFactory.NameMangler.GetMangledMethodName(_targetMethod));
+              .Append(nameMangler.GetMangledMethodName(_targetMethod));
         }
         public int Offset => 0;
-        protected override string GetName() => this.GetMangledName();
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
         public override ObjectNodeSection Section => ObjectNodeSection.ReadOnlyDataSection;
         public override bool IsShareable => false;
         public override bool StaticDependenciesAreComputed => true;
 
+        protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
+        {
+            if (_targetMethod.HasInstantiation && _targetMethod.IsVirtual)
+            {
+                DependencyList dependencies = new DependencyList();
+                dependencies.Add(new DependencyListEntry(factory.GVMDependencies(_targetMethod), "GVM dependencies for runtime method handle"));
+                return dependencies;
+            }
+            return null;
+        }
+
+        private static Utf8String s_NativeLayoutSignaturePrefix = new Utf8String("__RMHSignature_");
+
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
-            ObjectDataBuilder objData = new ObjectDataBuilder(factory);
+            ObjectDataBuilder objData = new ObjectDataBuilder(factory, relocsOnly);
 
-            objData.Alignment = objData.TargetPointerSize;
-            objData.DefinedSymbols.Add(this);
+            objData.RequireInitialPointerAlignment();
+            objData.AddSymbol(this);
 
             NativeLayoutMethodLdTokenVertexNode ldtokenSigNode = factory.NativeLayout.MethodLdTokenVertex(_targetMethod);
-            objData.EmitPointerReloc(factory.NativeLayout.NativeLayoutSignature(ldtokenSigNode));
+            objData.EmitPointerReloc(factory.NativeLayout.NativeLayoutSignature(ldtokenSigNode, s_NativeLayoutSignaturePrefix, _targetMethod));
 
             return objData.ToObjectData();
         }

@@ -32,9 +32,16 @@ namespace ILCompiler.DependencyAnalysis
 
         public override void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            sb.Append("unbox_").Append(NodeFactory.NameMangler.GetMangledMethodName(_target));
+            sb.Append("unbox_").Append(nameMangler.GetMangledMethodName(_target));
         }
 
-        protected override string GetName() => this.GetMangledName();
+        public static string GetMangledName(NameMangler nameMangler, MethodDesc method)
+        {
+            return "unbox_" + nameMangler.GetMangledMethodName(method);
+        }
+
+        public override bool IsShareable => true;
+
+        protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
     }
 }

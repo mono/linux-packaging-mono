@@ -1,5 +1,6 @@
-/*
- * mini-generic-sharing.c: Support functions for generic sharing.
+/**
+ * \file
+ * Support functions for generic sharing.
  *
  * Author:
  *   Mark Probst (mark.probst@gmail.com)
@@ -389,7 +390,17 @@ info_has_identity (MonoRgctxInfoType info_type)
 /*
  * LOCKING: loader lock
  */
+#if defined(PLATFORM_ANDROID) && defined(TARGET_ARM)
+/* work around for HW bug on Nexus9 when running on armv7 */
+#ifdef __clang__
+static __attribute__ ((optnone)) void
+#else
+/* gcc */
+static __attribute__ ((optimize("O0"))) void
+#endif
+#else
 static void
+#endif
 rgctx_template_set_slot (MonoImage *image, MonoRuntimeGenericContextTemplate *template_, int type_argc,
 	int slot, gpointer data, MonoRgctxInfoType info_type)
 {
@@ -532,6 +543,7 @@ inflate_info (MonoRuntimeGenericContextInfoTemplate *oti, MonoGenericContext *co
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE:
 	case MONO_RGCTX_INFO_VALUE_SIZE:
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
+	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO:
 	case MONO_RGCTX_INFO_LOCAL_OFFSET:
@@ -870,7 +882,7 @@ class_get_rgctx_template_oti (MonoClass *klass, int type_argc, guint32 slot, gbo
 static gpointer
 class_type_info (MonoDomain *domain, MonoClass *klass, MonoRgctxInfoType info_type, MonoError *error)
 {
-	mono_error_init (error);
+	error_init (error);
 
 	switch (info_type) {
 	case MONO_RGCTX_INFO_STATIC_DATA: {
@@ -913,6 +925,13 @@ class_type_info (MonoDomain *domain, MonoClass *klass, MonoRgctxInfoType info_ty
 			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_NULLABLE);
 		else
 			return GUINT_TO_POINTER (MONO_GSHAREDVT_BOX_TYPE_VTYPE);
+	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
+		mono_class_init (klass);
+		/* Can't return 0 */
+		if (MONO_TYPE_IS_REFERENCE (&klass->byval_arg) || klass->has_references)
+			return GUINT_TO_POINTER (2);
+		else
+			return GUINT_TO_POINTER (1);
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO: {
 		static MonoMethod *memcpy_method [17];
@@ -1191,9 +1210,9 @@ mini_get_gsharedvt_in_sig_wrapper (MonoMethodSignature *sig)
 	sig = mini_get_underlying_signature (sig);
 
 	// FIXME: Normal cache
+	gshared_lock ();
 	if (!cache)
 		cache = g_hash_table_new_full ((GHashFunc)mono_signature_hash, (GEqualFunc)mono_metadata_signature_equal, NULL, NULL);
-	gshared_lock ();
 	res = g_hash_table_lookup (cache, sig);
 	gshared_unlock ();
 	if (res) {
@@ -1295,9 +1314,9 @@ mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig)
 	sig = mini_get_underlying_signature (sig);
 
 	// FIXME: Normal cache
+	gshared_lock ();
 	if (!cache)
 		cache = g_hash_table_new_full ((GHashFunc)mono_signature_hash, (GEqualFunc)mono_metadata_signature_equal, NULL, NULL);
-	gshared_lock ();
 	res = g_hash_table_lookup (cache, sig);
 	gshared_unlock ();
 	if (res) {
@@ -1386,6 +1405,170 @@ mini_get_gsharedvt_out_sig_wrapper (MonoMethodSignature *sig)
 
 	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_GSHAREDVT_OUT_SIG);
 	info->d.gsharedvt.sig = sig;
+
+	res = mono_mb_create (mb, csig, sig->param_count + 16, info);
+
+	gshared_lock ();
+	cached = g_hash_table_lookup (cache, sig);
+	if (cached)
+		res = cached;
+	else
+		g_hash_table_insert (cache, sig, res);
+	gshared_unlock ();
+	return res;
+}
+
+/*
+ * mini_get_interp_in_wrapper:
+ *
+ *   Return a wrapper which can be used to transition from compiled code to the interpreter.
+ * The wrapper has the same signature as SIG. It is very similar to a gsharedvt_in wrapper,
+ * except the 'extra_arg' is passed in the rgctx reg, so this wrapper needs to be
+ * called through a static rgctx trampoline.
+ * FIXME: Move this elsewhere.
+ */
+MonoMethod*
+mini_get_interp_in_wrapper (MonoMethodSignature *sig)
+{
+	MonoMethodBuilder *mb;
+	MonoMethod *res, *cached;
+	WrapperInfo *info;
+	MonoMethodSignature *csig, *entry_sig;
+	int i, pindex, retval_var = 0;
+	static GHashTable *cache;
+	const char *name;
+	gboolean generic = FALSE;
+
+	sig = mini_get_underlying_signature (sig);
+
+	gshared_lock ();
+	if (!cache)
+		cache = g_hash_table_new_full ((GHashFunc)mono_signature_hash, (GEqualFunc)mono_metadata_signature_equal, NULL, NULL);
+	res = g_hash_table_lookup (cache, sig);
+	gshared_unlock ();
+	if (res) {
+		g_free (sig);
+		return res;
+	}
+
+	if (sig->param_count > 8)
+		/* Call the generic interpreter entry point, the specialized ones only handle a limited number of arguments */
+		generic = TRUE;
+
+	/* Create the signature for the wrapper */
+	csig = g_malloc0 (MONO_SIZEOF_METHOD_SIGNATURE + (sig->param_count * sizeof (MonoType*)));
+	memcpy (csig, sig, mono_metadata_signature_size (sig));
+
+	/* Create the signature for the callee callconv */
+	if (generic) {
+		/*
+		 * The called function has the following signature:
+		 * interp_entry_general (gpointer this_arg, gpointer res, gpointer *args, gpointer rmethod)
+		 */
+		entry_sig = g_malloc0 (MONO_SIZEOF_METHOD_SIGNATURE + (4 * sizeof (MonoType*)));
+		entry_sig->ret = &mono_defaults.void_class->byval_arg;
+		entry_sig->param_count = 4;
+		entry_sig->params [0] = &mono_defaults.int_class->byval_arg;
+		entry_sig->params [1] = &mono_defaults.int_class->byval_arg;
+		entry_sig->params [2] = &mono_defaults.int_class->byval_arg;
+		entry_sig->params [3] = &mono_defaults.int_class->byval_arg;
+		name = "interp_in_generic";
+		generic = TRUE;
+	} else  {
+		/*
+		 * The called function has the following signature:
+		 * void entry(<optional this ptr>, <optional return ptr>, <arguments>, <extra arg>)
+		 */
+		entry_sig = g_malloc0 (MONO_SIZEOF_METHOD_SIGNATURE + ((sig->param_count + 2) * sizeof (MonoType*)));
+		memcpy (entry_sig, sig, mono_metadata_signature_size (sig));
+		pindex = 0;
+		/* The return value is returned using an explicit vret argument */
+		if (sig->ret->type != MONO_TYPE_VOID) {
+			entry_sig->params [pindex ++] = &mono_defaults.int_class->byval_arg;
+			entry_sig->ret = &mono_defaults.void_class->byval_arg;
+		}
+		for (i = 0; i < sig->param_count; i++) {
+			entry_sig->params [pindex] = sig->params [i];
+			if (!sig->params [i]->byref) {
+				entry_sig->params [pindex] = mono_metadata_type_dup (NULL, entry_sig->params [pindex]);
+				entry_sig->params [pindex]->byref = 1;
+			}
+			pindex ++;
+		}
+		/* Extra arg */
+		entry_sig->params [pindex ++] = &mono_defaults.int_class->byval_arg;
+		entry_sig->param_count = pindex;
+		name = sig->hasthis ? "interp_in" : "interp_in_static";
+	}
+
+	mb = mono_mb_new (mono_defaults.object_class, name, MONO_WRAPPER_UNKNOWN);
+
+	// FIXME: save lmf
+
+#ifndef DISABLE_JIT
+	if (sig->ret->type != MONO_TYPE_VOID)
+		retval_var = mono_mb_add_local (mb, sig->ret);
+
+	/* Make the call */
+	if (generic) {
+		/* Collect arguments */
+		int args_var = mono_mb_add_local (mb, &mono_defaults.int_class->byval_arg);
+
+		mono_mb_emit_icon (mb, sizeof (gpointer) * sig->param_count);
+		mono_mb_emit_byte (mb, CEE_PREFIX1);
+		mono_mb_emit_byte (mb, CEE_LOCALLOC);
+		mono_mb_emit_stloc (mb, args_var);
+
+		for (i = 0; i < sig->param_count; i++) {
+			mono_mb_emit_ldloc (mb, args_var);
+			mono_mb_emit_icon (mb, sizeof (gpointer) * i);
+			mono_mb_emit_byte (mb, CEE_ADD);
+			if (sig->params [i]->byref)
+				mono_mb_emit_ldarg (mb, i + (sig->hasthis == TRUE));
+			else
+				mono_mb_emit_ldarg_addr (mb, i + (sig->hasthis == TRUE));
+			mono_mb_emit_byte (mb, CEE_STIND_I);
+		}
+
+		if (sig->hasthis)
+			mono_mb_emit_ldarg (mb, 0);
+		else
+			mono_mb_emit_byte (mb, CEE_LDNULL);
+		if (sig->ret->type != MONO_TYPE_VOID)
+			mono_mb_emit_ldloc_addr (mb, retval_var);
+		else
+			mono_mb_emit_byte (mb, CEE_LDNULL);
+		mono_mb_emit_ldloc (mb, args_var);
+	} else {
+		if (sig->hasthis)
+			mono_mb_emit_ldarg (mb, 0);
+		if (sig->ret->type != MONO_TYPE_VOID)
+			mono_mb_emit_ldloc_addr (mb, retval_var);
+		for (i = 0; i < sig->param_count; i++) {
+			if (sig->params [i]->byref)
+				mono_mb_emit_ldarg (mb, i + (sig->hasthis == TRUE));
+			else
+				mono_mb_emit_ldarg_addr (mb, i + (sig->hasthis == TRUE));
+		}
+	}
+	/* Extra arg */
+	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (mb, CEE_MONO_GET_RGCTX_ARG);
+	mono_mb_emit_icon (mb, sizeof (gpointer));
+	mono_mb_emit_byte (mb, CEE_ADD);
+	mono_mb_emit_byte (mb, CEE_LDIND_I);
+	/* Method to call */
+	mono_mb_emit_byte (mb, MONO_CUSTOM_PREFIX);
+	mono_mb_emit_byte (mb, CEE_MONO_GET_RGCTX_ARG);
+	mono_mb_emit_byte (mb, CEE_LDIND_I);
+	mono_mb_emit_calli (mb, entry_sig);
+	if (sig->ret->type != MONO_TYPE_VOID)
+		mono_mb_emit_ldloc (mb, retval_var);
+	mono_mb_emit_byte (mb, CEE_RET);
+#endif
+
+	info = mono_wrapper_info_create (mb, WRAPPER_SUBTYPE_INTERP_IN);
+	info->d.interp_in.sig = sig;
 
 	res = mono_mb_create (mb, csig, sig->param_count + 16, info);
 
@@ -1538,7 +1721,7 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 	gpointer data;
 	gboolean temporary;
 
-	mono_error_init (error);
+	error_init (error);
 
 	if (!oti->data)
 		return NULL;
@@ -1566,6 +1749,7 @@ instantiate_info (MonoDomain *domain, MonoRuntimeGenericContextInfoTemplate *oti
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE:
 	case MONO_RGCTX_INFO_VALUE_SIZE:
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
+	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO:
 	case MONO_RGCTX_INFO_NULLABLE_CLASS_BOX:
@@ -2007,6 +2191,7 @@ mono_rgctx_info_type_to_str (MonoRgctxInfoType type)
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE: return "ARRAY_ELEMENT_SIZE";
 	case MONO_RGCTX_INFO_VALUE_SIZE: return "VALUE_SIZE";
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE: return "CLASS_BOX_TYPE";
+	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS: return "CLASS_IS_REF_OR_CONTAINS_REFS";
 	case MONO_RGCTX_INFO_FIELD_OFFSET: return "FIELD_OFFSET";
 	case MONO_RGCTX_INFO_METHOD_GSHAREDVT_OUT_TRAMPOLINE: return "METHOD_GSHAREDVT_OUT_TRAMPOLINE";
 	case MONO_RGCTX_INFO_METHOD_GSHAREDVT_OUT_TRAMPOLINE_VIRT: return "METHOD_GSHAREDVT_OUT_TRAMPOLINE_VIRT";
@@ -2095,6 +2280,7 @@ info_equal (gpointer data1, gpointer data2, MonoRgctxInfoType info_type)
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE:
 	case MONO_RGCTX_INFO_VALUE_SIZE:
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
+	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO:
 	case MONO_RGCTX_INFO_NULLABLE_CLASS_BOX:
@@ -2148,6 +2334,7 @@ mini_rgctx_info_type_to_patch_info_type (MonoRgctxInfoType info_type)
 	case MONO_RGCTX_INFO_ARRAY_ELEMENT_SIZE:
 	case MONO_RGCTX_INFO_VALUE_SIZE:
 	case MONO_RGCTX_INFO_CLASS_BOX_TYPE:
+	case MONO_RGCTX_INFO_CLASS_IS_REF_OR_CONTAINS_REFS:
 	case MONO_RGCTX_INFO_MEMCPY:
 	case MONO_RGCTX_INFO_BZERO:
 	case MONO_RGCTX_INFO_NULLABLE_CLASS_BOX:
@@ -2320,7 +2507,7 @@ fill_runtime_generic_context (MonoVTable *class_vtable, MonoRuntimeGenericContex
 	int rgctx_index;
 	gboolean do_free;
 
-	mono_error_init (error);
+	error_init (error);
 
 	g_assert (rgctx);
 
@@ -2408,7 +2595,7 @@ mono_class_fill_runtime_generic_context (MonoVTable *class_vtable, guint32 slot,
 	MonoRuntimeGenericContext *rgctx;
 	gpointer info;
 
-	mono_error_init (error);
+	error_init (error);
 
 	mono_domain_lock (domain);
 
@@ -2839,7 +3026,8 @@ mono_method_needs_static_rgctx_invoke (MonoMethod *method, gboolean allow_type_v
 		return TRUE;
 
 	return ((method->flags & METHOD_ATTRIBUTE_STATIC) ||
-			method->klass->valuetype) &&
+			method->klass->valuetype ||
+			MONO_CLASS_IS_INTERFACE (method->klass)) &&
 		(mono_class_is_ginst (method->klass) || mono_class_is_gtd (method->klass));
 }
 
@@ -3042,7 +3230,7 @@ mini_get_basic_type_from_generic (MonoType *type)
 		return type;
 	else if (!type->byref && (type->type == MONO_TYPE_VAR || type->type == MONO_TYPE_MVAR)) {
 		MonoType *constraint = type->data.generic_param->gshared_constraint;
-		/* The gparam serial encodes the type this gparam can represent */
+		/* The gparam constraint encodes the type this gparam can represent */
 		if (!constraint) {
 			return &mono_defaults.object_class->byval_arg;
 		} else {
@@ -3060,7 +3248,7 @@ mini_get_basic_type_from_generic (MonoType *type)
 /*
  * mini_type_get_underlying_type:
  *
- *   Return the underlying type of TYPE, taking into account enums, byref, bool, char and generic
+ *   Return the underlying type of TYPE, taking into account enums, byref, bool, char, ref types and generic
  * sharing.
  */
 MonoType*
@@ -3079,6 +3267,9 @@ mini_type_get_underlying_type (MonoType *type)
 	case MONO_TYPE_CHAR:
 		return &mono_defaults.uint16_class->byval_arg;
 	case MONO_TYPE_STRING:
+	case MONO_TYPE_CLASS:
+	case MONO_TYPE_ARRAY:
+	case MONO_TYPE_SZARRAY:
 		return &mono_defaults.object_class->byval_arg;
 	default:
 		return type;

@@ -12,6 +12,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Private;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -653,7 +654,7 @@ namespace System.Collections.Concurrent
             Node head;
             Node next;
             int backoff = 1;
-            Random r = new Random(Environment.TickCount & Int32.MaxValue); // avoid the case where TickCount could return Int32.MinValue
+            Random r = null;
             while (true)
             {
                 head = _head;
@@ -694,7 +695,18 @@ namespace System.Collections.Concurrent
                     spin.SpinOnce();
                 }
 
-                backoff = spin.NextSpinWillYield ? r.Next(1, BACKOFF_MAX_YIELDS) : backoff * 2;
+                if (spin.NextSpinWillYield)
+                {
+                    if (r == null)
+                    {
+                        r = new Random();
+                    }
+                    backoff = r.Next(1, BACKOFF_MAX_YIELDS);
+                }
+                else
+                {
+                    backoff *= 2;
+                }
             }
         }
 #pragma warning restore 0420

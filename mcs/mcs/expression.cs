@@ -3448,7 +3448,7 @@ namespace Mono.CSharp
 			}
 		}
 
-		static CSharp.Operator.OpType ConvertBinaryToUserOperator (Operator op)
+		public static CSharp.Operator.OpType ConvertBinaryToUserOperator (Operator op)
 		{
 			switch (op) {
 			case Operator.Addition:
@@ -7560,14 +7560,21 @@ namespace Mono.CSharp
 			bool is_value_type = type.IsStructOrEnum;
 			VariableReference vr = target as VariableReference;
 
+			bool prepare_await = ec.HasSet (BuilderContext.Options.AsyncBody) && arguments?.ContainsEmitWithAwait () == true;
+
 			if (target != null && is_value_type && (vr != null || method == null)) {
+				if (prepare_await) {
+					arguments = arguments.Emit (ec, false, true);
+					prepare_await = false;
+				}
+				
 				target.AddressOf (ec, AddressOp.Store);
 			} else if (vr != null && vr.IsRef) {
 				vr.EmitLoad (ec);
 			}
 
 			if (arguments != null) {
-				if (ec.HasSet (BuilderContext.Options.AsyncBody) && (arguments.Count > (this is NewInitialize ? 0 : 1)) && arguments.ContainsEmitWithAwait ())
+				if (prepare_await)
 					arguments = arguments.Emit (ec, false, true);
 
 				arguments.Emit (ec);
@@ -12174,21 +12181,23 @@ namespace Mono.CSharp
 				args);
 		}
 
-		protected override Expression DoResolve (ResolveContext ec)
+		protected override Expression DoResolve (ResolveContext rc)
 		{
-			Expression e = base.DoResolve (ec);
+			Expression e = base.DoResolve (rc);
 			if (type == null)
 				return null;
 
 			if (type.IsDelegate) {
-				ec.Report.Error (1958, Initializers.Location,
+				rc.Report.Error (1958, Initializers.Location,
 					"Object and collection initializers cannot be used to instantiate a delegate");
 			}
 
-			Expression previous = ec.CurrentInitializerVariable;
-			ec.CurrentInitializerVariable = new InitializerTargetExpression (this);
-			initializers.Resolve (ec);
-			ec.CurrentInitializerVariable = previous;
+			Expression previous = rc.CurrentInitializerVariable;
+			rc.CurrentInitializerVariable = new InitializerTargetExpression (this);
+			using (rc.With (ResolveContext.Options.DontSetConditionalAccessReceiver, false)) {
+				initializers.Resolve (rc);
+			}
+			rc.CurrentInitializerVariable = previous;
 
 			dynamic = e as DynamicExpressionStatement;
 			if (dynamic != null)

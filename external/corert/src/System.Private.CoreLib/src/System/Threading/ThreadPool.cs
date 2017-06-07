@@ -4,7 +4,6 @@
 
 /*=============================================================================
 **
-** Class: ThreadPool
 **
 **
 ** Purpose: Class for creating and managing a threadpool
@@ -410,9 +409,9 @@ namespace System.Threading
             public volatile QueueSegment Next;
 
 
-            const int SixteenBits = 0xffff;
+            private const int SixteenBits = 0xffff;
 
-            void GetIndexes(out int upper, out int lower)
+            private void GetIndexes(out int upper, out int lower)
             {
                 int i = indexes;
                 upper = (i >> 16) & SixteenBits;
@@ -425,7 +424,7 @@ namespace System.Threading
                 Debug.Assert(lower >= 0);
             }
 
-            bool CompareExchangeIndexes(ref int prevUpper, int newUpper, ref int prevLower, int newLower)
+            private bool CompareExchangeIndexes(ref int prevUpper, int newUpper, ref int prevLower, int newLower)
             {
                 Debug.Assert(newUpper >= newLower);
                 Debug.Assert(newUpper <= nodes.Length);
@@ -673,7 +672,7 @@ namespace System.Threading
 
         //Per-appDomain quantum (in ms) for which the thread keeps processing
         //requests in the current domain.
-        const uint tpQuantum = 30U;
+        private const uint tpQuantum = 30U;
 
         internal static void Dispatch()
         {
@@ -841,8 +840,9 @@ namespace System.Threading
         private Object state;
 
 #if DEBUG
-        volatile int executed;
+        private volatile int executed;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1821:RemoveEmptyFinalizers")]
         ~QueueUserWorkItemCallback()
         {
             Debug.Assert(
@@ -850,7 +850,7 @@ namespace System.Threading
                 "A QueueUserWorkItemCallback was never called!");
         }
 
-        void MarkExecuted()
+        private void MarkExecuted()
         {
             GC.SuppressFinalize(this);
             Debug.Assert(
@@ -903,8 +903,9 @@ namespace System.Threading
         private Object state;
 
 #if DEBUG
-        volatile int executed;
+        private volatile int executed;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1821:RemoveEmptyFinalizers")]
         ~QueueUserWorkItemCallbackDefaultContext()
         {
             Debug.Assert(
@@ -912,7 +913,7 @@ namespace System.Threading
                 "A QueueUserWorkItemCallbackDefaultContext was never called!");
         }
 
-        void MarkExecuted()
+        private void MarkExecuted()
         {
             GC.SuppressFinalize(this);
             Debug.Assert(
