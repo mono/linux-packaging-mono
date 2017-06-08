@@ -1,0 +1,50 @@
+diff --git a/external/boringssl/crypto/internal.h b/external/boringssl/crypto/internal.h
+index e35fb7b..7bc1bea 100644
+--- a/external/boringssl/crypto/internal.h
++++ b/external/boringssl/crypto/internal.h
+@@ -117,6 +117,8 @@
+ #define alignas(x) __declspec(align(x))
+ #define alignof __alignof
+ #endif
++#elif defined(__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__ <= 406)
++#define alignas(x) __attribute((aligned(x)))
+ #else
+ #include <stdalign.h>
+ #endif
+diff --git a/configure.ac b/configure.ac
+index a04424a..e67ce89 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -2994,7 +2994,6 @@ case "$host" in
+ 			AOT_SUPPORTED="yes"
+ 			BTLS_SUPPORTED=yes
+ 			BTLS_PLATFORM=i386
+-			AC_CHECK_HEADER(stdalign.h,[],[BTLS_SUPPORTED=no])
+ 			;;
+ 		  darwin*)
+ 			AOT_SUPPORTED="yes"
+@@ -3017,7 +3016,6 @@ case "$host" in
+ 			AOT_SUPPORTED="yes"
+ 			BTLS_SUPPORTED=yes
+ 			BTLS_PLATFORM=x86_64
+-			AC_CHECK_HEADER(stdalign.h,[],[BTLS_SUPPORTED=no])
+ 			;;
+ 		  darwin*)
+ 			AOT_SUPPORTED="yes"
+diff --git a/external/boringssl/CMakeLists.txt b/external/boringssl/CMakeLists.txt
+index 4e63c89..8875b10 100644
+--- a/external/boringssl/CMakeLists.txt
++++ b/external/boringssl/CMakeLists.txt
+@@ -32,7 +32,11 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+   if(ANDROID)
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x ${C_CXX_FLAGS}")
+   elseif(CMAKE_COMPILER_IS_GNUCXX)
+-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${C_CXX_FLAGS}")
++    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.6.99")
++      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${C_CXX_FLAGS}")
++    else()
++      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x ${C_CXX_FLAGS}")
++    endif()
+   else()
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ ${C_CXX_FLAGS}")
+   endif()
