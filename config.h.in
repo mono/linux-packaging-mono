@@ -536,6 +536,9 @@
 /* No GC support. */
 #undef HAVE_NULL_GC
 
+/* Some VES is available at runtime */
+#undef HAVE_ONLINE_VES
+
 /* Define to 1 if you have the <pathconf.h> header file. */
 #undef HAVE_PATHCONF_H
 
