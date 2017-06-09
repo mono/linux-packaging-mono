@@ -345,8 +345,10 @@ CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 RUNTIME = $(top_builddir)/runtime/mono-wrapper
 TEST_RUNTIME = MONO_PATH=$(CLASS) $(RUNTIME)
 TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(RUNTIME)
-TEST_RUNNER = ../test-runner.exe --runtime $(RUNTIME) $(am__append_1) \
-	$(am__append_2)
+
+# These tests are testing strict assembly strong-name resolution
+TEST_RUNNER = ../test-runner.exe --runtime $(RUNTIME) --runtime-args \
+	"--assembly-loader=strict" $(am__append_1) $(am__append_2)
 @HOST_WIN32_FALSE@TEST_RUNNER_ARGS = --runtime $(if \
 @HOST_WIN32_FALSE@	$(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono) \
 @HOST_WIN32_FALSE@	$(if $(V), --verbose,)
