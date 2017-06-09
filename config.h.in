@@ -15,9 +15,6 @@
 /* Disable support for multiple appdomains. */
 #undef DISABLE_APPDOMAINS
 
-/* Disable assembly remapping. */
-#undef DISABLE_ASSEMBLY_REMAPPING
-
 /* Disable agent attach support */
 #undef DISABLE_ATTACH
 
@@ -29,6 +26,9 @@
 
 /* Disable System.Decimal support */
 #undef DISABLE_DECIMAL
+
+/* Disable desktop assembly loader semantics. */
+#undef DISABLE_DESKTOP_LOADER
 
 /* Disable generics support */
 #undef DISABLE_GENERICS

@@ -89,7 +89,7 @@ static char **assemblies_path = NULL;
 /* Contains the list of directories that point to auxiliary GACs */
 static char **extra_gac_paths = NULL;
 
-#ifndef DISABLE_ASSEMBLY_REMAPPING
+#ifndef DISABLE_DESKTOP_LOADER
 
 #define FACADE_ASSEMBLY(str) {str, 0, NULL, FALSE, TRUE}
 
@@ -123,6 +123,9 @@ static const AssemblyVersionMap framework_assemblies [] = {
 	{"Microsoft.Build.Utilities.v3.5", 2, "Microsoft.Build.Utilities.v4.0"},
 	{"Microsoft.VisualBasic", 1},
 	{"Microsoft.VisualC", 1},
+	FACADE_ASSEMBLY ("Microsoft.Win32.Primitives"),
+	FACADE_ASSEMBLY ("Microsoft.Win32.Registry"),
+	FACADE_ASSEMBLY ("Microsoft.Win32.Registry.AccessControl"),
 	{"Mono.Cairo", 0},
 	{"Mono.CompilerServices.SymbolWriter", 0},
 	{"Mono.Data", 0},
@@ -209,7 +212,6 @@ static const AssemblyVersionMap framework_assemblies [] = {
 	{"System.Net.Http", 4},
 	{"System.Net.Http.Rtc", 0},
 	FACADE_ASSEMBLY ("System.Net.HttpListener"),
-	{"System.Net.NetworkInformation", 0},
 	FACADE_ASSEMBLY ("System.Net.Mail"),
 	FACADE_ASSEMBLY ("System.Net.NameResolution"),
 	FACADE_ASSEMBLY ("System.Net.NetworkInformation"),
@@ -226,6 +228,7 @@ static const AssemblyVersionMap framework_assemblies [] = {
 	{"System.Numerics.Vectors", 3},
 	FACADE_ASSEMBLY ("System.ObjectModel"),
 	FACADE_ASSEMBLY ("System.Reflection"),
+	FACADE_ASSEMBLY ("System.Reflection.DispatchProxy"),
 	FACADE_ASSEMBLY ("System.Reflection.Emit"),
 	FACADE_ASSEMBLY ("System.Reflection.Emit.ILGeneration"),
 	FACADE_ASSEMBLY ("System.Reflection.Emit.Lightweight"),
@@ -245,7 +248,7 @@ static const AssemblyVersionMap framework_assemblies [] = {
 	FACADE_ASSEMBLY ("System.Runtime.Numerics"),
 	{"System.Runtime.Remoting", 0},
 	{"System.Runtime.Serialization", 3},
-	{"System.Runtime.Serialization.Formatters", 3},
+	FACADE_ASSEMBLY ("System.Runtime.Serialization.Formatters"),
 	{"System.Runtime.Serialization.Formatters.Soap", 0},
 	FACADE_ASSEMBLY ("System.Runtime.Serialization.Json"),
 	FACADE_ASSEMBLY ("System.Runtime.Serialization.Primitives"),
@@ -275,11 +278,11 @@ static const AssemblyVersionMap framework_assemblies [] = {
 	FACADE_ASSEMBLY ("System.Security.Principal.Windows"),
 	FACADE_ASSEMBLY ("System.Security.SecureString"),
 	{"System.ServiceModel", 3},
-	{"System.ServiceModel.Duplex", 3},
-	{"System.ServiceModel.Http", 3},
-	{"System.ServiceModel.NetTcp", 3},
-	{"System.ServiceModel.Primitives", 3},
-	{"System.ServiceModel.Security", 3},
+	FACADE_ASSEMBLY ("System.ServiceModel.Duplex"),
+	FACADE_ASSEMBLY ("System.ServiceModel.Http"),
+	FACADE_ASSEMBLY ("System.ServiceModel.NetTcp"),
+	FACADE_ASSEMBLY ("System.ServiceModel.Primitives"),
+	FACADE_ASSEMBLY ("System.ServiceModel.Security"),
 	{"System.ServiceModel.Web", 2},
 	{"System.ServiceProcess", 0},
 	FACADE_ASSEMBLY ("System.ServiceProcess.ServiceController"),
@@ -968,7 +971,7 @@ mono_assemblies_init (void)
 	mono_os_mutex_init_recursive (&assemblies_mutex);
 	mono_os_mutex_init (&assembly_binding_mutex);
 
-#ifndef DISABLE_ASSEMBLY_REMAPPING
+#ifndef DISABLE_DESKTOP_LOADER
 	assembly_remapping_table = g_hash_table_new (g_str_hash, g_str_equal);
 
 	int i;
@@ -1258,7 +1261,7 @@ mono_assembly_remap_version (MonoAssemblyName *aname, MonoAssemblyName *dest_ana
 		return dest_aname;
 	}
 	
-#ifndef DISABLE_ASSEMBLY_REMAPPING
+#ifndef DISABLE_DESKTOP_LOADER
 	const AssemblyVersionMap *vmap = (AssemblyVersionMap *)g_hash_table_lookup (assembly_remapping_table, aname->name);
 	if (vmap) {
 		const AssemblyVersionSet* vset;
@@ -3534,7 +3537,7 @@ mono_assembly_load_corlib (const MonoRuntimeInfo *runtime, MonoImageOpenStatus *
 	g_free (corlib_file);
 
 return_corlib_and_facades:
-	if (corlib)
+	if (corlib && !strcmp (runtime->framework_version, "4.5"))  // FIXME: stop hardcoding 4.5 here
 		default_path [1] = g_strdup_printf ("%s/Facades", corlib->basedir);
 		
 	return corlib;
@@ -3601,7 +3604,7 @@ exact_sn_match (MonoAssemblyName *wanted_name, MonoAssemblyName *candidate_name)
 gboolean
 framework_assembly_sn_match (MonoAssemblyName *wanted_name, MonoAssemblyName *candidate_name)
 {
-#ifndef DISABLE_ASSEMBLY_REMAPPING
+#ifndef DISABLE_DESKTOP_LOADER
 	const AssemblyVersionMap *vmap = (AssemblyVersionMap *)g_hash_table_lookup (assembly_remapping_table, wanted_name->name);
 	if (vmap) {
 		if (!vmap->framework_facade_assembly) {
@@ -3658,6 +3661,15 @@ mono_assembly_load_full_nosearch (MonoAssemblyName *aname,
 		return mono_assembly_load_corlib (mono_get_runtime_info (), status);
 	}
 
+	MonoAssemblyCandidatePredicate predicate = NULL;
+	void* predicate_ud = NULL;
+#if !defined(DISABLE_DESKTOP_LOADER)
+	if (G_LIKELY (mono_loader_get_strict_strong_names ())) {
+		predicate = &mono_assembly_candidate_predicate_sn_same_name;
+		predicate_ud = aname;
+	}
+#endif
+
 	len = strlen (aname->name);
 	for (ext_index = 0; ext_index < 2; ext_index ++) {
 		ext = ext_index == 0 ? ".dll" : ".exe";
@@ -3677,7 +3689,7 @@ mono_assembly_load_full_nosearch (MonoAssemblyName *aname,
 
 		if (basedir) {
 			fullpath = g_build_filename (basedir, filename, NULL);
-			result = mono_assembly_open_predicate (fullpath, refonly, FALSE, &mono_assembly_candidate_predicate_sn_same_name, aname, status);
+			result = mono_assembly_open_predicate (fullpath, refonly, FALSE, predicate, predicate_ud, status);
 			g_free (fullpath);
 			if (result) {
 				result->in_gac = FALSE;
@@ -3686,7 +3698,7 @@ mono_assembly_load_full_nosearch (MonoAssemblyName *aname,
 			}
 		}
 
-		result = load_in_path (filename, default_path, status, refonly, &mono_assembly_candidate_predicate_sn_same_name, aname);
+		result = load_in_path (filename, default_path, status, refonly, predicate, predicate_ud);
 		if (result)
 			result->in_gac = FALSE;
 		g_free (filename);
