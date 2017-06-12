@@ -12,6 +12,9 @@ namespace System.Collections.Specialized
     ///  </para>
     /// </devdoc>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class ListDictionary : IDictionary
     {
         private DictionaryNode head; // Do not rename (binary serialization)

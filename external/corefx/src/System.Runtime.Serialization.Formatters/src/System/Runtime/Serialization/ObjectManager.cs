@@ -1617,7 +1617,7 @@ namespace System.Runtime.Serialization
         }
     }
 
-    internal sealed class TypeLoadExceptionHolder
+    public sealed class TypeLoadExceptionHolder
     {
         internal TypeLoadExceptionHolder(string typeName)
         {

@@ -9,6 +9,9 @@ using System.Globalization;
 namespace System.Numerics
 {
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Numerics, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089")]
+#endif
     public struct BigInteger : IFormattable, IComparable, IComparable<BigInteger>, IEquatable<BigInteger>
     {
         private const int knMaskHighBit = int.MinValue;

@@ -28,7 +28,7 @@ namespace System.Collections.Generic
 #if DEBUG
             internal override bool versionUpToDate()
             {
-                return (_version == _underlying._version);
+                return (version == _underlying.version);
             }
 #endif
 
@@ -40,9 +40,9 @@ namespace System.Collections.Generic
                 _max = Max;
                 _lBoundActive = lowerBoundActive;
                 _uBoundActive = upperBoundActive;
-                _root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive); // root is first element within range
-                _count = 0;
-                _version = -1;
+                root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive); // root is first element within range
+                count = 0;
+                version = -1;
                 VersionCheckImpl();
             }
 
@@ -56,7 +56,7 @@ namespace System.Collections.Generic
                 bool ret = _underlying.AddIfNotPresent(item);
                 VersionCheck();
 #if DEBUG
-                Debug.Assert(this.versionUpToDate() && _root == _underlying.FindRange(_min, _max));
+                Debug.Assert(this.versionUpToDate() && root == _underlying.FindRange(_min, _max));
 #endif
 
                 return ret;
@@ -66,7 +66,7 @@ namespace System.Collections.Generic
             {
                 VersionCheck();
 #if DEBUG
-                Debug.Assert(versionUpToDate() && _root == _underlying.FindRange(_min, _max));
+                Debug.Assert(versionUpToDate() && root == _underlying.FindRange(_min, _max));
 #endif
                 return base.Contains(item);
             }
@@ -81,14 +81,14 @@ namespace System.Collections.Generic
                 bool ret = _underlying.Remove(item);
                 VersionCheck();
 #if DEBUG
-                Debug.Assert(versionUpToDate() && _root == _underlying.FindRange(_min, _max));
+                Debug.Assert(versionUpToDate() && root == _underlying.FindRange(_min, _max));
 #endif
                 return ret;
             }
 
             public override void Clear()
             {
-                if (_count == 0)
+                if (count == 0)
                 {
                     return;
                 }
@@ -101,9 +101,9 @@ namespace System.Collections.Generic
                     toRemove.RemoveAt(toRemove.Count - 1);
                 }
 
-                _root = null;
-                _count = 0;
-                _version = _underlying._version;
+                root = null;
+                count = 0;
+                version = _underlying.version;
             }
 
             internal override bool IsWithinRange(T item)
@@ -122,7 +122,7 @@ namespace System.Collections.Generic
             {
                 get
                 {
-                    Node current = _root;
+                    Node current = root;
                     T result = default(T);
 
                     while (current != null)
@@ -152,7 +152,7 @@ namespace System.Collections.Generic
             {
                 get
                 {
-                    Node current = _root;
+                    Node current = root;
                     T result = default(T);
 
                     while (current != null)
@@ -181,15 +181,15 @@ namespace System.Collections.Generic
             {
                 VersionCheck();
 
-                if (_root == null)
+                if (root == null)
                 {
                     return true;
                 }
 
                 // The maximum height of a red-black tree is 2*lg(n+1).
                 // See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-                Stack<Node> stack = new Stack<Node>(2 * (int)SortedSet<T>.Log2(_count + 1)); // this is not exactly right if count is out of date, but the stack can grow
-                Node current = _root;
+                Stack<Node> stack = new Stack<Node>(2 * (int)SortedSet<T>.Log2(count + 1)); // this is not exactly right if count is out of date, but the stack can grow
+                Node current = root;
                 while (current != null)
                 {
                     if (IsWithinRange(current.Item))
@@ -240,13 +240,13 @@ namespace System.Collections.Generic
             {
                 VersionCheck();
 
-                if (_root == null)
+                if (root == null)
                 {
                     return true;
                 }
 
                 Queue<Node> processQueue = new Queue<Node>();
-                processQueue.Enqueue(_root);
+                processQueue.Enqueue(root);
                 Node current;
 
                 while (processQueue.Count != 0)
@@ -277,7 +277,7 @@ namespace System.Collections.Generic
 
                 VersionCheck();
 #if DEBUG
-                Debug.Assert(this.versionUpToDate() && _root == _underlying.FindRange(_min, _max));
+                Debug.Assert(this.versionUpToDate() && root == _underlying.FindRange(_min, _max));
 #endif
                 return base.FindNode(item);
             }
@@ -294,7 +294,7 @@ namespace System.Collections.Generic
                         return count;
                 }
 #if DEBUG
-                Debug.Assert(this.versionUpToDate() && _root == _underlying.FindRange(_min, _max));
+                Debug.Assert(this.versionUpToDate() && root == _underlying.FindRange(_min, _max));
 #endif
                 return -1;
             }
@@ -307,12 +307,12 @@ namespace System.Collections.Generic
             private void VersionCheckImpl()
             {
                 Debug.Assert(_underlying != null);
-                if (_version != _underlying._version)
+                if (version != _underlying.version)
                 {
-                    _root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive);
-                    _version = _underlying._version;
-                    _count = 0;
-                    InOrderTreeWalk(n => { _count++; return true; });
+                    root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive);
+                    version = _underlying.version;
+                    count = 0;
+                    InOrderTreeWalk(n => { count++; return true; });
                 }
             }
 
@@ -336,7 +336,7 @@ namespace System.Collections.Generic
             internal override void IntersectWithEnumerable(IEnumerable<T> other)
             {
                 base.IntersectWithEnumerable(other);
-                Debug.Assert(versionUpToDate() && _root == _underlying.FindRange(_min, _max));
+                Debug.Assert(versionUpToDate() && root == _underlying.FindRange(_min, _max));
             }
 #endif
 

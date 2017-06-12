@@ -11,6 +11,9 @@ namespace System.Collections.Generic
     [DebuggerTypeProxy(typeof(ICollectionDebugView<>))]
     [DebuggerDisplay("Count = {Count}")]
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089 ")]
+#endif
     public class LinkedList<T> : ICollection<T>, ICollection, IReadOnlyCollection<T>, ISerializable, IDeserializationCallback
     {
         // This LinkedList is a doubly-Linked circular list.
@@ -357,7 +360,7 @@ namespace System.Collections.Generic
         {
             if (_siInfo == null)
             {
-                return; //Somebody had a dependency on this Dictionary and fixed us up before the ObjectManager got to it.
+                return; //Somebody had a dependency on this LinkedList and fixed us up before the ObjectManager got to it.
             }
 
             int realVersion = _siInfo.GetInt32(VersionName);

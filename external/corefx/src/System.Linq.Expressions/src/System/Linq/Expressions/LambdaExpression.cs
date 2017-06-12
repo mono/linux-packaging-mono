@@ -894,7 +894,7 @@ namespace System.Linq.Expressions
                 throw Error.LambdaTypeMustBeDerivedFromSystemDelegate(paramName);
             }
 
-            TypeUtils.ValidateType(delegateType, nameof(delegateType));
+            TypeUtils.ValidateType(delegateType, nameof(delegateType), allowByRef: true, allowPointer: true);
 
             MethodInfo mi;
             CacheDict<Type, MethodInfo> ldc = s_lambdaDelegateCache;

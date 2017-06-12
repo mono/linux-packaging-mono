@@ -10,6 +10,9 @@ namespace System.Drawing
 {
     [DebuggerDisplay("{NameAndARGBValue}")]
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Drawing, Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a")]
+#endif
     public struct Color : IEquatable<Color>
     {
         public static readonly Color Empty = new Color();

@@ -10,6 +10,9 @@ namespace System.Collections
     // A vector of bits.  Use this to store bits efficiently, without having to do bit 
     // shifting yourself.
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public sealed class BitArray : ICollection, ICloneable
     {
         /*=========================================================================

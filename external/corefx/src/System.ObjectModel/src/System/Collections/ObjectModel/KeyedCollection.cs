@@ -11,6 +11,9 @@ namespace System.Collections.ObjectModel
     [Serializable]
     [DebuggerTypeProxy(typeof(CollectionDebugView<>))]
     [DebuggerDisplay("Count = {Count}")]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089")]
+#endif
     public abstract class KeyedCollection<TKey, TItem> : Collection<TItem>
     {
         private const int defaultThreshold = 0;

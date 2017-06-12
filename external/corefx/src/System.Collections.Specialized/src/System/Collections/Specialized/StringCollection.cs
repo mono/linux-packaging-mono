@@ -9,6 +9,9 @@ namespace System.Collections.Specialized
     ///    <para>Represents a collection of strings.</para>
     /// </devdoc>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class StringCollection : IList
     {
         private readonly ArrayList data = new ArrayList(); // Do not rename (binary serialization)
