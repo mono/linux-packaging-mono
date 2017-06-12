@@ -18,7 +18,9 @@ namespace System.Collections.ObjectModel
     [Serializable]
     [DebuggerTypeProxy(typeof(CollectionDebugView<>))]
     [DebuggerDisplay("Count = {Count}")]
+#if !MONO
     [System.Runtime.CompilerServices.TypeForwardedFrom("WindowsBase, Version=3.0.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
+#endif
     public class ObservableCollection<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
         //------------------------------------------------------
@@ -375,7 +377,9 @@ namespace System.Collections.ObjectModel
         #region Private Types
 
         [Serializable]
+#if !MONO
         [System.Runtime.CompilerServices.TypeForwardedFrom("WindowsBase, Version=3.0.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
+#endif
         private sealed class SimpleMonitor : IDisposable
         {
             internal int _busyCount; // Only used during (de)serialization to maintain compatibility with desktop.

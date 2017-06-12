@@ -13,6 +13,9 @@ namespace System.Numerics
     /// are real numbers, and i is the imaginary unit, with the property i2= -1.
     /// </summary>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Numerics, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089")]
+#endif
     public struct Complex : IEquatable<Complex>, IFormattable
     {
         public static readonly Complex Zero = new Complex(0.0, 0.0);

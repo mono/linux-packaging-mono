@@ -12,6 +12,9 @@ namespace System.Collections.Specialized
     ///       with a proper StringComparer instance.</para>
     /// </devdoc>
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class StringDictionary : IEnumerable
     {
         // For compatibility, we want the Keys property to return values in lower-case.

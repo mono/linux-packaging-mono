@@ -21,6 +21,9 @@ namespace System.Collections
     [DebuggerTypeProxy(typeof(System.Collections.Queue.QueueDebugView))]
     [DebuggerDisplay("Count = {Count}")]
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class Queue : ICollection, ICloneable
     {
         private Object[] _array;
