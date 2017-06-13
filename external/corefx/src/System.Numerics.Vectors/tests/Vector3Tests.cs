@@ -1145,6 +1145,9 @@ namespace System.Numerics.Tests
 
         // A test to make sure these types are blittable directly into GPU buffer memory layouts
         [Fact]
+#if MONO
+        [ActiveIssue("https://bugzilla.xamarin.com/show_bug.cgi?id=57336")]
+#endif
         public unsafe void Vector3SizeofTest()
         {
             Assert.Equal(12, sizeof(Vector3));
