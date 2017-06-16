@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+if [ "$1" = remove ]; then
+        # Remove the GAC
+        if [ -x /usr/share/cli-common/gac-remove ]; then
+                /usr/share/cli-common/gac-remove mono-%SNAPVER%
+        fi
+fi
+
+#DEBHELPER#
+
