@@ -2033,10 +2033,8 @@ namespace System.Drawing
         public TextureBrush(System.Drawing.Image image, System.Drawing.Drawing2D.WrapMode wrapMode, System.Drawing.Rectangle dstRect) { }
         public TextureBrush(System.Drawing.Image image, System.Drawing.Drawing2D.WrapMode wrapMode, System.Drawing.RectangleF dstRect) { }
         public TextureBrush(System.Drawing.Image image, System.Drawing.Rectangle dstRect) { }
-        [System.MonoLimitationAttribute("ImageAttributes are ignored when using libgdiplus")]
         public TextureBrush(System.Drawing.Image image, System.Drawing.Rectangle dstRect, System.Drawing.Imaging.ImageAttributes imageAttr) { }
         public TextureBrush(System.Drawing.Image image, System.Drawing.RectangleF dstRect) { }
-        [System.MonoLimitationAttribute("ImageAttributes are ignored when using libgdiplus")]
         public TextureBrush(System.Drawing.Image image, System.Drawing.RectangleF dstRect, System.Drawing.Imaging.ImageAttributes imageAttr) { }
         public System.Drawing.Image Image { get { throw null; } }
         public System.Drawing.Drawing2D.Matrix Transform { get { throw null; } set { } }
@@ -2226,6 +2224,8 @@ namespace System.Drawing.Design
         public int IndexOf(System.Drawing.Design.ToolboxItem value) { throw null; }
     }
     public delegate System.Drawing.Design.ToolboxItem ToolboxItemCreatorCallback(object serializedObject, string format);
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class UITypeEditor
     {
         public UITypeEditor() { }
@@ -3145,7 +3145,9 @@ namespace System.Drawing.Imaging
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, byte[] value, bool undefined) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, short value) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, short[] value) { }
+        public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int numberValues, System.Drawing.Imaging.EncoderParameterValueType type, System.IntPtr value) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int numerator, int denominator) { }
+        [System.ObsoleteAttribute("This constructor has been deprecated. Use EncoderParameter(Encoder encoder, int numberValues, EncoderParameterValueType type, IntPtr value) instead.  http://go.microsoft.com/fwlink/?linkid=14202")]
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int NumberOfValues, int Type, int Value) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int numerator1, int demoninator1, int numerator2, int demoninator2) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int[] numerator, int[] denominator) { }
@@ -3242,7 +3244,6 @@ namespace System.Drawing.Imaging
         public object Clone() { throw null; }
         public void Dispose() { }
         ~ImageAttributes() { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void GetAdjustedPalette(System.Drawing.Imaging.ColorPalette palette, System.Drawing.Imaging.ColorAdjustType type) { }
         public void SetBrushRemapTable(System.Drawing.Imaging.ColorMap[] map) { }
         public void SetColorKey(System.Drawing.Color colorLow, System.Drawing.Color colorHigh) { }
@@ -3257,19 +3258,13 @@ namespace System.Drawing.Imaging
         public void SetGamma(float gamma, System.Drawing.Imaging.ColorAdjustType type) { }
         public void SetNoOp() { }
         public void SetNoOp(System.Drawing.Imaging.ColorAdjustType type) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetOutputChannel(System.Drawing.Imaging.ColorChannelFlag flags) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetOutputChannel(System.Drawing.Imaging.ColorChannelFlag flags, System.Drawing.Imaging.ColorAdjustType type) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetOutputChannelColorProfile(string colorProfileFilename) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetOutputChannelColorProfile(string colorProfileFilename, System.Drawing.Imaging.ColorAdjustType type) { }
         public void SetRemapTable(System.Drawing.Imaging.ColorMap[] map) { }
         public void SetRemapTable(System.Drawing.Imaging.ColorMap[] map, System.Drawing.Imaging.ColorAdjustType type) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetThreshold(float threshold) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetThreshold(float threshold, System.Drawing.Imaging.ColorAdjustType type) { }
         public void SetWrapMode(System.Drawing.Drawing2D.WrapMode mode) { }
         public void SetWrapMode(System.Drawing.Drawing2D.WrapMode mode, System.Drawing.Color color) { }
@@ -3506,7 +3501,7 @@ namespace System.Drawing.Imaging
         public short Type { get { throw null; } set { } }
         public byte[] Value { get { throw null; } set { } }
     }
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Pack=2)]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public sealed partial class WmfPlaceableFileHeader
     {
         public WmfPlaceableFileHeader() { }
@@ -3536,6 +3531,7 @@ namespace System.Drawing.Printing
     {
         public InvalidPrinterException(System.Drawing.Printing.PrinterSettings settings) { }
         protected InvalidPrinterException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.Printing.MarginsConverter))]

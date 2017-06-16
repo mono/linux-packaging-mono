@@ -1,10 +1,12 @@
 //
-// System.Drawing.Imaging.ColorChannelFlag.cs
+// SR.cs
 //
-// Author: Dennis Hayes (dennish@raytek.com)
+// Author:
+//   Frederik Carlier (frederik.carlier@quamotion.mobi)
 //
-// (C) 2002 Ximian, Inc.  http://www.ximian.com
-// Copyright (C) 2004,2006 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2017 Quamotion bvba http://quamotion.mobi
+//
+
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -26,13 +28,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace System.Drawing.Imaging {
-
-	public enum ColorChannelFlag {
-		ColorChannelC = 0,
-		ColorChannelK = 3,
-		ColorChannelLast = 4,
-		ColorChannelM = 1,
-		ColorChannelY = 2
-	}
+partial class SR
+{
+	public static string Format (string format, params object[] args)
+	{
+		return string.Format (format, args);
+	} 
 }

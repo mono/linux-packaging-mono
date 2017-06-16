@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.5.0.100],
+AC_INIT(mono, [5.5.0.129],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -3533,12 +3533,6 @@ if test "x$enable_interpreter" = "xyes"; then
 fi
 
 AM_CONDITIONAL(ENABLE_INTERPRETER, [test x$enable_interpreter = xyes])
-
-if test "x$enable_interpreter" = "xyes" || test "x$mono_feature_disable_jit" != "xyes"; then
-	AC_DEFINE(HAVE_ONLINE_VES, 1, [Some VES is available at runtime])
-fi
-
-AM_CONDITIONAL(HAVE_ONLINE_VES, [test x$enable_interpreter = xyes] || [test x$mono_feature_disable_jit != xyes])
 
 dnl 
 dnl Simple Generational checks (sgen)

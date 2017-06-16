@@ -14,6 +14,9 @@ namespace System.Drawing.Printing
     ///    </para>
     /// </devdoc>
     [Serializable]
+#if MONO
+    [System.ComponentModel.TypeConverter(typeof(MarginsConverter))]
+#endif
     public class Margins : ICloneable
     {
         private int _left;
