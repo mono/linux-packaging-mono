@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export MONO_PREFIX=/opt/mono-%SNAPVER%
+export PATH=$MONO_PREFIX/bin:$PATH
+export DYLD_LIBRARY_FALLBACK_PATH=$MONO_PREFIX/lib:$DYLD_LIBRARY_FALLBACK_PATH
+export LD_LIBRARY_PATH=$MONO_PREFIX/lib:$LD_LIBRARY_PATH
+export C_INCLUDE_PATH=$MONO_PREFIX/include:/usr/include:$C_INCLUDE_PATH
+export ACLOCAL_PATH=$MONO_PREFIX/share/aclocal:$ACLOCAL_PATH
+export PKG_CONFIG_PATH=$MONO_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/share/pkgconfig
+export PS1="[mono-%SNAPVER%]$PS1"
