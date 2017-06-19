@@ -541,6 +541,8 @@ namespace Mono.Debugger.Soft
         internal StackFrame() { }
         public int ColumnNumber { get { throw null; } }
         public Mono.Debugger.Soft.AppDomainMirror Domain { get { throw null; } }
+        public int EndColumnNumber { get { throw null; } }
+        public int EndLineNumber { get { throw null; } }
         public string FileName { get { throw null; } }
         public int ILOffset { get { throw null; } }
         public bool IsDebuggerInvoke { get { throw null; } }
