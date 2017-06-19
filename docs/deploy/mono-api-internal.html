@@ -641,7 +641,7 @@ mono_marshal_get_remoting_invoke_with_check (MonoMethod *method)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoMethod*
-mono_marshal_get_runtime_invoke (MonoMethod *method, gboolean virtual_)
+mono_marshal_get_runtime_invoke_full (MonoMethod *method, gboolean virtual_, gboolean need_direct_wrapper)
 
 </div>
             <p />
@@ -1038,10 +1038,7 @@ mono_gc_pending_finalizers (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gboolean
-mono_gc_register_thread (void *baseptr)
-
-</div>
+            <div class="mapi-prototype">mono_gc_register_thread</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
