@@ -219,6 +219,15 @@ typedef struct {
 
 	/* Stack mark for targets that explicitly require one */
 	gpointer stack_mark;
+
+	/* GCHandle to MonoInternalThread */
+	guint32 internal_thread_gchandle;
+
+	/*
+	 * Used by the sampling code in mini-posix.c to ensure that a thread has
+	 * handled a sampling signal before sending another one.
+	 */
+	gint32 profiler_signal_ack;
 } MonoThreadInfo;
 
 typedef struct {
@@ -237,9 +246,8 @@ typedef struct {
 	SMR remains functional as its small_id has not been reclaimed.
 	*/
 	void (*thread_detach_with_lock)(THREAD_INFO_TYPE *info);
-	gboolean (*mono_method_is_critical) (void *method);
 	gboolean (*ip_in_critical_region) (MonoDomain *domain, gpointer ip);
-	gboolean (*mono_thread_in_critical_region) (THREAD_INFO_TYPE *info);
+	gboolean (*thread_in_critical_region) (THREAD_INFO_TYPE *info);
 } MonoThreadInfoCallbacks;
 
 typedef struct {
@@ -298,18 +306,21 @@ mono_thread_info_set_tid (THREAD_INFO_TYPE *info, MonoNativeThreadId tid)
  * a single block with info from both camps. 
  */
 void
-mono_threads_init (MonoThreadInfoCallbacks *callbacks, size_t thread_info_size);
+mono_thread_info_init (size_t thread_info_size);
 
 void
-mono_threads_signals_init (void);
+mono_thread_info_callbacks_init (MonoThreadInfoCallbacks *callbacks);
 
 void
-mono_threads_runtime_init (MonoThreadInfoRuntimeCallbacks *callbacks);
+mono_thread_info_signals_init (void);
+
+void
+mono_thread_info_runtime_init (MonoThreadInfoRuntimeCallbacks *callbacks);
 
 MonoThreadInfoRuntimeCallbacks *
 mono_threads_get_runtime_callbacks (void);
 
-int
+MONO_API int
 mono_thread_info_register_small_id (void);
 
 THREAD_INFO_TYPE *
@@ -317,6 +328,15 @@ mono_thread_info_attach (void);
 
 MONO_API void
 mono_thread_info_detach (void);
+
+gboolean
+mono_thread_info_try_get_internal_thread_gchandle (THREAD_INFO_TYPE *info, guint32 *gchandle);
+
+void
+mono_thread_info_set_internal_thread_gchandle (THREAD_INFO_TYPE *info, guint32 gchandle);
+
+void
+mono_thread_info_unset_internal_thread_gchandle (THREAD_INFO_TYPE *info);
 
 gboolean
 mono_thread_info_is_exiting (void);
@@ -327,7 +347,7 @@ mono_thread_info_current (void);
 THREAD_INFO_TYPE*
 mono_thread_info_current_unchecked (void);
 
-int
+MONO_API int
 mono_thread_info_get_small_id (void);
 
 MonoLinkedListSet*

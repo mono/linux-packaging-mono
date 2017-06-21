@@ -8,15 +8,10 @@ namespace System.Runtime.CompilerServices
 {
     [Serializable]
     [System.AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter, Inherited = false)]
-    public sealed partial class IUnknownConstantAttribute : System.Runtime.CompilerServices.CustomConstantAttribute
+    public sealed partial class IUnknownConstantAttribute : CustomConstantAttribute
     {
         public IUnknownConstantAttribute() { }
-        public override object Value
-        {
-            get
-            {
-                return new UnknownWrapper(null);
-            }
-        }
+
+        public override object Value => new UnknownWrapper(null);
     }
 }

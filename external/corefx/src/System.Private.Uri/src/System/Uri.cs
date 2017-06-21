@@ -407,7 +407,7 @@ namespace System
         //
         protected Uri(SerializationInfo serializationInfo, StreamingContext streamingContext)
         {
-            string uriString = serializationInfo.GetString("AbsoluteUri");
+            string uriString = serializationInfo.GetString("AbsoluteUri"); // Do not rename (binary serialization)
 
             if (uriString.Length != 0)
             {
@@ -415,7 +415,7 @@ namespace System
                 return;
             }
 
-            uriString = serializationInfo.GetString("RelativeUri");
+            uriString = serializationInfo.GetString("RelativeUri");  // Do not rename (binary serialization)
             if ((object)uriString == null)
                 throw new ArgumentNullException("uriString");
 
@@ -440,11 +440,11 @@ namespace System
         {
 
             if (IsAbsoluteUri)
-                serializationInfo.AddValue("AbsoluteUri", GetParts(UriComponents.SerializationInfoString, UriFormat.UriEscaped));
+                serializationInfo.AddValue("AbsoluteUri", GetParts(UriComponents.SerializationInfoString, UriFormat.UriEscaped)); // Do not rename (binary serialization)
             else
             {
-                serializationInfo.AddValue("AbsoluteUri", string.Empty);
-                serializationInfo.AddValue("RelativeUri", GetParts(UriComponents.SerializationInfoString, UriFormat.UriEscaped));
+                serializationInfo.AddValue("AbsoluteUri", string.Empty); // Do not rename (binary serialization)
+                serializationInfo.AddValue("RelativeUri", GetParts(UriComponents.SerializationInfoString, UriFormat.UriEscaped)); // Do not rename (binary serialization)
             }
         }
 
@@ -2111,13 +2111,21 @@ namespace System
                             // Only FILE scheme may have UNC Path flag set
                             _flags |= Flags.UncPath;
                             idx = i;
+
+                            _syntax = IsWindowsSystem ? _syntax : UriParser.UnixFileUri;
+                        }
+                        else if (!IsWindowsSystem && _syntax.InFact(UriSyntaxFlags.FileLikeUri) && pUriString[i - 1] == '/' && i - idx == 3)
+                        {
+                            _syntax = UriParser.UnixFileUri;
+                            _flags |= Flags.UnixPath | Flags.AuthorityFound;
+                            idx += 2;
                         }
                     }
                 }
                 //
                 //STEP 1.5 decide on the Authority component
                 //
-                if ((_flags & (Flags.UncPath | Flags.DosPath)) != 0)
+                if ((_flags & (Flags.UncPath | Flags.DosPath | Flags.UnixPath)) != 0)
                 {
                 }
                 else if ((idx + 2) <= length)
@@ -2189,7 +2197,8 @@ namespace System
 
                     // This will disallow '\' as the host terminator for any scheme that is not implicitFile or cannot have a Dos Path
                     if ((idx < (ushort)length && pUriString[idx] == '\\') && NotAny(Flags.ImplicitFile) &&
-                        _syntax.NotAny(UriSyntaxFlags.AllowDOSPath))
+                        (_syntax.NotAny(UriSyntaxFlags.AllowDOSPath) ||
+                        (InFact(Flags.UncPath) && _syntax.NotAny(UriSyntaxFlags.ConvertPathSlashes))))
                     {
                         return ParsingError.BadAuthorityTerminator;
                     }

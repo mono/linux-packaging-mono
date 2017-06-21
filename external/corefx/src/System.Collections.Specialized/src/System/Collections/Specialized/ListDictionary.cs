@@ -373,8 +373,7 @@ namespace System.Collections.Specialized
                 _current = null;
             }
         }
-
-
+        
         private class NodeKeyValueCollection : ICollection
         {
             private ListDictionary _list;
@@ -495,11 +494,14 @@ namespace System.Collections.Specialized
         }
 
         [Serializable]
-        private class DictionaryNode
+#if !MONO
+        [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
+        public class DictionaryNode
         {
-            public object key;
-            public object value;
-            public DictionaryNode next;
+            public object key; // Do not rename (binary serialization)
+            public object value; // Do not rename (binary serialization)
+            public DictionaryNode next; // Do not rename (binary serialization)
         }
     }
 }

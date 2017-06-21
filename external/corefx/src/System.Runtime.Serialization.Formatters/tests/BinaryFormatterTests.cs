@@ -17,7 +17,6 @@ namespace System.Runtime.Serialization.Formatters.Tests
     {
         [Theory]
         [MemberData(nameof(BasicObjectsRoundtrip_MemberData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)] 
         public void ValidateBasicObjectsRoundtrip(object obj, FormatterAssemblyStyle assemblyFormat, TypeFilterLevel filterLevel, FormatterTypeStyle typeFormat)
         {
             object clone = FormatterClone(obj, null, assemblyFormat, filterLevel, typeFormat);
@@ -42,7 +41,6 @@ namespace System.Runtime.Serialization.Formatters.Tests
 
         [Theory]
         [MemberData(nameof(SerializableObjects_MemberData))]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
         public void ValidateAgainstBlobs(object obj, string[] blobs)
         {
             if (blobs == null || blobs.Length == 0)
@@ -51,10 +49,22 @@ namespace System.Runtime.Serialization.Formatters.Tests
                     SerializeObjectToBlob(obj));
             }
 
-            foreach (string blob in blobs.Take(1))
+            foreach (string blob in blobs)
             {
                 CheckForAnyEquals(obj, DeserializeBlobToObject(blob));
             }
+        }
+
+        [Fact]
+        public void ArraySegmentDefaultCtor()
+        {
+            // This is workaround for Xunit bug which tries to pretty print test case name and enumerate this object.
+            // When inner array is not initialized it throws an exception when this happens.
+            object obj = new ArraySegment<int>();
+            string corefxBlob = "AAEAAAD/////AQAAAAAAAAAEAQAAAHJTeXN0ZW0uQXJyYXlTZWdtZW50YDFbW1N5c3RlbS5JbnQzMiwgbXNjb3JsaWIsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5XV0DAAAABl9hcnJheQdfb2Zmc2V0Bl9jb3VudAcAAAgICAoAAAAAAAAAAAs=";
+            string netfxBlob = "AAEAAAD/////AQAAAAAAAAAEAQAAAHJTeXN0ZW0uQXJyYXlTZWdtZW50YDFbW1N5c3RlbS5JbnQzMiwgbXNjb3JsaWIsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5XV0DAAAABl9hcnJheQdfb2Zmc2V0Bl9jb3VudAcAAAgICAoAAAAAAAAAAAs=";
+            CheckForAnyEquals(obj, DeserializeBlobToObject(corefxBlob));
+            CheckForAnyEquals(obj, DeserializeBlobToObject(netfxBlob));
         }
 
         [Fact]
@@ -102,7 +112,6 @@ namespace System.Runtime.Serialization.Formatters.Tests
         }
 
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
         public void RoundtripManyObjectsInOneStream()
         {
             object[][] objects = SerializableObjects_MemberData().ToArray();
@@ -354,9 +363,11 @@ namespace System.Runtime.Serialization.Formatters.Tests
             Assert.Equal(42, real);
         }
 
-        [OuterLoop]
-        [Theory]
-        [MemberData(nameof(FuzzInputs_MemberData))]
+        // Test is disabled becaues it can cause improbable memory allocations leading to interminable paging.
+        // We're keeping the code because it could be useful to a dev making local changes to binary formatter code.
+        //[OuterLoop]
+        //[Theory]
+        //[MemberData(nameof(FuzzInputs_MemberData))]
         public void Deserialize_FuzzInput(object obj, Random rand)
         {
             // Get the serialized data for the object

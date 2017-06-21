@@ -79,10 +79,7 @@ namespace System.DirectoryServices.Protocols
         private int _errorCode;
         private string _serverErrorMessage;
         internal PartialResultsCollection results = new PartialResultsCollection();
-        protected LdapException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-            throw new PlatformNotSupportedException();
-        }
+        protected LdapException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         public LdapException() : base() { }
 
@@ -144,10 +141,7 @@ namespace System.DirectoryServices.Protocols
     [Serializable]
     public class TlsOperationException : DirectoryOperationException
     {
-        protected TlsOperationException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-            throw new PlatformNotSupportedException();
-        }
+        protected TlsOperationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         public TlsOperationException() : base() { }
 

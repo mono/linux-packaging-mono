@@ -254,7 +254,7 @@ namespace Mono.Cecil {
 
 #endif
 
-	public sealed class ModuleDefinition : ModuleReference, ICustomAttributeProvider, IDisposable {
+	public sealed class ModuleDefinition : ModuleReference, ICustomAttributeProvider, ICustomDebugInformationProvider, IDisposable {
 
 		internal Image Image;
 		internal MetadataSystem MetadataSystem;
@@ -293,6 +293,8 @@ namespace Mono.Cecil {
 		Collection<Resource> resources;
 		Collection<ExportedType> exported_types;
 		TypeDefinitionCollection types;
+
+		internal Collection<CustomDebugInformation> custom_infos;
 
 		public bool IsMain {
 			get { return kind != ModuleKind.NetModule; }
@@ -578,6 +580,18 @@ namespace Mono.Cecil {
 				return entry_point = null;
 			}
 			set { entry_point = value; }
+		}
+
+		public bool HasCustomDebugInformations {
+			get {
+				return custom_infos != null && custom_infos.Count > 0;
+			}
+		}
+
+		public Collection<CustomDebugInformation> CustomDebugInformations {
+			get {
+				return custom_infos ?? (custom_infos = new Collection<CustomDebugInformation> ());
+			}
 		}
 
 		internal ModuleDefinition ()
@@ -1237,13 +1251,13 @@ namespace Mono.Cecil {
 		public static void CheckWriteSeek (Stream stream)
 		{
 			if (!stream.CanWrite || !stream.CanSeek)
-				throw new ArgumentException ();
+				throw new ArgumentException ("Stream must be writable and seekable.");
 		}
 
 		public static void CheckReadSeek (Stream stream)
 		{
 			if (!stream.CanRead || !stream.CanSeek)
-				throw new ArgumentException ();
+				throw new ArgumentException ("Stream must be readable and seekable.");
 		}
 
 		public static void CheckType (object type)

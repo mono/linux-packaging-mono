@@ -12,7 +12,7 @@ namespace System.Net
     // A list of cookies maintained in Sorted order. Only one cookie with matching Name/Domain/Path
     [Serializable]
 #if !MONO
-    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089")]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
 #endif
     public class CookieCollection : ICollection
     {

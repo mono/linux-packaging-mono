@@ -66,7 +66,7 @@ static MonoThreadInfoCallbacks threads_callbacks;
 static MonoThreadInfoRuntimeCallbacks runtime_callbacks;
 static MonoNativeTlsKey thread_info_key, thread_exited_key;
 #ifdef HAVE_KW_THREAD
-static __thread guint32 tls_small_id;
+static __thread gint32 tls_small_id = -1;
 #else
 static MonoNativeTlsKey small_id_key;
 #endif
@@ -330,10 +330,23 @@ free_thread_info (gpointer mem)
 	g_free (info);
 }
 
+/*
+ * mono_thread_info_register_small_id
+ *
+ * Registers a small ID for the current thread. This is a 16-bit value uniquely
+ * identifying the current thread. If the current thread already has a small ID
+ * assigned, that small ID will be returned; otherwise, the newly assigned small
+ * ID is returned.
+ */
 int
 mono_thread_info_register_small_id (void)
 {
-	int small_id = mono_thread_small_id_alloc ();
+	int small_id = mono_thread_info_get_small_id ();
+
+	if (small_id != -1)
+		return small_id;
+
+	small_id = mono_thread_small_id_alloc ();
 #ifdef HAVE_KW_THREAD
 	tls_small_id = small_id;
 #else
@@ -379,6 +392,10 @@ register_thread (MonoThreadInfo *info)
 	info->stack_end = staddr + stsize;
 
 	info->stackdata = g_byte_array_new ();
+
+	info->internal_thread_gchandle = G_MAXUINT32;
+
+	info->profiler_signal_ack = 1;
 
 	mono_threads_suspend_register (info);
 
@@ -551,6 +568,16 @@ mono_thread_info_current (void)
 	return info;
 }
 
+/*
+ * mono_thread_info_get_small_id
+ *
+ * Retrieve the small ID for the current thread. This is a 16-bit value uniquely
+ * identifying the current thread. Returns -1 if the current thread doesn't have
+ * a small ID assigned.
+ *
+ * To ensure that the calling thread has a small ID assigned, call either
+ * mono_thread_info_attach or mono_thread_info_register_small_id.
+ */
 int
 mono_thread_info_get_small_id (void)
 {
@@ -610,7 +637,7 @@ mono_thread_info_attach (void)
 	{
 		/* This can happen from DllMain(DLL_THREAD_ATTACH) on Windows, if a
 		 * thread is created before an embedding API user initialized Mono. */
-		THREADS_DEBUG ("mono_thread_info_attach called before mono_threads_init\n");
+		THREADS_DEBUG ("mono_thread_info_attach called before mono_thread_info_init\n");
 		return NULL;
 	}
 #endif
@@ -640,7 +667,7 @@ mono_thread_info_detach (void)
 	{
 		/* This can happen from DllMain(THREAD_DETACH) on Windows, if a thread
 		 * is created before an embedding API user initialized Mono. */
-		THREADS_DEBUG ("mono_thread_info_detach called before mono_threads_init\n");
+		THREADS_DEBUG ("mono_thread_info_detach called before mono_thread_info_init\n");
 		return;
 	}
 #endif
@@ -652,6 +679,33 @@ mono_thread_info_detach (void)
 		THREADS_DEBUG ("detaching %p\n", info);
 		unregister_thread (info);
 	}
+}
+
+gboolean
+mono_thread_info_try_get_internal_thread_gchandle (MonoThreadInfo *info, guint32 *gchandle)
+{
+	g_assert (info);
+
+	if (info->internal_thread_gchandle == G_MAXUINT32)
+		return FALSE;
+
+	*gchandle = info->internal_thread_gchandle;
+	return TRUE;
+}
+
+void
+mono_thread_info_set_internal_thread_gchandle (MonoThreadInfo *info, guint32 gchandle)
+{
+	g_assert (info);
+	g_assert (gchandle != G_MAXUINT32);
+	info->internal_thread_gchandle = gchandle;
+}
+
+void
+mono_thread_info_unset_internal_thread_gchandle (THREAD_INFO_TYPE *info)
+{
+	g_assert (info);
+	info->internal_thread_gchandle = G_MAXUINT32;
 }
 
 /*
@@ -685,10 +739,9 @@ thread_info_key_dtor (void *arg)
 #endif
 
 void
-mono_threads_init (MonoThreadInfoCallbacks *callbacks, size_t info_size)
+mono_thread_info_init (size_t info_size)
 {
 	gboolean res;
-	threads_callbacks = *callbacks;
 	thread_info_size = info_size;
 	char *sleepLimit;
 #ifdef HOST_WIN32
@@ -737,13 +790,19 @@ mono_threads_init (MonoThreadInfoCallbacks *callbacks, size_t info_size)
 }
 
 void
-mono_threads_signals_init (void)
+mono_thread_info_callbacks_init (MonoThreadInfoCallbacks *callbacks)
+{
+	threads_callbacks = *callbacks;
+}
+
+void
+mono_thread_info_signals_init (void)
 {
 	mono_threads_suspend_init_signals ();
 }
 
 void
-mono_threads_runtime_init (MonoThreadInfoRuntimeCallbacks *callbacks)
+mono_thread_info_runtime_init (MonoThreadInfoRuntimeCallbacks *callbacks)
 {
 	runtime_callbacks = *callbacks;
 }
@@ -841,8 +900,6 @@ WB trampoline. Another option is to encode wb ranges in MonoJitInfo, but that is
 static gboolean
 is_thread_in_critical_region (MonoThreadInfo *info)
 {
-	MonoMethod *method;
-	MonoJitInfo *ji;
 	gpointer stack_start;
 	MonoThreadUnwindState *state;
 
@@ -854,7 +911,7 @@ is_thread_in_critical_region (MonoThreadInfo *info)
 		return TRUE;
 
 	/* Are we inside a GC critical region? */
-	if (threads_callbacks.mono_thread_in_critical_region && threads_callbacks.mono_thread_in_critical_region (info)) {
+	if (threads_callbacks.thread_in_critical_region && threads_callbacks.thread_in_critical_region (info)) {
 		return TRUE;
 	}
 
@@ -871,16 +928,7 @@ is_thread_in_critical_region (MonoThreadInfo *info)
 	if (threads_callbacks.ip_in_critical_region)
 		return threads_callbacks.ip_in_critical_region ((MonoDomain *) state->unwind_data [MONO_UNWIND_DATA_DOMAIN], (char *) MONO_CONTEXT_GET_IP (&state->ctx));
 
-	ji = mono_jit_info_table_find (
-		(MonoDomain *) state->unwind_data [MONO_UNWIND_DATA_DOMAIN],
-		(char *) MONO_CONTEXT_GET_IP (&state->ctx));
-
-	if (!ji)
-		return FALSE;
-
-	method = mono_jit_info_get_method (ji);
-
-	return threads_callbacks.mono_method_is_critical (method);
+	return FALSE;
 }
 
 gboolean

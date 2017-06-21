@@ -139,16 +139,6 @@ namespace System.Collections.ObjectModel
             OnPropertyChanged(e);
         }
         #endregion Private Methods
-
-        #region Private Fields
-
-        //------------------------------------------------------
-        //
-        //  Private Fields
-        //
-        //------------------------------------------------------
-
-        #endregion Private Fields
     }
 }
 
