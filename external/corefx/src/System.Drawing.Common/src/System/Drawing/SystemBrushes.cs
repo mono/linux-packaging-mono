@@ -15,9 +15,11 @@ namespace System.Drawing
     {
         private static readonly object s_systemBrushesKey = new object();
 
+#if MONO
         private SystemBrushes()
         {
         }
+#endif
 
         /// <include file='doc\SystemBrushes.uex' path='docs/doc[@for="SystemBrushes.ActiveBorder"]/*' />
         /// <devdoc>

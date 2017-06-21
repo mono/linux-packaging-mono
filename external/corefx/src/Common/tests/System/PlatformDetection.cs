@@ -66,7 +66,7 @@ namespace System
             return runningVersion != null && runningVersion >= net470;
         }
 
-        public static bool IsNetfxBelow471()
+        public static bool IsNetfx471OrNewer()
         {
             if (!IsFullFramework)
             {
@@ -75,7 +75,7 @@ namespace System
 
             Version net471 = new Version(4, 7, 1);
             Version runningVersion = GetFrameworkVersion();
-            return runningVersion != null && runningVersion < net471;
+            return runningVersion != null && runningVersion >= net471;
         }
 
         public static Version GetFrameworkVersion()
@@ -186,6 +186,7 @@ namespace System
         public static bool IsDebian8 => IsDistroAndVersion("debian", "8");
         public static bool IsUbuntu1404 => IsDistroAndVersion("ubuntu", "14.04");
         public static bool IsCentos7 => IsDistroAndVersion("centos", "7");
+        public static bool IsTizen => IsDistroAndVersion("tizen");
 
         /// <summary>
         /// Get whether the OS platform matches the given Linux distro and optional version.

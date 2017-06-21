@@ -15,6 +15,14 @@ namespace System.Collections
 #endif
     public sealed class BitArray : ICollection, ICloneable
     {
+        private int[] m_array; // Do not rename (binary serialization)
+        private int m_length; // Do not rename (binary serialization)
+        private int _version; // Do not rename (binary serialization)
+        [NonSerialized]
+        private object _syncRoot;
+
+        private const int _ShrinkThreshold = 256;
+
         /*=========================================================================
         ** Allocates space to hold length bit values. All of the values in the bit
         ** array are set to false.
@@ -701,13 +709,5 @@ namespace System.Collections
                 index = -1;
             }
         }
-
-        private int[] m_array;
-        private int m_length;
-        private int _version;
-        [NonSerialized]
-        private object _syncRoot;
-
-        private const int _ShrinkThreshold = 256;
     }
 }

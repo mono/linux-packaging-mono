@@ -892,7 +892,7 @@ namespace Mono.Cecil
         NXCompat = 256,
         TerminalServerAware = 32768,
     }
-    public sealed partial class ModuleDefinition : Mono.Cecil.ModuleReference, Mono.Cecil.ICustomAttributeProvider, Mono.Cecil.IMetadataTokenProvider, System.IDisposable
+    public sealed partial class ModuleDefinition : Mono.Cecil.ModuleReference, Mono.Cecil.Cil.ICustomDebugInformationProvider, Mono.Cecil.ICustomAttributeProvider, Mono.Cecil.IMetadataTokenProvider, System.IDisposable
     {
         internal ModuleDefinition() : base (default(string)) { }
         public Mono.Cecil.TargetArchitecture Architecture { get { throw null; } set { } }
@@ -902,6 +902,7 @@ namespace Mono.Cecil
         public Mono.Cecil.ModuleAttributes Attributes { get { throw null; } set { } }
         public Mono.Cecil.ModuleCharacteristics Characteristics { get { throw null; } set { } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttribute> CustomAttributes { get { throw null; } }
+        public Mono.Collections.Generic.Collection<Mono.Cecil.Cil.CustomDebugInformation> CustomDebugInformations { get { throw null; } }
         public Mono.Cecil.MethodDefinition EntryPoint { get { throw null; } set { } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.ExportedType> ExportedTypes { get { throw null; } }
         public string FileName { get { throw null; } }
@@ -909,6 +910,7 @@ namespace Mono.Cecil
         public string FullyQualifiedName { get { throw null; } }
         public bool HasAssemblyReferences { get { throw null; } }
         public bool HasCustomAttributes { get { throw null; } }
+        public bool HasCustomDebugInformations { get { throw null; } }
         public bool HasDebugHeader { get { throw null; } }
         public bool HasExportedTypes { get { throw null; } }
         public bool HasModuleReferences { get { throw null; } }
@@ -1835,6 +1837,8 @@ namespace Mono.Cecil.Cil
         Binary = 0,
         DefaultNamespace = 3,
         DynamicVariable = 2,
+        EmbeddedSource = 5,
+        SourceLink = 6,
         StateMachineScope = 1,
     }
     public abstract partial class DebugInformation : Mono.Cecil.Cil.ICustomDebugInformationProvider, Mono.Cecil.IMetadataTokenProvider
@@ -1927,6 +1931,14 @@ namespace Mono.Cecil.Cil
         public EmbeddedPortablePdbWriterProvider() { }
         public Mono.Cecil.Cil.ISymbolWriter GetSymbolWriter(Mono.Cecil.ModuleDefinition module, System.IO.Stream symbolStream) { throw null; }
         public Mono.Cecil.Cil.ISymbolWriter GetSymbolWriter(Mono.Cecil.ModuleDefinition module, string fileName) { throw null; }
+    }
+    public sealed partial class EmbeddedSourceDebugInformation : Mono.Cecil.Cil.CustomDebugInformation
+    {
+        public static System.Guid KindIdentifier;
+        public EmbeddedSourceDebugInformation(byte[] content, bool compress) { }
+        public bool Compress { get { throw null; } set { } }
+        public byte[] Content { get { throw null; } set { } }
+        public override Mono.Cecil.Cil.CustomDebugInformationKind Kind { get { throw null; } }
     }
     public sealed partial class ExceptionHandler
     {
@@ -2479,6 +2491,13 @@ namespace Mono.Cecil.Cil
         public int Offset { get { throw null; } }
         public int StartColumn { get { throw null; } set { } }
         public int StartLine { get { throw null; } set { } }
+    }
+    public sealed partial class SourceLinkDebugInformation : Mono.Cecil.Cil.CustomDebugInformation
+    {
+        public static System.Guid KindIdentifier;
+        public SourceLinkDebugInformation(string content) { }
+        public string Content { get { throw null; } set { } }
+        public override Mono.Cecil.Cil.CustomDebugInformationKind Kind { get { throw null; } }
     }
     public enum StackBehaviour
     {

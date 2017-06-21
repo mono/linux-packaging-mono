@@ -10,6 +10,7 @@ using System.Text;
 
 namespace System.Net
 {
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
     public enum CookieVariant
     {
         Unknown,
@@ -28,7 +29,7 @@ namespace System.Net
     // (e.g. "Cookie: $Version=1; name=value; $Path=/foo; $Secure")
     [Serializable]
 #if !MONO
-    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089")]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
 #endif
     public sealed class Cookie
     {
@@ -50,15 +51,16 @@ namespace System.Net
         private CookieVariant m_cookieVariant = CookieVariant.Plain; // Do not rename (binary serialization)
         private bool m_discard = false; // Do not rename (binary serialization)
         private string m_domain = string.Empty; // Do not rename (binary serialization)
-        private bool m_domainImplicit = true; // Do not rename (binary serialization)
+        private bool m_domain_implicit = true; // Do not rename (binary serialization)
         private DateTime m_expires = DateTime.MinValue; // Do not rename (binary serialization)
         private string m_name = string.Empty; // Do not rename (binary serialization)
         private string m_path = string.Empty; // Do not rename (binary serialization)
-        private bool m_pathImplicit = true; // Do not rename (binary serialization)
+        private bool m_path_implicit = true; // Do not rename (binary serialization)
         private string m_port = string.Empty; // Do not rename (binary serialization)
-        private bool m_portImplicit = true; // Do not rename (binary serialization)
-        private int[] m_portList = null; // Do not rename (binary serialization)
+        private bool m_port_implicit = true; // Do not rename (binary serialization)
+        private int[] m_port_list = null; // Do not rename (binary serialization)
         private bool m_secure = false; // Do not rename (binary serialization)
+        [System.Runtime.Serialization.OptionalField]
         private bool m_httpOnly = false; // Do not rename (binary serialization)
         private DateTime m_timeStamp = DateTime.Now; // Do not rename (binary serialization)
         private string m_value = string.Empty; // Do not rename (binary serialization)
@@ -156,7 +158,7 @@ namespace System.Net
             set
             {
                 m_domain = value ?? string.Empty;
-                m_domainImplicit = false;
+                m_domain_implicit = false;
                 m_domainKey = string.Empty; // _domainKey will be set when adding this cookie to a container.
             }
         }
@@ -165,11 +167,11 @@ namespace System.Net
         {
             get
             {
-                return m_domainImplicit;
+                return m_domain_implicit;
             }
             set
             {
-                m_domainImplicit = value;
+                m_domain_implicit = value;
             }
         }
 
@@ -246,7 +248,7 @@ namespace System.Net
             set
             {
                 m_path = value ?? string.Empty;
-                m_pathImplicit = false;
+                m_path_implicit = false;
             }
         }
 
@@ -263,18 +265,18 @@ namespace System.Net
             Cookie clonedCookie = new Cookie(m_name, m_value);
 
             // Copy over all the properties from the original cookie
-            if (!m_portImplicit)
+            if (!m_port_implicit)
             {
                 clonedCookie.Port = m_port;
             }
-            if (!m_pathImplicit)
+            if (!m_path_implicit)
             {
                 clonedCookie.Path = m_path;
             }
             clonedCookie.Domain = m_domain;
 
             // If the domain in the original cookie was implicit, we should preserve that property
-            clonedCookie.DomainImplicit = m_domainImplicit;
+            clonedCookie.DomainImplicit = m_domain_implicit;
             clonedCookie.m_timeStamp = m_timeStamp;
             clonedCookie.Comment = m_comment;
             clonedCookie.CommentUri = m_commentUri;
@@ -376,13 +378,13 @@ namespace System.Net
             // Check/set domain
             //
             // If domain is implicit => assume a) uri is valid, b) just set domain to uri hostname.
-            if (setDefault && m_domainImplicit == true)
+            if (setDefault && m_domain_implicit == true)
             {
                 m_domain = host;
             }
             else
             {
-                if (!m_domainImplicit)
+                if (!m_domain_implicit)
                 {
                     // Forwarding note: If Uri.Host is of IP address form then the only supported case
                     // is for IMPLICIT domain property of a cookie.
@@ -483,7 +485,7 @@ namespace System.Net
             }
 
             // Check/Set Path
-            if (setDefault && m_pathImplicit == true)
+            if (setDefault && m_path_implicit == true)
             {
                 // This code assumes that the URI path is always valid and contains at least one '/'.
                 switch (m_cookieVariant)
@@ -516,16 +518,16 @@ namespace System.Net
             }
 
             // Set the default port if Port attribute was present but had no value.
-            if (setDefault && (m_portImplicit == false && m_port.Length == 0))
+            if (setDefault && (m_port_implicit == false && m_port.Length == 0))
             {
-                m_portList = new int[1] { port };
+                m_port_list = new int[1] { port };
             }
 
-            if (m_portImplicit == false)
+            if (m_port_implicit == false)
             {
                 // Port must match against the one from the uri.
                 valid = false;
-                foreach (int p in m_portList)
+                foreach (int p in m_port_list)
                 {
                     if (p == port)
                     {
@@ -576,7 +578,7 @@ namespace System.Net
             }
             set
             {
-                m_portImplicit = false;
+                m_port_implicit = false;
                 if (string.IsNullOrEmpty(value))
                 {
                     // "Port" is present but has no value.
@@ -613,7 +615,7 @@ namespace System.Net
                             portList.Add(port);
                         }
                     }
-                    m_portList = portList.ToArray();
+                    m_port_list = portList.ToArray();
                     m_port = value;
                     m_version = MaxSupportedVersion;
                     m_cookieVariant = CookieVariant.Rfc2965;
@@ -627,7 +629,7 @@ namespace System.Net
             get
             {
                 // PortList will be null if Port Attribute was omitted in the response.
-                return m_portList;
+                return m_port_list;
             }
         }
 
@@ -688,7 +690,7 @@ namespace System.Net
         {
             get
             {
-                return m_domainImplicit ? Domain : m_domainKey;
+                return m_domain_implicit ? Domain : m_domainKey;
             }
         }
 
@@ -756,14 +758,14 @@ namespace System.Net
             if (!Plain)
             {
                 // Add the Path if necessary.
-                if (!m_pathImplicit && m_path.Length > 0)
+                if (!m_path_implicit && m_path.Length > 0)
                 {
                     sb.Append(SeparatorLiteral + SpecialAttributeLiteral + CookieFields.PathAttributeName + EqualsLiteral); // const strings
                     sb.Append(m_path);
                 }
 
                 // Add the Domain if necessary.
-                if (!m_domainImplicit && m_domain.Length > 0)
+                if (!m_domain_implicit && m_domain.Length > 0)
                 {
                     sb.Append(SeparatorLiteral + SpecialAttributeLiteral + CookieFields.DomainAttributeName + EqualsLiteral); // const strings
                     if (IsQuotedDomain) sb.Append('"');
@@ -773,7 +775,7 @@ namespace System.Net
             }
 
             // Add the Port if necessary.
-            if (!m_portImplicit)
+            if (!m_port_implicit)
             {
                 sb.Append(SeparatorLiteral + SpecialAttributeLiteral + CookieFields.PortAttributeName); // const strings
                 if (m_port.Length > 0)
@@ -807,7 +809,7 @@ namespace System.Net
             {
                 result += SeparatorLiteral + CookieFields.DiscardAttributeName;
             }
-            if (!m_domainImplicit && m_domain != null && m_domain.Length > 0)
+            if (!m_domain_implicit && m_domain != null && m_domain.Length > 0)
             {
                 result += SeparatorLiteral + CookieFields.DomainAttributeName + EqualsLiteral + m_domain;
             }
@@ -822,11 +824,11 @@ namespace System.Net
                 }
                 result += SeparatorLiteral + CookieFields.MaxAgeAttributeName + EqualsLiteral + seconds.ToString(NumberFormatInfo.InvariantInfo);
             }
-            if (!m_pathImplicit && m_path != null && m_path.Length > 0)
+            if (!m_path_implicit && m_path != null && m_path.Length > 0)
             {
                 result += SeparatorLiteral + CookieFields.PathAttributeName + EqualsLiteral + m_path;
             }
-            if (!Plain && !m_portImplicit && m_port != null && m_port.Length > 0)
+            if (!Plain && !m_port_implicit && m_port != null && m_port.Length > 0)
             {
                 // QuotesLiteral are included in _port.
                 result += SeparatorLiteral + CookieFields.PortAttributeName + EqualsLiteral + m_port;
