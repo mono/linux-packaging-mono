@@ -4502,6 +4502,11 @@ array_constructed:
 			ip += 3;
 			MINT_IN_BREAK;
 		}
+		MINT_IN_CASE(MINT_MONO_MEMORY_BARRIER) {
+			++ip;
+			mono_memory_barrier ();
+			MINT_IN_BREAK;
+		}
 		MINT_IN_CASE(MINT_MONO_JIT_ATTACH) {
 			++ip;
 
@@ -4516,6 +4521,11 @@ array_constructed:
 		MINT_IN_CASE(MINT_MONO_JIT_DETACH)
 			++ip;
 			mono_jit_set_domain (context->original_domain);
+			MINT_IN_BREAK;
+		MINT_IN_CASE(MINT_MONO_LDDOMAIN)
+			sp->data.p = mono_domain_get ();
+			++sp;
+			++ip;
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_SDB_INTR_LOC)
 			if (G_UNLIKELY (ss_enabled)) {
