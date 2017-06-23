@@ -7719,6 +7719,7 @@ decode_llvm_eh_info (EmitContext *ctx, gpointer eh_frame)
 	guint32 ei_len, i, nested_len;
 	gpointer *type_info;
 	gint32 *table;
+	guint8 *unw_info;
 
 	/*
 	 * Decode the one element EH table emitted by the MonoException class
@@ -7751,9 +7752,16 @@ decode_llvm_eh_info (EmitContext *ctx, gpointer eh_frame)
 	fde = (guint8*)eh_frame + fde_offset;
 	cie = (guint8*)table;
 
-	mono_unwind_decode_llvm_mono_fde (fde, fde_len, cie, cfg->native_code, &info);
+	/* Compute lengths */
+	mono_unwind_decode_llvm_mono_fde (fde, fde_len, cie, cfg->native_code, &info, NULL, NULL, NULL);
 
-	cfg->encoded_unwind_ops = info.unw_info;
+	ei = (MonoJitExceptionInfo *)g_malloc0 (info.ex_info_len * sizeof (MonoJitExceptionInfo));
+	type_info = (gpointer *)g_malloc0 (info.ex_info_len * sizeof (gpointer));
+	unw_info = (guint8*)g_malloc0 (info.unw_info_len);
+
+	mono_unwind_decode_llvm_mono_fde (fde, fde_len, cie, cfg->native_code, &info, ei, type_info, unw_info);
+
+	cfg->encoded_unwind_ops = unw_info;
 	cfg->encoded_unwind_ops_len = info.unw_info_len;
 	if (cfg->verbose_level > 1)
 		mono_print_unwind_info (cfg->encoded_unwind_ops, cfg->encoded_unwind_ops_len);
@@ -7762,9 +7770,7 @@ decode_llvm_eh_info (EmitContext *ctx, gpointer eh_frame)
 		cfg->llvm_this_offset = info.this_offset;
 	}
 
-	ei = info.ex_info;
 	ei_len = info.ex_info_len;
-	type_info = info.type_info;
 
 	// Nested clauses are currently disabled
 	nested_len = 0;
@@ -9232,7 +9238,7 @@ default_mono_llvm_unhandled_exception (void)
     The mono JIT uses pointer sized iregs/double fregs, while LLVM uses precisely
     typed registers, so we have to keep track of the precise LLVM type of each vreg.
     This is made easier because the IR is already in SSA form.
-    An additional problem is that our IR is not consistent with types, i.e. i32/ia64 
+    An additional problem is that our IR is not consistent with types, i.e. i32/i64 
 	types are frequently used incorrectly.
 */
 

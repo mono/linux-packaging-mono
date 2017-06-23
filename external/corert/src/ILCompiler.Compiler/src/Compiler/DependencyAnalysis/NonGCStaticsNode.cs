@@ -8,7 +8,6 @@ using Internal.Text;
 using Internal.TypeSystem;
 
 using Debug = System.Diagnostics.Debug;
-using FatFunctionPointerConstants = Internal.Runtime.FatFunctionPointerConstants;
 
 namespace ILCompiler.DependencyAnalysis
 {
@@ -18,14 +17,16 @@ namespace ILCompiler.DependencyAnalysis
     /// with the class constructor context if the type has a class constructor that
     /// needs to be triggered before the type members can be accessed.
     /// </summary>
-    public class NonGCStaticsNode : ObjectNode, ISymbolNode
+    public class NonGCStaticsNode : ObjectNode, IExportableSymbolNode
     {
         private MetadataType _type;
+        private NodeFactory _factory;
 
         public NonGCStaticsNode(MetadataType type, NodeFactory factory)
         {
             Debug.Assert(!type.IsCanonicalSubtype(CanonicalFormKind.Specific));
             _type = type;
+            _factory = factory;
         }
 
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
@@ -34,18 +35,40 @@ namespace ILCompiler.DependencyAnalysis
 
         public static string GetMangledName(TypeDesc type, NameMangler nameMangler)
         {
-            return "__NonGCStaticBase_" + nameMangler.GetMangledTypeName(type);
+            return nameMangler.NodeMangler.NonGCStatics(type);
         }
  
         public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
-            sb.Append("__NonGCStaticBase_").Append(nameMangler.GetMangledTypeName(_type)); 
+            sb.Append(nameMangler.NodeMangler.NonGCStatics(_type));
         }
 
-        public int Offset => 0;
+        int ISymbolNode.Offset => 0;
+
+        int ISymbolDefinitionNode.Offset
+        {
+            get
+            {
+                // Make sure the NonGCStatics symbol always points to the beginning of the data.
+                if (_factory.TypeSystemContext.HasLazyStaticConstructor(_type))
+                {
+                    return GetClassConstructorContextStorageSize(_factory.Target, _type);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
         public override bool IsShareable => EETypeNode.IsTypeNodeShareable(_type);
 
         public MetadataType Type => _type;
+
+        public virtual bool IsExported(NodeFactory factory)
+        {
+            return factory.CompilationModuleGroup.ExportsType(Type);
+        }
 
         private static int GetClassConstructorContextSize(TargetDetails target)
         {
@@ -100,11 +123,7 @@ namespace ILCompiler.DependencyAnalysis
 
                 // Emit the actual StaticClassConstructionContext
                 MethodDesc cctorMethod = _type.GetStaticConstructor();
-                MethodDesc canonCctorMethod = cctorMethod.GetCanonMethodTarget(CanonicalFormKind.Specific);
-                if (cctorMethod != canonCctorMethod)
-                    builder.EmitPointerReloc(factory.FatFunctionPointer(cctorMethod), FatFunctionPointerConstants.Offset);
-                else
-                    builder.EmitPointerReloc(factory.MethodEntrypoint(cctorMethod));
+                builder.EmitPointerReloc(factory.ExactCallableAddress(cctorMethod));
                 builder.EmitZeroPointer();
             }
             else

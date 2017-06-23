@@ -3,49 +3,25 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Reflection;
-using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
-using Internal.Runtime.Augments;
 using Internal.Reflection.Augments;
 
-#if CORERT
 namespace System
-#else
-// Add a fake TypedReference to keep Project X running with CoreRT's type system that needs this now.
-namespace System
-{
-    [StructLayout(LayoutKind.Sequential)]
-    [System.Runtime.CompilerServices.DependencyReductionRoot] // TODO: proper fix is to put this in the ILToolchain contract
-    internal struct TypedReference
-    {
-    }
-}
-
-namespace System.Reflection  //@TODO: Intentionally placing TypedReference in the wrong namespace to work around NUTC's inability to handle ELEMENT_TYPE_TYPEDBYREF.
-#endif
 {
     [CLSCompliant(false)]
     [StructLayout(LayoutKind.Sequential)]
     public struct TypedReference
     {
         // Do not change the ordering of these fields. The JIT has a dependency on this layout.
-#if CORERT
         private readonly ByReference<byte> _value;
-#else
-        private readonly ByReferenceOfByte _value;
-#endif
         private readonly RuntimeTypeHandle _typeHandle;
 
         private TypedReference(object target, int offset, RuntimeTypeHandle typeHandle)
         {
-#if CORERT
             _value = new ByReference<byte>(ref Unsafe.Add<byte>(ref target.GetRawData(), offset));
-#else
-            _value = new ByReferenceOfByte(target, offset);
-#endif
             _typeHandle = typeHandle;
         }
 
@@ -82,6 +58,10 @@ namespace System.Reflection  //@TODO: Intentionally placing TypedReference in th
             {
                 return RuntimeImports.RhBox(eeType, ref value.Value);
             }
+            else if (eeType.IsPointer)
+            {
+                return RuntimeImports.RhBox(EETypePtr.EETypePtrOf<UIntPtr>(), ref value.Value);
+            }
             else
             {
                 return Unsafe.As<byte, object>(ref value.Value);
@@ -103,22 +83,6 @@ namespace System.Reflection  //@TODO: Intentionally placing TypedReference in th
             {
                 return ref _value.Value;
             }
-        }
-
-        // @todo: ByReferenceOfByte is a workaround for the fact that ByReference<T> is broken on Project N right now.
-        // Once that's fixed, delete this class and replace references to ByReferenceOfByte to ByReference<byte>.
-        private struct ByReferenceOfByte
-        {
-            public ByReferenceOfByte(object target, int offset)
-            {
-                _target = target;
-                _offset = offset;
-            }
-
-            public ref byte Value => ref Unsafe.Add<byte>(ref Unsafe.As<IntPtr, byte>(ref _target.m_pEEType), _offset);
-
-            private readonly object _target;
-            private readonly int _offset;
         }
     }
 }

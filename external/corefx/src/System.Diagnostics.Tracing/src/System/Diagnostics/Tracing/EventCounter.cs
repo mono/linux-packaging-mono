@@ -18,6 +18,12 @@ namespace System.Diagnostics.Tracing
 {
     /// <summary>
     /// Provides the ability to collect statistics through EventSource
+    /// 
+    /// See https://github.com/dotnet/corefx/blob/master/src/System.Diagnostics.Tracing/documentation/EventCounterTutorial.md
+    /// for a tutorial guide.  
+    /// 
+    /// See https://github.com/dotnet/corefx/blob/master/src/System.Diagnostics.Tracing/tests/BasicEventSourceTest/TestEventCounter.cs
+    /// which shows tests, which are also useful in seeing actual use.  
     /// </summary>
     public class EventCounter
     {
@@ -245,7 +251,9 @@ namespace System.Diagnostics.Tracing
 
         private void RegisterCommandCallback()
         {
+#if SUPPORTS_EVENTCOMMANDEXECUTED
             _eventSource.EventCommandExecuted += OnEventSourceCommand;
+#endif
         }
 
         private void OnEventSourceCommand(object sender, EventCommandEventArgs e)

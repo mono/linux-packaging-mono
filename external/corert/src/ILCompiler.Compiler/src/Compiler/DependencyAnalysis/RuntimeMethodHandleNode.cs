@@ -10,14 +10,20 @@ using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
 {
-    class RuntimeMethodHandleNode : ObjectNode, ISymbolNode
+    public class RuntimeMethodHandleNode : ObjectNode, ISymbolDefinitionNode
     {
         private MethodDesc _targetMethod;
+
+        public MethodDesc Method => _targetMethod;
 
         public RuntimeMethodHandleNode(MethodDesc targetMethod)
         {
             Debug.Assert(!targetMethod.IsSharedByGenericInstantiations);
-            Debug.Assert(!targetMethod.IsRuntimeDeterminedExactMethod);
+
+            // IL is allowed to LDTOKEN an uninstantiated thing. Do not check IsRuntimeDetermined for the nonexact thing.
+            Debug.Assert((targetMethod.HasInstantiation && targetMethod.IsMethodDefinition)
+                || targetMethod.OwningType.IsGenericDefinition
+                || !targetMethod.IsRuntimeDeterminedExactMethod);
             _targetMethod = targetMethod;
         }
 
@@ -35,13 +41,25 @@ namespace ILCompiler.DependencyAnalysis
 
         protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
         {
-            if (_targetMethod.HasInstantiation && _targetMethod.IsVirtual)
+            DependencyList dependencies = null;
+
+            if (!_targetMethod.IsMethodDefinition && !_targetMethod.OwningType.IsGenericDefinition
+                && _targetMethod.HasInstantiation && _targetMethod.IsVirtual)
             {
-                DependencyList dependencies = new DependencyList();
-                dependencies.Add(new DependencyListEntry(factory.GVMDependencies(_targetMethod), "GVM dependencies for runtime method handle"));
-                return dependencies;
+                dependencies = dependencies ?? new DependencyList();
+                dependencies.Add(factory.GVMDependencies(_targetMethod), "GVM dependencies for runtime method handle");
             }
-            return null;
+
+            // TODO: https://github.com/dotnet/corert/issues/3224
+            // We should figure out reflectable methods when scanning for reflection
+            MethodDesc methodDefinition = _targetMethod.GetTypicalMethodDefinition();
+            if (factory.MetadataManager.CanGenerateMetadata(methodDefinition))
+            {
+                dependencies = dependencies ?? new DependencyList();
+                dependencies.Add(factory.MethodMetadata(methodDefinition), "LDTOKEN");
+            }
+
+            return dependencies;
         }
 
         private static Utf8String s_NativeLayoutSignaturePrefix = new Utf8String("__RMHSignature_");

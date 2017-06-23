@@ -6,12 +6,20 @@ using Xunit;
 using System.IO;
 using System.Xml.Schema;
 using System.Xml.XPath;
+using Xunit.Abstractions;
 
 namespace System.Xml.Tests
 {
     //[TestCase(Name = "TC_SchemaSet_Add_URL", Desc = "")]
     public class TC_SchemaSet_Add_URL : TC_SchemaSetBase
     {
+        private ITestOutputHelper _output;
+
+        public TC_SchemaSet_Add_URL(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         //-----------------------------------------------------------------------------------
         [Fact]
         //[Variation(Desc = "v1 - ns = null, URL = null", Priority = 0)]
@@ -377,8 +385,7 @@ namespace System.Xml.Tests
 
         [OuterLoop]
         [Theory]
-        [InlineData(5000, "5000s.xsd")]
-        [InlineData(10000, "10000s.xsd")]
+        [InlineData(1000, "1000s.xsd")]
         //[Variation(Desc = "Bug 298991 XMLSchemaSet.Compile cause StackOverflow - Sequence, 5000", Params = new object[] { 5000, "5000s.xsd" })]
         //[Variation(Desc = "Bug 298991 XMLSchemaSet.Compile cause StackOverflow - Sequence, 10000", Params = new object[] { 10000, "10000s.xsd" })]
         public void bug298991Sequence(int size, string xsdFileName)

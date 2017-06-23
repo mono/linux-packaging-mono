@@ -10,7 +10,7 @@ namespace ILCompiler.DependencyAnalysis
     /// <summary>
     /// Represents a node containing information necessary at runtime to locate type's thread static base.
     /// </summary>
-    internal class TypeThreadStaticIndexNode : ObjectNode, ISymbolNode
+    internal class TypeThreadStaticIndexNode : ObjectNode, ISymbolDefinitionNode
     {
         private MetadataType _type;
 
@@ -58,7 +58,7 @@ namespace ILCompiler.DependencyAnalysis
             if (!relocsOnly)
             {
                 var node = factory.TypeThreadStaticsSymbol(_type);
-                typeTlsIndex = factory.ThreadStaticsRegion.IndexOfEmbeddedObject(node);
+                typeTlsIndex = factory.ThreadStaticsRegion.IndexOfEmbeddedObject((ThreadStaticsNode)node);
             }
 
             objData.EmitPointerReloc(factory.TypeManagerIndirection);

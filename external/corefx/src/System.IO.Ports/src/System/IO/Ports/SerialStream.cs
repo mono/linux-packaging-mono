@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 // Notes about the SerialStream:
 //  * The stream is always opened via the SerialStream constructor.
@@ -52,6 +53,7 @@ namespace System.IO.Ports
         // internal-use members
         internal SafeFileHandle _handle = null;
         internal EventLoopRunner _eventRunner;
+        private Task _waitForComEventTask = null;
 
         private byte[] _tempBuf;                 // used to avoid multiple array allocations in ReadByte()
 
@@ -714,10 +716,8 @@ namespace System.IO.Ports
 
                 // prep. for starting event cycle.
                 _eventRunner = new EventLoopRunner(this);
-                Thread eventLoopThread = new Thread(new ThreadStart(_eventRunner.WaitForCommEvent));
-                eventLoopThread.IsBackground = true;
-                eventLoopThread.Start();
-
+                _waitForComEventTask = Task.Factory.StartNew(s => ((EventLoopRunner)s).WaitForCommEvent(), _eventRunner, CancellationToken.None,
+                                                                   TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning, TaskScheduler.Default);
             }
             catch
             {
@@ -742,7 +742,6 @@ namespace System.IO.Ports
             {
                 try
                 {
-
                     _eventRunner.endEventLoop = true;
 
                     Thread.MemoryBarrier();
@@ -790,12 +789,9 @@ namespace System.IO.Ports
                         DiscardOutBuffer();
                     }
 
-                    if (disposing && _eventRunner != null)
+                    if (disposing && _eventRunner != null && _waitForComEventTask != null)
                     {
-                        // now we need to wait for the event loop to tell us it's done.  Without this we could get into a race where the
-                        // event loop kept the port open even after Dispose ended.
-                        _eventRunner.eventLoopEndedSignal.WaitOne();
-                        _eventRunner.eventLoopEndedSignal.Close();
+                        _waitForComEventTask.GetAwaiter().GetResult();
                         _eventRunner.waitCommEventWaitHandle.Close();
                     }
                 }
@@ -1304,6 +1300,8 @@ namespace System.IO.Ports
             // Later the user may change this via the NullDiscard property.
             SetDcbFlag(NativeMethods.FNULL, discardNull ? 1 : 0);
 
+            // SerialStream does not handle the fAbortOnError behaviour, so we must make sure it's not enabled
+            SetDcbFlag(NativeMethods.FABORTONOERROR, 0);
 
             // Setting RTS control, which is RTS_CONTROL_HANDSHAKE if RTS / RTS-XOnXOff handshaking
             // used, RTS_ENABLE (RTS pin used during operation) if rtsEnable true but XOnXoff / No handshaking
@@ -1642,7 +1640,6 @@ namespace System.IO.Ports
         internal sealed class EventLoopRunner
         {
             private WeakReference streamWeakReference;
-            internal ManualResetEvent eventLoopEndedSignal = new ManualResetEvent(false);
             internal ManualResetEvent waitCommEventWaitHandle = new ManualResetEvent(false);
             private SafeFileHandle handle = null;
             private bool isAsync;
@@ -1776,7 +1773,6 @@ namespace System.IO.Ports
                     endEventLoop = true;
                     Overlapped.Free(intOverlapped);
                 }
-                eventLoopEndedSignal.Set();
             }
 
             private unsafe void FreeNativeOverlappedCallback(uint errorCode, uint numBytes, NativeOverlapped* pOverlapped)

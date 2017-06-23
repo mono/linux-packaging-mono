@@ -21,6 +21,8 @@ namespace System.Configuration.Provider
 
         protected ProviderException(SerializationInfo info, StreamingContext context)
             : base(info, context)
-        { }
+        {
+            throw new PlatformNotSupportedException();
+        }
     }
 }

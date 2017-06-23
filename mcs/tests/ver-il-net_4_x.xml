@@ -14651,6 +14651,9 @@
       <method name="Void Test_21()" attrs="129">
         <size>5</size>
       </method>
+      <method name="Void Test_22(Boolean)" attrs="129">
+        <size>24</size>
+      </method>
     </type>
   </test>
   <test name="gtest-410.cs">
@@ -20109,6 +20112,27 @@
       </method>
       <method name="Void AddChildButton[T1,T2](SeparateAssembly.IGenericAction`2[T1,T2])" attrs="150">
         <size>11</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="gtest-646.cs">
+    <type name="LocalBug`1[T]">
+      <method name="Int32 Foo(LocalBug`1[T], LocalBug`1[T])" attrs="134">
+        <size>10</size>
+      </method>
+      <method name="Int32 Foo(LocalBug`1[System.Object], LocalBug`1[T])" attrs="134">
+        <size>10</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="X">
+      <method name="Int32 Main()" attrs="150">
+        <size>64</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -52695,7 +52719,51 @@
     </type>
     <type name="X">
       <method name="Int32 Main()" attrs="150">
-        <size>44</size>
+        <size>102</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-944.cs">
+    <type name="Class2">
+      <method name="Void Main()" attrs="150">
+        <size>15</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-945.cs">
+    <type name="A">
+      <method name="Void Bind(System.String[])" attrs="1478">
+        <size>0</size>
+      </method>
+      <method name="Void .ctor()" attrs="6276">
+        <size>7</size>
+      </method>
+    </type>
+    <type name="B">
+      <method name="Void Bind(System.String[])" attrs="198">
+        <size>2</size>
+      </method>
+      <method name="Int32 Main()" attrs="150">
+        <size>63</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-946.cs">
+    <type name="X">
+      <method name="Void Main()" attrs="150">
+        <size>2</size>
+      </method>
+      <method name="Int32 ImportScope(Int32)" attrs="129">
+        <size>29</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -68335,7 +68403,7 @@
   <test name="test-decl-expr-01.cs">
     <type name="DeclarationExpression">
       <method name="Int32 Main()" attrs="150">
-        <size>223</size>
+        <size>121</size>
       </method>
       <method name="Boolean Out(Int32 ByRef)" attrs="145">
         <size>13</size>
@@ -68343,27 +68411,62 @@
       <method name="Boolean Out2(Int32 ByRef, System.String)" attrs="145">
         <size>14</size>
       </method>
-      <method name="Void Out3[T](T ByRef)" attrs="145">
-        <size>17</size>
-      </method>
-      <method name="Void Ref(Int32 ByRef)" attrs="145">
-        <size>8</size>
-      </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
       </method>
     </type>
   </test>
   <test name="test-decl-expr-02.cs">
-    <type name="DeclarationExpressions">
+    <type name="C">
       <method name="Void Main()" attrs="150">
         <size>2</size>
       </method>
-      <method name="Void M2()" attrs="129">
-        <size>2</size>
+      <method name="Boolean get_Test1()" attrs="2177">
+        <size>20</size>
       </method>
-      <method name="Int32 Test(Int32)" attrs="145">
+      <method name="Int32 get_Test2()" attrs="2177">
+        <size>32</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-decl-expr-03.cs">
+    <type name="C">
+      <method name="Void Main()" attrs="150">
+        <size>153</size>
+      </method>
+      <method name="T Foo[T](T, T ByRef)" attrs="150">
+        <size>18</size>
+      </method>
+      <method name="Char &lt;Main&gt;m__0(Char)" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Char &lt;Main&gt;m__1(Char)" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Char &lt;Main&gt;m__2(Char)" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Char &lt;Main&gt;m__3(Char, Char)" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-decl-expr-04.cs">
+    <type name="C">
+      <method name="Void Main()" attrs="150">
         <size>16</size>
+      </method>
+      <method name="Int32 Test(Int32 ByRef)" attrs="145">
+        <size>13</size>
+      </method>
+      <method name="Int32 Test2(Int32, Int32)" attrs="145">
+        <size>10</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
@@ -72118,30 +72221,16 @@
   <test name="test-pattern-01.cs">
     <type name="TypePattern">
       <method name="Int32 Main()" attrs="150">
-        <size>227</size>
+        <size>118</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>
       </method>
-    </type>
-  </test>
-  <test name="test-pattern-02.cs">
-    <type name="ConstantPattern">
-      <method name="Int32 Main()" attrs="150">
-        <size>609</size>
+      <method name="Void Test1(System.Object)" attrs="145">
+        <size>24</size>
       </method>
-      <method name="Void .ctor()" attrs="6278">
-        <size>7</size>
-      </method>
-    </type>
-    <type name="&lt;PatternMatchingHelper&gt;">
-      <method name="Boolean NumberMatcher(System.Object, System.Object, Boolean)" attrs="150">
-        <size>69</size>
-      </method>
-    </type>
-    <type name="ConstantPattern">
-      <method name="Boolean Generic[T](T)" attrs="145">
-        <size>28</size>
+      <method name="System.String Test2(System.Object)" attrs="145">
+        <size>39</size>
       </method>
     </type>
   </test>
@@ -72718,6 +72807,87 @@
     <type name="N2.M">
       <method name="Void Main()" attrs="150">
         <size>8</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-static-using-13.cs">
+    <type name="Program">
+      <method name="Void Main(System.String[])" attrs="150">
+        <size>4</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-throw-expr-01.cs">
+    <type name="X">
+      <method name="Void Main()" attrs="150">
+        <size>32</size>
+      </method>
+      <method name="Int32 Test()" attrs="134">
+        <size>10</size>
+      </method>
+      <method name="System.Object Foo()" attrs="129">
+        <size>10</size>
+      </method>
+      <method name="System.Object Test2()" attrs="134">
+        <size>23</size>
+      </method>
+      <method name="Void Test3(Int32 ByRef)" attrs="145">
+        <size>3</size>
+      </method>
+      <method name="Int32 get_Item(Int32)" attrs="2177">
+        <size>10</size>
+      </method>
+      <method name="Void add_Event(System.Action)" attrs="2182">
+        <size>3</size>
+      </method>
+      <method name="Void remove_Event(System.Action)" attrs="2182">
+        <size>3</size>
+      </method>
+      <method name="Void TestExpr_1(Boolean)" attrs="129">
+        <size>21</size>
+      </method>
+      <method name="Void TestExpr_2(Boolean)" attrs="129">
+        <size>21</size>
+      </method>
+      <method name="Void TestExpr_3(System.String)" attrs="129">
+        <size>18</size>
+      </method>
+      <method name="Void TestExpr_4()" attrs="129">
+        <size>16</size>
+      </method>
+      <method name="Void TestExpr_5()" attrs="129">
+        <size>32</size>
+      </method>
+      <method name="System.Object &lt;Main&gt;m__0()" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Void &lt;TestExpr_5&gt;m__1()" attrs="145">
+        <size>3</size>
+      </method>
+      <method name="Void .ctor()" attrs="6278">
+        <size>7</size>
+      </method>
+      <method name="Int32 TestExpr_6(Int32 ByRef)" attrs="145">
+        <size>10</size>
+      </method>
+      <method name="Int32 TestExpr_7(Int32 ByRef)" attrs="129">
+        <size>15</size>
+      </method>
+    </type>
+  </test>
+  <test name="test-throw-expr-02.cs">
+    <type name="Program">
+      <method name="Int32 Main()" attrs="150">
+        <size>63</size>
+      </method>
+      <method name="System.String M(System.Object)" attrs="145">
+        <size>33</size>
       </method>
       <method name="Void .ctor()" attrs="6278">
         <size>7</size>

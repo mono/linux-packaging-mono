@@ -36,34 +36,20 @@ namespace ILCompiler
             public HashSet<MethodDesc> DynamicInvokeCompiledMethods = new HashSet<MethodDesc>();
         }
 
-        private readonly HashSet<MetadataType> _typeDefinitionsGenerated = new HashSet<MetadataType>();
         private readonly ModuleDesc _metadataDescribingModule;
         private readonly HashSet<ModuleDesc> _compilationModules;
         private readonly Lazy<MetadataLoadedInfo> _loadedMetadata;
         private Lazy<Dictionary<MethodDesc, MethodDesc>> _dynamicInvokeStubs;
         private readonly byte[] _metadataBlob;
 
-        public PrecomputedMetadataManager(CompilationModuleGroup group, CompilerTypeSystemContext typeSystemContext, ModuleDesc metadataDescribingModule, IEnumerable<ModuleDesc> compilationModules, byte[] metadataBlob) : base(group, typeSystemContext)
+        public PrecomputedMetadataManager(CompilationModuleGroup group, CompilerTypeSystemContext typeSystemContext, ModuleDesc metadataDescribingModule, IEnumerable<ModuleDesc> compilationModules, byte[] metadataBlob)
+            : base(group, typeSystemContext, new AttributeSpecifiedBlockingPolicy())
         {
             _metadataDescribingModule = metadataDescribingModule;
             _compilationModules = new HashSet<ModuleDesc>(compilationModules);
             _loadedMetadata = new Lazy<MetadataLoadedInfo>(LoadMetadata);
             _dynamicInvokeStubs = new Lazy<Dictionary<MethodDesc, MethodDesc>>(LoadDynamicInvokeStubs);
             _metadataBlob = metadataBlob;
-        }
-
-        protected override void AddGeneratedType(TypeDesc type)
-        {
-            if (type.IsDefType && type.IsTypeDefinition)
-            {
-                var mdType = type as MetadataType;
-                if (mdType != null)
-                {
-                    _typeDefinitionsGenerated.Add(mdType);
-                }
-            }
-
-            base.AddGeneratedType(type);
         }
 
         /// <summary>
@@ -190,8 +176,8 @@ namespace ILCompiler
                 if (!_dynamicInvokeStubs.Value.TryGetValue(reflectableMethod, out typicalDynamicInvokeStub))
                     continue;
 
-                MethodDesc instantiatiatedDynamicInvokeStub = InstantiateDynamicInvokeMethodForMethod(typicalDynamicInvokeStub, reflectableMethod);
-                result.DynamicInvokeCompiledMethods.Add(instantiatiatedDynamicInvokeStub.GetCanonMethodTarget(CanonicalFormKind.Specific));
+                MethodDesc instantiatiatedDynamicInvokeStub = InstantiateCanonicalDynamicInvokeMethodForMethod(typicalDynamicInvokeStub, reflectableMethod);
+                result.DynamicInvokeCompiledMethods.Add(instantiatiatedDynamicInvokeStub);
             }
 
             return result;
@@ -202,9 +188,32 @@ namespace ILCompiler
             return _loadedMetadata.Value.LocalMetadataModules;
         }
 
-        public override bool IsReflectionBlocked(MetadataType type)
+        public override bool WillUseMetadataTokenToReferenceMethod(MethodDesc method)
         {
-            return type.HasCustomAttribute("System.Runtime.CompilerServices", "ReflectionBlockedAttribute");
+            return _compilationModuleGroup.ContainsType(method.GetTypicalMethodDefinition().OwningType);
+        }
+
+        public override bool WillUseMetadataTokenToReferenceField(FieldDesc field)
+        {
+            return _compilationModuleGroup.ContainsType(field.GetTypicalFieldDefinition().OwningType);
+        }
+
+        protected override MetadataCategory GetMetadataCategory(FieldDesc field)
+        {
+            // Backwards compatible behavior. We might want to tweak this.
+            return MetadataCategory.RuntimeMapping;
+        }
+
+        protected override MetadataCategory GetMetadataCategory(MethodDesc method)
+        {
+            // Backwards compatible behavior. We might want to tweak this.
+            return MetadataCategory.RuntimeMapping;
+        }
+
+        protected override MetadataCategory GetMetadataCategory(TypeDesc type)
+        {
+            // Backwards compatible behavior. We might want to tweak this.
+            return MetadataCategory.RuntimeMapping;
         }
 
         protected override void ComputeMetadata(NodeFactory factory, out byte[] metadataBlob, out List<MetadataMapping<MetadataType>> typeMappings, out List<MetadataMapping<MethodDesc>> methodMappings, out List<MetadataMapping<FieldDesc>> fieldMappings)
@@ -240,8 +249,12 @@ namespace ILCompiler
             }
 
             // Generate type definition mappings
-            foreach (var definition in _typeDefinitionsGenerated)
+            foreach (var type in factory.MetadataManager.GetTypesWithEETypes())
             {
+                MetadataType definition = type.IsTypeDefinition ? type as MetadataType : null;
+                if (definition == null)
+                    continue;
+
                 int token;
                 if (loadedMetadata.AllTypeMappings.TryGetValue(definition, out token))
                 {
@@ -251,33 +264,32 @@ namespace ILCompiler
 
             foreach (var method in GetCompiledMethods())
             {
+                if (!MethodCanBeInvokedViaReflection(factory, method))
+                    continue;
+
+                // If there is a possible canonical method, use that instead of a specific method (folds canonically equivalent methods away)
+                if (method.GetCanonMethodTarget(CanonicalFormKind.Specific) != method)
+                    continue;
+
                 int token;
                 if (loadedMetadata.MethodMappings.TryGetValue(method.GetTypicalMethodDefinition(), out token))
                 {
-                    MethodDesc invokeMapMethod = method;
-                    if (method.HasInstantiation && method.IsCanonicalMethod(CanonicalFormKind.Specific))
-                    {
-                        Debug.Assert(canonicalToSpecificMethods.ContainsKey(method));
+                    MethodDesc invokeMapMethod = GetInvokeMapMethodForMethod(canonicalToSpecificMethods, method);
 
-                        invokeMapMethod = canonicalToSpecificMethods[method];
-                    }
+                    if (invokeMapMethod != null)
+                        methodMappings.Add(new MetadataMapping<MethodDesc>(invokeMapMethod, token));
+                }
+                else if (!WillUseMetadataTokenToReferenceMethod(method) && 
+                    _compilationModuleGroup.ContainsMethodBody(method.GetCanonMethodTarget(CanonicalFormKind.Specific)))
+                {
+                    MethodDesc invokeMapMethod = GetInvokeMapMethodForMethod(canonicalToSpecificMethods, method);
 
-                    // Non-generic instance canonical methods on generic structures are only available in the invoke map
-                    // if the unboxing stub entrypoint is marked already (which will mean that the unboxing stub
-                    // has been compiled, On ProjectN abi, this may will not be triggered by the CodeBasedDependencyAlgorithm.
-                    // See the ProjectN abi specific code in there.
-                    if (!method.HasInstantiation && method.OwningType.IsValueType && !method.Signature.IsStatic)
-                    {
-                        MethodDesc canonicalMethod = method.GetCanonMethodTarget(CanonicalFormKind.Specific);
-
-                        if (canonicalMethod.OwningType.IsCanonicalSubtype(CanonicalFormKind.Any))
-                        {
-                            if (!factory.MethodEntrypoint(canonicalMethod, true).Marked)
-                                continue;
-                        }
-                    }
-
-                    methodMappings.Add(new MetadataMapping<MethodDesc>(invokeMapMethod, token));
+                    // For methods on types that are not in the current module, assume they must be reflectable
+                    // and generate a non-metadata backed invoke table entry
+                    // TODO, the above computation is overly generous with the set of methods that are placed into the method invoke map
+                    // It includes methods which are not reflectable at all.
+                    if (invokeMapMethod != null)
+                        methodMappings.Add(new MetadataMapping<MethodDesc>(invokeMapMethod, 0));
                 }
             }
 
@@ -302,8 +314,53 @@ namespace ILCompiler
                     {
                         fieldMappings.Add(new MetadataMapping<FieldDesc>(field, token));
                     }
+                    else if (!WillUseMetadataTokenToReferenceField(field))
+                    {
+                        // TODO, the above computation is overly generous with the set of fields that are placed into the field invoke map
+                        // It includes fields which are not reflectable at all, and collapses static fields across generics
+
+                        // TODO! enable this. Disabled due to cross module import of statics is not yet implemented
+                        // fieldMappings.Add(new MetadataMapping<FieldDesc>(field, 0));
+                    }
                 }
             }
+        }
+
+        private bool MethodCanBeInvokedViaReflection(NodeFactory factory, MethodDesc method)
+        {
+            // Non-generic instance canonical methods on generic structures are only available in the invoke map
+            // if the unboxing stub entrypoint is marked already (which will mean that the unboxing stub
+            // has been compiled, On ProjectN abi, this may will not be triggered by the CodeBasedDependencyAlgorithm.
+            // See the ProjectN abi specific code in there.
+            if (!method.HasInstantiation && method.OwningType.IsValueType && !method.Signature.IsStatic)
+            {
+                MethodDesc canonicalMethod = method.GetCanonMethodTarget(CanonicalFormKind.Specific);
+
+                if (canonicalMethod.OwningType.IsCanonicalSubtype(CanonicalFormKind.Any))
+                {
+                    if (!factory.MethodEntrypoint(canonicalMethod, true).Marked)
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private MethodDesc GetInvokeMapMethodForMethod(Dictionary<MethodDesc, MethodDesc> canonicalToSpecificMethods, MethodDesc method)
+        {
+            MethodDesc invokeMapMethod = method;
+            if (method.HasInstantiation && method.IsCanonicalMethod(CanonicalFormKind.Specific))
+            {
+                // Under optimization when a generic method makes no use of its generic dictionary
+                // the compiler can sometimes generate code for a canonical generic
+                // method, but not detect the need for a generic dictionary. We cannot currently
+                // represent this state in our invoke mapping tables, and must skip emitting a record into them
+                if (!canonicalToSpecificMethods.ContainsKey(method))
+                    return null;
+
+                invokeMapMethod = canonicalToSpecificMethods[method];
+            }
+
+            return invokeMapMethod;
         }
 
         private Dictionary<MethodDesc, MethodDesc> LoadDynamicInvokeStubs()
@@ -351,17 +408,19 @@ namespace ILCompiler
         /// </summary>
         public override bool HasReflectionInvokeStubForInvokableMethod(MethodDesc method)
         {
+            Debug.Assert(IsReflectionInvokable(method));
+
             if (method.IsCanonicalMethod(CanonicalFormKind.Any))
                 return false;
 
-            MethodDesc reflectionInvokeStub = GetReflectionInvokeStub(method);
+            MethodDesc reflectionInvokeStub = GetCanonicalReflectionInvokeStub(method);
 
             if (reflectionInvokeStub == null)
                 return false;
 
-            // TODO: Generate DynamicInvokeTemplateMap. For now, force all canonical stubs to go through the 
+            // TODO: Generate DynamicInvokeTemplateMap dependencies correctly. For now, force all canonical stubs to go through the 
             // calling convention converter interpreter path.
-            if (reflectionInvokeStub.GetCanonMethodTarget(CanonicalFormKind.Specific) != reflectionInvokeStub)
+            if (reflectionInvokeStub.IsSharedByGenericInstantiations)
                 return false;
 
             return true;
@@ -371,7 +430,7 @@ namespace ILCompiler
         /// <summary>
         /// Gets a stub that can be used to reflection-invoke a method with a given signature.
         /// </summary>
-        public override MethodDesc GetReflectionInvokeStub(MethodDesc method)
+        public override MethodDesc GetCanonicalReflectionInvokeStub(MethodDesc method)
         {
             MethodDesc typicalInvokeTarget = method.GetTypicalMethodDefinition();
             MethodDesc typicalDynamicInvokeStub;
@@ -379,16 +438,35 @@ namespace ILCompiler
             if (!_dynamicInvokeStubs.Value.TryGetValue(typicalInvokeTarget, out typicalDynamicInvokeStub))
                 return null;
 
-            MethodDesc dynamicInvokeStubIfItExists = InstantiateDynamicInvokeMethodForMethod(typicalDynamicInvokeStub, method);
+            MethodDesc dynamicInvokeStubCanonicalized = InstantiateCanonicalDynamicInvokeMethodForMethod(typicalDynamicInvokeStub, method);
 
-            if (dynamicInvokeStubIfItExists == null)
+            if (dynamicInvokeStubCanonicalized == null || !_loadedMetadata.Value.DynamicInvokeCompiledMethods.Contains(dynamicInvokeStubCanonicalized))
                 return null;
 
-            MethodDesc dynamicInvokeStubCanonicalized = dynamicInvokeStubIfItExists.GetCanonMethodTarget(CanonicalFormKind.Specific);
-            if (_loadedMetadata.Value.DynamicInvokeCompiledMethods.Contains(dynamicInvokeStubCanonicalized))
-                return dynamicInvokeStubIfItExists;
-            else
-                return null;
+            return dynamicInvokeStubCanonicalized;
+        }
+
+        private sealed class AttributeSpecifiedBlockingPolicy : MetadataBlockingPolicy
+        {
+            public override bool IsBlocked(MetadataType type)
+            {
+                Debug.Assert(type.IsTypeDefinition);
+                return type.HasCustomAttribute("System.Runtime.CompilerServices", "ReflectionBlockedAttribute");
+            }
+
+            public override bool IsBlocked(MethodDesc method)
+            {
+                Debug.Assert(method.IsTypicalMethodDefinition);
+                // TODO: we might need to do something here if we keep this policy.
+                return false;
+            }
+
+            public override bool IsBlocked(FieldDesc field)
+            {
+                Debug.Assert(field.IsTypicalFieldDefinition);
+                // TODO: we might need to do something here if we keep this policy.
+                return false;
+            }
         }
     }
 }

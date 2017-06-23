@@ -52,7 +52,7 @@ namespace System.Globalization
 
         private readonly String _cultureName;      // Name of the culture that created this text info
         private CultureData _cultureData;      // Data record for the culture that made us, not for this textinfo
-        private String _textInfoName;     // Name of the text info we're using (ie: m_cultureData.STEXTINFO)
+        private String _textInfoName;     // Name of the text info we're using (ie: _cultureData.STEXTINFO)
         private Tristate _isAsciiCasingSameAsInvariant = Tristate.NotInitialized;
 
         // Invariant text info
@@ -78,7 +78,7 @@ namespace System.Globalization
             if (_cultureData == null)
             {
                 // Get the text info name belonging to that culture
-                _cultureData = CultureInfo.GetCultureInfo(_cultureName).m_cultureData;
+                _cultureData = CultureInfo.GetCultureInfo(_cultureName)._cultureData;
                 _textInfoName = _cultureData.STEXTINFO;
                 FinishInitialization(_textInfoName);
             }
@@ -450,6 +450,8 @@ namespace System.Globalization
 
             StringBuilder result = new StringBuilder();
             string lowercaseData = null;
+            // Store if the current culture is Dutch (special case)
+            bool isDutchCulture = CultureName.StartsWith("nl-", StringComparison.OrdinalIgnoreCase);
 
             for (int i = 0; i < str.Length; i++)
             {
@@ -459,8 +461,18 @@ namespace System.Globalization
                 charType = CharUnicodeInfo.InternalGetUnicodeCategory(str, i, out charLen);
                 if (Char.CheckLetter(charType))
                 {
-                    // Do the titlecasing for the first character of the word.
-                    i = AddTitlecaseLetter(ref result, ref str, i, charLen) + 1;
+                    // Special case to check for Dutch specific titlecasing with "IJ" characters 
+                    // at the beginning of a word
+                    if (isDutchCulture && i < str.Length - 1 && (str[i] == 'i' || str[i] == 'I') && (str[i + 1] == 'j' || str[i + 1] == 'J'))
+                    {
+                        result.Append("IJ");
+                        i += 2;
+                    }
+                    else
+                    {
+                        // Do the titlecasing for the first character of the word.
+                        i = AddTitlecaseLetter(ref result, ref str, i, charLen) + 1;
+                    }
 
                     //
                     // Convert the characters until the end of the this word

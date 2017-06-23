@@ -32,11 +32,21 @@ using IKVM.Reflection.Metadata;
 namespace Ildasm
 {
 	enum MetadataTableIndex {
+		Module = 0x0,
 		CustomAttribute = 0xc,
 		ModuleRef = 0x1a,
 		Assembly = 0x20,
 		AssemblyRef = 0x23,
 		ExportedType = 0x27,
+		// Portable PDB tables
+		Document = 0x30,
+		MethodDebugInformation = 0x31,
+		LocalScope = 0x32,
+		LocalVariable = 0x33,
+		LocalConstant = 0x34,
+		ImportScope = 0x35,
+		StateMachineMethod = 0x36,
+		CustomDebugInformation = 0x37
 	}
 
 	class TableDumper
@@ -78,6 +88,21 @@ namespace Ildasm
 				break;
 			case MetadataTableIndex.CustomAttribute:
 				DumpCustomAttributeTable (w);
+				break;
+			case MetadataTableIndex.Document:
+				DumpDocumentTable (w);
+				break;
+			case MetadataTableIndex.MethodDebugInformation:
+				DumpMethodDebugInformationTable (w);
+				break;
+			case MetadataTableIndex.LocalScope:
+				DumpLocalScopeTable (w);
+				break;
+			case MetadataTableIndex.ImportScope:
+				DumpImportScopeTable (w);
+				break;
+			case MetadataTableIndex.CustomDebugInformation:
+				DumpCustomDebugInfoTable (w);
 				break;
 			default:
 				throw new NotImplementedException ();
@@ -255,6 +280,218 @@ namespace Ildasm
 				method.Append (")");
 
 				w.WriteLine (String.Format ("{0}: {1}: {2} {3} {4}", rowIndex, parent, row, method, args));
+				rowIndex ++;
+			}
+		}
+
+		public byte[] GetBlobCopy (int blobIndex) {
+			var r = module.GetBlob (blobIndex);
+			return r.ReadBytes (r.Length);
+		}
+
+		public string GetBlobString (int blobIndex) {
+			var r = module.GetBlob (blobIndex);
+			return new String (Encoding.UTF8.GetChars (r.ReadBytes (r.Length)));
+		}
+
+		static string HexStringFromBytes(byte[] bytes)
+        {
+            var sb = new StringBuilder();
+            foreach (byte b in bytes)
+				sb.Append (b.ToString ("x2"));
+            return sb.ToString();
+        }
+
+		string DecodeDocumentName (DocumentTable.Record r) {
+			var nameReader = module.GetBlob (r.Name);
+			// FIXME: UTF8
+			var sep = nameReader.ReadChar ();
+			var name = "";
+			while (nameReader.Length > 0) {
+				var part = nameReader.ReadCompressedUInt ();
+				if (part != 0) {
+					var partReader = module.GetBlob (part);
+					var partString = new String (Encoding.UTF8.GetChars (partReader.ReadBytes (partReader.Length)));
+					if (name == "")
+						name = sep + partString;
+					else
+						name = name + sep + partString;
+				}
+			}
+			return name;
+		}
+
+		public void DumpDocumentTable (TextWriter w) {
+			var t = module.Document;
+			w.WriteLine ("Document table (1.." + t.RowCount + ")");
+			int rowIndex = 1;
+			foreach (var r in t.records) {
+				string name;
+				string hashAlg;
+				string hash;
+				string lang;
+				Guid g;
+
+				name = DecodeDocumentName (r);
+
+				// FIXME: SHA256
+				if (r.HashAlgorithm != 0) {
+					g = module.GetGuid (r.HashAlgorithm);
+					if (g == DocumentTable.SHA1Guid) {
+						hashAlg = "sha1";
+						hash = HexStringFromBytes (GetBlobCopy (r.Hash));
+					} else {
+						hashAlg = g.ToString ();
+						hash = "<>";
+					}
+				} else {
+					hashAlg = "";
+					hash = "<>";
+				}
+
+				// FIXME: VB/F#
+				if (r.Language != 0) {
+					g = module.GetGuid (r.Language);
+					if (g == DocumentTable.CSharpGuid) {
+						lang = "C#";
+					} else {
+						lang = g.ToString ();
+					}
+				} else {
+					lang = "";
+				}
+
+				w.WriteLine ("" + rowIndex + ": " + name + " lang=" + lang + " hash=[" + hashAlg + " " + hash + "]");
+				rowIndex ++;
+			}
+		}
+
+		public void DumpMethodDebugInformationTable (TextWriter w) {
+			var t = module.MethodDebugInformation;
+			w.WriteLine ("MethodDebugInformation table (1.." + t.RowCount + ")");
+			int rowIndex = 1;
+			foreach (var r in t.records) {
+				w.WriteLine ("" + rowIndex + ":");
+
+				if (r.SequencePoints == 0) {
+					rowIndex ++;
+					continue;
+				}
+
+				var docIndex = r.Document;
+
+				var reader = module.GetBlob (r.SequencePoints);
+
+				var localSig = reader.ReadCompressedUInt ();
+				if (docIndex == 0)
+					docIndex = reader.ReadCompressedUInt ();
+				var docName = DecodeDocumentName (module.Document.records [docIndex - 1]);
+
+				int ilOffset = 0;
+				int startLine = 0;
+				int startColumn = 0;
+				bool first = true;
+				bool firstNonHidden = false;
+				while (reader.Length > 0) {
+					var deltaIlOffset = reader.ReadCompressedUInt ();
+					if (!first && deltaIlOffset == 0) {
+						/* subsequent-document-record */
+						docIndex = reader.ReadCompressedUInt ();
+						docName = DecodeDocumentName (module.Document.records [docIndex - 1]);
+						continue;
+					}
+					ilOffset += deltaIlOffset;
+					first = false;
+
+					var deltaLines = reader.ReadCompressedUInt ();
+					int deltaColumns;
+					if (deltaLines == 0)
+						deltaColumns = reader.ReadCompressedUInt ();
+					else
+						deltaColumns = reader.ReadCompressedInt ();
+
+					if (deltaLines == 0 && deltaColumns == 0) {
+						/* Hidden sequence point */
+						continue;
+					}
+
+					if (firstNonHidden) {
+						startLine = reader.ReadCompressedUInt ();
+						startColumn = reader.ReadCompressedUInt ();
+					} else {
+						int advLine = reader.ReadCompressedInt ();
+						int advCol = reader.ReadCompressedInt ();
+						startLine += advLine;
+						startColumn += advCol;
+					}
+					firstNonHidden = false;
+
+					w.WriteLine (docName + " il=" + ilOffset + " line=" + startLine + " col=" + startColumn + " endline=" + (startLine + deltaLines) + " endcol=" + (startColumn + deltaColumns));
+				}
+
+				rowIndex ++;
+			}
+		}
+
+		public void DumpLocalScopeTable (TextWriter w) {
+			var t = module.LocalScope;
+			w.WriteLine ("LocalScope table (1.." + t.RowCount + ")");
+			int rowIndex = 1;
+			foreach (var r in t.records) {
+				w.WriteLine ("" + rowIndex + ": method=" + r.Method + " import=" + r.ImportScope + " locals=" + r.VariableList);
+				rowIndex ++;
+			}
+		}
+
+		public void DumpImportScopeTable (TextWriter w) {
+			var t = module.ImportScope;
+			w.WriteLine ("ImportScope table (1.." + t.RowCount + ")");
+			int rowIndex = 1;
+			foreach (var r in t.records) {
+				w.WriteLine ("" + rowIndex + ": parent=" + r.Parent + " imports=" + r.Imports);
+
+				var reader = module.GetBlob (r.Imports);
+				while (reader.Length > 0) {
+					var kind = reader.ReadCompressedUInt ();
+					// FIXME: Constants
+					switch (kind) {
+					case 1:
+						var nsIndex = reader.ReadCompressedUInt ();
+						w.WriteLine ("\t ns=" + GetBlobString (nsIndex));
+						break;
+					default:
+						w.WriteLine ("K: " + kind);
+						throw new NotImplementedException ();
+					}
+				}
+				rowIndex ++;
+			}
+		}
+
+		static Guid StateMachineHoistedLocalScopesGuid = new Guid ("6da9a61e-f8c7-4874-be62-68bc5630df71");
+
+		public void DumpCustomDebugInfoTable (TextWriter w) {
+			var t = module.CustomDebugInformation;
+			w.WriteLine ("CustomDebugInformation table (1.." + t.RowCount + ")");
+			int rowIndex = 1;
+			foreach (var r in t.records) {
+				var g = module.GetGuid (r.Kind);
+				string kind = "";
+				if (g == StateMachineHoistedLocalScopesGuid)
+					kind = "<state-machine hoisted local scopes>";
+				else
+					kind = g.ToString ();
+				int parent_kind = r.Parent & 0x1f;
+				int parent_idx = r.Parent >> 5;
+				w.WriteLine ("" + rowIndex + ": " + kind + " [" + parent_kind + "-" + parent_idx + "]");
+				if (g == StateMachineHoistedLocalScopesGuid) {
+					var blob = module.GetBlob (r.Value);
+					while (blob.Length > 0) {
+						int start_offset = blob.ReadInt32 ();
+						int len = blob.ReadInt32 ();
+						w.WriteLine (String.Format ("\t0x{0:x}-0x{1:x}", start_offset, start_offset + len));
+					}
+				}
 				rowIndex ++;
 			}
 		}

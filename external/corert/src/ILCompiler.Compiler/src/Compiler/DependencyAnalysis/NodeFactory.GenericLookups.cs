@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
@@ -47,9 +48,9 @@ namespace ILCompiler.DependencyAnalysis
                     return new MethodDictionaryGenericLookupResult(method);
                 });
 
-                _methodEntrypoints = new NodeCache<MethodDesc, GenericLookupResult>(method =>
+                _methodEntrypoints = new NodeCache<MethodKey, GenericLookupResult>(key =>
                 {
-                    return new MethodEntryGenericLookupResult(method);
+                    return new MethodEntryGenericLookupResult(key.Method, key.IsUnboxingStub);
                 });
 
                 _virtualCallHelpers = new NodeCache<MethodDesc, GenericLookupResult>(method =>
@@ -87,6 +88,16 @@ namespace ILCompiler.DependencyAnalysis
                     return new ArrayAllocatorGenericLookupResult(type);
                 });
 
+                _isInstHelpers = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new IsInstGenericLookupResult(type);
+                });
+
+                _castClassHelpers = new NodeCache<TypeDesc, GenericLookupResult>(type =>
+                {
+                    return new CastClassGenericLookupResult(type);
+                });
+
                 _tlsIndices = new NodeCache<TypeDesc, GenericLookupResult>(type =>
                 {
                     return new ThreadStaticIndexLookupResult(type);
@@ -120,6 +131,11 @@ namespace ILCompiler.DependencyAnalysis
                 _typeSizes = new NodeCache<TypeDesc, GenericLookupResult>(type =>
                 {
                     return new TypeSizeLookupResult(type);
+                });
+
+                _constrainedMethodUses = new NodeCache<ConstrainedMethodUseKey, GenericLookupResult>(constrainedMethodUse =>
+                {
+                    return new ConstrainedMethodUseLookupResult(constrainedMethodUse.ConstrainedMethod, constrainedMethodUse.ConstraintType, constrainedMethodUse.DirectCall);
                 });
             }
 
@@ -204,11 +220,11 @@ namespace ILCompiler.DependencyAnalysis
                 return _virtualResolveHelpers.GetOrAdd(method);
             }
 
-            private NodeCache<MethodDesc, GenericLookupResult> _methodEntrypoints;
+            private NodeCache<MethodKey, GenericLookupResult> _methodEntrypoints;
 
-            public GenericLookupResult MethodEntry(MethodDesc method)
+            public GenericLookupResult MethodEntry(MethodDesc method, bool isUnboxingThunk = false)
             {
-                return _methodEntrypoints.GetOrAdd(method);
+                return _methodEntrypoints.GetOrAdd(new MethodKey(method, isUnboxingThunk));
             }
 
             private NodeCache<TypeDesc, GenericLookupResult> _objectAllocators;
@@ -223,6 +239,20 @@ namespace ILCompiler.DependencyAnalysis
             public GenericLookupResult ArrayAlloctor(TypeDesc type)
             {
                 return _arrayAllocators.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _isInstHelpers;
+
+            public GenericLookupResult IsInstHelper(TypeDesc type)
+            {
+                return _isInstHelpers.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, GenericLookupResult> _castClassHelpers;
+
+            public GenericLookupResult CastClassHelper(TypeDesc type)
+            {
+                return _castClassHelpers.GetOrAdd(type);
             }
 
             private NodeCache<TypeDesc, GenericLookupResult> _tlsIndices;
@@ -273,8 +303,51 @@ namespace ILCompiler.DependencyAnalysis
             {
                 return _typeSizes.GetOrAdd(type);
             }
+
+            private NodeCache<ConstrainedMethodUseKey, GenericLookupResult> _constrainedMethodUses;
+            public GenericLookupResult ConstrainedMethodUse(MethodDesc constrainedMethod, TypeDesc constraintType, bool directCall)
+            {
+                return _constrainedMethodUses.GetOrAdd(new ConstrainedMethodUseKey(constrainedMethod, constraintType, directCall));
+            }
         }
 
         public GenericLookupResults GenericLookup = new GenericLookupResults();
+
+        private struct ConstrainedMethodUseKey : IEquatable<ConstrainedMethodUseKey>
+        {
+            public ConstrainedMethodUseKey(MethodDesc constrainedMethod, TypeDesc constraintType, bool directCall)
+            {
+                ConstrainedMethod = constrainedMethod;
+                ConstraintType = constraintType;
+                DirectCall = directCall;
+            }
+
+            public readonly MethodDesc ConstrainedMethod;
+            public readonly TypeDesc ConstraintType;
+            public readonly bool DirectCall;
+
+            public override int GetHashCode()
+            {
+                return ConstraintType.GetHashCode() ^ ConstrainedMethod.GetHashCode() ^ DirectCall.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                return (obj is ConstrainedMethodUseKey) && Equals((ConstrainedMethodUseKey)obj);
+            }
+
+            public bool Equals(ConstrainedMethodUseKey other)
+            {
+                if (ConstraintType != other.ConstraintType)
+                    return false;
+                if (ConstrainedMethod != other.ConstrainedMethod)
+                    return false;
+                if (DirectCall != other.DirectCall)
+                    return false;
+
+                return true;
+            }
+        }
+
     }
 }

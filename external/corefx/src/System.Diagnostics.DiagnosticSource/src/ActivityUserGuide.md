@@ -60,9 +60,9 @@ When that activity is started, it gets an [Id](id) and [Parent](parent).
            //add tags, baggage, etc.
            activity.SetParentId(context.Request.headers["Request-id"])
            foreach (var pair in context.Request.Headers["Correlation-Context"])
-		   {
-			   var baggageItem = NameValueHEaderValue.Parse(pair);
-	           activity.AddBaggage(baggageItem.Key, baggageItem.Value);
+           {
+               var baggageItem = NameValueHEaderValue.Parse(pair);
+               activity.AddBaggage(baggageItem.Key, baggageItem.Value);
            }     
            httpListener.StartActivity(activity, new  {context});
            try {
@@ -133,54 +133,54 @@ Note that in the [Incoming Request Sample](#starting-and-stopping-activity), we 
 ### Log Events
 
 ```
-	public void LogActivityStart()
-	{
-		var document = new Dictionary<string,object>
-		{
-			["Message"] = $"Activity {activity.OperationName} was started",
-			["LogLevel"] = LogLevel.Info,
-			["Id"] = activity.Id,
-			["ParentId"] = activity.ParentId,
-			["StartTime"] = activity.StartTimeUtc,
-		}
-		//log tags and baggage if needed
-		...// send document to log storage	   
-	}
+    public void LogActivityStart()
+    {
+        var document = new Dictionary<string,object>
+        {
+            ["Message"] = $"Activity {activity.OperationName} was started",
+            ["LogLevel"] = LogLevel.Info,
+            ["Id"] = activity.Id,
+            ["ParentId"] = activity.ParentId,
+            ["StartTime"] = activity.StartTimeUtc,
+        }
+        //log tags and baggage if needed
+        ...// send document to log storage       
+    }
 
-	public void LogActivityStop()
-	{
-		var document = new Dictionary<string,object>
-		{
-			["Message"] = $"Activity {activity.OperationName} is being stopped",
-			["LogLevel"] = LogLevel.Info,
-			["Id"] = activity.Id,
-			["ParentId"] = activity.ParentId,
-			["Duration"] = activity.Duration
-		};
-		
-		//warning: Baggage or Tag could have duplicated keys!
+    public void LogActivityStop()
+    {
+        var document = new Dictionary<string,object>
+        {
+            ["Message"] = $"Activity {activity.OperationName} is being stopped",
+            ["LogLevel"] = LogLevel.Info,
+            ["Id"] = activity.Id,
+            ["ParentId"] = activity.ParentId,
+            ["Duration"] = activity.Duration
+        };
+        
+        //warning: Baggage or Tag could have duplicated keys!
         foreach (var kv in activity.Tags)
             document[kv.Key] = kv.Value;
         foreach (var kv in activity.Baggage)
             document[kv.Key] = kv.Value;
-		...// send document to log storage
-	}
+        ...// send document to log storage
+    }
 
-	public void Log(LogLevel level, string message)
-	{
-		var document = new Dictionary<string,object>
-		{
-			["Message"] = message,
-			["LogLevel"] = logLevel,
-		};
+    public void Log(LogLevel level, string message)
+    {
+        var document = new Dictionary<string,object>
+        {
+            ["Message"] = message,
+            ["LogLevel"] = logLevel,
+        };
 
-	    if (Activity.Current != null)
-	    {
-			document["Id"] = activity.Id;
-			//add tags, baggage and ParentId if needed
-		}
-		...// send document to log storage
-	}
+        if (Activity.Current != null)
+        {
+            document["Id"] = activity.Id;
+            //add tags, baggage and ParentId if needed
+        }
+        ...// send document to log storage
+    }
 ```
 
 It's crucial that Activity Id is logged along with every event. ParentId, Tags and Baggage must be logged at least once for every activity and may be logged with every telemetry event to simplify querying and aggregation. Duration is only available after SetEndTime is called and should be logged when Activity Stop event is received.
@@ -202,7 +202,7 @@ Activity.Id serves as hierarchical Request-Id in terms of [HTTP standard proposa
 
 e.g. 
 
-`|Server1-5d183ab6-a000b421.1.8e2d4c28_1.`
+`|a000b421-5d183ab6.1.8e2d4c28_1.`
 
 It starts with '|' followed by [root-id](#root-id) followed by '.' and small identifiers of local Activities, separated by '.' or '_'. 
 
@@ -217,7 +217,7 @@ Where base64 and '-' are used in nodes and other characters delimit nodes. Id al
 ### Root Id
 When you start the first Activity for the operation, you may optionaly provide root-id through `Activity.SetParentId(string)` API. 
 
-If you don't provide it, Activity will generate root-id: e.g. `Server-5d183ab6-a000b421`
+If you don't provide it, Activity will generate root-id: e.g. `a000b421-5d183ab6`
 
 If don't have ParentId from external process and want to generate one, keep in mind that Root-Id
 * MUST be sufficiently large to identify single operation in entire system: use 64(or 128) bit random number or Guid

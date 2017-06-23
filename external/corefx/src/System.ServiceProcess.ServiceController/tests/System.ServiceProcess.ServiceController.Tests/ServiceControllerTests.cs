@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using System.Security.Principal;
 using Xunit;
@@ -22,7 +23,7 @@ namespace System.ServiceProcess.Tests
         public ServiceProvider()
         {
             TestMachineName = ".";
-            ControlTimeout = TimeSpan.FromSeconds(30);
+            ControlTimeout = TimeSpan.FromSeconds(120);
             TestServiceName = Guid.NewGuid().ToString();
             TestServiceDisplayName = "Test Service " + TestServiceName;
             DependentTestServiceNamePrefix = TestServiceName + ".Dependent";
@@ -88,7 +89,8 @@ namespace System.ServiceProcess.Tests
 
         private void AssertExpectedProperties(ServiceController testServiceController)
         {
-            Assert.Equal(_testService.TestServiceName, testServiceController.ServiceName);
+            var comparer = PlatformDetection.IsFullFramework ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal; // Full framework upper cases the name
+            Assert.Equal(_testService.TestServiceName, testServiceController.ServiceName, comparer);
             Assert.Equal(_testService.TestServiceDisplayName, testServiceController.DisplayName);
             Assert.Equal(_testService.TestMachineName, testServiceController.MachineName);
             Assert.Equal(ServiceType.Win32OwnProcess, testServiceController.ServiceType);
@@ -161,7 +163,7 @@ namespace System.ServiceProcess.Tests
         public void Start_NullArg_ThrowsArgumentNullException()
         {
             var controller = new ServiceController(_testService.TestServiceName);
-            Assert.Throws<ArgumentNullException>("args[0]", () => controller.Start(new string[] { null } ));
+            Assert.Throws<ArgumentNullException>(() => controller.Start(new string[] { null } ));
         }
 
         [ConditionalFact(nameof(RunningWithElevatedPrivileges))]

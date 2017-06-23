@@ -94,9 +94,8 @@ target_triplet = @target@
 @CROSS_COMPILE_FALSE@@POWERPC64_TRUE@am__append_12 = mono-hwcap-ppc.c
 @CROSS_COMPILE_FALSE@@SPARC_TRUE@am__append_13 = mono-hwcap-sparc.c
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__append_14 = mono-hwcap-sparc.c
-@CROSS_COMPILE_FALSE@@IA64_TRUE@am__append_15 = mono-hwcap-ia64.c
-@CROSS_COMPILE_FALSE@@S390X_TRUE@am__append_16 = mono-hwcap-s390x.c
-@CROSS_COMPILE_TRUE@am__append_17 = mono-hwcap-cross.c
+@CROSS_COMPILE_FALSE@@S390X_TRUE@am__append_15 = mono-hwcap-s390x.c
+@CROSS_COMPILE_TRUE@am__append_16 = mono-hwcap-cross.c
 subdir = mono/utils
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -170,8 +169,8 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mach-support-x86.c mach-support-amd64.c mach-support-arm.c \
 	mach-support-arm64.c mach-support-unknown.c mono-hwcap-x86.c \
 	mono-hwcap-arm.c mono-hwcap-arm64.c mono-hwcap-mips.c \
-	mono-hwcap-ppc.c mono-hwcap-sparc.c mono-hwcap-ia64.c \
-	mono-hwcap-s390x.c mono-hwcap-cross.c
+	mono-hwcap-ppc.c mono-hwcap-sparc.c mono-hwcap-s390x.c \
+	mono-hwcap-cross.c
 @HOST_WIN32_FALSE@am__objects_1 = os-event-unix.lo
 @HOST_WIN32_TRUE@am__objects_2 = os-event-win32.lo
 @HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
@@ -219,16 +218,15 @@ am__objects_4 = $(am__objects_3) mono-md5.lo mono-sha1.lo \
 @CROSS_COMPILE_FALSE@@SPARC_TRUE@am__objects_17 = mono-hwcap-sparc.lo
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__objects_18 =  \
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@	mono-hwcap-sparc.lo
-@CROSS_COMPILE_FALSE@@IA64_TRUE@am__objects_19 = mono-hwcap-ia64.lo
-@CROSS_COMPILE_FALSE@@S390X_TRUE@am__objects_20 = mono-hwcap-s390x.lo
-@CROSS_COMPILE_TRUE@am__objects_21 = mono-hwcap-cross.lo
-am__objects_22 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
+@CROSS_COMPILE_FALSE@@S390X_TRUE@am__objects_19 = mono-hwcap-s390x.lo
+@CROSS_COMPILE_TRUE@am__objects_20 = mono-hwcap-cross.lo
+am__objects_21 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
 	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
 	$(am__objects_17) $(am__objects_18) $(am__objects_19) \
-	$(am__objects_20) $(am__objects_21)
-am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_22)
+	$(am__objects_20)
+am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_21)
 libmonoutils_la_OBJECTS = $(am_libmonoutils_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -416,7 +414,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
-MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -514,7 +511,6 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
-nacl_self_host = @nacl_self_host@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -703,7 +699,7 @@ arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \
 	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16) $(am__append_17)
+	$(am__append_16)
 libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
 libmonoutilsincludedir = $(includedir)/mono-$(API_VER)/mono/utils
 libmonoutilsinclude_HEADERS = \
@@ -799,7 +795,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-arm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-arm64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-cross.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-ia64.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-mips.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-ppc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-s390x.Plo@am__quote@

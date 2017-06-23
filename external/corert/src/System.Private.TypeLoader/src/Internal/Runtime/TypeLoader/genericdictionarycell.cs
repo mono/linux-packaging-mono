@@ -225,11 +225,14 @@ namespace Internal.Runtime.TypeLoader
 
             override internal IntPtr Create(TypeBuilder builder)
             {
+                RuntimeTypeHandle[] genericArgHandles = ConstrainedMethod.HasInstantiation ?
+                    builder.GetRuntimeTypeHandles(ConstrainedMethod.Instantiation) : null;
+
                 RuntimeMethodHandle rmh = TypeLoaderEnvironment.Instance.GetRuntimeMethodHandleForComponents(
                     builder.GetRuntimeTypeHandle(ConstrainedMethod.OwningType),
                     MethodName,
                     MethodSignature,
-                    builder.GetRuntimeTypeHandles(ConstrainedMethod.Instantiation));
+                    genericArgHandles);
 
                 return ConstrainedCallSupport.GenericConstrainedCallDesc.Get(builder.GetRuntimeTypeHandle(ConstraintType), rmh);
             }
@@ -371,11 +374,14 @@ namespace Internal.Runtime.TypeLoader
 
             internal override unsafe IntPtr Create(TypeBuilder builder)
             {
+                RuntimeTypeHandle[] genericArgHandles = Method.HasInstantiation && !Method.IsMethodDefinition ?
+                    builder.GetRuntimeTypeHandles(Method.Instantiation) : null;
+
                 RuntimeMethodHandle handle = TypeLoaderEnvironment.Instance.GetRuntimeMethodHandleForComponents(
                     builder.GetRuntimeTypeHandle(Method.OwningType),
                     MethodName,
                     MethodSignature,
-                    builder.GetRuntimeTypeHandles(Method.Instantiation));
+                    genericArgHandles);
 
                 return *(IntPtr*)&handle;
             }
@@ -1269,7 +1275,10 @@ namespace Internal.Runtime.TypeLoader
                         var type = metadata.GetType(token);
                         TypeLoaderLogger.WriteLine("UnwrapNullableType of: " + type.ToString());
 
-                        cell = new UnwrapNullableTypeCell() { Type = (DefType)type };
+                        if (type is DefType)
+                            cell = new UnwrapNullableTypeCell() { Type = (DefType)type };
+                        else
+                            cell = new TypeHandleCell() { Type = type };
                     }
                     break;
 
@@ -1589,7 +1598,10 @@ namespace Internal.Runtime.TypeLoader
                         var type = nativeLayoutInfoLoadContext.GetType(ref parser);
                         TypeLoaderLogger.WriteLine("UnwrapNullableType of: " + type.ToString());
 
-                        cell = new UnwrapNullableTypeCell() { Type = (DefType)type };
+                        if (type is DefType)
+                            cell = new UnwrapNullableTypeCell() { Type = (DefType)type };
+                        else
+                            cell = new TypeHandleCell() { Type = type };
                     }
                     break;
 

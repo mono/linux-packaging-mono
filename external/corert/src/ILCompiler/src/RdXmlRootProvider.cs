@@ -67,8 +67,10 @@ namespace ILCompiler
                 if (dynamicDegreeAttribute.Value != "Required All")
                     throw new NotSupportedException();
 
-                // Reuse LibraryRootProvider to root everything
-                new LibraryRootProvider((EcmaModule)assembly).AddCompilationRoots(rootProvider);
+                foreach (TypeDesc type in ((EcmaModule)assembly).GetAllTypes())
+                {
+                    RootType(rootProvider, type);
+                }
             }
 
             foreach (var element in assemblyElement.Elements())
@@ -98,18 +100,48 @@ namespace ILCompiler
             }
 
             string typeName = typeNameAttribute.Value;
+            RootType(rootProvider, containingModule.GetTypeByCustomAttributeTypeName(typeName));
+        }
 
-            TypeDesc type = containingModule.GetTypeByCustomAttributeTypeName(typeName);
+        private void RootType(IRootingServiceProvider rootProvider, TypeDesc type)
+        {
             rootProvider.AddCompilationRoot(type, "RD.XML root");
 
+            if (type.IsGenericDefinition)
+                return;
+            
             if (type.IsDefType)
             {
                 foreach (var method in type.GetMethods())
                 {
-                    if (method.IsAbstract || method.HasInstantiation)
+                    // We don't know what to instantiate generic methods over
+                    if (method.HasInstantiation)
                         continue;
 
-                    rootProvider.AddCompilationRoot(method, "RD.XML root");
+                    try
+                    {
+                        LibraryRootProvider.CheckCanGenerateMethod(method);
+                        
+                        // Virtual methods should be rooted as if they were called virtually
+                        if (method.IsVirtual)
+                        {
+                            MethodDesc slotMethod = MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(method);
+                            rootProvider.RootVirtualMethodForReflection(slotMethod, "RD.XML root");
+                        }
+                        
+                        if (!method.IsAbstract)
+                            rootProvider.AddCompilationRoot(method, "RD.XML root");
+                    }
+                    catch (TypeSystemException)
+                    {
+                        // TODO: fail compilation if a switch was passed
+
+                        // Individual methods can fail to load types referenced in their signatures.
+                        // Skip them in library mode since they're not going to be callable.
+                        continue;
+
+                        // TODO: Log as a warning
+                    }
                 }
             }
         }

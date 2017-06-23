@@ -500,7 +500,7 @@ namespace Internal.TypeSystem.NativeFormat
         public NativeFormatModule GetModuleFromAssemblyName(string assemblyNameString)
         {
             AssemblyBindResult bindResult;
-            AssemblyName assemblyName = new AssemblyName(assemblyNameString);
+            RuntimeAssemblyName assemblyName = AssemblyNameParser.Parse(assemblyNameString);
             Exception failureException;
             if (!AssemblyBinderImplementation.Instance.Bind(assemblyName, out bindResult, out failureException))
             {

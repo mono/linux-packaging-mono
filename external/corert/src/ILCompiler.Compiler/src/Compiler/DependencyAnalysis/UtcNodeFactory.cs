@@ -4,15 +4,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 using ILCompiler.DependencyAnalysis;
 using ILCompiler.DependencyAnalysisFramework;
 using Internal.Runtime;
 using Internal.TypeSystem;
-using Internal.TypeSystem.Ecma;
 
 namespace ILCompiler
 {
@@ -72,12 +70,11 @@ namespace ILCompiler
         }
 
         public UtcNodeFactory(CompilerTypeSystemContext context, CompilationModuleGroup compilationModuleGroup, IEnumerable<ModuleDesc> inputModules, string metadataFile, string outputFile, UTCNameMangler nameMangler) 
-            : base(context, compilationModuleGroup, PickMetadataManager(context, compilationModuleGroup, inputModules, metadataFile), nameMangler)
+            : base(context, compilationModuleGroup, PickMetadataManager(context, compilationModuleGroup, inputModules, metadataFile), nameMangler, new AttributeDrivenLazyGenericsPolicy())
         {
             CreateHostedNodeCaches();
             CompilationUnitPrefix = nameMangler.CompilationUnitPrefix;
             ThreadStaticsIndex = new ThreadStaticsIndexNode(nameMangler.GetCurrentModuleTlsIndexPrefix());
-            ThreadStaticsStartOffset = new ThreadStaticsStartNode();
             targetPrefix = context.Target.Architecture == TargetArchitecture.X86 ? "_" : "";
             TLSDirectory = new ThreadStaticsDirectoryNode(targetPrefix);
             TlsStart = new ExternSymbolNode(targetPrefix + "_tls_start");
@@ -96,9 +93,25 @@ namespace ILCompiler
                 return new GCStaticDescNode(type, true);
             });
 
-            _threadStaticsOffset = new NodeCache<MetadataType, ThreadStaticsOffsetNode>((MetadataType type) =>
+            _threadStaticsOffset = new NodeCache<MetadataType, ISymbolNode>((MetadataType type) =>
             {
-                return new ThreadStaticsOffsetNode(type, this);
+                if (CompilationModuleGroup.ContainsType(type))
+                {
+                    return new ThreadStaticsOffsetNode(type, this);
+                }
+                else if (CompilationModuleGroup.ShouldReferenceThroughImportTable(type))
+                {
+                    return new ImportedThreadStaticsOffsetNode(type, this);
+                }
+                else
+                {
+                    return new ExternSymbolNode(ThreadStaticsOffsetNode.GetMangledName(NameMangler, type));
+                }
+            });
+
+            _importedThreadStaticsIndices = new NodeCache<MetadataType, ImportedThreadStaticsIndexNode>((MetadataType type) =>
+            {
+                return new ImportedThreadStaticsIndexNode(this);
             });
 
             _hostedGenericDictionaryLayouts = new NodeCache<TypeSystemEntity, UtcDictionaryLayoutNode>((TypeSystemEntity methodOrType) =>
@@ -109,6 +122,11 @@ namespace ILCompiler
             _nonExternMethodSymbols = new NodeCache<MethodKey, NonExternMethodSymbolNode>((MethodKey method) =>
             {
                 return new NonExternMethodSymbolNode(this, method.Method, method.IsUnboxingStub);
+            });
+
+            _standaloneGCStaticDescs = new NodeCache<GCStaticDescNode, StandaloneGCStaticDescRegionNode>((GCStaticDescNode staticDesc) =>
+            {
+                return new StandaloneGCStaticDescRegionNode(staticDesc);
             });
         }
 
@@ -125,24 +143,20 @@ namespace ILCompiler
             graph.AddRoot(TypeManagerIndirection, "ModuleManagerIndirection is always generated");
             graph.AddRoot(GCStaticsRegion, "GC StaticsRegion is always generated");
             graph.AddRoot(GCStaticDescRegion, "GC Static Desc is always generated");
-            graph.AddRoot(ThreadStaticsRegion, "Thread Statics Region is always generated");
             graph.AddRoot(ThreadStaticsOffsetRegion, "Thread Statics Offset Region is always generated");
             graph.AddRoot(ThreadStaticGCDescRegion, "Thread Statics GC Desc Region is always generated");
             graph.AddRoot(ThreadStaticsIndex, "Thread statics index is always generated");
-            graph.AddRoot(ThreadStaticsStartOffset, "Thread statics start offset is always generated");
             graph.AddRoot(TLSDirectory, "TLS Directory is always generated");
-            
+
             ReadyToRunHeader.Add(ReadyToRunSectionType.EagerCctor, EagerCctorTable, EagerCctorTable.StartSymbol, EagerCctorTable.EndSymbol);
             ReadyToRunHeader.Add(ReadyToRunSectionType.InterfaceDispatchTable, DispatchMapTable, DispatchMapTable.StartSymbol);
             ReadyToRunHeader.Add(ReadyToRunSectionType.FrozenObjectRegion, FrozenSegmentRegion, FrozenSegmentRegion.StartSymbol, FrozenSegmentRegion.EndSymbol);
             ReadyToRunHeader.Add(ReadyToRunSectionType.TypeManagerIndirection, TypeManagerIndirection, TypeManagerIndirection);
             ReadyToRunHeader.Add(ReadyToRunSectionType.GCStaticRegion, GCStaticsRegion, GCStaticsRegion.StartSymbol, GCStaticsRegion.EndSymbol);
             ReadyToRunHeader.Add(ReadyToRunSectionType.GCStaticDesc, GCStaticDescRegion, GCStaticDescRegion.StartSymbol, GCStaticDescRegion.EndSymbol);
-            ReadyToRunHeader.Add(ReadyToRunSectionType.ThreadStaticRegion, ThreadStaticsRegion, ThreadStaticsRegion.StartSymbol, ThreadStaticsRegion.EndSymbol);
             ReadyToRunHeader.Add(ReadyToRunSectionType.ThreadStaticOffsetRegion, ThreadStaticsOffsetRegion, ThreadStaticsOffsetRegion.StartSymbol, ThreadStaticsOffsetRegion.EndSymbol);
             ReadyToRunHeader.Add(ReadyToRunSectionType.ThreadStaticGCDescRegion, ThreadStaticGCDescRegion, ThreadStaticGCDescRegion.StartSymbol, ThreadStaticGCDescRegion.EndSymbol);
             ReadyToRunHeader.Add(ReadyToRunSectionType.ThreadStaticIndex, ThreadStaticsIndex, ThreadStaticsIndex);
-            ReadyToRunHeader.Add(ReadyToRunSectionType.ThreadStaticStartOffset, ThreadStaticsStartOffset, ThreadStaticsStartOffset);
 
             MetadataManager.AddToReadyToRunHeader(ReadyToRunHeader, this);
             MetadataManager.AttachToDependencyGraph(graph);
@@ -155,7 +169,7 @@ namespace ILCompiler
                 return new RuntimeImportMethodNode(method);
             }
 
-            if (CompilationModuleGroup.ContainsMethod(method))
+            if (CompilationModuleGroup.ContainsMethodBody(method))
             {
                 return NonExternMethodSymbol(method, false);
             }
@@ -170,7 +184,7 @@ namespace ILCompiler
                 // Unboxing stubs to canonical instance methods need a special unboxing instantiating stub that unboxes
                 // 'this' and also provides an instantiation argument (we do a calling convention conversion).
                 // The unboxing instantiating stub is emitted by UTC.
-                if (CompilationModuleGroup.ContainsMethod(method))
+                if (CompilationModuleGroup.ContainsMethodBody(method))
                 {
                     return NonExternMethodSymbol(method, true);
                 }
@@ -189,15 +203,6 @@ namespace ILCompiler
             return new ReadyToRunHelperNode(this, helperCall.HelperId, helperCall.Target);
         }
 
-        protected override IMethodNode CreateShadowConcreteMethodNode(MethodKey methodKey)
-        {
-            IMethodNode methodCodeNode = MethodEntrypoint(
-                    methodKey.Method.GetCanonMethodTarget(CanonicalFormKind.Specific),
-                    methodKey.IsUnboxingStub);
-
-            return new ShadowConcreteMethodNode(methodKey.Method, methodCodeNode);
-        }
-
         public GCStaticDescRegionNode GCStaticDescRegion = new GCStaticDescRegionNode(
             CompilationUnitPrefix + "__GCStaticDescStart", 
             CompilationUnitPrefix + "__GCStaticDescEnd");
@@ -213,14 +218,17 @@ namespace ILCompiler
 
         public ThreadStaticsIndexNode ThreadStaticsIndex;
 
-        public ThreadStaticsStartNode ThreadStaticsStartOffset;
-
         public ThreadStaticsDirectoryNode TLSDirectory;
 
         // These two are defined in startup code to mark start and end of the entire Thread Local Storage area,
         // including the TLS data from different managed and native object files.
         public ExternSymbolNode TlsStart;
         public ExternSymbolNode TlsEnd;
+
+        protected override ISymbolDefinitionNode CreateThreadStaticsNode(MetadataType type)
+        {
+            return new UtcThreadStaticsNode(type);
+        }
 
         private NodeCache<MetadataType, GCStaticDescNode> _GCStaticDescs;
 
@@ -250,25 +258,24 @@ namespace ILCompiler
             }
         }
 
-        private NodeCache<MetadataType, ThreadStaticsOffsetNode> _threadStaticsOffset;
+        private NodeCache<MetadataType, ISymbolNode> _threadStaticsOffset;
 
         public ISymbolNode TypeThreadStaticsOffsetSymbol(MetadataType type)
         {
-            if (CompilationModuleGroup.ContainsType(type))
-            {
-                return _threadStaticsOffset.GetOrAdd(type);
-            }
-            else
-            {
-                return ExternSymbol(ThreadStaticsOffsetNode.GetMangledName(NameMangler, type));
-            }
+            return _threadStaticsOffset.GetOrAdd(type);            
         }
+
+        private NodeCache<MetadataType, ImportedThreadStaticsIndexNode> _importedThreadStaticsIndices;
 
         public ISymbolNode TypeThreadStaticsIndexSymbol(TypeDesc type)
         {
             if (CompilationModuleGroup.ContainsType(type))
             {
                 return ThreadStaticsIndex;
+            }
+            else if (CompilationModuleGroup.ShouldReferenceThroughImportTable(type))
+            {
+                return _importedThreadStaticsIndices.GetOrAdd((MetadataType)type);
             }
             else
             {
@@ -288,6 +295,13 @@ namespace ILCompiler
         public NonExternMethodSymbolNode NonExternMethodSymbol(MethodDesc method, bool isUnboxingStub)
         {
             return _nonExternMethodSymbols.GetOrAdd(new MethodKey(method, isUnboxingStub));
+        }
+
+        private NodeCache<GCStaticDescNode, StandaloneGCStaticDescRegionNode> _standaloneGCStaticDescs;
+
+        public StandaloneGCStaticDescRegionNode StandaloneGCStaticDescRegion(GCStaticDescNode staticDesc)
+        {
+            return _standaloneGCStaticDescs.GetOrAdd(staticDesc);
         }
     }
 }

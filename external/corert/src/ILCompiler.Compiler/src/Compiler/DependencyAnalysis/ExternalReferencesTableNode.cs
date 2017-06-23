@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 using Internal.Text;
 using Internal.TypeSystem;
+using Internal.Runtime;
 
 using Debug = System.Diagnostics.Debug;
 
@@ -15,7 +16,7 @@ namespace ILCompiler.DependencyAnalysis
     /// <summary>
     /// Represents a node that points to various symbols and can be sequentially addressed.
     /// </summary>
-    public sealed class ExternalReferencesTableNode : ObjectNode, ISymbolNode
+    public sealed class ExternalReferencesTableNode : ObjectNode, ISymbolDefinitionNode
     {
         private readonly ObjectAndOffsetSymbolNode _endSymbol;
         private readonly string _blobName;
@@ -31,7 +32,7 @@ namespace ILCompiler.DependencyAnalysis
             _nodeFactory = nodeFactory;
         }
 
-        public ISymbolNode EndSymbol => _endSymbol;
+        public ISymbolDefinitionNode EndSymbol => _endSymbol;
 
         public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
         {
@@ -87,7 +88,7 @@ namespace ILCompiler.DependencyAnalysis
         {
             // This node does not trigger generation of other nodes.
             if (relocsOnly)
-                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolNode[] { this });
+                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this });
 
             // Zero out the dictionary so that we AV if someone tries to insert after we're done.
             _insertedSymbolsDictionary = null;
@@ -96,16 +97,20 @@ namespace ILCompiler.DependencyAnalysis
 
             foreach (SymbolAndDelta symbolAndDelta in _insertedSymbols)
             {
-                if (factory.Target.Abi == Internal.TypeSystem.TargetAbi.CoreRT)
+                if (factory.Target.Abi == TargetAbi.CoreRT)
                 {
                     // TODO: set low bit if the linkage of the symbol is IAT_PVALUE.
-                    builder.EmitPointerReloc(symbolAndDelta.Symbol, symbolAndDelta.Delta);
+                    builder.EmitReloc(symbolAndDelta.Symbol, RelocType.IMAGE_REL_BASED_RELPTR32, symbolAndDelta.Delta);
                 }
                 else
                 {
-                    // TODO: set low bit if the linkage of the symbol is IAT_PVALUE.
-                    Debug.Assert(factory.Target.Abi == Internal.TypeSystem.TargetAbi.ProjectN);
-                    builder.EmitReloc(symbolAndDelta.Symbol, RelocType.IMAGE_REL_BASED_ADDR32NB, symbolAndDelta.Delta);
+                    Debug.Assert(factory.Target.Abi == TargetAbi.ProjectN);
+                    int delta = symbolAndDelta.Delta;
+                    if (symbolAndDelta.Symbol.RepresentsIndirectionCell)
+                    {
+                        delta = (int)((uint)delta | IndirectionConstants.RVAPointsToIndirection);
+                    }
+                    builder.EmitReloc(symbolAndDelta.Symbol, RelocType.IMAGE_REL_BASED_ADDR32NB, delta);
                 }
             }
 

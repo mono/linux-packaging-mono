@@ -22,6 +22,9 @@ namespace System.Collections.Generic
     [DebuggerTypeProxy(typeof(StackDebugView<>))]
     [DebuggerDisplay("Count = {Count}")]
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class Stack<T> : IEnumerable<T>,
         System.Collections.ICollection,
         IReadOnlyCollection<T>
@@ -126,8 +129,10 @@ namespace System.Collections.Generic
             Debug.Assert(array != _array);
             int srcIndex = 0;
             int dstIndex = arrayIndex + _size;
-            for (int i = 0; i < _size; i++)
+            while(srcIndex < _size)
+            {
                 array[--dstIndex] = _array[srcIndex++];
+            }
         }
 
         void ICollection.CopyTo(Array array, int arrayIndex)

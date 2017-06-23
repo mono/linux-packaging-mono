@@ -24,7 +24,7 @@
 #include "TypeManager.h"
 
 /* static */
-TypeManager * TypeManager::Create(HANDLE osModule, void * pModuleHeader)
+TypeManager * TypeManager::Create(HANDLE osModule, void * pModuleHeader, void** pClasslibFunctions, UInt32 nClasslibFunctions)
 {
     ReadyToRunHeader * pReadyToRunHeader = (ReadyToRunHeader *)pModuleHeader;
 
@@ -38,11 +38,12 @@ TypeManager * TypeManager::Create(HANDLE osModule, void * pModuleHeader)
     if (pReadyToRunHeader->MajorVersion != ReadyToRunHeaderConstants::CurrentMajorVersion)
         return nullptr;
 
-    return new (nothrow) TypeManager(osModule, pReadyToRunHeader);
+    return new (nothrow) TypeManager(osModule, pReadyToRunHeader, pClasslibFunctions, nClasslibFunctions);
 }
 
-TypeManager::TypeManager(HANDLE osModule, ReadyToRunHeader * pHeader)
-    : m_osModule(osModule), m_pHeader(pHeader), m_pDispatchMapTable(nullptr)
+TypeManager::TypeManager(HANDLE osModule, ReadyToRunHeader * pHeader, void** pClasslibFunctions, UInt32 nClasslibFunctions)
+    : m_osModule(osModule), m_pHeader(pHeader), m_pDispatchMapTable(nullptr),
+      m_pClasslibFunctions(pClasslibFunctions), m_nClasslibFunctions(nClasslibFunctions)
 {
     int length;
     m_pStaticsGCDataSection = (UInt8*)GetModuleSection(ReadyToRunSectionType::GCStaticRegion, &length);
@@ -50,8 +51,6 @@ TypeManager::TypeManager(HANDLE osModule, ReadyToRunHeader * pHeader)
     m_pThreadStaticsDataSection = (UInt8*)GetModuleSection(ReadyToRunSectionType::ThreadStaticRegion, &length);
     m_pThreadStaticsGCInfo = (StaticGcDesc*)GetModuleSection(ReadyToRunSectionType::ThreadStaticGCDescRegion, &length);
     m_pTlsIndex = (UInt32*)GetModuleSection(ReadyToRunSectionType::ThreadStaticIndex, &length);
-    UInt32 *pManagedTlsStartOffset = (UInt32*)GetModuleSection(ReadyToRunSectionType::ThreadStaticStartOffset, &length);
-    m_managedTlsStartOffset = pManagedTlsStartOffset ? *pManagedTlsStartOffset : 0;
 }
 
 void * TypeManager::GetModuleSection(ReadyToRunSectionType sectionId, int * length)
@@ -73,6 +72,16 @@ void * TypeManager::GetModuleSection(ReadyToRunSectionType sectionId, int * leng
 
     *length = 0;
     return nullptr;
+}
+
+void * TypeManager::GetClasslibFunction(ClasslibFunctionId functionId)
+{
+    uint32_t id = (uint32_t)functionId;
+
+    if (id >= m_nClasslibFunctions)
+        return nullptr;
+
+    return m_pClasslibFunctions[id];
 }
 
 DispatchMap** TypeManager::GetDispatchMapLookupTable()
@@ -157,7 +166,7 @@ void TypeManager::EnumStaticGCRefs(void * pfnCallback, void * pvCallbackData)
             //     value in the module header.
             //  2) The offset into the TLS block at which managed data begins. 
             EnumThreadStaticGCRefsBlock(pfnCallback, pvCallbackData, m_pThreadStaticsGCInfo,
-                dac_cast<UInt8*>(pThread->GetThreadLocalStorage(*m_pTlsIndex, m_managedTlsStartOffset)));
+                dac_cast<UInt8*>(pThread->GetThreadLocalStorage(*m_pTlsIndex, 0)));
         }
         END_FOREACH_THREAD
     }

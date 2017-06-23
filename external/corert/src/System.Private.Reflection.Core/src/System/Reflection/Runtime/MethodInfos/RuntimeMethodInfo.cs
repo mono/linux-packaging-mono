@@ -124,12 +124,22 @@ namespace System.Reflection.Runtime.MethodInfos
 
         public sealed override MethodInfo GetBaseDefinition()
         {
+            // This check is for compatibility. Yes, it happens before we normalize constructed generic methods back to their backing definition.
+            Type declaringType = DeclaringType;
+            if (!IsVirtual || IsStatic || declaringType == null || declaringType.IsInterface)
+                return this;
+
             MethodInfo method = this;
+
+            // For compat: Remove any instantation on generic methods.
+            if (method.IsConstructedGenericMethod)
+                method = method.GetGenericMethodDefinition();
+
             while (true)
             {
                 MethodInfo next = method.GetImplicitlyOverriddenBaseClassMember();
                 if (next == null)
-                    return method;
+                    return ((RuntimeMethodInfo)method).WithReflectedTypeSetToDeclaringType;
 
                 method = next;
             }
@@ -144,9 +154,7 @@ namespace System.Reflection.Runtime.MethodInfos
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            if (info == null)
-                throw new ArgumentNullException(nameof(info));
-            MemberInfoSerializationHolder.GetSerializationInfo(info, this);
+            throw new PlatformNotSupportedException();
         }
 
         public sealed override MethodBody GetMethodBody()
@@ -174,6 +182,8 @@ namespace System.Reflection.Runtime.MethodInfos
         {
             return RuntimeParameters;
         }
+
+        public abstract override bool HasSameMetadataDefinitionAs(MemberInfo other);
 
         [DebuggerGuidedStepThroughAttribute]
         public sealed override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture)
@@ -206,6 +216,8 @@ namespace System.Reflection.Runtime.MethodInfos
         }
 
         public abstract override MethodInfo MakeGenericMethod(params Type[] typeArguments);
+
+        public abstract override MethodBase MetadataDefinitionMethod { get; }
 
         public abstract override int MetadataToken
         {
@@ -291,6 +303,8 @@ namespace System.Reflection.Runtime.MethodInfos
         {
             get;
         }
+
+        internal abstract RuntimeMethodInfo WithReflectedTypeSetToDeclaringType { get; }
 
         protected abstract MethodInvoker UncachedMethodInvoker { get; }
 
@@ -418,7 +432,11 @@ namespace System.Reflection.Runtime.MethodInfos
                     if (!delegateParameterEnumerator.MoveNext())
                         return null;
                     isOpen = true;
-                    if (!IsAssignableFrom(executionEnvironment, this.DeclaringType, delegateParameterEnumerator.Current.ParameterType))
+                    Type firstParameterOfMethodType = this.DeclaringType;
+                    if (firstParameterOfMethodType.IsValueType)
+                        firstParameterOfMethodType = firstParameterOfMethodType.MakeByRefType();
+
+                    if (!IsAssignableFrom(executionEnvironment, firstParameterOfMethodType, delegateParameterEnumerator.Current.ParameterType))
                         return null;
                     if (target != null)
                         return null;

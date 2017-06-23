@@ -4,7 +4,6 @@
 
 using System;
 using System.Runtime;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using Debug = Internal.Runtime.CompilerHelpers.StartupDebug;
@@ -25,10 +24,10 @@ namespace Internal.Runtime.CompilerHelpers
         }
 
         [NativeCallable(EntryPoint = "InitializeModules", CallingConvention = CallingConvention.Cdecl)]
-        internal static void InitializeModules(IntPtr osModule, IntPtr moduleHeaders, int count)
+        internal static unsafe void InitializeModules(IntPtr osModule, IntPtr* pModuleHeaders, int count, IntPtr* pClasslibFunctions, int nClasslibFunctions)
         {
             RuntimeImports.RhpRegisterOsModule(osModule);
-            TypeManagerHandle[] modules = CreateTypeManagers(osModule, moduleHeaders, count);
+            TypeManagerHandle[] modules = CreateTypeManagers(osModule, pModuleHeaders, count, pClasslibFunctions, nClasslibFunctions);
 
             for (int i = 0; i < modules.Length; i++)
             {
@@ -48,7 +47,7 @@ namespace Internal.Runtime.CompilerHelpers
             }
         }
 
-        private static unsafe TypeManagerHandle[] CreateTypeManagers(IntPtr osModule, IntPtr moduleHeaders, int count)
+        private static unsafe TypeManagerHandle[] CreateTypeManagers(IntPtr osModule, IntPtr* pModuleHeaders, int count, IntPtr* pClasslibFunctions, int nClasslibFunctions)
         {
             // Count the number of modules so we can allocate an array to hold the TypeManager objects.
             // At this stage of startup, complex collection classes will not work.
@@ -58,7 +57,7 @@ namespace Internal.Runtime.CompilerHelpers
                 // The null pointers are sentinel values and padding inserted as side-effect of
                 // the section merging. (The global static constructors section used by C++ has 
                 // them too.)
-                if (((IntPtr*)moduleHeaders)[i] != IntPtr.Zero)
+                if (pModuleHeaders[i] != IntPtr.Zero)
                     moduleCount++;
             }
 
@@ -66,8 +65,8 @@ namespace Internal.Runtime.CompilerHelpers
             int moduleIndex = 0;
             for (int i = 0; i < count; i++)
             {
-                if (((IntPtr*)moduleHeaders)[i] != IntPtr.Zero)
-                    modules[moduleIndex++] = RuntimeImports.RhpCreateTypeManager(osModule, ((IntPtr*)moduleHeaders)[i]);
+                if (pModuleHeaders[i] != IntPtr.Zero)
+                    modules[moduleIndex++] = RuntimeImports.RhpCreateTypeManager(osModule, pModuleHeaders[i], pClasslibFunctions, nClasslibFunctions);
             }
 
             return modules;
@@ -142,9 +141,11 @@ namespace Internal.Runtime.CompilerHelpers
             }
         }
 
+#if CORERT
         private static unsafe void InitializeStatics(IntPtr gcStaticRegionStart, int length)
         {
             IntPtr gcStaticRegionEnd = (IntPtr)((byte*)gcStaticRegionStart + length);
+
             for (IntPtr* block = (IntPtr*)gcStaticRegionStart; block < (IntPtr*)gcStaticRegionEnd; block++)
             {
                 // Gc Static regions can be shared by modules linked together during compilation. To ensure each
@@ -152,21 +153,26 @@ namespace Internal.Runtime.CompilerHelpers
                 // The first time we initialize the static region its pointer is replaced with an object reference
                 // whose lowest bit is no longer set.
                 IntPtr* pBlock = (IntPtr*)*block;
-                if (((*pBlock).ToInt64() & 0x1L) == 1)
+                long blockAddr = (*pBlock).ToInt64();
+                if ((blockAddr & GCStaticRegionConstants.Uninitialized) == GCStaticRegionConstants.Uninitialized)
                 {
-                    object obj = RuntimeImports.RhNewObject(new EETypePtr(new IntPtr((*pBlock).ToInt64() & ~0x1L)));
+                    object obj = RuntimeImports.RhNewObject(new EETypePtr(new IntPtr(blockAddr & ~GCStaticRegionConstants.Mask)));
+
+                    if ((blockAddr & GCStaticRegionConstants.HasPreInitializedData) == GCStaticRegionConstants.HasPreInitializedData)
+                    {
+                        // The next pointer is preinitialized data blob that contains preinitialized static GC fields,
+                        // which are pointer relocs to GC objects in frozen segment. 
+                        // It actually has all GC fields including non-preinitialized fields and we simply copy over the
+                        // entire blob to this object, overwriting everything. 
+                        IntPtr pPreInitDataAddr = *(pBlock + 1);
+                        RuntimeImports.RhBulkMoveWithWriteBarrier(ref obj.GetRawData(), ref *(byte *)pPreInitDataAddr, obj.GetRawDataSize());
+                    }
+
                     *pBlock = RuntimeImports.RhHandleAlloc(obj, GCHandleType.Normal);
                 }
             }
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static unsafe int CStrLen(byte* str)
-        {
-            int len = 0;
-            for (; str[len] != 0; len++) { }
-            return len;
-        }
+#endif // CORERT
     }
 
     [StructLayout(LayoutKind.Sequential)]

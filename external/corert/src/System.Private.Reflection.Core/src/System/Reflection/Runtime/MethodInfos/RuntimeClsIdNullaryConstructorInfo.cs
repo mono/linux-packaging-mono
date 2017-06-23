@@ -30,6 +30,15 @@ namespace System.Reflection.Runtime.MethodInfos
         public sealed override IEnumerable<CustomAttributeData> CustomAttributes => Empty<CustomAttributeData>.Enumerable;
         public sealed override Type DeclaringType => _declaringType;
 
+        public sealed override bool HasSameMetadataDefinitionAs(MemberInfo other)
+        {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
+            // This logic is written to match CoreCLR's behavior.
+            return other is RuntimeCLSIDNullaryConstructorInfo;
+        }
+
         public sealed override bool Equals(object obj)
         {
             RuntimeCLSIDNullaryConstructorInfo other = obj as RuntimeCLSIDNullaryConstructorInfo;
@@ -51,6 +60,8 @@ namespace System.Reflection.Runtime.MethodInfos
             string server = _declaringType.Server;
             throw new NotImplementedException(); // TODO: https://github.com/dotnet/corert/issues/1764 - Make the call out to Interop to create an RCW from the supplied CLSID and server.
         }
+
+        public sealed override MethodBase MetadataDefinitionMethod { get { throw new NotSupportedException(); } }
 
         public sealed override int MetadataToken { get { throw new InvalidOperationException(); } }
 

@@ -38,22 +38,11 @@ namespace System.Runtime.InteropServices
         }
 
 #if CORECLR
-
-        public static unsafe void* CoTaskMemAlloc(IntPtr size)
-        {
-            return Marshal.AllocHGlobal(size).ToPointer();
-        }
-
-        public static unsafe void CoTaskMemFree(void* pv)
-        {
-            Marshal.FreeHGlobal(new IntPtr(pv));
-        }
-       
         public static unsafe void SafeCoTaskMemFree(void* pv)
         {
             // Even though CoTaskMemFree is a no-op for NULLs, skipping the interop call entirely is faster
             if (pv != null)
-                CoTaskMemFree(pv);
+                Marshal.FreeCoTaskMem(new IntPtr(pv));
         }
 
         public static unsafe IntPtr SysAllocStringLen(char* pStrIn, UInt32 dwSize)
@@ -80,21 +69,6 @@ namespace System.Runtime.InteropServices
 #else
         [DllImport(Libraries.CORE_COM)]
         [McgGeneratedNativeCallCodeAttribute]
-        public static extern unsafe void* CoTaskMemAlloc(IntPtr size);
-
-        [DllImport(Libraries.CORE_COM)]
-        [McgGeneratedNativeCallCodeAttribute]
-        public extern static unsafe void CoTaskMemFree(void* pv);
-               
-
-        [DllImport(Libraries.CORE_COM)]
-        [McgGeneratedNativeCallCodeAttribute]
-        internal static extern IntPtr CoTaskMemRealloc(IntPtr pv, IntPtr size);
-
-
-
-        [DllImport(Libraries.CORE_COM)]
-        [McgGeneratedNativeCallCodeAttribute]
         internal static extern unsafe int CoCreateInstanceFromApp(
             Guid* clsid,
             IntPtr pUnkOuter,
@@ -112,11 +86,11 @@ namespace System.Runtime.InteropServices
         [SuppressUnmanagedCodeSecurity]
         internal static extern void MkParseDisplayName(IBindCtx pbc, [MarshalAs(UnmanagedType.LPWStr)] String szUserName, out UInt32 pchEaten, out IMoniker ppmk);
 
-#if false // Bug 398140: Shared library is broken by addition of non-existent import BindMoniker
+#if !TARGET_CORE_API_SET // BindMoniker not available in core API set
         [DllImport(Libraries.CORE_COM, PreserveSig = false)]
         [SuppressUnmanagedCodeSecurity]
         internal static extern void BindMoniker(IMoniker pmk, UInt32 grfOpt, ref Guid iidResult, [MarshalAs(UnmanagedType.Interface)] out Object ppvResult);
-#endif // Bug 398140: Shared library is broken by addition of non-existent import BindMoniker
+#endif
 
         [DllImport(Libraries.CORE_COM_AUT)]
         [McgGeneratedNativeCallCodeAttribute]
@@ -157,7 +131,7 @@ namespace System.Runtime.InteropServices
         {
             // Even though CoTaskMemFree is a no-op for NULLs, skipping the interop call entirely is faster
             if (pv != null)
-                CoTaskMemFree(pv);
+                PInvokeMarshal.CoTaskMemFree(new IntPtr(pv));
         }
 #endif //CORECLR
     }

@@ -257,6 +257,16 @@ void RuntimeInstance::EnumAllStaticGCRefs(void * pfnCallback, void * pvCallbackD
     EnumThreadStaticGCRefDescs(pfnCallback, pvCallbackData);
 }
 
+RuntimeInstance::OsModuleList* RuntimeInstance::GetOsModuleList()
+{
+    return dac_cast<DPTR(OsModuleList)>(dac_cast<TADDR>(this) + offsetof(RuntimeInstance, m_OsModuleList));
+}
+
+ReaderWriterLock& RuntimeInstance::GetTypeManagerLock()
+{
+    return m_ModuleListLock;
+}
+
 #ifndef DACCESS_COMPILE
 
 Module * RuntimeInstance::FindModuleByOsHandle(HANDLE hOsHandle)
@@ -429,10 +439,15 @@ bool RuntimeInstance::RegisterTypeManager(TypeManager * pTypeManager)
     return true;
 }
 
-COOP_PINVOKE_HELPER(TypeManagerHandle, RhpCreateTypeManager, (HANDLE osModule, void* pModuleHeader))
+COOP_PINVOKE_HELPER(TypeManagerHandle, RhpCreateTypeManager, (HANDLE osModule, void* pModuleHeader, PTR_PTR_VOID pClasslibFunctions, UInt32 nClasslibFunctions))
 {
-    TypeManager * typeManager = TypeManager::Create(osModule, pModuleHeader);
+    TypeManager * typeManager = TypeManager::Create(osModule, pModuleHeader, pClasslibFunctions, nClasslibFunctions);
     GetRuntimeInstance()->RegisterTypeManager(typeManager);
+
+    // This event must occur after the module is added to the enumeration
+    if (osModule != nullptr)
+        DebugEventSource::SendModuleLoadEvent(osModule);
+
     return TypeManagerHandle::Create(typeManager);
 }
 
@@ -453,7 +468,7 @@ COOP_PINVOKE_HELPER(void*, RhpRegisterOsModule, (HANDLE hOsModule))
         RuntimeInstance *pRuntimeInstance = GetRuntimeInstance();
         ReaderWriterLock::WriteHolder write(&pRuntimeInstance->GetTypeManagerLock());
 
-        pRuntimeInstance->GetOsModuleList().PushHead(pEntry);
+        pRuntimeInstance->GetOsModuleList()->PushHead(pEntry);
     }
 
     return hOsModule; // Return non-null on success
@@ -462,16 +477,6 @@ COOP_PINVOKE_HELPER(void*, RhpRegisterOsModule, (HANDLE hOsModule))
 RuntimeInstance::TypeManagerList& RuntimeInstance::GetTypeManagerList() 
 {
     return m_TypeManagerList;
-}
-
-RuntimeInstance::OsModuleList& RuntimeInstance::GetOsModuleList() 
-{
-    return m_OsModuleList;
-}
-
-ReaderWriterLock& RuntimeInstance::GetTypeManagerLock() 
-{
-    return m_ModuleListLock;
 }
 
 // static 
@@ -641,6 +646,7 @@ bool RuntimeInstance::CreateGenericAndStaticInfo(EEType *             pEEType,
     }
 
     NewArrayHolder<UInt8> pGcStaticData;
+#ifndef CORERT
     if (gcStaticDataSize > 0)
     {
         // The value of gcStaticDataSize is read from native layout info in the managed layer, where
@@ -653,6 +659,7 @@ bool RuntimeInstance::CreateGenericAndStaticInfo(EEType *             pEEType,
         if (!AddDynamicGcStatics(pGcStaticData, pGcStaticsDesc))
             return false;
     }
+#endif
 
     if (threadStaticOffset != 0)
     {
@@ -842,64 +849,56 @@ COOP_PINVOKE_HELPER(PTR_UInt8, RhGetThreadLocalStorageForDynamicType, (UInt32 uO
     return pCurrentThread->AllocateThreadLocalStorageForDynamicType(uOffset, tlsStorageSize, numTlsCells);
 }
 
-COOP_PINVOKE_HELPER(void *, RhGetNonGcStaticFieldData, (EEType * pEEType))
-{
-    // We shouldn't be attempting to get the gc/non-gc statics data for non-dynamic types...
-    // For non-dynamic types, that info should have been hashed in a table and stored in its corresponding blob in the image.
-    ASSERT(pEEType->IsDynamicType());
-
-    if (pEEType->HasDynamicNonGcStatics())
-    {
-        return pEEType->get_DynamicNonGcStaticsPointer();
-    }
-
-    return NULL;
-}
-
-COOP_PINVOKE_HELPER(void *, RhGetGcStaticFieldData, (EEType * pEEType))
-{
-    // We shouldn't be attempting to get the gc/non-gc statics data for non-dynamic types...
-    // For non-dynamic types, that info should have been hashed in a table and stored in its corresponding blob in the image.
-    // The reason we don't want to do the lookup for non-dynamic types is that LookupGenericInstance will do the lookup in 
-    // a hashtable that *only* has the GIDs with variance. If we were to store all GIDs in that hashtable, we'd be violating
-    // pay-for-play principles
-    ASSERT(pEEType->IsDynamicType());
-
-    if (pEEType->HasDynamicGcStatics())
-    {
-        return pEEType->get_DynamicGcStaticsPointer();
-    }
-
-    return NULL;
-}
-
 #ifndef FEATURE_RX_THUNKS
 
 COOP_PINVOKE_HELPER(void*, RhpGetThunksBase, ());
 COOP_PINVOKE_HELPER(int, RhpGetNumThunkBlocksPerMapping, ());
+COOP_PINVOKE_HELPER(int, RhpGetNumThunksPerBlock, ());
+COOP_PINVOKE_HELPER(int, RhpGetThunkSize, ());
+COOP_PINVOKE_HELPER(int, RhpGetThunkBlockSize, ());
+
 EXTERN_C REDHAWK_API void* __cdecl RhAllocateThunksMapping()
 {
     static void* pThunksTemplateAddress = NULL;
+
+    void *pThunkMap = NULL;
+
+    int thunkBlocksPerMapping = RhpGetNumThunkBlocksPerMapping();
+    int thunkBlockSize = RhpGetThunkBlockSize();
+    int templateSize = thunkBlocksPerMapping * thunkBlockSize;
 
     if (pThunksTemplateAddress == NULL)
     {
         // First, we use the thunks directly from the thunks template sections in the module until all
         // thunks in that template are used up.
         pThunksTemplateAddress = RhpGetThunksBase();
-        return pThunksTemplateAddress;
+        pThunkMap = pThunksTemplateAddress;
+    }
+    else
+    {
+        // We've already used the thunks template in the module for some previous thunks, and we 
+        // cannot reuse it here. Now we need to create a new mapping of the thunks section in order to have 
+        // more thunks
+
+        UInt8* pModuleBase = (UInt8*)PalGetModuleHandleFromPointer(pThunksTemplateAddress);
+        int templateRva = (int)((UInt8*)RhpGetThunksBase() - pModuleBase);
+
+        if (!PalAllocateThunksFromTemplate((HANDLE)pModuleBase, templateRva, templateSize, &pThunkMap))
+            return NULL;
     }
 
-    // We've already used the thunks template in the module for some previous thunks, and we 
-    // cannot reuse it here. Now we need to create a new mapping of the thunks section in order to have 
-    // more thunks
+    if (!PalMarkThunksAsValidCallTargets(
+        pThunkMap,
+        RhpGetThunkSize(),
+        RhpGetNumThunksPerBlock(),
+        thunkBlockSize,
+        thunkBlocksPerMapping))
+    {
+        if (pThunkMap != pThunksTemplateAddress)
+            PalFreeThunksFromTemplate(pThunkMap);
 
-    UInt8* pModuleBase = (UInt8*)PalGetModuleHandleFromPointer(pThunksTemplateAddress);
-    int templateRva = (int)((UInt8*)RhpGetThunksBase() - pModuleBase);
-    int templateSize = RhpGetNumThunkBlocksPerMapping() * OS_PAGE_SIZE * 2;
-
-    void* pThunkMap = NULL;
-    if (PalAllocateThunksFromTemplate((HANDLE)pModuleBase, templateRva, templateSize, &pThunkMap) == FALSE)
         return NULL;
+    }
 
     return pThunkMap;
 }

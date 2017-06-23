@@ -33,18 +33,55 @@ namespace Internal.Runtime.Augments
             _waitedHandles = new WaitHandleArray<IntPtr>(elementInitializer: null);
         }
 
-        internal IntPtr[] GetWaitedHandleArray(int requiredCapacity)
-        {
-            Debug.Assert(this == CurrentThread);
-
-            _waitedHandles.EnsureCapacity(requiredCapacity);
-            return _waitedHandles.Items;
-        }
-
         // Platform-specific initialization of foreign threads, i.e. threads not created by Thread.Start
         private void PlatformSpecificInitializeExistingThread()
         {
             _osHandle = GetOSHandleForCurrentThread();
+        }
+
+        /// <summary>
+        /// Callers must ensure to clear and return the array after use
+        /// </summary>
+        internal SafeWaitHandle[] RentWaitedSafeWaitHandleArray(int requiredCapacity)
+        {
+            Debug.Assert(this == CurrentThread);
+
+            if (_waitedSafeWaitHandles.Items == null)
+            {
+                return null;
+            }
+
+            _waitedSafeWaitHandles.VerifyElementsAreDefault();
+            _waitedSafeWaitHandles.EnsureCapacity(requiredCapacity);
+            return _waitedSafeWaitHandles.RentItems();
+        }
+
+        internal void ReturnWaitedSafeWaitHandleArray(SafeWaitHandle[] waitedSafeWaitHandles)
+        {
+            Debug.Assert(this == CurrentThread);
+            _waitedSafeWaitHandles.ReturnItems(waitedSafeWaitHandles);
+        }
+
+        /// <summary>
+        /// Callers must ensure to return the array after use
+        /// </summary>
+        internal IntPtr[] RentWaitedHandleArray(int requiredCapacity)
+        {
+            Debug.Assert(this == CurrentThread);
+
+            if (_waitedHandles.Items == null)
+            {
+                return null;
+            }
+
+            _waitedHandles.EnsureCapacity(requiredCapacity);
+            return _waitedHandles.RentItems();
+        }
+
+        internal void ReturnWaitedHandleArray(IntPtr[] waitedHandles)
+        {
+            Debug.Assert(this == CurrentThread);
+            _waitedHandles.ReturnItems(waitedHandles);
         }
 
         private static SafeWaitHandle GetOSHandleForCurrentThread()
@@ -220,7 +257,7 @@ namespace Internal.Runtime.Augments
 
             uint threadId;
             _osHandle = Interop.mincore.CreateThread(IntPtr.Zero, (IntPtr)stackSize,
-                AddrofIntrinsics.AddrOf<Interop.mincore.ThreadProc>(StartThread), (IntPtr)thisThreadHandle,
+                AddrofIntrinsics.AddrOf<Interop.mincore.ThreadProc>(ThreadEntryPoint), (IntPtr)thisThreadHandle,
                 (uint)(Interop.Constants.CreateSuspended | Interop.Constants.StackSizeParamIsAReservation),
                 out threadId);
 
@@ -234,6 +271,16 @@ namespace Internal.Runtime.Augments
 
             Interop.mincore.ResumeThread(_osHandle);
             return true;
+        }
+
+        /// <summary>
+        /// This an entry point for managed threads created by applicatoin
+        /// </summary>
+        [NativeCallable(CallingConvention = CallingConvention.StdCall)]
+        private static uint ThreadEntryPoint(IntPtr parameter)
+        {
+            StartThread(parameter);
+            return 0;
         }
 
         public ApartmentState GetApartmentState() { throw null; }

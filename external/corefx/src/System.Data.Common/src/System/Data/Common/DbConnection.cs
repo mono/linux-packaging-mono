@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace System.Data.Common
 {
-    public abstract class DbConnection : Component, IDbConnection
+    public abstract partial class DbConnection : Component, IDbConnection
     {
         internal bool _suppressStateChangeForReconnection;
 
@@ -34,8 +34,6 @@ namespace System.Data.Common
         /// The associated provider factory for derived class.
         /// </summary>
         protected virtual DbProviderFactory DbProviderFactory => null;
-
-        internal DbProviderFactory ProviderFactory => DbProviderFactory;
 
         [Browsable(false)]
         public abstract string ServerVersion { get; }
@@ -102,8 +100,6 @@ namespace System.Data.Common
 
             StateChange?.Invoke(this, stateChange);
         }
-
-        internal bool ForceNewConnection { get; set; }
 
         public abstract void Open();
 
