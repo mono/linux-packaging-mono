@@ -39,6 +39,8 @@ endif
 
 ifeq ($(DEB_HOST_ARCH), armel)
 	CONF_FLAGS += --with-fpu=NONE
+	CONF_FLAGS += --enable-dynamic-btls
+	BTLS_ARCH = true
 endif
 
 ifneq (,$(findstring $(DEB_HOST_ARCH),$(DEB_MONO_SGEN_ARCHS)))
@@ -50,10 +52,17 @@ endif
 ifeq ($(DEB_HOST_ARCH), arm64)
 	MONO_BOEHM_TEST = true
 	CONF_FLAGS += --disable-boehm
+	CONF_FLAGS += --enable-dynamic-btls
+	BTLS_ARCH = true
 	SKIP_LIBGC = true
 endif
 
 ifeq ($(DEB_HOST_ARCH), i386)
+	CONF_FLAGS += --enable-dynamic-btls
+	BTLS_ARCH = true
+endif
+
+ifeq ($(DEB_HOST_ARCH), armhf)
 	CONF_FLAGS += --enable-dynamic-btls
 	BTLS_ARCH = true
 endif
