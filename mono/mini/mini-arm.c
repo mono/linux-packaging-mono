@@ -323,7 +323,7 @@ mono_arm_patchable_bl (guint8 *code, int cond)
 	return code;
 }
 
-#if defined(__ARM_EABI__) && defined(__linux__) && !defined(PLATFORM_ANDROID) && !defined(__native_client__) && !defined(MONO_CROSS_COMPILE)
+#if defined(__ARM_EABI__) && defined(__linux__) && !defined(PLATFORM_ANDROID) && !defined(MONO_CROSS_COMPILE)
 #define HAVE_AEABI_READ_TP 1
 #endif
 
@@ -4036,6 +4036,18 @@ gboolean
 mono_arm_thumb_supported (void)
 {
 	return thumb_supported;
+}
+
+gboolean
+mono_arm_eabi_supported (void)
+{
+	return eabi_supported;
+}
+
+int
+mono_arm_i8_align (void)
+{
+	return i8_align;
 }
 
 #ifndef DISABLE_JIT

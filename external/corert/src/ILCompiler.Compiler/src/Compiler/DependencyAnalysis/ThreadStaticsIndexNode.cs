@@ -17,7 +17,7 @@ namespace ILCompiler.DependencyAnalysis
 
     // The TLS slot index allocated for this module by the OS loader. We keep a pointer to this
     // value in the module header.
-    public class ThreadStaticsIndexNode : ObjectNode, ISymbolNode
+    public class ThreadStaticsIndexNode : ObjectNode, IExportableSymbolNode
     {
         string _prefix;
 
@@ -56,6 +56,8 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
+        public bool IsExported(NodeFactory factory) => true;
+
         public override bool IsShareable => false;            
 
         public override bool StaticDependenciesAreComputed => true;
@@ -81,7 +83,7 @@ namespace ILCompiler.DependencyAnalysis
     }
 
     // The data structure used by the OS loader to load TLS chunks. 
-    public class ThreadStaticsDirectoryNode : ObjectNode, ISymbolNode
+    public class ThreadStaticsDirectoryNode : ObjectNode, ISymbolDefinitionNode
     {
         string _prefix;
         public ThreadStaticsDirectoryNode(string prefix)
@@ -162,62 +164,6 @@ namespace ILCompiler.DependencyAnalysis
             objData.EmitInt(0);                 // size of tls zero fill
             objData.EmitInt(0);                 // characteristics
 
-            return objData.ToObjectData();
-        }
-    }
-
-    // The offset into the TLS block at which managed data begins. 
-    public class ThreadStaticsStartNode : ObjectNode, ISymbolNode
-    {
-        public ThreadStaticsStartNode()
-        {
-        }
-
-        public string MangledName
-        {
-            get
-            {
-                return GetMangledName();
-            }
-        }
-
-        public static string GetMangledName()
-        {
-            return "_tls_offset";
-        }
-
-        public int Offset => 0;
-
-        protected override string GetName(NodeFactory factory) => GetMangledName();
-
-        public void AppendMangledName(NameMangler nameMangler, Utf8StringBuilder sb)
-        {
-            sb.Append(GetMangledName());
-        }
-
-        public override ObjectNodeSection Section
-        {
-            get
-            {
-                return ObjectNodeSection.ReadOnlyDataSection;
-            }
-        }
-
-        public override bool IsShareable => false;
-
-        public override bool ShouldSkipEmittingObjectNode(NodeFactory factory)
-        {
-            return factory.ThreadStaticsRegion.ShouldSkipEmittingObjectNode(factory);
-        }
-
-        public override bool StaticDependenciesAreComputed => true;
-            
-        public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
-        {
-            ObjectDataBuilder objData = new ObjectDataBuilder(factory, relocsOnly);
-            objData.RequireInitialPointerAlignment();
-            objData.AddSymbol(this);
-            objData.EmitReloc(factory.ThreadStaticsRegion.StartSymbol, RelocType.IMAGE_REL_SECREL);
             return objData.ToObjectData();
         }
     }

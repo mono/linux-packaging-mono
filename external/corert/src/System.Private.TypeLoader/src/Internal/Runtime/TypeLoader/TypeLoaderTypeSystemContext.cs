@@ -5,6 +5,7 @@
 using System;
 using System.Reflection;
 using System.Diagnostics;
+
 using Internal.Metadata.NativeFormat;
 using Internal.Runtime.Augments;
 using Internal.Runtime.CompilerServices;
@@ -106,7 +107,7 @@ namespace Internal.Runtime.TypeLoader
             return s_nativeLayoutInterfacesAlgorithm;
         }
 
-        public override DefType GetWellKnownType(WellKnownType wellKnownType)
+        public override DefType GetWellKnownType(WellKnownType wellKnownType, bool throwIfNotFound = true)
         {
             switch (wellKnownType)
             {
@@ -189,16 +190,19 @@ namespace Internal.Runtime.TypeLoader
                     return (DefType)ResolveRuntimeTypeHandle(typeof(Exception).TypeHandle);
 
                 default:
-                    throw new NotImplementedException();
+                    if (throwIfNotFound)
+                        throw new NotImplementedException();
+                    else
+                        return null;
             }
         }
 
-        public override ModuleDesc ResolveAssembly(System.Reflection.AssemblyName name, bool throwErrorIfNotFound)
+        public override ModuleDesc ResolveAssembly(AssemblyName name, bool throwErrorIfNotFound)
         {
 #if SUPPORTS_NATIVE_METADATA_TYPE_LOADING
             AssemblyBindResult bindResult;
             Exception failureException;
-            if (!AssemblyBinderImplementation.Instance.Bind(name, out bindResult, out failureException))
+            if (!AssemblyBinderImplementation.Instance.Bind(name.ToRuntimeAssemblyName(), out bindResult, out failureException))
             {
                 if (throwErrorIfNotFound)
                     throw failureException;

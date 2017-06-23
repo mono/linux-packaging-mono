@@ -11,6 +11,9 @@ namespace System.Collections.Generic
     [DebuggerTypeProxy(typeof(IDictionaryDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue>
     {
         [NonSerialized]
@@ -964,10 +967,6 @@ namespace System.Collections.Generic
         { }
 
         public TreeSet(IComparer<T> comparer) : base(comparer) { }
-
-        public TreeSet(ICollection<T> collection) : base(collection) { }
-
-        public TreeSet(ICollection<T> collection, IComparer<T> comparer) : base(collection, comparer) { }
 
         public TreeSet(SerializationInfo siInfo, StreamingContext context) : base(siInfo, context) { }
 

@@ -13,7 +13,7 @@
 **
 ** Created: 11/2/2010
 ** 
-** <owner>[....]</owner>
+** <owner>Microsoft</owner>
 ** 
 =============================================================================*/
 
@@ -150,6 +150,10 @@ namespace System.Runtime.ExceptionServices {
             m_Exception.RestoreExceptionDispatchInfo(this);
             throw m_Exception; 
         }
+
+#if MONO
+        public static void Throw (Exception source) => Capture (source).Throw ();
+#endif
     }
 }
 #endif // FEATURE_EXCEPTIONDISPATCHINFO

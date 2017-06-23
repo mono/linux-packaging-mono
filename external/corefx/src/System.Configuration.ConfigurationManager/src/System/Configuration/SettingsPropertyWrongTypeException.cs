@@ -22,6 +22,7 @@ namespace System.Configuration
         protected SettingsPropertyWrongTypeException(SerializationInfo info, StreamingContext context)
              : base(info, context)
         {
+            throw new PlatformNotSupportedException();
         }
 
         public SettingsPropertyWrongTypeException()

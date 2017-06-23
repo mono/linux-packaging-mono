@@ -1233,7 +1233,7 @@ namespace System.Net
         {
             if (_exception != null)
             {
-                ExceptionDispatchInfo.Capture(_exception).Throw();
+                ExceptionDispatchInfo.Throw(_exception);
             }
         }
 
@@ -1576,7 +1576,7 @@ namespace System.Net
         {
             get
             {
-                return false;
+                return true;
             }
             set
             {

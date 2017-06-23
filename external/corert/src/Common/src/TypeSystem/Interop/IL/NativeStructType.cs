@@ -8,7 +8,7 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Internal.TypeSystem.Interop
 {
-    public class NativeStructType : MetadataType
+    public partial class NativeStructType : MetadataType
     {
         // The managed struct that this type will imitate
         public MetadataType ManagedStructType
@@ -176,12 +176,12 @@ namespace Internal.TypeSystem.Interop
                 }
                 catch (NotSupportedException)
                 {
-                    // if marshalling is not supported for this type the generates stubs will emit appropriate
+                    // if marshalling is not supported for this type the generated stubs will emit appropriate
                     // error message. We just set native type to be same as managedtype
                     nativeType = managedType;
                 }
 
-                _fields[index++] = new NativeStructField(nativeType, field, this, field.Name);
+                _fields[index++] = new NativeStructField(nativeType, this, field);
             }
         }
 
@@ -244,7 +244,9 @@ namespace Internal.TypeSystem.Interop
             return Array.Empty<MethodImplRecord>();
         }
 
-        public override int GetHashCode()
+        private int _hashCode;
+
+        private void InitializeHashCode()
         {
             var hashCodeBuilder = new Internal.NativeFormat.TypeHashingAlgorithms.HashCodeBuilder(Namespace);
 
@@ -254,7 +256,16 @@ namespace Internal.TypeSystem.Interop
             }
 
             hashCodeBuilder.Append(Name);
-            return hashCodeBuilder.ToHashCode();
+            _hashCode = hashCodeBuilder.ToHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            if (_hashCode == 0)
+            {
+                InitializeHashCode();
+            }
+            return _hashCode;
         }
 
         protected override TypeFlags ComputeTypeFlags(TypeFlags mask)
@@ -271,6 +282,8 @@ namespace Internal.TypeSystem.Interop
                 flags |= TypeFlags.ValueType;
             }
 
+            flags |= TypeFlags.HasFinalizerComputed;
+
             return flags;
         }
 
@@ -282,13 +295,11 @@ namespace Internal.TypeSystem.Interop
         /// <summary>
         /// Synthetic field on <see cref="NativeStructType"/>.
         /// </summary>
-        private class NativeStructField : FieldDesc
+        private partial class NativeStructField : FieldDesc
         {
-            private FieldDesc _managedField;
             private TypeDesc _fieldType;
-            private NativeStructType _owningType;
-
-            private string _name;
+            private MetadataType _owningType;
+            private FieldDesc _managedField;
 
             public override TypeSystemContext Context
             {
@@ -319,7 +330,7 @@ namespace Internal.TypeSystem.Interop
             {
                 get
                 {
-                    return _managedField.IsInitOnly;
+                    return false;
                 }
             }
 
@@ -364,17 +375,17 @@ namespace Internal.TypeSystem.Interop
             {
                 get
                 {
-                    return _name;
+                    return _managedField.Name;
                 }
             }
 
-            public NativeStructField(TypeDesc nativeType, FieldDesc managedField, NativeStructType owningType, string name)
+            public NativeStructField(TypeDesc nativeType, MetadataType owningType, FieldDesc managedField)
             {
                 _fieldType = nativeType;
-                _managedField = managedField;
                 _owningType = owningType;
-                _name = name;
+                _managedField = managedField;
             }
         }
+
     }
 }

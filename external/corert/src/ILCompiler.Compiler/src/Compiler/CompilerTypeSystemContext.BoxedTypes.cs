@@ -190,7 +190,7 @@ namespace ILCompiler
         /// A type with an identical layout to the layout of a boxed value type.
         /// The type has a single field of the type of the valuetype it represents.
         /// </summary>
-        private class BoxedValueType : MetadataType, INonEmittableType
+        private partial class BoxedValueType : MetadataType, INonEmittableType
         {
             private const string BoxedValueFieldName = "BoxedValue";
 
@@ -267,6 +267,8 @@ namespace ILCompiler
                     flags |= TypeFlags.Class;
                 }
 
+                flags |= TypeFlags.HasFinalizerComputed;
+
                 return flags;
             }
 
@@ -286,7 +288,7 @@ namespace ILCompiler
             /// <summary>
             /// Synthetic field on <see cref="BoxedValueType"/>.
             /// </summary>
-            private class BoxedValueField : FieldDesc
+            private partial class BoxedValueField : FieldDesc
             {
                 private BoxedValueType _owningType;
 
@@ -345,7 +347,7 @@ namespace ILCompiler
         /// <summary>
         /// Represents a thunk to call shared instance method on boxed valuetypes.
         /// </summary>
-        private class GenericUnboxingThunk : ILStubMethod
+        private partial class GenericUnboxingThunk : ILStubMethod
         {
             private MethodDesc _targetMethod;
             private ValueTypeInstanceMethodWithHiddenParameter _nakedTargetMethod;
@@ -417,7 +419,7 @@ namespace ILCompiler
         /// signature. This is so that we can refer to the parameter from IL. References to this method will
         /// be replaced by the actual instance method after codegen is done.
         /// </summary>
-        internal class ValueTypeInstanceMethodWithHiddenParameter : MethodDesc
+        internal partial class ValueTypeInstanceMethodWithHiddenParameter : MethodDesc
         {
             private MethodDesc _methodRepresented;
             private MethodSignature _signature;

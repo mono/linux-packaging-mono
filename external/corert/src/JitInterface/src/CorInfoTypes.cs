@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Internal.JitInterface
@@ -286,14 +287,11 @@ namespace Internal.JitInterface
     }
 
     // Result of calling embedGenericHandle
-    [StructLayout(LayoutKind.Explicit)]
-    public struct CORINFO_LOOKUP
+    public unsafe struct CORINFO_LOOKUP
     {
-        [FieldOffset(0)]
         public CORINFO_LOOKUP_KIND lookupKind;
 
         // If kind.needsRuntimeLookup then this indicates how to do the lookup
-        [FieldOffset(24)]
         public CORINFO_RUNTIME_LOOKUP runtimeLookup;
 
         // If the handle is obtained at compile-time, then this handle is the "exact" handle (class, method, or field)
@@ -301,8 +299,16 @@ namespace Internal.JitInterface
         //     IAT_VALUE --> "handle" stores the real handle or "addr " stores the computed address
         //     IAT_PVALUE --> "addr" stores a pointer to a location which will hold the real handle
         //     IAT_PPVALUE --> "addr" stores a double indirection to a location which will hold the real handle
-        [FieldOffset(24)]
-        public CORINFO_CONST_LOOKUP constLookup;
+        public ref CORINFO_CONST_LOOKUP constLookup
+        {
+            get
+            {
+                // constLookup is union with runtimeLookup
+                Debug.Assert(sizeof(CORINFO_RUNTIME_LOOKUP) >= sizeof(CORINFO_CONST_LOOKUP));
+                fixed (CORINFO_RUNTIME_LOOKUP * p = &runtimeLookup)
+                    return ref *(CORINFO_CONST_LOOKUP *)p;
+            }
+        }
     }
 
     public unsafe struct CORINFO_RESOLVED_TOKEN
@@ -469,6 +475,8 @@ namespace Internal.JitInterface
         CORINFO_INTRINSIC_GetManagedThreadId,
         CORINFO_INTRINSIC_ByReference_Ctor,
         CORINFO_INTRINSIC_ByReference_Value,
+        CORINFO_INTRINSIC_Span_GetItem,
+        CORINFO_INTRINSIC_ReadOnlySpan_GetItem,
 
         CORINFO_INTRINSIC_Count,
         CORINFO_INTRINSIC_Illegal = -1,         // Not a true intrinsic,
@@ -1390,6 +1398,9 @@ namespace Internal.JitInterface
 
         // token comes from CEE_NEWOBJ
         CORINFO_TOKENKIND_NewObj = 0x200 | CORINFO_TOKENKIND_Method,
+
+        // token comes from CEE_LDVIRTFTN
+        CORINFO_TOKENKIND_Ldvirtftn = 0x400 | CORINFO_TOKENKIND_Method,
     };
 
     // These are error codes returned by CompileMethod
@@ -1448,6 +1459,9 @@ namespace Internal.JitInterface
         CORJIT_FLAG_USE_PINVOKE_HELPERS = 36, // The JIT should use the PINVOKE_{BEGIN,END} helpers instead of emitting inline transitions
         CORJIT_FLAG_REVERSE_PINVOKE = 37, // The JIT should insert REVERSE_PINVOKE_{ENTER,EXIT} helpers into method prolog/epilog
         CORJIT_FLAG_DESKTOP_QUIRKS = 38, // The JIT should generate desktop-quirk-compatible code
+        CORJIT_FLAG_TIER0 = 39, // This is the initial tier for tiered compilation which should generate code as quickly as possible
+        CORJIT_FLAG_TIER1 = 40, // This is the final tier (for now) for tiered compilation which should generate high quality code
+        CORJIT_FLAG_RELATIVE_CODE_RELOCS = 41, // JIT should generate PC-relative address computations instead of EE relocation records
     }
 
     public struct CORJIT_FLAGS

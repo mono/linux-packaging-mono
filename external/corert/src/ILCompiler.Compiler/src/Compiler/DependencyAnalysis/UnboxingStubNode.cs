@@ -12,7 +12,7 @@ namespace ILCompiler.DependencyAnalysis
     /// <summary>
     /// Represents an unboxing stub that supports calling instance methods on boxed valuetypes.
     /// </summary>
-    public partial class UnboxingStubNode : AssemblyStubNode, IMethodNode
+    public partial class UnboxingStubNode : AssemblyStubNode, IMethodNode, IExportableSymbolNode
     {
         private MethodDesc _target;
 
@@ -24,8 +24,11 @@ namespace ILCompiler.DependencyAnalysis
             }
         }
 
+        public bool IsExported(NodeFactory factory) => factory.CompilationModuleGroup.ExportsMethod(Method);
+
         public UnboxingStubNode(MethodDesc target)
         {
+            Debug.Assert(target.GetCanonMethodTarget(CanonicalFormKind.Specific) == target);
             Debug.Assert(target.OwningType.IsValueType);
             _target = target;
         }

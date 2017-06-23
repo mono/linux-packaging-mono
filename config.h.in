@@ -106,9 +106,6 @@
 /* Disable SIMD intrinsics related optimizations. */
 #undef DISABLE_SIMD
 
-/* Disable sockets support */
-#undef DISABLE_SOCKETS
-
 /* Disable Soft Debugger Agent. */
 #undef DISABLE_SOFT_DEBUG
 
@@ -467,9 +464,6 @@
 /* Define to 1 if you have the <libproc.h> header file. */
 #undef HAVE_LIBPROC_H
 
-/* Define to 1 if you have the `unwind' library (-lunwind). */
-#undef HAVE_LIBUNWIND
-
 /* Define to 1 if you have the <link.h> header file. */
 #undef HAVE_LINK_H
 
@@ -527,9 +521,6 @@
 /* Have MSG_NOSIGNAL */
 #undef HAVE_MSG_NOSIGNAL
 
-/* Define to 1 if you have the <nacl/nacl_dyncode.h> header file. */
-#undef HAVE_NACL_NACL_DYNCODE_H
-
 /* Define to 1 if you have the <netdb.h> header file. */
 #undef HAVE_NETDB_H
 
@@ -544,6 +535,9 @@
 
 /* No GC support. */
 #undef HAVE_NULL_GC
+
+/* Some VES is available at runtime */
+#undef HAVE_ONLINE_VES
 
 /* Define to 1 if you have the <pathconf.h> header file. */
 #undef HAVE_PATHCONF_H
@@ -1014,9 +1008,6 @@
 #undef HOST_ARM64
 
 /* ... */
-#undef HOST_IA64
-
-/* ... */
 #undef HOST_MIPS
 
 /* ... */
@@ -1154,9 +1145,6 @@
 /* byte order of target */
 #undef TARGET_BYTE_ORDER
 
-/* ... */
-#undef TARGET_IA64
-
 /* The JIT/AOT targets iOS */
 #undef TARGET_IOS
 
@@ -1165,9 +1153,6 @@
 
 /* ... */
 #undef TARGET_MIPS
-
-/* ... */
-#undef TARGET_NACL
 
 /* The JIT/AOT targets OSX */
 #undef TARGET_OSX
@@ -1240,6 +1225,3 @@
 
 /* ... */
 #undef __mono_ppc64__
-
-/* ... */
-#undef __native_client_codegen__

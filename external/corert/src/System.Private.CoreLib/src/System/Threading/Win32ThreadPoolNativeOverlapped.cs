@@ -11,7 +11,6 @@ using System.Runtime.InteropServices;
 
 namespace System.Threading
 {
-    [Internal.Runtime.CompilerServices.RelocatedTypeAttribute("System.Threading.Overlapped")]
     [StructLayout(LayoutKind.Sequential)]
     internal partial struct Win32ThreadPoolNativeOverlapped
     {

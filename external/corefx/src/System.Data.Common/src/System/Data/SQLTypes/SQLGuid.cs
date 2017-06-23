@@ -15,6 +15,9 @@ namespace System.Data.SqlTypes
     /// </summary>
     [Serializable]
     [XmlSchemaProvider("GetXsdType")]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Data, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089")]
+#endif
     public struct SqlGuid : INullable, IComparable, IXmlSerializable
     {
         private static readonly int s_sizeOfGuid = 16;
@@ -36,7 +39,7 @@ namespace System.Data.SqlTypes
         public SqlGuid(byte[] value)
         {
             if (value == null || value.Length != s_sizeOfGuid)
-                throw new ArgumentException(SQLResource.s_invalidArraySizeMessage);
+                throw new ArgumentException(SQLResource.InvalidArraySizeMessage);
 
             _value = new byte[s_sizeOfGuid];
             value.CopyTo(_value, 0);
@@ -45,7 +48,7 @@ namespace System.Data.SqlTypes
         internal SqlGuid(byte[] value, bool ignored)
         {
             if (value == null || value.Length != s_sizeOfGuid)
-                throw new ArgumentException(SQLResource.s_invalidArraySizeMessage);
+                throw new ArgumentException(SQLResource.InvalidArraySizeMessage);
 
             _value = value;
         }
@@ -106,7 +109,7 @@ namespace System.Data.SqlTypes
         public override string ToString()
         {
             if (IsNull)
-                return SQLResource.s_nullString;
+                return SQLResource.NullString;
 
             Guid g = new Guid(_value);
             return g.ToString();
@@ -114,7 +117,7 @@ namespace System.Data.SqlTypes
 
         public static SqlGuid Parse(string s)
         {
-            if (s == SQLResource.s_nullString)
+            if (s == SQLResource.NullString)
                 return SqlGuid.Null;
             else
                 return new SqlGuid(s);

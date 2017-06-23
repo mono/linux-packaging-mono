@@ -18,6 +18,7 @@ namespace System.Numerics.Tests
         }
 
         [Fact]
+        [ActiveIssue("TFS 444567 - Codegen optimization issue", TargetFrameworkMonikers.UapAot)]
         public void Vector2CopyToTest()
         {
             Vector2 v1 = new Vector2(2.0f, 3.0f);
@@ -488,7 +489,7 @@ namespace System.Numerics.Tests
             Vector2 actual;
 
             actual = Vector2.TransformNormal(v, m);
-            Assert.Equal(expected, actual);
+            Assert.True(MathHelper.Equal(expected, actual), "Vector2f.Tranform did not return the expected value.");
         }
 
         // A test for TransformNormal (Vector2f, Matrix3x2)
@@ -504,7 +505,7 @@ namespace System.Numerics.Tests
             Vector2 actual;
 
             actual = Vector2.TransformNormal(v, m);
-            Assert.Equal(expected, actual);
+            Assert.True(MathHelper.Equal(expected, actual), "Vector2f.Transform did not return the expected value.");
         }
 
         // A test for Transform (Vector2f, Quaternion)
@@ -1128,6 +1129,9 @@ namespace System.Numerics.Tests
 
         // A test to make sure these types are blittable directly into GPU buffer memory layouts
         [Fact]
+#if MONO
+        [ActiveIssue("https://bugzilla.xamarin.com/show_bug.cgi?id=57336")]
+#endif
         public unsafe void Vector2SizeofTest()
         {
             Assert.Equal(8, sizeof(Vector2));

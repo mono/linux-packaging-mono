@@ -21,6 +21,9 @@ namespace System.Collections.Generic
     [DebuggerTypeProxy(typeof(QueueDebugView<>))]
     [DebuggerDisplay("Count = {Count}")]
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class Queue<T> : IEnumerable<T>,
         System.Collections.ICollection,
         IReadOnlyCollection<T>

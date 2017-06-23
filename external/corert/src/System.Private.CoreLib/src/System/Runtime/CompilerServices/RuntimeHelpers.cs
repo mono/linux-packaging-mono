@@ -12,6 +12,7 @@
 using Internal.Reflection.Augments;
 using Internal.Reflection.Core.NonPortable;
 using Internal.Runtime.Augments;
+using System.Runtime;
 using System.Runtime.Serialization;
 using System.Threading;
 
@@ -20,7 +21,14 @@ namespace System.Runtime.CompilerServices
     public static class RuntimeHelpers
     {
         [Intrinsic]
-        public static extern void InitializeArray(Array array, RuntimeFieldHandle fldHandle);
+        public static void InitializeArray(Array array, RuntimeFieldHandle fldHandle)
+        {
+            // We only support this intrinsic when it occurs within a well-defined IL sequence.
+            // If a call to this method occurs within the recognized sequence, codegen must expand the IL sequence completely.
+            // For any other purpose, the API is currently unsupported.
+            // https://github.com/dotnet/corert/issues/364
+            throw new PlatformNotSupportedException();
+        }
 
         public static void RunClassConstructor(RuntimeTypeHandle type)
         {
@@ -55,6 +63,25 @@ namespace System.Runtime.CompilerServices
                 return obj;
 
             return RuntimeImports.RhMemberwiseClone(obj);
+        }
+
+        public new static bool Equals(Object obj1, Object obj2)
+        {
+            if (obj1 == obj2)
+                return true;
+
+            if ((obj1 == null) || (obj2 == null))
+                return false;
+
+            // If it's not a value class, don't compare by value
+            if (!obj1.EETypePtr.IsValueType)
+                return false;
+
+            // Make sure they are the same type.
+            if (obj1.EETypePtr != obj2.EETypePtr)
+                return false;
+
+            return RuntimeImports.RhCompareObjectContentsAndPadding(obj1, obj2);
         }
 
 #if !FEATURE_SYNCTABLE

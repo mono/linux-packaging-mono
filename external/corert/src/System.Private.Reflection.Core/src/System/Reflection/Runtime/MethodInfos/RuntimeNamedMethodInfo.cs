@@ -144,6 +144,14 @@ namespace System.Reflection.Runtime.MethodInfos
             return methodInfo;
         }
 
+        public sealed override MethodBase MetadataDefinitionMethod
+        {
+            get
+            {
+                return RuntimeNamedMethodInfo<TRuntimeMethodCommon>.GetRuntimeNamedMethodInfo(_common.RuntimeMethodCommonOfUninstantiatedMethod, _common.ContextTypeInfo);
+            }
+        }
+
         public sealed override MethodImplAttributes MethodImplementationFlags
         {
             get
@@ -181,6 +189,23 @@ namespace System.Reflection.Runtime.MethodInfos
             return ComputeToString(this);
         }
 
+        public sealed override bool HasSameMetadataDefinitionAs(MemberInfo other)
+        {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
+            // Do not rewrite as a call to IsConstructedGenericMethod - we haven't yet established that "other" is a runtime-implemented member yet!
+            RuntimeConstructedGenericMethodInfo otherConstructedGenericMethod = other as RuntimeConstructedGenericMethodInfo;
+            if (otherConstructedGenericMethod != null)
+                other = otherConstructedGenericMethod.GetGenericMethodDefinition();
+
+            RuntimeNamedMethodInfo<TRuntimeMethodCommon> otherMethod = other as RuntimeNamedMethodInfo<TRuntimeMethodCommon>;
+            if (otherMethod == null)
+                return false;
+
+            return _common.HasSameMetadataDefinitionAs(otherMethod._common);
+        }
+
         public sealed override bool Equals(Object obj)
         {
             RuntimeNamedMethodInfo<TRuntimeMethodCommon> other = obj as RuntimeNamedMethodInfo<TRuntimeMethodCommon>;
@@ -198,7 +223,7 @@ namespace System.Reflection.Runtime.MethodInfos
             return _common.GetHashCode();
         }
 
-        public sealed override RuntimeMethodHandle MethodHandle => GetRuntimeMethodHandle(Array.Empty<Type>());
+        public sealed override RuntimeMethodHandle MethodHandle => GetRuntimeMethodHandle(null);
 
         protected internal sealed override String ComputeToString(RuntimeMethodInfo contextMethod)
         {
@@ -231,6 +256,17 @@ namespace System.Reflection.Runtime.MethodInfos
             get
             {
                 return _common.Name;
+            }
+        }
+
+        internal sealed override RuntimeMethodInfo WithReflectedTypeSetToDeclaringType
+        {
+            get
+            {
+                if (_reflectedType.Equals(_common.DefiningTypeInfo))
+                    return this;
+
+                return RuntimeNamedMethodInfo<TRuntimeMethodCommon>.GetRuntimeNamedMethodInfo(_common, _common.ContextTypeInfo);
             }
         }
 

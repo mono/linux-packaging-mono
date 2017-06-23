@@ -66,17 +66,27 @@ namespace System.Diagnostics.Tests
         public void SetParentId()
         {
             var parent = new Activity("parent");
-            Assert.Throws<ArgumentException>(() => parent.SetParentId(null));
-            Assert.Throws<ArgumentException>(() => parent.SetParentId(""));
+            parent.SetParentId(null);  // Error does nothing
+            Assert.Null(parent.ParentId);
+
+            parent.SetParentId("");  // Error does nothing
+            Assert.Null(parent.ParentId);
+
             parent.SetParentId("1");
             Assert.Equal("1", parent.ParentId);
-            Assert.Throws<InvalidOperationException>(() => parent.SetParentId("2"));
+
+            parent.SetParentId("2"); // Error does nothing
+            Assert.Equal("1", parent.ParentId);
 
             Assert.Equal(parent.ParentId, parent.RootId);
             parent.Start();
+
             var child = new Activity("child");
             child.Start();
-            Assert.Throws<InvalidOperationException>(() => child.SetParentId("3"));
+
+            Assert.Equal(parent.Id, child.ParentId);
+            child.SetParentId("3");  // Error does nothing;
+            Assert.Equal(parent.Id, child.ParentId);
         }
 
         /// <summary>
@@ -114,6 +124,33 @@ namespace System.Diagnostics.Tests
                 parentId.ToString().Substring(0, parentId.Length - 10),
                 activity.Id.Substring(0, activity.Id.Length - 9));
             Assert.Equal('#', activity.Id[activity.Id.Length - 1]);
+        }
+
+        /// <summary>
+        /// Tests overflow in Id generation when parentId has a single (root) node
+        /// </summary>
+        [Fact]
+        public void ActivityIdNonHierarchicalOverflow()
+        {
+            // find out Activity Id length on this platform in this AppDomain
+            Activity testActivity = new Activity("activity")
+                .Start();
+            var expectedIdLength = testActivity.Id.Length;
+            testActivity.Stop();
+
+            // check that if parentId '|aaa...a' 1024 bytes long is set with single node (no dots or underscores in the Id)
+            // it causes overflow during Id generation, and new root Id is generated for the new Activity
+            var parentId = '|' + new string('a', 1022) + '.';
+
+            var activity = new Activity("activity")
+                .SetParentId(parentId)
+                .Start();
+
+            Assert.Equal(parentId, activity.ParentId);
+
+            // With probability 1/MaxLong, Activity.Id length may be expectedIdLength + 1
+            Assert.InRange(activity.Id.Length, expectedIdLength, expectedIdLength + 1);
+            Assert.False(activity.Id.Contains('#'));
         }
 
         /// <summary>
@@ -204,8 +241,8 @@ namespace System.Diagnostics.Tests
             child1.SetParentId("123");
             child1.Start();
             Assert.Equal("123", child1.RootId);
-            Assert.True(child1.Id[0] == '|');
-            Assert.True(child1.Id[child1.Id.Length - 1] == '_');
+            Assert.Equal('|', child1.Id[0]);
+            Assert.Equal('_', child1.Id[child1.Id.Length - 1]);
             child1.Stop();
 
             var child2 = new Activity("child2");
@@ -243,15 +280,23 @@ namespace System.Diagnostics.Tests
         public void StartStopWithTimestamp()
         {
             var activity = new Activity("activity");
-            Assert.Throws<InvalidOperationException>(() => activity.SetStartTime(DateTime.Now));
+            Assert.Equal(default(DateTime), activity.StartTimeUtc);
 
-            var startTime = DateTime.UtcNow.AddSeconds(-1);
+            activity.SetStartTime(DateTime.Now);    // Error Does nothing because it is not UTC
+            Assert.Equal(default(DateTime), activity.StartTimeUtc);
+
+            var startTime = DateTime.UtcNow.AddSeconds(-1); // A valid time in the past that we want to be our offical start time.  
             activity.SetStartTime(startTime);
 
             activity.Start();
-            Assert.Equal(startTime, activity.StartTimeUtc);
+            Assert.Equal(startTime, activity.StartTimeUtc); // we use our offical start time not the time now.  
+            Assert.Equal(TimeSpan.Zero, activity.Duration);
 
-            Assert.Throws<InvalidOperationException>(() => activity.SetEndTime(DateTime.Now));
+            Thread.Sleep(35);
+
+            activity.SetEndTime(DateTime.Now);      // Error does nothing because it is not UTC    
+            Assert.Equal(TimeSpan.Zero, activity.Duration);
+
             var stopTime = DateTime.UtcNow;
             activity.SetEndTime(stopTime);
             Assert.Equal(stopTime - startTime, activity.Duration);
@@ -271,7 +316,14 @@ namespace System.Diagnostics.Tests
             Assert.Equal(startTime, activity.StartTimeUtc);
 
             activity.Stop();
-            Assert.True(activity.Duration.TotalSeconds >= 1);
+
+            // DateTime.UtcNow is not precise on some platforms, but Activity stop time is precise
+            // in this test we set start time, but not stop time and check duration.
+            //
+            // Let's check that duration is 1sec - maximum DateTime.UtcNow error or bigger.
+            // There is another test (ActivityDateTimeTests.StartStopReturnsPreciseDuration) 
+            // that checks duration precision on netfx.
+            Assert.InRange(activity.Duration.TotalMilliseconds, 1000 - MaxClockErrorMSec, double.MaxValue);
         }
 
         /// <summary>
@@ -335,7 +387,10 @@ namespace System.Diagnostics.Tests
         {
             var activity = new Activity("activity");
             activity.Start();
-            Assert.Throws<InvalidOperationException>(() => activity.Start());
+            var id = activity.Id;
+
+            activity.Start();       // Error already started.  Does nothing.  
+            Assert.Equal(id, activity.Id);
         }
 
         /// <summary>
@@ -344,7 +399,9 @@ namespace System.Diagnostics.Tests
         [Fact]
         public void StopNotStarted()
         {
-            Assert.Throws<InvalidOperationException>(() => new Activity("activity").Stop());
+            var activity = new Activity("activity");
+            activity.Stop();        // Error Does Nothing
+            Assert.Equal(TimeSpan.Zero, activity.Duration);
         }
 
         /// <summary>
@@ -382,21 +439,25 @@ namespace System.Diagnostics.Tests
 
                     var activity = new Activity("activity");
 
+                    var startTime = DateTime.UtcNow;
                     // Test Activity.Start
                     source.StartActivity(activity, arguments);
+
                     Assert.Equal(activity.OperationName + ".Start", observer.EventName);
                     Assert.Equal(arguments, observer.EventObject);
-
                     Assert.NotNull(observer.Activity);
-                    Assert.True(DateTime.UtcNow - new TimeSpan(0, 1, 0) <= observer.Activity.StartTimeUtc);
-                    Assert.True(observer.Activity.StartTimeUtc <= DateTime.UtcNow);
-                    Assert.True(observer.Activity.Duration == TimeSpan.Zero);
+
+                    // We 'fix' DateTime on netfx to be precise; 
+                    // comparing Activity StartTime to potentially imprecise DateTime.UtcNow is not correct
+                    // this test does not intend fo check StartTime/Duration precision, so we allow anything within 20ms.
+                    Assert.InRange(observer.Activity.StartTimeUtc, startTime.AddMilliseconds(-1 * MaxClockErrorMSec), DateTime.MaxValue);
+                    Assert.InRange(observer.Activity.StartTimeUtc, DateTime.MinValue, DateTime.UtcNow.AddMilliseconds(MaxClockErrorMSec).AddTicks(-1));
+
+                    Assert.Equal(TimeSpan.Zero, observer.Activity.Duration);
 
                     observer.Reset();
 
-                    //DateTime.UtcNow is not precise on some platforms 
-                    //duration could be Zero if activity lasts less than 16ms
-                    Thread.Sleep(20);
+                    Thread.Sleep(100);
 
                     // Test Activity.Stop
                     source.StopActivity(activity, arguments);
@@ -405,8 +466,10 @@ namespace System.Diagnostics.Tests
 
                     // Confirm that duration is set. 
                     Assert.NotNull(observer.Activity);
-                    Assert.True(TimeSpan.Zero < observer.Activity.Duration);
-                    Assert.True(observer.Activity.StartTimeUtc + observer.Activity.Duration <= DateTime.UtcNow.AddTicks(1));
+                    Assert.InRange(observer.Activity.Duration, TimeSpan.FromTicks(1), TimeSpan.MaxValue);
+
+                    // let's only check that Duration is set in StopActivity, we do not intend to check precision here
+                    Assert.InRange(observer.Activity.StartTimeUtc + observer.Activity.Duration, DateTime.MinValue, DateTime.UtcNow.AddMilliseconds(2 * MaxClockErrorMSec));
                 } 
             }
         }
@@ -492,5 +555,7 @@ namespace System.Diagnostics.Tests
 
             public void OnError(Exception error) { }
         }
+
+        private const int MaxClockErrorMSec = 20;
     }
 }

@@ -416,10 +416,6 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
 	gboolean ret;
 	gint64 start;
 
-#if defined(__native_client__)
-	return FALSE;
-#endif
-
 	if (mono_thread_internal_current () == gc_thread)
 		/* We are called from inside a finalizer, not much we can do here */
 		return FALSE;
@@ -845,7 +841,9 @@ finalizer_thread (gpointer unused)
 	MonoError error;
 	gboolean wait = TRUE;
 
-	mono_thread_set_name_internal (mono_thread_internal_current (), mono_string_new (mono_get_root_domain (), "Finalizer"), FALSE, FALSE, &error);
+	MonoString *finalizer = mono_string_new_checked (mono_get_root_domain (), "Finalizer", &error);
+	mono_error_assert_ok (&error);
+	mono_thread_set_name_internal (mono_thread_internal_current (), finalizer, FALSE, FALSE, &error);
 	mono_error_assert_ok (&error);
 
 	/* Register a hazard free queue pump callback */

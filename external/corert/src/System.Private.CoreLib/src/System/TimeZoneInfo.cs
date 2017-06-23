@@ -231,6 +231,9 @@ namespace System
 
         internal static bool GetTimeZoneInfo(out TimeZoneInformation timeZoneInfo)
         {
+#if PLATFORM_UNIX
+            throw new NotImplementedException();
+#else
             TIME_DYNAMIC_ZONE_INFORMATION dtzi = new TIME_DYNAMIC_ZONE_INFORMATION();
             long result = Interop.mincore.GetDynamicTimeZoneInformation(out dtzi);
             if (result == Interop.mincore.TIME_ZONE_ID_INVALID)
@@ -242,6 +245,7 @@ namespace System
             timeZoneInfo = new TimeZoneInformation(dtzi);
 
             return true;
+#endif
         }
 
         private class OffsetAndRule
@@ -1775,7 +1779,7 @@ namespace System
         //
         // Helper function that converts a year and TransitionTime into a DateTime
         //
-        private static DateTime TransitionTimeToDateTime(Int32 year, TransitionTime transitionTime)
+        internal static DateTime TransitionTimeToDateTime(Int32 year, TransitionTime transitionTime)
         {
             DateTime value;
             DateTime timeOfDay = transitionTime.TimeOfDay;

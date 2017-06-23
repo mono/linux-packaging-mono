@@ -78,7 +78,7 @@
 #define TARGET_WIN32_MSVC
 #endif
 
-#if defined(__linux__) || defined(__native_client_codegen__)
+#if defined(__linux__)
 #define RODATA_SECT ".rodata"
 #elif defined(TARGET_MACH)
 #define RODATA_SECT ".section __TEXT, __const"
@@ -298,6 +298,7 @@ typedef struct MonoAotCompile {
 	guint32 label_generator;
 	gboolean llvm;
 	gboolean has_jitted_code;
+	gboolean is_full_aot;
 	MonoAotFileFlags flags;
 	MonoDynamicStream blob;
 	gboolean blob_closed;
@@ -438,7 +439,10 @@ report_loader_error (MonoAotCompile *acfg, MonoError *error, const char *format,
 	va_end (args);
 	mono_error_cleanup (error);
 
-	g_error ("FullAOT cannot continue if there are loader errors");
+	if (acfg->is_full_aot) {
+		fprintf (output, "FullAOT cannot continue if there are loader errors.\n");
+		exit (1);
+	}
 }
 
 /* Wrappers around the image writer functions */
@@ -949,10 +953,8 @@ emit_code_bytes (MonoAotCompile *acfg, const guint8* buf, int size)
 #ifdef TARGET_X86
 #ifdef TARGET_WIN32
 #define AOT_TARGET_STR "X86 (WIN32)"
-#elif defined(__native_client_codegen__)
-#define AOT_TARGET_STR "X86 (native client codegen)"
 #else
-#define AOT_TARGET_STR "X86 (!native client codegen)"
+#define AOT_TARGET_STR "X86"
 #endif
 #endif
 
@@ -6130,11 +6132,23 @@ emit_exception_debug_info (MonoAotCompile *acfg, MonoCompile *cfg, gboolean stor
 			clause = &header->clauses [k];
 
 			encode_value (clause->flags, p, &p);
-			if (clause->data.catch_class) {
-				encode_value (1, p, &p);
-				encode_klass_ref (acfg, clause->data.catch_class, p, &p);
-			} else {
-				encode_value (0, p, &p);
+			if (!(clause->flags == MONO_EXCEPTION_CLAUSE_FILTER || clause->flags == MONO_EXCEPTION_CLAUSE_FINALLY)) {
+				if (clause->data.catch_class) {
+					guint8 *buf2, *p2;
+					int len;
+
+					buf2 = (guint8 *)g_malloc (4096);
+					p2 = buf2;
+					encode_klass_ref (acfg, clause->data.catch_class, p2, &p2);
+					len = p2 - buf2;
+					g_assert (len < 4096);
+					encode_value (len, p, &p);
+					memcpy (p, buf2, len);
+					p += p2 - buf2;
+					g_free (buf2);
+				} else {
+					encode_value (0, p, &p);
+				}
 			}
 
 			/* Emit the IL ranges too, since they might not be available at runtime */
@@ -7613,11 +7627,9 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 		return;
 	}
 	if (cfg->exception_type != MONO_EXCEPTION_NONE) {
-		if (acfg->aot_opts.print_skipped_methods) {
-			printf ("Skip (JIT failure): %s\n", mono_method_get_full_name (method));
-			if (cfg->exception_message)
-				printf ("Caused by: %s\n", cfg->exception_message);
-		}
+		/* Some instances cannot be JITted due to constraints etc. */
+		if (!method->is_inflated)
+			report_loader_error (acfg, &cfg->error, "Unable to compile method '%s' due to: '%s'.\n", mono_method_get_full_name (method), mono_error_get_message (&cfg->error));
 		/* Let the exception happen at runtime */
 		return;
 	}
@@ -7917,7 +7929,9 @@ compile_thread_main (gpointer user_data)
 
 	MonoError error;
 	MonoInternalThread *internal = mono_thread_internal_current ();
-	mono_thread_set_name_internal (internal, mono_string_new (mono_domain_get (), "AOT compiler"), TRUE, FALSE, &error);
+	MonoString *str = mono_string_new_checked (mono_domain_get (), "AOT compiler", &error);
+	mono_error_assert_ok (&error);
+	mono_thread_set_name_internal (internal, str, TRUE, FALSE, &error);
 	mono_error_assert_ok (&error);
 
 	for (i = 0; i < methods->len; ++i)
@@ -10345,19 +10359,13 @@ compile_asm (MonoAotCompile *acfg)
 #define AS_OPTIONS "-a64 -mppc64"
 #elif defined(sparc) && SIZEOF_VOID_P == 8
 #define AS_OPTIONS "-xarch=v9"
-#elif defined(TARGET_X86) && defined(TARGET_MACH) && !defined(__native_client_codegen__)
+#elif defined(TARGET_X86) && defined(TARGET_MACH)
 #define AS_OPTIONS "-arch i386"
 #else
 #define AS_OPTIONS ""
 #endif
 
-#ifdef __native_client_codegen__
-#if defined(TARGET_AMD64)
-#define AS_NAME "nacl64-as"
-#else
-#define AS_NAME "nacl-as"
-#endif
-#elif defined(TARGET_OSX)
+#if defined(TARGET_OSX)
 #define AS_NAME "clang"
 #elif defined(TARGET_WIN32_MSVC)
 #define AS_NAME "clang.exe"
@@ -10386,7 +10394,7 @@ compile_asm (MonoAotCompile *acfg)
 #elif defined(TARGET_WIN32) && !defined(TARGET_ANDROID)
 #define LD_NAME "gcc"
 #define LD_OPTIONS "-shared"
-#elif defined(TARGET_X86) && defined(TARGET_MACH) && !defined(__native_client_codegen__)
+#elif defined(TARGET_X86) && defined(TARGET_MACH)
 #define LD_NAME "clang"
 #define LD_OPTIONS "-m32 -dynamiclib"
 #elif defined(TARGET_ARM) && !defined(TARGET_ANDROID)
@@ -11485,8 +11493,10 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 		}
 	}
 
-	if (mono_aot_mode_is_full (&acfg->aot_opts))
+	if (mono_aot_mode_is_full (&acfg->aot_opts)) {
 		acfg->flags = (MonoAotFileFlags)(acfg->flags | MONO_AOT_FILE_FLAG_FULL_AOT);
+		acfg->is_full_aot = TRUE;
+	}
 
 	if (mono_threads_is_coop_enabled ())
 		acfg->flags = (MonoAotFileFlags)(acfg->flags | MONO_AOT_FILE_FLAG_SAFEPOINTS);

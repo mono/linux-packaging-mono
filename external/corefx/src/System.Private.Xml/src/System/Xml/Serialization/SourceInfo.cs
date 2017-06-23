@@ -10,8 +10,12 @@ using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using System.Xml.Extensions;
 
-#if !uapaot
+#if !uap
+#if XMLSERIALIZERGENERATOR
+namespace Microsoft.XmlSerializer.Generator
+#else
 namespace System.Xml.Serialization
+#endif
 {
     internal class SourceInfo
     {

@@ -25,7 +25,7 @@ namespace Internal.TypeSystem
     /// Runtime determined types also behave like signature variables in the sense that they allow being
     /// substituted during signature instantiation.
     /// </remarks>
-    public sealed class RuntimeDeterminedType : DefType
+    public sealed partial class RuntimeDeterminedType : DefType
     {
         private DefType _rawCanonType;
         private GenericParameterDesc _runtimeDeterminedDetailsType;
@@ -156,7 +156,7 @@ namespace Internal.TypeSystem
             return String.Concat(_runtimeDeterminedDetailsType.ToString(), "_", _rawCanonType.ToString());
         }
 
-        public override TypeDesc InstantiateSignature(Instantiation typeInstantiation, Instantiation methodInstantiation)
+        public override TypeDesc GetNonRuntimeDeterminedTypeFromRuntimeDeterminedSubtypeViaSubstitution(Instantiation typeInstantiation, Instantiation methodInstantiation)
         {
             if (_runtimeDeterminedDetailsType.Kind == GenericParameterKind.Type)
             {

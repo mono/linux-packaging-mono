@@ -51,6 +51,14 @@ namespace Ildasm
 						{ "moduleref", v =>tableToDump = MetadataTableIndex.ModuleRef },
 						{ "exported", v =>tableToDump = MetadataTableIndex.ExportedType },
 						{ "customattr", v =>tableToDump = MetadataTableIndex.CustomAttribute },
+						{ "module", v => tableToDump = MetadataTableIndex.Module },
+						{ "document", v => tableToDump = MetadataTableIndex.Document },
+						{ "methoddebuginformation", v => tableToDump = MetadataTableIndex.MethodDebugInformation },
+						{ "localscope", v => tableToDump = MetadataTableIndex.LocalScope },
+						{ "localvariable", v => tableToDump = MetadataTableIndex.LocalVariable },
+						{ "localconstant", v => tableToDump = MetadataTableIndex.LocalConstant },
+						{ "importscope", v =>tableToDump = MetadataTableIndex.ImportScope },
+						{ "customdebuginfo", v => tableToDump = MetadataTableIndex.CustomDebugInformation },
 					};
 				args = p.Parse (args).ToArray ();
 				if (printUsage) {

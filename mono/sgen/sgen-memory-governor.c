@@ -20,10 +20,10 @@
 
 #include "mono/sgen/sgen-gc.h"
 #include "mono/sgen/sgen-memory-governor.h"
-#include "mono/sgen/sgen-thread-pool.h"
+#include "mono/sgen/sgen-workers.h"
 #include "mono/sgen/sgen-client.h"
 
-#define MIN_MINOR_COLLECTION_ALLOWANCE	((mword)(DEFAULT_NURSERY_SIZE * default_allowance_nursery_size_ratio))
+#define MIN_MINOR_COLLECTION_ALLOWANCE	((mword)(SGEN_DEFAULT_NURSERY_SIZE * default_allowance_nursery_size_ratio))
 
 static SgenPointerQueue log_entries = SGEN_POINTER_QUEUE_INIT (INTERNAL_MEM_TEMPORARY);
 static MonoCoopMutex log_entries_mutex;
@@ -459,7 +459,7 @@ gboolean
 sgen_memgov_try_alloc_space (mword size, int space)
 {
 	if (sgen_memgov_available_free_space () < size) {
-		SGEN_ASSERT (4, !sgen_thread_pool_is_thread_pool_thread (mono_native_thread_id_get ()), "Memory shouldn't run out in worker thread");
+		SGEN_ASSERT (4, !sgen_workers_is_worker_thread (mono_native_thread_id_get ()), "Memory shouldn't run out in worker thread");
 		return FALSE;
 	}
 
@@ -492,11 +492,11 @@ sgen_memgov_init (size_t max_heap, size_t soft_limit, gboolean debug_allowance, 
 		max_heap = soft_limit;
 	}
 
-	if (max_heap < sgen_nursery_size * 4) {
+	if (max_heap < SGEN_DEFAULT_NURSERY_SIZE * 4) {
 		sgen_env_var_error (MONO_GC_PARAMS_NAME, "Setting to minimum.", "`max-heap-size` must be at least 4 times as large as `nursery size`.");
-		max_heap = sgen_nursery_size * 4;
+		max_heap = SGEN_DEFAULT_NURSERY_SIZE * 4;
 	}
-	max_heap_size = max_heap - sgen_nursery_size;
+	max_heap_size = max_heap - SGEN_DEFAULT_NURSERY_SIZE;
 
 	if (allowance_ratio)
 		default_allowance_nursery_size_ratio = allowance_ratio;

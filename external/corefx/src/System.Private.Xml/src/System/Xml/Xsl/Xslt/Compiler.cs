@@ -13,8 +13,8 @@ using System.Runtime.Versioning;
 namespace System.Xml.Xsl.Xslt
 {
     using TypeFactory = XmlQueryTypeFactory;
-#if DEBUG
-    using XmlILTrace    = System.Xml.Xsl.IlGen.XmlILTrace;
+#if DEBUG && !uap
+    using XmlILTrace = System.Xml.Xsl.IlGen.XmlILTrace;
 #endif
 
     internal enum XslVersion

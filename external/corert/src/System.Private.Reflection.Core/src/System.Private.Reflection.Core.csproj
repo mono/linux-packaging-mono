@@ -10,9 +10,6 @@
     <OutputType>Library</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(IsProjectNLibrary)' != 'true'">
-    <DefineConstants>CORERT;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(IsProjectNLibrary)' == 'true'">
     <DefineConstants>ENABLE_REFLECTION_TRACE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
@@ -27,22 +24,18 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ReferencePath Include="$(AotPackageReferencePath)\System.Runtime.dll" />
-    <ReferencePath Include="$(AotPackageReferencePath)\System.Diagnostics.Tracing.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\System.Private.Interop\src\System.Private.Interop.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsProjectNLibrary)' != 'true'">
-    <!-- TODO: We should always include this -->
     <ProjectReference Include="..\..\System.Private.CoreLib\src\System.Private.CoreLib.csproj" />
+    <ProjectReference Include="..\..\System.Private.Interop\src\System.Private.Interop.csproj" />
     <ProjectReference Include="..\..\System.Private.Reflection.Metadata\src\System.Private.Reflection.Metadata.csproj" />
-    <ReferencePath Condition="'$(EcmaMetadataSupport)' == 'true'" Include="$(EcmaMetadataDllPath)\System.Private.Reflection.Metadata.Ecma335.dll" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsProjectNLibrary)' != 'true' and '$(EcmaMetadataSupport)' != 'true'">
     <ProjectReference Include="..\..\System.Private.TypeLoader\src\System.Private.TypeLoader.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsProjectNLibrary)' != 'true' and '$(EcmaMetadataSupport)' == 'true'">
     <ProjectReference Include="..\..\System.Private.TypeLoader\src\System.Private.TypeLoader.Experimental.csproj" />
+    <ReferencePath Include="$(EcmaMetadataDllPath)\System.Private.Reflection.Metadata.Ecma335.dll" />
   </ItemGroup>
   <ItemGroup Condition="'$(EcmaMetadataSupport)' == 'true'">
     <Compile Include="System\Reflection\Runtime\Assemblies\EcmaFormat\EcmaFormatRuntimeAssembly.cs" />
@@ -52,6 +45,7 @@
     <Compile Include="System\Reflection\Runtime\EventInfos\EcmaFormat\EcmaFormatRuntimeEventInfo.cs" />
     <Compile Include="System\Reflection\Runtime\FieldInfos\EcmaFormat\EcmaFormatRuntimeFieldInfo.cs" />
     <Compile Include="System\Reflection\Runtime\MethodInfos\EcmaFormat\EcmaFormatMethodCommon.cs" />
+    <Compile Include="System\Reflection\Runtime\Modules\EcmaFormat\EcmaFormatRuntimeModule.cs" />
     <Compile Include="System\Reflection\Runtime\ParameterInfos\EcmaFormat\EcmaFormatMethodParameterInfo.cs" />
     <Compile Include="System\Reflection\Runtime\PropertyInfos\EcmaFormat\EcmaFormatRuntimePropertyInfo.cs" />
     <Compile Include="System\Reflection\Runtime\TypeInfos\EcmaFormat\EcmaFormatRuntimeGenericParameterTypeInfo.cs" />
@@ -118,6 +112,7 @@
     <Compile Include="System\Reflection\Runtime\General\ReflectionCoreCallbacksImplementation.cs" />
     <Compile Include="System\Reflection\Runtime\General\Dispensers.cs" />
     <Compile Include="System\Reflection\Runtime\General\Helpers.cs" />
+    <Compile Include="System\Reflection\Runtime\General\IRuntimeMemberInfoWithNoMetadataDefinition.cs" />
     <Compile Include="System\Reflection\Runtime\General\LegacyCustomAttributeApis.cs" />
     <Compile Include="System\Reflection\Runtime\General\ListBuilder.cs" />
     <Compile Include="System\Reflection\Runtime\General\MetadataReaderExtensions.NativeFormat.cs" />
@@ -150,6 +145,7 @@
     <Compile Include="System\Reflection\Runtime\MethodInfos\SyntheticMethodId.cs" />
     <Compile Include="System\Reflection\Runtime\MethodInfos\VirtualRuntimeParameterInfoArray.cs" />
     <Compile Include="System\Reflection\Runtime\Modules\RuntimeModule.cs" />
+    <Compile Include="System\Reflection\Runtime\Modules\NativeFormat\NativeFormatRuntimeModule.cs" />
     <Compile Include="System\Reflection\Runtime\ParameterInfos\NativeFormat\NativeFormatMethodParameterInfo.cs" />
     <Compile Include="System\Reflection\Runtime\ParameterInfos\RuntimeMethodParameterInfo.cs" />
     <Compile Include="System\Reflection\Runtime\ParameterInfos\RuntimeParameterInfo.cs" />
@@ -180,6 +176,7 @@
     <Compile Include="System\Reflection\Runtime\TypeInfos\RuntimeNoMetadataNamedTypeInfo.cs" />
     <Compile Include="System\Reflection\Runtime\TypeInfos\RuntimePointerTypeInfo.cs" />
     <Compile Include="System\Reflection\Runtime\TypeInfos\RuntimeBlockedTypeInfo.cs" />
+    <Compile Include="System\Reflection\Runtime\TypeInfos\RuntimeTypeDefinitionTypeInfo.cs" />
     <Compile Include="System\Reflection\Runtime\TypeInfos\RuntimeTypeInfo.cs" />
     <Compile Include="System\Reflection\Runtime\TypeInfos\RuntimeTypeInfo.GetMember.cs" />
     <Compile Include="System\Reflection\Runtime\TypeInfos\RuntimeTypeInfo.BindingFlags.cs" />
@@ -255,6 +252,9 @@
     </Compile>
     <Compile Include="..\..\Common\src\System\Runtime\CompilerServices\DeveloperExperienceState.cs">
       <Link>System\Runtime\CompilerServices\DeveloperExperienceState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\System\Runtime\CompilerServices\__BlockReflectionAttribute.cs" Condition="'$(IsProjectNLibrary)' != 'true'">
+      <Link>System\Runtime\CompilerServices\__BlockReflectionAttribute.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

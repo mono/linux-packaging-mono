@@ -732,9 +732,11 @@ namespace System.Net.WebSockets
             }
             catch (Exception exc)
             {
-                throw _state == WebSocketState.Aborted ?
-                    new WebSocketException(WebSocketError.InvalidState, SR.Format(SR.net_WebSockets_InvalidState_ClosedOrAborted, "System.Net.WebSockets.InternalClientWebSocket", "Aborted"), exc) :
-                    new WebSocketException(WebSocketError.ConnectionClosedPrematurely, exc);
+                if (_state == WebSocketState.Aborted)
+                {
+                    throw new OperationCanceledException(nameof(WebSocketState.Aborted), exc);
+                }
+                throw new WebSocketException(WebSocketError.ConnectionClosedPrematurely, exc);
             }
             finally
             {
@@ -1205,7 +1207,7 @@ namespace System.Net.WebSockets
         {
             int maskShift = maskIndex * 8;
             int shiftedMask = (int)(((uint)mask >> maskShift) | ((uint)mask << (32 - maskShift)));
-#if MONO_FEATUR_SIMD
+#if MONO_FEATURE_SIMD
             // Try to use SIMD.  We can if the number of bytes we're trying to mask is at least as much
             // as the width of a vector and if the width is an even multiple of the mask.
             if (Vector.IsHardwareAccelerated &&

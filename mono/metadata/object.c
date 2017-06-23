@@ -1968,7 +1968,6 @@ mono_class_create_runtime_vtable (MonoDomain *domain, MonoClass *klass, MonoErro
 			/*g_print ("bitmap 0x%x for %s.%s (size: %d)\n", bitmap [0], klass->name_space, klass->name, class_size);*/
 			statics_gc_descr = mono_gc_make_descr_from_bitmap (bitmap, max_set + 1);
 			vt->vtable [klass->vtable_size] = mono_gc_alloc_fixed (class_size, statics_gc_descr, MONO_ROOT_SOURCE_STATIC, "managed static variables");
-			mono_domain_add_class_static_data (domain, klass, vt->vtable [klass->vtable_size], NULL);
 			if (bitmap != default_bitmap)
 				g_free (bitmap);
 		} else {
@@ -3979,8 +3978,11 @@ mono_runtime_get_main_args_checked (MonoError *error)
 	res = (MonoArray*)mono_array_new_checked (domain, mono_defaults.string_class, num_main_args, error);
 	return_val_if_nok (error, NULL);
 
-	for (i = 0; i < num_main_args; ++i)
-		mono_array_setref (res, i, mono_string_new (domain, main_args [i]));
+	for (i = 0; i < num_main_args; ++i) {
+		MonoString *arg = mono_string_new_checked (domain, main_args [i], error);
+		return_val_if_nok (error, NULL);
+		mono_array_setref (res, i, arg);
+	}
 
 	return res;
 }
@@ -4120,7 +4122,8 @@ prepare_run_main (MonoMethod *method, int argc, char *argv[])
 			 * main_args array.
 			 */
 			gchar *str = mono_utf8_from_external (argv [i]);
-			MonoString *arg = mono_string_new (domain, str);
+			MonoString *arg = mono_string_new_checked (domain, str, &error);
+			mono_error_assert_ok (&error);
 			mono_array_setref (args, i, arg);
 			g_free (str);
 		}
@@ -4487,16 +4490,41 @@ mono_runtime_unhandled_exception_policy_get (void) {
  * a warning to the console 
  */
 void
-mono_unhandled_exception (MonoObject *exc)
+mono_unhandled_exception (MonoObject *exc_raw)
+{
+	MonoError error;
+	HANDLE_FUNCTION_ENTER ();
+	MONO_HANDLE_DCL (MonoObject, exc);
+	error_init (&error);
+	mono_unhandled_exception_checked (exc, &error);
+	mono_error_assert_ok (&error);
+	HANDLE_FUNCTION_RETURN ();
+}
+
+/**
+ * mono_unhandled_exception:
+ * @exc: exception thrown
+ *
+ * This is a VM internal routine.
+ *
+ * We call this function when we detect an unhandled exception
+ * in the default domain.
+ *
+ * It invokes the * UnhandledException event in AppDomain or prints
+ * a warning to the console 
+ */
+void
+mono_unhandled_exception_checked (MonoObjectHandle exc, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-	MonoError error;
+	error_init (error);
 	MonoClassField *field;
 	MonoDomain *current_domain, *root_domain;
-	MonoObject *current_appdomain_delegate = NULL, *root_appdomain_delegate = NULL;
+	MonoObjectHandle current_appdomain_delegate = MONO_HANDLE_NEW (MonoObject, NULL);
 
-	if (mono_class_has_parent (exc->vtable->klass, mono_defaults.threadabortexception_class))
+	MonoClass *klass = mono_handle_class (exc);
+	if (mono_class_has_parent (klass, mono_defaults.threadabortexception_class))
 		return;
 
 	field = mono_class_get_field_from_name (mono_defaults.appdomain_class, "UnhandledException");
@@ -4505,22 +4533,22 @@ mono_unhandled_exception (MonoObject *exc)
 	current_domain = mono_domain_get ();
 	root_domain = mono_get_root_domain ();
 
-	root_appdomain_delegate = mono_field_get_value_object_checked (root_domain, field, (MonoObject*) root_domain->domain, &error);
-	mono_error_assert_ok (&error);
+	MonoObjectHandle root_appdomain_delegate = MONO_HANDLE_NEW (MonoObject, mono_field_get_value_object_checked (root_domain, field, (MonoObject*) root_domain->domain, error)); /* FIXME use handles for mono_field_get_value_object_checked */
+	return_if_nok (error);
 	if (current_domain != root_domain) {
-		current_appdomain_delegate = mono_field_get_value_object_checked (current_domain, field, (MonoObject*) current_domain->domain, &error);
-		mono_error_assert_ok (&error);
+		MONO_HANDLE_ASSIGN (current_appdomain_delegate, MONO_HANDLE_NEW (MonoObject, mono_field_get_value_object_checked (current_domain, field, (MonoObject*) current_domain->domain, error))); /* FIXME use handles for mono_field_get_value_object_checked */
+		return_if_nok (error);
 	}
 
-	if (!current_appdomain_delegate && !root_appdomain_delegate) {
-		mono_print_unhandled_exception (exc);
+	if (MONO_HANDLE_IS_NULL (current_appdomain_delegate) && MONO_HANDLE_IS_NULL (root_appdomain_delegate)) {
+		mono_print_unhandled_exception (MONO_HANDLE_RAW (exc)); /* FIXME use handles for mono_print_unhandled_exception */
 	} else {
 		/* unhandled exception callbacks must not be aborted */
 		mono_threads_begin_abort_protected_block ();
-		if (root_appdomain_delegate)
-			call_unhandled_exception_delegate (root_domain, root_appdomain_delegate, exc);
-		if (current_appdomain_delegate)
-			call_unhandled_exception_delegate (current_domain, current_appdomain_delegate, exc);
+		if (!MONO_HANDLE_IS_NULL (root_appdomain_delegate))
+			call_unhandled_exception_delegate (root_domain, MONO_HANDLE_RAW (root_appdomain_delegate), MONO_HANDLE_RAW (exc)); /* FIXME use handles in call_unhandled_exception_delegate */
+		if (!MONO_HANDLE_IS_NULL (current_appdomain_delegate))
+			call_unhandled_exception_delegate (current_domain, MONO_HANDLE_RAW (current_appdomain_delegate), MONO_HANDLE_RAW (exc));
 		mono_threads_end_abort_protected_block ();
 	}
 
@@ -4568,18 +4596,23 @@ prepare_thread_to_exec_main (MonoDomain *domain, MonoMethod *method)
 
 	if (!domain->entry_assembly) {
 		gchar *str;
+		MonoError error;
 		MonoAssembly *assembly;
 
 		assembly = method->klass->image->assembly;
 		domain->entry_assembly = assembly;
 		/* Domains created from another domain already have application_base and configuration_file set */
 		if (domain->setup->application_base == NULL) {
-			MONO_OBJECT_SETREF (domain->setup, application_base, mono_string_new (domain, assembly->basedir));
+			MonoString *basedir = mono_string_new_checked (domain, assembly->basedir, &error);
+			mono_error_assert_ok (&error);
+			MONO_OBJECT_SETREF (domain->setup, application_base, basedir);
 		}
 
 		if (domain->setup->configuration_file == NULL) {
 			str = g_strconcat (assembly->image->name, ".config", NULL);
-			MONO_OBJECT_SETREF (domain->setup, configuration_file, mono_string_new (domain, str));
+			MonoString *config_file = mono_string_new_checked (domain, str, &error);
+			mono_error_assert_ok (&error);
+			MONO_OBJECT_SETREF (domain->setup, configuration_file, config_file);
 			g_free (str);
 			mono_domain_set_options_from_config (domain);
 		}
@@ -6170,24 +6203,25 @@ mono_string_new_checked (MonoDomain *domain, const char *text, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
-    GError *eg_error = NULL;
-    MonoString *o = NULL;
-    guint16 *ut;
-    glong items_written;
-    int l;
+	GError *eg_error = NULL;
+	MonoString *o = NULL;
+	guint16 *ut;
+	glong items_written;
+	int l;
 
-    error_init (error);
-
-    l = strlen (text);
-   
-    ut = g_utf8_to_utf16 (text, l, NULL, &items_written, &eg_error);
-
-    if (!eg_error)
-	    o = mono_string_new_utf16_checked (domain, ut, items_written, error);
-    else
-        g_error_free (eg_error);
-
-    g_free (ut);
+	error_init (error);
+	
+	l = strlen (text);
+	
+	ut = g_utf8_to_utf16 (text, l, NULL, &items_written, &eg_error);
+	
+	if (!eg_error) {
+		o = mono_string_new_utf16_checked (domain, ut, items_written, error);
+	} else {
+		mono_error_set_execution_engine (error, "String conversion error: %s", eg_error->message);
+	}
+	
+	g_free (ut);
     
 /*FIXME g_utf8_get_char, g_utf8_next_char and g_utf8_validate are not part of eglib.*/
 #if 0
@@ -6229,8 +6263,12 @@ mono_string_new_wrapper (const char *text)
 
 	MonoDomain *domain = mono_domain_get ();
 
-	if (text)
-		return mono_string_new (domain, text);
+	if (text) {
+		MonoError error;
+		MonoString *result = mono_string_new_checked (domain, text, &error);
+		mono_error_assert_ok (&error);
+		return result;
+	}
 
 	return NULL;
 }
@@ -7779,43 +7817,44 @@ mono_print_unhandled_exception (MonoObject *exc)
  * On failure returns FALSE and sets \p error.
  */
 gboolean
-mono_delegate_ctor_with_method (MonoObject *this_obj, MonoObject *target, gpointer addr, MonoMethod *method, MonoError *error)
+mono_delegate_ctor_with_method (MonoObjectHandle this_obj, MonoObjectHandle target, gpointer addr, MonoMethod *method, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
 	error_init (error);
-	MonoDelegate *delegate = (MonoDelegate *)this_obj;
+	MonoDelegateHandle delegate = MONO_HANDLE_CAST (MonoDelegate, this_obj);
 
-	g_assert (this_obj);
+	g_assert (!MONO_HANDLE_IS_NULL (this_obj));
 	g_assert (addr);
 
-	g_assert (mono_class_has_parent (mono_object_class (this_obj), mono_defaults.multicastdelegate_class));
+	MonoClass *klass = mono_handle_class (this_obj);
+	g_assert (mono_class_has_parent (klass, mono_defaults.multicastdelegate_class));
 
 	if (method)
-		delegate->method = method;
+		MONO_HANDLE_SETVAL (delegate, method, MonoMethod*, method);
 
 	mono_stats.delegate_creations++;
 
 #ifndef DISABLE_REMOTING
-	if (target && mono_object_is_transparent_proxy (target)) {
+	if (!MONO_HANDLE_IS_NULL (target) && mono_class_is_transparent_proxy (mono_handle_class (target))) {
 		g_assert (method);
 		method = mono_marshal_get_remoting_invoke (method);
 #ifdef ENABLE_INTERPRETER
-		g_error ("need RuntimeMethod in method_ptr when using interpreter");
+		//g_error ("need RuntimeMethod in method_ptr when using interpreter");
 #endif
-		delegate->method_ptr = mono_compile_method_checked (method, error);
+		MONO_HANDLE_SETVAL (delegate, method_ptr, gpointer, mono_compile_method_checked (method, error));
 		return_val_if_nok (error, FALSE);
-		MONO_OBJECT_SETREF (delegate, target, target);
+		MONO_HANDLE_SET (delegate, target, target);
 	} else
 #endif
 	{
-		delegate->method_ptr = addr;
-		MONO_OBJECT_SETREF (delegate, target, target);
+		MONO_HANDLE_SETVAL (delegate, method_ptr, gpointer, addr);
+		MONO_HANDLE_SET (delegate, target, target);
 	}
 
-	delegate->invoke_impl = callbacks.create_delegate_trampoline (delegate->object.vtable->domain, delegate->object.vtable->klass);
+	MONO_HANDLE_SETVAL (delegate, invoke_impl, gpointer, callbacks.create_delegate_trampoline (MONO_HANDLE_DOMAIN (delegate), mono_handle_class (delegate)));
 	if (callbacks.init_delegate)
-		callbacks.init_delegate (delegate);
+		callbacks.init_delegate (MONO_HANDLE_RAW (delegate)); /* FIXME: update init_delegate callback to take a MonoDelegateHandle */
 	return TRUE;
 }
 
@@ -7829,7 +7868,7 @@ mono_delegate_ctor_with_method (MonoObject *this_obj, MonoObject *target, gpoint
  * On failure returns FALSE and sets \p error.
  */
 gboolean
-mono_delegate_ctor (MonoObject *this_obj, MonoObject *target, gpointer addr, MonoError *error)
+mono_delegate_ctor (MonoObjectHandle this_obj, MonoObjectHandle target, gpointer addr, MonoError *error)
 {
 	MONO_REQ_GC_UNSAFE_MODE;
 
@@ -8061,9 +8100,13 @@ mono_load_remote_field_checked (MonoObject *this_obj, MonoClass *klass, MonoClas
 	return_val_if_nok (error, NULL);
 
 	full_name = mono_type_get_full_name (klass);
-	mono_array_setref (msg->args, 0, mono_string_new (domain, full_name));
-	mono_array_setref (msg->args, 1, mono_string_new (domain, mono_field_get_name (field)));
+	MonoString *full_name_str = mono_string_new_checked (domain, full_name, error);
 	g_free (full_name);
+	return_val_if_nok (error, NULL);
+	mono_array_setref (msg->args, 0, full_name_str);
+	MonoString *field_name = mono_string_new_checked (domain, mono_field_get_name (field), error);
+	return_val_if_nok (error, NULL);
+	mono_array_setref (msg->args, 1, field_name);
 
 	mono_remoting_invoke ((MonoObject *)(tp->rp), msg, &exc, &out_args, error);
 	return_val_if_nok (error, NULL);

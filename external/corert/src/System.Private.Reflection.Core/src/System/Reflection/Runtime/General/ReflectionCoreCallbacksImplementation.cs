@@ -160,11 +160,15 @@ namespace System.Reflection.Runtime.General
             return NativeFormatRuntimeFieldInfo.GetRuntimeFieldInfo(fieldHandle, definingTypeInfo, contextTypeInfo, reflectedType);
         }
 
+        [DebuggerHidden]
+        [DebuggerStepThrough]
         public sealed override object ActivatorCreateInstance(Type type, bool nonPublic)
         {
             return ActivatorImplementation.CreateInstance(type, nonPublic);
         }
 
+        [DebuggerHidden]
+        [DebuggerStepThrough]
         public sealed override object ActivatorCreateInstance(Type type, BindingFlags bindingAttr, Binder binder, object[] args, CultureInfo culture, object[] activationAttributes)
         {
             return ActivatorImplementation.CreateInstance(type, bindingAttr, binder, args, culture, activationAttributes);
@@ -353,7 +357,7 @@ namespace System.Reflection.Runtime.General
             if (flds.Length == 0)
                 throw new ArgumentException(SR.Arg_ArrayZeroError);
 
-            offset = RuntimeAugments.ObjectHeaderSize;
+            offset = 0;
             Type targetType = target.GetType();
             for (int i = 0; i < flds.Length; i++)
             {
@@ -381,5 +385,7 @@ namespace System.Reflection.Runtime.General
 
             type = targetType;
         }
+
+        public sealed override Assembly[] GetLoadedAssemblies() => RuntimeAssembly.GetLoadedAssemblies();
     }
 }

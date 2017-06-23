@@ -1602,6 +1602,11 @@ mono_class_setup_fields (MonoClass *klass)
 			g_assert (field->type);
 		}
 
+		if (!mono_type_get_underlying_type (field->type)) {
+			mono_class_set_type_load_failure (klass, "Field '%s' is an enum type with a bad underlying type", field->name);
+			break;
+		}
+
 		if (mono_field_is_deleted (field))
 			continue;
 		if (layout == TYPE_ATTRIBUTE_EXPLICIT_LAYOUT) {
@@ -1626,8 +1631,7 @@ mono_class_setup_fields (MonoClass *klass)
 			char *class_name = mono_type_get_full_name (klass);
 			char *type_name = mono_type_full_name (field->type);
 
-			mono_class_set_type_load_failure (klass, "");
-			g_warning ("Invalid type %s for instance field %s:%s", type_name, class_name, field->name);
+			mono_class_set_type_load_failure (klass, "Invalid type %s for instance field %s:%s", type_name, class_name, field->name);
 			g_free (class_name);
 			g_free (type_name);
 			break;
@@ -10045,7 +10049,7 @@ can_access_internals (MonoAssembly *accessing, MonoAssembly* accessed)
 		/* Be conservative with checks */
 		if (!friend_->name)
 			continue;
-		if (strcmp (accessing->aname.name, friend_->name))
+		if (g_ascii_strcasecmp (accessing->aname.name, friend_->name))
 			continue;
 		if (friend_->public_key_token [0]) {
 			if (!accessing->aname.public_key_token [0])

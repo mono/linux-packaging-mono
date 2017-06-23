@@ -64,8 +64,7 @@ namespace System.Reflection.Runtime.MethodInfos.NativeFormat
         {
             get
             {
-                NativeFormatRuntimeNamedTypeInfo genericTypeDefinition = DeclaringType.GetGenericTypeDefinition().CastToNativeFormatRuntimeNamedTypeInfo();
-                return new NativeFormatMethodCommon(MethodHandle, genericTypeDefinition, genericTypeDefinition);
+                return new NativeFormatMethodCommon(MethodHandle, _definingTypeInfo, _definingTypeInfo);
             }
         }
 
@@ -209,11 +208,19 @@ namespace System.Reflection.Runtime.MethodInfos.NativeFormat
 
         public RuntimeMethodHandle GetRuntimeMethodHandle(Type[] genericArgs)
         {
-            Debug.Assert(genericArgs != null);
+            Debug.Assert(genericArgs == null || genericArgs.Length > 0);
 
-            RuntimeTypeHandle[] genericArgHandles = new RuntimeTypeHandle[genericArgs.Length];
-            for (int i = 0; i < genericArgHandles.Length; i++)
-                genericArgHandles[i] = genericArgs[i].TypeHandle;
+            RuntimeTypeHandle[] genericArgHandles;
+            if (genericArgs != null)
+            {
+                genericArgHandles = new RuntimeTypeHandle[genericArgs.Length];
+                for (int i = 0; i < genericArgHandles.Length; i++)
+                    genericArgHandles[i] = genericArgs[i].TypeHandle;
+            }
+            else
+            {
+                genericArgHandles = null;
+            }
 
             TypeManagerHandle typeManager = TypeLoaderEnvironment.Instance.ModuleList.GetModuleForMetadataReader(Reader);
 
@@ -302,6 +309,17 @@ namespace System.Reflection.Runtime.MethodInfos.NativeFormat
             {
                 return _methodHandle;
             }
+        }
+
+        public bool HasSameMetadataDefinitionAs(NativeFormatMethodCommon other)
+        {
+            if (!(_reader == other._reader))
+                return false;
+            if (!(_methodHandle.Equals(other._methodHandle)))
+                return false;
+            if (!(_definingTypeInfo.Equals(other._definingTypeInfo)))
+                return false;
+            return true;
         }
 
         public override bool Equals(Object obj)

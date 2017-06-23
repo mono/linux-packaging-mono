@@ -16,7 +16,7 @@ namespace ILCompiler.DependencyAnalysis
     /// <summary>
     /// Represents a map between reflection metadata and native field offsets.
     /// </summary>
-    internal sealed class ReflectionFieldMapNode : ObjectNode, ISymbolNode
+    internal sealed class ReflectionFieldMapNode : ObjectNode, ISymbolDefinitionNode
     {
         private ObjectAndOffsetSymbolNode _endSymbol;
         private ExternalReferencesTableNode _externalReferences;
@@ -43,11 +43,38 @@ namespace ILCompiler.DependencyAnalysis
 
         protected override string GetName(NodeFactory factory) => this.GetMangledName(factory.NameMangler);
 
+        /// <summary>
+        /// Helper method to compute the dependencies that would be needed for reflection field lookup.
+        /// </summary>
+        public static void AddReflectionFieldMapEntryDependencies(ref DependencyList dependencies, NodeFactory factory, TypeDesc type)
+        {
+            // TODO: https://github.com/dotnet/corert/issues/3224
+            // Reflection static field bases handling is here because in the current reflection model we reflection-enable
+            // all fields of types that are compiled. Ideally the list of reflection enabled fields should be known before
+            // we even start the compilation process (with the static bases being compilation roots like any other).
+            if (type is MetadataType && !type.HasInstantiation && !type.IsCanonicalSubtype(CanonicalFormKind.Any))
+            {
+                MetadataType metadataType = (MetadataType)type;
+
+                if (metadataType.GCStaticFieldSize.AsInt > 0)
+                {
+                    dependencies.Add(factory.TypeGCStaticsSymbol(metadataType), "GC statics for ReflectionFieldMap entry");
+                }
+
+                if (metadataType.NonGCStaticFieldSize.AsInt > 0)
+                {
+                    dependencies.Add(factory.TypeNonGCStaticsSymbol(metadataType), "Non-GC statics for ReflectionFieldMap entry");
+                }
+
+                // TODO: TLS dependencies
+            }
+        }
+
         public override ObjectData GetData(NodeFactory factory, bool relocsOnly = false)
         {
             // This node does not trigger generation of other nodes.
             if (relocsOnly)
-                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolNode[] { this });
+                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this });
 
             var writer = new NativeWriter();
             var fieldMapHashTable = new VertexHashtable();
@@ -82,8 +109,8 @@ namespace ILCompiler.DependencyAnalysis
                     flags = FieldTableFlags.Instance | FieldTableFlags.FieldOffsetEncodedDirectly;
                 }
 
-                // TODO: support emitting field info without a handle for generics in multifile
-                flags |= FieldTableFlags.HasMetadataHandle;
+                if (fieldMapping.MetadataHandle != 0)
+                    flags |= FieldTableFlags.HasMetadataHandle;
 
                 if (field.OwningType.IsCanonicalSubtype(CanonicalFormKind.Universal))
                     flags |= FieldTableFlags.IsUniversalCanonicalEntry;
@@ -105,12 +132,15 @@ namespace ILCompiler.DependencyAnalysis
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    // No metadata handle means we need to store name
+                    vertex = writer.GetTuple(vertex,
+                        writer.GetStringConstant(field.Name));
                 }
 
                 if ((flags & FieldTableFlags.IsUniversalCanonicalEntry) != 0)
                 {
-                    throw new NotImplementedException();
+                    // TODO: USG
+                    continue;
                 }
                 else
                 {
@@ -130,17 +160,13 @@ namespace ILCompiler.DependencyAnalysis
                                 {
                                     MetadataType metadataType = (MetadataType)field.OwningType;
 
-                                    int cctorOffset = 0;
-                                    if (!field.HasGCStaticBase && factory.TypeSystemContext.HasLazyStaticConstructor(metadataType))
-                                        cctorOffset += NonGCStaticsNode.GetClassConstructorContextStorageSize(factory.TypeSystemContext.Target, metadataType);
-
                                     ISymbolNode staticsNode = field.HasGCStaticBase ?
                                         factory.TypeGCStaticsSymbol(metadataType) :
                                         factory.TypeNonGCStaticsSymbol(metadataType);
 
                                     if (!field.HasGCStaticBase || factory.Target.Abi == TargetAbi.ProjectN)
                                     {
-                                        uint index = _externalReferences.GetIndex(staticsNode, field.Offset.AsInt + cctorOffset);
+                                        uint index = _externalReferences.GetIndex(staticsNode, field.Offset.AsInt);
                                         vertex = writer.GetTuple(vertex, writer.GetUnsignedConstant(index));
                                     }
                                     else
@@ -149,7 +175,7 @@ namespace ILCompiler.DependencyAnalysis
 
                                         uint index = _externalReferences.GetIndex(staticsNode);
                                         vertex = writer.GetTuple(vertex, writer.GetUnsignedConstant(index));
-                                        vertex = writer.GetTuple(vertex, writer.GetUnsignedConstant((uint)(field.Offset.AsInt + cctorOffset)));
+                                        vertex = writer.GetTuple(vertex, writer.GetUnsignedConstant((uint)(field.Offset.AsInt)));
                                     }
                                 }
                             }
@@ -169,7 +195,7 @@ namespace ILCompiler.DependencyAnalysis
 
             _endSymbol.SetSymbolOffset(hashTableBytes.Length);
 
-            return new ObjectData(hashTableBytes, Array.Empty<Relocation>(), 1, new ISymbolNode[] { this, _endSymbol });
+            return new ObjectData(hashTableBytes, Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this, _endSymbol });
         }
     }
 }

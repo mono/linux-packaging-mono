@@ -31,6 +31,26 @@ namespace Internal.Runtime.Augments
             _stopped = new ManualResetEvent(false);
         }
 
+        /// <summary>
+        /// Callers must ensure to clear and return the array after use
+        /// </summary>
+        internal SafeWaitHandle[] RentWaitedSafeWaitHandleArray(int requiredCapacity)
+        {
+            Debug.Assert(this == CurrentThread);
+            Debug.Assert(!ReentrantWaitsEnabled); // due to this, no need to actually rent and return the array
+
+            _waitedSafeWaitHandles.VerifyElementsAreDefault();
+            _waitedSafeWaitHandles.EnsureCapacity(requiredCapacity);
+            return _waitedSafeWaitHandles.Items;
+        }
+
+        internal void ReturnWaitedSafeWaitHandleArray(SafeWaitHandle[] waitedSafeWaitHandles)
+        {
+            Debug.Assert(this == CurrentThread);
+            Debug.Assert(!ReentrantWaitsEnabled); // due to this, no need to actually rent and return the array
+            Debug.Assert(waitedSafeWaitHandles == _waitedSafeWaitHandles.Items);
+        }
+
         private ThreadPriority GetPriorityLive()
         {
             return ThreadPriority.Normal;
@@ -99,7 +119,7 @@ namespace Internal.Runtime.Augments
             _stopped = new ManualResetEvent(false);
 
             if (!Interop.Sys.RuntimeThread_CreateThread((IntPtr)_maxStackSize,
-                AddrofIntrinsics.AddrOf<Interop.Sys.ThreadProc>(StartThread), (IntPtr)thisThreadHandle))
+                AddrofIntrinsics.AddrOf<Interop.Sys.ThreadProc>(ThreadEntryPoint), (IntPtr)thisThreadHandle))
             {
                 return false;
             }
@@ -108,6 +128,16 @@ namespace Internal.Runtime.Augments
             SetPriorityLive(_priority);
 
             return true;
+        }
+
+        /// <summary>
+        /// This an entry point for managed threads created by applicatoin
+        /// </summary>
+        [NativeCallable]
+        private static IntPtr ThreadEntryPoint(IntPtr parameter)
+        {
+            StartThread(parameter);
+            return IntPtr.Zero;
         }
 
         public void Interrupt() => WaitSubsystem.Interrupt(this);

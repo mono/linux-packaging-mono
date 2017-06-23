@@ -17,7 +17,7 @@
 #include "sgen/sgen-client.h"
 #include "sgen/sgen-cardtable.h"
 #include "sgen/sgen-pinning.h"
-#include "sgen/sgen-thread-pool.h"
+#include "sgen/sgen-workers.h"
 #include "metadata/marshal.h"
 #include "metadata/method-builder.h"
 #include "metadata/abi-details.h"
@@ -181,9 +181,15 @@ mono_gc_wbarrier_set_field (MonoObject *obj, gpointer field_ptr, MonoObject* val
 }
 
 void
-mono_gc_wbarrier_value_copy_bitmap (gpointer _dest, gpointer _src, int size, unsigned bitmap)
+mono_gc_wbarrier_range_copy (gpointer _dest, gpointer _src, int size)
 {
-	sgen_wbarrier_value_copy_bitmap (_dest, _src, size, bitmap);
+	sgen_wbarrier_range_copy (_dest, _src, size);
+}
+
+void*
+mono_gc_get_range_copy_func (void)
+{
+	return sgen_get_remset ()->wbarrier_range_copy;
 }
 
 int
@@ -239,7 +245,7 @@ mono_gc_is_critical_method (MonoMethod *method)
 	return sgen_is_critical_method (method);
 }
 
-#ifndef DISABLE_JIT
+#ifdef HAVE_ONLINE_VES
 
 static void
 emit_nursery_check (MonoMethodBuilder *mb, int *nursery_check_return_labels, gboolean is_concurrent)
@@ -311,7 +317,7 @@ mono_gc_get_specific_write_barrier (gboolean is_concurrent)
 	else
 		mb = mono_mb_new (mono_defaults.object_class, "wbarrier_noconc", MONO_WRAPPER_WRITE_BARRIER);
 
-#ifndef DISABLE_JIT
+#ifdef HAVE_ONLINE_VES
 #ifdef MANAGED_WBARRIER
 	emit_nursery_check (mb, nursery_check_labels, is_concurrent);
 	/*
@@ -1120,7 +1126,7 @@ create_allocator (int atype, ManagedAllocatorVariant variant)
 
 	mb = mono_mb_new (mono_defaults.object_class, name, MONO_WRAPPER_ALLOC);
 
-#ifndef DISABLE_JIT
+#ifdef HAVE_ONLINE_VES
 	if (slowpath) {
 		switch (atype) {
 		case ATYPE_NORMAL:
@@ -1455,7 +1461,7 @@ create_allocator (int atype, ManagedAllocatorVariant variant)
 	info->d.alloc.gc_name = "sgen";
 	info->d.alloc.alloc_type = atype;
 
-#ifndef DISABLE_JIT
+#ifdef HAVE_ONLINE_VES
 	mb->init_locals = FALSE;
 #endif
 
@@ -2073,7 +2079,7 @@ mono_sgen_register_moved_object (void *obj, void *destination)
 	 * lock-free data structure for the queue as multiple threads will be
 	 * adding to it at the same time.
 	 */
-	if (sgen_thread_pool_is_thread_pool_thread (mono_native_thread_id_get ())) {
+	if (sgen_workers_is_worker_thread (mono_native_thread_id_get ())) {
 		sgen_pointer_queue_add (&moved_objects_queue, obj);
 		sgen_pointer_queue_add (&moved_objects_queue, destination);
 	} else {
@@ -2663,7 +2669,7 @@ void*
 mono_gc_get_nursery (int *shift_bits, size_t *size)
 {
 	*size = sgen_nursery_size;
-	*shift_bits = DEFAULT_NURSERY_BITS;
+	*shift_bits = sgen_nursery_bits;
 	return sgen_get_nursery_start ();
 }
 
@@ -3027,7 +3033,9 @@ mono_gc_base_init (void)
 void
 mono_gc_base_cleanup (void)
 {
-	sgen_thread_pool_shutdown ();
+	sgen_thread_pool_shutdown (major_collector.get_sweep_pool ());
+
+	sgen_workers_shutdown ();
 
 	// We should have consumed any outstanding moves.
 	g_assert (sgen_pointer_queue_is_empty (&moved_objects_queue));

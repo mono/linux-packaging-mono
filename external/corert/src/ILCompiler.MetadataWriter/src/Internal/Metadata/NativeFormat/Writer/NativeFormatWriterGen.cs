@@ -789,6 +789,75 @@ namespace Internal.Metadata.NativeFormat.Writer
         public double Value;
     } // ConstantDoubleValue
 
+    public partial class ConstantEnumArray : MetadataRecord
+    {
+        public override HandleType HandleType
+        {
+            get
+            {
+                return HandleType.ConstantEnumArray;
+            }
+        } // HandleType
+
+        internal override void Visit(IRecordVisitor visitor)
+        {
+            ElementType = visitor.Visit(this, ElementType);
+            Value = visitor.Visit(this, Value);
+        } // Visit
+
+        public override sealed bool Equals(Object obj)
+        {
+            if (Object.ReferenceEquals(this, obj)) return true;
+            var other = obj as ConstantEnumArray;
+            if (other == null) return false;
+            if (!Object.Equals(ElementType, other.ElementType)) return false;
+            if (!Object.Equals(Value, other.Value)) return false;
+            return true;
+        } // Equals
+
+        public override sealed int GetHashCode()
+        {
+            if (_hash != 0)
+                return _hash;
+            EnterGetHashCode();
+            int hash = -1347777940;
+            hash = ((hash << 13) - (hash >> 19)) ^ (ElementType == null ? 0 : ElementType.GetHashCode());
+            hash = ((hash << 13) - (hash >> 19)) ^ (Value == null ? 0 : Value.GetHashCode());
+            LeaveGetHashCode();
+            _hash = hash;
+            return _hash;
+        } // GetHashCode
+
+        internal override void Save(NativeWriter writer)
+        {
+            writer.Write(ElementType);
+            writer.Write(Value);
+        } // Save
+
+        internal static ConstantEnumArrayHandle AsHandle(ConstantEnumArray record)
+        {
+            if (record == null)
+            {
+                return new ConstantEnumArrayHandle(0);
+            }
+            else
+            {
+                return record.Handle;
+            }
+        } // AsHandle
+
+        internal new ConstantEnumArrayHandle Handle
+        {
+            get
+            {
+                return new ConstantEnumArrayHandle(HandleOffset);
+            }
+        } // Handle
+
+        public MetadataRecord ElementType;
+        public MetadataRecord Value;
+    } // ConstantEnumArray
+
     public partial class ConstantHandleArray : MetadataRecord
     {
         public override HandleType HandleType
@@ -2379,6 +2448,7 @@ namespace Internal.Metadata.NativeFormat.Writer
                 DefaultValue.HandleType == HandleType.ConstantCharValue ||
                 DefaultValue.HandleType == HandleType.ConstantDoubleArray ||
                 DefaultValue.HandleType == HandleType.ConstantDoubleValue ||
+                DefaultValue.HandleType == HandleType.ConstantEnumArray ||
                 DefaultValue.HandleType == HandleType.ConstantHandleArray ||
                 DefaultValue.HandleType == HandleType.ConstantInt16Array ||
                 DefaultValue.HandleType == HandleType.ConstantInt16Value ||
@@ -2562,6 +2632,7 @@ namespace Internal.Metadata.NativeFormat.Writer
                 Value.HandleType == HandleType.ConstantCharValue ||
                 Value.HandleType == HandleType.ConstantDoubleArray ||
                 Value.HandleType == HandleType.ConstantDoubleValue ||
+                Value.HandleType == HandleType.ConstantEnumArray ||
                 Value.HandleType == HandleType.ConstantHandleArray ||
                 Value.HandleType == HandleType.ConstantInt16Array ||
                 Value.HandleType == HandleType.ConstantInt16Value ||
@@ -3721,6 +3792,7 @@ namespace Internal.Metadata.NativeFormat.Writer
                 DefaultValue.HandleType == HandleType.ConstantCharValue ||
                 DefaultValue.HandleType == HandleType.ConstantDoubleArray ||
                 DefaultValue.HandleType == HandleType.ConstantDoubleValue ||
+                DefaultValue.HandleType == HandleType.ConstantEnumArray ||
                 DefaultValue.HandleType == HandleType.ConstantHandleArray ||
                 DefaultValue.HandleType == HandleType.ConstantInt16Array ||
                 DefaultValue.HandleType == HandleType.ConstantInt16Value ||
@@ -3921,6 +3993,7 @@ namespace Internal.Metadata.NativeFormat.Writer
                 DefaultValue.HandleType == HandleType.ConstantCharValue ||
                 DefaultValue.HandleType == HandleType.ConstantDoubleArray ||
                 DefaultValue.HandleType == HandleType.ConstantDoubleValue ||
+                DefaultValue.HandleType == HandleType.ConstantEnumArray ||
                 DefaultValue.HandleType == HandleType.ConstantHandleArray ||
                 DefaultValue.HandleType == HandleType.ConstantInt16Array ||
                 DefaultValue.HandleType == HandleType.ConstantInt16Value ||
@@ -4287,6 +4360,8 @@ namespace Internal.Metadata.NativeFormat.Writer
             EntryPoint = visitor.Visit(this, EntryPoint);
             GlobalModuleType = visitor.Visit(this, GlobalModuleType);
             CustomAttributes = visitor.Visit(this, CustomAttributes);
+            ModuleName = visitor.Visit(this, ModuleName);
+            ModuleCustomAttributes = visitor.Visit(this, ModuleCustomAttributes);
         } // Visit
 
         public override sealed bool Equals(Object obj)
@@ -4303,6 +4378,8 @@ namespace Internal.Metadata.NativeFormat.Writer
             if (RevisionNumber != other.RevisionNumber) return false;
             if (!PublicKey.SequenceEqual(other.PublicKey)) return false;
             if (!Object.Equals(Culture, other.Culture)) return false;
+            if (!Object.Equals(ModuleName, other.ModuleName)) return false;
+            if (!Mvid.SequenceEqual(other.Mvid)) return false;
             return true;
         } // Equals
 
@@ -4327,6 +4404,14 @@ namespace Internal.Metadata.NativeFormat.Writer
                 }
             }
             hash = ((hash << 13) - (hash >> 19)) ^ (Culture == null ? 0 : Culture.GetHashCode());
+            hash = ((hash << 13) - (hash >> 19)) ^ (ModuleName == null ? 0 : ModuleName.GetHashCode());
+            if (Mvid != null)
+            {
+                for (int i = 0; i < Mvid.Length; i++)
+                {
+                    hash = ((hash << 13) - (hash >> 19)) ^ Mvid[i].GetHashCode();
+                }
+            }
             LeaveGetHashCode();
             _hash = hash;
             return _hash;
@@ -4347,6 +4432,9 @@ namespace Internal.Metadata.NativeFormat.Writer
             writer.Write(EntryPoint);
             writer.Write(GlobalModuleType);
             writer.Write(CustomAttributes);
+            writer.Write(ModuleName);
+            writer.Write(Mvid);
+            writer.Write(ModuleCustomAttributes);
         } // Save
 
         internal static ScopeDefinitionHandle AsHandle(ScopeDefinition record)
@@ -4382,6 +4470,9 @@ namespace Internal.Metadata.NativeFormat.Writer
         public QualifiedMethod EntryPoint;
         public TypeDefinition GlobalModuleType;
         public List<CustomAttribute> CustomAttributes = new List<CustomAttribute>();
+        public ConstantStringValue ModuleName;
+        public Byte[] Mvid;
+        public List<CustomAttribute> ModuleCustomAttributes = new List<CustomAttribute>();
     } // ScopeDefinition
 
     public partial class ScopeReference : MetadataRecord

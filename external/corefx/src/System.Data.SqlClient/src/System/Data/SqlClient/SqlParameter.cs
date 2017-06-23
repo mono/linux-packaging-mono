@@ -2,10 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-
-
-//------------------------------------------------------------------------------
-
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlTypes;
@@ -54,7 +50,7 @@ namespace System.Data.SqlClient
         }
     }
 
-    public sealed partial class SqlParameter : DbParameter
+    public sealed partial class SqlParameter : DbParameter, IDbDataParameter, ICloneable
     {
         private MetaType _metaType;
 
@@ -78,6 +74,8 @@ namespace System.Data.SqlClient
         private bool _coercedValueIsSqlType;
         private bool _coercedValueIsDataFeed;
         private int _actualSize = -1;
+
+        private DataRowVersion _sourceVersion;
 
         public SqlParameter() : base()
         {
@@ -110,6 +108,50 @@ namespace System.Data.SqlClient
             this.SqlDbType = dbType;
             this.Size = size;
             this.SourceColumn = sourceColumn;
+        }
+
+        public SqlParameter(
+            string parameterName,
+            SqlDbType dbType, 
+            int size,
+            ParameterDirection direction,
+            byte precision,
+            byte scale,
+            string sourceColumn,
+            DataRowVersion sourceVersion,
+            bool sourceColumnNullMapping,
+            object value,
+            string xmlSchemaCollectionDatabase,
+            string xmlSchemaCollectionOwningSchema,
+            string xmlSchemaCollectionName
+        ) : this()
+        {
+            this.ParameterName = parameterName;
+            this.SqlDbType = dbType;
+            this.Size = size;
+            this.Direction = direction;
+            this.Precision = precision;
+            this.Scale = scale;
+            this.SourceColumn = sourceColumn;
+            this.SourceVersion = sourceVersion;
+            this.SourceColumnNullMapping = sourceColumnNullMapping;
+            this.Value = value;
+            this.XmlSchemaCollectionDatabase = xmlSchemaCollectionDatabase;
+            this.XmlSchemaCollectionOwningSchema = xmlSchemaCollectionOwningSchema;
+            this.XmlSchemaCollectionName = xmlSchemaCollectionName;
+        }
+
+        private SqlParameter(SqlParameter source) : this()
+        {
+            ADP.CheckArgumentNull(source, nameof(source));
+
+            source.CloneHelper(this);
+
+            ICloneable cloneable = (_value as ICloneable);
+            if (null != cloneable)
+            {
+                _value = cloneable.Clone();
+            }
         }
 
         //
@@ -900,6 +942,7 @@ namespace System.Data.SqlClient
                         value = new DateTimeOffset((DateTime)value);
                     }
                     else if (TdsEnums.SQLTABLE == destinationType.TDSType && (
+                                value is DataTable ||
                                 value is DbDataReader ||
                                 value is System.Collections.Generic.IEnumerable<SqlDataRecord>))
                     {
@@ -1032,7 +1075,48 @@ namespace System.Data.SqlClient
             peekAhead = null;
 
             object value = GetCoercedValue();
-            if (value is SqlDataReader)
+            if (value is DataTable dt)
+            {
+                if (dt.Columns.Count <= 0)
+                {
+                    throw SQL.NotEnoughColumnsInStructuredType();
+                }
+                fields = new List<MSS.SmiExtendedMetaData>(dt.Columns.Count);
+                bool[] keyCols = new bool[dt.Columns.Count];
+                bool hasKey = false;
+
+                // set up primary key as unique key list
+                //  do this prior to general metadata loop to favor the primary key
+                if (null != dt.PrimaryKey && 0 < dt.PrimaryKey.Length)
+                {
+                    foreach (DataColumn col in dt.PrimaryKey)
+                    {
+                        keyCols[col.Ordinal] = true;
+                        hasKey = true;
+                    }
+                }
+
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    fields.Add(MSS.MetaDataUtilsSmi.SmiMetaDataFromDataColumn(dt.Columns[i], dt));
+
+                    // DataColumn uniqueness is only for a single column, so don't add
+                    //  more than one.  (keyCols.Count first for assumed minimal perf benefit)
+                    if (!hasKey && dt.Columns[i].Unique)
+                    {
+                        keyCols[i] = true;
+                        hasKey = true;
+                    }
+                }
+
+                // Add unique key property, if any found.
+                if (hasKey)
+                {
+                    props = new SmiMetaDataPropertyCollection();
+                    props[MSS.SmiPropertySelector.UniqueKey] = new MSS.SmiUniqueKeyProperty(new List<bool>(keyCols));
+                }
+            }
+            else if (value is SqlDataReader)
             {
                 fields = new List<MSS.SmiExtendedMetaData>(((SqlDataReader)value).GetInternalSmiMetaData());
                 if (fields.Count <= 0)
@@ -1201,18 +1285,91 @@ namespace System.Data.SqlClient
             }
             else if (value is DbDataReader)
             {
-                // For ProjectK\CoreCLR, DbDataReader no longer supports GetSchema
-                // So instead we will attempt to generate the metadata from the Field Type alone
-                var reader = (DbDataReader)value;
-                if (reader.FieldCount <= 0)
+                DataTable schema = ((DbDataReader)value).GetSchemaTable();
+                if (schema.Rows.Count <= 0)
                 {
                     throw SQL.NotEnoughColumnsInStructuredType();
                 }
 
-                fields = new List<MSS.SmiExtendedMetaData>(reader.FieldCount);
-                for (int i = 0; i < reader.FieldCount; i++)
+                int fieldCount = schema.Rows.Count;
+                fields = new List<MSS.SmiExtendedMetaData>(fieldCount);
+
+                bool[] keyCols = new bool[fieldCount];
+                bool hasKey = false;
+                int ordinalForIsKey = schema.Columns[SchemaTableColumn.IsKey].Ordinal;
+                int ordinalForColumnOrdinal = schema.Columns[SchemaTableColumn.ColumnOrdinal].Ordinal;
+
+                // Extract column metadata
+                for (int rowOrdinal = 0; rowOrdinal < fieldCount; rowOrdinal++)
                 {
-                    fields.Add(MSS.MetaDataUtilsSmi.SmiMetaDataFromType(reader.GetName(i), reader.GetFieldType(i)));
+                    DataRow row = schema.Rows[rowOrdinal];
+                    MSS.SmiExtendedMetaData candidateMd = MSS.MetaDataUtilsSmi.SmiMetaDataFromSchemaTableRow(row);
+
+                    // Determine destination ordinal.  Allow for ordinal not specified by assuming rowOrdinal *is* columnOrdinal
+                    // in that case, but don't worry about mix-and-match of the two techniques
+                    int columnOrdinal = rowOrdinal;
+                    if (!row.IsNull(ordinalForColumnOrdinal))
+                    {
+                        columnOrdinal = (int)row[ordinalForColumnOrdinal];
+                    }
+
+                    // After this point, things we are creating (keyCols, fields) should be accessed by columnOrdinal
+                    // while the source should just be accessed via "row".
+
+                    // Watch for out-of-range ordinals
+                    if (columnOrdinal >= fieldCount || columnOrdinal < 0)
+                    {
+                        throw SQL.InvalidSchemaTableOrdinals();
+                    }
+
+                    // extend empty space if out-of-order ordinal
+                    while (columnOrdinal > fields.Count)
+                    {
+                        fields.Add(null);
+                    }
+
+                    // Now add the candidate to the list
+                    if (fields.Count == columnOrdinal)
+                    {
+                        fields.Add(candidateMd);
+                    }
+                    else
+                    {
+                        // Disallow two columns using the same ordinal (even if due to mixing null and non-null columnOrdinals)
+                        if (fields[columnOrdinal] != null)
+                        {
+                            throw SQL.InvalidSchemaTableOrdinals();
+                        }
+
+                        // Don't use insert, since it shifts all later columns down a notch
+                        fields[columnOrdinal] = candidateMd;
+                    }
+
+                    // Propagate key information
+                    if (!row.IsNull(ordinalForIsKey) && (bool)row[ordinalForIsKey])
+                    {
+                        keyCols[columnOrdinal] = true;
+                        hasKey = true;
+                    }
+                }
+
+#if DEBUG
+                // Check for holes
+                //  Above loop logic prevents holes since:
+                //      1) loop processes fieldcount # of columns
+                //      2) no ordinals outside continuous range from 0 to fieldcount - 1 are allowed
+                //      3) no duplicate ordinals are allowed
+                // But assert no holes to be sure.
+                foreach (MSS.SmiExtendedMetaData md in fields) {
+                    Debug.Assert(null != md, "Shouldn't be able to have holes, since original loop algorithm prevents such.");
+                }
+#endif
+
+                // Add unique key property, if any defined.
+                if (hasKey)
+                {
+                    props = new MSS.SmiMetaDataPropertyCollection();
+                    props[MSS.SmiPropertySelector.UniqueKey] = new SmiUniqueKeyProperty(new List<bool>(keyCols));
                 }
             }
         }
@@ -1631,6 +1788,69 @@ namespace System.Data.SqlClient
             {
                 {
                     throw SQL.InvalidParameterTypeNameFormat();
+                }
+            }
+        }
+
+        object ICloneable.Clone() => new SqlParameter(this);
+
+        private void CloneHelper(SqlParameter destination)
+        {
+            CloneHelperCore(destination);
+            destination._metaType = _metaType;
+            destination._collation = _collation;
+            destination._xmlSchemaCollectionDatabase = _xmlSchemaCollectionDatabase;
+            destination._xmlSchemaCollectionOwningSchema = _xmlSchemaCollectionOwningSchema;
+            destination._xmlSchemaCollectionName = _xmlSchemaCollectionName;
+            destination._typeName = _typeName;
+
+            destination._parameterName = _parameterName;
+            destination._precision = _precision;
+            destination._scale = _scale;
+            destination._sqlBufferReturnValue = _sqlBufferReturnValue;
+            destination._isSqlParameterSqlType = _isSqlParameterSqlType;
+            destination._internalMetaType = _internalMetaType;
+            destination.CoercedValue = CoercedValue; // copy cached value reference because of XmlReader problem
+            destination._valueAsINullable = _valueAsINullable;
+            destination._isNull = _isNull;
+            destination._coercedValueIsDataFeed = _coercedValueIsDataFeed;
+            destination._coercedValueIsSqlType = _coercedValueIsSqlType;
+            destination._actualSize = _actualSize;
+        }
+
+        private void CloneHelperCore(SqlParameter destination)
+        {
+            destination._value = _value;
+
+            destination._direction = _direction;
+            destination._size = _size;
+
+            destination._offset = _offset;
+            destination._sourceColumn = _sourceColumn;
+            destination._sourceVersion = _sourceVersion;
+            destination._sourceColumnNullMapping = _sourceColumnNullMapping;
+            destination._isNullable = _isNullable;
+        }
+
+        public override DataRowVersion SourceVersion
+        {
+            get
+            {
+                DataRowVersion sourceVersion = _sourceVersion;
+                return ((0 != sourceVersion) ? sourceVersion : DataRowVersion.Current);
+            }
+            set
+            {
+                switch (value)
+                {
+                    case DataRowVersion.Original:
+                    case DataRowVersion.Current:
+                    case DataRowVersion.Proposed:
+                    case DataRowVersion.Default:
+                        _sourceVersion = value;
+                        break;
+                    default:
+                        throw ADP.InvalidDataRowVersion(value);
                 }
             }
         }
