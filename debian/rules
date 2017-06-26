@@ -75,6 +75,10 @@ ifneq (,$(wildcard /usr/bin/gcc-4.7))
 	GCC := CC=/usr/bin/gcc-4.7 CXX=/usr/bin/g++-4.7
 endif
 
+ifneq (,$(wildcard /usr/lib/gcc-mozilla/bin/gcc))
+        GCC := CC=/usr/lib/gcc-mozilla/bin/gcc CXX=/usr/lib/gcc-mozilla/bin/g++
+endif
+
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
