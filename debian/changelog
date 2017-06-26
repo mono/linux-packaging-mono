@@ -1,3 +1,14 @@
+mono (5.4.0.56-0xamarin5) prealpha; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [58254ab] Force g++ 4.7, not just gcc [94a8324] Remember the gcc
+    epoch
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 26 Jun 2017 14:31:35 +0000
+
 mono (5.4.0.56-0xamarin4) prealpha; urgency=medium
 
   [ Xamarin Public Jenkins (auto-signing) ]
