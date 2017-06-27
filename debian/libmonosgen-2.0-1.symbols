@@ -721,6 +721,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_install_coverage_filter@Base 4.1.0.1738
  mono_profiler_install_enter_leave@Base 4.1.0.1738
  mono_profiler_install_exception@Base 4.1.0.1738
+ mono_profiler_install_exception_clause@Base 5.5.0.263
  mono_profiler_install_gc@Base 4.1.0.1738
  mono_profiler_install_gc_finalize@Base 4.7.0.488
  mono_profiler_install_gc_moves@Base 4.1.0.1738
@@ -871,6 +872,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_thread_hazardous_try_free@Base 4.5.2.48
  mono_thread_hazardous_try_free_all@Base 4.7.0.488
  mono_thread_info_detach@Base 4.5.2.48
+ mono_thread_info_get_small_id@Base 5.5.0.263
+ mono_thread_info_register_small_id@Base 5.5.0.263
  mono_thread_info_yield@Base 4.7.0.488
  mono_thread_init@Base 4.1.0.1738
  mono_thread_is_foreign@Base 4.1.0.1738
