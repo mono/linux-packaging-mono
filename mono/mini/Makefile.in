@@ -416,14 +416,16 @@ libmini_la_OBJECTS = $(am_libmini_la_OBJECTS)
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@am_libmini_la_rpath =
 @DISABLE_EXECUTABLES_TRUE@@SHARED_MONO_TRUE@am_libmini_la_rpath =
 am__DEPENDENCIES_2 =
-am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntime.la \
+@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_3 =  \
+@SUPPORT_NULLGC_FALSE@	$(monodir)/libgc/libmonogc.la
+am__DEPENDENCIES_4 = $(monodir)/mono/metadata/libmonoruntime.la \
 	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(libgc_libs)
-@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__DEPENDENCIES_4 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la \
-@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@	$(am__DEPENDENCIES_3)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3)
+@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__DEPENDENCIES_5 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la \
+@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@	$(am__DEPENDENCIES_4)
 @LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES =  \
 @LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
-@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_4)
+@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5)
 am__libmono_llvm_la_SOURCES_DIST = mini-llvm.c mini-llvm-cpp.cpp \
 	llvm-jit.cpp
 @LOADED_LLVM_TRUE@am_libmono_llvm_la_OBJECTS = mini-llvm.lo \
@@ -434,12 +436,12 @@ libmono_llvm_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_CXXFLAGS) $(CXXFLAGS) $(libmono_llvm_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 @LOADED_LLVM_TRUE@am_libmono_llvm_la_rpath = -rpath $(libdir)
-@DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_5 =  \
+@DTRACE_G_REQUIRED_TRUE@am__DEPENDENCIES_6 =  \
 @DTRACE_G_REQUIRED_TRUE@	.libs/mono-dtrace.$(OBJEXT)
-@LOADED_LLVM_FALSE@am__DEPENDENCIES_6 = $(am__DEPENDENCIES_2) \
+@LOADED_LLVM_FALSE@am__DEPENDENCIES_7 = $(am__DEPENDENCIES_2) \
 @LOADED_LLVM_FALSE@	$(am__DEPENDENCIES_2)
-libmonoboehm_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_3) \
-	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_6)
+libmonoboehm_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_7)
 am_libmonoboehm_2_0_la_OBJECTS =
 libmonoboehm_2_0_la_OBJECTS = $(am_libmonoboehm_2_0_la_OBJECTS)
 libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -450,12 +452,12 @@ libmonoboehm_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 @DISABLE_EXECUTABLES_FALSE@@SHARED_MONO_TRUE@@SUPPORT_BOEHM_TRUE@	$(libdir)
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@am_libmonoboehm_2_0_la_rpath =  \
 @DISABLE_EXECUTABLES_TRUE@@SUPPORT_BOEHM_TRUE@	-rpath $(libdir)
-am__DEPENDENCIES_7 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
+am__DEPENDENCIES_8 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
 	$(monodir)/mono/sgen/libmonosgen.la \
 	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_2)
-libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_7) \
-	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_6)
+libmonosgen_2_0_la_DEPENDENCIES = libmini.la $(am__DEPENDENCIES_8) \
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_7)
 am_libmonosgen_2_0_la_OBJECTS =
 libmonosgen_2_0_la_OBJECTS = $(am_libmonosgen_2_0_la_OBJECTS)
 libmonosgen_2_0_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -486,33 +488,35 @@ mono_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_boehm_OBJECTS = mono_boehm-main.$(OBJEXT)
 mono_boehm_OBJECTS = $(am_mono_boehm_OBJECTS)
-am__DEPENDENCIES_8 =  \
+@SUPPORT_NULLGC_FALSE@am__DEPENDENCIES_9 =  \
+@SUPPORT_NULLGC_FALSE@	$(monodir)/libgc/libmonogc-static.la
+am__DEPENDENCIES_10 =  \
 	$(monodir)/mono/metadata/libmonoruntime-static.la \
 	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2) $(libgc_static_libs)
-@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_9 = libmini-static.la \
-@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_8)
-@STATIC_MONO_FALSE@am__DEPENDENCIES_10 = libmonoboehm-2.0.la
-@STATIC_MONO_TRUE@am__DEPENDENCIES_10 = $(am__DEPENDENCIES_9)
-mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_10) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_9)
+@SUPPORT_BOEHM_TRUE@am__DEPENDENCIES_11 = libmini-static.la \
+@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_10)
+@STATIC_MONO_FALSE@am__DEPENDENCIES_12 = libmonoboehm-2.0.la
+@STATIC_MONO_TRUE@am__DEPENDENCIES_12 = $(am__DEPENDENCIES_11)
+mono_boehm_DEPENDENCIES = $(am__DEPENDENCIES_12) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 mono_boehm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_boehm_CFLAGS) \
 	$(CFLAGS) $(mono_boehm_LDFLAGS) $(LDFLAGS) -o $@
 am_mono_sgen_OBJECTS = mono_sgen-main-sgen.$(OBJEXT)
 mono_sgen_OBJECTS = $(am_mono_sgen_OBJECTS)
-am__DEPENDENCIES_11 =  \
+am__DEPENDENCIES_13 =  \
 	$(monodir)/mono/metadata/libmonoruntimesgen-static.la \
 	$(monodir)/mono/sgen/libmonosgen-static.la \
 	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_2)
-@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_12 = libmini-static.la \
-@SUPPORT_SGEN_TRUE@	$(am__DEPENDENCIES_11)
-@STATIC_MONO_FALSE@am__DEPENDENCIES_13 = libmonosgen-2.0.la
-@STATIC_MONO_TRUE@am__DEPENDENCIES_13 = $(am__DEPENDENCIES_12)
-mono_sgen_DEPENDENCIES = $(am__DEPENDENCIES_13) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_2) \
+@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_14 = libmini-static.la \
+@SUPPORT_SGEN_TRUE@	$(am__DEPENDENCIES_13)
+@STATIC_MONO_FALSE@am__DEPENDENCIES_15 = libmonosgen-2.0.la
+@STATIC_MONO_TRUE@am__DEPENDENCIES_15 = $(am__DEPENDENCIES_14)
+mono_sgen_DEPENDENCIES = $(am__DEPENDENCIES_15) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 mono_sgen_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(mono_sgen_CFLAGS) \
@@ -525,16 +529,16 @@ am__objects_36 = main.$(OBJEXT)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@am_monow_OBJECTS =  \
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__objects_36)
 monow_OBJECTS = $(am_monow_OBJECTS)
-am__DEPENDENCIES_14 = $(am__DEPENDENCIES_13) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_2) \
+am__DEPENDENCIES_16 = $(am__DEPENDENCIES_15) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
-am__DEPENDENCIES_15 = $(am__DEPENDENCIES_10) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_2) \
+am__DEPENDENCIES_17 = $(am__DEPENDENCIES_12) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_1)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@monow_DEPENDENCIES =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_14)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_FALSE@	$(am__DEPENDENCIES_16)
 @HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@monow_DEPENDENCIES =  \
-@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_15)
+@HOST_WIN32_TRUE@@SUPPORT_BOEHM_TRUE@	$(am__DEPENDENCIES_17)
 monow_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(monow_LDFLAGS) $(LDFLAGS) -o $@
@@ -837,10 +841,12 @@ monodir = $(top_builddir)
 mono = $(if $(MONO_EXECUTABLE),$(MONO_EXECUTABLE),mono)
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
 @HOST_WIN32_TRUE@PLATFORM_PATH_SEPARATOR = ;
+@SUPPORT_NULLGC_FALSE@libgc_libs = $(monodir)/libgc/libmonogc.la
 
 # This is needed for automake dependency generation
-libgc_libs = $(monodir)/libgc/libmonogc.la
-libgc_static_libs = $(monodir)/libgc/libmonogc-static.la
+@SUPPORT_NULLGC_TRUE@libgc_libs = 
+@SUPPORT_NULLGC_FALSE@libgc_static_libs = $(monodir)/libgc/libmonogc-static.la
+@SUPPORT_NULLGC_TRUE@libgc_static_libs = 
 boehm_libs = \
 	$(monodir)/mono/metadata/libmonoruntime.la	\
 	$(monodir)/mono/utils/libmonoutils.la \
@@ -3486,7 +3492,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/17d4227\"" > version.h
+	echo "#define FULL_VERSION \"master/6ca11b7\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

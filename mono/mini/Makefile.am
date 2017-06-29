@@ -10,8 +10,13 @@ PLATFORM_PATH_SEPARATOR=:
 endif
 
 # This is needed for automake dependency generation
+if SUPPORT_NULLGC
+libgc_libs=
+libgc_static_libs=
+else
 libgc_libs=$(monodir)/libgc/libmonogc.la
 libgc_static_libs=$(monodir)/libgc/libmonogc-static.la
+endif
 
 boehm_libs=	\
 	$(monodir)/mono/metadata/libmonoruntime.la	\
@@ -887,7 +892,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/17d4227\"" > version.h
+	echo "#define FULL_VERSION \"master/6ca11b7\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
