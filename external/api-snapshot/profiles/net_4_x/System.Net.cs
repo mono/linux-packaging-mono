@@ -78,6 +78,7 @@ namespace System
 }
 namespace System.Net
 {
+    [System.SerializableAttribute]
     public partial class IPEndPointCollection : System.Collections.ObjectModel.Collection<System.Net.IPEndPoint>
     {
         public IPEndPointCollection() { }

@@ -128,7 +128,7 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-io-portability.c mono-io-portability.h monobitset.c \
 	mono-filemap.c mono-math.c mono-mmap.c mono-mmap-windows.c \
 	mono-mmap.h mono-mmap-internals.h \
-	mono-mmap-windows-internals.h mono-os-mutex.h \
+	mono-mmap-windows-internals.h mono-os-mutex.h mono-os-mutex.c \
 	mono-coop-mutex.h mono-once.h mono-lazy-init.h \
 	mono-networkinterfaces.c mono-networkinterfaces.h \
 	mono-proclib.c mono-proclib-windows.c mono-proclib.h \
@@ -182,7 +182,7 @@ am__objects_4 = $(am__objects_3) mono-md5.lo mono-sha1.lo \
 	mono-log-posix.lo mono-log-android.lo mono-log-darwin.lo \
 	mono-internal-hash.lo mono-io-portability.lo monobitset.lo \
 	mono-filemap.lo mono-math.lo mono-mmap.lo mono-mmap-windows.lo \
-	mono-networkinterfaces.lo mono-proclib.lo \
+	mono-os-mutex.lo mono-networkinterfaces.lo mono-proclib.lo \
 	mono-proclib-windows.lo mono-publib.lo mono-time.lo strenc.lo \
 	mono-uri.lo mono-poll.lo mono-path.lo mono-stdlib.lo \
 	mono-property-hash.lo mono-value-hash.lo mono-error.lo \
@@ -577,6 +577,7 @@ monoutils_sources = \
 	mono-mmap-internals.h	\
 	mono-mmap-windows-internals.h	\
 	mono-os-mutex.h		\
+	mono-os-mutex.c		\
 	mono-coop-mutex.h		\
 	mono-once.h		\
 	mono-lazy-init.h		\
@@ -815,6 +816,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-mmap-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-mmap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-networkinterfaces.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-os-mutex.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-path.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-poll.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-proclib-windows.Plo@am__quote@
