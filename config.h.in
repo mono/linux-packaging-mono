@@ -575,6 +575,10 @@
 /* Define to 1 if you have the `pthread_attr_setstacksize' function. */
 #undef HAVE_PTHREAD_ATTR_SETSTACKSIZE
 
+/* Define to 1 if you have the `pthread_cond_timedwait_relative_np' function.
+   */
+#undef HAVE_PTHREAD_COND_TIMEDWAIT_RELATIVE_NP
+
 /* Define to 1 if you have the `pthread_getattr_np' function. */
 #undef HAVE_PTHREAD_GETATTR_NP
 

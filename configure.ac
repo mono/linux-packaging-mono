@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.5.0.285],
+AC_INIT(mono, [5.5.0.297],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -1956,7 +1956,7 @@ if test x$host_win32 = xno; then
 	AC_CHECK_HEADERS(pthread.h)
 	AC_CHECK_HEADERS(pthread_np.h)
 	AC_CHECK_FUNCS(pthread_mutex_timedlock)
-	AC_CHECK_FUNCS(pthread_getattr_np pthread_attr_get_np pthread_setname_np)
+	AC_CHECK_FUNCS(pthread_getattr_np pthread_attr_get_np pthread_setname_np pthread_cond_timedwait_relative_np)
 	AC_CHECK_FUNCS(pthread_kill)
 	AC_MSG_CHECKING(for PTHREAD_MUTEX_RECURSIVE)
 	AC_TRY_COMPILE([ #include <pthread.h>], [
