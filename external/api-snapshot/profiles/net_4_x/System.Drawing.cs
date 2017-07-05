@@ -1886,9 +1886,8 @@ namespace System.Drawing
         Point = 3,
         World = 0,
     }
-    public sealed partial class SystemBrushes
+    public static partial class SystemBrushes
     {
-        internal SystemBrushes() { }
         public static System.Drawing.Brush ActiveBorder { get { throw null; } }
         public static System.Drawing.Brush ActiveCaption { get { throw null; } }
         public static System.Drawing.Brush ActiveCaptionText { get { throw null; } }
@@ -2261,15 +2260,15 @@ namespace System.Drawing.Drawing2D
     {
         public Blend() { }
         public Blend(int count) { }
-        public float[] Factors { get { throw null; } set { } }
-        public float[] Positions { get { throw null; } set { } }
+        public float[] Factors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float[] Positions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     public sealed partial class ColorBlend
     {
         public ColorBlend() { }
         public ColorBlend(int count) { }
-        public System.Drawing.Color[] Colors { get { throw null; } set { } }
-        public float[] Positions { get { throw null; } set { } }
+        public System.Drawing.Color[] Colors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float[] Positions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     public enum CombineMode
     {
@@ -2661,8 +2660,8 @@ namespace System.Drawing.Drawing2D
     public sealed partial class PathData
     {
         public PathData() { }
-        public System.Drawing.PointF[] Points { get { throw null; } set { } }
-        public byte[] Types { get { throw null; } set { } }
+        public System.Drawing.PointF[] Points { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public byte[] Types { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     [System.MonoTODOAttribute("libgdiplus/cairo doesn't support path gradients - unless it can be mapped to a radial gradient")]
     public sealed partial class PathGradientBrush : System.Drawing.Brush
@@ -2742,7 +2741,7 @@ namespace System.Drawing.Drawing2D
     public sealed partial class RegionData
     {
         internal RegionData() { }
-        public byte[] Data { get { throw null; } set { } }
+        public byte[] Data { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     public enum SmoothingMode
     {
@@ -3518,7 +3517,6 @@ namespace System.Drawing.Imaging
 }
 namespace System.Drawing.Printing
 {
-    [System.SerializableAttribute]
     public enum Duplex
     {
         Default = -1,
@@ -3584,7 +3582,6 @@ namespace System.Drawing.Printing
         public void SetHdevmode(System.IntPtr hdevmode) { }
         public override string ToString() { throw null; }
     }
-    [System.SerializableAttribute]
     public enum PaperKind
     {
         A2 = 66,
@@ -3726,7 +3723,6 @@ namespace System.Drawing.Printing
         public string SourceName { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
-    [System.SerializableAttribute]
     public enum PaperSourceKind
     {
         AutomaticFeed = 7,
@@ -3819,7 +3815,6 @@ namespace System.Drawing.Printing
         public int Y { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
-    [System.SerializableAttribute]
     public enum PrinterResolutionKind
     {
         Custom = 0,
@@ -4003,7 +3998,6 @@ namespace System.Drawing.Printing
         public System.Drawing.Printing.PageSettings PageSettings { get { throw null; } }
     }
     public delegate void PrintPageEventHandler(object sender, System.Drawing.Printing.PrintPageEventArgs e);
-    [System.SerializableAttribute]
     public enum PrintRange
     {
         AllPages = 0,
