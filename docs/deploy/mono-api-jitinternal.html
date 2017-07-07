@@ -1360,14 +1360,8 @@ mono_create_ftnptr (MonoDomain *domain, gpointer addr)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_load (const char *desc)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_load</div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>desc</i></td><td> arguments to configure the profiler</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Invoke this method to initialize the profiler.   This will drive the 	 loading of the internal (&quot;default&quot;) or any external profilers. 	<p /> 	 This routine is invoked by Mono's driver, but must be called manually 	 if you embed Mono into your application.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1381,10 +1375,7 @@ mono_profiler_load (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_allocation (MonoObject *obj)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_allocation</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1399,10 +1390,7 @@ mono_profiler_allocation (MonoObject *obj)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void
-mono_profiler_stat_hit (guchar *ip, void *context)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_stat_hit</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1417,10 +1405,7 @@ mono_profiler_stat_hit (guchar *ip, void *context)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void
-mono_profiler_thread_start (gsize tid)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_thread_start</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1435,10 +1420,7 @@ mono_profiler_thread_start (gsize tid)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_thread_end (gsize tid)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_thread_end</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1453,10 +1435,7 @@ mono_profiler_thread_end (gsize tid)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_appdomain_event  (MonoDomain *domain, int code)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_appdomain_event</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1471,10 +1450,7 @@ mono_profiler_appdomain_event  (MonoDomain *domain, int code)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_appdomain_loaded (MonoDomain *domain, int result)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_appdomain_loaded</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1489,10 +1465,7 @@ mono_profiler_appdomain_loaded (MonoDomain *domain, int result)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_assembly_event  (MonoAssembly *assembly, int code)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_assembly_event</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1507,10 +1480,7 @@ mono_profiler_assembly_event  (MonoAssembly *assembly, int code)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_assembly_loaded (MonoAssembly *assembly, int result)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_assembly_loaded</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1525,10 +1495,7 @@ mono_profiler_assembly_loaded (MonoAssembly *assembly, int result)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_class_event  (MonoClass *klass, int code)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_class_event</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1543,10 +1510,7 @@ mono_profiler_class_event  (MonoClass *klass, int code)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_class_loaded (MonoClass *klass, int result)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_class_loaded</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1561,10 +1525,7 @@ mono_profiler_class_loaded (MonoClass *klass, int result)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_code_transition (MonoMethod *method, int result)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_code_transition</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1579,10 +1540,7 @@ mono_profiler_code_transition (MonoMethod *method, int result)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_method_end_jit (MonoMethod *method, MonoJitInfo* jinfo, int result)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_method_end_jit</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1597,10 +1555,7 @@ mono_profiler_method_end_jit (MonoMethod *method, MonoJitInfo* jinfo, int result
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void
-mono_profiler_method_enter (MonoMethod *method)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_method_enter</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1615,10 +1570,7 @@ mono_profiler_method_enter (MonoMethod *method)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_method_jit (MonoMethod *method)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_method_jit</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1633,10 +1585,7 @@ mono_profiler_method_jit (MonoMethod *method)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void
-mono_profiler_method_leave (MonoMethod *method)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_method_leave</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1651,10 +1600,7 @@ mono_profiler_method_leave (MonoMethod *method)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_module_event  (MonoImage *module, int code)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_module_event</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1669,10 +1615,7 @@ mono_profiler_module_event  (MonoImage *module, int code)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_module_loaded (MonoImage *module, int result)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_module_loaded</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1687,10 +1630,7 @@ mono_profiler_module_loaded (MonoImage *module, int result)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void 
-mono_profiler_shutdown (void)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_shutdown</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1705,13 +1645,8 @@ mono_profiler_shutdown (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void
-mono_profiler_startup (const char *desc)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_startup</div>
             <p />
-             <div class="mapi-section">Description</div>
-             <div> 	 the entry point</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -1725,10 +1660,7 @@ mono_profiler_startup (const char *desc)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void
-mono_profiler_gc_event (MonoGCEvent event, int generation)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_gc_event</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->
@@ -1743,10 +1675,7 @@ mono_profiler_gc_event (MonoGCEvent event, int generation)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void
-mono_profiler_gc_heap_resize (gint64 new_size)
-
-</div>
+            <div class="mapi-prototype">mono_profiler_gc_heap_resize</div>
             <p />
         </div><!--mapi-description -->
     </div><!--height container -->

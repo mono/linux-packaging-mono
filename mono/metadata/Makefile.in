@@ -152,13 +152,13 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
 	opcodes.c property-bag.h property-bag.c w32socket.c \
 	w32socket.h w32socket-internals.h w32process.c w32process.h \
-	w32process-internals.h profiler.c profiler-private.h rand.h \
-	rand.c remoting.h remoting.c runtime.c mono-security.c \
-	security.h security-core-clr.c security-core-clr.h \
-	security-manager.c security-manager.h string-icalls.c \
-	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
-	threads-types.h threadpool.c threadpool.h \
-	threadpool-worker-default.c threadpool-worker.h \
+	w32process-internals.h profiler.c profiler-events.h \
+	profiler-private.h rand.h rand.c remoting.h remoting.c \
+	runtime.c mono-security.c security.h security-core-clr.c \
+	security-core-clr.h security-manager.c security-manager.h \
+	string-icalls.c string-icalls.h sysmath.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
@@ -328,13 +328,13 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
 	opcodes.c property-bag.h property-bag.c w32socket.c \
 	w32socket.h w32socket-internals.h w32process.c w32process.h \
-	w32process-internals.h profiler.c profiler-private.h rand.h \
-	rand.c remoting.h remoting.c runtime.c mono-security.c \
-	security.h security-core-clr.c security-core-clr.h \
-	security-manager.c security-manager.h string-icalls.c \
-	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
-	threads-types.h threadpool.c threadpool.h \
-	threadpool-worker-default.c threadpool-worker.h \
+	w32process-internals.h profiler.c profiler-events.h \
+	profiler-private.h rand.h rand.c remoting.h remoting.c \
+	runtime.c mono-security.c security.h security-core-clr.c \
+	security-core-clr.h security-manager.c security-manager.h \
+	string-icalls.c string-icalls.h sysmath.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
@@ -482,13 +482,13 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
 	opcodes.c property-bag.h property-bag.c w32socket.c \
 	w32socket.h w32socket-internals.h w32process.c w32process.h \
-	w32process-internals.h profiler.c profiler-private.h rand.h \
-	rand.c remoting.h remoting.c runtime.c mono-security.c \
-	security.h security-core-clr.c security-core-clr.h \
-	security-manager.c security-manager.h string-icalls.c \
-	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
-	threads-types.h threadpool.c threadpool.h \
-	threadpool-worker-default.c threadpool-worker.h \
+	w32process-internals.h profiler.c profiler-events.h \
+	profiler-private.h rand.h rand.c remoting.h remoting.c \
+	runtime.c mono-security.c security.h security-core-clr.c \
+	security-core-clr.h security-manager.c security-manager.h \
+	string-icalls.c string-icalls.h sysmath.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
@@ -662,13 +662,13 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	number-formatter.h number-ms.c number-ms.h object-internals.h \
 	opcodes.c property-bag.h property-bag.c w32socket.c \
 	w32socket.h w32socket-internals.h w32process.c w32process.h \
-	w32process-internals.h profiler.c profiler-private.h rand.h \
-	rand.c remoting.h remoting.c runtime.c mono-security.c \
-	security.h security-core-clr.c security-core-clr.h \
-	security-manager.c security-manager.h string-icalls.c \
-	string-icalls.h sysmath.h sysmath.c tabledefs.h threads.c \
-	threads-types.h threadpool.c threadpool.h \
-	threadpool-worker-default.c threadpool-worker.h \
+	w32process-internals.h profiler.c profiler-events.h \
+	profiler-private.h rand.h rand.c remoting.h remoting.c \
+	runtime.c mono-security.c security.h security-core-clr.c \
+	security-core-clr.h security-manager.c security-manager.h \
+	string-icalls.c string-icalls.h sysmath.h sysmath.c \
+	tabledefs.h threads.c threads-types.h threadpool.c \
+	threadpool.h threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
 	dynamic-stream-internals.h reflection-cache.h \
@@ -1287,6 +1287,7 @@ common_sources = \
 	w32process.h		\
 	w32process-internals.h		\
 	profiler.c		\
+	profiler-events.h	\
 	profiler-private.h	\
 	rand.h			\
 	rand.c			\
