@@ -1052,6 +1052,7 @@ namespace Mono.Security.Interface
         System.Threading.Tasks.Task ShutdownAsync();
         void Write(byte[] buffer);
         void Write(byte[] buffer, int offset, int count);
+        System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken);
     }
     public partial interface IMonoTlsEventSink
     {
