@@ -2,6 +2,7 @@
 #define __MONO_PROFLOG_H__
 
 #include <glib.h>
+#define MONO_PROFILER_UNSTABLE_GC_ROOTS
 #include <mono/metadata/profiler.h>
 
 #define BUF_ID 0x4D504C01
@@ -67,6 +68,7 @@
                added an image pointer field to assembly load events
                added an exception object field to TYPE_CLAUSE
                class unload events no longer exist (they were never emitted)
+               removed type field from TYPE_SAMPLE_HIT
  */
 
 enum {
@@ -160,19 +162,6 @@ enum {
 	MONO_PROFILER_GC_HANDLE_CREATED,
 	MONO_PROFILER_GC_HANDLE_DESTROYED,
 };
-
-// Sampling sources
-// Unless you have compiled with --enable-perf-events, only SAMPLE_CYCLES is available
-enum {
-	SAMPLE_CYCLES = 1,
-	SAMPLE_INSTRUCTIONS,
-	SAMPLE_CACHE_MISSES,
-	SAMPLE_CACHE_REFS,
-	SAMPLE_BRANCHES,
-	SAMPLE_BRANCH_MISSES,
-	SAMPLE_LAST
-};
-
 
 // If you alter MAX_FRAMES, you may need to alter SAMPLE_BLOCK_SIZE too.
 #define MAX_FRAMES 32
