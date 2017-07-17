@@ -186,6 +186,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_counters_register@Base 4.1.0.1738
  mono_counters_register_with_size@Base 4.1.0.1738
  mono_counters_sample@Base 4.1.0.1738
+ mono_cpu_count@Base 5.5.0.426
  mono_custom_attrs_construct@Base 4.1.0.1738
  mono_custom_attrs_free@Base 4.1.0.1738
  mono_custom_attrs_from_assembly@Base 4.1.0.1738
@@ -488,6 +489,8 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_install_load_aot_data_hook@Base 4.3.2.147
  mono_install_runtime_cleanup@Base 4.1.0.1738
  mono_install_unhandled_exception_hook@Base 4.1.0.1738
+ mono_internal_current_level@Base 5.5.0.426
+ mono_internal_current_mask@Base 5.5.0.426
  mono_is_debugger_attached@Base 4.1.0.1738
  mono_jit_cleanup@Base 4.1.0.1738
  mono_jit_exec@Base 4.1.0.1738
@@ -933,6 +936,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_trace_set_mask_string@Base 4.1.0.1738
  mono_trace_set_print_handler@Base 4.1.0.1738
  mono_trace_set_printerr_handler@Base 4.1.0.1738
+ mono_tracev_inner@Base 5.5.0.426
  mono_type_create_from_typespec@Base 4.1.0.1738
  mono_type_full_name@Base 4.1.0.1738
  mono_type_generic_inst_is_valuetype@Base 4.1.0.1738
