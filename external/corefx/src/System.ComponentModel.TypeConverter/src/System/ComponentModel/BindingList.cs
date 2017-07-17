@@ -2,23 +2,20 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Scope = "type", Target = "System.ComponentModel.BindingList`1")]
+using System.Reflection;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+
+[assembly: SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Scope = "type", Target = "System.ComponentModel.BindingList`1")]
 
 namespace System.ComponentModel
 {
-    using System;
-    using System.Reflection;
-    using System.Collections;
-    using System.Collections.ObjectModel;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Diagnostics;
-
-    /// <summary>
-    /// </summary>
     [Serializable]
 #if !MONO
-    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+    [TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
 #endif
     public class BindingList<T> : Collection<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents
     {
@@ -48,16 +45,10 @@ namespace System.ComponentModel
 
         #region Constructors
 
-        /// <summary>
-        ///     Default constructor.
-        /// </summary>
-        public BindingList()
-        {
-            Initialize();
-        }
+        public BindingList() => Initialize();
 
         /// <summary>
-        ///     Constructor that allows substitution of the inner list with a custom list.
+        /// Constructor that allows substitution of the inner list with a custom list.
         /// </summary>
         public BindingList(IList<T> list) : base(list)
         {
@@ -94,12 +85,8 @@ namespace System.ComponentModel
                     return true;
                 }
 
-                if (itemType.GetConstructor(BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance, null, Array.Empty<Type>(), null) != null)
-                {
-                    return true;
-                }
-
-                return false;
+                const BindingFlags BindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance;
+                return itemType.GetConstructor(BindingFlags, null, Array.Empty<Type>(), null) != null;
             }
         }
 
@@ -108,7 +95,7 @@ namespace System.ComponentModel
         #region AddingNew event
 
         /// <summary>
-        ///     Event that allows a custom item to be provided as the new item added to the list by AddNew().
+        /// Event that allows a custom item to be provided as the new item added to the list by AddNew().
         /// </summary>
         public event AddingNewEventHandler AddingNew
         {
@@ -133,12 +120,9 @@ namespace System.ComponentModel
         }
 
         /// <summary>
-        ///     Raises the AddingNew event.
+        /// Raises the AddingNew event.
         /// </summary>
-        protected virtual void OnAddingNew(AddingNewEventArgs e)
-        {
-            _onAddingNew?.Invoke(this, e);
-        }
+        protected virtual void OnAddingNew(AddingNewEventArgs e) => _onAddingNew?.Invoke(this, e);
 
         // Private helper method
         private object FireAddingNew()
@@ -153,54 +137,27 @@ namespace System.ComponentModel
         #region ListChanged event
 
         /// <summary>
-        ///     Event that reports changes to the list or to items in the list.
+        /// Event that reports changes to the list or to items in the list.
         /// </summary>
         public event ListChangedEventHandler ListChanged
         {
-            add
-            {
-                _onListChanged += value;
-            }
-            remove
-            {
-                _onListChanged -= value;
-            }
+            add => _onListChanged += value;
+            remove => _onListChanged -= value;
         }
-        
 
         /// <summary>
-        ///     Raises the ListChanged event.
+        /// Raises the ListChanged event.
         /// </summary>
-        protected virtual void OnListChanged(ListChangedEventArgs e)
-        {
-            _onListChanged?.Invoke(this, e);
-        }
+        protected virtual void OnListChanged(ListChangedEventArgs e) => _onListChanged?.Invoke(this, e);
 
         public bool RaiseListChangedEvents
         {
-            get
-            {
-                return raiseListChangedEvents;
-            }
-
-            set
-            {
-                if (raiseListChangedEvents != value)
-                {
-                    raiseListChangedEvents = value;
-                }
-            }
+            get => raiseListChangedEvents;
+            set => raiseListChangedEvents = value;
         }
 
-        /// <summary>
-        /// </summary>
-        public void ResetBindings()
-        {
-            FireListChanged(ListChangedType.Reset, -1);
-        }
+        public void ResetBindings() => FireListChanged(ListChangedType.Reset, -1);
 
-        /// <summary>
-        /// </summary>
         public void ResetItem(int position)
         {
             FireListChanged(ListChangedType.ItemChanged, position);
@@ -292,7 +249,7 @@ namespace System.ComponentModel
         #region ICancelAddNew interface
 
         /// <summary>
-        ///     If item added using AddNew() is still cancellable, then remove that item from the list.
+        /// If item added using AddNew() is still cancellable, then remove that item from the list.
         /// </summary>
         public virtual void CancelNew(int itemIndex)
         {
@@ -304,7 +261,7 @@ namespace System.ComponentModel
         }
 
         /// <summary>
-        ///     If item added using AddNew() is still cancellable, then commit that item.
+        /// If item added using AddNew() is still cancellable, then commit that item.
         /// </summary>
         public virtual void EndNew(int itemIndex)
         {
@@ -319,18 +276,15 @@ namespace System.ComponentModel
         #region IBindingList interface
 
         /// <summary>
-        ///     Adds a new item to the list. Calls <see cref='AddNewCore'> to create and add the item.
+        /// Adds a new item to the list. Calls <see cref='AddNewCore'> to create and add the item.
         ///
-        ///     Add operations are cancellable via the <see cref='ICancelAddNew'> interface. The position of the
-        ///     new item is tracked until the add operation is either cancelled by a call to <see cref='CancelNew'>,
-        ///     explicitly commited by a call to <see cref='EndNew'>, or implicitly commmited some other operation
-        ///     that changes the contents of the list (such as an Insert or Remove). When an add operation is
+        /// Add operations are cancellable via the <see cref='ICancelAddNew'> interface. The position of the
+        /// new item is tracked until the add operation is either cancelled by a call to <see cref='CancelNew'>,
+        /// explicitly commited by a call to <see cref='EndNew'>, or implicitly commmited some other operation
+        ///   changes the contents of the list (such as an Insert or Remove). When an add operation is
         ///     cancelled, the new item is removed from the list.
         /// </summary>
-        public T AddNew()
-        {
-            return (T)((this as IBindingList).AddNew());
-        }
+        public T AddNew() => (T)((this as IBindingList).AddNew());
 
         object IBindingList.AddNew()
         {
@@ -347,13 +301,13 @@ namespace System.ComponentModel
         private bool AddingNewHandled => _onAddingNew != null && _onAddingNew.GetInvocationList().Length > 0;
 
         /// <summary>
-        ///     Creates a new item and adds it to the list.
+        /// Creates a new item and adds it to the list.
         ///
-        ///     The base implementation raises the AddingNew event to allow an event handler to
-        ///     supply a custom item to add to the list. Otherwise an item of type T is created.
-        ///     The new item is then added to the end of the list.
+        /// The base implementation raises the AddingNew event to allow an event handler to
+        /// supply a custom item to add to the list. Otherwise an item of type T is created.
+        /// The new item is then added to the end of the list.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2113:SecureLateBindingMethods")]
+        [SuppressMessage("Microsoft.Security", "CA2113:SecureLateBindingMethods")]
         protected virtual object AddNewCore()
         {
             // Allow event handler to supply the new item for us
@@ -380,22 +334,22 @@ namespace System.ComponentModel
         {
             get
             {
-                //If the user set AllowNew, return what they set.  If we have a default constructor, allowNew will be 
-                //true and we should just return true.
+                // If the user set AllowNew, return what they set.  If we have a default constructor, allowNew will be 
+                // true and we should just return true.
                 if (userSetAllowNew || allowNew)
                 {
                     return allowNew;
                 }
-                //Even if the item doesn't have a default constructor, the user can hook AddingNew to provide an item.
-                //If there's a handler for this, we should allow new.
+                // Even if the item doesn't have a default constructor, the user can hook AddingNew to provide an item.
+                // If there's a handler for this, we should allow new.
                 return AddingNewHandled;
             }
             set
             {
                 bool oldAllowNewValue = AllowNew;
                 userSetAllowNew = true;
-                //Note that we don't want to set allowNew only if AllowNew didn't match value,
-                //since AllowNew can depend on onAddingNew handler
+                // Note that we don't want to set allowNew only if AllowNew didn't match value,
+                // since AllowNew can depend on onAddingNew handler
                 allowNew = value;
                 if (oldAllowNewValue != value)
                 {
@@ -404,17 +358,11 @@ namespace System.ComponentModel
             }
         }
 
-        /* private */
         bool IBindingList.AllowNew => AllowNew;
 
-        /// <summary>
-        /// </summary>
         public bool AllowEdit
         {
-            get
-            {
-                return allowEdit;
-            }
+            get => allowEdit;
             set
             {
                 if (allowEdit != value)
@@ -425,17 +373,11 @@ namespace System.ComponentModel
             }
         }
 
-        /* private */
         bool IBindingList.AllowEdit => AllowEdit;
 
-        /// <summary>
-        /// </summary>
         public bool AllowRemove
         {
-            get
-            {
-                return allowRemove;
-            }
+            get => allowRemove;
             set
             {
                 if (allowRemove != value)
@@ -446,7 +388,6 @@ namespace System.ComponentModel
             }
         }
 
-        /* private */
         bool IBindingList.AllowRemove => AllowRemove;
 
         bool IBindingList.SupportsChangeNotification => SupportsChangeNotificationCore;
@@ -483,20 +424,14 @@ namespace System.ComponentModel
             throw new NotSupportedException();
         }
 
-        void IBindingList.RemoveSort()
-        {
-            RemoveSortCore();
-        }
+        void IBindingList.RemoveSort() => RemoveSortCore();
 
         protected virtual void RemoveSortCore()
         {
             throw new NotSupportedException();
         }
 
-        int IBindingList.Find(PropertyDescriptor prop, object key)
-        {
-            return FindCore(prop, key);
-        }
+        int IBindingList.Find(PropertyDescriptor prop, object key) => FindCore(prop, key);
 
         protected virtual int FindCore(PropertyDescriptor prop, object key)
         {
@@ -519,10 +454,8 @@ namespace System.ComponentModel
 
         private void HookPropertyChanged(T item)
         {
-            INotifyPropertyChanged inpc = (item as INotifyPropertyChanged);
-
             // Note: inpc may be null if item is null, so always check.
-            if (null != inpc)
+            if (item is INotifyPropertyChanged inpc)
             {
                 if (_propertyChangedEventHandler == null)
                 {
@@ -534,10 +467,8 @@ namespace System.ComponentModel
 
         private void UnhookPropertyChanged(T item)
         {
-            INotifyPropertyChanged inpc = (item as INotifyPropertyChanged);
-
             // Note: inpc may be null if item is null, so always check.
-            if (null != inpc && null != _propertyChangedEventHandler)
+            if (item is INotifyPropertyChanged inpc && _propertyChangedEventHandler != null)
             {
                 inpc.PropertyChanged -= _propertyChangedEventHandler;
             }
@@ -555,7 +486,7 @@ namespace System.ComponentModel
                 else
                 {
                     // The change event is broken should someone pass an item to us that is not
-                    // of type T.  Still, if they do so, detect it and ignore.  It is an incorrect
+                    // of type T. Still, if they do so, detect it and ignore. It is an incorrect
                     // and rare enough occurrence that we do not want to slow the mainline path
                     // with "is" checks.
                     T item;
@@ -570,7 +501,7 @@ namespace System.ComponentModel
                         return;
                     }
 
-                    // Find the position of the item.  This should never be -1.  If it is,
+                    // Find the position of the item. This should never be -1. If it is,
                     // somehow the item has been removed from our list without our knowledge.
                     int pos = _lastChangeIndex;
 
@@ -582,7 +513,8 @@ namespace System.ComponentModel
 
                     if (pos == -1)
                     {
-                        Debug.Fail("Item is no longer in our list but we are still getting change notifications.");
+                        // The item was removed from the list but we still get change notifications or
+                        // the sender is invalid and was never added to the list.
                         UnhookPropertyChanged(item);
                         ResetBindings();
                     }
@@ -598,7 +530,7 @@ namespace System.ComponentModel
 
                         PropertyDescriptor pd = _itemTypeProperties.Find(e.PropertyName, true);
 
-                        // Create event args.  If there was no matching property descriptor,
+                        // Create event args. If there was no matching property descriptor,
                         // we raise the list changed anyway.
                         ListChangedEventArgs args = new ListChangedEventArgs(ListChangedType.ItemChanged, pos, pd);
 
@@ -614,9 +546,9 @@ namespace System.ComponentModel
         #region IRaiseItemChangedEvents interface
 
         /// <summary>
-        ///     Returns false to indicate that BindingList<T> does NOT raise ListChanged events
-        ///     of type ItemChanged as a result of property changes on individual list items
-        ///     unless those items support INotifyPropertyChanged
+        /// Returns false to indicate that BindingList<T> does NOT raise ListChanged events
+        /// of type ItemChanged as a result of property changes on individual list items
+        /// unless those items support INotifyPropertyChanged.
         /// </summary>
         bool IRaiseItemChangedEvents.RaisesItemChangedEvents => raiseItemChangedEvents;
 
