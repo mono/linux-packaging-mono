@@ -14,6 +14,11 @@
     <Compile Include="BrushesTests.cs" />
     <Compile Include="CharacterRangeTests.cs" />
     <Compile Include="ColorTranslatorTests.cs" />
+    <Compile Include="Drawing2D\AdjustableArrowCapTests.cs" />
+    <Compile Include="Drawing2D\CustomLineCapTests.cs" />
+    <Compile Include="Drawing2D\GraphicsPathIteratorTests.cs" />
+    <Compile Include="Drawing2D\GraphicsPathTests.cs" />
+    <Compile Include="Drawing2D\PathGradientBrushTests.cs" />
     <Compile Include="FontTests.cs" />
     <Compile Include="FontFamilyTests.cs" />
     <Compile Include="GraphicsTests.cs" />
@@ -25,6 +30,8 @@
     <Compile Include="Imaging\BitmapDataTests.cs" />
     <Compile Include="Imaging\ColorMapTests.cs" />
     <Compile Include="Imaging\ColorMatrixTests.cs" />
+    <Compile Include="Imaging\EncoderParametersTests.cs" />
+    <Compile Include="Imaging\EncoderParameterTests.cs" />
     <Compile Include="Imaging\EncoderTests.cs" />
     <Compile Include="Imaging\FrameDimensionTests.cs" />
     <Compile Include="Imaging\ImageCodecInfoTests.cs" />
@@ -35,6 +42,7 @@
     <Compile Include="SolidBrushTests.cs" />
     <Compile Include="StringFormatTests.cs" />
     <Compile Include="SystemBrushesTests.cs" />
+    <Compile Include="SystemFontsTests.cs" />
     <Compile Include="SystemIconsTests.cs" />
     <Compile Include="SystemPensTest.cs" />
     <Compile Include="TextureBrushTests.cs" />
@@ -49,9 +57,6 @@
     <Compile Include="Text\PrivateFontCollectionTests.cs" />
     <Compile Include="$(CommonTestPath)\System\Diagnostics\DebuggerAttributes.cs">
       <Link>Common\System\Diagnostics\DebuggerAttributes.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonTestPath)\System\AssertExtensions.cs">
-      <Link>Common\System\AssertExtensions.cs</Link>
     </Compile>
     <Compile Include="$(CommonTestPath)\System\PlatformDetection.cs">
       <Link>Common\System\PlatformDetection.cs</Link>
