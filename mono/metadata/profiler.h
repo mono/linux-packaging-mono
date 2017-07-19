@@ -27,9 +27,9 @@ MONO_BEGIN_DECLS
  * the module after it has been loaded. If the specified module has already
  * been loaded, this function has no effect.
  *
- * A module should declare an entry point like so:
+ * A module called foo should declare an entry point like so:
  *
- * void mono_profiler_init (const char *desc)
+ * void mono_profiler_init_foo (const char *desc)
  * {
  * }
  *
@@ -141,7 +141,7 @@ MONO_API mono_bool mono_profiler_enable_sampling (MonoProfilerHandle handle);
  *
  * This function is async safe.
  */
-MONO_API mono_bool mono_profiler_set_sample_mode (MonoProfilerHandle handle, MonoProfilerSampleMode mode, uint64_t freq);
+MONO_API mono_bool mono_profiler_set_sample_mode (MonoProfilerHandle handle, MonoProfilerSampleMode mode, uint32_t freq);
 
 /*
  * Retrieves the current sampling mode and/or frequency (in Hz). Returns TRUE if
@@ -150,7 +150,7 @@ MONO_API mono_bool mono_profiler_set_sample_mode (MonoProfilerHandle handle, Mon
  *
  * This function is async safe.
  */
-MONO_API mono_bool mono_profiler_get_sample_mode (MonoProfilerHandle handle, MonoProfilerSampleMode *mode, uint64_t *freq);
+MONO_API mono_bool mono_profiler_get_sample_mode (MonoProfilerHandle handle, MonoProfilerSampleMode *mode, uint32_t *freq);
 
 /*
  * Enables instrumentation of GC allocations. This is necessary so that managed
