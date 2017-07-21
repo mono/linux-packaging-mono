@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.5.0.451],
+AC_INIT(mono, [5.5.0.475],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -816,7 +816,7 @@ AC_ARG_WITH(orbis,               [  --with-orbis=yes,no                 If you w
 AC_ARG_WITH(unreal,              [  --with-unreal=yes,no                If you want to build the Unreal assemblies (defaults to no)], [], [with_unreal=default])
 
 
-AC_ARG_WITH(runtime_preset, [  --with-runtime_preset=net_4_x,all,aot,hybridaot,fullaot,bitcode   Which default profile to build (defaults to net_4_x)],  [], [with_runtime_preset=net_4_x])
+AC_ARG_WITH(runtime_preset, [  --with-runtime_preset=net_4_x,all,aot,hybridaot,fullaot,bitcode,unreal   Which default profile to build (defaults to net_4_x)],  [], [with_runtime_preset=net_4_x])
 
 dnl
 dnl Profile defaults
@@ -928,11 +928,11 @@ elif test x$with_runtime_preset = xorbis; then
 elif test x$with_runtime_preset = xunreal; then
    DISABLE_MCS_DOCS_default=yes
    with_unreal_default=yes
-   TEST_PROFILE=ounreal
+   TEST_PROFILE=unreal
 
    mono_feature_disable_com='yes'
    mono_feature_disable_remoting='yes'
-   mono_feature_disable_appdomains='yes'
+   mono_feature_disable_appdomains='no'
 
    AOT_BUILD_FLAGS="--runtime=mobile --aot=hybrid,$INVARIANT_AOT_OPTIONS"
    AOT_RUN_FLAGS="--runtime=mobile --hybrid-aot"
@@ -3531,6 +3531,8 @@ elif test "x$sizeof_register" = "x8"; then
 else
    AC_DEFINE(SIZEOF_REGISTER,SIZEOF_VOID_P,[size of machine integer registers])
 fi
+
+AC_SUBST(SIZEOF_VOID_P,[$ac_cv_sizeof_void_p])
 
 if test "x$target_byte_order" = "xG_BIG_ENDIAN"; then
    AC_DEFINE(TARGET_BYTE_ORDER,G_BIG_ENDIAN,[byte order of target])
