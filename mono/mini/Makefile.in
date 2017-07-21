@@ -94,7 +94,7 @@ target_triplet = @target@
 @LOADED_LLVM_TRUE@am__append_1 = libmono-llvm.la
 @LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
 @BITCODE_TRUE@am__append_3 = -no-undefined
-@FULL_AOT_TESTS_TRUE@am__append_4 = 
+@FULL_AOT_TESTS_TRUE@am__append_4 = builtin-types.exe
 
 # Skip aoting the tests that aren't compiled 
 # on the full aot profiles because they're skipped
@@ -744,6 +744,7 @@ SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
 SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
+SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
@@ -1172,6 +1173,7 @@ test_sources = \
 	basic-calls.cs 		\
 	basic-long.cs 		\
 	bench.cs 		\
+	builtin-types.cs 	\
 	objects.cs 		\
 	arrays.cs		\
 	basic-float.cs		\
@@ -1197,6 +1199,7 @@ regtests_UNIVERSAL = \
 	basic-float.exe \
 	basic-long.exe \
 	basic-calls.exe \
+	builtin-types.exe \
 	objects.exe \
 	arrays.exe \
 	basic-math.exe \
@@ -3330,6 +3333,9 @@ basic-simd.exe: basic-simd.cs TestDriver.dll
 basic-vectors.exe: basic-vectors.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/System.Numerics.dll -r:$(CLASS)/System.Numerics.Vectors.dll
 
+builtin-types.exe: builtin-types.cs TestDriver.dll
+	$(MCS) -out:$@ $(CSFLAGS) -define:ARCH_$(shell echo $$((8 * $(SIZEOF_VOID_P)))) $< -r:TestDriver.dll
+
 nacl.exe: nacl.cs TestDriver.dll
 	$(MCS) -out:$@ $(CSFLAGS) $< -r:TestDriver.dll -r:$(CLASS)/Mono.Simd.dll
 
@@ -3492,7 +3498,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/574f999\"" > version.h
+	echo "#define FULL_VERSION \"master/061f782\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
