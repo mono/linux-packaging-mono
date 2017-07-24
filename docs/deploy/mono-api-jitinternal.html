@@ -630,14 +630,14 @@ mono_mempool_new (void)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">void
+            <div class="mapi-prototype">MONO_NO_SANITIZE_THREAD
+void
 mono_mempool_destroy (MonoMemPool *pool)
 
 </div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>pool</i></td><td> the memory pool to destroy</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Free all memory associated with this pool.</div>
+             <div class="mapi-section">Description</div>
+             <div> 	<p /> 	   clang's ThreadSanitizer detects races of total_bytes_allocated and pool-&gt;d.allocated throughout the functions 	     * mono_mempool_alloc 	     * mono_mempool_new_size 	     * mono_mempool_destroy 	   while these races could lead to wrong values, total_bytes_allocated is just used for debugging / reporting and since 	   the mempool.c functions are called quite often, a discussion led the the conclusion of ignoring these races: 	   https://bugzilla.xamarin.com/show_bug.cgi?id=57936 	<p /> 	 \param pool the memory pool to destroy 	<p /> 	 Free all memory associated with this pool.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -651,17 +651,17 @@ mono_mempool_destroy (MonoMemPool *pool)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">gpointer
+            <div class="mapi-prototype">MONO_NO_SANITIZE_THREAD
+gpointer
 mono_mempool_alloc (MonoMemPool *pool, guint size)
 
 </div>
             <p />
-            <div class="mapi-section">Parameters</div>
-            <table class="mapi-parameters"><tbody><tr><td><i>pool</i></td><td> the memory pool to use</td></tr><tr><td><i>size</i></td><td> size of the memory block</td></tr></tbody></table>             <div class="mapi-section">Return value</div>
+             <div class="mapi-section">Return value</div>
              <div>	 the address of a newly allocated memory block.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Allocates a new block of memory in <i>pool</i> . 	<p /></div>
+             <div> 	<p /> 	   clang's ThreadSanitizer detects races of total_bytes_allocated and pool-&gt;d.allocated throughout the functions 	     * mono_mempool_alloc 	     * mono_mempool_new_size 	     * mono_mempool_destroy 	   while these races could lead to wrong values, total_bytes_allocated is just used for debugging / reporting and since 	   the mempool.c functions are called quite often, a discussion led the the conclusion of ignoring these races: 	   https://bugzilla.xamarin.com/show_bug.cgi?id=57936 	<p /> 	 \param pool the memory pool to use 	 \param size size of the memory block 	<p /> 	 Allocates a new block of memory in <i>pool</i> . 	<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

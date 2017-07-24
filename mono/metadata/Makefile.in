@@ -153,11 +153,11 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	opcodes.c property-bag.h property-bag.c w32socket.c \
 	w32socket.h w32socket-internals.h w32process.c w32process.h \
 	w32process-internals.h profiler.c profiler-events.h \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.h sysmath.c \
-	tabledefs.h threads.c threads-types.h threadpool.c \
+	profiler-legacy.c profiler-private.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.h \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
 	threadpool.h threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
@@ -241,6 +241,7 @@ am__objects_5 = $(am__objects_4) libmonoruntime_static_la-assembly.lo \
 	libmonoruntime_static_la-w32socket.lo \
 	libmonoruntime_static_la-w32process.lo \
 	libmonoruntime_static_la-profiler.lo \
+	libmonoruntime_static_la-profiler-legacy.lo \
 	libmonoruntime_static_la-rand.lo \
 	libmonoruntime_static_la-remoting.lo \
 	libmonoruntime_static_la-runtime.lo \
@@ -329,11 +330,11 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	opcodes.c property-bag.h property-bag.c w32socket.c \
 	w32socket.h w32socket-internals.h w32process.c w32process.h \
 	w32process-internals.h profiler.c profiler-events.h \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.h sysmath.c \
-	tabledefs.h threads.c threads-types.h threadpool.c \
+	profiler-legacy.c profiler-private.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.h \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
 	threadpool.h threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
@@ -402,7 +403,8 @@ am__objects_14 = $(am__objects_13) libmonoruntime_la-assembly.lo \
 	libmonoruntime_la-mono-route.lo libmonoruntime_la-number-ms.lo \
 	libmonoruntime_la-opcodes.lo libmonoruntime_la-property-bag.lo \
 	libmonoruntime_la-w32socket.lo libmonoruntime_la-w32process.lo \
-	libmonoruntime_la-profiler.lo libmonoruntime_la-rand.lo \
+	libmonoruntime_la-profiler.lo \
+	libmonoruntime_la-profiler-legacy.lo libmonoruntime_la-rand.lo \
 	libmonoruntime_la-remoting.lo libmonoruntime_la-runtime.lo \
 	libmonoruntime_la-mono-security.lo \
 	libmonoruntime_la-security-core-clr.lo \
@@ -483,11 +485,11 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	opcodes.c property-bag.h property-bag.c w32socket.c \
 	w32socket.h w32socket-internals.h w32process.c w32process.h \
 	w32process-internals.h profiler.c profiler-events.h \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.h sysmath.c \
-	tabledefs.h threads.c threads-types.h threadpool.c \
+	profiler-legacy.c profiler-private.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.h \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
 	threadpool.h threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
@@ -571,6 +573,7 @@ am__objects_22 = $(am__objects_21) \
 	libmonoruntimesgen_static_la-w32socket.lo \
 	libmonoruntimesgen_static_la-w32process.lo \
 	libmonoruntimesgen_static_la-profiler.lo \
+	libmonoruntimesgen_static_la-profiler-legacy.lo \
 	libmonoruntimesgen_static_la-rand.lo \
 	libmonoruntimesgen_static_la-remoting.lo \
 	libmonoruntimesgen_static_la-runtime.lo \
@@ -663,11 +666,11 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	opcodes.c property-bag.h property-bag.c w32socket.c \
 	w32socket.h w32socket-internals.h w32process.c w32process.h \
 	w32process-internals.h profiler.c profiler-events.h \
-	profiler-private.h rand.h rand.c remoting.h remoting.c \
-	runtime.c mono-security.c security.h security-core-clr.c \
-	security-core-clr.h security-manager.c security-manager.h \
-	string-icalls.c string-icalls.h sysmath.h sysmath.c \
-	tabledefs.h threads.c threads-types.h threadpool.c \
+	profiler-legacy.c profiler-private.h rand.h rand.c remoting.h \
+	remoting.c runtime.c mono-security.c security.h \
+	security-core-clr.c security-core-clr.h security-manager.c \
+	security-manager.h string-icalls.c string-icalls.h sysmath.h \
+	sysmath.c tabledefs.h threads.c threads-types.h threadpool.c \
 	threadpool.h threadpool-worker-default.c threadpool-worker.h \
 	threadpool-io.c threadpool-io.h verify.c verify-internals.h \
 	wrapper-types.h dynamic-image-internals.h dynamic-stream.c \
@@ -750,6 +753,7 @@ am__objects_30 = $(am__objects_29) libmonoruntimesgen_la-assembly.lo \
 	libmonoruntimesgen_la-w32socket.lo \
 	libmonoruntimesgen_la-w32process.lo \
 	libmonoruntimesgen_la-profiler.lo \
+	libmonoruntimesgen_la-profiler-legacy.lo \
 	libmonoruntimesgen_la-rand.lo \
 	libmonoruntimesgen_la-remoting.lo \
 	libmonoruntimesgen_la-runtime.lo \
@@ -1289,6 +1293,7 @@ common_sources = \
 	w32process-internals.h		\
 	profiler.c		\
 	profiler-events.h	\
+	profiler-legacy.c	\
 	profiler-private.h	\
 	rand.h			\
 	rand.c			\
@@ -1570,6 +1575,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-number-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-opcodes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-profiler-legacy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-profiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-property-bag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-rand.Plo@am__quote@
@@ -1670,6 +1676,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-number-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-opcodes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-profiler-legacy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-profiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-property-bag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-rand.Plo@am__quote@
@@ -1767,6 +1774,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-number-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-opcodes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-profiler-legacy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-profiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-property-bag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-rand.Plo@am__quote@
@@ -1871,6 +1879,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-number-ms.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-object.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-opcodes.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-profiler-legacy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-profiler.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-property-bag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-rand.Plo@am__quote@
@@ -2393,6 +2402,13 @@ libmonoruntime_static_la-profiler.lo: profiler.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='profiler.c' object='libmonoruntime_static_la-profiler.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-profiler.lo `test -f 'profiler.c' || echo '$(srcdir)/'`profiler.c
+
+libmonoruntime_static_la-profiler-legacy.lo: profiler-legacy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-profiler-legacy.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-profiler-legacy.Tpo -c -o libmonoruntime_static_la-profiler-legacy.lo `test -f 'profiler-legacy.c' || echo '$(srcdir)/'`profiler-legacy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-profiler-legacy.Tpo $(DEPDIR)/libmonoruntime_static_la-profiler-legacy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='profiler-legacy.c' object='libmonoruntime_static_la-profiler-legacy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-profiler-legacy.lo `test -f 'profiler-legacy.c' || echo '$(srcdir)/'`profiler-legacy.c
 
 libmonoruntime_static_la-rand.lo: rand.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-rand.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-rand.Tpo -c -o libmonoruntime_static_la-rand.lo `test -f 'rand.c' || echo '$(srcdir)/'`rand.c
@@ -3101,6 +3117,13 @@ libmonoruntime_la-profiler.lo: profiler.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-profiler.lo `test -f 'profiler.c' || echo '$(srcdir)/'`profiler.c
 
+libmonoruntime_la-profiler-legacy.lo: profiler-legacy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-profiler-legacy.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-profiler-legacy.Tpo -c -o libmonoruntime_la-profiler-legacy.lo `test -f 'profiler-legacy.c' || echo '$(srcdir)/'`profiler-legacy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-profiler-legacy.Tpo $(DEPDIR)/libmonoruntime_la-profiler-legacy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='profiler-legacy.c' object='libmonoruntime_la-profiler-legacy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-profiler-legacy.lo `test -f 'profiler-legacy.c' || echo '$(srcdir)/'`profiler-legacy.c
+
 libmonoruntime_la-rand.lo: rand.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-rand.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-rand.Tpo -c -o libmonoruntime_la-rand.lo `test -f 'rand.c' || echo '$(srcdir)/'`rand.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-rand.Tpo $(DEPDIR)/libmonoruntime_la-rand.Plo
@@ -3807,6 +3830,13 @@ libmonoruntimesgen_static_la-profiler.lo: profiler.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='profiler.c' object='libmonoruntimesgen_static_la-profiler.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-profiler.lo `test -f 'profiler.c' || echo '$(srcdir)/'`profiler.c
+
+libmonoruntimesgen_static_la-profiler-legacy.lo: profiler-legacy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-profiler-legacy.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-profiler-legacy.Tpo -c -o libmonoruntimesgen_static_la-profiler-legacy.lo `test -f 'profiler-legacy.c' || echo '$(srcdir)/'`profiler-legacy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-profiler-legacy.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-profiler-legacy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='profiler-legacy.c' object='libmonoruntimesgen_static_la-profiler-legacy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-profiler-legacy.lo `test -f 'profiler-legacy.c' || echo '$(srcdir)/'`profiler-legacy.c
 
 libmonoruntimesgen_static_la-rand.lo: rand.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-rand.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-rand.Tpo -c -o libmonoruntimesgen_static_la-rand.lo `test -f 'rand.c' || echo '$(srcdir)/'`rand.c
@@ -4542,6 +4572,13 @@ libmonoruntimesgen_la-profiler.lo: profiler.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='profiler.c' object='libmonoruntimesgen_la-profiler.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-profiler.lo `test -f 'profiler.c' || echo '$(srcdir)/'`profiler.c
+
+libmonoruntimesgen_la-profiler-legacy.lo: profiler-legacy.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-profiler-legacy.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-profiler-legacy.Tpo -c -o libmonoruntimesgen_la-profiler-legacy.lo `test -f 'profiler-legacy.c' || echo '$(srcdir)/'`profiler-legacy.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-profiler-legacy.Tpo $(DEPDIR)/libmonoruntimesgen_la-profiler-legacy.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='profiler-legacy.c' object='libmonoruntimesgen_la-profiler-legacy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-profiler-legacy.lo `test -f 'profiler-legacy.c' || echo '$(srcdir)/'`profiler-legacy.c
 
 libmonoruntimesgen_la-rand.lo: rand.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-rand.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-rand.Tpo -c -o libmonoruntimesgen_la-rand.lo `test -f 'rand.c' || echo '$(srcdir)/'`rand.c
