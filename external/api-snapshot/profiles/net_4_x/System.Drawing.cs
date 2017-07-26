@@ -2068,7 +2068,6 @@ namespace System.Drawing
 }
 namespace System.Drawing.Design
 {
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class CategoryNameCollection : System.Collections.ReadOnlyCollectionBase
     {
         public CategoryNameCollection(System.Drawing.Design.CategoryNameCollection value) { }

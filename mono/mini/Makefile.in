@@ -3498,7 +3498,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/1d14ecc\"" > version.h
+	echo "#define FULL_VERSION \"master/211594f\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
