@@ -41,10 +41,11 @@ class GlibPackage (GnomeXzPackage):
                     'patch --ignore-whitespace -p1 < %{local_sources[' + str(p) + ']}')
 
     def arch_build(self, arch):
+        Package.profile.arch_build(arch, self)
         if arch == 'darwin-universal':  # multi-arch  build pass
             self.local_ld_flags = ['-arch i386', '-arch x86_64']
             self.local_gcc_flags = ['-arch i386', '-arch x86_64', '-Os']
-            self.local_configure_flags = ['--disable-dependency-tracking']
+            self.local_configure_flags.extend(['--disable-dependency-tracking'])
         else:
             Package.arch_build(self, arch)
 
