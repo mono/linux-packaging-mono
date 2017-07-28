@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-07-26 08:49+0000\n"
+"POT-Creation-Date: 2017-07-28 08:50+0000\n"
 "PO-Revision-Date: 2009-03-01 07:52-0300\n"
 "Last-Translator: Rodrigo Luiz Marques Flores <mail@rodrigoflores.org>\n"
 "Language-Team: pt-BR <mono-list@lists.ximian.com>\n"
@@ -2150,7 +2150,7 @@ msgstr ""
 "A palavra chave contextual \"var\" deve apenas aparecer dentro de uma "
 "declaração de variável local"
 
-#: mcs/mcs/enum.cs:144
+#: mcs/mcs/enum.cs:178
 #, fuzzy, csharp-format
 msgid ""
 "The enumerator value `{0}' is outside the range of enumerator underlying "
@@ -2158,12 +2158,12 @@ msgid ""
 msgstr ""
 "O valor enumerador \"{0}\" é muito grande para caber no seu tipo \"{1}\""
 
-#: mcs/mcs/enum.cs:213
+#: mcs/mcs/enum.cs:247
 #, csharp-format
 msgid "An item in an enumeration cannot have an identifier `{0}'"
 msgstr "Um ítem em uma enumeração não pode ter um identificador \"{0}\""
 
-#: mcs/mcs/enum.cs:224
+#: mcs/mcs/enum.cs:258
 msgid "Type byte, sbyte, short, ushort, int, uint, long or ulong expected"
 msgstr "Tipo byte, sbyte, short, ushort, int, uint, long ou ulong esperado"
 
