@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mono 2.1\n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-07-26 08:49+0000\n"
+"POT-Creation-Date: 2017-07-28 08:50+0000\n"
 "PO-Revision-Date: 2008-09-19 13:28-0400\n"
 "Last-Translator: Miguel de Icaza <miguel@novell.com>\n"
 "Language-Team: es <mono-list@lists.ximian.com>\n"
@@ -1985,19 +1985,19 @@ msgid ""
 "declaration"
 msgstr ""
 
-#: mcs/mcs/enum.cs:144
+#: mcs/mcs/enum.cs:178
 #, csharp-format
 msgid ""
 "The enumerator value `{0}' is outside the range of enumerator underlying "
 "type `{1}'"
 msgstr ""
 
-#: mcs/mcs/enum.cs:213
+#: mcs/mcs/enum.cs:247
 #, csharp-format
 msgid "An item in an enumeration cannot have an identifier `{0}'"
 msgstr ""
 
-#: mcs/mcs/enum.cs:224
+#: mcs/mcs/enum.cs:258
 msgid "Type byte, sbyte, short, ushort, int, uint, long or ulong expected"
 msgstr ""
 
