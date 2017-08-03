@@ -75,6 +75,7 @@ class DarwinProfile (UnixProfile):
         UnixProfile.attach (self, bockbuild)
         bockbuild.toolchain = list (DarwinProfile.default_toolchain)
         self.name = 'darwin'
+        self.debug_info = []
 
         xcode_version = self.use_Xcode ()
 
@@ -117,8 +118,6 @@ class DarwinProfile (UnixProfile):
         else:
             self.env.set('CC',  'ccache xcrun gcc')
             self.env.set('CXX', 'ccache xcrun g++')
-
-        self.debug_info = []
 
         if self.bockbuild.cmd_options.arch == 'default':
             self.bockbuild.cmd_options.arch = 'darwin-32'

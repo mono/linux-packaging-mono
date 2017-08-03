@@ -2108,6 +2108,10 @@ has_reference_assembly_attribute_iterator (MonoImage *image, guint32 typeref_sco
 gboolean
 mono_assembly_has_reference_assembly_attribute (MonoAssembly *assembly, MonoError *error)
 {
+	g_assert (assembly && assembly->image);
+	/* .NET Framework appears to ignore the attribute on dynamic
+	 * assemblies, so don't call this function for dynamic assemblies. */
+	g_assert (!image_is_dynamic (assembly->image));
 	error_init (error);
 
 	/*
@@ -2366,7 +2370,7 @@ static gboolean
 parse_public_key (const gchar *key, gchar** pubkey, gboolean *is_ecma)
 {
 	const gchar *pkey;
-	gchar header [16], val, *arr;
+	gchar header [16], val, *arr, *endp;
 	gint i, j, offset, bitlen, keylen, pkeylen;
 	
 	keylen = strlen (key) >> 1;
@@ -2428,16 +2432,10 @@ parse_public_key (const gchar *key, gchar** pubkey, gboolean *is_ecma)
 	if (!pubkey)
 		return TRUE;
 		
+	arr = (gchar *)g_malloc (keylen + 4);
 	/* Encode the size of the blob */
-	offset = 0;
-	if (keylen <= 127) {
-		arr = (gchar *)g_malloc (keylen + 1);
-		arr [offset++] = keylen;
-	} else {
-		arr = (gchar *)g_malloc (keylen + 2);
-		arr [offset++] = 0x80; /* 10bs */
-		arr [offset++] = keylen;
-	}
+	mono_metadata_encode_value (keylen, &arr[0], &endp);
+	offset = (gint)(endp-arr);
 		
 	for (i = offset, j = 0; i < keylen + offset; i++) {
 		arr [i] = g_ascii_xdigit_value (key [j++]) << 4;
@@ -3513,8 +3511,11 @@ prevent_reference_assembly_from_running (MonoAssembly* candidate, gboolean refon
 {
 	MonoError refasm_error;
 	error_init (&refasm_error);
-	if (candidate && !refonly && mono_assembly_has_reference_assembly_attribute (candidate, &refasm_error)) {
-		candidate = NULL;
+	if (candidate && !refonly) {
+		/* .NET Framework seems to not check for ReferenceAssemblyAttribute on dynamic assemblies */
+		if (!image_is_dynamic (candidate->image) &&
+		    mono_assembly_has_reference_assembly_attribute (candidate, &refasm_error))
+			candidate = NULL;
 	}
 	mono_error_cleanup (&refasm_error);
 	return candidate;
