@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://www.mono-project.com/Bugs\n"
-"POT-Creation-Date: 2017-06-23 10:40+0000\n"
+"POT-Creation-Date: 2017-08-03 17:06+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Atsushi Eno <atsushi@ximian.com>\n"
 "Language-Team: \n"
@@ -2718,22 +2718,22 @@ msgstr ""
 msgid "Cannot yield a value in the body of a catch clause"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1192
+#: mcs/mcs/iterators.cs:1191
 #, csharp-format
 msgid ""
 "The body of `{0}' cannot be an iterator block because `{1}' is not an "
 "iterator interface type"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1205
+#: mcs/mcs/iterators.cs:1204
 msgid "Iterators cannot have ref or out parameters"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1211
+#: mcs/mcs/iterators.cs:1210
 msgid "__arglist is not allowed in parameter list of iterators"
 msgstr ""
 
-#: mcs/mcs/iterators.cs:1217
+#: mcs/mcs/iterators.cs:1216
 msgid "Iterators cannot have unsafe parameters or yield types"
 msgstr ""
 

@@ -174,10 +174,10 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	bug-389886-3.exe constant-division.exe \
 @FULL_AOT_TESTS_TRUE@	dynamic-method-resurrection.exe \
 @FULL_AOT_TESTS_TRUE@	assembly_append_ordering.exe \
-@FULL_AOT_TESTS_TRUE@	bug-80307.exe namedmutex-destroy-race.exe \
-@FULL_AOT_TESTS_TRUE@	thread6.exe reference-loader.exe \
-@FULL_AOT_TESTS_TRUE@	constraints-load.exe bug-515884.exe \
-@FULL_AOT_TESTS_TRUE@	generic-type-builder.2.exe \
+@FULL_AOT_TESTS_TRUE@	assemblyresolve_event5.cs bug-80307.exe \
+@FULL_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe thread6.exe \
+@FULL_AOT_TESTS_TRUE@	reference-loader.exe constraints-load.exe \
+@FULL_AOT_TESTS_TRUE@	bug-515884.exe generic-type-builder.2.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload.exe \
 @FULL_AOT_TESTS_TRUE@	sgen-domain-unload-2.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-loader.exe \
@@ -543,12 +543,13 @@ MKBUNDLE = \
 
 @FULL_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY,FULL_AOT_DESKTOP 
 @HYBRID_AOT_TESTS_TRUE@PROFILE_MCS_FLAGS = -d:MOBILE,MOBILE_LEGACY 
-MCS_NO_LIB = $(TOOLS_RUNTIME) $(CSC) -unsafe -debug:portable \
+MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
 	-noconfig -nologo \
 	-nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 \
 	-nowarn:0169 -nowarn:1690 -nowarn:0649 -nowarn:0612 -nowarn:3021 \
 	-nowarn:0197 $(PROFILE_MCS_FLAGS)
 
+MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
 MCS = $(MCS_NO_LIB)
 ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 TEST_RUNNER = ./test-runner.exe --runtime \
@@ -577,19 +578,20 @@ TESTS_STRESS_SRC = \
 TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-2907.cs array-init.cs arraylist.cs assembly-load-remap.cs \
 	assemblyresolve_event.cs assemblyresolve_event3.cs \
-	assemblyresolve_event4.cs checked.cs char-isnumber.cs \
-	field-layout.cs pack-layout.cs pack-bug.cs hash-table.cs \
-	test-ops.cs obj.cs test-dup-mp.cs string.cs stringbuilder.cs \
-	switch.cs outparm.cs delegate.cs bitconverter.cs exception.cs \
-	exception2.cs exception3.cs exception4.cs exception5.cs \
-	exception6.cs exception7.cs exception8.cs exception10.cs \
-	exception11.cs exception12.cs exception13.cs exception14.cs \
-	exception15.cs exception16.cs exception17.cs exception18.cs \
-	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
-	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
-	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
-	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
-	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	assemblyresolve_event4.cs assemblyresolve_event5.cs checked.cs \
+	char-isnumber.cs field-layout.cs pack-layout.cs pack-bug.cs \
+	hash-table.cs test-ops.cs obj.cs test-dup-mp.cs string.cs \
+	stringbuilder.cs switch.cs outparm.cs delegate.cs \
+	bitconverter.cs exception.cs exception2.cs exception3.cs \
+	exception4.cs exception5.cs exception6.cs exception7.cs \
+	exception8.cs exception10.cs exception11.cs exception12.cs \
+	exception13.cs exception14.cs exception15.cs exception16.cs \
+	exception17.cs exception18.cs typeload-unaligned.cs struct.cs \
+	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
+	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
+	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
+	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
+	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -1079,7 +1081,10 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	unhandled-exception-base-configuration.config \
 	unhandled-exception-legacy-configuration.config \
 	appdomain-unload.exe.config unhandled-exception-test-case.2.cs \
-	unhandled-exception-test-runner.2.cs bug-81673-interface.cs \
+	unhandled-exception-test-runner.2.cs \
+	assemblyresolve_TestBase.cs assemblyresolve_Test.cs \
+	assemblyresolve_asm.cs assemblyresolve_event5_label.cs \
+	assemblyresolve_event5_helper.cs bug-81673-interface.cs \
 	bug-36848-a.cs bug-81691-a.cs bug-81691-b.cs bug-81466-lib.il \
 	bug-324535-il.il custom-modifiers.2.cs custom-modifiers-lib.il \
 	bug-382986-lib.cs bug-17537-helper.cs coreclr-security.cs \
@@ -1090,7 +1095,9 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	threadpool-in-processexit.exe.stdout.expected \
 	appdomain-loader.cs appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
-	console-output.exe.stdout.expected test_lldb.py test-lldb.cs
+	console-output.exe.stdout.expected test_lldb.py test-lldb.cs \
+	$(INTERNALSVISIBLETO_TEST_SRC) \
+	$(INTERNALSVISIBLETO_TEST_LIB_SRC)
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_HARD_KILL_FEATURE = -r:$(CLASS)/Mono.Posix.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@TEST_DRIVER_DEPEND = TestDriver.dll
 @FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@TEST_DRIVER_DEPEND = TestDriver.dll$(PLATFORM_AOT_SUFFIX)
@@ -1200,6 +1207,39 @@ AM_CPPFLAGS = $(GLIB_CFLAGS)
 @HOST_WIN32_TRUE@libtest_la_LDFLAGS = -no-undefined -rpath `pwd` -Wl,--kill-at
 libtest_la_SOURCES = libtest.c
 libtest_la_LIBADD = $(GLIB_LIBS) $(LIBICONV)
+INTERNALSVISIBLETO_TEST_SRC = \
+	internalsvisibleto-runtimetest.cs \
+	internalsvisibleto-compilertest.cs
+
+INTERNALSVISIBLETO_TEST_LIB_SRC = \
+	internalsvisibleto-library.cs
+
+INTERNALSVISIBLETO_TEST_LIBS = \
+	internalsvisibleto-correctcase.dll \
+	internalsvisibleto-wrongcase.dll \
+	internalsvisibleto-correctcase-2.dll \
+	internalsvisibleto-wrongcase-2.dll \
+	internalsvisibleto-correctcase-sign2048.dll \
+	internalsvisibleto-wrongcase-sign2048.dll \
+	internalsvisibleto-correctcase-2-sign2048.dll \
+	internalsvisibleto-wrongcase-2-sign2048.dll
+
+INTERNALSVISIBLETO_TEST = \
+	$(INTERNALSVISIBLETO_TEST_SRC:.cs=.exe) \
+	$(INTERNALSVISIBLETO_TEST_SRC:.cs=-sign2048.exe)
+
+@FULL_AOT_TESTS_TRUE@INTERNALSVISIBLETO_TESTAOT = \
+@FULL_AOT_TESTS_TRUE@	$(INTERNALSVISIBLETO_TEST:.exe=.exe$(PLATFORM_AOT_SUFFIX))
+
+@HYBRID_AOT_TESTS_TRUE@INTERNALSVISIBLETO_TESTAOT = \
+@HYBRID_AOT_TESTS_TRUE@	$(INTERNALSVISIBLETO_TEST:.exe=.exe$(PLATFORM_AOT_SUFFIX))
+
+@FULL_AOT_TESTS_TRUE@INTERNALSVISIBLETO_TESTAOT_LIBS = \
+@FULL_AOT_TESTS_TRUE@	$(INTERNALSVISIBLETO_TEST_LIBS:.dll=.dll$(PLATFORM_AOT_SUFFIX))
+
+@HYBRID_AOT_TESTS_TRUE@INTERNALSVISIBLETO_TESTAOT_LIBS = \
+@HYBRID_AOT_TESTS_TRUE@	$(INTERNALSVISIBLETO_TEST_LIBS:.dll=.dll$(PLATFORM_AOT_SUFFIX))
+
 CLEANFILES = $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH) $(TESTS_STRESS) $(TESTSAOT_CS) $(TESTSAOT_IL) $(TESTSAOT_BENCH) $(TESTSAOT_STRESS) *.dll *.stdout *.aotlog *.exe stest.dat
 all: all-recursive
 
@@ -2094,7 +2134,6 @@ reference-loader.exe: TestingReferenceAssembly.dll TestingReferenceReferenceAsse
 assemblyresolve_asm.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX)
 	MONO_PATH="assemblyresolve_deps:$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(AOT_BUILD_FLAGS) assemblyresolve_asm.dll
 assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
-
 assemblyresolve_deps:
 	mkdir -p assemblyresolve_deps
 assemblyresolve_deps/TestBase.dll: assemblyresolve_deps $(srcdir)/assemblyresolve_TestBase.cs
@@ -2109,6 +2148,11 @@ assemblyresolve_event3.exe: assemblyresolve_asm.dll assemblyresolve_deps/Test.dl
 
 assemblyresolve_event4.exe$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX) assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
 assemblyresolve_event4.exe: assemblyresolve_deps/Test.dll assemblyresolve_deps/TestBase.dll
+assemblyresolve_deps/assemblyresolve_event5_label.dll: assemblyresolve_event5_label.cs assemblyresolve_deps 
+	$(MCS) -target:library -out:assemblyresolve_deps/assemblyresolve_event5_label.dll $(srcdir)/assemblyresolve_event5_label.cs
+assemblyresolve_event5_helper.dll: assemblyresolve_event5_helper.cs assemblyresolve_deps/assemblyresolve_event5_label.dll
+	$(MCS) -target:library -out:assemblyresolve_event5_helper.dll -r:assemblyresolve_deps/assemblyresolve_event5_label.dll $(srcdir)/assemblyresolve_event5_helper.cs
+assemblyresolve_event5.exe: assemblyresolve_event5_helper.dll
 
 # We use 'test-support-files' to handle an ordering issue between the 'mono/' and 'runtime/' directories
 bug-80307.exe: $(srcdir)/bug-80307.cs
@@ -2279,21 +2323,32 @@ coreclr-gcstress:
 test-lldb: test-lldb.exe
 	python test_lldb.py $(JITTEST_PROG)
 
-test-internalsvisibleto: internalsvisibleto-runtimetest.exe internalsvisibleto-compilertest.exe internalsvisibleto-library.dll
-	$(Q) $(RUNTIME) internalsvisibleto-runtimetest.exe 1>internalsvisibleto-runtimetest.exe.stdout 2>internalsvisibleto-runtimetest.exe.stderr
-	$(Q) $(RUNTIME) internalsvisibleto-compilertest.exe 1>internalsvisibleto-compilertest.exe.stdout 2>internalsvisibleto-compilertest.exe.stderr
+test-internalsvisibleto: test-runner.exe $(INTERNALSVISIBLETO_TEST) $(INTERNALSVISIBLETO_TESTAOT) $(INTERNALSVISIBLETO_TESTAOT_LIBS)
+	$(TOOLS_RUNTIME) $(TEST_RUNNER) --testsuite-name $@ $(INTERNALSVISIBLETO_TEST)
 
-internalsvisibleto-runtimetest.exe: internalsvisibleto-runtimetest.cs internalsvisibleto-library.cs
-	$(Q) $(MCS) -out:internalsvisibleto-correctcase.dll -target:library -d:CORRECT_CASE -d:PERMISSIVE internalsvisibleto-library.cs	
-	$(Q) $(MCS) -out:internalsvisibleto-wrongcase.dll -target:library -d:WRONG_CASE -d:PERMISSIVE internalsvisibleto-library.cs
-	$(Q) $(MCS) -out:internalsvisibleto-runtimetest.exe -warn:0 -r:internalsvisibleto-correctcase.dll -r:internalsvisibleto-wrongcase.dll internalsvisibleto-runtimetest.cs
-	$(Q) $(MCS) -out:internalsvisibleto-correctcase.dll -target:library -d:CORRECT_CASE internalsvisibleto-library.cs	
-	$(Q) $(MCS) -out:internalsvisibleto-wrongcase.dll -target:library -d:WRONG_CASE internalsvisibleto-library.cs
+internalsvisibleto-correctcase.dll internalsvisibleto-wrongcase.dll internalsvisibleto-runtimetest.exe: internalsvisibleto-runtimetest.cs internalsvisibleto-library.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase.dll -target:library -d:CORRECT_CASE -d:PERMISSIVE internalsvisibleto-library.cs	
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase.dll -target:library -d:WRONG_CASE -d:PERMISSIVE internalsvisibleto-library.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-runtimetest.exe -warn:0 -r:internalsvisibleto-correctcase.dll -r:internalsvisibleto-wrongcase.dll internalsvisibleto-runtimetest.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase.dll -target:library -d:CORRECT_CASE internalsvisibleto-library.cs	
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase.dll -target:library -d:WRONG_CASE internalsvisibleto-library.cs
 
-internalsvisibleto-compilertest.exe: internalsvisibleto-compilertest.cs internalsvisibleto-library.cs
-	$(Q) $(MCS) -out:internalsvisibleto-correctcase-2.dll -target:library -d:CORRECT_CASE internalsvisibleto-library.cs	
-	$(Q) $(MCS) -out:internalsvisibleto-wrongcase-2.dll -target:library -d:WRONG_CASE internalsvisibleto-library.cs
-	$(Q) $(MCS) -out:internalsvisibleto-compilertest.exe -warn:0 -r:internalsvisibleto-correctcase-2.dll -r:internalsvisibleto-wrongcase-2.dll internalsvisibleto-compilertest.cs
+internalsvisibleto-correctcase-2.dll internalsvisibleto-wrongcase-2.dll  internalsvisibleto-compilertest.exe: internalsvisibleto-compilertest.cs internalsvisibleto-library.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase-2.dll -target:library -d:CORRECT_CASE internalsvisibleto-library.cs	
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase-2.dll -target:library -d:WRONG_CASE internalsvisibleto-library.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-compilertest.exe -warn:0 -r:internalsvisibleto-correctcase-2.dll -r:internalsvisibleto-wrongcase-2.dll internalsvisibleto-compilertest.cs
+
+internalsvisibleto-correctcase-sign2048.dll internalsvisibleto-wrongcase-sign2048.dll internalsvisibleto-runtimetest-sign2048.exe: internalsvisibleto-runtimetest.cs internalsvisibleto-library.cs internalsvisibleto-2048.snk
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase-sign2048.dll -target:library -d:CORRECT_CASE -d:PERMISSIVE -d:SIGN2048 internalsvisibleto-library.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase-sign2048.dll -target:library -d:WRONG_CASE -d:PERMISSIVE -d:SIGN2048 internalsvisibleto-library.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-runtimetest-sign2048.exe -warn:0 -r:internalsvisibleto-correctcase-sign2048.dll -r:internalsvisibleto-wrongcase-sign2048.dll -d:SIGN2048 internalsvisibleto-runtimetest.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase-sign2048.dll -target:library -d:CORRECT_CASE -d:SIGN2048 internalsvisibleto-library.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase-sign2048.dll -target:library -d:WRONG_CASE -d:SIGN2048 internalsvisibleto-library.cs
+
+internalsvisibleto-correctcase-2-sign2048.dll internalsvisibleto-wrongcase-2-sign2048.dll internalsvisibleto-compilertest-sign2048.exe: internalsvisibleto-compilertest.cs internalsvisibleto-library.cs internalsvisibleto-2048.snk
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-correctcase-2-sign2048.dll -target:library -d:CORRECT_CASE -d:SIGN2048 internalsvisibleto-library.cs	
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-wrongcase-2-sign2048.dll -target:library -d:WRONG_CASE -d:SIGN2048 internalsvisibleto-library.cs
+	$(Q) $(MCS_NO_UNSAFE) -out:internalsvisibleto-compilertest-sign2048.exe -warn:0 -r:internalsvisibleto-correctcase-2-sign2048.dll -r:internalsvisibleto-wrongcase-2-sign2048.dll -d:SIGN2048 internalsvisibleto-compilertest.cs
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

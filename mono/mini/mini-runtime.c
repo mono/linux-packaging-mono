@@ -574,7 +574,7 @@ G_GNUC_UNUSED gboolean
 mono_debug_count (void)
 {
 	static int count = 0, int_val = 0;
-	static gboolean inited;
+	static gboolean inited, has_value = FALSE;
 
 	count ++;
 
@@ -583,11 +583,12 @@ mono_debug_count (void)
 		if (value) {
 			int_val = atoi (value);
 			g_free (value);
+			has_value = TRUE;
 		}
 		inited = TRUE;
 	}
 
-	if (!int_val)
+	if (!has_value)
 		return TRUE;
 
 	if (count == int_val)
@@ -4242,7 +4243,8 @@ register_icalls (void)
 	register_icall (mono_gsharedvt_constrained_call, "mono_gsharedvt_constrained_call", "object ptr ptr ptr ptr ptr", FALSE);
 	register_icall (mono_gsharedvt_value_copy, "mono_gsharedvt_value_copy", "void ptr ptr ptr", TRUE);
 
-	register_icall_no_wrapper (mono_gc_get_range_copy_func (), "mono_gc_range_copy", "void ptr ptr int");
+	//WARNING We do runtime selection here but the string *MUST* be to a fallback function that has same signature and behavior
+	register_icall_no_wrapper (mono_gc_get_range_copy_func (), "mono_gc_wbarrier_range_copy", "void ptr ptr int");
 
 	register_icall (mono_object_castclass_with_cache, "mono_object_castclass_with_cache", "object object ptr ptr", FALSE);
 	register_icall (mono_object_isinst_with_cache, "mono_object_isinst_with_cache", "object object ptr ptr", FALSE);
