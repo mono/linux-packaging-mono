@@ -1,3 +1,9 @@
+mono (5.4.0.135-0xamarin1) prealpha; urgency=medium
+
+  * New release - mono-5.4.0.135.tar.bz2
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Thu, 03 Aug 2017 17:30:01 +0000
+
 mono (5.4.0.56-0xamarin7) prealpha; urgency=medium
 
   * Packaging bugfix:
