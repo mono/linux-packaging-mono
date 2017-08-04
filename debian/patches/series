@@ -1,1 +1,2 @@
+0001-btls-Disable-BUILD_SHARED_LIBS-while-building-boring.patch
 conditionally_define_alignas_for_precise.patch
