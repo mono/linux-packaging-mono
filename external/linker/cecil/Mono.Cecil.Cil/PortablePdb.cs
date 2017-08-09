@@ -60,10 +60,12 @@ namespace Mono.Cecil.Cil {
 			this.debug_reader = new MetadataReader (image, module, this.reader);
 		}
 
+#if !READ_ONLY
 		public ISymbolWriterProvider GetWriterProvider ()
 		{
 			return new PortablePdbWriterProvider ();
 		}
+#endif
 
 		public bool ProcessDebugHeader (ImageDebugHeader header)
 		{
@@ -92,7 +94,11 @@ namespace Mono.Cecil.Cil {
 
 			var pdb_guid = new Guid (buffer);
 
-			return module_guid == pdb_guid;
+			if (module_guid != pdb_guid)
+				return false;
+
+			ReadModule ();
+			return true;
 		}
 
 		static int ReadInt32 (byte [] bytes, int start)
@@ -101,6 +107,11 @@ namespace Mono.Cecil.Cil {
 				| (bytes [start + 1] << 8)
 				| (bytes [start + 2] << 16)
 				| (bytes [start + 3] << 24));
+		}
+
+		void ReadModule ()
+		{
+			module.custom_infos = debug_reader.GetCustomDebugInformation (module);
 		}
 
 		public MethodDebugInformation Read (MethodDefinition method)
@@ -190,11 +201,12 @@ namespace Mono.Cecil.Cil {
 			this.reader = reader;
 		}
 
+#if !READ_ONLY
 		public ISymbolWriterProvider GetWriterProvider ()
 		{
 			return new EmbeddedPortablePdbWriterProvider ();
 		}
-
+#endif
 		public bool ProcessDebugHeader (ImageDebugHeader header)
 		{
 			return reader.ProcessDebugHeader (header);
@@ -244,6 +256,7 @@ namespace Mono.Cecil.Cil {
 
 	interface IMetadataSymbolWriter : ISymbolWriter {
 		void SetMetadata (MetadataBuilder metadata);
+		void WriteModule ();
 	}
 
 	public sealed class PortablePdbWriter : ISymbolWriter, IMetadataSymbolWriter {
@@ -274,6 +287,11 @@ namespace Mono.Cecil.Cil {
 
 			if (module_metadata != pdb_metadata)
 				this.pdb_metadata.metadata_builder = metadata;
+		}
+
+		void IMetadataSymbolWriter.WriteModule ()
+		{
+			pdb_metadata.AddCustomDebugInformations (module);
 		}
 
 		public ISymbolReaderProvider GetReaderProvider ()
@@ -470,6 +488,11 @@ namespace Mono.Cecil.Cil {
 		void IMetadataSymbolWriter.SetMetadata (MetadataBuilder metadata)
 		{
 			((IMetadataSymbolWriter) writer).SetMetadata (metadata);
+		}
+
+		void IMetadataSymbolWriter.WriteModule ()
+		{
+			((IMetadataSymbolWriter) writer).WriteModule ();
 		}
 	}
 

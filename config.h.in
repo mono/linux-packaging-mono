@@ -148,6 +148,9 @@
 /* Runtime support code for llvm enabled */
 #undef ENABLE_LLVM_RUNTIME
 
+/* Overridable allocator support enabled */
+#undef ENABLE_OVERRIDABLE_ALLOCATORS
+
 /* Have GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY */
 #undef GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY
 
@@ -368,6 +371,9 @@
 /* Have getnameinfo */
 #undef HAVE_GETNAMEINFO
 
+/* Define to 1 if you have the <getopt.h> header file. */
+#undef HAVE_GETOPT_H
+
 /* Define to 1 if you have the `getpriority' function. */
 #undef HAVE_GETPRIORITY
 
@@ -397,6 +403,9 @@
 
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
+
+/* Define to 1 if you have the <iconv.h> header file. */
+#undef HAVE_ICONV_H
 
 /* Define to 1 if you have the <ieeefp.h> header file. */
 #undef HAVE_IEEEFP_H
@@ -461,6 +470,9 @@
 /* Have large file support */
 #undef HAVE_LARGE_FILE_SUPPORT
 
+/* Define to 1 if you have the `iconv' library (-liconv). */
+#undef HAVE_LIBICONV
+
 /* Define to 1 if you have the <libproc.h> header file. */
 #undef HAVE_LIBPROC_H
 
@@ -481,6 +493,9 @@
 
 /* Define to 1 if you have the <linux/serial.h> header file. */
 #undef HAVE_LINUX_SERIAL_H
+
+/* Define to 1 if you have the <localcharset.h> header file. */
+#undef HAVE_LOCALCHARSET_H
 
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
@@ -618,6 +633,9 @@
 /* Define to 1 if you have the `remap_file_pages' function. */
 #undef HAVE_REMAP_FILE_PAGES
 
+/* Define to 1 if you have the `rewinddir' function. */
+#undef HAVE_REWINDDIR
+
 /* Define to 1 if you have the `sched_getaffinity' function. */
 #undef HAVE_SCHED_GETAFFINITY
 
@@ -717,6 +735,9 @@
 /* Define to 1 if you have the `stime' function. */
 #undef HAVE_STIME
 
+/* Define to 1 if you have the `stpcpy' function. */
+#undef HAVE_STPCPY
+
 /* Define to 1 if you have the `strerror_r' function. */
 #undef HAVE_STRERROR_R
 
@@ -725,6 +746,15 @@
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
+
+/* Define to 1 if you have the `strndup' function. */
+#undef HAVE_STRNDUP
+
+/* Define to 1 if you have the `strtok_r' function. */
+#undef HAVE_STRTOK_R
 
 /* Define to 1 if the system has the type `struct cmsghdr'. */
 #undef HAVE_STRUCT_CMSGHDR
@@ -975,6 +1005,9 @@
 /* Don't use UWP Windows API support */
 #undef HAVE_UWP_WINAPI_SUPPORT
 
+/* Define to 1 if you have the `vasprintf' function. */
+#undef HAVE_VASPRINTF
+
 /* Support for the visibility ("hidden") attribute */
 #undef HAVE_VISIBILITY_HIDDEN
 
@@ -1118,6 +1151,15 @@
 
 /* pthread is a pointer */
 #undef PTHREAD_POINTER_ID
+
+/* The size of `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The size of `long', as computed by sizeof. */
+#undef SIZEOF_LONG
+
+/* The size of `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
 
 /* size of machine integer registers */
 #undef SIZEOF_REGISTER

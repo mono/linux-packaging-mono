@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assertions\BaseInAssemblyAttribute.cs" />
     <Compile Include="Assertions\IgnoreTestCaseAttribute.cs" />
     <Compile Include="Assertions\KeptAssemblyAttribute.cs" />
     <Compile Include="Assertions\KeptAttribute.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Assertions\RemovedAssemblyAttribute.cs" />
     <Compile Include="Assertions\RemovedMemberInAssemblyAttribute.cs" />
     <Compile Include="Assertions\RemovedTypeInAssemblyAttribute.cs" />
+    <Compile Include="Assertions\SkipPeVerifyAttribute.cs" />
     <Compile Include="Metadata\BaseMetadataAttribute.cs" />
     <Compile Include="Metadata\CoreLinkAttribute.cs" />
     <Compile Include="Metadata\IncludeBlacklistStepAttribute.cs" />

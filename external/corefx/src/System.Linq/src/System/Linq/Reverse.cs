@@ -101,6 +101,7 @@ namespace System.Linq
 
             public int GetCount(bool onlyIfCheap)
             {
+#if !__MonoCS__
                 if (onlyIfCheap)
                 {
                     switch (_source)
@@ -118,6 +119,7 @@ namespace System.Linq
                             return -1;
                     }
                 }
+#endif
 
                 return _source.Count();
             }
