@@ -6222,73 +6222,6 @@ mono_arch_decompose_opts (MonoCompile *cfg, MonoInst *ins)
 
 /*------------------------------------------------------------------*/
 /*                                                                  */
-/* Name		- mono_arch_print_tree                              */
-/*                                                                  */
-/* Function	- Print platform-specific opcode details.           */
-/*		                               			    */
-/* Returns	- 1 - opcode details have been printed		    */
-/*		  0 - opcode details have not been printed	    */
-/*                                                                  */
-/*------------------------------------------------------------------*/
-
-gboolean
-mono_arch_print_tree (MonoInst *tree, int arity)
-{
-	gboolean done;
-
-	switch (tree->opcode) {
-		case OP_S390_LOADARG:
-		case OP_S390_ARGREG:
-		case OP_S390_ARGPTR:
-			printf ("[0x%lx(%s)]", tree->inst_offset, 
-				mono_arch_regname (tree->inst_basereg));
-			done = 1;
-			break;
-		case OP_S390_STKARG:
-			printf ("[0x%lx(previous_frame)]", 
-				tree->inst_offset); 
-			done = 1;
-			break;
-		case OP_S390_MOVE:
-			printf ("[0x%lx(%d,%s),0x%lx(%s)]",
-				tree->inst_offset, tree->backend.size,
-				mono_arch_regname(tree->dreg), 
-				tree->inst_imm, 
-				mono_arch_regname(tree->sreg1));
-			done = 1;
-			break;
-		case OP_S390_SETF4RET:
-			printf ("[f%s,f%s]", 
-				mono_arch_regname (tree->dreg),
-				mono_arch_regname (tree->sreg1));
-			done = 1;
-			break;
-		case OP_TLS_GET:
-			printf ("[0x%lx(0x%lx,%s)]", tree->inst_offset,
-			tree->inst_imm,
-			mono_arch_regname (tree->sreg1));
-			done = 1;
-			break;
-		case OP_TLS_SET:
-			printf ("[0x%lx(0x%lx,%s)]", tree->inst_offset,
-			tree->inst_imm,
-			mono_arch_regname (tree->sreg1));
-			done = 1;
-			break;
-		case OP_S390_BKCHAIN:
-			printf ("[previous_frame(%s)]", 
-				mono_arch_regname (tree->sreg1));
-			done = 1;
-		default:
-			done = 0;
-	}
-	return (done);
-}
-
-/*========================= End of Function ========================*/
-
-/*------------------------------------------------------------------*/
-/*                                                                  */
 /* Name		- mono_arch_regalloc_cost                           */
 /*                                                                  */
 /* Function	- Determine the cost, in the number of memory       */
@@ -6409,39 +6342,6 @@ gpointer
 mono_arch_get_this_arg_from_call (mgreg_t *regs, guint8 *code)
 {
 	return (gpointer) regs [s390_r2];
-}
-
-/*========================= End of Function ========================*/
- 
-/*------------------------------------------------------------------*/
-/*                                                                  */
-/* Name		- mono_arch_install_handler_block_guard             */
-/*                                                                  */
-/* Function	- 						    */
-/*		                               			    */
-/*------------------------------------------------------------------*/
-
-gpointer
-mono_arch_install_handler_block_guard (MonoJitInfo *ji, MonoJitExceptionInfo *clause, 
-				       MonoContext *ctx, gpointer new_value)
-{
-	int offset;
-	gpointer *sp, old_value;
-	char *bp;
-
-	offset = clause->exvar_offset;
-
-	/*Load the spvar*/
-	bp = MONO_CONTEXT_GET_BP (ctx);
-	sp = *(gpointer*)(bp + offset);
-
-	old_value = *sp;
-	if (old_value < ji->code_start || (char*)old_value > ((char*)ji->code_start + ji->code_size))
-		return old_value;
-
-	*sp = new_value;
-
-	return old_value;
 }
 
 /*========================= End of Function ========================*/

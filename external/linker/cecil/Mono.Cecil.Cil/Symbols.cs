@@ -433,6 +433,8 @@ namespace Mono.Cecil.Cil {
 		DynamicVariable,
 		DefaultNamespace,
 		AsyncMethodBody,
+		EmbeddedSource,
+		SourceLink,
 	}
 
 	public abstract class CustomDebugInformation : DebugInformation {
@@ -555,6 +557,57 @@ namespace Mono.Cecil.Cil {
 		{
 			this.start = new InstructionOffset (start);
 			this.end = end != null ? new InstructionOffset (end) : new InstructionOffset ();
+		}
+	}
+
+	public sealed class EmbeddedSourceDebugInformation : CustomDebugInformation {
+
+		internal byte [] content;
+		internal bool compress;
+
+		public byte [] Content {
+			get { return content; }
+			set { content = value; }
+		}
+
+		public bool Compress {
+			get { return compress; }
+			set { compress = value; }
+		}
+
+		public override CustomDebugInformationKind Kind {
+			get { return CustomDebugInformationKind.EmbeddedSource; }
+		}
+
+		public static Guid KindIdentifier = new Guid ("{0E8A571B-6926-466E-B4AD-8AB04611F5FE}");
+
+		public EmbeddedSourceDebugInformation (byte [] content, bool compress)
+			: base (KindIdentifier)
+		{
+			this.content = content;
+			this.compress = compress;
+		}
+	}
+
+	public sealed class SourceLinkDebugInformation : CustomDebugInformation {
+
+		internal string content;
+
+		public string Content {
+			get { return content; }
+			set { content = value; }
+		}
+
+		public override CustomDebugInformationKind Kind {
+			get { return CustomDebugInformationKind.SourceLink; }
+		}
+
+		public static Guid KindIdentifier = new Guid ("{CC110556-A091-4D38-9FEC-25AB9A351A6A}");
+
+		public SourceLinkDebugInformation (string content)
+			: base (KindIdentifier)
+		{
+			this.content = content;
 		}
 	}
 
@@ -683,8 +736,9 @@ namespace Mono.Cecil.Cil {
 	}
 
 	public interface ISymbolReader : IDisposable {
-
+#if !READ_ONLY
 		ISymbolWriterProvider GetWriterProvider ();
+#endif
 		bool ProcessDebugHeader (ImageDebugHeader header);
 		MethodDebugInformation Read (MethodDefinition method);
 	}
@@ -722,14 +776,25 @@ namespace Mono.Cecil.Cil {
 
 			var pdb_file_name = Mixin.GetPdbFileName (fileName);
 
-			if (File.Exists (pdb_file_name))
-				return Mixin.IsPortablePdb (Mixin.GetPdbFileName (fileName))
-					? new PortablePdbReaderProvider ().GetSymbolReader (module, fileName)
-					: SymbolProvider.GetReaderProvider (SymbolKind.NativePdb).GetSymbolReader (module, fileName);
+			if (File.Exists (pdb_file_name)) {
+				if (Mixin.IsPortablePdb (Mixin.GetPdbFileName (fileName)))
+					return new PortablePdbReaderProvider ().GetSymbolReader (module, fileName);
+
+				try {
+					return SymbolProvider.GetReaderProvider (SymbolKind.NativePdb).GetSymbolReader (module, fileName);
+				} catch (TypeLoadException) {
+					// We might not include support for native pdbs.
+				}
+			}
 
 			var mdb_file_name = Mixin.GetMdbFileName (fileName);
-			if (File.Exists (mdb_file_name))
-				return SymbolProvider.GetReaderProvider (SymbolKind.Mdb).GetSymbolReader (module, fileName);
+			if (File.Exists (mdb_file_name)) {
+				try {
+					return SymbolProvider.GetReaderProvider (SymbolKind.Mdb).GetSymbolReader (module, fileName);
+				} catch (TypeLoadException) {
+					// We might not include support for mdbs.
+				}
+			}
 
 			if (throw_if_no_symbol)
 				throw new FileNotFoundException (string.Format ("No symbol found for file: {0}", fileName));
@@ -930,6 +995,7 @@ namespace Mono.Cecil {
 		{
 			const uint ppdb_signature = 0x424a5342;
 
+			if (stream.Length < 4) return false;
 			var position = stream.Position;
 			try {
 				var reader = new BinaryReader (stream);

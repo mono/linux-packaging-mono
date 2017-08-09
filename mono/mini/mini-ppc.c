@@ -5782,12 +5782,6 @@ mono_arch_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMetho
 	return NULL;
 }
 
-gboolean
-mono_arch_print_tree (MonoInst *tree, int arity)
-{
-	return 0;
-}
-
 mgreg_t
 mono_arch_context_get_int_reg (MonoContext *ctx, int reg)
 {
@@ -6017,15 +6011,3 @@ mono_arch_opcode_supported (int opcode)
 	}
 }
 
-
-#if 0
-// FIXME: To get the test case  finally_block_ending_in_dead_bb  to work properly we need to define the following
-// (in mini-ppc.h) and then implement the fuction mono_arch_create_handler_block_trampoline.
-//  #define MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD 1
-
-gpointer
-mono_arch_create_handler_block_trampoline (void)
-{
-	. . .
-}
-#endif

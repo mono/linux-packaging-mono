@@ -77,10 +77,15 @@ namespace Mono.Linker.Steps {
 
 		protected virtual void InitializeAssembly (AssemblyDefinition assembly)
 		{
-			MarkAssembly (assembly);
+			Annotations.Push (assembly);
+			try {
+				MarkAssembly (assembly);
 
-			foreach (TypeDefinition type in assembly.MainModule.Types)
-				InitializeType (type);
+				foreach (TypeDefinition type in assembly.MainModule.Types)
+					InitializeType (type);
+			} finally {
+				Annotations.Pop ();
+			}
 		}
 
 		void InitializeType (TypeDefinition type)
@@ -152,9 +157,14 @@ namespace Mono.Linker.Steps {
 					}
 					if (!Annotations.IsMarked (type))
 						continue;
-					Annotations.Mark (exported);
-					if (_context.KeepTypeForwarderOnlyAssemblies) {
-						Annotations.Mark (assembly.MainModule);
+					Annotations.Push (type);
+					try {
+						Annotations.Mark (exported);
+						if (_context.KeepTypeForwarderOnlyAssemblies) {
+							Annotations.Mark (assembly.MainModule);
+						}
+					} finally {
+						Annotations.Pop ();
 					}
 				}
 			}
@@ -245,8 +255,13 @@ namespace Mono.Linker.Steps {
 			if (!provider.HasCustomAttributes)
 				return;
 
-			foreach (CustomAttribute ca in provider.CustomAttributes)
-				MarkCustomAttribute (ca);
+			Annotations.Push (provider);
+			try {
+				foreach (CustomAttribute ca in provider.CustomAttributes)
+					MarkCustomAttribute (ca);
+			} finally {
+				Annotations.Pop ();
+			}
 		}
 
 		void LazyMarkCustomAttributes (ICustomAttributeProvider provider)
@@ -508,9 +523,15 @@ namespace Mono.Linker.Steps {
 			while (_topLevelAttributes.Count != 0) {
 				var customAttribute = _topLevelAttributes.Dequeue ();
 
+				var resolved = customAttribute.AttributeType.Resolve ();
+				if (resolved == null) {
+					HandleUnresolvedType (customAttribute.AttributeType);
+					continue;
+				}
+
 				// If an attribute's module has not been marked after processing all types in all assemblies and the attribute itself has not been marked,
 				// then surely nothing is using this attribute and there is no need to mark it
-				if (!Annotations.IsMarked (customAttribute.AttributeType.Resolve ().Module) && !Annotations.IsMarked (customAttribute.AttributeType))
+				if (!Annotations.IsMarked (resolved.Module) && !Annotations.IsMarked (customAttribute.AttributeType))
 					continue;
 
 				MarkCustomAttribute (customAttribute);
@@ -625,8 +646,10 @@ namespace Mono.Linker.Steps {
 				MarkFields (type, type.IsEnum);
 
 			if (type.HasInterfaces) {
-				foreach (var iface in type.Interfaces)
+				foreach (var iface in type.Interfaces) {
+					MarkCustomAttributes (iface);
 					MarkType (iface.InterfaceType);
+				}
 			}
 
 			if (type.HasMethods) {
