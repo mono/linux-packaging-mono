@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.7.0.35],
+AC_INIT(mono, [5.7.0.60],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -686,6 +686,9 @@ AC_ARG_WITH(crosspkgdir, [  --with-crosspkgdir=/path/to/pkg-config/dir      Chan
 	fi
 )
 
+AC_CHECK_PROG(ninja, ninja, yes, no)
+AM_CONDITIONAL(NINJA, test x$ninja != xno)
+
 AC_ARG_ENABLE(werror, [  --enable-werror Pass -Werror to the C compiler], werror_flag=$enableval, werror_flag=no)
 if test x$werror_flag = xyes; then
 	WERROR_CFLAGS="-Werror"
@@ -783,7 +786,10 @@ if test $csc_compiler = default; then
    if test $endian = big; then
       csc_compiler=mcs
    elif test $endian = little; then
-      csc_compiler=roslyn
+      case "$host" in
+        powerpc*) csc_compiler=mcs ;;
+        *) csc_compiler=roslyn ;;
+      esac
    else
       csc_compiler=mcs
    fi
