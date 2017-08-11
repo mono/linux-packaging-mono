@@ -116,8 +116,7 @@ am_monodis_OBJECTS = dump.$(OBJEXT) main.$(OBJEXT) declsec.$(OBJEXT)
 monodis_OBJECTS = $(am_monodis_OBJECTS)
 am__DEPENDENCIES_1 =
 @SUPPORT_SGEN_FALSE@am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1)
-@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 =  \
-@SUPPORT_SGEN_TRUE@	$(top_builddir)/mono/sgen/libmonosgen.la
+@SUPPORT_SGEN_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/mono/sgen/libmonosgen-static.la
 am__DEPENDENCIES_3 = $(metadata_lib) $(am__DEPENDENCIES_2) \
 	$(top_builddir)/mono/utils/libmonoutils.la \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -433,6 +432,7 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
+ninja = @ninja@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -453,10 +453,10 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = $(GLIB_CFLAGS) -I$(top_srcdir)
-@SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime.la
-@SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen.la
+@SUPPORT_SGEN_FALSE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntime-static.la
+@SUPPORT_SGEN_TRUE@metadata_lib = $(top_builddir)/mono/metadata/libmonoruntimesgen-static.la
 @SUPPORT_SGEN_FALSE@gc_lib = $(LIBGC_STATIC_LIBS)
-@SUPPORT_SGEN_TRUE@gc_lib = $(top_builddir)/mono/sgen/libmonosgen.la
+@SUPPORT_SGEN_TRUE@gc_lib = $(top_builddir)/mono/sgen/libmonosgen-static.la
 runtime_lib = \
 	$(metadata_lib) \
 	$(gc_lib)	\
