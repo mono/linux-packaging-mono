@@ -711,11 +711,15 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_print_thread_dump@Base 4.1.0.1738
  mono_print_thread_dump_from_ctx@Base 4.1.0.1738
  mono_print_unhandled_exception@Base 4.1.0.1738
+ mono_profiler_create@Base 5.5.0.527
  mono_profiler_enable_allocations@Base 5.5.0.357
  mono_profiler_enable_sampling@Base 5.5.0.357
  mono_profiler_get_coverage_data@Base 5.5.0.357
  mono_profiler_get_sample_mode@Base 5.5.0.357
  mono_profiler_install@Base 4.1.0.1738
+ mono_profiler_install_gc@Base 5.5.0.527
+ mono_profiler_install_jit_end@Base 5.5.0.527
+ mono_profiler_install_thread@Base 5.5.0.527
  mono_profiler_load@Base 4.1.0.1738
  mono_profiler_set_assembly_loaded_callback@Base 5.5.0.357
  mono_profiler_set_assembly_loading_callback@Base 5.5.0.357
@@ -733,6 +737,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_profiler_set_domain_name_callback@Base 5.5.0.357
  mono_profiler_set_domain_unloaded_callback@Base 5.5.0.357
  mono_profiler_set_domain_unloading_callback@Base 5.5.0.357
+ mono_profiler_set_events@Base 5.5.0.527
  mono_profiler_set_exception_clause_callback@Base 5.5.0.357
  mono_profiler_set_exception_throw_callback@Base 5.5.0.357
  mono_profiler_set_gc_allocation_callback@Base 5.5.0.357
