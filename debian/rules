@@ -88,7 +88,6 @@ export MAKEFLAGS=$(MAKE_FLAGS)
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-	EGLIB_MAKE_FLAGS += -j$(NUMJOBS)
 	LIBGC_MAKE_FLAGS += -j$(NUMJOBS)
 	MONO_MAKE_FLAGS += -j$(NUMJOBS)
 endif
@@ -107,7 +106,6 @@ configure-stamp: autoreconf-stamp
 build-arch build: build-stamp
 build-stamp: configure-stamp
 	dh_testdir
-	cd eglib && $(MAKE) $(EGLIB_MAKE_FLAGS)
 ifndef SKIP_LIBGC
 	cd libgc && $(MAKE) $(LIBGC_MAKE_FLAGS)
 endif
