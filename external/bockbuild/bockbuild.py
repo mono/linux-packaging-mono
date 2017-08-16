@@ -68,7 +68,7 @@ class Bockbuild:
 
     def run(self):
         self.name = 'bockbuild'
-        self.root = os.path.dirname (os.path.realpath(__file__)) # Bockbuild system root
+        self.root = os.path.dirname (os.path.abspath(__file__)) # Bockbuild system root
         self.execution_root = os.getcwd()
         self.resources = set([os.path.realpath(
             os.path.join(self.root, 'packages'))]) # list of paths on where to look for packages, patches, etc.

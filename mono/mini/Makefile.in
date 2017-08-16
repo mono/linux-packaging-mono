@@ -92,7 +92,7 @@ target_triplet = @target@
 @DISABLE_EXECUTABLES_FALSE@	mono$(EXEEXT)
 @DISABLE_EXECUTABLES_TRUE@noinst_PROGRAMS = genmdesc$(EXEEXT)
 @LOADED_LLVM_TRUE@am__append_1 = libmono-llvm.la
-@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
+@HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@am__append_2 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la $(boehm_libs)
 @BITCODE_TRUE@am__append_3 = -no-undefined
 @FULL_AOT_TESTS_TRUE@am__append_4 = builtin-types.exe
 
@@ -187,9 +187,9 @@ am__libmini_static_la_SOURCES_DIST = mini.c mini-runtime.c \
 	support-s390x.h exceptions-s390x.c tramp-s390x.c mini-sparc.c \
 	mini-sparc.h exceptions-sparc.c tramp-sparc.c mini-x86.c \
 	mini-x86.h exceptions-x86.c tramp-x86.c mini-x86-gsharedvt.c \
-	tramp-x86-gsharedvt.c mini-windows.c mini-windows.h \
-	mini-windows-dllmain.c mini-windows-dlldac.c mini-darwin.c \
-	mini-posix.c
+	tramp-x86-gsharedvt.c mini-darwin.c mini-posix.c \
+	mini-windows.c mini-windows.h mini-windows-dllmain.c \
+	mini-windows-dlldac.c
 am__objects_1 = libmini_static_la-mini.lo \
 	libmini_static_la-mini-runtime.lo \
 	libmini_static_la-seq-points.lo \
@@ -278,16 +278,15 @@ am__objects_12 = libmini_static_la-mini-x86.lo \
 @AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@am__objects_13 = $(am__objects_7)
 @AMD64_FALSE@@ARM64_TRUE@am__objects_13 = $(am__objects_6)
 @AMD64_TRUE@am__objects_13 = $(am__objects_5)
-am__objects_14 = libmini_static_la-mini-windows.lo \
+am__objects_14 = libmini_static_la-mini-darwin.lo
+am__objects_15 = libmini_static_la-mini-posix.lo
+am__objects_16 = libmini_static_la-mini-windows.lo \
 	libmini_static_la-mini-windows-dllmain.lo \
 	libmini_static_la-mini-windows-dlldac.lo
-am__objects_15 = libmini_static_la-mini-darwin.lo
-am__objects_16 = libmini_static_la-mini-posix.lo
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@@PLATFORM_SIGPOSIX_TRUE@am__objects_17 = $(am__objects_16)
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@am__objects_17 =  \
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_15) \
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_16)
-@HOST_WIN32_TRUE@am__objects_17 = $(am__objects_14)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_17 = $(am__objects_16)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_17 =  \
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_15)
+@HOST_DARWIN_TRUE@am__objects_17 = $(am__objects_14) $(am__objects_15)
 am__objects_18 = $(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	$(am__objects_4) $(am__objects_13) $(am__objects_17)
 am_libmini_static_la_OBJECTS = $(am__objects_18)
@@ -335,8 +334,8 @@ am__libmini_la_SOURCES_DIST = mini.c mini-runtime.c seq-points.c \
 	tramp-s390x.c mini-sparc.c mini-sparc.h exceptions-sparc.c \
 	tramp-sparc.c mini-x86.c mini-x86.h exceptions-x86.c \
 	tramp-x86.c mini-x86-gsharedvt.c tramp-x86-gsharedvt.c \
-	mini-windows.c mini-windows.h mini-windows-dllmain.c \
-	mini-windows-dlldac.c mini-darwin.c mini-posix.c
+	mini-darwin.c mini-posix.c mini-windows.c mini-windows.h \
+	mini-windows-dllmain.c mini-windows-dlldac.c
 am__objects_19 = libmini_la-mini.lo libmini_la-mini-runtime.lo \
 	libmini_la-seq-points.lo libmini_la-method-to-ir.lo \
 	libmini_la-cfgdump.lo libmini_la-decompose.lo \
@@ -402,16 +401,15 @@ am__objects_29 = libmini_la-mini-x86.lo libmini_la-exceptions-x86.lo \
 @AMD64_FALSE@@ARM64_FALSE@@ARM_TRUE@	$(am__objects_24)
 @AMD64_FALSE@@ARM64_TRUE@am__objects_30 = $(am__objects_23)
 @AMD64_TRUE@am__objects_30 = $(am__objects_22)
-am__objects_31 = libmini_la-mini-windows.lo \
+am__objects_31 = libmini_la-mini-darwin.lo
+am__objects_32 = libmini_la-mini-posix.lo
+am__objects_33 = libmini_la-mini-windows.lo \
 	libmini_la-mini-windows-dllmain.lo \
 	libmini_la-mini-windows-dlldac.lo
-am__objects_32 = libmini_la-mini-darwin.lo
-am__objects_33 = libmini_la-mini-posix.lo
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_FALSE@@PLATFORM_SIGPOSIX_TRUE@am__objects_34 = $(am__objects_33)
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@am__objects_34 =  \
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_32) \
-@HOST_WIN32_FALSE@@PLATFORM_DARWIN_TRUE@	$(am__objects_33)
-@HOST_WIN32_TRUE@am__objects_34 = $(am__objects_31)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_FALSE@@HOST_WIN32_TRUE@am__objects_34 = $(am__objects_33)
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@am__objects_34 =  \
+@HOST_DARWIN_FALSE@@HOST_SIGPOSIX_TRUE@	$(am__objects_32)
+@HOST_DARWIN_TRUE@am__objects_34 = $(am__objects_31) $(am__objects_32)
 am_libmini_la_OBJECTS = $(am__objects_19) $(am__objects_20) \
 	$(am__objects_3) $(am__objects_21) $(am__objects_30) \
 	$(am__objects_34)
@@ -424,8 +422,8 @@ am__DEPENDENCIES_2 =
 am__DEPENDENCIES_4 = $(monodir)/mono/metadata/libmonoruntime.la \
 	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_3)
-@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@am__DEPENDENCIES_5 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la \
-@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_FALSE@	$(am__DEPENDENCIES_4)
+@HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@am__DEPENDENCIES_5 = $(top_builddir)/mono/mini/libmonoboehm-$(API_VER).la \
+@HOST_DARWIN_FALSE@@LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_4)
 @LOADED_LLVM_TRUE@libmono_llvm_la_DEPENDENCIES =  \
 @LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2) \
 @LOADED_LLVM_TRUE@	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_5)
@@ -926,14 +924,12 @@ AM_CXXFLAGS = $(LLVM_CXXFLAGS) $(GLIB_CFLAGS)
 genmdesc_CFLAGS = $(AM_CFLAGS)
 monoldflags = $(export_ldflags)
 monobinldflags = $(export_ldflags) $(extra_runtime_ldflags)
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@libmonoldflags =  \
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@	$(monoldflags) \
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@	-version-info 1:0:0 \
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_FALSE@	$(am__append_3)
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@libmonoldflags =  \
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@	-avoid-version \
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@	$(monoldflags) \
-@HOST_WIN32_FALSE@@PLATFORM_ANDROID_TRUE@	$(am__append_3)
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@libmonoldflags = $(monoldflags) \
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	-version-info 1:0:0 \
+@HOST_ANDROID_FALSE@@HOST_WIN32_FALSE@	$(am__append_3)
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@libmonoldflags = -avoid-version \
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(monoldflags) \
+@HOST_ANDROID_TRUE@@HOST_WIN32_FALSE@	$(am__append_3)
 @HOST_WIN32_TRUE@libmonoldflags = -no-undefined -avoid-version \
 @HOST_WIN32_TRUE@	-Wl,--kill-at $(monoldflags) $(am__append_3)
 @SUPPORT_SGEN_TRUE@sgen_binaries = mono-sgen
@@ -956,7 +952,7 @@ lib_LTLIBRARIES = $(shared_libraries) $(am__append_1)
 @LOADED_LLVM_TRUE@libmono_llvm_la_SOURCES = mini-llvm.c mini-llvm-cpp.cpp llvm-jit.cpp
 @LOADED_LLVM_TRUE@libmono_llvm_la_LIBADD = $(GLIB_LIBS) $(LLVM_LIBS) \
 @LOADED_LLVM_TRUE@	$(LLVM_LDFLAGS) $(am__append_2)
-@LOADED_LLVM_TRUE@@PLATFORM_DARWIN_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
+@HOST_DARWIN_TRUE@@LOADED_LLVM_TRUE@libmono_llvm_la_LDFLAGS = -Wl,-undefined -Wl,suppress -Wl,-flat_namespace
 mono_boehm_SOURCES = \
 	main.c
 
@@ -1273,13 +1269,13 @@ regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
 
 # pick up arm_dpimacros.h
 @ARM_TRUE@ARCH_CFLAGS = -I../arch/arm
+@HOST_DARWIN_TRUE@os_sources = $(darwin_sources) $(posix_sources)
+@HOST_SIGPOSIX_TRUE@os_sources = $(posix_sources)
 @HOST_WIN32_TRUE@os_sources = $(windows_sources)
-@PLATFORM_DARWIN_TRUE@os_sources = $(darwin_sources) $(posix_sources)
-@PLATFORM_SIGPOSIX_TRUE@os_sources = $(posix_sources)
-@HOST_WIN32_TRUE@monobin_platform_ldflags = 
 #monobin_platform_ldflags=-sectcreate __TEXT __info_plist $(top_srcdir)/mono/mini/Info.plist -framework CoreFoundation -framework Foundation
-@PLATFORM_DARWIN_TRUE@monobin_platform_ldflags = -framework CoreFoundation -framework Foundation
-@PLATFORM_SIGPOSIX_TRUE@monobin_platform_ldflags = 
+@HOST_DARWIN_TRUE@monobin_platform_ldflags = -framework CoreFoundation -framework Foundation
+@HOST_SIGPOSIX_TRUE@monobin_platform_ldflags = 
+@HOST_WIN32_TRUE@monobin_platform_ldflags = 
 libmini_la_SOURCES = $(common_sources) $(llvm_sources) $(llvm_runtime_sources) $(interp_sources) $(arch_sources) $(os_sources)
 libmini_la_CFLAGS = $(mono_CFLAGS)
 libmonoboehm_2_0_la_SOURCES = 
@@ -2337,6 +2333,20 @@ libmini_static_la-tramp-x86-gsharedvt.lo: tramp-x86-gsharedvt.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-tramp-x86-gsharedvt.lo `test -f 'tramp-x86-gsharedvt.c' || echo '$(srcdir)/'`tramp-x86-gsharedvt.c
 
+libmini_static_la-mini-darwin.lo: mini-darwin.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-darwin.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-darwin.Tpo -c -o libmini_static_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-darwin.Tpo $(DEPDIR)/libmini_static_la-mini-darwin.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-darwin.c' object='libmini_static_la-mini-darwin.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
+
+libmini_static_la-mini-posix.lo: mini-posix.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-posix.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-posix.Tpo -c -o libmini_static_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-posix.Tpo $(DEPDIR)/libmini_static_la-mini-posix.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-posix.c' object='libmini_static_la-mini-posix.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
+
 libmini_static_la-mini-windows.lo: mini-windows.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-windows.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-windows.Tpo -c -o libmini_static_la-mini-windows.lo `test -f 'mini-windows.c' || echo '$(srcdir)/'`mini-windows.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-windows.Tpo $(DEPDIR)/libmini_static_la-mini-windows.Plo
@@ -2357,20 +2367,6 @@ libmini_static_la-mini-windows-dlldac.lo: mini-windows-dlldac.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-dlldac.c' object='libmini_static_la-mini-windows-dlldac.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
-
-libmini_static_la-mini-darwin.lo: mini-darwin.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-darwin.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-darwin.Tpo -c -o libmini_static_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-darwin.Tpo $(DEPDIR)/libmini_static_la-mini-darwin.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-darwin.c' object='libmini_static_la-mini-darwin.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
-
-libmini_static_la-mini-posix.lo: mini-posix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -MT libmini_static_la-mini-posix.lo -MD -MP -MF $(DEPDIR)/libmini_static_la-mini-posix.Tpo -c -o libmini_static_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_static_la-mini-posix.Tpo $(DEPDIR)/libmini_static_la-mini-posix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-posix.c' object='libmini_static_la-mini-posix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_static_la_CFLAGS) $(CFLAGS) -c -o libmini_static_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
 
 libmini_la-mini.lo: mini.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini.Tpo -c -o libmini_la-mini.lo `test -f 'mini.c' || echo '$(srcdir)/'`mini.c
@@ -2932,6 +2928,20 @@ libmini_la-tramp-x86-gsharedvt.lo: tramp-x86-gsharedvt.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-tramp-x86-gsharedvt.lo `test -f 'tramp-x86-gsharedvt.c' || echo '$(srcdir)/'`tramp-x86-gsharedvt.c
 
+libmini_la-mini-darwin.lo: mini-darwin.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-darwin.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-darwin.Tpo -c -o libmini_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-darwin.Tpo $(DEPDIR)/libmini_la-mini-darwin.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-darwin.c' object='libmini_la-mini-darwin.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
+
+libmini_la-mini-posix.lo: mini-posix.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-posix.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-posix.Tpo -c -o libmini_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-posix.Tpo $(DEPDIR)/libmini_la-mini-posix.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-posix.c' object='libmini_la-mini-posix.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
+
 libmini_la-mini-windows.lo: mini-windows.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-windows.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-windows.Tpo -c -o libmini_la-mini-windows.lo `test -f 'mini-windows.c' || echo '$(srcdir)/'`mini-windows.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-windows.Tpo $(DEPDIR)/libmini_la-mini-windows.Plo
@@ -2952,20 +2962,6 @@ libmini_la-mini-windows-dlldac.lo: mini-windows-dlldac.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-windows-dlldac.c' object='libmini_la-mini-windows-dlldac.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-windows-dlldac.lo `test -f 'mini-windows-dlldac.c' || echo '$(srcdir)/'`mini-windows-dlldac.c
-
-libmini_la-mini-darwin.lo: mini-darwin.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-darwin.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-darwin.Tpo -c -o libmini_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-darwin.Tpo $(DEPDIR)/libmini_la-mini-darwin.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-darwin.c' object='libmini_la-mini-darwin.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-darwin.lo `test -f 'mini-darwin.c' || echo '$(srcdir)/'`mini-darwin.c
-
-libmini_la-mini-posix.lo: mini-posix.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -MT libmini_la-mini-posix.lo -MD -MP -MF $(DEPDIR)/libmini_la-mini-posix.Tpo -c -o libmini_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmini_la-mini-posix.Tpo $(DEPDIR)/libmini_la-mini-posix.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='mini-posix.c' object='libmini_la-mini-posix.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmini_la_CFLAGS) $(CFLAGS) -c -o libmini_la-mini-posix.lo `test -f 'mini-posix.c' || echo '$(srcdir)/'`mini-posix.c
 
 genmdesc-genmdesc.o: genmdesc.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(genmdesc_CFLAGS) $(CFLAGS) -MT genmdesc-genmdesc.o -MD -MP -MF $(DEPDIR)/genmdesc-genmdesc.Tpo -c -o genmdesc-genmdesc.o `test -f 'genmdesc.c' || echo '$(srcdir)/'`genmdesc.c
@@ -3540,7 +3536,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/5b2ac5b\"" > version.h
+	echo "#define FULL_VERSION \"master/83020f1\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

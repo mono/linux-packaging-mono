@@ -421,7 +421,7 @@ pedump_LDADD = \
 	$(GLIB_LIBS)			\
 	$(LIBICONV)
 
-@PLATFORM_DARWIN_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
+@HOST_DARWIN_TRUE@pedump_LDFLAGS = -framework CoreFoundation -framework Foundation
 all: all-am
 
 .SUFFIXES:

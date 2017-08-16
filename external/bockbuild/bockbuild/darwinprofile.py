@@ -330,9 +330,9 @@ class DarwinProfile (UnixProfile):
         def process(self, path, fixup_func):
             staged_path = fixup_func(path)
 
-            run_shell('install_name_tool -id %s %s' %
-                      (staged_path, path), False)
 
+            run_shell('install_name_tool -id %s %s' %
+                      (staged_path, path), fatal=False)
             libs = backtick('otool -L %s' % path)
             for line in libs:
                 # parse 'otool -L'
@@ -343,4 +343,4 @@ class DarwinProfile (UnixProfile):
                 remap = fixup_func(rpath)
                 if remap != rpath:
                     run_shell('install_name_tool -change %s %s %s' %
-                              (rpath, remap, path), False)
+                              (rpath, remap, path), fatal=False)

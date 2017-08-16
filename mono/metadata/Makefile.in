@@ -80,7 +80,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@PLATFORM_ANDROID_TRUE@am__append_1 = ../../support/libm/complex.c
+@HOST_ANDROID_TRUE@am__append_1 = ../../support/libm/complex.c
 subdir = mono/metadata
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -187,7 +187,7 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-w32file-unix-glob.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-w32error-unix.lo
 am__dirstamp = $(am__leading_dot)dirstamp
-@PLATFORM_ANDROID_TRUE@am__objects_2 = ../../support/libm/libmonoruntime_static_la-complex.lo
+@HOST_ANDROID_TRUE@am__objects_2 = ../../support/libm/libmonoruntime_static_la-complex.lo
 @HOST_WIN32_TRUE@am__objects_3 =  \
 @HOST_WIN32_TRUE@	libmonoruntime_static_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntime_static_la-w32file-win32.lo \
@@ -361,7 +361,7 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32file-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32file-unix-glob.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32error-unix.lo
-@PLATFORM_ANDROID_TRUE@am__objects_11 = ../../support/libm/libmonoruntime_la-complex.lo
+@HOST_ANDROID_TRUE@am__objects_11 = ../../support/libm/libmonoruntime_la-complex.lo
 @HOST_WIN32_TRUE@am__objects_12 = libmonoruntime_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntime_la-w32file-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntime_la-icall-windows.lo \
@@ -516,7 +516,7 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_static_la-w32file-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_static_la-w32file-unix-glob.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_static_la-w32error-unix.lo
-@PLATFORM_ANDROID_TRUE@am__objects_19 = ../../support/libm/libmonoruntimesgen_static_la-complex.lo
+@HOST_ANDROID_TRUE@am__objects_19 = ../../support/libm/libmonoruntimesgen_static_la-complex.lo
 @HOST_WIN32_TRUE@am__objects_20 = libmonoruntimesgen_static_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_static_la-w32file-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_static_la-icall-windows.lo \
@@ -698,7 +698,7 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32file-unix-glob.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32error-unix.lo
-@PLATFORM_ANDROID_TRUE@am__objects_27 = ../../support/libm/libmonoruntimesgen_la-complex.lo
+@HOST_ANDROID_TRUE@am__objects_27 = ../../support/libm/libmonoruntimesgen_la-complex.lo
 @HOST_WIN32_TRUE@am__objects_28 =  \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-console-win32.lo \
 @HOST_WIN32_TRUE@	libmonoruntimesgen_la-w32file-win32.lo \
