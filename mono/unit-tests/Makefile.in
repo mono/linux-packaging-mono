@@ -674,7 +674,7 @@ test_cflags = $(AM_CFLAGS) $(SGEN_DEFINES)
 test_ldadd = libtestlib.la \
 	$(LIBGC_LIBS) $(GLIB_LIBS) -lm $(LIBICONV)
 
-@PLATFORM_DARWIN_TRUE@test_ldflags = -framework CoreFoundation -framework Foundation
+@HOST_DARWIN_TRUE@test_ldflags = -framework CoreFoundation -framework Foundation
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@noinst_LTLIBRARIES = libtestlib.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_SOURCES = 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la

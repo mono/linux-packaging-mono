@@ -1729,8 +1729,8 @@ tests: compile-tests
 #
 # Test that no symbols are missed in eglib-remap.h
 #
-@PLATFORM_LINUX_TRUE@test-platform: test-eglib-remap
-@PLATFORM_DARWIN_TRUE@@PLATFORM_LINUX_FALSE@test-platform: test-eglib-remap
+@HOST_LINUX_TRUE@test-platform: test-eglib-remap
+@HOST_DARWIN_TRUE@@HOST_LINUX_FALSE@test-platform: test-eglib-remap
 test-eglib-remap:
 	@echo "Testing eglib remap..."
 	@if which nm > /dev/null; then if nm $(top_builddir)/mono/mini/mono | grep -Ev $(OK_G_SYMBOLS) | grep -E 't _?g_'; then exit 1; else exit 0; fi; fi

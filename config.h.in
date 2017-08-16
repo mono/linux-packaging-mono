@@ -1035,14 +1035,23 @@
 /* ... */
 #undef HOST_AMD64
 
+/* Targeting the Android platform */
+#undef HOST_ANDROID
+
 /* ... */
 #undef HOST_ARM
 
 /* ... */
 #undef HOST_ARM64
 
+/* Host Platform is Darwin */
+#undef HOST_DARWIN
+
 /* ... */
 #undef HOST_MIPS
+
+/* This platform does not support symlinks */
+#undef HOST_NO_SYMLINKS
 
 /* ... */
 #undef HOST_POWERPC
@@ -1142,12 +1151,6 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
-
-/* Targeting the Android platform */
-#undef PLATFORM_ANDROID
-
-/* This platform does not support symlinks */
-#undef PLATFORM_NO_SYMLINKS
 
 /* pthread is a pointer */
 #undef PTHREAD_POINTER_ID

@@ -488,7 +488,7 @@ monodis_LDADD = \
 	$(GLIB_LIBS)			\
 	$(LIBICONV)
 
-@PLATFORM_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation -framework Foundation
+@HOST_DARWIN_TRUE@monodis_LDFLAGS = -framework CoreFoundation -framework Foundation
 man_MANS = monodis.1
 EXTRA_DIST = $(man_MANS)
 all: all-am
