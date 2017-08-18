@@ -50,6 +50,7 @@ namespace Microsoft.Win32.SafeHandles
     public abstract partial class SafeNCryptHandle : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid
     {
         protected SafeNCryptHandle() : base (default(bool)) { }
+        protected SafeNCryptHandle(System.IntPtr handle, System.Runtime.InteropServices.SafeHandle parentHandle) : base (default(bool)) { }
         public override bool IsInvalid { get { throw null; } }
         protected override bool ReleaseHandle() { throw null; }
         protected abstract bool ReleaseNativeHandle();
@@ -57,6 +58,7 @@ namespace Microsoft.Win32.SafeHandles
     public sealed partial class SafeNCryptKeyHandle : Microsoft.Win32.SafeHandles.SafeNCryptHandle
     {
         public SafeNCryptKeyHandle() { }
+        public SafeNCryptKeyHandle(System.IntPtr handle, System.Runtime.InteropServices.SafeHandle parentHandle) { }
         protected override bool ReleaseNativeHandle() { throw null; }
     }
     public sealed partial class SafeNCryptProviderHandle : Microsoft.Win32.SafeHandles.SafeNCryptHandle
@@ -2862,9 +2864,22 @@ namespace System.Security.Cryptography
         [System.Security.SecuritySafeCriticalAttribute]
         public ECDsaCng(System.Security.Cryptography.CngKey key) { }
         public ECDsaCng(System.Security.Cryptography.ECCurve curve) { }
+        public System.Security.Cryptography.CngAlgorithm HashAlgorithm { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public System.Security.Cryptography.CngKey Key { get { throw null; } }
+        public void FromXmlString(string xml, System.Security.Cryptography.ECKeyXmlFormat format) { }
+        public byte[] SignData(byte[] data) { throw null; }
+        public byte[] SignData(byte[] data, int offset, int count) { throw null; }
+        public byte[] SignData(System.IO.Stream data) { throw null; }
         public override byte[] SignHash(byte[] hash) { throw null; }
+        public string ToXmlString(System.Security.Cryptography.ECKeyXmlFormat format) { throw null; }
+        public bool VerifyData(byte[] data, byte[] signature) { throw null; }
+        public bool VerifyData(byte[] data, int offset, int count, byte[] signature) { throw null; }
+        public bool VerifyData(System.IO.Stream data, byte[] signature) { throw null; }
         public override bool VerifyHash(byte[] hash, byte[] signature) { throw null; }
+    }
+    public enum ECKeyXmlFormat
+    {
+        Rfc4050 = 0,
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ECParameters
