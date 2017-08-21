@@ -38,7 +38,6 @@ Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
 Patch0:		provides-facades.patch
 Patch1:		0001-btls-Disable-BUILD_SHARED_LIBS-while-building-boring.patch
-Patch2:		fix-project-builds-linux.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
@@ -136,7 +135,6 @@ technologies that have been submitted to the ECMA for standardization.
 %setup -q -n mono-%{version}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 ./autogen.sh
