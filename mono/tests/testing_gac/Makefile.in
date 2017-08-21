@@ -80,8 +80,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@FULL_AOT_TESTS_TRUE@am__append_1 = --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
-@HYBRID_AOT_TESTS_TRUE@am__append_2 = --aot-run-flags "$(AOT_RUN_FLAGS)" --aot-build-flags "$(AOT_BUILD_FLAGS)"
+@FULL_AOT_TESTS_TRUE@am__append_1 = --runtime-args "$(AOT_RUN_FLAGS)"
+@HYBRID_AOT_TESTS_TRUE@am__append_2 = --runtime-args "$(AOT_RUN_FLAGS)"
 subdir = mono/tests/testing_gac
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs README
@@ -217,7 +217,6 @@ MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MONO_CORLIB_VERSION = @MONO_CORLIB_VERSION@
 MONO_DL_NEED_USCORE = @MONO_DL_NEED_USCORE@
-MONO_NACL_ALIGN_MASK_OFF = @MONO_NACL_ALIGN_MASK_OFF@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
@@ -315,7 +314,6 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
-nacl_self_host = @nacl_self_host@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -375,11 +373,17 @@ SIGNED_V1_DLL = signed_v1/gactestlib.dll
 SIGNED_V2_DLL = signed_v2/gactestlib.dll
 GACTESTLIB_SRCS = $(V1_SRC) $(V2_SRC)
 GACTESTLIB_DLLS = $(SIGNED_V1_DLL) $(SIGNED_V2_DLL) $(UNSIGNED_V1_DLL) $(UNSIGNED_V2_DLL)
-@FULL_AOT_TESTS_TRUE@GACTESTLIB_DLLS_AOT = $(GACTESTLIB_DLLS:.dll=.dll$(PLATFORM_AOT_SUFFIX))
-@HYBRID_AOT_TESTS_TRUE@GACTESTLIB_DLLS_AOT = $(GACTESTLIB_DLLS:.dll=.dll$(PLATFORM_AOT_SUFFIX))
-@FULL_AOT_TESTS_TRUE@APP_SIGNED_V1_AOT = $(APP_SIGNED_V1_EXE:.exe=.exe$(PLATFORM_AOT_SUFFIX))
-@HYBRID_AOT_TESTS_TRUE@APP_SIGNED_V1_AOT = $(APP_SIGNED_V1_EXE:.exe=.exe$(PLATFORM_AOT_SUFFIX))
-SIGNING_KEY = testkey.snk
+
+#if FULL_AOT_TESTS
+#GACTESTLIB_DLLS_AOT=$(GACTESTLIB_DLLS:.dll=.dll$(PLATFORM_AOT_SUFFIX))
+#APP_SIGNED_V1_AOT=$(APP_SIGNED_V1_EXE:.exe=.exe$(PLATFORM_AOT_SUFFIX))
+#endif
+
+#if HYBRID_AOT_TESTS
+#GACTESTLIB_DLLS_AOT=$(GACTESTLIB_DLLS:.dll=.dll$(PLATFORM_AOT_SUFFIX))
+#APP_SIGNED_V1_AOT=$(APP_SIGNED_V1_EXE:.exe=.exe$(PLATFORM_AOT_SUFFIX))
+#endif
+SIGNING_KEY = $(srcdir)/testkey.snk
 
 # prefix for the testing gac.  gacutil will add lib/mono/gac directories
 GACDIR = .
@@ -387,21 +391,6 @@ SIGN = -delaysign -keyfile:$(SIGNING_KEY)
 
 ### autotools stuff
 EXTRA_DIST = README $(SIGNING_KEY) $(GACTESTLIB_SRCS) 
-@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@GAC_TESTS = test-signed-v1-app-gac
-@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_TRUE@GAC_TESTS = 
-
-### Test cases
-
-# MONO_GAC_PREFIX tests
-@FULL_AOT_TESTS_TRUE@GAC_TESTS = 
-
-# MONO_PATH tests
-MP_TESTS = test-app-both \
-	test-signed-v1-app-mp-unsigned-v1 \
-	test-signed-v1-app-mp-signed-v1 \
-	test-signed-v1-app-mp-unsigned-v2-signed-v1 \
-	test-signed-v1-app-mp-signed-v2-signed-v1
-
 all: all-am
 
 .SUFFIXES:
@@ -594,15 +583,23 @@ uninstall-am:
 	pdf-am ps ps-am tags-am uninstall uninstall-am
 
 
-###
+### Test cases
 
 .PHONY: runtest compile-tests prereqs
 
-runtest: $(MP_TESTS) $(GAC_TESTS)
+runtest:
+	true
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-app-both
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-signed-v1-app-mp-unsigned-v1
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-signed-v1-app-mp-signed-v1
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-signed-v1-app-mp-unsigned-v2-signed-v1
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-signed-v1-app-mp-signed-v2-signed-v1
+@FULL_AOT_TESTS_FALSE@@HYBRID_AOT_TESTS_FALSE@	$(MAKE) test-signed-v1-app-gac
 
 compile-tests: prereqs $(APP_SIGNED_V1_EXE) $(APP_BOTH_EXE) $(APP_SIGNED_V1_AOT)
 
-prereqs: $(GACTESTLIB_DLLS) $(GACTESTLIB_DLLS_AOT) gacinstall
+prereqs: $(GACTESTLIB_DLLS) $(GACTESTLIB_DLLS_AOT)
+	$(MAKE) gacinstall
 
 $(UNSIGNED_V1_DLL): $(V1_SRC)
 	-mkdir -p $(@D)
@@ -632,14 +629,13 @@ app-both.exe: app-both.cs $(SIGNED_V1_DLL) $(SIGNED_V2_DLL)
 %.dll$(PLATFORM_AOT_SUFFIX): %.dll 
 	$(TEST_RUNTIME) $(AOT_BUILD_FLAGS) $<
 
+# MONO_PATH tests
+
 test-signed-v1-app-mp-unsigned-v1: $(APP_SIGNED_V1_EXE) prereqs
 	$(TOOLS_RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name "testing_gac_$@" --mono-path "unsigned_v1$(PLATFORM_PATH_SEPARATOR)$(BASE_MONO_PATH)" --expected-exit-code 1 $(APP_SIGNED_V1_EXE)
 
 test-signed-v1-app-mp-signed-v1: $(APP_SIGNED_V1_EXE) prereqs
 	$(TOOLS_RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name "testing_gac_$@" --mono-path "signed_v1$(PLATFORM_PATH_SEPARATOR)$(BASE_MONO_PATH)"  $(APP_SIGNED_V1_EXE)
-
-test-signed-v1-app-gac: $(APP_SIGNED_V1_EXE) gacinstall prereqs
-	$(TOOLS_RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name "testing_gac_$@" --mono-gac-prefix $(GACDIR) $(APP_SIGNED_V1_EXE)
 
 test-signed-v1-app-mp-unsigned-v2-signed-v1: $(APP_SIGNED_V1_EXE) prereqs
 	$(TOOLS_RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name "testing_gac_$@" --mono-path "unsigned_v2$(PLATFORM_PATH_SEPARATOR)signed_v1$(PLATFORM_PATH_SEPARATOR)$(BASE_MONO_PATH)" $(APP_SIGNED_V1_EXE)
@@ -650,6 +646,11 @@ test-signed-v1-app-mp-signed-v2-signed-v1: $(APP_SIGNED_V1_EXE) prereqs
 # N.B. the path order is important - the test needs to load v1 successfully and then try to load v2 from the v1 directory.
 test-app-both: $(APP_BOTH_EXE) prereqs
 	$(TOOLS_RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name "testing_gac_$@" --mono-path "signed_v1$(PLATFORM_PATH_SEPARATOR)signed_v2$(PLATFORM_PATH_SEPARATOR)$(BASE_MONO_PATH)" app-both.exe
+
+# MONO_GAC_PREFIX tests
+
+test-signed-v1-app-gac: $(APP_SIGNED_V1_EXE) gacinstall prereqs
+	$(TOOLS_RUNTIME) $(TEST_RUNNER) $(TEST_RUNNER_ARGS) --testsuite-name "testing_gac_$@" --mono-gac-prefix $(GACDIR) $(APP_SIGNED_V1_EXE)
 
 .PHONY: gacinstall
 

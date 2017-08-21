@@ -8,6 +8,15 @@
 
 #include <mono/metadata/object-internals.h>
 
+/* Keep in sync with System.Reflection.Emit.AssemblyBuilderAccess */
+enum MonoAssemblyBuilderAccess {
+	MonoAssemblyBuilderAccess_Run = 1,                /* 0b0001 */
+	MonoAssemblyBuilderAccess_Save = 2,               /* 0b0010 */
+	MonoAssemblyBuilderAccess_RunAndSave = 3,         /* Run | Save */
+	MonoAssemblyBuilderAccess_ReflectionOnly = 6,     /* Refonly | Save */
+	MonoAssemblyBuilderAccess_RunAndCollect = 9,      /* Collect | Run */
+};
+
 typedef struct _ArrayMethod ArrayMethod;
 
 typedef struct {
@@ -74,6 +83,9 @@ mono_is_sr_mono_cmethod (MonoClass *klass);
 
 gboolean
 mono_is_sr_mono_property (MonoClass *klass);
+
+MonoType*
+mono_reflection_type_get_handle (MonoReflectionType *ref, MonoError *error);
 
 gpointer
 mono_reflection_resolve_object (MonoImage *image, MonoObject *obj, MonoClass **handle_class, MonoGenericContext *context, MonoError *error);

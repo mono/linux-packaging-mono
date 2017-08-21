@@ -208,6 +208,9 @@ namespace Internal.Runtime
         ETF_DynamicModule,
         ETF_GenericDefinition,
         ETF_GenericComposition,
+        ETF_DynamicGcStatics,
+        ETF_DynamicNonGcStatics,
+        ETF_DynamicThreadStaticOffset,
     }
 
     internal enum CorElementType
@@ -297,5 +300,10 @@ namespace Internal.Runtime
         // size for an actual array.
         public const int Pointer = 0;
         public const int ByRef = 1;
+    }
+
+    internal static class StringComponentSize
+    {
+        public const int Value = sizeof(char);
     }
 }

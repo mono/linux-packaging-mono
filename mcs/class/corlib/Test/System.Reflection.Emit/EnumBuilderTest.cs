@@ -303,6 +303,86 @@ namespace MonoTests.System.Reflection.Emit
 			Assert.AreEqual (FieldAttributes.RTSpecialName, value.Attributes & FieldAttributes.RTSpecialName);
 		}
 
+		[Test]
+		public void TestCreateTypeIncompleteEnumStaticField ()
+		{
+			ModuleBuilder modBuilder = GenerateModule ();
+			EnumBuilder enumBuilder = GenerateEnum (modBuilder);
+			GenerateField (enumBuilder);
+
+			var tb = modBuilder.DefineType ("T", TypeAttributes.Public);
+
+			tb.DefineDefaultConstructor (MethodAttributes.Public);
+			tb.DefineField ("e", enumBuilder, FieldAttributes.Static | FieldAttributes.Public);
+
+			var t = tb.CreateType ();
+			Assert.IsNotNull (t);
+			bool caught = false;
+			try {
+				object x = Activator.CreateInstance (t);
+			} catch (TypeLoadException exn) {
+				Assert.AreEqual (t.Name, exn.TypeName);
+				caught = true;
+			}
+			if (!caught)
+				Assert.Fail ("Expected CreateInstance of a broken type to throw TLE");
+		}
+
+		[Test]
+		public void TestEnumBuilderTokenUsable () {
+			// Regression test for https://bugzilla.xamarin.com/show_bug.cgi?id=58361
+			// Create an EnumBuilder and use it in an ILGenerator that consumes its token.
+			var modBuilder = GenerateModule ();
+			EnumBuilder enumBuilder = GenerateEnum (modBuilder);
+
+			var tb = modBuilder.DefineType ("Foo", TypeAttributes.Public);
+
+			var cb = tb.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard,
+						       Type.EmptyTypes);
+
+			var ilg = cb.GetILGenerator ();
+
+			ilg.Emit (OpCodes.Ldtoken, enumBuilder);
+			ilg.Emit (OpCodes.Pop);
+			ilg.Emit (OpCodes.Ret);
+
+			var t = tb.CreateType ();
+			enumBuilder.CreateType ();
+
+			var ci = t.GetConstructor (Type.EmptyTypes);
+			var x = ci.Invoke (null);
+			Assert.IsNotNull (x);
+		}
+
+		[Test]
+		public void TestEnumBuilderTokenUsableCrossAssembly () {
+			// Regression test for https://bugzilla.xamarin.com/show_bug.cgi?id=58361
+			// Create an EnumBuilder and use it in an ILGenerator that consumes its token in a different assembly.
+			var modBuilder = GenerateModule ();
+			var modBuilder2 = GenerateModule ();
+			EnumBuilder enumBuilder = GenerateEnum (modBuilder2);
+
+			// N.B. "tb" is in modBuilder but enumBuilder is in modBuilder2
+			var tb = modBuilder.DefineType ("Foo", TypeAttributes.Public);
+
+			var cb = tb.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard,
+						       Type.EmptyTypes);
+
+			var ilg = cb.GetILGenerator ();
+
+			ilg.Emit (OpCodes.Ldtoken, enumBuilder);
+			ilg.Emit (OpCodes.Pop);
+			ilg.Emit (OpCodes.Ret);
+
+			var t = tb.CreateType ();
+			enumBuilder.CreateType ();
+
+			var ci = t.GetConstructor (Type.EmptyTypes);
+			var x = ci.Invoke (null);
+			Assert.IsNotNull (x);
+		}
+
+
 		private static void VerifyType (Type type)
 		{
 			Assert.IsNotNull (type.Assembly, "#V1");

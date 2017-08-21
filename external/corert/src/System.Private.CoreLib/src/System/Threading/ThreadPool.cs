@@ -26,10 +26,9 @@
  * of the previous stack information.
  */
 
+using Internal.Runtime.Augments;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-using Internal.Runtime.Augments;
 
 namespace System.Threading
 {
@@ -530,6 +529,9 @@ namespace System.Threading
 
         private volatile int numOutstandingThreadRequests = 0;
 
+        // The number of threads executing work items in the Dispatch method
+        internal volatile int numWorkingThreads;
+
         public ThreadPoolWorkQueue()
         {
             queueTail = queueHead = new QueueSegment();
@@ -691,6 +693,8 @@ namespace System.Threading
             //
             workQueue.MarkThreadRequestSatisfied();
 
+            Interlocked.Increment(ref workQueue.numWorkingThreads);
+
             //
             // Assume that we're going to need another thread if this one returns to the VM.  We'll set this to 
             // false later, but only if we're absolutely certain that the queue is empty.
@@ -751,6 +755,9 @@ namespace System.Threading
             }
             finally
             {
+                int numWorkers = Interlocked.Decrement(ref workQueue.numWorkingThreads);
+                Debug.Assert(numWorkers >= 0);
+
                 //
                 // If we are exiting for any reason other than that the queue is definitely empty, ask for another
                 // thread to pick up where we left off.
@@ -817,7 +824,9 @@ namespace System.Threading
         }
     }
 
-    internal delegate void WaitCallback(Object state);
+    public delegate void WaitCallback(Object state);
+
+    public delegate void WaitOrTimerCallback(Object state, bool timedOut);  // signalled or timed out
 
     //
     // Interface to something that can be queued to the TP.  This is implemented by 
@@ -955,36 +964,41 @@ namespace System.Threading
         }
     }
 
-    internal static partial class ThreadPool
+    public static partial class ThreadPool
     {
-        public static void QueueUserWorkItem(
-             WaitCallback callBack,     // NOTE: we do not expose options that allow the callback to be queued as an APC
-             Object state
-             )
-        {
-            Debug.Assert(callBack != null);
-            ExecutionContext context = ExecutionContext.Capture();
-            IThreadPoolWorkItem tpcallBack = context == ExecutionContext.Default ?
-                    new QueueUserWorkItemCallbackDefaultContext(callBack, state) :
-                    (IThreadPoolWorkItem)new QueueUserWorkItemCallback(callBack, state, context);
-            ThreadPoolGlobals.workQueue.Enqueue(tpcallBack, true);
-        }
-
-        public static void QueueUserWorkItem(
-             WaitCallback callBack     // NOTE: we do not expose options that allow the callback to be queued as an APC
-             )
-        {
+        public static bool QueueUserWorkItem(WaitCallback callBack) =>
             QueueUserWorkItem(callBack, null);
+
+        public static bool QueueUserWorkItem(WaitCallback callBack, object state)
+        {
+            if (callBack == null)
+            {
+                throw new ArgumentNullException(nameof(callBack));
+            }
+
+            ExecutionContext context = ExecutionContext.Capture();
+
+            IThreadPoolWorkItem tpcallBack = context == ExecutionContext.Default ?
+                new QueueUserWorkItemCallbackDefaultContext(callBack, state) :
+                (IThreadPoolWorkItem)new QueueUserWorkItemCallback(callBack, state, context);
+
+            ThreadPoolGlobals.workQueue.Enqueue(tpcallBack, forceGlobal: true);
+
+            return true;
         }
 
-        public static void UnsafeQueueUserWorkItem(
-             WaitCallback callBack,     // NOTE: we do not expose options that allow the callback to be queued as an APC
-             Object state
-             )
+        public static bool UnsafeQueueUserWorkItem(WaitCallback callBack, Object state)
         {
-            Debug.Assert(callBack != null);
-            QueueUserWorkItemCallback tpcallBack = new QueueUserWorkItemCallback(callBack, state, null);
-            ThreadPoolGlobals.workQueue.Enqueue(tpcallBack, true);
+            if (callBack == null)
+            {
+                throw new ArgumentNullException(nameof(callBack));
+            }
+
+            IThreadPoolWorkItem tpcallBack = new QueueUserWorkItemCallback(callBack, state, null);
+
+            ThreadPoolGlobals.workQueue.Enqueue(tpcallBack, forceGlobal: true);
+
+            return true;
         }
 
         internal static void UnsafeQueueCustomWorkItem(IThreadPoolWorkItem workItem, bool forceGlobal)
@@ -1079,19 +1093,28 @@ namespace System.Threading
 
         // This is the method the debugger will actually call, if it ends up calling
         // into ThreadPool directly.  Tests can use this to simulate a debugger, as well.
-        internal static object[] GetQueuedWorkItemsForDebugger()
+        internal static object[] GetQueuedWorkItemsForDebugger() =>
+            ToObjectArray(GetQueuedWorkItems());
+
+        internal static object[] GetGloballyQueuedWorkItemsForDebugger() =>
+            ToObjectArray(GetGloballyQueuedWorkItems());
+
+        internal static object[] GetLocallyQueuedWorkItemsForDebugger() =>
+            ToObjectArray(GetLocallyQueuedWorkItems());
+
+        unsafe private static void NativeOverlappedCallback(object obj)
         {
-            return ToObjectArray(GetQueuedWorkItems());
+            NativeOverlapped* overlapped = (NativeOverlapped*)(IntPtr)obj;
+            _IOCompletionCallback.PerformIOCompletionCallback(0, 0, overlapped);
         }
 
-        internal static object[] GetGloballyQueuedWorkItemsForDebugger()
+        [CLSCompliant(false)]
+        unsafe public static bool UnsafeQueueNativeOverlapped(NativeOverlapped* overlapped)
         {
-            return ToObjectArray(GetGloballyQueuedWorkItems());
-        }
-
-        internal static object[] GetLocallyQueuedWorkItemsForDebugger()
-        {
-            return ToObjectArray(GetLocallyQueuedWorkItems());
+            // OS doesn't signal handle, so do it here
+            overlapped->InternalLow = (IntPtr)0;
+            // A quick-and-dirty implementation that runs the callback on the normal thread pool
+            return UnsafeQueueUserWorkItem(NativeOverlappedCallback, (IntPtr)overlapped);
         }
 
         internal static bool IsThreadPoolThread { get { return ThreadPoolWorkQueueThreadLocals.Current != null; } }

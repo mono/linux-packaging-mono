@@ -53,19 +53,10 @@ namespace System.Reflection.Runtime.Assemblies
 
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            if (info == null)
-                throw new ArgumentNullException(nameof(info));
-
-            UnitySerializationHolder.GetUnitySerializationInfo(info, UnitySerializationHolder.AssemblyUnity, FullName, this);
+            throw new PlatformNotSupportedException();
         }
 
-        public sealed override Module ManifestModule
-        {
-            get
-            {
-                return RuntimeModule.GetRuntimeModule(this);
-            }
-        }
+        public abstract override Module ManifestModule { get; }
 
         public sealed override IEnumerable<Module> Modules
         {
@@ -234,6 +225,25 @@ namespace System.Reflection.Runtime.Assemblies
             {
                 return SecurityRuleSet.None;
             }
+        }
+
+        /// <summary>
+        /// Returns a *freshly allocated* array of loaded Assemblies.
+        /// </summary>
+        internal static Assembly[] GetLoadedAssemblies()
+        {
+            // Important: The result of this method is the return value of the AppDomain.GetAssemblies() api so
+            // so it must return a freshly allocated array on each call.
+
+            AssemblyBinder binder = ReflectionCoreExecution.ExecutionDomain.ReflectionDomainSetup.AssemblyBinder;
+            IList<AssemblyBindResult> bindResults = binder.GetLoadedAssemblies();
+            Assembly[] results = new Assembly[bindResults.Count];
+            for (int i = 0; i < bindResults.Count; i++)
+            {
+                Assembly assembly = GetRuntimeAssembly(bindResults[i]);
+                results[i] = assembly;
+            }
+            return results;
         }
 
         private volatile CaseSensitiveTypeCache _lazyCaseSensitiveTypeTable;

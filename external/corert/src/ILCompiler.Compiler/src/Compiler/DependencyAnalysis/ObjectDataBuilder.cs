@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using Internal.TypeSystem;
+using Internal.Runtime;
 
 using Debug = System.Diagnostics.Debug;
 
@@ -18,7 +19,7 @@ namespace ILCompiler.DependencyAnalysis
             _data = new ArrayBuilder<byte>();
             _relocs = new ArrayBuilder<Relocation>();
             Alignment = 1;
-            _definedSymbols = new ArrayBuilder<ISymbolNode>();
+            _definedSymbols = new ArrayBuilder<ISymbolDefinitionNode>();
 #if DEBUG
             _numReservations = 0;
             _checkAllSymbolDependenciesMustBeMarked = !relocsOnly;
@@ -29,7 +30,7 @@ namespace ILCompiler.DependencyAnalysis
         private ArrayBuilder<Relocation> _relocs;
         private ArrayBuilder<byte> _data;
         public int Alignment { get; private set; }
-        private ArrayBuilder<ISymbolNode> _definedSymbols;
+        private ArrayBuilder<ISymbolDefinitionNode> _definedSymbols;
 
 #if DEBUG
         private int _numReservations;
@@ -256,8 +257,8 @@ namespace ILCompiler.DependencyAnalysis
                 case RelocType.IMAGE_REL_BASED_DIR64:
                     EmitLong(delta);
                     break;
-                case RelocType.IMAGE_REL_THUMB_BRANCH24:
-                case RelocType.IMAGE_REL_THUMB_MOV32:
+                case RelocType.IMAGE_REL_BASED_THUMB_BRANCH24:
+                case RelocType.IMAGE_REL_BASED_THUMB_MOV32:
                     // Do not vacate space for this kind of relocation, because
                     // the space is embedded in the instruction.
                     break;                    
@@ -268,6 +269,20 @@ namespace ILCompiler.DependencyAnalysis
 
         public void EmitPointerReloc(ISymbolNode symbol, int delta = 0)
         {
+            EmitReloc(symbol, (_target.PointerSize == 8) ? RelocType.IMAGE_REL_BASED_DIR64 : RelocType.IMAGE_REL_BASED_HIGHLOW, delta);
+        }
+
+        /// <summary>
+        /// Use this api to generate a reloc to a symbol that may be an indirection cell or not as a pointer
+        /// </summary>
+        /// <param name="symbol">symbol to reference</param>
+        /// <param name="indirectionBit">value to OR in to the reloc to represent to runtime code that this pointer is an indirection. Defaults to IndirectionConstants.IndirectionCellPointer</param>
+        /// <param name="delta">Delta from symbol start for value</param>
+        public void EmitPointerRelocOrIndirectionReference(ISymbolNode symbol, int indirectionBit = IndirectionConstants.IndirectionCellPointer, int delta = 0)
+        {
+            if (symbol.RepresentsIndirectionCell)
+                delta |= indirectionBit;
+
             EmitReloc(symbol, (_target.PointerSize == 8) ? RelocType.IMAGE_REL_BASED_DIR64 : RelocType.IMAGE_REL_BASED_HIGHLOW, delta);
         }
 
@@ -287,7 +302,7 @@ namespace ILCompiler.DependencyAnalysis
 
         public enum Reservation { }
 
-        public void AddSymbol(ISymbolNode node)
+        public void AddSymbol(ISymbolDefinitionNode node)
         {
             _definedSymbols.Add(node);
         }

@@ -77,6 +77,8 @@ namespace System.Reflection.Emit {
 		Hashtable resource_writers;
 		ISymbolWriter symbolWriter;
 
+		static bool has_warned_about_symbolWriter;
+
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
 		private static extern void basic_init (ModuleBuilder ab);
 
@@ -107,16 +109,36 @@ namespace System.Reflection.Emit {
 
 			if (emitSymbolInfo) {
 				Assembly asm = Assembly.LoadWithPartialName ("Mono.CompilerServices.SymbolWriter");
-				if (asm == null)
-					throw new TypeLoadException ("The assembly for default symbol writer cannot be loaded");
 
-				Type t = asm.GetType ("Mono.CompilerServices.SymbolWriter.SymbolWriterImpl", true);
-				symbolWriter = (ISymbolWriter) Activator.CreateInstance (t, new object[] { this });
+				Type t = null;
+				if (asm != null)
+					t = asm.GetType ("Mono.CompilerServices.SymbolWriter.SymbolWriterImpl");
+
+				if (t == null) {
+					WarnAboutSymbolWriter ("Failed to load the default Mono.CompilerServices.SymbolWriter assembly");
+				} else {
+					try {
+						symbolWriter = (ISymbolWriter) Activator.CreateInstance (t, new object[] { this });
+					} catch (System.MissingMethodException) {
+						WarnAboutSymbolWriter ("The default Mono.CompilerServices.SymbolWriter is not available on this platform");					
+						return;
+					}
+				}
+				
 				string fileName = fqname;
 				if (assemblyb.AssemblyDir != null)
 					fileName = Path.Combine (assemblyb.AssemblyDir, fileName);
 				symbolWriter.Initialize (IntPtr.Zero, fileName, true);
 			}
+		}
+
+		static void WarnAboutSymbolWriter (string message) 
+		{
+			if (has_warned_about_symbolWriter)
+				return;
+
+			has_warned_about_symbolWriter = true;
+			Console.Error.WriteLine ("WARNING: {0}", message);
 		}
 
 		public override string FullyQualifiedName {get { return fqname;}}
@@ -727,6 +749,14 @@ namespace System.Reflection.Emit {
 					token = typedef_tokengen --;
 				else
 					token = typeref_tokengen --;
+			} else if (member is EnumBuilder) {
+				token = GetPseudoToken ((member as  EnumBuilder).GetTypeBuilder(), create_open_instance);
+				if (create_open_instance)
+					inst_tokens_open[member] = token;
+				else
+					inst_tokens[member] = token;
+				// n.b. don't register with the runtime, the TypeBuilder already did it.
+				return token;
 			} else if (member is ConstructorBuilder) {
 				if (member.Module == this && !(member as ConstructorBuilder).TypeBuilder.ContainsGenericParameters)
 					token = methoddef_tokengen --;
@@ -757,7 +787,8 @@ namespace System.Reflection.Emit {
 		}
 
 		internal int GetToken (MemberInfo member, bool create_open_instance) {
-			if (member is TypeBuilderInstantiation || member is FieldOnTypeBuilderInst || member is ConstructorOnTypeBuilderInst || member is MethodOnTypeBuilderInst || member is SymbolType || member is FieldBuilder || member is TypeBuilder || member is ConstructorBuilder || member is MethodBuilder || member is GenericTypeParameterBuilder)
+			if (member is TypeBuilderInstantiation || member is FieldOnTypeBuilderInst || member is ConstructorOnTypeBuilderInst || member is MethodOnTypeBuilderInst || member is SymbolType || member is FieldBuilder || member is TypeBuilder || member is ConstructorBuilder || member is MethodBuilder || member is GenericTypeParameterBuilder ||
+			    member is EnumBuilder)
 				return GetPseudoToken (member, create_open_instance);
 			return getToken (this, member, create_open_instance);
 		}
@@ -850,6 +881,8 @@ namespace System.Reflection.Emit {
 					finished = (member as FieldBuilder).RuntimeResolve ();
 				} else if (member is TypeBuilder) {
 					finished = (member as TypeBuilder).RuntimeResolve ();
+				} else if (member is EnumBuilder) {
+					finished = (member as EnumBuilder).RuntimeResolve ();
 				} else if (member is ConstructorBuilder) {
 					finished = (member as ConstructorBuilder).RuntimeResolve ();
 				} else if (member is MethodBuilder) {

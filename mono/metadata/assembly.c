@@ -332,27 +332,6 @@ static const AssemblyVersionMap framework_assemblies [] = {
 static GList *loaded_assemblies = NULL;
 static MonoAssembly *corlib;
 
-#if defined(__native_client__)
-
-/* On Native Client, allow mscorlib to be loaded from memory  */
-/* instead of loaded off disk.  If these are not set, default */
-/* mscorlib loading will take place                           */
-
-/* NOTE: If mscorlib data is passed to mono in this way then */
-/* it needs to remain allocated during the use of mono.      */
-
-static void *corlibData = NULL;
-static size_t corlibSize = 0;
-
-void
-mono_set_corlib_data (void *data, size_t size)
-{
-  corlibData = data;
-  corlibSize = size;
-}
-
-#endif
-
 static char* unquote (const char *str);
 
 /* This protects loaded_assemblies and image->references */
@@ -462,12 +441,6 @@ mono_set_assemblies_path (const char* path)
 	}
 }
 
-/* Native Client can't get this info from an environment variable so */
-/* it's passed in to the runtime, or set manually by embedding code. */
-#ifdef __native_client__
-char* nacl_mono_path = NULL;
-#endif
-
 static void
 check_path_env (void)
 {
@@ -475,10 +448,6 @@ check_path_env (void)
 		return;
 
 	char* path = g_getenv ("MONO_PATH");
-#ifdef __native_client__
-	if (!path)
-		path = strdup (nacl_mono_path);
-#endif
 	if (!path)
 		return;
 
@@ -2139,6 +2108,10 @@ has_reference_assembly_attribute_iterator (MonoImage *image, guint32 typeref_sco
 gboolean
 mono_assembly_has_reference_assembly_attribute (MonoAssembly *assembly, MonoError *error)
 {
+	g_assert (assembly && assembly->image);
+	/* .NET Framework appears to ignore the attribute on dynamic
+	 * assemblies, so don't call this function for dynamic assemblies. */
+	g_assert (!image_is_dynamic (assembly->image));
 	error_init (error);
 
 	/*
@@ -2397,7 +2370,7 @@ static gboolean
 parse_public_key (const gchar *key, gchar** pubkey, gboolean *is_ecma)
 {
 	const gchar *pkey;
-	gchar header [16], val, *arr;
+	gchar header [16], val, *arr, *endp;
 	gint i, j, offset, bitlen, keylen, pkeylen;
 	
 	keylen = strlen (key) >> 1;
@@ -2459,16 +2432,10 @@ parse_public_key (const gchar *key, gchar** pubkey, gboolean *is_ecma)
 	if (!pubkey)
 		return TRUE;
 		
+	arr = (gchar *)g_malloc (keylen + 4);
 	/* Encode the size of the blob */
-	offset = 0;
-	if (keylen <= 127) {
-		arr = (gchar *)g_malloc (keylen + 1);
-		arr [offset++] = keylen;
-	} else {
-		arr = (gchar *)g_malloc (keylen + 2);
-		arr [offset++] = 0x80; /* 10bs */
-		arr [offset++] = keylen;
-	}
+	mono_metadata_encode_value (keylen, &arr[0], &endp);
+	offset = (gint)(endp-arr);
 		
 	for (i = offset, j = 0; i < keylen + offset; i++) {
 		arr [i] = g_ascii_xdigit_value (key [j++]) << 4;
@@ -3505,23 +3472,6 @@ mono_assembly_load_corlib (const MonoRuntimeInfo *runtime, MonoImageOpenStatus *
 		return corlib;
 	}
 
-	// In native client, Corlib is embedded in the executable as static variable corlibData
-#if defined(__native_client__)
-	if (corlibData != NULL && corlibSize != 0) {
-		int status = 0;
-		/* First "FALSE" instructs mono not to make a copy. */
-		/* Second "FALSE" says this is not just a ref.      */
-		MonoImage* image = mono_image_open_from_data_full (corlibData, corlibSize, FALSE, &status, FALSE);
-		if (image == NULL || status != 0)
-			g_print("mono_image_open_from_data_full failed: %d\n", status);
-		corlib = mono_assembly_load_from_full (image, "mscorlib", &status, FALSE);
-		if (corlib == NULL || status != 0)
-			g_print ("mono_assembly_load_from_full failed: %d\n", status);
-		if (corlib)
-			return corlib;
-	}
-#endif
-
 	// A nonstandard preload hook may provide a special mscorlib assembly
 	aname = mono_assembly_name_new ("mscorlib.dll");
 	corlib = invoke_assembly_preload_hook (aname, assemblies_path);
@@ -3561,8 +3511,11 @@ prevent_reference_assembly_from_running (MonoAssembly* candidate, gboolean refon
 {
 	MonoError refasm_error;
 	error_init (&refasm_error);
-	if (candidate && !refonly && mono_assembly_has_reference_assembly_attribute (candidate, &refasm_error)) {
-		candidate = NULL;
+	if (candidate && !refonly) {
+		/* .NET Framework seems to not check for ReferenceAssemblyAttribute on dynamic assemblies */
+		if (!image_is_dynamic (candidate->image) &&
+		    mono_assembly_has_reference_assembly_attribute (candidate, &refasm_error))
+			candidate = NULL;
 	}
 	mono_error_cleanup (&refasm_error);
 	return candidate;

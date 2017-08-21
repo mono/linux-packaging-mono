@@ -27,12 +27,14 @@ namespace ILCompiler
         public NameMangler NameMangler => _nodeFactory.NameMangler;
         public NodeFactory NodeFactory => _nodeFactory;
         public CompilerTypeSystemContext TypeSystemContext => NodeFactory.TypeSystemContext;
-        internal Logger Logger => _logger;
+        public Logger Logger => _logger;
         internal PInvokeILProvider PInvokeILProvider { get; }
 
         protected abstract bool GenerateDebugInfo { get; }
 
         private readonly TypeGetTypeMethodThunkCache _typeGetTypeMethodThunks;
+        private readonly AssemblyGetExecutingAssemblyMethodThunkCache _assemblyGetExecutingAssemblyMethodThunks;
+        private readonly MethodBaseGetCurrentMethodThunkCache _methodBaseGetCurrentMethodThunks;
 
         protected Compilation(
             DependencyAnalyzerBase<NodeFactory> dependencyGraph,
@@ -47,20 +49,20 @@ namespace ILCompiler
             _dependencyGraph.ComputeDependencyRoutine += ComputeDependencyNodeDependencies;
             NodeFactory.AttachToDependencyGraph(_dependencyGraph);
 
-            // TODO: hacky static field
-            NodeFactory.NameManglerDoNotUse = _nodeFactory.NameMangler;
-
             var rootingService = new RootingServiceProvider(dependencyGraph, nodeFactory);
             foreach (var rootProvider in compilationRoots)
                 rootProvider.AddCompilationRoots(rootingService);
 
-            _typeGetTypeMethodThunks = new TypeGetTypeMethodThunkCache(nodeFactory.CompilationModuleGroup.GeneratedAssembly.GetGlobalModuleType());
+            MetadataType globalModuleGeneratedType = nodeFactory.CompilationModuleGroup.GeneratedAssembly.GetGlobalModuleType();
+            _typeGetTypeMethodThunks = new TypeGetTypeMethodThunkCache(globalModuleGeneratedType);
+            _assemblyGetExecutingAssemblyMethodThunks = new AssemblyGetExecutingAssemblyMethodThunkCache(globalModuleGeneratedType);
+            _methodBaseGetCurrentMethodThunks = new MethodBaseGetCurrentMethodThunkCache();
 
             bool? forceLazyPInvokeResolution = null;
             // TODO: Workaround lazy PInvoke resolution not working with CppCodeGen yet
             // https://github.com/dotnet/corert/issues/2454
             // https://github.com/dotnet/corert/issues/2149
-            if (this is CppCodegenCompilation) forceLazyPInvokeResolution = false;
+            if (nodeFactory.IsCppCodegenTemporaryWorkaround) forceLazyPInvokeResolution = false;
             PInvokeILProvider = new PInvokeILProvider(new PInvokeILEmitterConfiguration(forceLazyPInvokeResolution), nodeFactory.InteropStubManager.InteropStateManager);
 
             _methodILCache = new ILProvider(PInvokeILProvider);
@@ -68,7 +70,7 @@ namespace ILCompiler
 
         private ILProvider _methodILCache;
         
-        internal MethodIL GetMethodIL(MethodDesc method)
+        public MethodIL GetMethodIL(MethodDesc method)
         {
             // Flush the cache when it grows too big
             if (_methodILCache.Count > 1000)
@@ -81,9 +83,9 @@ namespace ILCompiler
 
         protected abstract void CompileInternal(string outputFile, ObjectDumper dumper);
 
-        public DelegateCreationInfo GetDelegateCtor(TypeDesc delegateType, MethodDesc target)
+        public DelegateCreationInfo GetDelegateCtor(TypeDesc delegateType, MethodDesc target, bool followVirtualDispatch)
         {
-            return DelegateCreationInfo.Create(delegateType, target, NodeFactory);
+            return DelegateCreationInfo.Create(delegateType, target, NodeFactory, followVirtualDispatch);
         }
 
         /// <summary>
@@ -151,6 +153,25 @@ namespace ILCompiler
                     }
                 }
             }
+            else if (intrinsicOwningType.Name == "Assembly" && intrinsicOwningType.Namespace == "System.Reflection")
+            {
+                if (intrinsicMethod.Signature.IsStatic && intrinsicMethod.Name == "GetExecutingAssembly")
+                {
+                    ModuleDesc callsiteModule = (callsiteMethod.OwningType as MetadataType)?.Module;
+                    if (callsiteModule != null)
+                    {
+                        Debug.Assert(callsiteModule is IAssemblyDesc, "Multi-module assemblies");
+                        return _assemblyGetExecutingAssemblyMethodThunks.GetHelper((IAssemblyDesc)callsiteModule);
+                    }
+                }
+            }
+            else if (intrinsicOwningType.Name == "MethodBase" && intrinsicOwningType.Namespace == "System.Reflection")
+            {
+                if (intrinsicMethod.Signature.IsStatic && intrinsicMethod.Name == "GetCurrentMethod")
+                {
+                    return _methodBaseGetCurrentMethodThunks.GetHelper(callsiteMethod).InstantiateAsOpen();
+                }
+            }
 
             return intrinsicMethod;
         }
@@ -194,8 +215,7 @@ namespace ILCompiler
 
             public void AddCompilationRoot(MethodDesc method, string reason, string exportName = null)
             {
-                var methodEntryPoint = _factory.MethodEntrypoint(method);
-
+                IMethodNode methodEntryPoint = _factory.CanonicalEntrypoint(method);
                 _graph.AddRoot(methodEntryPoint, reason);
 
                 if (exportName != null)
@@ -236,7 +256,19 @@ namespace ILCompiler
                         _graph.AddRoot(_factory.TypeNonGCStaticsSymbol(metadataType), reason);
                     }
                 }
+            }
+            
+            public void RootVirtualMethodForReflection(MethodDesc method, string reason)
+            {
+                Debug.Assert(method.IsVirtual);
 
+                if (!_factory.CompilationModuleGroup.ShouldProduceFullVTable(method.OwningType))
+                    _graph.AddRoot(_factory.VirtualMethodUse(method), reason);
+
+                if (method.IsAbstract)
+                {
+                    _graph.AddRoot(_factory.ReflectableMethod(method), reason);
+                }
             }
         }
     }

@@ -12,6 +12,7 @@ namespace System.Runtime.Serialization
         protected InvalidDataContractException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+            throw new PlatformNotSupportedException();
         }
     }
 }

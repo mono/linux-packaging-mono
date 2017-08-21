@@ -22,6 +22,8 @@ namespace ILCompiler.DependencyAnalysis
     {
         private MethodDesc _method;
 
+        public MethodDesc Method => _method;
+
         public GVMDependenciesNode(MethodDesc method)
         {
             Debug.Assert(!method.IsRuntimeDeterminedExactMethod);
@@ -36,6 +38,15 @@ namespace ILCompiler.DependencyAnalysis
 
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory context)
         {
+            // TODO: https://github.com/dotnet/corert/issues/3224
+            if (_method.IsAbstract)
+            {
+                return new DependencyListEntry[]
+                {
+                    new DependencyListEntry(context.ReflectableMethod(_method), "Abstract reflectable method"),
+                };
+            }
+
             return Array.Empty<DependencyListEntry>();
         }
         public override IEnumerable<CombinedDependencyListEntry> GetConditionalStaticDependencies(NodeFactory context)
@@ -63,6 +74,12 @@ namespace ILCompiler.DependencyAnalysis
             Debug.Assert(_method.IsVirtual && _method.HasInstantiation);
 
             List<CombinedDependencyListEntry> dynamicDependencies = new List<CombinedDependencyListEntry>();
+
+            // Disable dependence tracking for ProjectN
+            if (factory.Target.Abi == TargetAbi.ProjectN)
+            {
+                return dynamicDependencies;
+            }
 
             for (int i = firstNode; i < markedNodes.Count; i++)
             {

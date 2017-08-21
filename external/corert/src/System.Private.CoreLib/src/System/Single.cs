@@ -22,7 +22,7 @@ namespace System
     [System.Runtime.InteropServices.StructLayout(LayoutKind.Sequential)]
     public struct Single : IComparable, IFormattable, IComparable<Single>, IEquatable<Single>, IConvertible
     {
-        internal float m_value;
+        private float _value;
 
         //
         // Public constants
@@ -73,12 +73,12 @@ namespace System
             if (value is Single)
             {
                 float f = (float)value;
-                if (m_value < f) return -1;
-                if (m_value > f) return 1;
-                if (m_value == f) return 0;
+                if (_value < f) return -1;
+                if (_value > f) return 1;
+                if (_value == f) return 0;
 
                 // At least one of the values is NaN.
-                if (IsNaN(m_value))
+                if (IsNaN(_value))
                     return (IsNaN(f) ? 0 : -1);
                 else // f is NaN.
                     return 1;
@@ -89,12 +89,12 @@ namespace System
 
         public int CompareTo(Single value)
         {
-            if (m_value < value) return -1;
-            if (m_value > value) return 1;
-            if (m_value == value) return 0;
+            if (_value < value) return -1;
+            if (_value > value) return 1;
+            if (_value == value) return 0;
 
             // At least one of the values is NaN.
-            if (IsNaN(m_value))
+            if (IsNaN(_value))
                 return (IsNaN(value) ? 0 : -1);
             else // f is NaN.
                 return 1;
@@ -136,28 +136,28 @@ namespace System
             {
                 return false;
             }
-            float temp = ((Single)obj).m_value;
-            if (temp == m_value)
+            float temp = ((Single)obj)._value;
+            if (temp == _value)
             {
                 return true;
             }
 
-            return IsNaN(temp) && IsNaN(m_value);
+            return IsNaN(temp) && IsNaN(_value);
         }
 
         public bool Equals(Single obj)
         {
-            if (obj == m_value)
+            if (obj == _value)
             {
                 return true;
             }
 
-            return IsNaN(obj) && IsNaN(m_value);
+            return IsNaN(obj) && IsNaN(_value);
         }
 
         public unsafe override int GetHashCode()
         {
-            float f = m_value;
+            float f = _value;
             if (f == 0)
             {
                 // Ensure that 0 and -0 have the same hash code
@@ -170,25 +170,25 @@ namespace System
         public override String ToString()
         {
             Contract.Ensures(Contract.Result<String>() != null);
-            return FormatProvider.FormatSingle(m_value, null, null);
+            return FormatProvider.FormatSingle(_value, null, null);
         }
 
         public String ToString(IFormatProvider provider)
         {
             Contract.Ensures(Contract.Result<String>() != null);
-            return FormatProvider.FormatSingle(m_value, null, provider);
+            return FormatProvider.FormatSingle(_value, null, provider);
         }
 
         public String ToString(String format)
         {
             Contract.Ensures(Contract.Result<String>() != null);
-            return FormatProvider.FormatSingle(m_value, format, null);
+            return FormatProvider.FormatSingle(_value, format, null);
         }
 
         public String ToString(String format, IFormatProvider provider)
         {
             Contract.Ensures(Contract.Result<String>() != null);
-            return FormatProvider.FormatSingle(m_value, format, provider);
+            return FormatProvider.FormatSingle(_value, format, provider);
         }
 
         // Parses a float from a String in the given style.  If
@@ -266,91 +266,76 @@ namespace System
         }
 
 
-        /// <internalonly/>
         bool IConvertible.ToBoolean(IFormatProvider provider)
         {
-            return Convert.ToBoolean(m_value);
+            return Convert.ToBoolean(_value);
         }
 
-        /// <internalonly/>
         char IConvertible.ToChar(IFormatProvider provider)
         {
             throw new InvalidCastException(String.Format(SR.InvalidCast_FromTo, "Single", "Char"));
         }
 
-        /// <internalonly/>
         sbyte IConvertible.ToSByte(IFormatProvider provider)
         {
-            return Convert.ToSByte(m_value);
+            return Convert.ToSByte(_value);
         }
 
-        /// <internalonly/>
         byte IConvertible.ToByte(IFormatProvider provider)
         {
-            return Convert.ToByte(m_value);
+            return Convert.ToByte(_value);
         }
 
-        /// <internalonly/>
         short IConvertible.ToInt16(IFormatProvider provider)
         {
-            return Convert.ToInt16(m_value);
+            return Convert.ToInt16(_value);
         }
 
-        /// <internalonly/>
         ushort IConvertible.ToUInt16(IFormatProvider provider)
         {
-            return Convert.ToUInt16(m_value);
+            return Convert.ToUInt16(_value);
         }
 
-        /// <internalonly/>
         int IConvertible.ToInt32(IFormatProvider provider)
         {
-            return Convert.ToInt32(m_value);
+            return Convert.ToInt32(_value);
         }
 
-        /// <internalonly/>
         uint IConvertible.ToUInt32(IFormatProvider provider)
         {
-            return Convert.ToUInt32(m_value);
+            return Convert.ToUInt32(_value);
         }
 
-        /// <internalonly/>
         long IConvertible.ToInt64(IFormatProvider provider)
         {
-            return Convert.ToInt64(m_value);
+            return Convert.ToInt64(_value);
         }
 
-        /// <internalonly/>
         ulong IConvertible.ToUInt64(IFormatProvider provider)
         {
-            return Convert.ToUInt64(m_value);
+            return Convert.ToUInt64(_value);
         }
 
-        /// <internalonly/>
         float IConvertible.ToSingle(IFormatProvider provider)
         {
-            return m_value;
+            return _value;
         }
 
-        /// <internalonly/>
         double IConvertible.ToDouble(IFormatProvider provider)
         {
-            return Convert.ToDouble(m_value);
+            return Convert.ToDouble(_value);
         }
 
-        /// <internalonly/>
         Decimal IConvertible.ToDecimal(IFormatProvider provider)
         {
-            return Convert.ToDecimal(m_value);
+            return Convert.ToDecimal(_value);
         }
 
-        /// <internalonly/>
         DateTime IConvertible.ToDateTime(IFormatProvider provider)
         {
             throw new InvalidCastException(String.Format(SR.InvalidCast_FromTo, "Single", "DateTime"));
         }
 
-        /// <internalonly/>
         Object IConvertible.ToType(Type type, IFormatProvider provider)
         {
             return Convert.DefaultToType((IConvertible)this, type, provider);

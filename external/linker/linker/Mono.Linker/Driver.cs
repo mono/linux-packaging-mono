@@ -1,4 +1,4 @@
-//
+﻿//
 // Driver.cs
 //
 // Author:
@@ -27,9 +27,8 @@
 //
 
 using System;
-using System.Collections;
 using System.IO;
-using SR = System.Reflection;
+using System.Collections.Generic;
 using System.Xml.XPath;
 
 using Mono.Linker.Steps;
@@ -63,11 +62,11 @@ namespace Mono.Linker {
 			return 0;
 		}
 
-		Queue _queue;
+		Queue<string> _queue;
 
 		public Driver (string [] args)
 		{
-			_queue = new Queue (args);
+			_queue = new Queue<string> (args);
 		}
 
 		bool HaveMoreTokens ()
@@ -78,109 +77,114 @@ namespace Mono.Linker {
 		void Run ()
 		{
 			Pipeline p = GetStandardPipeline ();
-			LinkContext context = GetDefaultContext (p);
-			I18nAssemblies assemblies = I18nAssemblies.All;
-			ArrayList custom_steps = new ArrayList ();
+			using (LinkContext context = GetDefaultContext (p)) {
+				I18nAssemblies assemblies = I18nAssemblies.All;
+				var custom_steps = new List<string> ();
 
-			bool resolver = false;
-			while (HaveMoreTokens ()) {
-				string token = GetParam ();
-				if (token.Length < 2)
-					Usage ("Option is too short");
-
-				if (! (token [0] == '-' || token [1] == '/'))
-					Usage ("Expecting an option, got instead: " + token);
-
-				if (token [0] == '-' && token [1] == '-') {
-
-					if (token.Length < 3)
+				bool resolver = false;
+				while (HaveMoreTokens ()) {
+					string token = GetParam ();
+					if (token.Length < 2)
 						Usage ("Option is too short");
 
-					switch (token [2]) {
-					case 'v':
-						Version ();
+					if (!(token [0] == '-' || token [1] == '/'))
+						Usage ("Expecting an option, got instead: " + token);
+
+					if (token [0] == '-' && token [1] == '-') {
+
+						if (token.Length < 3)
+							Usage ("Option is too short");
+
+						switch (token [2]) {
+						case 'v':
+							Version ();
+							break;
+						case 'a':
+							About ();
+							break;
+						default:
+							Usage (null);
+							break;
+						}
+					}
+
+					switch (token [1]) {
+					case 'd': {
+						DirectoryInfo info = new DirectoryInfo (GetParam ());
+						context.Resolver.AddSearchDirectory (info.FullName);
 						break;
+					}
+					case 'o':
+						context.OutputDirectory = GetParam ();
+						break;
+					case 'c':
+						context.CoreAction = ParseAssemblyAction (GetParam ());
+						break;
+					case 'p':
+						AssemblyAction action = ParseAssemblyAction (GetParam ());
+						context.Actions [GetParam ()] = action;
+						break;
+					case 's':
+						custom_steps.Add (GetParam ());
+						break;
+					case 't':
+						context.KeepTypeForwarderOnlyAssemblies = true;
+						break;
+					case 'x':
+						foreach (string file in GetFiles (GetParam ()))
+							p.PrependStep (new ResolveFromXmlStep (new XPathDocument (file)));
+						resolver = true;
+						break;
+					case 'r':
 					case 'a':
-						About ();
+						var rootVisibility = (token [1] == 'r')
+							? ResolveFromAssemblyStep.RootVisibility.PublicAndFamily
+							: ResolveFromAssemblyStep.RootVisibility.Any;
+						foreach (string file in GetFiles (GetParam ()))
+							p.PrependStep (new ResolveFromAssemblyStep (file, rootVisibility));
+						resolver = true;
+						break;
+					case 'i':
+						foreach (string file in GetFiles (GetParam ()))
+							p.PrependStep (new ResolveFromXApiStep (new XPathDocument (file)));
+						resolver = true;
+						break;
+					case 'l':
+						assemblies = ParseI18n (GetParam ());
+						break;
+					case 'm':
+						context.SetParameter (GetParam (), GetParam ());
+						break;
+					case 'b':
+						context.LinkSymbols = bool.Parse (GetParam ());
+						break;
+					case 'g':
+						if (!bool.Parse (GetParam ()))
+							p.RemoveStep (typeof (RegenerateGuidStep));
+						break;
+					case 'z':
+							if (!bool.Parse (GetParam ()))
+								p.RemoveStep (typeof (BlacklistStep));
+							break;
+					case 'v':
+						context.KeepMembersForDebuggerAttributes = bool.Parse (GetParam ());
 						break;
 					default:
-						Usage (null);
+						Usage ("Unknown option: `" + token [1] + "'");
 						break;
 					}
 				}
 
-				switch (token [1]) {
-				case 'd': {
-					DirectoryInfo info = new DirectoryInfo (GetParam ());
-					context.Resolver.AddSearchDirectory (info.FullName);
-					break;
-				}
-				case 'o':
-					context.OutputDirectory = GetParam ();
-					break;
-				case 'c':
-					context.CoreAction = ParseAssemblyAction (GetParam ());
-					break;
-				case 'p':
-					AssemblyAction action = ParseAssemblyAction (GetParam ());
-					context.Actions [GetParam ()] = action;
-					break;
-				case 's':
-					custom_steps.Add (GetParam ());
-					break;
-				case 't':
-					context.KeepTypeForwarderOnlyAssemblies = true;
-					break;
-				case 'x':
-					foreach (string file in GetFiles (GetParam ()))
-						p.PrependStep (new ResolveFromXmlStep (new XPathDocument (file)));
-					resolver = true;
-					break;
-				case 'r':
-				case 'a':
-					var rootVisibility = (token[1] == 'r')
-							? ResolveFromAssemblyStep.RootVisibility.PublicAndFamily
-							: ResolveFromAssemblyStep.RootVisibility.Any;
-					foreach (string file in GetFiles (GetParam ()))
-						p.PrependStep (new ResolveFromAssemblyStep (file, rootVisibility));
-					resolver = true;
-					break;
-				case 'i':
-					foreach (string file in GetFiles (GetParam ()))
-						p.PrependStep (new ResolveFromXApiStep (new XPathDocument (file)));
-					resolver = true;
-					break;
-				case 'l':
-					assemblies = ParseI18n (GetParam ());
-					break;
-				case 'm':
-					context.SetParameter (GetParam (), GetParam ());
-					break;
-				case 'b':
-					context.LinkSymbols = bool.Parse (GetParam ());
-					break;
-				case 'g':
-					if (!bool.Parse (GetParam ()))
-						p.RemoveStep (typeof (RegenerateGuidStep));
-					break;
-				case 'v':
-					context.KeepMembersForDebuggerAttributes = bool.Parse (GetParam ());
-					break;
-				default:
-					Usage ("Unknown option: `" + token [1] + "'");
-					break;
-				}
+				if (!resolver)
+					Usage ("No resolver was created (use -x, -a or -i)");
+
+				foreach (string custom_step in custom_steps)
+					AddCustomStep (p, custom_step);
+
+				p.AddStepAfter (typeof (LoadReferencesStep), new LoadI18nAssemblies (assemblies));
+
+				p.Process (context);
 			}
-
-			if (!resolver)
-				Usage ("No resolver was created (use -x, -a or -i)");
-
-			foreach (string custom_step in custom_steps)
-				AddCustomStep (p, custom_step);
-
-			p.AddStepAfter (typeof (LoadReferencesStep), new LoadI18nAssemblies (assemblies));
-
-			p.Process (context);
 		}
 
 		protected static void AddCustomStep (Pipeline pipeline, string arg)
@@ -235,13 +239,13 @@ namespace Mono.Linker {
 
 		static string [] ReadLines (string file)
 		{
-			ArrayList lines = new ArrayList ();
+			var lines = new List<string> ();
 			using (StreamReader reader = new StreamReader (file)) {
 				string line;
 				while ((line = reader.ReadLine ()) != null)
 					lines.Add (line);
 			}
-			return (string []) lines.ToArray (typeof (string));
+			return lines.ToArray ();
 		}
 
 		protected static I18nAssemblies ParseI18n (string str)
@@ -264,7 +268,7 @@ namespace Mono.Linker {
 			if (_queue.Count == 0)
 				Usage ("Expecting a parameter");
 
-			return (string) _queue.Dequeue ();
+			return _queue.Dequeue ();
 		}
 
 		static LinkContext GetDefaultContext (Pipeline pipeline)
@@ -304,6 +308,7 @@ namespace Mono.Linker {
 			Console.WriteLine ("   -a          Link from a list of assemblies");
 			Console.WriteLine ("   -r          Link from a list of assemblies using roots visible outside of the assembly");
 			Console.WriteLine ("   -i          Link from an mono-api-info descriptor");
+			Console.WriteLine ("   -z          Include default preservations (true or false), default to true");
 			Console.WriteLine ("");
 
 			Environment.Exit (1);

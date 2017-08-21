@@ -12,29 +12,89 @@ namespace System
 {
     public static partial class PlatformDetection
     {
+        //
+        // Do not use the " { get; } = <expression> " pattern here. Having all the initialization happen in the type initializer
+        // means that one exception anywhere means all tests using PlatformDetection fail. If you feel a value is worth latching,
+        // do it in a way that failures don't cascade.
+        //
+
+        public static bool IsUap => IsWinRT || IsNetNative;
         public static bool IsFullFramework => RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework", StringComparison.OrdinalIgnoreCase);
+        public static bool IsNetNative => RuntimeInformation.FrameworkDescription.StartsWith(".NET Native", StringComparison.OrdinalIgnoreCase);
 
-        public static bool IsWindows { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        public static bool IsWindows7 { get; } = IsWindows && GetWindowsVersion() == 6 && GetWindowsMinorVersion() == 1;
-        public static bool IsWindows8x { get; } = IsWindows && GetWindowsVersion() == 6 && (GetWindowsMinorVersion() == 2 || GetWindowsMinorVersion() == 3);
-        public static bool IsOSX { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-        public static bool IsNetBSD { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.Create("NETBSD"));
-        public static bool IsOpenSUSE { get; } = IsDistroAndVersion("opensuse");
-        public static bool IsUbuntu { get; } = IsDistroAndVersion("ubuntu");
-        public static bool IsNotWindowsNanoServer { get; } = (IsWindows &&
-            File.Exists(Path.Combine(Environment.GetEnvironmentVariable("windir"), "regedit.exe")));
-        public static bool IsWindows10Version1607OrGreater { get; } = IsWindows &&
+        public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        public static bool IsWindows7 => IsWindows && GetWindowsVersion() == 6 && GetWindowsMinorVersion() == 1;
+        public static bool IsWindows8x => IsWindows && GetWindowsVersion() == 6 && (GetWindowsMinorVersion() == 2 || GetWindowsMinorVersion() == 3);
+        public static bool IsOSX => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        public static bool IsNetBSD => RuntimeInformation.IsOSPlatform(OSPlatform.Create("NETBSD"));
+        public static bool IsOpenSUSE => IsDistroAndVersion("opensuse");
+        public static bool IsUbuntu => IsDistroAndVersion("ubuntu");
+        public static bool IsWindowsNanoServer => (IsWindows && !File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "regedit.exe")));
+        public static bool IsNotWindowsNanoServer => !IsWindowsNanoServer;
+        public static bool IsWindows10Version1607OrGreater => IsWindows &&
             GetWindowsVersion() == 10 && GetWindowsMinorVersion() == 0 && GetWindowsBuildNumber() >= 14393;
-        public static bool IsWindows10VersionInsiderPreviewOrGreater { get; } = IsWindows &&
-            GetWindowsVersion() == 10 && GetWindowsMinorVersion() == 0 && GetWindowsBuildNumber() >= 14917;
+        public static bool IsWindows10Version1703OrGreater => IsWindows &&
+            GetWindowsVersion() == 10 && GetWindowsMinorVersion() == 0 && GetWindowsBuildNumber() >= 15063;
+
         // Windows OneCoreUAP SKU doesn't have httpapi.dll
-        public static bool HasHttpApi { get; } = (IsWindows &&
-            File.Exists(Path.Combine(Environment.GetEnvironmentVariable("windir"), "System32", "httpapi.dll")));
+        public static bool IsNotOneCoreUAP => (!IsWindows || 
+            File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "System32", "httpapi.dll")));
 
-        public static bool IsNotOneCoreUAP { get; } = (!IsWindows || 
-            File.Exists(Path.Combine(Environment.GetEnvironmentVariable("windir"), "System32", "httpapi.dll")));
+        public static int WindowsVersion => GetWindowsVersion();
 
-        public static int WindowsVersion { get; } = GetWindowsVersion();
+        public static bool IsNetfx462OrNewer()
+        {
+            if (!IsFullFramework)
+            {
+                return false;
+            }
+
+            Version net462 = new Version(4, 6, 2);
+            Version runningVersion = GetFrameworkVersion();
+            return runningVersion != null && runningVersion >= net462;
+        }
+
+        public static bool IsNetfx470OrNewer()
+        {
+            if (!IsFullFramework)
+            {
+                return false;
+            }
+
+            Version net470 = new Version(4, 7, 0);
+            Version runningVersion = GetFrameworkVersion();
+            return runningVersion != null && runningVersion >= net470;
+        }
+
+        public static bool IsNetfxBelow471()
+        {
+            if (!IsFullFramework)
+            {
+                return false;
+            }
+
+            Version net471 = new Version(4, 7, 1);
+            Version runningVersion = GetFrameworkVersion();
+            return runningVersion != null && runningVersion < net471;
+        }
+
+        public static Version GetFrameworkVersion()
+        {
+            string[] descriptionArray = RuntimeInformation.FrameworkDescription.Split(' ');
+            if (descriptionArray.Length < 3)
+                return null;
+
+            if (!Version.TryParse(descriptionArray[2], out Version actualVersion))
+                return null;
+
+            foreach (Range currentRange in FrameworkRanges)
+            {
+                if (currentRange.IsInRange(actualVersion))
+                    return currentRange.FrameworkVersion;
+            }
+
+            return null;
+        }
 
         private static int s_isWinRT = -1;
 
@@ -99,6 +159,8 @@ namespace System
 
         public static bool IsNotFedoraOrRedHatOrCentos => !IsDistroAndVersion("fedora") && !IsDistroAndVersion("rhel") && !IsDistroAndVersion("centos");
 
+        public static bool IsFedora => IsDistroAndVersion("fedora");
+
         private static bool GetIsWindowsSubsystemForLinux()
         {
             // https://github.com/Microsoft/BashOnWindows/issues/423#issuecomment-221627364
@@ -120,16 +182,10 @@ namespace System
             return false;
         }
 
-        public static bool IsDebian8 { get; } = IsDistroAndVersion("debian", "8");
-        public static bool IsUbuntu1404 { get; } = IsDistroAndVersion("ubuntu", "14.04");
-        public static bool IsUbuntu1510 { get; } = IsDistroAndVersion("ubuntu", "15.10");
-        public static bool IsUbuntu1604 { get; } = IsDistroAndVersion("ubuntu", "16.04");
-        public static bool IsUbuntu1610 { get; } = IsDistroAndVersion("ubuntu", "16.10");
-        public static bool IsFedora23 { get; } = IsDistroAndVersion("fedora", "23");
-        public static bool IsFedora24 { get; } = IsDistroAndVersion("fedora", "24");
-        public static bool IsFedora25 { get; } = IsDistroAndVersion("fedora", "25");
-        public static bool IsFedora26 { get; } = IsDistroAndVersion("fedora", "26");
-        public static bool IsCentos7 { get; } = IsDistroAndVersion("centos", "7");
+        public static bool IsDebian => IsDistroAndVersion("debian");
+        public static bool IsDebian8 => IsDistroAndVersion("debian", "8");
+        public static bool IsUbuntu1404 => IsDistroAndVersion("ubuntu", "14.04");
+        public static bool IsCentos7 => IsDistroAndVersion("centos", "7");
 
         /// <summary>
         /// Get whether the OS platform matches the given Linux distro and optional version.
@@ -317,5 +373,65 @@ namespace System
         public static extern int GetCurrentApplicationUserModelId(
             ref uint applicationUserModelIdLength,
             byte[] applicationUserModelId);
+
+        public static bool IsNonZeroLowerBoundArraySupported
+        {
+            get
+            {
+                if (s_lazyNonZeroLowerBoundArraySupported == null)
+                {
+                    bool nonZeroLowerBoundArraysSupported = false;
+                    try
+                    {
+                        Array.CreateInstance(typeof(int), new int[] { 5 }, new int[] { 5 });
+                        nonZeroLowerBoundArraysSupported = true;
+                    }
+                    catch (PlatformNotSupportedException)
+                    {
+                    }
+                    s_lazyNonZeroLowerBoundArraySupported = Tuple.Create<bool>(nonZeroLowerBoundArraysSupported);
+                }
+                return s_lazyNonZeroLowerBoundArraySupported.Item1;
+            }
+        }
+
+        private static volatile Tuple<bool> s_lazyNonZeroLowerBoundArraySupported;
+
+        public static bool IsReflectionEmitSupported = !PlatformDetection.IsNetNative;
+
+        // Tracked in: https://github.com/dotnet/corert/issues/3643 in case we change our mind about this.
+        public static bool IsInvokingStaticConstructorsSupported => !PlatformDetection.IsNetNative;
+
+        // System.Security.Cryptography.Xml.XmlDsigXsltTransform.GetOutput() relies on XslCompiledTransform which relies
+        // heavily on Reflection.Emit
+        public static bool IsXmlDsigXsltTransformSupported => PlatformDetection.IsReflectionEmitSupported;
+
+        public static Range[] FrameworkRanges => new Range[]{
+          new Range(new Version(4, 7, 2500, 0), null, new Version(4, 7, 1)),
+          new Range(new Version(4, 6, 2000, 0), new Version(4, 7, 2090, 0), new Version(4, 7, 0)),
+          new Range(new Version(4, 6, 1500, 0), new Version(4, 6, 1999, 0), new Version(4, 6, 2)),
+          new Range(new Version(4, 6, 1000, 0), new Version(4, 6, 1499, 0), new Version(4, 6, 1)),
+          new Range(new Version(4, 6, 55, 0), new Version(4, 6, 999, 0), new Version(4, 6, 0)),
+          new Range(new Version(4, 0, 30319, 0), new Version(4, 0, 52313, 36313), new Version(4, 5, 2))
+        };
+
+        public class Range
+        {
+            public Version Start { get; private set; }
+            public Version Finish { get; private set; }
+            public Version FrameworkVersion { get; private set; }
+
+            public Range(Version start, Version finish, Version frameworkVersion)
+            {
+                Start = start;
+                Finish = finish;
+                FrameworkVersion = frameworkVersion;
+            }
+
+            public bool IsInRange(Version version)
+            {
+                return version >= Start && (Finish == null || version <= Finish);
+            }
+        }
     }
 }

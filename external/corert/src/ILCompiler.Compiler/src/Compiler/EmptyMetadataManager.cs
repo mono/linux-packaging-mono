@@ -8,11 +8,14 @@ using System.Collections.Generic;
 using Internal.TypeSystem;
 using ILCompiler.DependencyAnalysis;
 
+using Debug = System.Diagnostics.Debug;
+
 namespace ILCompiler
 {
     class EmptyMetadataManager : MetadataManager
     {
-        public EmptyMetadataManager(CompilationModuleGroup group, CompilerTypeSystemContext typeSystemContext) : base(group, typeSystemContext)
+        public EmptyMetadataManager(CompilationModuleGroup group, CompilerTypeSystemContext typeSystemContext)
+            : base(group, typeSystemContext, new FullyBlockedMetadataPolicy())
         {
         }
 
@@ -21,9 +24,19 @@ namespace ILCompiler
             return Array.Empty<ModuleDesc>();
         }
 
-        public override bool IsReflectionBlocked(MetadataType type)
+        protected override MetadataCategory GetMetadataCategory(FieldDesc field)
         {
-            return true;
+            return MetadataCategory.None;
+        }
+
+        protected override MetadataCategory GetMetadataCategory(MethodDesc method)
+        {
+            return MetadataCategory.None;
+        }
+
+        protected override MetadataCategory GetMetadataCategory(TypeDesc type)
+        {
+            return MetadataCategory.None;
         }
 
         protected override void ComputeMetadata(NodeFactory factory, out byte[] metadataBlob, out List<MetadataMapping<MetadataType>> typeMappings, out List<MetadataMapping<MethodDesc>> methodMappings, out List<MetadataMapping<FieldDesc>> fieldMappings)
@@ -40,15 +53,47 @@ namespace ILCompiler
         /// </summary>
         public override bool HasReflectionInvokeStubForInvokableMethod(MethodDesc method)
         {
+            Debug.Assert(IsReflectionInvokable(method));
             return false;
         }
 
         /// <summary>
         /// Gets a stub that can be used to reflection-invoke a method with a given signature.
         /// </summary>
-        public override MethodDesc GetReflectionInvokeStub(MethodDesc method)
+        public override MethodDesc GetCanonicalReflectionInvokeStub(MethodDesc method)
         {
             return null;
+        }
+
+        public override bool WillUseMetadataTokenToReferenceMethod(MethodDesc method)
+        {
+            return false;
+        }
+
+        public override bool WillUseMetadataTokenToReferenceField(FieldDesc field)
+        {
+            return false;
+        }
+
+        private sealed class FullyBlockedMetadataPolicy : MetadataBlockingPolicy
+        {
+            public override bool IsBlocked(MetadataType type)
+            {
+                Debug.Assert(type.IsTypeDefinition);
+                return true;
+            }
+
+            public override bool IsBlocked(MethodDesc method)
+            {
+                Debug.Assert(method.IsTypicalMethodDefinition);
+                return true;
+            }
+
+            public override bool IsBlocked(FieldDesc field)
+            {
+                Debug.Assert(field.IsTypicalFieldDefinition);
+                return true;
+            }
         }
     }
 }

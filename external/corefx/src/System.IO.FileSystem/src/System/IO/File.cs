@@ -708,7 +708,7 @@ namespace System.IO
             // available, we can put this into the FileSystem abstraction and implement it
             // properly for Win32.
 
-            throw new PlatformNotSupportedException();
+            throw new PlatformNotSupportedException(SR.PlatformNotSupported_FileEncryption);
         }
 
         public static void Decrypt(String path)
@@ -721,7 +721,7 @@ namespace System.IO
             // available, we can put this into the FileSystem abstraction and implement it
             // properly for Win32.
 
-            throw new PlatformNotSupportedException();
+            throw new PlatformNotSupportedException(SR.PlatformNotSupported_FileEncryption);
         }
 
         // UTF-8 without BOM and with error detection. Same as the default encoding for StreamWriter.
@@ -1005,7 +1005,7 @@ namespace System.IO
                 int index = 0;
                 while (index < count)
                 {
-                    int batchSize = Math.Min(DefaultBufferSize, count);
+                    int batchSize = Math.Min(DefaultBufferSize, count - index);
                     contents.CopyTo(index, buffer, 0, batchSize);
                     cancellationToken.ThrowIfCancellationRequested();
                     await sw.WriteAsync(buffer, 0, batchSize).ConfigureAwait(false);

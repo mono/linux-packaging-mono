@@ -12,7 +12,10 @@ namespace System.Reflection
     public abstract partial class Assembly : ICustomAttributeProvider, ISerializable
     {
         public static Assembly GetEntryAssembly() => Internal.Runtime.CompilerHelpers.StartupCodeHelpers.GetEntryAssembly();
-        public static Assembly GetExecutingAssembly() { throw new NotImplementedException(); }
+
+        [System.Runtime.CompilerServices.Intrinsic]
+        public static Assembly GetExecutingAssembly() { throw NotImplemented.ByDesign; } //Implemented by toolchain. 
+
         public static Assembly GetCallingAssembly() { throw new PlatformNotSupportedException(); }
 
         public static Assembly Load(AssemblyName assemblyRef) => ReflectionAugments.ReflectionCoreCallbacks.Load(assemblyRef);

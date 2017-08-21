@@ -23,6 +23,21 @@ namespace System.Runtime
         public static unsafe object RhNewObject(EETypePtr pEEType)
         {
             EEType* ptrEEType = (EEType*)pEEType.ToPointer();
+
+            // This is structured in a funny way because at the present state of things in CoreRT, the Debug.Assert
+            // below will call into the assert defined in the class library (and not the MRT version of it). The one
+            // in the class library is not low level enough to be callable when GC statics are not initialized yet.
+            // Feel free to restructure once that's not a problem.
+#if DEBUG
+            bool isValid = !ptrEEType->IsGenericTypeDefinition &&
+                !ptrEEType->IsInterface &&
+                !ptrEEType->IsArray &&
+                !ptrEEType->IsString &&
+                !ptrEEType->IsByRefLike;
+            if (!isValid)
+                Debug.Assert(false);
+#endif
+
 #if FEATURE_64BIT_ALIGNMENT
             if (ptrEEType->RequiresAlign8)
             {
@@ -45,6 +60,9 @@ namespace System.Runtime
         public static unsafe object RhNewArray(EETypePtr pEEType, int length)
         {
             EEType* ptrEEType = (EEType*)pEEType.ToPointer();
+
+            Debug.Assert(ptrEEType->IsArray || ptrEEType->IsString);
+
 #if FEATURE_64BIT_ALIGNMENT
             if (ptrEEType->RequiresAlign8)
             {
@@ -250,6 +268,25 @@ namespace System.Runtime
             }
             else
                 return new Wrapper();
+        }
+
+        // RhAllocLocal2 helper returns the pointer to the data region directly
+        // instead of relying on the code generator to offset the local by the 
+        // size of a pointer to get the data region.
+        [RuntimeExport("RhAllocLocal2")]
+        public static unsafe ref byte RhAllocLocal2(EETypePtr pEEType)
+        {
+            EEType* ptrEEType = (EEType*)pEEType.ToPointer();
+            if (ptrEEType->IsValueType)
+            {
+#if FEATURE_64BIT_ALIGNMENT
+                if (ptrEEType->RequiresAlign8)
+                    return ref InternalCalls.RhpNewFastMisalign(ptrEEType).GetRawData();
+#endif
+                return ref InternalCalls.RhpNewFast(ptrEEType).GetRawData();
+            }
+            else
+                return ref new Wrapper().GetRawData();
         }
 
         [RuntimeExport("RhMemberwiseClone")]

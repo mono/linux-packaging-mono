@@ -14,18 +14,27 @@ namespace System.Threading
     {
         internal static unsafe int WaitForSingleObject(IntPtr handle, int millisecondsTimeout)
         {
-            return WaitForMultipleObjects(&handle, 1, false, millisecondsTimeout);
+            SynchronizationContext context = RuntimeThread.CurrentThread.SynchronizationContext;
+            bool useSyncContextWait = (context != null) && context.IsWaitNotificationRequired();
+
+            if (useSyncContextWait)
+            {
+                var handles = new IntPtr[1] { handle };
+                return context.Wait(handles, false, millisecondsTimeout);
+            }
+
+            return WaitForMultipleObjectsIgnoringSyncContext(&handle, 1, false, millisecondsTimeout);
         }
 
-        private static unsafe int WaitForMultipleObjects(IntPtr[] handles, int numHandles, bool waitAll, int millisecondsTimeout)
+        internal static unsafe int WaitForMultipleObjectsIgnoringSyncContext(IntPtr[] handles, int numHandles, bool waitAll, int millisecondsTimeout)
         {
             fixed (IntPtr* pHandles = handles)
             {
-                return WaitForMultipleObjects(pHandles, numHandles, waitAll, millisecondsTimeout);
+                return WaitForMultipleObjectsIgnoringSyncContext(pHandles, numHandles, waitAll, millisecondsTimeout);
             }
         }
 
-        private static unsafe int WaitForMultipleObjects(IntPtr* pHandles, int numHandles, bool waitAll, int millisecondsTimeout)
+        private static unsafe int WaitForMultipleObjectsIgnoringSyncContext(IntPtr* pHandles, int numHandles, bool waitAll, int millisecondsTimeout)
         {
             Debug.Assert(millisecondsTimeout >= -1);
 
@@ -116,13 +125,33 @@ namespace System.Threading
             Debug.Assert(safeWaitHandles != null);
             Debug.Assert(safeWaitHandles.Length >= count);
 
-            IntPtr[] handles = currentThread.GetWaitedHandleArray(count);
-            for (int i = 0; i < count; i++)
-            {
-                handles[i] = safeWaitHandles[i].DangerousGetHandle();
-            }
+            // If we need to call SynchronizationContext.Wait method, always allocate a new IntPtr[]
+            SynchronizationContext context = currentThread.SynchronizationContext;
+            bool useSyncContextWait = (context != null) && context.IsWaitNotificationRequired();
 
-            return WaitForMultipleObjects(handles, count, waitAll, millisecondsTimeout);
+            IntPtr[] rentedHandles = useSyncContextWait ? null : currentThread.RentWaitedHandleArray(count);
+            IntPtr[] handles = rentedHandles ?? new IntPtr[count];
+            try
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    handles[i] = safeWaitHandles[i].DangerousGetHandle();
+                }
+
+                if (useSyncContextWait)
+                {
+                    return context.Wait(handles, waitAll, millisecondsTimeout);
+                }
+
+                return WaitForMultipleObjectsIgnoringSyncContext(handles, count, waitAll, millisecondsTimeout);
+            }
+            finally
+            {
+                if (rentedHandles != null)
+                {
+                    currentThread.ReturnWaitedHandleArray(rentedHandles);
+                }
+            }
         }
 
         private static int WaitAnyCore(

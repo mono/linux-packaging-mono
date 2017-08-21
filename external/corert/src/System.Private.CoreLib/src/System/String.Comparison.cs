@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace System
 {
@@ -466,9 +467,41 @@ namespace System
                 case StringComparison.OrdinalIgnoreCase:
                     return FormatProvider.CompareOrdinalIgnoreCase(strA, 0, strA.Length, strB, 0, strB.Length);
 
+                case StringComparison.InvariantCulture:
+                    return CultureInfo.InvariantCulture.CompareInfo.Compare(strA, strB, CompareOptions.None);
+
+                case StringComparison.InvariantCultureIgnoreCase:
+                    return CultureInfo.InvariantCulture.CompareInfo.Compare(strA, strB, CompareOptions.IgnoreCase);
+
                 default:
                     throw new NotSupportedException(SR.NotSupported_StringComparison);
             }
+        }
+
+        // Provides a culture-correct string comparison. strA is compared to strB
+        // to determine whether it is lexicographically less, equal, or greater, and then a
+        // negative integer, 0, or a positive integer is returned; respectively.
+        //
+        public static int Compare(String strA, String strB, CultureInfo culture, CompareOptions options)
+        {
+            if (culture == null)
+            {
+                throw new ArgumentNullException(nameof(culture));
+            }
+
+            return culture.CompareInfo.Compare(strA, strB, options);
+        }
+
+        // Provides a culture-correct string comparison. strA is compared to strB
+        // to determine whether it is lexicographically less, equal, or greater, and then a
+        // negative integer, 0, or a positive integer is returned; respectively.
+        // The case-sensitive option is set by ignoreCase, and the culture is set
+        // by culture
+        //
+        public static int Compare(String strA, String strB, bool ignoreCase, CultureInfo culture)
+        {
+            CompareOptions options = ignoreCase ? CompareOptions.IgnoreCase : CompareOptions.None;
+            return Compare(strA, strB, culture, options);
         }
 
         // Determines whether two string regions match.  The substring of strA beginning
@@ -520,6 +553,44 @@ namespace System
             return ignoreCase ?
                 FormatProvider.CompareIgnoreCase(strA, indexA, lengthA, strB, indexB, lengthB) :
                 FormatProvider.Compare(strA, indexA, lengthA, strB, indexB, lengthB);
+        }
+
+        // Determines whether two string regions match.  The substring of strA beginning
+        // at indexA of length length is compared with the substring of strB
+        // beginning at indexB of the same length.  Case sensitivity is determined by the ignoreCase boolean,
+        // and the culture is set by culture.
+        //
+        public static int Compare(String strA, int indexA, String strB, int indexB, int length, bool ignoreCase, CultureInfo culture)
+        {
+            CompareOptions options = ignoreCase ? CompareOptions.IgnoreCase : CompareOptions.None;
+            return Compare(strA, indexA, strB, indexB, length, culture, options);
+        }
+
+        // Determines whether two string regions match.  The substring of strA beginning
+        // at indexA of length length is compared with the substring of strB
+        // beginning at indexB of the same length.
+        //
+        public static int Compare(String strA, int indexA, String strB, int indexB, int length, CultureInfo culture, CompareOptions options)
+        {
+            if (culture == null)
+            {
+                throw new ArgumentNullException(nameof(culture));
+            }
+
+            int lengthA = length;
+            int lengthB = length;
+
+            if (strA != null)
+            {
+                lengthA = Math.Min(lengthA, strA.Length - indexA);
+            }
+
+            if (strB != null)
+            {
+                lengthB = Math.Min(lengthB, strB.Length - indexB);
+            }
+
+            return culture.CompareInfo.Compare(strA, indexA, lengthA, strB, indexB, lengthB, options);
         }
 
         public static int Compare(String strA, int indexA, String strB, int indexB, int length, StringComparison comparisonType)
@@ -579,6 +650,12 @@ namespace System
 
                 case StringComparison.OrdinalIgnoreCase:
                     return FormatProvider.CompareOrdinalIgnoreCase(strA, indexA, lengthA, strB, indexB, lengthB);
+
+                case StringComparison.InvariantCulture:
+                    return CultureInfo.InvariantCulture.CompareInfo.Compare(strA, indexA, lengthA, strB, indexB, lengthB, CompareOptions.None);
+
+                case StringComparison.InvariantCultureIgnoreCase:
+                    return CultureInfo.InvariantCulture.CompareInfo.Compare(strA, indexA, lengthA, strB, indexB, lengthB, CompareOptions.IgnoreCase);
 
                 default:
                     throw new ArgumentException(SR.NotSupported_StringComparison);
@@ -736,20 +813,42 @@ namespace System
                 case StringComparison.OrdinalIgnoreCase:
                     return this.Length < value.Length ? false : (FormatProvider.CompareOrdinalIgnoreCase(this, this.Length - value.Length, value.Length, value, 0, value.Length) == 0);
 
+                case StringComparison.InvariantCulture:
+                    return CultureInfo.InvariantCulture.CompareInfo.IsSuffix(this, value, CompareOptions.None);
+
+                case StringComparison.InvariantCultureIgnoreCase:
+                    return CultureInfo.InvariantCulture.CompareInfo.IsSuffix(this, value, CompareOptions.IgnoreCase);
+
                 default:
                     throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));
             }
         }
 
-        internal bool EndsWith(char value)
+        public Boolean EndsWith(String value, Boolean ignoreCase, CultureInfo culture)
         {
-            int thisLen = this.Length;
-            if (thisLen != 0)
+            if (null == value)
             {
-                if (this[thisLen - 1] == value)
-                    return true;
+                throw new ArgumentNullException(nameof(value));
             }
-            return false;
+
+            if ((object)this == (object)value)
+            {
+                return true;
+            }
+
+            CultureInfo referenceCulture;
+            if (culture == null)
+                referenceCulture = CultureInfo.CurrentCulture;
+            else
+                referenceCulture = culture;
+
+            return referenceCulture.CompareInfo.IsSuffix(this, value, ignoreCase ? CompareOptions.IgnoreCase : CompareOptions.None);
+        }
+
+        public bool EndsWith(char value)
+        {
+            int thisLen = Length;
+            return thisLen != 0 && this[thisLen - 1] == value;
         }
 
         // Determines whether two strings match.
@@ -827,6 +926,12 @@ namespace System
                         return FormatProvider.CompareOrdinalIgnoreCase(this, 0, this.Length, value, 0, value.Length) == 0;
                     }
 
+                case StringComparison.InvariantCulture:
+                    return (CultureInfo.InvariantCulture.CompareInfo.Compare(this, value, CompareOptions.None) == 0);
+
+                case StringComparison.InvariantCultureIgnoreCase:
+                    return (CultureInfo.InvariantCulture.CompareInfo.Compare(this, value, CompareOptions.IgnoreCase) == 0);
+
                 default:
                     throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));
             }
@@ -884,6 +989,13 @@ namespace System
                     {
                         return FormatProvider.CompareOrdinalIgnoreCase(a, 0, a.Length, b, 0, b.Length) == 0;
                     }
+
+                case StringComparison.InvariantCulture:
+                    return (CultureInfo.InvariantCulture.CompareInfo.Compare(a, b, CompareOptions.None) == 0);
+
+                case StringComparison.InvariantCultureIgnoreCase:
+                    return (CultureInfo.InvariantCulture.CompareInfo.Compare(a, b, CompareOptions.IgnoreCase) == 0);
+
                 default:
                     throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));
             }
@@ -911,14 +1023,23 @@ namespace System
         // they will return the same hash code.
         public override int GetHashCode()
         {
+            return Marvin.ComputeHash32(ref Unsafe.As<char, byte>(ref _firstChar), _stringLength * 2, Marvin.DefaultSeed);
+        }
+
+        // Use this if and only if you need the hashcode to not change across app domains (e.g. you have an app domain agile
+        // hash table).
+        internal int GetLegacyNonRandomizedHashCode()
+        {
             unsafe
             {
                 fixed (char* src = &_firstChar)
                 {
+                    Debug.Assert(src[this.Length] == '\0', "src[this.Length] == '\\0'");
+                    Debug.Assert(((int)src) % 4 == 0, "Managed string should start at 4 bytes boundary");
 #if BIT64
                     int hash1 = 5381;
-#else
-                    int hash1 = (5381 << 16) + 5381;
+#else // !BIT64 (32)
+                    int hash1 = (5381<<16) + 5381;
 #endif
                     int hash2 = hash1;
 
@@ -934,20 +1055,21 @@ namespace System
                         hash2 = ((hash2 << 5) + hash2) ^ c;
                         s += 2;
                     }
-#else
-                    // 32bit machines.
-                    int* pint = (int*)src;
+#else // !BIT64 (32)
+                    // 32 bit machines.
+                    int* pint = (int *)src;
                     int len = this.Length;
-                    while (len > 0)
+                    while (len > 2)
                     {
                         hash1 = ((hash1 << 5) + hash1 + (hash1 >> 27)) ^ pint[0];
-                        if (len <= 2)
-                        {
-                            break;
-                        }
                         hash2 = ((hash2 << 5) + hash2 + (hash2 >> 27)) ^ pint[1];
                         pint += 2;
-                        len -= 4;
+                        len  -= 4;
+                    }
+
+                    if (len > 0)
+                    {
+                        hash1 = ((hash1 << 5) + hash1 + (hash1 >> 27)) ^ pint[0];
                     }
 #endif
                     return hash1 + (hash2 * 1566083941);
@@ -1012,9 +1134,38 @@ namespace System
                     }
                     return FormatProvider.CompareOrdinalIgnoreCase(this, 0, value.Length, value, 0, value.Length) == 0;
 
+                case StringComparison.InvariantCulture:
+                    return CultureInfo.InvariantCulture.CompareInfo.IsPrefix(this, value, CompareOptions.None);
+
+                case StringComparison.InvariantCultureIgnoreCase:
+                    return CultureInfo.InvariantCulture.CompareInfo.IsPrefix(this, value, CompareOptions.IgnoreCase);
+
                 default:
                     throw new ArgumentException(SR.NotSupported_StringComparison, nameof(comparisonType));
             }
         }
+
+        public Boolean StartsWith(String value, Boolean ignoreCase, CultureInfo culture)
+        {
+            if (null == value)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            if ((object)this == (object)value)
+            {
+                return true;
+            }
+
+            CultureInfo referenceCulture;
+            if (culture == null)
+                referenceCulture = CultureInfo.CurrentCulture;
+            else
+                referenceCulture = culture;
+
+            return referenceCulture.CompareInfo.IsPrefix(this, value, ignoreCase ? CompareOptions.IgnoreCase : CompareOptions.None);
+        }
+
+        public bool StartsWith(char value) => Length != 0 && _firstChar == value;
     }
 }

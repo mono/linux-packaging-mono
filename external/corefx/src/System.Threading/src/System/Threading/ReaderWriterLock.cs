@@ -1142,11 +1142,6 @@ namespace System.Threading
             {
                 HResult = errorHResult;
             }
-
-            private ReaderWriterLockApplicationException(SerializationInfo info, StreamingContext context)
-                : base(info, context)
-            {
-            }
         }
 
         private static ApplicationException GetTimeoutException()

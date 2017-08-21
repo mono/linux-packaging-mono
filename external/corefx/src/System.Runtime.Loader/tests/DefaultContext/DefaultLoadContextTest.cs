@@ -37,7 +37,7 @@ namespace System.Runtime.Loader.Tests
         protected override Assembly Load(AssemblyName assemblyName)
         {
             // Override the assembly that was loaded in DefaultContext.
-            string assemblyPath = Path.Combine(AppContext.BaseDirectory, assemblyName.Name + ".dll");
+            string assemblyPath = Path.Combine(Path.GetDirectoryName(typeof(string).Assembly.Location), assemblyName.Name + ".dll");
             Assembly assembly = LoadFromAssemblyPath(assemblyPath);
             m_fLoadedFromContext = true;
             return assembly;
@@ -56,6 +56,7 @@ namespace System.Runtime.Loader.Tests
         }
     }
 
+    [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "AssemblyLoadContext not supported on .Net Native")]
     public class DefaultLoadContextTests
     {
         private static string s_loadFromPath = null;
@@ -117,7 +118,6 @@ namespace System.Runtime.Loader.Tests
         }
 
         [Fact]
-        [ActiveIssue(15101)]
         public static void LoadInDefaultContext()
         {
             Init();

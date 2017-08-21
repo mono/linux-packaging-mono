@@ -344,7 +344,14 @@ class SchemaDef
                     members: new MemberDef[] {
                         new MemberDef(name: "Value", typeName: new string[] { "ConstantStringValue", "ConstantReferenceValue" }, flags: MemberDefFlags.RecordRef | MemberDefFlags.List)
                     }
-                )
+                ),
+                new RecordDef(
+                    name: "ConstantEnumArray",
+                    members: new MemberDef[] {
+                        new MemberDef("ElementType", TypeDefOrRefOrSpec, MemberDefFlags.RecordRef),
+                        new MemberDef("Value", ConstantEnumArrayValue, MemberDefFlags.RecordRef)
+                    }
+                ),
             }
         )
         .ToArray();
@@ -368,6 +375,18 @@ class SchemaDef
         "ConstantUInt32Value",
         "ConstantInt64Value",
         "ConstantUInt64Value",
+    };
+
+    private static readonly string[] ConstantEnumArrayValue = new string[]
+    {
+        "ConstantByteArray",
+        "ConstantSByteArray",
+        "ConstantInt16Array",
+        "ConstantUInt16Array",
+        "ConstantInt32Array",
+        "ConstantUInt32Array",
+        "ConstantInt64Array",
+        "ConstantUInt64Array",
     };
 
     private static readonly string[] TypeDefOrRef = new string[]
@@ -475,6 +494,9 @@ class SchemaDef
                 new MemberDef("EntryPoint", "QualifiedMethod", MemberDefFlags.RecordRef),
                 new MemberDef("GlobalModuleType", "TypeDefinition", MemberDefFlags.RecordRef),
                 new MemberDef("CustomAttributes", "CustomAttribute", MemberDefFlags.List | MemberDefFlags.RecordRef | MemberDefFlags.Child),
+                new MemberDef("ModuleName", "ConstantStringValue", MemberDefFlags.RecordRef | MemberDefFlags.Child | MemberDefFlags.Compare),
+                new MemberDef("Mvid", "Byte", MemberDefFlags.Array | MemberDefFlags.Compare),
+                new MemberDef("ModuleCustomAttributes", "CustomAttribute", MemberDefFlags.List | MemberDefFlags.RecordRef | MemberDefFlags.Child),
             }
         ),
         new RecordDef(

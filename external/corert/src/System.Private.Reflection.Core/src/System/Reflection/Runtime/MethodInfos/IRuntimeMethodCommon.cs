@@ -50,12 +50,18 @@ namespace System.Reflection.Runtime.MethodInfos
 
         bool IsGenericMethodDefinition { get; }
 
+        bool HasSameMetadataDefinitionAs(TRuntimeMethodCommon other);
+
         TRuntimeMethodCommon RuntimeMethodCommonOfUninstantiatedMethod { get; }
 
         RuntimeTypeInfo[] GetGenericTypeParametersWithSpecifiedOwningMethod(RuntimeNamedMethodInfo<TRuntimeMethodCommon> owningMethod);
 
         int MetadataToken { get; }
 
+        /// <summary>
+        /// Retrieves the RuntimeMethodHandle for the given method. Non-null generic args should only be passed for instantiated
+        /// generic methods.
+        /// </summary>
         RuntimeMethodHandle GetRuntimeMethodHandle(Type[] genericArgs);
     }
 }

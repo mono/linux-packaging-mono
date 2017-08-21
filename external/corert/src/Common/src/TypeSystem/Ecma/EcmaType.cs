@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using Debug = System.Diagnostics.Debug;
 
@@ -230,6 +231,14 @@ namespace Internal.TypeSystem.Ecma
                         break;
                     }
                 }
+            }
+
+            if ((mask & TypeFlags.HasFinalizerComputed) != 0)
+            {
+                flags |= TypeFlags.HasFinalizerComputed;
+
+                if (GetFinalizer() != null)
+                    flags |= TypeFlags.HasFinalizer;
             }
 
             return flags;
@@ -506,6 +515,10 @@ namespace Internal.TypeSystem.Ecma
             foreach (var handle in fieldDefinitionHandles)
             {
                 var fieldDefinition = MetadataReader.GetFieldDefinition(handle);
+
+                if ((fieldDefinition.Attributes & FieldAttributes.Static) != 0)
+                    continue;
+
                 MarshalAsDescriptor marshalAsDescriptor = GetMarshalAsDescriptor(fieldDefinition);
                 marshalAsDescriptors[index++] = marshalAsDescriptor;
             }
@@ -520,7 +533,7 @@ namespace Internal.TypeSystem.Ecma
                 MetadataReader metadataReader = MetadataReader;
                 BlobReader marshalAsReader = metadataReader.GetBlobReader(fieldDefinition.GetMarshallingDescriptor());
                 EcmaSignatureParser parser = new EcmaSignatureParser(EcmaModule, marshalAsReader);
-                MarshalAsDescriptor marshalAs =  parser.ParseMarshalAsDescriptor(isParameter:false);
+                MarshalAsDescriptor marshalAs =  parser.ParseMarshalAsDescriptor();
                 Debug.Assert(marshalAs != null);
                 return marshalAs;
             }
@@ -548,6 +561,14 @@ namespace Internal.TypeSystem.Ecma
             get
             {
                 return (_typeDefinition.Attributes & TypeAttributes.BeforeFieldInit) != 0;
+            }
+        }
+
+        public override bool IsModuleType
+        {
+            get
+            {
+                return _handle.Equals(MetadataTokens.TypeDefinitionHandle(0x00000001 /* COR_GLOBAL_PARENT_TOKEN */));
             }
         }
 

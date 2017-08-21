@@ -108,7 +108,7 @@ copy_object_no_checks_par (GCObject *obj, SgenGrayQueue *queue)
 		 */
 		gboolean has_references = SGEN_VTABLE_HAS_REFERENCES (vt);
 		mword objsize = SGEN_ALIGN_UP (sgen_client_par_object_get_size (vt, obj));
-		destination = major_collector.alloc_object_par (vt, objsize, has_references);
+		destination = COLLECTOR_PARALLEL_ALLOC_FOR_PROMOTION (vt, obj, objsize, has_references);
 
 		par_copy_object_no_checks ((char*)destination, vt, obj, objsize);
 
@@ -124,6 +124,12 @@ copy_object_no_checks_par (GCObject *obj, SgenGrayQueue *queue)
 				GRAY_OBJECT_ENQUEUE_PARALLEL (queue, (GCObject *)destination, sgen_vtable_get_descriptor (vt));
 			}
 		} else {
+			/*
+			 * Unlikely case. Clear the allocated object so it doesn't confuse nursery
+			 * card table scanning, since it can contain old invalid refs.
+			 * FIXME make sure it is not a problem if another threads scans it while we clear
+			 */
+			mono_gc_bzero_aligned (destination, objsize);
 			destination = final_destination;
 		}
 	}
@@ -133,5 +139,6 @@ copy_object_no_checks_par (GCObject *obj, SgenGrayQueue *queue)
 #endif
 
 #undef COLLECTOR_SERIAL_ALLOC_FOR_PROMOTION
+#undef COLLECTOR_PARALLEL_ALLOC_FOR_PROMOTION
 #undef collector_pin_object
 #undef COPY_OR_MARK_PARALLEL

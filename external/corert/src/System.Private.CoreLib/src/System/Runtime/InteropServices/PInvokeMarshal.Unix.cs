@@ -39,7 +39,7 @@ namespace System.Runtime.InteropServices
             return System.Text.Encoding.UTF8.GetString((byte*)ptr, len);
         }
 
-        internal static unsafe IntPtr MemAlloc(IntPtr cb)
+        public static unsafe IntPtr MemAlloc(IntPtr cb)
         {
             return Interop.MemAlloc((UIntPtr)(void*)cb);
         }
@@ -49,14 +49,24 @@ namespace System.Runtime.InteropServices
             Interop.MemFree(hglobal);
         }
 
-        internal static IntPtr CoTaskMemAlloc(UIntPtr bytes)
+        public static unsafe IntPtr MemReAlloc(IntPtr pv, IntPtr cb)
+        {
+            return Interop.MemReAlloc(pv, new UIntPtr((void*)cb));
+        }
+
+        public static IntPtr CoTaskMemAlloc(UIntPtr bytes)
         {
             return Interop.MemAlloc(bytes);
         }
 
-        internal static void CoTaskMemFree(IntPtr allocatedMemory)
+        public static void CoTaskMemFree(IntPtr allocatedMemory)
         {
             Interop.MemFree(allocatedMemory);
+        }
+
+        public static unsafe IntPtr CoTaskMemReAlloc(IntPtr pv, IntPtr cb)
+        {
+            return Interop.MemReAlloc(pv, new UIntPtr((void*)cb));
         }
 
         public static IntPtr SecureStringToBSTR(SecureString s)
@@ -67,5 +77,60 @@ namespace System.Runtime.InteropServices
             }
             throw new PlatformNotSupportedException();
         }
+
+        // In CoreRT on Unix, there is not yet a BSTR implementation. On Windows, we would use SysAllocStringLen from OleAut32.dll.
+        internal static IntPtr AllocBSTR(int length)
+        {
+            throw new PlatformNotSupportedException();
+        }
+
+        internal static void FreeBSTR(IntPtr ptr)
+        {
+            throw new PlatformNotSupportedException();
+        }
+
+        #region String marshalling
+
+        public static unsafe int ConvertMultiByteToWideChar(byte* multiByteStr,
+                                                            int multiByteLen,
+                                                            char* wideCharStr,
+                                                            int wideCharLen)
+        {
+            return System.Text.Encoding.UTF8.GetChars(multiByteStr, multiByteLen, wideCharStr, wideCharLen);
+        }
+
+        public static unsafe int ConvertWideCharToMultiByte(char* wideCharStr,
+                                                            int wideCharLen,
+                                                            byte* multiByteStr,
+                                                            int multiByteLen,
+                                                            bool bestFit,
+                                                            bool throwOnUnmappableChar)
+        {
+            return System.Text.Encoding.UTF8.GetBytes(wideCharStr, wideCharLen, multiByteStr, multiByteLen);
+        }
+
+        public static unsafe int ConvertWideCharToMultiByte(char* wideCharStr,
+                                                            int wideCharLen,
+                                                            byte* multiByteStr,
+                                                            int multiByteLen)
+        {
+            return System.Text.Encoding.UTF8.GetBytes(wideCharStr, wideCharLen, multiByteStr, multiByteLen);
+        }
+
+        public static unsafe int GetByteCount(char* wideCharStr, int wideCharLen)
+        {
+            return System.Text.Encoding.UTF8.GetByteCount(wideCharStr, wideCharLen);
+        }
+
+        public static unsafe int GetCharCount(byte* multiByteStr, int multiByteLen)
+        {
+            return System.Text.Encoding.UTF8.GetCharCount(multiByteStr, multiByteLen);
+        }
+
+        public static unsafe int GetSystemMaxDBCSCharSize()
+        {
+            return 3;
+        }
+        #endregion
     }
 }

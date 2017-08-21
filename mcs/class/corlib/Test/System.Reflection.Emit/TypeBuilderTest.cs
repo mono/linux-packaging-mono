@@ -11186,6 +11186,41 @@ namespace MonoTests.System.Reflection.Emit
 			Assert.IsNotNull (ins4);
 		}
 
+		[Test]
+		public void CircularReferences () {
+			// A: C<D<A>>
+			var a_type = module.DefineType(
+				"A",
+				TypeAttributes.Class,
+				typeof(object));
+
+			var cba = a_type.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
+			cba.GetILGenerator ().Emit (OpCodes.Ret);
+
+			var c_type = module.DefineType(
+				"B",
+				TypeAttributes.Class,
+				typeof(object));
+			var cbb = c_type.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
+			cbb.GetILGenerator ().Emit (OpCodes.Ret);
+			c_type.DefineGenericParameters ("d_a_param");
+
+			var d_type = module.DefineType(
+				"D",
+				TypeAttributes.Class,
+				typeof(object));
+			var cbd = d_type.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
+			cbd.GetILGenerator ().Emit (OpCodes.Ret);
+			d_type.DefineGenericParameters ("a_param");
+
+
+			var d_instantiated = c_type.MakeGenericType (d_type.MakeGenericType (a_type));
+			a_type.SetParent (d_instantiated);
+			a_type.CreateType ();
+
+			Assert.IsNotNull (a_type);
+		}
+
 		// #22059
 		[Test]
 		[ExpectedException (typeof (TypeLoadException))]
@@ -11339,5 +11374,39 @@ namespace MonoTests.System.Reflection.Emit
 
 			assembly.Save (ASSEMBLY_NAME + ".dll");
 		}
+
+		[Test]
+		public void TwoAssembliesMidFlightTest () {
+			// Check that one AssemblyBuilder can refer to a TypeBuilder from another AssemblyBuilder.
+			// Regression test for https://bugzilla.xamarin.com/show_bug.cgi?id=58421
+			var name2 = "MonoTests.System.Reflection.Emit.TypeBuilderTest2";
+			var assemblyName2 = new AssemblyName (name2);
+			var assembly2 =
+				Thread.GetDomain ().DefineDynamicAssembly (
+					assemblyName2, AssemblyBuilderAccess.RunAndSave, tempDir);
+
+			var module2 = assembly2.DefineDynamicModule (name2, name2 + ".dll");
+
+			var tb = module.DefineType ("Foo", TypeAttributes.Public);
+			var tb2 = module2.DefineType ("Foo2", TypeAttributes.Public);
+
+			var cb = tb.DefineConstructor (MethodAttributes.Public, CallingConventions.Standard,
+						       Type.EmptyTypes);
+
+			var ilg = cb.GetILGenerator ();
+
+			ilg.Emit (OpCodes.Ldtoken, tb2); // N.B. type from the other AssemblyBuilder
+			ilg.Emit (OpCodes.Pop);
+			ilg.Emit (OpCodes.Ret);
+
+			var t = tb.CreateType ();
+			tb2.CreateType ();
+
+			var ci = t.GetConstructor (Type.EmptyTypes);
+			var x = ci.Invoke (null);
+			assembly.Save (ASSEMBLY_NAME + ".dll");
+			assembly2.Save (name2 + ".dll");
+		}
+
 	}
 }

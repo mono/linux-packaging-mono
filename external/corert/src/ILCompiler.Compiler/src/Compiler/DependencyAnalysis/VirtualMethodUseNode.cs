@@ -23,12 +23,16 @@ namespace ILCompiler.DependencyAnalysis
     {
         private MethodDesc _decl;
 
+        public MethodDesc Method => _decl;
+
         public VirtualMethodUseNode(MethodDesc decl)
         {
             Debug.Assert(decl.IsVirtual);
 
-            // TODO: assert that decl is a slot defining method (either a newslot or a first virtual method
-            // with this name and signature in the inheritance chain).
+            // Virtual method use always represents the slot defining method of the virtual.
+            // Places that might see virtual methods being used through an override need to normalize
+            // to the slot defining method.
+            Debug.Assert(MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(decl) == decl);
 
             // Generic virtual methods are tracked by an orthogonal mechanism.
             Debug.Assert(!decl.HasInstantiation);
@@ -55,11 +59,15 @@ namespace ILCompiler.DependencyAnalysis
 
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
         {
+            DependencyList dependencies = new DependencyList();
+
             MethodDesc canonDecl = _decl.GetCanonMethodTarget(CanonicalFormKind.Specific);
             if (canonDecl != _decl)
-                return new[] { new DependencyListEntry(factory.VirtualMethodUse(canonDecl), "Canonical method") };
+                dependencies.Add(new DependencyListEntry(factory.VirtualMethodUse(canonDecl), "Canonical method"));
 
-            return null;
+            dependencies.Add(new DependencyListEntry(factory.VTable(_decl.OwningType), "VTable of a VirtualMethodUse"));
+
+            return dependencies;
         }
 
         public override IEnumerable<CombinedDependencyListEntry> GetConditionalStaticDependencies(NodeFactory factory)

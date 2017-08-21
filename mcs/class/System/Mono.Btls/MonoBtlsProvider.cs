@@ -32,6 +32,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Authentication;
 
@@ -49,10 +50,8 @@ namespace Mono.Btls
 {
 	class MonoBtlsProvider : MonoTlsProvider
 	{
-		static readonly Guid id = new Guid ("432d18c9-9348-4b90-bfbf-9f2a10e1f15b");
-
 		public override Guid ID {
-			get { return id; }
+			get { return MNS.MonoTlsProviderFactory.BtlsId; }
 		}
 		public override string Name {
 			get { return "btls"; }
@@ -84,8 +83,15 @@ namespace Mono.Btls
 			Stream innerStream, bool leaveInnerStreamOpen,
 			MonoTlsSettings settings = null)
 		{
+			return SslStream.CreateMonoSslStream (innerStream, leaveInnerStreamOpen, this, settings);
+		}
+
+		internal override IMonoSslStream CreateSslStreamInternal (
+			SslStream sslStream, Stream innerStream, bool leaveInnerStreamOpen,
+			MonoTlsSettings settings)
+		{
 			return new MonoBtlsStream (
-				innerStream, leaveInnerStreamOpen, settings, this);
+				innerStream, leaveInnerStreamOpen, sslStream, settings, this);
 		}
 
 		internal override bool HasNativeCertificates {
@@ -111,7 +117,7 @@ namespace Mono.Btls
 			return new X509CertificateImplBtls (data, MonoBtlsX509Format.DER, false);
 		}
 
-		internal static MonoBtlsX509VerifyParam GetVerifyParam (string targetHost, bool serverMode)
+		internal static MonoBtlsX509VerifyParam GetVerifyParam (MonoTlsSettings settings, string targetHost, bool serverMode)
 		{
 			MonoBtlsX509VerifyParam param;
 			if (serverMode)
@@ -119,12 +125,15 @@ namespace Mono.Btls
 			else
 				param = MonoBtlsX509VerifyParam.GetSslServer ();
 
-			if (targetHost == null)
+			if (targetHost == null && settings?.CertificateValidationTime == null)
 				return param;
 
 			try {
 				var copy = param.Copy ();
-				copy.SetHost (targetHost);
+				if (targetHost != null)
+					copy.SetHost (targetHost);
+				if (settings?.CertificateValidationTime != null)
+					copy.SetTime (settings.CertificateValidationTime.Value);
 				return copy;
 			} finally {
 				param.Dispose ();
@@ -148,7 +157,7 @@ namespace Mono.Btls
 
 			using (var store = new MonoBtlsX509Store ())
 			using (var nativeChain = MonoBtlsProvider.GetNativeChain (certificates))
-			using (var param = GetVerifyParam (targetHost, serverMode))
+			using (var param = GetVerifyParam (validator.Settings, targetHost, serverMode))
 			using (var storeCtx = new MonoBtlsX509StoreCtx ()) {
 				SetupCertificateStore (store, validator.Settings, serverMode);
 
@@ -176,7 +185,12 @@ namespace Mono.Btls
 		{
 			using (var store = new MonoBtlsX509Store ())
 			using (var storeCtx = new MonoBtlsX509StoreCtx ()) {
-				SetupCertificateStore (store);
+				/*
+				 * We're called from X509Certificate2.Verify() via X509CertificateImplBtls.Verify().
+				 *
+				 * Use the default settings and assume client-mode.
+				 */
+				SetupCertificateStore (store, MonoTlsSettings.DefaultSettings, false);
 
 				storeCtx.Initialize (store, chain);
 
@@ -203,46 +217,62 @@ namespace Mono.Btls
 
 		internal static void SetupCertificateStore (MonoBtlsX509Store store, MonoTlsSettings settings, bool server)
 		{
-			if (settings?.CertificateSearchPaths == null)
-				AddTrustedRoots (store, settings, server);
+			/*
+			 * In server-mode, we only add certificates which are explicitly trusted via
+			 * MonoTlsSettings.TrustAnchors.
+			 * 
+			 * MonoTlsSettings.CertificateSearchPaths is ignored on Android.
+			 * 
+			 */
 
 #if MONODROID
-			SetupCertificateStore (store);
+			AddTrustedRoots (store, settings, server);
+			if (!server)
+				SetupDefaultCertificateStore (store);
 			return;
 #else
-			if (settings?.CertificateSearchPaths == null) {
-				SetupCertificateStore (store);
+			if (server || settings?.CertificateSearchPaths == null) {
+				AddTrustedRoots (store, settings, server);
+				if (!server)
+					SetupDefaultCertificateStore (store);
 				return;
 			}
 
 			foreach (var path in settings.CertificateSearchPaths) {
-				if (string.Equals (path, "@default", StringComparison.Ordinal)) {
+				switch (path) {
+				case "@default":
 					AddTrustedRoots (store, settings, server);
 					AddUserStore (store);
 					AddMachineStore (store);
-				} else if (string.Equals (path, "@user", StringComparison.Ordinal))
-					AddUserStore (store);
-				else if (string.Equals (path, "@machine", StringComparison.Ordinal))
-					AddMachineStore (store);
-				else if (string.Equals (path, "@trusted", StringComparison.Ordinal))
+					break;
+				case "@trusted":
 					AddTrustedRoots (store, settings, server);
-				else if (path.StartsWith ("@pem:", StringComparison.Ordinal)) {
-					var realPath = path.Substring (5);
-					if (Directory.Exists (realPath))
-						store.AddDirectoryLookup (realPath, MonoBtlsX509FileType.PEM);
-				} else if (path.StartsWith ("@der:", StringComparison.Ordinal)) {
-					var realPath = path.Substring (5);
-					if (Directory.Exists (realPath))
-						store.AddDirectoryLookup (realPath, MonoBtlsX509FileType.ASN1);
-				} else {
-					if (Directory.Exists (path))
-						store.AddDirectoryLookup (path, MonoBtlsX509FileType.PEM);
+					break;
+				case "@user":
+					AddUserStore (store);
+					break;
+				case "@machine":
+					AddMachineStore (store);
+					break;
+				default:
+					if (path.StartsWith ("@pem:")) {
+						var realPath = path.Substring (5);
+						if (Directory.Exists (realPath))
+							store.AddDirectoryLookup (realPath, MonoBtlsX509FileType.PEM);
+						break;
+					} else if (path.StartsWith ("@der:")) {
+						var realPath = path.Substring (5);
+						if (Directory.Exists (realPath))
+							store.AddDirectoryLookup (realPath, MonoBtlsX509FileType.ASN1);
+						break;
+					}
+					throw new NotSupportedException (string.Format ("Invalid item `{0}' in MonoTlsSettings.CertificateSearchPaths.", path));
 				}
 			}
 #endif
 		}
 
-		internal static void SetupCertificateStore (MonoBtlsX509Store store)
+		static void SetupDefaultCertificateStore (MonoBtlsX509Store store)
 		{
 #if MONODROID
 			store.SetDefaultPaths ();

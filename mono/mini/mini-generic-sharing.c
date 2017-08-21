@@ -1503,7 +1503,8 @@ mini_get_interp_in_wrapper (MonoMethodSignature *sig)
 
 	mb = mono_mb_new (mono_defaults.object_class, name, MONO_WRAPPER_UNKNOWN);
 
-	// FIXME: save lmf
+	/* This is needed to be able to unwind out of interpreted code */
+	mb->method->save_lmf = 1;
 
 #ifndef DISABLE_JIT
 	if (sig->ret->type != MONO_TYPE_VOID)
@@ -3507,6 +3508,7 @@ mini_get_shared_gparam (MonoType *t, MonoType *constraint)
 	copy = (MonoGSharedGenericParam *)mono_image_alloc0 (image, sizeof (MonoGSharedGenericParam));
 	memcpy (&copy->param, par, sizeof (MonoGenericParamFull));
 	copy->param.info.pklass = NULL;
+	constraint = mono_metadata_type_dup (image, constraint);
 	name = get_shared_gparam_name (constraint->type, ((MonoGenericParamFull*)copy)->info.name);
 	copy->param.info.name = mono_image_strdup (image, name);
 	g_free (name);

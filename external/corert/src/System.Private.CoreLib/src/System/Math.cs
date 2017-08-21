@@ -54,9 +54,7 @@ namespace System
 
         [Intrinsic]
         public static double Atan2(double y, double x)
-        {
-            if (Double.IsInfinity(x) && Double.IsInfinity(y))
-                return Double.NaN;
+        {          
             return RuntimeImports.atan2(y, x);
         }
 
@@ -246,36 +244,13 @@ namespace System
 
         [Intrinsic]
         public static double Exp(double d)
-        {
-            if (Double.IsInfinity(d))
-            {
-                if (d < 0)
-                    return +0.0;
-                return d;
-            }
+        {  
             return RuntimeImports.exp(d);
         }
 
         [Intrinsic]
         public static double Pow(double x, double y)
         {
-            if (Double.IsNaN(y))
-                return y;
-            if (Double.IsNaN(x))
-                return x;
-
-            if (Double.IsInfinity(y))
-            {
-                if (x == 1.0)
-                {
-                    return x;
-                }
-                if (x == -1.0)
-                {
-                    return Double.NaN;
-                }
-            }
-
             return RuntimeImports.pow(x, y);
         }
 
@@ -683,6 +658,31 @@ namespace System
                 return 1;
             else
                 return 0;
+        }
+
+        public static long BigMul(int a, int b)
+        {
+            return ((long)a) * b;
+        }
+
+        public static int DivRem(int a, int b, out int result)
+        {
+            // TODO https://github.com/dotnet/coreclr/issues/3439:
+            // Restore to using % and / when the JIT is able to eliminate one of the idivs.
+            // In the meantime, a * and - is measurably faster than an extra /.
+            int div = a / b;
+            result = a - (div * b);
+            return div;
+        }
+
+        public static long DivRem(long a, long b, out long result)
+        {
+            // TODO https://github.com/dotnet/coreclr/issues/3439:
+            // Restore to using % and / when the JIT is able to eliminate one of the idivs.
+            // In the meantime, a * and - is measurably faster than an extra /.
+            long div = a / b;
+            result = a - (div * b);
+            return div;
         }
     }
 }

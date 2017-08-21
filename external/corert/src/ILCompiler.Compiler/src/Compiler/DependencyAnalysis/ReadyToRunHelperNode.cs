@@ -121,18 +121,7 @@ namespace ILCompiler.DependencyAnalysis
                     sb.Append("__GetThreadStaticBase_").Append(nameMangler.GetMangledTypeName((TypeDesc)_target));
                     break;
                 case ReadyToRunHelperId.DelegateCtor:
-                    {
-                        var createInfo = (DelegateCreationInfo)_target;
-                        sb.Append("__DelegateCtor_");
-                        createInfo.Constructor.AppendMangledName(nameMangler, sb);
-                        sb.Append("__");
-                        createInfo.Target.AppendMangledName(nameMangler, sb);
-                        if (createInfo.Thunk != null)
-                        {
-                            sb.Append("__");
-                            createInfo.Thunk.AppendMangledName(nameMangler, sb);
-                        }
-                    }
+                    ((DelegateCreationInfo)_target).AppendMangledName(nameMangler, sb);
                     break;
                 case ReadyToRunHelperId.ResolveVirtualFunction:
                     sb.Append("__ResolveVirtualFunction_");
@@ -147,23 +136,54 @@ namespace ILCompiler.DependencyAnalysis
 
         protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
         {
-            if (_id == ReadyToRunHelperId.VirtualCall)
+            if (_id == ReadyToRunHelperId.VirtualCall || _id == ReadyToRunHelperId.ResolveVirtualFunction)
             {
+                var targetMethod = (MethodDesc)_target;
+
                 DependencyList dependencyList = new DependencyList();
-                dependencyList.Add(factory.VirtualMethodUse((MethodDesc)_target), "ReadyToRun Virtual Method Call");
-                dependencyList.Add(factory.VTable(((MethodDesc)_target).OwningType), "ReadyToRun Virtual Method Call Target VTable");
+
+#if !SUPPORT_JIT
+                // TODO: https://github.com/dotnet/corert/issues/3224 
+                if (targetMethod.IsAbstract)
+                {
+                    dependencyList.Add(factory.ReflectableMethod(targetMethod), "Abstract reflectable method");
+                }
+
+                if (!factory.CompilationModuleGroup.ShouldProduceFullVTable(targetMethod.OwningType))
+
+                {
+                    dependencyList.Add(factory.VirtualMethodUse((MethodDesc)_target), "ReadyToRun Virtual Method Call");
+                }
+#endif
+
                 return dependencyList;
             }
-            else if (_id == ReadyToRunHelperId.ResolveVirtualFunction)
+            else if (_id == ReadyToRunHelperId.DelegateCtor)
             {
-                DependencyList dependencyList = new DependencyList();
-                dependencyList.Add(factory.VirtualMethodUse((MethodDesc)_target), "ReadyToRun Virtual Method Address Load");
-                return dependencyList;
+                var info = (DelegateCreationInfo)_target;
+                if (info.NeedsVirtualMethodUseTracking)
+                {
+                    MethodDesc targetMethod = info.TargetMethod;
+
+                    DependencyList dependencyList = new DependencyList();
+#if !SUPPORT_JIT
+                    // TODO: https://github.com/dotnet/corert/issues/3224 
+                    if (targetMethod.IsAbstract)
+                    {
+                        dependencyList.Add(factory.ReflectableMethod(targetMethod), "Abstract reflectable method");
+                    }
+
+                    if (!factory.CompilationModuleGroup.ShouldProduceFullVTable(info.TargetMethod.OwningType))
+                    {
+                        dependencyList.Add(factory.VirtualMethodUse(info.TargetMethod), "ReadyToRun Delegate to virtual method");
+                    }
+#endif
+
+                    return dependencyList;
+                }
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }

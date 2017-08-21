@@ -25,8 +25,7 @@ namespace System.Runtime.InteropServices
 {
     public static partial class Marshal
     {
-
-
+#if PLATFORM_WINDOWS
         private const long HIWORDMASK = unchecked((long)0xffffffffffff0000L);
 
         // Win32 has the concept of Atoms, where a pointer can either be a pointer
@@ -46,6 +45,10 @@ namespace System.Runtime.InteropServices
             long lPtr = (long)ptr;
             return 0 != (lPtr & HIWORDMASK);
         }
+#else // PLATFORM_WINDOWS
+        private static bool IsWin32Atom(IntPtr ptr) => false;
+        private static bool IsNotWin32Atom(IntPtr ptr) => true;
+#endif // PLATFORM_WINDOWS
 
         //====================================================================
         // The default character size for the system. This is always 2 because
@@ -56,23 +59,7 @@ namespace System.Runtime.InteropServices
         //====================================================================
         // The max DBCS character size for the system.
         //====================================================================
-        public static readonly int SystemMaxDBCSCharSize = GetSystemMaxDBCSCharSize();
-
-        //====================================================================
-        // Helper method to retrieve the system's maximum DBCS character size.
-        //====================================================================
-        private static unsafe int GetSystemMaxDBCSCharSize()
-        {
-            ExternalInterop.CPINFO cpInfo;
-            if (ExternalInterop.GetCPInfo(ExternalInterop.Constants.CP_ACP, &cpInfo) != 0)
-            {
-                return cpInfo.MaxCharSize;
-            }
-            else
-            {
-                return 2;
-            }
-        }
+        public static readonly int SystemMaxDBCSCharSize = PInvokeMarshal.GetSystemMaxDBCSCharSize();
 
         public static unsafe String PtrToStringAnsi(IntPtr ptr)
         {
@@ -94,7 +81,7 @@ namespace System.Runtime.InteropServices
                 }
                 else
                 {
-                    return ConvertToUnicode(ptr, nb);
+                    return new string((sbyte*)ptr);
                 }
             }
         }
@@ -653,14 +640,14 @@ namespace System.Runtime.InteropServices
             {
                 throw GetExceptionForHR(errorCode, errorInfo);
             }
-        }  
+        }
 
         //====================================================================
         // Memory allocation and deallocation.
         //====================================================================
         public static unsafe IntPtr ReAllocHGlobal(IntPtr pv, IntPtr cb)
         {
-            return ExternalInterop.MemReAlloc(pv, cb);
+            return PInvokeMarshal.MemReAlloc(pv, cb);
         }
 
         private static unsafe void ConvertToAnsi(string source, IntPtr pbNativeBuffer, int cbNativeBuffer)
@@ -672,7 +659,7 @@ namespace System.Runtime.InteropServices
             fixed (char* pch = source)
             {
                 int convertedBytes =
-                    ExternalInterop.ConvertWideCharToMultiByte(pch, source.Length, pbNativeBuffer, cbNativeBuffer);
+                    PInvokeMarshal.ConvertWideCharToMultiByte(pch, source.Length, (byte*)pbNativeBuffer, cbNativeBuffer, false, false);
                 ((byte*)pbNativeBuffer)[convertedBytes] = 0;
             }
         }
@@ -689,7 +676,7 @@ namespace System.Runtime.InteropServices
                 return String.Empty;
             }
             // MB_PRECOMPOSED is the default.
-            int charsRequired = ExternalInterop.GetCharCount(sourceBuffer, cbSourceBuffer);
+            int charsRequired = PInvokeMarshal.GetCharCount((byte*)sourceBuffer, cbSourceBuffer);
 
             if (charsRequired == 0)
             {
@@ -699,9 +686,9 @@ namespace System.Runtime.InteropServices
             char[] wideChars = new char[charsRequired + 1];
             fixed (char* pWideChars = &wideChars[0])
             {
-                int converted = ExternalInterop.ConvertMultiByteToWideChar(sourceBuffer,
+                int converted = PInvokeMarshal.ConvertMultiByteToWideChar((byte*)sourceBuffer,
                                                                     cbSourceBuffer,
-                                                                    new IntPtr(pWideChars),
+                                                                    pWideChars,
                                                                     wideChars.Length);
                 if (converted == 0)
                 {
@@ -772,7 +759,7 @@ namespace System.Runtime.InteropServices
                 if (nb < s.Length)
                     throw new ArgumentOutOfRangeException(nameof(s));
 
-                IntPtr hglobal = ExternalInterop.MemAlloc(new IntPtr(nb));
+                IntPtr hglobal = PInvokeMarshal.MemAlloc(new IntPtr(nb));
                 ConvertToAnsi(s, hglobal, nb);
                 return hglobal;
             }
@@ -792,7 +779,7 @@ namespace System.Runtime.InteropServices
                 if (nb < s.Length)
                     throw new ArgumentOutOfRangeException(nameof(s));
 
-                IntPtr hglobal = ExternalInterop.MemAlloc(new UIntPtr((uint)nb));
+                IntPtr hglobal = PInvokeMarshal.MemAlloc(new IntPtr(nb));
                 fixed (char* firstChar = s)
                 {
                     InteropExtensions.Memcpy(hglobal, new IntPtr(firstChar), nb);
@@ -858,7 +845,7 @@ namespace System.Runtime.InteropServices
                 if (nb < s.Length)
                     throw new ArgumentOutOfRangeException(nameof(s));
 
-                IntPtr hglobal = new IntPtr( ExternalInterop.CoTaskMemAlloc(new IntPtr(nb)));
+                IntPtr hglobal = PInvokeMarshal.CoTaskMemAlloc(new UIntPtr((uint)nb));
 
                 if (hglobal == IntPtr.Zero)
                 {
@@ -889,7 +876,7 @@ namespace System.Runtime.InteropServices
                 if (nb < s.Length)
                     throw new ArgumentOutOfRangeException(nameof(s));
 
-                IntPtr hglobal = new IntPtr(ExternalInterop.CoTaskMemAlloc(new IntPtr(nb)));
+                IntPtr hglobal = PInvokeMarshal.CoTaskMemAlloc(new UIntPtr((uint)nb));
 
                 if (hglobal == IntPtr.Zero)
                 {
@@ -992,7 +979,7 @@ namespace System.Runtime.InteropServices
 
         public static IntPtr ReAllocCoTaskMem(IntPtr pv, int cb)
         {
-            IntPtr pNewMem = ExternalInterop.CoTaskMemRealloc(pv, new IntPtr(cb));
+            IntPtr pNewMem = PInvokeMarshal.CoTaskMemReAlloc(pv, new IntPtr(cb));
             if (pNewMem == IntPtr.Zero && cb != 0)
             {
                 throw new OutOfMemoryException();
@@ -1023,7 +1010,7 @@ namespace System.Runtime.InteropServices
 
             fixed (char* pch = s)
             {
-                IntPtr bstr = new IntPtr( ExternalInterop.SysAllocStringLen(pch, (uint)s.Length));
+                IntPtr bstr = new IntPtr(ExternalInterop.SysAllocStringLen(pch, (uint)s.Length));
                 if (bstr == IntPtr.Zero)
                     throw new OutOfMemoryException();
 
@@ -1074,7 +1061,7 @@ namespace System.Runtime.InteropServices
             if (d == null)
                 throw new ArgumentNullException(nameof(d));
 
-            return McgMarshal.GetStubForPInvokeDelegate(d);
+            return PInvokeMarshal.GetStubForPInvokeDelegate(d);
         }
 
         public static IntPtr GetFunctionPointerForDelegate<TDelegate>(TDelegate d)
@@ -1468,9 +1455,11 @@ namespace System.Runtime.InteropServices
         //====================================================================
         // This method binds to the specified moniker.
         //====================================================================
-#if false // Bug 398140: Shared library is broken by addition of non-existent import BindMoniker
         public static Object BindToMoniker(String monikerName)
         {
+#if TARGET_CORE_API_SET // BindMoniker not available in core API set
+            throw new PlatformNotSupportedException();
+#else
             Object obj = null;
             IBindCtx bindctx = null;
             ExternalInterop.CreateBindCtx(0, out bindctx);
@@ -1481,8 +1470,8 @@ namespace System.Runtime.InteropServices
 
             ExternalInterop.BindMoniker(pmoniker, 0, ref Interop.COM.IID_IUnknown, out obj);
             return obj;
+#endif
         }
-#endif // Bug 398140: Shared library is broken by addition of non-existent import BindMoniker
 
 #if ENABLE_WINRT
         public static Type GetTypeFromCLSID(Guid clsid)

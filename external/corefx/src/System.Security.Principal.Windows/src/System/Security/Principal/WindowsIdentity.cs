@@ -240,23 +240,18 @@ namespace System.Security.Principal
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2229", Justification = "Public API has already shipped.")]
         public WindowsIdentity(SerializationInfo info, StreamingContext context)
         {
-            _claimsInitialized = false;
-
-            IntPtr userToken = (IntPtr)info.GetValue("m_userToken", typeof(IntPtr));
-            if (userToken != IntPtr.Zero)
-            {
-                CreateFromToken(userToken);
-            }
+            throw new PlatformNotSupportedException();
         }
 
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            // TODO: Add back when ClaimsIdentity is serializable
-            // base.GetObjectData(info, context);
-            info.AddValue("m_userToken", _safeTokenHandle.DangerousGetHandle());
+            throw new PlatformNotSupportedException();
         }
 
-        void IDeserializationCallback.OnDeserialization(object sender) { }
+        void IDeserializationCallback.OnDeserialization(object sender)
+        {
+            throw new PlatformNotSupportedException();
+        }
 
         //
         // Factory methods.
@@ -774,44 +769,6 @@ namespace System.Security.Principal
             }
         }
 
-        //
-        // QueryImpersonation used to test if the current thread is impersonated.
-        // This method doesn't return the thread token (WindowsIdentity).
-        // Note GetCurrentInternal can be used to perform the same test, but 
-        // QueryImpersonation is optimized for performance
-        // 
-
-        internal static ImpersonationQueryResult QueryImpersonation()
-        {
-            SafeAccessTokenHandle safeTokenHandle = null;
-            bool success = Interop.Advapi32.OpenThreadToken(TokenAccessLevels.Query, WinSecurityContext.Thread, out safeTokenHandle);
-
-            if (safeTokenHandle != null)
-            {
-                Debug.Assert(success, "[WindowsIdentity..QueryImpersonation] - success");
-                safeTokenHandle.Dispose();
-                return ImpersonationQueryResult.Impersonated;
-            }
-
-            int lastError = Marshal.GetLastWin32Error();
-
-            if (lastError == Interop.Errors.ERROR_ACCESS_DENIED)
-            {
-                // thread is impersonated because the thread was there (and we failed to open it).
-                return ImpersonationQueryResult.Impersonated;
-            }
-
-            if (lastError == Interop.Errors.ERROR_NO_TOKEN)
-            {
-                // definitely not impersonating
-                return ImpersonationQueryResult.NotImpersonated;
-            }
-
-            // Unexpected failure.
-            return ImpersonationQueryResult.Failed;
-        }
-
-
         private static Interop.LUID GetLogonAuthId(SafeAccessTokenHandle safeTokenHandle)
         {
             using (SafeLocalAllocHandle pStatistics = GetTokenInformation(safeTokenHandle, TokenInformationClass.TokenStatistics))
@@ -893,29 +850,6 @@ namespace System.Security.Principal
                 throw new ArgumentNullException(nameof(identity));
             }
             return identity._authType;
-        }
-
-        internal IntPtr GetTokenInternal()
-        {
-            return _safeTokenHandle.DangerousGetHandle();
-        }
-
-
-        internal WindowsIdentity(ClaimsIdentity claimsIdentity, IntPtr userToken)
-            : base(claimsIdentity)
-        {
-            if (userToken != IntPtr.Zero && userToken.ToInt64() > 0)
-            {
-                CreateFromToken(userToken);
-            }
-        }
-
-        /// <summary>
-        /// Returns a new instance of the base, used when serializing the WindowsIdentity.
-        /// </summary>
-        internal ClaimsIdentity CloneAsBase()
-        {
-            return base.Clone();
         }
 
         /// <summary>
@@ -1128,21 +1062,12 @@ namespace System.Security.Principal
         Both = 3 // OpenAsSelf = true, then OpenAsSelf = false
     }
 
-    internal enum ImpersonationQueryResult
-    {
-        Impersonated = 0,    // current thread is impersonated
-        NotImpersonated = 1,    // current thread is not impersonated
-        Failed = 2     // failed to query 
-    }
-
-    [Serializable]
     internal enum TokenType : int
     {
         TokenPrimary = 1,
         TokenImpersonation
     }
 
-    [Serializable]
     internal enum TokenInformationClass : int
     {
         TokenUser = 1,

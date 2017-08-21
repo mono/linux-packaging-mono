@@ -35,6 +35,7 @@ typedef struct _SgenThreadInfo SgenThreadInfo;
 #include "mono/sgen/sgen-hash-table.h"
 #include "mono/sgen/sgen-protocol.h"
 #include "mono/sgen/gc-internal-agnostic.h"
+#include "mono/sgen/sgen-thread-pool.h"
 
 /* The method used to clear the nursery */
 /* Clearing at nursery collections is the safest, but has bad interactions with caches.
@@ -59,9 +60,6 @@ NurseryClearPolicy sgen_get_nursery_clear_policy (void);
 typedef struct _GCMemSection GCMemSection;
 struct _GCMemSection {
 	char *data;
-	mword size;
-	/* pointer where more data could be allocated if it fits */
-	char *next_data;
 	char *end_data;
 	/*
 	 * scan starts is an array of pointers to objects equally spaced in the allocation area
@@ -185,21 +183,9 @@ sgen_aligned_addr_hash (gconstpointer ptr)
 
 #define SGEN_PTR_IN_NURSERY(p,bits,start,end)	(((mword)(p) & ~(((mword)1 << (bits)) - 1)) == (mword)(start))
 
-#ifdef USER_CONFIG
-
-/* good sizes are 512KB-1MB: larger ones increase a lot memzeroing time */
-#define DEFAULT_NURSERY_SIZE (sgen_nursery_size)
 extern size_t sgen_nursery_size;
-/* The number of trailing 0 bits in DEFAULT_NURSERY_SIZE */
-#define DEFAULT_NURSERY_BITS (sgen_nursery_bits)
+extern size_t sgen_nursery_max_size;
 extern int sgen_nursery_bits;
-
-#else
-
-#define DEFAULT_NURSERY_SIZE (4*1024*1024)
-#define DEFAULT_NURSERY_BITS 22
-
-#endif
 
 extern char *sgen_nursery_start;
 extern char *sgen_nursery_end;
@@ -207,7 +193,7 @@ extern char *sgen_nursery_end;
 static inline MONO_ALWAYS_INLINE gboolean
 sgen_ptr_in_nursery (void *p)
 {
-	return SGEN_PTR_IN_NURSERY ((p), DEFAULT_NURSERY_BITS, sgen_nursery_start, sgen_nursery_end);
+	return SGEN_PTR_IN_NURSERY ((p), sgen_nursery_bits, sgen_nursery_start, sgen_nursery_end);
 }
 
 static inline MONO_ALWAYS_INLINE char*
@@ -494,7 +480,6 @@ typedef struct {
 
 void sgen_fragment_allocator_add (SgenFragmentAllocator *allocator, char *start, char *end);
 void sgen_fragment_allocator_release (SgenFragmentAllocator *allocator);
-void* sgen_fragment_allocator_serial_alloc (SgenFragmentAllocator *allocator, size_t size);
 void* sgen_fragment_allocator_par_alloc (SgenFragmentAllocator *allocator, size_t size);
 void* sgen_fragment_allocator_serial_range_alloc (SgenFragmentAllocator *allocator, size_t desired_size, size_t minimum_size, size_t *out_alloc_size);
 void* sgen_fragment_allocator_par_range_alloc (SgenFragmentAllocator *allocator, size_t desired_size, size_t minimum_size, size_t *out_alloc_size);
@@ -559,11 +544,14 @@ sgen_nursery_is_object_alive (GCObject *obj)
 
 typedef struct {
 	gboolean is_split;
+	gboolean is_parallel;
 
 	GCObject* (*alloc_for_promotion) (GCVTable vtable, GCObject *obj, size_t objsize, gboolean has_references);
+	GCObject* (*alloc_for_promotion_par) (GCVTable vtable, GCObject *obj, size_t objsize, gboolean has_references);
 
 	SgenObjectOperations serial_ops;
 	SgenObjectOperations serial_ops_with_concurrent_major;
+	SgenObjectOperations parallel_ops;
 
 	void (*prepare_to_space) (char *to_space_bitmap, size_t space_bitmap_size);
 	void (*clear_fragments) (void);
@@ -578,7 +566,7 @@ typedef struct {
 
 extern SgenMinorCollector sgen_minor_collector;
 
-void sgen_simple_nursery_init (SgenMinorCollector *collector);
+void sgen_simple_nursery_init (SgenMinorCollector *collector, gboolean parallel);
 void sgen_split_nursery_init (SgenMinorCollector *collector);
 
 /* Updating references */
@@ -591,7 +579,7 @@ sgen_update_reference (GCObject **p, GCObject *o, gboolean allow_null)
 {
 	if (!allow_null)
 		SGEN_ASSERT (0, o, "Cannot update a reference with a NULL pointer");
-	SGEN_ASSERT (0, !sgen_thread_pool_is_thread_pool_thread (mono_native_thread_id_get ()), "Can't update a reference in the worker thread");
+	SGEN_ASSERT (0, !sgen_workers_is_worker_thread (mono_native_thread_id_get ()), "Can't update a reference in the worker thread");
 	*p = o;
 }
 
@@ -634,11 +622,10 @@ struct _SgenMajorCollector {
 	size_t section_size;
 	gboolean is_concurrent;
 	gboolean is_parallel;
-	gboolean needs_thread_pool;
 	gboolean supports_cardtable;
 	gboolean sweeps_lazily;
 
-	void* (*alloc_heap) (mword nursery_size, mword nursery_align, int nursery_bits);
+	void* (*alloc_heap) (mword nursery_size, mword nursery_align);
 	gboolean (*is_object_live) (GCObject *obj);
 	GCObject* (*alloc_small_pinned_obj) (GCVTable vtable, size_t size, gboolean has_references);
 	GCObject* (*alloc_degraded) (GCVTable vtable, size_t size);
@@ -691,6 +678,7 @@ struct _SgenMajorCollector {
 	guint8* (*get_cardtable_mod_union_for_reference) (char *object);
 	long long (*get_and_reset_num_major_objects_marked) (void);
 	void (*count_cards) (long long *num_total_cards, long long *num_marked_cards);
+	SgenThreadPool* (*get_sweep_pool) (void);
 
 	void (*worker_init_cb) (gpointer worker);
 };
@@ -701,6 +689,7 @@ void sgen_marksweep_init (SgenMajorCollector *collector);
 void sgen_marksweep_conc_init (SgenMajorCollector *collector);
 void sgen_marksweep_conc_par_init (SgenMajorCollector *collector);
 SgenMajorCollector* sgen_get_major_collector (void);
+SgenMinorCollector* sgen_get_minor_collector (void);
 
 
 typedef struct _SgenRememberedSet {
@@ -710,12 +699,12 @@ typedef struct _SgenRememberedSet {
 	void (*wbarrier_object_copy) (GCObject* obj, GCObject *src);
 	void (*wbarrier_generic_nostore) (gpointer ptr);
 	void (*record_pointer) (gpointer ptr);
+	void (*wbarrier_range_copy) (gpointer dest, gpointer src, int count);
 
-	void (*scan_remsets) (ScanCopyContext ctx);
+	void (*start_scan_remsets) (void);
 
 	void (*clear_cards) (void);
 
-	void (*finish_minor_collection) (void);
 	gboolean (*find_address) (char *addr);
 	gboolean (*find_address_with_cards) (char *cards_start, guint8 *cards, char *addr);
 } SgenRememberedSet;
@@ -731,7 +720,7 @@ void mono_gc_wbarrier_generic_nostore (gpointer ptr);
 void mono_gc_wbarrier_generic_store (gpointer ptr, GCObject* value);
 void mono_gc_wbarrier_generic_store_atomic (gpointer ptr, GCObject *value);
 
-void sgen_wbarrier_value_copy_bitmap (gpointer _dest, gpointer _src, int size, unsigned bitmap);
+void sgen_wbarrier_range_copy (gpointer _dest, gpointer _src, int size);
 
 static inline SgenDescriptor
 sgen_obj_get_descriptor (GCObject *obj)
@@ -908,12 +897,12 @@ void sgen_los_mark_mod_union_card (GCObject *mono_obj, void **ptr);
 
 void sgen_clear_nursery_fragments (void);
 void sgen_nursery_allocator_prepare_for_pinning (void);
-void sgen_nursery_allocator_set_nursery_bounds (char *nursery_start, char *nursery_end);
+void sgen_nursery_allocator_set_nursery_bounds (char *nursery_start, size_t min_size, size_t max_size);
+void sgen_resize_nursery (gboolean need_shrink);
 mword sgen_build_nursery_fragments (GCMemSection *nursery_section, SgenGrayQueue *unpin_queue);
 void sgen_init_nursery_allocator (void);
 void sgen_nursery_allocator_init_heavy_stats (void);
 void sgen_init_allocator (void);
-char* sgen_nursery_alloc_get_upper_alloc_bound (void);
 void* sgen_nursery_alloc (size_t size);
 void* sgen_nursery_alloc_range (size_t size, size_t min_size, size_t *out_alloc_size);
 gboolean sgen_can_alloc_size (size_t size);
@@ -1000,6 +989,7 @@ extern mword total_promoted_size;
 extern mword total_allocated_major;
 extern volatile gboolean sgen_suspend_finalizers;
 extern MonoCoopMutex gc_mutex;
+extern volatile gboolean concurrent_collection_in_progress;
 
 /* Nursery helpers. */
 

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Internal.Text;
 using Internal.TypeSystem;
@@ -88,7 +89,7 @@ namespace ILCompiler.DependencyAnalysis
                     return new NativeLayoutTemplateMethodLayoutVertexNode(_factory, method);
                 });
 
-                _templateTypeLayouts = new NodeCache<DefType, NativeLayoutTemplateTypeLayoutVertexNode>(type =>
+                _templateTypeLayouts = new NodeCache<TypeDesc, NativeLayoutTemplateTypeLayoutVertexNode>(type =>
                 {
                     return new NativeLayoutTemplateTypeLayoutVertexNode(_factory, type);
                 });
@@ -121,6 +122,16 @@ namespace ILCompiler.DependencyAnalysis
                 _allocateObject_GenericDictionarySlots = new NodeCache<TypeDesc, NativeLayoutAllocateObjectGenericDictionarySlotNode>(type =>
                 {
                     return new NativeLayoutAllocateObjectGenericDictionarySlotNode(_factory, type);
+                });
+
+                _castClass_GenericDictionarySlots = new NodeCache<TypeDesc, NativeLayoutCastClassGenericDictionarySlotNode>(type =>
+                {
+                    return new NativeLayoutCastClassGenericDictionarySlotNode(_factory, type);
+                });
+
+                _isInst_GenericDictionarySlots = new NodeCache<TypeDesc, NativeLayoutIsInstGenericDictionarySlotNode>(type =>
+                {
+                    return new NativeLayoutIsInstGenericDictionarySlotNode(_factory, type);
                 });
 
                 _tlsIndex_GenericDictionarySlots = new NodeCache<TypeDesc, NativeLayoutTlsIndexGenericDictionarySlotNode>(type =>
@@ -180,7 +191,7 @@ namespace ILCompiler.DependencyAnalysis
 
                 _dictionarySignatures = new NodeCache<TypeSystemEntity, NativeLayoutDictionarySignatureNode>(owningMethodOrType =>
                 {
-                    return new NativeLayoutDictionarySignatureNode(owningMethodOrType);
+                    return new NativeLayoutDictionarySignatureNode(_factory, owningMethodOrType);
                 });
 
                 _integerSlots = new NodeCache<int, NativeLayoutIntegerDictionarySlotNode>(value =>
@@ -191,6 +202,11 @@ namespace ILCompiler.DependencyAnalysis
                 _otherSlotPointerSlots = new NodeCache<int, NativeLayoutPointerToOtherSlotDictionarySlotNode>(otherSlotIndex =>
                 {
                     return new NativeLayoutPointerToOtherSlotDictionarySlotNode(otherSlotIndex);
+                });
+
+                _constrainedMethodUseSlots = new NodeCache<ConstrainedMethodUseKey, NativeLayoutConstrainedMethodDictionarySlotNode>(constrainedMethodUse =>
+                {
+                    return new NativeLayoutConstrainedMethodDictionarySlotNode(constrainedMethodUse.ConstrainedMethod, constrainedMethodUse.ConstraintType, constrainedMethodUse.DirectCall);
                 });
             }
 
@@ -381,7 +397,7 @@ namespace ILCompiler.DependencyAnalysis
             }
 
             private NodeCache<NativeLayoutSignatureKey, NativeLayoutSignatureNode> _nativeLayoutSignatureNodes;
-            internal NativeLayoutSignatureNode NativeLayoutSignature(NativeLayoutSavedVertexNode signature, Utf8String identityPrefix, TypeSystemEntity identity)
+            public NativeLayoutSignatureNode NativeLayoutSignature(NativeLayoutSavedVertexNode signature, Utf8String identityPrefix, TypeSystemEntity identity)
             {
                 return _nativeLayoutSignatureNodes.GetOrAdd(new NativeLayoutSignatureKey(signature, identityPrefix, identity));
             }
@@ -398,10 +414,10 @@ namespace ILCompiler.DependencyAnalysis
                 return _templateMethodLayouts.GetOrAdd(method);
             }
 
-            private NodeCache<DefType, NativeLayoutTemplateTypeLayoutVertexNode> _templateTypeLayouts;
-            public NativeLayoutTemplateTypeLayoutVertexNode TemplateTypeLayout(DefType type)
+            private NodeCache<TypeDesc, NativeLayoutTemplateTypeLayoutVertexNode> _templateTypeLayouts;
+            public NativeLayoutTemplateTypeLayoutVertexNode TemplateTypeLayout(TypeDesc type)
             {
-                return _templateTypeLayouts.GetOrAdd(type);
+                return _templateTypeLayouts.GetOrAdd(GenericTypesTemplateMap.ConvertArrayOfTToRegularArray(_factory, type));
             }
 
             private NodeCache<TypeDesc, NativeLayoutTypeHandleGenericDictionarySlotNode> _typeHandle_GenericDictionarySlots;
@@ -438,6 +454,18 @@ namespace ILCompiler.DependencyAnalysis
             public NativeLayoutAllocateObjectGenericDictionarySlotNode AllocateObjectDictionarySlot(TypeDesc type)
             {
                 return _allocateObject_GenericDictionarySlots.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, NativeLayoutCastClassGenericDictionarySlotNode> _castClass_GenericDictionarySlots;
+            public NativeLayoutCastClassGenericDictionarySlotNode CastClassDictionarySlot(TypeDesc type)
+            {
+                return _castClass_GenericDictionarySlots.GetOrAdd(type);
+            }
+
+            private NodeCache<TypeDesc, NativeLayoutIsInstGenericDictionarySlotNode> _isInst_GenericDictionarySlots;
+            public NativeLayoutIsInstGenericDictionarySlotNode IsInstDictionarySlot(TypeDesc type)
+            {
+                return _isInst_GenericDictionarySlots.GetOrAdd(type);
             }
 
             private NodeCache<TypeDesc, NativeLayoutTlsIndexGenericDictionarySlotNode> _tlsIndex_GenericDictionarySlots;
@@ -569,6 +597,12 @@ namespace ILCompiler.DependencyAnalysis
             public NativeLayoutPointerToOtherSlotDictionarySlotNode PointerToOtherSlot(int otherSlotIndex)
             {
                 return _otherSlotPointerSlots.GetOrAdd(otherSlotIndex);
+            }
+
+            private NodeCache<ConstrainedMethodUseKey, NativeLayoutConstrainedMethodDictionarySlotNode> _constrainedMethodUseSlots;
+            public NativeLayoutConstrainedMethodDictionarySlotNode ConstrainedMethodUse(MethodDesc constrainedMethod, TypeDesc constraintType, bool directCall)
+            {
+                return _constrainedMethodUseSlots.GetOrAdd(new ConstrainedMethodUseKey(constrainedMethod, constraintType, directCall));
             }
         }
 

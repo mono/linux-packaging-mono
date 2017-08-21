@@ -29,8 +29,10 @@ namespace System.Reflection.Runtime.MethodInfos
         public sealed override bool IsConstructedGenericMethod { get { throw NotImplemented.ByDesign; } }
         public sealed override bool IsGenericMethod { get { throw NotImplemented.ByDesign; } }
         public sealed override bool IsGenericMethodDefinition { get { throw NotImplemented.ByDesign; } }
+        public sealed override bool HasSameMetadataDefinitionAs(MemberInfo other) { throw NotImplemented.ByDesign; }
         public sealed override MethodImplAttributes MethodImplementationFlags { get { throw NotImplemented.ByDesign; } }
         public sealed override Module Module { get { throw NotImplemented.ByDesign; } }
+        public sealed override MethodBase MetadataDefinitionMethod { get { throw NotImplemented.ByDesign; } }
         public sealed override int MetadataToken { get { throw NotImplemented.ByDesign; } }
         public sealed override RuntimeMethodHandle MethodHandle { get { throw NotImplemented.ByDesign; } }
         protected sealed override MethodInvoker UncachedMethodInvoker { get { throw NotImplemented.ByDesign; } }
@@ -42,7 +44,7 @@ namespace System.Reflection.Runtime.MethodInfos
         protected internal sealed override string ComputeToString(RuntimeMethodInfo contextMethod) { throw NotImplemented.ByDesign; }
         internal sealed override MethodInvoker GetUncachedMethodInvoker(RuntimeTypeInfo[] methodArguments, MemberInfo exceptionPertainant) { throw NotImplemented.ByDesign; }
         internal sealed override RuntimeMethodHandle GetRuntimeMethodHandle(Type[] genericArgs) { throw NotImplemented.ByDesign; }
-
+        internal sealed override RuntimeMethodInfo WithReflectedTypeSetToDeclaringType { get { throw NotImplemented.ByDesign; } }
         public static readonly RuntimeDummyMethodInfo Instance = new RuntimeDummyMethodInfo();
     }
 }

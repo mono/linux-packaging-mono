@@ -49,8 +49,6 @@ class DarwinProfile (UnixProfile):
         'libtool',
         'xz',
         'tar',
-        'gtk-osx-docbook',
-        'gtk-doc',
 
         # needed to autogen gtk+
         'gtk-osx-docbook',
@@ -77,6 +75,7 @@ class DarwinProfile (UnixProfile):
         UnixProfile.attach (self, bockbuild)
         bockbuild.toolchain = list (DarwinProfile.default_toolchain)
         self.name = 'darwin'
+        self.debug_info = []
 
         xcode_version = self.use_Xcode ()
 
@@ -119,8 +118,6 @@ class DarwinProfile (UnixProfile):
         else:
             self.env.set('CC',  'ccache xcrun gcc')
             self.env.set('CXX', 'ccache xcrun g++')
-
-        self.debug_info = []
 
         if self.bockbuild.cmd_options.arch == 'default':
             self.bockbuild.cmd_options.arch = 'darwin-32'

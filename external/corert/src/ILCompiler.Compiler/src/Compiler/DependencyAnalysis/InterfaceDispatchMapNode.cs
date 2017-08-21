@@ -11,7 +11,7 @@ using Internal.TypeSystem;
 
 namespace ILCompiler.DependencyAnalysis
 {
-    public class InterfaceDispatchMapNode : ObjectNode, ISymbolNode
+    public class InterfaceDispatchMapNode : ObjectNode, ISymbolDefinitionNode
     {
         const int IndexNotSet = int.MaxValue;
 
@@ -46,7 +46,7 @@ namespace ILCompiler.DependencyAnalysis
             get
             {
                 if (_type.Context.Target.IsWindows)
-                    return ObjectNodeSection.ReadOnlyDataSection;
+                    return ObjectNodeSection.FoldableReadOnlyDataSection;
                 else
                     return ObjectNodeSection.DataSection;
             }
@@ -87,7 +87,7 @@ namespace ILCompiler.DependencyAnalysis
                     if (implMethod != null)
                     {
                         builder.EmitShort(checked((short)interfaceIndex));
-                        builder.EmitShort(checked((short)interfaceMethodSlot));
+                        builder.EmitShort(checked((short)(interfaceMethodSlot + (interfaceType.HasGenericDictionarySlot() ? 1 : 0))));
                         builder.EmitShort(checked((short)VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, implMethod)));
                         entryCount++;
                     }
