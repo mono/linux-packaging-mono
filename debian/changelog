@@ -1,3 +1,15 @@
+mono (5.4.0.167-0xamarin2) alpha; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [83dbeb4] Revert "Fix for conflict when P/Invoking a library linked
+    against OpenSSL. Fixes: 57019" (Obsolete) [7397784] Revert "Fix for
+    msbuild not finding references from nuget" (Obsolete)
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Mon, 21 Aug 2017 16:19:36 +0000
+
 mono (5.4.0.167-0xamarin1) alpha; urgency=medium
 
   * New release - mono-5.4.0.167.tar.bz2
