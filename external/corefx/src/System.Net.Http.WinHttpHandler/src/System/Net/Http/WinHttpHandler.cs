@@ -87,7 +87,7 @@ namespace System.Net.Http
         private TimeSpan _sendTimeout = TimeSpan.FromSeconds(30);
         private TimeSpan _receiveHeadersTimeout = TimeSpan.FromSeconds(30);
         private TimeSpan _receiveDataTimeout = TimeSpan.FromSeconds(30);
-        private int _maxResponseHeadersLength = 64 * 1024;
+        private int _maxResponseHeadersLength = HttpHandlerDefaults.DefaultMaxResponseHeadersLength;
         private int _maxResponseDrainSize = 64 * 1024;
         private IDictionary<String, Object> _properties; // Only create dictionary when required.
         private volatile bool _operationStarted;
@@ -1173,7 +1173,7 @@ namespace System.Net.Http
 
         private void SetRequestHandleBufferingOptions(SafeWinHttpHandle requestHandle)
         {
-            uint optionData = (uint)_maxResponseHeadersLength;
+            uint optionData = (uint)(_maxResponseHeadersLength * 1024);
             SetWinHttpOption(requestHandle, Interop.WinHttp.WINHTTP_OPTION_MAX_RESPONSE_HEADER_SIZE, ref optionData);
             optionData = (uint)_maxResponseDrainSize;
             SetWinHttpOption(requestHandle, Interop.WinHttp.WINHTTP_OPTION_MAX_RESPONSE_DRAIN_SIZE, ref optionData);
@@ -1249,7 +1249,7 @@ namespace System.Net.Http
                 // If the exception was due to the cancellation token being canceled, throw cancellation exception.
                 state.Tcs.TrySetCanceled(state.CancellationToken);
             }
-            else if (ex is WinHttpException || ex is IOException)
+            else if (ex is WinHttpException || ex is IOException || ex is InvalidOperationException)
             {
                 // Wrap expected exceptions as HttpRequestExceptions since this is considered an error during
                 // execution. All other exception types, including ArgumentExceptions and ProtocolViolationExceptions
@@ -1337,11 +1337,16 @@ namespace System.Net.Http
                     0,
                     state.ToIntPtr()))
                 {
+                    int lastError = Marshal.GetLastWin32Error();
+                    Debug.Assert((unchecked((int)lastError) != Interop.WinHttp.ERROR_INSUFFICIENT_BUFFER &&
+                        unchecked((int)lastError) != unchecked((int)0x80090321)), // SEC_E_BUFFER_TOO_SMALL
+                        $"Unexpected async error in WinHttpRequestCallback: {unchecked((int)lastError)}");
+
                     // Dispose (which will unpin) the state object. Since this failed, WinHTTP won't associate
                     // our context value (state object) to the request handle. And thus we won't get HANDLE_CLOSING
                     // notifications which would normally cause the state object to be unpinned and disposed.
                     state.Dispose();
-                    WinHttpException.ThrowExceptionUsingLastError();
+                    throw WinHttpException.CreateExceptionUsingError(lastError);
                 }
             }
 

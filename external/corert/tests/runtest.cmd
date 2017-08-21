@@ -14,12 +14,19 @@ set CoreRT_CoreCLRTargetsFile=
 set CoreRT_TestLogFileName=testresults.xml
 set CoreRT_TestName=*
 
+:: Default to highest Visual Studio version available
+set CoreRT_VSVersion=vs2015
+if defined VS150COMNTOOLS set CoreRT_VSVersion=vs2017
+
 :ArgLoop
 if "%1" == "" goto :ArgsDone
 if /i "%1" == "/?" goto :Usage
 if /i "%1" == "x64"    (set CoreRT_BuildArch=x64&&shift&goto ArgLoop)
 if /i "%1" == "x86"    (set CoreRT_BuildArch=x86&&shift&goto ArgLoop)
 if /i "%1" == "arm"    (set CoreRT_BuildArch=arm&&shift&goto ArgLoop)
+
+if /i "%1" == "vs2017"   (set CoreRT_VSVersion=vs2017&shift&goto Arg_Loop)
+if /i "%1" == "vs2015"   (set CoreRT_VSVersion=vs2015&shift&goto Arg_Loop)
 
 if /i "%1" == "debug"    (set CoreRT_BuildType=Debug&shift&goto ArgLoop)
 if /i "%1" == "release"  (set CoreRT_BuildType=Release&shift&goto ArgLoop)
@@ -39,6 +46,7 @@ if /i "%1" == "/coreclr"  (
 
     if /i "!SelectedTests!" == "Top200" set CoreRT_CoreCLRTargetsFile=%CoreRT_TestRoot%\Top200.CoreCLR.issues.targets&&goto :ExtRepoTestsOk
     if /i "!SelectedTests!" == "KnownGood" set CoreRT_CoreCLRTargetsFile=%CoreRT_TestRoot%\CoreCLR.issues.targets&&goto :ExtRepoTestsOk
+    if /i "!SelectedTests!" == "Interop" set CoreRT_CoreCLRTargetsFile=%CoreRT_TestRoot%\Interop.CoreCLR.issues.targets&&goto :ExtRepoTestsOk
 
     echo Invalid test selection specified: !SelectedTests!
     goto :Usage
@@ -71,6 +79,7 @@ echo.
 echo     --- CoreCLR Subset ---
 echo        Top200     : Runs broad coverage / CI validation (~200 tests).
 echo        KnownGood  : Runs tests known to pass on CoreRT (~6000 tests).
+echo        Interop    : Runs only the interop tests (~43 tests).
 echo        All        : Runs all tests. There will be many failures (~7000 tests).
 exit /b 2
 
@@ -101,7 +110,12 @@ if NOT "%CoreRT_MultiFileConfiguration%" == "" (
 
 set __LogDir=%CoreRT_TestRoot%\..\bin\Logs\%__BuildStr%\tests
 
-call "!VS140COMNTOOLS!\..\..\VC\vcvarsall.bat" %CoreRT_BuildArch%
+:: VS2017 changed the location of vcvarsall.bat.
+if /i "%__VSVersion%" == "vs2017" (
+    call "!VS150COMNTOOLS!\..\..\VC\Auxiliary\Build\vcvarsall.bat" %CoreRT_BuildArch%
+) else (
+    call "!VS140COMNTOOLS!\..\..\VC\vcvarsall.bat" %CoreRT_BuildArch%
+)
 
 if "%CoreRT_RunCoreCLRTests%"=="true" goto :TestExtRepo
 
@@ -113,30 +127,31 @@ if /i "%__BuildType%"=="Debug" (
 
 echo. > %__CoreRTTestBinDir%\testResults.tmp
 
-rem Hacky filtering to prevent shared generics and unshared generics from mixing
-set __Filter=
-if /i "%CoreRT_MultiFileConfiguration%" == "MultiModule" (
-    set __Filter=^^^| findstr /V Generics
-)
-
 set /a __CppTotalTests=0
 set /a __CppPassedTests=0
 set /a __JitTotalTests=0
 set /a __JitPassedTests=0
-for /f "delims=" %%a in ('cmd /c dir /s /aD /b %CoreRT_TestRoot%\src\%CoreRT_TestName% %__Filter%') do (
+for /f "delims=" %%a in ('dir /s /aD /b %CoreRT_TestRoot%\src\%CoreRT_TestName%') do (
     set __SourceFolder=%%a
     set __SourceFileName=%%~na
     set __RelativePath=!__SourceFolder:%CoreRT_TestRoot%=!
+    set __SourceFileProj=
     if exist "!__SourceFolder!\!__SourceFileName!.csproj" (
+        set __SourceFileProj=!__SourceFolder!\!__SourceFileName!.csproj
+    )
+    if exist "!__SourceFolder!\!__SourceFileName!.ilproj" (
+        set __SourceFileProj=!__SourceFolder!\!__SourceFileName!.ilproj
+    )
+    if NOT "!__SourceFileProj!" == "" (
         if /i not "%CoreRT_TestCompileMode%" == "cpp" (
             set __Mode=Jit
-            call :CompileFile !__SourceFolder! !__SourceFileName! %__LogDir%\!__RelativePath!
+            call :CompileFile !__SourceFolder! !__SourceFileName! !__SourceFileProj! %__LogDir%\!__RelativePath!
             set /a __JitTotalTests=!__JitTotalTests!+1
         )
         if /i not "%CoreRT_TestCompileMode%" == "ryujit" (
             if not exist "!__SourceFolder!\no_cpp" (
                 set __Mode=Cpp
-                call :CompileFile !__SourceFolder! !__SourceFileName! %__LogDir%\!__RelativePath!
+                call :CompileFile !__SourceFolder! !__SourceFileName! !__SourceFileProj! %__LogDir%\!__RelativePath!
                 set /a __CppTotalTests=!__CppTotalTests!+1
             )
         )
@@ -193,7 +208,8 @@ goto :eof
     echo.
     set __SourceFolder=%~1
     set __SourceFileName=%~2
-    set __CompileLogPath=%~3
+    set __SourceFileProj=%~3
+    set __CompileLogPath=%~4
 
     echo Compiling directory !__SourceFolder! !__Mode!
     echo.
@@ -217,9 +233,9 @@ goto :eof
         )
     )
 
-    echo msbuild /m /ConsoleLoggerParameters:ForceNoAlign "/p:IlcPath=%CoreRT_ToolchainDir%" "/p:Configuration=%CoreRT_BuildType%" "/p:Platform=%CoreRT_BuildArch%" "/p:RepoLocalBuild=true" "/p:FrameworkLibPath=%~dp0..\bin\Product\%CoreRT_BuildOS%.%CoreRT_BuildArch%.%CoreRT_BuildType%\lib" "/p:FrameworkObjPath=%~dp0..\bin\obj\%CoreRT_BuildOS%.%CoreRT_BuildArch%.%CoreRT_BuildType%\Framework" !extraArgs! !__SourceFile!.csproj
+    echo msbuild /m /ConsoleLoggerParameters:ForceNoAlign "/p:IlcPath=%CoreRT_ToolchainDir%" "/p:Configuration=%CoreRT_BuildType%" "/p:Platform=%CoreRT_BuildArch%" "/p:RepoLocalBuild=true" "/p:FrameworkLibPath=%~dp0..\bin\Product\%CoreRT_BuildOS%.%CoreRT_BuildArch%.%CoreRT_BuildType%\lib" "/p:FrameworkObjPath=%~dp0..\bin\obj\%CoreRT_BuildOS%.%CoreRT_BuildArch%.%CoreRT_BuildType%\Framework" !extraArgs! !__SourceFileProj!
     echo.
-    msbuild /m /ConsoleLoggerParameters:ForceNoAlign "/p:IlcPath=%CoreRT_ToolchainDir%" "/p:Configuration=%CoreRT_BuildType%" "/p:Platform=%CoreRT_BuildArch%" "/p:RepoLocalBuild=true" "/p:FrameworkLibPath=%~dp0..\bin\Product\%CoreRT_BuildOS%.%CoreRT_BuildArch%.%CoreRT_BuildType%\lib" "/p:FrameworkObjPath=%~dp0..\bin\obj\%CoreRT_BuildOS%.%CoreRT_BuildArch%.%CoreRT_BuildType%\Framework" !extraArgs! !__SourceFile!.csproj
+    msbuild /m /ConsoleLoggerParameters:ForceNoAlign "/p:IlcPath=%CoreRT_ToolchainDir%" "/p:Configuration=%CoreRT_BuildType%" "/p:Platform=%CoreRT_BuildArch%" "/p:RepoLocalBuild=true" "/p:FrameworkLibPath=%~dp0..\bin\Product\%CoreRT_BuildOS%.%CoreRT_BuildArch%.%CoreRT_BuildType%\lib" "/p:FrameworkObjPath=%~dp0..\bin\obj\%CoreRT_BuildOS%.%CoreRT_BuildArch%.%CoreRT_BuildType%\Framework" !extraArgs! !__SourceFileProj!
     endlocal
 
     set __SavedErrorLevel=%ErrorLevel%
@@ -267,7 +283,7 @@ goto :eof
     if exist "%CoreRT_TestExtRepo%" rmdir /S /Q "%CoreRT_TestExtRepo%"
     mkdir "%CoreRT_TestExtRepo%"
 
-    set /p TESTS_REMOTE_URL=< "%~dp0..\CoreCLRTestsURL.txt"
+    set /p TESTS_REMOTE_URL=< "%~dp0\CoreCLRTestsURL.txt"
     set TESTS_LOCAL_ZIP=%CoreRT_TestExtRepo%\tests.zip
     set INIT_TESTS_LOG=%~dp0..\init-tests.log
     echo Restoring tests (this may take a few minutes)..

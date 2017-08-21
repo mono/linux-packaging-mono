@@ -14,7 +14,7 @@ namespace ILCompiler.DependencyAnalysis
     /// <summary>
     /// Hashtable of all exact (non-canonical) generic method instantiations compiled in the module.
     /// </summary>
-    internal sealed class ExactMethodInstantiationsNode : ObjectNode, ISymbolNode
+    internal sealed class ExactMethodInstantiationsNode : ObjectNode, ISymbolDefinitionNode
     {
         private ObjectAndOffsetSymbolNode _endSymbol;
         private ExternalReferencesTableNode _externalReferences;
@@ -30,7 +30,7 @@ namespace ILCompiler.DependencyAnalysis
             sb.Append(nameMangler.CompilationUnitPrefix).Append("__exact_method_instantiations");
         }
 
-        public ISymbolNode EndSymbol => _endSymbol;
+        public ISymbolDefinitionNode EndSymbol => _endSymbol;
         public int Offset => 0;
         public override bool IsShareable => false;
         public override ObjectNodeSection Section => _externalReferences.Section;
@@ -41,7 +41,7 @@ namespace ILCompiler.DependencyAnalysis
         {
             // Dependencies for this node are tracked by the method code nodes
             if (relocsOnly)
-                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolNode[] { this });
+                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this });
 
             // Ensure the native layout data has been saved, in order to get valid Vertex offsets for the signature Vertices
             factory.MetadataManager.NativeLayoutInfo.SaveNativeLayoutInfoWriter(factory);
@@ -102,15 +102,15 @@ namespace ILCompiler.DependencyAnalysis
 
             _endSymbol.SetSymbolOffset(streamBytes.Length);
 
-            return new ObjectData(streamBytes, Array.Empty<Relocation>(), 1, new ISymbolNode[] { this, _endSymbol });
+            return new ObjectData(streamBytes, Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this, _endSymbol });
         }
 
-        public static DependencyList GetExactMethodInstantiationDependenciesForMethod(NodeFactory factory, MethodDesc method)
+        public static void GetExactMethodInstantiationDependenciesForMethod(ref DependencyList dependencies, NodeFactory factory, MethodDesc method)
         {
             if (!IsMethodEligibleForTracking(method))
-                return null;
+                return;
 
-            DependencyList dependencies = new DependencyList();
+            dependencies = dependencies ?? new DependencyList();
 
             // Method entry point dependency
             bool getUnboxingStub = method.OwningType.IsValueType && !method.Signature.IsStatic;
@@ -127,8 +127,6 @@ namespace ILCompiler.DependencyAnalysis
             // Get native layout dependencies for the method signature.
             NativeLayoutMethodNameAndSignatureVertexNode nameAndSig = factory.NativeLayout.MethodNameAndSignatureVertex(method.GetTypicalMethodDefinition());
             dependencies.Add(new DependencyListEntry(factory.NativeLayout.PlacedSignatureVertex(nameAndSig), "Exact method instantiation entry"));
-
-            return dependencies;
         }
 
         private static bool IsMethodEligibleForTracking(MethodDesc method)

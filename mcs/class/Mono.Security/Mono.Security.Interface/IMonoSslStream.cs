@@ -38,6 +38,10 @@ namespace Mono.Security.Interface
 {
 	public interface IMonoSslStream : IDisposable
 	{
+		SslStream SslStream {
+			get;
+		}
+
 		void AuthenticateAsClient (string targetHost);
 
 		void AuthenticateAsClient (string targetHost, X509CertificateCollection clientCertificates, SSA.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
@@ -81,6 +85,8 @@ namespace Mono.Security.Interface
 		IAsyncResult BeginWrite (byte[] buffer, int offset, int count, AsyncCallback asyncCallback, object asyncState);
 
 		void EndWrite (IAsyncResult asyncResult);
+
+		Task ShutdownAsync ();
 
 		TransportContext TransportContext {
 			get;

@@ -161,7 +161,6 @@ namespace Mono.CSharp
 
 		protected override void CloneTo (CloneContext clonectx, Statement target)
 		{
-			throw new NotSupportedException ();
 		}
 
 		protected override bool DoResolve (BlockContext bc)
@@ -1220,7 +1219,7 @@ namespace Mono.CSharp
 			}
 
 			if ((modifiers & Modifiers.UNSAFE) != 0) {
-				parent.Compiler.Report.Error (1629, method.Location, "Unsafe code may not appear in iterators");
+				Expression.UnsafeInsideIteratorError (parent.Compiler.Report, method.Location);
 			}
 
 			method.Block = method.Block.ConvertToIterator (method, parent, iterator_type, is_enumerable);

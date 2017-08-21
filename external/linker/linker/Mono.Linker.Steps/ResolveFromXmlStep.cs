@@ -83,8 +83,13 @@ namespace Mono.Linker.Steps {
 		{
 			while (iterator.MoveNext ()) {
 				AssemblyDefinition assembly = GetAssembly (context, GetFullName (iterator.Current));
-				ProcessTypes (assembly, iterator.Current.SelectChildren ("type", _ns));
-				ProcessNamespaces (assembly, iterator.Current.SelectChildren ("namespace", _ns));
+				if (GetTypePreserve (iterator.Current) == TypePreserve.All) {
+					foreach (var type in assembly.MainModule.Types)
+						MarkAndPreserveAll (type);
+				} else {
+					ProcessTypes (assembly, iterator.Current.SelectChildren ("type", _ns));
+					ProcessNamespaces (assembly, iterator.Current.SelectChildren ("namespace", _ns));
+				}
 			}
 		}
 
@@ -223,15 +228,8 @@ namespace Mono.Linker.Steps {
 				}
 			}
 
-			switch (preserve) {
-			case TypePreserve.Nothing:
-				if (!nav.HasChildren)
-					Annotations.SetPreserve (type, TypePreserve.All);
-				break;
-			default:
+			if (preserve != TypePreserve.Nothing)
 				Annotations.SetPreserve (type, preserve);
-				break;
-			}
 
 			if (nav.HasChildren) {
 				MarkSelectedFields (nav, type);
@@ -261,7 +259,7 @@ namespace Mono.Linker.Steps {
 		{
 			string attribute = GetAttribute (nav, _preserve);
 			if (attribute == null || attribute.Length == 0)
-				return TypePreserve.Nothing;
+				return nav.HasChildren ? TypePreserve.Nothing : TypePreserve.All;
 
 			try {
 				return (TypePreserve) Enum.Parse (typeof (TypePreserve), attribute, true);

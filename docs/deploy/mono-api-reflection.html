@@ -281,7 +281,7 @@ mono_reflection_get_custom_attrs_blob (MonoReflectionAssembly *assembly, MonoObj
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoArray*
-mono_reflection_get_custom_attrs_by_type (MonoObject *obj, MonoClass *attr_klass, MonoError *error)
+mono_reflection_get_custom_attrs_by_type (MonoObject *obj_raw, MonoClass *attr_klass, MonoError *error)
 
 </div>
             <p />
@@ -306,7 +306,7 @@ mono_reflection_get_custom_attrs_by_type (MonoObject *obj, MonoClass *attr_klass
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoArray*
-mono_reflection_get_custom_attrs_data (MonoObject *obj)
+mono_reflection_get_custom_attrs_data (MonoObject *obj_raw)
 
 </div>
             <p />
@@ -330,7 +330,7 @@ mono_reflection_get_custom_attrs_data (MonoObject *obj)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoArray*
-mono_reflection_get_custom_attrs (MonoObject *obj)
+mono_reflection_get_custom_attrs (MonoObject *obj_raw)
 
 </div>
             <p />
@@ -457,7 +457,7 @@ mono_reflection_type_from_name (char *name, MonoImage *image)
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">MonoCustomAttrInfo*
-mono_reflection_get_custom_attrs_info (MonoObject *obj)
+mono_reflection_get_custom_attrs_info (MonoObject *obj_raw)
 
 </div>
             <p />

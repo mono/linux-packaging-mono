@@ -11,9 +11,6 @@ namespace System.IO
     // Provides methods for processing file system strings in a cross-platform manner.
     // Most of the methods don't do a complete parsing (such as examining a UNC hostname), 
     // but they will handle most string operations.
-#if PROJECTN
-    [Internal.Runtime.CompilerServices.RelocatedTypeAttribute("System.Runtime.Extensions")]
-#endif
     public static partial class Path
     {
         // Public static readonly variant of the separators. The Path implementation itself is using
@@ -79,19 +76,23 @@ namespace System.IO
         // "\\server\share").
         public static string GetDirectoryName(string path)
         {
-            if (path != null)
+            if (string.IsNullOrWhiteSpace(path))
             {
-                PathInternal.CheckInvalidPathChars(path);
-                path = PathInternal.NormalizeDirectorySeparators(path);
-                int root = PathInternal.GetRootLength(path);
-
-                int i = path.Length;
-                if (i > root)
-                {
-                    while (i > root && !PathInternal.IsDirectorySeparator(path[--i])) ;
-                    return path.Substring(0, i);
-                }
+                if (path == null) return null;
+                throw new ArgumentException(SR.Arg_PathIllegal, nameof(path));
             }
+
+            PathInternal.CheckInvalidPathChars(path);
+            path = PathInternal.NormalizeDirectorySeparators(path);
+            int root = PathInternal.GetRootLength(path);
+
+            int i = path.Length;
+            if (i > root)
+            {
+                while (i > root && !PathInternal.IsDirectorySeparator(path[--i])) ;
+                return path.Substring(0, i);
+            }
+            
             return null;
         }
 

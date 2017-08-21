@@ -8,11 +8,7 @@ using Internal.Runtime;
 using Internal.Runtime.Augments;
 using Debug = System.Diagnostics.Debug;
 
-#if CORERT
-using TableElement = System.IntPtr;
-#else
 using TableElement = System.UInt32;
-#endif
 
 namespace Internal.Runtime.TypeLoader
 {
@@ -21,24 +17,32 @@ namespace Internal.Runtime.TypeLoader
         private IntPtr _elements;
         private uint _elementsCount;
         private TypeManagerHandle _moduleHandle;
+        private bool isDebuggerPrepared;
 
-        public bool IsInitialized() { return !_moduleHandle.IsNull; }
+        public bool IsInitialized() { return isDebuggerPrepared || !_moduleHandle.IsNull; }
 
         private unsafe bool Initialize(NativeFormatModuleInfo module, ReflectionMapBlob blobId)
         {
-            _moduleHandle = module.Handle;
-
-            byte* pBlob;
-            uint cbBlob;
-            if (!module.TryFindBlob(blobId, out pBlob, out cbBlob))
+            if (module == null)
             {
-                _elements = IntPtr.Zero;
-                _elementsCount = 0;
-                return false;
+                isDebuggerPrepared = true;
             }
+            else
+            {
+                _moduleHandle = module.Handle;
 
-            _elements = (IntPtr)pBlob;
-            _elementsCount = (uint)(cbBlob / sizeof(TableElement));
+                byte* pBlob;
+                uint cbBlob;
+                if (!module.TryFindBlob(blobId, out pBlob, out cbBlob))
+                {
+                    _elements = IntPtr.Zero;
+                    _elementsCount = 0;
+                    return false;
+                }
+
+                _elements = (IntPtr)pBlob;
+                _elementsCount = (uint)(cbBlob / sizeof(TableElement));
+            }
             return true;
         }
 
@@ -95,14 +99,14 @@ namespace Internal.Runtime.TypeLoader
                 throw new BadImageFormatException();
 
             // TODO: indirection through IAT
-
-            return ((TableElement*)_elements)[index];
+            int* pRelPtr32 = &((int*)_elements)[index];
+            return (IntPtr)((byte*)pRelPtr32 + *pRelPtr32);
 #else
             uint rva = GetRvaFromIndex(index);
-            if ((rva & 0x80000000) != 0)
+            if ((rva & IndirectionConstants.RVAPointsToIndirection) != 0)
             {
                 // indirect through IAT
-                return *(IntPtr*)(_moduleHandle.ConvertRVAToPointer(rva & ~0x80000000));
+                return *(IntPtr*)(_moduleHandle.ConvertRVAToPointer(rva & ~IndirectionConstants.RVAPointsToIndirection));
             }
             else
             {
@@ -118,8 +122,8 @@ namespace Internal.Runtime.TypeLoader
                 throw new BadImageFormatException();
 
             // TODO: indirection through IAT
-
-            return ((IntPtr*)_elements)[index];
+            int* pRelPtr32 = &((int*)_elements)[index];
+            return (IntPtr)((byte*)pRelPtr32 + *pRelPtr32);
 #else
             uint rva = GetRvaFromIndex(index);
 
@@ -136,6 +140,11 @@ namespace Internal.Runtime.TypeLoader
 
         public RuntimeTypeHandle GetRuntimeTypeHandleFromIndex(uint index)
         {
+            if (isDebuggerPrepared)
+            {
+                return typeof(int).TypeHandle;
+            }
+
             return RuntimeAugments.CreateRuntimeTypeHandle(GetIntPtrFromIndex(index));
         }
 
@@ -151,8 +160,8 @@ namespace Internal.Runtime.TypeLoader
                 throw new BadImageFormatException();
 
             // TODO: indirection through IAT
-
-            return ((IntPtr*)_elements)[index];
+            int* pRelPtr32 = &((int*)_elements)[index];
+            return (IntPtr)((byte*)pRelPtr32 + *pRelPtr32);
         }
 #endif
 

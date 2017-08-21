@@ -10,9 +10,6 @@
     <!-- Disable warning about CLSCompliant attributes on members not being needed. -->
     <NoWarn>$(NoWarn);3021</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(IsProjectNLibrary)' != 'true'">
-    <DefineConstants>CORERT;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>
   <!-- Default configurations to help VS understand the options -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
@@ -22,10 +19,6 @@
     </ProjectReference>
     <ReferencePath Include="$(AotPackageReferencePath)\System.Runtime.dll" />
     <ReferencePath Include="$(AotPackageReferencePath)\System.Runtime.Extensions.dll" />
-    <ReferencePath Include="$(AotPackageReferencePath)\System.Reflection.dll" />
-    <ReferencePath Include="$(AotPackageReferencePath)\System.Diagnostics.Tracing.dll" />
-    <ReferencePath Include="$(AotPackageReferencePath)\System.Diagnostics.Debug.dll" Condition="'$(IsProjectNLibrary)' == 'true'" />
-    <ReferencePath Include="$(AotPackageReferencePath)\System.Threading.Tasks.dll" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsProjectNLibrary)' != 'true'">
     <ProjectReference Include="..\..\System.Private.CoreLib\src\System.Private.CoreLib.csproj" />
@@ -57,7 +50,6 @@
     <Compile Include="Shared\ComCallableObject.cs" />
     <Compile Include="Shared\ComException.cs" />
     <Compile Include="Shared\ComInterop.cs" />
-    <Compile Include="Shared\DebugAnnotations.cs" />
     <Compile Include="Shared\Dictionary.cs" />
     <Compile Include="Shared\DictionaryBase.cs" />
     <Compile Include="Shared\FixedHashTable.cs" />
@@ -73,8 +65,8 @@
     <Compile Include="Shared\McgData.cs" />
     <Compile Include="Shared\McgGeneratedAssemblyAttribute.cs" />
     <Compile Include="Shared\McgGeneratedMarshallingCodeAttribute.cs" />
-    <Compile Include="Shared\McgGeneratedNativeCallCodeAttribute.cs" />
     <Compile Include="Shared\McgHelpers.cs" />
+    <Compile Include="Shared\McgInternalTypeAttribute.cs" />
     <Compile Include="Shared\McgIntrinsics.cs" />
     <Compile Include="Shared\McgMarshal.cs" />
     <Compile Include="Shared\McgMethodNameAttribute.cs" />
@@ -95,7 +87,6 @@
   <ItemGroup>
     <Compile Include="System\Runtime\InteropServices\AllowReversePInvokeCallsAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\ArrayWithOffset.cs" />
-    <Compile Include="System\Runtime\InteropServices\BestFitMappingAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\BStrWrapper.cs" />
     <Compile Include="System\Runtime\InteropServices\ClassInterfaceAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\ClassInterfaceType.cs" />
@@ -119,7 +110,6 @@
     <Compile Include="System\Runtime\InteropServices\HandleRef.cs" />
     <Compile Include="System\Runtime\InteropServices\InteropEventProvider.cs" />
     <Compile Include="System\Runtime\InteropServices\GuidAttribute.cs" />
-    <Compile Include="System\Runtime\InteropServices\InAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\ICustomAdapter.cs" />
     <Compile Include="System\Runtime\InteropServices\ICustomFactory.cs" />
     <Compile Include="System\Runtime\InteropServices\ICustomMarshaler.cs" />
@@ -131,7 +121,6 @@
     <Compile Include="System\Runtime\InteropServices\Marshal.cs" />
     <Compile Include="System\Runtime\InteropServices\MarshalAdapter.cs" />
     <Compile Include="System\Runtime\InteropServices\MarshalImpl.cs" />
-    <Compile Include="System\Runtime\InteropServices\MarshalDirectiveException.cs" />
     <Compile Include="System\Runtime\InteropServices\MissingInteropDataException.cs" />
     <Compile Include="System\Runtime\InteropServices\OptionalAttribute.cs" />
     <Compile Include="System\Runtime\InteropServices\PreserveSigAttribute.cs" />
@@ -150,11 +139,15 @@
     <Compile Include="System\Runtime\InteropServices\WindowsRuntime\EventRegistrationToken.cs" />
     <Compile Include="Internal\Runtime\CompilerHelpers\LibraryInitializer.cs" />
     <Compile Include="Interop\Interop.Memory.cs" />
+    <Compile Condition="'$(IsProjectNLibrary)' == 'true'" Include="Internal\Runtime\CompilerHelpers\Callbacks.ProjectN.cs"/>
+    <Compile Condition="'$(IsProjectNLibrary)' != 'true'" Include="Internal\Runtime\CompilerHelpers\Callbacks.CoreRT.cs"/>
   </ItemGroup>
   <ItemGroup  Condition="'$(IsProjectNLibrary)' != 'true'">
-    <Compile Include="Internal\Runtime\CompilerHelpers\InteropCallbackManager.cs"/>
     <Compile Include="..\..\Common\src\Internal\Runtime\MetadataBlob.cs">
       <Link>MetadataBlob.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\System\Runtime\CompilerServices\__BlockReflectionAttribute.cs">
+      <Link>System\Runtime\CompilerServices\__BlockReflectionAttribute.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -213,11 +206,9 @@
     <Compile Include="System\Runtime\InteropServices\ComTypes\vardesc.cs" />
     <Compile Include="System\Runtime\InteropServices\ComTypes\varflags.cs" />
     <Compile Include="System\Runtime\InteropServices\ComTypes\varkind.cs" />
+    <Compile Include="System\__HResults.cs" />
   </ItemGroup>
-  <!-- TODO: Unix port https://github.com/dotnet/corert/issues/669
   <ItemGroup Condition=" '$(TargetsWindows)' == 'true' ">
-  -->
-  <ItemGroup>
     <Compile Include="Interop\Interop.String.Windows.cs" />
     <Compile Include="Interop\Interop.WinRT.cs" />
     <Compile Include="Interop\Interop.WinRT.Basic.cs" />
@@ -225,8 +216,6 @@
     <Compile Include="Interop\Interop.Sync.Windows.cs" />
     <Compile Include="Interop\Interop.COM.Windows.cs" />
     <Compile Include="Interop\Interop.Common.Windows.cs" />
-    <Compile Include="System\__HResults.cs" />
-    <Compile Include="System\DllNotFoundException.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsProjectNLibrary)' == 'true'">
     <Compile Include="System\Reflection\DispatchProxy.cs" />
@@ -258,11 +247,10 @@
       <Link>Interop\Windows\mincore\Interop.MemAllocWithZeroInitializeNoThrow.cs</Link>
     </Compile>
   </ItemGroup>
-  <!-- TODO: Unix port https://github.com/dotnet/corert/issues/669
   <ItemGroup Condition=" '$(TargetsWindows)' != 'true' ">
     <Compile Include="Interop\Interop.String.Unix.cs" />
     <Compile Include="Interop\Interop.Common.Unix.cs" />
-  -->
+  </ItemGroup>    
   <ItemGroup Condition="'$(TargetsUnix)'=='true' and '$(IsProjectKLibrary)' != 'true'">
     <Compile Include="..\..\Common\src\Interop\Unix\Interop.Libraries.cs">
       <Link>Interop\Unix\Interop.Libraries.cs</Link>

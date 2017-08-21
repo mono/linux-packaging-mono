@@ -4,9 +4,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-#if uap
-using System.Net.Internal;
-#endif
 
 namespace System.Net
 {
@@ -14,6 +11,9 @@ namespace System.Net
     //
     // A list of cookies maintained in Sorted order. Only one cookie with matching Name/Domain/Path
     [Serializable]
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, PublicKeyToken=b77a5c561934e089")]
+#endif
     public class CookieCollection : ICollection
     {
         internal enum Stamp
@@ -24,10 +24,10 @@ namespace System.Net
             SetToMaxUsed = 3,
         }
 
-        private readonly List<Cookie> _list = new List<Cookie>();
+        private readonly ArrayList m_list = new ArrayList();
 
-        private DateTime _timeStamp = DateTime.MinValue;
-        private bool _hasOtherVersions;
+        private DateTime m_timeStamp = DateTime.MinValue; // Do not rename (binary serialization)
+        private bool m_has_other_versions; // Do not rename (binary serialization)
 
         public CookieCollection()
         {
@@ -37,11 +37,11 @@ namespace System.Net
         {
             get
             {
-                if (index < 0 || index >= _list.Count)
+                if (index < 0 || index >= m_list.Count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
-                return _list[index];
+                return m_list[index] as Cookie;
             }
         }
 
@@ -49,7 +49,7 @@ namespace System.Net
         {
             get
             {
-                foreach (Cookie c in _list)
+                foreach (Cookie c in m_list)
                 {
                     if (string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase))
                     {
@@ -69,11 +69,11 @@ namespace System.Net
             int idx = IndexOf(cookie);
             if (idx == -1)
             {
-                _list.Add(cookie);
+                m_list.Add(cookie);
             }
             else
             {
-                _list[idx] = cookie;
+                m_list[idx] = cookie;
             }
         }
 
@@ -83,7 +83,7 @@ namespace System.Net
             {
                 throw new ArgumentNullException(nameof(cookies));
             }
-            foreach (Cookie cookie in cookies._list)
+            foreach (Cookie cookie in cookies.m_list)
             {
                 Add(cookie);
             }
@@ -101,7 +101,7 @@ namespace System.Net
         {
             get
             {
-                return _list.Count;
+                return m_list.Count;
             }
         }
 
@@ -123,12 +123,12 @@ namespace System.Net
 
         public void CopyTo(Array array, int index)
         {
-            ((ICollection)_list).CopyTo(array, index);
+            ((ICollection)m_list).CopyTo(array, index);
         }
 
         public void CopyTo(Cookie[] array, int index)
         {
-            _list.CopyTo(array, index);
+            m_list.CopyTo(array, index);
         }
 
         internal DateTime TimeStamp(Stamp how)
@@ -136,19 +136,19 @@ namespace System.Net
             switch (how)
             {
                 case Stamp.Set:
-                    _timeStamp = DateTime.Now;
+                    m_timeStamp = DateTime.Now;
                     break;
                 case Stamp.SetToMaxUsed:
-                    _timeStamp = DateTime.MaxValue;
+                    m_timeStamp = DateTime.MaxValue;
                     break;
                 case Stamp.SetToUnused:
-                    _timeStamp = DateTime.MinValue;
+                    m_timeStamp = DateTime.MinValue;
                     break;
                 case Stamp.Check:
                 default:
                     break;
             }
-            return _timeStamp;
+            return m_timeStamp;
         }
 
 
@@ -158,7 +158,7 @@ namespace System.Net
         {
             get
             {
-                return _hasOtherVersions;
+                return m_has_other_versions;
             }
         }
 
@@ -171,7 +171,7 @@ namespace System.Net
             if (isStrict)
             {
                 int idx = 0;
-                foreach (Cookie c in _list)
+                foreach (Cookie c in m_list)
                 {
                     if (CookieComparer.Compare(cookie, c) == 0)
                     {
@@ -180,24 +180,24 @@ namespace System.Net
                         // Cookie2 spec requires that new Variant cookie overwrite the old one.
                         if (c.Variant <= cookie.Variant)
                         {
-                            _list[idx] = cookie;
+                            m_list[idx] = cookie;
                         }
                         break;
                     }
                     ++idx;
                 }
-                if (idx == _list.Count)
+                if (idx == m_list.Count)
                 {
-                    _list.Add(cookie);
+                    m_list.Add(cookie);
                 }
             }
             else
             {
-                _list.Add(cookie);
+                m_list.Add(cookie);
             }
             if (cookie.Version != Cookie.MaxSupportedVersion)
             {
-                _hasOtherVersions = true;
+                m_has_other_versions = true;
             }
             return ret;
         }
@@ -205,7 +205,7 @@ namespace System.Net
         internal int IndexOf(Cookie cookie)
         {
             int idx = 0;
-            foreach (Cookie c in _list)
+            foreach (Cookie c in m_list)
             {
                 if (CookieComparer.Compare(cookie, c) == 0)
                 {
@@ -218,12 +218,12 @@ namespace System.Net
 
         internal void RemoveAt(int idx)
         {
-            _list.RemoveAt(idx);
+            m_list.RemoveAt(idx);
         }
 
         public IEnumerator GetEnumerator()
         {
-            return _list.GetEnumerator();
+            return m_list.GetEnumerator();
         }
 
 #if DEBUG

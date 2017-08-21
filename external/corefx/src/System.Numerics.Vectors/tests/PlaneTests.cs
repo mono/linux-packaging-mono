@@ -364,6 +364,9 @@ namespace System.Numerics.Tests
 
         // A test to make sure the fields are laid out how we expect
         [Fact]
+#if MONO
+        [ActiveIssue("https://bugzilla.xamarin.com/show_bug.cgi?id=57336")]
+#endif
         public unsafe void PlaneFieldOffsetTest()
         {
             Plane plane = new Plane();

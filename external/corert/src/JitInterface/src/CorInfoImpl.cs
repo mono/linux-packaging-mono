@@ -25,6 +25,14 @@ namespace Internal.JitInterface
         //
         // Global initialization and state
         //
+        private enum ImageFileMachine
+        {
+            I386 = 0x014c,
+            IA64 = 0x0200,
+            AMD64 = 0x8664,
+            ARM = 0x01c4,
+        }
+
         private IntPtr _jit;
 
         private IntPtr _unmanagedCallbacks; // array of pointers to JIT-EE interface callbacks
@@ -354,7 +362,7 @@ namespace Internal.JitInterface
             var objectData = new ObjectNode.ObjectData(_code,
                                                        relocs,
                                                        _compilation.NodeFactory.Target.MinimumFunctionAlignment,
-                                                       new ISymbolNode[] { _methodCodeNode });
+                                                       new ISymbolDefinitionNode[] { _methodCodeNode });
 
             _methodCodeNode.SetCode(objectData);
 
@@ -517,11 +525,6 @@ namespace Internal.JitInterface
             if (hasHiddenParameter)
             {
                 sig.callConv |= CorInfoCallConv.CORINFO_CALLCONV_PARAMTYPE;
-            }
-
-            if (method.HasInstantiation)
-            {
-                sig.callConv |= CorInfoCallConv.CORINFO_CALLCONV_GENERIC;
             }
         }
 
@@ -1125,7 +1128,10 @@ namespace Internal.JitInterface
         }
 
         private uint getClassAlignmentRequirement(CORINFO_CLASS_STRUCT_* cls, bool fDoubleAlignHint)
-        { throw new NotImplementedException("getClassAlignmentRequirement"); }
+        {
+            DefType type = (DefType)HandleToObject(cls);
+            return (uint)type.InstanceByteAlignment.AsInt;
+        }
 
         private int GatherClassGCLayout(TypeDesc type, byte* gcPtrs)
         {
@@ -1409,7 +1415,11 @@ namespace Internal.JitInterface
                         Debug.Assert(pGenericLookupKind.needsRuntimeLookup);
 
                         ReadyToRunHelperId helperId = (ReadyToRunHelperId)pGenericLookupKind.runtimeLookupFlags;
-                        object helperArg = GetTargetForFixup(GetRuntimeDeterminedObjectForToken(ref pResolvedToken), helperId);
+                        object helperArg;
+                        if (helperId != ReadyToRunHelperId.DelegateCtor)
+                            helperArg = GetTargetForFixup(GetRuntimeDeterminedObjectForToken(ref pResolvedToken), helperId);
+                        else
+                            helperArg = HandleToObject((IntPtr)pGenericLookupKind.runtimeLookupArgs);
                         ISymbolNode helper = GetGenericLookupHelper(pGenericLookupKind.runtimeLookupKind, helperId, helperArg);
                         pLookup = CreateConstLookupToSymbol(helper);
                     }
@@ -1420,14 +1430,45 @@ namespace Internal.JitInterface
             return true;
         }
 
-        private void getReadyToRunDelegateCtorHelper(ref CORINFO_RESOLVED_TOKEN pTargetMethod, CORINFO_CLASS_STRUCT_* delegateType, ref CORINFO_CONST_LOOKUP pLookup)
+        private void getReadyToRunDelegateCtorHelper(ref CORINFO_RESOLVED_TOKEN pTargetMethod, CORINFO_CLASS_STRUCT_* delegateType, ref CORINFO_LOOKUP pLookup)
         {
-            MethodDesc method = HandleToObject(pTargetMethod.hMethod);
-            TypeDesc type = HandleToObject(delegateType);
+#if DEBUG
+            // In debug, write some bogus data to the struct to ensure we have filled everything
+            // properly.
+            fixed (CORINFO_LOOKUP* tmp = &pLookup)
+                MemoryHelper.FillMemory((byte*)tmp, 0xcc, sizeof(CORINFO_LOOKUP));
+#endif
 
-            DelegateCreationInfo delegateInfo = _compilation.GetDelegateCtor(type, method);
+            MethodDesc targetMethod = HandleToObject(pTargetMethod.hMethod);
+            TypeDesc delegateTypeDesc = HandleToObject(delegateType);
 
-            pLookup = CreateConstLookupToSymbol(_compilation.NodeFactory.ReadyToRunHelper(ReadyToRunHelperId.DelegateCtor, delegateInfo));
+            if (targetMethod.IsSharedByGenericInstantiations)
+            {
+                // If the method is not exact, fetch it as a runtime determined method.
+                targetMethod = (MethodDesc)GetRuntimeDeterminedObjectForToken(ref pTargetMethod);
+            }
+
+            bool isLdvirtftn = pTargetMethod.tokenType == CorInfoTokenKind.CORINFO_TOKENKIND_Ldvirtftn;
+            DelegateCreationInfo delegateInfo = _compilation.GetDelegateCtor(delegateTypeDesc, targetMethod, isLdvirtftn);
+
+            if (delegateInfo.NeedsRuntimeLookup)
+            {
+                pLookup.lookupKind.needsRuntimeLookup = true;
+
+                MethodDesc contextMethod = methodFromContext(pTargetMethod.tokenContext);
+
+                // We should not be inlining these. RyuJIT should have aborted inlining already.
+                Debug.Assert(contextMethod == MethodBeingCompiled);
+                
+                pLookup.lookupKind.runtimeLookupKind = GetGenericRuntimeLookupKind(contextMethod);
+                pLookup.lookupKind.runtimeLookupFlags = (ushort)ReadyToRunHelperId.DelegateCtor;
+                pLookup.lookupKind.runtimeLookupArgs = (void*)ObjectToHandle(delegateInfo);
+            }
+            else
+            {
+                pLookup.lookupKind.needsRuntimeLookup = false;
+                pLookup.constLookup = CreateConstLookupToSymbol(_compilation.NodeFactory.ReadyToRunHelper(ReadyToRunHelperId.DelegateCtor, delegateInfo));
+            }
         }
 
         private byte* getHelperName(CorInfoHelpFunc helpFunc)
@@ -1448,16 +1489,10 @@ namespace Internal.JitInterface
                 return CorInfoInitClassResult.CORINFO_INITCLASS_NOT_REQUIRED;
             }
 
-            MetadataType typeToInit = (MetadataType)type;
-
-            if (typeToInit.IsModuleType)
-            {
-                // For both jitted and ngen code the global class is always considered initialized
-                return CorInfoInitClassResult.CORINFO_INITCLASS_NOT_REQUIRED;
-            }
-
             if (fd == null)
             {
+                MetadataType typeToInit = (MetadataType)type;
+
                 if (typeToInit.IsBeforeFieldInit)
                 {
                     // We can wait for field accesses to run .cctor
@@ -1635,7 +1670,8 @@ namespace Internal.JitInterface
             TypeDesc fieldType = fieldDesc.FieldType;
             CorInfoType type = asCorInfoType(fieldType, out structType);
 
-            Debug.Assert(_compilation.TypeSystemContext.GetWellKnownType(WellKnownType.ByReferenceOfT).GetKnownField("_value").FieldType.Category == TypeFlags.IntPtr);
+            Debug.Assert(!fieldDesc.OwningType.IsByReferenceOfT ||
+                fieldDesc.OwningType.GetKnownField("_value").FieldType.Category == TypeFlags.IntPtr);
             if (type == CorInfoType.CORINFO_TYPE_NATIVEINT && fieldDesc.OwningType.IsByReferenceOfT)
             {
                 Debug.Assert(structType == null);
@@ -2723,13 +2759,11 @@ namespace Internal.JitInterface
                     // Do not bother computing the runtime lookup if we are inlining. The JIT is going
                     // to abort the inlining attempt anyway.
                     MethodDesc contextMethod = methodFromContext(pResolvedToken.tokenContext);
-                    if (contextMethod != MethodBeingCompiled)
+                    if (contextMethod == MethodBeingCompiled)
                     {
-                        return;
+                        pResult.codePointerOrStubLookup.lookupKind.runtimeLookupKind = GetGenericRuntimeLookupKind(contextMethod);
+                        pResult.codePointerOrStubLookup.lookupKind.runtimeLookupFlags = (ushort)ReadyToRunHelperId.MethodEntry;
                     }
-
-                    pResult.codePointerOrStubLookup.lookupKind.runtimeLookupKind = GetGenericRuntimeLookupKind(contextMethod);
-                    pResult.codePointerOrStubLookup.lookupKind.runtimeLookupFlags = (ushort)ReadyToRunHelperId.MethodEntry;
                 }
                 else
                 {
@@ -2857,23 +2891,39 @@ namespace Internal.JitInterface
                     // Do not bother computing the runtime lookup if we are inlining. The JIT is going
                     // to abort the inlining attempt anyway.
                     MethodDesc contextMethod = methodFromContext(pResolvedToken.tokenContext);
-                    if (contextMethod != MethodBeingCompiled)
-                        return;
-
-                    pResult.codePointerOrStubLookup.lookupKind.runtimeLookupKind = GetGenericRuntimeLookupKind(contextMethod);
-                    pResult.codePointerOrStubLookup.lookupKind.runtimeLookupFlags = (ushort)ReadyToRunHelperId.MethodHandle;
+                    if (contextMethod == MethodBeingCompiled)
+                    {
+                        pResult.codePointerOrStubLookup.lookupKind.runtimeLookupKind = GetGenericRuntimeLookupKind(contextMethod);
+                        pResult.codePointerOrStubLookup.lookupKind.runtimeLookupFlags = (ushort)ReadyToRunHelperId.MethodHandle;
+                    }
                 }
-            }
-            else if((flags & CORINFO_CALLINFO_FLAGS.CORINFO_CALLINFO_LDFTN) != 0)
-            {
-                pResult.kind = CORINFO_CALL_KIND.CORINFO_VIRTUALCALL_LDVIRTFTN;
 
-                // If this is a non-interface/non-GVM call, we actually don't need a runtime lookup to find the target.
+                // RyuJIT will assert if we report CORINFO_CALLCONV_PARAMTYPE for a result of a ldvirtftn
+                // We don't need an instantiation parameter, so let's just not report it. Might be nice to
+                // move that assert to some place later though.
+                targetIsFatFunctionPointer = true;
+            }
+            else
+            {
+                ReadyToRunHelperId helperId;
+                if ((flags & CORINFO_CALLINFO_FLAGS.CORINFO_CALLINFO_LDFTN) != 0)
+                {
+                    pResult.kind = CORINFO_CALL_KIND.CORINFO_VIRTUALCALL_LDVIRTFTN;
+                    helperId = ReadyToRunHelperId.ResolveVirtualFunction;
+                }
+                else
+                {
+                    // CORINFO_CALL_CODE_POINTER tells the JIT that this is indirect
+                    // call that should not be inlined.
+                    pResult.kind = CORINFO_CALL_KIND.CORINFO_CALL_CODE_POINTER;
+                    helperId = ReadyToRunHelperId.VirtualCall;
+                }
+
+                // If this is a non-interface call, we actually don't need a runtime lookup to find the target.
                 // We don't even need to keep track of the runtime-determined method being called because the system ensures
                 // that if e.g. Foo<__Canon>.GetHashCode is needed and we're generating a dictionary for Foo<string>,
                 // Foo<string>.GetHashCode is needed too.
-                if (pResult.exactContextNeedsRuntimeLookup &&
-                    (targetMethod.HasInstantiation || targetMethod.OwningType.IsInterface))
+                if (pResult.exactContextNeedsRuntimeLookup && targetMethod.OwningType.IsInterface)
                 {
                     pResult.codePointerOrStubLookup.lookupKind.needsRuntimeLookup = true;
                     pResult.codePointerOrStubLookup.runtimeLookup.indirections = CORINFO.USEHELPER;
@@ -2881,13 +2931,11 @@ namespace Internal.JitInterface
                     // Do not bother computing the runtime lookup if we are inlining. The JIT is going
                     // to abort the inlining attempt anyway.
                     MethodDesc contextMethod = methodFromContext(pResolvedToken.tokenContext);
-                    if (contextMethod != MethodBeingCompiled)
+                    if (contextMethod == MethodBeingCompiled)
                     {
-                        return;
+                        pResult.codePointerOrStubLookup.lookupKind.runtimeLookupKind = GetGenericRuntimeLookupKind(contextMethod);
+                        pResult.codePointerOrStubLookup.lookupKind.runtimeLookupFlags = (ushort)helperId;
                     }
-
-                    pResult.codePointerOrStubLookup.lookupKind.runtimeLookupKind = GetGenericRuntimeLookupKind(contextMethod);
-                    pResult.codePointerOrStubLookup.lookupKind.runtimeLookupFlags = (ushort)ReadyToRunHelperId.ResolveVirtualFunction;
                 }
                 else
                 {
@@ -2900,51 +2948,7 @@ namespace Internal.JitInterface
 
                     pResult.codePointerOrStubLookup.constLookup = 
                         CreateConstLookupToSymbol(
-                            _compilation.NodeFactory.ReadyToRunHelper(ReadyToRunHelperId.ResolveVirtualFunction, slotDefiningMethod));
-                }
-
-                // The current CoreRT ReadyToRun helpers do not handle null thisptr - ask the JIT to emit explicit null checks
-                // TODO: Optimize this
-                pResult.nullInstanceCheck = true;
-            }
-            else
-            {
-                // CORINFO_CALL_CODE_POINTER tells the JIT that this is indirect
-                // call that should not be inlined.
-                pResult.kind = CORINFO_CALL_KIND.CORINFO_CALL_CODE_POINTER;
-
-                // If this is a non-interface/non-GVM call, we actually don't need a runtime lookup to find the target.
-                // We don't even need to keep track of the runtime-determined method being called because the system ensures
-                // that if e.g. Foo<__Canon>.GetHashCode is needed and we're generating a dictionary for Foo<string>,
-                // Foo<string>.GetHashCode is needed too.
-                if (pResult.exactContextNeedsRuntimeLookup &&
-                    (targetMethod.HasInstantiation || targetMethod.OwningType.IsInterface))
-                {
-                    pResult.codePointerOrStubLookup.lookupKind.needsRuntimeLookup = true;
-                    pResult.codePointerOrStubLookup.runtimeLookup.indirections = CORINFO.USEHELPER;
-
-                    // Do not bother computing the runtime lookup if we are inlining. The JIT is going
-                    // to abort the inlining attempt anyway.
-                    MethodDesc contextMethod = methodFromContext(pResolvedToken.tokenContext);
-                    if (contextMethod != MethodBeingCompiled)
-                    {
-                        return;
-                    }
-
-                    pResult.codePointerOrStubLookup.lookupKind.runtimeLookupKind = GetGenericRuntimeLookupKind(contextMethod);
-                    pResult.codePointerOrStubLookup.lookupKind.runtimeLookupFlags = (ushort)ReadyToRunHelperId.VirtualCall;
-                }
-                else
-                {
-                    pResult.exactContextNeedsRuntimeLookup = false;
-
-                    // Get the slot defining method to make sure our virtual method use tracking gets this right.
-                    // For normal C# code the targetMethod will always be newslot.
-                    MethodDesc slotDefiningMethod = targetMethod.IsNewSlot ?
-                        targetMethod : MetadataVirtualMethodAlgorithm.FindSlotDefiningMethodForVirtualMethod(targetMethod);
-
-                    pResult.codePointerOrStubLookup.constLookup =
-                            CreateConstLookupToSymbol(_compilation.NodeFactory.ReadyToRunHelper(ReadyToRunHelperId.VirtualCall, slotDefiningMethod));
+                            _compilation.NodeFactory.ReadyToRunHelper(helperId, slotDefiningMethod));
                 }
 
                 // The current CoreRT ReadyToRun helpers do not handle null thisptr - ask the JIT to emit explicit null checks
@@ -2962,6 +2966,20 @@ namespace Internal.JitInterface
 
             pResult.methodFlags = getMethodAttribsInternal(targetMethod);
             Get_CORINFO_SIG_INFO(targetMethod, out pResult.sig, targetIsFatFunctionPointer);
+            if (targetMethod.IsIntrinsic)
+            {
+                // We only populate sigInst for intrinsic methods because most of the time,
+                // JIT doesn't care what the instantiation is and this is expensive.
+                Instantiation owningTypeInst = targetMethod.OwningType.Instantiation;
+                pResult.sig.sigInst.classInstCount = (uint)owningTypeInst.Length;
+                if (owningTypeInst.Length > 0)
+                {
+                    var classInst = new IntPtr[owningTypeInst.Length];
+                    for (int i = 0; i < owningTypeInst.Length; i++)
+                        classInst[i] = (IntPtr)ObjectToHandle(owningTypeInst[i]);
+                    pResult.sig.sigInst.classInst = (CORINFO_CLASS_STRUCT_**)GetPin(classInst);
+                }
+            }
 
             if ((flags & CORINFO_CALLINFO_FLAGS.CORINFO_CALLINFO_VERIFICATION) != 0)
             {
@@ -3254,12 +3272,7 @@ namespace Internal.JitInterface
                 default:
                     // Reloc points to something outside of the generated blocks
                     var targetObject = HandleToObject((IntPtr)target);
-
                     relocTarget = (ISymbolNode)targetObject;
-
-                    if (relocTarget is IFatFunctionPointerNode)
-                        relocDelta = Runtime.FatFunctionPointerConstants.Offset;
-
                     break;
             }
 
@@ -3286,7 +3299,23 @@ namespace Internal.JitInterface
 
         private uint getExpectedTargetArchitecture()
         {
-            return 0x8664; // AMD64
+            TargetArchitecture arch = _compilation.TypeSystemContext.Target.Architecture;
+
+            switch (arch)
+            {
+                case TargetArchitecture.X86:
+                    return (uint)ImageFileMachine.I386;
+                case TargetArchitecture.X64:
+                    return (uint)ImageFileMachine.AMD64;
+                case TargetArchitecture.ARM:
+                    return (uint)ImageFileMachine.ARM;
+                case TargetArchitecture.ARMEL:
+                    return (uint)ImageFileMachine.ARM;
+                case TargetArchitecture.ARM64:
+                    return (uint)ImageFileMachine.ARM;
+                default:
+                    throw new NotImplementedException("Expected target architecture is not supported");
+            }
         }
 
         private uint getJitFlags(ref CORJIT_FLAGS flags, uint sizeInBytes)

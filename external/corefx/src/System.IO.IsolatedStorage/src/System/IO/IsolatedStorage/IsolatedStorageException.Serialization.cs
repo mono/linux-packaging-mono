@@ -12,6 +12,7 @@ namespace System.IO.IsolatedStorage
     {
         protected IsolatedStorageException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
+            throw new PlatformNotSupportedException();
         }
     }
 }

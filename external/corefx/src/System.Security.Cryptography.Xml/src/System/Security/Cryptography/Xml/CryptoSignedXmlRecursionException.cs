@@ -23,6 +23,8 @@ namespace System.Security.Cryptography.Xml
         // exception propagates from a remoting server to the client.  
         protected CryptoSignedXmlRecursionException(System.Runtime.Serialization.SerializationInfo info,
         System.Runtime.Serialization.StreamingContext context)
-        { }
+        {
+            throw new PlatformNotSupportedException();
+        }
     }
 }

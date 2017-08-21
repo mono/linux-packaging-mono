@@ -394,6 +394,9 @@
 /* Using the simple generational GC. */
 /* #undef HAVE_SGEN_GC */
 
+/* Some VES is available at runtime */
+#define HAVE_ONLINE_VES 1
+
  /* Have signal */
 #define HAVE_SIGNAL 1
 
@@ -585,6 +588,9 @@
 
 /* Define to 1 if you have the <wchar.h> header file. */
 #define HAVE_WCHAR_H 1
+
+/* Define to 1 if you have IPv6 support. */
+#define HAVE_STRUCT_SOCKADDR_IN6 1
 
 /* Have a working sigaltstack */
 /* #undef HAVE_WORKING_SIGALTSTACK */

@@ -42,7 +42,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         private CSemanticChecker _pSemanticChecker;
         private SymbolLoader _pSymbolLoader;
         private CType _typeSrc;
-        private EXPR _obj;
+        private Expr _obj;
         private CType _typeQual;
         private ParentSymbol _symWhere;
         private Name _name;
@@ -287,13 +287,12 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                         if (!_fMulti)
                         {
                             if (_swtFirst.Sym.IsFieldSymbol() && symCur.IsEventSymbol()
-#if !CSEE                       // The isEvent bit is only set on symbols which come from source...
+                               // The isEvent bit is only set on symbols which come from source...
                                 // This is not a problem for the compiler because the field is only
                                 // accessible in the scope in which it is declared,
                                 // but in the EE we ignore accessibility...
                                 && _swtFirst.Field().isEvent
-#endif
-)
+                        )
                             {
                                 // m_swtFirst is just the field behind the event symCur so ignore symCur.
                                 continue;
@@ -554,7 +553,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                     break;
 
                 case SYMKIND.SK_MethodSymbol:
-                    if (swt.Meth().name == GetSymbolLoader().GetNameManager().GetPredefName(PredefinedName.PN_INVOKE) && swt.Meth().getClass().IsDelegate())
+                    if (swt.Meth().name == NameManager.GetPredefinedName(PredefinedName.PN_INVOKE) && swt.Meth().getClass().IsDelegate())
                     {
                         swt.Set(swt.Meth().getClass(), swt.GetType());
                     }
@@ -623,10 +622,10 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             flags - See MemLookFlags.
                 TypeVarsAllowed only applies to the most derived type (not base types).
         ***************************************************************************************************/
-        public bool Lookup(CSemanticChecker checker, CType typeSrc, EXPR obj, ParentSymbol symWhere, Name name, int arity, MemLookFlags flags)
+        public bool Lookup(CSemanticChecker checker, CType typeSrc, Expr obj, ParentSymbol symWhere, Name name, int arity, MemLookFlags flags)
         {
             Debug.Assert((flags & ~MemLookFlags.All) == 0);
-            Debug.Assert(obj == null || obj.type != null);
+            Debug.Assert(obj == null || obj.Type != null);
             Debug.Assert(typeSrc.IsAggregateType() || typeSrc.IsTypeParameterType());
             Debug.Assert(checker != null);
 
@@ -636,7 +635,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             _pSemanticChecker = checker;
             _pSymbolLoader = checker.GetSymbolLoader();
             _typeSrc = typeSrc;
-            _obj = (obj != null && !obj.isCLASS()) ? obj : null;
+            _obj = obj is ExprClass ? null : obj;
             _symWhere = symWhere;
             _name = name;
             _arity = arity;
@@ -647,7 +646,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             else if ((_flags & MemLookFlags.Ctor) != 0)
                 _typeQual = _typeSrc;
             else if (obj != null)
-                _typeQual = (CType)obj.type;
+                _typeQual = (CType)obj.Type;
             else
                 _typeQual = null;
 
@@ -731,7 +730,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             return _swtInaccess;
         }
 
-        public EXPR GetObject()
+        public Expr GetObject()
         {
             return _obj;
         }

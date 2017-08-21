@@ -40,13 +40,13 @@ namespace System.Diagnostics
         [CLSCompliant(false)]
         public static Process Start(string fileName, string userName, SecureString password, string domain)
         {
-            throw new PlatformNotSupportedException();
+            throw new PlatformNotSupportedException(SR.ProcessStartIdentityNotSupported);
         }
 
         [CLSCompliant(false)]
         public static Process Start(string fileName, string arguments, string userName, SecureString password, string domain)
         { 
-            throw new PlatformNotSupportedException();
+            throw new PlatformNotSupportedException(SR.ProcessStartIdentityNotSupported);
         }
 
         /// <summary>Stops the associated process immediately.</summary>
@@ -532,21 +532,14 @@ namespace System.Diagnostics
             return _waitStateHolder._state;
         }
 
-        private bool IsRespondingCore()
-        {
-            return true;
-        }
-        private string GetMainWindowTitle()
-        {
-            return string.Empty;
-        }
-        private bool CloseMainWindowCore()
-        {
-            return false;
-        }
-        private bool WaitForInputIdleCore(int milliseconds)
-        {
-            throw new InvalidOperationException(SR.InputIdleUnkownError);
-        }
+        public IntPtr MainWindowHandle => IntPtr.Zero;
+
+        private bool CloseMainWindowCore() => false;
+
+        public string MainWindowTitle => string.Empty;
+
+        public bool Responding => true;
+
+        private bool WaitForInputIdleCore(int milliseconds) => throw new InvalidOperationException(SR.InputIdleUnkownError);
     }
 }

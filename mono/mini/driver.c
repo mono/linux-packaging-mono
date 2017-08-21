@@ -121,10 +121,6 @@ opt_names [] = {
 
 #endif
 
-#ifdef __native_client__
-extern char *nacl_mono_path;
-#endif
-
 #define DEFAULT_OPTIMIZATIONS (	\
 	MONO_OPT_PEEPHOLE |	\
 	MONO_OPT_CFOLD |	\
@@ -1156,8 +1152,11 @@ load_agent (MonoDomain *domain, char *desc)
 
 	if (args) {
 		main_args = (MonoArray*)mono_array_new_checked (domain, mono_defaults.string_class, 1, &error);
-		if (main_args)
-			mono_array_set (main_args, MonoString*, 0, mono_string_new (domain, args));
+		if (main_args) {
+			MonoString *str = mono_string_new_checked (domain, args, &error);
+			if (str)
+				mono_array_set (main_args, MonoString*, 0, str);
+		}
 	} else {
 		main_args = (MonoArray*)mono_array_new_checked (domain, mono_defaults.string_class, 0, &error);
 	}
@@ -1600,9 +1599,6 @@ mono_main (int argc, char* argv[])
 #ifdef HOST_WIN32
 	int mixed_mode = FALSE;
 #endif
-#ifdef __native_client__
-	gboolean nacl_null_checks_off = FALSE;
-#endif
 
 #ifdef MOONLIGHT
 #ifndef HOST_WIN32
@@ -1934,13 +1930,6 @@ mono_main (int argc, char* argv[])
 #else
 			fprintf (stderr, "Mono Warning: --interp= not enabled in this runtime.\n");
 #endif
-
-#ifdef __native_client__
-		} else if (strcmp (argv [i], "--nacl-mono-path") == 0){
-			nacl_mono_path = g_strdup(argv[++i]);
-		} else if (strcmp (argv [i], "--nacl-null-checks-off") == 0){
-			nacl_null_checks_off = TRUE;
-#endif
 		} else if (strncmp (argv [i], "--assembly-loader=", strlen("--assembly-loader=")) == 0) {
 			gchar *arg = argv [i] + strlen ("--assembly-loader=");
 			if (strcmp (arg, "strict") == 0)
@@ -1964,13 +1953,6 @@ mono_main (int argc, char* argv[])
 			return 1;
 		}
 	}
-
-#ifdef __native_client_codegen__
-	if (!nacl_null_checks_off) {
-		MonoDebugOptions *opt = mini_get_debug_options ();
-		opt->explicit_null_checks = TRUE;
-	}
-#endif
 
 #if defined(DISABLE_HW_TRAPS) || defined(MONO_ARCH_DISABLE_HW_TRAPS)
 	// Signal handlers not available
@@ -2071,9 +2053,6 @@ mono_main (int argc, char* argv[])
 	}
 
 	mono_set_defaults (mini_verbose, opt);
-#ifdef ENABLE_INTERPRETER
-	mono_interp_init ();
-#endif
 	domain = mini_init (argv [i], forced_version);
 
 	mono_gc_set_stack_end (&domain);
@@ -2396,6 +2375,10 @@ mono_jit_set_aot_mode (MonoAotMode mode)
 	if (mono_aot_mode == MONO_AOT_MODE_HYBRID) {
 		mono_set_generic_sharing_vt_supported (TRUE);
 		mono_set_partial_sharing_supported (TRUE);
+	}
+	if (mono_aot_mode == MONO_AOT_MODE_INTERP) {
+		mono_aot_only = TRUE;
+		mono_use_interpreter = TRUE;
 	}
 }
 

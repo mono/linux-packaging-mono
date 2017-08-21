@@ -26,14 +26,10 @@ class Program
         if (ThreadTest.Run() != Pass)
             return Fail;
 
-        return Pass;
-    }
+        if (TimerTest.Run() != Pass)
+            return Fail;
 
-    public static bool IsRunnningOnWindows()
-    {
-        // Note: Environment.OSVersion is not yet available.
-        // This is a temporary hack that allows to skip Task related tests on Unix.
-        return System.IO.Path.DirectorySeparatorChar == '\\';
+        return Pass;
     }
 }
 
@@ -163,12 +159,6 @@ class ThreadStaticsTestWithTasks
 
     public static void Run()
     {
-        if (!Program.IsRunnningOnWindows())
-        {
-            // Tasks are not supported on Unix yet
-            return;
-        }
-
         Task[] tasks = new Task[TotalTaskCount];
         for (int i = 0; i < tasks.Length; ++i)
         {
@@ -340,12 +330,6 @@ class ThreadTest
 
     private static void TestIsBackgroundProperty()
     {
-        if (!Program.IsRunnningOnWindows())
-        {
-            // This test uses tasks which are not supported on Unix yet
-            return;
-        }
-
         // Thread created using Thread.Start
         var t_event = new AutoResetEvent(false);
         var t = new Thread(() => t_event.WaitOne());
@@ -574,5 +558,75 @@ class ThreadTest
         {
             return CreateResurrectedThread(ref s_stoppedResurrected, unstarted: false);
         }
+    }
+}
+
+class TimerTest
+{
+    private static AutoResetEvent s_event;
+    private static Timer s_timer;
+    private static volatile int s_periodicTimerCount;
+
+    public static int Run()
+    {
+        s_event = new AutoResetEvent(false);
+        s_timer = new Timer(TimerCallback, null, 200, Timeout.Infinite);
+
+        bool timerFired = s_event.WaitOne(TimeSpan.FromSeconds(5));
+        if (!timerFired)
+        {
+            Console.WriteLine("The timer test failed: timer has not fired.");
+            return Program.Fail;
+        }
+
+        // Change the timer to a very long value
+        s_event.Reset();
+        s_timer.Change(3000000, Timeout.Infinite);
+        timerFired = s_event.WaitOne(500);
+        if (timerFired)
+        {
+            Console.WriteLine("The timer test failed: timer fired earlier than expected.");
+            return Program.Fail;
+        }
+
+        // Try change existing timer to a small value and make sure it fires
+        s_event.Reset();
+        s_timer.Change(200, Timeout.Infinite);
+        timerFired = s_event.WaitOne(TimeSpan.FromSeconds(5));
+        if (!timerFired)
+        {
+            Console.WriteLine("The timer test failed: failed to change the existing timer.");
+            return Program.Fail;
+        }
+
+        // Test a periodic timer
+        s_periodicTimerCount = 0;
+        s_event.Reset();
+        s_timer = new Timer(PeriodicTimerCallback, null, 200, 20);
+        while (s_periodicTimerCount < 3)
+        {
+            timerFired = s_event.WaitOne(TimeSpan.FromSeconds(5));
+            if (!timerFired)
+            {
+                Console.WriteLine("The timer test failed: the periodic timer has not fired.");
+                return Program.Fail;
+            }
+        }
+
+        // Stop the periodic timer
+        s_timer.Change(Timeout.Infinite, Timeout.Infinite);
+
+        return Program.Pass;
+    }
+
+    private static void TimerCallback(object state)
+    {
+        s_event.Set();
+    }
+
+    private static void PeriodicTimerCallback(object state)
+    {
+        Interlocked.Increment(ref s_periodicTimerCount);
+        s_event.Set();
     }
 }

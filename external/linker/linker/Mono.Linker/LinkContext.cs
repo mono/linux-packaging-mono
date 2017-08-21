@@ -1,4 +1,4 @@
-//
+﻿//
 // LinkContext.cs
 //
 // Author:
@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Mono.Cecil;
@@ -35,13 +34,13 @@ using Mono.Cecil.Cil;
 
 namespace Mono.Linker {
 
-	public class LinkContext {
+	public class LinkContext : IDisposable {
 
 		Pipeline _pipeline;
 		AssemblyAction _coreAction;
-		Hashtable _actions;
+		Dictionary<string, AssemblyAction> _actions;
 		string _outputDirectory;
-		Hashtable _parameters;
+		readonly Dictionary<string, string> _parameters;
 		bool _linkSymbols;
 		bool _keepTypeForwarderOnlyAssemblies;
 		bool _keepMembersForDebuggerAttributes;
@@ -89,7 +88,7 @@ namespace Mono.Linker {
 			set { _keepMembersForDebuggerAttributes = value; }
 		}
 
-		public IDictionary Actions {
+		public System.Collections.IDictionary Actions {
 			get { return _actions; }
 		}
 
@@ -122,17 +121,18 @@ namespace Mono.Linker {
 			: this(pipeline, resolver, new ReaderParameters
 			{
 				AssemblyResolver = resolver
-			})
+			},
+			new AnnotationStore ())
 		{
 		}
 
-		public LinkContext (Pipeline pipeline, AssemblyResolver resolver, ReaderParameters readerParameters)
+		public LinkContext (Pipeline pipeline, AssemblyResolver resolver, ReaderParameters readerParameters, AnnotationStore annotations)
 		{
 			_pipeline = pipeline;
 			_resolver = resolver;
-			_actions = new Hashtable ();
-			_parameters = new Hashtable ();
-			_annotations = new AnnotationStore ();
+			_actions = new Dictionary<string, AssemblyAction> ();
+			_parameters = new Dictionary<string, string> ();
+			_annotations = annotations;
 			_readerParameters = readerParameters;
 		}
 
@@ -160,8 +160,7 @@ namespace Mono.Linker {
 		{
 			if (File.Exists (name)) {
 				AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (name, _readerParameters);
-				_resolver.CacheAssembly (assembly);
-				return assembly;
+				return _resolver.CacheAssembly (assembly);
 			}
 
 			return Resolve (new AssemblyNameReference (name, new Version ()));
@@ -238,14 +237,16 @@ namespace Mono.Linker {
 
 		protected void SetAction (AssemblyDefinition assembly)
 		{
-			AssemblyAction action = AssemblyAction.Link;
+			AssemblyAction action;
 
 			AssemblyNameDefinition name = assembly.Name;
 
-			if (_actions.Contains (name.Name))
-				action = (AssemblyAction) _actions [name.Name];
-			else if (IsCore (name))
+			if (_actions.TryGetValue (name.Name, out action)) {
+			} else if (IsCore (name)) {
 				action = _coreAction;
+			} else {
+				action = AssemblyAction.Link;
+			}
 
 			_annotations.SetAction (assembly, action);
 		}
@@ -273,7 +274,7 @@ namespace Mono.Linker {
 
 		public AssemblyDefinition [] GetAssemblies ()
 		{
-			IDictionary cache = _resolver.AssemblyCache;
+			var cache = _resolver.AssemblyCache;
 			AssemblyDefinition [] asms = new AssemblyDefinition [cache.Count];
 			cache.Values.CopyTo (asms, 0);
 			return asms;
@@ -286,12 +287,19 @@ namespace Mono.Linker {
 
 		public bool HasParameter (string key)
 		{
-			return _parameters.Contains (key);
+			return _parameters.ContainsKey (key);
 		}
 
 		public string GetParameter (string key)
 		{
-			return (string) _parameters [key];
+			string val = null;
+			_parameters.TryGetValue (key, out val);
+			return val;
+		}
+
+		public void Dispose ()
+		{
+			_resolver.Dispose ();
 		}
 	}
 }

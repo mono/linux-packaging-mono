@@ -4,7 +4,7 @@
 
 namespace System
 {
-    internal static class HResults
+    internal static partial class HResults
     {
         internal const int Data = unchecked((int)0x80131920);
         internal const int DataDeletedRowInaccessible = unchecked((int)0x80131921);

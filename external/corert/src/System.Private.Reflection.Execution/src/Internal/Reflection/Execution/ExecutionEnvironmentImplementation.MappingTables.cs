@@ -29,7 +29,6 @@ using CanonicalFormKind = global::Internal.TypeSystem.CanonicalFormKind;
 
 
 using Debug = System.Diagnostics.Debug;
-using TargetException = System.ArgumentException;
 using ThunkKind = Internal.Runtime.TypeLoader.CallConverterThunk.ThunkKind;
 using Interlocked = System.Threading.Interlocked;
 
@@ -125,8 +124,6 @@ namespace Internal.Reflection.Execution
         //
         public unsafe sealed override bool IsReflectionBlocked(RuntimeTypeHandle runtimeTypeHandle)
         {
-            // CORERT-TODO: reflection blocking
-#if !CORERT
             // For generic types, use the generic type definition
             runtimeTypeHandle = GetTypeDefinition(runtimeTypeHandle);
 
@@ -152,7 +149,6 @@ namespace Internal.Reflection.Execution
                 return true;
             }
             // Entry not found, must not be blocked
-#endif
             return false;
         }
 
@@ -226,14 +222,10 @@ namespace Internal.Reflection.Execution
         //
         public unsafe sealed override bool TryGetArrayTypeForElementType(RuntimeTypeHandle elementTypeHandle, out RuntimeTypeHandle arrayTypeHandle)
         {
-            if (RuntimeAugments.IsUnmanagedPointerType(elementTypeHandle))
-            {
-                throw new PlatformNotSupportedException(SR.PlatformNotSupported_PointerArray);
-            }
-
             if (RuntimeAugments.IsGenericTypeDefinition(elementTypeHandle))
             {
-                throw new NotSupportedException(SR.NotSupported_OpenType);
+                arrayTypeHandle = default(RuntimeTypeHandle);
+                return false;
             }
 
             // For non-dynamic arrays try to look up the array type in the ArrayMap blobs;
@@ -267,19 +259,15 @@ namespace Internal.Reflection.Execution
         //
         public unsafe sealed override bool TryGetMultiDimArrayTypeForElementType(RuntimeTypeHandle elementTypeHandle, int rank, out RuntimeTypeHandle arrayTypeHandle)
         {
-            if (RuntimeAugments.IsUnmanagedPointerType(elementTypeHandle))
-            {
-                throw new PlatformNotSupportedException(SR.PlatformNotSupported_PointerArray);
-            }
-
             if (RuntimeAugments.IsGenericTypeDefinition(elementTypeHandle))
             {
-                throw new NotSupportedException(SR.NotSupported_OpenType);
+                arrayTypeHandle = default(RuntimeTypeHandle);
+                return false;
             }
             
             if ((rank < MDArray.MinRank) || (rank > MDArray.MaxRank))
             {
-                throw new PlatformNotSupportedException(SR.Format(SR.PlatformNotSupported_NoMultiDims, rank));
+                throw new TypeLoadException(SR.Format(SR.MultiDim_Of_This_Rank_Not_Supported, rank));
             }
 
             return TypeLoaderEnvironment.Instance.TryGetArrayTypeForElementType(elementTypeHandle, true, rank, out arrayTypeHandle);
@@ -354,7 +342,16 @@ namespace Internal.Reflection.Execution
 
             TypeInfo[] typeArguments = new TypeInfo[genericTypeArgumentHandles.Length];
             for (int i = 0; i < genericTypeArgumentHandles.Length; i++)
+            {
+                // Early out if one of the arguments is a generic definition.
+                // The reflection stack will use this to construct a Type that doesn't have a type handle.
+                // Note: this is different from the validation we do in EnsureSatisfiesClassConstraints because this
+                // should not throw.
+                if (RuntimeAugments.IsGenericTypeDefinition(genericTypeArgumentHandles[i]))
+                    return false;
+
                 typeArguments[i] = Type.GetTypeFromHandle(genericTypeArgumentHandles[i]).GetTypeInfo();
+            }
 
             ConstraintValidator.EnsureSatisfiesClassConstraints(typeDefinition, typeArguments);
 
@@ -456,8 +453,18 @@ namespace Internal.Reflection.Execution
                 success = module.TryFindBlob((int)ReflectionMapBlob.NativeLayoutInfo, out pNativeLayoutInfoBlob, out cbNativeLayoutInfoBlob);
                 Debug.Assert(success);
 
-                // All methods referred from this blob are contained in the same type. The first UINT in the blob is the RVA of that EEType
-                RuntimeTypeHandle declaringTypeHandle = TypeLoaderEnvironment.RvaToRuntimeTypeHandle(module.Handle, pBlob[0]);
+                RuntimeTypeHandle declaringTypeHandle;
+                // All methods referred from this blob are contained in the same type. The first UINT in the blob is a reloc to that EEType
+                if (module.Handle.IsTypeManager)
+                {
+                    // CoreRT uses 32bit relative relocs
+                    declaringTypeHandle = RuntimeAugments.CreateRuntimeTypeHandle((IntPtr)(pBlobAsBytes + *(int*)pBlobAsBytes));
+                }
+                else
+                {
+                    // .NET Native uses RVAs
+                    declaringTypeHandle = TypeLoaderEnvironment.RvaToRuntimeTypeHandle(module.Handle, pBlob[0]);
+                }
 
                 // The index points to two entries: the token of the dynamic invoke method and the function pointer to the canonical method
                 // Now have the type loader build or locate a dictionary for this method
@@ -471,7 +478,17 @@ namespace Internal.Reflection.Execution
                 success = TypeLoaderEnvironment.Instance.TryGetGenericMethodDictionaryForComponents(declaringTypeHandle, argHandles, nameAndSignature, out dynamicInvokeMethodGenericDictionary);
                 Debug.Assert(success);
 
-                dynamicInvokeMethod = TypeLoaderEnvironment.RvaToFunctionPointer(module.Handle, pBlob[index + 1]);
+                if (module.Handle.IsTypeManager)
+                {
+                    // CoreRT uses 32bit relative relocs
+                    int* pRelPtr32 = &((int*)pBlob)[index + 1];
+                    dynamicInvokeMethod = (IntPtr)((byte*)pRelPtr32 + *pRelPtr32);
+                }
+                else
+                {
+                    // .NET Native uses RVAs
+                    dynamicInvokeMethod = TypeLoaderEnvironment.RvaToFunctionPointer(module.Handle, pBlob[index + 1]);
+                }
             }
             else
             {

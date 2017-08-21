@@ -72,6 +72,7 @@
 
 GPTR_IMPL(EEType, g_pFreeObjectEEType);
 
+#include "DebuggerHook.h"
 
 #ifndef DACCESS_COMPILE
 
@@ -742,6 +743,18 @@ COOP_PINVOKE_HELPER(void, RhpCopyObjectContents, (Object* pobjDest, Object* pobj
     }
 }
 
+COOP_PINVOKE_HELPER(Boolean, RhCompareObjectContentsAndPadding, (Object* pObj1, Object* pObj2))
+{
+    ASSERT(pObj1->get_EEType()->IsEquivalentTo(pObj2->get_EEType()));
+    EEType * pEEType = pObj1->get_EEType();
+    size_t cbFields = pEEType->get_BaseSize() - (sizeof(ObjHeader) + sizeof(EEType*));
+
+    UInt8 * pbFields1 = (UInt8*)pObj1 + sizeof(EEType*);
+    UInt8 * pbFields2 = (UInt8*)pObj2 + sizeof(EEType*);
+
+    return (memcmp(pbFields1, pbFields2, cbFields) == 0) ? Boolean_true : Boolean_false;
+}
+
 COOP_PINVOKE_HELPER(void, RhpBox, (Object * pObj, void * pData))
 {
     EEType * pEEType = pObj->get_EEType();
@@ -920,6 +933,8 @@ void GCToEEInterface::RestartEE(bool /*bFinishedGC*/)
 
 void GCToEEInterface::GcStartWork(int condemned, int /*max_gen*/)
 {
+    DebuggerHook::OnBeforeGcCollection();
+    
     // Invoke any registered callouts for the start of the collection.
     RestrictedCallouts::InvokeGcCallouts(GCRC_StartCollection, condemned);
 }

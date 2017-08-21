@@ -37,7 +37,7 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         public List<Name> ParameterNames { get; private set; }
         private bool[] _optionalParameterIndex;
         private bool[] _defaultParameterIndex;
-        private CONSTVAL[] _defaultParameters;
+        private ConstVal[] _defaultParameters;
         private CType[] _defaultParameterConstValTypes;
         private bool[] _marshalAsIndex;
         private UnmanagedType[] _marshalAsBuffer;
@@ -65,13 +65,12 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
                 _Params = value;
                 _optionalParameterIndex = new bool[_Params.Count];
                 _defaultParameterIndex = new bool[_Params.Count];
-                _defaultParameters = new CONSTVAL[_Params.Count];
+                _defaultParameters = new ConstVal[_Params.Count];
                 _defaultParameterConstValTypes = new CType[_Params.Count];
                 _marshalAsIndex = new bool[_Params.Count];
                 _marshalAsBuffer = new UnmanagedType[_Params.Count];
             }
         }             // array of cParams parameter types.
-        public AggregateDeclaration declaration;       // containing declaration
 
         public MethodOrPropertySymbol()
         {
@@ -120,16 +119,15 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
             return _defaultParameterIndex[index];
         }
 
-        public void SetDefaultParameterValue(int index, CType type, CONSTVAL cv)
+        public void SetDefaultParameterValue(int index, CType type, ConstVal cv)
         {
             Debug.Assert(_defaultParameterIndex != null);
-            ConstValFactory factory = new ConstValFactory();
             _defaultParameterIndex[index] = true;
-            _defaultParameters[index] = factory.Copy(type.constValKind(), cv);
+            _defaultParameters[index] = cv;
             _defaultParameterConstValTypes[index] = type;
         }
 
-        public CONSTVAL GetDefaultParameterValue(int index)
+        public ConstVal GetDefaultParameterValue(int index)
         {
             Debug.Assert(HasDefaultParameterValue(index));
             Debug.Assert(_defaultParameterIndex != null);
@@ -179,11 +177,6 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         public bool IsExpImpl()
         {
             return name == null;
-        }
-
-        public AggregateDeclaration containingDeclaration()
-        {
-            return declaration;
         }
     }
 }

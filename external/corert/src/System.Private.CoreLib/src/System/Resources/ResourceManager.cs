@@ -45,11 +45,6 @@ namespace System.Resources
 {
     internal static class ExtensionMethods
     {
-        public static bool HasInvariantCultureName(this CultureInfo cultureInfo)
-        {
-            return cultureInfo.Name == CultureInfo.InvariantCulture.Name;
-        }
-
         public static Assembly InternalGetSatelliteAssembly(this Assembly mainAssembly, String name,
                                                               CultureInfo culture,
                                                               Version version,
@@ -173,7 +168,6 @@ namespace System.Resources
     // belonging to that type may not be initialized. FrameworkEventSource.Log
     // is one such example.
     //
-    [RelocatedType("System.Resources.ResourceManager")]
     [Serializable]
     public class ResourceManager
     {

@@ -519,7 +519,8 @@ mono_reflection_methodbuilder_from_ctor_builder (ReflectionMethodBuilder *rmb, M
 	rmb->call_conv = mb->call_conv;
 	rmb->code = NULL;
 	rmb->type = mb->type;
-	rmb->name = mono_string_new (mono_domain_get (), name);
+	rmb->name = mono_string_new_checked (mono_domain_get (), name, error);
+	return_val_if_nok (error, FALSE);
 	rmb->table_idx = &mb->table_idx;
 	rmb->init_locals = mb->init_locals;
 	rmb->skip_visibility = FALSE;
@@ -1021,7 +1022,7 @@ mono_image_insert_string (MonoReflectionModuleBuilderHandle ref_module, MonoStri
 	}
 
 	token = MONO_TOKEN_STRING | idx;
-	mono_dynamic_image_register_token (assembly, token, MONO_HANDLE_CAST (MonoObject, str));
+	mono_dynamic_image_register_token (assembly, token, MONO_HANDLE_CAST (MonoObject, str), MONO_DYN_IMAGE_TOK_NEW);
 
 leave:
 	HANDLE_FUNCTION_RETURN_VAL (token);
@@ -1091,7 +1092,7 @@ mono_image_create_method_token (MonoDynamicImage *assembly, MonoObjectHandle obj
 		g_error ("requested method token for %s\n", klass->name);
 	}
 
-	mono_dynamic_image_register_token (assembly, token, obj);
+	mono_dynamic_image_register_token (assembly, token, obj, MONO_DYN_IMAGE_TOK_NEW);
 	return token;
 fail:
 	g_assert (!mono_error_ok (error));
@@ -1127,12 +1128,18 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 		return 0;
 	}
 
+	/* This function is called from ModuleBuilder:getToken multiple times for the same objects */
+	int how_collide = MONO_DYN_IMAGE_TOK_SAME_OK;
+
 	if (strcmp (klass->name, "RuntimeType") == 0) {
 		MonoType *type = mono_reflection_type_handle_mono_type (MONO_HANDLE_CAST (MonoReflectionType, obj), error);
 		return_val_if_nok (error, 0);
 		MonoClass *mc = mono_class_from_mono_type (type);
 		token = mono_metadata_token_from_dor (
 			mono_dynimage_encode_typedef_or_ref_full (assembly, type, !mono_class_is_gtd (mc) || create_open_instance));
+		/* If it's a RuntimeType now, we could have registered a
+		 * TypeBuilder for it before, so replacing is okay. */
+		how_collide = MONO_DYN_IMAGE_TOK_REPLACE;
 	} else if (strcmp (klass->name, "MonoCMethod") == 0 ||
 			   strcmp (klass->name, "MonoMethod") == 0) {
 		MonoReflectionMethodHandle m = MONO_HANDLE_CAST (MonoReflectionMethod, obj);
@@ -1151,6 +1158,7 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 				 * FIXME: do the equivalent for Fields.
 				 */
 				token = method->token;
+				how_collide = MONO_DYN_IMAGE_TOK_REPLACE;
 			} else {
 				/*
 				 * Each token should have a unique index, but the indexes are
@@ -1159,6 +1167,7 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 				 */
 				method_table_idx --;
 				token = MONO_TOKEN_METHOD_DEF | method_table_idx;
+				how_collide = MONO_DYN_IMAGE_TOK_NEW;
 			}
 		} else {
 			token = mono_image_get_methodref_token (assembly, method, create_open_instance);
@@ -1171,6 +1180,7 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 			static guint32 field_table_idx = 0xffffff;
 			field_table_idx --;
 			token = MONO_TOKEN_FIELD_DEF | field_table_idx;
+			how_collide = MONO_DYN_IMAGE_TOK_NEW;
 		} else {
 			token = mono_image_get_fieldref_token (assembly, obj, field);
 		}
@@ -1183,17 +1193,12 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 		MonoReflectionSigHelperHandle s = MONO_HANDLE_CAST (MonoReflectionSigHelper, obj);
 		token = MONO_TOKEN_SIGNATURE | mono_image_get_sighelper_token (assembly, s, error);
 		return_val_if_nok (error, 0);
-	} else if (strcmp (klass->name, "EnumBuilder") == 0) {
-		MonoType *type = mono_reflection_type_handle_mono_type (MONO_HANDLE_CAST (MonoReflectionType, obj), error);
-		return_val_if_nok (error, 0);
-		token = mono_metadata_token_from_dor (
-			mono_image_typedef_or_ref (assembly, type));
 	} else {
 		g_error ("requested token for %s\n", klass->name);
 	}
 
 	if (register_token)
-		mono_dynamic_image_register_token (assembly, token, obj);
+		mono_dynamic_image_register_token (assembly, token, obj, how_collide);
 
 	return token;
 }
@@ -1202,6 +1207,25 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 #endif
 
 #ifndef DISABLE_REFLECTION_EMIT
+
+static gboolean
+assemblybuilderaccess_can_refonlyload (guint32 access)
+{
+	return (access & 0x4) != 0;
+}
+
+static gboolean
+assemblybuilderaccess_can_run (guint32 access)
+{
+	return (access & MonoAssemblyBuilderAccess_Run) != 0;
+}
+
+static gboolean
+assemblybuilderaccess_can_save (guint32 access)
+{
+	return (access & MonoAssemblyBuilderAccess_Save) != 0;
+}
+
 
 /*
  * mono_reflection_dynimage_basic_init:
@@ -1264,8 +1288,9 @@ mono_reflection_dynimage_basic_init (MonoReflectionAssemblyBuilder *assemblyb)
 			assembly->assembly.aname.revision = 0;
         }
 
-	assembly->run = assemblyb->access != 2;
-	assembly->save = assemblyb->access != 1;
+	assembly->assembly.ref_only = assemblybuilderaccess_can_refonlyload (assemblyb->access);
+	assembly->run = assemblybuilderaccess_can_run (assemblyb->access);
+	assembly->save = assemblybuilderaccess_can_save (assemblyb->access);
 	assembly->domain = domain;
 
 	char *assembly_name = mono_string_to_utf8_checked (assemblyb->name, &error);
@@ -2458,7 +2483,7 @@ reflection_setup_internal_class_internal (MonoReflectionTypeBuilderHandle ref_tb
 	*/
 	mono_image_append_class_to_reflection_info_set (klass);
 
-	mono_dynamic_image_register_token (dynamic_image, MONO_TOKEN_TYPE_DEF | table_idx, MONO_HANDLE_CAST (MonoObject, ref_tb));
+	mono_dynamic_image_register_token (dynamic_image, MONO_TOKEN_TYPE_DEF | table_idx, MONO_HANDLE_CAST (MonoObject, ref_tb), MONO_DYN_IMAGE_TOK_NEW);
 
 	if ((!strcmp (klass->name, "ValueType") && !strcmp (klass->name_space, "System")) ||
 			(!strcmp (klass->name, "Object") && !strcmp (klass->name_space, "System")) ||
@@ -3424,6 +3449,11 @@ typebuilder_setup_fields (MonoClass *klass, MonoError *error)
 			return_if_nok (error);
 		}
 
+		if (!klass->enumtype && !mono_type_get_underlying_type (field->type)) {
+			mono_class_set_type_load_failure (klass, "Field '%s' is an enum type with a bad underlying type", field->name);
+			continue;
+		}
+
 		if ((fb->attrs & FIELD_ATTRIBUTE_HAS_FIELD_RVA) && (rva_data = fb->rva_data)) {
 			char *base = mono_array_addr (rva_data, char, 0);
 			size_t size = mono_array_length (rva_data);
@@ -3449,7 +3479,9 @@ typebuilder_setup_fields (MonoClass *klass, MonoError *error)
 		}
 	}
 
-	mono_class_layout_fields (klass, instance_size, packing_size, TRUE);
+	if (!mono_class_has_failure (klass)) {
+		mono_class_layout_fields (klass, instance_size, packing_size, TRUE);
+	}
 }
 
 static void
@@ -4314,19 +4346,17 @@ void
 ves_icall_ModuleBuilder_RegisterToken (MonoReflectionModuleBuilderHandle mb, MonoObjectHandle obj, guint32 token, MonoError *error)
 {
 	error_init (error);
-	mono_dynamic_image_register_token (MONO_HANDLE_GETVAL (mb, dynamic_image), token, obj);
+	/* This function may be called by ModuleBuilder.FixupTokens to update
+	 * an existing token, so replace is okay here. */
+	mono_dynamic_image_register_token (MONO_HANDLE_GETVAL (mb, dynamic_image), token, obj, MONO_DYN_IMAGE_TOK_REPLACE);
 }
 
-MonoObject*
-ves_icall_ModuleBuilder_GetRegisteredToken (MonoReflectionModuleBuilder *mb, guint32 token)
+MonoObjectHandle
+ves_icall_ModuleBuilder_GetRegisteredToken (MonoReflectionModuleBuilderHandle mb, guint32 token, MonoError *error)
 {
-	MonoObject *obj;
-
-	mono_loader_lock ();
-	obj = (MonoObject *)mono_g_hash_table_lookup (mb->dynamic_image->tokens, GUINT_TO_POINTER (token));
-	mono_loader_unlock ();
-
-	return obj;
+	error_init (error);
+	MonoDynamicImage *dynamic_image = MONO_HANDLE_GETVAL (mb, dynamic_image);
+	return mono_dynamic_image_get_registered_token (dynamic_image, token, error);
 }
 
 #ifndef DISABLE_REFLECTION_EMIT
@@ -4347,10 +4377,12 @@ ves_icall_AssemblyBuilder_basic_init (MonoReflectionAssemblyBuilder *assemblyb)
 }
 
 void
-ves_icall_EnumBuilder_setup_enum_type (MonoReflectionType *enumtype,
-									   MonoReflectionType *t)
+ves_icall_EnumBuilder_setup_enum_type (MonoReflectionTypeHandle enumtype,
+				       MonoReflectionTypeHandle t,
+				       MonoError *error)
 {
-	enumtype->type = t->type;
+	error_init (error);
+	MONO_HANDLE_SETVAL (enumtype, type, MonoType*, MONO_HANDLE_GETVAL (t, type));
 }
 
 void
@@ -4367,10 +4399,12 @@ ves_icall_ModuleBuilder_getUSIndex (MonoReflectionModuleBuilderHandle module, Mo
 }
 
 void
-ves_icall_ModuleBuilder_set_wrappers_type (MonoReflectionModuleBuilder *moduleb, MonoReflectionType *type)
+ves_icall_ModuleBuilder_set_wrappers_type (MonoReflectionModuleBuilderHandle moduleb, MonoReflectionTypeHandle ref_type, MonoError *error)
 {
-	MonoDynamicImage *image = moduleb->dynamic_image;
+	error_init (error);
+	MonoDynamicImage *image = MONO_HANDLE_GETVAL (moduleb, dynamic_image);
+	MonoType *type = MONO_HANDLE_GETVAL (ref_type, type);
 
-	g_assert (type->type);
-	image->wrappers_type = mono_class_from_mono_type (type->type);
+	g_assert (type);
+	image->wrappers_type = mono_class_from_mono_type (type);
 }

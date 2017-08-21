@@ -9,12 +9,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
-
-
+using System.Transactions;
 
 namespace System.Data.SqlClient
 {
-    public sealed partial class SqlConnection : DbConnection
+    public sealed partial class SqlConnection : DbConnection, ICloneable
     {
         private bool _AsyncCommandInProgress;
 
@@ -51,6 +50,15 @@ namespace System.Data.SqlClient
         public SqlConnection(string connectionString) : this()
         {
             ConnectionString = connectionString;    // setting connection string first so that ConnectionOption is available
+            CacheConnectionStringProperties();
+        }
+
+        private SqlConnection(SqlConnection connection)
+        {
+            GC.SuppressFinalize(this);
+            CopyFrom(connection);
+            _connectionString = connection._connectionString;
+
             CacheConnectionStringProperties();
         }
 
@@ -306,6 +314,11 @@ namespace System.Data.SqlClient
                 string result = ((null != constr) ? constr.WorkstationId : string.Empty);
                 return result;
             }
+        }
+
+        protected override DbProviderFactory DbProviderFactory
+        {
+            get { return SqlClientFactory.Instance; }
         }
 
         // SqlCredential: Pair User Id and password in SecureString which are to be used for SQL authentication
@@ -599,6 +612,11 @@ namespace System.Data.SqlClient
             }
         }
 
+        public override void EnlistTransaction(Transaction transaction)
+        {
+            throw ADP.AmbientTransactionIsNotSupported();
+        }
+
         internal void RegisterWaitingForReconnect(Task waitingTask)
         {
             if (((SqlConnectionString)ConnectionOptions).MARS)
@@ -885,6 +903,21 @@ namespace System.Data.SqlClient
             }
         }
 
+        public override DataTable GetSchema()
+        {
+            return GetSchema(DbMetaDataCollectionNames.MetaDataCollections, null);
+        }
+
+        public override DataTable GetSchema(string collectionName)
+        {
+            return GetSchema(collectionName, null);
+        }
+
+        public override DataTable GetSchema(string collectionName, string[] restrictionValues)
+        {
+            return InnerConnection.GetSchema(ConnectionFactory, PoolGroup, this, collectionName, restrictionValues);
+        }
+
         private class OpenAsyncRetry
         {
             private SqlConnection _parent;
@@ -978,6 +1011,13 @@ namespace System.Data.SqlClient
         private bool TryOpen(TaskCompletionSource<DbConnectionInternal> retry)
         {
             SqlConnectionString connectionOptions = (SqlConnectionString)ConnectionOptions;
+
+            // Fail Fast in case an application is trying to enlist the SqlConnection in a Transaction Scope.
+            if (connectionOptions.Enlist && ADP.GetCurrentTransaction() != null)
+            {
+                throw ADP.AmbientTransactionIsNotSupported();
+            }
+
             _applyTransientFaultHandling = (retry == null && connectionOptions != null && connectionOptions.ConnectRetryCount > 0);
 
             if (ForceNewConnection)
@@ -1266,6 +1306,24 @@ namespace System.Data.SqlClient
             }
             // delegate the rest of the work to the SqlStatistics class
             Statistics.UpdateStatistics();
+        }
+
+        object ICloneable.Clone() => new SqlConnection(this);
+
+        private void CopyFrom(SqlConnection connection)
+        {
+            ADP.CheckArgumentNull(connection, nameof(connection));
+            _userConnectionOptions = connection.UserConnectionOptions;
+            _poolGroup = connection.PoolGroup;
+            
+            if (DbConnectionClosedNeverOpened.SingletonInstance == connection._innerConnection)
+            {
+                _innerConnection = DbConnectionClosedNeverOpened.SingletonInstance;
+            }
+            else
+            {
+                _innerConnection = DbConnectionClosedPreviouslyOpened.SingletonInstance;
+            }
         }
     } // SqlConnection
 } // System.Data.SqlClient namespace

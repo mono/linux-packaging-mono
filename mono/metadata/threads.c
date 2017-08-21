@@ -135,7 +135,7 @@ static StaticDataInfo context_static_info;
 static MonoGHashTable *threads=NULL;
 
 /* List of app context GC handles.
- * Added to from ves_icall_System_Runtime_Remoting_Contexts_Context_RegisterContext ().
+ * Added to from mono_threads_register_app_context ().
  */
 static GHashTable *contexts = NULL;
 
@@ -2964,8 +2964,9 @@ free_context (void *user_data)
 }
 
 void
-ves_icall_System_Runtime_Remoting_Contexts_Context_RegisterContext (MonoAppContext *ctx)
+mono_threads_register_app_context (MonoAppContext *ctx, MonoError *error)
 {
+	error_init (error);
 	mono_threads_lock ();
 
 	//g_print ("Registering context %d in domain %d\n", ctx->context_id, ctx->domain_id);
@@ -2997,7 +2998,14 @@ ves_icall_System_Runtime_Remoting_Contexts_Context_RegisterContext (MonoAppConte
 }
 
 void
-ves_icall_System_Runtime_Remoting_Contexts_Context_ReleaseContext (MonoAppContext *ctx)
+ves_icall_System_Runtime_Remoting_Contexts_Context_RegisterContext (MonoAppContextHandle ctx, MonoError *error)
+{
+	error_init (error);
+	mono_threads_register_app_context (MONO_HANDLE_RAW (ctx), error); /* FIXME use handles in mono_threads_register_app_context */
+}
+
+void
+mono_threads_release_app_context (MonoAppContext* ctx, MonoError *error)
 {
 	/*
 	 * NOTE: Since finalizers are unreliable for the purposes of ensuring
@@ -3008,6 +3016,13 @@ ves_icall_System_Runtime_Remoting_Contexts_Context_ReleaseContext (MonoAppContex
 	//g_print ("Releasing context %d in domain %d\n", ctx->context_id, ctx->domain_id);
 
 	mono_profiler_context_unloaded (ctx);
+}
+
+void
+ves_icall_System_Runtime_Remoting_Contexts_Context_ReleaseContext (MonoAppContextHandle ctx, MonoError *error)
+{
+	error_init (error);
+	mono_threads_release_app_context (MONO_HANDLE_RAW (ctx), error); /* FIXME use handles in mono_threads_release_app_context */
 }
 
 void mono_thread_init (MonoThreadStartCB start_cb,
@@ -3712,7 +3727,10 @@ mono_threads_get_thread_dump (MonoArray **out_threads, MonoArray **out_stack_fra
 					sf->il_offset = location->il_offset;
 
 					if (location && location->source_file) {
-						MONO_OBJECT_SETREF (sf, filename, mono_string_new (domain, location->source_file));
+						MonoString *filename = mono_string_new_checked (domain, location->source_file, error);
+						if (!is_ok (error))
+							goto leave;
+						MONO_OBJECT_SETREF (sf, filename, filename);
 						sf->line = location->row;
 						sf->column = location->column;
 					}
@@ -3898,10 +3916,6 @@ collect_appdomain_thread (gpointer key, gpointer value, gpointer user_data)
 gboolean
 mono_threads_abort_appdomain_threads (MonoDomain *domain, int timeout)
 {
-#ifdef __native_client__
-	return FALSE;
-#endif
-
 	abort_appdomain_data user_data;
 	gint64 start_time;
 	int orig_timeout = timeout;

@@ -6,6 +6,7 @@ using Xunit;
 
 namespace System.IO.IsolatedStorage
 {
+    [ActiveIssue(18940, TargetFrameworkMonikers.UapAot)]
     public class CreateDirectoryTests : IsoStorageTest
     {
         [Fact]
@@ -18,12 +19,12 @@ namespace System.IO.IsolatedStorage
         }
 
         [Fact]
-        public void CreateDirectory_ThrowsIsolatedStorageException()
+        public void CreateRemovedDirectory_ThrowsInvalidOperationException()
         {
             using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForAssembly())
             {
                 isf.Remove();
-                Assert.Throws<IsolatedStorageException>(() => isf.CreateDirectory("foo"));
+                Assert.Throws<InvalidOperationException>(() => isf.CreateDirectory("foo"));
             }
         }
 
@@ -39,7 +40,7 @@ namespace System.IO.IsolatedStorage
         }
 
         [Fact]
-        public void CreateDirectory_ThrowsInvalidOperationException()
+        public void CreateClosedDirectory_ThrowsInvalidOperationException()
         {
             using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForAssembly())
             {
@@ -58,6 +59,7 @@ namespace System.IO.IsolatedStorage
         }
 
         [Theory MemberData(nameof(ValidStores))]
+        [ActiveIssue("dotnet/corefx #18268", TargetFrameworkMonikers.NetFramework)]
         public void CreateDirectory_Existance(PresetScopes scope)
         {
             using (var isf = GetPresetScope(scope))

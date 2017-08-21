@@ -25,7 +25,7 @@
 
 #undef DEBUG_REFS
 
-#define SLOT_MAX		(1024 * 16)
+#define SLOT_MAX		(1024 * 32)
 
 /* must be a power of 2 */
 #define HANDLE_PER_SLOT	(256)
@@ -285,28 +285,10 @@ mono_w32handle_init (void)
 void
 mono_w32handle_cleanup (void)
 {
-	int i, j, k;
+	int i;
 
 	g_assert (!shutting_down);
 	shutting_down = TRUE;
-
-	/* Every shared handle we were using ought really to be closed
-	 * by now, but to make sure just blow them all away.  The
-	 * exiting finalizer thread in particular races us to the
-	 * program exit and doesn't always win, so it can be left
-	 * cluttering up the shared file.  Anything else left over is
-	 * really a bug.
-	 */
-	for(i = SLOT_INDEX (0); private_handles[i] != NULL; i++) {
-		for(j = SLOT_OFFSET (0); j < HANDLE_PER_SLOT; j++) {
-			MonoW32HandleBase *handle_data = &private_handles[i][j];
-			gpointer handle = GINT_TO_POINTER (i*HANDLE_PER_SLOT+j);
-
-			for(k = handle_data->ref; k > 0; k--) {
-				mono_w32handle_unref (handle);
-			}
-		}
-	}
 
 	for (i = 0; i < SLOT_MAX; ++i)
 		g_free (private_handles [i]);
@@ -682,8 +664,6 @@ w32handle_destroy (gpointer handle)
 	if (close_func != NULL) {
 		close_func (handle, handle_specific);
 	}
-
-	memset (handle_specific, 0, mono_w32handle_ops_typesize (type));
 
 	g_free (handle_specific);
 }

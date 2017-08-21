@@ -13,7 +13,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(IsProjectNLibrary)' != 'true'">
     <ProjectReference Include="..\..\System.Private.CoreLib\src\System.Private.CoreLib.csproj" />
   </ItemGroup>
 
@@ -31,6 +31,9 @@
     </Compile>
     <Compile Include="..\..\Common\src\System\Runtime\InteropServices\McgIntrinsicsAttribute.cs" >
       <Link>System\Runtime\InteropServices\McgIntrinsicsAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\src\System\Runtime\CompilerServices\__BlockReflectionAttribute.cs" Condition="'$(IsProjectNLibrary)' != 'true'">
+      <Link>System\Runtime\CompilerServices\__BlockReflectionAttribute.cs</Link>
     </Compile>
   </ItemGroup>
 

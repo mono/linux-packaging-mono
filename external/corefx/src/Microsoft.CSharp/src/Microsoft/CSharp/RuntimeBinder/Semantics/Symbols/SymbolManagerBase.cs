@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Microsoft.CSharp.RuntimeBinder.Syntax;
 
@@ -13,13 +14,6 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
     internal struct AidContainer
     {
         internal static readonly AidContainer NullAidContainer = default(AidContainer);
-
-        private enum Kind
-        {
-            None = 0,
-            File,
-            ExternAlias
-        }
 
         private object _value;
 
@@ -52,27 +46,25 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
         // The hash table for type arrays.
         private Dictionary<TypeArrayKey, TypeArray> tableTypeArrays;
 
-        private const int LOG2_SYMTBL_INITIAL_BUCKET_CNT = 13;    // Initial local size: 8192 buckets.
-
         private static readonly TypeArray s_taEmpty = new TypeArray(Array.Empty<CType>());
 
         public BSYMMGR(NameManager nameMgr, TypeManager typeManager)
         {
             this.m_nameTable = nameMgr;
             this.tableGlobal = new SYMTBL();
-            _symFactory = new SymFactory(this.tableGlobal, this.m_nameTable);
+            _symFactory = new SymFactory(this.tableGlobal);
             _miscSymFactory = new MiscSymFactory(this.tableGlobal);
 
             this.ssetAssembly = new List<AidContainer>();
 
-            InputFile infileUnres = new InputFile {isSource = false};
+            InputFile infileUnres = new InputFile();
             infileUnres.SetAssemblyID(KAID.kaidUnresolved);
 
             ssetAssembly.Add(new AidContainer(infileUnres));
             this.bsetGlobalAssemblies = new HashSet<KAID>();
             this.bsetGlobalAssemblies.Add(KAID.kaidThisAssembly);
             this.tableTypeArrays = new Dictionary<TypeArrayKey, TypeArray>();
-            _rootNS = _symFactory.CreateNamespace(m_nameTable.Add(""), null);
+            _rootNS = _symFactory.CreateNamespace(m_nameTable.Lookup(""), null);
             GetNsAid(_rootNS, KAID.kaidGlobal);
         }
 
@@ -334,24 +326,36 @@ namespace Microsoft.CSharp.RuntimeBinder.Semantics
 
             public bool Equals(TypeArrayKey other)
             {
-                if (other._types == _types) return true;
-                if (other._types.Length != _types.Length) return false;
-                if (other._hashCode != _hashCode) return false;
-                for (int i = 0, n = _types.Length; i < n; i++)
+                CType[] types = _types;
+                CType[] otherTypes = other._types;
+                if (otherTypes == types)
                 {
-                    if (!_types[i].Equals(other._types[i]))
-                        return false;
+                    return true;
                 }
+
+                if (other._hashCode != _hashCode || otherTypes.Length != types.Length)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < types.Length; i++)
+                {
+                    if (!types[i].Equals(otherTypes[i]))
+                    {
+                        return false;
+                    }
+                }
+
                 return true;
             }
 
+#if  DEBUG 
+            [ExcludeFromCodeCoverage] // Typed overload should always be the method called.
+#endif
             public override bool Equals(object obj)
             {
-                if (obj is TypeArrayKey)
-                {
-                    return this.Equals((TypeArrayKey)obj);
-                }
-                return false;
+                Debug.Fail("Sub-optimal overload called. Check if this can be avoided.");
+                return obj is TypeArrayKey && Equals((TypeArrayKey)obj);
             }
 
             public override int GetHashCode()

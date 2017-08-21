@@ -492,11 +492,11 @@ class Package:
                 self.shadow_copy(workspace_x86, workspace_x64)
 
                 self.link(workspace_x86, workspace)
-                package_stage = self.do_build(
+                stagedir_x32 = self.do_build(
                     'darwin-32', os.path.join(self.profile.bockbuild.scratch, self.name + '-x86.install'))
 
                 self.link(workspace_x64, workspace)
-                stagedir_x64 = self.do_build(
+                package_stage = self.do_build(
                     'darwin-64', os.path.join(self.profile.bockbuild.scratch, self.name + '-x64.install'))
 
                 delete(workspace)
@@ -504,9 +504,9 @@ class Package:
 
                 print 'lipo', self.name
 
-                self.lipo_dirs(stagedir_x64, package_stage, 'lib')
+                self.lipo_dirs(stagedir_x32, package_stage, 'lib')
                 self.copy_side_by_side(
-                    stagedir_x64, package_stage, 'bin', '64', '32')
+                    stagedir_x32, package_stage, 'bin', '32', '64')
             elif arch == 'toolchain':
                 package_stage = self.do_build('darwin-64')
             elif self.m32_only:
@@ -864,14 +864,17 @@ class Package:
                 dest_orig_file = os.path.join(dest_dir, reldir, filename)
 
                 if not os.path.exists(dest_orig_file):
-                    error('lipo: %s exists in %s but not in %s' %
+                    warn('lipo: %s exists in %s but not in %s' %
                           (relpath, src_dir, dest_dir))
-                if orig_suffix is not None:
+                elif orig_suffix is not None:
                     suffixed = os.path.join(
                         dest_dir, reldir, add_suffix(filename, orig_suffix))
                     trace(suffixed)
                     shutil.move(dest_orig_file, suffixed)
                     os.symlink(os.path.basename(suffixed), dest_orig_file)
+
+                if not os.path.exists(os.path.dirname(dest_file)):
+                    os.makedirs(os.path.dirname(dest_file))
 
                 shutil.copy2(path, dest_file)
 

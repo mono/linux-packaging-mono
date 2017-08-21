@@ -10,7 +10,7 @@ using Debug = System.Diagnostics.Debug;
 
 namespace ILCompiler.DependencyAnalysis
 {
-    internal sealed class GenericDefinitionEETypeNode : EETypeNode, ISymbolNode
+    internal sealed class GenericDefinitionEETypeNode : EETypeNode
     {
         public GenericDefinitionEETypeNode(NodeFactory factory, TypeDesc type) : base(factory, type)
         {
@@ -24,7 +24,12 @@ namespace ILCompiler.DependencyAnalysis
 
         protected override DependencyList ComputeNonRelocationBasedDependencies(NodeFactory factory)
         {
-            return null;
+            DependencyList dependencyList = null;
+
+            // Ask the metadata manager if we have any dependencies due to reflectability.
+            factory.MetadataManager.GetDependenciesDueToReflectability(ref dependencyList, factory, _type);
+
+            return dependencyList;
         }
 
         protected internal override void ComputeOptionalEETypeFields(NodeFactory factory, bool relocsOnly)

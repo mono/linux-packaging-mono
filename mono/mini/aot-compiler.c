@@ -78,7 +78,7 @@
 #define TARGET_WIN32_MSVC
 #endif
 
-#if defined(__linux__) || defined(__native_client_codegen__)
+#if defined(__linux__)
 #define RODATA_SECT ".rodata"
 #elif defined(TARGET_MACH)
 #define RODATA_SECT ".section __TEXT, __const"
@@ -298,6 +298,7 @@ typedef struct MonoAotCompile {
 	guint32 label_generator;
 	gboolean llvm;
 	gboolean has_jitted_code;
+	gboolean is_full_aot;
 	MonoAotFileFlags flags;
 	MonoDynamicStream blob;
 	gboolean blob_closed;
@@ -438,7 +439,10 @@ report_loader_error (MonoAotCompile *acfg, MonoError *error, const char *format,
 	va_end (args);
 	mono_error_cleanup (error);
 
-	g_error ("FullAOT cannot continue if there are loader errors");
+	if (acfg->is_full_aot) {
+		fprintf (output, "FullAOT cannot continue if there are loader errors.\n");
+		exit (1);
+	}
 }
 
 /* Wrappers around the image writer functions */
@@ -949,10 +953,8 @@ emit_code_bytes (MonoAotCompile *acfg, const guint8* buf, int size)
 #ifdef TARGET_X86
 #ifdef TARGET_WIN32
 #define AOT_TARGET_STR "X86 (WIN32)"
-#elif defined(__native_client_codegen__)
-#define AOT_TARGET_STR "X86 (native client codegen)"
 #else
-#define AOT_TARGET_STR "X86 (!native client codegen)"
+#define AOT_TARGET_STR "X86"
 #endif
 #endif
 
@@ -4425,7 +4427,13 @@ method_has_type_vars (MonoMethod *method)
 static
 gboolean mono_aot_mode_is_full (MonoAotOptions *opts)
 {
-	return opts->mode == MONO_AOT_MODE_FULL;
+	return opts->mode == MONO_AOT_MODE_FULL || opts->mode == MONO_AOT_MODE_INTERP;
+}
+
+static
+gboolean mono_aot_mode_is_interp (MonoAotOptions *opts)
+{
+	return opts->mode == MONO_AOT_MODE_INTERP;
 }
 
 static
@@ -5743,8 +5751,7 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 		encode_value (patch_info->data.index, p, &p);
 		break;
 	case MONO_PATCH_INFO_INTERNAL_METHOD:
-	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
-	case MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL: {
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR: {
 		guint32 len = strlen (patch_info->data.name);
 
 		encode_value (len, p, &p);
@@ -6131,11 +6138,23 @@ emit_exception_debug_info (MonoAotCompile *acfg, MonoCompile *cfg, gboolean stor
 			clause = &header->clauses [k];
 
 			encode_value (clause->flags, p, &p);
-			if (clause->data.catch_class) {
-				encode_value (1, p, &p);
-				encode_klass_ref (acfg, clause->data.catch_class, p, &p);
-			} else {
-				encode_value (0, p, &p);
+			if (!(clause->flags == MONO_EXCEPTION_CLAUSE_FILTER || clause->flags == MONO_EXCEPTION_CLAUSE_FINALLY)) {
+				if (clause->data.catch_class) {
+					guint8 *buf2, *p2;
+					int len;
+
+					buf2 = (guint8 *)g_malloc (4096);
+					p2 = buf2;
+					encode_klass_ref (acfg, clause->data.catch_class, p2, &p2);
+					len = p2 - buf2;
+					g_assert (len < 4096);
+					encode_value (len, p, &p);
+					memcpy (p, buf2, len);
+					p += p2 - buf2;
+					g_free (buf2);
+				} else {
+					encode_value (0, p, &p);
+				}
 			}
 
 			/* Emit the IL ranges too, since they might not be available at runtime */
@@ -6808,6 +6827,11 @@ emit_trampolines (MonoAotCompile *acfg)
 
 #endif /* #ifdef MONO_ARCH_HAVE_FULL_AOT_TRAMPOLINES */
 
+		if (mono_aot_mode_is_interp (&acfg->aot_opts)) {
+			mono_arch_get_enter_icall_trampoline (&info);
+			emit_trampoline (acfg, acfg->got_offset, info);
+		}
+
 		/* Emit trampolines which are numerous */
 
 		/*
@@ -7148,6 +7172,8 @@ mono_aot_parse_options (const char *aot_options, MonoAotOptions *opts)
 			opts->mode = MONO_AOT_MODE_FULL;
 		} else if (str_begins_with (arg, "hybrid")) {
 			opts->mode = MONO_AOT_MODE_HYBRID;			
+		} else if (str_begins_with (arg, "interp")) {
+			opts->mode = MONO_AOT_MODE_INTERP;
 		} else if (str_begins_with (arg, "threads=")) {
 			opts->nthreads = atoi (arg + strlen ("threads="));
 		} else if (str_begins_with (arg, "static")) {
@@ -7614,11 +7640,9 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 		return;
 	}
 	if (cfg->exception_type != MONO_EXCEPTION_NONE) {
-		if (acfg->aot_opts.print_skipped_methods) {
-			printf ("Skip (JIT failure): %s\n", mono_method_get_full_name (method));
-			if (cfg->exception_message)
-				printf ("Caused by: %s\n", cfg->exception_message);
-		}
+		/* Some instances cannot be JITted due to constraints etc. */
+		if (!method->is_inflated)
+			report_loader_error (acfg, &cfg->error, "Unable to compile method '%s' due to: '%s'.\n", mono_method_get_full_name (method), mono_error_get_message (&cfg->error));
 		/* Let the exception happen at runtime */
 		return;
 	}
@@ -7918,7 +7942,9 @@ compile_thread_main (gpointer user_data)
 
 	MonoError error;
 	MonoInternalThread *internal = mono_thread_internal_current ();
-	mono_thread_set_name_internal (internal, mono_string_new (mono_domain_get (), "AOT compiler"), TRUE, FALSE, &error);
+	MonoString *str = mono_string_new_checked (mono_domain_get (), "AOT compiler", &error);
+	mono_error_assert_ok (&error);
+	mono_thread_set_name_internal (internal, str, TRUE, FALSE, &error);
 	mono_error_assert_ok (&error);
 
 	for (i = 0; i < methods->len; ++i)
@@ -10346,19 +10372,13 @@ compile_asm (MonoAotCompile *acfg)
 #define AS_OPTIONS "-a64 -mppc64"
 #elif defined(sparc) && SIZEOF_VOID_P == 8
 #define AS_OPTIONS "-xarch=v9"
-#elif defined(TARGET_X86) && defined(TARGET_MACH) && !defined(__native_client_codegen__)
+#elif defined(TARGET_X86) && defined(TARGET_MACH)
 #define AS_OPTIONS "-arch i386"
 #else
 #define AS_OPTIONS ""
 #endif
 
-#ifdef __native_client_codegen__
-#if defined(TARGET_AMD64)
-#define AS_NAME "nacl64-as"
-#else
-#define AS_NAME "nacl-as"
-#endif
-#elif defined(TARGET_OSX)
+#if defined(TARGET_OSX)
 #define AS_NAME "clang"
 #elif defined(TARGET_WIN32_MSVC)
 #define AS_NAME "clang.exe"
@@ -10387,7 +10407,7 @@ compile_asm (MonoAotCompile *acfg)
 #elif defined(TARGET_WIN32) && !defined(TARGET_ANDROID)
 #define LD_NAME "gcc"
 #define LD_OPTIONS "-shared"
-#elif defined(TARGET_X86) && defined(TARGET_MACH) && !defined(__native_client_codegen__)
+#elif defined(TARGET_X86) && defined(TARGET_MACH)
 #define LD_NAME "clang"
 #define LD_OPTIONS "-m32 -dynamiclib"
 #elif defined(TARGET_ARM) && !defined(TARGET_ANDROID)
@@ -11353,13 +11373,6 @@ add_preinit_got_slots (MonoAotCompile *acfg)
 	get_got_offset (acfg, FALSE, ji);
 	get_got_offset (acfg, TRUE, ji);
 
-	/* Called by native-to-managed wrappers on possibly unattached threads */
-	ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
-	ji->type = MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL;
-	ji->data.name = "mono_threads_attach_coop";
-	get_got_offset (acfg, FALSE, ji);
-	get_got_offset (acfg, TRUE, ji);
-
 	for (i = 0; i < sizeof (preinited_jit_icalls) / sizeof (char*); ++i) {
 		ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoAotCompile));
 		ji->type = MONO_PATCH_INFO_INTERNAL_METHOD;
@@ -11493,8 +11506,10 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 		}
 	}
 
-	if (mono_aot_mode_is_full (&acfg->aot_opts))
+	if (mono_aot_mode_is_full (&acfg->aot_opts)) {
 		acfg->flags = (MonoAotFileFlags)(acfg->flags | MONO_AOT_FILE_FLAG_FULL_AOT);
+		acfg->is_full_aot = TRUE;
+	}
 
 	if (mono_threads_is_coop_enabled ())
 		acfg->flags = (MonoAotFileFlags)(acfg->flags | MONO_AOT_FILE_FLAG_SAFEPOINTS);
@@ -11515,7 +11530,7 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 		}
 	}
 
-	{
+	if (!mono_aot_mode_is_interp (&acfg->aot_opts)) {
 		int method_index;
 
        for (method_index = 0; method_index < acfg->image->tables [MONO_TABLE_METHOD].rows; ++method_index) {
@@ -11578,9 +11593,12 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 	if (mono_aot_mode_is_full (&acfg->aot_opts) || mono_aot_mode_is_hybrid (&acfg->aot_opts))
 		mono_set_partial_sharing_supported (TRUE);
 
-	res = collect_methods (acfg);
-	if (!res)
-		return 1;
+	if (!mono_aot_mode_is_interp (&acfg->aot_opts)) {
+		res = collect_methods (acfg);
+
+		if (!res)
+			return 1;
+	}
 
 	{
 		GList *l;
@@ -11601,9 +11619,29 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 #ifdef ENABLE_LLVM
 	if (acfg->llvm) {
 		llvm_acfg = acfg;
-		mono_llvm_create_aot_module (acfg->image->assembly, acfg->global_prefix, TRUE, acfg->aot_opts.static_link, acfg->aot_opts.llvm_only);
+		mono_llvm_create_aot_module (acfg->image->assembly, acfg->global_prefix, acfg->nshared_got_entries, TRUE, acfg->aot_opts.static_link, acfg->aot_opts.llvm_only);
 	}
 #endif
+
+	if (mono_aot_mode_is_interp (&acfg->aot_opts)) {
+		MonoMethod *wrapper;
+		MonoMethodSignature *sig;
+
+		/* object object:interp_in_static (object,intptr,intptr,intptr) */
+		sig = mono_create_icall_signature ("object object ptr ptr ptr");
+		wrapper = mini_get_interp_in_wrapper (sig);
+		add_method (acfg, wrapper);
+
+		/* int object:interp_in_static (intptr,int,intptr) */
+		sig = mono_create_icall_signature ("int32 ptr int32 ptr");
+		wrapper = mini_get_interp_in_wrapper (sig);
+		add_method (acfg, wrapper);
+
+		/* void object:interp_in_static (object,intptr,intptr,intptr) */
+		sig = mono_create_icall_signature ("void object ptr ptr ptr");
+		wrapper = mini_get_interp_in_wrapper (sig);
+		add_method (acfg, wrapper);
+	}
 
 	TV_GETTIME (atv);
 

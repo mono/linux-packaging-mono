@@ -21,6 +21,7 @@ namespace ILCompiler
     public partial class CompilerTypeSystemContext : MetadataTypeSystemContext, IMetadataStringDecoderProvider
     {
         private MetadataFieldLayoutAlgorithm _metadataFieldLayoutAlgorithm = new CompilerMetadataFieldLayoutAlgorithm();
+        private RuntimeDeterminedFieldLayoutAlgorithm _runtimeDeterminedFieldLayoutAlgorithm = new RuntimeDeterminedFieldLayoutAlgorithm();
         private MetadataRuntimeInterfacesAlgorithm _metadataRuntimeInterfacesAlgorithm = new MetadataRuntimeInterfacesAlgorithm();
         private ArrayOfTRuntimeInterfacesAlgorithm _arrayOfTRuntimeInterfacesAlgorithm;
         private MetadataVirtualMethodAlgorithm _virtualMethodAlgorithm = new MetadataVirtualMethodAlgorithm();
@@ -207,7 +208,7 @@ namespace ILCompiler
             try
             {
                 PEReader peReader = OpenPEFile(filePath, out mappedViewAccessor);
-                pdbReader = OpenAssociatedSymbolFile(filePath);
+                pdbReader = OpenAssociatedSymbolFile(filePath, peReader);
 
                 EcmaModule module = EcmaModule.Create(this, peReader, pdbReader);
 
@@ -253,9 +254,11 @@ namespace ILCompiler
 
         public override FieldLayoutAlgorithm GetLayoutAlgorithmForType(DefType type)
         {
-            if ((type == UniversalCanonType) || (type.IsRuntimeDeterminedType && (((RuntimeDeterminedType)type).CanonicalType == UniversalCanonType)))
+            if (type == UniversalCanonType)
                 return UniversalCanonLayoutAlgorithm.Instance;
-            else 
+            else if (type.IsRuntimeDeterminedType)
+                return _runtimeDeterminedFieldLayoutAlgorithm;
+            else
                 return _metadataFieldLayoutAlgorithm;
         }
 
@@ -395,20 +398,41 @@ namespace ILCompiler
         // Symbols
         //
 
-        private PdbSymbolReader OpenAssociatedSymbolFile(string peFilePath)
+        private PdbSymbolReader OpenAssociatedSymbolFile(string peFilePath, PEReader peReader)
         {
             // Assume that the .pdb file is next to the binary
             var pdbFilename = Path.ChangeExtension(peFilePath, ".pdb");
+            string searchPath = "";
 
             if (!File.Exists(pdbFilename))
-                return null;
+            {
+                pdbFilename = null;
+
+                // If the file doesn't exist, try the path specified in the CodeView section of the image
+                foreach (DebugDirectoryEntry debugEntry in peReader.ReadDebugDirectory())
+                {
+                    if (debugEntry.Type != DebugDirectoryEntryType.CodeView)
+                        continue;
+
+                    string candidateFileName = peReader.ReadCodeViewDebugDirectoryData(debugEntry).Path;
+                    if (Path.IsPathRooted(candidateFileName) && File.Exists(candidateFileName))
+                    {
+                        pdbFilename = candidateFileName;
+                        searchPath = Path.GetDirectoryName(pdbFilename);
+                        break;
+                    }
+                }
+
+                if (pdbFilename == null)
+                    return null;
+            }
 
             // Try to open the symbol file as portable pdb first
             PdbSymbolReader reader = PortablePdbSymbolReader.TryOpen(pdbFilename, GetMetadataStringDecoder());
             if (reader == null)
             {
                 // Fallback to the diasymreader for non-portable pdbs
-                reader = UnmanagedPdbSymbolReader.TryOpenSymbolReaderForMetadataFile(peFilePath);
+                reader = UnmanagedPdbSymbolReader.TryOpenSymbolReaderForMetadataFile(peFilePath, searchPath);
             }
 
             return reader;

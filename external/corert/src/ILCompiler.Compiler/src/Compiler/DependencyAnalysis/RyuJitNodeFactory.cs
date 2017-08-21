@@ -12,8 +12,8 @@ namespace ILCompiler.DependencyAnalysis
 {
     public sealed class RyuJitNodeFactory : NodeFactory
     {
-        public RyuJitNodeFactory(CompilerTypeSystemContext context, CompilationModuleGroup compilationModuleGroup)
-            : base(context, compilationModuleGroup, new CompilerGeneratedMetadataManager(compilationModuleGroup, context), new CoreRTNameMangler(false))
+        public RyuJitNodeFactory(CompilerTypeSystemContext context, CompilationModuleGroup compilationModuleGroup, MetadataManager metadataManager, NameMangler nameMangler)
+            : base(context, compilationModuleGroup, metadataManager, nameMangler, new LazyGenericsDisabledPolicy())
         {
         }
 
@@ -39,7 +39,7 @@ namespace ILCompiler.DependencyAnalysis
                 throw new TypeSystemException.InvalidProgramException(ExceptionStringID.InvalidProgramSpecific, method);
             }
 
-            if (CompilationModuleGroup.ContainsMethod(method))
+            if (CompilationModuleGroup.ContainsMethodBody(method))
             {
                 return new MethodCodeNode(method);
             }
@@ -59,7 +59,7 @@ namespace ILCompiler.DependencyAnalysis
                 // 'this' and also provides an instantiation argument (we do a calling convention conversion).
                 // We don't do this for generic instance methods though because they don't use the EEType
                 // for the generic context anyway.
-                return new UnboxingThunkMethodCodeNode(TypeSystemContext.GetSpecialUnboxingThunk(method, CompilationModuleGroup.GeneratedAssembly), method);
+                return new MethodCodeNode(TypeSystemContext.GetSpecialUnboxingThunk(method, CompilationModuleGroup.GeneratedAssembly));
             }
             else
             {
@@ -71,14 +71,6 @@ namespace ILCompiler.DependencyAnalysis
         protected override ISymbolNode CreateReadyToRunHelperNode(ReadyToRunHelperKey helperCall)
         {
             return new ReadyToRunHelperNode(this, helperCall.HelperId, helperCall.Target);
-        }
-
-        protected override IMethodNode CreateShadowConcreteMethodNode(MethodKey methodKey)
-        {
-            return new ShadowConcreteMethodNode(methodKey.Method, 
-                MethodEntrypoint(
-                    methodKey.Method.GetCanonMethodTarget(CanonicalFormKind.Specific),
-                    methodKey.IsUnboxingStub));
         }
     }
 }

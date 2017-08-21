@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using ILCompiler.DependencyAnalysis;
 using Internal.TypeSystem;
@@ -39,12 +40,33 @@ namespace ILCompiler
             return true;
         }
 
-        public sealed override bool ContainsMethod(MethodDesc method)
+        public sealed override bool ContainsMethodBody(MethodDesc method)
         {
             if (method.HasInstantiation)
                 return true;
 
             return ContainsType(method.OwningType);
+        }
+
+        public sealed override bool ContainsMethodDictionary(MethodDesc method)
+        {
+            Debug.Assert(method.GetCanonMethodTarget(CanonicalFormKind.Specific) != method);
+            return ContainsMethodBody(method);
+        }
+
+        public sealed override bool ExportsType(TypeDesc type)
+        {
+            return false;
+        }
+
+        public sealed override bool ExportsMethod(MethodDesc method)
+        {
+            return false;
+        }
+
+        public override bool ExportsMethodDictionary(MethodDesc method)
+        {
+            return false;
         }
 
         private bool IsModuleInCompilationGroup(EcmaModule module)

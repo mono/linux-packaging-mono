@@ -16,7 +16,7 @@ namespace ILCompiler.DependencyAnalysis
     /// <summary>
     /// Represents a map between reflection metadata and generated method bodies.
     /// </summary>
-    internal sealed class ReflectionInvokeMapNode : ObjectNode, ISymbolNode
+    internal sealed class ReflectionInvokeMapNode : ObjectNode, ISymbolDefinitionNode
     {
         private ObjectAndOffsetSymbolNode _endSymbol;
         private ExternalReferencesTableNode _externalReferences;
@@ -52,7 +52,10 @@ namespace ILCompiler.DependencyAnalysis
         {
             // This node does not trigger generation of other nodes.
             if (relocsOnly)
-                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolNode[] { this });
+                return new ObjectData(Array.Empty<byte>(), Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this });
+
+            // Ensure the native layout blob has been saved
+            factory.MetadataManager.NativeLayoutInfo.SaveNativeLayoutInfoWriter(factory);
 
             var writer = new NativeWriter();
             var typeMapHashTable = new VertexHashtable();
@@ -84,16 +87,20 @@ namespace ILCompiler.DependencyAnalysis
                 if (method.IsDefaultConstructor)
                     flags |= InvokeTableFlags.IsDefaultConstructor;
 
-                // TODO: HasVirtualInvoke
+                if (ReflectionVirtualInvokeMapNode.NeedsVirtualInvokeInfo(method))
+                    flags |= InvokeTableFlags.HasVirtualInvoke;
 
                 if (!method.IsAbstract)
                     flags |= InvokeTableFlags.HasEntrypoint;
 
-                // Once we have a true multi module compilation story, we'll need to start emitting entries where this is not set.
-                flags |= InvokeTableFlags.HasMetadataHandle;
+                if (mappingEntry.MetadataHandle != 0)
+                    flags |= InvokeTableFlags.HasMetadataHandle;
 
                 if (!factory.MetadataManager.HasReflectionInvokeStubForInvokableMethod(method))
                     flags |= InvokeTableFlags.NeedsParameterInterpretation;
+
+                if (method.IsCanonicalMethod(CanonicalFormKind.Universal))
+                    flags |= InvokeTableFlags.IsUniversalCanonicalEntry;
 
                 // TODO: native signature for P/Invokes and NativeCallable methods
                 if (method.IsRawPInvoke() || method.IsNativeCallable)
@@ -112,7 +119,8 @@ namespace ILCompiler.DependencyAnalysis
                 }
                 else
                 {
-                    // TODO: no MD handle case
+                    var nameAndSig = factory.NativeLayout.PlacedSignatureVertex(factory.NativeLayout.MethodNameAndSignatureVertex(method.GetTypicalMethodDefinition()));
+                    vertex = writer.GetTuple(vertex, writer.GetUnsignedConstant((uint)nameAndSig.SavedVertex.VertexOffset));
                 }
 
                 // Go with a necessary type symbol. It will be upgraded to a constructed one if a constructed was emitted.
@@ -128,26 +136,29 @@ namespace ILCompiler.DependencyAnalysis
                             factory.MethodEntrypoint(method.GetCanonMethodTarget(CanonicalFormKind.Specific), useUnboxingStub))));
                 }
 
-                // TODO: data to generate the generic dictionary with the type loader
                 if ((flags & InvokeTableFlags.NeedsParameterInterpretation) == 0)
                 {
-                    MethodDesc invokeStubMethod = factory.MetadataManager.GetReflectionInvokeStub(method);
-                    MethodDesc canonInvokeStubMethod = invokeStubMethod.GetCanonMethodTarget(CanonicalFormKind.Specific);
-                    if (invokeStubMethod != canonInvokeStubMethod)
+                    MethodDesc canonInvokeStubMethod = factory.MetadataManager.GetCanonicalReflectionInvokeStub(method);
+                    if (canonInvokeStubMethod.IsSharedByGenericInstantiations)
                     {
                         vertex = writer.GetTuple(vertex,
-                            writer.GetUnsignedConstant(_externalReferences.GetIndex(factory.FatFunctionPointer(invokeStubMethod), FatFunctionPointerConstants.Offset) << 1));
+                            writer.GetUnsignedConstant(((uint)factory.MetadataManager.DynamicInvokeTemplateData.GetIdForMethod(canonInvokeStubMethod) << 1) | 1));
                     }
                     else
                     {
                         vertex = writer.GetTuple(vertex,
-                            writer.GetUnsignedConstant(_externalReferences.GetIndex(factory.MethodEntrypoint(invokeStubMethod)) << 1));
+                            writer.GetUnsignedConstant(_externalReferences.GetIndex(factory.MethodEntrypoint(canonInvokeStubMethod)) << 1));
                     }
                 }
 
                 if ((flags & InvokeTableFlags.IsGenericMethod) != 0)
                 {
-                    if ((flags & InvokeTableFlags.RequiresInstArg) == 0 || (flags & InvokeTableFlags.HasEntrypoint) == 0)
+                    if ((flags & InvokeTableFlags.IsUniversalCanonicalEntry) != 0)
+                    {
+                        var nameAndSigGenericMethod = factory.NativeLayout.PlacedSignatureVertex(factory.NativeLayout.MethodNameAndSignatureVertex(method));
+                        vertex = writer.GetTuple(vertex, writer.GetUnsignedConstant((uint)nameAndSigGenericMethod.SavedVertex.VertexOffset));
+                    }
+                    else if ((flags & InvokeTableFlags.RequiresInstArg) == 0 || (flags & InvokeTableFlags.HasEntrypoint) == 0)
                     {
                         VertexSequence args = new VertexSequence();
                         for (int i = 0; i < method.Instantiation.Length; i++)
@@ -172,7 +183,7 @@ namespace ILCompiler.DependencyAnalysis
 
             _endSymbol.SetSymbolOffset(hashTableBytes.Length);
 
-            return new ObjectData(hashTableBytes, Array.Empty<Relocation>(), 1, new ISymbolNode[] { this, _endSymbol });
+            return new ObjectData(hashTableBytes, Array.Empty<Relocation>(), 1, new ISymbolDefinitionNode[] { this, _endSymbol });
         }
     }
 }

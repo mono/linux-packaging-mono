@@ -288,15 +288,27 @@ namespace MonoTests.System.Data.Connected.SqlClient
 		[Test]
 		public void ChangeDatabase ()
 		{
-			conn = new SqlConnection (connectionString);
-			conn.Open ();
-			conn.ChangeDatabase ("master");
-			Assert.AreEqual ("master", conn.Database);
+			conn = new SqlConnection(connectionString);
+			conn.Open();
+
+			if (ConnectionManager.Instance.Sql.IsAzure)
+			{
+				var exc = Assert.Throws<SqlException>(() => conn.ChangeDatabase("master"));
+				Assert.Equals(40508, exc.Number); //USE statement is not supported to switch between databases (Azure).
+			}
+			else
+			{
+				conn.ChangeDatabase("master");
+				Assert.AreEqual("master", conn.Database);
+			}
 		}
 
 		[Test]
 		public void ChangeDatabase_DatabaseName_DoesNotExist ()
 		{
+			if (ConnectionManager.Instance.Sql.IsAzure)
+				Assert.Ignore("SQL Azure doesn't support 'ChangeDatabase'");
+
 			conn = new SqlConnection (connectionString);
 			conn.Open ();
 
@@ -385,6 +397,7 @@ namespace MonoTests.System.Data.Connected.SqlClient
 		}
 
 		[Test]
+		[Category("NotWorking")]
 		public void ClearAllPools ()
 		{
 			SqlConnection conn1 = new SqlConnection (connectionString + ";Pooling=false");
@@ -668,6 +681,9 @@ namespace MonoTests.System.Data.Connected.SqlClient
 		[Test]
 		public void Database ()
 		{
+			if (ConnectionManager.Instance.Sql.IsAzure)
+				Assert.Ignore("SQL Azure doesn't support 'use [db]'");
+
 			conn = new SqlConnection (connectionString);
 			string database = conn.Database;
 
@@ -830,6 +846,9 @@ namespace MonoTests.System.Data.Connected.SqlClient
 		[Test]
 		public void GetSchemaTest1()
 		{
+			if (ConnectionManager.Instance.Sql.IsAzure)
+				Assert.Ignore("SQL Azure - Not supported'");
+
 			bool flag = false;
 			DataTable tab1 = conn.GetSchema("databases");
 			foreach (DataRow row in tab1.Rows)
@@ -1004,6 +1023,9 @@ namespace MonoTests.System.Data.Connected.SqlClient
 		[Test]
 		public void GetSchemaTest9()
 		{
+			if (ConnectionManager.Instance.Sql.IsAzure)
+				Assert.Ignore("SQL Azure - Not supported'");
+
 			bool flag = false;
 			DataTable tab1 = conn.GetSchema("Columns");
 			foreach (DataRow row in tab1.Rows)

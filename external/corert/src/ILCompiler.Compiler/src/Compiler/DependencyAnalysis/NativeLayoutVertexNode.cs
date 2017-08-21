@@ -98,6 +98,11 @@ namespace ILCompiler.DependencyAnalysis
         {
             CreateInstantiatedSignature = 1,
             SaveEntryPoint = 2,
+            /// <summary>
+            /// IsUnboxingStub is not set for template methods (all template lookups performed at runtime are done with this flag not set,
+            /// since it can't always be conveniently computed for a concrete method before looking up its template).
+            /// </summary>
+            DisableUnboxingStub = 4
         }
 
         protected readonly MethodDesc _method;
@@ -115,7 +120,7 @@ namespace ILCompiler.DependencyAnalysis
             if ((_flags & MethodEntryFlags.CreateInstantiatedSignature) == 0)
             {
                 _containingTypeSig = factory.NativeLayout.TypeSignatureVertex(method.OwningType);
-                if (method.HasInstantiation)
+                if (method.HasInstantiation && !method.IsMethodDefinition)
                 {
                     _instantiationArgsSig = new NativeLayoutTypeSignatureVertexNode[method.Instantiation.Length];
                     for (int i = 0; i < _instantiationArgsSig.Length; i++)
@@ -138,7 +143,7 @@ namespace ILCompiler.DependencyAnalysis
             else
             {
                 dependencies.Add(new DependencyListEntry(_containingTypeSig, "NativeLayoutMethodEntryVertexNode containing type signature"));
-                if (_method.HasInstantiation)
+                if (_method.HasInstantiation && !_method.IsMethodDefinition)
                 {
                     foreach (var arg in _instantiationArgsSig)
                         dependencies.Add(new DependencyListEntry(arg, "NativeLayoutMethodEntryVertexNode instantiation argument signature"));
@@ -165,7 +170,7 @@ namespace ILCompiler.DependencyAnalysis
 
             Vertex[] args = null;
             MethodFlags flags = 0;
-            if (_method.HasInstantiation)
+            if (_method.HasInstantiation && !_method.IsMethodDefinition)
             {
                 Debug.Assert(_instantiationArgsSig == null || (_instantiationArgsSig != null && _method.Instantiation.Length == _instantiationArgsSig.Length));
 
@@ -221,7 +226,7 @@ namespace ILCompiler.DependencyAnalysis
 
         protected virtual IMethodNode GetMethodEntrypointNode(NodeFactory factory, out bool unboxingStub)
         {
-            unboxingStub = _method.OwningType.IsValueType && !_method.Signature.IsStatic;
+            unboxingStub = (_flags & MethodEntryFlags.DisableUnboxingStub) != 0 ? false : _method.OwningType.IsValueType && !_method.Signature.IsStatic;
             IMethodNode methodEntryPointNode = factory.MethodEntrypoint(_method, unboxingStub);
 
             return methodEntryPointNode;
@@ -285,7 +290,7 @@ namespace ILCompiler.DependencyAnalysis
         private NativeLayoutTypeSignatureVertexNode _returnTypeSig;
         private NativeLayoutTypeSignatureVertexNode[] _parametersSig;
 
-        protected override string GetName(NodeFactory factory) => "NativeLayoutMethodSignatureVertexNode " + _signature.GetMangledName(factory.NameMangler);
+        protected override string GetName(NodeFactory factory) => "NativeLayoutMethodSignatureVertexNode " + _signature.GetName();
 
         public NativeLayoutMethodSignatureVertexNode(NodeFactory factory, Internal.TypeSystem.MethodSignature signature)
         {
@@ -667,7 +672,7 @@ namespace ILCompiler.DependencyAnalysis
         protected override string GetName(NodeFactory factory) => "NativeLayoutTemplateMethodSignatureVertexNode_" + factory.NameMangler.GetMangledMethodName(_method);
 
         public NativeLayoutTemplateMethodSignatureVertexNode(NodeFactory factory, MethodDesc method)
-            : base(factory, method, MethodEntryFlags.CreateInstantiatedSignature | MethodEntryFlags.SaveEntryPoint)
+            : base(factory, method, MethodEntryFlags.CreateInstantiatedSignature | MethodEntryFlags.SaveEntryPoint | MethodEntryFlags.DisableUnboxingStub)
         {
         }
 
@@ -684,18 +689,20 @@ namespace ILCompiler.DependencyAnalysis
     public sealed class NativeLayoutDictionarySignatureNode : NativeLayoutSavedVertexNode
     {
         private TypeSystemEntity _owningMethodOrType;
-        public NativeLayoutDictionarySignatureNode(TypeSystemEntity owningMethodOrType)
+        public NativeLayoutDictionarySignatureNode(NodeFactory nodeFactory, TypeSystemEntity owningMethodOrType)
         {
             if (owningMethodOrType is MethodDesc)
             {
                 MethodDesc owningMethod = (MethodDesc)owningMethodOrType;
-                Debug.Assert(owningMethod.IsCanonicalMethod(CanonicalFormKind.Universal));
+                Debug.Assert(owningMethod.IsCanonicalMethod(CanonicalFormKind.Universal) || nodeFactory.LazyGenericsPolicy.UsesLazyGenerics(owningMethod));
+                Debug.Assert(owningMethod.IsCanonicalMethod(CanonicalFormKind.Any));
                 Debug.Assert(owningMethod.HasInstantiation);
             }
             else
             {
                 TypeDesc owningType = (TypeDesc)owningMethodOrType;
-                Debug.Assert(owningType.IsCanonicalSubtype(CanonicalFormKind.Universal));
+                Debug.Assert(owningType.IsCanonicalSubtype(CanonicalFormKind.Universal) || nodeFactory.LazyGenericsPolicy.UsesLazyGenerics(owningType));
+                Debug.Assert(owningType.IsCanonicalSubtype(CanonicalFormKind.Any));
             }
 
             _owningMethodOrType = owningMethodOrType;
@@ -807,7 +814,7 @@ namespace ILCompiler.DependencyAnalysis
             DictionaryLayoutNode associatedLayout = factory.GenericDictionaryLayout(_method);
             ICollection<NativeLayoutVertexNode> templateLayout = associatedLayout.GetTemplateEntries(factory);
             
-            if (!_method.IsCanonicalMethod(CanonicalFormKind.Universal) && (templateLayout.Count > 0))
+            if (!(_method.IsCanonicalMethod(CanonicalFormKind.Universal) || (factory.LazyGenericsPolicy.UsesLazyGenerics(_method))) && (templateLayout.Count > 0))
             {
                 List<NativeLayoutVertexNode> dictionaryVertices = new List<NativeLayoutVertexNode>();
 
@@ -829,17 +836,34 @@ namespace ILCompiler.DependencyAnalysis
 
     public sealed class NativeLayoutTemplateTypeLayoutVertexNode : NativeLayoutSavedVertexNode
     {
-        private DefType _type;
+        private TypeDesc _type;
         private bool _isUniversalCanon;
 
         protected override string GetName(NodeFactory factory) => "NativeLayoutTemplateTypeLayoutVertexNode_" + factory.NameMangler.GetMangledTypeName(_type);
 
-        public NativeLayoutTemplateTypeLayoutVertexNode(NodeFactory factory, DefType type)
+        public NativeLayoutTemplateTypeLayoutVertexNode(NodeFactory factory, TypeDesc type)
         {
             Debug.Assert(type.IsCanonicalSubtype(CanonicalFormKind.Any));
             Debug.Assert(type.ConvertToCanonForm(CanonicalFormKind.Specific) == type, "Assert that the canonical type passed in is in standard canonical form");
             _isUniversalCanon = type.IsCanonicalSubtype(CanonicalFormKind.Universal);
-            _type = type.ConvertToSharedRuntimeDeterminedForm();
+
+            _type = GetActualTemplateTypeForType(factory, type);
+        }
+
+        private static TypeDesc GetActualTemplateTypeForType(NodeFactory factory, TypeDesc type)
+        {
+            DefType defType = type as DefType;
+            if (defType == null)
+            {
+                Debug.Assert(GenericTypesTemplateMap.IsArrayTypeEligibleForTemplate(type));
+                defType = type.GetClosestDefType().ConvertToSharedRuntimeDeterminedForm();
+                Debug.Assert(defType.Instantiation.Length == 1);
+                return factory.TypeSystemContext.GetArrayType(defType.Instantiation[0]);
+            }
+            else
+            {
+                return defType.ConvertToSharedRuntimeDeterminedForm();
+            }
         }
 
         private ISymbolNode GetStaticsNode(NodeFactory context, out BagElementKind staticsBagKind)
@@ -848,13 +872,13 @@ namespace ILCompiler.DependencyAnalysis
 
             if (context is UtcNodeFactory)
             {
-                symbol = ((UtcNodeFactory)context).TypeGCStaticDescSymbol((MetadataType)_type.ConvertToCanonForm(CanonicalFormKind.Specific));
+                symbol = ((UtcNodeFactory)context).TypeGCStaticDescSymbol((MetadataType)_type.GetClosestDefType().ConvertToCanonForm(CanonicalFormKind.Specific));
                 staticsBagKind = BagElementKind.GcStaticDesc;
             }
             else
             {
-                symbol = context.GCStaticEEType(GCPointerMap.FromStaticLayout(_type));
-                staticsBagKind = BagElementKind.End; // GC static EETypes not yet implemented in type loader
+                symbol = context.GCStaticEEType(GCPointerMap.FromStaticLayout(_type.GetClosestDefType()));
+                staticsBagKind = BagElementKind.GcStaticEEType;
             }
 
             return symbol;
@@ -866,12 +890,12 @@ namespace ILCompiler.DependencyAnalysis
 
             if (context is UtcNodeFactory)
             {
-                symbol = ((UtcNodeFactory)context).TypeThreadStaticGCDescNode((MetadataType)_type.ConvertToCanonForm(CanonicalFormKind.Specific));
+                symbol = ((UtcNodeFactory)context).TypeThreadStaticGCDescNode((MetadataType)_type.GetClosestDefType().ConvertToCanonForm(CanonicalFormKind.Specific));
                 staticsBagKind = BagElementKind.ThreadStaticDesc;
             }
             else
             {
-                symbol = context.GCStaticEEType(GCPointerMap.FromThreadStaticLayout(_type));
+                symbol = context.GCStaticEEType(GCPointerMap.FromThreadStaticLayout(_type.GetClosestDefType()));
                 staticsBagKind = BagElementKind.End; // GC static EETypes not yet implemented in type loader
             }
 
@@ -880,6 +904,7 @@ namespace ILCompiler.DependencyAnalysis
 
         public override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory context)
         {
+            yield return new DependencyListEntry(context.ConstructedTypeSymbol(_type.ConvertToCanonForm(CanonicalFormKind.Specific)), "Template EEType");
 
             foreach (TypeDesc iface in _type.RuntimeInterfaces)
             {
@@ -893,20 +918,20 @@ namespace ILCompiler.DependencyAnalysis
 
             if (!_isUniversalCanon)
             {
-                if (_type.GCStaticFieldSize.AsInt > 0)
+                if (_type.GetClosestDefType().GCStaticFieldSize.AsInt > 0)
                 {
                     BagElementKind ignored;
                     yield return new DependencyListEntry(GetStaticsNode(context, out ignored), "type gc static info");
                 }
 
-                if (_type.ThreadStaticFieldSize.AsInt > 0)
+                if (_type.GetClosestDefType().ThreadStaticFieldSize.AsInt > 0)
                 {
                     BagElementKind ignored;
                     yield return new DependencyListEntry(GetThreadStaticsNode(context, out ignored), "type thread static info");
                 }
             }
 
-            if (_type.BaseType.IsRuntimeDeterminedSubtype)
+            if (_type.BaseType != null && _type.BaseType.IsRuntimeDeterminedSubtype)
             {
                 yield return new DependencyListEntry(context.NativeLayout.PlacedSignatureVertex(context.NativeLayout.TypeSignatureVertex(_type.BaseType)), "template base type");
             }
@@ -1025,7 +1050,7 @@ namespace ILCompiler.DependencyAnalysis
         private bool HasInstantiationDeterminedSize()
         {
             Debug.Assert(_isUniversalCanon);
-            return _type.InstanceFieldSize.IsIndeterminate;
+            return _type.GetClosestDefType().InstanceFieldSize.IsIndeterminate;
         }
 
         public override Vertex WriteVertex(NodeFactory factory)
@@ -1034,7 +1059,7 @@ namespace ILCompiler.DependencyAnalysis
 
             VertexBag layoutInfo = new VertexBag();
 
-            DictionaryLayoutNode associatedLayout = factory.GenericDictionaryLayout(_type.ConvertToCanonForm(CanonicalFormKind.Specific));
+            DictionaryLayoutNode associatedLayout = factory.GenericDictionaryLayout(_type.ConvertToCanonForm(CanonicalFormKind.Specific).GetClosestDefType());
             ICollection<NativeLayoutVertexNode> templateLayout = associatedLayout.GetTemplateEntries(factory);
             
             NativeWriter writer = GetNativeWriter(factory);
@@ -1053,7 +1078,7 @@ namespace ILCompiler.DependencyAnalysis
                 layoutInfo.Append(BagElementKind.ImplementedInterfaces, implementedInterfaces.WriteVertex(factory));
             }
 
-            if (!_isUniversalCanon && (templateLayout.Count > 0))
+            if (!(_isUniversalCanon || (factory.LazyGenericsPolicy.UsesLazyGenerics(_type)) )&& (templateLayout.Count > 0))
             {
                 List<NativeLayoutVertexNode> dictionaryVertices = new List<NativeLayoutVertexNode>();
 
@@ -1082,23 +1107,24 @@ namespace ILCompiler.DependencyAnalysis
 
             if (!_isUniversalCanon)
             {
-                if (_type.NonGCStaticFieldSize.AsInt != 0)
+                DefType closestDefType = _type.GetClosestDefType();
+                if (closestDefType.NonGCStaticFieldSize.AsInt != 0)
                 {
-                    layoutInfo.AppendUnsigned(BagElementKind.NonGcStaticDataSize, checked((uint)_type.NonGCStaticFieldSize.AsInt));
+                    layoutInfo.AppendUnsigned(BagElementKind.NonGcStaticDataSize, checked((uint)closestDefType.NonGCStaticFieldSize.AsInt));
                 }
 
-                if (_type.GCStaticFieldSize.AsInt != 0)
+                if (closestDefType.GCStaticFieldSize.AsInt != 0)
                 {
-                    layoutInfo.AppendUnsigned(BagElementKind.GcStaticDataSize, checked((uint)_type.GCStaticFieldSize.AsInt));
+                    layoutInfo.AppendUnsigned(BagElementKind.GcStaticDataSize, checked((uint)closestDefType.GCStaticFieldSize.AsInt));
                     BagElementKind staticDescBagType;
                     ISymbolNode staticsDescSymbol = GetStaticsNode(factory, out staticDescBagType);
                     uint gcStaticsSymbolIndex = factory.MetadataManager.NativeLayoutInfo.StaticsReferences.GetIndex(staticsDescSymbol);
                     layoutInfo.AppendUnsigned(staticDescBagType, gcStaticsSymbolIndex);
                 }
 
-                if (_type.ThreadStaticFieldSize.AsInt != 0)
+                if (closestDefType.ThreadStaticFieldSize.AsInt != 0)
                 {
-                    layoutInfo.AppendUnsigned(BagElementKind.ThreadStaticDataSize, checked((uint)_type.ThreadStaticFieldSize.AsInt));
+                    layoutInfo.AppendUnsigned(BagElementKind.ThreadStaticDataSize, checked((uint)closestDefType.ThreadStaticFieldSize.AsInt));
                     BagElementKind threadStaticDescBagType;
                     ISymbolNode threadStaticsDescSymbol = GetThreadStaticsNode(factory, out threadStaticDescBagType);
                     uint threadStaticsSymbolIndex = factory.MetadataManager.NativeLayoutInfo.StaticsReferences.GetIndex(threadStaticsDescSymbol);
@@ -1115,7 +1141,7 @@ namespace ILCompiler.DependencyAnalysis
                 }
             }
 
-            if (_type.BaseType.IsRuntimeDeterminedSubtype)
+            if (_type.BaseType != null && _type.BaseType.IsRuntimeDeterminedSubtype)
             {
                 layoutInfo.Append(BagElementKind.BaseType, factory.NativeLayout.PlacedSignatureVertex(factory.NativeLayout.TypeSignatureVertex(_type.BaseType)).WriteVertex(factory));
             }
@@ -1131,8 +1157,11 @@ namespace ILCompiler.DependencyAnalysis
             if (typeFlags != default(Internal.NativeFormat.TypeFlags))
                 layoutInfo.AppendUnsigned(BagElementKind.TypeFlags, (uint)typeFlags);
 
-            if (_type.GetTypeDefinition().HasVariance)
+            if (_type.GetTypeDefinition().HasVariance || factory.TypeSystemContext.IsGenericArrayInterfaceType(_type))
             {
+                // Runtime casting logic relies on all interface types implemented on arrays
+                // to have the variant flag set (even if all the arguments are non-variant).
+                // This supports e.g. casting uint[] to ICollection<int>
                 List<uint> varianceFlags = new List<uint>();
                 foreach (GenericParameterDesc param in _type.GetTypeDefinition().Instantiation)
                 {
@@ -1423,6 +1452,28 @@ namespace ILCompiler.DependencyAnalysis
         protected override string NodeTypeName => "NativeLayoutAllocateObjectGenericDictionarySlotNode_";
 
         protected override FixupSignatureKind SignatureKind => FixupSignatureKind.AllocateObject;
+    }
+
+    public sealed class NativeLayoutCastClassGenericDictionarySlotNode : NativeLayoutTypeSignatureBasedGenericDictionarySlotNode
+    {
+        public NativeLayoutCastClassGenericDictionarySlotNode(NodeFactory factory, TypeDesc type) : base(factory, type)
+        {
+        }
+
+        protected override string NodeTypeName => "NativeLayoutAllocateCastClassDictionarySlotNode_";
+
+        protected override FixupSignatureKind SignatureKind => FixupSignatureKind.CastClass;
+    }
+
+    public sealed class NativeLayoutIsInstGenericDictionarySlotNode : NativeLayoutTypeSignatureBasedGenericDictionarySlotNode
+    {
+        public NativeLayoutIsInstGenericDictionarySlotNode(NodeFactory factory, TypeDesc type) : base(factory, type)
+        {
+        }
+
+        protected override string NodeTypeName => "NativeLayoutIsInstGenericDictionarySlotNode_";
+
+        protected override FixupSignatureKind SignatureKind => FixupSignatureKind.IsInst;
     }
 
     public sealed class NativeLayoutTlsIndexGenericDictionarySlotNode : NativeLayoutTypeSignatureBasedGenericDictionarySlotNode
@@ -1727,7 +1778,7 @@ namespace ILCompiler.DependencyAnalysis
 
         protected sealed override string GetName(NodeFactory factory) => 
             "NativeLayoutCallingConventionConverterGenericDictionarySlotNode" + _converterKind.ToString() +
-             _signature.GetMangledName(factory.NameMangler);
+             _signature.GetName();
 
         protected sealed override FixupSignatureKind SignatureKind => FixupSignatureKind.MethodLdToken;
 
@@ -1740,6 +1791,69 @@ namespace ILCompiler.DependencyAnalysis
         {
             Vertex signatureStream = factory.NativeLayout.MethodSignatureVertex(_signature).WriteVertex(factory);
             return GetNativeWriter(factory).GetCallingConventionConverterSignature((uint)_converterKind, signatureStream);
+        }
+    }
+
+    public sealed class NativeLayoutConstrainedMethodDictionarySlotNode : NativeLayoutGenericDictionarySlotNode
+    {
+        MethodDesc _constrainedMethod;
+        TypeDesc _constraintType;
+        bool _directCall;
+
+        public NativeLayoutConstrainedMethodDictionarySlotNode(MethodDesc constrainedMethod, TypeDesc constraintType, bool directCall)
+        {
+            _constrainedMethod = constrainedMethod;
+            _constraintType = constraintType;
+            _directCall = directCall;
+            Debug.Assert(_constrainedMethod.OwningType.IsInterface);
+            Debug.Assert(!_constrainedMethod.HasInstantiation || !directCall);
+        }
+
+        protected sealed override string GetName(NodeFactory factory) =>
+            "NativeLayoutConstrainedMethodDictionarySlotNode_"
+            + (_directCall ? "Direct" : "")
+            + factory.NameMangler.GetMangledMethodName(_constrainedMethod) 
+            + ","
+            + factory.NameMangler.GetMangledTypeName(_constraintType);
+
+        protected sealed override FixupSignatureKind SignatureKind => _constrainedMethod.HasInstantiation ? FixupSignatureKind.GenericConstrainedMethod :
+            (_directCall ? FixupSignatureKind.NonGenericDirectConstrainedMethod : FixupSignatureKind.NonGenericConstrainedMethod);
+
+        public sealed override IEnumerable<DependencyListEntry> GetStaticDependencies(NodeFactory factory)
+        {
+            DependencyNodeCore<NodeFactory> constrainedMethodDescriptorNode;
+            if (_constrainedMethod.HasInstantiation)
+            {
+                constrainedMethodDescriptorNode = factory.NativeLayout.MethodLdTokenVertex(_constrainedMethod);
+            }
+            else
+            {
+                constrainedMethodDescriptorNode = factory.NativeLayout.TypeSignatureVertex(_constrainedMethod.OwningType);
+            }
+
+            return new DependencyListEntry[] {
+                new DependencyListEntry(factory.NativeLayout.TypeSignatureVertex(_constraintType), "ConstraintType"),
+                new DependencyListEntry(constrainedMethodDescriptorNode, "ConstrainedMethodType"),
+            };
+        }
+
+        protected sealed override Vertex WriteSignatureVertex(NativeWriter writer, NodeFactory factory)
+        {
+            Vertex constraintType = factory.NativeLayout.TypeSignatureVertex(_constraintType).WriteVertex(factory);
+            if (_constrainedMethod.HasInstantiation)
+            {
+                Debug.Assert(SignatureKind == FixupSignatureKind.GenericConstrainedMethod);
+                Vertex constrainedMethodVertex = factory.NativeLayout.MethodLdTokenVertex(_constrainedMethod).WriteVertex(factory);
+                return writer.GetTuple(constraintType, constrainedMethodVertex);
+            }
+            else
+            {
+                Debug.Assert((SignatureKind == FixupSignatureKind.NonGenericConstrainedMethod) || (SignatureKind == FixupSignatureKind.NonGenericDirectConstrainedMethod));
+                Vertex methodType = factory.NativeLayout.TypeSignatureVertex(_constrainedMethod.OwningType).WriteVertex(factory);
+                int interfaceSlot = VirtualMethodSlotHelper.GetVirtualMethodSlot(factory, _constrainedMethod.GetCanonMethodTarget(CanonicalFormKind.Specific));
+                Vertex interfaceSlotVertex = writer.GetUnsignedConstant(checked((uint)interfaceSlot));
+                return writer.GetTuple(constraintType, methodType, interfaceSlotVertex);
+            }
         }
     }
 

@@ -803,7 +803,7 @@ mono_image_init (MonoImage *image)
 				       class_next_value);
 	image->field_cache = mono_conc_hashtable_new (NULL, NULL);
 
-	image->typespec_cache = g_hash_table_new (NULL, NULL);
+	image->typespec_cache = mono_conc_hashtable_new (NULL, NULL);
 	image->memberref_signatures = g_hash_table_new (NULL, NULL);
 	image->helper_signatures = g_hash_table_new (g_str_hash, g_str_equal);
 	image->method_signatures = g_hash_table_new (NULL, NULL);
@@ -1112,6 +1112,11 @@ The ignored_assemblies list is generated using tools/nuget-hash-extractor and fe
 Right now the list of nugets are the ones that provide the assemblies in $ignored_assemblies_file_names.
 
 This is to be removed once a proper fix is shipped through nuget.
+
+Please keep this in sync with mcs/tools/xbuild/data/deniedAssembliesList.txt
+If any assemblies are added/removed, then this should be regenerated with:
+
+  $ mono tools/nuget-hash-extractor/nuget-hash-extractor.exe nugets guids_for_msbuild > mcs/tools/xbuild/data/deniedAssembliesList.txt
 
 */
 
@@ -1697,7 +1702,7 @@ mono_image_open_a_lot (const char *fname, MonoImageOpenStatus *status, gboolean 
 	}
 #endif
 
-	absfname = mono_path_canonicalize (fname);
+	absfname = mono_path_resolve_symlinks (fname);
 
 	/*
 	 * The easiest solution would be to do all the loading inside the mutex,
@@ -2084,7 +2089,7 @@ mono_image_close_except_pools (MonoImage *image)
 	free_hash (image->pinvoke_scopes);
 	free_hash (image->pinvoke_scope_filenames);
 	free_hash (image->native_func_wrapper_cache);
-	free_hash (image->typespec_cache);
+	mono_conc_hashtable_destroy (image->typespec_cache);
 
 	mono_wrapper_caches_free (&image->wrapper_caches);
 

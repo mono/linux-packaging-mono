@@ -88,6 +88,7 @@ namespace System.Reflection.Runtime.MethodInfos
             }
         }
 
+        [DebuggerGuidedStepThrough]
         public sealed override object Invoke(BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture)
         {
 #if ENABLE_REFLECTION_TRACE
@@ -103,7 +104,16 @@ namespace System.Reflection.Runtime.MethodInfos
             // us the right way by coordinating the implementation of NewObject and MethodInvoker.
             Object newObject = ReflectionCoreExecution.ExecutionEnvironment.NewObject(this.DeclaringType.TypeHandle);
             Object ctorAllocatedObject = this.MethodInvoker.Invoke(newObject, parameters, binder, invokeAttr, culture);
+            System.Diagnostics.DebugAnnotations.PreviousCallContainsDebuggerStepInCode();
             return newObject != null ? newObject : ctorAllocatedObject;
+        }
+
+        public sealed override MethodBase MetadataDefinitionMethod
+        {
+            get
+            {
+                return RuntimePlainConstructorInfo<TRuntimeMethodCommon>.GetRuntimePlainConstructorInfo(_common.RuntimeMethodCommonOfUninstantiatedMethod);
+            }
         }
 
         public sealed override MethodImplAttributes MethodImplementationFlags
@@ -135,6 +145,17 @@ namespace System.Reflection.Runtime.MethodInfos
             }
         }
 
+        public sealed override bool HasSameMetadataDefinitionAs(MemberInfo other)
+        {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other));
+
+            RuntimePlainConstructorInfo<TRuntimeMethodCommon> otherConstructor = other as RuntimePlainConstructorInfo<TRuntimeMethodCommon>;
+            if (otherConstructor == null)
+                return false;
+            return _common.HasSameMetadataDefinitionAs(otherConstructor._common);
+        }
+
         public sealed override bool Equals(Object obj)
         {
             RuntimePlainConstructorInfo<TRuntimeMethodCommon> other = obj as RuntimePlainConstructorInfo<TRuntimeMethodCommon>;
@@ -153,7 +174,7 @@ namespace System.Reflection.Runtime.MethodInfos
             return RuntimeMethodHelpers.ComputeToString(ref _common, this, Array.Empty<RuntimeTypeInfo>());
         }
 
-        public sealed override RuntimeMethodHandle MethodHandle => _common.GetRuntimeMethodHandle(Array.Empty<Type>());
+        public sealed override RuntimeMethodHandle MethodHandle => _common.GetRuntimeMethodHandle(null);
 
         protected sealed override RuntimeParameterInfo[] RuntimeParameters
         {
