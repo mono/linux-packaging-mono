@@ -248,6 +248,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/chktrust
 %{_bindir}/crlupdate
 %{_bindir}/csc
+%{_bindir}/csi
 %{_bindir}/csharp
 %{_bindir}/dmcs
 %{_bindir}/gacutil
@@ -296,6 +297,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/crlupdate.exe*
 %{_prefix}/lib/mono/4.5/crlupdate.pdb
 %{_prefix}/lib/mono/4.5/csc.*
+%{_prefix}/lib/mono/4.5/csi.*
 %{_prefix}/lib/mono/4.5/csharp.exe*
 %{_prefix}/lib/mono/4.5/csharp.pdb
 %{_prefix}/lib/mono/4.5/gacutil.exe*
@@ -317,6 +319,9 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/ICSharpCode.SharpZipLib.dll
 %{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.dll*
 %{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.Scripting.dll*
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.Scripting.dll*
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.VisualBasic.dll*
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
 %if 0%{?rhel} >= 7
@@ -359,6 +364,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Xml.Linq.dll
 %{_prefix}/lib/mono/4.5/System.Xml.dll
 %{_prefix}/lib/mono/4.5/System.dll
+%{_prefix}/lib/mono/4.5/VBCSCompiler.*
 %{_prefix}/lib/mono/4.5/cscompmgd.dll
 %{_prefix}/lib/mono/4.5/mscorlib.dll*
 %{_prefix}/lib/mono/4.5/mscorlib.pdb
@@ -1315,6 +1321,7 @@ Mono development tools.
 %{_prefix}/lib/mono/gac/Mono.Debugger.Soft
 %{_prefix}/lib/mono/gac/Mono.XBuild.Tasks/
 %{_prefix}/lib/mono/gac/PEAPI
+%{_prefix}/lib/mono/msbuild
 %{_prefix}/lib/mono/xbuild
 %{_prefix}/lib/mono/xbuild-frameworks
 %{_libdir}/mono/lldb
