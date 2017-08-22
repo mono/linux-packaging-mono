@@ -1,3 +1,15 @@
+mono (5.4.0.167-0xamarin9) alpha; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [87d2294] Use secret Mozilla GCC in 12.04 for btls [ae4fe95] Force
+    g++ 4.7, not just gcc [6048bfd] Remember the gcc epoch [5c25bed]
+    Build btls on ARM
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Tue, 22 Aug 2017 20:34:21 +0000
+
 mono (5.4.0.167-0xamarin8) alpha; urgency=medium
 
   * Packaging bugfix:
