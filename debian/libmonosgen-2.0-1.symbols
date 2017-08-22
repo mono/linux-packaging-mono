@@ -149,6 +149,7 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_compile_method@Base 4.1.0.1738
  mono_conc_hashtable_destroy@Base 4.1.0.1738
  mono_conc_hashtable_foreach@Base 4.1.0.1738
+ mono_conc_hashtable_foreach_steal@Base 5.4.0.167
  mono_conc_hashtable_insert@Base 4.1.0.1738
  mono_conc_hashtable_lookup@Base 4.1.0.1738
  mono_conc_hashtable_new@Base 4.1.0.1738
@@ -247,7 +248,6 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_dl_fallback_register@Base 4.1.0.1738
  mono_dl_fallback_unregister@Base 4.1.0.1738
  mono_dllmap_insert@Base 4.1.0.1738
- mono_domain_add_class_static_data@Base 4.1.0.1738
  mono_domain_assembly_open@Base 4.1.0.1738
  mono_domain_create@Base 4.1.0.1738
  mono_domain_create_appdomain@Base 4.1.0.1738
