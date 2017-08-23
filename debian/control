@@ -2585,6 +2585,8 @@ Depends: ${misc:Depends},
          ${cli:Depends},
          libmono-corlib4.5-cil (>= ${mono:upversion}),
          libmono-corlib4.5-cil (<< ${mono:next-upversion})
+Replaces: msbuild (<< 15.5)
+Breaks: msbuild (<< 15.5)
 Recommends: pkg-config
 Description: Microsoft C# compiler
  This is the Microsoft C# (C-Sharp) compiler,
