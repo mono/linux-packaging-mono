@@ -1320,6 +1320,7 @@ Mono development tools.
 %{_prefix}/lib/mono/gac/Mono.Debugger.Soft
 %{_prefix}/lib/mono/gac/Mono.XBuild.Tasks/
 %{_prefix}/lib/mono/gac/PEAPI
+%{_prefix}/lib/mono/msbuild
 %{_prefix}/lib/mono/xbuild
 %{_prefix}/lib/mono/xbuild-frameworks
 %{_libdir}/mono/lldb
