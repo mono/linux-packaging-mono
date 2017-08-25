@@ -95,7 +95,8 @@ target_triplet = @target@
 @CROSS_COMPILE_FALSE@@SPARC_TRUE@am__append_13 = mono-hwcap-sparc.c
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__append_14 = mono-hwcap-sparc.c
 @CROSS_COMPILE_FALSE@@S390X_TRUE@am__append_15 = mono-hwcap-s390x.c
-@CROSS_COMPILE_TRUE@am__append_16 = mono-hwcap-cross.c
+@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__append_16 = mono-hwcap-wasm.c
+@CROSS_COMPILE_TRUE@am__append_17 = mono-hwcap-cross.c
 subdir = mono/utils
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -121,7 +122,7 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-md5.c mono-sha1.c mono-logger.c mono-logger-internals.h \
 	mono-codeman.c dlmalloc.h dlmalloc.c mono-counters.c \
 	mono-compiler.h mono-complex.h mono-dl.c mono-dl-windows.c \
-	mono-dl-darwin.c mono-dl-posix.c mono-dl.h \
+	mono-dl-darwin.c mono-dl-posix.c mono-dl-wasm.c mono-dl.h \
 	mono-dl-windows-internals.h mono-log-windows.c \
 	mono-log-common.c mono-log-posix.c mono-log-android.c \
 	mono-log-darwin.c mono-internal-hash.c mono-internal-hash.h \
@@ -154,23 +155,23 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-threads-mach-helper.c mono-threads-windows.c \
 	mono-threads-linux.c mono-threads-freebsd.c \
 	mono-threads-netbsd.c mono-threads-openbsd.c \
-	mono-threads-android.c mono-threads-haiku.c mono-threads.h \
-	mono-threads-debug.h mono-threads-api.h mono-threads-coop.c \
-	mono-threads-coop.h mono-tls.h mono-tls.c linux_magic.h \
-	mono-memory-model.h atomic.h atomic.c mono-hwcap.h \
-	mono-hwcap.c mono-hwcap-vars.h bsearch.h bsearch.c \
-	mono-signal-handler.h mono-conc-hashtable.h \
-	mono-conc-hashtable.c json.h json.c networking.c \
-	networking-posix.c networking-fallback.c networking-missing.c \
-	networking-windows.c networking.h mono-rand.c \
-	mono-rand-windows.c mono-rand.h mono-rand-windows-internals.h \
-	memfuncs.c memfuncs.h parse.c parse.h checked-build.c \
-	checked-build.h os-event.h refcount.h w32api.h unlocked.h \
-	mach-support-x86.c mach-support-amd64.c mach-support-arm.c \
-	mach-support-arm64.c mach-support-unknown.c mono-hwcap-x86.c \
-	mono-hwcap-arm.c mono-hwcap-arm64.c mono-hwcap-mips.c \
-	mono-hwcap-ppc.c mono-hwcap-sparc.c mono-hwcap-s390x.c \
-	mono-hwcap-cross.c
+	mono-threads-android.c mono-threads-haiku.c \
+	mono-threads-wasm.c mono-threads.h mono-threads-debug.h \
+	mono-threads-api.h mono-threads-coop.c mono-threads-coop.h \
+	mono-tls.h mono-tls.c linux_magic.h mono-memory-model.h \
+	atomic.h atomic.c mono-hwcap.h mono-hwcap.c mono-hwcap-vars.h \
+	bsearch.h bsearch.c mono-signal-handler.h \
+	mono-conc-hashtable.h mono-conc-hashtable.c json.h json.c \
+	networking.c networking-posix.c networking-fallback.c \
+	networking-missing.c networking-windows.c networking.h \
+	mono-rand.c mono-rand-windows.c mono-rand.h \
+	mono-rand-windows-internals.h memfuncs.c memfuncs.h parse.c \
+	parse.h checked-build.c checked-build.h os-event.h refcount.h \
+	w32api.h unlocked.h mach-support-x86.c mach-support-amd64.c \
+	mach-support-arm.c mach-support-arm64.c mach-support-unknown.c \
+	mono-hwcap-x86.c mono-hwcap-arm.c mono-hwcap-arm64.c \
+	mono-hwcap-mips.c mono-hwcap-ppc.c mono-hwcap-sparc.c \
+	mono-hwcap-s390x.c mono-hwcap-wasm.c mono-hwcap-cross.c
 @HOST_WIN32_FALSE@am__objects_1 = os-event-unix.lo
 @HOST_WIN32_TRUE@am__objects_2 = os-event-win32.lo
 @HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
@@ -178,10 +179,11 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 am__objects_4 = $(am__objects_3) mono-md5.lo mono-sha1.lo \
 	mono-logger.lo mono-codeman.lo dlmalloc.lo mono-counters.lo \
 	mono-dl.lo mono-dl-windows.lo mono-dl-darwin.lo \
-	mono-dl-posix.lo mono-log-windows.lo mono-log-common.lo \
-	mono-log-posix.lo mono-log-android.lo mono-log-darwin.lo \
-	mono-internal-hash.lo mono-io-portability.lo monobitset.lo \
-	mono-filemap.lo mono-math.lo mono-mmap.lo mono-mmap-windows.lo \
+	mono-dl-posix.lo mono-dl-wasm.lo mono-log-windows.lo \
+	mono-log-common.lo mono-log-posix.lo mono-log-android.lo \
+	mono-log-darwin.lo mono-internal-hash.lo \
+	mono-io-portability.lo monobitset.lo mono-filemap.lo \
+	mono-math.lo mono-mmap.lo mono-mmap-windows.lo \
 	mono-os-mutex.lo mono-networkinterfaces.lo mono-proclib.lo \
 	mono-proclib-windows.lo mono-publib.lo mono-time.lo strenc.lo \
 	mono-uri.lo mono-poll.lo mono-path.lo mono-stdlib.lo \
@@ -195,11 +197,12 @@ am__objects_4 = $(am__objects_3) mono-md5.lo mono-sha1.lo \
 	mono-threads-linux.lo mono-threads-freebsd.lo \
 	mono-threads-netbsd.lo mono-threads-openbsd.lo \
 	mono-threads-android.lo mono-threads-haiku.lo \
-	mono-threads-coop.lo mono-tls.lo atomic.lo mono-hwcap.lo \
-	bsearch.lo mono-conc-hashtable.lo json.lo networking.lo \
-	networking-posix.lo networking-fallback.lo \
-	networking-missing.lo networking-windows.lo mono-rand.lo \
-	mono-rand-windows.lo memfuncs.lo parse.lo checked-build.lo
+	mono-threads-wasm.lo mono-threads-coop.lo mono-tls.lo \
+	atomic.lo mono-hwcap.lo bsearch.lo mono-conc-hashtable.lo \
+	json.lo networking.lo networking-posix.lo \
+	networking-fallback.lo networking-missing.lo \
+	networking-windows.lo mono-rand.lo mono-rand-windows.lo \
+	memfuncs.lo parse.lo checked-build.lo
 @CROSS_COMPILE_FALSE@@X86_TRUE@am__objects_5 = mach-support-x86.lo
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@am__objects_6 =  \
 @AMD64_TRUE@@CROSS_COMPILE_FALSE@	mach-support-amd64.lo
@@ -219,14 +222,16 @@ am__objects_4 = $(am__objects_3) mono-md5.lo mono-sha1.lo \
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@am__objects_18 =  \
 @CROSS_COMPILE_FALSE@@SPARC64_TRUE@	mono-hwcap-sparc.lo
 @CROSS_COMPILE_FALSE@@S390X_TRUE@am__objects_19 = mono-hwcap-s390x.lo
-@CROSS_COMPILE_TRUE@am__objects_20 = mono-hwcap-cross.lo
-am__objects_21 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
+@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@am__objects_20 =  \
+@CROSS_COMPILE_FALSE@@HOST_WASM_TRUE@	mono-hwcap-wasm.lo
+@CROSS_COMPILE_TRUE@am__objects_21 = mono-hwcap-cross.lo
+am__objects_22 = $(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
 	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
 	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
 	$(am__objects_17) $(am__objects_18) $(am__objects_19) \
-	$(am__objects_20)
-am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_21)
+	$(am__objects_20) $(am__objects_21)
+am_libmonoutils_la_OBJECTS = $(am__objects_4) $(am__objects_22)
 libmonoutils_la_OBJECTS = $(am_libmonoutils_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -580,6 +585,7 @@ monoutils_sources = \
 	mono-dl-windows.c	\
 	mono-dl-darwin.c	\
 	mono-dl-posix.c		\
+	mono-dl-wasm.c	\
 	mono-dl.h		\
 	mono-dl-windows-internals.h	\
 	mono-log-windows.c	\
@@ -677,6 +683,7 @@ monoutils_sources = \
 	mono-threads-openbsd.c	\
 	mono-threads-android.c	\
 	mono-threads-haiku.c	\
+	mono-threads-wasm.c	\
 	mono-threads.h	\
 	mono-threads-debug.h	\
 	mono-threads-api.h	\
@@ -724,7 +731,7 @@ arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
 	$(am__append_10) $(am__append_11) $(am__append_12) \
 	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16)
+	$(am__append_16) $(am__append_17)
 libmonoutils_la_SOURCES = $(monoutils_sources) $(arch_sources)
 libmonoutilsincludedir = $(includedir)/mono-$(API_VER)/mono/utils
 libmonoutilsinclude_HEADERS = \
@@ -813,6 +820,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-counters.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-dl-darwin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-dl-posix.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-dl-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-dl-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-dl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-error.Plo@am__quote@
@@ -824,6 +832,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-ppc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-s390x.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-sparc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap-x86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-hwcap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-internal-hash.Plo@am__quote@
@@ -863,6 +872,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix-signals.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-posix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-state-machine.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-wasm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads-windows.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-threads.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-time.Plo@am__quote@

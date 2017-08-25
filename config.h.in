@@ -1224,6 +1224,9 @@
 /* ... */
 #undef TARGET_SPARC64
 
+/* Target wasm */
+#undef TARGET_WASM
+
 /* The JIT/AOT targets WatchOS */
 #undef TARGET_WATCHOS
 
