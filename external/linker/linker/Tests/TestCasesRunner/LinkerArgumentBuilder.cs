@@ -29,16 +29,35 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			Append (value);
 		}
 
-		public virtual void IncludeBlacklist (string value)
+		public virtual void LinkFromAssembly (string fileName)
+		{
+			Append ("-a");
+			Append (fileName);
+		}
+
+		public virtual void IncludeBlacklist (bool value)
 		{
 			Append ("-z");
-			Append (value);
+			Append (value ? "true" : "false");
 		}
 
 		public virtual void AddIl8n (string value)
 		{
 			Append ("-l");
 			Append (value);
+		}
+
+		public virtual void AddKeepTypeForwarderOnlyAssemblies (string value)
+		{
+			if (bool.Parse (value))
+				Append ("-t");
+		}
+
+		public virtual void AddAssemblyAction (string action, string assembly)
+		{
+			Append ("-p");
+			Append (action);
+			Append (assembly);
 		}
 
 		public string [] ToArgs ()
@@ -53,16 +72,24 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 		public virtual void ProcessOptions (TestCaseLinkerOptions options)
 		{
-			AddCoreLink (options.CoreLink);
+			if (options.CoreAssembliesAction != null)
+				AddCoreLink (options.CoreAssembliesAction);
+
+			if (options.AssembliesAction != null) {
+				foreach (var entry in options.AssembliesAction)
+					AddAssemblyAction (entry.Key, entry.Value);
+			}
 
 			// Running the blacklist step causes a ton of stuff to be preserved.  That's good for normal use cases, but for
 			// our test cases that pollutes the results
-			if (!string.IsNullOrEmpty (options.IncludeBlacklistStep))
-				IncludeBlacklist (options.IncludeBlacklistStep);
+			IncludeBlacklist (options.IncludeBlacklistStep);
 
 			// Internationalization assemblies pollute our test case results as well so disable them
 			if (!string.IsNullOrEmpty (options.Il8n))
 				AddIl8n (options.Il8n);
+
+			if (!string.IsNullOrEmpty (options.KeepTypeForwarderOnlyAssemblies))
+				AddKeepTypeForwarderOnlyAssemblies (options.KeepTypeForwarderOnlyAssemblies);
 		}
 	}
 }

@@ -388,7 +388,7 @@ namespace Mono.Cecil {
 		internal IReflectionImporter ReflectionImporter {
 			get {
 				if (reflection_importer == null)
-					Interlocked.CompareExchange (ref reflection_importer, new ReflectionImporter (this), null);
+					Interlocked.CompareExchange (ref reflection_importer, new DefaultReflectionImporter (this), null);
 
 				return reflection_importer;
 			}
@@ -397,13 +397,13 @@ namespace Mono.Cecil {
 		internal IMetadataImporter MetadataImporter {
 			get {
 				if (metadata_importer == null)
-					Interlocked.CompareExchange (ref metadata_importer, new MetadataImporter (this), null);
+					Interlocked.CompareExchange (ref metadata_importer, new DefaultMetadataImporter (this), null);
 
 				return metadata_importer;
 			}
 		}
 
-		internal void SetMetadataImporter (MetadataImporter importer)
+		internal void SetMetadataImporter (IMetadataImporter importer)
 		{
 			if (this.metadata_importer != null)
 				throw new InvalidOperationException ();
