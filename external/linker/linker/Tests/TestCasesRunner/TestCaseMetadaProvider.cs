@@ -26,12 +26,20 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 		public virtual TestCaseLinkerOptions GetLinkerOptions ()
 		{
-			// This will end up becoming more complicated as we get into more complex test cases that require additional
-			// data
-			var coreLink = GetOptionAttributeValue (nameof (CoreLinkAttribute), "skip");
-			var il8n = GetOptionAttributeValue (nameof (Il8nAttribute), string.Empty);
-			var blacklist = GetOptionAttributeValue (nameof (IncludeBlacklistStepAttribute), string.Empty);
-			return new TestCaseLinkerOptions {CoreLink = coreLink, Il8n = il8n, IncludeBlacklistStep = blacklist};
+			var tclo = new TestCaseLinkerOptions {
+				Il8n = GetOptionAttributeValue (nameof (Il8nAttribute), string.Empty),
+				IncludeBlacklistStep = GetOptionAttributeValue (nameof (IncludeBlacklistStepAttribute), false),
+				KeepTypeForwarderOnlyAssemblies = GetOptionAttributeValue (nameof (KeepTypeForwarderOnlyAssembliesAttribute), string.Empty),
+				CoreAssembliesAction = GetOptionAttributeValue<string> (nameof (SetupLinkerCoreActionAttribute), null)
+			};
+
+			foreach (var assemblyAction in _testCaseTypeDefinition.CustomAttributes.Where (attr => attr.AttributeType.Name == nameof (SetupLinkerActionAttribute)))
+			{
+				var ca = assemblyAction.ConstructorArguments;
+				tclo.AssembliesAction.Add (new KeyValuePair<string, string> ((string)ca [0].Value, (string)ca [1].Value));
+			}
+
+			return tclo;
 		}
 
 		public virtual IEnumerable<string> GetReferencedAssemblies (NPath workingDirectory)
@@ -72,6 +80,27 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			}
 		}
 
+		public virtual IEnumerable<SetupCompileInfo> GetSetupCompileAssembliesBefore ()
+		{
+			return _testCaseTypeDefinition.CustomAttributes
+				.Where (attr => attr.AttributeType.Name == nameof (SetupCompileBeforeAttribute))
+				.Select (CreateSetupCompileAssemblyInfo);
+		}
+
+		public virtual IEnumerable<SetupCompileInfo> GetSetupCompileAssembliesAfter ()
+		{
+			return _testCaseTypeDefinition.CustomAttributes
+				.Where (attr => attr.AttributeType.Name == nameof (SetupCompileAfterAttribute))
+				.Select (CreateSetupCompileAssemblyInfo);
+		}
+
+		public virtual IEnumerable<string> GetDefines ()
+		{
+			return _testCaseTypeDefinition.CustomAttributes
+				.Where (attr => attr.AttributeType.Name == nameof (DefineAttribute))
+				.Select (attr => (string) attr.ConstructorArguments.First ().Value);
+		}
+
 		T GetOptionAttributeValue<T> (string attributeName, T defaultValue)
 		{
 			var attribute = _testCaseTypeDefinition.CustomAttributes.FirstOrDefault (attr => attr.AttributeType.Name == attributeName);
@@ -79,6 +108,19 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 				return (T) attribute.ConstructorArguments.First ().Value;
 
 			return defaultValue;
+		}
+
+		private SetupCompileInfo CreateSetupCompileAssemblyInfo (CustomAttribute attribute)
+		{
+			var ctorArguments = attribute.ConstructorArguments;
+			return new SetupCompileInfo
+			{
+				OutputName = (string) ctorArguments [0].Value,
+				SourceFiles = ((CustomAttributeArgument []) ctorArguments [1].Value).Select (arg => _testCase.SourceFile.Parent.Combine (arg.Value.ToString ())).ToArray (),
+				References = ((CustomAttributeArgument []) ctorArguments [2].Value)?.Select (arg => arg.Value.ToString ()).ToArray (),
+				Defines = ((CustomAttributeArgument []) ctorArguments [3].Value)?.Select (arg => arg.Value.ToString ()).ToArray (),
+				AddAsReference = ctorArguments.Count >= 5 ? (bool) ctorArguments [4].Value : true
+			};
 		}
 	}
 }

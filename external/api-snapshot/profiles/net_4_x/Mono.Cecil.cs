@@ -220,6 +220,24 @@ namespace Mono.Cecil
         protected void RegisterAssembly(Mono.Cecil.AssemblyDefinition assembly) { }
         public override Mono.Cecil.AssemblyDefinition Resolve(Mono.Cecil.AssemblyNameReference name) { throw null; }
     }
+    public partial class DefaultMetadataImporter : Mono.Cecil.IMetadataImporter
+    {
+        protected readonly Mono.Cecil.ModuleDefinition module;
+        public DefaultMetadataImporter(Mono.Cecil.ModuleDefinition module) { }
+        public virtual Mono.Cecil.AssemblyNameReference ImportReference(Mono.Cecil.AssemblyNameReference name) { throw null; }
+        public virtual Mono.Cecil.FieldReference ImportReference(Mono.Cecil.FieldReference field, Mono.Cecil.IGenericParameterProvider context) { throw null; }
+        public virtual Mono.Cecil.MethodReference ImportReference(Mono.Cecil.MethodReference method, Mono.Cecil.IGenericParameterProvider context) { throw null; }
+        public virtual Mono.Cecil.TypeReference ImportReference(Mono.Cecil.TypeReference type, Mono.Cecil.IGenericParameterProvider context) { throw null; }
+    }
+    public partial class DefaultReflectionImporter : Mono.Cecil.IReflectionImporter
+    {
+        protected readonly Mono.Cecil.ModuleDefinition module;
+        public DefaultReflectionImporter(Mono.Cecil.ModuleDefinition module) { }
+        public virtual Mono.Cecil.AssemblyNameReference ImportReference(System.Reflection.AssemblyName name) { throw null; }
+        public virtual Mono.Cecil.FieldReference ImportReference(System.Reflection.FieldInfo field, Mono.Cecil.IGenericParameterProvider context) { throw null; }
+        public virtual Mono.Cecil.MethodReference ImportReference(System.Reflection.MethodBase method, Mono.Cecil.IGenericParameterProvider context) { throw null; }
+        public virtual Mono.Cecil.TypeReference ImportReference(System.Type type, Mono.Cecil.IGenericParameterProvider context) { throw null; }
+    }
     public sealed partial class EmbeddedResource : Mono.Cecil.Resource
     {
         public EmbeddedResource(string name, Mono.Cecil.ManifestResourceAttributes attributes, byte[] data) { }
@@ -512,6 +530,7 @@ namespace Mono.Cecil
     }
     public partial interface IMetadataImporter
     {
+        Mono.Cecil.AssemblyNameReference ImportReference(Mono.Cecil.AssemblyNameReference reference);
         Mono.Cecil.FieldReference ImportReference(Mono.Cecil.FieldReference field, Mono.Cecil.IGenericParameterProvider context);
         Mono.Cecil.MethodReference ImportReference(Mono.Cecil.MethodReference method, Mono.Cecil.IGenericParameterProvider context);
         Mono.Cecil.TypeReference ImportReference(Mono.Cecil.TypeReference type, Mono.Cecil.IGenericParameterProvider context);
@@ -560,6 +579,7 @@ namespace Mono.Cecil
     }
     public partial interface IReflectionImporter
     {
+        Mono.Cecil.AssemblyNameReference ImportReference(System.Reflection.AssemblyName reference);
         Mono.Cecil.FieldReference ImportReference(System.Reflection.FieldInfo field, Mono.Cecil.IGenericParameterProvider context);
         Mono.Cecil.MethodReference ImportReference(System.Reflection.MethodBase method, Mono.Cecil.IGenericParameterProvider context);
         Mono.Cecil.TypeReference ImportReference(System.Type type, Mono.Cecil.IGenericParameterProvider context);
@@ -607,13 +627,6 @@ namespace Mono.Cecil
         public Mono.Cecil.IMemberDefinition Resolve() { throw null; }
         protected abstract Mono.Cecil.IMemberDefinition ResolveDefinition();
         public override string ToString() { throw null; }
-    }
-    public partial class MetadataImporter : Mono.Cecil.IMetadataImporter
-    {
-        public MetadataImporter(Mono.Cecil.ModuleDefinition module) { }
-        public virtual Mono.Cecil.FieldReference ImportReference(Mono.Cecil.FieldReference field, Mono.Cecil.IGenericParameterProvider context) { throw null; }
-        public virtual Mono.Cecil.MethodReference ImportReference(Mono.Cecil.MethodReference method, Mono.Cecil.IGenericParameterProvider context) { throw null; }
-        public virtual Mono.Cecil.TypeReference ImportReference(Mono.Cecil.TypeReference type, Mono.Cecil.IGenericParameterProvider context) { throw null; }
     }
     public enum MetadataKind
     {
@@ -729,6 +742,7 @@ namespace Mono.Cecil
     public sealed partial class MethodDefinition : Mono.Cecil.MethodReference, Mono.Cecil.Cil.ICustomDebugInformationProvider, Mono.Cecil.ICustomAttributeProvider, Mono.Cecil.IMemberDefinition, Mono.Cecil.IMetadataTokenProvider, Mono.Cecil.ISecurityDeclarationProvider
     {
         public MethodDefinition(string name, Mono.Cecil.MethodAttributes attributes, Mono.Cecil.TypeReference returnType) : base (default(string), default(Mono.Cecil.TypeReference)) { }
+        public bool AggressiveInlining { get { throw null; } set { } }
         public Mono.Cecil.MethodAttributes Attributes { get { throw null; } set { } }
         public Mono.Cecil.Cil.MethodBody Body { get { throw null; } set { } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttribute> CustomAttributes { get { throw null; } }
@@ -794,6 +808,7 @@ namespace Mono.Cecil
     [System.FlagsAttribute]
     public enum MethodImplAttributes : ushort
     {
+        AggressiveInlining = (ushort)256,
         CodeTypeMask = (ushort)3,
         ForwardRef = (ushort)16,
         IL = (ushort)0,
@@ -1238,13 +1253,6 @@ namespace Mono.Cecil
     {
         Deferred = 2,
         Immediate = 1,
-    }
-    public partial class ReflectionImporter : Mono.Cecil.IReflectionImporter
-    {
-        public ReflectionImporter(Mono.Cecil.ModuleDefinition module) { }
-        public virtual Mono.Cecil.FieldReference ImportReference(System.Reflection.FieldInfo field, Mono.Cecil.IGenericParameterProvider context) { throw null; }
-        public virtual Mono.Cecil.MethodReference ImportReference(System.Reflection.MethodBase method, Mono.Cecil.IGenericParameterProvider context) { throw null; }
-        public virtual Mono.Cecil.TypeReference ImportReference(System.Type type, Mono.Cecil.IGenericParameterProvider context) { throw null; }
     }
     public sealed partial class RequiredModifierType : Mono.Cecil.TypeSpecification, Mono.Cecil.IModifierType
     {

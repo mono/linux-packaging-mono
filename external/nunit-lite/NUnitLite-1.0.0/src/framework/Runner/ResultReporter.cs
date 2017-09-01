@@ -71,6 +71,11 @@ namespace NUnitLite.Runner
             if (summary.NotRunCount > 0)
                 PrintNotRunReport();
 
+#if MONO
+            if (summary.FlakyTestRetriesCount > 0)
+                PrintFlakyTestRetriesReport();
+#endif
+
             //if (commandLineOptions.Full)
             //    PrintFullReport(result);
         }
@@ -117,6 +122,16 @@ namespace NUnitLite.Runner
             PrintNotRunResults(this.result);
         }
 
+#if MONO
+        public void PrintFlakyTestRetriesReport()
+        {
+            reportCount = 0;
+            writer.WriteLine();
+            writer.WriteLine("Flaky Test Retries:");
+            PrintFlakyTestRetriesResults(this.result);
+        }
+#endif
+
         /// <summary>
         /// Prints a full report of all results
         /// </summary>
@@ -148,6 +163,20 @@ namespace NUnitLite.Runner
             else if (result.ResultState.Status == TestStatus.Skipped)
                 WriteSingleResult(result);
         }
+
+#if MONO
+        private void PrintFlakyTestRetriesResults(ITestResult result)
+        {
+            if (result.HasChildren)
+                foreach (ITestResult childResult in result.Children)
+                    PrintFlakyTestRetriesResults(childResult);
+            else if (result.Test.Properties.ContainsKey("FlakyTestRetries.Result"))
+            {
+                writer.WriteLine();
+                writer.WriteLine("{0} ({1} passes/{2} fails): {3} ({4})", result.Test.Properties.Get("FlakyTestRetries.Result"), result.Test.Properties.Get("FlakyTestRetries.PassCount"), result.Test.Properties.Get("FlakyTestRetries.FailCount"), result.Name, result.FullName);
+            }
+        }
+#endif
 
         private void PrintTestProperties(ITest test)
         {

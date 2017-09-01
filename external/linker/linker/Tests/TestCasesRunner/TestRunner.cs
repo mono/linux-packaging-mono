@@ -23,7 +23,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 				var sandbox = Sandbox (testCase, metadataProvider);
 				var compilationResult = Compile (sandbox, metadataProvider);
-				PrepForLink (sandbox, compilationResult);
+//				PrepForLink (sandbox, compilationResult);
 				return Link (testCase, sandbox, compilationResult, metadataProvider);
 			}
 		}
@@ -37,7 +37,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 		private ManagedCompilationResult Compile (TestCaseSandbox sandbox, TestCaseMetadaProvider metadataProvider)
 		{
-			var compiler = _factory.CreateCompiler ();
+			var compiler = _factory.CreateCompiler (sandbox, metadataProvider);
 			var sourceFiles = sandbox.SourceFiles.Select(s => s.ToString()).ToArray();
 
 			var references = metadataProvider.GetReferencedAssemblies(sandbox.InputDirectory);
@@ -47,13 +47,13 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			var expectationsAssemblyPath = compiler.CompileTestIn (sandbox.ExpectationsDirectory, "test.exe", sourceFiles, references, new [] { "INCLUDE_EXPECTATIONS" });
 			return new ManagedCompilationResult (inputAssemblyPath, expectationsAssemblyPath);
 		}
-
+/*
 		private void PrepForLink (TestCaseSandbox sandbox, ManagedCompilationResult compilationResult)
 		{
 			var entryPointLinkXml = sandbox.InputDirectory.Combine ("entrypoint.xml");
 			LinkXmlHelpers.WriteXmlFileToPreserveEntryPoint (compilationResult.InputAssemblyPath, entryPointLinkXml);
 		}
-
+*/
 		private LinkedTestCaseResult Link (TestCase testCase, TestCaseSandbox sandbox, ManagedCompilationResult compilationResult, TestCaseMetadaProvider metadataProvider)
 		{
 			var linker = _factory.CreateLinker ();
@@ -71,6 +71,9 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			builder.ProcessOptions (caseDefinedOptions);
 
 			AddAdditionalLinkOptions (builder, metadataProvider);
+
+			// TODO: Should be overridable
+			builder.LinkFromAssembly (compilationResult.InputAssemblyPath.ToString ());
 
 			linker.Link (builder.ToArgs ());
 
