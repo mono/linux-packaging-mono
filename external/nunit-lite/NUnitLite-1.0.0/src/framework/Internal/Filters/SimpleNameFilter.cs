@@ -84,7 +84,11 @@ namespace NUnit.Framework.Internal.Filters
 		public override bool Match( ITest test )
 		{
 			foreach( string name in names )
+#if MONO
+				if ( test.FullName.StartsWith (name) )
+#else
 				if ( test.FullName == name )
+#endif
 					return true;
 
 			return false;

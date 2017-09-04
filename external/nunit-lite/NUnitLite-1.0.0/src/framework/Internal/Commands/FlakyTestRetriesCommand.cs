@@ -55,14 +55,16 @@ namespace NUnit.Framework.Internal.Commands
 
     public class FlakyTestRetriesCommand : DelegatingTestCommand
     {
-        const int RETRY_COUNT = 5;
-        const int MASS_FAIL_SAFEGUARD = 2;
+        int retries = 0;
+        const int MASS_FAIL_SAFEGUARD = 10;
 
         private static int globalTotalRetries = 0;
 
         public FlakyTestRetriesCommand(TestCommand innerCommand)
             : base(innerCommand)
         {
+            string retriesEnv = Environment.GetEnvironmentVariable ("MONO_FLAKY_TEST_RETRIES");
+            Int32.TryParse (retriesEnv, out retries);
         }
 
         public override TestResult Execute(TestExecutionContext context)
@@ -70,7 +72,7 @@ namespace NUnit.Framework.Internal.Commands
             // regular test execution
             context.CurrentResult = innerCommand.Execute(context);
 
-            if (RETRY_COUNT == 0 ||
+            if (retries == 0 ||
                 context.CurrentResult.ResultState.Status == TestStatus.Passed ||
                 context.CurrentResult.ResultState.Status == TestStatus.Skipped)
                 return context.CurrentResult;
@@ -86,7 +88,7 @@ namespace NUnit.Framework.Internal.Commands
             var passedTestResults = new List<TestResult>();
             var failedTestResults = new List<TestResult>();
 
-            for (int i = 0; i < RETRY_COUNT; i++)
+            for (int i = 0; i < retries; i++)
             {
                 Thread.Sleep (1000); // give the test some time to close files, sockets etc
 
