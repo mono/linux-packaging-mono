@@ -678,7 +678,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-59286.cs bug-70561.cs bug-78311.cs bug-78653.cs \
 	bug-78656.cs bug-77127.cs bug-323114.cs bug-Xamarin-5278.cs \
 	interlocked.cs delegate-async-exit.cs \
-	delegate-delegate-exit.cs delegate-exit.cs finalizer-abort.cs \
+	delegate-delegate-exit.cs delegate-exit.cs \
+	delegate-disposed-hashcode.cs finalizer-abort.cs \
 	finalizer-exception.cs finalizer-exit.cs finalizer-thread.cs \
 	main-exit.cs main-returns-abort-resetabort.cs \
 	main-returns-background-abort-resetabort.cs \
