@@ -179,8 +179,8 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
 @FULL_AOT_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event2.2.exe \
-@FULL_AOT_TESTS_TRUE@	bug-544446.exe bug-36848.exe \
-@FULL_AOT_TESTS_TRUE@	generic-marshalbyref.2.exe \
+@FULL_AOT_TESTS_TRUE@	assemblyresolve_event6.exe bug-544446.exe \
+@FULL_AOT_TESTS_TRUE@	bug-36848.exe generic-marshalbyref.2.exe \
 @FULL_AOT_TESTS_TRUE@	stackframes-async.2.exe \
 @FULL_AOT_TESTS_TRUE@	transparentproxy.exe bug-48015.exe \
 @FULL_AOT_TESTS_TRUE@	delegate9.exe marshal-valuetypes.exe \
@@ -632,20 +632,20 @@ TESTS_STRESS_SRC = \
 TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-2907.cs array-init.cs arraylist.cs assembly-load-remap.cs \
 	assemblyresolve_event.cs assemblyresolve_event3.cs \
-	assemblyresolve_event4.cs assemblyresolve_event5.cs checked.cs \
-	char-isnumber.cs field-layout.cs pack-layout.cs pack-bug.cs \
-	hash-table.cs test-ops.cs obj.cs test-dup-mp.cs string.cs \
-	stringbuilder.cs switch.cs outparm.cs delegate.cs \
-	bitconverter.cs exception.cs exception2.cs exception3.cs \
-	exception4.cs exception5.cs exception6.cs exception7.cs \
-	exception8.cs exception10.cs exception11.cs exception12.cs \
-	exception13.cs exception14.cs exception15.cs exception16.cs \
-	exception17.cs exception18.cs typeload-unaligned.cs struct.cs \
-	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
-	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
-	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
-	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
-	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	assemblyresolve_event4.cs assemblyresolve_event5.cs \
+	assemblyresolve_event6.cs checked.cs char-isnumber.cs \
+	field-layout.cs pack-layout.cs pack-bug.cs hash-table.cs \
+	test-ops.cs obj.cs test-dup-mp.cs string.cs stringbuilder.cs \
+	switch.cs outparm.cs delegate.cs bitconverter.cs exception.cs \
+	exception2.cs exception3.cs exception4.cs exception5.cs \
+	exception6.cs exception7.cs exception8.cs exception10.cs \
+	exception11.cs exception12.cs exception13.cs exception14.cs \
+	exception15.cs exception16.cs exception17.cs exception18.cs \
+	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
+	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
+	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
+	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
+	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -2166,9 +2166,9 @@ module-cctor-loader.2.exe: module-cctor.exe
 reference-loader.exe$(PLATFORM_AOT_SUFFIX): TestingReferenceAssembly.dll$(PLATFORM_AOT_SUFFIX) TestingReferenceReferenceAssembly.dll$(PLATFORM_AOT_SUFFIX)
 reference-loader.exe: TestingReferenceAssembly.dll TestingReferenceReferenceAssembly.dll
 
-assemblyresolve_asm.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX)
+assemblyresolve_asm.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_asm.dll assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX)
 	MONO_PATH="assemblyresolve_deps:$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(AOT_BUILD_FLAGS) assemblyresolve_asm.dll
-assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
+assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/Test.dll assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
 assemblyresolve_deps:
 	mkdir -p assemblyresolve_deps
 assemblyresolve_deps/TestBase.dll: assemblyresolve_deps $(srcdir)/assemblyresolve_TestBase.cs
@@ -2188,6 +2188,9 @@ assemblyresolve_deps/assemblyresolve_event5_label.dll: assemblyresolve_event5_la
 assemblyresolve_event5_helper.dll: assemblyresolve_event5_helper.cs assemblyresolve_deps/assemblyresolve_event5_label.dll
 	$(MCS) -target:library -out:assemblyresolve_event5_helper.dll -r:assemblyresolve_deps/assemblyresolve_event5_label.dll $(srcdir)/assemblyresolve_event5_helper.cs
 assemblyresolve_event5.exe: assemblyresolve_event5_helper.dll
+
+assemblyresolve_event6.exe$(PLATFORM_AOT_SUFFIX): assemblyresolve_asm.dll$(PLATFORM_AOT_SUFFIX) assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX) assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
+assemblyresolve_event6.exe: assemblyresolve_asm.dll assemblyresolve_deps/Test.dll assemblyresolve_deps/TestBase.dll
 
 # We use 'test-support-files' to handle an ordering issue between the 'mono/' and 'runtime/' directories
 bug-80307.exe: $(srcdir)/bug-80307.cs
