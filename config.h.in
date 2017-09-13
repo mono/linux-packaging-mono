@@ -1072,6 +1072,9 @@
 /* ... */
 #undef HOST_SPARC64
 
+/* Host wasm */
+#undef HOST_WASM
+
 /* Host Platform is Win32 */
 #undef HOST_WIN32
 

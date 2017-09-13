@@ -2565,7 +2565,7 @@ mono_remote_class (MonoDomain *domain, MonoStringHandle class_name, MonoClass *p
 	rc->xdomain_vtable = NULL;
 	rc->proxy_class_name = name;
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->loader_bytes += mono_string_length (MONO_HANDLE_RAW (class_name)) + 1;
+	InterlockedAdd (&mono_perfcounters->loader_bytes, mono_string_length (MONO_HANDLE_RAW (class_name)) + 1);
 #endif
 
 	g_hash_table_insert (domain->proxy_vtable_hash, key, rc);
@@ -5257,8 +5257,9 @@ mono_object_new_checked (MonoDomain *domain, MonoClass *klass, MonoError *error)
 
 	MonoVTable *vtable;
 
-	vtable = mono_class_vtable (domain, klass);
-	g_assert (vtable); /* FIXME don't swallow the error */
+	vtable = mono_class_vtable_full (domain, klass, error);
+	if (!is_ok (error))
+		return NULL;
 
 	MonoObject *o = mono_object_new_specific_checked (vtable, error);
 	return o;
