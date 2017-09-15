@@ -754,6 +754,11 @@ uninstall-am: uninstall-binPROGRAMS
 	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS
 
 
+#Helper target to rebuild metadata as well, it's useful when working on the verifier as its source still on metadata
+md:
+	make -C ../../mono/metadata all
+	make -C . all
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

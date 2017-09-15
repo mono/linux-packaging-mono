@@ -1034,7 +1034,6 @@ namespace Mono.Security.Interface
         void EndAuthenticateAsServer(System.IAsyncResult asyncResult);
         int EndRead(System.IAsyncResult asyncResult);
         void EndWrite(System.IAsyncResult asyncResult);
-        void Flush();
         Mono.Security.Interface.MonoTlsConnectionInfo GetConnectionInfo();
         int Read(byte[] buffer, int offset, int count);
         void SetLength(long value);
