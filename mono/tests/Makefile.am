@@ -517,7 +517,8 @@ TESTS_CS_SRC=		\
 	runtime-invoke.gen.cs \
 	imt_big_iface_test.cs \
 	bug-58782-plain-throw.cs \
-	bug-58782-capture-and-throw.cs
+	bug-58782-capture-and-throw.cs \
+	recursive-struct-arrays.cs
 
 if AMD64
 TESTS_CS_SRC += async-exc-compilation.cs finally_guard.cs finally_block_ending_in_dead_bb.cs
@@ -958,6 +959,7 @@ INTERP_DISABLED_TESTS = \
 	array_load_exception.exe \
 	assembly_append_ordering.exe \
 	assemblyresolve_event4.exe \
+	assemblyresolve_event6.exe \
 	async-exc-compilation.exe \
 	async-with-cb-throws.exe \
 	async_read.exe \
