@@ -202,7 +202,10 @@ class GtkPackage (GnomeGitPackage):
                 # 'patches/gtk/gtk-new-screen-updates-api.patch',
 
                 # https://bugzilla.xamarin.com/show_bug.cgi?id=5162
-                'patches/gtk/get-ascii-capable-keyboard-input-source.patch'
+                # 'patches/gtk/get-ascii-capable-keyboard-input-source.patch',
+
+                # https://developercommunity.visualstudio.com/content/problem/104471/visual-studio-for-mac-720540-cannot-launch-exc-bre.html
+                'patches/gtk/update_only_apple_keyboard_layout.patch'
             ])
 
     def prep(self):
