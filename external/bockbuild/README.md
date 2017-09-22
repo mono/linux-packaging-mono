@@ -9,7 +9,7 @@ Bockbuild is already provided as a submodule of Mono. To build a functional dist
 
     $ git clone git@github.com:mono/mono
     $ cd mono
-    $ make mac-sdk-package
+    $ ./scripts/mac-sdk-package.sh
 
 To get a shell that uses your custom-built distribution (e.g. for testing, to build & run Monodevelop against it):
 

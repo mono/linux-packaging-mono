@@ -85,10 +85,18 @@ class DarwinProfile (UnixProfile):
 
         info('Using Xcode %s, SDK %s' % (xcode_version, os.path.basename(osx_sdk)))
 
+        # Recent versions of XCode with recent MacOS SDKs buggily resolve several functions as existing on earlier OS X versions
+        # even when they are not.
+        xcode_blacklisted_functions = []
+
         if xcode_version >= '8.0':
-            # based on https://github.com/Homebrew/brew/pull/970. This applies to XCode 8, OS X 10.11 and the 10.12 SDK. The following symbols will be unresolved
-            # when running binaries on a system of lower version than 10.12.
-            map(lambda t : self.configure_flags.append ('ac_cv_func_%s=no' % t), 'basename_r clock_getres clock_gettime clock_settime dirname_r getentropy mkostemp mkostemps'.split(' '))
+            # based on https://github.com/Homebrew/brew/pull/970
+            xcode_blacklisted_functions.extend (['basename_r','clock_getres','clock_gettime','clock_settime','dirname_r','getentropy','mkostemp', 'mkostemps'])
+
+        if xcode_version >= '9.0':
+            xcode_blacklisted_functions.extend (['futimens', 'utimensat'])
+
+        map(lambda t : self.configure_flags.append ('ac_cv_func_%s=no' % t), xcode_blacklisted_functions)
 
         self.gcc_flags.extend([
             '-D_XOPEN_SOURCE',
