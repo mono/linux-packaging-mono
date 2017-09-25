@@ -740,12 +740,13 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	appdomain-exit.cs appdomain-serialize-exception.cs \
 	assemblyresolve_event2.2.cs appdomain-unload-callback.cs \
 	appdomain-unload-doesnot-raise-pending-events.cs \
-	appdomain-unload-asmload.cs unload-appdomain-on-shutdown.cs \
-	bug-47295.cs loader.cs pinvoke2.cs generic-type-builder.2.cs \
-	dynamic-generic-size.cs cominterop.cs \
-	dynamic-method-access.2.cs dynamic-method-finalize.2.cs \
-	dynamic-method-stack-traces.cs generic_type_definition.2.cs \
-	bug-333798-tb.2.cs bug-335131.2.cs bug-322722_patch_bx.2.cs \
+	appdomain-unload-asmload.cs appdomain-unload-exception.cs \
+	unload-appdomain-on-shutdown.cs bug-47295.cs loader.cs \
+	pinvoke2.cs generic-type-builder.2.cs dynamic-generic-size.cs \
+	cominterop.cs dynamic-method-access.2.cs \
+	dynamic-method-finalize.2.cs dynamic-method-stack-traces.cs \
+	generic_type_definition.2.cs bug-333798-tb.2.cs \
+	bug-335131.2.cs bug-322722_patch_bx.2.cs \
 	bug-322722_dyn_method_throw.2.cs bug-389886-2.cs \
 	bug-349190.2.cs bug-389886-sre-generic-interface-instances.cs \
 	bug-462592.cs bug-575941.cs bug-389886-3.cs \
@@ -1203,7 +1204,8 @@ AOT_CONFIGURATIONS = \
 
 # tests that expect a 1 exit code
 TESTS_UNHANDLED_EXCEPTION_1_SRC = \
-	unhandled-exception-1.cs
+	unhandled-exception-1.cs	\
+	unhandled-exception-9.cs
 
 
 # tests that expect a 255 exit code
