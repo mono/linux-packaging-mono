@@ -23,7 +23,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 				var sandbox = Sandbox (testCase, metadataProvider);
 				var compilationResult = Compile (sandbox, metadataProvider);
-				PrepForLink (sandbox, compilationResult);
+//				PrepForLink (sandbox, compilationResult);
 				return Link (testCase, sandbox, compilationResult, metadataProvider);
 			}
 		}
@@ -37,23 +37,23 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 		private ManagedCompilationResult Compile (TestCaseSandbox sandbox, TestCaseMetadaProvider metadataProvider)
 		{
-			var compiler = _factory.CreateCompiler ();
+			var compiler = _factory.CreateCompiler (sandbox, metadataProvider);
 			var sourceFiles = sandbox.SourceFiles.Select(s => s.ToString()).ToArray();
 
-			var references = metadataProvider.GetReferencedAssemblies ().Concat (sandbox.InputDirectoryReferences.Select (r => r.ToString ())).ToArray ();
-			var inputAssemblyPath = compiler.CompileTestIn (sandbox.InputDirectory, sourceFiles, references, null);
+			var references = metadataProvider.GetReferencedAssemblies(sandbox.InputDirectory);
+			var inputAssemblyPath = compiler.CompileTestIn (sandbox.InputDirectory, "test.exe", sourceFiles, references, null);
 
-			references = metadataProvider.GetReferencedAssemblies ().Concat (sandbox.ExpectationsDirectoryReferences.Select (r => r.ToString ())).ToArray ();
-			var expectationsAssemblyPath = compiler.CompileTestIn (sandbox.ExpectationsDirectory, sourceFiles, references, new [] { "INCLUDE_EXPECTATIONS" });
+			references = metadataProvider.GetReferencedAssemblies(sandbox.ExpectationsDirectory);
+			var expectationsAssemblyPath = compiler.CompileTestIn (sandbox.ExpectationsDirectory, "test.exe", sourceFiles, references, new [] { "INCLUDE_EXPECTATIONS" });
 			return new ManagedCompilationResult (inputAssemblyPath, expectationsAssemblyPath);
 		}
-
+/*
 		private void PrepForLink (TestCaseSandbox sandbox, ManagedCompilationResult compilationResult)
 		{
 			var entryPointLinkXml = sandbox.InputDirectory.Combine ("entrypoint.xml");
 			LinkXmlHelpers.WriteXmlFileToPreserveEntryPoint (compilationResult.InputAssemblyPath, entryPointLinkXml);
 		}
-
+*/
 		private LinkedTestCaseResult Link (TestCase testCase, TestCaseSandbox sandbox, ManagedCompilationResult compilationResult, TestCaseMetadaProvider metadataProvider)
 		{
 			var linker = _factory.CreateLinker ();
@@ -68,20 +68,20 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			foreach (var extraSearchDir in metadataProvider.GetExtraLinkerSearchDirectories ())
 				builder.AddSearchDirectory (extraSearchDir);
 
-			builder.AddCoreLink (caseDefinedOptions.CoreLink);
+			builder.ProcessOptions (caseDefinedOptions);
 
-			// Running the blacklist step causes a ton of stuff to be preserved.  That's good for normal use cases, but for
-			// our test cases that pollutes the results
-			if (!string.IsNullOrEmpty (caseDefinedOptions.IncludeBlacklistStep))
-				builder.IncludeBlacklist (caseDefinedOptions.IncludeBlacklistStep);
+			AddAdditionalLinkOptions (builder, metadataProvider);
 
-			// Internationalization assemblies pollute our test case results as well so disable them
-			if (!string.IsNullOrEmpty (caseDefinedOptions.Il8n))
-				builder.AddIl8n (caseDefinedOptions.Il8n);
+			// TODO: Should be overridable
+			builder.LinkFromAssembly (compilationResult.InputAssemblyPath.ToString ());
 
 			linker.Link (builder.ToArgs ());
 
 			return new LinkedTestCaseResult (testCase, compilationResult.InputAssemblyPath, sandbox.OutputDirectory.Combine (compilationResult.InputAssemblyPath.FileName), compilationResult.ExpectationsAssemblyPath);
+		}
+
+		protected virtual void AddAdditionalLinkOptions (LinkerArgumentBuilder builder, TestCaseMetadaProvider metadataProvider)
+		{
 		}
 	}
 }

@@ -59,6 +59,14 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 					continue;
 
 				foreach (var file in subDir.Files ("*.cs", true)) {
+
+					// Magic : Anything in a directory named Dependnecies is assumed to be a dependency to a test case
+					// and never a test itself
+					// This makes life a little easier when writing these supporting files as it removes some contraints you would previously have
+					// had to follow such as ensuring a class exists that matches the file name and putting [NotATestCase] on that class
+					if (file.Parent.FileName == "Dependencies")
+						continue;
+
 					yield return file;
 				}
 			}
@@ -70,22 +78,29 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 			var typeDefinition = FindTypeDefinition (caseAssemblyDefinition, potentialCase);
 
-			if (typeDefinition == null)
-				throw new InvalidOperationException ($"Could not find the matching type for test case {sourceFile}.  Ensure the file name and class name match");
+			testCase = null;
+
+			if (typeDefinition == null) {
+				Console.WriteLine ($"Could not find the matching type for test case {sourceFile}.  Ensure the file name and class name match");
+				return false;
+			}
 
 			if (typeDefinition.HasAttribute (nameof (NotATestCaseAttribute))) {
-				testCase = null;
 				return false;
 			}
 
 			// Verify the class as a static main method
 			var mainMethod = typeDefinition.Methods.FirstOrDefault (m => m.Name == "Main");
 
-			if (mainMethod == null)
-				throw new InvalidOperationException ($"{typeDefinition} in {sourceFile} is missing a Main() method");
+			if (mainMethod == null) {
+				Console.WriteLine ($"{typeDefinition} in {sourceFile} is missing a Main() method");
+				return false;
+			}
 
-			if (!mainMethod.IsStatic)
-				throw new InvalidOperationException ($"The Main() method for {typeDefinition} in {sourceFile} should be static");
+			if (!mainMethod.IsStatic) {
+				Console.WriteLine ($"The Main() method for {typeDefinition} in {sourceFile} should be static");
+				return false;
+			}
 
 			testCase = potentialCase;
 			return true;

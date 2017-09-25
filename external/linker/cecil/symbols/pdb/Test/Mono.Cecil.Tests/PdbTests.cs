@@ -1,4 +1,4 @@
-
+#if !READ_ONLY
 using System.IO;
 using System.Linq;
 
@@ -151,6 +151,13 @@ namespace Mono.Cecil.Tests {
 		{
 			TestModule ("empty-iterator.dll", module => {
 			}, readOnly: Platform.OnMono, symbolReaderProvider: typeof (PdbReaderProvider), symbolWriterProvider: typeof (PdbWriterProvider));
+		}
+
+		[Test]
+		public void EmptyRootNamespace ()
+		{
+			TestModule ("EmptyRootNamespace.dll", module => {
+			}, readOnly: Platform.OnMono, symbolReaderProvider: typeof(PdbReaderProvider), symbolWriterProvider: typeof(PdbWriterProvider));
 		}
 
 		[Test]
@@ -359,6 +366,42 @@ namespace Mono.Cecil.Tests {
 		}
 
 		[Test]
+		public void ImportsForFirstMethod ()
+		{
+			TestModule ("CecilTest.exe", module => {
+				var type = module.GetType ("CecilTest.Program");
+				var method = type.GetMethod ("Main");
+
+				var debug = method.DebugInformation;
+				var scope = debug.Scope;
+
+				Assert.IsTrue (scope.End.IsEndOfMethod);
+
+				var import = scope.Import;
+
+				Assert.IsNotNull (import);
+				Assert.AreEqual (5, import.Targets.Count);
+
+				var ns = new [] {
+					"System",
+					"System.Collections.Generic",
+					"System.Linq",
+					"System.Text",
+					"System.Threading.Tasks",
+				};
+
+				for (int i = 0; i < import.Targets.Count; i++) {
+					var target = import.Targets [i];
+
+					Assert.AreEqual (ImportTargetKind.ImportNamespace, target.Kind);
+					Assert.AreEqual (ns [i], target.Namespace);
+				}
+
+				Assert.AreEqual ("System", import.Targets [0].Namespace);
+			}, readOnly: Platform.OnMono, symbolReaderProvider: typeof (PdbReaderProvider), symbolWriterProvider: typeof (PdbWriterProvider));
+		}
+
+		[Test]
 		public void CreateMethodFromScratch ()
 		{
 			IgnoreOnMono ();
@@ -412,3 +455,4 @@ namespace Mono.Cecil.Tests {
 		}
 	}
 }
+#endif

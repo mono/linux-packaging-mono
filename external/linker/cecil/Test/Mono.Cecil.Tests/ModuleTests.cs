@@ -12,6 +12,7 @@ namespace Mono.Cecil.Tests {
 	[TestFixture]
 	public class ModuleTests : BaseTestFixture {
 
+#if !READ_ONLY
 		[Test]
 		public void CreateModuleEscapesAssemblyName ()
 		{
@@ -21,6 +22,7 @@ namespace Mono.Cecil.Tests {
 			module = ModuleDefinition.CreateModule ("Test.exe", ModuleKind.Console);
 			Assert.AreEqual ("Test", module.Assembly.Name.Name);
 		}
+#endif
 
 		[Test]
 		public void SingleModule ()
@@ -277,6 +279,7 @@ namespace Mono.Cecil.Tests {
 			}
 		}
 
+#if !READ_ONLY
 		[Test]
 		public void ReadAndWriteFile ()
 		{
@@ -294,5 +297,21 @@ namespace Mono.Cecil.Tests {
 			using (var module = ModuleDefinition.ReadModule (path))
 				Assert.AreEqual ("Foo.Foo", module.Types [1].FullName);
 		}
+
+		[Test]
+		public void ExceptionInWriteDoesNotKeepLockOnFile ()
+		{
+			var path = Path.GetTempFileName ();
+
+			var module = ModuleDefinition.CreateModule ("FooFoo", ModuleKind.Dll);
+			// Mixed mode module that Cecil can not write
+			module.Attributes = (ModuleAttributes) 0;
+
+			Assert.Throws<NotSupportedException>(() => module.Write (path));
+
+			// Ensure you can still delete the file
+			File.Delete (path);
+		}
+#endif
 	}
 }

@@ -171,10 +171,10 @@ namespace Mono.Cecil {
 
 		public MethodDebugInformation DebugInformation {
 			get {
+				Mixin.Read (Body);
+
 				if (debug_info != null)
 					return debug_info;
-
-				Mixin.Read (Body);
 
 				return debug_info ?? (debug_info = new MethodDebugInformation (this));
 			}
@@ -414,6 +414,11 @@ namespace Mono.Cecil {
 		public bool NoOptimization {
 			get { return impl_attributes.GetAttributes ((ushort) MethodImplAttributes.NoOptimization); }
 			set { impl_attributes = impl_attributes.SetAttributes ((ushort) MethodImplAttributes.NoOptimization, value); }
+		}
+
+		public bool AggressiveInlining {
+			get { return impl_attributes.GetAttributes ((ushort) MethodImplAttributes.AggressiveInlining); }
+			set { impl_attributes = impl_attributes.SetAttributes ((ushort) MethodImplAttributes.AggressiveInlining, value); }
 		}
 
 		#endregion

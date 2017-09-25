@@ -254,7 +254,7 @@ namespace Mono.Cecil {
 
 #endif
 
-	public sealed class ModuleDefinition : ModuleReference, ICustomAttributeProvider, IDisposable {
+	public sealed class ModuleDefinition : ModuleReference, ICustomAttributeProvider, ICustomDebugInformationProvider, IDisposable {
 
 		internal Image Image;
 		internal MetadataSystem MetadataSystem;
@@ -293,6 +293,8 @@ namespace Mono.Cecil {
 		Collection<Resource> resources;
 		Collection<ExportedType> exported_types;
 		TypeDefinitionCollection types;
+
+		internal Collection<CustomDebugInformation> custom_infos;
 
 		public bool IsMain {
 			get { return kind != ModuleKind.NetModule; }
@@ -386,7 +388,7 @@ namespace Mono.Cecil {
 		internal IReflectionImporter ReflectionImporter {
 			get {
 				if (reflection_importer == null)
-					Interlocked.CompareExchange (ref reflection_importer, new ReflectionImporter (this), null);
+					Interlocked.CompareExchange (ref reflection_importer, new DefaultReflectionImporter (this), null);
 
 				return reflection_importer;
 			}
@@ -395,13 +397,13 @@ namespace Mono.Cecil {
 		internal IMetadataImporter MetadataImporter {
 			get {
 				if (metadata_importer == null)
-					Interlocked.CompareExchange (ref metadata_importer, new MetadataImporter (this), null);
+					Interlocked.CompareExchange (ref metadata_importer, new DefaultMetadataImporter (this), null);
 
 				return metadata_importer;
 			}
 		}
 
-		internal void SetMetadataImporter (MetadataImporter importer)
+		internal void SetMetadataImporter (IMetadataImporter importer)
 		{
 			if (this.metadata_importer != null)
 				throw new InvalidOperationException ();
@@ -578,6 +580,18 @@ namespace Mono.Cecil {
 				return entry_point = null;
 			}
 			set { entry_point = value; }
+		}
+
+		public bool HasCustomDebugInformations {
+			get {
+				return custom_infos != null && custom_infos.Count > 0;
+			}
+		}
+
+		public Collection<CustomDebugInformation> CustomDebugInformations {
+			get {
+				return custom_infos ?? (custom_infos = new Collection<CustomDebugInformation> ());
+			}
 		}
 
 		internal ModuleDefinition ()
@@ -1149,7 +1163,7 @@ namespace Mono.Cecil {
 		{
 			Mixin.CheckParameters (parameters);
 			var file = GetFileStream (fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
-			ModuleWriter.WriteModuleTo (this, Disposable.Owned (file), parameters);
+			ModuleWriter.WriteModule (this, Disposable.Owned (file), parameters);
 		}
 
 		public void Write ()
@@ -1176,7 +1190,7 @@ namespace Mono.Cecil {
 			Mixin.CheckWriteSeek (stream);
 			Mixin.CheckParameters (parameters);
 
-			ModuleWriter.WriteModuleTo (this, Disposable.NotOwned (stream), parameters);
+			ModuleWriter.WriteModule (this, Disposable.NotOwned (stream), parameters);
 		}
 
 #endif
@@ -1237,16 +1251,14 @@ namespace Mono.Cecil {
 		public static void CheckWriteSeek (Stream stream)
 		{
 			if (!stream.CanWrite || !stream.CanSeek)
-				throw new ArgumentException ();
+				throw new ArgumentException ("Stream must be writable and seekable.");
 		}
 
 		public static void CheckReadSeek (Stream stream)
 		{
 			if (!stream.CanRead || !stream.CanSeek)
-				throw new ArgumentException ();
+				throw new ArgumentException ("Stream must be readable and seekable.");
 		}
-
-#if !READ_ONLY
 
 		public static void CheckType (object type)
 		{
@@ -1271,8 +1283,6 @@ namespace Mono.Cecil {
 			if (method == null)
 				throw new ArgumentNullException (Argument.method.ToString ());
 		}
-
-#endif
 
 		public static void CheckParameters (object parameters)
 		{
