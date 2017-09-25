@@ -179,8 +179,8 @@ namespace Mono.Linker {
 
 				return assembly;
 			}
-			catch {
-				throw new AssemblyResolutionException (reference);
+			catch (Exception e) {
+				throw new AssemblyResolutionException (reference, e);
 			}
 		}
 
@@ -272,7 +272,7 @@ namespace Mono.Linker {
 			}
 		}
 
-		public AssemblyDefinition [] GetAssemblies ()
+		public virtual AssemblyDefinition [] GetAssemblies ()
 		{
 			var cache = _resolver.AssemblyCache;
 			AssemblyDefinition [] asms = new AssemblyDefinition [cache.Count];
