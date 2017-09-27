@@ -311,7 +311,6 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/setreg.pdb
 %{_prefix}/lib/mono/4.5/sn.exe*
 %{_prefix}/lib/mono/4.5/sn.pdb
-%{_prefix}/lib/mono/4.5/VBCSCompiler.exe*
 %{_prefix}/lib/mono/4.5/Commons.Xml.Relaxng.dll
 %{_prefix}/lib/mono/4.5/CustomMarshalers.dll
 %{_prefix}/lib/mono/4.5/I18N.West.dll
@@ -365,12 +364,13 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/System.Xml.Linq.dll
 %{_prefix}/lib/mono/4.5/System.Xml.dll
 %{_prefix}/lib/mono/4.5/System.dll
+%{_prefix}/lib/mono/4.5/VBCSCompiler.*
 %{_prefix}/lib/mono/4.5/cscompmgd.dll
 %{_prefix}/lib/mono/4.5/mscorlib.dll*
 %{_prefix}/lib/mono/4.5/mscorlib.pdb
 %{_prefix}/lib/mono/4.5/Facades/System*
 %{_prefix}/lib/mono/4.5/Facades/Microsoft*
-%{_prefix}/lib/mono/4.5/Facades/netstandard.dll*
+%{_prefix}/lib/mono/4.5/Facades/netstandard*
 %{_prefix}/lib/mono/gac/Commons.Xml.Relaxng
 %{_prefix}/lib/mono/gac/CustomMarshalers
 %{_prefix}/lib/mono/gac/I18N
