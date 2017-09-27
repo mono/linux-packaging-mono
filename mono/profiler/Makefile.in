@@ -157,6 +157,28 @@ libmono_profiler_aot_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_aot_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+libmono_profiler_coverage_static_la_LIBADD =
+am_libmono_profiler_coverage_static_la_OBJECTS = coverage.lo
+libmono_profiler_coverage_static_la_OBJECTS =  \
+	$(am_libmono_profiler_coverage_static_la_OBJECTS)
+libmono_profiler_coverage_static_la_LINK = $(LIBTOOL) $(AM_V_lt) \
+	--tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
+	$(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(libmono_profiler_coverage_static_la_LDFLAGS) $(LDFLAGS) -o \
+	$@
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_static_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
+libmono_profiler_coverage_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+am_libmono_profiler_coverage_la_OBJECTS = coverage.lo
+libmono_profiler_coverage_la_OBJECTS =  \
+	$(am_libmono_profiler_coverage_la_OBJECTS)
+libmono_profiler_coverage_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_coverage_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_la_rpath = -rpath \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_iomap_static_la_LIBADD =
 am_libmono_profiler_iomap_static_la_OBJECTS = iomap.lo
 libmono_profiler_iomap_static_la_OBJECTS =  \
@@ -263,6 +285,8 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_aot_la_SOURCES) \
+	$(libmono_profiler_coverage_static_la_SOURCES) \
+	$(libmono_profiler_coverage_la_SOURCES) \
 	$(libmono_profiler_iomap_static_la_SOURCES) \
 	$(libmono_profiler_iomap_la_SOURCES) \
 	$(libmono_profiler_log_static_la_SOURCES) \
@@ -271,6 +295,8 @@ SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_vtune_la_SOURCES) $(mprof_report_SOURCES)
 DIST_SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_aot_la_SOURCES) \
+	$(libmono_profiler_coverage_static_la_SOURCES) \
+	$(libmono_profiler_coverage_la_SOURCES) \
 	$(libmono_profiler_iomap_static_la_SOURCES) \
 	$(libmono_profiler_iomap_la_SOURCES) \
 	$(libmono_profiler_log_static_la_SOURCES) \
@@ -554,6 +580,8 @@ AM_CPPFLAGS = \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-iomap-static.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log-static.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-coverage.la \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-coverage-static.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_libs)
 
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
@@ -588,6 +616,11 @@ libmono_profiler_log_la_LIBADD = $(libmono_dep) $(GLIB_LIBS) $(Z_LIBS)
 libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_log_static_la_SOURCES = log.c log-args.c
 libmono_profiler_log_static_la_LDFLAGS = -static
+libmono_profiler_coverage_la_SOURCES = coverage.c
+libmono_profiler_coverage_la_LIBADD = $(libmono_dep) $(GLIB_LIBS) $(Z_LIBS)
+libmono_profiler_coverage_la_LDFLAGS = $(prof_ldflags)
+libmono_profiler_coverage_static_la_SOURCES = coverage.c
+libmono_profiler_coverage_static_la_LDFLAGS = -static
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_SOURCES = vtune.c
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_CFLAGS = $(VTUNE_CFLAGS)
 @HAVE_VTUNE_TRUE@libmono_profiler_vtune_la_LIBADD = $(VTUNE_LIBS) $(LIBMONO) $(GLIB_LIBS) $(LIBICONV)
@@ -687,6 +720,12 @@ libmono-profiler-aot-static.la: $(libmono_profiler_aot_static_la_OBJECTS) $(libm
 libmono-profiler-aot.la: $(libmono_profiler_aot_la_OBJECTS) $(libmono_profiler_aot_la_DEPENDENCIES) $(EXTRA_libmono_profiler_aot_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_profiler_aot_la_LINK) $(am_libmono_profiler_aot_la_rpath) $(libmono_profiler_aot_la_OBJECTS) $(libmono_profiler_aot_la_LIBADD) $(LIBS)
 
+libmono-profiler-coverage-static.la: $(libmono_profiler_coverage_static_la_OBJECTS) $(libmono_profiler_coverage_static_la_DEPENDENCIES) $(EXTRA_libmono_profiler_coverage_static_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libmono_profiler_coverage_static_la_LINK) $(am_libmono_profiler_coverage_static_la_rpath) $(libmono_profiler_coverage_static_la_OBJECTS) $(libmono_profiler_coverage_static_la_LIBADD) $(LIBS)
+
+libmono-profiler-coverage.la: $(libmono_profiler_coverage_la_OBJECTS) $(libmono_profiler_coverage_la_DEPENDENCIES) $(EXTRA_libmono_profiler_coverage_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libmono_profiler_coverage_la_LINK) $(am_libmono_profiler_coverage_la_rpath) $(libmono_profiler_coverage_la_OBJECTS) $(libmono_profiler_coverage_la_LIBADD) $(LIBS)
+
 libmono-profiler-iomap-static.la: $(libmono_profiler_iomap_static_la_OBJECTS) $(libmono_profiler_iomap_static_la_DEPENDENCIES) $(EXTRA_libmono_profiler_iomap_static_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_profiler_iomap_static_la_LINK) $(am_libmono_profiler_iomap_static_la_rpath) $(libmono_profiler_iomap_static_la_OBJECTS) $(libmono_profiler_iomap_static_la_LIBADD) $(LIBS)
 
@@ -765,6 +804,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aot.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coverage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iomap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_la-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_static_la-vtune.Plo@am__quote@
