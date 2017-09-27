@@ -119,17 +119,18 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libmonoutils_la_LIBADD =
 am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
-	mono-md5.c mono-sha1.c mono-logger.c mono-logger-internals.h \
-	mono-codeman.c dlmalloc.h dlmalloc.c mono-counters.c \
-	mono-compiler.h mono-complex.h mono-dl.c mono-dl-windows.c \
-	mono-dl-darwin.c mono-dl-posix.c mono-dl-wasm.c mono-dl.h \
-	mono-dl-windows-internals.h mono-log-windows.c \
-	mono-log-common.c mono-log-posix.c mono-log-android.c \
-	mono-log-darwin.c mono-internal-hash.c mono-internal-hash.h \
-	mono-io-portability.c mono-io-portability.h monobitset.c \
-	mono-filemap.c mono-math.c mono-mmap.c mono-mmap-windows.c \
-	mono-mmap.h mono-mmap-internals.h \
-	mono-mmap-windows-internals.h mono-os-mutex.h mono-os-mutex.c \
+	mono-os-wait-win32.c mono-md5.c mono-sha1.c mono-logger.c \
+	mono-logger-internals.h mono-codeman.c dlmalloc.h dlmalloc.c \
+	mono-counters.c mono-compiler.h mono-complex.h mono-dl.c \
+	mono-dl-windows.c mono-dl-darwin.c mono-dl-posix.c \
+	mono-dl-wasm.c mono-dl.h mono-dl-windows-internals.h \
+	mono-log-windows.c mono-log-common.c mono-log-posix.c \
+	mono-log-android.c mono-log-darwin.c mono-internal-hash.c \
+	mono-internal-hash.h mono-io-portability.c \
+	mono-io-portability.h monobitset.c mono-filemap.c mono-math.c \
+	mono-mmap.c mono-mmap-windows.c mono-mmap.h \
+	mono-mmap-internals.h mono-mmap-windows-internals.h \
+	mono-os-mutex.h mono-os-mutex.c mono-os-wait.h \
 	mono-coop-mutex.h mono-once.h mono-lazy-init.h \
 	mono-networkinterfaces.c mono-networkinterfaces.h \
 	mono-proclib.c mono-proclib-windows.c mono-proclib.h \
@@ -173,7 +174,8 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-hwcap-mips.c mono-hwcap-ppc.c mono-hwcap-sparc.c \
 	mono-hwcap-s390x.c mono-hwcap-wasm.c mono-hwcap-cross.c
 @HOST_WIN32_FALSE@am__objects_1 = os-event-unix.lo
-@HOST_WIN32_TRUE@am__objects_2 = os-event-win32.lo
+@HOST_WIN32_TRUE@am__objects_2 = os-event-win32.lo \
+@HOST_WIN32_TRUE@	mono-os-wait-win32.lo
 @HOST_WIN32_FALSE@am__objects_3 = $(am__objects_1)
 @HOST_WIN32_TRUE@am__objects_3 = $(am__objects_2)
 am__objects_4 = $(am__objects_3) mono-md5.lo mono-sha1.lo \
@@ -562,7 +564,8 @@ noinst_LTLIBRARIES = libmonoutils.la
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) $(SHARED_CFLAGS)
 @ENABLE_DTRACE_TRUE@BUILT_SOURCES = mono-dtrace.h
 @HOST_WIN32_TRUE@win32_sources = \
-@HOST_WIN32_TRUE@	os-event-win32.c
+@HOST_WIN32_TRUE@	os-event-win32.c \
+@HOST_WIN32_TRUE@	mono-os-wait-win32.c
 
 @HOST_WIN32_FALSE@platform_sources = $(unix_sources)
 @HOST_WIN32_TRUE@platform_sources = $(win32_sources)
@@ -607,6 +610,7 @@ monoutils_sources = \
 	mono-mmap-windows-internals.h	\
 	mono-os-mutex.h		\
 	mono-os-mutex.c		\
+	mono-os-wait.h \
 	mono-coop-mutex.h		\
 	mono-once.h		\
 	mono-lazy-init.h		\
@@ -850,6 +854,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-mmap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-networkinterfaces.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-os-mutex.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-os-wait-win32.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-path.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-poll.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mono-proclib-windows.Plo@am__quote@
