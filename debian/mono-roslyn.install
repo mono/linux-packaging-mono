@@ -2,9 +2,11 @@
 /usr/bin/csi
 /usr/lib/mono/4.5/csc.exe*
 /usr/lib/mono/4.5/csc.rsp
-/usr/lib/mono/4.5/csi.*
-/usr/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
+/usr/lib/mono/4.5/csi.exe*
+/usr/lib/mono/4.5/csi.rsp
+/usr/lib/mono/4.5/VBCSCompiler.exe*
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.Scripting.dll*
+/usr/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.Scripting.dll*
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.VisualBasic.dll*
 /usr/lib/mono/4.5/Microsoft.CodeAnalysis.dll*
