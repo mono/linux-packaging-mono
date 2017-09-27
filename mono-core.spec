@@ -247,6 +247,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_bindir}/chktrust
 %{_bindir}/crlupdate
 %{_bindir}/csc
+%{_bindir}/csi
 %{_bindir}/csharp
 %{_bindir}/dmcs
 %{_bindir}/gacutil
@@ -295,6 +296,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/crlupdate.exe*
 %{_prefix}/lib/mono/4.5/crlupdate.pdb
 %{_prefix}/lib/mono/4.5/csc.*
+%{_prefix}/lib/mono/4.5/csi.*
 %{_prefix}/lib/mono/4.5/csharp.exe*
 %{_prefix}/lib/mono/4.5/csharp.pdb
 %{_prefix}/lib/mono/4.5/gacutil.exe*
@@ -309,6 +311,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/setreg.pdb
 %{_prefix}/lib/mono/4.5/sn.exe*
 %{_prefix}/lib/mono/4.5/sn.pdb
+%{_prefix}/lib/mono/4.5/VBCSCompiler.exe*
 %{_prefix}/lib/mono/4.5/Commons.Xml.Relaxng.dll
 %{_prefix}/lib/mono/4.5/CustomMarshalers.dll
 %{_prefix}/lib/mono/4.5/I18N.West.dll
@@ -316,6 +319,9 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/ICSharpCode.SharpZipLib.dll
 %{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.dll*
 %{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.dll*
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.CSharp.Scripting.dll*
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.Scripting.dll*
+%{_prefix}/lib/mono/4.5/Microsoft.CodeAnalysis.VisualBasic.dll*
 %{_prefix}/lib/mono/4.5/Microsoft.CSharp.dll
 %{_prefix}/lib/mono/4.5/Microsoft.VisualC.dll
 %if 0%{?rhel} >= 7
