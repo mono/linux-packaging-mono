@@ -658,7 +658,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_compile_method@Base 4.1.0.1738
  mono_conc_hashtable_destroy@Base 4.1.0.1738
  mono_conc_hashtable_foreach@Base 4.1.0.1738
- mono_conc_hashtable_foreach_steal@Base 5.3.0.149
+ mono_conc_hashtable_foreach_steal@Base 5.4.0.167
  mono_conc_hashtable_insert@Base 4.1.0.1738
  mono_conc_hashtable_lookup@Base 4.1.0.1738
  mono_conc_hashtable_new@Base 4.1.0.1738
@@ -1023,7 +1023,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_load_remote_field@Base 4.1.0.1738
  mono_load_remote_field_new@Base 4.1.0.1738
  mono_loader_register_module@Base 5.5.0.357
- mono_lock_free_alloc@Base 4.5.2.48
+ mono_lock_free_alloc@Base 4.5.2.48-0nightly2
  mono_lock_free_allocator_check_consistency@Base 4.5.2.48
  mono_lock_free_allocator_init_allocator@Base 4.5.2.48
  mono_lock_free_allocator_init_size_class@Base 4.5.2.48
@@ -1201,7 +1201,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_object_unbox@Base 4.1.0.1738
  mono_opcode_name@Base 4.1.0.1738
  mono_opcode_value@Base 4.1.0.1738
- mono_opcodes@Base 4.5.2.363
+ mono_opcodes@Base 4.5.2.363-0nightly1
  mono_pagesize@Base 4.1.0.1738
  mono_param_get_objects@Base 4.1.0.1738
  mono_parse_default_optimizations@Base 4.1.0.1738
@@ -1328,7 +1328,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_register_config_for_assembly@Base 4.1.0.1738
  mono_register_machine_config@Base 4.1.0.1738
  mono_register_symfile_for_assembly@Base 4.1.0.1738
- mono_reraise_exception@Base 5.7.0.181
+ mono_reraise_exception@Base 5.4.0.199
  mono_runtime_class_init@Base 4.1.0.1738
  mono_runtime_cleanup@Base 4.1.0.1738
  mono_runtime_delegate_invoke@Base 4.1.0.1738
