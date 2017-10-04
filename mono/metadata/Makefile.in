@@ -170,8 +170,9 @@ am__libmonoruntime_static_la_SOURCES_DIST = console-unix.c \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h reflection.c dynamic-image.c sre.c \
 	sre-encode.c sre-save.c custom-attrs.c fdhandle.h fdhandle.c \
-	gc-stats.c gc.c monitor.c mono-hash.c mono-conc-hash.c \
-	null-gc.c null-gc-handles.h null-gc-handles.c boehm-gc.c
+	callspec.h callspec.c gc-stats.c gc.c monitor.c mono-hash.c \
+	mono-conc-hash.c null-gc.c null-gc-handles.h null-gc-handles.c \
+	boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_1 =  \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_static_la-w32mutex-unix.lo \
@@ -270,7 +271,8 @@ am__objects_5 = $(am__objects_4) libmonoruntime_static_la-appdomain.lo \
 	libmonoruntime_static_la-sre-encode.lo \
 	libmonoruntime_static_la-sre-save.lo \
 	libmonoruntime_static_la-custom-attrs.lo \
-	libmonoruntime_static_la-fdhandle.lo
+	libmonoruntime_static_la-fdhandle.lo \
+	libmonoruntime_static_la-callspec.lo
 am__objects_6 = libmonoruntime_static_la-gc-stats.lo \
 	libmonoruntime_static_la-gc.lo \
 	libmonoruntime_static_la-monitor.lo \
@@ -346,8 +348,9 @@ am__libmonoruntime_la_SOURCES_DIST = console-unix.c w32mutex-unix.c \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h reflection.c dynamic-image.c sre.c \
 	sre-encode.c sre-save.c custom-attrs.c fdhandle.h fdhandle.c \
-	gc-stats.c gc.c monitor.c mono-hash.c mono-conc-hash.c \
-	null-gc.c null-gc-handles.h null-gc-handles.c boehm-gc.c
+	callspec.h callspec.c gc-stats.c gc.c monitor.c mono-hash.c \
+	mono-conc-hash.c null-gc.c null-gc-handles.h null-gc-handles.c \
+	boehm-gc.c
 @HOST_WIN32_FALSE@am__objects_10 = libmonoruntime_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32mutex-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntime_la-w32semaphore-unix.lo \
@@ -424,7 +427,7 @@ am__objects_14 = $(am__objects_13) libmonoruntime_la-appdomain.lo \
 	libmonoruntime_la-dynamic-image.lo libmonoruntime_la-sre.lo \
 	libmonoruntime_la-sre-encode.lo libmonoruntime_la-sre-save.lo \
 	libmonoruntime_la-custom-attrs.lo \
-	libmonoruntime_la-fdhandle.lo
+	libmonoruntime_la-fdhandle.lo libmonoruntime_la-callspec.lo
 am__objects_15 = libmonoruntime_la-gc-stats.lo libmonoruntime_la-gc.lo \
 	libmonoruntime_la-monitor.lo libmonoruntime_la-mono-hash.lo \
 	libmonoruntime_la-mono-conc-hash.lo
@@ -498,11 +501,11 @@ am__libmonoruntimesgen_static_la_SOURCES_DIST = console-unix.c \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h reflection.c dynamic-image.c sre.c \
 	sre-encode.c sre-save.c custom-attrs.c fdhandle.h fdhandle.c \
-	gc-stats.c gc.c monitor.c mono-hash.c mono-conc-hash.c \
-	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
-	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
-	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
-	sgen-client-mono.h
+	callspec.h callspec.c gc-stats.c gc.c monitor.c mono-hash.c \
+	mono-conc-hash.c sgen-bridge.c sgen-bridge.h \
+	sgen-bridge-internals.h sgen-old-bridge.c sgen-new-bridge.c \
+	sgen-tarjan-bridge.c sgen-toggleref.c sgen-toggleref.h \
+	sgen-stw.c sgen-mono.c sgen-client-mono.h
 @HOST_WIN32_FALSE@am__objects_18 = libmonoruntimesgen_static_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_static_la-w32mutex-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_static_la-w32semaphore-unix.lo \
@@ -599,7 +602,8 @@ am__objects_22 = $(am__objects_21) \
 	libmonoruntimesgen_static_la-sre-encode.lo \
 	libmonoruntimesgen_static_la-sre-save.lo \
 	libmonoruntimesgen_static_la-custom-attrs.lo \
-	libmonoruntimesgen_static_la-fdhandle.lo
+	libmonoruntimesgen_static_la-fdhandle.lo \
+	libmonoruntimesgen_static_la-callspec.lo
 am__objects_23 = libmonoruntimesgen_static_la-gc-stats.lo \
 	libmonoruntimesgen_static_la-gc.lo \
 	libmonoruntimesgen_static_la-monitor.lo \
@@ -679,11 +683,11 @@ am__libmonoruntimesgen_la_SOURCES_DIST = console-unix.c \
 	w32handle-namespace.h w32handle-namespace.c w32handle.h \
 	w32handle.c w32error.h reflection.c dynamic-image.c sre.c \
 	sre-encode.c sre-save.c custom-attrs.c fdhandle.h fdhandle.c \
-	gc-stats.c gc.c monitor.c mono-hash.c mono-conc-hash.c \
-	sgen-bridge.c sgen-bridge.h sgen-bridge-internals.h \
-	sgen-old-bridge.c sgen-new-bridge.c sgen-tarjan-bridge.c \
-	sgen-toggleref.c sgen-toggleref.h sgen-stw.c sgen-mono.c \
-	sgen-client-mono.h
+	callspec.h callspec.c gc-stats.c gc.c monitor.c mono-hash.c \
+	mono-conc-hash.c sgen-bridge.c sgen-bridge.h \
+	sgen-bridge-internals.h sgen-old-bridge.c sgen-new-bridge.c \
+	sgen-tarjan-bridge.c sgen-toggleref.c sgen-toggleref.h \
+	sgen-stw.c sgen-mono.c sgen-client-mono.h
 @HOST_WIN32_FALSE@am__objects_26 =  \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-console-unix.lo \
 @HOST_WIN32_FALSE@	libmonoruntimesgen_la-w32mutex-unix.lo \
@@ -779,7 +783,8 @@ am__objects_30 = $(am__objects_29) libmonoruntimesgen_la-appdomain.lo \
 	libmonoruntimesgen_la-sre-encode.lo \
 	libmonoruntimesgen_la-sre-save.lo \
 	libmonoruntimesgen_la-custom-attrs.lo \
-	libmonoruntimesgen_la-fdhandle.lo
+	libmonoruntimesgen_la-fdhandle.lo \
+	libmonoruntimesgen_la-callspec.lo
 am__objects_31 = libmonoruntimesgen_la-gc-stats.lo \
 	libmonoruntimesgen_la-gc.lo libmonoruntimesgen_la-monitor.lo \
 	libmonoruntimesgen_la-mono-hash.lo \
@@ -1373,7 +1378,9 @@ common_sources = \
 	sre-save.c	\
 	custom-attrs.c	\
 	fdhandle.h	\
-	fdhandle.c
+	fdhandle.c	\
+	callspec.h	\
+	callspec.c
 
 
 # These source files have compile time dependencies on GC code
@@ -1541,6 +1548,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-assembly.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-attach.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-boehm-gc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-callspec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-class-accessors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-class.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_la-cominterop.Plo@am__quote@
@@ -1642,6 +1650,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-assembly.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-attach.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-boehm-gc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-callspec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-class-accessors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-class.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntime_static_la-cominterop.Plo@am__quote@
@@ -1742,6 +1751,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-assembly.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-attach.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-callspec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-class-accessors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-class.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_la-cominterop.Plo@am__quote@
@@ -1847,6 +1857,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-appdomain.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-assembly.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-attach.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-callspec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-class-accessors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-class.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmonoruntimesgen_static_la-cominterop.Plo@am__quote@
@@ -2639,6 +2650,13 @@ libmonoruntime_static_la-fdhandle.lo: fdhandle.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-fdhandle.lo `test -f 'fdhandle.c' || echo '$(srcdir)/'`fdhandle.c
 
+libmonoruntime_static_la-callspec.lo: callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-callspec.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-callspec.Tpo -c -o libmonoruntime_static_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-callspec.Tpo $(DEPDIR)/libmonoruntime_static_la-callspec.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='callspec.c' object='libmonoruntime_static_la-callspec.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_static_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
+
 libmonoruntime_static_la-gc-stats.lo: gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_static_la-gc-stats.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_static_la-gc-stats.Tpo -c -o libmonoruntime_static_la-gc-stats.lo `test -f 'gc-stats.c' || echo '$(srcdir)/'`gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_static_la-gc-stats.Tpo $(DEPDIR)/libmonoruntime_static_la-gc-stats.Plo
@@ -3353,6 +3371,13 @@ libmonoruntime_la-fdhandle.lo: fdhandle.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-fdhandle.lo `test -f 'fdhandle.c' || echo '$(srcdir)/'`fdhandle.c
 
+libmonoruntime_la-callspec.lo: callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-callspec.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-callspec.Tpo -c -o libmonoruntime_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-callspec.Tpo $(DEPDIR)/libmonoruntime_la-callspec.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='callspec.c' object='libmonoruntime_la-callspec.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -c -o libmonoruntime_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
+
 libmonoruntime_la-gc-stats.lo: gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntime_la_CFLAGS) $(CFLAGS) -MT libmonoruntime_la-gc-stats.lo -MD -MP -MF $(DEPDIR)/libmonoruntime_la-gc-stats.Tpo -c -o libmonoruntime_la-gc-stats.lo `test -f 'gc-stats.c' || echo '$(srcdir)/'`gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntime_la-gc-stats.Tpo $(DEPDIR)/libmonoruntime_la-gc-stats.Plo
@@ -4066,6 +4091,13 @@ libmonoruntimesgen_static_la-fdhandle.lo: fdhandle.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fdhandle.c' object='libmonoruntimesgen_static_la-fdhandle.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-fdhandle.lo `test -f 'fdhandle.c' || echo '$(srcdir)/'`fdhandle.c
+
+libmonoruntimesgen_static_la-callspec.lo: callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-callspec.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-callspec.Tpo -c -o libmonoruntimesgen_static_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_static_la-callspec.Tpo $(DEPDIR)/libmonoruntimesgen_static_la-callspec.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='callspec.c' object='libmonoruntimesgen_static_la-callspec.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_static_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
 
 libmonoruntimesgen_static_la-gc-stats.lo: gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_static_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_static_la-gc-stats.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_static_la-gc-stats.Tpo -c -o libmonoruntimesgen_static_la-gc-stats.lo `test -f 'gc-stats.c' || echo '$(srcdir)/'`gc-stats.c
@@ -4808,6 +4840,13 @@ libmonoruntimesgen_la-fdhandle.lo: fdhandle.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fdhandle.c' object='libmonoruntimesgen_la-fdhandle.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-fdhandle.lo `test -f 'fdhandle.c' || echo '$(srcdir)/'`fdhandle.c
+
+libmonoruntimesgen_la-callspec.lo: callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-callspec.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-callspec.Tpo -c -o libmonoruntimesgen_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmonoruntimesgen_la-callspec.Tpo $(DEPDIR)/libmonoruntimesgen_la-callspec.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='callspec.c' object='libmonoruntimesgen_la-callspec.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -c -o libmonoruntimesgen_la-callspec.lo `test -f 'callspec.c' || echo '$(srcdir)/'`callspec.c
 
 libmonoruntimesgen_la-gc-stats.lo: gc-stats.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmonoruntimesgen_la_CFLAGS) $(CFLAGS) -MT libmonoruntimesgen_la-gc-stats.lo -MD -MP -MF $(DEPDIR)/libmonoruntimesgen_la-gc-stats.Tpo -c -o libmonoruntimesgen_la-gc-stats.lo `test -f 'gc-stats.c' || echo '$(srcdir)/'`gc-stats.c

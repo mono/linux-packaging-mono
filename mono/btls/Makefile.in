@@ -392,6 +392,7 @@ MONO_BTLS_SOURCES_FILES = \
 
 EXTRA_DIST = $(MONO_BTLS_SOURCES_FILES)
 CMAKE_VERBOSE = $(if $(V),VERBOSE=1,)
+NINJA_VERBOSE = $(if ($V),-v,)
 @NINJA_FALSE@NINJA_ARGS = 
 @NINJA_TRUE@NINJA_ARGS = -G Ninja
 @NINJA_FALSE@BUILDFILE = Makefile
@@ -598,7 +599,7 @@ build-shared/$(BUILDFILE):
 	(cd build-shared && CC="$(CC)" CXX="$(CXX)" $(CMAKE) $(CMAKE_ARGS) $(BTLS_CMAKE_ARGS) -DBUILD_SHARED_LIBS=1 $(abs_top_srcdir)/mono/btls)
 
 @NINJA_TRUE@build-shared/libmono-btls-shared$(libsuffix): build-shared/$(BUILDFILE) $(MONO_BTLS_SOURCES_FILES)
-@NINJA_TRUE@	ninja -C build-shared $(CMAKE_VERBOSE)
+@NINJA_TRUE@	ninja -C build-shared $(NINJA_VERBOSE)
 @NINJA_FALSE@build-shared/libmono-btls-shared$(libsuffix): build-shared/$(BUILDFILE) $(MONO_BTLS_SOURCES_FILES)
 @NINJA_FALSE@	$(MAKE) -C build-shared $(CMAKE_VERBOSE)
 

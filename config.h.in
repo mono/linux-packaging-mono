@@ -3,6 +3,9 @@
 /* Define if building universal (internal helper macro) */
 #undef AC_APPLE_UNIVERSAL_BUILD
 
+/* Whether Android NDK unified headers are used */
+#undef ANDROID_UNIFIED_HEADERS
+
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -165,6 +168,16 @@
 
 /* Define to 1 if you have the <alloca.h> header file. */
 #undef HAVE_ALLOCA_H
+
+/* Define to 1 if you have the <android/api-level.h> header file. */
+#undef HAVE_ANDROID_API_LEVEL_H
+
+/* Define to 1 if you have the <android/legacy_signal_inlines.h> header file.
+   */
+#undef HAVE_ANDROID_LEGACY_SIGNAL_INLINES_H
+
+/* Define to 1 if you have the <android/versioning.h> header file. */
+#undef HAVE_ANDROID_VERSIONING_H
 
 /* ARM v5 */
 #undef HAVE_ARMV5
@@ -509,6 +522,9 @@
 
 /* Define to 1 if you have the `lutimes' function. */
 #undef HAVE_LUTIMES
+
+/* Define to 1 if you have the <machine/endian.h> header file. */
+#undef HAVE_MACHINE_ENDIAN_H
 
 /* Define to 1 if you have the `madvise' function. */
 #undef HAVE_MADVISE
@@ -855,6 +871,9 @@
 
 /* Define to 1 if you have the <sys/auxv.h> header file. */
 #undef HAVE_SYS_AUXV_H
+
+/* Define to 1 if you have the <sys/endian.h> header file. */
+#undef HAVE_SYS_ENDIAN_H
 
 /* Define to 1 if you have the <sys/epoll.h> header file. */
 #undef HAVE_SYS_EPOLL_H
