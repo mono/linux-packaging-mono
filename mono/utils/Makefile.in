@@ -168,11 +168,12 @@ am__libmonoutils_la_SOURCES_DIST = os-event-unix.c os-event-win32.c \
 	mono-rand.c mono-rand-windows.c mono-rand.h \
 	mono-rand-windows-internals.h memfuncs.c memfuncs.h parse.c \
 	parse.h checked-build.c checked-build.h os-event.h refcount.h \
-	w32api.h unlocked.h mach-support-x86.c mach-support-amd64.c \
-	mach-support-arm.c mach-support-arm64.c mach-support-unknown.c \
-	mono-hwcap-x86.c mono-hwcap-arm.c mono-hwcap-arm64.c \
-	mono-hwcap-mips.c mono-hwcap-ppc.c mono-hwcap-sparc.c \
-	mono-hwcap-s390x.c mono-hwcap-wasm.c mono-hwcap-cross.c
+	w32api.h unlocked.h ward.h mach-support-x86.c \
+	mach-support-amd64.c mach-support-arm.c mach-support-arm64.c \
+	mach-support-unknown.c mono-hwcap-x86.c mono-hwcap-arm.c \
+	mono-hwcap-arm64.c mono-hwcap-mips.c mono-hwcap-ppc.c \
+	mono-hwcap-sparc.c mono-hwcap-s390x.c mono-hwcap-wasm.c \
+	mono-hwcap-cross.c
 @HOST_WIN32_FALSE@am__objects_1 = os-event-unix.lo
 @HOST_WIN32_TRUE@am__objects_2 = os-event-win32.lo \
 @HOST_WIN32_TRUE@	mono-os-wait-win32.lo
@@ -728,7 +729,8 @@ monoutils_sources = \
 	os-event.h \
 	refcount.h	\
 	w32api.h	\
-	unlocked.h
+	unlocked.h	\
+	ward.h
 
 arch_sources = $(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \

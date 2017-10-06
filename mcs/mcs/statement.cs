@@ -774,6 +774,8 @@ namespace Mono.CSharp {
 
 			ec.Emit (OpCodes.Br, test);
 			ec.MarkLabel (loop);
+
+			Condition?.EmitPrepare (ec);
 			Statement.Emit (ec);
 
 			ec.MarkLabel (ec.LoopBegin);
@@ -2878,9 +2880,9 @@ namespace Mono.CSharp {
 			AddLocalName (li.Name, li);
 		}
 
-		public void AddLocalName (string name, INamedBlockVariable li)
+		public virtual void AddLocalName (string name, INamedBlockVariable li, bool canShadowChildrenBlockName = false)
 		{
-			ParametersBlock.TopBlock.AddLocalName (name, li, false);
+			ParametersBlock.TopBlock.AddLocalName (name, li, canShadowChildrenBlockName);
 		}
 
 		public virtual void Error_AlreadyDeclared (string name, INamedBlockVariable variable, string reason)
@@ -4257,7 +4259,7 @@ namespace Mono.CSharp {
 			}
 		}
 
-		public void AddLocalName (string name, INamedBlockVariable li, bool ignoreChildrenBlocks)
+		public override void AddLocalName (string name, INamedBlockVariable li, bool ignoreChildrenBlocks)
 		{
 			if (names == null)
 				names = new Dictionary<string, object> ();

@@ -7219,7 +7219,8 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 {
 	MonoError error;
 	MonoInst *ins, **sp, **stack_start;
-	MonoBasicBlock *tblock = NULL, *init_localsbb = NULL;
+	MonoBasicBlock *tblock = NULL;
+	MonoBasicBlock *init_localsbb = NULL, *init_localsbb2 = NULL;
 	MonoSimpleBasicBlock *bb = NULL, *original_bb = NULL;
 	MonoMethod *cmethod, *method_definition;
 	MonoInst **arg_array;
@@ -7286,7 +7287,10 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 		seq_points = FALSE;
 	}
 
-	if (cfg->gen_sdb_seq_points && cfg->method == method) {
+	if (cfg->method == method)
+		cfg->coverage_info = mono_profiler_coverage_alloc (cfg->method, header->code_size);
+
+	if ((cfg->gen_sdb_seq_points && cfg->method == method) || cfg->coverage_info) {
 		minfo = mono_debug_lookup_method (method);
 		if (minfo) {
 			MonoSymSeqPoint *sps;
@@ -7381,9 +7385,6 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 	cfg->dont_inline = g_list_prepend (cfg->dont_inline, method);
 	if (cfg->method == method) {
-
-		cfg->coverage_info = mono_profiler_coverage_alloc (cfg->method, header->code_size);
-
 		/* ENTRY BLOCK */
 		NEW_BBLOCK (cfg, start_bblock);
 		cfg->bb_entry = start_bblock;
@@ -7556,7 +7557,7 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 	init_localsbb->next_bb = cfg->cbb;
 	link_bblock (cfg, start_bblock, init_localsbb);
 	link_bblock (cfg, init_localsbb, cfg->cbb);
-		
+	init_localsbb2 = init_localsbb;
 	cfg->cbb = init_localsbb;
 
 	if (cfg->gsharedvt && cfg->method == method) {
@@ -7774,32 +7775,32 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 
 			if (sym_seq_points)
 				mono_bitset_set_fast (seq_point_set_locs, ip - header->code);
+
+			if ((cfg->method == method) && cfg->coverage_info) {
+				guint32 cil_offset = ip - header->code;
+				gpointer counter = &cfg->coverage_info->data [cil_offset].count;
+				cfg->coverage_info->data [cil_offset].cil_code = ip;
+
+				if (mono_arch_opcode_supported (OP_ATOMIC_ADD_I4)) {
+					MonoInst *one_ins, *load_ins;
+
+					EMIT_NEW_PCONST (cfg, load_ins, counter);
+					EMIT_NEW_ICONST (cfg, one_ins, 1);
+					MONO_INST_NEW (cfg, ins, OP_ATOMIC_ADD_I4);
+					ins->dreg = mono_alloc_ireg (cfg);
+					ins->inst_basereg = load_ins->dreg;
+					ins->inst_offset = 0;
+					ins->sreg2 = one_ins->dreg;
+					ins->type = STACK_I4;
+					MONO_ADD_INS (cfg->cbb, ins);
+				} else {
+					EMIT_NEW_PCONST (cfg, ins, counter);
+					MONO_EMIT_NEW_STORE_MEMBASE_IMM (cfg, OP_STORE_MEMBASE_IMM, ins->dreg, 0, 1);
+				}
+			}
 		}
 
 		cfg->cbb->real_offset = cfg->real_offset;
-
-		if ((cfg->method == method) && cfg->coverage_info) {
-			guint32 cil_offset = ip - header->code;
-			gpointer counter = &cfg->coverage_info->data [cil_offset].count;
-			cfg->coverage_info->data [cil_offset].cil_code = ip;
-
-			if (mono_arch_opcode_supported (OP_ATOMIC_ADD_I4)) {
-				MonoInst *one_ins, *load_ins;
-
-				EMIT_NEW_PCONST (cfg, load_ins, counter);
-				EMIT_NEW_ICONST (cfg, one_ins, 1);
-				MONO_INST_NEW (cfg, ins, OP_ATOMIC_ADD_I4);
-				ins->dreg = mono_alloc_ireg (cfg);
-				ins->inst_basereg = load_ins->dreg;
-				ins->inst_offset = 0;
-				ins->sreg2 = one_ins->dreg;
-				ins->type = STACK_I4;
-				MONO_ADD_INS (cfg->cbb, ins);
-			} else {
-				EMIT_NEW_PCONST (cfg, ins, counter);
-				MONO_EMIT_NEW_STORE_MEMBASE_IMM (cfg, OP_STORE_MEMBASE_IMM, ins->dreg, 0, 1);
-			}
-		}
 
 		if (cfg->verbose_level > 3)
 			printf ("converting (in B%d: stack: %d) %s", cfg->cbb->block_num, (int)(sp - stack_start), mono_disasm_code_one (NULL, method, ip, NULL));
@@ -11934,6 +11935,13 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				if (next_bb)
 					MONO_START_BB (cfg, next_bb);
 
+				/*
+				 * Parts of the initlocals code needs to come after this, since it might call methods like memset.
+				 */
+				init_localsbb2 = cfg->cbb;
+				NEW_BBLOCK (cfg, next_bb);
+				MONO_START_BB (cfg, next_bb);
+
 				ip += 2;
 				break;
 			}
@@ -12708,6 +12716,14 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 		cfg->cbb = init_localsbb;
 		cfg->ip = NULL;
 		for (i = 0; i < header->num_locals; ++i) {
+			/*
+			 * Vtype initialization might need to be done after CEE_JIT_ATTACH, since it can make calls to memset (),
+			 * which need the trampoline code to work.
+			 */
+			if (MONO_TYPE_ISSTRUCT (header->locals [i]))
+				cfg->cbb = init_localsbb2;
+			else
+				cfg->cbb = init_localsbb;
 			emit_init_local (cfg, i, header->locals [i], init_locals);
 		}
 	}
