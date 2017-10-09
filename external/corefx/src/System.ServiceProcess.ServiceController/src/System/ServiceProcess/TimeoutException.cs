@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 namespace System.ServiceProcess
 {
     [Serializable]
-    public class TimeoutException : Exception
+    public class TimeoutException : SystemException
     {
         private const int ServiceControllerTimeout = unchecked((int)0x80131906);
 

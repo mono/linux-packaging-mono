@@ -22,6 +22,7 @@
     <Compile Include="StreamWriter\StreamWriter.StringCtorTests.cs" />
     <Compile Include="Stream\Stream.APMMethodsTests.cs" />
     <Compile Include="BinaryWriter\BinaryWriter.WriteByteCharTests.cs" />
+    <Compile Include="BinaryWriter\BinaryWriter.WriteByteCharTests.netcoreapp.cs" Condition="'$(TargetGroup)' == 'netcoreapp'" />
     <Compile Include="BinaryWriter\BinaryWriter.WriteTests.cs" />
     <Compile Include="BinaryWriter\BinaryWriterTests.cs" />
     <Compile Include="BufferedStream\BufferedStream.FlushTests.cs" />
@@ -32,6 +33,7 @@
     <Compile Include="MemoryStream\MemoryStream.ConstructorTests.cs" />
     <Compile Include="MemoryStream\MemoryStream.TryGetBufferTests.cs" />
     <Compile Include="MemoryStream\MemoryStreamTests.cs" />
+    <Compile Include="MemoryStream\MemoryStreamTests.netcoreapp.cs" Condition="'$(TargetGroup)' == 'netcoreapp'" />
     <Compile Include="StreamReader\StreamReader.CtorTests.cs" />
     <Compile Include="StreamReader\StreamReaderTests.cs" />
     <Compile Include="StreamWriter\StreamWriter.BaseStream.cs" />
@@ -39,6 +41,8 @@
     <Compile Include="StreamWriter\StreamWriter.CtorTests.cs" />
     <Compile Include="StreamWriter\StreamWriter.FlushTests.cs" />
     <Compile Include="StreamWriter\StreamWriter.WriteTests.cs" />
+    <Compile Include="Stream\Stream.ReadWriteSpan.netcoreapp.cs" Condition="'$(TargetGroup)' == 'netcoreapp'" />
+    <Compile Include="Stream\Stream.NullTests.netcoreapp.cs" Condition="'$(TargetGroup)' == 'netcoreapp'" />
     <Compile Include="Stream\Stream.NullTests.cs" />
     <Compile Include="Stream\Stream.AsyncTests.cs" />
     <Compile Include="Stream\Stream.CopyToTests.cs" />

@@ -45,5 +45,11 @@ namespace Microsoft.CSharp.RuntimeBinder.Tests
             Assert.Same(inner, rbe.InnerException);
             BinaryFormatterHelpers.AssertRoundtrips(rbe);
         }
+
+        [Fact]
+        public void AssertExceptionDeserializationFails()
+        {
+            BinaryFormatterHelpers.AssertExceptionDeserializationFails<RuntimeBinderInternalCompilerException>();
+        }
     }
 }

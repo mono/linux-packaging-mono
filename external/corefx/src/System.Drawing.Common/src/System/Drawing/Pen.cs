@@ -14,10 +14,7 @@ namespace System.Drawing
     /// <summary>
     /// Defines an object used to draw lines and curves.
     /// </summary>
-    public sealed class Pen : MarshalByRefObject, ICloneable, IDisposable
-#if FEATURE_SYSTEM_EVENTS
-        , ISystemColorTracker
-#endif
+    public sealed partial class Pen : MarshalByRefObject, ICloneable, IDisposable
     {
 #if FINALIZATION_WATCH
         private string allocationSite = Graphics.GetAllocationStack();
@@ -60,13 +57,6 @@ namespace System.Drawing
             SafeNativeMethods.Gdip.CheckStatus(status);
 
             SetNativePen(pen);
-
-#if FEATURE_SYSTEM_EVENTS
-            if (this.color.IsSystemColor)
-            {
-                SystemColorTracker.Add(this);
-            }
-#endif
         }
 
         /// <summary>
@@ -360,58 +350,6 @@ namespace System.Drawing
         }
 
         /// <summary>
-        /// Gets or sets a custom cap style to use at the beginning of lines drawn with this <see cref='Pen'/>.
-        /// </summary>
-        public CustomLineCap CustomStartCap
-        {
-            get
-            {
-                IntPtr lineCap = IntPtr.Zero;
-                int status = SafeNativeMethods.Gdip.GdipGetPenCustomStartCap(new HandleRef(this, NativePen), out lineCap);
-                SafeNativeMethods.Gdip.CheckStatus(status);
-
-                return CustomLineCap.CreateCustomLineCapObject(lineCap);
-            }
-            set
-            {
-                if (_immutable)
-                {
-                    throw new ArgumentException(SR.Format(SR.CantChangeImmutableObjects, nameof(Pen)));
-                }
-
-                int status = SafeNativeMethods.Gdip.GdipSetPenCustomStartCap(new HandleRef(this, NativePen),
-                                                              new HandleRef(value, (value == null) ? IntPtr.Zero : value.nativeCap));
-                SafeNativeMethods.Gdip.CheckStatus(status);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a custom cap style to use at the end of lines drawn with this <see cref='Pen'/>.
-        /// </summary>
-        public CustomLineCap CustomEndCap
-        {
-            get
-            {
-                IntPtr lineCap = IntPtr.Zero;
-                int status = SafeNativeMethods.Gdip.GdipGetPenCustomEndCap(new HandleRef(this, NativePen), out lineCap);
-                SafeNativeMethods.Gdip.CheckStatus(status);
-
-                return CustomLineCap.CreateCustomLineCapObject(lineCap);
-            }
-            set
-            {
-                if (_immutable)
-                {
-                    throw new ArgumentException(SR.Format(SR.CantChangeImmutableObjects, nameof(Pen)));
-                }
-
-                int status = SafeNativeMethods.Gdip.GdipSetPenCustomEndCap(new HandleRef(this, NativePen),
-                                                            new HandleRef(value, (value == null) ? IntPtr.Zero : value.nativeCap));
-                SafeNativeMethods.Gdip.CheckStatus(status);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the limit of the thickness of the join on a mitered corner.
         /// </summary>
         public float MiterLimit
@@ -516,6 +454,12 @@ namespace System.Drawing
         /// </summary>
         public void MultiplyTransform(Matrix matrix, MatrixOrder order)
         {
+            if (matrix.nativeMatrix == IntPtr.Zero)
+            {
+                // Disposed matrices should result in a no-op.
+                return;
+            }
+
             int status = SafeNativeMethods.Gdip.GdipMultiplyPenTransform(new HandleRef(this, NativePen),
                                                           new HandleRef(matrix, matrix.nativeMatrix),
                                                           order);
@@ -523,13 +467,13 @@ namespace System.Drawing
         }
 
         /// <summary>
-        /// Translates the local geometrical transform by the specified dimmensions. This method prepends the translation
+        /// Translates the local geometrical transform by the specified dimensions. This method prepends the translation
         /// to the transform.
         /// </summary>
         public void TranslateTransform(float dx, float dy) => TranslateTransform(dx, dy, MatrixOrder.Prepend);
 
         /// <summary>
-        /// Translates the local geometrical transform by the specified dimmensions in the specified order.
+        /// Translates the local geometrical transform by the specified dimensions in the specified order.
         /// </summary>
         public void TranslateTransform(float dx, float dy, MatrixOrder order)
         {
@@ -623,15 +567,6 @@ namespace System.Drawing
                     Color oldColor = _color;
                     _color = value;
                     InternalSetColor(value);
-
-#if FEATURE_SYSTEM_EVENTS
-                    // NOTE: We never remove pens from the active list, so if someone is
-                    // changing their pen colors a lot, this could be a problem.
-                    if (value.IsSystemColor && !oldColor.IsSystemColor)
-                    {
-                        SystemColorTracker.Add(this);
-                    }
-#endif
                 }
             }
         }
@@ -780,7 +715,7 @@ namespace System.Drawing
         }
 
         /// <summary>
-        /// Gets or sets an array of cutom dashes and spaces. The dashes are made up of line segments.
+        /// Gets or sets an array of custom dashes and spaces. The dashes are made up of line segments.
         /// </summary>
         public float[] DashPattern
         {
@@ -820,6 +755,14 @@ namespace System.Drawing
                     throw new ArgumentException(SR.Format(SR.InvalidDashPattern));
                 }
 
+                foreach (float val in value)
+                {
+                    if (val <= 0)
+                    {
+                        throw new ArgumentException(SR.Format(SR.InvalidDashPattern));
+                    }
+                }
+
                 int count = value.Length;
                 IntPtr buf = Marshal.AllocHGlobal(checked(4 * count));
 
@@ -838,7 +781,7 @@ namespace System.Drawing
         }
 
         /// <summary>
-        /// Gets or sets an array of cutom dashes and spaces. The dashes are made up of line segments.
+        /// Gets or sets an array of custom dashes and spaces. The dashes are made up of line segments.
         /// </summary>
         public float[] CompoundArray
         {
@@ -861,19 +804,22 @@ namespace System.Drawing
                     throw new ArgumentException(SR.Format(SR.CantChangeImmutableObjects, nameof(Pen)));
                 }
 
+                if (value.Length <= 1)
+                {
+                    throw new ArgumentException(SR.Format(SR.GdiplusInvalidParameter));
+                }
+
+                foreach (float val in value)
+                {
+                    if (val < 0 || val > 1)
+                    {
+                        throw new ArgumentException(SR.Format(SR.GdiplusInvalidParameter));
+                    }
+                }
+
                 int status = SafeNativeMethods.Gdip.GdipSetPenCompoundArray(new HandleRef(this, NativePen), value, value.Length);
                 SafeNativeMethods.Gdip.CheckStatus(status);
             }
         }
-
-#if FEATURE_SYSTEM_EVENTS
-        void ISystemColorTracker.OnSystemColorChanged()
-        {
-            if (NativePen != IntPtr.Zero)
-            {
-                InternalSetColor(_color);
-            }
-        }
-#endif
     }
 }
