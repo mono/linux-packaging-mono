@@ -3065,7 +3065,7 @@ namespace System.Data
         private void OnInitialized() => Initialized?.Invoke(this, EventArgs.Empty);
 
         /// <summary>
-        /// This method should be overriden by subclasses to restrict tables being removed.
+        /// This method should be overridden by subclasses to restrict tables being removed.
         /// </summary>
         protected internal virtual void OnRemoveTable(DataTable table) { }
 
@@ -3079,7 +3079,7 @@ namespace System.Data
         }
 
         /// <summary>
-        /// This method should be overriden by subclasses to restrict tables being removed.
+        /// This method should be overridden by subclasses to restrict tables being removed.
         /// </summary>
         protected virtual void OnRemoveRelation(DataRelation relation) { }
 

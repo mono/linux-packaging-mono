@@ -21,7 +21,7 @@ namespace System
     //     factory methods - still maintaining advantages 1 & 2
     //
 
-    internal static class ThrowHelper
+    internal static partial class ThrowHelper
     {
         internal static void ThrowArgumentNullException(ExceptionArgument argument) { throw CreateArgumentNullException(argument); }
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -47,7 +47,7 @@ namespace System
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static Exception CreateArgumentOutOfRangeException(ExceptionArgument argument) { return new ArgumentOutOfRangeException(argument.ToString()); }
     }
-
+#if !MONO
     internal enum ExceptionArgument
     {
         array,
@@ -56,4 +56,5 @@ namespace System
         text,
         obj,
     }
+#endif
 }

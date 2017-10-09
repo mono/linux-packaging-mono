@@ -2307,7 +2307,7 @@ namespace System.Drawing.Drawing2D
         public float BaseInset { get { throw null; } set { } }
         public System.Drawing.Drawing2D.LineJoin StrokeJoin { get { throw null; } set { } }
         public float WidthScale { get { throw null; } set { } }
-        public object Clone() { throw null; }
+        public virtual object Clone() { throw null; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         ~CustomLineCap() { }

@@ -47,11 +47,6 @@
     <BinPlaceConfiguration Condition="'$(IsUAP)' == 'true' AND '$(BuildingUAPAOTVertical)' == 'true'" Include="uapaot-$(_bc_OSGroup)">
       <PackageFileRuntimePath>$(UAPAOTPackageRuntimePath)</PackageFileRuntimePath>
     </BinPlaceConfiguration>
-    <BinPlaceConfiguration Condition="('$(IsNetFxNETStandard)' == 'true' OR '$(IsNetFxNETStandardRef)' == 'true') AND '$(BuildingNETFxVertical)' == 'true'"
-                           Include="netfx-$(_bc_OSGroup);net462-$(_bc_OSGroup);net47-$(_bc_OSGroup)">
-      <PackageFileRefPath Condition="'$(IsNetFxNETStandardRef)'=='true'">$(NetFxPackageRefPath)</PackageFileRefPath>
-      <PackageFileRuntimePath Condition="'$(IsNetFxNETStandard)'=='true'">$(NetFxPackageRuntimePath)</PackageFileRuntimePath>
-    </BinPlaceConfiguration>
 
     <!-- Setup the shared framework directory for testing -->
     <BinPlaceConfiguration Condition="'$(BinPlaceTestSharedFramework)' == 'true'" Include="netcoreapp-$(_bc_OSGroup)">
@@ -72,6 +67,10 @@
     <!-- binplace targeting packs which may be different from BuildConfiguration -->
     <BinPlaceConfiguration Include="netstandard">
       <RefPath>$(RefRootPath)netstandard/</RefPath>
+    </BinPlaceConfiguration>
+    <!-- some libraries that produce packages will remain targeting netcoreapp2.0 -->
+    <BinPlaceConfiguration Condition="'$(BuildingNETCoreAppVertical)' == 'true'" Include="netcoreapp2.0">
+      <RefPath>$(RefRootPath)netcoreapp2.0/</RefPath>
     </BinPlaceConfiguration>
     <!-- for BuildAllConfigurations make sure all refpaths are created.  -->
     <_TargetGroupsWithIsAot Condition="'$(BuildAllConfigurations)' == 'true'" Include="@(TargetGroups)">
