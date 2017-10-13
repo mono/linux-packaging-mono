@@ -151,6 +151,7 @@ Description: Mono utilities
 
 Package: ca-certificates-mono
 Architecture: all
+Pre-Depends: mono-runtime-common
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${cli:Depends}, ca-certificates (>= 20121114)
 Description: Common CA certificates (Mono keystore)
  Mono is a platform for running and developing applications based on the
