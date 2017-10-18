@@ -77,6 +77,10 @@ libmonosgen-2.0.so.1 libmonosgen-2.0-1 #MINVER#
  mono_bitset_union@Base 4.1.0.1738
  mono_bounded_array_class_get@Base 4.1.0.1738
  mono_build_date@Base 5.7.0.378
+ mono_callspec_cleanup@Base 5.9.0.0
+ mono_callspec_eval@Base 5.9.0.0
+ mono_callspec_eval_exception@Base 5.9.0.0
+ mono_callspec_parse@Base 5.9.0.0
  mono_check_corlib_version@Base 4.1.0.1738
  mono_class_array_element_size@Base 4.1.0.1738
  mono_class_data_size@Base 4.1.0.1738
