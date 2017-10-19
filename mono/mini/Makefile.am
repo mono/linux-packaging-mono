@@ -524,11 +524,13 @@ test_sources = 			\
 	mixed.cs
 
 regtests_UNIVERSAL = \
+	aot-tests.exe \
 	basic.exe \
 	basic-float.exe \
 	basic-long.exe \
 	basic-calls.exe \
 	builtin-types.exe \
+	gshared.exe \
 	objects.exe \
 	arrays.exe \
 	basic-math.exe \
@@ -797,7 +799,7 @@ llvmaotcheck:
 gsharedvtcheck:
 	$(MAKE) fullaotcheck GSHAREDVT=1
 
-fullaot_regtests = $(regtests) aot-tests.exe $(if $(GSHAREDVT),gshared.exe)
+fullaot_regtests = $(regtests)
 fullaot_testing_deps = generics-variant-types.dll TestDriver.dll MemoryIntrinsics.dll
 
 FULLAOT_LIBS_UNIVERSAL = \
@@ -920,7 +922,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/23d2ee7\"" > version.h
+	echo "#define FULL_VERSION \"master/0b60a62\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:
