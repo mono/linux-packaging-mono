@@ -16,9 +16,9 @@ namespace System.IO
     [Serializable]
     public abstract partial class FileSystemInfo : MarshalByRefObject, ISerializable
     {
-        protected String FullPath;          // fully qualified path of the file or directory
-        protected String OriginalPath;      // path passed in by the user
-        private String _displayPath = "";   // path that can be displayed to the user
+        protected string FullPath;          // fully qualified path of the file or directory
+        protected string OriginalPath;      // path passed in by the user
+        private string _displayPath = "";   // path that can be displayed to the user
 
         [System.Security.SecurityCritical]
         protected FileSystemInfo()
@@ -36,7 +36,7 @@ namespace System.IO
         }
 
         // Full path of the directory/file
-        public virtual String FullName
+        public virtual string FullName
         {
             [System.Security.SecuritySafeCritical]
             get
@@ -45,7 +45,7 @@ namespace System.IO
             }
         }
 
-        public String Extension
+        public string Extension
         {
             get
             {
@@ -59,13 +59,13 @@ namespace System.IO
                     if (PathInternal.IsDirectorySeparator(ch) || ch == Path.VolumeSeparatorChar)
                         break;
                 }
-                return String.Empty;
+                return string.Empty;
             }
         }
 
         // For files name of the file is returned, for directories the last directory in hierarchy is returned if possible,
         // otherwise the fully qualified name s returned
-        public abstract String Name
+        public abstract string Name
         {
             get;
         }
@@ -181,7 +181,7 @@ namespace System.IO
             }
         }
 
-        internal String DisplayPath
+        internal string DisplayPath
         {
             get
             {

@@ -50,7 +50,7 @@
 #include <sys/stat.h>
 #endif
 
-#ifdef PLATFORM_MACOSX
+#ifdef HOST_DARWIN
 #include <mach-o/dyld.h>
 #endif
 
@@ -840,7 +840,7 @@ set_dirs (char *exe)
 void
 mono_set_rootdir (void)
 {
-#if defined(HOST_WIN32) || (defined(PLATFORM_MACOSX) && !defined(TARGET_ARM))
+#if defined(HOST_WIN32) || (defined(HOST_DARWIN) && !defined(TARGET_ARM))
 	gchar *bindir, *installdir, *root, *name, *resolvedname, *config;
 
 #ifdef HOST_WIN32
@@ -2222,7 +2222,7 @@ mono_assembly_load_from_predicate (MonoImage *image, const char *fname,
 	ass->ref_only = refonly;
 	ass->image = image;
 
-	mono_profiler_assembly_event (ass, MONO_PROFILE_START_LOAD);
+	MONO_PROFILER_RAISE (assembly_loading, (ass));
 
 	mono_assembly_fill_assembly_name (image, &ass->aname);
 
@@ -2314,7 +2314,7 @@ mono_assembly_load_from_predicate (MonoImage *image, const char *fname,
 
 	mono_assembly_invoke_load_hook (ass);
 
-	mono_profiler_assembly_loaded (ass, MONO_PROFILE_OK);
+	MONO_PROFILER_RAISE (assembly_loaded, (ass));
 	
 	return ass;
 }
@@ -2372,17 +2372,18 @@ parse_public_key (const gchar *key, gchar** pubkey, gboolean *is_ecma)
 	const gchar *pkey;
 	gchar header [16], val, *arr, *endp;
 	gint i, j, offset, bitlen, keylen, pkeylen;
-	
+
+	//both pubkey and is_ecma are required arguments
+	g_assert (pubkey && is_ecma);
+
 	keylen = strlen (key) >> 1;
 	if (keylen < 1)
 		return FALSE;
 
 	/* allow the ECMA standard key */
 	if (strcmp (key, "00000000000000000400000000000000") == 0) {
-		if (pubkey) {
-			*pubkey = g_strdup (key);
-			*is_ecma = TRUE;
-		}
+		*pubkey = NULL;
+		*is_ecma = TRUE;
 		return TRUE;
 	}
 	*is_ecma = FALSE;
@@ -2427,10 +2428,6 @@ parse_public_key (const gchar *key, gchar** pubkey, gboolean *is_ecma)
 	bitlen = read32 (header + 12) >> 3;
 	if ((bitlen + 16 + 4) != pkeylen)
 		return FALSE;
-
-	/* parsing is OK and the public key itself is not requested back */
-	if (!pubkey)
-		return TRUE;
 		
 	arr = (gchar *)g_malloc (keylen + 4);
 	/* Encode the size of the blob */
@@ -2453,7 +2450,7 @@ build_assembly_name (const char *name, const char *version, const char *culture,
 	gint major, minor, build, revision;
 	gint len;
 	gint version_parts;
-	gchar *pkey, *pkeyptr, *encoded, tok [8];
+	gchar *pkeyptr, *encoded, tok [8];
 
 	memset (aname, 0, sizeof (MonoAssemblyName));
 
@@ -2502,17 +2499,16 @@ build_assembly_name (const char *name, const char *version, const char *culture,
 	}
 
 	if (key) {
-		gboolean is_ecma;
+		gboolean is_ecma = FALSE;
+		gchar *pkey = NULL;
 		if (strcmp (key, "null") == 0 || !parse_public_key (key, &pkey, &is_ecma)) {
 			mono_assembly_name_free (aname);
 			return FALSE;
 		}
 
 		if (is_ecma) {
-			if (save_public_key)
-				aname->public_key = (guint8*)pkey;
-			else
-				g_free (pkey);
+			g_assert (pkey == NULL);
+			aname->public_key = NULL;
 			g_strlcpy ((gchar*)aname->public_key_token, "b77a5c561934e089", MONO_PUBLIC_KEY_TOKEN_LENGTH);
 			return TRUE;
 		}
@@ -3798,7 +3794,7 @@ mono_assembly_close_except_image_pools (MonoAssembly *assembly)
 	if (InterlockedDecrement (&assembly->ref_count) > 0)
 		return FALSE;
 
-	mono_profiler_assembly_event (assembly, MONO_PROFILE_START_UNLOAD);
+	MONO_PROFILER_RAISE (assembly_unloading, (assembly));
 
 	mono_trace (G_LOG_LEVEL_INFO, MONO_TRACE_ASSEMBLY, "Unloading assembly %s [%p].", assembly->aname.name, assembly);
 
@@ -3821,7 +3817,7 @@ mono_assembly_close_except_image_pools (MonoAssembly *assembly)
 	g_slist_free (assembly->friend_assembly_names);
 	g_free (assembly->basedir);
 
-	mono_profiler_assembly_event (assembly, MONO_PROFILE_END_UNLOAD);
+	MONO_PROFILER_RAISE (assembly_unloaded, (assembly));
 
 	return TRUE;
 }

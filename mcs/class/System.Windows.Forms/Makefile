@@ -4,6 +4,7 @@ include ../../build/rules.make
 LIBRARY = System.Windows.Forms.dll
 
 LIB_REFS = System System.Xml System.Drawing Accessibility System.Data Mono.Posix Mono.WebBrowser System.Configuration System.Runtime.Serialization.Formatters.Soap
+KEYFILE = ../ecma.pub
 LIB_MCS_FLAGS = /unsafe \
 	@System.Windows.Forms.dll.resources \
 	-nowarn:618,612,809
@@ -114,7 +115,7 @@ test-local: DummyAssembly.dll
 
 include ../../build/library.make
 
-TEST_HARNESS_EXCLUDES = -exclude=Interactive,NotWorking,ValueAdd,CAS,InetAccess
+TEST_HARNESS_EXCLUDES = -exclude=Interactive,NotWorking,CAS
 TEST_HARNESS_EXCLUDES_ONDOTNET = -exclude=Interactive,NotDotNet,CAS
 
 $(the_lib): $(RESOURCES)

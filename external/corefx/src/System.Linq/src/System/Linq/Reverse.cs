@@ -35,10 +35,7 @@ namespace System.Linq
                 _source = source;
             }
 
-            public override Iterator<TSource> Clone()
-            {
-                return new ReverseIterator<TSource>(_source);
-            }
+            public override Iterator<TSource> Clone() => new ReverseIterator<TSource>(_source);
 
             public override bool MoveNext()
             {
@@ -91,7 +88,7 @@ namespace System.Linq
             public TSource[] ToArray()
             {
                 TSource[] array = _source.ToArray();
-                Array.Reverse<TSource>(array);
+                Array.Reverse(array);
                 return array;
             }
 
@@ -104,19 +101,25 @@ namespace System.Linq
 
             public int GetCount(bool onlyIfCheap)
             {
+#if !__MonoCS__
                 if (onlyIfCheap)
                 {
-                    IIListProvider<TSource> listProv = _source as IIListProvider<TSource>;
-                    if (listProv != null)
+                    switch (_source)
                     {
-                        return listProv.GetCount(onlyIfCheap: true);
-                    }
+                        case IIListProvider<TSource> listProv:
+                            return listProv.GetCount(onlyIfCheap: true);
 
-                    if (!(_source is ICollection<TSource>) && !(_source is ICollection))
-                    {
-                        return -1;
+                        case ICollection<TSource> colT:
+                            return colT.Count;
+
+                        case ICollection col:
+                            return col.Count;
+
+                        default:
+                            return -1;
                     }
                 }
+#endif
 
                 return _source.Count();
             }

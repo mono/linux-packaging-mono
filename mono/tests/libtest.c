@@ -1356,7 +1356,10 @@ mono_test_return_empty_struct (int a)
 
 	memset (&s, 0, sizeof (s));
 
+#if !(defined(__i386__) && defined(__clang__))
+	/* https://bugzilla.xamarin.com/show_bug.cgi?id=58901 */
 	g_assert (a == 42);
+#endif
 
 	return s;
 }
@@ -3577,6 +3580,28 @@ mono_test_marshal_ccw_itest (MonoComObject *pUnk)
 	hr = pUnk->vtbl->ITestOut (pUnk, &pTest);
 	if (hr != 0)
 		return 13;
+
+	return 0;
+}
+
+// Xamarin-47560
+LIBTEST_API int STDCALL
+mono_test_marshal_array_ccw_itest (int count, MonoComObject ** ppUnk)
+{
+	int hr = 0;
+
+	if (!ppUnk)
+		return 1;
+
+	if (count < 1)
+		return 2;
+
+	if (!ppUnk[0])
+		return 3;
+
+	hr = ppUnk[0]->vtbl->SByteIn (ppUnk[0], -100);
+	if (hr != 0)
+		return 4;
 
 	return 0;
 }
@@ -7463,7 +7488,7 @@ mono_test_marshal_pointer_array (int *arr[])
 
 #ifndef WIN32
 
-typedef void (*NativeToManagedExceptionRethrowFunc) ();
+typedef void (*NativeToManagedExceptionRethrowFunc) (void);
 
 void *mono_test_native_to_managed_exception_rethrow_thread (void *arg)
 {

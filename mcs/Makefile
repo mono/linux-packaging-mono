@@ -7,6 +7,7 @@ SUBDIRS := build jay mcs class nunit24 ilasm tools tests errors docs packages
 basic_SUBDIRS := build jay class
 build_SUBDIRS := build class class/aot-compiler tools ilasm
 monodroid_SUBDIRS := build class
+monodroid_tools_SUBDIRS := build class tools
 monotouch_SUBDIRS := build class
 monotouch_watch_SUBDIRS := build class
 monotouch_tv_SUBDIRS := build class
@@ -23,6 +24,7 @@ xbuild_12_SUBDIRS := build class tools/xbuild
 xbuild_14_SUBDIRS := build class tools/xbuild
 winaot_SUBDIRS := build class
 orbis_SUBDIRS := build class
+unreal_SUBDIRS := build class
 
 include build/rules.make
 
@@ -65,6 +67,7 @@ $(_boot_:%=profile-do--xbuild_12--%):         profile-do--xbuild_12--%:         
 $(_boot_:%=profile-do--binary_reference_assemblies--%):           profile-do--binary_reference_assemblies--%:           profile-do--build--%
 $(_boot_:%=profile-do--net_4_x--%):           profile-do--net_4_x--%:           profile-do--build--%
 $(_boot_:%=profile-do--monodroid--%):         profile-do--monodroid--%:         profile-do--build--%
+$(_boot_:%=profile-do--monodroid_tools--%):         profile-do--monodroid_tools--%:         profile-do--build--%
 $(_boot_:%=profile-do--monotouch--%):         profile-do--monotouch--%:         profile-do--build--%
 $(_boot_:%=profile-do--monotouch_watch--%):   profile-do--monotouch_watch--%:   profile-do--build--%
 $(_boot_:%=profile-do--monotouch_tv--%):      profile-do--monotouch_tv--%:      profile-do--build--%
@@ -77,6 +80,7 @@ $(_boot_:%=profile-do--testing_aot_hybrid--%):        profile-do--testing_aot_hy
 $(_boot_:%=profile-do--testing_aot_full--%):          profile-do--testing_aot_full--%:          profile-do--build--%
 $(_boot_:%=profile-do--winaot--%):              profile-do--winaot--%:              profile-do--build--%
 $(_boot_:%=profile-do--orbis--%):              profile-do--orbis--%:              profile-do--build--%
+$(_boot_:%=profile-do--unreal--%):              profile-do--unreal--%:              profile-do--build--%
 $(_boot_:%=profile-do--build--%):             profile-do--build--%:             profile-do--basic--%
 
 testcorlib:
@@ -142,7 +146,7 @@ distcheck: dist-tarball
 MONO_API_SNAPSHOT_PATH := $(topdir)../external/api-snapshot/
 GENAPI := $(MONO_API_SNAPSHOT_PATH)tools/genapi/GenAPI.exe
 MONO_API_SNAPSHOT_PROFILE_PATH := $(MONO_API_SNAPSHOT_PATH)profiles/$(PROFILE)/
-MONO_API_ASSEMBLIES_IGNORED := $(addprefix $(topdir)class/lib/$(PROFILE)/, Mono.CSharp.dll SystemWebTestShim.dll standalone-runner-support.dll nunit.core.dll nunit.core.extensions.dll nunit.core.interfaces.dll nunit.framework.dll nunit.framework.extensions.dll nunit.mocks.dll nunit.util.dll nunit-console-runner.dll nunitlite.dll)
+MONO_API_ASSEMBLIES_IGNORED := $(addprefix $(topdir)class/lib/$(PROFILE)/, Mono.CSharp.dll SystemWebTestShim.dll standalone-runner-support.dll nunit.core.dll nunit.core.extensions.dll nunit.core.interfaces.dll nunit.framework.dll nunit.framework.extensions.dll nunit.mocks.dll nunit.util.dll nunit-console-runner.dll nunitlite.dll Mono.Profiler.Log.dll)
 MONO_API_ASSEMBLIES := $(filter-out $(MONO_API_ASSEMBLIES_IGNORED), $(wildcard $(topdir)class/lib/$(PROFILE)/*.dll)) $(wildcard $(topdir)class/lib/$(PROFILE)/Facades/*.dll)
 MONO_API_ASSEMBLIES_CS := $(MONO_API_ASSEMBLIES:$(topdir)class/lib/$(PROFILE)/%.dll=$(MONO_API_SNAPSHOT_PROFILE_PATH)%.cs)
 

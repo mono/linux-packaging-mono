@@ -46,6 +46,7 @@
 #include <mono/utils/mono-threads.h>
 #include <mono/utils/mono-time.h>
 #include <mono/utils/refcount.h>
+#include <mono/utils/mono-os-wait.h>
 
 typedef struct {
 	MonoDomain *domain;
@@ -339,7 +340,7 @@ worker_callback (void)
 		g_assert (tpdomain->outstanding_request >= 0);
 
 		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_THREADPOOL, "[%p] worker running in domain %p (outstanding requests %d)",
-			mono_native_thread_id_get (), tpdomain->domain, tpdomain->outstanding_request);
+			GUINT_TO_POINTER (MONO_NATIVE_THREAD_ID_TO_UINT (mono_native_thread_id_get ())), tpdomain->domain, tpdomain->outstanding_request);
 
 		g_assert (tpdomain->threadpool_jobs >= 0);
 		tpdomain->threadpool_jobs ++;
@@ -495,7 +496,7 @@ mono_threadpool_end_invoke (MonoAsyncResult *ares, MonoArray **out_args, MonoObj
 		mono_monitor_exit ((MonoObject*) ares);
 		MONO_ENTER_GC_SAFE;
 #ifdef HOST_WIN32
-		WaitForSingleObjectEx (wait_event, INFINITE, TRUE);
+		mono_win32_wait_for_single_object_ex (wait_event, INFINITE, TRUE);
 #else
 		mono_w32handle_wait_one (wait_event, MONO_INFINITE_WAIT, TRUE);
 #endif

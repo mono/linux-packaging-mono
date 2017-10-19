@@ -3,6 +3,9 @@
 /* Define if building universal (internal helper macro) */
 #undef AC_APPLE_UNIVERSAL_BUILD
 
+/* Whether Android NDK unified headers are used */
+#undef ANDROID_UNIFIED_HEADERS
+
 /* GC description */
 #undef DEFAULT_GC_NAME
 
@@ -148,6 +151,9 @@
 /* Runtime support code for llvm enabled */
 #undef ENABLE_LLVM_RUNTIME
 
+/* Overridable allocator support enabled */
+#undef ENABLE_OVERRIDABLE_ALLOCATORS
+
 /* Have GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY */
 #undef GLIBC_BEFORE_2_3_4_SCHED_SETAFFINITY
 
@@ -162,6 +168,16 @@
 
 /* Define to 1 if you have the <alloca.h> header file. */
 #undef HAVE_ALLOCA_H
+
+/* Define to 1 if you have the <android/api-level.h> header file. */
+#undef HAVE_ANDROID_API_LEVEL_H
+
+/* Define to 1 if you have the <android/legacy_signal_inlines.h> header file.
+   */
+#undef HAVE_ANDROID_LEGACY_SIGNAL_INLINES_H
+
+/* Define to 1 if you have the <android/versioning.h> header file. */
+#undef HAVE_ANDROID_VERSIONING_H
 
 /* ARM v5 */
 #undef HAVE_ARMV5
@@ -246,6 +262,10 @@
 /* Define to 1 if you have the declaration of `InterlockedIncrement64', and to
    0 if you don't. */
 #undef HAVE_DECL_INTERLOCKEDINCREMENT64
+
+/* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRERROR_R
 
 /* Define to 1 if you have the declaration of `__readfsdword', and to 0 if you
    don't. */
@@ -368,6 +388,9 @@
 /* Have getnameinfo */
 #undef HAVE_GETNAMEINFO
 
+/* Define to 1 if you have the <getopt.h> header file. */
+#undef HAVE_GETOPT_H
+
 /* Define to 1 if you have the `getpriority' function. */
 #undef HAVE_GETPRIORITY
 
@@ -397,6 +420,9 @@
 
 /* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
+
+/* Define to 1 if you have the <iconv.h> header file. */
+#undef HAVE_ICONV_H
 
 /* Define to 1 if you have the <ieeefp.h> header file. */
 #undef HAVE_IEEEFP_H
@@ -461,6 +487,9 @@
 /* Have large file support */
 #undef HAVE_LARGE_FILE_SUPPORT
 
+/* Define to 1 if you have the `iconv' library (-liconv). */
+#undef HAVE_LIBICONV
+
 /* Define to 1 if you have the <libproc.h> header file. */
 #undef HAVE_LIBPROC_H
 
@@ -482,6 +511,9 @@
 /* Define to 1 if you have the <linux/serial.h> header file. */
 #undef HAVE_LINUX_SERIAL_H
 
+/* Define to 1 if you have the <localcharset.h> header file. */
+#undef HAVE_LOCALCHARSET_H
+
 /* Define to 1 if you have the `localtime_r' function. */
 #undef HAVE_LOCALTIME_R
 
@@ -490,6 +522,9 @@
 
 /* Define to 1 if you have the `lutimes' function. */
 #undef HAVE_LUTIMES
+
+/* Define to 1 if you have the <machine/endian.h> header file. */
+#undef HAVE_MACHINE_ENDIAN_H
 
 /* Define to 1 if you have the `madvise' function. */
 #undef HAVE_MADVISE
@@ -536,9 +571,6 @@
 /* No GC support. */
 #undef HAVE_NULL_GC
 
-/* Some VES is available at runtime */
-#undef HAVE_ONLINE_VES
-
 /* Define to 1 if you have the <pathconf.h> header file. */
 #undef HAVE_PATHCONF_H
 
@@ -578,6 +610,10 @@
 /* Define to 1 if you have the `pthread_attr_setstacksize' function. */
 #undef HAVE_PTHREAD_ATTR_SETSTACKSIZE
 
+/* Define to 1 if you have the `pthread_cond_timedwait_relative_np' function.
+   */
+#undef HAVE_PTHREAD_COND_TIMEDWAIT_RELATIVE_NP
+
 /* Define to 1 if you have the `pthread_getattr_np' function. */
 #undef HAVE_PTHREAD_GETATTR_NP
 
@@ -616,6 +652,9 @@
 
 /* Define to 1 if you have the `remap_file_pages' function. */
 #undef HAVE_REMAP_FILE_PAGES
+
+/* Define to 1 if you have the `rewinddir' function. */
+#undef HAVE_REWINDDIR
 
 /* Define to 1 if you have the `sched_getaffinity' function. */
 #undef HAVE_SCHED_GETAFFINITY
@@ -716,6 +755,9 @@
 /* Define to 1 if you have the `stime' function. */
 #undef HAVE_STIME
 
+/* Define to 1 if you have the `stpcpy' function. */
+#undef HAVE_STPCPY
+
 /* Define to 1 if you have the `strerror_r' function. */
 #undef HAVE_STRERROR_R
 
@@ -724,6 +766,15 @@
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
+
+/* Define to 1 if you have the `strndup' function. */
+#undef HAVE_STRNDUP
+
+/* Define to 1 if you have the `strtok_r' function. */
+#undef HAVE_STRTOK_R
 
 /* Define to 1 if the system has the type `struct cmsghdr'. */
 #undef HAVE_STRUCT_CMSGHDR
@@ -820,6 +871,9 @@
 
 /* Define to 1 if you have the <sys/auxv.h> header file. */
 #undef HAVE_SYS_AUXV_H
+
+/* Define to 1 if you have the <sys/endian.h> header file. */
+#undef HAVE_SYS_ENDIAN_H
 
 /* Define to 1 if you have the <sys/epoll.h> header file. */
 #undef HAVE_SYS_EPOLL_H
@@ -974,6 +1028,9 @@
 /* Don't use UWP Windows API support */
 #undef HAVE_UWP_WINAPI_SUPPORT
 
+/* Define to 1 if you have the `vasprintf' function. */
+#undef HAVE_VASPRINTF
+
 /* Support for the visibility ("hidden") attribute */
 #undef HAVE_VISIBILITY_HIDDEN
 
@@ -1001,14 +1058,23 @@
 /* ... */
 #undef HOST_AMD64
 
+/* Targeting the Android platform */
+#undef HOST_ANDROID
+
 /* ... */
 #undef HOST_ARM
 
 /* ... */
 #undef HOST_ARM64
 
+/* Host Platform is Darwin */
+#undef HOST_DARWIN
+
 /* ... */
 #undef HOST_MIPS
+
+/* This platform does not support symlinks */
+#undef HOST_NO_SYMLINKS
 
 /* ... */
 #undef HOST_POWERPC
@@ -1024,6 +1090,9 @@
 
 /* ... */
 #undef HOST_SPARC64
+
+/* Host wasm */
+#undef HOST_WASM
 
 /* Host Platform is Win32 */
 #undef HOST_WIN32
@@ -1109,14 +1178,17 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* Targeting the Android platform */
-#undef PLATFORM_ANDROID
-
-/* This platform does not support symlinks */
-#undef PLATFORM_NO_SYMLINKS
-
 /* pthread is a pointer */
 #undef PTHREAD_POINTER_ID
+
+/* The size of `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The size of `long', as computed by sizeof. */
+#undef SIZEOF_LONG
+
+/* The size of `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
 
 /* size of machine integer registers */
 #undef SIZEOF_REGISTER
@@ -1129,6 +1201,9 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Define to 1 if strerror_r returns char *. */
+#undef STRERROR_R_CHAR_P
 
 /* ... */
 #undef TARGET_AMD64
@@ -1177,6 +1252,9 @@
 
 /* ... */
 #undef TARGET_SPARC64
+
+/* Target wasm */
+#undef TARGET_WASM
 
 /* The JIT/AOT targets WatchOS */
 #undef TARGET_WATCHOS

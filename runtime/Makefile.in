@@ -81,7 +81,7 @@ host_triplet = @host@
 target_triplet = @target@
 @INSTALL_4_x_TRUE@am__append_1 = etc/mono/4.0/machine.config etc/mono/4.0/web.config etc/mono/4.5/web.config etc/mono/4.5/machine.config etc/mono/4.0/Browsers/Compat.browser etc/mono/4.5/Browsers/Compat.browser
 @INSTALL_4_x_TRUE@am__append_2 = binary_reference_assemblies net_4_x xbuild_12 xbuild_14
-@INSTALL_MONODROID_TRUE@am__append_3 = monodroid
+@INSTALL_MONODROID_TRUE@am__append_3 = monodroid monodroid_tools
 @INSTALL_MONOTOUCH_TRUE@am__append_4 = monotouch monotouch_runtime
 @INSTALL_MONOTOUCH_WATCH_TRUE@am__append_5 = monotouch_watch monotouch_watch_runtime
 @INSTALL_MONOTOUCH_TV_TRUE@am__append_6 = monotouch_tv monotouch_tv_runtime
@@ -90,14 +90,15 @@ target_triplet = @target@
 @INSTALL_WINAOT_TRUE@am__append_9 = winaot
 @INSTALL_XAMMAC_TRUE@am__append_10 = xammac xammac_net_4_5
 @INSTALL_ORBIS_TRUE@am__append_11 = orbis
+@INSTALL_UNREAL_TRUE@am__append_12 = unreal
 
 # Mono.WebBrowser.dll fails to verify on Windows
-@HOST_WIN32_TRUE@am__append_12 = Mono.WebBrowser.dll
+@HOST_WIN32_TRUE@am__append_13 = Mono.WebBrowser.dll
 
 #  ILASM.exe has features which a testing_aot_full runtime will not support.
 #  It is invoked with an external mono when used in the runtime.
 #  We skip it here because otherwise it will fail to verify.
-@FULL_AOT_TESTS_TRUE@am__append_13 = ilasm.exe
+@FULL_AOT_TESTS_TRUE@am__append_14 = ilasm.exe
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -152,6 +153,7 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BREAKPOINT = @BREAKPOINT@
 BTLS_ARCH = @BTLS_ARCH@
 BTLS_CFLAGS = @BTLS_CFLAGS@
 BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
@@ -192,12 +194,27 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
+GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
+GNUC_NORETURN = @GNUC_NORETURN@
+GNUC_PRETTY = @GNUC_PRETTY@
+GNUC_UNUSED = @GNUC_UNUSED@
+GPOINTER_TO_INT = @GPOINTER_TO_INT@
+GPOINTER_TO_UINT = @GPOINTER_TO_UINT@
 GREP = @GREP@
+GSIZE = @GSIZE@
+GSIZE_FORMAT = @GSIZE_FORMAT@
 GTKX11 = @GTKX11@
+GUINT_TO_POINTER = @GUINT_TO_POINTER@
+G_GINT32_FORMAT = @G_GINT32_FORMAT@
+G_GINT64_FORMAT = @G_GINT64_FORMAT@
+G_GUINT32_FORMAT = @G_GUINT32_FORMAT@
+G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
+G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
+HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -242,6 +259,8 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ORDER = @ORDER@
+OS = @OS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -251,15 +270,19 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
+PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
 SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
+SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
@@ -332,6 +355,7 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
+ninja = @ninja@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -361,9 +385,9 @@ SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
 	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11)
+	$(am__append_11) $(am__append_12)
 @INSTALL_4_x_TRUE@net_profile = net_4_x
-test_profiles = $(build_profiles)
+test_profiles = $(filter-out binary_reference_assemblies monodroid_tools,$(build_profiles))
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
 TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc $(tmpinst)/bin/mcs $(tmpinst)/bin/al
 @CROSS_COMPILING_FALSE@@HOST_WIN32_TRUE@cur_dir_cmd = cygpath -w -a .
@@ -374,7 +398,7 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
 
 # assemblies which are excluded from testing in mcs-compileall below
-VERIFY_TESTS_FILTER = $(am__append_12) $(am__append_13)
+VERIFY_TESTS_FILTER = $(am__append_13) $(am__append_14)
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want
@@ -594,13 +618,10 @@ mcs-do-run-test-profiles: test-support-files
 
 # Compile all assemblies with the verifier turned on. Code must be valid but not verifiable.
 # TODO it would be nice to split assemblies without unsafe code to use the verifier with verifiable mode.
-# Skip binary_reference_assemblies because they contain metadata only
 mcs-compileall: mono-wrapper etc/mono/config
 	save_MONO_PATH=$$MONO_PATH; mcs_topdir=`cd $(mcs_topdir) && $(cur_dir_cmd)`; ok=:; \
 	for profile in $(test_profiles); do \
-	  if [ "binary_reference_assemblies" = "$$profile" ]; then \
-          continue; \
-	  elif [ "xbuild_12" = "$$profile" ]; then \
+	  if [ "xbuild_12" = "$$profile" ]; then \
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_x$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \
 	  elif [ "xbuild_14" = "$$profile" ]; then \
 		  MONO_PATH="$$mcs_topdir/class/lib/$$profile$(PLATFORM_PATH_SEPARATOR)$$mcs_topdir/class/lib/net_4_x$(PLATFORM_PATH_SEPARATOR)$$save_MONO_PATH"; \

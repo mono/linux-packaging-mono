@@ -47,6 +47,7 @@
 #define ALIGN_TO(val,align) (((val) + ((align) - 1)) & ~((align) - 1))
 
 #ifdef TARGET_WIN32
+static void (*restore_stack) (void);
 static MonoW32ExceptionHandler fpe_handler;
 static MonoW32ExceptionHandler ill_handler;
 static MonoW32ExceptionHandler segv_handler;
@@ -70,6 +71,50 @@ static LONG CALLBACK seh_unhandled_exception_filter(EXCEPTION_POINTERS* ep)
 	return EXCEPTION_CONTINUE_SEARCH;
 }
 
+static gpointer
+get_win32_restore_stack (void)
+{
+	static guint8 *start = NULL;
+	guint8 *code;
+
+	if (start)
+		return start;
+
+	/* restore_stack (void) */
+	start = code = mono_global_codeman_reserve (128);
+
+	amd64_push_reg (code, AMD64_RBP);
+	amd64_mov_reg_reg (code, AMD64_RBP, AMD64_RSP, 8);
+
+	/* push 32 bytes of stack space for Win64 calling convention */
+	amd64_alu_reg_imm (code, X86_SUB, AMD64_RSP, 32);
+
+	/* restore guard page */
+	amd64_mov_reg_imm (code, AMD64_R11, _resetstkoflw);
+	amd64_call_reg (code, AMD64_R11);
+
+	/* get jit_tls with context to restore */
+	amd64_mov_reg_imm (code, AMD64_R11, mono_tls_get_jit_tls);
+	amd64_call_reg (code, AMD64_R11);
+
+	/* move jit_tls from return reg to arg reg */
+	amd64_mov_reg_reg (code, AMD64_ARG_REG1, AMD64_RAX, 8);
+
+	/* retrieve pointer to saved context */
+	amd64_alu_reg_imm (code, X86_ADD, AMD64_ARG_REG1, MONO_STRUCT_OFFSET (MonoJitTlsData, stack_restore_ctx));
+
+	/* this call does not return */
+	amd64_mov_reg_imm (code, AMD64_R11, mono_restore_context);
+	amd64_call_reg (code, AMD64_R11);
+
+	g_assert ((code - start) < 128);
+
+	mono_arch_flush_icache (start, code - start);
+	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
+
+	return start;
+}
+
 /*
  * Unhandled Exception Filter
  * Top-level per-process exception handler.
@@ -80,6 +125,7 @@ static LONG CALLBACK seh_vectored_exception_handler(EXCEPTION_POINTERS* ep)
 	CONTEXT* ctx;
 	LONG res;
 	MonoJitTlsData *jit_tls = mono_tls_get_jit_tls ();
+	MonoDomain* domain = mono_domain_get ();
 
 	/* If the thread is not managed by the runtime return early */
 	if (!jit_tls)
@@ -92,6 +138,15 @@ static LONG CALLBACK seh_vectored_exception_handler(EXCEPTION_POINTERS* ep)
 	ctx = ep->ContextRecord;
 
 	switch (er->ExceptionCode) {
+	case EXCEPTION_STACK_OVERFLOW:
+		if (mono_arch_handle_exception (ctx, domain->stack_overflow_ex)) {
+			/* need to restore stack protection once stack is unwound
+			 * restore_stack will restore stack protection and then
+			 * resume control to the saved stack_restore_ctx */
+			mono_sigctx_to_monoctx (ctx, &jit_tls->stack_restore_ctx);
+			ctx->Rip = (guint64)restore_stack;
+		}
+		break;
 	case EXCEPTION_ACCESS_VIOLATION:
 		W32_SEH_HANDLE_EX(segv);
 		break;
@@ -126,6 +181,8 @@ static LONG CALLBACK seh_vectored_exception_handler(EXCEPTION_POINTERS* ep)
 
 void win32_seh_init()
 {
+	restore_stack = get_win32_restore_stack ();
+
 	mono_old_win_toplevel_exception_filter = SetUnhandledExceptionFilter(seh_unhandled_exception_filter);
 	mono_win_vectored_exception_handle = AddVectoredExceptionHandler (1, seh_vectored_exception_handler);
 }
@@ -203,7 +260,7 @@ mono_arch_get_restore_context (MonoTrampInfo **info, gboolean aot)
 	amd64_jump_reg (code, AMD64_R11);
 
 	mono_arch_flush_icache (start, code - start);
-	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
+	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
 
 	if (info)
 		*info = mono_tramp_info_create ("restore_context", start, code - start, ji, unwind_ops);
@@ -291,7 +348,7 @@ mono_arch_get_call_filter (MonoTrampInfo **info, gboolean aot)
 	g_assert ((code - start) < kMaxCodeSize);
 
 	mono_arch_flush_icache (start, code - start);
-	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
+	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
 
 	if (info)
 		*info = mono_tramp_info_create ("call_filter", start, code - start, ji, unwind_ops);
@@ -474,7 +531,7 @@ get_throw_trampoline (MonoTrampInfo **info, gboolean rethrow, gboolean corlib, g
 	g_assert ((code - start) < kMaxCodeSize);
 	g_assert_checked (mono_arch_unwindinfo_validate_size (unwind_ops, MONO_MAX_TRAMPOLINE_UNWINDINFO_SIZE));
 
-	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
+	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
 
 	if (info)
 		*info = mono_tramp_info_create (tramp_name, start, code - start, ji, unwind_ops);
@@ -1825,7 +1882,7 @@ mono_tasklets_arch_restore (void)
 	g_assert ((code - start) <= kMaxCodeSize);
 
 	mono_arch_flush_icache (start, code - start);
-	mono_profiler_code_buffer_new (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL);
+	MONO_PROFILER_RAISE (jit_code_buffer, (start, code - start, MONO_PROFILER_CODE_BUFFER_EXCEPTION_HANDLING, NULL));
 
 	saved = start;
 	return (MonoContinuationRestore)saved;

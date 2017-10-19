@@ -19,6 +19,7 @@
 #include <mono/utils/mono-proclib.h>
 #include <mono/utils/mono-mmap.h>
 #include <mono/utils/mono-hwcap.h>
+#include <mono/utils/unlocked.h>
 
 #include "mini-ppc.h"
 #ifdef TARGET_POWERPC64
@@ -1004,8 +1005,7 @@ get_call_info (MonoMethodSignature *sig)
 	fr = PPC_FIRST_FPARG_REG;
 	gr = PPC_FIRST_ARG_REG;
 
-	/* FIXME: handle returning a struct */
-	if (MONO_TYPE_ISSTRUCT (sig->ret)) {
+	if (mini_type_is_vtype (sig->ret)) {
 		cinfo->vtype_retaddr = TRUE;
 	}
 
@@ -3183,17 +3183,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 
 	cpos = bb->max_offset;
 
-	if (cfg->prof_options & MONO_PROFILE_COVERAGE) {
-		//MonoCoverageInfo *cov = mono_get_coverage_info (cfg->method);
-		//g_assert (!mono_compile_aot);
-		//cpos += 6;
-		//if (bb->cil_code)
-		//	cov->data [bb->dfn].iloffset = bb->cil_code - cfg->cil_code;
-		/* this is not thread save, but good enough */
-		/* fixme: howto handle overflows? */
-		//x86_inc_mem (code, &cov->data [bb->dfn].count); 
-	}
-
 	MONO_BB_FOR_EACH_INS (bb, ins) {
 		offset = code - cfg->native_code;
 
@@ -4136,6 +4125,11 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			ppc_mtctr (code, ins->sreg1);
 			ppc_bcctr (code, PPC_BR_ALWAYS, 0);
 			break;
+		case OP_ICNEQ:
+			ppc_li (code, ins->dreg, 0);
+			ppc_bc (code, PPC_BR_TRUE, PPC_BR_EQ, 2);
+			ppc_li (code, ins->dreg, 1);
+			break;
 		case OP_CEQ:
 		case OP_ICEQ:
 		CASE_PPC64 (OP_LCEQ)
@@ -4153,6 +4147,12 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			ppc_bc (code, PPC_BR_TRUE, PPC_BR_LT, 2);
 			ppc_li (code, ins->dreg, 0);
 			break;
+		case OP_ICGE:
+		case OP_ICGE_UN:
+			ppc_li (code, ins->dreg, 1);
+			ppc_bc (code, PPC_BR_FALSE, PPC_BR_LT, 2);
+			ppc_li (code, ins->dreg, 0);
+			break;
 		case OP_CGT:
 		case OP_CGT_UN:
 		case OP_ICGT:
@@ -4161,6 +4161,12 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		CASE_PPC64 (OP_LCGT_UN)
 			ppc_li (code, ins->dreg, 1);
 			ppc_bc (code, PPC_BR_TRUE, PPC_BR_GT, 2);
+			ppc_li (code, ins->dreg, 0);
+			break;
+		case OP_ICLE:
+		case OP_ICLE_UN:
+			ppc_li (code, ins->dreg, 1);
+			ppc_bc (code, PPC_BR_FALSE, PPC_BR_GT, 2);
 			ppc_li (code, ins->dreg, 0);
 			break;
 		case OP_COND_EXC_EQ:
@@ -4365,15 +4371,17 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			ppc_fcmpu (code, 0, ins->sreg1, ins->sreg2);
 			break;
 		case OP_FCEQ:
+		case OP_FCNEQ:
 			ppc_fcmpo (code, 0, ins->sreg1, ins->sreg2);
-			ppc_li (code, ins->dreg, 0);
-			ppc_bc (code, PPC_BR_FALSE, PPC_BR_EQ, 2);
 			ppc_li (code, ins->dreg, 1);
+			ppc_bc (code, ins->opcode == OP_FCEQ ? PPC_BR_TRUE : PPC_BR_FALSE, PPC_BR_EQ, 2);
+			ppc_li (code, ins->dreg, 0);
 			break;
 		case OP_FCLT:
+		case OP_FCGE:
 			ppc_fcmpo (code, 0, ins->sreg1, ins->sreg2);
 			ppc_li (code, ins->dreg, 1);
-			ppc_bc (code, PPC_BR_TRUE, PPC_BR_LT, 2);
+			ppc_bc (code, ins->opcode == OP_FCLT ? PPC_BR_TRUE : PPC_BR_FALSE, PPC_BR_LT, 2);
 			ppc_li (code, ins->dreg, 0);
 			break;
 		case OP_FCLT_UN:
@@ -4384,9 +4392,10 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 			ppc_li (code, ins->dreg, 0);
 			break;
 		case OP_FCGT:
+		case OP_FCLE:
 			ppc_fcmpo (code, 0, ins->sreg1, ins->sreg2);
 			ppc_li (code, ins->dreg, 1);
-			ppc_bc (code, PPC_BR_TRUE, PPC_BR_GT, 2);
+			ppc_bc (code, ins->opcode == OP_FCGT ? PPC_BR_TRUE : PPC_BR_FALSE, PPC_BR_GT, 2);
 			ppc_li (code, ins->dreg, 0);
 			break;
 		case OP_FCGT_UN:
@@ -4918,9 +4927,6 @@ mono_arch_emit_prolog (MonoCompile *cfg)
 		MonoInst *ins;
 		bb->max_offset = max_offset;
 
-		if (cfg->prof_options & MONO_PROFILE_COVERAGE)
-			max_offset += 6; 
-
 		MONO_BB_FOR_EACH_INS (bb, ins)
 			max_offset += ins_native_length (cfg, ins);
 	}
@@ -5327,9 +5333,6 @@ mono_arch_emit_epilog (MonoCompile *cfg)
 		max_epilog_size += 128;
 	
 	if (mono_jit_trace_calls != NULL)
-		max_epilog_size += 50;
-
-	if (cfg->prof_options & MONO_PROFILE_ENTER_LEAVE)
 		max_epilog_size += 50;
 
 	while (cfg->code_len + max_epilog_size > (cfg->code_size - 16)) {
@@ -5757,7 +5760,7 @@ mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, MonoIMTC
 	}
 
 	if (!fail_tramp)
-		mono_stats.imt_trampolines_size += code - start;
+		UnlockedAdd (&mono_stats.imt_trampolines_size, code - start);
 	g_assert (code - start <= size);
 	mono_arch_flush_icache (start, size);
 
@@ -5797,12 +5800,6 @@ mono_arch_emit_inst_for_method (MonoCompile *cfg, MonoMethod *cmethod, MonoMetho
 {
 	/* FIXME: */
 	return NULL;
-}
-
-gboolean
-mono_arch_print_tree (MonoInst *tree, int arity)
-{
-	return 0;
 }
 
 mgreg_t
@@ -6034,15 +6031,3 @@ mono_arch_opcode_supported (int opcode)
 	}
 }
 
-
-#if 0
-// FIXME: To get the test case  finally_block_ending_in_dead_bb  to work properly we need to define the following
-// (in mini-ppc.h) and then implement the fuction mono_arch_create_handler_block_trampoline.
-//  #define MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD 1
-
-gpointer
-mono_arch_create_handler_block_trampoline (void)
-{
-	. . .
-}
-#endif

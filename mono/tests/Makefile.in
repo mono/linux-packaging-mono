@@ -179,8 +179,8 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
 @FULL_AOT_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event2.2.exe \
-@FULL_AOT_TESTS_TRUE@	bug-544446.exe bug-36848.exe \
-@FULL_AOT_TESTS_TRUE@	generic-marshalbyref.2.exe \
+@FULL_AOT_TESTS_TRUE@	assemblyresolve_event6.exe bug-544446.exe \
+@FULL_AOT_TESTS_TRUE@	bug-36848.exe generic-marshalbyref.2.exe \
 @FULL_AOT_TESTS_TRUE@	stackframes-async.2.exe \
 @FULL_AOT_TESTS_TRUE@	transparentproxy.exe bug-48015.exe \
 @FULL_AOT_TESTS_TRUE@	delegate9.exe marshal-valuetypes.exe \
@@ -205,7 +205,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	bug-389886-3.exe constant-division.exe \
 @FULL_AOT_TESTS_TRUE@	dynamic-method-resurrection.exe \
 @FULL_AOT_TESTS_TRUE@	assembly_append_ordering.exe \
-@FULL_AOT_TESTS_TRUE@	assemblyresolve_event5.cs bug-80307.exe \
+@FULL_AOT_TESTS_TRUE@	assemblyresolve_event5.exe bug-80307.exe \
 @FULL_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe thread6.exe \
 @FULL_AOT_TESTS_TRUE@	reference-loader.exe constraints-load.exe \
 @FULL_AOT_TESTS_TRUE@	bug-515884.exe generic-type-builder.2.exe \
@@ -361,6 +361,7 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BREAKPOINT = @BREAKPOINT@
 BTLS_ARCH = @BTLS_ARCH@
 BTLS_CFLAGS = @BTLS_CFLAGS@
 BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
@@ -401,12 +402,27 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
+GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
+GNUC_NORETURN = @GNUC_NORETURN@
+GNUC_PRETTY = @GNUC_PRETTY@
+GNUC_UNUSED = @GNUC_UNUSED@
+GPOINTER_TO_INT = @GPOINTER_TO_INT@
+GPOINTER_TO_UINT = @GPOINTER_TO_UINT@
 GREP = @GREP@
+GSIZE = @GSIZE@
+GSIZE_FORMAT = @GSIZE_FORMAT@
 GTKX11 = @GTKX11@
+GUINT_TO_POINTER = @GUINT_TO_POINTER@
+G_GINT32_FORMAT = @G_GINT32_FORMAT@
+G_GINT64_FORMAT = @G_GINT64_FORMAT@
+G_GUINT32_FORMAT = @G_GUINT32_FORMAT@
+G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
+G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
+HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -451,6 +467,8 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ORDER = @ORDER@
+OS = @OS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -460,15 +478,19 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
+PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
 SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
+SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
@@ -541,6 +563,7 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
+ninja = @ninja@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -609,20 +632,20 @@ TESTS_STRESS_SRC = \
 TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	bug-2907.cs array-init.cs arraylist.cs assembly-load-remap.cs \
 	assemblyresolve_event.cs assemblyresolve_event3.cs \
-	assemblyresolve_event4.cs assemblyresolve_event5.cs checked.cs \
-	char-isnumber.cs field-layout.cs pack-layout.cs pack-bug.cs \
-	hash-table.cs test-ops.cs obj.cs test-dup-mp.cs string.cs \
-	stringbuilder.cs switch.cs outparm.cs delegate.cs \
-	bitconverter.cs exception.cs exception2.cs exception3.cs \
-	exception4.cs exception5.cs exception6.cs exception7.cs \
-	exception8.cs exception10.cs exception11.cs exception12.cs \
-	exception13.cs exception14.cs exception15.cs exception16.cs \
-	exception17.cs exception18.cs typeload-unaligned.cs struct.cs \
-	valuetype-gettype.cs typeof-ptr.cs static-constructor.cs \
-	pinvoke.cs pinvoke-utf8.cs pinvoke3.cs pinvoke11.cs \
-	pinvoke13.cs pinvoke17.cs invoke.cs invoke2.cs \
-	runtime-invoke.cs invoke-string-ctors.cs reinit.cs box.cs \
-	array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
+	assemblyresolve_event4.cs assemblyresolve_event5.cs \
+	assemblyresolve_event6.cs checked.cs char-isnumber.cs \
+	field-layout.cs pack-layout.cs pack-bug.cs hash-table.cs \
+	test-ops.cs obj.cs test-dup-mp.cs string.cs stringbuilder.cs \
+	switch.cs outparm.cs delegate.cs bitconverter.cs exception.cs \
+	exception2.cs exception3.cs exception4.cs exception5.cs \
+	exception6.cs exception7.cs exception8.cs exception10.cs \
+	exception11.cs exception12.cs exception13.cs exception14.cs \
+	exception15.cs exception16.cs exception17.cs exception18.cs \
+	typeload-unaligned.cs struct.cs valuetype-gettype.cs \
+	typeof-ptr.cs static-constructor.cs pinvoke.cs pinvoke-utf8.cs \
+	pinvoke3.cs pinvoke11.cs pinvoke13.cs pinvoke17.cs invoke.cs \
+	invoke2.cs runtime-invoke.cs invoke-string-ctors.cs reinit.cs \
+	box.cs array.cs enum.cs enum2.cs enum-intrins.cs property.cs \
 	enumcast.cs assignable-tests.cs array-cast.cs \
 	array-subtype-attr.cs cattr-compile.cs cattr-field.cs \
 	cattr-object.cs custom-attr.cs double-cast.cs \
@@ -638,9 +661,9 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	jit-float.cs pop.cs time.cs pointer.cs hashcode.cs \
 	delegate1.cs delegate2.cs delegate3.cs delegate5.cs \
 	delegate6.cs delegate7.cs delegate8.cs delegate10.cs \
-	delegate11.cs delegate12.cs delegate13.cs largeexp.cs \
-	largeexp2.cs marshalbyref1.cs static-ctor.cs inctest.cs \
-	bound.cs array-invoke.cs test-arr.cs decimal.cs \
+	delegate11.cs delegate12.cs delegate13.cs delegate14.cs \
+	largeexp.cs largeexp2.cs marshalbyref1.cs static-ctor.cs \
+	inctest.cs bound.cs array-invoke.cs test-arr.cs decimal.cs \
 	decimal-array.cs marshal.cs marshal1.cs marshal2.cs \
 	marshal3.cs marshal5.cs marshal6.cs marshal7.cs marshal8.cs \
 	marshal9.cs marshalbool.cs test-byval-in-struct.cs thread.cs \
@@ -717,12 +740,13 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	appdomain-exit.cs appdomain-serialize-exception.cs \
 	assemblyresolve_event2.2.cs appdomain-unload-callback.cs \
 	appdomain-unload-doesnot-raise-pending-events.cs \
-	appdomain-unload-asmload.cs unload-appdomain-on-shutdown.cs \
-	bug-47295.cs loader.cs pinvoke2.cs generic-type-builder.2.cs \
-	dynamic-generic-size.cs cominterop.cs \
-	dynamic-method-access.2.cs dynamic-method-finalize.2.cs \
-	dynamic-method-stack-traces.cs generic_type_definition.2.cs \
-	bug-333798-tb.2.cs bug-335131.2.cs bug-322722_patch_bx.2.cs \
+	appdomain-unload-asmload.cs appdomain-unload-exception.cs \
+	unload-appdomain-on-shutdown.cs bug-47295.cs loader.cs \
+	pinvoke2.cs generic-type-builder.2.cs dynamic-generic-size.cs \
+	cominterop.cs dynamic-method-access.2.cs \
+	dynamic-method-finalize.2.cs dynamic-method-stack-traces.cs \
+	generic_type_definition.2.cs bug-333798-tb.2.cs \
+	bug-335131.2.cs bug-322722_patch_bx.2.cs \
 	bug-322722_dyn_method_throw.2.cs bug-389886-2.cs \
 	bug-349190.2.cs bug-389886-sre-generic-interface-instances.cs \
 	bug-462592.cs bug-575941.cs bug-389886-3.cs \
@@ -736,7 +760,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	appdomain-threadpool-unload.cs process-unref-race.cs \
 	bug-46661.cs w32message.cs runtime-invoke.gen.cs \
 	imt_big_iface_test.cs bug-58782-plain-throw.cs \
-	bug-58782-capture-and-throw.cs $(am__append_5) $(am__append_6)
+	bug-58782-capture-and-throw.cs recursive-struct-arrays.cs \
+	bug-59281.cs $(am__append_5) $(am__append_6)
 TESTS_IL_SRC = \
 	field-access.il		\
 	method-access.il	\
@@ -895,6 +920,7 @@ CI_PR_DISABLED_TESTS = \
 
 # appdomain-threadpool-unload.exe creates 100 appdomains, takes too long with llvm
 LLVM_DISABLED_TESTS = \
+	finally_block_ending_in_dead_bb.exe \
 	appdomain-threadpool-unload.exe
 
 LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
@@ -905,7 +931,6 @@ LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
 # delegate-invoke.exe depends on 929c6bc9b6d76a273f251e6f5dfacac36e9c38bd which was
 # reverted.
 # bug-Xamarin-5278.exe got broken by 5d26590e79da139a284459299aee95c25f4cd835
-# bug-45841-fpstack-exceptions.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47053
 # appdomain-thread-abort.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47054
 KNOWN_FAILING_TESTS = \
 	delegate-async-exception.exe	\
@@ -913,7 +938,6 @@ KNOWN_FAILING_TESTS = \
 	bug-459094.exe \
 	delegate-invoke.exe \
 	bug-Xamarin-5278.exe \
-	bug-45841-fpstack-exceptions.exe \
 	appdomain-thread-abort.exe
 
 DISABLED_TESTS = \
@@ -946,6 +970,7 @@ INTERP_DISABLED_TESTS = \
 	array_load_exception.exe \
 	assembly_append_ordering.exe \
 	assemblyresolve_event4.exe \
+	assemblyresolve_event6.exe \
 	async-exc-compilation.exe \
 	async-with-cb-throws.exe \
 	async_read.exe \
@@ -955,6 +980,7 @@ INTERP_DISABLED_TESTS = \
 	bug-327438.2.exe \
 	bug-335131.2.exe \
 	bug-415577.exe \
+	bug-45841-fpstack-exceptions.exe \
 	bug-461867.exe \
 	bug-461941.exe \
 	bug-46661.exe \
@@ -973,6 +999,7 @@ INTERP_DISABLED_TESTS = \
 	call_missing_method.exe \
 	calliGenericTest.exe \
 	cominterop.exe \
+	context-static.exe \
 	cross-domain.exe \
 	delegate-with-null-target.exe \
 	delegate9.exe \
@@ -1177,7 +1204,8 @@ AOT_CONFIGURATIONS = \
 
 # tests that expect a 1 exit code
 TESTS_UNHANDLED_EXCEPTION_1_SRC = \
-	unhandled-exception-1.cs
+	unhandled-exception-1.cs	\
+	unhandled-exception-9.cs
 
 
 # tests that expect a 255 exit code
@@ -1715,8 +1743,8 @@ tests: compile-tests
 #
 # Test that no symbols are missed in eglib-remap.h
 #
-@PLATFORM_LINUX_TRUE@test-platform: test-eglib-remap
-@PLATFORM_DARWIN_TRUE@@PLATFORM_LINUX_FALSE@test-platform: test-eglib-remap
+@HOST_LINUX_TRUE@test-platform: test-eglib-remap
+@HOST_DARWIN_TRUE@@HOST_LINUX_FALSE@test-platform: test-eglib-remap
 test-eglib-remap:
 	@echo "Testing eglib remap..."
 	@if which nm > /dev/null; then if nm $(top_builddir)/mono/mini/mono | grep -Ev $(OK_G_SYMBOLS) | grep -E 't _?g_'; then exit 1; else exit 0; fi; fi
@@ -2142,9 +2170,9 @@ module-cctor-loader.2.exe: module-cctor.exe
 reference-loader.exe$(PLATFORM_AOT_SUFFIX): TestingReferenceAssembly.dll$(PLATFORM_AOT_SUFFIX) TestingReferenceReferenceAssembly.dll$(PLATFORM_AOT_SUFFIX)
 reference-loader.exe: TestingReferenceAssembly.dll TestingReferenceReferenceAssembly.dll
 
-assemblyresolve_asm.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX)
+assemblyresolve_asm.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_asm.dll assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX)
 	MONO_PATH="assemblyresolve_deps:$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(AOT_BUILD_FLAGS) assemblyresolve_asm.dll
-assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
+assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/Test.dll assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
 assemblyresolve_deps:
 	mkdir -p assemblyresolve_deps
 assemblyresolve_deps/TestBase.dll: assemblyresolve_deps $(srcdir)/assemblyresolve_TestBase.cs
@@ -2164,6 +2192,9 @@ assemblyresolve_deps/assemblyresolve_event5_label.dll: assemblyresolve_event5_la
 assemblyresolve_event5_helper.dll: assemblyresolve_event5_helper.cs assemblyresolve_deps/assemblyresolve_event5_label.dll
 	$(MCS) -target:library -out:assemblyresolve_event5_helper.dll -r:assemblyresolve_deps/assemblyresolve_event5_label.dll $(srcdir)/assemblyresolve_event5_helper.cs
 assemblyresolve_event5.exe: assemblyresolve_event5_helper.dll
+
+assemblyresolve_event6.exe$(PLATFORM_AOT_SUFFIX): assemblyresolve_asm.dll$(PLATFORM_AOT_SUFFIX) assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX) assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
+assemblyresolve_event6.exe: assemblyresolve_asm.dll assemblyresolve_deps/Test.dll assemblyresolve_deps/TestBase.dll
 
 # We use 'test-support-files' to handle an ordering issue between the 'mono/' and 'runtime/' directories
 bug-80307.exe: $(srcdir)/bug-80307.cs

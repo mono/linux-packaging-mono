@@ -473,6 +473,7 @@ namespace PEAPI
     }
     public enum ImplAttr
     {
+        AggressiveInlining = 256,
         ForwardRef = 16,
         IL = 0,
         InternalCall = 4096,
@@ -600,7 +601,7 @@ namespace PEAPI
     public partial class MetaData
     {
         internal MetaData() { }
-        public PEAPI.MSCorLib mscorlib;
+        public PEAPI.MSCorLib mscorlib { get { throw null; } }
     }
     public abstract partial class MetaDataElement : System.IComparable
     {

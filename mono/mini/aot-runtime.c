@@ -925,12 +925,12 @@ decode_method_ref_with_target (MonoAotModule *module, MethodRef *ref, MonoMethod
 		case MONO_WRAPPER_ALLOC: {
 			int atype = decode_value (p, &p);
 			ManagedAllocatorVariant variant =
-				mono_profiler_get_events () & MONO_PROFILE_ALLOCATIONS ?
-				MANAGED_ALLOCATOR_SLOW_PATH : MANAGED_ALLOCATOR_REGULAR;
+				mono_profiler_allocations_enabled () ?
+				MANAGED_ALLOCATOR_PROFILER : MANAGED_ALLOCATOR_REGULAR;
 
 			ref->method = mono_gc_get_managed_allocator_by_type (atype, variant);
 			/* Try to fallback to the slow path version */
-			if (!ref->method && variant == MANAGED_ALLOCATOR_REGULAR)
+			if (!ref->method)
 				ref->method = mono_gc_get_managed_allocator_by_type (atype, MANAGED_ALLOCATOR_SLOW_PATH);
 			if (!ref->method) {
 				mono_error_set_bad_image_name (error, module->aot_name, "Error: No managed allocator, but we need one for AOT.\nAre you using non-standard GC options?\n");
@@ -1947,7 +1947,7 @@ load_aot_module (MonoAssembly *assembly, gpointer user_data)
 		 */
 		return;
 
-	if (image_is_dynamic (assembly->image) || assembly->ref_only)
+	if (image_is_dynamic (assembly->image) || assembly->ref_only || mono_domain_get () != mono_get_root_domain ())
 		return;
 
 	mono_aot_lock ();
@@ -1969,6 +1969,7 @@ load_aot_module (MonoAssembly *assembly, gpointer user_data)
 			globals = (void **)info->globals;
 			g_assert (globals);
 		}
+		found_aot_name = g_strdup (aot_name);
 	} else {
 		char *err;
 
@@ -3542,7 +3543,8 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 		break;
 	}
 	case MONO_PATCH_INFO_INTERNAL_METHOD:
-	case MONO_PATCH_INFO_JIT_ICALL_ADDR: {
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL: {
 		guint32 len = decode_value (p, &p);
 
 		ji->data.name = (char*)p;
@@ -3661,6 +3663,7 @@ decode_patch (MonoAotModule *aot_module, MonoMemPool *mp, MonoJumpInfo *ji, guin
 	case MONO_PATCH_INFO_GC_CARD_TABLE_ADDR:
 	case MONO_PATCH_INFO_GC_NURSERY_START:
 	case MONO_PATCH_INFO_GC_NURSERY_BITS:
+	case MONO_PATCH_INFO_PROFILER_ALLOCATION_COUNT:
 		break;
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:
 		ji->data.index = decode_value (p, &p);
@@ -3899,13 +3902,6 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 
 	init_amodule_got (amodule);
 
-	if (mono_profiler_get_events () & MONO_PROFILE_ENTER_LEAVE) {
-		if (mono_aot_only)
-			/* The caller cannot handle this */
-			g_assert_not_reached ();
-		return NULL;
-	}
-
 	if (domain != mono_get_root_domain ())
 		/* Non shared AOT code can't be used in other appdomains */
 		return NULL;
@@ -3961,9 +3957,10 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 		return code;
 
 	if (mono_last_aot_method != -1) {
-		if (mono_jit_stats.methods_aot >= mono_last_aot_method)
-				return NULL;
-		else if (mono_jit_stats.methods_aot == mono_last_aot_method - 1) {
+		gint32 methods_aot = InterlockedRead (&mono_jit_stats.methods_aot);
+		if (methods_aot >= mono_last_aot_method)
+			return NULL;
+		else if (methods_aot == mono_last_aot_method - 1) {
 			if (!method) {
 				method = mono_get_method_checked (image, token, NULL, NULL, error);
 				if (!method)
@@ -4020,7 +4017,7 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 
 	amodule_unlock (amodule);
 
-	if (mono_profiler_get_events () & MONO_PROFILE_JIT_COMPILATION) {
+	if (MONO_PROFILER_ENABLED (jit_begin) || MONO_PROFILER_ENABLED (jit_done)) {
 		MonoJitInfo *jinfo;
 
 		if (!method) {
@@ -4028,10 +4025,10 @@ load_method (MonoDomain *domain, MonoAotModule *amodule, MonoImage *image, MonoM
 			if (!method)
 				return NULL;
 		}
-		mono_profiler_method_jit (method);
+		MONO_PROFILER_RAISE (jit_begin, (method));
 		jinfo = mono_jit_info_table_find (domain, (char*)code);
 		g_assert (jinfo);
-		mono_profiler_method_end_jit (method, jinfo, MONO_PROFILE_OK);
+		MONO_PROFILER_RAISE (jit_done, (method, jinfo));
 	}
 
 	return code;
@@ -4638,24 +4635,6 @@ mono_aot_get_method_checked (MonoDomain *domain, MonoMethod *method, MonoError *
 	return code;
 }
 
-/*
- * mono_aot_get_method:
- *
- *   Return a pointer to the AOTed native code for METHOD if it can be found,
- * NULL otherwise.
- * On platforms with function pointers, this doesn't return a function pointer.
- */
-gpointer
-mono_aot_get_method (MonoDomain *domain, MonoMethod *method)
-{
-	MonoError error;
-
-	gpointer res = mono_aot_get_method_checked (domain, method, &error);
-	/* This is external only, so its ok to raise here */
-	mono_error_raise_exception (&error); /* OK to throw, external only without a good alternative */
-	return res;
-}
-
 /**
  * Same as mono_aot_get_method, but we try to avoid loading any metadata from the
  * method.
@@ -5165,6 +5144,8 @@ no_trampolines (void)
 	g_assert_not_reached ();
 }
 
+
+#ifndef TARGET_WASM
 /*
  * Return the trampoline identified by NAME from the mscorlib AOT file.
  * On ppc64, this returns a function descriptor.
@@ -5181,6 +5162,8 @@ mono_aot_get_trampoline_full (const char *name, MonoTrampInfo **out_tinfo)
 
 	return mono_create_ftnptr_malloc ((guint8 *)load_function_full (amodule, name, out_tinfo));
 }
+#endif
+
 
 gpointer
 mono_aot_get_trampoline (const char *name)
@@ -5822,7 +5805,7 @@ mono_aot_is_pagefault (void *ptr)
 void
 mono_aot_handle_pagefault (void *ptr)
 {
-#ifndef PLATFORM_WIN32
+#ifndef HOST_WIN32
 	guint8* start = (guint8*)ROUND_DOWN (((gssize)ptr), mono_pagesize ());
 	int res;
 

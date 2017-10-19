@@ -36,7 +36,6 @@
 #include <mono/metadata/threads.h>
 #include <mono/metadata/appdomain.h>
 #include <mono/metadata/debug-helpers.h>
-#include "mono/metadata/profiler.h"
 #include <mono/metadata/profiler-private.h>
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/environment.h>
@@ -61,6 +60,7 @@
 #include <mono/utils/dtrace.h>
 #include <mono/utils/mono-threads.h>
 #include <mono/utils/mono-threads-coop.h>
+#include <mono/utils/unlocked.h>
 
 #include "mini.h"
 #include "seq-points.h"
@@ -1381,9 +1381,8 @@ mono_allocate_stack_slots2 (MonoCompile *cfg, gboolean backward, guint32 *stack_
 				printf ("LAST: %s\n", mono_method_full_name (cfg->method, TRUE));
 			if (count > atoi (g_getenv ("COUNT3")))
 				slot = 0xffffff;
-			else {
+			else
 				mono_print_ins (inst);
-				}
 		}
 #endif
 
@@ -1615,20 +1614,19 @@ mono_allocate_stack_slots (MonoCompile *cfg, gboolean backward, guint32 *stack_s
 			}
 		}
 
+#if 0
 		{
 			static int count = 0;
 			count ++;
 
-			/*
 			if (count == atoi (g_getenv ("COUNT")))
 				printf ("LAST: %s\n", mono_method_full_name (cfg->method, TRUE));
 			if (count > atoi (g_getenv ("COUNT")))
 				slot = 0xffffff;
-			else {
+			else
 				mono_print_ins (inst);
-				}
-			*/
 		}
+#endif
 
 		if (inst->flags & MONO_INST_LMF) {
 			/*
@@ -2078,8 +2076,11 @@ mono_compile_create_vars (MonoCompile *cfg)
 	if (cfg->verbose_level > 2)
 		g_print ("creating locals\n");
 
-	for (i = 0; i < header->num_locals; ++i)
+	for (i = 0; i < header->num_locals; ++i) {
+		if (cfg->verbose_level > 2)
+			g_print ("\tlocal [%d]: ", i);
 		cfg->locals [i] = mono_compile_create_var (cfg, header->locals [i], OP_LOCAL);
+	}
 
 	if (cfg->verbose_level > 2)
 		g_print ("locals done\n");
@@ -2230,9 +2231,6 @@ mono_codegen (MonoCompile *cfg)
 			mono_bb_deduplicate_op_il_seq_points (cfg, bb);
 	}
 
-	if (cfg->prof_options & MONO_PROFILE_COVERAGE)
-		cfg->coverage_info = mono_profiler_coverage_alloc (cfg->method, cfg->num_bblocks);
-
 	code = mono_arch_emit_prolog (cfg);
 
 	cfg->code_len = code - cfg->native_code;
@@ -2255,6 +2253,9 @@ mono_codegen (MonoCompile *cfg)
 			mono_arch_emit_epilog (cfg);
 			cfg->epilog_end = cfg->code_len;
 		}
+
+		if (bb->clause_hole)
+			mono_cfg_add_try_hole (cfg, bb->clause_hole, cfg->native_code + bb->native_offset, bb);
 	}
 
 	mono_arch_emit_exceptions (cfg);
@@ -2378,7 +2379,7 @@ mono_codegen (MonoCompile *cfg)
 	} else {
 		mono_domain_code_commit (code_domain, cfg->native_code, cfg->code_size, cfg->code_len);
 	}
-	mono_profiler_code_buffer_new (cfg->native_code, cfg->code_len, MONO_PROFILER_CODE_BUFFER_METHOD, cfg->method);
+	MONO_PROFILER_RAISE (jit_code_buffer, (cfg->native_code, cfg->code_len, MONO_PROFILER_CODE_BUFFER_METHOD, cfg->method));
 	
 	mono_arch_flush_icache (cfg->native_code, cfg->code_len);
 
@@ -2653,27 +2654,15 @@ create_jit_info (MonoCompile *cfg, MonoMethod *method_to_compile)
 			MonoExceptionClause *ec = &header->clauses [i];
 			MonoJitExceptionInfo *ei = &jinfo->clauses [i];
 			MonoBasicBlock *tblock;
-			MonoInst *exvar, *spvar;
+			MonoInst *exvar;
 
 			ei->flags = ec->flags;
 
 			if (G_UNLIKELY (cfg->verbose_level >= 4))
 				printf ("IL clause: try 0x%x-0x%x handler 0x%x-0x%x filter 0x%x\n", ec->try_offset, ec->try_offset + ec->try_len, ec->handler_offset, ec->handler_offset + ec->handler_len, ec->flags == MONO_EXCEPTION_CLAUSE_FILTER ? ec->data.filter_offset : 0);
 
-			/*
-			 * The spvars are needed by mono_arch_install_handler_block_guard ().
-			 */
-			if (ei->flags == MONO_EXCEPTION_CLAUSE_FINALLY) {
-				int region;
-
-				region = ((i + 1) << 8) | MONO_REGION_FINALLY | ec->flags;
-				spvar = mono_find_spvar_for_region (cfg, region);
-				g_assert (spvar);
-				ei->exvar_offset = spvar->inst_offset;
-			} else {
-				exvar = mono_find_exvar_for_offset (cfg, ec->handler_offset);
-				ei->exvar_offset = exvar ? exvar->inst_offset : 0;
-			}
+			exvar = mono_find_exvar_for_offset (cfg, ec->handler_offset);
+			ei->exvar_offset = exvar ? exvar->inst_offset : 0;
 
 			if (ei->flags == MONO_EXCEPTION_CLAUSE_FILTER) {
 				tblock = cfg->cil_offset_to_bb [ec->data.filter_offset];
@@ -3081,7 +3070,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	MonoMethodSignature *sig;
 	MonoError err;
 	MonoCompile *cfg;
-	int i, code_size_ratio;
+	int i;
 	gboolean try_generic_shared, try_llvm = FALSE;
 	MonoMethod *method_to_compile, *method_to_register;
 	gboolean method_is_gshared = FALSE;
@@ -3097,8 +3086,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	static char *verbose_method_name;
 
 	InterlockedIncrement (&mono_jit_stats.methods_compiled);
-	if (mono_profiler_get_events () & MONO_PROFILE_JIT_COMPILATION)
-		mono_profiler_method_jit (method);
+	MONO_PROFILER_RAISE (jit_begin, (method));
 	if (MONO_METHOD_COMPILE_BEGIN_ENABLED ())
 		MONO_PROBE_METHOD_COMPILE_BEGIN (method);
 
@@ -3136,9 +3124,9 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 
 	if (opts & MONO_OPT_GSHARED) {
 		if (try_generic_shared)
-			mono_stats.generics_sharable_methods++;
+			InterlockedIncrement (&mono_stats.generics_sharable_methods);
 		else if (mono_method_is_generic_impl (method))
-			mono_stats.generics_unsharable_methods++;
+			InterlockedIncrement (&mono_stats.generics_unsharable_methods);
 	}
 
 #ifdef ENABLE_LLVM
@@ -3161,7 +3149,6 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	cfg->method = method_to_compile;
 	cfg->mempool = mono_mempool_new ();
 	cfg->opt = opts;
-	cfg->prof_options = mono_profiler_get_events ();
 	cfg->run_cctors = run_cctors;
 	cfg->domain = domain;
 	cfg->verbose_level = mini_verbose;
@@ -3175,7 +3162,7 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	cfg->llvm_only = (flags & JIT_FLAG_LLVM_ONLY) != 0;
 	cfg->backend = current_backend;
 
-#ifdef PLATFORM_ANDROID
+#ifdef HOST_ANDROID
 	if (cfg->method->wrapper_type != MONO_WRAPPER_NONE) {
 		/* FIXME: Why is this needed */
 		cfg->gen_seq_points = FALSE;
@@ -3306,8 +3293,10 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 	}
 #endif
 
+	cfg->prof_flags = mono_profiler_get_call_instrumentation_flags (cfg->method);
+
 	/* The debugger has no liveness information, so avoid sharing registers/stack slots */
-	if (debug_options.mdb_optimizations) {
+	if (debug_options.mdb_optimizations || MONO_CFG_PROFILE_CALL_CONTEXT (cfg)) {
 		cfg->disable_reuse_registers = TRUE;
 		cfg->disable_reuse_stack_slots = TRUE;
 		/* 
@@ -3887,23 +3876,28 @@ mini_method_compile (MonoMethod *method, guint32 opts, MonoDomain *domain, JitFl
 
 	/* collect statistics */
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->jit_methods++;
-	mono_perfcounters->jit_bytes += header->code_size;
+	InterlockedIncrement (&mono_perfcounters->jit_methods);
+	InterlockedAdd (&mono_perfcounters->jit_bytes, header->code_size);
 #endif
-	mono_jit_stats.allocated_code_size += cfg->code_len;
-	code_size_ratio = cfg->code_len;
-	if (code_size_ratio > mono_jit_stats.biggest_method_size && mono_jit_stats.enabled) {
-		mono_jit_stats.biggest_method_size = code_size_ratio;
-		g_free (mono_jit_stats.biggest_method);
-		mono_jit_stats.biggest_method = g_strdup_printf ("%s::%s)", method->klass->name, method->name);
+	gint32 code_size_ratio = cfg->code_len;
+	InterlockedAdd (&mono_jit_stats.allocated_code_size, code_size_ratio);
+	InterlockedAdd (&mono_jit_stats.native_code_size, code_size_ratio);
+	/* FIXME: use an explicit function to read booleans */
+	if ((gboolean)InterlockedRead ((gint32*)&mono_jit_stats.enabled)) {
+		if (code_size_ratio > InterlockedRead (&mono_jit_stats.biggest_method_size)) {
+			InterlockedWrite (&mono_jit_stats.biggest_method_size, code_size_ratio);
+			char *biggest_method = g_strdup_printf ("%s::%s)", method->klass->name, method->name);
+			biggest_method = InterlockedExchangePointer ((gpointer*)&mono_jit_stats.biggest_method, biggest_method);
+			g_free (biggest_method);
+		}
+		code_size_ratio = (code_size_ratio * 100) / header->code_size;
+		if (code_size_ratio > InterlockedRead (&mono_jit_stats.max_code_size_ratio)) {
+			InterlockedWrite (&mono_jit_stats.max_code_size_ratio, code_size_ratio);
+			char *max_ratio_method = g_strdup_printf ("%s::%s)", method->klass->name, method->name);
+			max_ratio_method = InterlockedExchangePointer ((gpointer*)&mono_jit_stats.max_ratio_method, max_ratio_method);
+			g_free (max_ratio_method);
+		}
 	}
-	code_size_ratio = (code_size_ratio * 100) / header->code_size;
-	if (code_size_ratio > mono_jit_stats.max_code_size_ratio && mono_jit_stats.enabled) {
-		mono_jit_stats.max_code_size_ratio = code_size_ratio;
-		g_free (mono_jit_stats.max_ratio_method);
-		mono_jit_stats.max_ratio_method = g_strdup_printf ("%s::%s)", method->klass->name, method->name);
-	}
-	mono_jit_stats.native_code_size += cfg->code_len;
 
 	if (MONO_METHOD_COMPILE_END_ENABLED ())
 		MONO_PROBE_METHOD_COMPILE_END (method, TRUE);
@@ -4006,14 +4000,26 @@ GTimer *mono_time_track_start ()
 	return g_timer_new ();
 }
 
-void mono_time_track_end (double *time, GTimer *timer)
+/*
+ * mono_time_track_end:
+ *
+ *   Uses UnlockedAddDouble () to update \param time.
+ */
+void mono_time_track_end (gdouble *time, GTimer *timer)
 {
 	g_timer_stop (timer);
-	*time += g_timer_elapsed (timer, NULL);
+	UnlockedAddDouble (time, g_timer_elapsed (timer, NULL));
 	g_timer_destroy (timer);
 }
 
-void mono_update_jit_stats (MonoCompile *cfg)
+/*
+ * mono_update_jit_stats:
+ *
+ *   Only call this function in locked environments to avoid data races.
+ */
+MONO_NO_SANITIZE_THREAD
+void
+mono_update_jit_stats (MonoCompile *cfg)
 {
 	mono_jit_stats.allocate_var += cfg->stat_allocate_var;
 	mono_jit_stats.locals_stack_size += cfg->stat_locals_stack_size;
@@ -4039,7 +4045,6 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 	MonoJitInfo *jinfo, *info;
 	MonoVTable *vtable;
 	MonoException *ex = NULL;
-	guint32 prof_options;
 	GTimer *jit_timer;
 	MonoMethod *prof_method, *shared;
 
@@ -4070,7 +4075,7 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 		if (!jinfo)
 			jinfo = mono_jit_info_table_find (mono_domain_get (), (char *)code);
 		if (jinfo)
-			mono_profiler_method_end_jit (method, jinfo, MONO_PROFILE_OK);
+			MONO_PROFILER_RAISE (jit_done, (method, jinfo));
 		return code;
 	} else if ((method->iflags & METHOD_IMPL_ATTRIBUTE_RUNTIME)) {
 		const char *name = method->name;
@@ -4165,9 +4170,9 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 
 	jit_timer = mono_time_track_start ();
 	cfg = mini_method_compile (method, opt, target_domain, JIT_FLAG_RUN_CCTORS, 0, -1);
-	double jit_time = 0.0;
+	gdouble jit_time = 0.0;
 	mono_time_track_end (&jit_time, jit_timer);
-	mono_jit_stats.jit_time += jit_time;
+	UnlockedAddDouble (&mono_jit_stats.jit_time, jit_time);
 
 	prof_method = cfg->method;
 
@@ -4211,8 +4216,7 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 	}
 
 	if (ex) {
-		if (cfg->prof_options & MONO_PROFILE_JIT_COMPILATION)
-			mono_profiler_method_end_jit (method, NULL, MONO_PROFILE_FAILED);
+		MONO_PROFILER_RAISE (jit_failed, (method));
 
 		mono_destroy_compile (cfg);
 		mono_error_set_exception_instance (error, ex);
@@ -4248,14 +4252,12 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 		code = cfg->native_code;
 
 		if (cfg->gshared && mono_method_is_generic_sharable (method, FALSE))
-			mono_stats.generics_shared_methods++;
+			InterlockedIncrement (&mono_stats.generics_shared_methods);
 		if (cfg->gsharedvt)
-			mono_stats.gsharedvt_methods++;
+			InterlockedIncrement (&mono_stats.gsharedvt_methods);
 	}
 
 	jinfo = cfg->jit_info;
-
-	prof_options = cfg->prof_options;
 
 	/*
 	 * Update global stats while holding a lock, instead of doing many
@@ -4321,19 +4323,16 @@ mono_jit_compile_method_inner (MonoMethod *method, MonoDomain *target_domain, in
 		return NULL;
 	}
 
-	if (prof_options & MONO_PROFILE_JIT_COMPILATION) {
-		if (method->wrapper_type == MONO_WRAPPER_MANAGED_TO_NATIVE) {
-			if (mono_marshal_method_from_wrapper (method)) {
-				/* Native func wrappers have no method */
-				/* The profiler doesn't know about wrappers, so pass the original icall method */
-				mono_profiler_method_end_jit (mono_marshal_method_from_wrapper (method), jinfo, MONO_PROFILE_OK);
-			}
-		}
-		mono_profiler_method_end_jit (method, jinfo, MONO_PROFILE_OK);
-		if (prof_method != method) {
-			mono_profiler_method_end_jit (prof_method, jinfo, MONO_PROFILE_OK);
+	if (method->wrapper_type == MONO_WRAPPER_MANAGED_TO_NATIVE) {
+		if (mono_marshal_method_from_wrapper (method)) {
+			/* Native func wrappers have no method */
+			/* The profiler doesn't know about wrappers, so pass the original icall method */
+			MONO_PROFILER_RAISE (jit_done, (mono_marshal_method_from_wrapper (method), jinfo));
 		}
 	}
+	MONO_PROFILER_RAISE (jit_done, (method, jinfo));
+	if (prof_method != method)
+		MONO_PROFILER_RAISE (jit_done, (prof_method, jinfo));
 
 	if (!(method->wrapper_type == MONO_WRAPPER_REMOTING_INVOKE ||
 		  method->wrapper_type == MONO_WRAPPER_REMOTING_INVOKE_WITH_CHECK ||

@@ -30,6 +30,7 @@
 #include <mono/metadata/tokentype.h>
 #include <mono/utils/mono-math.h>
 #include <mono/utils/mono-hwcap.h>
+#include <mono/utils/unlocked.h>
 
 #include "mini-sparc.h"
 #include "trace.h"
@@ -2359,7 +2360,7 @@ mono_arch_build_imt_trampoline (MonoVTable *vtable, MonoDomain *domain, MonoIMTC
 
 	mono_arch_flush_icache ((guint8*)start, (code - start) * 4);
 
-	mono_stats.imt_trampolines_size += (code - start) * 4;
+	UnlockedAdd (&mono_stats.imt_trampolines_size, (code - start) * 4);
 	g_assert (code - start <= size);
 
 	mono_tramp_info_register (mono_tramp_info_create (NULL, start, code - start, NULL, NULL), domain);
@@ -2406,10 +2407,6 @@ mono_arch_output_basic_block (MonoCompile *cfg, MonoBasicBlock *bb)
 		g_print ("Basic block %d starting at offset 0x%x\n", bb->block_num, bb->native_offset);
 
 	cpos = bb->max_offset;
-
-	if (cfg->prof_options & MONO_PROFILE_COVERAGE) {
-		NOT_IMPLEMENTED;
-	}
 
 	MONO_BB_FOR_EACH_INS (bb, ins) {
 		guint8* code_start;
@@ -4105,9 +4102,6 @@ mono_arch_emit_epilog (MonoCompile *cfg)
 	if (mono_jit_trace_calls != NULL)
 		max_epilog_size += 50;
 
-	if (cfg->prof_options & MONO_PROFILE_ENTER_LEAVE)
-		max_epilog_size += 50;
-
 	while (cfg->code_len + max_epilog_size > (cfg->code_size - 16)) {
 		cfg->code_size *= 2;
 		cfg->native_code = g_realloc (cfg->native_code, cfg->code_size);
@@ -4417,12 +4411,6 @@ mono_arch_get_argument_info (MonoMethodSignature *csig, int param_count, MonoJit
 
 	g_free (cinfo);
 
-	return 0;
-}
-
-gboolean
-mono_arch_print_tree (MonoInst *tree, int arity)
-{
 	return 0;
 }
 

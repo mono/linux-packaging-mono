@@ -28,10 +28,10 @@ namespace System.Collections
 #endif
     public class Stack : ICollection, ICloneable
     {
-        private Object[] _array;     // Storage for stack elements
+        private Object[] _array; // Storage for stack elements. Do not rename (binary serialization)
         [ContractPublicPropertyName("Count")]
-        private int _size;           // Number of items in the stack.
-        private int _version;        // Used to keep enumerator in sync w/ collection.
+        private int _size; // Number of items in the stack. Do not rename (binary serialization)
+        private int _version; // Used to keep enumerator in sync w/ collection. Do not rename (binary serialization)
         [NonSerialized]
         private Object _syncRoot;
 

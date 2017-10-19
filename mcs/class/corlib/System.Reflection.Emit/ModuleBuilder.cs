@@ -159,8 +159,8 @@ namespace System.Reflection.Emit {
 			if (data == null)
 				throw new ArgumentNullException ("data");
 
-			FieldBuilder fb = DefineUninitializedData (name, data.Length, 
-													   attributes | FieldAttributes.HasFieldRVA);
+			var maskedAttributes = attributes & ~FieldAttributes.ReservedMask;
+			FieldBuilder fb = DefineDataImpl (name, data.Length, maskedAttributes | FieldAttributes.HasFieldRVA);
 			fb.SetRVAData (data);
 
 			return fb;
@@ -168,12 +168,19 @@ namespace System.Reflection.Emit {
 
 		public FieldBuilder DefineUninitializedData (string name, int size, FieldAttributes attributes)
 		{
+			return DefineDataImpl (name, size, attributes & ~FieldAttributes.ReservedMask);
+		}
+
+		private FieldBuilder DefineDataImpl (string name, int size, FieldAttributes attributes)
+		{
 			if (name == null)
 				throw new ArgumentNullException ("name");
+			if (name == String.Empty)
+				throw new ArgumentException ("name cannot be empty", "name");
 			if (global_type_created != null)
 				throw new InvalidOperationException ("global fields already created");
-			if ((size <= 0) || (size > 0x3f0000))
-				throw new ArgumentException ("size", "Data size must be > 0 and < 0x3f0000");
+			if ((size <= 0) || (size >= 0x3f0000))
+				throw new ArgumentException ("Data size must be > 0 and < 0x3f0000", null as string);
 
 			CreateGlobalType ();
 
@@ -709,8 +716,7 @@ namespace System.Reflection.Emit {
 		static int typespec_tokengen =  0x1bffffff;
 		static int memberref_tokengen =  0x0affffff;
 		static int methoddef_tokengen =  0x06ffffff;
-		Dictionary<MemberInfo, int> inst_tokens = new Dictionary<MemberInfo, int> ();
-		Dictionary<MemberInfo, int> inst_tokens_open = new Dictionary<MemberInfo, int> ();
+		Dictionary<MemberInfo, int> inst_tokens, inst_tokens_open;
 
 		//
 		// Assign a pseudo token to the various TypeBuilderInst objects, so the runtime
@@ -720,16 +726,20 @@ namespace System.Reflection.Emit {
 		// still encounter these objects, it will resolve them by calling their
 		// RuntimeResolve () methods.
 		//
-		int GetPseudoToken (MemberInfo member, bool create_open_instance) {
+		int GetPseudoToken (MemberInfo member, bool create_open_instance)
+		{
 			int token;
-
-			if (create_open_instance) {
-				if (inst_tokens_open.TryGetValue (member, out token))
-					return token;
-			} else {
-				if (inst_tokens.TryGetValue (member, out token))
-					return token;
+			var dict = create_open_instance ? inst_tokens_open : inst_tokens;
+			if (dict == null) {
+				dict = new Dictionary<MemberInfo, int> (ReferenceEqualityComparer<MemberInfo>.Instance);
+				if (create_open_instance)
+					inst_tokens_open = dict;
+				else
+					inst_tokens = dict;
+			} else if (dict.TryGetValue (member, out token)) {
+				return token;
 			}
+
 			// Count backwards to avoid collisions with the tokens
 			// allocated by the runtime
 			if (member is TypeBuilderInstantiation || member is SymbolType)
@@ -751,10 +761,7 @@ namespace System.Reflection.Emit {
 					token = typeref_tokengen --;
 			} else if (member is EnumBuilder) {
 				token = GetPseudoToken ((member as  EnumBuilder).GetTypeBuilder(), create_open_instance);
-				if (create_open_instance)
-					inst_tokens_open[member] = token;
-				else
-					inst_tokens[member] = token;
+				dict[member] = token;
 				// n.b. don't register with the runtime, the TypeBuilder already did it.
 				return token;
 			} else if (member is ConstructorBuilder) {
@@ -772,10 +779,8 @@ namespace System.Reflection.Emit {
 				token = typespec_tokengen --;
 			} else
 				throw new NotImplementedException ();
-			if (create_open_instance)
-				inst_tokens_open [member] = token;
-			else
-				inst_tokens [member] = token;
+
+			dict [member] = token;
 			RegisterToken (member, token);
 			return token;
 		}
@@ -904,11 +909,14 @@ namespace System.Reflection.Emit {
 		//
 		// Fixup the pseudo tokens assigned to the various SRE objects
 		//
-		void FixupTokens () {
+		void FixupTokens ()
+		{
 			var token_map = new Dictionary<int, int> ();
 			var member_map = new Dictionary<int, MemberInfo> ();
-			FixupTokens (token_map, member_map, inst_tokens, false);
-			FixupTokens (token_map, member_map, inst_tokens_open, true);
+			if (inst_tokens != null)
+				FixupTokens (token_map, member_map, inst_tokens, false);
+			if (inst_tokens_open != null)
+				FixupTokens (token_map, member_map, inst_tokens_open, true);
 
 			// Replace the tokens in the IL stream
 			if (types != null) {

@@ -5,16 +5,15 @@ SUBDIRS =
 LIBRARY = System.Drawing.dll
 
 LIB_REFS = System
+KEYFILE = ../msfinal.pub
 LIB_MCS_FLAGS = /unsafe \
 	-resource:Assembly/Mono.ico,Mono.ico -resource:Assembly/Information.ico,Information.ico \
 	-resource:Assembly/Error.ico,Error.ico -resource:Assembly/Warning.ico,Warning.ico \
 	-resource:Assembly/Question.ico,Question.ico -resource:Assembly/Shield.ico,Shield.ico
 
-ifeq (winaot, $(PROFILE))
-LIB_MCS_FLAGS += /keyfile:../msfinal.pub
-else ifeq (orbis, $(PROFILE))
-LIB_MCS_FLAGS += /keyfile:../msfinal.pub
-else
+RESX_RESOURCE_STRING = ../../../external/corefx/src/System.Drawing.Common/src/Resources/Strings.resx
+
+ifndef MOBILE_PROFILE
 LIB_MCS_FLAGS += -d:FEATURE_TYPECONVERTER,SUPPORTS_WINDOWS_COLORS
 endif
 

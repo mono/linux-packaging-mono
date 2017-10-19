@@ -249,6 +249,10 @@ namespace NUnit.Framework.Internal
             // Add Standard stuff
             decorators.Add(new SetUpTearDownDecorator());
 
+#if MONO
+            decorators.Add(new FlakyTestRetriesDecorator());
+#endif
+
             // Add Decorators supplied by attributes and parameter sets
             foreach (ICommandDecorator decorator in CustomDecorators)
                 decorators.Add(decorator);

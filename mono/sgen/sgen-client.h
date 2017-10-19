@@ -122,7 +122,7 @@ void sgen_client_pinned_los_object (GCObject *obj);
 /*
  * Called for every degraded allocation.  No action is necessary.
  */
-void sgen_client_degraded_allocation (size_t size);
+void sgen_client_degraded_allocation (void);
 
 /*
  * Called whenever the amount of memory allocated for the managed heap changes.  No action
@@ -153,11 +153,11 @@ void sgen_client_pre_collection_checks (void);
  * Must set the thread's thread info to `info`.  If the thread's small ID was not already
  * initialized in `sgen_client_init()` (for the main thread, usually), it must be done here.
  *
- * `stack_bottom_fallback` is the value passed through via `sgen_thread_register()`.
+ * `stack_bottom_fallback` is the value passed through via `sgen_thread_attach()`.
  */
-void sgen_client_thread_register (SgenThreadInfo* info, void *stack_bottom_fallback);
+void sgen_client_thread_attach (SgenThreadInfo* info);
 
-void sgen_client_thread_unregister (SgenThreadInfo *p);
+void sgen_client_thread_detach_with_lock (SgenThreadInfo *p);
 
 /*
  * Called on each worker thread when it starts up.  Must initialize the thread's small ID.

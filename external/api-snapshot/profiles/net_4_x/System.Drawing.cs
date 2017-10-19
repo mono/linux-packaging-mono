@@ -1886,9 +1886,8 @@ namespace System.Drawing
         Point = 3,
         World = 0,
     }
-    public sealed partial class SystemBrushes
+    public static partial class SystemBrushes
     {
-        internal SystemBrushes() { }
         public static System.Drawing.Brush ActiveBorder { get { throw null; } }
         public static System.Drawing.Brush ActiveCaption { get { throw null; } }
         public static System.Drawing.Brush ActiveCaptionText { get { throw null; } }
@@ -2033,10 +2032,8 @@ namespace System.Drawing
         public TextureBrush(System.Drawing.Image image, System.Drawing.Drawing2D.WrapMode wrapMode, System.Drawing.Rectangle dstRect) { }
         public TextureBrush(System.Drawing.Image image, System.Drawing.Drawing2D.WrapMode wrapMode, System.Drawing.RectangleF dstRect) { }
         public TextureBrush(System.Drawing.Image image, System.Drawing.Rectangle dstRect) { }
-        [System.MonoLimitationAttribute("ImageAttributes are ignored when using libgdiplus")]
         public TextureBrush(System.Drawing.Image image, System.Drawing.Rectangle dstRect, System.Drawing.Imaging.ImageAttributes imageAttr) { }
         public TextureBrush(System.Drawing.Image image, System.Drawing.RectangleF dstRect) { }
-        [System.MonoLimitationAttribute("ImageAttributes are ignored when using libgdiplus")]
         public TextureBrush(System.Drawing.Image image, System.Drawing.RectangleF dstRect, System.Drawing.Imaging.ImageAttributes imageAttr) { }
         public System.Drawing.Image Image { get { throw null; } }
         public System.Drawing.Drawing2D.Matrix Transform { get { throw null; } set { } }
@@ -2131,6 +2128,8 @@ namespace System.Drawing.Design
         bool GetToolSupported(System.Drawing.Design.ToolboxItem tool);
         void ToolPicked(System.Drawing.Design.ToolboxItem tool);
     }
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class PaintValueEventArgs : System.EventArgs
     {
         public PaintValueEventArgs(System.ComponentModel.ITypeDescriptorContext context, object value, System.Drawing.Graphics graphics, System.Drawing.Rectangle bounds) { }
@@ -2140,6 +2139,8 @@ namespace System.Drawing.Design
         public object Value { get { throw null; } }
     }
     public delegate void PropertyValueUIHandler(System.ComponentModel.ITypeDescriptorContext context, System.ComponentModel.PropertyDescriptor propDesc, System.Collections.ArrayList valueUIItemList);
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class PropertyValueUIItem
     {
         public PropertyValueUIItem(System.Drawing.Image uiItemImage, System.Drawing.Design.PropertyValueUIItemInvokeHandler handler, string tooltip) { }
@@ -2149,14 +2150,16 @@ namespace System.Drawing.Design
         public virtual void Reset() { }
     }
     public delegate void PropertyValueUIItemInvokeHandler(System.ComponentModel.ITypeDescriptorContext context, System.ComponentModel.PropertyDescriptor descriptor, System.Drawing.Design.PropertyValueUIItem invokedItem);
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ToolboxComponentsCreatedEventArgs : System.EventArgs
     {
         public ToolboxComponentsCreatedEventArgs(System.ComponentModel.IComponent[] components) { }
         public System.ComponentModel.IComponent[] Components { get { throw null; } }
     }
     public delegate void ToolboxComponentsCreatedEventHandler(object sender, System.Drawing.Design.ToolboxComponentsCreatedEventArgs e);
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted=true)]
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class ToolboxComponentsCreatingEventArgs : System.EventArgs
     {
         public ToolboxComponentsCreatingEventArgs(System.ComponentModel.Design.IDesignerHost host) { }
@@ -2208,7 +2211,7 @@ namespace System.Drawing.Design
         protected void ValidatePropertyType(string propertyName, object value, System.Type expectedType, bool allowNull) { }
         protected virtual object ValidatePropertyValue(string propertyName, object value) { throw null; }
     }
-    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted=true)]
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public sealed partial class ToolboxItemCollection : System.Collections.ReadOnlyCollectionBase
     {
         public ToolboxItemCollection(System.Drawing.Design.ToolboxItemCollection value) { }
@@ -2219,6 +2222,8 @@ namespace System.Drawing.Design
         public int IndexOf(System.Drawing.Design.ToolboxItem value) { throw null; }
     }
     public delegate System.Drawing.Design.ToolboxItem ToolboxItemCreatorCallback(object serializedObject, string format);
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Name="FullTrust")]
+    [System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Name="FullTrust")]
     public partial class UITypeEditor
     {
         public UITypeEditor() { }
@@ -2254,15 +2259,15 @@ namespace System.Drawing.Drawing2D
     {
         public Blend() { }
         public Blend(int count) { }
-        public float[] Factors { get { throw null; } set { } }
-        public float[] Positions { get { throw null; } set { } }
+        public float[] Factors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float[] Positions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     public sealed partial class ColorBlend
     {
         public ColorBlend() { }
         public ColorBlend(int count) { }
-        public System.Drawing.Color[] Colors { get { throw null; } set { } }
-        public float[] Positions { get { throw null; } set { } }
+        public System.Drawing.Color[] Colors { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public float[] Positions { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     public enum CombineMode
     {
@@ -2654,8 +2659,8 @@ namespace System.Drawing.Drawing2D
     public sealed partial class PathData
     {
         public PathData() { }
-        public System.Drawing.PointF[] Points { get { throw null; } set { } }
-        public byte[] Types { get { throw null; } set { } }
+        public System.Drawing.PointF[] Points { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public byte[] Types { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     [System.MonoTODOAttribute("libgdiplus/cairo doesn't support path gradients - unless it can be mapped to a radial gradient")]
     public sealed partial class PathGradientBrush : System.Drawing.Brush
@@ -2735,7 +2740,7 @@ namespace System.Drawing.Drawing2D
     public sealed partial class RegionData
     {
         internal RegionData() { }
-        public byte[] Data { get { throw null; } set { } }
+        public byte[] Data { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
     }
     public enum SmoothingMode
     {
@@ -3138,7 +3143,9 @@ namespace System.Drawing.Imaging
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, byte[] value, bool undefined) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, short value) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, short[] value) { }
+        public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int numberValues, System.Drawing.Imaging.EncoderParameterValueType type, System.IntPtr value) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int numerator, int denominator) { }
+        [System.ObsoleteAttribute("This constructor has been deprecated. Use EncoderParameter(Encoder encoder, int numberValues, EncoderParameterValueType type, IntPtr value) instead.  http://go.microsoft.com/fwlink/?linkid=14202")]
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int NumberOfValues, int Type, int Value) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int numerator1, int demoninator1, int numerator2, int demoninator2) { }
         public EncoderParameter(System.Drawing.Imaging.Encoder encoder, int[] numerator, int[] denominator) { }
@@ -3235,7 +3242,6 @@ namespace System.Drawing.Imaging
         public object Clone() { throw null; }
         public void Dispose() { }
         ~ImageAttributes() { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void GetAdjustedPalette(System.Drawing.Imaging.ColorPalette palette, System.Drawing.Imaging.ColorAdjustType type) { }
         public void SetBrushRemapTable(System.Drawing.Imaging.ColorMap[] map) { }
         public void SetColorKey(System.Drawing.Color colorLow, System.Drawing.Color colorHigh) { }
@@ -3250,19 +3256,13 @@ namespace System.Drawing.Imaging
         public void SetGamma(float gamma, System.Drawing.Imaging.ColorAdjustType type) { }
         public void SetNoOp() { }
         public void SetNoOp(System.Drawing.Imaging.ColorAdjustType type) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetOutputChannel(System.Drawing.Imaging.ColorChannelFlag flags) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetOutputChannel(System.Drawing.Imaging.ColorChannelFlag flags, System.Drawing.Imaging.ColorAdjustType type) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetOutputChannelColorProfile(string colorProfileFilename) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetOutputChannelColorProfile(string colorProfileFilename, System.Drawing.Imaging.ColorAdjustType type) { }
         public void SetRemapTable(System.Drawing.Imaging.ColorMap[] map) { }
         public void SetRemapTable(System.Drawing.Imaging.ColorMap[] map, System.Drawing.Imaging.ColorAdjustType type) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetThreshold(float threshold) { }
-        [System.MonoTODOAttribute("Not supported by libgdiplus")]
         public void SetThreshold(float threshold, System.Drawing.Imaging.ColorAdjustType type) { }
         public void SetWrapMode(System.Drawing.Drawing2D.WrapMode mode) { }
         public void SetWrapMode(System.Drawing.Drawing2D.WrapMode mode, System.Drawing.Color color) { }
@@ -3499,7 +3499,7 @@ namespace System.Drawing.Imaging
         public short Type { get { throw null; } set { } }
         public byte[] Value { get { throw null; } set { } }
     }
-    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Pack=2)]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public sealed partial class WmfPlaceableFileHeader
     {
         public WmfPlaceableFileHeader() { }
@@ -3516,7 +3516,6 @@ namespace System.Drawing.Imaging
 }
 namespace System.Drawing.Printing
 {
-    [System.SerializableAttribute]
     public enum Duplex
     {
         Default = -1,
@@ -3529,6 +3528,7 @@ namespace System.Drawing.Printing
     {
         public InvalidPrinterException(System.Drawing.Printing.PrinterSettings settings) { }
         protected InvalidPrinterException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+        [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter=true)]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
     }
     [System.ComponentModel.TypeConverterAttribute(typeof(System.Drawing.Printing.MarginsConverter))]
@@ -3581,7 +3581,6 @@ namespace System.Drawing.Printing
         public void SetHdevmode(System.IntPtr hdevmode) { }
         public override string ToString() { throw null; }
     }
-    [System.SerializableAttribute]
     public enum PaperKind
     {
         A2 = 66,
@@ -3723,7 +3722,6 @@ namespace System.Drawing.Printing
         public string SourceName { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
-    [System.SerializableAttribute]
     public enum PaperSourceKind
     {
         AutomaticFeed = 7,
@@ -3816,7 +3814,6 @@ namespace System.Drawing.Printing
         public int Y { get { throw null; } set { } }
         public override string ToString() { throw null; }
     }
-    [System.SerializableAttribute]
     public enum PrinterResolutionKind
     {
         Custom = 0,
@@ -4000,7 +3997,6 @@ namespace System.Drawing.Printing
         public System.Drawing.Printing.PageSettings PageSettings { get { throw null; } }
     }
     public delegate void PrintPageEventHandler(object sender, System.Drawing.Printing.PrintPageEventArgs e);
-    [System.SerializableAttribute]
     public enum PrintRange
     {
         AllPages = 0,

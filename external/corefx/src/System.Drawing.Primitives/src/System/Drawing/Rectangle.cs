@@ -15,7 +15,7 @@ namespace System.Drawing
     /// </summary>
     [Serializable]
 #if !MONO
-    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Drawing, Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a")]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
 #endif
     public struct Rectangle : IEquatable<Rectangle>
     {

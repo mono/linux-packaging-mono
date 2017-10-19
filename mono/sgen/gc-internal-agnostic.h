@@ -63,11 +63,11 @@ typedef enum {
 #define MONO_GC_HANDLE(slot, type) (((slot) << MONO_GC_HANDLE_TYPE_SHIFT) | (((type) & MONO_GC_HANDLE_TYPE_MASK) + 1))
 
 typedef struct {
-	guint minor_gc_count;
-	guint major_gc_count;
-	guint64 minor_gc_time;
-	guint64 major_gc_time;
-	guint64 major_gc_time_concurrent;
+	gint32 minor_gc_count;
+	gint32 major_gc_count;
+	gint64 minor_gc_time;
+	gint64 major_gc_time;
+	gint64 major_gc_time_concurrent;
 } GCStats;
 
 extern GCStats gc_stats;
@@ -79,12 +79,6 @@ typedef SgenDescriptor MonoGCDescriptor;
 typedef void* MonoGCDescriptor;
 #define MONO_GC_DESCRIPTOR_NULL NULL
 #endif
-
-/*
- * Try to register a foreign thread with the GC, if we fail or the backend
- * can't cope with this concept - we return FALSE.
- */
-extern gboolean mono_gc_register_thread (void *baseptr);
 
 gboolean mono_gc_parse_environment_string_extract_number (const char *str, size_t *out);
 

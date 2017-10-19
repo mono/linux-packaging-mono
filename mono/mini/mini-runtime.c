@@ -39,7 +39,6 @@
 #include <mono/metadata/threads.h>
 #include <mono/metadata/appdomain.h>
 #include <mono/metadata/debug-helpers.h>
-#include "mono/metadata/profiler.h"
 #include <mono/metadata/profiler-private.h>
 #include <mono/metadata/mono-config.h>
 #include <mono/metadata/environment.h>
@@ -65,6 +64,7 @@
 #include <mono/utils/mono-threads.h>
 #include <mono/utils/mono-threads-coop.h>
 #include <mono/utils/checked-build.h>
+#include <mono/utils/mono-compiler.h>
 #include <mono/utils/mono-proclib.h>
 #include <mono/metadata/w32handle.h>
 #include <mono/metadata/threadpool.h>
@@ -131,15 +131,11 @@ int valgrind_register;
 #endif
 GList* mono_aot_paths;
 
-static gboolean mini_enable_profiler = FALSE;
-static char* mini_profiler_options = NULL;
+static GPtrArray *profile_options;
 
 static GSList *tramp_infos;
 
 static void register_icalls (void);
-
-static gboolean mini_profiler_enabled (void) { return mini_enable_profiler; }
-static const char* mini_profiler_get_options (void) {  return mini_profiler_options;  }
 
 gboolean
 mono_running_on_valgrind (void)
@@ -841,7 +837,7 @@ mono_jit_thread_attach (MonoDomain *domain)
 	MonoDomain *orig;
 	gboolean attached;
 
-	g_assert (!mono_threads_is_coop_enabled ());
+	g_assert (!mono_threads_is_blocking_transition_enabled ());
 
 	if (!domain) {
 		/* Happens when called from AOTed code which is only used in the root domain. */
@@ -874,7 +870,7 @@ mono_jit_thread_attach (MonoDomain *domain)
 void
 mono_jit_set_domain (MonoDomain *domain)
 {
-	g_assert (!mono_threads_is_coop_enabled ());
+	g_assert (!mono_threads_is_blocking_transition_enabled ());
 
 	if (domain)
 		mono_domain_set (domain, TRUE);
@@ -894,7 +890,9 @@ mono_thread_abort (MonoObject *obj)
 	g_free (jit_tls);*/
 
 	if ((mono_runtime_unhandled_exception_policy_get () == MONO_UNHANDLED_POLICY_LEGACY) ||
-			(obj->vtable->klass == mono_defaults.threadabortexception_class)) {
+			(obj->vtable->klass == mono_defaults.threadabortexception_class) ||
+			((obj->vtable->klass) == mono_class_get_appdomain_unloaded_exception_class () &&
+			mono_thread_info_current ()->runtime_thread)) {
 		mono_thread_exit ();
 	} else {
 		mono_invoke_unhandled_exception_hook (obj);
@@ -1218,6 +1216,7 @@ mono_patch_info_hash (gconstpointer data)
 	case MONO_PATCH_INFO_GC_SAFE_POINT_FLAG:
 	case MONO_PATCH_INFO_AOT_MODULE:
 	case MONO_PATCH_INFO_JIT_THREAD_ATTACH:
+	case MONO_PATCH_INFO_PROFILER_ALLOCATION_COUNT:
 		return (ji->type << 8);
 	case MONO_PATCH_INFO_CASTCLASS_CACHE:
 		return (ji->type << 8) | (ji->data.index);
@@ -1238,6 +1237,7 @@ mono_patch_info_hash (gconstpointer data)
 		return (ji->type << 8) | (gssize)info->klass | (gssize)info->method;
 	}
 	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL:
 		return (ji->type << 8) | g_str_hash (ji->data.target);
 	case MONO_PATCH_INFO_GSHAREDVT_IN_WRAPPER:
 		return (ji->type << 8) | mono_signature_hash (ji->data.sig);
@@ -1302,6 +1302,7 @@ mono_patch_info_equal (gconstpointer ka, gconstpointer kb)
 	case MONO_PATCH_INFO_VIRT_METHOD:
 		return ji1->data.virt_method->klass == ji2->data.virt_method->klass && ji1->data.virt_method->method == ji2->data.virt_method->method;
 	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL:
 		if (ji1->data.target == ji2->data.target)
 			return 1;
 		return strcmp (ji1->data.target, ji2->data.target) == 0 ? 1 : 0;
@@ -1354,7 +1355,8 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		target = mono_icall_get_wrapper (mi);
 		break;
 	}
-	case MONO_PATCH_INFO_JIT_ICALL_ADDR: {
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL: {
 		MonoJitICallInfo *mi = mono_find_jit_icall_by_name (patch_info->data.name);
 		if (!mi) {
 			g_warning ("unknown MONO_PATCH_INFO_JIT_ICALL_ADDR %s", patch_info->data.name);
@@ -1645,6 +1647,10 @@ mono_resolve_patch_target (MonoMethod *method, MonoDomain *domain, guint8 *code,
 		target = mi->func;
 		break;
 	}
+	case MONO_PATCH_INFO_PROFILER_ALLOCATION_COUNT: {
+		target = (gpointer) &mono_profiler_state.gc_allocation_count;
+		break;
+	}
 	default:
 		g_assert_not_reached ();
 	}
@@ -1730,12 +1736,6 @@ lookup_method (MonoDomain *domain, MonoMethod *method)
 	}
 
 	return ji;
-}
-
-MonoJitInfo *
-mono_get_jit_info_from_method (MonoDomain *domain, MonoMethod *method)
-{
-	return lookup_method (domain, method);
 }
 
 MonoClass*
@@ -2051,7 +2051,7 @@ lookup_start:
 		if (! ((domain != target_domain) && !info->domain_neutral)) {
 			MonoVTable *vtable;
 
-			mono_jit_stats.methods_lookups++;
+			InterlockedIncrement (&mono_jit_stats.methods_lookups);
 			vtable = mono_class_vtable_full (domain, method->klass, error);
 			if (!is_ok (error))
 				return NULL;
@@ -2082,7 +2082,7 @@ lookup_start:
 		if ((code = mono_aot_get_method_checked (domain, method, error))) {
 			MonoVTable *vtable;
 
-			if (mono_runtime_is_critical_method (method) || mono_gc_is_critical_method (method)) {
+			if (mono_gc_is_critical_method (method)) {
 				/*
 				 * The suspend code needs to be able to lookup these methods by ip in async context,
 				 * so preload their jit info.
@@ -2296,7 +2296,7 @@ mono_jit_find_compiled_method_with_jit_info (MonoDomain *domain, MonoMethod *met
 	if (info) {
 		/* We can't use a domain specific method in another domain */
 		if (! ((domain != target_domain) && !info->domain_neutral)) {
-			mono_jit_stats.methods_lookups++;
+			InterlockedIncrement (&mono_jit_stats.methods_lookups);
 			if (ji)
 				*ji = info;
 			return info->code_start;
@@ -2431,8 +2431,11 @@ create_runtime_invoke_info (MonoDomain *domain, MonoMethod *method, gpointer com
 		if (mono_class_is_contextbound (method->klass) || !info->compiled_method)
 			supported = FALSE;
 
-		if (supported)
+		if (supported) {
 			info->dyn_call_info = mono_arch_dyn_call_prepare (sig);
+			if (debug_options.dyn_runtime_invoke)
+				g_assert (info->dyn_call_info);
+		}
 	}
 #endif
 
@@ -2624,6 +2627,8 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 #endif
 
 	error_init (error);
+	if (exc)
+		*exc = NULL;
 
 	if (obj == NULL && !(method->flags & METHOD_ATTRIBUTE_STATIC) && !method->string_ctor && (method->wrapper_type == 0)) {
 		g_warning ("Ignoring invocation of an instance method on a NULL instance.\n");
@@ -2732,8 +2737,8 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 		MonoMethodSignature *sig = mono_method_signature (method);
 		gpointer *args;
 		static RuntimeInvokeDynamicFunction dyn_runtime_invoke;
-		int i, pindex;
-		guint8 buf [512];
+		int i, pindex, buf_size;
+		guint8 *buf;
 		guint8 retval [256];
 
 		if (!dyn_runtime_invoke) {
@@ -2762,7 +2767,11 @@ mono_jit_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObjec
 
 		//printf ("M: %s\n", mono_method_full_name (method, TRUE));
 
-		mono_arch_start_dyn_call (info->dyn_call_info, (gpointer**)args, retval, buf, sizeof (buf));
+		buf_size = mono_arch_dyn_call_get_buf_size (info->dyn_call_info);
+		buf = g_alloca (buf_size);
+		g_assert (buf);
+
+		mono_arch_start_dyn_call (info->dyn_call_info, (gpointer**)args, retval, buf);
 
 		dyn_runtime_invoke (buf, exc, info->compiled_method);
 		mono_arch_finish_dyn_call (info->dyn_call_info, buf);
@@ -3302,12 +3311,13 @@ mini_get_delegate_arg (MonoMethod *method, gpointer method_ptr)
 void
 mini_init_delegate (MonoDelegate *del)
 {
-	if (mono_llvm_only)
-		del->extra_arg = mini_get_delegate_arg (del->method, del->method_ptr);
 #ifdef ENABLE_INTERPRETER
 	if (mono_use_interpreter)
 		mono_interp_init_delegate (del);
+	else
 #endif
+	if (mono_llvm_only)
+		del->extra_arg = mini_get_delegate_arg (del->method, del->method_ptr);
 }
 
 char*
@@ -3757,10 +3767,12 @@ mini_llvm_init (void)
 }
 
 void
-mini_profiler_enable_with_options (const char* profile_options)
+mini_add_profiler_argument (const char *desc)
 {
-	mini_enable_profiler = TRUE;
-	mini_profiler_options = g_strdup (profile_options);
+	if (!profile_options)
+		profile_options = g_ptr_array_new ();
+
+	g_ptr_array_add (profile_options, (gpointer) desc);
 }
 
 MonoDomain *
@@ -3853,7 +3865,7 @@ mini_init (const char *filename, const char *runtime_version)
 	mono_w32handle_init ();
 #endif
 
-	mono_threads_runtime_init (&ticallbacks);
+	mono_thread_info_runtime_init (&ticallbacks);
 
 	if (g_hasenv ("MONO_DEBUG")) {
 		mini_parse_debug_options ();
@@ -3918,7 +3930,7 @@ mini_init (const char *filename, const char *runtime_version)
 	mono_set_generic_sharing_supported (TRUE);
 #endif
 
-	mono_threads_signals_init ();
+	mono_thread_info_signals_init ();
 
 #ifndef MONO_CROSS_COMPILE
 	mono_runtime_install_handlers ();
@@ -3933,10 +3945,18 @@ mini_init (const char *filename, const char *runtime_version)
 	mono_install_get_class_from_name (mono_aot_get_class_from_name);
 	mono_install_jit_info_find_in_aot (mono_aot_find_jit_info);
 
-	if (mini_profiler_enabled ()) {
-		mono_profiler_load (mini_profiler_get_options ());
-		mono_profiler_thread_name (MONO_NATIVE_THREAD_ID_TO_UINT (mono_native_thread_id_get ()), "Main");
-	}
+	mono_profiler_state.context_enable = mini_profiler_context_enable;
+	mono_profiler_state.context_get_this = mini_profiler_context_get_this;
+	mono_profiler_state.context_get_argument = mini_profiler_context_get_argument;
+	mono_profiler_state.context_get_local = mini_profiler_context_get_local;
+	mono_profiler_state.context_get_result = mini_profiler_context_get_result;
+	mono_profiler_state.context_free_buffer = mini_profiler_context_free_buffer;
+
+	if (profile_options)
+		for (guint i = 0; i < profile_options->len; i++)
+			mono_profiler_load ((const char *) g_ptr_array_index (profile_options, i));
+
+	mono_profiler_started ();
 
 	if (debug_options.collect_pagefault_stats)
 		mono_aot_set_make_unreadable (TRUE);
@@ -4013,12 +4033,13 @@ mini_init (const char *filename, const char *runtime_version)
 	mono_runtime_init_checked (domain, mono_thread_start_cb, mono_thread_attach_cb, &error);
 	mono_error_assert_ok (&error);
 	mono_thread_attach (domain);
+	MONO_PROFILER_RAISE (thread_name, (MONO_NATIVE_THREAD_ID_TO_UINT (mono_native_thread_id_get ()), "Main"));
 #endif
 
-	if (mono_profiler_get_events () & MONO_PROFILE_STATISTICAL)
+	if (mono_profiler_sampling_enabled ())
 		mono_runtime_setup_stat_profiler ();
 
-	mono_profiler_runtime_initialized ();
+	MONO_PROFILER_RAISE (runtime_initialized, ());
 
 	MONO_VES_INIT_END ();
 
@@ -4037,7 +4058,7 @@ register_icalls (void)
 	mono_add_internal_call ("Mono.Runtime::mono_runtime_cleanup_handlers",
 				mono_runtime_cleanup_handlers);
 
-#if defined(PLATFORM_ANDROID) || defined(TARGET_ANDROID)
+#if defined(HOST_ANDROID) || defined(TARGET_ANDROID)
 	mono_add_internal_call ("System.Diagnostics.Debugger::Mono_UnhandledException_internal",
 				mono_debugger_agent_unhandled_exception);
 #endif
@@ -4049,8 +4070,9 @@ register_icalls (void)
 	 * the wrapper would call the icall which would call the wrapper and
 	 * so on.
 	 */
-	register_icall (mono_profiler_method_enter, "mono_profiler_method_enter", "void ptr", TRUE);
-	register_icall (mono_profiler_method_leave, "mono_profiler_method_leave", "void ptr", TRUE);
+	register_icall (mono_profiler_raise_method_enter, "mono_profiler_raise_method_enter", "void ptr ptr", TRUE);
+	register_icall (mono_profiler_raise_method_leave, "mono_profiler_raise_method_leave", "void ptr ptr", TRUE);
+	register_icall (mono_profiler_raise_method_tail_call, "mono_profiler_raise_method_tail_call", "void ptr ptr", TRUE);
 
 	register_icall (mono_trace_enter_method, "mono_trace_enter_method", NULL, TRUE);
 	register_icall (mono_trace_leave_method, "mono_trace_leave_method", NULL, TRUE);
@@ -4077,6 +4099,7 @@ register_icalls (void)
 	register_dyn_icall (mono_get_rethrow_exception (), "mono_arch_rethrow_exception", "void object", TRUE);
 	register_dyn_icall (mono_get_throw_corlib_exception (), "mono_arch_throw_corlib_exception", "void ptr", TRUE);
 	register_icall (mono_thread_get_undeniable_exception, "mono_thread_get_undeniable_exception", "object", FALSE);
+	register_icall (mono_thread_self_abort, "mono_thread_self_abort", "void", FALSE);
 	register_icall (mono_thread_interruption_checkpoint, "mono_thread_interruption_checkpoint", "object", FALSE);
 	register_icall (mono_thread_force_interruption_checkpoint_noraise, "mono_thread_force_interruption_checkpoint_noraise", "object", FALSE);
 
@@ -4295,46 +4318,51 @@ register_icalls (void)
 
 MonoJitStats mono_jit_stats = {0};
 
+/**
+ * Counters of mono_stats and mono_jit_stats can be read without locking here.
+ * MONO_NO_SANITIZE_THREAD tells Clang's ThreadSanitizer to hide all reports of these (known) races.
+ */
+MONO_NO_SANITIZE_THREAD
 static void
 print_jit_stats (void)
 {
 	if (mono_jit_stats.enabled) {
 		g_print ("Mono Jit statistics\n");
-		g_print ("Max code size ratio:    %.2f (%s)\n", mono_jit_stats.max_code_size_ratio/100.0,
+		g_print ("Max code size ratio:    %.2f (%s)\n", mono_jit_stats.max_code_size_ratio / 100.0,
 				 mono_jit_stats.max_ratio_method);
-		g_print ("Biggest method:         %ld (%s)\n", mono_jit_stats.biggest_method_size,
+		g_print ("Biggest method:         %" G_GINT32_FORMAT " (%s)\n", mono_jit_stats.biggest_method_size,
 				 mono_jit_stats.biggest_method);
 
-		g_print ("Delegates created:      %ld\n", mono_stats.delegate_creations);
-		g_print ("Initialized classes:    %ld\n", mono_stats.initialized_class_count);
-		g_print ("Used classes:           %ld\n", mono_stats.used_class_count);
-		g_print ("Generic vtables:        %ld\n", mono_stats.generic_vtable_count);
-		g_print ("Methods:                %ld\n", mono_stats.method_count);
-		g_print ("Static data size:       %ld\n", mono_stats.class_static_data_size);
-		g_print ("VTable data size:       %ld\n", mono_stats.class_vtable_size);
+		g_print ("Delegates created:      %" G_GINT32_FORMAT "\n", mono_stats.delegate_creations);
+		g_print ("Initialized classes:    %" G_GINT32_FORMAT "\n", mono_stats.initialized_class_count);
+		g_print ("Used classes:           %" G_GINT32_FORMAT "\n", mono_stats.used_class_count);
+		g_print ("Generic vtables:        %" G_GINT32_FORMAT "\n", mono_stats.generic_vtable_count);
+		g_print ("Methods:                %" G_GINT32_FORMAT "\n", mono_stats.method_count);
+		g_print ("Static data size:       %" G_GINT32_FORMAT "\n", mono_stats.class_static_data_size);
+		g_print ("VTable data size:       %" G_GINT32_FORMAT "\n", mono_stats.class_vtable_size);
 		g_print ("Mscorlib mempool size:  %d\n", mono_mempool_get_allocated (mono_defaults.corlib->mempool));
 
-		g_print ("\nInitialized classes:    %ld\n", mono_stats.generic_class_count);
-		g_print ("Inflated types:         %ld\n", mono_stats.inflated_type_count);
+		g_print ("\nInitialized classes:    %" G_GINT32_FORMAT "\n", mono_stats.generic_class_count);
+		g_print ("Inflated types:         %" G_GINT32_FORMAT "\n", mono_stats.inflated_type_count);
 		g_print ("Generics virtual invokes: %ld\n", mono_jit_stats.generic_virtual_invocations);
 
-		g_print ("Sharable generic methods: %ld\n", mono_stats.generics_sharable_methods);
-		g_print ("Unsharable generic methods: %ld\n", mono_stats.generics_unsharable_methods);
-		g_print ("Shared generic methods: %ld\n", mono_stats.generics_shared_methods);
-		g_print ("Shared vtype generic methods: %ld\n", mono_stats.gsharedvt_methods);
+		g_print ("Sharable generic methods: %" G_GINT32_FORMAT "\n", mono_stats.generics_sharable_methods);
+		g_print ("Unsharable generic methods: %" G_GINT32_FORMAT "\n", mono_stats.generics_unsharable_methods);
+		g_print ("Shared generic methods: %" G_GINT32_FORMAT "\n", mono_stats.generics_shared_methods);
+		g_print ("Shared vtype generic methods: %" G_GINT32_FORMAT "\n", mono_stats.gsharedvt_methods);
 
-		g_print ("IMT tables size:        %ld\n", mono_stats.imt_tables_size);
-		g_print ("IMT number of tables:   %ld\n", mono_stats.imt_number_of_tables);
-		g_print ("IMT number of methods:  %ld\n", mono_stats.imt_number_of_methods);
-		g_print ("IMT used slots:         %ld\n", mono_stats.imt_used_slots);
-		g_print ("IMT colliding slots:    %ld\n", mono_stats.imt_slots_with_collisions);
-		g_print ("IMT max collisions:     %ld\n", mono_stats.imt_max_collisions_in_slot);
-		g_print ("IMT methods at max col: %ld\n", mono_stats.imt_method_count_when_max_collisions);
-		g_print ("IMT trampolines size:   %ld\n", mono_stats.imt_trampolines_size);
+		g_print ("IMT tables size:        %" G_GINT32_FORMAT "\n", mono_stats.imt_tables_size);
+		g_print ("IMT number of tables:   %" G_GINT32_FORMAT "\n", mono_stats.imt_number_of_tables);
+		g_print ("IMT number of methods:  %" G_GINT32_FORMAT "\n", mono_stats.imt_number_of_methods);
+		g_print ("IMT used slots:         %" G_GINT32_FORMAT "\n", mono_stats.imt_used_slots);
+		g_print ("IMT colliding slots:    %" G_GINT32_FORMAT "\n", mono_stats.imt_slots_with_collisions);
+		g_print ("IMT max collisions:     %" G_GINT32_FORMAT "\n", mono_stats.imt_max_collisions_in_slot);
+		g_print ("IMT methods at max col: %" G_GINT32_FORMAT "\n", mono_stats.imt_method_count_when_max_collisions);
+		g_print ("IMT trampolines size:   %" G_GINT32_FORMAT "\n", mono_stats.imt_trampolines_size);
 
-		g_print ("JIT info table inserts: %ld\n", mono_stats.jit_info_table_insert_count);
-		g_print ("JIT info table removes: %ld\n", mono_stats.jit_info_table_remove_count);
-		g_print ("JIT info table lookups: %ld\n", mono_stats.jit_info_table_lookup_count);
+		g_print ("JIT info table inserts: %" G_GINT32_FORMAT "\n", mono_stats.jit_info_table_insert_count);
+		g_print ("JIT info table removes: %" G_GINT32_FORMAT "\n", mono_stats.jit_info_table_remove_count);
+		g_print ("JIT info table lookups: %" G_GINT32_FORMAT "\n", mono_stats.jit_info_table_lookup_count);
 
 		g_free (mono_jit_stats.max_ratio_method);
 		mono_jit_stats.max_ratio_method = NULL;
@@ -4346,8 +4374,10 @@ print_jit_stats (void)
 void
 mini_cleanup (MonoDomain *domain)
 {
-	if (mono_profiler_get_events () & MONO_PROFILE_STATISTICAL)
+	if (mono_profiler_sampling_enabled ())
 		mono_runtime_shutdown_stat_profiler ();
+
+	MONO_PROFILER_RAISE (runtime_shutdown_begin, ());
 
 #ifndef DISABLE_COM
 	cominterop_release_all_rcws ();
@@ -4370,7 +4400,12 @@ mini_cleanup (MonoDomain *domain)
 
 	mono_threadpool_cleanup ();
 
-	mono_profiler_shutdown ();
+	MONO_PROFILER_RAISE (runtime_shutdown_end, ());
+
+	mono_profiler_cleanup ();
+
+	if (profile_options)
+		g_ptr_array_free (profile_options, TRUE);
 
 	free_jit_tls_data ((MonoJitTlsData *)mono_tls_get_jit_tls ());
 

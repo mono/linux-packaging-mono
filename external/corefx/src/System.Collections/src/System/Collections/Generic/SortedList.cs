@@ -1048,7 +1048,7 @@ namespace System.Collections.Generic
         [Serializable]
         private sealed class KeyList : IList<TKey>, ICollection
         {
-            private SortedList<TKey, TValue> _dict;
+            private SortedList<TKey, TValue> _dict; // Do not rename (binary serialization)
 
             internal KeyList(SortedList<TKey, TValue> dictionary)
             {
@@ -1167,7 +1167,7 @@ namespace System.Collections.Generic
         [Serializable]
         private sealed class ValueList : IList<TValue>, ICollection
         {
-            private SortedList<TKey, TValue> _dict;
+            private SortedList<TKey, TValue> _dict; // Do not rename (binary serialization)
 
             internal ValueList(SortedList<TKey, TValue> dictionary)
             {

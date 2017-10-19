@@ -135,7 +135,7 @@ class MakeBundle {
 					return 1;
 				}
 				if (sdk_path != null || runtime != null)
-					Error ("You can not specify one of --runtime, --sdk or --cross");
+					Error ("You can only specify one of --runtime, --sdk or --cross");
 				custom_mode = false;
 				autodeps = true;
 				cross_target = args [++i];
@@ -213,7 +213,7 @@ class MakeBundle {
 				autodeps = true;
 				sdk_path = args [++i];
 				if (cross_target != null || runtime != null)
-					Error ("You can not specify one of --runtime, --sdk or --cross");
+					Error ("You can only specify one of --runtime, --sdk or --cross");
 				break;
 			case "--runtime":
 				if (i+1 == top){
@@ -624,6 +624,8 @@ class MakeBundle {
 			return false;
 		}
 		maker.Add (code, file);
+		// add a space after code (="systemconfig:" or "machineconfig:")
+		Console.WriteLine (code + " " + file);
 		return true;
 	}
 	
@@ -659,15 +661,17 @@ class MakeBundle {
 			Console.WriteLine ("     Assembly: " + fname);
 			if (File.Exists (fname + ".config")){
 				maker.Add ("config:" + aname, fname + ".config");
-				Console.WriteLine ("       Config: " + runtime);
+				Console.WriteLine ("       Config: " + fname + ".config");
 			}
 		}
 		
 		if (!MaybeAddFile (maker, "systemconfig:", config_file) || !MaybeAddFile (maker, "machineconfig:", machine_config_file))
 			return false;
 
-		if (config_dir != null)
+		if (config_dir != null){
 			maker.Add ("config_dir:", config_dir);
+			Console.WriteLine ("   Config_dir: " + config_dir );
+		}
 		if (embedded_options != null)
 			maker.AddString ("options:", embedded_options);
 		if (environment.Count > 0){
@@ -1005,6 +1009,7 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 			else
 			{
 				string zlib = (compress ? "-lz" : "");
+				string objc = (style == "osx" ? "-framework CoreFoundation -lobjc" : "");
 				string debugging = "-g";
 				string cc = GetEnv("CC", "cc");
 				string cmd = null;
@@ -1018,16 +1023,16 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 						smonolib = "`pkg-config --variable=libdir mono-2`/libmono-2.0.a ";
 					else
 						smonolib = "-Wl,-Bstatic -lmono-2.0 -Wl,-Bdynamic ";
-					cmd = String.Format("{4} -o '{2}' -Wall `pkg-config --cflags mono-2` {0} {3} " +
+					cmd = String.Format("{4} -o '{2}' -Wall {5} `pkg-config --cflags mono-2` {0} {3} " +
 						"`pkg-config --libs-only-L mono-2` " + smonolib +
 						"`pkg-config --libs-only-l mono-2 | sed -e \"s/\\-lmono-2.0 //\"` {1}",
-						temp_c, temp_o, output, zlib, cc);
+						temp_c, temp_o, output, zlib, cc, objc);
 				}
 				else
 				{
 
-					cmd = String.Format("{4} " + debugging + " -o '{2}' -Wall {0} `pkg-config --cflags --libs mono-2` {3} {1}",
-						temp_c, temp_o, output, zlib, cc);
+					cmd = String.Format("{4} " + debugging + " -o '{2}' -Wall {5} {0} `pkg-config --cflags --libs mono-2` {3} {1}",
+						temp_c, temp_o, output, zlib, cc, objc);
 				}
 				Execute (cmd);
 			}
@@ -1169,9 +1174,18 @@ void          mono_register_config_for_assembly (const char* assembly_name, cons
 			return true;
 		try {
 			Assembly a = universe.LoadFile (path);
+			if (a == null) {
+				Error ("Unable to to load assembly `{0}'", path);
+				return false;
+			}
 
 			foreach (AssemblyName an in a.GetReferencedAssemblies ()) {
 				a = LoadAssembly (an.Name);
+				if (a == null) {
+					Error ("Unable to load assembly `{0}' referenced by `{1}'", an.Name, path);
+					return false;
+				}
+
 				if (!QueueAssembly (files, a.CodeBase))
 					return false;
 			}
