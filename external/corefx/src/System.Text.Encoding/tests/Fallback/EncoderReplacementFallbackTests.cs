@@ -103,6 +103,7 @@ namespace System.Text.Tests
             Assert.Equal(expected, buffer.Fallback('\uD800', '\uDC00', 0));
         }
 
+#if !MONO  // use FIXME: SkipOnTargetFramework(TargetFrameworkMonikers.Mono) once available
         [Fact]
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
         public void CreateFallbackBuffer_Fallback_InvalidSurrogateChars_ThrowsArgumentOutOfRangeException()
@@ -112,6 +113,7 @@ namespace System.Text.Tests
             AssertExtensions.Throws<ArgumentOutOfRangeException>("charUnknownHigh", () => buffer.Fallback('a', '\uDC00', 0));
             AssertExtensions.Throws<ArgumentOutOfRangeException>("charUnknownLow", () => buffer.Fallback('\uD800', 'a', 0));
         }
+#endif
 
         [Fact]
         [SkipOnTargetFramework(~TargetFrameworkMonikers.NetFramework)]
