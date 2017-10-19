@@ -34,10 +34,12 @@ namespace Ildasm
         readonly TextWriter writer;
         int column;
         bool wrapped;
+        StringBuilder sb;
 
         internal LineWriter(TextWriter writer)
         {
             this.writer = writer;
+            sb = new StringBuilder (256);
         }
 
         internal int Column
@@ -55,41 +57,68 @@ namespace Ildasm
             wrapped = false;
         }
 
+        internal void Write(string str, object arg0)
+        {
+            int len = sb.Length;
+            sb.AppendFormat (str, arg0);
+            column += sb.Length - len;
+        }
+
         internal void Write(string str, params object[] args)
         {
-            Write(String.Format(str, args));
+            int len = sb.Length;
+            sb.AppendFormat (str, args);
+            column += sb.Length - len;
         }
 
         internal void Write(string str)
         {
-            writer.Write(str);
+            sb.Append (str);
             column += str.Length;
         }
 
         internal void WriteLine(string str)
         {
-            writer.WriteLine(str);
+            if (sb.Length > 0) {
+                sb.Append (str);
+                writer.WriteLine (sb.ToString ());
+                sb.Clear ();
+            } else {
+                writer.WriteLine (str);
+            }
             column = 0;
             wrapped = true;
         }
 
         internal void WriteLine(string str, params object[] args)
         {
-            writer.WriteLine(str, args);
+            if (sb.Length > 0) {
+                sb.AppendFormat (str, args);
+                writer.WriteLine(sb.ToString ());
+                sb.Clear ();
+            } else {
+                writer.WriteLine (String.Format (str, args));
+            }
             column = 0;
             wrapped = true;
         }
 
         internal void WriteLine()
         {
-            writer.WriteLine();
+            if (sb.Length > 0) {
+                writer.WriteLine (sb.ToString ());
+                sb.Clear ();
+            } else {
+                writer.WriteLine ();
+            }
             column = 0;
             wrapped = true;
         }
 
         internal void GoToColumn(int column)
         {
-            Write(new String(' ', column - this.column));
+            sb.Append (' ', column - this.column);
+            this.column = column;
         }
 
         internal void Flush()

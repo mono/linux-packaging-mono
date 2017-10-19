@@ -18,13 +18,10 @@ namespace System.Collections.Specialized
     ///    can be accessed either with the hash code of the key or with the index.</para>
     /// </devdoc>
     [Serializable]
-#if !MONO
-    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
-#endif
     public class NameValueCollection : NameObjectCollectionBase
     {
-        private String[] _all;
-        private String[] _allKeys;
+        private String[] _all; // Do not rename (binary serialization)
+        private String[] _allKeys; // Do not rename (binary serialization)
 
         //
         // Constructors

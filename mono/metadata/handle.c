@@ -20,6 +20,10 @@
 #include <mono/utils/atomic.h>
 #include <mono/utils/mono-lazy-init.h>
 #include <mono/utils/mono-threads.h>
+#ifdef HAVE_BACKTRACE_SYMBOLS
+#include <execinfo.h>
+#endif
+
 /* TODO (missing pieces)
 
 Add counters for:
@@ -69,6 +73,62 @@ Combine: MonoDefaults, GENERATE_GET_CLASS_WITH_CACHE, TYPED_HANDLE_DECL and frie
  * points to a valid value.
  */
 
+#if defined(HAVE_BOEHM_GC) || defined(HAVE_NULL_GC)
+static HandleStack*
+new_handle_stack (void)
+{
+	return (HandleStack *)mono_gc_alloc_fixed (sizeof (HandleStack), MONO_GC_DESCRIPTOR_NULL, MONO_ROOT_SOURCE_HANDLE, "Thread Handle Stack");
+}
+
+static void
+free_handle_stack (HandleStack *stack)
+{
+	mono_gc_free_fixed (stack);
+}
+
+static HandleChunk*
+new_handle_chunk (void)
+{
+#if defined(HAVE_BOEHM_GC)
+	return (HandleChunk *)GC_MALLOC (sizeof (HandleChunk));
+#elif defined(HAVE_NULL_GC)
+	return (HandleChunk *)g_malloc (sizeof (HandleChunk));
+#endif
+}
+
+static void
+free_handle_chunk (HandleChunk *chunk)
+{
+#if defined(HAVE_NULL_GC)
+	g_free (chunk);
+#endif
+}
+#else
+static HandleStack*
+new_handle_stack (void)
+{
+	return g_new (HandleStack, 1);
+}
+
+static void
+free_handle_stack (HandleStack *stack)
+{
+	g_free (stack);
+}
+
+static HandleChunk*
+new_handle_chunk (void)
+{
+	return g_new (HandleChunk, 1);
+}
+
+static void
+free_handle_chunk (HandleChunk *chunk)
+{
+	g_free (chunk);
+}
+#endif
+
 const MonoObjectHandle mono_null_value_handle = NULL;
 
 #define THIS_IS_AN_OK_NUMBER_OF_HANDLES 100
@@ -111,7 +171,14 @@ chunk_element_to_chunk_idx (HandleStack *stack, HandleChunkElem *elem, int *out_
 }
 
 #ifdef MONO_HANDLE_TRACK_OWNER
-#define SET_OWNER(chunk,idx) do { (chunk)->elems[(idx)].owner = owner; } while (0)
+#ifdef HAVE_BACKTRACE_SYMBOLS
+#define SET_BACKTRACE(btaddrs) do {					\
+	backtrace(btaddrs, 7);						\
+	} while (0)
+#else
+#define SET_BACKTRACE(btaddrs) 0
+#endif
+#define SET_OWNER(chunk,idx) do { (chunk)->elems[(idx)].owner = owner; SET_BACKTRACE (&((chunk)->elems[(idx)].backtrace_ips[0])); } while (0)
 #else
 #define SET_OWNER(chunk,idx) do { } while (0)
 #endif
@@ -197,7 +264,7 @@ retry:
 		handles->top = top;
 		goto retry;
 	}
-	HandleChunk *new_chunk = g_new (HandleChunk, 1);
+	HandleChunk *new_chunk = new_handle_chunk ();
 	new_chunk->size = 0;
 	new_chunk->prev = top;
 	new_chunk->next = NULL;
@@ -245,10 +312,14 @@ mono_handle_new_interior (gpointer rawptr, const char *owner)
 HandleStack*
 mono_handle_stack_alloc (void)
 {
-	HandleStack *stack = g_new0 (HandleStack, 1);
-	HandleChunk *chunk = g_new0 (HandleChunk, 1);
-	HandleChunk *interior = g_new0 (HandleChunk, 1);
+	HandleStack *stack = new_handle_stack ();
+	HandleChunk *chunk = new_handle_chunk ();
+	HandleChunk *interior = new_handle_chunk ();
 
+	chunk->prev = chunk->next = NULL;
+	chunk->size = 0;
+	interior->prev = interior->next = NULL;
+	interior->size = 0;
 	mono_memory_write_barrier ();
 	stack->top = stack->bottom = chunk;
 	stack->interior = interior;
@@ -268,12 +339,12 @@ mono_handle_stack_free (HandleStack *stack)
 	mono_memory_write_barrier ();
 	while (c) {
 		HandleChunk *next = c->next;
-		g_free (c);
+		free_handle_chunk (c);
 		c = next;
 	}
-	g_free (c);
-	g_free (stack->interior);
-	g_free (stack);
+	free_handle_chunk (c);
+	free_handle_chunk (stack->interior);
+	free_handle_stack (stack);
 }
 
 void
@@ -497,6 +568,16 @@ mono_string_handle_pin_chars (MonoStringHandle handle, uint32_t *gchandle)
 	*gchandle = mono_gchandle_from_handle (MONO_HANDLE_CAST (MonoObject, handle), TRUE);
 	MonoString *raw = MONO_HANDLE_RAW (handle);
 	return mono_string_chars (raw);
+}
+
+gpointer
+mono_object_handle_pin_unbox (MonoObjectHandle obj, uint32_t *gchandle)
+{
+	g_assert (!MONO_HANDLE_IS_NULL (obj));
+	MonoClass *klass = mono_handle_class (obj);
+	g_assert (klass->valuetype);
+	*gchandle = mono_gchandle_from_handle (obj, TRUE);
+	return mono_object_unbox (MONO_HANDLE_RAW (obj));
 }
 
 void

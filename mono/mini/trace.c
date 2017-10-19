@@ -26,30 +26,11 @@
 #include <mono/utils/mono-memory-model.h>
 #include "trace.h"
 
-#if defined (PLATFORM_ANDROID) || (defined (TARGET_IOS) && defined (TARGET_IOS))
+#if defined (HOST_ANDROID) || (defined (TARGET_IOS) && defined (TARGET_IOS))
 #  undef printf
 #  define printf(...) g_log("mono", G_LOG_LEVEL_MESSAGE, __VA_ARGS__)
 #  undef fprintf
 #  define fprintf(__ignore, ...) g_log ("mono-gc", G_LOG_LEVEL_MESSAGE, __VA_ARGS__)
-#endif
-
-#ifdef __GNUC__
-
-#define RETURN_ADDRESS_N(N) (__builtin_extract_return_addr (__builtin_return_address (N)))
-#define RETURN_ADDRESS() RETURN_ADDRESS_N(0)
-
-#elif defined(_MSC_VER)
-
-#include <intrin.h>
-#pragma intrinsic(_ReturnAddress)
-
-#define RETURN_ADDRESS() _ReturnAddress()
-#define RETURN_ADDRESS_N(N) NULL
-
-#else
-
-#error "Missing return address intrinsics implementation"
-
 #endif
 
 static MonoTraceSpec trace_spec;
@@ -435,7 +416,7 @@ mono_trace_enter_method (MonoMethod *method, char *ebp)
 	g_free (fname);
 
 	if (!ebp) {
-		printf (") ip: %p\n", RETURN_ADDRESS_N (1));
+		printf (") ip: %p\n", MONO_RETURN_ADDRESS_N (1));
 		goto unlock;
 	}
 
@@ -445,7 +426,7 @@ mono_trace_enter_method (MonoMethod *method, char *ebp)
 
 	if (method->is_inflated) {
 		/* FIXME: Might be better to pass the ji itself */
-		MonoJitInfo *ji = mini_jit_info_table_find (mono_domain_get (), (char *)RETURN_ADDRESS (), NULL);
+		MonoJitInfo *ji = mini_jit_info_table_find (mono_domain_get (), (char *)MONO_RETURN_ADDRESS (), NULL);
 		if (ji) {
 			gsctx = mono_jit_info_get_generic_sharing_context (ji);
 			if (gsctx && gsctx->is_gsharedvt) {
@@ -609,7 +590,7 @@ mono_trace_leave_method (MonoMethod *method, ...)
 
 	if (method->is_inflated) {
 		/* FIXME: Might be better to pass the ji itself */
-		MonoJitInfo *ji = mini_jit_info_table_find (mono_domain_get (), (char *)RETURN_ADDRESS (), NULL);
+		MonoJitInfo *ji = mini_jit_info_table_find (mono_domain_get (), (char *)MONO_RETURN_ADDRESS (), NULL);
 		if (ji) {
 			gsctx = mono_jit_info_get_generic_sharing_context (ji);
 			if (gsctx && gsctx->is_gsharedvt) {
@@ -717,7 +698,7 @@ mono_trace_leave_method (MonoMethod *method, ...)
 		printf ("(unknown return type %x)", mono_method_signature (method)->ret->type);
 	}
 
-	//printf (" ip: %p\n", RETURN_ADDRESS_N (1));
+	//printf (" ip: %p\n", MONO_RETURN_ADDRESS_N (1));
 	printf ("\n");
 	fflush (stdout);
 

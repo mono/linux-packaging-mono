@@ -51,6 +51,11 @@ struct _MonoType {
 #define MONO_PROCESSOR_ARCHITECTURE_AMD64 4
 #define MONO_PROCESSOR_ARCHITECTURE_ARM 5
 
+#if !defined(DISABLE_JIT) || defined(ENABLE_INTERPRETER)
+/* Some VES is available at runtime */
+#define ENABLE_ILGEN
+#endif
+
 struct _MonoAssemblyName {
 	const char *name;
 	const char *culture;
@@ -498,7 +503,6 @@ struct _MonoDynamicImage {
 	GHashTable *typespec;
 	GHashTable *typeref;
 	GHashTable *handleref;
-	MonoGHashTable *handleref_managed;
 	MonoGHashTable *tokens;
 	GHashTable *blob_cache;
 	GHashTable *standalonesig_cache;
@@ -935,7 +939,7 @@ mono_image_set_description (MonoImageSet *);
 MonoImageSet *
 mono_find_image_set_owner (void *ptr);
 
-void
+MONO_API void
 mono_loader_register_module (const char *name, MonoDl *module);
 
 gboolean

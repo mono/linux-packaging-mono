@@ -5,13 +5,10 @@ CSC ?= csc
 CSC_COMMON_ARGS := -nologo -noconfig -optimize -nostdlib -unsafe -deterministic -publicsign -debug- -target:library -nowarn:612 -nowarn:618
 Q_CSC = $(if $(V),,@echo "CSC   [$(PROFILE)] $(1)";)
 
-ASSEMBLIES := Accessibility Commons.Xml.Relaxng CustomMarshalers I18N.CJK I18N.MidEast I18N.Other I18N.Rare I18N.West I18N	\
-	IBM.Data.DB2 ICSharpCode.SharpZipLib Microsoft.Build.Engine Microsoft.Build.Framework Microsoft.Build.Tasks.v4.0	\
+ASSEMBLIES := Accessibility CustomMarshalers	\
+	Microsoft.Build.Engine Microsoft.Build.Framework Microsoft.Build.Tasks.v4.0	\
 	Microsoft.Build.Utilities.v4.0 Microsoft.Build Microsoft.CSharp Microsoft.VisualBasic Microsoft.VisualC Microsoft.Web.Infrastructure	\
-	Mono.CSharp Mono.Cairo Mono.CodeContracts Mono.CompilerServices.SymbolWriter Mono.Data.Sqlite	\
-	Mono.Data.Tds Mono.Debugger.Soft Mono.Http Mono.Management Mono.Messaging.RabbitMQ Mono.Messaging	\
-	Mono.Parallel Mono.Posix Mono.Security.Win32 Mono.Security Mono.Simd Mono.Tasklets Mono.WebBrowser	\
-	Novell.Directory.Ldap PEAPI RabbitMQ.Client SMDiagnostics System.ComponentModel.Composition	\
+	SMDiagnostics System.ComponentModel.Composition	\
 	System.ComponentModel.DataAnnotations System.Configuration.Install System.Configuration System.Core	\
 	System.Data.DataSetExtensions System.Data.Entity System.Data.Linq System.Data.OracleClient	\
 	System.Data.Services.Client System.Data.Services System.Data System.Design System.DirectoryServices.Protocols	\
@@ -29,11 +26,11 @@ ASSEMBLIES := Accessibility Commons.Xml.Relaxng CustomMarshalers I18N.CJK I18N.M
 	System.Web.Http.SelfHost System.Web.Http.WebHost System.Web.Http System.Web.Mvc System.Web.Razor System.Web.Routing	\
 	System.Web.Services System.Web.WebPages.Deployment System.Web.WebPages.Razor System.Web.WebPages System.Web	\
 	System.Windows.Forms.DataVisualization System.Windows.Forms System.Windows System.Xaml System.Xml.Linq	\
-	System.Xml.Serialization System.Xml System WebMatrix.Data WindowsBase cscompmgd mscorlib	\
+	System.Xml.Serialization System.Xml System WindowsBase cscompmgd mscorlib	\
 	System.Deployment System.Numerics.Vectors System.Reflection.Context System.Runtime.InteropServices.RuntimeInformation	\
 	System.Web.Mobile System.Web.RegularExpressions System.Workflow.Activities System.Workflow.ComponentModel System.Workflow.Runtime
 
-ASSEMBLIES += bare/System bare/System.Xml bare/System.Configuration bare/System.ServiceModel.Activation bare/System.Web bare/Mono.Cecil
+ASSEMBLIES += bare/System bare/System.Xml bare/System.Configuration bare/System.ServiceModel.Activation bare/System.Web
 
 FACADE_ASSEMBLIES := Facades/System.Collections.Concurrent Facades/System.Net.Primitives Facades/System.Runtime	\
 	Facades/System.Collections Facades/System.Net.Requests Facades/System.Security.Principal	\
@@ -59,16 +56,7 @@ ASSEMBLIES += $(FACADE_ASSEMBLIES)
 # generated with (and then slightly tweaked):
 # for i in *.dll; do ikdasm --assemblyref $i | grep Name= | sed 's/.*Name=//g' | sed -e $'s/$/\\\n/g' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g' -e "s/^/${i%.*}_REFS := /"; done
 Accessibility_REFS := mscorlib
-Commons.Xml.Relaxng_REFS := mscorlib System.Xml System
 CustomMarshalers_REFS := mscorlib
-I18N.CJK_REFS := mscorlib I18N
-I18N.MidEast_REFS := mscorlib I18N
-I18N.Other_REFS := mscorlib I18N
-I18N.Rare_REFS := mscorlib I18N
-I18N.West_REFS := mscorlib I18N
-I18N_REFS := mscorlib
-IBM.Data.DB2_REFS := mscorlib System System.Data
-ICSharpCode.SharpZipLib_REFS := mscorlib System
 Microsoft.Build.Engine_REFS := mscorlib System.Xml Microsoft.Build.Framework Microsoft.Build.Utilities.v4.0 System System.Core
 Microsoft.Build.Framework_REFS := mscorlib System
 Microsoft.Build.Tasks.v4.0_REFS := mscorlib Microsoft.Build.Framework Microsoft.Build.Utilities.v4.0 System Microsoft.Build.Engine System.Xml System.Core
@@ -78,44 +66,23 @@ Microsoft.CSharp_REFS := mscorlib System System.Core
 Microsoft.VisualBasic_REFS := mscorlib System System.Windows.Forms System.Drawing
 Microsoft.VisualC_REFS := mscorlib
 Microsoft.Web.Infrastructure_REFS := mscorlib System System.Web
-Mono.CSharp_REFS := mscorlib System System.Core System.Xml
-Mono.Cairo_REFS := mscorlib
-Mono.CodeContracts_REFS := mscorlib System.Core System
-Mono.CompilerServices.SymbolWriter_REFS := mscorlib System
-Mono.Data.Sqlite_REFS := mscorlib System.Data System System.Transactions
-Mono.Data.Tds_REFS := mscorlib Mono.Security System
-Mono.Debugger.Soft_REFS := mscorlib System.Core System bare/Mono.Cecil
-Mono.Http_REFS := mscorlib System ICSharpCode.SharpZipLib Mono.Security System.Web System.Xml
-Mono.Management_REFS := mscorlib System Mono.Posix
-Mono.Messaging.RabbitMQ_REFS := mscorlib Mono.Messaging RabbitMQ.Client System
-Mono.Messaging_REFS := mscorlib System System.Configuration
-Mono.Parallel_REFS := mscorlib
-Mono.Posix_REFS := mscorlib System
-Mono.Security.Win32_REFS := mscorlib
-Mono.Security_REFS := mscorlib bare/System
-Mono.Simd_REFS := mscorlib
-Mono.Tasklets_REFS := mscorlib
-Mono.WebBrowser_REFS := mscorlib System
-Novell.Directory.Ldap_REFS := mscorlib System
-PEAPI_REFS := mscorlib
-RabbitMQ.Client_REFS := mscorlib System.Xml System
 SMDiagnostics_REFS := mscorlib System.Configuration System System.Xml System.ServiceModel.Internals
 System.ComponentModel.Composition_REFS := mscorlib System System.Core
 System.ComponentModel.DataAnnotations_REFS := mscorlib System System.Core
 System.Configuration.Install_REFS := mscorlib System
 System.Configuration_REFS := mscorlib bare/System.Xml System
-System.Core_REFS := mscorlib System Mono.Posix
+System.Core_REFS := mscorlib System
 System.Data.DataSetExtensions_REFS := mscorlib System.Data System System.Core
 System.Data.Entity_REFS := mscorlib System.Core System System.Data System.Runtime.Serialization System.ComponentModel.DataAnnotations System.Xml System.Xml.Linq System.Transactions System.Configuration
 System.Data.Linq_REFS := mscorlib System.Data System.Core System System.Xml System.Runtime.Serialization
 System.Data.OracleClient_REFS := mscorlib System.Data System System.Drawing System.EnterpriseServices System.Transactions
 System.Data.Services.Client_REFS := mscorlib System System.Xml System.Core System.Xml.Linq
 System.Data.Services_REFS := mscorlib System.Configuration System.ServiceModel System.ServiceModel.Web System System.ServiceModel.Activation System.Core System.Data.Services.Client
-System.Data_REFS := mscorlib System.Configuration System.Xml System System.Numerics System.Core System.Transactions Mono.Data.Tds System.EnterpriseServices
+System.Data_REFS := mscorlib System.Configuration System.Xml System System.Numerics System.Core System.Transactions System.EnterpriseServices
 System.Deployment_REFS := mscorlib
 System.Design_REFS := mscorlib System.Drawing System.Drawing.Design System System.Windows.Forms System.Data bare/System.Web System.Configuration System.Xml
 System.DirectoryServices.Protocols_REFS := mscorlib System.Xml System System.DirectoryServices
-System.DirectoryServices_REFS := mscorlib Novell.Directory.Ldap System
+System.DirectoryServices_REFS := mscorlib System
 System.Drawing.Design_REFS := mscorlib System.Drawing System.Windows.Forms System
 System.Drawing_REFS := mscorlib System
 System.Dynamic_REFS := mscorlib System.Core System
@@ -123,11 +90,11 @@ System.EnterpriseServices_REFS := mscorlib System.Transactions
 System.IO.Compression.FileSystem_REFS := mscorlib System.IO.Compression System
 System.IO.Compression_REFS := mscorlib System
 System.IdentityModel.Selectors_REFS := mscorlib System.Xml System System.IdentityModel
-System.IdentityModel_REFS := mscorlib System.Configuration System.Runtime.Serialization System.Security System System.Xml Mono.Security System.Web.ApplicationServices
+System.IdentityModel_REFS := mscorlib System.Configuration System.Runtime.Serialization System.Security System System.Xml System.Web.ApplicationServices
 System.Json.Microsoft_REFS := mscorlib System.Runtime.Serialization System System.Xml System.Core
 System.Json_REFS := mscorlib System System.Core
 System.Management_REFS := mscorlib System System.Configuration.Install
-System.Messaging_REFS := mscorlib System Mono.Messaging System.Drawing System.Configuration.Install System.Xml System.Windows.Forms
+System.Messaging_REFS := mscorlib System System.Drawing System.Configuration.Install System.Xml System.Windows.Forms
 System.Net.Http.Formatting_REFS := mscorlib System System.Xml System.Xml.Linq System.Runtime.Serialization System.Core System.Data System.Net.Http System.Configuration
 System.Net.Http.WebRequest_REFS := mscorlib System.Net.Http System
 System.Net.Http_REFS := mscorlib System System.Core
@@ -153,7 +120,7 @@ System.Runtime.InteropServices.RuntimeInformation_REFS := mscorlib
 System.Runtime.Remoting_REFS := mscorlib System System.Web System.Xml System.Runtime.Serialization.Formatters.Soap
 System.Runtime.Serialization.Formatters.Soap_REFS := mscorlib System.Xml
 System.Runtime.Serialization_REFS := mscorlib System.Xml System.ServiceModel.Internals System System.Configuration System.Core
-System.Security_REFS := mscorlib System System.Xml Mono.Security
+System.Security_REFS := mscorlib System System.Xml
 System.ServiceModel.Activation_REFS := mscorlib System.ServiceModel System System.Web
 System.ServiceModel.Discovery_REFS := mscorlib System.ServiceModel System System.Xml System.Xml.Linq System.Runtime.Serialization System.Configuration System.Core
 System.ServiceModel.Internals_REFS := mscorlib System System.Xml
@@ -180,9 +147,9 @@ System.Web.Services_REFS := mscorlib System System.Configuration System.Enterpri
 System.Web.WebPages.Deployment_REFS := mscorlib System.Web System System.Configuration System.Core Microsoft.Web.Infrastructure
 System.Web.WebPages.Razor_REFS := mscorlib System.Web System System.Web.Razor System.Configuration System.Core System.Web.WebPages
 System.Web.WebPages_REFS := mscorlib System.Web System System.Core System.Xml.Linq System.Web.Razor System.ComponentModel.DataAnnotations System.Data.Linq Microsoft.Web.Infrastructure Microsoft.CSharp System.Web.WebPages.Deployment
-System.Web_REFS := mscorlib System.Configuration System.Xml System System.Data System.Drawing System.Runtime.Serialization.Formatters.Soap System.Core System.EnterpriseServices System.Web.ApplicationServices Mono.Data.Sqlite System.ComponentModel.DataAnnotations System.Web.Services
+System.Web_REFS := mscorlib System.Configuration System.Xml System System.Data System.Drawing System.Runtime.Serialization.Formatters.Soap System.Core System.EnterpriseServices System.Web.ApplicationServices System.ComponentModel.DataAnnotations System.Web.Services
 System.Windows.Forms.DataVisualization_REFS := mscorlib System.Drawing System.Windows.Forms System System.Xml System.Data System.Core
-System.Windows.Forms_REFS := mscorlib System System.Xml System.Drawing System.Runtime.Serialization.Formatters.Soap Accessibility Mono.WebBrowser System.Configuration Mono.Posix System.Data
+System.Windows.Forms_REFS := mscorlib System System.Xml System.Drawing System.Runtime.Serialization.Formatters.Soap Accessibility System.Configuration System.Data
 System.Windows_REFS := mscorlib System
 System.Workflow.Activities_REFS := mscorlib
 System.Workflow.ComponentModel_REFS := mscorlib
@@ -191,8 +158,7 @@ System.Xaml_REFS := mscorlib System System.Xml System.Core
 System.Xml.Linq_REFS := mscorlib System System.Runtime.Serialization System.Xml System.Core
 System.Xml.Serialization_REFS := mscorlib System.ServiceModel System.Xml
 System.Xml_REFS := mscorlib System System.Configuration
-System_REFS := mscorlib Mono.Security bare/System.Configuration bare/System.Xml
-WebMatrix.Data_REFS := mscorlib System.Data System.Core System System.Configuration
+System_REFS := mscorlib bare/System.Configuration bare/System.Xml
 WindowsBase_REFS := mscorlib System.Xaml System System.Xml System.Security
 cscompmgd_REFS := mscorlib System
 mscorlib_REFS :=
@@ -201,8 +167,7 @@ bare/System_REFS := mscorlib
 bare/System.Xml_REFS := mscorlib bare/System
 bare/System.Configuration_REFS := mscorlib bare/System bare/System.Xml
 bare/System.ServiceModel.Activation_REFS := mscorlib System
-bare/System.Web_REFS := mscorlib System.Drawing System System.Xml System.Core System.Configuration System.Data System.Web.ApplicationServices System.ComponentModel.DataAnnotations Mono.Data.Sqlite System.EnterpriseServices
-bare/Mono.Cecil_REFS := mscorlib
+bare/System.Web_REFS := mscorlib System.Drawing System System.Xml System.Core System.Configuration System.Data System.Web.ApplicationServices System.ComponentModel.DataAnnotations System.EnterpriseServices
 
 Facades/System.Collections.Concurrent_REFS := mscorlib System
 Facades/System.Collections_REFS := mscorlib System.Core System
@@ -265,19 +230,9 @@ System.Xml_CSC_ARGS := -d:CONFIG_DEP
 System.ServiceModel.Activation_CSC_ARGS := -d:SERVICEMODEL_DEP -d:WEB_DEP
 System.Web_CSC_ARGS := -d:SERVICES_DEP
 
-MONO_KEY := ../../../mcs/class/mono.pub         # Public Key Token: 0738eb9f132ed756
 ECMA_KEY := ../../../mcs/class/ecma.pub         # Public Key Token: b77a5c561934e089
 WINFX_KEY := ../../../mcs/class/winfx.pub       # Public Key Token: 31bf3856ad364e35
 MSFINAL_KEY := ../../../mcs/class/msfinal.pub   # Public Key Token: b03f5f7f11d50a3a
-
-IBM.Data.DB2_KEYFILE := ../../../mcs/class/IBM.Data.DB2/ibm.pub
-ICSharpCode.SharpZipLib_KEYFILE := ../../../mcs/class/ICSharpCode.SharpZipLib/SharpZipLib.pub
-
-MONO_KEY_ASSEMBLIES := Commons.Xml.Relaxng I18N.CJK I18N.MidEast I18N.Other I18N.Rare I18N.West I18N Mono.CSharp	\
-	Mono.Cairo Mono.CodeContracts Mono.CompilerServices.SymbolWriter Mono.Data.Sqlite Mono.Data.Tds	\
-	Mono.Debugger.Soft Mono.Http Mono.Management Mono.Messaging.RabbitMQ Mono.Messaging Mono.Parallel	\
-	Mono.Posix Mono.Security.Win32 Mono.Security Mono.Simd Mono.Tasklets Mono.WebBrowser	\
-	Novell.Directory.Ldap PEAPI WebMatrix.Data bare/Mono.Cecil
 
 ECMA_KEY_ASSEMBLIES := SMDiagnostics System.ComponentModel.Composition System.Core System.Data.DataSetExtensions	\
 	System.Data.Entity System.Data.Linq System.Data.OracleClient System.Data.Services.Client System.Data.Services	\
@@ -299,7 +254,7 @@ WINFX_KEY_ASSEMBLIES := System.ComponentModel.DataAnnotations Microsoft.Web.Infr
 
 MSFINAL_KEY_ASSEMBLIES := Accessibility CustomMarshalers Microsoft.Build.Engine Microsoft.Build.Framework	\
 	Microsoft.Build.Tasks.v4.0 Microsoft.Build.Utilities.v4.0 Microsoft.Build Microsoft.CSharp Microsoft.VisualBasic Microsoft.VisualC	\
-	RabbitMQ.Client System.Configuration.Install System.Configuration System.Deployment System.Design System.DirectoryServices.Protocols	\
+	System.Configuration.Install System.Configuration System.Deployment System.Design System.DirectoryServices.Protocols	\
 	System.DirectoryServices System.Drawing.Design System.Drawing System.Dynamic System.EnterpriseServices System.Management	\
 	System.Messaging System.Net.Http.WebRequest System.Net.Http System.Net System.Numerics.Vectors System.Runtime.Caching	\
 	System.Runtime.InteropServices.RuntimeInformation System.Runtime.Serialization.Formatters.Soap System.Security System.ServiceProcess System.Web.Services	\
@@ -323,7 +278,6 @@ $(1).dll: $(addprefix $(SOURCEDIR),$(subst bare/,,$(1)).cs) $(wildcard $(SOURCED
 	$(Q_CSC) $(CSC) -out:$(1).dll $(CSC_COMMON_ARGS) -keyfile:$($(1)_KEYFILE) $($(1)_CSC_ARGS) $(addprefix -r:, $(addsuffix .dll, $($(1)_REFS))) $(wildcard $(SOURCEDIR)$(1).extra.cs) $$<
 endef
 
-$(foreach asm, $(MONO_KEY_ASSEMBLIES),    $(eval $(call KEYFILE_TEMPLATE,$(asm), $(MONO_KEY))))
 $(foreach asm, $(ECMA_KEY_ASSEMBLIES),    $(eval $(call KEYFILE_TEMPLATE,$(asm), $(ECMA_KEY))))
 $(foreach asm, $(WINFX_KEY_ASSEMBLIES),   $(eval $(call KEYFILE_TEMPLATE,$(asm), $(WINFX_KEY))))
 $(foreach asm, $(MSFINAL_KEY_ASSEMBLIES), $(eval $(call KEYFILE_TEMPLATE,$(asm), $(MSFINAL_KEY))))

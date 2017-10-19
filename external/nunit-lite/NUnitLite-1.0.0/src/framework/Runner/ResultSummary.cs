@@ -39,6 +39,9 @@ namespace NUnitLite.Runner
         private int ignoreCount;
         private int skipCount;
         private int invalidCount;
+#if MONO
+        private int flakyTestRetriesCount;
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResultSummary"/> class.
@@ -125,6 +128,13 @@ namespace NUnitLite.Runner
             get { return inconclusiveCount; }
         }
 
+#if MONO
+        public int FlakyTestRetriesCount
+                {
+            get { return flakyTestRetriesCount; }
+        }
+#endif
+
         private void Visit(ITestResult result)
         {
             if (result.Test.IsSuite)
@@ -161,6 +171,10 @@ namespace NUnitLite.Runner
                         break;
                 }
 
+#if MONO
+                if (result.Test.Properties.ContainsKey("FlakyTestRetries.Result"))
+                    flakyTestRetriesCount++;
+#endif
                 return;
             }
         }

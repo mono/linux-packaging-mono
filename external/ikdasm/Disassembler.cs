@@ -2730,10 +2730,10 @@ namespace Ildasm
 
         void WriteSignatureType(LineWriter lw, Type type, TypeLocation loc)
         {
-            WriteSignatureType(lw, type, loc, false);
+            WriteSignatureType(lw, type, loc, false, false);
         }
 
-        void WriteSignatureType(LineWriter lw, Type type, TypeLocation loc, bool skipGenArgs)
+        void WriteSignatureType(LineWriter lw, Type type, TypeLocation loc, bool skipGenArgs, bool skipClass)
         {
             if (type.__IsVector)
             {
@@ -2778,7 +2778,7 @@ namespace Ildasm
             }
             else if (!type.__IsMissing && type.IsGenericType && !type.IsGenericTypeDefinition)
             {
-                WriteSignatureType(lw, type.GetGenericTypeDefinition(), loc, true);
+                WriteSignatureType(lw, type.GetGenericTypeDefinition(), loc, true, false);
                 lw.Write("<");
                 string sep = "";
                 Type[] args = type.GetGenericArguments();
@@ -2883,7 +2883,10 @@ namespace Ildasm
             }
             else
             {
-                lw.Write(type.IsValueType ? "valuetype " : "class ");
+                if (!type.__IsMissing && !skipClass)
+                {
+                    lw.Write(type.IsValueType ? "valuetype " : "class ");
+                }
                 WriteModuleOrAssemblyRef(lw, type.Module);
                 WriteTypeName(lw, type);
                 if (!skipGenArgs && !type.__IsMissing && type.IsGenericTypeDefinition)
@@ -2988,20 +2991,7 @@ namespace Ildasm
 
         void WriteTypeDefOrRef(LineWriter lw, Type type)
         {
-            if (type.IsGenericParameter)
-            {
-                lw.Write(type.DeclaringMethod == null ? "!" : "!!");
-                lw.Write("{0}", QuoteIdentifier(type.Name));
-            }
-            else if (type.IsArray)
-            {
-                WriteSignatureType(lw, type, TypeLocation.General);
-            }
-            else
-            {
-                WriteModuleOrAssemblyRef(lw, type.Module);
-                WriteTypeName(lw, type);
-            }
+             WriteSignatureType(lw, type, TypeLocation.General, true, true);
         }
 
         static void WriteBytes(LineWriter lw, byte[] buf, bool data)

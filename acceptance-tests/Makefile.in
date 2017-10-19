@@ -139,6 +139,7 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOEHM_DEFINES = @BOEHM_DEFINES@
+BREAKPOINT = @BREAKPOINT@
 BTLS_ARCH = @BTLS_ARCH@
 BTLS_CFLAGS = @BTLS_CFLAGS@
 BTLS_CMAKE_ARGS = @BTLS_CMAKE_ARGS@
@@ -179,12 +180,27 @@ EXEEXT = @EXEEXT@
 FGREP = @FGREP@
 GDKX11 = @GDKX11@
 GETTEXT_MACRO_VERSION = @GETTEXT_MACRO_VERSION@
+GINT_TO_POINTER = @GINT_TO_POINTER@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
+GNUC_NORETURN = @GNUC_NORETURN@
+GNUC_PRETTY = @GNUC_PRETTY@
+GNUC_UNUSED = @GNUC_UNUSED@
+GPOINTER_TO_INT = @GPOINTER_TO_INT@
+GPOINTER_TO_UINT = @GPOINTER_TO_UINT@
 GREP = @GREP@
+GSIZE = @GSIZE@
+GSIZE_FORMAT = @GSIZE_FORMAT@
 GTKX11 = @GTKX11@
+GUINT_TO_POINTER = @GUINT_TO_POINTER@
+G_GINT32_FORMAT = @G_GINT32_FORMAT@
+G_GINT64_FORMAT = @G_GINT64_FORMAT@
+G_GUINT32_FORMAT = @G_GUINT32_FORMAT@
+G_GUINT64_FORMAT = @G_GUINT64_FORMAT@
+G_HAVE_ISO_VARARGS = @G_HAVE_ISO_VARARGS@
+HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_MSGFMT = @HAVE_MSGFMT@
 HOST_CC = @HOST_CC@
 INSTALL = @INSTALL@
@@ -229,6 +245,8 @@ NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+ORDER = @ORDER@
+OS = @OS@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
@@ -238,15 +256,19 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
+PATHSEP = @PATHSEP@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PIDTYPE = @PIDTYPE@
 PKG_CONFIG = @PKG_CONFIG@
 PLATFORM_AOT_SUFFIX = @PLATFORM_AOT_SUFFIX@
 RANLIB = @RANLIB@
+SEARCHSEP = @SEARCHSEP@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SGEN_DEFINES = @SGEN_DEFINES@
 SHARED_CFLAGS = @SHARED_CFLAGS@
 SHELL = @SHELL@
+SIZEOF_VOID_P = @SIZEOF_VOID_P@
 SQLITE = @SQLITE@
 SQLITE3 = @SQLITE3@
 STRIP = @STRIP@
@@ -319,6 +341,7 @@ mkdir_p = @mkdir_p@
 mono_build_root = @mono_build_root@
 mono_cfg_dir = @mono_cfg_dir@
 mono_runtime = @mono_runtime@
+ninja = @ninja@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
 prefix = @prefix@
@@ -5808,7 +5831,7 @@ commit-bump-current-ms-test-suite:
 
 check-profiler-stress:
 	@$(MAKE) validate-benchmarker RESET_VERSIONS=1
-	cd profiler-stress && $(MCS) -target:exe $(addprefix -r:, $(SYS_REFS)) -out:runner.exe @runner.exe.sources
+	cd profiler-stress && $(MCS) -debug -define:ARCH_$(arch_target) -target:exe $(addprefix -r:, $(SYS_REFS)) -out:runner.exe @runner.exe.sources
 	cd profiler-stress && $(RUNTIME) runner.exe
 check-roslyn:
 	@$(MAKE) validate-roslyn RESET_VERSIONS=1
@@ -5895,9 +5918,11 @@ GCStressTests.exe: $(CORECLR_STRESSTEST_RUNNER_CS_SRC)
 check-ms-test-suite: $(CLASS)/nunitlite.dll
 	@if $(MAKE) validate-ms-test-suite RESET_VERSIONS=1; then \
 		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance build MCS="$(MCS) -debug:portable -t:library -warn:1 -r:$(CLASS)/nunitlite.dll" && \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug:portable -t:library -warn:1 -r:$(CLASS)/nunitlite.dll" && \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/System.Linq.Expressions build MCS="$(MCS) -debug:portable -t:library -warn:1 -r:$(CLASS)/nunitlite.dll" && \
 		$(MAKE) -C $(MSTESTSUITE_PATH)/conformance run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-lite-console.exe -exclude=MonoBug,BadTest -format:nunit2" NUNIT_XML_RESULT="-result:$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-conformance.xml" || EXIT_CODE=1; \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup build MCS="$(MCS) -debug:portable -warn:1" && \
-		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run MONO="$(RUNTIME)" || EXIT_CODE=1; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/systemruntimebringup run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-lite-console.exe -exclude=MonoBug,BadTest -format:nunit2" NUNIT_XML_RESULT="-result:$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-systemruntimebringup.xml" || EXIT_CODE=1; \
+		$(MAKE) -C $(MSTESTSUITE_PATH)/System.Linq.Expressions run NUNIT-CONSOLE="$(RUNTIME) $(CLASS)/nunit-lite-console.exe -exclude=MonoBug,BadTest -format:nunit2" NUNIT_XML_RESULT="-result:$(abs_top_builddir)/acceptance-tests/TestResult-ms-test-suite-systemlinqexpressions.xml" || EXIT_CODE=1; \
 		exit $$EXIT_CODE; \
 	else \
 		echo "*** [ms-test-suite] Getting the repository failed, you probably don't have access to this Xamarin-internal resource. Skipping."; \

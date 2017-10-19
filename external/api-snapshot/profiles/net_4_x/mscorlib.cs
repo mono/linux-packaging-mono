@@ -14414,7 +14414,6 @@ namespace System.Runtime.InteropServices
         public static bool AreComObjectsAvailableForCleanup() { throw null; }
         [System.MonoTODOAttribute]
         public static object BindToMoniker(string monikerName) { throw null; }
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.InternalCall)]public static System.IntPtr BufferToBSTR(System.Array ptr, int slen) { throw null; }
         [System.MonoTODOAttribute]
         public static void ChangeWrapperHandleStrength(object otp, bool fIsWeak) { }
         [System.MonoTODOAttribute]

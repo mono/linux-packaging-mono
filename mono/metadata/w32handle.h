@@ -24,16 +24,11 @@
 
 typedef enum {
 	MONO_W32HANDLE_UNUSED = 0,
-	MONO_W32HANDLE_FILE,
-	MONO_W32HANDLE_CONSOLE,
-	MONO_W32HANDLE_THREAD,
 	MONO_W32HANDLE_SEM,
 	MONO_W32HANDLE_MUTEX,
 	MONO_W32HANDLE_EVENT,
-	MONO_W32HANDLE_SOCKET,
 	MONO_W32HANDLE_FIND,
 	MONO_W32HANDLE_PROCESS,
-	MONO_W32HANDLE_PIPE,
 	MONO_W32HANDLE_NAMEDMUTEX,
 	MONO_W32HANDLE_NAMEDSEM,
 	MONO_W32HANDLE_NAMEDEVENT,
@@ -53,7 +48,7 @@ typedef struct
 	void (*close)(gpointer handle, gpointer data);
 
 	/* mono_w32handle_signal_and_wait */
-	void (*signal)(gpointer signal);
+	void (*signal)(gpointer signal, gpointer data);
 
 	/* Called by mono_w32handle_wait_one and mono_w32handle_wait_multiple,
 	 * with the handle locked (shared handles aren't locked.)
@@ -99,8 +94,6 @@ typedef enum {
 	MONO_W32HANDLE_CAP_SPECIAL_WAIT = 0x08,
 } MonoW32HandleCapability;
 
-extern guint32 mono_w32handle_fd_reserve;
-
 void
 mono_w32handle_init (void);
 
@@ -114,7 +107,7 @@ gpointer
 mono_w32handle_new (MonoW32HandleType type, gpointer handle_specific);
 
 gpointer
-mono_w32handle_new_fd (MonoW32HandleType type, int fd, gpointer handle_specific);
+mono_w32handle_duplicate (gpointer handle);
 
 gboolean
 mono_w32handle_close (gpointer handle);
@@ -135,19 +128,10 @@ void
 mono_w32handle_dump (void);
 
 void
-mono_w32handle_ref (gpointer handle);
-
-void
-mono_w32handle_unref (gpointer handle);
-
-void
 mono_w32handle_register_capabilities (MonoW32HandleType type, MonoW32HandleCapability caps);
 
 gboolean
 mono_w32handle_test_capabilities (gpointer handle, MonoW32HandleCapability caps);
-
-void
-mono_w32handle_force_close (gpointer handle, gpointer data);
 
 void
 mono_w32handle_set_signal_state (gpointer handle, gboolean state, gboolean broadcast);

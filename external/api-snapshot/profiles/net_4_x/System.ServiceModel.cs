@@ -8203,7 +8203,6 @@ namespace System.ServiceModel.Description
         public System.Collections.Generic.KeyedByTypeCollection<System.ServiceModel.Description.IEndpointBehavior> Behaviors { get { throw null; } }
         public System.ServiceModel.Channels.Binding Binding { get { throw null; } set { } }
         public System.ServiceModel.Description.ContractDescription Contract { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
         public System.Collections.ObjectModel.KeyedCollection<System.Type, System.ServiceModel.Description.IEndpointBehavior> EndpointBehaviors { get { throw null; } }
         public bool IsSystemEndpoint { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
         public System.Uri ListenUri { get { throw null; } set { } }

@@ -19,10 +19,24 @@ namespace System.Collections.ObjectModel
     [DebuggerTypeProxy(typeof(CollectionDebugView<>))]
     [DebuggerDisplay("Count = {Count}")]
 #if !MONO
-    [System.Runtime.CompilerServices.TypeForwardedFrom("WindowsBase, Version=3.0.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
+    [System.Runtime.CompilerServices.TypeForwardedFrom("WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35")]
 #endif
     public class ObservableCollection<T> : Collection<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
+        //------------------------------------------------------
+        //
+        //  Private Fields
+        //
+        //------------------------------------------------------
+
+        #region Private Fields
+
+        private SimpleMonitor _monitor; // Lazily allocated only when a subclass calls BlockReentrancy() or during serialization. Do not rename (binary serialization)
+
+        [NonSerialized]
+        private int _blockReentrancyCount;
+        #endregion Private Fields
+
         //------------------------------------------------------
         //
         //  Constructors
@@ -363,8 +377,11 @@ namespace System.Collections.ObjectModel
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            _blockReentrancyCount = _monitor._busyCount;
-            _monitor._collection = this;
+            if (_monitor != null)
+            {
+                _blockReentrancyCount = _monitor._busyCount;
+                _monitor._collection = this;
+            }
         }
         #endregion Private Methods
 
@@ -378,11 +395,11 @@ namespace System.Collections.ObjectModel
 
         [Serializable]
 #if !MONO
-        [System.Runtime.CompilerServices.TypeForwardedFrom("WindowsBase, Version=3.0.0.0, Culture=Neutral, PublicKeyToken=31bf3856ad364e35")]
+        [System.Runtime.CompilerServices.TypeForwardedFrom("WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35")]
 #endif
         private sealed class SimpleMonitor : IDisposable
         {
-            internal int _busyCount; // Only used during (de)serialization to maintain compatibility with desktop.
+            internal int _busyCount; // Only used during (de)serialization to maintain compatibility with desktop. Do not rename (binary serialization)
 
             [NonSerialized]
             internal ObservableCollection<T> _collection;
@@ -400,20 +417,6 @@ namespace System.Collections.ObjectModel
         }
 
         #endregion Private Types
-
-        //------------------------------------------------------
-        //
-        //  Private Fields
-        //
-        //------------------------------------------------------
-
-        #region Private Fields
-
-        private SimpleMonitor _monitor; // Lazily allocated only when a subclass calls BlockReentrancy() or during serialization.
-
-        [NonSerialized]
-        private int _blockReentrancyCount;
-        #endregion Private Fields
     }
 
     internal static class EventArgsCache

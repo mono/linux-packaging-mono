@@ -56,7 +56,7 @@
 #include <mono/utils/mono-rand.h>
 #include <mono/utils/json.h>
 #include <mono/utils/mono-threads-coop.h>
-#include <mono/profiler/mono-profiler-aot.h>
+#include <mono/profiler/aot.h>
 #include <mono/utils/w32api.h>
 
 #include "aot-compiler.h"
@@ -2897,7 +2897,7 @@ encode_klass_ref_inner (MonoAotCompile *acfg, MonoClass *klass, guint8 *buf, gui
 		if (par->gshared_constraint) {
 			MonoGSharedGenericParam *gpar = (MonoGSharedGenericParam*)par;
 			encode_type (acfg, par->gshared_constraint, p, &p);
-			encode_klass_ref (acfg, mono_class_from_generic_parameter (gpar->parent, NULL, klass->byval_arg.type == MONO_TYPE_MVAR), p, &p);
+			encode_klass_ref (acfg, mono_class_from_generic_parameter_internal (gpar->parent), p, &p);
 		} else {
 			encode_value (klass->byval_arg.type, p, &p);
 			encode_value (mono_type_get_generic_param_num (&klass->byval_arg), p, &p);
@@ -3977,6 +3977,8 @@ add_wrappers (MonoAotCompile *acfg)
 			if ((m = mono_gc_get_managed_allocator_by_type (i, MANAGED_ALLOCATOR_REGULAR)))
 				add_method (acfg, m);
 			if ((m = mono_gc_get_managed_allocator_by_type (i, MANAGED_ALLOCATOR_SLOW_PATH)))
+				add_method (acfg, m);
+			if ((m = mono_gc_get_managed_allocator_by_type (i, MANAGED_ALLOCATOR_PROFILER)))
 				add_method (acfg, m);
 		}
 
@@ -5751,7 +5753,8 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 		encode_value (patch_info->data.index, p, &p);
 		break;
 	case MONO_PATCH_INFO_INTERNAL_METHOD:
-	case MONO_PATCH_INFO_JIT_ICALL_ADDR: {
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR:
+	case MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL: {
 		guint32 len = strlen (patch_info->data.name);
 
 		encode_value (len, p, &p);
@@ -5816,6 +5819,8 @@ encode_patch (MonoAotCompile *acfg, MonoJumpInfo *patch_info, guint8 *buf, guint
 		encode_field_info (acfg, patch_info->data.field, p, &p);
 		break;
 	case MONO_PATCH_INFO_INTERRUPTION_REQUEST_FLAG:
+		break;
+	case MONO_PATCH_INFO_PROFILER_ALLOCATION_COUNT:
 		break;
 	case MONO_PATCH_INFO_RGCTX_FETCH:
 	case MONO_PATCH_INFO_RGCTX_SLOT_INDEX: {
@@ -6737,10 +6742,6 @@ emit_trampolines (MonoAotCompile *acfg)
 			if (tramp_type == MONO_TRAMPOLINE_GENERIC_VIRTUAL_REMOTING)
 				continue;
 #endif
-#ifndef MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD
-			if (tramp_type == MONO_TRAMPOLINE_HANDLER_BLOCK_GUARD)
-				continue;
-#endif
 			mono_arch_create_generic_trampoline ((MonoTrampolineType)tramp_type, &info, acfg->aot_opts.use_trampolines_page? 2: TRUE);
 			emit_trampoline (acfg, acfg->got_offset, info);
 		}
@@ -6820,17 +6821,12 @@ emit_trampolines (MonoAotCompile *acfg)
 			}
 		}
 
-#ifdef MONO_ARCH_HAVE_HANDLER_BLOCK_GUARD_AOT
-		mono_arch_create_handler_block_trampoline (&info, TRUE);
-		emit_trampoline (acfg, acfg->got_offset, info);
-#endif
-
-#endif /* #ifdef MONO_ARCH_HAVE_FULL_AOT_TRAMPOLINES */
-
 		if (mono_aot_mode_is_interp (&acfg->aot_opts)) {
 			mono_arch_get_enter_icall_trampoline (&info);
 			emit_trampoline (acfg, acfg->got_offset, info);
 		}
+
+#endif /* #ifdef MONO_ARCH_HAVE_FULL_AOT_TRAMPOLINES */
 
 		/* Emit trampolines which are numerous */
 
@@ -7921,6 +7917,7 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 
 	g_hash_table_insert (acfg->method_to_cfg, cfg->orig_method, cfg);
 
+	/* Update global stats while holding a lock. */
 	mono_update_jit_stats (cfg);
 
 	/*
@@ -11373,6 +11370,13 @@ add_preinit_got_slots (MonoAotCompile *acfg)
 	get_got_offset (acfg, FALSE, ji);
 	get_got_offset (acfg, TRUE, ji);
 
+	/* Called by native-to-managed wrappers on possibly unattached threads */
+	ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoJumpInfo));
+	ji->type = MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL;
+	ji->data.name = "mono_threads_attach_coop";
+	get_got_offset (acfg, FALSE, ji);
+	get_got_offset (acfg, TRUE, ji);
+
 	for (i = 0; i < sizeof (preinited_jit_icalls) / sizeof (char*); ++i) {
 		ji = (MonoJumpInfo *)mono_mempool_alloc0 (acfg->mempool, sizeof (MonoAotCompile));
 		ji->type = MONO_PATCH_INFO_INTERNAL_METHOD;
@@ -11688,8 +11692,14 @@ mono_compile_assembly (MonoAssembly *ass, guint32 opts, const char *aot_options)
 			acfg->tmpfname = g_strdup_printf ("%s.s", acfg->image->name);
 		acfg->fp = fopen (acfg->tmpfname, "w+");
 	} else {
-		int i = g_file_open_tmp ("mono_aot_XXXXXX", &acfg->tmpfname, NULL);
-		acfg->fp = fdopen (i, "w+");
+		if (strcmp (acfg->aot_opts.temp_path, "") == 0) {
+			int i = g_file_open_tmp ("mono_aot_XXXXXX", &acfg->tmpfname, NULL);
+			acfg->fp = fdopen (i, "w+");
+		} else {
+			acfg->tmpbasename = g_build_filename (acfg->aot_opts.temp_path, "temp", NULL);
+			acfg->tmpfname = g_strdup_printf ("%s.s", acfg->tmpbasename);
+			acfg->fp = fopen (acfg->tmpfname, "w+");
+		}
 	}
 	if (acfg->fp == 0 && !acfg->aot_opts.llvm_only) {
 		aot_printerrf (acfg, "Unable to open file '%s': %s\n", acfg->tmpfname, strerror (errno));

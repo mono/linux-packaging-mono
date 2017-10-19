@@ -286,7 +286,7 @@ mono_gchandle_free (o_handle);
 
             <div class="mapi-declaration mapi-section">Syntax</div>
             <div class="mapi-prototype">guint32
-mono_gchandle_new (GCObject *obj, gboolean pinned)
+mono_gchandle_new (MonoObject *obj, gboolean pinned)
 
 </div>
             <p />
@@ -334,7 +334,7 @@ mono_gchandle_new_weakref (GCObject *obj, gboolean track_resurrection)
             <div class="mapi-ptr"></div>
 
             <div class="mapi-declaration mapi-section">Syntax</div>
-            <div class="mapi-prototype">GCObject*
+            <div class="mapi-prototype">MonoObject*
 mono_gchandle_get_target (guint32 gchandle)
 
 </div>

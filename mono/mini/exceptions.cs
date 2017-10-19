@@ -1427,6 +1427,7 @@ class Tests
 		return 0;
 	}
 
+	[Category ("!WASM")] // reported as https://github.com/kripken/emscripten/issues/5603
 	public static int test_0_simple_double_casts () {
 
 		double d = 0xffffffff;
@@ -2316,7 +2317,6 @@ class Tests
 		Console.WriteLine ();
 	}
 
-	[Category ("!INTERPRETER")]
 	[Category ("!BITCODE")]
 	public static int test_0_rethrow_stacktrace () {
 		// Check that rethrowing an exception preserves the original stack trace
@@ -2870,6 +2870,7 @@ class Tests
 		}
 	}
 
+	[Category ("!BITCODE")]
 	public static int test_1_basic_filter_catch () {
 		try {
 			MyException e = new MyException ("");
@@ -2881,6 +2882,7 @@ class Tests
 		return 0;
 	}
 
+	[Category ("!BITCODE")]
 	public static int test_1234_complicated_filter_catch () {
 		string res = "init";
 		try {
@@ -2922,6 +2924,7 @@ class Tests
     [MethodImpl( MethodImplOptions.NoInlining )]
     private static bool ExceptionFilter( byte x, FooStruct item ) => true;
 
+	[Category ("!BITCODE")]
 	public static int test_0_filter_caller_area () {
         try {
             throw new Exception();

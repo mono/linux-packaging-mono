@@ -27,6 +27,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Security;
+using System.Threading;
 using System.Threading.Tasks;
 using SSA = System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -70,8 +71,6 @@ namespace Mono.Security.Interface
 
 		Task AuthenticateAsServerAsync (X509Certificate serverCertificate, bool clientCertificateRequired, SSA.SslProtocols enabledSslProtocols, bool checkCertificateRevocation);
 
-		void Flush ();
-
 		int Read (byte[] buffer, int offset, int count);
 
 		void Write (byte[] buffer);
@@ -85,6 +84,8 @@ namespace Mono.Security.Interface
 		IAsyncResult BeginWrite (byte[] buffer, int offset, int count, AsyncCallback asyncCallback, object asyncState);
 
 		void EndWrite (IAsyncResult asyncResult);
+
+		Task WriteAsync (byte[] buffer, int offset, int count, CancellationToken cancellationToken);
 
 		Task ShutdownAsync ();
 

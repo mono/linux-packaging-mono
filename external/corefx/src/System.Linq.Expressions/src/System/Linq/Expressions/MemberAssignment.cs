@@ -93,6 +93,26 @@ namespace System.Linq.Expressions
 
             // Null paramName as there are two paths here with different parameter names at the API
             TypeUtils.ValidateType(decType, null);
+
+#if __MonoCS__
+            if (member is PropertyInfo pi)
+            {
+                if (!pi.CanWrite)
+                {
+                    throw Error.PropertyDoesNotHaveSetter(pi, nameof(member));
+                }
+
+                memberType = pi.PropertyType;
+            }
+            else if (member is FieldInfo fi)
+            {
+                memberType = fi.FieldType;
+            }
+            else
+            {
+                throw Error.ArgumentMustBeFieldInfoOrPropertyInfo(nameof(member));
+            }
+#else
             switch (member)
             {
                 case PropertyInfo pi:
@@ -111,6 +131,7 @@ namespace System.Linq.Expressions
                 default:
                     throw Error.ArgumentMustBeFieldInfoOrPropertyInfo(nameof(member));
             }
+#endif
         }
     }
 }

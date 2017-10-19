@@ -732,13 +732,12 @@ namespace System.Security.Cryptography.Xml
     public partial class Reference
     {
         public Reference() { }
-        [System.MonoTODOAttribute("There is no description about how it is used.")]
         public Reference(System.IO.Stream stream) { }
         public Reference(string uri) { }
         public string DigestMethod { get { throw null; } set { } }
         public byte[] DigestValue { get { throw null; } set { } }
         public string Id { get { throw null; } set { } }
-        public System.Security.Cryptography.Xml.TransformChain TransformChain { get { throw null; } [System.Runtime.InteropServices.ComVisibleAttribute(false)]set { } }
+        public System.Security.Cryptography.Xml.TransformChain TransformChain { get { throw null; } set { } }
         public string Type { get { throw null; } set { } }
         public string Uri { get { throw null; } set { } }
         public void AddTransform(System.Security.Cryptography.Xml.Transform transform) { }
@@ -826,7 +825,13 @@ namespace System.Security.Cryptography.Xml
         public const string XmlDsigMinimalCanonicalizationUrl = "http://www.w3.org/2000/09/xmldsig#minimal";
         public const string XmlDsigNamespaceUrl = "http://www.w3.org/2000/09/xmldsig#";
         public const string XmlDsigRSASHA1Url = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+        public const string XmlDsigRSASHA256Url = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
+        public const string XmlDsigRSASHA384Url = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384";
+        public const string XmlDsigRSASHA512Url = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
         public const string XmlDsigSHA1Url = "http://www.w3.org/2000/09/xmldsig#sha1";
+        public const string XmlDsigSHA256Url = "http://www.w3.org/2001/04/xmlenc#sha256";
+        public const string XmlDsigSHA384Url = "http://www.w3.org/2001/04/xmldsig-more#sha384";
+        public const string XmlDsigSHA512Url = "http://www.w3.org/2001/04/xmlenc#sha512";
         public const string XmlDsigXPathTransformUrl = "http://www.w3.org/TR/1999/REC-xpath-19991116";
         public const string XmlDsigXsltTransformUrl = "http://www.w3.org/TR/1999/REC-xslt-19991116";
         public const string XmlLicenseTransformUrl = "urn:mpeg:mpeg21:2003:01-REL-R-NS:licenseTransform";
@@ -836,7 +841,6 @@ namespace System.Security.Cryptography.Xml
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Security.Cryptography.Xml.EncryptedXml EncryptedXml { get { throw null; } set { } }
         public System.Security.Cryptography.Xml.KeyInfo KeyInfo { get { throw null; } set { } }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Xml.XmlResolver Resolver { set { } }
         public System.Security.Cryptography.Xml.Signature Signature { get { throw null; } }
         public string SignatureLength { get { throw null; } }
@@ -865,16 +869,11 @@ namespace System.Security.Cryptography.Xml
     {
         protected Transform() { }
         public string Algorithm { get { throw null; } set { } }
-        [System.MonoTODOAttribute]
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Xml.XmlElement Context { get { throw null; } set { } }
         public abstract System.Type[] InputTypes { get; }
         public abstract System.Type[] OutputTypes { get; }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Collections.Hashtable PropagatedNamespaces { get { throw null; } }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public System.Xml.XmlResolver Resolver { set { } }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public virtual byte[] GetDigestedOutput(System.Security.Cryptography.HashAlgorithm hash) { throw null; }
         protected abstract System.Xml.XmlNodeList GetInnerXml();
         public abstract object GetOutput();
@@ -904,14 +903,10 @@ namespace System.Security.Cryptography.Xml
         public override System.Type[] InputTypes { get { throw null; } }
         public override System.Type[] OutputTypes { get { throw null; } }
         public void AddExceptUri(string uri) { }
-        [System.MonoTODOAttribute("Verify")]
         protected override System.Xml.XmlNodeList GetInnerXml() { throw null; }
-        [System.MonoTODOAttribute("Verify processing of ExceptURIs")]
         public override object GetOutput() { throw null; }
         public override object GetOutput(System.Type type) { throw null; }
-        [System.MonoTODOAttribute("verify")]
         protected virtual bool IsTargetElement(System.Xml.XmlElement inputElement, string idValue) { throw null; }
-        [System.MonoTODOAttribute("This doesn't seem to work in .NET")]
         public override void LoadInnerXml(System.Xml.XmlNodeList nodeList) { }
         public override void LoadInput(object obj) { }
     }
@@ -932,7 +927,6 @@ namespace System.Security.Cryptography.Xml
         public XmlDsigC14NTransform(bool includeComments) { }
         public override System.Type[] InputTypes { get { throw null; } }
         public override System.Type[] OutputTypes { get { throw null; } }
-        [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         public override byte[] GetDigestedOutput(System.Security.Cryptography.HashAlgorithm hash) { throw null; }
         protected override System.Xml.XmlNodeList GetInnerXml() { throw null; }
         public override object GetOutput() { throw null; }
@@ -983,7 +977,6 @@ namespace System.Security.Cryptography.Xml
         public override System.Type[] InputTypes { get { throw null; } }
         public override System.Type[] OutputTypes { get { throw null; } }
         protected override System.Xml.XmlNodeList GetInnerXml() { throw null; }
-        [System.MonoTODOAttribute("Evaluation of extension function here() results in different from MS.NET (is MS.NET really correct??).")]
         public override object GetOutput() { throw null; }
         public override object GetOutput(System.Type type) { throw null; }
         public override void LoadInnerXml(System.Xml.XmlNodeList nodeList) { }
@@ -1007,13 +1000,10 @@ namespace System.Security.Cryptography.Xml
         public System.Security.Cryptography.Xml.IRelDecryptor Decryptor { get { throw null; } set { } }
         public override System.Type[] InputTypes { get { throw null; } }
         public override System.Type[] OutputTypes { get { throw null; } }
-        [System.MonoTODOAttribute]
         protected override System.Xml.XmlNodeList GetInnerXml() { throw null; }
-        [System.MonoTODOAttribute]
         public override object GetOutput() { throw null; }
         public override object GetOutput(System.Type type) { throw null; }
         public override void LoadInnerXml(System.Xml.XmlNodeList nodeList) { }
-        [System.MonoTODOAttribute]
         public override void LoadInput(object obj) { }
     }
 }

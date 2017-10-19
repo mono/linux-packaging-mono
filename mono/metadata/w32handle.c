@@ -34,6 +34,7 @@ typedef struct {
 	MonoW32HandleType type;
 	guint ref;
 	gboolean signalled;
+	gboolean in_use;
 	mono_mutex_t signal_mutex;
 	mono_cond_t signal_cond;
 	gpointer specific;
@@ -50,10 +51,7 @@ static MonoW32HandleOps *handle_ops [MONO_W32HANDLE_COUNT];
 #define SLOT_OFFSET(x)	(x % HANDLE_PER_SLOT)
 
 static MonoW32HandleBase *private_handles [SLOT_MAX];
-static guint32 private_handles_count = 0;
-static guint32 private_handles_slots_count = 0;
-
-guint32 mono_w32handle_fd_reserve;
+static guint32 private_handles_size = 0;
 
 /*
  * This is an internal handle which is used for handling waiting for multiple handles.
@@ -66,20 +64,6 @@ static mono_cond_t global_signal_cond;
 static mono_mutex_t scan_mutex;
 
 static gboolean shutting_down = FALSE;
-
-static gboolean
-type_is_fd (MonoW32HandleType type)
-{
-	switch (type) {
-	case MONO_W32HANDLE_FILE:
-	case MONO_W32HANDLE_CONSOLE:
-	case MONO_W32HANDLE_SOCKET:
-	case MONO_W32HANDLE_PIPE:
-		return TRUE;
-	default:
-		return FALSE;
-	}
-}
 
 static gboolean
 mono_w32handle_lookup_data (gpointer handle, MonoW32HandleBase **handle_data)
@@ -179,6 +163,17 @@ mono_w32handle_issignalled (gpointer handle)
 }
 
 static void
+mono_w32handle_set_in_use (gpointer handle, gboolean in_use)
+{
+	MonoW32HandleBase *handle_data;
+
+	if (!mono_w32handle_lookup_data (handle, &handle_data))
+		g_assert_not_reached ();
+
+	handle_data->in_use = in_use;
+}
+
+static void
 mono_w32handle_lock_signal_mutex (void)
 {
 #ifdef DEBUG
@@ -197,6 +192,12 @@ mono_w32handle_unlock_signal_mutex (void)
 
 	mono_os_mutex_unlock (&global_signal_mutex);
 }
+
+static void
+mono_w32handle_ref (gpointer handle);
+
+static void
+mono_w32handle_unref (gpointer handle);
 
 void
 mono_w32handle_lock_handle (gpointer handle)
@@ -261,19 +262,6 @@ mono_w32handle_init (void)
 	g_assert ((sizeof (handle_ops) / sizeof (handle_ops[0]))
 		  == MONO_W32HANDLE_COUNT);
 
-	/* This is needed by the code in mono_w32handle_new_internal */
-	mono_w32handle_fd_reserve = (eg_getdtablesize () + (HANDLE_PER_SLOT - 1)) & ~(HANDLE_PER_SLOT - 1);
-
-	do {
-		/*
-		 * The entries in private_handles reserved for fds are allocated lazily to
-		 * save memory.
-		 */
-
-		private_handles_count += HANDLE_PER_SLOT;
-		private_handles_slots_count ++;
-	} while(mono_w32handle_fd_reserve > private_handles_count);
-
 	mono_os_mutex_init (&scan_mutex);
 
 	mono_os_cond_init (&global_signal_cond);
@@ -297,22 +285,6 @@ mono_w32handle_cleanup (void)
 static gsize
 mono_w32handle_ops_typesize (MonoW32HandleType type);
 
-static void mono_w32handle_init_handle (MonoW32HandleBase *handle,
-			       MonoW32HandleType type, gpointer handle_specific)
-{
-	g_assert (handle->ref == 0);
-
-	handle->type = type;
-	handle->signalled = FALSE;
-	handle->ref = 1;
-
-	mono_os_cond_init (&handle->signal_cond);
-	mono_os_mutex_init (&handle->signal_mutex);
-
-	if (handle_specific)
-		handle->specific = g_memdup (handle_specific, mono_w32handle_ops_typesize (type));
-}
-
 /*
  * mono_w32handle_new_internal:
  * @type: Init handle to this type
@@ -334,15 +306,16 @@ static guint32 mono_w32handle_new_internal (MonoW32HandleType type,
 	 * descriptors
 	 */
 
-	if (last < mono_w32handle_fd_reserve) {
-		last = mono_w32handle_fd_reserve;
+	if (last == 0) {
+		/* We need to go from 1 since a handle of value 0 can be considered invalid in managed code */
+		last = 1;
 	} else {
 		retry = TRUE;
 	}
 
 again:
 	count = last;
-	for(i = SLOT_INDEX (count); i < private_handles_slots_count; i++) {
+	for(i = SLOT_INDEX (count); i < private_handles_size; i++) {
 		if (private_handles [i]) {
 			for (k = SLOT_OFFSET (count); k < HANDLE_PER_SLOT; k++) {
 				MonoW32HandleBase *handle = &private_handles [i][k];
@@ -350,7 +323,18 @@ again:
 				if(handle->type == MONO_W32HANDLE_UNUSED) {
 					last = count + 1;
 
-					mono_w32handle_init_handle (handle, type, handle_specific);
+					g_assert (handle->ref == 0);
+
+					handle->type = type;
+					handle->signalled = FALSE;
+					handle->ref = 1;
+
+					mono_os_cond_init (&handle->signal_cond);
+					mono_os_mutex_init (&handle->signal_mutex);
+
+					if (handle_specific)
+						handle->specific = g_memdup (handle_specific, mono_w32handle_ops_typesize (type));
+
 					return (count);
 				}
 				count++;
@@ -358,123 +342,90 @@ again:
 		}
 	}
 
-	if(retry && last > mono_w32handle_fd_reserve) {
+	if (retry) {
 		/* Try again from the beginning */
-		last = mono_w32handle_fd_reserve;
+		last = 1;
+		retry = FALSE;
 		goto again;
 	}
 
 	/* Will need to expand the array.  The caller will sort it out */
 
-	return(0);
+	return G_MAXUINT32;
 }
 
 gpointer
 mono_w32handle_new (MonoW32HandleType type, gpointer handle_specific)
 {
-	guint32 handle_idx = 0;
+	guint32 handle_idx;
 	gpointer handle;
 
 	g_assert (!shutting_down);
 
-	g_assert(!type_is_fd(type));
-
 	mono_os_mutex_lock (&scan_mutex);
 
-	while ((handle_idx = mono_w32handle_new_internal (type, handle_specific)) == 0) {
+	while ((handle_idx = mono_w32handle_new_internal (type, handle_specific)) == G_MAXUINT32) {
 		/* Try and expand the array, and have another go */
-		int idx = SLOT_INDEX (private_handles_count);
-		if (idx >= SLOT_MAX) {
-			break;
+		if (private_handles_size >= SLOT_MAX) {
+			mono_os_mutex_unlock (&scan_mutex);
+
+			/* We ran out of slots */
+			mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_W32HANDLE, "%s: failed to create %s handle", __func__, mono_w32handle_ops_typename (type));
+			return INVALID_HANDLE_VALUE;
 		}
 
-		private_handles [idx] = g_new0 (MonoW32HandleBase, HANDLE_PER_SLOT);
-
-		private_handles_count += HANDLE_PER_SLOT;
-		private_handles_slots_count ++;
+		private_handles [private_handles_size ++] = g_new0 (MonoW32HandleBase, HANDLE_PER_SLOT);
 	}
 
 	mono_os_mutex_unlock (&scan_mutex);
-
-	if (handle_idx == 0) {
-		/* We ran out of slots */
-		handle = INVALID_HANDLE_VALUE;
-		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_W32HANDLE, "%s: failed to create %s handle", __func__, mono_w32handle_ops_typename (type));
-		goto done;
-	}
-
-	/* Make sure we left the space for fd mappings */
-	g_assert (handle_idx >= mono_w32handle_fd_reserve);
 
 	handle = GUINT_TO_POINTER (handle_idx);
 
 	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_W32HANDLE, "%s: create %s handle %p", __func__, mono_w32handle_ops_typename (type), handle);
 
-done:
 	return(handle);
 }
 
-gpointer mono_w32handle_new_fd (MonoW32HandleType type, int fd,
-			      gpointer handle_specific)
+static gboolean
+mono_w32handle_ref_core (gpointer handle, MonoW32HandleBase *handle_data);
+
+static gboolean
+mono_w32handle_unref_core (gpointer handle, MonoW32HandleBase *handle_data);
+
+static void
+w32handle_destroy (gpointer handle);
+
+gpointer
+mono_w32handle_duplicate (gpointer handle)
 {
 	MonoW32HandleBase *handle_data;
-	int fd_index, fd_offset;
 
-	g_assert (!shutting_down);
+	if (handle == INVALID_HANDLE_VALUE)
+		return handle;
+	if (!mono_w32handle_lookup_data (handle, &handle_data))
+		return INVALID_HANDLE_VALUE;
 
-	g_assert(type_is_fd(type));
+	if (!mono_w32handle_ref_core (handle, handle_data))
+		g_error ("%s: failed to ref handle %p", __func__, handle);
 
-	if (fd >= mono_w32handle_fd_reserve) {
-		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_W32HANDLE, "%s: failed to create %s handle, fd is too big", __func__, mono_w32handle_ops_typename (type));
-
-		return(GUINT_TO_POINTER (INVALID_HANDLE_VALUE));
-	}
-
-	fd_index = SLOT_INDEX (fd);
-	fd_offset = SLOT_OFFSET (fd);
-
-	/* Initialize the array entries on demand */
-	if (!private_handles [fd_index]) {
-		mono_os_mutex_lock (&scan_mutex);
-
-		if (!private_handles [fd_index])
-			private_handles [fd_index] = g_new0 (MonoW32HandleBase, HANDLE_PER_SLOT);
-
-		mono_os_mutex_unlock (&scan_mutex);
-	}
-
-	handle_data = &private_handles [fd_index][fd_offset];
-
-	if (handle_data->type != MONO_W32HANDLE_UNUSED) {
-		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_W32HANDLE, "%s: failed to create %s handle, fd is already in use", __func__, mono_w32handle_ops_typename (type));
-		/* FIXME: clean up this handle?  We can't do anything
-		 * with the fd, cos thats the new one
-		 */
-		return(GUINT_TO_POINTER (INVALID_HANDLE_VALUE));
-	}
-
-	mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_W32HANDLE, "%s: create %s handle %p", __func__, mono_w32handle_ops_typename (type), GUINT_TO_POINTER(fd));
-
-	mono_w32handle_init_handle (handle_data, type, handle_specific);
-
-	return(GUINT_TO_POINTER(fd));
+	return handle;
 }
 
 gboolean
 mono_w32handle_close (gpointer handle)
 {
+	MonoW32HandleBase *handle_data;
+	gboolean destroy;
+
 	if (handle == INVALID_HANDLE_VALUE)
 		return FALSE;
-	if (handle == (gpointer) 0 && mono_w32handle_get_type (handle) != MONO_W32HANDLE_CONSOLE) {
-		/* Problem: because we map file descriptors to the
-		 * same-numbered handle we can't tell the difference
-		 * between a bogus handle and the handle to stdin.
-		 * Assume that it's the console handle if that handle
-		 * exists... */
+	if (!mono_w32handle_lookup_data (handle, &handle_data))
 		return FALSE;
-	}
 
-	mono_w32handle_unref (handle);
+	destroy = mono_w32handle_unref_core (handle, handle_data);
+	if (destroy)
+		w32handle_destroy (handle);
+
 	return TRUE;
 }
 
@@ -499,15 +450,6 @@ mono_w32handle_lookup (gpointer handle, MonoW32HandleType type,
 	return(TRUE);
 }
 
-static gboolean
-mono_w32handle_ref_core (gpointer handle, MonoW32HandleBase *handle_data);
-
-static gboolean
-mono_w32handle_unref_core (gpointer handle, MonoW32HandleBase *handle_data);
-
-static void
-w32handle_destroy (gpointer handle);
-
 void
 mono_w32handle_foreach (gboolean (*on_each)(gpointer handle, gpointer data, gpointer user_data), gpointer user_data)
 {
@@ -518,7 +460,7 @@ mono_w32handle_foreach (gboolean (*on_each)(gpointer handle, gpointer data, gpoi
 
 	mono_os_mutex_lock (&scan_mutex);
 
-	for (i = SLOT_INDEX (0); i < private_handles_slots_count; i++) {
+	for (i = SLOT_INDEX (0); i < private_handles_size; i++) {
 		if (!private_handles [i])
 			continue;
 		for (k = SLOT_OFFSET (0); k < HANDLE_PER_SLOT; k++) {
@@ -614,14 +556,13 @@ mono_w32handle_unref_core (gpointer handle, MonoW32HandleBase *handle_data)
 	return new == 0;
 }
 
-void mono_w32handle_ref (gpointer handle)
+static void
+mono_w32handle_ref (gpointer handle)
 {
 	MonoW32HandleBase *handle_data;
 
-	if (!mono_w32handle_lookup_data (handle, &handle_data)) {
-		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_W32HANDLE, "%s: failed to ref handle %p, unknown handle", __func__, handle);
-		return;
-	}
+	if (!mono_w32handle_lookup_data (handle, &handle_data))
+		g_error ("%s: failed to ref handle %p, unknown handle", __func__, handle);
 
 	if (!mono_w32handle_ref_core (handle, handle_data))
 		g_error ("%s: failed to ref handle %p", __func__, handle);
@@ -646,6 +587,8 @@ w32handle_destroy (gpointer handle)
 	if (!mono_w32handle_lookup_data (handle, &handle_data))
 		g_error ("%s: unknown handle %p", __func__, handle);
 
+	g_assert (!handle_data->in_use);
+
 	type = handle_data->type;
 	handle_specific = handle_data->specific;
 
@@ -665,34 +608,24 @@ w32handle_destroy (gpointer handle)
 		close_func (handle, handle_specific);
 	}
 
+	memset (handle_specific, 0, mono_w32handle_ops_typesize (type));
+
 	g_free (handle_specific);
 }
 
 /* The handle must not be locked on entry to this function */
-void
+static void
 mono_w32handle_unref (gpointer handle)
 {
 	MonoW32HandleBase *handle_data;
 	gboolean destroy;
 
-	if (!mono_w32handle_lookup_data (handle, &handle_data)) {
-		mono_trace (G_LOG_LEVEL_DEBUG, MONO_TRACE_W32HANDLE, "%s: failed to unref handle %p, unknown handle",
-			__func__, handle);
-		return;
-	}
+	if (!mono_w32handle_lookup_data (handle, &handle_data))
+		g_error ("%s: failed to unref handle %p, unknown handle", __func__, handle);
 
 	destroy = mono_w32handle_unref_core (handle, handle_data);
 	if (destroy)
 		w32handle_destroy (handle);
-}
-
-static void
-mono_w32handle_ops_close (gpointer handle, gpointer data);
-
-void
-mono_w32handle_force_close (gpointer handle, gpointer data)
-{
-	mono_w32handle_ops_close (handle, data);
 }
 
 void
@@ -736,24 +669,6 @@ static void (*_wapi_handle_ops_get_close_func (MonoW32HandleType type))(gpointer
 }
 
 static void
-mono_w32handle_ops_close (gpointer handle, gpointer data)
-{
-	MonoW32HandleBase *handle_data;
-	MonoW32HandleType type;
-
-	if (!mono_w32handle_lookup_data (handle, &handle_data)) {
-		return;
-	}
-
-	type = handle_data->type;
-
-	if (handle_ops[type] != NULL &&
-	    handle_ops[type]->close != NULL) {
-		handle_ops[type]->close (handle, data);
-	}
-}
-
-static void
 mono_w32handle_ops_details (MonoW32HandleType type, gpointer data)
 {
 	if (handle_ops[type] != NULL &&
@@ -791,7 +706,7 @@ mono_w32handle_ops_signal (gpointer handle)
 	type = handle_data->type;
 
 	if (handle_ops[type] != NULL && handle_ops[type]->signal != NULL) {
-		handle_ops[type]->signal (handle);
+		handle_ops[type]->signal (handle, handle_data->specific);
 	}
 }
 
@@ -1043,13 +958,14 @@ signal_handle_and_unref (gpointer handle)
 	mono_os_cond_broadcast (cond);
 	mono_os_mutex_unlock (mutex);
 
-	mono_w32handle_unref (handle);
+	mono_w32handle_close (handle);
 }
 
 static int
 mono_w32handle_timedwait_signal_handle (gpointer handle, guint32 timeout, gboolean poll, gboolean *alerted)
 {
 	MonoW32HandleBase *handle_data;
+	gpointer handle_duplicate;
 	int res;
 
 	if (!mono_w32handle_lookup_data (handle, &handle_data))
@@ -1062,10 +978,11 @@ mono_w32handle_timedwait_signal_handle (gpointer handle, guint32 timeout, gboole
 		*alerted = FALSE;
 
 	if (alerted) {
-		mono_thread_info_install_interrupt (signal_handle_and_unref, handle, alerted);
-		if (*alerted)
+		mono_thread_info_install_interrupt (signal_handle_and_unref, handle_duplicate = mono_w32handle_duplicate (handle), alerted);
+		if (*alerted) {
+			mono_w32handle_close (handle_duplicate);
 			return 0;
-		mono_w32handle_ref (handle);
+		}
 	}
 
 	res = mono_w32handle_timedwait_signal_naked (&handle_data->signal_cond, &handle_data->signal_mutex, timeout, poll, alerted);
@@ -1073,8 +990,8 @@ mono_w32handle_timedwait_signal_handle (gpointer handle, guint32 timeout, gboole
 	if (alerted) {
 		mono_thread_info_uninstall_interrupt (alerted);
 		if (!*alerted) {
-			/* if it is alerted, then the handle is unref in the interrupt callback */
-			mono_w32handle_unref (handle);
+			/* if it is alerted, then the handle_duplicate is closed in the interrupt callback */
+			mono_w32handle_close (handle_duplicate);
 		}
 	}
 
@@ -1090,7 +1007,7 @@ dump_callback (gpointer handle, gpointer handle_specific, gpointer user_data)
 		g_error ("cannot dump unknown handle %p", handle);
 
 	g_print ("%p [%7s] signalled: %5s ref: %3d ",
-		handle, mono_w32handle_ops_typename (handle_data->type), handle_data->signalled ? "true" : "false", handle_data->ref);
+		handle, mono_w32handle_ops_typename (handle_data->type), handle_data->signalled ? "true" : "false", handle_data->ref - 1 /* foreach increase ref by 1 */);
 	mono_w32handle_ops_details (handle_data->type, handle_data->specific);
 	g_print ("\n");
 
@@ -1163,6 +1080,8 @@ mono_w32handle_wait_one (gpointer handle, guint32 timeout, gboolean alertable)
 	if (timeout != MONO_INFINITE_WAIT)
 		start = mono_msec_ticks ();
 
+	mono_w32handle_set_in_use (handle, TRUE);
+
 	for (;;) {
 		gint waited;
 
@@ -1202,6 +1121,8 @@ mono_w32handle_wait_one (gpointer handle, guint32 timeout, gboolean alertable)
 	}
 
 done:
+	mono_w32handle_set_in_use (handle, FALSE);
+
 	mono_w32handle_unlock_handle (handle);
 
 	return ret;
@@ -1297,8 +1218,13 @@ mono_w32handle_wait_multiple (gpointer *handles, gsize nhandles, gboolean waital
 		signalled = (waitall && count == nhandles) || (!waitall && count > 0);
 
 		if (signalled) {
-			for (i = 0; i < nhandles; i++)
-				own_if_signalled (handles [i], &abandoned [i]);
+			for (i = 0; i < nhandles; i++) {
+				if (own_if_signalled (handles [i], &abandoned [i]) && !waitall) {
+					/* if we are calling WaitHandle.WaitAny, .NET only owns the first one; it matters for Mutex which
+					 * throw AbandonedMutexException in case we owned it but didn't release it */
+					break;
+				}
+			}
 		}
 
 		mono_w32handle_unlock_handles (handles, nhandles);

@@ -386,19 +386,19 @@ mono_domain_create (void)
 	}
 	mono_appdomains_unlock ();
 
-#ifdef HAVE_BOEHM_GC
-	domain = (MonoDomain *)mono_gc_alloc_fixed (sizeof (MonoDomain), MONO_GC_DESCRIPTOR_NULL, MONO_ROOT_SOURCE_DOMAIN, "domain object");
-#else
-	domain = (MonoDomain *)mono_gc_alloc_fixed (sizeof (MonoDomain), domain_gc_desc, MONO_ROOT_SOURCE_DOMAIN, "domain object");
-	mono_gc_register_root ((char*)&(domain->MONO_DOMAIN_FIRST_GC_TRACKED), G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_LAST_GC_TRACKED) - G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_FIRST_GC_TRACKED), MONO_GC_DESCRIPTOR_NULL, MONO_ROOT_SOURCE_DOMAIN, "misc domain fields");
-#endif
+	if (!mono_gc_is_moving ()) {
+		domain = (MonoDomain *)mono_gc_alloc_fixed (sizeof (MonoDomain), MONO_GC_DESCRIPTOR_NULL, MONO_ROOT_SOURCE_DOMAIN, "domain object");
+	} else {
+		domain = (MonoDomain *)mono_gc_alloc_fixed (sizeof (MonoDomain), domain_gc_desc, MONO_ROOT_SOURCE_DOMAIN, "domain object");
+		mono_gc_register_root ((char*)&(domain->MONO_DOMAIN_FIRST_GC_TRACKED), G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_LAST_GC_TRACKED) - G_STRUCT_OFFSET (MonoDomain, MONO_DOMAIN_FIRST_GC_TRACKED), MONO_GC_DESCRIPTOR_NULL, MONO_ROOT_SOURCE_DOMAIN, "misc domain fields");
+	}
 	domain->shadow_serial = shadow_serial;
 	domain->domain = NULL;
 	domain->setup = NULL;
 	domain->friendly_name = NULL;
 	domain->search_path = NULL;
 
-	mono_profiler_appdomain_event (domain, MONO_PROFILE_START_LOAD);
+	MONO_PROFILER_RAISE (domain_loading, (domain));
 
 	domain->mp = mono_mempool_new ();
 	domain->code_mp = mono_code_manager_new ();
@@ -430,8 +430,8 @@ mono_domain_create (void)
 	mono_appdomains_unlock ();
 
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->loader_appdomains++;
-	mono_perfcounters->loader_total_appdomains++;
+	InterlockedIncrement (&mono_perfcounters->loader_appdomains);
+	InterlockedIncrement (&mono_perfcounters->loader_total_appdomains);
 #endif
 
 	mono_debug_domain_create (domain);
@@ -439,7 +439,7 @@ mono_domain_create (void)
 	if (create_domain_hook)
 		create_domain_hook (domain);
 
-	mono_profiler_appdomain_loaded (domain, MONO_PROFILE_OK);
+	MONO_PROFILER_RAISE (domain_loaded, (domain));
 	
 	return domain;
 }
@@ -464,7 +464,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	MonoAssembly *ass = NULL;
 	MonoImageOpenStatus status = MONO_IMAGE_OK;
 	const MonoRuntimeInfo* runtimes [G_N_ELEMENTS (supported_runtimes) + 1] = { NULL };
-	int n, dummy;
+	int n;
 
 #ifdef DEBUG_DOMAIN_UNLOAD
 	debug_domain_unload = TRUE;
@@ -501,7 +501,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 	mono_counters_register ("Max HashTable Chain Length", MONO_COUNTER_INT|MONO_COUNTER_METADATA, &mono_g_hash_table_max_chain_length);
 
 	mono_gc_base_init ();
-	mono_thread_info_attach (&dummy);
+	mono_thread_info_attach ();
 
 	mono_coop_mutex_init_recursive (&appdomains_mutex);
 
@@ -762,7 +762,7 @@ mono_init_internal (const char *filename, const char *exe_filename, const char *
 
 	domain->friendly_name = g_path_get_basename (filename);
 
-	mono_profiler_appdomain_name (domain, domain->friendly_name);
+	MONO_PROFILER_RAISE (domain_name, (domain, domain->friendly_name));
 
 	return domain;
 }
@@ -1033,7 +1033,7 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 	if (mono_dont_free_domains)
 		return;
 
-	mono_profiler_appdomain_event (domain, MONO_PROFILE_START_UNLOAD);
+	MONO_PROFILER_RAISE (domain_unloading, (domain));
 
 	mono_debug_domain_unload (domain);
 
@@ -1120,7 +1120,7 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 	 * Send this after the assemblies have been unloaded and the domain is still in a 
 	 * usable state.
 	 */
-	mono_profiler_appdomain_event (domain, MONO_PROFILE_END_UNLOAD);
+	MONO_PROFILER_RAISE (domain_unloaded, (domain));
 
 	if (free_domain_hook)
 		free_domain_hook (domain);
@@ -1171,7 +1171,8 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 		mono_code_manager_invalidate (domain->code_mp);
 	} else {
 #ifndef DISABLE_PERFCOUNTERS
-		mono_perfcounters->loader_bytes -= mono_mempool_get_allocated (domain->mp);
+		/* FIXME: use an explicit subtraction method as soon as it's available */
+		InterlockedAdd (&mono_perfcounters->loader_bytes, -1 * mono_mempool_get_allocated (domain->mp));
 #endif
 		mono_mempool_destroy (domain->mp);
 		domain->mp = NULL;
@@ -1208,18 +1209,17 @@ mono_domain_free (MonoDomain *domain, gboolean force)
 
 	domain->setup = NULL;
 
-	mono_gc_deregister_root ((char*)&(domain->MONO_DOMAIN_FIRST_GC_TRACKED));
+	if (mono_gc_is_moving ())
+		mono_gc_deregister_root ((char*)&(domain->MONO_DOMAIN_FIRST_GC_TRACKED));
 
 	mono_appdomains_lock ();
 	appdomains_list [domain->domain_id] = NULL;
 	mono_appdomains_unlock ();
 
-	/* FIXME: anything else required ? */
-
 	mono_gc_free_fixed (domain);
 
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->loader_appdomains--;
+	InterlockedDecrement (&mono_perfcounters->loader_appdomains);
 #endif
 
 	if (domain == mono_root_domain)
@@ -1287,7 +1287,7 @@ mono_domain_alloc (MonoDomain *domain, guint size)
 
 	mono_domain_lock (domain);
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->loader_bytes += size;
+	InterlockedAdd (&mono_perfcounters->loader_bytes, size);
 #endif
 	res = mono_mempool_alloc (domain->mp, size);
 	mono_domain_unlock (domain);
@@ -1307,7 +1307,7 @@ mono_domain_alloc0 (MonoDomain *domain, guint size)
 
 	mono_domain_lock (domain);
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->loader_bytes += size;
+	InterlockedAdd (&mono_perfcounters->loader_bytes, size);
 #endif
 	res = mono_mempool_alloc0 (domain->mp, size);
 	mono_domain_unlock (domain);

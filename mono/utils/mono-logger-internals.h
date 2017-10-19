@@ -36,8 +36,8 @@ typedef enum {
 					  MONO_TRACE_W32HANDLE
 } MonoTraceMask;
 
-extern GLogLevelFlags mono_internal_current_level;
-extern MonoTraceMask mono_internal_current_mask;
+MONO_API extern GLogLevelFlags mono_internal_current_level;
+MONO_API extern MonoTraceMask mono_internal_current_mask;
 
 void 
 mono_trace_init (void);
@@ -45,7 +45,7 @@ mono_trace_init (void);
 void 
 mono_trace_cleanup (void);
 
-void 
+MONO_API void
 mono_tracev_inner (GLogLevelFlags level, MonoTraceMask mask, const char *format, va_list args);
 
 void 
@@ -134,11 +134,13 @@ mono_trace_message(MonoTraceMask mask, const char *format, ...)
 
 #endif /* !__GNUC__ */
 
-#if defined (PLATFORM_ANDROID) || (defined (TARGET_IOS) && defined (TARGET_IOS))
+#if defined (HOST_ANDROID) || (defined (TARGET_IOS) && defined (TARGET_IOS))
 
 #define mono_gc_printf(gc_log_file, format, ...) g_log ("mono-gc", G_LOG_LEVEL_MESSAGE, format, ##__VA_ARGS__)
 #define mono_runtime_printf(format, ...) g_log ("mono-rt", G_LOG_LEVEL_MESSAGE, format "\n", ##__VA_ARGS__)
 #define mono_runtime_printf_err(format, ...) g_log ("mono-rt", G_LOG_LEVEL_CRITICAL, format "\n", ##__VA_ARGS__)
+#define mono_profiler_printf(format, ...) g_log ("mono-prof", G_LOG_LEVEL_MESSAGE, format "\n", ##__VA_ARGS__)
+#define mono_profiler_printf_err(format, ...) g_log ("mono-prof", G_LOG_LEVEL_CRITICAL, format "\n", ##__VA_ARGS__)
 #define mono_runtime_stdout_fflush() do { } while (0)
 
 #else
@@ -150,6 +152,8 @@ mono_trace_message(MonoTraceMask mask, const char *format, ...)
 
 #define mono_runtime_printf(format, ...) fprintf (stdout, format "\n", ##__VA_ARGS__)
 #define mono_runtime_printf_err(format, ...) fprintf (stderr, format "\n", ##__VA_ARGS__)
+#define mono_profiler_printf(format, ...) fprintf (stdout, format "\n", ##__VA_ARGS__)
+#define mono_profiler_printf_err(format, ...) fprintf (stderr, format "\n", ##__VA_ARGS__)
 #define mono_runtime_stdout_fflush() do { fflush (stdout); } while (0)
 
 #endif
@@ -180,7 +184,7 @@ void mono_log_open_logfile (const char *, void *);
 void mono_log_write_logfile (const char *, GLogLevelFlags, mono_bool, const char *);
 void mono_log_close_logfile (void);
 
-#if PLATFORM_ANDROID
+#if HOST_ANDROID
 void mono_log_open_logcat (const char *path, void *userData);
 void mono_log_write_logcat (const char *log_domain, GLogLevelFlags level, mono_bool hdr, const char *message);
 void mono_log_close_logcat (void);

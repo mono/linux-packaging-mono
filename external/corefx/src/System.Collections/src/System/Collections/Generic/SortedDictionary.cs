@@ -21,7 +21,7 @@ namespace System.Collections.Generic
         [NonSerialized]
         private ValueCollection _values;
 
-        private TreeSet<KeyValuePair<TKey, TValue>> _set;
+        private TreeSet<KeyValuePair<TKey, TValue>> _set; // Do not rename (binary serialization)
 
         public SortedDictionary() : this((IComparer<TKey>)null)
         {
@@ -928,7 +928,7 @@ namespace System.Collections.Generic
         [Serializable]
         internal sealed class KeyValuePairComparer : Comparer<KeyValuePair<TKey, TValue>>
         {
-            internal IComparer<TKey> keyComparer;
+            internal IComparer<TKey> keyComparer; // Do not rename (binary serialization)
 
             public KeyValuePairComparer(IComparer<TKey> keyComparer)
             {
@@ -960,7 +960,11 @@ namespace System.Collections.Generic
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    internal sealed class TreeSet<T> : SortedSet<T>
+#if !MONO
+    [System.Runtime.CompilerServices.TypeForwardedFrom("System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089")]
+    public
+#endif
+    sealed class TreeSet<T> : SortedSet<T>
     {
         public TreeSet()
             : base()

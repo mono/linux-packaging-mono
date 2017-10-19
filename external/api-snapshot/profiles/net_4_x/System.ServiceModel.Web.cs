@@ -10,7 +10,7 @@
 [assembly:System.Reflection.AssemblyDefaultAliasAttribute("System.ServiceModel.Web.dll")]
 [assembly:System.Reflection.AssemblyDescriptionAttribute("System.ServiceModel.Web.dll")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("4.6.57.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("3.5.594.0")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("4.6.57.0")]
 [assembly:System.Reflection.AssemblyProductAttribute("MONO CLI")]
 [assembly:System.Reflection.AssemblyTitleAttribute("System.ServiceModel.Web.dll")]
 [assembly:System.Resources.NeutralResourcesLanguageAttribute("en-US")]

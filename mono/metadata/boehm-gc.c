@@ -36,6 +36,7 @@
 #include <mono/utils/mono-os-mutex.h>
 #include <mono/utils/mono-counters.h>
 #include <mono/utils/mono-compiler.h>
+#include <mono/utils/unlocked.h>
 
 #if HAVE_BOEHM_GC
 
@@ -44,7 +45,7 @@
 #define THREAD_LOCAL_ALLOC 1
 #include "private/pthread_support.h"
 
-#if defined(PLATFORM_MACOSX) && defined(HAVE_PTHREAD_GET_STACKADDR_NP)
+#if defined(HOST_DARWIN) && defined(HAVE_PTHREAD_GET_STACKADDR_NP)
 void *pthread_get_stackaddr_np(pthread_t);
 #endif
 
@@ -56,12 +57,14 @@ void *pthread_get_stackaddr_np(pthread_t);
 static gboolean gc_initialized = FALSE;
 static mono_mutex_t mono_gc_lock;
 
-static void*
-boehm_thread_register (MonoThreadInfo* info, void *baseptr);
+typedef void (*GC_push_other_roots_proc)(void);
+
+static GC_push_other_roots_proc default_push_other_roots;
+static GHashTable *roots;
+
 static void
-boehm_thread_unregister (MonoThreadInfo *p);
-static void
-boehm_thread_detach (MonoThreadInfo *p);
+mono_push_other_roots(void);
+
 static void
 register_test_toggleref_callback (void);
 
@@ -108,9 +111,7 @@ static void on_gc_heap_resize (size_t new_size);
 void
 mono_gc_base_init (void)
 {
-	MonoThreadInfoCallbacks cb;
-	const char *env;
-	int dummy;
+	char *env;
 
 	if (gc_initialized)
 		return;
@@ -175,7 +176,11 @@ mono_gc_base_init (void)
 	}
 #endif
 
-#if !defined(PLATFORM_ANDROID)
+	roots = g_hash_table_new (NULL, NULL);
+	default_push_other_roots = GC_push_other_roots;
+	GC_push_other_roots = mono_push_other_roots;
+
+#if !defined(HOST_ANDROID)
 	/* If GC_no_dls is set to true, GC_find_limit is not called. This causes a seg fault on Android. */
 	GC_no_dls = TRUE;
 #endif
@@ -238,17 +243,12 @@ mono_gc_base_init (void)
 		g_strfreev (opts);
 	}
 
-	memset (&cb, 0, sizeof (cb));
-	cb.thread_register = boehm_thread_register;
-	cb.thread_unregister = boehm_thread_unregister;
-	cb.thread_detach = boehm_thread_detach;
-	cb.mono_method_is_critical = (gboolean (*)(void *))mono_runtime_is_critical_method;
-
-	mono_threads_init (&cb, sizeof (MonoThreadInfo));
+	mono_thread_callbacks_init ();
+	mono_thread_info_init (sizeof (MonoThreadInfo));
 	mono_os_mutex_init (&mono_gc_lock);
 	mono_os_mutex_init_recursive (&handle_section);
 
-	mono_thread_info_attach (&dummy);
+	mono_thread_info_attach ();
 
 	GC_set_on_collection_event (on_gc_notification);
 	GC_on_heap_resize = on_gc_heap_resize;
@@ -278,7 +278,7 @@ void
 mono_gc_collect (int generation)
 {
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->gc_induced++;
+	InterlockedIncrement (&mono_perfcounters->gc_induced);
 #endif
 	GC_gcollect ();
 }
@@ -376,20 +376,14 @@ mono_gc_is_gc_thread (void)
 	return GC_thread_is_registered ();
 }
 
-gboolean
-mono_gc_register_thread (void *baseptr)
-{
-	return mono_thread_info_attach (baseptr) != NULL;
-}
-
-static void*
-boehm_thread_register (MonoThreadInfo* info, void *baseptr)
+gpointer
+mono_gc_thread_attach (MonoThreadInfo* info)
 {
 	struct GC_stack_base sb;
 	int res;
 
 	/* TODO: use GC_get_stack_base instead of baseptr. */
-	sb.mem_base = baseptr;
+	sb.mem_base = info->stack_end;
 	res = GC_register_my_thread (&sb);
 	if (res == GC_UNIMPLEMENTED)
 	    return NULL; /* Cannot happen with GC v7+. */
@@ -399,8 +393,8 @@ boehm_thread_register (MonoThreadInfo* info, void *baseptr)
 	return info;
 }
 
-static void
-boehm_thread_unregister (MonoThreadInfo *p)
+void
+mono_gc_thread_detach_with_lock (MonoThreadInfo *p)
 {
 	MonoNativeThreadId tid;
 
@@ -408,13 +402,14 @@ boehm_thread_unregister (MonoThreadInfo *p)
 
 	if (p->runtime_thread)
 		mono_threads_add_joinable_thread ((gpointer)tid);
+
+	mono_handle_stack_free (p->handle_stack);
 }
 
-static void
-boehm_thread_detach (MonoThreadInfo *p)
+gboolean
+mono_gc_thread_in_critical_region (MonoThreadInfo *info)
 {
-	if (mono_thread_internal_current_is_attached ())
-		mono_thread_detach_internal (mono_thread_internal_current ());
+	return FALSE;
 }
 
 gboolean
@@ -434,36 +429,42 @@ static gint64 gc_start_time;
 static void
 on_gc_notification (GC_EventType event)
 {
-	MonoGCEvent e = (MonoGCEvent)event;
+	MonoProfilerGCEvent e;
 
-	switch (e) {
-	case MONO_GC_EVENT_PRE_STOP_WORLD:
+	switch (event) {
+	case GC_EVENT_PRE_STOP_WORLD:
+		e = MONO_GC_EVENT_PRE_STOP_WORLD;
 		MONO_GC_WORLD_STOP_BEGIN ();
 		break;
 
-	case MONO_GC_EVENT_POST_STOP_WORLD:
+	case GC_EVENT_POST_STOP_WORLD:
+		e = MONO_GC_EVENT_POST_STOP_WORLD;
 		MONO_GC_WORLD_STOP_END ();
 		break;
 
-	case MONO_GC_EVENT_PRE_START_WORLD:
+	case GC_EVENT_PRE_START_WORLD:
+		e = MONO_GC_EVENT_PRE_START_WORLD;
 		MONO_GC_WORLD_RESTART_BEGIN (1);
 		break;
 
-	case MONO_GC_EVENT_POST_START_WORLD:
+	case GC_EVENT_POST_START_WORLD:
+		e = MONO_GC_EVENT_POST_START_WORLD;
 		MONO_GC_WORLD_RESTART_END (1);
 		break;
 
-	case MONO_GC_EVENT_START:
+	case GC_EVENT_START:
+		e = MONO_GC_EVENT_START;
 		MONO_GC_BEGIN (1);
 #ifndef DISABLE_PERFCOUNTERS
 		if (mono_perfcounters)
-			mono_perfcounters->gc_collections0++;
+			InterlockedIncrement (&mono_perfcounters->gc_collections0);
 #endif
-		gc_stats.major_gc_count ++;
+		InterlockedIncrement (&gc_stats.major_gc_count);
 		gc_start_time = mono_100ns_ticks ();
 		break;
 
-	case MONO_GC_EVENT_END:
+	case GC_EVENT_END:
+		e = MONO_GC_EVENT_END;
 		MONO_GC_END (1);
 #if defined(ENABLE_DTRACE) && defined(__sun__)
 		/* This works around a dtrace -G problem on Solaris.
@@ -476,29 +477,39 @@ on_gc_notification (GC_EventType event)
 		if (mono_perfcounters) {
 			guint64 heap_size = GC_get_heap_size ();
 			guint64 used_size = heap_size - GC_get_free_bytes ();
-			mono_perfcounters->gc_total_bytes = used_size;
-			mono_perfcounters->gc_committed_bytes = heap_size;
-			mono_perfcounters->gc_reserved_bytes = heap_size;
-			mono_perfcounters->gc_gen0size = heap_size;
+			/* FIXME: change these to InterlockedWrite64 () */
+			UnlockedWrite64 (&mono_perfcounters->gc_total_bytes, used_size);
+			UnlockedWrite64 (&mono_perfcounters->gc_committed_bytes, heap_size);
+			UnlockedWrite64 (&mono_perfcounters->gc_reserved_bytes, heap_size);
+			UnlockedWrite64 (&mono_perfcounters->gc_gen0size, heap_size);
 		}
 #endif
-		gc_stats.major_gc_time += mono_100ns_ticks () - gc_start_time;
-		mono_trace_message (MONO_TRACE_GC, "gc took %d usecs", (mono_100ns_ticks () - gc_start_time) / 10);
+		UnlockedAdd64 (&gc_stats.major_gc_time, mono_100ns_ticks () - gc_start_time);
+		mono_trace_message (MONO_TRACE_GC, "gc took %" G_GINT64_FORMAT " usecs", (mono_100ns_ticks () - gc_start_time) / 10);
 		break;
 	default:
 		break;
 	}
 
-	mono_profiler_gc_event (e, 0);
-
-	switch (e) {
-	case MONO_GC_EVENT_PRE_STOP_WORLD:
-		mono_thread_info_suspend_lock ();
-		mono_profiler_gc_event (MONO_GC_EVENT_PRE_STOP_WORLD_LOCKED, 0);
+	switch (event) {
+	case GC_EVENT_MARK_START:
+	case GC_EVENT_MARK_END:
+	case GC_EVENT_RECLAIM_START:
+	case GC_EVENT_RECLAIM_END:
 		break;
-	case MONO_GC_EVENT_POST_START_WORLD:
+	default:
+		MONO_PROFILER_RAISE (gc_event, (e, 0));
+		break;
+	}
+
+	switch (event) {
+	case GC_EVENT_PRE_STOP_WORLD:
+		mono_thread_info_suspend_lock ();
+		MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_PRE_STOP_WORLD_LOCKED, 0));
+		break;
+	case GC_EVENT_POST_START_WORLD:
 		mono_thread_info_suspend_unlock ();
-		mono_profiler_gc_event (MONO_GC_EVENT_POST_START_WORLD_UNLOCKED, 0);
+		MONO_PROFILER_RAISE (gc_event, (MONO_GC_EVENT_POST_START_WORLD_UNLOCKED, 0));
 		break;
 	default:
 		break;
@@ -512,19 +523,37 @@ on_gc_heap_resize (size_t new_size)
 	guint64 heap_size = GC_get_heap_size ();
 #ifndef DISABLE_PERFCOUNTERS
 	if (mono_perfcounters) {
-		mono_perfcounters->gc_committed_bytes = heap_size;
-		mono_perfcounters->gc_reserved_bytes = heap_size;
-		mono_perfcounters->gc_gen0size = heap_size;
+		/* FIXME: change these to InterlockedWrite64 () */
+		UnlockedWrite64 (&mono_perfcounters->gc_committed_bytes, heap_size);
+		UnlockedWrite64 (&mono_perfcounters->gc_reserved_bytes, heap_size);
+		UnlockedWrite64 (&mono_perfcounters->gc_gen0size, heap_size);
 	}
 #endif
-	mono_profiler_gc_heap_resize (new_size);
+
+	MONO_PROFILER_RAISE (gc_resize, (new_size));
+}
+
+typedef struct {
+	char *start;
+	char *end;
+} RootData;
+
+static gpointer
+register_root (gpointer arg)
+{
+	RootData* root_data = arg;
+	g_hash_table_insert (roots, root_data->start, root_data->end);
+	return NULL;
 }
 
 int
 mono_gc_register_root (char *start, size_t size, void *descr, MonoGCRootSource source, const char *msg)
 {
-	/* for some strange reason, they want one extra byte on the end */
-	GC_add_roots (start, start + size + 1);
+	RootData root_data;
+	root_data.start = start;
+	/* Boehm root processing requires one byte past end of region to be scanned */
+	root_data.end = start + size + 1;
+	GC_call_with_alloc_lock (register_root, &root_data);
 
 	return TRUE;
 }
@@ -535,14 +564,32 @@ mono_gc_register_root_wbarrier (char *start, size_t size, MonoGCDescriptor descr
 	return mono_gc_register_root (start, size, descr, source, msg);
 }
 
+static gpointer
+deregister_root (gpointer arg)
+{
+	gboolean removed = g_hash_table_remove (roots, arg);
+	g_assert (removed);
+	return NULL;
+}
+
 void
 mono_gc_deregister_root (char* addr)
 {
-#ifndef HOST_WIN32
-	/* FIXME: libgc doesn't define this work win32 for some reason */
-	/* FIXME: No size info */
-	GC_remove_roots (addr, addr + sizeof (gpointer) + 1);
-#endif
+	GC_call_with_alloc_lock (deregister_root, addr);
+}
+
+static void
+push_root (gpointer key, gpointer value, gpointer user_data)
+{
+	GC_push_all (key, value);
+}
+
+static void
+mono_push_other_roots (void)
+{
+	g_hash_table_foreach (roots, push_root, NULL);
+	if (default_push_other_roots)
+		default_push_other_roots ();
 }
 
 static void
@@ -661,8 +708,8 @@ mono_gc_alloc_obj (MonoVTable *vtable, size_t size)
 		obj->vtable = vtable;
 	}
 
-	if (G_UNLIKELY (mono_profiler_events & MONO_PROFILE_ALLOCATIONS))
-		mono_profiler_allocation (obj);
+	if (G_UNLIKELY (mono_profiler_allocations_enabled ()))
+		MONO_PROFILER_RAISE (gc_allocation, (obj));
 
 	return obj;
 }
@@ -695,8 +742,8 @@ mono_gc_alloc_vector (MonoVTable *vtable, size_t size, uintptr_t max_length)
 
 	obj->max_length = max_length;
 
-	if (G_UNLIKELY (mono_profiler_events & MONO_PROFILE_ALLOCATIONS))
-		mono_profiler_allocation (&obj->obj);
+	if (G_UNLIKELY (mono_profiler_allocations_enabled ()))
+		MONO_PROFILER_RAISE (gc_allocation, (&obj->obj));
 
 	return obj;
 }
@@ -732,8 +779,8 @@ mono_gc_alloc_array (MonoVTable *vtable, size_t size, uintptr_t max_length, uint
 	if (bounds_size)
 		obj->bounds = (MonoArrayBounds *) ((char *) obj + size - bounds_size);
 
-	if (G_UNLIKELY (mono_profiler_events & MONO_PROFILE_ALLOCATIONS))
-		mono_profiler_allocation (&obj->obj);
+	if (G_UNLIKELY (mono_profiler_allocations_enabled ()))
+		MONO_PROFILER_RAISE (gc_allocation, (&obj->obj));
 
 	return obj;
 }
@@ -750,8 +797,8 @@ mono_gc_alloc_string (MonoVTable *vtable, size_t size, gint32 len)
 	obj->length = len;
 	obj->chars [len] = 0;
 
-	if (G_UNLIKELY (mono_profiler_events & MONO_PROFILE_ALLOCATIONS))
-		mono_profiler_allocation (&obj->object);
+	if (G_UNLIKELY (mono_profiler_allocations_enabled ()))
+		MONO_PROFILER_RAISE (gc_allocation, (&obj->object));
 
 	return obj;
 }
@@ -1127,11 +1174,8 @@ mono_gc_is_critical_method (MonoMethod *method)
  * @klass. The method will typically have an thread-local inline allocation sequence.
  * The signature of the called method is:
  * 	object allocate (MonoVTable *vtable)
- * Some of the logic here is similar to mono_class_get_allocation_ftn () i object.c,
- * keep in sync.
  * The thread local alloc logic is taken from libgc/pthread_support.c.
  */
-
 MonoMethod*
 mono_gc_get_managed_allocator (MonoClass *klass, gboolean for_box, gboolean known_instance_size)
 {
@@ -1147,7 +1191,7 @@ mono_gc_get_managed_allocator (MonoClass *klass, gboolean for_box, gboolean know
 		return NULL;
 	if (mono_class_has_finalizer (klass) || mono_class_is_marshalbyref (klass))
 		return NULL;
-	if (mono_profiler_get_events () & (MONO_PROFILE_ALLOCATIONS | MONO_PROFILE_STATISTICAL))
+	if (G_UNLIKELY (mono_profiler_allocations_enabled ()))
 		return NULL;
 	if (klass->rank)
 		return NULL;
@@ -1694,11 +1738,11 @@ alloc_handle (HandleData *handles, MonoObject *obj, gboolean track)
 	}
 
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->gc_num_handles++;
+	InterlockedIncrement (&mono_perfcounters->gc_num_handles);
 #endif
 	unlock_handles (handles);
 	res = MONO_GC_HANDLE (slot, handles->type);
-	mono_profiler_gc_handle (MONO_PROFILER_GC_HANDLE_CREATED, handles->type, res, obj);
+	MONO_PROFILER_RAISE (gc_handle_created, (res, handles->type, obj));
 	return res;
 }
 
@@ -1892,11 +1936,11 @@ mono_gchandle_free (guint32 gchandle)
 		/* print a warning? */
 	}
 #ifndef DISABLE_PERFCOUNTERS
-	mono_perfcounters->gc_num_handles--;
+	InterlockedDecrement (&mono_perfcounters->gc_num_handles);
 #endif
 	/*g_print ("freed entry %d of type %d\n", slot, handles->type);*/
 	unlock_handles (handles);
-	mono_profiler_gc_handle (MONO_PROFILER_GC_HANDLE_DESTROYED, handles->type, gchandle, NULL);
+	MONO_PROFILER_RAISE (gc_handle_deleted, (gchandle, handles->type));
 }
 
 /**

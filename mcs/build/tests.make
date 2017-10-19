@@ -72,8 +72,6 @@ ifndef HAVE_CS_TESTS
 HAVE_CS_TESTS := $(wildcard $(test_sourcefile))
 endif
 
-HAVE_SOURCE_EXCLUDES := $(wildcard $(test_sourcefile_excludes))
-
 HAVE_CS_XTESTS := $(wildcard $(xtest_sourcefile))
 
 endif # !NO_TEST
@@ -104,7 +102,7 @@ test-local: $(test_assemblies)
 run-test-local: run-test-lib
 run-test-ondotnet-local: run-test-ondotnet-lib
 
-TEST_HARNESS_EXCLUDES = -exclude=$(PLATFORM_TEST_HARNESS_EXCLUDES)$(PROFILE_TEST_HARNESS_EXCLUDES)NotWorking,ValueAdd,CAS,InetAccess
+TEST_HARNESS_EXCLUDES = -exclude=$(PLATFORM_TEST_HARNESS_EXCLUDES)$(PROFILE_TEST_HARNESS_EXCLUDES)NotWorking,CAS
 TEST_HARNESS_EXCLUDES_ONDOTNET = /exclude:$(PLATFORM_TEST_HARNESS_EXCLUDES)$(PROFILE_TEST_HARNESS_EXCLUDES)NotDotNet,CAS
 
 NOSHADOW_FLAG =
@@ -173,7 +171,7 @@ test_response_preprocessed = $(test_response)_preprocessed
 
 # This handles .excludes/.sources pairs, as well as resolving the
 # includes that occur in .sources files
-$(test_response_preprocessed): $(test_sourcefile)
+$(test_response_preprocessed): $(test_sourcefile) $(wildcard $(test_sourcefile_excludes))
 	$(SHELL) $(topdir)/build/gensources.sh $@ '$(test_sourcefile)' '$(test_sourcefile_excludes)'
 
 $(test_response): $(test_response_preprocessed)
@@ -212,9 +210,9 @@ run-xunit-test: run-xunit-test-local
 xunit-test-local: $(xunit_test_lib)
 run-xunit-test-local: run-xunit-test-lib
 
-# ln -s is a HACK for xunit runner to require xunit.execution.desktop.dll file in local folder on .net only
+# cp -rf is a HACK for xunit runner to require xunit.execution.desktop.dll file in local folder on .net only
 run-xunit-test-lib: xunit-test-local
-	@ln -fs $(XTEST_HARNESS_PATH)/xunit.execution.desktop.dll xunit.execution.desktop.dll
+	@cp -rf $(XTEST_HARNESS_PATH)/xunit.execution.desktop.dll xunit.execution.desktop.dll
 	ok=:; \
 	PATH="$(TEST_RUNTIME_WRAPPERS_PATH):$(PATH)" $(TEST_RUNTIME) $(RUNTIME_FLAGS) $(AOT_RUN_FLAGS) $(XTEST_HARNESS) $(xunit_test_lib) $(XTEST_HARNESS_FLAGS) $(XTEST_TRAIT) || ok=false; \
 	$$ok
@@ -227,7 +225,7 @@ xtest_response_preprocessed = $(xtest_response)_preprocessed
 
 # This handles .excludes/.sources pairs, as well as resolving the
 # includes that occur in .sources files
-$(xtest_response): $(xtest_sourcefile)
+$(xtest_response): $(xtest_sourcefile) $(wildcard $(xtest_sourcefile_excludes))
 	$(SHELL) $(topdir)/build/gensources.sh $@ '$(xtest_sourcefile)' '$(xtest_sourcefile_excludes)'
 
 $(xtest_makefrag): $(xtest_response)

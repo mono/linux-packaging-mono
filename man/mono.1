@@ -300,7 +300,7 @@ mono_aot_register_module (mono_aot_module_hello_info);
 .I stats
 Print various stats collected during AOT compilation.
 .TP
-.I temp_path=[path]
+.I temp-path=[path]
 Explicitly specify path to store temporary files created during AOT compilation.
 .TP
 .I threads=[number]
@@ -908,52 +908,11 @@ your profiler.
 For a sample of how to write your own custom profiler look in the
 Mono source tree for in the samples/profiler.c.
 .SH CODE COVERAGE
-Mono ships with a code coverage module.  This module is activated by
-using the Mono --profile=cov option.  The format is:
-\fB--profile=cov[:assembly-name[/namespace]] test-suite.exe\fR
-.PP
-By default code coverage will default to all the assemblies loaded,
-you can limit this by specifying the assembly name, for example to
-perform code coverage in the routines of your program use, for example
-the following command line limits the code coverage to routines in the
-"demo" assembly:
-.nf
-
-	mono --profile=cov:demo demo.exe
-
-.fi
-.PP
-Notice that the 
-.I assembly-name
-does not include the extension.
-.PP
-You can further restrict the code coverage output by specifying a
-namespace:
-.nf
-
-	mono --profile=cov:demo/My.Utilities demo.exe
-
-.fi
-.PP
-Which will only perform code coverage in the given assembly and
-namespace.  
-.PP
-Typical output looks like this:
-.nf
-
-	Not covered: Class:.ctor ()
-	Not covered: Class:A ()
-	Not covered: Driver:.ctor ()
-	Not covered: Driver:method ()
-	Partial coverage: Driver:Main ()
-		offset 0x000a
-
-.fi
-.PP
-The offsets displayed are IL offsets.
-.PP
-A more powerful coverage tool is available in the module `monocov'.
-See the monocov(1) man page for details.
+Mono ships with a code coverage module in the \f[I]coverage\f[] profiler.
+To enable it, pass \fB--profile=coverage\fR to your mono invocation. It
+will by default output a coverage.xml in the current directory. Use
+\fBmono --profile=coverage:help sample.exe\fR for more information on the
+different options.
 .SH AOT PROFILING
 You can improve startup performance by using the AOT profiler.
 .PP
@@ -1100,11 +1059,6 @@ This is a tool used in diagnostics to help isolate problems in the
 code generation backend.   For example \fBLLVM_COUNT=10\fR would only
 compile 10 methods with LLVM and then switch to the Mono JIT engine.
 \fBLLVM_COUNT=0\fR would disable the LLVM engine altogether.
-.TP
-\fBMONO_AOT_CACHE\fR
-If set, this variable will instruct Mono to ahead-of-time compile new
-assemblies on demand and store the result into a cache in
-~/.mono/aot-cache. 
 .TP
 \fBMONO_ASPNET_INHIBIT_SETTINGSMAP\fR
 Mono contains a feature which allows modifying settings in the .config files shipped
@@ -1314,10 +1268,19 @@ first generation (of two).  A larger nursery will usually speed up the
 program but will obviously use more memory.  The default nursery size
 4 MB.
 .TP
-\fBmajor=\fIcollector\fR Specifies which major collector to use.
-Options are `marksweep' for the Mark&Sweep collector, and
-`marksweep-conc' for concurrent Mark&Sweep.  The non-concurrent
-Mark&Sweep collector is the default.
+\fBmajor=\fIcollector\fR
+Specifies which major collector to use.
+Options are `marksweep' for the Mark&Sweep collector, `marksweep-conc'
+for concurrent Mark&Sweep and `marksweep-conc-par' for parallel and
+concurrent Mark&Sweep.  The concurrent Mark&Sweep collector is the default.
+.TP
+\fBmode=balanced|throughput|pause\fR[:\fImax-pause\fR]
+Specifies what should be the garbage collector's target. The `throughput'
+mode aims to reduce time spent in the garbage collector and improve
+application speed, the `pause' mode aims to keep pause times to a minimum
+and it receives the argument \fImax-pause\fR which specifies the maximum
+pause time in milliseconds that is acceptable and the `balanced' mode
+which is a general purpose optimal mode.
 .TP
 \fBsoft-heap-limit=\fIsize\fR
 Once the heap size gets larger than this size, ignore what the default
@@ -1380,9 +1343,11 @@ more memory when it reaches a stable size.
 This option is EXPERIMENTAL, so it might disappear in later versions of mono.
 .TP
 \fBminor=\fIminor-collector\fR
-Specifies which minor collector to use. Options are 'simple' which
-promotes all objects from the nursery directly to the old generation
-and 'split' which lets object stay longer on the nursery before promoting.
+Specifies which minor collector to use. Options are `simple' which
+promotes all objects from the nursery directly to the old generation,
+`simple-par' which has same promotion behavior as `simple' but using
+multiple workers and `split' which lets objects stay longer on the nursery
+before promoting.
 .TP
 \fBalloc-ratio=\fIratio\fR
 Specifies the ratio of memory from the nursery to be use by the alloc space.
@@ -2043,7 +2008,7 @@ http://www.mono-project.com/community/help/mailing-lists/
 http://www.mono-project.com
 .SH SEE ALSO
 .PP
-certmgr(1), cert-sync(1), csharp(1), gacutil(1), mcs(1), mdb(1), monocov(1), monodis(1),
+certmgr(1), cert-sync(1), csharp(1), gacutil(1), mcs(1), mdb(1), monodis(1),
 mono-config(5), mprof-report(1), pdb2mdb(1), xsp(1), mod_mono(8).
 .PP
 For more information on AOT:

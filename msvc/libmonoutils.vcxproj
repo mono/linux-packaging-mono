@@ -68,6 +68,7 @@
     <ClCompile Include="..\mono\utils\mono-mmap-windows.c" />
     <ClCompile Include="..\mono\utils\mono-mmap.c" />
     <ClCompile Include="..\mono\utils\mono-networkinterfaces.c" />
+    <ClCompile Include="..\mono\utils\mono-os-wait-win32.c" />
     <ClCompile Include="..\mono\utils\mono-proclib-windows.c" />
     <ClCompile Include="..\mono\utils\mono-rand-windows.c" />
     <ClCompile Include="..\mono\utils\mono-rand.c" />
@@ -109,6 +110,7 @@
     <ClCompile Include="..\mono\utils\mono-uri.c" />
     <ClCompile Include="..\mono\utils\mono-value-hash.c" />
     <ClCompile Include="..\mono\utils\monobitset.c" />
+    <ClCompile Include="..\mono\utils\mono-os-mutex.c" />
     <ClCompile Include="..\mono\utils\os-event-win32.c" />
     <ClCompile Include="..\mono\utils\strenc.c" />
     <ClCompile Include="..\mono\utils\atomic.c" />
@@ -164,6 +166,7 @@
     <ClInclude Include="..\mono\utils\mono-once.h" />
     <ClInclude Include="..\mono\utils\mono-os-mutex.h" />
     <ClInclude Include="..\mono\utils\mono-os-semaphore.h" />
+    <ClInclude Include="..\mono\utils\mono-os-wait.h" />
     <ClInclude Include="..\mono\utils\mono-path.h" />
     <ClInclude Include="..\mono\utils\mono-poll.h" />
     <ClInclude Include="..\mono\utils\mono-proclib-windows-internals.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="..\mono\utils\strenc.h" />
     <ClInclude Include="..\mono\utils\valgrind.h" />
     <ClInclude Include="..\mono\utils\atomic.h" />
+    <ClInclude Include="..\mono\utils\unlocked.h" />
     <ClInclude Include="..\mono\utils\mono-hwcap.h" />
     <ClInclude Include="..\mono\utils\mono-hwcap-x86.h" />
     <ClInclude Include="..\mono\utils\bsearch.h" />

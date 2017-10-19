@@ -127,6 +127,26 @@ namespace System.Linq.Expressions
 
             // Null paramName as there are several paths here with different parameter names at the API
             TypeUtils.ValidateType(decType, null, allowByRef: true, allowPointer: true);
+
+#if __MonoCS__
+            if (member is PropertyInfo pi)
+            {
+                if (!pi.CanRead)
+                {
+                    throw Error.PropertyDoesNotHaveGetter(pi, nameof(member));
+                }
+
+                memberType = pi.PropertyType;
+            }
+            else if (member is FieldInfo fi)
+            {
+                memberType = fi.FieldType;
+            }
+            else
+            {
+                throw Error.ArgumentMustBeFieldInfoOrPropertyInfo(nameof(member));
+            }
+#else
             switch (member)
             {
                 case PropertyInfo pi:
@@ -145,6 +165,7 @@ namespace System.Linq.Expressions
                 default:
                     throw Error.ArgumentMustBeFieldInfoOrPropertyInfo(nameof(member));
             }
+#endif
         }
 
         private static void ValidateMemberInitArgs(Type type, ReadOnlyCollection<MemberBinding> bindings)

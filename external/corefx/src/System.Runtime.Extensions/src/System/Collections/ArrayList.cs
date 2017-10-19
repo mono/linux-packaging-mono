@@ -39,10 +39,10 @@ namespace System.Collections
 #endif
     public class ArrayList : IList, ICloneable
     {
-        private Object[] _items;
+        private Object[] _items; // Do not rename (binary serialization)
         [ContractPublicPropertyName("Count")]
-        private int _size;
-        private int _version;
+        private int _size; // Do not rename (binary serialization)
+        private int _version; // Do not rename (binary serialization)
         [NonSerialized]
         private Object _syncRoot;
 

@@ -1,6 +1,3 @@
-/* config.h.  Generated from config.h.in by configure.  */
-/* config.h.in.  Generated from configure.ac by autoheader.  */
-
 #ifndef _MSC_VER
 #include "cygconfig.h"
 #else
@@ -58,7 +55,7 @@
 #define DISABLE_PORTABILITY 1
 
 /* Windows does not have symlinks */
-#define PLATFORM_NO_SYMLINKS 1
+#define HOST_NO_SYMLINKS 1
 
 /* String of disabled features */
 #define DISABLED_FEATURES "none"
@@ -394,9 +391,6 @@
 /* Using the simple generational GC. */
 /* #undef HAVE_SGEN_GC */
 
-/* Some VES is available at runtime */
-#define HAVE_ONLINE_VES 1
-
  /* Have signal */
 #define HAVE_SIGNAL 1
 
@@ -591,6 +585,9 @@
 
 /* Define to 1 if you have IPv6 support. */
 #define HAVE_STRUCT_SOCKADDR_IN6 1
+
+/* Defined as strtok_s in eglib-config.hw */
+#define HAVE_STRTOK_R 1
 
 /* Have a working sigaltstack */
 /* #undef HAVE_WORKING_SIGALTSTACK */

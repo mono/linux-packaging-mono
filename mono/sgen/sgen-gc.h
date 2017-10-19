@@ -552,6 +552,7 @@ typedef struct {
 	SgenObjectOperations serial_ops;
 	SgenObjectOperations serial_ops_with_concurrent_major;
 	SgenObjectOperations parallel_ops;
+	SgenObjectOperations parallel_ops_with_concurrent_major;
 
 	void (*prepare_to_space) (char *to_space_bitmap, size_t space_bitmap_size);
 	void (*clear_fragments) (void);
@@ -649,7 +650,7 @@ struct _SgenMajorCollector {
 	void (*free_non_pinned_object) (GCObject *obj, size_t size);
 	void (*pin_objects) (SgenGrayQueue *queue);
 	void (*pin_major_object) (GCObject *obj, SgenGrayQueue *queue);
-	void (*scan_card_table) (CardTableScanType scan_type, ScanCopyContext ctx, int job_index, int job_split_count);
+	void (*scan_card_table) (CardTableScanType scan_type, ScanCopyContext ctx, int job_index, int job_split_count, int block_count);
 	void (*iterate_live_block_ranges) (sgen_cardtable_block_callback callback);
 	void (*iterate_block_ranges) (sgen_cardtable_block_callback callback);
 	void (*update_cardtable_mod_union) (void);
@@ -678,9 +679,7 @@ struct _SgenMajorCollector {
 	guint8* (*get_cardtable_mod_union_for_reference) (char *object);
 	long long (*get_and_reset_num_major_objects_marked) (void);
 	void (*count_cards) (long long *num_total_cards, long long *num_marked_cards);
-	SgenThreadPool* (*get_sweep_pool) (void);
-
-	void (*worker_init_cb) (gpointer worker);
+	void (*init_block_free_lists) (gpointer *list_p);
 };
 
 extern SgenMajorCollector major_collector;
@@ -918,8 +917,8 @@ GCObject* sgen_try_alloc_obj_nolock (GCVTable vtable, size_t size);
 
 /* Threads */
 
-void* sgen_thread_register (SgenThreadInfo* info, void *addr);
-void sgen_thread_unregister (SgenThreadInfo *p);
+void* sgen_thread_attach (SgenThreadInfo* info);
+void sgen_thread_detach_with_lock (SgenThreadInfo *p);
 
 /* Finalization/ephemeron support */
 
@@ -969,10 +968,14 @@ void sgen_null_links_if (SgenObjectPredicateFunc predicate, void *data, int gene
 
 typedef gpointer (*SgenGCHandleIterateCallback) (gpointer hidden, GCHandleType handle_type, int max_generation, gpointer user);
 
+guint32 sgen_gchandle_new (GCObject *obj, gboolean pinned);
+guint32 sgen_gchandle_new_weakref (GCObject *obj, gboolean track_resurrection);
 void sgen_gchandle_iterate (GCHandleType handle_type, int max_generation, SgenGCHandleIterateCallback callback, gpointer user);
 void sgen_gchandle_set_target (guint32 gchandle, GCObject *obj);
 void sgen_mark_normal_gc_handles (void *addr, SgenUserMarkFunc mark_func, void *gc_data);
 gpointer sgen_gchandle_get_metadata (guint32 gchandle);
+GCObject *sgen_gchandle_get_target (guint32 gchandle);
+void sgen_gchandle_free (guint32 gchandle);
 
 /* Other globals */
 
