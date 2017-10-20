@@ -332,6 +332,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/4.5/Mono.Management.dll
 %{_prefix}/lib/mono/4.5/Mono.Parallel.dll
 %{_prefix}/lib/mono/4.5/Mono.Posix.dll
+%{_prefix}/lib/mono/4.5/Mono.Profiler.Log.dll
 %{_prefix}/lib/mono/4.5/Mono.Security.dll
 %{_prefix}/lib/mono/4.5/Mono.Simd.dll
 %{_prefix}/lib/mono/4.5/Mono.Tasklets.dll
@@ -387,6 +388,7 @@ rm %{buildroot}%{_bindir}/mono-sgen-gdb.py
 %{_prefix}/lib/mono/gac/Mono.Management
 %{_prefix}/lib/mono/gac/Mono.Parallel
 %{_prefix}/lib/mono/gac/Mono.Posix
+%{_prefix}/lib/mono/gac/Mono.Profiler.Log
 %{_prefix}/lib/mono/gac/Mono.Security
 %{_prefix}/lib/mono/gac/Mono.Simd
 %{_prefix}/lib/mono/gac/Mono.Tasklets
@@ -1166,7 +1168,6 @@ Mono development tools.
 %{_bindir}/pdb2mdb
 %{_bindir}/pedump
 %{_bindir}/permview
-%{_bindir}/prj2make
 %{_bindir}/resgen
 %{_bindir}/resgen2
 %{_bindir}/secutil
