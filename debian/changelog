@@ -1,3 +1,13 @@
+mono (5.8.0.22-0xamarin2) alpha; urgency=medium
+
+  [ Xamarin Public Jenkins (auto-signing) ]
+  * Packaging bugfix:
+
+  [ Ubuntu ]
+  * [e41764a] Add Roslyn files [c845674] Remove eglib from debian/rules
+
+ -- Xamarin Public Jenkins (auto-signing) <releng@xamarin.com>  Fri, 20 Oct 2017 15:09:50 +0000
+
 mono (5.8.0.22-0xamarin1) alpha; urgency=medium
 
   * New release - mono-5.8.0.22.tar.bz2
