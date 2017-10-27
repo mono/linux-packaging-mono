@@ -247,6 +247,7 @@ TESTS_CS_SRC=		\
 	delegate12.cs		\
 	delegate13.cs		\
 	delegate14.cs		\
+	delegate15.cs		\
 	largeexp.cs		\
 	largeexp2.cs		\
 	marshalbyref1.cs	\
@@ -948,16 +949,6 @@ INTERP_DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
 	$(INTERP_DISABLED_TESTS_PLATFORM) \
 	abort-cctor.exe \
-	appdomain-async-invoke.exe \
-	appdomain-exit.exe \
-	appdomain-serialize-exception.exe \
-	appdomain-unload-asmload.exe \
-	appdomain-unload-callback.exe \
-	appdomain-unload-doesnot-raise-pending-events.exe \
-	appdomain-unload.exe \
-	appdomain.exe \
-	appdomain1.exe \
-	appdomain2.exe \
 	array_load_exception.exe \
 	assembly_append_ordering.exe \
 	assemblyresolve_event4.exe \
@@ -1015,12 +1006,8 @@ INTERP_DISABLED_TESTS = \
 	ldfld_missing_field.exe \
 	ldftn-access.exe \
 	main-returns-background-change.exe \
-	marshal-valuetypes.exe \
 	marshal.exe \
-	marshal2.exe \
 	marshal8.exe \
-	marshal9.exe \
-	marshalbool.exe \
 	method-access.exe \
 	monitor.exe \
 	nullable_boxing.2.exe \
@@ -1037,11 +1024,6 @@ INTERP_DISABLED_TESTS = \
 	pinvoke_ppcs.exe \
 	process-unref-race.exe \
 	reload-at-bb-end.exe \
-	remoting1.exe \
-	remoting2.exe \
-	remoting3.exe \
-	remoting4.exe \
-	remoting5.exe \
 	safehandle.2.exe \
 	stackframes-async.2.exe \
 	static-constructor.exe \
@@ -1058,14 +1040,12 @@ INTERP_DISABLED_TESTS = \
 	threadpool.exe \
 	threadpool1.exe \
 	thunks.exe \
-	transparentproxy.exe \
 	typeload-unaligned.exe \
 	unload-appdomain-on-shutdown.exe \
 	vararg.exe \
 	vararg2.exe \
 	vt-sync-method.exe \
 	winx64structs.exe \
-	xdomain-threads.exe \
 	appdomain-thread-abort.exe
 
 TESTS_CS=$(filter-out $(DISABLED_TESTS),$(TESTS_CS_SRC:.cs=.exe))

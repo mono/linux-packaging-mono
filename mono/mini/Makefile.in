@@ -1232,7 +1232,8 @@ test_sources = \
 	gshared.cs \
 	unaligned.cs	\
 	MemoryIntrinsics.il	\
-	mixed.cs
+	mixed.cs	\
+	ratests.cs
 
 regtests_UNIVERSAL = \
 	aot-tests.exe \
@@ -1251,7 +1252,8 @@ regtests_UNIVERSAL = \
 	generics.exe \
 	basic-simd.exe \
 	unaligned.exe	\
-	basic-vectors.exe
+	basic-vectors.exe	\
+	ratests.exe
 
 regtests_DISABLED = $(am__append_4)
 regtests = $(filter-out $(regtests_DISABLED),$(regtests_UNIVERSAL))
@@ -3628,7 +3630,7 @@ clean-local:
 	rm -f mono a.out gmon.out *.o buildver-boehm.h buildver-sgen.h test.exe regressionexitcode.out TestResult-op_il_seq_point.xml*
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/6caf00b\"" > version.h
+	echo "#define FULL_VERSION \"master/c14b080\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

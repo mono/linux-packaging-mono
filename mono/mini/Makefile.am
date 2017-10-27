@@ -521,7 +521,8 @@ test_sources = 			\
 	gshared.cs \
 	unaligned.cs	\
 	MemoryIntrinsics.il	\
-	mixed.cs
+	mixed.cs	\
+	ratests.cs
 
 regtests_UNIVERSAL = \
 	aot-tests.exe \
@@ -540,7 +541,8 @@ regtests_UNIVERSAL = \
 	generics.exe \
 	basic-simd.exe \
 	unaligned.exe	\
-	basic-vectors.exe
+	basic-vectors.exe	\
+	ratests.exe
 
 regtests_DISABLED = 
 
@@ -922,7 +924,7 @@ EXTRA_DIST = TestDriver.cs \
 	Makefile.am.in
 
 version.h: Makefile
-	echo "#define FULL_VERSION \"master/6caf00b\"" > version.h
+	echo "#define FULL_VERSION \"master/c14b080\"" > version.h
 
 # Utility target for patching libtool to speed up linking
 patch-libtool:

@@ -1994,6 +1994,11 @@ mono_jit_compile_method_with_opt (MonoMethod *method, guint32 opt, gboolean jit_
 
 	error_init (error);
 
+	if (mono_class_is_open_constructed_type (&method->klass->byval_arg)) {
+		mono_error_set_invalid_operation (error, "Could not execute the method because the containing type is not fully instantiated.");
+		return NULL;
+	}
+
 #ifdef ENABLE_INTERPRETER
 	if (mono_use_interpreter && !jit_only) {
 		code = mono_interp_create_method_pointer (method, error);
@@ -2051,7 +2056,7 @@ lookup_start:
 		if (! ((domain != target_domain) && !info->domain_neutral)) {
 			MonoVTable *vtable;
 
-			InterlockedIncrement (&mono_jit_stats.methods_lookups);
+			mono_atomic_inc_i32 (&mono_jit_stats.methods_lookups);
 			vtable = mono_class_vtable_full (domain, method->klass, error);
 			if (!is_ok (error))
 				return NULL;
@@ -2304,7 +2309,7 @@ mono_jit_find_compiled_method_with_jit_info (MonoDomain *domain, MonoMethod *met
 	if (info) {
 		/* We can't use a domain specific method in another domain */
 		if (! ((domain != target_domain) && !info->domain_neutral)) {
-			InterlockedIncrement (&mono_jit_stats.methods_lookups);
+			mono_atomic_inc_i32 (&mono_jit_stats.methods_lookups);
 			if (ji)
 				*ji = info;
 			return info->code_start;
@@ -3859,6 +3864,9 @@ mini_init (const char *filename, const char *runtime_version)
 #ifndef DISABLE_REMOTING
 	callbacks.create_remoting_trampoline = mono_jit_create_remoting_trampoline;
 #endif
+#endif
+#if defined (ENABLE_INTERPRETER) && !defined (DISABLE_REMOTING)
+	callbacks.interp_get_remoting_invoke = mono_interp_get_remoting_invoke;
 #endif
 
 	mono_install_callbacks (&callbacks);
