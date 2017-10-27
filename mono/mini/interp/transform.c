@@ -1518,7 +1518,7 @@ save_seq_points (TransformData *td)
 	}
 
 	info = mono_seq_point_info_new (array->len, TRUE, array->data, TRUE, &seq_info_size);
-	InterlockedAdd (&mono_jit_stats.allocated_seq_points_size, seq_info_size);
+	mono_atomic_fetch_add_i32 (&mono_jit_stats.allocated_seq_points_size, seq_info_size);
 
 	g_byte_array_free (array, TRUE);
 
@@ -4224,7 +4224,7 @@ mono_interp_transform_init (void)
 }
 
 MonoException *
-mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context)
+mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, MonoDelegate *del)
 {
 	MonoError error;
 	int i, align, size, offset;
@@ -4244,32 +4244,22 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context)
 	MonoDomain *domain = imethod->domain;
 
 	error_init (&error);
+
+	if (mono_class_is_open_constructed_type (&method->klass->byval_arg)) {
+		mono_error_set_invalid_operation (&error, "Could not execute the method because the containing type is not fully instantiated.");
+		return mono_error_convert_to_exception (&error);
+	}
+
 	// g_printerr ("TRANSFORM(0x%016lx): begin %s::%s\n", mono_thread_current (), method->klass->name, method->name);
 	method_class_vt = mono_class_vtable_full (domain, imethod->method->klass, &error);
 	if (!is_ok (&error))
 		return mono_error_convert_to_exception (&error);
 
 	if (!method_class_vt->initialized) {
-		jmp_buf env;
-		InterpFrame *last_env_frame = context->env_frame;
-		jmp_buf *old_env = context->current_env;
-		error_init (&error);
-
-		if (setjmp(env)) {
-			MonoException *failed = context->env_frame->ex;
-			context->env_frame->ex = NULL;
-			context->env_frame = last_env_frame;
-			context->current_env = old_env;
-			return failed;
-		}
-		context->env_frame = context->current_frame;
-		context->current_env = &env;
 		mono_runtime_class_init_full (method_class_vt, &error);
 		if (!mono_error_ok (&error)) {
 			return mono_error_convert_to_exception (&error);
 		}
-		context->env_frame = last_env_frame;
-		context->current_env = old_env;
 	}
 
 	MONO_PROFILER_RAISE (jit_begin, (method));
@@ -4305,7 +4295,7 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context)
 					nm = mono_marshal_get_icall_wrapper (mi->sig, wrapper_name, mi->func, TRUE);
 					g_free (wrapper_name);
 				} else if (*name == 'I' && (strcmp (name, "Invoke") == 0)) {
-					nm = mono_marshal_get_delegate_invoke (method, NULL);
+					nm = mono_marshal_get_delegate_invoke (method, del);
 				} else if (*name == 'B' && (strcmp (name, "BeginInvoke") == 0)) {
 					nm = mono_marshal_get_delegate_begin_invoke (method);
 				} else if (*name == 'E' && (strcmp (name, "EndInvoke") == 0)) {

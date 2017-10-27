@@ -20,7 +20,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <glib.h>
-#include <setjmp.h>
 #include <signal.h>
 #include <math.h>
 #include <locale.h>
@@ -107,8 +106,6 @@ init_frame (InterpFrame *frame, InterpFrame *parent_frame, InterpMethod *rmethod
 GSList *jit_classes;
 /* If TRUE, interpreted code will be interrupted at function entry/backward branches */
 static gboolean ss_enabled;
-
-void ves_exec_method (InterpFrame *frame);
 
 static char* dump_frame (InterpFrame *inv);
 static MonoArray *get_trace_ips (MonoDomain *domain, InterpFrame *top);
@@ -257,6 +254,18 @@ lookup_imethod (MonoDomain *domain, MonoMethod *method)
 	mono_domain_jit_code_hash_unlock (domain);
 	return rtm;
 }
+
+#ifndef DISABLE_REMOTING
+gpointer
+mono_interp_get_remoting_invoke (gpointer imethod, MonoError *error)
+{
+	InterpMethod *imethod_cast = (InterpMethod*) imethod;
+
+	g_assert (mono_use_interpreter);
+
+	return mono_interp_get_imethod (mono_domain_get (), mono_marshal_get_remoting_invoke (imethod_cast->method), error);
+}
+#endif
 
 InterpMethod*
 mono_interp_get_imethod (MonoDomain *domain, MonoMethod *method, MonoError *error)
@@ -977,23 +986,9 @@ static InterpMethodArguments* build_args_from_sig (MonoMethodSignature *sig, Int
 static void 
 ves_pinvoke_method (InterpFrame *frame, MonoMethodSignature *sig, MonoFuncV addr, gboolean string_ctor, ThreadContext *context)
 {
-	jmp_buf env;
-	InterpFrame *old_frame = context->current_frame;
-	InterpFrame *old_env_frame = context->env_frame;
-	jmp_buf *old_env = context->current_env;
 	MonoLMFExt ext;
 
-	if (setjmp (env)) {
-		context->current_frame = old_frame;
-		context->env_frame = old_env_frame;
-		context->current_env = old_env;
-		context->managed_code = 1;
-		return;
-	}
-
 	frame->ex = NULL;
-	context->env_frame = frame;
-	context->current_env = &env;
 
 	g_assert (!frame->imethod);
 	if (!mono_interp_enter_icall_trampoline) {
@@ -1014,15 +1009,10 @@ ves_pinvoke_method (InterpFrame *frame, MonoMethodSignature *sig, MonoFuncV addr
 #endif
 
 	context->current_frame = frame;
-	context->managed_code = 0;
 
 	interp_push_lmf (&ext, frame);
-
 	mono_interp_enter_icall_trampoline (addr, margs);
-
 	interp_pop_lmf (&ext);
-
-	context->managed_code = 1;
 
 	if (*mono_thread_interruption_request_flag ()) {
 		MonoException *exc = mono_thread_interruption_checkpoint ();
@@ -1034,10 +1024,6 @@ ves_pinvoke_method (InterpFrame *frame, MonoMethodSignature *sig, MonoFuncV addr
 	
 	if (!frame->ex && !MONO_TYPE_ISSTRUCT (sig->ret))
 		stackval_from_data (sig->ret, frame->retval, (char*)&frame->retval->data.p, sig->pinvoke);
-
-	context->current_frame = old_frame;
-	context->env_frame = old_env_frame;
-	context->current_env = old_env;
 
 	g_free (margs->iargs);
 	g_free (margs->fargs);
@@ -1363,16 +1349,13 @@ get_trace_ips (MonoDomain *domain, InterpFrame *top)
 MonoObject*
 mono_interp_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoObject **exc, MonoError *error)
 {
-	InterpFrame frame;
+	InterpFrame frame, *old_frame;
 	ThreadContext * volatile context = mono_native_tls_get_value (thread_context_id);
-	MonoObject *retval = NULL;
 	MonoMethodSignature *sig = mono_method_signature (method);
 	MonoClass *klass = mono_class_from_mono_type (sig->ret);
 	stackval result;
 	stackval *args;
 	ThreadContext context_struct;
-	InterpFrame *old_frame = NULL;
-	jmp_buf env;
 
 	error_init (error);
 	if (exc)
@@ -1380,27 +1363,13 @@ mono_interp_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoOb
 
 	frame.ex = NULL;
 
-	if (setjmp(env)) {
-		if (context != &context_struct) {
-			context->current_frame = old_frame;
-			context->managed_code = 0;
-		} else
-			set_context (NULL);
-		if (exc != NULL)
-			*exc = (MonoObject *)frame.ex;
-		return retval;
-	}
-
 	if (context == NULL) {
 		context = &context_struct;
 		memset (context, 0, sizeof (ThreadContext));
-		context_struct.base_frame = &frame;
-		context_struct.env_frame = &frame;
-		context_struct.current_env = &env;
 		set_context (context);
-	}
-	else
+	} else {
 		old_frame = context->current_frame;
+	}
 
 	MonoDomain *domain = mono_domain_get ();
 
@@ -1423,24 +1392,21 @@ mono_interp_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoOb
 
 	if (exc)
 		frame.invoke_trap = 1;
-	context->managed_code = 1;
+
 	ves_exec_method_with_context (&frame, context, NULL, NULL, -1);
-	context->managed_code = 0;
+
 	if (context == &context_struct)
 		set_context (NULL);
 	else
 		context->current_frame = old_frame;
-	if (frame.ex != NULL) {
-		if (exc != NULL) {
+
+	if (frame.ex) {
+		if (exc) {
 			*exc = (MonoObject*) frame.ex;
 			return NULL;
 		}
-		if (context->current_env != NULL) {
-			context->env_frame->ex = frame.ex;
-			longjmp(*context->current_env, 1);
-		}
-		else
-			printf("dropped exception...\n");
+		mono_set_pending_exception (frame.ex);
+		return NULL;
 	}
 	return result.data.p;
 }
@@ -1480,8 +1446,6 @@ interp_entry (InterpEntryData *data)
 	if (context == NULL) {
 		context = &context_struct;
 		memset (context, 0, sizeof (ThreadContext));
-		context_struct.base_frame = &frame;
-		context_struct.env_frame = &frame;
 		set_context (context);
 	} else {
 		old_frame = context->current_frame;
@@ -1559,7 +1523,6 @@ interp_entry (InterpEntryData *data)
 	}
 
 	init_frame (&frame, NULL, data->rmethod, args, &result);
-	context->managed_code = 1;
 
 	type = rmethod->rtype;
 	switch (type->type) {
@@ -1575,7 +1538,6 @@ interp_entry (InterpEntryData *data)
 	}
 
 	ves_exec_method_with_context (&frame, context, NULL, NULL, -1);
-	context->managed_code = 0;
 	if (context == &context_struct)
 		set_context (NULL);
 	else
@@ -1650,22 +1612,8 @@ interp_entry (InterpEntryData *data)
 static stackval * 
 do_icall (ThreadContext *context, int op, stackval *sp, gpointer ptr)
 {
-	InterpFrame *old_frame = context->current_frame;
-	InterpFrame *old_env_frame = context->env_frame;
-	jmp_buf *old_env = context->current_env;
-	jmp_buf env;
-
-	if (setjmp (env)) {
-		context->current_frame = old_frame;
-		context->env_frame = old_env_frame;
-		context->current_env = old_env;
-		context->managed_code = 1;
-		return sp;
-	}
-
-	context->env_frame = context->current_frame;
-	context->current_env = &env;
-	context->managed_code = 0;
+	MonoLMFExt ext;
+	interp_push_lmf (&ext, context->current_frame);
 
 	switch (op) {
 	case MINT_ICALL_V_V: {
@@ -1730,9 +1678,7 @@ do_icall (ThreadContext *context, int op, stackval *sp, gpointer ptr)
 		g_assert_not_reached ();
 	}
 
-	context->env_frame = old_env_frame;
-	context->current_env = old_env;
-
+	interp_pop_lmf (&ext);
 	return sp;
 }
 
@@ -1964,8 +1910,7 @@ do_transform_method (InterpFrame *frame, ThreadContext *context)
 	/* Use the parent frame as the current frame is not complete yet */
 	interp_push_lmf (&ext, frame->parent);
 
-	frame->ex = mono_interp_transform_method (frame->imethod, context);
-	context->managed_code = 1;
+	frame->ex = mono_interp_transform_method (frame->imethod, context, (MonoDelegate *) frame->stack_args [0].data.p);
 
 	interp_pop_lmf (&ext);
 }
@@ -2278,7 +2223,6 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 	debug_enter (frame, &tracing);
 
 	if (!frame->imethod->transformed) {
-		context->managed_code = 0;
 #if DEBUG_INTERP
 		char *mn = mono_method_full_name (frame->imethod->method, TRUE);
 		g_print ("(%p) Transforming %s\n", mono_thread_internal_current (), mn);
@@ -2287,6 +2231,7 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 
 		do_transform_method (frame, context);
 		if (frame->ex) {
+			context->search_for_handler = 1;
 			rtm = NULL;
 			ip = NULL;
 			goto exit_frame;
@@ -2448,7 +2393,7 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 
 			if (!new_method->transformed) {
 				frame->ip = ip;
-				frame->ex = mono_interp_transform_method (new_method, context);
+				frame->ex = mono_interp_transform_method (new_method, context, NULL);
 				if (frame->ex)
 					goto exit_frame;
 			}
@@ -2485,13 +2430,6 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 				--sp;
 			child_frame.stack_args = sp;
 
-#ifndef DISABLE_REMOTING
-			/* `this' can be NULL for string:.ctor */
-			if (csignature->hasthis && sp->data.p && mono_object_is_transparent_proxy (sp->data.p)) {
-				child_frame.imethod = mono_interp_get_imethod (rtm->domain, mono_marshal_get_remoting_invoke (child_frame.imethod->method), &error);
-				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-			} else
-#endif
 			if (child_frame.imethod->method->flags & METHOD_ATTRIBUTE_PINVOKE_IMPL) {
 				child_frame.imethod = mono_interp_get_imethod (rtm->domain, mono_marshal_get_native_wrapper (child_frame.imethod->method, FALSE, FALSE), &error);
 				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
@@ -2598,14 +2536,6 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 				--sp;
 			child_frame.stack_args = sp;
 
-#ifndef DISABLE_REMOTING
-			/* `this' can be NULL for string:.ctor */
-			if (child_frame.imethod->hasthis && !child_frame.imethod->method->klass->valuetype && sp->data.p && mono_object_is_transparent_proxy (sp->data.p)) {
-				child_frame.imethod = mono_interp_get_imethod (rtm->domain, mono_marshal_get_remoting_invoke (child_frame.imethod->method), &error);
-				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-			}
-#endif
-
 			ves_exec_method_with_context (&child_frame, context, NULL, NULL, -1);
 
 			context->current_frame = frame;
@@ -2647,13 +2577,6 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 					THROW_EX (mono_get_exception_null_reference(), ip - 2);
 			}
 			child_frame.stack_args = sp;
-
-#ifndef DISABLE_REMOTING
-			if (child_frame.imethod->hasthis && !child_frame.imethod->method->klass->valuetype && mono_object_is_transparent_proxy (sp->data.p)) {
-				child_frame.imethod = mono_interp_get_imethod (rtm->domain, mono_marshal_get_remoting_invoke (child_frame.imethod->method), &error);
-				mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-			}
-#endif
 
 			ves_exec_method_with_context (&child_frame, context, NULL, NULL, -1);
 
@@ -2831,9 +2754,21 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 				g_warning ("ret.vt: more values on stack: %d", sp-frame->stack);
 			goto exit_frame;
 		MINT_IN_CASE(MINT_BR_S)
+			/* Checkpoint to be able to handle aborts */
+			if (*mono_thread_interruption_request_flag ()) {
+				MonoException *exc = mono_thread_interruption_checkpoint ();
+				if (exc)
+					THROW_EX (exc, ip);
+			}
 			ip += (short) *(ip + 1);
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_BR)
+			/* Checkpoint to be able to handle aborts */
+			if (*mono_thread_interruption_request_flag ()) {
+				MonoException *exc = mono_thread_interruption_checkpoint ();
+				if (exc)
+					THROW_EX (exc, ip);
+			}
 			ip += (gint32) READ32(ip + 1);
 			MINT_IN_BREAK;
 #define ZEROP_S(datamem, op) \
@@ -3205,7 +3140,7 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 		MINT_IN_CASE(MINT_MONO_ATOMIC_STORE_I4)
 			++ip;
 			sp -= 2;
-			InterlockedWrite ((gint32 *) sp->data.p, sp [1].data.i);
+			mono_atomic_store_i32 ((gint32 *) sp->data.p, sp [1].data.i);
 			MINT_IN_BREAK;
 #define BINOP(datamem, op) \
 	--sp; \
@@ -3575,10 +3510,8 @@ ves_exec_method_with_context (InterpFrame *frame, ThreadContext *context, unsign
 				}
 			} else {
 				if (newobj_class != mono_defaults.string_class) {
-					context->managed_code = 0;
 					o = mono_object_new_checked (rtm->domain, newobj_class, &error);
 					mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-					context->managed_code = 1;
 					if (*mono_thread_interruption_request_flag ())
 						mono_thread_interruption_checkpoint ();
 					sp->data.p = o;
@@ -4475,16 +4408,25 @@ array_constructed:
 				--sp;
 			}
 			frame->ip = ip;
+
+			if (frame->ex_handler != NULL && MONO_OFFSET_IN_HANDLER(frame->ex_handler, frame->ip - rtm->code)) {
+				MonoException *exc = frame->ex;
+				frame->ex_handler = NULL;
+				frame->ex = NULL;
+				if (frame->imethod->method->wrapper_type != MONO_WRAPPER_RUNTIME_INVOKE) {
+					MonoException *abort_exc = mono_thread_get_undeniable_exception ();
+					if (abort_exc)
+						THROW_EX (abort_exc, frame->ip);
+				}
+
+			}
+
 			if (*ip == MINT_LEAVE_S) {
 				ip += (short) *(ip + 1);
 			} else {
 				ip += (gint32) READ32 (ip + 1);
 			}
 			endfinally_ip = ip;
-			if (frame->ex_handler != NULL && MONO_OFFSET_IN_HANDLER(frame->ex_handler, frame->ip - rtm->code)) {
-				frame->ex_handler = NULL;
-				frame->ex = NULL;
-			}
 			goto handle_finally;
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_ICALL_V_V) 
@@ -4551,7 +4493,7 @@ array_constructed:
 
 			context->original_domain = NULL;
 			MonoDomain *tls_domain = (MonoDomain *) ((gpointer (*)(void)) mono_tls_get_tls_getter (TLS_KEY_DOMAIN, FALSE)) ();
-			gpointer tls_jit = ((gpointer (*)(void)) mono_tls_get_tls_getter (TLS_KEY_DOMAIN, FALSE)) ();
+			gpointer tls_jit = ((gpointer (*)(void)) mono_tls_get_tls_getter (TLS_KEY_JIT_TLS, FALSE)) ();
 
 			if (tls_domain != rtm->domain || !tls_jit)
 				context->original_domain = mono_jit_thread_attach (rtm->domain);
@@ -5247,52 +5189,6 @@ exit_frame:
 		MONO_PROFILER_RAISE (method_exception_leave, (frame->imethod->method, &frame->ex->object));
 
 	DEBUG_LEAVE ();
-}
-
-void
-ves_exec_method (InterpFrame *frame)
-{
-	ThreadContext *context = mono_native_tls_get_value (thread_context_id);
-	ThreadContext context_struct;
-	MonoDomain *domain = frame->imethod->domain;
-	MonoError error;
-	jmp_buf env;
-
-	frame->ex = NULL;
-
-	if (setjmp(env)) {
-		mono_unhandled_exception ((MonoObject*)frame->ex);
-		return;
-	}
-	if (context == NULL) {
-		context = &context_struct;
-		context_struct.base_frame = frame;
-		context_struct.current_frame = NULL;
-		context_struct.env_frame = frame;
-		context_struct.current_env = &env;
-		context_struct.search_for_handler = 0;
-		context_struct.managed_code = 0;
-		set_context (context);
-	}
-	frame->ip = NULL;
-	frame->parent = context->current_frame;
-	frame->imethod = mono_interp_get_imethod (domain, frame->method, &error);
-	mono_error_cleanup (&error); /* FIXME: don't swallow the error */
-	context->managed_code = 1;
-	ves_exec_method_with_context (frame, context, NULL, NULL, -1);
-	context->managed_code = 0;
-	if (frame->ex) {
-		if (context != &context_struct && context->current_env) {
-			context->env_frame->ex = frame->ex;
-			longjmp (*context->current_env, 1);
-		}
-		else
-			mono_unhandled_exception ((MonoObject*)frame->ex);
-	}
-	if (context->base_frame == frame)
-		set_context (NULL);
-	else
-		context->current_frame = frame->parent;
 }
 
 void

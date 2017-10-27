@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.9.0.139],
+AC_INIT(mono, [5.9.0.217],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -40,7 +40,7 @@ MONO_VERSION_BUILD=`echo $VERSION | cut -d . -f 3`
 # This can be reset to 0 when Mono's version number is bumped
 # since it's part of the corlib version (the prefix '1' in the full
 # version number is to ensure the number isn't treated as octal in C)
-MONO_CORLIB_COUNTER=0
+MONO_CORLIB_COUNTER=1
 MONO_CORLIB_VERSION=`printf "1%02d%02d%02d%03d" $MONO_VERSION_MAJOR $MONO_VERSION_MINOR 0 $MONO_CORLIB_COUNTER`
 
 AC_DEFINE_UNQUOTED(MONO_CORLIB_VERSION,$MONO_CORLIB_VERSION,[Version of the corlib-runtime interface])
@@ -846,6 +846,7 @@ fi
 AM_CONDITIONAL(STATIC_MONO, test x$with_static_mono != xno)
 AM_CONDITIONAL(SHARED_MONO, test x$with_shared_mono != xno)
 AC_ARG_ENABLE(mcs-build, [  --disable-mcs-build disable the build of the mcs directory], try_mcs_build=$enableval, enable_mcs_build=yes)
+AC_ARG_ENABLE(support-build, [  --disable-support-build disable the build of the support directory], try_support_build=$enableval, enable_support_build=yes)
 
 AC_ARG_WITH(xen_opt,   [  --with-xen_opt=yes,no          Enable Xen-specific behaviour (defaults to yes)],[],[with_xen_opt=yes])
 if test "x$with_xen_opt" = "xyes" -a "x$mono_cv_clang" = "xno"; then
@@ -3351,6 +3352,7 @@ HOST=$TARGET
 if test "x$host" != "x$target"; then
    AC_DEFINE(MONO_CROSS_COMPILE,1,[The runtime is compiled for cross-compiling mode])
    enable_mcs_build=no
+   enable_support_build=no
    BTLS_SUPPORTED=no
    case "$target" in
    arm*-darwin*)
@@ -4408,6 +4410,7 @@ AC_SUBST(docs_dir)
 
 ## Maybe should also disable if mcsdir is invalid.  Let's punt the issue for now.
 AM_CONDITIONAL(BUILD_MCS, [test x$cross_compiling = xno && test x$enable_mcs_build != xno])
+AM_CONDITIONAL(BUILD_SUPPORT, [test x$enable_support_build != xno])
 
 libmono_ldflags="$libmono_ldflags $LIBS"
 
@@ -4455,7 +4458,7 @@ AC_SUBST(mono_build_root)
 mono_runtime=mono/mini/mono
 AC_SUBST(mono_runtime)
 
-CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.2.3.2/tools/csc.exe
+CSC_LOCATION=`cd $srcdir && pwd`/external/roslyn-binaries/Microsoft.Net.Compilers/Microsoft.Net.Compilers.2.6.0/tools/csc.exe
 
 if test $csc_compiler = mcs; then
   CSC=$mcs_topdir/class/lib/build/mcs.exe

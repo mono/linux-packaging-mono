@@ -145,7 +145,7 @@ mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
 		if (code [-5] != 0xe8) {
 			if (can_write) {
 				g_assert ((guint64)(orig_code - 11) % 8 == 0);
-				InterlockedExchangePointer ((gpointer*)(orig_code - 11), addr);
+				mono_atomic_xchg_ptr ((gpointer*)(orig_code - 11), addr);
 				VALGRIND_DISCARD_TRANSLATIONS (orig_code - 11, sizeof (gpointer));
 			}
 		} else {
@@ -166,7 +166,7 @@ mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
 				MONO_PROFILER_RAISE (jit_code_buffer, (thunk_start, thunk_code - thunk_start, MONO_PROFILER_CODE_BUFFER_HELPER, NULL));
 			}
 			if (can_write) {
-				InterlockedExchange ((gint32*)(orig_code - 4), ((gint64)addr - (gint64)orig_code));
+				mono_atomic_xchg_i32 ((gint32*)(orig_code - 4), ((gint64)addr - (gint64)orig_code));
 				VALGRIND_DISCARD_TRANSLATIONS (orig_code - 5, 4);
 			}
 		}
@@ -175,7 +175,7 @@ mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
 		/* call *<OFFSET>(%rip) */
 		gpointer *got_entry = (gpointer*)((guint8*)orig_code + (*(guint32*)(orig_code - 4)));
 		if (can_write) {
-			InterlockedExchangePointer (got_entry, addr);
+			mono_atomic_xchg_ptr (got_entry, addr);
 			VALGRIND_DISCARD_TRANSLATIONS (orig_code - 5, sizeof (gpointer));
 		}
 	}
@@ -217,7 +217,7 @@ mono_arch_patch_plt_entry (guint8 *code, gpointer *got, mgreg_t *regs, guint8 *a
 
 	plt_jump_table_entry = (gpointer*)(code + 6 + disp);
 
-	InterlockedExchangePointer (plt_jump_table_entry, addr);
+	mono_atomic_xchg_ptr (plt_jump_table_entry, addr);
 }
 
 #ifndef DISABLE_JIT
@@ -360,8 +360,9 @@ mono_arch_create_generic_trampoline (MonoTrampolineType tramp_type, MonoTrampInf
 		/* cfa = rbp + cfa_offset */
 		mono_add_unwind_op_offset (unwind_ops, code, buf, i, - cfa_offset + saved_regs_offset + (i * sizeof (mgreg_t)));
 	}
-	for (i = 0; i < 8; ++i)
-		amd64_movsd_membase_reg (code, AMD64_RBP, saved_fpregs_offset + (i * sizeof(mgreg_t)), i);
+	for (i = 0; i < AMD64_XMM_NREG; ++i)
+		if (AMD64_IS_ARGUMENT_XREG (i))
+			amd64_movdqu_membase_reg (code, AMD64_RBP, saved_fpregs_offset + (i * sizeof(MonoContextSimdReg)), i);
 
 	/* Check that the stack is aligned */
 	amd64_mov_reg_reg (code, AMD64_R11, AMD64_RSP, sizeof (mgreg_t));
@@ -543,8 +544,9 @@ mono_arch_create_generic_trampoline (MonoTrampolineType tramp_type, MonoTrampInf
 	for (i = 0; i < AMD64_NREG; ++i)
 		if (AMD64_IS_ARGUMENT_REG (i) || i == AMD64_R10 || i == AMD64_RAX)
 			amd64_mov_reg_membase (code, i, AMD64_RBP, saved_regs_offset + (i * sizeof(mgreg_t)), sizeof(mgreg_t));
-	for (i = 0; i < 8; ++i)
-		amd64_movsd_reg_membase (code, i, AMD64_RBP, saved_fpregs_offset + (i * sizeof(mgreg_t)));
+	for (i = 0; i < AMD64_XMM_NREG; ++i)
+		if (AMD64_IS_ARGUMENT_XREG (i))
+			amd64_movdqu_reg_membase (code, i, AMD64_RBP, saved_fpregs_offset + (i * sizeof(MonoContextSimdReg)));
 
 	/* Restore stack */
 #if TARGET_WIN32

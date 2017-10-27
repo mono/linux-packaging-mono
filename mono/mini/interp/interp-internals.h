@@ -134,12 +134,8 @@ struct _InterpFrame {
 
 typedef struct {
 	MonoDomain *original_domain;
-	InterpFrame *base_frame;
 	InterpFrame *current_frame;
-	InterpFrame *env_frame;
-	jmp_buf *current_env;
 	unsigned char search_for_handler;
-	unsigned char managed_code;
 
 	/* Resume state for resuming execution in mixed mode */
 	gboolean       has_resume_state;
@@ -153,7 +149,7 @@ extern int mono_interp_traceopt;
 extern GSList *jit_classes;
 
 MonoException *
-mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context);
+mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, MonoDelegate *del);
 
 void
 mono_interp_transform_init (void);

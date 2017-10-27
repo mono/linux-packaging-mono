@@ -3973,8 +3973,10 @@ handle_delegate_ctor (MonoCompile *cfg, MonoClass *klass, MonoInst *target, Mono
 	/* Set target field */
 	/* Optimize away setting of NULL target */
 	if (!MONO_INS_IS_PCONST_NULL (target)) {
-		MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, target->dreg, 0);
-		MONO_EMIT_NEW_COND_EXC (cfg, EQ, "NullReferenceException");
+		if (!(method->flags & METHOD_ATTRIBUTE_STATIC)) {
+			MONO_EMIT_NEW_BIALU_IMM (cfg, OP_COMPARE_IMM, -1, target->dreg, 0);
+			MONO_EMIT_NEW_COND_EXC (cfg, EQ, "NullReferenceException");
+		}
 		MONO_EMIT_NEW_STORE_MEMBASE (cfg, OP_STORE_MEMBASE_REG, obj->dreg, MONO_STRUCT_OFFSET (MonoDelegate, target), target->dreg);
 		if (cfg->gen_write_barriers) {
 			dreg = alloc_preg (cfg);
@@ -11569,16 +11571,28 @@ mono_method_to_ir (MonoCompile *cfg, MonoMethod *method, MonoBasicBlock *start_b
 				CHECK_STACK (info->sig->param_count);
 				sp -= info->sig->param_count;
 
-				if (cfg->compile_aot && !strcmp (info->name, "mono_threads_attach_coop")) {
+				if (!strcmp (info->name, "mono_threads_attach_coop")) {
 					MonoInst *addr;
+					MonoBasicBlock *next_bb;
+
+					if (cfg->compile_aot) {
+						/*
+						 * This is called on unattached threads, so it cannot go through the trampoline
+						 * infrastructure. Use an indirect call through a got slot initialized at load time
+						 * instead.
+						 */
+						EMIT_NEW_AOTCONST (cfg, addr, MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL, (char*)info->name);
+						ins = mini_emit_calli (cfg, info->sig, sp, addr, NULL, NULL);
+					} else {
+						ins = mono_emit_jit_icall (cfg, info->func, sp);
+					}
 
 					/*
-					 * This is called on unattached threads, so it cannot go through the trampoline
-					 * infrastructure. Use an indirect call through a got slot initialized at load time
-					 * instead.
+					 * Parts of the initlocals code needs to come after this, since it might call methods like memset.
 					 */
-					EMIT_NEW_AOTCONST (cfg, addr, MONO_PATCH_INFO_JIT_ICALL_ADDR_NOCALL, (char*)info->name);
-					ins = mini_emit_calli (cfg, info->sig, sp, addr, NULL, NULL);
+					init_localsbb2 = cfg->cbb;
+					NEW_BBLOCK (cfg, next_bb);
+					MONO_START_BB (cfg, next_bb);
 				} else {
 					ins = mono_emit_jit_icall (cfg, info->func, sp);
 				}
@@ -13846,6 +13860,7 @@ mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts)
 			regtype = spec [MONO_INST_DEST];
 			g_assert (((ins->dreg == -1) && (regtype == ' ')) || ((ins->dreg != -1) && (regtype != ' ')));
 			prev_dreg = -1;
+			int dreg_using_dest_to_membase_op = -1;
 
 			if ((ins->dreg != -1) && get_vreg_to_inst (cfg, ins->dreg)) {
 				MonoInst *var = get_vreg_to_inst (cfg, ins->dreg);
@@ -13867,6 +13882,7 @@ mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts)
 						NULLIFY_INS (ins);
 						def_ins = NULL;
 					} else {
+						dreg_using_dest_to_membase_op = ins->dreg;
 						ins->opcode = op_to_op_dest_membase (store_opcode, ins->opcode);
 						ins->inst_basereg = var->inst_basereg;
 						ins->inst_offset = var->inst_offset;
@@ -14052,7 +14068,12 @@ mono_spill_global_vars (MonoCompile *cfg, gboolean *need_local_opts)
 									sreg = ins->dreg;
 								}
 								g_assert (sreg != -1);
-								vreg_to_lvreg [var->dreg] = sreg;
+								if (var->dreg == dreg_using_dest_to_membase_op) {
+									if (cfg->verbose_level > 2)
+										printf ("\tCan't cache R%d because it's part of a dreg dest_membase optimization\n", var->dreg);
+								} else {
+									vreg_to_lvreg [var->dreg] = sreg;
+								}
 								if (lvregs_len >= lvregs_size) {
 									guint32 *new_lvregs = mono_mempool_alloc0 (cfg->mempool, sizeof (guint32) * lvregs_size * 2);
 									memcpy (new_lvregs, lvregs, sizeof (guint32) * lvregs_size);
@@ -14321,5 +14342,7 @@ NOTES
 - Instead of the to_end stuff in the old JIT, simply call the function handling
   the values on the stack before emitting the last instruction of the bb.
 */
+#else /* !DISABLE_JIT */
 
+MONO_EMPTY_SOURCE_FILE (method_to_ir);
 #endif /* !DISABLE_JIT */

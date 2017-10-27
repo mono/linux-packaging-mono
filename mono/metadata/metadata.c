@@ -3171,7 +3171,7 @@ mono_metadata_get_canonical_generic_inst (MonoGenericInst *candidate)
 		int size = MONO_SIZEOF_GENERIC_INST + type_argc * sizeof (MonoType *);
 		ginst = (MonoGenericInst *)mono_image_set_alloc0 (set, size);
 #ifndef MONO_SMALL_CONFIG
-		ginst->id = InterlockedIncrement (&next_generic_inst_id);
+		ginst->id = mono_atomic_inc_i32 (&next_generic_inst_id);
 #endif
 		ginst->is_open = is_open;
 		ginst->type_argc = type_argc;
@@ -3411,7 +3411,7 @@ get_anonymous_container_for_image (MonoImage *image, gboolean is_mvar)
 
 		// If another thread already made a container, use that and leak this new one.
 		// (Technically it would currently be safe to just assign instead of CASing.)
-		MonoGenericContainer *exchange = (MonoGenericContainer *)InterlockedCompareExchangePointer ((volatile gpointer *)container_pointer, result, NULL);
+		MonoGenericContainer *exchange = (MonoGenericContainer *)mono_atomic_cas_ptr ((volatile gpointer *)container_pointer, result, NULL);
 		if (exchange)
 			result = exchange;
 	}
@@ -3997,8 +3997,7 @@ mono_metadata_parse_mh_full (MonoImage *m, MonoGenericContainer *container, cons
 	}
 	if (fat_flags & METHOD_HEADER_MORE_SECTS) {
 		clauses = parse_section_data (m, &num_clauses, (const unsigned char*)ptr, error);
-		if (!is_ok (error))
-			goto fail;
+		goto_if_nok (error, fail);
 	}
 	if (local_var_sig_tok) {
 		const char *locals_ptr;
@@ -4014,8 +4013,7 @@ mono_metadata_parse_mh_full (MonoImage *m, MonoGenericContainer *container, cons
 		mh->num_locals = len;
 		for (i = 0; i < len; ++i) {
 			mh->locals [i] = mono_metadata_parse_type_internal (m, container, 0, TRUE, locals_ptr, &locals_ptr, error);
-			if (!is_ok (error))
-				goto fail;
+			goto_if_nok (error, fail);
 		}
 	} else {
 		mh = (MonoMethodHeader *)g_malloc0 (MONO_SIZEOF_METHOD_HEADER + num_clauses * sizeof (MonoExceptionClause));
