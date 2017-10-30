@@ -7891,8 +7891,6 @@ namespace System.Web.UI
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.Demand, ControlThread=true)]
         public static System.Web.UI.ControlBuilder ParseTheme(System.ComponentModel.Design.IDesignerHost host, string theme, string themePath) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     public partial class EmptyControlCollection : System.Web.UI.ControlCollection
     {
         public EmptyControlCollection(System.Web.UI.Control owner) : base (default(System.Web.UI.Control)) { }
@@ -8481,12 +8479,14 @@ namespace System.Web.UI
         System.Web.UI.IHierarchicalEnumerable GetChildren();
         System.Web.UI.IHierarchyData GetParent();
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     public sealed partial class ImageClickEventArgs : System.EventArgs
     {
         public int X;
+        public double XRaw;
         public int Y;
+        public double YRaw;
         public ImageClickEventArgs(int x, int y) { }
+        public ImageClickEventArgs(int x, int y, double xRaw, double yRaw) { }
     }
     public delegate void ImageClickEventHandler(object sender, System.Web.UI.ImageClickEventArgs e);
     public partial interface INamingContainer
@@ -8503,7 +8503,7 @@ namespace System.Web.UI
     public sealed partial class IndexedString
     {
         public IndexedString(string s) { }
-        public string Value { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public string Value { get { throw null; } }
     }
     public partial interface IParserAccessor
     {
@@ -17562,8 +17562,6 @@ namespace System.Web.UI.WebControls
         public TableCellControlBuilder() { }
         public override bool AllowWhitespaceLiterals() { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     public partial class TableFooterRow : System.Web.UI.WebControls.TableRow
     {
         public TableFooterRow() { }
@@ -17582,8 +17580,6 @@ namespace System.Web.UI.WebControls
         public virtual System.Web.UI.WebControls.TableHeaderScope Scope { get { throw null; } set { } }
         protected override void AddAttributesToRender(System.Web.UI.HtmlTextWriter writer) { }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.InheritanceDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     public partial class TableHeaderRow : System.Web.UI.WebControls.TableRow
     {
         public TableHeaderRow() { }
