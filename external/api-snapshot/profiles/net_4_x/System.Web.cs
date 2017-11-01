@@ -7801,6 +7801,7 @@ namespace System.Web.UI
     public sealed partial class DataSourceControlBuilder : System.Web.UI.ControlBuilder
     {
         public DataSourceControlBuilder() { }
+        public override bool AllowWhitespaceLiterals() { throw null; }
     }
     public enum DataSourceOperation
     {
@@ -7900,9 +7901,9 @@ namespace System.Web.UI
     public partial class EventEntry
     {
         public EventEntry() { }
-        public string HandlerMethodName { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public System.Type HandlerType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
-        public string Name { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } [System.Runtime.CompilerServices.CompilerGeneratedAttribute]set { } }
+        public string HandlerMethodName { get { throw null; } set { } }
+        public System.Type HandlerType { get { throw null; } set { } }
+        public string Name { get { throw null; } set { } }
     }
     public sealed partial class ExpressionBinding
     {
@@ -9107,7 +9108,6 @@ namespace System.Web.UI
         protected System.Collections.IEnumerable XPathSelect(string xPathExpression) { throw null; }
         protected System.Collections.IEnumerable XPathSelect(string xPathExpression, System.Xml.IXmlNamespaceResolver resolver) { throw null; }
     }
-    [System.Web.AspNetHostingPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Level=(System.Web.AspNetHostingPermissionLevel)(200))]
     [System.SerializableAttribute]
     public sealed partial class Pair
     {
@@ -18839,7 +18839,7 @@ namespace System.Web.UI.WebControls
     }
     public delegate void WizardNavigationEventHandler(object sender, System.Web.UI.WebControls.WizardNavigationEventArgs e);
     [System.ComponentModel.BindableAttribute(false)]
-    [System.ComponentModel.ToolboxItemAttribute("")]
+    [System.ComponentModel.ToolboxItemAttribute(false)]
     [System.Web.UI.ControlBuilderAttribute(typeof(System.Web.UI.WebControls.WizardStepControlBuilder))]
     public sealed partial class WizardStep : System.Web.UI.WebControls.WizardStepBase
     {

@@ -14,7 +14,6 @@
 
 @SET_MAKE@
 
-
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
 am__make_running_with_option = \
@@ -80,16 +79,18 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@noinst_PROGRAMS = test-sgen-qsort$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@check_PROGRAMS = test-sgen-qsort$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-memfuncs$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-linked-list-set$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-conc-hashtable$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-handle$(EXEEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-handle$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-callspec$(EXEEXT)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@TESTS = test-sgen-qsort$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-memfuncs$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-linked-list-set$(EXEEXT) \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-conc-hashtable$(EXEEXT) \
-@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-handle$(EXEEXT)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-handle$(EXEEXT) \
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	test-mono-callspec$(EXEEXT)
 subdir = mono/unit-tests
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(top_srcdir)/depcomp \
@@ -120,7 +121,6 @@ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_libtestlib_la_rpath =
-PROGRAMS = $(noinst_PROGRAMS)
 am__test_conc_hashtable_SOURCES_DIST = test-conc-hashtable.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_conc_hashtable_OBJECTS = test_conc_hashtable-test-conc-hashtable.$(OBJEXT)
 test_conc_hashtable_OBJECTS = $(am_test_conc_hashtable_OBJECTS)
@@ -139,6 +139,17 @@ test_memfuncs_OBJECTS = $(am_test_memfuncs_OBJECTS)
 test_memfuncs_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_memfuncs_CFLAGS) \
 	$(CFLAGS) $(test_memfuncs_LDFLAGS) $(LDFLAGS) -o $@
+am__test_mono_callspec_SOURCES_DIST = test-mono-callspec.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_mono_callspec_OBJECTS = test_mono_callspec-test-mono-callspec.$(OBJEXT)
+test_mono_callspec_OBJECTS = $(am_test_mono_callspec_OBJECTS)
+am__DEPENDENCIES_3 = $(monodir)/mono/metadata/libmonoruntimesgen.la \
+	$(monodir)/mono/sgen/libmonosgen.la \
+	$(monodir)/mono/utils/libmonoutils.la $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+test_mono_callspec_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(test_mono_callspec_CFLAGS) $(CFLAGS) \
+	$(test_mono_callspec_LDFLAGS) $(LDFLAGS) -o $@
 am__test_mono_handle_SOURCES_DIST = test-mono-handle.c
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@am_test_mono_handle_OBJECTS = test_mono_handle-test-mono-handle.$(OBJEXT)
 test_mono_handle_OBJECTS = $(am_test_mono_handle_OBJECTS)
@@ -196,12 +207,14 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(libtestlib_la_SOURCES) $(test_conc_hashtable_SOURCES) \
-	$(test_memfuncs_SOURCES) $(test_mono_handle_SOURCES) \
+	$(test_memfuncs_SOURCES) $(test_mono_callspec_SOURCES) \
+	$(test_mono_handle_SOURCES) \
 	$(test_mono_linked_list_set_SOURCES) \
 	$(test_sgen_qsort_SOURCES)
 DIST_SOURCES = $(libtestlib_la_SOURCES) \
 	$(am__test_conc_hashtable_SOURCES_DIST) \
 	$(am__test_memfuncs_SOURCES_DIST) \
+	$(am__test_mono_callspec_SOURCES_DIST) \
 	$(am__test_mono_handle_SOURCES_DIST) \
 	$(am__test_mono_linked_list_set_SOURCES_DIST) \
 	$(am__test_sgen_qsort_SOURCES_DIST)
@@ -670,11 +683,28 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/mono $(LIBGC_CPPFLAGS) $(GLIB_CFLAGS) -DMONO_BINDIR=\"$(bindir)/\" -DMONO_ASSEMBLIES=\"$(assembliesdir)\" -DMONO_CFG_DIR=\"$(confdir)\"
+CLASS = $(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
+TOOLS_RUNTIME = MONO_PATH=$(mcs_topdir)/class/lib/build $(top_builddir)/runtime/mono-wrapper --aot-path=$(mcs_topdir)/class/lib/build
+MCS_NO_UNSAFE = $(TOOLS_RUNTIME) $(CSC) -debug:portable \
+	-noconfig -nologo \
+	-nowarn:0162 -nowarn:0168 -nowarn:0219 -nowarn:0414 -nowarn:0618 \
+	-nowarn:0169 -nowarn:1690 -nowarn:0649 -nowarn:0612 -nowarn:3021 \
+	-nowarn:0197 $(PROFILE_MCS_FLAGS)
+
+MCS_NO_LIB = $(MCS_NO_UNSAFE) -unsafe
+MCS = $(MCS_NO_LIB)
 test_cflags = $(AM_CFLAGS) $(SGEN_DEFINES)
 test_ldadd = libtestlib.la \
 	$(LIBGC_LIBS) $(GLIB_LIBS) -lm $(LIBICONV)
 
 @HOST_DARWIN_TRUE@test_ldflags = -framework CoreFoundation -framework Foundation
+monodir = $(top_builddir)
+sgen_libs = \
+	$(monodir)/mono/metadata/libmonoruntimesgen.la	\
+	$(monodir)/mono/sgen/libmonosgen.la	\
+	$(monodir)/mono/utils/libmonoutils.la \
+	$(GLIB_LIBS) $(LIBICONV)
+
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@noinst_LTLIBRARIES = libtestlib.la
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_SOURCES = 
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@libtestlib_la_LIBADD = ../metadata/libmonoruntimesgen.la ../sgen/libmonosgen.la ../utils/libmonoutils.la
@@ -698,6 +728,12 @@ test_ldadd = libtestlib.la \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_CFLAGS = $(test_cflags)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_LDADD = $(test_ldadd)
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_handle_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_SOURCES = test-mono-callspec.c
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_CFLAGS = $(AM_CFLAGS)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_LDADD = $(test_ldadd) ../mini/libmini.la $(sgen_libs)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_LDFLAGS = $(test_ldflags)
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@test_mono_callspec_DEPENDENCIES = callspec.exe
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@AM_TESTS_ENVIRONMENT = export MONO_PATH=$(mcs_topdir)/class/lib/build;
 all: all-am
 
 .SUFFIXES:
@@ -747,8 +783,8 @@ clean-noinstLTLIBRARIES:
 libtestlib.la: $(libtestlib_la_OBJECTS) $(libtestlib_la_DEPENDENCIES) $(EXTRA_libtestlib_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) $(am_libtestlib_la_rpath) $(libtestlib_la_OBJECTS) $(libtestlib_la_LIBADD) $(LIBS)
 
-clean-noinstPROGRAMS:
-	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
+clean-checkPROGRAMS:
+	@list='$(check_PROGRAMS)'; test -n "$$list" || exit 0; \
 	echo " rm -f" $$list; \
 	rm -f $$list || exit $$?; \
 	test -n "$(EXEEXT)" || exit 0; \
@@ -763,6 +799,10 @@ test-conc-hashtable$(EXEEXT): $(test_conc_hashtable_OBJECTS) $(test_conc_hashtab
 test-memfuncs$(EXEEXT): $(test_memfuncs_OBJECTS) $(test_memfuncs_DEPENDENCIES) $(EXTRA_test_memfuncs_DEPENDENCIES) 
 	@rm -f test-memfuncs$(EXEEXT)
 	$(AM_V_CCLD)$(test_memfuncs_LINK) $(test_memfuncs_OBJECTS) $(test_memfuncs_LDADD) $(LIBS)
+
+test-mono-callspec$(EXEEXT): $(test_mono_callspec_OBJECTS) $(test_mono_callspec_DEPENDENCIES) $(EXTRA_test_mono_callspec_DEPENDENCIES) 
+	@rm -f test-mono-callspec$(EXEEXT)
+	$(AM_V_CCLD)$(test_mono_callspec_LINK) $(test_mono_callspec_OBJECTS) $(test_mono_callspec_LDADD) $(LIBS)
 
 test-mono-handle$(EXEEXT): $(test_mono_handle_OBJECTS) $(test_mono_handle_DEPENDENCIES) $(EXTRA_test_mono_handle_DEPENDENCIES) 
 	@rm -f test-mono-handle$(EXEEXT)
@@ -784,6 +824,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_conc_hashtable-test-conc-hashtable.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_memfuncs-test-memfuncs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_callspec-test-mono-callspec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_handle-test-mono-handle.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_mono_linked_list_set-test-mono-linked-list-set.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_sgen_qsort-test-sgen-qsort.Po@am__quote@
@@ -839,6 +880,20 @@ test_memfuncs-test-memfuncs.obj: test-memfuncs.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-memfuncs.c' object='test_memfuncs-test-memfuncs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_memfuncs_CFLAGS) $(CFLAGS) -c -o test_memfuncs-test-memfuncs.obj `if test -f 'test-memfuncs.c'; then $(CYGPATH_W) 'test-memfuncs.c'; else $(CYGPATH_W) '$(srcdir)/test-memfuncs.c'; fi`
+
+test_mono_callspec-test-mono-callspec.o: test-mono-callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -MT test_mono_callspec-test-mono-callspec.o -MD -MP -MF $(DEPDIR)/test_mono_callspec-test-mono-callspec.Tpo -c -o test_mono_callspec-test-mono-callspec.o `test -f 'test-mono-callspec.c' || echo '$(srcdir)/'`test-mono-callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_callspec-test-mono-callspec.Tpo $(DEPDIR)/test_mono_callspec-test-mono-callspec.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-callspec.c' object='test_mono_callspec-test-mono-callspec.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -c -o test_mono_callspec-test-mono-callspec.o `test -f 'test-mono-callspec.c' || echo '$(srcdir)/'`test-mono-callspec.c
+
+test_mono_callspec-test-mono-callspec.obj: test-mono-callspec.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -MT test_mono_callspec-test-mono-callspec.obj -MD -MP -MF $(DEPDIR)/test_mono_callspec-test-mono-callspec.Tpo -c -o test_mono_callspec-test-mono-callspec.obj `if test -f 'test-mono-callspec.c'; then $(CYGPATH_W) 'test-mono-callspec.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-callspec.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_mono_callspec-test-mono-callspec.Tpo $(DEPDIR)/test_mono_callspec-test-mono-callspec.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='test-mono-callspec.c' object='test_mono_callspec-test-mono-callspec.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_callspec_CFLAGS) $(CFLAGS) -c -o test_mono_callspec-test-mono-callspec.obj `if test -f 'test-mono-callspec.c'; then $(CYGPATH_W) 'test-mono-callspec.c'; else $(CYGPATH_W) '$(srcdir)/test-mono-callspec.c'; fi`
 
 test_mono_handle-test-mono-handle.o: test-mono-handle.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_mono_handle_CFLAGS) $(CFLAGS) -MT test_mono_handle-test-mono-handle.o -MD -MP -MF $(DEPDIR)/test_mono_handle-test-mono-handle.Tpo -c -o test_mono_handle-test-mono-handle.o `test -f 'test-mono-handle.c' || echo '$(srcdir)/'`test-mono-handle.c
@@ -1070,7 +1125,7 @@ check-TESTS:
 	log_list=`echo $$log_list`; trs_list=`echo $$trs_list`; \
 	$(MAKE) $(AM_MAKEFLAGS) $(TEST_SUITE_LOG) TEST_LOGS="$$log_list"; \
 	exit $$?;
-recheck: all 
+recheck: all $(check_PROGRAMS)
 	@test -z "$(TEST_SUITE_LOG)" || rm -f $(TEST_SUITE_LOG)
 	@set +e; $(am__set_TESTS_bases); \
 	bases=`for i in $$bases; do echo $$i; done \
@@ -1112,6 +1167,13 @@ test-conc-hashtable.log: test-conc-hashtable$(EXEEXT)
 test-mono-handle.log: test-mono-handle$(EXEEXT)
 	@p='test-mono-handle$(EXEEXT)'; \
 	b='test-mono-handle'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test-mono-callspec.log: test-mono-callspec$(EXEEXT)
+	@p='test-mono-callspec$(EXEEXT)'; \
+	b='test-mono-callspec'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -1166,9 +1228,10 @@ distdir: $(DISTFILES)
 @SUPPORT_BOEHM_FALSE@check-local:
 @SUPPORT_SGEN_FALSE@check-local:
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS check-local
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
+all-am: Makefile $(LTLIBRARIES)
 installdirs:
 install: install-am
 install-exec: install-exec-am
@@ -1203,10 +1266,14 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@CROSS_COMPILE_TRUE@clean-local:
+@HOST_WIN32_TRUE@clean-local:
+@SUPPORT_BOEHM_FALSE@clean-local:
+@SUPPORT_SGEN_FALSE@clean-local:
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLTLIBRARIES \
-	clean-noinstPROGRAMS mostlyclean-am
+clean-am: clean-checkPROGRAMS clean-generic clean-libtool clean-local \
+	clean-noinstLTLIBRARIES mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -1277,16 +1344,16 @@ uninstall-am:
 .MAKE: check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-TESTS check-am \
-	check-local clean clean-generic clean-libtool \
-	clean-noinstLTLIBRARIES clean-noinstPROGRAMS cscopelist-am \
-	ctags ctags-am distclean distclean-compile distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	check-local clean clean-checkPROGRAMS clean-generic \
+	clean-libtool clean-local clean-noinstLTLIBRARIES \
+	cscopelist-am ctags ctags-am distclean distclean-compile \
+	distclean-generic distclean-libtool distclean-tags distdir dvi \
+	dvi-am html html-am info info-am install install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	recheck tags tags-am uninstall uninstall-am
@@ -1301,6 +1368,12 @@ uninstall-am:
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@		if [ $$failures -ne 0 ]; then echo "<failure><message>"'<![CDATA[' >> TestResult-unit-tests.xml && cat test-suite.log >> TestResult-unit-tests.xml && echo "]]></message><stack-trace></stack-trace></failure>" >> TestResult-unit-tests.xml; fi; \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@		echo "</test-case></results></test-suite></test-results>" >> TestResult-unit-tests.xml; \
 @CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	fi;
+
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@clean-local:
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	rm -f callspec.exe callspec.pdb
+
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@%.exe: %.cs
+@CROSS_COMPILE_FALSE@@HOST_WIN32_FALSE@@SUPPORT_BOEHM_TRUE@@SUPPORT_SGEN_TRUE@	$(MCS) -r:$(CLASS)/System.dll -r:$(CLASS)/System.Xml.dll -r:$(CLASS)/System.Core.dll -out:$@ $<
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
