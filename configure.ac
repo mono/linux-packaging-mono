@@ -1,7 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 #AC_PREREQ([2.62])
 
-AC_INIT(mono, [5.9.0.235],
+AC_INIT(mono, [5.9.0.260],
         [http://bugzilla.xamarin.com/enter_bug.cgi?classification=Mono])
 
 AC_CONFIG_SRCDIR([README.md])
@@ -1062,13 +1062,6 @@ elif test x$with_runtime_preset = xwasm; then
    AOT_RUN_FLAGS="--runtime=mobile --full-aot"
 else
    with_profile4_x_default=yes
-fi
-
-if test "x$AOT_BUILD_FLAGS" != "x"; then :
-   AC_SUBST(AOT_BUILD_FLAGS)
-   AC_SUBST(AOT_RUN_FLAGS)
-   # For llvmonlycheck + fullaotcheck
-   AC_SUBST(INVARIANT_AOT_OPTIONS)
 fi
 
 AC_SUBST(TEST_PROFILE)
@@ -2650,6 +2643,12 @@ if test x$host_win32 = xno; then
 	 #endif
 	])
 	AC_CHECK_HEADERS([termios.h])
+
+	dnl *********************************
+	dnl *** Checks for random         ***
+	dnl *********************************
+	AC_CHECK_HEADERS(sys/random.h)
+	AC_CHECK_FUNCS(getrandom getentropy)
 else
 	dnl *********************************
 	dnl *** Checks for Windows compilation ***
@@ -3035,6 +3034,11 @@ if test "x$enable_llvm" = "xyes"; then
       fi
    fi
 
+   if test x$with_runtime_preset != xbitcode; then
+      AOT_BUILD_FLAGS="$AOT_BUILD_FLAGS,llvm"
+      AOT_RUN_FLAGS="$AOT_RUN_FLAGS --llvm"
+   fi
+
    llvm_codegen="x86codegen"
    case "$target" in
    arm*)
@@ -3150,6 +3154,13 @@ if test "x$enable_llvm_runtime" = "xyes"; then
    AC_DEFINE(ENABLE_LLVM_RUNTIME, 1, [Runtime support code for llvm enabled])
 fi
 AM_CONDITIONAL(ENABLE_LLVM_RUNTIME, [test x$enable_llvm_runtime = xyes])
+
+if test "x$AOT_BUILD_FLAGS" != "x"; then :
+   AC_SUBST(AOT_BUILD_FLAGS)
+   AC_SUBST(AOT_RUN_FLAGS)
+   # For llvmonlycheck + fullaotcheck
+   AC_SUBST(INVARIANT_AOT_OPTIONS)
+fi
 
 TARGET="unknown"
 ACCESS_UNALIGNED="yes"
