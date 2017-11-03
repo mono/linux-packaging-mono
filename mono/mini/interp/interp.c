@@ -349,7 +349,7 @@ get_virtual_method (InterpMethod *imethod, MonoObject *obj)
 
 #ifndef DISABLE_REMOTING
 	if (mono_object_is_transparent_proxy (obj)) {
-		ret = mono_interp_get_imethod (domain, mono_marshal_get_remoting_invoke (m), &error);
+		ret = mono_interp_get_imethod (domain, mono_marshal_get_remoting_invoke_with_check (m), &error);
 		mono_error_assert_ok (&error);
 		return ret;
 	}
@@ -3523,6 +3523,12 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, guint16 *st
 					if (*mono_thread_interruption_request_flag ())
 						mono_thread_interruption_checkpoint ();
 					sp->data.p = o;
+#ifndef DISABLE_REMOTING
+					if (mono_object_is_transparent_proxy (o)) {
+						child_frame.imethod = mono_interp_get_imethod (rtm->domain, mono_marshal_get_remoting_invoke_with_check (child_frame.imethod->method), &error);
+						mono_error_assert_ok (&error);
+					}
+#endif
 				} else {
 					sp->data.p = NULL;
 					child_frame.retval = &retval;
@@ -4452,10 +4458,9 @@ array_constructed:
 				if (exc) {
 					frame->ex = exc;
 					context->search_for_handler = 1;
+					goto handle_exception;
 				}
 			}
-			if (frame->ex != NULL)
-				goto handle_exception;
 			ip += 2;
 			MINT_IN_BREAK;
 		MINT_IN_CASE(MINT_MONO_LDPTR) 

@@ -49,6 +49,9 @@ JITTEST_PROG_RUN = MONO_CFG_DIR=$(mono_build_root)/runtime/etc $(LIBTOOL) --mode
 
 
 RUNTIME_ARGS=--config tests-config --optimize=all --debug
+TEST_RUNTIME_ARGS ?= $(RUNTIME_ARGS)
+TEST_AOT_BUILD_FLAGS ?= $(AOT_BUILD_FLAGS)
+TEST_AOT_RUN_FLAGS ?= $(AOT_RUN_FLAGS)
 
 CLASS=$(mcs_topdir)/class/lib/$(DEFAULT_PROFILE)
 
@@ -83,11 +86,11 @@ ILASM = $(TOOLS_RUNTIME) $(mcs_topdir)/class/lib/build/ilasm.exe
 TEST_RUNNER = ./test-runner.exe --runtime $(top_builddir)/runtime/mono-wrapper --mono-path "$(CLASS)"
 
 if FULL_AOT_TESTS
-TEST_RUNNER += --runtime-args "$(AOT_RUN_FLAGS)"
+TEST_RUNNER += --runtime-args "$(TEST_AOT_RUN_FLAGS)"
 endif
 
 if HYBRID_AOT_TESTS
-TEST_RUNNER += --runtime-args "$(AOT_RUN_FLAGS)"
+TEST_RUNNER += --runtime-args "$(TEST_AOT_RUN_FLAGS)"
 endif
 
 if HOST_WIN32
@@ -952,6 +955,8 @@ DISABLED_TESTS = \
 	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
 	$(if $(LLVM),$(LLVM_DISABLED_TESTS))
 
+# bug-48015.exe: be careful when re-enabling, it happens that it returns with
+#                exit code 0, but doesn't actually execute the test.
 INTERP_DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
 	$(INTERP_PLATFORM_DISABLED_TESTS) \
@@ -959,7 +964,7 @@ INTERP_DISABLED_TESTS = \
 	$(if $(CI),$(CI_DISABLED_TESTS)) \
 	$(if $(CI_PR),$(CI_PR_DISABLED_TESTS)) \
 	abort-cctor.exe \
-	appdomain-thread-abort.exe \
+	appdomain-unload.exe \
 	array_load_exception.exe \
 	async-exc-compilation.exe \
 	async-with-cb-throws.exe \
@@ -985,7 +990,6 @@ INTERP_DISABLED_TESTS = \
 	exception18.exe \
 	field-access.exe \
 	finally_block_ending_in_dead_bb.exe \
-	generic-marshalbyref.2.exe \
 	handleref.exe \
 	invalid-token.exe \
 	invalid_generic_instantiation.exe \
@@ -1087,10 +1091,10 @@ TestingReferenceReferenceAssembly.dll: TestingReferenceReferenceAssembly.cs Test
 	$(MCS) -r:TestingReferenceAssembly.dll -target:library -out:$@ $<
 
 %.exe$(PLATFORM_AOT_SUFFIX): %.exe 
-	$(RUNTIME) $(AOT_BUILD_FLAGS) $<
+	$(RUNTIME) $(TEST_AOT_BUILD_FLAGS) $<
 
 %.dll$(PLATFORM_AOT_SUFFIX): %.dll 
-	$(RUNTIME) $(AOT_BUILD_FLAGS) $<
+	$(RUNTIME) $(TEST_AOT_BUILD_FLAGS) $<
 
 # mkbundle works on ppc, but the pkg-config POC doesn't when run with make test
 if POWERPC
@@ -1152,8 +1156,8 @@ runtest: compile-tests
 	for i in $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH); do echo $${i} >> testlist; sort testlist > testlist.sorted; done; \
 	for i in `cat testlist.sorted`; do \
 		rm -f $${i}.so; \
-		$(with_mono_path) $(JITTEST_PROG_RUN) --aot --debug $${i} > $${i}.aotlog 2>&1 || exit 1; \
-		if $(srcdir)/test-driver '$(with_mono_path) $(JITTEST_PROG_RUN)' $$i "$(DISABLED_TESTS)" "$${dump_action}" $(RUNTIME_ARGS); \
+		$(with_mono_path) $(JITTEST_PROG_RUN) --aot $(TEST_AOT_BUILD_FLAGS) --debug $${i} > $${i}.aotlog 2>&1 || exit 1; \
+		if $(srcdir)/test-driver '$(with_mono_path) $(JITTEST_PROG_RUN)' $$i "$(DISABLED_TESTS)" "$${dump_action}" $(TEST_RUNTIME_ARGS) $(TEST_AOT_RUN_FLAGS) ; \
 		then \
 			passed=`expr $${passed} + 1`; \
 		else \
@@ -1177,7 +1181,7 @@ runtest: compile-tests
 	fi
 
 runtest-managed: test-runner.exe compile-tests
-	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --testsuite-name "runtime" --timeout 300 --disabled "$(DISABLED_TESTS)" $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH)
+	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --testsuite-name "runtime" --timeout 300 --disabled "$(DISABLED_TESTS)" --runtime-args "$(TEST_RUNTIME_FLAGS)" $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH)
 
 runtest-managed-serial: test-runner.exe compile-tests
 	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j 1 --testsuite-name "runtime" --disabled "$(DISABLED_TESTS)" $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH)
@@ -1189,7 +1193,7 @@ testaot:
 	@$(MAKE) AOT=1 runtest
 
 testtrace:
-	@$(MAKE) RUNTIME_ARGS="$${RUNTIME_ARGS} --trace" runtest
+	@$(MAKE) TEST_RUNTIME_ARGS="$${TEST_RUNTIME_ARGS} --trace" runtest
 
 testinterp: test-runner.exe compile-tests
 	$(TOOLS_RUNTIME) --debug $(TEST_RUNNER) -j a --runtime-args "--interpreter" --testsuite-name "runtime-interp" --timeout 300 --disabled "$(INTERP_DISABLED_TESTS)" $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH)
@@ -1209,7 +1213,7 @@ stresstest: compile-tests
 	passed=0; \
 	failed_tests="";\
 	for i in $(TESTS_STRESS); do	\
-		if $(srcdir)/stress-runner.pl $$i ../mini/mono $(RUNTIME_ARGS); \
+		if $(srcdir)/stress-runner.pl $$i ../mini/mono $(TEST_RUNTIME_ARGS); \
 		then \
 			passed=`expr $${passed} + 1`; \
 		else \
@@ -1680,7 +1684,7 @@ reference-loader.exe$(PLATFORM_AOT_SUFFIX): TestingReferenceAssembly.dll$(PLATFO
 reference-loader.exe: TestingReferenceAssembly.dll TestingReferenceReferenceAssembly.dll
 
 assemblyresolve_asm.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_asm.dll assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX)
-	MONO_PATH="assemblyresolve_deps:$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(AOT_BUILD_FLAGS) assemblyresolve_asm.dll
+	MONO_PATH="assemblyresolve_deps:$(CLASS)" $(top_builddir)/runtime/mono-wrapper $(TEST_AOT_BUILD_FLAGS) assemblyresolve_asm.dll
 assemblyresolve_deps/Test.dll$(PLATFORM_AOT_SUFFIX): assemblyresolve_deps/Test.dll assemblyresolve_deps/TestBase.dll$(PLATFORM_AOT_SUFFIX)
 
 EXTRA_DIST += assemblyresolve_TestBase.cs assemblyresolve_Test.cs assemblyresolve_asm.cs 
