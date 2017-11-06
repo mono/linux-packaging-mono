@@ -1408,7 +1408,7 @@ mono_interp_runtime_invoke (MonoMethod *method, void *obj, void **params, MonoOb
 			*exc = (MonoObject*) frame.ex;
 			return NULL;
 		}
-		mono_set_pending_exception (frame.ex);
+		mono_error_set_exception_instance (error, frame.ex);
 		return NULL;
 	}
 	return result.data.p;
@@ -2560,7 +2560,11 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, guint16 *st
 				 * An exception occurred, need to run finally, fault and catch handlers..
 				 */
 				frame->ex = child_frame.ex;
-				goto handle_exception;;
+				if (context->search_for_handler) {
+					context->search_for_handler = 0;
+					goto handle_exception;
+				}
+				goto handle_finally;
 			}
 
 			/* need to handle typedbyref ... */
@@ -2602,6 +2606,10 @@ interp_exec_method_full (InterpFrame *frame, ThreadContext *context, guint16 *st
 				 * An exception occurred, need to run finally, fault and catch handlers..
 				 */
 				frame->ex = child_frame.ex;
+				if (context->search_for_handler) {
+					context->search_for_handler = 0;
+					goto handle_exception;
+				}
 				goto handle_finally;
 			}
 			MINT_IN_BREAK;
