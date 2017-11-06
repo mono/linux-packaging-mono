@@ -1191,18 +1191,26 @@ no_intrinsic:
 }
 
 static MonoClassField *
-interp_field_from_token (MonoMethod *method, guint32 token, MonoClass **klass, MonoGenericContext *generic_context)
+interp_field_from_token (MonoMethod *method, guint32 token, MonoClass **klass, MonoGenericContext *generic_context, MonoError *error)
 {
 	MonoClassField *field = NULL;
 	if (method->wrapper_type != MONO_WRAPPER_NONE) {
 		field = (MonoClassField *) mono_method_get_wrapper_data (method, token);
 		*klass = field->parent;
 	} else {
-		MonoError error;
-		error_init (&error);
-		field = mono_field_from_token_checked (method->klass->image, token, klass, generic_context, &error);
-		mono_error_cleanup (&error); /* FIXME: don't swallow the error */
+		field = mono_field_from_token_checked (method->klass->image, token, klass, generic_context, error);
+		return_val_if_nok (error, NULL);
 	}
+
+	if (!method->skip_visibility && !mono_method_can_access_field (method, field)) {
+		char *method_fname = mono_method_full_name (method, TRUE);
+		char *field_fname = mono_field_full_name (field);
+		mono_error_set_generic_error (error, "System", "FieldAccessException", "Field `%s' is inaccessible from method `%s'\n", field_fname, method_fname);
+		g_free (method_fname);
+		g_free (field_fname);
+		return NULL;
+	}
+
 	return field;
 }
 
@@ -2824,7 +2832,8 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 		case CEE_LDFLDA:
 			CHECK_STACK (td, 1);
 			token = read32 (td->ip + 1);
-			field = interp_field_from_token (method, token, &klass, generic_context);
+			field = interp_field_from_token (method, token, &klass, generic_context, error);
+			return_if_nok (error);
 			gboolean is_static = !!(field->type->attrs & FIELD_ATTRIBUTE_STATIC);
 			mono_class_init (klass);
 			if (is_static) {
@@ -2847,7 +2856,8 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 		case CEE_LDFLD: {
 			CHECK_STACK (td, 1);
 			token = read32 (td->ip + 1);
-			field = interp_field_from_token (method, token, &klass, generic_context);
+			field = interp_field_from_token (method, token, &klass, generic_context, error);
+			return_if_nok (error);
 			gboolean is_static = !!(field->type->attrs & FIELD_ATTRIBUTE_STATIC);
 			mono_class_init (klass);
 
@@ -2893,7 +2903,8 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 		case CEE_STFLD: {
 			CHECK_STACK (td, 2);
 			token = read32 (td->ip + 1);
-			field = interp_field_from_token (method, token, &klass, generic_context);
+			field = interp_field_from_token (method, token, &klass, generic_context, error);
+			return_if_nok (error);
 			gboolean is_static = !!(field->type->attrs & FIELD_ATTRIBUTE_STATIC);
 			mono_class_init (klass);
 			mt = mint_type(field->type);
@@ -2931,7 +2942,8 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 		}
 		case CEE_LDSFLDA:
 			token = read32 (td->ip + 1);
-			field = interp_field_from_token (method, token, &klass, generic_context);
+			field = interp_field_from_token (method, token, &klass, generic_context, error);
+			return_if_nok (error);
 			ADD_CODE(td, MINT_LDSFLDA);
 			ADD_CODE(td, get_data_item_index (td, field));
 			td->ip += 5;
@@ -2939,7 +2951,8 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 			break;
 		case CEE_LDSFLD:
 			token = read32 (td->ip + 1);
-			field = interp_field_from_token (method, token, &klass, generic_context);
+			field = interp_field_from_token (method, token, &klass, generic_context, error);
+			return_if_nok (error);
 			mt = mint_type(field->type);
 			ADD_CODE(td, mt == MINT_TYPE_VT ? MINT_LDSFLD_VT : MINT_LDSFLD);
 			ADD_CODE(td, get_data_item_index (td, field));
@@ -2960,7 +2973,8 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 		case CEE_STSFLD:
 			CHECK_STACK (td, 1);
 			token = read32 (td->ip + 1);
-			field = interp_field_from_token (method, token, &klass, generic_context);
+			field = interp_field_from_token (method, token, &klass, generic_context, error);
+			return_if_nok (error);
 			mt = mint_type(field->type);
 			ADD_CODE(td, mt == MINT_TYPE_VT ? MINT_STSFLD_VT : MINT_STSFLD);
 			ADD_CODE(td, get_data_item_index (td, field));
@@ -3604,7 +3618,8 @@ generate (MonoMethod *method, MonoMethodHeader *header, InterpMethod *rtm, unsig
 					return_if_nok (error);
 				}
 			} else {
-				handle = mono_ldtoken (image, token, &klass, generic_context);
+				handle = mono_ldtoken_checked (image, token, &klass, generic_context, error);
+				return_if_nok (error);
 			}
 			mono_class_init (klass);
 			mt = mint_type (&klass->byval_arg);
@@ -4245,13 +4260,15 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 	register const unsigned char *ip, *end;
 	const MonoOpcode *opcode;
 	MonoMethod *m;
-	MonoClass *class;
+	MonoClass *klass;
 	unsigned char *is_bb_start;
 	int in;
 	MonoVTable *method_class_vt;
 	int backwards;
 	MonoGenericContext *generic_context = NULL;
 	MonoDomain *domain = imethod->domain;
+	InterpMethod tmp_imethod;
+	InterpMethod *real_imethod;
 
 	error_init (&error);
 
@@ -4379,13 +4396,13 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 			break;
 		case MonoInlineType:
 			if (method->wrapper_type == MONO_WRAPPER_NONE) {
-				class = mini_get_class (method, read32 (ip + 1), generic_context);
-				mono_class_init (class);
+				klass = mini_get_class (method, read32 (ip + 1), generic_context);
+				mono_class_init (klass);
 				/* quick fix to not do this for the fake ptr classes - probably should not be getting the vtable at all here */
 #if 0
-				g_error ("FIXME: interface method lookup: %s (in method %s)", class->name, method->name);
-				if (!(class->flags & TYPE_ATTRIBUTE_INTERFACE) && class->interface_offsets != NULL)
-					mono_class_vtable (domain, class);
+				g_error ("FIXME: interface method lookup: %s (in method %s)", klass->name, method->name);
+				if (!(klass->flags & TYPE_ATTRIBUTE_INTERFACE) && klass->interface_offsets != NULL)
+					mono_class_vtable (domain, klass);
 #endif
 			}
 			ip += 5;
@@ -4460,16 +4477,10 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 	}
 	// g_printerr ("TRANSFORM(0x%016lx): end %s::%s\n", mono_thread_current (), method->klass->name, method->name);
 
-	/* the rest needs to be locked so it is only done once */
-	mono_os_mutex_lock(&calc_section);
-	if (imethod->transformed) {
-		mono_os_mutex_unlock(&calc_section);
-		g_free (is_bb_start);
-		if (header)
-			mono_metadata_free_mh (header);
-		MONO_PROFILER_RAISE (jit_done, (method, imethod->jinfo));
-		return NULL;
-	}
+	/* Make modifications to a copy of imethod, copy them back inside the lock */
+	real_imethod = imethod;
+	memcpy (&tmp_imethod, imethod, sizeof (InterpMethod));
+	imethod = &tmp_imethod;
 
 	imethod->local_offsets = g_malloc (header->num_locals * sizeof(guint32));
 	imethod->stack_size = (sizeof (stackval)) * (header->max_stack + 2); /* + 1 for returns of called functions  + 1 for 0-ing in trace*/
@@ -4526,18 +4537,25 @@ mono_interp_transform_method (InterpMethod *imethod, ThreadContext *context, Mon
 	generate (method, header, imethod, is_bb_start, generic_context, &error);
 
 	mono_metadata_free_mh (header);
-
-	if (!mono_error_ok (&error)) {
-		mono_os_mutex_unlock (&calc_section);
-		return mono_error_convert_to_exception (&error);
-	}
-
 	g_free (is_bb_start);
+
+	if (!mono_error_ok (&error))
+		return mono_error_convert_to_exception (&error);
 
 	// FIXME: Add a different callback ?
 	MONO_PROFILER_RAISE (jit_done, (method, imethod->jinfo));
-	imethod->transformed = TRUE;
-	mono_os_mutex_unlock(&calc_section);
+
+	/* Copy changes back */
+	imethod = real_imethod;
+	mono_os_mutex_lock (&calc_section);
+	if (!imethod->transformed) {
+		InterpMethod *hash = imethod->next_jit_code_hash;
+		memcpy (imethod, &tmp_imethod, sizeof (InterpMethod));
+		imethod->next_jit_code_hash = hash;
+		mono_memory_barrier ();
+		imethod->transformed = TRUE;
+	}
+	mono_os_mutex_unlock (&calc_section);
 
 	return NULL;
 }
