@@ -740,7 +740,7 @@ is_field_on_inst (MonoClassField *field)
 
 #ifndef DISABLE_REFLECTION_EMIT
 static guint32
-mono_image_get_fieldref_token (MonoDynamicImage *assembly, MonoObjectHandle f, MonoClassField *field)
+mono_image_get_fieldref_token (MonoDynamicImage *assembly, MonoClassField *field)
 {
 	MonoType *type;
 	guint32 token;
@@ -748,7 +748,7 @@ mono_image_get_fieldref_token (MonoDynamicImage *assembly, MonoObjectHandle f, M
 	g_assert (field);
 	g_assert (field->parent);
 
-	token = GPOINTER_TO_UINT (mono_g_hash_table_lookup (assembly->handleref_managed, MONO_HANDLE_RAW (f)));
+	token = GPOINTER_TO_UINT (g_hash_table_lookup (assembly->handleref, field));
 	if (token)
 		return token;
 
@@ -761,7 +761,7 @@ mono_image_get_fieldref_token (MonoDynamicImage *assembly, MonoObjectHandle f, M
 	token = mono_image_get_memberref_token (assembly, &field->parent->byval_arg,
 											mono_field_get_name (field),
 											mono_dynimage_encode_fieldref_signature (assembly, field->parent->image, type));
-	mono_g_hash_table_insert (assembly->handleref_managed, MONO_HANDLE_RAW (f), GUINT_TO_POINTER(token));
+	g_hash_table_insert (assembly->handleref, field, GUINT_TO_POINTER(token));
 	return token;
 }
 
@@ -1115,17 +1115,20 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 			 gboolean create_open_instance, gboolean register_token,
 			 MonoError *error)
 {
+	HANDLE_FUNCTION_ENTER ();
 	guint32 token = 0;
 
 	error_init (error);
 
 	MonoClass *klass = mono_handle_class (obj);
+	MonoObjectHandle register_obj = MONO_HANDLE_NEW (MonoObject, NULL);
+	MONO_HANDLE_ASSIGN (register_obj, obj);
 
 	/* Check for user defined reflection objects */
 	/* TypeDelegator is the only corlib type which doesn't look like a MonoReflectionType */
 	if (klass->image != mono_defaults.corlib || (strcmp (klass->name, "TypeDelegator") == 0)) {
 		mono_error_set_not_supported (error, "User defined subclasses of System.Type are not yet supported");
-		return 0;
+		goto leave;
 	}
 
 	/* This function is called from ModuleBuilder:getToken multiple times for the same objects */
@@ -1133,7 +1136,8 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 
 	if (strcmp (klass->name, "RuntimeType") == 0) {
 		MonoType *type = mono_reflection_type_handle_mono_type (MONO_HANDLE_CAST (MonoReflectionType, obj), error);
-		return_val_if_nok (error, 0);
+		if (!is_ok (error))
+			goto leave;
 		MonoClass *mc = mono_class_from_mono_type (type);
 		token = mono_metadata_token_from_dor (
 			mono_dynimage_encode_typedef_or_ref_full (assembly, type, !mono_class_is_gtd (mc) || create_open_instance));
@@ -1145,9 +1149,15 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 		MonoReflectionMethodHandle m = MONO_HANDLE_CAST (MonoReflectionMethod, obj);
 		MonoMethod *method = MONO_HANDLE_GETVAL (m, method);
 		if (method->is_inflated) {
-			if (create_open_instance)
-				token = mono_image_get_methodspec_token (assembly, method);
-			else
+			if (create_open_instance) {
+				guint32 methodspec_token = mono_image_get_methodspec_token (assembly, method);
+				MonoReflectionMethodHandle canonical_obj =
+					mono_method_get_object_handle (MONO_HANDLE_DOMAIN (obj), method, NULL, error);
+				if (!is_ok (error))
+					goto leave;
+				MONO_HANDLE_ASSIGN (register_obj, canonical_obj);
+				token = methodspec_token;
+			} else
 				token = mono_image_get_inflated_method_token (assembly, method);
 		} else if ((method->klass->image == &assembly->image) &&
 			 !mono_class_is_ginst (method->klass)) {
@@ -1170,7 +1180,21 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 				how_collide = MONO_DYN_IMAGE_TOK_NEW;
 			}
 		} else {
-			token = mono_image_get_methodref_token (assembly, method, create_open_instance);
+			guint32 methodref_token = mono_image_get_methodref_token (assembly, method, create_open_instance);
+			/* We need to register a 'canonical' object.  The same
+			 * MonoMethod could have been reflected via different
+			 * classes so the MonoReflectionMethod:reftype could be
+			 * different, and the object lookup in
+			 * dynamic_image_register_token would assert assert. So
+			 * we pick the MonoReflectionMethod object that has the
+			 * reflected type as NULL (ie, take the declaring type
+			 * of the method) */
+			MonoReflectionMethodHandle canonical_obj =
+				mono_method_get_object_handle (MONO_HANDLE_DOMAIN (obj), method, NULL, error);
+			if (!is_ok (error))
+				goto leave;
+			MONO_HANDLE_ASSIGN (register_obj, canonical_obj);
+			token = methodref_token;
 		}
 		/*g_print ("got token 0x%08x for %s\n", token, m->method->name);*/
 	} else if (strcmp (klass->name, "MonoField") == 0) {
@@ -1182,25 +1206,42 @@ mono_image_create_token (MonoDynamicImage *assembly, MonoObjectHandle obj,
 			token = MONO_TOKEN_FIELD_DEF | field_table_idx;
 			how_collide = MONO_DYN_IMAGE_TOK_NEW;
 		} else {
-			token = mono_image_get_fieldref_token (assembly, obj, field);
+			guint32 fieldref_token = mono_image_get_fieldref_token (assembly, field);
+			/* Same as methodref: get a canonical object to
+			 * register with the token. */
+			MonoReflectionFieldHandle canonical_obj =
+				mono_field_get_object_handle (MONO_HANDLE_DOMAIN (obj), field->parent, field, error);
+			if (!is_ok (error))
+				goto leave;
+			MONO_HANDLE_ASSIGN (register_obj, canonical_obj);
+			token = fieldref_token;
 		}
 		/*g_print ("got token 0x%08x for %s\n", token, f->field->name);*/
 	} else if (strcmp (klass->name, "MonoArrayMethod") == 0) {
 		MonoReflectionArrayMethodHandle m = MONO_HANDLE_CAST (MonoReflectionArrayMethod, obj);
-		token = mono_image_get_array_token (assembly, m, error);
-		return_val_if_nok (error, 0);
+		/* always returns a fresh token */
+		guint32 array_token = mono_image_get_array_token (assembly, m, error);
+		if (!is_ok (error))
+			goto leave;
+		token = array_token;
+		how_collide = MONO_DYN_IMAGE_TOK_NEW;
 	} else if (strcmp (klass->name, "SignatureHelper") == 0) {
 		MonoReflectionSigHelperHandle s = MONO_HANDLE_CAST (MonoReflectionSigHelper, obj);
-		token = MONO_TOKEN_SIGNATURE | mono_image_get_sighelper_token (assembly, s, error);
-		return_val_if_nok (error, 0);
+		/* always returns a fresh token */
+		guint32 sig_token = MONO_TOKEN_SIGNATURE | mono_image_get_sighelper_token (assembly, s, error);
+		if (!is_ok (error))
+			goto leave;
+		token = sig_token;
+		how_collide = MONO_DYN_IMAGE_TOK_NEW;
 	} else {
 		g_error ("requested token for %s\n", klass->name);
 	}
 
 	if (register_token)
-		mono_dynamic_image_register_token (assembly, token, obj, how_collide);
+		mono_dynamic_image_register_token (assembly, token, register_obj, how_collide);
 
-	return token;
+leave:
+	HANDLE_FUNCTION_RETURN_VAL (token);
 }
 
 
