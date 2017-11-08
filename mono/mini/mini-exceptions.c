@@ -228,7 +228,7 @@ mono_exceptions_init (void)
 #ifdef MONO_ARCH_HAVE_EXCEPTIONS_INIT
 	mono_arch_exceptions_init ();
 #endif
-#ifdef ENABLE_INTERPRETER
+#ifndef DISABLE_INTERPRETER
 	if (mono_use_interpreter)
 		cbs.mono_walk_stack_with_ctx = interp_walk_stack_with_ctx;
 	else
@@ -2284,10 +2284,13 @@ mono_handle_exception_internal (MonoContext *ctx, MonoObject *obj, gboolean resu
 						return 0;
 					} else {
 						mini_set_abort_threshold (ctx);
-						if (in_interp)
-							mono_interp_run_finally (&frame, i, ei->handler_start);
-						else
+						if (in_interp) {
+							gboolean has_ex = mono_interp_run_finally (&frame, i, ei->handler_start);
+							if (has_ex)
+								return 0;
+						} else {
 							call_filter (ctx, ei->handler_start);
+						}
 					}
 				}
 			}

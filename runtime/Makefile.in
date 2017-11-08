@@ -91,14 +91,15 @@ target_triplet = @target@
 @INSTALL_XAMMAC_TRUE@am__append_10 = xammac xammac_net_4_5
 @INSTALL_ORBIS_TRUE@am__append_11 = orbis
 @INSTALL_UNREAL_TRUE@am__append_12 = unreal
+@INSTALL_WASM_TRUE@am__append_13 = wasm
 
 # Mono.WebBrowser.dll fails to verify on Windows
-@HOST_WIN32_TRUE@am__append_13 = Mono.WebBrowser.dll
+@HOST_WIN32_TRUE@am__append_14 = Mono.WebBrowser.dll
 
 #  ILASM.exe has features which a testing_aot_full runtime will not support.
 #  It is invoked with an external mono when used in the runtime.
 #  We skip it here because otherwise it will fail to verify.
-@FULL_AOT_TESTS_TRUE@am__append_14 = ilasm.exe
+@FULL_AOT_TESTS_TRUE@am__append_15 = ilasm.exe
 subdir = runtime
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/mkinstalldirs $(srcdir)/mono-wrapper.in \
@@ -385,7 +386,7 @@ SUPPORT_FILES = $(symlinks) mono-wrapper etc/mono/config
 build_profiles = $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
 	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11) $(am__append_12)
+	$(am__append_11) $(am__append_12) $(am__append_13)
 @INSTALL_4_x_TRUE@net_profile = net_4_x
 test_profiles = $(filter-out binary_reference_assemblies monodroid_tools,$(build_profiles))
 @BUILD_MCS_TRUE@MAKE_FLAGS = $(if $(V),,--no-print-directory -s)
@@ -398,7 +399,7 @@ TEST_SUPPORT_FILES = $(tmpinst)/bin/mono $(tmpinst)/bin/ilasm $(tmpinst)/bin/csc
 @HOST_WIN32_FALSE@PLATFORM_PATH_SEPARATOR = :
 
 # assemblies which are excluded from testing in mcs-compileall below
-VERIFY_TESTS_FILTER = $(am__append_13) $(am__append_14)
+VERIFY_TESTS_FILTER = $(am__append_14) $(am__append_15)
 CLEANFILES = etc/mono/config
 
 # the 'cygnus' option also disables the default 'distdir:' target, which we _do_ want

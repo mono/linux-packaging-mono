@@ -42,7 +42,11 @@
 /* Icall tables disabled */
 #undef DISABLE_ICALL_TABLES
 
-/* Disable the JIT, only full-aot mode will be supported by the runtime. */
+/* Disable the interpreter. */
+#undef DISABLE_INTERPRETER
+
+/* Disable the JIT, only full-aot mode or interpreter will be supported by the
+   runtime. */
 #undef DISABLE_JIT
 
 /* Disable support for huge assemblies */
@@ -141,9 +145,6 @@
 
 /* Icall symbol map enabled */
 #undef ENABLE_ICALL_SYMBOL_MAP
-
-/* Enable Interpreter */
-#undef ENABLE_INTERPRETER
 
 /* Enable the LLVM back end */
 #undef ENABLE_LLVM

@@ -3616,6 +3616,9 @@ namespace System.Web.Configuration
         Clear = 0,
         MD5 = 2,
         SHA1 = 1,
+        SHA256 = 3,
+        SHA384 = 4,
+        SHA512 = 5,
     }
     public enum FormsProtectionEnum
     {
