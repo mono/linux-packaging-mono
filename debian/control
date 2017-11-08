@@ -181,6 +181,8 @@ Depends: ${misc:Depends},
          monodoc-base (= ${source:Version}),
          monodoc-manual (= ${source:Version}),
          libmono-cil-dev (= ${source:Version}),
+         referenceassemblies-pcl,
+         msbuild,
          ca-certificates-mono (= ${source:Version})
 Description: complete Mono runtime, development tools and all libraries
  Mono is a platform for running and developing applications based on the
