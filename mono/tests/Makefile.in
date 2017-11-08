@@ -205,7 +205,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	bug-389886-3.exe constant-division.exe \
 @FULL_AOT_TESTS_TRUE@	dynamic-method-resurrection.exe \
 @FULL_AOT_TESTS_TRUE@	assembly_append_ordering.exe \
-@FULL_AOT_TESTS_TRUE@	assemblyresolve_event5.cs bug-80307.exe \
+@FULL_AOT_TESTS_TRUE@	assemblyresolve_event5.exe bug-80307.exe \
 @FULL_AOT_TESTS_TRUE@	namedmutex-destroy-race.exe thread6.exe \
 @FULL_AOT_TESTS_TRUE@	reference-loader.exe constraints-load.exe \
 @FULL_AOT_TESTS_TRUE@	bug-515884.exe generic-type-builder.2.exe \
@@ -736,7 +736,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	appdomain-threadpool-unload.cs process-unref-race.cs \
 	bug-46661.cs w32message.cs runtime-invoke.gen.cs \
 	imt_big_iface_test.cs bug-58782-plain-throw.cs \
-	bug-58782-capture-and-throw.cs $(am__append_5) $(am__append_6)
+	bug-58782-capture-and-throw.cs bug-59281.cs $(am__append_5) \
+	$(am__append_6)
 TESTS_IL_SRC = \
 	field-access.il		\
 	method-access.il	\
