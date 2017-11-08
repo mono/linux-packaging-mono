@@ -3349,6 +3349,7 @@ namespace System.Xml.XmlConfiguration
     public sealed partial class XmlReaderSection
     {
         public XmlReaderSection() { }
+        public string CollapseWhiteSpaceIntoEmptyStringString { get { throw null; } set { } }
     }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class XsltConfigSection

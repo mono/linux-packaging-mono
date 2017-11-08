@@ -3455,6 +3455,8 @@ namespace System.Xml.XmlConfiguration
     public sealed partial class XmlReaderSection : System.Configuration.ConfigurationSection
     {
         public XmlReaderSection() { }
+        [System.Configuration.ConfigurationPropertyAttribute("CollapseWhiteSpaceIntoEmptyString", DefaultValue="false")]
+        public string CollapseWhiteSpaceIntoEmptyStringString { get { throw null; } set { } }
         [System.Configuration.ConfigurationPropertyAttribute("prohibitDefaultResolver", DefaultValue="false")]
         public string ProhibitDefaultResolverString { get { throw null; } set { } }
     }
