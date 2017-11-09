@@ -1130,6 +1130,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  mono_method_desc_free@Base 4.1.0.1738
  mono_method_desc_from_method@Base 4.1.0.1738
  mono_method_desc_full_match@Base 4.1.0.1738
+ mono_method_desc_is_full@Base 5.9.0.331
  mono_method_desc_match@Base 4.1.0.1738
  mono_method_desc_new@Base 4.1.0.1738
  mono_method_desc_search_in_class@Base 4.1.0.1738
@@ -1643,6 +1644,7 @@ libmonoboehm-2.0.so.1 libmonoboehm-2.0-1 #MINVER#
  monoeg_g_printf@Base 5.7.0.181
  monoeg_g_propagate_error@Base 5.7.0.181
  monoeg_g_ptr_array_add@Base 5.7.0.181
+ monoeg_g_ptr_array_capacity@Base 5.9.0.331
  monoeg_g_ptr_array_foreach@Base 5.7.0.181
  monoeg_g_ptr_array_free@Base 5.7.0.181
  monoeg_g_ptr_array_new@Base 5.7.0.181
