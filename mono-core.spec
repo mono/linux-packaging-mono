@@ -36,7 +36,6 @@ License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
 Url:            http://www.mono-project.com
 Source0:        http://download.mono-project.com/sources/mono/mono-%{version}.tar.bz2
-Patch0:		provides-facades.patch
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  bison
