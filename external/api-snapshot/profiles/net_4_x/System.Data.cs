@@ -49,6 +49,14 @@ namespace Microsoft.SqlServer.Server
         [System.Security.Permissions.SecurityPermissionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Flags=(System.Security.Permissions.SecurityPermissionFlag)(128))]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo si, System.Runtime.Serialization.StreamingContext context) { }
     }
+    public sealed partial class SqlContext
+    {
+        public SqlContext() { }
+        public static bool IsAvailable { get { throw null; } }
+        public static Microsoft.SqlServer.Server.SqlPipe Pipe { get { throw null; } }
+        public static Microsoft.SqlServer.Server.SqlTriggerContext TriggerContext { get { throw null; } }
+        public static System.Security.Principal.WindowsIdentity WindowsIdentity { get { throw null; } }
+    }
     public partial class SqlDataRecord : System.Data.IDataRecord
     {
         public SqlDataRecord(params Microsoft.SqlServer.Server.SqlMetaData[] metaData) { }
@@ -234,6 +242,18 @@ namespace Microsoft.SqlServer.Server
         public bool InvokeIfReceiverIsNull { get { throw null; } set { } }
         public bool IsMutator { get { throw null; } set { } }
         public bool OnNullCall { get { throw null; } set { } }
+    }
+    public sealed partial class SqlPipe
+    {
+        internal SqlPipe() { }
+        public bool IsSendingResults { get { throw null; } }
+        public void ExecuteAndSend(System.Data.SqlClient.SqlCommand command) { }
+        public void Send(Microsoft.SqlServer.Server.SqlDataRecord record) { }
+        public void Send(System.Data.SqlClient.SqlDataReader reader) { }
+        public void Send(string message) { }
+        public void SendResultsEnd() { }
+        public void SendResultsRow(Microsoft.SqlServer.Server.SqlDataRecord record) { }
+        public void SendResultsStart(Microsoft.SqlServer.Server.SqlDataRecord record) { }
     }
     [System.AttributeUsageAttribute((System.AttributeTargets)(64), AllowMultiple=false, Inherited=false)]
     [System.SerializableAttribute]
