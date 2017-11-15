@@ -131,7 +131,6 @@ technologies that have been submitted to the ECMA for standardization.
 
 %prep
 %setup -q -n mono-%{version}
-%patch0 -p1
 
 %build
 ./autogen.sh
