@@ -30,7 +30,7 @@ Name:           mono-core
 %define __majorver 5.9.0
 %define __minorver 380
 Version:	%{__majorver}.%{__minorver}
-Release:	0.xamarin.1
+Release:	0.xamarin.2
 Summary:        Cross-platform, Open Source, .NET development framework
 License:        LGPL-2.1 and MIT and MS-PL
 Group:          Development/Languages/Mono
