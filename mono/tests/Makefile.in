@@ -178,6 +178,7 @@ target_triplet = @target@
 @FULL_AOT_TESTS_TRUE@	appdomain-unload-callback.exe \
 @FULL_AOT_TESTS_TRUE@	appdomain-unload-doesnot-raise-pending-events.exe \
 @FULL_AOT_TESTS_TRUE@	unload-appdomain-on-shutdown.exe \
+@FULL_AOT_TESTS_TRUE@	appdomain-marshalbyref-assemblyload.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event2.2.exe \
 @FULL_AOT_TESTS_TRUE@	assemblyresolve_event6.exe bug-544446.exe \
 @FULL_AOT_TESTS_TRUE@	bug-36848.exe generic-marshalbyref.2.exe \
@@ -741,7 +742,8 @@ TESTS_CS_SRC = generic-unloading-sub.2.cs create-instance.cs \
 	assemblyresolve_event2.2.cs appdomain-unload-callback.cs \
 	appdomain-unload-doesnot-raise-pending-events.cs \
 	appdomain-unload-asmload.cs appdomain-unload-exception.cs \
-	unload-appdomain-on-shutdown.cs bug-47295.cs loader.cs \
+	unload-appdomain-on-shutdown.cs \
+	appdomain-marshalbyref-assemblyload.cs bug-47295.cs loader.cs \
 	pinvoke2.cs generic-type-builder.2.cs dynamic-generic-size.cs \
 	cominterop.cs dynamic-method-access.2.cs \
 	dynamic-method-finalize.2.cs dynamic-method-stack-traces.cs \
@@ -942,12 +944,14 @@ LLVM = $(filter --llvm, $(MONO_ENV_OPTIONS))
 # reverted.
 # bug-Xamarin-5278.exe got broken by 5d26590e79da139a284459299aee95c25f4cd835
 # appdomain-thread-abort.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=47054
+# appdomain-marshalbyref-assemblyload.exe: https://bugzilla.xamarin.com/show_bug.cgi?id=49308
 KNOWN_FAILING_TESTS = \
 	delegate-async-exception.exe	\
 	bug-348522.2.exe	\
 	bug-459094.exe \
 	delegate-invoke.exe \
-	bug-Xamarin-5278.exe
+	bug-Xamarin-5278.exe \
+	appdomain-marshalbyref-assemblyload.exe
 
 DISABLED_TESTS = \
 	$(KNOWN_FAILING_TESTS) \
@@ -1077,8 +1081,11 @@ EXTRA_DIST = test-driver test-runner.cs $(TESTS_CS_SRC) \
 	bug-382986-lib.cs bug-17537-helper.cs coreclr-security.cs \
 	generic-unboxing.2.il generic-boxing.2.il generic-unbox.2.cs \
 	generic-box.2.cs generic-delegate2.2.cs \
-	generic-delegate2-lib.2.il async-exceptions.cs modules.cs \
-	modules-m1.cs threadpool-in-processexit.cs \
+	generic-delegate2-lib.2.il \
+	appdomain-marshalbyref-assemblyload-MidAssembly.cs \
+	appdomain-marshalbyref-assemblyload-LeafAssembly.cs \
+	async-exceptions.cs modules.cs modules-m1.cs \
+	threadpool-in-processexit.cs \
 	threadpool-in-processexit.exe.stdout.expected \
 	appdomain-loader.cs appdomain-tester.cs console-output.cs \
 	console-output.exe.stderr.expected \
@@ -1228,7 +1235,7 @@ INTERNALSVISIBLETO_TEST = \
 @HYBRID_AOT_TESTS_TRUE@INTERNALSVISIBLETO_TESTAOT_LIBS = \
 @HYBRID_AOT_TESTS_TRUE@	$(INTERNALSVISIBLETO_TEST_LIBS:.dll=.dll$(PLATFORM_AOT_SUFFIX))
 
-CLEANFILES = $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH) $(TESTS_STRESS) $(TESTSAOT_CS) $(TESTSAOT_IL) $(TESTSAOT_BENCH) $(TESTSAOT_STRESS) *.dll *.stdout *.aotlog *.exe stest.dat
+CLEANFILES = $(TESTS_CS) $(TESTS_IL) $(TESTS_BENCH) $(TESTS_STRESS) $(TESTSAOT_CS) $(TESTSAOT_IL) $(TESTSAOT_BENCH) $(TESTSAOT_STRESS) *.dll *.stdout *.aotlog *.exe stest.dat LeafAssembly.dll MidAssembly.dll appdomain-marshalbyref-assemblyload2/*.dll 
 all: all-recursive
 
 .SUFFIXES:
@@ -2224,6 +2231,21 @@ generic-delegate2.2.exe: $(srcdir)/generic-delegate2.2.cs generic-delegate2-lib.
 
 bug-3903.exe: bug-3903.cs
 	$(MCS_NO_LIB)  $(srcdir)/bug-3903.cs -nostdlib -r:$(srcdir)/../../external/binary-reference-assemblies/v2.0/mscorlib.dll -r:$(srcdir)/../../external/binary-reference-assemblies/v2.0/System.Core.dll -out:$@
+
+LeafAssembly.dll: appdomain-marshalbyref-assemblyload-LeafAssembly.cs
+	mkdir -p appdomain-marshalbyref-assemblyload1
+	$(MCS) -target:library -out:$@ $<
+
+appdomain-marshalbyref-assemblyload2/LeafAssembly.dll: appdomain-marshalbyref-assemblyload-LeafAssembly.cs
+	mkdir -p appdomain-marshalbyref-assemblyload2
+	$(MCS) -target:library -out:$@ $< -define:UNDEFINE_OTHER_METHOD
+
+MidAssembly.dll: appdomain-marshalbyref-assemblyload-MidAssembly.cs LeafAssembly.dll
+	mkdir -p appdomain-marshalbyref-assemblyload1
+	$(MCS) -target:library -out:$@ $< -r:LeafAssembly.dll
+
+appdomain-marshalbyref-assemblyload.exe: appdomain-marshalbyref-assemblyload.cs MidAssembly.dll LeafAssembly.dll appdomain-marshalbyref-assemblyload2/LeafAssembly.dll
+	$(MCS) -out:$@ $< -r:MidAssembly.dll -r:LeafAssembly.dll
 
 gshared:
 	$(MAKE) test-generic-sharing
