@@ -6,7 +6,7 @@
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2015 Jb Evain")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("0.10.0.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0-beta6")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0-beta7")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono.Cecil")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Cecil")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
@@ -149,6 +149,7 @@ namespace Mono.Cecil
         public void RemoveSearchDirectory(string directory) { }
         public virtual Mono.Cecil.AssemblyDefinition Resolve(Mono.Cecil.AssemblyNameReference name) { throw null; }
         public virtual Mono.Cecil.AssemblyDefinition Resolve(Mono.Cecil.AssemblyNameReference name, Mono.Cecil.ReaderParameters parameters) { throw null; }
+        protected virtual Mono.Cecil.AssemblyDefinition SearchDirectory(Mono.Cecil.AssemblyNameReference name, System.Collections.Generic.IEnumerable<string> directories, Mono.Cecil.ReaderParameters parameters) { throw null; }
     }
     public sealed partial class ByReferenceType : Mono.Cecil.TypeSpecification
     {
@@ -1468,7 +1469,7 @@ namespace Mono.Cecil
         public bool IsSerializable { get { throw null; } set { } }
         public bool IsSpecialName { get { throw null; } set { } }
         public bool IsUnicodeClass { get { throw null; } set { } }
-        public override bool IsValueType { get { throw null; } }
+        public override bool IsValueType { get { throw null; } set { } }
         public bool IsWindowsRuntime { get { throw null; } set { } }
         public override Mono.Cecil.MetadataType MetadataType { get { throw null; } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.MethodDefinition> Methods { get { throw null; } }
@@ -1594,7 +1595,7 @@ namespace Mono.Cecil.Cil
         public AsyncMethodBodyDebugInformation(Mono.Cecil.Cil.Instruction catchHandler) { }
         public Mono.Cecil.Cil.InstructionOffset CatchHandler { get { throw null; } set { } }
         public override Mono.Cecil.Cil.CustomDebugInformationKind Kind { get { throw null; } }
-        public Mono.Cecil.MethodDefinition MoveNextMethod { get { throw null; } set { } }
+        public Mono.Collections.Generic.Collection<Mono.Cecil.MethodDefinition> ResumeMethods { get { throw null; } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.Cil.InstructionOffset> Resumes { get { throw null; } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.Cil.InstructionOffset> Yields { get { throw null; } }
     }
@@ -2539,13 +2540,18 @@ namespace Mono.Cecil.Cil
         Varpop = 27,
         Varpush = 28,
     }
+    public sealed partial class StateMachineScope
+    {
+        public StateMachineScope(Mono.Cecil.Cil.Instruction start, Mono.Cecil.Cil.Instruction end) { }
+        public Mono.Cecil.Cil.InstructionOffset End { get { throw null; } set { } }
+        public Mono.Cecil.Cil.InstructionOffset Start { get { throw null; } set { } }
+    }
     public sealed partial class StateMachineScopeDebugInformation : Mono.Cecil.Cil.CustomDebugInformation
     {
         public static System.Guid KindIdentifier;
-        public StateMachineScopeDebugInformation(Mono.Cecil.Cil.Instruction start, Mono.Cecil.Cil.Instruction end) { }
-        public Mono.Cecil.Cil.InstructionOffset End { get { throw null; } set { } }
+        public StateMachineScopeDebugInformation() { }
         public override Mono.Cecil.Cil.CustomDebugInformationKind Kind { get { throw null; } }
-        public Mono.Cecil.Cil.InstructionOffset Start { get { throw null; } set { } }
+        public Mono.Collections.Generic.Collection<Mono.Cecil.Cil.StateMachineScope> Scopes { get { throw null; } }
     }
     [System.FlagsAttribute]
     public enum VariableAttributes : ushort
