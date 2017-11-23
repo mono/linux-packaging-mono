@@ -428,16 +428,6 @@ ignore_cfg (MonoCompile *cfg)
 	return !cfg || cfg->skip;
 }
 
-gboolean 
-mono_aot_can_dedup (MonoMethod *method) 
-{
-	gboolean not_normal_gshared = method->is_inflated && !mono_method_is_generic_sharable_full (method, TRUE, FALSE, FALSE);
-	gboolean extra_method = (method->wrapper_type != MONO_WRAPPER_NONE) || not_normal_gshared;
-
-	return extra_method;
-}
-
-
 static void
 aot_printf (MonoAotCompile *acfg, const gchar *format, ...)
 {
@@ -7927,7 +7917,8 @@ compile_method (MonoAotCompile *acfg, MonoMethod *method)
 			switch (patch_info->type) {
 			case MONO_PATCH_INFO_RGCTX_FETCH:
 			case MONO_PATCH_INFO_RGCTX_SLOT_INDEX:
-			case MONO_PATCH_INFO_METHOD: {
+			case MONO_PATCH_INFO_METHOD:
+			case MONO_PATCH_INFO_METHOD_RGCTX: {
 				MonoMethod *m = NULL;
 
 				if (patch_info->type == MONO_PATCH_INFO_RGCTX_FETCH || patch_info->type == MONO_PATCH_INFO_RGCTX_SLOT_INDEX) {
