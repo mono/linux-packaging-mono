@@ -12877,6 +12877,13 @@ namespace System.Runtime.InteropServices
     {
         public AllowReversePInvokeCallsAttribute() { }
     }
+    public enum Architecture
+    {
+        Arm = 2,
+        Arm64 = 3,
+        X64 = 1,
+        X86 = 0,
+    }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
@@ -13833,6 +13840,20 @@ namespace System.Runtime.InteropServices
     {
         public OptionalAttribute() { }
     }
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct OSPlatform : System.IEquatable<System.Runtime.InteropServices.OSPlatform>
+    {
+        public static System.Runtime.InteropServices.OSPlatform Linux { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.Runtime.InteropServices.OSPlatform OSX { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.Runtime.InteropServices.OSPlatform Windows { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public static System.Runtime.InteropServices.OSPlatform Create(string osPlatform) { throw null; }
+        public override bool Equals(object obj) { throw null; }
+        public bool Equals(System.Runtime.InteropServices.OSPlatform other) { throw null; }
+        public override int GetHashCode() { throw null; }
+        public static bool operator ==(System.Runtime.InteropServices.OSPlatform left, System.Runtime.InteropServices.OSPlatform right) { throw null; }
+        public static bool operator !=(System.Runtime.InteropServices.OSPlatform left, System.Runtime.InteropServices.OSPlatform right) { throw null; }
+        public override string ToString() { throw null; }
+    }
     [System.AttributeUsageAttribute((System.AttributeTargets)(2048), Inherited=false)]
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public sealed partial class OutAttribute : System.Attribute
@@ -13929,6 +13950,14 @@ namespace System.Runtime.InteropServices
         public static object GetRuntimeInterfaceAsObject(System.Guid clsid, System.Guid riid) { throw null; }
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)][System.Security.SecuritySafeCriticalAttribute]
         public static string GetSystemVersion() { throw null; }
+    }
+    public static partial class RuntimeInformation
+    {
+        public static string FrameworkDescription { get { throw null; } }
+        public static System.Runtime.InteropServices.Architecture OSArchitecture { get { throw null; } }
+        public static string OSDescription { get { throw null; } }
+        public static System.Runtime.InteropServices.Architecture ProcessArchitecture { get { throw null; } }
+        public static bool IsOSPlatform(System.Runtime.InteropServices.OSPlatform osPlatform) { throw null; }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
