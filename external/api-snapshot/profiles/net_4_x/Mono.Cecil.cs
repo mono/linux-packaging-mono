@@ -493,7 +493,9 @@ namespace Mono.Cecil
     public partial interface ICustomAttribute
     {
         Mono.Cecil.TypeReference AttributeType { get; }
+        Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttributeArgument> ConstructorArguments { get; }
         Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttributeNamedArgument> Fields { get; }
+        bool HasConstructorArguments { get; }
         bool HasFields { get; }
         bool HasProperties { get; }
         Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttributeNamedArgument> Properties { get; }
@@ -1317,6 +1319,8 @@ namespace Mono.Cecil
         public Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttributeNamedArgument> Fields { get { throw null; } }
         public bool HasFields { get { throw null; } }
         public bool HasProperties { get { throw null; } }
+        Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttributeArgument> Mono.Cecil.ICustomAttribute.ConstructorArguments { get { throw null; } }
+        bool Mono.Cecil.ICustomAttribute.HasConstructorArguments { get { throw null; } }
         public Mono.Collections.Generic.Collection<Mono.Cecil.CustomAttributeNamedArgument> Properties { get { throw null; } }
     }
     public sealed partial class SecurityDeclaration

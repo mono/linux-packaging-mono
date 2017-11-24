@@ -59,6 +59,8 @@ namespace Mono.Linker.Steps {
 
 		XPathDocument _document;
 		string _xmlDocumentLocation;
+		string _resourceName;
+		AssemblyDefinition _resourceAssembly;
 
 		public ResolveFromXmlStep (XPathDocument document, string xmlDocumentLocation = "<unspecified>")
 		{
@@ -66,18 +68,33 @@ namespace Mono.Linker.Steps {
 			_xmlDocumentLocation = xmlDocumentLocation;
 		}
 
+		public ResolveFromXmlStep (XPathDocument document, string resourceName, AssemblyDefinition resourceAssembly, string xmlDocumentLocation = "<unspecified>")
+			: this (document, xmlDocumentLocation)
+		{
+			if (string.IsNullOrEmpty (resourceName))
+				throw new ArgumentNullException (nameof (resourceName));
+
+			if (resourceAssembly == null)
+				throw new ArgumentNullException (nameof (resourceAssembly));
+
+			_resourceName = resourceName;
+			_resourceAssembly = resourceAssembly;
+		}
+
 		protected override void Process ()
 		{
 			XPathNavigator nav = _document.CreateNavigator ();
-			nav.MoveToFirstChild ();
 
 			// This step can be created with XML files that aren't necessarily
 			// linker descriptor files. So bail if we don't have a <linker> element.
-			if (nav.LocalName != "linker")
+			if (!nav.MoveToChild("linker", _ns))
 				return;
 
 			try {
 				ProcessAssemblies (Context, nav.SelectChildren ("assembly", _ns));
+
+				if (!string.IsNullOrEmpty (_resourceName))
+					Context.Annotations.AddResourceToRemove (_resourceAssembly, _resourceName);
 			} catch (Exception ex) {
 				throw new XmlResolutionException (string.Format ("Failed to process XML description: {0}", _xmlDocumentLocation), ex);
 			}

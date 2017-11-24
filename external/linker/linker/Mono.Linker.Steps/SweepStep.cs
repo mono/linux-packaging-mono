@@ -75,11 +75,23 @@ namespace Mono.Linker.Steps {
 
 		void SweepAssembly (AssemblyDefinition assembly)
 		{
-			if (Annotations.GetAction (assembly) != AssemblyAction.Link)
+			switch (Annotations.GetAction (assembly)) {
+			case AssemblyAction.Link:
+				if (!IsMarkedAssembly (assembly)) {
+					RemoveAssembly (assembly);
+					return;
+				}
+				break;
+
+			case AssemblyAction.CopyUsed:
+				if (!IsMarkedAssembly (assembly)) {
+					RemoveAssembly (assembly);
+				} else {
+					Annotations.SetAction (assembly, AssemblyAction.Copy);
+				}
 				return;
 
-			if (!IsMarkedAssembly (assembly)) {
-				RemoveAssembly (assembly);
+			default:
 				return;
 			}
 
@@ -101,6 +113,8 @@ namespace Mono.Linker.Steps {
 			assembly.MainModule.Types.Clear ();
 			foreach (TypeDefinition type in types)
 				assembly.MainModule.Types.Add (type);
+
+			SweepResources (assembly);
 		}
 
 		bool IsMarkedAssembly (AssemblyDefinition assembly)
@@ -113,6 +127,23 @@ namespace Mono.Linker.Steps {
 			Annotations.SetAction (assembly, AssemblyAction.Delete);
 
 			SweepReferences (assembly);
+		}
+
+		void SweepResources (AssemblyDefinition assembly)
+		{
+			var resourcesToRemove = Annotations.GetResourcesToRemove (assembly);
+			if (resourcesToRemove != null) {
+				var resources = assembly.MainModule.Resources;
+
+				for (int i = 0; i < resources.Count; i++) {
+					var resource = resources [i] as EmbeddedResource;
+					if (resource == null)
+						continue;
+
+					if (resourcesToRemove.Contains (resource.Name))
+						resources.RemoveAt (i--);
+				}
+			}
 		}
 
 		void SweepReferences (AssemblyDefinition target)
@@ -147,8 +178,8 @@ namespace Mono.Linker.Steps {
 				case AssemblyAction.Copy:
 					// Copy means even if "unlinked" we still want that assembly to be saved back 
 					// to disk (OutputStep) without the (removed) reference
-					Annotations.SetAction (assembly, AssemblyAction.Save);
 					if (!Context.KeepTypeForwarderOnlyAssemblies) {
+						Annotations.SetAction (assembly, AssemblyAction.Save);
 						ResolveAllTypeReferences (assembly);
 					}
 					break;
@@ -224,6 +255,9 @@ namespace Mono.Linker.Steps {
 
 			if (type.HasNestedTypes)
 				SweepNestedTypes (type);
+
+			if (type.HasInterfaces)
+				SweepInterfaces (type);
 		}
 
 		protected void SweepNestedTypes (TypeDefinition type)
@@ -236,6 +270,17 @@ namespace Mono.Linker.Steps {
 					ElementRemoved (type.NestedTypes [i]);
 					type.NestedTypes.RemoveAt (i--);
 				}
+			}
+		}
+
+		protected void SweepInterfaces (TypeDefinition type)
+		{
+			for (int i = type.Interfaces.Count - 1; i >= 0; i--) {
+				var iface = type.Interfaces [i];
+				if (Annotations.IsMarked (iface.InterfaceType.Resolve ()))
+					continue;
+				InterfaceRemoved (type, iface);
+				type.Interfaces.RemoveAt (i);
 			}
 		}
 
@@ -319,6 +364,10 @@ namespace Mono.Linker.Steps {
 		}
 
 		protected virtual void ReferenceRemoved (AssemblyDefinition assembly, AssemblyNameReference reference)
+		{
+		}
+
+		protected virtual void InterfaceRemoved (TypeDefinition type, InterfaceImplementation iface)
 		{
 		}
 	}

@@ -52,6 +52,13 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			}
 		}
 
+		public virtual IEnumerable<SourceAndDestinationPair> GetResources ()
+		{
+			return _testCaseTypeDefinition.CustomAttributes
+				.Where (attr => attr.AttributeType.Name == nameof (SetupCompileResourceAttribute))
+				.Select (GetSourceAndRelativeDestinationValue);
+		}
+
 		public virtual IEnumerable<NPath> GetExtraLinkerSearchDirectories ()
 		{
 			yield break;
@@ -69,15 +76,11 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			return false;
 		}
 
-		public virtual IEnumerable<NPath> AdditionalFilesToSandbox ()
+		public virtual IEnumerable<SourceAndDestinationPair> AdditionalFilesToSandbox ()
 		{
-			foreach (var attr in _testCaseTypeDefinition.CustomAttributes) {
-				if (attr.AttributeType.Name != nameof (SandboxDependencyAttribute))
-					continue;
-
-				var relativeDepPath = ((string) attr.ConstructorArguments.First ().Value).ToNPath ();
-				yield return _testCase.SourceFile.Parent.Combine (relativeDepPath);
-			}
+			return _testCaseTypeDefinition.CustomAttributes
+				.Where (attr => attr.AttributeType.Name == nameof (SandboxDependencyAttribute))
+				.Select (GetSourceAndRelativeDestinationValue);
 		}
 
 		public virtual IEnumerable<SetupCompileInfo> GetSetupCompileAssembliesBefore ()
@@ -101,6 +104,11 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 				.Select (attr => (string) attr.ConstructorArguments.First ().Value);
 		}
 
+		public virtual string GetAssemblyName ()
+		{
+			return GetOptionAttributeValue (nameof (SetupCompileAssemblyNameAttribute), "test.exe");
+		}
+
 		T GetOptionAttributeValue<T> (string attributeName, T defaultValue)
 		{
 			var attribute = _testCaseTypeDefinition.CustomAttributes.FirstOrDefault (attr => attr.AttributeType.Name == attributeName);
@@ -108,6 +116,18 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 				return (T) attribute.ConstructorArguments.First ().Value;
 
 			return defaultValue;
+		}
+
+		SourceAndDestinationPair GetSourceAndRelativeDestinationValue (CustomAttribute attribute)
+		{
+			var relativeSource = (string) attribute.ConstructorArguments.First ().Value;
+			var destinationFileName = (string) attribute.ConstructorArguments [1].Value;
+			var fullSource = _testCase.SourceFile.Parent.Combine (relativeSource);
+			return new SourceAndDestinationPair
+			{
+				Source = fullSource,
+				DestinationFileName = string.IsNullOrEmpty (destinationFileName) ? fullSource.FileName : destinationFileName
+			};
 		}
 
 		private SetupCompileInfo CreateSetupCompileAssemblyInfo (CustomAttribute attribute)
