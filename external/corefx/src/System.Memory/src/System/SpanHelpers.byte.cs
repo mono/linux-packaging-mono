@@ -5,8 +5,12 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-#if !netstandard10
+#if !netstandard11 && !MONO
 using System.Numerics;
+#endif
+
+#if MONO
+using System.Diagnostics.Private;
 #endif
 
 namespace System
@@ -75,7 +79,7 @@ namespace System
             uint uValue = value; // Use uint for comparisons to avoid unnecessary 8->32 extensions
             IntPtr index = (IntPtr)0; // Use UIntPtr for arithmetic to avoid unnecessary 64->32->64 truncations
             IntPtr nLength = (IntPtr)(uint)length;
-#if !netstandard10
+#if !netstandard11 && !MONO
             if (Vector.IsHardwareAccelerated && length >= Vector<byte>.Count * 2)
             {
                 unchecked
@@ -135,7 +139,7 @@ namespace System
 
                 index += 1;
             }
-#if !netstandard10
+#if !netstandard11 && !MONO
             if (Vector.IsHardwareAccelerated && ((int)(byte*)index < length))
             {
                 nLength = (IntPtr)(uint)((length - (uint)index) & ~(Vector<byte>.Count - 1));
@@ -190,7 +194,7 @@ namespace System
             uint uValue1 = value1; // Use uint for comparisons to avoid unnecessary 8->32 extensions
             IntPtr index = (IntPtr)0; // Use UIntPtr for arithmetic to avoid unnecessary 64->32->64 truncations
             IntPtr nLength = (IntPtr)(uint)length;
-#if !netstandard10
+#if !netstandard11 && !MONO
             if (Vector.IsHardwareAccelerated && length >= Vector<byte>.Count * 2)
             {
                 unchecked
@@ -264,7 +268,7 @@ namespace System
 
                 index += 1;
             }
-#if !netstandard10
+#if !netstandard11 && !MONO
             if (Vector.IsHardwareAccelerated && ((int)(byte*)index < length))
             {
                 nLength = (IntPtr)(uint)((length - (uint)index) & ~(Vector<byte>.Count - 1));
@@ -325,7 +329,7 @@ namespace System
             uint uValue2 = value2; // Use uint for comparisons to avoid unnecessary 8->32 extensions
             IntPtr index = (IntPtr)0; // Use UIntPtr for arithmetic to avoid unnecessary 64->32->64 truncations
             IntPtr nLength = (IntPtr)(uint)length;
-#if !netstandard10
+#if !netstandard11 && !MONO
             if (Vector.IsHardwareAccelerated && length >= Vector<byte>.Count * 2)
             {
                 unchecked
@@ -399,7 +403,7 @@ namespace System
 
                 index += 1;
             }
-#if !netstandard10
+#if !netstandard11 && !MONO
             if (Vector.IsHardwareAccelerated && ((int)(byte*)index < length))
             {
                 nLength = (IntPtr)(uint)((length - (uint)index) & ~(Vector<byte>.Count - 1));
@@ -465,7 +469,7 @@ namespace System
             IntPtr i = (IntPtr)0; // Use IntPtr and byte* for arithmetic to avoid unnecessary 64->32->64 truncations
             IntPtr n = (IntPtr)length;
 
-#if !netstandard10
+#if !netstandard11 && !MONO
             if (Vector.IsHardwareAccelerated && (byte*)n >= (byte*)Vector<byte>.Count)
             {
                 n -= Vector<byte>.Count;
@@ -513,7 +517,7 @@ namespace System
             return false;
         }
 
-#if !netstandard10
+#if !netstandard11 && !MONO
         // Vector sub-search adapted from https://github.com/aspnet/KestrelHttpServer/pull/1138
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int LocateFirstFoundByte(Vector<byte> match)
@@ -536,7 +540,7 @@ namespace System
         }
 #endif
 
-#if !netstandard10
+#if !netstandard11 && !MONO
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int LocateFirstFoundByte(ulong match)
         {
@@ -545,12 +549,12 @@ namespace System
                 // Flag least significant power of two bit
                 var powerOfTwoFlag = match ^ (match - 1);
                 // Shift all powers of two into the high byte and extract
-                return (int)((powerOfTwoFlag * xorPowerOfTwoToHighByte) >> 57);
+                return (int)((powerOfTwoFlag * XorPowerOfTwoToHighByte) >> 57);
             }
         }
 #endif
 
-#if !netstandard10
+#if !netstandard11 && !MONO
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Vector<byte> GetVector(byte vectorByte)
         {
@@ -565,9 +569,9 @@ namespace System
         }
 #endif
 
-#if !netstandard10
-        private const ulong xorPowerOfTwoToHighByte = (0x07ul       |
-                                                       0x06ul <<  8 |
+#if !netstandard11 && !MONO
+        private const ulong XorPowerOfTwoToHighByte = (0x07ul |
+                                                       0x06ul << 8 |
                                                        0x05ul << 16 |
                                                        0x04ul << 24 |
                                                        0x03ul << 32 |

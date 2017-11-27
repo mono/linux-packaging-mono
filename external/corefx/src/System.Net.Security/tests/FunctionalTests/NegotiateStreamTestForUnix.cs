@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -73,7 +74,6 @@ namespace System.Net.Security.Tests
 
             // Clear the credentials
             var startInfo = new ProcessStartInfo(KDestroyCmd);
-            startInfo.UseShellExecute = true;
             startInfo.CreateNoWindow = true;
             startInfo.Arguments = "-A";
             using (Process clearCreds = Process.Start(startInfo))

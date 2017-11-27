@@ -3,9 +3,9 @@
 
   <Target Name="CheckForBuildTools">
     <Error Condition="!Exists('$(ToolsDir)') and '$(OverrideToolsDir)'=='true'"
-           Text="The tools directory [$(ToolsDir)] does not exist. Please run sync in your enlistment to ensure the tools are installed before attempting to build an individual project." />
+           Text="The tools directory [$(ToolsDir)] does not exist. Please run sync in your repo to ensure the tools are installed before attempting to build an individual project." />
     <Error Condition="!Exists('$(ToolsDir)') and '$(OverrideToolsDir)'!='true'"
-           Text="The tools directory [$(ToolsDir)] does not exist. Please run init-tools.cmd in your enlistment to ensure the tools are installed before attempting to build an individual project." />
+           Text="The tools directory [$(ToolsDir)] does not exist. Please run init-tools.cmd in your repo to ensure the tools are installed before attempting to build an individual project." />
   </Target>
 
   <Import Project="buildvertical.targets" />
@@ -22,6 +22,7 @@
 
     <BinPlaceRef Condition="'$(BinPlaceRef)' == '' And ('$(IsReferenceAssembly)' == 'true' OR '$(IsRuntimeAndReferenceAssembly)' == 'true')">true</BinPlaceRef>
     <BinPlaceRuntime Condition="'$(BinPlaceRuntime)' == '' And ('$(IsRuntimeAssembly)' == 'true' OR '$(IsRuntimeAndReferenceAssembly)' == 'true')">true</BinPlaceRuntime>
+    <BinPlaceTest Condition="'$(BinPlaceTest)' == '' And '$(IsTestProject)' == 'true'">true</BinPlaceTest>
   </PropertyGroup>
 
   <ItemGroup Condition="'@(BinPlaceConfiguration)' == ''">
@@ -29,6 +30,8 @@
     <BinPlaceConfiguration Include="$(_bc_TargetGroup)-$(_bc_OSGroup)">
       <RefPath>$(BuildConfigurationRefPath)</RefPath>
       <RuntimePath>$(RuntimePath)</RuntimePath>
+      <!-- we want to bin place the test output into the working directory -->
+      <TestPath>$(TestPath)</TestPath>
     </BinPlaceConfiguration>
     <!-- binplace to directories for packages -->
     <BinPlaceConfiguration Condition="'$(IsNETCoreApp)' == 'true' AND '$(BuildingNETCoreAppVertical)' == 'true'" Include="netcoreapp-$(_bc_OSGroup)">

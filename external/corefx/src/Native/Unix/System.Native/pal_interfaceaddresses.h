@@ -13,7 +13,7 @@ struct LinkLayerAddressInfo
     uint8_t AddressBytes[8]; // A pointer to the bytes containing the address.
     uint8_t NumAddressBytes; // The number of bytes actually stored in the address.
     uint8_t __padding;
-    uint16_t HardwareType;
+    NetworkInterfaceType HardwareType;
 };
 
 struct IpAddressInfo

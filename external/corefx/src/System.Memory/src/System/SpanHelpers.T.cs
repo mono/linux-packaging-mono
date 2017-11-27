@@ -4,6 +4,9 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+#if MONO
+using System.Diagnostics.Private;
+#endif
 
 namespace System
 {

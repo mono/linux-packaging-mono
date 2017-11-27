@@ -4,29 +4,23 @@
 
 #pragma once
 
-#include "pal_compiler.h"
-
-BEGIN_EXTERN_C
-
 #include "pal_config.h"
 
 enum TcpState
 {
-    TcpState_Unknown,
-    TcpState_Closed,
-    TcpState_Listen,
-    TcpState_SynSent,
-    TcpState_SynReceived,
-    TcpState_Established,
-    TcpState_FinWait1,
-    TcpState_FinWait2,
-    TcpState_CloseWait,
-    TcpState_Closing,
-    TcpState_LastAck,
-    TcpState_TimeWait,
-    TcpState_DeleteTcb
+    Unknown,
+    Closed,
+    Listen,
+    SynSent,
+    SynReceived,
+    Established,
+    FinWait1,
+    FinWait2,
+    CloseWait,
+    Closing,
+    LastAck,
+    TimeWait,
+    DeleteTcb
 };
 
-int32_t SystemNative_MapTcpState(int32_t tcpState);
-
-END_EXTERN_C
+extern "C" TcpState SystemNative_MapTcpState(int32_t tcpState);
