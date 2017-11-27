@@ -81,16 +81,16 @@ namespace System.IO.Pipes
         }
 
         [SecuritySafeCritical]
-        private Task<int> ReadAsyncCore(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        private Task<int> ReadAsyncCore(Memory<byte> buffer, CancellationToken cancellationToken)
         {
-            var completionSource = new ReadWriteCompletionSource(this, buffer, cancellationToken, isWrite: false);
+            var completionSource = new ReadWriteCompletionSource(this, buffer, isWrite: false);
 
             // Queue an async ReadFile operation and pass in a packed overlapped
             int errorCode = 0;
             int r;
             unsafe
             {
-                r = ReadFileNative(_handle, new Span<byte>(buffer, offset, count), completionSource.Overlapped, out errorCode);
+                r = ReadFileNative(_handle, buffer.Span, completionSource.Overlapped, out errorCode);
             }
 
             // ReadFile, the OS version, will return 0 on failure, but this ReadFileNative wrapper
@@ -131,7 +131,7 @@ namespace System.IO.Pipes
                 }
             }
 
-            completionSource.RegisterForCancellation();
+            completionSource.RegisterForCancellation(cancellationToken);
             return completionSource.Task;
         }
 
@@ -149,16 +149,16 @@ namespace System.IO.Pipes
         }
 
         [SecuritySafeCritical]
-        private Task WriteAsyncCore(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        private Task WriteAsyncCore(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
         {
-            var completionSource = new ReadWriteCompletionSource(this, buffer, cancellationToken, isWrite: true);
+            var completionSource = new ReadWriteCompletionSource(this, buffer, isWrite: true);
             int errorCode = 0;
 
             // Queue an async WriteFile operation and pass in a packed overlapped
             int r;
             unsafe
             {
-                r = WriteFileNative(_handle, new ReadOnlySpan<byte>(buffer, offset, count), completionSource.Overlapped, out errorCode);
+                r = WriteFileNative(_handle, buffer.Span, completionSource.Overlapped, out errorCode);
             }
 
             // WriteFile, the OS version, will return 0 on failure, but this WriteFileNative 
@@ -177,7 +177,7 @@ namespace System.IO.Pipes
                 throw WinIOError(errorCode);
             }
 
-            completionSource.RegisterForCancellation();
+            completionSource.RegisterForCancellation(cancellationToken);
             return completionSource.Task;
         }
 

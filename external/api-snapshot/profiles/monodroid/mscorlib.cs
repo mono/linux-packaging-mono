@@ -3486,6 +3486,30 @@ namespace System
         public MemberAccessException(string message) { }
         public MemberAccessException(string message, System.Exception inner) { }
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("{DebuggerDisplay,nq}")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.MemoryDebugView<T>")]
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct Memory<T>
+    {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Memory(T[] array) { throw null;}
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public Memory(T[] array, int start, int length) { throw null;}
+        public static System.Memory<T> Empty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsEmpty { get { throw null; } }
+        public int Length { get { throw null; } }
+        public System.Span<T> Span { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+        public bool Equals(System.Memory<T> other) { throw null; }
+        public override bool Equals(object obj) { throw null; }
+        public override int GetHashCode() { throw null; }
+        public static implicit operator System.Memory<T> (System.ArraySegment<T> arraySegment) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public static implicit operator System.ReadOnlyMemory<T> (System.Memory<T> memory) { throw null; }
+        public static implicit operator System.Memory<T> (T[] array) { throw null; }
+        public System.Buffers.MemoryHandle Retain(bool pin=false) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Memory<T> Slice(int start) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.Memory<T> Slice(int start, int length) { throw null; }
+        public T[] ToArray() { throw null; }
+        public bool TryGetArray(out System.ArraySegment<T> arraySegment) { arraySegment = default(System.ArraySegment<T>); throw null; }
+    }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     [System.SerializableAttribute]
     public partial class MethodAccessException : System.MemberAccessException
@@ -3843,6 +3867,34 @@ namespace System
         public RankException(string message) { }
         public RankException(string message, System.Exception innerException) { }
     }
+    [System.Diagnostics.DebuggerDisplayAttribute("{DebuggerDisplay,nq}")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.MemoryDebugView<T>")]
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct ReadOnlyMemory<T>
+    {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ReadOnlyMemory(T[] array) { throw null;}
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public ReadOnlyMemory(T[] array, int start, int length) { throw null;}
+        public static System.ReadOnlyMemory<T> Empty { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public bool IsEmpty { get { throw null; } }
+        public int Length { get { throw null; } }
+        public System.ReadOnlySpan<T> Span { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
+        public bool DangerousTryGetArray(out System.ArraySegment<T> arraySegment) { arraySegment = default(System.ArraySegment<T>); throw null; }
+        public override bool Equals(object obj) { throw null; }
+        public bool Equals(System.ReadOnlyMemory<T> other) { throw null; }
+        public override int GetHashCode() { throw null; }
+        public static implicit operator System.ReadOnlyMemory<T> (System.ArraySegment<T> arraySegment) { throw null; }
+        public static implicit operator System.ReadOnlyMemory<T> (T[] array) { throw null; }
+        public System.Buffers.MemoryHandle Retain(bool pin=false) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.ReadOnlyMemory<T> Slice(int start) { throw null; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]public System.ReadOnlyMemory<T> Slice(int start, int length) { throw null; }
+        public T[] ToArray() { throw null; }
+    }
+    [System.Diagnostics.DebuggerDisplayAttribute("{DebuggerDisplay,nq}")]
+    [System.Diagnostics.DebuggerTypeProxyAttribute("System.SpanDebugView<T>")]
+    [System.ObsoleteAttribute("Types with embedded references are not supported in this version of your compiler.", true)]
+    [System.Runtime.CompilerServices.IsByRefLikeAttribute]
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct ReadOnlySpan<T>
     {
@@ -4055,8 +4107,11 @@ namespace System
         public static bool TryParse(string s, System.Globalization.NumberStyles style, System.IFormatProvider provider, out System.Single result) { result = default(float); throw null; }
         public static bool TryParse(string s, out System.Single result) { result = default(float); throw null; }
     }
-    [System.Diagnostics.DebuggerDisplayAttribute("Length = {Length}")]
+    [System.Diagnostics.DebuggerDisplayAttribute("{DebuggerDisplay,nq}")]
     [System.Diagnostics.DebuggerTypeProxyAttribute("System.SpanDebugView<T>")]
+    [System.ObsoleteAttribute("Types with embedded references are not supported in this version of your compiler.", true)]
+    [System.Runtime.CompilerServices.IsByRefLikeAttribute]
+    [System.Runtime.CompilerServices.IsReadOnlyAttribute]
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
     public partial struct Span<T>
     {
@@ -5610,6 +5665,36 @@ namespace System
         void SetShadowCopyPath(string s);
         void SetThreadPrincipal(System.Security.Principal.IPrincipal principal);
         string ToString();
+    }
+}
+namespace System.Buffers
+{
+    public partial interface IRetainable
+    {
+        bool Release();
+        void Retain();
+    }
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct MemoryHandle : System.IDisposable
+    {
+        public unsafe MemoryHandle(System.Buffers.IRetainable retainable, void* pinnedPointer=null, System.Runtime.InteropServices.GCHandle handle=default(System.Runtime.InteropServices.GCHandle)) { throw null;}
+        public unsafe void* PinnedPointer { get { throw null; } }
+        public void Dispose() { }
+    }
+    public abstract partial class OwnedMemory<T> : System.Buffers.IRetainable, System.IDisposable
+    {
+        protected OwnedMemory() { }
+        public abstract bool IsDisposed { get; }
+        protected abstract bool IsRetained { get; }
+        public abstract int Length { get; }
+        public System.Memory<T> Memory { get { throw null; } }
+        public abstract System.Span<T> Span { get; }
+        public void Dispose() { }
+        protected abstract void Dispose(bool disposing);
+        public abstract System.Buffers.MemoryHandle Pin();
+        public abstract bool Release();
+        public abstract void Retain();
+        protected internal abstract bool TryGetArray(out System.ArraySegment<T> arraySegment);
     }
 }
 namespace System.Collections
@@ -9335,6 +9420,7 @@ namespace System.IO
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public virtual System.Threading.Tasks.Task<int> ReadAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public virtual System.Threading.Tasks.ValueTask<int> ReadAsync(System.Memory<byte> destination, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public virtual int ReadByte() { throw null; }
         public abstract long Seek(long offset, System.IO.SeekOrigin origin);
         public abstract void SetLength(long value);
@@ -9348,6 +9434,7 @@ namespace System.IO
         [System.Runtime.InteropServices.ComVisibleAttribute(false)]
         [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, ExternalThreading=true)]
         public virtual System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken) { throw null; }
+        public virtual System.Threading.Tasks.Task WriteAsync(System.ReadOnlyMemory<byte> source, System.Threading.CancellationToken cancellationToken=default(System.Threading.CancellationToken)) { throw null; }
         public virtual void WriteByte(byte value) { }
     }
     [System.Runtime.InteropServices.ComVisibleAttribute(true)]
@@ -12956,6 +13043,12 @@ namespace System.Runtime.CompilerServices
         public AccessedThroughPropertyAttribute(string propertyName) { }
         public string PropertyName { get { throw null; } }
     }
+    [System.AttributeUsageAttribute((System.AttributeTargets)(5148), Inherited=false, AllowMultiple=false)]
+    public sealed partial class AsyncMethodBuilderAttribute : System.Attribute
+    {
+        public AsyncMethodBuilderAttribute(System.Type builderType) { }
+        public System.Type BuilderType { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+    }
     [System.AttributeUsageAttribute((System.AttributeTargets)(64), Inherited=false, AllowMultiple=false)]
     [System.SerializableAttribute]
     public sealed partial class AsyncStateMachineAttribute : System.Runtime.CompilerServices.StateMachineAttribute
@@ -12991,6 +13084,18 @@ namespace System.Runtime.CompilerServices
         public void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine stateMachine) { }
         [System.Diagnostics.DebuggerStepThroughAttribute]
         [System.Security.SecuritySafeCriticalAttribute]
+        public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
+    }
+    public partial struct AsyncValueTaskMethodBuilder<TResult>
+    {
+        public System.Threading.Tasks.ValueTask<TResult> Task { get { throw null; } }
+        public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : System.Runtime.CompilerServices.INotifyCompletion where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
+        [System.Security.SecuritySafeCriticalAttribute]
+        public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine) where TAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
+        public static System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder<TResult> Create() { throw null; }
+        public void SetException(System.Exception exception) { }
+        public void SetResult(TResult result) { }
+        public void SetStateMachine(System.Runtime.CompilerServices.IAsyncStateMachine stateMachine) { }
         public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : System.Runtime.CompilerServices.IAsyncStateMachine { }
     }
     [System.Security.Permissions.HostProtectionAttribute(System.Security.Permissions.SecurityAction.LinkDemand, Synchronization=true, ExternalThreading=true)]
@@ -13115,6 +13220,17 @@ namespace System.Runtime.CompilerServices
             [System.Security.SecuritySafeCriticalAttribute]
             public void OnCompleted(System.Action continuation) { }
             [System.Security.SecurityCriticalAttribute]
+            public void UnsafeOnCompleted(System.Action continuation) { }
+        }
+    }
+    public partial struct ConfiguredValueTaskAwaitable<TResult>
+    {
+        public System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable<TResult>.ConfiguredValueTaskAwaiter GetAwaiter() { throw null; }
+        public partial struct ConfiguredValueTaskAwaiter : System.Runtime.CompilerServices.ICriticalNotifyCompletion, System.Runtime.CompilerServices.INotifyCompletion
+        {
+            public bool IsCompleted { get { throw null; } }
+            public TResult GetResult() { throw null; }
+            public void OnCompleted(System.Action continuation) { }
             public void UnsafeOnCompleted(System.Action continuation) { }
         }
     }
@@ -13506,6 +13622,14 @@ namespace System.Runtime.CompilerServices
     public sealed partial class UnsafeValueTypeAttribute : System.Attribute
     {
         public UnsafeValueTypeAttribute() { }
+    }
+    [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public partial struct ValueTaskAwaiter<TResult> : System.Runtime.CompilerServices.ICriticalNotifyCompletion, System.Runtime.CompilerServices.INotifyCompletion
+    {
+        public bool IsCompleted { get { throw null; } }
+        public TResult GetResult() { throw null; }
+        public void OnCompleted(System.Action continuation) { }
+        public void UnsafeOnCompleted(System.Action continuation) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential, Size=1)]
     public partial struct YieldAwaitable
@@ -25147,6 +25271,7 @@ namespace System.Threading.Tasks
         public int Id { get { throw null; } }
         public bool IsCanceled { get { throw null; } }
         public bool IsCompleted { get { throw null; } }
+        public bool IsCompletedSuccessfully { get { throw null; } }
         public bool IsFaulted { get { throw null; } }
         public System.Threading.Tasks.TaskStatus Status { get { throw null; } }
         System.Threading.WaitHandle System.IAsyncResult.AsyncWaitHandle { get { throw null; } }
@@ -25501,5 +25626,26 @@ namespace System.Threading.Tasks
         public System.AggregateException Exception { get { throw null; } }
         public bool Observed { get { throw null; } }
         public void SetObserved() { }
+    }
+    [System.Runtime.CompilerServices.AsyncMethodBuilderAttribute(typeof(System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder<TResult>))]
+    public partial struct ValueTask<TResult> : System.IEquatable<System.Threading.Tasks.ValueTask<TResult>>
+    {
+        public ValueTask(System.Threading.Tasks.Task<TResult> task) { throw null;}
+        public ValueTask(TResult result) { throw null;}
+        public bool IsCanceled { get { throw null; } }
+        public bool IsCompleted { get { throw null; } }
+        public bool IsCompletedSuccessfully { get { throw null; } }
+        public bool IsFaulted { get { throw null; } }
+        public TResult Result { get { throw null; } }
+        public System.Threading.Tasks.Task<TResult> AsTask() { throw null; }
+        public System.Runtime.CompilerServices.ConfiguredValueTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext) { throw null; }
+        public static System.Runtime.CompilerServices.AsyncValueTaskMethodBuilder<TResult> CreateAsyncMethodBuilder() { throw null; }
+        public override bool Equals(object obj) { throw null; }
+        public bool Equals(System.Threading.Tasks.ValueTask<TResult> other) { throw null; }
+        public System.Runtime.CompilerServices.ValueTaskAwaiter<TResult> GetAwaiter() { throw null; }
+        public override int GetHashCode() { throw null; }
+        public static bool operator ==(System.Threading.Tasks.ValueTask<TResult> left, System.Threading.Tasks.ValueTask<TResult> right) { throw null; }
+        public static bool operator !=(System.Threading.Tasks.ValueTask<TResult> left, System.Threading.Tasks.ValueTask<TResult> right) { throw null; }
+        public override string ToString() { throw null; }
     }
 }

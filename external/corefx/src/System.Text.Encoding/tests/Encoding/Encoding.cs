@@ -44,16 +44,14 @@ namespace System.Text.Encodings.Tests
             Assert.Equal(enc.GetBytes("Some string"), Encoding.Default.GetBytes("Some string"));
         }
 
-#if !MONO  // FIXME: use SkipOnTargetFramework(TargetFrameworkMonikers.Mono) once available
         [Fact]
-        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Full framework uses system ACP and not UTF8")]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework | TargetFrameworkMonikers.Mono, "Full framework uses system ACP and not UTF8")]
         public static void DefaultEncodingBOMTest()
         {
             UTF8Encoding defaultEncoding = Encoding.Default as UTF8Encoding;
             Assert.True(defaultEncoding != null);
             Assert.Equal(0, defaultEncoding.GetPreamble().Length);
         }
-#endif
 
         [Fact]
         public static void GetEncodingsTest()
@@ -63,7 +61,7 @@ namespace System.Text.Encodings.Tests
             {
                 Encoding encoding = Encoding.GetEncoding(info.CodePage);
                 Assert.Equal(encoding, info.GetEncoding());
-#if !MONO  // FIXME: https://bugzilla.xamarin.com/show_bug.cgi?id=60202
+#if !MONO // https://bugzilla.xamarin.com/show_bug.cgi?id=60202
                 Assert.Equal(encoding.WebName, info.Name);
 #endif
                 Assert.False(String.IsNullOrEmpty(info.DisplayName));
