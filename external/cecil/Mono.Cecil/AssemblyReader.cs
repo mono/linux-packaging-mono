@@ -156,7 +156,6 @@ namespace Mono.Cecil {
 			this.module.Read (this.module, (module, reader) => {
 				ReadModuleManifest (reader);
 				ReadModule (module, resolve_attributes: true);
-				return module;
 			});
 		}
 
@@ -422,10 +421,7 @@ namespace Mono.Cecil {
 
 		protected override void ReadModule ()
 		{
-			this.module.Read (this.module, (module, reader) => {
-				ReadModuleManifest (reader);
-				return module;
-			});
+			this.module.Read (this.module, (_, reader) => ReadModuleManifest (reader));
 		}
 
 		public override void ReadSymbols (ModuleDefinition module)
@@ -943,8 +939,8 @@ namespace Mono.Cecil {
 
 			type.BaseType = GetTypeDefOrRef (ReadMetadataToken (CodedIndex.TypeDefOrRef));
 
-			type.fields_range = ReadFieldsRange (rid);
-			type.methods_range = ReadMethodsRange (rid);
+			type.fields_range = ReadListRange (rid, Table.TypeDef, Table.Field);
+			type.methods_range = ReadListRange (rid, Table.TypeDef, Table.Method);
 
 			if (IsNested (attributes))
 				type.DeclaringType = GetNestedTypeDeclaringType (type);
@@ -965,21 +961,13 @@ namespace Mono.Cecil {
 			return GetTypeDefinition (declaring_rid);
 		}
 
-		Range ReadFieldsRange (uint type_index)
-		{
-			return ReadListRange (type_index, Table.TypeDef, Table.Field);
-		}
-
-		Range ReadMethodsRange (uint type_index)
-		{
-			return ReadListRange (type_index, Table.TypeDef, Table.Method);
-		}
-
 		Range ReadListRange (uint current_index, Table current, Table target)
 		{
 			var list = new Range ();
 
-			list.Start = ReadTableIndex (target);
+			var start = ReadTableIndex (target);
+			if (start == 0)
+				return list;
 
 			uint next_index;
 			var current_table = image.TableHeap [current];
@@ -993,7 +981,8 @@ namespace Mono.Cecil {
 				this.position = position;
 			}
 
-			list.Length = next_index - list.Start;
+			list.Start = start;
+			list.Length = next_index - start;
 
 			return list;
 		}
@@ -1496,14 +1485,9 @@ namespace Mono.Cecil {
 
 			for (uint i = 1; i <= length; i++) {
 				var type_rid = ReadTableIndex (Table.TypeDef);
-				Range events_range = ReadEventsRange (i);
+				Range events_range = ReadListRange (i, Table.EventMap, Table.Event);
 				metadata.AddEventsRange (type_rid, events_range);
 			}
-		}
-
-		Range ReadEventsRange (uint rid)
-		{
-			return ReadListRange (rid, Table.EventMap, Table.Event);
 		}
 
 		public bool HasProperties (TypeDefinition type)
@@ -1585,14 +1569,9 @@ namespace Mono.Cecil {
 
 			for (uint i = 1; i <= length; i++) {
 				var type_rid = ReadTableIndex (Table.TypeDef);
-				var properties_range = ReadPropertiesRange (i);
+				var properties_range = ReadListRange (i, Table.PropertyMap, Table.Property);
 				metadata.AddPropertiesRange (type_rid, properties_range);
 			}
-		}
-
-		Range ReadPropertiesRange (uint rid)
-		{
-			return ReadListRange (rid, Table.PropertyMap, Table.Property);
 		}
 
 		MethodSemanticsAttributes ReadMethodSemantics (MethodDefinition method)
@@ -1697,23 +1676,19 @@ namespace Mono.Cecil {
 			}
 		}
 
-		public PropertyDefinition ReadMethods (PropertyDefinition property)
+		public void ReadMethods (PropertyDefinition property)
 		{
 			ReadAllSemantics (property.DeclaringType);
-			return property;
 		}
 
-		public EventDefinition ReadMethods (EventDefinition @event)
+		public void ReadMethods (EventDefinition @event)
 		{
 			ReadAllSemantics (@event.DeclaringType);
-			return @event;
 		}
 
-		public MethodSemanticsAttributes ReadAllSemantics (MethodDefinition method)
+		public void ReadAllSemantics (MethodDefinition method)
 		{
 			ReadAllSemantics (method.DeclaringType);
-
-			return method.SemanticsAttributes;
 		}
 
 		void ReadAllSemantics (TypeDefinition type)
@@ -1727,11 +1702,6 @@ namespace Mono.Cecil {
 				method.sem_attrs = ReadMethodSemantics (method);
 				method.sem_attrs_ready = true;
 			}
-		}
-
-		Range ReadParametersRange (uint method_rid)
-		{
-			return ReadListRange (method_rid, Table.Method, Table.Param);
 		}
 
 		public Collection<MethodDefinition> ReadMethods (TypeDefinition type)
@@ -1794,7 +1764,7 @@ namespace Mono.Cecil {
 			methods.Add (method); // attach method
 
 			var signature = ReadBlobIndex ();
-			var param_range = ReadParametersRange (method_rid);
+			var param_range = ReadListRange (method_rid, Table.Method, Table.Param);
 
 			this.context = method;
 
@@ -2121,6 +2091,11 @@ namespace Mono.Cecil {
 			return code.ReadMethodBody (method);
 		}
 
+		public int ReadCodeSize (MethodDefinition method)
+		{
+			return code.ReadCodeSize (method);
+		}
+
 		public CallSite ReadCallSite (MetadataToken token)
 		{
 			if (!MoveTo (Table.StandAloneSig, token.RID))
@@ -2387,8 +2362,8 @@ namespace Mono.Cecil {
 
 			var type_system = module.TypeSystem;
 
-			var context = new MethodReference (string.Empty, type_system.Void);
-			context.DeclaringType = new TypeReference (string.Empty, string.Empty, module, type_system.CoreLibrary);
+			var context = new MethodDefinition (string.Empty, MethodAttributes.Static, type_system.Void);
+			context.DeclaringType = new TypeDefinition (string.Empty, string.Empty, TypeAttributes.Public);
 
 			var member_references = new MemberReference [length];
 
@@ -3183,25 +3158,36 @@ namespace Mono.Cecil {
 			for (int i = 0; i < rows.Length; i++) {
 				if (rows [i].Col1 == StateMachineScopeDebugInformation.KindIdentifier) {
 					var signature = ReadSignature (rows [i].Col2);
-					infos.Add (new StateMachineScopeDebugInformation (signature.ReadInt32 (), signature.ReadInt32 ()));
+					var scopes = new Collection<StateMachineScope> ();
+
+					while (signature.CanReadMore ()) {
+						var start = signature.ReadInt32 ();
+						var end = start + signature.ReadInt32 ();
+						scopes.Add (new StateMachineScope (start, end));
+					}
+
+					var state_machine = new StateMachineScopeDebugInformation ();
+					state_machine.scopes = scopes;
+
+					infos.Add (state_machine);
 				} else if (rows [i].Col1 == AsyncMethodBodyDebugInformation.KindIdentifier) {
 					var signature = ReadSignature (rows [i].Col2);
 
 					var catch_offset = signature.ReadInt32 () - 1;
 					var yields = new Collection<InstructionOffset> ();
 					var resumes = new Collection<InstructionOffset> ();
-					uint move_next_rid = 0;
+					var resume_methods = new Collection<MethodDefinition> ();
 
 					while (signature.CanReadMore ()) {
 						yields.Add (new InstructionOffset (signature.ReadInt32 ()));
 						resumes.Add (new InstructionOffset (signature.ReadInt32 ()));
-						move_next_rid = signature.ReadCompressedUInt32 ();
+						resume_methods.Add (GetMethodDefinition (signature.ReadCompressedUInt32 ()));
 					}
 
 					var async_body = new AsyncMethodBodyDebugInformation (catch_offset);
 					async_body.yields = yields;
 					async_body.resumes = resumes;
-					async_body.move_next = GetMethodDefinition (move_next_rid);
+					async_body.resume_methods = resume_methods;
 
 					infos.Add (async_body);
 				} else if (rows [i].Col1 == EmbeddedSourceDebugInformation.KindIdentifier) {
@@ -3370,7 +3356,7 @@ namespace Mono.Cecil {
 			switch (etype) {
 			case ElementType.ValueType: {
 				var value_type = GetTypeDefOrRef (ReadTypeTokenSignature ());
-				value_type.IsValueType = true;
+				value_type.KnownValueType ();
 				return value_type;
 			}
 			case ElementType.Class:
@@ -3410,8 +3396,8 @@ namespace Mono.Cecil {
 				ReadGenericInstanceSignature (element_type, generic_instance);
 
 				if (is_value_type) {
-					generic_instance.IsValueType = true;
-					element_type.GetElementType ().IsValueType = true;
+					generic_instance.KnownValueType ();
+					element_type.GetElementType ().KnownValueType ();
 				}
 
 				return generic_instance;
