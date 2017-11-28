@@ -23,7 +23,7 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 
 				var sandbox = Sandbox (testCase, metadataProvider);
 				var compilationResult = Compile (sandbox, metadataProvider);
-//				PrepForLink (sandbox, compilationResult);
+				PrepForLink (sandbox, compilationResult);
 				return Link (testCase, sandbox, compilationResult, metadataProvider);
 			}
 		}
@@ -40,20 +40,21 @@ namespace Mono.Linker.Tests.TestCasesRunner {
 			var compiler = _factory.CreateCompiler (sandbox, metadataProvider);
 			var sourceFiles = sandbox.SourceFiles.Select(s => s.ToString()).ToArray();
 
+			var assemblyName = metadataProvider.GetAssemblyName ();
+
 			var references = metadataProvider.GetReferencedAssemblies(sandbox.InputDirectory);
-			var inputAssemblyPath = compiler.CompileTestIn (sandbox.InputDirectory, "test.exe", sourceFiles, references, null);
+			var resources = sandbox.ResourceFiles.ToArray ();
+			var inputAssemblyPath = compiler.CompileTestIn (sandbox.InputDirectory, assemblyName, sourceFiles, references, null, resources);
 
 			references = metadataProvider.GetReferencedAssemblies(sandbox.ExpectationsDirectory);
-			var expectationsAssemblyPath = compiler.CompileTestIn (sandbox.ExpectationsDirectory, "test.exe", sourceFiles, references, new [] { "INCLUDE_EXPECTATIONS" });
+			var expectationsAssemblyPath = compiler.CompileTestIn (sandbox.ExpectationsDirectory, assemblyName, sourceFiles, references, new [] { "INCLUDE_EXPECTATIONS" }, resources);
 			return new ManagedCompilationResult (inputAssemblyPath, expectationsAssemblyPath);
 		}
-/*
-		private void PrepForLink (TestCaseSandbox sandbox, ManagedCompilationResult compilationResult)
+
+		protected virtual void PrepForLink (TestCaseSandbox sandbox, ManagedCompilationResult compilationResult)
 		{
-			var entryPointLinkXml = sandbox.InputDirectory.Combine ("entrypoint.xml");
-			LinkXmlHelpers.WriteXmlFileToPreserveEntryPoint (compilationResult.InputAssemblyPath, entryPointLinkXml);
 		}
-*/
+
 		private LinkedTestCaseResult Link (TestCase testCase, TestCaseSandbox sandbox, ManagedCompilationResult compilationResult, TestCaseMetadaProvider metadataProvider)
 		{
 			var linker = _factory.CreateLinker ();

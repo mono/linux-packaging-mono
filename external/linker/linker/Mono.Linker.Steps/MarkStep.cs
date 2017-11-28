@@ -647,8 +647,7 @@ namespace Mono.Linker.Steps {
 
 			if (type.HasInterfaces) {
 				foreach (var iface in type.Interfaces) {
-					MarkCustomAttributes (iface);
-					MarkType (iface.InterfaceType);
+					MarkInterfaceImplementation (type, iface);
 				}
 			}
 
@@ -1444,7 +1443,14 @@ namespace Mono.Linker.Steps {
 				return true;
 			case MethodAction.Parse:
 				AssemblyDefinition assembly = ResolveAssembly (method.DeclaringType.Scope);
-				return Annotations.GetAction (assembly) == AssemblyAction.Link;
+				switch (Annotations.GetAction (assembly)) {
+				case AssemblyAction.Link:
+				case AssemblyAction.Copy:
+				case AssemblyAction.CopyUsed:
+					return true;
+				default:
+					return false;
+				}
 			default:
 				return false;
 			}
@@ -1550,12 +1556,22 @@ namespace Mono.Linker.Steps {
 
 		protected virtual void HandleUnresolvedType (TypeReference reference)
 		{
-			throw new ResolutionException (reference);
+			if (!_context.IgnoreUnresolved) {
+				throw new ResolutionException (reference);
+			}
 		}
 
 		protected virtual void HandleUnresolvedMethod (MethodReference reference)
 		{
-			throw new ResolutionException (reference);
+			if (!_context.IgnoreUnresolved) {
+				throw new ResolutionException (reference);
+			}
+		}
+
+		protected virtual void MarkInterfaceImplementation (TypeDefinition type, InterfaceImplementation iface)
+		{
+			MarkCustomAttributes (iface);
+			MarkType (iface.InterfaceType);
 		}
 	}
 }

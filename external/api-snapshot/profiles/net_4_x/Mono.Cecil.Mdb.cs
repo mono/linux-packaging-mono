@@ -7,7 +7,7 @@
 [assembly:System.Diagnostics.DebuggableAttribute((System.Diagnostics.DebuggableAttribute.DebuggingModes)(2))]
 [assembly:System.Reflection.AssemblyCopyrightAttribute("Copyright © 2008 - 2015 Jb Evain")]
 [assembly:System.Reflection.AssemblyFileVersionAttribute("0.10.0.0")]
-[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0-beta6")]
+[assembly:System.Reflection.AssemblyInformationalVersionAttribute("0.10.0.0-beta7")]
 [assembly:System.Reflection.AssemblyProductAttribute("Mono.Cecil")]
 [assembly:System.Reflection.AssemblyTitleAttribute("Mono.Cecil.Mdb")]
 [assembly:System.Runtime.CompilerServices.CompilationRelaxationsAttribute(8)]
