@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -628,7 +638,8 @@ mono_mb_create_method (MonoMethodBuilder *mb, MonoMethodSignature *signature, in
              <div>	 the newly created method.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	 Create a <code>MonoMethod</code> from this method builder.</div>
+             <div>
+ Create a <code>MonoMethod</code> from this method builder.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -746,7 +757,14 @@ mono_metadata_signature_alloc (MonoImage *m, guint32 nparams)
              <div>	 the new <code>MonoMethodSignature</code> structure.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Allocate a <code>MonoMethodSignature</code> structure with the specified number of params. 	 The return type and the params types need to be filled later. 	 This is a Mono runtime internal function. 	<p /> 	 LOCKING: Assumes the loader lock is held. 	<p /></div>
+             <div>
+<p />
+ Allocate a <code>MonoMethodSignature</code> structure with the specified number of params.
+ The return type and the params types need to be filled later.
+ This is a Mono runtime internal function.
+<p />
+ LOCKING: Assumes the loader lock is held.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -770,6 +788,10 @@ mono_metadata_signature_dup (MonoMethodSignature *sig)
              <div>	 the new <code>MonoMethodSignature</code> structure.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Duplicate an existing <code>MonoMethodSignature</code> so it can be modified. 	 This is a Mono runtime internal function. 	<p /></div>
+             <div>
+<p />
+ Duplicate an existing <code>MonoMethodSignature</code> so it can be modified.
+ This is a Mono runtime internal function.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->

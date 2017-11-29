@@ -182,27 +182,6 @@ libmono_profiler_coverage_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_coverage_la_rpath = -rpath \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-libmono_profiler_iomap_static_la_LIBADD =
-am_libmono_profiler_iomap_static_la_OBJECTS = iomap.lo
-libmono_profiler_iomap_static_la_OBJECTS =  \
-	$(am_libmono_profiler_iomap_static_la_OBJECTS)
-libmono_profiler_iomap_static_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) \
-	$(libmono_profiler_iomap_static_la_LDFLAGS) $(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_iomap_static_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
-libmono_profiler_iomap_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
-am_libmono_profiler_iomap_la_OBJECTS = iomap.lo
-libmono_profiler_iomap_la_OBJECTS =  \
-	$(am_libmono_profiler_iomap_la_OBJECTS)
-libmono_profiler_iomap_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(libmono_profiler_iomap_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@am_libmono_profiler_iomap_la_rpath = -rpath \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(libdir)
 libmono_profiler_log_static_la_LIBADD =
 am_libmono_profiler_log_static_la_OBJECTS = log.lo log-args.lo
 libmono_profiler_log_static_la_OBJECTS =  \
@@ -290,8 +269,6 @@ SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_aot_la_SOURCES) \
 	$(libmono_profiler_coverage_static_la_SOURCES) \
 	$(libmono_profiler_coverage_la_SOURCES) \
-	$(libmono_profiler_iomap_static_la_SOURCES) \
-	$(libmono_profiler_iomap_la_SOURCES) \
 	$(libmono_profiler_log_static_la_SOURCES) \
 	$(libmono_profiler_log_la_SOURCES) \
 	$(libmono_profiler_vtune_static_la_SOURCES) \
@@ -300,8 +277,6 @@ DIST_SOURCES = $(libmono_profiler_aot_static_la_SOURCES) \
 	$(libmono_profiler_aot_la_SOURCES) \
 	$(libmono_profiler_coverage_static_la_SOURCES) \
 	$(libmono_profiler_coverage_la_SOURCES) \
-	$(libmono_profiler_iomap_static_la_SOURCES) \
-	$(libmono_profiler_iomap_la_SOURCES) \
 	$(libmono_profiler_log_static_la_SOURCES) \
 	$(libmono_profiler_log_la_SOURCES) \
 	$(am__libmono_profiler_vtune_static_la_SOURCES_DIST) \
@@ -580,8 +555,6 @@ AM_CPPFLAGS = \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@lib_LTLIBRARIES = \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-aot-static.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-iomap.la \
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-iomap-static.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-log-static.la \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	libmono-profiler-coverage.la \
@@ -589,7 +562,10 @@ AM_CPPFLAGS = \
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	$(vtune_libs)
 
 @DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppressiondir = $(datadir)/mono-$(API_VER)/mono/profiler
-@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppression_DATA = mono-profiler-log.suppression
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@suppression_DATA = \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	mono-profiler-coverage.suppression \
+@DISABLE_LIBRARIES_FALSE@@DISABLE_PROFILER_FALSE@@HOST_WIN32_FALSE@	mono-profiler-log.suppression
+
 
 # FIXME: The profiler tests currently don't work with coop because the
 # sampling infrastructure depends on signals being available.
@@ -639,11 +615,6 @@ libmono_profiler_aot_la_LIBADD = $(libmono_dep) $(GLIB_LIBS) $(LIBICONV)
 libmono_profiler_aot_la_LDFLAGS = $(prof_ldflags)
 libmono_profiler_aot_static_la_SOURCES = aot.c
 libmono_profiler_aot_static_la_LDFLAGS = -static
-libmono_profiler_iomap_la_SOURCES = iomap.c
-libmono_profiler_iomap_la_LIBADD = $(libmono_dep) $(GLIB_LIBS) $(LIBICONV)
-libmono_profiler_iomap_la_LDFLAGS = $(prof_ldflags)
-libmono_profiler_iomap_static_la_SOURCES = iomap.c
-libmono_profiler_iomap_static_la_LDFLAGS = -static
 libmono_profiler_log_la_SOURCES = log.c log-args.c
 libmono_profiler_log_la_LIBADD = $(libmono_dep) $(GLIB_LIBS) $(zlib_dep)
 libmono_profiler_log_la_LDFLAGS = $(prof_ldflags)
@@ -765,12 +736,6 @@ libmono-profiler-coverage-static.la: $(libmono_profiler_coverage_static_la_OBJEC
 libmono-profiler-coverage.la: $(libmono_profiler_coverage_la_OBJECTS) $(libmono_profiler_coverage_la_DEPENDENCIES) $(EXTRA_libmono_profiler_coverage_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_profiler_coverage_la_LINK) $(am_libmono_profiler_coverage_la_rpath) $(libmono_profiler_coverage_la_OBJECTS) $(libmono_profiler_coverage_la_LIBADD) $(LIBS)
 
-libmono-profiler-iomap-static.la: $(libmono_profiler_iomap_static_la_OBJECTS) $(libmono_profiler_iomap_static_la_DEPENDENCIES) $(EXTRA_libmono_profiler_iomap_static_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libmono_profiler_iomap_static_la_LINK) $(am_libmono_profiler_iomap_static_la_rpath) $(libmono_profiler_iomap_static_la_OBJECTS) $(libmono_profiler_iomap_static_la_LIBADD) $(LIBS)
-
-libmono-profiler-iomap.la: $(libmono_profiler_iomap_la_OBJECTS) $(libmono_profiler_iomap_la_DEPENDENCIES) $(EXTRA_libmono_profiler_iomap_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libmono_profiler_iomap_la_LINK) $(am_libmono_profiler_iomap_la_rpath) $(libmono_profiler_iomap_la_OBJECTS) $(libmono_profiler_iomap_la_LIBADD) $(LIBS)
-
 libmono-profiler-log-static.la: $(libmono_profiler_log_static_la_OBJECTS) $(libmono_profiler_log_static_la_DEPENDENCIES) $(EXTRA_libmono_profiler_log_static_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libmono_profiler_log_static_la_LINK) $(am_libmono_profiler_log_static_la_rpath) $(libmono_profiler_log_static_la_OBJECTS) $(libmono_profiler_log_static_la_LIBADD) $(LIBS)
 
@@ -844,7 +809,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coverage.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iomap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_la-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmono_profiler_vtune_static_la-vtune.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log-args.Plo@am__quote@

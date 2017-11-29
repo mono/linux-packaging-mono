@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -257,7 +267,23 @@ mono_domain_create (void)
 
 	 loaded into it.</div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Creates a new application domain, the unmanaged representation 	 of the actual domain. 	<p /> 	 Application domains provide an isolation facilty for assemblies.   You 	 can load assemblies and execute code in them that will not be visible 	 to other application domains. This is a runtime-based virtualization 	 technology. 	<p /> 	 It is possible to unload domains, which unloads the assemblies and 	 data that was allocated in that domain. 	<p /> 	 When a domain is created a mempool is allocated for domain-specific 	 structures, along a dedicated code manager to hold code that is 	 associated with the domain. 	<p /></div>
+             <div>
+<p />
+ Creates a new application domain, the unmanaged representation
+ of the actual domain.
+<p />
+ Application domains provide an isolation facilty for assemblies.   You
+ can load assemblies and execute code in them that will not be visible
+ to other application domains. This is a runtime-based virtualization
+ technology.
+<p />
+ It is possible to unload domains, which unloads the assemblies and
+ data that was allocated in that domain.
+<p />
+ When a domain is created a mempool is allocated for domain-specific
+ structures, along a dedicated code manager to hold code that is
+ associated with the domain.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -303,7 +329,11 @@ mono_domain_finalize (MonoDomain *domain, guint32 timeout)
              <div>	 <code>TRUE</code> if succeeded, <code>FALSE</code> if there was a timeout
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Request finalization of all finalizable objects inside <i>domain</i>. Wait 	 <i>timeout</i> msecs for the finalization to complete. 	<p /></div>
+             <div>
+<p />
+ Request finalization of all finalizable objects inside <i>domain</i>. Wait
+ <i>timeout</i> msecs for the finalization to complete.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -324,7 +354,12 @@ mono_domain_foreach (MonoDomainFunc func, gpointer user_data)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>func</i></td><td> function to invoke with the domain data</td></tr><tr><td><i>user_data</i></td><td> user-defined pointer that is passed to the supplied <i>func</i> fo reach domain</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Use this method to safely iterate over all the loaded application 	 domains in the current runtime.   The provided <i>func</i> is invoked with a 	 pointer to the <code>MonoDomain</code> and is given the value of the <i>user_data</i> 	 parameter which can be used to pass state to your called routine.</div>
+             <div>
+<p />
+ Use this method to safely iterate over all the loaded application
+ domains in the current runtime.   The provided <i>func</i> is invoked with a
+ pointer to the <code>MonoDomain</code> and is given the value of the <i>user_data</i>
+ parameter which can be used to pass state to your called routine.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -345,7 +380,11 @@ mono_domain_free (MonoDomain *domain, gboolean force)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> the domain to release</td></tr><tr><td><i>force</i></td><td> if <code>TRUE</code>, it allows the root domain to be released (used at shutdown only).</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This releases the resources associated with the specific domain. 	 This is a low-level function that is invoked by the AppDomain infrastructure 	 when necessary.</div>
+             <div>
+<p />
+ This releases the resources associated with the specific domain.
+ This is a low-level function that is invoked by the AppDomain infrastructure
+ when necessary.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -408,7 +447,11 @@ mono_domain_get_friendly_name (MonoDomain *domain)
              <div>	 The friendly name of <i>domain</i>. Can be <code>NULL</code> if not yet set.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 The returned string's lifetime is the same as <i>domain</i>'s. Consider 	 copying it if you need to store it somewhere. 	<p /></div>
+             <div>
+<p />
+ The returned string's lifetime is the same as <i>domain</i>'s. Consider
+ copying it if you need to store it somewhere.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -431,7 +474,12 @@ mono_domain_get_id (MonoDomain *domain)
              <div>	 The unique ID for <i>domain</i>.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 A domain ID is guaranteed to be unique for as long as the domain 	 using it is alive. It may be reused later once the domain has been 	 unloaded. 	<p /></div>
+             <div>
+<p />
+ A domain ID is guaranteed to be unique for as long as the domain
+ using it is alive. It may be reused later once the domain has been
+ unloaded.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -454,7 +502,12 @@ mono_domain_get ()
              <div>	 the current domain
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This method returns the value of the current <code>MonoDomain</code> that this thread 	 and code are running under.   To obtain the root domain use 	 <code>mono_get_root_domain</code> API. 	<p /></div>
+             <div>
+<p />
+ This method returns the value of the current <code>MonoDomain</code> that this thread
+ and code are running under.   To obtain the root domain use
+ <code>mono_get_root_domain</code> API.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -478,7 +531,8 @@ mono_domain_has_type_resolve (MonoDomain *domain)
              <div>	 <code>TRUE</code> if the <code>AppDomain.TypeResolve</code> field has been set.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -538,7 +592,13 @@ mono_domain_set_config (MonoDomain *domain, const char *base_dir, const char *co
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> <code>MonoDomain</code> initialized with the appdomain we want to change</td></tr><tr><td><i>base_dir</i></td><td> new base directory for the appdomain</td></tr><tr><td><i>config_file_name</i></td><td> path to the new configuration for the app domain</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Used to set the system configuration for an appdomain 	<p /> 	 Without using this, embedded builds will get 'System.Configuration.ConfigurationErrorsException:  	 Error Initializing the configuration system. ---&gt; System.ArgumentException:  	 The 'ExeConfigFilename' argument cannot be null.' for some managed calls.</div>
+             <div>
+<p />
+ Used to set the system configuration for an appdomain
+<p />
+ Without using this, embedded builds will get 'System.Configuration.ConfigurationErrorsException: 
+ Error Initializing the configuration system. ---&gt; System.ArgumentException: 
+ The 'ExeConfigFilename' argument cannot be null.' for some managed calls.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -559,7 +619,9 @@ mono_domain_set_internal (MonoDomain *domain)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> the new domain</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Sets the current domain to <i>domain</i>.</div>
+             <div>
+<p />
+ Sets the current domain to <i>domain</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -583,7 +645,11 @@ mono_domain_set (MonoDomain *domain, gboolean force)
              <div>	 <code>TRUE</code> on success; <code>FALSE</code> if the domain is unloaded
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Set the current appdomain to <i>domain</i>. If <i>force</i> is set, set it even 	 if it is being unloaded. 	<p /></div>
+             <div>
+<p />
+ Set the current appdomain to <i>domain</i>. If <i>force</i> is set, set it even
+ if it is being unloaded.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -607,7 +673,13 @@ mono_domain_try_type_resolve (MonoDomain *domain, char *name, MonoObject *tb)
              <div>	 A <code>MonoReflectionAssembly</code> or <code>NULL</code> if not found
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This routine invokes the internal <code>System.AppDomain.DoTypeResolve</code> and returns 	 the assembly that matches name. 	<p /> 	 If <i>name</i> is null, the value of <code>((TypeBuilder)tb).FullName</code> is used instead 	<p /></div>
+             <div>
+<p />
+ This routine invokes the internal <code>System.AppDomain.DoTypeResolve</code> and returns
+ the assembly that matches name.
+<p />
+ If <i>name</i> is null, the value of <code>((TypeBuilder)tb).FullName</code> is used instead
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -643,7 +715,21 @@ mono_domain_try_unload (MonoDomain *domain, MonoObject **exc)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> The domain to unload</td></tr><tr><td><i>exc</i></td><td> Exception information</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	  Unloads an appdomain. Follows the process outlined in: 	  http://blogs.gotdotnet.com/cbrumme 	<p /> 	  If doing things the 'right' way is too hard or complex, we do it the  	  'simple' way, which means do everything needed to avoid crashes and 	  memory leaks, but not much else. 	<p /> 	  It is required to pass a valid reference to the exc argument, upon return 	  from this function *exc will be set to the exception thrown, if any. 	<p /> 	  If this method is not called from an icall (embedded scenario for instance), 	  it must not be called with any managed frames on the stack, since the unload 	  process could end up trying to abort the current thread.</div>
+             <div>
+<p />
+  Unloads an appdomain. Follows the process outlined in:
+  http://blogs.gotdotnet.com/cbrumme
+<p />
+  If doing things the 'right' way is too hard or complex, we do it the 
+  'simple' way, which means do everything needed to avoid crashes and
+  memory leaks, but not much else.
+<p />
+  It is required to pass a valid reference to the exc argument, upon return
+  from this function *exc will be set to the exception thrown, if any.
+<p />
+  If this method is not called from an icall (embedded scenario for instance),
+  it must not be called with any managed frames on the stack, since the unload
+  process could end up trying to abort the current thread.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 
@@ -667,7 +753,8 @@ mono_context_init (MonoDomain *domain)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>domain</i></td><td> The domain where the <code>System.Runtime.Remoting.Context.Context</code> is initialized</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Initializes the <i>domain</i>'s default <code>System.Runtime.Remoting</code> 's Context.</div>
+             <div>
+ Initializes the <i>domain</i>'s default <code>System.Runtime.Remoting</code> 's Context.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -690,7 +777,8 @@ mono_context_get (void)
              <div>	 the current Mono Application Context.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /></div>
+             <div>
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -736,7 +824,11 @@ mono_context_get_id (MonoAppContext *context)
              <div>	 The unique ID for <i>context</i>.
 </div>
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Context IDs are guaranteed to be unique for the duration of a Mono 	 process; they are never reused. 	<p /></div>
+             <div>
+<p />
+ Context IDs are guaranteed to be unique for the duration of a Mono
+ process; they are never reused.
+<p /></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->

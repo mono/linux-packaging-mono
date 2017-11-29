@@ -48,6 +48,16 @@
         line-height: 0px;
     }
 
+    .mapi-codeblock {
+        display: block;
+        padding: 5pt 5pt;
+        margin: 10pt;
+        white-space: pre;
+        font-family: monospace;
+        border: 1px solid rgba(233,233,233,1);
+        background-color: rgba(249,249,249,1);
+    }
+
     .mapi-entry code {
         border: none;
         background-color: transparent;
@@ -259,7 +269,10 @@ mono_debug_symfile_free_location (MonoDebugSourceLocation  *location)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Free a <code>MonoDebugSourceLocation</code> returned by 	 <code>mono_debug_symfile_lookup_location</code></div>
+             <div>
+<p />
+ Free a <code>MonoDebugSourceLocation</code> returned by
+ <code>mono_debug_symfile_lookup_location</code></div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -297,7 +310,11 @@ mono_debug_symfile_lookup_locals (MonoDebugMethodInfo *minfo)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Return information about the local variables of <i>minfo</i> from the symbol file. 	 Return <code>NULL</code> if no information can be found. 	 The result should be freed using <code>mono_debug_symfile_free_locals</code>.</div>
+             <div>
+<p />
+ Return information about the local variables of <i>minfo</i> from the symbol file.
+ Return <code>NULL</code> if no information can be found.
+ The result should be freed using <code>mono_debug_symfile_free_locals</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -318,7 +335,11 @@ mono_debug_symfile_lookup_location (MonoDebugMethodInfo *minfo, uint32_t offset)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>minfo</i></td><td> A <code>MonoDebugMethodInfo</code> which can be retrieved by <code>mono_debug_lookup_method</code>.</td></tr><tr><td><i>offset</i></td><td> IL offset within the corresponding method's CIL code.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 This function is similar to <code>mono_debug_lookup_location</code>, but we 	 already looked up the method and also already did the 	 native address -&gt; IL offset mapping.</div>
+             <div>
+<p />
+ This function is similar to <code>mono_debug_lookup_location</code>, but we
+ already looked up the method and also already did the
+ native address -&gt; IL offset mapping.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -428,7 +449,9 @@ mono_debug_enabled (void)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Returns true is debug information is enabled. This doesn't relate if a debugger is present or not.</div>
+             <div>
+<p />
+ Returns true is debug information is enabled. This doesn't relate if a debugger is present or not.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -464,7 +487,8 @@ mono_debug_free_source_location (MonoDebugSourceLocation *location)
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>location</i></td><td> A <code>MonoDebugSourceLocation</code></td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Frees the <i>location</i>.</div>
+             <div>
+ Frees the <i>location</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -499,7 +523,11 @@ mono_debug_lookup_method (MonoMethod *method)
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Lookup symbol file information for the method <i>method</i>.  The returned 	 <code>MonoDebugMethodInfo</code> is a private structure, but it can be passed to 	 <code>mono_debug_symfile_lookup_location</code>.</div>
+             <div>
+<p />
+ Lookup symbol file information for the method <i>method</i>.  The returned
+ <code>MonoDebugMethodInfo</code> is a private structure, but it can be passed to
+ <code>mono_debug_symfile_lookup_location</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -535,7 +563,12 @@ mono_debug_lookup_source_location (MonoMethod *method, guint32 address, MonoDoma
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>address</i></td><td> Native offset within the <i>method</i>'s machine code.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Lookup the source code corresponding to the machine instruction located at 	 native offset <i>address</i> within <i>method</i>. 	 The returned <code>MonoDebugSourceLocation</code> contains both file / line number 	 information and the corresponding IL offset.  It must be freed by 	 <code>mono_debug_free_source_location</code>.</div>
+             <div>
+ Lookup the source code corresponding to the machine instruction located at
+ native offset <i>address</i> within <i>method</i>.
+ The returned <code>MonoDebugSourceLocation</code> contains both file / line number
+ information and the corresponding IL offset.  It must be freed by
+ <code>mono_debug_free_source_location</code>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -571,7 +604,9 @@ mono_debug_print_stack_frame (MonoMethod *method, guint32 native_offset, MonoDom
             <p />
             <div class="mapi-section">Parameters</div>
             <table class="mapi-parameters"><tbody><tr><td><i>native_offset</i></td><td> Native offset within the <i>method</i>'s machine code.</td></tr></tbody></table>             <div class="mapi-section">Description</div>
-             <div> 	 Conventient wrapper around <code>mono_debug_lookup_source_location</code> which can be 	 used if you only want to use the location to print a stack frame.</div>
+             <div>
+ Conventient wrapper around <code>mono_debug_lookup_source_location</code> which can be
+ used if you only want to use the location to print a stack frame.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
@@ -606,7 +641,10 @@ mono_debug_il_offset_from_address (MonoMethod *method, MonoDomain *domain, guint
 </div>
             <p />
              <div class="mapi-section">Description</div>
-             <div> 	<p /> 	 Compute the IL offset corresponding to <i>native_offset</i> inside the native 	 code of <i>method</i> in <i>domain</i>.</div>
+             <div>
+<p />
+ Compute the IL offset corresponding to <i>native_offset</i> inside the native
+ code of <i>method</i> in <i>domain</i>.</div>
         </div><!--mapi-description -->
     </div><!--height container -->
 </div> <!-- class=mapi  -->
