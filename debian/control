@@ -3040,7 +3040,8 @@ Description: Mono service manager for CLI 4.0
 Package: mono-xbuild
 Architecture: all
 Depends: ${misc:Depends}, ${cli:Depends}
-Replaces: mono-gmcs (<< 1.2.6-1)
+Replaces: mono-gmcs (<< 1.2.6-1), msbuild (<< 1:15.4+xamarinxplat.2017.11.27.11.23)
+Breaks: msbuild (<< 1:15.4+xamarinxplat.2017.11.27.11.23)
 Description: MSBuild-compatible build system for Mono
  Mono is a platform for running and developing applications based on the
  ECMA/ISO Standards. Mono is an open source effort led by Xamarin.
